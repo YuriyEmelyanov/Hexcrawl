@@ -2,6 +2,16 @@
 
 Минимальный веб-MVP для интерактивной hexcrawl-карты.
 
+## Публикация
+
+Приложение публикуется через GitHub Pages из workflow:
+
+- URL опубликованной версии: <https://yuriyemelyanov.github.io/Hexcrawl/>
+- Workflow: `.github/workflows/deploy.yml`
+- Автопубликация происходит при пуше в ветку `main`.
+
+> В репозитории нужно включить GitHub Pages: **Settings → Pages → Source: GitHub Actions**.
+
 ## Что реализовано
 
 - Интерактивная гекс-карта в центре.
@@ -37,3 +47,11 @@ npm run dev
 npm run build
 npm run preview
 ```
+
+## Команды для деплоя
+
+```bash
+npm run deploy
+```
+
+Скрипт `deploy` выполняет production-сборку для GitHub Pages.
