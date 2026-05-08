@@ -1,6 +1,6 @@
 :root {
   color: #e8ecf2;
-  background: #10151d;
+  background: #0f1521;
   font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
 }
 
@@ -12,81 +12,100 @@ body {
   margin: 0;
 }
 
-.layout {
+.app {
   min-height: 100vh;
-  display: grid;
-  grid-template-columns: 280px 1fr 280px;
+  padding: 1.25rem;
 }
 
-.panel {
-  padding: 1rem;
-  background: #182131;
-  border-right: 1px solid #2b3850;
-}
-
-.panel.right {
-  border-right: none;
-  border-left: 1px solid #2b3850;
-}
-
-.map-panel {
+.header {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.controls {
+  display: flex;
+  gap: 0.75rem;
+}
+
+button {
+  border: 1px solid #375386;
+  background: #365792;
+  color: #eef4ff;
+  padding: 0.55rem 0.85rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+button.secondary {
+  background: transparent;
+}
+
+.content {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.map-card,
+.roll-card {
+  border: 1px solid #2a3b5c;
+  background: #141f32;
+  border-radius: 10px;
   padding: 1rem;
 }
 
 svg {
-  width: min(100%, 760px);
-  border: 1px solid #2b3850;
-  background: #0f1726;
+  width: 100%;
+  max-height: 70vh;
+  border: 1px solid #2a3b5c;
+  background: #0c1423;
   border-radius: 8px;
 }
 
 .hex {
-  fill: #24334d;
-  stroke: #6f8fc6;
+  stroke: #9ab3dd;
   stroke-width: 2;
-  cursor: pointer;
-  transition: fill 0.2s ease;
-}
-
-.hex:hover {
-  fill: #31456a;
 }
 
 .hex.selected {
-  fill: #3f67a6;
-  stroke: #d3e2ff;
+  fill: #2f598f;
+}
+
+.hex.center {
+  fill: #a86b1d;
+  stroke: #ffd7a4;
 }
 
 .hex-label {
-  fill: #f6f8fc;
-  font-size: 12px;
+  fill: #f4f8ff;
+  font-size: 11px;
   pointer-events: none;
 }
 
-.hex-id {
-  margin: 0;
-  color: #95add8;
+.sum {
+  font-size: 1.2rem;
+  font-weight: 700;
 }
 
-.sheet {
-  background: #101828;
-  padding: 0.75rem;
-  margin-bottom: 0.75rem;
-  border: 1px solid #2b3850;
-  border-radius: 8px;
+.roll-values {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
 }
 
-@media (max-width: 1000px) {
-  .layout {
+.roll-chip {
+  border: 1px solid #46679d;
+  background: #203657;
+  padding: 0.25rem 0.5rem;
+  border-radius: 999px;
+}
+
+@media (max-width: 900px) {
+  .content {
     grid-template-columns: 1fr;
-  }
-
-  .panel,
-  .panel.right {
-    border: none;
-    border-bottom: 1px solid #2b3850;
   }
 }
