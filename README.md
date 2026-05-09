@@ -17,7 +17,7 @@ React + TypeScript + Vite приложение для пошагового ра�
    - проверяется flood-fill для ближайших пустых гексов;
    - если нет выхода наружу, кандидат отвергается.
 8. Если после фильтрации допустимых кандидатов нет, рост региона останавливается раньше целевого размера.
-9. `centralHex` выбирается после генерации с весами `1 + sameRegionNeighborCount^2`, при этом `anchorHex` получает штраф `*0.25`.
+9. `centralHex` выбирается после генерации по максимуму `sameRegionNeighborCount` (число соседей гекса в том же регионе): случайно среди гексов с максимальным значением; для региона из одного гекса центр — он сам.
 
 ## Основные функции
 
@@ -25,7 +25,7 @@ React + TypeScript + Vite приложение для пошагового ра�
 - `weightedPickCandidate(candidates, anchorHex, currentRegionHexes)`
 - `wouldCreateEnclosedVoid(candidateHex, currentMap, currentRegionHexes)`
 - `hasEscapeToOutside(startEmptyHex, temporaryOccupiedHexes)`
-- `chooseRegionCenter(regionHexes, anchorHex)`
+- `chooseRegionCenter(regionHexes)`
 - `getRegionColor(regionId)`
 
 ## Интерфейс
