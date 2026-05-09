@@ -27,6 +27,26 @@ type HexMeta = {
   isAnchor: boolean;
 };
 
+type HexEdge = {
+  from: AxialHex;
+  to: AxialHex;
+  neighbor: AxialHex;
+};
+
+type RiverSegment = {
+  edgeKey: string;
+  hexA: AxialHex;
+  hexB: AxialHex;
+  orderIndex: number;
+  riverId: number;
+};
+
+type River = {
+  id: number;
+  segments: RiverSegment[];
+  mergedIntoRiverId?: number;
+};
+
 const HEX_SIZE = 28;
 const SQRT3 = Math.sqrt(3);
 const START_HEX: AxialHex = { q: 0, r: 0 };
@@ -48,6 +68,12 @@ function parseHexKey(key: string): AxialHex {
   return { q, r };
 }
 
+function normalizeEdgeKey(hexA: AxialHex, hexB: AxialHex): string {
+  const a = hexKey(hexA);
+  const b = hexKey(hexB);
+  return a < b ? `${a}|${b}` : `${b}|${a}`;
+}
+
 function toPixel(q: number, r: number) {
   return {
     x: HEX_SIZE * SQRT3 * (q + r / 2),
@@ -66,6 +92,34 @@ function hexPoints(cx: number, cy: number, size: number) {
 
 function randomFrom<T>(values: T[]): T {
   return values[Math.floor(Math.random() * values.length)];
+}
+
+function getHexEdges(hex: AxialHex): HexEdge[] {
+  const { x, y } = toPixel(hex.q, hex.r);
+  const corners = Array.from({ length: 6 }, (_, i) => {
+    const angle = (Math.PI / 180) * (60 * i - 30);
+    return { q: x + HEX_SIZE * Math.cos(angle), r: y + HEX_SIZE * Math.sin(angle) };
+  });
+
+  return NEIGHBOR_DIRECTIONS.map((direction, i) => ({
+    from: corners[i],
+    to: corners[(i + 1) % 6],
+    neighbor: { q: hex.q + direction.q, r: hex.r + direction.r }
+  }));
+}
+
+function getRiverSegmentsTouchingHex(hex: AxialHex, rivers: River[]): RiverSegment[] {
+  return rivers.flatMap((river) =>
+    river.segments.filter((segment) => hexKey(segment.hexA) === hexKey(hex) || hexKey(segment.hexB) === hexKey(hex))
+  );
+}
+
+function getEdgeBetweenHexes(hexA: AxialHex, hexB: AxialHex) {
+  return getHexEdges(hexA).find((edge) => hexKey(edge.neighbor) === hexKey(hexB));
+}
+
+function buildSegment(hexA: AxialHex, hexB: AxialHex, orderIndex: number, riverId: number): RiverSegment {
+  return { edgeKey: normalizeEdgeKey(hexA, hexB), hexA, hexB, orderIndex, riverId };
 }
 
 export function generateDfRoll(): DfRollResult {
@@ -251,9 +305,131 @@ export function getCandidateHexes(allRegionHexes: AxialHex[]): AxialHex[] {
   return Array.from(candidates.values());
 }
 
+function continueRiverThroughRegion(region: Region, river: River, candidateHexes: AxialHex[]): River {
+  const regionKeys = new Set(region.hexes.map(hexKey));
+  const extensionTarget = Math.floor(Math.random() * 3) + 1;
+  const existingEdges = new Set(river.segments.map((segment) => segment.edgeKey));
+  let current = river.segments[river.segments.length - 1]?.hexB ?? region.centerHex;
+  const additions: RiverSegment[] = [];
+
+  for (let i = 0; i < extensionTarget; i += 1) {
+    const neighbors = getHexNeighbors(current);
+    const preferred = neighbors.filter((h) => regionKeys.has(hexKey(h)) || candidateHexes.some((c) => hexKey(c) === hexKey(h)));
+    const nextPool = preferred.length > 0 ? preferred : neighbors;
+    const nextHex = randomFrom(nextPool);
+    const edgeKey = normalizeEdgeKey(current, nextHex);
+    if (existingEdges.has(edgeKey)) {
+      break;
+    }
+    existingEdges.add(edgeKey);
+    additions.push(buildSegment(current, nextHex, river.segments.length + additions.length, river.id));
+    current = nextHex;
+  }
+
+  return { ...river, segments: [...river.segments, ...additions] };
+}
+
+function generateRiverForRegion(region: Region, existingRivers: River[], candidateHexes: AxialHex[]): River[] {
+  const touching = existingRivers.filter((river) =>
+    river.segments.some((segment) => region.hexes.some((hex) => hexKey(hex) === hexKey(segment.hexA) || hexKey(hex) === hexKey(segment.hexB)))
+  );
+
+  if (touching.length > 0) {
+    const updated = existingRivers.map((river) => {
+      if (!touching.some((t) => t.id === river.id)) {
+        return river;
+      }
+      return continueRiverThroughRegion(region, river, candidateHexes);
+    });
+
+    if (touching.length > 1) {
+      return mergeRiversIfNeeded(updated);
+    }
+
+    return updated;
+  }
+
+  const regionByCenter = [...region.hexes].sort(
+    (a, b) => hexDistance(a, region.centerHex) - hexDistance(b, region.centerHex)
+  );
+  const nearCenter = regionByCenter[0] ?? region.centerHex;
+  const centerNeighbors = getHexNeighbors(nearCenter);
+  const toRegionNeighbor = centerNeighbors.find((neighbor) => region.hexes.some((hex) => hexKey(hex) === hexKey(neighbor)));
+  const firstOutCandidate = centerNeighbors.find((neighbor) => candidateHexes.some((c) => hexKey(c) === hexKey(neighbor)));
+
+  if (!toRegionNeighbor || !firstOutCandidate) {
+    return existingRivers;
+  }
+
+  const newRiverId = (existingRivers.at(-1)?.id ?? 0) + 1;
+  const river: River = {
+    id: newRiverId,
+    segments: [
+      buildSegment(nearCenter, toRegionNeighbor, 0, newRiverId),
+      buildSegment(toRegionNeighbor, firstOutCandidate, 1, newRiverId)
+    ]
+  };
+
+  return [...existingRivers, continueRiverThroughRegion(region, river, candidateHexes)];
+}
+
+function mergeRiversIfNeeded(rivers: River[]): River[] {
+  if (rivers.length < 2) {
+    return rivers;
+  }
+
+  const active = rivers.filter((r) => !r.mergedIntoRiverId);
+  if (active.length < 2) {
+    return rivers;
+  }
+
+  const sorted = [...active].sort((a, b) => a.id - b.id);
+  const mainRiver = sorted[0];
+  const mergedIds = new Set(sorted.slice(1).map((r) => r.id));
+  const combinedSegments = sorted.flatMap((r) => r.segments).map((segment, index) => ({ ...segment, orderIndex: index, riverId: mainRiver.id }));
+
+  return rivers.map((river) => {
+    if (river.id === mainRiver.id) {
+      return { ...river, segments: combinedSegments };
+    }
+    if (mergedIds.has(river.id)) {
+      return { ...river, mergedIntoRiverId: mainRiver.id };
+    }
+    return river;
+  });
+}
+
+function renderRiverSegments(rivers: River[], positionedByKey: Map<string, { x: number; y: number }>) {
+  const activeRivers = rivers.filter((r) => !r.mergedIntoRiverId);
+  return activeRivers.flatMap((river) => {
+    const sorted = [...river.segments].sort((a, b) => a.orderIndex - b.orderIndex);
+    return sorted.map((segment) => {
+      const edge = getEdgeBetweenHexes(segment.hexA, segment.hexB);
+      if (!edge) {
+        return null;
+      }
+      const a = positionedByKey.get(hexKey(segment.hexA));
+      if (!a) {
+        return null;
+      }
+      const base = toPixel(segment.hexA.q, segment.hexA.r);
+      const dx = a.x - base.x;
+      const dy = a.y - base.y;
+      return {
+        key: `${river.id}-${segment.orderIndex}`,
+        x1: edge.from.q + dx,
+        y1: edge.from.r + dy,
+        x2: edge.to.q + dx,
+        y2: edge.to.r + dy
+      };
+    }).filter(Boolean);
+  });
+}
+
 export function App() {
   const [regions, setRegions] = useState<Region[]>([]);
   const [candidateHexes, setCandidateHexes] = useState<AxialHex[]>([]);
+  const [rivers, setRivers] = useState<River[]>([]);
   const [selectedHex, setSelectedHex] = useState<AxialHex | null>(START_HEX);
 
   const allRegionHexes = useMemo(() => regions.flatMap((region) => region.hexes), [regions]);
@@ -297,6 +473,11 @@ export function App() {
     };
   }, [allRegionHexes, candidateHexes]);
 
+  const riverLines = useMemo(() => {
+    const posMap = new Map(positionedHexes.hexes.map((hex) => [hex.key, { x: hex.x, y: hex.y }]));
+    return renderRiverSegments(rivers, posMap);
+  }, [positionedHexes, rivers]);
+
   const addRegionToMap = (anchorHex: AxialHex) => {
     const roll = generateDfRoll();
     const size = roll.sum + 1;
@@ -313,20 +494,24 @@ export function App() {
     };
     const nextRegions = [...regions, region];
     const nextAllHexes = nextRegions.flatMap((r) => r.hexes);
+    const nextCandidateHexes = getCandidateHexes(nextAllHexes);
     setRegions(nextRegions);
-    setCandidateHexes(getCandidateHexes(nextAllHexes));
+    setCandidateHexes(nextCandidateHexes);
+    setRivers((current) => generateRiverForRegion(region, current, nextCandidateHexes));
     setSelectedHex(centerHex);
   };
 
   const resetMap = () => {
     setRegions([]);
     setCandidateHexes([]);
+    setRivers([]);
     setSelectedHex(START_HEX);
   };
 
   const selectedHexKey = selectedHex ? hexKey(selectedHex) : null;
   const selectedMeta = selectedHexKey ? metadataMap.get(selectedHexKey) : undefined;
   const isSelectedCandidate = selectedHex ? candidateHexes.some((c) => hexKey(c) === selectedHexKey) : false;
+  const selectedRiverIds = selectedHex ? [...new Set(getRiverSegmentsTouchingHex(selectedHex, rivers).map((s) => s.riverId))] : [];
 
   const selectedType: HexType | 'none' = !selectedHex
     ? 'none'
@@ -356,6 +541,11 @@ export function App() {
         <div className="map-card">
           <h2>Карта регионов</h2>
           <svg viewBox={`0 0 ${positionedHexes.width} ${positionedHexes.height}`}>
+            <defs>
+              <marker id="river-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth">
+                <path d="M 0 0 L 8 4 L 0 8 z" className="river-arrowhead" />
+              </marker>
+            </defs>
             {positionedHexes.hexes.map((hex) => {
               const meta = metadataMap.get(hex.key);
               const cls = hex.kind === 'candidate' ? 'hex candidate' : meta?.isCenter ? 'hex center' : 'hex region';
@@ -372,11 +562,24 @@ export function App() {
                   }}
                 >
                   <polygon points={hexPoints(hex.x, hex.y, HEX_SIZE)} className={cls} style={{ fill }} />
-                  {meta?.isCenter ? <circle cx={hex.x} cy={hex.y} r={4} className="center-dot" /> : null}
+                  {meta?.isCenter ? <circle cx={hex.x} cy={hex.y} r={3} className="center-dot" /> : null}
                   <text x={hex.x} y={hex.y + 4} textAnchor="middle" className="hex-label">{hex.q}/{hex.r}</text>
                 </g>
               );
             })}
+            <g className="rivers-layer">
+              {riverLines.map((line) => (
+                <line
+                  key={line?.key}
+                  x1={line?.x1}
+                  y1={line?.y1}
+                  x2={line?.x2}
+                  y2={line?.y2}
+                  className="river-segment"
+                  markerEnd="url(#river-arrow)"
+                />
+              ))}
+            </g>
           </svg>
         </div>
 
@@ -399,6 +602,7 @@ export function App() {
           <p><strong>Регион:</strong> {selectedMeta?.regionId ?? '—'}</p>
           <p><strong>centralHex:</strong> {selectedMeta?.isCenter ? 'да' : 'нет'}</p>
           <p><strong>anchorHex:</strong> {selectedMeta?.isAnchor ? 'да' : 'нет'}</p>
+          <p><strong>Реки:</strong> {selectedRiverIds.length > 0 ? selectedRiverIds.join(', ') : '—'}</p>
           {candidateHexes.length > 0 ? <p>Выберите гекс-кандидат на карте для добавления следующего региона.</p> : null}
         </div>
       </section>
