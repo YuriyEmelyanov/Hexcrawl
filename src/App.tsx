@@ -211,31 +211,23 @@ export function generateConnectedRegionFromAnchor(
   return Array.from(regionKeys).map(parseHexKey);
 }
 
-export function chooseRegionCenter(regionHexes: AxialHex[], anchorHex: AxialHex): AxialHex {
-  if (regionHexes.length <= 2) {
-    return randomFrom(regionHexes);
+export function chooseRegionCenter(regionHexes: AxialHex[]): AxialHex {
+  if (regionHexes.length === 1) {
+    return regionHexes[0];
   }
 
   const regionKeys = new Set(regionHexes.map(hexKey));
-  const weighted = regionHexes.map((hex) => {
-    const sameRegionNeighborCount = getHexNeighbors(hex).filter((neighbor) => regionKeys.has(hexKey(neighbor))).length;
-    let centerWeight = 1 + sameRegionNeighborCount ** 2;
-    if (hexKey(hex) === hexKey(anchorHex)) {
-      centerWeight *= 0.25;
-    }
-    return { hex, weight: centerWeight };
-  });
+  const byNeighborCount = regionHexes.map((hex) => ({
+    hex,
+    sameRegionNeighborCount: getHexNeighbors(hex).filter((neighbor) => regionKeys.has(hexKey(neighbor))).length
+  }));
 
-  const total = weighted.reduce((acc, item) => acc + item.weight, 0);
-  let roll = Math.random() * total;
-  for (const item of weighted) {
-    roll -= item.weight;
-    if (roll <= 0) {
-      return item.hex;
-    }
-  }
+  const maxNeighborCount = Math.max(...byNeighborCount.map(({ sameRegionNeighborCount }) => sameRegionNeighborCount));
+  const bestCenterCandidates = byNeighborCount
+    .filter(({ sameRegionNeighborCount }) => sameRegionNeighborCount === maxNeighborCount)
+    .map(({ hex }) => hex);
 
-  return weighted[weighted.length - 1].hex;
+  return randomFrom(bestCenterCandidates);
 }
 
 export function getRegionColor(regionId: number): string {
@@ -310,7 +302,7 @@ export function App() {
     const size = roll.sum + 1;
     const occupiedHexes = new Set(allRegionHexes.map(hexKey));
     const regionHexes = generateConnectedRegionFromAnchor(anchorHex, size, occupiedHexes);
-    const centerHex = chooseRegionCenter(regionHexes, anchorHex);
+    const centerHex = chooseRegionCenter(regionHexes);
     const region: Region = {
       id: regions.length + 1,
       hexes: regionHexes,
