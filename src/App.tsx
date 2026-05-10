@@ -13,8 +13,7 @@ type DfRollResult = {
 };
 
 type RegionSizeRoll = {
-  scaleDiceValues: number[];
-  scaleSticks: number;
+  scaleD20: number;
   scaleX: number;
   growthDiceValues: number[];
   growthSticks: number;
@@ -26,8 +25,7 @@ type Region = {
   hexes: AxialHex[];
   centerHex: AxialHex;
   anchorHex: AxialHex;
-  scaleDiceValues: number[];
-  scaleSticks: number;
+  scaleD20: number;
   scaleX: number;
   growthDiceValues: number[];
   growthSticks: number;
@@ -142,15 +140,18 @@ export function rollFateSticks(count: number): DfRollResult {
   return { values, sum };
 }
 
+export function rollD20(): number {
+  return Math.floor(Math.random() * 20) + 1;
+}
+
 export function rollRegionSize(): RegionSizeRoll {
-  const scaleRoll = rollFateSticks(8);
-  const scaleX = 1 + scaleRoll.sum;
+  const scaleD20 = rollD20();
+  const scaleX = scaleD20;
   const growthRoll = rollFateSticks(scaleX);
   const regionSize = scaleX + growthRoll.sum;
 
   return {
-    scaleDiceValues: scaleRoll.values,
-    scaleSticks: scaleRoll.sum,
+    scaleD20,
     scaleX,
     growthDiceValues: growthRoll.values,
     growthSticks: growthRoll.sum,
@@ -519,8 +520,7 @@ export function App() {
       hexes: regionHexes,
       centerHex,
       anchorHex,
-      scaleDiceValues: sizeRoll.scaleDiceValues,
-      scaleSticks: sizeRoll.scaleSticks,
+      scaleD20: sizeRoll.scaleD20,
       scaleX: sizeRoll.scaleX,
       growthDiceValues: sizeRoll.growthDiceValues,
       growthSticks: sizeRoll.growthSticks,
@@ -625,14 +625,13 @@ export function App() {
             <>
               <p>Регионов: {regions.length}</p>
               <p>Последний регион: #{lastRegion.id}</p>
-              <p>Бросок масштаба (8dF): {lastRegion.scaleDiceValues.join(', ')}</p>
-              <p>Палочки масштаба: {lastRegion.scaleSticks}</p>
-              <p>Масштаб X: {lastRegion.scaleX} (1 + {lastRegion.scaleSticks})</p>
-              <p>Бросок влияния ({lastRegion.scaleX}dF): {lastRegion.growthDiceValues.join(', ')}</p>
-              <p>Палочки влияния: {lastRegion.growthSticks}</p>
+              <p>Бросок масштаба: d20 = {lastRegion.scaleD20}</p>
+              <p>Масштаб X: {lastRegion.scaleX}</p>
+              <p>Бросок роста ({lastRegion.scaleX}dF): {lastRegion.growthDiceValues.join(', ')}</p>
+              <p>Палочки роста: {lastRegion.growthSticks}</p>
               <p>Итоговый размер региона: {lastRegion.regionSize} ({lastRegion.scaleX} + {lastRegion.growthSticks})</p>
               <p>Целевой размер: {lastRegion.targetSize}</p>
-              <p>Фактический размер: {lastRegion.hexes.length}</p>
+              <p>Фактический размер региона: {lastRegion.hexes.length}</p>
             </>
           ) : null}
           <hr />
