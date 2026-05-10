@@ -52,14 +52,6 @@ type River = {
   vertexPath: RiverVertex[];
 };
 
-type RiverValidationIssue = {
-  type: string;
-  message: string;
-  riverId?: number;
-  edgeKey?: string;
-  vertexKey?: string;
-};
-
 type RiverVertex = {
   x: number;
   y: number;
@@ -221,96 +213,6 @@ function getRiverEdgeKeys(rivers: River[]): Set<string> {
     }
   }
   return occupied;
-}
-
-function validateRivers(rivers: River[]): RiverValidationIssue[] {
-  const issues: RiverValidationIssue[] = [];
-  const globalEdgeToRiver = new Map<string, number>();
-  const vertexDegree = new Map<string, number>();
-  const endpointOwners = new Map<string, Set<number>>();
-
-  for (const river of rivers) {
-    if (river.vertexPath.length < 2) {
-      issues.push({
-        type: 'too_short_river',
-        message: `River ${river.id} is too short: vertexPath.length=${river.vertexPath.length}.`,
-        riverId: river.id
-      });
-    }
-
-    const riverEdgeSet = new Set<string>();
-    const riverVertexSet = new Set<string>();
-    for (const vertex of river.vertexPath) {
-      if (riverVertexSet.has(vertex.key)) {
-        issues.push({
-          type: 'repeated_vertex_in_river',
-          message: `River ${river.id} contains repeated vertex ${vertex.key}.`,
-          riverId: river.id,
-          vertexKey: vertex.key
-        });
-      }
-      riverVertexSet.add(vertex.key);
-    }
-
-    for (let i = 0; i < river.vertexPath.length - 1; i += 1) {
-      const a = river.vertexPath[i].key;
-      const b = river.vertexPath[i + 1].key;
-      const edgeKey = a < b ? `${a}|${b}` : `${b}|${a}`;
-      vertexDegree.set(a, (vertexDegree.get(a) ?? 0) + 1);
-      vertexDegree.set(b, (vertexDegree.get(b) ?? 0) + 1);
-
-      if (riverEdgeSet.has(edgeKey)) {
-        issues.push({
-          type: 'river_self_duplicate_edge',
-          message: `River ${river.id} reuses edge ${edgeKey}.`,
-          riverId: river.id,
-          edgeKey
-        });
-      }
-      riverEdgeSet.add(edgeKey);
-
-      const ownerRiverId = globalEdgeToRiver.get(edgeKey);
-      if (ownerRiverId !== undefined) {
-        issues.push({
-          type: 'duplicate_edge',
-          message: `Duplicate edge ${edgeKey} found in river ${river.id} (already in river ${ownerRiverId}).`,
-          riverId: river.id,
-          edgeKey
-        });
-      } else {
-        globalEdgeToRiver.set(edgeKey, river.id);
-      }
-    }
-
-    if (river.vertexPath.length > 0) {
-      const first = river.vertexPath[0].key;
-      const last = river.vertexPath[river.vertexPath.length - 1].key;
-      endpointOwners.set(first, new Set([...(endpointOwners.get(first) ?? []), river.id]));
-      endpointOwners.set(last, new Set([...(endpointOwners.get(last) ?? []), river.id]));
-    }
-  }
-
-  for (const [vertexKeyValue, degree] of vertexDegree) {
-    if (degree > 2) {
-      issues.push({
-        type: 'branching_or_bad_junction',
-        message: `Vertex ${vertexKeyValue} has suspicious degree=${degree}.`,
-        vertexKey: vertexKeyValue
-      });
-    }
-  }
-
-  for (const [vertexKeyValue, owners] of endpointOwners) {
-    if (owners.size > 1) {
-      issues.push({
-        type: 'shared_endpoint_between_rivers',
-        message: `Endpoint vertex ${vertexKeyValue} is shared by rivers ${Array.from(owners).join(', ')}.`,
-        vertexKey: vertexKeyValue
-      });
-    }
-  }
-
-  return issues;
 }
 
 function buildRiverGraph(regionHexes: AxialHex[], occupiedRiverEdgeKeys: Set<string>): Map<string, RiverGraphNode> {
@@ -654,11 +556,6 @@ function generateRiverForRegion(region: Region, existingRivers: River[], candida
   }
   const adjacentEndpoints = findAdjacentRiverEndpoints(Array.from(boundaryVerticesMap.values()), existingRivers);
   const occupiedRiverEdgeKeys = getRiverEdgeKeys(existingRivers);
-  const mode = adjacentEndpoints.length === 0
-    ? 'new independent river'
-    : adjacentEndpoints.length === 1
-      ? 'continue single river'
-      : 'connect two rivers';
 
   let path: RiverVertex[] = [];
   if (adjacentEndpoints.length === 0) {
@@ -668,38 +565,12 @@ function generateRiverForRegion(region: Region, existingRivers: River[], candida
   } else {
     path = connectTwoAdjacentRivers(region, adjacentEndpoints, occupiedRiverEdgeKeys);
   }
-  const startVertex = path[0]?.key ?? '—';
-  const endVertex = path[path.length - 1]?.key ?? '—';
   if (path.length < 2) {
     console.warn(`River path not found for region ${region.id}.`);
-    const validationIssues = validateRivers(existingRivers);
-    console.warn('[RiverDebug]', {
-      regionId: region.id,
-      adjacentEndpointsLength: adjacentEndpoints.length,
-      mode,
-      startVertex,
-      endVertex,
-      pathLength: path.length,
-      validationIssuesCount: validationIssues.length
-    });
     return existingRivers;
   }
   const newRiverId = (existingRivers.at(-1)?.id ?? 0) + 1;
-  const nextRivers = [...existingRivers, { id: newRiverId, regionId: region.id, vertexPath: path }];
-  const validationIssues = validateRivers(nextRivers);
-  for (const issue of validationIssues) {
-    console.warn('[RiverValidation]', issue);
-  }
-  console.warn('[RiverDebug]', {
-    regionId: region.id,
-    adjacentEndpointsLength: adjacentEndpoints.length,
-    mode,
-    startVertex,
-    endVertex,
-    pathLength: path.length,
-    validationIssuesCount: validationIssues.length
-  });
-  return nextRivers;
+  return [...existingRivers, { id: newRiverId, regionId: region.id, vertexPath: path }];
 }
 
 function renderRiverPolyline(river: River, offsetX: number, offsetY: number) {
@@ -711,7 +582,6 @@ export function App() {
   const [regions, setRegions] = useState<Region[]>([]);
   const [candidateHexes, setCandidateHexes] = useState<AxialHex[]>([]);
   const [rivers, setRivers] = useState<River[]>([]);
-  const [riverValidationIssues, setRiverValidationIssues] = useState<RiverValidationIssue[]>([]);
   const [selectedHex, setSelectedHex] = useState<AxialHex | null>(START_HEX);
 
   const allRegionHexes = useMemo(() => regions.flatMap((region) => region.hexes), [regions]);
@@ -788,11 +658,7 @@ export function App() {
     const nextCandidateHexes = getCandidateHexes(nextAllHexes);
     setRegions(nextRegions);
     setCandidateHexes(nextCandidateHexes);
-    setRivers((current) => {
-      const nextRivers = generateRiverForRegion(region, current, nextCandidateHexes);
-      setRiverValidationIssues(validateRivers(nextRivers));
-      return nextRivers;
-    });
+    setRivers((current) => generateRiverForRegion(region, current, nextCandidateHexes));
     setSelectedHex(centerHex);
   };
 
@@ -800,7 +666,6 @@ export function App() {
     setRegions([]);
     setCandidateHexes([]);
     setRivers([]);
-    setRiverValidationIssues([]);
     setSelectedHex(START_HEX);
   };
 
@@ -902,13 +767,6 @@ export function App() {
           <p><strong>centralHex:</strong> {selectedMeta?.isCenter ? 'да' : 'нет'}</p>
           <p><strong>anchorHex:</strong> {selectedMeta?.isAnchor ? 'да' : 'нет'}</p>
           <p><strong>Реки:</strong> {selectedRiverIds.length > 0 ? selectedRiverIds.join(', ') : '—'}</p>
-          <hr />
-          <p><strong>River validation:</strong> {riverValidationIssues.length === 0 ? 'OK' : `${riverValidationIssues.length} issue(s)`}</p>
-          {riverValidationIssues.slice(0, 5).map((issue, index) => (
-            <p key={`${issue.type}-${issue.riverId ?? 'n'}-${issue.edgeKey ?? issue.vertexKey ?? index}`}>
-              {issue.type} {issue.riverId ? `#${issue.riverId}` : ''} {issue.edgeKey ?? issue.vertexKey ?? ''}
-            </p>
-          ))}
           {candidateHexes.length > 0 ? <p>Выберите гекс-кандидат на карте для добавления следующего региона.</p> : null}
         </div>
       </section>
