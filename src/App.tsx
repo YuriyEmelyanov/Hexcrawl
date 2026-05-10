@@ -40,24 +40,22 @@ type HexMeta = {
 };
 
 type HexEdge = {
-  from: AxialHex;
-  to: AxialHex;
-  neighbor: AxialHex;
-};
-
-type RiverSegment = {
+  from: RiverVertex;
+  to: RiverVertex;
+  neighborHex: AxialHex;
   edgeKey: string;
-  hexA: AxialHex;
-  hexB: AxialHex;
-  orderIndex: number;
 };
 
 type River = {
   id: number;
   regionId: number;
-  pathEdges: RiverSegment[];
-  startBoundary: AxialHex;
-  endBoundary: AxialHex;
+  vertexPath: RiverVertex[];
+};
+
+type RiverVertex = {
+  x: number;
+  y: number;
+  key: string;
 };
 
 const HEX_SIZE = 28;
@@ -103,104 +101,36 @@ function hexPoints(cx: number, cy: number, size: number) {
   return points.join(' ');
 }
 
+function round3(value: number): number {
+  return Number(value.toFixed(3));
+}
+
+function vertexKey(x: number, y: number): string {
+  return `${round3(x)},${round3(y)}`;
+}
+
 function randomFrom<T>(values: T[]): T {
   return values[Math.floor(Math.random() * values.length)];
 }
 
-function getHexEdges(hex: AxialHex): HexEdge[] {
+function getHexCornerPoints(hex: AxialHex): RiverVertex[] {
   const { x, y } = toPixel(hex.q, hex.r);
-  const corners = Array.from({ length: 6 }, (_, i) => {
+  return Array.from({ length: 6 }, (_, i) => {
     const angle = (Math.PI / 180) * (60 * i - 30);
-    return { q: x + HEX_SIZE * Math.cos(angle), r: y + HEX_SIZE * Math.sin(angle) };
+    const vx = x + HEX_SIZE * Math.cos(angle);
+    const vy = y + HEX_SIZE * Math.sin(angle);
+    return { x: vx, y: vy, key: vertexKey(vx, vy) };
   });
+}
 
+function getHexEdgesAsVertexPairs(hex: AxialHex): HexEdge[] {
+  const corners = getHexCornerPoints(hex);
   return NEIGHBOR_DIRECTIONS.map((direction, i) => ({
     from: corners[i],
     to: corners[(i + 1) % 6],
-    neighbor: { q: hex.q + direction.q, r: hex.r + direction.r }
+    neighborHex: { q: hex.q + direction.q, r: hex.r + direction.r },
+    edgeKey: [corners[i].key, corners[(i + 1) % 6].key].sort().join('|')
   }));
-}
-
-function getEdgeBetweenHexes(hexA: AxialHex, hexB: AxialHex) {
-  return getHexEdges(hexA).find((edge) => hexKey(edge.neighbor) === hexKey(hexB));
-}
-
-function buildSegment(hexA: AxialHex, hexB: AxialHex, orderIndex: number): RiverSegment {
-  return { edgeKey: normalizeEdgeKey(hexA, hexB), hexA, hexB, orderIndex };
-}
-
-function getRegionBoundaryHexes(regionHexes: AxialHex[]): AxialHex[] {
-  const regionKeys = new Set(regionHexes.map(hexKey));
-  return regionHexes.filter((hex) => getHexNeighbors(hex).some((neighbor) => !regionKeys.has(hexKey(neighbor))));
-}
-
-function chooseRiverEndpoints(regionHexes: AxialHex[], candidateHexes: AxialHex[]) {
-  const boundary = getRegionBoundaryHexes(regionHexes);
-  const regionKeys = new Set(regionHexes.map(hexKey));
-  const candidateKeys = new Set(candidateHexes.map(hexKey));
-  const boundaryWithCandidates = boundary.filter((hex) =>
-    getHexNeighbors(hex).some((neighbor) => candidateKeys.has(hexKey(neighbor)))
-  );
-  const pool = boundaryWithCandidates.length >= 2 ? boundaryWithCandidates : boundary;
-  const startBoundary = randomFrom(pool);
-  const farthest = [...pool].sort((a, b) => hexDistance(b, startBoundary) - hexDistance(a, startBoundary));
-  const endBoundary = farthest.find((hex) => hexKey(hex) !== hexKey(startBoundary)) ?? randomFrom(pool.filter((h) => hexKey(h) !== hexKey(startBoundary)));
-
-  const chooseCandidateForBoundary = (boundaryHex: AxialHex) => {
-    const touchingCandidates = getHexNeighbors(boundaryHex).filter((neighbor) => candidateKeys.has(hexKey(neighbor)));
-    if (touchingCandidates.length > 0) {
-      return randomFrom(touchingCandidates);
-    }
-    const outside = getHexNeighbors(boundaryHex).find((neighbor) => !regionKeys.has(hexKey(neighbor)));
-    return outside ?? boundaryHex;
-  };
-
-  return {
-    startBoundary,
-    endBoundary: endBoundary ?? startBoundary,
-    startCandidate: chooseCandidateForBoundary(startBoundary),
-    endCandidate: chooseCandidateForBoundary(endBoundary ?? startBoundary)
-  };
-}
-
-function buildRiverPathAcrossRegion(regionHexes: AxialHex[], startBoundary: AxialHex, endBoundary: AxialHex): RiverSegment[] {
-  const regionKeys = new Set(regionHexes.map(hexKey));
-  const queue: AxialHex[] = [startBoundary];
-  const parent = new Map<string, string>();
-  const visited = new Set([hexKey(startBoundary)]);
-
-  while (queue.length > 0) {
-    const current = queue.shift()!;
-    if (hexKey(current) === hexKey(endBoundary)) {
-      break;
-    }
-    for (const neighbor of getHexNeighbors(current)) {
-      const key = hexKey(neighbor);
-      if (!regionKeys.has(key) || visited.has(key)) {
-        continue;
-      }
-      visited.add(key);
-      parent.set(key, hexKey(current));
-      queue.push(neighbor);
-    }
-  }
-
-  if (!visited.has(hexKey(endBoundary))) {
-    return [];
-  }
-
-  const pathHexes: AxialHex[] = [];
-  let currentKey: string | undefined = hexKey(endBoundary);
-  while (currentKey) {
-    pathHexes.push(parseHexKey(currentKey));
-    if (currentKey === hexKey(startBoundary)) {
-      break;
-    }
-    currentKey = parent.get(currentKey);
-  }
-  pathHexes.reverse();
-
-  return pathHexes.slice(0, -1).map((hex, index) => buildSegment(hex, pathHexes[index + 1], index));
 }
 
 export function rollFateSticks(count: number): DfRollResult {
@@ -240,6 +170,121 @@ function hexDistance(a: AxialHex, b: AxialHex): number {
   const z2 = b.r;
   const y2 = -x2 - z2;
   return Math.max(Math.abs(x1 - x2), Math.abs(y1 - y2), Math.abs(z1 - z2));
+}
+
+type RiverGraphNode = {
+  vertex: RiverVertex;
+  neighbors: { to: string; cost: number }[];
+};
+
+function getRegionBoundaryEdges(regionHexes: AxialHex[]): HexEdge[] {
+  const regionKeys = new Set(regionHexes.map(hexKey));
+  return regionHexes.flatMap((hex) =>
+    getHexEdgesAsVertexPairs(hex).filter((edge) => !regionKeys.has(hexKey(edge.neighborHex)))
+  );
+}
+
+function getRegionRiverGraph(regionHexes: AxialHex[]): Map<string, RiverGraphNode> {
+  const regionKeys = new Set(regionHexes.map(hexKey));
+  const graph = new Map<string, RiverGraphNode>();
+  const edgeCost = new Map<string, number>();
+
+  for (const hex of regionHexes) {
+    for (const edge of getHexEdgesAsVertexPairs(hex)) {
+      const isBoundary = !regionKeys.has(hexKey(edge.neighborHex));
+      const cost = isBoundary ? 3 : 1;
+      edgeCost.set(edge.edgeKey, Math.min(edgeCost.get(edge.edgeKey) ?? Number.POSITIVE_INFINITY, cost));
+      for (const vertex of [edge.from, edge.to]) {
+        if (!graph.has(vertex.key)) {
+          graph.set(vertex.key, { vertex, neighbors: [] });
+        }
+      }
+    }
+  }
+
+  for (const hex of regionHexes) {
+    for (const edge of getHexEdgesAsVertexPairs(hex)) {
+      const cost = edgeCost.get(edge.edgeKey);
+      if (!cost) continue;
+      graph.get(edge.from.key)?.neighbors.push({ to: edge.to.key, cost });
+      graph.get(edge.to.key)?.neighbors.push({ to: edge.from.key, cost });
+    }
+  }
+
+  return graph;
+}
+
+function chooseRiverBoundaryVertices(regionHexes: AxialHex[]): { startVertex: RiverVertex; endVertex: RiverVertex } | null {
+  const boundaryVertices = new Map<string, RiverVertex>();
+  for (const edge of getRegionBoundaryEdges(regionHexes)) {
+    boundaryVertices.set(edge.from.key, edge.from);
+    boundaryVertices.set(edge.to.key, edge.to);
+  }
+  const vertices = Array.from(boundaryVertices.values());
+  if (vertices.length < 2) return null;
+
+  let bestPair: [RiverVertex, RiverVertex] | null = null;
+  let bestDistance = -1;
+  for (let i = 0; i < vertices.length; i += 1) {
+    for (let j = i + 1; j < vertices.length; j += 1) {
+      const dx = vertices[i].x - vertices[j].x;
+      const dy = vertices[i].y - vertices[j].y;
+      const d2 = dx * dx + dy * dy;
+      if (d2 > bestDistance) {
+        bestDistance = d2;
+        bestPair = [vertices[i], vertices[j]];
+      }
+    }
+  }
+  if (!bestPair) return null;
+  return { startVertex: bestPair[0], endVertex: bestPair[1] };
+}
+
+function findRiverVertexPath(startVertex: RiverVertex, endVertex: RiverVertex, riverGraph: Map<string, RiverGraphNode>): RiverVertex[] {
+  const distances = new Map<string, number>([[startVertex.key, 0]]);
+  const previous = new Map<string, string>();
+  const visited = new Set<string>();
+  const queue = new Set<string>([startVertex.key]);
+
+  while (queue.size > 0) {
+    let currentKey: string | null = null;
+    let bestDistance = Number.POSITIVE_INFINITY;
+    for (const key of queue) {
+      const d = distances.get(key) ?? Number.POSITIVE_INFINITY;
+      if (d < bestDistance) {
+        bestDistance = d;
+        currentKey = key;
+      }
+    }
+    if (!currentKey) break;
+    queue.delete(currentKey);
+    if (currentKey === endVertex.key) break;
+    if (visited.has(currentKey)) continue;
+    visited.add(currentKey);
+
+    const node = riverGraph.get(currentKey);
+    if (!node) continue;
+    for (const neighbor of node.neighbors) {
+      const nextDistance = (distances.get(currentKey) ?? 0) + neighbor.cost;
+      if (nextDistance < (distances.get(neighbor.to) ?? Number.POSITIVE_INFINITY)) {
+        distances.set(neighbor.to, nextDistance);
+        previous.set(neighbor.to, currentKey);
+        queue.add(neighbor.to);
+      }
+    }
+  }
+
+  if (!distances.has(endVertex.key)) return [];
+  const path: RiverVertex[] = [];
+  let currentKey: string | undefined = endVertex.key;
+  while (currentKey) {
+    const node = riverGraph.get(currentKey);
+    if (!node) return [];
+    path.push(node.vertex);
+    if (currentKey === startVertex.key) break;
+    currentKey = previous.get(currentKey);
+  }
+  return path.reverse();
 }
 
 export function hasEscapeToOutside(startEmptyHex: AxialHex, temporaryOccupiedHexes: Set<string>): boolean {
@@ -404,42 +449,26 @@ export function getCandidateHexes(allRegionHexes: AxialHex[]): AxialHex[] {
   return Array.from(candidates.values());
 }
 
-function generateRiverForRegion(region: Region, existingRivers: River[], candidateHexes: AxialHex[]): River[] {
-  const { startBoundary, endBoundary, startCandidate, endCandidate } = chooseRiverEndpoints(region.hexes, candidateHexes);
-  const corePath = buildRiverPathAcrossRegion(region.hexes, startBoundary, endBoundary);
-  const pathEdges = [
-    buildSegment(startCandidate, startBoundary, 0),
-    ...corePath.map((segment, index) => ({ ...segment, orderIndex: index + 1 })),
-    buildSegment(endBoundary, endCandidate, corePath.length + 1)
-  ];
+function generateRiverForRegion(region: Region, existingRivers: River[]): River[] {
+  if (region.hexes.length < 3) {
+    return existingRivers;
+  }
+  const boundaryVertices = chooseRiverBoundaryVertices(region.hexes);
+  if (!boundaryVertices) {
+    return existingRivers;
+  }
+  const riverGraph = getRegionRiverGraph(region.hexes);
+  const path = findRiverVertexPath(boundaryVertices.startVertex, boundaryVertices.endVertex, riverGraph);
+  if (path.length < 2) {
+    return existingRivers;
+  }
   const newRiverId = (existingRivers.at(-1)?.id ?? 0) + 1;
-  return [...existingRivers, { id: newRiverId, regionId: region.id, pathEdges, startBoundary, endBoundary }];
+  return [...existingRivers, { id: newRiverId, regionId: region.id, vertexPath: path }];
 }
 
-function renderRiverSegments(rivers: River[], positionedByKey: Map<string, { x: number; y: number }>) {
-  return rivers.flatMap((river) => {
-    const sorted = [...river.pathEdges].sort((a, b) => a.orderIndex - b.orderIndex);
-    return sorted.map((segment) => {
-      const edge = getEdgeBetweenHexes(segment.hexA, segment.hexB);
-      if (!edge) {
-        return null;
-      }
-      const a = positionedByKey.get(hexKey(segment.hexA));
-      if (!a) {
-        return null;
-      }
-      const base = toPixel(segment.hexA.q, segment.hexA.r);
-      const dx = a.x - base.x;
-      const dy = a.y - base.y;
-      return {
-        key: `${river.id}-${segment.orderIndex}`,
-        x1: edge.from.q + dx,
-        y1: edge.from.r + dy,
-        x2: edge.to.q + dx,
-        y2: edge.to.r + dy
-      };
-    }).filter(Boolean);
-  });
+function renderRiverPolyline(river: River, offsetX: number, offsetY: number) {
+  const points = river.vertexPath.map((vertex) => `${vertex.x + offsetX},${vertex.y + offsetY}`).join(' ');
+  return { key: `river-${river.id}`, points };
 }
 
 export function App() {
@@ -489,9 +518,14 @@ export function App() {
     };
   }, [allRegionHexes, candidateHexes]);
 
-  const riverLines = useMemo(() => {
-    const posMap = new Map(positionedHexes.hexes.map((hex) => [hex.key, { x: hex.x, y: hex.y }]));
-    return renderRiverSegments(rivers, posMap);
+  const riverPolylines = useMemo(() => {
+    const all = positionedHexes.hexes;
+    if (all.length === 0) return [];
+    const minBaseX = Math.min(...all.map((h) => toPixel(h.q, h.r).x));
+    const minBaseY = Math.min(...all.map((h) => toPixel(h.q, h.r).y));
+    const offsetX = HEX_SIZE * 2 - minBaseX;
+    const offsetY = HEX_SIZE * 2 - minBaseY;
+    return rivers.map((river) => renderRiverPolyline(river, offsetX, offsetY));
   }, [positionedHexes, rivers]);
 
   const addRegionToMap = (anchorHex: AxialHex) => {
@@ -517,7 +551,7 @@ export function App() {
     const nextCandidateHexes = getCandidateHexes(nextAllHexes);
     setRegions(nextRegions);
     setCandidateHexes(nextCandidateHexes);
-    setRivers((current) => generateRiverForRegion(region, current, nextCandidateHexes));
+    setRivers((current) => generateRiverForRegion(region, current));
     setSelectedHex(centerHex);
   };
 
@@ -532,7 +566,14 @@ export function App() {
   const selectedMeta = selectedHexKey ? metadataMap.get(selectedHexKey) : undefined;
   const isSelectedCandidate = selectedHex ? candidateHexes.some((c) => hexKey(c) === selectedHexKey) : false;
   const selectedRiverIds = selectedHex
-    ? rivers.filter((river) => river.pathEdges.some((s) => hexKey(s.hexA) === selectedHexKey || hexKey(s.hexB) === selectedHexKey)).map((r) => r.id)
+    ? rivers
+      .filter((river) => {
+        const { x, y } = toPixel(selectedHex.q, selectedHex.r);
+        const corners = getHexCornerPoints(selectedHex);
+        const cornerKeys = new Set(corners.map((corner) => corner.key));
+        return river.vertexPath.some((vertex) => cornerKeys.has(vertex.key) || vertexKey(x, y) === vertex.key);
+      })
+      .map((r) => r.id)
     : [];
 
   const selectedType: HexType | 'none' = !selectedHex
@@ -585,14 +626,11 @@ export function App() {
               );
             })}
             <g className="rivers-layer">
-              {riverLines.map((line) => (
-                <line
-                  key={line?.key}
-                  x1={line?.x1}
-                  y1={line?.y1}
-                  x2={line?.x2}
-                  y2={line?.y2}
-                  className="river-segment"
+              {riverPolylines.map((riverLine) => (
+                <polyline
+                  key={riverLine.key}
+                  points={riverLine.points}
+                  className="river-polyline"
                 />
               ))}
             </g>
