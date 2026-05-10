@@ -240,16 +240,15 @@ export function wouldCreateEnclosedVoid(
   return false;
 }
 
+export function getAdjacentRegionHexCount(candidate: AxialHex, currentRegionHexes: Set<string>): number {
+  return getHexNeighbors(candidate).filter((neighbor) => currentRegionHexes.has(hexKey(neighbor))).length;
+}
+
 export function weightedPickCandidate(
   candidates: AxialHex[],
-  anchorHex: AxialHex,
   currentRegionHexes: Set<string>
 ): AxialHex {
-  const weights = candidates.map((candidate) => {
-    const distanceWeight = 1 / (1 + hexDistance(candidate, anchorHex));
-    const insideNeighbors = getHexNeighbors(candidate).filter((n) => currentRegionHexes.has(hexKey(n))).length;
-    return distanceWeight * (1 + insideNeighbors);
-  });
+  const weights = candidates.map((candidate) => getAdjacentRegionHexCount(candidate, currentRegionHexes));
 
   const total = weights.reduce((acc, w) => acc + w, 0);
   let roll = Math.random() * total;
@@ -289,7 +288,7 @@ export function generateConnectedRegionFromAnchor(
       break;
     }
 
-    const picked = weightedPickCandidate(validCandidates, anchorHex, regionKeys);
+    const picked = weightedPickCandidate(validCandidates, regionKeys);
     regionKeys.add(hexKey(picked));
   }
 
