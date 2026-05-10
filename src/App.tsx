@@ -214,19 +214,12 @@ function getRegionRiverGraph(regionHexes: AxialHex[]): Map<string, RiverGraphNod
   return graph;
 }
 
-function findExistingRiverEndpointBoundaryVertices(
+function findExistingRiverBoundaryVertices(
   regionBoundaryVertices: RiverVertex[],
   existingRivers: River[]
 ): RiverVertex[] {
-  const riverEndpointKeys = new Set(
-    existingRivers.flatMap((river) => {
-      if (river.vertexPath.length === 0) return [];
-      const firstVertex = river.vertexPath[0];
-      const lastVertex = river.vertexPath[river.vertexPath.length - 1];
-      return firstVertex.key === lastVertex.key ? [firstVertex.key] : [firstVertex.key, lastVertex.key];
-    })
-  );
-  return regionBoundaryVertices.filter((vertex) => riverEndpointKeys.has(vertex.key));
+  const riverVertexKeys = new Set(existingRivers.flatMap((river) => river.vertexPath.map((vertex) => vertex.key)));
+  return regionBoundaryVertices.filter((vertex) => riverVertexKeys.has(vertex.key));
 }
 
 function chooseRiverBoundaryVertices(
@@ -241,9 +234,9 @@ function chooseRiverBoundaryVertices(
   const vertices = Array.from(boundaryVertices.values());
   if (vertices.length < 2) return null;
 
-  const existingRiverEndpointBoundaryVertices = findExistingRiverEndpointBoundaryVertices(vertices, existingRivers);
-  if (existingRiverEndpointBoundaryVertices.length > 0) {
-    const firstVertex = randomFrom(existingRiverEndpointBoundaryVertices);
+  const existingRiverBoundaryVertices = findExistingRiverBoundaryVertices(vertices, existingRivers);
+  if (existingRiverBoundaryVertices.length > 0) {
+    const firstVertex = randomFrom(existingRiverBoundaryVertices);
     let secondVertex = vertices[0];
     let maxDistance = -1;
     for (const candidate of vertices) {
