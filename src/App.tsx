@@ -50,13 +50,14 @@ type RiverSegment = {
   hexA: AxialHex;
   hexB: AxialHex;
   orderIndex: number;
-  riverId: number;
 };
 
 type River = {
   id: number;
-  segments: RiverSegment[];
-  mergedIntoRiverId?: number;
+  regionId: number;
+  pathEdges: RiverSegment[];
+  startBoundary: AxialHex;
+  endBoundary: AxialHex;
 };
 
 const HEX_SIZE = 28;
@@ -120,18 +121,86 @@ function getHexEdges(hex: AxialHex): HexEdge[] {
   }));
 }
 
-function getRiverSegmentsTouchingHex(hex: AxialHex, rivers: River[]): RiverSegment[] {
-  return rivers.flatMap((river) =>
-    river.segments.filter((segment) => hexKey(segment.hexA) === hexKey(hex) || hexKey(segment.hexB) === hexKey(hex))
-  );
-}
-
 function getEdgeBetweenHexes(hexA: AxialHex, hexB: AxialHex) {
   return getHexEdges(hexA).find((edge) => hexKey(edge.neighbor) === hexKey(hexB));
 }
 
-function buildSegment(hexA: AxialHex, hexB: AxialHex, orderIndex: number, riverId: number): RiverSegment {
-  return { edgeKey: normalizeEdgeKey(hexA, hexB), hexA, hexB, orderIndex, riverId };
+function buildSegment(hexA: AxialHex, hexB: AxialHex, orderIndex: number): RiverSegment {
+  return { edgeKey: normalizeEdgeKey(hexA, hexB), hexA, hexB, orderIndex };
+}
+
+function getRegionBoundaryHexes(regionHexes: AxialHex[]): AxialHex[] {
+  const regionKeys = new Set(regionHexes.map(hexKey));
+  return regionHexes.filter((hex) => getHexNeighbors(hex).some((neighbor) => !regionKeys.has(hexKey(neighbor))));
+}
+
+function chooseRiverEndpoints(regionHexes: AxialHex[], candidateHexes: AxialHex[]) {
+  const boundary = getRegionBoundaryHexes(regionHexes);
+  const regionKeys = new Set(regionHexes.map(hexKey));
+  const candidateKeys = new Set(candidateHexes.map(hexKey));
+  const boundaryWithCandidates = boundary.filter((hex) =>
+    getHexNeighbors(hex).some((neighbor) => candidateKeys.has(hexKey(neighbor)))
+  );
+  const pool = boundaryWithCandidates.length >= 2 ? boundaryWithCandidates : boundary;
+  const startBoundary = randomFrom(pool);
+  const farthest = [...pool].sort((a, b) => hexDistance(b, startBoundary) - hexDistance(a, startBoundary));
+  const endBoundary = farthest.find((hex) => hexKey(hex) !== hexKey(startBoundary)) ?? randomFrom(pool.filter((h) => hexKey(h) !== hexKey(startBoundary)));
+
+  const chooseCandidateForBoundary = (boundaryHex: AxialHex) => {
+    const touchingCandidates = getHexNeighbors(boundaryHex).filter((neighbor) => candidateKeys.has(hexKey(neighbor)));
+    if (touchingCandidates.length > 0) {
+      return randomFrom(touchingCandidates);
+    }
+    const outside = getHexNeighbors(boundaryHex).find((neighbor) => !regionKeys.has(hexKey(neighbor)));
+    return outside ?? boundaryHex;
+  };
+
+  return {
+    startBoundary,
+    endBoundary: endBoundary ?? startBoundary,
+    startCandidate: chooseCandidateForBoundary(startBoundary),
+    endCandidate: chooseCandidateForBoundary(endBoundary ?? startBoundary)
+  };
+}
+
+function buildRiverPathAcrossRegion(regionHexes: AxialHex[], startBoundary: AxialHex, endBoundary: AxialHex): RiverSegment[] {
+  const regionKeys = new Set(regionHexes.map(hexKey));
+  const queue: AxialHex[] = [startBoundary];
+  const parent = new Map<string, string>();
+  const visited = new Set([hexKey(startBoundary)]);
+
+  while (queue.length > 0) {
+    const current = queue.shift()!;
+    if (hexKey(current) === hexKey(endBoundary)) {
+      break;
+    }
+    for (const neighbor of getHexNeighbors(current)) {
+      const key = hexKey(neighbor);
+      if (!regionKeys.has(key) || visited.has(key)) {
+        continue;
+      }
+      visited.add(key);
+      parent.set(key, hexKey(current));
+      queue.push(neighbor);
+    }
+  }
+
+  if (!visited.has(hexKey(endBoundary))) {
+    return [];
+  }
+
+  const pathHexes: AxialHex[] = [];
+  let currentKey: string | undefined = hexKey(endBoundary);
+  while (currentKey) {
+    pathHexes.push(parseHexKey(currentKey));
+    if (currentKey === hexKey(startBoundary)) {
+      break;
+    }
+    currentKey = parent.get(currentKey);
+  }
+  pathHexes.reverse();
+
+  return pathHexes.slice(0, -1).map((hex, index) => buildSegment(hex, pathHexes[index + 1], index));
 }
 
 export function rollFateSticks(count: number): DfRollResult {
@@ -335,104 +404,21 @@ export function getCandidateHexes(allRegionHexes: AxialHex[]): AxialHex[] {
   return Array.from(candidates.values());
 }
 
-function continueRiverThroughRegion(region: Region, river: River, candidateHexes: AxialHex[]): River {
-  const regionKeys = new Set(region.hexes.map(hexKey));
-  const extensionTarget = Math.floor(Math.random() * 3) + 1;
-  const existingEdges = new Set(river.segments.map((segment) => segment.edgeKey));
-  let current = river.segments[river.segments.length - 1]?.hexB ?? region.centerHex;
-  const additions: RiverSegment[] = [];
-
-  for (let i = 0; i < extensionTarget; i += 1) {
-    const neighbors = getHexNeighbors(current);
-    const preferred = neighbors.filter((h) => regionKeys.has(hexKey(h)) || candidateHexes.some((c) => hexKey(c) === hexKey(h)));
-    const nextPool = preferred.length > 0 ? preferred : neighbors;
-    const nextHex = randomFrom(nextPool);
-    const edgeKey = normalizeEdgeKey(current, nextHex);
-    if (existingEdges.has(edgeKey)) {
-      break;
-    }
-    existingEdges.add(edgeKey);
-    additions.push(buildSegment(current, nextHex, river.segments.length + additions.length, river.id));
-    current = nextHex;
-  }
-
-  return { ...river, segments: [...river.segments, ...additions] };
-}
-
 function generateRiverForRegion(region: Region, existingRivers: River[], candidateHexes: AxialHex[]): River[] {
-  const touching = existingRivers.filter((river) =>
-    river.segments.some((segment) => region.hexes.some((hex) => hexKey(hex) === hexKey(segment.hexA) || hexKey(hex) === hexKey(segment.hexB)))
-  );
-
-  if (touching.length > 0) {
-    const updated = existingRivers.map((river) => {
-      if (!touching.some((t) => t.id === river.id)) {
-        return river;
-      }
-      return continueRiverThroughRegion(region, river, candidateHexes);
-    });
-
-    if (touching.length > 1) {
-      return mergeRiversIfNeeded(updated);
-    }
-
-    return updated;
-  }
-
-  const regionByCenter = [...region.hexes].sort(
-    (a, b) => hexDistance(a, region.centerHex) - hexDistance(b, region.centerHex)
-  );
-  const nearCenter = regionByCenter[0] ?? region.centerHex;
-  const centerNeighbors = getHexNeighbors(nearCenter);
-  const toRegionNeighbor = centerNeighbors.find((neighbor) => region.hexes.some((hex) => hexKey(hex) === hexKey(neighbor)));
-  const firstOutCandidate = centerNeighbors.find((neighbor) => candidateHexes.some((c) => hexKey(c) === hexKey(neighbor)));
-
-  if (!toRegionNeighbor || !firstOutCandidate) {
-    return existingRivers;
-  }
-
+  const { startBoundary, endBoundary, startCandidate, endCandidate } = chooseRiverEndpoints(region.hexes, candidateHexes);
+  const corePath = buildRiverPathAcrossRegion(region.hexes, startBoundary, endBoundary);
+  const pathEdges = [
+    buildSegment(startCandidate, startBoundary, 0),
+    ...corePath.map((segment, index) => ({ ...segment, orderIndex: index + 1 })),
+    buildSegment(endBoundary, endCandidate, corePath.length + 1)
+  ];
   const newRiverId = (existingRivers.at(-1)?.id ?? 0) + 1;
-  const river: River = {
-    id: newRiverId,
-    segments: [
-      buildSegment(nearCenter, toRegionNeighbor, 0, newRiverId),
-      buildSegment(toRegionNeighbor, firstOutCandidate, 1, newRiverId)
-    ]
-  };
-
-  return [...existingRivers, continueRiverThroughRegion(region, river, candidateHexes)];
-}
-
-function mergeRiversIfNeeded(rivers: River[]): River[] {
-  if (rivers.length < 2) {
-    return rivers;
-  }
-
-  const active = rivers.filter((r) => !r.mergedIntoRiverId);
-  if (active.length < 2) {
-    return rivers;
-  }
-
-  const sorted = [...active].sort((a, b) => a.id - b.id);
-  const mainRiver = sorted[0];
-  const mergedIds = new Set(sorted.slice(1).map((r) => r.id));
-  const combinedSegments = sorted.flatMap((r) => r.segments).map((segment, index) => ({ ...segment, orderIndex: index, riverId: mainRiver.id }));
-
-  return rivers.map((river) => {
-    if (river.id === mainRiver.id) {
-      return { ...river, segments: combinedSegments };
-    }
-    if (mergedIds.has(river.id)) {
-      return { ...river, mergedIntoRiverId: mainRiver.id };
-    }
-    return river;
-  });
+  return [...existingRivers, { id: newRiverId, regionId: region.id, pathEdges, startBoundary, endBoundary }];
 }
 
 function renderRiverSegments(rivers: River[], positionedByKey: Map<string, { x: number; y: number }>) {
-  const activeRivers = rivers.filter((r) => !r.mergedIntoRiverId);
-  return activeRivers.flatMap((river) => {
-    const sorted = [...river.segments].sort((a, b) => a.orderIndex - b.orderIndex);
+  return rivers.flatMap((river) => {
+    const sorted = [...river.pathEdges].sort((a, b) => a.orderIndex - b.orderIndex);
     return sorted.map((segment) => {
       const edge = getEdgeBetweenHexes(segment.hexA, segment.hexB);
       if (!edge) {
@@ -545,7 +531,9 @@ export function App() {
   const selectedHexKey = selectedHex ? hexKey(selectedHex) : null;
   const selectedMeta = selectedHexKey ? metadataMap.get(selectedHexKey) : undefined;
   const isSelectedCandidate = selectedHex ? candidateHexes.some((c) => hexKey(c) === selectedHexKey) : false;
-  const selectedRiverIds = selectedHex ? [...new Set(getRiverSegmentsTouchingHex(selectedHex, rivers).map((s) => s.riverId))] : [];
+  const selectedRiverIds = selectedHex
+    ? rivers.filter((river) => river.pathEdges.some((s) => hexKey(s.hexA) === selectedHexKey || hexKey(s.hexB) === selectedHexKey)).map((r) => r.id)
+    : [];
 
   const selectedType: HexType | 'none' = !selectedHex
     ? 'none'
@@ -575,11 +563,6 @@ export function App() {
         <div className="map-card">
           <h2>Карта регионов</h2>
           <svg viewBox={`0 0 ${positionedHexes.width} ${positionedHexes.height}`}>
-            <defs>
-              <marker id="river-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth">
-                <path d="M 0 0 L 8 4 L 0 8 z" className="river-arrowhead" />
-              </marker>
-            </defs>
             {positionedHexes.hexes.map((hex) => {
               const meta = metadataMap.get(hex.key);
               const cls = hex.kind === 'candidate' ? 'hex candidate' : meta?.isCenter ? 'hex center' : 'hex region';
@@ -610,7 +593,6 @@ export function App() {
                   x2={line?.x2}
                   y2={line?.y2}
                   className="river-segment"
-                  markerEnd="url(#river-arrow)"
                 />
               ))}
             </g>
