@@ -12,12 +12,26 @@ type DfRollResult = {
   sum: number;
 };
 
+type RegionSizeRoll = {
+  scaleDiceValues: number[];
+  scaleSticks: number;
+  scaleX: number;
+  growthDiceValues: number[];
+  growthSticks: number;
+  regionSize: number;
+};
+
 type Region = {
   id: number;
   hexes: AxialHex[];
   centerHex: AxialHex;
   anchorHex: AxialHex;
-  roll: DfRollResult;
+  scaleDiceValues: number[];
+  scaleSticks: number;
+  scaleX: number;
+  growthDiceValues: number[];
+  growthSticks: number;
+  regionSize: number;
   targetSize: number;
 };
 
@@ -122,10 +136,26 @@ function buildSegment(hexA: AxialHex, hexB: AxialHex, orderIndex: number, riverI
   return { edgeKey: normalizeEdgeKey(hexA, hexB), hexA, hexB, orderIndex, riverId };
 }
 
-export function generateDfRoll(): DfRollResult {
-  const values = Array.from({ length: 12 }, () => Math.floor(Math.random() * 3));
+export function rollFateSticks(count: number): DfRollResult {
+  const values = Array.from({ length: count }, () => Math.floor(Math.random() * 3));
   const sum = values.reduce((acc, current) => acc + current, 0);
   return { values, sum };
+}
+
+export function rollRegionSize(): RegionSizeRoll {
+  const scaleRoll = rollFateSticks(8);
+  const scaleX = 1 + scaleRoll.sum;
+  const growthRoll = rollFateSticks(scaleX);
+  const regionSize = scaleX + growthRoll.sum;
+
+  return {
+    scaleDiceValues: scaleRoll.values,
+    scaleSticks: scaleRoll.sum,
+    scaleX,
+    growthDiceValues: growthRoll.values,
+    growthSticks: growthRoll.sum,
+    regionSize
+  };
 }
 
 export function getHexNeighbors(hex: AxialHex): AxialHex[] {
@@ -479,8 +509,8 @@ export function App() {
   }, [positionedHexes, rivers]);
 
   const addRegionToMap = (anchorHex: AxialHex) => {
-    const roll = generateDfRoll();
-    const size = roll.sum + 1;
+    const sizeRoll = rollRegionSize();
+    const size = sizeRoll.regionSize;
     const occupiedHexes = new Set(allRegionHexes.map(hexKey));
     const regionHexes = generateConnectedRegionFromAnchor(anchorHex, size, occupiedHexes);
     const centerHex = chooseRegionCenter(regionHexes);
@@ -489,7 +519,12 @@ export function App() {
       hexes: regionHexes,
       centerHex,
       anchorHex,
-      roll,
+      scaleDiceValues: sizeRoll.scaleDiceValues,
+      scaleSticks: sizeRoll.scaleSticks,
+      scaleX: sizeRoll.scaleX,
+      growthDiceValues: sizeRoll.growthDiceValues,
+      growthSticks: sizeRoll.growthSticks,
+      regionSize: sizeRoll.regionSize,
       targetSize: size
     };
     const nextRegions = [...regions, region];
@@ -590,8 +625,12 @@ export function App() {
             <>
               <p>Регионов: {regions.length}</p>
               <p>Последний регион: #{lastRegion.id}</p>
-              <p>12dF: {lastRegion.roll.values.join(', ')}</p>
-              <p>Сумма броска: {lastRegion.roll.sum}</p>
+              <p>Бросок масштаба (8dF): {lastRegion.scaleDiceValues.join(', ')}</p>
+              <p>Палочки масштаба: {lastRegion.scaleSticks}</p>
+              <p>Масштаб X: {lastRegion.scaleX} (1 + {lastRegion.scaleSticks})</p>
+              <p>Бросок влияния ({lastRegion.scaleX}dF): {lastRegion.growthDiceValues.join(', ')}</p>
+              <p>Палочки влияния: {lastRegion.growthSticks}</p>
+              <p>Итоговый размер региона: {lastRegion.regionSize} ({lastRegion.scaleX} + {lastRegion.growthSticks})</p>
               <p>Целевой размер: {lastRegion.targetSize}</p>
               <p>Фактический размер: {lastRegion.hexes.length}</p>
             </>
