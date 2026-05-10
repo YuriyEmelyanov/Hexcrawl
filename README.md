@@ -14,9 +14,7 @@ React + TypeScript + Vite приложение для пошагового ра�
    - `regionSize = X + sticks(XdF)`.
 4. Регион всегда включает `anchorHex` и строится как связная область.
 5. Добавляются только пустые соседние гексы текущего региона (без пересечений с уже занятыми).
-6. Выбор кандидата для роста — **взвешенный случайный**:
-   - ближе к `anchorHex` → выше шанс;
-   - больше соседей уже внутри региона → выше шанс.
+6. Выбор кандидата для роста — **взвешенный случайный**: вес потенциального гекса равен числу его соседей, уже входящих в текущий регион.
 7. Перед добавлением кандидата выполняется проверка `wouldCreateEnclosedVoid`:
    - кандидат временно добавляется;
    - проверяется flood-fill для ближайших пустых гексов;
@@ -27,7 +25,7 @@ React + TypeScript + Vite приложение для пошагового ра�
 ## Основные функции
 
 - `generateConnectedRegionFromAnchor(anchorHex, size, occupiedHexes)`
-- `weightedPickCandidate(candidates, anchorHex, currentRegionHexes)`
+- `weightedPickCandidate(candidates, currentRegionHexes)`
 - `wouldCreateEnclosedVoid(candidateHex, currentMap, currentRegionHexes)`
 - `hasEscapeToOutside(startEmptyHex, temporaryOccupiedHexes)`
 - `chooseRegionCenter(regionHexes)`
