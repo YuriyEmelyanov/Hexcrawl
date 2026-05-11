@@ -173,200 +173,141 @@ function hexDistance(a: AxialHex, b: AxialHex): number {
 }
 
 type RiverGraphNode = {
-  vertex: RiverVertex;
-  neighbors: { to: string; cost: number }[];
+  key: string;
+  x: number;
+  y: number;
+  incidentEdgeKeys: string[];
+  regionIncidentEdgeKeys: string[];
+  boundaryIncidentEdgeKeys: string[];
+  candidateBoundaryIncidentEdgeKeys: string[];
+  isInsideRegion: boolean;
+  isRegionBoundaryVertex: boolean;
+  isCandidateBoundaryVertex: boolean;
 };
 
-function getRegionBoundaryEdges(regionHexes: AxialHex[]): HexEdge[] {
+type RiverGraphEdge = {
+  key: string;
+  a: RiverGraphNode;
+  b: RiverGraphNode;
+  hexA?: AxialHex;
+  hexB?: AxialHex;
+  touchesRegion: boolean;
+  isInsideRegionEdge: boolean;
+  isRegionBoundaryEdge: boolean;
+  isCandidateBoundaryEdge: boolean;
+};
+
+type RiverGraph = {
+  nodes: Map<string, RiverGraphNode>;
+  edges: Map<string, RiverGraphEdge>;
+};
+
+function edgeKey(a: RiverVertex, b: RiverVertex): string {
+  return [a.key, b.key].sort().join('|');
+}
+
+function buildRiverGraphForRegion(regionHexes: AxialHex[], allHexes: AxialHex[], candidateHexes: AxialHex[] = []): RiverGraph {
   const regionKeys = new Set(regionHexes.map(hexKey));
-  return regionHexes.flatMap((hex) =>
-    getHexEdgesAsVertexPairs(hex).filter((edge) => !regionKeys.has(hexKey(edge.neighborHex)))
-  );
-}
-
-function getBoundaryVerticesFromEdges(boundaryEdges: HexEdge[]): RiverVertex[] {
-  const boundaryVertices = new Map<string, RiverVertex>();
-  for (const edge of boundaryEdges) {
-    boundaryVertices.set(edge.from.key, edge.from);
-    boundaryVertices.set(edge.to.key, edge.to);
-  }
-  return Array.from(boundaryVertices.values());
-}
-
-function getExposedBoundaryVertices(boundaryEdges: HexEdge[]): RiverVertex[] {
-  const vertexToBoundaryEdges = new Map<string, HexEdge[]>();
-  const vertices = new Map<string, RiverVertex>();
-
-  for (const edge of boundaryEdges) {
-    const fromEdges = vertexToBoundaryEdges.get(edge.from.key) ?? [];
-    fromEdges.push(edge);
-    vertexToBoundaryEdges.set(edge.from.key, fromEdges);
-    vertices.set(edge.from.key, edge.from);
-
-    const toEdges = vertexToBoundaryEdges.get(edge.to.key) ?? [];
-    toEdges.push(edge);
-    vertexToBoundaryEdges.set(edge.to.key, toEdges);
-    vertices.set(edge.to.key, edge.to);
-  }
-
-  return Array.from(vertices.values()).filter((vertex) => (vertexToBoundaryEdges.get(vertex.key)?.length ?? 0) >= 2);
-}
-
-function getRegionRiverGraph(regionHexes: AxialHex[]): Map<string, RiverGraphNode> {
-  const regionKeys = new Set(regionHexes.map(hexKey));
-  const graph = new Map<string, RiverGraphNode>();
-  const edgeCost = new Map<string, number>();
+  const candidateSet = new Set(candidateHexes.map(hexKey));
+  const allHexSet = new Set(allHexes.map(hexKey));
+  const nodes = new Map<string, RiverGraphNode>();
+  const edges = new Map<string, RiverGraphEdge>();
 
   for (const hex of regionHexes) {
     for (const edge of getHexEdgesAsVertexPairs(hex)) {
-      const isBoundary = !regionKeys.has(hexKey(edge.neighborHex));
-      const cost = isBoundary ? 3 : 1;
-      edgeCost.set(edge.edgeKey, Math.min(edgeCost.get(edge.edgeKey) ?? Number.POSITIVE_INFINITY, cost));
-      for (const vertex of [edge.from, edge.to]) {
-        if (!graph.has(vertex.key)) {
-          graph.set(vertex.key, { vertex, neighbors: [] });
-        }
+      if (!nodes.has(edge.from.key)) {
+        nodes.set(edge.from.key, {
+          key: edge.from.key,
+          x: edge.from.x,
+          y: edge.from.y,
+          incidentEdgeKeys: [],
+          regionIncidentEdgeKeys: [],
+          boundaryIncidentEdgeKeys: [],
+          candidateBoundaryIncidentEdgeKeys: [],
+          isInsideRegion: true,
+          isRegionBoundaryVertex: false,
+          isCandidateBoundaryVertex: false
+        });
+      }
+      if (!nodes.has(edge.to.key)) {
+        nodes.set(edge.to.key, {
+          key: edge.to.key,
+          x: edge.to.x,
+          y: edge.to.y,
+          incidentEdgeKeys: [],
+          regionIncidentEdgeKeys: [],
+          boundaryIncidentEdgeKeys: [],
+          candidateBoundaryIncidentEdgeKeys: [],
+          isInsideRegion: true,
+          isRegionBoundaryVertex: false,
+          isCandidateBoundaryVertex: false
+        });
+      }
+      if (edges.has(edge.edgeKey)) continue;
+      const hasRegionNeighbor = regionKeys.has(hexKey(edge.neighborHex));
+      const isInsideRegionEdge = hasRegionNeighbor;
+      const isRegionBoundaryEdge = !hasRegionNeighbor;
+      const isCandidateBoundaryEdge = isRegionBoundaryEdge && candidateSet.has(hexKey(edge.neighborHex));
+      const touchesRegion = true;
+      edges.set(edge.edgeKey, {
+        key: edge.edgeKey,
+        a: nodes.get(edge.from.key)!,
+        b: nodes.get(edge.to.key)!,
+        hexA: hex,
+        hexB: allHexSet.has(hexKey(edge.neighborHex)) ? edge.neighborHex : undefined,
+        touchesRegion,
+        isInsideRegionEdge,
+        isRegionBoundaryEdge,
+        isCandidateBoundaryEdge
+      });
+    }
+  }
+
+  for (const edge of edges.values()) {
+    for (const node of [edge.a, edge.b]) {
+      node.incidentEdgeKeys.push(edge.key);
+      node.regionIncidentEdgeKeys.push(edge.key);
+      if (edge.isRegionBoundaryEdge) {
+        node.boundaryIncidentEdgeKeys.push(edge.key);
+        node.isRegionBoundaryVertex = true;
+      }
+      if (edge.isCandidateBoundaryEdge) {
+        node.candidateBoundaryIncidentEdgeKeys.push(edge.key);
+        node.isCandidateBoundaryVertex = true;
       }
     }
   }
 
-  for (const hex of regionHexes) {
-    for (const edge of getHexEdgesAsVertexPairs(hex)) {
-      const cost = edgeCost.get(edge.edgeKey);
-      if (!cost) continue;
-      graph.get(edge.from.key)?.neighbors.push({ to: edge.to.key, cost });
-      graph.get(edge.to.key)?.neighbors.push({ to: edge.from.key, cost });
-    }
-  }
-
-  return graph;
+  return { nodes, edges };
 }
 
-function chooseRandomRiverEndpointVertices(exposedBoundaryVertices: RiverVertex[]): { startVertex: RiverVertex; endVertex: RiverVertex } | null {
-  if (exposedBoundaryVertices.length < 2) return null;
-  const startVertex = randomFrom(exposedBoundaryVertices);
-  const endCandidates = exposedBoundaryVertices.filter((vertex) => vertex.key !== startVertex.key);
-  if (endCandidates.length === 0) return null;
-  const endVertex = randomFrom(endCandidates);
-  return { startVertex, endVertex };
-}
-
-function isSameUndirectedEdge(edgeA: HexEdge | null | undefined, edgeB: HexEdge | null | undefined): boolean {
-  if (!edgeA || !edgeB) return false;
-  return (
-    (edgeA.from.key === edgeB.from.key && edgeA.to.key === edgeB.to.key) ||
-    (edgeA.from.key === edgeB.to.key && edgeA.to.key === edgeB.from.key)
-  );
-}
-
-function getFirstRiverEdge(vertexPath: RiverVertex[]): HexEdge | null {
-  if (!Array.isArray(vertexPath) || vertexPath.length < 2) return null;
-  return { from: vertexPath[0], to: vertexPath[1], edgeKey: edgeKey(vertexPath[0], vertexPath[1]), neighborHex: { q: 0, r: 0 } };
-}
-
-function getLastRiverEdge(vertexPath: RiverVertex[]): HexEdge | null {
-  if (!Array.isArray(vertexPath) || vertexPath.length < 2) return null;
-  const from = vertexPath[vertexPath.length - 2];
-  const to = vertexPath[vertexPath.length - 1];
-  return { from, to, edgeKey: edgeKey(from, to), neighborHex: { q: 0, r: 0 } };
-}
-
-function getCandidateBoundaryEdges(regionHexes: AxialHex[], candidateHexes: AxialHex[] | undefined): HexEdge[] {
-  const candidates = Array.isArray(candidateHexes) ? candidateHexes : [];
-  if (candidates.length === 0) return [];
-  const candidateSet = new Set(candidates.map(hexKey));
-  return getRegionBoundaryEdges(regionHexes).filter((edge) => candidateSet.has(hexKey(edge.neighborHex)));
-}
-
-function chooseRandomBoundaryEdgePair(edges: HexEdge[]): { startBoundaryEdge: HexEdge; endBoundaryEdge: HexEdge } | null {
-  if (!Array.isArray(edges) || edges.length < 2) return null;
-  const startBoundaryEdge = randomFrom(edges);
-  const endCandidates = edges.filter((edge) => !isSameUndirectedEdge(edge, startBoundaryEdge));
-  if (endCandidates.length === 0) return null;
-  const endBoundaryEdge = randomFrom(endCandidates);
-  return { startBoundaryEdge, endBoundaryEdge };
-}
-
-function buildRiverPathBetweenBoundaryEdgesSafe(
-  startBoundaryEdge: HexEdge,
-  endBoundaryEdge: HexEdge,
-  riverGraph: Map<string, RiverGraphNode>
-): RiverVertex[] | null {
-  const startDirections: [RiverVertex, RiverVertex][] = [
-    [startBoundaryEdge.from, startBoundaryEdge.to],
-    [startBoundaryEdge.to, startBoundaryEdge.from]
-  ];
-  const endDirections: [RiverVertex, RiverVertex][] = [
-    [endBoundaryEdge.from, endBoundaryEdge.to],
-    [endBoundaryEdge.to, endBoundaryEdge.from]
-  ];
-
-  for (const [startOutside, startInside] of startDirections) {
-    for (const [endInside, endOutside] of endDirections) {
-      const middlePath = findRiverPath(startInside, endInside, riverGraph);
-      if (!Array.isArray(middlePath) || middlePath.length < 1) continue;
-      const vertexPath = [startOutside, ...middlePath];
-      if (vertexPath[vertexPath.length - 1]?.key !== endOutside.key) {
-        vertexPath.push(endOutside);
-      }
-
-      if (!Array.isArray(vertexPath) || vertexPath.length < 2) continue;
-      const allVerticesValid = vertexPath.every((vertex) => Boolean(vertex?.key) && Number.isFinite(vertex?.x) && Number.isFinite(vertex?.y));
-      if (!allVerticesValid) continue;
-      const firstEdge = getFirstRiverEdge(vertexPath);
-      const lastEdge = getLastRiverEdge(vertexPath);
-      if (!firstEdge || !lastEdge) continue;
-      if (!isSameUndirectedEdge(firstEdge, startBoundaryEdge)) continue;
-      if (!isSameUndirectedEdge(lastEdge, endBoundaryEdge)) continue;
-      return vertexPath;
-    }
-  }
-
-  return null;
-}
-
-function findRiverPath(startVertex: RiverVertex, endVertex: RiverVertex, riverGraph: Map<string, RiverGraphNode>): RiverVertex[] {
-  const distances = new Map<string, number>([[startVertex.key, 0]]);
+function findRiverPath(startNode: RiverGraphNode, endNode: RiverGraphNode, riverGraph: RiverGraph): RiverGraphNode[] {
   const previous = new Map<string, string>();
-  const visited = new Set<string>();
-  const queue = new Set<string>([startVertex.key]);
-
-  while (queue.size > 0) {
-    let currentKey: string | null = null;
-    let bestDistance = Number.POSITIVE_INFINITY;
-    for (const key of queue) {
-      const d = distances.get(key) ?? Number.POSITIVE_INFINITY;
-      if (d < bestDistance) {
-        bestDistance = d;
-        currentKey = key;
-      }
-    }
-    if (!currentKey) break;
-    queue.delete(currentKey);
-    if (currentKey === endVertex.key) break;
-    if (visited.has(currentKey)) continue;
-    visited.add(currentKey);
-
-    const node = riverGraph.get(currentKey);
-    if (!node) continue;
-    for (const neighbor of node.neighbors) {
-      const nextDistance = (distances.get(currentKey) ?? 0) + neighbor.cost;
-      if (nextDistance < (distances.get(neighbor.to) ?? Number.POSITIVE_INFINITY)) {
-        distances.set(neighbor.to, nextDistance);
-        previous.set(neighbor.to, currentKey);
-        queue.add(neighbor.to);
-      }
+  const queue: string[] = [startNode.key];
+  const visited = new Set<string>([startNode.key]);
+  while (queue.length > 0) {
+    const currentKey = queue.shift()!;
+    if (currentKey === endNode.key) break;
+    const currentNode = riverGraph.nodes.get(currentKey);
+    if (!currentNode) continue;
+    for (const edgeKey of currentNode.incidentEdgeKeys) {
+      const edge = riverGraph.edges.get(edgeKey);
+      if (!edge?.touchesRegion) continue;
+      const nextKey = edge.a.key === currentKey ? edge.b.key : edge.a.key;
+      if (visited.has(nextKey)) continue;
+      visited.add(nextKey);
+      previous.set(nextKey, currentKey);
+      queue.push(nextKey);
     }
   }
-
-  if (!distances.has(endVertex.key)) return [];
-  const path: RiverVertex[] = [];
-  let currentKey: string | undefined = endVertex.key;
+  if (!visited.has(endNode.key)) return [];
+  const path: RiverGraphNode[] = [];
+  let currentKey: string | undefined = endNode.key;
   while (currentKey) {
-    const node = riverGraph.get(currentKey);
+    const node = riverGraph.nodes.get(currentKey);
     if (!node) return [];
-    path.push(node.vertex);
-    if (currentKey === startVertex.key) break;
+    path.push(node);
+    if (currentKey === startNode.key) break;
     currentKey = previous.get(currentKey);
   }
   return path.reverse();
@@ -539,57 +480,49 @@ function generateRiverForRegion(region: Region, existingRivers: River[], candida
     return existingRivers;
   }
   try {
-    const riverGraph = getRegionRiverGraph(region.hexes);
-    const boundaryEdges = getRegionBoundaryEdges(region.hexes);
-    const candidateBoundaryEdges = getCandidateBoundaryEdges(region.hexes, candidateHexes);
-    const preferredEdges = candidateBoundaryEdges.length >= 2 ? candidateBoundaryEdges : boundaryEdges;
-
+    const riverGraph = buildRiverGraphForRegion(region.hexes, region.hexes, candidateHexes ?? []);
+    const graphNodes = Array.from(riverGraph.nodes.values());
+    const candidateBoundaryNodes = graphNodes.filter((node) => node.isCandidateBoundaryVertex);
+    const regionBoundaryNodes = graphNodes.filter((node) => node.isRegionBoundaryVertex);
+    const endpointCandidates = candidateBoundaryNodes.length >= 2 ? candidateBoundaryNodes : regionBoundaryNodes;
+    if (endpointCandidates.length < 2) return existingRivers;
+    const requireCandidateBoundary = candidateBoundaryNodes.length >= 2;
     const RANDOM_PAIR_ATTEMPTS = 30;
     for (let attempt = 0; attempt < RANDOM_PAIR_ATTEMPTS; attempt += 1) {
-      const edgePair = chooseRandomBoundaryEdgePair(preferredEdges);
-      if (!edgePair) break;
-      const path = buildRiverPathBetweenBoundaryEdgesSafe(edgePair.startBoundaryEdge, edgePair.endBoundaryEdge, riverGraph);
-      if (!path) {
+      const startNode = randomFrom(endpointCandidates);
+      const endPool = endpointCandidates.filter((node) => node.key !== startNode.key);
+      if (endPool.length === 0) continue;
+      const endNode = randomFrom(endPool);
+      if (!startNode.isRegionBoundaryVertex || !endNode.isRegionBoundaryVertex) continue;
+      if (requireCandidateBoundary && (!startNode.isCandidateBoundaryVertex || !endNode.isCandidateBoundaryVertex)) continue;
+      const pathNodes = findRiverPath(startNode, endNode, riverGraph);
+      if (pathNodes.length < 2) continue;
+      const allSegmentsValid = pathNodes.slice(1).every((node, index) => riverGraph.edges.has(edgeKey(pathNodes[index], node)));
+      if (!allSegmentsValid) continue;
+      if (region.hexes.length > 6 && pathNodes.length < 4) {
         continue;
       }
+      const path = pathNodes.map((node) => ({ key: node.key, x: node.x, y: node.y }));
+      const firstNode = pathNodes[0];
+      const lastNode = pathNodes[pathNodes.length - 1];
+      if (!firstNode?.isRegionBoundaryVertex || !lastNode?.isRegionBoundaryVertex) continue;
+      if (requireCandidateBoundary && (!firstNode.isCandidateBoundaryVertex || !lastNode.isCandidateBoundaryVertex)) continue;
+      console.log('RiverGraph river created', {
+        regionId: region.id,
+        totalGraphNodes: graphNodes.length,
+        regionBoundaryNodesCount: regionBoundaryNodes.length,
+        candidateBoundaryNodesCount: candidateBoundaryNodes.length,
+        startNodeKey: startNode.key,
+        endNodeKey: endNode.key,
+        startNodeIsCandidateBoundaryVertex: startNode.isCandidateBoundaryVertex,
+        endNodeIsCandidateBoundaryVertex: endNode.isCandidateBoundaryVertex,
+        pathLength: path.length
+      });
       const newRiverId = (existingRivers.at(-1)?.id ?? 0) + 1;
       return [...existingRivers, { id: newRiverId, regionId: region.id, vertexPath: path }];
     }
   } catch (error) {
-    console.warn('River edge-to-edge generation failed, using fallback.', { regionId: region.id, error });
-  }
-
-  try {
-    const riverGraph = getRegionRiverGraph(region.hexes);
-    const boundaryEdges = getRegionBoundaryEdges(region.hexes);
-    const allBoundaryVertices = getBoundaryVerticesFromEdges(boundaryEdges);
-    const exposedBoundaryVertices = getExposedBoundaryVertices(boundaryEdges);
-    const endpointVertices = exposedBoundaryVertices.length >= 2 ? exposedBoundaryVertices : allBoundaryVertices;
-    if (endpointVertices.length < 2) {
-      return existingRivers;
-    }
-
-    const RANDOM_PAIR_ATTEMPTS = 30;
-    for (let attempt = 0; attempt < RANDOM_PAIR_ATTEMPTS; attempt += 1) {
-      const endpoints = chooseRandomRiverEndpointVertices(endpointVertices);
-      if (!endpoints) {
-        return existingRivers;
-      }
-      const path = findRiverPath(endpoints.startVertex, endpoints.endVertex, riverGraph);
-      if (path.length < 2) {
-        continue;
-      }
-      if (region.hexes.length > 6 && path.length < 4) {
-        continue;
-      }
-      if (path[0]?.key !== endpoints.startVertex.key || path.at(-1)?.key !== endpoints.endVertex.key) {
-        continue;
-      }
-      const newRiverId = (existingRivers.at(-1)?.id ?? 0) + 1;
-      return [...existingRivers, { id: newRiverId, regionId: region.id, vertexPath: path }];
-    }
-  } catch (error) {
-    console.warn('Fallback river generation failed; skipping river for region.', { regionId: region.id, error });
+    console.warn('River graph generation failed; skipping river for region.', { regionId: region.id, error });
   }
 
   return existingRivers;
