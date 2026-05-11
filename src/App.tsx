@@ -69,6 +69,14 @@ const NEIGHBOR_DIRECTIONS: AxialHex[] = [
   { q: -1, r: 1 },
   { q: 0, r: 1 }
 ];
+const HEX_EDGE_DIRECTIONS: AxialHex[] = [
+  { q: 1, r: 0 },
+  { q: 0, r: 1 },
+  { q: -1, r: 1 },
+  { q: -1, r: 0 },
+  { q: 0, r: -1 },
+  { q: 1, r: -1 }
+];
 
 function hexKey(hex: AxialHex): string {
   return `${hex.q},${hex.r}`;
@@ -125,7 +133,7 @@ function getHexCornerPoints(hex: AxialHex): RiverVertex[] {
 
 function getHexEdgesAsVertexPairs(hex: AxialHex): HexEdge[] {
   const corners = getHexCornerPoints(hex);
-  return NEIGHBOR_DIRECTIONS.map((direction, i) => ({
+  return HEX_EDGE_DIRECTIONS.map((direction, i) => ({
     from: corners[i],
     to: corners[(i + 1) % 6],
     neighborHex: { q: hex.q + direction.q, r: hex.r + direction.r },
@@ -143,8 +151,8 @@ function getAdjacentHexesForVertex(vertex: RiverVertex, sourceHex: AxialHex): Ax
   const rightDirection = cornerIndex;
   const adjacent = new Map<string, AxialHex>();
   adjacent.set(hexKey(sourceHex), sourceHex);
-  const leftHex = getNeighborHex(sourceHex, leftDirection);
-  const rightHex = getNeighborHex(sourceHex, rightDirection);
+  const leftHex = getHexEdgeNeighbor(sourceHex, leftDirection);
+  const rightHex = getHexEdgeNeighbor(sourceHex, rightDirection);
   if (leftHex) adjacent.set(hexKey(leftHex), leftHex);
   if (rightHex) adjacent.set(hexKey(rightHex), rightHex);
   return Array.from(adjacent.values());
@@ -202,14 +210,20 @@ function validateRiverPathUsesExteriorEndpoints(
   return true;
 }
 
-function getNeighborHex(hex: AxialHex, direction: number): AxialHex | undefined {
+function getHexNeighbor(hex: AxialHex, direction: number): AxialHex | undefined {
   const delta = NEIGHBOR_DIRECTIONS[direction];
   if (!delta) return undefined;
   return { q: hex.q + delta.q, r: hex.r + delta.r };
 }
 
+function getHexEdgeNeighbor(hex: AxialHex, edgeIndex: number): AxialHex | undefined {
+  const delta = HEX_EDGE_DIRECTIONS[edgeIndex];
+  if (!delta) return undefined;
+  return { q: hex.q + delta.q, r: hex.r + delta.r };
+}
+
 function getHexEdgeForDirection(hex: AxialHex, direction: number): HexEdge | undefined {
-  if (direction < 0 || direction >= NEIGHBOR_DIRECTIONS.length) return undefined;
+  if (direction < 0 || direction >= HEX_EDGE_DIRECTIONS.length) return undefined;
   return getHexEdgesAsVertexPairs(hex)[direction];
 }
 
@@ -220,7 +234,7 @@ function getCandidateBoundaryEdgesForRegion(regionHexes: AxialHex[] = [], candid
   const edges = new Map<string, HexEdge>();
   for (const hex of regionHexes) {
     for (let direction = 0; direction < 6; direction += 1) {
-      const neighbor = getNeighborHex(hex, direction);
+      const neighbor = getHexEdgeNeighbor(hex, direction);
       if (!neighbor) continue;
       const neighborKey = hexKey(neighbor);
       if (regionSet.has(neighborKey)) continue;
