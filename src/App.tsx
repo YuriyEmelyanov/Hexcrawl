@@ -73,6 +73,9 @@ type VertexUsage = {
 
 const HEX_SIZE = 28;
 const SQRT3 = Math.sqrt(3);
+const HEX_TERRAIN_OVERLAY_OPACITY = 0.7;
+const HEX_TERRAIN_OVERLAY_SCALE = 0.78;
+const FOREST_TILE_SRC = new URL('../forest-tile.png', import.meta.url).href;
 const START_HEX: AxialHex = { q: 0, r: 0 };
 const NEIGHBOR_DIRECTIONS: AxialHex[] = [
   { q: 1, r: 0 },
@@ -1131,10 +1134,19 @@ export function App() {
         <div className="map-card">
           <h2>Карта регионов</h2>
           <svg viewBox={`0 0 ${positionedHexes.width} ${positionedHexes.height}`}>
+            <defs>
+              {positionedHexes.hexes.map((hex) => (
+                <clipPath key={`hex-clip-${hex.key}`} id={`hex-clip-${hex.key}`}>
+                  <polygon points={hexPoints(hex.x, hex.y, HEX_SIZE)} />
+                </clipPath>
+              ))}
+            </defs>
             {positionedHexes.hexes.map((hex) => {
               const meta = metadataMap.get(hex.key);
               const cls = hex.kind === 'candidate' ? 'hex candidate' : meta?.isCenter ? 'hex center' : 'hex region';
               const fill = hex.kind === 'candidate' ? undefined : getRegionColor(meta?.regionId ?? 0);
+              const overlayWidth = HEX_SIZE * SQRT3 * HEX_TERRAIN_OVERLAY_SCALE;
+              const overlayHeight = HEX_SIZE * SQRT3 * HEX_TERRAIN_OVERLAY_SCALE;
               return (
                 <g
                   key={`${hex.kind}-${hex.key}`}
@@ -1147,6 +1159,20 @@ export function App() {
                   }}
                 >
                   <polygon points={hexPoints(hex.x, hex.y, HEX_SIZE)} className={cls} style={{ fill }} />
+                  {hex.kind === 'region' ? (
+                    <image
+                      href={FOREST_TILE_SRC}
+                      x={hex.x - overlayWidth / 2}
+                      y={hex.y - overlayHeight / 2}
+                      width={overlayWidth}
+                      height={overlayHeight}
+                      opacity={HEX_TERRAIN_OVERLAY_OPACITY}
+                      preserveAspectRatio="xMidYMid meet"
+                      clipPath={`url(#hex-clip-${hex.key})`}
+                      pointerEvents="none"
+                    />
+                  ) : null}
+                  <polygon points={hexPoints(hex.x, hex.y, HEX_SIZE)} className={cls} style={{ fill: 'none' }} />
                   {meta?.isCenter ? <circle cx={hex.x} cy={hex.y} r={3} className="center-dot" /> : null}
                   <text x={hex.x} y={hex.y + 4} textAnchor="middle" className="hex-label">{hex.q}/{hex.r}</text>
                 </g>
