@@ -796,7 +796,9 @@ export function getCandidateHexes(allRegionHexes: AxialHex[]): AxialHex[] {
 function generateRiverForRegion(region: Region, regions: Region[], existingRivers: River[], candidateHexes?: AxialHex[]): River[] {
   try {
     const riverGraph = buildRiverGraphForRegion(region.hexes, region.hexes, candidateHexes ?? []);
-    const { candidateVertices: redVertices } = getRegionSharedVertices(region, regions, candidateHexes ?? []);
+    const { candidateVertices, neighborRegionVertices } = getRegionSharedVertices(region, regions, candidateHexes ?? []);
+    const orangeKeys = new Set(neighborRegionVertices.map((vertex) => vertex.key));
+    const redVertices = candidateVertices.filter((vertex) => !orangeKeys.has(vertex.key));
     const purpleVertices = region.centerHex ? getHexCornerPoints(region.centerHex) : [];
     if (redVertices.length < 2) return existingRivers;
     const RANDOM_PAIR_ATTEMPTS = 50;
@@ -1021,12 +1023,16 @@ export function App() {
   const selectedRegionSharedVertices = selectedRegion
     ? (regionSharedVerticesByRegion.get(selectedRegion.id) ?? { candidateVertices: [], neighborRegionVertices: [] })
     : { candidateVertices: [], neighborRegionVertices: [] };
-  const selectedRegionRedVertices = selectedRegionSharedVertices.candidateVertices;
+  const selectedRegionRedVertices = useMemo(() => {
+    const orangeKeys = new Set(selectedRegionSharedVertices.neighborRegionVertices.map((vertex) => vertex.key));
+    return selectedRegionSharedVertices.candidateVertices.filter((vertex) => !orangeKeys.has(vertex.key));
+  }, [selectedRegionSharedVertices]);
   const debugVerticesByRegion = useMemo(() => {
     const map = new Map<number, { key: string; x: number; y: number; type: 'red' | 'orange' | 'purple' }[]>();
     for (const region of regions) {
       const sharedVertices = regionSharedVerticesByRegion.get(region.id) ?? { candidateVertices: [], neighborRegionVertices: [] };
-      const redVertices = sharedVertices.candidateVertices;
+      const orangeKeys = new Set(sharedVertices.neighborRegionVertices.map((vertex) => vertex.key));
+      const redVertices = sharedVertices.candidateVertices.filter((vertex) => !orangeKeys.has(vertex.key));
       const orangeVertices = sharedVertices.neighborRegionVertices;
       const centralHexVertices = region.centerHex ? getHexCornerPoints(region.centerHex) : [];
       const redSet = new Set(redVertices.map((vertex) => vertex.key));
@@ -1210,7 +1216,7 @@ export function App() {
                   <>
                     <p>regionId: {selectedRegion.id}</p>
                     <p>regionHexes.length: {selectedRegion.hexes.length}</p>
-                    <p>redCandidateVertices.length: {selectedRegionSharedVertices.candidateVertices.length}</p>
+                    <p>redCandidateVertices.length: {selectedRegionRedVertices.length}</p>
                     <p>orangeNeighborRegionVertices.length: {selectedRegionSharedVertices.neighborRegionVertices.length}</p>
                     <p>purpleCentralHexVertices.length: {selectedRegion.centerHex ? getHexCornerPoints(selectedRegion.centerHex).length : 0}</p>
                     <p>centralHex coordinate: {selectedRegion.centerHex ? `${selectedRegion.centerHex.q}/${selectedRegion.centerHex.r}` : '—'}</p>
