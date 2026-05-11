@@ -1036,8 +1036,8 @@ export function App() {
       for (const vertex of [...centralHexVertices, ...orangeVertices, ...redVertices]) byKey.set(vertex.key, vertex);
       const merged = new Map<string, { key: string; x: number; y: number; type: 'red' | 'orange' | 'purple' }>();
       for (const [key, vertex] of byKey) {
-        if (redSet.has(key)) merged.set(key, { ...vertex, type: 'red' });
-        else if (orangeSet.has(key)) merged.set(key, { ...vertex, type: 'orange' });
+        if (orangeSet.has(key)) merged.set(key, { ...vertex, type: 'orange' });
+        else if (redSet.has(key)) merged.set(key, { ...vertex, type: 'red' });
         else if (purpleSet.has(key)) merged.set(key, { ...vertex, type: 'purple' });
       }
 
