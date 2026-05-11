@@ -184,6 +184,15 @@ function getRegionBoundaryEdges(regionHexes: AxialHex[]): HexEdge[] {
   );
 }
 
+function getBoundaryVerticesFromEdges(boundaryEdges: HexEdge[]): RiverVertex[] {
+  const boundaryVertices = new Map<string, RiverVertex>();
+  for (const edge of boundaryEdges) {
+    boundaryVertices.set(edge.from.key, edge.from);
+    boundaryVertices.set(edge.to.key, edge.to);
+  }
+  return Array.from(boundaryVertices.values());
+}
+
 function getRegionRiverGraph(regionHexes: AxialHex[]): Map<string, RiverGraphNode> {
   const regionKeys = new Set(regionHexes.map(hexKey));
   const graph = new Map<string, RiverGraphNode>();
@@ -214,25 +223,16 @@ function getRegionRiverGraph(regionHexes: AxialHex[]): Map<string, RiverGraphNod
   return graph;
 }
 
-function chooseRiverBoundaryVertices(
-  regionHexes: AxialHex[]
-): { startVertex: RiverVertex; endVertex: RiverVertex } | null {
-  const boundaryVertices = new Map<string, RiverVertex>();
-  for (const edge of getRegionBoundaryEdges(regionHexes)) {
-    boundaryVertices.set(edge.from.key, edge.from);
-    boundaryVertices.set(edge.to.key, edge.to);
-  }
-  const vertices = Array.from(boundaryVertices.values());
-  if (vertices.length < 2) return null;
-
-  const startVertex = randomFrom(vertices);
-  const endCandidates = vertices.filter((vertex) => vertex.key !== startVertex.key);
+function chooseRandomRiverEndpointVertices(boundaryVertices: RiverVertex[]): { startVertex: RiverVertex; endVertex: RiverVertex } | null {
+  if (boundaryVertices.length < 2) return null;
+  const startVertex = randomFrom(boundaryVertices);
+  const endCandidates = boundaryVertices.filter((vertex) => vertex.key !== startVertex.key);
   if (endCandidates.length === 0) return null;
   const endVertex = randomFrom(endCandidates);
   return { startVertex, endVertex };
 }
 
-function findRiverVertexPath(startVertex: RiverVertex, endVertex: RiverVertex, riverGraph: Map<string, RiverGraphNode>): RiverVertex[] {
+function findRiverPath(startVertex: RiverVertex, endVertex: RiverVertex, riverGraph: Map<string, RiverGraphNode>): RiverVertex[] {
   const distances = new Map<string, number>([[startVertex.key, 0]]);
   const previous = new Map<string, string>();
   const visited = new Set<string>();
@@ -446,29 +446,29 @@ function generateRiverForRegion(region: Region, existingRivers: River[]): River[
     return existingRivers;
   }
   const riverGraph = getRegionRiverGraph(region.hexes);
+  const boundaryEdges = getRegionBoundaryEdges(region.hexes);
+  const boundaryVertices = getBoundaryVerticesFromEdges(boundaryEdges);
+  if (boundaryVertices.length < 2) {
+    return existingRivers;
+  }
 
   const RANDOM_PAIR_ATTEMPTS = 20;
   for (let attempt = 0; attempt < RANDOM_PAIR_ATTEMPTS; attempt += 1) {
-    const boundaryVertices = chooseRiverBoundaryVertices(region.hexes);
-    if (!boundaryVertices) {
+    const endpoints = chooseRandomRiverEndpointVertices(boundaryVertices);
+    if (!endpoints) {
       return existingRivers;
     }
-    const path = findRiverVertexPath(boundaryVertices.startVertex, boundaryVertices.endVertex, riverGraph);
-    if (path.length < 2) continue;
+    const path = findRiverPath(endpoints.startVertex, endpoints.endVertex, riverGraph);
+    if (path.length < 2) {
+      continue;
+    }
+    if (path[0]?.key !== endpoints.startVertex.key || path.at(-1)?.key !== endpoints.endVertex.key) {
+      continue;
+    }
     const newRiverId = (existingRivers.at(-1)?.id ?? 0) + 1;
     return [...existingRivers, { id: newRiverId, regionId: region.id, vertexPath: path }];
   }
-
-  const fallbackBoundaryVertices = chooseRiverBoundaryVertices(region.hexes);
-  if (!fallbackBoundaryVertices) {
-    return existingRivers;
-  }
-  const fallbackPath = findRiverVertexPath(fallbackBoundaryVertices.startVertex, fallbackBoundaryVertices.endVertex, riverGraph);
-  if (fallbackPath.length < 2) {
-    return existingRivers;
-  }
-  const fallbackRiverId = (existingRivers.at(-1)?.id ?? 0) + 1;
-  return [...existingRivers, { id: fallbackRiverId, regionId: region.id, vertexPath: fallbackPath }];
+  return existingRivers;
 }
 
 function renderRiverPolyline(river: River, offsetX: number, offsetY: number) {
