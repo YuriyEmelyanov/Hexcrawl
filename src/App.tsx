@@ -133,6 +133,60 @@ function getHexEdgesAsVertexPairs(hex: AxialHex): HexEdge[] {
   }));
 }
 
+function getNeighborHex(hex: AxialHex, direction: number): AxialHex | undefined {
+  const delta = NEIGHBOR_DIRECTIONS[direction];
+  if (!delta) return undefined;
+  return { q: hex.q + delta.q, r: hex.r + delta.r };
+}
+
+function getHexEdgeForDirection(hex: AxialHex, direction: number): HexEdge | undefined {
+  if (direction < 0 || direction >= NEIGHBOR_DIRECTIONS.length) return undefined;
+  return getHexEdgesAsVertexPairs(hex)[direction];
+}
+
+function getCandidateBoundaryEdgesForRegion(regionHexes: AxialHex[] = [], candidateHexes: AxialHex[] = []): HexEdge[] {
+  if (regionHexes.length === 0 || candidateHexes.length === 0) return [];
+  const regionSet = new Set(regionHexes.map(hexKey));
+  const candidateSet = new Set(candidateHexes.map(hexKey));
+  const edges = new Map<string, HexEdge>();
+  for (const hex of regionHexes) {
+    for (let direction = 0; direction < 6; direction += 1) {
+      const neighbor = getNeighborHex(hex, direction);
+      if (!neighbor) continue;
+      const neighborKey = hexKey(neighbor);
+      if (regionSet.has(neighborKey)) continue;
+      if (!candidateSet.has(neighborKey)) continue;
+      const edge = getHexEdgeForDirection(hex, direction);
+      if (!edge) continue;
+      edges.set(edge.edgeKey, edge);
+    }
+  }
+  return Array.from(edges.values());
+}
+
+function getCandidateBoundaryVerticesForRegion(regionHexes: AxialHex[] = [], candidateHexes: AxialHex[] = []): RiverVertex[] {
+  const vertices = new Map<string, RiverVertex>();
+  for (const edge of getCandidateBoundaryEdgesForRegion(regionHexes, candidateHexes)) {
+    vertices.set(edge.from.key, edge.from);
+    vertices.set(edge.to.key, edge.to);
+  }
+  return Array.from(vertices.values());
+}
+
+function validateCandidateBoundaryVertices(
+  regionHexes: AxialHex[] = [],
+  candidateHexes: AxialHex[] = [],
+  candidateBoundaryVertices: RiverVertex[] = []
+): RiverVertex[] {
+  if (regionHexes.length === 0 || candidateHexes.length === 0 || candidateBoundaryVertices.length === 0) return [];
+  const validVertexKeys = new Set<string>();
+  for (const edge of getCandidateBoundaryEdgesForRegion(regionHexes, candidateHexes)) {
+    validVertexKeys.add(edge.from.key);
+    validVertexKeys.add(edge.to.key);
+  }
+  return candidateBoundaryVertices.filter((vertex) => !validVertexKeys.has(vertex.key));
+}
+
 export function rollFateSticks(count: number): DfRollResult {
   const values = Array.from({ length: count }, () => Math.floor(Math.random() * 3));
   const sum = values.reduce((acc, current) => acc + current, 0);
@@ -220,8 +274,10 @@ function edgeKey(a: RiverVertex, b: RiverVertex): string {
 
 function buildRiverGraphForRegion(regionHexes: AxialHex[], allHexes: AxialHex[], candidateHexes: AxialHex[] = []): RiverGraph {
   const regionKeys = new Set(regionHexes.map(hexKey));
-  const candidateSet = new Set(candidateHexes.map(hexKey));
   const allHexSet = new Set(allHexes.map(hexKey));
+  const candidateBoundaryEdgeKeys = new Set(
+    getCandidateBoundaryEdgesForRegion(regionHexes, candidateHexes).map((edge) => edge.edgeKey)
+  );
   const nodes = new Map<string, RiverGraphNode>();
   const edges = new Map<string, RiverGraphEdge>();
 
@@ -259,7 +315,7 @@ function buildRiverGraphForRegion(regionHexes: AxialHex[], allHexes: AxialHex[],
       const hasRegionNeighbor = regionKeys.has(hexKey(edge.neighborHex));
       const isInsideRegionEdge = hasRegionNeighbor;
       const isRegionBoundaryEdge = !hasRegionNeighbor;
-      const isCandidateBoundaryEdge = isRegionBoundaryEdge && candidateSet.has(hexKey(edge.neighborHex));
+      const isCandidateBoundaryEdge = candidateBoundaryEdgeKeys.has(edge.edgeKey);
       const touchesRegion = true;
       edges.set(edge.edgeKey, {
         key: edge.edgeKey,
@@ -650,6 +706,23 @@ export function App() {
     return map;
   }, [regions, candidateHexes]);
 
+  const candidateBoundaryDebugByRegion = useMemo(() => {
+    const map = new Map<number, { edges: HexEdge[]; vertices: RiverVertex[]; invalidVertices: RiverVertex[]; edgeKeys: string[]; vertexKeys: string[] }>();
+    for (const region of regions) {
+      const edges = getCandidateBoundaryEdgesForRegion(region.hexes, candidateHexes);
+      const vertices = getCandidateBoundaryVerticesForRegion(region.hexes, candidateHexes);
+      const invalidVertices = validateCandidateBoundaryVertices(region.hexes, candidateHexes, vertices);
+      map.set(region.id, {
+        edges,
+        vertices,
+        invalidVertices,
+        edgeKeys: edges.map((edge) => edge.edgeKey),
+        vertexKeys: vertices.map((vertex) => vertex.key)
+      });
+    }
+    return map;
+  }, [regions, candidateHexes]);
+
   const addRegionToMap = (anchorHex: AxialHex) => {
     const sizeRoll = rollRegionSize();
     const size = sizeRoll.regionSize;
@@ -715,6 +788,18 @@ export function App() {
   const selectedIssues = selectedRegion && selectedRegionRiver && selectedRegionGraph
     ? validateRiverEndpoints(selectedRegion, selectedRegionRiver, selectedRegionGraph)
     : [];
+  const selectedCandidateBoundaryDebug = selectedRegion ? candidateBoundaryDebugByRegion.get(selectedRegion.id) : undefined;
+
+  if (debugRivers && selectedRegion && selectedCandidateBoundaryDebug) {
+    console.log('Candidate boundary debug', {
+      regionId: selectedRegion.id,
+      regionHexesLength: selectedRegion.hexes.length,
+      candidateBoundaryEdgesLength: selectedCandidateBoundaryDebug.edges.length,
+      candidateBoundaryVerticesLength: selectedCandidateBoundaryDebug.vertices.length,
+      edgeKeys: selectedCandidateBoundaryDebug.edgeKeys,
+      vertexKeys: selectedCandidateBoundaryDebug.vertexKeys
+    });
+  }
 
   return (
     <div className="app">
@@ -773,9 +858,13 @@ export function App() {
                 {Array.from(riverGraphsByRegion.values()).flatMap((graph, graphIndex) => Array.from(graph.nodes.values()).filter((node) => node.isRegionBoundaryVertex).map((node) => (
                   <circle key={`dbg-rb-${graphIndex}-${node.key}`} cx={node.x + riverOffset.x} cy={node.y + riverOffset.y} r={2} className="dbg-node-boundary" />
                 )))}
-                {Array.from(riverGraphsByRegion.values()).flatMap((graph, graphIndex) => Array.from(graph.nodes.values()).filter((node) => node.isCandidateBoundaryVertex).map((node) => (
-                  <circle key={`dbg-cb-${graphIndex}-${node.key}`} cx={node.x + riverOffset.x} cy={node.y + riverOffset.y} r={2} className="dbg-node-candidate" />
-                )))}
+                {(selectedRegion
+                  ? (candidateBoundaryDebugByRegion.get(selectedRegion.id)?.vertices ?? []).map((vertex) => (
+                    <circle key={`dbg-cb-sel-${selectedRegion.id}-${vertex.key}`} cx={vertex.x + riverOffset.x} cy={vertex.y + riverOffset.y} r={2} className="dbg-node-candidate" />
+                  ))
+                  : regions.flatMap((region) => (candidateBoundaryDebugByRegion.get(region.id)?.vertices ?? []).map((vertex) => (
+                    <circle key={`dbg-cb-all-${region.id}-${vertex.key}`} cx={vertex.x + riverOffset.x} cy={vertex.y + riverOffset.y} r={2} className="dbg-node-candidate" />
+                  ))))}
                 {rivers.map((river) => {
                   if (!river.vertexPath || river.vertexPath.length < 2) return null;
                   const start = river.vertexPath[0];
@@ -855,6 +944,9 @@ export function App() {
                     <p>first edge isCandidateBoundaryEdge: {firstEdge?.isCandidateBoundaryEdge ? 'true' : 'false'}</p>
                     <p>last edge isCandidateBoundaryEdge: {lastEdge?.isCandidateBoundaryEdge ? 'true' : 'false'}</p>
                     <p>issues: {selectedIssues.length > 0 ? selectedIssues.slice(0, 6).join(', ') : 'none'}</p>
+                    <p>candidateBoundaryEdges count: {selectedCandidateBoundaryDebug?.edges.length ?? 0}</p>
+                    <p>candidateBoundaryVertices count: {selectedCandidateBoundaryDebug?.vertices.length ?? 0}</p>
+                    <p>invalidCandidateBoundaryVertices count: {selectedCandidateBoundaryDebug?.invalidVertices.length ?? 0}</p>
                   </>
                 );
               })() : null}
