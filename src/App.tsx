@@ -73,9 +73,9 @@ type VertexUsage = {
 
 const HEX_SIZE = 28;
 const SQRT3 = Math.sqrt(3);
-const HEX_TERRAIN_OVERLAY_OPACITY = 0.7;
-const HEX_TERRAIN_OVERLAY_SCALE = 0.78;
-const FOREST_TILE_SRC = new URL('../forest-tile.png', import.meta.url).href;
+const HEX_TERRAIN_OVERLAY_OPACITY = 1;
+const HEX_TERRAIN_OVERLAY_SCALE = 1.05;
+const FOREST_TILE_SRC = `${import.meta.env.BASE_URL}forest-tile.png`;
 const START_HEX: AxialHex = { q: 0, r: 0 };
 const NEIGHBOR_DIRECTIONS: AxialHex[] = [
   { q: 1, r: 0 },
