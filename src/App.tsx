@@ -193,6 +193,25 @@ function getBoundaryVerticesFromEdges(boundaryEdges: HexEdge[]): RiverVertex[] {
   return Array.from(boundaryVertices.values());
 }
 
+function getExposedBoundaryVertices(boundaryEdges: HexEdge[]): RiverVertex[] {
+  const vertexToBoundaryEdges = new Map<string, HexEdge[]>();
+  const vertices = new Map<string, RiverVertex>();
+
+  for (const edge of boundaryEdges) {
+    const fromEdges = vertexToBoundaryEdges.get(edge.from.key) ?? [];
+    fromEdges.push(edge);
+    vertexToBoundaryEdges.set(edge.from.key, fromEdges);
+    vertices.set(edge.from.key, edge.from);
+
+    const toEdges = vertexToBoundaryEdges.get(edge.to.key) ?? [];
+    toEdges.push(edge);
+    vertexToBoundaryEdges.set(edge.to.key, toEdges);
+    vertices.set(edge.to.key, edge.to);
+  }
+
+  return Array.from(vertices.values()).filter((vertex) => (vertexToBoundaryEdges.get(vertex.key)?.length ?? 0) >= 2);
+}
+
 function getRegionRiverGraph(regionHexes: AxialHex[]): Map<string, RiverGraphNode> {
   const regionKeys = new Set(regionHexes.map(hexKey));
   const graph = new Map<string, RiverGraphNode>();
@@ -223,10 +242,10 @@ function getRegionRiverGraph(regionHexes: AxialHex[]): Map<string, RiverGraphNod
   return graph;
 }
 
-function chooseRandomRiverEndpointVertices(boundaryVertices: RiverVertex[]): { startVertex: RiverVertex; endVertex: RiverVertex } | null {
-  if (boundaryVertices.length < 2) return null;
-  const startVertex = randomFrom(boundaryVertices);
-  const endCandidates = boundaryVertices.filter((vertex) => vertex.key !== startVertex.key);
+function chooseRandomRiverEndpointVertices(exposedBoundaryVertices: RiverVertex[]): { startVertex: RiverVertex; endVertex: RiverVertex } | null {
+  if (exposedBoundaryVertices.length < 2) return null;
+  const startVertex = randomFrom(exposedBoundaryVertices);
+  const endCandidates = exposedBoundaryVertices.filter((vertex) => vertex.key !== startVertex.key);
   if (endCandidates.length === 0) return null;
   const endVertex = randomFrom(endCandidates);
   return { startVertex, endVertex };
@@ -447,19 +466,32 @@ function generateRiverForRegion(region: Region, existingRivers: River[]): River[
   }
   const riverGraph = getRegionRiverGraph(region.hexes);
   const boundaryEdges = getRegionBoundaryEdges(region.hexes);
-  const boundaryVertices = getBoundaryVerticesFromEdges(boundaryEdges);
-  if (boundaryVertices.length < 2) {
+  const allBoundaryVertices = getBoundaryVerticesFromEdges(boundaryEdges);
+  const exposedBoundaryVertices = getExposedBoundaryVertices(boundaryEdges);
+  const endpointVertices = exposedBoundaryVertices.length >= 2 ? exposedBoundaryVertices : allBoundaryVertices;
+  if (endpointVertices.length < 2) {
     return existingRivers;
   }
 
-  const RANDOM_PAIR_ATTEMPTS = 20;
+  const RANDOM_PAIR_ATTEMPTS = 30;
   for (let attempt = 0; attempt < RANDOM_PAIR_ATTEMPTS; attempt += 1) {
-    const endpoints = chooseRandomRiverEndpointVertices(boundaryVertices);
+    const endpoints = chooseRandomRiverEndpointVertices(endpointVertices);
     if (!endpoints) {
       return existingRivers;
     }
     const path = findRiverPath(endpoints.startVertex, endpoints.endVertex, riverGraph);
+    console.log('River generation', {
+      regionId: region.id,
+      allBoundaryVertices: allBoundaryVertices.length,
+      exposedBoundaryVertices: exposedBoundaryVertices.length,
+      startVertexKey: endpoints.startVertex.key,
+      endVertexKey: endpoints.endVertex.key,
+      pathLength: path.length
+    });
     if (path.length < 2) {
+      continue;
+    }
+    if (region.hexes.length > 6 && path.length < 4) {
       continue;
     }
     if (path[0]?.key !== endpoints.startVertex.key || path.at(-1)?.key !== endpoints.endVertex.key) {
