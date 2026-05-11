@@ -951,6 +951,25 @@ export function App() {
   const selectedRegionRiver = selectedRegion ? rivers.find((river) => river.regionId === selectedRegion.id) : undefined;
   const selectedRegionGraph = selectedRegion ? riverGraphsByRegion.get(selectedRegion.id) : undefined;
   const selectedRegionRedVertices = selectedRegion ? (regionExteriorVerticesByRegion.get(selectedRegion.id) ?? []) : [];
+  const debugVerticesByRegion = useMemo(() => {
+    const map = new Map<number, { key: string; x: number; y: number; type: 'red' | 'purple' }[]>();
+    for (const region of regions) {
+      const redVertices = regionExteriorVerticesByRegion.get(region.id) ?? [];
+      const redKeys = new Set(redVertices.map((vertex) => vertex.key));
+      const centralHexVertices = region.centerHex ? getHexCornerPoints(region.centerHex) : [];
+      const merged = new Map<string, { key: string; x: number; y: number; type: 'red' | 'purple' }>();
+
+      for (const vertex of centralHexVertices) {
+        merged.set(vertex.key, { ...vertex, type: 'purple' });
+      }
+      for (const vertex of redVertices) {
+        merged.set(vertex.key, { ...vertex, type: redKeys.has(vertex.key) ? 'red' : 'purple' });
+      }
+
+      map.set(region.id, Array.from(merged.values()));
+    }
+    return map;
+  }, [regions, regionExteriorVerticesByRegion]);
   const selectedRegionVertexUsage = selectedRegion ? regionExteriorVertexUsageByRegion.get(selectedRegion.id) : undefined;
   const selectedRedVertexFromHex = selectedRegion && selectedHex
     ? getHexCornerPoints(selectedHex).find((vertex) => selectedRegionRedVertices.some((redVertex) => redVertex.key === vertex.key))
@@ -1039,11 +1058,11 @@ export function App() {
                     <circle key={`dbg-cb-all-${region.id}-${vertex.key}`} cx={vertex.x + riverOffset.x} cy={vertex.y + riverOffset.y} r={2} className="dbg-node-candidate" />
                   ))))}
                 {(selectedRegion
-                  ? (regionExteriorVerticesByRegion.get(selectedRegion.id) ?? []).map((vertex) => (
-                    <circle key={`dbg-ext-sel-${selectedRegion.id}-${vertex.key}`} cx={vertex.x + riverOffset.x} cy={vertex.y + riverOffset.y} r={1.5} className="dbg-node-exterior" />
+                  ? (debugVerticesByRegion.get(selectedRegion.id) ?? []).map((vertex) => (
+                    <circle key={`dbg-vertex-sel-${selectedRegion.id}-${vertex.key}`} cx={vertex.x + riverOffset.x} cy={vertex.y + riverOffset.y} r={1.5} className={vertex.type === 'red' ? 'dbg-node-exterior' : 'dbg-node-central'} />
                   ))
-                  : regions.flatMap((region) => (regionExteriorVerticesByRegion.get(region.id) ?? []).map((vertex) => (
-                    <circle key={`dbg-ext-all-${region.id}-${vertex.key}`} cx={vertex.x + riverOffset.x} cy={vertex.y + riverOffset.y} r={1.5} className="dbg-node-exterior" />
+                  : regions.flatMap((region) => (debugVerticesByRegion.get(region.id) ?? []).map((vertex) => (
+                    <circle key={`dbg-vertex-all-${region.id}-${vertex.key}`} cx={vertex.x + riverOffset.x} cy={vertex.y + riverOffset.y} r={1.5} className={vertex.type === 'red' ? 'dbg-node-exterior' : 'dbg-node-central'} />
                   ))))}
                 {rivers.map((river) => {
                   if (!river.vertexPath || river.vertexPath.length < 2) return null;
@@ -1111,6 +1130,8 @@ export function App() {
                     <p>regionId: {selectedRegion.id}</p>
                     <p>regionHexes.length: {selectedRegion.hexes.length}</p>
                     <p>redVertices.length: {regionExteriorVerticesByRegion.get(selectedRegion.id)?.length ?? 0}</p>
+                    <p>centralHex coordinate: {selectedRegion.centerHex ? `${selectedRegion.centerHex.q}/${selectedRegion.centerHex.r}` : '—'}</p>
+                    <p>centralHexVertices.length: {selectedRegion.centerHex ? getHexCornerPoints(selectedRegion.centerHex).length : 0}</p>
                     <p>selectedRedVertex key: {selectedRedVertexFromHex?.key ?? '—'}</p>
                     <p>selectedRedVertex currentRegionCount: {selectedRedVertexUsage?.currentRegionCount ?? 0}</p>
                     <p>selectedRedVertex otherRegionCount: {selectedRedVertexUsage?.otherRegionCount ?? 0}</p>
