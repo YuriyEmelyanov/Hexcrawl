@@ -396,7 +396,7 @@ function validateRiverPathViaControlPoints(
 }
 
 function getExistingRiverEndpointVerticesInRegion(region: Region, rivers: River[], riverGraph: RiverGraph): RiverVertex[] {
-  const regionHexSet = new Set(region.hexes.map(hexKey));
+  void region;
   const endpointKeys = new Set<string>();
   for (const river of rivers) {
     if (!river.vertexPath || river.vertexPath.length < 1) continue;
@@ -408,7 +408,6 @@ function getExistingRiverEndpointVerticesInRegion(region: Region, rivers: River[
   const vertices: RiverVertex[] = [];
   for (const node of riverGraph.nodes.values()) {
     if (!endpointKeys.has(node.key)) continue;
-    if (!node.hexes.some((hex) => regionHexSet.has(hexKey(hex)))) continue;
     vertices.push({ key: node.key, x: node.x, y: node.y });
   }
   return vertices;
@@ -850,7 +849,7 @@ function generateRiverForRegion(region: Region, regions: Region[], existingRiver
       return [...existingRivers, { id: newRiverId, regionId: region.id, vertexPath: path, controlPoints }];
     }
   } catch (error) {
-    console.warn('River generation failed; skipping river for region.', { regionId: region.id, error });
+    console.warn('river generation failed', { regionId: region.id, error });
   }
 
   return existingRivers;
@@ -1267,17 +1266,17 @@ export function App() {
                     <p>selectedRedVertex otherRegionCount: {selectedRedVertexUsage?.otherRegionCount ?? 0}</p>
                     <p>selectedRedVertex candidateCount: {selectedRedVertexUsage?.candidateCount ?? 0}</p>
                     <p>riverId: {selectedRegionRiver.id}</p>
-                    <p>existingRiverEndpointVerticesInRegion.length: {existingRiverEndpointVerticesInRegion.length}</p>
-                    <p>selected start mode: {selectedRegionRiver.controlPoints?.startMode ?? '—'}</p>
-                    <p>selected startVertex key: {selectedRegionRiver.controlPoints?.startVertex.key ?? '—'}</p>
-                    <p>selected middlePurpleVertex key: {selectedRegionRiver.controlPoints?.middlePurpleVertex?.key ?? '—'}</p>
-                    <p>selected endVertex key: {selectedRegionRiver.controlPoints?.endVertex.key ?? '—'}</p>
+                    <p>existingRiverEndpointVerticesInRegion.length: {existingRiverEndpointVerticesInRegion.length ?? 0}</p>
+                    <p>selected start mode: {selectedRegionRiver.controlPoints?.startMode ?? 'none'}</p>
+                    <p>selected startVertex key: {selectedRegionRiver.controlPoints?.startVertex.key ?? 'none'}</p>
+                    <p>selected middlePurpleVertex key: {selectedRegionRiver.controlPoints?.middlePurpleVertex?.key ?? '-'}</p>
+                    <p>selected endVertex key: {selectedRegionRiver.controlPoints?.endVertex.key ?? 'none'}</p>
                     <p>startRiverExteriorVertex key: {start?.key ?? "—"}</p>
                     <p>endRiverExteriorVertex key: {end?.key ?? "—"}</p>
                     <p>riverPath.length: {path?.length ?? 0}</p>
                     <p>riverEdgeCount: {riverEdgeCount}</p>
-                    <p>duplicateRiverEdgeCount: {duplicateRiverEdgeCount}</p>
-                    <p>duplicateRiverVertexCount: {duplicateRiverVertexCount}</p>
+                    <p>duplicateRiverEdgeCount: {duplicateRiverEdgeCount ?? 0}</p>
+                    <p>duplicateRiverVertexCount: {duplicateRiverVertexCount ?? 0}</p>
                     <p>riverHasDuplicateEdges: {riverHasDuplicateEdges ? 'true' : 'false'}</p>
                     <p>startVertex key: {start?.key ?? '—'}</p>
                     <p>endVertex key: {end?.key ?? '—'}</p>
