@@ -50,6 +50,11 @@ type River = {
   id: number;
   regionId: number;
   vertexPath: RiverVertex[];
+  controlPoints?: {
+    startRedVertex: RiverVertex;
+    middlePurpleVertex?: RiverVertex;
+    endRedVertex: RiverVertex;
+  };
 };
 
 type RiverVertex = {
@@ -298,6 +303,58 @@ function validateRiverPathUsesExteriorEndpoints(
     if (!riverGraph.edges.has(edgeKey(vertexPath[i - 1], vertexPath[i]))) {
       return false;
     }
+  }
+  return true;
+}
+
+function chooseRandomRiverControlPoints(
+  redVertices: RiverVertex[],
+  purpleVertices: RiverVertex[]
+): { startRedVertex: RiverVertex; middlePurpleVertex?: RiverVertex; endRedVertex: RiverVertex } | null {
+  if (redVertices.length < 2) return null;
+  const startRedVertex = randomFrom(redVertices);
+  const endPool = redVertices.filter((vertex) => vertex.key !== startRedVertex.key);
+  if (endPool.length === 0) return null;
+  const endRedVertex = randomFrom(endPool);
+  if (purpleVertices.length === 0) return { startRedVertex, endRedVertex };
+  const preferredMiddle = purpleVertices.filter(
+    (vertex) => vertex.key !== startRedVertex.key && vertex.key !== endRedVertex.key
+  );
+  const middlePool = preferredMiddle.length > 0 ? preferredMiddle : purpleVertices;
+  const middlePurpleVertex = randomFrom(middlePool);
+  return { startRedVertex, middlePurpleVertex, endRedVertex };
+}
+
+function buildRiverPathViaControlPoints(
+  controlPoints: { startRedVertex: RiverVertex; middlePurpleVertex?: RiverVertex; endRedVertex: RiverVertex },
+  riverGraph: RiverGraph
+): RiverVertex[] {
+  const startNode = riverGraph.nodes.get(controlPoints.startRedVertex.key);
+  const endNode = riverGraph.nodes.get(controlPoints.endRedVertex.key);
+  if (!startNode || !endNode) return [];
+  if (!controlPoints.middlePurpleVertex) {
+    return findRiverPath(startNode, endNode, riverGraph).map((node) => ({ key: node.key, x: node.x, y: node.y }));
+  }
+  const middleNode = riverGraph.nodes.get(controlPoints.middlePurpleVertex.key);
+  if (!middleNode) return [];
+  const path1 = findRiverPath(startNode, middleNode, riverGraph);
+  const path2 = findRiverPath(middleNode, endNode, riverGraph);
+  if (path1.length < 1 || path2.length < 1) return [];
+  const joined = [...path1, ...path2.slice(1)];
+  return joined.map((node) => ({ key: node.key, x: node.x, y: node.y }));
+}
+
+function validateRiverPathViaControlPoints(
+  vertexPath: RiverVertex[],
+  controlPoints: { startRedVertex: RiverVertex; middlePurpleVertex?: RiverVertex; endRedVertex: RiverVertex },
+  riverGraph: RiverGraph
+): boolean {
+  if (!vertexPath || vertexPath.length < 2) return false;
+  if (vertexPath[0].key !== controlPoints.startRedVertex.key) return false;
+  if (vertexPath[vertexPath.length - 1].key !== controlPoints.endRedVertex.key) return false;
+  if (controlPoints.middlePurpleVertex && !vertexPath.some((vertex) => vertex.key === controlPoints.middlePurpleVertex?.key)) return false;
+  for (let i = 1; i < vertexPath.length; i += 1) {
+    if (!riverGraph.edges.has(edgeKey(vertexPath[i - 1], vertexPath[i]))) return false;
   }
   return true;
 }
@@ -719,29 +776,22 @@ export function getCandidateHexes(allRegionHexes: AxialHex[]): AxialHex[] {
 }
 
 function generateRiverForRegion(region: Region, regions: Region[], existingRivers: River[], candidateHexes?: AxialHex[]): River[] {
-  if (region.hexes.length < 3) {
-    return existingRivers;
-  }
   try {
     const riverGraph = buildRiverGraphForRegion(region.hexes, region.hexes, candidateHexes ?? []);
-    const regionExteriorVertices = getRegionExteriorVerticesBySharedVertex(region, regions, candidateHexes ?? []);
-    if (regionExteriorVertices.length < 2) return existingRivers;
+    const redVertices = getRegionExteriorVerticesBySharedVertex(region, regions, candidateHexes ?? []);
+    const purpleVertices = region.centerHex ? getHexCornerPoints(region.centerHex) : [];
+    if (redVertices.length < 2) return existingRivers;
     const RANDOM_PAIR_ATTEMPTS = 50;
     for (let attempt = 0; attempt < RANDOM_PAIR_ATTEMPTS; attempt += 1) {
-      const pair = chooseRandomRegionExteriorVertexPair(regionExteriorVertices);
-      if (!pair) continue;
-      const startNode = riverGraph.nodes.get(pair.startVertex.key);
-      const endNode = riverGraph.nodes.get(pair.endVertex.key);
-      if (!startNode || !endNode) continue;
-      const pathNodes = findRiverPath(startNode, endNode, riverGraph);
-      if (pathNodes.length < 2) continue;
-      const path = pathNodes.map((node) => ({ key: node.key, x: node.x, y: node.y }));
-      if (!validateRiverPathUsesExteriorEndpoints(path, regionExteriorVertices, riverGraph)) continue;
+      const controlPoints = chooseRandomRiverControlPoints(redVertices, purpleVertices);
+      if (!controlPoints) continue;
+      const path = buildRiverPathViaControlPoints(controlPoints, riverGraph);
+      if (!validateRiverPathViaControlPoints(path, controlPoints, riverGraph)) continue;
       const newRiverId = (existingRivers.at(-1)?.id ?? 0) + 1;
-      return [...existingRivers, { id: newRiverId, regionId: region.id, vertexPath: path }];
+      return [...existingRivers, { id: newRiverId, regionId: region.id, vertexPath: path, controlPoints }];
     }
   } catch (error) {
-    console.warn('River graph generation failed; skipping river for region.', { regionId: region.id, error });
+    console.warn('River generation failed; skipping river for region.', { regionId: region.id, error });
   }
 
   return existingRivers;
@@ -1130,6 +1180,7 @@ export function App() {
                     <p>regionId: {selectedRegion.id}</p>
                     <p>regionHexes.length: {selectedRegion.hexes.length}</p>
                     <p>redVertices.length: {regionExteriorVerticesByRegion.get(selectedRegion.id)?.length ?? 0}</p>
+                    <p>purpleVertices.length: {selectedRegion.centerHex ? getHexCornerPoints(selectedRegion.centerHex).length : 0}</p>
                     <p>centralHex coordinate: {selectedRegion.centerHex ? `${selectedRegion.centerHex.q}/${selectedRegion.centerHex.r}` : '—'}</p>
                     <p>centralHexVertices.length: {selectedRegion.centerHex ? getHexCornerPoints(selectedRegion.centerHex).length : 0}</p>
                     <p>selectedRedVertex key: {selectedRedVertexFromHex?.key ?? '—'}</p>
@@ -1137,6 +1188,9 @@ export function App() {
                     <p>selectedRedVertex otherRegionCount: {selectedRedVertexUsage?.otherRegionCount ?? 0}</p>
                     <p>selectedRedVertex candidateCount: {selectedRedVertexUsage?.candidateCount ?? 0}</p>
                     <p>riverId: {selectedRegionRiver.id}</p>
+                    <p>selected startRedVertex key: {selectedRegionRiver.controlPoints?.startRedVertex.key ?? '—'}</p>
+                    <p>selected middlePurpleVertex key: {selectedRegionRiver.controlPoints?.middlePurpleVertex?.key ?? '—'}</p>
+                    <p>selected endRedVertex key: {selectedRegionRiver.controlPoints?.endRedVertex.key ?? '—'}</p>
                     <p>startRiverExteriorVertex key: {start?.key ?? "—"}</p>
                     <p>endRiverExteriorVertex key: {end?.key ?? "—"}</p>
                     <p>riverPath.length: {path?.length ?? 0}</p>
