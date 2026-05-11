@@ -58,6 +58,13 @@ type RiverVertex = {
   key: string;
 };
 
+type VertexUsage = {
+  vertex: RiverVertex;
+  currentRegionCount: number;
+  otherRegionCount: number;
+  candidateCount: number;
+};
+
 const HEX_SIZE = 28;
 const SQRT3 = Math.sqrt(3);
 const START_HEX: AxialHex = { q: 0, r: 0 };
@@ -182,6 +189,91 @@ function getRegionExteriorVertices(regionHexes: AxialHex[]): RiverVertex[] {
     }
   }
   return Array.from(unique.values());
+}
+
+function getRegionExteriorVerticesBySharedVertex(
+  region: Region,
+  regions: Region[] = [],
+  candidateHexes: AxialHex[] = []
+): RiverVertex[] {
+  if (!region?.hexes?.length) return [];
+  const currentRegionHexKeys = new Set(region.hexes.map(hexKey));
+  const vertexUsageByKey = new Map<string, VertexUsage>();
+
+  const addHexUsage = (hex: AxialHex, kind: 'current' | 'other' | 'candidate') => {
+    for (const vertex of getHexCornerPoints(hex)) {
+      const usage = vertexUsageByKey.get(vertex.key) ?? {
+        vertex,
+        currentRegionCount: 0,
+        otherRegionCount: 0,
+        candidateCount: 0
+      };
+      if (kind === 'current') usage.currentRegionCount += 1;
+      if (kind === 'other') usage.otherRegionCount += 1;
+      if (kind === 'candidate') usage.candidateCount += 1;
+      vertexUsageByKey.set(vertex.key, usage);
+    }
+  };
+
+  for (const hex of region.hexes) addHexUsage(hex, 'current');
+  for (const otherRegion of regions) {
+    if (otherRegion.id === region.id) continue;
+    for (const hex of otherRegion.hexes) addHexUsage(hex, 'other');
+  }
+  for (const candidateHex of candidateHexes) {
+    if (currentRegionHexKeys.has(hexKey(candidateHex))) continue;
+    addHexUsage(candidateHex, 'candidate');
+  }
+
+  const uniqueExterior = new Map<string, RiverVertex>();
+  for (const hex of region.hexes) {
+    for (const vertex of getHexCornerPoints(hex)) {
+      const usage = vertexUsageByKey.get(vertex.key) ?? {
+        vertex,
+        currentRegionCount: 0,
+        otherRegionCount: 0,
+        candidateCount: 0
+      };
+      if (usage.currentRegionCount > 0 && (usage.otherRegionCount > 0 || usage.candidateCount > 0)) {
+        uniqueExterior.set(vertex.key, vertex);
+      }
+    }
+  }
+  return Array.from(uniqueExterior.values());
+}
+
+function getVertexUsageByKeyForRegion(
+  region: Region,
+  regions: Region[] = [],
+  candidateHexes: AxialHex[] = []
+): Map<string, VertexUsage> {
+  const map = new Map<string, VertexUsage>();
+  if (!region?.hexes?.length) return map;
+  const currentRegionHexKeys = new Set(region.hexes.map(hexKey));
+  const addHexUsage = (hex: AxialHex, kind: 'current' | 'other' | 'candidate') => {
+    for (const vertex of getHexCornerPoints(hex)) {
+      const usage = map.get(vertex.key) ?? {
+        vertex,
+        currentRegionCount: 0,
+        otherRegionCount: 0,
+        candidateCount: 0
+      };
+      if (kind === 'current') usage.currentRegionCount += 1;
+      if (kind === 'other') usage.otherRegionCount += 1;
+      if (kind === 'candidate') usage.candidateCount += 1;
+      map.set(vertex.key, usage);
+    }
+  };
+  for (const hex of region.hexes) addHexUsage(hex, 'current');
+  for (const otherRegion of regions) {
+    if (otherRegion.id === region.id) continue;
+    for (const hex of otherRegion.hexes) addHexUsage(hex, 'other');
+  }
+  for (const candidateHex of candidateHexes) {
+    if (currentRegionHexKeys.has(hexKey(candidateHex))) continue;
+    addHexUsage(candidateHex, 'candidate');
+  }
+  return map;
 }
 
 function chooseRandomRegionExteriorVertexPair(regionExteriorVertices: RiverVertex[]): { startVertex: RiverVertex; endVertex: RiverVertex } | null {
@@ -626,13 +718,13 @@ export function getCandidateHexes(allRegionHexes: AxialHex[]): AxialHex[] {
   return Array.from(candidates.values());
 }
 
-function generateRiverForRegion(region: Region, existingRivers: River[], candidateHexes?: AxialHex[]): River[] {
+function generateRiverForRegion(region: Region, regions: Region[], existingRivers: River[], candidateHexes?: AxialHex[]): River[] {
   if (region.hexes.length < 3) {
     return existingRivers;
   }
   try {
     const riverGraph = buildRiverGraphForRegion(region.hexes, region.hexes, candidateHexes ?? []);
-    const regionExteriorVertices = getRegionExteriorVertices(region.hexes);
+    const regionExteriorVertices = getRegionExteriorVerticesBySharedVertex(region, regions, candidateHexes ?? []);
     if (regionExteriorVertices.length < 2) return existingRivers;
     const RANDOM_PAIR_ATTEMPTS = 50;
     for (let attempt = 0; attempt < RANDOM_PAIR_ATTEMPTS; attempt += 1) {
@@ -805,7 +897,7 @@ export function App() {
     const nextCandidateHexes = getCandidateHexes(nextAllHexes);
     setRegions(nextRegions);
     setCandidateHexes(nextCandidateHexes);
-    setRivers((current) => generateRiverForRegion(region, current, nextCandidateHexes));
+    setRivers((current) => generateRiverForRegion(region, nextRegions, current, nextCandidateHexes));
     setSelectedHex(centerHex);
   };
 
@@ -840,19 +932,36 @@ export function App() {
           ? 'candidate'
           : 'none';
 
+  const regionExteriorVerticesByRegion = useMemo(() => {
+    const map = new Map<number, RiverVertex[]>();
+    for (const region of regions) map.set(region.id, getRegionExteriorVerticesBySharedVertex(region, regions, candidateHexes));
+    return map;
+  }, [regions, candidateHexes]);
+
+  const regionExteriorVertexUsageByRegion = useMemo(() => {
+    const map = new Map<number, Map<string, VertexUsage>>();
+    for (const region of regions) {
+      map.set(region.id, getVertexUsageByKeyForRegion(region, regions, candidateHexes));
+    }
+    return map;
+  }, [regions, candidateHexes]);
+
   const lastRegion = regions[regions.length - 1];
   const selectedRegion = selectedMeta ? regions.find((region) => region.id === selectedMeta.regionId) : undefined;
   const selectedRegionRiver = selectedRegion ? rivers.find((river) => river.regionId === selectedRegion.id) : undefined;
   const selectedRegionGraph = selectedRegion ? riverGraphsByRegion.get(selectedRegion.id) : undefined;
+  const selectedRegionRedVertices = selectedRegion ? (regionExteriorVerticesByRegion.get(selectedRegion.id) ?? []) : [];
+  const selectedRegionVertexUsage = selectedRegion ? regionExteriorVertexUsageByRegion.get(selectedRegion.id) : undefined;
+  const selectedRedVertexFromHex = selectedRegion && selectedHex
+    ? getHexCornerPoints(selectedHex).find((vertex) => selectedRegionRedVertices.some((redVertex) => redVertex.key === vertex.key))
+    : undefined;
+  const selectedRedVertexUsage = selectedRedVertexFromHex && selectedRegionVertexUsage
+    ? selectedRegionVertexUsage.get(selectedRedVertexFromHex.key)
+    : undefined;
   const selectedIssues = selectedRegion && selectedRegionRiver && selectedRegionGraph
     ? validateRiverEndpoints(selectedRegion, selectedRegionRiver, selectedRegionGraph)
     : [];
   const selectedCandidateBoundaryDebug = selectedRegion ? candidateBoundaryDebugByRegion.get(selectedRegion.id) : undefined;
-  const regionExteriorVerticesByRegion = useMemo(() => {
-    const map = new Map<number, RiverVertex[]>();
-    for (const region of regions) map.set(region.id, getRegionExteriorVertices(region.hexes));
-    return map;
-  }, [regions]);
 
   if (debugRivers && selectedRegion && selectedCandidateBoundaryDebug) {
     console.log('Candidate boundary debug', {
@@ -1001,7 +1110,11 @@ export function App() {
                   <>
                     <p>regionId: {selectedRegion.id}</p>
                     <p>regionHexes.length: {selectedRegion.hexes.length}</p>
-                    <p>regionExteriorVertices.length: {regionExteriorVerticesByRegion.get(selectedRegion.id)?.length ?? 0}</p>
+                    <p>redVertices.length: {regionExteriorVerticesByRegion.get(selectedRegion.id)?.length ?? 0}</p>
+                    <p>selectedRedVertex key: {selectedRedVertexFromHex?.key ?? '—'}</p>
+                    <p>selectedRedVertex currentRegionCount: {selectedRedVertexUsage?.currentRegionCount ?? 0}</p>
+                    <p>selectedRedVertex otherRegionCount: {selectedRedVertexUsage?.otherRegionCount ?? 0}</p>
+                    <p>selectedRedVertex candidateCount: {selectedRedVertexUsage?.candidateCount ?? 0}</p>
                     <p>riverId: {selectedRegionRiver.id}</p>
                     <p>startRiverExteriorVertex key: {start?.key ?? "—"}</p>
                     <p>endRiverExteriorVertex key: {end?.key ?? "—"}</p>
