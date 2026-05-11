@@ -307,6 +307,21 @@ function validateRiverPathUsesExteriorEndpoints(
   return true;
 }
 
+function getRiverPathEdgeKeys(vertexPath: RiverVertex[], riverGraph: RiverGraph): string[] | undefined {
+  if (!vertexPath || vertexPath.length < 2) return [];
+  const edgeKeys: string[] = [];
+  for (let i = 1; i < vertexPath.length; i += 1) {
+    const segmentEdge = riverGraph.edges.get(edgeKey(vertexPath[i - 1], vertexPath[i]));
+    if (!segmentEdge) return undefined;
+    edgeKeys.push(segmentEdge.key);
+  }
+  return edgeKeys;
+}
+
+function hasDuplicateEdgeKeys(edgeKeys: string[]): boolean {
+  return new Set(edgeKeys).size !== edgeKeys.length;
+}
+
 function chooseRandomRiverControlPoints(
   redVertices: RiverVertex[],
   purpleVertices: RiverVertex[]
@@ -353,9 +368,9 @@ function validateRiverPathViaControlPoints(
   if (vertexPath[0].key !== controlPoints.startRedVertex.key) return false;
   if (vertexPath[vertexPath.length - 1].key !== controlPoints.endRedVertex.key) return false;
   if (controlPoints.middlePurpleVertex && !vertexPath.some((vertex) => vertex.key === controlPoints.middlePurpleVertex?.key)) return false;
-  for (let i = 1; i < vertexPath.length; i += 1) {
-    if (!riverGraph.edges.has(edgeKey(vertexPath[i - 1], vertexPath[i]))) return false;
-  }
+  const riverPathEdgeKeys = getRiverPathEdgeKeys(vertexPath, riverGraph);
+  if (!riverPathEdgeKeys) return false;
+  if (hasDuplicateEdgeKeys(riverPathEdgeKeys)) return false;
   return true;
 }
 
@@ -1175,6 +1190,12 @@ export function App() {
                 const lastEdgeKey = path && path.length >= 2 ? edgeKey(path[path.length - 2], path[path.length - 1]) : '—';
                 const firstEdge = path && path.length >= 2 ? selectedRegionGraph.edges.get(firstEdgeKey) : undefined;
                 const lastEdge = path && path.length >= 2 ? selectedRegionGraph.edges.get(lastEdgeKey) : undefined;
+                const riverPathEdgeKeys = path ? getRiverPathEdgeKeys(path, selectedRegionGraph) : undefined;
+                const riverEdgeCount = riverPathEdgeKeys?.length ?? 0;
+                const duplicateRiverEdgeCount = riverPathEdgeKeys
+                  ? riverEdgeCount - new Set(riverPathEdgeKeys).size
+                  : 0;
+                const riverHasDuplicateEdges = riverPathEdgeKeys ? hasDuplicateEdgeKeys(riverPathEdgeKeys) : false;
                 return (
                   <>
                     <p>regionId: {selectedRegion.id}</p>
@@ -1194,6 +1215,9 @@ export function App() {
                     <p>startRiverExteriorVertex key: {start?.key ?? "—"}</p>
                     <p>endRiverExteriorVertex key: {end?.key ?? "—"}</p>
                     <p>riverPath.length: {path?.length ?? 0}</p>
+                    <p>riverEdgeCount: {riverEdgeCount}</p>
+                    <p>duplicateRiverEdgeCount: {duplicateRiverEdgeCount}</p>
+                    <p>riverHasDuplicateEdges: {riverHasDuplicateEdges ? 'true' : 'false'}</p>
                     <p>startVertex key: {start?.key ?? '—'}</p>
                     <p>endVertex key: {end?.key ?? '—'}</p>
                     <p>start isRegionBoundaryVertex: {startNode?.isRegionBoundaryVertex ? 'true' : 'false'}</p>
