@@ -51,9 +51,10 @@ type River = {
   regionId: number;
   vertexPath: RiverVertex[];
   controlPoints?: {
-    startRedVertex: RiverVertex;
+    startVertex: RiverVertex;
     middlePurpleVertex?: RiverVertex;
-    endRedVertex: RiverVertex;
+    endVertex: RiverVertex;
+    startMode: 'existing river endpoint' | 'red vertex';
   };
 };
 
@@ -324,28 +325,40 @@ function hasDuplicateEdgeKeys(edgeKeys: string[]): boolean {
 
 function chooseRandomRiverControlPoints(
   redVertices: RiverVertex[],
-  purpleVertices: RiverVertex[]
-): { startRedVertex: RiverVertex; middlePurpleVertex?: RiverVertex; endRedVertex: RiverVertex } | null {
+  purpleVertices: RiverVertex[],
+  existingRiverEndpointVerticesInRegion: RiverVertex[]
+): { startVertex: RiverVertex; middlePurpleVertex?: RiverVertex; endVertex: RiverVertex; startMode: 'existing river endpoint' | 'red vertex' } | null {
+  if (existingRiverEndpointVerticesInRegion.length > 0) {
+    if (redVertices.length < 1) return null;
+    const startVertex = randomFrom(existingRiverEndpointVerticesInRegion);
+    const endPool = redVertices.filter((vertex) => vertex.key !== startVertex.key);
+    if (endPool.length === 0) return null;
+    const endVertex = randomFrom(endPool);
+    if (purpleVertices.length === 0) return { startVertex, endVertex, startMode: 'existing river endpoint' };
+    const preferredMiddle = purpleVertices.filter((vertex) => vertex.key !== startVertex.key && vertex.key !== endVertex.key);
+    const middlePool = preferredMiddle.length > 0 ? preferredMiddle : purpleVertices;
+    return { startVertex, middlePurpleVertex: randomFrom(middlePool), endVertex, startMode: 'existing river endpoint' };
+  }
   if (redVertices.length < 2) return null;
-  const startRedVertex = randomFrom(redVertices);
-  const endPool = redVertices.filter((vertex) => vertex.key !== startRedVertex.key);
+  const startVertex = randomFrom(redVertices);
+  const endPool = redVertices.filter((vertex) => vertex.key !== startVertex.key);
   if (endPool.length === 0) return null;
-  const endRedVertex = randomFrom(endPool);
-  if (purpleVertices.length === 0) return { startRedVertex, endRedVertex };
+  const endVertex = randomFrom(endPool);
+  if (purpleVertices.length === 0) return { startVertex, endVertex, startMode: 'red vertex' };
   const preferredMiddle = purpleVertices.filter(
-    (vertex) => vertex.key !== startRedVertex.key && vertex.key !== endRedVertex.key
+    (vertex) => vertex.key !== startVertex.key && vertex.key !== endVertex.key
   );
   const middlePool = preferredMiddle.length > 0 ? preferredMiddle : purpleVertices;
   const middlePurpleVertex = randomFrom(middlePool);
-  return { startRedVertex, middlePurpleVertex, endRedVertex };
+  return { startVertex, middlePurpleVertex, endVertex, startMode: 'red vertex' };
 }
 
 function buildRiverPathViaControlPoints(
-  controlPoints: { startRedVertex: RiverVertex; middlePurpleVertex?: RiverVertex; endRedVertex: RiverVertex },
+  controlPoints: { startVertex: RiverVertex; middlePurpleVertex?: RiverVertex; endVertex: RiverVertex },
   riverGraph: RiverGraph
 ): RiverVertex[] {
-  const startNode = riverGraph.nodes.get(controlPoints.startRedVertex.key);
-  const endNode = riverGraph.nodes.get(controlPoints.endRedVertex.key);
+  const startNode = riverGraph.nodes.get(controlPoints.startVertex.key);
+  const endNode = riverGraph.nodes.get(controlPoints.endVertex.key);
   if (!startNode || !endNode) return [];
   if (!controlPoints.middlePurpleVertex) {
     return findRiverPath(startNode, endNode, riverGraph).map((node) => ({ key: node.key, x: node.x, y: node.y }));
@@ -361,20 +374,44 @@ function buildRiverPathViaControlPoints(
 
 function validateRiverPathViaControlPoints(
   vertexPath: RiverVertex[],
-  controlPoints: { startRedVertex: RiverVertex; middlePurpleVertex?: RiverVertex; endRedVertex: RiverVertex },
+  controlPoints: { startVertex: RiverVertex; middlePurpleVertex?: RiverVertex; endVertex: RiverVertex; startMode: 'existing river endpoint' | 'red vertex' },
   riverGraph: RiverGraph,
-  redVertices: RiverVertex[]
+  redVertices: RiverVertex[],
+  existingRiverEndpointVerticesInRegion: RiverVertex[]
 ): boolean {
   if (!vertexPath || vertexPath.length < 2) return false;
   const redSet = new Set(redVertices.map((vertex) => vertex.key));
-  if (vertexPath[0].key !== controlPoints.startRedVertex.key) return false;
-  if (vertexPath[vertexPath.length - 1].key !== controlPoints.endRedVertex.key) return false;
-  if (!redSet.has(controlPoints.startRedVertex.key) || !redSet.has(controlPoints.endRedVertex.key)) return false;
+  const endpointSet = new Set(existingRiverEndpointVerticesInRegion.map((vertex) => vertex.key));
+  if (vertexPath[0].key !== controlPoints.startVertex.key) return false;
+  if (vertexPath[vertexPath.length - 1].key !== controlPoints.endVertex.key) return false;
+  if (!redSet.has(controlPoints.endVertex.key)) return false;
+  if (controlPoints.startMode === 'red vertex' && !redSet.has(controlPoints.startVertex.key)) return false;
+  if (controlPoints.startMode === 'existing river endpoint' && !endpointSet.has(controlPoints.startVertex.key)) return false;
   if (controlPoints.middlePurpleVertex && !vertexPath.some((vertex) => vertex.key === controlPoints.middlePurpleVertex?.key)) return false;
+  if (new Set(vertexPath.map((vertex) => vertex.key)).size !== vertexPath.length) return false;
   const riverPathEdgeKeys = getRiverPathEdgeKeys(vertexPath, riverGraph);
   if (!riverPathEdgeKeys) return false;
   if (hasDuplicateEdgeKeys(riverPathEdgeKeys)) return false;
   return true;
+}
+
+function getExistingRiverEndpointVerticesInRegion(region: Region, rivers: River[], riverGraph: RiverGraph): RiverVertex[] {
+  const regionHexSet = new Set(region.hexes.map(hexKey));
+  const endpointKeys = new Set<string>();
+  for (const river of rivers) {
+    if (!river.vertexPath || river.vertexPath.length < 1) continue;
+    const firstVertex = river.vertexPath[0];
+    const lastVertex = river.vertexPath[river.vertexPath.length - 1];
+    if (firstVertex) endpointKeys.add(firstVertex.key);
+    if (lastVertex) endpointKeys.add(lastVertex.key);
+  }
+  const vertices: RiverVertex[] = [];
+  for (const node of riverGraph.nodes.values()) {
+    if (!endpointKeys.has(node.key)) continue;
+    if (!node.hexes.some((hex) => regionHexSet.has(hexKey(hex)))) continue;
+    vertices.push({ key: node.key, x: node.x, y: node.y });
+  }
+  return vertices;
 }
 
 function getHexNeighbor(hex: AxialHex, direction: number): AxialHex | undefined {
@@ -800,13 +837,15 @@ function generateRiverForRegion(region: Region, regions: Region[], existingRiver
     const orangeKeys = new Set(neighborRegionVertices.map((vertex) => vertex.key));
     const redVertices = candidateVertices.filter((vertex) => !orangeKeys.has(vertex.key));
     const purpleVertices = region.centerHex ? getHexCornerPoints(region.centerHex) : [];
-    if (redVertices.length < 2) return existingRivers;
+    const existingRiverEndpointVerticesInRegion = getExistingRiverEndpointVerticesInRegion(region, existingRivers, riverGraph);
+    if (existingRiverEndpointVerticesInRegion.length > 0 && redVertices.length < 1) return existingRivers;
+    if (existingRiverEndpointVerticesInRegion.length === 0 && redVertices.length < 2) return existingRivers;
     const RANDOM_PAIR_ATTEMPTS = 50;
     for (let attempt = 0; attempt < RANDOM_PAIR_ATTEMPTS; attempt += 1) {
-      const controlPoints = chooseRandomRiverControlPoints(redVertices, purpleVertices);
+      const controlPoints = chooseRandomRiverControlPoints(redVertices, purpleVertices, existingRiverEndpointVerticesInRegion);
       if (!controlPoints) continue;
       const path = buildRiverPathViaControlPoints(controlPoints, riverGraph);
-      if (!validateRiverPathViaControlPoints(path, controlPoints, riverGraph, redVertices)) continue;
+      if (!validateRiverPathViaControlPoints(path, controlPoints, riverGraph, redVertices, existingRiverEndpointVerticesInRegion)) continue;
       const newRiverId = (existingRivers.at(-1)?.id ?? 0) + 1;
       return [...existingRivers, { id: newRiverId, regionId: region.id, vertexPath: path, controlPoints }];
     }
@@ -1211,6 +1250,8 @@ export function App() {
                 const duplicateRiverEdgeCount = riverPathEdgeKeys
                   ? riverEdgeCount - new Set(riverPathEdgeKeys).size
                   : 0;
+                const duplicateRiverVertexCount = path ? path.length - new Set(path.map((vertex) => vertex.key)).size : 0;
+                const existingRiverEndpointVerticesInRegion = getExistingRiverEndpointVerticesInRegion(selectedRegion, rivers, selectedRegionGraph);
                 const riverHasDuplicateEdges = riverPathEdgeKeys ? hasDuplicateEdgeKeys(riverPathEdgeKeys) : false;
                 return (
                   <>
@@ -1226,14 +1267,17 @@ export function App() {
                     <p>selectedRedVertex otherRegionCount: {selectedRedVertexUsage?.otherRegionCount ?? 0}</p>
                     <p>selectedRedVertex candidateCount: {selectedRedVertexUsage?.candidateCount ?? 0}</p>
                     <p>riverId: {selectedRegionRiver.id}</p>
-                    <p>selected startRedVertex key: {selectedRegionRiver.controlPoints?.startRedVertex.key ?? '—'}</p>
+                    <p>existingRiverEndpointVerticesInRegion.length: {existingRiverEndpointVerticesInRegion.length}</p>
+                    <p>selected start mode: {selectedRegionRiver.controlPoints?.startMode ?? '—'}</p>
+                    <p>selected startVertex key: {selectedRegionRiver.controlPoints?.startVertex.key ?? '—'}</p>
                     <p>selected middlePurpleVertex key: {selectedRegionRiver.controlPoints?.middlePurpleVertex?.key ?? '—'}</p>
-                    <p>selected endRedVertex key: {selectedRegionRiver.controlPoints?.endRedVertex.key ?? '—'}</p>
+                    <p>selected endVertex key: {selectedRegionRiver.controlPoints?.endVertex.key ?? '—'}</p>
                     <p>startRiverExteriorVertex key: {start?.key ?? "—"}</p>
                     <p>endRiverExteriorVertex key: {end?.key ?? "—"}</p>
                     <p>riverPath.length: {path?.length ?? 0}</p>
                     <p>riverEdgeCount: {riverEdgeCount}</p>
                     <p>duplicateRiverEdgeCount: {duplicateRiverEdgeCount}</p>
+                    <p>duplicateRiverVertexCount: {duplicateRiverVertexCount}</p>
                     <p>riverHasDuplicateEdges: {riverHasDuplicateEdges ? 'true' : 'false'}</p>
                     <p>startVertex key: {start?.key ?? '—'}</p>
                     <p>endVertex key: {end?.key ?? '—'}</p>
