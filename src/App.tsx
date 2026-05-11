@@ -202,6 +202,18 @@ type RiverGraph = {
   edges: Map<string, RiverGraphEdge>;
 };
 
+type RiverEndpointIssue =
+  | 'start_not_region_boundary'
+  | 'end_not_region_boundary'
+  | 'start_not_candidate_boundary_when_candidates_exist'
+  | 'end_not_candidate_boundary_when_candidates_exist'
+  | 'first_edge_not_boundary'
+  | 'last_edge_not_boundary'
+  | 'first_edge_not_candidate_boundary_when_candidates_exist'
+  | 'last_edge_not_candidate_boundary_when_candidates_exist'
+  | 'path_too_short'
+  | 'segment_not_in_graph';
+
 function edgeKey(a: RiverVertex, b: RiverVertex): string {
   return [a.key, b.key].sort().join('|');
 }
@@ -533,11 +545,39 @@ function renderRiverPolyline(river: River, offsetX: number, offsetY: number) {
   return { key: `river-${river.id}`, points };
 }
 
+function validateRiverEndpoints(region: Region, river: River, riverGraph: RiverGraph): RiverEndpointIssue[] {
+  const issues: RiverEndpointIssue[] = [];
+  if (!river.vertexPath || river.vertexPath.length < 2) return ['path_too_short'];
+  const start = riverGraph.nodes.get(river.vertexPath[0].key);
+  const end = riverGraph.nodes.get(river.vertexPath[river.vertexPath.length - 1].key);
+  const hasCandidateBoundary = Array.from(riverGraph.nodes.values()).some((node) => node.isCandidateBoundaryVertex);
+  if (!start?.isRegionBoundaryVertex) issues.push('start_not_region_boundary');
+  if (!end?.isRegionBoundaryVertex) issues.push('end_not_region_boundary');
+  if (hasCandidateBoundary && !start?.isCandidateBoundaryVertex) issues.push('start_not_candidate_boundary_when_candidates_exist');
+  if (hasCandidateBoundary && !end?.isCandidateBoundaryVertex) issues.push('end_not_candidate_boundary_when_candidates_exist');
+  const firstEdge = riverGraph.edges.get(edgeKey(river.vertexPath[0], river.vertexPath[1]));
+  const lastEdge = riverGraph.edges.get(edgeKey(river.vertexPath[river.vertexPath.length - 2], river.vertexPath[river.vertexPath.length - 1]));
+  if (!firstEdge?.isRegionBoundaryEdge) issues.push('first_edge_not_boundary');
+  if (!lastEdge?.isRegionBoundaryEdge) issues.push('last_edge_not_boundary');
+  if (hasCandidateBoundary && !firstEdge?.isCandidateBoundaryEdge) issues.push('first_edge_not_candidate_boundary_when_candidates_exist');
+  if (hasCandidateBoundary && !lastEdge?.isCandidateBoundaryEdge) issues.push('last_edge_not_candidate_boundary_when_candidates_exist');
+  if (!firstEdge || !lastEdge) issues.push('segment_not_in_graph');
+  for (let i = 1; i < river.vertexPath.length; i += 1) {
+    if (!riverGraph.edges.has(edgeKey(river.vertexPath[i - 1], river.vertexPath[i]))) {
+      issues.push('segment_not_in_graph');
+      break;
+    }
+  }
+  if (region.hexes.length > 6 && river.vertexPath.length < 4) issues.push('path_too_short');
+  return Array.from(new Set(issues));
+}
+
 export function App() {
   const [regions, setRegions] = useState<Region[]>([]);
   const [candidateHexes, setCandidateHexes] = useState<AxialHex[]>([]);
   const [rivers, setRivers] = useState<River[]>([]);
   const [selectedHex, setSelectedHex] = useState<AxialHex | null>(START_HEX);
+  const [debugRivers, setDebugRivers] = useState(false);
 
   const allRegionHexes = useMemo(() => regions.flatMap((region) => region.hexes), [regions]);
 
@@ -589,6 +629,26 @@ export function App() {
     const offsetY = HEX_SIZE * 2 - minBaseY;
     return rivers.map((river) => renderRiverPolyline(river, offsetX, offsetY));
   }, [positionedHexes, rivers]);
+
+  const riverOffset = useMemo(() => {
+    const all = positionedHexes.hexes;
+    if (all.length === 0) return { x: 0, y: 0 };
+    const minBaseX = Math.min(...all.map((h) => toPixel(h.q, h.r).x));
+    const minBaseY = Math.min(...all.map((h) => toPixel(h.q, h.r).y));
+    return { x: HEX_SIZE * 2 - minBaseX, y: HEX_SIZE * 2 - minBaseY };
+  }, [positionedHexes]);
+
+  const riverGraphsByRegion = useMemo(() => {
+    const map = new Map<number, RiverGraph>();
+    for (const region of regions) {
+      try {
+        map.set(region.id, buildRiverGraphForRegion(region.hexes, region.hexes, candidateHexes));
+      } catch {
+        // debug only
+      }
+    }
+    return map;
+  }, [regions, candidateHexes]);
 
   const addRegionToMap = (anchorHex: AxialHex) => {
     const sizeRoll = rollRegionSize();
@@ -649,6 +709,12 @@ export function App() {
           : 'none';
 
   const lastRegion = regions[regions.length - 1];
+  const selectedRegion = selectedMeta ? regions.find((region) => region.id === selectedMeta.regionId) : undefined;
+  const selectedRegionRiver = selectedRegion ? rivers.find((river) => river.regionId === selectedRegion.id) : undefined;
+  const selectedRegionGraph = selectedRegion ? riverGraphsByRegion.get(selectedRegion.id) : undefined;
+  const selectedIssues = selectedRegion && selectedRegionRiver && selectedRegionGraph
+    ? validateRiverEndpoints(selectedRegion, selectedRegionRiver, selectedRegionGraph)
+    : [];
 
   return (
     <div className="app">
@@ -659,6 +725,9 @@ export function App() {
             Сгенерировать регион
           </button>
           <button onClick={resetMap} className="secondary">Сбросить</button>
+          <button onClick={() => setDebugRivers((v) => !v)} className="secondary">
+            Debug rivers / Отладка рек: {debugRivers ? 'ON' : 'OFF'}
+          </button>
         </div>
       </header>
 
@@ -696,6 +765,36 @@ export function App() {
                 />
               ))}
             </g>
+            {debugRivers ? (
+              <g className="river-debug-layer">
+                {Array.from(riverGraphsByRegion.values()).flatMap((graph, graphIndex) => Array.from(graph.nodes.values()).map((node) => (
+                  <circle key={`dbg-all-${graphIndex}-${node.key}`} cx={node.x + riverOffset.x} cy={node.y + riverOffset.y} r={2} className="dbg-node-all" />
+                )))}
+                {Array.from(riverGraphsByRegion.values()).flatMap((graph, graphIndex) => Array.from(graph.nodes.values()).filter((node) => node.isRegionBoundaryVertex).map((node) => (
+                  <circle key={`dbg-rb-${graphIndex}-${node.key}`} cx={node.x + riverOffset.x} cy={node.y + riverOffset.y} r={2} className="dbg-node-boundary" />
+                )))}
+                {Array.from(riverGraphsByRegion.values()).flatMap((graph, graphIndex) => Array.from(graph.nodes.values()).filter((node) => node.isCandidateBoundaryVertex).map((node) => (
+                  <circle key={`dbg-cb-${graphIndex}-${node.key}`} cx={node.x + riverOffset.x} cy={node.y + riverOffset.y} r={2} className="dbg-node-candidate" />
+                )))}
+                {rivers.map((river) => {
+                  if (!river.vertexPath || river.vertexPath.length < 2) return null;
+                  const start = river.vertexPath[0];
+                  const end = river.vertexPath[river.vertexPath.length - 1];
+                  const first = [start, river.vertexPath[1]];
+                  const last = [river.vertexPath[river.vertexPath.length - 2], end];
+                  const mid = river.vertexPath[Math.floor(river.vertexPath.length / 2)];
+                  return (
+                    <g key={`dbg-river-${river.id}`}>
+                      <line x1={first[0].x + riverOffset.x} y1={first[0].y + riverOffset.y} x2={first[1].x + riverOffset.x} y2={first[1].y + riverOffset.y} className="dbg-first-segment" />
+                      <line x1={last[0].x + riverOffset.x} y1={last[0].y + riverOffset.y} x2={last[1].x + riverOffset.x} y2={last[1].y + riverOffset.y} className="dbg-last-segment" />
+                      <circle cx={start.x + riverOffset.x} cy={start.y + riverOffset.y} r={5} className="dbg-start" />
+                      <circle cx={end.x + riverOffset.x} cy={end.y + riverOffset.y} r={5} className="dbg-end" />
+                      <text x={mid.x + riverOffset.x + 4} y={mid.y + riverOffset.y - 4} className="dbg-river-id">#{river.id}</text>
+                    </g>
+                  );
+                })}
+              </g>
+            ) : null}
           </svg>
         </div>
 
@@ -722,6 +821,45 @@ export function App() {
           <p><strong>centralHex:</strong> {selectedMeta?.isCenter ? 'да' : 'нет'}</p>
           <p><strong>anchorHex:</strong> {selectedMeta?.isAnchor ? 'да' : 'нет'}</p>
           <p><strong>Реки:</strong> {selectedRiverIds.length > 0 ? selectedRiverIds.join(', ') : '—'}</p>
+          {debugRivers ? (
+            <>
+              <hr />
+              <p><strong>River debug</strong></p>
+              {!selectedRegion ? <p>Выберите региональный гекс.</p> : null}
+              {selectedRegion && !selectedRegionGraph ? <p>no graph</p> : null}
+              {selectedRegion && selectedRegionGraph && selectedRegionRiver ? (() => {
+                const path = selectedRegionRiver.vertexPath;
+                const start = path?.[0];
+                const end = path?.[path.length - 1];
+                const startNode = start ? selectedRegionGraph.nodes.get(start.key) : undefined;
+                const endNode = end ? selectedRegionGraph.nodes.get(end.key) : undefined;
+                const firstEdgeKey = path && path.length >= 2 ? edgeKey(path[0], path[1]) : '—';
+                const lastEdgeKey = path && path.length >= 2 ? edgeKey(path[path.length - 2], path[path.length - 1]) : '—';
+                const firstEdge = path && path.length >= 2 ? selectedRegionGraph.edges.get(firstEdgeKey) : undefined;
+                const lastEdge = path && path.length >= 2 ? selectedRegionGraph.edges.get(lastEdgeKey) : undefined;
+                return (
+                  <>
+                    <p>regionId: {selectedRegion.id}</p>
+                    <p>riverId: {selectedRegionRiver.id}</p>
+                    <p>vertexPath.length: {path?.length ?? 0}</p>
+                    <p>startVertex key: {start?.key ?? '—'}</p>
+                    <p>endVertex key: {end?.key ?? '—'}</p>
+                    <p>start isRegionBoundaryVertex: {startNode?.isRegionBoundaryVertex ? 'true' : 'false'}</p>
+                    <p>end isRegionBoundaryVertex: {endNode?.isRegionBoundaryVertex ? 'true' : 'false'}</p>
+                    <p>start isCandidateBoundaryVertex: {startNode?.isCandidateBoundaryVertex ? 'true' : 'false'}</p>
+                    <p>end isCandidateBoundaryVertex: {endNode?.isCandidateBoundaryVertex ? 'true' : 'false'}</p>
+                    <p>first edge key: {firstEdgeKey}</p>
+                    <p>last edge key: {lastEdgeKey}</p>
+                    <p>first edge isRegionBoundaryEdge: {firstEdge?.isRegionBoundaryEdge ? 'true' : 'false'}</p>
+                    <p>last edge isRegionBoundaryEdge: {lastEdge?.isRegionBoundaryEdge ? 'true' : 'false'}</p>
+                    <p>first edge isCandidateBoundaryEdge: {firstEdge?.isCandidateBoundaryEdge ? 'true' : 'false'}</p>
+                    <p>last edge isCandidateBoundaryEdge: {lastEdge?.isCandidateBoundaryEdge ? 'true' : 'false'}</p>
+                    <p>issues: {selectedIssues.length > 0 ? selectedIssues.slice(0, 6).join(', ') : 'none'}</p>
+                  </>
+                );
+              })() : null}
+            </>
+          ) : null}
           {candidateHexes.length > 0 ? <p>Выберите гекс-кандидат на карте для добавления следующего региона.</p> : null}
         </div>
       </section>
