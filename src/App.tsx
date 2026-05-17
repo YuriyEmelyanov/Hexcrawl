@@ -86,8 +86,8 @@ type VertexUsage = {
 
 const HEX_SIZE = 28;
 const SQRT3 = Math.sqrt(3);
-const HEX_TERRAIN_OVERLAY_OPACITY = 0.45;
-const HEX_TERRAIN_OVERLAY_SCALE = 0.6;
+const HEX_TERRAIN_OVERLAY_OPACITY = 1;
+const HEX_TERRAIN_OVERLAY_SCALE = 1;
 
 const TERRAIN_TILES: Record<TerrainTileId, { label: string; src: string }> = {
   cactus: {
