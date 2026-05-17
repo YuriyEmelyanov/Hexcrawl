@@ -7,6 +7,18 @@ type AxialHex = {
 
 type HexType = 'region' | 'candidate' | 'center';
 
+type TerrainTileId =
+  | 'cactus'
+  | 'evergreen_heavy'
+  | 'forest_tile'
+  | 'forest_heavy'
+  | 'forest_mixed'
+  | 'forested_hills'
+  | 'grassland'
+  | 'hills_grassy'
+  | 'mountain'
+  | 'swamp';
+
 type DfRollResult = {
   values: number[];
   sum: number;
@@ -31,6 +43,7 @@ type Region = {
   growthSticks: number;
   regionSize: number;
   targetSize: number;
+  terrainTileId: TerrainTileId;
 };
 
 type HexMeta = {
@@ -73,10 +86,51 @@ type VertexUsage = {
 
 const HEX_SIZE = 28;
 const SQRT3 = Math.sqrt(3);
-const HEX_TERRAIN_OVERLAY_OPACITY = 1;
-const HEX_TERRAIN_OVERLAY_SCALE = 1.05;
-const FOREST_TILE_SRC =
-  'https://raw.githubusercontent.com/YuriyEmelyanov/Hexcrawl/main/public/forest-tile.png';
+const HEX_TERRAIN_OVERLAY_OPACITY = 0.45;
+const HEX_TERRAIN_OVERLAY_SCALE = 0.6;
+
+const TERRAIN_TILES: Record<TerrainTileId, { label: string; src: string }> = {
+  cactus: {
+    label: 'Cactus',
+    src: 'https://raw.githubusercontent.com/YuriyEmelyanov/Hexcrawl/main/public/cactus.png'
+  },
+  evergreen_heavy: {
+    label: 'Evergreen Heavy',
+    src: 'https://raw.githubusercontent.com/YuriyEmelyanov/Hexcrawl/main/public/evergreen_heavy.png'
+  },
+  forest_tile: {
+    label: 'Forest',
+    src: 'https://raw.githubusercontent.com/YuriyEmelyanov/Hexcrawl/main/public/forest-tile.png'
+  },
+  forest_heavy: {
+    label: 'Heavy Forest',
+    src: 'https://raw.githubusercontent.com/YuriyEmelyanov/Hexcrawl/main/public/forest_heavy.png'
+  },
+  forest_mixed: {
+    label: 'Mixed Forest',
+    src: 'https://raw.githubusercontent.com/YuriyEmelyanov/Hexcrawl/main/public/forest_mixed.png'
+  },
+  forested_hills: {
+    label: 'Forested Hills',
+    src: 'https://raw.githubusercontent.com/YuriyEmelyanov/Hexcrawl/main/public/forested_hills.png'
+  },
+  grassland: {
+    label: 'Grassland',
+    src: 'https://raw.githubusercontent.com/YuriyEmelyanov/Hexcrawl/main/public/grassland.png'
+  },
+  hills_grassy: {
+    label: 'Grassy Hills',
+    src: 'https://raw.githubusercontent.com/YuriyEmelyanov/Hexcrawl/main/public/hills_grassy.png'
+  },
+  mountain: {
+    label: 'Mountain',
+    src: 'https://raw.githubusercontent.com/YuriyEmelyanov/Hexcrawl/main/public/mountain.png'
+  },
+  swamp: {
+    label: 'Swamp',
+    src: 'https://raw.githubusercontent.com/YuriyEmelyanov/Hexcrawl/main/public/swamp.png'
+  }
+};
 const START_HEX: AxialHex = { q: 0, r: 0 };
 const NEIGHBOR_DIRECTIONS: AxialHex[] = [
   { q: 1, r: 0 },
@@ -136,6 +190,10 @@ function vertexKey(x: number, y: number): string {
 
 function randomFrom<T>(values: T[]): T {
   return values[Math.floor(Math.random() * values.length)];
+}
+
+function chooseRandomTerrainTileId(): TerrainTileId {
+  return randomFrom(Object.keys(TERRAIN_TILES) as TerrainTileId[]);
 }
 
 function getHexCornerPoints(hex: AxialHex): RiverVertex[] {
@@ -924,7 +982,7 @@ export function App() {
       all.push({ ...START_HEX, kind: 'candidate' as const });
     }
 
-    const withPixels = all.map((hex) => ({ ...hex, ...toPixel(hex.q, hex.r), key: hexKey(hex) }));
+    const withPixels = all.map((hex) => ({ ...hex, ...toPixel(hex.q, hex.r), key: hexKey(hex), regionId: metadataMap.get(hexKey(hex))?.regionId }));
     const minX = Math.min(...withPixels.map((h) => h.x));
     const maxX = Math.max(...withPixels.map((h) => h.x));
     const minY = Math.min(...withPixels.map((h) => h.y));
@@ -937,7 +995,7 @@ export function App() {
       height: maxY - minY + HEX_SIZE * 4,
       hexes: withPixels.map((h) => ({ ...h, x: h.x + offsetX, y: h.y + offsetY }))
     };
-  }, [allRegionHexes, candidateHexes]);
+  }, [allRegionHexes, candidateHexes, metadataMap]);
 
   const riverPolylines = useMemo(() => {
     const all = positionedHexes.hexes;
@@ -1002,7 +1060,8 @@ export function App() {
       growthDiceValues: sizeRoll.growthDiceValues,
       growthSticks: sizeRoll.growthSticks,
       regionSize: sizeRoll.regionSize,
-      targetSize: size
+      targetSize: size,
+      terrainTileId: chooseRandomTerrainTileId()
     };
     const nextRegions = [...regions, region];
     const nextAllHexes = nextRegions.flatMap((r) => r.hexes);
@@ -1148,6 +1207,9 @@ export function App() {
               const fill = hex.kind === 'candidate' ? undefined : getRegionColor(meta?.regionId ?? 0);
               const overlayWidth = HEX_SIZE * SQRT3 * HEX_TERRAIN_OVERLAY_SCALE;
               const overlayHeight = HEX_SIZE * SQRT3 * HEX_TERRAIN_OVERLAY_SCALE;
+              const region = meta?.regionId ? regions.find((item) => item.id === meta.regionId) : undefined;
+              const terrainTileId = region?.terrainTileId ?? 'forest_tile';
+              const terrainTile = region ? TERRAIN_TILES[terrainTileId] : undefined;
               return (
                 <g
                   key={`${hex.kind}-${hex.key}`}
@@ -1160,9 +1222,9 @@ export function App() {
                   }}
                 >
                   <polygon points={hexPoints(hex.x, hex.y, HEX_SIZE)} className={cls} style={{ fill }} />
-                  {hex.kind === 'region' ? (
+                  {hex.kind === 'region' && hex.regionId && region && terrainTile ? (
                     <image
-                      href={FOREST_TILE_SRC}
+                      href={terrainTile.src}
                       x={hex.x - overlayWidth / 2}
                       y={hex.y - overlayHeight / 2}
                       width={overlayWidth}
@@ -1255,6 +1317,7 @@ export function App() {
           <p><strong>centralHex:</strong> {selectedMeta?.isCenter ? 'да' : 'нет'}</p>
           <p><strong>anchorHex:</strong> {selectedMeta?.isAnchor ? 'да' : 'нет'}</p>
           <p><strong>Реки:</strong> {selectedRiverIds.length > 0 ? selectedRiverIds.join(', ') : '—'}</p>
+          <p><strong>Terrain:</strong> {selectedRegion?.terrainTileId ? TERRAIN_TILES[selectedRegion.terrainTileId].label : 'Forest fallback'}</p>
           {debugRivers ? (
             <>
               <hr />
