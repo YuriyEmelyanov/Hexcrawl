@@ -107,6 +107,15 @@ const SHOW_HEX_COORDINATES = false;
 const SHOW_BIOME_EMOJI = true;
 const SHOW_FULL_BIOME_EMOJI_WHEN_SMALL = false;
 const MIN_HEX_RADIUS_FOR_MULTI_EMOJI = 24;
+const LAKE_HEX_COLOR = '#3B82A0';
+
+
+type HexTerrainOverride = 'lake';
+
+type HexTerrainData = {
+  terrainOverride?: HexTerrainOverride;
+  lakeId?: number;
+};
 
 type Biome = {
   id: BiomeId;
@@ -1020,12 +1029,55 @@ function validateRiverEndpoints(region: Region, river: River, riverGraph: RiverG
   return Array.from(new Set(issues));
 }
 
+function assignLakesForRegion(regionHexes: AxialHex[], centerHex: AxialHex, startingLakeId: number): { lakesByHex: Map<string, HexTerrainData>; nextLakeId: number } {
+  const centerKey = hexKey(centerHex);
+  const regionHexMap = new Map(regionHexes.map((hex) => [hexKey(hex), hex]));
+  const selectedLakeKeys = new Set<string>();
+
+  for (const hex of regionHexes) {
+    const key = hexKey(hex);
+    if (key === centerKey) continue;
+    if (Math.random() < 0.02) selectedLakeKeys.add(key);
+  }
+
+  const lakesByHex = new Map<string, HexTerrainData>();
+  const visited = new Set<string>();
+  let nextLakeId = startingLakeId;
+
+  for (const lakeKey of selectedLakeKeys) {
+    if (visited.has(lakeKey)) continue;
+    const queue = [lakeKey];
+    visited.add(lakeKey);
+
+    while (queue.length > 0) {
+      const current = queue.shift();
+      if (!current) continue;
+      lakesByHex.set(current, { terrainOverride: 'lake', lakeId: nextLakeId });
+      const currentHex = regionHexMap.get(current);
+      if (!currentHex) continue;
+
+      for (const neighbor of getHexNeighbors(currentHex)) {
+        const neighborKey = hexKey(neighbor);
+        if (!selectedLakeKeys.has(neighborKey) || visited.has(neighborKey) || !regionHexMap.has(neighborKey)) continue;
+        visited.add(neighborKey);
+        queue.push(neighborKey);
+      }
+    }
+
+    nextLakeId += 1;
+  }
+
+  return { lakesByHex, nextLakeId };
+}
+
 export function App() {
   const [regions, setRegions] = useState<Region[]>([]);
   const [candidateHexes, setCandidateHexes] = useState<AxialHex[]>([]);
   const [rivers, setRivers] = useState<River[]>([]);
   const [selectedHex, setSelectedHex] = useState<AxialHex | null>(START_HEX);
   const [debugRivers, setDebugRivers] = useState(false);
+  const [hexTerrainByKey, setHexTerrainByKey] = useState<Map<string, HexTerrainData>>(new Map());
+  const [nextLakeId, setNextLakeId] = useState(1);
 
   const allRegionHexes = useMemo(() => regions.flatMap((region) => region.hexes), [regions]);
 
@@ -1143,10 +1195,17 @@ export function App() {
       biomeEmojiLabel: biome.primaryEmoji + biome.secondaryEmojis.join('')
     };
     const nextRegions = [...regions, region];
+    const { lakesByHex, nextLakeId: computedNextLakeId } = assignLakesForRegion(regionHexes, centerHex, nextLakeId);
     const nextAllHexes = nextRegions.flatMap((r) => r.hexes);
     const nextCandidateHexes = getCandidateHexes(nextAllHexes);
     setRegions(nextRegions);
     setCandidateHexes(nextCandidateHexes);
+    setHexTerrainByKey((current) => {
+      const next = new Map(current);
+      for (const [key, terrain] of lakesByHex) next.set(key, terrain);
+      return next;
+    });
+    setNextLakeId(computedNextLakeId);
     setRivers((current) => generateRiverForRegion(region, nextRegions, current, nextCandidateHexes));
     setSelectedHex(centerHex);
   };
@@ -1156,10 +1215,14 @@ export function App() {
     setCandidateHexes([]);
     setRivers([]);
     setSelectedHex(START_HEX);
+    setHexTerrainByKey(new Map());
+    setNextLakeId(1);
   };
 
   const selectedHexKey = selectedHex ? hexKey(selectedHex) : null;
   const selectedMeta = selectedHexKey ? metadataMap.get(selectedHexKey) : undefined;
+  const selectedTerrain = selectedHexKey ? hexTerrainByKey.get(selectedHexKey) : undefined;
+  const isSelectedLake = selectedTerrain?.terrainOverride === 'lake';
   const isSelectedCandidate = selectedHex ? candidateHexes.some((c) => hexKey(c) === selectedHexKey) : false;
   const selectedRiverIds = selectedHex
     ? rivers
@@ -1283,7 +1346,9 @@ export function App() {
             {positionedHexes.hexes.map((hex) => {
               const meta = metadataMap.get(hex.key);
               const cls = hex.kind === 'candidate' ? 'hex candidate' : meta?.isCenter ? 'hex center' : 'hex region';
-              const fill = hex.kind === 'candidate' ? undefined : getRegionColor(meta?.regionId ?? 0);
+              const terrain = hexTerrainByKey.get(hex.key);
+              const isLakeHex = terrain?.terrainOverride === 'lake';
+              const fill = hex.kind === 'candidate' ? undefined : isLakeHex ? LAKE_HEX_COLOR : getRegionColor(meta?.regionId ?? 0);
               const region = meta?.regionId ? regions.find((item) => item.id === meta.regionId) : undefined;
               const fallbackBiome = BIOMES[FALLBACK_BIOME_ID];
               const biomePrimaryEmoji = region?.biomePrimaryEmoji ?? fallbackBiome.primaryEmoji;
@@ -1301,7 +1366,7 @@ export function App() {
                   }}
                 >
                   <polygon points={hexPoints(hex.x, hex.y, HEX_SIZE)} className={cls} style={{ fill }} />
-                  {SHOW_BIOME_EMOJI && hex.kind === 'region' && hex.regionId && region
+                  {SHOW_BIOME_EMOJI && hex.kind === 'region' && hex.regionId && region && !isLakeHex
                     ? biomeEmojiLayout.map((item, index) => (
                       <text
                         key={`biome-emoji-${hex.key}-${index}`}
@@ -1399,7 +1464,15 @@ export function App() {
           <p><strong>anchorHex:</strong> {selectedMeta?.isAnchor ? 'да' : 'нет'}</p>
           <p><strong>Реки:</strong> {selectedRiverIds.length > 0 ? selectedRiverIds.join(', ') : '—'}</p>
           {isSelectedCandidate ? <p><strong>Статус:</strong> Кандидат для нового региона</p> : null}
-          {!isSelectedCandidate && selectedRegion ? (
+          {isSelectedLake && !isSelectedCandidate && selectedRegion ? (
+            <>
+              <p><strong>Тип гекса:</strong> Озеро</p>
+              <p><strong>Озеро:</strong> {selectedTerrain?.lakeId ?? '—'}</p>
+              <p><strong>Регион:</strong> #{selectedRegion.id}</p>
+              <p><strong>Исходный биом региона:</strong> {selectedRegion.biomeLabel}</p>
+            </>
+          ) : null}
+          {!isSelectedCandidate && selectedRegion && !isSelectedLake ? (
             <>
               <p><strong>Тип местности:</strong> {selectedRegion.biomeLandType === 'settled' ? 'Освоенная' : 'Дикая'}</p>
               <p><strong>Биом:</strong> {selectedRegion.biomePrimaryEmoji}{selectedRegion.biomeSecondaryEmojis.join('')} {selectedRegion.biomeLabel}</p>
