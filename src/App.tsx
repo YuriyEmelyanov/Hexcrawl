@@ -877,6 +877,88 @@ export function wouldCreateEnclosedVoid(
   return false;
 }
 
+function buildBoundingBox(occupiedHexes: Set<string>, padding = 2): { minQ: number; maxQ: number; minR: number; maxR: number } {
+  const occupied = Array.from(occupiedHexes).map(parseHexKey);
+  if (occupied.length === 0) {
+    return { minQ: -padding, maxQ: padding, minR: -padding, maxR: padding };
+  }
+  return {
+    minQ: Math.min(...occupied.map((h) => h.q)) - padding,
+    maxQ: Math.max(...occupied.map((h) => h.q)) + padding,
+    minR: Math.min(...occupied.map((h) => h.r)) - padding,
+    maxR: Math.max(...occupied.map((h) => h.r)) + padding
+  };
+}
+
+type EmptyAreaScanResult = {
+  areaKeys: Set<string>;
+  borderRegionIds: Set<number>;
+  isOpen: boolean;
+};
+
+function scanEmptyArea(
+  startHex: AxialHex,
+  blockedHexes: Set<string>,
+  regionByHexKey: Map<string, number>,
+  bbox: { minQ: number; maxQ: number; minR: number; maxR: number },
+  globalVisited?: Set<string>
+): EmptyAreaScanResult {
+  const startKey = hexKey(startHex);
+  const queue: AxialHex[] = [startHex];
+  const areaKeys = new Set<string>([startKey]);
+  const borderRegionIds = new Set<number>();
+  let isOpen = false;
+  if (globalVisited) globalVisited.add(startKey);
+
+  while (queue.length > 0) {
+    const current = queue.shift()!;
+    if (current.q < bbox.minQ || current.q > bbox.maxQ || current.r < bbox.minR || current.r > bbox.maxR) {
+      isOpen = true;
+      continue;
+    }
+    for (const neighbor of getHexNeighbors(current)) {
+      const neighborKey = hexKey(neighbor);
+      if (blockedHexes.has(neighborKey)) {
+        const borderRegionId = regionByHexKey.get(neighborKey);
+        if (typeof borderRegionId === 'number') borderRegionIds.add(borderRegionId);
+        continue;
+      }
+      if (areaKeys.has(neighborKey)) continue;
+      areaKeys.add(neighborKey);
+      if (globalVisited) globalVisited.add(neighborKey);
+      queue.push(neighbor);
+    }
+  }
+
+  return { areaKeys, borderRegionIds, isOpen };
+}
+
+export function wouldCreateSelfEnclosedCandidateArea(
+  candidateHex: AxialHex,
+  currentRegionHexes: Set<string>,
+  existingRegionHexes: Map<string, number>,
+  currentRegionId = -1
+): boolean {
+  const candidateKey = hexKey(candidateHex);
+  const regionByHexKey = new Map(existingRegionHexes);
+  for (const key of currentRegionHexes) regionByHexKey.set(key, currentRegionId);
+  regionByHexKey.set(candidateKey, currentRegionId);
+  const blockedHexes = new Set(regionByHexKey.keys());
+  const bbox = buildBoundingBox(blockedHexes, 2);
+  const visited = new Set<string>();
+
+  for (const neighbor of getHexNeighbors(candidateHex)) {
+    const neighborKey = hexKey(neighbor);
+    if (blockedHexes.has(neighborKey) || visited.has(neighborKey)) continue;
+    const area = scanEmptyArea(neighbor, blockedHexes, regionByHexKey, bbox, visited);
+    if (area.isOpen) continue;
+    if (area.borderRegionIds.size === 1 && area.borderRegionIds.has(currentRegionId)) {
+      return true;
+    }
+  }
+  return false;
+}
+
 type GrowthCandidate = {
   hex: AxialHex;
   currentRegionNeighborCount: number;
@@ -934,10 +1016,76 @@ export function weightedPickCandidate(candidates: GrowthCandidate[]): GrowthCand
   return candidates[candidates.length - 1];
 }
 
+export function findEnclosedInterregionalGrowthCandidateAreas(
+  growthCandidates: AxialHex[],
+  currentRegionHexes: Set<string>,
+  existingRegionHexes: Map<string, number>,
+  currentRegionId = -1
+): AxialHex[][] {
+  if (growthCandidates.length === 0) return [];
+  const candidateKeySet = new Set(growthCandidates.map(hexKey));
+  const regionByHexKey = new Map(existingRegionHexes);
+  for (const key of currentRegionHexes) regionByHexKey.set(key, currentRegionId);
+  const blockedHexes = new Set(regionByHexKey.keys());
+  const bbox = buildBoundingBox(blockedHexes, 2);
+  const visitedCandidates = new Set<string>();
+  const enclosedAreas: AxialHex[][] = [];
+
+  for (const start of growthCandidates) {
+    const startKey = hexKey(start);
+    if (visitedCandidates.has(startKey)) continue;
+    const queue: AxialHex[] = [start];
+    const component: AxialHex[] = [];
+    visitedCandidates.add(startKey);
+
+    while (queue.length > 0) {
+      const current = queue.shift()!;
+      component.push(current);
+      for (const neighbor of getHexNeighbors(current)) {
+        const nk = hexKey(neighbor);
+        if (!candidateKeySet.has(nk) || visitedCandidates.has(nk)) continue;
+        visitedCandidates.add(nk);
+        queue.push(neighbor);
+      }
+    }
+
+    const borderRegionIds = new Set<number>();
+    let isOpen = false;
+    for (const hex of component) {
+      if (hex.q < bbox.minQ || hex.q > bbox.maxQ || hex.r < bbox.minR || hex.r > bbox.maxR) {
+        isOpen = true;
+      }
+      for (const neighbor of getHexNeighbors(hex)) {
+        const nk = hexKey(neighbor);
+        if (candidateKeySet.has(nk)) continue;
+        if (neighbor.q < bbox.minQ || neighbor.q > bbox.maxQ || neighbor.r < bbox.minR || neighbor.r > bbox.maxR) {
+          isOpen = true;
+          continue;
+        }
+        const borderRegionId = regionByHexKey.get(nk);
+        if (typeof borderRegionId !== 'number') {
+          isOpen = true;
+        } else {
+          borderRegionIds.add(borderRegionId);
+        }
+      }
+    }
+
+    if (!isOpen && borderRegionIds.size >= 2) {
+      enclosedAreas.push(component);
+    }
+  }
+
+  return enclosedAreas;
+}
+
 export function generateConnectedRegionFromAnchor(
   anchorHex: AxialHex,
   size: number,
-  occupiedHexes: Set<string>
+  occupiedHexes: Set<string>,
+  existingRegionHexes: Map<string, number> = new Map(),
+  currentRegionId = -1,
+  debugGrowth = false
 ): AxialHex[] {
   const targetSize = Math.max(1, size);
   const regionKeys = new Set<string>([hexKey(anchorHex)]);
@@ -961,9 +1109,46 @@ export function generateConnectedRegionFromAnchor(
       break;
     }
 
-    const picked = weightedPickCandidate(growthCandidates);
+    const eligibleGrowthCandidates = growthCandidates.filter(
+      (candidate) => !wouldCreateSelfEnclosedCandidateArea(candidate.hex, regionKeys, existingRegionHexes, currentRegionId)
+    );
+    const selfEnclosedRejectedCandidates = growthCandidates.length - eligibleGrowthCandidates.length;
+    if (eligibleGrowthCandidates.length === 0) break;
+
+    const enclosedAreas = findEnclosedInterregionalGrowthCandidateAreas(
+      eligibleGrowthCandidates.map((candidate) => candidate.hex),
+      regionKeys,
+      existingRegionHexes,
+      currentRegionId
+    ).sort((a, b) => a.length - b.length);
+
+    let picked: GrowthCandidate | null = null;
+    let growthMode: 'weighted_random' | 'fill_enclosed_interregional_area' = 'weighted_random';
+    let selectedEnclosedAreaSize = 0;
+    if (enclosedAreas.length > 0) {
+      const selectedArea = enclosedAreas[0];
+      selectedEnclosedAreaSize = selectedArea.length;
+      const areaSet = new Set(selectedArea.map(hexKey));
+      const enclosedEligible = eligibleGrowthCandidates.filter((candidate) => areaSet.has(hexKey(candidate.hex)));
+      if (enclosedEligible.length > 0) {
+        const maxCurrentNeighbors = Math.max(...enclosedEligible.map((candidate) => candidate.currentRegionNeighborCount));
+        const best = enclosedEligible.filter((candidate) => candidate.currentRegionNeighborCount === maxCurrentNeighbors);
+        picked = randomFrom(best);
+        growthMode = 'fill_enclosed_interregional_area';
+      }
+    }
+
+    if (!picked) picked = weightedPickCandidate(eligibleGrowthCandidates);
     if (!picked) {
       break;
+    }
+    if (debugGrowth) {
+      console.debug('region growth step', {
+        enclosedInterregionalAreaCount: enclosedAreas.length,
+        selectedEnclosedAreaSize,
+        selfEnclosedRejectedCandidates,
+        growthMode
+      });
     }
     regionKeys.add(hexKey(picked.hex));
   }
@@ -1211,13 +1396,18 @@ export function App() {
     const sizeRoll = rollRegionSize();
     const size = sizeRoll.regionSize;
     const occupiedHexes = new Set(allRegionHexes.map(hexKey));
-    const regionHexes = generateConnectedRegionFromAnchor(anchorHex, size, occupiedHexes);
+    const existingRegionHexes = new Map<string, number>();
+    for (const region of regions) {
+      for (const hex of region.hexes) existingRegionHexes.set(hexKey(hex), region.id);
+    }
+    const regionId = regions.length + 1;
+    const regionHexes = generateConnectedRegionFromAnchor(anchorHex, size, occupiedHexes, existingRegionHexes, regionId, debugRivers);
     const centerHex = chooseRegionCenter(regionHexes);
     const biomeLandType = chooseBiomeLandType(regions.length);
     const biomeId = chooseBiomeId(biomeLandType);
     const biome = BIOMES[biomeId] ?? BIOMES[FALLBACK_BIOME_ID];
     const region: Region = {
-      id: regions.length + 1,
+      id: regionId,
       hexes: regionHexes,
       centerHex,
       anchorHex,
