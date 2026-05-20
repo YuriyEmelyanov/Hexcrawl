@@ -877,24 +877,60 @@ export function wouldCreateEnclosedVoid(
   return false;
 }
 
-export function getAdjacentRegionHexCount(candidate: AxialHex, currentRegionHexes: Set<string>): number {
-  return getHexNeighbors(candidate).filter((neighbor) => currentRegionHexes.has(hexKey(neighbor))).length;
-}
+type GrowthCandidate = {
+  hex: AxialHex;
+  currentRegionNeighborCount: number;
+  existingRegionNeighborCount: number;
+  totalGrowthWeight: number;
+};
 
-export function weightedPickCandidate(
-  candidates: AxialHex[],
-  currentRegionHexes: Set<string>
-): AxialHex {
-  const weights = candidates.map((candidate) => getAdjacentRegionHexCount(candidate, currentRegionHexes));
+export function getGrowthCandidate(
+  candidate: AxialHex,
+  currentRegionHexes: Set<string>,
+  occupiedHexes: Set<string>
+): GrowthCandidate | null {
+  let currentRegionNeighborCount = 0;
+  let existingRegionNeighborCount = 0;
 
-  const total = weights.reduce((acc, w) => acc + w, 0);
-  let roll = Math.random() * total;
-  for (let i = 0; i < candidates.length; i += 1) {
-    roll -= weights[i];
-    if (roll <= 0) {
-      return candidates[i];
+  for (const neighbor of getHexNeighbors(candidate)) {
+    const neighborKey = hexKey(neighbor);
+    if (currentRegionHexes.has(neighborKey)) {
+      currentRegionNeighborCount += 1;
+    } else if (occupiedHexes.has(neighborKey)) {
+      existingRegionNeighborCount += 1;
     }
   }
+
+  if (currentRegionNeighborCount < 1) {
+    return null;
+  }
+
+  return {
+    hex: candidate,
+    currentRegionNeighborCount,
+    existingRegionNeighborCount,
+    totalGrowthWeight: currentRegionNeighborCount + existingRegionNeighborCount
+  };
+}
+
+export function weightedPickCandidate(candidates: GrowthCandidate[]): GrowthCandidate | null {
+  if (candidates.length === 0) {
+    return null;
+  }
+
+  const totalWeight = candidates.reduce((acc, candidate) => acc + candidate.totalGrowthWeight, 0);
+  if (totalWeight <= 0) {
+    return candidates[0];
+  }
+
+  let roll = Math.random() * totalWeight;
+  for (const candidate of candidates) {
+    roll -= candidate.totalGrowthWeight;
+    if (roll <= 0) {
+      return candidate;
+    }
+  }
+
   return candidates[candidates.length - 1];
 }
 
@@ -917,16 +953,19 @@ export function generateConnectedRegionFromAnchor(
       }
     }
 
-    const validCandidates = Array.from(frontierMap.values()).filter(
-      (candidate) => !wouldCreateEnclosedVoid(candidate, occupiedHexes, regionKeys)
-    );
+    const growthCandidates = Array.from(frontierMap.values())
+      .map((candidate) => getGrowthCandidate(candidate, regionKeys, occupiedHexes))
+      .filter((candidate): candidate is GrowthCandidate => candidate !== null);
 
-    if (validCandidates.length === 0) {
+    if (growthCandidates.length === 0) {
       break;
     }
 
-    const picked = weightedPickCandidate(validCandidates, regionKeys);
-    regionKeys.add(hexKey(picked));
+    const picked = weightedPickCandidate(growthCandidates);
+    if (!picked) {
+      break;
+    }
+    regionKeys.add(hexKey(picked.hex));
   }
 
   return Array.from(regionKeys).map(parseHexKey);
