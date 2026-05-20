@@ -7,17 +7,29 @@ type AxialHex = {
 
 type HexType = 'region' | 'candidate' | 'center';
 
-type TerrainTileId =
-  | 'cactus'
-  | 'evergreen_heavy'
-  | 'forest_tile'
-  | 'forest_heavy'
-  | 'forest_mixed'
-  | 'forested_hills'
-  | 'grassland'
-  | 'hills_grassy'
-  | 'mountain'
-  | 'swamp';
+type BiomeLandType = 'settled' | 'wild';
+
+type BiomeId =
+  | 'plain_deciduous_forest'
+  | 'plain_mixed_forest'
+  | 'plain_coniferous_forest'
+  | 'deciduous_forested_hills'
+  | 'mixed_forested_hills'
+  | 'coniferous_forested_hills'
+  | 'open_hills'
+  | 'coniferous_mountain_forest'
+  | 'mixed_mountain_forest'
+  | 'deciduous_mountain_forest'
+  | 'mountains'
+  | 'open_plains'
+  | 'swamp_forest'
+  | 'swamp'
+  | 'hilly_woodland'
+  | 'mountain_woodland'
+  | 'deciduous_woodland'
+  | 'mixed_woodland'
+  | 'coniferous_woodland'
+  | 'semi_desert';
 
 type DfRollResult = {
   values: number[];
@@ -43,7 +55,10 @@ type Region = {
   growthSticks: number;
   regionSize: number;
   targetSize: number;
-  terrainTileId: TerrainTileId;
+  biomeLandType: BiomeLandType;
+  biomeId: BiomeId;
+  biomeLabel: string;
+  biomeEmoji: string;
 };
 
 type HexMeta = {
@@ -86,51 +101,33 @@ type VertexUsage = {
 
 const HEX_SIZE = 28;
 const SQRT3 = Math.sqrt(3);
-const HEX_TERRAIN_OVERLAY_OPACITY = 1;
-const HEX_TERRAIN_OVERLAY_SCALE = 1;
+const SHOW_HEX_COORDINATES = false;
+const SHOW_BIOME_EMOJI = true;
+const HEX_BIOME_EMOJI_FONT_SIZE = 22;
 
-const TERRAIN_TILES: Record<TerrainTileId, { label: string; src: string }> = {
-  cactus: {
-    label: 'Cactus',
-    src: 'https://raw.githubusercontent.com/YuriyEmelyanov/Hexcrawl/main/public/cactus.png'
-  },
-  evergreen_heavy: {
-    label: 'Evergreen Heavy',
-    src: 'https://raw.githubusercontent.com/YuriyEmelyanov/Hexcrawl/main/public/evergreen_heavy.png'
-  },
-  forest_tile: {
-    label: 'Forest',
-    src: 'https://raw.githubusercontent.com/YuriyEmelyanov/Hexcrawl/main/public/forest-tile.png'
-  },
-  forest_heavy: {
-    label: 'Heavy Forest',
-    src: 'https://raw.githubusercontent.com/YuriyEmelyanov/Hexcrawl/main/public/forest_heavy.png'
-  },
-  forest_mixed: {
-    label: 'Mixed Forest',
-    src: 'https://raw.githubusercontent.com/YuriyEmelyanov/Hexcrawl/main/public/forest_mixed.png'
-  },
-  forested_hills: {
-    label: 'Forested Hills',
-    src: 'https://raw.githubusercontent.com/YuriyEmelyanov/Hexcrawl/main/public/forested_hills.png'
-  },
-  grassland: {
-    label: 'Grassland',
-    src: 'https://raw.githubusercontent.com/YuriyEmelyanov/Hexcrawl/main/public/grassland.png'
-  },
-  hills_grassy: {
-    label: 'Grassy Hills',
-    src: 'https://raw.githubusercontent.com/YuriyEmelyanov/Hexcrawl/main/public/hills_grassy.png'
-  },
-  mountain: {
-    label: 'Mountain',
-    src: 'https://raw.githubusercontent.com/YuriyEmelyanov/Hexcrawl/main/public/mountain.png'
-  },
-  swamp: {
-    label: 'Swamp',
-    src: 'https://raw.githubusercontent.com/YuriyEmelyanov/Hexcrawl/main/public/swamp.png'
-  }
+const BIOMES: Record<BiomeId, { id: BiomeId; label: string; emoji: string; wildWeight: number; settledWeight: number }> = {
+  plain_deciduous_forest: { id: 'plain_deciduous_forest', label: 'Равнинный лиственный лес', emoji: '🌳', wildWeight: 20, settledWeight: 11 },
+  plain_mixed_forest: { id: 'plain_mixed_forest', label: 'Равнинный смешанный лес', emoji: '🌳🌲', wildWeight: 12, settledWeight: 5 },
+  plain_coniferous_forest: { id: 'plain_coniferous_forest', label: 'Равнинный хвойный лес', emoji: '🌲', wildWeight: 6, settledWeight: 1 },
+  deciduous_forested_hills: { id: 'deciduous_forested_hills', label: 'Лиственные лесистые холмы', emoji: '〰️🌳', wildWeight: 7, settledWeight: 10 },
+  mixed_forested_hills: { id: 'mixed_forested_hills', label: 'Смешанные лесистые холмы', emoji: '〰️🌳🌲', wildWeight: 5, settledWeight: 2 },
+  coniferous_forested_hills: { id: 'coniferous_forested_hills', label: 'Хвойные лесистые холмы', emoji: '〰️🌲', wildWeight: 4, settledWeight: 1 },
+  open_hills: { id: 'open_hills', label: 'Открытые холмы', emoji: '〰️', wildWeight: 6, settledWeight: 9 },
+  coniferous_mountain_forest: { id: 'coniferous_mountain_forest', label: 'Хвойный горный лес', emoji: '⛰🌲', wildWeight: 4, settledWeight: 0 },
+  mixed_mountain_forest: { id: 'mixed_mountain_forest', label: 'Смешанный горный лес', emoji: '⛰🌳🌲', wildWeight: 3, settledWeight: 0 },
+  deciduous_mountain_forest: { id: 'deciduous_mountain_forest', label: 'Лиственный горный лес', emoji: '⛰🌳', wildWeight: 1, settledWeight: 0 },
+  mountains: { id: 'mountains', label: 'Горы', emoji: '⛰', wildWeight: 2, settledWeight: 0 },
+  open_plains: { id: 'open_plains', label: 'Открытые равнины', emoji: '🌱', wildWeight: 14, settledWeight: 32 },
+  swamp_forest: { id: 'swamp_forest', label: 'Заболоченный лес', emoji: '💧🌳', wildWeight: 3, settledWeight: 0 },
+  swamp: { id: 'swamp', label: 'Болото', emoji: '💧🌱', wildWeight: 4, settledWeight: 0 },
+  hilly_woodland: { id: 'hilly_woodland', label: 'Холмистое редколесье', emoji: '〰️🌱🌳', wildWeight: 2, settledWeight: 2 },
+  mountain_woodland: { id: 'mountain_woodland', label: 'Горное редколесье', emoji: '⛰🌱🌲', wildWeight: 1, settledWeight: 0 },
+  deciduous_woodland: { id: 'deciduous_woodland', label: 'Лиственное редколесье', emoji: '🌱🌳', wildWeight: 3, settledWeight: 19 },
+  mixed_woodland: { id: 'mixed_woodland', label: 'Смешанное редколесье', emoji: '🌱🌳🌲', wildWeight: 1, settledWeight: 7 },
+  coniferous_woodland: { id: 'coniferous_woodland', label: 'Хвойное редколесье', emoji: '🌱🌲', wildWeight: 1, settledWeight: 1 },
+  semi_desert: { id: 'semi_desert', label: 'Полупустыня', emoji: '🪨🌱', wildWeight: 1, settledWeight: 0 }
 };
+const FALLBACK_BIOME_ID: BiomeId = 'plain_deciduous_forest';
 const START_HEX: AxialHex = { q: 0, r: 0 };
 const NEIGHBOR_DIRECTIONS: AxialHex[] = [
   { q: 1, r: 0 },
@@ -192,8 +189,20 @@ function randomFrom<T>(values: T[]): T {
   return values[Math.floor(Math.random() * values.length)];
 }
 
-function chooseRandomTerrainTileId(): TerrainTileId {
-  return randomFrom(Object.keys(TERRAIN_TILES) as TerrainTileId[]);
+function chooseBiomeLandType(regionCount: number): BiomeLandType {
+  if (regionCount === 0) return 'settled';
+  return Math.floor(Math.random() * 100) + 1 <= 20 ? 'settled' : 'wild';
+}
+
+function chooseBiomeId(landType: BiomeLandType): BiomeId {
+  const candidates = (Object.values(BIOMES)).filter((biome) => (landType === 'wild' ? biome.wildWeight : biome.settledWeight) > 0);
+  const total = candidates.reduce((acc, biome) => acc + (landType === 'wild' ? biome.wildWeight : biome.settledWeight), 0);
+  let roll = Math.random() * total;
+  for (const biome of candidates) {
+    roll -= landType === 'wild' ? biome.wildWeight : biome.settledWeight;
+    if (roll <= 0) return biome.id;
+  }
+  return candidates[candidates.length - 1].id;
 }
 
 function getHexCornerPoints(hex: AxialHex): RiverVertex[] {
@@ -1050,6 +1059,9 @@ export function App() {
     const occupiedHexes = new Set(allRegionHexes.map(hexKey));
     const regionHexes = generateConnectedRegionFromAnchor(anchorHex, size, occupiedHexes);
     const centerHex = chooseRegionCenter(regionHexes);
+    const biomeLandType = chooseBiomeLandType(regions.length);
+    const biomeId = chooseBiomeId(biomeLandType);
+    const biome = BIOMES[biomeId] ?? BIOMES[FALLBACK_BIOME_ID];
     const region: Region = {
       id: regions.length + 1,
       hexes: regionHexes,
@@ -1061,7 +1073,10 @@ export function App() {
       growthSticks: sizeRoll.growthSticks,
       regionSize: sizeRoll.regionSize,
       targetSize: size,
-      terrainTileId: chooseRandomTerrainTileId()
+      biomeLandType,
+      biomeId,
+      biomeLabel: biome.label,
+      biomeEmoji: biome.emoji
     };
     const nextRegions = [...regions, region];
     const nextAllHexes = nextRegions.flatMap((r) => r.hexes);
@@ -1205,11 +1220,8 @@ export function App() {
               const meta = metadataMap.get(hex.key);
               const cls = hex.kind === 'candidate' ? 'hex candidate' : meta?.isCenter ? 'hex center' : 'hex region';
               const fill = hex.kind === 'candidate' ? undefined : getRegionColor(meta?.regionId ?? 0);
-              const overlayWidth = HEX_SIZE * SQRT3 * HEX_TERRAIN_OVERLAY_SCALE;
-              const overlayHeight = HEX_SIZE * SQRT3 * HEX_TERRAIN_OVERLAY_SCALE;
               const region = meta?.regionId ? regions.find((item) => item.id === meta.regionId) : undefined;
-              const terrainTileId = region?.terrainTileId ?? 'forest_tile';
-              const terrainTile = region ? TERRAIN_TILES[terrainTileId] : undefined;
+              const biomeEmoji = region?.biomeEmoji ?? BIOMES[FALLBACK_BIOME_ID].emoji;
               return (
                 <g
                   key={`${hex.kind}-${hex.key}`}
@@ -1222,22 +1234,14 @@ export function App() {
                   }}
                 >
                   <polygon points={hexPoints(hex.x, hex.y, HEX_SIZE)} className={cls} style={{ fill }} />
-                  {hex.kind === 'region' && hex.regionId && region && terrainTile ? (
-                    <image
-                      href={terrainTile.src}
-                      x={hex.x - overlayWidth / 2}
-                      y={hex.y - overlayHeight / 2}
-                      width={overlayWidth}
-                      height={overlayHeight}
-                      opacity={HEX_TERRAIN_OVERLAY_OPACITY}
-                      preserveAspectRatio="xMidYMid meet"
-                      clipPath={`url(#hex-clip-${hex.key})`}
-                      pointerEvents="none"
-                    />
+                  {SHOW_BIOME_EMOJI && hex.kind === 'region' && hex.regionId && region ? (
+                    <text x={hex.x} y={hex.y} textAnchor="middle" dominantBaseline="central" fontSize={HEX_BIOME_EMOJI_FONT_SIZE} pointerEvents="none">
+                      {biomeEmoji}
+                    </text>
                   ) : null}
                   <polygon points={hexPoints(hex.x, hex.y, HEX_SIZE)} className={cls} style={{ fill: 'none' }} />
                   {meta?.isCenter ? <circle cx={hex.x} cy={hex.y} r={3} className="center-dot" /> : null}
-                  <text x={hex.x} y={hex.y + 4} textAnchor="middle" className="hex-label">{hex.q}/{hex.r}</text>
+                  {SHOW_HEX_COORDINATES ? <text x={hex.x} y={hex.y + 4} textAnchor="middle" className="hex-label">{hex.q}/{hex.r}</text> : null}
                 </g>
               );
             })}
@@ -1317,7 +1321,13 @@ export function App() {
           <p><strong>centralHex:</strong> {selectedMeta?.isCenter ? 'да' : 'нет'}</p>
           <p><strong>anchorHex:</strong> {selectedMeta?.isAnchor ? 'да' : 'нет'}</p>
           <p><strong>Реки:</strong> {selectedRiverIds.length > 0 ? selectedRiverIds.join(', ') : '—'}</p>
-          <p><strong>Terrain:</strong> {selectedRegion?.terrainTileId ? TERRAIN_TILES[selectedRegion.terrainTileId].label : 'Forest fallback'}</p>
+          {isSelectedCandidate ? <p><strong>Статус:</strong> Кандидат для нового региона</p> : null}
+          {!isSelectedCandidate && selectedRegion ? (
+            <>
+              <p><strong>Тип местности:</strong> {selectedRegion.biomeLandType === 'settled' ? 'Освоенная' : 'Дикая'}</p>
+              <p><strong>Биом:</strong> {selectedRegion.biomeEmoji} {selectedRegion.biomeLabel}</p>
+            </>
+          ) : null}
           {debugRivers ? (
             <>
               <hr />
