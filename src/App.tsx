@@ -107,7 +107,8 @@ const SHOW_HEX_COORDINATES = false;
 const SHOW_BIOME_EMOJI = true;
 const SHOW_FULL_BIOME_EMOJI_WHEN_SMALL = false;
 const MIN_HEX_RADIUS_FOR_MULTI_EMOJI = 24;
-const LAKE_HEX_COLOR = '#3B82A0';
+const WATER_COLOR = 'var(--water-color)';
+const LAKE_HEX_COLOR = WATER_COLOR;
 
 
 type HexTerrainOverride = 'lake';
