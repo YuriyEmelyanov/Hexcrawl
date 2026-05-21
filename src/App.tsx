@@ -266,15 +266,98 @@ function chooseBiomeLandType(regionCount: number): BiomeLandType {
   return Math.floor(Math.random() * 100) + 1 <= 20 ? 'settled' : 'wild';
 }
 
-function chooseBiomeId(landType: BiomeLandType): BiomeId {
-  const candidates = (Object.values(BIOMES)).filter((biome) => (landType === 'wild' ? biome.wildWeight : biome.settledWeight) > 0);
-  const total = candidates.reduce((acc, biome) => acc + (landType === 'wild' ? biome.wildWeight : biome.settledWeight), 0);
-  let roll = Math.random() * total;
-  for (const biome of candidates) {
-    roll -= landType === 'wild' ? biome.wildWeight : biome.settledWeight;
-    if (roll <= 0) return biome.id;
+type BiomeCompatibilityMatrix = Partial<Record<BiomeId, Partial<Record<BiomeId, boolean>>>>;
+
+const BIOME_COMPATIBILITY_MATRIX: BiomeCompatibilityMatrix = {
+  plain_deciduous_forest: { plain_deciduous_forest: true, plain_mixed_forest: true, deciduous_forested_hills: true, swamp_forest: true, hilly_woodland: true, deciduous_woodland: true, mixed_woodland: true },
+  plain_mixed_forest: { plain_deciduous_forest: true, plain_mixed_forest: true, plain_coniferous_forest: true, deciduous_forested_hills: true, mixed_forested_hills: true, coniferous_forested_hills: true, swamp_forest: true, hilly_woodland: true, deciduous_woodland: true, mixed_woodland: true, coniferous_woodland: true },
+  plain_coniferous_forest: { plain_mixed_forest: true, plain_coniferous_forest: true, mixed_forested_hills: true, coniferous_forested_hills: true, mixed_woodland: true, coniferous_woodland: true },
+  deciduous_forested_hills: { plain_deciduous_forest: true, plain_mixed_forest: true, deciduous_forested_hills: true, mixed_forested_hills: true, mixed_mountain_forest: true, deciduous_mountain_forest: true, hilly_woodland: true, deciduous_woodland: true, mixed_woodland: true },
+  mixed_forested_hills: { plain_deciduous_forest: true, plain_mixed_forest: true, plain_coniferous_forest: true, deciduous_forested_hills: true, mixed_forested_hills: true, coniferous_forested_hills: true, coniferous_mountain_forest: true, mixed_mountain_forest: true, deciduous_mountain_forest: true, hilly_woodland: true, deciduous_woodland: true, mixed_woodland: true, coniferous_woodland: true },
+  coniferous_forested_hills: { plain_mixed_forest: true, plain_coniferous_forest: true, mixed_forested_hills: true, coniferous_forested_hills: true, coniferous_mountain_forest: true, mixed_mountain_forest: true, mountain_woodland: true, mixed_woodland: true, coniferous_woodland: true },
+  open_hills: { open_hills: true, mountains: true, open_plains: true, hilly_woodland: true, mountain_woodland: true, deciduous_woodland: true, mixed_woodland: true, coniferous_woodland: true, semi_desert: true },
+  coniferous_mountain_forest: { mixed_forested_hills: true, coniferous_forested_hills: true, coniferous_mountain_forest: true, mixed_mountain_forest: true, mountain_woodland: true },
+  mixed_mountain_forest: { deciduous_forested_hills: true, mixed_forested_hills: true, coniferous_forested_hills: true, coniferous_mountain_forest: true, mixed_mountain_forest: true, deciduous_mountain_forest: true, hilly_woodland: true, mountain_woodland: true },
+  deciduous_mountain_forest: { deciduous_forested_hills: true, mixed_forested_hills: true, mixed_mountain_forest: true, deciduous_mountain_forest: true, hilly_woodland: true, mountain_woodland: true },
+  mountains: { open_hills: true, mountains: true, hilly_woodland: true, mountain_woodland: true },
+  open_plains: { open_hills: true, open_plains: true, swamp: true, hilly_woodland: true, deciduous_woodland: true, mixed_woodland: true, coniferous_woodland: true, semi_desert: true },
+  swamp_forest: { plain_deciduous_forest: true, plain_mixed_forest: true, swamp_forest: true, swamp: true, deciduous_woodland: true, mixed_woodland: true },
+  swamp: { open_plains: true, swamp_forest: true, swamp: true, deciduous_woodland: true, mixed_woodland: true, coniferous_woodland: true },
+  hilly_woodland: { plain_deciduous_forest: true, plain_mixed_forest: true, deciduous_forested_hills: true, mixed_forested_hills: true, open_hills: true, mixed_mountain_forest: true, deciduous_mountain_forest: true, mountains: true, open_plains: true, hilly_woodland: true, deciduous_woodland: true, mixed_woodland: true, semi_desert: true },
+  mountain_woodland: { coniferous_forested_hills: true, open_hills: true, coniferous_mountain_forest: true, mixed_mountain_forest: true, deciduous_mountain_forest: true, mountains: true, mountain_woodland: true },
+  deciduous_woodland: { plain_deciduous_forest: true, plain_mixed_forest: true, deciduous_forested_hills: true, mixed_forested_hills: true, open_hills: true, open_plains: true, swamp_forest: true, swamp: true, hilly_woodland: true, deciduous_woodland: true, mixed_woodland: true, semi_desert: true },
+  mixed_woodland: { plain_deciduous_forest: true, plain_mixed_forest: true, plain_coniferous_forest: true, deciduous_forested_hills: true, mixed_forested_hills: true, coniferous_forested_hills: true, open_hills: true, open_plains: true, swamp_forest: true, swamp: true, hilly_woodland: true, deciduous_woodland: true, mixed_woodland: true, coniferous_woodland: true, semi_desert: true },
+  coniferous_woodland: { plain_mixed_forest: true, plain_coniferous_forest: true, mixed_forested_hills: true, coniferous_forested_hills: true, open_hills: true, open_plains: true, swamp: true, mixed_woodland: true, coniferous_woodland: true, semi_desert: true },
+  semi_desert: { open_hills: true, open_plains: true, hilly_woodland: true, deciduous_woodland: true, mixed_woodland: true, coniferous_woodland: true, semi_desert: true }
+};
+
+function isBiomesCompatible(biomeA: BiomeId, biomeB: BiomeId, compatibilityMatrix: BiomeCompatibilityMatrix): boolean {
+  const direct = compatibilityMatrix[biomeA]?.[biomeB];
+  if (typeof direct === 'boolean') return direct;
+  const reverse = compatibilityMatrix[biomeB]?.[biomeA];
+  if (typeof reverse === 'boolean') return reverse;
+  return false;
+}
+
+function getIncompatibleBiomes(neighborBiomes: BiomeId[], compatibilityMatrix: BiomeCompatibilityMatrix): Set<BiomeId> {
+  const incompatible = new Set<BiomeId>();
+  const allBiomeIds = Object.keys(BIOMES) as BiomeId[];
+  for (const neighborBiome of neighborBiomes) {
+    for (const candidateBiome of allBiomeIds) {
+      if (!isBiomesCompatible(neighborBiome, candidateBiome, compatibilityMatrix)) incompatible.add(candidateBiome);
+    }
   }
-  return candidates[candidates.length - 1].id;
+  return incompatible;
+}
+
+function applyBiomeRestrictions(baseWeights: Record<BiomeId, number>, forbiddenBiomes: Set<BiomeId>): Record<BiomeId, number> {
+  const restricted = { ...baseWeights };
+  for (const biomeId of forbiddenBiomes) restricted[biomeId] = 0;
+  return restricted;
+}
+
+function normalizeWeights(weights: Record<BiomeId, number>): Record<BiomeId, number> {
+  const total = Object.values(weights).reduce((acc, value) => acc + value, 0);
+  if (total <= 0) return { ...weights };
+  const normalized = {} as Record<BiomeId, number>;
+  for (const biomeId of Object.keys(weights) as BiomeId[]) normalized[biomeId] = weights[biomeId] / total;
+  return normalized;
+}
+
+function chooseWeightedRandom(weights: Record<BiomeId, number>): BiomeId {
+  const total = Object.values(weights).reduce((acc, value) => acc + value, 0);
+  if (total <= 0) return FALLBACK_BIOME_ID;
+  let roll = Math.random() * total;
+  for (const biomeId of Object.keys(weights) as BiomeId[]) {
+    roll -= weights[biomeId];
+    if (roll <= 0) return biomeId;
+  }
+  return (Object.keys(weights) as BiomeId[]).at(-1) ?? FALLBACK_BIOME_ID;
+}
+
+function chooseBiomeId(landType: BiomeLandType, neighborBiomes: BiomeId[]): BiomeId {
+  const baseWeights = {} as Record<BiomeId, number>;
+  for (const biome of Object.values(BIOMES)) {
+    baseWeights[biome.id] = landType === 'wild' ? biome.wildWeight : biome.settledWeight;
+  }
+
+  const forbiddenBiomes = getIncompatibleBiomes(neighborBiomes, BIOME_COMPATIBILITY_MATRIX);
+  let restrictedWeights = applyBiomeRestrictions(baseWeights, forbiddenBiomes);
+  let normalizedWeights = normalizeWeights(restrictedWeights);
+  let weightSum = Object.values(normalizedWeights).reduce((acc, value) => acc + value, 0);
+
+  if (weightSum <= 0) {
+    for (const neighborBiome of neighborBiomes) {
+      restrictedWeights[neighborBiome] = baseWeights[neighborBiome];
+    }
+    normalizedWeights = normalizeWeights(restrictedWeights);
+    weightSum = Object.values(normalizedWeights).reduce((acc, value) => acc + value, 0);
+  }
+
+  if (weightSum <= 0) {
+    normalizedWeights = normalizeWeights(baseWeights);
+  }
+  return chooseWeightedRandom(normalizedWeights);
 }
 
 function getHexCornerPoints(hex: AxialHex): RiverVertex[] {
@@ -1404,7 +1487,18 @@ export function App() {
     const regionHexes = generateConnectedRegionFromAnchor(anchorHex, size, occupiedHexes, existingRegionHexes, regionId, debugRivers);
     const centerHex = chooseRegionCenter(regionHexes);
     const biomeLandType = chooseBiomeLandType(regions.length);
-    const biomeId = chooseBiomeId(biomeLandType);
+    const regionByHexKey = new Map<string, Region>();
+    for (const region of regions) {
+      for (const hex of region.hexes) regionByHexKey.set(hexKey(hex), region);
+    }
+    const neighborBiomes = Array.from(
+      new Set(
+        getHexNeighbors(anchorHex)
+          .map((neighborHex) => regionByHexKey.get(hexKey(neighborHex))?.biomeId)
+          .filter((biomeId): biomeId is BiomeId => Boolean(biomeId))
+      )
+    );
+    const biomeId = chooseBiomeId(biomeLandType, neighborBiomes);
     const biome = BIOMES[biomeId] ?? BIOMES[FALLBACK_BIOME_ID];
     const region: Region = {
       id: regionId,
