@@ -1336,6 +1336,33 @@ function renderRiverPolyline(river: River, offsetX: number, offsetY: number) {
   return { key: `river-${river.id}`, points };
 }
 
+function renderRiverDirectionArrows(river: River, offsetX: number, offsetY: number) {
+  const arrows: Array<{ key: string; x1: number; y1: number; x2: number; y2: number }> = [];
+  for (let i = 1; i < river.vertexPath.length; i += 1) {
+    const start = river.vertexPath[i - 1];
+    const end = river.vertexPath[i];
+    const dx = end.x - start.x;
+    const dy = end.y - start.y;
+    const length = Math.hypot(dx, dy);
+    if (length < 0.001) continue;
+
+    const ux = dx / length;
+    const uy = dy / length;
+    const arrowLength = Math.min(10, length * 0.35);
+    const halfArrow = arrowLength / 2;
+    const mx = (start.x + end.x) / 2;
+    const my = (start.y + end.y) / 2;
+    arrows.push({
+      key: `river-arrow-${river.id}-${i}`,
+      x1: mx - ux * halfArrow + offsetX,
+      y1: my - uy * halfArrow + offsetY,
+      x2: mx + ux * halfArrow + offsetX,
+      y2: my + uy * halfArrow + offsetY
+    });
+  }
+  return arrows;
+}
+
 function validateRiverEndpoints(region: Region, river: River, riverGraph: RiverGraph): RiverEndpointIssue[] {
   const issues: RiverEndpointIssue[] = [];
   if (!river.vertexPath || river.vertexPath.length < 2) return ['path_too_short'];
@@ -1462,6 +1489,15 @@ export function App() {
     const offsetX = HEX_SIZE * 2 - minBaseX;
     const offsetY = HEX_SIZE * 2 - minBaseY;
     return rivers.map((river) => renderRiverPolyline(river, offsetX, offsetY));
+  }, [positionedHexes, rivers]);
+  const riverDirectionArrows = useMemo(() => {
+    const all = positionedHexes.hexes;
+    if (all.length === 0) return [];
+    const minBaseX = Math.min(...all.map((h) => toPixel(h.q, h.r).x));
+    const minBaseY = Math.min(...all.map((h) => toPixel(h.q, h.r).y));
+    const offsetX = HEX_SIZE * 2 - minBaseX;
+    const offsetY = HEX_SIZE * 2 - minBaseY;
+    return rivers.flatMap((river) => renderRiverDirectionArrows(river, offsetX, offsetY));
   }, [positionedHexes, rivers]);
 
   const riverOffset = useMemo(() => {
@@ -1681,6 +1717,9 @@ export function App() {
           <h2>Карта регионов</h2>
           <svg viewBox={`0 0 ${positionedHexes.width} ${positionedHexes.height}`}>
             <defs>
+              <marker id="river-arrowhead" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="5" markerHeight="5" orient="auto">
+                <path d="M 0 0 L 8 4 L 0 8 z" className="river-arrow-head" />
+              </marker>
               {positionedHexes.hexes.map((hex) => (
                 <clipPath key={`hex-clip-${hex.key}`} id={`hex-clip-${hex.key}`}>
                   <polygon points={hexPoints(hex.x, hex.y, HEX_SIZE)} />
@@ -1737,6 +1776,17 @@ export function App() {
                   key={riverLine.key}
                   points={riverLine.points}
                   className="river-polyline"
+                />
+              ))}
+              {riverDirectionArrows.map((arrow) => (
+                <line
+                  key={arrow.key}
+                  x1={arrow.x1}
+                  y1={arrow.y1}
+                  x2={arrow.x2}
+                  y2={arrow.y2}
+                  className="river-direction-arrow"
+                  markerEnd="url(#river-arrowhead)"
                 />
               ))}
             </g>
