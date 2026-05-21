@@ -235,10 +235,10 @@ function getHexWidth(hexSize: number): number {
 
 function getRiverWidth(flowLevel: number, hexWidth: number): number {
   const safeFlowLevel = clamp(Math.round(flowLevel), MIN_RIVER_FLOW_LEVEL, MAX_RIVER_FLOW_LEVEL);
-  const minRiverWidth = hexWidth * 0.02;
-  const maxRiverWidth = hexWidth * 0.4;
-  const t = (safeFlowLevel - MIN_RIVER_FLOW_LEVEL) / (MAX_RIVER_FLOW_LEVEL - MIN_RIVER_FLOW_LEVEL);
-  return minRiverWidth + t * (maxRiverWidth - minRiverWidth);
+  const minWidth = hexWidth * 0.02;
+  const maxWidth = hexWidth * 0.4;
+  const normalized = (safeFlowLevel - 1) / 9;
+  return minWidth + normalized * (maxWidth - minWidth);
 }
 
 function getBiomeEmojiLayout(
@@ -1365,6 +1365,7 @@ function generateRiverForRegion(region: Region, regions: Region[], existingRiver
 function renderRiverSegments(river: River, offsetX: number, offsetY: number, lakeEdgeKeys: Set<string>) {
   const hexWidth = getHexWidth(HEX_SIZE);
   const riverWidth = getRiverWidth(river.flowLevel, hexWidth);
+  console.log('river', river.id, 'flowLevel', river.flowLevel, 'width', riverWidth);
   const segments: Array<{ key: string; x1: number; y1: number; x2: number; y2: number; width: number }> = [];
   for (let i = 1; i < river.vertexPath.length; i += 1) {
     const start = river.vertexPath[i - 1];
