@@ -299,21 +299,40 @@ function isBiomesCompatible(biomeA: BiomeId, biomeB: BiomeId, compatibilityMatri
   return false;
 }
 
-function getIncompatibleBiomes(neighborBiomes: BiomeId[], compatibilityMatrix: BiomeCompatibilityMatrix): Set<BiomeId> {
-  const incompatible = new Set<BiomeId>();
-  const allBiomeIds = Object.keys(BIOMES) as BiomeId[];
-  for (const neighborBiome of neighborBiomes) {
-    for (const candidateBiome of allBiomeIds) {
-      if (!isBiomesCompatible(neighborBiome, candidateBiome, compatibilityMatrix)) incompatible.add(candidateBiome);
-    }
-  }
-  return incompatible;
+function getCompatibility(candidateBiome: BiomeId, neighborBiome: BiomeId, compatibilityMatrix: BiomeCompatibilityMatrix): boolean {
+  return isBiomesCompatible(candidateBiome, neighborBiome, compatibilityMatrix);
 }
 
-function applyBiomeRestrictions(baseWeights: Record<BiomeId, number>, forbiddenBiomes: Set<BiomeId>): Record<BiomeId, number> {
-  const restricted = { ...baseWeights };
-  for (const biomeId of forbiddenBiomes) restricted[biomeId] = 0;
-  return restricted;
+function calculateAdjustedBiomeWeights(
+  baseWeights: Record<BiomeId, number>,
+  neighborBiomes: BiomeId[],
+  compatibilityMatrix: BiomeCompatibilityMatrix,
+  forbidSameBiome: boolean
+): Record<BiomeId, number> {
+  const adjustedWeights = { ...baseWeights };
+  const uniqueNeighborBiomes = new Set(neighborBiomes);
+
+  for (const candidateBiome of Object.keys(baseWeights) as BiomeId[]) {
+    let weight = baseWeights[candidateBiome];
+
+    if (forbidSameBiome && uniqueNeighborBiomes.has(candidateBiome)) {
+      adjustedWeights[candidateBiome] = 0;
+      continue;
+    }
+
+    for (const neighborBiome of uniqueNeighborBiomes) {
+      if (candidateBiome === neighborBiome) continue;
+      if (getCompatibility(candidateBiome, neighborBiome, compatibilityMatrix)) {
+        weight += 5;
+      } else {
+        weight *= 0.5;
+      }
+    }
+
+    adjustedWeights[candidateBiome] = weight;
+  }
+
+  return adjustedWeights;
 }
 
 function normalizeWeights(weights: Record<BiomeId, number>): Record<BiomeId, number> {
@@ -341,16 +360,13 @@ function chooseBiomeId(landType: BiomeLandType, neighborBiomes: BiomeId[]): Biom
     baseWeights[biome.id] = landType === 'wild' ? biome.wildWeight : biome.settledWeight;
   }
 
-  const forbiddenBiomes = getIncompatibleBiomes(neighborBiomes, BIOME_COMPATIBILITY_MATRIX);
-  let restrictedWeights = applyBiomeRestrictions(baseWeights, forbiddenBiomes);
-  let normalizedWeights = normalizeWeights(restrictedWeights);
+  let adjustedWeights = calculateAdjustedBiomeWeights(baseWeights, neighborBiomes, BIOME_COMPATIBILITY_MATRIX, true);
+  let normalizedWeights = normalizeWeights(adjustedWeights);
   let weightSum = Object.values(normalizedWeights).reduce((acc, value) => acc + value, 0);
 
   if (weightSum <= 0) {
-    for (const neighborBiome of neighborBiomes) {
-      restrictedWeights[neighborBiome] = baseWeights[neighborBiome];
-    }
-    normalizedWeights = normalizeWeights(restrictedWeights);
+    adjustedWeights = calculateAdjustedBiomeWeights(baseWeights, neighborBiomes, BIOME_COMPATIBILITY_MATRIX, false);
+    normalizedWeights = normalizeWeights(adjustedWeights);
     weightSum = Object.values(normalizedWeights).reduce((acc, value) => acc + value, 0);
   }
 
@@ -358,6 +374,16 @@ function chooseBiomeId(landType: BiomeLandType, neighborBiomes: BiomeId[]): Biom
     normalizedWeights = normalizeWeights(baseWeights);
   }
   return chooseWeightedRandom(normalizedWeights);
+}
+
+function getNeighborBiomes(hex: AxialHex, regionByHexKey: Map<string, Region>): BiomeId[] {
+  return Array.from(
+    new Set(
+      getHexNeighbors(hex)
+        .map((neighborHex) => regionByHexKey.get(hexKey(neighborHex))?.biomeId)
+        .filter((biomeId): biomeId is BiomeId => Boolean(biomeId))
+    )
+  );
 }
 
 function getHexCornerPoints(hex: AxialHex): RiverVertex[] {
@@ -1491,13 +1517,7 @@ export function App() {
     for (const region of regions) {
       for (const hex of region.hexes) regionByHexKey.set(hexKey(hex), region);
     }
-    const neighborBiomes = Array.from(
-      new Set(
-        getHexNeighbors(anchorHex)
-          .map((neighborHex) => regionByHexKey.get(hexKey(neighborHex))?.biomeId)
-          .filter((biomeId): biomeId is BiomeId => Boolean(biomeId))
-      )
-    );
+    const neighborBiomes = getNeighborBiomes(anchorHex, regionByHexKey);
     const biomeId = chooseBiomeId(biomeLandType, neighborBiomes);
     const biome = BIOMES[biomeId] ?? BIOMES[FALLBACK_BIOME_ID];
     const region: Region = {
