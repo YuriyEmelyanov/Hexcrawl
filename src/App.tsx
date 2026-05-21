@@ -79,6 +79,7 @@ type HexEdge = {
 type River = {
   id: number;
   regionId: number;
+  flowLevel: number;
   vertexPath: RiverVertex[];
   controlPoints?: {
     startVertex: RiverVertex;
@@ -111,6 +112,8 @@ const SHOW_FULL_BIOME_EMOJI_WHEN_SMALL = false;
 const MIN_HEX_RADIUS_FOR_MULTI_EMOJI = 24;
 const WATER_COLOR = 'var(--water-color)';
 const LAKE_HEX_COLOR = WATER_COLOR;
+const MIN_RIVER_FLOW_LEVEL = 1;
+const MAX_RIVER_FLOW_LEVEL = 10;
 
 
 type HexTerrainOverride = 'lake';
@@ -211,6 +214,31 @@ function hexPoints(cx: number, cy: number, size: number) {
 
 function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value));
+}
+
+function randomInt(min: number, max: number): number {
+  const lower = Math.ceil(min);
+  const upper = Math.floor(max);
+  return Math.floor(Math.random() * (upper - lower + 1)) + lower;
+}
+
+function assignRiverFlowLevel(river: Omit<River, 'flowLevel'>): River {
+  return {
+    ...river,
+    flowLevel: randomInt(MIN_RIVER_FLOW_LEVEL, MAX_RIVER_FLOW_LEVEL)
+  };
+}
+
+function getHexWidth(hexSize: number): number {
+  return SQRT3 * hexSize;
+}
+
+function getRiverWidth(flowLevel: number, hexWidth: number): number {
+  const safeFlowLevel = clamp(Math.round(flowLevel), MIN_RIVER_FLOW_LEVEL, MAX_RIVER_FLOW_LEVEL);
+  const minRiverWidth = hexWidth * 0.02;
+  const maxRiverWidth = hexWidth * 0.4;
+  const t = (safeFlowLevel - MIN_RIVER_FLOW_LEVEL) / (MAX_RIVER_FLOW_LEVEL - MIN_RIVER_FLOW_LEVEL);
+  return minRiverWidth + t * (maxRiverWidth - minRiverWidth);
 }
 
 function getBiomeEmojiLayout(
@@ -1324,7 +1352,8 @@ function generateRiverForRegion(region: Region, regions: Region[], existingRiver
       const path = buildRiverPathViaControlPoints(controlPoints, riverGraph);
       if (!validateRiverPathViaControlPoints(path, controlPoints, riverGraph, redVertices, existingRiverEndpointVerticesInRegion)) continue;
       const newRiverId = (existingRivers.at(-1)?.id ?? 0) + 1;
-      return [...existingRivers, { id: newRiverId, regionId: region.id, vertexPath: path, controlPoints }];
+      const river = assignRiverFlowLevel({ id: newRiverId, regionId: region.id, vertexPath: path, controlPoints });
+      return [...existingRivers, river];
     }
   } catch (error) {
     console.warn('river generation failed', { regionId: region.id, error });
@@ -1334,7 +1363,9 @@ function generateRiverForRegion(region: Region, regions: Region[], existingRiver
 }
 
 function renderRiverSegments(river: River, offsetX: number, offsetY: number, lakeEdgeKeys: Set<string>) {
-  const segments: Array<{ key: string; x1: number; y1: number; x2: number; y2: number }> = [];
+  const hexWidth = getHexWidth(HEX_SIZE);
+  const riverWidth = getRiverWidth(river.flowLevel, hexWidth);
+  const segments: Array<{ key: string; x1: number; y1: number; x2: number; y2: number; width: number }> = [];
   for (let i = 1; i < river.vertexPath.length; i += 1) {
     const start = river.vertexPath[i - 1];
     const end = river.vertexPath[i];
@@ -1344,7 +1375,8 @@ function renderRiverSegments(river: River, offsetX: number, offsetY: number, lak
       x1: start.x + offsetX,
       y1: start.y + offsetY,
       x2: end.x + offsetX,
-      y2: end.y + offsetY
+      y2: end.y + offsetY,
+      width: riverWidth
     });
   }
   return segments;
@@ -1837,6 +1869,7 @@ export function App() {
                   x2={segment.x2}
                   y2={segment.y2}
                   className="river-polyline"
+                  strokeWidth={segment.width}
                 />
               ))}
               {riverDirectionArrows.map((arrow) => (
