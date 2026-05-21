@@ -94,6 +94,8 @@ type RiverVertex = {
   key: string;
 };
 
+type LakeVertex = RiverVertex;
+
 type VertexUsage = {
   vertex: RiverVertex;
   currentRegionCount: number;
@@ -1331,16 +1333,29 @@ function generateRiverForRegion(region: Region, regions: Region[], existingRiver
   return existingRivers;
 }
 
-function renderRiverPolyline(river: River, offsetX: number, offsetY: number) {
-  const points = river.vertexPath.map((vertex) => `${vertex.x + offsetX},${vertex.y + offsetY}`).join(' ');
-  return { key: `river-${river.id}`, points };
+function renderRiverSegments(river: River, offsetX: number, offsetY: number, lakeEdgeKeys: Set<string>) {
+  const segments: Array<{ key: string; x1: number; y1: number; x2: number; y2: number }> = [];
+  for (let i = 1; i < river.vertexPath.length; i += 1) {
+    const start = river.vertexPath[i - 1];
+    const end = river.vertexPath[i];
+    if (isLakeEdge(edgeKey(start, end), lakeEdgeKeys)) continue;
+    segments.push({
+      key: `river-segment-${river.id}-${i}`,
+      x1: start.x + offsetX,
+      y1: start.y + offsetY,
+      x2: end.x + offsetX,
+      y2: end.y + offsetY
+    });
+  }
+  return segments;
 }
 
-function renderRiverDirectionArrows(river: River, offsetX: number, offsetY: number) {
+function renderRiverDirectionArrows(river: River, offsetX: number, offsetY: number, lakeEdgeKeys: Set<string>) {
   const arrows: Array<{ key: string; x1: number; y1: number; x2: number; y2: number }> = [];
   for (let i = 1; i < river.vertexPath.length; i += 1) {
     const start = river.vertexPath[i - 1];
     const end = river.vertexPath[i];
+    if (isLakeEdge(edgeKey(start, end), lakeEdgeKeys)) continue;
     const dx = end.x - start.x;
     const dy = end.y - start.y;
     const length = Math.hypot(dx, dy);
@@ -1431,6 +1446,42 @@ function assignLakesForRegion(regionHexes: AxialHex[], centerHex: AxialHex, star
   return { lakesByHex, nextLakeId };
 }
 
+function getLakeVertices(allHexes: AxialHex[], hexTerrainByKey: Map<string, HexTerrainData>): LakeVertex[] {
+  const uniqueVertices = new Map<string, LakeVertex>();
+  for (const hex of allHexes) {
+    const terrain = hexTerrainByKey.get(hexKey(hex));
+    if (terrain?.terrainOverride !== 'lake') continue;
+    for (const vertex of getHexCornerPoints(hex)) {
+      uniqueVertices.set(vertex.key, vertex);
+    }
+  }
+  return Array.from(uniqueVertices.values());
+}
+
+function getLakeEdgeKeys(allHexes: AxialHex[], hexTerrainByKey: Map<string, HexTerrainData>): Set<string> {
+  const edgeKeys = new Set<string>();
+  for (const hex of allHexes) {
+    const terrain = hexTerrainByKey.get(hexKey(hex));
+    if (terrain?.terrainOverride !== 'lake') continue;
+    for (const edge of getHexEdgesAsVertexPairs(hex)) {
+      edgeKeys.add(edge.edgeKey);
+    }
+  }
+  return edgeKeys;
+}
+
+function isLakeEdge(edge: string, lakeEdgeKeys: Set<string>): boolean {
+  return lakeEdgeKeys.has(edge);
+}
+
+function drawLakeVerticesDebug(lakeVertices: LakeVertex[], offsetX: number, offsetY: number) {
+  return lakeVertices.map((vertex) => ({
+    key: `dbg-lake-vertex-${vertex.key}`,
+    cx: vertex.x + offsetX,
+    cy: vertex.y + offsetY
+  }));
+}
+
 export function App() {
   const [regions, setRegions] = useState<Region[]>([]);
   const [candidateHexes, setCandidateHexes] = useState<AxialHex[]>([]);
@@ -1481,15 +1532,18 @@ export function App() {
     };
   }, [allRegionHexes, candidateHexes, metadataMap]);
 
-  const riverPolylines = useMemo(() => {
+  const lakeVertices = useMemo(() => getLakeVertices(allRegionHexes, hexTerrainByKey), [allRegionHexes, hexTerrainByKey]);
+  const lakeEdgeKeys = useMemo(() => getLakeEdgeKeys(allRegionHexes, hexTerrainByKey), [allRegionHexes, hexTerrainByKey]);
+
+  const riverSegments = useMemo(() => {
     const all = positionedHexes.hexes;
     if (all.length === 0) return [];
     const minBaseX = Math.min(...all.map((h) => toPixel(h.q, h.r).x));
     const minBaseY = Math.min(...all.map((h) => toPixel(h.q, h.r).y));
     const offsetX = HEX_SIZE * 2 - minBaseX;
     const offsetY = HEX_SIZE * 2 - minBaseY;
-    return rivers.map((river) => renderRiverPolyline(river, offsetX, offsetY));
-  }, [positionedHexes, rivers]);
+    return rivers.flatMap((river) => renderRiverSegments(river, offsetX, offsetY, lakeEdgeKeys));
+  }, [positionedHexes, rivers, lakeEdgeKeys]);
   const riverDirectionArrows = useMemo(() => {
     const all = positionedHexes.hexes;
     if (all.length === 0) return [];
@@ -1497,8 +1551,8 @@ export function App() {
     const minBaseY = Math.min(...all.map((h) => toPixel(h.q, h.r).y));
     const offsetX = HEX_SIZE * 2 - minBaseX;
     const offsetY = HEX_SIZE * 2 - minBaseY;
-    return rivers.flatMap((river) => renderRiverDirectionArrows(river, offsetX, offsetY));
-  }, [positionedHexes, rivers]);
+    return rivers.flatMap((river) => renderRiverDirectionArrows(river, offsetX, offsetY, lakeEdgeKeys));
+  }, [positionedHexes, rivers, lakeEdgeKeys]);
 
   const riverOffset = useMemo(() => {
     const all = positionedHexes.hexes;
@@ -1507,6 +1561,10 @@ export function App() {
     const minBaseY = Math.min(...all.map((h) => toPixel(h.q, h.r).y));
     return { x: HEX_SIZE * 2 - minBaseX, y: HEX_SIZE * 2 - minBaseY };
   }, [positionedHexes]);
+  const lakeVerticesDebug = useMemo(
+    () => drawLakeVerticesDebug(lakeVertices, riverOffset.x, riverOffset.y),
+    [lakeVertices, riverOffset.x, riverOffset.y]
+  );
 
   const riverGraphsByRegion = useMemo(() => {
     const map = new Map<number, RiverGraph>();
@@ -1771,10 +1829,13 @@ export function App() {
               );
             })}
             <g className="rivers-layer">
-              {riverPolylines.map((riverLine) => (
-                <polyline
-                  key={riverLine.key}
-                  points={riverLine.points}
+              {riverSegments.map((segment) => (
+                <line
+                  key={segment.key}
+                  x1={segment.x1}
+                  y1={segment.y1}
+                  x2={segment.x2}
+                  y2={segment.y2}
                   className="river-polyline"
                 />
               ))}
@@ -1829,6 +1890,9 @@ export function App() {
                     </g>
                   );
                 })}
+                {lakeVerticesDebug.map((vertex) => (
+                  <circle key={vertex.key} cx={vertex.cx} cy={vertex.cy} r={2.2} className="dbg-lake-vertex" />
+                ))}
               </g>
             ) : null}
           </svg>
