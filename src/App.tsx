@@ -1439,61 +1439,42 @@ function generateRiverForRegion(region: Region, regions: Region[], existingRiver
     const purpleVertices = region.centerHex ? getHexCornerPoints(region.centerHex) : [];
     const existingRiverEndpointVerticesInRegion = getExistingRiverEndpointVerticesInRegion(region, existingRivers, riverGraph);
 
-    let nextRivers = existingRivers;
-    const pendingRiverConnections = existingRiverEndpointVerticesInRegion.flatMap((vertex) => findRiverConnectionsByStartVertex(existingRivers, vertex));
+    const safeExistingRivers = existingRivers ?? [];
+    let nextRivers = safeExistingRivers;
+    const pendingRiverConnections = safeExistingRivers.length > 0
+      ? findAllRiverConnectionsForRegion(existingRiverEndpointVerticesInRegion, safeExistingRivers)
+      : [];
+    console.log('River connections for new region', {
+      regionId: region.id,
+      existingRiverCount: safeExistingRivers.length,
+      pendingConnectionCount: pendingRiverConnections.length,
+      pendingRiverConnections
+    });
     const processedConnections = new Set<string>();
 
-    for (const connection of pendingRiverConnections) {
-      const connectionKey = `${connection.riverId}:${connection.type}:${connection.vertex.key}`;
-      if (processedConnections.has(connectionKey)) continue;
-      processedConnections.add(connectionKey);
-
-      const usedRiverEdges = buildUsedRiverEdges(nextRivers);
-      const connectionRedVertices = redVertices.filter((vertex) => vertex.key !== connection.vertex.key);
-      if (connectionRedVertices.length < 1) {
-        console.warn('Could not extend river into region', {
-          riverId: connection.riverId,
-          connectionType: connection.type,
-          connectionPoint: connection.vertex,
-          reason: 'no_available_red_vertices'
-        });
-        continue;
-      }
-
-      const RANDOM_PAIR_ATTEMPTS = 50;
-      let extended = false;
-      for (let attempt = 0; attempt < RANDOM_PAIR_ATTEMPTS; attempt += 1) {
-        const controlPoints = chooseRandomRiverControlPoints(connectionRedVertices, purpleVertices, [connection.vertex]);
-        if (!controlPoints) continue;
-        const path = buildRiverPathViaControlPoints(controlPoints, riverGraph);
-        if (!validateRiverPathViaControlPoints(path, controlPoints, riverGraph, connectionRedVertices, [connection.vertex], usedRiverEdges)) continue;
-
-        nextRivers = nextRivers.map((river) => {
-          if (river.id !== connection.riverId) return river;
-          const extensionPath = connection.type === 'start' ? reverseRiverPath(path) : path;
-          const mergedPath = connection.type === 'start'
-            ? [...extensionPath.slice(0, -1), ...river.vertexPath]
-            : [...river.vertexPath, ...extensionPath.slice(1)];
-          return { ...river, vertexPath: mergedPath };
-        });
-        extended = true;
-        break;
-      }
-
-      if (!extended) {
-        console.warn('Could not extend river into region', {
-          riverId: connection.riverId,
-          connectionType: connection.type,
-          connectionPoint: connection.vertex,
-          reason: 'no_valid_path'
-        });
-      }
-    }
-
     if (pendingRiverConnections.length > 0) {
+      for (const connection of pendingRiverConnections) {
+        const connectionKey = `${connection.riverId}:${connection.type}:${connection.vertex.key}`;
+        if (processedConnections.has(connectionKey)) continue;
+        processedConnections.add(connectionKey);
+
+        const result = tryExtendRiverIntoRegion(connection, nextRivers, riverGraph, redVertices, purpleVertices);
+        if (result.success && result.rivers) {
+          nextRivers = result.rivers;
+          continue;
+        }
+
+        console.warn('Could not extend river into region', {
+          riverId: connection.riverId,
+          reason: result.reason
+        });
+      }
       for (const river of nextRivers) validateRiverDirection(river);
       validateNoDuplicateRiverEdges(nextRivers);
-      return nextRivers;
+    } else {
+      // No adjacent river connections.
+      // This is valid both for the first region and for non-empty maps.
+      // Continue normal region generation.
     }
 
     if (redVertices.length < 2) return nextRivers;
@@ -1515,7 +1496,49 @@ function generateRiverForRegion(region: Region, regions: Region[], existingRiver
     console.warn('river generation failed', { regionId: region.id, error });
   }
 
-  return existingRivers;
+  return existingRivers ?? [];
+}
+
+function findAllRiverConnectionsForRegion(
+  existingRiverEndpointVerticesInRegion: RiverVertex[],
+  existingRivers: River[]
+): RiverConnection[] {
+  if (!existingRiverEndpointVerticesInRegion.length || !existingRivers.length) return [];
+  return existingRiverEndpointVerticesInRegion.flatMap((vertex) => findRiverConnectionsByStartVertex(existingRivers, vertex));
+}
+
+function tryExtendRiverIntoRegion(
+  connection: RiverConnection,
+  rivers: River[],
+  riverGraph: RiverGraph,
+  redVertices: RiverVertex[],
+  purpleVertices: RiverVertex[]
+): { success: boolean; rivers?: River[]; reason?: string } {
+  const usedRiverEdges = buildUsedRiverEdges(rivers);
+  const connectionRedVertices = redVertices.filter((vertex) => vertex.key !== connection.vertex.key);
+  if (connectionRedVertices.length < 1) {
+    return { success: false, reason: 'no_available_red_vertices' };
+  }
+
+  const RANDOM_PAIR_ATTEMPTS = 50;
+  for (let attempt = 0; attempt < RANDOM_PAIR_ATTEMPTS; attempt += 1) {
+    const controlPoints = chooseRandomRiverControlPoints(connectionRedVertices, purpleVertices, [connection.vertex]);
+    if (!controlPoints) continue;
+    const path = buildRiverPathViaControlPoints(controlPoints, riverGraph);
+    if (!validateRiverPathViaControlPoints(path, controlPoints, riverGraph, connectionRedVertices, [connection.vertex], usedRiverEdges)) continue;
+
+    const nextRivers = rivers.map((river) => {
+      if (river.id !== connection.riverId) return river;
+      const extensionPath = connection.type === 'start' ? reverseRiverPath(path) : path;
+      const mergedPath = connection.type === 'start'
+        ? [...extensionPath.slice(0, -1), ...river.vertexPath]
+        : [...river.vertexPath, ...extensionPath.slice(1)];
+      return { ...river, vertexPath: mergedPath };
+    });
+    return { success: true, rivers: nextRivers };
+  }
+
+  return { success: false, reason: 'no_valid_path' };
 }
 
 
