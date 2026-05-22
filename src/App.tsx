@@ -615,6 +615,38 @@ function hasDuplicateEdgeKeys(edgeKeys: string[]): boolean {
   return new Set(edgeKeys).size !== edgeKeys.length;
 }
 
+function buildUsedRiverEdges(rivers: River[]): Set<string> {
+  const used = new Set<string>();
+  for (const river of rivers) {
+    if (!river.vertexPath || river.vertexPath.length < 2) continue;
+    for (let i = 1; i < river.vertexPath.length; i += 1) {
+      used.add(edgeKey(river.vertexPath[i - 1], river.vertexPath[i]));
+    }
+  }
+  return used;
+}
+
+function validateNoDuplicateRiverEdges(rivers: River[]): void {
+  const seen = new Map<string, { regionId: number; riverId: number }>();
+
+  for (const river of rivers) {
+    if (!river.vertexPath || river.vertexPath.length < 2) continue;
+    for (let i = 1; i < river.vertexPath.length; i += 1) {
+      const key = edgeKey(river.vertexPath[i - 1], river.vertexPath[i]);
+
+      if (seen.has(key)) {
+        console.warn('Duplicate river edge detected', {
+          edgeKey: key,
+          first: seen.get(key),
+          duplicate: { regionId: river.regionId, riverId: river.id }
+        });
+      } else {
+        seen.set(key, { regionId: river.regionId, riverId: river.id });
+      }
+    }
+  }
+}
+
 function chooseRandomRiverControlPoints(
   redVertices: RiverVertex[],
   purpleVertices: RiverVertex[],
@@ -669,7 +701,8 @@ function validateRiverPathViaControlPoints(
   controlPoints: { startVertex: RiverVertex; middlePurpleVertex?: RiverVertex; endVertex: RiverVertex; startMode: 'existing river endpoint' | 'red vertex' },
   riverGraph: RiverGraph,
   redVertices: RiverVertex[],
-  existingRiverEndpointVerticesInRegion: RiverVertex[]
+  existingRiverEndpointVerticesInRegion: RiverVertex[],
+  usedRiverEdges: Set<string>
 ): boolean {
   if (!vertexPath || vertexPath.length < 2) return false;
   const redSet = new Set(redVertices.map((vertex) => vertex.key));
@@ -684,6 +717,7 @@ function validateRiverPathViaControlPoints(
   const riverPathEdgeKeys = getRiverPathEdgeKeys(vertexPath, riverGraph);
   if (!riverPathEdgeKeys) return false;
   if (hasDuplicateEdgeKeys(riverPathEdgeKeys)) return false;
+  if (riverPathEdgeKeys.some((pathEdgeKey) => usedRiverEdges.has(pathEdgeKey))) return false;
   return true;
 }
 
@@ -1353,6 +1387,7 @@ function generateRiverForRegion(region: Region, regions: Region[], existingRiver
     const redVertices = candidateVertices.filter((vertex) => !orangeKeys.has(vertex.key));
     const purpleVertices = region.centerHex ? getHexCornerPoints(region.centerHex) : [];
     const existingRiverEndpointVerticesInRegion = getExistingRiverEndpointVerticesInRegion(region, existingRivers, riverGraph);
+    const usedRiverEdges = buildUsedRiverEdges(existingRivers);
     if (existingRiverEndpointVerticesInRegion.length > 0 && redVertices.length < 1) return existingRivers;
     if (existingRiverEndpointVerticesInRegion.length === 0 && redVertices.length < 2) return existingRivers;
     const RANDOM_PAIR_ATTEMPTS = 50;
@@ -1360,10 +1395,15 @@ function generateRiverForRegion(region: Region, regions: Region[], existingRiver
       const controlPoints = chooseRandomRiverControlPoints(redVertices, purpleVertices, existingRiverEndpointVerticesInRegion);
       if (!controlPoints) continue;
       const path = buildRiverPathViaControlPoints(controlPoints, riverGraph);
-      if (!validateRiverPathViaControlPoints(path, controlPoints, riverGraph, redVertices, existingRiverEndpointVerticesInRegion)) continue;
+      if (!validateRiverPathViaControlPoints(path, controlPoints, riverGraph, redVertices, existingRiverEndpointVerticesInRegion, usedRiverEdges)) continue;
       const newRiverId = (existingRivers.at(-1)?.id ?? 0) + 1;
       const river = assignRiverFlowLevel({ id: newRiverId, regionId: region.id, vertexPath: path, controlPoints });
-      return [...existingRivers, river];
+      const nextRivers = [...existingRivers, river];
+      for (let i = 1; i < river.vertexPath.length; i += 1) {
+        usedRiverEdges.add(edgeKey(river.vertexPath[i - 1], river.vertexPath[i]));
+      }
+      validateNoDuplicateRiverEdges(nextRivers);
+      return nextRivers;
     }
   } catch (error) {
     console.warn('river generation failed', { regionId: region.id, error });
