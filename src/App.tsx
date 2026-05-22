@@ -462,6 +462,26 @@ function getHexEdgesAsVertexPairs(hex: AxialHex): HexEdge[] {
 }
 
 
+function getHexEdgeKeys(hex: AxialHex): Set<string> {
+  return new Set(getHexEdgesAsVertexPairs(hex).map((edge) => edge.edgeKey));
+}
+
+function riverPathTouchesCenterHex(
+  path: RiverVertex[],
+  centerHex: AxialHex | undefined,
+  riverGraph: RiverGraph
+): boolean {
+  if (!centerHex) return false;
+
+  const centerHexEdgeKeys = getHexEdgeKeys(centerHex);
+  const pathEdgeKeys = getRiverPathEdgeKeys(path, riverGraph);
+
+  if (!pathEdgeKeys) return false;
+
+  return pathEdgeKeys.some((pathEdgeKey) => centerHexEdgeKeys.has(pathEdgeKey));
+}
+
+
 
 function getAdjacentHexesForVertex(vertex: RiverVertex, sourceHex: AxialHex): AxialHex[] {
   const corners = getHexCornerPoints(sourceHex);
@@ -816,19 +836,26 @@ function buildRiverPathViaControlPoints(
 function findBestFreeRiverPathFromEndpoints(
   existingRiverEndpointVerticesInRegion: RiverVertex[],
   redVertices: RiverVertex[],
+  purpleVertices: RiverVertex[],
   riverGraph: RiverGraph,
-  blockedEdgeKeys: Set<string>
-): { controlPoints: { startVertex: RiverVertex; endVertex: RiverVertex; startMode: 'existing river endpoint' }; path: RiverVertex[] } | null {
-  let best: { controlPoints: { startVertex: RiverVertex; endVertex: RiverVertex; startMode: 'existing river endpoint' }; path: RiverVertex[] } | null = null;
+  blockedEdgeKeys: Set<string>,
+  centerHex: AxialHex | undefined
+): { controlPoints: { startVertex: RiverVertex; middlePurpleVertex: RiverVertex; endVertex: RiverVertex; startMode: 'existing river endpoint' }; path: RiverVertex[] } | null {
+  if (!centerHex || purpleVertices.length === 0) return null;
+  let best: { controlPoints: { startVertex: RiverVertex; middlePurpleVertex: RiverVertex; endVertex: RiverVertex; startMode: 'existing river endpoint' }; path: RiverVertex[] } | null = null;
 
   for (const endpoint of existingRiverEndpointVerticesInRegion) {
     for (const redVertex of redVertices) {
       if (redVertex.key === endpoint.key) continue;
-      const controlPoints = { startVertex: endpoint, endVertex: redVertex, startMode: 'existing river endpoint' as const };
-      const path = buildRiverPathViaControlPoints(controlPoints, riverGraph, blockedEdgeKeys);
-      if (path.length < 2) continue;
-      if (!best || path.length < best.path.length) {
-        best = { controlPoints, path };
+      for (const middlePurpleVertex of purpleVertices) {
+        const controlPoints = { startVertex: endpoint, middlePurpleVertex, endVertex: redVertex, startMode: 'existing river endpoint' as const };
+        const path = buildRiverPathViaControlPoints(controlPoints, riverGraph, blockedEdgeKeys);
+        if (path.length < 2) continue;
+        if (!validateRiverPathViaControlPoints(path, controlPoints, riverGraph, redVertices, existingRiverEndpointVerticesInRegion, blockedEdgeKeys)) continue;
+        if (!riverPathTouchesCenterHex(path, centerHex, riverGraph)) continue;
+        if (!best || path.length < best.path.length) {
+          best = { controlPoints, path };
+        }
       }
     }
   }
@@ -1595,8 +1622,10 @@ function generateRiverForRegion(region: Region, regions: Region[], existingRiver
       const bestEndpointPath = findBestFreeRiverPathFromEndpoints(
         existingRiverEndpointVerticesInRegion,
         redVertices,
+        purpleVertices,
         riverGraph,
-        usedRiverEdges
+        usedRiverEdges,
+        region.centerHex
       );
 
       if (!bestEndpointPath) {
@@ -1606,7 +1635,7 @@ function generateRiverForRegion(region: Region, regions: Region[], existingRiver
           redVertexCount: redVertices.length,
           usedRiverEdgeCount: usedRiverEdges.size
         });
-        return { success: false, rivers: existingRivers, reason: 'no_valid_endpoint_path' };
+        return { success: false, rivers: existingRivers, reason: 'river_does_not_touch_center_hex' };
       }
 
       const { controlPoints, path } = bestEndpointPath;
@@ -1618,6 +1647,9 @@ function generateRiverForRegion(region: Region, regions: Region[], existingRiver
           usedRiverEdgeCount: usedRiverEdges.size
         });
         return { success: false, rivers: existingRivers, reason: 'endpoint_path_validation_failed' };
+      }
+      if (!riverPathTouchesCenterHex(path, region.centerHex, riverGraph)) {
+        return { success: false, rivers: existingRivers, reason: 'river_does_not_touch_center_hex' };
       }
 
       const connection = findRiverConnectionByStartVertex(existingRivers, controlPoints.startVertex);
@@ -1642,6 +1674,7 @@ function generateRiverForRegion(region: Region, regions: Region[], existingRiver
       if (!controlPoints) continue;
       const path = buildRiverPathViaControlPoints(controlPoints, riverGraph, usedRiverEdges);
       if (!validateRiverPathViaControlPoints(path, controlPoints, riverGraph, redVertices, existingRiverEndpointVerticesInRegion, usedRiverEdges)) continue;
+      if (!riverPathTouchesCenterHex(path, region.centerHex, riverGraph)) continue;
 
       const connection = controlPoints.startMode === 'existing river endpoint'
         ? findRiverConnectionByStartVertex(existingRivers, controlPoints.startVertex)
