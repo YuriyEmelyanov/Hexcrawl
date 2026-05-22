@@ -1525,7 +1525,9 @@ export function getCandidateHexes(allRegionHexes: AxialHex[]): AxialHex[] {
   return Array.from(candidates.values());
 }
 
-function generateRiverForRegion(region: Region, regions: Region[], existingRivers: River[], candidateHexes?: AxialHex[]): River[] {
+type RiverGenerationResult = { success: boolean; rivers: River[]; reason?: string };
+
+function generateRiverForRegion(region: Region, regions: Region[], existingRivers: River[], candidateHexes?: AxialHex[]): RiverGenerationResult {
   try {
     const riverGraph = buildRiverGraphForRegion(region.hexes, region.hexes, candidateHexes ?? []);
     const { candidateVertices, neighborRegionVertices } = getRegionSharedVertices(region, regions, candidateHexes ?? []);
@@ -1574,7 +1576,7 @@ function generateRiverForRegion(region: Region, regions: Region[], existingRiver
               validateRiverContinuity(river);
             }
             validateNoDuplicateRiverEdges(merged);
-            return merged;
+            return { success: true, rivers: merged };
           }
         } else {
           console.warn('Could not connect river pair: no free connector path', {
@@ -1587,8 +1589,8 @@ function generateRiverForRegion(region: Region, regions: Region[], existingRiver
       }
     }
 
-    if (existingRiverEndpointVerticesInRegion.length > 0 && redVertices.length < 1) return existingRivers;
-    if (existingRiverEndpointVerticesInRegion.length === 0 && redVertices.length < 2) return existingRivers;
+    if (existingRiverEndpointVerticesInRegion.length > 0 && redVertices.length < 1) return { success: false, rivers: existingRivers, reason: 'no_red_vertices_for_extension' };
+    if (existingRiverEndpointVerticesInRegion.length === 0 && redVertices.length < 2) return { success: false, rivers: existingRivers, reason: 'not_enough_red_vertices_for_new_river' };
     if (existingRiverEndpointVerticesInRegion.length > 0) {
       const bestEndpointPath = findBestFreeRiverPathFromEndpoints(
         existingRiverEndpointVerticesInRegion,
@@ -1604,7 +1606,7 @@ function generateRiverForRegion(region: Region, regions: Region[], existingRiver
           redVertexCount: redVertices.length,
           usedRiverEdgeCount: usedRiverEdges.size
         });
-        return existingRivers;
+        return { success: false, rivers: existingRivers, reason: 'no_valid_endpoint_path' };
       }
 
       const { controlPoints, path } = bestEndpointPath;
@@ -1615,11 +1617,11 @@ function generateRiverForRegion(region: Region, regions: Region[], existingRiver
           redVertexCount: redVertices.length,
           usedRiverEdgeCount: usedRiverEdges.size
         });
-        return existingRivers;
+        return { success: false, rivers: existingRivers, reason: 'endpoint_path_validation_failed' };
       }
 
       const connection = findRiverConnectionByStartVertex(existingRivers, controlPoints.startVertex);
-      if (!connection) return existingRivers;
+      if (!connection) return { success: false, rivers: existingRivers, reason: 'endpoint_connection_not_found' };
 
       const nextRivers = existingRivers.map((river) => {
         if (river.id !== connection.riverId) return river;
@@ -1631,7 +1633,7 @@ function generateRiverForRegion(region: Region, regions: Region[], existingRiver
 
       for (const river of nextRivers) validateRiverDirection(river);
       validateNoDuplicateRiverEdges(nextRivers);
-      return nextRivers;
+      return { success: true, rivers: nextRivers };
     }
 
     const RANDOM_PAIR_ATTEMPTS = 50;
@@ -1663,13 +1665,14 @@ function generateRiverForRegion(region: Region, regions: Region[], existingRiver
 
       for (const river of nextRivers) validateRiverDirection(river);
       validateNoDuplicateRiverEdges(nextRivers);
-      return nextRivers;
+      return { success: true, rivers: nextRivers };
     }
   } catch (error) {
     console.warn('river generation failed', { regionId: region.id, error });
+    return { success: false, rivers: existingRivers, reason: 'exception' };
   }
 
-  return existingRivers;
+  return { success: false, rivers: existingRivers, reason: 'no_valid_random_path' };
 }
 
 function renderRiverSegments(river: River, offsetX: number, offsetY: number, lakeEdgeKeys: Set<string>) {
@@ -1938,56 +1941,66 @@ export function App() {
   }, [regions, candidateHexes]);
 
   const addRegionToMap = (anchorHex: AxialHex) => {
-    const sizeRoll = rollRegionSize();
-    const size = sizeRoll.regionSize;
-    const occupiedHexes = new Set(allRegionHexes.map(hexKey));
-    const existingRegionHexes = new Map<string, number>();
-    for (const region of regions) {
-      for (const hex of region.hexes) existingRegionHexes.set(hexKey(hex), region.id);
+    const maxRegionAttempts = 30;
+    for (let attempt = 0; attempt < maxRegionAttempts; attempt += 1) {
+      const sizeRoll = rollRegionSize();
+      const size = sizeRoll.regionSize;
+      const occupiedHexes = new Set(allRegionHexes.map(hexKey));
+      const existingRegionHexes = new Map<string, number>();
+      for (const region of regions) {
+        for (const hex of region.hexes) existingRegionHexes.set(hexKey(hex), region.id);
+      }
+      const regionId = regions.length + 1;
+      const regionHexes = generateConnectedRegionFromAnchor(anchorHex, size, occupiedHexes, existingRegionHexes, regionId, debugRivers);
+      const centerHex = chooseRegionCenter(regionHexes);
+      const biomeLandType = chooseBiomeLandType(regions.length);
+      const regionByHexKey = new Map<string, Region>();
+      for (const region of regions) {
+        for (const hex of region.hexes) regionByHexKey.set(hexKey(hex), region);
+      }
+      const neighborBiomes = getNeighborBiomes(anchorHex, regionByHexKey);
+      const biomeId = chooseBiomeId(biomeLandType, neighborBiomes);
+      const biome = BIOMES[biomeId] ?? BIOMES[FALLBACK_BIOME_ID];
+      const region: Region = {
+        id: regionId,
+        hexes: regionHexes,
+        centerHex,
+        anchorHex,
+        scaleD20: sizeRoll.scaleD20,
+        scaleX: sizeRoll.scaleX,
+        growthDiceValues: sizeRoll.growthDiceValues,
+        growthSticks: sizeRoll.growthSticks,
+        regionSize: sizeRoll.regionSize,
+        targetSize: size,
+        biomeLandType,
+        biomeId,
+        biomeLabel: biome.label,
+        biomePrimaryEmoji: biome.primaryEmoji,
+        biomeSecondaryEmojis: [...biome.secondaryEmojis],
+        biomeEmojiLabel: biome.primaryEmoji + biome.secondaryEmojis.join('')
+      };
+      const nextRegions = [...regions, region];
+      const { lakesByHex, nextLakeId: computedNextLakeId } = assignLakesForRegion(regionHexes, centerHex, nextLakeId);
+      const nextAllHexes = nextRegions.flatMap((r) => r.hexes);
+      const nextCandidateHexes = getCandidateHexes(nextAllHexes);
+      const riverResult = generateRiverForRegion(region, nextRegions, rivers, nextCandidateHexes);
+      if (!riverResult.success) {
+        console.warn('Discarding failed candidate region', { attempt, reason: riverResult.reason });
+        continue;
+      }
+
+      setRegions(nextRegions);
+      setCandidateHexes(nextCandidateHexes);
+      setHexTerrainByKey((current) => {
+        const next = new Map(current);
+        for (const [key, terrain] of lakesByHex) next.set(key, terrain);
+        return next;
+      });
+      setNextLakeId(computedNextLakeId);
+      setRivers(riverResult.rivers);
+      setSelectedHex(centerHex);
+      return;
     }
-    const regionId = regions.length + 1;
-    const regionHexes = generateConnectedRegionFromAnchor(anchorHex, size, occupiedHexes, existingRegionHexes, regionId, debugRivers);
-    const centerHex = chooseRegionCenter(regionHexes);
-    const biomeLandType = chooseBiomeLandType(regions.length);
-    const regionByHexKey = new Map<string, Region>();
-    for (const region of regions) {
-      for (const hex of region.hexes) regionByHexKey.set(hexKey(hex), region);
-    }
-    const neighborBiomes = getNeighborBiomes(anchorHex, regionByHexKey);
-    const biomeId = chooseBiomeId(biomeLandType, neighborBiomes);
-    const biome = BIOMES[biomeId] ?? BIOMES[FALLBACK_BIOME_ID];
-    const region: Region = {
-      id: regionId,
-      hexes: regionHexes,
-      centerHex,
-      anchorHex,
-      scaleD20: sizeRoll.scaleD20,
-      scaleX: sizeRoll.scaleX,
-      growthDiceValues: sizeRoll.growthDiceValues,
-      growthSticks: sizeRoll.growthSticks,
-      regionSize: sizeRoll.regionSize,
-      targetSize: size,
-      biomeLandType,
-      biomeId,
-      biomeLabel: biome.label,
-      biomePrimaryEmoji: biome.primaryEmoji,
-      biomeSecondaryEmojis: [...biome.secondaryEmojis],
-      biomeEmojiLabel: biome.primaryEmoji + biome.secondaryEmojis.join('')
-    };
-    const nextRegions = [...regions, region];
-    const { lakesByHex, nextLakeId: computedNextLakeId } = assignLakesForRegion(regionHexes, centerHex, nextLakeId);
-    const nextAllHexes = nextRegions.flatMap((r) => r.hexes);
-    const nextCandidateHexes = getCandidateHexes(nextAllHexes);
-    setRegions(nextRegions);
-    setCandidateHexes(nextCandidateHexes);
-    setHexTerrainByKey((current) => {
-      const next = new Map(current);
-      for (const [key, terrain] of lakesByHex) next.set(key, terrain);
-      return next;
-    });
-    setNextLakeId(computedNextLakeId);
-    setRivers((current) => generateRiverForRegion(region, nextRegions, current, nextCandidateHexes));
-    setSelectedHex(centerHex);
   };
 
   const resetMap = () => {
