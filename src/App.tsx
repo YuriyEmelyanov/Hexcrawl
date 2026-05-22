@@ -752,11 +752,11 @@ function mergeRiversWithConnector(
   }
   const connectorMiddle = connectorPath.slice(1, -1);
   const mergedPath = [...upstreamRiver.vertexPath, ...connectorMiddle, ...downstreamRiver.vertexPath];
-  const mergedRiver = assignRiverFlowLevel({
+  const mergedRiver: River = {
     ...upstreamRiver,
     flowLevel: Math.max(upstreamRiver.flowLevel ?? 1, downstreamRiver.flowLevel ?? 1),
     vertexPath: mergedPath
-  });
+  };
 
   return existingRivers
     .filter((river) => river.id !== downstreamRiverId)
@@ -795,18 +795,19 @@ function chooseRandomRiverControlPoints(
 
 function buildRiverPathViaControlPoints(
   controlPoints: { startVertex: RiverVertex; middlePurpleVertex?: RiverVertex; endVertex: RiverVertex },
-  riverGraph: RiverGraph
+  riverGraph: RiverGraph,
+  blockedEdgeKeys: Set<string> = new Set()
 ): RiverVertex[] {
   const startNode = riverGraph.nodes.get(controlPoints.startVertex.key);
   const endNode = riverGraph.nodes.get(controlPoints.endVertex.key);
   if (!startNode || !endNode) return [];
   if (!controlPoints.middlePurpleVertex) {
-    return findRiverPath(startNode, endNode, riverGraph).map((node) => ({ key: node.key, x: node.x, y: node.y }));
+    return findRiverPath(startNode, endNode, riverGraph, blockedEdgeKeys).map((node) => ({ key: node.key, x: node.x, y: node.y }));
   }
   const middleNode = riverGraph.nodes.get(controlPoints.middlePurpleVertex.key);
   if (!middleNode) return [];
-  const path1 = findRiverPath(startNode, middleNode, riverGraph);
-  const path2 = findRiverPath(middleNode, endNode, riverGraph);
+  const path1 = findRiverPath(startNode, middleNode, riverGraph, blockedEdgeKeys);
+  const path2 = findRiverPath(middleNode, endNode, riverGraph, blockedEdgeKeys);
   if (path1.length < 1 || path2.length < 1) return [];
   const joined = [...path1, ...path2.slice(1)];
   return joined.map((node) => ({ key: node.key, x: node.x, y: node.y }));
@@ -1077,7 +1078,12 @@ function buildRiverGraphForRegion(regionHexes: AxialHex[], allHexes: AxialHex[],
   return { nodes, edges };
 }
 
-function findRiverPath(startNode: RiverGraphNode, endNode: RiverGraphNode, riverGraph: RiverGraph): RiverGraphNode[] {
+function findRiverPath(
+  startNode: RiverGraphNode,
+  endNode: RiverGraphNode,
+  riverGraph: RiverGraph,
+  blockedEdgeKeys: Set<string> = new Set()
+): RiverGraphNode[] {
   const previous = new Map<string, string>();
   const queue: string[] = [startNode.key];
   const visited = new Set<string>([startNode.key]);
@@ -1087,6 +1093,7 @@ function findRiverPath(startNode: RiverGraphNode, endNode: RiverGraphNode, river
     const currentNode = riverGraph.nodes.get(currentKey);
     if (!currentNode) continue;
     for (const edgeKey of currentNode.incidentEdgeKeys) {
+      if (blockedEdgeKeys.has(edgeKey)) continue;
       const edge = riverGraph.edges.get(edgeKey);
       if (!edge?.touchesRegion) continue;
       const nextKey = edge.a.key === currentKey ? edge.b.key : edge.a.key;
@@ -1507,21 +1514,37 @@ function generateRiverForRegion(region: Region, regions: Region[], existingRiver
     const touchingEndpoints = findRiverEndpointsTouchingRegion(region, existingRivers, riverGraph);
 
     if (touchingEndpoints.length >= 2) {
-      const pair = touchingEndpoints.flatMap((left) => touchingEndpoints
+      const candidatePairs = touchingEndpoints.flatMap((left) => touchingEndpoints
         .filter((right) => right.riverId !== left.riverId)
         .map((right) => ({ left, right })))
-        .find(({ left, right }) => left.endpointType === 'end' && right.endpointType === 'start');
+        .filter(({ left, right }) => left.endpointType === 'end' && right.endpointType === 'start');
 
-      if (pair) {
-        const connectorPath = buildRiverPathViaControlPoints({ startVertex: pair.left.vertex, endVertex: pair.right.vertex }, riverGraph);
-        if (connectorPath.length < 2) {
-          console.warn('Cannot merge rivers: connector path not found', { regionId: region.id, upstreamRiverId: pair.left.riverId, downstreamRiverId: pair.right.riverId });
-        } else if (connectorPath[0].key !== pair.left.vertex.key || connectorPath[connectorPath.length - 1].key !== pair.right.vertex.key) {
-          console.warn('Cannot merge rivers: connector endpoints mismatch', { regionId: region.id, upstreamRiverId: pair.left.riverId, downstreamRiverId: pair.right.riverId });
-        } else if (getRiverPathEdgeKeys(connectorPath, riverGraph)?.some((pathEdgeKey) => usedRiverEdges.has(pathEdgeKey))) {
-          console.warn('Cannot merge rivers: connector uses occupied river edges', { regionId: region.id, upstreamRiverId: pair.left.riverId, downstreamRiverId: pair.right.riverId });
-        } else {
-          const merged = mergeRiversWithConnector(existingRivers, pair.left.riverId, pair.right.riverId, connectorPath);
+      if (candidatePairs.length > 0) {
+        const validConnectors = candidatePairs
+          .map((pair) => {
+            const connectorPath = buildRiverPathViaControlPoints(
+              { startVertex: pair.left.vertex, endVertex: pair.right.vertex },
+              riverGraph,
+              usedRiverEdges
+            );
+            if (connectorPath.length < 2) return null;
+            if (connectorPath[0].key !== pair.left.vertex.key || connectorPath[connectorPath.length - 1].key !== pair.right.vertex.key) return null;
+            const connectorEdgeKeys = getRiverPathEdgeKeys(connectorPath, riverGraph);
+            if (!connectorEdgeKeys) return null;
+            if (connectorEdgeKeys.some((pathEdgeKey) => usedRiverEdges.has(pathEdgeKey))) return null;
+            return { pair, connectorPath };
+          })
+          .filter((candidate): candidate is { pair: { left: RiverEndpointTouch; right: RiverEndpointTouch }; connectorPath: RiverVertex[] } => candidate !== null)
+          .sort((a, b) => a.connectorPath.length - b.connectorPath.length);
+
+        const bestConnector = validConnectors[0];
+        if (bestConnector) {
+          const merged = mergeRiversWithConnector(
+            existingRivers,
+            bestConnector.pair.left.riverId,
+            bestConnector.pair.right.riverId,
+            bestConnector.connectorPath
+          );
           if (merged) {
             for (const river of merged) {
               validateRiverDirection(river);
@@ -1530,6 +1553,11 @@ function generateRiverForRegion(region: Region, regions: Region[], existingRiver
             validateNoDuplicateRiverEdges(merged);
             return merged;
           }
+        } else {
+          console.warn('Could not connect river pair: no free connector path', {
+            regionId: region.id,
+            candidatePairs,
+          });
         }
       } else {
         console.warn('Cannot merge rivers automatically: no valid end->start pair', { regionId: region.id, touchingEndpoints });
