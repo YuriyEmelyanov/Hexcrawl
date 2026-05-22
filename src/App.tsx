@@ -813,6 +813,29 @@ function buildRiverPathViaControlPoints(
   return joined.map((node) => ({ key: node.key, x: node.x, y: node.y }));
 }
 
+function findBestFreeRiverPathFromEndpoints(
+  existingRiverEndpointVerticesInRegion: RiverVertex[],
+  redVertices: RiverVertex[],
+  riverGraph: RiverGraph,
+  blockedEdgeKeys: Set<string>
+): { controlPoints: { startVertex: RiverVertex; endVertex: RiverVertex; startMode: 'existing river endpoint' }; path: RiverVertex[] } | null {
+  let best: { controlPoints: { startVertex: RiverVertex; endVertex: RiverVertex; startMode: 'existing river endpoint' }; path: RiverVertex[] } | null = null;
+
+  for (const endpoint of existingRiverEndpointVerticesInRegion) {
+    for (const redVertex of redVertices) {
+      if (redVertex.key === endpoint.key) continue;
+      const controlPoints = { startVertex: endpoint, endVertex: redVertex, startMode: 'existing river endpoint' as const };
+      const path = buildRiverPathViaControlPoints(controlPoints, riverGraph, blockedEdgeKeys);
+      if (path.length < 2) continue;
+      if (!best || path.length < best.path.length) {
+        best = { controlPoints, path };
+      }
+    }
+  }
+
+  return best;
+}
+
 function validateRiverPathViaControlPoints(
   vertexPath: RiverVertex[],
   controlPoints: { startVertex: RiverVertex; middlePurpleVertex?: RiverVertex; endVertex: RiverVertex; startMode: 'existing river endpoint' | 'red vertex' },
@@ -1566,11 +1589,56 @@ function generateRiverForRegion(region: Region, regions: Region[], existingRiver
 
     if (existingRiverEndpointVerticesInRegion.length > 0 && redVertices.length < 1) return existingRivers;
     if (existingRiverEndpointVerticesInRegion.length === 0 && redVertices.length < 2) return existingRivers;
+    if (existingRiverEndpointVerticesInRegion.length > 0) {
+      const bestEndpointPath = findBestFreeRiverPathFromEndpoints(
+        existingRiverEndpointVerticesInRegion,
+        redVertices,
+        riverGraph,
+        usedRiverEdges
+      );
+
+      if (!bestEndpointPath) {
+        console.warn('Could not extend river in region: no valid free path', {
+          regionId: region.id,
+          endpointCount: existingRiverEndpointVerticesInRegion.length,
+          redVertexCount: redVertices.length,
+          usedRiverEdgeCount: usedRiverEdges.size
+        });
+        return existingRivers;
+      }
+
+      const { controlPoints, path } = bestEndpointPath;
+      if (!validateRiverPathViaControlPoints(path, controlPoints, riverGraph, redVertices, existingRiverEndpointVerticesInRegion, usedRiverEdges)) {
+        console.warn('Could not extend river in region: no valid free path', {
+          regionId: region.id,
+          endpointCount: existingRiverEndpointVerticesInRegion.length,
+          redVertexCount: redVertices.length,
+          usedRiverEdgeCount: usedRiverEdges.size
+        });
+        return existingRivers;
+      }
+
+      const connection = findRiverConnectionByStartVertex(existingRivers, controlPoints.startVertex);
+      if (!connection) return existingRivers;
+
+      const nextRivers = existingRivers.map((river) => {
+        if (river.id !== connection.riverId) return river;
+        if (connection.type === 'end') {
+          return { ...river, vertexPath: [...river.vertexPath, ...path.slice(1)] };
+        }
+        return { ...river, vertexPath: [...reverseRiverPath(path).slice(0, -1), ...river.vertexPath] };
+      });
+
+      for (const river of nextRivers) validateRiverDirection(river);
+      validateNoDuplicateRiverEdges(nextRivers);
+      return nextRivers;
+    }
+
     const RANDOM_PAIR_ATTEMPTS = 50;
     for (let attempt = 0; attempt < RANDOM_PAIR_ATTEMPTS; attempt += 1) {
       const controlPoints = chooseRandomRiverControlPoints(redVertices, purpleVertices, existingRiverEndpointVerticesInRegion);
       if (!controlPoints) continue;
-      const path = buildRiverPathViaControlPoints(controlPoints, riverGraph);
+      const path = buildRiverPathViaControlPoints(controlPoints, riverGraph, usedRiverEdges);
       if (!validateRiverPathViaControlPoints(path, controlPoints, riverGraph, redVertices, existingRiverEndpointVerticesInRegion, usedRiverEdges)) continue;
 
       const connection = controlPoints.startMode === 'existing river endpoint'
