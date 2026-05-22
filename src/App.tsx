@@ -977,16 +977,13 @@ export function rollD20(): number {
 }
 
 export function rollRegionSize(): RegionSizeRoll {
-  const scaleD20 = rollD20();
-  const scaleX = scaleD20;
-  const growthRoll = rollFateSticks(scaleX);
-  const regionSize = scaleX + growthRoll.sum;
+  const regionSize = randomInt(10, 60);
 
   return {
-    scaleD20,
-    scaleX,
-    growthDiceValues: growthRoll.values,
-    growthSticks: growthRoll.sum,
+    scaleD20: 0,
+    scaleX: 0,
+    growthDiceValues: [],
+    growthSticks: 0,
     regionSize
   };
 }
@@ -1446,7 +1443,7 @@ export function generateConnectedRegionFromAnchor(
   const targetSize = Math.max(1, size);
   const regionKeys = new Set<string>([hexKey(anchorHex)]);
 
-  while (regionKeys.size < targetSize) {
+  const growOneStep = (preferEnclosedInterregionalAreas: boolean): boolean => {
     const frontierMap = new Map<string, AxialHex>();
     for (const regionHex of Array.from(regionKeys).map(parseHexKey)) {
       for (const neighbor of getHexNeighbors(regionHex)) {
@@ -1461,15 +1458,13 @@ export function generateConnectedRegionFromAnchor(
       .map((candidate) => getGrowthCandidate(candidate, regionKeys, occupiedHexes))
       .filter((candidate): candidate is GrowthCandidate => candidate !== null);
 
-    if (growthCandidates.length === 0) {
-      break;
-    }
+    if (growthCandidates.length === 0) return false;
 
     const eligibleGrowthCandidates = growthCandidates.filter(
       (candidate) => !wouldCreateSelfEnclosedCandidateArea(candidate.hex, regionKeys, existingRegionHexes, currentRegionId)
     );
     const selfEnclosedRejectedCandidates = growthCandidates.length - eligibleGrowthCandidates.length;
-    if (eligibleGrowthCandidates.length === 0) break;
+    if (eligibleGrowthCandidates.length === 0) return false;
 
     const enclosedAreas = findEnclosedInterregionalGrowthCandidateAreas(
       eligibleGrowthCandidates.map((candidate) => candidate.hex),
@@ -1481,6 +1476,7 @@ export function generateConnectedRegionFromAnchor(
     let picked: GrowthCandidate | null = null;
     let growthMode: 'weighted_random' | 'fill_enclosed_interregional_area' = 'weighted_random';
     let selectedEnclosedAreaSize = 0;
+
     if (enclosedAreas.length > 0) {
       const selectedArea = enclosedAreas[0];
       selectedEnclosedAreaSize = selectedArea.length;
@@ -1494,19 +1490,39 @@ export function generateConnectedRegionFromAnchor(
       }
     }
 
-    if (!picked) picked = weightedPickCandidate(eligibleGrowthCandidates);
-    if (!picked) {
-      break;
+    if (!picked && !preferEnclosedInterregionalAreas) {
+      picked = weightedPickCandidate(eligibleGrowthCandidates);
     }
+    if (!picked) return false;
+
     if (debugGrowth) {
       console.debug('region growth step', {
         enclosedInterregionalAreaCount: enclosedAreas.length,
         selectedEnclosedAreaSize,
         selfEnclosedRejectedCandidates,
-        growthMode
+        growthMode,
+        preferEnclosedInterregionalAreas
       });
     }
+
     regionKeys.add(hexKey(picked.hex));
+    return true;
+  };
+
+  while (regionKeys.size < targetSize) {
+    if (!growOneStep(false)) break;
+  }
+
+  while (growOneStep(true)) {
+    // Fill every enclosed interregional area even if this exceeds targetSize.
+  }
+
+  if (regionKeys.size > targetSize) {
+    console.log('Region size exceeded target because enclosed areas were filled', {
+      targetSize,
+      finalSize: regionKeys.size,
+      exceededBy: regionKeys.size - targetSize
+    });
   }
 
   return Array.from(regionKeys).map(parseHexKey);
