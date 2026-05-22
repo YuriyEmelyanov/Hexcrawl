@@ -686,16 +686,15 @@ function validateRiverDirection(river: River): void {
   }
 }
 
-function findRiverConnectionsByStartVertex(rivers: River[], startVertex: RiverVertex): RiverConnection[] {
-  const connections: RiverConnection[] = [];
+function findRiverConnectionByStartVertex(rivers: River[], startVertex: RiverVertex): RiverConnection | null {
   for (const river of rivers) {
     if (!river.vertexPath || river.vertexPath.length < 1) continue;
     const firstVertex = river.vertexPath[0];
     const lastVertex = river.vertexPath[river.vertexPath.length - 1];
-    if (lastVertex?.key === startVertex.key) connections.push({ riverId: river.id, type: 'end', vertex: lastVertex });
-    if (firstVertex?.key === startVertex.key) connections.push({ riverId: river.id, type: 'start', vertex: firstVertex });
+    if (lastVertex?.key === startVertex.key) return { riverId: river.id, type: 'end', vertex: lastVertex };
+    if (firstVertex?.key === startVertex.key) return { riverId: river.id, type: 'start', vertex: firstVertex };
   }
-  return connections;
+  return null;
 }
 
 function chooseRandomRiverControlPoints(
@@ -1438,145 +1437,45 @@ function generateRiverForRegion(region: Region, regions: Region[], existingRiver
     const redVertices = candidateVertices.filter((vertex) => !orangeKeys.has(vertex.key));
     const purpleVertices = region.centerHex ? getHexCornerPoints(region.centerHex) : [];
     const existingRiverEndpointVerticesInRegion = getExistingRiverEndpointVerticesInRegion(region, existingRivers, riverGraph);
-
-    const safeExistingRivers = existingRivers ?? [];
-    let nextRivers = safeExistingRivers;
-    const pendingRiverConnections = safeExistingRivers.length > 0
-      ? findAllRiverConnectionsForRegion(existingRiverEndpointVerticesInRegion, safeExistingRivers)
-      : [];
-    console.log('River connections for new region', {
-      regionId: region.id,
-      existingRiverCount: safeExistingRivers.length,
-      pendingConnectionCount: pendingRiverConnections.length,
-      pendingRiverConnections
-    });
-    const processedConnections = new Set<string>();
-
-    if (pendingRiverConnections.length > 0) {
-      for (const connection of pendingRiverConnections) {
-        const connectionKey = `${connection.riverId}:${connection.type}:${connection.vertex.key}`;
-        if (processedConnections.has(connectionKey)) continue;
-        processedConnections.add(connectionKey);
-
-        const result = tryExtendRiverIntoRegion(connection, nextRivers, riverGraph, redVertices, purpleVertices);
-        if (result.success && result.rivers) {
-          nextRivers = result.rivers;
-          continue;
-        }
-
-        console.warn('Could not extend river into region', {
-          riverId: connection.riverId,
-          reason: result.reason
-        });
-      }
-      for (const river of nextRivers) validateRiverDirection(river);
-      validateNoDuplicateRiverEdges(nextRivers);
-    } else {
-      // No adjacent river connections.
-      // This is valid both for the first region and for non-empty maps.
-      // Continue normal region generation.
-    }
-
-    if (redVertices.length < 2) return nextRivers;
-    const usedRiverEdges = buildUsedRiverEdges(nextRivers);
+    const usedRiverEdges = buildUsedRiverEdges(existingRivers);
+    if (existingRiverEndpointVerticesInRegion.length > 0 && redVertices.length < 1) return existingRivers;
+    if (existingRiverEndpointVerticesInRegion.length === 0 && redVertices.length < 2) return existingRivers;
     const RANDOM_PAIR_ATTEMPTS = 50;
     for (let attempt = 0; attempt < RANDOM_PAIR_ATTEMPTS; attempt += 1) {
-      const controlPoints = chooseRandomRiverControlPoints(redVertices, purpleVertices, []);
+      const controlPoints = chooseRandomRiverControlPoints(redVertices, purpleVertices, existingRiverEndpointVerticesInRegion);
       if (!controlPoints) continue;
       const path = buildRiverPathViaControlPoints(controlPoints, riverGraph);
-      if (!validateRiverPathViaControlPoints(path, controlPoints, riverGraph, redVertices, [], usedRiverEdges)) continue;
-      const newRiverId = (nextRivers.at(-1)?.id ?? 0) + 1;
-      const river = assignRiverFlowLevel({ id: newRiverId, regionId: region.id, vertexPath: path, controlPoints });
-      const riversWithNew = [...nextRivers, river];
-      for (const item of riversWithNew) validateRiverDirection(item);
-      validateNoDuplicateRiverEdges(riversWithNew);
-      return riversWithNew;
+      if (!validateRiverPathViaControlPoints(path, controlPoints, riverGraph, redVertices, existingRiverEndpointVerticesInRegion, usedRiverEdges)) continue;
+
+      const connection = controlPoints.startMode === 'existing river endpoint'
+        ? findRiverConnectionByStartVertex(existingRivers, controlPoints.startVertex)
+        : null;
+
+      let nextRivers: River[];
+      if (connection) {
+        nextRivers = existingRivers.map((river) => {
+          if (river.id !== connection.riverId) return river;
+          const extensionPath = connection.type === 'start' ? reverseRiverPath(path) : path;
+          const mergedPath = connection.type === 'start'
+            ? [...extensionPath.slice(0, -1), ...river.vertexPath]
+            : [...river.vertexPath, ...extensionPath.slice(1)];
+          return { ...river, vertexPath: mergedPath };
+        });
+      } else {
+        const newRiverId = (existingRivers.at(-1)?.id ?? 0) + 1;
+        const river = assignRiverFlowLevel({ id: newRiverId, regionId: region.id, vertexPath: path, controlPoints });
+        nextRivers = [...existingRivers, river];
+      }
+
+      for (const river of nextRivers) validateRiverDirection(river);
+      validateNoDuplicateRiverEdges(nextRivers);
+      return nextRivers;
     }
   } catch (error) {
     console.warn('river generation failed', { regionId: region.id, error });
   }
 
-  return existingRivers ?? [];
-}
-
-function findAllRiverConnectionsForRegion(
-  existingRiverEndpointVerticesInRegion: RiverVertex[],
-  existingRivers: River[]
-): RiverConnection[] {
-  if (!existingRiverEndpointVerticesInRegion.length || !existingRivers.length) return [];
-  return existingRiverEndpointVerticesInRegion.flatMap((vertex) => findRiverConnectionsByStartVertex(existingRivers, vertex));
-}
-
-function tryExtendRiverIntoRegion(
-  connection: RiverConnection,
-  rivers: River[],
-  riverGraph: RiverGraph,
-  redVertices: RiverVertex[],
-  purpleVertices: RiverVertex[]
-): { success: boolean; rivers?: River[]; reason?: string } {
-  const usedRiverEdges = buildUsedRiverEdges(rivers);
-  const connectionRedVertices = redVertices.filter((vertex) => vertex.key !== connection.vertex.key);
-  if (connectionRedVertices.length < 1) {
-    return { success: false, reason: 'no_available_red_vertices' };
-  }
-
-  const RANDOM_PAIR_ATTEMPTS = 50;
-  for (let attempt = 0; attempt < RANDOM_PAIR_ATTEMPTS; attempt += 1) {
-    const controlPoints = chooseRandomRiverControlPoints(connectionRedVertices, purpleVertices, [connection.vertex]);
-    if (!controlPoints) continue;
-    const path = buildRiverPathViaControlPoints(controlPoints, riverGraph);
-    if (!validateRiverPathViaControlPoints(path, controlPoints, riverGraph, connectionRedVertices, [connection.vertex], usedRiverEdges)) continue;
-
-    const nextRivers = rivers.map((river) => {
-      if (river.id !== connection.riverId) return river;
-      const extensionPath = connection.type === 'start' ? reverseRiverPath(path) : path;
-      const mergedPath = connection.type === 'start'
-        ? [...extensionPath.slice(0, -1), ...river.vertexPath]
-        : [...river.vertexPath, ...extensionPath.slice(1)];
-      return { ...river, vertexPath: mergedPath };
-    });
-    return { success: true, rivers: nextRivers };
-  }
-
-  return { success: false, reason: 'no_valid_path' };
-}
-
-
-function validateRiverDeadEnds(regions: Region[], rivers: River[], candidateHexes: AxialHex[]): void {
-  const allRegionHexes = regions.flatMap((region) => region.hexes);
-  const allGraph = buildRiverGraphForRegion(allRegionHexes, allRegionHexes, candidateHexes);
-  const occupied = new Set(allRegionHexes.map(hexKey));
-  const boundaryVertices = new Set<string>();
-  for (const hex of allRegionHexes) {
-    for (let direction = 0; direction < 6; direction += 1) {
-      const neighbor = getHexEdgeNeighbor(hex, direction);
-      if (neighbor && occupied.has(hexKey(neighbor))) continue;
-      const edge = getHexEdgeForDirection(hex, direction);
-      if (!edge) continue;
-      boundaryVertices.add(edge.from.key);
-      boundaryVertices.add(edge.to.key);
-    }
-  }
-
-  for (const river of rivers) {
-    if (!river.vertexPath || river.vertexPath.length < 2) continue;
-    const endpoints = [
-      { type: 'start', point: river.vertexPath[0] },
-      { type: 'end', point: river.vertexPath[river.vertexPath.length - 1] }
-    ] as const;
-
-    for (const endpoint of endpoints) {
-      if (!boundaryVertices.has(endpoint.point.key)) continue;
-      const node = allGraph.nodes.get(endpoint.point.key);
-      const touchesMapEdge = node?.neighborEdges.some((edge) => !occupied.has(hexKey(edge.neighborHex))) ?? false;
-      if (touchesMapEdge) continue;
-      console.warn('Possible river dead end on region border', {
-        riverId: river.id,
-        endpointType: endpoint.type,
-        point: endpoint.point
-      });
-    }
-  }
+  return existingRivers;
 }
 
 function renderRiverSegments(river: River, offsetX: number, offsetY: number, lakeEdgeKeys: Set<string>) {
@@ -1893,11 +1792,7 @@ export function App() {
       return next;
     });
     setNextLakeId(computedNextLakeId);
-    setRivers((current) => {
-      const next = generateRiverForRegion(region, nextRegions, current, nextCandidateHexes);
-      validateRiverDeadEnds(nextRegions, next, nextCandidateHexes);
-      return next;
-    });
+    setRivers((current) => generateRiverForRegion(region, nextRegions, current, nextCandidateHexes));
     setSelectedHex(centerHex);
   };
 
