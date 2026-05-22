@@ -97,6 +97,15 @@ type RiverVertex = {
 
 type LakeVertex = RiverVertex;
 
+
+type RiverConnectionType = 'start' | 'end';
+
+type RiverConnection = {
+  riverId: number;
+  type: RiverConnectionType;
+  vertex: RiverVertex;
+};
+
 type VertexUsage = {
   vertex: RiverVertex;
   currentRegionCount: number;
@@ -645,6 +654,47 @@ function validateNoDuplicateRiverEdges(rivers: River[]): void {
       }
     }
   }
+}
+
+function reverseRiverPath(vertexPath: RiverVertex[]): RiverVertex[] {
+  return [...vertexPath].reverse().map((vertex) => ({ ...vertex }));
+}
+
+function validateRiverDirection(river: River): void {
+  if (!river.vertexPath || river.vertexPath.length < 2) return;
+  for (let i = 0; i < river.vertexPath.length - 1; i += 1) {
+    if (river.vertexPath[i].key === river.vertexPath[i + 1].key) {
+      console.warn('Broken river direction/order', {
+        riverId: river.id,
+        index: i,
+        currentEnd: river.vertexPath[i],
+        nextStart: river.vertexPath[i + 1]
+      });
+    }
+  }
+
+
+  const outgoingByVertex = new Map<string, number>();
+  for (let i = 1; i < river.vertexPath.length; i += 1) {
+    const startKey = river.vertexPath[i - 1].key;
+    outgoingByVertex.set(startKey, (outgoingByVertex.get(startKey) ?? 0) + 1);
+  }
+  for (const [vertexKey, outgoing] of outgoingByVertex.entries()) {
+    if (outgoing > 1) {
+      console.warn('Multiple outgoing river segments from one startPoint', { riverId: river.id, vertexKey, outgoing });
+    }
+  }
+}
+
+function findRiverConnectionByStartVertex(rivers: River[], startVertex: RiverVertex): RiverConnection | null {
+  for (const river of rivers) {
+    if (!river.vertexPath || river.vertexPath.length < 1) continue;
+    const firstVertex = river.vertexPath[0];
+    const lastVertex = river.vertexPath[river.vertexPath.length - 1];
+    if (lastVertex?.key === startVertex.key) return { riverId: river.id, type: 'end', vertex: lastVertex };
+    if (firstVertex?.key === startVertex.key) return { riverId: river.id, type: 'start', vertex: firstVertex };
+  }
+  return null;
 }
 
 function chooseRandomRiverControlPoints(
@@ -1396,12 +1446,28 @@ function generateRiverForRegion(region: Region, regions: Region[], existingRiver
       if (!controlPoints) continue;
       const path = buildRiverPathViaControlPoints(controlPoints, riverGraph);
       if (!validateRiverPathViaControlPoints(path, controlPoints, riverGraph, redVertices, existingRiverEndpointVerticesInRegion, usedRiverEdges)) continue;
-      const newRiverId = (existingRivers.at(-1)?.id ?? 0) + 1;
-      const river = assignRiverFlowLevel({ id: newRiverId, regionId: region.id, vertexPath: path, controlPoints });
-      const nextRivers = [...existingRivers, river];
-      for (let i = 1; i < river.vertexPath.length; i += 1) {
-        usedRiverEdges.add(edgeKey(river.vertexPath[i - 1], river.vertexPath[i]));
+
+      const connection = controlPoints.startMode === 'existing river endpoint'
+        ? findRiverConnectionByStartVertex(existingRivers, controlPoints.startVertex)
+        : null;
+
+      let nextRivers: River[];
+      if (connection) {
+        nextRivers = existingRivers.map((river) => {
+          if (river.id !== connection.riverId) return river;
+          const extensionPath = connection.type === 'start' ? reverseRiverPath(path) : path;
+          const mergedPath = connection.type === 'start'
+            ? [...extensionPath.slice(0, -1), ...river.vertexPath]
+            : [...river.vertexPath, ...extensionPath.slice(1)];
+          return { ...river, vertexPath: mergedPath };
+        });
+      } else {
+        const newRiverId = (existingRivers.at(-1)?.id ?? 0) + 1;
+        const river = assignRiverFlowLevel({ id: newRiverId, regionId: region.id, vertexPath: path, controlPoints });
+        nextRivers = [...existingRivers, river];
       }
+
+      for (const river of nextRivers) validateRiverDirection(river);
       validateNoDuplicateRiverEdges(nextRivers);
       return nextRivers;
     }
