@@ -754,36 +754,6 @@ function findRiverEndpointsTouchingRegion(region: Region, rivers: River[], river
   return endpoints;
 }
 
-function findIncomingRiverEndpointsForRegion(region: Region, rivers: River[], riverGraph: RiverGraph): RiverEndpointTouch[] {
-  return findRiverEndpointsTouchingRegion(region, rivers, riverGraph);
-}
-
-function findBestPathToAnyTargetVertex(
-  startVertex: RiverVertex,
-  targetVertices: RiverVertex[],
-  riverGraph: RiverGraph,
-  blockedEdgeKeys: Set<string>
-): RiverVertex[] {
-  const startNode = riverGraph.nodes.get(startVertex.key);
-  if (!startNode) return [];
-  let best: RiverVertex[] = [];
-
-  for (const targetVertex of targetVertices) {
-    if (targetVertex.key === startVertex.key) continue;
-    const targetNode = riverGraph.nodes.get(targetVertex.key);
-    if (!targetNode) continue;
-    const path = findRiverPath(startNode, targetNode, riverGraph, blockedEdgeKeys)
-      .map((node) => ({ key: node.key, x: node.x, y: node.y }));
-    if (path.length < 2) continue;
-    const pathEdgeKeys = getRiverPathEdgeKeys(path, riverGraph);
-    if (!pathEdgeKeys) continue;
-    if (pathEdgeKeys.some((pathEdgeKey) => blockedEdgeKeys.has(pathEdgeKey))) continue;
-    if (best.length === 0 || path.length < best.length) best = path;
-  }
-
-  return best;
-}
-
 function mergeRiversWithConnector(
   existingRivers: River[],
   upstreamRiverId: number,
@@ -1593,92 +1563,57 @@ function generateRiverForRegion(region: Region, regions: Region[], existingRiver
     const purpleVertices = region.centerHex ? getHexCornerPoints(region.centerHex) : [];
     const existingRiverEndpointVerticesInRegion = getExistingRiverEndpointVerticesInRegion(region, existingRivers, riverGraph);
     const usedRiverEdges = buildUsedRiverEdges(existingRivers);
-    const touchingEndpoints = findIncomingRiverEndpointsForRegion(region, existingRivers, riverGraph);
-    console.log('Incoming rivers for region', {
-      regionId: region.id,
-      incoming: touchingEndpoints.map((i) => ({
-        riverId: i.riverId,
-        endpointType: i.endpointType,
-        flowLevel: existingRivers.find((r) => r.id === i.riverId)?.flowLevel,
-        point: i.vertex
-      }))
-    });
+    const touchingEndpoints = findRiverEndpointsTouchingRegion(region, existingRivers, riverGraph);
 
     if (touchingEndpoints.length >= 2) {
-      const sortedIncoming = [...touchingEndpoints].sort((a, b) => {
-        const flowA = existingRivers.find((r) => r.id === a.riverId)?.flowLevel ?? 1;
-        const flowB = existingRivers.find((r) => r.id === b.riverId)?.flowLevel ?? 1;
-        if (flowB !== flowA) return flowB - flowA;
-        return String(a.riverId).localeCompare(String(b.riverId));
-      });
-      const mainConnection = sortedIncoming[0];
-      const tributaries = sortedIncoming.slice(1);
-      console.log('Selected main river', {
-        regionId: region.id,
-        mainRiverId: mainConnection.riverId,
-        flowLevel: existingRivers.find((r) => r.id === mainConnection.riverId)?.flowLevel
-      });
-      if (mainConnection.endpointType === 'start') {
-        return { success: false, rivers: existingRivers, reason: 'main-startpoint-not-supported' };
-      }
-      const mainPathResult = findBestFreeRiverPathFromEndpoints(
-        [mainConnection.vertex],
-        redVertices,
-        purpleVertices,
-        riverGraph,
-        usedRiverEdges,
-        region.centerHex
-      );
-      if (!mainPathResult) return { success: false, rivers: existingRivers, reason: 'main-river-path-not-found' };
-      if (!riverPathTouchesCenterHex(mainPathResult.path, region.centerHex, riverGraph)) {
-        return { success: false, rivers: existingRivers, reason: 'main-river-does-not-touch-center' };
-      }
-      const mainConnectionData = findRiverConnectionByStartVertex(existingRivers, mainConnection.vertex);
-      if (!mainConnectionData || mainConnectionData.type !== 'end') return { success: false, rivers: existingRivers, reason: 'main-connection-not-found' };
-      let nextRivers = existingRivers.map((river) => river.id === mainConnectionData.riverId
-        ? { ...river, vertexPath: [...river.vertexPath, ...mainPathResult.path.slice(1)] }
-        : river);
-      const mainRiver = nextRivers.find((r) => r.id === mainConnectionData.riverId);
-      if (!mainRiver) return { success: false, rivers: existingRivers, reason: 'main-river-missing-after-extension' };
-      const mainVerticesInRegion = mainRiver.vertexPath.filter((v) => riverGraph.nodes.has(v.key));
-      for (const tributary of tributaries) {
-        console.log('Building tributary to main river', {
-          regionId: region.id,
-          tributaryRiverId: tributary.riverId,
-          mainRiverId: mainRiver.id,
-          targetVertexCount: mainVerticesInRegion.length
-        });
-        if (tributary.endpointType === 'start') {
-          return { success: false, rivers: existingRivers, reason: 'tributary-startpoint-not-supported' };
-        }
-        const tributaryPath = findBestPathToAnyTargetVertex(tributary.vertex, mainVerticesInRegion, riverGraph, usedRiverEdges);
-        if (tributaryPath.length < 2) {
-          console.warn('Could not connect mandatory tributary to main river', {
+      const candidatePairs = touchingEndpoints.flatMap((left) => touchingEndpoints
+        .filter((right) => right.riverId !== left.riverId)
+        .map((right) => ({ left, right })))
+        .filter(({ left, right }) => left.endpointType === 'end' && right.endpointType === 'start');
+
+      if (candidatePairs.length > 0) {
+        const validConnectors = candidatePairs
+          .map((pair) => {
+            const connectorPath = buildRiverPathViaControlPoints(
+              { startVertex: pair.left.vertex, endVertex: pair.right.vertex },
+              riverGraph,
+              usedRiverEdges
+            );
+            if (connectorPath.length < 2) return null;
+            if (connectorPath[0].key !== pair.left.vertex.key || connectorPath[connectorPath.length - 1].key !== pair.right.vertex.key) return null;
+            const connectorEdgeKeys = getRiverPathEdgeKeys(connectorPath, riverGraph);
+            if (!connectorEdgeKeys) return null;
+            if (connectorEdgeKeys.some((pathEdgeKey) => usedRiverEdges.has(pathEdgeKey))) return null;
+            return { pair, connectorPath };
+          })
+          .filter((candidate): candidate is { pair: { left: RiverEndpointTouch; right: RiverEndpointTouch }; connectorPath: RiverVertex[] } => candidate !== null)
+          .sort((a, b) => a.connectorPath.length - b.connectorPath.length);
+
+        const bestConnector = validConnectors[0];
+        if (bestConnector) {
+          const merged = mergeRiversWithConnector(
+            existingRivers,
+            bestConnector.pair.left.riverId,
+            bestConnector.pair.right.riverId,
+            bestConnector.connectorPath
+          );
+          if (merged) {
+            for (const river of merged) {
+              validateRiverDirection(river);
+              validateRiverContinuity(river);
+            }
+            validateNoDuplicateRiverEdges(merged);
+            return { success: true, rivers: merged };
+          }
+        } else {
+          console.warn('Could not connect river pair: no free connector path', {
             regionId: region.id,
-            tributaryRiverId: tributary.riverId,
-            mainRiverId: mainRiver.id,
-            reason: 'mandatory-tributary-path-not-found'
+            candidatePairs,
           });
-          return { success: false, rivers: existingRivers, reason: 'mandatory-tributary-path-not-found' };
         }
-        const tributaryEdgeKeys = getRiverPathEdgeKeys(tributaryPath, riverGraph);
-        if (!tributaryEdgeKeys || tributaryEdgeKeys.some((e) => usedRiverEdges.has(e))) {
-          return { success: false, rivers: existingRivers, reason: 'mandatory-tributary-path-blocked' };
-        }
-        tributaryEdgeKeys.forEach((e) => usedRiverEdges.add(e));
-        const tributaryRiver = nextRivers.find((r) => r.id === tributary.riverId);
-        if (!tributaryRiver) return { success: false, rivers: existingRivers, reason: 'tributary-river-not-found' };
-        const mergedPath = [...tributaryRiver.vertexPath, ...tributaryPath.slice(1)];
-        const mergedToMain = mergeRiversWithConnector(nextRivers, tributary.riverId, mainRiver.id, mergedPath);
-        if (!mergedToMain) return { success: false, rivers: existingRivers, reason: 'tributary-merge-failed' };
-        nextRivers = mergedToMain;
+      } else {
+        console.warn('Cannot merge rivers automatically: no valid end->start pair', { regionId: region.id, touchingEndpoints });
       }
-      for (const river of nextRivers) {
-        validateRiverDirection(river);
-        validateRiverContinuity(river);
-      }
-      validateNoDuplicateRiverEdges(nextRivers);
-      return { success: true, rivers: nextRivers };
     }
 
     if (existingRiverEndpointVerticesInRegion.length > 0 && redVertices.length < 1) return { success: false, rivers: existingRivers, reason: 'no_red_vertices_for_extension' };
