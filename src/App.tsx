@@ -952,13 +952,13 @@ function validateCandidateBoundaryVertices(
 }
 
 export function rollRegionTargetSize(): number {
-  const roll = randomIntInclusive(1, 100);
-  if (roll <= 5) return randomIntInclusive(5, 10);
-  if (roll <= 40) return randomIntInclusive(11, 20);
-  if (roll <= 65) return randomIntInclusive(21, 30);
-  if (roll <= 83) return randomIntInclusive(31, 40);
-  if (roll <= 95) return randomIntInclusive(41, 50);
-  return randomIntInclusive(51, 60);
+  const roll = randomInt(1, 100);
+  if (roll <= 5) return randomInt(5, 10);
+  if (roll <= 40) return randomInt(11, 20);
+  if (roll <= 65) return randomInt(21, 30);
+  if (roll <= 83) return randomInt(31, 40);
+  if (roll <= 95) return randomInt(41, 50);
+  return randomInt(51, 60);
 }
 
 export function getRegionSizeCategory(size: number): Pick<Region, 'sizeCategory' | 'sizeLabel'> {
@@ -2046,6 +2046,10 @@ export function App() {
       setSelectedHex(centerHex);
       return;
     }
+    console.warn('Could not create region after max attempts', {
+      anchorHex,
+      maxRegionAttempts
+    });
   };
 
   const resetMap = () => {
