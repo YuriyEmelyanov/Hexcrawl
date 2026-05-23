@@ -1575,15 +1575,39 @@ function validateRiverEndpoints(region: Region, river: River, riverGraph: RiverG
   return Array.from(new Set(issues));
 }
 
-function assignLakesForRegion(regionHexes: AxialHex[], centerHex: AxialHex, startingLakeId: number): { lakesByHex: Map<string, HexTerrainData>; nextLakeId: number } {
+function getLakeChanceForBiome(biomeId: BiomeId): number {
+  if (biomeId === 'semi_desert') return 0;
+  if (biomeId === 'swamp' || biomeId === 'swamp_forest') return 0.04;
+  return 0.02;
+}
+
+function assignLakesForRegion(
+  regionHexes: AxialHex[],
+  centerHex: AxialHex,
+  startingLakeId: number,
+  biomeId: BiomeId
+): { lakesByHex: Map<string, HexTerrainData>; nextLakeId: number } {
   const centerKey = hexKey(centerHex);
   const regionHexMap = new Map(regionHexes.map((hex) => [hexKey(hex), hex]));
   const selectedLakeKeys = new Set<string>();
+  const lakeChance = getLakeChanceForBiome(biomeId);
 
   for (const hex of regionHexes) {
     const key = hexKey(hex);
     if (key === centerKey) continue;
-    if (Math.random() < 0.02) selectedLakeKeys.add(key);
+    if (Math.random() < lakeChance) selectedLakeKeys.add(key);
+  }
+
+  const firstPassLakeKeys = new Set(selectedLakeKeys);
+  for (const hex of regionHexes) {
+    const key = hexKey(hex);
+    if (key === centerKey) continue;
+    if (selectedLakeKeys.has(key)) continue;
+
+    const touchesFirstPassLake = getHexNeighbors(hex).some((neighbor) => firstPassLakeKeys.has(hexKey(neighbor)));
+    if (!touchesFirstPassLake) continue;
+
+    if (Math.random() < lakeChance) selectedLakeKeys.add(key);
   }
 
   const lakesByHex = new Map<string, HexTerrainData>();
@@ -1612,6 +1636,13 @@ function assignLakesForRegion(regionHexes: AxialHex[], centerHex: AxialHex, star
 
     nextLakeId += 1;
   }
+
+  console.log('Lakes generated for region', {
+    biomeId,
+    lakeChance,
+    lakeHexCount: lakesByHex.size,
+    lakeIds: Array.from(new Set(Array.from(lakesByHex.values()).map((terrain) => terrain.lakeId))).filter(Boolean)
+  });
 
   return { lakesByHex, nextLakeId };
 }
@@ -1817,7 +1848,7 @@ export function App() {
         });
       }
       const nextRegions = [...regions, region];
-      const { lakesByHex, nextLakeId: computedNextLakeId } = assignLakesForRegion(regionHexes, centerHex, nextLakeId);
+      const { lakesByHex, nextLakeId: computedNextLakeId } = assignLakesForRegion(regionHexes, centerHex, nextLakeId, biomeId);
       const nextAllHexes = nextRegions.flatMap((r) => r.hexes);
       const nextCandidateHexes = getCandidateHexes(nextAllHexes);
       const riverResult = generateRiverForRegion(region, nextRegions, rivers, nextCandidateHexes);
