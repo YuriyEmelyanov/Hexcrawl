@@ -162,6 +162,8 @@ const BIOMES: Record<BiomeId, Biome> = {
   semi_desert: { id: 'semi_desert', label: 'Полупустыня', primaryEmoji: '🪨', secondaryEmojis: ['🌱'], wildWeight: 1, settledWeight: 0 }
 };
 const FALLBACK_BIOME_ID: BiomeId = 'plain_deciduous_forest';
+const FALLBACK_SETTLED_BIOME_ID: BiomeId = 'open_plains';
+const FALLBACK_WILD_BIOME_ID: BiomeId = 'plain_deciduous_forest';
 const START_HEX: AxialHex = { q: 0, r: 0 };
 const NEIGHBOR_DIRECTIONS: AxialHex[] = [
   { q: 1, r: 0 },
@@ -339,49 +341,6 @@ function isBiomesCompatible(biomeA: BiomeId, biomeB: BiomeId, compatibilityMatri
   return false;
 }
 
-function getCompatibility(candidateBiome: BiomeId, neighborBiome: BiomeId, compatibilityMatrix: BiomeCompatibilityMatrix): boolean {
-  return isBiomesCompatible(candidateBiome, neighborBiome, compatibilityMatrix);
-}
-
-function calculateAdjustedBiomeWeights(
-  baseWeights: Record<BiomeId, number>,
-  neighborBiomes: BiomeId[],
-  compatibilityMatrix: BiomeCompatibilityMatrix,
-  forbidSameBiome: boolean
-): Record<BiomeId, number> {
-  const adjustedWeights = { ...baseWeights };
-  const uniqueNeighborBiomes = new Set(neighborBiomes);
-
-  for (const candidateBiome of Object.keys(baseWeights) as BiomeId[]) {
-    let weight = baseWeights[candidateBiome];
-
-    if (forbidSameBiome && uniqueNeighborBiomes.has(candidateBiome)) {
-      adjustedWeights[candidateBiome] = 0;
-      continue;
-    }
-
-    for (const neighborBiome of uniqueNeighborBiomes) {
-      if (candidateBiome === neighborBiome) continue;
-      if (getCompatibility(candidateBiome, neighborBiome, compatibilityMatrix)) {
-        weight += 5;
-      } else {
-        weight *= 0.5;
-      }
-    }
-
-    adjustedWeights[candidateBiome] = weight;
-  }
-
-  return adjustedWeights;
-}
-
-function normalizeWeights(weights: Record<BiomeId, number>): Record<BiomeId, number> {
-  const total = Object.values(weights).reduce((acc, value) => acc + value, 0);
-  if (total <= 0) return { ...weights };
-  const normalized = {} as Record<BiomeId, number>;
-  for (const biomeId of Object.keys(weights) as BiomeId[]) normalized[biomeId] = weights[biomeId] / total;
-  return normalized;
-}
 
 function chooseWeightedRandom(weights: Record<BiomeId, number>): BiomeId {
   const total = Object.values(weights).reduce((acc, value) => acc + value, 0);
@@ -394,36 +353,62 @@ function chooseWeightedRandom(weights: Record<BiomeId, number>): BiomeId {
   return (Object.keys(weights) as BiomeId[]).at(-1) ?? FALLBACK_BIOME_ID;
 }
 
-function chooseBiomeId(landType: BiomeLandType, neighborBiomes: BiomeId[]): BiomeId {
+function chooseBiomeId(landType: BiomeLandType, adjacentBiomeIds: BiomeId[], regionId?: number): BiomeId {
   const baseWeights = {} as Record<BiomeId, number>;
   for (const biome of Object.values(BIOMES)) {
-    baseWeights[biome.id] = landType === 'wild' ? biome.wildWeight : biome.settledWeight;
+    baseWeights[biome.id] = landType === 'settled' ? biome.settledWeight : biome.wildWeight;
   }
 
-  let adjustedWeights = calculateAdjustedBiomeWeights(baseWeights, neighborBiomes, BIOME_COMPATIBILITY_MATRIX, true);
-  let normalizedWeights = normalizeWeights(adjustedWeights);
-  let weightSum = Object.values(normalizedWeights).reduce((acc, value) => acc + value, 0);
+  const uniqueAdjacentBiomeIds = new Set(adjacentBiomeIds);
+  const strictWeights = { ...baseWeights };
 
-  if (weightSum <= 0) {
-    adjustedWeights = calculateAdjustedBiomeWeights(baseWeights, neighborBiomes, BIOME_COMPATIBILITY_MATRIX, false);
-    normalizedWeights = normalizeWeights(adjustedWeights);
-    weightSum = Object.values(normalizedWeights).reduce((acc, value) => acc + value, 0);
+  for (const candidateBiomeId of Object.keys(strictWeights) as BiomeId[]) {
+    if (uniqueAdjacentBiomeIds.has(candidateBiomeId)) {
+      strictWeights[candidateBiomeId] = 0;
+      continue;
+    }
+
+    const isIncompatibleWithAdjacent = adjacentBiomeIds.some(
+      (adjacentBiomeId) => !isBiomesCompatible(candidateBiomeId, adjacentBiomeId, BIOME_COMPATIBILITY_MATRIX)
+    );
+
+    if (isIncompatibleWithAdjacent) strictWeights[candidateBiomeId] = 0;
   }
 
-  if (weightSum <= 0) {
-    normalizedWeights = normalizeWeights(baseWeights);
+  const strictWeightSum = Object.values(strictWeights).reduce((acc, value) => acc + value, 0);
+  if (strictWeightSum > 0) return chooseWeightedRandom(strictWeights);
+
+  if (adjacentBiomeIds.length > 0) {
+    const relaxedWeights = { ...baseWeights };
+    for (const adjacentBiomeId of uniqueAdjacentBiomeIds) relaxedWeights[adjacentBiomeId] = 0;
+    const relaxedWeightSum = Object.values(relaxedWeights).reduce((acc, value) => acc + value, 0);
+
+    console.log('Biome strict filter had no available weights; restored incompatible biome weights', {
+      regionId,
+      biomeLandType: landType,
+      adjacentBiomeIds
+    });
+
+    if (relaxedWeightSum > 0) return chooseWeightedRandom(relaxedWeights);
   }
-  return chooseWeightedRandom(normalizedWeights);
+
+  return landType === 'settled' ? FALLBACK_SETTLED_BIOME_ID : FALLBACK_WILD_BIOME_ID;
 }
 
-function getNeighborBiomes(hex: AxialHex, regionByHexKey: Map<string, Region>): BiomeId[] {
-  return Array.from(
-    new Set(
-      getHexNeighbors(hex)
-        .map((neighborHex) => regionByHexKey.get(hexKey(neighborHex))?.biomeId)
-        .filter((biomeId): biomeId is BiomeId => Boolean(biomeId))
-    )
-  );
+function getAdjacentRegionBiomes(regionHexes: AxialHex[], regionByHexKey: Map<string, Region>): BiomeId[] {
+  const biomeIds = new Set<BiomeId>();
+
+  for (const hex of regionHexes) {
+    for (const neighbor of getHexNeighbors(hex)) {
+      const neighborRegion = regionByHexKey.get(hexKey(neighbor));
+
+      if (neighborRegion?.biomeId) {
+        biomeIds.add(neighborRegion.biomeId);
+      }
+    }
+  }
+
+  return Array.from(biomeIds);
 }
 
 function getHexCornerPoints(hex: AxialHex): RiverVertex[] {
@@ -1795,8 +1780,8 @@ export function App() {
       for (const region of regions) {
         for (const hex of region.hexes) regionByHexKey.set(hexKey(hex), region);
       }
-      const neighborBiomes = getNeighborBiomes(anchorHex, regionByHexKey);
-      const biomeId = chooseBiomeId(biomeLandType, neighborBiomes);
+      const adjacentBiomeIds = getAdjacentRegionBiomes(regionHexes, regionByHexKey);
+      const biomeId = chooseBiomeId(biomeLandType, adjacentBiomeIds, regionId);
       const biome = BIOMES[biomeId] ?? BIOMES[FALLBACK_BIOME_ID];
       const region: Region = {
         id: regionId,
@@ -1815,6 +1800,14 @@ export function App() {
         biomeEmojiLabel: biome.primaryEmoji + biome.secondaryEmojis.join('')
       };
       console.log('Region size generated', { regionId: region.id, targetSize, finalSize, sizeLabel });
+      console.log('Biome selected', {
+        regionId,
+        regionCount: regions.length,
+        biomeLandType,
+        adjacentBiomeIds,
+        selectedBiomeId: biomeId,
+        selectedBiomeLabel: BIOMES[biomeId]?.label
+      });
       if (finalSize > targetSize) {
         console.log('Region size exceeded target because enclosed areas were filled', {
           regionId: region.id,
