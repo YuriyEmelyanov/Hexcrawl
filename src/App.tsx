@@ -128,6 +128,7 @@ type HexTerrainData = {
 type Biome = {
   id: BiomeId;
   label: string;
+  color: string;
   primaryEmoji: string;
   secondaryEmojis: string[];
   wildWeight: number;
@@ -143,26 +144,26 @@ type BiomeEmojiLayoutItem = {
 };
 
 const BIOMES: Record<BiomeId, Biome> = {
-  plain_deciduous_forest: { id: 'plain_deciduous_forest', label: 'Равнинный лиственный лес', primaryEmoji: '🌳', secondaryEmojis: [], wildWeight: 20, settledWeight: 11, heightLevel: 1 },
-  plain_mixed_forest: { id: 'plain_mixed_forest', label: 'Равнинный смешанный лес', primaryEmoji: '🌳', secondaryEmojis: ['🌲'], wildWeight: 12, settledWeight: 5, heightLevel: 1 },
-  plain_coniferous_forest: { id: 'plain_coniferous_forest', label: 'Равнинный хвойный лес', primaryEmoji: '🌲', secondaryEmojis: [], wildWeight: 6, settledWeight: 1, heightLevel: 1 },
-  deciduous_forested_hills: { id: 'deciduous_forested_hills', label: 'Лиственные лесистые холмы', primaryEmoji: '〰️', secondaryEmojis: ['🌳'], wildWeight: 7, settledWeight: 10, heightLevel: 2 },
-  mixed_forested_hills: { id: 'mixed_forested_hills', label: 'Смешанные лесистые холмы', primaryEmoji: '〰️', secondaryEmojis: ['🌳', '🌲'], wildWeight: 5, settledWeight: 2, heightLevel: 2 },
-  coniferous_forested_hills: { id: 'coniferous_forested_hills', label: 'Хвойные лесистые холмы', primaryEmoji: '〰️', secondaryEmojis: ['🌲'], wildWeight: 4, settledWeight: 1, heightLevel: 2 },
-  open_hills: { id: 'open_hills', label: 'Открытые холмы', primaryEmoji: '〰️', secondaryEmojis: [], wildWeight: 6, settledWeight: 9, heightLevel: 2 },
-  coniferous_mountain_forest: { id: 'coniferous_mountain_forest', label: 'Хвойный горный лес', primaryEmoji: '⛰', secondaryEmojis: ['🌲'], wildWeight: 4, settledWeight: 0, heightLevel: 3 },
-  mixed_mountain_forest: { id: 'mixed_mountain_forest', label: 'Смешанный горный лес', primaryEmoji: '⛰', secondaryEmojis: ['🌳', '🌲'], wildWeight: 3, settledWeight: 0, heightLevel: 3 },
-  deciduous_mountain_forest: { id: 'deciduous_mountain_forest', label: 'Лиственный горный лес', primaryEmoji: '⛰', secondaryEmojis: ['🌳'], wildWeight: 1, settledWeight: 0, heightLevel: 3 },
-  mountains: { id: 'mountains', label: 'Горы', primaryEmoji: '⛰', secondaryEmojis: [], wildWeight: 2, settledWeight: 0, heightLevel: 3 },
-  open_plains: { id: 'open_plains', label: 'Открытые равнины', primaryEmoji: '🌱', secondaryEmojis: [], wildWeight: 14, settledWeight: 32, heightLevel: 1 },
-  swamp_forest: { id: 'swamp_forest', label: 'Заболоченный лес', primaryEmoji: '💧', secondaryEmojis: ['🌳'], wildWeight: 3, settledWeight: 0, heightLevel: 1 },
-  swamp: { id: 'swamp', label: 'Болото', primaryEmoji: '💧', secondaryEmojis: ['🌱'], wildWeight: 4, settledWeight: 0, heightLevel: 1 },
-  hilly_woodland: { id: 'hilly_woodland', label: 'Холмистое редколесье', primaryEmoji: '〰️', secondaryEmojis: ['🌱', '🌳'], wildWeight: 2, settledWeight: 2, heightLevel: 2 },
-  mountain_woodland: { id: 'mountain_woodland', label: 'Горное редколесье', primaryEmoji: '⛰', secondaryEmojis: ['🌱', '🌲'], wildWeight: 1, settledWeight: 0, heightLevel: 3 },
-  deciduous_woodland: { id: 'deciduous_woodland', label: 'Лиственное редколесье', primaryEmoji: '🌱', secondaryEmojis: ['🌳'], wildWeight: 3, settledWeight: 19, heightLevel: 1 },
-  mixed_woodland: { id: 'mixed_woodland', label: 'Смешанное редколесье', primaryEmoji: '🌱', secondaryEmojis: ['🌳', '🌲'], wildWeight: 1, settledWeight: 7, heightLevel: 1 },
-  coniferous_woodland: { id: 'coniferous_woodland', label: 'Хвойное редколесье', primaryEmoji: '🌱', secondaryEmojis: ['🌲'], wildWeight: 1, settledWeight: 1, heightLevel: 1 },
-  semi_desert: { id: 'semi_desert', label: 'Полупустыня', primaryEmoji: '🪨', secondaryEmojis: ['🌱'], wildWeight: 1, settledWeight: 0, heightLevel: 1 }
+  plain_deciduous_forest: { id: 'plain_deciduous_forest', label: 'Равнинный лиственный лес', color: '#5F9E6E', primaryEmoji: '🌳', secondaryEmojis: [], wildWeight: 20, settledWeight: 11, heightLevel: 1 },
+  plain_mixed_forest: { id: 'plain_mixed_forest', label: 'Равнинный смешанный лес', color: '#5B8F64', primaryEmoji: '🌳', secondaryEmojis: ['🌲'], wildWeight: 12, settledWeight: 5, heightLevel: 1 },
+  plain_coniferous_forest: { id: 'plain_coniferous_forest', label: 'Равнинный хвойный лес', color: '#3F7F73', primaryEmoji: '🌲', secondaryEmojis: [], wildWeight: 6, settledWeight: 1, heightLevel: 1 },
+  deciduous_forested_hills: { id: 'deciduous_forested_hills', label: 'Лиственные лесистые холмы', color: '#78945D', primaryEmoji: '〰️', secondaryEmojis: ['🌳'], wildWeight: 7, settledWeight: 10, heightLevel: 2 },
+  mixed_forested_hills: { id: 'mixed_forested_hills', label: 'Смешанные лесистые холмы', color: '#6F8758', primaryEmoji: '〰️', secondaryEmojis: ['🌳', '🌲'], wildWeight: 5, settledWeight: 2, heightLevel: 2 },
+  coniferous_forested_hills: { id: 'coniferous_forested_hills', label: 'Хвойные лесистые холмы', color: '#527B69', primaryEmoji: '〰️', secondaryEmojis: ['🌲'], wildWeight: 4, settledWeight: 1, heightLevel: 2 },
+  open_hills: { id: 'open_hills', label: 'Открытые холмы', color: '#B49A5A', primaryEmoji: '〰️', secondaryEmojis: [], wildWeight: 6, settledWeight: 9, heightLevel: 2 },
+  coniferous_mountain_forest: { id: 'coniferous_mountain_forest', label: 'Хвойный горный лес', color: '#4E6F68', primaryEmoji: '⛰', secondaryEmojis: ['🌲'], wildWeight: 4, settledWeight: 0, heightLevel: 3 },
+  mixed_mountain_forest: { id: 'mixed_mountain_forest', label: 'Смешанный горный лес', color: '#667762', primaryEmoji: '⛰', secondaryEmojis: ['🌳', '🌲'], wildWeight: 3, settledWeight: 0, heightLevel: 3 },
+  deciduous_mountain_forest: { id: 'deciduous_mountain_forest', label: 'Лиственный горный лес', color: '#6F8063', primaryEmoji: '⛰', secondaryEmojis: ['🌳'], wildWeight: 1, settledWeight: 0, heightLevel: 3 },
+  mountains: { id: 'mountains', label: 'Горы', color: '#8A8375', primaryEmoji: '⛰', secondaryEmojis: [], wildWeight: 2, settledWeight: 0, heightLevel: 3 },
+  open_plains: { id: 'open_plains', label: 'Открытые равнины', color: '#A7BE63', primaryEmoji: '🌱', secondaryEmojis: [], wildWeight: 14, settledWeight: 32, heightLevel: 1 },
+  swamp_forest: { id: 'swamp_forest', label: 'Заболоченный лес', color: '#5E806E', primaryEmoji: '💧', secondaryEmojis: ['🌳'], wildWeight: 3, settledWeight: 0, heightLevel: 1 },
+  swamp: { id: 'swamp', label: 'Болото', color: '#6F9278', primaryEmoji: '💧', secondaryEmojis: ['🌱'], wildWeight: 4, settledWeight: 0, heightLevel: 1 },
+  hilly_woodland: { id: 'hilly_woodland', label: 'Холмистое редколесье', color: '#9A9861', primaryEmoji: '〰️', secondaryEmojis: ['🌱', '🌳'], wildWeight: 2, settledWeight: 2, heightLevel: 2 },
+  mountain_woodland: { id: 'mountain_woodland', label: 'Горное редколесье', color: '#7D8069', primaryEmoji: '⛰', secondaryEmojis: ['🌱', '🌲'], wildWeight: 1, settledWeight: 0, heightLevel: 3 },
+  deciduous_woodland: { id: 'deciduous_woodland', label: 'Лиственное редколесье', color: '#8CAF67', primaryEmoji: '🌱', secondaryEmojis: ['🌳'], wildWeight: 3, settledWeight: 19, heightLevel: 1 },
+  mixed_woodland: { id: 'mixed_woodland', label: 'Смешанное редколесье', color: '#82A568', primaryEmoji: '🌱', secondaryEmojis: ['🌳', '🌲'], wildWeight: 1, settledWeight: 7, heightLevel: 1 },
+  coniferous_woodland: { id: 'coniferous_woodland', label: 'Хвойное редколесье', color: '#6C9A78', primaryEmoji: '🌱', secondaryEmojis: ['🌲'], wildWeight: 1, settledWeight: 1, heightLevel: 1 },
+  semi_desert: { id: 'semi_desert', label: 'Полупустыня', color: '#C4A96A', primaryEmoji: '🪨', secondaryEmojis: ['🌱'], wildWeight: 1, settledWeight: 0, heightLevel: 1 }
 };
 const FALLBACK_BIOME_ID: BiomeId = 'plain_deciduous_forest';
 const FALLBACK_SETTLED_BIOME_ID: BiomeId = 'open_plains';
@@ -1336,9 +1337,9 @@ export function chooseRegionCenter(regionHexes: AxialHex[]): AxialHex {
   return randomFrom(bestCenterCandidates);
 }
 
-export function getRegionColor(regionId: number): string {
-  const hue = (regionId * 67) % 360;
-  return `hsl(${hue} 55% 42%)`;
+function getBiomeColor(biomeId: BiomeId | undefined): string {
+  if (!biomeId) return BIOMES[FALLBACK_BIOME_ID].color;
+  return BIOMES[biomeId]?.color ?? BIOMES[FALLBACK_BIOME_ID].color;
 }
 
 export function getCandidateHexes(allRegionHexes: AxialHex[]): AxialHex[] {
@@ -2033,8 +2034,8 @@ export function App() {
               const cls = hex.kind === 'candidate' ? 'hex candidate' : meta?.isCenter ? 'hex center' : 'hex region';
               const terrain = hexTerrainByKey.get(hex.key);
               const isLakeHex = terrain?.terrainOverride === 'lake';
-              const fill = hex.kind === 'candidate' ? undefined : isLakeHex ? LAKE_HEX_COLOR : getRegionColor(meta?.regionId ?? 0);
               const region = meta?.regionId ? regions.find((item) => item.id === meta.regionId) : undefined;
+              const fill = hex.kind === 'candidate' ? undefined : isLakeHex ? LAKE_HEX_COLOR : getBiomeColor(region?.biomeId);
               const fallbackBiome = BIOMES[FALLBACK_BIOME_ID];
               const biomePrimaryEmoji = region?.biomePrimaryEmoji ?? fallbackBiome.primaryEmoji;
               const biomeSecondaryEmojis = region?.biomeSecondaryEmojis ?? fallbackBiome.secondaryEmojis;
