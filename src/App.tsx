@@ -8,6 +8,7 @@ type AxialHex = {
 type HexType = 'region' | 'candidate' | 'center';
 
 type BiomeLandType = 'settled' | 'wild';
+type RegionHeightLevel = 1 | 2 | 3;
 
 type BiomeId =
   | 'plain_deciduous_forest'
@@ -41,6 +42,7 @@ type Region = {
   sizeCategory: 'locality' | 'small_region' | 'region' | 'large_region' | 'land' | 'vast_land';
   sizeLabel: 'Местность' | 'Малый регион' | 'Регион' | 'Большой регион' | 'Край' | 'Обширный край';
   biomeLandType: BiomeLandType;
+  heightLevel: RegionHeightLevel;
   biomeId: BiomeId;
   biomeLabel: string;
   biomePrimaryEmoji: string;
@@ -130,6 +132,7 @@ type Biome = {
   secondaryEmojis: string[];
   wildWeight: number;
   settledWeight: number;
+  heightLevel: RegionHeightLevel;
 };
 
 type BiomeEmojiLayoutItem = {
@@ -140,26 +143,26 @@ type BiomeEmojiLayoutItem = {
 };
 
 const BIOMES: Record<BiomeId, Biome> = {
-  plain_deciduous_forest: { id: 'plain_deciduous_forest', label: 'Равнинный лиственный лес', primaryEmoji: '🌳', secondaryEmojis: [], wildWeight: 20, settledWeight: 11 },
-  plain_mixed_forest: { id: 'plain_mixed_forest', label: 'Равнинный смешанный лес', primaryEmoji: '🌳', secondaryEmojis: ['🌲'], wildWeight: 12, settledWeight: 5 },
-  plain_coniferous_forest: { id: 'plain_coniferous_forest', label: 'Равнинный хвойный лес', primaryEmoji: '🌲', secondaryEmojis: [], wildWeight: 6, settledWeight: 1 },
-  deciduous_forested_hills: { id: 'deciduous_forested_hills', label: 'Лиственные лесистые холмы', primaryEmoji: '〰️', secondaryEmojis: ['🌳'], wildWeight: 7, settledWeight: 10 },
-  mixed_forested_hills: { id: 'mixed_forested_hills', label: 'Смешанные лесистые холмы', primaryEmoji: '〰️', secondaryEmojis: ['🌳', '🌲'], wildWeight: 5, settledWeight: 2 },
-  coniferous_forested_hills: { id: 'coniferous_forested_hills', label: 'Хвойные лесистые холмы', primaryEmoji: '〰️', secondaryEmojis: ['🌲'], wildWeight: 4, settledWeight: 1 },
-  open_hills: { id: 'open_hills', label: 'Открытые холмы', primaryEmoji: '〰️', secondaryEmojis: [], wildWeight: 6, settledWeight: 9 },
-  coniferous_mountain_forest: { id: 'coniferous_mountain_forest', label: 'Хвойный горный лес', primaryEmoji: '⛰', secondaryEmojis: ['🌲'], wildWeight: 4, settledWeight: 0 },
-  mixed_mountain_forest: { id: 'mixed_mountain_forest', label: 'Смешанный горный лес', primaryEmoji: '⛰', secondaryEmojis: ['🌳', '🌲'], wildWeight: 3, settledWeight: 0 },
-  deciduous_mountain_forest: { id: 'deciduous_mountain_forest', label: 'Лиственный горный лес', primaryEmoji: '⛰', secondaryEmojis: ['🌳'], wildWeight: 1, settledWeight: 0 },
-  mountains: { id: 'mountains', label: 'Горы', primaryEmoji: '⛰', secondaryEmojis: [], wildWeight: 2, settledWeight: 0 },
-  open_plains: { id: 'open_plains', label: 'Открытые равнины', primaryEmoji: '🌱', secondaryEmojis: [], wildWeight: 14, settledWeight: 32 },
-  swamp_forest: { id: 'swamp_forest', label: 'Заболоченный лес', primaryEmoji: '💧', secondaryEmojis: ['🌳'], wildWeight: 3, settledWeight: 0 },
-  swamp: { id: 'swamp', label: 'Болото', primaryEmoji: '💧', secondaryEmojis: ['🌱'], wildWeight: 4, settledWeight: 0 },
-  hilly_woodland: { id: 'hilly_woodland', label: 'Холмистое редколесье', primaryEmoji: '〰️', secondaryEmojis: ['🌱', '🌳'], wildWeight: 2, settledWeight: 2 },
-  mountain_woodland: { id: 'mountain_woodland', label: 'Горное редколесье', primaryEmoji: '⛰', secondaryEmojis: ['🌱', '🌲'], wildWeight: 1, settledWeight: 0 },
-  deciduous_woodland: { id: 'deciduous_woodland', label: 'Лиственное редколесье', primaryEmoji: '🌱', secondaryEmojis: ['🌳'], wildWeight: 3, settledWeight: 19 },
-  mixed_woodland: { id: 'mixed_woodland', label: 'Смешанное редколесье', primaryEmoji: '🌱', secondaryEmojis: ['🌳', '🌲'], wildWeight: 1, settledWeight: 7 },
-  coniferous_woodland: { id: 'coniferous_woodland', label: 'Хвойное редколесье', primaryEmoji: '🌱', secondaryEmojis: ['🌲'], wildWeight: 1, settledWeight: 1 },
-  semi_desert: { id: 'semi_desert', label: 'Полупустыня', primaryEmoji: '🪨', secondaryEmojis: ['🌱'], wildWeight: 1, settledWeight: 0 }
+  plain_deciduous_forest: { id: 'plain_deciduous_forest', label: 'Равнинный лиственный лес', primaryEmoji: '🌳', secondaryEmojis: [], wildWeight: 20, settledWeight: 11, heightLevel: 1 },
+  plain_mixed_forest: { id: 'plain_mixed_forest', label: 'Равнинный смешанный лес', primaryEmoji: '🌳', secondaryEmojis: ['🌲'], wildWeight: 12, settledWeight: 5, heightLevel: 1 },
+  plain_coniferous_forest: { id: 'plain_coniferous_forest', label: 'Равнинный хвойный лес', primaryEmoji: '🌲', secondaryEmojis: [], wildWeight: 6, settledWeight: 1, heightLevel: 1 },
+  deciduous_forested_hills: { id: 'deciduous_forested_hills', label: 'Лиственные лесистые холмы', primaryEmoji: '〰️', secondaryEmojis: ['🌳'], wildWeight: 7, settledWeight: 10, heightLevel: 2 },
+  mixed_forested_hills: { id: 'mixed_forested_hills', label: 'Смешанные лесистые холмы', primaryEmoji: '〰️', secondaryEmojis: ['🌳', '🌲'], wildWeight: 5, settledWeight: 2, heightLevel: 2 },
+  coniferous_forested_hills: { id: 'coniferous_forested_hills', label: 'Хвойные лесистые холмы', primaryEmoji: '〰️', secondaryEmojis: ['🌲'], wildWeight: 4, settledWeight: 1, heightLevel: 2 },
+  open_hills: { id: 'open_hills', label: 'Открытые холмы', primaryEmoji: '〰️', secondaryEmojis: [], wildWeight: 6, settledWeight: 9, heightLevel: 2 },
+  coniferous_mountain_forest: { id: 'coniferous_mountain_forest', label: 'Хвойный горный лес', primaryEmoji: '⛰', secondaryEmojis: ['🌲'], wildWeight: 4, settledWeight: 0, heightLevel: 3 },
+  mixed_mountain_forest: { id: 'mixed_mountain_forest', label: 'Смешанный горный лес', primaryEmoji: '⛰', secondaryEmojis: ['🌳', '🌲'], wildWeight: 3, settledWeight: 0, heightLevel: 3 },
+  deciduous_mountain_forest: { id: 'deciduous_mountain_forest', label: 'Лиственный горный лес', primaryEmoji: '⛰', secondaryEmojis: ['🌳'], wildWeight: 1, settledWeight: 0, heightLevel: 3 },
+  mountains: { id: 'mountains', label: 'Горы', primaryEmoji: '⛰', secondaryEmojis: [], wildWeight: 2, settledWeight: 0, heightLevel: 3 },
+  open_plains: { id: 'open_plains', label: 'Открытые равнины', primaryEmoji: '🌱', secondaryEmojis: [], wildWeight: 14, settledWeight: 32, heightLevel: 1 },
+  swamp_forest: { id: 'swamp_forest', label: 'Заболоченный лес', primaryEmoji: '💧', secondaryEmojis: ['🌳'], wildWeight: 3, settledWeight: 0, heightLevel: 1 },
+  swamp: { id: 'swamp', label: 'Болото', primaryEmoji: '💧', secondaryEmojis: ['🌱'], wildWeight: 4, settledWeight: 0, heightLevel: 1 },
+  hilly_woodland: { id: 'hilly_woodland', label: 'Холмистое редколесье', primaryEmoji: '〰️', secondaryEmojis: ['🌱', '🌳'], wildWeight: 2, settledWeight: 2, heightLevel: 2 },
+  mountain_woodland: { id: 'mountain_woodland', label: 'Горное редколесье', primaryEmoji: '⛰', secondaryEmojis: ['🌱', '🌲'], wildWeight: 1, settledWeight: 0, heightLevel: 3 },
+  deciduous_woodland: { id: 'deciduous_woodland', label: 'Лиственное редколесье', primaryEmoji: '🌱', secondaryEmojis: ['🌳'], wildWeight: 3, settledWeight: 19, heightLevel: 1 },
+  mixed_woodland: { id: 'mixed_woodland', label: 'Смешанное редколесье', primaryEmoji: '🌱', secondaryEmojis: ['🌳', '🌲'], wildWeight: 1, settledWeight: 7, heightLevel: 1 },
+  coniferous_woodland: { id: 'coniferous_woodland', label: 'Хвойное редколесье', primaryEmoji: '🌱', secondaryEmojis: ['🌲'], wildWeight: 1, settledWeight: 1, heightLevel: 1 },
+  semi_desert: { id: 'semi_desert', label: 'Полупустыня', primaryEmoji: '🪨', secondaryEmojis: ['🌱'], wildWeight: 1, settledWeight: 0, heightLevel: 1 }
 };
 const FALLBACK_BIOME_ID: BiomeId = 'plain_deciduous_forest';
 const FALLBACK_SETTLED_BIOME_ID: BiomeId = 'open_plains';
@@ -251,6 +254,16 @@ function getRiverWidth(flowLevel: number, hexWidth: number): number {
 
   const clampedFlowLevel = clamp(Math.round(flowLevel), MIN_RIVER_FLOW_LEVEL, MAX_RIVER_FLOW_LEVEL);
   return hexWidth * widthFactors[clampedFlowLevel];
+}
+
+function getRegionHeightLevelFromBiomeId(biomeId: BiomeId): RegionHeightLevel {
+  return BIOMES[biomeId]?.heightLevel ?? 1;
+}
+
+function getRegionHeightLabel(heightLevel: RegionHeightLevel): string {
+  if (heightLevel === 3) return '3 — горы';
+  if (heightLevel === 2) return '2 — холмы';
+  return '1 — равнина';
 }
 
 function getBiomeEmojiLayout(
@@ -1816,6 +1829,7 @@ export function App() {
       const adjacentBiomeIds = getAdjacentRegionBiomes(regionHexes, regionByHexKey);
       const biomeId = chooseBiomeId(biomeLandType, adjacentBiomeIds, regionId);
       const biome = BIOMES[biomeId] ?? BIOMES[FALLBACK_BIOME_ID];
+      const heightLevel = BIOMES[biomeId]?.heightLevel ?? 1;
       const region: Region = {
         id: regionId,
         hexes: regionHexes,
@@ -1826,6 +1840,7 @@ export function App() {
         sizeCategory,
         sizeLabel,
         biomeLandType,
+        heightLevel,
         biomeId,
         biomeLabel: biome.label,
         biomePrimaryEmoji: biome.primaryEmoji,
@@ -2136,6 +2151,7 @@ export function App() {
               <p>Регионов: {regions.length}</p>
               <p>Последний регион: #{lastRegion.id}</p>
               <p>Размер региона: {getRegionSizeDisplay(lastRegion)}</p>
+              <p>Высота: {getRegionHeightLabel(lastRegion.heightLevel ?? getRegionHeightLevelFromBiomeId(lastRegion.biomeId))}</p>
               <p>Целевой размер: {lastRegion.targetSize}</p>
               <p>Фактический размер региона: {lastRegion.finalSize}</p>
             </>
@@ -2154,12 +2170,14 @@ export function App() {
               <p><strong>Озеро:</strong> {selectedTerrain?.lakeId ?? '—'}</p>
               <p><strong>Регион:</strong> #{selectedRegion.id}</p>
               <p><strong>Исходный биом региона:</strong> {selectedRegion.biomeLabel}</p>
+              <p><strong>Высота:</strong> {getRegionHeightLabel(selectedRegion.heightLevel ?? getRegionHeightLevelFromBiomeId(selectedRegion.biomeId))}</p>
             </>
           ) : null}
           {!isSelectedCandidate && selectedRegion && !isSelectedLake ? (
             <>
               <p><strong>Тип местности:</strong> {selectedRegion.biomeLandType === 'settled' ? 'Освоенная' : 'Дикая'}</p>
               <p><strong>Биом:</strong> {selectedRegion.biomePrimaryEmoji}{selectedRegion.biomeSecondaryEmojis.join('')} {selectedRegion.biomeLabel}</p>
+              <p><strong>Высота:</strong> {getRegionHeightLabel(selectedRegion.heightLevel ?? getRegionHeightLevelFromBiomeId(selectedRegion.biomeId))}</p>
               <p><strong>Размер:</strong> {getRegionSizeDisplay(selectedRegion)}</p>
             </>
           ) : null}
