@@ -31,30 +31,15 @@ type BiomeId =
   | 'coniferous_woodland'
   | 'semi_desert';
 
-type DfRollResult = {
-  values: number[];
-  sum: number;
-};
-
-type RegionSizeRoll = {
-  scaleD20: number;
-  scaleX: number;
-  growthDiceValues: number[];
-  growthSticks: number;
-  regionSize: number;
-};
-
 type Region = {
   id: number;
   hexes: AxialHex[];
   centerHex: AxialHex;
   anchorHex: AxialHex;
-  scaleD20: number;
-  scaleX: number;
-  growthDiceValues: number[];
-  growthSticks: number;
-  regionSize: number;
   targetSize: number;
+  finalSize: number;
+  sizeCategory: 'locality' | 'small_region' | 'region' | 'large_region' | 'land' | 'vast_land';
+  sizeLabel: 'Местность' | 'Малый регион' | 'Регион' | 'Большой регион' | 'Край' | 'Обширный край';
   biomeLandType: BiomeLandType;
   biomeId: BiomeId;
   biomeLabel: string;
@@ -966,26 +951,29 @@ function validateCandidateBoundaryVertices(
   return candidateBoundaryVertices.filter((vertex) => !validVertexKeys.has(vertex.key));
 }
 
-export function rollFateSticks(count: number): DfRollResult {
-  const values = Array.from({ length: count }, () => Math.floor(Math.random() * 3));
-  const sum = values.reduce((acc, current) => acc + current, 0);
-  return { values, sum };
+export function rollRegionTargetSize(): number {
+  const roll = randomIntInclusive(1, 100);
+  if (roll <= 5) return randomIntInclusive(5, 10);
+  if (roll <= 40) return randomIntInclusive(11, 20);
+  if (roll <= 65) return randomIntInclusive(21, 30);
+  if (roll <= 83) return randomIntInclusive(31, 40);
+  if (roll <= 95) return randomIntInclusive(41, 50);
+  return randomIntInclusive(51, 60);
 }
 
-export function rollD20(): number {
-  return Math.floor(Math.random() * 20) + 1;
+export function getRegionSizeCategory(size: number): Pick<Region, 'sizeCategory' | 'sizeLabel'> {
+  if (size >= 5 && size <= 10) return { sizeCategory: 'locality', sizeLabel: 'Местность' };
+  if (size >= 11 && size <= 20) return { sizeCategory: 'small_region', sizeLabel: 'Малый регион' };
+  if (size >= 21 && size <= 30) return { sizeCategory: 'region', sizeLabel: 'Регион' };
+  if (size >= 31 && size <= 40) return { sizeCategory: 'large_region', sizeLabel: 'Большой регион' };
+  if (size >= 41 && size <= 50) return { sizeCategory: 'land', sizeLabel: 'Край' };
+  return { sizeCategory: 'vast_land', sizeLabel: 'Обширный край' };
 }
 
-export function rollRegionSize(): RegionSizeRoll {
-  const regionSize = randomInt(10, 60);
-
-  return {
-    scaleD20: 0,
-    scaleX: 0,
-    growthDiceValues: [],
-    growthSticks: 0,
-    regionSize
-  };
+export function getRegionSizeDisplay(region: Partial<Region> & { hexes?: AxialHex[] }): string {
+  const size = region.finalSize ?? region.hexes?.length ?? region.targetSize ?? 0;
+  const { sizeLabel } = getRegionSizeCategory(size);
+  return `${sizeLabel} (${size})`;
 }
 
 export function getHexNeighbors(hex: AxialHex): AxialHex[] {
@@ -1992,15 +1980,16 @@ export function App() {
   const addRegionToMap = (anchorHex: AxialHex) => {
     const maxRegionAttempts = 30;
     for (let attempt = 0; attempt < maxRegionAttempts; attempt += 1) {
-      const sizeRoll = rollRegionSize();
-      const size = sizeRoll.regionSize;
+      const targetSize = rollRegionTargetSize();
       const occupiedHexes = new Set(allRegionHexes.map(hexKey));
       const existingRegionHexes = new Map<string, number>();
       for (const region of regions) {
         for (const hex of region.hexes) existingRegionHexes.set(hexKey(hex), region.id);
       }
       const regionId = regions.length + 1;
-      const regionHexes = generateConnectedRegionFromAnchor(anchorHex, size, occupiedHexes, existingRegionHexes, regionId, debugRivers);
+      const regionHexes = generateConnectedRegionFromAnchor(anchorHex, targetSize, occupiedHexes, existingRegionHexes, regionId, debugRivers);
+      const finalSize = regionHexes.length;
+      const { sizeCategory, sizeLabel } = getRegionSizeCategory(finalSize);
       const centerHex = chooseRegionCenter(regionHexes);
       const biomeLandType = chooseBiomeLandType(regions.length);
       const regionByHexKey = new Map<string, Region>();
@@ -2015,12 +2004,10 @@ export function App() {
         hexes: regionHexes,
         centerHex,
         anchorHex,
-        scaleD20: sizeRoll.scaleD20,
-        scaleX: sizeRoll.scaleX,
-        growthDiceValues: sizeRoll.growthDiceValues,
-        growthSticks: sizeRoll.growthSticks,
-        regionSize: sizeRoll.regionSize,
-        targetSize: size,
+        targetSize,
+        finalSize,
+        sizeCategory,
+        sizeLabel,
         biomeLandType,
         biomeId,
         biomeLabel: biome.label,
@@ -2028,6 +2015,15 @@ export function App() {
         biomeSecondaryEmojis: [...biome.secondaryEmojis],
         biomeEmojiLabel: biome.primaryEmoji + biome.secondaryEmojis.join('')
       };
+      console.log('Region size generated', { regionId: region.id, targetSize, finalSize, sizeLabel });
+      if (finalSize > targetSize) {
+        console.log('Region size exceeded target because enclosed areas were filled', {
+          regionId: region.id,
+          targetSize,
+          finalSize,
+          exceededBy: finalSize - targetSize
+        });
+      }
       const nextRegions = [...regions, region];
       const { lakesByHex, nextLakeId: computedNextLakeId } = assignLakesForRegion(regionHexes, centerHex, nextLakeId);
       const nextAllHexes = nextRegions.flatMap((r) => r.hexes);
@@ -2310,13 +2306,9 @@ export function App() {
             <>
               <p>Регионов: {regions.length}</p>
               <p>Последний регион: #{lastRegion.id}</p>
-              <p>Бросок масштаба: d20 = {lastRegion.scaleD20}</p>
-              <p>Масштаб X: {lastRegion.scaleX}</p>
-              <p>Бросок роста ({lastRegion.scaleX}dF): {lastRegion.growthDiceValues.join(', ')}</p>
-              <p>Палочки роста: {lastRegion.growthSticks}</p>
-              <p>Итоговый размер региона: {lastRegion.regionSize} ({lastRegion.scaleX} + {lastRegion.growthSticks})</p>
+              <p>Размер региона: {getRegionSizeDisplay(lastRegion)}</p>
               <p>Целевой размер: {lastRegion.targetSize}</p>
-              <p>Фактический размер региона: {lastRegion.hexes.length}</p>
+              <p>Фактический размер региона: {lastRegion.finalSize}</p>
             </>
           ) : null}
           <hr />
@@ -2339,6 +2331,7 @@ export function App() {
             <>
               <p><strong>Тип местности:</strong> {selectedRegion.biomeLandType === 'settled' ? 'Освоенная' : 'Дикая'}</p>
               <p><strong>Биом:</strong> {selectedRegion.biomePrimaryEmoji}{selectedRegion.biomeSecondaryEmojis.join('')} {selectedRegion.biomeLabel}</p>
+              <p><strong>Размер:</strong> {getRegionSizeDisplay(selectedRegion)}</p>
             </>
           ) : null}
           {debugRivers ? (
