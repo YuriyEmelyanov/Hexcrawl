@@ -1580,6 +1580,7 @@ function getLakeChanceForBiome(biomeId: BiomeId): number {
   if (biomeId === 'swamp' || biomeId === 'swamp_forest') return 0.04;
   return 0.02;
 }
+const LAKE_EXPANSION_CHANCE = 0.10;
 
 function assignLakesForRegion(
   regionHexes: AxialHex[],
@@ -1607,7 +1608,7 @@ function assignLakesForRegion(
     const touchesFirstPassLake = getHexNeighbors(hex).some((neighbor) => firstPassLakeKeys.has(hexKey(neighbor)));
     if (!touchesFirstPassLake) continue;
 
-    if (Math.random() < lakeChance) selectedLakeKeys.add(key);
+    if (Math.random() < LAKE_EXPANSION_CHANCE) selectedLakeKeys.add(key);
   }
 
   const lakesByHex = new Map<string, HexTerrainData>();
@@ -1640,6 +1641,7 @@ function assignLakesForRegion(
   console.log('Lakes generated for region', {
     biomeId,
     lakeChance,
+    lakeExpansionChance: LAKE_EXPANSION_CHANCE,
     lakeHexCount: lakesByHex.size,
     lakeIds: Array.from(new Set(Array.from(lakesByHex.values()).map((terrain) => terrain.lakeId))).filter(Boolean)
   });
