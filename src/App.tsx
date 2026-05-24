@@ -1144,6 +1144,36 @@ function findRiverPath(
   return path.reverse();
 }
 
+function findBestFreeRiverPathToAnyTarget(
+  startVertex: RiverVertex,
+  targetVertices: RiverVertex[],
+  riverGraph: RiverGraph,
+  blockedEdgeKeys: Set<string>
+): RiverVertex[] | null {
+  const startNode = riverGraph.nodes.get(startVertex.key);
+  if (!startNode || targetVertices.length === 0) return null;
+
+  let bestPath: RiverVertex[] | null = null;
+  for (const targetVertex of targetVertices) {
+    const targetNode = riverGraph.nodes.get(targetVertex.key);
+    if (!targetNode) continue;
+
+    const path = findRiverPath(startNode, targetNode, riverGraph, blockedEdgeKeys)
+      .map((node) => ({ key: node.key, x: node.x, y: node.y }));
+    if (path.length < 2) continue;
+    if (new Set(path.map((vertex) => vertex.key)).size !== path.length) continue;
+    const pathEdgeKeys = getRiverPathEdgeKeys(path, riverGraph);
+    if (!pathEdgeKeys) continue;
+    if (pathEdgeKeys.some((edgeKey) => blockedEdgeKeys.has(edgeKey))) continue;
+
+    if (!bestPath || path.length < bestPath.length) {
+      bestPath = path;
+    }
+  }
+
+  return bestPath;
+}
+
 function buildBoundingBox(occupiedHexes: Set<string>, padding = 2): { minQ: number; maxQ: number; minR: number; maxR: number } {
   const occupied = Array.from(occupiedHexes).map(parseHexKey);
   if (occupied.length === 0) {
@@ -1364,6 +1394,94 @@ function generateRiverForRegion(region: Region, regions: Region[], existingRiver
     const existingRiverEndpointVerticesInRegion = getExistingRiverEndpointVerticesInRegion(region, existingRivers, riverGraph);
     const usedRiverEdges = buildUsedRiverEdges(existingRivers);
     const touchingEndpoints = findRiverEndpointsTouchingRegion(region, existingRivers, riverGraph);
+    const incomingEndpoints = touchingEndpoints.filter((endpoint) => endpoint.endpointType === 'end');
+    const outgoingEndpoints = touchingEndpoints.filter((endpoint) => endpoint.endpointType === 'start');
+
+    if (incomingEndpoints.length >= 2) {
+      const sortedIncomingEndpoints = [...incomingEndpoints].sort((a, b) => {
+        const riverA = existingRivers.find((river) => river.id === a.riverId);
+        const riverB = existingRivers.find((river) => river.id === b.riverId);
+        return (riverB?.flowLevel ?? 1) - (riverA?.flowLevel ?? 1);
+      });
+      const mainIncomingEndpoint = sortedIncomingEndpoints[0];
+      const tributaryIncomingEndpoints = sortedIncomingEndpoints.slice(1);
+      const blockedEdgeKeys = new Set(usedRiverEdges);
+
+      console.log('Multiple incoming rivers: building main river and tributaries', {
+        regionId: region.id,
+        incomingRiverIds: sortedIncomingEndpoints.map((endpoint) => endpoint.riverId),
+        mainRiverId: mainIncomingEndpoint.riverId,
+        tributaryRiverIds: tributaryIncomingEndpoints.map((endpoint) => endpoint.riverId),
+      });
+
+      const mainEndpointPath = findBestFreeRiverPathFromEndpoints(
+        [mainIncomingEndpoint.vertex],
+        redVertices,
+        purpleVertices,
+        riverGraph,
+        blockedEdgeKeys,
+        region.centerHex
+      );
+      if (!mainEndpointPath) return { success: false, rivers: existingRivers, reason: 'main_incoming_river_path_not_found' };
+      const { controlPoints: mainControlPoints, path: mainPath } = mainEndpointPath;
+      if (!validateRiverPathViaControlPoints(mainPath, mainControlPoints, riverGraph, redVertices, [mainIncomingEndpoint.vertex], blockedEdgeKeys)) {
+        return { success: false, rivers: existingRivers, reason: 'main_incoming_river_validation_failed' };
+      }
+      if (!riverPathTouchesCenterHex(mainPath, region.centerHex, riverGraph)) {
+        return { success: false, rivers: existingRivers, reason: 'main_incoming_river_does_not_touch_center_hex' };
+      }
+
+      const mainRiver = existingRivers.find((river) => river.id === mainIncomingEndpoint.riverId);
+      if (!mainRiver) return { success: false, rivers: existingRivers, reason: 'main_incoming_river_not_found' };
+
+      const mainPathEdgeKeys = getRiverPathEdgeKeys(mainPath, riverGraph);
+      if (!mainPathEdgeKeys) return { success: false, rivers: existingRivers, reason: 'main_incoming_river_edge_keys_not_found' };
+      for (const edgeKey of mainPathEdgeKeys) blockedEdgeKeys.add(edgeKey);
+
+      const mainBuiltPath = mainEndpointPath.path;
+      const tributaryTargetVertices = mainBuiltPath.slice(1);
+      if (tributaryTargetVertices.length === 0) return { success: false, rivers: existingRivers, reason: 'no_tributary_targets' };
+
+      const tributaryPathByRiverId = new Map<number, RiverVertex[]>();
+      for (const endpoint of tributaryIncomingEndpoints) {
+        const tributaryPath = findBestFreeRiverPathToAnyTarget(
+          endpoint.vertex,
+          tributaryTargetVertices,
+          riverGraph,
+          blockedEdgeKeys
+        );
+        if (!tributaryPath) {
+          console.warn('Could not connect tributary to main river', {
+            regionId: region.id,
+            tributaryRiverId: endpoint.riverId,
+            mainRiverId: mainIncomingEndpoint.riverId,
+          });
+          return { success: false, rivers: existingRivers, reason: 'tributary_path_not_found' };
+        }
+        const tributaryPathEdgeKeys = getRiverPathEdgeKeys(tributaryPath, riverGraph);
+        if (!tributaryPathEdgeKeys) return { success: false, rivers: existingRivers, reason: 'tributary_edge_keys_not_found' };
+        for (const edgeKey of tributaryPathEdgeKeys) blockedEdgeKeys.add(edgeKey);
+        tributaryPathByRiverId.set(endpoint.riverId, tributaryPath);
+      }
+
+      const nextRivers = existingRivers.map((river) => {
+        if (river.id === mainIncomingEndpoint.riverId) {
+          return { ...river, vertexPath: [...river.vertexPath, ...mainPath.slice(1)] };
+        }
+        const tributaryPath = tributaryPathByRiverId.get(river.id);
+        if (tributaryPath) {
+          return { ...river, vertexPath: [...river.vertexPath, ...tributaryPath.slice(1)] };
+        }
+        return river;
+      });
+
+      for (const river of nextRivers) {
+        validateRiverDirection(river);
+        validateRiverContinuity(river);
+      }
+      validateNoDuplicateRiverEdges(nextRivers);
+      return { success: true, rivers: nextRivers };
+    }
 
     if (touchingEndpoints.length >= 2) {
       const candidatePairs = touchingEndpoints.flatMap((left) => touchingEndpoints
@@ -1415,6 +1533,8 @@ function generateRiverForRegion(region: Region, regions: Region[], existingRiver
         console.warn('Cannot merge rivers automatically: no valid end->start pair', { regionId: region.id, touchingEndpoints });
       }
     }
+
+    void outgoingEndpoints;
 
     if (existingRiverEndpointVerticesInRegion.length > 0 && redVertices.length < 1) return { success: false, rivers: existingRivers, reason: 'no_red_vertices_for_extension' };
     if (existingRiverEndpointVerticesInRegion.length === 0 && redVertices.length < 2) return { success: false, rivers: existingRivers, reason: 'not_enough_red_vertices_for_new_river' };
