@@ -110,8 +110,7 @@ const HEX_SIZE = 28;
 const SQRT3 = Math.sqrt(3);
 const SHOW_HEX_COORDINATES = false;
 const SHOW_BIOME_EMOJI = true;
-const SHOW_FULL_BIOME_EMOJI_WHEN_SMALL = false;
-const MIN_HEX_RADIUS_FOR_MULTI_EMOJI = 24;
+const REGION_CENTER_EMOJI = '★';
 const WATER_COLOR = 'var(--water-color)';
 const LAKE_HEX_COLOR = WATER_COLOR;
 const MIN_RIVER_FLOW_LEVEL = 1;
@@ -134,13 +133,6 @@ type Biome = {
   wildWeight: number;
   settledWeight: number;
   heightLevel: RegionHeightLevel;
-};
-
-type BiomeEmojiLayoutItem = {
-  emoji: string;
-  dx: number;
-  dy: number;
-  fontSize: number;
 };
 
 const BIOMES: Record<BiomeId, Biome> = {
@@ -267,42 +259,44 @@ function getRegionHeightLabel(heightLevel: RegionHeightLevel): string {
   return '1 — равнина';
 }
 
-function getBiomeEmojiLayout(
-  primaryEmoji: string,
-  secondaryEmojis: string[],
+function getHexEmojiLayout(
+  emojis: string[],
   centerX: number,
   centerY: number,
   hexRadius: number
 ): Array<{ emoji: string; x: number; y: number; fontSize: number }> {
-  const cappedSecondary = secondaryEmojis.slice(0, 2);
-  const fullEmojiCount = 1 + cappedSecondary.length;
+  const visibleEmojis = emojis.slice(0, 4);
 
-  if (!SHOW_FULL_BIOME_EMOJI_WHEN_SMALL && hexRadius < MIN_HEX_RADIUS_FOR_MULTI_EMOJI) {
-    return [{ emoji: primaryEmoji, x: centerX, y: centerY, fontSize: clamp(hexRadius * 0.55, 12, 20) }];
+  if (visibleEmojis.length === 0) return [];
+
+  if (visibleEmojis.length === 1) {
+    return [{ emoji: visibleEmojis[0], x: centerX, y: centerY, fontSize: clamp(hexRadius * 0.55, 16, 28) }];
   }
 
-  let layout: BiomeEmojiLayoutItem[];
-  if (fullEmojiCount <= 1) {
-    layout = [{ emoji: primaryEmoji, dx: 0, dy: 0, fontSize: clamp(hexRadius * 0.55, 16, 28) }];
-  } else if (fullEmojiCount === 2) {
-    layout = [
-      { emoji: primaryEmoji, dx: -hexRadius * 0.18, dy: 0, fontSize: clamp(hexRadius * 0.42, 14, 22) },
-      { emoji: cappedSecondary[0], dx: hexRadius * 0.18, dy: 0, fontSize: clamp(hexRadius * 0.42, 14, 22) }
-    ];
-  } else {
-    layout = [
-      { emoji: primaryEmoji, dx: 0, dy: -hexRadius * 0.18, fontSize: clamp(hexRadius * 0.34, 12, 18) },
-      { emoji: cappedSecondary[0], dx: -hexRadius * 0.22, dy: hexRadius * 0.16, fontSize: clamp(hexRadius * 0.34, 12, 18) },
-      { emoji: cappedSecondary[1], dx: hexRadius * 0.22, dy: hexRadius * 0.16, fontSize: clamp(hexRadius * 0.34, 12, 18) }
+  if (visibleEmojis.length === 2) {
+    const fontSize = clamp(hexRadius * 0.42, 14, 22);
+    return [
+      { emoji: visibleEmojis[0], x: centerX - hexRadius * 0.18, y: centerY, fontSize },
+      { emoji: visibleEmojis[1], x: centerX + hexRadius * 0.18, y: centerY, fontSize }
     ];
   }
 
-  return layout.map((item) => ({
-    emoji: item.emoji,
-    x: centerX + item.dx,
-    y: centerY + item.dy,
-    fontSize: item.fontSize
-  }));
+  if (visibleEmojis.length === 3) {
+    const fontSize = clamp(hexRadius * 0.34, 12, 18);
+    return [
+      { emoji: visibleEmojis[0], x: centerX, y: centerY - hexRadius * 0.18, fontSize },
+      { emoji: visibleEmojis[1], x: centerX - hexRadius * 0.22, y: centerY + hexRadius * 0.16, fontSize },
+      { emoji: visibleEmojis[2], x: centerX + hexRadius * 0.22, y: centerY + hexRadius * 0.16, fontSize }
+    ];
+  }
+
+  const fontSize = clamp(hexRadius * 0.30, 11, 16);
+  return [
+    { emoji: visibleEmojis[0], x: centerX - hexRadius * 0.18, y: centerY - hexRadius * 0.16, fontSize },
+    { emoji: visibleEmojis[1], x: centerX + hexRadius * 0.18, y: centerY - hexRadius * 0.16, fontSize },
+    { emoji: visibleEmojis[2], x: centerX - hexRadius * 0.18, y: centerY + hexRadius * 0.17, fontSize },
+    { emoji: visibleEmojis[3], x: centerX + hexRadius * 0.18, y: centerY + hexRadius * 0.17, fontSize }
+  ];
 }
 
 function round3(value: number): number {
@@ -2039,7 +2033,14 @@ export function App() {
               const fallbackBiome = BIOMES[FALLBACK_BIOME_ID];
               const biomePrimaryEmoji = region?.biomePrimaryEmoji ?? fallbackBiome.primaryEmoji;
               const biomeSecondaryEmojis = region?.biomeSecondaryEmojis ?? fallbackBiome.secondaryEmojis;
-              const biomeEmojiLayout = getBiomeEmojiLayout(biomePrimaryEmoji, biomeSecondaryEmojis, hex.x, hex.y, HEX_SIZE);
+              const biomeEmojis = [
+                biomePrimaryEmoji,
+                ...biomeSecondaryEmojis.slice(0, 2)
+              ];
+              const hexEmojis = meta?.isCenter
+                ? [REGION_CENTER_EMOJI, ...biomeEmojis]
+                : biomeEmojis;
+              const hexEmojiLayout = getHexEmojiLayout(hexEmojis, hex.x, hex.y, HEX_SIZE);
               return (
                 <g
                   key={`${hex.kind}-${hex.key}`}
@@ -2053,7 +2054,7 @@ export function App() {
                 >
                   <polygon points={hexPoints(hex.x, hex.y, HEX_SIZE)} className={cls} style={{ fill }} />
                   {SHOW_BIOME_EMOJI && hex.kind === 'region' && hex.regionId && region && !isLakeHex
-                    ? biomeEmojiLayout.map((item, index) => (
+                    ? hexEmojiLayout.map((item, index) => (
                       <text
                         key={`biome-emoji-${hex.key}-${index}`}
                         x={item.x}
@@ -2068,7 +2069,6 @@ export function App() {
                     ))
                     : null}
                   <polygon points={hexPoints(hex.x, hex.y, HEX_SIZE)} className={cls} style={{ fill: 'none' }} />
-                  {meta?.isCenter ? <circle cx={hex.x} cy={hex.y} r={3} className="center-dot" /> : null}
                   {SHOW_HEX_COORDINATES ? <text x={hex.x} y={hex.y + 4} textAnchor="middle" className="hex-label">{hex.q}/{hex.r}</text> : null}
                 </g>
               );
