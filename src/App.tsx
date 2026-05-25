@@ -1148,13 +1148,15 @@ function findBestFreeRiverPathToAnyTarget(
   startVertex: RiverVertex,
   targetVertices: RiverVertex[],
   riverGraph: RiverGraph,
-  blockedEdgeKeys: Set<string>
+  blockedEdgeKeys: Set<string>,
+  excludedTargetVertexKeys: Set<string> = new Set()
 ): RiverVertex[] | null {
   const startNode = riverGraph.nodes.get(startVertex.key);
   if (!startNode || targetVertices.length === 0) return null;
 
   let bestPath: RiverVertex[] | null = null;
   for (const targetVertex of targetVertices) {
+    if (excludedTargetVertexKeys.has(targetVertex.key)) continue;
     const targetNode = riverGraph.nodes.get(targetVertex.key);
     if (!targetNode) continue;
 
@@ -1439,8 +1441,34 @@ function generateRiverForRegion(region: Region, regions: Region[], existingRiver
       for (const edgeKey of mainPathEdgeKeys) blockedEdgeKeys.add(edgeKey);
 
       const mainBuiltPath = mainEndpointPath.path;
-      const tributaryTargetVertices = mainBuiltPath.slice(1);
-      if (tributaryTargetVertices.length === 0) return { success: false, rivers: existingRivers, reason: 'no_tributary_targets' };
+      const tributaryTargetVertices = mainBuiltPath.slice(1, -1);
+
+      console.log('Tributary target vertices for main river', {
+        regionId: region.id,
+        mainRiverId: mainIncomingEndpoint.riverId,
+        mainBuiltPathLength: mainBuiltPath.length,
+        tributaryTargetVerticesCount: tributaryTargetVertices.length,
+        excludedStartVertex: mainBuiltPath[0]?.key,
+        excludedEndVertex: mainBuiltPath[mainBuiltPath.length - 1]?.key,
+      });
+
+      if (tributaryTargetVertices.length === 0) {
+        console.warn('Main river has no internal vertices for tributary connection', {
+          regionId: region.id,
+          mainRiverId: mainIncomingEndpoint.riverId,
+          mainBuiltPathLength: mainBuiltPath.length,
+        });
+        return {
+          success: false,
+          rivers: existingRivers,
+          reason: 'main_river_has_no_internal_vertices_for_tributaries',
+        };
+      }
+
+      const excludedTributaryTargetVertexKeys = new Set<string>([
+        mainBuiltPath[0]?.key,
+        mainBuiltPath[mainBuiltPath.length - 1]?.key,
+      ].filter((key): key is string => Boolean(key)));
 
       const tributaryPathByRiverId = new Map<number, RiverVertex[]>();
       for (const endpoint of tributaryIncomingEndpoints) {
@@ -1448,7 +1476,8 @@ function generateRiverForRegion(region: Region, regions: Region[], existingRiver
           endpoint.vertex,
           tributaryTargetVertices,
           riverGraph,
-          blockedEdgeKeys
+          blockedEdgeKeys,
+          excludedTributaryTargetVertexKeys
         );
         if (!tributaryPath) {
           console.warn('Could not connect tributary to main river', {
