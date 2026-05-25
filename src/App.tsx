@@ -1822,22 +1822,43 @@ function generateRiverForRegion(region: Region, regions: Region[], existingRiver
         if (usage.otherRegionCount > 0) return false;
         return true;
       });
+      const centerVertexKeys = new Set(getHexCornerPoints(region.centerHex).map((vertex) => vertex.key));
+      const preferredStartVertices = interiorStartVertices.filter((vertex) => !centerVertexKeys.has(vertex.key));
 
-      let bestPath: RiverVertex[] | null = null;
-      let bestControlPoints: RiverControlPoints | null = null;
-      for (const startVertex of interiorStartVertices) {
-        for (const endVertex of redVertices) {
-          if (startVertex.key === endVertex.key) continue;
-          const controlPoints: RiverControlPoints = { startVertex, endVertex, startMode: 'red', endMode: 'red' };
-          const path = buildRiverPathViaControlPoints(controlPoints, riverGraph, usedRiverEdges);
-          if (!validateRiverPathViaControlPoints(path, controlPoints, riverGraph, redVertices, existingRiverEndpointVerticesInRegion, usedRiverEdges)) continue;
-          if (!riverPathTouchesCenterHexVertex(path, region.centerHex)) continue;
-          if (!bestPath || path.length < bestPath.length) {
-            bestPath = path;
-            bestControlPoints = controlPoints;
+      const findBestMountainSourcePath = (startVertices: RiverVertex[]) => {
+        let bestPath: RiverVertex[] | null = null;
+        let bestControlPoints: RiverControlPoints | null = null;
+        for (const startVertex of startVertices) {
+          for (const endVertex of redVertices) {
+            if (startVertex.key === endVertex.key) continue;
+            const controlPoints: RiverControlPoints = { startVertex, endVertex, startMode: 'red', endMode: 'red' };
+            const path = buildRiverPathViaControlPoints(controlPoints, riverGraph, usedRiverEdges);
+            if (!validateRiverPathViaControlPoints(path, controlPoints, riverGraph, redVertices, existingRiverEndpointVerticesInRegion, usedRiverEdges)) continue;
+            if (!riverPathTouchesCenterHexVertex(path, region.centerHex)) continue;
+            if (!bestPath || path.length < bestPath.length) {
+              bestPath = path;
+              bestControlPoints = controlPoints;
+            }
           }
         }
+        return { bestPath, bestControlPoints };
+      };
+
+      let { bestPath, bestControlPoints } = findBestMountainSourcePath(preferredStartVertices);
+      let usedFallback = false;
+      if (!bestPath || !bestControlPoints) {
+        usedFallback = true;
+        ({ bestPath, bestControlPoints } = findBestMountainSourcePath(interiorStartVertices));
       }
+
+      console.log('mountain-source-branch:', {
+        regionId: region.id,
+        interiorStartVerticesLength: interiorStartVertices.length,
+        preferredStartVerticesLength: preferredStartVertices.length,
+        usedFallback,
+        selectedStartVertexKey: bestControlPoints?.startVertex.key ?? null,
+        selectedStartIsCenterHexVertex: bestControlPoints ? centerVertexKeys.has(bestControlPoints.startVertex.key) : null
+      });
 
       if (!bestPath || !bestControlPoints) {
         return { success: false, rivers: existingRivers, reason: 'mountain_source_river_path_not_found' };
