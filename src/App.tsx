@@ -2132,7 +2132,6 @@ export function App() {
 
   const addRegionToMap = (anchorHex: AxialHex) => {
     const maxRegionAttempts = 30;
-    let shouldAllowRiverHeightConflictFallback = false;
     for (let attempt = 0; attempt < maxRegionAttempts; attempt += 1) {
       const targetSize = rollRegionTargetSize();
       const occupiedHexes = new Set(allRegionHexes.map(hexKey));
@@ -2188,56 +2187,75 @@ export function App() {
         maxHeight: riverHeightConstraint.maxHeight,
         reasons: riverHeightConstraint.reasons
       });
-      const biomeChoice = chooseBiomeId(biomeLandType, adjacentBiomeIds, regionId, riverHeightConstraint);
-      if (!biomeChoice.biomeId) {
-        if (biomeChoice.reason === 'river_height_constraint_failed') {
-          console.warn('Region failed because of river height constraint', {
-            regionId,
-            attempt,
-            riverHeightConstraint,
-            adjacentBiomeIds,
-            biomeLandType
-          });
-          shouldAllowRiverHeightConflictFallback = true;
-        }
-        console.warn('No biome available for river height constraint; retrying region generation', {
+      let riversForGeneration = rivers;
+      let effectiveRiverHeightConstraint = riverHeightConstraint;
+      let biomeChoice = chooseBiomeId(
+        biomeLandType,
+        adjacentBiomeIds,
+        regionId,
+        effectiveRiverHeightConstraint
+      );
+
+      if (!biomeChoice.biomeId && biomeChoice.reason === 'river_height_constraint_failed') {
+        console.warn('Region failed because of river height constraint; trying outgoing river trimming fallback', {
           regionId,
           attempt,
           riverHeightConstraint,
           adjacentBiomeIds,
           biomeLandType
         });
-        continue;
-      }
-      const biomeId = biomeChoice.biomeId;
-      let riversForGeneration = rivers;
-      if (shouldAllowRiverHeightConflictFallback) {
-        console.warn('Retrying region with outgoing river trimming fallback', {
-          regionId,
-          attempt,
-        });
         const conflictingOutgoingRiverIds = getConflictingOutgoingRiverIds(
           touchingEndpoints,
           regions,
           riverHeightConstraint
         );
-        if (conflictingOutgoingRiverIds.length > 0) {
+        if (conflictingOutgoingRiverIds.length === 0) {
+          console.warn('River height conflict detected but no outgoing river ids found for trimming', {
+            regionId,
+            attempt,
+            touchingEndpoints,
+            riverHeightConstraint
+          });
+        } else {
           riversForGeneration = trimConflictingOutgoingRiversAwayFromRegion(
             rivers,
             conflictingOutgoingRiverIds,
             regionHexes,
             regionId
           );
-          const patchedConstraint = getRiverHeightConstraintForCandidateRegion(
+          effectiveRiverHeightConstraint = getRiverHeightConstraintForCandidateRegion(
             candidateRegionForRiverCheck,
             regions,
             riversForGeneration,
             nextCandidateHexesPreview
           );
-          const patchedBiomeChoice = chooseBiomeId(biomeLandType, adjacentBiomeIds, regionId, patchedConstraint);
-          if (!patchedBiomeChoice.biomeId) continue;
+          console.warn('Recalculated river height constraint after outgoing river trimming', {
+            regionId,
+            attempt,
+            originalConstraint: riverHeightConstraint,
+            patchedConstraint: effectiveRiverHeightConstraint,
+            conflictingOutgoingRiverIds
+          });
+          biomeChoice = chooseBiomeId(
+            biomeLandType,
+            adjacentBiomeIds,
+            regionId,
+            effectiveRiverHeightConstraint
+          );
         }
       }
+      if (!biomeChoice.biomeId) {
+        console.warn('No biome available after river height fallback; retrying region generation', {
+          regionId,
+          attempt,
+          riverHeightConstraint,
+          effectiveRiverHeightConstraint,
+          adjacentBiomeIds,
+          biomeLandType
+        });
+        continue;
+      }
+      const biomeId = biomeChoice.biomeId;
       const biome = BIOMES[biomeId] ?? BIOMES[FALLBACK_BIOME_ID];
       const heightLevel = BIOMES[biomeId]?.heightLevel ?? 1;
       const region: Region = {
