@@ -111,6 +111,10 @@ type RiverHeightConstraint = {
   maxHeight?: RegionHeightLevel;
   reasons: string[];
 };
+type ChooseBiomeResult = {
+  biomeId: BiomeId | null;
+  reason?: 'river_height_constraint_failed';
+};
 
 const HEX_SIZE = 28;
 const SQRT3 = Math.sqrt(3);
@@ -384,7 +388,7 @@ function chooseBiomeId(
   adjacentBiomeIds: BiomeId[],
   regionId?: number,
   riverHeightConstraint?: RiverHeightConstraint
-): BiomeId | null {
+): ChooseBiomeResult {
   const baseWeights = {} as Record<BiomeId, number>;
   for (const biome of Object.values(BIOMES)) {
     baseWeights[biome.id] = landType === 'settled' ? biome.settledWeight : biome.wildWeight;
@@ -415,7 +419,7 @@ function chooseBiomeId(
   }
 
   const strictWeightSum = Object.values(strictWeights).reduce((acc, value) => acc + value, 0);
-  if (strictWeightSum > 0) return chooseWeightedRandom(strictWeights);
+  if (strictWeightSum > 0) return { biomeId: chooseWeightedRandom(strictWeights) };
 
   if (adjacentBiomeIds.length > 0) {
     const relaxedWeights = { ...baseWeights };
@@ -436,7 +440,7 @@ function chooseBiomeId(
       adjacentBiomeIds
     });
 
-    if (relaxedWeightSum > 0) return chooseWeightedRandom(relaxedWeights);
+    if (relaxedWeightSum > 0) return { biomeId: chooseWeightedRandom(relaxedWeights) };
   }
 
   const fallbackBiomeId = landType === 'settled'
@@ -447,10 +451,10 @@ function chooseBiomeId(
     riverHeightConstraint &&
     !isBiomeAllowedByRiverHeightConstraint(fallbackBiomeId, riverHeightConstraint)
   ) {
-    return null;
+    return { biomeId: null, reason: 'river_height_constraint_failed' };
   }
 
-  return fallbackBiomeId;
+  return { biomeId: fallbackBiomeId };
 }
 
 function getAdjacentRegionBiomes(regionHexes: AxialHex[], regionByHexKey: Map<string, Region>): BiomeId[] {
@@ -835,6 +839,72 @@ function getRiverHeightConstraintForCandidateRegion(
   }
 
   return { minHeight, maxHeight, reasons };
+}
+
+function getRegionVertexKeys(regionHexes: AxialHex[]): Set<string> {
+  const keys = new Set<string>();
+  for (const hex of regionHexes) {
+    for (const corner of getHexCornerPoints(hex)) keys.add(corner.key);
+  }
+  return keys;
+}
+
+function trimOutgoingRiverStartAwayFromRegion(river: River, regionHexes: AxialHex[]): River | null {
+  const regionVertexKeys = getRegionVertexKeys(regionHexes);
+  const trimmedPath = [...river.vertexPath];
+
+  while (trimmedPath.length > 0 && regionVertexKeys.has(trimmedPath[0].key)) {
+    trimmedPath.shift();
+  }
+
+  if (trimmedPath.length < 2) return null;
+  return { ...river, vertexPath: trimmedPath };
+}
+
+function getConflictingOutgoingRiverIds(
+  touchingEndpoints: RiverEndpointTouch[],
+  existingRegions: Region[],
+  riverHeightConstraint: RiverHeightConstraint
+): number[] {
+  if (
+    riverHeightConstraint.minHeight === undefined ||
+    riverHeightConstraint.maxHeight === undefined ||
+    riverHeightConstraint.minHeight <= riverHeightConstraint.maxHeight
+  ) return [];
+
+  const maxHeight = riverHeightConstraint.maxHeight;
+  return touchingEndpoints
+    .filter((endpoint) => endpoint.endpointType === 'start')
+    .filter((endpoint) => {
+      const touchingRegion = findRegionTouchingVertex(endpoint.vertex, existingRegions);
+      return (touchingRegion?.heightLevel ?? 1) > maxHeight;
+    })
+    .map((endpoint) => endpoint.riverId);
+}
+
+function trimConflictingOutgoingRiversAwayFromRegion(
+  rivers: River[],
+  conflictingOutgoingRiverIds: number[],
+  regionHexes: AxialHex[],
+  regionId: number
+): River[] {
+  const conflictingSet = new Set(conflictingOutgoingRiverIds);
+  return rivers.flatMap((river) => {
+    if (!conflictingSet.has(river.id)) return [river];
+    const originalStartVertex = river.vertexPath[0]?.key;
+    const originalLength = river.vertexPath.length;
+    const trimmedRiver = trimOutgoingRiverStartAwayFromRegion(river, regionHexes);
+    console.warn('Trimming outgoing river start away from new region', {
+      regionId,
+      riverId: river.id,
+      originalStartVertex,
+      originalLength,
+      newStartVertex: trimmedRiver?.vertexPath[0]?.key,
+      newLength: trimmedRiver?.vertexPath.length ?? 0,
+      removed: trimmedRiver === null,
+    });
+    return trimmedRiver ? [trimmedRiver] : [];
+  });
 }
 
 function mergeRiversWithConnector(
@@ -2062,6 +2132,7 @@ export function App() {
 
   const addRegionToMap = (anchorHex: AxialHex) => {
     const maxRegionAttempts = 30;
+    let shouldAllowRiverHeightConflictFallback = false;
     for (let attempt = 0; attempt < maxRegionAttempts; attempt += 1) {
       const targetSize = rollRegionTargetSize();
       const occupiedHexes = new Set(allRegionHexes.map(hexKey));
@@ -2101,14 +2172,34 @@ export function App() {
         rivers,
         nextCandidateHexesPreview
       );
+      const candidateRiverGraph = buildRiverGraphForRegion(
+        candidateRegionForRiverCheck.hexes,
+        candidateRegionForRiverCheck.hexes,
+        nextCandidateHexesPreview
+      );
+      const touchingEndpoints = findRiverEndpointsTouchingRegion(
+        candidateRegionForRiverCheck,
+        rivers,
+        candidateRiverGraph
+      );
       console.log('River height constraint for candidate region', {
         regionId,
         minHeight: riverHeightConstraint.minHeight,
         maxHeight: riverHeightConstraint.maxHeight,
         reasons: riverHeightConstraint.reasons
       });
-      const biomeId = chooseBiomeId(biomeLandType, adjacentBiomeIds, regionId, riverHeightConstraint);
-      if (!biomeId) {
+      const biomeChoice = chooseBiomeId(biomeLandType, adjacentBiomeIds, regionId, riverHeightConstraint);
+      if (!biomeChoice.biomeId) {
+        if (biomeChoice.reason === 'river_height_constraint_failed') {
+          console.warn('Region failed because of river height constraint', {
+            regionId,
+            attempt,
+            riverHeightConstraint,
+            adjacentBiomeIds,
+            biomeLandType
+          });
+          shouldAllowRiverHeightConflictFallback = true;
+        }
         console.warn('No biome available for river height constraint; retrying region generation', {
           regionId,
           attempt,
@@ -2117,6 +2208,35 @@ export function App() {
           biomeLandType
         });
         continue;
+      }
+      const biomeId = biomeChoice.biomeId;
+      let riversForGeneration = rivers;
+      if (shouldAllowRiverHeightConflictFallback) {
+        console.warn('Retrying region with outgoing river trimming fallback', {
+          regionId,
+          attempt,
+        });
+        const conflictingOutgoingRiverIds = getConflictingOutgoingRiverIds(
+          touchingEndpoints,
+          regions,
+          riverHeightConstraint
+        );
+        if (conflictingOutgoingRiverIds.length > 0) {
+          riversForGeneration = trimConflictingOutgoingRiversAwayFromRegion(
+            rivers,
+            conflictingOutgoingRiverIds,
+            regionHexes,
+            regionId
+          );
+          const patchedConstraint = getRiverHeightConstraintForCandidateRegion(
+            candidateRegionForRiverCheck,
+            regions,
+            riversForGeneration,
+            nextCandidateHexesPreview
+          );
+          const patchedBiomeChoice = chooseBiomeId(biomeLandType, adjacentBiomeIds, regionId, patchedConstraint);
+          if (!patchedBiomeChoice.biomeId) continue;
+        }
       }
       const biome = BIOMES[biomeId] ?? BIOMES[FALLBACK_BIOME_ID];
       const heightLevel = BIOMES[biomeId]?.heightLevel ?? 1;
@@ -2158,7 +2278,7 @@ export function App() {
       const { lakesByHex, nextLakeId: computedNextLakeId } = assignLakesForRegion(regionHexes, centerHex, nextLakeId, biomeId);
       const nextAllHexes = nextRegions.flatMap((r) => r.hexes);
       const nextCandidateHexes = getCandidateHexes(nextAllHexes);
-      const riverResult = generateRiverForRegion(region, nextRegions, rivers, nextCandidateHexes);
+      const riverResult = generateRiverForRegion(region, nextRegions, riversForGeneration, nextCandidateHexes);
       if (!riverResult.success) {
         console.warn('Discarding failed candidate region', { attempt, reason: riverResult.reason });
         continue;
