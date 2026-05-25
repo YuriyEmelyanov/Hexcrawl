@@ -650,6 +650,92 @@ function getVertexUsageByKeyForRegion(
   return map;
 }
 
+function getLakesForRegion(
+  region: Region,
+  hexTerrainByKey: Map<string, HexTerrainData>
+): Array<{ lakeId: number; hexes: AxialHex[]; vertices: RiverVertex[] }> {
+  const lakeHexesById = new Map<number, AxialHex[]>();
+  for (const hex of region.hexes) {
+    const terrain = hexTerrainByKey.get(hexKey(hex));
+    if (terrain?.terrainOverride !== 'lake' || terrain.lakeId === undefined) continue;
+    const hexes = lakeHexesById.get(terrain.lakeId) ?? [];
+    hexes.push(hex);
+    lakeHexesById.set(terrain.lakeId, hexes);
+  }
+
+  return Array.from(lakeHexesById.entries()).map(([lakeId, hexes]) => {
+    const verticesByKey = new Map<string, RiverVertex>();
+    for (const hex of hexes) {
+      for (const vertex of getHexCornerPoints(hex)) verticesByKey.set(vertex.key, vertex);
+    }
+    return { lakeId, hexes, vertices: Array.from(verticesByKey.values()) };
+  });
+}
+
+function getMountainInteriorSourceVertices(
+  region: Region,
+  regions: Region[],
+  candidateHexes: AxialHex[],
+  riverGraph: RiverGraph,
+  candidateVertices: RiverVertex[],
+  neighborRegionVertices: RiverVertex[]
+): RiverVertex[] {
+  const vertexUsageByKey = getVertexUsageByKeyForRegion(region, regions, candidateHexes);
+  const candidateVertexKeys = new Set(candidateVertices.map((vertex) => vertex.key));
+  const neighborRegionVertexKeys = new Set(neighborRegionVertices.map((vertex) => vertex.key));
+  const regionVerticesByKey = new Map<string, RiverVertex>();
+  for (const hex of region.hexes) {
+    for (const vertex of getHexCornerPoints(hex)) regionVerticesByKey.set(vertex.key, vertex);
+  }
+
+  return Array.from(regionVerticesByKey.values()).filter((vertex) => {
+    if (candidateVertexKeys.has(vertex.key)) return false;
+    if (neighborRegionVertexKeys.has(vertex.key)) return false;
+    if (!riverGraph.nodes.has(vertex.key)) return false;
+    const usage = vertexUsageByKey.get(vertex.key);
+    if (!usage || usage.currentRegionCount < 1) return false;
+    if (usage.candidateCount > 0) return false;
+    if (usage.otherRegionCount > 0) return false;
+    return true;
+  });
+}
+
+function findBestPathFromSourceToOutgoingEndpoint(
+  sourceVertices: RiverVertex[],
+  outgoingEndpoint: RiverEndpointTouch,
+  riverGraph: RiverGraph,
+  usedRiverEdges: Set<string>,
+  options?: { requireCenterHexVertex?: AxialHex }
+): RiverVertex[] | null {
+  let bestPath: RiverVertex[] | null = null;
+  for (const sourceVertex of sourceVertices) {
+    const controlPoints: RiverControlPoints = {
+      startVertex: sourceVertex,
+      endVertex: outgoingEndpoint.vertex,
+      startMode: 'red',
+      endMode: 'existing river endpoint'
+    };
+    const path = buildRiverPathViaControlPoints(controlPoints, riverGraph, usedRiverEdges);
+    if (path.length < 2) continue;
+    if (path[0].key !== sourceVertex.key || path[path.length - 1].key !== outgoingEndpoint.vertex.key) continue;
+    if (new Set(path.map((vertex) => vertex.key)).size !== path.length) continue;
+    const pathEdgeKeys = getRiverPathEdgeKeys(path, riverGraph);
+    if (!pathEdgeKeys || pathEdgeKeys.some((pathEdgeKey) => usedRiverEdges.has(pathEdgeKey))) continue;
+    if (options?.requireCenterHexVertex && !riverPathTouchesCenterHexVertex(path, options.requireCenterHexVertex)) continue;
+    if (!bestPath || path.length < bestPath.length) bestPath = path;
+  }
+  return bestPath;
+}
+
+function findBestPathFromLakeToOutgoingEndpoint(
+  lakeVertices: RiverVertex[],
+  outgoingEndpoint: RiverEndpointTouch,
+  riverGraph: RiverGraph,
+  usedRiverEdges: Set<string>
+): RiverVertex[] | null {
+  return findBestPathFromSourceToOutgoingEndpoint(lakeVertices, outgoingEndpoint, riverGraph, usedRiverEdges);
+}
+
 function chooseRandomRegionExteriorVertexPair(regionExteriorVertices: RiverVertex[]): { startVertex: RiverVertex; endVertex: RiverVertex } | null {
   if (regionExteriorVertices.length < 2) return null;
   const startVertex = randomFrom(regionExteriorVertices);
@@ -1570,7 +1656,13 @@ export function getCandidateHexes(allRegionHexes: AxialHex[]): AxialHex[] {
 
 type RiverGenerationResult = { success: boolean; rivers: River[]; reason?: string };
 
-function generateRiverForRegion(region: Region, regions: Region[], existingRivers: River[], candidateHexes?: AxialHex[]): RiverGenerationResult {
+function generateRiverForRegion(
+  region: Region,
+  regions: Region[],
+  existingRivers: River[],
+  candidateHexes?: AxialHex[],
+  hexTerrainByKey?: Map<string, HexTerrainData>
+): RiverGenerationResult {
   try {
     const riverGraph = buildRiverGraphForRegion(region.hexes, region.hexes, candidateHexes ?? []);
     const { candidateVertices, neighborRegionVertices } = getRegionSharedVertices(region, regions, candidateHexes ?? []);
@@ -1582,6 +1674,108 @@ function generateRiverForRegion(region: Region, regions: Region[], existingRiver
     const touchingEndpoints = findRiverEndpointsTouchingRegion(region, existingRivers, riverGraph);
     const incomingEndpoints = touchingEndpoints.filter((endpoint) => endpoint.endpointType === 'end');
     const outgoingEndpoints = touchingEndpoints.filter((endpoint) => endpoint.endpointType === 'start');
+    const terrainMap = hexTerrainByKey ?? new Map<string, HexTerrainData>();
+
+    if (region.heightLevel === 3 && outgoingEndpoints.length > 0) {
+      const sortedOutgoingEndpoints = [...outgoingEndpoints].sort((a, b) => {
+        const riverA = existingRivers.find((river) => river.id === a.riverId);
+        const riverB = existingRivers.find((river) => river.id === b.riverId);
+        return (riverB?.flowLevel ?? 1) - (riverA?.flowLevel ?? 1);
+      });
+      const mainOutgoingEndpoint = sortedOutgoingEndpoints[0];
+      const secondaryOutgoingEndpoints = sortedOutgoingEndpoints.slice(1);
+      let nextRivers = existingRivers;
+      const blockedEdgeKeys = new Set(usedRiverEdges);
+      const usedLakeIds = new Set<number>();
+      const interiorSourceVertices = getMountainInteriorSourceVertices(region, regions, candidateHexes ?? [], riverGraph, candidateVertices, neighborRegionVertices);
+
+      console.log('Mountain region with outgoing rivers', {
+        regionId: region.id,
+        incomingRiverIds: incomingEndpoints.map((endpoint) => endpoint.riverId),
+        outgoingRiverIds: sortedOutgoingEndpoints.map((endpoint) => endpoint.riverId),
+        mainOutgoingRiverId: mainOutgoingEndpoint.riverId,
+      });
+      console.log('Connecting main mountain outgoing river', {
+        regionId: region.id,
+        mainOutgoingRiverId: mainOutgoingEndpoint.riverId,
+        mode: incomingEndpoints.length > 0 ? 'incoming_to_outgoing' : 'interior_source_to_outgoing_through_center',
+      });
+
+      if (incomingEndpoints.length > 0) {
+        const mainIncomingEndpoint = [...incomingEndpoints].sort((a, b) => {
+          const riverA = existingRivers.find((river) => river.id === a.riverId);
+          const riverB = existingRivers.find((river) => river.id === b.riverId);
+          return (riverB?.flowLevel ?? 1) - (riverA?.flowLevel ?? 1);
+        })[0];
+        const connectorPath = buildRiverPathViaControlPoints(
+          { startVertex: mainIncomingEndpoint.vertex, endVertex: mainOutgoingEndpoint.vertex },
+          riverGraph,
+          blockedEdgeKeys
+        );
+        const connectorEdgeKeys = getRiverPathEdgeKeys(connectorPath, riverGraph);
+        if (
+          connectorPath.length < 2
+          || connectorPath[0].key !== mainIncomingEndpoint.vertex.key
+          || connectorPath[connectorPath.length - 1].key !== mainOutgoingEndpoint.vertex.key
+          || !connectorEdgeKeys
+          || connectorEdgeKeys.some((pathEdgeKey) => blockedEdgeKeys.has(pathEdgeKey))
+        ) return { success: false, rivers: existingRivers, reason: 'mountain_main_outgoing_connector_not_found' };
+        const merged = mergeRiversWithConnector(nextRivers, mainIncomingEndpoint.riverId, mainOutgoingEndpoint.riverId, connectorPath);
+        if (!merged) return { success: false, rivers: existingRivers, reason: 'mountain_main_outgoing_merge_failed' };
+        nextRivers = merged;
+        for (const edgeKey of connectorEdgeKeys) blockedEdgeKeys.add(edgeKey);
+      } else {
+        const mainPath = findBestPathFromSourceToOutgoingEndpoint(interiorSourceVertices, mainOutgoingEndpoint, riverGraph, blockedEdgeKeys, {
+          requireCenterHexVertex: region.centerHex
+        });
+        if (!mainPath) return { success: false, rivers: existingRivers, reason: 'mountain_main_outgoing_source_path_not_found' };
+        nextRivers = nextRivers.map((river) => river.id !== mainOutgoingEndpoint.riverId
+          ? river
+          : { ...river, vertexPath: [...mainPath.slice(0, -1), ...river.vertexPath] });
+        const mainPathEdgeKeys = getRiverPathEdgeKeys(mainPath, riverGraph);
+        if (!mainPathEdgeKeys) return { success: false, rivers: existingRivers, reason: 'mountain_main_outgoing_edge_keys_not_found' };
+        for (const edgeKey of mainPathEdgeKeys) blockedEdgeKeys.add(edgeKey);
+      }
+
+      for (const outgoingEndpoint of secondaryOutgoingEndpoints) {
+        const lakes = getLakesForRegion(region, terrainMap);
+        const availableLakes = lakes.filter((lake) => !usedLakeIds.has(lake.lakeId));
+        let selectedLake: { lakeId: number; hexes: AxialHex[]; vertices: RiverVertex[] } | null = null;
+        let selectedPath: RiverVertex[] | null = null;
+        for (const lake of availableLakes) {
+          const lakePath = findBestPathFromLakeToOutgoingEndpoint(lake.vertices, outgoingEndpoint, riverGraph, blockedEdgeKeys);
+          if (lakePath && (!selectedPath || lakePath.length < selectedPath.length)) {
+            selectedLake = lake;
+            selectedPath = lakePath;
+          }
+        }
+        if (!selectedPath) {
+          selectedPath = findBestPathFromSourceToOutgoingEndpoint(interiorSourceVertices, outgoingEndpoint, riverGraph, blockedEdgeKeys);
+        } else if (selectedLake) {
+          usedLakeIds.add(selectedLake.lakeId);
+        }
+        if (!selectedPath) return { success: false, rivers: existingRivers, reason: 'mountain_secondary_outgoing_path_not_found' };
+        const pathEdgeKeys = getRiverPathEdgeKeys(selectedPath, riverGraph);
+        if (!pathEdgeKeys) return { success: false, rivers: existingRivers, reason: 'mountain_secondary_outgoing_edge_keys_not_found' };
+        nextRivers = nextRivers.map((river) => river.id !== outgoingEndpoint.riverId
+          ? river
+          : { ...river, vertexPath: [...selectedPath.slice(0, -1), ...river.vertexPath] });
+        for (const edgeKey of pathEdgeKeys) blockedEdgeKeys.add(edgeKey);
+        console.log('Connecting secondary mountain outgoing river', {
+          regionId: region.id,
+          outgoingRiverId: outgoingEndpoint.riverId,
+          mode: selectedLake ? 'lake_to_outgoing' : 'interior_source_to_outgoing',
+          lakeId: selectedLake?.lakeId ?? null,
+        });
+      }
+
+      for (const river of nextRivers) {
+        validateRiverDirection(river);
+        validateRiverContinuity(river);
+      }
+      validateNoDuplicateRiverEdges(nextRivers);
+      return { success: true, rivers: nextRivers };
+    }
 
     if (incomingEndpoints.length >= 2) {
       const sortedIncomingEndpoints = [...incomingEndpoints].sort((a, b) => {
@@ -1802,26 +1996,7 @@ function generateRiverForRegion(region: Region, regions: Region[], existingRiver
     }
 
     if (region.heightLevel === 3) {
-      const vertexUsageByKey = getVertexUsageByKeyForRegion(region, regions, candidateHexes ?? []);
-      const candidateVertexKeys = new Set(candidateVertices.map((vertex) => vertex.key));
-      const neighborRegionVertexKeys = new Set(neighborRegionVertices.map((vertex) => vertex.key));
-      const regionVerticesByKey = new Map<string, RiverVertex>();
-      for (const hex of region.hexes) {
-        for (const vertex of getHexCornerPoints(hex)) {
-          regionVerticesByKey.set(vertex.key, vertex);
-        }
-      }
-
-      const interiorStartVertices = Array.from(regionVerticesByKey.values()).filter((vertex) => {
-        if (candidateVertexKeys.has(vertex.key)) return false;
-        if (neighborRegionVertexKeys.has(vertex.key)) return false;
-        if (!riverGraph.nodes.has(vertex.key)) return false;
-        const usage = vertexUsageByKey.get(vertex.key);
-        if (!usage || usage.currentRegionCount < 1) return false;
-        if (usage.candidateCount > 0) return false;
-        if (usage.otherRegionCount > 0) return false;
-        return true;
-      });
+      const interiorStartVertices = getMountainInteriorSourceVertices(region, regions, candidateHexes ?? [], riverGraph, candidateVertices, neighborRegionVertices);
       const centerVertexKeys = new Set(getHexCornerPoints(region.centerHex).map((vertex) => vertex.key));
       const preferredStartVertices = interiorStartVertices.filter((vertex) => !centerVertexKeys.has(vertex.key));
 
@@ -2377,9 +2552,17 @@ export function App() {
       }
       const nextRegions = [...regions, region];
       const { lakesByHex, nextLakeId: computedNextLakeId } = assignLakesForRegion(regionHexes, centerHex, nextLakeId, biomeId);
+      const nextHexTerrainByKeyPreview = new Map(hexTerrainByKey);
+      for (const [key, terrain] of lakesByHex) nextHexTerrainByKeyPreview.set(key, terrain);
       const nextAllHexes = nextRegions.flatMap((r) => r.hexes);
       const nextCandidateHexes = getCandidateHexes(nextAllHexes);
-      const riverResult = generateRiverForRegion(region, nextRegions, riversForGeneration, nextCandidateHexes);
+      const riverResult = generateRiverForRegion(
+        region,
+        nextRegions,
+        riversForGeneration,
+        nextCandidateHexes,
+        nextHexTerrainByKeyPreview
+      );
       if (!riverResult.success) {
         console.warn('Discarding failed candidate region', { attempt, reason: riverResult.reason });
         continue;
