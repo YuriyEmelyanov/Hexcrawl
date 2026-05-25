@@ -106,6 +106,12 @@ type VertexUsage = {
   candidateCount: number;
 };
 
+type RiverHeightConstraint = {
+  minHeight?: RegionHeightLevel;
+  maxHeight?: RegionHeightLevel;
+  reasons: string[];
+};
+
 const HEX_SIZE = 28;
 const SQRT3 = Math.sqrt(3);
 const SHOW_HEX_COORDINATES = false;
@@ -361,7 +367,24 @@ function chooseWeightedRandom(weights: Record<BiomeId, number>): BiomeId {
   return (Object.keys(weights) as BiomeId[]).at(-1) ?? FALLBACK_BIOME_ID;
 }
 
-function chooseBiomeId(landType: BiomeLandType, adjacentBiomeIds: BiomeId[], regionId?: number): BiomeId {
+function isBiomeAllowedByRiverHeightConstraint(
+  biomeId: BiomeId,
+  constraint: RiverHeightConstraint
+): boolean {
+  const height = BIOMES[biomeId]?.heightLevel ?? 1;
+
+  if (constraint.minHeight !== undefined && height < constraint.minHeight) return false;
+  if (constraint.maxHeight !== undefined && height > constraint.maxHeight) return false;
+
+  return true;
+}
+
+function chooseBiomeId(
+  landType: BiomeLandType,
+  adjacentBiomeIds: BiomeId[],
+  regionId?: number,
+  riverHeightConstraint?: RiverHeightConstraint
+): BiomeId | null {
   const baseWeights = {} as Record<BiomeId, number>;
   for (const biome of Object.values(BIOMES)) {
     baseWeights[biome.id] = landType === 'settled' ? biome.settledWeight : biome.wildWeight;
@@ -371,6 +394,14 @@ function chooseBiomeId(landType: BiomeLandType, adjacentBiomeIds: BiomeId[], reg
   const strictWeights = { ...baseWeights };
 
   for (const candidateBiomeId of Object.keys(strictWeights) as BiomeId[]) {
+    if (
+      riverHeightConstraint &&
+      !isBiomeAllowedByRiverHeightConstraint(candidateBiomeId, riverHeightConstraint)
+    ) {
+      strictWeights[candidateBiomeId] = 0;
+      continue;
+    }
+
     if (uniqueAdjacentBiomeIds.has(candidateBiomeId)) {
       strictWeights[candidateBiomeId] = 0;
       continue;
@@ -389,6 +420,14 @@ function chooseBiomeId(landType: BiomeLandType, adjacentBiomeIds: BiomeId[], reg
   if (adjacentBiomeIds.length > 0) {
     const relaxedWeights = { ...baseWeights };
     for (const adjacentBiomeId of uniqueAdjacentBiomeIds) relaxedWeights[adjacentBiomeId] = 0;
+    for (const candidateBiomeId of Object.keys(relaxedWeights) as BiomeId[]) {
+      if (
+        riverHeightConstraint &&
+        !isBiomeAllowedByRiverHeightConstraint(candidateBiomeId, riverHeightConstraint)
+      ) {
+        relaxedWeights[candidateBiomeId] = 0;
+      }
+    }
     const relaxedWeightSum = Object.values(relaxedWeights).reduce((acc, value) => acc + value, 0);
 
     console.log('Biome strict filter had no available weights; restored incompatible biome weights', {
@@ -400,7 +439,18 @@ function chooseBiomeId(landType: BiomeLandType, adjacentBiomeIds: BiomeId[], reg
     if (relaxedWeightSum > 0) return chooseWeightedRandom(relaxedWeights);
   }
 
-  return landType === 'settled' ? FALLBACK_SETTLED_BIOME_ID : FALLBACK_WILD_BIOME_ID;
+  const fallbackBiomeId = landType === 'settled'
+    ? FALLBACK_SETTLED_BIOME_ID
+    : FALLBACK_WILD_BIOME_ID;
+
+  if (
+    riverHeightConstraint &&
+    !isBiomeAllowedByRiverHeightConstraint(fallbackBiomeId, riverHeightConstraint)
+  ) {
+    return null;
+  }
+
+  return fallbackBiomeId;
 }
 
 function getAdjacentRegionBiomes(regionHexes: AxialHex[], regionByHexKey: Map<string, Region>): BiomeId[] {
@@ -730,6 +780,61 @@ function findRiverEndpointsTouchingRegion(region: Region, rivers: River[], river
     }
   }
   return endpoints;
+}
+
+function findRegionTouchingVertex(
+  vertex: RiverVertex,
+  regions: Region[]
+): Region | undefined {
+  for (const region of regions) {
+    for (const hex of region.hexes) {
+      if (getHexCornerPoints(hex).some((corner) => corner.key === vertex.key)) {
+        return region;
+      }
+    }
+  }
+
+  return undefined;
+}
+
+function getRiverHeightConstraintForCandidateRegion(
+  candidateRegion: Region,
+  existingRegions: Region[],
+  existingRivers: River[],
+  candidateHexes: AxialHex[]
+): RiverHeightConstraint {
+  const riverGraph = buildRiverGraphForRegion(
+    candidateRegion.hexes,
+    candidateRegion.hexes,
+    candidateHexes
+  );
+  const touchingEndpoints = findRiverEndpointsTouchingRegion(
+    candidateRegion,
+    existingRivers,
+    riverGraph
+  );
+
+  let minHeight: RegionHeightLevel | undefined;
+  let maxHeight: RegionHeightLevel | undefined;
+  const reasons: string[] = [];
+
+  for (const endpoint of touchingEndpoints) {
+    const existingRegion = findRegionTouchingVertex(endpoint.vertex, existingRegions);
+    const touchingHeight = existingRegion?.heightLevel;
+    if (!touchingHeight) continue;
+
+    if (endpoint.endpointType === 'end') {
+      maxHeight = Math.min(maxHeight ?? touchingHeight, touchingHeight);
+      reasons.push(`incoming river ${endpoint.riverId}: new height <= ${touchingHeight}`);
+    }
+
+    if (endpoint.endpointType === 'start') {
+      minHeight = Math.max(minHeight ?? touchingHeight, touchingHeight);
+      reasons.push(`outgoing river ${endpoint.riverId}: new height >= ${touchingHeight}`);
+    }
+  }
+
+  return { minHeight, maxHeight, reasons };
 }
 
 function mergeRiversWithConnector(
@@ -1971,7 +2076,48 @@ export function App() {
         for (const hex of region.hexes) regionByHexKey.set(hexKey(hex), region);
       }
       const adjacentBiomeIds = getAdjacentRegionBiomes(regionHexes, regionByHexKey);
-      const biomeId = chooseBiomeId(biomeLandType, adjacentBiomeIds, regionId);
+      const candidateRegionForRiverCheck: Region = {
+        id: regionId,
+        hexes: regionHexes,
+        centerHex,
+        anchorHex,
+        targetSize,
+        finalSize,
+        sizeCategory,
+        sizeLabel,
+        biomeLandType,
+        heightLevel: 1,
+        biomeId: FALLBACK_BIOME_ID,
+        biomeLabel: BIOMES[FALLBACK_BIOME_ID].label,
+        biomePrimaryEmoji: BIOMES[FALLBACK_BIOME_ID].primaryEmoji,
+        biomeSecondaryEmojis: [...BIOMES[FALLBACK_BIOME_ID].secondaryEmojis],
+        biomeEmojiLabel: BIOMES[FALLBACK_BIOME_ID].primaryEmoji + BIOMES[FALLBACK_BIOME_ID].secondaryEmojis.join('')
+      };
+      const nextAllHexesPreview = [...allRegionHexes, ...regionHexes];
+      const nextCandidateHexesPreview = getCandidateHexes(nextAllHexesPreview);
+      const riverHeightConstraint = getRiverHeightConstraintForCandidateRegion(
+        candidateRegionForRiverCheck,
+        regions,
+        rivers,
+        nextCandidateHexesPreview
+      );
+      console.log('River height constraint for candidate region', {
+        regionId,
+        minHeight: riverHeightConstraint.minHeight,
+        maxHeight: riverHeightConstraint.maxHeight,
+        reasons: riverHeightConstraint.reasons
+      });
+      const biomeId = chooseBiomeId(biomeLandType, adjacentBiomeIds, regionId, riverHeightConstraint);
+      if (!biomeId) {
+        console.warn('No biome available for river height constraint; retrying region generation', {
+          regionId,
+          attempt,
+          riverHeightConstraint,
+          adjacentBiomeIds,
+          biomeLandType
+        });
+        continue;
+      }
       const biome = BIOMES[biomeId] ?? BIOMES[FALLBACK_BIOME_ID];
       const heightLevel = BIOMES[biomeId]?.heightLevel ?? 1;
       const region: Region = {
