@@ -241,11 +241,10 @@ function shuffleArray<T>(values: T[]): T[] {
   return result;
 }
 
-function assignRiverFlowLevel(river: Omit<River, 'flowLevel'>): River {
-  return {
-    ...river,
-    flowLevel: randomInt(MIN_RIVER_FLOW_LEVEL, MAX_RIVER_FLOW_LEVEL)
-  };
+function getInitialRiverFullnessByHeight(heightLevel: number): number {
+  if (heightLevel >= 3) return randomInt(1, 2);
+  if (heightLevel === 2) return randomInt(3, 4);
+  return randomInt(5, 6);
 }
 
 function getHexWidth(hexSize: number): number {
@@ -681,6 +680,39 @@ function getLakesForRegion(
     }
     return { lakeId, hexes, vertices: Array.from(verticesByKey.values()) };
   });
+}
+
+function getRiversForRegion(region: Region, rivers: River[]): River[] {
+  const regionVertexKeys = new Set<string>();
+  for (const hex of region.hexes) {
+    for (const vertex of getHexCornerPoints(hex)) regionVertexKeys.add(vertex.key);
+  }
+
+  return rivers
+    .filter((river) => river.vertexPath.some((vertex) => regionVertexKeys.has(vertex.key)))
+    .sort((a, b) => a.id - b.id);
+}
+
+function getLakeSummariesForRegion(
+  region: Region,
+  hexTerrainByKey: Map<string, HexTerrainData>
+): Array<{ lakeId: number; size: number }> {
+  const lakeSizes = new Map<number, number>();
+  for (const hex of region.hexes) {
+    const terrain = hexTerrainByKey.get(hexKey(hex));
+    if (terrain?.terrainOverride !== 'lake' || terrain.lakeId == null) continue;
+    lakeSizes.set(terrain.lakeId, (lakeSizes.get(terrain.lakeId) ?? 0) + 1);
+  }
+
+  return Array.from(lakeSizes.entries())
+    .map(([lakeId, size]) => ({ lakeId, size }))
+    .sort((a, b) => a.lakeId - b.lakeId);
+}
+
+function formatHexCount(count: number): string {
+  if (count === 1) return 'гекс';
+  if (count >= 2 && count <= 4) return 'гекса';
+  return 'гексов';
 }
 
 function getMountainInteriorSourceVertices(
@@ -2051,7 +2083,13 @@ function generateRiverForRegion(
       }
 
       const newRiverId = (existingRivers.at(-1)?.id ?? 0) + 1;
-      const river = assignRiverFlowLevel({ id: newRiverId, regionId: region.id, vertexPath: bestPath, controlPoints: bestControlPoints });
+      const river = {
+        id: newRiverId,
+        regionId: region.id,
+        vertexPath: bestPath,
+        controlPoints: bestControlPoints,
+        flowLevel: getInitialRiverFullnessByHeight(region.heightLevel)
+      };
       const nextRivers = [...existingRivers, river];
       for (const nextRiver of nextRivers) {
         validateRiverDirection(nextRiver);
@@ -2085,7 +2123,13 @@ function generateRiverForRegion(
         });
       } else {
         const newRiverId = (existingRivers.at(-1)?.id ?? 0) + 1;
-        const river = assignRiverFlowLevel({ id: newRiverId, regionId: region.id, vertexPath: path, controlPoints });
+        const river = {
+          id: newRiverId,
+          regionId: region.id,
+          vertexPath: path,
+          controlPoints,
+          flowLevel: getInitialRiverFullnessByHeight(region.heightLevel)
+        };
         nextRivers = [...existingRivers, river];
       }
 
@@ -2687,6 +2731,8 @@ export function App() {
   const lastRegion = regions[regions.length - 1];
   const selectedRegion = selectedMeta ? regions.find((region) => region.id === selectedMeta.regionId) : undefined;
   const selectedRegionRiver = selectedRegion ? rivers.find((river) => river.regionId === selectedRegion.id) : undefined;
+  const selectedRegionRivers = selectedRegion ? getRiversForRegion(selectedRegion, rivers) : [];
+  const selectedRegionLakes = selectedRegion ? getLakeSummariesForRegion(selectedRegion, hexTerrainByKey) : [];
   const selectedRegionGraph = selectedRegion ? riverGraphsByRegion.get(selectedRegion.id) : undefined;
   const selectedRegionSharedVertices = selectedRegion
     ? (regionSharedVerticesByRegion.get(selectedRegion.id) ?? { candidateVertices: [], neighborRegionVertices: [] })
@@ -2934,6 +2980,22 @@ export function App() {
               <p><strong>Высота:</strong> {getRegionHeightLabel(selectedRegion.heightLevel ?? getRegionHeightLevelFromBiomeId(selectedRegion.biomeId))}</p>
               <p><strong>Размер:</strong> {getRegionSizeDisplay(selectedRegion)}</p>
               <p><strong>Точек интереса в регионе:</strong> {selectedRegion.pointsOfInterest.length}</p>
+              <p>
+                <strong>Реки региона:</strong>{' '}
+                {selectedRegionRivers.length > 0
+                  ? selectedRegionRivers
+                    .map((river) => `#${river.id} / полноводность ${river.flowLevel ?? '—'}`)
+                    .join('; ')
+                  : '—'}
+              </p>
+              <p>
+                <strong>Озёра региона:</strong>{' '}
+                {selectedRegionLakes.length > 0
+                  ? selectedRegionLakes
+                    .map((lake) => `#${lake.lakeId} — ${lake.size} ${formatHexCount(lake.size)}`)
+                    .join('; ')
+                  : '—'}
+              </p>
             </>
           ) : null}
           {debugRivers ? (
