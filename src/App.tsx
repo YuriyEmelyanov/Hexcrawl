@@ -2265,8 +2265,8 @@ function assignPointsOfInterestForRegion(
   const eligibleCount = regionHexes.length - 1 - lakeHexCount;
   if (eligibleCount <= 0) return [];
 
-  const maxPoiCount = Math.floor(eligibleCount / 2);
-  const minPoiCount = Math.floor(eligibleCount / 3);
+  const maxPoiCount = Math.floor(eligibleCount / 4);
+  const minPoiCount = Math.floor(eligibleCount / 6);
   if (maxPoiCount < minPoiCount) return [];
 
   const poiCount = randomInt(minPoiCount, maxPoiCount);
