@@ -76,6 +76,9 @@ type River = {
     startMode: 'existing river endpoint' | 'red vertex';
   };
 };
+type RoadKind = 'road' | 'trail';
+type RoadSegment = { from: AxialHex; to: AxialHex; kind: RoadKind };
+type Road = { id: number; regionId: number; segments: RoadSegment[] };
 
 type RiverVertex = {
   x: number;
@@ -203,6 +206,59 @@ function normalizeEdgeKey(hexA: AxialHex, hexB: AxialHex): string {
   const a = hexKey(hexA);
   const b = hexKey(hexB);
   return a < b ? `${a}|${b}` : `${b}|${a}`;
+}
+function areHexesAdjacent(a: AxialHex, b: AxialHex): boolean {
+  return getHexNeighbors(a).some((n) => n.q === b.q && n.r === b.r);
+}
+function normalizeRoadSegmentKey(a: AxialHex, b: AxialHex): string {
+  const keyA = hexKey(a);
+  const keyB = hexKey(b);
+  return keyA < keyB ? `${keyA}|${keyB}` : `${keyB}|${keyA}`;
+}
+function getRoadSegmentKeys(roads: Road[]): Set<string> {
+  const keys = new Set<string>();
+  for (const road of roads) for (const s of road.segments) keys.add(normalizeRoadSegmentKey(s.from, s.to));
+  return keys;
+}
+function getRoadHexKeys(roads: Road[]): Set<string> {
+  const keys = new Set<string>();
+  for (const road of roads) for (const s of road.segments) { keys.add(hexKey(s.from)); keys.add(hexKey(s.to)); }
+  return keys;
+}
+function getRoadEndpoints(road: Road): AxialHex[] {
+  const deg = new Map<string, { hex: AxialHex; d: number }>();
+  for (const s of road.segments) {
+    for (const h of [s.from, s.to]) {
+      const k = hexKey(h);
+      const prev = deg.get(k) ?? { hex: h, d: 0 };
+      prev.d += 1;
+      deg.set(k, prev);
+    }
+  }
+  return Array.from(deg.values()).filter((x) => x.d === 1).map((x) => x.hex);
+}
+function getSharedHexEdgeVertexKeys(a: AxialHex, b: AxialHex): [string, string] | null {
+  if (!areHexesAdjacent(a, b)) return null;
+  const aEdges = getHexEdgesAsVertexPairs(a);
+  const bEdgeKeys = new Set(getHexEdgesAsVertexPairs(b).map((e) => e.edgeKey));
+  const shared = aEdges.find((e) => bEdgeKeys.has(e.edgeKey));
+  return shared ? [shared.from.key, shared.to.key] : null;
+}
+function roadStepCrossesRiver(fromHex: AxialHex, toHex: AxialHex, rivers: River[]): boolean {
+  const shared = getSharedHexEdgeVertexKeys(fromHex, toHex);
+  if (!shared) return false;
+  const sharedEdgeKey = [shared[0], shared[1]].sort().join('|');
+  for (const river of rivers) for (let i = 1; i < river.vertexPath.length; i += 1) {
+    const riverEdge = [river.vertexPath[i - 1].key, river.vertexPath[i].key].sort().join('|');
+    if (riverEdge === sharedEdgeKey) return true;
+  }
+  return false;
+}
+function countRoadSegmentsTouchingHex(hex: AxialHex, roads: Road[]): number {
+  const k = hexKey(hex);
+  let count = 0;
+  for (const road of roads) for (const s of road.segments) if (hexKey(s.from) === k || hexKey(s.to) === k) count += 1;
+  return count;
 }
 
 function toPixel(q: number, r: number) {
@@ -2319,6 +2375,65 @@ function assignPointsOfInterestForRegion(
   const shuffledEligibleHexes = shuffleArray(eligibleHexes);
   return shuffledEligibleHexes.slice(0, Math.min(poiCount, shuffledEligibleHexes.length));
 }
+function findRoadPathWithinRegion(options: {
+  region: Region; from: AxialHex; targets: AxialHex[]; roads: Road[]; rivers: River[]; hexTerrainByKey: Map<string, HexTerrainData>;
+  avoidRivers: boolean; allowExistingRoadEndpoint?: AxialHex; allowCenterHex?: AxialHex;
+}): AxialHex[] | null {
+  const { region, from, targets, roads, rivers, hexTerrainByKey, avoidRivers, allowExistingRoadEndpoint, allowCenterHex } = options;
+  const regionKeys = new Set(region.hexes.map(hexKey));
+  const targetKeys = new Set(targets.map(hexKey));
+  const roadSegKeys = getRoadSegmentKeys(roads);
+  const roadHexKeys = getRoadHexKeys(roads);
+  const startKey = hexKey(from);
+  const allowEndpointKey = allowExistingRoadEndpoint ? hexKey(allowExistingRoadEndpoint) : '';
+  const allowCenterKey = allowCenterHex ? hexKey(allowCenterHex) : '';
+  const q: AxialHex[][] = [[from]];
+  const visited = new Set<string>([startKey]);
+  while (q.length) {
+    const path = q.shift()!;
+    const cur = path[path.length - 1];
+    const curKey = hexKey(cur);
+    if (path.length > 1 && targetKeys.has(curKey)) return path;
+    for (const n of getHexNeighbors(cur)) {
+      const nk = hexKey(n);
+      if (visited.has(nk) || !regionKeys.has(nk)) continue;
+      if (hexTerrainByKey.get(nk)?.terrainOverride === 'lake') continue;
+      if (roadSegKeys.has(normalizeRoadSegmentKey(cur, n))) continue;
+      const hasRoadHex = roadHexKeys.has(nk);
+      const allowedRoadHex = nk === startKey || nk === allowEndpointKey || nk === allowCenterKey || targetKeys.has(nk);
+      if (hasRoadHex && !allowedRoadHex) continue;
+      if (avoidRivers && roadStepCrossesRiver(cur, n, rivers)) continue;
+      visited.add(nk);
+      q.push([...path, n]);
+    }
+  }
+  return null;
+}
+function findIncomingRoadEndpointsForRegion(region: Region, roads: Road[]): Array<{ roadId: number; endpointHex: AxialHex; entryHex: AxialHex }> {
+  const regionKeys = new Set(region.hexes.map(hexKey));
+  const result: Array<{ roadId: number; endpointHex: AxialHex; entryHex: AxialHex }> = [];
+  for (const road of roads) {
+    for (const endpoint of getRoadEndpoints(road)) {
+      const entries = getHexNeighbors(endpoint).filter((h) => regionKeys.has(hexKey(h)));
+      if (entries.length === 0) continue;
+      entries.sort((a, b) => hexDistance(a, region.centerHex) - hexDistance(b, region.centerHex));
+      result.push({ roadId: road.id, endpointHex: endpoint, entryHex: entries[0] });
+    }
+  }
+  return result;
+}
+function renderRoadSegments(roads: Road[], offsetX: number, offsetY: number): Array<{ key: string; x1: number; y1: number; x2: number; y2: number; kind: RoadKind }> {
+  const result: Array<{ key: string; x1: number; y1: number; x2: number; y2: number; kind: RoadKind }> = [];
+  for (const road of roads) {
+    for (let i = 0; i < road.segments.length; i += 1) {
+      const s = road.segments[i];
+      const p1 = toPixel(s.from.q, s.from.r);
+      const p2 = toPixel(s.to.q, s.to.r);
+      result.push({ key: `road-${road.id}-${i}`, x1: p1.x + offsetX, y1: p1.y + offsetY, x2: p2.x + offsetX, y2: p2.y + offsetY, kind: s.kind });
+    }
+  }
+  return result;
+}
 
 function getLakeVertices(allHexes: AxialHex[], hexTerrainByKey: Map<string, HexTerrainData>): LakeVertex[] {
   const uniqueVertices = new Map<string, LakeVertex>();
@@ -2355,15 +2470,65 @@ function drawLakeVerticesDebug(lakeVertices: LakeVertex[], offsetX: number, offs
     cy: vertex.y + offsetY
   }));
 }
+function generateRoadsForRegion(options: {
+  region: Region; regions: Region[]; roads: Road[]; rivers: River[]; hexTerrainByKey: Map<string, HexTerrainData>; nextRoadId: number;
+}): { roads: Road[]; nextRoadId: number } {
+  const { region, roads, rivers, hexTerrainByKey } = options;
+  const roadTargets = [...region.pointsOfInterest, region.centerHex];
+  const incoming = findIncomingRoadEndpointsForRegion(region, roads);
+  let nextRoadId = options.nextRoadId;
+  const built = [...roads];
+  const addRoadFromPath = (path: AxialHex[], kind: RoadKind) => {
+    if (path.length < 2) return;
+    const segs: RoadSegment[] = [];
+    for (let i = 1; i < path.length; i += 1) segs.push({ from: path[i - 1], to: path[i], kind });
+    built.push({ id: nextRoadId, regionId: region.id, segments: segs });
+    nextRoadId += 1;
+  };
+  const settled = region.biomeLandType === 'settled';
+  if (!settled && incoming.length === 0) return { roads: built, nextRoadId };
+  for (const inc of incoming) {
+    const best = findRoadPathWithinRegion({ region, from: inc.entryHex, targets: roadTargets, roads: built, rivers, hexTerrainByKey, avoidRivers: true, allowExistingRoadEndpoint: inc.endpointHex, allowCenterHex: region.centerHex });
+    if (!best) continue;
+    addRoadFromPath([inc.endpointHex, ...best], settled ? 'road' : 'trail');
+    const reached = best[best.length - 1];
+    if (settled && hexKey(reached) !== hexKey(region.centerHex)) {
+      const toCenter = findRoadPathWithinRegion({ region, from: reached, targets: [region.centerHex], roads: built, rivers, hexTerrainByKey, avoidRivers: true, allowCenterHex: region.centerHex });
+      if (toCenter) addRoadFromPath(toCenter, 'road');
+    }
+  }
+  if (settled) {
+    let attempts = 0;
+    while (countRoadSegmentsTouchingHex(region.centerHex, built) < 2 && attempts < 10) {
+      attempts += 1;
+      const roadHexes = getRoadHexKeys(built);
+      const noRoad = region.hexes.filter((h) => !roadHexes.has(hexKey(h)) && hexKey(h) !== hexKey(region.centerHex) && hexTerrainByKey.get(hexKey(h))?.terrainOverride !== 'lake');
+      if (noRoad.length === 0) break;
+      noRoad.sort((a, b) => hexDistance(a, region.centerHex) - hexDistance(b, region.centerHex));
+      const mid = noRoad[0];
+      const p1 = findRoadPathWithinRegion({ region, from: region.centerHex, targets: [mid], roads: built, rivers, hexTerrainByKey, avoidRivers: true, allowCenterHex: region.centerHex })
+        ?? findRoadPathWithinRegion({ region, from: region.centerHex, targets: [mid], roads: built, rivers, hexTerrainByKey, avoidRivers: false, allowCenterHex: region.centerHex });
+      if (!p1) break;
+      const boundary = region.hexes.filter((h) => getHexNeighbors(h).some((n) => !region.hexes.some((rh) => hexKey(rh) === hexKey(n))));
+      const p2 = findRoadPathWithinRegion({ region, from: mid, targets: boundary, roads: built, rivers, hexTerrainByKey, avoidRivers: true, allowCenterHex: region.centerHex })
+        ?? findRoadPathWithinRegion({ region, from: mid, targets: boundary, roads: built, rivers, hexTerrainByKey, avoidRivers: false, allowCenterHex: region.centerHex });
+      if (!p2) continue;
+      addRoadFromPath([...p1, ...p2.slice(1)], 'road');
+    }
+  }
+  return { roads: built, nextRoadId };
+}
 
 export function App() {
   const [regions, setRegions] = useState<Region[]>([]);
   const [candidateHexes, setCandidateHexes] = useState<AxialHex[]>([]);
   const [rivers, setRivers] = useState<River[]>([]);
+  const [roads, setRoads] = useState<Road[]>([]);
   const [selectedHex, setSelectedHex] = useState<AxialHex | null>(START_HEX);
   const [debugRivers, setDebugRivers] = useState(false);
   const [hexTerrainByKey, setHexTerrainByKey] = useState<Map<string, HexTerrainData>>(new Map());
   const [nextLakeId, setNextLakeId] = useState(1);
+  const [nextRoadId, setNextRoadId] = useState(1);
 
   const allRegionHexes = useMemo(() => regions.flatMap((region) => region.hexes), [regions]);
 
@@ -2427,6 +2592,13 @@ export function App() {
     const offsetY = HEX_SIZE * 2 - minBaseY;
     return rivers.flatMap((river) => renderRiverDirectionArrows(river, offsetX, offsetY, lakeEdgeKeys));
   }, [positionedHexes, rivers, lakeEdgeKeys]);
+  const roadSegments = useMemo(() => {
+    const all = positionedHexes.hexes;
+    if (all.length === 0) return [];
+    const minBaseX = Math.min(...all.map((h) => toPixel(h.q, h.r).x));
+    const minBaseY = Math.min(...all.map((h) => toPixel(h.q, h.r).y));
+    return renderRoadSegments(roads, HEX_SIZE * 2 - minBaseX, HEX_SIZE * 2 - minBaseY);
+  }, [positionedHexes, roads]);
 
   const riverOffset = useMemo(() => {
     const all = positionedHexes.hexes;
@@ -2659,6 +2831,14 @@ export function App() {
         ...regionForRiverGeneration,
         pointsOfInterest
       };
+      const roadResult = generateRoadsForRegion({
+        region: finalRegion,
+        regions,
+        roads,
+        rivers: riverResult.rivers,
+        hexTerrainByKey: nextHexTerrainByKeyPreview,
+        nextRoadId
+      });
       const nextRegions = [...regions, finalRegion];
 
       setRegions(nextRegions);
@@ -2670,6 +2850,8 @@ export function App() {
       });
       setNextLakeId(computedNextLakeId);
       setRivers(riverResult.rivers);
+      setRoads(roadResult.roads);
+      setNextRoadId(roadResult.nextRoadId);
       setSelectedHex(centerHex);
       return;
     }
@@ -2683,6 +2865,8 @@ export function App() {
     setRegions([]);
     setCandidateHexes([]);
     setRivers([]);
+    setRoads([]);
+    setNextRoadId(1);
     setSelectedHex(START_HEX);
     setHexTerrainByKey(new Map());
     setNextLakeId(1);
@@ -2702,6 +2886,9 @@ export function App() {
         return river.vertexPath.some((vertex) => cornerKeys.has(vertex.key) || vertexKey(x, y) === vertex.key);
       })
       .map((r) => r.id)
+    : [];
+  const selectedHexRoadKinds = selectedHex
+    ? roads.flatMap((road) => road.segments.filter((s) => hexKey(s.from) === selectedHexKey || hexKey(s.to) === selectedHexKey).map((s) => s.kind))
     : [];
 
   const selectedType: HexType | 'none' = !selectedHex
@@ -2733,6 +2920,16 @@ export function App() {
   const selectedRegionRiver = selectedRegion ? rivers.find((river) => river.regionId === selectedRegion.id) : undefined;
   const selectedRegionRivers = selectedRegion ? getRiversForRegion(selectedRegion, rivers) : [];
   const selectedRegionLakes = selectedRegion ? getLakeSummariesForRegion(selectedRegion, hexTerrainByKey) : [];
+  const selectedRegionRoadStats = selectedRegion ? (() => {
+    const regionKeys = new Set(selectedRegion.hexes.map(hexKey));
+    let road = 0; let trail = 0;
+    for (const r of roads) for (const s of r.segments) {
+      if (regionKeys.has(hexKey(s.from)) || regionKeys.has(hexKey(s.to))) {
+        if (s.kind === 'road') road += 1; else trail += 1;
+      }
+    }
+    return { road, trail };
+  })() : { road: 0, trail: 0 };
   const selectedRegionGraph = selectedRegion ? riverGraphsByRegion.get(selectedRegion.id) : undefined;
   const selectedRegionSharedVertices = selectedRegion
     ? (regionSharedVerticesByRegion.get(selectedRegion.id) ?? { candidateVertices: [], neighborRegionVertices: [] })
@@ -2850,21 +3047,6 @@ export function App() {
                   }}
                 >
                   <polygon points={hexPoints(hex.x, hex.y, HEX_SIZE)} className={cls} style={{ fill }} />
-                  {SHOW_BIOME_EMOJI && hex.kind === 'region' && hex.regionId && region && !isLakeHex
-                    ? hexEmojiLayout.map((item, index) => (
-                      <text
-                        key={`biome-emoji-${hex.key}-${index}`}
-                        x={item.x}
-                        y={item.y}
-                        textAnchor="middle"
-                        dominantBaseline="central"
-                        fontSize={item.fontSize}
-                        pointerEvents="none"
-                      >
-                        {item.emoji}
-                      </text>
-                    ))
-                    : null}
                   <polygon points={hexPoints(hex.x, hex.y, HEX_SIZE)} className={cls} style={{ fill: 'none' }} />
                   {SHOW_HEX_COORDINATES ? <text x={hex.x} y={hex.y + 4} textAnchor="middle" className="hex-label">{hex.q}/{hex.r}</text> : null}
                 </g>
@@ -2893,6 +3075,29 @@ export function App() {
                   markerEnd="url(#river-arrowhead)"
                 />
               ))}
+            </g>
+            <g className="roads-layer">
+              {roadSegments.map((segment) => (
+                <line key={segment.key} x1={segment.x1} y1={segment.y1} x2={segment.x2} y2={segment.y2} className={segment.kind === 'trail' ? 'road-trail' : 'road-line'} />
+              ))}
+            </g>
+            <g className="emoji-layer">
+              {positionedHexes.hexes.map((hex) => {
+                const meta = metadataMap.get(hex.key);
+                const terrain = hexTerrainByKey.get(hex.key);
+                const isLakeHex = terrain?.terrainOverride === 'lake';
+                const region = meta?.regionId ? regions.find((item) => item.id === meta.regionId) : undefined;
+                const fallbackBiome = BIOMES[FALLBACK_BIOME_ID];
+                const biomePrimaryEmoji = region?.biomePrimaryEmoji ?? fallbackBiome.primaryEmoji;
+                const biomeSecondaryEmojis = region?.biomeSecondaryEmojis ?? fallbackBiome.secondaryEmojis;
+                const biomeEmojis = [biomePrimaryEmoji, ...biomeSecondaryEmojis.slice(0, 2)];
+                const isPointOfInterest = region?.pointsOfInterest.some((poi) => hexKey(poi) === hex.key) ?? false;
+                const hexEmojis = [...(meta?.isCenter ? [REGION_CENTER_EMOJI] : []), ...(isPointOfInterest ? [POI_EMOJI] : []), ...biomeEmojis];
+                const hexEmojiLayout = getHexEmojiLayout(hexEmojis, hex.x, hex.y, HEX_SIZE);
+                return SHOW_BIOME_EMOJI && hex.kind === 'region' && hex.regionId && region && !isLakeHex ? hexEmojiLayout.map((item, index) => (
+                  <text key={`biome-emoji-${hex.key}-${index}`} x={item.x} y={item.y} textAnchor="middle" dominantBaseline="central" fontSize={item.fontSize} pointerEvents="none">{item.emoji}</text>
+                )) : null;
+              })}
             </g>
             {debugRivers ? (
               <g className="river-debug-layer">
@@ -2963,6 +3168,8 @@ export function App() {
           <p><strong>anchorHex:</strong> {selectedMeta?.isAnchor ? 'да' : 'нет'}</p>
           <p><strong>Реки:</strong> {selectedRiverIds.length > 0 ? selectedRiverIds.join(', ') : '—'}</p>
           <p><strong>Точка интереса:</strong> {!isSelectedCandidate && selectedRegion ? (selectedRegion.pointsOfInterest.some((poi) => selectedHexKey === hexKey(poi)) ? 'да' : 'нет') : '—'}</p>
+          <p><strong>Дорога:</strong> {selectedHexRoadKinds.includes('road') ? 'да' : 'нет'}</p>
+          <p><strong>Тропа:</strong> {selectedHexRoadKinds.includes('trail') ? 'да' : 'нет'}</p>
           {isSelectedCandidate ? <p><strong>Статус:</strong> Кандидат для нового региона</p> : null}
           {isSelectedLake && !isSelectedCandidate && selectedRegion ? (
             <>
@@ -2980,6 +3187,8 @@ export function App() {
               <p><strong>Высота:</strong> {getRegionHeightLabel(selectedRegion.heightLevel ?? getRegionHeightLevelFromBiomeId(selectedRegion.biomeId))}</p>
               <p><strong>Размер:</strong> {getRegionSizeDisplay(selectedRegion)}</p>
               <p><strong>Точек интереса в регионе:</strong> {selectedRegion.pointsOfInterest.length}</p>
+              <p><strong>Дорог региона:</strong> {selectedRegionRoadStats.road}</p>
+              <p><strong>Троп региона:</strong> {selectedRegionRoadStats.trail}</p>
               <p>
                 <strong>Реки региона:</strong>{' '}
                 {selectedRegionRivers.length > 0
