@@ -2546,8 +2546,7 @@ export function App() {
       const biome = BIOMES[biomeId] ?? BIOMES[FALLBACK_BIOME_ID];
       const heightLevel = BIOMES[biomeId]?.heightLevel ?? 1;
       const { lakesByHex, nextLakeId: computedNextLakeId } = assignLakesForRegion(regionHexes, centerHex, nextLakeId, biomeId);
-      const pointsOfInterest = assignPointsOfInterestForRegion(regionHexes, centerHex, lakesByHex);
-      const region: Region = {
+      const regionBase: Omit<Region, 'pointsOfInterest'> = {
         id: regionId,
         hexes: regionHexes,
         centerHex,
@@ -2562,10 +2561,13 @@ export function App() {
         biomeLabel: biome.label,
         biomePrimaryEmoji: biome.primaryEmoji,
         biomeSecondaryEmojis: [...biome.secondaryEmojis],
-        biomeEmojiLabel: biome.primaryEmoji + biome.secondaryEmojis.join(''),
-        pointsOfInterest
+        biomeEmojiLabel: biome.primaryEmoji + biome.secondaryEmojis.join('')
       };
-      console.log('Region size generated', { regionId: region.id, targetSize, finalSize, sizeLabel });
+      const regionForRiverGeneration: Region = {
+        ...regionBase,
+        pointsOfInterest: []
+      };
+      console.log('Region size generated', { regionId, targetSize, finalSize, sizeLabel });
       console.log('Biome selected', {
         regionId,
         regionCount: regions.length,
@@ -2576,20 +2578,20 @@ export function App() {
       });
       if (finalSize > targetSize) {
         console.log('Region size exceeded target because enclosed areas were filled', {
-          regionId: region.id,
+          regionId,
           targetSize,
           finalSize,
           exceededBy: finalSize - targetSize
         });
       }
-      const nextRegions = [...regions, region];
+      const nextRegionsForRiverGeneration = [...regions, regionForRiverGeneration];
       const nextHexTerrainByKeyPreview = new Map(hexTerrainByKey);
       for (const [key, terrain] of lakesByHex) nextHexTerrainByKeyPreview.set(key, terrain);
-      const nextAllHexes = nextRegions.flatMap((r) => r.hexes);
+      const nextAllHexes = nextRegionsForRiverGeneration.flatMap((r) => r.hexes);
       const nextCandidateHexes = getCandidateHexes(nextAllHexes);
       const riverResult = generateRiverForRegion(
-        region,
-        nextRegions,
+        regionForRiverGeneration,
+        nextRegionsForRiverGeneration,
         riversForGeneration,
         nextCandidateHexes,
         nextHexTerrainByKeyPreview
@@ -2598,6 +2600,13 @@ export function App() {
         console.warn('Discarding failed candidate region', { attempt, reason: riverResult.reason });
         continue;
       }
+
+      const pointsOfInterest = assignPointsOfInterestForRegion(regionHexes, centerHex, lakesByHex);
+      const finalRegion: Region = {
+        ...regionForRiverGeneration,
+        pointsOfInterest
+      };
+      const nextRegions = [...regions, finalRegion];
 
       setRegions(nextRegions);
       setCandidateHexes(nextCandidateHexes);
