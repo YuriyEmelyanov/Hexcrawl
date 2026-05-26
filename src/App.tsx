@@ -232,6 +232,15 @@ function randomInt(min: number, max: number): number {
   return Math.floor(Math.random() * (upper - lower + 1)) + lower;
 }
 
+function shuffleArray<T>(values: T[]): T[] {
+  const result = [...values];
+  for (let i = result.length - 1; i > 0; i -= 1) {
+    const j = randomInt(0, i);
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
+}
+
 function assignRiverFlowLevel(river: Omit<River, 'flowLevel'>): River {
   return {
     ...river,
