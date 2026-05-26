@@ -48,6 +48,7 @@ type Region = {
   biomePrimaryEmoji: string;
   biomeSecondaryEmojis: string[];
   biomeEmojiLabel: string;
+  pointsOfInterest: AxialHex[];
 };
 
 type HexMeta = {
@@ -121,6 +122,7 @@ const SQRT3 = Math.sqrt(3);
 const SHOW_HEX_COORDINATES = false;
 const SHOW_BIOME_EMOJI = true;
 const REGION_CENTER_EMOJI = '★';
+const POI_EMOJI = '◆';
 const WATER_COLOR = 'var(--water-color)';
 const LAKE_HEX_COLOR = WATER_COLOR;
 const MIN_RIVER_FLOW_LEVEL = 1;
@@ -2239,6 +2241,32 @@ function assignLakesForRegion(
   return { lakesByHex, nextLakeId };
 }
 
+function assignPointsOfInterestForRegion(
+  regionHexes: AxialHex[],
+  centerHex: AxialHex,
+  lakesByHex: Map<string, HexTerrainData>
+): AxialHex[] {
+  const centerKey = hexKey(centerHex);
+  const eligibleHexes = regionHexes.filter((hex) => {
+    const key = hexKey(hex);
+    if (key === centerKey) return false;
+    return lakesByHex.get(key)?.terrainOverride !== 'lake';
+  });
+  const lakeHexCount = regionHexes.length - 1 - eligibleHexes.length;
+  const eligibleCount = regionHexes.length - 1 - lakeHexCount;
+  if (eligibleCount <= 0) return [];
+
+  const maxPoiCount = Math.floor(eligibleCount / 2);
+  const minPoiCount = Math.floor(eligibleCount / 3);
+  if (maxPoiCount < minPoiCount) return [];
+
+  const poiCount = randomInt(minPoiCount, maxPoiCount);
+  if (poiCount <= 0) return [];
+
+  const shuffledEligibleHexes = shuffleArray(eligibleHexes);
+  return shuffledEligibleHexes.slice(0, Math.min(poiCount, shuffledEligibleHexes.length));
+}
+
 function getLakeVertices(allHexes: AxialHex[], hexTerrainByKey: Map<string, HexTerrainData>): LakeVertex[] {
   const uniqueVertices = new Map<string, LakeVertex>();
   for (const hex of allHexes) {
@@ -2419,7 +2447,8 @@ export function App() {
         biomeLabel: BIOMES[FALLBACK_BIOME_ID].label,
         biomePrimaryEmoji: BIOMES[FALLBACK_BIOME_ID].primaryEmoji,
         biomeSecondaryEmojis: [...BIOMES[FALLBACK_BIOME_ID].secondaryEmojis],
-        biomeEmojiLabel: BIOMES[FALLBACK_BIOME_ID].primaryEmoji + BIOMES[FALLBACK_BIOME_ID].secondaryEmojis.join('')
+        biomeEmojiLabel: BIOMES[FALLBACK_BIOME_ID].primaryEmoji + BIOMES[FALLBACK_BIOME_ID].secondaryEmojis.join(''),
+        pointsOfInterest: []
       };
       const nextAllHexesPreview = [...allRegionHexes, ...regionHexes];
       const nextCandidateHexesPreview = getCandidateHexes(nextAllHexesPreview);
@@ -2516,6 +2545,8 @@ export function App() {
       const biomeId = biomeChoice.biomeId;
       const biome = BIOMES[biomeId] ?? BIOMES[FALLBACK_BIOME_ID];
       const heightLevel = BIOMES[biomeId]?.heightLevel ?? 1;
+      const { lakesByHex, nextLakeId: computedNextLakeId } = assignLakesForRegion(regionHexes, centerHex, nextLakeId, biomeId);
+      const pointsOfInterest = assignPointsOfInterestForRegion(regionHexes, centerHex, lakesByHex);
       const region: Region = {
         id: regionId,
         hexes: regionHexes,
@@ -2531,7 +2562,8 @@ export function App() {
         biomeLabel: biome.label,
         biomePrimaryEmoji: biome.primaryEmoji,
         biomeSecondaryEmojis: [...biome.secondaryEmojis],
-        biomeEmojiLabel: biome.primaryEmoji + biome.secondaryEmojis.join('')
+        biomeEmojiLabel: biome.primaryEmoji + biome.secondaryEmojis.join(''),
+        pointsOfInterest
       };
       console.log('Region size generated', { regionId: region.id, targetSize, finalSize, sizeLabel });
       console.log('Biome selected', {
@@ -2551,7 +2583,6 @@ export function App() {
         });
       }
       const nextRegions = [...regions, region];
-      const { lakesByHex, nextLakeId: computedNextLakeId } = assignLakesForRegion(regionHexes, centerHex, nextLakeId, biomeId);
       const nextHexTerrainByKeyPreview = new Map(hexTerrainByKey);
       for (const [key, terrain] of lakesByHex) nextHexTerrainByKeyPreview.set(key, terrain);
       const nextAllHexes = nextRegions.flatMap((r) => r.hexes);
@@ -2736,9 +2767,12 @@ export function App() {
                 biomePrimaryEmoji,
                 ...biomeSecondaryEmojis.slice(0, 2)
               ];
-              const hexEmojis = meta?.isCenter
-                ? [REGION_CENTER_EMOJI, ...biomeEmojis]
-                : biomeEmojis;
+              const isPointOfInterest = region?.pointsOfInterest.some((poi) => hexKey(poi) === hex.key) ?? false;
+              const hexEmojis = [
+                ...(meta?.isCenter ? [REGION_CENTER_EMOJI] : []),
+                ...(isPointOfInterest ? [POI_EMOJI] : []),
+                ...biomeEmojis
+              ];
               const hexEmojiLayout = getHexEmojiLayout(hexEmojis, hex.x, hex.y, HEX_SIZE);
               return (
                 <g
@@ -2854,6 +2888,7 @@ export function App() {
               <p>Высота: {getRegionHeightLabel(lastRegion.heightLevel ?? getRegionHeightLevelFromBiomeId(lastRegion.biomeId))}</p>
               <p>Целевой размер: {lastRegion.targetSize}</p>
               <p>Фактический размер региона: {lastRegion.finalSize}</p>
+              <p>Точек интереса: {lastRegion.pointsOfInterest.length}</p>
             </>
           ) : null}
           <hr />
@@ -2863,6 +2898,7 @@ export function App() {
           <p><strong>centralHex:</strong> {selectedMeta?.isCenter ? 'да' : 'нет'}</p>
           <p><strong>anchorHex:</strong> {selectedMeta?.isAnchor ? 'да' : 'нет'}</p>
           <p><strong>Реки:</strong> {selectedRiverIds.length > 0 ? selectedRiverIds.join(', ') : '—'}</p>
+          <p><strong>Точка интереса:</strong> {!isSelectedCandidate && selectedRegion ? (selectedRegion.pointsOfInterest.some((poi) => selectedHexKey === hexKey(poi)) ? 'да' : 'нет') : '—'}</p>
           {isSelectedCandidate ? <p><strong>Статус:</strong> Кандидат для нового региона</p> : null}
           {isSelectedLake && !isSelectedCandidate && selectedRegion ? (
             <>
@@ -2879,6 +2915,7 @@ export function App() {
               <p><strong>Биом:</strong> {selectedRegion.biomePrimaryEmoji}{selectedRegion.biomeSecondaryEmojis.join('')} {selectedRegion.biomeLabel}</p>
               <p><strong>Высота:</strong> {getRegionHeightLabel(selectedRegion.heightLevel ?? getRegionHeightLevelFromBiomeId(selectedRegion.biomeId))}</p>
               <p><strong>Размер:</strong> {getRegionSizeDisplay(selectedRegion)}</p>
+              <p><strong>Точек интереса в регионе:</strong> {selectedRegion.pointsOfInterest.length}</p>
             </>
           ) : null}
           {debugRivers ? (
