@@ -1754,6 +1754,106 @@ export function getCandidateHexes(allRegionHexes: AxialHex[]): AxialHex[] {
 
 type RiverGenerationResult = { success: boolean; rivers: River[]; reason?: string };
 
+function tryAddMinorInternalRiver(
+  region: Region,
+  rivers: River[],
+  riverGraph: RiverGraph,
+  candidateHexes: AxialHex[],
+  hexTerrainByKey: Map<string, HexTerrainData>
+): River[] {
+  if (region.sizeCategory !== 'region' && region.sizeCategory !== 'large_region') return rivers;
+  if (!region.centerHex) return rivers;
+
+  const usedRiverEdgeKeys = buildUsedRiverEdges(rivers);
+  const lakes = getLakesForRegion(region, hexTerrainByKey);
+  const startVertices = lakes.length > 0
+    ? shuffleArray(lakes.flatMap((lake) => getRegionExteriorVertices(lake.hexes)))
+    : shuffleArray(Array.from(riverGraph.nodes.values())
+      .filter((node) => !node.isRegionBoundaryVertex)
+      .map((node) => ({ key: node.key, x: node.x, y: node.y })));
+  if (startVertices.length === 0) return rivers;
+
+  const regionVertexKeys = new Set<string>();
+  for (const hex of region.hexes) for (const vertex of getHexCornerPoints(hex)) regionVertexKeys.add(vertex.key);
+
+  const tryBuildPath = (start: RiverVertex, end: RiverVertex): RiverVertex[] | null => {
+    if (start.key === end.key) return null;
+    const startNode = riverGraph.nodes.get(start.key);
+    const endNode = riverGraph.nodes.get(end.key);
+    if (!startNode || !endNode) return null;
+    const path = findRiverPath(startNode, endNode, riverGraph, usedRiverEdgeKeys)
+      .map((node) => ({ key: node.key, x: node.x, y: node.y }));
+    if (path.length < 2) return null;
+    if (new Set(path.map((v) => v.key)).size !== path.length) return null;
+    const pathEdgeKeys = getRiverPathEdgeKeys(path, riverGraph);
+    if (!pathEdgeKeys || pathEdgeKeys.some((key) => usedRiverEdgeKeys.has(key))) return null;
+    return path;
+  };
+
+  let bestPath: RiverVertex[] | null = null;
+  if (region.heightLevel <= 2) {
+    const targetVertexMap = new Map<string, RiverVertex>();
+    for (const river of rivers) {
+      if (!river.vertexPath.some((vertex) => regionVertexKeys.has(vertex.key))) continue;
+      for (const vertex of river.vertexPath) if (regionVertexKeys.has(vertex.key)) targetVertexMap.set(vertex.key, vertex);
+    }
+    const targetVertices = shuffleArray(Array.from(targetVertexMap.values()));
+    for (const start of startVertices) {
+      let localBest: RiverVertex[] | null = null;
+      for (const end of targetVertices) {
+        const path = tryBuildPath(start, end);
+        if (!path) continue;
+        if (!localBest || path.length > localBest.length) localBest = path;
+      }
+      if (localBest) {
+        bestPath = localBest;
+        if (bestPath.length >= 3) break;
+      }
+    }
+  } else if (region.heightLevel === 3) {
+    const candidateBoundaryVertices = getCandidateBoundaryVerticesForRegion(region.hexes, candidateHexes);
+    const centerVertices = getHexCornerPoints(region.centerHex);
+    const shuffledTargets = shuffleArray(candidateBoundaryVertices);
+    for (const start of startVertices) {
+      for (const end of shuffledTargets) {
+        let selected: RiverVertex[] | null = null;
+        for (const center of shuffleArray(centerVertices)) {
+          const first = tryBuildPath(start, center);
+          if (!first) continue;
+          const localBlocked = new Set(usedRiverEdgeKeys);
+          const firstEdgeKeys = getRiverPathEdgeKeys(first, riverGraph);
+          if (!firstEdgeKeys) continue;
+          for (const key of firstEdgeKeys) localBlocked.add(key);
+          const centerNode = riverGraph.nodes.get(center.key);
+          const endNode = riverGraph.nodes.get(end.key);
+          if (!centerNode || !endNode) continue;
+          const second = findRiverPath(centerNode, endNode, riverGraph, localBlocked)
+            .map((node) => ({ key: node.key, x: node.x, y: node.y }));
+          if (second.length < 2) continue;
+          if (new Set(second.map((v) => v.key)).size !== second.length) continue;
+          selected = [...first.slice(0, -1), ...second];
+          break;
+        }
+        if (!selected) selected = tryBuildPath(start, end);
+        if (selected) {
+          bestPath = selected;
+          break;
+        }
+      }
+      if (bestPath) break;
+    }
+  }
+
+  if (!bestPath) return rivers;
+  const newRiverId = rivers.reduce((maxId, river) => Math.max(maxId, river.id), 0) + 1;
+  return [...rivers, {
+    id: newRiverId,
+    regionId: region.id,
+    vertexPath: bestPath,
+    flowLevel: randomInt(1, 2)
+  }];
+}
+
 function generateRiverForRegion(
   region: Region,
   regions: Region[],
@@ -1872,7 +1972,7 @@ function generateRiverForRegion(
         validateRiverContinuity(river);
       }
       validateNoDuplicateRiverEdges(nextRivers);
-      return { success: true, rivers: nextRivers };
+      return { success: true, rivers: tryAddMinorInternalRiver(region, nextRivers, riverGraph, candidateHexes ?? [], terrainMap) };
     }
 
     if (incomingEndpoints.length >= 2) {
@@ -1985,7 +2085,7 @@ function generateRiverForRegion(
         validateRiverContinuity(river);
       }
       validateNoDuplicateRiverEdges(nextRivers);
-      return { success: true, rivers: nextRivers };
+      return { success: true, rivers: tryAddMinorInternalRiver(region, nextRivers, riverGraph, candidateHexes ?? [], terrainMap) };
     }
 
     if (touchingEndpoints.length >= 2) {
@@ -2026,7 +2126,7 @@ function generateRiverForRegion(
               validateRiverContinuity(river);
             }
             validateNoDuplicateRiverEdges(merged);
-            return { success: true, rivers: merged };
+            return { success: true, rivers: tryAddMinorInternalRiver(region, merged, riverGraph, candidateHexes ?? [], terrainMap) };
           }
         } else {
           console.warn('Could not connect river pair: no free connector path', {
@@ -2090,7 +2190,7 @@ function generateRiverForRegion(
 
       for (const river of nextRivers) validateRiverDirection(river);
       validateNoDuplicateRiverEdges(nextRivers);
-      return { success: true, rivers: nextRivers };
+      return { success: true, rivers: tryAddMinorInternalRiver(region, nextRivers, riverGraph, candidateHexes ?? [], terrainMap) };
     }
 
     if (region.heightLevel === 3) {
@@ -2151,7 +2251,7 @@ function generateRiverForRegion(
         validateRiverContinuity(nextRiver);
       }
       validateNoDuplicateRiverEdges(nextRivers);
-      return { success: true, rivers: nextRivers };
+      return { success: true, rivers: tryAddMinorInternalRiver(region, nextRivers, riverGraph, candidateHexes ?? [], terrainMap) };
     }
 
     const RANDOM_PAIR_ATTEMPTS = 50;
@@ -2190,7 +2290,7 @@ function generateRiverForRegion(
 
       for (const river of nextRivers) validateRiverDirection(river);
       validateNoDuplicateRiverEdges(nextRivers);
-      return { success: true, rivers: nextRivers };
+      return { success: true, rivers: tryAddMinorInternalRiver(region, nextRivers, riverGraph, candidateHexes ?? [], terrainMap) };
     }
   } catch (error) {
     console.warn('river generation failed', { regionId: region.id, error });
