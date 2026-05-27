@@ -2468,6 +2468,10 @@ function countRoadPathRiverCrossings(path: AxialHex[], rivers: River[]): number 
   return crossings;
 }
 
+function roadPathCrossesRiver(path: AxialHex[], rivers: River[]): boolean {
+  return countRoadPathRiverCrossings(path, rivers) > 0;
+}
+
 function getPoiKeysOnRoadPath(path: AxialHex[], region: Region): Set<string> {
   const pathKeys = new Set(path.map(hexKey));
   const centerKey = hexKey(region.centerHex);
@@ -2494,6 +2498,127 @@ function chooseBestRoadCandidate(candidates: RoadCandidatePath[]): RoadCandidate
 function hexHasRoad(hex: AxialHex, roads: Road[]): boolean {
   const key = hexKey(hex);
   return roads.some((road) => road.segments.some((segment) => hexKey(segment.from) === key || hexKey(segment.to) === key));
+}
+
+function hexHasRoadOrTrail(hex: AxialHex, roads: Road[]): boolean {
+  return hexHasRoad(hex, roads);
+}
+
+function findTrailPathWithinRegion(options: {
+  region: Region;
+  fromHex: AxialHex;
+  targetHex: AxialHex;
+  roads: Road[];
+  rivers: River[];
+  hexTerrainByKey: Map<string, HexTerrainData>;
+}): AxialHex[] | null {
+  const { region, fromHex, targetHex, roads, rivers, hexTerrainByKey } = options;
+  const path = findRoadPathWithinRegion({
+    region,
+    from: fromHex,
+    targets: [targetHex],
+    roads,
+    hexTerrainByKey,
+    allowRoadHexes: [fromHex, targetHex]
+  });
+  if (!path) return null;
+  if (roadPathCrossesRiver(path, rivers)) return null;
+  return path;
+}
+
+function addTrailPathWithoutDuplicateSegments(options: {
+  path: AxialHex[];
+  roads: Road[];
+  regionId: number;
+  nextRoadId: number;
+}): { roads: Road[]; nextRoadId: number; added: boolean } {
+  const { path, roads, regionId, nextRoadId } = options;
+  if (path.length < 2) return { roads, nextRoadId, added: false };
+  const existingSegmentKeys = getRoadSegmentKeys(roads);
+  const segmentsToAdd: RoadSegment[] = [];
+  for (let i = 1; i < path.length; i += 1) {
+    const from = path[i - 1];
+    const to = path[i];
+    const segmentKey = normalizeRoadSegmentKey(from, to);
+    if (existingSegmentKeys.has(segmentKey)) continue;
+    segmentsToAdd.push({ from, to, kind: 'trail' });
+    existingSegmentKeys.add(segmentKey);
+  }
+  if (segmentsToAdd.length === 0) return { roads, nextRoadId, added: false };
+  return {
+    roads: [...roads, { id: nextRoadId, regionId, segments: segmentsToAdd }],
+    nextRoadId: nextRoadId + 1,
+    added: true
+  };
+}
+
+function connectRemainingPoiWithTrails(options: {
+  region: Region;
+  roads: Road[];
+  rivers: River[];
+  hexTerrainByKey: Map<string, HexTerrainData>;
+  nextRoadId: number;
+}): { roads: Road[]; nextRoadId: number } {
+  const { region, roads, rivers, hexTerrainByKey, nextRoadId } = options;
+  let builtRoads = [...roads];
+  let nextRoadIdLocal = nextRoadId;
+  const skippedPoiKeys = new Set<string>();
+  let loopLimit = region.pointsOfInterest.length + 5;
+  const regionRoadHexes = (currentRoads: Road[]) => getRoadHexesInRegion(region, currentRoads);
+  while (loopLimit > 0) {
+    loopLimit -= 1;
+    const disconnectedPoi = region.pointsOfInterest
+      .filter((poi) => !hexHasRoadOrTrail(poi, builtRoads))
+      .filter((poi) => !isLakeHex(poi, hexTerrainByKey))
+      .filter((poi) => !skippedPoiKeys.has(hexKey(poi)));
+    if (disconnectedPoi.length === 0) break;
+    const roadHexCandidates = regionRoadHexes(builtRoads)
+      .filter((hex) => !isLakeHex(hex, hexTerrainByKey));
+    const selectedPoi = [...disconnectedPoi].sort((a, b) => {
+      const da = roadHexCandidates.length > 0 ? Math.min(...roadHexCandidates.map((roadHex) => hexDistance(a, roadHex))) : Number.MAX_SAFE_INTEGER;
+      const db = roadHexCandidates.length > 0 ? Math.min(...roadHexCandidates.map((roadHex) => hexDistance(b, roadHex))) : Number.MAX_SAFE_INTEGER;
+      return da - db;
+    })[0];
+    let connected = false;
+    const roadTargets = regionRoadHexes(builtRoads)
+      .filter((hex) => !isLakeHex(hex, hexTerrainByKey))
+      .filter((hex) => !isSameHex(hex, selectedPoi))
+      .sort((a, b) => hexDistance(selectedPoi, a) - hexDistance(selectedPoi, b));
+    for (const roadHex of roadTargets) {
+      const path = findTrailPathWithinRegion({ region, fromHex: selectedPoi, targetHex: roadHex, roads: builtRoads, rivers, hexTerrainByKey });
+      if (!path) continue;
+      const addResult = addTrailPathWithoutDuplicateSegments({ path, roads: builtRoads, regionId: region.id, nextRoadId: nextRoadIdLocal });
+      if (!addResult.added) continue;
+      builtRoads = addResult.roads;
+      nextRoadIdLocal = addResult.nextRoadId;
+      connected = true;
+      break;
+    }
+    if (!connected) {
+      const poiTargets = region.pointsOfInterest
+        .filter((poi) => !isSameHex(poi, selectedPoi))
+        .filter((poi) => !isLakeHex(poi, hexTerrainByKey))
+        .sort((a, b) => hexDistance(selectedPoi, a) - hexDistance(selectedPoi, b));
+      for (const targetPoi of poiTargets) {
+        const path = findTrailPathWithinRegion({ region, fromHex: selectedPoi, targetHex: targetPoi, roads: builtRoads, rivers, hexTerrainByKey });
+        if (!path) continue;
+        const addResult = addTrailPathWithoutDuplicateSegments({ path, roads: builtRoads, regionId: region.id, nextRoadId: nextRoadIdLocal });
+        if (!addResult.added) continue;
+        builtRoads = addResult.roads;
+        nextRoadIdLocal = addResult.nextRoadId;
+        connected = true;
+        break;
+      }
+    }
+    if (!connected) skippedPoiKeys.add(hexKey(selectedPoi));
+  }
+  console.log('Settled POI trails result', {
+    regionId: region.id,
+    totalPoi: region.pointsOfInterest.length,
+    connectedPoi: region.pointsOfInterest.filter((poi) => hexHasRoadOrTrail(poi, builtRoads)).length,
+    skippedPoi: skippedPoiKeys.size
+  });
+  return { roads: builtRoads, nextRoadId: nextRoadIdLocal };
 }
 
 function getRoadedPoiTargets(region: Region, roads: Road[]): AxialHex[] {
@@ -2815,10 +2940,12 @@ function generateRoadsForRegion(options: {
         if (firstBest) break;
       }
     }
-    if (!firstBest) return { roads: built, nextRoadId };
+    if (!firstBest) {
+      return connectRemainingPoiWithTrails({ region, roads: built, rivers, hexTerrainByKey, nextRoadId });
+    }
     if (addRoadFromPath(firstBest.extendedPath, 'road', [region.centerHex, firstBest.targetHex, firstBest.extendedPath[firstBest.extendedPath.length - 1]], new Set([hexKey(firstBest.targetHex)]))) {
       markPoiOnPathAsUsed(firstBest.extendedPath, region, usedRoadPoiKeys);
-    } else return { roads: built, nextRoadId };
+    } else return connectRemainingPoiWithTrails({ region, roads: built, rivers, hexTerrainByKey, nextRoadId });
     const firstAnchorHex = firstBest.targetHex;
     const firstPathKeys = new Set(firstBest.extendedPath.map(hexKey).filter((key) => key !== hexKey(region.centerHex)));
     const secondPoiTargets = getUnusedPoiTargets(region, usedRoadPoiKeys, hexTerrainByKey)
@@ -2945,7 +3072,7 @@ function generateRoadsForRegion(options: {
         });
       }
     }
-    return { roads: built, nextRoadId };
+    return connectRemainingPoiWithTrails({ region, roads: built, rivers, hexTerrainByKey, nextRoadId });
   }
   if (settled) {
     let attempts = 0;
@@ -2977,6 +3104,7 @@ function generateRoadsForRegion(options: {
       if (!added) break;
     }
   }
+  if (settled) return connectRemainingPoiWithTrails({ region, roads: built, rivers, hexTerrainByKey, nextRoadId });
   return { roads: built, nextRoadId };
 }
 
