@@ -2483,9 +2483,11 @@ function getPoiKeysOnRoadPath(path: AxialHex[], region: Region): Set<string> {
 function chooseBestRoadCandidate(candidates: RoadCandidatePath[]): RoadCandidatePath | null {
   if (candidates.length === 0) return null;
   const minCrossings = Math.min(...candidates.map((candidate) => candidate.crossedRiverCount));
-  const leastCrossingCandidates = candidates.filter((candidate) => candidate.crossedRiverCount === minCrossings);
-  const maxPoiCount = Math.max(...leastCrossingCandidates.map((candidate) => candidate.touchedPoiCount));
-  const bestCandidates = leastCrossingCandidates.filter((candidate) => candidate.touchedPoiCount === maxPoiCount);
+  let bestCandidates = candidates.filter((candidate) => candidate.crossedRiverCount === minCrossings);
+  const minLength = Math.min(...bestCandidates.map((candidate) => candidate.extendedPath.length));
+  bestCandidates = bestCandidates.filter((candidate) => candidate.extendedPath.length === minLength);
+  const maxPoiCount = Math.max(...bestCandidates.map((candidate) => candidate.touchedPoiCount));
+  bestCandidates = bestCandidates.filter((candidate) => candidate.touchedPoiCount === maxPoiCount);
   return randomFrom(bestCandidates);
 }
 
@@ -2797,13 +2799,13 @@ function generateRoadsForRegion(options: {
     const secondFallbackTargets = getAvailableRoadFallbackHexes({ region, fromHex: firstAnchorHex, roads: built, hexTerrainByKey, usedRoadPoiKeys, excludeHexKeys: new Set([hexKey(region.centerHex), ...Array.from(firstPathKeys)]) });
     let secondBest: RoadCandidatePath | null = null;
     for (const targetPoi of secondPoiTargets) {
-      const candidates = collectAlternativeRoadPathsToTarget({ region, fromHex: firstAnchorHex, targetHex: targetPoi, targetIsPoi: true, roads: built, rivers, hexTerrainByKey, usedRoadPoiKeys, maxAlternatives: maxCandidates });
+      const candidates = collectAlternativeRoadPathsToTarget({ region, fromHex: region.centerHex, targetHex: targetPoi, targetIsPoi: true, roads: built, rivers, hexTerrainByKey, usedRoadPoiKeys, maxAlternatives: maxCandidates });
       secondBest = chooseBestRoadCandidate(candidates);
       if (secondBest) break;
     }
     if (!secondBest) {
       for (const fallbackHex of secondFallbackTargets) {
-        const candidates = collectAlternativeRoadPathsToTarget({ region, fromHex: firstAnchorHex, targetHex: fallbackHex, targetIsPoi: false, roads: built, rivers, hexTerrainByKey, usedRoadPoiKeys, maxAlternatives: maxCandidates });
+        const candidates = collectAlternativeRoadPathsToTarget({ region, fromHex: region.centerHex, targetHex: fallbackHex, targetIsPoi: false, roads: built, rivers, hexTerrainByKey, usedRoadPoiKeys, maxAlternatives: maxCandidates });
         secondBest = chooseBestRoadCandidate(candidates);
         if (secondBest) break;
       }
@@ -2819,7 +2821,8 @@ function generateRoadsForRegion(options: {
         .sort((a, b) => hexDistance(b, region.centerHex) - hexDistance(a, region.centerHex));
       let thirdBest: RoadCandidatePath | null = null;
       for (const targetPoi of thirdPoiTargets) {
-        const connectionPool = [region.centerHex, ...getRoadedPoiTargets(region, built)];
+        const roadHexKeysCurrent = getRoadHexKeys(built);
+        const connectionPool = [region.centerHex, ...getRoadedPoiTargets(region, built)].filter((hex) => roadHexKeysCurrent.has(hexKey(hex)));
         const uniqueConnectionPool = connectionPool.filter((hex, index, arr) => arr.findIndex((h) => hexKey(h) === hexKey(hex)) === index);
         uniqueConnectionPool.sort((a, b) => hexDistance(a, targetPoi) - hexDistance(b, targetPoi));
         const connectionHex = uniqueConnectionPool[0];
