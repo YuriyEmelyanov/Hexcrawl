@@ -2398,6 +2398,28 @@ function findRoadPathWithinRegion(options: {
   }
   return null;
 }
+function isSameHex(a: AxialHex, b: AxialHex): boolean {
+  return a.q === b.q && a.r === b.r;
+}
+
+function isPointOfInterestHex(hex: AxialHex, region: Region): boolean {
+  const key = hexKey(hex);
+  return region.pointsOfInterest.some((poi) => hexKey(poi) === key);
+}
+
+function getUnusedPoiTargets(
+  region: Region,
+  usedRoadPoiKeys: Set<string>,
+  hexTerrainByKey: Map<string, HexTerrainData>
+): AxialHex[] {
+  return region.pointsOfInterest.filter((poi) => {
+    const key = hexKey(poi);
+    if (usedRoadPoiKeys.has(key)) return false;
+    if (isLakeHex(poi, hexTerrainByKey)) return false;
+    return true;
+  });
+}
+
 function canAddRoadPath(options: {
   path: AxialHex[];
   roads: Road[];
@@ -2495,9 +2517,9 @@ function generateRoadsForRegion(options: {
   region: Region; regions: Region[]; roads: Road[]; rivers: River[]; hexTerrainByKey: Map<string, HexTerrainData>; nextRoadId: number;
 }): { roads: Road[]; nextRoadId: number } {
   const { region, roads, hexTerrainByKey } = options;
-  const roadTargets = [...region.pointsOfInterest, region.centerHex];
   const incoming = findIncomingRoadEndpointsForRegion(region, roads);
   const boundaryHexes = getBoundaryHexes(region);
+  const usedRoadPoiKeys = new Set<string>();
   let nextRoadId = options.nextRoadId;
   const built = [...roads];
   const addRoadFromPath = (path: AxialHex[], kind: RoadKind, allowedRoadHexes: AxialHex[] = [], allowedDuplicateHexKeys = new Set<string>()) => {
@@ -2511,34 +2533,56 @@ function generateRoadsForRegion(options: {
   const settled = region.biomeLandType === 'settled';
   if (!settled && incoming.length === 0) return { roads: built, nextRoadId };
   for (const inc of incoming) {
-    const best = findRoadPathWithinRegion({ region, from: inc.entryHex, targets: roadTargets, roads: built, hexTerrainByKey, allowRoadHexes: [region.centerHex] });
-    if (!best) continue;
-    const firstPath = [inc.endpointHex, ...best];
-    const reached = best[best.length - 1];
+    const unusedPoiTargets = getUnusedPoiTargets(region, usedRoadPoiKeys, hexTerrainByKey);
+    const toPoi = findRoadPathWithinRegion({ region, from: inc.entryHex, targets: unusedPoiTargets, roads: built, hexTerrainByKey, allowRoadHexes: [region.centerHex] });
+
     if (!settled) {
-      addRoadFromPath(firstPath, 'trail', [inc.endpointHex, inc.entryHex, reached, region.centerHex]);
+      if (toPoi) {
+        const poiTarget = toPoi[toPoi.length - 1];
+        const firstPath = [inc.endpointHex, ...toPoi];
+        if (addRoadFromPath(firstPath, 'trail', [inc.endpointHex, inc.entryHex, poiTarget, region.centerHex])) {
+          usedRoadPoiKeys.add(hexKey(poiTarget));
+          continue;
+        }
+      }
+      const toCenter = findRoadPathWithinRegion({ region, from: inc.entryHex, targets: [region.centerHex], roads: built, hexTerrainByKey, allowRoadHexes: [region.centerHex] });
+      if (!toCenter) continue;
+      const fallbackPath = [inc.endpointHex, ...toCenter];
+      addRoadFromPath(fallbackPath, 'trail', [inc.endpointHex, inc.entryHex, region.centerHex]);
       continue;
     }
-    if (hexKey(reached) === hexKey(region.centerHex)) {
-      addRoadFromPath(firstPath, 'road', [inc.endpointHex, inc.entryHex, region.centerHex, reached]);
-      continue;
+
+    if (toPoi) {
+      const poiTarget = toPoi[toPoi.length - 1];
+      const firstPath = [inc.endpointHex, ...toPoi];
+      const temporaryRoads = [...built, { id: -1, regionId: region.id, segments: firstPath.slice(1).map((h, i) => ({ from: firstPath[i], to: h, kind: 'road' as RoadKind })) }];
+      const poiToCenter = findRoadPathWithinRegion({ region, from: poiTarget, targets: [region.centerHex], roads: temporaryRoads, hexTerrainByKey, allowRoadHexes: [region.centerHex, poiTarget] });
+      if (poiToCenter) {
+        const combined = [...firstPath, ...poiToCenter.slice(1)];
+        if (addRoadFromPath(combined, 'road', [inc.endpointHex, inc.entryHex, poiTarget, region.centerHex], new Set([hexKey(poiTarget)]))) {
+          usedRoadPoiKeys.add(hexKey(poiTarget));
+          continue;
+        }
+      }
     }
-    const temporaryRoads = [...built, { id: -1, regionId: region.id, segments: firstPath.slice(1).map((h, i) => ({ from: firstPath[i], to: h, kind: 'road' as RoadKind })) }];
-    const toCenter = findRoadPathWithinRegion({ region, from: reached, targets: [region.centerHex], roads: temporaryRoads, hexTerrainByKey, allowRoadHexes: [region.centerHex, reached] });
+
+    const toCenter = findRoadPathWithinRegion({ region, from: inc.entryHex, targets: [region.centerHex], roads: built, hexTerrainByKey, allowRoadHexes: [region.centerHex] });
     if (!toCenter) continue;
-    const combined = [...firstPath, ...toCenter.slice(1)];
-    addRoadFromPath(combined, 'road', [inc.endpointHex, inc.entryHex, reached, region.centerHex], new Set([hexKey(reached)]));
+    const fallbackPath = [inc.endpointHex, ...toCenter];
+    addRoadFromPath(fallbackPath, 'road', [inc.endpointHex, inc.entryHex, region.centerHex]);
   }
   if (settled) {
     let attempts = 0;
     while (countRoadSegmentsTouchingHex(region.centerHex, built) < 2 && attempts < 10) {
       attempts += 1;
       const roadHexes = getRoadHexKeys(built);
-      const candidateTargets = [
-        ...region.pointsOfInterest.filter((h) => hexKey(h) !== hexKey(region.centerHex)),
-        ...region.hexes.filter((h) => !roadHexes.has(hexKey(h)) && hexKey(h) !== hexKey(region.centerHex))
-      ]
-        .filter((h, i, arr) => !isLakeHex(h, hexTerrainByKey) && arr.findIndex((x) => hexKey(x) === hexKey(h)) === i)
+      const poiKeys = new Set(region.pointsOfInterest.map((poi) => hexKey(poi)));
+      const freePoiTargets = getUnusedPoiTargets(region, usedRoadPoiKeys, hexTerrainByKey)
+        .filter((h) => !isSameHex(h, region.centerHex));
+      const freeHexTargets = region.hexes
+        .filter((h) => !roadHexes.has(hexKey(h)) && !isSameHex(h, region.centerHex) && !poiKeys.has(hexKey(h)) && !isLakeHex(h, hexTerrainByKey));
+      const candidateTargets = [...freePoiTargets, ...freeHexTargets]
+        .filter((h, i, arr) => arr.findIndex((x) => hexKey(x) === hexKey(h)) === i)
         .sort((a, b) => hexDistance(a, region.centerHex) - hexDistance(b, region.centerHex));
       let added = false;
       for (const mid of candidateTargets) {
@@ -2549,6 +2593,7 @@ function generateRoadsForRegion(options: {
         if (!p2) continue;
         const combined = [...p1, ...p2.slice(1)];
         if (addRoadFromPath(combined, 'road', [region.centerHex, mid, p2[p2.length - 1]], new Set([hexKey(mid)]))) {
+          if (isPointOfInterestHex(mid, region)) usedRoadPoiKeys.add(hexKey(mid));
           added = true;
           break;
         }
