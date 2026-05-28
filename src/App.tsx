@@ -790,7 +790,7 @@ type EdgeMinorRiverGenerationReason =
   | 'no_confluence_candidates'
   | 'no_start_candidates'
   | 'no_valid_path'
-  | 'path_too_long'
+  | 'validation_failed'
   | 'reached_different_river'
   | 'ok'
   | 'error_safe_fallback';
@@ -814,7 +814,6 @@ function tryAddEdgeMinorTributaryRiver(
   rivers: River[],
   candidateHexes: AxialHex[]
 ): River[] {
-  const maxSegmentCount = 8;
   const logGeneration = ({
     outgoingRiverCandidates,
     selectedMainRiver,
@@ -836,15 +835,15 @@ function tryAddEdgeMinorTributaryRiver(
     flowLevel: number | null;
     reachedDifferentRiver: boolean;
   }) => {
-    console.log('Edge minor river generation', {
+    console.log('Edge river from candidate boundary generation', {
       regionId: region.id,
       sizeCategory: region.sizeCategory,
       heightLevel: region.heightLevel,
       outgoingRiverCandidates,
       selectedMainRiverId: selectedMainRiver?.id ?? null,
       selectedMainRiverFlowLevel: selectedMainRiver?.flowLevel ?? null,
-      confluenceCandidates,
       startCandidates,
+      confluenceCandidates,
       built,
       reason,
       segmentCount,
@@ -863,8 +862,9 @@ function tryAddEdgeMinorTributaryRiver(
       return rivers;
     }
 
+    const candidateBoundaryVertices = getCandidateBoundaryVerticesForRegion(region.hexes, candidateHexes);
+    const candidateBoundaryVertexKeys = new Set(candidateBoundaryVertices.map((vertex) => vertex.key));
     const regionRivers = getRiversForRegion(region, rivers);
-    const candidateBoundaryVertexKeys = new Set(getCandidateBoundaryVerticesForRegion(region.hexes, candidateHexes).map((vertex) => vertex.key));
     const outgoingRiverCandidates = regionRivers.filter((river) => (
       river.vertexPath.some((vertex) => candidateBoundaryVertexKeys.has(vertex.key))
     ));
@@ -876,58 +876,30 @@ function tryAddEdgeMinorTributaryRiver(
       return rivers;
     }
 
-    const existingRiverEdgeKeys = buildUsedRiverEdges(rivers);
+    const usedRiverEdges = buildUsedRiverEdges(rivers);
     const existingRiverVertexKeys = new Set(rivers.flatMap((river) => river.vertexPath.map((vertex) => vertex.key)));
+    const existingRiverVertexRiverIdsByKey = new Map<string, Set<number>>();
+    for (const river of rivers) {
+      for (const vertex of river.vertexPath) {
+        const riverIds = existingRiverVertexRiverIdsByKey.get(vertex.key) ?? new Set<number>();
+        riverIds.add(river.id);
+        existingRiverVertexRiverIdsByKey.set(vertex.key, riverIds);
+      }
+    }
     const forbiddenTerminalRiverVertexKeys = new Set<string>();
     for (const river of rivers) {
       const firstVertex = river.vertexPath[0];
       if (firstVertex) forbiddenTerminalRiverVertexKeys.add(firstVertex.key);
     }
     const connectedLakeVertexKeys = new Set<string>();
-    const freeLakeVertexByKey = new Map<string, RiverVertex>();
-    const allLakeVertexKeys = new Set<string>();
     for (const lake of getLakesForRegion(region, terrainMap)) {
-      const isConnectedLake = lakeHasRiverConnection(lake.hexes, rivers);
-      if (isConnectedLake) {
-        for (const vertex of lake.vertices) connectedLakeVertexKeys.add(vertex.key);
-      } else {
-        for (const vertex of lake.vertices) freeLakeVertexByKey.set(vertex.key, vertex);
-      }
-      for (const vertex of lake.vertices) allLakeVertexKeys.add(vertex.key);
+      if (!lakeHasRiverConnection(lake.hexes, rivers)) continue;
+      for (const vertex of lake.vertices) connectedLakeVertexKeys.add(vertex.key);
     }
-
-    const graphNodeFor = (vertex: RiverVertex): RiverGraphNode | undefined => riverGraph.nodes.get(vertex.key);
-    const isCandidateAdjacentVertex = (vertex: RiverVertex): boolean => (
-      candidateBoundaryVertexKeys.has(vertex.key)
-      || vertexTouchesAnyHex(vertex, candidateHexes)
-      || Boolean(graphNodeFor(vertex)?.isCandidateBoundaryVertex)
-    );
-    const isRegionPerimeterVertex = (vertex: RiverVertex): boolean => (
-      !graphNodeFor(vertex)
-      || Boolean(graphNodeFor(vertex)?.isRegionBoundaryVertex)
-      || getRegionHexesTouchingVertex(vertex, region).length < 3
-    );
-    const isExternalVertex = (vertex: RiverVertex): boolean => isRegionPerimeterVertex(vertex) || isCandidateAdjacentVertex(vertex);
-    const isValidEdge = (from: RiverVertex, to: RiverVertex, pathEdgeKeys: Set<string>): boolean => {
-      const key = edgeKey(from, to);
-      const graphEdge = riverGraph.edges.get(key);
-      if (!graphEdge?.isInsideRegionEdge) return false;
-      if (existingRiverEdgeKeys.has(key)) return false;
-      if (pathEdgeKeys.has(key)) return false;
-      return true;
-    };
-    const hasIncidentExistingRiverEdge = (vertex: RiverVertex): boolean => (
-      getNeighborRiverVertices(vertex, riverGraph).some((next) => existingRiverEdgeKeys.has(edgeKey(vertex, next)))
-    );
-    const isAllowedTerminal = (vertex: RiverVertex): boolean => (
-      existingRiverVertexKeys.has(vertex.key)
-      && !forbiddenTerminalRiverVertexKeys.has(vertex.key)
-    );
 
     const selectedMainRiverFirstKey = selectedMainRiver.vertexPath[0]?.key;
     const confluenceCandidates = selectedMainRiver.vertexPath.filter((vertex) => (
       vertex.key !== selectedMainRiverFirstKey
-      && candidateBoundaryVertexKeys.has(vertex.key)
       && riverGraph.nodes.has(vertex.key)
       && !forbiddenTerminalRiverVertexKeys.has(vertex.key)
     ));
@@ -937,21 +909,27 @@ function tryAddEdgeMinorTributaryRiver(
       return rivers;
     }
 
-    const startCandidatesByKey = new Map<string, RiverVertex>();
-    const addStartCandidate = (vertex: RiverVertex, allowLakeStart: boolean) => {
-      if (startCandidatesByKey.has(vertex.key)) return;
-      if (!riverGraph.nodes.has(vertex.key)) return;
-      if (existingRiverVertexKeys.has(vertex.key)) return;
-      if (hasIncidentExistingRiverEdge(vertex)) return;
-      if (isExternalVertex(vertex)) return;
-      if (connectedLakeVertexKeys.has(vertex.key)) return;
-      if (!allowLakeStart && allLakeVertexKeys.has(vertex.key)) return;
-      startCandidatesByKey.set(vertex.key, vertex);
+    const hasAvailableInteriorStep = (vertex: RiverVertex): boolean => {
+      const node = riverGraph.nodes.get(vertex.key);
+      if (!node) return false;
+      return node.incidentEdgeKeys.some((incidentEdgeKey) => {
+        const graphEdge = riverGraph.edges.get(incidentEdgeKey);
+        if (!graphEdge?.isInsideRegionEdge) return false;
+        if (usedRiverEdges.has(graphEdge.key)) return false;
+        const nextNode = graphEdge.a.key === vertex.key ? graphEdge.b : graphEdge.a;
+        if (connectedLakeVertexKeys.has(nextNode.key)) return false;
+        return true;
+      });
     };
 
-    for (const vertex of freeLakeVertexByKey.values()) addStartCandidate(vertex, true);
-    for (const node of riverGraph.nodes.values()) {
-      addStartCandidate({ key: node.key, x: node.x, y: node.y }, false);
+    const startCandidatesByKey = new Map<string, RiverVertex>();
+    for (const vertex of candidateBoundaryVertices) {
+      if (startCandidatesByKey.has(vertex.key)) continue;
+      if (!riverGraph.nodes.has(vertex.key)) continue;
+      if (existingRiverVertexKeys.has(vertex.key)) continue;
+      if (connectedLakeVertexKeys.has(vertex.key)) continue;
+      if (!hasAvailableInteriorStep(vertex)) continue;
+      startCandidatesByKey.set(vertex.key, vertex);
     }
     const startCandidates = Array.from(startCandidatesByKey.values());
 
@@ -960,70 +938,50 @@ function tryAddEdgeMinorTributaryRiver(
       return rivers;
     }
 
-    const confluenceCandidateKeys = new Set(confluenceCandidates.map((vertex) => vertex.key));
-    const buildPathFromStart = (startVertex: RiverVertex): EdgeMinorRiverBuildResult | null => {
-      if (!riverGraph.nodes.has(startVertex.key)) return null;
-
-      type QueueItem = { vertex: RiverVertex; path: RiverVertex[]; edgeKeys: Set<string> };
-      const queue: QueueItem[] = [{ vertex: startVertex, path: [startVertex], edgeKeys: new Set<string>() }];
-      const visited = new Set<string>([startVertex.key]);
-      let sawTooLong = false;
-
-      while (queue.length > 0) {
-        const current = queue.shift()!;
-        if (current.path.length - 1 >= maxSegmentCount) {
-          sawTooLong = true;
-          continue;
-        }
-
-        for (const next of shuffleArray(getNeighborRiverVertices(current.vertex, riverGraph))) {
-          const nextEdgeKey = edgeKey(current.vertex, next);
-          if (!isValidEdge(current.vertex, next, current.edgeKeys)) continue;
-          if (next.key === startVertex.key || visited.has(next.key)) continue;
-          const nextIsTerminal = isAllowedTerminal(next);
-          if (existingRiverVertexKeys.has(next.key) && !nextIsTerminal) continue;
-          if (nextIsTerminal) {
-            const path = [...current.path, next];
-            const reachedDifferentRiver = !confluenceCandidateKeys.has(next.key);
-            return {
-              path,
-              reason: reachedDifferentRiver ? 'reached_different_river' : 'ok',
-              reachedDifferentRiver,
-            };
-          }
-          if (isExternalVertex(next)) continue;
-          if (allLakeVertexKeys.has(next.key)) continue;
-
-          const nextEdgeKeys = new Set(current.edgeKeys);
-          nextEdgeKeys.add(nextEdgeKey);
-          const path = [...current.path, next];
-          visited.add(next.key);
-          queue.push({ vertex: next, path, edgeKeys: nextEdgeKeys });
-        }
+    const trimPathAtFirstExistingRiverVertex = (path: RiverVertex[]): RiverVertex[] => {
+      for (let i = 1; i < path.length; i += 1) {
+        if (existingRiverVertexKeys.has(path[i].key)) return path.slice(0, i + 1);
       }
+      return path;
+    };
 
-      return sawTooLong ? { path: [], reason: 'ok', reachedDifferentRiver: false } : null;
+    const validateEdgeTributaryPath = (path: RiverVertex[], startVertex: RiverVertex): boolean => {
+      if (path.length < 2) return false;
+      if (path[0].key !== startVertex.key) return false;
+      if (!candidateBoundaryVertexKeys.has(path[0].key)) return false;
+      const terminalVertex = path[path.length - 1];
+      if (!existingRiverVertexKeys.has(terminalVertex.key)) return false;
+      if (new Set(path.map((vertex) => vertex.key)).size !== path.length) return false;
+      if (path.slice(0, -1).some((vertex) => existingRiverVertexKeys.has(vertex.key))) return false;
+      if (path.some((vertex) => connectedLakeVertexKeys.has(vertex.key))) return false;
+      const pathEdgeKeys = getRiverPathEdgeKeys(path, riverGraph);
+      if (!pathEdgeKeys) return false;
+      if (hasDuplicateEdgeKeys(pathEdgeKeys)) return false;
+      if (pathEdgeKeys.some((pathEdgeKey) => usedRiverEdges.has(pathEdgeKey))) return false;
+      return true;
     };
 
     let builtResult: EdgeMinorRiverBuildResult | null = null;
-    let sawTooLongOnly = false;
     for (const startVertex of shuffleArray(startCandidates)) {
-      const result = buildPathFromStart(startVertex);
-      if (!result) continue;
-      if (result.path.length === 0) {
-        sawTooLongOnly = true;
-        continue;
+      for (const confluenceVertex of shuffleArray(confluenceCandidates)) {
+        if (startVertex.key === confluenceVertex.key) continue;
+        const candidatePath = buildRiverPathViaControlPoints(
+          { startVertex, endVertex: confluenceVertex },
+          riverGraph,
+          usedRiverEdges
+        );
+        const path = trimPathAtFirstExistingRiverVertex(candidatePath);
+        if (!validateEdgeTributaryPath(path, startVertex)) continue;
+        const terminalVertex = path[path.length - 1];
+        const reachedSelectedMainRiver = existingRiverVertexRiverIdsByKey.get(terminalVertex.key)?.has(selectedMainRiver.id) ?? false;
+        const reachedDifferentRiver = !reachedSelectedMainRiver;
+        const result: EdgeMinorRiverBuildResult = {
+          path,
+          reason: reachedDifferentRiver ? 'reached_different_river' : 'ok',
+          reachedDifferentRiver,
+        };
+        if (!builtResult || result.path.length < builtResult.path.length) builtResult = result;
       }
-      const segmentCount = result.path.length - 1;
-      if (segmentCount < 1) continue;
-      if (segmentCount > maxSegmentCount) {
-        sawTooLongOnly = true;
-        continue;
-      }
-      const pathEdgeKeys = getRiverPathEdgeKeys(result.path, riverGraph);
-      if (!pathEdgeKeys || hasDuplicateEdgeKeys(pathEdgeKeys)) continue;
-      builtResult = result;
-      break;
     }
 
     if (!builtResult) {
@@ -1033,7 +991,7 @@ function tryAddEdgeMinorTributaryRiver(
         confluenceCandidates: confluenceCandidates.length,
         startCandidates: startCandidates.length,
         built: false,
-        reason: sawTooLongOnly ? 'path_too_long' : 'no_valid_path',
+        reason: 'no_valid_path',
         segmentCount: 0,
         flowLevel: null,
         reachedDifferentRiver: false,
@@ -1050,9 +1008,15 @@ function tryAddEdgeMinorTributaryRiver(
       vertexPath: builtResult.path,
     };
     const nextRivers = [...rivers, newRiver];
-    for (const river of nextRivers) {
-      validateRiverDirection(river);
-      validateRiverContinuity(river);
+    validateRiverDirection(newRiver);
+    if (!validateRiverContinuity(newRiver)) {
+      logGeneration({ outgoingRiverCandidates: outgoingRiverCandidates.length, selectedMainRiver, confluenceCandidates: confluenceCandidates.length, startCandidates: startCandidates.length, built: false, reason: 'validation_failed', segmentCount: newRiver.vertexPath.length - 1, flowLevel, reachedDifferentRiver: builtResult.reachedDifferentRiver });
+      return rivers;
+    }
+    const nextRiverEdgeKeys = getRiverPathEdgeKeys(newRiver.vertexPath, riverGraph);
+    if (!nextRiverEdgeKeys || nextRiverEdgeKeys.some((pathEdgeKey) => usedRiverEdges.has(pathEdgeKey)) || hasDuplicateEdgeKeys(nextRiverEdgeKeys)) {
+      logGeneration({ outgoingRiverCandidates: outgoingRiverCandidates.length, selectedMainRiver, confluenceCandidates: confluenceCandidates.length, startCandidates: startCandidates.length, built: false, reason: 'validation_failed', segmentCount: newRiver.vertexPath.length - 1, flowLevel, reachedDifferentRiver: builtResult.reachedDifferentRiver });
+      return rivers;
     }
     validateNoDuplicateRiverEdges(nextRivers);
     logGeneration({
