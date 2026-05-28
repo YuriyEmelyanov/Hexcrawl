@@ -754,6 +754,22 @@ function lakeIsConnectedToRiver(
   return rivers.some((river) => river.vertexPath.some((vertex) => exteriorVertexKeys.has(vertex.key)));
 }
 
+function getNeighborRiverVertices(
+  vertex: RiverVertex,
+  riverGraph: RiverGraph
+): RiverVertex[] {
+  const node = riverGraph.nodes.get(vertex.key);
+  if (!node) return [];
+
+  return node.incidentEdgeKeys
+    .map((edgeKey) => riverGraph.edges.get(edgeKey))
+    .filter((edge): edge is RiverGraphEdge => Boolean(edge))
+    .map((edge) => {
+      const nextNode = edge.a.key === vertex.key ? edge.b : edge.a;
+      return { key: nextNode.key, x: nextNode.x, y: nextNode.y };
+    });
+}
+
 function tryAddSmallTributaryRiver(
   region: Region,
   terrainMap: Map<string, HexTerrainData>,
@@ -809,10 +825,10 @@ function tryAddSmallTributaryRiver(
         if (!vertex || candidateRiverVertices.some((v) => v.key === vertex.key)) continue;
         if (vertexTouchesAnyHex(vertex, candidateHexes)) continue;
         if (isExteriorVertex(vertex)) continue;
-        const neighbors = riverGraph.nodes.get(vertex.key) ?? [];
+        const neighbors = getNeighborRiverVertices(vertex, riverGraph);
         const hasUsable = neighbors.some((n) => {
-          if (existingRiverEdgeKeys.has(edgeKey(vertex, n.vertex))) return false;
-          if (isInvalidNextVertex(n.vertex)) return false;
+          if (existingRiverEdgeKeys.has(edgeKey(vertex, n))) return false;
+          if (isInvalidNextVertex(n)) return false;
           return true;
         });
         if (hasUsable) candidateRiverVertices.push(vertex);
@@ -835,29 +851,29 @@ function tryAddSmallTributaryRiver(
     let builtPath: RiverVertex[] | null = null;
     let hasFirstEdgeAttempt = false;
     for (const riverVertex of shuffledVertices) {
-      const neighbors = shuffleArray(riverGraph.nodes.get(riverVertex.key) ?? []);
+      const neighbors = shuffleArray(getNeighborRiverVertices(riverVertex, riverGraph));
       for (const neighbor of neighbors) {
-        const firstEdgeKey = edgeKey(riverVertex, neighbor.vertex);
+        const firstEdgeKey = edgeKey(riverVertex, neighbor);
         if (existingRiverEdgeKeys.has(firstEdgeKey)) continue;
         hasFirstEdgeAttempt = true;
-        if (isInvalidNextVertex(neighbor.vertex)) continue;
-        const path = [riverVertex, neighbor.vertex];
+        if (isInvalidNextVertex(neighbor)) continue;
+        const path = [riverVertex, neighbor];
         const pathVertexKeys = new Set(path.map((v) => v.key));
         const pathEdgeKeys = new Set([firstEdgeKey]);
         let previous = riverVertex;
-        let current = neighbor.vertex;
+        let current = neighbor;
         while (true) {
-          const nextCandidates = (riverGraph.nodes.get(current.key) ?? []).filter((next) => next.vertex.key !== previous.key);
+          const nextCandidates = getNeighborRiverVertices(current, riverGraph).filter((next) => next.key !== previous.key);
           const nextStep = nextCandidates.find((next) => {
-            const candidateEdgeKey = edgeKey(current, next.vertex);
+            const candidateEdgeKey = edgeKey(current, next);
             if (existingRiverEdgeKeys.has(candidateEdgeKey)) return false;
             if (pathEdgeKeys.has(candidateEdgeKey)) return false;
-            if (pathVertexKeys.has(next.vertex.key)) return false;
-            if (isInvalidNextVertex(next.vertex)) return false;
+            if (pathVertexKeys.has(next.key)) return false;
+            if (isInvalidNextVertex(next)) return false;
             return true;
           });
           if (!nextStep) break;
-          const nextVertex = nextStep.vertex;
+          const nextVertex = nextStep;
           const nextEdgeKey = edgeKey(current, nextVertex);
           path.push(nextVertex);
           pathVertexKeys.add(nextVertex.key);
