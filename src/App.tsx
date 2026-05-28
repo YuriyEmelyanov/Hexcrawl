@@ -745,13 +745,16 @@ function getRegionHexesTouchingVertex(vertex: RiverVertex, region: Region): Axia
   return region.hexes.filter((hex) => getHexCornerPoints(hex).some((corner) => corner.key === vertex.key));
 }
 
-function lakeIsConnectedToRiver(
+function lakeHasRiverConnection(
   lakeHexes: AxialHex[],
   rivers: River[]
 ): boolean {
-  const exteriorVertexKeys = new Set(getRegionExteriorVertices(lakeHexes).map((vertex) => vertex.key));
-  if (exteriorVertexKeys.size === 0) return false;
-  return rivers.some((river) => river.vertexPath.some((vertex) => exteriorVertexKeys.has(vertex.key)));
+  const lakeVertexKeys = new Set(getRegionExteriorVertices(lakeHexes).map((vertex) => vertex.key));
+  if (lakeVertexKeys.size === 0) return false;
+
+  return rivers.some((river) =>
+    river.vertexPath.some((vertex) => lakeVertexKeys.has(vertex.key))
+  );
 }
 
 function getNeighborRiverVertices(
@@ -801,6 +804,7 @@ function tryAddSmallTributaryRiver(
     segmentCount,
     flowLevel,
     reachedLake,
+    targetLakeWasFree,
   }: {
     startCandidates: number;
     built: boolean;
@@ -808,6 +812,7 @@ function tryAddSmallTributaryRiver(
     segmentCount: number;
     flowLevel: number | null;
     reachedLake: boolean;
+    targetLakeWasFree: boolean;
   }) => {
     console.log('Minor river generation', {
       regionId: region.id,
@@ -819,25 +824,30 @@ function tryAddSmallTributaryRiver(
       segmentCount,
       flowLevel,
       reachedLake,
+      reversedForFlowDirection: true,
+      targetLakeWasFree,
     });
   };
 
   try {
     if (!(region.sizeCategory === 'region' || region.sizeCategory === 'large_region')) {
-      logGeneration({ startCandidates: 0, built: false, reason: 'wrong_region_size', segmentCount: 0, flowLevel: null, reachedLake: false });
+      logGeneration({ startCandidates: 0, built: false, reason: 'wrong_region_size', segmentCount: 0, flowLevel: null, reachedLake: false, targetLakeWasFree: false });
       return rivers;
     }
     if (!(region.heightLevel === 1 || region.heightLevel === 2)) {
-      logGeneration({ startCandidates: 0, built: false, reason: 'wrong_height', segmentCount: 0, flowLevel: null, reachedLake: false });
+      logGeneration({ startCandidates: 0, built: false, reason: 'wrong_height', segmentCount: 0, flowLevel: null, reachedLake: false, targetLakeWasFree: false });
       return rivers;
     }
 
     const regionRivers = getRiversForRegion(region, rivers);
     const existingRiverVertexKeys = new Set(regionRivers.flatMap((river) => river.vertexPath.map((v) => v.key)));
     const existingRiverEdgeKeys = buildUsedRiverEdges(rivers);
-    const lakeVertexKeys = new Set<string>();
+    const freeLakeVertexKeys = new Set<string>();
+    const connectedLakeVertexKeys = new Set<string>();
     for (const lake of getLakesForRegion(region, terrainMap)) {
-      for (const vertex of lake.vertices) lakeVertexKeys.add(vertex.key);
+      const exteriorVertices = getRegionExteriorVertices(lake.hexes);
+      const targetVertexKeys = lakeHasRiverConnection(lake.hexes, rivers) ? connectedLakeVertexKeys : freeLakeVertexKeys;
+      for (const vertex of exteriorVertices) targetVertexKeys.add(vertex.key);
     }
 
     const graphNodeFor = (vertex: RiverVertex): RiverGraphNode | undefined => riverGraph.nodes.get(vertex.key);
@@ -855,10 +865,12 @@ function tryAddSmallTributaryRiver(
       || isRegionPerimeterVertex(vertex)
       || isCandidateAdjacentVertex(vertex)
     );
-    const isLakeVertex = (vertex: RiverVertex): boolean => lakeVertexKeys.has(vertex.key);
+    const isFreeLakeVertex = (vertex: RiverVertex): boolean => freeLakeVertexKeys.has(vertex.key);
+    const isConnectedLakeVertex = (vertex: RiverVertex): boolean => connectedLakeVertexKeys.has(vertex.key);
     const isValidNextVertex = (vertex: RiverVertex, pathVertexKeys: Set<string>): boolean => {
       if (isForbiddenInteriorVertex(vertex)) return false;
       if (existingRiverVertexKeys.has(vertex.key)) return false;
+      if (isConnectedLakeVertex(vertex)) return false;
       if (pathVertexKeys.has(vertex.key)) return false;
       return true;
     };
@@ -871,9 +883,9 @@ function tryAddSmallTributaryRiver(
       return true;
     };
     const distanceToNearestLake = (vertex: RiverVertex): number => {
-      if (lakeVertexKeys.size === 0) return Number.POSITIVE_INFINITY;
+      if (freeLakeVertexKeys.size === 0) return Number.POSITIVE_INFINITY;
       let min = Number.POSITIVE_INFINITY;
-      for (const lakeKey of lakeVertexKeys) {
+      for (const lakeKey of freeLakeVertexKeys) {
         const lakeVertex = riverGraph.nodes.get(lakeKey);
         if (!lakeVertex) continue;
         min = Math.min(min, Math.hypot(vertex.x - lakeVertex.x, vertex.y - lakeVertex.y));
@@ -882,7 +894,7 @@ function tryAddSmallTributaryRiver(
     };
     const sortTowardLake = (vertices: RiverVertex[]): RiverVertex[] => {
       const randomized = shuffleArray(vertices);
-      if (lakeVertexKeys.size === 0) return randomized;
+      if (freeLakeVertexKeys.size === 0) return randomized;
       return randomized.sort((a, b) => distanceToNearestLake(a) - distanceToNearestLake(b));
     };
 
@@ -898,7 +910,7 @@ function tryAddSmallTributaryRiver(
     const startCandidates = Array.from(startCandidatesByKey.values());
 
     if (startCandidates.length === 0) {
-      logGeneration({ startCandidates: 0, built: false, reason: 'no_start_candidates', segmentCount: 0, flowLevel: null, reachedLake: false });
+      logGeneration({ startCandidates: 0, built: false, reason: 'no_start_candidates', segmentCount: 0, flowLevel: null, reachedLake: false, targetLakeWasFree: false });
       return rivers;
     }
 
@@ -917,7 +929,7 @@ function tryAddSmallTributaryRiver(
         const pathEdgeKeys = new Set<string>([edgeKey(startVertex, firstStep)]);
         let previous = startVertex;
         let current = firstStep;
-        let reachedLake = isLakeVertex(current);
+        let reachedLake = isFreeLakeVertex(current);
 
         while (!reachedLake && path.length - 1 < maxSegmentCount) {
           const nextCandidates = getNeighborRiverVertices(current, riverGraph).filter((next) => (
@@ -933,7 +945,7 @@ function tryAddSmallTributaryRiver(
           pathEdgeKeys.add(edgeKey(current, nextVertex));
           previous = current;
           current = nextVertex;
-          reachedLake = isLakeVertex(current);
+          reachedLake = isFreeLakeVertex(current);
         }
 
         if (path.length >= 2) {
@@ -955,6 +967,7 @@ function tryAddSmallTributaryRiver(
         isValidEdge(startVertex, next, new Set<string>())
         && !isForbiddenInteriorVertex(next)
         && !existingRiverVertexKeys.has(next.key)
+        && !isConnectedLakeVertex(next)
       ));
       if (possibleFirstEdges.length > 0) sawFirstEdgeCandidate = true;
 
@@ -973,6 +986,7 @@ function tryAddSmallTributaryRiver(
         segmentCount: 0,
         flowLevel: null,
         reachedLake: false,
+        targetLakeWasFree: false,
       });
       return rivers;
     }
@@ -983,7 +997,7 @@ function tryAddSmallTributaryRiver(
       id: nextRiverId,
       regionId: region.id,
       flowLevel,
-      vertexPath: builtResult.path.map((vertex) => ({ ...vertex })),
+      vertexPath: reverseRiverPath(builtResult.path),
     };
     const nextRivers = [...rivers, newRiver];
     for (const river of nextRivers) {
@@ -998,11 +1012,12 @@ function tryAddSmallTributaryRiver(
       segmentCount: newRiver.vertexPath.length - 1,
       flowLevel,
       reachedLake: builtResult.reachedLake,
+      targetLakeWasFree: builtResult.reachedLake,
     });
     return nextRivers;
   } catch (error) {
     console.warn('Minor river generation failed', { regionId: region.id, error });
-    logGeneration({ startCandidates: 0, built: false, reason: 'no_valid_path', segmentCount: 0, flowLevel: null, reachedLake: false });
+    logGeneration({ startCandidates: 0, built: false, reason: 'no_valid_path', segmentCount: 0, flowLevel: null, reachedLake: false, targetLakeWasFree: false });
     return rivers;
   }
 }
