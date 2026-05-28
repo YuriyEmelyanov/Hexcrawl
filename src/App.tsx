@@ -1754,247 +1754,6 @@ export function getCandidateHexes(allRegionHexes: AxialHex[]): AxialHex[] {
 
 type RiverGenerationResult = { success: boolean; rivers: River[]; reason?: string };
 
-function tryAddMinorInternalRiver(
-  options: {
-    region: Region;
-    rivers: River[];
-    hexTerrainByKey: Map<string, HexTerrainData>;
-  }
-): River[] {
-  const { region, rivers, hexTerrainByKey } = options;
-
-  try {
-    if (region.sizeCategory !== 'region' && region.sizeCategory !== 'large_region') {
-      console.log('Minor river result', {
-        regionId: region.id,
-        built: false,
-        reason: 'skipped_size',
-        fromLake: false,
-        pathLength: 0,
-        flowLevel: null
-      });
-      return rivers;
-    }
-
-    const riverGraph = buildRiverGraphForRegion(region.hexes, region.hexes, []);
-    const usedRiverEdgeKeys = buildUsedRiverEdges(rivers);
-    const usedRiverVertexKeys = new Set<string>();
-    for (const river of rivers) {
-      for (const vertex of river.vertexPath) usedRiverVertexKeys.add(vertex.key);
-    }
-
-    const regionExteriorVertexKeys = new Set(getRegionExteriorVertices(region.hexes).map((vertex) => vertex.key));
-    const regionVertexKeys = new Set<string>(Array.from(riverGraph.nodes.keys()));
-
-    const lakes = getLakesForRegion(region, hexTerrainByKey);
-    const connectedLakeVertexKeys = new Set<string>();
-    const lakeStartVertices: RiverVertex[] = [];
-
-    const isAvailableStartVertex = (vertex: RiverVertex): boolean => {
-      if (!regionVertexKeys.has(vertex.key)) return false;
-      if (regionExteriorVertexKeys.has(vertex.key)) return false;
-      if (usedRiverVertexKeys.has(vertex.key)) return false;
-      if (connectedLakeVertexKeys.has(vertex.key)) return false;
-      return true;
-    };
-
-    for (const lake of lakes) {
-      const lakeVertices = getRegionExteriorVertices(lake.hexes);
-      const isConnected = lakeVertices.some((vertex) => usedRiverVertexKeys.has(vertex.key));
-      if (isConnected) {
-        for (const vertex of lakeVertices) connectedLakeVertexKeys.add(vertex.key);
-        continue;
-      }
-      for (const vertex of lakeVertices) {
-        if (isAvailableStartVertex(vertex)) lakeStartVertices.push(vertex);
-      }
-    }
-
-    const lakeStartVertexKeys = new Set(lakeStartVertices.map((vertex) => vertex.key));
-    const ordinaryStartVertices: RiverVertex[] = Array.from(riverGraph.nodes.values())
-      .map((node) => ({ key: node.key, x: node.x, y: node.y }))
-      .filter((vertex) => isAvailableStartVertex(vertex) && !lakeStartVertexKeys.has(vertex.key));
-
-    const targetVertices: RiverVertex[] = Array.from(riverGraph.nodes.values())
-      .map((node) => ({ key: node.key, x: node.x, y: node.y }))
-      .filter((target) =>
-        usedRiverVertexKeys.has(target.key) &&
-        regionVertexKeys.has(target.key) &&
-        !regionExteriorVertexKeys.has(target.key)
-      );
-
-    const findMinorRiverPath = (
-      start: RiverVertex,
-      target: RiverVertex,
-      localRiverGraph: RiverGraph,
-      localUsedRiverEdgeKeys: Set<string>,
-      localUsedRiverVertexKeys: Set<string>
-    ): RiverVertex[] | null => {
-      const startNode = localRiverGraph.nodes.get(start.key);
-      const targetNode = localRiverGraph.nodes.get(target.key);
-      if (!startNode || !targetNode) return null;
-
-      const queue: RiverNode[][] = [[startNode]];
-      const visited = new Set<string>([startNode.key]);
-
-      while (queue.length > 0) {
-        const currentPath = queue.shift();
-        if (!currentPath) continue;
-        const current = currentPath[currentPath.length - 1];
-
-        if (current.key === targetNode.key) {
-          return currentPath.map((node) => ({ key: node.key, x: node.x, y: node.y }));
-        }
-
-        for (const neighbor of current.neighbors) {
-          const edge = edgeKey(current, neighbor);
-          if (localUsedRiverEdgeKeys.has(edge)) continue;
-
-          const isTarget = neighbor.key === targetNode.key;
-          if (!isTarget && localUsedRiverVertexKeys.has(neighbor.key)) continue;
-          if (visited.has(neighbor.key)) continue;
-
-          visited.add(neighbor.key);
-          queue.push([...currentPath, neighbor]);
-        }
-      }
-
-      return null;
-    };
-
-    const isValidMinorRiverPath = (path: RiverVertex[] | null): path is RiverVertex[] => {
-      if (!path) return false;
-      if (path.length < 2) return false;
-      if (usedRiverVertexKeys.has(path[0].key)) return false;
-      if (!usedRiverVertexKeys.has(path[path.length - 1].key)) return false;
-      if (regionExteriorVertexKeys.has(path[path.length - 1].key)) return false;
-
-      const vertexKeys = new Set<string>();
-      const pathEdgeKeys: string[] = [];
-
-      for (let i = 0; i < path.length; i += 1) {
-        const vertex = path[i];
-        if (vertexKeys.has(vertex.key)) return false;
-        vertexKeys.add(vertex.key);
-
-        const isFirst = i === 0;
-        const isLast = i === path.length - 1;
-        if (!isFirst && !isLast && usedRiverVertexKeys.has(vertex.key)) return false;
-
-        if (i > 0) {
-          const prev = path[i - 1];
-          const edge = edgeKey(prev, vertex);
-          if (usedRiverEdgeKeys.has(edge)) return false;
-          pathEdgeKeys.push(edge);
-        }
-      }
-
-      if (new Set(pathEdgeKeys).size !== pathEdgeKeys.length) return false;
-      return true;
-    };
-
-    console.log('Minor river candidates', {
-      regionId: region.id,
-      sizeCategory: region.sizeCategory,
-      lakeStartCount: lakeStartVertices.length,
-      ordinaryStartCount: ordinaryStartVertices.length,
-      targetCount: targetVertices.length,
-      usedRiverVertexCount: usedRiverVertexKeys.size,
-      usedRiverEdgeCount: usedRiverEdgeKeys.size
-    });
-
-    if (lakeStartVertices.length === 0 && ordinaryStartVertices.length === 0) {
-      console.log('Minor river result', {
-        regionId: region.id,
-        built: false,
-        reason: 'no_start_vertices',
-        fromLake: false,
-        pathLength: 0,
-        flowLevel: null
-      });
-      return rivers;
-    }
-
-    if (targetVertices.length === 0) {
-      console.log('Minor river result', {
-        regionId: region.id,
-        built: false,
-        reason: 'no_target_vertices',
-        fromLake: false,
-        pathLength: 0,
-        flowLevel: null
-      });
-      return rivers;
-    }
-
-    for (const start of lakeStartVertices) {
-      for (const target of targetVertices) {
-        const path = findMinorRiverPath(start, target, riverGraph, usedRiverEdgeKeys, usedRiverVertexKeys);
-        if (!isValidMinorRiverPath(path)) continue;
-
-        const nextRiverId = rivers.length > 0
-          ? Math.max(...rivers.map((river) => river.id)) + 1
-          : 1;
-        const flowLevel = Math.random() < 0.5 ? 1 : 2;
-        const minorRiver: River = { id: nextRiverId, regionId: region.id, vertexPath: path, flowLevel };
-
-        console.log('Minor river result', {
-          regionId: region.id,
-          built: true,
-          reason: 'ok',
-          fromLake: true,
-          pathLength: path.length,
-          flowLevel
-        });
-
-        return [...rivers, minorRiver];
-      }
-    }
-
-    for (const start of ordinaryStartVertices) {
-      for (const target of targetVertices) {
-        const path = findMinorRiverPath(start, target, riverGraph, usedRiverEdgeKeys, usedRiverVertexKeys);
-        if (!isValidMinorRiverPath(path)) continue;
-
-        const nextRiverId = rivers.length > 0
-          ? Math.max(...rivers.map((river) => river.id)) + 1
-          : 1;
-        const flowLevel = Math.random() < 0.5 ? 1 : 2;
-        const minorRiver: River = { id: nextRiverId, regionId: region.id, vertexPath: path, flowLevel };
-
-        console.log('Minor river result', {
-          regionId: region.id,
-          built: true,
-          reason: 'ok',
-          fromLake: false,
-          pathLength: path.length,
-          flowLevel
-        });
-
-        return [...rivers, minorRiver];
-      }
-    }
-
-    console.log('Minor river result', {
-      regionId: region.id,
-      built: false,
-      reason: 'no_valid_path',
-      fromLake: false,
-      pathLength: 0,
-      flowLevel: null
-    });
-
-    return rivers;
-  } catch (error) {
-    console.warn('Minor internal river generation failed safely', {
-      regionId: region.id,
-      sizeCategory: region.sizeCategory,
-      error
-    });
-    return rivers;
-  }
-}
-
 function generateRiverForRegion(
   region: Region,
   regions: Region[],
@@ -2113,7 +1872,7 @@ function generateRiverForRegion(
         validateRiverContinuity(river);
       }
       validateNoDuplicateRiverEdges(nextRivers);
-      return { success: true, rivers: tryAddMinorInternalRiver({ region, rivers: nextRivers, hexTerrainByKey: terrainMap }) };
+      return { success: true, rivers: nextRivers };
     }
 
     if (incomingEndpoints.length >= 2) {
@@ -2226,7 +1985,7 @@ function generateRiverForRegion(
         validateRiverContinuity(river);
       }
       validateNoDuplicateRiverEdges(nextRivers);
-      return { success: true, rivers: tryAddMinorInternalRiver({ region, rivers: nextRivers, hexTerrainByKey: terrainMap }) };
+      return { success: true, rivers: nextRivers };
     }
 
     if (touchingEndpoints.length >= 2) {
@@ -2267,7 +2026,7 @@ function generateRiverForRegion(
               validateRiverContinuity(river);
             }
             validateNoDuplicateRiverEdges(merged);
-            return { success: true, rivers: tryAddMinorInternalRiver({ region, rivers: merged, hexTerrainByKey: terrainMap }) };
+            return { success: true, rivers: merged };
           }
         } else {
           console.warn('Could not connect river pair: no free connector path', {
@@ -2331,7 +2090,7 @@ function generateRiverForRegion(
 
       for (const river of nextRivers) validateRiverDirection(river);
       validateNoDuplicateRiverEdges(nextRivers);
-      return { success: true, rivers: tryAddMinorInternalRiver({ region, rivers: nextRivers, hexTerrainByKey: terrainMap }) };
+      return { success: true, rivers: nextRivers };
     }
 
     if (region.heightLevel === 3) {
@@ -2392,7 +2151,7 @@ function generateRiverForRegion(
         validateRiverContinuity(nextRiver);
       }
       validateNoDuplicateRiverEdges(nextRivers);
-      return { success: true, rivers: tryAddMinorInternalRiver({ region, rivers: nextRivers, hexTerrainByKey: terrainMap }) };
+      return { success: true, rivers: nextRivers };
     }
 
     const RANDOM_PAIR_ATTEMPTS = 50;
@@ -2431,7 +2190,7 @@ function generateRiverForRegion(
 
       for (const river of nextRivers) validateRiverDirection(river);
       validateNoDuplicateRiverEdges(nextRivers);
-      return { success: true, rivers: tryAddMinorInternalRiver({ region, rivers: nextRivers, hexTerrainByKey: terrainMap }) };
+      return { success: true, rivers: nextRivers };
     }
   } catch (error) {
     console.warn('river generation failed', { regionId: region.id, error });
