@@ -886,14 +886,11 @@ function sectorTouchesRegion(sector: RiverSector, regionEdgeKeys: Set<string>): 
   return sector.edgeKeys.some((edgeKey) => regionEdgeKeys.has(edgeKey));
 }
 
-function findAdjacentOldSector(
+function findUpstreamAdjacentOldSector(
   oldSectors: RiverSector[],
   sector: RiverSector
 ): RiverSector | null {
-  return oldSectors.find((oldSector) => (
-    sector.startVertexKey === oldSector.endVertexKey
-    || sector.endVertexKey === oldSector.startVertexKey
-  )) ?? null;
+  return oldSectors.find((oldSector) => sector.startVertexKey === oldSector.endVertexKey) ?? null;
 }
 
 function assignFlowLevelsForRiverSectors(
@@ -905,19 +902,19 @@ function assignFlowLevelsForRiverSectors(
   return sectors.map((sector) => {
     const currentFlow = sector.flowLevel;
     let inheritedFlow: number | null = null;
-    let source: 'overlap' | 'adjacent' | 'current' = 'current';
+    let source: 'overlap' | 'upstream-adjacent' | 'current' = 'current';
 
     const bestOldSector = findBestOverlappingOldSector(oldSectors, sector.edgeKeys);
     if (bestOldSector) {
       inheritedFlow = bestOldSector.oldSector.flowLevel;
       source = 'overlap';
     } else {
-      const adjacentOldSector = findAdjacentOldSector(oldSectors, sector);
+      const adjacentOldSector = findUpstreamAdjacentOldSector(oldSectors, sector);
       if (adjacentOldSector) {
         inheritedFlow = adjacentOldSector.flowLevel;
-        source = 'adjacent';
+        source = 'upstream-adjacent';
       } else if (oldSectors.length > 0) {
-        console.warn('New river continuation sector could not inherit flowLevel from overlap or adjacent old sector', {
+        console.warn('New river continuation sector could not inherit flowLevel from overlap or upstream adjacent old sector', {
           riverId: river.id,
           sectorId: sector.id,
           sectorIndex: sector.sectorIndex,
@@ -928,9 +925,7 @@ function assignFlowLevelsForRiverSectors(
       }
     }
 
-    const selectedFlow = inheritedFlow === null
-      ? currentFlow
-      : Math.max(currentFlow, inheritedFlow);
+    const selectedFlow = inheritedFlow ?? currentFlow;
     const finalFlow = clampFlowLevel(selectedFlow);
 
     console.log('Sector flow inheritance', {
@@ -971,22 +966,25 @@ function warnIfExistingSectorFlowChangedOutsideCurrentRegion(
   }
 }
 
-function getDownstreamCurrentRegionSectorsUntilCandidate(
+function getCurrentRegionSectorsFromConfluenceToCandidate(
   sectors: RiverSector[],
   startIndex: number,
+  step: 1 | -1,
   currentRegionEdgeKeys: Set<string>,
   candidateHexes: AxialHex[]
 ): RiverSector[] {
-  const downstreamSectors: RiverSector[] = [];
+  const sectorsTowardCandidate: RiverSector[] = [];
 
-  for (let index = startIndex; index < sectors.length; index += 1) {
+  for (let index = startIndex; index >= 0 && index < sectors.length; index += step) {
     const sector = sectors[index];
     if (!sectorTouchesRegion(sector, currentRegionEdgeKeys)) break;
 
-    downstreamSectors.push(sector);
+    sectorsTowardCandidate.push(sector);
 
-    const endVertex = sector.vertexPath[sector.vertexPath.length - 1];
-    if (endVertex && vertexTouchesAnyHex(endVertex, candidateHexes)) return downstreamSectors;
+    const exitVertex = step === 1
+      ? sector.vertexPath[sector.vertexPath.length - 1]
+      : sector.vertexPath[0];
+    if (exitVertex && vertexTouchesAnyHex(exitVertex, candidateHexes)) return sectorsTowardCandidate;
   }
 
   return [];
@@ -1013,12 +1011,24 @@ function applyCandidateConfluenceFlowIncrease(
       if (upstreamSector.endReason !== 'river_confluence') continue;
       if (downstreamSector.startReason !== 'river_confluence') continue;
 
-      const sectorsToIncrease = getDownstreamCurrentRegionSectorsUntilCandidate(
+      const sectorsAfterConfluence = getCurrentRegionSectorsFromConfluenceToCandidate(
         nextSectors,
         index,
+        1,
         currentRegionEdgeKeys,
         candidateHexes
       );
+      const sectorsBeforeConfluence = getCurrentRegionSectorsFromConfluenceToCandidate(
+        nextSectors,
+        index - 1,
+        -1,
+        currentRegionEdgeKeys,
+        candidateHexes
+      );
+      const sectorsToIncrease = [
+        ...sectorsAfterConfluence,
+        ...sectorsBeforeConfluence,
+      ];
       if (sectorsToIncrease.length === 0) continue;
 
       for (const sector of sectorsToIncrease) {
@@ -1029,6 +1039,7 @@ function applyCandidateConfluenceFlowIncrease(
     return { ...river, sectors: nextSectors };
   });
 }
+
 
 function logRiverSectorFlowAdjusted(rivers: River[]): void {
   console.log('River sector flow adjusted', {
