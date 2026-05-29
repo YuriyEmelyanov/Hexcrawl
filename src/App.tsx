@@ -964,6 +964,27 @@ function warnIfExistingSectorFlowChangedOutsideCurrentRegion(
   }
 }
 
+function getDownstreamCurrentRegionSectorsUntilCandidate(
+  sectors: RiverSector[],
+  startIndex: number,
+  currentRegionEdgeKeys: Set<string>,
+  candidateHexes: AxialHex[]
+): RiverSector[] {
+  const downstreamSectors: RiverSector[] = [];
+
+  for (let index = startIndex; index < sectors.length; index += 1) {
+    const sector = sectors[index];
+    if (!sectorTouchesRegion(sector, currentRegionEdgeKeys)) break;
+
+    downstreamSectors.push(sector);
+
+    const endVertex = sector.vertexPath[sector.vertexPath.length - 1];
+    if (endVertex && vertexTouchesAnyHex(endVertex, candidateHexes)) return downstreamSectors;
+  }
+
+  return [];
+}
+
 function applyCandidateConfluenceFlowIncrease(
   rivers: River[],
   currentRegion: Region | undefined,
@@ -985,13 +1006,17 @@ function applyCandidateConfluenceFlowIncrease(
       if (upstreamSector.endReason !== 'river_confluence') continue;
       if (downstreamSector.startReason !== 'river_confluence') continue;
 
-      const downstreamLastVertex = downstreamSector.vertexPath[downstreamSector.vertexPath.length - 1];
-      if (!downstreamLastVertex) continue;
-      if (!vertexTouchesAnyHex(downstreamLastVertex, candidateHexes)) continue;
-      if (!sectorTouchesRegion(downstreamSector, currentRegionEdgeKeys)) continue;
+      const sectorsToIncrease = getDownstreamCurrentRegionSectorsUntilCandidate(
+        nextSectors,
+        index,
+        currentRegionEdgeKeys,
+        candidateHexes
+      );
+      if (sectorsToIncrease.length === 0) continue;
 
-      const nextFlowLevel = downstreamSector.flowLevel + 1;
-      if (nextFlowLevel <= MAX_RIVER_FLOW_LEVEL) downstreamSector.flowLevel = nextFlowLevel;
+      for (const sector of sectorsToIncrease) {
+        sector.flowLevel = clampFlowLevel(sector.flowLevel + 1);
+      }
     }
 
     return { ...river, sectors: nextSectors };
