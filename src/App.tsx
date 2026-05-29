@@ -839,78 +839,130 @@ function createInitialRiverSectors(
   }];
 }
 
+function findBestOverlappingOldSector(
+  oldSectors: RiverSector[],
+  newSectorEdgeKeys: string[]
+): { oldSector: RiverSector; overlapCount: number } | null {
+  if (oldSectors.length === 0 || newSectorEdgeKeys.length === 0) return null;
+
+  const newSectorEdgeKeySet = new Set(newSectorEdgeKeys);
+  const bestOldSector = oldSectors
+    .map((oldSector) => ({
+      oldSector,
+      overlapCount: oldSector.edgeKeys.filter((edgeKey) => newSectorEdgeKeySet.has(edgeKey)).length
+    }))
+    .sort((a, b) => b.overlapCount - a.overlapCount)[0];
+
+  return bestOldSector && bestOldSector.overlapCount > 0 ? bestOldSector : null;
+}
+
 function getFlowLevelForNewSector(river: River, newSectorEdgeKeys: string[]): number {
-  const oldSectors = river.sectors ?? [];
-
-  if (oldSectors.length > 0) {
-    const newSectorEdgeKeySet = new Set(newSectorEdgeKeys);
-    const bestOldSector = oldSectors
-      .map((oldSector) => ({
-        oldSector,
-        overlapCount: oldSector.edgeKeys.filter((edgeKey) => newSectorEdgeKeySet.has(edgeKey)).length
-      }))
-      .sort((a, b) => b.overlapCount - a.overlapCount)[0];
-
-    if (bestOldSector && bestOldSector.overlapCount > 0) {
-      return clampFlowLevel(bestOldSector.oldSector.flowLevel);
-    }
-  }
+  const bestOldSector = findBestOverlappingOldSector(river.sectors ?? [], newSectorEdgeKeys);
+  if (bestOldSector) return clampFlowLevel(bestOldSector.oldSector.flowLevel);
 
   return getRiverMaxFlowLevel(river);
 }
 
-function applyRiverSectorFlowAdjustment(
-  upstreamSector: RiverSector,
-  downstreamSector: RiverSector
-): void {
-  upstreamSector.flowLevel = clampFlowLevel(upstreamSector.flowLevel);
-  downstreamSector.flowLevel = clampFlowLevel(upstreamSector.flowLevel + 1);
+function getRegionEdgeKeys(region?: Region): Set<string> {
+  const regionEdgeKeys = new Set<string>();
+  for (const hex of region?.hexes ?? []) {
+    for (const edgeKey of getHexEdgeKeys(hex)) regionEdgeKeys.add(edgeKey);
+  }
+  return regionEdgeKeys;
 }
 
-function adjustRiverSectorFlowLevels(rivers: River[]): River[] {
-  for (const river of rivers) {
-    for (const sector of river.sectors ?? []) sector.flowLevel = clampFlowLevel(sector.flowLevel);
+function sectorTouchesRegion(sector: RiverSector, regionEdgeKeys: Set<string>): boolean {
+  return sector.edgeKeys.some((edgeKey) => regionEdgeKeys.has(edgeKey));
+}
 
-    const confluenceVertexKeys = new Set<string>();
-    for (const sector of river.sectors ?? []) {
-      if (sector.startReason === 'river_confluence') confluenceVertexKeys.add(sector.startVertexKey);
-      if (sector.endReason === 'river_confluence') confluenceVertexKeys.add(sector.endVertexKey);
+function shouldRaiseFlowAfterSectorBoundary(upstreamSector: RiverSector, downstreamSector: RiverSector): boolean {
+  if (upstreamSector.endReason === 'lake' || downstreamSector.startReason === 'lake') return false;
+  return upstreamSector.endReason === 'river_confluence' && downstreamSector.startReason === 'river_confluence';
+}
+
+function assignFlowLevelsForRiverSectors(
+  river: River,
+  sectors: RiverSector[],
+  currentRegionEdgeKeys: Set<string>
+): RiverSector[] {
+  const oldSectors = river.sectors ?? [];
+  const inheritedSectorIndexes = new Set<number>();
+
+  const sectorsWithInheritedFlow = sectors.map((sector, index) => {
+    const bestOldSector = findBestOverlappingOldSector(oldSectors, sector.edgeKeys);
+    if (!bestOldSector) return { ...sector };
+
+    inheritedSectorIndexes.add(index);
+    return {
+      ...sector,
+      flowLevel: clampFlowLevel(bestOldSector.oldSector.flowLevel)
+    };
+  });
+
+  for (let index = 0; index < sectorsWithInheritedFlow.length; index += 1) {
+    if (inheritedSectorIndexes.has(index)) continue;
+
+    const sector = sectorsWithInheritedFlow[index];
+    const previousSector = sectorsWithInheritedFlow[index - 1];
+    const nextInheritedSector = sectorsWithInheritedFlow
+      .slice(index + 1)
+      .find((_, offset) => inheritedSectorIndexes.has(index + offset + 1));
+
+    if (previousSector) {
+      const inheritedFlowLevel = shouldRaiseFlowAfterSectorBoundary(previousSector, sector)
+        ? previousSector.flowLevel + 1
+        : previousSector.flowLevel;
+      sector.flowLevel = clampFlowLevel(inheritedFlowLevel);
+      continue;
     }
 
-    for (const confluenceVertexKey of confluenceVertexKeys) {
-      const upstreamSectors = (river.sectors ?? []).filter((sector) => sector.endVertexKey === confluenceVertexKey);
-      const downstreamSectors = (river.sectors ?? []).filter((sector) => sector.startVertexKey === confluenceVertexKey);
-      const upstreamSector = upstreamSectors[0];
-      const downstreamSector = downstreamSectors[0];
-
-      if (upstreamSectors.length !== 1 || downstreamSectors.length !== 1 || !upstreamSector || !downstreamSector) {
-        console.warn('Could not adjust river sector flow at river_confluence: adjacent sectors not found', {
-          riverId: river.id,
-          vertexKey: confluenceVertexKey,
-          upstreamSectorCount: upstreamSectors.length,
-          downstreamSectorCount: downstreamSectors.length
-        });
-        continue;
-      }
-
-      if (upstreamSector.endReason === 'lake' || downstreamSector.startReason === 'lake') continue;
-      if (upstreamSector.endReason !== 'river_confluence' || downstreamSector.startReason !== 'river_confluence') continue;
-
-      applyRiverSectorFlowAdjustment(upstreamSector, downstreamSector);
-
-      if (upstreamSector.flowLevel > downstreamSector.flowLevel) {
-        console.warn('River sector flow decreased after river_confluence adjustment', {
-          riverId: river.id,
-          vertexKey: confluenceVertexKey,
-          upstreamSectorId: upstreamSector.id,
-          downstreamSectorId: downstreamSector.id,
-          upstreamFlowLevel: upstreamSector.flowLevel,
-          downstreamFlowLevel: downstreamSector.flowLevel
-        });
-      }
+    if (nextInheritedSector) {
+      sector.flowLevel = clampFlowLevel(nextInheritedSector.flowLevel);
+      continue;
     }
+
+    sector.flowLevel = clampFlowLevel(sector.flowLevel);
   }
 
+  for (let index = 1; index < sectorsWithInheritedFlow.length; index += 1) {
+    const upstreamSector = sectorsWithInheritedFlow[index - 1];
+    const downstreamSector = sectorsWithInheritedFlow[index];
+    if (!shouldRaiseFlowAfterSectorBoundary(upstreamSector, downstreamSector)) continue;
+    if (inheritedSectorIndexes.has(index)) continue;
+    if (currentRegionEdgeKeys.size > 0 && !sectorTouchesRegion(downstreamSector, currentRegionEdgeKeys)) continue;
+
+    downstreamSector.flowLevel = clampFlowLevel(upstreamSector.flowLevel + 1);
+  }
+
+  return sectorsWithInheritedFlow.map((sector) => ({
+    ...sector,
+    flowLevel: clampFlowLevel(sector.flowLevel)
+  }));
+}
+
+function warnIfExistingSectorFlowChangedOutsideCurrentRegion(
+  rivers: River[],
+  previousSectorFlowById: Map<string, { riverId: number | string; flowLevel: number }>,
+  currentRegionEdgeKeys: Set<string>
+): void {
+  for (const river of rivers) {
+    for (const sector of river.sectors ?? []) {
+      const previous = previousSectorFlowById.get(sector.id);
+      if (!previous) continue;
+      if (sectorTouchesRegion(sector, currentRegionEdgeKeys)) continue;
+      if (previous.flowLevel === sector.flowLevel) continue;
+
+      console.warn('Existing river sector flowLevel changed outside current region', {
+        riverId: previous.riverId,
+        sectorId: sector.id,
+        oldFlowLevel: previous.flowLevel,
+        newFlowLevel: sector.flowLevel
+      });
+    }
+  }
+}
+
+function logRiverSectorFlowAdjusted(rivers: River[]): void {
   console.log('River sector flow adjusted', {
     riverCount: rivers.length,
     sectors: rivers.flatMap((river) =>
@@ -926,8 +978,6 @@ function adjustRiverSectorFlowLevels(rivers: River[]): River[] {
       }))
     )
   });
-
-  return rivers;
 }
 
 function logRiverSectorsAssigned(rivers: River[]): void {
@@ -946,6 +996,16 @@ function logRiverSectorsAssigned(rivers: River[]): void {
 }
 
 function assignRiverSectors(rivers: River[], lakes: Lake[], regions: Region[] = [], candidateHexes: AxialHex[] = []): River[] {
+  void candidateHexes;
+  const currentRegion = regions[regions.length - 1];
+  const currentRegionEdgeKeys = getRegionEdgeKeys(currentRegion);
+  const previousSectorFlowById = new Map<string, { riverId: number | string; flowLevel: number }>();
+  for (const river of rivers) {
+    for (const sector of river.sectors ?? []) {
+      previousSectorFlowById.set(sector.id, { riverId: river.id, flowLevel: sector.flowLevel });
+    }
+  }
+
   const riverIdsByVertexKey = new Map<string, Set<number | string>>();
   for (const river of rivers) {
     for (const vertex of river.vertexPath ?? []) {
@@ -1031,21 +1091,22 @@ function assignRiverSectors(rivers: River[], lakes: Lake[], regions: Region[] = 
         });
       }
 
-      return { ...river, sectors };
+      return { ...river, sectors: assignFlowLevelsForRiverSectors(river, sectors, currentRegionEdgeKeys) };
     } catch (error) {
       console.warn('Could not assign river sectors', { riverId: river.id, error });
       return { ...river, sectors: [] };
     }
   });
 
-  const adjustedRivers = adjustRiverSectorFlowLevels(nextRivers, regions, candidateHexes);
-  for (const river of adjustedRivers) {
+  warnIfExistingSectorFlowChangedOutsideCurrentRegion(nextRivers, previousSectorFlowById, currentRegionEdgeKeys);
+  for (const river of nextRivers) {
     if (!river.sectors || river.sectors.length === 0) {
       console.warn('River has no sectors after assignRiverSectors', river);
     }
   }
-  logRiverSectorsAssigned(adjustedRivers);
-  return adjustedRivers;
+  logRiverSectorFlowAdjusted(nextRivers);
+  logRiverSectorsAssigned(nextRivers);
+  return nextRivers;
 }
 
 function getRiverSectorsForHex(hex: AxialHex, rivers: River[]): RiverSector[] {
