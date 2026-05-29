@@ -1079,19 +1079,9 @@ function assignRiverSectors(rivers: River[], lakes: Lake[], regions: Region[] = 
       });
 
       for (const lakeVertexKeysForLake of lakeExteriorVertexKeysByLakeId.values()) {
-        let groupStart: number | null = null;
-        for (let index = 0; index < vertexPath.length; index += 1) {
-          if (lakeVertexKeysForLake.has(vertexPath[index].key)) {
-            if (groupStart === null) groupStart = index;
-          } else if (groupStart !== null) {
-            breakIndices.add(groupStart);
-            breakIndices.add(index - 1);
-            groupStart = null;
-          }
-        }
-        if (groupStart !== null) {
-          breakIndices.add(groupStart);
-          breakIndices.add(lastIndex);
+        const firstLakeContactIndex = vertexPath.findIndex((vertex) => lakeVertexKeysForLake.has(vertex.key));
+        if (firstLakeContactIndex > 0 && firstLakeContactIndex < lastIndex) {
+          breakIndices.add(firstLakeContactIndex);
         }
       }
 
