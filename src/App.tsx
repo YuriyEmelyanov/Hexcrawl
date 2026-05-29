@@ -82,7 +82,7 @@ type RiverSector = {
 type River = {
   id: number;
   regionId: number;
-  // Deprecated fallback. Do not use for calculations. Use sectors instead.
+  // Explicit/base fullness assigned when the river is created or merged.
   flowLevel?: number;
   vertexPath: RiverVertex[];
   sectors: RiverSector[];
@@ -806,7 +806,7 @@ function getRiverMaxFlowLevel(river: River): number {
     return Math.max(...sectorFlowLevels.map(clampFlowLevel));
   }
 
-  // Deprecated fallback for legacy data only. Do not use river.flowLevel for new calculations.
+  // River-level flow stores the explicit/base value for rivers without sectors.
   return clampFlowLevel((river as any).flowLevel ?? 1);
 }
 
@@ -844,34 +844,49 @@ function createInitialRiverSectors(
   }];
 }
 
-function findBestOverlappingOldSector(
-  oldSectors: RiverSector[],
-  newSectorEdgeKeys: string[]
-): { oldSector: RiverSector; overlapCount: number } | null {
-  if (oldSectors.length === 0 || newSectorEdgeKeys.length === 0) return null;
+// Fullness is intentionally limited to explicit river values, continuation endpoint
+// values, and the downstream +1 confluence adjustment in applyCandidateConfluenceFlowIncrease.
+function getExplicitRiverFlowLevel(river: River): number {
+  const explicitFlowLevel = (river as any).flowLevel;
+  if (typeof explicitFlowLevel === 'number') return clampFlowLevel(explicitFlowLevel);
 
-  const newSectorEdgeKeySet = new Set(newSectorEdgeKeys);
-  const bestOldSector = oldSectors
-    .map((oldSector) => ({
-      oldSector,
-      overlapCount: oldSector.edgeKeys.filter((edgeKey) => newSectorEdgeKeySet.has(edgeKey)).length
-    }))
-    .sort((a, b) => b.overlapCount - a.overlapCount)[0];
-
-  return bestOldSector && bestOldSector.overlapCount > 0 ? bestOldSector : null;
+  const firstSector = river.sectors?.[0];
+  return clampFlowLevel(firstSector?.flowLevel ?? MIN_RIVER_FLOW_LEVEL);
 }
 
-function getFlowLevelForNewSector(river: River, newSectorEdgeKeys: string[]): number {
+function getAllowedFlowLevelForSector(
+  river: River,
+  sectorPath: RiverVertex[],
+  sectorEdgeKeys: string[],
+  currentRegion?: Region
+): number {
   const oldSectors = river.sectors ?? [];
-  const bestOldSector = findBestOverlappingOldSector(oldSectors, newSectorEdgeKeys);
-  if (bestOldSector) return clampFlowLevel(bestOldSector.oldSector.flowLevel);
+  if (oldSectors.length === 0 || sectorPath.length < 2) return getExplicitRiverFlowLevel(river);
 
-  // Deprecated fallback for initial sectors in legacy/new river records that have
-  // not yet been migrated to sector-only flowLevel storage. River.flowLevel is
-  // only consulted when the river has no sector-level flow source at all.
-  if (oldSectors.length === 0) return clampFlowLevel((river as any).flowLevel ?? MIN_RIVER_FLOW_LEVEL);
+  const sectorStartVertexKey = sectorPath[0].key;
+  const sectorEndVertexKey = sectorPath[sectorPath.length - 1].key;
+  const firstOldSector = oldSectors[0];
+  const lastOldSector = oldSectors[oldSectors.length - 1];
+  const oldStartVertexKey = firstOldSector?.startVertexKey;
+  const oldEndVertexKey = lastOldSector?.endVertexKey;
 
-  return MIN_RIVER_FLOW_LEVEL;
+  if (sectorStartVertexKey === oldEndVertexKey) return getRiverEndFlowLevel(river);
+  if (sectorEndVertexKey === oldStartVertexKey) return getRiverStartFlowLevel(river);
+
+  if (currentRegion) {
+    const currentRegionEdgeKeys = getRegionEdgeKeys(currentRegion);
+    const sectorIsInCurrentRegion = sectorEdgeKeys.some((edgeKey) => currentRegionEdgeKeys.has(edgeKey));
+    const oldStartVertex = firstOldSector?.vertexPath[0];
+    const oldEndVertex = lastOldSector?.vertexPath[lastOldSector.vertexPath.length - 1];
+    if (sectorIsInCurrentRegion && oldEndVertex && vertexTouchesAnyHex(oldEndVertex, currentRegion.hexes)) {
+      return getRiverEndFlowLevel(river);
+    }
+    if (sectorIsInCurrentRegion && oldStartVertex && vertexTouchesAnyHex(oldStartVertex, currentRegion.hexes)) {
+      return getRiverStartFlowLevel(river);
+    }
+  }
+
+  return getExplicitRiverFlowLevel(river);
 }
 
 function getRegionEdgeKeys(region?: Region): Set<string> {
@@ -884,64 +899,6 @@ function getRegionEdgeKeys(region?: Region): Set<string> {
 
 function sectorTouchesRegion(sector: RiverSector, regionEdgeKeys: Set<string>): boolean {
   return sector.edgeKeys.some((edgeKey) => regionEdgeKeys.has(edgeKey));
-}
-
-function findUpstreamAdjacentOldSector(
-  oldSectors: RiverSector[],
-  sector: RiverSector
-): RiverSector | null {
-  return oldSectors.find((oldSector) => sector.startVertexKey === oldSector.endVertexKey) ?? null;
-}
-
-function assignFlowLevelsForRiverSectors(
-  river: River,
-  sectors: RiverSector[]
-): RiverSector[] {
-  const oldSectors = river.sectors ?? [];
-
-  return sectors.map((sector) => {
-    const currentFlow = sector.flowLevel;
-    let inheritedFlow: number | null = null;
-    let source: 'overlap' | 'upstream-adjacent' | 'current' = 'current';
-
-    const bestOldSector = findBestOverlappingOldSector(oldSectors, sector.edgeKeys);
-    if (bestOldSector) {
-      inheritedFlow = bestOldSector.oldSector.flowLevel;
-      source = 'overlap';
-    } else {
-      const adjacentOldSector = findUpstreamAdjacentOldSector(oldSectors, sector);
-      if (adjacentOldSector) {
-        inheritedFlow = adjacentOldSector.flowLevel;
-        source = 'upstream-adjacent';
-      } else if (oldSectors.length > 0) {
-        console.warn('New river continuation sector could not inherit flowLevel from overlap or upstream adjacent old sector', {
-          riverId: river.id,
-          sectorId: sector.id,
-          sectorIndex: sector.sectorIndex,
-          startVertexKey: sector.startVertexKey,
-          endVertexKey: sector.endVertexKey,
-          flowLevelKept: currentFlow
-        });
-      }
-    }
-
-    const selectedFlow = inheritedFlow ?? currentFlow;
-    const finalFlow = clampFlowLevel(selectedFlow);
-
-    console.log('Sector flow inheritance', {
-      riverId: river.id,
-      sectorId: sector.id,
-      currentFlow,
-      inheritedFlow,
-      finalFlow,
-      source
-    });
-
-    return {
-      ...sector,
-      flowLevel: finalFlow
-    };
-  });
 }
 
 function warnIfExistingSectorFlowChangedOutsideCurrentRegion(
@@ -1053,7 +1010,7 @@ function logRiverSectorsAssigned(rivers: River[]): void {
   console.log('River sector flow source check', {
     rivers: rivers.map((river) => ({
       riverId: river.id,
-      deprecatedRiverFlowLevel: (river as any).flowLevel ?? null,
+      explicitRiverFlowLevel: (river as any).flowLevel ?? null,
       sectorFlowLevels: river.sectors?.map((sector) => ({
         sectorIndex: sector.sectorIndex,
         flowLevel: sector.flowLevel,
@@ -1141,7 +1098,7 @@ function assignRiverSectors(rivers: River[], lakes: Lake[], regions: Region[] = 
           sectorIndex,
           vertexPath: sectorPath,
           edgeKeys,
-          flowLevel: getFlowLevelForNewSector(river, edgeKeys),
+          flowLevel: getAllowedFlowLevelForSector(river, sectorPath, edgeKeys, currentRegion),
           startVertexKey: sectorPath[0].key,
           endVertexKey: sectorPath[sectorPath.length - 1].key,
           startReason: getRiverEndpointReason(fromIndex, lastIndex, sectorPath[0].key, lakeVertexKeys, confluenceVertexKeys, 'start') as RiverSector['startReason'],
@@ -1149,7 +1106,7 @@ function assignRiverSectors(rivers: River[], lakes: Lake[], regions: Region[] = 
         });
       }
 
-      return { ...river, sectors: assignFlowLevelsForRiverSectors(river, sectors) };
+      return { ...river, sectors };
     } catch (error) {
       console.warn('Could not assign river sectors', { riverId: river.id, error });
       return { ...river, sectors: [] };
@@ -1433,7 +1390,6 @@ function tryAddEdgeMinorTributaryRiver(
       const newRiver: River = {
         id: nextRiverId,
         regionId: region.id,
-        // Deprecated fallback. Do not use for calculations. Use sectors instead.
         flowLevel,
         vertexPath: path,
         sectors: createInitialRiverSectors(nextRiverId, path, flowLevel),
@@ -1674,7 +1630,6 @@ function tryAddSmallTributaryRiver(
     const newRiver: River = {
       id: nextRiverId,
       regionId: region.id,
-      // Deprecated fallback. Do not use for calculations. Use sectors instead.
       flowLevel,
       vertexPath: newRiverPath,
       sectors: createInitialRiverSectors(nextRiverId, newRiverPath, flowLevel),
@@ -2088,7 +2043,6 @@ function mergeRiversWithConnector(
     .map((sector) => ({ ...sector, id: `${upstreamRiver.id}:connector:sector:${sector.sectorIndex}` }));
   const mergedRiver: River = {
     ...upstreamRiver,
-    // Deprecated fallback. Do not use for calculations. Use sectors instead.
     flowLevel: Math.max(getRiverMaxFlowLevel(upstreamRiver), getRiverMaxFlowLevel(downstreamRiver)),
     vertexPath: mergedPath,
     sectors: [
@@ -3130,7 +3084,6 @@ function generateRiverForRegion(
         vertexPath: bestPath,
         sectors: createInitialRiverSectors(newRiverId, bestPath, initialFlowLevel),
         controlPoints: bestControlPoints,
-        // Deprecated fallback. Do not use for calculations. Use sectors instead.
         flowLevel: initialFlowLevel
       };
       const nextRivers = [...existingRivers, river];
@@ -3173,7 +3126,6 @@ function generateRiverForRegion(
           vertexPath: path,
           sectors: createInitialRiverSectors(newRiverId, path, initialFlowLevel),
           controlPoints,
-          // Deprecated fallback. Do not use for calculations. Use sectors instead.
           flowLevel: initialFlowLevel
         };
         nextRivers = [...existingRivers, river];
