@@ -1011,24 +1011,14 @@ function applyCandidateConfluenceFlowIncrease(
       if (upstreamSector.endReason !== 'river_confluence') continue;
       if (downstreamSector.startReason !== 'river_confluence') continue;
 
-      const sectorsAfterConfluence = getCurrentRegionSectorsFromConfluenceToCandidate(
+      // Flow increases only below the confluence, following river direction.
+      const sectorsToIncrease = getCurrentRegionSectorsFromConfluenceToCandidate(
         nextSectors,
         index,
         1,
         currentRegionEdgeKeys,
         candidateHexes
       );
-      const sectorsBeforeConfluence = getCurrentRegionSectorsFromConfluenceToCandidate(
-        nextSectors,
-        index - 1,
-        -1,
-        currentRegionEdgeKeys,
-        candidateHexes
-      );
-      const sectorsToIncrease = [
-        ...sectorsAfterConfluence,
-        ...sectorsBeforeConfluence,
-      ];
       if (sectorsToIncrease.length === 0) continue;
 
       for (const sector of sectorsToIncrease) {
