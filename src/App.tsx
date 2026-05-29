@@ -64,11 +64,27 @@ type HexEdge = {
   edgeKey: string;
 };
 
+type RiverSectorReason = 'river_start' | 'river_confluence' | 'lake' | 'split' | 'unknown';
+
+type RiverSector = {
+  id: string;
+  riverId: number | string;
+  sectorIndex: number;
+  vertexPath: RiverVertex[];
+  edgeKeys: string[];
+  flowLevel: number;
+  startVertexKey: string;
+  endVertexKey: string;
+  startReason: RiverSectorReason;
+  endReason: Exclude<RiverSectorReason, 'river_start'> | 'river_end';
+};
+
 type River = {
   id: number;
   regionId: number;
   flowLevel: number;
   vertexPath: RiverVertex[];
+  sectors?: RiverSector[];
   controlPoints?: {
     startVertex: RiverVertex;
     middlePurpleVertex?: RiverVertex;
@@ -96,6 +112,12 @@ type RiverVertex = {
 };
 
 type LakeVertex = RiverVertex;
+
+type Lake = {
+  lakeId: number;
+  hexes: AxialHex[];
+  vertices: RiverVertex[];
+};
 
 
 type RiverConnectionType = 'start' | 'end';
@@ -718,7 +740,7 @@ function getVertexUsageByKeyForRegion(
 function getLakesForRegion(
   region: Region,
   hexTerrainByKey: Map<string, HexTerrainData>
-): Array<{ lakeId: number; hexes: AxialHex[]; vertices: RiverVertex[] }> {
+): Lake[] {
   const lakeHexesById = new Map<number, AxialHex[]>();
   for (const hex of region.hexes) {
     const terrain = hexTerrainByKey.get(hexKey(hex));
@@ -735,6 +757,192 @@ function getLakesForRegion(
     }
     return { lakeId, hexes, vertices: Array.from(verticesByKey.values()) };
   });
+}
+
+function getLakesForRegions(regions: Region[], hexTerrainByKey: Map<string, HexTerrainData>): Lake[] {
+  return regions.flatMap((region) => getLakesForRegion(region, hexTerrainByKey));
+}
+
+function getRiverEdgeKey(a: RiverVertex, b: RiverVertex): string {
+  return edgeKey(a, b);
+}
+
+function getRiverEndpointReason(
+  index: number,
+  lastIndex: number,
+  vertexKey: string,
+  lakeVertexKeys: Set<string>,
+  confluenceVertexKeys: Set<string>,
+  endpoint: 'start' | 'end'
+): RiverSector['startReason'] | RiverSector['endReason'] {
+  if (lakeVertexKeys.has(vertexKey)) return 'lake';
+  if (confluenceVertexKeys.has(vertexKey)) return 'river_confluence';
+  if (endpoint === 'start' && index === 0) return 'river_start';
+  if (endpoint === 'end' && index === lastIndex) return 'river_end';
+  return 'split';
+}
+
+function logRiverSectorsAssigned(rivers: River[]): void {
+  console.log('River sectors assigned', {
+    riverCount: rivers.length,
+    sectorCount: rivers.reduce((sum, river) => sum + (river.sectors?.length ?? 0), 0),
+    rivers: rivers.map((river) => ({
+      riverId: river.id,
+      flowLevel: river.flowLevel,
+      vertexCount: river.vertexPath.length,
+      sectorCount: river.sectors?.length ?? 0,
+      sectors: river.sectors?.map((sector) => ({
+        id: sector.id,
+        sectorIndex: sector.sectorIndex,
+        flowLevel: sector.flowLevel,
+        vertexCount: sector.vertexPath.length,
+        edgeCount: sector.edgeKeys.length,
+        startReason: sector.startReason,
+        endReason: sector.endReason
+      }))
+    }))
+  });
+}
+
+function assignRiverSectors(rivers: River[], lakes: Lake[]): River[] {
+  const riverIdsByVertexKey = new Map<string, Set<number | string>>();
+  for (const river of rivers) {
+    for (const vertex of river.vertexPath ?? []) {
+      const riverIds = riverIdsByVertexKey.get(vertex.key) ?? new Set<number | string>();
+      riverIds.add(river.id);
+      riverIdsByVertexKey.set(vertex.key, riverIds);
+    }
+  }
+
+  const lakeExteriorVertexKeysByLakeId = new Map<number, Set<string>>();
+  const lakeVertexKeys = new Set<string>();
+  for (const lake of lakes) {
+    const exteriorKeys = new Set(getRegionExteriorVertices(lake.hexes).map((vertex) => vertex.key));
+    lakeExteriorVertexKeysByLakeId.set(lake.lakeId, exteriorKeys);
+    for (const key of exteriorKeys) lakeVertexKeys.add(key);
+  }
+
+  const nextRivers = rivers.map((river) => {
+    try {
+      const vertexPath = river.vertexPath ?? [];
+      if (vertexPath.length < 2) {
+        console.warn('Could not assign river sectors: river path is too short', { riverId: river.id, vertexCount: vertexPath.length });
+        return { ...river, sectors: [] };
+      }
+
+      const lastIndex = vertexPath.length - 1;
+      const breakIndices = new Set<number>([0, lastIndex]);
+      const confluenceVertexKeys = new Set<string>();
+
+      vertexPath.forEach((vertex, index) => {
+        const riverIds = riverIdsByVertexKey.get(vertex.key);
+        if (riverIds && Array.from(riverIds).some((riverId) => riverId !== river.id)) {
+          confluenceVertexKeys.add(vertex.key);
+          breakIndices.add(index);
+        }
+      });
+
+      for (const lakeVertexKeysForLake of lakeExteriorVertexKeysByLakeId.values()) {
+        let groupStart: number | null = null;
+        for (let index = 0; index < vertexPath.length; index += 1) {
+          if (lakeVertexKeysForLake.has(vertexPath[index].key)) {
+            if (groupStart === null) groupStart = index;
+          } else if (groupStart !== null) {
+            breakIndices.add(groupStart);
+            breakIndices.add(index - 1);
+            groupStart = null;
+          }
+        }
+        if (groupStart !== null) {
+          breakIndices.add(groupStart);
+          breakIndices.add(lastIndex);
+        }
+      }
+
+      const sortedBreakIndices = Array.from(breakIndices).sort((a, b) => a - b);
+      const sectors: RiverSector[] = [];
+
+      for (let i = 1; i < sortedBreakIndices.length; i += 1) {
+        const fromIndex = sortedBreakIndices[i - 1];
+        const toIndex = sortedBreakIndices[i];
+        if (toIndex <= fromIndex) continue;
+
+        const sectorPath = vertexPath.slice(fromIndex, toIndex + 1);
+        if (sectorPath.length < 2) continue;
+
+        const edgeKeys: string[] = [];
+        for (let pathIndex = 1; pathIndex < sectorPath.length; pathIndex += 1) {
+          edgeKeys.push(getRiverEdgeKey(sectorPath[pathIndex - 1], sectorPath[pathIndex]));
+        }
+
+        const sectorIndex = sectors.length + 1;
+        sectors.push({
+          id: `${river.id}:sector:${sectorIndex}`,
+          riverId: river.id,
+          sectorIndex,
+          vertexPath: sectorPath,
+          edgeKeys,
+          flowLevel: river.flowLevel,
+          startVertexKey: sectorPath[0].key,
+          endVertexKey: sectorPath[sectorPath.length - 1].key,
+          startReason: getRiverEndpointReason(fromIndex, lastIndex, sectorPath[0].key, lakeVertexKeys, confluenceVertexKeys, 'start') as RiverSector['startReason'],
+          endReason: getRiverEndpointReason(toIndex, lastIndex, sectorPath[sectorPath.length - 1].key, lakeVertexKeys, confluenceVertexKeys, 'end') as RiverSector['endReason']
+        });
+      }
+
+      return { ...river, sectors };
+    } catch (error) {
+      console.warn('Could not assign river sectors', { riverId: river.id, error });
+      return { ...river, sectors: [] };
+    }
+  });
+
+  logRiverSectorsAssigned(nextRivers);
+  return nextRivers;
+}
+
+function getRiverSectorsForHex(hex: AxialHex, rivers: River[]): RiverSector[] {
+  const hexEdges = getHexEdgeKeys(hex);
+  const hexVertexKeys = new Set(getHexCornerPoints(hex).map((vertex) => vertex.key));
+  const sectorsById = new Map<string, RiverSector>();
+
+  for (const river of rivers) {
+    for (const sector of river.sectors ?? []) {
+      const touchesHex = sector.edgeKeys.some((sectorEdgeKey) => hexEdges.has(sectorEdgeKey))
+        || sector.vertexPath.some((vertex) => hexVertexKeys.has(vertex.key));
+      if (touchesHex) sectorsById.set(sector.id, sector);
+    }
+  }
+
+  return Array.from(sectorsById.values()).sort((a, b) => {
+    const riverCompare = String(a.riverId).localeCompare(String(b.riverId), undefined, { numeric: true });
+    return riverCompare || a.sectorIndex - b.sectorIndex;
+  });
+}
+
+function getRiverSectorsForRegion(region: Region, rivers: River[]): RiverSector[] {
+  const sectorsById = new Map<string, RiverSector>();
+  for (const hex of region.hexes) {
+    for (const sector of getRiverSectorsForHex(hex, rivers)) sectorsById.set(sector.id, sector);
+  }
+  return Array.from(sectorsById.values()).sort((a, b) => {
+    const riverCompare = String(a.riverId).localeCompare(String(b.riverId), undefined, { numeric: true });
+    return riverCompare || a.sectorIndex - b.sectorIndex;
+  });
+}
+
+function getRiversForHex(hex: AxialHex, rivers: River[]): River[] {
+  const hexEdges = getHexEdgeKeys(hex);
+  const hexVertexKeys = new Set(getHexCornerPoints(hex).map((vertex) => vertex.key));
+  return rivers
+    .filter((river) => {
+      if (river.vertexPath.some((vertex) => hexVertexKeys.has(vertex.key))) return true;
+      for (let i = 1; i < river.vertexPath.length; i += 1) {
+        if (hexEdges.has(getRiverEdgeKey(river.vertexPath[i - 1], river.vertexPath[i]))) return true;
+      }
+      return false;
+    })
+    .sort((a, b) => a.id - b.id);
 }
 
 function vertexTouchesAnyHex(vertex: RiverVertex, hexes: AxialHex[]): boolean {
@@ -3914,6 +4122,8 @@ export function App() {
         continue;
       }
 
+      const assignedRivers = assignRiverSectors(riverResult.rivers, getLakesForRegions(nextRegionsForRiverGeneration, nextHexTerrainByKeyPreview));
+
       const pointsOfInterest = assignPointsOfInterestForRegion(regionHexes, centerHex, lakesByHex);
       const finalRegion: Region = {
         ...regionForRiverGeneration,
@@ -3923,7 +4133,7 @@ export function App() {
         region: finalRegion,
         regions,
         roads,
-        rivers: riverResult.rivers,
+        rivers: assignedRivers,
         hexTerrainByKey: nextHexTerrainByKeyPreview,
         nextRoadId
       });
@@ -3937,7 +4147,7 @@ export function App() {
         return next;
       });
       setNextLakeId(computedNextLakeId);
-      setRivers(riverResult.rivers);
+      setRivers(assignedRivers);
       setRoads(roadResult.roads);
       setNextRoadId(roadResult.nextRoadId);
       setSelectedHex(centerHex);
@@ -3965,16 +4175,8 @@ export function App() {
   const selectedTerrain = selectedHexKey ? hexTerrainByKey.get(selectedHexKey) : undefined;
   const isSelectedLake = selectedTerrain?.terrainOverride === 'lake';
   const isSelectedCandidate = selectedHex ? candidateHexes.some((c) => hexKey(c) === selectedHexKey) : false;
-  const selectedRiverIds = selectedHex
-    ? rivers
-      .filter((river) => {
-        const { x, y } = toPixel(selectedHex.q, selectedHex.r);
-        const corners = getHexCornerPoints(selectedHex);
-        const cornerKeys = new Set(corners.map((corner) => corner.key));
-        return river.vertexPath.some((vertex) => cornerKeys.has(vertex.key) || vertexKey(x, y) === vertex.key);
-      })
-      .map((r) => r.id)
-    : [];
+  const selectedHexRivers = selectedHex ? getRiversForHex(selectedHex, rivers) : [];
+  const selectedHexRiverSectors = selectedHex ? getRiverSectorsForHex(selectedHex, rivers) : [];
   const selectedHexRoadKinds = selectedHex
     ? roads.flatMap((road) => road.segments.filter((s) => hexKey(s.from) === selectedHexKey || hexKey(s.to) === selectedHexKey).map((s) => s.kind))
     : [];
@@ -4007,6 +4209,7 @@ export function App() {
   const selectedRegion = selectedMeta ? regions.find((region) => region.id === selectedMeta.regionId) : undefined;
   const selectedRegionRiver = selectedRegion ? rivers.find((river) => river.regionId === selectedRegion.id) : undefined;
   const selectedRegionRivers = selectedRegion ? getRiversForRegion(selectedRegion, rivers) : [];
+  const selectedRegionRiverSectors = selectedRegion ? getRiverSectorsForRegion(selectedRegion, rivers) : [];
   const selectedRegionLakes = selectedRegion ? getLakeSummariesForRegion(selectedRegion, hexTerrainByKey) : [];
   const selectedRegionRoadStats = selectedRegion ? (() => {
     const regionKeys = new Set(selectedRegion.hexes.map(hexKey));
@@ -4254,7 +4457,22 @@ export function App() {
           <p><strong>Регион:</strong> {selectedMeta?.regionId ?? '—'}</p>
           <p><strong>centralHex:</strong> {selectedMeta?.isCenter ? 'да' : 'нет'}</p>
           <p><strong>anchorHex:</strong> {selectedMeta?.isAnchor ? 'да' : 'нет'}</p>
-          <p><strong>Реки:</strong> {selectedRiverIds.length > 0 ? selectedRiverIds.join(', ') : '—'}</p>
+          <div>
+            <strong>Реки:</strong>
+            {selectedHexRiverSectors.length > 0 ? (
+              <ul>
+                {selectedHexRiverSectors.map((sector) => (
+                  <li key={sector.id}>Река #{sector.riverId}, сектор {sector.sectorIndex}, полноводность {sector.flowLevel}</li>
+                ))}
+              </ul>
+            ) : selectedHexRivers.length > 0 ? (
+              <ul>
+                {selectedHexRivers.map((river) => (
+                  <li key={river.id}>Река #{river.id}, полноводность {river.flowLevel ?? '—'}</li>
+                ))}
+              </ul>
+            ) : ' —'}
+          </div>
           <p><strong>Точка интереса:</strong> {!isSelectedCandidate && selectedRegion ? (selectedRegion.pointsOfInterest.some((poi) => selectedHexKey === hexKey(poi)) ? 'да' : 'нет') : '—'}</p>
           <p><strong>Дорога:</strong> {selectedHexRoadKinds.includes('road') ? 'да' : 'нет'}</p>
           <p><strong>Тропа:</strong> {selectedHexRoadKinds.includes('trail') ? 'да' : 'нет'}</p>
@@ -4285,6 +4503,16 @@ export function App() {
                     .join('; ')
                   : '—'}
               </p>
+              <div>
+                <strong>Речные сектора:</strong>
+                {selectedRegionRiverSectors.length > 0 ? (
+                  <ul>
+                    {selectedRegionRiverSectors.map((sector) => (
+                      <li key={sector.id}>Река #{sector.riverId}: сектор {sector.sectorIndex}, полноводность {sector.flowLevel}</li>
+                    ))}
+                  </ul>
+                ) : ' —'}
+              </div>
               <p>
                 <strong>Озёра региона:</strong>{' '}
                 {selectedRegionLakes.length > 0
