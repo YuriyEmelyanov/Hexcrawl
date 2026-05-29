@@ -72,7 +72,6 @@ type RiverSector = {
   sectorIndex: number;
   vertexPath: RiverVertex[];
   edgeKeys: string[];
-  flowLevel: number;
   startVertexKey: string;
   endVertexKey: string;
   startReason: RiverSectorReason;
@@ -82,8 +81,6 @@ type RiverSector = {
 type River = {
   id: number;
   regionId: number;
-  // Explicit/base fullness assigned when the river is created or merged.
-  flowLevel?: number;
   vertexPath: RiverVertex[];
   sectors: RiverSector[];
   controlPoints?: {
@@ -160,8 +157,6 @@ const REGION_CENTER_EMOJI = '★';
 const POI_EMOJI = '◆';
 const WATER_COLOR = 'var(--water-color)';
 const LAKE_HEX_COLOR = WATER_COLOR;
-const MIN_RIVER_FLOW_LEVEL = 1;
-const MAX_RIVER_FLOW_LEVEL = 10;
 
 
 type HexTerrainOverride = 'lake';
@@ -319,32 +314,12 @@ function shuffleArray<T>(values: T[]): T[] {
   return result;
 }
 
-function getInitialRiverFullnessByHeight(heightLevel: number): number {
-  if (heightLevel >= 3) return randomInt(1, 2);
-  if (heightLevel === 2) return randomInt(3, 4);
-  return randomInt(5, 6);
-}
-
 function getHexWidth(hexSize: number): number {
   return SQRT3 * hexSize;
 }
 
-function getRiverWidth(flowLevel: number, hexWidth: number): number {
-  const widthFactors: Record<number, number> = {
-    1: 0.05,
-    2: 0.08,
-    3: 0.11,
-    4: 0.14,
-    5: 0.17,
-    6: 0.20,
-    7: 0.23,
-    8: 0.26,
-    9: 0.29,
-    10: 0.32
-  };
-
-  const clampedFlowLevel = clamp(Math.round(flowLevel), MIN_RIVER_FLOW_LEVEL, MAX_RIVER_FLOW_LEVEL);
-  return hexWidth * widthFactors[clampedFlowLevel];
+function getRiverWidth(hexWidth: number): number {
+  return hexWidth * 0.11;
 }
 
 function getRegionHeightLevelFromBiomeId(biomeId: BiomeId): RegionHeightLevel {
@@ -456,7 +431,8 @@ function chooseWeightedRandom(weights: Record<BiomeId, number>): BiomeId {
     roll -= weights[biomeId];
     if (roll <= 0) return biomeId;
   }
-  return (Object.keys(weights) as BiomeId[]).at(-1) ?? FALLBACK_BIOME_ID;
+  const biomeIds = Object.keys(weights) as BiomeId[];
+  return biomeIds[biomeIds.length - 1] ?? FALLBACK_BIOME_ID;
 }
 
 function isBiomeAllowedByRiverHeightConstraint(
@@ -788,10 +764,6 @@ function getRiverEndpointReason(
   return 'split';
 }
 
-function clampFlowLevel(value: number): number {
-  return Math.max(MIN_RIVER_FLOW_LEVEL, Math.min(MAX_RIVER_FLOW_LEVEL, Math.round(value)));
-}
-
 function getRiverSimpleEdgeKeys(vertexPath: RiverVertex[]): string[] {
   const edgeKeys: string[] = [];
   for (let i = 1; i < vertexPath.length; i += 1) {
@@ -800,33 +772,9 @@ function getRiverSimpleEdgeKeys(vertexPath: RiverVertex[]): string[] {
   return edgeKeys;
 }
 
-function getRiverMaxFlowLevel(river: River): number {
-  const sectorFlowLevels = river.sectors?.map((sector) => sector.flowLevel) ?? [];
-  if (sectorFlowLevels.length > 0) {
-    return Math.max(...sectorFlowLevels.map(clampFlowLevel));
-  }
-
-  // River-level flow stores the explicit/base value for rivers without sectors.
-  return clampFlowLevel((river as any).flowLevel ?? 1);
-}
-
-function getRiverStartFlowLevel(river: River): number {
-  const firstSector = river.sectors?.[0];
-  if (firstSector) return clampFlowLevel(firstSector.flowLevel);
-  return clampFlowLevel((river as any).flowLevel ?? 1);
-}
-
-function getRiverEndFlowLevel(river: River): number {
-  const sectors = river.sectors ?? [];
-  const lastSector = sectors[sectors.length - 1];
-  if (lastSector) return clampFlowLevel(lastSector.flowLevel);
-  return clampFlowLevel((river as any).flowLevel ?? 1);
-}
-
 function createInitialRiverSectors(
   riverId: number | string,
-  vertexPath: RiverVertex[],
-  initialFlowLevel: number
+  vertexPath: RiverVertex[]
 ): RiverSector[] {
   if (vertexPath.length < 2) return [];
 
@@ -836,7 +784,6 @@ function createInitialRiverSectors(
     sectorIndex: 1,
     vertexPath,
     edgeKeys: getRiverSimpleEdgeKeys(vertexPath),
-    flowLevel: clampFlowLevel(initialFlowLevel),
     startVertexKey: vertexPath[0].key,
     endVertexKey: vertexPath[vertexPath.length - 1].key,
     startReason: 'river_start',
@@ -844,193 +791,10 @@ function createInitialRiverSectors(
   }];
 }
 
-// Fullness is intentionally limited to explicit river values, continuation endpoint
-// values, and the downstream +1 confluence adjustment in applyCandidateConfluenceFlowIncrease.
-function getExplicitRiverFlowLevel(river: River): number {
-  const explicitFlowLevel = (river as any).flowLevel;
-  if (typeof explicitFlowLevel === 'number') return clampFlowLevel(explicitFlowLevel);
-
-  const firstSector = river.sectors?.[0];
-  return clampFlowLevel(firstSector?.flowLevel ?? MIN_RIVER_FLOW_LEVEL);
-}
-
-function getAllowedFlowLevelForSector(
-  river: River,
-  sectorPath: RiverVertex[],
-  sectorEdgeKeys: string[],
-  currentRegion?: Region
-): number {
-  const oldSectors = river.sectors ?? [];
-  if (oldSectors.length === 0 || sectorPath.length < 2) return getExplicitRiverFlowLevel(river);
-
-  const sectorStartVertexKey = sectorPath[0].key;
-  const sectorEndVertexKey = sectorPath[sectorPath.length - 1].key;
-  const firstOldSector = oldSectors[0];
-  const lastOldSector = oldSectors[oldSectors.length - 1];
-  const oldStartVertexKey = firstOldSector?.startVertexKey;
-  const oldEndVertexKey = lastOldSector?.endVertexKey;
-
-  if (sectorStartVertexKey === oldEndVertexKey) return getRiverEndFlowLevel(river);
-  if (sectorEndVertexKey === oldStartVertexKey) return getRiverStartFlowLevel(river);
-
-  if (currentRegion) {
-    const currentRegionEdgeKeys = getRegionEdgeKeys(currentRegion);
-    const sectorIsInCurrentRegion = sectorEdgeKeys.some((edgeKey) => currentRegionEdgeKeys.has(edgeKey));
-    const oldStartVertex = firstOldSector?.vertexPath[0];
-    const oldEndVertex = lastOldSector?.vertexPath[lastOldSector.vertexPath.length - 1];
-    if (sectorIsInCurrentRegion && oldEndVertex && vertexTouchesAnyHex(oldEndVertex, currentRegion.hexes)) {
-      return getRiverEndFlowLevel(river);
-    }
-    if (sectorIsInCurrentRegion && oldStartVertex && vertexTouchesAnyHex(oldStartVertex, currentRegion.hexes)) {
-      return getRiverStartFlowLevel(river);
-    }
-  }
-
-  return getExplicitRiverFlowLevel(river);
-}
-
-function getRegionEdgeKeys(region?: Region): Set<string> {
-  const regionEdgeKeys = new Set<string>();
-  for (const hex of region?.hexes ?? []) {
-    for (const edgeKey of getHexEdgeKeys(hex)) regionEdgeKeys.add(edgeKey);
-  }
-  return regionEdgeKeys;
-}
-
-function sectorTouchesRegion(sector: RiverSector, regionEdgeKeys: Set<string>): boolean {
-  return sector.edgeKeys.some((edgeKey) => regionEdgeKeys.has(edgeKey));
-}
-
-function warnIfExistingSectorFlowChangedOutsideCurrentRegion(
-  rivers: River[],
-  previousSectorFlowById: Map<string, { riverId: number | string; flowLevel: number }>,
-  currentRegionEdgeKeys: Set<string>
-): void {
-  for (const river of rivers) {
-    for (const sector of river.sectors ?? []) {
-      const previous = previousSectorFlowById.get(sector.id);
-      if (!previous) continue;
-      if (sectorTouchesRegion(sector, currentRegionEdgeKeys)) continue;
-      if (previous.flowLevel === sector.flowLevel) continue;
-
-      console.warn('Existing river sector flowLevel changed outside current region', {
-        riverId: previous.riverId,
-        sectorId: sector.id,
-        oldFlowLevel: previous.flowLevel,
-        newFlowLevel: sector.flowLevel
-      });
-    }
-  }
-}
-
-function getCurrentRegionSectorsFromConfluenceToCandidate(
-  sectors: RiverSector[],
-  startIndex: number,
-  step: 1 | -1,
-  currentRegionEdgeKeys: Set<string>,
-  candidateHexes: AxialHex[]
-): RiverSector[] {
-  const sectorsTowardCandidate: RiverSector[] = [];
-
-  for (let index = startIndex; index >= 0 && index < sectors.length; index += step) {
-    const sector = sectors[index];
-    if (!sectorTouchesRegion(sector, currentRegionEdgeKeys)) break;
-
-    sectorsTowardCandidate.push(sector);
-
-    const exitVertex = step === 1
-      ? sector.vertexPath[sector.vertexPath.length - 1]
-      : sector.vertexPath[0];
-    if (exitVertex && vertexTouchesAnyHex(exitVertex, candidateHexes)) return sectorsTowardCandidate;
-  }
-
-  return [];
-}
-
-function applyCandidateConfluenceFlowIncrease(
-  rivers: River[],
-  currentRegion: Region | undefined,
-  candidateHexes: AxialHex[] = []
-): River[] {
-  if (!currentRegion || candidateHexes.length === 0) return rivers;
-
-  const currentRegionEdgeKeys = getRegionEdgeKeys(currentRegion);
-
-  return rivers.map((river) => {
-    const sectors = river.sectors ?? [];
-    if (sectors.length < 2) return river;
-
-    const nextSectors = sectors.map((sector) => ({ ...sector }));
-
-    for (let index = 1; index < nextSectors.length; index += 1) {
-      const upstreamSector = nextSectors[index - 1];
-      const downstreamSector = nextSectors[index];
-      if (upstreamSector.endReason !== 'river_confluence') continue;
-      if (downstreamSector.startReason !== 'river_confluence') continue;
-
-      // Flow increases only below the confluence, following river direction.
-      const sectorsToIncrease = getCurrentRegionSectorsFromConfluenceToCandidate(
-        nextSectors,
-        index,
-        1,
-        currentRegionEdgeKeys,
-        candidateHexes
-      );
-      if (sectorsToIncrease.length === 0) continue;
-
-      for (const sector of sectorsToIncrease) {
-        sector.flowLevel = clampFlowLevel(sector.flowLevel + 1);
-      }
-    }
-
-    return { ...river, sectors: nextSectors };
-  });
-}
-
-
-function logRiverSectorFlowAdjusted(rivers: River[]): void {
-  console.log('River sector flow adjusted', {
-    riverCount: rivers.length,
-    sectors: rivers.flatMap((river) =>
-      (river.sectors ?? []).map((sector) => ({
-        riverId: river.id,
-        sectorId: sector.id,
-        sectorIndex: sector.sectorIndex,
-        flowLevel: sector.flowLevel,
-        startReason: sector.startReason,
-        endReason: sector.endReason,
-        startVertexKey: sector.startVertexKey,
-        endVertexKey: sector.endVertexKey
-      }))
-    )
-  });
-}
-
-function logRiverSectorsAssigned(rivers: River[]): void {
-  console.log('River sector flow source check', {
-    rivers: rivers.map((river) => ({
-      riverId: river.id,
-      explicitRiverFlowLevel: (river as any).flowLevel ?? null,
-      sectorFlowLevels: river.sectors?.map((sector) => ({
-        sectorIndex: sector.sectorIndex,
-        flowLevel: sector.flowLevel,
-        startReason: sector.startReason,
-        endReason: sector.endReason
-      })) ?? []
-    }))
-  });
-}
 
 function assignRiverSectors(rivers: River[], lakes: Lake[], regions: Region[] = [], candidateHexes: AxialHex[] = []): River[] {
-  const currentRegion = regions[regions.length - 1];
-  const currentRegionEdgeKeys = getRegionEdgeKeys(currentRegion);
-  const previousSectorFlowById = new Map<string, { riverId: number | string; flowLevel: number }>();
-  for (const river of rivers) {
-    for (const sector of river.sectors ?? []) {
-      previousSectorFlowById.set(sector.id, { riverId: river.id, flowLevel: sector.flowLevel });
-    }
-  }
-
+  void regions;
+  void candidateHexes;
   const riverIdsByVertexKey = new Map<string, Set<number | string>>();
   for (const river of rivers) {
     for (const vertex of river.vertexPath ?? []) {
@@ -1098,7 +862,6 @@ function assignRiverSectors(rivers: River[], lakes: Lake[], regions: Region[] = 
           sectorIndex,
           vertexPath: sectorPath,
           edgeKeys,
-          flowLevel: getAllowedFlowLevelForSector(river, sectorPath, edgeKeys, currentRegion),
           startVertexKey: sectorPath[0].key,
           endVertexKey: sectorPath[sectorPath.length - 1].key,
           startReason: getRiverEndpointReason(fromIndex, lastIndex, sectorPath[0].key, lakeVertexKeys, confluenceVertexKeys, 'start') as RiverSector['startReason'],
@@ -1113,17 +876,12 @@ function assignRiverSectors(rivers: River[], lakes: Lake[], regions: Region[] = 
     }
   });
 
-  const riversWithCandidateConfluenceFlow = applyCandidateConfluenceFlowIncrease(nextRivers, currentRegion, candidateHexes);
-
-  warnIfExistingSectorFlowChangedOutsideCurrentRegion(riversWithCandidateConfluenceFlow, previousSectorFlowById, currentRegionEdgeKeys);
-  for (const river of riversWithCandidateConfluenceFlow) {
+  for (const river of nextRivers) {
     if (!river.sectors || river.sectors.length === 0) {
       console.warn('River has no sectors after assignRiverSectors', river);
     }
   }
-  logRiverSectorFlowAdjusted(riversWithCandidateConfluenceFlow);
-  logRiverSectorsAssigned(riversWithCandidateConfluenceFlow);
-  return riversWithCandidateConfluenceFlow;
+  return nextRivers;
 }
 
 function getRiverSectorsForHex(hex: AxialHex, rivers: River[]): RiverSector[] {
@@ -1249,18 +1007,15 @@ function tryAddEdgeMinorTributaryRiver(
   let candidateStartCount = 0;
   let outgoingRiverCount = 0;
   let selectedTargetRiverId: number | null = null;
-  let selectedTargetFlowLevel: number | null = null;
 
   const logGeneration = ({
     built,
     reason,
     pathLength,
-    flowLevel,
   }: {
     built: boolean;
     reason: EdgeTributaryGenerationReason;
     pathLength: number;
-    flowLevel: number | null;
   }) => {
     console.log('Edge tributary generation', {
       regionId: region.id,
@@ -1269,21 +1024,19 @@ function tryAddEdgeMinorTributaryRiver(
       candidateStartCount,
       outgoingRiverCount,
       selectedTargetRiverId,
-      selectedTargetFlowLevel,
       built,
       reason,
       pathLength,
-      flowLevel,
     });
   };
 
   try {
     if (!(region.sizeCategory === 'land' || region.sizeCategory === 'vast_land')) {
-      logGeneration({ built: false, reason: 'not_edge_size', pathLength: 0, flowLevel: null });
+      logGeneration({ built: false, reason: 'not_edge_size', pathLength: 0 });
       return rivers;
     }
     if (!(region.heightLevel === 1 || region.heightLevel === 2)) {
-      logGeneration({ built: false, reason: 'height_not_supported', pathLength: 0, flowLevel: null });
+      logGeneration({ built: false, reason: 'height_not_supported', pathLength: 0 });
       return rivers;
     }
 
@@ -1323,7 +1076,7 @@ function tryAddEdgeMinorTributaryRiver(
     candidateStartCount = startCandidates.length;
 
     if (startCandidates.length === 0) {
-      logGeneration({ built: false, reason: 'no_candidate_start_vertices', pathLength: 0, flowLevel: null });
+      logGeneration({ built: false, reason: 'no_candidate_start_vertices', pathLength: 0 });
       return rivers;
     }
 
@@ -1336,13 +1089,11 @@ function tryAddEdgeMinorTributaryRiver(
 
     const outgoingRivers = regionRivers.filter(riverTouchesCandidateExit);
     outgoingRiverCount = outgoingRivers.length;
-    const selectedTargetRiver = [...outgoingRivers]
-      .sort((a, b) => getRiverMaxFlowLevel(b) - getRiverMaxFlowLevel(a))[0] ?? null;
+    const selectedTargetRiver = outgoingRivers[0] ?? null;
     selectedTargetRiverId = selectedTargetRiver?.id ?? null;
-    selectedTargetFlowLevel = selectedTargetRiver ? getRiverMaxFlowLevel(selectedTargetRiver) : null;
 
     if (!selectedTargetRiver) {
-      logGeneration({ built: false, reason: 'no_outgoing_rivers', pathLength: 0, flowLevel: null });
+      logGeneration({ built: false, reason: 'no_outgoing_rivers', pathLength: 0 });
       return rivers;
     }
 
@@ -1385,36 +1136,34 @@ function tryAddEdgeMinorTributaryRiver(
       const path = trimPathAtFirstExistingRiverVertex(pathToTargetRiver);
       if (!validateEdgeTributaryPath(path)) continue;
 
-      const flowLevel = region.heightLevel === 2 ? randomInt(1, 2) : randomInt(3, 4);
       const nextRiverId = Math.max(0, ...rivers.map((river) => river.id)) + 1;
       const newRiver: River = {
         id: nextRiverId,
         regionId: region.id,
-        flowLevel,
         vertexPath: path,
-        sectors: createInitialRiverSectors(nextRiverId, path, flowLevel),
+        sectors: createInitialRiverSectors(nextRiverId, path),
       };
       const nextRivers = [...rivers, newRiver];
       validateRiverDirection(newRiver);
       if (!validateRiverContinuity(newRiver)) {
-        logGeneration({ built: false, reason: 'invalid_result', pathLength: newRiver.vertexPath.length, flowLevel });
+        logGeneration({ built: false, reason: 'invalid_result', pathLength: newRiver.vertexPath.length });
         return rivers;
       }
       const newRiverEdgeKeys = getRiverPathEdgeKeys(newRiver.vertexPath, riverGraph);
       if (!newRiverEdgeKeys || newRiverEdgeKeys.some((pathEdgeKey) => usedRiverEdges.has(pathEdgeKey)) || hasDuplicateEdgeKeys(newRiverEdgeKeys)) {
-        logGeneration({ built: false, reason: 'invalid_result', pathLength: newRiver.vertexPath.length, flowLevel });
+        logGeneration({ built: false, reason: 'invalid_result', pathLength: newRiver.vertexPath.length });
         return rivers;
       }
       validateNoDuplicateRiverEdges(nextRivers);
-      logGeneration({ built: true, reason: 'ok', pathLength: newRiver.vertexPath.length, flowLevel });
+      logGeneration({ built: true, reason: 'ok', pathLength: newRiver.vertexPath.length });
       return nextRivers;
     }
 
-    logGeneration({ built: false, reason: 'no_valid_path', pathLength: 0, flowLevel: null });
+    logGeneration({ built: false, reason: 'no_valid_path', pathLength: 0 });
     return rivers;
   } catch (error) {
     console.warn('Edge tributary generation failed', { regionId: region.id, error });
-    logGeneration({ built: false, reason: 'no_valid_path', pathLength: 0, flowLevel: null });
+    logGeneration({ built: false, reason: 'no_valid_path', pathLength: 0 });
     return rivers;
   }
 }
@@ -1432,7 +1181,6 @@ function tryAddSmallTributaryRiver(
     built,
     reason,
     segmentCount,
-    flowLevel,
     reachedLake,
     targetLakeWasFree,
   }: {
@@ -1440,7 +1188,6 @@ function tryAddSmallTributaryRiver(
     built: boolean;
     reason: MinorRiverGenerationReason;
     segmentCount: number;
-    flowLevel: number | null;
     reachedLake: boolean;
     targetLakeWasFree: boolean;
   }) => {
@@ -1452,7 +1199,6 @@ function tryAddSmallTributaryRiver(
       built,
       reason,
       segmentCount,
-      flowLevel,
       reachedLake,
       reversedForFlowDirection: true,
       targetLakeWasFree,
@@ -1464,11 +1210,11 @@ function tryAddSmallTributaryRiver(
       return tryAddEdgeMinorTributaryRiver(region, terrainMap, riverGraph, rivers, candidateHexes);
     }
     if (!(region.sizeCategory === 'region' || region.sizeCategory === 'large_region')) {
-      logGeneration({ startCandidates: 0, built: false, reason: 'wrong_region_size', segmentCount: 0, flowLevel: null, reachedLake: false, targetLakeWasFree: false });
+      logGeneration({ startCandidates: 0, built: false, reason: 'wrong_region_size', segmentCount: 0, reachedLake: false, targetLakeWasFree: false });
       return rivers;
     }
     if (!(region.heightLevel === 1 || region.heightLevel === 2)) {
-      logGeneration({ startCandidates: 0, built: false, reason: 'wrong_height', segmentCount: 0, flowLevel: null, reachedLake: false, targetLakeWasFree: false });
+      logGeneration({ startCandidates: 0, built: false, reason: 'wrong_height', segmentCount: 0, reachedLake: false, targetLakeWasFree: false });
       return rivers;
     }
 
@@ -1543,7 +1289,7 @@ function tryAddSmallTributaryRiver(
     const startCandidates = Array.from(startCandidatesByKey.values());
 
     if (startCandidates.length === 0) {
-      logGeneration({ startCandidates: 0, built: false, reason: 'no_start_candidates', segmentCount: 0, flowLevel: null, reachedLake: false, targetLakeWasFree: false });
+      logGeneration({ startCandidates: 0, built: false, reason: 'no_start_candidates', segmentCount: 0, reachedLake: false, targetLakeWasFree: false });
       return rivers;
     }
 
@@ -1617,22 +1363,19 @@ function tryAddSmallTributaryRiver(
         built: false,
         reason: sawFirstEdgeCandidate ? 'no_valid_path' : 'no_valid_first_edge',
         segmentCount: 0,
-        flowLevel: null,
         reachedLake: false,
         targetLakeWasFree: false,
       });
       return rivers;
     }
 
-    const flowLevel = randomInt(1, 2);
     const nextRiverId = Math.max(0, ...rivers.map((river) => river.id)) + 1;
     const newRiverPath = reverseRiverPath(builtResult.path);
     const newRiver: River = {
       id: nextRiverId,
       regionId: region.id,
-      flowLevel,
       vertexPath: newRiverPath,
-      sectors: createInitialRiverSectors(nextRiverId, newRiverPath, flowLevel),
+      sectors: createInitialRiverSectors(nextRiverId, newRiverPath),
     };
     const nextRivers = [...rivers, newRiver];
     for (const river of nextRivers) {
@@ -1645,14 +1388,13 @@ function tryAddSmallTributaryRiver(
       built: true,
       reason: builtResult.reason,
       segmentCount: newRiver.vertexPath.length - 1,
-      flowLevel,
       reachedLake: builtResult.reachedLake,
       targetLakeWasFree: builtResult.reachedLake,
     });
     return nextRivers;
   } catch (error) {
     console.warn('Minor river generation failed', { regionId: region.id, error });
-    logGeneration({ startCandidates: 0, built: false, reason: 'no_valid_path', segmentCount: 0, flowLevel: null, reachedLake: false, targetLakeWasFree: false });
+    logGeneration({ startCandidates: 0, built: false, reason: 'no_valid_path', segmentCount: 0, reachedLake: false, targetLakeWasFree: false });
     return rivers;
   }
 }
@@ -1941,12 +1683,12 @@ function getRiverHeightConstraintForCandidateRegion(
     if (!touchingHeight) continue;
 
     if (endpoint.endpointType === 'end') {
-      maxHeight = Math.min(maxHeight ?? touchingHeight, touchingHeight);
+      maxHeight = Math.min(maxHeight ?? touchingHeight, touchingHeight) as RegionHeightLevel;
       reasons.push(`incoming river ${endpoint.riverId}: new height <= ${touchingHeight}`);
     }
 
     if (endpoint.endpointType === 'start') {
-      minHeight = Math.max(minHeight ?? touchingHeight, touchingHeight);
+      minHeight = Math.max(minHeight ?? touchingHeight, touchingHeight) as RegionHeightLevel;
       reasons.push(`outgoing river ${endpoint.riverId}: new height >= ${touchingHeight}`);
     }
   }
@@ -2038,12 +1780,10 @@ function mergeRiversWithConnector(
   }
   const connectorMiddle = connectorPath.slice(1, -1);
   const mergedPath = [...upstreamRiver.vertexPath, ...connectorMiddle, ...downstreamRiver.vertexPath];
-  const connectorFlowLevel = Math.max(getRiverEndFlowLevel(upstreamRiver), getRiverStartFlowLevel(downstreamRiver));
-  const connectorSectors = createInitialRiverSectors(upstreamRiver.id, connectorPath, connectorFlowLevel)
+  const connectorSectors = createInitialRiverSectors(upstreamRiver.id, connectorPath)
     .map((sector) => ({ ...sector, id: `${upstreamRiver.id}:connector:sector:${sector.sectorIndex}` }));
   const mergedRiver: River = {
     ...upstreamRiver,
-    flowLevel: Math.max(getRiverMaxFlowLevel(upstreamRiver), getRiverMaxFlowLevel(downstreamRiver)),
     vertexPath: mergedPath,
     sectors: [
       ...(upstreamRiver.sectors ?? []),
@@ -2714,11 +2454,7 @@ function generateRiverForRegion(
     const terrainMap = hexTerrainByKey ?? new Map<string, HexTerrainData>();
 
     if (region.heightLevel === 3 && outgoingEndpoints.length > 0) {
-      const sortedOutgoingEndpoints = [...outgoingEndpoints].sort((a, b) => {
-        const riverA = existingRivers.find((river) => river.id === a.riverId);
-        const riverB = existingRivers.find((river) => river.id === b.riverId);
-        return (riverB ? getRiverMaxFlowLevel(riverB) : 1) - (riverA ? getRiverMaxFlowLevel(riverA) : 1);
-      });
+      const sortedOutgoingEndpoints = [...outgoingEndpoints].sort((a, b) => a.riverId - b.riverId);
       const mainOutgoingEndpoint = sortedOutgoingEndpoints[0];
       const secondaryOutgoingEndpoints = sortedOutgoingEndpoints.slice(1);
       let nextRivers = existingRivers;
@@ -2739,11 +2475,7 @@ function generateRiverForRegion(
       });
 
       if (incomingEndpoints.length > 0) {
-        const mainIncomingEndpoint = [...incomingEndpoints].sort((a, b) => {
-          const riverA = existingRivers.find((river) => river.id === a.riverId);
-          const riverB = existingRivers.find((river) => river.id === b.riverId);
-          return (riverB ? getRiverMaxFlowLevel(riverB) : 1) - (riverA ? getRiverMaxFlowLevel(riverA) : 1);
-        })[0];
+        const mainIncomingEndpoint = [...incomingEndpoints].sort((a, b) => a.riverId - b.riverId)[0];
         const connectorPath = buildRiverPathViaControlPoints(
           { startVertex: mainIncomingEndpoint.vertex, endVertex: mainOutgoingEndpoint.vertex },
           riverGraph,
@@ -2815,11 +2547,7 @@ function generateRiverForRegion(
     }
 
     if (incomingEndpoints.length >= 2) {
-      const sortedIncomingEndpoints = [...incomingEndpoints].sort((a, b) => {
-        const riverA = existingRivers.find((river) => river.id === a.riverId);
-        const riverB = existingRivers.find((river) => river.id === b.riverId);
-        return (riverB ? getRiverMaxFlowLevel(riverB) : 1) - (riverA ? getRiverMaxFlowLevel(riverA) : 1);
-      });
+      const sortedIncomingEndpoints = [...incomingEndpoints].sort((a, b) => a.riverId - b.riverId);
       const mainIncomingEndpoint = sortedIncomingEndpoints[0];
       const tributaryIncomingEndpoints = sortedIncomingEndpoints.slice(1);
       const blockedEdgeKeys = new Set(usedRiverEdges);
@@ -3076,15 +2804,13 @@ function generateRiverForRegion(
         return { success: false, rivers: existingRivers, reason: 'mountain_source_river_path_not_found' };
       }
 
-      const newRiverId = (existingRivers.at(-1)?.id ?? 0) + 1;
-      const initialFlowLevel = getInitialRiverFullnessByHeight(region.heightLevel);
+      const newRiverId = (existingRivers[existingRivers.length - 1]?.id ?? 0) + 1;
       const river: River = {
         id: newRiverId,
         regionId: region.id,
         vertexPath: bestPath,
-        sectors: createInitialRiverSectors(newRiverId, bestPath, initialFlowLevel),
-        controlPoints: bestControlPoints,
-        flowLevel: initialFlowLevel
+        sectors: createInitialRiverSectors(newRiverId, bestPath),
+        controlPoints: bestControlPoints
       };
       const nextRivers = [...existingRivers, river];
       for (const nextRiver of nextRivers) {
@@ -3118,15 +2844,13 @@ function generateRiverForRegion(
           return { ...river, vertexPath: mergedPath };
         });
       } else {
-        const newRiverId = (existingRivers.at(-1)?.id ?? 0) + 1;
-        const initialFlowLevel = getInitialRiverFullnessByHeight(region.heightLevel);
+        const newRiverId = (existingRivers[existingRivers.length - 1]?.id ?? 0) + 1;
         const river: River = {
           id: newRiverId,
           regionId: region.id,
           vertexPath: path,
-          sectors: createInitialRiverSectors(newRiverId, path, initialFlowLevel),
-          controlPoints,
-          flowLevel: initialFlowLevel
+          sectors: createInitialRiverSectors(newRiverId, path),
+          controlPoints
         };
         nextRivers = [...existingRivers, river];
       }
@@ -3145,24 +2869,19 @@ function generateRiverForRegion(
 
 function renderRiverSegments(river: River, offsetX: number, offsetY: number, lakeEdgeKeys: Set<string>) {
   const hexWidth = getHexWidth(HEX_SIZE);
-  const sectorByEdgeKey = new Map<string, RiverSector>();
-  for (const sector of river.sectors ?? []) {
-    for (const sectorEdgeKey of sector.edgeKeys) sectorByEdgeKey.set(sectorEdgeKey, sector);
-  }
   const segments: Array<{ key: string; x1: number; y1: number; x2: number; y2: number; width: number }> = [];
   for (let i = 1; i < river.vertexPath.length; i += 1) {
     const start = river.vertexPath[i - 1];
     const end = river.vertexPath[i];
     const segmentEdgeKey = edgeKey(start, end);
     if (isLakeEdge(segmentEdgeKey, lakeEdgeKeys)) continue;
-    const segmentFlowLevel = sectorByEdgeKey.get(segmentEdgeKey)?.flowLevel ?? getRiverMaxFlowLevel(river);
     segments.push({
       key: `river-segment-${river.id}-${i}`,
       x1: start.x + offsetX,
       y1: start.y + offsetY,
       x2: end.x + offsetX,
       y2: end.y + offsetY,
-      width: getRiverWidth(segmentFlowLevel, hexWidth)
+      width: getRiverWidth(hexWidth)
     });
   }
   return segments;
@@ -3420,55 +3139,6 @@ function roadPathCrossesRiver(path: AxialHex[], rivers: River[]): boolean {
   return countRoadPathRiverCrossings(path, rivers) > 0;
 }
 
-function countRoadPathMajorRiverSectorCrossings(path: AxialHex[], rivers: River[]): number {
-  if (path.length < 2) return 0;
-
-  const majorRiverEdgeKeys = new Set<string>();
-
-  for (const river of rivers) {
-    const sectors = river.sectors ?? [];
-
-    for (const sector of sectors) {
-      if ((sector.flowLevel ?? 1) <= 2) continue;
-
-      for (const edgeKeyValue of sector.edgeKeys ?? []) {
-        majorRiverEdgeKeys.add(edgeKeyValue);
-      }
-
-      // Fallback, if a sector unexpectedly has no precomputed edge keys.
-      if (!sector.edgeKeys || sector.edgeKeys.length === 0) {
-        for (let i = 1; i < sector.vertexPath.length; i += 1) {
-          majorRiverEdgeKeys.add(edgeKey(sector.vertexPath[i - 1], sector.vertexPath[i]));
-        }
-      }
-    }
-
-    // Deprecated fallback for legacy rivers without sectors only.
-    if (sectors.length === 0 && ((river as any).flowLevel ?? 1) > 2) {
-      for (let i = 1; i < river.vertexPath.length; i += 1) {
-        majorRiverEdgeKeys.add(edgeKey(river.vertexPath[i - 1], river.vertexPath[i]));
-      }
-    }
-  }
-
-  let crossings = 0;
-
-  for (let i = 1; i < path.length; i += 1) {
-    const sharedEdge = getSharedHexEdgeVertexKeys(path[i - 1], path[i]);
-    if (!sharedEdge) continue;
-
-    const [v1, v2] = sharedEdge;
-    const sharedRiverEdgeKey = v1 < v2 ? `${v1}|${v2}` : `${v2}|${v1}`;
-
-    if (majorRiverEdgeKeys.has(sharedRiverEdgeKey)) crossings += 1;
-  }
-
-  return crossings;
-}
-
-function roadPathCrossesMajorRiverSector(path: AxialHex[], rivers: River[]): boolean {
-  return countRoadPathMajorRiverSectorCrossings(path, rivers) > 0;
-}
 
 function getPoiKeysOnRoadPath(path: AxialHex[], region: Region): Set<string> {
   const pathKeys = new Set(path.map(hexKey));
@@ -3520,7 +3190,7 @@ function findTrailPathWithinRegion(options: {
     allowRoadHexes: [fromHex, targetHex]
   });
   if (!path) return null;
-  if (roadPathCrossesMajorRiverSector(path, rivers)) return null;
+  if (roadPathCrossesRiver(path, rivers)) return null;
   return path;
 }
 
@@ -3873,7 +3543,7 @@ function generateRoadsForRegion(options: {
   let nextRoadId = options.nextRoadId;
   const built = [...roads];
   const addRoadFromPath = (path: AxialHex[], kind: RoadKind, allowedRoadHexes: AxialHex[] = [], allowedDuplicateHexKeys = new Set<string>()) => {
-    if (kind === 'trail' && roadPathCrossesMajorRiverSector(path, rivers)) return false;
+    if (kind === 'trail' && roadPathCrossesRiver(path, rivers)) return false;
     if (!canAddRoadPath({ path, roads: built, region, hexTerrainByKey, allowedRoadHexes, allowedDuplicateHexKeys })) return false;
     const segs: RoadSegment[] = [];
     for (let i = 1; i < path.length; i += 1) segs.push({ from: path[i - 1], to: path[i], kind });
@@ -4759,13 +4429,13 @@ export function App() {
             {selectedHexRiverSectors.length > 0 ? (
               <ul>
                 {selectedHexRiverSectors.map((sector) => (
-                  <li key={sector.id}>Река #{sector.riverId}, сектор {sector.sectorIndex}, полноводность {sector.flowLevel}</li>
+                  <li key={sector.id}>Река #{sector.riverId}, сектор {sector.sectorIndex}</li>
                 ))}
               </ul>
             ) : selectedHexRivers.length > 0 ? (
               <ul>
                 {selectedHexRivers.map((river) => (
-                  <li key={river.id}>Река #{river.id}, полноводность {getRiverMaxFlowLevel(river)}</li>
+                  <li key={river.id}>Река #{river.id}</li>
                 ))}
               </ul>
             ) : ' —'}
@@ -4796,11 +4466,11 @@ export function App() {
                 <strong>Реки региона:</strong>{' '}
                 {selectedRegionRiverSectors.length > 0
                   ? selectedRegionRiverSectors
-                    .map((sector) => `#${sector.riverId}, сектор ${sector.sectorIndex} / полноводность ${sector.flowLevel}`)
+                    .map((sector) => `#${sector.riverId}, сектор ${sector.sectorIndex}`)
                     .join('; ')
                   : selectedRegionRivers.length > 0
                     ? selectedRegionRivers
-                      .map((river) => `#${river.id} / полноводность ${getRiverMaxFlowLevel(river)}`)
+                      .map((river) => `#${river.id}`)
                       .join('; ')
                     : '—'}
               </p>
@@ -4809,7 +4479,7 @@ export function App() {
                 {selectedRegionRiverSectors.length > 0 ? (
                   <ul>
                     {selectedRegionRiverSectors.map((sector) => (
-                      <li key={sector.id}>Река #{sector.riverId}: сектор {sector.sectorIndex}, полноводность {sector.flowLevel}</li>
+                      <li key={sector.id}>Река #{sector.riverId}: сектор {sector.sectorIndex}</li>
                     ))}
                   </ul>
                 ) : ' —'}
