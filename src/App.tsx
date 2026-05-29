@@ -3424,6 +3424,56 @@ function roadPathCrossesRiver(path: AxialHex[], rivers: River[]): boolean {
   return countRoadPathRiverCrossings(path, rivers) > 0;
 }
 
+function countRoadPathMajorRiverSectorCrossings(path: AxialHex[], rivers: River[]): number {
+  if (path.length < 2) return 0;
+
+  const majorRiverEdgeKeys = new Set<string>();
+
+  for (const river of rivers) {
+    const sectors = river.sectors ?? [];
+
+    for (const sector of sectors) {
+      if ((sector.flowLevel ?? 1) <= 2) continue;
+
+      for (const edgeKeyValue of sector.edgeKeys ?? []) {
+        majorRiverEdgeKeys.add(edgeKeyValue);
+      }
+
+      // Fallback, if a sector unexpectedly has no precomputed edge keys.
+      if (!sector.edgeKeys || sector.edgeKeys.length === 0) {
+        for (let i = 1; i < sector.vertexPath.length; i += 1) {
+          majorRiverEdgeKeys.add(edgeKey(sector.vertexPath[i - 1], sector.vertexPath[i]));
+        }
+      }
+    }
+
+    // Deprecated fallback for legacy rivers without sectors only.
+    if (sectors.length === 0 && ((river as any).flowLevel ?? 1) > 2) {
+      for (let i = 1; i < river.vertexPath.length; i += 1) {
+        majorRiverEdgeKeys.add(edgeKey(river.vertexPath[i - 1], river.vertexPath[i]));
+      }
+    }
+  }
+
+  let crossings = 0;
+
+  for (let i = 1; i < path.length; i += 1) {
+    const sharedEdge = getSharedHexEdgeVertexKeys(path[i - 1], path[i]);
+    if (!sharedEdge) continue;
+
+    const [v1, v2] = sharedEdge;
+    const sharedRiverEdgeKey = v1 < v2 ? `${v1}|${v2}` : `${v2}|${v1}`;
+
+    if (majorRiverEdgeKeys.has(sharedRiverEdgeKey)) crossings += 1;
+  }
+
+  return crossings;
+}
+
+function roadPathCrossesMajorRiverSector(path: AxialHex[], rivers: River[]): boolean {
+  return countRoadPathMajorRiverSectorCrossings(path, rivers) > 0;
+}
+
 function getPoiKeysOnRoadPath(path: AxialHex[], region: Region): Set<string> {
   const pathKeys = new Set(path.map(hexKey));
   const centerKey = hexKey(region.centerHex);
@@ -3474,7 +3524,7 @@ function findTrailPathWithinRegion(options: {
     allowRoadHexes: [fromHex, targetHex]
   });
   if (!path) return null;
-  if (roadPathCrossesRiver(path, rivers)) return null;
+  if (roadPathCrossesMajorRiverSector(path, rivers)) return null;
   return path;
 }
 
@@ -3827,6 +3877,7 @@ function generateRoadsForRegion(options: {
   let nextRoadId = options.nextRoadId;
   const built = [...roads];
   const addRoadFromPath = (path: AxialHex[], kind: RoadKind, allowedRoadHexes: AxialHex[] = [], allowedDuplicateHexKeys = new Set<string>()) => {
+    if (kind === 'trail' && roadPathCrossesMajorRiverSector(path, rivers)) return false;
     if (!canAddRoadPath({ path, roads: built, region, hexTerrainByKey, allowedRoadHexes, allowedDuplicateHexKeys })) return false;
     const segs: RoadSegment[] = [];
     for (let i = 1; i < path.length; i += 1) segs.push({ from: path[i - 1], to: path[i], kind });
