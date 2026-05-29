@@ -891,66 +891,9 @@ function findAdjacentOldSector(
   )) ?? null;
 }
 
-function vertexTouchesCandidateHexes(vertex: RiverVertex, candidateHexes: AxialHex[]): boolean {
-  return vertexTouchesAnyHex(vertex, candidateHexes);
-}
-
-function upstreamSectorTouchesCandidate(
-  sector: RiverSector,
-  candidateHexes: AxialHex[]
-): boolean {
-  const firstVertex = sector.vertexPath[0];
-  return firstVertex ? vertexTouchesCandidateHexes(firstVertex, candidateHexes) : false;
-}
-
-function downstreamSectorTouchesCandidate(
-  sector: RiverSector,
-  candidateHexes: AxialHex[]
-): boolean {
-  const lastVertex = sector.vertexPath[sector.vertexPath.length - 1];
-  return lastVertex ? vertexTouchesCandidateHexes(lastVertex, candidateHexes) : false;
-}
-
-type RiverConfluenceFlowAction =
-  | 'upstream_minus_1'
-  | 'downstream_plus_1'
-  | 'random_upstream_minus_1'
-  | 'random_downstream_plus_1'
-  | 'none';
-
-type RiverConfluenceFlowReason =
-  | 'no_candidate_sector'
-  | 'upstream_changed'
-  | 'downstream_changed'
-  | 'both_candidate_random_upstream'
-  | 'both_candidate_random_downstream'
-  | 'out_of_range'
-  | 'sector_not_in_current_region'
-  | 'not_confluence';
-
-function tryApplyRiverConfluenceFlowDelta(
-  sector: RiverSector,
-  delta: -1 | 1,
-  currentRegionEdgeKeys: Set<string>
-): { changed: boolean; reason: RiverConfluenceFlowReason } {
-  if (!sectorTouchesRegion(sector, currentRegionEdgeKeys)) {
-    return { changed: false, reason: 'sector_not_in_current_region' };
-  }
-
-  const nextFlowLevel = sector.flowLevel + delta;
-  if (nextFlowLevel < MIN_RIVER_FLOW_LEVEL || nextFlowLevel > MAX_RIVER_FLOW_LEVEL) {
-    return { changed: false, reason: 'out_of_range' };
-  }
-
-  sector.flowLevel = nextFlowLevel;
-  return { changed: true, reason: delta < 0 ? 'upstream_changed' : 'downstream_changed' };
-}
-
 function assignFlowLevelsForRiverSectors(
   river: River,
-  sectors: RiverSector[],
-  currentRegionEdgeKeys: Set<string>,
-  candidateHexes: AxialHex[]
+  sectors: RiverSector[]
 ): RiverSector[] {
   const oldSectors = river.sectors ?? [];
 
@@ -987,66 +930,6 @@ function assignFlowLevelsForRiverSectors(
       flowLevel: clampFlowLevel(sector.flowLevel)
     };
   });
-
-  for (let index = 1; index < sectorsWithInheritedFlow.length; index += 1) {
-    const upstreamSector = sectorsWithInheritedFlow[index - 1];
-    const downstreamSector = sectorsWithInheritedFlow[index];
-    if (
-      upstreamSector.endReason !== 'river_confluence'
-      || downstreamSector.startReason !== 'river_confluence'
-    ) {
-      continue;
-    }
-
-    const upstreamFlowLevelBefore = upstreamSector.flowLevel;
-    const downstreamFlowLevelBefore = downstreamSector.flowLevel;
-    const upstreamCandidate = upstreamSectorTouchesCandidate(upstreamSector, candidateHexes);
-    const downstreamCandidate = downstreamSectorTouchesCandidate(downstreamSector, candidateHexes);
-    const upstreamTouchesCurrentRegion = sectorTouchesRegion(upstreamSector, currentRegionEdgeKeys);
-    const downstreamTouchesCurrentRegion = sectorTouchesRegion(downstreamSector, currentRegionEdgeKeys);
-    let action: RiverConfluenceFlowAction = 'none';
-    let changed = false;
-    let reason: RiverConfluenceFlowReason = 'no_candidate_sector';
-
-    if (upstreamCandidate && !downstreamCandidate) {
-      action = 'upstream_minus_1';
-      const result = tryApplyRiverConfluenceFlowDelta(upstreamSector, -1, currentRegionEdgeKeys);
-      changed = result.changed;
-      reason = result.reason;
-    } else if (!upstreamCandidate && downstreamCandidate) {
-      action = 'downstream_plus_1';
-      const result = tryApplyRiverConfluenceFlowDelta(downstreamSector, 1, currentRegionEdgeKeys);
-      changed = result.changed;
-      reason = result.reason;
-    } else if (upstreamCandidate && downstreamCandidate) {
-      const changeUpstream = Math.random() < 0.5;
-      action = changeUpstream ? 'random_upstream_minus_1' : 'random_downstream_plus_1';
-      const result = changeUpstream
-        ? tryApplyRiverConfluenceFlowDelta(upstreamSector, -1, currentRegionEdgeKeys)
-        : tryApplyRiverConfluenceFlowDelta(downstreamSector, 1, currentRegionEdgeKeys);
-      changed = result.changed;
-      reason = result.changed
-        ? (changeUpstream ? 'both_candidate_random_upstream' : 'both_candidate_random_downstream')
-        : result.reason;
-    }
-
-    console.log('River confluence candidate flow check', {
-      riverId: river.id,
-      upstreamSectorId: upstreamSector.id,
-      downstreamSectorId: downstreamSector.id,
-      upstreamFlowLevelBefore,
-      downstreamFlowLevelBefore,
-      upstreamCandidate,
-      downstreamCandidate,
-      upstreamTouchesCurrentRegion,
-      downstreamTouchesCurrentRegion,
-      action,
-      changed,
-      reason,
-      upstreamFlowLevelAfter: upstreamSector.flowLevel,
-      downstreamFlowLevelAfter: downstreamSector.flowLevel
-    });
-  }
 
   return sectorsWithInheritedFlow.map((sector) => ({
     ...sector,
@@ -1109,7 +992,7 @@ function logRiverSectorsAssigned(rivers: River[]): void {
   });
 }
 
-function assignRiverSectors(rivers: River[], lakes: Lake[], regions: Region[] = [], candidateHexes: AxialHex[] = []): River[] {
+function assignRiverSectors(rivers: River[], lakes: Lake[], regions: Region[] = []): River[] {
   const currentRegion = regions[regions.length - 1];
   const currentRegionEdgeKeys = getRegionEdgeKeys(currentRegion);
   const previousSectorFlowById = new Map<string, { riverId: number | string; flowLevel: number }>();
@@ -1204,7 +1087,7 @@ function assignRiverSectors(rivers: River[], lakes: Lake[], regions: Region[] = 
         });
       }
 
-      return { ...river, sectors: assignFlowLevelsForRiverSectors(river, sectors, currentRegionEdgeKeys, candidateHexes) };
+      return { ...river, sectors: assignFlowLevelsForRiverSectors(river, sectors) };
     } catch (error) {
       console.warn('Could not assign river sectors', { riverId: river.id, error });
       return { ...river, sectors: [] };
@@ -4471,8 +4354,7 @@ export function App() {
       const assignedRivers = assignRiverSectors(
         riverResult.rivers,
         getLakesForRegions(nextRegionsForRiverGeneration, nextHexTerrainByKeyPreview),
-        nextRegionsForRiverGeneration,
-        nextCandidateHexes
+        nextRegionsForRiverGeneration
       );
 
       const pointsOfInterest = assignPointsOfInterestForRegion(regionHexes, centerHex, lakesByHex);
