@@ -581,6 +581,11 @@ function getHexEdgesAsVertexPairs(hex: AxialHex): HexEdge[] {
   }));
 }
 
+function getRiverVertexDistance(a: RiverVertex, b: RiverVertex): number {
+  const dx = a.x - b.x;
+  const dy = a.y - b.y;
+  return Math.sqrt(dx * dx + dy * dy);
+}
 
 function getHexEdgeKeys(hex: AxialHex): Set<string> {
   return new Set(getHexEdgesAsVertexPairs(hex).map((edge) => edge.edgeKey));
@@ -2072,9 +2077,20 @@ function chooseRandomRiverControlPoints(
   }
   if (redVertices.length < 2) return null;
   const startVertex = randomFrom(redVertices);
-  const endPool = redVertices.filter((vertex) => vertex.key !== startVertex.key);
-  if (endPool.length === 0) return null;
-  const endVertex = randomFrom(endPool);
+  const candidateEndVertices = redVertices.filter((vertex) => vertex.key !== startVertex.key);
+  if (candidateEndVertices.length === 0) return null;
+  const maxDistance = Math.max(...candidateEndVertices.map((vertex) => getRiverVertexDistance(startVertex, vertex)));
+  const farthestVertices = candidateEndVertices.filter(
+    (vertex) => Math.abs(getRiverVertexDistance(startVertex, vertex) - maxDistance) < 0.001
+  );
+  const endVertex = randomFrom(farthestVertices);
+  console.log('River red endpoint selection', {
+    mode: 'farthest_red_vertex',
+    startVertexKey: startVertex.key,
+    endVertexKey: endVertex.key,
+    distance: getRiverVertexDistance(startVertex, endVertex),
+    redVertexCount: redVertices.length
+  });
   if (purpleVertices.length === 0) return { startVertex, endVertex, startMode: 'red vertex' };
   const preferredMiddle = purpleVertices.filter(
     (vertex) => vertex.key !== startVertex.key && vertex.key !== endVertex.key
