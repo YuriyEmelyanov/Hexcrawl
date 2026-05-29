@@ -928,9 +928,7 @@ function assignFlowLevelsForRiverSectors(
       }
     }
 
-    const selectedFlow = inheritedFlow === null
-      ? currentFlow
-      : Math.max(currentFlow, inheritedFlow);
+    const selectedFlow = inheritedFlow ?? currentFlow;
     const finalFlow = clampFlowLevel(selectedFlow);
 
     console.log('Sector flow inheritance', {
@@ -1029,6 +1027,7 @@ function applyCandidateConfluenceFlowIncrease(
     return { ...river, sectors: nextSectors };
   });
 }
+
 
 function logRiverSectorFlowAdjusted(rivers: River[]): void {
   console.log('River sector flow adjusted', {
