@@ -320,12 +320,10 @@ function getHexWidth(hexSize: number): number {
   return SQRT3 * hexSize;
 }
 
-function clampRiverFullness(fullness: number): RiverFullness {
-  return Math.min(5, Math.max(1, Math.round(fullness))) as RiverFullness;
-}
-
 function getNewRiverFullnessForHeight(heightLevel: RegionHeightLevel): RiverFullness {
-  return clampRiverFullness(heightLevel);
+  if (heightLevel === 1) return 3;
+  if (heightLevel === 2) return 2;
+  return 1;
 }
 
 function getTributaryRiverFullnessForHeight(heightLevel: RegionHeightLevel): RiverFullness {
@@ -335,7 +333,7 @@ function getTributaryRiverFullnessForHeight(heightLevel: RegionHeightLevel): Riv
 }
 
 function getRiverWidth(hexWidth: number, fullness: RiverFullness): number {
-  return hexWidth * (0.06 + clampRiverFullness(fullness) * 0.025);
+  return hexWidth * (0.06 + fullness * 0.025);
 }
 
 function getRegionHeightLevelFromBiomeId(biomeId: BiomeId): RegionHeightLevel {
@@ -805,7 +803,7 @@ function createInitialRiverSectors(
     endVertexKey: vertexPath[vertexPath.length - 1].key,
     startReason: 'river_start',
     endReason: 'river_end',
-    fullness: clampRiverFullness(fullness)
+    fullness
   }];
 }
 
@@ -815,14 +813,14 @@ function getRiverSectorFullnessByEdge(river: River): Map<string, RiverFullness> 
   const fullnessByEdge = new Map<string, RiverFullness>();
   for (const sector of river.sectors ?? []) {
     for (const edgeKey of sector.edgeKeys ?? []) {
-      fullnessByEdge.set(edgeKey, clampRiverFullness(sector.fullness ?? 1));
+      fullnessByEdge.set(edgeKey, sector.fullness ?? 1);
     }
   }
   return fullnessByEdge;
 }
 
 function getRiverFallbackFullness(river: River): RiverFullness {
-  return clampRiverFullness(river.sectors?.[0]?.fullness ?? 1);
+  return river.sectors?.[0]?.fullness ?? 1;
 }
 
 function getRiverSectorFullness(edgeKeys: string[], fullnessByEdge: Map<string, RiverFullness>, fallback: RiverFullness): RiverFullness {
