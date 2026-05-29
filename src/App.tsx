@@ -3178,27 +3178,38 @@ function getSharedHexEdgeVertexKeys(a: AxialHex, b: AxialHex): [string, string] 
   return [shared[0], shared[1]];
 }
 
-function countRoadPathRiverCrossings(path: AxialHex[], rivers: River[]): number {
-  if (path.length < 2) return 0;
-  const riverEdgeKeys = new Set<string>();
+function getRiverCrossingFullnessByEdge(rivers: River[]): Map<string, RiverFullness> {
+  const fullnessByEdge = new Map<string, RiverFullness>();
   for (const river of rivers) {
+    const sectorFullnessByEdge = getRiverSectorFullnessByEdge(river);
+    const fallbackFullness = getRiverFallbackFullness(river);
     for (let i = 1; i < river.vertexPath.length; i += 1) {
-      riverEdgeKeys.add(edgeKey(river.vertexPath[i - 1], river.vertexPath[i]));
+      const riverEdgeKey = edgeKey(river.vertexPath[i - 1], river.vertexPath[i]);
+      const fullness = sectorFullnessByEdge.get(riverEdgeKey) ?? fallbackFullness;
+      const existingFullness = fullnessByEdge.get(riverEdgeKey);
+      if (!existingFullness || fullness > existingFullness) fullnessByEdge.set(riverEdgeKey, fullness);
     }
   }
+  return fullnessByEdge;
+}
+
+function countRoadPathRiverCrossings(path: AxialHex[], rivers: River[], minFullness: RiverFullness = 1): number {
+  if (path.length < 2) return 0;
+  const riverFullnessByEdge = getRiverCrossingFullnessByEdge(rivers);
   let crossings = 0;
   for (let i = 1; i < path.length; i += 1) {
     const sharedEdge = getSharedHexEdgeVertexKeys(path[i - 1], path[i]);
     if (!sharedEdge) continue;
     const [v1, v2] = sharedEdge;
-    const edgeKey = v1 < v2 ? `${v1}|${v2}` : `${v2}|${v1}`;
-    if (riverEdgeKeys.has(edgeKey)) crossings += 1;
+    const roadEdgeKey = v1 < v2 ? `${v1}|${v2}` : `${v2}|${v1}`;
+    const fullness = riverFullnessByEdge.get(roadEdgeKey);
+    if (fullness && fullness >= minFullness) crossings += 1;
   }
   return crossings;
 }
 
-function roadPathCrossesRiver(path: AxialHex[], rivers: River[]): boolean {
-  return countRoadPathRiverCrossings(path, rivers) > 0;
+function roadPathCrossesRiver(path: AxialHex[], rivers: River[], minFullness: RiverFullness = 1): boolean {
+  return countRoadPathRiverCrossings(path, rivers, minFullness) > 0;
 }
 
 
@@ -3252,7 +3263,7 @@ function findTrailPathWithinRegion(options: {
     allowRoadHexes: [fromHex, targetHex]
   });
   if (!path) return null;
-  if (roadPathCrossesRiver(path, rivers)) return null;
+  if (roadPathCrossesRiver(path, rivers, 2)) return null;
   return path;
 }
 
