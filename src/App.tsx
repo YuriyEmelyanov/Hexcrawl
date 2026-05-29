@@ -866,12 +866,12 @@ function getFlowLevelForNewSector(river: River, newSectorEdgeKeys: string[]): nu
   const bestOldSector = findBestOverlappingOldSector(oldSectors, newSectorEdgeKeys);
   if (bestOldSector) return clampFlowLevel(bestOldSector.oldSector.flowLevel);
 
-  const firstOldSector = oldSectors[0];
-  if (firstOldSector) return clampFlowLevel(firstOldSector.flowLevel);
-
   // Deprecated fallback for initial sectors in legacy/new river records that have
-  // not yet been migrated to sector-only flowLevel storage.
-  return clampFlowLevel((river as any).flowLevel ?? MIN_RIVER_FLOW_LEVEL);
+  // not yet been migrated to sector-only flowLevel storage. River.flowLevel is
+  // only consulted when the river has no sector-level flow source at all.
+  if (oldSectors.length === 0) return clampFlowLevel((river as any).flowLevel ?? MIN_RIVER_FLOW_LEVEL);
+
+  return MIN_RIVER_FLOW_LEVEL;
 }
 
 function getRegionEdgeKeys(region?: Region): Set<string> {
@@ -902,44 +902,51 @@ function assignFlowLevelsForRiverSectors(
 ): RiverSector[] {
   const oldSectors = river.sectors ?? [];
 
-  const sectorsWithInheritedFlow = sectors.map((sector) => {
+  return sectors.map((sector) => {
+    const currentFlow = sector.flowLevel;
+    let inheritedFlow: number | null = null;
+    let source: 'overlap' | 'adjacent' | 'current' = 'current';
+
     const bestOldSector = findBestOverlappingOldSector(oldSectors, sector.edgeKeys);
     if (bestOldSector) {
-      return {
-        ...sector,
-        flowLevel: clampFlowLevel(bestOldSector.oldSector.flowLevel)
-      };
+      inheritedFlow = bestOldSector.oldSector.flowLevel;
+      source = 'overlap';
+    } else {
+      const adjacentOldSector = findAdjacentOldSector(oldSectors, sector);
+      if (adjacentOldSector) {
+        inheritedFlow = adjacentOldSector.flowLevel;
+        source = 'adjacent';
+      } else if (oldSectors.length > 0) {
+        console.warn('New river continuation sector could not inherit flowLevel from overlap or adjacent old sector', {
+          riverId: river.id,
+          sectorId: sector.id,
+          sectorIndex: sector.sectorIndex,
+          startVertexKey: sector.startVertexKey,
+          endVertexKey: sector.endVertexKey,
+          flowLevelKept: currentFlow
+        });
+      }
     }
 
-    const adjacentOldSector = findAdjacentOldSector(oldSectors, sector);
-    if (adjacentOldSector) {
-      return {
-        ...sector,
-        flowLevel: clampFlowLevel(adjacentOldSector.flowLevel)
-      };
-    }
+    const selectedFlow = inheritedFlow === null
+      ? currentFlow
+      : Math.max(currentFlow, inheritedFlow);
+    const finalFlow = clampFlowLevel(selectedFlow);
 
-    if (oldSectors.length > 0) {
-      console.warn('New river continuation sector could not inherit flowLevel from overlap or adjacent old sector', {
-        riverId: river.id,
-        sectorId: sector.id,
-        sectorIndex: sector.sectorIndex,
-        startVertexKey: sector.startVertexKey,
-        endVertexKey: sector.endVertexKey,
-        flowLevelKept: sector.flowLevel
-      });
-    }
+    console.log('Sector flow inheritance', {
+      riverId: river.id,
+      sectorId: sector.id,
+      currentFlow,
+      inheritedFlow,
+      finalFlow,
+      source
+    });
 
     return {
       ...sector,
-      flowLevel: clampFlowLevel(sector.flowLevel)
+      flowLevel: finalFlow
     };
   });
-
-  return sectorsWithInheritedFlow.map((sector) => ({
-    ...sector,
-    flowLevel: clampFlowLevel(sector.flowLevel)
-  }));
 }
 
 function warnIfExistingSectorFlowChangedOutsideCurrentRegion(
