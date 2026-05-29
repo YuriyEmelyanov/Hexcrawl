@@ -964,6 +964,40 @@ function warnIfExistingSectorFlowChangedOutsideCurrentRegion(
   }
 }
 
+function applyCandidateConfluenceFlowIncrease(
+  rivers: River[],
+  currentRegion: Region | undefined,
+  candidateHexes: AxialHex[] = []
+): River[] {
+  if (!currentRegion || candidateHexes.length === 0) return rivers;
+
+  const currentRegionEdgeKeys = getRegionEdgeKeys(currentRegion);
+
+  return rivers.map((river) => {
+    const sectors = river.sectors ?? [];
+    if (sectors.length < 2) return river;
+
+    const nextSectors = sectors.map((sector) => ({ ...sector }));
+
+    for (let index = 1; index < nextSectors.length; index += 1) {
+      const upstreamSector = nextSectors[index - 1];
+      const downstreamSector = nextSectors[index];
+      if (upstreamSector.endReason !== 'river_confluence') continue;
+      if (downstreamSector.startReason !== 'river_confluence') continue;
+
+      const downstreamLastVertex = downstreamSector.vertexPath[downstreamSector.vertexPath.length - 1];
+      if (!downstreamLastVertex) continue;
+      if (!vertexTouchesAnyHex(downstreamLastVertex, candidateHexes)) continue;
+      if (!sectorTouchesRegion(downstreamSector, currentRegionEdgeKeys)) continue;
+
+      const nextFlowLevel = downstreamSector.flowLevel + 1;
+      if (nextFlowLevel <= MAX_RIVER_FLOW_LEVEL) downstreamSector.flowLevel = nextFlowLevel;
+    }
+
+    return { ...river, sectors: nextSectors };
+  });
+}
+
 function logRiverSectorFlowAdjusted(rivers: River[]): void {
   console.log('River sector flow adjusted', {
     riverCount: rivers.length,
@@ -997,7 +1031,7 @@ function logRiverSectorsAssigned(rivers: River[]): void {
   });
 }
 
-function assignRiverSectors(rivers: River[], lakes: Lake[], regions: Region[] = []): River[] {
+function assignRiverSectors(rivers: River[], lakes: Lake[], regions: Region[] = [], candidateHexes: AxialHex[] = []): River[] {
   const currentRegion = regions[regions.length - 1];
   const currentRegionEdgeKeys = getRegionEdgeKeys(currentRegion);
   const previousSectorFlowById = new Map<string, { riverId: number | string; flowLevel: number }>();
@@ -1099,15 +1133,17 @@ function assignRiverSectors(rivers: River[], lakes: Lake[], regions: Region[] = 
     }
   });
 
-  warnIfExistingSectorFlowChangedOutsideCurrentRegion(nextRivers, previousSectorFlowById, currentRegionEdgeKeys);
-  for (const river of nextRivers) {
+  const riversWithCandidateConfluenceFlow = applyCandidateConfluenceFlowIncrease(nextRivers, currentRegion, candidateHexes);
+
+  warnIfExistingSectorFlowChangedOutsideCurrentRegion(riversWithCandidateConfluenceFlow, previousSectorFlowById, currentRegionEdgeKeys);
+  for (const river of riversWithCandidateConfluenceFlow) {
     if (!river.sectors || river.sectors.length === 0) {
       console.warn('River has no sectors after assignRiverSectors', river);
     }
   }
-  logRiverSectorFlowAdjusted(nextRivers);
-  logRiverSectorsAssigned(nextRivers);
-  return nextRivers;
+  logRiverSectorFlowAdjusted(riversWithCandidateConfluenceFlow);
+  logRiverSectorsAssigned(riversWithCandidateConfluenceFlow);
+  return riversWithCandidateConfluenceFlow;
 }
 
 function getRiverSectorsForHex(hex: AxialHex, rivers: River[]): RiverSector[] {
@@ -4421,7 +4457,8 @@ export function App() {
       const assignedRivers = assignRiverSectors(
         riverResult.rivers,
         getLakesForRegions(nextRegionsForRiverGeneration, nextHexTerrainByKeyPreview),
-        nextRegionsForRiverGeneration
+        nextRegionsForRiverGeneration,
+        nextCandidateHexes
       );
 
       const pointsOfInterest = assignPointsOfInterestForRegion(regionHexes, centerHex, lakesByHex);
