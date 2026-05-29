@@ -1302,15 +1302,6 @@ function tryAddEdgeMinorTributaryRiver(
     const usedRiverEdges = buildUsedRiverEdges(rivers);
     const regionRivers = getRiversForRegion(region, rivers);
     const existingRiverVertexKeys = new Set(rivers.flatMap((river) => river.vertexPath.map((vertex) => vertex.key)));
-    const existingRiverVertexRiverIdsByKey = new Map<string, Set<number>>();
-    for (const river of rivers) {
-      for (const vertex of river.vertexPath) {
-        const riverIds = existingRiverVertexRiverIdsByKey.get(vertex.key) ?? new Set<number>();
-        riverIds.add(river.id);
-        existingRiverVertexRiverIdsByKey.set(vertex.key, riverIds);
-      }
-    }
-
     const lakeVertexKeys = new Set<string>();
     for (const lake of getLakesForRegion(region, terrainMap)) {
       for (const vertex of lake.vertices) lakeVertexKeys.add(vertex.key);
@@ -1325,7 +1316,6 @@ function tryAddEdgeMinorTributaryRiver(
         if (usedRiverEdges.has(graphEdge.key)) return false;
         const nextNode = graphEdge.a.key === vertex.key ? graphEdge.b : graphEdge.a;
         if (existingRiverVertexKeys.has(nextNode.key)) return false;
-        if (lakeVertexKeys.has(nextNode.key)) return false;
         return true;
       });
     };
@@ -1336,7 +1326,6 @@ function tryAddEdgeMinorTributaryRiver(
       if (!riverGraph.nodes.has(vertex.key)) continue;
       if (!candidateBoundaryVertexKeys.has(vertex.key)) continue;
       if (existingRiverVertexKeys.has(vertex.key)) continue;
-      if (lakeVertexKeys.has(vertex.key)) continue;
       if (!hasFreeInteriorStep(vertex)) continue;
       startCandidatesByKey.set(vertex.key, vertex);
     }
@@ -1379,14 +1368,14 @@ function tryAddEdgeMinorTributaryRiver(
       if (path.length < 2) return false;
       if (!candidateBoundaryVertexKeys.has(path[0].key)) return false;
       if (existingRiverVertexKeys.has(path[0].key)) return false;
-      if (lakeVertexKeys.has(path[0].key)) return false;
       const terminalVertex = path[path.length - 1];
+      if (vertexTouchesAnyHex(terminalVertex, candidateHexes)) return false;
       if (!existingRiverVertexKeys.has(terminalVertex.key)) return false;
       if (path.length === 2) return false;
       if (path[0].key === terminalVertex.key) return false;
       if (new Set(path.map((vertex) => vertex.key)).size !== path.length) return false;
       if (path.slice(0, -1).some((vertex) => existingRiverVertexKeys.has(vertex.key))) return false;
-      if (path.slice(0, -1).some((vertex) => lakeVertexKeys.has(vertex.key))) return false;
+      if (path.slice(2, -1).some((vertex) => lakeVertexKeys.has(vertex.key))) return false;
       const pathEdgeKeys = getRiverPathEdgeKeys(path, riverGraph);
       if (!pathEdgeKeys) return false;
       if (hasDuplicateEdgeKeys(pathEdgeKeys)) return false;
@@ -1395,7 +1384,6 @@ function tryAddEdgeMinorTributaryRiver(
       return true;
     };
 
-    let bestPath: RiverVertex[] | null = null;
     for (const startVertex of shuffleArray(startCandidates)) {
       const pathToTargetRiver = findBestFreeRiverPathToAnyTarget(
         startVertex,
@@ -1406,38 +1394,35 @@ function tryAddEdgeMinorTributaryRiver(
       if (!pathToTargetRiver) continue;
       const path = trimPathAtFirstExistingRiverVertex(pathToTargetRiver);
       if (!validateEdgeTributaryPath(path)) continue;
-      if (!bestPath || path.length < bestPath.length) bestPath = path;
+
+      const flowLevel = region.heightLevel === 2 ? randomInt(1, 2) : randomInt(3, 4);
+      const nextRiverId = Math.max(0, ...rivers.map((river) => river.id)) + 1;
+      const newRiver: River = {
+        id: nextRiverId,
+        regionId: region.id,
+        // Deprecated fallback. Do not use for calculations. Use sectors instead.
+        flowLevel,
+        vertexPath: path,
+        sectors: createInitialRiverSectors(nextRiverId, path, flowLevel),
+      };
+      const nextRivers = [...rivers, newRiver];
+      validateRiverDirection(newRiver);
+      if (!validateRiverContinuity(newRiver)) {
+        logGeneration({ built: false, reason: 'invalid_result', pathLength: newRiver.vertexPath.length, flowLevel });
+        return rivers;
+      }
+      const newRiverEdgeKeys = getRiverPathEdgeKeys(newRiver.vertexPath, riverGraph);
+      if (!newRiverEdgeKeys || newRiverEdgeKeys.some((pathEdgeKey) => usedRiverEdges.has(pathEdgeKey)) || hasDuplicateEdgeKeys(newRiverEdgeKeys)) {
+        logGeneration({ built: false, reason: 'invalid_result', pathLength: newRiver.vertexPath.length, flowLevel });
+        return rivers;
+      }
+      validateNoDuplicateRiverEdges(nextRivers);
+      logGeneration({ built: true, reason: 'ok', pathLength: newRiver.vertexPath.length, flowLevel });
+      return nextRivers;
     }
 
-    if (!bestPath) {
-      logGeneration({ built: false, reason: 'no_valid_path', pathLength: 0, flowLevel: null });
-      return rivers;
-    }
-
-    const flowLevel = region.heightLevel === 2 ? randomInt(1, 2) : randomInt(3, 4);
-    const nextRiverId = Math.max(0, ...rivers.map((river) => river.id)) + 1;
-    const newRiver: River = {
-      id: nextRiverId,
-      regionId: region.id,
-      // Deprecated fallback. Do not use for calculations. Use sectors instead.
-      flowLevel,
-      vertexPath: bestPath,
-      sectors: createInitialRiverSectors(nextRiverId, bestPath, flowLevel),
-    };
-    const nextRivers = [...rivers, newRiver];
-    validateRiverDirection(newRiver);
-    if (!validateRiverContinuity(newRiver)) {
-      logGeneration({ built: false, reason: 'invalid_result', pathLength: newRiver.vertexPath.length, flowLevel });
-      return rivers;
-    }
-    const newRiverEdgeKeys = getRiverPathEdgeKeys(newRiver.vertexPath, riverGraph);
-    if (!newRiverEdgeKeys || newRiverEdgeKeys.some((pathEdgeKey) => usedRiverEdges.has(pathEdgeKey)) || hasDuplicateEdgeKeys(newRiverEdgeKeys)) {
-      logGeneration({ built: false, reason: 'invalid_result', pathLength: newRiver.vertexPath.length, flowLevel });
-      return rivers;
-    }
-    validateNoDuplicateRiverEdges(nextRivers);
-    logGeneration({ built: true, reason: 'ok', pathLength: newRiver.vertexPath.length, flowLevel });
-    return nextRivers;
+    logGeneration({ built: false, reason: 'no_valid_path', pathLength: 0, flowLevel: null });
+    return rivers;
   } catch (error) {
     console.warn('Edge tributary generation failed', { regionId: region.id, error });
     logGeneration({ built: false, reason: 'no_valid_path', pathLength: 0, flowLevel: null });
