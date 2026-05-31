@@ -111,6 +111,8 @@ type WildRoadCandidate = {
   path: AxialHex[];
   crossedRiverCount: number;
   targetKind: 'candidate' | 'road';
+  startEndpointKey: string;
+  targetEndpointKey: string;
 };
 
 type WildIncomingRoadPairCandidate = {
@@ -3955,9 +3957,11 @@ function getWildRoadCandidates(options: {
   rivers: River[];
   hexTerrainByKey: Map<string, HexTerrainData>;
   candidateHexes: AxialHex[];
+  usedEndpointKeys?: Set<string>;
 }): WildRoadCandidate[] {
-  const { region, roads, rivers, hexTerrainByKey, candidateHexes } = options;
+  const { region, roads, rivers, hexTerrainByKey, candidateHexes, usedEndpointKeys = new Set<string>() } = options;
   const incoming = findIncomingRoadEndpointsForRegion(region, roads)
+    .filter((incomingEndpoint) => !usedEndpointKeys.has(hexKey(incomingEndpoint.endpointHex)))
     .filter((incomingEndpoint) => !isSameHex(incomingEndpoint.entryHex, region.centerHex) && !isLakeHex(incomingEndpoint.entryHex, hexTerrainByKey));
   if (incoming.length === 0) return [];
 
@@ -3995,13 +3999,20 @@ function getWildRoadCandidates(options: {
         allowedRoadHexes: [start.entryHex, target.entryHex]
       });
       if (!innerPath || innerPath.length < 2) continue;
-      const fullPath = appendIncomingRoadEndpointToPath(buildPathFromIncomingRoadEndpoint(start.endpointHex, innerPath), target.outsideHex);
+      const pathFromIncoming = buildPathFromIncomingRoadEndpoint(start.endpointHex, innerPath);
+      const fullPath = target.kind === 'candidate'
+        ? pathFromIncoming
+        : appendIncomingRoadEndpointToPath(pathFromIncoming, target.outsideHex);
+      const targetEndpointHex = target.kind === 'candidate' ? target.entryHex : target.outsideHex;
+      if (usedEndpointKeys.has(hexKey(targetEndpointHex))) continue;
       result.push({
         startRoadId: start.roadId,
         targetRoadId: target.roadId,
         path: fullPath,
         crossedRiverCount: countRoadPathRiverCrossings(innerPath, rivers),
-        targetKind: target.kind
+        targetKind: target.kind,
+        startEndpointKey: hexKey(start.endpointHex),
+        targetEndpointKey: hexKey(targetEndpointHex)
       });
     }
   }
@@ -4104,8 +4115,9 @@ function generateRoadsForRegion(options: {
   const settled = region.biomeLandType === 'settled';
   if (!settled) {
     let builtAnyWildRoad = false;
+    const usedWildRoadEndpointKeys = new Set<string>();
     while (true) {
-      const wildCandidate = chooseBestWildRoadCandidate(getWildRoadCandidates({ region, roads: built, rivers, hexTerrainByKey, candidateHexes }));
+      const wildCandidate = chooseBestWildRoadCandidate(getWildRoadCandidates({ region, roads: built, rivers, hexTerrainByKey, candidateHexes, usedEndpointKeys: usedWildRoadEndpointKeys }));
       if (!wildCandidate) break;
       const added = addWildRoadCandidateToExistingRoad({ candidate: wildCandidate, roads: built, region, hexTerrainByKey });
       console.log('Wild road result', {
@@ -4118,6 +4130,8 @@ function generateRoadsForRegion(options: {
         pathLength: wildCandidate.path.length
       });
       if (!added) break;
+      usedWildRoadEndpointKeys.add(wildCandidate.startEndpointKey);
+      usedWildRoadEndpointKeys.add(wildCandidate.targetEndpointKey);
       builtAnyWildRoad = true;
     }
 
