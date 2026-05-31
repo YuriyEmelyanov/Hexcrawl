@@ -269,9 +269,10 @@ function getRoadHexKeys(roads: Road[]): Set<string> {
   for (const road of roads) for (const s of road.segments) { keys.add(hexKey(s.from)); keys.add(hexKey(s.to)); }
   return keys;
 }
-function getRoadEndpoints(road: Road): AxialHex[] {
+function getRoadEndpoints(road: Road, segmentKind?: RoadKind): AxialHex[] {
   const deg = new Map<string, { hex: AxialHex; d: number }>();
   for (const s of road.segments) {
+    if (segmentKind && s.kind !== segmentKind) continue;
     for (const h of [s.from, s.to]) {
       const k = hexKey(h);
       const prev = deg.get(k) ?? { hex: h, d: 0 };
@@ -3592,8 +3593,9 @@ function canAddRoadPath(options: {
   hexTerrainByKey: Map<string, HexTerrainData>;
   allowedRoadHexes?: AxialHex[];
   allowedDuplicateHexKeys?: Set<string>;
+  allowExistingRoadOverlap?: boolean;
 }): boolean {
-  const { path, roads, region, hexTerrainByKey, allowedRoadHexes = [], allowedDuplicateHexKeys = new Set<string>() } = options;
+  const { path, roads, region, hexTerrainByKey, allowedRoadHexes = [], allowedDuplicateHexKeys = new Set<string>(), allowExistingRoadOverlap = false } = options;
   if (path.length < 2) return false;
   const regionKeys = new Set(region.hexes.map(hexKey));
   const roadSegKeys = getRoadSegmentKeys(roads);
@@ -3607,12 +3609,12 @@ function canAddRoadPath(options: {
     if (i > 0 && i < path.length - 1 && !regionKeys.has(ck)) return false;
     if (seen.has(ck) && !allowedDuplicateHexKeys.has(ck)) return false;
     seen.add(ck);
-    if (roadHexKeys.has(ck) && !allowedRoadHexKeys.has(ck)) return false;
+    if (!allowExistingRoadOverlap && roadHexKeys.has(ck) && !allowedRoadHexKeys.has(ck)) return false;
     if (i === 0) continue;
     const prev = path[i - 1];
     const pk = hexKey(prev);
     if (!areHexesAdjacent(prev, cur)) return false;
-    if (roadSegKeys.has(normalizeRoadSegmentKey(prev, cur))) return false;
+    if (!allowExistingRoadOverlap && roadSegKeys.has(normalizeRoadSegmentKey(prev, cur))) return false;
     if (i > 1 && !regionKeys.has(pk)) return false;
   }
   return true;
@@ -3633,7 +3635,7 @@ function findIncomingRoadEndpointsForRegion(region: Region, roads: Road[]): Inco
   const regionKeys = new Set(region.hexes.map(hexKey));
   const result: IncomingRoadEndpoint[] = [];
   for (const road of roads) {
-    for (const endpoint of getRoadEndpoints(road)) {
+    for (const endpoint of getRoadEndpoints(road, 'road')) {
       if (regionKeys.has(hexKey(endpoint))) {
         result.push({ roadId: road.id, endpointHex: endpoint, entryHex: endpoint });
         continue;
@@ -3642,6 +3644,20 @@ function findIncomingRoadEndpointsForRegion(region: Region, roads: Road[]): Inco
       if (entries.length === 0) continue;
       entries.sort((a, b) => hexDistance(a, region.centerHex) - hexDistance(b, region.centerHex));
       result.push({ roadId: road.id, endpointHex: endpoint, entryHex: entries[0] });
+    }
+  }
+  return result;
+}
+
+function findWildIncomingRoadEndpointsForRegion(region: Region, roads: Road[]): IncomingRoadEndpoint[] {
+  const regionKeys = new Set(region.hexes.map(hexKey));
+  const result: IncomingRoadEndpoint[] = [];
+  for (const road of roads) {
+    for (const endpoint of getRoadEndpoints(road, 'road')) {
+      const endpointKey = hexKey(endpoint);
+      const touchesRegion = regionKeys.has(endpointKey) || getHexNeighbors(endpoint).some((neighbor) => regionKeys.has(hexKey(neighbor)));
+      if (!touchesRegion) continue;
+      result.push({ roadId: road.id, endpointHex: endpoint, entryHex: endpoint });
     }
   }
   return result;
@@ -3656,18 +3672,18 @@ function findLowestRiverCrossingPathWithinWildRegion(options: {
   hexTerrainByKey: Map<string, HexTerrainData>;
   allowedRoadHexes: AxialHex[];
 }): AxialHex[] | null {
-  const { region, from, target, roads, rivers, hexTerrainByKey, allowedRoadHexes } = options;
+  const { region, from, target, rivers, hexTerrainByKey } = options;
   const regionKeys = new Set(region.hexes.map(hexKey));
   const centerKey = hexKey(region.centerHex);
   const startKey = hexKey(from);
   const targetKey = hexKey(target);
-  if (!regionKeys.has(startKey) || !regionKeys.has(targetKey)) return null;
+  if (startKey === targetKey) return null;
   if (startKey === centerKey || targetKey === centerKey) return null;
   if (isLakeHex(from, hexTerrainByKey) || isLakeHex(target, hexTerrainByKey)) return null;
 
-  const roadSegKeys = getRoadSegmentKeys(roads);
-  const roadHexKeys = getRoadHexKeys(roads);
-  const allowedRoadHexKeys = new Set([startKey, targetKey, ...allowedRoadHexes.map(hexKey)]);
+  const canTouchRegion = (hex: AxialHex) => regionKeys.has(hexKey(hex)) || getHexNeighbors(hex).some((neighbor) => regionKeys.has(hexKey(neighbor)));
+  if (!canTouchRegion(from) || !canTouchRegion(target)) return null;
+
   const riverFullnessByEdge = getRiverCrossingFullnessByEdge(rivers);
   const queue: Array<{ path: AxialHex[]; cost: number; riverCrossings: number }> = [{ path: [from], cost: 0, riverCrossings: 0 }];
   const bestCostByHex = new Map<string, number>([[startKey, 0]]);
@@ -3682,12 +3698,12 @@ function findLowestRiverCrossingPathWithinWildRegion(options: {
 
     for (const neighbor of getHexNeighbors(cur)) {
       const neighborKey = hexKey(neighbor);
-      if (!regionKeys.has(neighborKey)) continue;
-      if (neighborKey === centerKey) continue;
+      const neighborIsTarget = neighborKey === targetKey;
+      const neighborIsInsideRegion = regionKeys.has(neighborKey);
+      if (!neighborIsTarget && !neighborIsInsideRegion) continue;
+      if (neighborIsInsideRegion && neighborKey === centerKey) continue;
       if (current.path.some((hex) => hexKey(hex) === neighborKey)) continue;
       if (isLakeHex(neighbor, hexTerrainByKey)) continue;
-      if (roadSegKeys.has(normalizeRoadSegmentKey(cur, neighbor))) continue;
-      if (roadHexKeys.has(neighborKey) && !allowedRoadHexKeys.has(neighborKey)) continue;
 
       const sharedEdge = getSharedHexEdgeVertexKeys(cur, neighbor);
       const riverEdgeKey = sharedEdge ? (sharedEdge[0] < sharedEdge[1] ? `${sharedEdge[0]}|${sharedEdge[1]}` : `${sharedEdge[1]}|${sharedEdge[0]}`) : undefined;
@@ -3914,54 +3930,35 @@ function getWildRoadCandidates(options: {
   roads: Road[];
   rivers: River[];
   hexTerrainByKey: Map<string, HexTerrainData>;
-  candidateHexes: AxialHex[];
 }): WildRoadCandidate[] {
-  const { region, roads, rivers, hexTerrainByKey, candidateHexes } = options;
-  const incoming = findIncomingRoadEndpointsForRegion(region, roads)
-    .filter((incomingEndpoint) => !isSameHex(incomingEndpoint.entryHex, region.centerHex) && !isLakeHex(incomingEndpoint.entryHex, hexTerrainByKey));
-  if (incoming.length === 0) return [];
+  const { region, roads, rivers, hexTerrainByKey } = options;
+  const incoming = findWildIncomingRoadEndpointsForRegion(region, roads)
+    .filter((incomingEndpoint) => !isSameHex(incomingEndpoint.endpointHex, region.centerHex) && !isLakeHex(incomingEndpoint.endpointHex, hexTerrainByKey));
+  if (incoming.length < 2) return [];
 
   const regionKeys = new Set(region.hexes.map(hexKey));
-  const candidateKeys = new Set(candidateHexes.map(hexKey));
-  const candidateTargets = getRegionBorderHexes(region)
-    .flatMap((borderHex) => getHexNeighbors(borderHex)
-      .filter((neighbor) => candidateKeys.has(hexKey(neighbor)))
-      .map((candidateHex) => ({ entryHex: borderHex, outsideHex: candidateHex })))
-    .filter((target, index, allTargets) => allTargets.findIndex((other) => hexKey(other.entryHex) === hexKey(target.entryHex) && hexKey(other.outsideHex) === hexKey(target.outsideHex)) === index)
-    .filter((target) => !isLakeHex(target.entryHex, hexTerrainByKey));
-
   const result: WildRoadCandidate[] = [];
   for (const start of incoming) {
-    const targets: Array<{ kind: 'candidate' | 'road'; entryHex: AxialHex; outsideHex: AxialHex; roadId?: number }> = [];
-    for (const target of candidateTargets) {
-      if (isSameHex(target.entryHex, start.entryHex)) continue;
-      targets.push({ kind: 'candidate', entryHex: target.entryHex, outsideHex: target.outsideHex });
-    }
     for (const target of incoming) {
       if (target.roadId === start.roadId) continue;
-      if (isSameHex(target.entryHex, start.entryHex)) continue;
-      targets.push({ kind: 'road', entryHex: target.entryHex, outsideHex: target.endpointHex, roadId: target.roadId });
-    }
-
-    for (const target of targets) {
-      if (!regionKeys.has(hexKey(target.entryHex))) continue;
-      const innerPath = findLowestRiverCrossingPathWithinWildRegion({
+      if (isSameHex(target.endpointHex, start.endpointHex)) continue;
+      const path = findLowestRiverCrossingPathWithinWildRegion({
         region,
-        from: start.entryHex,
-        target: target.entryHex,
+        from: start.endpointHex,
+        target: target.endpointHex,
         roads,
         rivers,
         hexTerrainByKey,
-        allowedRoadHexes: [start.entryHex, target.entryHex]
+        allowedRoadHexes: [start.endpointHex, target.endpointHex]
       });
-      if (!innerPath || innerPath.length < 2) continue;
-      const fullPath = appendIncomingRoadEndpointToPath(buildPathFromIncomingRoadEndpoint(start.endpointHex, innerPath), target.outsideHex);
+      if (!path || path.length < 2) continue;
+      if (!path.some((hex) => regionKeys.has(hexKey(hex)))) continue;
       result.push({
         startRoadId: start.roadId,
         targetRoadId: target.roadId,
-        path: fullPath,
-        crossedRiverCount: countRoadPathRiverCrossings(innerPath, rivers),
-        targetKind: target.kind
+        path,
+        crossedRiverCount: countRoadPathRiverCrossings(path, rivers),
+        targetKind: 'road'
       });
     }
   }
@@ -3987,7 +3984,7 @@ function addWildRoadCandidateToExistingRoad(options: {
 }): boolean {
   const { candidate, roads, region, hexTerrainByKey } = options;
   const allowedRoadHexes = [candidate.path[0], candidate.path[candidate.path.length - 1]];
-  if (!canAddRoadPath({ path: candidate.path, roads, region, hexTerrainByKey, allowedRoadHexes })) return false;
+  if (!canAddRoadPath({ path: candidate.path, roads, region, hexTerrainByKey, allowedRoadHexes, allowExistingRoadOverlap: true })) return false;
   const startRoad = roads.find((road) => road.id === candidate.startRoadId);
   if (!startRoad) return false;
   const segmentsToAdd: RoadSegment[] = [];
@@ -4055,33 +4052,18 @@ function drawLakeVerticesDebug(lakeVertices: LakeVertex[], offsetX: number, offs
   }));
 }
 function generateRoadsForRegion(options: {
-  region: Region; regions: Region[]; roads: Road[]; rivers: River[]; hexTerrainByKey: Map<string, HexTerrainData>; nextRoadId: number; candidateHexes: AxialHex[];
+  region: Region; regions: Region[]; roads: Road[]; rivers: River[]; hexTerrainByKey: Map<string, HexTerrainData>; nextRoadId: number;
 }): { roads: Road[]; nextRoadId: number } {
-  const { region, regions, roads, hexTerrainByKey, rivers, candidateHexes } = options;
+  const { region, regions, roads, hexTerrainByKey, rivers } = options;
   const usedRoadPoiKeys = new Set<string>();
   let nextRoadId = options.nextRoadId;
   const built = [...roads];
   const settled = region.biomeLandType === 'settled';
   if (!settled) {
-    let builtIncomingPair = false;
+    let builtAnyWildRoad = false;
     while (true) {
-      const pairCandidate = chooseBestWildIncomingRoadPairCandidate(getWildIncomingRoadPairCandidates({ region, regions, roads: built, rivers, hexTerrainByKey }));
-      if (!pairCandidate) break;
-      const added = addWildIncomingRoadPairCandidate({ candidate: pairCandidate, roads: built, region, hexTerrainByKey });
-      console.log('Wild incoming road pair result', {
-        regionId: region.id,
-        built: added,
-        startRoadId: pairCandidate.startRoadId,
-        targetRoadId: pairCandidate.targetRoadId,
-        crossedRiverCount: pairCandidate.crossedRiverCount,
-        pathLength: pairCandidate.path.length
-      });
-      if (!added) break;
-      builtIncomingPair = true;
-    }
-
-    const wildCandidate = chooseBestWildRoadCandidate(getWildRoadCandidates({ region, roads: built, rivers, hexTerrainByKey, candidateHexes }));
-    if (wildCandidate) {
+      const wildCandidate = chooseBestWildRoadCandidate(getWildRoadCandidates({ region, roads: built, rivers, hexTerrainByKey }));
+      if (!wildCandidate) break;
       const added = addWildRoadCandidateToExistingRoad({ candidate: wildCandidate, roads: built, region, hexTerrainByKey });
       console.log('Wild road result', {
         regionId: region.id,
@@ -4092,12 +4074,15 @@ function generateRoadsForRegion(options: {
         crossedRiverCount: wildCandidate.crossedRiverCount,
         pathLength: wildCandidate.path.length
       });
-    } else {
+      if (!added) break;
+      builtAnyWildRoad = true;
+    }
+
+    if (!builtAnyWildRoad) {
       console.log('Wild road result', {
         regionId: region.id,
         built: false,
-        previousIncomingPairBuilt: builtIncomingPair,
-        reason: 'no incoming road endpoint or cross-region target'
+        reason: 'fewer than two incoming road endpoints or no valid cross-region road target'
       });
     }
     return { roads: built, nextRoadId };
@@ -4645,8 +4630,7 @@ export function App() {
         roads,
         rivers: assignedRivers,
         hexTerrainByKey: nextHexTerrainByKeyPreview,
-        nextRoadId,
-        candidateHexes: nextCandidateHexes
+        nextRoadId
       });
       const nextRegions = [...regions, finalRegion];
 
