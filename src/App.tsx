@@ -3419,6 +3419,32 @@ function getRoadHexKeySet(road: Road): Set<string> {
   return keys;
 }
 
+function getUniqueIncomingRoadCount(incoming: IncomingRoadEndpoint[]): number {
+  return new Set(incoming.map((endpoint) => endpoint.roadId)).size;
+}
+
+function pathPassesNearSameRoad(options: {
+  path: AxialHex[];
+  road: Road;
+  allowedTouchHexes: AxialHex[];
+}): boolean {
+  const { path, road, allowedTouchHexes } = options;
+  const roadHexKeys = getRoadHexKeySet(road);
+  const allowedTouchHexKeys = new Set(allowedTouchHexes.map(hexKey));
+
+  for (const pathHex of path) {
+    const pathHexKey = hexKey(pathHex);
+    if (allowedTouchHexKeys.has(pathHexKey)) continue;
+    if (roadHexKeys.has(pathHexKey)) return true;
+    if (getHexNeighbors(pathHex).some((neighbor) => {
+      const neighborKey = hexKey(neighbor);
+      return roadHexKeys.has(neighborKey) && !allowedTouchHexKeys.has(neighborKey);
+    })) return true;
+  }
+
+  return false;
+}
+
 function normalizeSettledRegionRoadIds(options: {
   region: Region;
   roads: Road[];
@@ -4135,10 +4161,17 @@ function addWildRoadCandidateToExistingRoad(options: {
   hexTerrainByKey: Map<string, HexTerrainData>;
 }): boolean {
   const { candidate, roads, region, hexTerrainByKey } = options;
-  const allowedRoadHexes = [candidate.path[0], candidate.path[candidate.path.length - 1]];
+  const startTouchHex = candidate.path[0];
+  const targetTouchHex = candidate.path[candidate.path.length - 1];
+  const allowedRoadHexes = [startTouchHex, targetTouchHex];
   if (!canAddRoadPath({ path: candidate.path, roads, region, hexTerrainByKey, allowedRoadHexes, allowExistingRoadOverlap: true })) return false;
   const startRoad = roads.find((road) => road.id === candidate.startRoadId);
   if (!startRoad) return false;
+  if (pathPassesNearSameRoad({ path: candidate.path, road: startRoad, allowedTouchHexes: [startTouchHex] })) return false;
+  if (candidate.targetRoadId !== undefined && candidate.targetRoadId !== candidate.startRoadId) {
+    const targetRoad = roads.find((road) => road.id === candidate.targetRoadId);
+    if (targetRoad && pathPassesNearSameRoad({ path: candidate.path, road: targetRoad, allowedTouchHexes: [targetTouchHex] })) return false;
+  }
   const segmentsToAdd: RoadSegment[] = [];
   for (let i = 1; i < candidate.path.length; i += 1) {
     segmentsToAdd.push({ from: candidate.path[i - 1], to: candidate.path[i], kind: 'road' });
@@ -4317,9 +4350,9 @@ function generateRoadsForRegion(options: {
   const settled = region.biomeLandType === 'settled';
   if (!settled) {
     let builtAnyWildRoad = false;
-    const incomingWildRoadCount = findIncomingRoadEndpointsForRegion(region, built, hexTerrainByKey)
-      .filter((incomingEndpoint) => !isSameHex(incomingEndpoint.entryHex, region.centerHex) && !isLakeHex(incomingEndpoint.entryHex, hexTerrainByKey))
-      .length;
+    const incomingWildRoadEndpoints = findIncomingRoadEndpointsForRegion(region, built, hexTerrainByKey)
+      .filter((incomingEndpoint) => !isSameHex(incomingEndpoint.entryHex, region.centerHex) && !isLakeHex(incomingEndpoint.entryHex, hexTerrainByKey));
+    const incomingWildRoadCount = getUniqueIncomingRoadCount(incomingWildRoadEndpoints);
     const usedWildRoadEndpointKeys = new Set<string>();
     while (true) {
       const wildCandidate = chooseBestWildRoadCandidate(getWildRoadCandidates({ region, regions, roads: built, rivers, hexTerrainByKey, candidateHexes, usedEndpointKeys: usedWildRoadEndpointKeys }));
