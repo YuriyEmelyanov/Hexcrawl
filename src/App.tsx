@@ -3447,6 +3447,19 @@ function pathPassesNearSameRoad(options: {
   return false;
 }
 
+function pathPassesNearItself(path: AxialHex[]): boolean {
+  for (let i = 0; i < path.length; i += 1) {
+    const currentKey = hexKey(path[i]);
+    for (let j = i + 1; j < path.length; j += 1) {
+      if (j === i + 1) continue;
+      if (hexKey(path[j]) === currentKey) return true;
+      if (areHexesAdjacent(path[i], path[j])) return true;
+    }
+  }
+
+  return false;
+}
+
 function normalizeSettledRegionRoadIds(options: {
   region: Region;
   roads: Road[];
@@ -4258,6 +4271,7 @@ function getWildCandidateRoadCandidates(options: {
       if (!path || path.length < 3) continue;
       const trimmedPath = trimPathToRegionHexes(path, region);
       if (trimmedPath.length < 2) continue;
+      if (pathPassesNearItself(trimmedPath)) continue;
       if (!canAddRoadPath({ path: trimmedPath, roads, region, hexTerrainByKey })) continue;
       candidates.push({
         path: trimmedPath,
@@ -4284,6 +4298,7 @@ function addWildCandidateRoadCandidate(options: {
 }): { roads: Road[]; nextRoadId: number; added: boolean } {
   const { candidate, roads, region, hexTerrainByKey, nextRoadId } = options;
   const allowedRoadHexes = [candidate.path[0], candidate.path[candidate.path.length - 1]];
+  if (pathPassesNearItself(candidate.path)) return { roads, nextRoadId, added: false };
   if (!canAddRoadPath({ path: candidate.path, roads, region, hexTerrainByKey, allowedRoadHexes })) return { roads, nextRoadId, added: false };
   const segments: RoadSegment[] = [];
   for (let i = 1; i < candidate.path.length; i += 1) {
