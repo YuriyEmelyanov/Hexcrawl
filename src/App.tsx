@@ -126,7 +126,6 @@ type WildIncomingRoadPairCandidate = {
 type WildCandidateRoadCandidate = {
   path: AxialHex[];
   crossedRiverCount: number;
-  candidateDistance: number;
 };
 
 type RiverVertex = {
@@ -3788,11 +3787,21 @@ function getRoadRegionCenterKeys(road: Road, regions: Region[]): Set<string> {
   return new Set([`road-${road.id}`]);
 }
 
+function roadTouchesKnownRegionCenter(road: Road, regions: Region[]): boolean {
+  const roadHexKeys = getRoadHexKeySet(road);
+  return regions.some((region) => roadHexKeys.has(hexKey(region.centerHex)));
+}
+
 function roadsShareRegionCenter(a: Road, b: Road, regions: Region[]): boolean {
   const aCenterKeys = getRoadRegionCenterKeys(a, regions);
   const bCenterKeys = getRoadRegionCenterKeys(b, regions);
   for (const key of aCenterKeys) if (bCenterKeys.has(key)) return true;
   return false;
+}
+
+function shouldSkipWildIncomingRoadPairForSharedCenter(a: Road, b: Road, regions: Region[]): boolean {
+  if (!roadsShareRegionCenter(a, b, regions)) return false;
+  return roadTouchesKnownRegionCenter(a, regions) && roadTouchesKnownRegionCenter(b, regions);
 }
 
 function findAlternativeWildRoadPairPaths(options: {
@@ -3919,7 +3928,7 @@ function getWildIncomingRoadPairCandidates(options: {
       const startRoad = roads.find((road) => road.id === start.roadId);
       const targetRoad = roads.find((road) => road.id === target.roadId);
       if (!startRoad || !targetRoad) continue;
-      if (roadsShareRegionCenter(startRoad, targetRoad, regions)) continue;
+      if (shouldSkipWildIncomingRoadPairForSharedCenter(startRoad, targetRoad, regions)) continue;
 
       const innerPaths = findAlternativeWildRoadPairPaths({
         region,
@@ -4161,6 +4170,21 @@ function getWildRoadCandidateBoundaryHexes(options: {
   return Array.from(boundaryCandidates.values());
 }
 
+function trimPathToRegionHexes(path: AxialHex[], region: Region): AxialHex[] {
+  const regionKeys = new Set(region.hexes.map(hexKey));
+  const firstRegionIndex = path.findIndex((hex) => regionKeys.has(hexKey(hex)));
+  if (firstRegionIndex < 0) return [];
+  let lastRegionIndex = -1;
+  for (let i = path.length - 1; i >= 0; i -= 1) {
+    if (regionKeys.has(hexKey(path[i]))) {
+      lastRegionIndex = i;
+      break;
+    }
+  }
+  if (lastRegionIndex < firstRegionIndex) return [];
+  return path.slice(firstRegionIndex, lastRegionIndex + 1);
+}
+
 function getWildCandidateRoadCandidates(options: {
   region: Region;
   roads: Road[];
@@ -4172,7 +4196,6 @@ function getWildCandidateRoadCandidates(options: {
   const boundaryCandidates = getWildRoadCandidateBoundaryHexes({ region, candidateHexes, hexTerrainByKey });
   if (boundaryCandidates.length < 2) return [];
 
-  const regionKeys = new Set(region.hexes.map(hexKey));
   const candidates: WildCandidateRoadCandidate[] = [];
   for (let i = 0; i < boundaryCandidates.length - 1; i += 1) {
     for (let j = i + 1; j < boundaryCandidates.length; j += 1) {
@@ -4187,12 +4210,12 @@ function getWildCandidateRoadCandidates(options: {
         freeFirstRiverCrossing: true
       });
       if (!path || path.length < 3) continue;
-      if (!path.some((hex) => regionKeys.has(hexKey(hex)))) continue;
-      if (!canAddRoadPath({ path, roads, region, hexTerrainByKey, allowedRoadHexes: [from, target] })) continue;
+      const trimmedPath = trimPathToRegionHexes(path, region);
+      if (trimmedPath.length < 2) continue;
+      if (!canAddRoadPath({ path: trimmedPath, roads, region, hexTerrainByKey })) continue;
       candidates.push({
-        path,
-        crossedRiverCount: Math.max(0, countRoadPathRiverCrossings(path, rivers) - 1),
-        candidateDistance: hexDistance(from, target)
+        path: trimmedPath,
+        crossedRiverCount: countRoadPathRiverCrossings(trimmedPath, rivers)
       });
     }
   }
@@ -4203,8 +4226,6 @@ function chooseBestWildCandidateRoadCandidate(candidates: WildCandidateRoadCandi
   if (candidates.length === 0) return null;
   const minRiverCrossings = Math.min(...candidates.map((candidate) => candidate.crossedRiverCount));
   let best = candidates.filter((candidate) => candidate.crossedRiverCount === minRiverCrossings);
-  const maxCandidateDistance = Math.max(...best.map((candidate) => candidate.candidateDistance));
-  best = best.filter((candidate) => candidate.candidateDistance === maxCandidateDistance);
   const minLength = Math.min(...best.map((candidate) => candidate.path.length));
   best = best.filter((candidate) => candidate.path.length === minLength);
   return randomFrom(best);
