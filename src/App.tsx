@@ -4441,6 +4441,10 @@ function findWildTrailPath(options: {
   return null;
 }
 
+function getWildRegionTrailBuildCount(region: Region): number {
+  return region.sizeCategory === 'large_region' || region.sizeCategory === 'land' || region.sizeCategory === 'vast_land' ? 2 : 1;
+}
+
 function buildWildRegionTrail(options: {
   region: Region;
   regions: Region[];
@@ -4484,6 +4488,35 @@ function buildWildRegionTrail(options: {
 
   console.log('Wild trail result', { regionId: region.id, built: false, reason: 'no valid path', eligiblePointCount: trailPoints.length });
   return { roads, nextRoadId };
+}
+
+function buildWildRegionTrails(options: {
+  region: Region;
+  regions: Region[];
+  roads: Road[];
+  rivers: River[];
+  hexTerrainByKey: Map<string, HexTerrainData>;
+  nextRoadId: number;
+}): { roads: Road[]; nextRoadId: number } {
+  const { region, regions, rivers, hexTerrainByKey } = options;
+  const trailBuildCount = getWildRegionTrailBuildCount(region);
+  let builtRoads = options.roads;
+  let nextRoadId = options.nextRoadId;
+
+  for (let trailIndex = 0; trailIndex < trailBuildCount; trailIndex += 1) {
+    const result = buildWildRegionTrail({
+      region,
+      regions,
+      roads: builtRoads,
+      rivers,
+      hexTerrainByKey,
+      nextRoadId
+    });
+    builtRoads = result.roads;
+    nextRoadId = result.nextRoadId;
+  }
+
+  return { roads: builtRoads, nextRoadId };
 }
 
 function renderRoadSegments(roads: Road[], offsetX: number, offsetY: number): Array<{ key: string; x1: number; y1: number; x2: number; y2: number; kind: RoadKind }> {
@@ -4590,7 +4623,7 @@ function generateRoadsForRegion(options: {
         reason: incomingWildRoadCount === 0 ? 'fewer than two candidate road endpoints' : 'fewer than two incoming road endpoints or no valid cross-region road target'
       });
     }
-    return buildWildRegionTrail({
+    return buildWildRegionTrails({
       region,
       regions,
       roads: built,
