@@ -3427,15 +3427,17 @@ function pathPassesNearSameRoad(options: {
   path: AxialHex[];
   road: Road;
   allowedTouchHexes: AxialHex[];
+  allowedNearHexes?: AxialHex[];
 }): boolean {
-  const { path, road, allowedTouchHexes } = options;
+  const { path, road, allowedTouchHexes, allowedNearHexes = [] } = options;
   const roadHexKeys = getRoadHexKeySet(road);
   const allowedTouchHexKeys = new Set(allowedTouchHexes.map(hexKey));
+  const allowedNearHexKeys = new Set([...allowedTouchHexes, ...allowedNearHexes].map(hexKey));
 
   for (const pathHex of path) {
     const pathHexKey = hexKey(pathHex);
-    if (allowedTouchHexKeys.has(pathHexKey)) continue;
-    if (roadHexKeys.has(pathHexKey)) return true;
+    if (roadHexKeys.has(pathHexKey) && !allowedTouchHexKeys.has(pathHexKey)) return true;
+    if (allowedNearHexKeys.has(pathHexKey)) continue;
     if (getHexNeighbors(pathHex).some((neighbor) => {
       const neighborKey = hexKey(neighbor);
       return roadHexKeys.has(neighborKey) && !allowedTouchHexKeys.has(neighborKey);
@@ -4167,11 +4169,15 @@ function addWildRoadCandidateToExistingRoad(options: {
   if (!canAddRoadPath({ path: candidate.path, roads, region, hexTerrainByKey, allowedRoadHexes, allowExistingRoadOverlap: true })) return false;
   const startRoad = roads.find((road) => road.id === candidate.startRoadId);
   if (!startRoad) return false;
-  if (pathPassesNearSameRoad({ path: candidate.path, road: startRoad, allowedTouchHexes: [startTouchHex] })) return false;
-  if (candidate.targetRoadId !== undefined && candidate.targetRoadId !== candidate.startRoadId) {
-    const targetRoad = roads.find((road) => road.id === candidate.targetRoadId);
-    if (targetRoad && pathPassesNearSameRoad({ path: candidate.path, road: targetRoad, allowedTouchHexes: [targetTouchHex] })) return false;
-  }
+  const startNearHex = candidate.path.length > 1 ? candidate.path[1] : startTouchHex;
+  const targetNearHex = candidate.path.length > 1 ? candidate.path[candidate.path.length - 2] : targetTouchHex;
+  if (candidate.targetRoadId === candidate.startRoadId
+    && pathPassesNearSameRoad({
+      path: candidate.path,
+      road: startRoad,
+      allowedTouchHexes: [startTouchHex, targetTouchHex],
+      allowedNearHexes: [startNearHex, targetNearHex]
+    })) return false;
   const segmentsToAdd: RoadSegment[] = [];
   for (let i = 1; i < candidate.path.length; i += 1) {
     segmentsToAdd.push({ from: candidate.path[i - 1], to: candidate.path[i], kind: 'road' });
