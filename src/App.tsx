@@ -111,6 +111,7 @@ type WildRoadCandidate = {
   path: AxialHex[];
   crossedRiverCount: number;
   targetKind: 'candidate' | 'road';
+  targetDistanceFromStartRoadCenter: number;
   startEndpointKey: string;
   targetEndpointKey: string;
 };
@@ -3764,17 +3765,21 @@ function findLowestRiverCrossingPathWithinWildRegion(options: {
 }
 
 
-function getRoadRegionCenterKeys(road: Road, regions: Region[]): Set<string> {
+function getRoadRegionCenterHexes(road: Road, regions: Region[]): AxialHex[] {
   const roadHexKeys = getRoadHexKeySet(road);
-  const centerKeys = new Set(
-    regions
-      .filter((region) => roadHexKeys.has(hexKey(region.centerHex)))
-      .map((region) => hexKey(region.centerHex))
-  );
-  if (centerKeys.size > 0) return centerKeys;
+  const roadCenterHexes = regions
+    .filter((region) => roadHexKeys.has(hexKey(region.centerHex)))
+    .map((region) => region.centerHex);
+  if (roadCenterHexes.length > 0) return roadCenterHexes;
 
   const sourceRegion = regions.find((region) => region.id === road.regionId);
-  return new Set([sourceRegion ? hexKey(sourceRegion.centerHex) : `road-${road.id}`]);
+  return sourceRegion ? [sourceRegion.centerHex] : [];
+}
+
+function getRoadRegionCenterKeys(road: Road, regions: Region[]): Set<string> {
+  const centerHexes = getRoadRegionCenterHexes(road, regions);
+  if (centerHexes.length > 0) return new Set(centerHexes.map(hexKey));
+  return new Set([`road-${road.id}`]);
 }
 
 function roadsShareRegionCenter(a: Road, b: Road, regions: Region[]): boolean {
@@ -4037,6 +4042,7 @@ function getWildRoadCandidates(options: {
       startEntryHex: start.entryHex,
       hexTerrainByKey
     });
+    const startRoadCenterHexes = getRoadRegionCenterHexes(startRoad, regions);
     const targets: Array<{ kind: 'candidate' | 'road'; entryHex: AxialHex; outsideHex: AxialHex; roadId?: number }> = [];
 
     if (sameCenterRoadTargets.length > 0) {
@@ -4071,12 +4077,16 @@ function getWildRoadCandidates(options: {
       const targetEndpointHex = target.kind === 'candidate' ? target.entryHex : target.outsideHex;
       if (usedEndpointKeys.has(hexKey(targetEndpointHex))) continue;
       const crossedRiverCount = countRoadPathRiverCrossings(innerPath, rivers);
+      const targetDistanceFromStartRoadCenter = target.kind === 'candidate' && startRoadCenterHexes.length > 0
+        ? Math.max(...startRoadCenterHexes.map((centerHex) => hexDistance(centerHex, target.outsideHex)))
+        : 0;
       result.push({
         startRoadId: start.roadId,
         targetRoadId: target.roadId,
         path: fullPath,
         crossedRiverCount: target.kind === 'candidate' ? Math.max(0, crossedRiverCount - 1) : crossedRiverCount,
         targetKind: target.kind,
+        targetDistanceFromStartRoadCenter,
         startEndpointKey: hexKey(start.endpointHex),
         targetEndpointKey: hexKey(targetEndpointHex)
       });
@@ -4089,8 +4099,8 @@ function chooseBestWildRoadCandidate(candidates: WildRoadCandidate[]): WildRoadC
   if (candidates.length === 0) return null;
   const minRiverCrossings = Math.min(...candidates.map((candidate) => candidate.crossedRiverCount));
   let best = candidates.filter((candidate) => candidate.crossedRiverCount === minRiverCrossings);
-  const maxDistance = Math.max(...best.map((candidate) => hexDistance(candidate.path[1], candidate.path[candidate.path.length - 2])));
-  best = best.filter((candidate) => hexDistance(candidate.path[1], candidate.path[candidate.path.length - 2]) === maxDistance);
+  const maxTargetDistanceFromStartRoadCenter = Math.max(...best.map((candidate) => candidate.targetDistanceFromStartRoadCenter));
+  best = best.filter((candidate) => candidate.targetDistanceFromStartRoadCenter === maxTargetDistanceFromStartRoadCenter);
   const minLength = Math.min(...best.map((candidate) => candidate.path.length));
   best = best.filter((candidate) => candidate.path.length === minLength);
   return randomFrom(best);
