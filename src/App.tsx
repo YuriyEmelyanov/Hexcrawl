@@ -3792,6 +3792,11 @@ function roadTouchesKnownRegionCenter(road: Road, regions: Region[]): boolean {
   return regions.some((region) => roadHexKeys.has(hexKey(region.centerHex)));
 }
 
+function roadTouchesSettledRegionCenter(road: Road, regions: Region[]): boolean {
+  const roadHexKeys = getRoadHexKeySet(road);
+  return regions.some((region) => region.biomeLandType === 'settled' && roadHexKeys.has(hexKey(region.centerHex)));
+}
+
 function roadsShareRegionCenter(a: Road, b: Road, regions: Region[]): boolean {
   const aCenterKeys = getRoadRegionCenterKeys(a, regions);
   const bCenterKeys = getRoadRegionCenterKeys(b, regions);
@@ -4002,6 +4007,8 @@ function getSameCenterWildRoadTargets(options: {
   const targets = new Map<string, { kind: 'road'; entryHex: AxialHex; outsideHex: AxialHex; roadId: number }>();
 
   for (const road of roads) {
+    if (road.id === startRoad.id && !roadTouchesSettledRegionCenter(startRoad, regions)) continue;
+
     const roadCenterKeys = getRoadRegionCenterKeys(road, regions);
     const sharesCenter = Array.from(startCenterKeys).some((centerKey) => roadCenterKeys.has(centerKey));
     if (!sharesCenter) continue;
