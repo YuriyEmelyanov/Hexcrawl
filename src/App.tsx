@@ -3721,7 +3721,12 @@ function chooseIncomingRoadEntryHex(
   return [...entries].sort((a, b) => hexDistance(a, region.centerHex) - hexDistance(b, region.centerHex))[0];
 }
 
-function findIncomingRoadEndpointsForRegion(region: Region, roads: Road[], hexTerrainByKey?: Map<string, HexTerrainData>): IncomingRoadEndpoint[] {
+function findIncomingRoadEndpointsForRegion(
+  region: Region,
+  roads: Road[],
+  hexTerrainByKey?: Map<string, HexTerrainData>,
+  includeRoadBodyEntries = false
+): IncomingRoadEndpoint[] {
   const regionKeys = new Set(region.hexes.map(hexKey));
   const result = new Map<string, IncomingRoadEndpoint>();
 
@@ -3742,23 +3747,25 @@ function findIncomingRoadEndpointsForRegion(region: Region, roads: Road[], hexTe
       addIncoming(road.id, endpoint, chooseIncomingRoadEntryHex(region, road, endpoint, entries, hexTerrainByKey));
     }
 
-    const roadHexes = new Map<string, AxialHex>();
-    for (const segment of road.segments) {
-      if (segment.kind !== 'road') continue;
-      roadHexes.set(hexKey(segment.from), segment.from);
-      roadHexes.set(hexKey(segment.to), segment.to);
-    }
-
-    for (const roadHex of roadHexes.values()) {
-      if (regionKeys.has(hexKey(roadHex))) {
-        addIncoming(road.id, roadHex, roadHex);
-        continue;
+    if (includeRoadBodyEntries) {
+      const roadHexes = new Map<string, AxialHex>();
+      for (const segment of road.segments) {
+        if (segment.kind !== 'road') continue;
+        roadHexes.set(hexKey(segment.from), segment.from);
+        roadHexes.set(hexKey(segment.to), segment.to);
       }
 
-      const sideEntries = getHexNeighbors(roadHex)
-        .filter((entry) => regionKeys.has(hexKey(entry)))
-        .filter((entry) => isUsableIncomingRoadEntryHex(region, entry, hexTerrainByKey));
-      for (const entry of sideEntries) addIncoming(road.id, roadHex, entry);
+      for (const roadHex of roadHexes.values()) {
+        if (regionKeys.has(hexKey(roadHex))) {
+          addIncoming(road.id, roadHex, roadHex);
+          continue;
+        }
+
+        const sideEntries = getHexNeighbors(roadHex)
+          .filter((entry) => regionKeys.has(hexKey(entry)))
+          .filter((entry) => isUsableIncomingRoadEntryHex(region, entry, hexTerrainByKey));
+        for (const entry of sideEntries) addIncoming(road.id, roadHex, entry);
+      }
     }
   }
 
@@ -4728,7 +4735,7 @@ function generateRoadsForRegion(options: {
   const finalizeSettledRoads = (result: { roads: Road[]; nextRoadId: number }) => normalizeSettledRegionRoadIds({ region, roads: result.roads, nextRoadId: result.nextRoadId });
 
   const boundaryHexes = getBoundaryHexes(region);
-  const incoming = findIncomingRoadEndpointsForRegion(region, roads, hexTerrainByKey);
+  const incoming = findIncomingRoadEndpointsForRegion(region, roads, hexTerrainByKey, true);
   const addRoadFromPath = (path: AxialHex[], kind: RoadKind, allowedRoadHexes: AxialHex[] = [], allowedDuplicateHexKeys = new Set<string>()) => {
     if (kind === 'trail' && roadPathCrossesRiver(path, rivers)) return false;
     if (!canAddRoadPath({ path, roads: built, region, hexTerrainByKey, allowedRoadHexes, allowedDuplicateHexKeys })) return false;
