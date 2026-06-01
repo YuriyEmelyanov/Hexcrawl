@@ -4271,9 +4271,7 @@ function getWildCandidateRoadCandidates(options: {
 function chooseBestWildCandidateRoadCandidate(candidates: WildCandidateRoadCandidate[]): WildCandidateRoadCandidate | null {
   if (candidates.length === 0) return null;
   const minRiverCrossings = Math.min(...candidates.map((candidate) => candidate.crossedRiverCount));
-  let best = candidates.filter((candidate) => candidate.crossedRiverCount === minRiverCrossings);
-  const minLength = Math.min(...best.map((candidate) => candidate.path.length));
-  best = best.filter((candidate) => candidate.path.length === minLength);
+  const best = candidates.filter((candidate) => candidate.crossedRiverCount === minRiverCrossings);
   return randomFrom(best);
 }
 
