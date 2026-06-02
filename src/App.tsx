@@ -6051,15 +6051,11 @@ export function App() {
               <p><strong>Троп региона:</strong> {selectedRegionRoadStats.trail}</p>
               <p>
                 <strong>Реки региона:</strong>{' '}
-                {selectedRegionRiverSectors.length > 0
-                  ? selectedRegionRiverSectors
-                    .map((sector) => `#${sector.riverId}, сектор ${sector.sectorIndex}, полноводность ${sector.fullness}`)
+                {selectedRegionRivers.length > 0
+                  ? selectedRegionRivers
+                    .map((river) => `#${river.id}`)
                     .join('; ')
-                  : selectedRegionRivers.length > 0
-                    ? selectedRegionRivers
-                      .map((river) => `#${river.id}`)
-                      .join('; ')
-                    : '—'}
+                  : '—'}
               </p>
               <div>
                 <strong>Речные сектора:</strong>
