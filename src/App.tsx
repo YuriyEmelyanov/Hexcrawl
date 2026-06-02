@@ -892,8 +892,47 @@ function getRiverDownstreamFullness(river: River): RiverFullness {
   return downstreamSector?.fullness ?? river.sectors?.[river.sectors.length - 1]?.fullness ?? getRiverFallbackFullness(river);
 }
 
-function riverUsesBaseFullnessThree(river: River): boolean {
-  return getRiverFallbackFullness(river) === 3 || (river.sectors ?? []).some((sector) => sector.fullness === 3);
+function getRiverFullnessAtVertex(river: River, vertexKey: string): RiverFullness {
+  let fullness: RiverFullness = getRiverFallbackFullness(river);
+
+  for (const sector of river.sectors ?? []) {
+    const touchesVertex = sector.startVertexKey === vertexKey
+      || sector.endVertexKey === vertexKey
+      || sector.vertexPath.some((vertex) => vertex.key === vertexKey);
+    if (touchesVertex && sector.fullness > fullness) fullness = sector.fullness;
+  }
+
+  return fullness;
+}
+
+function getMaxTributaryFullnessAtVertex(
+  river: River,
+  vertexKey: string,
+  riverIdsByVertexKey: Map<string, Set<number | string>>,
+  riversById: Map<number | string, River>
+): RiverFullness | null {
+  const riverIds = riverIdsByVertexKey.get(vertexKey);
+  if (!riverIds) return null;
+
+  let maxFullness: RiverFullness | null = null;
+  for (const riverId of riverIds) {
+    if (riverId === river.id) continue;
+    const tributary = riversById.get(riverId);
+    if (!tributary) continue;
+    const tributaryFullness = getRiverFullnessAtVertex(tributary, vertexKey);
+    if (maxFullness === null || tributaryFullness > maxFullness) maxFullness = tributaryFullness;
+  }
+
+  return maxFullness;
+}
+
+function getIncreasedRiverFullnessAfterTributary(
+  currentFullness: RiverFullness,
+  maxTributaryFullness: RiverFullness | null
+): RiverFullness {
+  if (currentFullness === 4 && maxTributaryFullness !== null && maxTributaryFullness >= 3) return 5;
+  if (currentFullness === 3 && maxTributaryFullness !== null && maxTributaryFullness >= 2) return 4;
+  return currentFullness;
 }
 
 function riverHasDownstreamCandidateEndInHeightOneRegion(
@@ -924,25 +963,35 @@ function riverHasDownstreamCandidateEndInHeightOneRegion(
   return false;
 }
 
-function getFirstDownstreamConfluenceIndexForFullnessIncrease(
+function getConfluenceTributaryFullnessByIndexForFullnessIncrease(
   river: River,
   riverIdsByVertexKey: Map<string, Set<number | string>>,
+  riversById: Map<number | string, River>,
   regions: Region[] = [],
   candidateHexes: AxialHex[] = []
-): number | null {
+): Map<number, RiverFullness> {
+  const result = new Map<number, RiverFullness>();
   const vertexPath = river.vertexPath ?? [];
-  if (vertexPath.length < 3) return null;
-  if (!riverHasDownstreamCandidateEndInHeightOneRegion(river, regions, candidateHexes)) return null;
+  if (vertexPath.length < 3) return result;
+  if (!riverHasDownstreamCandidateEndInHeightOneRegion(river, regions, candidateHexes)) return result;
 
   for (let index = 1; index < vertexPath.length - 1; index += 1) {
-    const riverIds = riverIdsByVertexKey.get(vertexPath[index].key);
-    if (riverIds && Array.from(riverIds).some((riverId) => riverId !== river.id)) return index;
+    const maxTributaryFullness = getMaxTributaryFullnessAtVertex(
+      river,
+      vertexPath[index].key,
+      riverIdsByVertexKey,
+      riversById
+    );
+    if (maxTributaryFullness !== null) result.set(index, maxTributaryFullness);
   }
 
-  return null;
+  return result;
 }
 
 function assignRiverSectors(rivers: River[], lakes: Lake[], regions: Region[] = [], candidateHexes: AxialHex[] = []): River[] {
+  const riversById = new Map<number | string, River>();
+  for (const river of rivers) riversById.set(river.id, river);
+
   const riverIdsByVertexKey = new Map<string, Set<number | string>>();
   for (const river of rivers) {
     for (const vertex of river.vertexPath ?? []) {
@@ -973,9 +1022,10 @@ function assignRiverSectors(rivers: River[], lakes: Lake[], regions: Region[] = 
       const fallbackFullness = getRiverFallbackFullness(river);
       const breakIndices = new Set<number>([0, lastIndex]);
       const confluenceVertexKeys = new Set<string>();
-      const downstreamFullnessIncreaseStartIndex = getFirstDownstreamConfluenceIndexForFullnessIncrease(
+      const confluenceTributaryFullnessByIndex = getConfluenceTributaryFullnessByIndexForFullnessIncrease(
         river,
         riverIdsByVertexKey,
+        riversById,
         regions,
         candidateHexes
       );
@@ -997,6 +1047,7 @@ function assignRiverSectors(rivers: River[], lakes: Lake[], regions: Region[] = 
 
       const sortedBreakIndices = Array.from(breakIndices).sort((a, b) => a - b);
       const sectors: RiverSector[] = [];
+      let downstreamFullness: RiverFullness = fallbackFullness;
 
       for (let i = 1; i < sortedBreakIndices.length; i += 1) {
         const fromIndex = sortedBreakIndices[i - 1];
@@ -1013,8 +1064,12 @@ function assignRiverSectors(rivers: River[], lakes: Lake[], regions: Region[] = 
 
         const sectorIndex = sectors.length + 1;
         const baseFullness = getRiverSectorFullness(edgeKeys, existingFullnessByEdge, fallbackFullness);
-        const isDownstreamOfTributary = downstreamFullnessIncreaseStartIndex !== null && fromIndex >= downstreamFullnessIncreaseStartIndex;
-        const fullness = isDownstreamOfTributary && riverUsesBaseFullnessThree(river) ? 4 : baseFullness;
+        if (baseFullness > downstreamFullness) downstreamFullness = baseFullness;
+        downstreamFullness = getIncreasedRiverFullnessAfterTributary(
+          downstreamFullness,
+          confluenceTributaryFullnessByIndex.get(fromIndex) ?? null
+        );
+        const fullness = downstreamFullness;
         sectors.push({
           id: `${river.id}:sector:${sectorIndex}`,
           riverId: river.id,
