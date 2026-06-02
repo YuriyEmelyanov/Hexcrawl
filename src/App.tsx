@@ -3009,8 +3009,6 @@ function buildMinimumMountainRiverPath(
   riverGraph: RiverGraph,
   usedRiverEdges: Set<string>
 ): RiverVertex[] | null {
-  let bestPath: RiverVertex[] | null = null;
-
   for (const sourceVertex of sourceVertices) {
     for (const endVertex of endVertices) {
       if (sourceVertex.key === endVertex.key) continue;
@@ -3028,11 +3026,11 @@ function buildMinimumMountainRiverPath(
       if (hasDuplicateEdgeKeys(pathEdgeKeys)) continue;
       if (pathEdgeKeys.some((edgeKey) => usedRiverEdges.has(edgeKey))) continue;
 
-      if (!bestPath || path.length < bestPath.length) bestPath = path;
+      return path;
     }
   }
 
-  return bestPath;
+  return null;
 }
 
 function ensureMinimumMountainRiversForRegion(
@@ -3053,6 +3051,9 @@ function ensureMinimumMountainRiversForRegion(
   while (getRiversForRegion(region, nextRivers).length < minimumRiverCount) {
     const usedRiverEdges = buildUsedRiverEdges(nextRivers);
     const existingRiverVertexKeys = new Set(nextRivers.flatMap((river) => river.vertexPath.map((vertex) => vertex.key)));
+    const centerHexRiverCount = region.centerHex ? getRiversForHex(region.centerHex, nextRivers).length : 0;
+    const requireCenterHexSource = Boolean(region.centerHex && centerHexRiverCount === 0);
+    const centerHexVertexKeys = new Set((region.centerHex ? getHexCornerPoints(region.centerHex) : []).map((vertex) => vertex.key));
     const sourceVertices = getMountainInteriorSourceVertices(
       region,
       regions,
@@ -3060,7 +3061,10 @@ function ensureMinimumMountainRiversForRegion(
       riverGraph,
       candidateVertices,
       neighborRegionVertices
-    ).filter((vertex) => !existingRiverVertexKeys.has(vertex.key));
+    ).filter((vertex) => (
+      !existingRiverVertexKeys.has(vertex.key)
+      && (!requireCenterHexSource || centerHexVertexKeys.has(vertex.key))
+    ));
     const endVertices = candidateVertices.filter((vertex) => !blockedEndVertexKeys.has(vertex.key));
 
     const path = buildMinimumMountainRiverPath(sourceVertices, endVertices, riverGraph, usedRiverEdges);
@@ -3071,6 +3075,8 @@ function ensureMinimumMountainRiversForRegion(
         minimumRiverCount,
         sourceVertexCount: sourceVertices.length,
         endVertexCount: endVertices.length,
+        centerHexRiverCount,
+        requireCenterHexSource,
       });
       break;
     }
