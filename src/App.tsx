@@ -93,6 +93,14 @@ type River = {
     startMode: 'existing river endpoint' | 'red vertex';
   };
 };
+
+type RiverConfluence = {
+  id: string;
+  tributaryRiverId: number;
+  mainRiverId: number;
+  vertexKey: string;
+};
+
 type RoadKind = 'road' | 'trail';
 type RoadSegment = { from: AxialHex; to: AxialHex; kind: RoadKind };
 type Road = { id: number; regionId: number; segments: RoadSegment[] };
@@ -1398,6 +1406,58 @@ function getRiverSectorsForRegion(region: Region, rivers: River[]): RiverSector[
     const riverCompare = String(a.riverId).localeCompare(String(b.riverId), undefined, { numeric: true });
     return riverCompare || a.sectorIndex - b.sectorIndex;
   });
+}
+
+function getRiverConfluences(rivers: River[]): RiverConfluence[] {
+  const riversByVertexKey = new Map<string, River[]>();
+  for (const river of rivers) {
+    for (const vertex of river.vertexPath ?? []) {
+      const vertexRivers = riversByVertexKey.get(vertex.key) ?? [];
+      if (!vertexRivers.some((item) => item.id === river.id)) vertexRivers.push(river);
+      riversByVertexKey.set(vertex.key, vertexRivers);
+    }
+  }
+
+  const confluencesById = new Map<string, RiverConfluence>();
+  for (const [vertexKey, vertexRivers] of riversByVertexKey) {
+    if (vertexRivers.length < 2) continue;
+
+    for (const tributary of vertexRivers) {
+      const tributaryIndex = tributary.vertexPath.findIndex((vertex) => vertex.key === vertexKey);
+      if (tributaryIndex < 0 || tributaryIndex !== tributary.vertexPath.length - 1) continue;
+
+      const mainRivers = vertexRivers
+        .map((river) => ({
+          river,
+          vertexIndex: river.vertexPath.findIndex((vertex) => vertex.key === vertexKey)
+        }))
+        .filter(({ river, vertexIndex }) => river.id !== tributary.id && vertexIndex >= 0 && vertexIndex < river.vertexPath.length - 1);
+
+      for (const { river: mainRiver } of mainRivers) {
+        const id = `${tributary.id}->${mainRiver.id}@${vertexKey}`;
+        confluencesById.set(id, {
+          id,
+          tributaryRiverId: tributary.id,
+          mainRiverId: mainRiver.id,
+          vertexKey
+        });
+      }
+    }
+  }
+
+  return Array.from(confluencesById.values()).sort((a, b) => {
+    const tributaryCompare = a.tributaryRiverId - b.tributaryRiverId;
+    return tributaryCompare || a.mainRiverId - b.mainRiverId || a.vertexKey.localeCompare(b.vertexKey);
+  });
+}
+
+function getRiverConfluencesForRegion(region: Region, rivers: River[]): RiverConfluence[] {
+  const regionVertexKeys = new Set<string>();
+  for (const hex of region.hexes) {
+    for (const vertex of getHexCornerPoints(hex)) regionVertexKeys.add(vertex.key);
+  }
+
+  return getRiverConfluences(rivers).filter((confluence) => regionVertexKeys.has(confluence.vertexKey));
 }
 
 function getRiversForHex(hex: AxialHex, rivers: River[]): River[] {
@@ -5808,6 +5868,7 @@ export function App() {
   const selectedRegionRiver = selectedRegion ? rivers.find((river) => river.regionId === selectedRegion.id) : undefined;
   const selectedRegionRivers = selectedRegion ? getRiversForRegion(selectedRegion, rivers) : [];
   const selectedRegionRiverSectors = selectedRegion ? getRiverSectorsForRegion(selectedRegion, rivers) : [];
+  const selectedRegionConfluences = selectedRegion ? getRiverConfluencesForRegion(selectedRegion, rivers) : [];
   const selectedRegionLakes = selectedRegion ? getLakeSummariesForRegion(selectedRegion, hexTerrainByKey) : [];
   const selectedRegionRoadStats = selectedRegion ? (() => {
     const regionKeys = new Set(selectedRegion.hexes.map(hexKey));
@@ -6109,6 +6170,16 @@ export function App() {
                   <ul>
                     {selectedRegionRiverSectors.map((sector) => (
                       <li key={sector.id}>Река #{sector.riverId}: сектор {sector.sectorIndex}, полноводность {sector.fullness}</li>
+                    ))}
+                  </ul>
+                ) : ' —'}
+              </div>
+              <div>
+                <strong>Слияния:</strong>
+                {selectedRegionConfluences.length > 0 ? (
+                  <ul>
+                    {selectedRegionConfluences.map((confluence) => (
+                      <li key={confluence.id}>Река {confluence.tributaryRiverId} впадает в Реку {confluence.mainRiverId}</li>
                     ))}
                   </ul>
                 ) : ' —'}
