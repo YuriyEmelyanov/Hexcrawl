@@ -932,6 +932,7 @@ function getIncreasedRiverFullnessAfterTributary(
 ): RiverFullness {
   if (currentFullness === 4 && maxTributaryFullness !== null && maxTributaryFullness >= 3) return 5;
   if (currentFullness === 3 && maxTributaryFullness !== null && maxTributaryFullness >= 2) return 4;
+  if (currentFullness === 2 && maxTributaryFullness !== null) return 3;
   return currentFullness;
 }
 
