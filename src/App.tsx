@@ -1074,6 +1074,7 @@ type CandidateBoundaryByHeight = Map<RegionHeightLevel, { edgeKeys: Set<string>;
 
 type RiverFullnessRuleState = {
   confluenceTributaryFullnessByIndex: Map<number, RiverFullness>;
+  allowConfluenceFullnessIncrease: boolean;
   reduceHeightTwoUpstreamBeforeConfluence: boolean;
   firstConfluenceIndex?: number;
 };
@@ -1095,16 +1096,19 @@ function buildCandidateBoundaryByHeight(regions: Region[] = [], candidateHexes: 
   return boundaryByHeight;
 }
 
-function riverEndpointTouchesCandidateBoundaryForHeight(
+function riverEndpointTouchesCandidateBoundary(
   river: River,
   endpoint: 'upstream' | 'downstream',
-  heightLevel: RegionHeightLevel,
-  candidateBoundaryByHeight: CandidateBoundaryByHeight
+  candidateBoundaryByHeight: CandidateBoundaryByHeight,
+  heightLevel?: RegionHeightLevel
 ): boolean {
   const vertexPath = river.vertexPath ?? [];
   if (vertexPath.length < 2) return false;
-  const boundary = candidateBoundaryByHeight.get(heightLevel);
-  if (!boundary) return false;
+
+  const boundaries = heightLevel !== undefined
+    ? [candidateBoundaryByHeight.get(heightLevel)].filter((boundary): boundary is { edgeKeys: Set<string>; vertexKeys: Set<string> } => Boolean(boundary))
+    : Array.from(candidateBoundaryByHeight.values());
+  if (boundaries.length === 0) return false;
 
   const endpointIndex = endpoint === 'upstream' ? 0 : vertexPath.length - 1;
   const adjacentIndex = endpoint === 'upstream' ? 1 : vertexPath.length - 2;
@@ -1115,7 +1119,7 @@ function riverEndpointTouchesCandidateBoundaryForHeight(
   // corner is too broad: the same vertex can also belong to an edge that goes to
   // another existing region, which would apply candidate-only fullness rules to
   // the wrong river.
-  return boundary.edgeKeys.has(endpointEdgeKey);
+  return boundaries.some((boundary) => boundary.edgeKeys.has(endpointEdgeKey));
 }
 
 function getConfluenceTributaryFullnessByIndex(
@@ -1148,15 +1152,21 @@ function buildRiverFullnessRuleState(
 ): RiverFullnessRuleState {
   const confluenceTributaryFullnessByIndex = getConfluenceTributaryFullnessByIndex(river, riverIdsByVertexKey, riversById);
   const confluenceIndices = Array.from(confluenceTributaryFullnessByIndex.keys());
-  const reduceHeightTwoUpstreamBeforeConfluence = confluenceIndices.length > 0 && riverEndpointTouchesCandidateBoundaryForHeight(
+  const allowConfluenceFullnessIncrease = confluenceIndices.length > 0 && riverEndpointTouchesCandidateBoundary(
+    river,
+    'downstream',
+    candidateBoundaryByHeight
+  );
+  const reduceHeightTwoUpstreamBeforeConfluence = confluenceIndices.length > 0 && riverEndpointTouchesCandidateBoundary(
     river,
     'upstream',
-    2,
-    candidateBoundaryByHeight
+    candidateBoundaryByHeight,
+    2
   );
 
   return {
     confluenceTributaryFullnessByIndex,
+    allowConfluenceFullnessIncrease,
     reduceHeightTwoUpstreamBeforeConfluence,
     firstConfluenceIndex: confluenceIndices.length > 0 ? Math.min(...confluenceIndices) : undefined
   };
@@ -1170,15 +1180,15 @@ function applyRiverFullnessRules(
 ): { downstreamFullness: RiverFullness; sectorFullness: RiverFullness } {
   let downstreamFullness = currentDownstreamFullness;
 
-  // A confluence is local to the sector that starts at the shared vertex: once a
-  // tributary reaches this vertex, all downstream sectors of the main river keep
-  // the increased fullness. Do not gate this by candidate-boundary contact,
-  // because short edge tributaries can join an interior vertex of the current
-  // region while still being a real confluence.
-  downstreamFullness = getIncreasedRiverFullnessAfterTributary(
-    downstreamFullness,
-    ruleState.confluenceTributaryFullnessByIndex.get(fromIndex) ?? null
-  );
+  // A confluence increases the main river only when that extra water can leave
+  // the known map through a downstream candidate-facing edge. Interior
+  // confluences without a downstream candidate keep the existing fullness.
+  if (ruleState.allowConfluenceFullnessIncrease) {
+    downstreamFullness = getIncreasedRiverFullnessAfterTributary(
+      downstreamFullness,
+      ruleState.confluenceTributaryFullnessByIndex.get(fromIndex) ?? null
+    );
+  }
 
   let sectorFullness = downstreamFullness;
   if (
