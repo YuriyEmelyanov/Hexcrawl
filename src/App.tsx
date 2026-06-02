@@ -2016,7 +2016,7 @@ function findBestPathFromSourceToOutgoingEndpoint(
   outgoingEndpoint: RiverEndpointTouch,
   riverGraph: RiverGraph,
   usedRiverEdges: Set<string>,
-  options?: { requireCenterHexVertex?: AxialHex }
+  options?: { requireCenterHexVertex?: AxialHex; occupiedVertexKeys?: Set<string>; allowedOccupiedVertexKeys?: Set<string> }
 ): RiverVertex[] | null {
   let bestPath: RiverVertex[] | null = null;
   for (const sourceVertex of sourceVertices) {
@@ -2032,6 +2032,7 @@ function findBestPathFromSourceToOutgoingEndpoint(
     if (new Set(path.map((vertex) => vertex.key)).size !== path.length) continue;
     const pathEdgeKeys = getRiverPathEdgeKeys(path, riverGraph);
     if (!pathEdgeKeys || pathEdgeKeys.some((pathEdgeKey) => usedRiverEdges.has(pathEdgeKey))) continue;
+    if (options?.occupiedVertexKeys && !riverPathAvoidsOccupiedVertices(path, options.occupiedVertexKeys, options.allowedOccupiedVertexKeys)) continue;
     if (options?.requireCenterHexVertex && !riverPathTouchesCenterHexVertex(path, options.requireCenterHexVertex)) continue;
     if (!bestPath || path.length < bestPath.length) bestPath = path;
   }
@@ -2042,9 +2043,13 @@ function findBestPathFromLakeToOutgoingEndpoint(
   lakeVertices: RiverVertex[],
   outgoingEndpoint: RiverEndpointTouch,
   riverGraph: RiverGraph,
-  usedRiverEdges: Set<string>
+  usedRiverEdges: Set<string>,
+  occupiedVertexKeys: Set<string> = new Set()
 ): RiverVertex[] | null {
-  return findBestPathFromSourceToOutgoingEndpoint(lakeVertices, outgoingEndpoint, riverGraph, usedRiverEdges);
+  return findBestPathFromSourceToOutgoingEndpoint(lakeVertices, outgoingEndpoint, riverGraph, usedRiverEdges, {
+    occupiedVertexKeys,
+    allowedOccupiedVertexKeys: new Set([outgoingEndpoint.vertex.key])
+  });
 }
 
 function chooseRandomRegionExteriorVertexPair(regionExteriorVertices: RiverVertex[]): { startVertex: RiverVertex; endVertex: RiverVertex } | null {
@@ -2427,7 +2432,8 @@ function findBestFreeRiverPathFromEndpoints(
   purpleVertices: RiverVertex[],
   riverGraph: RiverGraph,
   blockedEdgeKeys: Set<string>,
-  centerHex: AxialHex | undefined
+  centerHex: AxialHex | undefined,
+  occupiedVertexKeys: Set<string> = new Set()
 ): { controlPoints: { startVertex: RiverVertex; middlePurpleVertex: RiverVertex; endVertex: RiverVertex; startMode: 'existing river endpoint' }; path: RiverVertex[] } | null {
   if (!centerHex || purpleVertices.length === 0) return null;
   let best: { controlPoints: { startVertex: RiverVertex; middlePurpleVertex: RiverVertex; endVertex: RiverVertex; startMode: 'existing river endpoint' }; path: RiverVertex[] } | null = null;
@@ -2439,7 +2445,16 @@ function findBestFreeRiverPathFromEndpoints(
         const controlPoints = { startVertex: endpoint, middlePurpleVertex, endVertex: redVertex, startMode: 'existing river endpoint' as const };
         const path = buildRiverPathViaControlPoints(controlPoints, riverGraph, blockedEdgeKeys);
         if (path.length < 2) continue;
-        if (!validateRiverPathViaControlPoints(path, controlPoints, riverGraph, redVertices, existingRiverEndpointVerticesInRegion, blockedEdgeKeys)) continue;
+        if (!validateRiverPathViaControlPoints(
+          path,
+          controlPoints,
+          riverGraph,
+          redVertices,
+          existingRiverEndpointVerticesInRegion,
+          blockedEdgeKeys,
+          occupiedVertexKeys,
+          new Set([endpoint.key])
+        )) continue;
         if (!riverPathTouchesCenterHex(path, centerHex, riverGraph)) continue;
         if (!best || path.length < best.path.length) {
           best = { controlPoints, path };
@@ -2451,13 +2466,23 @@ function findBestFreeRiverPathFromEndpoints(
   return best;
 }
 
+function riverPathAvoidsOccupiedVertices(
+  vertexPath: RiverVertex[],
+  occupiedVertexKeys: Set<string>,
+  allowedOccupiedVertexKeys: Set<string> = new Set()
+): boolean {
+  return vertexPath.every((vertex) => !occupiedVertexKeys.has(vertex.key) || allowedOccupiedVertexKeys.has(vertex.key));
+}
+
 function validateRiverPathViaControlPoints(
   vertexPath: RiverVertex[],
   controlPoints: { startVertex: RiverVertex; middlePurpleVertex?: RiverVertex; endVertex: RiverVertex; startMode: 'existing river endpoint' | 'red vertex' },
   riverGraph: RiverGraph,
   redVertices: RiverVertex[],
   existingRiverEndpointVerticesInRegion: RiverVertex[],
-  usedRiverEdges: Set<string>
+  usedRiverEdges: Set<string>,
+  occupiedVertexKeys: Set<string> = new Set(),
+  allowedOccupiedVertexKeys: Set<string> = new Set()
 ): boolean {
   if (!vertexPath || vertexPath.length < 2) return false;
   const redSet = new Set(redVertices.map((vertex) => vertex.key));
@@ -2473,6 +2498,7 @@ function validateRiverPathViaControlPoints(
   if (!riverPathEdgeKeys) return false;
   if (hasDuplicateEdgeKeys(riverPathEdgeKeys)) return false;
   if (riverPathEdgeKeys.some((pathEdgeKey) => usedRiverEdges.has(pathEdgeKey))) return false;
+  if (!riverPathAvoidsOccupiedVertices(vertexPath, occupiedVertexKeys, allowedOccupiedVertexKeys)) return false;
   return true;
 }
 
@@ -2759,7 +2785,9 @@ function findBestFreeRiverPathToAnyTarget(
   targetVertices: RiverVertex[],
   riverGraph: RiverGraph,
   blockedEdgeKeys: Set<string>,
-  excludedTargetVertexKeys: Set<string> = new Set()
+  excludedTargetVertexKeys: Set<string> = new Set(),
+  occupiedVertexKeys: Set<string> = new Set(),
+  allowedOccupiedVertexKeys: Set<string> = new Set()
 ): RiverVertex[] | null {
   const startNode = riverGraph.nodes.get(startVertex.key);
   if (!startNode || targetVertices.length === 0) return null;
@@ -2777,6 +2805,7 @@ function findBestFreeRiverPathToAnyTarget(
     const pathEdgeKeys = getRiverPathEdgeKeys(path, riverGraph);
     if (!pathEdgeKeys) continue;
     if (pathEdgeKeys.some((edgeKey) => blockedEdgeKeys.has(edgeKey))) continue;
+    if (!riverPathAvoidsOccupiedVertices(path, occupiedVertexKeys, allowedOccupiedVertexKeys)) continue;
 
     if (!bestPath || path.length < bestPath.length) {
       bestPath = path;
@@ -3007,7 +3036,8 @@ function buildMinimumMountainRiverPath(
   sourceVertices: RiverVertex[],
   endVertices: RiverVertex[],
   riverGraph: RiverGraph,
-  usedRiverEdges: Set<string>
+  usedRiverEdges: Set<string>,
+  occupiedVertexKeys: Set<string> = new Set()
 ): RiverVertex[] | null {
   for (const sourceVertex of sourceVertices) {
     for (const endVertex of endVertices) {
@@ -3025,6 +3055,7 @@ function buildMinimumMountainRiverPath(
       if (!pathEdgeKeys) continue;
       if (hasDuplicateEdgeKeys(pathEdgeKeys)) continue;
       if (pathEdgeKeys.some((edgeKey) => usedRiverEdges.has(edgeKey))) continue;
+      if (!riverPathAvoidsOccupiedVertices(path, occupiedVertexKeys)) continue;
 
       return path;
     }
@@ -3067,7 +3098,7 @@ function ensureMinimumMountainRiversForRegion(
     ));
     const endVertices = candidateVertices.filter((vertex) => !blockedEndVertexKeys.has(vertex.key));
 
-    const path = buildMinimumMountainRiverPath(sourceVertices, endVertices, riverGraph, usedRiverEdges);
+    const path = buildMinimumMountainRiverPath(sourceVertices, endVertices, riverGraph, usedRiverEdges, existingRiverVertexKeys);
     if (!path) {
       console.warn('Could not add minimum mountain river', {
         regionId: region.id,
@@ -3144,6 +3175,7 @@ function generateRiverForRegion(
     const purpleVertices = region.centerHex ? getHexCornerPoints(region.centerHex) : [];
     const existingRiverEndpointVerticesInRegion = getExistingRiverEndpointVerticesInRegion(region, existingRivers, riverGraph);
     const usedRiverEdges = buildUsedRiverEdges(existingRivers);
+    const existingRiverVertexKeys = new Set(existingRivers.flatMap((river) => river.vertexPath.map((vertex) => vertex.key)));
     const touchingEndpoints = findRiverEndpointsTouchingRegion(region, existingRivers, riverGraph);
     const incomingEndpoints = touchingEndpoints.filter((endpoint) => endpoint.endpointType === 'end');
     const outgoingEndpoints = touchingEndpoints.filter((endpoint) => endpoint.endpointType === 'start');
@@ -3184,6 +3216,7 @@ function generateRiverForRegion(
           || connectorPath[connectorPath.length - 1].key !== mainOutgoingEndpoint.vertex.key
           || !connectorEdgeKeys
           || connectorEdgeKeys.some((pathEdgeKey) => blockedEdgeKeys.has(pathEdgeKey))
+          || !riverPathAvoidsOccupiedVertices(connectorPath, existingRiverVertexKeys, new Set([mainIncomingEndpoint.vertex.key, mainOutgoingEndpoint.vertex.key]))
         ) return { success: false, rivers: existingRivers, reason: 'mountain_main_outgoing_connector_not_found' };
         const merged = mergeRiversWithConnector(nextRivers, mainIncomingEndpoint.riverId, mainOutgoingEndpoint.riverId, connectorPath, undefined, region.id);
         if (!merged) return { success: false, rivers: existingRivers, reason: 'mountain_main_outgoing_merge_failed' };
@@ -3191,7 +3224,9 @@ function generateRiverForRegion(
         for (const edgeKey of connectorEdgeKeys) blockedEdgeKeys.add(edgeKey);
       } else {
         const mainPath = findBestPathFromSourceToOutgoingEndpoint(interiorSourceVertices, mainOutgoingEndpoint, riverGraph, blockedEdgeKeys, {
-          requireCenterHexVertex: region.centerHex
+          requireCenterHexVertex: region.centerHex,
+          occupiedVertexKeys: existingRiverVertexKeys,
+          allowedOccupiedVertexKeys: new Set([mainOutgoingEndpoint.vertex.key])
         });
         if (!mainPath) return { success: false, rivers: existingRivers, reason: 'mountain_main_outgoing_source_path_not_found' };
         nextRivers = nextRivers.map((river) => river.id !== mainOutgoingEndpoint.riverId
@@ -3208,14 +3243,17 @@ function generateRiverForRegion(
         let selectedLake: { lakeId: number; hexes: AxialHex[]; vertices: RiverVertex[] } | null = null;
         let selectedPath: RiverVertex[] | null = null;
         for (const lake of availableLakes) {
-          const lakePath = findBestPathFromLakeToOutgoingEndpoint(lake.vertices, outgoingEndpoint, riverGraph, blockedEdgeKeys);
+          const lakePath = findBestPathFromLakeToOutgoingEndpoint(lake.vertices, outgoingEndpoint, riverGraph, blockedEdgeKeys, existingRiverVertexKeys);
           if (lakePath && (!selectedPath || lakePath.length < selectedPath.length)) {
             selectedLake = lake;
             selectedPath = lakePath;
           }
         }
         if (!selectedPath) {
-          selectedPath = findBestPathFromSourceToOutgoingEndpoint(interiorSourceVertices, outgoingEndpoint, riverGraph, blockedEdgeKeys);
+          selectedPath = findBestPathFromSourceToOutgoingEndpoint(interiorSourceVertices, outgoingEndpoint, riverGraph, blockedEdgeKeys, {
+            occupiedVertexKeys: existingRiverVertexKeys,
+            allowedOccupiedVertexKeys: new Set([outgoingEndpoint.vertex.key])
+          });
         } else if (selectedLake) {
           usedLakeIds.add(selectedLake.lakeId);
         }
@@ -3261,11 +3299,21 @@ function generateRiverForRegion(
         purpleVertices,
         riverGraph,
         blockedEdgeKeys,
-        region.centerHex
+        region.centerHex,
+        existingRiverVertexKeys
       );
       if (!mainEndpointPath) return { success: false, rivers: existingRivers, reason: 'main_incoming_river_path_not_found' };
       const { controlPoints: mainControlPoints, path: mainPath } = mainEndpointPath;
-      if (!validateRiverPathViaControlPoints(mainPath, mainControlPoints, riverGraph, redVertices, [mainIncomingEndpoint.vertex], blockedEdgeKeys)) {
+      if (!validateRiverPathViaControlPoints(
+        mainPath,
+        mainControlPoints,
+        riverGraph,
+        redVertices,
+        [mainIncomingEndpoint.vertex],
+        blockedEdgeKeys,
+        existingRiverVertexKeys,
+        new Set([mainIncomingEndpoint.vertex.key])
+      )) {
         return { success: false, rivers: existingRivers, reason: 'main_incoming_river_validation_failed' };
       }
       if (!riverPathTouchesCenterHex(mainPath, region.centerHex, riverGraph)) {
@@ -3316,7 +3364,9 @@ function generateRiverForRegion(
           tributaryTargetVertices,
           riverGraph,
           blockedEdgeKeys,
-          excludedTributaryTargetVertexKeys
+          excludedTributaryTargetVertexKeys,
+          existingRiverVertexKeys,
+          new Set([endpoint.vertex.key])
         );
         if (!tributaryPath) {
           console.warn('Could not connect tributary to main river', {
@@ -3370,6 +3420,7 @@ function generateRiverForRegion(
             const connectorEdgeKeys = getRiverPathEdgeKeys(connectorPath, riverGraph);
             if (!connectorEdgeKeys) return null;
             if (connectorEdgeKeys.some((pathEdgeKey) => usedRiverEdges.has(pathEdgeKey))) return null;
+            if (!riverPathAvoidsOccupiedVertices(connectorPath, existingRiverVertexKeys, new Set([pair.left.vertex.key, pair.right.vertex.key]))) return null;
             return { pair, connectorPath };
           })
           .filter((candidate): candidate is { pair: { left: RiverEndpointTouch; right: RiverEndpointTouch }; connectorPath: RiverVertex[] } => candidate !== null)
@@ -3415,7 +3466,8 @@ function generateRiverForRegion(
         purpleVertices,
         riverGraph,
         usedRiverEdges,
-        region.centerHex
+        region.centerHex,
+        existingRiverVertexKeys
       );
 
       if (!bestEndpointPath) {
@@ -3429,7 +3481,16 @@ function generateRiverForRegion(
       }
 
       const { controlPoints, path } = bestEndpointPath;
-      if (!validateRiverPathViaControlPoints(path, controlPoints, riverGraph, redVertices, existingRiverEndpointVerticesInRegion, usedRiverEdges)) {
+      if (!validateRiverPathViaControlPoints(
+        path,
+        controlPoints,
+        riverGraph,
+        redVertices,
+        existingRiverEndpointVerticesInRegion,
+        usedRiverEdges,
+        existingRiverVertexKeys,
+        new Set([controlPoints.startVertex.key])
+      )) {
         console.warn('Could not extend river in region: no valid free path', {
           regionId: region.id,
           endpointCount: existingRiverEndpointVerticesInRegion.length,
@@ -3459,7 +3520,8 @@ function generateRiverForRegion(
     }
 
     if (region.heightLevel === 3) {
-      const interiorStartVertices = getMountainInteriorSourceVertices(region, regions, candidateHexes ?? [], riverGraph, candidateVertices, neighborRegionVertices);
+      const interiorStartVertices = getMountainInteriorSourceVertices(region, regions, candidateHexes ?? [], riverGraph, candidateVertices, neighborRegionVertices)
+        .filter((vertex) => !existingRiverVertexKeys.has(vertex.key));
       const centerVertexKeys = new Set(getHexCornerPoints(region.centerHex).map((vertex) => vertex.key));
       const preferredStartVertices = interiorStartVertices.filter((vertex) => !centerVertexKeys.has(vertex.key));
 
@@ -3471,7 +3533,15 @@ function generateRiverForRegion(
             if (startVertex.key === endVertex.key) continue;
             const controlPoints: RiverControlPoints = { startVertex, endVertex, startMode: 'red vertex', endMode: 'red vertex' };
             const path = buildRiverPathViaControlPoints(controlPoints, riverGraph, usedRiverEdges);
-            if (!validateRiverPathViaControlPoints(path, controlPoints, riverGraph, redVertices, existingRiverEndpointVerticesInRegion, usedRiverEdges)) continue;
+            if (!validateRiverPathViaControlPoints(
+              path,
+              controlPoints,
+              riverGraph,
+              redVertices,
+              existingRiverEndpointVerticesInRegion,
+              usedRiverEdges,
+              existingRiverVertexKeys
+            )) continue;
             if (!riverPathTouchesCenterHexVertex(path, region.centerHex)) continue;
             if (!bestPath || path.length < bestPath.length) {
               bestPath = path;
