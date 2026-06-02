@@ -5566,11 +5566,16 @@ export function App() {
         continue;
       }
 
-      const finalizedRivers = riverResult.rivers;
-      if (!validateExistingRiverEdgeFullnessPreserved(rivers, finalizedRivers)) {
+      if (!validateExistingRiverEdgeFullnessPreserved(rivers, riverResult.rivers)) {
         console.warn('Discarding failed candidate region because old river edge fullness was not preserved', { attempt });
         continue;
       }
+      const finalizedRivers = assignRiverSectors(
+        riverResult.rivers,
+        getLakesForRegions(nextRegionsForRiverGeneration, nextHexTerrainByKeyPreview),
+        nextRegionsForRiverGeneration,
+        nextCandidateHexes
+      );
 
       const pointsOfInterest = assignPointsOfInterestForRegion(regionHexes, centerHex, lakesByHex);
       const finalRegion: Region = {
