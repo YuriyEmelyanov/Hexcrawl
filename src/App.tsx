@@ -1103,7 +1103,12 @@ function riverEndpointTouchesCandidateBoundaryForHeight(
   const adjacentIndex = endpoint === 'upstream' ? 1 : vertexPath.length - 2;
   const endpointVertex = vertexPath[endpointIndex];
   const endpointEdgeKey = getRiverEdgeKey(endpointVertex, vertexPath[adjacentIndex]);
-  return boundary.edgeKeys.has(endpointEdgeKey) || boundary.vertexKeys.has(endpointVertex.key);
+
+  // The river must leave/enter the region along a candidate-facing edge. A shared
+  // corner is too broad: the same vertex can also belong to an edge that goes to
+  // another existing region, which would apply candidate-only fullness rules to
+  // the wrong river.
+  return boundary.edgeKeys.has(endpointEdgeKey);
 }
 
 function getConfluenceTributaryFullnessByIndex(
