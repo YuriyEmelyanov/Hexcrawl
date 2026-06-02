@@ -1303,10 +1303,20 @@ function getRiverSectorsForHex(hex: AxialHex, rivers: River[]): RiverSector[] {
 }
 
 function getRiverSectorsForRegion(region: Region, rivers: River[]): RiverSector[] {
-  const sectorsById = new Map<string, RiverSector>();
+  const regionEdgeKeys = new Set<string>();
   for (const hex of region.hexes) {
-    for (const sector of getRiverSectorsForHex(hex, rivers)) sectorsById.set(sector.id, sector);
+    for (const edgeKey of getHexEdgeKeys(hex)) regionEdgeKeys.add(edgeKey);
   }
+
+  const sectorsById = new Map<string, RiverSector>();
+  for (const river of rivers) {
+    for (const sector of river.sectors ?? []) {
+      if (sector.edgeKeys.some((edgeKey) => regionEdgeKeys.has(edgeKey))) {
+        sectorsById.set(sector.id, sector);
+      }
+    }
+  }
+
   return Array.from(sectorsById.values()).sort((a, b) => {
     const riverCompare = String(a.riverId).localeCompare(String(b.riverId), undefined, { numeric: true });
     return riverCompare || a.sectorIndex - b.sectorIndex;
