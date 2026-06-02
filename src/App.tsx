@@ -898,6 +898,44 @@ function getRegionBoundaryVertexKeys(regions: Region[]): Set<string> {
   return boundaryVertexKeys;
 }
 
+function getRegionIdsByRiverEdgeKey(regions: Region[]): Map<string, Set<number>> {
+  const regionIdsByEdgeKey = new Map<string, Set<number>>();
+
+  for (const region of regions) {
+    for (const hex of region.hexes) {
+      for (const edge of getHexEdgesAsVertexPairs(hex)) {
+        const regionIds = regionIdsByEdgeKey.get(edge.edgeKey) ?? new Set<number>();
+        regionIds.add(region.id);
+        regionIdsByEdgeKey.set(edge.edgeKey, regionIds);
+      }
+    }
+  }
+
+  return regionIdsByEdgeKey;
+}
+
+function areNumberSetsEqual(a: Set<number>, b: Set<number>): boolean {
+  if (a.size !== b.size) return false;
+  for (const value of a) {
+    if (!b.has(value)) return false;
+  }
+  return true;
+}
+
+function doesRiverTurnIntoDifferentRegionSet(
+  previousVertex: RiverVertex | undefined,
+  boundaryVertex: RiverVertex,
+  nextVertex: RiverVertex | undefined,
+  regionIdsByRiverEdgeKey: Map<string, Set<number>>
+): boolean {
+  if (!previousVertex || !nextVertex) return false;
+
+  const previousRegionIds = regionIdsByRiverEdgeKey.get(getRiverEdgeKey(previousVertex, boundaryVertex)) ?? new Set<number>();
+  const nextRegionIds = regionIdsByRiverEdgeKey.get(getRiverEdgeKey(boundaryVertex, nextVertex)) ?? new Set<number>();
+
+  return !areNumberSetsEqual(previousRegionIds, nextRegionIds);
+}
+
 function getRiverFullnessAtEndpointVertex(rivers: River[], vertexKey: string, excludedRiverId?: number): RiverFullness | null {
   let fullness: RiverFullness | null = null;
 
@@ -1109,6 +1147,7 @@ function assignRiverSectors(rivers: River[], lakes: Lake[], regions: Region[] = 
   const lakeExteriorVertexKeysByLakeId = new Map<number, Set<string>>();
   const lakeVertexKeys = new Set<string>();
   const regionBoundaryVertexKeys = getRegionBoundaryVertexKeys(regions);
+  const regionIdsByRiverEdgeKey = getRegionIdsByRiverEdgeKey(regions);
   for (const lake of lakes) {
     const exteriorKeys = new Set(getRegionExteriorVertices(lake.hexes).map((vertex) => vertex.key));
     lakeExteriorVertexKeysByLakeId.set(lake.lakeId, exteriorKeys);
@@ -1142,7 +1181,17 @@ function assignRiverSectors(rivers: River[], lakes: Lake[], regions: Region[] = 
           confluenceVertexKeys.add(vertex.key);
           breakIndices.add(index);
         }
-        if (index > 0 && index < lastIndex && regionBoundaryVertexKeys.has(vertex.key)) {
+        if (
+          index > 0
+          && index < lastIndex
+          && regionBoundaryVertexKeys.has(vertex.key)
+          && doesRiverTurnIntoDifferentRegionSet(
+            vertexPath[index - 1],
+            vertex,
+            vertexPath[index + 1],
+            regionIdsByRiverEdgeKey
+          )
+        ) {
           breakIndices.add(index);
         }
       });
