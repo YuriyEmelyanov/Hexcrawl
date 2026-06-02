@@ -65,7 +65,7 @@ type HexEdge = {
   edgeKey: string;
 };
 
-type RiverSectorReason = 'river_start' | 'river_confluence' | 'lake' | 'split' | 'unknown';
+type RiverSectorReason = 'river_start' | 'river_confluence' | 'lake' | 'region_boundary' | 'split' | 'unknown';
 
 type RiverSector = {
   id: string;
@@ -793,12 +793,14 @@ function getRiverEndpointReason(
   vertexKey: string,
   lakeVertexKeys: Set<string>,
   confluenceVertexKeys: Set<string>,
+  regionBoundaryVertexKeys: Set<string>,
   endpoint: 'start' | 'end'
 ): RiverSector['startReason'] | RiverSector['endReason'] {
   if (lakeVertexKeys.has(vertexKey)) return 'lake';
   if (confluenceVertexKeys.has(vertexKey)) return 'river_confluence';
   if (endpoint === 'start' && index === 0) return 'river_start';
   if (endpoint === 'end' && index === lastIndex) return 'river_end';
+  if (regionBoundaryVertexKeys.has(vertexKey)) return 'region_boundary';
   return 'split';
 }
 
@@ -813,7 +815,8 @@ function getRiverSimpleEdgeKeys(vertexPath: RiverVertex[]): string[] {
 function createInitialRiverSectors(
   riverId: number | string,
   vertexPath: RiverVertex[],
-  fullness: RiverFullness = 1
+  fullness: RiverFullness = 1,
+  reasons: Partial<Pick<RiverSector, 'startReason' | 'endReason'>> = {}
 ): RiverSector[] {
   if (vertexPath.length < 2) return [];
 
@@ -825,8 +828,8 @@ function createInitialRiverSectors(
     edgeKeys: getRiverSimpleEdgeKeys(vertexPath),
     startVertexKey: vertexPath[0].key,
     endVertexKey: vertexPath[vertexPath.length - 1].key,
-    startReason: 'river_start',
-    endReason: 'river_end',
+    startReason: reasons.startReason ?? 'river_start',
+    endReason: reasons.endReason ?? 'river_end',
     fullness
   }];
 }
@@ -855,6 +858,80 @@ function getRiverSectorFullness(edgeKeys: string[], fullnessByEdge: Map<string, 
   return fallback;
 }
 
+function getMaxRiverSectorIndex(river: River): number {
+  return Math.max(0, ...(river.sectors ?? []).map((sector) => sector.sectorIndex));
+}
+
+function getMinRiverSectorIndex(river: River): number {
+  return Math.min(1, ...(river.sectors ?? []).map((sector) => sector.sectorIndex));
+}
+
+function withRiverSectorOrder(riverId: number | string, sectors: RiverSector[], firstSectorIndex: number): RiverSector[] {
+  return sectors.map((sector, index) => {
+    const sectorIndex = firstSectorIndex + index;
+    return {
+      ...sector,
+      id: `${riverId}:sector:${sectorIndex}:${sector.startVertexKey}:${sector.endVertexKey}`,
+      riverId,
+      sectorIndex
+    };
+  });
+}
+
+function getRegionBoundaryVertexKeys(regions: Region[]): Set<string> {
+  const regionIdsByVertexKey = new Map<string, Set<number>>();
+
+  for (const region of regions) {
+    for (const hex of region.hexes) {
+      for (const vertex of getHexCornerPoints(hex)) {
+        const regionIds = regionIdsByVertexKey.get(vertex.key) ?? new Set<number>();
+        regionIds.add(region.id);
+        regionIdsByVertexKey.set(vertex.key, regionIds);
+      }
+    }
+  }
+
+  const boundaryVertexKeys = new Set<string>();
+  for (const [vertexKey, regionIds] of regionIdsByVertexKey.entries()) {
+    if (regionIds.size > 1) boundaryVertexKeys.add(vertexKey);
+  }
+  return boundaryVertexKeys;
+}
+
+function getRiverFullnessAtEndpointVertex(rivers: River[], vertexKey: string, excludedRiverId?: number): RiverFullness | null {
+  let fullness: RiverFullness | null = null;
+
+  for (const river of rivers) {
+    if (excludedRiverId !== undefined && river.id === excludedRiverId) continue;
+    const firstVertex = river.vertexPath[0];
+    const lastVertex = river.vertexPath[river.vertexPath.length - 1];
+    if (firstVertex?.key !== vertexKey && lastVertex?.key !== vertexKey) continue;
+
+    const endpointFullness = getRiverFullnessAtVertex(river, vertexKey);
+    if (fullness === null || endpointFullness > fullness) fullness = endpointFullness;
+  }
+
+  return fullness;
+}
+
+function chooseRiverFullnessFromAdjacentSectors(
+  vertexPath: RiverVertex[],
+  existingRivers: River[],
+  fallbackFullness: RiverFullness,
+  preferredFullness?: RiverFullness,
+  excludedRiverId?: number
+): RiverFullness {
+  const startVertexKey = vertexPath[0]?.key;
+  const endVertexKey = vertexPath[vertexPath.length - 1]?.key;
+  const startFullness = startVertexKey ? getRiverFullnessAtEndpointVertex(existingRivers, startVertexKey, excludedRiverId) : null;
+  const endFullness = endVertexKey ? getRiverFullnessAtEndpointVertex(existingRivers, endVertexKey, excludedRiverId) : null;
+
+  if (startFullness !== null && endFullness !== null && startFullness !== endFullness) {
+    return preferredFullness ?? startFullness;
+  }
+  return startFullness ?? endFullness ?? preferredFullness ?? fallbackFullness;
+}
+
 
 function normalizeRiverSectorOrder(riverId: number | string, sectors: RiverSector[]): RiverSector[] {
   return sectors.map((sector, index) => {
@@ -869,17 +946,25 @@ function normalizeRiverSectorOrder(riverId: number | string, sectors: RiverSecto
 }
 
 function prependRiverPathSector(river: River, path: RiverVertex[], fullness: RiverFullness): RiverSector[] {
-  return normalizeRiverSectorOrder(river.id, [
-    ...createInitialRiverSectors(river.id, path, fullness),
+  const createdSectors = createInitialRiverSectors(river.id, path, fullness, { endReason: 'region_boundary' });
+  if (createdSectors.length === 0) return river.sectors ?? [];
+
+  const firstSectorIndex = getMinRiverSectorIndex(river) - createdSectors.length;
+  return [
+    ...withRiverSectorOrder(river.id, createdSectors, firstSectorIndex),
     ...(river.sectors ?? [])
-  ]);
+  ];
 }
 
 function appendRiverPathSector(river: River, path: RiverVertex[], fullness: RiverFullness): RiverSector[] {
-  return normalizeRiverSectorOrder(river.id, [
+  const createdSectors = createInitialRiverSectors(river.id, path, fullness, { startReason: 'region_boundary' });
+  if (createdSectors.length === 0) return river.sectors ?? [];
+
+  const firstSectorIndex = getMaxRiverSectorIndex(river) + 1;
+  return [
     ...(river.sectors ?? []),
-    ...createInitialRiverSectors(river.id, path, fullness)
-  ]);
+    ...withRiverSectorOrder(river.id, createdSectors, firstSectorIndex)
+  ];
 }
 
 
@@ -989,6 +1074,25 @@ function getConfluenceTributaryFullnessByIndexForFullnessIncrease(
   return result;
 }
 
+function validateExistingRiverEdgeFullnessPreserved(previousRivers: River[], nextRivers: River[]): boolean {
+  const previousFullnessByEdge = getRiverCrossingFullnessByEdge(previousRivers);
+  const nextFullnessByEdge = getRiverCrossingFullnessByEdge(nextRivers);
+  const changedEdges: Array<{ edgeKey: string; previousFullness: RiverFullness; nextFullness: RiverFullness }> = [];
+
+  for (const [edgeKey, previousFullness] of previousFullnessByEdge.entries()) {
+    const nextFullness = nextFullnessByEdge.get(edgeKey);
+    if (nextFullness !== undefined && nextFullness !== previousFullness) {
+      changedEdges.push({ edgeKey, previousFullness, nextFullness });
+    }
+  }
+
+  if (changedEdges.length > 0) {
+    console.warn('Rejecting river update because existing river edge fullness changed', { changedEdges });
+    return false;
+  }
+  return true;
+}
+
 function assignRiverSectors(rivers: River[], lakes: Lake[], regions: Region[] = [], candidateHexes: AxialHex[] = []): River[] {
   const riversById = new Map<number | string, River>();
   for (const river of rivers) riversById.set(river.id, river);
@@ -1004,6 +1108,7 @@ function assignRiverSectors(rivers: River[], lakes: Lake[], regions: Region[] = 
 
   const lakeExteriorVertexKeysByLakeId = new Map<number, Set<string>>();
   const lakeVertexKeys = new Set<string>();
+  const regionBoundaryVertexKeys = getRegionBoundaryVertexKeys(regions);
   for (const lake of lakes) {
     const exteriorKeys = new Set(getRegionExteriorVertices(lake.hexes).map((vertex) => vertex.key));
     lakeExteriorVertexKeysByLakeId.set(lake.lakeId, exteriorKeys);
@@ -1037,6 +1142,9 @@ function assignRiverSectors(rivers: River[], lakes: Lake[], regions: Region[] = 
           confluenceVertexKeys.add(vertex.key);
           breakIndices.add(index);
         }
+        if (index > 0 && index < lastIndex && regionBoundaryVertexKeys.has(vertex.key)) {
+          breakIndices.add(index);
+        }
       });
 
       for (const lakeVertexKeysForLake of lakeExteriorVertexKeysByLakeId.values()) {
@@ -1064,8 +1172,34 @@ function assignRiverSectors(rivers: River[], lakes: Lake[], regions: Region[] = 
         }
 
         const sectorIndex = sectors.length + 1;
-        const baseFullness = getRiverSectorFullness(edgeKeys, existingFullnessByEdge, fallbackFullness);
-        if (baseFullness > downstreamFullness) downstreamFullness = baseFullness;
+        const knownSectorFullness = edgeKeys
+          .map((edgeKey) => existingFullnessByEdge.get(edgeKey))
+          .find((fullness): fullness is RiverFullness => Boolean(fullness));
+        const baseFullness = knownSectorFullness ?? fallbackFullness;
+        const startReason = getRiverEndpointReason(
+          fromIndex,
+          lastIndex,
+          sectorPath[0].key,
+          lakeVertexKeys,
+          confluenceVertexKeys,
+          regionBoundaryVertexKeys,
+          'start'
+        ) as RiverSector['startReason'];
+        const endReason = getRiverEndpointReason(
+          toIndex,
+          lastIndex,
+          sectorPath[sectorPath.length - 1].key,
+          lakeVertexKeys,
+          confluenceVertexKeys,
+          regionBoundaryVertexKeys,
+          'end'
+        ) as RiverSector['endReason'];
+
+        if (startReason === 'region_boundary' && knownSectorFullness && knownSectorFullness !== downstreamFullness) {
+          downstreamFullness = knownSectorFullness;
+        } else if (baseFullness > downstreamFullness) {
+          downstreamFullness = baseFullness;
+        }
         downstreamFullness = getIncreasedRiverFullnessAfterTributary(
           downstreamFullness,
           confluenceTributaryFullnessByIndex.get(fromIndex) ?? null
@@ -1079,8 +1213,8 @@ function assignRiverSectors(rivers: River[], lakes: Lake[], regions: Region[] = 
           edgeKeys,
           startVertexKey: sectorPath[0].key,
           endVertexKey: sectorPath[sectorPath.length - 1].key,
-          startReason: getRiverEndpointReason(fromIndex, lastIndex, sectorPath[0].key, lakeVertexKeys, confluenceVertexKeys, 'start') as RiverSector['startReason'],
-          endReason: getRiverEndpointReason(toIndex, lastIndex, sectorPath[sectorPath.length - 1].key, lakeVertexKeys, confluenceVertexKeys, 'end') as RiverSector['endReason'],
+          startReason,
+          endReason,
           fullness
         });
       }
@@ -1997,17 +2131,26 @@ function mergeRiversWithConnector(
   }
   const connectorMiddle = connectorPath.slice(1, -1);
   const mergedPath = [...upstreamRiver.vertexPath, ...connectorMiddle, ...downstreamRiver.vertexPath];
-  const effectiveConnectorFullness = connectorFullness ?? getRiverDownstreamFullness(upstreamRiver);
-  const connectorSectors = createInitialRiverSectors(upstreamRiver.id, connectorPath, effectiveConnectorFullness)
-    .map((sector) => ({ ...sector, id: `${upstreamRiver.id}:connector:sector:${sector.sectorIndex}` }));
+  const effectiveConnectorFullness = connectorFullness ?? chooseRiverFullnessFromAdjacentSectors(
+    connectorPath,
+    existingRivers,
+    getRiverDownstreamFullness(upstreamRiver),
+    getRiverDownstreamFullness(upstreamRiver),
+    upstreamRiver.id
+  );
+  const connectorSectors = withRiverSectorOrder(
+    upstreamRiver.id,
+    createInitialRiverSectors(upstreamRiver.id, connectorPath, effectiveConnectorFullness, { startReason: 'region_boundary', endReason: 'region_boundary' }),
+    getMaxRiverSectorIndex(upstreamRiver) + 1
+  ).map((sector) => ({ ...sector, id: `${upstreamRiver.id}:connector:sector:${sector.sectorIndex}` }));
   const mergedRiver: River = {
     ...upstreamRiver,
     vertexPath: mergedPath,
-    sectors: normalizeRiverSectorOrder(upstreamRiver.id, [
+    sectors: [
       ...(upstreamRiver.sectors ?? []),
       ...connectorSectors,
       ...(downstreamRiver.sectors ?? [])
-    ])
+    ]
   };
 
   return existingRivers
@@ -2718,7 +2861,7 @@ function generateRiverForRegion(
         if (!mainPath) return { success: false, rivers: existingRivers, reason: 'mountain_main_outgoing_source_path_not_found' };
         nextRivers = nextRivers.map((river) => river.id !== mainOutgoingEndpoint.riverId
           ? river
-          : { ...river, vertexPath: [...mainPath.slice(0, -1), ...river.vertexPath], sectors: prependRiverPathSector(river, mainPath, getNewRiverFullnessForHeight(region.heightLevel)) });
+          : { ...river, vertexPath: [...mainPath.slice(0, -1), ...river.vertexPath], sectors: prependRiverPathSector(river, mainPath, chooseRiverFullnessFromAdjacentSectors(mainPath, existingRivers, getNewRiverFullnessForHeight(region.heightLevel))) });
         const mainPathEdgeKeys = getRiverPathEdgeKeys(mainPath, riverGraph);
         if (!mainPathEdgeKeys) return { success: false, rivers: existingRivers, reason: 'mountain_main_outgoing_edge_keys_not_found' };
         for (const edgeKey of mainPathEdgeKeys) blockedEdgeKeys.add(edgeKey);
@@ -2746,7 +2889,7 @@ function generateRiverForRegion(
         if (!pathEdgeKeys) return { success: false, rivers: existingRivers, reason: 'mountain_secondary_outgoing_edge_keys_not_found' };
         nextRivers = nextRivers.map((river) => river.id !== outgoingEndpoint.riverId
           ? river
-          : { ...river, vertexPath: [...selectedPath.slice(0, -1), ...river.vertexPath], sectors: prependRiverPathSector(river, selectedPath, getNewRiverFullnessForHeight(region.heightLevel)) });
+          : { ...river, vertexPath: [...selectedPath.slice(0, -1), ...river.vertexPath], sectors: prependRiverPathSector(river, selectedPath, chooseRiverFullnessFromAdjacentSectors(selectedPath, existingRivers, getNewRiverFullnessForHeight(region.heightLevel))) });
         for (const edgeKey of pathEdgeKeys) blockedEdgeKeys.add(edgeKey);
         console.log('Connecting secondary mountain outgoing river', {
           regionId: region.id,
@@ -2970,7 +3113,7 @@ function generateRiverForRegion(
         if (connection.type === 'end') {
           return { ...river, vertexPath: [...river.vertexPath, ...path.slice(1)], sectors: appendRiverPathSector(river, path, getRiverDownstreamFullness(river)) };
         }
-        return { ...river, vertexPath: [...reverseRiverPath(path).slice(0, -1), ...river.vertexPath], sectors: prependRiverPathSector(river, reverseRiverPath(path), getNewRiverFullnessForHeight(region.heightLevel)) };
+        return { ...river, vertexPath: [...reverseRiverPath(path).slice(0, -1), ...river.vertexPath], sectors: prependRiverPathSector(river, reverseRiverPath(path), chooseRiverFullnessFromAdjacentSectors(reverseRiverPath(path), existingRivers, getNewRiverFullnessForHeight(region.heightLevel))) };
       });
 
       for (const river of nextRivers) validateRiverDirection(river);
@@ -3027,7 +3170,7 @@ function generateRiverForRegion(
         id: newRiverId,
         regionId: region.id,
         vertexPath: bestPath,
-        sectors: createInitialRiverSectors(newRiverId, bestPath, getNewRiverFullnessForHeight(region.heightLevel)),
+        sectors: createInitialRiverSectors(newRiverId, bestPath, chooseRiverFullnessFromAdjacentSectors(bestPath, existingRivers, getNewRiverFullnessForHeight(region.heightLevel))),
         controlPoints: bestControlPoints
       };
       const nextRivers = [...existingRivers, river];
@@ -3060,7 +3203,7 @@ function generateRiverForRegion(
             ? [...extensionPath.slice(0, -1), ...river.vertexPath]
             : [...river.vertexPath, ...extensionPath.slice(1)];
           return { ...river, vertexPath: mergedPath, sectors: connection.type === 'start'
-            ? prependRiverPathSector(river, extensionPath, getNewRiverFullnessForHeight(region.heightLevel))
+            ? prependRiverPathSector(river, extensionPath, chooseRiverFullnessFromAdjacentSectors(extensionPath, existingRivers, getNewRiverFullnessForHeight(region.heightLevel)))
             : appendRiverPathSector(river, extensionPath, getRiverDownstreamFullness(river)) };
         });
       } else {
@@ -3069,7 +3212,7 @@ function generateRiverForRegion(
           id: newRiverId,
           regionId: region.id,
           vertexPath: path,
-          sectors: createInitialRiverSectors(newRiverId, path, getNewRiverFullnessForHeight(region.heightLevel)),
+          sectors: createInitialRiverSectors(newRiverId, path, chooseRiverFullnessFromAdjacentSectors(path, existingRivers, getNewRiverFullnessForHeight(region.heightLevel))),
           controlPoints
         };
         nextRivers = [...existingRivers, river];
@@ -5423,12 +5566,11 @@ export function App() {
         continue;
       }
 
-      const assignedRivers = assignRiverSectors(
-        riverResult.rivers,
-        getLakesForRegions(nextRegionsForRiverGeneration, nextHexTerrainByKeyPreview),
-        nextRegionsForRiverGeneration,
-        nextCandidateHexes
-      );
+      const finalizedRivers = riverResult.rivers;
+      if (!validateExistingRiverEdgeFullnessPreserved(rivers, finalizedRivers)) {
+        console.warn('Discarding failed candidate region because old river edge fullness was not preserved', { attempt });
+        continue;
+      }
 
       const pointsOfInterest = assignPointsOfInterestForRegion(regionHexes, centerHex, lakesByHex);
       const finalRegion: Region = {
@@ -5439,7 +5581,7 @@ export function App() {
         region: finalRegion,
         regions,
         roads,
-        rivers: assignedRivers,
+        rivers: finalizedRivers,
         hexTerrainByKey: nextHexTerrainByKeyPreview,
         nextRoadId,
         candidateHexes: nextCandidateHexes
@@ -5454,7 +5596,7 @@ export function App() {
         return next;
       });
       setNextLakeId(computedNextLakeId);
-      setRivers(assignedRivers);
+      setRivers(finalizedRivers);
       setRoads(roadResult.roads);
       setNextRoadId(roadResult.nextRoadId);
       setSelectedHex(centerHex);
