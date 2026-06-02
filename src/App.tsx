@@ -366,7 +366,7 @@ function getTributaryRiverFullnessForHeight(heightLevel: RegionHeightLevel): Riv
 }
 
 function getRiverWidth(hexWidth: number, fullness: RiverFullness): number {
-  return hexWidth * (0.06 + fullness * 0.025);
+  return hexWidth * (0.04 + fullness * 0.035);
 }
 
 function getRegionHeightLevelFromBiomeId(biomeId: BiomeId): RegionHeightLevel {
