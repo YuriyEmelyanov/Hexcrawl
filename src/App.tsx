@@ -1,4 +1,4 @@
-import { type WheelEvent, useEffect, useMemo, useState } from 'react';
+import { type ChangeEvent, type WheelEvent, useEffect, useMemo, useRef, useState } from 'react';
 
 type AxialHex = {
   q: number;
@@ -212,6 +212,64 @@ type Biome = {
   heightLevel: RegionHeightLevel;
 };
 
+type HexcrawlSaveData = {
+  schema: 'hexcrawl-map';
+  version: 1;
+  savedAt: string;
+  map: {
+    regions: Region[];
+    candidateHexes: AxialHex[];
+    rivers: River[];
+    roads: Road[];
+    terrainByHexKey: Record<string, HexTerrainData>;
+  };
+  counters: {
+    nextLakeId: number;
+    nextRoadId: number;
+  };
+  ui: {
+    selectedHex: AxialHex | null;
+    isMapRotated: boolean;
+    mapScale: number;
+  };
+};
+
+type ValidatedHexcrawlSaveData = HexcrawlSaveData & {
+  map: HexcrawlSaveData['map'] & {
+    terrainByHexKey: Record<string, HexTerrainData>;
+  };
+};
+
+const HEXCRAWL_SAVE_SCHEMA = 'hexcrawl-map';
+const HEXCRAWL_SAVE_VERSION = 1;
+const PNG_EXPORT_SCALE = 2;
+const EXPORT_FILE_PREFIX = 'hexcrawl-map';
+const SVG_EXPORT_STYLES = `
+  svg { --water-color: #3ea2ff; background: #0c1423; }
+  .hex { stroke:#617187; stroke-width:1; }
+  .hex.center { stroke:#707f96; }
+  .hex.candidate { fill:#4f5f72; stroke:#7f8ea3; cursor:pointer; stroke-dasharray:2 2; }
+  .hex-label { fill:#f4f8ff; font-size:11px; pointer-events:none; }
+  .rivers-layer, .roads-layer, .river-debug-layer { pointer-events:none; }
+  .river-polyline { fill:none; stroke:#3ea2ff; stroke-linecap:round; stroke-linejoin:round; }
+  .river-direction-arrow { stroke:#ffffff; stroke-width:1.2; stroke-linecap:round; }
+  .river-arrow-head { fill:#ffffff; }
+  .road-line { stroke:#8b6a3f; stroke-width:3; stroke-linecap:round; }
+  .road-trail { stroke:#8b6a3f; stroke-width:2.5; stroke-linecap:round; stroke-dasharray:6 4; }
+  .dbg-node-all { fill:#a0a7b2; opacity:.85; }
+  .dbg-node-boundary { fill:#ffd84a; }
+  .dbg-node-candidate { fill:#57df63; }
+  .dbg-first-segment { stroke:#c17cff; stroke-width:4; stroke-linecap:round; }
+  .dbg-last-segment { stroke:#ff9f40; stroke-width:4; stroke-linecap:round; }
+  .dbg-start { fill:#3f83ff; }
+  .dbg-end { fill:#ff4b4b; }
+  .dbg-river-id { fill:#ffffff; font-size:10px; }
+  .dbg-lake-vertex { fill:#ff4d00; stroke:#2b1200; stroke-width:0.6; }
+  .dbg-node-exterior { fill:#ff2a2a; opacity:0.95; }
+  .dbg-node-central { fill:#9b59ff; opacity:0.95; }
+  .dbg-node-neighbor-region { fill:#ff9a2a; opacity:0.95; }
+`;
+
 const BIOMES: Record<BiomeId, Biome> = {
   plain_deciduous_forest: { id: 'plain_deciduous_forest', label: 'Равнинный лиственный лес', color: '#5F9E6E', primaryEmoji: '🌳', secondaryEmojis: [], wildWeight: 20, settledWeight: 11, heightLevel: 1 },
   plain_mixed_forest: { id: 'plain_mixed_forest', label: 'Равнинный смешанный лес', color: '#5B8F64', primaryEmoji: '🌳', secondaryEmojis: ['🌲'], wildWeight: 12, settledWeight: 5, heightLevel: 1 },
@@ -333,6 +391,135 @@ function hexPoints(cx: number, cy: number, size: number) {
 
 function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value));
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function isAxialHex(value: unknown): value is AxialHex {
+  return isRecord(value) && typeof value.q === 'number' && Number.isFinite(value.q) && typeof value.r === 'number' && Number.isFinite(value.r);
+}
+
+function isHexTerrainData(value: unknown): value is HexTerrainData {
+  if (!isRecord(value)) return false;
+  const terrainOverride = value.terrainOverride;
+  const lakeId = value.lakeId;
+  return (
+    (terrainOverride === undefined || terrainOverride === 'lake') &&
+    (lakeId === undefined || (typeof lakeId === 'number' && Number.isFinite(lakeId)))
+  );
+}
+
+function assertHexcrawlSaveData(value: unknown): asserts value is ValidatedHexcrawlSaveData {
+  if (!isRecord(value)) throw new Error('Файл сохранения должен быть JSON-объектом.');
+  if (value.schema !== HEXCRAWL_SAVE_SCHEMA) throw new Error('Это не файл сохранения Hexcrawl.');
+  if (value.version !== HEXCRAWL_SAVE_VERSION) throw new Error(`Неподдерживаемая версия сохранения: ${String(value.version)}.`);
+  if (!isRecord(value.map)) throw new Error('В сохранении отсутствует объект map.');
+  if (!Array.isArray(value.map.regions)) throw new Error('В сохранении отсутствует список regions.');
+  if (!Array.isArray(value.map.rivers)) throw new Error('В сохранении отсутствует список rivers.');
+  if (!Array.isArray(value.map.roads)) throw new Error('В сохранении отсутствует список roads.');
+  if (!isRecord(value.map.terrainByHexKey)) throw new Error('В сохранении отсутствует объект terrainByHexKey.');
+  for (const [key, terrain] of Object.entries(value.map.terrainByHexKey)) {
+    if (!isAxialHex(parseHexKey(key))) throw new Error(`Некорректный ключ terrain-гекса ${key}.`);
+    if (!isHexTerrainData(terrain)) throw new Error(`Некорректные terrain-данные для гекса ${key}.`);
+  }
+  for (const region of value.map.regions) {
+    if (!isRecord(region)) throw new Error('Некорректная запись региона.');
+    if (typeof region.id !== 'number' || !Number.isFinite(region.id)) throw new Error('У региона отсутствует числовой id.');
+    if (!Array.isArray(region.hexes) || !region.hexes.every(isAxialHex)) throw new Error(`Некорректные гексы региона #${region.id}.`);
+    if (!isAxialHex(region.centerHex)) throw new Error(`Некорректный centerHex региона #${region.id}.`);
+    if (!isAxialHex(region.anchorHex)) throw new Error(`Некорректный anchorHex региона #${region.id}.`);
+    if (!Array.isArray(region.pointsOfInterest) || !region.pointsOfInterest.every(isAxialHex)) throw new Error(`Некорректные точки интереса региона #${region.id}.`);
+  }
+  if (value.map.candidateHexes !== undefined && !Array.isArray(value.map.candidateHexes)) throw new Error('Некорректный список candidateHexes.');
+  if (!isRecord(value.counters)) throw new Error('В сохранении отсутствует объект counters.');
+  if (typeof value.counters.nextLakeId !== 'number' || !Number.isFinite(value.counters.nextLakeId)) throw new Error('Некорректный счетчик nextLakeId.');
+  if (typeof value.counters.nextRoadId !== 'number' || !Number.isFinite(value.counters.nextRoadId)) throw new Error('Некорректный счетчик nextRoadId.');
+  if (!isRecord(value.ui)) throw new Error('В сохранении отсутствует объект ui.');
+  if (value.ui.selectedHex !== null && value.ui.selectedHex !== undefined && !isAxialHex(value.ui.selectedHex)) throw new Error('Некорректный selectedHex.');
+}
+
+function downloadBlob(blob: Blob, filename: string): void {
+  const link = document.createElement('a');
+  const url = URL.createObjectURL(blob);
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 0);
+}
+
+function getTimestampForFilename(date = new Date()): string {
+  return date.toISOString().replace(/[:.]/g, '-');
+}
+
+function createExportSvgClone(svg: SVGSVGElement): SVGSVGElement {
+  const clone = svg.cloneNode(true) as SVGSVGElement;
+  const viewBox = clone.viewBox.baseVal;
+  clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+  clone.setAttribute('width', String(viewBox.width));
+  clone.setAttribute('height', String(viewBox.height));
+  clone.style.width = '';
+  clone.style.height = '';
+
+  const style = document.createElementNS('http://www.w3.org/2000/svg', 'style');
+  style.textContent = SVG_EXPORT_STYLES;
+  clone.insertBefore(style, clone.firstChild);
+
+  const background = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+  background.setAttribute('x', '0');
+  background.setAttribute('y', '0');
+  background.setAttribute('width', String(viewBox.width));
+  background.setAttribute('height', String(viewBox.height));
+  background.setAttribute('fill', '#0c1423');
+  clone.insertBefore(background, style.nextSibling);
+
+  return clone;
+}
+
+async function exportSvgToPng(svg: SVGSVGElement, filename: string, scale = PNG_EXPORT_SCALE): Promise<void> {
+  const clone = createExportSvgClone(svg);
+  const viewBox = clone.viewBox.baseVal;
+  const svgText = new XMLSerializer().serializeToString(clone);
+  const svgBlob = new Blob([svgText], { type: 'image/svg+xml;charset=utf-8' });
+  const objectUrl = URL.createObjectURL(svgBlob);
+
+  try {
+    const image = new Image();
+    image.decoding = 'async';
+    await new Promise<void>((resolve, reject) => {
+      image.onload = () => resolve();
+      image.onerror = () => reject(new Error('Не удалось подготовить SVG для PNG-экспорта.'));
+      image.src = objectUrl;
+    });
+
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.max(1, Math.ceil(viewBox.width * scale));
+    canvas.height = Math.max(1, Math.ceil(viewBox.height * scale));
+    const context = canvas.getContext('2d');
+    if (!context) throw new Error('Canvas 2D недоступен в этом браузере.');
+    context.fillStyle = '#0c1423';
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    context.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+    const pngBlob = await new Promise<Blob>((resolve, reject) => {
+      canvas.toBlob((blob) => (blob ? resolve(blob) : reject(new Error('Не удалось создать PNG-файл.'))), 'image/png');
+    });
+    downloadBlob(pngBlob, filename);
+  } finally {
+    URL.revokeObjectURL(objectUrl);
+  }
+}
+
+function readTextFile(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result ?? ''));
+    reader.onerror = () => reject(reader.error ?? new Error('Не удалось прочитать файл.'));
+    reader.readAsText(file);
+  });
 }
 
 function randomInt(min: number, max: number): number {
@@ -5672,6 +5859,8 @@ function generateRoadsForRegion(options: {
 }
 
 export function App() {
+  const mapSvgRef = useRef<SVGSVGElement | null>(null);
+  const jsonImportInputRef = useRef<HTMLInputElement | null>(null);
   const [regions, setRegions] = useState<Region[]>([]);
   const [candidateHexes, setCandidateHexes] = useState<AxialHex[]>([]);
   const [rivers, setRivers] = useState<River[]>([]);
@@ -5800,7 +5989,7 @@ export function App() {
     for (let attempt = 0; attempt < maxRegionAttempts; attempt += 1) {
       const targetSize = rollRegionTargetSize();
       const occupiedHexes = new Set(allRegionHexes.map(hexKey));
-      const regionId = regions.length + 1;
+      const regionId = Math.max(0, ...regions.map((region) => region.id)) + 1;
       const regionHexes = generateConnectedRegionFromAnchor(anchorHex, targetSize, occupiedHexes);
       const finalSize = regionHexes.length;
       const { sizeCategory, sizeLabel } = getRegionSizeCategory(finalSize);
@@ -6170,6 +6359,81 @@ export function App() {
     updateMapScale(mapScale + (event.deltaY > 0 ? -0.1 : 0.1));
   };
 
+  const createSaveData = (): HexcrawlSaveData => ({
+    schema: HEXCRAWL_SAVE_SCHEMA,
+    version: HEXCRAWL_SAVE_VERSION,
+    savedAt: new Date().toISOString(),
+    map: {
+      regions,
+      candidateHexes,
+      rivers,
+      roads,
+      terrainByHexKey: Object.fromEntries(hexTerrainByKey.entries())
+    },
+    counters: {
+      nextLakeId,
+      nextRoadId
+    },
+    ui: {
+      selectedHex,
+      isMapRotated,
+      mapScale
+    }
+  });
+
+  const handleExportPng = async () => {
+    if (!mapSvgRef.current) return;
+    try {
+      await exportSvgToPng(mapSvgRef.current, `${EXPORT_FILE_PREFIX}-${getTimestampForFilename()}.png`);
+    } catch (error) {
+      console.error('PNG export failed', error);
+      window.alert(error instanceof Error ? error.message : 'Не удалось выгрузить PNG-файл.');
+    }
+  };
+
+  const handleExportJson = () => {
+    const saveData = createSaveData();
+    const blob = new Blob([JSON.stringify(saveData, null, 2)], { type: 'application/json;charset=utf-8' });
+    downloadBlob(blob, `${EXPORT_FILE_PREFIX}-${getTimestampForFilename()}.json`);
+  };
+
+  const handleImportJsonClick = () => {
+    jsonImportInputRef.current?.click();
+  };
+
+  const handleImportJson = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    event.target.value = '';
+    if (!file) return;
+
+    try {
+      const text = await readTextFile(file);
+      const parsed: unknown = JSON.parse(text);
+      assertHexcrawlSaveData(parsed);
+
+      const importedRegions = parsed.map.regions;
+      const importedAllHexes = importedRegions.flatMap((region) => region.hexes);
+      const importedCandidateHexes = importedAllHexes.length > 0 ? getCandidateHexes(importedAllHexes) : [];
+      const importedTerrain = new Map<string, HexTerrainData>(Object.entries(parsed.map.terrainByHexKey));
+      const fallbackNextLakeId = Math.max(0, ...Array.from(importedTerrain.values()).map((terrain) => terrain.lakeId ?? 0)) + 1;
+      const fallbackNextRoadId = Math.max(0, ...parsed.map.roads.map((road) => road.id)) + 1;
+
+      setRegions(importedRegions);
+      setCandidateHexes(importedCandidateHexes);
+      setRivers(parsed.map.rivers);
+      setRoads(parsed.map.roads);
+      setHexTerrainByKey(importedTerrain);
+      setNextLakeId(Math.max(parsed.counters.nextLakeId, fallbackNextLakeId));
+      setNextRoadId(Math.max(parsed.counters.nextRoadId, fallbackNextRoadId));
+      setSelectedHex(parsed.ui.selectedHex ?? START_HEX);
+      setIsMapRotated(parsed.ui.isMapRotated);
+      updateMapScale(parsed.ui.mapScale);
+    } catch (error) {
+      console.error('JSON import failed', error);
+      window.alert(error instanceof Error ? error.message : 'Не удалось загрузить JSON-файл.');
+    }
+  };
+
   if (debugRivers && selectedRegion && selectedCandidateBoundaryDebug) {
     console.log('Candidate boundary debug', {
       regionId: selectedRegion.id,
@@ -6188,6 +6452,10 @@ export function App() {
           <div className="map-toolbar" aria-label="Управление картой">
             <div className="controls">
               <button onClick={resetMap} className="secondary">Сбросить</button>
+              <button type="button" onClick={() => void handleExportPng()} className="secondary">Выгрузить PNG</button>
+              <button type="button" onClick={handleExportJson} className="secondary">Выгрузить JSON</button>
+              <button type="button" onClick={handleImportJsonClick} className="secondary">Загрузить JSON</button>
+              <input ref={jsonImportInputRef} className="visually-hidden" type="file" accept="application/json,.json" onChange={(event) => void handleImportJson(event)} />
               <button onClick={() => setDebugRivers((v) => !v)} className="secondary">
                 Debug rivers / Отладка рек: {debugRivers ? 'ON' : 'OFF'}
               </button>
@@ -6215,6 +6483,7 @@ export function App() {
           </div>
           <div className="map-viewport" onWheel={handleMapWheel}>
             <svg
+              ref={mapSvgRef}
               viewBox={`0 0 ${displayMapWidth} ${displayMapHeight}`}
               preserveAspectRatio="xMinYMin meet"
               style={{ width: `${displayMapWidth * mapScale}px`, height: `${displayMapHeight * mapScale}px` }}
