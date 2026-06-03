@@ -255,7 +255,7 @@ const SVG_EXPORT_STYLES = `
   .river-direction-arrow { stroke:#ffffff; stroke-width:1.2; stroke-linecap:round; }
   .river-arrow-head { fill:#ffffff; }
   .road-line { stroke:#8b6a3f; stroke-width:3; stroke-linecap:round; }
-  .road-trail { stroke:#8b6a3f; stroke-width:2.5; stroke-linecap:round; stroke-dasharray:6 4; }
+  .road-trail-dot { fill:#8b6a3f; }
   .dbg-node-all { fill:#a0a7b2; opacity:.85; }
   .dbg-node-boundary { fill:#ffd84a; }
   .dbg-node-candidate { fill:#57df63; }
@@ -555,6 +555,10 @@ function getTributaryRiverFullnessForHeight(heightLevel: RegionHeightLevel): Riv
 
 function getRiverWidth(hexWidth: number, fullness: RiverFullness): number {
   return hexWidth * (0.04 + fullness * 0.035);
+}
+
+function getRiverArrowScale(fullness: RiverFullness): number {
+  return 0.4 + fullness * 0.2;
 }
 
 function getRegionHeightLevelFromBiomeId(biomeId: BiomeId): RegionHeightLevel {
@@ -4056,11 +4060,15 @@ function renderRiverSegments(river: River, offsetX: number, offsetY: number, lak
 }
 
 function renderRiverDirectionArrows(river: River, offsetX: number, offsetY: number, lakeEdgeKeys: Set<string>) {
-  const arrows: Array<{ key: string; x1: number; y1: number; x2: number; y2: number }> = [];
+  const fullnessByEdge = getRiverSectorFullnessByEdge(river);
+  const fallbackFullness = getRiverFallbackFullness(river);
+  const arrows: Array<{ key: string; x1: number; y1: number; x2: number; y2: number; fullness: RiverFullness }> = [];
   for (let i = 1; i < river.vertexPath.length; i += 1) {
     const start = river.vertexPath[i - 1];
     const end = river.vertexPath[i];
-    if (isLakeEdge(edgeKey(start, end), lakeEdgeKeys)) continue;
+    const segmentEdgeKey = edgeKey(start, end);
+    if (isLakeEdge(segmentEdgeKey, lakeEdgeKeys)) continue;
+    const fullness = fullnessByEdge.get(segmentEdgeKey) ?? fallbackFullness;
     const dx = end.x - start.x;
     const dy = end.y - start.y;
     const length = Math.hypot(dx, dy);
@@ -4068,7 +4076,7 @@ function renderRiverDirectionArrows(river: River, offsetX: number, offsetY: numb
 
     const ux = dx / length;
     const uy = dy / length;
-    const arrowLength = Math.min(10, length * 0.35);
+    const arrowLength = Math.min(10 * getRiverArrowScale(fullness), length * 0.6);
     const halfArrow = arrowLength / 2;
     const mx = (start.x + end.x) / 2;
     const my = (start.y + end.y) / 2;
@@ -4077,7 +4085,8 @@ function renderRiverDirectionArrows(river: River, offsetX: number, offsetY: numb
       x1: mx - ux * halfArrow + offsetX,
       y1: my - uy * halfArrow + offsetY,
       x2: mx + ux * halfArrow + offsetX,
-      y2: my + uy * halfArrow + offsetY
+      y2: my + uy * halfArrow + offsetY,
+      fullness
     });
   }
   return arrows;
@@ -5718,6 +5727,30 @@ function renderRoadSegments(roads: Road[], offsetX: number, offsetY: number): Ar
   return result;
 }
 
+function renderTrailDots(
+  roadSegments: Array<{ key: string; x1: number; y1: number; x2: number; y2: number; kind: RoadKind }>
+): Array<{ key: string; x: number; y: number }> {
+  const dots: Array<{ key: string; x: number; y: number }> = [];
+  const dotSpacing = 14;
+  for (const segment of roadSegments) {
+    if (segment.kind !== 'trail') continue;
+    const dx = segment.x2 - segment.x1;
+    const dy = segment.y2 - segment.y1;
+    const length = Math.hypot(dx, dy);
+    if (length < 0.001) continue;
+    const dotCount = Math.max(2, Math.floor(length / dotSpacing) + 1);
+    for (let i = 0; i < dotCount; i += 1) {
+      const t = dotCount === 1 ? 0.5 : i / (dotCount - 1);
+      dots.push({
+        key: `${segment.key}-dot-${i}`,
+        x: segment.x1 + dx * t,
+        y: segment.y1 + dy * t
+      });
+    }
+  }
+  return dots;
+}
+
 function getLakeVertices(allHexes: AxialHex[], hexTerrainByKey: Map<string, HexTerrainData>): LakeVertex[] {
   const uniqueVertices = new Map<string, LakeVertex>();
   for (const hex of allHexes) {
@@ -6152,6 +6185,7 @@ export function App() {
     const minBaseY = Math.min(...all.map((h) => toPixel(h.q, h.r).y));
     return renderRoadSegments(roads, (HEX_SIZE * SQRT3) / 2 - minBaseX, HEX_SIZE - minBaseY);
   }, [positionedHexes, roads]);
+  const trailDots = useMemo(() => renderTrailDots(roadSegments), [roadSegments]);
 
   const riverOffset = useMemo(() => {
     const all = positionedHexes.hexes;
@@ -6699,9 +6733,14 @@ export function App() {
               style={{ width: `${displayMapWidth * mapScale}px`, height: `${displayMapHeight * mapScale}px` }}
             >
             <defs>
-              <marker id="river-arrowhead" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="5" markerHeight="5" orient="auto">
-                <path d="M 0 0 L 8 4 L 0 8 z" className="river-arrow-head" />
-              </marker>
+              {([1, 2, 3, 4, 5] as RiverFullness[]).map((fullness) => {
+                const markerSize = 5 * getRiverArrowScale(fullness);
+                return (
+                  <marker key={`river-arrowhead-${fullness}`} id={`river-arrowhead-${fullness}`} viewBox="0 0 8 8" refX="7" refY="4" markerWidth={markerSize} markerHeight={markerSize} orient="auto">
+                    <path d="M 0 0 L 8 4 L 0 8 z" className="river-arrow-head" />
+                  </marker>
+                );
+              })}
               {positionedHexes.hexes.map((hex) => (
                 <clipPath key={`hex-clip-${hex.key}`} id={`hex-clip-${hex.key}`}>
                   <polygon points={hexPoints(hex.x, hex.y, HEX_SIZE)} />
@@ -6767,13 +6806,17 @@ export function App() {
                   x2={arrow.x2}
                   y2={arrow.y2}
                   className="river-direction-arrow"
-                  markerEnd="url(#river-arrowhead)"
+                  strokeWidth={1.2 * getRiverArrowScale(arrow.fullness)}
+                  markerEnd={`url(#river-arrowhead-${arrow.fullness})`}
                 />
               ))}
             </g>
             <g className="roads-layer">
-              {roadSegments.map((segment) => (
-                <line key={segment.key} x1={segment.x1} y1={segment.y1} x2={segment.x2} y2={segment.y2} className={segment.kind === 'trail' ? 'road-trail' : 'road-line'} />
+              {roadSegments.filter((segment) => segment.kind === 'road').map((segment) => (
+                <line key={segment.key} x1={segment.x1} y1={segment.y1} x2={segment.x2} y2={segment.y2} className="road-line" />
+              ))}
+              {trailDots.map((dot) => (
+                <circle key={dot.key} cx={dot.x} cy={dot.y} r={2.1} className="road-trail-dot" />
               ))}
             </g>
             </g>
