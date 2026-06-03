@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { type WheelEvent, useMemo, useState } from 'react';
 
 type AxialHex = {
   q: number;
@@ -6132,6 +6132,19 @@ export function App() {
     ? validateRiverEndpoints(selectedRegion, selectedRegionRiver, selectedRegionGraph)
     : [];
   const selectedCandidateBoundaryDebug = selectedRegion ? candidateBoundaryDebugByRegion.get(selectedRegion.id) : undefined;
+  const [isInfoCollapsed, setIsInfoCollapsed] = useState(false);
+  const [mapScale, setMapScale] = useState(1);
+  const mapZoomPercent = Math.round(mapScale * 100);
+
+  const updateMapScale = (scale: number) => {
+    setMapScale(Math.min(3, Math.max(0.5, scale)));
+  };
+
+  const handleMapWheel = (event: WheelEvent<HTMLDivElement>) => {
+    if (!event.ctrlKey && !event.metaKey) return;
+    event.preventDefault();
+    updateMapScale(mapScale + (event.deltaY > 0 ? -0.1 : 0.1));
+  };
 
   if (debugRivers && selectedRegion && selectedCandidateBoundaryDebug) {
     console.log('Candidate boundary debug', {
@@ -6146,23 +6159,29 @@ export function App() {
 
   return (
     <div className="app">
-      <header className="header">
-        <h1>Hexcrawl Region Generator</h1>
-        <div className="controls">
-          <button onClick={() => addRegionToMap(START_HEX)} disabled={regions.length > 0}>
-            Сгенерировать регион
-          </button>
-          <button onClick={resetMap} className="secondary">Сбросить</button>
-          <button onClick={() => setDebugRivers((v) => !v)} className="secondary">
-            Debug rivers / Отладка рек: {debugRivers ? 'ON' : 'OFF'}
-          </button>
-        </div>
-      </header>
-
       <section className="content">
         <div className="map-card">
-          <h2>Карта регионов</h2>
-          <svg viewBox={`0 0 ${positionedHexes.width} ${positionedHexes.height}`}>
+          <div className="map-toolbar" aria-label="Управление картой">
+            <div className="controls">
+              <button onClick={() => addRegionToMap(START_HEX)} disabled={regions.length > 0}>
+                Сгенерировать регион
+              </button>
+              <button onClick={resetMap} className="secondary">Сбросить</button>
+              <button onClick={() => setDebugRivers((v) => !v)} className="secondary">
+                Debug rivers / Отладка рек: {debugRivers ? 'ON' : 'OFF'}
+              </button>
+            </div>
+            <div className="zoom-controls" aria-label="Масштаб карты">
+              <button type="button" className="secondary" onClick={() => updateMapScale(mapScale - 0.1)} aria-label="Отдалить карту">−</button>
+              <span>{mapZoomPercent}%</span>
+              <button type="button" className="secondary" onClick={() => updateMapScale(mapScale + 0.1)} aria-label="Приблизить карту">+</button>
+            </div>
+          </div>
+          <div className="map-viewport" onWheel={handleMapWheel}>
+            <svg
+              viewBox={`0 0 ${positionedHexes.width} ${positionedHexes.height}`}
+              style={{ width: `${positionedHexes.width * mapScale}px`, height: `${positionedHexes.height * mapScale}px` }}
+            >
             <defs>
               <marker id="river-arrowhead" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="5" markerHeight="5" orient="auto">
                 <path d="M 0 0 L 8 4 L 0 8 z" className="river-arrow-head" />
@@ -6302,11 +6321,21 @@ export function App() {
                 ))}
               </g>
             ) : null}
-          </svg>
-        </div>
+            </svg>
+          </div>
 
-        <div className="roll-card">
-          <h2>Информация</h2>
+          <aside className={`roll-card${isInfoCollapsed ? ' is-collapsed' : ''}`}>
+            <button
+              type="button"
+              className="info-toggle secondary"
+              onClick={() => setIsInfoCollapsed((value) => !value)}
+              aria-expanded={!isInfoCollapsed}
+            >
+              <span>Информация</span>
+              <span>{isInfoCollapsed ? 'Развернуть' : 'Свернуть'}</span>
+            </button>
+            {!isInfoCollapsed ? (
+              <div className="info-body">
           {regions.length === 0 ? <p>Нажмите «Сгенерировать регион», чтобы создать первый регион от стартового гекса 0/0.</p> : null}
           {lastRegion ? (
             <>
@@ -6474,6 +6503,9 @@ export function App() {
             </>
           ) : null}
           {candidateHexes.length > 0 ? <p>Выберите гекс-кандидат на карте для добавления следующего региона.</p> : null}
+              </div>
+            ) : null}
+          </aside>
         </div>
       </section>
 
