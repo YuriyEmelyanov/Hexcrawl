@@ -5430,8 +5430,12 @@ function findWildTrailPath(options: {
   return null;
 }
 
+function canBuildStandaloneWildRegionRoad(region: Region): boolean {
+  return region.sizeCategory === 'large_region' || region.sizeCategory === 'land' || region.sizeCategory === 'vast_land';
+}
+
 function getWildRegionTrailBuildCount(region: Region): number {
-  return region.sizeCategory === 'large_region' || region.sizeCategory === 'land' || region.sizeCategory === 'vast_land' ? 2 : 1;
+  return canBuildStandaloneWildRegionRoad(region) ? 2 : 1;
 }
 
 function buildWildRegionTrail(options: {
@@ -5589,7 +5593,7 @@ function generateRoadsForRegion(options: {
       builtAnyWildRoad = true;
     }
 
-    if (!builtAnyWildRoad && incomingWildRoadCount === 0) {
+    if (!builtAnyWildRoad && incomingWildRoadCount === 0 && canBuildStandaloneWildRegionRoad(region)) {
       const candidateRoad = chooseBestWildCandidateRoadCandidate(getWildCandidateRoadCandidates({ region, roads: built, rivers, hexTerrainByKey, candidateHexes }));
       if (candidateRoad) {
         const addResult = addWildCandidateRoadCandidate({ candidate: candidateRoad, roads: built, region, hexTerrainByKey, nextRoadId });
@@ -5609,7 +5613,9 @@ function generateRoadsForRegion(options: {
       console.log('Wild road result', {
         regionId: region.id,
         built: false,
-        reason: incomingWildRoadCount === 0 ? 'fewer than two candidate road endpoints' : 'fewer than two incoming road endpoints or no valid cross-region road target'
+        reason: incomingWildRoadCount === 0
+          ? (canBuildStandaloneWildRegionRoad(region) ? 'fewer than two candidate road endpoints' : 'standalone wild roads are only built for large regions and lands')
+          : 'fewer than two incoming road endpoints or no valid cross-region road target'
       });
     }
     return buildWildRegionTrails({
