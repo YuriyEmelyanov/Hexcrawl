@@ -3339,6 +3339,189 @@ function ensureMinimumMountainRiversForRegion(
   return nextRivers;
 }
 
+
+function decreaseRiverFullness(fullness: RiverFullness): RiverFullness {
+  return Math.max(1, fullness - 1) as RiverFullness;
+}
+
+type RemainingOutgoingConnection = {
+  endpoint: RiverEndpointTouch;
+  river: River;
+  downstreamRegion: Region;
+};
+
+function getRemainingOutgoingConnectionsForRegion(
+  region: Region,
+  regions: Region[],
+  rivers: River[],
+  riverGraph: RiverGraph
+): RemainingOutgoingConnection[] {
+  const otherRegions = regions.filter((item) => item.id !== region.id);
+  return findRiverEndpointsTouchingRegion(region, rivers, riverGraph)
+    .filter((endpoint) => endpoint.endpointType === 'start')
+    .map((endpoint) => {
+      const river = rivers.find((item) => item.id === endpoint.riverId);
+      const downstreamRegion = findRegionTouchingVertex(endpoint.vertex, otherRegions);
+      if (!river || !downstreamRegion) return null;
+      if (downstreamRegion.heightLevel > region.heightLevel) return null;
+      return { endpoint, river, downstreamRegion };
+    })
+    .filter((connection): connection is RemainingOutgoingConnection => connection !== null)
+    .sort((a, b) => a.river.id - b.river.id);
+}
+
+function getOutgoingInteriorConnectorFullness(
+  river: River,
+  outgoingVertexKey: string,
+  connectedToLake: boolean
+): RiverFullness {
+  const outgoingFullness = getRiverFullnessAtVertex(river, outgoingVertexKey);
+  if (connectedToLake) return outgoingFullness;
+  return outgoingFullness > 1 ? decreaseRiverFullness(outgoingFullness) : outgoingFullness;
+}
+
+function getAvailableUnconnectedLakesForRegion(
+  region: Region,
+  terrainMap: Map<string, HexTerrainData>,
+  rivers: River[],
+  usedLakeIds: Set<number>
+): Lake[] {
+  return getLakesForRegion(region, terrainMap)
+    .filter((lake) => !usedLakeIds.has(lake.lakeId))
+    .filter((lake) => !lakeHasRiverConnection(lake.hexes, rivers));
+}
+
+function prependOutgoingRiverConnection(
+  rivers: River[],
+  connection: RemainingOutgoingConnection,
+  path: RiverVertex[],
+  fullness: RiverFullness,
+  assignedRegionId: number
+): River[] {
+  return rivers.map((river) => river.id !== connection.river.id
+    ? river
+    : {
+      ...river,
+      vertexPath: [...path.slice(0, -1), ...river.vertexPath],
+      sectors: prependRiverPathSector(river, path, fullness, assignedRegionId)
+    });
+}
+
+function connectRemainingOutgoingRiversForRegion(
+  region: Region,
+  regions: Region[],
+  terrainMap: Map<string, HexTerrainData>,
+  riverGraph: RiverGraph,
+  rivers: River[],
+  candidateHexes: AxialHex[],
+  candidateVertices: RiverVertex[],
+  neighborRegionVertices: RiverVertex[]
+): River[] {
+  let nextRivers = rivers;
+  const usedLakeIds = new Set<number>();
+  const skippedRiverIds = new Set<number>();
+
+  while (true) {
+    const remainingOutgoingConnections = getRemainingOutgoingConnectionsForRegion(region, regions, nextRivers, riverGraph)
+      .filter((connection) => !skippedRiverIds.has(connection.river.id));
+    if (remainingOutgoingConnections.length === 0) break;
+
+    const connection = remainingOutgoingConnections[0];
+    const usedRiverEdges = buildUsedRiverEdges(nextRivers);
+    const existingRiverVertexKeys = new Set(nextRivers.flatMap((river) => river.vertexPath.map((vertex) => vertex.key)));
+    const availableLakes = getAvailableUnconnectedLakesForRegion(region, terrainMap, nextRivers, usedLakeIds);
+    let selectedPath: RiverVertex[] | null = null;
+    let selectedLake: Lake | null = null;
+
+    for (const lake of availableLakes) {
+      const lakePath = findBestPathFromLakeToOutgoingEndpoint(
+        lake.vertices,
+        connection.endpoint,
+        riverGraph,
+        usedRiverEdges,
+        existingRiverVertexKeys
+      );
+      if (lakePath && (!selectedPath || lakePath.length < selectedPath.length)) {
+        selectedPath = lakePath;
+        selectedLake = lake;
+      }
+    }
+
+    if (!selectedPath) {
+      const interiorSourceVertices = getMountainInteriorSourceVertices(
+        region,
+        regions,
+        candidateHexes,
+        riverGraph,
+        candidateVertices,
+        neighborRegionVertices
+      ).filter((vertex) => !existingRiverVertexKeys.has(vertex.key));
+      selectedPath = findBestPathFromSourceToOutgoingEndpoint(
+        interiorSourceVertices,
+        connection.endpoint,
+        riverGraph,
+        usedRiverEdges,
+        {
+          occupiedVertexKeys: existingRiverVertexKeys,
+          allowedOccupiedVertexKeys: new Set([connection.endpoint.vertex.key])
+        }
+      );
+    }
+
+    if (!selectedPath) {
+      console.warn('Could not connect remaining outgoing river', {
+        regionId: region.id,
+        outgoingRiverId: connection.river.id,
+        downstreamRegionId: connection.downstreamRegion.id,
+        availableLakeCount: availableLakes.length,
+      });
+      skippedRiverIds.add(connection.river.id);
+      continue;
+    }
+
+    const pathEdgeKeys = getRiverPathEdgeKeys(selectedPath, riverGraph);
+    if (!pathEdgeKeys || pathEdgeKeys.some((pathEdgeKey) => usedRiverEdges.has(pathEdgeKey))) {
+      console.warn('Remaining outgoing river connector failed edge validation', {
+        regionId: region.id,
+        outgoingRiverId: connection.river.id,
+      });
+      skippedRiverIds.add(connection.river.id);
+      continue;
+    }
+
+    if (selectedLake) usedLakeIds.add(selectedLake.lakeId);
+    const connectorFullness = getOutgoingInteriorConnectorFullness(
+      connection.river,
+      connection.endpoint.vertex.key,
+      Boolean(selectedLake)
+    );
+    nextRivers = prependOutgoingRiverConnection(
+      nextRivers,
+      connection,
+      selectedPath,
+      connectorFullness,
+      region.id
+    );
+
+    for (const river of nextRivers) {
+      validateRiverDirection(river);
+      validateRiverContinuity(river);
+    }
+    validateNoDuplicateRiverEdges(nextRivers);
+
+    console.log('Connected remaining outgoing river', {
+      regionId: region.id,
+      outgoingRiverId: connection.river.id,
+      downstreamRegionId: connection.downstreamRegion.id,
+      mode: selectedLake ? 'lake_to_outgoing' : 'interior_source_to_outgoing',
+      lakeId: selectedLake?.lakeId ?? null,
+      connectorFullness,
+    });
+  }
+
+  return nextRivers;
+}
+
 function finalizeRiverGenerationForRegion(
   region: Region,
   regions: Region[],
@@ -3359,8 +3542,18 @@ function finalizeRiverGenerationForRegion(
     candidateVertices,
     neighborRegionVertices
   );
+  const riversWithRemainingOutgoingConnected = connectRemainingOutgoingRiversForRegion(
+    region,
+    regions,
+    terrainMap,
+    riverGraph,
+    riversWithMinimumMountainRivers,
+    candidateHexes,
+    candidateVertices,
+    neighborRegionVertices
+  );
 
-  return { success: true, rivers: riversWithMinimumMountainRivers };
+  return { success: true, rivers: riversWithRemainingOutgoingConnected };
 }
 
 function generateRiverForRegion(
