@@ -1,4 +1,4 @@
-import { type WheelEvent, useMemo, useState } from 'react';
+import { type WheelEvent, useEffect, useMemo, useState } from 'react';
 
 type AxialHex = {
   q: number;
@@ -191,6 +191,7 @@ const REGION_CENTER_EMOJI = '★';
 const POI_EMOJI = '◆';
 const WATER_COLOR = 'var(--water-color)';
 const LAKE_HEX_COLOR = WATER_COLOR;
+const MOBILE_LAYOUT_QUERY = '(max-width: 900px)';
 
 
 type HexTerrainOverride = 'lake';
@@ -6140,12 +6141,24 @@ export function App() {
     : [];
   const selectedCandidateBoundaryDebug = selectedRegion ? candidateBoundaryDebugByRegion.get(selectedRegion.id) : undefined;
   const [isInfoCollapsed, setIsInfoCollapsed] = useState(false);
+  const [isMobileLayout, setIsMobileLayout] = useState(() => (typeof window === 'undefined' ? false : window.matchMedia(MOBILE_LAYOUT_QUERY).matches));
   const [mapScale, setMapScale] = useState(1);
   const [isMapRotated, setIsMapRotated] = useState(false);
+  const isInfoPanelCollapsed = !isMobileLayout && isInfoCollapsed;
   const mapZoomPercent = Math.round(mapScale * 100);
   const displayMapWidth = isMapRotated ? positionedHexes.height : positionedHexes.width;
   const displayMapHeight = isMapRotated ? positionedHexes.width : positionedHexes.height;
   const mapRotationTransform = isMapRotated ? `translate(${positionedHexes.height} 0) rotate(90)` : undefined;
+
+  useEffect(() => {
+    const mobileLayout = window.matchMedia(MOBILE_LAYOUT_QUERY);
+    const syncMobileLayout = () => setIsMobileLayout(mobileLayout.matches);
+
+    syncMobileLayout();
+    mobileLayout.addEventListener('change', syncMobileLayout);
+
+    return () => mobileLayout.removeEventListener('change', syncMobileLayout);
+  }, []);
 
   const updateMapScale = (scale: number) => {
     setMapScale(Math.min(3, Math.max(0.5, scale)));
@@ -6353,7 +6366,12 @@ export function App() {
             </svg>
           </div>
 
-          <aside className={`roll-card${isInfoCollapsed ? ' is-collapsed' : ''}`}>
+          <aside className={`roll-card${isInfoPanelCollapsed ? ' is-collapsed' : ''}`}>
+            {isMobileLayout ? (
+              <div className="info-toggle info-toggle--static">
+                <span>Информация</span>
+              </div>
+            ) : (
             <button
               type="button"
               className="info-toggle secondary"
@@ -6363,7 +6381,8 @@ export function App() {
               <span>Информация</span>
               <span>{isInfoCollapsed ? 'Развернуть' : 'Свернуть'}</span>
             </button>
-            {!isInfoCollapsed ? (
+            )}
+            {!isInfoPanelCollapsed ? (
               <div className="info-body">
           {regions.length === 0 ? <p>Нажмите на стартовый гекс 0/0 на карте, чтобы создать первый регион.</p> : null}
           {lastRegion ? (
