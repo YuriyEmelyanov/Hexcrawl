@@ -419,6 +419,10 @@ function getHexEmojiLayout(
   ];
 }
 
+function rotateMapPoint(x: number, y: number, sourceHeight: number): { x: number; y: number } {
+  return { x: sourceHeight - y, y: x };
+}
+
 function round3(value: number): number {
   return Number(value.toFixed(3));
 }
@@ -6029,6 +6033,7 @@ export function App() {
     setSelectedHex(START_HEX);
     setHexTerrainByKey(new Map());
     setNextLakeId(1);
+    setIsMapRotated(false);
   };
 
   const selectedHexKey = selectedHex ? hexKey(selectedHex) : null;
@@ -6134,7 +6139,11 @@ export function App() {
   const selectedCandidateBoundaryDebug = selectedRegion ? candidateBoundaryDebugByRegion.get(selectedRegion.id) : undefined;
   const [isInfoCollapsed, setIsInfoCollapsed] = useState(false);
   const [mapScale, setMapScale] = useState(1);
+  const [isMapRotated, setIsMapRotated] = useState(false);
   const mapZoomPercent = Math.round(mapScale * 100);
+  const displayMapWidth = isMapRotated ? positionedHexes.height : positionedHexes.width;
+  const displayMapHeight = isMapRotated ? positionedHexes.width : positionedHexes.height;
+  const mapRotationTransform = isMapRotated ? `translate(${positionedHexes.height} 0) rotate(90)` : undefined;
 
   const updateMapScale = (scale: number) => {
     setMapScale(Math.min(3, Math.max(0.5, scale)));
@@ -6176,11 +6185,26 @@ export function App() {
               <span>{mapZoomPercent}%</span>
               <button type="button" className="secondary" onClick={() => updateMapScale(mapScale + 0.1)} aria-label="Приблизить карту">+</button>
             </div>
+            <button
+              type="button"
+              className="rotate-map-button"
+              onClick={() => setIsMapRotated((value) => !value)}
+              aria-label={isMapRotated ? 'Вернуть исходный поворот карты' : 'Повернуть карту на 90 градусов'}
+              title={isMapRotated ? 'Вернуть исходный поворот карты' : 'Повернуть карту на 90°'}
+            >
+              <svg className="rotate-map-button__icon" viewBox="0 0 64 48" aria-hidden="true" focusable="false">
+                <polygon
+                  points={isMapRotated ? '32,4 56,16 56,32 32,44 8,32 8,16' : '20,4 44,4 56,24 44,44 20,44 8,24'}
+                  className="rotate-map-button__hex"
+                />
+                <text x="32" y="25" className="rotate-map-button__sign">{isMapRotated ? '↺' : '↻'}</text>
+              </svg>
+            </button>
           </div>
           <div className="map-viewport" onWheel={handleMapWheel}>
             <svg
-              viewBox={`0 0 ${positionedHexes.width} ${positionedHexes.height}`}
-              style={{ width: `${positionedHexes.width * mapScale}px`, height: `${positionedHexes.height * mapScale}px` }}
+              viewBox={`0 0 ${displayMapWidth} ${displayMapHeight}`}
+              style={{ width: `${displayMapWidth * mapScale}px`, height: `${displayMapHeight * mapScale}px` }}
             >
             <defs>
               <marker id="river-arrowhead" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="5" markerHeight="5" orient="auto">
@@ -6192,6 +6216,7 @@ export function App() {
                 </clipPath>
               ))}
             </defs>
+            <g className="map-rotation-layer" transform={mapRotationTransform}>
             {positionedHexes.hexes.map((hex) => {
               const meta = metadataMap.get(hex.key);
               const cls = hex.kind === 'candidate' ? 'hex candidate' : meta?.isCenter ? 'hex center' : 'hex region';
@@ -6259,6 +6284,7 @@ export function App() {
                 <line key={segment.key} x1={segment.x1} y1={segment.y1} x2={segment.x2} y2={segment.y2} className={segment.kind === 'trail' ? 'road-trail' : 'road-line'} />
               ))}
             </g>
+            </g>
             <g className="emoji-layer">
               {positionedHexes.hexes.map((hex) => {
                 const meta = metadataMap.get(hex.key);
@@ -6272,13 +6298,16 @@ export function App() {
                 const isPointOfInterest = region?.pointsOfInterest.some((poi) => hexKey(poi) === hex.key) ?? false;
                 const hexEmojis = [...(meta?.isCenter ? [REGION_CENTER_EMOJI] : []), ...(isPointOfInterest ? [POI_EMOJI] : []), ...biomeEmojis];
                 const hexEmojiLayout = getHexEmojiLayout(hexEmojis, hex.x, hex.y, HEX_SIZE);
-                return SHOW_BIOME_EMOJI && hex.kind === 'region' && hex.regionId && region && !isLakeHex ? hexEmojiLayout.map((item, index) => (
-                  <text key={`biome-emoji-${hex.key}-${index}`} x={item.x} y={item.y} textAnchor="middle" dominantBaseline="central" fontSize={item.fontSize} pointerEvents="none">{item.emoji}</text>
-                )) : null;
+                return SHOW_BIOME_EMOJI && hex.kind === 'region' && hex.regionId && region && !isLakeHex ? hexEmojiLayout.map((item, index) => {
+                  const position = isMapRotated ? rotateMapPoint(item.x, item.y, positionedHexes.height) : item;
+                  return (
+                    <text key={`biome-emoji-${hex.key}-${index}`} x={position.x} y={position.y} textAnchor="middle" dominantBaseline="central" fontSize={item.fontSize} pointerEvents="none">{item.emoji}</text>
+                  );
+                }) : null;
               })}
             </g>
             {debugRivers ? (
-              <g className="river-debug-layer">
+              <g className="river-debug-layer" transform={mapRotationTransform}>
                 {Array.from(riverGraphsByRegion.values()).flatMap((graph, graphIndex) => Array.from(graph.nodes.values()).map((node) => (
                   <circle key={`dbg-all-${graphIndex}-${node.key}`} cx={node.x + riverOffset.x} cy={node.y + riverOffset.y} r={2} className="dbg-node-all" />
                 )))}
