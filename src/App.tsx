@@ -1307,11 +1307,11 @@ function riverEndpointTouchesCandidateBoundary(
   const endpointVertex = vertexPath[endpointIndex];
   const endpointEdgeKey = getRiverEdgeKey(endpointVertex, vertexPath[adjacentIndex]);
 
-  // The river must leave/enter the region along a candidate-facing edge. A shared
-  // corner is too broad: the same vertex can also belong to an edge that goes to
-  // another existing region, which would apply candidate-only fullness rules to
-  // the wrong river.
-  return boundaries.some((boundary) => boundary.edgeKeys.has(endpointEdgeKey));
+  // Prefer a candidate-facing endpoint edge, but also accept the terminal
+  // endpoint vertex itself. Some valid rivers end on a candidate hex corner while
+  // their last drawn segment follows another incident region edge, so edge-only
+  // matching misses a downstream exit that is still present on the candidate.
+  return boundaries.some((boundary) => boundary.edgeKeys.has(endpointEdgeKey) || boundary.vertexKeys.has(endpointVertex.key));
 }
 
 function getConfluenceTributaryFullnessByIndex(
@@ -1364,6 +1364,14 @@ function buildRiverFullnessRuleState(
   };
 }
 
+function isDownstreamOfConfluenceFullnessIncrease(
+  fromIndex: number,
+  ruleState: RiverFullnessRuleState
+): boolean {
+  return ruleState.allowConfluenceFullnessIncrease
+    && Array.from(ruleState.confluenceTributaryFullnessByIndex.keys()).some((confluenceIndex) => confluenceIndex < fromIndex);
+}
+
 function applyRiverFullnessRules(
   currentDownstreamFullness: RiverFullness,
   fromIndex: number,
@@ -1372,13 +1380,14 @@ function applyRiverFullnessRules(
 ): { downstreamFullness: RiverFullness; sectorFullness: RiverFullness } {
   let downstreamFullness = currentDownstreamFullness;
 
-  // A confluence increases the main river only when that extra water can leave
-  // the known map through a downstream candidate-facing edge. Interior
-  // confluences without a downstream candidate keep the existing fullness.
-  if (ruleState.allowConfluenceFullnessIncrease) {
+  // A confluence raises the carried downstream fullness when the combined flow
+  // has a downstream candidate exit. The raised value then propagates through
+  // subsequent sectors until the river reaches that candidate-facing endpoint.
+  const tributaryFullnessAtSectorStart = ruleState.confluenceTributaryFullnessByIndex.get(fromIndex) ?? null;
+  if (ruleState.allowConfluenceFullnessIncrease && tributaryFullnessAtSectorStart !== null) {
     downstreamFullness = getIncreasedRiverFullnessAfterTributary(
       downstreamFullness,
-      ruleState.confluenceTributaryFullnessByIndex.get(fromIndex) ?? null
+      tributaryFullnessAtSectorStart
     );
   }
 
@@ -1522,7 +1531,9 @@ function assignRiverSectors(rivers: River[], lakes: Lake[], regions: Region[] = 
         ) as RiverSector['endReason'];
 
         if (startReason === 'region_boundary' && knownSectorFullness && knownSectorFullness !== downstreamFullness) {
-          downstreamFullness = knownSectorFullness;
+          const keepsConfluenceFullness = knownSectorFullness < downstreamFullness
+            && isDownstreamOfConfluenceFullnessIncrease(fromIndex, riverFullnessRuleState);
+          if (!keepsConfluenceFullness) downstreamFullness = knownSectorFullness;
         } else if (baseFullness > downstreamFullness) {
           downstreamFullness = baseFullness;
         }
