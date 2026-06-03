@@ -5712,12 +5712,14 @@ export function App() {
     const maxX = Math.max(...withPixels.map((h) => h.x));
     const minY = Math.min(...withPixels.map((h) => h.y));
     const maxY = Math.max(...withPixels.map((h) => h.y));
-    const offsetX = -minX + HEX_SIZE * 2;
-    const offsetY = -minY + HEX_SIZE * 2;
+    const hexWidth = HEX_SIZE * SQRT3;
+    const hexHeight = HEX_SIZE * 2;
+    const offsetX = -minX + hexWidth / 2;
+    const offsetY = -minY + HEX_SIZE;
 
     return {
-      width: maxX - minX + HEX_SIZE * 4,
-      height: maxY - minY + HEX_SIZE * 4,
+      width: maxX - minX + hexWidth,
+      height: maxY - minY + hexHeight,
       hexes: withPixels.map((h) => ({ ...h, x: h.x + offsetX, y: h.y + offsetY }))
     };
   }, [allRegionHexes, candidateHexes, metadataMap]);
@@ -5730,8 +5732,8 @@ export function App() {
     if (all.length === 0) return [];
     const minBaseX = Math.min(...all.map((h) => toPixel(h.q, h.r).x));
     const minBaseY = Math.min(...all.map((h) => toPixel(h.q, h.r).y));
-    const offsetX = HEX_SIZE * 2 - minBaseX;
-    const offsetY = HEX_SIZE * 2 - minBaseY;
+    const offsetX = (HEX_SIZE * SQRT3) / 2 - minBaseX;
+    const offsetY = HEX_SIZE - minBaseY;
     return rivers.flatMap((river) => renderRiverSegments(river, offsetX, offsetY, lakeEdgeKeys));
   }, [positionedHexes, rivers, lakeEdgeKeys]);
   const riverDirectionArrows = useMemo(() => {
@@ -5739,8 +5741,8 @@ export function App() {
     if (all.length === 0) return [];
     const minBaseX = Math.min(...all.map((h) => toPixel(h.q, h.r).x));
     const minBaseY = Math.min(...all.map((h) => toPixel(h.q, h.r).y));
-    const offsetX = HEX_SIZE * 2 - minBaseX;
-    const offsetY = HEX_SIZE * 2 - minBaseY;
+    const offsetX = (HEX_SIZE * SQRT3) / 2 - minBaseX;
+    const offsetY = HEX_SIZE - minBaseY;
     return rivers.flatMap((river) => renderRiverDirectionArrows(river, offsetX, offsetY, lakeEdgeKeys));
   }, [positionedHexes, rivers, lakeEdgeKeys]);
   const roadSegments = useMemo(() => {
@@ -5748,7 +5750,7 @@ export function App() {
     if (all.length === 0) return [];
     const minBaseX = Math.min(...all.map((h) => toPixel(h.q, h.r).x));
     const minBaseY = Math.min(...all.map((h) => toPixel(h.q, h.r).y));
-    return renderRoadSegments(roads, HEX_SIZE * 2 - minBaseX, HEX_SIZE * 2 - minBaseY);
+    return renderRoadSegments(roads, (HEX_SIZE * SQRT3) / 2 - minBaseX, HEX_SIZE - minBaseY);
   }, [positionedHexes, roads]);
 
   const riverOffset = useMemo(() => {
@@ -5756,7 +5758,7 @@ export function App() {
     if (all.length === 0) return { x: 0, y: 0 };
     const minBaseX = Math.min(...all.map((h) => toPixel(h.q, h.r).x));
     const minBaseY = Math.min(...all.map((h) => toPixel(h.q, h.r).y));
-    return { x: HEX_SIZE * 2 - minBaseX, y: HEX_SIZE * 2 - minBaseY };
+    return { x: (HEX_SIZE * SQRT3) / 2 - minBaseX, y: HEX_SIZE - minBaseY };
   }, [positionedHexes]);
   const lakeVerticesDebug = useMemo(
     () => drawLakeVerticesDebug(lakeVertices, riverOffset.x, riverOffset.y),
@@ -6172,9 +6174,6 @@ export function App() {
         <div className="map-card">
           <div className="map-toolbar" aria-label="Управление картой">
             <div className="controls">
-              <button onClick={() => addRegionToMap(START_HEX)} disabled={regions.length > 0}>
-                Сгенерировать регион
-              </button>
               <button onClick={resetMap} className="secondary">Сбросить</button>
               <button onClick={() => setDebugRivers((v) => !v)} className="secondary">
                 Debug rivers / Отладка рек: {debugRivers ? 'ON' : 'OFF'}
@@ -6204,6 +6203,7 @@ export function App() {
           <div className="map-viewport" onWheel={handleMapWheel}>
             <svg
               viewBox={`0 0 ${displayMapWidth} ${displayMapHeight}`}
+              preserveAspectRatio="xMinYMin meet"
               style={{ width: `${displayMapWidth * mapScale}px`, height: `${displayMapHeight * mapScale}px` }}
             >
             <defs>
@@ -6365,7 +6365,7 @@ export function App() {
             </button>
             {!isInfoCollapsed ? (
               <div className="info-body">
-          {regions.length === 0 ? <p>Нажмите «Сгенерировать регион», чтобы создать первый регион от стартового гекса 0/0.</p> : null}
+          {regions.length === 0 ? <p>Нажмите на стартовый гекс 0/0 на карте, чтобы создать первый регион.</p> : null}
           {lastRegion ? (
             <>
               <p>Регионов: {regions.length}</p>
