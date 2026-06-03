@@ -5126,7 +5126,7 @@ function getWildRoadCandidates(options: {
       if (usedEndpointKeys.has(hexKey(targetEndpointHex))) continue;
       const crossedRiverCount = countRoadPathRiverCrossings(innerPath, rivers);
       const targetDistanceFromStartRoadCenter = target.kind === 'candidate' && startRoadCenterHexes.length > 0
-        ? Math.max(...startRoadCenterHexes.map((centerHex) => hexDistance(centerHex, target.outsideHex)))
+        ? Math.max(...startRoadCenterHexes.map((centerHex) => hexDistance(centerHex, target.outsideHex))) - hexDistance(start.entryHex, target.entryHex)
         : 0;
       const candidate: WildRoadCandidate = {
         startRoadId: start.roadId,
