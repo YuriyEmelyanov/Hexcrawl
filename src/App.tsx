@@ -4638,6 +4638,12 @@ function getRegionBorderHexes(region: Region): AxialHex[] {
   return region.hexes.filter((hex) => getHexNeighbors(hex).some((neighbor) => !regionKeys.has(hexKey(neighbor))));
 }
 
+function getCandidateFacingRegionBorderHexes(region: Region, candidateHexes: AxialHex[]): AxialHex[] {
+  const candidateKeys = new Set(candidateHexes.map(hexKey));
+  if (candidateKeys.size === 0) return [];
+  return getRegionBorderHexes(region).filter((hex) => getHexNeighbors(hex).some((neighbor) => candidateKeys.has(hexKey(neighbor))));
+}
+
 function isAdjacentToRoadHex(hex: AxialHex, roads: Road[]): boolean {
   const roadHexKeys = getRoadHexKeys(roads);
   return getHexNeighbors(hex).some((neighbor) => roadHexKeys.has(hexKey(neighbor)));
@@ -6163,9 +6169,11 @@ function generateRoadsForRegion(options: {
 
   const buildSupplementalRoadToExistingRoad = (anchorHex: AxialHex, logLabel: string): boolean => {
     const roadTargets = getRoadHexesInRegion(region, built).filter((hex) => !isLakeHex(hex, hexTerrainByKey));
-    const startHexes = getRegionBorderHexes(region)
-      .filter((hex) => getSupplementalRoadStartHexes(anchorHex).some((startHex) => isSameHex(startHex, hex)))
+    const availableStartHexes = getSupplementalRoadStartHexes(anchorHex);
+    const collectStartHexes = (borderHexes: AxialHex[]) => borderHexes
+      .filter((hex) => availableStartHexes.some((startHex) => isSameHex(startHex, hex)))
       .filter((hex) => !isAdjacentToRoadHex(hex, built));
+    const startHexes = collectStartHexes(getCandidateFacingRegionBorderHexes(region, candidateHexes));
     const candidates = collectDirectSupplementalCandidates({ startHexes, targetHexes: roadTargets, anchorHex, maxAlternatives: 6 });
     const best = chooseBestSupplementalSettledRoadCandidate(candidates);
     if (!best) {
