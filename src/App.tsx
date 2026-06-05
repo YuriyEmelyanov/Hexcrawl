@@ -1663,6 +1663,50 @@ function getRiverConfluences(rivers: River[]): RiverConfluence[] {
   });
 }
 
+
+function buildRiverDownstreamAdjacency(rivers: River[]): Map<number, Set<number>> {
+  const downstreamByRiverId = new Map<number, Set<number>>();
+  for (const confluence of getRiverConfluences(rivers)) {
+    const downstream = downstreamByRiverId.get(confluence.tributaryRiverId) ?? new Set<number>();
+    downstream.add(confluence.mainRiverId);
+    downstreamByRiverId.set(confluence.tributaryRiverId, downstream);
+  }
+  return downstreamByRiverId;
+}
+
+function riverDrainsInto(
+  downstreamByRiverId: Map<number, Set<number>>,
+  sourceRiverId: number,
+  targetRiverId: number
+): boolean {
+  // Intentionally walks the full downstream chain, so A -> B -> C means A drains into C.
+  if (sourceRiverId === targetRiverId) return true;
+  const queue = [sourceRiverId];
+  const visited = new Set<number>();
+
+  while (queue.length > 0) {
+    const currentRiverId = queue.shift()!;
+    if (visited.has(currentRiverId)) continue;
+    visited.add(currentRiverId);
+
+    for (const downstreamRiverId of downstreamByRiverId.get(currentRiverId) ?? []) {
+      if (downstreamRiverId === targetRiverId) return true;
+      if (!visited.has(downstreamRiverId)) queue.push(downstreamRiverId);
+    }
+  }
+
+  return false;
+}
+
+function wouldCreateRiverDrainageCycle(
+  rivers: River[],
+  upstreamRiverId: number,
+  downstreamRiverId: number
+): boolean {
+  if (upstreamRiverId === downstreamRiverId) return true;
+  return riverDrainsInto(buildRiverDownstreamAdjacency(rivers), downstreamRiverId, upstreamRiverId);
+}
+
 function getRiverConfluencesForRegion(region: Region, rivers: River[]): RiverConfluence[] {
   const regionVertexKeys = new Set<string>();
   for (const hex of region.hexes) {
@@ -2537,6 +2581,10 @@ function mergeRiversWithConnector(
   const downstreamRiver = existingRivers.find((river) => river.id === downstreamRiverId);
   if (!upstreamRiver || !downstreamRiver) {
     console.warn('Cannot merge rivers: missing river', { upstreamRiverId, downstreamRiverId });
+    return null;
+  }
+  if (wouldCreateRiverDrainageCycle(existingRivers, upstreamRiverId, downstreamRiverId)) {
+    console.warn('Cannot merge rivers: connection would create a drainage cycle', { upstreamRiverId, downstreamRiverId });
     return null;
   }
   if (!upstreamRiver.vertexPath?.length || !downstreamRiver.vertexPath?.length || connectorPath.length < 2) {
@@ -3581,10 +3629,93 @@ function generateRiverForRegion(
     const outgoingEndpoints = touchingEndpoints.filter((endpoint) => endpoint.endpointType === 'start');
     const terrainMap = hexTerrainByKey ?? new Map<string, HexTerrainData>();
 
+    const buildMountainIncomingBoundaryFallback = (
+      incomingEndpoint: RiverEndpointTouch,
+      fallbackReason: string
+    ): RiverGenerationResult | null => {
+      const endpointPath = findBestFreeRiverPathFromEndpoints(
+        [incomingEndpoint.vertex],
+        redVertices,
+        purpleVertices,
+        riverGraph,
+        new Set(usedRiverEdges),
+        region.centerHex,
+        existingRiverVertexKeys
+      );
+
+      if (!endpointPath) {
+        console.warn('Mountain incoming fallback failed: no boundary path', {
+          regionId: region.id,
+          incomingRiverId: incomingEndpoint.riverId,
+          fallbackReason,
+        });
+        return null;
+      }
+
+      const { controlPoints, path } = endpointPath;
+      if (!validateRiverPathViaControlPoints(
+        path,
+        controlPoints,
+        riverGraph,
+        redVertices,
+        [incomingEndpoint.vertex],
+        usedRiverEdges,
+        existingRiverVertexKeys,
+        new Set([incomingEndpoint.vertex.key])
+      )) {
+        console.warn('Mountain incoming fallback failed: boundary path validation failed', {
+          regionId: region.id,
+          incomingRiverId: incomingEndpoint.riverId,
+          fallbackReason,
+        });
+        return null;
+      }
+      if (!riverPathTouchesCenterHex(path, region.centerHex, riverGraph)) {
+        console.warn('Mountain incoming fallback failed: boundary path does not touch center', {
+          regionId: region.id,
+          incomingRiverId: incomingEndpoint.riverId,
+          fallbackReason,
+        });
+        return null;
+      }
+
+      const nextRivers = existingRivers.map((river) => {
+        if (river.id !== incomingEndpoint.riverId) return river;
+        return {
+          ...river,
+          vertexPath: [...river.vertexPath, ...path.slice(1)],
+          sectors: appendRiverPathSector(river, path, getRiverDownstreamFullness(river), region.id)
+        };
+      });
+
+      for (const river of nextRivers) {
+        validateRiverDirection(river);
+        validateRiverContinuity(river);
+      }
+      validateNoDuplicateRiverEdges(nextRivers);
+
+      console.log('Mountain incoming fallback: incoming river extended to boundary; outgoing rivers will be connected separately', {
+        regionId: region.id,
+        incomingRiverId: incomingEndpoint.riverId,
+        fallbackReason,
+      });
+      return finalizeRiverGenerationForRegion(region, regions, terrainMap, riverGraph, nextRivers, candidateHexes ?? [], candidateVertices, neighborRegionVertices);
+    };
+
     if (region.heightLevel === 3 && outgoingEndpoints.length > 0) {
       const sortedOutgoingEndpoints = [...outgoingEndpoints].sort((a, b) => a.riverId - b.riverId);
-      const mainOutgoingEndpoint = sortedOutgoingEndpoints[0];
-      const secondaryOutgoingEndpoints = sortedOutgoingEndpoints.slice(1);
+      const sortedIncomingEndpointsForMain = [...incomingEndpoints].sort((a, b) => a.riverId - b.riverId);
+      const mainIncomingEndpoint = sortedIncomingEndpointsForMain[0];
+      const mainOutgoingEndpoint = mainIncomingEndpoint
+        ? sortedOutgoingEndpoints.find((endpoint) => !wouldCreateRiverDrainageCycle(existingRivers, mainIncomingEndpoint.riverId, endpoint.riverId))
+        : sortedOutgoingEndpoints[0];
+      if (!mainOutgoingEndpoint) {
+        const fallbackResult = mainIncomingEndpoint
+          ? buildMountainIncomingBoundaryFallback(mainIncomingEndpoint, 'mountain_main_outgoing_would_create_cycle')
+          : null;
+        return fallbackResult ?? { success: false, rivers: existingRivers, reason: 'mountain_main_outgoing_would_create_cycle' };
+      }
+      const secondaryOutgoingEndpoints = sortedOutgoingEndpoints.filter((endpoint) => endpoint.riverId !== mainOutgoingEndpoint.riverId);
       let nextRivers = existingRivers;
       const blockedEdgeKeys = new Set(usedRiverEdges);
       const usedLakeIds = new Set<number>();
@@ -3603,7 +3734,7 @@ function generateRiverForRegion(
       });
 
       if (incomingEndpoints.length > 0) {
-        const mainIncomingEndpoint = [...incomingEndpoints].sort((a, b) => a.riverId - b.riverId)[0];
+        if (!mainIncomingEndpoint) return { success: false, rivers: existingRivers, reason: 'mountain_main_incoming_not_found' };
         const connectorPath = buildRiverPathViaControlPoints(
           { startVertex: mainIncomingEndpoint.vertex, endVertex: mainOutgoingEndpoint.vertex },
           riverGraph,
@@ -3617,9 +3748,15 @@ function generateRiverForRegion(
           || !connectorEdgeKeys
           || connectorEdgeKeys.some((pathEdgeKey) => blockedEdgeKeys.has(pathEdgeKey))
           || !riverPathAvoidsOccupiedVertices(connectorPath, existingRiverVertexKeys, new Set([mainIncomingEndpoint.vertex.key, mainOutgoingEndpoint.vertex.key]))
-        ) return { success: false, rivers: existingRivers, reason: 'mountain_main_outgoing_connector_not_found' };
+        ) {
+          const fallbackResult = buildMountainIncomingBoundaryFallback(mainIncomingEndpoint, 'mountain_main_outgoing_connector_not_found');
+          return fallbackResult ?? { success: false, rivers: existingRivers, reason: 'mountain_main_outgoing_connector_not_found' };
+        }
         const merged = mergeRiversWithConnector(nextRivers, mainIncomingEndpoint.riverId, mainOutgoingEndpoint.riverId, connectorPath, undefined, region.id);
-        if (!merged) return { success: false, rivers: existingRivers, reason: 'mountain_main_outgoing_merge_failed' };
+        if (!merged) {
+          const fallbackResult = buildMountainIncomingBoundaryFallback(mainIncomingEndpoint, 'mountain_main_outgoing_merge_failed');
+          return fallbackResult ?? { success: false, rivers: existingRivers, reason: 'mountain_main_outgoing_merge_failed' };
+        }
         nextRivers = merged;
         for (const edgeKey of connectorEdgeKeys) blockedEdgeKeys.add(edgeKey);
       } else {
@@ -3657,9 +3794,21 @@ function generateRiverForRegion(
         } else if (selectedLake) {
           usedLakeIds.add(selectedLake.lakeId);
         }
-        if (!selectedPath) return { success: false, rivers: existingRivers, reason: 'mountain_secondary_outgoing_path_not_found' };
+        if (!selectedPath) {
+          console.warn('Could not eagerly connect secondary mountain outgoing river; deferring to final outgoing connector pass', {
+            regionId: region.id,
+            outgoingRiverId: outgoingEndpoint.riverId,
+          });
+          continue;
+        }
         const pathEdgeKeys = getRiverPathEdgeKeys(selectedPath, riverGraph);
-        if (!pathEdgeKeys) return { success: false, rivers: existingRivers, reason: 'mountain_secondary_outgoing_edge_keys_not_found' };
+        if (!pathEdgeKeys) {
+          console.warn('Secondary mountain outgoing river has invalid edge keys; deferring to final outgoing connector pass', {
+            regionId: region.id,
+            outgoingRiverId: outgoingEndpoint.riverId,
+          });
+          continue;
+        }
         nextRivers = nextRivers.map((river) => river.id !== outgoingEndpoint.riverId
           ? river
           : { ...river, vertexPath: [...selectedPath.slice(0, -1), ...river.vertexPath], sectors: prependRiverPathSector(river, selectedPath, chooseRiverFullnessFromAdjacentSectors(selectedPath, existingRivers, getNewRiverFullnessForHeight(region.heightLevel)), region.id) });
@@ -3809,6 +3958,7 @@ function generateRiverForRegion(
 
       if (candidatePairs.length > 0) {
         const validConnectors = candidatePairs
+          .filter((pair) => !wouldCreateRiverDrainageCycle(existingRivers, pair.left.riverId, pair.right.riverId))
           .map((pair) => {
             const connectorPath = buildRiverPathViaControlPoints(
               { startVertex: pair.left.vertex, endVertex: pair.right.vertex },
