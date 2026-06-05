@@ -4745,6 +4745,25 @@ function normalizeSettledRegionRoadIds(options: {
   };
 }
 
+type SupplementalSettledRoadCandidate = RoadCandidatePath & { startHex: AxialHex; anchorDistance: number };
+
+function chooseBestSupplementalSettledRoadCandidate(candidates: SupplementalSettledRoadCandidate[]): SupplementalSettledRoadCandidate | null {
+  if (candidates.length === 0) return null;
+  const maxPoiCount = Math.max(...candidates.map((c) => c.touchedPoiCount));
+  let best = candidates.filter((c) => c.touchedPoiCount === maxPoiCount);
+
+  const minRiverCrossings = Math.min(...best.map((c) => c.crossedRiverCount));
+  best = best.filter((c) => c.crossedRiverCount === minRiverCrossings);
+
+  const maxAnchorDistance = Math.max(...best.map((c) => c.anchorDistance));
+  best = best.filter((c) => c.anchorDistance === maxAnchorDistance);
+
+  const minLength = Math.min(...best.map((c) => c.extendedPath.length));
+  best = best.filter((c) => c.extendedPath.length === minLength);
+
+  return randomFrom(best);
+}
+
 function chooseBestThirdRoadCandidate(candidates: RoadCandidatePath[]): RoadCandidatePath | null {
   if (candidates.length === 0) return null;
   const maxPoiCount = Math.max(...candidates.map((c) => c.touchedPoiCount));
@@ -6019,7 +6038,8 @@ function generateRoadsForRegion(options: {
     return true;
   };
   const usedIncomingRoadIds = new Set<number>();
-  const buildBestIncomingRoadToTargets = (targetHexes: AxialHex[], logLabel: string): boolean => {
+  let firstIncomingEntryHex: AxialHex | null = null;
+  const buildBestIncomingRoadToTargets = (targetHexes: AxialHex[], logLabel: string): SettledIncomingRoadCandidate | null => {
     const candidates = incoming
       .filter((inc) => !usedIncomingRoadIds.has(inc.roadId))
       .flatMap((inc) => collectSettledIncomingRoadPathsToTarget({
@@ -6035,7 +6055,7 @@ function generateRoadsForRegion(options: {
     const best = chooseBestSettledIncomingRoadCandidate(candidates);
     if (!best) {
       console.log(logLabel, { regionId: region.id, built: false, reason: 'no valid incoming road path' });
-      return false;
+      return null;
     }
 
     const added = addRoadFromPath(best.extendedPath, 'road', [best.incoming.endpointHex, best.incoming.entryHex, best.targetHex]);
@@ -6050,11 +6070,132 @@ function generateRoadsForRegion(options: {
       crossedRiverCount: best.crossedRiverCount,
       pathLength: best.extendedPath.length
     });
-    if (!added) return false;
+    if (!added) return null;
 
     usedIncomingRoadIds.add(best.incoming.roadId);
+    if (!firstIncomingEntryHex) firstIncomingEntryHex = best.incoming.entryHex;
+    markPoiOnPathAsUsed(best.extendedPath, region, usedRoadPoiKeys);
+    return best;
+  };
+
+  const getSupplementalRoadStartHexes = (anchorHex: AxialHex, excludeHexKeys = new Set<string>()) => {
+    const roadHexKeys = getRoadHexKeys(built);
+    const uniqueStarts = new Map<string, AxialHex>();
+    for (const hex of [...getUnusedPoiTargets(region, usedRoadPoiKeys, hexTerrainByKey), ...region.hexes]) {
+      const key = hexKey(hex);
+      if (uniqueStarts.has(key)) continue;
+      if (excludeHexKeys.has(key)) continue;
+      if (isSameHex(hex, region.centerHex)) continue;
+      if (isLakeHex(hex, hexTerrainByKey)) continue;
+      if (roadHexKeys.has(key)) continue;
+      uniqueStarts.set(key, hex);
+    }
+    return Array.from(uniqueStarts.values()).sort((a, b) => hexDistance(b, anchorHex) - hexDistance(a, anchorHex));
+  };
+
+  const collectDirectSupplementalCandidates = (options: {
+    startHexes: AxialHex[];
+    targetHexes: AxialHex[];
+    anchorHex: AxialHex;
+    maxAlternatives: number;
+  }): SupplementalSettledRoadCandidate[] => {
+    const candidates: SupplementalSettledRoadCandidate[] = [];
+    const uniqueTargets = options.targetHexes.filter((targetHex, index, allTargets) => allTargets.findIndex((other) => hexKey(other) === hexKey(targetHex)) === index);
+    for (const startHex of options.startHexes) {
+      for (const targetHex of uniqueTargets) {
+        if (isSameHex(startHex, targetHex)) continue;
+        const basePaths = findAlternativeRoadPathsWithinRegion({
+          region,
+          from: startHex,
+          target: targetHex,
+          roads: built,
+          hexTerrainByKey,
+          maxAlternatives: options.maxAlternatives
+        });
+        for (const basePath of basePaths) {
+          if (!canAddRoadPath({ path: basePath, roads: built, region, hexTerrainByKey, allowedRoadHexes: [startHex, targetHex] })) continue;
+          const touchedPoiKeys = getPoiKeysOnRoadPath(basePath, region);
+          const touchedPoiCount = Array.from(touchedPoiKeys).filter((key) => !usedRoadPoiKeys.has(key)).length;
+          candidates.push({
+            startHex,
+            anchorDistance: hexDistance(startHex, options.anchorHex),
+            basePath,
+            extendedPath: basePath,
+            targetHex,
+            targetIsPoi: isPointOfInterestHex(targetHex, region),
+            crossedRiverCount: countRoadPathRiverCrossings(basePath, rivers),
+            touchedPoiCount,
+            touchedPoiKeys
+          });
+        }
+      }
+    }
+    return candidates;
+  };
+
+  const buildSupplementalRoadToCenter = (anchorHex: AxialHex, logLabel: string): boolean => {
+    const candidates = collectDirectSupplementalCandidates({
+      startHexes: getSupplementalRoadStartHexes(anchorHex, new Set([hexKey(region.centerHex)])),
+      targetHexes: [region.centerHex],
+      anchorHex,
+      maxAlternatives: 6
+    });
+    const best = chooseBestSupplementalSettledRoadCandidate(candidates);
+    if (!best) {
+      console.log(logLabel, { regionId: region.id, built: false, reason: 'no valid supplemental center road path' });
+      return false;
+    }
+    const added = addRoadFromPath(best.extendedPath, 'road', [best.startHex, region.centerHex]);
+    console.log(logLabel, {
+      regionId: region.id,
+      built: added,
+      startHex: hexKey(best.startHex),
+      targetHex: hexKey(region.centerHex),
+      anchorDistance: best.anchorDistance,
+      touchedPoiCount: best.touchedPoiCount,
+      crossedRiverCount: best.crossedRiverCount,
+      pathLength: best.extendedPath.length
+    });
+    if (!added) return false;
     markPoiOnPathAsUsed(best.extendedPath, region, usedRoadPoiKeys);
     return true;
+  };
+
+  const buildSupplementalRoadToExistingRoad = (anchorHex: AxialHex, logLabel: string): boolean => {
+    const roadTargets = getRoadHexesInRegion(region, built).filter((hex) => !isLakeHex(hex, hexTerrainByKey));
+    const startHexes = getRegionBorderHexes(region)
+      .filter((hex) => getSupplementalRoadStartHexes(anchorHex).some((startHex) => isSameHex(startHex, hex)))
+      .filter((hex) => !isAdjacentToRoadHex(hex, built));
+    const candidates = collectDirectSupplementalCandidates({ startHexes, targetHexes: roadTargets, anchorHex, maxAlternatives: 6 });
+    const best = chooseBestSupplementalSettledRoadCandidate(candidates);
+    if (!best) {
+      console.log(logLabel, { regionId: region.id, built: false, reason: 'no valid supplemental road-to-road path' });
+      return false;
+    }
+    const added = addRoadFromPath(best.extendedPath, 'road', [best.startHex, best.targetHex]);
+    console.log(logLabel, {
+      regionId: region.id,
+      built: added,
+      startHex: hexKey(best.startHex),
+      targetHex: hexKey(best.targetHex),
+      anchorDistance: best.anchorDistance,
+      touchedPoiCount: best.touchedPoiCount,
+      crossedRiverCount: best.crossedRiverCount,
+      pathLength: best.extendedPath.length
+    });
+    if (!added) return false;
+    markPoiOnPathAsUsed(best.extendedPath, region, usedRoadPoiKeys);
+    return true;
+  };
+
+  const enforceSettledRoadMinimum = (anchorHex: AxialHex) => {
+    const centerRoadMinimum = Math.min(2, getSettledMainRoadLimit(region));
+    while (getRoadBuildCountForSettledRegion(region, built) < centerRoadMinimum) {
+      if (!buildSupplementalRoadToCenter(anchorHex, 'Supplemental settled center road result')) break;
+    }
+    while (getRoadBuildCountForSettledRegion(region, built) < getSettledMainRoadLimit(region)) {
+      if (!buildSupplementalRoadToExistingRoad(anchorHex, 'Supplemental settled road-to-road result')) break;
+    }
   };
 
   if (incoming.length > 0) {
@@ -6069,6 +6210,7 @@ function generateRoadsForRegion(options: {
       if (!buildBestIncomingRoadToTargets(roadTargets, 'Additional settled incoming road result')) break;
     }
 
+    enforceSettledRoadMinimum(firstIncomingEntryHex ?? region.centerHex);
     return finalizeSettledRoads(connectRemainingPoiWithTrails({ region, roads: built, rivers, hexTerrainByKey, nextRoadId }));
   }
   if (incoming.length === 0) {
@@ -6089,11 +6231,15 @@ function generateRoadsForRegion(options: {
       }
     }
     if (!firstBest) {
+      enforceSettledRoadMinimum(region.centerHex);
       return finalizeSettledRoads(connectRemainingPoiWithTrails({ region, roads: built, rivers, hexTerrainByKey, nextRoadId }));
     }
     if (addRoadFromPath(firstBest.extendedPath, 'road', [region.centerHex, firstBest.targetHex, firstBest.extendedPath[firstBest.extendedPath.length - 1]], new Set([hexKey(firstBest.targetHex)]))) {
       markPoiOnPathAsUsed(firstBest.extendedPath, region, usedRoadPoiKeys);
-    } else return finalizeSettledRoads(connectRemainingPoiWithTrails({ region, roads: built, rivers, hexTerrainByKey, nextRoadId }));
+    } else {
+      enforceSettledRoadMinimum(region.centerHex);
+      return finalizeSettledRoads(connectRemainingPoiWithTrails({ region, roads: built, rivers, hexTerrainByKey, nextRoadId }));
+    }
     const firstAnchorHex = firstBest.targetHex;
     const firstPathKeys = new Set(firstBest.extendedPath.map(hexKey).filter((key) => key !== hexKey(region.centerHex)));
     const secondPoiTargets = getUnusedPoiTargets(region, usedRoadPoiKeys, hexTerrainByKey)
@@ -6220,6 +6366,7 @@ function generateRoadsForRegion(options: {
         });
       }
     }
+    enforceSettledRoadMinimum(firstAnchorHex ?? region.centerHex);
     return finalizeSettledRoads(connectRemainingPoiWithTrails({ region, roads: built, rivers, hexTerrainByKey, nextRoadId }));
   }
   let attempts = 0;
