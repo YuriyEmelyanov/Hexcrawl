@@ -2433,15 +2433,16 @@ function validateRiverContinuity(river: River): boolean {
 function findRiverEndpointsTouchingRegion(region: Region, rivers: River[], riverGraph: RiverGraph): RiverEndpointTouch[] {
   void region;
   const endpoints: RiverEndpointTouch[] = [];
-  const graphKeys = new Set(Array.from(riverGraph.nodes.keys()));
   for (const river of rivers) {
     if (!river.vertexPath || river.vertexPath.length < 1) continue;
     const startVertex = river.vertexPath[0];
     const endVertex = river.vertexPath[river.vertexPath.length - 1];
-    if (startVertex && graphKeys.has(startVertex.key)) {
+    const startNode = startVertex ? riverGraph.nodes.get(startVertex.key) : undefined;
+    const endNode = endVertex ? riverGraph.nodes.get(endVertex.key) : undefined;
+    if (startVertex && startNode?.isRegionBoundaryVertex) {
       endpoints.push({ riverId: river.id, endpointType: 'start', vertex: startVertex });
     }
-    if (endVertex && graphKeys.has(endVertex.key)) {
+    if (endVertex && endNode?.isRegionBoundaryVertex) {
       endpoints.push({ riverId: river.id, endpointType: 'end', vertex: endVertex });
     }
   }
@@ -2770,6 +2771,7 @@ function getExistingRiverEndpointVerticesInRegion(region: Region, rivers: River[
   const vertices: RiverVertex[] = [];
   for (const node of riverGraph.nodes.values()) {
     if (!endpointKeys.has(node.key)) continue;
+    if (!node.isRegionBoundaryVertex) continue;
     vertices.push({ key: node.key, x: node.x, y: node.y });
   }
   return vertices;
