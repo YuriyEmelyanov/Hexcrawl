@@ -345,6 +345,25 @@ function getRoadHexKeys(roads: Road[]): Set<string> {
   for (const road of roads) for (const s of road.segments) { keys.add(hexKey(s.from)); keys.add(hexKey(s.to)); }
   return keys;
 }
+function cloneRoads(roads: Road[]): Road[] {
+  return roads.map((road) => ({
+    ...road,
+    segments: road.segments.map((segment) => ({
+      from: { ...segment.from },
+      to: { ...segment.to },
+      kind: segment.kind
+    }))
+  }));
+}
+function pruneRoadsToRegionHexes(roads: Road[], regions: Region[]): Road[] {
+  const regionHexKeys = new Set(regions.flatMap((region) => region.hexes.map(hexKey)));
+  return roads
+    .map((road) => ({
+      ...road,
+      segments: road.segments.filter((segment) => regionHexKeys.has(hexKey(segment.from)) && regionHexKeys.has(hexKey(segment.to)))
+    }))
+    .filter((road) => road.segments.length > 0);
+}
 function getRoadEndpoints(road: Road, segmentKind?: RoadKind): AxialHex[] {
   const deg = new Map<string, { hex: AxialHex; d: number }>();
   for (const s of road.segments) {
@@ -6030,7 +6049,7 @@ function generateRoadsForRegion(options: {
   const { region, regions, roads, hexTerrainByKey, rivers, candidateHexes } = options;
   const usedRoadPoiKeys = new Set<string>();
   let nextRoadId = options.nextRoadId;
-  let built = [...roads];
+  let built = cloneRoads(roads);
   const settled = region.biomeLandType === 'settled';
   if (!settled) {
     let builtAnyWildRoad = false;
@@ -6824,7 +6843,7 @@ export function App() {
         regions,
         candidateHexes,
         rivers,
-        roads,
+        roads: cloneRoads(roads),
         hexTerrainByKey,
         nextLakeId,
         nextRoadId
@@ -6881,7 +6900,7 @@ export function App() {
     setRegions(snapshot.regions);
     setCandidateHexes(snapshot.candidateHexes);
     setRivers(snapshot.rivers);
-    setRoads(snapshot.roads);
+    setRoads(pruneRoadsToRegionHexes(cloneRoads(snapshot.roads), snapshot.regions));
     setHexTerrainByKey(snapshot.hexTerrainByKey);
     setNextLakeId(snapshot.nextLakeId);
     setNextRoadId(snapshot.nextRoadId);
