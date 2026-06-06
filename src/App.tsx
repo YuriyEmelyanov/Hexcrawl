@@ -627,6 +627,60 @@ function randomFrom<T>(values: T[]): T {
   return values[Math.floor(Math.random() * values.length)];
 }
 
+type CoastalPreference = 'coast' | 'mainland';
+
+// В проекте пока нет модели моря/океана, поэтому параметр "побережье / материк"
+// влияет только на выбор высоты биома: побережье тянет генерацию к низинам
+// (равнины, болота, редколесья), материк — к возвышенностям (холмы, горы).
+function getCoastalHeightMultiplier(heightLevel: RegionHeightLevel, preference: CoastalPreference): number {
+  if (preference === 'coast') {
+    if (heightLevel === 1) return 2;
+    if (heightLevel === 2) return 1;
+    return 0.2;
+  }
+  // mainland
+  if (heightLevel === 1) return 0.6;
+  if (heightLevel === 2) return 1.3;
+  return 1.7;
+}
+
+// Параметры ручного управления генерацией региона. Любое поле, оставленное
+// пустым (undefined), означает "как раньше" — то есть случайный выбор.
+type GenerationOptions = {
+  targetSize?: number;
+  landType?: BiomeLandType;
+  biomeId?: BiomeId;
+  coastalPreference?: CoastalPreference;
+};
+
+const REGION_SIZE_CATEGORY_RANGES: Record<Region['sizeCategory'], [number, number]> = {
+  locality: [5, 10],
+  small_region: [11, 20],
+  region: [21, 30],
+  large_region: [31, 40],
+  land: [41, 50],
+  vast_land: [51, 60]
+};
+
+function rollRegionSizeInCategory(category: Region['sizeCategory']): number {
+  const [min, max] = REGION_SIZE_CATEGORY_RANGES[category];
+  return randomInt(min, max);
+}
+
+// Полный снимок состояния карты до добавления очередного региона.
+// Используется для удаления/перегенерации последнего региона: вместо того
+// чтобы пытаться "откатить" все побочные эффекты генерации рек и дорог
+// (которые могут менять соседние регионы), мы просто восстанавливаем снимок.
+type MapSnapshot = {
+  regions: Region[];
+  candidateHexes: AxialHex[];
+  rivers: River[];
+  roads: Road[];
+  hexTerrainByKey: Map<string, HexTerrainData>;
+  nextLakeId: number;
+  nextRoadId: number;
+};
+
 function chooseBiomeLandType(regionCount: number): BiomeLandType {
   if (regionCount === 0) return 'settled';
   return Math.floor(Math.random() * 100) + 1 <= 20 ? 'settled' : 'wild';
@@ -694,11 +748,18 @@ function chooseBiomeId(
   landType: BiomeLandType,
   adjacentBiomeIds: BiomeId[],
   regionId?: number,
-  riverHeightConstraint?: RiverHeightConstraint
+  riverHeightConstraint?: RiverHeightConstraint,
+  coastalPreference?: CoastalPreference
 ): ChooseBiomeResult {
   const baseWeights = {} as Record<BiomeId, number>;
   for (const biome of Object.values(BIOMES)) {
     baseWeights[biome.id] = landType === 'settled' ? biome.settledWeight : biome.wildWeight;
+  }
+
+  if (coastalPreference) {
+    for (const biome of Object.values(BIOMES)) {
+      baseWeights[biome.id] *= getCoastalHeightMultiplier(biome.heightLevel, coastalPreference);
+    }
   }
 
   const uniqueAdjacentBiomeIds = new Set(adjacentBiomeIds);
@@ -6420,6 +6481,16 @@ export function App() {
   const [hexTerrainByKey, setHexTerrainByKey] = useState<Map<string, HexTerrainData>>(new Map());
   const [nextLakeId, setNextLakeId] = useState(1);
   const [nextRoadId, setNextRoadId] = useState(1);
+  // Стек снимков состояния карты: один снимок на каждый добавленный регион.
+  const [history, setHistory] = useState<MapSnapshot[]>([]);
+  // Отложенная перегенерация: ставим заявку, ждём пока React применит
+  // восстановленный снимок, и только потом генерируем регион заново.
+  const [pendingRegen, setPendingRegen] = useState<{ anchorHex: AxialHex; options: GenerationOptions } | null>(null);
+  // Параметры ручной генерации ('auto' — прежнее случайное поведение).
+  const [genSizeCategory, setGenSizeCategory] = useState<'auto' | Region['sizeCategory']>('auto');
+  const [genLandType, setGenLandType] = useState<'auto' | BiomeLandType>('auto');
+  const [genBiome, setGenBiome] = useState<'auto' | BiomeId>('auto');
+  const [genCoastal, setGenCoastal] = useState<'auto' | CoastalPreference>('auto');
 
   const allRegionHexes = useMemo(() => regions.flatMap((region) => region.hexes), [regions]);
 
@@ -6535,17 +6606,28 @@ export function App() {
     return map;
   }, [regions, candidateHexes]);
 
-  const addRegionToMap = (anchorHex: AxialHex) => {
+  const addRegionToMap = (anchorHex: AxialHex, options: GenerationOptions = {}) => {
     const maxRegionAttempts = 30;
     for (let attempt = 0; attempt < maxRegionAttempts; attempt += 1) {
-      const targetSize = rollRegionTargetSize();
+      const targetSize = options.targetSize ?? rollRegionTargetSize();
       const occupiedHexes = new Set(allRegionHexes.map(hexKey));
       const regionId = Math.max(0, ...regions.map((region) => region.id)) + 1;
       const regionHexes = generateConnectedRegionFromAnchor(anchorHex, targetSize, occupiedHexes);
       const finalSize = regionHexes.length;
       const { sizeCategory, sizeLabel } = getRegionSizeCategory(finalSize);
       const centerHex = chooseRegionCenter(regionHexes);
-      const biomeLandType = chooseBiomeLandType(regions.length);
+      const biomeLandType = options.landType ?? chooseBiomeLandType(regions.length);
+      // Выбор биома: либо принудительно заданный пользователем, либо обычный
+      // взвешенный выбор. Принудительный биом всё равно проверяется на
+      // совместимость с ограничением высоты от рек.
+      const pickBiome = (constraint: RiverHeightConstraint): ChooseBiomeResult => {
+        if (options.biomeId) {
+          return isBiomeAllowedByRiverHeightConstraint(options.biomeId, constraint)
+            ? { biomeId: options.biomeId }
+            : { biomeId: null, reason: 'river_height_constraint_failed' };
+        }
+        return chooseBiomeId(biomeLandType, adjacentBiomeIds, regionId, constraint, options.coastalPreference);
+      };
       const regionByHexKey = new Map<string, Region>();
       for (const region of regions) {
         for (const hex of region.hexes) regionByHexKey.set(hexKey(hex), region);
@@ -6595,12 +6677,7 @@ export function App() {
       });
       let riversForGeneration = rivers;
       let effectiveRiverHeightConstraint = riverHeightConstraint;
-      let biomeChoice = chooseBiomeId(
-        biomeLandType,
-        adjacentBiomeIds,
-        regionId,
-        effectiveRiverHeightConstraint
-      );
+      let biomeChoice = pickBiome(effectiveRiverHeightConstraint);
 
       if (!biomeChoice.biomeId && biomeChoice.reason === 'river_height_constraint_failed') {
         console.warn('Region failed because of river height constraint; trying outgoing river trimming fallback', {
@@ -6642,12 +6719,7 @@ export function App() {
             patchedConstraint: effectiveRiverHeightConstraint,
             conflictingOutgoingRiverIds
           });
-          biomeChoice = chooseBiomeId(
-            biomeLandType,
-            adjacentBiomeIds,
-            regionId,
-            effectiveRiverHeightConstraint
-          );
+          biomeChoice = pickBiome(effectiveRiverHeightConstraint);
         }
       }
       if (!biomeChoice.biomeId) {
@@ -6747,6 +6819,17 @@ export function App() {
       });
       const nextRegions = [...regions, finalRegion];
 
+      // Снимок состояния ДО добавления этого региона — для удаления/перегенерации.
+      const snapshot: MapSnapshot = {
+        regions,
+        candidateHexes,
+        rivers,
+        roads,
+        hexTerrainByKey,
+        nextLakeId,
+        nextRoadId
+      };
+      setHistory((current) => [...current, snapshot]);
       setRegions(nextRegions);
       setCandidateHexes(nextCandidateHexes);
       setHexTerrainByKey((current) => {
@@ -6777,7 +6860,65 @@ export function App() {
     setHexTerrainByKey(new Map());
     setNextLakeId(1);
     setIsMapRotated(false);
+    setHistory([]);
+    setPendingRegen(null);
   };
+
+  // Текущие параметры генерации, собранные из выпадающих списков.
+  // Размер перебрасывается в момент вызова, чтобы каждая генерация в рамках
+  // выбранной категории давала новое случайное значение из её диапазона.
+  const buildGenerationOptions = (): GenerationOptions => ({
+    targetSize: genSizeCategory === 'auto' ? undefined : rollRegionSizeInCategory(genSizeCategory),
+    landType: genLandType === 'auto' ? undefined : genLandType,
+    biomeId: genBiome === 'auto' ? undefined : genBiome,
+    coastalPreference: genCoastal === 'auto' ? undefined : genCoastal
+  });
+
+  // Удаление последнего региона = восстановление снимка состояния, сделанного
+  // перед его добавлением. Это надёжно откатывает и реки, и дороги, в том
+  // числе изменения, которые новый регион внёс в соседние регионы.
+  const restoreSnapshot = (snapshot: MapSnapshot) => {
+    setRegions(snapshot.regions);
+    setCandidateHexes(snapshot.candidateHexes);
+    setRivers(snapshot.rivers);
+    setRoads(snapshot.roads);
+    setHexTerrainByKey(snapshot.hexTerrainByKey);
+    setNextLakeId(snapshot.nextLakeId);
+    setNextRoadId(snapshot.nextRoadId);
+  };
+
+  const deleteLastRegion = () => {
+    if (history.length === 0) return;
+    const snapshot = history[history.length - 1];
+    restoreSnapshot(snapshot);
+    setHistory(history.slice(0, -1));
+    const previousRegions = snapshot.regions;
+    setSelectedHex(
+      previousRegions.length > 0
+        ? previousRegions[previousRegions.length - 1].centerHex
+        : START_HEX
+    );
+  };
+
+  const regenerateLastRegion = () => {
+    if (regions.length === 0 || history.length === 0) return;
+    const lastAnchor = regions[regions.length - 1].anchorHex;
+    const snapshot = history[history.length - 1];
+    restoreSnapshot(snapshot);
+    setHistory(history.slice(0, -1));
+    // Генерируем не сразу: ждём, пока React применит восстановленный снимок,
+    // иначе addRegionToMap прочитает из замыкания ещё старое состояние.
+    setPendingRegen({ anchorHex: lastAnchor, options: buildGenerationOptions() });
+  };
+
+  useEffect(() => {
+    if (!pendingRegen) return;
+    addRegionToMap(pendingRegen.anchorHex, pendingRegen.options);
+    setPendingRegen(null);
+    // addRegionToMap намеренно не в зависимостях: эффект должен сработать
+    // ровно один раз на установку заявки, уже с восстановленным состоянием.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pendingRegen]);
 
   const selectedHexKey = selectedHex ? hexKey(selectedHex) : null;
   const selectedMeta = selectedHexKey ? metadataMap.get(selectedHexKey) : undefined;
@@ -7003,6 +7144,22 @@ export function App() {
           <div className="map-toolbar" aria-label="Управление картой">
             <div className="controls">
               <button onClick={resetMap} className="secondary">Сбросить</button>
+              <button
+                type="button"
+                onClick={regenerateLastRegion}
+                className="secondary"
+                disabled={regions.length === 0}
+              >
+                Перегенерировать регион
+              </button>
+              <button
+                type="button"
+                onClick={deleteLastRegion}
+                className="secondary"
+                disabled={regions.length === 0}
+              >
+                Удалить последний регион
+              </button>
               <button type="button" onClick={() => void handleExportPng()} className="secondary">Выгрузить PNG</button>
               <button type="button" onClick={handleExportJson} className="secondary">Выгрузить JSON</button>
               <button type="button" onClick={handleImportJsonClick} className="secondary">Загрузить JSON</button>
@@ -7010,6 +7167,45 @@ export function App() {
               <button onClick={() => setDebugRivers((v) => !v)} className="secondary">
                 Debug rivers / Отладка рек: {debugRivers ? 'ON' : 'OFF'}
               </button>
+            </div>
+            <div className="gen-params" aria-label="Параметры генерации">
+              <label>
+                Размер
+                <select value={genSizeCategory} onChange={(e) => setGenSizeCategory(e.target.value as typeof genSizeCategory)}>
+                  <option value="auto">Авто</option>
+                  <option value="locality">Местность</option>
+                  <option value="small_region">Малый регион</option>
+                  <option value="region">Регион</option>
+                  <option value="large_region">Большой регион</option>
+                  <option value="land">Край</option>
+                  <option value="vast_land">Обширный край</option>
+                </select>
+              </label>
+              <label>
+                Освоенность
+                <select value={genLandType} onChange={(e) => setGenLandType(e.target.value as typeof genLandType)}>
+                  <option value="auto">Авто</option>
+                  <option value="settled">Освоенный</option>
+                  <option value="wild">Дикий</option>
+                </select>
+              </label>
+              <label>
+                Биом
+                <select value={genBiome} onChange={(e) => setGenBiome(e.target.value as typeof genBiome)}>
+                  <option value="auto">Авто</option>
+                  {(Object.values(BIOMES)).map((biome) => (
+                    <option key={biome.id} value={biome.id}>{biome.label}</option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                Берег
+                <select value={genCoastal} onChange={(e) => setGenCoastal(e.target.value as typeof genCoastal)}>
+                  <option value="auto">Авто</option>
+                  <option value="coast">Побережье</option>
+                  <option value="mainland">Материк</option>
+                </select>
+              </label>
             </div>
             <div className="zoom-controls" aria-label="Масштаб карты">
               <button type="button" className="secondary" onClick={() => updateMapScale(mapScale - 0.1)} aria-label="Отдалить карту">−</button>
@@ -7081,7 +7277,7 @@ export function App() {
                   key={`${hex.kind}-${hex.key}`}
                   onClick={() => {
                     if (hex.kind === 'candidate') {
-                      addRegionToMap({ q: hex.q, r: hex.r });
+                      addRegionToMap({ q: hex.q, r: hex.r }, buildGenerationOptions());
                     } else {
                       setSelectedHex({ q: hex.q, r: hex.r });
                     }
