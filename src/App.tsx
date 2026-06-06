@@ -1,4 +1,4 @@
-import { type ChangeEvent, type WheelEvent, useEffect, useMemo, useRef, useState } from 'react';
+import { type ChangeEvent, type CSSProperties, type WheelEvent, useEffect, useMemo, useRef, useState } from 'react';
 
 type AxialHex = {
   q: number;
@@ -6490,6 +6490,7 @@ function generateRoadsForRegion(options: {
 
 export function App() {
   const mapSvgRef = useRef<SVGSVGElement | null>(null);
+  const mapToolbarRef = useRef<HTMLDivElement | null>(null);
   const jsonImportInputRef = useRef<HTMLInputElement | null>(null);
   const [regions, setRegions] = useState<Region[]>([]);
   const [candidateHexes, setCandidateHexes] = useState<AxialHex[]>([]);
@@ -7044,11 +7045,36 @@ export function App() {
   const [isMobileLayout, setIsMobileLayout] = useState(() => (typeof window === 'undefined' ? false : window.matchMedia(MOBILE_LAYOUT_QUERY).matches));
   const [mapScale, setMapScale] = useState(1);
   const [isMapRotated, setIsMapRotated] = useState(false);
+  const [mapToolbarHeight, setMapToolbarHeight] = useState(0);
   const isInfoPanelCollapsed = !isMobileLayout && isInfoCollapsed;
   const mapZoomPercent = Math.round(mapScale * 100);
   const displayMapWidth = isMapRotated ? positionedHexes.height : positionedHexes.width;
   const displayMapHeight = isMapRotated ? positionedHexes.width : positionedHexes.height;
   const mapRotationTransform = isMapRotated ? `translate(${positionedHexes.height} 0) rotate(90)` : undefined;
+  const mapCardStyle = { '--map-toolbar-height': `${mapToolbarHeight}px` } as CSSProperties;
+
+  useEffect(() => {
+    if (isMobileLayout) {
+      setMapToolbarHeight(0);
+      return;
+    }
+
+    const toolbar = mapToolbarRef.current;
+    if (!toolbar) return;
+
+    const updateToolbarHeight = () => setMapToolbarHeight(toolbar.offsetHeight);
+    updateToolbarHeight();
+
+    if (typeof ResizeObserver === 'undefined') {
+      window.addEventListener('resize', updateToolbarHeight);
+      return () => window.removeEventListener('resize', updateToolbarHeight);
+    }
+
+    const resizeObserver = new ResizeObserver(updateToolbarHeight);
+    resizeObserver.observe(toolbar);
+
+    return () => resizeObserver.disconnect();
+  }, [isMobileLayout]);
 
   useEffect(() => {
     const mobileLayout = window.matchMedia(MOBILE_LAYOUT_QUERY);
@@ -7159,8 +7185,8 @@ export function App() {
   return (
     <div className="app">
       <section className="content">
-        <div className="map-card">
-          <div className="map-toolbar" aria-label="Управление картой">
+        <div className="map-card" style={mapCardStyle}>
+          <div ref={mapToolbarRef} className="map-toolbar" aria-label="Управление картой">
             <div className="controls">
               <button onClick={resetMap} className="secondary">Сбросить</button>
               <button
