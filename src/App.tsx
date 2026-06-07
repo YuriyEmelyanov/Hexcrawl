@@ -249,6 +249,8 @@ const SVG_EXPORT_STYLES = `
   .hex { stroke:#617187; stroke-width:1; }
   .hex.center { stroke:#707f96; }
   .hex.candidate { fill:#4f5f72; stroke:#7f8ea3; cursor:pointer; stroke-dasharray:2 2; }
+  .hex.click-prompt { stroke:#f7dc6f; stroke-width:2; }
+  .click-prompt-label { fill:#fff7bf; stroke:#0c1423; stroke-width:3px; paint-order:stroke; font-size:12px; font-weight:800; pointer-events:none; }
   .hex-label { fill:#f4f8ff; font-size:11px; pointer-events:none; }
   .rivers-layer, .roads-layer, .river-debug-layer { pointer-events:none; }
   .river-polyline { fill:none; stroke:#3ea2ff; stroke-linecap:round; stroke-linejoin:round; }
@@ -296,6 +298,10 @@ const FALLBACK_BIOME_ID: BiomeId = 'plain_deciduous_forest';
 const FALLBACK_SETTLED_BIOME_ID: BiomeId = 'open_plains';
 const FALLBACK_WILD_BIOME_ID: BiomeId = 'plain_deciduous_forest';
 const START_HEX: AxialHex = { q: 0, r: 0 };
+const START_PROMPT_HEX_SCALE = 1.45;
+const START_PROMPT_HEX_PADDING = HEX_SIZE * (START_PROMPT_HEX_SCALE - 1);
+const CLICK_PROMPT_INTERVAL_MS = 5000;
+const CLICK_PROMPT_LABEL = 'Click Me!';
 const NEIGHBOR_DIRECTIONS: AxialHex[] = [
   { q: 1, r: 0 },
   { q: 1, r: -1 },
@@ -6511,6 +6517,7 @@ export function App() {
   const [genLandType, setGenLandType] = useState<'auto' | BiomeLandType>('auto');
   const [genBiome, setGenBiome] = useState<'auto' | BiomeId>('auto');
   const [genCoastal, setGenCoastal] = useState<'auto' | CoastalPreference>('auto');
+  const [clickPromptCandidateKey, setClickPromptCandidateKey] = useState<string | null>(null);
 
   const allRegionHexes = useMemo(() => regions.flatMap((region) => region.hexes), [regions]);
 
@@ -6530,6 +6537,7 @@ export function App() {
   }, [regions]);
 
   const positionedHexes = useMemo(() => {
+    const isStartPromptVisible = allRegionHexes.length === 0 && candidateHexes.length === 0;
     const all = [
       ...allRegionHexes.map((hex) => ({ ...hex, kind: 'region' as const })),
       ...candidateHexes.map((hex) => ({ ...hex, kind: 'candidate' as const }))
@@ -6545,15 +6553,38 @@ export function App() {
     const maxY = Math.max(...withPixels.map((h) => h.y));
     const hexWidth = HEX_SIZE * SQRT3;
     const hexHeight = HEX_SIZE * 2;
-    const offsetX = -minX + hexWidth / 2;
-    const offsetY = -minY + HEX_SIZE;
+    const promptPadding = isStartPromptVisible ? START_PROMPT_HEX_PADDING : 0;
+    const offsetX = -minX + hexWidth / 2 + promptPadding;
+    const offsetY = -minY + HEX_SIZE + promptPadding;
 
     return {
-      width: maxX - minX + hexWidth,
-      height: maxY - minY + hexHeight,
+      width: maxX - minX + hexWidth + promptPadding * 2,
+      height: maxY - minY + hexHeight + promptPadding * 2,
       hexes: withPixels.map((h) => ({ ...h, x: h.x + offsetX, y: h.y + offsetY }))
     };
   }, [allRegionHexes, candidateHexes, metadataMap]);
+
+  useEffect(() => {
+    if (regions.length < 1 || regions.length > 2 || candidateHexes.length === 0) {
+      setClickPromptCandidateKey(null);
+      return;
+    }
+
+    const pickRandomCandidateKey = (previousKey: string | null = null) => {
+      const candidateKeys = candidateHexes.map(hexKey);
+      const availableKeys = candidateKeys.length > 1
+        ? candidateKeys.filter((candidateKey) => candidateKey !== previousKey)
+        : candidateKeys;
+      return availableKeys[Math.floor(Math.random() * availableKeys.length)] ?? null;
+    };
+
+    setClickPromptCandidateKey((previousKey) => pickRandomCandidateKey(previousKey));
+    const intervalId = window.setInterval(() => {
+      setClickPromptCandidateKey((previousKey) => pickRandomCandidateKey(previousKey));
+    }, CLICK_PROMPT_INTERVAL_MS);
+
+    return () => window.clearInterval(intervalId);
+  }, [regions.length, candidateHexes]);
 
   const lakeVertices = useMemo(() => getLakeVertices(allRegionHexes, hexTerrainByKey), [allRegionHexes, hexTerrainByKey]);
   const lakeEdgeKeys = useMemo(() => getLakeEdgeKeys(allRegionHexes, hexTerrainByKey), [allRegionHexes, hexTerrainByKey]);
@@ -7298,7 +7329,10 @@ export function App() {
             <g className="map-rotation-layer" transform={mapRotationTransform}>
             {positionedHexes.hexes.map((hex) => {
               const meta = metadataMap.get(hex.key);
-              const cls = hex.kind === 'candidate' ? 'hex candidate' : meta?.isCenter ? 'hex center' : 'hex region';
+              const isStartClickPrompt = regions.length === 0 && hex.kind === 'candidate' && hex.key === hexKey(START_HEX);
+              const isCandidateClickPrompt = regions.length >= 1 && regions.length <= 2 && hex.kind === 'candidate' && hex.key === clickPromptCandidateKey;
+              const cls = `${hex.kind === 'candidate' ? 'hex candidate' : meta?.isCenter ? 'hex center' : 'hex region'}${isStartClickPrompt || isCandidateClickPrompt ? ' click-prompt' : ''}`;
+              const hexRenderSize = isStartClickPrompt ? HEX_SIZE * START_PROMPT_HEX_SCALE : HEX_SIZE;
               const terrain = hexTerrainByKey.get(hex.key);
               const isLakeHex = terrain?.terrainOverride === 'lake';
               const region = meta?.regionId ? regions.find((item) => item.id === meta.regionId) : undefined;
@@ -7328,8 +7362,8 @@ export function App() {
                     }
                   }}
                 >
-                  <polygon points={hexPoints(hex.x, hex.y, HEX_SIZE)} className={cls} style={{ fill }} />
-                  <polygon points={hexPoints(hex.x, hex.y, HEX_SIZE)} className={cls} style={{ fill: 'none' }} />
+                  <polygon points={hexPoints(hex.x, hex.y, hexRenderSize)} className={cls} style={{ fill }} />
+                  <polygon points={hexPoints(hex.x, hex.y, hexRenderSize)} className={cls} style={{ fill: 'none' }} />
                   {SHOW_HEX_COORDINATES ? <text x={hex.x} y={hex.y + 4} textAnchor="middle" className="hex-label">{hex.q}/{hex.r}</text> : null}
                 </g>
               );
@@ -7369,6 +7403,24 @@ export function App() {
             </g>
             </g>
             <g className="emoji-layer">
+              {positionedHexes.hexes.map((hex) => {
+                const isStartClickPrompt = regions.length === 0 && hex.kind === 'candidate' && hex.key === hexKey(START_HEX);
+                const isCandidateClickPrompt = regions.length >= 1 && regions.length <= 2 && hex.kind === 'candidate' && hex.key === clickPromptCandidateKey;
+                if (!isStartClickPrompt && !isCandidateClickPrompt) return null;
+                const position = isMapRotated ? rotateMapPoint(hex.x, hex.y, positionedHexes.height) : hex;
+                return (
+                  <text
+                    key={`click-prompt-${hex.key}`}
+                    x={position.x}
+                    y={position.y}
+                    textAnchor="middle"
+                    dominantBaseline="central"
+                    className="click-prompt-label"
+                  >
+                    {CLICK_PROMPT_LABEL}
+                  </text>
+                );
+              })}
               {positionedHexes.hexes.map((hex) => {
                 const meta = metadataMap.get(hex.key);
                 const terrain = hexTerrainByKey.get(hex.key);
