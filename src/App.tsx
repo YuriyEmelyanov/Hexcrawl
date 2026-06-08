@@ -196,8 +196,11 @@ const WATER_COLOR = 'var(--water-color)';
 const LAKE_HEX_COLOR = WATER_COLOR;
 // Море рисуется отдельным, более глубоким синим, чтобы визуально отличать его от озёр.
 const SEA_HEX_COLOR = '#21577f';
-// Радиус (в пикселях) от центра карты, на котором побережье появляется гарантированно.
-const GUARANTEED_COAST_DISTANCE = 500;
+// Дистанция В ТАЙЛАХ (гексах) от центра карты, на которой берег гарантирован.
+// Это жёсткая граница материка. Вероятность моря растёт линейно от 0 в центре
+// до 1 здесь — то есть в среднем берег появляется на половине этой дистанции
+// (при 500 — около 250-го тайла).
+const GUARANTEED_COAST_DISTANCE_TILES = 500;
 const MOBILE_LAYOUT_QUERY = '(max-width: 900px)';
 
 
@@ -422,10 +425,9 @@ function toPixel(q: number, r: number) {
   };
 }
 
-// Пиксельное расстояние центра гекса от центра карты (START_HEX в точке 0,0).
-function pixelDistanceFromMapCenter(hex: AxialHex): number {
-  const p = toPixel(hex.q, hex.r);
-  return Math.hypot(p.x, p.y);
+// Расстояние В ТАЙЛАХ (число гексов) от центра карты по гексовой метрике.
+function hexDistanceFromCenter(hex: AxialHex): number {
+  return (Math.abs(hex.q) + Math.abs(hex.q + hex.r) + Math.abs(hex.r)) / 2;
 }
 
 function hexPoints(cx: number, cy: number, size: number) {
@@ -3391,71 +3393,78 @@ export function getCandidateHexes(allRegionHexes: AxialHex[], excludeKeys?: Set<
   return Array.from(candidates.values());
 }
 
-// Вероятность того, что регион окажется прибрежным, растёт с удалением от
-// центра карты и достигает 1 (гарантированно) на расстоянии GUARANTEED_COAST_DISTANCE.
-function rollIsCoastalRegion(
-  anchorHex: AxialHex,
-  coastalPreference: CoastalPreference | undefined,
-  nearExistingCoast: boolean
-): boolean {
-  if (coastalPreference === 'coast') return true;
-  if (coastalPreference === 'mainland') return false;
-  const distance = pixelDistanceFromMapCenter(anchorHex);
-  let probability = Math.min(1, distance / GUARANTEED_COAST_DISTANCE);
-  // Побережье соседнего региона повышает шанс берега и здесь — берега тянутся вдоль кромки.
-  if (nearExistingCoast) probability = Math.min(1, probability + 0.25);
-  return Math.random() < probability;
+// Вероятность моря в данной точке по расстоянию в тайлах от центра карты.
+// Линейно растёт от 0 в центре до 1 на GUARANTEED_COAST_DISTANCE_TILES,
+// то есть достигает 50% на половине этой дистанции.
+function seaProbabilityForTileDistance(distance: number): number {
+  return Math.min(1, Math.max(0, distance / GUARANTEED_COAST_DISTANCE_TILES));
 }
 
-// Гекс лежит "наружу" от региона, если он дальше от центра карты, чем центр региона.
-// Так побережье формируется на периферийной стороне, отвёрнутой от центра.
+// Считается ли регион прибрежным (для уклона освоенности и биома к низинам).
+// Один материк ограничивается берегом по абсолютному расстоянию от центра;
+// регион в среднем становится прибрежным во внешней половине радиуса.
+function regionReachesCoast(centerHex: AxialHex, coastalPreference: CoastalPreference | undefined): boolean {
+  if (coastalPreference === 'coast') return true;
+  if (coastalPreference === 'mainland') return false;
+  return hexDistanceFromCenter(centerHex) >= GUARANTEED_COAST_DISTANCE_TILES / 2;
+}
+
+// Гексы-море для прибрежного региона. По умолчанию море определяется расстоянием
+// в тайлах от центра (жёсткая граница материка на GUARANTEED_COAST_DISTANCE_TILES,
+// рваная кромка из-за линейной вероятности). При ручном выборе "Побережье"
+// (forceShore) берег формируется на отвёрнутой от центра стороне региона.
 function computeSeaHexKeysForCoastalRegion(
   regionHexes: AxialHex[],
   centerHex: AxialHex,
   existingTerrain: Map<string, HexTerrainData>,
   rivers: River[],
-  regionId: number
+  regionId: number,
+  forceShore: boolean
 ): string[] {
   const regionSet = new Set(regionHexes.map(hexKey));
-  const centerDistance = pixelDistanceFromMapCenter(centerHex);
+  const centerDistance = hexDistanceFromCenter(centerHex);
   const seaByKey = new Map<string, AxialHex>();
 
-  // Базовая кромка: пустые внешние соседи региона на стороне, отвёрнутой от центра.
+  const isShoreward = (neighbor: AxialHex): boolean =>
+    hexDistanceFromCenter(neighbor) > centerDistance;
+  const becomesSea = (neighbor: AxialHex): boolean =>
+    forceShore ? isShoreward(neighbor) : Math.random() < seaProbabilityForTileDistance(hexDistanceFromCenter(neighbor));
+
+  // Базовая береговая кромка из пустых внешних соседей региона.
   for (const hex of regionHexes) {
     for (const neighbor of getHexNeighbors(hex)) {
       const key = hexKey(neighbor);
       if (regionSet.has(key)) continue;
       if (existingTerrain.get(key)?.terrainOverride) continue; // не трогаем озёра и уже существующее море
       if (seaByKey.has(key)) continue;
-      if (pixelDistanceFromMapCenter(neighbor) > centerDistance) seaByKey.set(key, neighbor);
+      if (becomesSea(neighbor)) seaByKey.set(key, neighbor);
     }
   }
 
-  // Дельты: там, где река региона выходит к кромке моря, расширяем устье ещё
-  // одним рядом гексов наружу — получается характерный веер дельты.
+  // Дельты: где устье реки выходит к кромке, расширяем устье ещё одним рядом
+  // гексов наружу — получается характерный веер дельты.
   const seaBase = Array.from(seaByKey.values());
-  const regionRivers = rivers.filter((river) => river.regionId === regionId && river.vertexPath?.length);
-  for (const river of regionRivers) {
-    const mouth = river.vertexPath[river.vertexPath.length - 1];
-    const mx = mouth.x;
-    const my = mouth.y;
-    if (!Number.isFinite(mx) || !Number.isFinite(my)) continue;
-    // Ближайший к устью гекс базовой кромки.
-    let nearest: AxialHex | undefined;
-    let nearestDist = Infinity;
-    for (const seaHex of seaBase) {
-      const p = toPixel(seaHex.q, seaHex.r);
-      const d = Math.hypot(p.x - mx, p.y - my);
-      if (d < nearestDist) { nearestDist = d; nearest = seaHex; }
-    }
-    // Если устье близко к кромке (в пределах ~1.5 гекса) — формируем дельту.
-    if (nearest && nearestDist <= HEX_SIZE * 3) {
-      for (const neighbor of getHexNeighbors(nearest)) {
-        const key = hexKey(neighbor);
-        if (regionSet.has(key)) continue;
-        if (existingTerrain.get(key)?.terrainOverride) continue;
-        if (seaByKey.has(key)) continue;
-        if (pixelDistanceFromMapCenter(neighbor) >= centerDistance) seaByKey.set(key, neighbor);
+  if (seaBase.length > 0) {
+    const regionRivers = rivers.filter((river) => river.regionId === regionId && river.vertexPath?.length);
+    for (const river of regionRivers) {
+      const mouth = river.vertexPath[river.vertexPath.length - 1];
+      if (!Number.isFinite(mouth.x) || !Number.isFinite(mouth.y)) continue;
+      let nearest: AxialHex | undefined;
+      let nearestDist = Infinity;
+      for (const seaHex of seaBase) {
+        const p = toPixel(seaHex.q, seaHex.r);
+        const d = Math.hypot(p.x - mouth.x, p.y - mouth.y);
+        if (d < nearestDist) { nearestDist = d; nearest = seaHex; }
+      }
+      if (nearest && nearestDist <= HEX_SIZE * 3) {
+        for (const neighbor of getHexNeighbors(nearest)) {
+          const key = hexKey(neighbor);
+          if (regionSet.has(key)) continue;
+          if (existingTerrain.get(key)?.terrainOverride) continue;
+          if (seaByKey.has(key)) continue;
+          // Дельту расширяем только в сторону моря (наружу от центра).
+          if (isShoreward(neighbor)) seaByKey.set(key, neighbor);
+        }
       }
     }
   }
@@ -6646,6 +6655,8 @@ export function App() {
   const [genLandType, setGenLandType] = useState<'auto' | BiomeLandType>('auto');
   const [genBiome, setGenBiome] = useState<'auto' | BiomeId>('auto');
   const [genCoastal, setGenCoastal] = useState<'auto' | CoastalPreference>('auto');
+  // Режим ручной "кисти берега": клик по гексу кромки делает его морем и обратно.
+  const [seaBrushActive, setSeaBrushActive] = useState(false);
   const [clickPromptCandidateKey, setClickPromptCandidateKey] = useState<string | null>(null);
 
   const allRegionHexes = useMemo(() => regions.flatMap((region) => region.hexes), [regions]);
@@ -6794,14 +6805,8 @@ export function App() {
 
   const addRegionToMap = (anchorHex: AxialHex, options: GenerationOptions = {}) => {
     const maxRegionAttempts = 30;
-    // Прибрежность решается один раз на вызов: вероятность растёт с удалением
-    // от центра карты, гарантирована на GUARANTEED_COAST_DISTANCE, и повышается
-    // рядом с уже существующим берегом.
+    // Близость к уже существующему берегу влияет на освоенность (но не красит море).
     const nearExistingCoast = isHexNearExistingCoast(anchorHex, regions, hexTerrainByKey);
-    const isCoastalRegion = rollIsCoastalRegion(anchorHex, options.coastalPreference, nearExistingCoast);
-    // Прибрежный регион тяготеет к низинам (уровень моря).
-    const effectiveCoastalPreference: CoastalPreference | undefined =
-      options.coastalPreference ?? (isCoastalRegion ? 'coast' : undefined);
     for (let attempt = 0; attempt < maxRegionAttempts; attempt += 1) {
       const targetSize = options.targetSize ?? rollRegionTargetSize();
       const occupiedHexes = new Set(allRegionHexes.map(hexKey));
@@ -6810,6 +6815,12 @@ export function App() {
       const finalSize = regionHexes.length;
       const { sizeCategory, sizeLabel } = getRegionSizeCategory(finalSize);
       const centerHex = chooseRegionCenter(regionHexes);
+      // Прибрежность определяется геометрией: достаёт ли регион до береговой зоны
+      // (абсолютное расстояние от центра материка), либо задана вручную.
+      const isCoastalRegion = regionReachesCoast(centerHex, options.coastalPreference);
+      // Прибрежный регион тяготеет к низинам (уровень моря).
+      const effectiveCoastalPreference: CoastalPreference | undefined =
+        options.coastalPreference ?? (isCoastalRegion ? 'coast' : undefined);
       const biomeLandType = options.landType ?? chooseCoastalAwareLandType(regions.length, isCoastalRegion, nearExistingCoast);
       // Выбор биома: либо принудительно заданный пользователем, либо обычный
       // взвешенный выбор. Принудительный биом всё равно проверяется на
@@ -6999,9 +7010,18 @@ export function App() {
       );
 
       const pointsOfInterest = assignPointsOfInterestForRegion(regionHexes, centerHex, lakesByHex);
+
+      // Море прибрежного региона: ставится ПОСЛЕ генерации рек, поэтому реки
+      // региона уже завершились на этом внешнем фронте — то есть впадают в море.
+      const seaHexKeys = isCoastalRegion
+        ? computeSeaHexKeysForCoastalRegion(regionHexes, centerHex, nextHexTerrainByKeyPreview, finalizedRivers, regionId, options.coastalPreference === 'coast')
+        : [];
+
       const finalRegion: Region = {
         ...regionForRiverGeneration,
-        pointsOfInterest
+        pointsOfInterest,
+        // Регион считается прибрежным, только если у него реально появилось море.
+        isCoastal: seaHexKeys.length > 0
       };
       const roadResult = generateRoadsForRegion({
         region: finalRegion,
@@ -7014,11 +7034,6 @@ export function App() {
       });
       const nextRegions = [...regions, finalRegion];
 
-      // Море прибрежного региона: ставится ПОСЛЕ генерации рек, поэтому реки
-      // региона уже завершились на этом внешнем фронте — то есть впадают в море.
-      const seaHexKeys = isCoastalRegion
-        ? computeSeaHexKeysForCoastalRegion(regionHexes, centerHex, nextHexTerrainByKeyPreview, finalizedRivers, regionId)
-        : [];
       // Кликабельный фронт роста не должен включать ни старое, ни новое море.
       const allSeaKeys = getSeaHexKeys(hexTerrainByKey);
       for (const key of seaHexKeys) allSeaKeys.add(key);
@@ -7068,6 +7083,7 @@ export function App() {
     setIsMapRotated(false);
     setHistory([]);
     setPendingRegen(null);
+    setSeaBrushActive(false);
   };
 
   // Текущие параметры генерации, собранные из выпадающих списков.
@@ -7079,6 +7095,21 @@ export function App() {
     biomeId: genBiome === 'auto' ? undefined : genBiome,
     coastalPreference: genCoastal === 'auto' ? undefined : genCoastal
   });
+
+  // Ручная кисть берега: переключает гекс кромки между морем и сушей-кандидатом.
+  // Гексы регионов не трогаются. После правки пересчитываем фронт роста.
+  const toggleSeaHex = (hex: AxialHex) => {
+    const key = hexKey(hex);
+    if (metadataMap.has(key)) return; // это гекс региона — не трогаем
+    const nextTerrain = new Map(hexTerrainByKey);
+    if (nextTerrain.get(key)?.terrainOverride === 'sea') {
+      nextTerrain.delete(key);
+    } else {
+      nextTerrain.set(key, { terrainOverride: 'sea' });
+    }
+    setHexTerrainByKey(nextTerrain);
+    setCandidateHexes(getCandidateHexes(allRegionHexes, getSeaHexKeys(nextTerrain)));
+  };
 
   // Удаление последнего региона = восстановление снимка состояния, сделанного
   // перед его добавлением. Это надёжно откатывает и реки, и дороги, в том
@@ -7392,6 +7423,14 @@ export function App() {
               >
                 Удалить последний регион
               </button>
+              <button
+                type="button"
+                onClick={() => setSeaBrushActive((v) => !v)}
+                className="secondary"
+                aria-pressed={seaBrushActive}
+              >
+                Кисть берега: {seaBrushActive ? 'ВКЛ' : 'ВЫКЛ'}
+              </button>
               <button type="button" onClick={() => void handleExportPng()} className="secondary">Выгрузить PNG</button>
               <button type="button" onClick={handleExportJson} className="secondary">Выгрузить JSON</button>
               <button type="button" onClick={handleImportJsonClick} className="secondary">Загрузить JSON</button>
@@ -7511,7 +7550,10 @@ export function App() {
                 <g
                   key={`${hex.kind}-${hex.key}`}
                   onClick={() => {
-                    if (hex.kind === 'candidate') {
+                    if (seaBrushActive) {
+                      // В режиме кисти клик по кромке/морю переключает море, по региону — игнор.
+                      if (hex.kind !== 'region') toggleSeaHex({ q: hex.q, r: hex.r });
+                    } else if (hex.kind === 'candidate') {
                       addRegionToMap({ q: hex.q, r: hex.r }, buildGenerationOptions());
                     } else {
                       setSelectedHex({ q: hex.q, r: hex.r });
