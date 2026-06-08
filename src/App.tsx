@@ -194,8 +194,8 @@ const REGION_CENTER_EMOJI = '★';
 const POI_EMOJI = '◆';
 const WATER_COLOR = 'var(--water-color)';
 const LAKE_HEX_COLOR = WATER_COLOR;
-// Море рисуется отдельным, более глубоким синим, чтобы визуально отличать его от озёр.
-const SEA_HEX_COLOR = '#21577f';
+// Море (прибрежные воды) — заметно темнее озёр и рек (BR-006).
+const SEA_HEX_COLOR = '#143d5c';
 // Дистанция В ТАЙЛАХ (гексах) от центра карты, на которой берег гарантирован.
 // Это жёсткая граница материка. Вероятность моря растёт линейно от 0 в центре
 // до 1 здесь — то есть в среднем берег появляется на половине этой дистанции
@@ -3472,36 +3472,11 @@ function computeSeaHexKeysForCoastalRegion(
   return Array.from(seaByKey.keys());
 }
 
-// Сосед гекса — это море или часть уже существующего прибрежного региона?
-// Используется, чтобы берег влиял на освоенность соседнего региона.
-function isHexNearExistingCoast(
-  hex: AxialHex,
-  existingRegions: Region[],
-  terrain: Map<string, HexTerrainData>
-): boolean {
-  const coastalRegionHexKeys = new Set<string>();
-  for (const region of existingRegions) {
-    if (!region.isCoastal) continue;
-    for (const h of region.hexes) coastalRegionHexKeys.add(hexKey(h));
-  }
-  for (const neighbor of getHexNeighbors(hex)) {
-    const key = hexKey(neighbor);
-    if (terrain.get(key)?.terrainOverride === 'sea') return true;
-    if (coastalRegionHexKeys.has(key)) return true;
-  }
-  return false;
-}
-
-// Выбор освоенности с учётом берега: у воды люди селились чаще, поэтому
-// прибрежные и приморские регионы смещены к "освоенному" типу.
-function chooseCoastalAwareLandType(
-  regionCount: number,
-  isCoastal: boolean,
-  nearCoast: boolean
-): BiomeLandType {
-  if (isCoastal) return Math.random() < 0.8 ? 'settled' : 'wild';
-  if (nearCoast) return Math.random() < 0.6 ? 'settled' : 'wild';
-  return chooseBiomeLandType(regionCount);
+// Выбор освоенности (BR-007): прибрежный регион освоен с вероятностью 40%,
+// материковый — 20%.
+function chooseCoastalAwareLandType(isCoastal: boolean): BiomeLandType {
+  const settledChance = isCoastal ? 0.4 : 0.2;
+  return Math.random() < settledChance ? 'settled' : 'wild';
 }
 
 type RiverGenerationResult = { success: boolean; rivers: River[]; reason?: string };
@@ -6805,23 +6780,27 @@ export function App() {
 
   const addRegionToMap = (anchorHex: AxialHex, options: GenerationOptions = {}) => {
     const maxRegionAttempts = 30;
-    // Близость к уже существующему берегу влияет на освоенность (но не красит море).
-    const nearExistingCoast = isHexNearExistingCoast(anchorHex, regions, hexTerrainByKey);
     for (let attempt = 0; attempt < maxRegionAttempts; attempt += 1) {
       const targetSize = options.targetSize ?? rollRegionTargetSize();
       const occupiedHexes = new Set(allRegionHexes.map(hexKey));
+      // Море — не суша: рост региона не должен захватывать гексы моря.
+      for (const seaKey of getSeaHexKeys(hexTerrainByKey)) occupiedHexes.add(seaKey);
       const regionId = Math.max(0, ...regions.map((region) => region.id)) + 1;
       const regionHexes = generateConnectedRegionFromAnchor(anchorHex, targetSize, occupiedHexes);
       const finalSize = regionHexes.length;
       const { sizeCategory, sizeLabel } = getRegionSizeCategory(finalSize);
       const centerHex = chooseRegionCenter(regionHexes);
-      // Прибрежность определяется геометрией: достаёт ли регион до береговой зоны
-      // (абсолютное расстояние от центра материка), либо задана вручную.
-      const isCoastalRegion = regionReachesCoast(centerHex, options.coastalPreference);
+      // Прибрежность: ручной выбор приоритетен; для стартового региона в режиме
+      // "Авто" — 30% шанс побережья (BR-001); иначе по текущей модели расстояния.
+      const isCoastalRegion =
+        options.coastalPreference === 'coast' ? true
+        : options.coastalPreference === 'mainland' ? false
+        : regions.length === 0 ? Math.random() < 0.3
+        : regionReachesCoast(centerHex, undefined);
       // Прибрежный регион тяготеет к низинам (уровень моря).
       const effectiveCoastalPreference: CoastalPreference | undefined =
         options.coastalPreference ?? (isCoastalRegion ? 'coast' : undefined);
-      const biomeLandType = options.landType ?? chooseCoastalAwareLandType(regions.length, isCoastalRegion, nearExistingCoast);
+      const biomeLandType = options.landType ?? chooseCoastalAwareLandType(isCoastalRegion);
       // Выбор биома: либо принудительно заданный пользователем, либо обычный
       // взвешенный выбор. Принудительный биом всё равно проверяется на
       // совместимость с ограничением высоты от рек.
@@ -7056,6 +7035,15 @@ export function App() {
         const next = new Map(current);
         for (const [key, terrain] of lakesByHex) next.set(key, terrain);
         for (const key of seaHexKeys) next.set(key, { terrainOverride: 'sea' });
+        // BR-004: озеро, соседствующее с морем, удаляется (гекс возвращается к биому региона).
+        if (seaHexKeys.length > 0) {
+          const seaSet = getSeaHexKeys(next);
+          for (const [key, terrain] of next) {
+            if (terrain.terrainOverride !== 'lake') continue;
+            const touchesSea = getHexNeighbors(parseHexKey(key)).some((n) => seaSet.has(hexKey(n)));
+            if (touchesSea) next.delete(key);
+          }
+        }
         return next;
       });
       setNextLakeId(computedNextLakeId);
