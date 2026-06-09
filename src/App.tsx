@@ -196,11 +196,6 @@ const WATER_COLOR = 'var(--water-color)';
 const LAKE_HEX_COLOR = WATER_COLOR;
 // Море (прибрежные воды) — заметно темнее озёр и рек (BR-006).
 const SEA_HEX_COLOR = '#143d5c';
-// Дистанция В ТАЙЛАХ (гексах) от центра карты, на которой берег гарантирован.
-// Это жёсткая граница материка. Вероятность моря растёт линейно от 0 в центре
-// до 1 здесь — то есть в среднем берег появляется на половине этой дистанции
-// (при 500 — около 250-го тайла).
-const GUARANTEED_COAST_DISTANCE_TILES = 500;
 const MOBILE_LAYOUT_QUERY = '(max-width: 900px)';
 
 
@@ -3393,33 +3388,56 @@ export function getCandidateHexes(allRegionHexes: AxialHex[], excludeKeys?: Set<
   return Array.from(candidates.values());
 }
 
-// Вероятность моря в данной точке по расстоянию в тайлах от центра карты.
-// Линейно растёт от 0 в центре до 1 на GUARANTEED_COAST_DISTANCE_TILES,
-// то есть достигает 50% на половине этой дистанции.
-function seaProbabilityForTileDistance(distance: number): number {
-  return Math.min(1, Math.max(0, distance / GUARANTEED_COAST_DISTANCE_TILES));
+// BR-002: вероятность побережья для нового региона по протяжённости карты.
+// Берётся максимальная протяжённость уже сгенерированной карты по трём осям
+// гекс-сетки, ограничивается 400, и делится на 400.
+const COAST_SPAN_CAP = 400;
+
+function computeMapMaxSpanTiles(allRegionHexes: AxialHex[]): number {
+  if (allRegionHexes.length === 0) return 0;
+  let minQ = Infinity, maxQ = -Infinity, minR = Infinity, maxR = -Infinity, minS = Infinity, maxS = -Infinity;
+  for (const hex of allRegionHexes) {
+    const s = -hex.q - hex.r;
+    if (hex.q < minQ) minQ = hex.q;
+    if (hex.q > maxQ) maxQ = hex.q;
+    if (hex.r < minR) minR = hex.r;
+    if (hex.r > maxR) maxR = hex.r;
+    if (s < minS) minS = s;
+    if (s > maxS) maxS = s;
+  }
+  return Math.max(maxQ - minQ, maxR - minR, maxS - minS);
 }
 
-// Считается ли регион прибрежным (для уклона освоенности и биома к низинам).
-// Один материк ограничивается берегом по абсолютному расстоянию от центра;
-// регион в среднем становится прибрежным во внешней половине радиуса.
-function regionReachesCoast(centerHex: AxialHex, coastalPreference: CoastalPreference | undefined): boolean {
-  if (coastalPreference === 'coast') return true;
-  if (coastalPreference === 'mainland') return false;
-  return hexDistanceFromCenter(centerHex) >= GUARANTEED_COAST_DISTANCE_TILES / 2;
+function coastProbabilityFromSpan(span: number): number {
+  return Math.min(span, COAST_SPAN_CAP) / COAST_SPAN_CAP;
 }
 
-// Гексы-море для прибрежного региона. По умолчанию море определяется расстоянием
-// в тайлах от центра (жёсткая граница материка на GUARANTEED_COAST_DISTANCE_TILES,
-// рваная кромка из-за линейной вероятности). При ручном выборе "Побережье"
-// (forceShore) берег формируется на отвёрнутой от центра стороне региона.
+// BR-002 (принудительное продолжение): новый регион граничит с гексом, который
+// граничит с прибрежным (морским) гексом — тогда регион гарантированно прибрежный.
+function regionForcesCoastContinuation(regionHexes: AxialHex[], seaKeys: Set<string>): boolean {
+  if (seaKeys.size === 0) return false;
+  const regionSet = new Set(regionHexes.map(hexKey));
+  for (const hex of regionHexes) {
+    for (const neighbor of getHexNeighbors(hex)) {
+      if (regionSet.has(hexKey(neighbor))) continue;
+      for (const second of getHexNeighbors(neighbor)) {
+        if (seaKeys.has(hexKey(second))) return true;
+      }
+    }
+  }
+  return false;
+}
+
+// Гексы-море для прибрежного региона: пустые гексы на отвёрнутой от центра
+// ("береговой") стороне региона. Никогда не ставятся на гексы какого-либо
+// региона и на гексы с уже заданным terrain (озёра/существующее море).
 function computeSeaHexKeysForCoastalRegion(
   regionHexes: AxialHex[],
   centerHex: AxialHex,
   existingTerrain: Map<string, HexTerrainData>,
+  occupiedRegionKeys: Set<string>,
   rivers: River[],
-  regionId: number,
-  forceShore: boolean
+  regionId: number
 ): string[] {
   const regionSet = new Set(regionHexes.map(hexKey));
   const centerDistance = hexDistanceFromCenter(centerHex);
@@ -3427,17 +3445,16 @@ function computeSeaHexKeysForCoastalRegion(
 
   const isShoreward = (neighbor: AxialHex): boolean =>
     hexDistanceFromCenter(neighbor) > centerDistance;
-  const becomesSea = (neighbor: AxialHex): boolean =>
-    forceShore ? isShoreward(neighbor) : Math.random() < seaProbabilityForTileDistance(hexDistanceFromCenter(neighbor));
+  const isClaimable = (key: string): boolean =>
+    !regionSet.has(key) && !occupiedRegionKeys.has(key) && !existingTerrain.get(key)?.terrainOverride;
 
   // Базовая береговая кромка из пустых внешних соседей региона.
   for (const hex of regionHexes) {
     for (const neighbor of getHexNeighbors(hex)) {
       const key = hexKey(neighbor);
-      if (regionSet.has(key)) continue;
-      if (existingTerrain.get(key)?.terrainOverride) continue; // не трогаем озёра и уже существующее море
       if (seaByKey.has(key)) continue;
-      if (becomesSea(neighbor)) seaByKey.set(key, neighbor);
+      if (!isClaimable(key)) continue;
+      if (isShoreward(neighbor)) seaByKey.set(key, neighbor);
     }
   }
 
@@ -3459,9 +3476,8 @@ function computeSeaHexKeysForCoastalRegion(
       if (nearest && nearestDist <= HEX_SIZE * 3) {
         for (const neighbor of getHexNeighbors(nearest)) {
           const key = hexKey(neighbor);
-          if (regionSet.has(key)) continue;
-          if (existingTerrain.get(key)?.terrainOverride) continue;
           if (seaByKey.has(key)) continue;
+          if (!isClaimable(key)) continue;
           // Дельту расширяем только в сторону моря (наружу от центра).
           if (isShoreward(neighbor)) seaByKey.set(key, neighbor);
         }
@@ -6654,9 +6670,12 @@ export function App() {
   const positionedHexes = useMemo(() => {
     const isStartPromptVisible = allRegionHexes.length === 0 && candidateHexes.length === 0;
     // Гексы-море берутся из карты terrain-данных (они не принадлежат ни одному региону).
+    // Защита: если гекс почему-то числится и регионом, и морем (старые данные/импорт),
+    // он считается сушей — море на гексе региона не рисуется.
+    const regionHexKeySet = new Set(allRegionHexes.map(hexKey));
     const seaHexList: AxialHex[] = [];
     for (const [key, terrain] of hexTerrainByKey) {
-      if (terrain.terrainOverride === 'sea') seaHexList.push(parseHexKey(key));
+      if (terrain.terrainOverride === 'sea' && !regionHexKeySet.has(key)) seaHexList.push(parseHexKey(key));
     }
     const all = [
       ...allRegionHexes.map((hex) => ({ ...hex, kind: 'region' as const })),
@@ -6791,12 +6810,17 @@ export function App() {
       const { sizeCategory, sizeLabel } = getRegionSizeCategory(finalSize);
       const centerHex = chooseRegionCenter(regionHexes);
       // Прибрежность: ручной выбор приоритетен; для стартового региона в режиме
-      // "Авто" — 30% шанс побережья (BR-001); иначе по текущей модели расстояния.
+      // Прибрежность (BR-001/BR-002): ручной выбор приоритетен; иначе сначала
+      // принудительное продолжение существующего берега, затем — для стартового
+      // региона 30%, для остальных вероятность по протяжённости карты span/400.
+      // NB: ограничение "исходящая река -> материк" (BR-002/BR-003) пока не реализовано.
+      const existingSeaKeys = getSeaHexKeys(hexTerrainByKey);
       const isCoastalRegion =
         options.coastalPreference === 'coast' ? true
         : options.coastalPreference === 'mainland' ? false
+        : regionForcesCoastContinuation(regionHexes, existingSeaKeys) ? true
         : regions.length === 0 ? Math.random() < 0.3
-        : regionReachesCoast(centerHex, undefined);
+        : Math.random() < coastProbabilityFromSpan(computeMapMaxSpanTiles(allRegionHexes));
       // Прибрежный регион тяготеет к низинам (уровень моря).
       const effectiveCoastalPreference: CoastalPreference | undefined =
         options.coastalPreference ?? (isCoastalRegion ? 'coast' : undefined);
@@ -6993,7 +7017,7 @@ export function App() {
       // Море прибрежного региона: ставится ПОСЛЕ генерации рек, поэтому реки
       // региона уже завершились на этом внешнем фронте — то есть впадают в море.
       const seaHexKeys = isCoastalRegion
-        ? computeSeaHexKeysForCoastalRegion(regionHexes, centerHex, nextHexTerrainByKeyPreview, finalizedRivers, regionId, options.coastalPreference === 'coast')
+        ? computeSeaHexKeysForCoastalRegion(regionHexes, centerHex, nextHexTerrainByKeyPreview, new Set(allRegionHexes.map(hexKey)), finalizedRivers, regionId)
         : [];
 
       const finalRegion: Region = {
