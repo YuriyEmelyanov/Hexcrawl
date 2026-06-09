@@ -4132,6 +4132,7 @@ function prependOutgoingRiverConnection(
     });
 }
 
+
 function getUnhandledIncomingConnectionsForRegion(
   region: Region,
   rivers: River[],
@@ -4897,7 +4898,7 @@ function generateRiverForRegion(
             if (connectorSplit === null) return null;
             return { pair, connectorPath, connectorSplit };
           })
-          .filter((candidate): candidate is { pair: { left: RiverEndpointTouch; right: RiverEndpointTouch }; connectorPath: RiverVertex[]; connectorSplit?: RiverConnectorSplit } => candidate !== null)
+          .filter((candidate): candidate is { pair: { left: RiverEndpointTouch; right: RiverEndpointTouch }; connectorPath: RiverVertex[]; connectorSplit: RiverConnectorSplit | undefined } => candidate !== null)
           .sort((a, b) => a.connectorPath.length - b.connectorPath.length);
 
         const bestConnector = validConnectors[0];
