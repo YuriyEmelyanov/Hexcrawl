@@ -2063,7 +2063,7 @@ function tryAddSmallTributaryRiver(
   rivers: River[],
   candidateHexes: AxialHex[]
 ): River[] {
-  const maxSegmentCount = 5;
+  const maxSegmentCount = 6;
   const logGeneration = ({
     startCandidates,
     built,
@@ -2263,7 +2263,7 @@ function tryAddSmallTributaryRiver(
       id: nextRiverId,
       regionId: region.id,
       vertexPath: newRiverPath,
-      sectors: createInitialRiverSectors(nextRiverId, newRiverPath, getTributaryRiverFullnessForHeight(region.heightLevel), {}, region.id),
+      sectors: createInitialRiverSectors(nextRiverId, newRiverPath, 1, {}, region.id),
     };
     const nextRivers = [...rivers, newRiver];
     for (const river of nextRivers) {
