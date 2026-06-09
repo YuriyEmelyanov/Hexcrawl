@@ -3758,6 +3758,214 @@ function prependOutgoingRiverConnection(
     });
 }
 
+
+function getUnhandledIncomingConnectionsForRegion(
+  region: Region,
+  rivers: River[],
+  riverGraph: RiverGraph
+): Array<{ endpoint: RiverEndpointTouch; river: River; fullness: RiverFullness }> {
+  return findRiverEndpointsTouchingRegion(region, rivers, riverGraph)
+    .filter((endpoint) => endpoint.endpointType === 'end')
+    .map((endpoint) => {
+      const river = rivers.find((item) => item.id === endpoint.riverId);
+      if (!river) return null;
+      const currentEndVertex = river.vertexPath[river.vertexPath.length - 1];
+      if (currentEndVertex?.key !== endpoint.vertex.key) return null;
+      const endpointAlreadyExtendedInRegion = (river.sectors ?? []).some((sector) => (
+        sector.assignedRegionId === region.id
+        && sector.endVertexKey === endpoint.vertex.key
+      ));
+      if (endpointAlreadyExtendedInRegion) return null;
+      return {
+        endpoint,
+        river,
+        fullness: getRiverFullnessAtVertex(river, endpoint.vertex.key)
+      };
+    })
+    .filter((connection): connection is { endpoint: RiverEndpointTouch; river: River; fullness: RiverFullness } => connection !== null)
+    .sort((a, b) => b.fullness - a.fullness || a.river.id - b.river.id);
+}
+
+function appendIncomingRiverConnection(
+  rivers: River[],
+  endpoint: RiverEndpointTouch,
+  path: RiverVertex[],
+  assignedRegionId: number
+): River[] {
+  return rivers.map((river) => river.id !== endpoint.riverId
+    ? river
+    : {
+      ...river,
+      vertexPath: [...river.vertexPath, ...path.slice(1)],
+      sectors: appendRiverPathSector(river, path, getRiverDownstreamFullness(river), assignedRegionId)
+    });
+}
+
+function getBestIncomingPathToCandidate(
+  endpoint: RiverEndpointTouch,
+  candidateVertices: RiverVertex[],
+  riverGraph: RiverGraph,
+  usedRiverEdges: Set<string>,
+  occupiedVertexKeys: Set<string>
+): RiverVertex[] | null {
+  const targetVertices = candidateVertices.filter((vertex) => (
+    vertex.key !== endpoint.vertex.key
+    && !occupiedVertexKeys.has(vertex.key)
+    && riverGraph.nodes.has(vertex.key)
+  ));
+  return findBestFreeRiverPathToAnyTarget(
+    endpoint.vertex,
+    targetVertices,
+    riverGraph,
+    usedRiverEdges,
+    new Set(),
+    occupiedVertexKeys,
+    new Set([endpoint.vertex.key])
+  );
+}
+
+function getBestIncomingPathToRiverTributary(
+  endpoint: RiverEndpointTouch,
+  rivers: River[],
+  riverGraph: RiverGraph,
+  usedRiverEdges: Set<string>,
+  occupiedVertexKeys: Set<string>
+): RiverVertex[] | null {
+  const targetVerticesByKey = new Map<string, RiverVertex>();
+
+  for (const targetRiver of rivers) {
+    if (targetRiver.id === endpoint.riverId) continue;
+    if (wouldCreateRiverDrainageCycle(rivers, endpoint.riverId, targetRiver.id)) continue;
+
+    for (const vertex of targetRiver.vertexPath.slice(1, -1)) {
+      if (!riverGraph.nodes.has(vertex.key)) continue;
+      if (vertex.key === endpoint.vertex.key) continue;
+      targetVerticesByKey.set(vertex.key, vertex);
+    }
+  }
+
+  const targetVertices = Array.from(targetVerticesByKey.values());
+  return findBestFreeRiverPathToAnyTarget(
+    endpoint.vertex,
+    targetVertices,
+    riverGraph,
+    usedRiverEdges,
+    new Set(),
+    occupiedVertexKeys,
+    new Set([endpoint.vertex.key, ...targetVertices.map((vertex) => vertex.key)])
+  );
+}
+
+function getBestIncomingPathToLake(
+  endpoint: RiverEndpointTouch,
+  region: Region,
+  terrainMap: Map<string, HexTerrainData>,
+  rivers: River[],
+  riverGraph: RiverGraph,
+  usedRiverEdges: Set<string>,
+  occupiedVertexKeys: Set<string>
+): RiverVertex[] | null {
+  const lakes = getLakesForRegion(region, terrainMap)
+    .map((lake) => ({ lake, hasRiverConnection: lakeHasRiverConnection(lake.hexes, rivers) }))
+    .sort((a, b) => Number(a.hasRiverConnection) - Number(b.hasRiverConnection) || a.lake.lakeId - b.lake.lakeId);
+
+  let bestPath: RiverVertex[] | null = null;
+  for (const { lake } of lakes) {
+    const lakeVertices = getRegionExteriorVertices(lake.hexes)
+      .filter((vertex) => vertex.key !== endpoint.vertex.key && riverGraph.nodes.has(vertex.key));
+    const path = findBestFreeRiverPathToAnyTarget(
+      endpoint.vertex,
+      lakeVertices,
+      riverGraph,
+      usedRiverEdges,
+      new Set(),
+      occupiedVertexKeys,
+      new Set([endpoint.vertex.key, ...lakeVertices.map((vertex) => vertex.key)])
+    );
+    if (path && (!bestPath || path.length < bestPath.length)) bestPath = path;
+  }
+
+  return bestPath;
+}
+
+function connectRemainingIncomingRiversForRegion(
+  region: Region,
+  terrainMap: Map<string, HexTerrainData>,
+  riverGraph: RiverGraph,
+  rivers: River[],
+  candidateVertices: RiverVertex[]
+): River[] {
+  let nextRivers = rivers;
+
+  for (const initialConnection of getUnhandledIncomingConnectionsForRegion(region, nextRivers, riverGraph)) {
+    const currentConnection = getUnhandledIncomingConnectionsForRegion(region, nextRivers, riverGraph)
+      .find((connection) => connection.river.id === initialConnection.river.id);
+    if (!currentConnection) continue;
+
+    const usedRiverEdges = buildUsedRiverEdges(nextRivers);
+    const occupiedVertexKeys = new Set(nextRivers.flatMap((river) => river.vertexPath.map((vertex) => vertex.key)));
+    const candidatePath = getBestIncomingPathToCandidate(
+      currentConnection.endpoint,
+      candidateVertices,
+      riverGraph,
+      usedRiverEdges,
+      occupiedVertexKeys
+    );
+    const tributaryPath = candidatePath ? null : getBestIncomingPathToRiverTributary(
+      currentConnection.endpoint,
+      nextRivers,
+      riverGraph,
+      usedRiverEdges,
+      occupiedVertexKeys
+    );
+    const lakePath = candidatePath || tributaryPath ? null : getBestIncomingPathToLake(
+      currentConnection.endpoint,
+      region,
+      terrainMap,
+      nextRivers,
+      riverGraph,
+      usedRiverEdges,
+      occupiedVertexKeys
+    );
+    const selectedPath = candidatePath ?? tributaryPath ?? lakePath;
+    const selectedMode = candidatePath ? 'candidate' : tributaryPath ? 'tributary' : lakePath ? 'lake' : null;
+
+    if (!selectedPath) {
+      console.warn('Could not connect remaining incoming river', {
+        regionId: region.id,
+        incomingRiverId: currentConnection.river.id,
+        fullness: currentConnection.fullness,
+        candidateTargetCount: candidateVertices.length,
+        lakeCount: getLakesForRegion(region, terrainMap).length,
+      });
+      continue;
+    }
+
+    nextRivers = appendIncomingRiverConnection(
+      nextRivers,
+      currentConnection.endpoint,
+      selectedPath,
+      region.id
+    );
+
+    for (const river of nextRivers) {
+      validateRiverDirection(river);
+      validateRiverContinuity(river);
+    }
+    validateNoDuplicateRiverEdges(nextRivers);
+
+    console.log('Connected remaining incoming river', {
+      regionId: region.id,
+      incomingRiverId: currentConnection.river.id,
+      fullness: currentConnection.fullness,
+      mode: selectedMode,
+      pathLength: selectedPath.length,
+    });
+  }
+
+  return nextRivers;
+}
+
 function connectRemainingOutgoingRiversForRegion(
   region: Region,
   regions: Region[],
@@ -3893,12 +4101,19 @@ function finalizeRiverGenerationForRegion(
     candidateVertices,
     neighborRegionVertices
   );
+  const riversWithRemainingIncomingConnected = connectRemainingIncomingRiversForRegion(
+    region,
+    terrainMap,
+    riverGraph,
+    riversWithMinimumMountainRivers,
+    candidateVertices
+  );
   const riversWithRemainingOutgoingConnected = connectRemainingOutgoingRiversForRegion(
     region,
     regions,
     terrainMap,
     riverGraph,
-    riversWithMinimumMountainRivers,
+    riversWithRemainingIncomingConnected,
     candidateHexes,
     candidateVertices,
     neighborRegionVertices
@@ -4309,7 +4524,7 @@ function generateRiverForRegion(
             if (connectorSplit === null) return null;
             return { pair, connectorPath, connectorSplit };
           })
-          .filter((candidate): candidate is { pair: { left: RiverEndpointTouch; right: RiverEndpointTouch }; connectorPath: RiverVertex[]; connectorSplit?: RiverConnectorSplit } => candidate !== null)
+          .filter((candidate): candidate is { pair: { left: RiverEndpointTouch; right: RiverEndpointTouch }; connectorPath: RiverVertex[]; connectorSplit: RiverConnectorSplit | undefined } => candidate !== null)
           .sort((a, b) => a.connectorPath.length - b.connectorPath.length);
 
         const bestConnector = validConnectors[0];
