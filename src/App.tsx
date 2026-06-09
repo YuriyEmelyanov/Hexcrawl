@@ -3603,6 +3603,7 @@ export function getCandidateHexes(allRegionHexes: AxialHex[], excludeKeys?: Set<
 // Берётся максимальная протяжённость уже сгенерированной карты по трём осям
 // гекс-сетки, ограничивается 400, и делится на 400.
 const COAST_SPAN_CAP = 400;
+const START_REGION_AUTO_COAST_PROBABILITY = 0.3;
 
 function computeMapMaxSpanTiles(allRegionHexes: AxialHex[]): number {
   if (allRegionHexes.length === 0) return 0;
@@ -3637,6 +3638,67 @@ function regionForcesCoastContinuation(regionHexes: AxialHex[], seaKeys: Set<str
     }
   }
   return false;
+}
+
+function regionHasOutgoingRiverToExistingRegion(touchingEndpoints: RiverEndpointTouch[]): boolean {
+  return touchingEndpoints.some((endpoint) => endpoint.endpointType === 'start');
+}
+
+function getHexSameRegionNeighborCount(hex: AxialHex, regionKeys: Set<string>): number {
+  return getHexNeighbors(hex).filter((neighbor) => regionKeys.has(hexKey(neighbor))).length;
+}
+
+function chooseCoastalCenterHex(regionHexes: AxialHex[], seaKeys: Set<string>, rivers: River[]): AxialHex | null {
+  const regionKeys = new Set(regionHexes.map(hexKey));
+  const candidates = regionHexes.filter((hex) => {
+    const touchesSea = getHexNeighbors(hex).some((neighbor) => seaKeys.has(hexKey(neighbor)));
+    return touchesSea && getRiversForHex(hex, rivers).length > 0;
+  });
+  if (candidates.length === 0) return null;
+
+  const maxNeighborCount = Math.max(...candidates.map((hex) => getHexSameRegionNeighborCount(hex, regionKeys)));
+  return randomFrom(candidates.filter((hex) => getHexSameRegionNeighborCount(hex, regionKeys) === maxNeighborCount));
+}
+
+function getClaimableSeaNeighborKey(
+  hex: AxialHex,
+  regionKeys: Set<string>,
+  occupiedRegionKeys: Set<string>,
+  existingTerrain: Map<string, HexTerrainData>
+): string | null {
+  const neighbors = getHexNeighbors(hex)
+    .filter((neighbor) => {
+      const key = hexKey(neighbor);
+      return !regionKeys.has(key) && !occupiedRegionKeys.has(key) && !existingTerrain.get(key)?.terrainOverride;
+    })
+    .sort((left, right) => hexDistanceFromCenter(right) - hexDistanceFromCenter(left));
+
+  return neighbors[0] ? hexKey(neighbors[0]) : null;
+}
+
+function extendSeaToCoastalCenterCandidate(
+  regionHexes: AxialHex[],
+  seaHexKeys: string[],
+  existingTerrain: Map<string, HexTerrainData>,
+  occupiedRegionKeys: Set<string>,
+  rivers: River[]
+): string[] {
+  const seaKeys = new Set(seaHexKeys);
+  if (chooseCoastalCenterHex(regionHexes, seaKeys, rivers)) return Array.from(seaKeys);
+
+  const regionKeys = new Set(regionHexes.map(hexKey));
+  const riverHexes = regionHexes
+    .filter((hex) => getRiversForHex(hex, rivers).length > 0)
+    .sort((left, right) => hexDistanceFromCenter(right) - hexDistanceFromCenter(left));
+
+  for (const hex of riverHexes) {
+    const seaKey = getClaimableSeaNeighborKey(hex, regionKeys, occupiedRegionKeys, existingTerrain);
+    if (!seaKey) continue;
+    seaKeys.add(seaKey);
+    if (chooseCoastalCenterHex(regionHexes, seaKeys, rivers)) break;
+  }
+
+  return Array.from(seaKeys);
 }
 
 // Гексы-море для прибрежного региона: пустые гексы на отвёрнутой от центра
@@ -4492,7 +4554,9 @@ function generateRiverForRegion(
     void outgoingEndpoints;
 
     if (existingRiverEndpointVerticesInRegion.length > 0 && redVertices.length < 1) return { success: false, rivers: existingRivers, reason: 'no_red_vertices_for_extension' };
-    if (existingRiverEndpointVerticesInRegion.length === 0 && redVertices.length < 2) return { success: false, rivers: existingRivers, reason: 'not_enough_red_vertices_for_new_river' };
+    if (existingRiverEndpointVerticesInRegion.length === 0 && redVertices.length < 2) {
+      return finalizeRiverGenerationForRegion(region, regions, terrainMap, riverGraph, existingRivers, candidateHexes ?? [], candidateVertices, neighborRegionVertices);
+    }
     if (existingRiverEndpointVerticesInRegion.length > 0) {
       const bestEndpointPath = findBestFreeRiverPathFromEndpoints(
         existingRiverEndpointVerticesInRegion,
@@ -7066,6 +7130,7 @@ export function App() {
 
   const addRegionToMap = (anchorHex: AxialHex, options: GenerationOptions = {}) => {
     const maxRegionAttempts = 30;
+    const autoCoastRoll = Math.random();
     for (let attempt = 0; attempt < maxRegionAttempts; attempt += 1) {
       const targetSize = options.targetSize ?? rollRegionTargetSize();
       const occupiedHexes = new Set(allRegionHexes.map(hexKey));
@@ -7076,18 +7141,55 @@ export function App() {
       const finalSize = regionHexes.length;
       const { sizeCategory, sizeLabel } = getRegionSizeCategory(finalSize);
       const centerHex = chooseRegionCenter(regionHexes);
-      // Прибрежность: ручной выбор приоритетен; для стартового региона в режиме
-      // Прибрежность (BR-001/BR-002): ручной выбор приоритетен; иначе сначала
-      // принудительное продолжение существующего берега, затем — для стартового
-      // региона 30%, для остальных вероятность по протяжённости карты span/400.
-      // NB: ограничение "исходящая река -> материк" (BR-002/BR-003) пока не реализовано.
+      const regionByHexKey = new Map<string, Region>();
+      for (const region of regions) {
+        for (const hex of region.hexes) regionByHexKey.set(hexKey(hex), region);
+      }
+      const adjacentBiomeIds = getAdjacentRegionBiomes(regionHexes, regionByHexKey);
+      const nextAllHexesPreview = [...allRegionHexes, ...regionHexes];
+      const nextCandidateHexesPreview = getCandidateHexes(nextAllHexesPreview);
+      const candidateRegionForTopologyCheck: Region = {
+        id: regionId,
+        hexes: regionHexes,
+        centerHex,
+        anchorHex,
+        targetSize,
+        finalSize,
+        sizeCategory,
+        sizeLabel,
+        biomeLandType: 'wild',
+        heightLevel: 1,
+        biomeId: FALLBACK_BIOME_ID,
+        biomeLabel: BIOMES[FALLBACK_BIOME_ID].label,
+        biomePrimaryEmoji: BIOMES[FALLBACK_BIOME_ID].primaryEmoji,
+        biomeSecondaryEmojis: [...BIOMES[FALLBACK_BIOME_ID].secondaryEmojis],
+        biomeEmojiLabel: BIOMES[FALLBACK_BIOME_ID].primaryEmoji + BIOMES[FALLBACK_BIOME_ID].secondaryEmojis.join(''),
+        pointsOfInterest: []
+      };
+      const candidateRiverGraph = buildRiverGraphForRegion(
+        candidateRegionForTopologyCheck.hexes,
+        candidateRegionForTopologyCheck.hexes,
+        nextCandidateHexesPreview
+      );
+      const touchingEndpoints = findRiverEndpointsTouchingRegion(
+        candidateRegionForTopologyCheck,
+        rivers,
+        candidateRiverGraph
+      );
       const existingSeaKeys = getSeaHexKeys(hexTerrainByKey);
+      const forcedCoastContinuation = regionForcesCoastContinuation(regionHexes, existingSeaKeys);
+      const hasOutgoingRiverToExistingRegion = regionHasOutgoingRiverToExistingRegion(touchingEndpoints);
+      if (options.coastalPreference === 'coast' && hasOutgoingRiverToExistingRegion) {
+        console.warn('Discarding coastal candidate region because it has outgoing river to existing region', { attempt, regionId });
+        return;
+      }
       const isCoastalRegion =
         options.coastalPreference === 'coast' ? true
         : options.coastalPreference === 'mainland' ? false
-        : regionForcesCoastContinuation(regionHexes, existingSeaKeys) ? true
-        : regions.length === 0 ? Math.random() < 0.3
-        : Math.random() < coastProbabilityFromSpan(computeMapMaxSpanTiles(allRegionHexes));
+        : forcedCoastContinuation ? true
+        : hasOutgoingRiverToExistingRegion ? false
+        : regions.length === 0 ? autoCoastRoll < START_REGION_AUTO_COAST_PROBABILITY
+        : autoCoastRoll < coastProbabilityFromSpan(computeMapMaxSpanTiles(allRegionHexes));
       // Прибрежный регион тяготеет к низинам (уровень моря).
       const effectiveCoastalPreference: CoastalPreference | undefined =
         options.coastalPreference ?? (isCoastalRegion ? 'coast' : undefined);
@@ -7103,46 +7205,15 @@ export function App() {
         }
         return chooseBiomeId(biomeLandType, adjacentBiomeIds, regionId, constraint, effectiveCoastalPreference);
       };
-      const regionByHexKey = new Map<string, Region>();
-      for (const region of regions) {
-        for (const hex of region.hexes) regionByHexKey.set(hexKey(hex), region);
-      }
-      const adjacentBiomeIds = getAdjacentRegionBiomes(regionHexes, regionByHexKey);
       const candidateRegionForRiverCheck: Region = {
-        id: regionId,
-        hexes: regionHexes,
-        centerHex,
-        anchorHex,
-        targetSize,
-        finalSize,
-        sizeCategory,
-        sizeLabel,
-        biomeLandType,
-        heightLevel: 1,
-        biomeId: FALLBACK_BIOME_ID,
-        biomeLabel: BIOMES[FALLBACK_BIOME_ID].label,
-        biomePrimaryEmoji: BIOMES[FALLBACK_BIOME_ID].primaryEmoji,
-        biomeSecondaryEmojis: [...BIOMES[FALLBACK_BIOME_ID].secondaryEmojis],
-        biomeEmojiLabel: BIOMES[FALLBACK_BIOME_ID].primaryEmoji + BIOMES[FALLBACK_BIOME_ID].secondaryEmojis.join(''),
-        pointsOfInterest: []
+        ...candidateRegionForTopologyCheck,
+        biomeLandType
       };
-      const nextAllHexesPreview = [...allRegionHexes, ...regionHexes];
-      const nextCandidateHexesPreview = getCandidateHexes(nextAllHexesPreview);
       const riverHeightConstraint = getRiverHeightConstraintForCandidateRegion(
         candidateRegionForRiverCheck,
         regions,
         rivers,
         nextCandidateHexesPreview
-      );
-      const candidateRiverGraph = buildRiverGraphForRegion(
-        candidateRegionForRiverCheck.hexes,
-        candidateRegionForRiverCheck.hexes,
-        nextCandidateHexesPreview
-      );
-      const touchingEndpoints = findRiverEndpointsTouchingRegion(
-        candidateRegionForRiverCheck,
-        rivers,
-        candidateRiverGraph
       );
       console.log('River height constraint for candidate region', {
         regionId,
@@ -7288,16 +7359,32 @@ export function App() {
         const terrain = nextHexTerrainByKeyPreview.get(hexKey(hex));
         if (terrain) regionTerrainByHex.set(hexKey(hex), terrain);
       }
-      const pointsOfInterest = assignPointsOfInterestForRegion(regionHexes, centerHex, regionTerrainByHex);
 
       // Море прибрежного региона: ставится ПОСЛЕ генерации рек, поэтому реки
       // региона уже завершились на этом внешнем фронте — то есть впадают в море.
+      const occupiedRegionKeysForSea = new Set(allRegionHexes.map(hexKey));
       const seaHexKeys = isCoastalRegion
-        ? computeSeaHexKeysForCoastalRegion(regionHexes, centerHex, nextHexTerrainByKeyPreview, new Set(allRegionHexes.map(hexKey)), finalizedRivers, regionId)
+        ? extendSeaToCoastalCenterCandidate(
+          regionHexes,
+          computeSeaHexKeysForCoastalRegion(regionHexes, centerHex, nextHexTerrainByKeyPreview, occupiedRegionKeysForSea, finalizedRivers, regionId),
+          nextHexTerrainByKeyPreview,
+          occupiedRegionKeysForSea,
+          finalizedRivers
+        )
         : [];
+      const coastalCenterHex = seaHexKeys.length > 0
+        ? chooseCoastalCenterHex(regionHexes, new Set(seaHexKeys), finalizedRivers)
+        : null;
+      if (isCoastalRegion && (!coastalCenterHex || seaHexKeys.length === 0)) {
+        console.warn('Discarding failed coastal candidate region because no center hex touches both sea and river', { attempt, regionId });
+        continue;
+      }
+      const finalCenterHex = coastalCenterHex ?? centerHex;
+      const pointsOfInterest = assignPointsOfInterestForRegion(regionHexes, finalCenterHex, regionTerrainByHex);
 
       const finalRegion: Region = {
         ...regionForRiverGeneration,
+        centerHex: finalCenterHex,
         pointsOfInterest,
         // Регион считается прибрежным, только если у него реально появилось море.
         isCoastal: seaHexKeys.length > 0
