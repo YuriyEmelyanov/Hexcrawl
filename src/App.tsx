@@ -1626,21 +1626,27 @@ function assignRiverSectors(rivers: River[], lakes: Lake[], regions: Region[] = 
           'end'
         ) as RiverSector['endReason'];
 
-        if (startReason === 'region_boundary' && knownSectorFullness && knownSectorFullness !== downstreamFullness) {
-          const keepsConfluenceFullness = knownSectorFullness < downstreamFullness
-            && isDownstreamOfConfluenceFullnessIncrease(fromIndex, riverFullnessRuleState);
-          if (!keepsConfluenceFullness) downstreamFullness = knownSectorFullness;
-        } else if (baseFullness > downstreamFullness) {
-          downstreamFullness = baseFullness;
+        let fullness: RiverFullness;
+        if (knownSectorFullness) {
+          // Existing river edges are authoritative: connecting a stronger incoming river
+          // must not silently rewrite the already drawn outgoing river's fullness.
+          // New connector sectors are created with their intended fullness beforehand,
+          // so preserving known edge fullness also keeps deliberate split/drop sectors.
+          downstreamFullness = knownSectorFullness;
+          fullness = knownSectorFullness;
+        } else {
+          if (baseFullness > downstreamFullness) {
+            downstreamFullness = baseFullness;
+          }
+          const adjustedFullness = applyRiverFullnessRules(
+            downstreamFullness,
+            fromIndex,
+            toIndex,
+            riverFullnessRuleState
+          );
+          downstreamFullness = adjustedFullness.downstreamFullness;
+          fullness = adjustedFullness.sectorFullness;
         }
-        const adjustedFullness = applyRiverFullnessRules(
-          downstreamFullness,
-          fromIndex,
-          toIndex,
-          riverFullnessRuleState
-        );
-        downstreamFullness = adjustedFullness.downstreamFullness;
-        const fullness = adjustedFullness.sectorFullness;
         sectors.push({
           id: `${river.id}:sector:${sectorIndex}`,
           riverId: river.id,
@@ -7114,6 +7120,10 @@ export function App() {
         nextRegionsForRiverGeneration,
         nextCandidateHexes
       );
+      if (!validateExistingRiverEdgeFullnessPreserved(rivers, finalizedRivers)) {
+        console.warn('Discarding failed candidate region because final river sector assignment changed old edge fullness', { attempt });
+        continue;
+      }
 
       const regionTerrainByHex = new Map<string, HexTerrainData>();
       for (const hex of regionHexes) {
