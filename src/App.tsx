@@ -1793,6 +1793,10 @@ function wouldCreateRiverDrainageCycle(
   return riverDrainsInto(buildRiverDownstreamAdjacency(rivers), downstreamRiverId, upstreamRiverId);
 }
 
+function getRiverConfluenceVertexKeys(rivers: River[]): Set<string> {
+  return new Set(getRiverConfluences(rivers).map((confluence) => confluence.vertexKey));
+}
+
 function getRiverConfluencesForRegion(region: Region, rivers: River[]): RiverConfluence[] {
   const regionVertexKeys = new Set<string>();
   for (const hex of region.hexes) {
@@ -2519,6 +2523,7 @@ function validateRiverContinuity(river: River): boolean {
 function findRiverEndpointsTouchingRegion(region: Region, rivers: River[], riverGraph: RiverGraph): RiverEndpointTouch[] {
   void region;
   const endpoints: RiverEndpointTouch[] = [];
+  const confluenceVertexKeys = getRiverConfluenceVertexKeys(rivers);
   for (const river of rivers) {
     if (!river.vertexPath || river.vertexPath.length < 1) continue;
     const startVertex = river.vertexPath[0];
@@ -2528,7 +2533,11 @@ function findRiverEndpointsTouchingRegion(region: Region, rivers: River[], river
     if (startVertex && startNode?.isRegionBoundaryVertex) {
       endpoints.push({ riverId: river.id, endpointType: 'start', vertex: startVertex });
     }
-    if (endVertex && endNode?.isRegionBoundaryVertex) {
+    if (
+      endVertex
+      && endNode?.isRegionBoundaryVertex
+      && !confluenceVertexKeys.has(endVertex.key)
+    ) {
       endpoints.push({ riverId: river.id, endpointType: 'end', vertex: endVertex });
     }
   }
