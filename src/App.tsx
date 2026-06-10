@@ -6913,6 +6913,31 @@ function getSeaEdgeKeys(hexTerrainByKey: Map<string, HexTerrainData>): Set<strin
   return edgeKeys;
 }
 
+// Все вершины (углы) суши — вершины, принадлежащие хотя бы одному гексу региона.
+function getLandVertexKeys(allRegionHexes: AxialHex[]): Set<string> {
+  const keys = new Set<string>();
+  for (const hex of allRegionHexes) {
+    for (const corner of getHexCornerPoints(hex)) keys.add(corner.key);
+  }
+  return keys;
+}
+
+// Обрезает у реки концевые вершины, которые не касаются суши (то есть торчат в
+// море/пустоту). Так река реально заканчивается у берега, а не «течёт из моря в
+// море» в данных. Геометрия рендера берётся из vertexPath, поэтому правка пути
+// безопасна (так же поступает trimOutgoingRiverStartAwayFromRegion).
+function trimRiverEndsToLand(river: River, landVertexKeys: Set<string>): River | null {
+  const path = river.vertexPath;
+  let start = 0;
+  let end = path.length - 1;
+  while (start <= end && !landVertexKeys.has(path[start].key)) start += 1;
+  while (end >= start && !landVertexKeys.has(path[end].key)) end -= 1;
+  if (start === 0 && end === path.length - 1) return river;
+  const trimmed = path.slice(start, end + 1);
+  if (trimmed.length < 2) return null;
+  return { ...river, vertexPath: trimmed };
+}
+
 function drawLakeVerticesDebug(lakeVertices: LakeVertex[], offsetX: number, offsetY: number) {
   return lakeVertices.map((vertex) => ({
     key: `dbg-lake-vertex-${vertex.key}`,
@@ -7390,6 +7415,8 @@ export function App() {
   const [genCoastal, setGenCoastal] = useState<'auto' | CoastalPreference>('auto');
   // Режим ручной "кисти берега": клик по гексу кромки делает его морем и обратно.
   const [seaBrushActive, setSeaBrushActive] = useState(false);
+  // Уведомление пользователю (например, почему не создалось побережье).
+  const [coastNotice, setCoastNotice] = useState<string | null>(null);
   const [clickPromptCandidateKey, setClickPromptCandidateKey] = useState<string | null>(null);
 
   const allRegionHexes = useMemo(() => regions.flatMap((region) => region.hexes), [regions]);
@@ -7548,6 +7575,7 @@ export function App() {
   const addRegionToMap = (anchorHex: AxialHex, options: GenerationOptions = {}) => {
     const maxRegionAttempts = 30;
     const autoCoastRoll = Math.random();
+    setCoastNotice(null);
     for (let attempt = 0; attempt < maxRegionAttempts; attempt += 1) {
       const targetSize = options.targetSize ?? rollRegionTargetSize();
       const occupiedHexes = new Set(allRegionHexes.map(hexKey));
@@ -7601,6 +7629,7 @@ export function App() {
       const hasOutgoingRiverToExistingRegion = regionHasOutgoingRiverToExistingRegion(touchingEndpoints);
       if (options.coastalPreference === 'coast' && hasOutgoingRiverToExistingRegion) {
         console.warn('Discarding coastal candidate region because it has outgoing river to existing region', { attempt, regionId });
+        setCoastNotice('Побережье здесь создать нельзя: из этого региона вытекает река в соседний регион. Реки не текут от побережья вглубь суши (BR-003).');
         return;
       }
       const isCoastalRegion =
@@ -7873,7 +7902,14 @@ export function App() {
       });
       setNextLakeId(Math.max(computedNextLakeId, getNextLakeIdFromTerrain(nextHexTerrainByKeyPreview)));
 
-      setRivers(finalizedRivers);
+      // Обрезаем у всех рек концевые вершины, торчащие в море, чтобы они
+      // заканчивались у берега, а не шли «из моря в море» (учитываем и новое море).
+      const landVertexKeys = getLandVertexKeys(nextAllHexes);
+      const trimmedRivers = finalizedRivers
+        .map((river) => trimRiverEndsToLand(river, landVertexKeys))
+        .filter((river): river is River => river !== null);
+
+      setRivers(trimmedRivers);
       setRoads(roadResult.roads);
       setNextRoadId(roadResult.nextRoadId);
       setSelectedHex(centerHex);
@@ -8293,6 +8329,12 @@ export function App() {
                 </select>
               </label>
             </div>
+            {coastNotice && (
+              <div className="coast-notice" role="status">
+                <span>{coastNotice}</span>
+                <button type="button" onClick={() => setCoastNotice(null)} aria-label="Закрыть уведомление">×</button>
+              </div>
+            )}
             <div className="zoom-controls" aria-label="Масштаб карты">
               <button type="button" className="secondary" onClick={() => updateMapScale(mapScale - 0.1)} aria-label="Отдалить карту">−</button>
               <span>{mapZoomPercent}%</span>
