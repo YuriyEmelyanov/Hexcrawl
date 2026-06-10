@@ -4037,7 +4037,31 @@ function validateGlobalSeaConnectivity(existingSeaKeys: Set<string>, newSeaKeys:
   return { valid: true };
 }
 
-function validateSeaConnectivityThroughOpenTiles(landHexes: AxialHex[], seaKeys: Iterable<string>): GlobalSeaValidationResult {
+function openTileTouchesRiverAwayFromMouth(hex: AxialHex, rivers: River[]): boolean {
+  const vertexKeys = new Set(getHexCornerPoints(hex).map((vertex) => vertex.key));
+  const edgeKeys = new Set(getHexEdgesAsVertexPairs(hex).map((edge) => edge.edgeKey));
+
+  for (const river of rivers) {
+    const path = river.vertexPath ?? [];
+    if (path.length < 2) continue;
+    const mouthIndex = path.length - 1;
+
+    for (let index = 0; index < mouthIndex; index += 1) {
+      if (vertexKeys.has(path[index].key)) return true;
+    }
+
+    for (let index = 1; index < path.length; index += 1) {
+      const currentEdgeKey = edgeKey(path[index - 1], path[index]);
+      if (!edgeKeys.has(currentEdgeKey)) continue;
+      const isLastEdgeToMouth = index === mouthIndex;
+      if (!isLastEdgeToMouth) return true;
+    }
+  }
+
+  return false;
+}
+
+function validateSeaConnectivityThroughOpenTiles(landHexes: AxialHex[], seaKeys: Iterable<string>, rivers: River[] = []): GlobalSeaValidationResult {
   const seaSet = new Set(seaKeys);
   if (seaSet.size <= 1) return { valid: true };
 
@@ -4059,6 +4083,7 @@ function validateSeaConnectivityThroughOpenTiles(landHexes: AxialHex[], seaKeys:
     if (!isInsideBounds(hex)) return;
     const key = hexKey(hex);
     if (landKeys.has(key) || reachable.has(key)) return;
+    if (!seaSet.has(key) && openTileTouchesRiverAwayFromMouth(hex, rivers)) return;
     reachable.add(key);
     queue.push(hex);
   };
@@ -4113,7 +4138,8 @@ function validateCoastalSeaArea(
 
   const globalSeaValidation = validateSeaConnectivityThroughOpenTiles(
     [...existingRegions.flatMap((region) => region.hexes), ...regionHexes],
-    new Set([...existingSeaKeys, ...seaKeys])
+    new Set([...existingSeaKeys, ...seaKeys]),
+    rivers
   );
   if (!globalSeaValidation.valid) return globalSeaValidation;
 
@@ -8621,7 +8647,7 @@ export function App() {
       const existingSeaKeysBeforeRegion = getSeaHexKeys(hexTerrainByKey);
       const allSeaKeys = new Set(existingSeaKeysBeforeRegion);
       for (const key of seaHexKeys) allSeaKeys.add(key);
-      const seaConnectivityValidation = validateSeaConnectivityThroughOpenTiles(nextAllHexes, allSeaKeys);
+      const seaConnectivityValidation = validateSeaConnectivityThroughOpenTiles(nextAllHexes, allSeaKeys, finalizedRivers);
       if (!seaConnectivityValidation.valid) {
         console.warn('Discarding failed coastal candidate region because sea would be disconnected from open tiles', { attempt, regionId, reason: seaConnectivityValidation.reason });
         continue;
