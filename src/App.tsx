@@ -7183,7 +7183,10 @@ function getRiverTouchingSeaAwayFromMouth(
     if (touchesInvalidVertex) return true;
 
     for (let index = 1; index < path.length; index += 1) {
-      if (seaEdgeKeys.has(edgeKey(path[index - 1], path[index]))) return true;
+      const currentEdgeKey = edgeKey(path[index - 1], path[index]);
+      if (!seaEdgeKeys.has(currentEdgeKey)) continue;
+      const isLastEdgeToAllowedMouth = index === mouthIndex && allowedMouthVertexKeys.has(path[index].key);
+      if (!isLastEdgeToAllowedMouth) return true;
     }
     return false;
   }) ?? null;
@@ -7275,6 +7278,76 @@ function riverChangedFromPrevious(previousRiver: River | undefined, river: River
   if (!previousRiver) return true;
   return riverPathSignature(previousRiver) !== riverPathSignature(river)
     || riverSectorsSignature(previousRiver) !== riverSectorsSignature(river);
+}
+
+function extendRiverMouthToSeaIfPossible(
+  river: River,
+  seaVertexKeys: Set<string>,
+  riverGraph: RiverGraph,
+  usedRiverEdges: Set<string>
+): River {
+  const path = river.vertexPath ?? [];
+  if (path.length < 2) return river;
+  const mouth = path[path.length - 1];
+  if (seaVertexKeys.has(mouth.key)) return river;
+
+  const mouthNode = riverGraph.nodes.get(mouth.key);
+  if (!mouthNode) return river;
+
+  const pathVertexKeys = new Set(path.map((vertex) => vertex.key));
+  const incidentEdges = [...mouthNode.incidentEdgeKeys].sort();
+  for (const incidentEdgeKey of incidentEdges) {
+    if (usedRiverEdges.has(incidentEdgeKey)) continue;
+    const [leftKey, rightKey] = incidentEdgeKey.split('|');
+    const targetKey = leftKey === mouth.key ? rightKey : rightKey === mouth.key ? leftKey : null;
+    if (!targetKey) continue;
+    if (!seaVertexKeys.has(targetKey)) continue;
+    if (pathVertexKeys.has(targetKey)) continue;
+
+    const targetNode = riverGraph.nodes.get(targetKey);
+    if (!targetNode) continue;
+
+    return {
+      ...river,
+      vertexPath: [...path, { key: targetNode.key, x: targetNode.x, y: targetNode.y }]
+    };
+  }
+
+  return river;
+}
+
+function extendChangedRiverMouthsToSeaIfPossible(
+  previousRivers: River[],
+  nextRivers: River[],
+  seaKeys: Iterable<string>,
+  riverGraph: RiverGraph
+): River[] {
+  const seaKeyList = Array.from(seaKeys);
+  if (seaKeyList.length === 0) return nextRivers;
+
+  const seaVertexKeys = getSeaVertexKeysFromSeaKeys(seaKeyList);
+  if (seaVertexKeys.size === 0) return nextRivers;
+
+  const previousById = new Map(previousRivers.map((river) => [river.id, river]));
+  const usedRiverEdges = buildUsedRiverEdges(nextRivers);
+
+  return nextRivers.map((river) => {
+    const previousRiver = previousById.get(river.id);
+    if (!riverChangedFromPrevious(previousRiver, river)) return river;
+
+    const extendedRiver = extendRiverMouthToSeaIfPossible(river, seaVertexKeys, riverGraph, usedRiverEdges);
+    if (extendedRiver !== river) {
+      const newEdgeKey = edgeKey(river.vertexPath[river.vertexPath.length - 1], extendedRiver.vertexPath[extendedRiver.vertexPath.length - 1]);
+      usedRiverEdges.add(newEdgeKey);
+      console.log('Extended river mouth to sea', {
+        riverId: river.id,
+        oldMouthKey: river.vertexPath[river.vertexPath.length - 1]?.key,
+        newMouthKey: extendedRiver.vertexPath[extendedRiver.vertexPath.length - 1]?.key
+      });
+    }
+
+    return extendedRiver;
+  });
 }
 
 function sanitizeRiversForSea(
@@ -8258,6 +8331,15 @@ export function App() {
       }
       const allNewSeaKeys = [...seaHexKeys, ...seaPocketKeys];
       const nextCandidateHexesExclSea = getCandidateHexes(nextAllHexes, allSeaKeys);
+      if (allNewSeaKeys.length > 0) {
+        const seaExtensionGraph = buildRiverGraphForRegion(regionHexes, nextAllHexes, nextCandidateHexesExclSea);
+        finalizedRivers = extendChangedRiverMouthsToSeaIfPossible(
+          riversForGeneration,
+          finalizedRivers,
+          allNewSeaKeys,
+          seaExtensionGraph
+        );
+      }
 
       // Обрезаем у всех рек концевые вершины, торчащие в море, чтобы они
       // заканчивались у берега, а не шли «из моря в море» (учитываем и новое море).
@@ -8297,6 +8379,15 @@ export function App() {
         } catch (error) {
           console.warn('Delta arm generation failed; skipping deltas', error);
         }
+      }
+      if (allNewSeaKeys.length > 0) {
+        const seaExtensionGraph = buildRiverGraphForRegion(regionHexes, nextAllHexes, nextCandidateHexesExclSea);
+        riversWithDeltas = extendChangedRiverMouthsToSeaIfPossible(
+          riversForGeneration,
+          riversWithDeltas,
+          allNewSeaKeys,
+          seaExtensionGraph
+        );
       }
 
       riversWithDeltas = restoreInvalidGeneratedRiversForRegion(regionForRiverGeneration, riversForGeneration, riversWithDeltas, nextCandidateHexesExclSea);
