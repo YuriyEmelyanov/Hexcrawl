@@ -6994,6 +6994,13 @@ function buildDeltaArmsForRivers(
 }
 // а также не даёт реке соединять море с морем: если ОБА конца — устья у моря,
 // один конец уводится вглубь суши, оставляя единственное устье.
+function getRiverStartingFromSea(rivers: River[], seaVertexKeys: Set<string>): River | null {
+  return rivers.find((river) => {
+    const start = river.vertexPath[0];
+    return Boolean(start && seaVertexKeys.has(start.key));
+  }) ?? null;
+}
+
 function trimRiverEndsToLand(river: River, landVertexKeys: Set<string>, seaVertexKeys: Set<string>): River | null {
   const path = river.vertexPath;
   let start = 0;
@@ -7002,12 +7009,13 @@ function trimRiverEndsToLand(river: River, landVertexKeys: Set<string>, seaVerte
   while (end >= start && !landVertexKeys.has(path[end].key)) end -= 1;
   // Река не может вытекать из моря и впадать в море одновременно: если оба конца
   // примыкают к морю, отрезаем начало вглубь, пока оно не перестанет касаться моря.
-  if (end > start && seaVertexKeys.has(path[start].key) && seaVertexKeys.has(path[end].key)) {
-    while (start < end && seaVertexKeys.has(path[start].key)) start += 1;
-  }
+  while (start < end && seaVertexKeys.has(path[start].key)) start += 1;
+  while (start <= end && !landVertexKeys.has(path[start].key)) start += 1;
+  if (start > end) return null;
   if (start === 0 && end === path.length - 1) return river;
   const trimmed = path.slice(start, end + 1);
   if (trimmed.length < 2) return null;
+  if (seaVertexKeys.has(trimmed[0].key)) return null;
   return { ...river, vertexPath: trimmed };
 }
 
@@ -7485,7 +7493,7 @@ export function App() {
   const [genSizeCategory, setGenSizeCategory] = useState<'auto' | Region['sizeCategory']>('auto');
   const [genLandType, setGenLandType] = useState<'auto' | BiomeLandType>('auto');
   const [genBiome, setGenBiome] = useState<'auto' | BiomeId>('auto');
-  const [genCoastal, setGenCoastal] = useState<'auto' | CoastalPreference>('auto');
+  const [genCoastal, setGenCoastal] = useState<'auto' | CoastalPreference>('mainland');
   // Режим ручной "кисти берега": клик по гексу кромки делает его морем и обратно.
   const [seaBrushActive, setSeaBrushActive] = useState(false);
   // Уведомление пользователю (например, почему не создалось побережье).
@@ -7715,7 +7723,7 @@ export function App() {
       // Прибрежный регион тяготеет к низинам (уровень моря).
       const effectiveCoastalPreference: CoastalPreference | undefined =
         options.coastalPreference ?? (isCoastalRegion ? 'coast' : undefined);
-      const biomeLandType = options.landType ?? chooseCoastalAwareLandType(isCoastalRegion);
+      const biomeLandType = regions.length === 0 ? 'settled' : options.landType ?? chooseCoastalAwareLandType(isCoastalRegion);
       // Выбор биома: либо принудительно заданный пользователем, либо обычный
       // взвешенный выбор. Принудительный биом всё равно проверяется на
       // совместимость с ограничением высоты от рек.
@@ -7946,6 +7954,45 @@ export function App() {
       const allNewSeaKeys = [...seaHexKeys, ...seaPocketKeys];
       const nextCandidateHexesExclSea = getCandidateHexes(nextAllHexes, allSeaKeys);
 
+      // Обрезаем у всех рек концевые вершины, торчащие в море, чтобы они
+      // заканчивались у берега, а не шли «из моря в море» (учитываем и новое море).
+      const landVertexKeys = getLandVertexKeys(nextAllHexes);
+      const seaVertexKeys = new Set<string>();
+      for (const seaKey of allSeaKeys) {
+        for (const corner of getHexCornerPoints(parseHexKey(seaKey))) seaVertexKeys.add(corner.key);
+      }
+      const seaSourceRiver = getRiverStartingFromSea(finalizedRivers, seaVertexKeys);
+      if (seaSourceRiver) {
+        console.warn('Discarding failed coastal candidate region because river starts from sea', { attempt, regionId, riverId: seaSourceRiver.id });
+        continue;
+      }
+      const trimmedRivers = finalizedRivers
+        .map((river) => trimRiverEndsToLand(river, landVertexKeys, seaVertexKeys))
+        .filter((river): river is River => river !== null);
+      const trimmedSeaSourceRiver = getRiverStartingFromSea(trimmedRivers, seaVertexKeys);
+      if (trimmedSeaSourceRiver) {
+        console.warn('Discarding failed coastal candidate region because trimmed river still starts from sea', { attempt, regionId, riverId: trimmedSeaSourceRiver.id });
+        continue;
+      }
+
+      // BR-009: рукава дельты. Изолировано в try/catch — сбой не ломает генерацию,
+      // в худшем случае рукав просто не добавляется.
+      let riversWithDeltas = trimmedRivers;
+      if (allNewSeaKeys.length > 0) {
+        try {
+          const seaEdgeKeys = new Set<string>();
+          for (const seaKey of allSeaKeys) {
+            for (const edge of getHexEdgesAsVertexPairs(parseHexKey(seaKey))) seaEdgeKeys.add(edge.edgeKey);
+          }
+          const deltaGraph = buildRiverGraphForRegion(regionHexes, nextAllHexes, nextCandidateHexes);
+          const startRiverId = Math.max(0, ...trimmedRivers.map((r) => r.id)) + 1;
+          const deltaArms = buildDeltaArmsForRivers(trimmedRivers, regionId, deltaGraph, seaVertexKeys, seaEdgeKeys, startRiverId);
+          if (deltaArms.length > 0) riversWithDeltas = [...trimmedRivers, ...deltaArms];
+        } catch (error) {
+          console.warn('Delta arm generation failed; skipping deltas', error);
+        }
+      }
+
       // Снимок состояния ДО добавления этого региона — для удаления/перегенерации.
       const snapshot: MapSnapshot = {
         regions,
@@ -7974,35 +8021,6 @@ export function App() {
         return next;
       });
       setNextLakeId(Math.max(computedNextLakeId, getNextLakeIdFromTerrain(nextHexTerrainByKeyPreview)));
-
-      // Обрезаем у всех рек концевые вершины, торчащие в море, чтобы они
-      // заканчивались у берега, а не шли «из моря в море» (учитываем и новое море).
-      const landVertexKeys = getLandVertexKeys(nextAllHexes);
-      const seaVertexKeys = new Set<string>();
-      for (const seaKey of allSeaKeys) {
-        for (const corner of getHexCornerPoints(parseHexKey(seaKey))) seaVertexKeys.add(corner.key);
-      }
-      const trimmedRivers = finalizedRivers
-        .map((river) => trimRiverEndsToLand(river, landVertexKeys, seaVertexKeys))
-        .filter((river): river is River => river !== null);
-
-      // BR-009: рукава дельты. Изолировано в try/catch — сбой не ломает генерацию,
-      // в худшем случае рукав просто не добавляется.
-      let riversWithDeltas = trimmedRivers;
-      if (allNewSeaKeys.length > 0) {
-        try {
-          const seaEdgeKeys = new Set<string>();
-          for (const seaKey of allSeaKeys) {
-            for (const edge of getHexEdgesAsVertexPairs(parseHexKey(seaKey))) seaEdgeKeys.add(edge.edgeKey);
-          }
-          const deltaGraph = buildRiverGraphForRegion(regionHexes, nextAllHexes, nextCandidateHexes);
-          const startRiverId = Math.max(0, ...trimmedRivers.map((r) => r.id)) + 1;
-          const deltaArms = buildDeltaArmsForRivers(trimmedRivers, regionId, deltaGraph, seaVertexKeys, seaEdgeKeys, startRiverId);
-          if (deltaArms.length > 0) riversWithDeltas = [...trimmedRivers, ...deltaArms];
-        } catch (error) {
-          console.warn('Delta arm generation failed; skipping deltas', error);
-        }
-      }
 
       setRivers(riversWithDeltas);
       setRoads(roadResult.roads);
@@ -8764,6 +8782,7 @@ export function App() {
               <p><strong>River debug</strong></p>
               {!selectedRegion ? <p>Выберите региональный гекс.</p> : null}
               {selectedRegion && !selectedRegionGraph ? <p>no graph</p> : null}
+              {selectedRegion && selectedRegionGraph && !selectedRegionRiver ? <p>В выбранном регионе нет реки для подробной отладки.</p> : null}
               {selectedRegion && selectedRegionGraph && selectedRegionRiver ? (() => {
                 const path = selectedRegionRiver.vertexPath;
                 const start = path?.[0];
@@ -8829,7 +8848,7 @@ export function App() {
               })() : null}
             </>
           ) : null}
-          {candidateHexes.length > 0 ? <p>Выберите гекс-кандидат на карте для добавления следующего региона.</p> : null}
+          {candidateHexes.length > 0 && !debugRivers ? <p>Выберите гекс-кандидат на карте для добавления следующего региона.</p> : null}
               </div>
             ) : null}
           </aside>
