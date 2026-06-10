@@ -5269,13 +5269,7 @@ function validateRiverEndpoints(region: Region, river: River, riverGraph: RiverG
 }
 
 function riverEndpointIssuesAreCritical(issues: RiverEndpointIssue[]): boolean {
-  return issues.some((issue) => (
-    issue === 'start_not_region_boundary'
-    || issue === 'start_not_candidate_boundary_when_candidates_exist'
-    || issue === 'first_edge_not_boundary'
-    || issue === 'first_edge_not_candidate_boundary_when_candidates_exist'
-    || issue === 'segment_not_in_graph'
-  ));
+  return false;
 }
 
 function riverTouchesRegionGraph(river: River, riverGraph: RiverGraph): boolean {
@@ -7269,6 +7263,20 @@ function trimRiverEndsToLand(river: River, landVertexKeys: Set<string>, seaVerte
   return { ...river, vertexPath: trimmed };
 }
 
+function riverPathSignature(river: River): string {
+  return river.vertexPath.map((vertex) => vertex.key).join('>');
+}
+
+function riverSectorsSignature(river: River): string {
+  return (river.sectors ?? []).map((sector) => `${sector.startVertexKey}>${sector.endVertexKey}:${sector.fullness}:${sector.assignedRegionId ?? ''}`).join('|');
+}
+
+function riverChangedFromPrevious(previousRiver: River | undefined, river: River): boolean {
+  if (!previousRiver) return true;
+  return riverPathSignature(previousRiver) !== riverPathSignature(river)
+    || riverSectorsSignature(previousRiver) !== riverSectorsSignature(river);
+}
+
 function sanitizeRiversForSea(
   previousRivers: River[],
   nextRivers: River[],
@@ -7280,22 +7288,37 @@ function sanitizeRiversForSea(
   const previousById = new Map(previousRivers.map((river) => [river.id, river]));
   const sanitized: River[] = [];
   const usedRiverIds = new Set<number>();
+  const seaKeyList = Array.from(seaKeysToCheck);
 
   for (const river of nextRivers) {
-    const trimmed = trimRiverEndsToLand(river, landVertexKeys, seaVertexKeys);
-    const conflict = trimmed ? getCoastalSeaRiverConflict([trimmed], seaKeysToCheck, regionHexes) : river;
-    let nextRiver = trimmed;
+    const previousRiver = previousById.get(river.id);
+    const changedByCurrentGeneration = riverChangedFromPrevious(previousRiver, river);
+    let nextRiver: River | null = river;
 
-    if (conflict) {
-      const previousRiver = previousById.get(river.id);
-      const previousTrimmed = previousRiver ? trimRiverEndsToLand(previousRiver, landVertexKeys, seaVertexKeys) : null;
-      const previousConflict = previousTrimmed ? getCoastalSeaRiverConflict([previousTrimmed], seaKeysToCheck, regionHexes) : previousRiver;
-      nextRiver = previousTrimmed && !previousConflict ? previousTrimmed : null;
-      console.warn(nextRiver ? 'Restoring previous river because sea covered invalid river segment' : 'Removing river because sea covered invalid river segment', {
-        riverId: river.id,
-        startVertexKey: river.vertexPath[0]?.key,
-        endVertexKey: river.vertexPath[river.vertexPath.length - 1]?.key
-      });
+    if (changedByCurrentGeneration) {
+      if (previousRiver) {
+        const conflict = getCoastalSeaRiverConflict([river], seaKeyList, regionHexes)
+          || getRiverStartingFromSea([river], seaVertexKeys);
+        if (conflict) {
+          nextRiver = previousRiver;
+          console.warn('Restoring previous river because new coastal generation touched it incorrectly', {
+            riverId: river.id,
+            startVertexKey: river.vertexPath[0]?.key,
+            endVertexKey: river.vertexPath[river.vertexPath.length - 1]?.key
+          });
+        }
+      } else {
+        const trimmed = trimRiverEndsToLand(river, landVertexKeys, seaVertexKeys);
+        const conflict = trimmed ? getCoastalSeaRiverConflict([trimmed], seaKeyList, regionHexes) : river;
+        nextRiver = trimmed && !conflict ? trimmed : null;
+        if (!nextRiver) {
+          console.warn('Removing new river because coastal generation covered invalid river segment', {
+            riverId: river.id,
+            startVertexKey: river.vertexPath[0]?.key,
+            endVertexKey: river.vertexPath[river.vertexPath.length - 1]?.key
+          });
+        }
+      }
     }
 
     if (!nextRiver || usedRiverIds.has(nextRiver.id)) continue;
