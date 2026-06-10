@@ -5274,35 +5274,91 @@ function validateRiverEndpoints(region: Region, river: River, riverGraph: RiverG
   return Array.from(new Set(issues));
 }
 
-function removeInvalidGeneratedRiversForRegion(region: Region, rivers: River[], candidateHexes: AxialHex[]): River[] {
-  const riverGraph = buildRiverGraphForRegion(region.hexes, region.hexes, candidateHexes);
-  return rivers.filter((river) => {
-    if (river.regionId !== region.id) return true;
-    const issues = validateRiverEndpoints(region, river, riverGraph);
-    if (issues.length === 0) return true;
-    console.warn('Removing invalid generated river for region', {
-      regionId: region.id,
-      riverId: river.id,
-      issues,
-      startVertexKey: river.vertexPath[0]?.key,
-      endVertexKey: river.vertexPath[river.vertexPath.length - 1]?.key
-    });
-    return false;
-  });
+function riverEndpointIssuesAreCritical(issues: RiverEndpointIssue[]): boolean {
+  return issues.some((issue) => (
+    issue === 'start_not_region_boundary'
+    || issue === 'start_not_candidate_boundary_when_candidates_exist'
+    || issue === 'first_edge_not_boundary'
+    || issue === 'first_edge_not_candidate_boundary_when_candidates_exist'
+    || issue === 'segment_not_in_graph'
+  ));
 }
 
-function removeGeneratedRiversStartingFromSea(regionId: number, rivers: River[], seaVertexKeys: Set<string>): River[] {
-  return rivers.filter((river) => {
-    if (river.regionId !== regionId) return true;
+function riverTouchesRegionGraph(river: River, riverGraph: RiverGraph): boolean {
+  if (river.vertexPath.some((vertex) => riverGraph.nodes.has(vertex.key))) return true;
+  for (let index = 1; index < river.vertexPath.length; index += 1) {
+    if (riverGraph.edges.has(edgeKey(river.vertexPath[index - 1], river.vertexPath[index]))) return true;
+  }
+  return false;
+}
+
+function riverHasSectorAssignedToRegion(river: River, regionId: number): boolean {
+  return river.sectors?.some((sector) => sector.assignedRegionId === regionId) ?? false;
+}
+
+function restoreInvalidGeneratedRiversForRegion(
+  region: Region,
+  previousRivers: River[],
+  nextRivers: River[],
+  candidateHexes: AxialHex[]
+): River[] {
+  const riverGraph = buildRiverGraphForRegion(region.hexes, region.hexes, candidateHexes);
+  const previousById = new Map(previousRivers.map((river) => [river.id, river]));
+  const restored: River[] = [];
+  const usedRiverIds = new Set<number>();
+
+  for (const river of nextRivers) {
+    const shouldCheckRiver = river.regionId === region.id
+      || riverHasSectorAssignedToRegion(river, region.id)
+      || riverTouchesRegionGraph(river, riverGraph);
+    let nextRiver: River | null = river;
+
+    if (shouldCheckRiver) {
+      const issues = validateRiverEndpoints(region, river, riverGraph);
+      if (riverEndpointIssuesAreCritical(issues)) {
+        const previousRiver = previousById.get(river.id);
+        console.warn(previousRiver ? 'Restoring previous river because generated segment is invalid for region' : 'Removing invalid generated river for region', {
+          regionId: region.id,
+          riverId: river.id,
+          issues,
+          startVertexKey: river.vertexPath[0]?.key,
+          endVertexKey: river.vertexPath[river.vertexPath.length - 1]?.key
+        });
+        nextRiver = previousRiver ?? null;
+      }
+    }
+
+    if (!nextRiver || usedRiverIds.has(nextRiver.id)) continue;
+    restored.push(nextRiver);
+    usedRiverIds.add(nextRiver.id);
+  }
+
+  return restored;
+}
+
+function restoreRiversStartingFromSea(previousRivers: River[], nextRivers: River[], seaVertexKeys: Set<string>): River[] {
+  const previousById = new Map(previousRivers.map((river) => [river.id, river]));
+  const restored: River[] = [];
+  const usedRiverIds = new Set<number>();
+
+  for (const river of nextRivers) {
     const startVertex = river.vertexPath[0];
-    if (!startVertex || !seaVertexKeys.has(startVertex.key)) return true;
-    console.warn('Removing generated river because it starts from sea', {
-      regionId,
-      riverId: river.id,
-      startVertexKey: startVertex.key
-    });
-    return false;
-  });
+    let nextRiver: River | null = river;
+    if (startVertex && seaVertexKeys.has(startVertex.key)) {
+      const previousRiver = previousById.get(river.id);
+      console.warn(previousRiver ? 'Restoring previous river because generated river starts from sea' : 'Removing generated river because it starts from sea', {
+        riverId: river.id,
+        startVertexKey: startVertex.key
+      });
+      nextRiver = previousRiver ?? null;
+    }
+
+    if (!nextRiver || usedRiverIds.has(nextRiver.id)) continue;
+    restored.push(nextRiver);
+    usedRiverIds.add(nextRiver.id);
+  }
+
+  return restored;
 }
 
 function getLakeChanceForBiome(biomeId: BiomeId): number {
@@ -8082,7 +8138,7 @@ export function App() {
         nextRegionsForRiverGeneration,
         nextCandidateHexes
       );
-      finalizedRivers = removeInvalidGeneratedRiversForRegion(regionForRiverGeneration, finalizedRivers, nextCandidateHexes);
+      finalizedRivers = restoreInvalidGeneratedRiversForRegion(regionForRiverGeneration, riversForGeneration, finalizedRivers, nextCandidateHexes);
       if (!validateExistingRiverEdgeFullnessPreserved(rivers, finalizedRivers)) {
         console.warn('Discarding failed candidate region because final river sector assignment changed old edge fullness', { attempt });
         continue;
@@ -8171,7 +8227,7 @@ export function App() {
       for (const seaKey of allSeaKeys) {
         for (const corner of getHexCornerPoints(parseHexKey(seaKey))) seaVertexKeys.add(corner.key);
       }
-      finalizedRivers = removeGeneratedRiversStartingFromSea(regionId, finalizedRivers, seaVertexKeys);
+      finalizedRivers = restoreRiversStartingFromSea(riversForGeneration, finalizedRivers, seaVertexKeys);
       const trimmedRivers = finalizedRivers
         .map((river) => trimRiverEndsToLand(river, landVertexKeys, seaVertexKeys))
         .filter((river): river is River => river !== null);
@@ -8199,6 +8255,8 @@ export function App() {
         }
       }
 
+      riversWithDeltas = restoreInvalidGeneratedRiversForRegion(regionForRiverGeneration, riversForGeneration, riversWithDeltas, nextCandidateHexes);
+      riversWithDeltas = restoreRiversStartingFromSea(riversForGeneration, riversWithDeltas, seaVertexKeys);
       const finalSeaRiverConflict = getCoastalSeaRiverConflict(riversWithDeltas, allNewSeaKeys, regionHexes);
       if (finalSeaRiverConflict) {
         console.warn('Discarding failed coastal candidate region because final river/sea interaction is invalid', { attempt, regionId, riverId: finalSeaRiverConflict.id });
