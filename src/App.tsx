@@ -4037,6 +4037,52 @@ function validateGlobalSeaConnectivity(existingSeaKeys: Set<string>, newSeaKeys:
   return { valid: true };
 }
 
+function validateSeaConnectivityThroughOpenTiles(landHexes: AxialHex[], seaKeys: Iterable<string>): GlobalSeaValidationResult {
+  const seaSet = new Set(seaKeys);
+  if (seaSet.size <= 1) return { valid: true };
+
+  const landKeys = new Set(landHexes.map(hexKey));
+  const knownHexes = [...landHexes, ...Array.from(seaSet).map(parseHexKey)];
+  if (knownHexes.length === 0) return { valid: true };
+
+  const qs = knownHexes.map((hex) => hex.q);
+  const rs = knownHexes.map((hex) => hex.r);
+  const minQ = Math.min(...qs) - 2;
+  const maxQ = Math.max(...qs) + 2;
+  const minR = Math.min(...rs) - 2;
+  const maxR = Math.max(...rs) + 2;
+
+  const isInsideBounds = (hex: AxialHex) => hex.q >= minQ && hex.q <= maxQ && hex.r >= minR && hex.r <= maxR;
+  const reachable = new Set<string>();
+  const queue: AxialHex[] = [];
+  const enqueue = (hex: AxialHex) => {
+    if (!isInsideBounds(hex)) return;
+    const key = hexKey(hex);
+    if (landKeys.has(key) || reachable.has(key)) return;
+    reachable.add(key);
+    queue.push(hex);
+  };
+
+  for (let q = minQ; q <= maxQ; q += 1) {
+    enqueue({ q, r: minR });
+    enqueue({ q, r: maxR });
+  }
+  for (let r = minR; r <= maxR; r += 1) {
+    enqueue({ q: minQ, r });
+    enqueue({ q: maxQ, r });
+  }
+
+  for (let cursor = 0; cursor < queue.length; cursor += 1) {
+    for (const neighbor of getHexNeighbors(queue[cursor])) enqueue(neighbor);
+  }
+
+  for (const seaKey of seaSet) {
+    if (!reachable.has(seaKey)) return { valid: false, reason: 'sea_not_connected_through_open_tiles' };
+  }
+
+  return { valid: true };
+}
+
 type CoastalSeaValidationResult = { valid: true } | { valid: false; reason: string };
 
 function validateCoastalSeaArea(
@@ -4065,11 +4111,10 @@ function validateCoastalSeaArea(
     if (getConnectedSeaComponent(firstKey, seaKeys).size !== seaKeys.size) return { valid: false, reason: 'disconnected_sea_area' };
   }
 
-  if (regionForcesCoastContinuation(regionHexes, existingSeaKeys) && !seaKeysTouchExistingSea(seaKeys, existingSeaKeys)) {
-    return { valid: false, reason: 'sea_area_not_connected_to_existing_coast' };
-  }
-
-  const globalSeaValidation = validateGlobalSeaConnectivity(existingSeaKeys, seaKeys);
+  const globalSeaValidation = validateSeaConnectivityThroughOpenTiles(
+    [...existingRegions.flatMap((region) => region.hexes), ...regionHexes],
+    new Set([...existingSeaKeys, ...seaKeys])
+  );
   if (!globalSeaValidation.valid) return globalSeaValidation;
 
   const riverConflict = getCoastalSeaRiverConflict(rivers, seaKeys, regionHexes);
@@ -8574,13 +8619,13 @@ export function App() {
       const nextRegions = [...regions, finalRegion];
 
       const existingSeaKeysBeforeRegion = getSeaHexKeys(hexTerrainByKey);
-      const seaConnectivityValidation = validateGlobalSeaConnectivity(existingSeaKeysBeforeRegion, seaHexKeys);
-      if (!seaConnectivityValidation.valid) {
-        console.warn('Discarding failed coastal candidate region because sea would be disconnected', { attempt, regionId, reason: seaConnectivityValidation.reason });
-        continue;
-      }
       const allSeaKeys = new Set(existingSeaKeysBeforeRegion);
       for (const key of seaHexKeys) allSeaKeys.add(key);
+      const seaConnectivityValidation = validateSeaConnectivityThroughOpenTiles(nextAllHexes, allSeaKeys);
+      if (!seaConnectivityValidation.valid) {
+        console.warn('Discarding failed coastal candidate region because sea would be disconnected from open tiles', { attempt, regionId, reason: seaConnectivityValidation.reason });
+        continue;
+      }
       const allNewSeaKeys = [...seaHexKeys];
       const nextCandidateHexesExclSea = getCandidateHexes(nextAllHexes, allSeaKeys);
       if (allNewSeaKeys.length > 0) {
