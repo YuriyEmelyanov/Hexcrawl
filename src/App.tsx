@@ -6922,16 +6922,89 @@ function getLandVertexKeys(allRegionHexes: AxialHex[]): Set<string> {
   return keys;
 }
 
-// Обрезает у реки концевые вершины, которые не касаются суши (то есть торчат в
-// море/пустоту). Так река реально заканчивается у берега, а не «течёт из моря в
-// море» в данных. Геометрия рендера берётся из vertexPath, поэтому правка пути
-// безопасна (так же поступает trimOutgoingRiverStartAwayFromRegion).
-function trimRiverEndsToLand(river: River, landVertexKeys: Set<string>): River | null {
+// BR-009: рукава дельты. Для рек, впадающих в море, при полноводности 4 строится
+// 1 рукав, при 5 — 2 рукава. Рукав ответвляется за 1 (и 2) ребра до устья и идёт
+// к соседней береговой вершине по суше (короткий распределитель). Полноводность
+// рукава случайна (1–3 для f4, 1–4 для f5). Всё дополнительно — основные реки не
+// меняются; вызывается в try/catch, поэтому сбой просто не добавит рукав.
+function buildDeltaArmsForRivers(
+  rivers: River[],
+  regionId: number,
+  riverGraph: RiverGraph,
+  seaVertexKeys: Set<string>,
+  seaEdgeKeys: Set<string>,
+  startRiverId: number
+): River[] {
+  const arms: River[] = [];
+  const usedVertexKeys = new Set(rivers.flatMap((r) => r.vertexPath.map((v) => v.key)));
+  let nextId = startRiverId;
+  for (const river of rivers) {
+    if (river.regionId !== regionId) continue;
+    const path = river.vertexPath;
+    if (path.length < 3) continue;
+    const mouth = path[path.length - 1];
+    if (!seaVertexKeys.has(mouth.key)) continue; // только реки, впадающие в море
+    const fullness = getRiverFallbackFullness(river);
+    const armCount = fullness === 5 ? 2 : fullness === 4 ? 1 : 0;
+    const fullnessRange = fullness === 5 ? 4 : 3;
+    for (let a = 0; a < armCount; a += 1) {
+      const branchIndex = path.length - 2 - a;
+      if (branchIndex < 1) break;
+      const branch = path[branchIndex];
+      const node = riverGraph.nodes.get(branch.key);
+      if (!node) continue;
+      let target: RiverVertex | null = null;
+      for (const incidentEdgeKey of node.incidentEdgeKeys) {
+        const [k1, k2] = incidentEdgeKey.split('|');
+        const otherKey = k1 === branch.key ? k2 : k1;
+        if (otherKey === mouth.key || usedVertexKeys.has(otherKey)) continue;
+        if (!seaVertexKeys.has(otherKey)) continue;          // конец рукава — у берега
+        const otherNode = riverGraph.nodes.get(otherKey);
+        if (!otherNode) continue;
+        const candidate = { key: otherKey, x: otherNode.x, y: otherNode.y };
+        if (seaEdgeKeys.has(edgeKey(branch, candidate))) continue; // ребро не по морю (иначе скрыто)
+        target = candidate;
+        break;
+      }
+      if (!target) continue;
+      const armPath = [branch, target];
+      const armFullness = (1 + Math.floor(Math.random() * fullnessRange)) as RiverFullness;
+      const id = nextId++;
+      arms.push({
+        id,
+        regionId,
+        vertexPath: armPath,
+        sectors: [{
+          id: `delta-${id}-0`,
+          riverId: id,
+          sectorIndex: 0,
+          vertexPath: armPath,
+          edgeKeys: [edgeKey(branch, target)],
+          startVertexKey: branch.key,
+          endVertexKey: target.key,
+          startReason: 'split',
+          endReason: 'river_end',
+          fullness: armFullness
+        }]
+      });
+      usedVertexKeys.add(target.key);
+    }
+  }
+  return arms;
+}
+// а также не даёт реке соединять море с морем: если ОБА конца — устья у моря,
+// один конец уводится вглубь суши, оставляя единственное устье.
+function trimRiverEndsToLand(river: River, landVertexKeys: Set<string>, seaVertexKeys: Set<string>): River | null {
   const path = river.vertexPath;
   let start = 0;
   let end = path.length - 1;
   while (start <= end && !landVertexKeys.has(path[start].key)) start += 1;
   while (end >= start && !landVertexKeys.has(path[end].key)) end -= 1;
+  // Река не может вытекать из моря и впадать в море одновременно: если оба конца
+  // примыкают к морю, отрезаем начало вглубь, пока оно не перестанет касаться моря.
+  if (end > start && seaVertexKeys.has(path[start].key) && seaVertexKeys.has(path[end].key)) {
+    while (start < end && seaVertexKeys.has(path[start].key)) start += 1;
+  }
   if (start === 0 && end === path.length - 1) return river;
   const trimmed = path.slice(start, end + 1);
   if (trimmed.length < 2) return null;
@@ -7905,11 +7978,33 @@ export function App() {
       // Обрезаем у всех рек концевые вершины, торчащие в море, чтобы они
       // заканчивались у берега, а не шли «из моря в море» (учитываем и новое море).
       const landVertexKeys = getLandVertexKeys(nextAllHexes);
+      const seaVertexKeys = new Set<string>();
+      for (const seaKey of allSeaKeys) {
+        for (const corner of getHexCornerPoints(parseHexKey(seaKey))) seaVertexKeys.add(corner.key);
+      }
       const trimmedRivers = finalizedRivers
-        .map((river) => trimRiverEndsToLand(river, landVertexKeys))
+        .map((river) => trimRiverEndsToLand(river, landVertexKeys, seaVertexKeys))
         .filter((river): river is River => river !== null);
 
-      setRivers(trimmedRivers);
+      // BR-009: рукава дельты. Изолировано в try/catch — сбой не ломает генерацию,
+      // в худшем случае рукав просто не добавляется.
+      let riversWithDeltas = trimmedRivers;
+      if (allNewSeaKeys.length > 0) {
+        try {
+          const seaEdgeKeys = new Set<string>();
+          for (const seaKey of allSeaKeys) {
+            for (const edge of getHexEdgesAsVertexPairs(parseHexKey(seaKey))) seaEdgeKeys.add(edge.edgeKey);
+          }
+          const deltaGraph = buildRiverGraphForRegion(regionHexes, nextAllHexes, nextCandidateHexes);
+          const startRiverId = Math.max(0, ...trimmedRivers.map((r) => r.id)) + 1;
+          const deltaArms = buildDeltaArmsForRivers(trimmedRivers, regionId, deltaGraph, seaVertexKeys, seaEdgeKeys, startRiverId);
+          if (deltaArms.length > 0) riversWithDeltas = [...trimmedRivers, ...deltaArms];
+        } catch (error) {
+          console.warn('Delta arm generation failed; skipping deltas', error);
+        }
+      }
+
+      setRivers(riversWithDeltas);
       setRoads(roadResult.roads);
       setNextRoadId(roadResult.nextRoadId);
       setSelectedHex(centerHex);
