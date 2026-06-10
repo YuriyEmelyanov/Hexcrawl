@@ -3862,22 +3862,6 @@ function chooseSeaCandidateKeyForRiverMouth(candidates: Map<string, AxialHex>, m
   return touching[0]?.[0] ?? null;
 }
 
-function chooseSeaCandidateKeyNearRiverMouth(
-  candidates: Map<string, AxialHex>,
-  regionHexes: AxialHex[],
-  mouth: RiverVertex
-): string | null {
-  const mouthRegionHexes = regionHexes.filter((hex) => seaHexTouchesRiverMouth(hex, mouth));
-  const candidateEntries = Array.from(candidates.entries())
-    .filter(([, candidate]) => mouthRegionHexes.some((hex) => getHexNeighbors(hex).some((neighbor) => isSameHex(neighbor, candidate))))
-    .sort(([, left], [, right]) => {
-      const leftCenter = toPixel(left.q, left.r);
-      const rightCenter = toPixel(right.q, right.r);
-      return Math.hypot(leftCenter.x - mouth.x, leftCenter.y - mouth.y) - Math.hypot(rightCenter.x - mouth.x, rightCenter.y - mouth.y);
-    });
-  return candidateEntries[0]?.[0] ?? null;
-}
-
 function getConnectedSeaComponent(startKey: string, seaKeys: Set<string>): Set<string> {
   const connected = new Set<string>([startKey]);
   const queue = [startKey];
@@ -3996,8 +3980,7 @@ function computeSeaHexKeysForCoastalRegion(
 
   for (const river of getSeaFlowingRiversForRegion(rivers, regionId, existingRegions)) {
     const mouth = river.vertexPath[river.vertexPath.length - 1];
-    const key = chooseSeaCandidateKeyForRiverMouth(candidates, mouth)
-      ?? chooseSeaCandidateKeyNearRiverMouth(candidates, regionHexes, mouth);
+    const key = chooseSeaCandidateKeyForRiverMouth(candidates, mouth);
     if (key) requiredKeys.add(key);
   }
 
@@ -8276,10 +8259,27 @@ export function App() {
       const allNewSeaKeys = [...seaHexKeys, ...seaPocketKeys];
       const nextCandidateHexesExclSea = getCandidateHexes(nextAllHexes, allSeaKeys);
 
+      // Обрезаем у всех рек концевые вершины, торчащие в море, чтобы они
+      // заканчивались у берега, а не шли «из моря в море» (учитываем и новое море).
+      const landVertexKeys = getLandVertexKeys(nextAllHexes);
       const seaVertexKeys = new Set<string>();
       for (const seaKey of allSeaKeys) {
         for (const corner of getHexCornerPoints(parseHexKey(seaKey))) seaVertexKeys.add(corner.key);
       }
+      finalizedRivers = sanitizeRiversForSea(
+        riversForGeneration,
+        finalizedRivers,
+        landVertexKeys,
+        seaVertexKeys,
+        allNewSeaKeys,
+        regionHexes
+      );
+      finalizedRivers = assignRiverSectors(
+        finalizedRivers,
+        getLakesForRegions(nextRegions, nextHexTerrainByKeyPreview),
+        nextRegions,
+        nextCandidateHexesExclSea
+      );
 
       // BR-009: рукава дельты. Изолировано в try/catch — сбой не ломает генерацию,
       // в худшем случае рукав просто не добавляется.
@@ -8300,6 +8300,14 @@ export function App() {
       }
 
       riversWithDeltas = restoreInvalidGeneratedRiversForRegion(regionForRiverGeneration, riversForGeneration, riversWithDeltas, nextCandidateHexesExclSea);
+      riversWithDeltas = sanitizeRiversForSea(
+        riversForGeneration,
+        riversWithDeltas,
+        landVertexKeys,
+        seaVertexKeys,
+        allNewSeaKeys,
+        regionHexes
+      );
       riversWithDeltas = assignRiverSectors(
         riversWithDeltas,
         getLakesForRegions(nextRegions, nextHexTerrainByKeyPreview),
