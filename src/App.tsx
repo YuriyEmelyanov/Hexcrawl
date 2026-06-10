@@ -203,6 +203,7 @@ const LAKE_HEX_COLOR = WATER_COLOR;
 // Море (прибрежные воды) — заметно темнее озёр и рек (BR-006).
 const SEA_HEX_COLOR = '#2b6b9e';
 const SEA_EMOJI = '🌊';
+const SEA_HEIGHT_LEVEL = 0;
 const MOBILE_LAYOUT_QUERY = '(max-width: 900px)';
 
 
@@ -3702,6 +3703,76 @@ export function getCandidateHexes(allRegionHexes: AxialHex[], excludeKeys?: Set<
   }
 
   return Array.from(candidates.values());
+}
+
+function fillSmallEnclosedAreasForRegion(
+  regionHexes: AxialHex[],
+  existingRegionHexes: AxialHex[],
+  seaKeys: Set<string>
+): AxialHex[] {
+  const minLocalitySize = REGION_SIZE_CATEGORY_RANGES.locality[0];
+  const currentRegionKeys = new Set(regionHexes.map(hexKey));
+  const occupiedLandKeys = new Set([...existingRegionHexes.map(hexKey), ...currentRegionKeys]);
+  const allKnownHexes = [...existingRegionHexes, ...regionHexes, ...Array.from(seaKeys).map(parseHexKey)];
+  if (allKnownHexes.length === 0) return regionHexes;
+
+  const qs = allKnownHexes.map((hex) => hex.q);
+  const rs = allKnownHexes.map((hex) => hex.r);
+  const minQ = Math.min(...qs) - 1;
+  const maxQ = Math.max(...qs) + 1;
+  const minR = Math.min(...rs) - 1;
+  const maxR = Math.max(...rs) + 1;
+  const candidateKeys = new Set<string>();
+  const candidateHexes = new Map<string, AxialHex>();
+
+  for (let q = minQ; q <= maxQ; q += 1) {
+    for (let r = minR; r <= maxR; r += 1) {
+      const hex = { q, r };
+      const key = hexKey(hex);
+      if (occupiedLandKeys.has(key) || seaKeys.has(key)) continue;
+      candidateKeys.add(key);
+      candidateHexes.set(key, hex);
+    }
+  }
+
+  const visited = new Set<string>();
+  const filledKeys = new Set<string>();
+
+  for (const startKey of candidateKeys) {
+    if (visited.has(startKey)) continue;
+    const queue = [startKey];
+    const componentKeys: string[] = [];
+    visited.add(startKey);
+    let touchesOutside = false;
+    let touchesCurrentRegion = false;
+
+    while (queue.length > 0) {
+      const key = queue.shift();
+      if (!key) continue;
+      const hex = candidateHexes.get(key);
+      if (!hex) continue;
+      componentKeys.push(key);
+      if (hex.q === minQ || hex.q === maxQ || hex.r === minR || hex.r === maxR) touchesOutside = true;
+
+      for (const neighbor of getHexNeighbors(hex)) {
+        const neighborKey = hexKey(neighbor);
+        if (currentRegionKeys.has(neighborKey)) touchesCurrentRegion = true;
+        if (!candidateKeys.has(neighborKey) || visited.has(neighborKey)) continue;
+        visited.add(neighborKey);
+        queue.push(neighborKey);
+      }
+    }
+
+    if (!touchesOutside && touchesCurrentRegion && componentKeys.length < minLocalitySize) {
+      for (const key of componentKeys) filledKeys.add(key);
+    }
+  }
+
+  if (filledKeys.size === 0) return regionHexes;
+  return [
+    ...regionHexes,
+    ...Array.from(filledKeys).map(parseHexKey)
+  ];
 }
 
 // BR-002: вероятность побережья для нового региона по протяжённости карты.
@@ -7265,6 +7336,59 @@ function getSeaEdgeKeysFromSeaKeys(seaKeys: Iterable<string>): Set<string> {
   return edgeKeys;
 }
 
+
+type RiverSeaHeightViolationReason =
+  | 'source_vertex_sea'
+  | 'first_edge_sea'
+  | 'source_and_mouth_sea'
+  | 'non_mouth_vertex_sea'
+  | 'non_mouth_edge_sea';
+
+function getRiverSeaHeightViolation(
+  rivers: River[],
+  seaKeys: Iterable<string>
+): { river: River; reason: RiverSeaHeightViolationReason } | null {
+  const seaKeyList = Array.from(seaKeys);
+  if (seaKeyList.length === 0) return null;
+
+  const seaVertexKeys = getSeaVertexKeysFromSeaKeys(seaKeyList);
+  const seaEdgeKeys = getSeaEdgeKeysFromSeaKeys(seaKeyList);
+  if (seaVertexKeys.size === 0 && seaEdgeKeys.size === 0) return null;
+
+  for (const river of rivers) {
+    const path = river.vertexPath ?? [];
+    if (path.length < 2) continue;
+
+    const mouthIndex = path.length - 1;
+    const sourceHeight = seaVertexKeys.has(path[0].key) ? SEA_HEIGHT_LEVEL : null;
+    const mouthHeight = seaVertexKeys.has(path[mouthIndex].key) ? SEA_HEIGHT_LEVEL : null;
+
+    if (sourceHeight === SEA_HEIGHT_LEVEL && mouthHeight === SEA_HEIGHT_LEVEL) {
+      return { river, reason: 'source_and_mouth_sea' };
+    }
+    if (sourceHeight === SEA_HEIGHT_LEVEL) {
+      return { river, reason: 'source_vertex_sea' };
+    }
+    if (seaEdgeKeys.has(edgeKey(path[0], path[1]))) {
+      return { river, reason: 'first_edge_sea' };
+    }
+
+    for (let index = 1; index < path.length; index += 1) {
+      if (index !== mouthIndex && seaVertexKeys.has(path[index].key)) {
+        return { river, reason: 'non_mouth_vertex_sea' };
+      }
+
+      const currentEdgeKey = edgeKey(path[index - 1], path[index]);
+      if (!seaEdgeKeys.has(currentEdgeKey)) continue;
+      if (index !== mouthIndex) {
+        return { river, reason: 'non_mouth_edge_sea' };
+      }
+    }
+  }
+
+  return null;
+}
+
 function getRiverMouthVertexKeys(rivers: River[]): Set<string> {
   const mouthKeys = new Set<string>();
   for (const river of rivers) {
@@ -8161,7 +8285,8 @@ export function App() {
       // Море — не суша: рост региона не должен захватывать гексы моря.
       for (const seaKey of getSeaHexKeys(hexTerrainByKey)) occupiedHexes.add(seaKey);
       const regionId = Math.max(0, ...regions.map((region) => region.id)) + 1;
-      const regionHexes = generateConnectedRegionFromAnchor(anchorHex, targetSize, occupiedHexes);
+      let regionHexes = generateConnectedRegionFromAnchor(anchorHex, targetSize, occupiedHexes);
+      regionHexes = fillSmallEnclosedAreasForRegion(regionHexes, allRegionHexes, getSeaHexKeys(hexTerrainByKey));
       const finalSize = regionHexes.length;
       const { sizeCategory, sizeLabel } = getRegionSizeCategory(finalSize);
       const centerHex = chooseRegionCenter(regionHexes);
@@ -8384,6 +8509,17 @@ export function App() {
         });
         continue;
       }
+      const existingSeaHeightViolation = getRiverSeaHeightViolation(finalizedRivers, getSeaHexKeys(hexTerrainByKey));
+      if (existingSeaHeightViolation) {
+        console.warn('Discarding failed candidate region because a river violates sea height before coast generation', {
+          attempt,
+          regionId,
+          riverId: existingSeaHeightViolation.river.id,
+          reason: existingSeaHeightViolation.reason
+        });
+        continue;
+      }
+
 
       const regionTerrainByHex = new Map<string, HexTerrainData>();
       for (const hex of regionHexes) {
@@ -8469,6 +8605,17 @@ export function App() {
         });
         continue;
       }
+      const riverSeaHeightViolationAfterExtension = getRiverSeaHeightViolation(finalizedRivers, allSeaKeys);
+      if (riverSeaHeightViolationAfterExtension) {
+        console.warn('Discarding failed candidate region because a river violates sea height after extension', {
+          attempt,
+          regionId,
+          riverId: riverSeaHeightViolationAfterExtension.river.id,
+          reason: riverSeaHeightViolationAfterExtension.reason
+        });
+        continue;
+      }
+
       const coastalRiverConflictAfterExtension = getCoastalSeaRiverConflict(finalizedRivers, allNewSeaKeys, regionHexes);
       if (coastalRiverConflictAfterExtension) {
         console.warn('Discarding failed coastal candidate region because sea touches a river away from its mouth after extension', {
@@ -8540,6 +8687,17 @@ export function App() {
         });
         continue;
       }
+      const riverSeaHeightViolationAfterDeltas = getRiverSeaHeightViolation(riversWithDeltas, allSeaKeys);
+      if (riverSeaHeightViolationAfterDeltas) {
+        console.warn('Discarding failed candidate region because a river violates sea height after deltas', {
+          attempt,
+          regionId,
+          riverId: riverSeaHeightViolationAfterDeltas.river.id,
+          reason: riverSeaHeightViolationAfterDeltas.reason
+        });
+        continue;
+      }
+
       const coastalRiverConflictAfterDeltas = getCoastalSeaRiverConflict(riversWithDeltas, allNewSeaKeys, regionHexes);
       if (coastalRiverConflictAfterDeltas) {
         console.warn('Discarding failed coastal candidate region because sea touches a river away from its mouth after deltas', {
@@ -8565,6 +8723,16 @@ export function App() {
         nextRegions,
         nextCandidateHexesExclSea
       );
+      const finalRiverSeaHeightViolation = getRiverSeaHeightViolation(riversWithDeltas, allSeaKeys);
+      if (finalRiverSeaHeightViolation) {
+        console.warn('Discarding failed candidate region because a river violates final sea height', {
+          attempt,
+          regionId,
+          riverId: finalRiverSeaHeightViolation.river.id,
+          reason: finalRiverSeaHeightViolation.reason
+        });
+        continue;
+      }
       const finalRiverCycleValidation = validateRiverCycleSafety(riversWithDeltas);
       if (!finalRiverCycleValidation.valid) {
         console.warn('Discarding failed candidate region because final river cycle was detected', { attempt, regionId, ...finalRiverCycleValidation });
