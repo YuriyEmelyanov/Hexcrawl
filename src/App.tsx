@@ -5274,6 +5274,37 @@ function validateRiverEndpoints(region: Region, river: River, riverGraph: RiverG
   return Array.from(new Set(issues));
 }
 
+function removeInvalidGeneratedRiversForRegion(region: Region, rivers: River[], candidateHexes: AxialHex[]): River[] {
+  const riverGraph = buildRiverGraphForRegion(region.hexes, region.hexes, candidateHexes);
+  return rivers.filter((river) => {
+    if (river.regionId !== region.id) return true;
+    const issues = validateRiverEndpoints(region, river, riverGraph);
+    if (issues.length === 0) return true;
+    console.warn('Removing invalid generated river for region', {
+      regionId: region.id,
+      riverId: river.id,
+      issues,
+      startVertexKey: river.vertexPath[0]?.key,
+      endVertexKey: river.vertexPath[river.vertexPath.length - 1]?.key
+    });
+    return false;
+  });
+}
+
+function removeGeneratedRiversStartingFromSea(regionId: number, rivers: River[], seaVertexKeys: Set<string>): River[] {
+  return rivers.filter((river) => {
+    if (river.regionId !== regionId) return true;
+    const startVertex = river.vertexPath[0];
+    if (!startVertex || !seaVertexKeys.has(startVertex.key)) return true;
+    console.warn('Removing generated river because it starts from sea', {
+      regionId,
+      riverId: river.id,
+      startVertexKey: startVertex.key
+    });
+    return false;
+  });
+}
+
 function getLakeChanceForBiome(biomeId: BiomeId): number {
   if (biomeId === 'semi_desert') return 0;
   if (biomeId === 'swamp' || biomeId === 'swamp_forest') return 0.04;
@@ -8045,12 +8076,13 @@ export function App() {
         console.warn('Discarding failed candidate region because old river edge fullness was not preserved', { attempt });
         continue;
       }
-      const finalizedRivers = assignRiverSectors(
+      let finalizedRivers = assignRiverSectors(
         riverResult.rivers,
         getLakesForRegions(nextRegionsForRiverGeneration, nextHexTerrainByKeyPreview),
         nextRegionsForRiverGeneration,
         nextCandidateHexes
       );
+      finalizedRivers = removeInvalidGeneratedRiversForRegion(regionForRiverGeneration, finalizedRivers, nextCandidateHexes);
       if (!validateExistingRiverEdgeFullnessPreserved(rivers, finalizedRivers)) {
         console.warn('Discarding failed candidate region because final river sector assignment changed old edge fullness', { attempt });
         continue;
@@ -8139,11 +8171,7 @@ export function App() {
       for (const seaKey of allSeaKeys) {
         for (const corner of getHexCornerPoints(parseHexKey(seaKey))) seaVertexKeys.add(corner.key);
       }
-      const seaSourceRiver = getRiverStartingFromSea(finalizedRivers, seaVertexKeys);
-      if (seaSourceRiver) {
-        console.warn('Discarding failed coastal candidate region because river starts from sea', { attempt, regionId, riverId: seaSourceRiver.id });
-        continue;
-      }
+      finalizedRivers = removeGeneratedRiversStartingFromSea(regionId, finalizedRivers, seaVertexKeys);
       const trimmedRivers = finalizedRivers
         .map((river) => trimRiverEndsToLand(river, landVertexKeys, seaVertexKeys))
         .filter((river): river is River => river !== null);
