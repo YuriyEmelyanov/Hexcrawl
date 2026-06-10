@@ -1850,6 +1850,72 @@ function wouldCreateRiverDrainageCycle(
   return riverDrainsInto(buildRiverDownstreamAdjacency(rivers), downstreamRiverId, upstreamRiverId);
 }
 
+function hasDirectedCycleInAdjacency<T>(adjacency: Map<T, Set<T>>): boolean {
+  const visiting = new Set<T>();
+  const visited = new Set<T>();
+
+  const visit = (node: T): boolean => {
+    if (visiting.has(node)) return true;
+    if (visited.has(node)) return false;
+
+    visiting.add(node);
+    for (const next of adjacency.get(node) ?? []) {
+      if (visit(next)) return true;
+    }
+    visiting.delete(node);
+    visited.add(node);
+    return false;
+  };
+
+  for (const node of adjacency.keys()) {
+    if (visit(node)) return true;
+  }
+  return false;
+}
+
+function riverPathHasDirectedCycle(river: River): boolean {
+  const adjacency = new Map<string, Set<string>>();
+  const edgeKeys = new Set<string>();
+  const path = river.vertexPath ?? [];
+
+  for (const vertex of path) {
+    if (!adjacency.has(vertex.key)) adjacency.set(vertex.key, new Set<string>());
+  }
+
+  for (let index = 1; index < path.length; index += 1) {
+    const fromKey = path[index - 1].key;
+    const toKey = path[index].key;
+    if (fromKey === toKey) return true;
+    const currentEdgeKey = `${fromKey}>${toKey}`;
+    if (edgeKeys.has(currentEdgeKey)) return true;
+    edgeKeys.add(currentEdgeKey);
+    const nextKeys = adjacency.get(fromKey) ?? new Set<string>();
+    nextKeys.add(toKey);
+    adjacency.set(fromKey, nextKeys);
+    if (!adjacency.has(toKey)) adjacency.set(toKey, new Set<string>());
+  }
+
+  return hasDirectedCycleInAdjacency(adjacency);
+}
+
+function riverDrainageGraphHasCycle(rivers: River[]): boolean {
+  return hasDirectedCycleInAdjacency(buildRiverDownstreamAdjacency(rivers));
+}
+
+function validateRiverCycleSafety(rivers: River[]): { valid: true } | { valid: false; reason: string; riverId?: number } {
+  for (const river of rivers) {
+    if (riverPathHasDirectedCycle(river)) {
+      return { valid: false, reason: 'river_flows_into_itself', riverId: river.id };
+    }
+  }
+
+  if (riverDrainageGraphHasCycle(rivers)) {
+    return { valid: false, reason: 'river_drainage_cycle' };
+  }
+
+  return { valid: true };
+}
+
 function getRiverConfluenceVertexKeys(rivers: River[]): Set<string> {
   return new Set(getRiverConfluences(rivers).map((confluence) => confluence.vertexKey));
 }
@@ -7418,48 +7484,12 @@ function sanitizeRiversForSea(
   seaKeysToCheck: Iterable<string>,
   regionHexes: AxialHex[]
 ): River[] {
-  const previousById = new Map(previousRivers.map((river) => [river.id, river]));
-  const sanitized: River[] = [];
-  const usedRiverIds = new Set<number>();
-  const seaKeyList = Array.from(seaKeysToCheck);
-
-  for (const river of nextRivers) {
-    const previousRiver = previousById.get(river.id);
-    const changedByCurrentGeneration = riverChangedFromPrevious(previousRiver, river);
-    let nextRiver: River | null = river;
-
-    if (changedByCurrentGeneration) {
-      if (previousRiver) {
-        const conflict = getCoastalSeaRiverConflict([river], seaKeyList, regionHexes)
-          || getRiverStartingFromSea([river], seaVertexKeys);
-        if (conflict) {
-          nextRiver = previousRiver;
-          console.warn('Restoring previous river because new coastal generation touched it incorrectly', {
-            riverId: river.id,
-            startVertexKey: river.vertexPath[0]?.key,
-            endVertexKey: river.vertexPath[river.vertexPath.length - 1]?.key
-          });
-        }
-      } else {
-        const trimmed = trimRiverEndsToLand(river, landVertexKeys, seaVertexKeys);
-        const conflict = trimmed ? getCoastalSeaRiverConflict([trimmed], seaKeyList, regionHexes) : river;
-        nextRiver = trimmed && !conflict ? trimmed : null;
-        if (!nextRiver) {
-          console.warn('Removing new river because coastal generation covered invalid river segment', {
-            riverId: river.id,
-            startVertexKey: river.vertexPath[0]?.key,
-            endVertexKey: river.vertexPath[river.vertexPath.length - 1]?.key
-          });
-        }
-      }
-    }
-
-    if (!nextRiver || usedRiverIds.has(nextRiver.id)) continue;
-    sanitized.push(nextRiver);
-    usedRiverIds.add(nextRiver.id);
-  }
-
-  return sanitized;
+  void previousRivers;
+  void landVertexKeys;
+  void seaVertexKeys;
+  void seaKeysToCheck;
+  void regionHexes;
+  return nextRivers;
 }
 
 function drawLakeVerticesDebug(lakeVertices: LakeVertex[], offsetX: number, offsetY: number) {
@@ -8200,47 +8230,13 @@ export function App() {
       let biomeChoice = pickBiome(effectiveRiverHeightConstraint);
 
       if (!biomeChoice.biomeId && biomeChoice.reason === 'river_height_constraint_failed') {
-        console.warn('Region failed because of river height constraint; trying outgoing river trimming fallback', {
+        console.warn('Region failed because of river height constraint; outgoing river trimming fallback is disabled', {
           regionId,
           attempt,
           riverHeightConstraint,
           adjacentBiomeIds,
           biomeLandType
         });
-        const conflictingOutgoingRiverIds = getConflictingOutgoingRiverIds(
-          touchingEndpoints,
-          regions,
-          riverHeightConstraint
-        );
-        if (conflictingOutgoingRiverIds.length === 0) {
-          console.warn('River height conflict detected but no outgoing river ids found for trimming', {
-            regionId,
-            attempt,
-            touchingEndpoints,
-            riverHeightConstraint
-          });
-        } else {
-          riversForGeneration = trimConflictingOutgoingRiversAwayFromRegion(
-            rivers,
-            conflictingOutgoingRiverIds,
-            regionHexes,
-            regionId
-          );
-          effectiveRiverHeightConstraint = getRiverHeightConstraintForCandidateRegion(
-            candidateRegionForRiverCheck,
-            regions,
-            riversForGeneration,
-            nextCandidateHexesPreview
-          );
-          console.warn('Recalculated river height constraint after outgoing river trimming', {
-            regionId,
-            attempt,
-            originalConstraint: riverHeightConstraint,
-            patchedConstraint: effectiveRiverHeightConstraint,
-            conflictingOutgoingRiverIds
-          });
-          biomeChoice = pickBiome(effectiveRiverHeightConstraint);
-        }
       }
       if (!biomeChoice.biomeId) {
         console.warn('No biome available after river height fallback; retrying region generation', {
@@ -8327,6 +8323,11 @@ export function App() {
       finalizedRivers = restoreInvalidGeneratedRiversForRegion(regionForRiverGeneration, riversForGeneration, finalizedRivers, nextCandidateHexes);
       if (!validateExistingRiverEdgeFullnessPreserved(rivers, finalizedRivers)) {
         console.warn('Discarding failed candidate region because final river sector assignment changed old edge fullness', { attempt });
+        continue;
+      }
+      const initialRiverCycleValidation = validateRiverCycleSafety(finalizedRivers);
+      if (!initialRiverCycleValidation.valid) {
+        console.warn('Discarding failed candidate region because river cycle was detected', { attempt, regionId, ...initialRiverCycleValidation });
         continue;
       }
 
@@ -8466,6 +8467,15 @@ export function App() {
         nextRegions,
         nextCandidateHexesExclSea
       );
+      const finalRiverCycleValidation = validateRiverCycleSafety(riversWithDeltas);
+      if (!finalRiverCycleValidation.valid) {
+        console.warn('Discarding failed candidate region because final river cycle was detected', { attempt, regionId, ...finalRiverCycleValidation });
+        continue;
+      }
+      if (!validateExistingRiverEdgeFullnessPreserved(rivers, riversWithDeltas)) {
+        console.warn('Discarding failed candidate region because final river edge fullness changed old rivers', { attempt, regionId });
+        continue;
+      }
       const roadResult = generateRoadsForRegion({
         region: finalRegion,
         regions,
