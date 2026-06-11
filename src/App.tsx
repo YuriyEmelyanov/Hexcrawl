@@ -3912,7 +3912,7 @@ function findSeaCandidatePath(
       previousByKey.set(neighborKey, currentKey);
       if (neighborKey === targetKey) {
         const path = [targetKey];
-        let previousKey = currentKey;
+        let previousKey: string | null = currentKey;
         while (previousKey) {
           path.push(previousKey);
           previousKey = previousByKey.get(previousKey) ?? null;
@@ -4189,6 +4189,32 @@ function extendSeaToCoastalCenterCandidate(
 // Гексы-море для прибрежного региона: пустые гексы на отвёрнутой от центра
 // ("береговой") стороне региона. Никогда не ставятся на гексы какого-либо
 // региона и на гексы с уже заданным terrain (озёра/существующее море).
+// Item 1: река не должна впадать в озеро, из которого вытекла. Если река стартует
+// на периметре озера, покидает его, а затем снова касается ТОГО ЖЕ озера —
+// обрезаем путь перед повторным входом (эквивалент «озеро-исток в обход DFS»).
+function trimRiverSourceLakeReentry(river: River, lakeIdByVertexKey: Map<string, number>): River {
+  const path = river.vertexPath;
+  if (path.length < 3) return river;
+  const sourceLakeId = lakeIdByVertexKey.get(path[0].key);
+  if (sourceLakeId === undefined) return river;
+  for (let i = 2; i < path.length; i += 1) {
+    const prevOnSourceLake = lakeIdByVertexKey.get(path[i - 1].key) === sourceLakeId;
+    const currentOnSourceLake = lakeIdByVertexKey.get(path[i].key) === sourceLakeId;
+    if (currentOnSourceLake && !prevOnSourceLake) {
+      return { ...river, vertexPath: path.slice(0, i) };
+    }
+  }
+  return river;
+}
+
+function buildLakeIdByVertexKey(lakes: Lake[]): Map<string, number> {
+  const map = new Map<string, number>();
+  for (const lake of lakes) {
+    for (const vertex of getRegionExteriorVertices(lake.hexes)) map.set(vertex.key, lake.lakeId);
+  }
+  return map;
+}
+
 function computeSeaHexKeysForCoastalRegion(
   regionHexes: AxialHex[],
   centerHex: AxialHex,
@@ -5188,7 +5214,7 @@ function generateRiverForRegion(
             if (connectorSplit === null) return null;
             return { pair, connectorPath, connectorSplit };
           })
-          .filter((candidate): candidate is { pair: { left: RiverEndpointTouch; right: RiverEndpointTouch }; connectorPath: RiverVertex[]; connectorSplit?: RiverConnectorSplit } => candidate !== null)
+          .filter((candidate): candidate is { pair: { left: RiverEndpointTouch; right: RiverEndpointTouch }; connectorPath: RiverVertex[]; connectorSplit: RiverConnectorSplit } => candidate !== null)
           .sort((a, b) => a.connectorPath.length - b.connectorPath.length);
 
         const bestConnector = validConnectors[0];
@@ -8834,13 +8860,36 @@ export function App() {
         nextRoadId
       };
       setHistory((current) => [...current, snapshot]);
+
+      // Item 2: запертые кандидатные карманы (≤5 тайлов) между регионом и морем
+      // поглощаются морем — чтобы не оставались «висящие» неоткрытые участки и по
+      // ним нельзя было кликнуть генерацию (которая упрётся в море). Если моря рядом
+      // нет, карманы не трогаем — обычная генерация их откроет.
+      const enclosedPocketKeys: string[] = [];
+      if (allNewSeaKeys.length > 0) {
+        const occupiedForPockets = new Set<string>(allSeaKeys);
+        for (const hex of allRegionHexes) occupiedForPockets.add(hexKey(hex));
+        for (const area of findFillableEnclosedEmptyAreas(new Set(regionHexes.map(hexKey)), occupiedForPockets)) {
+          if (area.length > 5) continue;
+          for (const hex of area) enclosedPocketKeys.push(hexKey(hex));
+        }
+      }
+      const pocketKeySet = new Set(enclosedPocketKeys);
+      const finalSeaKeysToWrite = [...allNewSeaKeys, ...enclosedPocketKeys];
+      const finalCandidateHexes = pocketKeySet.size > 0
+        ? nextCandidateHexesExclSea.filter((hex) => !pocketKeySet.has(hexKey(hex)))
+        : nextCandidateHexesExclSea;
+      // Item 1: реки, возвращающиеся в озеро-исток, обрезаются перед повторным входом.
+      const lakeIdByVertexKey = buildLakeIdByVertexKey(getLakesForRegions(nextRegions, nextHexTerrainByKeyPreview));
+      const sanitizedRivers = riversWithDeltas.map((river) => trimRiverSourceLakeReentry(river, lakeIdByVertexKey));
+
       setRegions(nextRegions);
-      setCandidateHexes(nextCandidateHexesExclSea);
+      setCandidateHexes(finalCandidateHexes);
       setHexTerrainByKey(() => {
         const next = new Map(nextHexTerrainByKeyPreview);
-        for (const key of allNewSeaKeys) next.set(key, { terrainOverride: 'sea' });
+        for (const key of finalSeaKeysToWrite) next.set(key, { terrainOverride: 'sea' });
         // BR-004: озеро, соседствующее с морем, удаляется (гекс возвращается к биому региона).
-        if (allNewSeaKeys.length > 0) {
+        if (finalSeaKeysToWrite.length > 0) {
           const seaSet = getSeaHexKeys(next);
           for (const [key, terrain] of next) {
             if (terrain.terrainOverride !== 'lake') continue;
@@ -8852,7 +8901,7 @@ export function App() {
       });
       setNextLakeId(Math.max(computedNextLakeId, getNextLakeIdFromTerrain(nextHexTerrainByKeyPreview)));
 
-      setRivers(riversWithDeltas);
+      setRivers(sanitizedRivers);
       setRoads(roadResult.roads);
       setNextRoadId(roadResult.nextRoadId);
       setSelectedHex(centerHex);
