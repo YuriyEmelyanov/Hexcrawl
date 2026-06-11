@@ -1701,9 +1701,12 @@ const preserveKnownFullness = startReason === 'split'
   || startReason === 'lake'
   || endReason === 'lake';
 
-const startingFullness = baseFullness > downstreamFullness
-  ? baseFullness
-  : downstreamFullness;
+const confluenceAtSectorStart = riverFullnessRuleState.confluenceTributaryFullnessByIndex.has(fromIndex);
+const startingFullness = confluenceAtSectorStart
+  ? downstreamFullness
+  : baseFullness > downstreamFullness
+    ? baseFullness
+    : downstreamFullness;
 
 const adjustedFullness = applyRiverFullnessRules(
   startingFullness,
@@ -5592,31 +5595,70 @@ function renderRiverDirectionArrows(river: River, offsetX: number, offsetY: numb
   return arrows;
 }
 
+
+function getRiverPathInRegionGraph(river: River, riverGraph: RiverGraph): RiverVertex[] {
+  const fullPath = river.vertexPath ?? [];
+  if (fullPath.length < 2) return fullPath;
+
+  let bestStart = 0;
+  let bestEnd = fullPath.length - 1;
+  let bestEdgeCount = getRiverPathEdgeKeys(fullPath, riverGraph)?.length ?? 0;
+  let currentStart: number | null = null;
+
+  for (let index = 1; index < fullPath.length; index += 1) {
+    const segmentIsInGraph = riverGraph.edges.has(edgeKey(fullPath[index - 1], fullPath[index]));
+    if (segmentIsInGraph) {
+      if (currentStart === null) currentStart = index - 1;
+      const currentEdgeCount = index - currentStart;
+      if (currentEdgeCount > bestEdgeCount) {
+        bestStart = currentStart;
+        bestEnd = index;
+        bestEdgeCount = currentEdgeCount;
+      }
+    } else {
+      currentStart = null;
+    }
+  }
+
+  if (bestEdgeCount === 0) return fullPath;
+  return fullPath.slice(bestStart, bestEnd + 1);
+}
+
+function riverRegionalPathStartsAtGlobalSource(river: River, regionalPath: RiverVertex[]): boolean {
+  return Boolean(regionalPath[0] && river.vertexPath?.[0]?.key === regionalPath[0].key);
+}
+
 function validateRiverEndpoints(region: Region, river: River, riverGraph: RiverGraph): RiverEndpointIssue[] {
   const issues: RiverEndpointIssue[] = [];
   if (!river.vertexPath || river.vertexPath.length < 2) return ['path_too_short'];
-  const start = riverGraph.nodes.get(river.vertexPath[0].key);
-  const end = riverGraph.nodes.get(river.vertexPath[river.vertexPath.length - 1].key);
+
+  const regionalPath = getRiverPathInRegionGraph(river, riverGraph);
+  if (!regionalPath || regionalPath.length < 2) return ['path_too_short'];
+
+  const start = riverGraph.nodes.get(regionalPath[0].key);
+  const end = riverGraph.nodes.get(regionalPath[regionalPath.length - 1].key);
   const hasCandidateBoundary = Array.from(riverGraph.nodes.values()).some((node) => node.isCandidateBoundaryVertex);
-  const startsInsideRegion = river.controlPoints?.startMode === 'mountain source';
+  const startsAtGlobalSource = riverRegionalPathStartsAtGlobalSource(river, regionalPath);
+  const startsInsideRegion = startsAtGlobalSource && river.controlPoints?.startMode === 'mountain source';
+  const startsFromNewRegionCandidate = startsAtGlobalSource && river.controlPoints?.startMode === 'red vertex';
   if (!startsInsideRegion && !start?.isRegionBoundaryVertex) issues.push('start_not_region_boundary');
   if (!end?.isRegionBoundaryVertex) issues.push('end_not_region_boundary');
-  if (hasCandidateBoundary && !startsInsideRegion && !start?.isCandidateBoundaryVertex) issues.push('start_not_candidate_boundary_when_candidates_exist');
+  if (hasCandidateBoundary && startsFromNewRegionCandidate && !start?.isCandidateBoundaryVertex) issues.push('start_not_candidate_boundary_when_candidates_exist');
   if (hasCandidateBoundary && !end?.isCandidateBoundaryVertex) issues.push('end_not_candidate_boundary_when_candidates_exist');
-  const firstEdge = riverGraph.edges.get(edgeKey(river.vertexPath[0], river.vertexPath[1]));
-  const lastEdge = riverGraph.edges.get(edgeKey(river.vertexPath[river.vertexPath.length - 2], river.vertexPath[river.vertexPath.length - 1]));
-  if (!startsInsideRegion && !firstEdge?.isRegionBoundaryEdge) issues.push('first_edge_not_boundary');
+  const firstEdge = riverGraph.edges.get(edgeKey(regionalPath[0], regionalPath[1]));
+  const lastEdge = riverGraph.edges.get(edgeKey(regionalPath[regionalPath.length - 2], regionalPath[regionalPath.length - 1]));
+  if (startsFromNewRegionCandidate && !firstEdge?.isRegionBoundaryEdge) issues.push('first_edge_not_boundary');
   if (!lastEdge?.isRegionBoundaryEdge) issues.push('last_edge_not_boundary');
-  if (hasCandidateBoundary && !startsInsideRegion && !firstEdge?.isCandidateBoundaryEdge) issues.push('first_edge_not_candidate_boundary_when_candidates_exist');
+  if (hasCandidateBoundary && startsFromNewRegionCandidate && !firstEdge?.isCandidateBoundaryEdge) issues.push('first_edge_not_candidate_boundary_when_candidates_exist');
   if (hasCandidateBoundary && !lastEdge?.isCandidateBoundaryEdge) issues.push('last_edge_not_candidate_boundary_when_candidates_exist');
   if (!firstEdge || !lastEdge) issues.push('segment_not_in_graph');
-  for (let i = 1; i < river.vertexPath.length; i += 1) {
-    if (!riverGraph.edges.has(edgeKey(river.vertexPath[i - 1], river.vertexPath[i]))) {
+  for (let i = 1; i < regionalPath.length; i += 1) {
+    if (!riverGraph.edges.has(edgeKey(regionalPath[i - 1], regionalPath[i]))) {
       issues.push('segment_not_in_graph');
       break;
     }
   }
-  if (region.hexes.length > 6 && river.vertexPath.length < 4) issues.push('path_too_short');
+  if (region.hexes.length > 6 && regionalPath.length < 4) issues.push('path_too_short');
   return Array.from(new Set(issues));
 }
 
@@ -9991,7 +10033,8 @@ export function App() {
               {selectedRegion && !selectedRegionGraph ? <p>no graph</p> : null}
               {selectedRegion && selectedRegionGraph && !selectedRegionRiver ? <p>В выбранном регионе нет реки для подробной отладки.</p> : null}
               {selectedRegion && selectedRegionGraph && selectedRegionRiver ? (() => {
-                const path = selectedRegionRiver.vertexPath;
+                const fullPath = selectedRegionRiver.vertexPath;
+                const path = getRiverPathInRegionGraph(selectedRegionRiver, selectedRegionGraph);
                 const start = path?.[0];
                 const end = path?.[path.length - 1];
                 const startNode = start ? selectedRegionGraph.nodes.get(start.key) : undefined;
@@ -10030,6 +10073,7 @@ export function App() {
                     <p>startRiverExteriorVertex key: {start?.key ?? "—"}</p>
                     <p>endRiverExteriorVertex key: {end?.key ?? "—"}</p>
                     <p>riverPath.length: {path?.length ?? 0}</p>
+                    <p>fullRiverPath.length: {fullPath?.length ?? 0}</p>
                     <p>riverEdgeCount: {riverEdgeCount}</p>
                     <p>duplicateRiverEdgeCount: {duplicateRiverEdgeCount ?? 0}</p>
                     <p>duplicateRiverVertexCount: {duplicateRiverVertexCount ?? 0}</p>
