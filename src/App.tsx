@@ -69,6 +69,7 @@ type HexEdge = {
 };
 
 type RiverSectorReason = 'river_start' | 'river_confluence' | 'lake' | 'region_boundary' | 'split' | 'unknown';
+type RiverStartMode = 'existing river endpoint' | 'red vertex' | 'mountain source';
 
 type RiverSector = {
   id: string;
@@ -93,7 +94,7 @@ type River = {
     startVertex: RiverVertex;
     middlePurpleVertex?: RiverVertex;
     endVertex: RiverVertex;
-    startMode: 'existing river endpoint' | 'red vertex';
+    startMode: RiverStartMode;
   };
 };
 
@@ -1364,6 +1365,12 @@ function getMaxTributaryFullnessAtVertex(
     if (riverId === river.id) continue;
     const tributary = riversById.get(riverId);
     if (!tributary) continue;
+    const tributaryMouth = tributary.vertexPath?.[tributary.vertexPath.length - 1];
+    // Only rivers that end at this vertex are true tributaries. Other rivers may
+    // also touch the same vertex as an upstream source or through segment, but
+    // counting them here can apply a downstream river's fullness as an incoming
+    // tributary and incorrectly raise 3 -> 4 -> 5 in one region.
+    if (tributaryMouth?.key !== vertexKey) continue;
     const tributaryFullness = getRiverFullnessAtVertex(tributary, vertexKey);
     if (maxFullness === null || tributaryFullness > maxFullness) maxFullness = tributaryFullness;
   }
@@ -2052,7 +2059,7 @@ type RiverControlPoints = {
   startVertex: RiverVertex;
   middlePurpleVertex?: RiverVertex;
   endVertex: RiverVertex;
-  startMode: 'existing river endpoint' | 'red vertex';
+  startMode: RiverStartMode;
   endMode?: 'existing river endpoint' | 'red vertex';
 };
 
@@ -2546,7 +2553,7 @@ function findBestPathFromSourceToOutgoingEndpoint(
     const controlPoints: RiverControlPoints = {
       startVertex: sourceVertex,
       endVertex: outgoingEndpoint.vertex,
-      startMode: 'red vertex',
+      startMode: 'mountain source',
       endMode: 'existing river endpoint'
     };
     const path = buildRiverPathViaControlPoints(controlPoints, riverGraph, usedRiverEdges);
@@ -3199,7 +3206,7 @@ function riverPathAvoidsOccupiedVertices(
 
 function validateRiverPathViaControlPoints(
   vertexPath: RiverVertex[],
-  controlPoints: { startVertex: RiverVertex; middlePurpleVertex?: RiverVertex; endVertex: RiverVertex; startMode: 'existing river endpoint' | 'red vertex' },
+  controlPoints: { startVertex: RiverVertex; middlePurpleVertex?: RiverVertex; endVertex: RiverVertex; startMode: RiverStartMode },
   riverGraph: RiverGraph,
   redVertices: RiverVertex[],
   existingRiverEndpointVerticesInRegion: RiverVertex[],
@@ -3223,6 +3230,7 @@ function validateRiverPathViaControlPoints(
   if (!isValidOutgoingBoundaryVertex(controlPoints.endVertex)) return false;
   if (controlPoints.startMode === 'red vertex' && !redSet.has(controlPoints.startVertex.key)) return false;
   if (controlPoints.startMode === 'red vertex' && !isValidOutgoingBoundaryVertex(controlPoints.startVertex)) return false;
+  if (controlPoints.startMode === 'mountain source' && redSet.has(controlPoints.startVertex.key)) return false;
   if (controlPoints.startMode === 'existing river endpoint' && !endpointSet.has(controlPoints.startVertex.key)) return false;
   if (controlPoints.middlePurpleVertex && !vertexPath.some((vertex) => vertex.key === controlPoints.middlePurpleVertex?.key)) return false;
   if (new Set(vertexPath.map((vertex) => vertex.key)).size !== vertexPath.length) return false;
@@ -4446,7 +4454,7 @@ function ensureMinimumMountainRiversForRegion(
       controlPoints: {
         startVertex: path[0],
         endVertex: path[path.length - 1],
-        startMode: 'red vertex'
+        startMode: 'mountain source'
       }
     };
 
@@ -5423,7 +5431,7 @@ function generateRiverForRegion(
         for (const startVertex of startVertices) {
           for (const endVertex of redVertices) {
             if (startVertex.key === endVertex.key) continue;
-            const controlPoints: RiverControlPoints = { startVertex, endVertex, startMode: 'red vertex', endMode: 'red vertex' };
+            const controlPoints: RiverControlPoints = { startVertex, endVertex, startMode: 'mountain source', endMode: 'red vertex' };
             const path = buildRiverPathViaControlPoints(controlPoints, riverGraph, usedRiverEdges);
             if (!validateRiverPathViaControlPoints(
               path,
@@ -5590,15 +5598,16 @@ function validateRiverEndpoints(region: Region, river: River, riverGraph: RiverG
   const start = riverGraph.nodes.get(river.vertexPath[0].key);
   const end = riverGraph.nodes.get(river.vertexPath[river.vertexPath.length - 1].key);
   const hasCandidateBoundary = Array.from(riverGraph.nodes.values()).some((node) => node.isCandidateBoundaryVertex);
-  if (!start?.isRegionBoundaryVertex) issues.push('start_not_region_boundary');
+  const startsInsideRegion = river.controlPoints?.startMode === 'mountain source';
+  if (!startsInsideRegion && !start?.isRegionBoundaryVertex) issues.push('start_not_region_boundary');
   if (!end?.isRegionBoundaryVertex) issues.push('end_not_region_boundary');
-  if (hasCandidateBoundary && !start?.isCandidateBoundaryVertex) issues.push('start_not_candidate_boundary_when_candidates_exist');
+  if (hasCandidateBoundary && !startsInsideRegion && !start?.isCandidateBoundaryVertex) issues.push('start_not_candidate_boundary_when_candidates_exist');
   if (hasCandidateBoundary && !end?.isCandidateBoundaryVertex) issues.push('end_not_candidate_boundary_when_candidates_exist');
   const firstEdge = riverGraph.edges.get(edgeKey(river.vertexPath[0], river.vertexPath[1]));
   const lastEdge = riverGraph.edges.get(edgeKey(river.vertexPath[river.vertexPath.length - 2], river.vertexPath[river.vertexPath.length - 1]));
-  if (!firstEdge?.isRegionBoundaryEdge) issues.push('first_edge_not_boundary');
+  if (!startsInsideRegion && !firstEdge?.isRegionBoundaryEdge) issues.push('first_edge_not_boundary');
   if (!lastEdge?.isRegionBoundaryEdge) issues.push('last_edge_not_boundary');
-  if (hasCandidateBoundary && !firstEdge?.isCandidateBoundaryEdge) issues.push('first_edge_not_candidate_boundary_when_candidates_exist');
+  if (hasCandidateBoundary && !startsInsideRegion && !firstEdge?.isCandidateBoundaryEdge) issues.push('first_edge_not_candidate_boundary_when_candidates_exist');
   if (hasCandidateBoundary && !lastEdge?.isCandidateBoundaryEdge) issues.push('last_edge_not_candidate_boundary_when_candidates_exist');
   if (!firstEdge || !lastEdge) issues.push('segment_not_in_graph');
   for (let i = 1; i < river.vertexPath.length; i += 1) {
