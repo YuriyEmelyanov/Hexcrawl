@@ -7513,6 +7513,27 @@ function buildDeltaArmsForRivers(
 }
 // а также не даёт реке соединять море с морем: если ОБА конца — устья у моря,
 // один конец уводится вглубь суши, оставляя единственное устье.
+function trimRiverSourcesOffExistingSea(
+  rivers: River[],
+  previousRivers: River[],
+  seaVertexKeys: Set<string>
+): River[] {
+  if (seaVertexKeys.size === 0) return rivers;
+  const previousById = new Map(previousRivers.map((river) => [river.id, river]));
+  return rivers.map((river) => {
+    const path = river.vertexPath ?? [];
+    if (path.length < 2) return river;
+    if (!seaVertexKeys.has(path[0].key)) return river; // исток уже не на море
+    if (!riverChangedFromPrevious(previousById.get(river.id), river)) return river; // старую неизменную реку не трогаем
+    let start = 0;
+    while (start < path.length - 1 && seaVertexKeys.has(path[start].key)) start += 1;
+    // Нечего обрезать, либо обрезка оставила бы слишком короткую реку — оставляем как есть,
+    // дальнейшая проверка getChangedRiverStartingFromSea отбракует регион (поведение как раньше).
+    if (start === 0 || path.length - start < 2) return river;
+    return { ...river, vertexPath: path.slice(start) };
+  });
+}
+
 function getRiverStartingFromSea(rivers: River[], seaVertexKeys: Set<string>, seaEdgeKeys: Set<string> = new Set()): River | null {
   return rivers.find((river) => {
     const path = river.vertexPath ?? [];
@@ -8787,12 +8808,18 @@ export function App() {
         continue;
       }
 
-      if (!validateExistingRiverEdgeFullnessPreserved(rivers, riverResult.rivers)) {
+      // Вариант 2 (спасти сушу): если подключение коннектора посадило исток реки на
+      // существующее море, подтягиваем исток назад до первой сухопутной вершины (устье
+      // не трогаем). Так зажатый морем карман может стать сушей без реки, текущей из моря.
+      const existingSeaVertexKeysForTrim = getSeaVertexKeysFromSeaKeys(getSeaHexKeys(hexTerrainByKey));
+      const connectedRivers = trimRiverSourcesOffExistingSea(riverResult.rivers, riversForGeneration, existingSeaVertexKeysForTrim);
+
+      if (!validateExistingRiverEdgeFullnessPreserved(rivers, connectedRivers)) {
         console.warn('Discarding failed candidate region because old river edge fullness was not preserved', { attempt });
         continue;
       }
       let finalizedRivers = assignRiverSectors(
-        riverResult.rivers,
+        connectedRivers,
         getLakesForRegions(nextRegionsForRiverGeneration, nextHexTerrainByKeyPreview),
         nextRegionsForRiverGeneration,
         nextCandidateHexes
@@ -9096,7 +9123,9 @@ export function App() {
       // Item 1: реки, возвращающиеся в озеро-исток, обрезаются перед повторным входом.
       const lakeIdByVertexKey = buildLakeIdByVertexKey(getLakesForRegions(nextRegions, nextHexTerrainByKeyPreview));
       const sanitizedRivers = riversWithDeltas.map((river) => trimRiverSourceLakeReentry(river, lakeIdByVertexKey));
-      const finalNewSeaHeightViolation = getRiverSeaHeightViolation(sanitizedRivers, finalSeaKeysToWrite);
+      // Река «море-в-море»: проверяем против ВСЕГО моря (существующее + новое + карманы).
+      const finalAllSeaKeys = [...allSeaKeys, ...enclosedPocketKeys];
+      const finalNewSeaHeightViolation = getRiverSeaHeightViolation(sanitizedRivers, finalAllSeaKeys);
       if (finalNewSeaHeightViolation) {
         console.warn('Discarding failed candidate region because final new sea touches a river away from its mouth', {
           attempt,
@@ -9124,8 +9153,10 @@ export function App() {
         const next = new Map(nextHexTerrainByKeyPreview);
         for (const key of finalSeaKeysToWrite) next.set(key, { terrainOverride: 'sea' });
         // BR-004: озеро, соседствующее с морем, удаляется (гекс возвращается к биому региона).
-        if (finalSeaKeysToWrite.length > 0) {
-          const seaSet = getSeaHexKeys(next);
+        // Запускаем при наличии ЛЮБОГО моря (включая существующее), а не только когда регион
+        // добавил новое море — иначе озеро в кармане у старого моря оставалось у берега.
+        const seaSet = getSeaHexKeys(next);
+        if (seaSet.size > 0) {
           for (const [key, terrain] of next) {
             if (terrain.terrainOverride !== 'lake') continue;
             const touchesSea = getHexNeighbors(parseHexKey(key)).some((n) => seaSet.has(hexKey(n)));
@@ -9141,6 +9172,53 @@ export function App() {
       setNextRoadId(roadResult.nextRoadId);
       setSelectedHex(centerHex);
       return;
+    }
+
+    // Вариант 1 (страховка-залив): все попытки сделать сушу провалились. Если клик был по
+    // карману, ПОЛНОСТЬЮ окружённому регионами/морем и примыкающему к существующему морю —
+    // заливаем его морем. СТРОГО: только если ни одна река не начинается из этого залива и не
+    // идёт по нему вне устья (иначе получилась бы река из моря — это запрещено). Если небезопасно
+    // — не заливаем, оставляем честный отказ.
+    const occupiedForBay = new Set<string>();
+    for (const region of regions) for (const hex of region.hexes) occupiedForBay.add(hexKey(hex));
+    const existingSeaForBay = getSeaHexKeys(hexTerrainByKey);
+    for (const key of existingSeaForBay) occupiedForBay.add(key);
+    const bayArea = findEnclosedEmptyAreaContainingHex(anchorHex, occupiedForBay);
+    if (bayArea && bayArea.length > 0) {
+      const bayTouchesSea = bayArea.some((hex) => getHexNeighbors(hex).some((n) => existingSeaForBay.has(hexKey(n))));
+      const bayKeys = bayArea.map(hexKey);
+      const bayVertexKeys = getSeaVertexKeysFromSeaKeys(bayKeys);
+      const bayEdgeKeys = getSeaEdgeKeysFromSeaKeys(bayKeys);
+      const bayStartsRiverFromSea = getRiverStartingFromSea(rivers, bayVertexKeys, bayEdgeKeys);
+      const bayHeightViolation = getRiverSeaHeightViolation(rivers, bayKeys);
+      if (bayTouchesSea && !bayStartsRiverFromSea && !bayHeightViolation) {
+        const snapshot: MapSnapshot = {
+          regions,
+          candidateHexes,
+          rivers,
+          roads: cloneRoads(roads),
+          hexTerrainByKey,
+          nextLakeId,
+          nextRoadId
+        };
+        setHistory((current) => [...current, snapshot]);
+        const bayKeySet = new Set(bayKeys);
+        setHexTerrainByKey((current) => {
+          const next = new Map(current);
+          for (const key of bayKeys) next.set(key, { terrainOverride: 'sea' });
+          // BR-004: убрать озёра, ставшие соседями нового моря-залива.
+          const seaSet = getSeaHexKeys(next);
+          for (const [key, terrain] of next) {
+            if (terrain.terrainOverride !== 'lake') continue;
+            if (getHexNeighbors(parseHexKey(key)).some((n) => seaSet.has(hexKey(n)))) next.delete(key);
+          }
+          return next;
+        });
+        setCandidateHexes((current) => current.filter((hex) => !bayKeySet.has(hexKey(hex))));
+        setSelectedHex(anchorHex);
+        console.warn('Filled sea-locked pocket as bay (no valid land region possible)', { anchorHex, bayHexCount: bayKeys.length });
+        return;
+      }
     }
     if (firstCoastalFailureReason === 'outgoing_river_to_existing_region') {
       setCoastNotice('Побережье здесь создать нельзя: из этого региона вытекает река в соседний регион. Реки не текут от побережья вглубь суши (BR-003).');
