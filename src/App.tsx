@@ -8161,13 +8161,66 @@ function generateRoadsForRegion(options: {
     return true;
   };
 
-  const buildSupplementalRoadToExistingRoad = (anchorHex: AxialHex, logLabel: string): boolean => {
-    const roadTargets = getNonLakeRoadHexesInRegion(region, built, hexTerrainByKey);
+  const getCandidateFacingSupplementalEndpoints = (anchorHex: AxialHex): AxialHex[] => {
     const availableStartHexes = getSupplementalRoadStartHexes(anchorHex);
-    const collectStartHexes = (borderHexes: AxialHex[]) => borderHexes
+    return getCandidateFacingRegionBorderHexes(region, candidateHexes)
       .filter((hex) => availableStartHexes.some((startHex) => isSameHex(startHex, hex)))
       .filter((hex) => !isAdjacentToRoadHex(hex, built));
-    const startHexes = collectStartHexes(getCandidateFacingRegionBorderHexes(region, candidateHexes));
+  };
+
+  const buildSupplementalRoadFromCenterToCandidateFacingEndpoint = (anchorHex: AxialHex, logLabel: string): boolean => {
+    const targetHexes = getCandidateFacingSupplementalEndpoints(anchorHex);
+    const candidates: SupplementalSettledRoadCandidate[] = [];
+    for (const targetHex of targetHexes) {
+      const basePaths = findAlternativeRoadPathsWithinRegion({
+        region,
+        from: region.centerHex,
+        target: targetHex,
+        roads: built,
+        hexTerrainByKey,
+        maxAlternatives: 6
+      });
+      for (const basePath of basePaths) {
+        if (!canAddRoadPath({ path: basePath, roads: built, region, hexTerrainByKey, allowedRoadHexes: [region.centerHex, targetHex] })) continue;
+        const touchedPoiKeys = getPoiKeysOnRoadPath(basePath, region);
+        const touchedPoiCount = Array.from(touchedPoiKeys).filter((key) => !usedRoadPoiKeys.has(key)).length;
+        candidates.push({
+          startHex: region.centerHex,
+          anchorDistance: hexDistance(targetHex, anchorHex),
+          basePath,
+          extendedPath: basePath,
+          targetHex,
+          targetIsPoi: isPointOfInterestHex(targetHex, region),
+          crossedRiverCount: countRoadPathRiverCrossings(basePath, rivers),
+          touchedPoiCount,
+          touchedPoiKeys
+        });
+      }
+    }
+    const best = chooseBestSupplementalSettledRoadCandidate(candidates);
+    if (!best) {
+      console.log(logLabel, { regionId: region.id, built: false, reason: 'no valid supplemental center-to-candidate-facing path' });
+      return false;
+    }
+    const added = addRoadFromPath(best.extendedPath, 'road', [region.centerHex, best.targetHex]);
+    console.log(logLabel, {
+      regionId: region.id,
+      built: added,
+      startHex: hexKey(region.centerHex),
+      targetHex: hexKey(best.targetHex),
+      anchorDistance: best.anchorDistance,
+      touchedPoiCount: best.touchedPoiCount,
+      crossedRiverCount: best.crossedRiverCount,
+      pathLength: best.extendedPath.length
+    });
+    if (!added) return false;
+    markPoiOnPathAsUsed(best.extendedPath, region, usedRoadPoiKeys);
+    return true;
+  };
+
+  const buildSupplementalRoadToExistingRoad = (anchorHex: AxialHex, logLabel: string): boolean => {
+    const roadTargets = getNonLakeRoadHexesInRegion(region, built, hexTerrainByKey);
+    const startHexes = getCandidateFacingSupplementalEndpoints(anchorHex);
     const candidates = collectDirectSupplementalCandidates({ startHexes, targetHexes: roadTargets, anchorHex, maxAlternatives: 6 });
     const best = chooseBestSupplementalSettledRoadCandidate(candidates);
     if (!best) {
@@ -8194,7 +8247,7 @@ function generateRoadsForRegion(options: {
     const centerRoadMinimum = Math.min(2, getSettledMainRoadLimit(region));
     while (getRoadBuildCountForSettledRegion(region, built) < centerRoadMinimum) {
       const builtSupplementalRoad = requireCandidateFacingSecondRoad
-        ? buildSupplementalRoadToExistingRoad(anchorHex, 'Supplemental settled candidate-facing road result')
+        ? buildSupplementalRoadFromCenterToCandidateFacingEndpoint(anchorHex, 'Supplemental settled candidate-facing road result')
         : buildSupplementalRoadToCenter(anchorHex, 'Supplemental settled center road result');
       if (!builtSupplementalRoad) break;
     }
