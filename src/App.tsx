@@ -8220,42 +8220,47 @@ function generateRoadsForRegion(options: {
     const largeRegionLabels = new Set<Region['sizeLabel']>(['Большой регион', 'Край', 'Обширный край']);
     if (largeRegionLabels.has(region.sizeLabel)) {
       const existingRoadHexKeys = getRoadHexKeys(built);
-      const borderHexCandidates = getRegionBorderHexes(region)
-        .filter((hex) => {
-          const key = hexKey(hex);
-          if (isSameHex(hex, region.centerHex)) return false;
-          if (isLakeHex(hex, hexTerrainByKey)) return false;
-          if (existingRoadHexKeys.has(key)) return false;
-          if (isAdjacentToRoadHex(hex, built)) return false;
+      const thirdCandidateTargets = getRegionBorderHexes(region)
+        .flatMap((entryHex) => getHexNeighbors(entryHex)
+          .filter((candidateHex) => candidateKeys.has(hexKey(candidateHex)))
+          .map((candidateHex) => ({ entryHex, candidateHex })))
+        .filter((target, index, allTargets) => allTargets.findIndex((other) => hexKey(other.entryHex) === hexKey(target.entryHex) && hexKey(other.candidateHex) === hexKey(target.candidateHex)) === index)
+        .filter((target) => {
+          const entryKey = hexKey(target.entryHex);
+          if (isSameHex(target.entryHex, region.centerHex)) return false;
+          if (isLakeHex(target.entryHex, hexTerrainByKey) || isLakeHex(target.candidateHex, hexTerrainByKey)) return false;
+          if (existingRoadHexKeys.has(entryKey)) return false;
+          if (isAdjacentToRoadHex(target.entryHex, built)) return false;
           return true;
         })
-        .sort((a, b) => hexDistance(b, region.centerHex) - hexDistance(a, region.centerHex));
+        .sort((a, b) => hexDistance(b.entryHex, region.centerHex) - hexDistance(a.entryHex, region.centerHex));
       const roadHexCandidates = getRoadHexesInRegion(region, built)
         .filter((hex) => !isLakeHex(hex, hexTerrainByKey));
 
       const thirdCandidates: RoadCandidatePath[] = [];
-      for (const borderHex of borderHexCandidates) {
-        const sortedRoadHexCandidates = [...roadHexCandidates].sort((a, b) => hexDistance(a, borderHex) - hexDistance(b, borderHex));
+      for (const target of thirdCandidateTargets) {
+        const sortedRoadHexCandidates = [...roadHexCandidates].sort((a, b) => hexDistance(a, target.entryHex) - hexDistance(b, target.entryHex));
         for (const roadHex of sortedRoadHexCandidates) {
           if (thirdCandidates.length >= 10) break;
           const basePath = findRoadPathWithinRegion({
             region,
-            from: borderHex,
-            targets: [roadHex],
+            from: roadHex,
+            targets: [target.entryHex],
             roads: built,
             hexTerrainByKey,
             allowRoadHexes: [roadHex]
           });
           if (!basePath) continue;
-          if (!canAddRoadPath({ path: basePath, roads: built, region, hexTerrainByKey, allowedRoadHexes: [borderHex, roadHex] })) continue;
-          const touchedPoiKeys = getPoiKeysOnRoadPath(basePath, region);
+          const extendedPath = [...basePath, target.candidateHex];
+          if (!canAddRoadPath({ path: extendedPath, roads: built, region, hexTerrainByKey, allowedRoadHexes: [roadHex, target.entryHex] })) continue;
+          const touchedPoiKeys = getPoiKeysOnRoadPath(extendedPath, region);
           const touchedPoiCount = Array.from(touchedPoiKeys).filter((key) => !usedRoadPoiKeys.has(key)).length;
           thirdCandidates.push({
             basePath,
-            extendedPath: basePath,
-            targetHex: roadHex,
-            targetIsPoi: isPointOfInterestHex(roadHex, region),
-            crossedRiverCount: countRoadPathRiverCrossings(basePath, rivers),
+            extendedPath,
+            targetHex: target.candidateHex,
+            targetIsPoi: false,
+            crossedRiverCount: countRoadPathRiverCrossings(extendedPath, rivers),
             touchedPoiCount,
             touchedPoiKeys
           });
@@ -8263,61 +8268,85 @@ function generateRoadsForRegion(options: {
         if (thirdCandidates.length >= 10) break;
       }
       const thirdBest = chooseBestThirdRoadCandidate(thirdCandidates);
-      if (thirdBest) {
-        const borderHex = thirdBest.extendedPath[0];
-        const roadHex = thirdBest.extendedPath[thirdBest.extendedPath.length - 1];
-        const borderEndIsRegionBorder = getRegionBorderHexes(region).some((hex) => isSameHex(hex, borderHex));
-        const roadEndHasExistingRoad = hexHasRoad(roadHex, built);
-        const preBuildBorderAdjacentToRoad = isAdjacentToRoadHex(borderHex, built);
+      const thirdRoadPath = thirdBest ? trimPathToRegionHexes(thirdBest.extendedPath, region) : [];
+      if (thirdBest && thirdRoadPath.length >= 2) {
+        const roadHex = thirdRoadPath[0];
+        const entryHex = thirdRoadPath[thirdRoadPath.length - 1];
+        const candidateHex = thirdBest.targetHex;
+        const entryEndIsRegionBorder = getRegionBorderHexes(region).some((hex) => isSameHex(hex, entryHex));
+        const candidateEndIsCandidate = candidateKeys.has(hexKey(candidateHex));
+        const roadStartHasExistingRoad = hexHasRoad(roadHex, built);
+        const preBuildEntryAdjacentToRoad = isAdjacentToRoadHex(entryHex, built);
         const pathHasLake = thirdBest.extendedPath.some((hex) => isLakeHex(hex, hexTerrainByKey));
-        const isValid = borderEndIsRegionBorder && !isLakeHex(borderHex, hexTerrainByKey) && !preBuildBorderAdjacentToRoad && roadEndHasExistingRoad && !pathHasLake;
+        const trimmedCandidateExitSegment = thirdRoadPath.length < thirdBest.extendedPath.length;
+        const isValid = entryEndIsRegionBorder
+          && candidateEndIsCandidate
+          && areHexesAdjacent(entryHex, candidateHex)
+          && !isLakeHex(entryHex, hexTerrainByKey)
+          && !isLakeHex(candidateHex, hexTerrainByKey)
+          && !preBuildEntryAdjacentToRoad
+          && roadStartHasExistingRoad
+          && !pathHasLake
+          && trimmedCandidateExitSegment;
         if (isValid) {
-          const added = addRoadFromPath(thirdBest.extendedPath, 'road', [borderHex, roadHex]);
+          const added = addRoadFromPath(thirdRoadPath, 'road', [roadHex, entryHex]);
           console.log('Third settled road result', {
             regionId: region.id,
             built: added,
-            borderEnd: hexKey(borderHex),
-            roadEnd: hexKey(roadHex),
+            entryHex: hexKey(entryHex),
+            candidateHex: hexKey(candidateHex),
+            roadStart: hexKey(roadHex),
             touchedPoiCount: thirdBest.touchedPoiCount,
             crossedRiverCount: thirdBest.crossedRiverCount,
-            pathLength: thirdBest.extendedPath.length,
-            borderEndIsRegionBorder,
-            roadEndHasExistingRoad
+            pathLength: thirdRoadPath.length,
+            entryEndIsRegionBorder,
+            candidateEndIsCandidate,
+            roadStartHasExistingRoad,
+            trimmedCandidateExitSegment
           });
-          if (added) markPoiOnPathAsUsed(thirdBest.extendedPath, region, usedRoadPoiKeys);
+          if (added) markPoiOnPathAsUsed(thirdRoadPath, region, usedRoadPoiKeys);
         } else {
           console.warn('Third settled road validation failed', {
             regionId: region.id,
-            borderEnd: hexKey(borderHex),
-            roadEnd: hexKey(roadHex),
-            borderEndIsRegionBorder,
-            roadEndHasExistingRoad,
-            preBuildBorderAdjacentToRoad,
-            pathHasLake
+            entryHex: hexKey(entryHex),
+            candidateHex: hexKey(candidateHex),
+            roadStart: hexKey(roadHex),
+            entryEndIsRegionBorder,
+            candidateEndIsCandidate,
+            roadStartHasExistingRoad,
+            preBuildEntryAdjacentToRoad,
+            pathHasLake,
+            trimmedCandidateExitSegment
           });
           console.log('Third settled road result', {
             regionId: region.id,
             built: false,
-            borderEnd: hexKey(borderHex),
-            roadEnd: hexKey(roadHex),
+            entryHex: hexKey(entryHex),
+            candidateHex: hexKey(candidateHex),
+            roadStart: hexKey(roadHex),
             touchedPoiCount: thirdBest.touchedPoiCount,
             crossedRiverCount: thirdBest.crossedRiverCount,
-            pathLength: thirdBest.extendedPath.length,
-            borderEndIsRegionBorder,
-            roadEndHasExistingRoad
+            pathLength: thirdRoadPath.length,
+            entryEndIsRegionBorder,
+            candidateEndIsCandidate,
+            roadStartHasExistingRoad,
+            trimmedCandidateExitSegment
           });
         }
       } else {
         console.log('Third settled road result', {
           regionId: region.id,
           built: false,
-          borderEnd: null,
-          roadEnd: null,
-          touchedPoiCount: 0,
-          crossedRiverCount: 0,
-          pathLength: 0,
-          borderEndIsRegionBorder: false,
-          roadEndHasExistingRoad: false
+          entryHex: null,
+          candidateHex: thirdBest ? hexKey(thirdBest.targetHex) : null,
+          roadStart: null,
+          touchedPoiCount: thirdBest?.touchedPoiCount ?? 0,
+          crossedRiverCount: thirdBest?.crossedRiverCount ?? 0,
+          pathLength: thirdRoadPath.length,
+          entryEndIsRegionBorder: false,
+          candidateEndIsCandidate: thirdBest ? candidateKeys.has(hexKey(thirdBest.targetHex)) : false,
+          roadStartHasExistingRoad: false,
+          trimmedCandidateExitSegment: false
         });
       }
     }
