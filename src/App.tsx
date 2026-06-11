@@ -1541,13 +1541,13 @@ function validateExistingRiverEdgeFullnessPreserved(previousRivers: River[], nex
 
   for (const [edgeKey, previousFullness] of previousFullnessByEdge.entries()) {
     const nextFullness = nextFullnessByEdge.get(edgeKey);
-    if (nextFullness !== undefined && nextFullness !== previousFullness) {
+    if (nextFullness !== undefined && nextFullness < previousFullness) {
       changedEdges.push({ edgeKey, previousFullness, nextFullness });
     }
   }
 
   if (changedEdges.length > 0) {
-    console.warn('Rejecting river update because existing river edge fullness changed', { changedEdges });
+    console.warn('Rejecting river update because existing river edge fullness decreased', { changedEdges });
     return false;
   }
   return true;
