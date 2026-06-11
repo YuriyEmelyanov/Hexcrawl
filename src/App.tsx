@@ -8682,12 +8682,18 @@ export function App() {
       const nextCandidateHexesExclSea = getCandidateHexes(nextAllHexes, allSeaKeys);
       if (allNewSeaKeys.length > 0) {
         const seaExtensionGraph = buildRiverGraphForRegion(regionHexes, nextAllHexes, nextCandidateHexesExclSea);
-        finalizedRivers = extendChangedRiverMouthsToSeaIfPossible(
+        const extendedRivers = extendChangedRiverMouthsToSeaIfPossible(
           riversForGeneration,
           finalizedRivers,
           allNewSeaKeys,
           seaExtensionGraph
         );
+        // Применяем удлинение устья только если оно НЕ создаёт контакт реки с морем
+        // вне устья. Иначе устье «уезжает» в море несколькими вершинами и регион
+        // отбраковывается (non_mouth_vertex_sea) — оставляем корректное устье у берега.
+        if (!getRiverSeaHeightViolation(extendedRivers, allSeaKeys)) {
+          finalizedRivers = extendedRivers;
+        }
       }
       const riverStartingFromSeaAfterExtension = getChangedRiverStartingFromSea(
         riversForGeneration,
@@ -8764,12 +8770,15 @@ export function App() {
       }
       if (allNewSeaKeys.length > 0) {
         const seaExtensionGraph = buildRiverGraphForRegion(regionHexes, nextAllHexes, nextCandidateHexesExclSea);
-        riversWithDeltas = extendChangedRiverMouthsToSeaIfPossible(
+        const extendedWithDeltas = extendChangedRiverMouthsToSeaIfPossible(
           riversForGeneration,
           riversWithDeltas,
           allNewSeaKeys,
           seaExtensionGraph
         );
+        if (!getRiverSeaHeightViolation(extendedWithDeltas, allSeaKeys)) {
+          riversWithDeltas = extendedWithDeltas;
+        }
       }
       const riverStartingFromSeaAfterDeltas = getChangedRiverStartingFromSea(
         riversForGeneration,
