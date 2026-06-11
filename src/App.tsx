@@ -6845,18 +6845,23 @@ function getWildRoadCandidates(options: {
     });
     const startRoadCenterHexes = getRoadRegionCenterHexes(startRoad, regions);
     const targets: Array<{ kind: 'candidate' | 'road'; entryHex: AxialHex; outsideHex: AxialHex; roadId?: number }> = [];
+    const differentCenterIncomingTargets = incoming.filter((target) => {
+      if (target.roadId === start.roadId) return false;
+      if (isSameHex(target.entryHex, start.entryHex)) return false;
+      const targetRoad = roads.find((road) => road.id === target.roadId);
+      return !!targetRoad && !roadsShareRegionCenter(startRoad, targetRoad, regions);
+    });
 
     if (sameCenterRoadTargets.length > 0) {
       targets.push(...sameCenterRoadTargets);
+    } else if (differentCenterIncomingTargets.length > 0) {
+      for (const target of differentCenterIncomingTargets) {
+        targets.push({ kind: 'road', entryHex: target.entryHex, outsideHex: target.endpointHex, roadId: target.roadId });
+      }
     } else {
       for (const target of candidateTargets) {
         if (isSameHex(target.entryHex, start.entryHex)) continue;
         targets.push({ kind: 'candidate', entryHex: target.entryHex, outsideHex: target.outsideHex });
-      }
-      for (const target of incoming) {
-        if (target.roadId === start.roadId) continue;
-        if (isSameHex(target.entryHex, start.entryHex)) continue;
-        targets.push({ kind: 'road', entryHex: target.entryHex, outsideHex: target.endpointHex, roadId: target.roadId });
       }
     }
 
