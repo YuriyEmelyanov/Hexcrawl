@@ -6304,11 +6304,16 @@ function chooseIncomingRoadEntryHex(
   return [...entries].sort((a, b) => hexDistance(a, region.centerHex) - hexDistance(b, region.centerHex))[0];
 }
 
+function getRegionCenterHexKeys(regions: Region[]): Set<string> {
+  return new Set(regions.map((region) => hexKey(region.centerHex)));
+}
+
 function findIncomingRoadEndpointsForRegion(
   region: Region,
   roads: Road[],
   hexTerrainByKey?: Map<string, HexTerrainData>,
-  includeRoadBodyEntries = false
+  includeRoadBodyEntries = false,
+  blockedRoadTouchHexKeys = new Set<string>()
 ): IncomingRoadEndpoint[] {
   const regionKeys = new Set(region.hexes.map(hexKey));
   const result = new Map<string, IncomingRoadEndpoint>();
@@ -6321,7 +6326,9 @@ function findIncomingRoadEndpointsForRegion(
 
   for (const road of roads) {
     for (const endpoint of getRoadEndpoints(road, 'road')) {
-      if (regionKeys.has(hexKey(endpoint))) {
+      const endpointKey = hexKey(endpoint);
+      if (blockedRoadTouchHexKeys.has(endpointKey)) continue;
+      if (regionKeys.has(endpointKey)) {
         addIncoming(road.id, endpoint, endpoint);
         continue;
       }
@@ -6339,7 +6346,9 @@ function findIncomingRoadEndpointsForRegion(
       }
 
       for (const roadHex of roadHexes.values()) {
-        if (regionKeys.has(hexKey(roadHex))) {
+        const roadHexKey = hexKey(roadHex);
+        if (blockedRoadTouchHexKeys.has(roadHexKey)) continue;
+        if (regionKeys.has(roadHexKey)) {
           addIncoming(road.id, roadHex, roadHex);
           continue;
         }
@@ -6639,7 +6648,7 @@ function getWildIncomingRoadPairCandidates(options: {
   hexTerrainByKey: Map<string, HexTerrainData>;
 }): WildIncomingRoadPairCandidate[] {
   const { region, regions, roads, rivers, hexTerrainByKey } = options;
-  const incoming = findIncomingRoadEndpointsForRegion(region, roads, hexTerrainByKey)
+  const incoming = findIncomingRoadEndpointsForRegion(region, roads, hexTerrainByKey, false, getRegionCenterHexKeys(regions))
     .filter((incomingEndpoint) => !isSameHex(incomingEndpoint.entryHex, region.centerHex) && !isLakeHex(incomingEndpoint.entryHex, hexTerrainByKey));
   if (incoming.length < 2) return [];
 
@@ -6757,7 +6766,7 @@ function getWildRoadCandidates(options: {
   usedEndpointKeys?: Set<string>;
 }): WildRoadCandidate[] {
   const { region, regions, roads, rivers, hexTerrainByKey, candidateHexes, usedEndpointKeys = new Set<string>() } = options;
-  const incoming = findIncomingRoadEndpointsForRegion(region, roads, hexTerrainByKey)
+  const incoming = findIncomingRoadEndpointsForRegion(region, roads, hexTerrainByKey, false, getRegionCenterHexKeys(regions))
     .filter((incomingEndpoint) => !usedEndpointKeys.has(hexKey(incomingEndpoint.endpointHex)))
     .filter((incomingEndpoint) => !isSameHex(incomingEndpoint.entryHex, region.centerHex) && !isLakeHex(incomingEndpoint.entryHex, hexTerrainByKey));
   if (incoming.length === 0) return [];
@@ -7728,7 +7737,7 @@ function generateRoadsForRegion(options: {
   const settled = region.biomeLandType === 'settled';
   if (!settled) {
     let builtAnyWildRoad = false;
-    const incomingWildRoadEndpoints = findIncomingRoadEndpointsForRegion(region, built, hexTerrainByKey)
+    const incomingWildRoadEndpoints = findIncomingRoadEndpointsForRegion(region, built, hexTerrainByKey, false, getRegionCenterHexKeys(regions))
       .filter((incomingEndpoint) => !isSameHex(incomingEndpoint.entryHex, region.centerHex) && !isLakeHex(incomingEndpoint.entryHex, hexTerrainByKey));
     const incomingWildRoadCount = getUniqueIncomingRoadCount(incomingWildRoadEndpoints);
     const usedWildRoadEndpointKeys = new Set<string>();
@@ -7788,7 +7797,7 @@ function generateRoadsForRegion(options: {
   const finalizeSettledRoads = (result: { roads: Road[]; nextRoadId: number }) => normalizeSettledRegionRoadIds({ region, roads: result.roads, nextRoadId: result.nextRoadId });
 
   const boundaryHexes = getBoundaryHexes(region);
-  const incoming = findIncomingRoadEndpointsForRegion(region, roads, hexTerrainByKey, true);
+  const incoming = findIncomingRoadEndpointsForRegion(region, roads, hexTerrainByKey, true, getRegionCenterHexKeys(regions));
   const addRoadFromPath = (path: AxialHex[], kind: RoadKind, allowedRoadHexes: AxialHex[] = [], allowedDuplicateHexKeys = new Set<string>()) => {
     if (kind === 'trail' && roadPathCrossesRiver(path, rivers)) return false;
     if (!canAddRoadPath({ path, roads: built, region, hexTerrainByKey, allowedRoadHexes, allowedDuplicateHexKeys })) return false;
