@@ -8190,10 +8190,13 @@ function generateRoadsForRegion(options: {
     return true;
   };
 
-  const enforceSettledRoadMinimum = (anchorHex: AxialHex) => {
+  const enforceSettledRoadMinimum = (anchorHex: AxialHex, requireCandidateFacingSecondRoad = false) => {
     const centerRoadMinimum = Math.min(2, getSettledMainRoadLimit(region));
     while (getRoadBuildCountForSettledRegion(region, built) < centerRoadMinimum) {
-      if (!buildSupplementalRoadToCenter(anchorHex, 'Supplemental settled center road result')) break;
+      const builtSupplementalRoad = requireCandidateFacingSecondRoad
+        ? buildSupplementalRoadToExistingRoad(anchorHex, 'Supplemental settled candidate-facing road result')
+        : buildSupplementalRoadToCenter(anchorHex, 'Supplemental settled center road result');
+      if (!builtSupplementalRoad) break;
     }
     while (getRoadBuildCountForSettledRegion(region, built) < getSettledMainRoadLimit(region)) {
       if (!buildSupplementalRoadToExistingRoad(anchorHex, 'Supplemental settled road-to-road result')) break;
@@ -8211,7 +8214,7 @@ function generateRoadsForRegion(options: {
       if (!buildBestIncomingRoadToTargets(roadTargets, 'Additional settled incoming road result')) break;
     }
 
-    enforceSettledRoadMinimum(firstIncomingEntryHex ?? region.centerHex);
+    enforceSettledRoadMinimum(firstIncomingEntryHex ?? region.centerHex, getUniqueIncomingRoadCount(incoming) === 1);
     return finalizeSettledRoads(connectRemainingPoiWithTrails({ region, roads: built, rivers, hexTerrainByKey, nextRoadId }));
   }
   if (incoming.length === 0) {
