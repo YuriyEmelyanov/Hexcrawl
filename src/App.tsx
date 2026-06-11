@@ -3775,6 +3775,15 @@ function fillSmallEnclosedAreasForRegion(
   ];
 }
 
+function findEnclosedEmptyAreaContainingHex(anchorHex: AxialHex, occupiedHexes: Set<string>): AxialHex[] | null {
+  const anchorKey = hexKey(anchorHex);
+  if (occupiedHexes.has(anchorKey)) return null;
+  const area = scanEmptyArea(anchorHex, occupiedHexes, buildBoundingBox(occupiedHexes, 2));
+  if (area.isOpen) return null;
+  return Array.from(area.areaKeys).map(parseHexKey);
+}
+
+
 // BR-002: вероятность побережья для нового региона по протяжённости карты.
 // Берётся максимальная протяжённость уже сгенерированной карты по трём осям
 // гекс-сетки, ограничивается 400, и делится на 400.
@@ -4152,6 +4161,9 @@ function validateCoastalSeaArea(
     rivers
   );
   if (!globalSeaValidation.valid) return globalSeaValidation;
+
+  const riverHeightViolation = getRiverSeaHeightViolation(rivers, seaKeys);
+  if (riverHeightViolation) return { valid: false, reason: `sea_height_${riverHeightViolation.reason}` };
 
   const riverConflict = getCoastalSeaRiverConflict(rivers, seaKeys, regionHexes);
   if (riverConflict) return { valid: false, reason: 'sea_touches_river_not_at_mouth' };
@@ -8406,13 +8418,17 @@ export function App() {
     let firstCoastalFailureReason: CoastalGenerationFailureReason | null = null;
     setCoastNotice(null);
     for (let attempt = 0; attempt < maxRegionAttempts; attempt += 1) {
-      const targetSize = options.targetSize ?? rollRegionTargetSize();
+      let targetSize = options.targetSize ?? rollRegionTargetSize();
       const occupiedHexes = new Set(allRegionHexes.map(hexKey));
       // Море — не суша: рост региона не должен захватывать гексы моря.
       for (const seaKey of getSeaHexKeys(hexTerrainByKey)) occupiedHexes.add(seaKey);
+      const enclosedAnchorArea = findEnclosedEmptyAreaContainingHex(anchorHex, occupiedHexes);
+      if (enclosedAnchorArea) targetSize = enclosedAnchorArea.length;
       const regionId = Math.max(0, ...regions.map((region) => region.id)) + 1;
-      let regionHexes = generateConnectedRegionFromAnchor(anchorHex, targetSize, occupiedHexes);
-      regionHexes = fillSmallEnclosedAreasForRegion(regionHexes, allRegionHexes, getSeaHexKeys(hexTerrainByKey));
+      let regionHexes = enclosedAnchorArea ?? generateConnectedRegionFromAnchor(anchorHex, targetSize, occupiedHexes);
+      if (!enclosedAnchorArea) {
+        regionHexes = fillSmallEnclosedAreasForRegion(regionHexes, allRegionHexes, getSeaHexKeys(hexTerrainByKey));
+      }
       const finalSize = regionHexes.length;
       const { sizeCategory, sizeLabel } = getRegionSizeCategory(finalSize);
       const centerHex = chooseRegionCenter(regionHexes);
@@ -8462,8 +8478,8 @@ export function App() {
         if (attempt === 0) firstCoastalFailureReason = 'outgoing_river_to_existing_region';
         continue;
       }
-      const isCoastalRegion =
-        options.coastalPreference === 'coast' ? true
+      const isCoastalRegion = enclosedAnchorArea ? false
+        : options.coastalPreference === 'coast' ? true
         : options.coastalPreference === 'mainland' ? false
         : forcedCoastContinuation ? true
         : hasOutgoingRiverToExistingRegion ? false
@@ -8589,13 +8605,15 @@ export function App() {
       const nextAllHexes = nextRegionsForRiverGeneration.flatMap((r) => r.hexes);
       // Реки не строятся через морские гексы — исключаем существующее море из фронта.
       const nextCandidateHexes = getCandidateHexes(nextAllHexes, existingSeaForRivers);
-      const riverResult = generateRiverForRegion(
-        regionForRiverGeneration,
-        nextRegionsForRiverGeneration,
-        riversForGeneration,
-        nextCandidateHexes,
-        nextHexTerrainByKeyPreview
-      );
+      const riverResult = enclosedAnchorArea
+        ? { success: true as const, rivers: riversForGeneration }
+        : generateRiverForRegion(
+          regionForRiverGeneration,
+          nextRegionsForRiverGeneration,
+          riversForGeneration,
+          nextCandidateHexes,
+          nextHexTerrainByKeyPreview
+        );
       if (!riverResult.success) {
         console.warn('Discarding failed candidate region', { attempt, reason: riverResult.reason });
         continue;
@@ -8720,14 +8738,14 @@ export function App() {
         // Применяем удлинение устья только если оно НЕ создаёт контакт реки с морем
         // вне устья. Иначе устье «уезжает» в море несколькими вершинами и регион
         // отбраковывается (non_mouth_vertex_sea) — оставляем корректное устье у берега.
-        if (!getChangedRiverSeaHeightViolation(riversForGeneration, extendedRivers, allSeaKeys)) {
+        if (!getRiverSeaHeightViolation(extendedRivers, allNewSeaKeys)) {
           finalizedRivers = extendedRivers;
         }
       }
-      const riverStartingFromSeaAfterExtension = getChangedRiverStartingFromSea(
-        riversForGeneration,
+      const riverStartingFromSeaAfterExtension = getRiverStartingFromSea(
         finalizedRivers,
-        allSeaKeys
+        getSeaVertexKeysFromSeaKeys(allNewSeaKeys),
+        getSeaEdgeKeysFromSeaKeys(allNewSeaKeys)
       );
       if (riverStartingFromSeaAfterExtension) {
         console.warn('Discarding failed candidate region because a river starts from sea after extension', {
@@ -8737,7 +8755,7 @@ export function App() {
         });
         continue;
       }
-      const riverSeaHeightViolationAfterExtension = getChangedRiverSeaHeightViolation(riversForGeneration, finalizedRivers, allSeaKeys);
+      const riverSeaHeightViolationAfterExtension = getRiverSeaHeightViolation(finalizedRivers, allNewSeaKeys);
       if (riverSeaHeightViolationAfterExtension) {
         console.warn('Discarding failed candidate region because a river violates sea height after extension', {
           attempt,
@@ -8805,14 +8823,14 @@ export function App() {
           allNewSeaKeys,
           seaExtensionGraph
         );
-        if (!getChangedRiverSeaHeightViolation(riversForGeneration, extendedWithDeltas, allSeaKeys)) {
+        if (!getRiverSeaHeightViolation(extendedWithDeltas, allNewSeaKeys)) {
           riversWithDeltas = extendedWithDeltas;
         }
       }
-      const riverStartingFromSeaAfterDeltas = getChangedRiverStartingFromSea(
-        riversForGeneration,
+      const riverStartingFromSeaAfterDeltas = getRiverStartingFromSea(
         riversWithDeltas,
-        allSeaKeys
+        getSeaVertexKeysFromSeaKeys(allNewSeaKeys),
+        getSeaEdgeKeysFromSeaKeys(allNewSeaKeys)
       );
       if (riverStartingFromSeaAfterDeltas) {
         console.warn('Discarding failed candidate region because a river starts from sea after deltas', {
@@ -8822,7 +8840,7 @@ export function App() {
         });
         continue;
       }
-      const riverSeaHeightViolationAfterDeltas = getChangedRiverSeaHeightViolation(riversForGeneration, riversWithDeltas, allSeaKeys);
+      const riverSeaHeightViolationAfterDeltas = getRiverSeaHeightViolation(riversWithDeltas, allNewSeaKeys);
       if (riverSeaHeightViolationAfterDeltas) {
         console.warn('Discarding failed candidate region because a river violates sea height after deltas', {
           attempt,
@@ -8858,7 +8876,7 @@ export function App() {
         nextRegions,
         nextCandidateHexesExclSea
       );
-      const finalRiverSeaHeightViolation = getChangedRiverSeaHeightViolation(riversForGeneration, riversWithDeltas, allSeaKeys);
+      const finalRiverSeaHeightViolation = getRiverSeaHeightViolation(riversWithDeltas, allNewSeaKeys);
       if (finalRiverSeaHeightViolation) {
         console.warn('Discarding failed candidate region because a river violates final sea height', {
           attempt,
@@ -8887,18 +8905,6 @@ export function App() {
         candidateHexes: nextCandidateHexesExclSea
       });
 
-      // Снимок состояния ДО добавления этого региона — для удаления/перегенерации.
-      const snapshot: MapSnapshot = {
-        regions,
-        candidateHexes,
-        rivers,
-        roads: cloneRoads(roads),
-        hexTerrainByKey,
-        nextLakeId,
-        nextRoadId
-      };
-      setHistory((current) => [...current, snapshot]);
-
       // Item 2: запертые кандидатные карманы (≤5 тайлов) между регионом и морем
       // поглощаются морем — чтобы не оставались «висящие» неоткрытые участки и по
       // ним нельзя было кликнуть генерацию (которая упрётся в море). Если моря рядом
@@ -8920,6 +8926,27 @@ export function App() {
       // Item 1: реки, возвращающиеся в озеро-исток, обрезаются перед повторным входом.
       const lakeIdByVertexKey = buildLakeIdByVertexKey(getLakesForRegions(nextRegions, nextHexTerrainByKeyPreview));
       const sanitizedRivers = riversWithDeltas.map((river) => trimRiverSourceLakeReentry(river, lakeIdByVertexKey));
+      const finalNewSeaHeightViolation = getRiverSeaHeightViolation(sanitizedRivers, finalSeaKeysToWrite);
+      if (finalNewSeaHeightViolation) {
+        console.warn('Discarding failed candidate region because final new sea touches a river away from its mouth', {
+          attempt,
+          regionId,
+          riverId: finalNewSeaHeightViolation.river.id,
+          reason: finalNewSeaHeightViolation.reason
+        });
+        continue;
+      }
+
+      const snapshot: MapSnapshot = {
+        regions,
+        candidateHexes,
+        rivers,
+        roads: cloneRoads(roads),
+        hexTerrainByKey,
+        nextLakeId,
+        nextRoadId
+      };
+      setHistory((current) => [...current, snapshot]);
 
       setRegions(nextRegions);
       setCandidateHexes(finalCandidateHexes);
