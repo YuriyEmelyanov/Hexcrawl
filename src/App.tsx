@@ -201,7 +201,9 @@ const POI_EMOJI = '◆';
 const WATER_COLOR = 'var(--water-color)';
 const LAKE_HEX_COLOR = WATER_COLOR;
 // Море (прибрежные воды) — заметно темнее озёр и рек (BR-006).
-const SEA_HEX_COLOR = '#143d5c';
+const SEA_HEX_COLOR = '#2b6b9e';
+const SEA_EMOJI = '🌊';
+const SEA_HEIGHT_LEVEL = 0;
 const MOBILE_LAYOUT_QUERY = '(max-width: 900px)';
 
 
@@ -1739,6 +1741,29 @@ function getRiverSectorsForRegion(region: Region, rivers: River[]): RiverSector[
   });
 }
 
+function getRiverSectorsTouchingRegion(region: Region, rivers: River[]): RiverSector[] {
+  const regionEdgeKeys = new Set<string>();
+  const regionVertexKeys = new Set<string>();
+  for (const hex of region.hexes) {
+    for (const edgeKey of getHexEdgeKeys(hex)) regionEdgeKeys.add(edgeKey);
+    for (const vertex of getHexCornerPoints(hex)) regionVertexKeys.add(vertex.key);
+  }
+
+  const sectorsById = new Map<string, RiverSector>();
+  for (const river of rivers) {
+    for (const sector of river.sectors ?? []) {
+      const touchesRegion = sector.edgeKeys.some((edgeKey) => regionEdgeKeys.has(edgeKey))
+        || sector.vertexPath.some((vertex) => regionVertexKeys.has(vertex.key));
+      if (touchesRegion) sectorsById.set(sector.id, sector);
+    }
+  }
+
+  return Array.from(sectorsById.values()).sort((a, b) => {
+    const riverCompare = String(a.riverId).localeCompare(String(b.riverId), undefined, { numeric: true });
+    return riverCompare || a.sectorIndex - b.sectorIndex;
+  });
+}
+
 function getRiverConfluences(rivers: River[]): RiverConfluence[] {
   const riversByVertexKey = new Map<string, River[]>();
   for (const river of rivers) {
@@ -1824,6 +1849,72 @@ function wouldCreateRiverDrainageCycle(
 ): boolean {
   if (upstreamRiverId === downstreamRiverId) return true;
   return riverDrainsInto(buildRiverDownstreamAdjacency(rivers), downstreamRiverId, upstreamRiverId);
+}
+
+function hasDirectedCycleInAdjacency<T>(adjacency: Map<T, Set<T>>): boolean {
+  const visiting = new Set<T>();
+  const visited = new Set<T>();
+
+  const visit = (node: T): boolean => {
+    if (visiting.has(node)) return true;
+    if (visited.has(node)) return false;
+
+    visiting.add(node);
+    for (const next of adjacency.get(node) ?? []) {
+      if (visit(next)) return true;
+    }
+    visiting.delete(node);
+    visited.add(node);
+    return false;
+  };
+
+  for (const node of adjacency.keys()) {
+    if (visit(node)) return true;
+  }
+  return false;
+}
+
+function riverPathHasDirectedCycle(river: River): boolean {
+  const adjacency = new Map<string, Set<string>>();
+  const edgeKeys = new Set<string>();
+  const path = river.vertexPath ?? [];
+
+  for (const vertex of path) {
+    if (!adjacency.has(vertex.key)) adjacency.set(vertex.key, new Set<string>());
+  }
+
+  for (let index = 1; index < path.length; index += 1) {
+    const fromKey = path[index - 1].key;
+    const toKey = path[index].key;
+    if (fromKey === toKey) return true;
+    const currentEdgeKey = `${fromKey}>${toKey}`;
+    if (edgeKeys.has(currentEdgeKey)) return true;
+    edgeKeys.add(currentEdgeKey);
+    const nextKeys = adjacency.get(fromKey) ?? new Set<string>();
+    nextKeys.add(toKey);
+    adjacency.set(fromKey, nextKeys);
+    if (!adjacency.has(toKey)) adjacency.set(toKey, new Set<string>());
+  }
+
+  return hasDirectedCycleInAdjacency(adjacency);
+}
+
+function riverDrainageGraphHasCycle(rivers: River[]): boolean {
+  return hasDirectedCycleInAdjacency(buildRiverDownstreamAdjacency(rivers));
+}
+
+function validateRiverCycleSafety(rivers: River[]): { valid: true } | { valid: false; reason: string; riverId?: number } {
+  for (const river of rivers) {
+    if (riverPathHasDirectedCycle(river)) {
+      return { valid: false, reason: 'river_flows_into_itself', riverId: river.id };
+    }
+  }
+
+  if (riverDrainageGraphHasCycle(rivers)) {
+    return { valid: false, reason: 'river_drainage_cycle' };
+  }
+
+  return { valid: true };
 }
 
 function getRiverConfluenceVertexKeys(rivers: River[]): Set<string> {
@@ -3061,15 +3152,30 @@ function validateRiverPathViaControlPoints(
   if (!vertexPath || vertexPath.length < 2) return false;
   const redSet = new Set(redVertices.map((vertex) => vertex.key));
   const endpointSet = new Set(existingRiverEndpointVerticesInRegion.map((vertex) => vertex.key));
+  const hasCandidateBoundary = Array.from(riverGraph.nodes.values()).some((node) => node.isCandidateBoundaryVertex);
+  const isValidOutgoingBoundaryVertex = (vertex: RiverVertex): boolean => {
+    const node = riverGraph.nodes.get(vertex.key);
+    if (!node?.isRegionBoundaryVertex) return false;
+    if (hasCandidateBoundary && !node.isCandidateBoundaryVertex) return false;
+    return true;
+  };
   if (vertexPath[0].key !== controlPoints.startVertex.key) return false;
   if (vertexPath[vertexPath.length - 1].key !== controlPoints.endVertex.key) return false;
   if (!redSet.has(controlPoints.endVertex.key)) return false;
+  if (!isValidOutgoingBoundaryVertex(controlPoints.endVertex)) return false;
   if (controlPoints.startMode === 'red vertex' && !redSet.has(controlPoints.startVertex.key)) return false;
+  if (controlPoints.startMode === 'red vertex' && !isValidOutgoingBoundaryVertex(controlPoints.startVertex)) return false;
   if (controlPoints.startMode === 'existing river endpoint' && !endpointSet.has(controlPoints.startVertex.key)) return false;
   if (controlPoints.middlePurpleVertex && !vertexPath.some((vertex) => vertex.key === controlPoints.middlePurpleVertex?.key)) return false;
   if (new Set(vertexPath.map((vertex) => vertex.key)).size !== vertexPath.length) return false;
   const riverPathEdgeKeys = getRiverPathEdgeKeys(vertexPath, riverGraph);
   if (!riverPathEdgeKeys) return false;
+  const firstEdge = riverGraph.edges.get(edgeKey(vertexPath[0], vertexPath[1]));
+  const lastEdge = riverGraph.edges.get(edgeKey(vertexPath[vertexPath.length - 2], vertexPath[vertexPath.length - 1]));
+  if (controlPoints.startMode === 'red vertex' && !firstEdge?.isRegionBoundaryEdge) return false;
+  if (!lastEdge?.isRegionBoundaryEdge) return false;
+  if (hasCandidateBoundary && controlPoints.startMode === 'red vertex' && !firstEdge?.isCandidateBoundaryEdge) return false;
+  if (hasCandidateBoundary && !lastEdge?.isCandidateBoundaryEdge) return false;
   if (hasDuplicateEdgeKeys(riverPathEdgeKeys)) return false;
   if (riverPathEdgeKeys.some((pathEdgeKey) => usedRiverEdges.has(pathEdgeKey))) return false;
   if (!riverPathAvoidsOccupiedVertices(vertexPath, occupiedVertexKeys, allowedOccupiedVertexKeys)) return false;
@@ -3599,6 +3705,76 @@ export function getCandidateHexes(allRegionHexes: AxialHex[], excludeKeys?: Set<
   return Array.from(candidates.values());
 }
 
+function fillSmallEnclosedAreasForRegion(
+  regionHexes: AxialHex[],
+  existingRegionHexes: AxialHex[],
+  seaKeys: Set<string>
+): AxialHex[] {
+  const minLocalitySize = REGION_SIZE_CATEGORY_RANGES.locality[0];
+  const currentRegionKeys = new Set(regionHexes.map(hexKey));
+  const occupiedLandKeys = new Set([...existingRegionHexes.map(hexKey), ...currentRegionKeys]);
+  const allKnownHexes = [...existingRegionHexes, ...regionHexes, ...Array.from(seaKeys).map(parseHexKey)];
+  if (allKnownHexes.length === 0) return regionHexes;
+
+  const qs = allKnownHexes.map((hex) => hex.q);
+  const rs = allKnownHexes.map((hex) => hex.r);
+  const minQ = Math.min(...qs) - 1;
+  const maxQ = Math.max(...qs) + 1;
+  const minR = Math.min(...rs) - 1;
+  const maxR = Math.max(...rs) + 1;
+  const candidateKeys = new Set<string>();
+  const candidateHexes = new Map<string, AxialHex>();
+
+  for (let q = minQ; q <= maxQ; q += 1) {
+    for (let r = minR; r <= maxR; r += 1) {
+      const hex = { q, r };
+      const key = hexKey(hex);
+      if (occupiedLandKeys.has(key) || seaKeys.has(key)) continue;
+      candidateKeys.add(key);
+      candidateHexes.set(key, hex);
+    }
+  }
+
+  const visited = new Set<string>();
+  const filledKeys = new Set<string>();
+
+  for (const startKey of candidateKeys) {
+    if (visited.has(startKey)) continue;
+    const queue = [startKey];
+    const componentKeys: string[] = [];
+    visited.add(startKey);
+    let touchesOutside = false;
+    let touchesCurrentRegion = false;
+
+    while (queue.length > 0) {
+      const key = queue.shift();
+      if (!key) continue;
+      const hex = candidateHexes.get(key);
+      if (!hex) continue;
+      componentKeys.push(key);
+      if (hex.q === minQ || hex.q === maxQ || hex.r === minR || hex.r === maxR) touchesOutside = true;
+
+      for (const neighbor of getHexNeighbors(hex)) {
+        const neighborKey = hexKey(neighbor);
+        if (currentRegionKeys.has(neighborKey)) touchesCurrentRegion = true;
+        if (!candidateKeys.has(neighborKey) || visited.has(neighborKey)) continue;
+        visited.add(neighborKey);
+        queue.push(neighborKey);
+      }
+    }
+
+    if (!touchesOutside && touchesCurrentRegion && componentKeys.length < minLocalitySize) {
+      for (const key of componentKeys) filledKeys.add(key);
+    }
+  }
+
+  if (filledKeys.size === 0) return regionHexes;
+  return [
+    ...regionHexes,
+    ...Array.from(filledKeys).map(parseHexKey)
+  ];
+}
+
 // BR-002: вероятность побережья для нового региона по протяжённости карты.
 // Берётся максимальная протяжённость уже сгенерированной карты по трём осям
 // гекс-сетки, ограничивается 400, и делится на 400.
@@ -3651,11 +3827,25 @@ function getHexSameRegionNeighborCount(hex: AxialHex, regionKeys: Set<string>): 
 function chooseCoastalCenterHex(regionHexes: AxialHex[], seaKeys: Set<string>, rivers: River[]): AxialHex | null {
   const regionKeys = new Set(regionHexes.map(hexKey));
   const candidates = regionHexes.filter((hex) => {
-    const touchesSea = getHexNeighbors(hex).some((neighbor) => seaKeys.has(hexKey(neighbor)));
-    return touchesSea && getRiversForHex(hex, rivers).length > 0;
+    const seaNeighbors = getHexNeighbors(hex).filter((neighbor) => seaKeys.has(hexKey(neighbor)));
+    if (seaNeighbors.length === 0) return false;
+    return rivers.some((river) => {
+      const mouth = river.vertexPath?.[river.vertexPath.length - 1];
+      if (!mouth) return false;
+      if (getRiversForHex(hex, [river]).length === 0) return false;
+      return seaNeighbors.some((seaHex) => seaHexTouchesRiverMouth(seaHex, mouth));
+    });
   });
   if (candidates.length === 0) return null;
 
+  const maxNeighborCount = Math.max(...candidates.map((hex) => getHexSameRegionNeighborCount(hex, regionKeys)));
+  return randomFrom(candidates.filter((hex) => getHexSameRegionNeighborCount(hex, regionKeys) === maxNeighborCount));
+}
+
+function chooseSeaAdjacentCenterHex(regionHexes: AxialHex[], seaKeys: Set<string>): AxialHex | null {
+  const regionKeys = new Set(regionHexes.map(hexKey));
+  const candidates = regionHexes.filter((hex) => getHexNeighbors(hex).some((neighbor) => seaKeys.has(hexKey(neighbor))));
+  if (candidates.length === 0) return null;
   const maxNeighborCount = Math.max(...candidates.map((hex) => getHexSameRegionNeighborCount(hex, regionKeys)));
   return randomFrom(candidates.filter((hex) => getHexSameRegionNeighborCount(hex, regionKeys) === maxNeighborCount));
 }
@@ -3664,11 +3854,13 @@ function getClaimableSeaNeighborKey(
   hex: AxialHex,
   regionKeys: Set<string>,
   occupiedRegionKeys: Set<string>,
-  existingTerrain: Map<string, HexTerrainData>
+  existingTerrain: Map<string, HexTerrainData>,
+  allowedSeaKeys?: Set<string>
 ): string | null {
   const neighbors = getHexNeighbors(hex)
     .filter((neighbor) => {
       const key = hexKey(neighbor);
+      if (allowedSeaKeys && !allowedSeaKeys.has(key)) return false;
       return !regionKeys.has(key) && !occupiedRegionKeys.has(key) && !existingTerrain.get(key)?.terrainOverride;
     })
     .sort((left, right) => hexDistanceFromCenter(right) - hexDistanceFromCenter(left));
@@ -3683,27 +3875,15 @@ function getSeaCandidateHexesForRegion(
 ): Map<string, AxialHex> {
   const regionKeys = new Set(regionHexes.map(hexKey));
   const candidates = new Map<string, AxialHex>();
-  const visited = new Set(regionKeys);
-  const queue = regionHexes.map((hex) => ({ hex, distance: 0 }));
-  const maxSeaCandidateDistance = 3;
-
-  for (let cursor = 0; cursor < queue.length; cursor += 1) {
-    const current = queue[cursor];
-    if (current.distance >= maxSeaCandidateDistance) continue;
-
-    for (const neighbor of getHexNeighbors(current.hex)) {
+  for (const hex of regionHexes) {
+    for (const neighbor of getHexNeighbors(hex)) {
       const key = hexKey(neighbor);
-      if (visited.has(key)) continue;
-      visited.add(key);
-      queue.push({ hex: neighbor, distance: current.distance + 1 });
-
       if (regionKeys.has(key)) continue;
       if (occupiedRegionKeys.has(key)) continue;
       if (existingTerrain.get(key)?.terrainOverride) continue;
       candidates.set(key, neighbor);
     }
   }
-
   return candidates;
 }
 
@@ -3732,7 +3912,7 @@ function findSeaCandidatePath(
       previousByKey.set(neighborKey, currentKey);
       if (neighborKey === targetKey) {
         const path = [targetKey];
-        let previousKey = currentKey;
+        let previousKey: string | null = currentKey;
         while (previousKey) {
           path.push(previousKey);
           previousKey = previousByKey.get(previousKey) ?? null;
@@ -3773,7 +3953,7 @@ function getExpandableSeaNeighborKeys(seaKeys: Set<string>, candidates: Map<stri
 function expandConnectedSeaArea(seaKeys: Set<string>, candidates: Map<string, AxialHex>): Set<string> {
   const nextSeaKeys = new Set(seaKeys);
   const firstFrontier = getExpandableSeaNeighborKeys(nextSeaKeys, candidates);
-  const extraCount = Math.floor(Math.random() * (firstFrontier.length + 1));
+  const extraCount = Math.max(firstFrontier.length, Math.floor(candidates.size * 0.6));
 
   for (let i = 0; i < extraCount; i += 1) {
     const frontier = getExpandableSeaNeighborKeys(nextSeaKeys, candidates);
@@ -3794,9 +3974,7 @@ function seaKeysTouchExistingSea(seaKeys: Set<string>, existingSeaKeys: Set<stri
 }
 
 function seaHexTouchesRiverMouth(seaHex: AxialHex, mouth: RiverVertex): boolean {
-  if (getHexCornerPoints(seaHex).some((vertex) => vertex.key === mouth.key)) return true;
-  const center = toPixel(seaHex.q, seaHex.r);
-  return Math.hypot(center.x - mouth.x, center.y - mouth.y) <= HEX_SIZE * 1.75;
+  return getHexCornerPoints(seaHex).some((vertex) => vertex.key === mouth.key);
 }
 
 function getSeaFlowingRiversForRegion(rivers: River[], regionId: number, existingRegions: Region[]): River[] {
@@ -3818,15 +3996,7 @@ function chooseSeaCandidateKeyForRiverMouth(candidates: Map<string, AxialHex>, m
       const rightCenter = toPixel(right.q, right.r);
       return Math.hypot(leftCenter.x - mouth.x, leftCenter.y - mouth.y) - Math.hypot(rightCenter.x - mouth.x, rightCenter.y - mouth.y);
     });
-  if (touching[0]) return touching[0][0];
-
-  const nearest = Array.from(candidates.entries())
-    .sort(([, left], [, right]) => {
-      const leftCenter = toPixel(left.q, left.r);
-      const rightCenter = toPixel(right.q, right.r);
-      return Math.hypot(leftCenter.x - mouth.x, leftCenter.y - mouth.y) - Math.hypot(rightCenter.x - mouth.x, rightCenter.y - mouth.y);
-    });
-  return nearest[0]?.[0] ?? null;
+  return touching[0]?.[0] ?? null;
 }
 
 function getConnectedSeaComponent(startKey: string, seaKeys: Set<string>): Set<string> {
@@ -3844,6 +4014,100 @@ function getConnectedSeaComponent(startKey: string, seaKeys: Set<string>): Set<s
   return connected;
 }
 
+function seaKeysAreConnected(seaKeys: Set<string>): boolean {
+  if (seaKeys.size <= 1) return true;
+  const firstKey = Array.from(seaKeys)[0];
+  return getConnectedSeaComponent(firstKey, seaKeys).size === seaKeys.size;
+}
+
+type GlobalSeaValidationResult = { valid: true } | { valid: false; reason: string };
+
+function validateGlobalSeaConnectivity(existingSeaKeys: Set<string>, newSeaKeys: Iterable<string>): GlobalSeaValidationResult {
+  const newSeaSet = new Set(newSeaKeys);
+  if (newSeaSet.size === 0) return { valid: true };
+  const allSeaKeys = new Set(existingSeaKeys);
+  for (const key of newSeaSet) allSeaKeys.add(key);
+
+  if (existingSeaKeys.size > 0 && seaKeysAreConnected(existingSeaKeys) && !seaKeysTouchExistingSea(newSeaSet, existingSeaKeys)) {
+    return { valid: false, reason: 'new_sea_not_connected_to_existing_sea' };
+  }
+  if (existingSeaKeys.size > 0 && seaKeysAreConnected(existingSeaKeys) && !seaKeysAreConnected(allSeaKeys)) {
+    return { valid: false, reason: 'sea_would_be_disconnected' };
+  }
+  return { valid: true };
+}
+
+function openTileTouchesRiverAwayFromMouth(hex: AxialHex, rivers: River[]): boolean {
+  const vertexKeys = new Set(getHexCornerPoints(hex).map((vertex) => vertex.key));
+  const edgeKeys = new Set(getHexEdgesAsVertexPairs(hex).map((edge) => edge.edgeKey));
+
+  for (const river of rivers) {
+    const path = river.vertexPath ?? [];
+    if (path.length < 2) continue;
+    const mouthIndex = path.length - 1;
+
+    for (let index = 0; index < mouthIndex; index += 1) {
+      if (vertexKeys.has(path[index].key)) return true;
+    }
+
+    for (let index = 1; index < path.length; index += 1) {
+      const currentEdgeKey = edgeKey(path[index - 1], path[index]);
+      if (!edgeKeys.has(currentEdgeKey)) continue;
+      const isLastEdgeToMouth = index === mouthIndex;
+      if (!isLastEdgeToMouth) return true;
+    }
+  }
+
+  return false;
+}
+
+function validateSeaConnectivityThroughOpenTiles(landHexes: AxialHex[], seaKeys: Iterable<string>, rivers: River[] = []): GlobalSeaValidationResult {
+  const seaSet = new Set(seaKeys);
+  if (seaSet.size <= 1) return { valid: true };
+
+  const landKeys = new Set(landHexes.map(hexKey));
+  const knownHexes = [...landHexes, ...Array.from(seaSet).map(parseHexKey)];
+  if (knownHexes.length === 0) return { valid: true };
+
+  const qs = knownHexes.map((hex) => hex.q);
+  const rs = knownHexes.map((hex) => hex.r);
+  const minQ = Math.min(...qs) - 2;
+  const maxQ = Math.max(...qs) + 2;
+  const minR = Math.min(...rs) - 2;
+  const maxR = Math.max(...rs) + 2;
+
+  const isInsideBounds = (hex: AxialHex) => hex.q >= minQ && hex.q <= maxQ && hex.r >= minR && hex.r <= maxR;
+  const reachable = new Set<string>();
+  const queue: AxialHex[] = [];
+  const enqueue = (hex: AxialHex) => {
+    if (!isInsideBounds(hex)) return;
+    const key = hexKey(hex);
+    if (landKeys.has(key) || reachable.has(key)) return;
+    if (!seaSet.has(key) && openTileTouchesRiverAwayFromMouth(hex, rivers)) return;
+    reachable.add(key);
+    queue.push(hex);
+  };
+
+  for (let q = minQ; q <= maxQ; q += 1) {
+    enqueue({ q, r: minR });
+    enqueue({ q, r: maxR });
+  }
+  for (let r = minR; r <= maxR; r += 1) {
+    enqueue({ q: minQ, r });
+    enqueue({ q: maxQ, r });
+  }
+
+  for (let cursor = 0; cursor < queue.length; cursor += 1) {
+    for (const neighbor of getHexNeighbors(queue[cursor])) enqueue(neighbor);
+  }
+
+  for (const seaKey of seaSet) {
+    if (!reachable.has(seaKey)) return { valid: false, reason: 'sea_not_connected_through_open_tiles' };
+  }
+
+  return { valid: true };
+}
+
 type CoastalSeaValidationResult = { valid: true } | { valid: false; reason: string };
 
 function validateCoastalSeaArea(
@@ -3858,10 +4122,10 @@ function validateCoastalSeaArea(
   if (seaKeys.size === 0) return { valid: false, reason: 'no_sea_hexes' };
 
   const regionKeys = new Set(regionHexes.map(hexKey));
-  const seaAreaTouchesRegion = Array.from(seaKeys).some((key) => (
-    getHexNeighbors(parseHexKey(key)).some((neighbor) => regionKeys.has(hexKey(neighbor)))
-  ));
-  if (!seaAreaTouchesRegion) return { valid: false, reason: 'sea_area_does_not_touch_region' };
+  for (const key of seaKeys) {
+    const touchesRegion = getHexNeighbors(parseHexKey(key)).some((neighbor) => regionKeys.has(hexKey(neighbor)));
+    if (!touchesRegion) return { valid: false, reason: 'sea_hex_does_not_touch_region' };
+  }
 
   if (seaKeys.size > 1) {
     for (const key of seaKeys) {
@@ -3872,15 +4136,15 @@ function validateCoastalSeaArea(
     if (getConnectedSeaComponent(firstKey, seaKeys).size !== seaKeys.size) return { valid: false, reason: 'disconnected_sea_area' };
   }
 
-  if (regionForcesCoastContinuation(regionHexes, existingSeaKeys) && !seaKeysTouchExistingSea(seaKeys, existingSeaKeys)) {
-    return { valid: false, reason: 'sea_area_not_connected_to_existing_coast' };
-  }
+  const globalSeaValidation = validateSeaConnectivityThroughOpenTiles(
+    [...existingRegions.flatMap((region) => region.hexes), ...regionHexes],
+    new Set([...existingSeaKeys, ...seaKeys]),
+    rivers
+  );
+  if (!globalSeaValidation.valid) return globalSeaValidation;
 
-  for (const river of getSeaFlowingRiversForRegion(rivers, regionId, existingRegions)) {
-    const mouth = river.vertexPath[river.vertexPath.length - 1];
-    const touchesMouth = Array.from(seaKeys).some((key) => seaHexTouchesRiverMouth(parseHexKey(key), mouth));
-    if (!touchesMouth) return { valid: false, reason: 'sea_area_does_not_touch_river_mouth' };
-  }
+  const riverConflict = getCoastalSeaRiverConflict(rivers, seaKeys, regionHexes);
+  if (riverConflict) return { valid: false, reason: 'sea_touches_river_not_at_mouth' };
 
   return { valid: true };
 }
@@ -3890,19 +4154,28 @@ function extendSeaToCoastalCenterCandidate(
   seaHexKeys: string[],
   existingTerrain: Map<string, HexTerrainData>,
   occupiedRegionKeys: Set<string>,
-  rivers: River[]
+  rivers: River[],
+  allowedMouthVertexKeys: Set<string>
 ): string[] {
   const seaKeys = new Set(seaHexKeys);
   if (chooseCoastalCenterHex(regionHexes, seaKeys, rivers)) return Array.from(seaKeys);
 
   const regionKeys = new Set(regionHexes.map(hexKey));
-  const candidates = getSeaCandidateHexesForRegion(regionHexes, existingTerrain, occupiedRegionKeys);
+  const candidates = filterSeaCandidatesByRiverInteraction(
+    getSeaCandidateHexesForRegion(regionHexes, existingTerrain, occupiedRegionKeys),
+    rivers,
+    allowedMouthVertexKeys,
+    regionHexes
+  );
   const riverHexes = regionHexes
-    .filter((hex) => getRiversForHex(hex, rivers).length > 0)
+    .filter((hex) => rivers.some((river) => {
+      const mouth = river.vertexPath?.[river.vertexPath.length - 1];
+      return Boolean(mouth && getHexCornerPoints(hex).some((corner) => corner.key === mouth.key));
+    }))
     .sort((left, right) => hexDistanceFromCenter(right) - hexDistanceFromCenter(left));
 
   for (const hex of riverHexes) {
-    const seaKey = getClaimableSeaNeighborKey(hex, regionKeys, occupiedRegionKeys, existingTerrain);
+    const seaKey = getClaimableSeaNeighborKey(hex, regionKeys, occupiedRegionKeys, existingTerrain, new Set(candidates.keys()));
     if (!seaKey) continue;
     const path = seaKeys.size > 0 ? findSeaCandidatePath(seaKeys, seaKey, candidates) : [seaKey];
     if (!path) continue;
@@ -3916,6 +4189,32 @@ function extendSeaToCoastalCenterCandidate(
 // Гексы-море для прибрежного региона: пустые гексы на отвёрнутой от центра
 // ("береговой") стороне региона. Никогда не ставятся на гексы какого-либо
 // региона и на гексы с уже заданным terrain (озёра/существующее море).
+// Item 1: река не должна впадать в озеро, из которого вытекла. Если река стартует
+// на периметре озера, покидает его, а затем снова касается ТОГО ЖЕ озера —
+// обрезаем путь перед повторным входом (эквивалент «озеро-исток в обход DFS»).
+function trimRiverSourceLakeReentry(river: River, lakeIdByVertexKey: Map<string, number>): River {
+  const path = river.vertexPath;
+  if (path.length < 3) return river;
+  const sourceLakeId = lakeIdByVertexKey.get(path[0].key);
+  if (sourceLakeId === undefined) return river;
+  for (let i = 2; i < path.length; i += 1) {
+    const prevOnSourceLake = lakeIdByVertexKey.get(path[i - 1].key) === sourceLakeId;
+    const currentOnSourceLake = lakeIdByVertexKey.get(path[i].key) === sourceLakeId;
+    if (currentOnSourceLake && !prevOnSourceLake) {
+      return { ...river, vertexPath: path.slice(0, i) };
+    }
+  }
+  return river;
+}
+
+function buildLakeIdByVertexKey(lakes: Lake[]): Map<string, number> {
+  const map = new Map<string, number>();
+  for (const lake of lakes) {
+    for (const vertex of getRegionExteriorVertices(lake.hexes)) map.set(vertex.key, lake.lakeId);
+  }
+  return map;
+}
+
 function computeSeaHexKeysForCoastalRegion(
   regionHexes: AxialHex[],
   centerHex: AxialHex,
@@ -3925,7 +4224,13 @@ function computeSeaHexKeysForCoastalRegion(
   rivers: River[],
   regionId: number
 ): string[] {
-  const candidates = getSeaCandidateHexesForRegion(regionHexes, existingTerrain, occupiedRegionKeys);
+  const allowedMouthVertexKeys = getRiverMouthVertexKeys(rivers);
+  const candidates = filterSeaCandidatesByRiverInteraction(
+    getSeaCandidateHexesForRegion(regionHexes, existingTerrain, occupiedRegionKeys),
+    rivers,
+    allowedMouthVertexKeys,
+    regionHexes
+  );
   if (candidates.size === 0) return [];
 
   const centerDistance = hexDistanceFromCenter(centerHex);
@@ -4144,6 +4449,213 @@ function prependOutgoingRiverConnection(
     });
 }
 
+function getUnhandledIncomingConnectionsForRegion(
+  region: Region,
+  rivers: River[],
+  riverGraph: RiverGraph
+): Array<{ endpoint: RiverEndpointTouch; river: River; fullness: RiverFullness }> {
+  return findRiverEndpointsTouchingRegion(region, rivers, riverGraph)
+    .filter((endpoint) => endpoint.endpointType === 'end')
+    .map((endpoint) => {
+      const river = rivers.find((item) => item.id === endpoint.riverId);
+      if (!river) return null;
+      const currentEndVertex = river.vertexPath[river.vertexPath.length - 1];
+      if (currentEndVertex?.key !== endpoint.vertex.key) return null;
+      const endpointAlreadyExtendedInRegion = (river.sectors ?? []).some((sector) => (
+        sector.assignedRegionId === region.id
+        && sector.endVertexKey === endpoint.vertex.key
+      ));
+      if (endpointAlreadyExtendedInRegion) return null;
+      return {
+        endpoint,
+        river,
+        fullness: getRiverFullnessAtVertex(river, endpoint.vertex.key)
+      };
+    })
+    .filter((connection): connection is { endpoint: RiverEndpointTouch; river: River; fullness: RiverFullness } => connection !== null)
+    .sort((a, b) => b.fullness - a.fullness || a.river.id - b.river.id);
+}
+
+function appendIncomingRiverConnection(
+  rivers: River[],
+  endpoint: RiverEndpointTouch,
+  path: RiverVertex[],
+  assignedRegionId: number
+): River[] {
+  return rivers.map((river) => river.id !== endpoint.riverId
+    ? river
+    : {
+      ...river,
+      vertexPath: [...river.vertexPath, ...path.slice(1)],
+      sectors: appendRiverPathSector(river, path, getRiverDownstreamFullness(river), assignedRegionId)
+    });
+}
+
+function getBestIncomingPathToCandidate(
+  endpoint: RiverEndpointTouch,
+  candidateVertices: RiverVertex[],
+  riverGraph: RiverGraph,
+  usedRiverEdges: Set<string>,
+  occupiedVertexKeys: Set<string>
+): RiverVertex[] | null {
+  const targetVertices = candidateVertices.filter((vertex) => (
+    vertex.key !== endpoint.vertex.key
+    && !occupiedVertexKeys.has(vertex.key)
+    && riverGraph.nodes.has(vertex.key)
+  ));
+  return findBestFreeRiverPathToAnyTarget(
+    endpoint.vertex,
+    targetVertices,
+    riverGraph,
+    usedRiverEdges,
+    new Set(),
+    occupiedVertexKeys,
+    new Set([endpoint.vertex.key])
+  );
+}
+
+function getBestIncomingPathToRiverTributary(
+  endpoint: RiverEndpointTouch,
+  rivers: River[],
+  riverGraph: RiverGraph,
+  usedRiverEdges: Set<string>,
+  occupiedVertexKeys: Set<string>
+): RiverVertex[] | null {
+  const targetVerticesByKey = new Map<string, RiverVertex>();
+
+  for (const targetRiver of rivers) {
+    if (targetRiver.id === endpoint.riverId) continue;
+    if (wouldCreateRiverDrainageCycle(rivers, endpoint.riverId, targetRiver.id)) continue;
+
+    for (const vertex of targetRiver.vertexPath.slice(1, -1)) {
+      if (!riverGraph.nodes.has(vertex.key)) continue;
+      if (vertex.key === endpoint.vertex.key) continue;
+      targetVerticesByKey.set(vertex.key, vertex);
+    }
+  }
+
+  const targetVertices = Array.from(targetVerticesByKey.values());
+  return findBestFreeRiverPathToAnyTarget(
+    endpoint.vertex,
+    targetVertices,
+    riverGraph,
+    usedRiverEdges,
+    new Set(),
+    occupiedVertexKeys,
+    new Set([endpoint.vertex.key, ...targetVertices.map((vertex) => vertex.key)])
+  );
+}
+
+function getBestIncomingPathToLake(
+  endpoint: RiverEndpointTouch,
+  region: Region,
+  terrainMap: Map<string, HexTerrainData>,
+  rivers: River[],
+  riverGraph: RiverGraph,
+  usedRiverEdges: Set<string>,
+  occupiedVertexKeys: Set<string>
+): RiverVertex[] | null {
+  const lakes = getLakesForRegion(region, terrainMap)
+    .map((lake) => ({ lake, hasRiverConnection: lakeHasRiverConnection(lake.hexes, rivers) }))
+    .sort((a, b) => Number(a.hasRiverConnection) - Number(b.hasRiverConnection) || a.lake.lakeId - b.lake.lakeId);
+
+  let bestPath: RiverVertex[] | null = null;
+  for (const { lake } of lakes) {
+    const lakeVertices = getRegionExteriorVertices(lake.hexes)
+      .filter((vertex) => vertex.key !== endpoint.vertex.key && riverGraph.nodes.has(vertex.key));
+    const path = findBestFreeRiverPathToAnyTarget(
+      endpoint.vertex,
+      lakeVertices,
+      riverGraph,
+      usedRiverEdges,
+      new Set(),
+      occupiedVertexKeys,
+      new Set([endpoint.vertex.key, ...lakeVertices.map((vertex) => vertex.key)])
+    );
+    if (path && (!bestPath || path.length < bestPath.length)) bestPath = path;
+  }
+
+  return bestPath;
+}
+
+function connectRemainingIncomingRiversForRegion(
+  region: Region,
+  terrainMap: Map<string, HexTerrainData>,
+  riverGraph: RiverGraph,
+  rivers: River[],
+  candidateVertices: RiverVertex[]
+): River[] {
+  let nextRivers = rivers;
+
+  for (const initialConnection of getUnhandledIncomingConnectionsForRegion(region, nextRivers, riverGraph)) {
+    const currentConnection = getUnhandledIncomingConnectionsForRegion(region, nextRivers, riverGraph)
+      .find((connection) => connection.river.id === initialConnection.river.id);
+    if (!currentConnection) continue;
+
+    const usedRiverEdges = buildUsedRiverEdges(nextRivers);
+    const occupiedVertexKeys = new Set(nextRivers.flatMap((river) => river.vertexPath.map((vertex) => vertex.key)));
+    const candidatePath = getBestIncomingPathToCandidate(
+      currentConnection.endpoint,
+      candidateVertices,
+      riverGraph,
+      usedRiverEdges,
+      occupiedVertexKeys
+    );
+    const tributaryPath = candidatePath ? null : getBestIncomingPathToRiverTributary(
+      currentConnection.endpoint,
+      nextRivers,
+      riverGraph,
+      usedRiverEdges,
+      occupiedVertexKeys
+    );
+    const lakePath = candidatePath || tributaryPath ? null : getBestIncomingPathToLake(
+      currentConnection.endpoint,
+      region,
+      terrainMap,
+      nextRivers,
+      riverGraph,
+      usedRiverEdges,
+      occupiedVertexKeys
+    );
+    const selectedPath = candidatePath ?? tributaryPath ?? lakePath;
+    const selectedMode = candidatePath ? 'candidate' : tributaryPath ? 'tributary' : lakePath ? 'lake' : null;
+
+    if (!selectedPath) {
+      console.warn('Could not connect remaining incoming river', {
+        regionId: region.id,
+        incomingRiverId: currentConnection.river.id,
+        fullness: currentConnection.fullness,
+        candidateTargetCount: candidateVertices.length,
+        lakeCount: getLakesForRegion(region, terrainMap).length,
+      });
+      continue;
+    }
+
+    nextRivers = appendIncomingRiverConnection(
+      nextRivers,
+      currentConnection.endpoint,
+      selectedPath,
+      region.id
+    );
+
+    for (const river of nextRivers) {
+      validateRiverDirection(river);
+      validateRiverContinuity(river);
+    }
+    validateNoDuplicateRiverEdges(nextRivers);
+
+    console.log('Connected remaining incoming river', {
+      regionId: region.id,
+      incomingRiverId: currentConnection.river.id,
+      fullness: currentConnection.fullness,
+      mode: selectedMode,
+      pathLength: selectedPath.length,
+    });
+  }
+
+  return nextRivers;
+}
+
 function connectRemainingOutgoingRiversForRegion(
   region: Region,
   regions: Region[],
@@ -4279,12 +4791,19 @@ function finalizeRiverGenerationForRegion(
     candidateVertices,
     neighborRegionVertices
   );
+  const riversWithRemainingIncomingConnected = connectRemainingIncomingRiversForRegion(
+    region,
+    terrainMap,
+    riverGraph,
+    riversWithMinimumMountainRivers,
+    candidateVertices
+  );
   const riversWithRemainingOutgoingConnected = connectRemainingOutgoingRiversForRegion(
     region,
     regions,
     terrainMap,
     riverGraph,
-    riversWithMinimumMountainRivers,
+    riversWithRemainingIncomingConnected,
     candidateHexes,
     candidateVertices,
     neighborRegionVertices
@@ -4695,7 +5214,7 @@ function generateRiverForRegion(
             if (connectorSplit === null) return null;
             return { pair, connectorPath, connectorSplit };
           })
-          .filter((candidate): candidate is { pair: { left: RiverEndpointTouch; right: RiverEndpointTouch }; connectorPath: RiverVertex[]; connectorSplit?: RiverConnectorSplit } => candidate !== null)
+          .filter((candidate): candidate is { pair: { left: RiverEndpointTouch; right: RiverEndpointTouch }; connectorPath: RiverVertex[]; connectorSplit: RiverConnectorSplit } => candidate !== null)
           .sort((a, b) => a.connectorPath.length - b.connectorPath.length);
 
         const bestConnector = validConnectors[0];
@@ -5010,6 +5529,87 @@ function validateRiverEndpoints(region: Region, river: River, riverGraph: RiverG
   }
   if (region.hexes.length > 6 && river.vertexPath.length < 4) issues.push('path_too_short');
   return Array.from(new Set(issues));
+}
+
+function riverEndpointIssuesAreCritical(issues: RiverEndpointIssue[]): boolean {
+  return false;
+}
+
+function riverTouchesRegionGraph(river: River, riverGraph: RiverGraph): boolean {
+  if (river.vertexPath.some((vertex) => riverGraph.nodes.has(vertex.key))) return true;
+  for (let index = 1; index < river.vertexPath.length; index += 1) {
+    if (riverGraph.edges.has(edgeKey(river.vertexPath[index - 1], river.vertexPath[index]))) return true;
+  }
+  return false;
+}
+
+function riverHasSectorAssignedToRegion(river: River, regionId: number): boolean {
+  return river.sectors?.some((sector) => sector.assignedRegionId === regionId) ?? false;
+}
+
+function restoreInvalidGeneratedRiversForRegion(
+  region: Region,
+  previousRivers: River[],
+  nextRivers: River[],
+  candidateHexes: AxialHex[]
+): River[] {
+  const riverGraph = buildRiverGraphForRegion(region.hexes, region.hexes, candidateHexes);
+  const previousById = new Map(previousRivers.map((river) => [river.id, river]));
+  const restored: River[] = [];
+  const usedRiverIds = new Set<number>();
+
+  for (const river of nextRivers) {
+    const shouldCheckRiver = river.regionId === region.id
+      || riverHasSectorAssignedToRegion(river, region.id)
+      || riverTouchesRegionGraph(river, riverGraph);
+    let nextRiver: River | null = river;
+
+    if (shouldCheckRiver) {
+      const issues = validateRiverEndpoints(region, river, riverGraph);
+      if (riverEndpointIssuesAreCritical(issues)) {
+        const previousRiver = previousById.get(river.id);
+        console.warn(previousRiver ? 'Restoring previous river because generated segment is invalid for region' : 'Removing invalid generated river for region', {
+          regionId: region.id,
+          riverId: river.id,
+          issues,
+          startVertexKey: river.vertexPath[0]?.key,
+          endVertexKey: river.vertexPath[river.vertexPath.length - 1]?.key
+        });
+        nextRiver = previousRiver ?? null;
+      }
+    }
+
+    if (!nextRiver || usedRiverIds.has(nextRiver.id)) continue;
+    restored.push(nextRiver);
+    usedRiverIds.add(nextRiver.id);
+  }
+
+  return restored;
+}
+
+function restoreRiversStartingFromSea(previousRivers: River[], nextRivers: River[], seaVertexKeys: Set<string>): River[] {
+  const previousById = new Map(previousRivers.map((river) => [river.id, river]));
+  const restored: River[] = [];
+  const usedRiverIds = new Set<number>();
+
+  for (const river of nextRivers) {
+    const startVertex = river.vertexPath[0];
+    let nextRiver: River | null = river;
+    if (startVertex && seaVertexKeys.has(startVertex.key)) {
+      const previousRiver = previousById.get(river.id);
+      console.warn(previousRiver ? 'Restoring previous river because generated river starts from sea' : 'Removing generated river because it starts from sea', {
+        riverId: river.id,
+        startVertexKey: startVertex.key
+      });
+      nextRiver = previousRiver ?? null;
+    }
+
+    if (!nextRiver || usedRiverIds.has(nextRiver.id)) continue;
+    restored.push(nextRiver);
+    usedRiverIds.add(nextRiver.id);
+  }
+
+  return restored;
 }
 
 function getLakeChanceForBiome(biomeId: BiomeId): number {
@@ -6697,6 +7297,446 @@ function isLakeEdge(edge: string, lakeEdgeKeys: Set<string>): boolean {
   return lakeEdgeKeys.has(edge);
 }
 
+// Рёбра морских гексов: сегменты рек, лежащие на них, не отрисовываются —
+// река визуально заканчивается у берега и не «течёт по морю» (как с озёрами).
+function getSeaEdgeKeys(hexTerrainByKey: Map<string, HexTerrainData>): Set<string> {
+  const edgeKeys = new Set<string>();
+  for (const [key, terrain] of hexTerrainByKey) {
+    if (terrain.terrainOverride !== 'sea') continue;
+    for (const edge of getHexEdgesAsVertexPairs(parseHexKey(key))) {
+      edgeKeys.add(edge.edgeKey);
+    }
+  }
+  return edgeKeys;
+}
+
+// Все вершины (углы) суши — вершины, принадлежащие хотя бы одному гексу региона.
+function getLandVertexKeys(allRegionHexes: AxialHex[]): Set<string> {
+  const keys = new Set<string>();
+  for (const hex of allRegionHexes) {
+    for (const corner of getHexCornerPoints(hex)) keys.add(corner.key);
+  }
+  return keys;
+}
+
+// BR-009: рукава дельты. Для рек, впадающих в море, при полноводности 4 строится
+// 1 рукав, при 5 — 2 рукава. Рукав ответвляется за 1 (и 2) ребра до устья и идёт
+// к соседней береговой вершине по суше (короткий распределитель). Полноводность
+// рукава случайна (1–3 для f4, 1–4 для f5). Всё дополнительно — основные реки не
+// меняются; вызывается в try/catch, поэтому сбой просто не добавит рукав.
+function buildDeltaArmsForRivers(
+  rivers: River[],
+  regionId: number,
+  riverGraph: RiverGraph,
+  seaVertexKeys: Set<string>,
+  seaEdgeKeys: Set<string>,
+  startRiverId: number
+): River[] {
+  const arms: River[] = [];
+  const usedVertexKeys = new Set(rivers.flatMap((r) => r.vertexPath.map((v) => v.key)));
+  let nextId = startRiverId;
+  for (const river of rivers) {
+    if (river.regionId !== regionId) continue;
+    const path = river.vertexPath;
+    if (path.length < 3) continue;
+    const mouth = path[path.length - 1];
+    if (!seaVertexKeys.has(mouth.key)) continue; // только реки, впадающие в море
+    const fullness = getRiverFallbackFullness(river);
+    const armCount = fullness === 5 ? 2 : fullness === 4 ? 1 : 0;
+    const fullnessRange = fullness === 5 ? 4 : 3;
+    for (let a = 0; a < armCount; a += 1) {
+      const branchIndex = path.length - 2 - a;
+      if (branchIndex < 1) break;
+      const branch = path[branchIndex];
+      const node = riverGraph.nodes.get(branch.key);
+      if (!node) continue;
+      let target: RiverVertex | null = null;
+      for (const incidentEdgeKey of node.incidentEdgeKeys) {
+        const [k1, k2] = incidentEdgeKey.split('|');
+        const otherKey = k1 === branch.key ? k2 : k1;
+        if (otherKey === mouth.key || usedVertexKeys.has(otherKey)) continue;
+        if (!seaVertexKeys.has(otherKey)) continue;          // конец рукава — у берега
+        const otherNode = riverGraph.nodes.get(otherKey);
+        if (!otherNode) continue;
+        const candidate = { key: otherKey, x: otherNode.x, y: otherNode.y };
+        if (seaEdgeKeys.has(edgeKey(branch, candidate))) continue; // ребро не по морю (иначе скрыто)
+        target = candidate;
+        break;
+      }
+      if (!target) continue;
+      const armPath = [branch, target];
+      const armFullness = (1 + Math.floor(Math.random() * fullnessRange)) as RiverFullness;
+      const id = nextId++;
+      arms.push({
+        id,
+        regionId,
+        vertexPath: armPath,
+        sectors: [{
+          id: `delta-${id}-0`,
+          riverId: id,
+          sectorIndex: 0,
+          vertexPath: armPath,
+          edgeKeys: [edgeKey(branch, target)],
+          startVertexKey: branch.key,
+          endVertexKey: target.key,
+          startReason: 'split',
+          endReason: 'river_end',
+          fullness: armFullness
+        }]
+      });
+      usedVertexKeys.add(target.key);
+    }
+  }
+  return arms;
+}
+// а также не даёт реке соединять море с морем: если ОБА конца — устья у моря,
+// один конец уводится вглубь суши, оставляя единственное устье.
+function getRiverStartingFromSea(rivers: River[], seaVertexKeys: Set<string>, seaEdgeKeys: Set<string> = new Set()): River | null {
+  return rivers.find((river) => {
+    const path = river.vertexPath ?? [];
+    const start = path[0];
+    if (start && seaVertexKeys.has(start.key)) return true;
+    if (path.length >= 2 && seaEdgeKeys.has(edgeKey(path[0], path[1]))) return true;
+    return false;
+  }) ?? null;
+}
+
+function getChangedRiverStartingFromSea(previousRivers: River[], nextRivers: River[], seaKeys: Iterable<string>): River | null {
+  const seaKeyList = Array.from(seaKeys);
+  if (seaKeyList.length === 0) return null;
+  const seaVertexKeys = getSeaVertexKeysFromSeaKeys(seaKeyList);
+  const seaEdgeKeys = getSeaEdgeKeysFromSeaKeys(seaKeyList);
+  const previousById = new Map(previousRivers.map((river) => [river.id, river]));
+
+  return nextRivers.find((river) => {
+    const previousRiver = previousById.get(river.id);
+    if (!riverChangedFromPrevious(previousRiver, river)) return false;
+    return getRiverStartingFromSea([river], seaVertexKeys, seaEdgeKeys) !== null;
+  }) ?? null;
+}
+
+type CoastalGenerationFailureReason = 'outgoing_river_to_existing_region';
+
+function getSeaVertexKeysFromSeaKeys(seaKeys: Iterable<string>): Set<string> {
+  const vertexKeys = new Set<string>();
+  for (const seaKey of seaKeys) {
+    for (const corner of getHexCornerPoints(parseHexKey(seaKey))) vertexKeys.add(corner.key);
+  }
+  return vertexKeys;
+}
+
+function getSeaEdgeKeysFromSeaKeys(seaKeys: Iterable<string>): Set<string> {
+  const edgeKeys = new Set<string>();
+  for (const seaKey of seaKeys) {
+    for (const edge of getHexEdgesAsVertexPairs(parseHexKey(seaKey))) edgeKeys.add(edge.edgeKey);
+  }
+  return edgeKeys;
+}
+
+
+type RiverSeaHeightViolationReason =
+  | 'source_vertex_sea'
+  | 'first_edge_sea'
+  | 'source_and_mouth_sea'
+  | 'non_mouth_vertex_sea'
+  | 'non_mouth_edge_sea';
+
+function getRiverSeaHeightViolation(
+  rivers: River[],
+  seaKeys: Iterable<string>
+): { river: River; reason: RiverSeaHeightViolationReason } | null {
+  const seaKeyList = Array.from(seaKeys);
+  if (seaKeyList.length === 0) return null;
+
+  const seaVertexKeys = getSeaVertexKeysFromSeaKeys(seaKeyList);
+  const seaEdgeKeys = getSeaEdgeKeysFromSeaKeys(seaKeyList);
+  if (seaVertexKeys.size === 0 && seaEdgeKeys.size === 0) return null;
+
+  for (const river of rivers) {
+    const path = river.vertexPath ?? [];
+    if (path.length < 2) continue;
+
+    const mouthIndex = path.length - 1;
+    const sourceHeight = seaVertexKeys.has(path[0].key) ? SEA_HEIGHT_LEVEL : null;
+    const mouthHeight = seaVertexKeys.has(path[mouthIndex].key) ? SEA_HEIGHT_LEVEL : null;
+
+    if (sourceHeight === SEA_HEIGHT_LEVEL && mouthHeight === SEA_HEIGHT_LEVEL) {
+      return { river, reason: 'source_and_mouth_sea' };
+    }
+    if (sourceHeight === SEA_HEIGHT_LEVEL) {
+      return { river, reason: 'source_vertex_sea' };
+    }
+    if (seaEdgeKeys.has(edgeKey(path[0], path[1]))) {
+      return { river, reason: 'first_edge_sea' };
+    }
+
+    for (let index = 1; index < path.length; index += 1) {
+      if (index !== mouthIndex && seaVertexKeys.has(path[index].key)) {
+        return { river, reason: 'non_mouth_vertex_sea' };
+      }
+
+      const currentEdgeKey = edgeKey(path[index - 1], path[index]);
+      if (!seaEdgeKeys.has(currentEdgeKey)) continue;
+      if (index !== mouthIndex) {
+        return { river, reason: 'non_mouth_edge_sea' };
+      }
+    }
+  }
+
+  return null;
+}
+
+function getRiverMouthVertexKeys(rivers: River[]): Set<string> {
+  const mouthKeys = new Set<string>();
+  for (const river of rivers) {
+    const mouth = river.vertexPath?.[river.vertexPath.length - 1];
+    if (mouth) mouthKeys.add(mouth.key);
+  }
+  return mouthKeys;
+}
+
+function getRiverTouchingSeaAwayFromMouth(
+  rivers: River[],
+  seaKeys: Iterable<string>,
+  allowedMouthVertexKeys: Set<string>
+): River | null {
+  const seaKeyList = Array.from(seaKeys);
+  const seaVertexKeys = getSeaVertexKeysFromSeaKeys(seaKeyList);
+  const seaEdgeKeys = getSeaEdgeKeysFromSeaKeys(seaKeyList);
+  if (seaVertexKeys.size === 0 && seaEdgeKeys.size === 0) return null;
+
+  return rivers.find((river) => {
+    const path = river.vertexPath ?? [];
+    if (path.length < 2) return false;
+    const mouthIndex = path.length - 1;
+    const touchesInvalidVertex = path.some((vertex, index) => {
+      if (!seaVertexKeys.has(vertex.key)) return false;
+      return !(index === mouthIndex && allowedMouthVertexKeys.has(vertex.key));
+    });
+    if (touchesInvalidVertex) return true;
+
+    for (let index = 1; index < path.length; index += 1) {
+      const currentEdgeKey = edgeKey(path[index - 1], path[index]);
+      if (!seaEdgeKeys.has(currentEdgeKey)) continue;
+      const isLastEdgeToAllowedMouth = index === mouthIndex && allowedMouthVertexKeys.has(path[index].key);
+      if (!isLastEdgeToAllowedMouth) return true;
+    }
+    return false;
+  }) ?? null;
+}
+
+function getRiverTouchingSeaThroughRegionHexAwayFromMouth(
+  rivers: River[],
+  seaKeys: Iterable<string>,
+  regionHexes: AxialHex[]
+): River | null {
+  const regionHexByKey = new Map(regionHexes.map((hex) => [hexKey(hex), hex]));
+  for (const seaKey of seaKeys) {
+    const seaHex = parseHexKey(seaKey);
+    for (const neighbor of getHexNeighbors(seaHex)) {
+      const regionHex = regionHexByKey.get(hexKey(neighbor));
+      if (!regionHex) continue;
+      for (const river of getRiversForHex(regionHex, rivers)) {
+        const mouth = river.vertexPath?.[river.vertexPath.length - 1];
+        if (!mouth || !seaHexTouchesRiverMouth(seaHex, mouth)) return river;
+      }
+    }
+  }
+  return null;
+}
+
+function getCoastalSeaRiverConflict(
+  rivers: River[],
+  seaKeys: Iterable<string>,
+  regionHexes: AxialHex[]
+): River | null {
+  const seaKeyList = Array.from(seaKeys);
+  const seaVertexKeys = getSeaVertexKeysFromSeaKeys(seaKeyList);
+  const seaEdgeKeys = getSeaEdgeKeysFromSeaKeys(seaKeyList);
+  return getRiverStartingFromSea(rivers, seaVertexKeys, seaEdgeKeys)
+    ?? getRiverTouchingSeaAwayFromMouth(rivers, seaKeyList, getRiverMouthVertexKeys(rivers))
+    ?? getRiverTouchingSeaThroughRegionHexAwayFromMouth(rivers, seaKeyList, regionHexes);
+}
+
+function canPlaceSeaHexNearRivers(
+  hex: AxialHex,
+  rivers: River[],
+  allowedMouthVertexKeys: Set<string>,
+  regionHexes: AxialHex[] = []
+): boolean {
+  const key = hexKey(hex);
+  const seaVertexKeys = getSeaVertexKeysFromSeaKeys([key]);
+  const seaEdgeKeys = getSeaEdgeKeysFromSeaKeys([key]);
+  if (getRiverStartingFromSea(rivers, seaVertexKeys, seaEdgeKeys)) return false;
+  return getRiverTouchingSeaAwayFromMouth(rivers, [key], allowedMouthVertexKeys) === null
+    && getRiverTouchingSeaThroughRegionHexAwayFromMouth(rivers, [key], regionHexes) === null;
+}
+
+function filterSeaCandidatesByRiverInteraction(
+  candidates: Map<string, AxialHex>,
+  rivers: River[],
+  allowedMouthVertexKeys: Set<string>,
+  regionHexes: AxialHex[] = []
+): Map<string, AxialHex> {
+  const filtered = new Map<string, AxialHex>();
+  for (const [key, hex] of candidates) {
+    if (canPlaceSeaHexNearRivers(hex, rivers, allowedMouthVertexKeys, regionHexes)) filtered.set(key, hex);
+  }
+  return filtered;
+}
+
+function trimRiverEndsToLand(river: River, landVertexKeys: Set<string>, seaVertexKeys: Set<string>): River | null {
+  const path = river.vertexPath;
+  let start = 0;
+  let end = path.length - 1;
+  while (start <= end && !landVertexKeys.has(path[start].key)) start += 1;
+  while (end >= start && !landVertexKeys.has(path[end].key)) end -= 1;
+  // Река не может вытекать из моря и впадать в море одновременно: если оба конца
+  // примыкают к морю, отрезаем начало вглубь, пока оно не перестанет касаться моря.
+  while (start < end && seaVertexKeys.has(path[start].key)) start += 1;
+  while (start <= end && !landVertexKeys.has(path[start].key)) start += 1;
+  if (start > end) return null;
+  if (start === 0 && end === path.length - 1) return river;
+  const trimmed = path.slice(start, end + 1);
+  if (trimmed.length < 2) return null;
+  if (seaVertexKeys.has(trimmed[0].key)) return null;
+  return { ...river, vertexPath: trimmed };
+}
+
+function riverPathSignature(river: River): string {
+  return river.vertexPath.map((vertex) => vertex.key).join('>');
+}
+
+function riverSectorsSignature(river: River): string {
+  return (river.sectors ?? []).map((sector) => `${sector.startVertexKey}>${sector.endVertexKey}:${sector.fullness}:${sector.assignedRegionId ?? ''}`).join('|');
+}
+
+function riverChangedFromPrevious(previousRiver: River | undefined, river: River): boolean {
+  if (!previousRiver) return true;
+  return riverPathSignature(previousRiver) !== riverPathSignature(river)
+    || riverSectorsSignature(previousRiver) !== riverSectorsSignature(river);
+}
+
+function findRiverExtensionPathToSea(
+  startVertex: RiverVertex,
+  seaVertexKeys: Set<string>,
+  riverGraph: RiverGraph,
+  usedRiverEdges: Set<string>,
+  blockedVertexKeys: Set<string>,
+  maxExtraEdges = 6
+): RiverVertex[] | null {
+  const startNode = riverGraph.nodes.get(startVertex.key);
+  if (!startNode) return null;
+  if (seaVertexKeys.has(startVertex.key)) return [startVertex];
+
+  const queue: Array<{ key: string; path: string[] }> = [{ key: startVertex.key, path: [startVertex.key] }];
+  const visited = new Set<string>([startVertex.key]);
+
+  for (let cursor = 0; cursor < queue.length; cursor += 1) {
+    const current = queue[cursor];
+    if (current.path.length - 1 >= maxExtraEdges) continue;
+    const currentNode = riverGraph.nodes.get(current.key);
+    if (!currentNode) continue;
+
+    for (const incidentEdgeKey of currentNode.incidentEdgeKeys) {
+      if (usedRiverEdges.has(incidentEdgeKey)) continue;
+      const edge = riverGraph.edges.get(incidentEdgeKey);
+      if (!edge?.touchesRegion) continue;
+      const nextKey = edge.a.key === current.key ? edge.b.key : edge.b.key === current.key ? edge.a.key : null;
+      if (!nextKey || visited.has(nextKey)) continue;
+      if (blockedVertexKeys.has(nextKey) && !seaVertexKeys.has(nextKey)) continue;
+
+      const nextPath = [...current.path, nextKey];
+      if (seaVertexKeys.has(nextKey)) {
+        const result = nextPath.map((key) => riverGraph.nodes.get(key)).filter((node): node is RiverGraphNode => Boolean(node));
+        if (result.length !== nextPath.length) return null;
+        return result.map((node) => ({ key: node.key, x: node.x, y: node.y }));
+      }
+
+      visited.add(nextKey);
+      queue.push({ key: nextKey, path: nextPath });
+    }
+  }
+
+  return null;
+}
+
+function extendRiverMouthToSeaIfPossible(
+  river: River,
+  seaVertexKeys: Set<string>,
+  riverGraph: RiverGraph,
+  usedRiverEdges: Set<string>
+): River {
+  const path = river.vertexPath ?? [];
+  if (path.length < 2) return river;
+  const mouth = path[path.length - 1];
+  if (seaVertexKeys.has(mouth.key)) return river;
+
+  const blockedVertexKeys = new Set(path.map((vertex) => vertex.key));
+  blockedVertexKeys.delete(mouth.key);
+  const extensionPath = findRiverExtensionPathToSea(mouth, seaVertexKeys, riverGraph, usedRiverEdges, blockedVertexKeys);
+  if (!extensionPath || extensionPath.length < 2) return river;
+
+  return {
+    ...river,
+    vertexPath: [...path, ...extensionPath.slice(1)]
+  };
+}
+
+function extendChangedRiverMouthsToSeaIfPossible(
+  previousRivers: River[],
+  nextRivers: River[],
+  seaKeys: Iterable<string>,
+  riverGraph: RiverGraph
+): River[] {
+  const seaKeyList = Array.from(seaKeys);
+  if (seaKeyList.length === 0) return nextRivers;
+
+  const seaVertexKeys = getSeaVertexKeysFromSeaKeys(seaKeyList);
+  if (seaVertexKeys.size === 0) return nextRivers;
+
+  const previousById = new Map(previousRivers.map((river) => [river.id, river]));
+  const usedRiverEdges = buildUsedRiverEdges(nextRivers);
+
+  return nextRivers.map((river) => {
+    const previousRiver = previousById.get(river.id);
+    const changed = riverChangedFromPrevious(previousRiver, river);
+    const mouth = river.vertexPath?.[river.vertexPath.length - 1];
+    const mouthTouchesNewSea = Boolean(mouth && Array.from(seaKeyList).some((key) => getHexCornerPoints(parseHexKey(key)).some((corner) => corner.key === mouth.key)));
+    if (!changed && mouthTouchesNewSea) return river;
+
+    const extendedRiver = extendRiverMouthToSeaIfPossible(river, seaVertexKeys, riverGraph, usedRiverEdges);
+    if (extendedRiver !== river) {
+      for (let index = river.vertexPath.length; index < extendedRiver.vertexPath.length; index += 1) {
+        usedRiverEdges.add(edgeKey(extendedRiver.vertexPath[index - 1], extendedRiver.vertexPath[index]));
+      }
+      console.log('Extended river mouth to sea', {
+        riverId: river.id,
+        oldMouthKey: river.vertexPath[river.vertexPath.length - 1]?.key,
+        newMouthKey: extendedRiver.vertexPath[extendedRiver.vertexPath.length - 1]?.key
+      });
+    }
+
+    return extendedRiver;
+  });
+}
+
+function sanitizeRiversForSea(
+  previousRivers: River[],
+  nextRivers: River[],
+  landVertexKeys: Set<string>,
+  seaVertexKeys: Set<string>,
+  seaKeysToCheck: Iterable<string>,
+  regionHexes: AxialHex[]
+): River[] {
+  void previousRivers;
+  void landVertexKeys;
+  void seaVertexKeys;
+  void seaKeysToCheck;
+  void regionHexes;
+  return nextRivers;
+}
+
 function drawLakeVerticesDebug(lakeVertices: LakeVertex[], offsetX: number, offsetY: number) {
   return lakeVertices.map((vertex) => ({
     key: `dbg-lake-vertex-${vertex.key}`,
@@ -7171,9 +8211,11 @@ export function App() {
   const [genSizeCategory, setGenSizeCategory] = useState<'auto' | Region['sizeCategory']>('auto');
   const [genLandType, setGenLandType] = useState<'auto' | BiomeLandType>('auto');
   const [genBiome, setGenBiome] = useState<'auto' | BiomeId>('auto');
-  const [genCoastal, setGenCoastal] = useState<'auto' | CoastalPreference>('auto');
+  const [genCoastal, setGenCoastal] = useState<'auto' | CoastalPreference>('mainland');
   // Режим ручной "кисти берега": клик по гексу кромки делает его морем и обратно.
   const [seaBrushActive, setSeaBrushActive] = useState(false);
+  // Уведомление пользователю (например, почему не создалось побережье).
+  const [coastNotice, setCoastNotice] = useState<string | null>(null);
   const [clickPromptCandidateKey, setClickPromptCandidateKey] = useState<string | null>(null);
 
   const allRegionHexes = useMemo(() => regions.flatMap((region) => region.hexes), [regions]);
@@ -7254,6 +8296,12 @@ export function App() {
 
   const lakeVertices = useMemo(() => getLakeVertices(allRegionHexes, hexTerrainByKey), [allRegionHexes, hexTerrainByKey]);
   const lakeEdgeKeys = useMemo(() => getLakeEdgeKeys(allRegionHexes, hexTerrainByKey), [allRegionHexes, hexTerrainByKey]);
+  // Сегменты рек скрываются и над озёрами, и над морем (река заканчивается у берега).
+  const hiddenRiverEdgeKeys = useMemo(() => {
+    const combined = new Set(lakeEdgeKeys);
+    for (const key of getSeaEdgeKeys(hexTerrainByKey)) combined.add(key);
+    return combined;
+  }, [lakeEdgeKeys, hexTerrainByKey]);
 
   const riverSegments = useMemo(() => {
     const all = positionedHexes.hexes;
@@ -7262,8 +8310,8 @@ export function App() {
     const minBaseY = Math.min(...all.map((h) => toPixel(h.q, h.r).y));
     const offsetX = (HEX_SIZE * SQRT3) / 2 - minBaseX;
     const offsetY = HEX_SIZE - minBaseY;
-    return rivers.flatMap((river) => renderRiverSegments(river, offsetX, offsetY, lakeEdgeKeys));
-  }, [positionedHexes, rivers, lakeEdgeKeys]);
+    return rivers.flatMap((river) => renderRiverSegments(river, offsetX, offsetY, hiddenRiverEdgeKeys));
+  }, [positionedHexes, rivers, hiddenRiverEdgeKeys]);
   const riverDirectionArrows = useMemo(() => {
     const all = positionedHexes.hexes;
     if (all.length === 0) return [];
@@ -7271,8 +8319,8 @@ export function App() {
     const minBaseY = Math.min(...all.map((h) => toPixel(h.q, h.r).y));
     const offsetX = (HEX_SIZE * SQRT3) / 2 - minBaseX;
     const offsetY = HEX_SIZE - minBaseY;
-    return rivers.flatMap((river) => renderRiverDirectionArrows(river, offsetX, offsetY, lakeEdgeKeys));
-  }, [positionedHexes, rivers, lakeEdgeKeys]);
+    return rivers.flatMap((river) => renderRiverDirectionArrows(river, offsetX, offsetY, hiddenRiverEdgeKeys));
+  }, [positionedHexes, rivers, hiddenRiverEdgeKeys]);
   const roadSegments = useMemo(() => {
     const all = positionedHexes.hexes;
     if (all.length === 0) return [];
@@ -7326,13 +8374,16 @@ export function App() {
   const addRegionToMap = (anchorHex: AxialHex, options: GenerationOptions = {}) => {
     const maxRegionAttempts = 30;
     const autoCoastRoll = Math.random();
+    let firstCoastalFailureReason: CoastalGenerationFailureReason | null = null;
+    setCoastNotice(null);
     for (let attempt = 0; attempt < maxRegionAttempts; attempt += 1) {
       const targetSize = options.targetSize ?? rollRegionTargetSize();
       const occupiedHexes = new Set(allRegionHexes.map(hexKey));
       // Море — не суша: рост региона не должен захватывать гексы моря.
       for (const seaKey of getSeaHexKeys(hexTerrainByKey)) occupiedHexes.add(seaKey);
       const regionId = Math.max(0, ...regions.map((region) => region.id)) + 1;
-      const regionHexes = generateConnectedRegionFromAnchor(anchorHex, targetSize, occupiedHexes);
+      let regionHexes = generateConnectedRegionFromAnchor(anchorHex, targetSize, occupiedHexes);
+      regionHexes = fillSmallEnclosedAreasForRegion(regionHexes, allRegionHexes, getSeaHexKeys(hexTerrainByKey));
       const finalSize = regionHexes.length;
       const { sizeCategory, sizeLabel } = getRegionSizeCategory(finalSize);
       const centerHex = chooseRegionCenter(regionHexes);
@@ -7342,7 +8393,10 @@ export function App() {
       }
       const adjacentBiomeIds = getAdjacentRegionBiomes(regionHexes, regionByHexKey);
       const nextAllHexesPreview = [...allRegionHexes, ...regionHexes];
-      const nextCandidateHexesPreview = getCandidateHexes(nextAllHexesPreview);
+      // Морские гексы не считаются кандидатами при построении рек (реки не должны
+      // выходить из воды) — исключаем уже существующее море из речного фронта.
+      const existingSeaForRivers = getSeaHexKeys(hexTerrainByKey);
+      const nextCandidateHexesPreview = getCandidateHexes(nextAllHexesPreview, existingSeaForRivers);
       const candidateRegionForTopologyCheck: Region = {
         id: regionId,
         hexes: regionHexes,
@@ -7376,7 +8430,8 @@ export function App() {
       const hasOutgoingRiverToExistingRegion = regionHasOutgoingRiverToExistingRegion(touchingEndpoints);
       if (options.coastalPreference === 'coast' && hasOutgoingRiverToExistingRegion) {
         console.warn('Discarding coastal candidate region because it has outgoing river to existing region', { attempt, regionId });
-        return;
+        if (attempt === 0) firstCoastalFailureReason = 'outgoing_river_to_existing_region';
+        continue;
       }
       const isCoastalRegion =
         options.coastalPreference === 'coast' ? true
@@ -7388,7 +8443,7 @@ export function App() {
       // Прибрежный регион тяготеет к низинам (уровень моря).
       const effectiveCoastalPreference: CoastalPreference | undefined =
         options.coastalPreference ?? (isCoastalRegion ? 'coast' : undefined);
-      const biomeLandType = options.landType ?? chooseCoastalAwareLandType(isCoastalRegion);
+      const biomeLandType = regions.length === 0 ? 'settled' : options.landType ?? chooseCoastalAwareLandType(isCoastalRegion);
       // Выбор биома: либо принудительно заданный пользователем, либо обычный
       // взвешенный выбор. Принудительный биом всё равно проверяется на
       // совместимость с ограничением высоты от рек.
@@ -7421,47 +8476,29 @@ export function App() {
       let biomeChoice = pickBiome(effectiveRiverHeightConstraint);
 
       if (!biomeChoice.biomeId && biomeChoice.reason === 'river_height_constraint_failed') {
-        console.warn('Region failed because of river height constraint; trying outgoing river trimming fallback', {
+        console.warn('Region failed because of river height constraint; outgoing river trimming fallback is disabled', {
           regionId,
           attempt,
           riverHeightConstraint,
           adjacentBiomeIds,
           biomeLandType
         });
-        const conflictingOutgoingRiverIds = getConflictingOutgoingRiverIds(
-          touchingEndpoints,
-          regions,
-          riverHeightConstraint
-        );
-        if (conflictingOutgoingRiverIds.length === 0) {
-          console.warn('River height conflict detected but no outgoing river ids found for trimming', {
-            regionId,
-            attempt,
-            touchingEndpoints,
-            riverHeightConstraint
-          });
-        } else {
-          riversForGeneration = trimConflictingOutgoingRiversAwayFromRegion(
-            rivers,
-            conflictingOutgoingRiverIds,
-            regionHexes,
-            regionId
-          );
-          effectiveRiverHeightConstraint = getRiverHeightConstraintForCandidateRegion(
-            candidateRegionForRiverCheck,
-            regions,
-            riversForGeneration,
-            nextCandidateHexesPreview
-          );
-          console.warn('Recalculated river height constraint after outgoing river trimming', {
-            regionId,
-            attempt,
-            originalConstraint: riverHeightConstraint,
-            patchedConstraint: effectiveRiverHeightConstraint,
-            conflictingOutgoingRiverIds
-          });
-          biomeChoice = pickBiome(effectiveRiverHeightConstraint);
-        }
+        effectiveRiverHeightConstraint = {
+          reasons: [
+            ...riverHeightConstraint.reasons,
+            'river height constraint relaxed because outgoing river trimming fallback is disabled'
+          ]
+        };
+        biomeChoice = pickBiome(effectiveRiverHeightConstraint);
+        console.warn('River height constraint relaxed because outgoing river trimming fallback is disabled', {
+          regionId,
+          attempt,
+          riverHeightConstraint,
+          effectiveRiverHeightConstraint,
+          adjacentBiomeIds,
+          biomeLandType,
+          biomeId: biomeChoice.biomeId
+        });
       }
       if (!biomeChoice.biomeId) {
         console.warn('No biome available after river height fallback; retrying region generation', {
@@ -7521,7 +8558,8 @@ export function App() {
       const nextHexTerrainByKeyPreview = new Map(hexTerrainByKey);
       for (const [key, terrain] of lakesByHex) nextHexTerrainByKeyPreview.set(key, terrain);
       const nextAllHexes = nextRegionsForRiverGeneration.flatMap((r) => r.hexes);
-      const nextCandidateHexes = getCandidateHexes(nextAllHexes);
+      // Реки не строятся через морские гексы — исключаем существующее море из фронта.
+      const nextCandidateHexes = getCandidateHexes(nextAllHexes, existingSeaForRivers);
       const riverResult = generateRiverForRegion(
         regionForRiverGeneration,
         nextRegionsForRiverGeneration,
@@ -7538,16 +8576,47 @@ export function App() {
         console.warn('Discarding failed candidate region because old river edge fullness was not preserved', { attempt });
         continue;
       }
-      const finalizedRivers = assignRiverSectors(
+      let finalizedRivers = assignRiverSectors(
         riverResult.rivers,
         getLakesForRegions(nextRegionsForRiverGeneration, nextHexTerrainByKeyPreview),
         nextRegionsForRiverGeneration,
         nextCandidateHexes
       );
+      finalizedRivers = restoreInvalidGeneratedRiversForRegion(regionForRiverGeneration, riversForGeneration, finalizedRivers, nextCandidateHexes);
       if (!validateExistingRiverEdgeFullnessPreserved(rivers, finalizedRivers)) {
         console.warn('Discarding failed candidate region because final river sector assignment changed old edge fullness', { attempt });
         continue;
       }
+      const initialRiverCycleValidation = validateRiverCycleSafety(finalizedRivers);
+      if (!initialRiverCycleValidation.valid) {
+        console.warn('Discarding failed candidate region because river cycle was detected', { attempt, regionId, ...initialRiverCycleValidation });
+        continue;
+      }
+
+      const changedRiverStartingFromExistingSea = getChangedRiverStartingFromSea(
+        riversForGeneration,
+        finalizedRivers,
+        getSeaHexKeys(hexTerrainByKey)
+      );
+      if (changedRiverStartingFromExistingSea) {
+        console.warn('Discarding failed candidate region because a generated river starts from existing sea', {
+          attempt,
+          regionId,
+          riverId: changedRiverStartingFromExistingSea.id
+        });
+        continue;
+      }
+      const existingSeaHeightViolation = getRiverSeaHeightViolation(finalizedRivers, getSeaHexKeys(hexTerrainByKey));
+      if (existingSeaHeightViolation) {
+        console.warn('Discarding failed candidate region because a river violates sea height before coast generation', {
+          attempt,
+          regionId,
+          riverId: existingSeaHeightViolation.river.id,
+          reason: existingSeaHeightViolation.reason
+        });
+        continue;
+      }
+
 
       const regionTerrainByHex = new Map<string, HexTerrainData>();
       for (const hex of regionHexes) {
@@ -7558,26 +8627,34 @@ export function App() {
       // Море прибрежного региона: ставится ПОСЛЕ генерации рек, поэтому реки
       // региона уже завершились на этом внешнем фронте — то есть впадают в море.
       const occupiedRegionKeysForSea = new Set(allRegionHexes.map(hexKey));
-      const seaHexKeys = isCoastalRegion
+      const allowedSeaMouthVertexKeys = getRiverMouthVertexKeys(finalizedRivers);
+      let seaHexKeys = isCoastalRegion
         ? extendSeaToCoastalCenterCandidate(
           regionHexes,
           computeSeaHexKeysForCoastalRegion(regionHexes, centerHex, nextHexTerrainByKeyPreview, occupiedRegionKeysForSea, regions, finalizedRivers, regionId),
           nextHexTerrainByKeyPreview,
           occupiedRegionKeysForSea,
-          finalizedRivers
+          finalizedRivers,
+          allowedSeaMouthVertexKeys
         )
         : [];
       const coastalSeaValidation = isCoastalRegion
         ? validateCoastalSeaArea(regionHexes, seaHexKeys, getSeaHexKeys(hexTerrainByKey), finalizedRivers, regionId, regions)
         : { valid: true as const };
+      let effectiveIsCoastalRegion = isCoastalRegion;
       if (coastalSeaValidation.valid === false) {
-        console.warn('Discarding failed coastal candidate region because sea area is invalid', { attempt, regionId, reason: coastalSeaValidation.reason });
-        continue;
+        if (options.coastalPreference !== 'coast' && coastalSeaValidation.reason === 'no_sea_hexes') {
+          seaHexKeys = [];
+          effectiveIsCoastalRegion = false;
+        } else {
+          console.warn('Discarding failed coastal candidate region because sea area is invalid', { attempt, regionId, reason: coastalSeaValidation.reason });
+          continue;
+        }
       }
       const coastalCenterHex = seaHexKeys.length > 0
-        ? chooseCoastalCenterHex(regionHexes, new Set(seaHexKeys), finalizedRivers)
+        ? chooseCoastalCenterHex(regionHexes, new Set(seaHexKeys), finalizedRivers) ?? chooseSeaAdjacentCenterHex(regionHexes, new Set(seaHexKeys))
         : null;
-      if (isCoastalRegion && (!coastalCenterHex || seaHexKeys.length === 0)) {
+      if (effectiveIsCoastalRegion && (!coastalCenterHex || seaHexKeys.length === 0)) {
         console.warn('Discarding failed coastal candidate region because no center hex touches both sea and river', { attempt, regionId });
         continue;
       }
@@ -7589,23 +8666,197 @@ export function App() {
         centerHex: finalCenterHex,
         pointsOfInterest,
         // Регион считается прибрежным, только если у него реально появилось море.
-        isCoastal: seaHexKeys.length > 0
+        isCoastal: effectiveIsCoastalRegion && seaHexKeys.length > 0
       };
+      const nextRegions = [...regions, finalRegion];
+
+      const existingSeaKeysBeforeRegion = getSeaHexKeys(hexTerrainByKey);
+      const allSeaKeys = new Set(existingSeaKeysBeforeRegion);
+      for (const key of seaHexKeys) allSeaKeys.add(key);
+      const seaConnectivityValidation = validateSeaConnectivityThroughOpenTiles(nextAllHexes, allSeaKeys, finalizedRivers);
+      if (!seaConnectivityValidation.valid) {
+        console.warn('Discarding failed coastal candidate region because sea would be disconnected from open tiles', { attempt, regionId, reason: seaConnectivityValidation.reason });
+        continue;
+      }
+      const allNewSeaKeys = [...seaHexKeys];
+      const nextCandidateHexesExclSea = getCandidateHexes(nextAllHexes, allSeaKeys);
+      if (allNewSeaKeys.length > 0) {
+        const seaExtensionGraph = buildRiverGraphForRegion(regionHexes, nextAllHexes, nextCandidateHexesExclSea);
+        const extendedRivers = extendChangedRiverMouthsToSeaIfPossible(
+          riversForGeneration,
+          finalizedRivers,
+          allNewSeaKeys,
+          seaExtensionGraph
+        );
+        // Применяем удлинение устья только если оно НЕ создаёт контакт реки с морем
+        // вне устья. Иначе устье «уезжает» в море несколькими вершинами и регион
+        // отбраковывается (non_mouth_vertex_sea) — оставляем корректное устье у берега.
+        if (!getRiverSeaHeightViolation(extendedRivers, allSeaKeys)) {
+          finalizedRivers = extendedRivers;
+        }
+      }
+      const riverStartingFromSeaAfterExtension = getChangedRiverStartingFromSea(
+        riversForGeneration,
+        finalizedRivers,
+        allSeaKeys
+      );
+      if (riverStartingFromSeaAfterExtension) {
+        console.warn('Discarding failed candidate region because a river starts from sea after extension', {
+          attempt,
+          regionId,
+          riverId: riverStartingFromSeaAfterExtension.id
+        });
+        continue;
+      }
+      const riverSeaHeightViolationAfterExtension = getRiverSeaHeightViolation(finalizedRivers, allSeaKeys);
+      if (riverSeaHeightViolationAfterExtension) {
+        console.warn('Discarding failed candidate region because a river violates sea height after extension', {
+          attempt,
+          regionId,
+          riverId: riverSeaHeightViolationAfterExtension.river.id,
+          reason: riverSeaHeightViolationAfterExtension.reason
+        });
+        continue;
+      }
+
+      const coastalRiverConflictAfterExtension = getCoastalSeaRiverConflict(finalizedRivers, allNewSeaKeys, regionHexes);
+      if (coastalRiverConflictAfterExtension) {
+        console.warn('Discarding failed coastal candidate region because sea touches a river away from its mouth after extension', {
+          attempt,
+          regionId,
+          riverId: coastalRiverConflictAfterExtension.id
+        });
+        continue;
+      }
+
+      // Обрезаем у всех рек концевые вершины, торчащие в море, чтобы они
+      // заканчивались у берега, а не шли «из моря в море» (учитываем и новое море).
+      const landVertexKeys = getLandVertexKeys(nextAllHexes);
+      const seaVertexKeys = new Set<string>();
+      for (const seaKey of allSeaKeys) {
+        for (const corner of getHexCornerPoints(parseHexKey(seaKey))) seaVertexKeys.add(corner.key);
+      }
+      finalizedRivers = sanitizeRiversForSea(
+        riversForGeneration,
+        finalizedRivers,
+        landVertexKeys,
+        seaVertexKeys,
+        allNewSeaKeys,
+        regionHexes
+      );
+      finalizedRivers = assignRiverSectors(
+        finalizedRivers,
+        getLakesForRegions(nextRegions, nextHexTerrainByKeyPreview),
+        nextRegions,
+        nextCandidateHexesExclSea
+      );
+
+      // BR-009: рукава дельты. Изолировано в try/catch — сбой не ломает генерацию,
+      // в худшем случае рукав просто не добавляется.
+      let riversWithDeltas = finalizedRivers;
+      if (allNewSeaKeys.length > 0) {
+        try {
+          const seaEdgeKeys = new Set<string>();
+          for (const seaKey of allSeaKeys) {
+            for (const edge of getHexEdgesAsVertexPairs(parseHexKey(seaKey))) seaEdgeKeys.add(edge.edgeKey);
+          }
+          const deltaGraph = buildRiverGraphForRegion(regionHexes, nextAllHexes, nextCandidateHexes);
+          const startRiverId = Math.max(0, ...finalizedRivers.map((r) => r.id)) + 1;
+          const deltaArms = buildDeltaArmsForRivers(finalizedRivers, regionId, deltaGraph, seaVertexKeys, seaEdgeKeys, startRiverId);
+          if (deltaArms.length > 0) riversWithDeltas = [...finalizedRivers, ...deltaArms];
+        } catch (error) {
+          console.warn('Delta arm generation failed; skipping deltas', error);
+        }
+      }
+      if (allNewSeaKeys.length > 0) {
+        const seaExtensionGraph = buildRiverGraphForRegion(regionHexes, nextAllHexes, nextCandidateHexesExclSea);
+        const extendedWithDeltas = extendChangedRiverMouthsToSeaIfPossible(
+          riversForGeneration,
+          riversWithDeltas,
+          allNewSeaKeys,
+          seaExtensionGraph
+        );
+        if (!getRiverSeaHeightViolation(extendedWithDeltas, allSeaKeys)) {
+          riversWithDeltas = extendedWithDeltas;
+        }
+      }
+      const riverStartingFromSeaAfterDeltas = getChangedRiverStartingFromSea(
+        riversForGeneration,
+        riversWithDeltas,
+        allSeaKeys
+      );
+      if (riverStartingFromSeaAfterDeltas) {
+        console.warn('Discarding failed candidate region because a river starts from sea after deltas', {
+          attempt,
+          regionId,
+          riverId: riverStartingFromSeaAfterDeltas.id
+        });
+        continue;
+      }
+      const riverSeaHeightViolationAfterDeltas = getRiverSeaHeightViolation(riversWithDeltas, allSeaKeys);
+      if (riverSeaHeightViolationAfterDeltas) {
+        console.warn('Discarding failed candidate region because a river violates sea height after deltas', {
+          attempt,
+          regionId,
+          riverId: riverSeaHeightViolationAfterDeltas.river.id,
+          reason: riverSeaHeightViolationAfterDeltas.reason
+        });
+        continue;
+      }
+
+      const coastalRiverConflictAfterDeltas = getCoastalSeaRiverConflict(riversWithDeltas, allNewSeaKeys, regionHexes);
+      if (coastalRiverConflictAfterDeltas) {
+        console.warn('Discarding failed coastal candidate region because sea touches a river away from its mouth after deltas', {
+          attempt,
+          regionId,
+          riverId: coastalRiverConflictAfterDeltas.id
+        });
+        continue;
+      }
+
+      riversWithDeltas = restoreInvalidGeneratedRiversForRegion(regionForRiverGeneration, riversForGeneration, riversWithDeltas, nextCandidateHexesExclSea);
+      riversWithDeltas = sanitizeRiversForSea(
+        riversForGeneration,
+        riversWithDeltas,
+        landVertexKeys,
+        seaVertexKeys,
+        allNewSeaKeys,
+        regionHexes
+      );
+      riversWithDeltas = assignRiverSectors(
+        riversWithDeltas,
+        getLakesForRegions(nextRegions, nextHexTerrainByKeyPreview),
+        nextRegions,
+        nextCandidateHexesExclSea
+      );
+      const finalRiverSeaHeightViolation = getRiverSeaHeightViolation(riversWithDeltas, allSeaKeys);
+      if (finalRiverSeaHeightViolation) {
+        console.warn('Discarding failed candidate region because a river violates final sea height', {
+          attempt,
+          regionId,
+          riverId: finalRiverSeaHeightViolation.river.id,
+          reason: finalRiverSeaHeightViolation.reason
+        });
+        continue;
+      }
+      const finalRiverCycleValidation = validateRiverCycleSafety(riversWithDeltas);
+      if (!finalRiverCycleValidation.valid) {
+        console.warn('Discarding failed candidate region because final river cycle was detected', { attempt, regionId, ...finalRiverCycleValidation });
+        continue;
+      }
+      if (!validateExistingRiverEdgeFullnessPreserved(rivers, riversWithDeltas)) {
+        console.warn('Discarding failed candidate region because final river edge fullness changed old rivers', { attempt, regionId });
+        continue;
+      }
       const roadResult = generateRoadsForRegion({
         region: finalRegion,
         regions,
         roads,
-        rivers: finalizedRivers,
+        rivers: riversWithDeltas,
         hexTerrainByKey: nextHexTerrainByKeyPreview,
         nextRoadId,
-        candidateHexes: nextCandidateHexes
+        candidateHexes: nextCandidateHexesExclSea
       });
-      const nextRegions = [...regions, finalRegion];
-
-      // Кликабельный фронт роста не должен включать ни старое, ни новое море.
-      const allSeaKeys = getSeaHexKeys(hexTerrainByKey);
-      for (const key of seaHexKeys) allSeaKeys.add(key);
-      const nextCandidateHexesExclSea = getCandidateHexes(nextAllHexes, allSeaKeys);
 
       // Снимок состояния ДО добавления этого региона — для удаления/перегенерации.
       const snapshot: MapSnapshot = {
@@ -7618,13 +8869,36 @@ export function App() {
         nextRoadId
       };
       setHistory((current) => [...current, snapshot]);
+
+      // Item 2: запертые кандидатные карманы (≤5 тайлов) между регионом и морем
+      // поглощаются морем — чтобы не оставались «висящие» неоткрытые участки и по
+      // ним нельзя было кликнуть генерацию (которая упрётся в море). Если моря рядом
+      // нет, карманы не трогаем — обычная генерация их откроет.
+      const enclosedPocketKeys: string[] = [];
+      if (allNewSeaKeys.length > 0) {
+        const occupiedForPockets = new Set<string>(allSeaKeys);
+        for (const hex of allRegionHexes) occupiedForPockets.add(hexKey(hex));
+        for (const area of findFillableEnclosedEmptyAreas(new Set(regionHexes.map(hexKey)), occupiedForPockets)) {
+          if (area.length > 5) continue;
+          for (const hex of area) enclosedPocketKeys.push(hexKey(hex));
+        }
+      }
+      const pocketKeySet = new Set(enclosedPocketKeys);
+      const finalSeaKeysToWrite = [...allNewSeaKeys, ...enclosedPocketKeys];
+      const finalCandidateHexes = pocketKeySet.size > 0
+        ? nextCandidateHexesExclSea.filter((hex) => !pocketKeySet.has(hexKey(hex)))
+        : nextCandidateHexesExclSea;
+      // Item 1: реки, возвращающиеся в озеро-исток, обрезаются перед повторным входом.
+      const lakeIdByVertexKey = buildLakeIdByVertexKey(getLakesForRegions(nextRegions, nextHexTerrainByKeyPreview));
+      const sanitizedRivers = riversWithDeltas.map((river) => trimRiverSourceLakeReentry(river, lakeIdByVertexKey));
+
       setRegions(nextRegions);
-      setCandidateHexes(nextCandidateHexesExclSea);
+      setCandidateHexes(finalCandidateHexes);
       setHexTerrainByKey(() => {
         const next = new Map(nextHexTerrainByKeyPreview);
-        for (const key of seaHexKeys) next.set(key, { terrainOverride: 'sea' });
+        for (const key of finalSeaKeysToWrite) next.set(key, { terrainOverride: 'sea' });
         // BR-004: озеро, соседствующее с морем, удаляется (гекс возвращается к биому региона).
-        if (seaHexKeys.length > 0) {
+        if (finalSeaKeysToWrite.length > 0) {
           const seaSet = getSeaHexKeys(next);
           for (const [key, terrain] of next) {
             if (terrain.terrainOverride !== 'lake') continue;
@@ -7636,11 +8910,14 @@ export function App() {
       });
       setNextLakeId(Math.max(computedNextLakeId, getNextLakeIdFromTerrain(nextHexTerrainByKeyPreview)));
 
-      setRivers(finalizedRivers);
+      setRivers(sanitizedRivers);
       setRoads(roadResult.roads);
       setNextRoadId(roadResult.nextRoadId);
       setSelectedHex(centerHex);
       return;
+    }
+    if (firstCoastalFailureReason === 'outgoing_river_to_existing_region') {
+      setCoastNotice('Побережье здесь создать нельзя: из этого региона вытекает река в соседний регион. Реки не текут от побережья вглубь суши (BR-003).');
     }
     console.warn('Could not create region after max attempts', {
       anchorHex,
@@ -7776,9 +9053,12 @@ export function App() {
 
   const lastRegion = regions[regions.length - 1];
   const selectedRegion = selectedMeta ? regions.find((region) => region.id === selectedMeta.regionId) : undefined;
-  const selectedRegionRiver = selectedRegion ? rivers.find((river) => river.regionId === selectedRegion.id) : undefined;
   const selectedRegionRivers = selectedRegion ? getRiversForRegion(selectedRegion, rivers) : [];
   const selectedRegionRiverSectors = selectedRegion ? getRiverSectorsForRegion(selectedRegion, rivers) : [];
+  const selectedRegionDebugRiverSectors = selectedRegion ? getRiverSectorsTouchingRegion(selectedRegion, rivers) : [];
+  const selectedRegionRiver = selectedRegionDebugRiverSectors.length > 0
+    ? rivers.find((river) => String(river.id) === String(selectedRegionDebugRiverSectors[0].riverId))
+    : selectedRegionRivers[0];
   const selectedRegionConfluences = selectedRegion ? getRiverConfluencesForRegion(selectedRegion, rivers) : [];
   const selectedRegionLakes = selectedRegion ? getLakeSummariesForRegion(selectedRegion, hexTerrainByKey) : [];
   const selectedRegionRoadStats = selectedRegion ? (() => {
@@ -8005,6 +9285,7 @@ export function App() {
                 onClick={() => setSeaBrushActive((v) => !v)}
                 className="secondary"
                 aria-pressed={seaBrushActive}
+                disabled
               >
                 Кисть берега: {seaBrushActive ? 'ВКЛ' : 'ВЫКЛ'}
               </button>
@@ -8055,6 +9336,12 @@ export function App() {
                 </select>
               </label>
             </div>
+            {coastNotice && (
+              <div className="coast-notice" role="status">
+                <span>{coastNotice}</span>
+                <button type="button" onClick={() => setCoastNotice(null)} aria-label="Закрыть уведомление">×</button>
+              </div>
+            )}
             <div className="zoom-controls" aria-label="Масштаб карты">
               <button type="button" className="secondary" onClick={() => updateMapScale(mapScale - 0.1)} aria-label="Отдалить карту">−</button>
               <span>{mapZoomPercent}%</span>
@@ -8197,6 +9484,13 @@ export function App() {
                 );
               })}
               {positionedHexes.hexes.map((hex) => {
+                if (hex.kind === 'sea') {
+                  const position = isMapRotated ? rotateMapPoint(hex.x, hex.y, positionedHexes.height) : hex;
+                  return (
+                    <text key={`sea-emoji-${hex.key}`} x={position.x} y={position.y} textAnchor="middle" dominantBaseline="central" fontSize={18} pointerEvents="none">{SEA_EMOJI}</text>
+                  );
+                }
+
                 const meta = metadataMap.get(hex.key);
                 const terrain = hexTerrainByKey.get(hex.key);
                 const isLakeHex = terrain?.terrainOverride === 'lake';
@@ -8382,6 +9676,7 @@ export function App() {
               <p><strong>River debug</strong></p>
               {!selectedRegion ? <p>Выберите региональный гекс.</p> : null}
               {selectedRegion && !selectedRegionGraph ? <p>no graph</p> : null}
+              {selectedRegion && selectedRegionGraph && !selectedRegionRiver ? <p>В выбранном регионе нет реки для подробной отладки.</p> : null}
               {selectedRegion && selectedRegionGraph && selectedRegionRiver ? (() => {
                 const path = selectedRegionRiver.vertexPath;
                 const start = path?.[0];
@@ -8447,7 +9742,7 @@ export function App() {
               })() : null}
             </>
           ) : null}
-          {candidateHexes.length > 0 ? <p>Выберите гекс-кандидат на карте для добавления следующего региона.</p> : null}
+          {candidateHexes.length > 0 && !debugRivers ? <p>Выберите гекс-кандидат на карте для добавления следующего региона.</p> : null}
               </div>
             ) : null}
           </aside>
