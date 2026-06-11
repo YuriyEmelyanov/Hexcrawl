@@ -6369,7 +6369,7 @@ function canAddRoadPath(options: {
   }
   return true;
 }
-type IncomingRoadEndpoint = { roadId: number; endpointHex: AxialHex; entryHex: AxialHex };
+type IncomingRoadEndpoint = { roadId: number; endpointHex: AxialHex; entryHex: AxialHex; touchKind: 'endpoint' | 'body' };
 type SettledIncomingRoadCandidate = RoadCandidatePath & { incoming: IncomingRoadEndpoint };
 
 function buildPathFromIncomingRoadEndpoint(endpointHex: AxialHex, innerPath: AxialHex[]): AxialHex[] {
@@ -6436,10 +6436,10 @@ function findIncomingRoadEndpointsForRegion(
   const regionKeys = new Set(region.hexes.map(hexKey));
   const result = new Map<string, IncomingRoadEndpoint>();
 
-  const addIncoming = (roadId: number, endpointHex: AxialHex, entryHex: AxialHex) => {
+  const addIncoming = (roadId: number, endpointHex: AxialHex, entryHex: AxialHex, touchKind: IncomingRoadEndpoint['touchKind']) => {
     if (!isUsableIncomingRoadEntryHex(region, entryHex, hexTerrainByKey)) return;
-    const key = `${roadId}:${hexKey(endpointHex)}:${hexKey(entryHex)}`;
-    if (!result.has(key)) result.set(key, { roadId, endpointHex, entryHex });
+    const key = `${roadId}:${hexKey(endpointHex)}:${hexKey(entryHex)}:${touchKind}`;
+    if (!result.has(key)) result.set(key, { roadId, endpointHex, entryHex, touchKind });
   };
 
   for (const road of roads) {
@@ -6447,12 +6447,12 @@ function findIncomingRoadEndpointsForRegion(
       const endpointKey = hexKey(endpoint);
       if (blockedRoadTouchHexKeys.has(endpointKey)) continue;
       if (regionKeys.has(endpointKey)) {
-        addIncoming(road.id, endpoint, endpoint);
+        addIncoming(road.id, endpoint, endpoint, 'endpoint');
         continue;
       }
       const entries = getHexNeighbors(endpoint).filter((h) => regionKeys.has(hexKey(h)));
       if (entries.length === 0) continue;
-      addIncoming(road.id, endpoint, chooseIncomingRoadEntryHex(region, road, endpoint, entries, hexTerrainByKey));
+      addIncoming(road.id, endpoint, chooseIncomingRoadEntryHex(region, road, endpoint, entries, hexTerrainByKey), 'endpoint');
     }
 
     if (includeRoadBodyEntries) {
@@ -6467,14 +6467,14 @@ function findIncomingRoadEndpointsForRegion(
         const roadHexKey = hexKey(roadHex);
         if (blockedRoadTouchHexKeys.has(roadHexKey)) continue;
         if (regionKeys.has(roadHexKey)) {
-          addIncoming(road.id, roadHex, roadHex);
+          addIncoming(road.id, roadHex, roadHex, 'body');
           continue;
         }
 
         const sideEntries = getHexNeighbors(roadHex)
           .filter((entry) => regionKeys.has(hexKey(entry)))
           .filter((entry) => isUsableIncomingRoadEntryHex(region, entry, hexTerrainByKey));
-        for (const entry of sideEntries) addIncoming(road.id, roadHex, entry);
+        for (const entry of sideEntries) addIncoming(road.id, roadHex, entry, 'body');
       }
     }
   }
@@ -6485,8 +6485,10 @@ function findIncomingRoadEndpointsForRegion(
 
 function chooseBestSettledIncomingRoadCandidate(candidates: SettledIncomingRoadCandidate[]): SettledIncomingRoadCandidate | null {
   if (candidates.length === 0) return null;
-  const maxPoiCount = Math.max(...candidates.map((candidate) => candidate.touchedPoiCount));
-  let bestCandidates = candidates.filter((candidate) => candidate.touchedPoiCount === maxPoiCount);
+  const endpointCandidates = candidates.filter((candidate) => candidate.incoming.touchKind === 'endpoint');
+  const priorityCandidates = endpointCandidates.length > 0 ? endpointCandidates : candidates;
+  const maxPoiCount = Math.max(...priorityCandidates.map((candidate) => candidate.touchedPoiCount));
+  let bestCandidates = priorityCandidates.filter((candidate) => candidate.touchedPoiCount === maxPoiCount);
   const minCrossings = Math.min(...bestCandidates.map((candidate) => candidate.crossedRiverCount));
   bestCandidates = bestCandidates.filter((candidate) => candidate.crossedRiverCount === minCrossings);
   const minLength = Math.min(...bestCandidates.map((candidate) => candidate.extendedPath.length));
@@ -6555,7 +6557,7 @@ function findWildIncomingRoadEndpointsForRegion(region: Region, roads: Road[]): 
       const endpointKey = hexKey(endpoint);
       const touchesRegion = regionKeys.has(endpointKey) || getHexNeighbors(endpoint).some((neighbor) => regionKeys.has(hexKey(neighbor)));
       if (!touchesRegion) continue;
-      result.push({ roadId: road.id, endpointHex: endpoint, entryHex: endpoint });
+      result.push({ roadId: road.id, endpointHex: endpoint, entryHex: endpoint, touchKind: 'endpoint' });
     }
   }
   return result;
