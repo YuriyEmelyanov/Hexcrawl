@@ -1681,39 +1681,53 @@ function assignRiverSectors(rivers: River[], lakes: Lake[], regions: Region[] = 
           'end'
         ) as RiverSector['endReason'];
 
-        let fullness: RiverFullness;
-        if (knownSectorFullness) {
-          // Existing river edges are authoritative: connecting a stronger incoming river
-          // must not silently rewrite the already drawn outgoing river's fullness.
-          // New connector sectors are created with their intended fullness beforehand,
-          // so preserving known edge fullness also keeps deliberate split/drop sectors.
-          downstreamFullness = knownSectorFullness;
-          fullness = knownSectorFullness;
-        } else {
-          if (baseFullness > downstreamFullness) {
-            downstreamFullness = baseFullness;
-          }
-          const adjustedFullness = applyRiverFullnessRules(
-            downstreamFullness,
-            fromIndex,
-            toIndex,
-            riverFullnessRuleState
-          );
-          downstreamFullness = adjustedFullness.downstreamFullness;
-          fullness = adjustedFullness.sectorFullness;
-          // Вариант 2: ниже первого слияния не опускаем полноводность ниже того,
-          // что было у реки до пересчёта. Срабатывает как страховка, если вариант 1
-          // не помог (например, русло сдвинулось между расчётами). Только downstream —
-          // верховья выше слияния не расширяем.
-          if (
-            priorMaxFullness !== null
-            && riverFullnessRuleState.firstConfluenceIndex !== undefined
-            && fromIndex >= riverFullnessRuleState.firstConfluenceIndex
-          ) {
-            if (downstreamFullness < priorMaxFullness) downstreamFullness = priorMaxFullness;
-            if (fullness < priorMaxFullness) fullness = priorMaxFullness;
-          }
-        }
+let fullness: RiverFullness;
+
+const confluenceAffectsSector = riverFullnessRuleState.allowConfluenceFullnessIncrease
+  && (
+    riverFullnessRuleState.confluenceTributaryFullnessByIndex.has(fromIndex)
+    || isDownstreamOfConfluenceFullnessIncrease(fromIndex, riverFullnessRuleState)
+  );
+
+const preserveKnownFullness = startReason === 'split'
+  || endReason === 'split'
+  || startReason === 'lake'
+  || endReason === 'lake';
+
+const startingFullness = baseFullness > downstreamFullness
+  ? baseFullness
+  : downstreamFullness;
+
+const adjustedFullness = applyRiverFullnessRules(
+  startingFullness,
+  fromIndex,
+  toIndex,
+  riverFullnessRuleState
+);
+
+if (knownSectorFullness && (!confluenceAffectsSector || preserveKnownFullness)) {
+  downstreamFullness = knownSectorFullness;
+  fullness = knownSectorFullness;
+} else if (knownSectorFullness) {
+  downstreamFullness = adjustedFullness.downstreamFullness > knownSectorFullness
+    ? adjustedFullness.downstreamFullness
+    : knownSectorFullness;
+  fullness = adjustedFullness.sectorFullness > knownSectorFullness
+    ? adjustedFullness.sectorFullness
+    : knownSectorFullness;
+} else {
+  downstreamFullness = adjustedFullness.downstreamFullness;
+  fullness = adjustedFullness.sectorFullness;
+
+  if (
+    priorMaxFullness !== null
+    && riverFullnessRuleState.firstConfluenceIndex !== undefined
+    && fromIndex >= riverFullnessRuleState.firstConfluenceIndex
+  ) {
+    if (downstreamFullness < priorMaxFullness) downstreamFullness = priorMaxFullness;
+    if (fullness < priorMaxFullness) fullness = priorMaxFullness;
+  }
+}
         sectors.push({
           id: `${river.id}:sector:${sectorIndex}`,
           riverId: river.id,
