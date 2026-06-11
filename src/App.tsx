@@ -6016,6 +6016,9 @@ function getRoadHexesInRegion(region: Region, roads: Road[]): AxialHex[] {
   return region.hexes.filter((hex) => hexHasRoad(hex, roads));
 }
 
+function getNonLakeRoadHexesInRegion(region: Region, roads: Road[], hexTerrainByKey: Map<string, HexTerrainData>): AxialHex[] {
+  return getRoadHexesInRegion(region, roads).filter((hex) => !isLakeHex(hex, hexTerrainByKey));
+}
 
 function getSettledMainRoadLimit(region: Region): number {
   const largeRegionLabels = new Set<Region['sizeLabel']>(['Большой регион', 'Край', 'Обширный край']);
@@ -7999,7 +8002,7 @@ function generateRoadsForRegion(options: {
   };
 
   const buildSupplementalRoadToExistingRoad = (anchorHex: AxialHex, logLabel: string): boolean => {
-    const roadTargets = getRoadHexesInRegion(region, built).filter((hex) => !isLakeHex(hex, hexTerrainByKey));
+    const roadTargets = getNonLakeRoadHexesInRegion(region, built, hexTerrainByKey);
     const availableStartHexes = getSupplementalRoadStartHexes(anchorHex);
     const collectStartHexes = (borderHexes: AxialHex[]) => borderHexes
       .filter((hex) => availableStartHexes.some((startHex) => isSameHex(startHex, hex)))
@@ -8042,8 +8045,7 @@ function generateRoadsForRegion(options: {
     buildBestIncomingRoadToTargets([region.centerHex], 'Second settled incoming road result');
 
     while (getRoadBuildCountForSettledRegion(region, built) < getSettledMainRoadLimit(region)) {
-      const roadTargets = getRoadHexesInRegion(region, built)
-        .filter((hex) => !isLakeHex(hex, hexTerrainByKey))
+      const roadTargets = getNonLakeRoadHexesInRegion(region, built, hexTerrainByKey)
         .filter((hex) => !isSameHex(hex, region.centerHex));
       if (roadTargets.length === 0) break;
       if (!buildBestIncomingRoadToTargets(roadTargets, 'Additional settled incoming road result')) break;
@@ -8085,11 +8087,21 @@ function generateRoadsForRegion(options: {
       .filter((poi) => !firstPathKeys.has(hexKey(poi)))
       .sort((a, b) => hexDistance(b, firstAnchorHex) - hexDistance(a, firstAnchorHex));
     const secondFallbackTargets = getAvailableRoadFallbackHexes({ region, fromHex: firstAnchorHex, roads: built, hexTerrainByKey, usedRoadPoiKeys, excludeHexKeys: new Set([hexKey(region.centerHex), ...Array.from(firstPathKeys)]) });
+    // Existing road-to-road builders handle incoming roads and supplemental border roads;
+    // the no-incoming second center road must explicitly prefer the first road as a target.
+    const existingRoadTargets = getNonLakeRoadHexesInRegion(region, built, hexTerrainByKey)
+      .filter((hex) => !isSameHex(hex, region.centerHex))
+      .sort((a, b) => hexDistance(b, region.centerHex) - hexDistance(a, region.centerHex));
     let secondBest: RoadCandidatePath | null = null;
-    for (const targetPoi of secondPoiTargets) {
-      const candidates = collectAlternativeRoadPathsToTarget({ region, fromHex: region.centerHex, targetHex: targetPoi, targetIsPoi: true, roads: built, rivers, hexTerrainByKey, usedRoadPoiKeys, maxAlternatives: maxCandidates });
+    for (const roadHex of existingRoadTargets) {
+      const candidates = collectAlternativeRoadPathsToTarget({ region, fromHex: region.centerHex, targetHex: roadHex, targetIsPoi: isPointOfInterestHex(roadHex, region), roads: built, rivers, hexTerrainByKey, usedRoadPoiKeys, maxAlternatives: maxCandidates });
       secondBest = chooseBestRoadCandidate(candidates);
       if (secondBest) break;
+    }
+    for (const targetPoi of secondPoiTargets) {
+      if (secondBest) break;
+      const candidates = collectAlternativeRoadPathsToTarget({ region, fromHex: region.centerHex, targetHex: targetPoi, targetIsPoi: true, roads: built, rivers, hexTerrainByKey, usedRoadPoiKeys, maxAlternatives: maxCandidates });
+      secondBest = chooseBestRoadCandidate(candidates);
     }
     if (!secondBest) {
       for (const fallbackHex of secondFallbackTargets) {
