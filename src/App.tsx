@@ -8194,7 +8194,8 @@ function generateRoadsForRegion(options: {
       }
     }
     const secondBest = chooseBestSettledCandidateRoadCandidate(secondCandidateRoads);
-    if (secondBest && addRoadFromPath(secondBest.extendedPath, 'road', [region.centerHex, secondBest.candidateHex], new Set([hexKey(secondBest.entryHex)]))) {
+    const secondRoadPath = secondBest ? trimPathToRegionHexes(secondBest.extendedPath, region) : [];
+    if (secondBest && addRoadFromPath(secondRoadPath, 'road', [region.centerHex, secondBest.entryHex], new Set([hexKey(secondBest.entryHex)]))) {
       console.log('Second settled candidate road result', {
         regionId: region.id,
         built: true,
@@ -8203,9 +8204,10 @@ function generateRoadsForRegion(options: {
         distanceFromFirstRoadEnd: secondBest.candidateDistanceFromAnchor,
         touchedPoiCount: secondBest.touchedPoiCount,
         crossedRiverCount: secondBest.crossedRiverCount,
-        pathLength: secondBest.extendedPath.length
+        pathLength: secondRoadPath.length,
+        trimmedCandidateExitSegment: secondRoadPath.length < secondBest.extendedPath.length
       });
-      markPoiOnPathAsUsed(secondBest.extendedPath, region, usedRoadPoiKeys);
+      markPoiOnPathAsUsed(secondRoadPath, region, usedRoadPoiKeys);
     } else {
       console.log('Second settled candidate road result', {
         regionId: region.id,
