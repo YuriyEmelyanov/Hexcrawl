@@ -4358,12 +4358,18 @@ function extendSeaToCoastalCenterCandidate(
 // Гексы-море для прибрежного региона: пустые гексы на отвёрнутой от центра
 // ("береговой") стороне региона. Никогда не ставятся на гексы какого-либо
 // региона и на гексы с уже заданным terrain (озёра/существующее море).
-// Item 1: река не должна повторно впадать в озеро, через которое уже проходила.
-// Если река касается периметра озера (в том числе стартует на нём), покидает его,
-// а затем снова касается ТОГО ЖЕ озера — обрезаем путь перед повторным входом.
-function trimRiverLakeReentry(river: River, lakeIdByVertexKey: Map<string, number>): River {
+type RiverLakeReentryViolation = {
+  riverId: number;
+  lakeId: number;
+  vertexKey: string;
+};
+
+function getRiverLakeReentryViolation(
+  river: River,
+  lakeIdByVertexKey: Map<string, number>
+): RiverLakeReentryViolation | null {
   const path = river.vertexPath;
-  if (path.length < 3) return river;
+  if (path.length < 3) return null;
 
   const exitedLakeIds = new Set<number>();
   let previousLakeId = lakeIdByVertexKey.get(path[0].key);
@@ -4375,13 +4381,25 @@ function trimRiverLakeReentry(river: River, lakeIdByVertexKey: Map<string, numbe
       exitedLakeIds.add(previousLakeId);
     }
     if (currentLakeId !== undefined && currentLakeId !== previousLakeId && exitedLakeIds.has(currentLakeId)) {
-      return { ...river, vertexPath: path.slice(0, i) };
+      return { riverId: river.id, lakeId: currentLakeId, vertexKey: path[i].key };
     }
 
     previousLakeId = currentLakeId;
   }
 
-  return river;
+  return null;
+}
+
+function getRiversLakeReentryViolation(
+  rivers: River[],
+  lakeIdByVertexKey: Map<string, number>
+): RiverLakeReentryViolation | null {
+  for (const river of rivers) {
+    const violation = getRiverLakeReentryViolation(river, lakeIdByVertexKey);
+    if (violation) return violation;
+  }
+
+  return null;
 }
 
 function buildLakeIdByVertexKey(lakes: Lake[]): Map<string, number> {
@@ -9346,12 +9364,21 @@ export function App() {
       const finalCandidateHexes = pocketKeySet.size > 0
         ? nextCandidateHexesExclSea.filter((hex) => !pocketKeySet.has(hexKey(hex)))
         : nextCandidateHexesExclSea;
-      // Item 1: реки, возвращающиеся в уже пройденное озеро, обрезаются перед повторным входом.
+      // Item 1: реки, возвращающиеся в уже пройденное озеро, больше не обрезаются.
+      // Некорректная попытка отбраковывается целиком, чтобы генератор искал другой путь.
       const lakeIdByVertexKey = buildLakeIdByVertexKey(getLakesForRegions(nextRegions, nextHexTerrainByKeyPreview));
-      const sanitizedRivers = riversWithDeltas.map((river) => trimRiverLakeReentry(river, lakeIdByVertexKey));
+      const riverLakeReentryViolation = getRiversLakeReentryViolation(riversWithDeltas, lakeIdByVertexKey);
+      if (riverLakeReentryViolation) {
+        console.warn('Discarding failed candidate region because a river re-enters a lake it already left', {
+          attempt,
+          regionId,
+          ...riverLakeReentryViolation
+        });
+        continue;
+      }
       // Река «море-в-море»: проверяем против ВСЕГО моря (существующее + новое + карманы).
       const finalAllSeaKeys = [...allSeaKeys, ...enclosedPocketKeys];
-      const finalNewSeaHeightViolation = getRiverSeaHeightViolation(sanitizedRivers, finalAllSeaKeys);
+      const finalNewSeaHeightViolation = getRiverSeaHeightViolation(riversWithDeltas, finalAllSeaKeys);
       if (finalNewSeaHeightViolation) {
         console.warn('Discarding failed candidate region because final new sea touches a river away from its mouth', {
           attempt,
@@ -9398,7 +9425,7 @@ export function App() {
       });
       setNextLakeId(Math.max(computedNextLakeId, getNextLakeIdFromTerrain(nextHexTerrainByKeyPreview)));
 
-      setRivers(sanitizedRivers);
+      setRivers(riversWithDeltas);
       setRoads(roadResult.roads);
       setNextRoadId(roadResult.nextRoadId);
       setSelectedHex(centerHex);
