@@ -1514,11 +1514,22 @@ function firstDownstreamOutletAfterConfluenceTouchesCandidate(
   river: River,
   confluenceIndices: number[],
   candidateBoundaryByHeight: CandidateBoundaryByHeight,
-  regionBoundaryVertexKeys: Set<string>
+  regionBoundaryVertexKeys: Set<string>,
+  extraDownstreamBoundary?: { edgeKeys: Set<string>; vertexKeys: Set<string> }
 ): boolean {
   if (confluenceIndices.length === 0) return false;
   const vertexPath = river.vertexPath ?? [];
   const firstConfluenceIndex = Math.min(...confluenceIndices);
+
+  // If the final downstream endpoint already faces an ungenerated candidate (or
+  // the sea), the merged flow has an outlet even when the full river path crosses
+  // older region-boundary vertices before reaching that endpoint. The scan below
+  // still protects local intermediate outlets, but endpoint-first detection keeps
+  // confluences in a newly generated region from being hidden by historical
+  // boundary vertices stored in the same river path.
+  if (riverEndpointTouchesCandidateBoundary(river, 'downstream', candidateBoundaryByHeight, undefined, extraDownstreamBoundary)) {
+    return true;
+  }
 
   for (let index = firstConfluenceIndex + 1; index < vertexPath.length; index += 1) {
     if (vertexTouchesCandidateBoundary(vertexPath, index, candidateBoundaryByHeight)) return true;
@@ -1533,7 +1544,8 @@ function buildRiverFullnessRuleState(
   riverIdsByVertexKey: Map<string, Set<number | string>>,
   riversById: Map<number | string, River>,
   candidateBoundaryByHeight: CandidateBoundaryByHeight,
-  regionBoundaryVertexKeys: Set<string>
+  regionBoundaryVertexKeys: Set<string>,
+  extraDownstreamBoundary?: { edgeKeys: Set<string>; vertexKeys: Set<string> }
 ): RiverFullnessRuleState {
   const confluenceTributaryFullnessByIndex = getConfluenceTributaryFullnessByIndex(river, riverIdsByVertexKey, riversById);
   const confluenceIndices = Array.from(confluenceTributaryFullnessByIndex.keys());
@@ -1541,7 +1553,8 @@ function buildRiverFullnessRuleState(
     river,
     confluenceIndices,
     candidateBoundaryByHeight,
-    regionBoundaryVertexKeys
+    regionBoundaryVertexKeys,
+    extraDownstreamBoundary
   );
   const reduceHeightTwoUpstreamBeforeConfluence = confluenceIndices.length > 0 && riverEndpointTouchesCandidateBoundary(
     river,
@@ -1656,6 +1669,10 @@ function assignRiverSectors(
   const lakeVertexKeys = new Set<string>();
   const regionBoundaryVertexKeys = getRegionBoundaryVertexKeys(regions);
   const candidateBoundaryByHeight = buildCandidateBoundaryByHeight(regions, candidateHexes);
+  const seaMouthBoundary = buildSeaMouthBoundary(seaHexKeys);
+  const extraDownstreamBoundary = seaMouthBoundary.edgeKeys.size > 0 || seaMouthBoundary.vertexKeys.size > 0
+    ? seaMouthBoundary
+    : undefined;
   for (const lake of lakes) {
     const exteriorKeys = new Set(getRegionExteriorVertices(lake.hexes).map((vertex) => vertex.key));
     lakeExteriorVertexKeysByLakeId.set(lake.lakeId, exteriorKeys);
@@ -1683,7 +1700,8 @@ function assignRiverSectors(
         riverIdsByVertexKey,
         riversById,
         candidateBoundaryByHeight,
-        regionBoundaryVertexKeys
+        regionBoundaryVertexKeys,
+        extraDownstreamBoundary
       );
       // Вариант 2 (нижняя граница): полноводность реки до пересчёта — страховка,
       // чтобы повторный расчёт после моря не занижал её ниже первого слияния.
