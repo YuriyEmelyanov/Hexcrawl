@@ -2447,14 +2447,14 @@ function tryAddSmallTributaryRiver(
       return rivers;
     }
     const regionRivers = getRiversForRegion(region, rivers);
-    const hasFullnessTwoMountainIncomingRiver = region.heightLevel === 3 && regionRivers.some((river) => (
+    const hasFullnessTwoMountainOutgoingRiver = region.heightLevel === 3 && regionRivers.some((river) => (
       (river.sectors ?? []).some((sector) => (
         sector.assignedRegionId === region.id
-        && sector.startReason === 'region_boundary'
+        && sector.endReason === 'region_boundary'
         && sector.fullness === 2
       ))
     ));
-    if (!(region.heightLevel === 1 || region.heightLevel === 2 || hasFullnessTwoMountainIncomingRiver)) {
+    if (!(region.heightLevel === 1 || region.heightLevel === 2 || hasFullnessTwoMountainOutgoingRiver)) {
       logGeneration({ startCandidates: 0, built: false, reason: 'wrong_height', segmentCount: 0, reachedLake: false, targetLakeWasFree: false });
       return rivers;
     }
@@ -5321,6 +5321,86 @@ function generateRiverForRegion(
       });
       return finalizeRiverGenerationForRegion(region, regions, terrainMap, riverGraph, nextRivers, candidateHexes ?? [], candidateVertices, neighborRegionVertices);
     };
+
+    if (region.heightLevel === 3) {
+      const fullnessTwoOutgoingEndpoints = outgoingEndpoints
+        .filter((endpoint) => {
+          const river = existingRivers.find((item) => item.id === endpoint.riverId);
+          return river ? getRiverEndpointSectorFullness(river, endpoint.vertex.key) === 2 : false;
+        })
+        .sort((a, b) => a.riverId - b.riverId);
+      const mainOutgoingEndpoint = fullnessTwoOutgoingEndpoints[0];
+
+      if (mainOutgoingEndpoint) {
+        let bestPath: RiverVertex[] | null = null;
+        let bestControlPoints: RiverControlPoints | null = null;
+        const redVerticesByDistance = [...redVertices].sort((a, b) => (
+          getRiverVertexDistance(b, mainOutgoingEndpoint.vertex) - getRiverVertexDistance(a, mainOutgoingEndpoint.vertex)
+        ));
+        const middlePool = purpleVertices.length > 0 ? purpleVertices : [undefined];
+
+        for (const startVertex of redVerticesByDistance) {
+          if (startVertex.key === mainOutgoingEndpoint.vertex.key) continue;
+          for (const middlePurpleVertex of middlePool) {
+            const controlPoints: RiverControlPoints = {
+              startVertex,
+              ...(middlePurpleVertex ? { middlePurpleVertex } : {}),
+              endVertex: mainOutgoingEndpoint.vertex,
+              startMode: 'red vertex',
+              endMode: 'existing river endpoint'
+            };
+            const path = buildRiverPathViaControlPoints(controlPoints, riverGraph, usedRiverEdges);
+            if (path.length < 2) continue;
+            if (path[0].key !== startVertex.key || path[path.length - 1].key !== mainOutgoingEndpoint.vertex.key) continue;
+            if (middlePurpleVertex && !path.some((vertex) => vertex.key === middlePurpleVertex.key)) continue;
+            if (!riverPathTouchesCenterHex(path, region.centerHex, riverGraph)) continue;
+            if (new Set(path.map((vertex) => vertex.key)).size !== path.length) continue;
+            const pathEdgeKeys = getRiverPathEdgeKeys(path, riverGraph);
+            if (!pathEdgeKeys) continue;
+            if (hasDuplicateEdgeKeys(pathEdgeKeys)) continue;
+            if (pathEdgeKeys.some((pathEdgeKey) => usedRiverEdges.has(pathEdgeKey))) continue;
+            if (!riverPathAvoidsOccupiedVertices(path, existingRiverVertexKeys, new Set([mainOutgoingEndpoint.vertex.key]))) continue;
+            const firstEdge = riverGraph.edges.get(edgeKey(path[0], path[1]));
+            if (!firstEdge?.isRegionBoundaryEdge) continue;
+
+            if (!bestPath || path.length < bestPath.length) {
+              bestPath = path;
+              bestControlPoints = controlPoints;
+            }
+          }
+        }
+
+        if (!bestPath || !bestControlPoints) {
+          console.warn('Could not extend fullness-2 outgoing mountain river from candidate boundary through center', {
+            regionId: region.id,
+            outgoingRiverId: mainOutgoingEndpoint.riverId,
+            redVertexCount: redVertices.length,
+          });
+          return { success: false, rivers: existingRivers, reason: 'mountain_fullness_two_outgoing_path_not_found' };
+        }
+
+        const outgoingRiver = existingRivers.find((river) => river.id === mainOutgoingEndpoint.riverId);
+        const outgoingFullness = outgoingRiver
+          ? getRiverEndpointSectorFullness(outgoingRiver, mainOutgoingEndpoint.vertex.key)
+          : 2;
+        const nextRivers = existingRivers.map((river) => {
+          if (river.id !== mainOutgoingEndpoint.riverId) return river;
+          return {
+            ...river,
+            vertexPath: [...bestPath.slice(0, -1), ...river.vertexPath],
+            sectors: prependRiverPathSector(river, bestPath, outgoingFullness, region.id),
+            controlPoints: bestControlPoints
+          };
+        });
+
+        for (const river of nextRivers) {
+          validateRiverDirection(river);
+          validateRiverContinuity(river);
+        }
+        validateNoDuplicateRiverEdges(nextRivers);
+        return finalizeRiverGenerationForRegion(region, regions, terrainMap, riverGraph, nextRivers, candidateHexes ?? [], candidateVertices, neighborRegionVertices);
+      }
+    }
 
     if (region.heightLevel === 3 && outgoingEndpoints.length > 0) {
       const sortedOutgoingEndpoints = [...outgoingEndpoints].sort((a, b) => a.riverId - b.riverId);
