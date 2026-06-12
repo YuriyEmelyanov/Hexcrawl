@@ -1643,14 +1643,6 @@ function applyRiverFullnessRules(
     && toIndex <= ruleState.firstConfluenceIndex
   ) {
     sectorFullness = 2;
-  } else if (
-    ruleState.reduceHeightThreeUpstreamBeforeConfluence
-    && sectorFullness === 2
-    && ruleState.firstConfluenceIndex !== undefined
-    && fromIndex < ruleState.firstConfluenceIndex
-    && toIndex <= ruleState.firstConfluenceIndex
-  ) {
-    sectorFullness = 1;
   }
 
   return { downstreamFullness, sectorFullness };
