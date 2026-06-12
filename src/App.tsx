@@ -1772,7 +1772,6 @@ function assignRiverSectors(
         const assignedRegionId = getRiverSectorAssignedRegion(edgeKeys, existingAssignedRegionByEdge, river.regionId);
         const canRecalculateFullness = options.recalculatedRegionId === undefined
           || assignedRegionId === options.recalculatedRegionId;
-
         let fullness: RiverFullness;
 
         const confluenceAffectsSector = canRecalculateFullness
@@ -1800,20 +1799,32 @@ function assignRiverSectors(
           toIndex,
           riverFullnessRuleState
         );
+        // This reduction is intentionally narrow: only sectors being recalculated
+        // for the new region may apply it, and only when the whole river has an
+        // upstream endpoint on a height-2 candidate boundary before a confluence.
+        // Existing known fullness used to mask this local 3 -> 2 sector result.
+        const localReductionAffectsSector = Boolean(
+          canRecalculateFullness
+          && !preserveKnownFullness
+          && riverFullnessRuleState.reduceHeightTwoUpstreamBeforeConfluence
+          && adjustedFullness.sectorFullness < startingFullness
+        );
 
         if (!canRecalculateFullness) {
           downstreamFullness = baseFullness;
           fullness = baseFullness;
-        } else if (knownSectorFullness && (!confluenceAffectsSector || preserveKnownFullness)) {
+        } else if (knownSectorFullness && (!confluenceAffectsSector || preserveKnownFullness) && !localReductionAffectsSector) {
           downstreamFullness = knownSectorFullness;
           fullness = knownSectorFullness;
         } else if (knownSectorFullness) {
           downstreamFullness = adjustedFullness.downstreamFullness > knownSectorFullness
             ? adjustedFullness.downstreamFullness
             : knownSectorFullness;
-          fullness = adjustedFullness.sectorFullness > knownSectorFullness
+          fullness = localReductionAffectsSector
             ? adjustedFullness.sectorFullness
-            : knownSectorFullness;
+            : adjustedFullness.sectorFullness > knownSectorFullness
+              ? adjustedFullness.sectorFullness
+              : knownSectorFullness;
         } else {
           downstreamFullness = adjustedFullness.downstreamFullness;
           fullness = adjustedFullness.sectorFullness;
