@@ -9268,32 +9268,17 @@ export function App() {
       let biomeChoice = pickBiome(effectiveRiverHeightConstraint);
 
       if (!biomeChoice.biomeId && biomeChoice.reason === 'river_height_constraint_failed') {
-        console.warn('Region failed because of river height constraint; outgoing river trimming fallback is disabled', {
+        console.warn('Region attempt discarded because no biome satisfies river height constraints', {
           regionId,
           attempt,
           riverHeightConstraint,
           adjacentBiomeIds,
           biomeLandType
         });
-        effectiveRiverHeightConstraint = {
-          reasons: [
-            ...riverHeightConstraint.reasons,
-            'river height constraint relaxed because outgoing river trimming fallback is disabled'
-          ]
-        };
-        biomeChoice = pickBiome(effectiveRiverHeightConstraint);
-        console.warn('River height constraint relaxed because outgoing river trimming fallback is disabled', {
-          regionId,
-          attempt,
-          riverHeightConstraint,
-          effectiveRiverHeightConstraint,
-          adjacentBiomeIds,
-          biomeLandType,
-          biomeId: biomeChoice.biomeId
-        });
+        continue;
       }
       if (!biomeChoice.biomeId) {
-        console.warn('No biome available after river height fallback; retrying region generation', {
+        console.warn('No biome available for candidate region; retrying region generation', {
           regionId,
           attempt,
           riverHeightConstraint,
