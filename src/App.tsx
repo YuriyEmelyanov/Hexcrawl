@@ -1438,6 +1438,7 @@ type RiverFullnessRuleState = {
   confluenceTributaryFullnessByIndex: Map<number, RiverFullness>;
   allowConfluenceFullnessIncrease: boolean;
   reduceHeightTwoUpstreamBeforeConfluence: boolean;
+  reduceHeightThreeUpstreamBeforeConfluence: boolean;
   firstConfluenceIndex?: number;
 };
 
@@ -1584,11 +1585,18 @@ function buildRiverFullnessRuleState(
     candidateBoundaryByHeight,
     2
   );
+  const reduceHeightThreeUpstreamBeforeConfluence = confluenceIndices.length > 0 && riverEndpointTouchesCandidateBoundary(
+    river,
+    'upstream',
+    candidateBoundaryByHeight,
+    3
+  );
 
   return {
     confluenceTributaryFullnessByIndex,
     allowConfluenceFullnessIncrease,
     reduceHeightTwoUpstreamBeforeConfluence,
+    reduceHeightThreeUpstreamBeforeConfluence,
     firstConfluenceIndex: confluenceIndices.length > 0 ? Math.min(...confluenceIndices) : undefined
   };
 }
@@ -1606,7 +1614,8 @@ function applyRiverFullnessRules(
   fromIndex: number,
   toIndex: number,
   ruleState: RiverFullnessRuleState,
-  allowHeightOneConfluenceIncrease: boolean
+  allowHeightOneConfluenceIncrease: boolean,
+  assignedRegionHeight?: RegionHeightLevel
 ): { downstreamFullness: RiverFullness; sectorFullness: RiverFullness } {
   let downstreamFullness = currentDownstreamFullness;
 
@@ -1634,6 +1643,15 @@ function applyRiverFullnessRules(
     && toIndex <= ruleState.firstConfluenceIndex
   ) {
     sectorFullness = 2;
+  }
+  if (
+    (ruleState.reduceHeightThreeUpstreamBeforeConfluence || assignedRegionHeight === 3)
+    && sectorFullness === 2
+    && ruleState.firstConfluenceIndex !== undefined
+    && fromIndex < ruleState.firstConfluenceIndex
+    && toIndex <= ruleState.firstConfluenceIndex
+  ) {
+    sectorFullness = 1;
   }
 
   return { downstreamFullness, sectorFullness };
@@ -1829,16 +1847,21 @@ function assignRiverSectors(
           fromIndex,
           toIndex,
           riverFullnessRuleState,
-          allowHeightOneConfluenceIncrease
+          allowHeightOneConfluenceIncrease,
+          assignedRegionHeight
         );
         // This reduction is intentionally narrow: only sectors being recalculated
-        // for the new region may apply it, and only when the whole river has an
-        // upstream endpoint on a height-2 candidate boundary before a confluence.
-        // Existing known fullness used to mask this local 3 -> 2 sector result.
+        // for the new region may apply it, and only before a confluence that has
+        // a height-specific upstream reduction (height 2) or belongs to a height-3
+        // region. Existing known fullness used to mask these local reductions.
         const localReductionAffectsSector = Boolean(
           canRecalculateFullness
           && !preserveKnownFullness
-          && riverFullnessRuleState.reduceHeightTwoUpstreamBeforeConfluence
+          && (
+            riverFullnessRuleState.reduceHeightTwoUpstreamBeforeConfluence
+            || riverFullnessRuleState.reduceHeightThreeUpstreamBeforeConfluence
+            || assignedRegionHeight === 3
+          )
           && adjustedFullness.sectorFullness < startingFullness
         );
 
@@ -2423,12 +2446,18 @@ function tryAddSmallTributaryRiver(
       logGeneration({ startCandidates: 0, built: false, reason: 'wrong_region_size', segmentCount: 0, reachedLake: false, targetLakeWasFree: false });
       return rivers;
     }
-    if (!(region.heightLevel === 1 || region.heightLevel === 2)) {
+    const regionRivers = getRiversForRegion(region, rivers);
+    const hasFullnessTwoMountainIncomingRiver = region.heightLevel === 3 && regionRivers.some((river) => (
+      (river.sectors ?? []).some((sector) => (
+        sector.assignedRegionId === region.id
+        && sector.startReason === 'region_boundary'
+        && sector.fullness === 2
+      ))
+    ));
+    if (!(region.heightLevel === 1 || region.heightLevel === 2 || hasFullnessTwoMountainIncomingRiver)) {
       logGeneration({ startCandidates: 0, built: false, reason: 'wrong_height', segmentCount: 0, reachedLake: false, targetLakeWasFree: false });
       return rivers;
     }
-
-    const regionRivers = getRiversForRegion(region, rivers);
     const existingRiverVertexKeys = new Set(regionRivers.flatMap((river) => river.vertexPath.map((v) => v.key)));
     const existingRiverEdgeKeys = buildUsedRiverEdges(rivers);
     const freeLakeVertexKeys = new Set<string>();
