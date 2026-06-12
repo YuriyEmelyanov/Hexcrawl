@@ -1636,15 +1636,14 @@ function applyRiverFullnessRules(
 
   let sectorFullness = downstreamFullness;
   if (
-    ruleState.reduceHeightTwoUpstreamBeforeConfluence
+    (ruleState.reduceHeightTwoUpstreamBeforeConfluence || assignedRegionHeight === 3)
     && sectorFullness === 3
     && ruleState.firstConfluenceIndex !== undefined
     && fromIndex < ruleState.firstConfluenceIndex
     && toIndex <= ruleState.firstConfluenceIndex
   ) {
     sectorFullness = 2;
-  }
-  if (
+  } else if (
     (ruleState.reduceHeightThreeUpstreamBeforeConfluence || assignedRegionHeight === 3)
     && sectorFullness === 2
     && ruleState.firstConfluenceIndex !== undefined
@@ -1853,7 +1852,9 @@ function assignRiverSectors(
         // This reduction is intentionally narrow: only sectors being recalculated
         // for the new region may apply it, and only before a confluence that has
         // a height-specific upstream reduction (height 2) or belongs to a height-3
-        // region. Existing known fullness used to mask these local reductions.
+        // region. Existing known fullness used to mask these local reductions;
+        // mountain regions need the local 3 -> 2 drop before a size-1 tributary
+        // while preserving the carried downstream fullness after the confluence.
         const localReductionAffectsSector = Boolean(
           canRecalculateFullness
           && !preserveKnownFullness
@@ -2228,18 +2229,27 @@ type MinorRiverBuildResult = {
 };
 
 
-function hasFullnessTwoMountainOutgoingRiver(
+function hasMountainOutgoingRiverWithFullness(
   region: Region,
   rivers: River[],
-  riverGraph: RiverGraph
+  riverGraph: RiverGraph,
+  allowedFullnesses: Set<RiverFullness>
 ): boolean {
   if (region.heightLevel !== 3) return false;
 
   return findRiverEndpointsTouchingRegion(region, rivers, riverGraph).some((endpoint) => {
     if (endpoint.endpointType !== 'start') return false;
     const river = rivers.find((item) => item.id === endpoint.riverId);
-    return river ? getRiverEndpointSectorFullness(river, endpoint.vertex.key) === 2 : false;
+    return river ? allowedFullnesses.has(getRiverEndpointSectorFullness(river, endpoint.vertex.key)) : false;
   });
+}
+
+function hasFullnessTwoOrThreeMountainOutgoingRiver(
+  region: Region,
+  rivers: River[],
+  riverGraph: RiverGraph
+): boolean {
+  return hasMountainOutgoingRiverWithFullness(region, rivers, riverGraph, new Set<RiverFullness>([2, 3]));
 }
 
 type EdgeTributaryGenerationReason =
@@ -2285,15 +2295,15 @@ function tryAddEdgeMinorTributaryRiver(
   };
 
   try {
-    const hasMountainFullnessTwoOutgoingRiver = hasFullnessTwoMountainOutgoingRiver(region, rivers, riverGraph);
+    const hasMountainFullnessTwoOrThreeOutgoingRiver = hasFullnessTwoOrThreeMountainOutgoingRiver(region, rivers, riverGraph);
     const supportsEdgeTributary = region.sizeCategory === 'land'
       || region.sizeCategory === 'vast_land'
-      || hasMountainFullnessTwoOutgoingRiver;
+      || hasMountainFullnessTwoOrThreeOutgoingRiver;
     if (!supportsEdgeTributary) {
       logGeneration({ built: false, reason: 'not_edge_size', pathLength: 0 });
       return rivers;
     }
-    if (!(region.heightLevel === 1 || region.heightLevel === 2 || hasMountainFullnessTwoOutgoingRiver)) {
+    if (!(region.heightLevel === 1 || region.heightLevel === 2 || hasMountainFullnessTwoOrThreeOutgoingRiver)) {
       logGeneration({ built: false, reason: 'height_not_supported', pathLength: 0 });
       return rivers;
     }
@@ -2345,15 +2355,20 @@ function tryAddEdgeMinorTributaryRiver(
       if (endpoint.endpointType !== 'start') continue;
       if (!outgoingEndpointByRiverId.has(endpoint.riverId)) outgoingEndpointByRiverId.set(endpoint.riverId, endpoint);
     }
-    const riverIsRequiredMountainOutgoing = (river: River): boolean => {
-      if (!hasMountainFullnessTwoOutgoingRiver) return true;
+    const getMountainOutgoingEndpointFullness = (river: River): RiverFullness | null => {
       const endpoint = outgoingEndpointByRiverId.get(river.id);
-      return endpoint ? getRiverEndpointSectorFullness(river, endpoint.vertex.key) === 2 : false;
+      return endpoint ? getRiverEndpointSectorFullness(river, endpoint.vertex.key) : null;
+    };
+    const riverIsRequiredMountainOutgoing = (river: River): boolean => {
+      if (!hasMountainFullnessTwoOrThreeOutgoingRiver) return true;
+      const fullness = getMountainOutgoingEndpointFullness(river);
+      return fullness === 2 || fullness === 3;
     };
 
     const outgoingRivers = regionRivers
       .filter(riverTouchesCandidateExit)
-      .filter(riverIsRequiredMountainOutgoing);
+      .filter(riverIsRequiredMountainOutgoing)
+      .sort((a, b) => (getMountainOutgoingEndpointFullness(b) ?? 0) - (getMountainOutgoingEndpointFullness(a) ?? 0) || a.id - b.id);
     outgoingRiverCount = outgoingRivers.length;
     const selectedTargetRiver = outgoingRivers[0] ?? null;
     selectedTargetRiverId = selectedTargetRiver?.id ?? null;
@@ -2471,24 +2486,24 @@ function tryAddSmallTributaryRiver(
   };
 
   try {
-    const hasMountainFullnessTwoOutgoingRiver = hasFullnessTwoMountainOutgoingRiver(region, rivers, riverGraph);
+    const hasMountainFullnessTwoOrThreeOutgoingRiver = hasFullnessTwoOrThreeMountainOutgoingRiver(region, rivers, riverGraph);
     if (region.sizeCategory === 'land' || region.sizeCategory === 'vast_land') {
       return tryAddEdgeMinorTributaryRiver(region, terrainMap, riverGraph, rivers, candidateHexes);
     }
     const supportsInteriorTributary = region.sizeCategory === 'region'
       || region.sizeCategory === 'large_region'
-      || hasMountainFullnessTwoOutgoingRiver;
+      || hasMountainFullnessTwoOrThreeOutgoingRiver;
     if (!supportsInteriorTributary) {
       logGeneration({ startCandidates: 0, built: false, reason: 'wrong_region_size', segmentCount: 0, reachedLake: false, targetLakeWasFree: false });
       return rivers;
     }
     const regionRivers = getRiversForRegion(region, rivers);
-    if (!(region.heightLevel === 1 || region.heightLevel === 2 || hasMountainFullnessTwoOutgoingRiver)) {
+    if (!(region.heightLevel === 1 || region.heightLevel === 2 || hasMountainFullnessTwoOrThreeOutgoingRiver)) {
       logGeneration({ startCandidates: 0, built: false, reason: 'wrong_height', segmentCount: 0, reachedLake: false, targetLakeWasFree: false });
       return rivers;
     }
     const tryMountainEdgeFallback = (): River[] => {
-      if (!hasMountainFullnessTwoOutgoingRiver) return rivers;
+      if (!hasMountainFullnessTwoOrThreeOutgoingRiver) return rivers;
       return tryAddEdgeMinorTributaryRiver(region, terrainMap, riverGraph, rivers, candidateHexes);
     };
 
@@ -5357,13 +5372,15 @@ function generateRiverForRegion(
     };
 
     if (region.heightLevel === 3) {
-      const fullnessTwoOutgoingEndpoints = outgoingEndpoints
-        .filter((endpoint) => {
+      const fullnessTwoOrThreeOutgoingEndpoints = outgoingEndpoints
+        .map((endpoint) => {
           const river = existingRivers.find((item) => item.id === endpoint.riverId);
-          return river ? getRiverEndpointSectorFullness(river, endpoint.vertex.key) === 2 : false;
+          const fullness = river ? getRiverEndpointSectorFullness(river, endpoint.vertex.key) : null;
+          return fullness === 2 || fullness === 3 ? { endpoint, fullness } : null;
         })
-        .sort((a, b) => a.riverId - b.riverId);
-      const mainOutgoingEndpoint = fullnessTwoOutgoingEndpoints[0];
+        .filter((item): item is { endpoint: RiverEndpointTouch; fullness: 2 | 3 } => item !== null)
+        .sort((a, b) => b.fullness - a.fullness || a.endpoint.riverId - b.endpoint.riverId);
+      const mainOutgoingEndpoint = fullnessTwoOrThreeOutgoingEndpoints[0]?.endpoint;
 
       if (mainOutgoingEndpoint) {
         let bestPath: RiverVertex[] | null = null;
@@ -5405,12 +5422,12 @@ function generateRiverForRegion(
         }
 
         if (!bestPath || !bestControlPoints) {
-          console.warn('Could not extend fullness-2 outgoing mountain river from candidate boundary through center', {
+          console.warn('Could not extend fullness-2/3 outgoing mountain river from candidate boundary through center', {
             regionId: region.id,
             outgoingRiverId: mainOutgoingEndpoint.riverId,
             redVertexCount: redVertices.length,
           });
-          return { success: false, rivers: existingRivers, reason: 'mountain_fullness_two_outgoing_path_not_found' };
+          return { success: false, rivers: existingRivers, reason: 'mountain_fullness_two_or_three_outgoing_path_not_found' };
         }
 
         const outgoingRiver = existingRivers.find((river) => river.id === mainOutgoingEndpoint.riverId);
