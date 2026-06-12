@@ -5388,7 +5388,14 @@ function generateRiverForRegion(
     }
 
     if (incomingEndpoints.length >= 2 && outgoingEndpoints.length === 0) {
-      const sortedIncomingEndpoints = [...incomingEndpoints].sort((a, b) => a.riverId - b.riverId);
+      const getIncomingEndpointFullness = (endpoint: RiverEndpointTouch): RiverFullness => {
+        const river = existingRivers.find((item) => item.id === endpoint.riverId);
+        return river ? getRiverFullnessAtVertex(river, endpoint.vertex.key) : 1;
+      };
+      const sortedIncomingEndpoints = [...incomingEndpoints].sort((a, b) => (
+        getIncomingEndpointFullness(b) - getIncomingEndpointFullness(a)
+        || a.riverId - b.riverId
+      ));
       const mainIncomingEndpoint = sortedIncomingEndpoints[0];
       const tributaryIncomingEndpoints = sortedIncomingEndpoints.slice(1);
       const blockedEdgeKeys = new Set(usedRiverEdges);
@@ -5396,7 +5403,12 @@ function generateRiverForRegion(
       console.log('Multiple incoming rivers: building main river and tributaries', {
         regionId: region.id,
         incomingRiverIds: sortedIncomingEndpoints.map((endpoint) => endpoint.riverId),
+        incomingRiverFullnesses: sortedIncomingEndpoints.map((endpoint) => ({
+          riverId: endpoint.riverId,
+          fullness: getIncomingEndpointFullness(endpoint),
+        })),
         mainRiverId: mainIncomingEndpoint.riverId,
+        mainRiverFullness: getIncomingEndpointFullness(mainIncomingEndpoint),
         tributaryRiverIds: tributaryIncomingEndpoints.map((endpoint) => endpoint.riverId),
       });
 
