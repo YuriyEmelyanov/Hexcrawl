@@ -2953,6 +2953,54 @@ function getNextLakeIdFromTerrain(terrainMap: Map<string, HexTerrainData>): numb
   return Math.max(0, ...Array.from(terrainMap.values()).map((terrain) => terrain.lakeId ?? 0)) + 1;
 }
 
+
+function mergeAdjacentLakeIds(terrainMap: Map<string, HexTerrainData>): void {
+  const lakeKeys = Array.from(terrainMap.entries())
+    .filter(([, terrain]) => terrain.terrainOverride === 'lake' && terrain.lakeId !== undefined)
+    .map(([key]) => key);
+  if (lakeKeys.length < 2) return;
+
+  const parent = new Map<number, number>();
+  const find = (lakeId: number): number => {
+    const currentParent = parent.get(lakeId) ?? lakeId;
+    if (currentParent === lakeId) {
+      parent.set(lakeId, lakeId);
+      return lakeId;
+    }
+    const root = find(currentParent);
+    parent.set(lakeId, root);
+    return root;
+  };
+  const union = (leftLakeId: number, rightLakeId: number): void => {
+    const leftRoot = find(leftLakeId);
+    const rightRoot = find(rightLakeId);
+    if (leftRoot === rightRoot) return;
+    const mergedRoot = Math.min(leftRoot, rightRoot);
+    const mergedChild = Math.max(leftRoot, rightRoot);
+    parent.set(mergedChild, mergedRoot);
+    parent.set(mergedRoot, mergedRoot);
+  };
+
+  for (const key of lakeKeys) {
+    const terrain = terrainMap.get(key);
+    if (terrain?.terrainOverride !== 'lake' || terrain.lakeId === undefined) continue;
+    find(terrain.lakeId);
+
+    for (const neighbor of getHexNeighbors(parseHexKey(key))) {
+      const neighborTerrain = terrainMap.get(hexKey(neighbor));
+      if (neighborTerrain?.terrainOverride !== 'lake' || neighborTerrain.lakeId === undefined) continue;
+      union(terrain.lakeId, neighborTerrain.lakeId);
+    }
+  }
+
+  for (const key of lakeKeys) {
+    const terrain = terrainMap.get(key);
+    if (terrain?.terrainOverride !== 'lake' || terrain.lakeId === undefined) continue;
+    const mergedLakeId = find(terrain.lakeId);
+    if (terrain.lakeId !== mergedLakeId) terrainMap.set(key, { ...terrain, lakeId: mergedLakeId });
+  }
+}
+
 function getHexCenterDistanceToVertex(hex: AxialHex, vertex: RiverVertex): number {
   const center = toPixel(hex.q, hex.r);
   const dx = center.x - vertex.x;
@@ -9032,6 +9080,7 @@ export function App() {
       const nextRegionsForRiverGeneration = [...regions, regionForRiverGeneration];
       const nextHexTerrainByKeyPreview = new Map(hexTerrainByKey);
       for (const [key, terrain] of lakesByHex) nextHexTerrainByKeyPreview.set(key, terrain);
+      mergeAdjacentLakeIds(nextHexTerrainByKeyPreview);
       const nextAllHexes = nextRegionsForRiverGeneration.flatMap((r) => r.hexes);
       // Реки не строятся через морские гексы — исключаем существующее море из фронта.
       const nextCandidateHexes = getCandidateHexes(nextAllHexes, existingSeaForRivers);
@@ -9048,6 +9097,7 @@ export function App() {
         console.warn('Discarding failed candidate region', { attempt, reason: riverResult.reason });
         continue;
       }
+      mergeAdjacentLakeIds(nextHexTerrainByKeyPreview);
 
       // Вариант 2 (спасти сушу): если подключение коннектора посадило исток реки на
       // существующее море, подтягиваем исток назад до первой сухопутной вершины (устье
@@ -9421,6 +9471,7 @@ export function App() {
         for (const key of getSolitarySeaHexKeys(getSeaHexKeys(next))) {
           next.delete(key);
         }
+        mergeAdjacentLakeIds(next);
         return next;
       });
       setNextLakeId(Math.max(computedNextLakeId, getNextLakeIdFromTerrain(nextHexTerrainByKeyPreview)));
