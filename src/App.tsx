@@ -1408,6 +1408,10 @@ function getIncreasedRiverFullnessAfterTributary(
 
 type CandidateBoundaryByHeight = Map<RegionHeightLevel, { edgeKeys: Set<string>; vertexKeys: Set<string> }>;
 
+type AssignRiverSectorsOptions = {
+  recalculatedRegionId?: number;
+};
+
 type RiverFullnessRuleState = {
   confluenceTributaryFullnessByIndex: Map<number, RiverFullness>;
   allowConfluenceFullnessIncrease: boolean;
@@ -1487,21 +1491,57 @@ function getConfluenceTributaryFullnessByIndex(
   return result;
 }
 
+function vertexTouchesCandidateBoundary(
+  vertexPath: RiverVertex[],
+  index: number,
+  candidateBoundaryByHeight: CandidateBoundaryByHeight
+): boolean {
+  const vertex = vertexPath[index];
+  if (!vertex) return false;
+  const previous = vertexPath[index - 1];
+  const next = vertexPath[index + 1];
+  const incidentEdgeKeys = [previous, next]
+    .filter((adjacent): adjacent is RiverVertex => Boolean(adjacent))
+    .map((adjacent) => getRiverEdgeKey(vertex, adjacent));
+
+  return Array.from(candidateBoundaryByHeight.values()).some((boundary) => (
+    boundary.vertexKeys.has(vertex.key)
+    || incidentEdgeKeys.some((edgeKey) => boundary.edgeKeys.has(edgeKey))
+  ));
+}
+
+function firstDownstreamOutletAfterConfluenceTouchesCandidate(
+  river: River,
+  confluenceIndices: number[],
+  candidateBoundaryByHeight: CandidateBoundaryByHeight,
+  regionBoundaryVertexKeys: Set<string>
+): boolean {
+  if (confluenceIndices.length === 0) return false;
+  const vertexPath = river.vertexPath ?? [];
+  const firstConfluenceIndex = Math.min(...confluenceIndices);
+
+  for (let index = firstConfluenceIndex + 1; index < vertexPath.length; index += 1) {
+    if (vertexTouchesCandidateBoundary(vertexPath, index, candidateBoundaryByHeight)) return true;
+    if (regionBoundaryVertexKeys.has(vertexPath[index].key)) return false;
+  }
+
+  return false;
+}
+
 function buildRiverFullnessRuleState(
   river: River,
   riverIdsByVertexKey: Map<string, Set<number | string>>,
   riversById: Map<number | string, River>,
   candidateBoundaryByHeight: CandidateBoundaryByHeight,
-  seaMouthBoundary?: { edgeKeys: Set<string>; vertexKeys: Set<string> }
+  regionBoundaryVertexKeys: Set<string>
 ): RiverFullnessRuleState {
   const confluenceTributaryFullnessByIndex = getConfluenceTributaryFullnessByIndex(river, riverIdsByVertexKey, riversById);
   const confluenceIndices = Array.from(confluenceTributaryFullnessByIndex.keys());
-  const allowConfluenceFullnessIncrease = confluenceIndices.length > 0 && riverEndpointTouchesCandidateBoundary(
+  const allowConfluenceFullnessIncrease = firstDownstreamOutletAfterConfluenceTouchesCandidate(
     river,
-    'downstream',
+    confluenceIndices,
     candidateBoundaryByHeight,
-    undefined,
-    seaMouthBoundary
+    regionBoundaryVertexKeys
   );
   const reduceHeightTwoUpstreamBeforeConfluence = confluenceIndices.length > 0 && riverEndpointTouchesCandidateBoundary(
     river,
@@ -1592,7 +1632,14 @@ function buildSeaMouthBoundary(seaHexKeys: Iterable<string>): { edgeKeys: Set<st
   return { edgeKeys, vertexKeys };
 }
 
-function assignRiverSectors(rivers: River[], lakes: Lake[], regions: Region[] = [], candidateHexes: AxialHex[] = [], seaHexKeys: Iterable<string> = []): River[] {
+function assignRiverSectors(
+  rivers: River[],
+  lakes: Lake[],
+  regions: Region[] = [],
+  candidateHexes: AxialHex[] = [],
+  seaHexKeys: Iterable<string> = [],
+  options: AssignRiverSectorsOptions = {}
+): River[] {
   const riversById = new Map<number | string, River>();
   for (const river of rivers) riversById.set(river.id, river);
 
@@ -1609,7 +1656,6 @@ function assignRiverSectors(rivers: River[], lakes: Lake[], regions: Region[] = 
   const lakeVertexKeys = new Set<string>();
   const regionBoundaryVertexKeys = getRegionBoundaryVertexKeys(regions);
   const candidateBoundaryByHeight = buildCandidateBoundaryByHeight(regions, candidateHexes);
-  const seaMouthBoundary = buildSeaMouthBoundary(seaHexKeys);
   for (const lake of lakes) {
     const exteriorKeys = new Set(getRegionExteriorVertices(lake.hexes).map((vertex) => vertex.key));
     lakeExteriorVertexKeysByLakeId.set(lake.lakeId, exteriorKeys);
@@ -1637,7 +1683,7 @@ function assignRiverSectors(rivers: River[], lakes: Lake[], regions: Region[] = 
         riverIdsByVertexKey,
         riversById,
         candidateBoundaryByHeight,
-        seaMouthBoundary
+        regionBoundaryVertexKeys
       );
       // Вариант 2 (нижняя граница): полноводность реки до пересчёта — страховка,
       // чтобы повторный расчёт после моря не занижал её ниже первого слияния.
@@ -1705,57 +1751,64 @@ function assignRiverSectors(rivers: River[], lakes: Lake[], regions: Region[] = 
           regionBoundaryVertexKeys,
           'end'
         ) as RiverSector['endReason'];
+        const assignedRegionId = getRiverSectorAssignedRegion(edgeKeys, existingAssignedRegionByEdge, river.regionId);
+        const canRecalculateFullness = options.recalculatedRegionId === undefined
+          || assignedRegionId === options.recalculatedRegionId;
 
-let fullness: RiverFullness;
+        let fullness: RiverFullness;
 
-const confluenceAffectsSector = riverFullnessRuleState.allowConfluenceFullnessIncrease
-  && (
-    riverFullnessRuleState.confluenceTributaryFullnessByIndex.has(fromIndex)
-    || isDownstreamOfConfluenceFullnessIncrease(fromIndex, riverFullnessRuleState)
-  );
+        const confluenceAffectsSector = canRecalculateFullness
+          && riverFullnessRuleState.allowConfluenceFullnessIncrease
+          && (
+            riverFullnessRuleState.confluenceTributaryFullnessByIndex.has(fromIndex)
+            || isDownstreamOfConfluenceFullnessIncrease(fromIndex, riverFullnessRuleState)
+          );
 
-const preserveKnownFullness = startReason === 'split'
-  || endReason === 'split'
-  || startReason === 'lake'
-  || endReason === 'lake';
+        const preserveKnownFullness = startReason === 'split'
+          || endReason === 'split'
+          || startReason === 'lake'
+          || endReason === 'lake';
 
-const confluenceAtSectorStart = riverFullnessRuleState.confluenceTributaryFullnessByIndex.has(fromIndex);
-const startingFullness = confluenceAtSectorStart
-  ? downstreamFullness
-  : baseFullness > downstreamFullness
-    ? baseFullness
-    : downstreamFullness;
+        const confluenceAtSectorStart = riverFullnessRuleState.confluenceTributaryFullnessByIndex.has(fromIndex);
+        const startingFullness = confluenceAtSectorStart
+          ? downstreamFullness
+          : baseFullness > downstreamFullness
+            ? baseFullness
+            : downstreamFullness;
 
-const adjustedFullness = applyRiverFullnessRules(
-  startingFullness,
-  fromIndex,
-  toIndex,
-  riverFullnessRuleState
-);
+        const adjustedFullness = applyRiverFullnessRules(
+          startingFullness,
+          fromIndex,
+          toIndex,
+          riverFullnessRuleState
+        );
 
-if (knownSectorFullness && (!confluenceAffectsSector || preserveKnownFullness)) {
-  downstreamFullness = knownSectorFullness;
-  fullness = knownSectorFullness;
-} else if (knownSectorFullness) {
-  downstreamFullness = adjustedFullness.downstreamFullness > knownSectorFullness
-    ? adjustedFullness.downstreamFullness
-    : knownSectorFullness;
-  fullness = adjustedFullness.sectorFullness > knownSectorFullness
-    ? adjustedFullness.sectorFullness
-    : knownSectorFullness;
-} else {
-  downstreamFullness = adjustedFullness.downstreamFullness;
-  fullness = adjustedFullness.sectorFullness;
+        if (!canRecalculateFullness) {
+          downstreamFullness = baseFullness;
+          fullness = baseFullness;
+        } else if (knownSectorFullness && (!confluenceAffectsSector || preserveKnownFullness)) {
+          downstreamFullness = knownSectorFullness;
+          fullness = knownSectorFullness;
+        } else if (knownSectorFullness) {
+          downstreamFullness = adjustedFullness.downstreamFullness > knownSectorFullness
+            ? adjustedFullness.downstreamFullness
+            : knownSectorFullness;
+          fullness = adjustedFullness.sectorFullness > knownSectorFullness
+            ? adjustedFullness.sectorFullness
+            : knownSectorFullness;
+        } else {
+          downstreamFullness = adjustedFullness.downstreamFullness;
+          fullness = adjustedFullness.sectorFullness;
 
-  if (
-    priorMaxFullness !== null
-    && riverFullnessRuleState.firstConfluenceIndex !== undefined
-    && fromIndex >= riverFullnessRuleState.firstConfluenceIndex
-  ) {
-    if (downstreamFullness < priorMaxFullness) downstreamFullness = priorMaxFullness;
-    if (fullness < priorMaxFullness) fullness = priorMaxFullness;
-  }
-}
+          if (
+            priorMaxFullness !== null
+            && riverFullnessRuleState.firstConfluenceIndex !== undefined
+            && fromIndex >= riverFullnessRuleState.firstConfluenceIndex
+          ) {
+            if (downstreamFullness < priorMaxFullness) downstreamFullness = priorMaxFullness;
+            if (fullness < priorMaxFullness) fullness = priorMaxFullness;
+          }
+        }
         sectors.push({
           id: `${river.id}:sector:${sectorIndex}`,
           riverId: river.id,
@@ -1767,7 +1820,7 @@ if (knownSectorFullness && (!confluenceAffectsSector || preserveKnownFullness)) 
           startReason,
           endReason,
           fullness,
-          assignedRegionId: getRiverSectorAssignedRegion(edgeKeys, existingAssignedRegionByEdge, river.regionId)
+          assignedRegionId
         });
       }
 
@@ -9113,7 +9166,9 @@ export function App() {
         connectedRivers,
         getLakesForRegions(nextRegionsForRiverGeneration, nextHexTerrainByKeyPreview),
         nextRegionsForRiverGeneration,
-        nextCandidateHexes
+        nextCandidateHexes,
+        [],
+        { recalculatedRegionId: regionId }
       );
       finalizedRivers = restoreInvalidGeneratedRiversForRegion(regionForRiverGeneration, riversForGeneration, finalizedRivers, nextCandidateHexes);
       if (!validateExistingRiverEdgeFullnessPreserved(rivers, finalizedRivers)) {
@@ -9285,7 +9340,8 @@ export function App() {
         getLakesForRegions(nextRegions, nextHexTerrainByKeyPreview),
         nextRegions,
         nextCandidateHexesExclSea,
-        allSeaKeys
+        allSeaKeys,
+        { recalculatedRegionId: regionId }
       );
 
       // BR-009: рукава дельты. Изолировано в try/catch — сбой не ломает генерацию,
@@ -9365,7 +9421,8 @@ export function App() {
         getLakesForRegions(nextRegions, nextHexTerrainByKeyPreview),
         nextRegions,
         nextCandidateHexesExclSea,
-        allSeaKeys
+        allSeaKeys,
+        { recalculatedRegionId: regionId }
       );
       const finalRiverSeaHeightViolation = getRiverSeaHeightViolation(riversWithDeltas, allNewSeaKeys);
       if (finalRiverSeaHeightViolation) {
