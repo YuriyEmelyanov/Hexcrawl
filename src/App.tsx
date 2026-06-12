@@ -1264,6 +1264,28 @@ function getRegionBoundaryVertexKeys(regions: Region[]): Set<string> {
   return boundaryVertexKeys;
 }
 
+function getRiverEndpointSectorFullness(river: River, vertexKey: string): RiverFullness {
+  const firstVertex = river.vertexPath[0];
+  const lastVertex = river.vertexPath[river.vertexPath.length - 1];
+  const endpointSectors = (river.sectors ?? []).filter((sector) => (
+    (firstVertex?.key === vertexKey && sector.startVertexKey === vertexKey)
+    || (lastVertex?.key === vertexKey && sector.endVertexKey === vertexKey)
+  ));
+
+  if (endpointSectors.length > 0) {
+    return Math.max(...endpointSectors.map((sector) => sector.fullness)) as RiverFullness;
+  }
+
+  const touchingBoundarySectors = (river.sectors ?? []).filter((sector) => (
+    sector.startVertexKey === vertexKey || sector.endVertexKey === vertexKey
+  ));
+  if (touchingBoundarySectors.length > 0) {
+    return Math.max(...touchingBoundarySectors.map((sector) => sector.fullness)) as RiverFullness;
+  }
+
+  return getRiverFullnessAtVertex(river, vertexKey);
+}
+
 function getRiverFullnessAtEndpointVertex(rivers: River[], vertexKey: string, excludedRiverId?: number): RiverFullness | null {
   let fullness: RiverFullness | null = null;
 
@@ -1273,7 +1295,7 @@ function getRiverFullnessAtEndpointVertex(rivers: River[], vertexKey: string, ex
     const lastVertex = river.vertexPath[river.vertexPath.length - 1];
     if (firstVertex?.key !== vertexKey && lastVertex?.key !== vertexKey) continue;
 
-    const endpointFullness = getRiverFullnessAtVertex(river, vertexKey);
+    const endpointFullness = getRiverEndpointSectorFullness(river, vertexKey);
     if (fullness === null || endpointFullness > fullness) fullness = endpointFullness;
   }
 
@@ -1357,16 +1379,16 @@ function getRiverDownstreamFullness(river: River): RiverFullness {
 }
 
 function getRiverFullnessAtVertex(river: River, vertexKey: string): RiverFullness {
-  let fullness: RiverFullness = getRiverFallbackFullness(river);
+  let fullness: RiverFullness | null = null;
 
   for (const sector of river.sectors ?? []) {
     const touchesVertex = sector.startVertexKey === vertexKey
       || sector.endVertexKey === vertexKey
       || sector.vertexPath.some((vertex) => vertex.key === vertexKey);
-    if (touchesVertex && sector.fullness > fullness) fullness = sector.fullness;
+    if (touchesVertex && (fullness === null || sector.fullness > fullness)) fullness = sector.fullness;
   }
 
-  return fullness;
+  return fullness ?? getRiverFallbackFullness(river);
 }
 
 function getMaxTributaryFullnessAtVertex(
@@ -3145,7 +3167,7 @@ function getRiverById(rivers: River[], riverId: number): River | undefined {
 
 function getEndpointFullnessForRiver(rivers: River[], riverId: number, vertexKey: string): RiverFullness | null {
   const river = getRiverById(rivers, riverId);
-  return river ? getRiverFullnessAtVertex(river, vertexKey) : null;
+  return river ? getRiverEndpointSectorFullness(river, vertexKey) : null;
 }
 
 function buildConnectorSplitForFullnessDrop(
@@ -4772,7 +4794,7 @@ function getOutgoingInteriorConnectorFullness(
   outgoingVertexKey: string,
   connectedToLake: boolean
 ): RiverFullness {
-  const outgoingFullness = getRiverFullnessAtVertex(river, outgoingVertexKey);
+  const outgoingFullness = getRiverEndpointSectorFullness(river, outgoingVertexKey);
   if (connectedToLake) return outgoingFullness;
   return outgoingFullness > 1 ? decreaseRiverFullness(outgoingFullness) : outgoingFullness;
 }
@@ -4824,7 +4846,7 @@ function getUnhandledIncomingConnectionsForRegion(
       return {
         endpoint,
         river,
-        fullness: getRiverFullnessAtVertex(river, endpoint.vertex.key)
+        fullness: getRiverEndpointSectorFullness(river, endpoint.vertex.key)
       };
     })
     .filter((connection): connection is { endpoint: RiverEndpointTouch; river: River; fullness: RiverFullness } => connection !== null)
@@ -5419,7 +5441,7 @@ function generateRiverForRegion(
     if (incomingEndpoints.length >= 2 && outgoingEndpoints.length === 0) {
       const getIncomingEndpointFullness = (endpoint: RiverEndpointTouch): RiverFullness => {
         const river = existingRivers.find((item) => item.id === endpoint.riverId);
-        return river ? getRiverFullnessAtVertex(river, endpoint.vertex.key) : 1;
+        return river ? getRiverEndpointSectorFullness(river, endpoint.vertex.key) : 1;
       };
       const sortedIncomingEndpoints = [...incomingEndpoints].sort((a, b) => (
         getIncomingEndpointFullness(b) - getIncomingEndpointFullness(a)
