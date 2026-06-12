@@ -417,6 +417,24 @@ function getSeaHexKeys(hexTerrainByKey: Map<string, HexTerrainData>): Set<string
   }
   return keys;
 }
+// Морские гексы без единого морского соседа — одиночные артефакты. Реки об них спотыкаются
+// (non_mouth_vertex_sea), хотя по сути такого моря быть не должно. Для проверок реки-vs-море
+// их игнорируем, а на коммите лечим (удаляем). Так старые артефакты не блокируют генерацию.
+function getSolitarySeaHexKeys(seaKeys: Set<string>): Set<string> {
+  const solitary = new Set<string>();
+  for (const key of seaKeys) {
+    if (!getHexNeighbors(parseHexKey(key)).some((neighbor) => seaKeys.has(hexKey(neighbor)))) solitary.add(key);
+  }
+  return solitary;
+}
+function getNonSolitarySeaHexKeys(hexTerrainByKey: Map<string, HexTerrainData>): Set<string> {
+  const seaKeys = getSeaHexKeys(hexTerrainByKey);
+  const solitary = getSolitarySeaHexKeys(seaKeys);
+  if (solitary.size === 0) return seaKeys;
+  const result = new Set<string>();
+  for (const key of seaKeys) if (!solitary.has(key)) result.add(key);
+  return result;
+}
 function getBoundaryHexes(region: Region): AxialHex[] {
   const regionKeys = new Set(region.hexes.map(hexKey));
   return region.hexes.filter((h) => getHexNeighbors(h).some((n) => !regionKeys.has(hexKey(n))));
@@ -4277,11 +4295,15 @@ function validateCoastalSeaArea(
   );
   if (!touchesRegion) return { valid: false, reason: 'sea_area_does_not_touch_region' };
 
+  // Каждый гекс нового моря обязан примыкать к другому морю (новому ИЛИ существующему).
+  // Иначе это одиночное море — точечный спавн, который порождал разбросанные артефакты
+  // и конфликты рек с морем. Бан действует и для размера 1.
+  for (const key of seaKeys) {
+    const touchesNewSea = getHexNeighbors(parseHexKey(key)).some((neighbor) => seaKeys.has(hexKey(neighbor)));
+    const touchesExistingSea = getHexNeighbors(parseHexKey(key)).some((neighbor) => existingSeaKeys.has(hexKey(neighbor)));
+    if (!touchesNewSea && !touchesExistingSea) return { valid: false, reason: 'isolated_sea_hex' };
+  }
   if (seaKeys.size > 1) {
-    for (const key of seaKeys) {
-      const touchesSea = getHexNeighbors(parseHexKey(key)).some((neighbor) => seaKeys.has(hexKey(neighbor)));
-      if (!touchesSea) return { valid: false, reason: 'isolated_sea_hex' };
-    }
     const firstKey = Array.from(seaKeys)[0];
     if (getConnectedSeaComponent(firstKey, seaKeys).size !== seaKeys.size) return { valid: false, reason: 'disconnected_sea_area' };
   }
@@ -4423,7 +4445,7 @@ function computeSeaHexKeysForCoastalRegion(
       new Set([...existingSeaKeys, ...heuristicSeaKeys]),
       rivers
     ).valid;
-    if (!heuristicValid && candidates.size <= 22) {
+    if (!heuristicValid && candidates.size <= 18) {
       const searched = searchConnectedSeaSubset(
         candidates,
         connectedRequiredSeaKeys,
@@ -9034,10 +9056,13 @@ export function App() {
         continue;
       }
 
+      // Старое одиночное море (артефакт) не должно блокировать генерацию: реки-vs-старое-море
+      // проверяем против существующего моря БЕЗ одиночных гексов.
+      const existingSeaForRiverChecks = getNonSolitarySeaHexKeys(hexTerrainByKey);
       const changedRiverStartingFromExistingSea = getChangedRiverStartingFromSea(
         riversForGeneration,
         finalizedRivers,
-        getSeaHexKeys(hexTerrainByKey)
+        existingSeaForRiverChecks
       );
       if (changedRiverStartingFromExistingSea) {
         console.warn('Discarding failed candidate region because a generated river starts from existing sea', {
@@ -9047,7 +9072,7 @@ export function App() {
         });
         continue;
       }
-      const existingSeaHeightViolation = getChangedRiverSeaHeightViolation(riversForGeneration, finalizedRivers, getSeaHexKeys(hexTerrainByKey));
+      const existingSeaHeightViolation = getChangedRiverSeaHeightViolation(riversForGeneration, finalizedRivers, existingSeaForRiverChecks);
       if (existingSeaHeightViolation) {
         console.warn('Discarding failed candidate region because a river violates sea height before coast generation', {
           attempt,
@@ -9361,6 +9386,11 @@ export function App() {
             const touchesSea = getHexNeighbors(parseHexKey(key)).some((n) => seaSet.has(hexKey(n)));
             if (touchesSea) next.delete(key);
           }
+        }
+        // Лечение одиночного моря: морской гекс без морских соседей — артефакт, удаляем
+        // (гекс возвращается к кандидату/региону). Карта постепенно самоочищается.
+        for (const key of getSolitarySeaHexKeys(getSeaHexKeys(next))) {
+          next.delete(key);
         }
         return next;
       });
