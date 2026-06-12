@@ -1605,15 +1605,20 @@ function applyRiverFullnessRules(
   currentDownstreamFullness: RiverFullness,
   fromIndex: number,
   toIndex: number,
-  ruleState: RiverFullnessRuleState
+  ruleState: RiverFullnessRuleState,
+  allowHeightOneConfluenceIncrease: boolean
 ): { downstreamFullness: RiverFullness; sectorFullness: RiverFullness } {
   let downstreamFullness = currentDownstreamFullness;
 
-  // A confluence raises the carried downstream fullness when the combined flow
-  // has a downstream candidate exit. The raised value then propagates through
-  // subsequent sectors until the river reaches that candidate-facing endpoint.
+  // A confluence can raise the carried downstream fullness only inside a
+  // height-1 region when the combined flow has a downstream candidate exit.
+  // The raised value then propagates through subsequent height-1 sectors.
   const tributaryFullnessAtSectorStart = ruleState.confluenceTributaryFullnessByIndex.get(fromIndex) ?? null;
-  if (ruleState.allowConfluenceFullnessIncrease && tributaryFullnessAtSectorStart !== null) {
+  if (
+    allowHeightOneConfluenceIncrease
+    && ruleState.allowConfluenceFullnessIncrease
+    && tributaryFullnessAtSectorStart !== null
+  ) {
     downstreamFullness = getIncreasedRiverFullnessAfterTributary(
       downstreamFullness,
       tributaryFullnessAtSectorStart
@@ -1691,6 +1696,7 @@ function assignRiverSectors(
   const lakeVertexKeys = new Set<string>();
   const regionBoundaryVertexKeys = getRegionBoundaryVertexKeys(regions);
   const candidateBoundaryByHeight = buildCandidateBoundaryByHeight(regions, candidateHexes);
+  const regionHeightById = new Map(regions.map((region) => [region.id, region.heightLevel]));
   const seaMouthBoundary = buildSeaMouthBoundary(seaHexKeys);
   const extraDownstreamBoundary = seaMouthBoundary.edgeKeys.size > 0 || seaMouthBoundary.vertexKeys.size > 0
     ? seaMouthBoundary
@@ -1792,11 +1798,14 @@ function assignRiverSectors(
           'end'
         ) as RiverSector['endReason'];
         const assignedRegionId = getRiverSectorAssignedRegion(edgeKeys, existingAssignedRegionByEdge, river.regionId);
+        const assignedRegionHeight = regionHeightById.get(assignedRegionId);
+        const allowHeightOneConfluenceIncrease = assignedRegionHeight === 1;
         const canRecalculateFullness = options.recalculatedRegionId === undefined
           || assignedRegionId === options.recalculatedRegionId;
         let fullness: RiverFullness;
 
         const confluenceAffectsSector = canRecalculateFullness
+          && allowHeightOneConfluenceIncrease
           && riverFullnessRuleState.allowConfluenceFullnessIncrease
           && (
             riverFullnessRuleState.confluenceTributaryFullnessByIndex.has(fromIndex)
@@ -1819,7 +1828,8 @@ function assignRiverSectors(
           startingFullness,
           fromIndex,
           toIndex,
-          riverFullnessRuleState
+          riverFullnessRuleState,
+          allowHeightOneConfluenceIncrease
         );
         // This reduction is intentionally narrow: only sectors being recalculated
         // for the new region may apply it, and only when the whole river has an
