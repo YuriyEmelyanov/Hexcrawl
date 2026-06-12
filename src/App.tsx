@@ -417,6 +417,24 @@ function getSeaHexKeys(hexTerrainByKey: Map<string, HexTerrainData>): Set<string
   }
   return keys;
 }
+// Морские гексы без единого морского соседа — одиночные артефакты. Реки об них спотыкаются
+// (non_mouth_vertex_sea), хотя по сути такого моря быть не должно. Для проверок реки-vs-море
+// их игнорируем, а на коммите лечим (удаляем). Так старые артефакты не блокируют генерацию.
+function getSolitarySeaHexKeys(seaKeys: Set<string>): Set<string> {
+  const solitary = new Set<string>();
+  for (const key of seaKeys) {
+    if (!getHexNeighbors(parseHexKey(key)).some((neighbor) => seaKeys.has(hexKey(neighbor)))) solitary.add(key);
+  }
+  return solitary;
+}
+function getNonSolitarySeaHexKeys(hexTerrainByKey: Map<string, HexTerrainData>): Set<string> {
+  const seaKeys = getSeaHexKeys(hexTerrainByKey);
+  const solitary = getSolitarySeaHexKeys(seaKeys);
+  if (solitary.size === 0) return seaKeys;
+  const result = new Set<string>();
+  for (const key of seaKeys) if (!solitary.has(key)) result.add(key);
+  return result;
+}
 function getBoundaryHexes(region: Region): AxialHex[] {
   const regionKeys = new Set(region.hexes.map(hexKey));
   return region.hexes.filter((h) => getHexNeighbors(h).some((n) => !regionKeys.has(hexKey(n))));
@@ -4046,10 +4064,72 @@ function expandConnectedSeaArea(seaKeys: Set<string>, candidates: Map<string, Ax
   for (let i = 0; i < extraCount; i += 1) {
     const frontier = getExpandableSeaNeighborKeys(nextSeaKeys, candidates);
     if (frontier.length === 0) break;
-    nextSeaKeys.add(randomFrom(frontier));
+    // Вариант 1b: рост моря "наружу" — предпочитаем кандидатов дальше от центра карты
+    // (ближе к открытому океану). Берём случайного из более дальней половины фронтира,
+    // чтобы сохранить разнообразие между попытками, но смещать форму к берегу.
+    const sortedByOutward = [...frontier].sort(
+      (left, right) => hexDistanceFromCenter(parseHexKey(right)) - hexDistanceFromCenter(parseHexKey(left))
+    );
+    const outwardPool = sortedByOutward.slice(0, Math.max(1, Math.ceil(sortedByOutward.length / 2)));
+    nextSeaKeys.add(randomFrom(outwardPool));
   }
 
   return nextSeaKeys;
+}
+
+// Вариант 2: точный fail-safe поиск связной раскладки моря. Кандидаты уже отфильтрованы
+// по рекам (любое подмножество безопасно по рекам), поэтому задача — чисто связность:
+// найти связное подмножество кандидатов-моря, при котором ВСЁ море (включая зажатые
+// морские гексы) достижимо от открытого океана. Растим море от обязательных ключей наружу
+// (DFS) и проверяем существующими валидаторами. Лимит узлов держит UI отзывчивым; если
+// решения нет или лимит превышен — возвращаем null, и наверху отрабатывает обычная логика
+// (регион честно бракуется). Хуже текущего не станет.
+function searchConnectedSeaSubset(
+  candidates: Map<string, AxialHex>,
+  requiredConnectedKeys: Set<string>,
+  existingSeaKeys: Set<string>,
+  allRegionHexes: AxialHex[],
+  regionHexes: AxialHex[],
+  rivers: River[],
+  regionId: number,
+  existingRegions: Region[],
+  nodeLimit: number
+): string[] | null {
+  if (requiredConnectedKeys.size === 0) return null;
+  const isValidSeaSet = (seaSet: Set<string>): boolean => {
+    const seaKeys = Array.from(seaSet);
+    const coastalValidation = validateCoastalSeaArea(regionHexes, seaKeys, existingSeaKeys, rivers, regionId, existingRegions);
+    if (!coastalValidation.valid) return false;
+    const allSea = new Set(existingSeaKeys);
+    for (const key of seaSet) allSea.add(key);
+    return validateSeaConnectivityThroughOpenTiles(allRegionHexes, allSea, rivers).valid;
+  };
+
+  let nodes = 0;
+  const seen = new Set<string>();
+  const stack: Set<string>[] = [new Set(requiredConnectedKeys)];
+  while (stack.length > 0) {
+    if (nodes >= nodeLimit) return null;
+    nodes += 1;
+    const current = stack.pop() as Set<string>;
+    const signature = Array.from(current).sort().join('|');
+    if (seen.has(signature)) continue;
+    seen.add(signature);
+
+    if (isValidSeaSet(current)) return Array.from(current);
+
+    // Растим наружу: добавляем по одному кандидату с фронтира, ближние к океану — позже
+    // (кладём в стек так, чтобы дальние от центра разворачивались первыми).
+    const frontier = getExpandableSeaNeighborKeys(current, candidates).sort(
+      (left, right) => hexDistanceFromCenter(parseHexKey(left)) - hexDistanceFromCenter(parseHexKey(right))
+    );
+    for (const frontierKey of frontier) {
+      const next = new Set(current);
+      next.add(frontierKey);
+      stack.push(next);
+    }
+  }
+  return null;
 }
 
 function seaKeysTouchExistingSea(seaKeys: Set<string>, existingSeaKeys: Set<string>): boolean {
@@ -4215,11 +4295,15 @@ function validateCoastalSeaArea(
   );
   if (!touchesRegion) return { valid: false, reason: 'sea_area_does_not_touch_region' };
 
+  // Каждый гекс нового моря обязан примыкать к другому морю (новому ИЛИ существующему).
+  // Иначе это одиночное море — точечный спавн, который порождал разбросанные артефакты
+  // и конфликты рек с морем. Бан действует и для размера 1.
+  for (const key of seaKeys) {
+    const touchesNewSea = getHexNeighbors(parseHexKey(key)).some((neighbor) => seaKeys.has(hexKey(neighbor)));
+    const touchesExistingSea = getHexNeighbors(parseHexKey(key)).some((neighbor) => existingSeaKeys.has(hexKey(neighbor)));
+    if (!touchesNewSea && !touchesExistingSea) return { valid: false, reason: 'isolated_sea_hex' };
+  }
   if (seaKeys.size > 1) {
-    for (const key of seaKeys) {
-      const touchesSea = getHexNeighbors(parseHexKey(key)).some((neighbor) => seaKeys.has(hexKey(neighbor)));
-      if (!touchesSea) return { valid: false, reason: 'isolated_sea_hex' };
-    }
     const firstKey = Array.from(seaKeys)[0];
     if (getConnectedSeaComponent(firstKey, seaKeys).size !== seaKeys.size) return { valid: false, reason: 'disconnected_sea_area' };
   }
@@ -4349,7 +4433,37 @@ function computeSeaHexKeysForCoastalRegion(
   const connectedRequiredSeaKeys = connectRequiredSeaKeys(candidates, Array.from(requiredKeys));
   if (connectedRequiredSeaKeys.size === 0) return [];
 
-  return Array.from(expandConnectedSeaArea(connectedRequiredSeaKeys, candidates));
+  const heuristicSeaKeys = Array.from(expandConnectedSeaArea(connectedRequiredSeaKeys, candidates));
+
+  // Вариант 2 (fail-safe): если эвристическая раскладка не связывается с открытым океаном
+  // (а решение, возможно, существует — узкий коридор кандидатов), пробуем точный поиск.
+  // Всё в try/catch; при ошибке/отсутствии решения возвращаем эвристику (как раньше).
+  try {
+    const allRegionHexes = [...existingRegions.flatMap((region) => region.hexes), ...regionHexes];
+    const heuristicValid = validateSeaConnectivityThroughOpenTiles(
+      allRegionHexes,
+      new Set([...existingSeaKeys, ...heuristicSeaKeys]),
+      rivers
+    ).valid;
+    if (!heuristicValid && candidates.size <= 18) {
+      const searched = searchConnectedSeaSubset(
+        candidates,
+        connectedRequiredSeaKeys,
+        existingSeaKeys,
+        allRegionHexes,
+        regionHexes,
+        rivers,
+        regionId,
+        existingRegions,
+        8000
+      );
+      if (searched) return searched;
+    }
+  } catch (error) {
+    console.warn('Connected sea search failed; falling back to heuristic sea area', error);
+  }
+
+  return heuristicSeaKeys;
 }
 
 // Выбор освоенности (BR-007): прибрежный регион освоен с вероятностью 40%,
@@ -8942,10 +9056,13 @@ export function App() {
         continue;
       }
 
+      // Старое одиночное море (артефакт) не должно блокировать генерацию: реки-vs-старое-море
+      // проверяем против существующего моря БЕЗ одиночных гексов.
+      const existingSeaForRiverChecks = getNonSolitarySeaHexKeys(hexTerrainByKey);
       const changedRiverStartingFromExistingSea = getChangedRiverStartingFromSea(
         riversForGeneration,
         finalizedRivers,
-        getSeaHexKeys(hexTerrainByKey)
+        existingSeaForRiverChecks
       );
       if (changedRiverStartingFromExistingSea) {
         console.warn('Discarding failed candidate region because a generated river starts from existing sea', {
@@ -8955,7 +9072,7 @@ export function App() {
         });
         continue;
       }
-      const existingSeaHeightViolation = getChangedRiverSeaHeightViolation(riversForGeneration, finalizedRivers, getSeaHexKeys(hexTerrainByKey));
+      const existingSeaHeightViolation = getChangedRiverSeaHeightViolation(riversForGeneration, finalizedRivers, existingSeaForRiverChecks);
       if (existingSeaHeightViolation) {
         console.warn('Discarding failed candidate region because a river violates sea height before coast generation', {
           attempt,
@@ -9270,6 +9387,11 @@ export function App() {
             if (touchesSea) next.delete(key);
           }
         }
+        // Лечение одиночного моря: морской гекс без морских соседей — артефакт, удаляем
+        // (гекс возвращается к кандидату/региону). Карта постепенно самоочищается.
+        for (const key of getSolitarySeaHexKeys(getSeaHexKeys(next))) {
+          next.delete(key);
+        }
         return next;
       });
       setNextLakeId(Math.max(computedNextLakeId, getNextLakeIdFromTerrain(nextHexTerrainByKeyPreview)));
@@ -9298,7 +9420,15 @@ export function App() {
       const bayEdgeKeys = getSeaEdgeKeysFromSeaKeys(bayKeys);
       const bayStartsRiverFromSea = getRiverStartingFromSea(rivers, bayVertexKeys, bayEdgeKeys);
       const bayHeightViolation = getRiverSeaHeightViolation(rivers, bayKeys);
-      if (bayTouchesSea && !bayStartsRiverFromSea && !bayHeightViolation) {
+      // 1a: залив не должен создавать "застрявшее" море — всё море (существующее + залив)
+      // обязано оставаться достижимым от открытого океана.
+      const allRegionHexesForBay = regions.flatMap((region) => region.hexes);
+      const bayKeepsSeaReachable = validateSeaConnectivityThroughOpenTiles(
+        allRegionHexesForBay,
+        new Set([...existingSeaForBay, ...bayKeys]),
+        rivers
+      ).valid;
+      if (bayTouchesSea && bayKeepsSeaReachable && !bayStartsRiverFromSea && !bayHeightViolation) {
         const snapshot: MapSnapshot = {
           regions,
           candidateHexes,
