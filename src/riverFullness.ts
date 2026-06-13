@@ -5,7 +5,15 @@ export function decreaseRiverFullness(fullness: RiverFullness): RiverFullness {
 }
 
 export function getInteriorSourceFullnessForOutgoingRiver(outgoingFullness: RiverFullness): RiverFullness {
-  return outgoingFullness > 1 ? decreaseRiverFullness(outgoingFullness) : outgoingFullness;
+  return getUpstreamFullnessBeforeMountainTributary(outgoingFullness);
+}
+
+export function getUpstreamFullnessBeforeMountainTributary(
+  sourceFullness: RiverFullness,
+  currentSectorFullness: RiverFullness = sourceFullness
+): RiverFullness {
+  const reducedSourceFullness = decreaseRiverFullness(sourceFullness);
+  return Math.min(currentSectorFullness, reducedSourceFullness) as RiverFullness;
 }
 
 // Connector sectors that enter a region through an outgoing boundary keep the
