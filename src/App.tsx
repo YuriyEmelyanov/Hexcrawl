@@ -1645,14 +1645,14 @@ function applySingleMountainUpstreamTributaryDrop(region: Region, rivers: River[
   if (region.heightLevel !== 3) return rivers;
 
   for (const river of rivers) {
-    const sectorsInRegion = (river.sectors ?? []).filter((sector) => sector.assignedRegionId === region.id);
-    const hasOutgoingFullnessThree = sectorsInRegion.some((sector) => (
+    const regionSectors = (river.sectors ?? []).filter((sector) => sector.assignedRegionId === region.id);
+    const hasOutgoingFullnessThree = regionSectors.some((sector) => (
       sector.endReason === 'region_boundary'
       && sector.fullness === 3
     ));
     if (!hasOutgoingFullnessThree) continue;
 
-    const hasIncomingFullnessThree = sectorsInRegion.some((sector) => (
+    const hasIncomingFullnessThree = regionSectors.some((sector) => (
       sector.startReason === 'region_boundary'
       && sector.fullness === 3
     ));
@@ -1663,7 +1663,7 @@ function applySingleMountainUpstreamTributaryDrop(region: Region, rivers: River[
       if (!mainVertexIndexByKey.has(vertex.key)) mainVertexIndexByKey.set(vertex.key, index);
     });
 
-    const sectorsInRegion = (river.sectors ?? [])
+    const indexedRegionSectors = (river.sectors ?? [])
       .filter((sector) => sector.assignedRegionId === region.id)
       .map((sector) => ({
         sector,
@@ -1672,12 +1672,12 @@ function applySingleMountainUpstreamTributaryDrop(region: Region, rivers: River[
       }))
       .filter(({ startIndex, endIndex }) => Number.isFinite(startIndex) && Number.isFinite(endIndex))
       .sort((a, b) => Math.min(a.startIndex, a.endIndex) - Math.min(b.startIndex, b.endIndex));
-    if (sectorsInRegion.length === 0) continue;
+    if (indexedRegionSectors.length === 0) continue;
 
-    const outgoingSector = sectorsInRegion[0].sector;
+    const outgoingSector = indexedRegionSectors[0].sector;
     if (outgoingSector.fullness !== 3) continue;
 
-    const incomingSector = sectorsInRegion[sectorsInRegion.length - 1].sector;
+    const incomingSector = indexedRegionSectors[indexedRegionSectors.length - 1].sector;
     if (incomingSector.fullness !== 3) return rivers;
 
     const tributaryConnection = rivers
@@ -9432,7 +9432,6 @@ export function App() {
         { recalculatedRegionId: regionId }
       );
       finalizedRivers = restoreInvalidGeneratedRiversForRegion(regionForRiverGeneration, riversForGeneration, finalizedRivers, nextCandidateHexes);
-      finalizedRivers = applySingleMountainUpstreamTributaryDrop(regionForRiverGeneration, finalizedRivers);
       if (!validateExistingRiverEdgeFullnessPreserved(rivers, finalizedRivers)) {
         console.warn('Discarding failed candidate region because final river sector assignment changed old edge fullness', { attempt });
         continue;
@@ -9597,6 +9596,9 @@ export function App() {
         allNewSeaKeys,
         regionHexes
       );
+      // sanitizeRiversForSea can trim endpoint vertices and change which region,
+      // lake, sea, or boundary each river edge belongs to, so derived sector
+      // metadata must be rebuilt before delta generation and validation.
       finalizedRivers = assignRiverSectors(
         finalizedRivers,
         getLakesForRegions(nextRegions, nextHexTerrainByKeyPreview),
@@ -9678,6 +9680,9 @@ export function App() {
         allNewSeaKeys,
         regionHexes
       );
+      // Deltas, mouth extension, restoreInvalidGeneratedRiversForRegion, and
+      // sea sanitizing can all change river paths; rebuild sectors one final
+      // time so validation and saved debug data use the final geometry.
       riversWithDeltas = assignRiverSectors(
         riversWithDeltas,
         getLakesForRegions(nextRegions, nextHexTerrainByKeyPreview),
@@ -9686,6 +9691,10 @@ export function App() {
         allSeaKeys,
         { recalculatedRegionId: regionId }
       );
+      // Apply this rule only after the last geometry-changing river step and
+      // final sector rebuild, so later path/sanitize/delta changes cannot
+      // overwrite the local mountain-region upstream tributary reduction.
+      riversWithDeltas = applySingleMountainUpstreamTributaryDrop(regionForRiverGeneration, riversWithDeltas);
       const finalRiverSeaHeightViolation = getRiverSeaHeightViolation(riversWithDeltas, allNewSeaKeys);
       if (finalRiverSeaHeightViolation) {
         console.warn('Discarding failed candidate region because a river violates final sea height', {
