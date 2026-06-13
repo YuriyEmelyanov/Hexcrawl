@@ -1615,7 +1615,8 @@ function applyRiverFullnessRules(
   toIndex: number,
   ruleState: RiverFullnessRuleState,
   allowHeightOneConfluenceIncrease: boolean,
-  assignedRegionHeight?: RegionHeightLevel
+  assignedRegionHeight?: RegionHeightLevel,
+  preserveMountainFullnessThreeDrop = false
 ): { downstreamFullness: RiverFullness; sectorFullness: RiverFullness } {
   let downstreamFullness = currentDownstreamFullness;
 
@@ -1648,6 +1649,7 @@ function applyRiverFullnessRules(
     sectorIsUpstreamBeforeConfluence
     && assignedRegionHeight === 3
     && sectorFullness === 2
+    && !preserveMountainFullnessThreeDrop
   ) {
     sectorFullness = 1;
   }
@@ -1846,7 +1848,8 @@ function assignRiverSectors(
           toIndex,
           riverFullnessRuleState,
           allowHeightOneConfluenceIncrease,
-          assignedRegionHeight
+          assignedRegionHeight,
+          knownSectorFullness === 2 && priorMaxFullness === 3
         );
         // This reduction is intentionally narrow: only sectors being recalculated
         // for the new region may apply it, and only before a confluence that has
