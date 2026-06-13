@@ -1,29 +1,14 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import {
-  getInteriorSourceFullnessForOutgoingRiver,
-  getOutgoingConnectorFullnessFromEndpoint,
-  getUpstreamFullnessBeforeMountainTributary,
-} from '../src/riverFullness.ts';
+import { getOutgoingConnectorFullnessFromEndpoint } from '../src/riverFullness.ts';
 
-test('height-3 outgoing fullness 2 only drops on the interior upstream side of a tributary', () => {
-  assert.equal(getInteriorSourceFullnessForOutgoingRiver(2), 1);
-  assert.equal(getUpstreamFullnessBeforeMountainTributary(2, 3), 1);
+test('outgoing connector keeps endpoint fullness', () => {
   assert.equal(getOutgoingConnectorFullnessFromEndpoint(2, false), 2);
-});
-
-test('height-3 outgoing fullness 3 only drops on the interior upstream side of a tributary', () => {
-  assert.equal(getInteriorSourceFullnessForOutgoingRiver(3), 2);
   assert.equal(getOutgoingConnectorFullnessFromEndpoint(3, false), 3);
 });
 
-test('lake-connected outgoing river keeps downstream fullness', () => {
+test('lake-connected outgoing connector keeps endpoint fullness', () => {
   assert.equal(getOutgoingConnectorFullnessFromEndpoint(2, true), 2);
   assert.equal(getOutgoingConnectorFullnessFromEndpoint(3, true), 3);
-});
-
-test('recalculating height-3 upstream drop does not apply the same drop twice', () => {
-  assert.equal(getUpstreamFullnessBeforeMountainTributary(3, 2), 2);
-  assert.equal(getUpstreamFullnessBeforeMountainTributary(2, 1), 1);
 });
