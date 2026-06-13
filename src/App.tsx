@@ -3011,6 +3011,34 @@ function findRegionTouchingVertex(
   return undefined;
 }
 
+function findRegionTouchingVertexExcept(
+  vertex: RiverVertex,
+  regions: Region[],
+  excludedRegionId: number
+): Region | undefined {
+  return findRegionTouchingVertex(
+    vertex,
+    regions.filter((region) => region.id !== excludedRegionId)
+  );
+}
+
+function canConnectIncomingToOutgoingByRegionHeight(
+  region: Region,
+  regions: Region[],
+  incomingEndpoint: RiverEndpointTouch,
+  outgoingEndpoint: RiverEndpointTouch
+): boolean {
+  const incomingRegion = findRegionTouchingVertexExcept(incomingEndpoint.vertex, regions, region.id);
+  const outgoingRegion = findRegionTouchingVertexExcept(outgoingEndpoint.vertex, regions, region.id);
+  const incomingRegionHeight = incomingRegion?.heightLevel;
+  const outgoingRegionHeight = outgoingRegion?.heightLevel;
+
+  if (outgoingRegionHeight !== undefined && outgoingRegionHeight > region.heightLevel) return false;
+  if (incomingRegionHeight !== undefined && region.heightLevel > incomingRegionHeight) return false;
+
+  return true;
+}
+
 function getRiverHeightConstraintForCandidateRegion(
   candidateRegion: Region,
   existingRegions: Region[],
@@ -5607,6 +5635,10 @@ function generateRiverForRegion(
 
       if (incomingEndpoints.length > 0) {
         if (!mainIncomingEndpoint) return { success: false, rivers: existingRivers, reason: 'mountain_main_incoming_not_found' };
+        if (!canConnectIncomingToOutgoingByRegionHeight(region, regions, mainIncomingEndpoint, mainOutgoingEndpoint)) {
+          const fallbackResult = buildMountainIncomingBoundaryFallback(mainIncomingEndpoint, 'mountain_main_outgoing_height_incompatible');
+          return fallbackResult ?? { success: false, rivers: existingRivers, reason: 'mountain_main_outgoing_height_incompatible' };
+        }
         const connectorPath = findBestConnectorPathBetweenRiverEndpoints(
           mainIncomingEndpoint.vertex,
           mainOutgoingEndpoint.vertex,
@@ -5862,6 +5894,7 @@ function generateRiverForRegion(
       if (candidatePairs.length > 0) {
         const validConnectors = candidatePairs
           .filter((pair) => !wouldCreateRiverDrainageCycle(existingRivers, pair.left.riverId, pair.right.riverId))
+          .filter((pair) => canConnectIncomingToOutgoingByRegionHeight(region, regions, pair.left, pair.right))
           .map((pair) => {
             const connectorPath = findBestConnectorPathBetweenRiverEndpoints(
               pair.left.vertex,
