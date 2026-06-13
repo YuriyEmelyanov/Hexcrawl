@@ -1,4 +1,5 @@
 import { type ChangeEvent, type CSSProperties, type WheelEvent, useEffect, useMemo, useRef, useState } from 'react';
+import { getOutgoingConnectorFullnessFromEndpoint, type RiverFullness } from './riverFullness';
 
 type AxialHex = {
   q: number;
@@ -9,7 +10,6 @@ type HexType = 'region' | 'candidate' | 'center';
 
 type BiomeLandType = 'settled' | 'wild';
 type RegionHeightLevel = 1 | 2 | 3;
-type RiverFullness = 1 | 2 | 3 | 4 | 5;
 
 type BiomeId =
   | 'plain_deciduous_forest'
@@ -4846,11 +4846,6 @@ function ensureMinimumMountainRiversForRegion(
   return nextRivers;
 }
 
-
-function decreaseRiverFullness(fullness: RiverFullness): RiverFullness {
-  return Math.max(1, fullness - 1) as RiverFullness;
-}
-
 type RemainingOutgoingConnection = {
   endpoint: RiverEndpointTouch;
   river: River;
@@ -4883,8 +4878,7 @@ function getOutgoingInteriorConnectorFullness(
   connectedToLake: boolean
 ): RiverFullness {
   const outgoingFullness = getRiverEndpointSectorFullness(river, outgoingVertexKey);
-  if (connectedToLake) return outgoingFullness;
-  return outgoingFullness > 1 ? decreaseRiverFullness(outgoingFullness) : outgoingFullness;
+  return getOutgoingConnectorFullnessFromEndpoint(outgoingFullness, connectedToLake);
 }
 
 function getAvailableUnconnectedLakesForRegion(
@@ -5439,7 +5433,7 @@ function generateRiverForRegion(
           return {
             ...river,
             vertexPath: [...bestPath.slice(0, -1), ...river.vertexPath],
-            sectors: prependRiverPathSector(river, bestPath, outgoingFullness, region.id),
+            sectors: prependRiverPathSector(river, bestPath, getOutgoingConnectorFullnessFromEndpoint(outgoingFullness, false), region.id),
             controlPoints: bestControlPoints
           };
         });
@@ -5547,7 +5541,7 @@ function generateRiverForRegion(
         if (!mainPath) return { success: false, rivers: existingRivers, reason: 'mountain_main_outgoing_source_path_not_found' };
         nextRivers = nextRivers.map((river) => river.id !== mainOutgoingEndpoint.riverId
           ? river
-          : { ...river, vertexPath: [...mainPath.slice(0, -1), ...river.vertexPath], sectors: prependRiverPathSector(river, mainPath, chooseRiverFullnessFromAdjacentSectors(mainPath, existingRivers, getNewRiverFullnessForHeight(region.heightLevel)), region.id) });
+          : { ...river, vertexPath: [...mainPath.slice(0, -1), ...river.vertexPath], sectors: prependRiverPathSector(river, mainPath, getOutgoingInteriorConnectorFullness(river, mainOutgoingEndpoint.vertex.key, false), region.id) });
         const mainPathEdgeKeys = getRiverPathEdgeKeys(mainPath, riverGraph);
         if (!mainPathEdgeKeys) return { success: false, rivers: existingRivers, reason: 'mountain_main_outgoing_edge_keys_not_found' };
         for (const edgeKey of mainPathEdgeKeys) blockedEdgeKeys.add(edgeKey);
@@ -5590,7 +5584,7 @@ function generateRiverForRegion(
         }
         nextRivers = nextRivers.map((river) => river.id !== outgoingEndpoint.riverId
           ? river
-          : { ...river, vertexPath: [...selectedPath.slice(0, -1), ...river.vertexPath], sectors: prependRiverPathSector(river, selectedPath, chooseRiverFullnessFromAdjacentSectors(selectedPath, existingRivers, getNewRiverFullnessForHeight(region.heightLevel)), region.id) });
+          : { ...river, vertexPath: [...selectedPath.slice(0, -1), ...river.vertexPath], sectors: prependRiverPathSector(river, selectedPath, getOutgoingInteriorConnectorFullness(river, outgoingEndpoint.vertex.key, Boolean(selectedLake)), region.id) });
         for (const edgeKey of pathEdgeKeys) blockedEdgeKeys.add(edgeKey);
         console.log('Connecting secondary mountain outgoing river', {
           regionId: region.id,
