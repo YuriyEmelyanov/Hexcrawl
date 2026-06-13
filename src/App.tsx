@@ -1645,6 +1645,19 @@ function applySingleMountainUpstreamTributaryDrop(region: Region, rivers: River[
   if (region.heightLevel !== 3) return rivers;
 
   for (const river of rivers) {
+    const sectorsInRegion = (river.sectors ?? []).filter((sector) => sector.assignedRegionId === region.id);
+    const hasOutgoingFullnessThree = sectorsInRegion.some((sector) => (
+      sector.endReason === 'region_boundary'
+      && sector.fullness === 3
+    ));
+    if (!hasOutgoingFullnessThree) continue;
+
+    const hasIncomingFullnessThree = sectorsInRegion.some((sector) => (
+      sector.startReason === 'region_boundary'
+      && sector.fullness === 3
+    ));
+    if (!hasIncomingFullnessThree) return rivers;
+
     const mainVertexIndexByKey = new Map<string, number>();
     river.vertexPath.forEach((vertex, index) => {
       if (!mainVertexIndexByKey.has(vertex.key)) mainVertexIndexByKey.set(vertex.key, index);
@@ -1673,6 +1686,7 @@ function applySingleMountainUpstreamTributaryDrop(region: Region, rivers: River[
         const tributaryMouth = tributary.vertexPath[tributary.vertexPath.length - 1];
         const mainIndex = tributaryMouth ? mainVertexIndexByKey.get(tributaryMouth.key) : undefined;
         if (mainIndex === undefined || mainIndex <= 0) return null;
+        if (mainIndex === undefined || mainIndex <= 0 || mainIndex >= river.vertexPath.length - 1) return null;
         return { vertexKey: tributaryMouth.key, mainIndex };
       })
       .filter((item): item is { vertexKey: string; mainIndex: number } => item !== null)
