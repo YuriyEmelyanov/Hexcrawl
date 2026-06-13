@@ -1663,11 +1663,29 @@ function applySingleMountainUpstreamTributaryDrop(region: Region, rivers: River[
       if (!mainVertexIndexByKey.has(vertex.key)) mainVertexIndexByKey.set(vertex.key, index);
     });
 
+    const sectorsInRegion = (river.sectors ?? [])
+      .filter((sector) => sector.assignedRegionId === region.id)
+      .map((sector) => ({
+        sector,
+        startIndex: mainVertexIndexByKey.get(sector.startVertexKey) ?? Number.POSITIVE_INFINITY,
+        endIndex: mainVertexIndexByKey.get(sector.endVertexKey) ?? Number.POSITIVE_INFINITY
+      }))
+      .filter(({ startIndex, endIndex }) => Number.isFinite(startIndex) && Number.isFinite(endIndex))
+      .sort((a, b) => Math.min(a.startIndex, a.endIndex) - Math.min(b.startIndex, b.endIndex));
+    if (sectorsInRegion.length === 0) continue;
+
+    const outgoingSector = sectorsInRegion[0].sector;
+    if (outgoingSector.fullness !== 3) continue;
+
+    const incomingSector = sectorsInRegion[sectorsInRegion.length - 1].sector;
+    if (incomingSector.fullness !== 3) return rivers;
+
     const tributaryConnection = rivers
       .filter((tributary) => tributary.id !== river.id)
       .map((tributary) => {
         const tributaryMouth = tributary.vertexPath[tributary.vertexPath.length - 1];
         const mainIndex = tributaryMouth ? mainVertexIndexByKey.get(tributaryMouth.key) : undefined;
+        if (mainIndex === undefined || mainIndex <= 0) return null;
         if (mainIndex === undefined || mainIndex <= 0 || mainIndex >= river.vertexPath.length - 1) return null;
         return { vertexKey: tributaryMouth.key, mainIndex };
       })
