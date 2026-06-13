@@ -9424,14 +9424,51 @@ export function App() {
       let biomeChoice = pickBiome(effectiveRiverHeightConstraint);
 
       if (!biomeChoice.biomeId && biomeChoice.reason === 'river_height_constraint_failed') {
-        console.warn('Region attempt discarded because no biome satisfies river height constraints', {
-          regionId,
-          attempt,
-          riverHeightConstraint,
-          adjacentBiomeIds,
-          biomeLandType
-        });
-        continue;
+        const outgoingEndpointRiverIds = new Set(
+          touchingEndpoints
+            .filter((endpoint) => endpoint.endpointType === 'start')
+            .map((endpoint) => endpoint.riverId)
+        );
+        const conflictingOutgoingRiverIds = getConflictingOutgoingRiverIds(
+          touchingEndpoints,
+          regions,
+          riverHeightConstraint
+        );
+        // Only trim rivers whose current start endpoint is treated as outgoing
+        // from the candidate region. Incoming river ends must keep constraining
+        // the candidate height instead of being shortened here.
+        const outgoingRiverIdsToTrim = conflictingOutgoingRiverIds.length > 0
+          ? conflictingOutgoingRiverIds.filter((riverId) => outgoingEndpointRiverIds.has(riverId))
+          : Array.from(outgoingEndpointRiverIds);
+
+        if (outgoingRiverIdsToTrim.length > 0) {
+          riversForGeneration = trimConflictingOutgoingRiversAwayFromRegion(
+            riversForGeneration,
+            outgoingRiverIdsToTrim,
+            regionHexes,
+            regionId
+          );
+          effectiveRiverHeightConstraint = getRiverHeightConstraintForCandidateRegion(
+            candidateRegionForRiverCheck,
+            regions,
+            riversForGeneration,
+            nextCandidateHexesPreview
+          );
+          biomeChoice = pickBiome(effectiveRiverHeightConstraint);
+        }
+
+        if (!biomeChoice.biomeId && biomeChoice.reason === 'river_height_constraint_failed') {
+          console.warn('Region attempt discarded because no biome satisfies river height constraints', {
+            regionId,
+            attempt,
+            riverHeightConstraint,
+            effectiveRiverHeightConstraint,
+            trimmedOutgoingRiverIds: outgoingRiverIdsToTrim,
+            adjacentBiomeIds,
+            biomeLandType
+          });
+          continue;
+        }
       }
       if (!biomeChoice.biomeId) {
         console.warn('No biome available for candidate region; retrying region generation', {
