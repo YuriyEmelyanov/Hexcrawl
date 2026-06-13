@@ -3152,22 +3152,26 @@ function mergeRiversWithConnector(
   const splitIndex = connectorSplit
     ? connectorPath.findIndex((vertex) => vertex.key === connectorSplit.vertex.key)
     : -1;
-  const rawConnectorSectors = connectorSplit && splitIndex > 0 && splitIndex < connectorPath.length - 1
+  const rawConnectorSectors = connectorSplit && splitIndex >= 0
     ? [
-      ...createInitialRiverSectors(
-        upstreamRiver.id,
-        connectorPath.slice(0, splitIndex + 1),
-        connectorSplit.upstreamFullness,
-        { startReason: 'region_boundary', endReason: 'split' },
-        assignedRegionId
-      ),
-      ...createInitialRiverSectors(
-        upstreamRiver.id,
-        connectorPath.slice(splitIndex),
-        connectorSplit.downstreamFullness,
-        { startReason: 'split', endReason: 'region_boundary' },
-        assignedRegionId
-      )
+      ...(splitIndex > 0
+        ? createInitialRiverSectors(
+          upstreamRiver.id,
+          connectorPath.slice(0, splitIndex + 1),
+          connectorSplit.upstreamFullness,
+          { startReason: 'region_boundary', endReason: 'split' },
+          assignedRegionId
+        )
+        : []),
+      ...(splitIndex < connectorPath.length - 1
+        ? createInitialRiverSectors(
+          upstreamRiver.id,
+          connectorPath.slice(splitIndex),
+          connectorSplit.downstreamFullness,
+          { startReason: 'split', endReason: 'region_boundary' },
+          assignedRegionId
+        )
+        : [])
     ]
     : createInitialRiverSectors(
       upstreamRiver.id,
@@ -3327,11 +3331,11 @@ function buildConnectorSplitForFullnessDrop(
   if (upstreamFullness === null || downstreamFullness === null) return undefined;
   if (upstreamFullness <= downstreamFullness) return undefined;
 
-  const internalVertices = connectorPath.slice(1, -1);
-  if (internalVertices.length === 0) return null;
+  const splitCandidateVertices = connectorPath;
+  if (splitCandidateVertices.length === 0) return null;
 
   return {
-    vertex: randomFrom(internalVertices),
+    vertex: randomFrom(splitCandidateVertices),
     upstreamFullness,
     downstreamFullness
   };
