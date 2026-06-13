@@ -8408,6 +8408,40 @@ function filterSeaCandidatesByRiverInteraction(
   return filtered;
 }
 
+// Юрий: при генерации ПОБЕРЕЖЬЯ режем низовой хвост реки по сегментам, чьё ребро делит
+// ОТКРЫТЫЙ гекс (суша региона) и НЕ ОТКРЫТЫЙ (кандидатный/серый) гекс. Идём от устья
+// (последняя вершина) назад и убираем такие сегменты ПОДРЯД — река просто укорачивается,
+// не распадается. Сегмент = ребро между двумя смежными гексами; эти два гекса — те, что
+// содержат ОБЕ вершины ребра как свои углы (пересечение множеств в hexesByCornerKey).
+// Сегмент суша|море (устье) не режется, т.к. морская сторона не кандидат.
+function trimRiverCoastalBoundaryTail(
+  river: River,
+  openHexKeys: Set<string>,
+  candidateHexKeys: Set<string>,
+  hexesByCornerKey: Map<string, Set<string>>
+): River {
+  const path = river.vertexPath;
+  if (path.length < 2) return river;
+  let lastIndex = path.length - 1;
+  while (lastIndex >= 1) {
+    const fromOwners = hexesByCornerKey.get(path[lastIndex - 1].key);
+    const toOwners = hexesByCornerKey.get(path[lastIndex].key);
+    if (!fromOwners || !toOwners) break;
+    let touchesOpen = false;
+    let touchesCandidate = false;
+    for (const edgeHexKey of fromOwners) {
+      if (!toOwners.has(edgeHexKey)) continue; // только гексы, делящие ЭТО ребро
+      if (openHexKeys.has(edgeHexKey)) touchesOpen = true;
+      else if (candidateHexKeys.has(edgeHexKey)) touchesCandidate = true;
+    }
+    if (!(touchesOpen && touchesCandidate)) break;
+    lastIndex -= 1;
+  }
+  if (lastIndex === path.length - 1) return river; // ничего не обрезали
+  if (lastIndex < 1) return river; // обрезка съела бы всю реку — оставляем как есть
+  return { ...river, vertexPath: path.slice(0, lastIndex + 1) };
+}
+
 function trimRiverEndsToLand(river: River, landVertexKeys: Set<string>, seaVertexKeys: Set<string>): River | null {
   const path = river.vertexPath;
   let start = 0;
@@ -9572,20 +9606,27 @@ export function App() {
       );
       finalizedRivers = restoreInvalidGeneratedRiversForRegion(regionForRiverGeneration, riversForGeneration, finalizedRivers, nextCandidateHexes);
 
-      // Юрий: для ПОБЕРЕЖЬЯ обрезаем рёбра рек, идущие по границе с неоткрытым чанком
-      // (открытый и неоткрытый гекс делят сторону, по ней течёт река), ДО проверок реки-vs-море
-      // и до построения моря — тянем низовой конец назад к суше. Устье у УЖЕ существующего моря
-      // не трогаем (его вершина — угол берега = суша). Так река заранее заканчивается у берега,
-      // и проверка non_mouth_vertex_sea её пропускает.
+      // Юрий: для ПОБЕРЕЖЬЯ режем низовой хвост реки по сегментам, чьё ребро делит открытый
+      // гекс (суша региона) и неоткрытый (кантидатный/серый) — ДО проверок реки-vs-море и до
+      // построения моря. Река просто укорачивается. Сегмент суша|море (устье) не трогаем.
       if (isCoastalRegion) {
-        const preSeaLandVertexKeys = getLandVertexKeys(nextAllHexes);
-        const preSeaSeaVertexKeys = getSeaVertexKeysFromSeaKeys(getNonSolitarySeaHexKeys(hexTerrainByKey));
+        const openHexKeys = new Set<string>(nextAllHexes.map(hexKey));
+        const candidateHexKeys = new Set<string>(nextCandidateHexes.map(hexKey));
+        const hexesByCornerKey = new Map<string, Set<string>>();
+        for (const hex of [...nextAllHexes, ...nextCandidateHexes]) {
+          const ownerKey = hexKey(hex);
+          for (const corner of getHexCornerPoints(hex)) {
+            const owners = hexesByCornerKey.get(corner.key) ?? new Set<string>();
+            owners.add(ownerKey);
+            hexesByCornerKey.set(corner.key, owners);
+          }
+        }
         const previousRiverById = new Map(riversForGeneration.map((river) => [river.id, river]));
         let trimmedAnyRiver = false;
         const trimmedRivers = finalizedRivers.map((river) => {
           if (!riverChangedFromPrevious(previousRiverById.get(river.id), river)) return river;
-          const trimmed = trimRiverEndsToLand(river, preSeaLandVertexKeys, preSeaSeaVertexKeys);
-          if (trimmed && trimmed !== river) {
+          const trimmed = trimRiverCoastalBoundaryTail(river, openHexKeys, candidateHexKeys, hexesByCornerKey);
+          if (trimmed !== river) {
             trimmedAnyRiver = true;
             return trimmed;
           }
