@@ -1,5 +1,5 @@
 import { type ChangeEvent, type CSSProperties, type WheelEvent, useEffect, useMemo, useRef, useState } from 'react';
-import { getOutgoingConnectorFullnessFromEndpoint, getUpstreamFullnessBeforeMountainTributary, type RiverFullness } from './riverFullness';
+import { getOutgoingConnectorFullnessFromEndpoint, type RiverFullness } from './riverFullness';
 
 type AxialHex = {
   q: number;
@@ -1438,7 +1438,6 @@ type RiverFullnessRuleState = {
   confluenceTributaryFullnessByIndex: Map<number, RiverFullness>;
   allowConfluenceFullnessIncrease: boolean;
   reduceHeightTwoUpstreamBeforeConfluence: boolean;
-  reduceHeightThreeUpstreamBeforeConfluence: boolean;
   firstConfluenceIndex?: number;
 };
 
@@ -1585,18 +1584,10 @@ function buildRiverFullnessRuleState(
     candidateBoundaryByHeight,
     2
   );
-  const reduceHeightThreeUpstreamBeforeConfluence = confluenceIndices.length > 0 && riverEndpointTouchesCandidateBoundary(
-    river,
-    'upstream',
-    candidateBoundaryByHeight,
-    3
-  );
-
   return {
     confluenceTributaryFullnessByIndex,
     allowConfluenceFullnessIncrease,
     reduceHeightTwoUpstreamBeforeConfluence,
-    reduceHeightThreeUpstreamBeforeConfluence,
     firstConfluenceIndex: confluenceIndices.length > 0 ? Math.min(...confluenceIndices) : undefined
   };
 }
@@ -1614,9 +1605,7 @@ function applyRiverFullnessRules(
   fromIndex: number,
   toIndex: number,
   ruleState: RiverFullnessRuleState,
-  allowHeightOneConfluenceIncrease: boolean,
-  assignedRegionHeight?: RegionHeightLevel,
-  upstreamReductionSourceFullness: RiverFullness = currentDownstreamFullness
+  allowHeightOneConfluenceIncrease: boolean
 ): { downstreamFullness: RiverFullness; sectorFullness: RiverFullness } {
   let downstreamFullness = currentDownstreamFullness;
 
@@ -1642,22 +1631,8 @@ function applyRiverFullnessRules(
   if (sectorIsUpstreamBeforeConfluence) {
     const shouldReduceHeightTwo = ruleState.reduceHeightTwoUpstreamBeforeConfluence
       && sectorFullness === 3;
-    const shouldReduceHeightThree = assignedRegionHeight === 3
-      && upstreamReductionSourceFullness > 1;
 
-    if (shouldReduceHeightThree) {
-      // Mountain outgoing rivers drop exactly one step on the upstream side of
-      // a tributary. Use the original/source fullness as the baseline so a
-      // recalculated sector that already dropped from 3 to 2 is not dropped
-      // again to 1 on a later assignRiverSectors pass.
-      const mountainSourceFullness = currentDownstreamFullness === 2
-        ? currentDownstreamFullness
-        : upstreamReductionSourceFullness;
-      sectorFullness = getUpstreamFullnessBeforeMountainTributary(
-        mountainSourceFullness,
-        sectorFullness
-      );
-    } else if (shouldReduceHeightTwo) {
+    if (shouldReduceHeightTwo) {
       sectorFullness = 2;
     }
   }
@@ -1850,35 +1825,22 @@ function assignRiverSectors(
             ? baseFullness
             : downstreamFullness;
 
-        const upstreamReductionSourceFullness = priorMaxFullness !== null
-          && riverFullnessRuleState.firstConfluenceIndex !== undefined
-          && toIndex <= riverFullnessRuleState.firstConfluenceIndex
-          ? (Math.max(startingFullness, priorMaxFullness) as RiverFullness)
-          : startingFullness;
         const adjustedFullness = applyRiverFullnessRules(
           startingFullness,
           fromIndex,
           toIndex,
           riverFullnessRuleState,
-          allowHeightOneConfluenceIncrease,
-          assignedRegionHeight,
-          upstreamReductionSourceFullness
+          allowHeightOneConfluenceIncrease
         );
         // This reduction is intentionally narrow: only sectors being recalculated
         // for the new region may apply it, and only before a confluence that has
-        // a height-specific upstream reduction (height 2) or belongs to a height-3
-        // region. Existing known fullness used to mask these local reductions;
-        // mountain regions need a local one-step drop (3 -> 2 or 2 -> 1)
-        // before a size-1 tributary while preserving the carried downstream
+        // a height-specific upstream reduction. Existing known fullness used to
+        // mask these local reductions while preserving the carried downstream
         // fullness after the confluence.
         const localReductionAffectsSector = Boolean(
           canRecalculateFullness
           && !preserveKnownFullness
-          && (
-            riverFullnessRuleState.reduceHeightTwoUpstreamBeforeConfluence
-            || riverFullnessRuleState.reduceHeightThreeUpstreamBeforeConfluence
-            || assignedRegionHeight === 3
-          )
+          && riverFullnessRuleState.reduceHeightTwoUpstreamBeforeConfluence
           && adjustedFullness.sectorFullness < startingFullness
         );
 
