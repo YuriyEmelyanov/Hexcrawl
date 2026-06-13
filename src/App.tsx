@@ -3471,6 +3471,37 @@ function buildRiverPathViaControlPoints(
   return joined.map((node) => ({ key: node.key, x: node.x, y: node.y }));
 }
 
+function findBestConnectorPathBetweenRiverEndpoints(
+  startVertex: RiverVertex,
+  endVertex: RiverVertex,
+  middleVertices: RiverVertex[],
+  riverGraph: RiverGraph,
+  blockedEdgeKeys: Set<string>,
+  occupiedVertexKeys: Set<string>
+): RiverVertex[] | null {
+  const allowedOccupiedVertexKeys = new Set([startVertex.key, endVertex.key]);
+  const candidates: RiverVertex[][] = [
+    buildRiverPathViaControlPoints({ startVertex, endVertex }, riverGraph, blockedEdgeKeys),
+    ...middleVertices
+      .filter((middlePurpleVertex) => middlePurpleVertex.key !== startVertex.key && middlePurpleVertex.key !== endVertex.key)
+      .map((middlePurpleVertex) => buildRiverPathViaControlPoints({ startVertex, middlePurpleVertex, endVertex }, riverGraph, blockedEdgeKeys))
+  ];
+
+  let bestPath: RiverVertex[] | null = null;
+  for (const path of candidates) {
+    if (path.length < 2) continue;
+    if (path[0].key !== startVertex.key || path[path.length - 1].key !== endVertex.key) continue;
+    if (new Set(path.map((vertex) => vertex.key)).size !== path.length) continue;
+    const pathEdgeKeys = getRiverPathEdgeKeys(path, riverGraph);
+    if (!pathEdgeKeys) continue;
+    if (pathEdgeKeys.some((pathEdgeKey) => blockedEdgeKeys.has(pathEdgeKey))) continue;
+    if (!riverPathAvoidsOccupiedVertices(path, occupiedVertexKeys, allowedOccupiedVertexKeys)) continue;
+    if (!bestPath || path.length < bestPath.length) bestPath = path;
+  }
+
+  return bestPath;
+}
+
 function findBestFreeRiverPathFromEndpoints(
   existingRiverEndpointVerticesInRegion: RiverVertex[],
   redVertices: RiverVertex[],
@@ -5540,20 +5571,16 @@ function generateRiverForRegion(
 
       if (incomingEndpoints.length > 0) {
         if (!mainIncomingEndpoint) return { success: false, rivers: existingRivers, reason: 'mountain_main_incoming_not_found' };
-        const connectorPath = buildRiverPathViaControlPoints(
-          { startVertex: mainIncomingEndpoint.vertex, endVertex: mainOutgoingEndpoint.vertex },
+        const connectorPath = findBestConnectorPathBetweenRiverEndpoints(
+          mainIncomingEndpoint.vertex,
+          mainOutgoingEndpoint.vertex,
+          purpleVertices,
           riverGraph,
-          blockedEdgeKeys
+          blockedEdgeKeys,
+          existingRiverVertexKeys
         );
-        const connectorEdgeKeys = getRiverPathEdgeKeys(connectorPath, riverGraph);
-        if (
-          connectorPath.length < 2
-          || connectorPath[0].key !== mainIncomingEndpoint.vertex.key
-          || connectorPath[connectorPath.length - 1].key !== mainOutgoingEndpoint.vertex.key
-          || !connectorEdgeKeys
-          || connectorEdgeKeys.some((pathEdgeKey) => blockedEdgeKeys.has(pathEdgeKey))
-          || !riverPathAvoidsOccupiedVertices(connectorPath, existingRiverVertexKeys, new Set([mainIncomingEndpoint.vertex.key, mainOutgoingEndpoint.vertex.key]))
-        ) {
+        const connectorEdgeKeys = connectorPath ? getRiverPathEdgeKeys(connectorPath, riverGraph) : null;
+        if (!connectorPath || !connectorEdgeKeys) {
           const fallbackResult = buildMountainIncomingBoundaryFallback(mainIncomingEndpoint, 'mountain_main_outgoing_connector_not_found');
           return fallbackResult ?? { success: false, rivers: existingRivers, reason: 'mountain_main_outgoing_connector_not_found' };
         }
@@ -5805,17 +5832,17 @@ function generateRiverForRegion(
         const validConnectors = candidatePairs
           .filter((pair) => !wouldCreateRiverDrainageCycle(existingRivers, pair.left.riverId, pair.right.riverId))
           .map((pair) => {
-            const connectorPath = buildRiverPathViaControlPoints(
-              { startVertex: pair.left.vertex, endVertex: pair.right.vertex },
+            const connectorPath = findBestConnectorPathBetweenRiverEndpoints(
+              pair.left.vertex,
+              pair.right.vertex,
+              purpleVertices,
               riverGraph,
-              usedRiverEdges
+              usedRiverEdges,
+              existingRiverVertexKeys
             );
-            if (connectorPath.length < 2) return null;
-            if (connectorPath[0].key !== pair.left.vertex.key || connectorPath[connectorPath.length - 1].key !== pair.right.vertex.key) return null;
+            if (!connectorPath) return null;
             const connectorEdgeKeys = getRiverPathEdgeKeys(connectorPath, riverGraph);
             if (!connectorEdgeKeys) return null;
-            if (connectorEdgeKeys.some((pathEdgeKey) => usedRiverEdges.has(pathEdgeKey))) return null;
-            if (!riverPathAvoidsOccupiedVertices(connectorPath, existingRiverVertexKeys, new Set([pair.left.vertex.key, pair.right.vertex.key]))) return null;
             const connectorSplit = buildConnectorSplitForFullnessDrop(
               existingRivers,
               pair.left.riverId,
