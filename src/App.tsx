@@ -1635,14 +1635,21 @@ function applyRiverFullnessRules(
   }
 
   let sectorFullness = downstreamFullness;
-  if (
-    (ruleState.reduceHeightTwoUpstreamBeforeConfluence || assignedRegionHeight === 3)
-    && sectorFullness === 3
-    && ruleState.firstConfluenceIndex !== undefined
+  const sectorIsUpstreamBeforeConfluence = ruleState.firstConfluenceIndex !== undefined
     && fromIndex < ruleState.firstConfluenceIndex
-    && toIndex <= ruleState.firstConfluenceIndex
+    && toIndex <= ruleState.firstConfluenceIndex;
+  if (
+    sectorIsUpstreamBeforeConfluence
+    && (ruleState.reduceHeightTwoUpstreamBeforeConfluence || assignedRegionHeight === 3)
+    && sectorFullness === 3
   ) {
     sectorFullness = 2;
+  } else if (
+    sectorIsUpstreamBeforeConfluence
+    && assignedRegionHeight === 3
+    && sectorFullness === 2
+  ) {
+    sectorFullness = 1;
   }
 
   return { downstreamFullness, sectorFullness };
@@ -1845,8 +1852,9 @@ function assignRiverSectors(
         // for the new region may apply it, and only before a confluence that has
         // a height-specific upstream reduction (height 2) or belongs to a height-3
         // region. Existing known fullness used to mask these local reductions;
-        // mountain regions need the local 3 -> 2 drop before a size-1 tributary
-        // while preserving the carried downstream fullness after the confluence.
+        // mountain regions need a local one-step drop (3 -> 2 or 2 -> 1)
+        // before a size-1 tributary while preserving the carried downstream
+        // fullness after the confluence.
         const localReductionAffectsSector = Boolean(
           canRecalculateFullness
           && !preserveKnownFullness
