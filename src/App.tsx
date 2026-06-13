@@ -1640,6 +1640,59 @@ function applyRiverFullnessRules(
   return { downstreamFullness, sectorFullness };
 }
 
+
+function applySingleMountainUpstreamTributaryDrop(region: Region, rivers: River[]): River[] {
+  if (region.heightLevel !== 3) return rivers;
+
+  for (const river of rivers) {
+    const sectorsInRegion = (river.sectors ?? []).filter((sector) => sector.assignedRegionId === region.id);
+    const hasOutgoingFullnessThree = sectorsInRegion.some((sector) => (
+      sector.endReason === 'region_boundary'
+      && sector.fullness === 3
+    ));
+    if (!hasOutgoingFullnessThree) continue;
+
+    const hasIncomingFullnessThree = sectorsInRegion.some((sector) => (
+      sector.startReason === 'region_boundary'
+      && sector.fullness === 3
+    ));
+    if (!hasIncomingFullnessThree) return rivers;
+
+    const mainVertexIndexByKey = new Map<string, number>();
+    river.vertexPath.forEach((vertex, index) => {
+      if (!mainVertexIndexByKey.has(vertex.key)) mainVertexIndexByKey.set(vertex.key, index);
+    });
+
+    const tributaryConnection = rivers
+      .filter((tributary) => tributary.id !== river.id)
+      .map((tributary) => {
+        const tributaryMouth = tributary.vertexPath[tributary.vertexPath.length - 1];
+        const mainIndex = tributaryMouth ? mainVertexIndexByKey.get(tributaryMouth.key) : undefined;
+        if (mainIndex === undefined || mainIndex <= 0 || mainIndex >= river.vertexPath.length - 1) return null;
+        return { vertexKey: tributaryMouth.key, mainIndex };
+      })
+      .filter((item): item is { vertexKey: string; mainIndex: number } => item !== null)
+      .sort((a, b) => a.mainIndex - b.mainIndex)[0];
+
+    if (!tributaryConnection) return rivers;
+
+    return rivers.map((item) => {
+      if (item.id !== river.id) return item;
+      return {
+        ...item,
+        sectors: (item.sectors ?? []).map((sector) => {
+          if (sector.assignedRegionId !== region.id) return sector;
+          const sectorEndIndex = mainVertexIndexByKey.get(sector.endVertexKey);
+          if (sectorEndIndex === undefined || sectorEndIndex > tributaryConnection.mainIndex) return sector;
+          return { ...sector, fullness: 2 as RiverFullness };
+        })
+      };
+    });
+  }
+
+  return rivers;
+}
+
 function validateExistingRiverEdgeFullnessPreserved(previousRivers: River[], nextRivers: River[]): boolean {
   const previousFullnessByEdge = getRiverCrossingFullnessByEdge(previousRivers);
   const nextFullnessByEdge = getRiverCrossingFullnessByEdge(nextRivers);
@@ -9361,6 +9414,7 @@ export function App() {
         { recalculatedRegionId: regionId }
       );
       finalizedRivers = restoreInvalidGeneratedRiversForRegion(regionForRiverGeneration, riversForGeneration, finalizedRivers, nextCandidateHexes);
+      finalizedRivers = applySingleMountainUpstreamTributaryDrop(regionForRiverGeneration, finalizedRivers);
       if (!validateExistingRiverEdgeFullnessPreserved(rivers, finalizedRivers)) {
         console.warn('Discarding failed candidate region because final river sector assignment changed old edge fullness', { attempt });
         continue;
