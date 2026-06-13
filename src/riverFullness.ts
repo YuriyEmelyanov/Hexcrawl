@@ -8,10 +8,12 @@ export function getInteriorSourceFullnessForOutgoingRiver(outgoingFullness: Rive
   return outgoingFullness > 1 ? decreaseRiverFullness(outgoingFullness) : outgoingFullness;
 }
 
+// Connector sectors that enter a region through an outgoing boundary keep the
+// endpoint fullness. Any mountain-source drop is applied later only to sectors
+// upstream of an actual tributary confluence, not at the region boundary.
 export function getOutgoingConnectorFullnessFromEndpoint(
   outgoingFullness: RiverFullness,
-  connectedToLake: boolean
+  _connectedToLake: boolean
 ): RiverFullness {
-  if (connectedToLake) return outgoingFullness;
-  return getInteriorSourceFullnessForOutgoingRiver(outgoingFullness);
+  return outgoingFullness;
 }
