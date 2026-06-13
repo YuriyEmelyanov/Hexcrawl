@@ -1645,27 +1645,23 @@ function applySingleMountainUpstreamTributaryDrop(region: Region, rivers: River[
   if (region.heightLevel !== 3) return rivers;
 
   for (const river of rivers) {
+    const sectorsInRegion = (river.sectors ?? []).filter((sector) => sector.assignedRegionId === region.id);
+    const hasOutgoingFullnessThree = sectorsInRegion.some((sector) => (
+      sector.endReason === 'region_boundary'
+      && sector.fullness === 3
+    ));
+    if (!hasOutgoingFullnessThree) continue;
+
+    const hasIncomingFullnessThree = sectorsInRegion.some((sector) => (
+      sector.startReason === 'region_boundary'
+      && sector.fullness === 3
+    ));
+    if (!hasIncomingFullnessThree) return rivers;
+
     const mainVertexIndexByKey = new Map<string, number>();
     river.vertexPath.forEach((vertex, index) => {
       if (!mainVertexIndexByKey.has(vertex.key)) mainVertexIndexByKey.set(vertex.key, index);
     });
-
-    const sectorsInRegion = (river.sectors ?? [])
-      .filter((sector) => sector.assignedRegionId === region.id)
-      .map((sector) => ({
-        sector,
-        startIndex: mainVertexIndexByKey.get(sector.startVertexKey) ?? Number.POSITIVE_INFINITY,
-        endIndex: mainVertexIndexByKey.get(sector.endVertexKey) ?? Number.POSITIVE_INFINITY
-      }))
-      .filter(({ startIndex, endIndex }) => Number.isFinite(startIndex) && Number.isFinite(endIndex))
-      .sort((a, b) => Math.min(a.startIndex, a.endIndex) - Math.min(b.startIndex, b.endIndex));
-    if (sectorsInRegion.length === 0) continue;
-
-    const outgoingSector = sectorsInRegion[0].sector;
-    if (outgoingSector.fullness !== 3) continue;
-
-    const incomingSector = sectorsInRegion[sectorsInRegion.length - 1].sector;
-    if (incomingSector.fullness !== 3) return rivers;
 
     const tributaryConnection = rivers
       .filter((tributary) => tributary.id !== river.id)
