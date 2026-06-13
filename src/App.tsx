@@ -1645,7 +1645,9 @@ function applySingleMountainUpstreamTributaryDrop(region: Region, rivers: River[
   if (region.heightLevel !== 3) return rivers;
 
   for (const river of rivers) {
-    const regionSectors = (river.sectors ?? []).filter((sector) => sector.assignedRegionId === region.id);
+    const sectorTouchesRegion = (sector: RiverSector): boolean => sector.assignedRegionId === region.id
+      || sector.vertexPath.some((vertex) => vertexTouchesAnyHex(vertex, region.hexes));
+    const regionSectors = (river.sectors ?? []).filter(sectorTouchesRegion);
     const hasOutgoingFullnessThree = regionSectors.some((sector) => (
       sector.endReason === 'region_boundary'
       && sector.fullness === 3
@@ -1656,7 +1658,7 @@ function applySingleMountainUpstreamTributaryDrop(region: Region, rivers: River[
       sector.startReason === 'region_boundary'
       && sector.fullness === 3
     ));
-    if (!hasIncomingFullnessThree) return rivers;
+    if (!hasIncomingFullnessThree) continue;
 
     const mainVertexIndexByKey = new Map<string, number>();
     river.vertexPath.forEach((vertex, index) => {
@@ -1664,7 +1666,7 @@ function applySingleMountainUpstreamTributaryDrop(region: Region, rivers: River[
     });
 
     const indexedRegionSectors = (river.sectors ?? [])
-      .filter((sector) => sector.assignedRegionId === region.id)
+      .filter(sectorTouchesRegion)
       .map((sector) => ({
         sector,
         startIndex: mainVertexIndexByKey.get(sector.startVertexKey) ?? Number.POSITIVE_INFINITY,
@@ -1678,7 +1680,7 @@ function applySingleMountainUpstreamTributaryDrop(region: Region, rivers: River[
     if (outgoingSector.fullness !== 3) continue;
 
     const incomingSector = indexedRegionSectors[indexedRegionSectors.length - 1].sector;
-    if (incomingSector.fullness !== 3) return rivers;
+    if (incomingSector.fullness !== 3) continue;
 
     const tributaryConnection = rivers
       .filter((tributary) => tributary.id !== river.id)
@@ -1692,14 +1694,14 @@ function applySingleMountainUpstreamTributaryDrop(region: Region, rivers: River[
       .filter((item): item is { vertexKey: string; mainIndex: number } => item !== null)
       .sort((a, b) => a.mainIndex - b.mainIndex)[0];
 
-    if (!tributaryConnection) return rivers;
+    if (!tributaryConnection) continue;
 
     return rivers.map((item) => {
       if (item.id !== river.id) return item;
       return {
         ...item,
         sectors: (item.sectors ?? []).map((sector) => {
-          if (sector.assignedRegionId !== region.id) return sector;
+          if (!sectorTouchesRegion(sector)) return sector;
           const sectorEndIndex = mainVertexIndexByKey.get(sector.endVertexKey);
           if (sectorEndIndex === undefined || sectorEndIndex > tributaryConnection.mainIndex) return sector;
           return { ...sector, fullness: 2 as RiverFullness };
