@@ -1,4 +1,4 @@
-import { type ChangeEvent, type CSSProperties, type WheelEvent, useEffect, useMemo, useRef, useState } from 'react';
+import { type ChangeEvent, type CSSProperties, type TouchEvent, type WheelEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { getOutgoingConnectorFullnessFromEndpoint, type RiverFullness } from './riverFullness';
 
 type AxialHex = {
@@ -206,6 +206,9 @@ const SEA_HEX_COLOR = '#2b6b9e';
 const SEA_EMOJI = '🌊';
 const SEA_HEIGHT_LEVEL = 0;
 const MOBILE_LAYOUT_QUERY = '(max-width: 900px)';
+const MIN_MAP_SCALE = 0.5;
+const MAX_MAP_SCALE = 3;
+const WHEEL_ZOOM_SENSITIVITY = 0.0015;
 
 
 type HexTerrainOverride = 'lake' | 'sea';
@@ -9135,6 +9138,9 @@ function generateRoadsForRegion(options: {
 
 export function App() {
   const mapSvgRef = useRef<SVGSVGElement | null>(null);
+  const mapViewportRef = useRef<HTMLDivElement | null>(null);
+  const mapScaleRef = useRef(1);
+  const pinchZoomRef = useRef<{ distance: number; scale: number } | null>(null);
   const mapToolbarRef = useRef<HTMLDivElement | null>(null);
   const jsonImportInputRef = useRef<HTMLInputElement | null>(null);
   const [regions, setRegions] = useState<Region[]>([]);
@@ -10242,14 +10248,88 @@ export function App() {
     return () => mobileLayout.removeEventListener('change', syncMobileLayout);
   }, []);
 
+  const clampMapScale = (scale: number) => Math.min(MAX_MAP_SCALE, Math.max(MIN_MAP_SCALE, scale));
+
+  const applyMapScale = (scale: number) => {
+    const nextScale = clampMapScale(scale);
+    mapScaleRef.current = nextScale;
+    setMapScale(nextScale);
+    return nextScale;
+  };
+
   const updateMapScale = (scale: number) => {
-    setMapScale(Math.min(3, Math.max(0.5, scale)));
+    applyMapScale(scale);
+  };
+
+  const zoomMapAtPoint = (scale: number, clientX?: number, clientY?: number) => {
+    const viewport = mapViewportRef.current;
+    const previousScale = mapScaleRef.current;
+    const nextScale = clampMapScale(scale);
+    if (!viewport || previousScale === nextScale) {
+      applyMapScale(nextScale);
+      return;
+    }
+
+    const rect = viewport.getBoundingClientRect();
+    const focalX = (clientX ?? rect.left + rect.width / 2) - rect.left;
+    const focalY = (clientY ?? rect.top + rect.height / 2) - rect.top;
+    const mapX = (viewport.scrollLeft + focalX) / previousScale;
+    const mapY = (viewport.scrollTop + focalY) / previousScale;
+
+    applyMapScale(nextScale);
+
+    window.requestAnimationFrame(() => {
+      viewport.scrollLeft = mapX * nextScale - focalX;
+      viewport.scrollTop = mapY * nextScale - focalY;
+    });
+  };
+
+  const getTouchDistance = (touches: React.TouchList) => {
+    const [first, second] = [touches.item(0), touches.item(1)];
+    if (!first || !second) return 0;
+    return Math.hypot(second.clientX - first.clientX, second.clientY - first.clientY);
+  };
+
+  const getTouchCenter = (touches: React.TouchList) => {
+    const [first, second] = [touches.item(0), touches.item(1)];
+    if (!first || !second) return null;
+    return {
+      x: (first.clientX + second.clientX) / 2,
+      y: (first.clientY + second.clientY) / 2
+    };
   };
 
   const handleMapWheel = (event: WheelEvent<HTMLDivElement>) => {
-    if (!event.ctrlKey && !event.metaKey) return;
     event.preventDefault();
-    updateMapScale(mapScale + (event.deltaY > 0 ? -0.1 : 0.1));
+    const zoomFactor = Math.exp(-event.deltaY * WHEEL_ZOOM_SENSITIVITY);
+    zoomMapAtPoint(mapScaleRef.current * zoomFactor, event.clientX, event.clientY);
+  };
+
+  const handleMapTouchStart = (event: TouchEvent<HTMLDivElement>) => {
+    if (event.touches.length !== 2) {
+      pinchZoomRef.current = null;
+      return;
+    }
+
+    pinchZoomRef.current = {
+      distance: getTouchDistance(event.touches),
+      scale: mapScaleRef.current
+    };
+  };
+
+  const handleMapTouchMove = (event: TouchEvent<HTMLDivElement>) => {
+    if (event.touches.length !== 2 || !pinchZoomRef.current) return;
+    event.preventDefault();
+
+    const distance = getTouchDistance(event.touches);
+    const center = getTouchCenter(event.touches);
+    if (distance <= 0 || !center) return;
+
+    zoomMapAtPoint(pinchZoomRef.current.scale * (distance / pinchZoomRef.current.distance), center.x, center.y);
+  };
+
+  const handleMapTouchEnd = (event: TouchEvent<HTMLDivElement>) => {
+    if (event.touches.length < 2) pinchZoomRef.current = null;
   };
 
   const createSaveData = (): HexcrawlSaveData => ({
@@ -10425,9 +10505,9 @@ export function App() {
               </div>
             )}
             <div className="zoom-controls" aria-label="Масштаб карты">
-              <button type="button" className="secondary" onClick={() => updateMapScale(mapScale - 0.1)} aria-label="Отдалить карту">−</button>
+              <button type="button" className="secondary" onClick={() => zoomMapAtPoint(mapScaleRef.current - 0.1)} aria-label="Отдалить карту">−</button>
               <span>{mapZoomPercent}%</span>
-              <button type="button" className="secondary" onClick={() => updateMapScale(mapScale + 0.1)} aria-label="Приблизить карту">+</button>
+              <button type="button" className="secondary" onClick={() => zoomMapAtPoint(mapScaleRef.current + 0.1)} aria-label="Приблизить карту">+</button>
             </div>
             <button
               type="button"
@@ -10445,7 +10525,15 @@ export function App() {
               </svg>
             </button>
           </div>
-          <div className="map-viewport" onWheel={handleMapWheel}>
+          <div
+            ref={mapViewportRef}
+            className="map-viewport"
+            onWheel={handleMapWheel}
+            onTouchStart={handleMapTouchStart}
+            onTouchMove={handleMapTouchMove}
+            onTouchEnd={handleMapTouchEnd}
+            onTouchCancel={handleMapTouchEnd}
+          >
             <svg
               ref={mapSvgRef}
               viewBox={`0 0 ${displayMapWidth} ${displayMapHeight}`}
