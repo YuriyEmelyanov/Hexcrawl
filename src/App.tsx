@@ -3309,6 +3309,40 @@ function addLakeAroundRiverSplitVertex(
   return { lakeId, hexes: lakeHexes };
 }
 
+
+function riverTouchesCenterHexArea(river: River, centerHex: AxialHex, riverGraph: RiverGraph): boolean {
+  return riverPathTouchesCenterHex(river.vertexPath, centerHex, riverGraph)
+    || riverPathTouchesCenterHexVertex(river.vertexPath, centerHex);
+}
+
+function ensureCentralAdjacentLakeWhenNoRiverTouchesCenter(
+  region: Region,
+  terrainMap: Map<string, HexTerrainData>,
+  riverGraph: RiverGraph,
+  rivers: River[]
+): void {
+  if (!region.centerHex) return;
+  const regionHexKeys = new Set(region.hexes.map(hexKey));
+  const hasRiverNearCenter = rivers
+    .filter((river) => getRiversForRegion(region, [river]).length > 0)
+    .some((river) => riverTouchesCenterHexArea(river, region.centerHex, riverGraph));
+  if (hasRiverNearCenter) return;
+
+  const lakeHex = getHexNeighbors(region.centerHex)
+    .filter((hex) => regionHexKeys.has(hexKey(hex)))
+    .find((hex) => !isLakeHex(hex, terrainMap));
+  if (!lakeHex) return;
+
+  const lakeId = getNextLakeIdFromTerrain(terrainMap);
+  terrainMap.set(hexKey(lakeHex), { terrainOverride: 'lake', lakeId });
+  console.log('Created central fallback lake because no river touches central hex', {
+    regionId: region.id,
+    lakeId,
+    centerHexKey: hexKey(region.centerHex),
+    lakeHexKey: hexKey(lakeHex),
+  });
+}
+
 function getRiverById(rivers: River[], riverId: number): River | undefined {
   return rivers.find((river) => river.id === riverId);
 }
@@ -3512,7 +3546,8 @@ function findBestFreeRiverPathFromEndpoints(
   occupiedVertexKeys: Set<string> = new Set()
 ): { controlPoints: { startVertex: RiverVertex; middlePurpleVertex: RiverVertex; endVertex: RiverVertex; startMode: 'existing river endpoint' }; path: RiverVertex[] } | null {
   if (!centerHex || purpleVertices.length === 0) return null;
-  let best: { controlPoints: { startVertex: RiverVertex; middlePurpleVertex: RiverVertex; endVertex: RiverVertex; startMode: 'existing river endpoint' }; path: RiverVertex[] } | null = null;
+  let bestTouchingCenter: { controlPoints: { startVertex: RiverVertex; middlePurpleVertex: RiverVertex; endVertex: RiverVertex; startMode: 'existing river endpoint' }; path: RiverVertex[] } | null = null;
+  let bestFallback: { controlPoints: { startVertex: RiverVertex; middlePurpleVertex: RiverVertex; endVertex: RiverVertex; startMode: 'existing river endpoint' }; path: RiverVertex[] } | null = null;
 
   for (const endpoint of existingRiverEndpointVerticesInRegion) {
     for (const redVertex of redVertices) {
@@ -3531,15 +3566,19 @@ function findBestFreeRiverPathFromEndpoints(
           occupiedVertexKeys,
           new Set([endpoint.key])
         )) continue;
-        if (!riverPathTouchesCenterHex(path, centerHex, riverGraph)) continue;
-        if (!best || path.length < best.path.length) {
-          best = { controlPoints, path };
+        const touchesCenter = riverPathTouchesCenterHex(path, centerHex, riverGraph);
+        if (touchesCenter) {
+          if (!bestTouchingCenter || path.length < bestTouchingCenter.path.length) {
+            bestTouchingCenter = { controlPoints, path };
+          }
+        } else if (!bestFallback || path.length < bestFallback.path.length) {
+          bestFallback = { controlPoints, path };
         }
       }
     }
   }
 
-  return best;
+  return bestTouchingCenter ?? bestFallback;
 }
 
 function riverPathAvoidsOccupiedVertices(
@@ -5359,6 +5398,13 @@ function finalizeRiverGenerationForRegion(
     neighborRegionVertices
   );
 
+  ensureCentralAdjacentLakeWhenNoRiverTouchesCenter(
+    region,
+    terrainMap,
+    riverGraph,
+    riversWithRemainingOutgoingConnected
+  );
+
   return { success: true, rivers: riversWithRemainingOutgoingConnected };
 }
 
@@ -5424,15 +5470,6 @@ function generateRiverForRegion(
         });
         return null;
       }
-      if (!riverPathTouchesCenterHex(path, region.centerHex, riverGraph)) {
-        console.warn('Mountain incoming fallback failed: boundary path does not touch center', {
-          regionId: region.id,
-          incomingRiverId: incomingEndpoint.riverId,
-          fallbackReason,
-        });
-        return null;
-      }
-
       const nextRivers = existingRivers.map((river) => {
         if (river.id !== incomingEndpoint.riverId) return river;
         return {
@@ -5489,7 +5526,6 @@ function generateRiverForRegion(
             if (path.length < 2) continue;
             if (path[0].key !== startVertex.key || path[path.length - 1].key !== mainOutgoingEndpoint.vertex.key) continue;
             if (middlePurpleVertex && !path.some((vertex) => vertex.key === middlePurpleVertex.key)) continue;
-            if (!riverPathTouchesCenterHex(path, region.centerHex, riverGraph)) continue;
             if (new Set(path.map((vertex) => vertex.key)).size !== path.length) continue;
             const pathEdgeKeys = getRiverPathEdgeKeys(path, riverGraph);
             if (!pathEdgeKeys) continue;
@@ -5621,7 +5657,6 @@ function generateRiverForRegion(
         for (const edgeKey of connectorEdgeKeys) blockedEdgeKeys.add(edgeKey);
       } else {
         const mainPath = findBestPathFromSourceToOutgoingEndpoint(interiorSourceVertices, mainOutgoingEndpoint, riverGraph, blockedEdgeKeys, {
-          requireCenterHexVertex: region.centerHex,
           occupiedVertexKeys: existingRiverVertexKeys,
           allowedOccupiedVertexKeys: new Set([mainOutgoingEndpoint.vertex.key])
         });
@@ -5737,10 +5772,6 @@ function generateRiverForRegion(
       )) {
         return { success: false, rivers: existingRivers, reason: 'main_incoming_river_validation_failed' };
       }
-      if (!riverPathTouchesCenterHex(mainPath, region.centerHex, riverGraph)) {
-        return { success: false, rivers: existingRivers, reason: 'main_incoming_river_does_not_touch_center_hex' };
-      }
-
       const mainRiver = existingRivers.find((river) => river.id === mainIncomingEndpoint.riverId);
       if (!mainRiver) return { success: false, rivers: existingRivers, reason: 'main_incoming_river_not_found' };
 
@@ -5951,10 +5982,6 @@ function generateRiverForRegion(
         });
         return { success: false, rivers: existingRivers, reason: 'endpoint_path_validation_failed' };
       }
-      if (!riverPathTouchesCenterHex(path, region.centerHex, riverGraph)) {
-        return { success: false, rivers: existingRivers, reason: 'river_does_not_touch_center_hex' };
-      }
-
       const connection = findRiverConnectionByStartVertex(existingRivers, controlPoints.startVertex);
       if (!connection) return { success: false, rivers: existingRivers, reason: 'endpoint_connection_not_found' };
 
@@ -6047,8 +6074,6 @@ function generateRiverForRegion(
       if (!controlPoints) continue;
       const path = buildRiverPathViaControlPoints(controlPoints, riverGraph, usedRiverEdges);
       if (!validateRiverPathViaControlPoints(path, controlPoints, riverGraph, redVertices, existingRiverEndpointVerticesInRegion, usedRiverEdges)) continue;
-      if (!riverPathTouchesCenterHex(path, region.centerHex, riverGraph)) continue;
-
       const connection = controlPoints.startMode === 'existing river endpoint'
         ? findRiverConnectionByStartVertex(existingRivers, controlPoints.startVertex)
         : null;
