@@ -1644,73 +1644,78 @@ function applyRiverFullnessRules(
 function applySingleMountainUpstreamTributaryDrop(region: Region, rivers: River[]): River[] {
   if (region.heightLevel !== 3) return rivers;
 
-  for (const river of rivers) {
-    const sectorTouchesRegion = (sector: RiverSector): boolean => sector.assignedRegionId === region.id
-      || sector.vertexPath.some((vertex) => vertexTouchesAnyHex(vertex, region.hexes));
-    const regionSectors = (river.sectors ?? []).filter(sectorTouchesRegion);
-    const hasOutgoingFullnessThree = regionSectors.some((sector) => (
-      sector.endReason === 'region_boundary'
-      && sector.fullness === 3
-    ));
-    if (!hasOutgoingFullnessThree) continue;
+  const applyDropForOutgoingFullness = (outgoingFullness: RiverFullness, upstreamFullness: RiverFullness): { foundOutgoing: boolean; rivers: River[] | null } => {
+    let foundOutgoing = false;
 
-    const hasIncomingFullnessThree = regionSectors.some((sector) => (
-      sector.startReason === 'region_boundary'
-      && sector.fullness === 3
-    ));
-    if (!hasIncomingFullnessThree) continue;
+    for (const river of rivers) {
+      const sectorTouchesRegion = (sector: RiverSector): boolean => sector.assignedRegionId === region.id
+        || sector.vertexPath.some((vertex) => vertexTouchesAnyHex(vertex, region.hexes));
+      const regionSectors = (river.sectors ?? []).filter(sectorTouchesRegion);
+      const hasOutgoingFullness = regionSectors.some((sector) => (
+        sector.endReason === 'region_boundary'
+        && sector.fullness === outgoingFullness
+      ));
+      if (!hasOutgoingFullness) continue;
+      foundOutgoing = true;
 
-    const mainVertexIndexByKey = new Map<string, number>();
-    river.vertexPath.forEach((vertex, index) => {
-      if (!mainVertexIndexByKey.has(vertex.key)) mainVertexIndexByKey.set(vertex.key, index);
-    });
+      const mainVertexIndexByKey = new Map<string, number>();
+      river.vertexPath.forEach((vertex, index) => {
+        if (!mainVertexIndexByKey.has(vertex.key)) mainVertexIndexByKey.set(vertex.key, index);
+      });
 
-    const indexedRegionSectors = (river.sectors ?? [])
-      .filter(sectorTouchesRegion)
-      .map((sector) => ({
-        sector,
-        startIndex: mainVertexIndexByKey.get(sector.startVertexKey) ?? Number.POSITIVE_INFINITY,
-        endIndex: mainVertexIndexByKey.get(sector.endVertexKey) ?? Number.POSITIVE_INFINITY
-      }))
-      .filter(({ startIndex, endIndex }) => Number.isFinite(startIndex) && Number.isFinite(endIndex))
-      .sort((a, b) => Math.min(a.startIndex, a.endIndex) - Math.min(b.startIndex, b.endIndex));
-    if (indexedRegionSectors.length === 0) continue;
+      const indexedRegionSectors = (river.sectors ?? [])
+        .filter(sectorTouchesRegion)
+        .map((sector) => ({
+          sector,
+          startIndex: mainVertexIndexByKey.get(sector.startVertexKey) ?? Number.POSITIVE_INFINITY,
+          endIndex: mainVertexIndexByKey.get(sector.endVertexKey) ?? Number.POSITIVE_INFINITY
+        }))
+        .filter(({ startIndex, endIndex }) => Number.isFinite(startIndex) && Number.isFinite(endIndex))
+        .sort((a, b) => Math.min(a.startIndex, a.endIndex) - Math.min(b.startIndex, b.endIndex));
+      if (indexedRegionSectors.length === 0) return { foundOutgoing, rivers: null };
 
-    const outgoingSector = indexedRegionSectors[0].sector;
-    if (outgoingSector.fullness !== 3) continue;
+      const outgoingSector = indexedRegionSectors[0].sector;
+      if (outgoingSector.fullness !== outgoingFullness) return { foundOutgoing, rivers: null };
 
-    const incomingSector = indexedRegionSectors[indexedRegionSectors.length - 1].sector;
-    if (incomingSector.fullness !== 3) continue;
+      const incomingSector = indexedRegionSectors[indexedRegionSectors.length - 1].sector;
+      if (incomingSector.fullness !== outgoingFullness) return { foundOutgoing, rivers: null };
 
-    const tributaryConnection = rivers
-      .filter((tributary) => tributary.id !== river.id)
-      .map((tributary) => {
-        const tributaryMouth = tributary.vertexPath[tributary.vertexPath.length - 1];
-        const mainIndex = tributaryMouth ? mainVertexIndexByKey.get(tributaryMouth.key) : undefined;
-        if (mainIndex === undefined || mainIndex <= 0) return null;
-        if (mainIndex === undefined || mainIndex <= 0 || mainIndex >= river.vertexPath.length - 1) return null;
-        return { vertexKey: tributaryMouth.key, mainIndex };
-      })
-      .filter((item): item is { vertexKey: string; mainIndex: number } => item !== null)
-      .sort((a, b) => a.mainIndex - b.mainIndex)[0];
-
-    if (!tributaryConnection) continue;
-
-    return rivers.map((item) => {
-      if (item.id !== river.id) return item;
-      return {
-        ...item,
-        sectors: (item.sectors ?? []).map((sector) => {
-          if (!sectorTouchesRegion(sector)) return sector;
-          const sectorEndIndex = mainVertexIndexByKey.get(sector.endVertexKey);
-          if (sectorEndIndex === undefined || sectorEndIndex > tributaryConnection.mainIndex) return sector;
-          return { ...sector, fullness: 2 as RiverFullness };
+      const tributaryConnection = rivers
+        .filter((tributary) => tributary.id !== river.id)
+        .map((tributary) => {
+          const tributaryMouth = tributary.vertexPath[tributary.vertexPath.length - 1];
+          const mainIndex = tributaryMouth ? mainVertexIndexByKey.get(tributaryMouth.key) : undefined;
+          if (mainIndex === undefined || mainIndex <= 0 || mainIndex >= river.vertexPath.length - 1) return null;
+          return { vertexKey: tributaryMouth.key, mainIndex };
         })
-      };
-    });
-  }
+        .filter((item): item is { vertexKey: string; mainIndex: number } => item !== null)
+        .sort((a, b) => a.mainIndex - b.mainIndex)[0];
 
-  return rivers;
+      if (!tributaryConnection) return { foundOutgoing, rivers: null };
+
+      return { foundOutgoing, rivers: rivers.map((item) => {
+        if (item.id !== river.id) return item;
+        return {
+          ...item,
+          sectors: (item.sectors ?? []).map((sector) => {
+            if (!sectorTouchesRegion(sector)) return sector;
+            const sectorEndIndex = mainVertexIndexByKey.get(sector.endVertexKey);
+            if (sectorEndIndex === undefined || sectorEndIndex > tributaryConnection.mainIndex) return sector;
+            // Assign an exact rule value, not "current fullness - 1", so this rule cannot stack with prior fullness changes.
+            return { ...sector, fullness: upstreamFullness };
+          })
+        };
+      }) };
+    }
+
+    return { foundOutgoing, rivers: null };
+  };
+
+  const fullnessThreeResult = applyDropForOutgoingFullness(3, 2);
+  if (fullnessThreeResult.foundOutgoing) return fullnessThreeResult.rivers ?? rivers;
+
+  const fullnessTwoResult = applyDropForOutgoingFullness(2, 1);
+  return fullnessTwoResult.rivers ?? rivers;
 }
 
 function validateExistingRiverEdgeFullnessPreserved(previousRivers: River[], nextRivers: River[]): boolean {
