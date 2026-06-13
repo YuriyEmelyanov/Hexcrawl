@@ -206,8 +206,8 @@ const SEA_HEX_COLOR = '#2b6b9e';
 const SEA_EMOJI = '🌊';
 const SEA_HEIGHT_LEVEL = 0;
 const MOBILE_LAYOUT_QUERY = '(max-width: 900px)';
-const MIN_MAP_SCALE = 0.5;
-const MAX_MAP_SCALE = 3;
+const MIN_MAP_SCALE = 0.2;
+const MAX_MAP_SCALE = 6;
 const WHEEL_ZOOM_SENSITIVITY = 0.0015;
 
 
@@ -10209,7 +10209,6 @@ export function App() {
   const [isMapRotated, setIsMapRotated] = useState(false);
   const [mapToolbarHeight, setMapToolbarHeight] = useState(0);
   const isInfoPanelCollapsed = !isMobileLayout && isInfoCollapsed;
-  const mapZoomPercent = Math.round(mapScale * 100);
   const displayMapWidth = isMapRotated ? positionedHexes.height : positionedHexes.width;
   const displayMapHeight = isMapRotated ? positionedHexes.width : positionedHexes.height;
   const mapRotationTransform = isMapRotated ? `translate(${positionedHexes.height} 0) rotate(90)` : undefined;
@@ -10504,11 +10503,6 @@ export function App() {
                 <button type="button" onClick={() => setCoastNotice(null)} aria-label="Закрыть уведомление">×</button>
               </div>
             )}
-            <div className="zoom-controls" aria-label="Масштаб карты">
-              <button type="button" className="secondary" onClick={() => zoomMapAtPoint(mapScaleRef.current - 0.1)} aria-label="Отдалить карту">−</button>
-              <span>{mapZoomPercent}%</span>
-              <button type="button" className="secondary" onClick={() => zoomMapAtPoint(mapScaleRef.current + 0.1)} aria-label="Приблизить карту">+</button>
-            </div>
             <button
               type="button"
               className="rotate-map-button"
