@@ -12,6 +12,8 @@ export function getUpstreamFullnessBeforeMountainTributary(
   sourceFullness: RiverFullness,
   currentSectorFullness: RiverFullness = sourceFullness
 ): RiverFullness {
+  if (sourceFullness === 2) return 1;
+
   const reducedSourceFullness = decreaseRiverFullness(sourceFullness);
   return Math.min(currentSectorFullness, reducedSourceFullness) as RiverFullness;
 }
