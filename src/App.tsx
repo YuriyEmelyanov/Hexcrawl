@@ -1650,8 +1650,11 @@ function applyRiverFullnessRules(
       // a tributary. Use the original/source fullness as the baseline so a
       // recalculated sector that already dropped from 3 to 2 is not dropped
       // again to 1 on a later assignRiverSectors pass.
+      const mountainSourceFullness = currentDownstreamFullness === 2
+        ? currentDownstreamFullness
+        : upstreamReductionSourceFullness;
       sectorFullness = getUpstreamFullnessBeforeMountainTributary(
-        upstreamReductionSourceFullness,
+        mountainSourceFullness,
         sectorFullness
       );
     } else if (shouldReduceHeightTwo) {

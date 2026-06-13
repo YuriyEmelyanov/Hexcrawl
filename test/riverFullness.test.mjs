@@ -9,6 +9,7 @@ import {
 
 test('height-3 outgoing fullness 2 only drops on the interior upstream side of a tributary', () => {
   assert.equal(getInteriorSourceFullnessForOutgoingRiver(2), 1);
+  assert.equal(getUpstreamFullnessBeforeMountainTributary(2, 3), 1);
   assert.equal(getOutgoingConnectorFullnessFromEndpoint(2, false), 2);
 });
 
