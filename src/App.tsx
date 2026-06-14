@@ -4725,17 +4725,21 @@ function extendSeaToCoastalCenterCandidate(
   existingTerrain: Map<string, HexTerrainData>,
   occupiedRegionKeys: Set<string>,
   rivers: River[],
-  allowedMouthVertexKeys: Set<string>
+  allowedMouthVertexKeys: Set<string>,
+  roads: Road[] = []
 ): string[] {
   const seaKeys = new Set(seaHexKeys);
   if (chooseCoastalCenterHex(regionHexes, seaKeys, rivers)) return Array.from(seaKeys);
 
   const regionKeys = new Set(regionHexes.map(hexKey));
-  const candidates = filterSeaCandidatesByRiverInteraction(
-    getSeaCandidateHexesForRegion(regionHexes, existingTerrain, occupiedRegionKeys),
-    rivers,
-    allowedMouthVertexKeys,
-    regionHexes
+  const candidates = filterSeaCandidatesByRoadEndpoints(
+    filterSeaCandidatesByRiverInteraction(
+      getSeaCandidateHexesForRegion(regionHexes, existingTerrain, occupiedRegionKeys),
+      rivers,
+      allowedMouthVertexKeys,
+      regionHexes
+    ),
+    roads
   );
   const riverHexes = regionHexes
     .filter((hex) => rivers.some((river) => {
@@ -4811,6 +4815,17 @@ function buildLakeIdByVertexKey(lakes: Lake[]): Map<string, number> {
   return map;
 }
 
+// Море прибрежного региона по модели дяди:
+//   1. Берём гексы-кандидаты вокруг региона.
+//   2. Убираем «красные кресты» — кандидатов, касающихся «объектов»: вершин рек
+//      (через filterSeaCandidatesByRiverInteraction; устье — исключение, там море
+//      и должно соприкасаться с рекой) и концов дорог (filterSeaCandidatesByRoadEndpoints).
+//      Оставшиеся кандидаты образуют граф, в котором реки и концы дорог — стены.
+//   3. «Гарантированное море» (двойная галочка) — кандидаты, смежные с уже существующим
+//      открытым океаном, плюс устья рек, впадающих в этот регион.
+//   4. Заполняем море от гарантированного наружу по графу кандидатов, пока не упрёмся
+//      в стены (реки/дороги) — это «зелёные галочки». Кандидаты, отрезанные стенами от
+//      гарантированного моря, остаются сушей — это «красные минусы».
 function computeSeaHexKeysForCoastalRegion(
   regionHexes: AxialHex[],
   centerHex: AxialHex,
@@ -4818,14 +4833,18 @@ function computeSeaHexKeysForCoastalRegion(
   occupiedRegionKeys: Set<string>,
   existingRegions: Region[],
   rivers: River[],
-  regionId: number
+  regionId: number,
+  roads: Road[] = []
 ): string[] {
   const allowedMouthVertexKeys = getRiverMouthVertexKeys(rivers);
-  const candidates = filterSeaCandidatesByRiverInteraction(
-    getSeaCandidateHexesForRegion(regionHexes, existingTerrain, occupiedRegionKeys),
-    rivers,
-    allowedMouthVertexKeys,
-    regionHexes
+  const candidates = filterSeaCandidatesByRoadEndpoints(
+    filterSeaCandidatesByRiverInteraction(
+      getSeaCandidateHexesForRegion(regionHexes, existingTerrain, occupiedRegionKeys),
+      rivers,
+      allowedMouthVertexKeys,
+      regionHexes
+    ),
+    roads
   );
   if (candidates.size === 0) return [];
 
@@ -4833,16 +4852,21 @@ function computeSeaHexKeysForCoastalRegion(
   const existingSeaKeys = getSeaHexKeys(existingTerrain);
   const requiredKeys = new Set<string>();
 
+  // Гарантированное море (двойная галочка): кандидаты, касающиеся открытого океана.
   for (const [key, hex] of candidates) {
     if (getHexNeighbors(hex).some((neighbor) => existingSeaKeys.has(hexKey(neighbor)))) requiredKeys.add(key);
   }
 
+  // Устья рек, впадающих в этот регион, — тоже гарантированное море: туда река
+  // должна вытекать, значит у устья обязан стоять морской кандидат.
   for (const river of getSeaFlowingRiversForRegion(rivers, regionId, existingRegions)) {
     const mouth = river.vertexPath[river.vertexPath.length - 1];
     const key = chooseSeaCandidateKeyForRiverMouth(candidates, mouth);
     if (key) requiredKeys.add(key);
   }
 
+  // Нет ни океана рядом, ни устья (первый берег): берём самого «мористого» кандидата —
+  // дальше всех от центра карты, то есть в сторону открытого океана.
   if (requiredKeys.size === 0) {
     const shoreward = Array.from(candidates.values()).filter((hex) => hexDistanceFromCenter(hex) > centerDistance);
     const pool = shoreward.length > 0 ? shoreward : Array.from(candidates.values());
@@ -4851,6 +4875,8 @@ function computeSeaHexKeysForCoastalRegion(
     requiredKeys.add(hexKey(randomFrom(farthest)));
   }
 
+  // Связываем гарантированное море в один кусок и заливаем наружу по графу кандидатов.
+  // Реки и концы дорог уже выкинуты из candidates выше — фронт об них и упирается.
   const connectedRequiredSeaKeys = connectRequiredSeaKeys(candidates, Array.from(requiredKeys));
   if (connectedRequiredSeaKeys.size === 0) return [];
 
@@ -8408,6 +8434,38 @@ function filterSeaCandidatesByRiverInteraction(
   return filtered;
 }
 
+// Дядина модель: концы дорог — это «объекты» разметки (наряду с вершинами рек).
+// Гекс-кандидат, КАСАЮЩИЙСЯ конца дороги (сам гекс — конец дороги или его сосед),
+// получает «красный крест»: морем стать не может. Поэтому фронт заполнения моря об такие
+// гексы упирается так же, как об реки, а отрезанные ими кандидаты остаются сушей
+// («красные минусы» — не могут быть смежными с морем, потому что кресты мешают).
+function getRoadEndpointHexKeys(roads: Road[]): Set<string> {
+  const keys = new Set<string>();
+  for (const road of roads) {
+    for (const endpoint of getRoadEndpoints(road)) keys.add(hexKey(endpoint));
+  }
+  return keys;
+}
+
+function candidateTouchesRoadEndpoint(hex: AxialHex, roadEndpointKeys: Set<string>): boolean {
+  if (roadEndpointKeys.size === 0) return false;
+  if (roadEndpointKeys.has(hexKey(hex))) return true;
+  return getHexNeighbors(hex).some((neighbor) => roadEndpointKeys.has(hexKey(neighbor)));
+}
+
+function filterSeaCandidatesByRoadEndpoints(
+  candidates: Map<string, AxialHex>,
+  roads: Road[]
+): Map<string, AxialHex> {
+  const roadEndpointKeys = getRoadEndpointHexKeys(roads);
+  if (roadEndpointKeys.size === 0) return candidates;
+  const filtered = new Map<string, AxialHex>();
+  for (const [key, hex] of candidates) {
+    if (!candidateTouchesRoadEndpoint(hex, roadEndpointKeys)) filtered.set(key, hex);
+  }
+  return filtered;
+}
+
 // Юрий: при генерации ПОБЕРЕЖЬЯ режем низовой хвост реки по сегментам, чьё ребро делит
 // ОТКРЫТЫЙ гекс (суша региона) и НЕ ОТКРЫТЫЙ (кандидатный/серый) гекс. Идём от устья
 // (последняя вершина) назад и убираем такие сегменты ПОДРЯД — река просто укорачивается,
@@ -9694,11 +9752,12 @@ export function App() {
       let seaHexKeys = isCoastalRegion
         ? extendSeaToCoastalCenterCandidate(
           regionHexes,
-          computeSeaHexKeysForCoastalRegion(regionHexes, centerHex, nextHexTerrainByKeyPreview, occupiedRegionKeysForSea, regions, finalizedRivers, regionId),
+          computeSeaHexKeysForCoastalRegion(regionHexes, centerHex, nextHexTerrainByKeyPreview, occupiedRegionKeysForSea, regions, finalizedRivers, regionId, roads),
           nextHexTerrainByKeyPreview,
           occupiedRegionKeysForSea,
           finalizedRivers,
-          allowedSeaMouthVertexKeys
+          allowedSeaMouthVertexKeys,
+          roads
         )
         : [];
       const coastalSeaValidation = isCoastalRegion
