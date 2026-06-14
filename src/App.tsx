@@ -9824,7 +9824,7 @@ export function App() {
         console.warn('Discarding failed coastal candidate region because sea would be disconnected from open tiles', { attempt, regionId, brokenCount: seaBrokenByThisRegion.length });
         continue;
       }
-      const allNewSeaKeys = [...seaHexKeys];
+      let allNewSeaKeys = [...seaHexKeys];
       const nextCandidateHexesExclSea = getCandidateHexes(nextAllHexes, allSeaKeys);
       if (allNewSeaKeys.length > 0) {
         const seaExtensionGraph = buildRiverGraphForRegion(regionHexes, nextAllHexes, nextCandidateHexesExclSea);
@@ -10018,6 +10018,22 @@ export function App() {
         candidateHexes: nextCandidateHexesExclSea
       });
 
+      // Дороги генерируются ПОСЛЕ моря, поэтому концы дорог ЭТОГО региона не успевают
+      // попасть в сет «не-морских» до раскладки моря. Доливаем их сюда: концы новых дорог
+      // — это запрещённые координаты, и примыкающее к ним уже построенное море выпиливаем
+      // (тот же принцип, что для рек/озёр, только пост-фактум — потому что дороги позже).
+      const roadEndpointKeysAfterRoads = getRoadEndpointHexKeys(roadResult.roads);
+      if (roadEndpointKeysAfterRoads.size > 0 && allNewSeaKeys.length > 0) {
+        const seaBlockedByRoads = allNewSeaKeys.filter((key) =>
+          candidateTouchesRoadEndpoint(parseHexKey(key), roadEndpointKeysAfterRoads)
+        );
+        if (seaBlockedByRoads.length > 0) {
+          const blockedSet = new Set(seaBlockedByRoads);
+          allNewSeaKeys = allNewSeaKeys.filter((key) => !blockedSet.has(key));
+          for (const key of blockedSet) allSeaKeys.delete(key);
+        }
+      }
+
       // Item 2: запертые кандидатные карманы (≤5 тайлов) между регионом и морем
       // поглощаются морем — чтобы не оставались «висящие» неоткрытые участки и по
       // ним нельзя было кликнуть генерацию (которая упрётся в море). Если моря рядом
@@ -10028,7 +10044,10 @@ export function App() {
         for (const hex of allRegionHexes) occupiedForPockets.add(hexKey(hex));
         for (const area of findFillableEnclosedEmptyAreas(new Set(regionHexes.map(hexKey)), occupiedForPockets)) {
           if (area.length > 5) continue;
-          for (const hex of area) enclosedPocketKeys.push(hexKey(hex));
+          for (const hex of area) {
+            if (candidateTouchesRoadEndpoint(hex, roadEndpointKeysAfterRoads)) continue;
+            enclosedPocketKeys.push(hexKey(hex));
+          }
         }
       }
       const pocketKeySet = new Set(enclosedPocketKeys);
@@ -10056,6 +10075,7 @@ export function App() {
             if (landKeys.has(key)) continue;
             const terrainOverride = nextHexTerrainByKeyPreview.get(key)?.terrainOverride;
             if (terrainOverride === 'lake' || terrainOverride === 'sea') continue;
+            if (candidateTouchesRoadEndpoint(parseHexKey(key), roadEndpointKeysAfterRoads)) continue;
             const seaNeighborCount = getHexNeighbors(parseHexKey(key)).filter((neighbor) => seaSoFar.has(hexKey(neighbor))).length;
             if (seaNeighborCount < 5) continue;
             if (getRiverSeaHeightViolation(riversWithDeltas, [key])) continue;
