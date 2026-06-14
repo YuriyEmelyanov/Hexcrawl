@@ -4624,22 +4624,46 @@ function openTileTouchesRiverAwayFromMouth(hex: AxialHex, rivers: River[]): bool
   return false;
 }
 
-function validateSeaConnectivityThroughOpenTiles(landHexes: AxialHex[], seaKeys: Iterable<string>, rivers: River[] = []): GlobalSeaValidationResult {
+// Возвращает множество морских гексов, НЕ достижимых от открытого океана (снаружи карты)
+// по проходимым тайлам: море + пустые тайлы, не касающиеся реки вне устья; суша — стена.
+function getUnreachableSeaKeys(landHexes: AxialHex[], seaKeys: Iterable<string>, rivers: River[] = []): Set<string> {
   const seaSet = new Set(seaKeys);
-  if (seaSet.size <= 1) return { valid: true };
+  if (seaSet.size === 0) return new Set<string>();
 
   const landKeys = new Set(landHexes.map(hexKey));
   const knownHexes = [...landHexes, ...Array.from(seaSet).map(parseHexKey)];
-  if (knownHexes.length === 0) return { valid: true };
+  if (knownHexes.length === 0) return new Set<string>();
 
-  const qs = knownHexes.map((hex) => hex.q);
-  const rs = knownHexes.map((hex) => hex.r);
-  const minQ = Math.min(...qs) - 2;
-  const maxQ = Math.max(...qs) + 2;
-  const minR = Math.min(...rs) - 2;
-  const maxR = Math.max(...rs) + 2;
+  // Рамка обхода = ОБЪЕДИНЕНИЕ двух рамок по всем известным гексам (land + sea):
+  //   - осевая (q/r), как было раньше, +2 гекса;
+  //   - пиксельная (x/y) — прямоугольник по центрам гексов, +2 гекса с каждой стороны.
+  // Осевой бокс — это параллелограмм и теряет «чёрную пустоту» у одних углов карты,
+  // пиксельный прямоугольник — у других. Объединение НИКОГДА не у́же прежней осевой рамки,
+  // поэтому раньше работавшая генерация не ломается, а пустота у углов теперь тоже
+  // проходима — и связное у берега море перестаёт ложно браковаться.
+  let minQ = Infinity, maxQ = -Infinity, minR = Infinity, maxR = -Infinity;
+  let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+  for (const hex of knownHexes) {
+    if (hex.q < minQ) minQ = hex.q;
+    if (hex.q > maxQ) maxQ = hex.q;
+    if (hex.r < minR) minR = hex.r;
+    if (hex.r > maxR) maxR = hex.r;
+    const { x, y } = toPixel(hex.q, hex.r);
+    if (x < minX) minX = x;
+    if (x > maxX) maxX = x;
+    if (y < minY) minY = y;
+    if (y > maxY) maxY = y;
+  }
+  minQ -= 2; maxQ += 2; minR -= 2; maxR += 2;
+  const HEX_WIDTH = HEX_SIZE * SQRT3;
+  const HEX_ROW_HEIGHT = HEX_SIZE * 1.5;
+  minX -= HEX_WIDTH * 2; maxX += HEX_WIDTH * 2; minY -= HEX_ROW_HEIGHT * 2; maxY += HEX_ROW_HEIGHT * 2;
 
-  const isInsideBounds = (hex: AxialHex) => hex.q >= minQ && hex.q <= maxQ && hex.r >= minR && hex.r <= maxR;
+  const isInsideBounds = (hex: AxialHex) => {
+    if (hex.q >= minQ && hex.q <= maxQ && hex.r >= minR && hex.r <= maxR) return true;
+    const { x, y } = toPixel(hex.q, hex.r);
+    return x >= minX && x <= maxX && y >= minY && y <= maxY;
+  };
   const reachable = new Set<string>();
   const queue: AxialHex[] = [];
   const enqueue = (hex: AxialHex) => {
@@ -4651,6 +4675,8 @@ function validateSeaConnectivityThroughOpenTiles(landHexes: AxialHex[], seaKeys:
     queue.push(hex);
   };
 
+  // Затравка с осевой границы (она внутри объединённой рамки и заведомо пустая —
+  // открытый океан снаружи). BFS дальше сам растекается и по пиксельным углам.
   for (let q = minQ; q <= maxQ; q += 1) {
     enqueue({ q, r: minR });
     enqueue({ q, r: maxR });
@@ -4664,10 +4690,19 @@ function validateSeaConnectivityThroughOpenTiles(landHexes: AxialHex[], seaKeys:
     for (const neighbor of getHexNeighbors(queue[cursor])) enqueue(neighbor);
   }
 
+  const unreachable = new Set<string>();
   for (const seaKey of seaSet) {
-    if (!reachable.has(seaKey)) return { valid: false, reason: 'sea_not_connected_through_open_tiles' };
+    if (!reachable.has(seaKey)) unreachable.add(seaKey);
   }
+  return unreachable;
+}
 
+function validateSeaConnectivityThroughOpenTiles(landHexes: AxialHex[], seaKeys: Iterable<string>, rivers: River[] = []): GlobalSeaValidationResult {
+  const seaSet = new Set(seaKeys);
+  if (seaSet.size <= 1) return { valid: true };
+  if (getUnreachableSeaKeys(landHexes, seaSet, rivers).size > 0) {
+    return { valid: false, reason: 'sea_not_connected_through_open_tiles' };
+  }
   return { valid: true };
 }
 
@@ -4703,12 +4738,17 @@ function validateCoastalSeaArea(
     if (getConnectedSeaComponent(firstKey, seaKeys).size !== seaKeys.size) return { valid: false, reason: 'disconnected_sea_area' };
   }
 
-  const globalSeaValidation = validateSeaConnectivityThroughOpenTiles(
+  // Связность с открытым океаном проверяем для НОВОГО моря: достаточно, чтобы каждый
+  // новый морской гекс дотягивался до океана. Старые уже-оторванные гексы (артефакты
+  // прежней генерации) в существующем море не должны валить новый прибрежный регион.
+  const unreachableSea = getUnreachableSeaKeys(
     [...existingRegions.flatMap((region) => region.hexes), ...regionHexes],
     new Set([...existingSeaKeys, ...seaKeys]),
     rivers
   );
-  if (!globalSeaValidation.valid) return globalSeaValidation;
+  if (Array.from(seaKeys).some((key) => unreachableSea.has(key))) {
+    return { valid: false, reason: 'sea_not_connected_through_open_tiles' };
+  }
 
   const riverHeightViolation = getRiverSeaHeightViolation(rivers, seaKeys);
   if (riverHeightViolation) return { valid: false, reason: `sea_height_${riverHeightViolation.reason}` };
@@ -4725,17 +4765,21 @@ function extendSeaToCoastalCenterCandidate(
   existingTerrain: Map<string, HexTerrainData>,
   occupiedRegionKeys: Set<string>,
   rivers: River[],
-  allowedMouthVertexKeys: Set<string>
+  allowedMouthVertexKeys: Set<string>,
+  roads: Road[] = []
 ): string[] {
   const seaKeys = new Set(seaHexKeys);
   if (chooseCoastalCenterHex(regionHexes, seaKeys, rivers)) return Array.from(seaKeys);
 
   const regionKeys = new Set(regionHexes.map(hexKey));
-  const candidates = filterSeaCandidatesByRiverInteraction(
-    getSeaCandidateHexesForRegion(regionHexes, existingTerrain, occupiedRegionKeys),
-    rivers,
-    allowedMouthVertexKeys,
-    regionHexes
+  const candidates = filterSeaCandidatesByRoadEndpoints(
+    filterSeaCandidatesByRiverInteraction(
+      getSeaCandidateHexesForRegion(regionHexes, existingTerrain, occupiedRegionKeys),
+      rivers,
+      allowedMouthVertexKeys,
+      regionHexes
+    ),
+    roads
   );
   const riverHexes = regionHexes
     .filter((hex) => rivers.some((river) => {
@@ -4811,6 +4855,17 @@ function buildLakeIdByVertexKey(lakes: Lake[]): Map<string, number> {
   return map;
 }
 
+// Море прибрежного региона по модели дяди:
+//   1. Берём гексы-кандидаты вокруг региона.
+//   2. Убираем «красные кресты» — кандидатов, касающихся «объектов»: вершин рек
+//      (через filterSeaCandidatesByRiverInteraction; устье — исключение, там море
+//      и должно соприкасаться с рекой) и концов дорог (filterSeaCandidatesByRoadEndpoints).
+//      Оставшиеся кандидаты образуют граф, в котором реки и концы дорог — стены.
+//   3. «Гарантированное море» (двойная галочка) — кандидаты, смежные с уже существующим
+//      открытым океаном, плюс устья рек, впадающих в этот регион.
+//   4. Заполняем море от гарантированного наружу по графу кандидатов, пока не упрёмся
+//      в стены (реки/дороги) — это «зелёные галочки». Кандидаты, отрезанные стенами от
+//      гарантированного моря, остаются сушей — это «красные минусы».
 function computeSeaHexKeysForCoastalRegion(
   regionHexes: AxialHex[],
   centerHex: AxialHex,
@@ -4818,14 +4873,18 @@ function computeSeaHexKeysForCoastalRegion(
   occupiedRegionKeys: Set<string>,
   existingRegions: Region[],
   rivers: River[],
-  regionId: number
+  regionId: number,
+  roads: Road[] = []
 ): string[] {
   const allowedMouthVertexKeys = getRiverMouthVertexKeys(rivers);
-  const candidates = filterSeaCandidatesByRiverInteraction(
-    getSeaCandidateHexesForRegion(regionHexes, existingTerrain, occupiedRegionKeys),
-    rivers,
-    allowedMouthVertexKeys,
-    regionHexes
+  const candidates = filterSeaCandidatesByRoadEndpoints(
+    filterSeaCandidatesByRiverInteraction(
+      getSeaCandidateHexesForRegion(regionHexes, existingTerrain, occupiedRegionKeys),
+      rivers,
+      allowedMouthVertexKeys,
+      regionHexes
+    ),
+    roads
   );
   if (candidates.size === 0) return [];
 
@@ -4833,16 +4892,21 @@ function computeSeaHexKeysForCoastalRegion(
   const existingSeaKeys = getSeaHexKeys(existingTerrain);
   const requiredKeys = new Set<string>();
 
+  // Гарантированное море (двойная галочка): кандидаты, касающиеся открытого океана.
   for (const [key, hex] of candidates) {
     if (getHexNeighbors(hex).some((neighbor) => existingSeaKeys.has(hexKey(neighbor)))) requiredKeys.add(key);
   }
 
+  // Устья рек, впадающих в этот регион, — тоже гарантированное море: туда река
+  // должна вытекать, значит у устья обязан стоять морской кандидат.
   for (const river of getSeaFlowingRiversForRegion(rivers, regionId, existingRegions)) {
     const mouth = river.vertexPath[river.vertexPath.length - 1];
     const key = chooseSeaCandidateKeyForRiverMouth(candidates, mouth);
     if (key) requiredKeys.add(key);
   }
 
+  // Нет ни океана рядом, ни устья (первый берег): берём самого «мористого» кандидата —
+  // дальше всех от центра карты, то есть в сторону открытого океана.
   if (requiredKeys.size === 0) {
     const shoreward = Array.from(candidates.values()).filter((hex) => hexDistanceFromCenter(hex) > centerDistance);
     const pool = shoreward.length > 0 ? shoreward : Array.from(candidates.values());
@@ -4851,6 +4915,8 @@ function computeSeaHexKeysForCoastalRegion(
     requiredKeys.add(hexKey(randomFrom(farthest)));
   }
 
+  // Связываем гарантированное море в один кусок и заливаем наружу по графу кандидатов.
+  // Реки и концы дорог уже выкинуты из candidates выше — фронт об них и упирается.
   const connectedRequiredSeaKeys = connectRequiredSeaKeys(candidates, Array.from(requiredKeys));
   if (connectedRequiredSeaKeys.size === 0) return [];
 
@@ -8408,6 +8474,38 @@ function filterSeaCandidatesByRiverInteraction(
   return filtered;
 }
 
+// Дядина модель: концы дорог — это «объекты» разметки (наряду с вершинами рек).
+// Гекс-кандидат, КАСАЮЩИЙСЯ конца дороги (сам гекс — конец дороги или его сосед),
+// получает «красный крест»: морем стать не может. Поэтому фронт заполнения моря об такие
+// гексы упирается так же, как об реки, а отрезанные ими кандидаты остаются сушей
+// («красные минусы» — не могут быть смежными с морем, потому что кресты мешают).
+function getRoadEndpointHexKeys(roads: Road[]): Set<string> {
+  const keys = new Set<string>();
+  for (const road of roads) {
+    for (const endpoint of getRoadEndpoints(road)) keys.add(hexKey(endpoint));
+  }
+  return keys;
+}
+
+function candidateTouchesRoadEndpoint(hex: AxialHex, roadEndpointKeys: Set<string>): boolean {
+  if (roadEndpointKeys.size === 0) return false;
+  if (roadEndpointKeys.has(hexKey(hex))) return true;
+  return getHexNeighbors(hex).some((neighbor) => roadEndpointKeys.has(hexKey(neighbor)));
+}
+
+function filterSeaCandidatesByRoadEndpoints(
+  candidates: Map<string, AxialHex>,
+  roads: Road[]
+): Map<string, AxialHex> {
+  const roadEndpointKeys = getRoadEndpointHexKeys(roads);
+  if (roadEndpointKeys.size === 0) return candidates;
+  const filtered = new Map<string, AxialHex>();
+  for (const [key, hex] of candidates) {
+    if (!candidateTouchesRoadEndpoint(hex, roadEndpointKeys)) filtered.set(key, hex);
+  }
+  return filtered;
+}
+
 // Юрий: при генерации ПОБЕРЕЖЬЯ режем низовой хвост реки по сегментам, чьё ребро делит
 // ОТКРЫТЫЙ гекс (суша региона) и НЕ ОТКРЫТЫЙ (кандидатный/серый) гекс. Идём от устья
 // (последняя вершина) назад и убираем такие сегменты ПОДРЯД — река просто укорачивается,
@@ -9694,11 +9792,12 @@ export function App() {
       let seaHexKeys = isCoastalRegion
         ? extendSeaToCoastalCenterCandidate(
           regionHexes,
-          computeSeaHexKeysForCoastalRegion(regionHexes, centerHex, nextHexTerrainByKeyPreview, occupiedRegionKeysForSea, regions, finalizedRivers, regionId),
+          computeSeaHexKeysForCoastalRegion(regionHexes, centerHex, nextHexTerrainByKeyPreview, occupiedRegionKeysForSea, regions, finalizedRivers, regionId, roads),
           nextHexTerrainByKeyPreview,
           occupiedRegionKeysForSea,
           finalizedRivers,
-          allowedSeaMouthVertexKeys
+          allowedSeaMouthVertexKeys,
+          roads
         )
         : [];
       const coastalSeaValidation = isCoastalRegion
@@ -9734,11 +9833,20 @@ export function App() {
       const nextRegions = [...regions, finalRegion];
 
       const existingSeaKeysBeforeRegion = getSeaHexKeys(hexTerrainByKey);
+      const newSeaKeySet = new Set(seaHexKeys);
       const allSeaKeys = new Set(existingSeaKeysBeforeRegion);
       for (const key of seaHexKeys) allSeaKeys.add(key);
-      const seaConnectivityValidation = validateSeaConnectivityThroughOpenTiles(nextAllHexes, allSeaKeys, finalizedRivers);
-      if (!seaConnectivityValidation.valid) {
-        console.warn('Discarding failed coastal candidate region because sea would be disconnected from open tiles', { attempt, regionId, reason: seaConnectivityValidation.reason });
+      // Старое море, уже оторванное от океана ДО этого региона (артефакт прежней
+      // 3-слойной генерации), не должно блокировать генерацию. Регион бракуем, только если
+      // ОН ухудшил связность: новый морской гекс не дотянулся до океана ИЛИ ранее достижимый
+      // морской гекс стал недостижим. Уже-битые-до гексы пропускаем.
+      const unreachableBeforeRegion = getUnreachableSeaKeys(allRegionHexes, existingSeaKeysBeforeRegion, rivers);
+      const unreachableAfterRegion = getUnreachableSeaKeys(nextAllHexes, allSeaKeys, finalizedRivers);
+      const seaBrokenByThisRegion = Array.from(unreachableAfterRegion).filter(
+        (key) => newSeaKeySet.has(key) || !unreachableBeforeRegion.has(key)
+      );
+      if (seaBrokenByThisRegion.length > 0) {
+        console.warn('Discarding failed coastal candidate region because sea would be disconnected from open tiles', { attempt, regionId, brokenCount: seaBrokenByThisRegion.length });
         continue;
       }
       const allNewSeaKeys = [...seaHexKeys];
