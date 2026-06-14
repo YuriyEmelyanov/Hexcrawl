@@ -4632,14 +4632,34 @@ function validateSeaConnectivityThroughOpenTiles(landHexes: AxialHex[], seaKeys:
   const knownHexes = [...landHexes, ...Array.from(seaSet).map(parseHexKey)];
   if (knownHexes.length === 0) return { valid: true };
 
-  const qs = knownHexes.map((hex) => hex.q);
-  const rs = knownHexes.map((hex) => hex.r);
-  const minQ = Math.min(...qs) - 2;
-  const maxQ = Math.max(...qs) + 2;
-  const minR = Math.min(...rs) - 2;
-  const maxR = Math.max(...rs) + 2;
+  // Рамку обхода считаем в ПИКСЕЛЯХ, а не в осевых q/r: осевой бокс — это параллелограмм,
+  // и у углов карты часть «чёрной пустоты» в него не попадает, из-за чего связное море
+  // ложно бракуется. Берём пиксельный прямоугольник по центрам всех известных гексов
+  // (land + sea) и расширяем на 2 гекса в каждую сторону. По этому кольцу пустоты море
+  // должно дотянуться до открытого океана снаружи — если дотянулось, оно связно.
+  const HEX_WIDTH = HEX_SIZE * SQRT3;
+  const HEX_ROW_HEIGHT = HEX_SIZE * 1.5;
+  const MARGIN_X = HEX_WIDTH * 2;
+  const MARGIN_Y = HEX_ROW_HEIGHT * 2;
 
-  const isInsideBounds = (hex: AxialHex) => hex.q >= minQ && hex.q <= maxQ && hex.r >= minR && hex.r <= maxR;
+  const centers = knownHexes.map((hex) => toPixel(hex.q, hex.r));
+  const minX = Math.min(...centers.map((point) => point.x)) - MARGIN_X;
+  const maxX = Math.max(...centers.map((point) => point.x)) + MARGIN_X;
+  const minY = Math.min(...centers.map((point) => point.y)) - MARGIN_Y;
+  const maxY = Math.max(...centers.map((point) => point.y)) + MARGIN_Y;
+
+  const isInsideBounds = (hex: AxialHex) => {
+    const { x, y } = toPixel(hex.q, hex.r);
+    return x >= minX && x <= maxX && y >= minY && y <= maxY;
+  };
+
+  // Осевой диапазон, гарантированно накрывающий весь пиксельный прямоугольник
+  // (x = HEX_WIDTH·(q + r/2), y = HEX_ROW_HEIGHT·r), с запасом ±1 ряд.
+  const rMin = Math.floor(minY / HEX_ROW_HEIGHT) - 1;
+  const rMax = Math.ceil(maxY / HEX_ROW_HEIGHT) + 1;
+  const qMin = Math.floor(minX / HEX_WIDTH - rMax / 2) - 1;
+  const qMax = Math.ceil(maxX / HEX_WIDTH - rMin / 2) + 1;
+
   const reachable = new Set<string>();
   const queue: AxialHex[] = [];
   const enqueue = (hex: AxialHex) => {
@@ -4651,13 +4671,14 @@ function validateSeaConnectivityThroughOpenTiles(landHexes: AxialHex[], seaKeys:
     queue.push(hex);
   };
 
-  for (let q = minQ; q <= maxQ; q += 1) {
-    enqueue({ q, r: minR });
-    enqueue({ q, r: maxR });
-  }
-  for (let r = minR; r <= maxR; r += 1) {
-    enqueue({ q: minQ, r });
-    enqueue({ q: maxQ, r });
+  // Затравка — с периметра рамки: гекс внутри рамки, у которого есть сосед ВНЕ её
+  // (край кольца пустоты = соприкосновение с бесконечным океаном снаружи карты).
+  for (let r = rMin; r <= rMax; r += 1) {
+    for (let q = qMin; q <= qMax; q += 1) {
+      const hex = { q, r };
+      if (!isInsideBounds(hex)) continue;
+      if (getHexNeighbors(hex).some((neighbor) => !isInsideBounds(neighbor))) enqueue(hex);
+    }
   }
 
   for (let cursor = 0; cursor < queue.length; cursor += 1) {
