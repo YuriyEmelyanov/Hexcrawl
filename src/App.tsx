@@ -10424,12 +10424,10 @@ export function App() {
     ? validateRiverEndpoints(selectedRegion, selectedRegionRiver, selectedRegionGraph)
     : [];
   const selectedCandidateBoundaryDebug = selectedRegion ? candidateBoundaryDebugByRegion.get(selectedRegion.id) : undefined;
-  const [isInfoCollapsed, setIsInfoCollapsed] = useState(false);
   const [isMobileLayout, setIsMobileLayout] = useState(() => (typeof window === 'undefined' ? false : window.matchMedia(MOBILE_LAYOUT_QUERY).matches));
   const [mapScale, setMapScale] = useState(1);
   const [isMapRotated, setIsMapRotated] = useState(false);
   const [mapToolbarHeight, setMapToolbarHeight] = useState(0);
-  const isInfoPanelCollapsed = !isMobileLayout && isInfoCollapsed;
   const displayMapWidth = isMapRotated ? positionedHexes.height : positionedHexes.width;
   const displayMapHeight = isMapRotated ? positionedHexes.width : positionedHexes.height;
   const mapRotationTransform = isMapRotated ? `translate(${positionedHexes.height} 0) rotate(90)` : undefined;
@@ -10728,21 +10726,32 @@ export function App() {
               >
                 Удалить последний регион
               </button>
-              <button
-                type="button"
-                onClick={() => setSeaBrushActive((v) => !v)}
-                className="secondary"
-                aria-pressed={seaBrushActive}
-                disabled
-              >
-                Кисть берега: {seaBrushActive ? 'ВКЛ' : 'ВЫКЛ'}
-              </button>
-              <button type="button" onClick={() => void handleExportPng()} className="secondary">Выгрузить PNG</button>
-              <button type="button" onClick={handleExportJson} className="secondary">Выгрузить JSON</button>
+              <details className="export-menu">
+                <summary className="secondary">Выгрузить</summary>
+                <div className="export-menu__items">
+                  <button type="button" onClick={() => void handleExportPng()} className="secondary">PNG</button>
+                  <button type="button" onClick={handleExportJson} className="secondary">JSON</button>
+                </div>
+              </details>
               <button type="button" onClick={handleImportJsonClick} className="secondary">Загрузить JSON</button>
               <input ref={jsonImportInputRef} className="visually-hidden" type="file" accept="application/json,.json" onChange={(event) => void handleImportJson(event)} />
               <button onClick={() => setDebugRivers((v) => !v)} className="secondary">
-                Debug rivers / Отладка рек: {debugRivers ? 'ON' : 'OFF'}
+                Отладка: {debugRivers ? 'ON' : 'OFF'}
+              </button>
+              <button
+                type="button"
+                className="rotate-map-button"
+                onClick={() => setIsMapRotated((value) => !value)}
+                aria-label={isMapRotated ? 'Вернуть исходный поворот карты' : 'Повернуть карту на 90 градусов'}
+                title={isMapRotated ? 'Вернуть исходный поворот карты' : 'Повернуть карту на 90°'}
+              >
+                <svg className="rotate-map-button__icon" viewBox="0 0 64 48" aria-hidden="true" focusable="false">
+                  <polygon
+                    points={isMapRotated ? '32,4 56,16 56,32 32,44 8,32 8,16' : '20,4 44,4 56,24 44,44 20,44 8,24'}
+                    className="rotate-map-button__hex"
+                  />
+                  <text x="32" y="25" className="rotate-map-button__sign">{isMapRotated ? '↺' : '↻'}</text>
+                </svg>
               </button>
             </div>
             <div className="gen-params" aria-label="Параметры генерации">
@@ -10790,21 +10799,6 @@ export function App() {
                 <button type="button" onClick={() => setCoastNotice(null)} aria-label="Закрыть уведомление">×</button>
               </div>
             )}
-            <button
-              type="button"
-              className="rotate-map-button"
-              onClick={() => setIsMapRotated((value) => !value)}
-              aria-label={isMapRotated ? 'Вернуть исходный поворот карты' : 'Повернуть карту на 90 градусов'}
-              title={isMapRotated ? 'Вернуть исходный поворот карты' : 'Повернуть карту на 90°'}
-            >
-              <svg className="rotate-map-button__icon" viewBox="0 0 64 48" aria-hidden="true" focusable="false">
-                <polygon
-                  points={isMapRotated ? '32,4 56,16 56,32 32,44 8,32 8,16' : '20,4 44,4 56,24 44,44 20,44 8,24'}
-                  className="rotate-map-button__hex"
-                />
-                <text x="32" y="25" className="rotate-map-button__sign">{isMapRotated ? '↺' : '↻'}</text>
-              </svg>
-            </button>
           </div>
           <div
             ref={mapViewportRef}
@@ -11016,24 +11010,8 @@ export function App() {
             </svg>
           </div>
 
-          <aside className={`roll-card${isInfoPanelCollapsed ? ' is-collapsed' : ''}`}>
-            {isMobileLayout ? (
-              <div className="info-toggle info-toggle--static">
-                <span>Информация</span>
-              </div>
-            ) : (
-            <button
-              type="button"
-              className="info-toggle secondary"
-              onClick={() => setIsInfoCollapsed((value) => !value)}
-              aria-expanded={!isInfoCollapsed}
-            >
-              <span>Информация</span>
-              <span>{isInfoCollapsed ? 'Развернуть' : 'Свернуть'}</span>
-            </button>
-            )}
-            {!isInfoPanelCollapsed ? (
-              <div className="info-body">
+          <aside className="roll-card">
+            <div className="info-body">
           {regions.length === 0 ? <p>Нажмите на стартовый гекс 0/0 на карте, чтобы создать первый регион.</p> : null}
           {lastRegion ? (
             <>
@@ -11204,8 +11182,7 @@ export function App() {
             </>
           ) : null}
           {candidateHexes.length > 0 && !debugRivers ? <p>Выберите гекс-кандидат на карте для добавления следующего региона.</p> : null}
-              </div>
-            ) : null}
+            </div>
           </aside>
         </div>
       </section>
