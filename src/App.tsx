@@ -10023,6 +10023,7 @@ export function App() {
       // — это запрещённые координаты, и примыкающее к ним уже построенное море выпиливаем
       // (тот же принцип, что для рек/озёр, только пост-фактум — потому что дороги позже).
       const roadEndpointKeysAfterRoads = getRoadEndpointHexKeys(roadResult.roads);
+      const roadPrunedSeaKeys: string[] = [];
       if (roadEndpointKeysAfterRoads.size > 0 && allNewSeaKeys.length > 0) {
         const seaBlockedByRoads = allNewSeaKeys.filter((key) =>
           candidateTouchesRoadEndpoint(parseHexKey(key), roadEndpointKeysAfterRoads)
@@ -10030,7 +10031,7 @@ export function App() {
         if (seaBlockedByRoads.length > 0) {
           const blockedSet = new Set(seaBlockedByRoads);
           allNewSeaKeys = allNewSeaKeys.filter((key) => !blockedSet.has(key));
-          for (const key of blockedSet) allSeaKeys.delete(key);
+          for (const key of blockedSet) { allSeaKeys.delete(key); roadPrunedSeaKeys.push(key); }
         }
       }
 
@@ -10087,9 +10088,19 @@ export function App() {
         }
       }
       const finalSeaKeysToWrite = [...allNewSeaKeys, ...enclosedPocketKeys, ...seaHoleKeys];
-      const finalCandidateHexes = pocketKeySet.size > 0
+      let finalCandidateHexes = pocketKeySet.size > 0
         ? nextCandidateHexesExclSea.filter((hex) => !pocketKeySet.has(hexKey(hex)))
         : nextCandidateHexesExclSea;
+      // Гексы, у которых дороги отняли море, возвращаем в кандидаты: их посчитали ДО выпила
+      // и исключили из nextCandidateHexesExclSea как «море», а морем они уже не являются.
+      // Без этого они зависали «ничьими» (не море, не суша, не кандидат) — это и был баг.
+      if (roadPrunedSeaKeys.length > 0) {
+        const existingCandidateKeys = new Set(finalCandidateHexes.map(hexKey));
+        const returned = roadPrunedSeaKeys.filter(
+          (key) => !existingCandidateKeys.has(key) && !pocketKeySet.has(key)
+        );
+        if (returned.length > 0) finalCandidateHexes = [...finalCandidateHexes, ...returned.map(parseHexKey)];
+      }
       // Item 1: реки, возвращающиеся в уже пройденное озеро, больше не обрезаются.
       // Некорректная попытка отбраковывается целиком, чтобы генератор искал другой путь.
       const lakeIdByVertexKey = buildLakeIdByVertexKey(getLakesForRegions(nextRegions, nextHexTerrainByKeyPreview));
