@@ -4624,13 +4624,15 @@ function openTileTouchesRiverAwayFromMouth(hex: AxialHex, rivers: River[]): bool
   return false;
 }
 
-function validateSeaConnectivityThroughOpenTiles(landHexes: AxialHex[], seaKeys: Iterable<string>, rivers: River[] = []): GlobalSeaValidationResult {
+// Возвращает множество морских гексов, НЕ достижимых от открытого океана (снаружи карты)
+// по проходимым тайлам: море + пустые тайлы, не касающиеся реки вне устья; суша — стена.
+function getUnreachableSeaKeys(landHexes: AxialHex[], seaKeys: Iterable<string>, rivers: River[] = []): Set<string> {
   const seaSet = new Set(seaKeys);
-  if (seaSet.size <= 1) return { valid: true };
+  if (seaSet.size === 0) return new Set<string>();
 
   const landKeys = new Set(landHexes.map(hexKey));
   const knownHexes = [...landHexes, ...Array.from(seaSet).map(parseHexKey)];
-  if (knownHexes.length === 0) return { valid: true };
+  if (knownHexes.length === 0) return new Set<string>();
 
   // Рамка обхода = ОБЪЕДИНЕНИЕ двух рамок по всем известным гексам (land + sea):
   //   - осевая (q/r), как было раньше, +2 гекса;
@@ -4688,10 +4690,19 @@ function validateSeaConnectivityThroughOpenTiles(landHexes: AxialHex[], seaKeys:
     for (const neighbor of getHexNeighbors(queue[cursor])) enqueue(neighbor);
   }
 
+  const unreachable = new Set<string>();
   for (const seaKey of seaSet) {
-    if (!reachable.has(seaKey)) return { valid: false, reason: 'sea_not_connected_through_open_tiles' };
+    if (!reachable.has(seaKey)) unreachable.add(seaKey);
   }
+  return unreachable;
+}
 
+function validateSeaConnectivityThroughOpenTiles(landHexes: AxialHex[], seaKeys: Iterable<string>, rivers: River[] = []): GlobalSeaValidationResult {
+  const seaSet = new Set(seaKeys);
+  if (seaSet.size <= 1) return { valid: true };
+  if (getUnreachableSeaKeys(landHexes, seaSet, rivers).size > 0) {
+    return { valid: false, reason: 'sea_not_connected_through_open_tiles' };
+  }
   return { valid: true };
 }
 
@@ -4727,12 +4738,17 @@ function validateCoastalSeaArea(
     if (getConnectedSeaComponent(firstKey, seaKeys).size !== seaKeys.size) return { valid: false, reason: 'disconnected_sea_area' };
   }
 
-  const globalSeaValidation = validateSeaConnectivityThroughOpenTiles(
+  // Связность с открытым океаном проверяем для НОВОГО моря: достаточно, чтобы каждый
+  // новый морской гекс дотягивался до океана. Старые уже-оторванные гексы (артефакты
+  // прежней генерации) в существующем море не должны валить новый прибрежный регион.
+  const unreachableSea = getUnreachableSeaKeys(
     [...existingRegions.flatMap((region) => region.hexes), ...regionHexes],
     new Set([...existingSeaKeys, ...seaKeys]),
     rivers
   );
-  if (!globalSeaValidation.valid) return globalSeaValidation;
+  if (Array.from(seaKeys).some((key) => unreachableSea.has(key))) {
+    return { valid: false, reason: 'sea_not_connected_through_open_tiles' };
+  }
 
   const riverHeightViolation = getRiverSeaHeightViolation(rivers, seaKeys);
   if (riverHeightViolation) return { valid: false, reason: `sea_height_${riverHeightViolation.reason}` };
@@ -9817,11 +9833,20 @@ export function App() {
       const nextRegions = [...regions, finalRegion];
 
       const existingSeaKeysBeforeRegion = getSeaHexKeys(hexTerrainByKey);
+      const newSeaKeySet = new Set(seaHexKeys);
       const allSeaKeys = new Set(existingSeaKeysBeforeRegion);
       for (const key of seaHexKeys) allSeaKeys.add(key);
-      const seaConnectivityValidation = validateSeaConnectivityThroughOpenTiles(nextAllHexes, allSeaKeys, finalizedRivers);
-      if (!seaConnectivityValidation.valid) {
-        console.warn('Discarding failed coastal candidate region because sea would be disconnected from open tiles', { attempt, regionId, reason: seaConnectivityValidation.reason });
+      // Старое море, уже оторванное от океана ДО этого региона (артефакт прежней
+      // 3-слойной генерации), не должно блокировать генерацию. Регион бракуем, только если
+      // ОН ухудшил связность: новый морской гекс не дотянулся до океана ИЛИ ранее достижимый
+      // морской гекс стал недостижим. Уже-битые-до гексы пропускаем.
+      const unreachableBeforeRegion = getUnreachableSeaKeys(allRegionHexes, existingSeaKeysBeforeRegion, rivers);
+      const unreachableAfterRegion = getUnreachableSeaKeys(nextAllHexes, allSeaKeys, finalizedRivers);
+      const seaBrokenByThisRegion = Array.from(unreachableAfterRegion).filter(
+        (key) => newSeaKeySet.has(key) || !unreachableBeforeRegion.has(key)
+      );
+      if (seaBrokenByThisRegion.length > 0) {
+        console.warn('Discarding failed coastal candidate region because sea would be disconnected from open tiles', { attempt, regionId, brokenCount: seaBrokenByThisRegion.length });
         continue;
       }
       const allNewSeaKeys = [...seaHexKeys];
