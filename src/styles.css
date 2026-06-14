@@ -4,19 +4,19 @@ html, body, #root { width: 100%; height: 100%; }
 body { margin: 0; overflow: hidden; }
 .app { width: 100vw; height: 100vh; overflow: hidden; }
 .content { width: 100%; height: 100%; }
-.map-card { position: relative; width: 100%; height: 100%; overflow: hidden; background:#0c1423; }
-.map-toolbar { position:absolute; z-index:5; top:1rem; left:1rem; right:calc(24rem + 2rem); display:flex; align-items:center; gap:.75rem; flex-wrap:wrap; max-width:none; }
+.map-card { width: 100%; height: 100%; overflow: hidden; background:#0c1423; display:grid; grid-template-columns:minmax(20rem, 1fr) 2fr; grid-template-rows:auto minmax(0, 1fr); }
+.map-toolbar { grid-column:1; grid-row:1; z-index:5; display:flex; align-items:flex-start; gap:.75rem; flex-wrap:wrap; min-width:0; max-width:none; padding:1rem; background:#0f1726; border-right:1px solid #2a3b5c; }
 .controls { display:flex; align-items:center; gap:.75rem; flex-wrap:wrap; max-width:100%; padding:.5rem; border:1px solid rgba(42,59,92,.9); background:rgba(20,31,50,.92); border-radius:10px; box-shadow:0 10px 30px rgba(0,0,0,.25); backdrop-filter:blur(8px); }
 button { border:1px solid #375386; background:#365792; color:#eef4ff; padding:.55rem .85rem; border-radius:8px; cursor:pointer; }
 button:disabled { opacity:.6; cursor:not-allowed; }
 button.secondary { background:rgba(12,20,35,.6); }
 .visually-hidden { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0; }
-.map-viewport { width:100%; height:100%; overflow:auto; scrollbar-width:none; -ms-overflow-style:none; padding:calc(var(--map-toolbar-height) + 2rem) calc(24rem + 2rem) 1rem 1rem; overscroll-behavior:contain; touch-action:pan-x pan-y; display:grid; place-items:center; cursor:grab; }
+.map-viewport { grid-column:2; grid-row:1 / span 2; min-width:0; min-height:0; width:100%; height:100%; overflow:auto; scrollbar-width:none; -ms-overflow-style:none; padding:1rem; overscroll-behavior:contain; touch-action:pan-x pan-y; display:grid; place-items:center; cursor:grab; }
 .map-viewport::-webkit-scrollbar { width:0; height:0; }
 .map-viewport.is-dragging { cursor:grabbing; user-select:none; }
 svg { display:block; border:0; background:#0c1423; border-radius:0; transform-origin:0 0; }
-.roll-card { position:absolute; z-index:4; top:1rem; right:1rem; width:min(24rem, calc(100% - 2rem)); max-height:calc(100vh - 2rem); overflow:auto; border:1px solid #2a3b5c; background:rgba(20,31,50,.94); border-radius:10px; padding:1rem; box-shadow:0 14px 40px rgba(0,0,0,.32); backdrop-filter:blur(8px); }
-.roll-card.is-collapsed { width:auto; max-width:calc(100% - 2rem); overflow:visible; }
+.roll-card { grid-column:1; grid-row:2; z-index:4; min-width:0; min-height:0; width:100%; max-height:none; overflow:auto; border:0; border-top:1px solid #2a3b5c; border-right:1px solid #2a3b5c; background:rgba(20,31,50,.94); border-radius:0; padding:1rem; box-shadow:none; backdrop-filter:blur(8px); }
+.roll-card.is-collapsed { width:100%; max-width:none; overflow:visible; }
 .info-toggle { width:100%; display:flex; align-items:center; justify-content:space-between; gap:1rem; font-weight:700; }
 .roll-card.is-collapsed .info-toggle { width:auto; }
 .info-toggle--static { cursor:default; }
@@ -55,9 +55,9 @@ svg { display:block; border:0; background:#0c1423; border-radius:0; transform-or
   .app { min-height:100dvh; height:auto; overflow:visible; }
   .content { min-height:100dvh; height:auto; }
   .map-card { display:flex; flex-direction:column; min-height:100dvh; height:auto; overflow:visible; }
-  .map-toolbar { position:static; flex:0 0 auto; padding:.75rem; align-items:flex-start; max-width:none; }
-  .map-viewport { flex:0 0 60vh; min-height:22rem; height:60vh; padding:0; }
-  .roll-card { position:static; flex:0 0 auto; width:100%; max-height:none; overflow:visible; border-right:0; border-bottom:0; border-left:0; border-radius:0; }
+  .map-toolbar { order:2; flex:0 0 auto; padding:.75rem; align-items:flex-start; max-width:none; border-top:1px solid #2a3b5c; border-right:0; }
+  .map-viewport { order:1; flex:0 0 60vh; min-height:22rem; height:60vh; padding:.75rem; }
+  .roll-card { order:3; flex:0 0 auto; width:100%; max-height:none; overflow:visible; border-right:0; border-bottom:0; border-left:0; border-radius:0; }
 }
 .rotate-map-button { display:flex; align-items:center; justify-content:center; width:3.5rem; height:3.5rem; padding:.2rem; border:1px solid rgba(42,59,92,.9); background:rgba(20,31,50,.92); border-radius:10px; box-shadow:0 10px 30px rgba(0,0,0,.25); backdrop-filter:blur(8px); }
 .rotate-map-button__icon { width:100%; height:100%; min-width:0; min-height:0; border:0; background:transparent; border-radius:0; }
