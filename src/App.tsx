@@ -1,4 +1,4 @@
-import { type ChangeEvent, type CSSProperties, type TouchEvent, type WheelEvent, useEffect, useMemo, useRef, useState } from 'react';
+import { type ChangeEvent, type CSSProperties, type KeyboardEvent, type MouseEvent, type TouchEvent, type WheelEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { getOutgoingConnectorFullnessFromEndpoint, type RiverFullness } from './riverFullness';
 
 type AxialHex = {
@@ -9248,6 +9248,7 @@ export function App() {
   const mapViewportRef = useRef<HTMLDivElement | null>(null);
   const mapScaleRef = useRef(1);
   const pinchZoomRef = useRef<{ distance: number; scale: number } | null>(null);
+  const mapDragRef = useRef<{ pointerId: number; startX: number; startY: number; scrollLeft: number; scrollTop: number } | null>(null);
   const mapToolbarRef = useRef<HTMLDivElement | null>(null);
   const jsonImportInputRef = useRef<HTMLInputElement | null>(null);
   const [regions, setRegions] = useState<Region[]>([]);
@@ -10524,6 +10525,72 @@ export function App() {
     zoomMapAtPoint(mapScaleRef.current * zoomFactor, event.clientX, event.clientY);
   };
 
+
+  const handleMapMouseDown = (event: MouseEvent<HTMLDivElement>) => {
+    if (event.button !== 0 && event.button !== 2) return;
+
+    const viewport = mapViewportRef.current;
+    if (!viewport) return;
+
+    viewport.focus({ preventScroll: true });
+    mapDragRef.current = {
+      pointerId: event.button,
+      startX: event.clientX,
+      startY: event.clientY,
+      scrollLeft: viewport.scrollLeft,
+      scrollTop: viewport.scrollTop
+    };
+    viewport.classList.add('is-dragging');
+    event.preventDefault();
+  };
+
+  const handleMapMouseMove = (event: MouseEvent<HTMLDivElement>) => {
+    const drag = mapDragRef.current;
+    const viewport = mapViewportRef.current;
+    if (!drag || !viewport) return;
+
+    const requiredButtonMask = drag.pointerId === 2 ? 2 : 1;
+    if ((event.buttons & requiredButtonMask) === 0) {
+      mapDragRef.current = null;
+      viewport.classList.remove('is-dragging');
+      return;
+    }
+
+    viewport.scrollLeft = drag.scrollLeft - (event.clientX - drag.startX);
+    viewport.scrollTop = drag.scrollTop - (event.clientY - drag.startY);
+    event.preventDefault();
+  };
+
+  const handleMapMouseUp = () => {
+    mapDragRef.current = null;
+    mapViewportRef.current?.classList.remove('is-dragging');
+  };
+
+  const handleMapKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    const viewport = mapViewportRef.current;
+    if (!viewport) return;
+
+    const step = event.shiftKey ? 120 : 40;
+    switch (event.key) {
+      case 'ArrowLeft':
+        viewport.scrollLeft -= step;
+        break;
+      case 'ArrowRight':
+        viewport.scrollLeft += step;
+        break;
+      case 'ArrowUp':
+        viewport.scrollTop -= step;
+        break;
+      case 'ArrowDown':
+        viewport.scrollTop += step;
+        break;
+      default:
+        return;
+    }
+
+    event.preventDefault();
+  };
+
   const handleMapTouchStart = (event: TouchEvent<HTMLDivElement>) => {
     if (event.touches.length !== 2) {
       pinchZoomRef.current = null;
@@ -10742,7 +10809,15 @@ export function App() {
           <div
             ref={mapViewportRef}
             className="map-viewport"
+            tabIndex={0}
+            aria-label="Карта: перетаскивайте пальцем или мышью, стрелки клавиатуры перемещают область просмотра"
             onWheel={handleMapWheel}
+            onMouseDown={handleMapMouseDown}
+            onMouseMove={handleMapMouseMove}
+            onMouseUp={handleMapMouseUp}
+            onMouseLeave={handleMapMouseUp}
+            onContextMenu={(event) => event.preventDefault()}
+            onKeyDown={handleMapKeyDown}
             onTouchStart={handleMapTouchStart}
             onTouchMove={handleMapTouchMove}
             onTouchEnd={handleMapTouchEnd}
