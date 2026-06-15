@@ -10428,10 +10428,12 @@ export function App() {
   const [mapScale, setMapScale] = useState(1);
   const [isMapRotated, setIsMapRotated] = useState(false);
   const [mapToolbarHeight, setMapToolbarHeight] = useState(0);
+  const [isSidePanelCollapsed, setIsSidePanelCollapsed] = useState(false);
   const displayMapWidth = isMapRotated ? positionedHexes.height : positionedHexes.width;
   const displayMapHeight = isMapRotated ? positionedHexes.width : positionedHexes.height;
   const mapRotationTransform = isMapRotated ? `translate(${positionedHexes.height} 0) rotate(90)` : undefined;
   const mapCardStyle = { '--map-toolbar-height': `${mapToolbarHeight}px` } as CSSProperties;
+  const sidePanelToggleLabel = isSidePanelCollapsed ? 'Показать панель управления и информации' : 'Скрыть панель управления и информации';
 
   useEffect(() => {
     if (isMobileLayout) {
@@ -10706,8 +10708,21 @@ export function App() {
   return (
     <div className="app">
       <section className="content">
-        <div className="map-card" style={mapCardStyle}>
-          <div ref={mapToolbarRef} className="map-toolbar" aria-label="Управление картой">
+        <div className={`map-card${isSidePanelCollapsed ? ' is-panel-collapsed' : ''}`} style={mapCardStyle}>
+          <button
+            type="button"
+            className="side-panel-toggle"
+            onClick={() => setIsSidePanelCollapsed((value) => !value)}
+            aria-expanded={!isSidePanelCollapsed}
+            aria-controls="side-panel-controls side-panel-info"
+            aria-label={sidePanelToggleLabel}
+            title={sidePanelToggleLabel}
+          >
+            <span className="side-panel-toggle__desktop" aria-hidden="true">{isSidePanelCollapsed ? '›' : '‹'}</span>
+            <span className="side-panel-toggle__mobile" aria-hidden="true">{isSidePanelCollapsed ? '⌃' : '⌄'}</span>
+            <span className="visually-hidden">{sidePanelToggleLabel}</span>
+          </button>
+          <div id="side-panel-controls" ref={mapToolbarRef} className="map-toolbar" aria-label="Управление картой">
             <div className="controls">
               <button onClick={resetMap} className="secondary" disabled={regions.length === 0}>Сбросить</button>
               <button
@@ -11015,7 +11030,7 @@ export function App() {
             </svg>
           </div>
 
-          <aside className="roll-card">
+          <aside id="side-panel-info" className="roll-card">
             <div className="info-body">
           {regions.length === 0 ? <p>Нажми на стартовый гекс</p> : null}
           {regions.length > 0 && lastRegion ? (
