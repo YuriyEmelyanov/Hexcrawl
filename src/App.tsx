@@ -10709,7 +10709,7 @@ export function App() {
         <div className="map-card" style={mapCardStyle}>
           <div ref={mapToolbarRef} className="map-toolbar" aria-label="Управление картой">
             <div className="controls">
-              <button onClick={resetMap} className="secondary">Сбросить</button>
+              <button onClick={resetMap} className="secondary" disabled={regions.length === 0}>Сбросить</button>
               <button
                 type="button"
                 onClick={regenerateLastRegion}
@@ -10726,8 +10726,13 @@ export function App() {
               >
                 Удалить последний регион
               </button>
-              <details className="export-menu">
-                <summary className="secondary">Выгрузить</summary>
+              <details
+                className={`export-menu${regions.length === 0 ? ' is-disabled' : ''}`}
+                onToggle={(event) => {
+                  if (regions.length === 0) event.currentTarget.open = false;
+                }}
+              >
+                <summary className="secondary" aria-disabled={regions.length === 0}>Выгрузить</summary>
                 <div className="export-menu__items">
                   <button type="button" onClick={() => void handleExportPng()} className="secondary">PNG</button>
                   <button type="button" onClick={handleExportJson} className="secondary">JSON</button>
@@ -11012,8 +11017,8 @@ export function App() {
 
           <aside className="roll-card">
             <div className="info-body">
-          {regions.length === 0 ? <p>Нажмите на стартовый гекс 0/0 на карте, чтобы создать первый регион.</p> : null}
-          {lastRegion ? (
+          {regions.length === 0 ? <p>Нажми на стартовый гекс</p> : null}
+          {regions.length > 0 && lastRegion ? (
             <>
               <p>Регионов: {regions.length}</p>
               <p>Последний регион: #{lastRegion.id}</p>
@@ -11024,6 +11029,8 @@ export function App() {
               <p>Точек интереса: {lastRegion.pointsOfInterest.length}</p>
             </>
           ) : null}
+          {regions.length > 0 ? (
+            <>
           <hr />
           <p><strong>Выбранный гекс:</strong> {selectedHex ? `${selectedHex.q}/${selectedHex.r}` : '—'}</p>
           <p><strong>Тип:</strong> {selectedType}</p>
@@ -11182,6 +11189,8 @@ export function App() {
             </>
           ) : null}
           {candidateHexes.length > 0 && !debugRivers ? <p>Выберите гекс-кандидат на карте для добавления следующего региона.</p> : null}
+            </>
+          ) : null}
             </div>
           </aside>
         </div>
