@@ -10773,7 +10773,7 @@ export function App() {
                 </select>
               </label>
               <label>
-                Освоенность
+                Тип
                 <select value={genLandType} onChange={(e) => setGenLandType(e.target.value as typeof genLandType)}>
                   <option value="auto">Авто</option>
                   <option value="settled">Освоенный</option>
