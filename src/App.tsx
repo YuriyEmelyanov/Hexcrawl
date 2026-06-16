@@ -289,6 +289,36 @@ const SVG_EXPORT_STYLES = `
   .dbg-node-neighbor-region { fill:#ff9a2a; opacity:0.95; }
 `;
 
+
+type Language = 'ru' | 'en';
+
+const UI_TEXT = {
+  ru: {
+    languageName: 'Русский', switchLanguage: 'Switch to English', reset: 'Сбросить', regenerateRegion: 'Перегенерировать регион', deleteLastRegion: 'Удалить последний регион', export: 'Выгрузить', importJson: 'Загрузить JSON', debug: 'Отладка', controlsLabel: 'Управление картой', genParamsLabel: 'Параметры генерации', size: 'Размер', type: 'Тип', biome: 'Биом', coast: 'Берег', auto: 'Авто', settled: 'Освоенный', wild: 'Дикий', coastOption: 'Побережье', mainland: 'Материк', closeNotice: 'Закрыть уведомление', mapAria: 'Карта: перетаскивайте пальцем или мышью, стрелки клавиатуры перемещают область просмотра', rotateMap: 'Повернуть карту на 90 градусов', rotateMapTitle: 'Повернуть карту на 90°', unrotateMap: 'Вернуть исходный поворот карты', showPanel: 'Показать панель управления и информации', hidePanel: 'Скрыть панель управления и информации', startPrompt: 'Нажми на стартовый гекс', candidatePrompt: 'Выберите гекс-кандидат для добавления региона', selectedHexInfo: 'Информация о выбранном гексе', candidateForRegion: 'Кандидат для нового региона', noHexSelected: 'Гекс не выбран', lake: 'Озеро', settledRegion: 'Освоенный регион', wildArea: 'Дикая местность', centralPoi: 'Центральная точка интереса', poi: 'Точка интереса', road: 'Дорога', trail: 'Тропа', nearby: 'Рядом:', river: 'Река', sea: 'Море', debugInfo: 'Отладочная информация', regions: 'Регионов', lastRegion: 'Последний регион', regionSize: 'Размер региона', height: 'Высота', targetSize: 'Целевой размер', finalSize: 'Фактический размер региона', poiCount: 'Точек интереса', selectedHex: 'Выбранный гекс', selectedRegionHeight: 'Высота выбранного региона', selectedRegionSize: 'Размер выбранного региона', yes: 'да', no: 'нет', roadNumbers: 'Номера дорог', trailNumbers: 'Номера троп', regionPoiCount: 'Точек интереса в регионе', regionRoads: 'Дорог региона', regionTrails: 'Троп региона', regionRivers: 'Реки региона', riverSectors: 'Речные сектора:', sector: 'сектор', fullness: 'полноводность', confluences: 'Слияния:', flowsInto: 'впадает в', regionLakes: 'Озёра региона', selectRegionHex: 'Выберите региональный гекс.', noRiverInRegion: 'В выбранном регионе нет реки для подробной отладки.', pngExportError: 'Не удалось выгрузить PNG-файл.', jsonImportError: 'Не удалось загрузить JSON-файл.' },
+  en: {
+    languageName: 'English', switchLanguage: 'Переключить на русский', reset: 'Reset', regenerateRegion: 'Regenerate region', deleteLastRegion: 'Delete last region', export: 'Export', importJson: 'Load JSON', debug: 'Debug', controlsLabel: 'Map controls', genParamsLabel: 'Generation parameters', size: 'Size', type: 'Type', biome: 'Biome', coast: 'Coast', auto: 'Auto', settled: 'Settled', wild: 'Wild', coastOption: 'Coast', mainland: 'Mainland', closeNotice: 'Close notice', mapAria: 'Map: drag with touch or mouse; keyboard arrows move the viewport', rotateMap: 'Rotate map 90 degrees', rotateMapTitle: 'Rotate map 90°', unrotateMap: 'Restore original map rotation', showPanel: 'Show controls and information panel', hidePanel: 'Hide controls and information panel', startPrompt: 'Click the starting hex', candidatePrompt: 'Select a candidate hex to add a region', selectedHexInfo: 'Selected hex information', candidateForRegion: 'Candidate for a new region', noHexSelected: 'No hex selected', lake: 'Lake', settledRegion: 'Settled region', wildArea: 'Wild area', centralPoi: 'Central point of interest', poi: 'Point of interest', road: 'Road', trail: 'Trail', nearby: 'Nearby:', river: 'River', sea: 'Sea', debugInfo: 'Debug information', regions: 'Regions', lastRegion: 'Last region', regionSize: 'Region size', height: 'Height', targetSize: 'Target size', finalSize: 'Final region size', poiCount: 'Points of interest', selectedHex: 'Selected hex', selectedRegionHeight: 'Selected region height', selectedRegionSize: 'Selected region size', yes: 'yes', no: 'no', roadNumbers: 'Road numbers', trailNumbers: 'Trail numbers', regionPoiCount: 'Points of interest in region', regionRoads: 'Region roads', regionTrails: 'Region trails', regionRivers: 'Region rivers', riverSectors: 'River sectors:', sector: 'sector', fullness: 'fullness', confluences: 'Confluences:', flowsInto: 'flows into', regionLakes: 'Region lakes', selectRegionHex: 'Select a region hex.', noRiverInRegion: 'The selected region has no river for detailed debugging.', pngExportError: 'Failed to export PNG file.', jsonImportError: 'Failed to load JSON file.' }
+} as const;
+
+const SIZE_LABELS: Record<Language, Record<Region['sizeCategory'], string>> = {
+  ru: { locality: 'Местность', small_region: 'Малый регион', region: 'Регион', large_region: 'Большой регион', land: 'Край', vast_land: 'Обширный край' },
+  en: { locality: 'Locality', small_region: 'Small region', region: 'Region', large_region: 'Large region', land: 'Land', vast_land: 'Vast land' }
+};
+
+const BIOME_LABELS_EN: Record<BiomeId, string> = {
+  plain_deciduous_forest: 'Lowland deciduous forest', plain_mixed_forest: 'Lowland mixed forest', plain_coniferous_forest: 'Lowland coniferous forest', deciduous_forested_hills: 'Deciduous forested hills', mixed_forested_hills: 'Mixed forested hills', coniferous_forested_hills: 'Coniferous forested hills', open_hills: 'Open hills', coniferous_mountain_forest: 'Coniferous mountain forest', mixed_mountain_forest: 'Mixed mountain forest', deciduous_mountain_forest: 'Deciduous mountain forest', mountains: 'Mountains', open_plains: 'Open plains', swamp_forest: 'Swamp forest', swamp: 'Swamp', hilly_woodland: 'Hilly woodland', mountain_woodland: 'Mountain woodland', deciduous_woodland: 'Deciduous woodland', mixed_woodland: 'Mixed woodland', coniferous_woodland: 'Coniferous woodland', semi_desert: 'Semi-desert'
+};
+
+function getBiomeLabel(biomeId: BiomeId, language: Language): string {
+  return language === 'en' ? BIOME_LABELS_EN[biomeId] : BIOMES[biomeId].label;
+}
+
+function translateCoastNotice(message: string, language: Language): string {
+  if (language === 'en' && message === 'Побережье здесь создать нельзя: из этого региона вытекает река в соседний регион. Реки не текут от побережья вглубь суши (BR-003).') {
+    return 'A coast cannot be created here: a river flows from this region into a neighboring region. Rivers do not flow from the coast inland (BR-003).';
+  }
+  return message;
+}
+
 const BIOMES: Record<BiomeId, Biome> = {
   plain_deciduous_forest: { id: 'plain_deciduous_forest', label: 'Равнинный лиственный лес', color: '#5F9E6E', primaryEmoji: '🌳', secondaryEmojis: [], wildWeight: 20, settledWeight: 11, heightLevel: 1 },
   plain_mixed_forest: { id: 'plain_mixed_forest', label: 'Равнинный смешанный лес', color: '#5B8F64', primaryEmoji: '🌳', secondaryEmojis: ['🌲'], wildWeight: 12, settledWeight: 5, heightLevel: 1 },
@@ -641,7 +671,12 @@ function getRegionHeightLevelFromBiomeId(biomeId: BiomeId): RegionHeightLevel {
   return BIOMES[biomeId]?.heightLevel ?? 1;
 }
 
-function getRegionHeightLabel(heightLevel: RegionHeightLevel): string {
+function getRegionHeightLabel(heightLevel: RegionHeightLevel, language: Language = 'ru'): string {
+  if (language === 'en') {
+    if (heightLevel === 3) return '3 — mountains';
+    if (heightLevel === 2) return '2 — hills';
+    return '1 — plains';
+  }
   if (heightLevel === 3) return '3 — горы';
   if (heightLevel === 2) return '2 — холмы';
   return '1 — равнина';
@@ -2786,7 +2821,8 @@ function getLakeSummariesForRegion(
     .sort((a, b) => a.lakeId - b.lakeId);
 }
 
-function formatHexCount(count: number): string {
+function formatHexCount(count: number, language: Language = 'ru'): string {
+  if (language === 'en') return count === 1 ? 'hex' : 'hexes';
   if (count === 1) return 'гекс';
   if (count >= 2 && count <= 4) return 'гекса';
   return 'гексов';
@@ -3775,10 +3811,10 @@ export function getRegionSizeCategory(size: number): Pick<Region, 'sizeCategory'
   return { sizeCategory: 'vast_land', sizeLabel: 'Обширный край' };
 }
 
-export function getRegionSizeDisplay(region: Partial<Region> & { hexes?: AxialHex[] }): string {
+export function getRegionSizeDisplay(region: Partial<Region> & { hexes?: AxialHex[] }, language: Language = 'ru'): string {
   const size = region.finalSize ?? region.hexes?.length ?? region.targetSize ?? 0;
-  const { sizeLabel } = getRegionSizeCategory(size);
-  return `${sizeLabel} (${size})`;
+  const { sizeCategory, sizeLabel } = getRegionSizeCategory(size);
+  return `${language === 'en' ? SIZE_LABELS.en[sizeCategory] : sizeLabel} (${size})`;
 }
 
 export function getHexNeighbors(hex: AxialHex): AxialHex[] {
@@ -9264,6 +9300,8 @@ export function App() {
   const mapDragRef = useRef<{ pointerId: number; startX: number; startY: number; scrollLeft: number; scrollTop: number } | null>(null);
   const mapToolbarRef = useRef<HTMLDivElement | null>(null);
   const jsonImportInputRef = useRef<HTMLInputElement | null>(null);
+  const [language, setLanguage] = useState<Language>('ru');
+  const t = UI_TEXT[language];
   const [regions, setRegions] = useState<Region[]>([]);
   const [candidateHexes, setCandidateHexes] = useState<AxialHex[]>([]);
   const [rivers, setRivers] = useState<River[]>([]);
@@ -10454,7 +10492,7 @@ export function App() {
   const displayMapHeight = isMapRotated ? positionedHexes.width : positionedHexes.height;
   const mapRotationTransform = isMapRotated ? `translate(${positionedHexes.height} 0) rotate(90)` : undefined;
   const mapCardStyle = { '--map-toolbar-height': `${mapToolbarHeight}px` } as CSSProperties;
-  const sidePanelToggleLabel = isSidePanelCollapsed ? 'Показать панель управления и информации' : 'Скрыть панель управления и информации';
+  const sidePanelToggleLabel = isSidePanelCollapsed ? t.showPanel : t.hidePanel;
 
   useEffect(() => {
     if (isMobileLayout) {
@@ -10667,7 +10705,7 @@ export function App() {
       await exportSvgToPng(mapSvgRef.current, `${EXPORT_FILE_PREFIX}-${getTimestampForFilename()}.png`);
     } catch (error) {
       console.error('PNG export failed', error);
-      window.alert(error instanceof Error ? error.message : 'Не удалось выгрузить PNG-файл.');
+      window.alert(error instanceof Error ? error.message : t.pngExportError);
     }
   };
 
@@ -10711,7 +10749,7 @@ export function App() {
       updateMapScale(parsed.ui.mapScale);
     } catch (error) {
       console.error('JSON import failed', error);
-      window.alert(error instanceof Error ? error.message : 'Не удалось загрузить JSON-файл.');
+      window.alert(error instanceof Error ? error.message : t.jsonImportError);
     }
   };
 
@@ -10743,16 +10781,25 @@ export function App() {
             <span className="side-panel-toggle__mobile" aria-hidden="true">{isSidePanelCollapsed ? '⌃' : '⌄'}</span>
             <span className="visually-hidden">{sidePanelToggleLabel}</span>
           </button>
-          <div id="side-panel-controls" ref={mapToolbarRef} className="map-toolbar" aria-label="Управление картой">
+          <button
+            type="button"
+            className="language-toggle"
+            onClick={() => setLanguage((value) => (value === 'ru' ? 'en' : 'ru'))}
+            aria-label={t.switchLanguage}
+            title={t.switchLanguage}
+          >
+            {language === 'ru' ? 'EN' : 'RU'}
+          </button>
+          <div id="side-panel-controls" ref={mapToolbarRef} className="map-toolbar" aria-label={t.controlsLabel}>
             <div className="controls">
-              <button onClick={resetMap} className="secondary" disabled={regions.length === 0}>Сбросить</button>
+              <button onClick={resetMap} className="secondary" disabled={regions.length === 0}>{t.reset}</button>
               <button
                 type="button"
                 onClick={regenerateLastRegion}
                 className="secondary"
                 disabled={regions.length === 0}
               >
-                Перегенерировать регион
+                {t.regenerateRegion}
               </button>
               <button
                 type="button"
@@ -10760,7 +10807,7 @@ export function App() {
                 className="secondary"
                 disabled={regions.length === 0}
               >
-                Удалить последний регион
+                {t.deleteLastRegion}
               </button>
               <details
                 className={`export-menu${regions.length === 0 ? ' is-disabled' : ''}`}
@@ -10768,23 +10815,23 @@ export function App() {
                   if (regions.length === 0) event.currentTarget.open = false;
                 }}
               >
-                <summary className="secondary" aria-disabled={regions.length === 0}>Выгрузить</summary>
+                <summary className="secondary" aria-disabled={regions.length === 0}>{t.export}</summary>
                 <div className="export-menu__items">
                   <button type="button" onClick={() => void handleExportPng()} className="secondary">PNG</button>
                   <button type="button" onClick={handleExportJson} className="secondary">JSON</button>
                 </div>
               </details>
-              <button type="button" onClick={handleImportJsonClick} className="secondary">Загрузить JSON</button>
+              <button type="button" onClick={handleImportJsonClick} className="secondary">{t.importJson}</button>
               <input ref={jsonImportInputRef} className="visually-hidden" type="file" accept="application/json,.json" onChange={(event) => void handleImportJson(event)} />
               <button onClick={() => setDebugRivers((v) => !v)} className="secondary">
-                Отладка: {debugRivers ? 'ON' : 'OFF'}
+                {t.debug}: {debugRivers ? 'ON' : 'OFF'}
               </button>
               <button
                 type="button"
                 className="rotate-map-button"
                 onClick={() => setIsMapRotated((value) => !value)}
-                aria-label={isMapRotated ? 'Вернуть исходный поворот карты' : 'Повернуть карту на 90 градусов'}
-                title={isMapRotated ? 'Вернуть исходный поворот карты' : 'Повернуть карту на 90°'}
+                aria-label={isMapRotated ? t.unrotateMap : t.rotateMap}
+                title={isMapRotated ? t.unrotateMap : t.rotateMapTitle}
               >
                 <svg className="rotate-map-button__icon" viewBox="0 0 64 48" aria-hidden="true" focusable="false">
                   <polygon
@@ -10795,49 +10842,49 @@ export function App() {
                 </svg>
               </button>
             </div>
-            <div className="gen-params" aria-label="Параметры генерации">
+            <div className="gen-params" aria-label={t.genParamsLabel}>
               <label>
-                Размер
+                {t.size}
                 <select value={genSizeCategory} onChange={(e) => setGenSizeCategory(e.target.value as typeof genSizeCategory)}>
-                  <option value="auto">Авто</option>
-                  <option value="locality">Местность</option>
-                  <option value="small_region">Малый регион</option>
-                  <option value="region">Регион</option>
-                  <option value="large_region">Большой регион</option>
-                  <option value="land">Край</option>
-                  <option value="vast_land">Обширный край</option>
+                  <option value="auto">{t.auto}</option>
+                  <option value="locality">{SIZE_LABELS[language].locality}</option>
+                  <option value="small_region">{SIZE_LABELS[language].small_region}</option>
+                  <option value="region">{SIZE_LABELS[language].region}</option>
+                  <option value="large_region">{SIZE_LABELS[language].large_region}</option>
+                  <option value="land">{SIZE_LABELS[language].land}</option>
+                  <option value="vast_land">{SIZE_LABELS[language].vast_land}</option>
                 </select>
               </label>
               <label>
-                Тип
+                {t.type}
                 <select value={genLandType} onChange={(e) => setGenLandType(e.target.value as typeof genLandType)}>
-                  <option value="auto">Авто</option>
-                  <option value="settled">Освоенный</option>
-                  <option value="wild">Дикий</option>
+                  <option value="auto">{t.auto}</option>
+                  <option value="settled">{t.settled}</option>
+                  <option value="wild">{t.wild}</option>
                 </select>
               </label>
               <label>
-                Биом
+                {t.biome}
                 <select value={genBiome} onChange={(e) => setGenBiome(e.target.value as typeof genBiome)}>
-                  <option value="auto">Авто</option>
+                  <option value="auto">{t.auto}</option>
                   {(Object.values(BIOMES)).map((biome) => (
-                    <option key={biome.id} value={biome.id}>{biome.label}</option>
+                    <option key={biome.id} value={biome.id}>{getBiomeLabel(biome.id, language)}</option>
                   ))}
                 </select>
               </label>
               <label>
-                Берег
+                {t.coast}
                 <select value={genCoastal} onChange={(e) => setGenCoastal(e.target.value as typeof genCoastal)}>
-                  <option value="auto">Авто</option>
-                  <option value="coast">Побережье</option>
-                  <option value="mainland">Материк</option>
+                  <option value="auto">{t.auto}</option>
+                  <option value="coast">{t.coastOption}</option>
+                  <option value="mainland">{t.mainland}</option>
                 </select>
               </label>
             </div>
             {coastNotice && (
               <div className="coast-notice" role="status">
-                <span>{coastNotice}</span>
-                <button type="button" onClick={() => setCoastNotice(null)} aria-label="Закрыть уведомление">×</button>
+                <span>{translateCoastNotice(coastNotice, language)}</span>
+                <button type="button" onClick={() => setCoastNotice(null)} aria-label={t.closeNotice}>×</button>
               </div>
             )}
           </div>
@@ -10845,7 +10892,7 @@ export function App() {
             ref={mapViewportRef}
             className="map-viewport"
             tabIndex={0}
-            aria-label="Карта: перетаскивайте пальцем или мышью, стрелки клавиатуры перемещают область просмотра"
+            aria-label={t.mapAria}
             onWheel={handleMapWheel}
             onMouseDown={handleMapMouseDown}
             onMouseMove={handleMapMouseMove}
@@ -11054,31 +11101,31 @@ export function App() {
           <aside id="side-panel-info" className="roll-card">
             <div className="info-body">
               {regions.length === 0 ? (
-                <div className="info-block info-block--prompt" role="status">Нажми на стартовый гекс</div>
+                <div className="info-block info-block--prompt" role="status">{t.startPrompt}</div>
               ) : regions.length <= 2 && candidateHexes.length > 0 ? (
-                <div className="info-block info-block--prompt" role="status">Выберите гекс-кандидат для добавления региона</div>
+                <div className="info-block info-block--prompt" role="status">{t.candidatePrompt}</div>
               ) : null}
 
-              <section className="info-block info-block--hex" aria-label="Информация о выбранном гексе">
+              <section className="info-block info-block--hex" aria-label={t.selectedHexInfo}>
                 {selectedRegion ? (
-                  <p><strong>{selectedRegion.sizeLabel} {selectedRegion.id}</strong></p>
+                  <p><strong>{SIZE_LABELS[language][selectedRegion.sizeCategory]} {selectedRegion.id}</strong></p>
                 ) : (
-                  <p><strong>{isSelectedCandidate ? 'Кандидат для нового региона' : 'Гекс не выбран'}</strong></p>
+                  <p><strong>{isSelectedCandidate ? t.candidateForRegion : t.noHexSelected}</strong></p>
                 )}
                 {!isSelectedCandidate && selectedRegion ? (
                   <>
-                    <p>{isSelectedLake ? `💧 Озеро ${selectedTerrain?.lakeId ?? '—'}` : `${selectedRegion.biomePrimaryEmoji}${selectedRegion.biomeSecondaryEmojis.join('')} ${selectedRegion.biomeLabel}`}</p>
-                    <p>{selectedRegion.biomeLandType === 'settled' ? 'Освоенный регион' : 'Дикая местность'}</p>
-                    {selectedMeta?.isCenter ? <p>{REGION_CENTER_EMOJI} Центральная точка интереса</p> : null}
-                    {selectedRegion.pointsOfInterest.some((poi) => selectedHexKey === hexKey(poi)) ? <p>{POI_EMOJI} Точка интереса</p> : null}
-                    {selectedHexRoadIds.map((roadId) => <p key={`selected-road-${roadId}`}>▬ Дорога {roadId}</p>)}
-                    {selectedHexTrailIds.map((trailId) => <p key={`selected-trail-${trailId}`}>⋯ Тропа {trailId}</p>)}
+                    <p>{isSelectedLake ? `💧 ${t.lake} ${selectedTerrain?.lakeId ?? '—'}` : `${selectedRegion.biomePrimaryEmoji}${selectedRegion.biomeSecondaryEmojis.join('')} ${getBiomeLabel(selectedRegion.biomeId, language)}`}</p>
+                    <p>{selectedRegion.biomeLandType === 'settled' ? t.settledRegion : t.wildArea}</p>
+                    {selectedMeta?.isCenter ? <p>{REGION_CENTER_EMOJI} {t.centralPoi}</p> : null}
+                    {selectedRegion.pointsOfInterest.some((poi) => selectedHexKey === hexKey(poi)) ? <p>{POI_EMOJI} {t.poi}</p> : null}
+                    {selectedHexRoadIds.map((roadId) => <p key={`selected-road-${roadId}`}>▬ {t.road} {roadId}</p>)}
+                    {selectedHexTrailIds.map((trailId) => <p key={`selected-trail-${trailId}`}>⋯ {t.trail} {trailId}</p>)}
                     {nearbyRiverIds.length > 0 || nearbyLakeIds.length > 0 || hasNearbySea ? (
                       <div>
-                        <strong>Рядом:</strong>
-                        {nearbyRiverIds.map((riverId) => <p key={`nearby-river-${riverId}`}>Река {riverId}</p>)}
-                        {nearbyLakeIds.map((lakeId) => <p key={`nearby-lake-${lakeId}`}>Озеро {lakeId}</p>)}
-                        {hasNearbySea ? <p>Море</p> : null}
+                        <strong>{t.nearby}</strong>
+                        {nearbyRiverIds.map((riverId) => <p key={`nearby-river-${riverId}`}>{t.river} {riverId}</p>)}
+                        {nearbyLakeIds.map((lakeId) => <p key={`nearby-lake-${lakeId}`}>{t.lake} {lakeId}</p>)}
+                        {hasNearbySea ? <p>{t.sea}</p> : null}
                       </div>
                     ) : null}
                   </>
@@ -11086,40 +11133,40 @@ export function App() {
               </section>
 
               {debugRivers ? (
-                <section className="info-block info-block--debug" aria-label="Отладочная информация">
+                <section className="info-block info-block--debug" aria-label={t.debugInfo}>
                   {regions.length > 0 && lastRegion ? (
                     <>
-                      <p>Регионов: {regions.length}</p>
-                      <p>Последний регион: {lastRegion.id}</p>
-                      <p>Размер региона: {getRegionSizeDisplay(lastRegion)}</p>
-                      <p>Высота: {getRegionHeightLabel(lastRegion.heightLevel ?? getRegionHeightLevelFromBiomeId(lastRegion.biomeId))}</p>
-                      <p>Целевой размер: {lastRegion.targetSize}</p>
-                      <p>Фактический размер региона: {lastRegion.finalSize}</p>
-                      <p>Точек интереса: {lastRegion.pointsOfInterest.length}</p>
+                      <p>{t.regions}: {regions.length}</p>
+                      <p>{t.lastRegion}: {lastRegion.id}</p>
+                      <p>{t.regionSize}: {getRegionSizeDisplay(lastRegion, language)}</p>
+                      <p>{t.height}: {getRegionHeightLabel(lastRegion.heightLevel ?? getRegionHeightLevelFromBiomeId(lastRegion.biomeId), language)}</p>
+                      <p>{t.targetSize}: {lastRegion.targetSize}</p>
+                      <p>{t.finalSize}: {lastRegion.finalSize}</p>
+                      <p>{t.poiCount}: {lastRegion.pointsOfInterest.length}</p>
                     </>
                   ) : null}
                   {regions.length > 0 ? (
                     <>
                       <hr />
-                      <p><strong>Выбранный гекс:</strong> {selectedHex ? `${selectedHex.q}/${selectedHex.r}` : '—'}</p>
-                      <p><strong>Тип:</strong> {selectedType}</p>
+                      <p><strong>{t.selectedHex}:</strong> {selectedHex ? `${selectedHex.q}/${selectedHex.r}` : '—'}</p>
+                      <p><strong>{t.type}:</strong> {selectedType}</p>
                       {selectedRegion ? (
                         <>
-                          <p><strong>Высота выбранного региона:</strong> {getRegionHeightLabel(selectedRegion.heightLevel ?? getRegionHeightLevelFromBiomeId(selectedRegion.biomeId))}</p>
-                          <p><strong>Размер выбранного региона:</strong> {getRegionSizeDisplay(selectedRegion)}</p>
+                          <p><strong>{t.selectedRegionHeight}:</strong> {getRegionHeightLabel(selectedRegion.heightLevel ?? getRegionHeightLevelFromBiomeId(selectedRegion.biomeId), language)}</p>
+                          <p><strong>{t.selectedRegionSize}:</strong> {getRegionSizeDisplay(selectedRegion, language)}</p>
                         </>
                       ) : null}
-                      <p><strong>centralHex:</strong> {selectedMeta?.isCenter ? 'да' : 'нет'}</p>
-                      <p><strong>anchorHex:</strong> {selectedMeta?.isAnchor ? 'да' : 'нет'}</p>
-                      <p><strong>Номера дорог:</strong> {selectedHexRoadIds.length > 0 ? selectedHexRoadIds.map((roadId) => `${roadId}`).join('; ') : '—'}</p>
-                      <p><strong>Номера троп:</strong> {selectedHexTrailIds.length > 0 ? selectedHexTrailIds.map((trailId) => `${trailId}`).join('; ') : '—'}</p>
+                      <p><strong>centralHex:</strong> {selectedMeta?.isCenter ? t.yes : t.no}</p>
+                      <p><strong>anchorHex:</strong> {selectedMeta?.isAnchor ? t.yes : t.no}</p>
+                      <p><strong>{t.roadNumbers}:</strong> {selectedHexRoadIds.length > 0 ? selectedHexRoadIds.map((roadId) => `${roadId}`).join('; ') : '—'}</p>
+                      <p><strong>{t.trailNumbers}:</strong> {selectedHexTrailIds.length > 0 ? selectedHexTrailIds.map((trailId) => `${trailId}`).join('; ') : '—'}</p>
                       {!isSelectedCandidate && selectedRegion && !isSelectedLake ? (
                         <>
-                          <p><strong>Точек интереса в регионе:</strong> {selectedRegion.pointsOfInterest.length}</p>
-                          <p><strong>Дорог региона:</strong> {selectedRegionRoadStats.road}</p>
-                          <p><strong>Троп региона:</strong> {selectedRegionRoadStats.trail}</p>
+                          <p><strong>{t.regionPoiCount}:</strong> {selectedRegion.pointsOfInterest.length}</p>
+                          <p><strong>{t.regionRoads}:</strong> {selectedRegionRoadStats.road}</p>
+                          <p><strong>{t.regionTrails}:</strong> {selectedRegionRoadStats.trail}</p>
                           <p>
-                            <strong>Реки региона:</strong>{' '}
+                            <strong>{t.regionRivers}:</strong>{' '}
                             {selectedRegionRivers.length > 0
                               ? selectedRegionRivers
                                 .map((river) => `${river.id}`)
@@ -11127,30 +11174,30 @@ export function App() {
                               : '—'}
                           </p>
                           <div>
-                            <strong>Речные сектора:</strong>
+                            <strong>{t.riverSectors}</strong>
                             {selectedRegionRiverSectors.length > 0 ? (
                               <ul>
                                 {selectedRegionRiverSectors.map((sector) => (
-                                  <li key={sector.id}>Река {sector.riverId}: сектор {sector.sectorIndex}, полноводность {sector.fullness}</li>
+                                  <li key={sector.id}>{t.river} {sector.riverId}: {t.sector} {sector.sectorIndex}, {t.fullness} {sector.fullness}</li>
                                 ))}
                               </ul>
                             ) : ' —'}
                           </div>
                           <div>
-                            <strong>Слияния:</strong>
+                            <strong>{t.confluences}</strong>
                             {selectedRegionConfluences.length > 0 ? (
                               <ul>
                                 {selectedRegionConfluences.map((confluence) => (
-                                  <li key={confluence.id}>Река {confluence.tributaryRiverId} впадает в Реку {confluence.mainRiverId}</li>
+                                  <li key={confluence.id}>{t.river} {confluence.tributaryRiverId} {t.flowsInto} {t.river} {confluence.mainRiverId}</li>
                                 ))}
                               </ul>
                             ) : ' —'}
                           </div>
                           <p>
-                            <strong>Озёра региона:</strong>{' '}
+                            <strong>{t.regionLakes}:</strong>{' '}
                             {selectedRegionLakes.length > 0
                               ? selectedRegionLakes
-                                .map((lake) => `${lake.lakeId} — ${lake.size} ${formatHexCount(lake.size)}`)
+                                .map((lake) => `${lake.lakeId} — ${lake.size} ${formatHexCount(lake.size, language)}`)
                                 .join('; ')
                               : '—'}
                           </p>
@@ -11158,9 +11205,9 @@ export function App() {
                       ) : null}
                       <hr />
                       <p><strong>River debug</strong></p>
-                      {!selectedRegion ? <p>Выберите региональный гекс.</p> : null}
+                      {!selectedRegion ? <p>{t.selectRegionHex}</p> : null}
                       {selectedRegion && !selectedRegionGraph ? <p>no graph</p> : null}
-                      {selectedRegion && selectedRegionGraph && !selectedRegionRiver ? <p>В выбранном регионе нет реки для подробной отладки.</p> : null}
+                      {selectedRegion && selectedRegionGraph && !selectedRegionRiver ? <p>{t.noRiverInRegion}</p> : null}
                       {selectedRegion && selectedRegionGraph && selectedRegionRiver ? (() => {
                 const fullPath = selectedRegionRiver.vertexPath;
                 const path = getRiverPathInRegionGraph(selectedRegionRiver, selectedRegionGraph);
