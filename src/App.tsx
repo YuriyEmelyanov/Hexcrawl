@@ -503,10 +503,10 @@ function assertHexcrawlSaveData(value: unknown): asserts value is ValidatedHexcr
   for (const region of value.map.regions) {
     if (!isRecord(region)) throw new Error('Некорректная запись региона.');
     if (typeof region.id !== 'number' || !Number.isFinite(region.id)) throw new Error('У региона отсутствует числовой id.');
-    if (!Array.isArray(region.hexes) || !region.hexes.every(isAxialHex)) throw new Error(`Некорректные гексы региона #${region.id}.`);
-    if (!isAxialHex(region.centerHex)) throw new Error(`Некорректный centerHex региона #${region.id}.`);
-    if (!isAxialHex(region.anchorHex)) throw new Error(`Некорректный anchorHex региона #${region.id}.`);
-    if (!Array.isArray(region.pointsOfInterest) || !region.pointsOfInterest.every(isAxialHex)) throw new Error(`Некорректные точки интереса региона #${region.id}.`);
+    if (!Array.isArray(region.hexes) || !region.hexes.every(isAxialHex)) throw new Error(`Некорректные гексы региона ${region.id}.`);
+    if (!isAxialHex(region.centerHex)) throw new Error(`Некорректный centerHex региона ${region.id}.`);
+    if (!isAxialHex(region.anchorHex)) throw new Error(`Некорректный anchorHex региона ${region.id}.`);
+    if (!Array.isArray(region.pointsOfInterest) || !region.pointsOfInterest.every(isAxialHex)) throw new Error(`Некорректные точки интереса региона ${region.id}.`);
   }
   if (value.map.candidateHexes !== undefined && !Array.isArray(value.map.candidateHexes)) throw new Error('Некорректный список candidateHexes.');
   if (!isRecord(value.counters)) throw new Error('В сохранении отсутствует объект counters.');
@@ -2219,6 +2219,19 @@ function getRiversForHex(hex: AxialHex, rivers: River[]): River[] {
   return rivers
     .filter((river) => {
       if (river.vertexPath.some((vertex) => hexVertexKeys.has(vertex.key))) return true;
+      for (let i = 1; i < river.vertexPath.length; i += 1) {
+        if (hexEdges.has(getRiverEdgeKey(river.vertexPath[i - 1], river.vertexPath[i]))) return true;
+      }
+      return false;
+    })
+    .sort((a, b) => a.id - b.id);
+}
+
+
+function getRiversOnHexEdges(hex: AxialHex, rivers: River[]): River[] {
+  const hexEdges = getHexEdgeKeys(hex);
+  return rivers
+    .filter((river) => {
       for (let i = 1; i < river.vertexPath.length; i += 1) {
         if (hexEdges.has(getRiverEdgeKey(river.vertexPath[i - 1], river.vertexPath[i]))) return true;
       }
@@ -10336,11 +10349,12 @@ export function App() {
       .map((road) => road.id)))
     : [];
   const nearbyHexes = selectedHex ? getHexNeighbors(selectedHex) : [];
-  const nearbyRiverIds = Array.from(new Set(nearbyHexes.flatMap((hex) => getRiversForHex(hex, rivers).map((river) => river.id))));
+  const nearbyRiverIds = selectedHex ? getRiversOnHexEdges(selectedHex, rivers).map((river) => river.id) : [];
   const nearbyLakeIds = Array.from(new Set(nearbyHexes
     .map((hex) => hexTerrainByKey.get(hexKey(hex)))
     .filter((terrain): terrain is HexTerrainData & { lakeId: number } => terrain?.terrainOverride === 'lake' && typeof terrain.lakeId === 'number')
-    .map((terrain) => terrain.lakeId)));
+    .map((terrain) => terrain.lakeId)
+    .filter((lakeId) => lakeId !== selectedTerrain?.lakeId)));
   const hasNearbySea = nearbyHexes.some((hex) => hexTerrainByKey.get(hexKey(hex))?.terrainOverride === 'sea');
 
   const selectedType: HexType | 'none' = !selectedHex
@@ -11025,7 +11039,7 @@ export function App() {
                       <line x1={last[0].x + riverOffset.x} y1={last[0].y + riverOffset.y} x2={last[1].x + riverOffset.x} y2={last[1].y + riverOffset.y} className="dbg-last-segment" />
                       <circle cx={start.x + riverOffset.x} cy={start.y + riverOffset.y} r={5} className="dbg-start" />
                       <circle cx={end.x + riverOffset.x} cy={end.y + riverOffset.y} r={5} className="dbg-end" />
-                      <text x={mid.x + riverOffset.x + 4} y={mid.y + riverOffset.y - 4} className="dbg-river-id">#{river.id}</text>
+                      <text x={mid.x + riverOffset.x + 4} y={mid.y + riverOffset.y - 4} className="dbg-river-id">{river.id}</text>
                     </g>
                   );
                 })}
@@ -11053,17 +11067,17 @@ export function App() {
                 )}
                 {!isSelectedCandidate && selectedRegion ? (
                   <>
-                    <p>{selectedRegion.biomePrimaryEmoji}{selectedRegion.biomeSecondaryEmojis.join('')} {isSelectedLake ? `Озеро (${selectedRegion.biomeLabel})` : selectedRegion.biomeLabel}</p>
+                    <p>{isSelectedLake ? `💧 Озеро ${selectedTerrain?.lakeId ?? '—'}` : `${selectedRegion.biomePrimaryEmoji}${selectedRegion.biomeSecondaryEmojis.join('')} ${selectedRegion.biomeLabel}`}</p>
                     <p>{selectedRegion.biomeLandType === 'settled' ? 'Освоенный регион' : 'Дикая местность'}</p>
                     {selectedMeta?.isCenter ? <p>{REGION_CENTER_EMOJI} Центральная точка интереса</p> : null}
                     {selectedRegion.pointsOfInterest.some((poi) => selectedHexKey === hexKey(poi)) ? <p>{POI_EMOJI} Точка интереса</p> : null}
-                    {selectedHexRoadIds.map((roadId) => <p key={`selected-road-${roadId}`}>▬ Дорога #{roadId}</p>)}
-                    {selectedHexTrailIds.map((trailId) => <p key={`selected-trail-${trailId}`}>⋯ Тропа #{trailId}</p>)}
+                    {selectedHexRoadIds.map((roadId) => <p key={`selected-road-${roadId}`}>▬ Дорога {roadId}</p>)}
+                    {selectedHexTrailIds.map((trailId) => <p key={`selected-trail-${trailId}`}>⋯ Тропа {trailId}</p>)}
                     {nearbyRiverIds.length > 0 || nearbyLakeIds.length > 0 || hasNearbySea ? (
                       <div>
                         <strong>Рядом:</strong>
-                        {nearbyRiverIds.map((riverId) => <p key={`nearby-river-${riverId}`}>Река #{riverId}</p>)}
-                        {nearbyLakeIds.map((lakeId) => <p key={`nearby-lake-${lakeId}`}>Озеро #{lakeId}</p>)}
+                        {nearbyRiverIds.map((riverId) => <p key={`nearby-river-${riverId}`}>Река {riverId}</p>)}
+                        {nearbyLakeIds.map((lakeId) => <p key={`nearby-lake-${lakeId}`}>Озеро {lakeId}</p>)}
                         {hasNearbySea ? <p>Море</p> : null}
                       </div>
                     ) : null}
@@ -11076,7 +11090,7 @@ export function App() {
                   {regions.length > 0 && lastRegion ? (
                     <>
                       <p>Регионов: {regions.length}</p>
-                      <p>Последний регион: #{lastRegion.id}</p>
+                      <p>Последний регион: {lastRegion.id}</p>
                       <p>Размер региона: {getRegionSizeDisplay(lastRegion)}</p>
                       <p>Высота: {getRegionHeightLabel(lastRegion.heightLevel ?? getRegionHeightLevelFromBiomeId(lastRegion.biomeId))}</p>
                       <p>Целевой размер: {lastRegion.targetSize}</p>
@@ -11097,8 +11111,8 @@ export function App() {
                       ) : null}
                       <p><strong>centralHex:</strong> {selectedMeta?.isCenter ? 'да' : 'нет'}</p>
                       <p><strong>anchorHex:</strong> {selectedMeta?.isAnchor ? 'да' : 'нет'}</p>
-                      <p><strong>Номера дорог:</strong> {selectedHexRoadIds.length > 0 ? selectedHexRoadIds.map((roadId) => `#${roadId}`).join('; ') : '—'}</p>
-                      <p><strong>Номера троп:</strong> {selectedHexTrailIds.length > 0 ? selectedHexTrailIds.map((trailId) => `#${trailId}`).join('; ') : '—'}</p>
+                      <p><strong>Номера дорог:</strong> {selectedHexRoadIds.length > 0 ? selectedHexRoadIds.map((roadId) => `${roadId}`).join('; ') : '—'}</p>
+                      <p><strong>Номера троп:</strong> {selectedHexTrailIds.length > 0 ? selectedHexTrailIds.map((trailId) => `${trailId}`).join('; ') : '—'}</p>
                       {!isSelectedCandidate && selectedRegion && !isSelectedLake ? (
                         <>
                           <p><strong>Точек интереса в регионе:</strong> {selectedRegion.pointsOfInterest.length}</p>
@@ -11108,7 +11122,7 @@ export function App() {
                             <strong>Реки региона:</strong>{' '}
                             {selectedRegionRivers.length > 0
                               ? selectedRegionRivers
-                                .map((river) => `#${river.id}`)
+                                .map((river) => `${river.id}`)
                                 .join('; ')
                               : '—'}
                           </p>
@@ -11117,7 +11131,7 @@ export function App() {
                             {selectedRegionRiverSectors.length > 0 ? (
                               <ul>
                                 {selectedRegionRiverSectors.map((sector) => (
-                                  <li key={sector.id}>Река #{sector.riverId}: сектор {sector.sectorIndex}, полноводность {sector.fullness}</li>
+                                  <li key={sector.id}>Река {sector.riverId}: сектор {sector.sectorIndex}, полноводность {sector.fullness}</li>
                                 ))}
                               </ul>
                             ) : ' —'}
@@ -11136,7 +11150,7 @@ export function App() {
                             <strong>Озёра региона:</strong>{' '}
                             {selectedRegionLakes.length > 0
                               ? selectedRegionLakes
-                                .map((lake) => `#${lake.lakeId} — ${lake.size} ${formatHexCount(lake.size)}`)
+                                .map((lake) => `${lake.lakeId} — ${lake.size} ${formatHexCount(lake.size)}`)
                                 .join('; ')
                               : '—'}
                           </p>
