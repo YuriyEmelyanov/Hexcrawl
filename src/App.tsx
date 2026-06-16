@@ -209,6 +209,8 @@ const MOBILE_LAYOUT_QUERY = '(max-width: 900px)';
 const MIN_MAP_SCALE = 0.2;
 const MAX_MAP_SCALE = 6;
 const WHEEL_ZOOM_SENSITIVITY = 0.0015;
+const TELEGRAM_URL = 'https://t.me/+npFQfQkVklo5Njky';
+const YOUTUBE_URL = 'https://www.youtube.com/@Hex_Crawl';
 
 
 type HexTerrainOverride = 'lake' | 'sea';
@@ -294,9 +296,9 @@ type Language = 'ru' | 'en';
 
 const UI_TEXT = {
   ru: {
-    languageName: 'Русский', switchLanguage: 'Switch to English', reset: 'Сбросить', regenerateRegion: 'Перегенерировать регион', deleteLastRegion: 'Удалить последний регион', export: 'Выгрузить', importJson: 'Загрузить JSON', debug: 'Отладка', controlsLabel: 'Управление картой', genParamsLabel: 'Параметры генерации', size: 'Размер', type: 'Тип', biome: 'Биом', coast: 'Берег', auto: 'Авто', settled: 'Освоенный', wild: 'Дикий', coastOption: 'Побережье', mainland: 'Материк', closeNotice: 'Закрыть уведомление', mapAria: 'Карта: перетаскивайте пальцем или мышью, стрелки клавиатуры перемещают область просмотра', rotateMap: 'Повернуть карту на 90 градусов', rotateMapTitle: 'Повернуть карту на 90°', unrotateMap: 'Вернуть исходный поворот карты', showPanel: 'Показать панель управления и информации', hidePanel: 'Скрыть панель управления и информации', startPrompt: 'Нажми на стартовый гекс', candidatePrompt: 'Выберите гекс-кандидат для добавления региона', selectedHexInfo: 'Информация о выбранном гексе', candidateForRegion: 'Кандидат для нового региона', noHexSelected: 'Гекс не выбран', lake: 'Озеро', settledRegion: 'Освоенный регион', wildArea: 'Дикая местность', centralPoi: 'Центральная точка интереса', poi: 'Точка интереса', road: 'Дорога', trail: 'Тропа', nearby: 'Рядом:', river: 'Река', sea: 'Море', debugInfo: 'Отладочная информация', regions: 'Регионов', lastRegion: 'Последний регион', regionSize: 'Размер региона', height: 'Высота', targetSize: 'Целевой размер', finalSize: 'Фактический размер региона', poiCount: 'Точек интереса', selectedHex: 'Выбранный гекс', selectedRegionHeight: 'Высота выбранного региона', selectedRegionSize: 'Размер выбранного региона', yes: 'да', no: 'нет', roadNumbers: 'Номера дорог', trailNumbers: 'Номера троп', regionPoiCount: 'Точек интереса в регионе', regionRoads: 'Дорог региона', regionTrails: 'Троп региона', regionRivers: 'Реки региона', riverSectors: 'Речные сектора:', sector: 'сектор', fullness: 'полноводность', confluences: 'Слияния:', flowsInto: 'впадает в', regionLakes: 'Озёра региона', selectRegionHex: 'Выберите региональный гекс.', noRiverInRegion: 'В выбранном регионе нет реки для подробной отладки.', pngExportError: 'Не удалось выгрузить PNG-файл.', jsonImportError: 'Не удалось загрузить JSON-файл.' },
+    languageName: 'Русский', switchLanguage: 'Switch to English', reset: 'Сбросить', regenerateRegion: 'Перегенерировать регион', deleteLastRegion: 'Удалить последний регион', export: 'Выгрузить', importJson: 'Загрузить JSON', debug: 'Отладка', controlsLabel: 'Управление картой', genParamsLabel: 'Параметры генерации', size: 'Размер', type: 'Тип', biome: 'Биом', coast: 'Берег', auto: 'Авто', settled: 'Освоенный', wild: 'Дикий', coastOption: 'Побережье', mainland: 'Материк', closeNotice: 'Закрыть уведомление', mapAria: 'Карта: перетаскивайте пальцем или мышью, стрелки клавиатуры перемещают область просмотра', rotateMap: 'Повернуть карту на 90 градусов', rotateMapTitle: 'Повернуть карту на 90°', unrotateMap: 'Вернуть исходный поворот карты', showPanel: 'Показать панель управления и информации', hidePanel: 'Скрыть панель управления и информации', startPrompt: 'Нажми на стартовый гекс', candidatePrompt: 'Выберите гекс-кандидат для добавления региона', selectedHexInfo: 'Информация о выбранном гексе', candidateForRegion: 'Кандидат для нового региона', noHexSelected: 'Гекс не выбран', lake: 'Озеро', settledRegion: 'Освоенный регион', wildArea: 'Дикая местность', centralPoi: 'Центральная точка интереса', poi: 'Точка интереса', road: 'Дорога', trail: 'Тропа', nearby: 'Рядом:', river: 'Река', sea: 'Море', debugInfo: 'Отладочная информация', regions: 'Регионов', lastRegion: 'Последний регион', regionSize: 'Размер региона', height: 'Высота', targetSize: 'Целевой размер', finalSize: 'Фактический размер региона', poiCount: 'Точек интереса', selectedHex: 'Выбранный гекс', selectedRegionHeight: 'Высота выбранного региона', selectedRegionSize: 'Размер выбранного региона', yes: 'да', no: 'нет', roadNumbers: 'Номера дорог', trailNumbers: 'Номера троп', regionPoiCount: 'Точек интереса в регионе', regionRoads: 'Дорог региона', regionTrails: 'Троп региона', regionRivers: 'Реки региона', riverSectors: 'Речные сектора:', sector: 'сектор', fullness: 'полноводность', confluences: 'Слияния:', flowsInto: 'впадает в', regionLakes: 'Озёра региона', selectRegionHex: 'Выберите региональный гекс.', noRiverInRegion: 'В выбранном регионе нет реки для подробной отладки.', pngExportError: 'Не удалось выгрузить PNG-файл.', jsonImportError: 'Не удалось загрузить JSON-файл.', youtubeLabel: 'YouTube канал', telegramLabel: 'Telegram канал' },
   en: {
-    languageName: 'English', switchLanguage: 'Переключить на русский', reset: 'Reset', regenerateRegion: 'Regenerate region', deleteLastRegion: 'Delete last region', export: 'Export', importJson: 'Load JSON', debug: 'Debug', controlsLabel: 'Map controls', genParamsLabel: 'Generation parameters', size: 'Size', type: 'Type', biome: 'Biome', coast: 'Coast', auto: 'Auto', settled: 'Settled', wild: 'Wild', coastOption: 'Coast', mainland: 'Mainland', closeNotice: 'Close notice', mapAria: 'Map: drag with touch or mouse; keyboard arrows move the viewport', rotateMap: 'Rotate map 90 degrees', rotateMapTitle: 'Rotate map 90°', unrotateMap: 'Restore original map rotation', showPanel: 'Show controls and information panel', hidePanel: 'Hide controls and information panel', startPrompt: 'Click the starting hex', candidatePrompt: 'Select a candidate hex to add a region', selectedHexInfo: 'Selected hex information', candidateForRegion: 'Candidate for a new region', noHexSelected: 'No hex selected', lake: 'Lake', settledRegion: 'Settled region', wildArea: 'Wild area', centralPoi: 'Central point of interest', poi: 'Point of interest', road: 'Road', trail: 'Trail', nearby: 'Nearby:', river: 'River', sea: 'Sea', debugInfo: 'Debug information', regions: 'Regions', lastRegion: 'Last region', regionSize: 'Region size', height: 'Height', targetSize: 'Target size', finalSize: 'Final region size', poiCount: 'Points of interest', selectedHex: 'Selected hex', selectedRegionHeight: 'Selected region height', selectedRegionSize: 'Selected region size', yes: 'yes', no: 'no', roadNumbers: 'Road numbers', trailNumbers: 'Trail numbers', regionPoiCount: 'Points of interest in region', regionRoads: 'Region roads', regionTrails: 'Region trails', regionRivers: 'Region rivers', riverSectors: 'River sectors:', sector: 'sector', fullness: 'fullness', confluences: 'Confluences:', flowsInto: 'flows into', regionLakes: 'Region lakes', selectRegionHex: 'Select a region hex.', noRiverInRegion: 'The selected region has no river for detailed debugging.', pngExportError: 'Failed to export PNG file.', jsonImportError: 'Failed to load JSON file.' }
+    languageName: 'English', switchLanguage: 'Переключить на русский', reset: 'Reset', regenerateRegion: 'Regenerate region', deleteLastRegion: 'Delete last region', export: 'Export', importJson: 'Load JSON', debug: 'Debug', controlsLabel: 'Map controls', genParamsLabel: 'Generation parameters', size: 'Size', type: 'Type', biome: 'Biome', coast: 'Coast', auto: 'Auto', settled: 'Settled', wild: 'Wild', coastOption: 'Coast', mainland: 'Mainland', closeNotice: 'Close notice', mapAria: 'Map: drag with touch or mouse; keyboard arrows move the viewport', rotateMap: 'Rotate map 90 degrees', rotateMapTitle: 'Rotate map 90°', unrotateMap: 'Restore original map rotation', showPanel: 'Show controls and information panel', hidePanel: 'Hide controls and information panel', startPrompt: 'Click the starting hex', candidatePrompt: 'Select a candidate hex to add a region', selectedHexInfo: 'Selected hex information', candidateForRegion: 'Candidate for a new region', noHexSelected: 'No hex selected', lake: 'Lake', settledRegion: 'Settled region', wildArea: 'Wild area', centralPoi: 'Central point of interest', poi: 'Point of interest', road: 'Road', trail: 'Trail', nearby: 'Nearby:', river: 'River', sea: 'Sea', debugInfo: 'Debug information', regions: 'Regions', lastRegion: 'Last region', regionSize: 'Region size', height: 'Height', targetSize: 'Target size', finalSize: 'Final region size', poiCount: 'Points of interest', selectedHex: 'Selected hex', selectedRegionHeight: 'Selected region height', selectedRegionSize: 'Selected region size', yes: 'yes', no: 'no', roadNumbers: 'Road numbers', trailNumbers: 'Trail numbers', regionPoiCount: 'Points of interest in region', regionRoads: 'Region roads', regionTrails: 'Region trails', regionRivers: 'Region rivers', riverSectors: 'River sectors:', sector: 'sector', fullness: 'fullness', confluences: 'Confluences:', flowsInto: 'flows into', regionLakes: 'Region lakes', selectRegionHex: 'Select a region hex.', noRiverInRegion: 'The selected region has no river for detailed debugging.', pngExportError: 'Failed to export PNG file.', jsonImportError: 'Failed to load JSON file.', youtubeLabel: 'YouTube channel', telegramLabel: 'Telegram channel' }
 } as const;
 
 const SIZE_LABELS: Record<Language, Record<Region['sizeCategory'], string>> = {
@@ -10781,15 +10783,42 @@ export function App() {
             <span className="side-panel-toggle__mobile" aria-hidden="true">{isSidePanelCollapsed ? '⌃' : '⌄'}</span>
             <span className="visually-hidden">{sidePanelToggleLabel}</span>
           </button>
-          <button
-            type="button"
-            className="language-toggle"
-            onClick={() => setLanguage((value) => (value === 'ru' ? 'en' : 'ru'))}
-            aria-label={t.switchLanguage}
-            title={t.switchLanguage}
-          >
-            {language === 'ru' ? 'EN' : 'RU'}
-          </button>
+          <div className="header-links" aria-label="Social links">
+            <button
+              type="button"
+              className="language-toggle"
+              onClick={() => setLanguage((value) => (value === 'ru' ? 'en' : 'ru'))}
+              aria-label={t.switchLanguage}
+              title={t.switchLanguage}
+            >
+              {language === 'ru' ? 'EN' : 'RU'}
+            </button>
+            <a
+              className="social-link social-link--telegram"
+              href={TELEGRAM_URL}
+              target="_blank"
+              rel="noreferrer"
+              aria-label={t.telegramLabel}
+              title={t.telegramLabel}
+            >
+              <svg className="social-link__icon" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false">
+                <path d="M21.7 4.1c.3-1-.6-1.8-1.5-1.4L2.7 9.5c-1 .4-.9 1.8.1 2.1l4.5 1.4 1.7 5.5c.3.9 1.4 1.1 2 .4l2.5-2.6 4.8 3.5c.8.6 1.9.1 2.1-.9l3.3-14.8ZM8.2 12.2l8.8-5.4c.4-.2.8.3.4.6l-7.3 6.7-.3 3.1-1.6-5Z" />
+              </svg>
+            </a>
+            <a
+              className="social-link social-link--youtube"
+              href={YOUTUBE_URL}
+              target="_blank"
+              rel="noreferrer"
+              aria-label={t.youtubeLabel}
+              title={t.youtubeLabel}
+            >
+              <svg className="social-link__icon" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false">
+                <path d="M21.6 7.2a2.7 2.7 0 0 0-1.9-1.9C18 4.8 12 4.8 12 4.8s-6 0-7.7.5a2.7 2.7 0 0 0-1.9 1.9A28 28 0 0 0 2 12a28 28 0 0 0 .4 4.8 2.7 2.7 0 0 0 1.9 1.9c1.7.5 7.7.5 7.7.5s6 0 7.7-.5a2.7 2.7 0 0 0 1.9-1.9A28 28 0 0 0 22 12a28 28 0 0 0-.4-4.8Z" />
+                <path className="social-link__cutout" d="m10 15.4 5.2-3.4L10 8.6v6.8Z" />
+              </svg>
+            </a>
+          </div>
           <div id="side-panel-controls" ref={mapToolbarRef} className="map-toolbar" aria-label={t.controlsLabel}>
             <div className="controls">
               <button onClick={resetMap} className="secondary" disabled={regions.length === 0}>{t.reset}</button>
