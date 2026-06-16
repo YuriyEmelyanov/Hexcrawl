@@ -11032,111 +11032,122 @@ export function App() {
 
           <aside id="side-panel-info" className="roll-card">
             <div className="info-body">
-          {regions.length === 0 ? <p>Нажми на стартовый гекс</p> : null}
-          {regions.length > 0 && lastRegion ? (
-            <>
-              <p>Регионов: {regions.length}</p>
-              <p>Последний регион: #{lastRegion.id}</p>
-              <p>Размер региона: {getRegionSizeDisplay(lastRegion)}</p>
-              <p>Высота: {getRegionHeightLabel(lastRegion.heightLevel ?? getRegionHeightLevelFromBiomeId(lastRegion.biomeId))}</p>
-              <p>Целевой размер: {lastRegion.targetSize}</p>
-              <p>Фактический размер региона: {lastRegion.finalSize}</p>
-              <p>Точек интереса: {lastRegion.pointsOfInterest.length}</p>
-            </>
-          ) : null}
-          {regions.length > 0 ? (
-            <>
-          <hr />
-          <p><strong>Выбранный гекс:</strong> {selectedHex ? `${selectedHex.q}/${selectedHex.r}` : '—'}</p>
-          <p><strong>Тип:</strong> {selectedType}</p>
-          <p><strong>Регион:</strong> {selectedMeta?.regionId ?? '—'}</p>
-          <p><strong>centralHex:</strong> {selectedMeta?.isCenter ? 'да' : 'нет'}</p>
-          <p><strong>anchorHex:</strong> {selectedMeta?.isAnchor ? 'да' : 'нет'}</p>
-          <div>
-            <strong>Реки:</strong>
-            {selectedHexRiverSectors.length > 0 ? (
-              <ul>
-                {selectedHexRiverSectors.map((sector) => (
-                  <li key={sector.id}>Река #{sector.riverId}, сектор {sector.sectorIndex}, полноводность {sector.fullness}</li>
-                ))}
-              </ul>
-            ) : selectedHexRivers.length > 0 ? (
-              <ul>
-                {selectedHexRivers.map((river) => (
-                  <li key={river.id}>Река #{river.id}</li>
-                ))}
-              </ul>
-            ) : ' —'}
-          </div>
-          <p><strong>Точка интереса:</strong> {!isSelectedCandidate && selectedRegion ? (selectedRegion.pointsOfInterest.some((poi) => selectedHexKey === hexKey(poi)) ? 'да' : 'нет') : '—'}</p>
-          <p><strong>Дорога:</strong> {selectedHexRoadKinds.includes('road') ? 'да' : 'нет'}</p>
-          <p><strong>Тропа:</strong> {selectedHexRoadKinds.includes('trail') ? 'да' : 'нет'}</p>
-          <p><strong>Номера дорог:</strong> {selectedHexRoadIds.length > 0 ? selectedHexRoadIds.map((roadId) => `#${roadId}`).join('; ') : '—'}</p>
-          {isSelectedCandidate ? <p><strong>Статус:</strong> Кандидат для нового региона</p> : null}
-          {isSelectedLake && !isSelectedCandidate && selectedRegion ? (
-            <>
-              <p><strong>Тип гекса:</strong> Озеро</p>
-              <p><strong>Озеро:</strong> {selectedTerrain?.lakeId ?? '—'}</p>
-              <p><strong>Регион:</strong> #{selectedRegion.id}</p>
-              <p><strong>Исходный биом региона:</strong> {selectedRegion.biomeLabel}</p>
-              <p><strong>Высота:</strong> {getRegionHeightLabel(selectedRegion.heightLevel ?? getRegionHeightLevelFromBiomeId(selectedRegion.biomeId))}</p>
-            </>
-          ) : null}
-          {!isSelectedCandidate && selectedRegion && !isSelectedLake ? (
-            <>
-              <p><strong>Тип местности:</strong> {selectedRegion.biomeLandType === 'settled' ? 'Освоенная' : 'Дикая'}</p>
-              <p><strong>Биом:</strong> {selectedRegion.biomePrimaryEmoji}{selectedRegion.biomeSecondaryEmojis.join('')} {selectedRegion.biomeLabel}</p>
-              <p><strong>Высота:</strong> {getRegionHeightLabel(selectedRegion.heightLevel ?? getRegionHeightLevelFromBiomeId(selectedRegion.biomeId))}</p>
-              <p><strong>Размер:</strong> {getRegionSizeDisplay(selectedRegion)}</p>
-              <p><strong>Точек интереса в регионе:</strong> {selectedRegion.pointsOfInterest.length}</p>
-              <p><strong>Дорог региона:</strong> {selectedRegionRoadStats.road}</p>
-              <p><strong>Троп региона:</strong> {selectedRegionRoadStats.trail}</p>
-              <p>
-                <strong>Реки региона:</strong>{' '}
-                {selectedRegionRivers.length > 0
-                  ? selectedRegionRivers
-                    .map((river) => `#${river.id}`)
-                    .join('; ')
-                  : '—'}
-              </p>
-              <div>
-                <strong>Речные сектора:</strong>
-                {selectedRegionRiverSectors.length > 0 ? (
-                  <ul>
-                    {selectedRegionRiverSectors.map((sector) => (
-                      <li key={sector.id}>Река #{sector.riverId}: сектор {sector.sectorIndex}, полноводность {sector.fullness}</li>
-                    ))}
-                  </ul>
-                ) : ' —'}
-              </div>
-              <div>
-                <strong>Слияния:</strong>
-                {selectedRegionConfluences.length > 0 ? (
-                  <ul>
-                    {selectedRegionConfluences.map((confluence) => (
-                      <li key={confluence.id}>Река {confluence.tributaryRiverId} впадает в Реку {confluence.mainRiverId}</li>
-                    ))}
-                  </ul>
-                ) : ' —'}
-              </div>
-              <p>
-                <strong>Озёра региона:</strong>{' '}
-                {selectedRegionLakes.length > 0
-                  ? selectedRegionLakes
-                    .map((lake) => `#${lake.lakeId} — ${lake.size} ${formatHexCount(lake.size)}`)
-                    .join('; ')
-                  : '—'}
-              </p>
-            </>
-          ) : null}
-          {debugRivers ? (
-            <>
-              <hr />
-              <p><strong>River debug</strong></p>
-              {!selectedRegion ? <p>Выберите региональный гекс.</p> : null}
-              {selectedRegion && !selectedRegionGraph ? <p>no graph</p> : null}
-              {selectedRegion && selectedRegionGraph && !selectedRegionRiver ? <p>В выбранном регионе нет реки для подробной отладки.</p> : null}
-              {selectedRegion && selectedRegionGraph && selectedRegionRiver ? (() => {
+              {regions.length === 0 ? (
+                <div className="info-block info-block--prompt" role="status">Нажми на стартовый гекс</div>
+              ) : regions.length <= 2 && candidateHexes.length > 0 ? (
+                <div className="info-block info-block--prompt" role="status">Выберите гекс-кандидат для добавления региона</div>
+              ) : null}
+
+              <section className="info-block info-block--hex" aria-label="Информация о выбранном гексе">
+                <p><strong>Выбранный гекс:</strong> {selectedHex ? `${selectedHex.q}/${selectedHex.r}` : '—'}</p>
+                <p><strong>Тип:</strong> {selectedType}</p>
+                <p><strong>Регион:</strong> {selectedMeta?.regionId ?? '—'}</p>
+                <div>
+                  <strong>Реки:</strong>
+                  {selectedHexRiverSectors.length > 0 ? (
+                    <ul>
+                      {selectedHexRiverSectors.map((sector) => (
+                        <li key={sector.id}>Река #{sector.riverId}, сектор {sector.sectorIndex}, полноводность {sector.fullness}</li>
+                      ))}
+                    </ul>
+                  ) : selectedHexRivers.length > 0 ? (
+                    <ul>
+                      {selectedHexRivers.map((river) => (
+                        <li key={river.id}>Река #{river.id}</li>
+                      ))}
+                    </ul>
+                  ) : ' —'}
+                </div>
+                <p><strong>Точка интереса:</strong> {!isSelectedCandidate && selectedRegion ? (selectedRegion.pointsOfInterest.some((poi) => selectedHexKey === hexKey(poi)) ? 'да' : 'нет') : '—'}</p>
+                <p><strong>Дорога:</strong> {selectedHexRoadKinds.includes('road') ? 'да' : 'нет'}</p>
+                <p><strong>Тропа:</strong> {selectedHexRoadKinds.includes('trail') ? 'да' : 'нет'}</p>
+                {isSelectedCandidate ? <p><strong>Статус:</strong> Кандидат для нового региона</p> : null}
+                {isSelectedLake && !isSelectedCandidate && selectedRegion ? (
+                  <>
+                    <p><strong>Тип гекса:</strong> Озеро</p>
+                    <p><strong>Озеро:</strong> {selectedTerrain?.lakeId ?? '—'}</p>
+                    <p><strong>Исходный биом региона:</strong> {selectedRegion.biomeLabel}</p>
+                    <p><strong>Высота:</strong> {getRegionHeightLabel(selectedRegion.heightLevel ?? getRegionHeightLevelFromBiomeId(selectedRegion.biomeId))}</p>
+                  </>
+                ) : null}
+                {!isSelectedCandidate && selectedRegion && !isSelectedLake ? (
+                  <>
+                    <p><strong>Тип местности:</strong> {selectedRegion.biomeLandType === 'settled' ? 'Освоенная' : 'Дикая'}</p>
+                    <p><strong>Биом:</strong> {selectedRegion.biomePrimaryEmoji}{selectedRegion.biomeSecondaryEmojis.join('')} {selectedRegion.biomeLabel}</p>
+                    <p><strong>Высота:</strong> {getRegionHeightLabel(selectedRegion.heightLevel ?? getRegionHeightLevelFromBiomeId(selectedRegion.biomeId))}</p>
+                    <p><strong>Размер:</strong> {getRegionSizeDisplay(selectedRegion)}</p>
+                  </>
+                ) : null}
+              </section>
+
+              {debugRivers ? (
+                <section className="info-block info-block--debug" aria-label="Отладочная информация">
+                  {regions.length > 0 && lastRegion ? (
+                    <>
+                      <p>Регионов: {regions.length}</p>
+                      <p>Последний регион: #{lastRegion.id}</p>
+                      <p>Размер региона: {getRegionSizeDisplay(lastRegion)}</p>
+                      <p>Высота: {getRegionHeightLabel(lastRegion.heightLevel ?? getRegionHeightLevelFromBiomeId(lastRegion.biomeId))}</p>
+                      <p>Целевой размер: {lastRegion.targetSize}</p>
+                      <p>Фактический размер региона: {lastRegion.finalSize}</p>
+                      <p>Точек интереса: {lastRegion.pointsOfInterest.length}</p>
+                    </>
+                  ) : null}
+                  {regions.length > 0 ? (
+                    <>
+                      <hr />
+                      <p><strong>centralHex:</strong> {selectedMeta?.isCenter ? 'да' : 'нет'}</p>
+                      <p><strong>anchorHex:</strong> {selectedMeta?.isAnchor ? 'да' : 'нет'}</p>
+                      <p><strong>Номера дорог:</strong> {selectedHexRoadIds.length > 0 ? selectedHexRoadIds.map((roadId) => `#${roadId}`).join('; ') : '—'}</p>
+                      {!isSelectedCandidate && selectedRegion && !isSelectedLake ? (
+                        <>
+                          <p><strong>Точек интереса в регионе:</strong> {selectedRegion.pointsOfInterest.length}</p>
+                          <p><strong>Дорог региона:</strong> {selectedRegionRoadStats.road}</p>
+                          <p><strong>Троп региона:</strong> {selectedRegionRoadStats.trail}</p>
+                          <p>
+                            <strong>Реки региона:</strong>{' '}
+                            {selectedRegionRivers.length > 0
+                              ? selectedRegionRivers
+                                .map((river) => `#${river.id}`)
+                                .join('; ')
+                              : '—'}
+                          </p>
+                          <div>
+                            <strong>Речные сектора:</strong>
+                            {selectedRegionRiverSectors.length > 0 ? (
+                              <ul>
+                                {selectedRegionRiverSectors.map((sector) => (
+                                  <li key={sector.id}>Река #{sector.riverId}: сектор {sector.sectorIndex}, полноводность {sector.fullness}</li>
+                                ))}
+                              </ul>
+                            ) : ' —'}
+                          </div>
+                          <div>
+                            <strong>Слияния:</strong>
+                            {selectedRegionConfluences.length > 0 ? (
+                              <ul>
+                                {selectedRegionConfluences.map((confluence) => (
+                                  <li key={confluence.id}>Река {confluence.tributaryRiverId} впадает в Реку {confluence.mainRiverId}</li>
+                                ))}
+                              </ul>
+                            ) : ' —'}
+                          </div>
+                          <p>
+                            <strong>Озёра региона:</strong>{' '}
+                            {selectedRegionLakes.length > 0
+                              ? selectedRegionLakes
+                                .map((lake) => `#${lake.lakeId} — ${lake.size} ${formatHexCount(lake.size)}`)
+                                .join('; ')
+                              : '—'}
+                          </p>
+                        </>
+                      ) : null}
+                      <hr />
+                      <p><strong>River debug</strong></p>
+                      {!selectedRegion ? <p>Выберите региональный гекс.</p> : null}
+                      {selectedRegion && !selectedRegionGraph ? <p>no graph</p> : null}
+                      {selectedRegion && selectedRegionGraph && !selectedRegionRiver ? <p>В выбранном регионе нет реки для подробной отладки.</p> : null}
+                      {selectedRegion && selectedRegionGraph && selectedRegionRiver ? (() => {
                 const fullPath = selectedRegionRiver.vertexPath;
                 const path = getRiverPathInRegionGraph(selectedRegionRiver, selectedRegionGraph);
                 const start = path?.[0];
@@ -11201,11 +11212,10 @@ export function App() {
                   </>
                 );
               })() : null}
-            </>
-          ) : null}
-          {candidateHexes.length > 0 && !debugRivers ? <p>Выберите гекс-кандидат на карте для добавления следующего региона.</p> : null}
-            </>
-          ) : null}
+                    </>
+                  ) : null}
+                </section>
+              ) : null}
             </div>
           </aside>
         </div>
