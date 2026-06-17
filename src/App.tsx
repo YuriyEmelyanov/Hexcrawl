@@ -6597,8 +6597,9 @@ function assignSettledLandPoiKinds(options: {
     // Освоенный малый регион: деревня появляется в неопределённой точке интереса
     // на дорожном гексе у воды; если такой нет — в любой неопределённой точке
     // интереса рядом с рекой или озером.
-    assignFirstMatching('village', hasRoadAndWater);
-    assignFirstMatching('village', hasWater);
+    if (!assignFirstMatching('village', hasRoadAndWater)) {
+      assignFirstMatching('village', hasWater);
+    }
   } else if (region.sizeCategory === 'region') {
     assignFirstMatching('village', hasRoadAndWater);
     assignFirstMatching('village', hasWater);
