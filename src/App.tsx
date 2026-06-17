@@ -6593,7 +6593,18 @@ function assignSettledLandPoiKinds(options: {
   const hasRoadAndWater = (poi: AxialHex) => hexHasRoadSegment(poi, roads) && hexTouchesRiverOrLake(poi, rivers, hexTerrainByKey);
   const hasWater = (poi: AxialHex) => hexTouchesRiverOrLake(poi, rivers, hexTerrainByKey);
 
-  if (region.sizeCategory === 'land' || region.sizeCategory === 'large_region') {
+  if (region.sizeCategory === 'region') {
+    const countVillages = () => Object.values(assigned).filter((kind) => kind === 'village').length;
+
+    assignFirstMatching('village', hasRoadAndWater);
+    assignFirstMatching('village', hasRoadAndWater);
+    assignFirstMatching('village', hasRoadAndWater);
+    assignFirstMatching('village', hasWater);
+
+    if (countVillages() < 3) {
+      assignFirstMatching('village', hasWater);
+    }
+  } else if (region.sizeCategory === 'land' || region.sizeCategory === 'large_region') {
     assignFirstMatching('town', hasRoadAndWater);
     assignFirstMatching('village', hasRoadAndWater);
     assignFirstMatching('village', hasWater);
