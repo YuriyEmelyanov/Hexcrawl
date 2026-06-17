@@ -6593,7 +6593,13 @@ function assignSettledLandPoiKinds(options: {
   const hasRoadAndWater = (poi: AxialHex) => hexHasRoadSegment(poi, roads) && hexTouchesRiverOrLake(poi, rivers, hexTerrainByKey);
   const hasWater = (poi: AxialHex) => hexTouchesRiverOrLake(poi, rivers, hexTerrainByKey);
 
-  if (region.sizeCategory === 'region') {
+  if (region.sizeCategory === 'small_region') {
+    // Освоенный малый регион: деревня появляется в неопределённой точке интереса
+    // на дорожном гексе у воды; если такой нет — в любой неопределённой точке
+    // интереса рядом с рекой или озером.
+    assignFirstMatching('village', hasRoadAndWater);
+    assignFirstMatching('village', hasWater);
+  } else if (region.sizeCategory === 'region') {
     assignFirstMatching('village', hasRoadAndWater);
     assignFirstMatching('village', hasWater);
   } else if (region.sizeCategory === 'land' || region.sizeCategory === 'large_region') {
