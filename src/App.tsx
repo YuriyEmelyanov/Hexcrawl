@@ -6573,14 +6573,14 @@ function hexHasRoadSegment(hex: AxialHex, roads: Road[]): boolean {
   return roads.some((road) => road.segments.some((segment) => segment.kind === 'road' && (hexKey(segment.from) === key || hexKey(segment.to) === key)));
 }
 
-function assignSettledVastLandPoiKinds(options: {
+function assignSettledLandPoiKinds(options: {
   region: Region;
   roads: Road[];
   rivers: River[];
   hexTerrainByKey: Map<string, HexTerrainData>;
 }): Record<string, SettledPoiKind> | undefined {
   const { region, roads, rivers, hexTerrainByKey } = options;
-  if (region.biomeLandType !== 'settled' || region.sizeCategory !== 'vast_land') return region.pointOfInterestKinds;
+  if (region.biomeLandType !== 'settled') return region.pointOfInterestKinds;
 
   const assigned: Record<string, SettledPoiKind> = { ...(region.pointOfInterestKinds ?? {}) };
   const unassignedPoi = () => region.pointsOfInterest.filter((poi) => assigned[hexKey(poi)] === undefined);
@@ -6590,11 +6590,24 @@ function assignSettledVastLandPoiKinds(options: {
     assigned[hexKey(candidates[0])] = kind;
     return true;
   };
+  const hasRoadAndWater = (poi: AxialHex) => hexHasRoadSegment(poi, roads) && hexTouchesRiverOrLake(poi, rivers, hexTerrainByKey);
+  const hasWater = (poi: AxialHex) => hexTouchesRiverOrLake(poi, rivers, hexTerrainByKey);
 
-  assignFirstMatching('city', (poi) => hexHasRoadSegment(poi, roads) && hexTouchesRiverOrLake(poi, rivers, hexTerrainByKey));
-  assignFirstMatching('town', (poi) => hexHasRoadSegment(poi, roads) && hexTouchesRiverOrLake(poi, rivers, hexTerrainByKey));
-  assignFirstMatching('village', (poi) => hexTouchesRiverOrLake(poi, rivers, hexTerrainByKey));
-  assignFirstMatching('village', (poi) => hexTouchesRiverOrLake(poi, rivers, hexTerrainByKey));
+  if (region.sizeCategory === 'land') {
+    assignFirstMatching('town', hasRoadAndWater);
+    assignFirstMatching('village', hasRoadAndWater);
+    assignFirstMatching('village', hasWater);
+
+    const villageCount = Object.values(assigned).filter((kind) => kind === 'village').length;
+    if (villageCount === 1) {
+      assignFirstMatching('village', hasWater);
+    }
+  } else if (region.sizeCategory === 'vast_land') {
+    assignFirstMatching('city', hasRoadAndWater);
+    assignFirstMatching('town', hasRoadAndWater);
+    assignFirstMatching('village', hasWater);
+    assignFirstMatching('village', hasWater);
+  }
 
   return Object.keys(assigned).length > 0 ? assigned : undefined;
 }
@@ -10176,7 +10189,7 @@ export function App() {
       });
       const finalRegionWithPoiKinds: Region = {
         ...finalRegion,
-        pointOfInterestKinds: assignSettledVastLandPoiKinds({
+        pointOfInterestKinds: assignSettledLandPoiKinds({
           region: finalRegion,
           roads: roadResult.roads,
           rivers: riversWithDeltas,
