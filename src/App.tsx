@@ -10,7 +10,37 @@ type HexType = 'region' | 'candidate' | 'center';
 
 type BiomeLandType = 'settled' | 'wild';
 type CentralPoiKind = 'capital' | 'city' | 'town' | 'village' | 'lair' | 'ruins' | 'cursed_place' | 'holy_place';
-type SettledPoiKind = Extract<CentralPoiKind, 'city' | 'town' | 'village'>;
+type SettlementPoiKind = Extract<CentralPoiKind, 'city' | 'town' | 'village'>;
+type SecondaryPoiKind =
+  | 'dungeon'
+  | 'camp'
+  | 'castle'
+  | 'pasture'
+  | 'cave'
+  | 'graveyard'
+  | 'fort'
+  | 'hut'
+  | 'mine'
+  | 'obelisk'
+  | 'ruins'
+  | 'holy_place'
+  | 'cursed_place'
+  | 'lair'
+  | 'tavern'
+  | 'tower'
+  | 'portal'
+  | 'mill'
+  | 'monastery'
+  | 'farm'
+  | 'statue'
+  | 'stronghold'
+  | 'brewery'
+  | 'distillery'
+  | 'sawmill'
+  | 'stone_quarry'
+  | 'apiary'
+  | 'quarry';
+type PoiKind = SettlementPoiKind | SecondaryPoiKind;
 type RegionHeightLevel = 1 | 2 | 3;
 
 type BiomeId =
@@ -52,7 +82,7 @@ type Region = {
   biomeSecondaryEmojis: string[];
   biomeEmojiLabel: string;
   pointsOfInterest: AxialHex[];
-  pointOfInterestKinds?: Record<string, SettledPoiKind>;
+  pointOfInterestKinds?: Record<string, PoiKind>;
   centralPoiKind?: CentralPoiKind;
   // Прибрежный ли регион. Необязательное поле — старые сохранения без него
   // корректно читаются как "не прибрежный".
@@ -211,6 +241,33 @@ const CENTRAL_POI_DETAILS: Record<CentralPoiKind, { emoji: string; label: Record
   ruins: { emoji: '🏚️', label: { ru: 'Руины', en: 'Ruins' } },
   cursed_place: { emoji: '☠️', label: { ru: 'Проклятое место', en: 'Cursed place' } },
   holy_place: { emoji: '✨', label: { ru: 'Святое место', en: 'Holy place' } }
+};
+const POI_DETAILS: Record<PoiKind, { emoji: string; label: Record<Language, string> }> = {
+  ...CENTRAL_POI_DETAILS,
+  dungeon: { emoji: '🕳️', label: { ru: 'Подземелье', en: 'Dungeon' } },
+  camp: { emoji: '⛺', label: { ru: 'Лагерь', en: 'Camp' } },
+  castle: { emoji: '🏯', label: { ru: 'Замок', en: 'Castle' } },
+  pasture: { emoji: '🐑', label: { ru: 'Пастбище', en: 'Pasture' } },
+  cave: { emoji: '🪨', label: { ru: 'Пещера', en: 'Cave' } },
+  graveyard: { emoji: '🪦', label: { ru: 'Кладбище', en: 'Graveyard' } },
+  fort: { emoji: '🛡️', label: { ru: 'Форт', en: 'Fort' } },
+  hut: { emoji: '🏚️', label: { ru: 'Хижина', en: 'Hut' } },
+  mine: { emoji: '⛏️', label: { ru: 'Рудник', en: 'Mine' } },
+  obelisk: { emoji: '🗿', label: { ru: 'Обелиск', en: 'Obelisk' } },
+  tavern: { emoji: '🍺', label: { ru: 'Таверна', en: 'Tavern' } },
+  tower: { emoji: '🗼', label: { ru: 'Башня', en: 'Tower' } },
+  portal: { emoji: '🌀', label: { ru: 'Портал', en: 'Portal' } },
+  mill: { emoji: '🌾', label: { ru: 'Мельница', en: 'Mill' } },
+  monastery: { emoji: '⛪', label: { ru: 'Монастырь', en: 'Monastery' } },
+  farm: { emoji: '🚜', label: { ru: 'Ферма', en: 'Farm' } },
+  statue: { emoji: '🗽', label: { ru: 'Статуя', en: 'Statue' } },
+  stronghold: { emoji: '🏰', label: { ru: 'Крепость', en: 'Stronghold' } },
+  brewery: { emoji: '🍻', label: { ru: 'Пивоварня', en: 'Brewery' } },
+  distillery: { emoji: '🥃', label: { ru: 'Винокурня', en: 'Distillery' } },
+  sawmill: { emoji: '🪚', label: { ru: 'Лесопилка', en: 'Sawmill' } },
+  stone_quarry: { emoji: '⛏️', label: { ru: 'Каменоломня', en: 'Stone quarry' } },
+  apiary: { emoji: '🐝', label: { ru: 'Пасека', en: 'Apiary' } },
+  quarry: { emoji: '🚧', label: { ru: 'Карьер', en: 'Quarry' } }
 };
 const WILD_CENTRAL_POI_KINDS: CentralPoiKind[] = ['lair', 'ruins', 'cursed_place', 'holy_place'];
 const POI_EMOJI = '◆';
@@ -528,8 +585,8 @@ function isCentralPoiKind(value: unknown): value is CentralPoiKind {
   return typeof value === 'string' && value in CENTRAL_POI_DETAILS;
 }
 
-function isSettledPoiKind(value: unknown): value is SettledPoiKind {
-  return value === 'city' || value === 'town' || value === 'village';
+function isPoiKind(value: unknown): value is PoiKind {
+  return typeof value === 'string' && value in POI_DETAILS;
 }
 
 function isHexTerrainData(value: unknown): value is HexTerrainData {
@@ -566,7 +623,7 @@ function assertHexcrawlSaveData(value: unknown): asserts value is ValidatedHexcr
     if (region.pointOfInterestKinds !== undefined) {
       if (!isRecord(region.pointOfInterestKinds)) throw new Error(`Некорректные типы точек интереса региона ${region.id}.`);
       for (const [poiKey, poiKind] of Object.entries(region.pointOfInterestKinds)) {
-        if (!isAxialHex(parseHexKey(poiKey)) || !isSettledPoiKind(poiKind)) throw new Error(`Некорректный тип точки интереса региона ${region.id}.`);
+        if (!isAxialHex(parseHexKey(poiKey)) || !isPoiKind(poiKind)) throw new Error(`Некорректный тип точки интереса региона ${region.id}.`);
       }
     }
   }
@@ -6573,14 +6630,121 @@ function hexHasRoadSegment(hex: AxialHex, roads: Road[]): boolean {
   return roads.some((road) => road.segments.some((segment) => segment.kind === 'road' && (hexKey(segment.from) === key || hexKey(segment.to) === key)));
 }
 
+const SECONDARY_POI_KIND_ORDER: SecondaryPoiKind[] = [
+  'dungeon',
+  'camp',
+  'castle',
+  'pasture',
+  'cave',
+  'graveyard',
+  'fort',
+  'hut',
+  'mine',
+  'obelisk',
+  'ruins',
+  'holy_place',
+  'cursed_place',
+  'lair',
+  'tavern',
+  'tower',
+  'portal',
+  'mill',
+  'monastery',
+  'farm',
+  'statue',
+  'stronghold',
+  'brewery',
+  'distillery',
+  'sawmill',
+  'stone_quarry',
+  'apiary',
+  'quarry'
+];
+
+function biomeHasForest(biomeId: BiomeId): boolean {
+  return biomeId.includes('forest') || biomeId.includes('woodland');
+}
+
+function secondaryPoiKindCanAppearInRegion(
+  kind: SecondaryPoiKind,
+  region: Region,
+  poi: AxialHex,
+  roads: Road[]
+): boolean {
+  switch (kind) {
+    case 'dungeon':
+    case 'camp':
+    case 'ruins':
+    case 'cursed_place':
+    case 'lair':
+    case 'portal':
+      return region.biomeLandType === 'wild';
+    case 'castle':
+    case 'pasture':
+    case 'fort':
+    case 'mill':
+    case 'farm':
+    case 'stronghold':
+    case 'brewery':
+    case 'distillery':
+      return region.biomeLandType === 'settled';
+    case 'cave':
+    case 'mine':
+      return region.heightLevel === 2 || region.heightLevel === 3;
+    case 'graveyard':
+    case 'hut':
+    case 'obelisk':
+    case 'holy_place':
+    case 'tower':
+    case 'monastery':
+    case 'statue':
+      return true;
+    case 'tavern':
+      return hexHasRoadSegment(poi, roads);
+    case 'sawmill':
+      return region.biomeLandType === 'settled' && biomeHasForest(region.biomeId);
+    case 'stone_quarry':
+      return region.biomeLandType === 'settled' && (region.heightLevel === 2 || region.heightLevel === 3);
+    case 'apiary':
+      return region.biomeLandType === 'settled' && (region.heightLevel === 1 || region.heightLevel === 2);
+    case 'quarry':
+      // Карьер трактуем как открытый промышленный карьер: чаще всего он
+      // появляется в освоенных равнинных или холмистых регионах, где удобнее
+      // вести добычу открытым способом.
+      return region.biomeLandType === 'settled' && (region.heightLevel === 1 || region.heightLevel === 2);
+  }
+}
+
+function assignSecondaryPoiKindsForRegion(region: Region, roads: Road[], assigned: Record<string, PoiKind>): void {
+  let nextKindIndex = 0;
+
+  for (const poi of region.pointsOfInterest) {
+    const poiKey = hexKey(poi);
+    if (assigned[poiKey] !== undefined) continue;
+
+    const unusedCandidate = SECONDARY_POI_KIND_ORDER.find((kind, index) =>
+      index >= nextKindIndex
+      && !Object.values(assigned).includes(kind)
+      && secondaryPoiKindCanAppearInRegion(kind, region, poi, roads)
+    );
+    const repeatedCandidate = SECONDARY_POI_KIND_ORDER.find((kind) => secondaryPoiKindCanAppearInRegion(kind, region, poi, roads));
+    const chosenKind = unusedCandidate ?? repeatedCandidate;
+    if (!chosenKind) continue;
+
+    assigned[poiKey] = chosenKind;
+    const chosenIndex = SECONDARY_POI_KIND_ORDER.indexOf(chosenKind);
+    if (chosenIndex >= nextKindIndex) nextKindIndex = chosenIndex + 1;
+  }
+}
+
 function assignPoiKindsForRegion(options: {
   region: Region;
   roads: Road[];
   rivers: River[];
   hexTerrainByKey: Map<string, HexTerrainData>;
-}): Record<string, SettledPoiKind> | undefined {
+}): Record<string, PoiKind> | undefined {
   const { region, roads, rivers, hexTerrainByKey } = options;
-  const assigned: Record<string, SettledPoiKind> = { ...(region.pointOfInterestKinds ?? {}) };
+  const assigned: Record<string, PoiKind> = { ...(region.pointOfInterestKinds ?? {}) };
 
   if (region.biomeLandType === 'wild') {
     // Дикий регион: после определения центральной точки интереса ищем
@@ -6592,13 +6756,14 @@ function assignPoiKindsForRegion(options: {
       && hexTouchesRiverOrLake(poi, rivers, hexTerrainByKey)
     );
     if (wildVillagePoi) assigned[hexKey(wildVillagePoi)] = 'village';
+    assignSecondaryPoiKindsForRegion(region, roads, assigned);
     return Object.keys(assigned).length > 0 ? assigned : undefined;
   }
 
   if (region.biomeLandType !== 'settled') return Object.keys(assigned).length > 0 ? assigned : undefined;
 
   const unassignedPoi = () => region.pointsOfInterest.filter((poi) => assigned[hexKey(poi)] === undefined);
-  const assignFirstMatching = (kind: SettledPoiKind, predicate: (poi: AxialHex) => boolean): boolean => {
+  const assignFirstMatching = (kind: SettlementPoiKind, predicate: (poi: AxialHex) => boolean): boolean => {
     const candidates = unassignedPoi().filter(predicate);
     if (candidates.length === 0) return false;
     assigned[hexKey(candidates[0])] = kind;
@@ -6635,21 +6800,23 @@ function assignPoiKindsForRegion(options: {
     assignFirstMatching('village', hasWater);
   }
 
+  assignSecondaryPoiKindsForRegion(region, roads, assigned);
+
   return Object.keys(assigned).length > 0 ? assigned : undefined;
 }
 
-function getPoiKindForHex(region: Region | undefined, hex: AxialHex): SettledPoiKind | undefined {
+function getPoiKindForHex(region: Region | undefined, hex: AxialHex): PoiKind | undefined {
   return region?.pointOfInterestKinds?.[hexKey(hex)];
 }
 
 function getPoiEmojiForHex(region: Region | undefined, hex: AxialHex): string {
   const kind = getPoiKindForHex(region, hex);
-  return kind ? CENTRAL_POI_DETAILS[kind].emoji : POI_EMOJI;
+  return kind ? POI_DETAILS[kind].emoji : POI_EMOJI;
 }
 
 function getPoiLabelForHex(region: Region, hex: AxialHex, language: Language): string {
   const kind = getPoiKindForHex(region, hex);
-  return kind ? CENTRAL_POI_DETAILS[kind].label[language] : TRANSLATIONS[language].poi;
+  return kind ? POI_DETAILS[kind].label[language] : TRANSLATIONS[language].poi;
 }
 function findRoadPathWithinRegion(options: {
   region: Region; from: AxialHex; targets: AxialHex[]; roads: Road[]; hexTerrainByKey: Map<string, HexTerrainData>;
