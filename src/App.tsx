@@ -9,6 +9,7 @@ type AxialHex = {
 type HexType = 'region' | 'candidate' | 'center';
 
 type BiomeLandType = 'settled' | 'wild';
+type CentralPoiKind = 'capital' | 'city' | 'town' | 'village' | 'lair' | 'ruins' | 'cursed_place' | 'holy_place';
 type RegionHeightLevel = 1 | 2 | 3;
 
 type BiomeId =
@@ -50,6 +51,7 @@ type Region = {
   biomeSecondaryEmojis: string[];
   biomeEmojiLabel: string;
   pointsOfInterest: AxialHex[];
+  centralPoiKind?: CentralPoiKind;
   // Прибрежный ли регион. Необязательное поле — старые сохранения без него
   // корректно читаются как "не прибрежный".
   isCoastal?: boolean;
@@ -198,6 +200,17 @@ const SQRT3 = Math.sqrt(3);
 const SHOW_HEX_COORDINATES = false;
 const SHOW_BIOME_EMOJI = true;
 const REGION_CENTER_EMOJI = '★';
+const CENTRAL_POI_DETAILS: Record<CentralPoiKind, { emoji: string; label: Record<Language, string> }> = {
+  capital: { emoji: '👑', label: { ru: 'Столица', en: 'Capital' } },
+  city: { emoji: '🏰', label: { ru: 'Город', en: 'City' } },
+  town: { emoji: '🏘️', label: { ru: 'Городок', en: 'Town' } },
+  village: { emoji: '🛖', label: { ru: 'Деревня', en: 'Village' } },
+  lair: { emoji: '🐾', label: { ru: 'Логово', en: 'Lair' } },
+  ruins: { emoji: '🏚️', label: { ru: 'Руины', en: 'Ruins' } },
+  cursed_place: { emoji: '☠️', label: { ru: 'Проклятое место', en: 'Cursed place' } },
+  holy_place: { emoji: '✨', label: { ru: 'Святое место', en: 'Holy place' } }
+};
+const WILD_CENTRAL_POI_KINDS: CentralPoiKind[] = ['lair', 'ruins', 'cursed_place', 'holy_place'];
 const POI_EMOJI = '◆';
 const WATER_COLOR = 'var(--water-color)';
 const LAKE_HEX_COLOR = WATER_COLOR;
@@ -509,6 +522,10 @@ function isAxialHex(value: unknown): value is AxialHex {
   return isRecord(value) && typeof value.q === 'number' && Number.isFinite(value.q) && typeof value.r === 'number' && Number.isFinite(value.r);
 }
 
+function isCentralPoiKind(value: unknown): value is CentralPoiKind {
+  return typeof value === 'string' && value in CENTRAL_POI_DETAILS;
+}
+
 function isHexTerrainData(value: unknown): value is HexTerrainData {
   if (!isRecord(value)) return false;
   const terrainOverride = value.terrainOverride;
@@ -539,6 +556,7 @@ function assertHexcrawlSaveData(value: unknown): asserts value is ValidatedHexcr
     if (!isAxialHex(region.centerHex)) throw new Error(`Некорректный centerHex региона ${region.id}.`);
     if (!isAxialHex(region.anchorHex)) throw new Error(`Некорректный anchorHex региона ${region.id}.`);
     if (!Array.isArray(region.pointsOfInterest) || !region.pointsOfInterest.every(isAxialHex)) throw new Error(`Некорректные точки интереса региона ${region.id}.`);
+    if (region.centralPoiKind !== undefined && !isCentralPoiKind(region.centralPoiKind)) throw new Error(`Некорректная центральная точка интереса региона ${region.id}.`);
   }
   if (value.map.candidateHexes !== undefined && !Array.isArray(value.map.candidateHexes)) throw new Error('Некорректный список candidateHexes.');
   if (!isRecord(value.counters)) throw new Error('В сохранении отсутствует объект counters.');
@@ -738,6 +756,23 @@ function vertexKey(x: number, y: number): string {
 
 function randomFrom<T>(values: T[]): T {
   return values[Math.floor(Math.random() * values.length)];
+}
+
+
+function assignCentralPoiKindForRegion(biomeLandType: BiomeLandType, sizeCategory: Region['sizeCategory']): CentralPoiKind {
+  if (biomeLandType === 'wild') return randomFrom(WILD_CENTRAL_POI_KINDS);
+  if (sizeCategory === 'vast_land') return 'capital';
+  if (sizeCategory === 'land' || sizeCategory === 'large_region') return 'city';
+  if (sizeCategory === 'region' || sizeCategory === 'small_region') return 'town';
+  return 'village';
+}
+
+function getCentralPoiEmoji(region: Region): string {
+  return region.centralPoiKind ? CENTRAL_POI_DETAILS[region.centralPoiKind]?.emoji ?? REGION_CENTER_EMOJI : REGION_CENTER_EMOJI;
+}
+
+function getCentralPoiLabel(region: Region, language: Language): string {
+  return region.centralPoiKind ? CENTRAL_POI_DETAILS[region.centralPoiKind]?.label[language] ?? TRANSLATIONS[language].centralPoi : TRANSLATIONS[language].centralPoi;
 }
 
 type CoastalPreference = 'coast' | 'mainland';
@@ -9652,6 +9687,7 @@ export function App() {
       const biome = BIOMES[biomeId] ?? BIOMES[FALLBACK_BIOME_ID];
       const heightLevel = BIOMES[biomeId]?.heightLevel ?? 1;
       const { lakesByHex, nextLakeId: computedNextLakeId } = assignLakesForRegion(regionHexes, centerHex, nextLakeId, biomeId);
+      const centralPoiKind = assignCentralPoiKindForRegion(biomeLandType, sizeCategory);
       const regionBase: Omit<Region, 'pointsOfInterest'> = {
         id: regionId,
         hexes: regionHexes,
@@ -9668,6 +9704,7 @@ export function App() {
         biomePrimaryEmoji: biome.primaryEmoji,
         biomeSecondaryEmojis: [...biome.secondaryEmojis],
         biomeEmojiLabel: biome.primaryEmoji + biome.secondaryEmojis.join(''),
+        centralPoiKind,
         isCoastal: isCoastalRegion
       };
       const regionForRiverGeneration: Region = {
@@ -11018,7 +11055,7 @@ export function App() {
               ];
               const isPointOfInterest = region?.pointsOfInterest.some((poi) => hexKey(poi) === hex.key) ?? false;
               const hexEmojis = [
-                ...(meta?.isCenter ? [REGION_CENTER_EMOJI] : []),
+                ...(meta?.isCenter && region ? [getCentralPoiEmoji(region)] : meta?.isCenter ? [REGION_CENTER_EMOJI] : []),
                 ...(isPointOfInterest ? [POI_EMOJI] : []),
                 ...biomeEmojis
               ];
@@ -11113,7 +11150,7 @@ export function App() {
                 const biomeSecondaryEmojis = region?.biomeSecondaryEmojis ?? fallbackBiome.secondaryEmojis;
                 const biomeEmojis = [biomePrimaryEmoji, ...biomeSecondaryEmojis.slice(0, 2)];
                 const isPointOfInterest = region?.pointsOfInterest.some((poi) => hexKey(poi) === hex.key) ?? false;
-                const hexEmojis = [...(meta?.isCenter ? [REGION_CENTER_EMOJI] : []), ...(isPointOfInterest ? [POI_EMOJI] : []), ...biomeEmojis];
+                const hexEmojis = [...(meta?.isCenter && region ? [getCentralPoiEmoji(region)] : meta?.isCenter ? [REGION_CENTER_EMOJI] : []), ...(isPointOfInterest ? [POI_EMOJI] : []), ...biomeEmojis];
                 const hexEmojiLayout = getHexEmojiLayout(hexEmojis, hex.x, hex.y, HEX_SIZE);
                 return SHOW_BIOME_EMOJI && hex.kind === 'region' && hex.regionId && region && !isLakeHex ? hexEmojiLayout.map((item, index) => {
                   const position = isMapRotated ? rotateMapPoint(item.x, item.y, positionedHexes.height) : item;
@@ -11188,7 +11225,7 @@ export function App() {
                   <>
                     <p>{isSelectedLake ? `💧 ${t.lake} ${selectedTerrain?.lakeId ?? '—'}` : `${selectedRegion.biomePrimaryEmoji}${selectedRegion.biomeSecondaryEmojis.join('')} ${getBiomeLabel(selectedRegion.biomeId, language)}`}</p>
                     <p>{selectedRegion.biomeLandType === 'settled' ? t.settledRegion : t.wildArea}</p>
-                    {selectedMeta?.isCenter ? <p>{REGION_CENTER_EMOJI} {t.centralPoi}</p> : null}
+                    {selectedMeta?.isCenter ? <p>{getCentralPoiEmoji(selectedRegion)} {getCentralPoiLabel(selectedRegion, language)}</p> : null}
                     {selectedRegion.pointsOfInterest.some((poi) => selectedHexKey === hexKey(poi)) ? <p>{POI_EMOJI} {t.poi}</p> : null}
                     {selectedHexRoadIds.map((roadId) => <p key={`selected-road-${roadId}`}>▬ {t.road} {roadId}</p>)}
                     {selectedHexTrailIds.map((trailId) => <p key={`selected-trail-${trailId}`}>⋯ {t.trail} {trailId}</p>)}
