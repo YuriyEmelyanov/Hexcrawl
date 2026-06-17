@@ -6573,16 +6573,30 @@ function hexHasRoadSegment(hex: AxialHex, roads: Road[]): boolean {
   return roads.some((road) => road.segments.some((segment) => segment.kind === 'road' && (hexKey(segment.from) === key || hexKey(segment.to) === key)));
 }
 
-function assignSettledLandPoiKinds(options: {
+function assignPoiKindsForRegion(options: {
   region: Region;
   roads: Road[];
   rivers: River[];
   hexTerrainByKey: Map<string, HexTerrainData>;
 }): Record<string, SettledPoiKind> | undefined {
   const { region, roads, rivers, hexTerrainByKey } = options;
-  if (region.biomeLandType !== 'settled') return region.pointOfInterestKinds;
-
   const assigned: Record<string, SettledPoiKind> = { ...(region.pointOfInterestKinds ?? {}) };
+
+  if (region.biomeLandType === 'wild') {
+    // Дикий регион: после определения центральной точки интереса ищем
+    // неопределённую точку интереса на дороге рядом с рекой или озером.
+    // Если такая точка есть, она становится деревней.
+    const wildVillagePoi = region.pointsOfInterest.find((poi) =>
+      assigned[hexKey(poi)] === undefined
+      && hexHasRoadSegment(poi, roads)
+      && hexTouchesRiverOrLake(poi, rivers, hexTerrainByKey)
+    );
+    if (wildVillagePoi) assigned[hexKey(wildVillagePoi)] = 'village';
+    return Object.keys(assigned).length > 0 ? assigned : undefined;
+  }
+
+  if (region.biomeLandType !== 'settled') return Object.keys(assigned).length > 0 ? assigned : undefined;
+
   const unassignedPoi = () => region.pointsOfInterest.filter((poi) => assigned[hexKey(poi)] === undefined);
   const assignFirstMatching = (kind: SettledPoiKind, predicate: (poi: AxialHex) => boolean): boolean => {
     const candidates = unassignedPoi().filter(predicate);
@@ -10201,7 +10215,7 @@ export function App() {
       });
       const finalRegionWithPoiKinds: Region = {
         ...finalRegion,
-        pointOfInterestKinds: assignSettledLandPoiKinds({
+        pointOfInterestKinds: assignPoiKindsForRegion({
           region: finalRegion,
           roads: roadResult.roads,
           rivers: riversWithDeltas,
