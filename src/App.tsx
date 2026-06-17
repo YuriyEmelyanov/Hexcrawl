@@ -10,6 +10,7 @@ type HexType = 'region' | 'candidate' | 'center';
 
 type BiomeLandType = 'settled' | 'wild';
 type CentralPoiKind = 'capital' | 'city' | 'town' | 'village' | 'lair' | 'ruins' | 'cursed_place' | 'holy_place';
+type SettledPoiKind = Extract<CentralPoiKind, 'city' | 'town' | 'village'>;
 type RegionHeightLevel = 1 | 2 | 3;
 
 type BiomeId =
@@ -51,6 +52,7 @@ type Region = {
   biomeSecondaryEmojis: string[];
   biomeEmojiLabel: string;
   pointsOfInterest: AxialHex[];
+  pointOfInterestKinds?: Record<string, SettledPoiKind>;
   centralPoiKind?: CentralPoiKind;
   // Прибрежный ли регион. Необязательное поле — старые сохранения без него
   // корректно читаются как "не прибрежный".
@@ -526,6 +528,10 @@ function isCentralPoiKind(value: unknown): value is CentralPoiKind {
   return typeof value === 'string' && value in CENTRAL_POI_DETAILS;
 }
 
+function isSettledPoiKind(value: unknown): value is SettledPoiKind {
+  return value === 'city' || value === 'town' || value === 'village';
+}
+
 function isHexTerrainData(value: unknown): value is HexTerrainData {
   if (!isRecord(value)) return false;
   const terrainOverride = value.terrainOverride;
@@ -557,6 +563,12 @@ function assertHexcrawlSaveData(value: unknown): asserts value is ValidatedHexcr
     if (!isAxialHex(region.anchorHex)) throw new Error(`Некорректный anchorHex региона ${region.id}.`);
     if (!Array.isArray(region.pointsOfInterest) || !region.pointsOfInterest.every(isAxialHex)) throw new Error(`Некорректные точки интереса региона ${region.id}.`);
     if (region.centralPoiKind !== undefined && !isCentralPoiKind(region.centralPoiKind)) throw new Error(`Некорректная центральная точка интереса региона ${region.id}.`);
+    if (region.pointOfInterestKinds !== undefined) {
+      if (!isRecord(region.pointOfInterestKinds)) throw new Error(`Некорректные типы точек интереса региона ${region.id}.`);
+      for (const [poiKey, poiKind] of Object.entries(region.pointOfInterestKinds)) {
+        if (!isAxialHex(parseHexKey(poiKey)) || !isSettledPoiKind(poiKind)) throw new Error(`Некорректный тип точки интереса региона ${region.id}.`);
+      }
+    }
   }
   if (value.map.candidateHexes !== undefined && !Array.isArray(value.map.candidateHexes)) throw new Error('Некорректный список candidateHexes.');
   if (!isRecord(value.counters)) throw new Error('В сохранении отсутствует объект counters.');
@@ -6546,6 +6558,60 @@ function assignPointsOfInterestForRegion(
   const shuffledEligibleHexes = shuffleArray(eligibleHexes);
   return shuffledEligibleHexes.slice(0, Math.min(poiCount, shuffledEligibleHexes.length));
 }
+
+function hexTouchesLake(hex: AxialHex, hexTerrainByKey: Map<string, HexTerrainData>): boolean {
+  return hexTerrainByKey.get(hexKey(hex))?.terrainOverride === 'lake'
+    || getHexNeighbors(hex).some((neighbor) => hexTerrainByKey.get(hexKey(neighbor))?.terrainOverride === 'lake');
+}
+
+function hexTouchesRiverOrLake(hex: AxialHex, rivers: River[], hexTerrainByKey: Map<string, HexTerrainData>): boolean {
+  return getRiversOnHexEdges(hex, rivers).length > 0 || hexTouchesLake(hex, hexTerrainByKey);
+}
+
+function hexHasRoadSegment(hex: AxialHex, roads: Road[]): boolean {
+  const key = hexKey(hex);
+  return roads.some((road) => road.segments.some((segment) => segment.kind === 'road' && (hexKey(segment.from) === key || hexKey(segment.to) === key)));
+}
+
+function assignSettledVastLandPoiKinds(options: {
+  region: Region;
+  roads: Road[];
+  rivers: River[];
+  hexTerrainByKey: Map<string, HexTerrainData>;
+}): Record<string, SettledPoiKind> | undefined {
+  const { region, roads, rivers, hexTerrainByKey } = options;
+  if (region.biomeLandType !== 'settled' || region.sizeCategory !== 'vast_land') return region.pointOfInterestKinds;
+
+  const assigned: Record<string, SettledPoiKind> = { ...(region.pointOfInterestKinds ?? {}) };
+  const unassignedPoi = () => region.pointsOfInterest.filter((poi) => assigned[hexKey(poi)] === undefined);
+  const assignFirstMatching = (kind: SettledPoiKind, predicate: (poi: AxialHex) => boolean): boolean => {
+    const candidates = unassignedPoi().filter(predicate);
+    if (candidates.length === 0) return false;
+    assigned[hexKey(candidates[0])] = kind;
+    return true;
+  };
+
+  assignFirstMatching('city', (poi) => hexHasRoadSegment(poi, roads) && hexTouchesRiverOrLake(poi, rivers, hexTerrainByKey));
+  assignFirstMatching('town', (poi) => hexHasRoadSegment(poi, roads) && hexTouchesRiverOrLake(poi, rivers, hexTerrainByKey));
+  assignFirstMatching('village', (poi) => hexTouchesRiverOrLake(poi, rivers, hexTerrainByKey));
+  assignFirstMatching('village', (poi) => hexTouchesRiverOrLake(poi, rivers, hexTerrainByKey));
+
+  return Object.keys(assigned).length > 0 ? assigned : undefined;
+}
+
+function getPoiKindForHex(region: Region | undefined, hex: AxialHex): SettledPoiKind | undefined {
+  return region?.pointOfInterestKinds?.[hexKey(hex)];
+}
+
+function getPoiEmojiForHex(region: Region | undefined, hex: AxialHex): string {
+  const kind = getPoiKindForHex(region, hex);
+  return kind ? CENTRAL_POI_DETAILS[kind].emoji : POI_EMOJI;
+}
+
+function getPoiLabelForHex(region: Region, hex: AxialHex, language: Language): string {
+  const kind = getPoiKindForHex(region, hex);
+  return kind ? CENTRAL_POI_DETAILS[kind].label[language] : TRANSLATIONS[language].poi;
+}
 function findRoadPathWithinRegion(options: {
   region: Region; from: AxialHex; targets: AxialHex[]; roads: Road[]; hexTerrainByKey: Map<string, HexTerrainData>;
   allowRoadHexes?: AxialHex[];
@@ -10108,6 +10174,16 @@ export function App() {
         nextRoadId,
         candidateHexes: nextCandidateHexesExclSea
       });
+      const finalRegionWithPoiKinds: Region = {
+        ...finalRegion,
+        pointOfInterestKinds: assignSettledVastLandPoiKinds({
+          region: finalRegion,
+          roads: roadResult.roads,
+          rivers: riversWithDeltas,
+          hexTerrainByKey: nextHexTerrainByKeyPreview
+        })
+      };
+      const finalRegions = [...regions, finalRegionWithPoiKinds];
 
       // Дороги генерируются ПОСЛЕ моря, поэтому концы дорог ЭТОГО региона не успевают
       // попасть в сет «не-морских» до раскладки моря. Доливаем их сюда: концы новых дорог
@@ -10228,7 +10304,7 @@ export function App() {
       };
       setHistory((current) => [...current, snapshot]);
 
-      setRegions(nextRegions);
+      setRegions(finalRegions);
       setCandidateHexes(finalCandidateHexes);
       setHexTerrainByKey(() => {
         const next = new Map(nextHexTerrainByKeyPreview);
@@ -11056,7 +11132,7 @@ export function App() {
               const isPointOfInterest = region?.pointsOfInterest.some((poi) => hexKey(poi) === hex.key) ?? false;
               const hexEmojis = [
                 ...(meta?.isCenter && region ? [getCentralPoiEmoji(region)] : meta?.isCenter ? [REGION_CENTER_EMOJI] : []),
-                ...(isPointOfInterest ? [POI_EMOJI] : []),
+                ...(isPointOfInterest ? [getPoiEmojiForHex(region, { q: hex.q, r: hex.r })] : []),
                 ...biomeEmojis
               ];
               const hexEmojiLayout = getHexEmojiLayout(hexEmojis, hex.x, hex.y, HEX_SIZE);
@@ -11150,7 +11226,7 @@ export function App() {
                 const biomeSecondaryEmojis = region?.biomeSecondaryEmojis ?? fallbackBiome.secondaryEmojis;
                 const biomeEmojis = [biomePrimaryEmoji, ...biomeSecondaryEmojis.slice(0, 2)];
                 const isPointOfInterest = region?.pointsOfInterest.some((poi) => hexKey(poi) === hex.key) ?? false;
-                const hexEmojis = [...(meta?.isCenter && region ? [getCentralPoiEmoji(region)] : meta?.isCenter ? [REGION_CENTER_EMOJI] : []), ...(isPointOfInterest ? [POI_EMOJI] : []), ...biomeEmojis];
+                const hexEmojis = [...(meta?.isCenter && region ? [getCentralPoiEmoji(region)] : meta?.isCenter ? [REGION_CENTER_EMOJI] : []), ...(isPointOfInterest ? [getPoiEmojiForHex(region, { q: hex.q, r: hex.r })] : []), ...biomeEmojis];
                 const hexEmojiLayout = getHexEmojiLayout(hexEmojis, hex.x, hex.y, HEX_SIZE);
                 return SHOW_BIOME_EMOJI && hex.kind === 'region' && hex.regionId && region && !isLakeHex ? hexEmojiLayout.map((item, index) => {
                   const position = isMapRotated ? rotateMapPoint(item.x, item.y, positionedHexes.height) : item;
@@ -11226,7 +11302,7 @@ export function App() {
                     <p>{isSelectedLake ? `💧 ${t.lake} ${selectedTerrain?.lakeId ?? '—'}` : `${selectedRegion.biomePrimaryEmoji}${selectedRegion.biomeSecondaryEmojis.join('')} ${getBiomeLabel(selectedRegion.biomeId, language)}`}</p>
                     <p>{selectedRegion.biomeLandType === 'settled' ? t.settledRegion : t.wildArea}</p>
                     {selectedMeta?.isCenter ? <p>{getCentralPoiEmoji(selectedRegion)} {getCentralPoiLabel(selectedRegion, language)}</p> : null}
-                    {selectedRegion.pointsOfInterest.some((poi) => selectedHexKey === hexKey(poi)) ? <p>{POI_EMOJI} {t.poi}</p> : null}
+                    {selectedRegion.pointsOfInterest.some((poi) => selectedHexKey === hexKey(poi)) && selectedHex ? <p>{getPoiEmojiForHex(selectedRegion, selectedHex)} {getPoiLabelForHex(selectedRegion, selectedHex, language)}</p> : null}
                     {selectedHexRoadIds.map((roadId) => <p key={`selected-road-${roadId}`}>▬ {t.road} {roadId}</p>)}
                     {selectedHexTrailIds.map((trailId) => <p key={`selected-trail-${trailId}`}>⋯ {t.trail} {trailId}</p>)}
                     {nearbyRiverIds.length > 0 || nearbyLakeIds.length > 0 || hasNearbySea ? (
