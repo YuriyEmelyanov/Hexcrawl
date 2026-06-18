@@ -335,6 +335,7 @@ const HEXCRAWL_SAVE_SCHEMA = 'hexcrawl-map';
 const HEXCRAWL_SAVE_VERSION = 1;
 const PNG_EXPORT_SCALE = 2;
 const EXPORT_FILE_PREFIX = 'hexcrawl-map';
+const OPEN_PLAINS_TILE_HREF = '/open-plains-tile.svg';
 const SVG_EXPORT_STYLES = `
   svg { --water-color: #3ea2ff; background: #0c1423; }
   .hex { stroke:#617187; stroke-width:1; }
@@ -405,7 +406,7 @@ const BIOMES: Record<BiomeId, Biome> = {
   mixed_mountain_forest: { id: 'mixed_mountain_forest', label: 'Смешанный горный лес', color: '#667762', primaryEmoji: '⛰', secondaryEmojis: ['🌳', '🌲'], wildWeight: 3, settledWeight: 0, heightLevel: 3 },
   deciduous_mountain_forest: { id: 'deciduous_mountain_forest', label: 'Лиственный горный лес', color: '#6F8063', primaryEmoji: '⛰', secondaryEmojis: ['🌳'], wildWeight: 1, settledWeight: 0, heightLevel: 3 },
   mountains: { id: 'mountains', label: 'Горы', color: '#8A8375', primaryEmoji: '⛰', secondaryEmojis: [], wildWeight: 2, settledWeight: 0, heightLevel: 3 },
-  open_plains: { id: 'open_plains', label: 'Открытые равнины', color: '#A7BE63', primaryEmoji: '🌱', secondaryEmojis: [], wildWeight: 14, settledWeight: 32, heightLevel: 1 },
+  open_plains: { id: 'open_plains', label: 'Открытые равнины', color: '#C8EE8C', primaryEmoji: '🌱', secondaryEmojis: [], wildWeight: 14, settledWeight: 32, heightLevel: 1 },
   swamp_forest: { id: 'swamp_forest', label: 'Заболоченный лес', color: '#5E806E', primaryEmoji: '💧', secondaryEmojis: ['🌳'], wildWeight: 3, settledWeight: 0, heightLevel: 1 },
   swamp: { id: 'swamp', label: 'Болото', color: '#6F9278', primaryEmoji: '💧', secondaryEmojis: ['🌱'], wildWeight: 4, settledWeight: 0, heightLevel: 1 },
   hilly_woodland: { id: 'hilly_woodland', label: 'Холмистое редколесье', color: '#9A9861', primaryEmoji: '〰️', secondaryEmojis: ['🌱', '🌳'], wildWeight: 2, settledWeight: 2, heightLevel: 2 },
@@ -11322,6 +11323,7 @@ export function App() {
               const isLakeHex = terrain?.terrainOverride === 'lake';
               const region = meta?.regionId ? regions.find((item) => item.id === meta.regionId) : undefined;
               const fill = hex.kind === 'sea' ? SEA_HEX_COLOR : hex.kind === 'candidate' ? undefined : isLakeHex ? LAKE_HEX_COLOR : getBiomeColor(region?.biomeId);
+              const showsOpenPlainsTile = hex.kind === 'region' && !isLakeHex && region?.biomeId === 'open_plains';
               const fallbackBiome = BIOMES[FALLBACK_BIOME_ID];
               const biomePrimaryEmoji = region?.biomePrimaryEmoji ?? fallbackBiome.primaryEmoji;
               const biomeSecondaryEmojis = region?.biomeSecondaryEmojis ?? fallbackBiome.secondaryEmojis;
@@ -11351,6 +11353,18 @@ export function App() {
                   }}
                 >
                   <polygon points={hexPoints(hex.x, hex.y, hexRenderSize)} className={cls} style={{ fill }} />
+                  {showsOpenPlainsTile ? (
+                    <image
+                      href={OPEN_PLAINS_TILE_HREF}
+                      x={hex.x - getHexWidth(hexRenderSize) / 2}
+                      y={hex.y - hexRenderSize}
+                      width={getHexWidth(hexRenderSize)}
+                      height={hexRenderSize * 2}
+                      preserveAspectRatio="xMidYMid slice"
+                      clipPath={`url(#hex-clip-${hex.key})`}
+                      pointerEvents="none"
+                    />
+                  ) : null}
                   <polygon points={hexPoints(hex.x, hex.y, hexRenderSize)} className={cls} style={{ fill: 'none' }} />
                   {SHOW_HEX_COORDINATES ? <text x={hex.x} y={hex.y + 4} textAnchor="middle" className="hex-label">{hex.q}/{hex.r}</text> : null}
                 </g>
@@ -11424,7 +11438,8 @@ export function App() {
                 const fallbackBiome = BIOMES[FALLBACK_BIOME_ID];
                 const biomePrimaryEmoji = region?.biomePrimaryEmoji ?? fallbackBiome.primaryEmoji;
                 const biomeSecondaryEmojis = region?.biomeSecondaryEmojis ?? fallbackBiome.secondaryEmojis;
-                const biomeEmojis = [biomePrimaryEmoji, ...biomeSecondaryEmojis.slice(0, 2)];
+                const showsOpenPlainsTile = hex.kind === 'region' && !isLakeHex && region?.biomeId === 'open_plains';
+                const biomeEmojis = showsOpenPlainsTile ? [] : [biomePrimaryEmoji, ...biomeSecondaryEmojis.slice(0, 2)];
                 const isPointOfInterest = region?.pointsOfInterest.some((poi) => hexKey(poi) === hex.key) ?? false;
                 const hexEmojis = [...(meta?.isCenter && region ? [getCentralPoiEmoji(region)] : meta?.isCenter ? [REGION_CENTER_EMOJI] : []), ...(isPointOfInterest ? [getPoiEmojiForHex(region, { q: hex.q, r: hex.r })] : []), ...biomeEmojis];
                 const hexEmojiLayout = getHexEmojiLayout(hexEmojis, hex.x, hex.y, HEX_SIZE);
