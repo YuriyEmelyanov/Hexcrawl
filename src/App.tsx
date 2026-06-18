@@ -335,7 +335,7 @@ const HEXCRAWL_SAVE_SCHEMA = 'hexcrawl-map';
 const HEXCRAWL_SAVE_VERSION = 1;
 const PNG_EXPORT_SCALE = 2;
 const EXPORT_FILE_PREFIX = 'hexcrawl-map';
-const OPEN_PLAINS_TILE_HREF = '/open-plains-tile.svg';
+const OPEN_PLAINS_TILE_HREF = '/Open_plains.png';
 const SVG_EXPORT_STYLES = `
   svg { --water-color: #3ea2ff; background: #0c1423; }
   .hex { stroke:#617187; stroke-width:1; }
@@ -11361,6 +11361,7 @@ export function App() {
                       width={getHexWidth(hexRenderSize)}
                       height={hexRenderSize * 2}
                       preserveAspectRatio="xMidYMid slice"
+                      transform={isMapRotated ? `rotate(-90 ${hex.x} ${hex.y})` : undefined}
                       clipPath={`url(#hex-clip-${hex.key})`}
                       pointerEvents="none"
                     />
