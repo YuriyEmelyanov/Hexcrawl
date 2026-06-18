@@ -6716,24 +6716,18 @@ function secondaryPoiKindCanAppearInRegion(
 }
 
 function assignSecondaryPoiKindsForRegion(region: Region, roads: Road[], assigned: Record<string, PoiKind>): void {
-  let nextKindIndex = 0;
-
-  for (const poi of region.pointsOfInterest) {
+  for (const poi of shuffleArray(region.pointsOfInterest)) {
     const poiKey = hexKey(poi);
     if (assigned[poiKey] !== undefined) continue;
 
-    const unusedCandidate = SECONDARY_POI_KIND_ORDER.find((kind, index) =>
-      index >= nextKindIndex
-      && !Object.values(assigned).includes(kind)
+    const candidates = SECONDARY_POI_KIND_ORDER.filter((kind) =>
+      !Object.values(assigned).includes(kind)
       && secondaryPoiKindCanAppearInRegion(kind, region, poi, roads)
     );
-    const repeatedCandidate = SECONDARY_POI_KIND_ORDER.find((kind) => secondaryPoiKindCanAppearInRegion(kind, region, poi, roads));
-    const chosenKind = unusedCandidate ?? repeatedCandidate;
-    if (!chosenKind) continue;
 
-    assigned[poiKey] = chosenKind;
-    const chosenIndex = SECONDARY_POI_KIND_ORDER.indexOf(chosenKind);
-    if (chosenIndex >= nextKindIndex) nextKindIndex = chosenIndex + 1;
+    if (candidates.length === 0) continue;
+
+    assigned[poiKey] = randomFrom(candidates);
   }
 }
 
