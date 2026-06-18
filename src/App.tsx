@@ -335,7 +335,10 @@ const HEXCRAWL_SAVE_SCHEMA = 'hexcrawl-map';
 const HEXCRAWL_SAVE_VERSION = 1;
 const PNG_EXPORT_SCALE = 2;
 const EXPORT_FILE_PREFIX = 'hexcrawl-map';
-const OPEN_PLAINS_TILE_HREF = '/Open_plains.png';
+const BIOME_TILE_HREFS: Partial<Record<BiomeId, string>> = {
+  open_plains: '/Open_plains.png',
+  plain_deciduous_forest: '/Lowland_deciduous_forest.png'
+};
 const SVG_EXPORT_STYLES = `
   svg { --water-color: #3ea2ff; background: #0c1423; }
   .hex { stroke:#617187; stroke-width:1; }
@@ -387,6 +390,10 @@ function getBiomeLabel(biomeId: BiomeId, language: Language): string {
   return language === 'en' ? BIOME_LABELS_EN[biomeId] : BIOMES[biomeId].label;
 }
 
+function getBiomeTileHref(biomeId?: BiomeId): string | undefined {
+  return biomeId ? BIOME_TILE_HREFS[biomeId] : undefined;
+}
+
 function translateCoastNotice(message: string, language: Language): string {
   if (language === 'en' && message === 'Побережье здесь создать нельзя: из этого региона вытекает река в соседний регион. Реки не текут от побережья вглубь суши (BR-003).') {
     return 'A coast cannot be created here: a river flows from this region into a neighboring region. Rivers do not flow from the coast inland (BR-003).';
@@ -395,7 +402,7 @@ function translateCoastNotice(message: string, language: Language): string {
 }
 
 const BIOMES: Record<BiomeId, Biome> = {
-  plain_deciduous_forest: { id: 'plain_deciduous_forest', label: 'Равнинный лиственный лес', color: '#5F9E6E', primaryEmoji: '🌳', secondaryEmojis: [], wildWeight: 20, settledWeight: 11, heightLevel: 1 },
+  plain_deciduous_forest: { id: 'plain_deciduous_forest', label: 'Равнинный лиственный лес', color: '#7AAD43', primaryEmoji: '🌳', secondaryEmojis: [], wildWeight: 20, settledWeight: 11, heightLevel: 1 },
   plain_mixed_forest: { id: 'plain_mixed_forest', label: 'Равнинный смешанный лес', color: '#5B8F64', primaryEmoji: '🌳', secondaryEmojis: ['🌲'], wildWeight: 12, settledWeight: 5, heightLevel: 1 },
   plain_coniferous_forest: { id: 'plain_coniferous_forest', label: 'Равнинный хвойный лес', color: '#3F7F73', primaryEmoji: '🌲', secondaryEmojis: [], wildWeight: 6, settledWeight: 1, heightLevel: 1 },
   deciduous_forested_hills: { id: 'deciduous_forested_hills', label: 'Лиственные лесистые холмы', color: '#78945D', primaryEmoji: '〰️', secondaryEmojis: ['🌳'], wildWeight: 7, settledWeight: 10, heightLevel: 2 },
@@ -11323,7 +11330,7 @@ export function App() {
               const isLakeHex = terrain?.terrainOverride === 'lake';
               const region = meta?.regionId ? regions.find((item) => item.id === meta.regionId) : undefined;
               const fill = hex.kind === 'sea' ? SEA_HEX_COLOR : hex.kind === 'candidate' ? undefined : isLakeHex ? LAKE_HEX_COLOR : getBiomeColor(region?.biomeId);
-              const showsOpenPlainsTile = hex.kind === 'region' && !isLakeHex && region?.biomeId === 'open_plains';
+              const biomeTileHref = hex.kind === 'region' && !isLakeHex ? getBiomeTileHref(region?.biomeId) : undefined;
               const fallbackBiome = BIOMES[FALLBACK_BIOME_ID];
               const biomePrimaryEmoji = region?.biomePrimaryEmoji ?? fallbackBiome.primaryEmoji;
               const biomeSecondaryEmojis = region?.biomeSecondaryEmojis ?? fallbackBiome.secondaryEmojis;
@@ -11353,9 +11360,9 @@ export function App() {
                   }}
                 >
                   <polygon points={hexPoints(hex.x, hex.y, hexRenderSize)} className={cls} style={{ fill }} />
-                  {showsOpenPlainsTile ? (
+                  {biomeTileHref ? (
                     <image
-                      href={OPEN_PLAINS_TILE_HREF}
+                      href={biomeTileHref}
                       x={hex.x - getHexWidth(hexRenderSize) / 2}
                       y={hex.y - hexRenderSize}
                       width={getHexWidth(hexRenderSize)}
@@ -11439,8 +11446,8 @@ export function App() {
                 const fallbackBiome = BIOMES[FALLBACK_BIOME_ID];
                 const biomePrimaryEmoji = region?.biomePrimaryEmoji ?? fallbackBiome.primaryEmoji;
                 const biomeSecondaryEmojis = region?.biomeSecondaryEmojis ?? fallbackBiome.secondaryEmojis;
-                const showsOpenPlainsTile = hex.kind === 'region' && !isLakeHex && region?.biomeId === 'open_plains';
-                const biomeEmojis = showsOpenPlainsTile ? [] : [biomePrimaryEmoji, ...biomeSecondaryEmojis.slice(0, 2)];
+                const biomeTileHref = hex.kind === 'region' && !isLakeHex ? getBiomeTileHref(region?.biomeId) : undefined;
+                const biomeEmojis = biomeTileHref ? [] : [biomePrimaryEmoji, ...biomeSecondaryEmojis.slice(0, 2)];
                 const isPointOfInterest = region?.pointsOfInterest.some((poi) => hexKey(poi) === hex.key) ?? false;
                 const hexEmojis = [...(meta?.isCenter && region ? [getCentralPoiEmoji(region)] : meta?.isCenter ? [REGION_CENTER_EMOJI] : []), ...(isPointOfInterest ? [getPoiEmojiForHex(region, { q: hex.q, r: hex.r })] : []), ...biomeEmojis];
                 const hexEmojiLayout = getHexEmojiLayout(hexEmojis, hex.x, hex.y, HEX_SIZE);
