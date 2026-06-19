@@ -8800,14 +8800,18 @@ function getRiverTouchingSeaThroughRegionHexAwayFromMouth(
 function getCoastalSeaRiverConflict(
   rivers: River[],
   seaKeys: Iterable<string>,
-  regionHexes: AxialHex[]
+  _regionHexes: AxialHex[]
 ): River | null {
   const seaKeyList = Array.from(seaKeys);
   const seaVertexKeys = getSeaVertexKeysFromSeaKeys(seaKeyList);
   const seaEdgeKeys = getSeaEdgeKeysFromSeaKeys(seaKeyList);
-  return getRiverStartingFromSea(rivers, seaVertexKeys, seaEdgeKeys)
-    ?? getRiverTouchingSeaAwayFromMouth(rivers, seaKeyList, getRiverMouthVertexKeys(rivers))
-    ?? getRiverTouchingSeaThroughRegionHexAwayFromMouth(rivers, seaKeyList, regionHexes);
+
+  // This validation is intentionally narrow: it only rejects rivers that would
+  // start from the sea. Broader "sea touches a river away from its mouth"
+  // checks duplicated getRiverSeaHeightViolation and were stricter than the
+  // coastline generator itself, causing valid coast candidates to be discarded
+  // after river-mouth extension or delta generation.
+  return getRiverStartingFromSea(rivers, seaVertexKeys, seaEdgeKeys);
 }
 
 function candidateHexHasRiverEdgeOrSourceAwayFromMouth(
