@@ -4507,12 +4507,31 @@ function chooseCoastalCenterHex(regionHexes: AxialHex[], seaKeys: Set<string>, r
 
 function chooseRiverMouthCenterHex(regionHexes: AxialHex[], rivers: River[]): AxialHex | null {
   const regionKeys = new Set(regionHexes.map(hexKey));
-  const candidates = regionHexes.filter((hex) => rivers.some((river) => {
-    const mouth = river.vertexPath?.[river.vertexPath.length - 1];
-    if (!mouth) return false;
-    if (getRiversForHex(hex, [river]).length === 0) return false;
-    return getHexCornerPoints(hex).some((corner) => corner.key === mouth.key);
-  }));
+  const boundaryMouths = rivers
+    .map((river) => {
+      const mouth = river.vertexPath?.[river.vertexPath.length - 1];
+      if (!mouth || !isRegionExteriorVertex(mouth, regionHexes)) return null;
+      return {
+        river,
+        mouth,
+        fullness: getRiverEndpointSectorFullness(river, mouth.key)
+      };
+    })
+    .filter((mouth): mouth is { river: River; mouth: RiverVertex; fullness: RiverFullness } => mouth !== null);
+  if (boundaryMouths.length === 0) return null;
+
+  const maxFullness = Math.max(...boundaryMouths.map(({ fullness }) => fullness));
+  const fullestBoundaryMouths = boundaryMouths.filter(({ fullness }) => fullness === maxFullness);
+  const candidateByKey = new Map<string, AxialHex>();
+  for (const hex of regionHexes) {
+    const touchesFullestBoundaryMouth = fullestBoundaryMouths.some(({ river, mouth }) => {
+      if (getRiversForHex(hex, [river]).length === 0) return false;
+      return getHexCornerPoints(hex).some((corner) => corner.key === mouth.key);
+    });
+    if (touchesFullestBoundaryMouth) candidateByKey.set(hexKey(hex), hex);
+  }
+
+  const candidates = Array.from(candidateByKey.values());
   if (candidates.length === 0) return null;
 
   const maxNeighborCount = Math.max(...candidates.map((hex) => getHexSameRegionNeighborCount(hex, regionKeys)));
@@ -10171,7 +10190,7 @@ export function App() {
         ? chooseRiverMouthCenterHex(regionHexes, finalizedRivers)
         : null;
       if (isCoastalRegion && biomeLandType === 'settled' && !coastalRiverMouthCenterHex) {
-        console.warn('Discarding failed settled coastal candidate region because no center hex touches a river mouth', { attempt, regionId });
+        console.warn('Discarding failed settled coastal candidate region because no center hex touches a boundary river mouth', { attempt, regionId });
         continue;
       }
       const preliminaryCenterHex = coastalRiverMouthCenterHex ?? centerHex;
