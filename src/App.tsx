@@ -4788,6 +4788,28 @@ function getConnectedSeaComponent(startKey: string, seaKeys: Set<string>): Set<s
   return connected;
 }
 
+
+function splitNewSeaKeysByMouthConnectedComponent(newSeaKeys: string[], rivers: River[]): { connectedSeaKeys: string[]; disconnectedSeaKeys: string[] } {
+  const uniqueNewSeaKeys = Array.from(new Set(newSeaKeys));
+  const mouthSeaKey = uniqueNewSeaKeys.find((key) => seaHexTouchesAnyRiverMouth(parseHexKey(key), rivers));
+  if (!mouthSeaKey) return { connectedSeaKeys: uniqueNewSeaKeys, disconnectedSeaKeys: [] };
+
+  const newSeaKeySet = new Set(uniqueNewSeaKeys);
+  const connected = getConnectedSeaComponent(mouthSeaKey, newSeaKeySet);
+  return {
+    connectedSeaKeys: uniqueNewSeaKeys.filter((key) => connected.has(key)),
+    disconnectedSeaKeys: uniqueNewSeaKeys.filter((key) => !connected.has(key))
+  };
+}
+
+function addCandidateHexKeys(candidateHexes: AxialHex[], keysToAdd: Iterable<string>, blockedKeys: Set<string> = new Set()): AxialHex[] {
+  const nextByKey = new Map(candidateHexes.map((hex) => [hexKey(hex), hex]));
+  for (const key of keysToAdd) {
+    if (blockedKeys.has(key) || nextByKey.has(key)) continue;
+    nextByKey.set(key, parseHexKey(key));
+  }
+  return Array.from(nextByKey.values());
+}
 function seaKeysAreConnected(seaKeys: Set<string>): boolean {
   if (seaKeys.size <= 1) return true;
   const firstKey = Array.from(seaKeys)[0];
@@ -10578,10 +10600,20 @@ export function App() {
           }
         }
       }
-      const finalSeaKeysToWrite = [...allNewSeaKeys, ...enclosedPocketKeys, ...seaHoleKeys];
+      const createdSeaKeys = [...allNewSeaKeys, ...enclosedPocketKeys, ...seaHoleKeys];
+      const { connectedSeaKeys: finalSeaKeysToWrite, disconnectedSeaKeys: seaKeysDemotedToCandidates } = splitNewSeaKeysByMouthConnectedComponent(createdSeaKeys, riversWithDeltas);
+      const finalSeaKeySetToWrite = new Set(finalSeaKeysToWrite);
+      const demotedSeaKeySet = new Set(seaKeysDemotedToCandidates);
+      for (const demotedKey of demotedSeaKeySet) pocketKeySet.delete(demotedKey);
       let finalCandidateHexes = pocketKeySet.size > 0
         ? nextCandidateHexesExclSea.filter((hex) => !pocketKeySet.has(hexKey(hex)))
         : nextCandidateHexesExclSea;
+      if (demotedSeaKeySet.size > 0) {
+        const blockedCandidateKeys = new Set<string>(nextAllHexes.map(hexKey));
+        for (const key of getSeaHexKeys(hexTerrainByKey)) blockedCandidateKeys.add(key);
+        for (const key of finalSeaKeySetToWrite) blockedCandidateKeys.add(key);
+        finalCandidateHexes = addCandidateHexKeys(finalCandidateHexes, demotedSeaKeySet, blockedCandidateKeys);
+      }
       // Item 1: реки, возвращающиеся в уже пройденное озеро, больше не обрезаются.
       // Некорректная попытка отбраковывается целиком, чтобы генератор искал другой путь.
       const lakeIdByVertexKey = buildLakeIdByVertexKey(getLakesForRegions(nextRegions, nextHexTerrainByKeyPreview));
@@ -10595,7 +10627,7 @@ export function App() {
         continue;
       }
       // Река «море-в-море»: проверяем против ВСЕГО моря (существующее + новое + карманы + дырки).
-      const finalAllSeaKeys = [...allSeaKeys, ...enclosedPocketKeys, ...seaHoleKeys];
+      const finalAllSeaKeys = [...existingSeaKeysBeforeRegion, ...finalSeaKeysToWrite];
       const finalNewSeaHeightViolation = getRiverSeaHeightViolation(riversWithDeltas, finalAllSeaKeys);
       if (finalNewSeaHeightViolation) {
         console.warn('Discarding failed candidate region because final new sea touches a river away from its mouth', {
