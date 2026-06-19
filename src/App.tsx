@@ -4711,6 +4711,13 @@ function seaHexTouchesRiverMouth(seaHex: AxialHex, mouth: RiverVertex): boolean 
   return getHexCornerPoints(seaHex).some((vertex) => vertex.key === mouth.key);
 }
 
+function seaHexTouchesAnyRiverMouth(seaHex: AxialHex, rivers: River[]): boolean {
+  return rivers.some((river) => {
+    const mouth = river.vertexPath?.[river.vertexPath.length - 1];
+    return Boolean(mouth && seaHexTouchesRiverMouth(seaHex, mouth));
+  });
+}
+
 function getSeaFlowingRiversForRegion(rivers: River[], regionId: number, existingRegions: Region[]): River[] {
   return rivers.filter((river) => {
     if (!river.vertexPath?.length) return false;
@@ -10530,9 +10537,10 @@ export function App() {
             if (touchesSea) next.delete(key);
           }
         }
-        // Лечение одиночного моря: морской гекс без морских соседей — артефакт, удаляем
-        // (гекс возвращается к кандидату/региону). Карта постепенно самоочищается.
+        // Лечение одиночного моря: морской гекс без морских соседей обычно артефакт,
+        // но одиночный гекс у устья — валидный однотайловый прибрежный выход реки.
         for (const key of getSolitarySeaHexKeys(getSeaHexKeys(next))) {
+          if (seaHexTouchesAnyRiverMouth(parseHexKey(key), riversWithDeltas)) continue;
           next.delete(key);
         }
         mergeAdjacentLakeIds(next);
