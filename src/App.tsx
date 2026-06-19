@@ -5011,8 +5011,7 @@ function extendSeaToCoastalCenterCandidate(
 
   const regionKeys = new Set(regionHexes.map(hexKey));
   const rawCandidates = getSeaCandidateHexesForRegion(regionHexes, existingTerrain, occupiedRegionKeys);
-  const centerHexKeys = new Set([hexKey(centerHex), ...getRegionCenterHexKeys(existingRegions)]);
-  const nonSeaKeys = getNonSeaCandidateKeys(rawCandidates, rivers, roads, existingTerrain, allowedMouthVertexKeys, regionHexes, centerHexKeys);
+  const nonSeaKeys = getNonSeaCandidateKeys(rawCandidates, rivers, roads, existingTerrain, allowedMouthVertexKeys, regionHexes);
   const candidateKeySet = new Set(removeNonSeaCandidates(rawCandidates, nonSeaKeys).keys());
   const riverHexes = regionHexes
     .filter((hex) => rivers.some((river) => {
@@ -5110,15 +5109,20 @@ function computeSeaHexKeysForCoastalRegion(
 ): string[] {
   const allowedMouthVertexKeys = getRiverMouthVertexKeys(rivers);
   const rawCandidates = getSeaCandidateHexesForRegion(regionHexes, existingTerrain, occupiedRegionKeys);
-  const mouthSeaKeys = new Set<string>();
+  const mouthSeaKeyByVertex = new Map<string, string>();
   for (const [key, hex] of rawCandidates) {
-    if (getHexCornerPoints(hex).some((corner) => allowedMouthVertexKeys.has(corner.key))) mouthSeaKeys.add(key);
+    for (const corner of getHexCornerPoints(hex)) {
+      if (allowedMouthVertexKeys.has(corner.key) && !mouthSeaKeyByVertex.has(corner.key)) mouthSeaKeyByVertex.set(corner.key, key);
+    }
   }
+  const mouthSeaKeys = new Set<string>(mouthSeaKeyByVertex.values());
 
   // (1) Единый сет «не-морских» гексов (реки/дороги/озёра) и выкидываем их из кандидатов.
-  // Исключение: гекс, который касается устья реки, всегда становится морем.
-  const centerHexKeys = new Set([hexKey(centerHex), ...getRegionCenterHexKeys(existingRegions)]);
-  const nonSeaKeys = getNonSeaCandidateKeys(rawCandidates, rivers, roads, existingTerrain, allowedMouthVertexKeys, regionHexes, centerHexKeys);
+  // Только первый гекс у каждого устья становится морем без дополнительных проверок;
+  // остальные гексы вокруг того же устья проходят стандартные критерии ниже.
+  // Центры регионов не исключаются из road-endpoint проверки: если дорога
+  // заканчивается в центре/POI, соседние кандидаты всё равно не должны стать морем.
+  const nonSeaKeys = getNonSeaCandidateKeys(rawCandidates, rivers, roads, existingTerrain, allowedMouthVertexKeys, regionHexes);
   const candidates = removeNonSeaCandidates(rawCandidates, nonSeaKeys);
   if (candidates.size === 0 && mouthSeaKeys.size === 0) return [];
 
