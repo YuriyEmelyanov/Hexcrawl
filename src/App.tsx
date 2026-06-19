@@ -7172,9 +7172,10 @@ function getSettledMainRoadLimit(region: Region): number {
   return largeRegionLabels.has(region.sizeLabel) ? 3 : 2;
 }
 
-function getRoadHexKeySet(road: Road): Set<string> {
+function getRoadHexKeySet(road: Road, segmentKind?: RoadKind): Set<string> {
   const keys = new Set<string>();
   for (const segment of road.segments) {
+    if (segmentKind && segment.kind !== segmentKind) continue;
     keys.add(hexKey(segment.from));
     keys.add(hexKey(segment.to));
   }
@@ -8837,16 +8838,17 @@ function filterSeaCandidatesByRiverInteraction(
 }
 
 // Дядина модель: концы дорог — это «объекты» разметки (наряду с вершинами рек).
+// Концы троп намеренно не учитываются: море не должно упираться в trail-only выходы.
 // Гекс-кандидат, КАСАЮЩИЙСЯ конца дороги (сам гекс — конец дороги или его сосед),
 // получает «красный крест»: морем стать не может. Поэтому фронт заполнения моря об такие
 // гексы упирается так же, как об реки, а отрезанные ими кандидаты остаются сушей
 // («красные минусы» — не могут быть смежными с морем, потому что кресты мешают).
 function getRoadEndpointHexKeys(roads: Road[], centerHexKeys = new Set<string>()): Set<string> {
   const keys = new Set<string>();
-  const roadHexKeysById = new Map(roads.map((road) => [road.id, getRoadHexKeySet(road)]));
+  const roadHexKeysById = new Map(roads.map((road) => [road.id, getRoadHexKeySet(road, 'road')]));
 
   for (const road of roads) {
-    for (const endpoint of getRoadEndpoints(road)) {
+    for (const endpoint of getRoadEndpoints(road, 'road')) {
       const endpointKey = hexKey(endpoint);
       if (centerHexKeys.has(endpointKey)) continue;
 
@@ -8891,7 +8893,7 @@ function filterSeaCandidatesByRoadEndpoints(
 // (Дядина модель, п.1) Единый сет «не-морских» гексов — кандидаты, которые НЕ МОГУТ стать
 // морем, потому что касаются объектов, рядом с которыми моря быть не должно:
 //   - реки (вне устья) — как и раньше, через canPlaceSeaHexNearRivers;
-//   - концы дорог;
+//   - концы дорог (но не троп);
 //   - озёра (сосед-гекс с terrainOverride 'lake').
 // Дальше эти ключи просто выкидываются из кандидатов перед раскладкой моря.
 function getNonSeaCandidateKeys(
