@@ -9925,7 +9925,7 @@ export function App() {
       // Прибрежный регион тяготеет к низинам (уровень моря).
       const effectiveCoastalPreference: CoastalPreference | undefined =
         options.coastalPreference ?? (isCoastalRegion ? 'coast' : undefined);
-      const biomeLandType = regions.length === 0 ? 'settled' : options.landType ?? chooseCoastalAwareLandType(isCoastalRegion);
+      const biomeLandType = options.landType ?? (regions.length === 0 ? 'settled' : chooseCoastalAwareLandType(isCoastalRegion));
       // Выбор биома: либо принудительно заданный пользователем, либо обычный
       // взвешенный выбор. Принудительный биом всё равно проверяется на
       // совместимость с ограничением высоты от рек.
