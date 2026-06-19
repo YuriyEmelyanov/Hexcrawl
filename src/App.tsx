@@ -10143,19 +10143,42 @@ export function App() {
         if (terrain) regionTerrainByHex.set(hexKey(hex), terrain);
       }
 
-      // Море прибрежного региона: ставится ПОСЛЕ генерации рек, поэтому реки
-      // региона уже завершились на этом внешнем фронте — то есть впадают в море.
+      const preliminaryPointsOfInterest = assignPointsOfInterestForRegion(regionHexes, centerHex, regionTerrainByHex);
+      const preliminaryRegion: Region = {
+        ...regionForRiverGeneration,
+        centerHex,
+        pointsOfInterest: preliminaryPointsOfInterest,
+        isCoastal: false
+      };
+
+      // Дороги строятся ДО моря: их концы сразу попадают в ограничения для
+      // раскладки прибрежных вод, поэтому море больше не нужно выпиливать
+      // пост-фактум вокруг новых дорожных выходов.
+      const roadResult = generateRoadsForRegion({
+        region: preliminaryRegion,
+        regions,
+        roads,
+        rivers: finalizedRivers,
+        hexTerrainByKey: nextHexTerrainByKeyPreview,
+        nextRoadId,
+        candidateHexes: nextCandidateHexes
+      });
+      const roadEndpointKeysAfterRoads = getRoadEndpointHexKeys(roadResult.roads);
+
+      // Море прибрежного региона: ставится ПОСЛЕ генерации рек и дорог, поэтому
+      // реки уже завершились на внешнем фронте, а новые дорожные выходы заранее
+      // исключены из морских кандидатов.
       const occupiedRegionKeysForSea = new Set(allRegionHexes.map(hexKey));
       const allowedSeaMouthVertexKeys = getRiverMouthVertexKeys(finalizedRivers);
       let seaHexKeys = isCoastalRegion
         ? extendSeaToCoastalCenterCandidate(
           regionHexes,
-          computeSeaHexKeysForCoastalRegion(regionHexes, centerHex, nextHexTerrainByKeyPreview, occupiedRegionKeysForSea, regions, finalizedRivers, regionId, roads),
+          computeSeaHexKeysForCoastalRegion(regionHexes, centerHex, nextHexTerrainByKeyPreview, occupiedRegionKeysForSea, regions, finalizedRivers, regionId, roadResult.roads),
           nextHexTerrainByKeyPreview,
           occupiedRegionKeysForSea,
           finalizedRivers,
           allowedSeaMouthVertexKeys,
-          roads
+          roadResult.roads
         )
         : [];
       const coastalSeaValidation = isCoastalRegion
@@ -10179,12 +10202,9 @@ export function App() {
         continue;
       }
       const finalCenterHex = coastalCenterHex ?? centerHex;
-      const pointsOfInterest = assignPointsOfInterestForRegion(regionHexes, finalCenterHex, regionTerrainByHex);
-
       const finalRegion: Region = {
-        ...regionForRiverGeneration,
+        ...preliminaryRegion,
         centerHex: finalCenterHex,
-        pointsOfInterest,
         // Регион считается прибрежным, только если у него реально появилось море.
         isCoastal: effectiveIsCoastalRegion && seaHexKeys.length > 0
       };
@@ -10391,15 +10411,6 @@ export function App() {
         console.warn('Discarding failed candidate region because final river edge fullness changed old rivers', { attempt, regionId });
         continue;
       }
-      const roadResult = generateRoadsForRegion({
-        region: finalRegion,
-        regions,
-        roads,
-        rivers: riversWithDeltas,
-        hexTerrainByKey: nextHexTerrainByKeyPreview,
-        nextRoadId,
-        candidateHexes: nextCandidateHexesExclSea
-      });
       const finalRegionWithPoiKinds: Region = {
         ...finalRegion,
         pointOfInterestKinds: assignPoiKindsForRegion({
@@ -10410,23 +10421,6 @@ export function App() {
         })
       };
       const finalRegions = [...regions, finalRegionWithPoiKinds];
-
-      // Дороги генерируются ПОСЛЕ моря, поэтому концы дорог ЭТОГО региона не успевают
-      // попасть в сет «не-морских» до раскладки моря. Доливаем их сюда: концы новых дорог
-      // — это запрещённые координаты, и примыкающее к ним уже построенное море выпиливаем
-      // (тот же принцип, что для рек/озёр, только пост-фактум — потому что дороги позже).
-      const roadEndpointKeysAfterRoads = getRoadEndpointHexKeys(roadResult.roads);
-      const roadPrunedSeaKeys: string[] = [];
-      if (roadEndpointKeysAfterRoads.size > 0 && allNewSeaKeys.length > 0) {
-        const seaBlockedByRoads = allNewSeaKeys.filter((key) =>
-          candidateTouchesRoadEndpoint(parseHexKey(key), roadEndpointKeysAfterRoads)
-        );
-        if (seaBlockedByRoads.length > 0) {
-          const blockedSet = new Set(seaBlockedByRoads);
-          allNewSeaKeys = allNewSeaKeys.filter((key) => !blockedSet.has(key));
-          for (const key of blockedSet) { allSeaKeys.delete(key); roadPrunedSeaKeys.push(key); }
-        }
-      }
 
       // Item 2: запертые кандидатные карманы (≤5 тайлов) между регионом и морем
       // поглощаются морем — чтобы не оставались «висящие» неоткрытые участки и по
@@ -10484,16 +10478,6 @@ export function App() {
       let finalCandidateHexes = pocketKeySet.size > 0
         ? nextCandidateHexesExclSea.filter((hex) => !pocketKeySet.has(hexKey(hex)))
         : nextCandidateHexesExclSea;
-      // Гексы, у которых дороги отняли море, возвращаем в кандидаты: их посчитали ДО выпила
-      // и исключили из nextCandidateHexesExclSea как «море», а морем они уже не являются.
-      // Без этого они зависали «ничьими» (не море, не суша, не кандидат) — это и был баг.
-      if (roadPrunedSeaKeys.length > 0) {
-        const existingCandidateKeys = new Set(finalCandidateHexes.map(hexKey));
-        const returned = roadPrunedSeaKeys.filter(
-          (key) => !existingCandidateKeys.has(key) && !pocketKeySet.has(key)
-        );
-        if (returned.length > 0) finalCandidateHexes = [...finalCandidateHexes, ...returned.map(parseHexKey)];
-      }
       // Item 1: реки, возвращающиеся в уже пройденное озеро, больше не обрезаются.
       // Некорректная попытка отбраковывается целиком, чтобы генератор искал другой путь.
       const lakeIdByVertexKey = buildLakeIdByVertexKey(getLakesForRegions(nextRegions, nextHexTerrainByKeyPreview));
