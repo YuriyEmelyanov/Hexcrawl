@@ -4989,7 +4989,8 @@ function extendSeaToCoastalCenterCandidate(
 
   const regionKeys = new Set(regionHexes.map(hexKey));
   const rawCandidates = getSeaCandidateHexesForRegion(regionHexes, existingTerrain, occupiedRegionKeys);
-  const nonSeaKeys = getNonSeaCandidateKeys(rawCandidates, rivers, roads, existingTerrain, allowedMouthVertexKeys, regionHexes);
+  const centerHexKeys = new Set([hexKey(centerHex), ...getRegionCenterHexKeys(existingRegions)]);
+  const nonSeaKeys = getNonSeaCandidateKeys(rawCandidates, rivers, roads, existingTerrain, allowedMouthVertexKeys, regionHexes, centerHexKeys);
   const candidateKeySet = new Set(removeNonSeaCandidates(rawCandidates, nonSeaKeys).keys());
   const riverHexes = regionHexes
     .filter((hex) => rivers.some((river) => {
@@ -5094,7 +5095,8 @@ function computeSeaHexKeysForCoastalRegion(
 
   // (1) Единый сет «не-морских» гексов (реки/дороги/озёра) и выкидываем их из кандидатов.
   // Исключение: гекс, который касается устья реки, всегда становится морем.
-  const nonSeaKeys = getNonSeaCandidateKeys(rawCandidates, rivers, roads, existingTerrain, allowedMouthVertexKeys, regionHexes);
+  const centerHexKeys = new Set([hexKey(centerHex), ...getRegionCenterHexKeys(existingRegions)]);
+  const nonSeaKeys = getNonSeaCandidateKeys(rawCandidates, rivers, roads, existingTerrain, allowedMouthVertexKeys, regionHexes, centerHexKeys);
   const candidates = removeNonSeaCandidates(rawCandidates, nonSeaKeys);
   if (candidates.size === 0 && mouthSeaKeys.size === 0) return [];
 
@@ -8839,10 +8841,30 @@ function filterSeaCandidatesByRiverInteraction(
 // получает «красный крест»: морем стать не может. Поэтому фронт заполнения моря об такие
 // гексы упирается так же, как об реки, а отрезанные ими кандидаты остаются сушей
 // («красные минусы» — не могут быть смежными с морем, потому что кресты мешают).
-function getRoadEndpointHexKeys(roads: Road[]): Set<string> {
+function getRoadEndpointHexKeys(roads: Road[], centerHexKeys = new Set<string>()): Set<string> {
   const keys = new Set<string>();
+  const roadHexKeysById = new Map(roads.map((road) => [road.id, getRoadHexKeySet(road)]));
+
   for (const road of roads) {
-    for (const endpoint of getRoadEndpoints(road)) keys.add(hexKey(endpoint));
+    for (const endpoint of getRoadEndpoints(road)) {
+      const endpointKey = hexKey(endpoint);
+      if (centerHexKeys.has(endpointKey)) continue;
+
+      const ownRoadHexKeys = roadHexKeysById.get(road.id) ?? new Set<string>();
+      const restsAgainstAnotherRoad = roads.some((otherRoad) => {
+        if (otherRoad.id === road.id) return false;
+        const otherRoadHexKeys = roadHexKeysById.get(otherRoad.id);
+        if (!otherRoadHexKeys) return false;
+        if (otherRoadHexKeys.has(endpointKey)) return true;
+        return getHexNeighbors(endpoint).some((neighbor) => {
+          const neighborKey = hexKey(neighbor);
+          return !ownRoadHexKeys.has(neighborKey) && otherRoadHexKeys.has(neighborKey);
+        });
+      });
+      if (restsAgainstAnotherRoad) continue;
+
+      keys.add(endpointKey);
+    }
   }
   return keys;
 }
@@ -8878,10 +8900,11 @@ function getNonSeaCandidateKeys(
   roads: Road[],
   existingTerrain: Map<string, HexTerrainData>,
   allowedMouthVertexKeys: Set<string>,
-  regionHexes: AxialHex[]
+  regionHexes: AxialHex[],
+  centerHexKeys = new Set<string>()
 ): Set<string> {
   const nonSea = new Set<string>();
-  const roadEndpointKeys = getRoadEndpointHexKeys(roads);
+  const roadEndpointKeys = getRoadEndpointHexKeys(roads, centerHexKeys);
   for (const [key, hex] of candidates) {
     if (!canPlaceSeaHexNearRivers(hex, rivers, allowedMouthVertexKeys, regionHexes)) { nonSea.add(key); continue; }
     if (candidateTouchesRoadEndpoint(hex, roadEndpointKeys)) { nonSea.add(key); continue; }
