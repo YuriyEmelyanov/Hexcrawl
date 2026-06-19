@@ -4505,6 +4505,20 @@ function chooseCoastalCenterHex(regionHexes: AxialHex[], seaKeys: Set<string>, r
   return randomFrom(candidates.filter((hex) => getHexSameRegionNeighborCount(hex, regionKeys) === maxNeighborCount));
 }
 
+function chooseRiverMouthCenterHex(regionHexes: AxialHex[], rivers: River[]): AxialHex | null {
+  const regionKeys = new Set(regionHexes.map(hexKey));
+  const candidates = regionHexes.filter((hex) => rivers.some((river) => {
+    const mouth = river.vertexPath?.[river.vertexPath.length - 1];
+    if (!mouth) return false;
+    if (getRiversForHex(hex, [river]).length === 0) return false;
+    return getHexCornerPoints(hex).some((corner) => corner.key === mouth.key);
+  }));
+  if (candidates.length === 0) return null;
+
+  const maxNeighborCount = Math.max(...candidates.map((hex) => getHexSameRegionNeighborCount(hex, regionKeys)));
+  return randomFrom(candidates.filter((hex) => getHexSameRegionNeighborCount(hex, regionKeys) === maxNeighborCount));
+}
+
 function chooseSeaAdjacentCenterHex(regionHexes: AxialHex[], seaKeys: Set<string>): AxialHex | null {
   const regionKeys = new Set(regionHexes.map(hexKey));
   const candidates = regionHexes.filter((hex) => getHexNeighbors(hex).some((neighbor) => seaKeys.has(hexKey(neighbor))));
@@ -10150,10 +10164,23 @@ export function App() {
         if (terrain) regionTerrainByHex.set(hexKey(hex), terrain);
       }
 
-      const preliminaryPointsOfInterest = assignPointsOfInterestForRegion(regionHexes, centerHex, regionTerrainByHex);
+      // В прибрежном освоенном регионе переносим центральный гекс к устью
+      // сразу после построения рек, чтобы POI и дороги уже строились от
+      // прибрежного центра. Дикий прибрежный регион сохраняет обычный центр.
+      const coastalRiverMouthCenterHex = isCoastalRegion && biomeLandType === 'settled'
+        ? chooseRiverMouthCenterHex(regionHexes, finalizedRivers)
+        : null;
+      if (isCoastalRegion && biomeLandType === 'settled' && !coastalRiverMouthCenterHex) {
+        console.warn('Discarding failed settled coastal candidate region because no center hex touches a river mouth', { attempt, regionId });
+        continue;
+      }
+      const preliminaryCenterHex = coastalRiverMouthCenterHex ?? centerHex;
+      const centerHexMovedToRiverMouth = !isSameHex(preliminaryCenterHex, centerHex);
+
+      const preliminaryPointsOfInterest = assignPointsOfInterestForRegion(regionHexes, preliminaryCenterHex, regionTerrainByHex);
       const preliminaryRegion: Region = {
         ...regionForRiverGeneration,
-        centerHex,
+        centerHex: preliminaryCenterHex,
         pointsOfInterest: preliminaryPointsOfInterest,
         isCoastal: false
       };
@@ -10180,7 +10207,7 @@ export function App() {
       let seaHexKeys = isCoastalRegion
         ? extendSeaToCoastalCenterCandidate(
           regionHexes,
-          computeSeaHexKeysForCoastalRegion(regionHexes, centerHex, nextHexTerrainByKeyPreview, occupiedRegionKeysForSea, regions, finalizedRivers, regionId, roadResult.roads),
+          computeSeaHexKeysForCoastalRegion(regionHexes, preliminaryCenterHex, nextHexTerrainByKeyPreview, occupiedRegionKeysForSea, regions, finalizedRivers, regionId, roadResult.roads),
           nextHexTerrainByKeyPreview,
           occupiedRegionKeysForSea,
           finalizedRivers,
@@ -10193,7 +10220,7 @@ export function App() {
         : { valid: true as const };
       let effectiveIsCoastalRegion = isCoastalRegion;
       if (coastalSeaValidation.valid === false) {
-        if (options.coastalPreference !== 'coast' && coastalSeaValidation.reason === 'no_sea_hexes') {
+        if (!centerHexMovedToRiverMouth && options.coastalPreference !== 'coast' && coastalSeaValidation.reason === 'no_sea_hexes') {
           seaHexKeys = [];
           effectiveIsCoastalRegion = false;
         } else {
@@ -10201,14 +10228,11 @@ export function App() {
           continue;
         }
       }
-      const coastalCenterHex = seaHexKeys.length > 0
-        ? chooseCoastalCenterHex(regionHexes, new Set(seaHexKeys), finalizedRivers) ?? chooseSeaAdjacentCenterHex(regionHexes, new Set(seaHexKeys))
-        : null;
-      if (effectiveIsCoastalRegion && (!coastalCenterHex || seaHexKeys.length === 0)) {
-        console.warn('Discarding failed coastal candidate region because no center hex touches both sea and river', { attempt, regionId });
+      if (effectiveIsCoastalRegion && seaHexKeys.length === 0) {
+        console.warn('Discarding failed coastal candidate region because no sea hexes were generated', { attempt, regionId });
         continue;
       }
-      const finalCenterHex = coastalCenterHex ?? centerHex;
+      const finalCenterHex = preliminaryCenterHex;
       const finalRegion: Region = {
         ...preliminaryRegion,
         centerHex: finalCenterHex,
@@ -10551,7 +10575,7 @@ export function App() {
       setRivers(riversWithDeltas);
       setRoads(roadResult.roads);
       setNextRoadId(roadResult.nextRoadId);
-      setSelectedHex(centerHex);
+      setSelectedHex(finalCenterHex);
       return;
     }
 
