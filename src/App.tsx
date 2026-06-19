@@ -8810,18 +8810,43 @@ function getCoastalSeaRiverConflict(
     ?? getRiverTouchingSeaThroughRegionHexAwayFromMouth(rivers, seaKeyList, regionHexes);
 }
 
+function candidateHexHasRiverEdgeOrSourceAwayFromMouth(
+  hex: AxialHex,
+  rivers: River[],
+  allowedMouthVertexKeys: Set<string>
+): boolean {
+  const hexVertexKeys = new Set(getHexCornerPoints(hex).map((vertex) => vertex.key));
+  const hexEdgeKeys = new Set(getHexEdgesAsVertexPairs(hex).map((edge) => edge.edgeKey));
+
+  return rivers.some((river) => {
+    const path = river.vertexPath ?? [];
+    if (path.length < 2) return false;
+
+    // Исток — это «конец реки, но не устье»: кандидат с таким углом не должен
+    // становиться морем, иначе река начнётся из моря. Остальные касания вершиной
+    // не блокируют море сами по себе: блокируют только рёбра, реально проходящие
+    // по гексу-кандидату.
+    if (hexVertexKeys.has(path[0].key)) return true;
+
+    const mouthIndex = path.length - 1;
+    for (let index = 1; index < path.length; index += 1) {
+      const currentEdgeKey = edgeKey(path[index - 1], path[index]);
+      if (!hexEdgeKeys.has(currentEdgeKey)) continue;
+      const isLastEdgeToAllowedMouth = index === mouthIndex && allowedMouthVertexKeys.has(path[index].key);
+      if (!isLastEdgeToAllowedMouth) return true;
+    }
+
+    return false;
+  });
+}
+
 function canPlaceSeaHexNearRivers(
   hex: AxialHex,
   rivers: River[],
   allowedMouthVertexKeys: Set<string>,
-  regionHexes: AxialHex[] = []
+  _regionHexes: AxialHex[] = []
 ): boolean {
-  const key = hexKey(hex);
-  const seaVertexKeys = getSeaVertexKeysFromSeaKeys([key]);
-  const seaEdgeKeys = getSeaEdgeKeysFromSeaKeys([key]);
-  if (getRiverStartingFromSea(rivers, seaVertexKeys, seaEdgeKeys)) return false;
-  return getRiverTouchingSeaAwayFromMouth(rivers, [key], allowedMouthVertexKeys) === null
-    && getRiverTouchingSeaThroughRegionHexAwayFromMouth(rivers, [key], regionHexes) === null;
+  return !candidateHexHasRiverEdgeOrSourceAwayFromMouth(hex, rivers, allowedMouthVertexKeys);
 }
 
 function filterSeaCandidatesByRiverInteraction(
