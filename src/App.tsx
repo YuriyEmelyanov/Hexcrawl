@@ -4762,12 +4762,27 @@ function getSeaFlowingRiversForRegion(rivers: River[], regionId: number, existin
   });
 }
 
-function chooseSeaCandidateKeyForRiverMouth(candidates: Map<string, AxialHex>, mouth: RiverVertex): string | null {
+function chooseSeaCandidateKeyForRiverMouth(
+  candidates: Map<string, AxialHex>,
+  mouth: RiverVertex,
+  previousVertex?: RiverVertex
+): string | null {
+  const direction = previousVertex
+    ? { x: mouth.x - previousVertex.x, y: mouth.y - previousVertex.y }
+    : null;
+  const directionLength = direction ? Math.hypot(direction.x, direction.y) : 0;
   const touching = Array.from(candidates.entries())
     .filter(([, hex]) => seaHexTouchesRiverMouth(hex, mouth))
     .sort(([, left], [, right]) => {
       const leftCenter = toPixel(left.q, left.r);
       const rightCenter = toPixel(right.q, right.r);
+      if (direction && directionLength > 0) {
+        const leftVector = { x: leftCenter.x - mouth.x, y: leftCenter.y - mouth.y };
+        const rightVector = { x: rightCenter.x - mouth.x, y: rightCenter.y - mouth.y };
+        const leftProjection = (leftVector.x * direction.x + leftVector.y * direction.y) / directionLength;
+        const rightProjection = (rightVector.x * direction.x + rightVector.y * direction.y) / directionLength;
+        if (Math.abs(leftProjection - rightProjection) > 1e-6) return rightProjection - leftProjection;
+      }
       return Math.hypot(leftCenter.x - mouth.x, leftCenter.y - mouth.y) - Math.hypot(rightCenter.x - mouth.x, rightCenter.y - mouth.y);
     });
   return touching[0]?.[0] ?? null;
@@ -5111,16 +5126,22 @@ function computeSeaHexKeysForCoastalRegion(
   const allowedMouthVertexKeys = getRiverMouthVertexKeys(rivers);
   const rawCandidates = getSeaCandidateHexesForRegion(regionHexes, existingTerrain, occupiedRegionKeys);
   const mouthSeaKeyByVertex = new Map<string, string>();
-  for (const [key, hex] of rawCandidates) {
-    for (const corner of getHexCornerPoints(hex)) {
-      if (allowedMouthVertexKeys.has(corner.key) && !mouthSeaKeyByVertex.has(corner.key)) mouthSeaKeyByVertex.set(corner.key, key);
-    }
+  for (const river of rivers) {
+    const path = river.vertexPath ?? [];
+    if (path.length < 2) continue;
+    const mouth = path[path.length - 1];
+    if (!allowedMouthVertexKeys.has(mouth.key) || mouthSeaKeyByVertex.has(mouth.key)) continue;
+    const mouthSeaKey = chooseSeaCandidateKeyForRiverMouth(rawCandidates, mouth, path[path.length - 2]);
+    if (mouthSeaKey) mouthSeaKeyByVertex.set(mouth.key, mouthSeaKey);
   }
   const mouthSeaKeys = new Set<string>(mouthSeaKeyByVertex.values());
 
   // (1) Единый сет «не-морских» гексов (реки/дороги/озёра) и выкидываем их из кандидатов.
-  // Только первый гекс у каждого устья становится морем без дополнительных проверок;
-  // остальные гексы вокруг того же устья проходят стандартные критерии ниже.
+  // Только гекс, лежащий по направлению последнего сегмента реки (продолжение
+  // previous→mouth наружу), становится морем без дополнительных проверок. Это
+  // не даёт боковому соседу устья случайно получить mouth-исключение из-за
+  // порядка обхода rawCandidates; остальные гексы вокруг того же устья проходят
+  // стандартные критерии ниже, включая запрет моря рядом с концом дороги.
   const centerHexKeys = new Set([hexKey(centerHex), ...getRegionCenterHexKeys(existingRegions)]);
   const nonSeaKeys = getNonSeaCandidateKeys(rawCandidates, rivers, roads, existingTerrain, allowedMouthVertexKeys, regionHexes, centerHexKeys);
   const candidates = removeNonSeaCandidates(rawCandidates, nonSeaKeys);
