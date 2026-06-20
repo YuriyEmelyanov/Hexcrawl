@@ -3670,7 +3670,8 @@ function connectIncomingTributariesToMainPath(
 function chooseRandomRiverControlPoints(
   redVertices: RiverVertex[],
   purpleVertices: RiverVertex[],
-  existingRiverEndpointVerticesInRegion: RiverVertex[]
+  existingRiverEndpointVerticesInRegion: RiverVertex[],
+  preferredStartVertex?: RiverVertex
 ): { startVertex: RiverVertex; middlePurpleVertex?: RiverVertex; endVertex: RiverVertex; startMode: 'existing river endpoint' | 'red vertex' } | null {
   if (existingRiverEndpointVerticesInRegion.length > 0) {
     if (redVertices.length < 1) return null;
@@ -3684,7 +3685,9 @@ function chooseRandomRiverControlPoints(
     return { startVertex, middlePurpleVertex: randomFrom(middlePool), endVertex, startMode: 'existing river endpoint' };
   }
   if (redVertices.length < 2) return null;
-  const startVertex = randomFrom(redVertices);
+  const startVertex = preferredStartVertex && redVertices.some((vertex) => vertex.key === preferredStartVertex.key)
+    ? preferredStartVertex
+    : randomFrom(redVertices);
   const candidateEndVertices = redVertices.filter((vertex) => vertex.key !== startVertex.key);
   if (candidateEndVertices.length === 0) return null;
   const maxDistance = Math.max(...candidateEndVertices.map((vertex) => getRiverVertexDistance(startVertex, vertex)));
@@ -3706,6 +3709,60 @@ function chooseRandomRiverControlPoints(
   const middlePool = preferredMiddle.length > 0 ? preferredMiddle : purpleVertices;
   const middlePurpleVertex = randomFrom(middlePool);
   return { startVertex, middlePurpleVertex, endVertex, startMode: 'red vertex' };
+}
+
+function regionTouchesCoastalRegion(region: Region, regions: Region[]): boolean {
+  const coastalRegionHexKeys = new Set<string>();
+  for (const existingRegion of regions) {
+    if (!existingRegion.isCoastal || existingRegion.id === region.id) continue;
+    for (const hex of existingRegion.hexes) coastalRegionHexKeys.add(hexKey(hex));
+  }
+  if (coastalRegionHexKeys.size === 0) return false;
+
+  return region.hexes.some((hex) => (
+    getHexNeighbors(hex).some((neighbor) => coastalRegionHexKeys.has(hexKey(neighbor)))
+  ));
+}
+
+function getDistanceFromRiverVertexToHex(vertex: RiverVertex, hex: AxialHex): number {
+  const hexCorners = getHexCornerPoints(hex);
+  return Math.min(...hexCorners.map((corner) => getRiverVertexDistance(vertex, corner)));
+}
+
+function getNearestSeaDistanceFromRiverVertex(
+  vertex: RiverVertex,
+  seaHexes: AxialHex[]
+): number {
+  if (seaHexes.length === 0) return Number.POSITIVE_INFINITY;
+  return Math.min(...seaHexes.map((seaHex) => getDistanceFromRiverVertexToHex(vertex, seaHex)));
+}
+
+function chooseCoastalAwareRedStartVertex(
+  region: Region,
+  regions: Region[],
+  redVertices: RiverVertex[],
+  hexTerrainByKey: Map<string, HexTerrainData>
+): RiverVertex | undefined {
+  if (redVertices.length === 0) return undefined;
+  if (!regionTouchesCoastalRegion(region, regions)) return undefined;
+
+  const seaHexes = Array.from(getSeaHexKeys(hexTerrainByKey)).map(parseHexKey);
+  if (seaHexes.length === 0) return undefined;
+
+  let bestDistance = Number.NEGATIVE_INFINITY;
+  const farthestVertices: RiverVertex[] = [];
+  for (const vertex of redVertices) {
+    const distance = getNearestSeaDistanceFromRiverVertex(vertex, seaHexes);
+    if (distance > bestDistance + 0.001) {
+      bestDistance = distance;
+      farthestVertices.length = 0;
+      farthestVertices.push(vertex);
+    } else if (Math.abs(distance - bestDistance) < 0.001) {
+      farthestVertices.push(vertex);
+    }
+  }
+
+  return farthestVertices.length > 0 ? randomFrom(farthestVertices) : undefined;
 }
 
 function buildRiverPathViaControlPoints(
@@ -6411,8 +6468,9 @@ function generateRiverForRegion(
     }
 
     const RANDOM_PAIR_ATTEMPTS = 50;
+    const coastalAwareStartVertex = chooseCoastalAwareRedStartVertex(region, regions, redVertices, terrainMap);
     for (let attempt = 0; attempt < RANDOM_PAIR_ATTEMPTS; attempt += 1) {
-      const controlPoints = chooseRandomRiverControlPoints(redVertices, purpleVertices, existingRiverEndpointVerticesInRegion);
+      const controlPoints = chooseRandomRiverControlPoints(redVertices, purpleVertices, existingRiverEndpointVerticesInRegion, coastalAwareStartVertex);
       if (!controlPoints) continue;
       const path = buildRiverPathViaControlPoints(controlPoints, riverGraph, usedRiverEdges);
       if (!validateRiverPathViaControlPoints(path, controlPoints, riverGraph, redVertices, existingRiverEndpointVerticesInRegion, usedRiverEdges)) continue;
