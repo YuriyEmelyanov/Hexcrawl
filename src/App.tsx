@@ -690,7 +690,7 @@ function getTimestampForFilename(date = new Date()): string {
   return date.toISOString().replace(/[:.]/g, '-');
 }
 
-function createExportSvgClone(svg: SVGSVGElement): SVGSVGElement {
+async function createExportSvgClone(svg: SVGSVGElement): Promise<SVGSVGElement> {
   const clone = svg.cloneNode(true) as SVGSVGElement;
   const viewBox = clone.viewBox.baseVal;
   clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
@@ -711,11 +711,44 @@ function createExportSvgClone(svg: SVGSVGElement): SVGSVGElement {
   background.setAttribute('fill', '#0c1423');
   clone.insertBefore(background, style.nextSibling);
 
+  await inlineExportImageHrefs(clone);
+
   return clone;
 }
 
+function blobToDataUrl(blob: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result ?? ''));
+    reader.onerror = () => reject(reader.error ?? new Error('Не удалось встроить изображение тайла в PNG-экспорт.'));
+    reader.readAsDataURL(blob);
+  });
+}
+
+async function inlineExportImageHrefs(svg: SVGSVGElement): Promise<void> {
+  const cache = new Map<string, string>();
+  const images = Array.from(svg.querySelectorAll('image'));
+
+  await Promise.all(images.map(async (image) => {
+    const href = image.getAttribute('href') ?? image.getAttribute('xlink:href');
+    if (!href || href.startsWith('data:')) return;
+
+    const absoluteHref = new URL(href, window.location.href).toString();
+    let dataUrl = cache.get(absoluteHref);
+    if (!dataUrl) {
+      const response = await fetch(absoluteHref);
+      if (!response.ok) throw new Error(`Не удалось загрузить тайл для PNG-экспорта: ${href}`);
+      dataUrl = await blobToDataUrl(await response.blob());
+      cache.set(absoluteHref, dataUrl);
+    }
+
+    image.setAttribute('href', dataUrl);
+    image.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', dataUrl);
+  }));
+}
+
 async function exportSvgToPng(svg: SVGSVGElement, filename: string, scale = PNG_EXPORT_SCALE): Promise<void> {
-  const clone = createExportSvgClone(svg);
+  const clone = await createExportSvgClone(svg);
   const viewBox = clone.viewBox.baseVal;
   const svgText = new XMLSerializer().serializeToString(clone);
   const svgBlob = new Blob([svgText], { type: 'image/svg+xml;charset=utf-8' });
