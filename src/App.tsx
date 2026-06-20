@@ -10569,33 +10569,11 @@ export function App() {
         console.warn('Discarding failed candidate region because final river edge fullness changed old rivers', { attempt, regionId });
         continue;
       }
-      const finalRegionWithPoiKinds: Region = {
-        ...finalRegion,
-        pointOfInterestKinds: assignPoiKindsForRegion({
-          region: finalRegion,
-          roads: roadResult.roads,
-          rivers: riversWithDeltas,
-          hexTerrainByKey: nextHexTerrainByKeyPreview
-        })
-      };
-      const finalRegions = [...regions, finalRegionWithPoiKinds];
-
-      // Item 2: запертые кандидатные карманы (≤5 тайлов) между регионом и морем
-      // поглощаются морем — чтобы не оставались «висящие» неоткрытые участки и по
-      // ним нельзя было кликнуть генерацию (которая упрётся в море). Если моря рядом
-      // нет, карманы не трогаем — обычная генерация их откроет.
+      // Запертые кандидатные карманы больше не поглощаются морем: после
+      // построения береговой линии они присоединяются к биому строящегося
+      // региона ниже, чтобы серые/невидимые гексы между морем и сушей стали
+      // сушей, а не заливом.
       const enclosedPocketKeys: string[] = [];
-      if (allNewSeaKeys.length > 0) {
-        const occupiedForPockets = new Set<string>(allSeaKeys);
-        for (const hex of allRegionHexes) occupiedForPockets.add(hexKey(hex));
-        for (const area of findFillableEnclosedEmptyAreas(new Set(regionHexes.map(hexKey)), occupiedForPockets)) {
-          if (area.length > 5) continue;
-          for (const hex of area) {
-            if (candidateTouchesRoadEndpoint(hex, roadEndpointKeysAfterRoads)) continue;
-            enclosedPocketKeys.push(hexKey(hex));
-          }
-        }
-      }
       const pocketKeySet = new Set(enclosedPocketKeys);
       // «Дырки» в море: пустой гекс (не регион, не озеро, не море), у которого >=5 из 6
       // соседей — море, заливается морем. Порог 5 закрывает и двойные дырки (пара пустых
@@ -10637,11 +10615,44 @@ export function App() {
       const finalSeaKeySetToWrite = new Set(finalSeaKeysToWrite);
       const demotedSeaKeySet = new Set(seaKeysDemotedToCandidates);
       for (const demotedKey of demotedSeaKeySet) pocketKeySet.delete(demotedKey);
+
+      // После окончательного выбора морских гексов проверяем, не заперло ли море
+      // между собой и сушей область из кандидатных или ещё невидимых гексов. Такие
+      // карманы становятся частью строящегося региона, чтобы на карте не оставалось
+      // недоступных серых островков между биомом региона и береговой линией.
+      const occupiedForLandPockets = new Set<string>(finalSeaKeySetToWrite);
+      for (const key of existingSeaKeysBeforeRegion) occupiedForLandPockets.add(key);
+      for (const region of regions) for (const hex of region.hexes) occupiedForLandPockets.add(hexKey(hex));
+      const enclosedLandPocketKeys = new Set<string>();
+      for (const area of findFillableEnclosedEmptyAreas(new Set(finalRegion.hexes.map(hexKey)), occupiedForLandPockets)) {
+        for (const hex of area) enclosedLandPocketKeys.add(hexKey(hex));
+      }
+      for (const key of enclosedLandPocketKeys) pocketKeySet.add(key);
+      const enclosedLandPocketHexes = Array.from(enclosedLandPocketKeys).map(parseHexKey);
+      const finalRegionAfterLandPockets = enclosedLandPocketHexes.length > 0
+        ? (() => {
+          const mergedHexes = [...finalRegion.hexes, ...enclosedLandPocketHexes];
+          const updatedSize = mergedHexes.length;
+          const updatedSizeCategory = getRegionSizeCategory(updatedSize);
+          return {
+            ...finalRegion,
+            hexes: mergedHexes,
+            finalSize: updatedSize,
+            sizeCategory: updatedSizeCategory.sizeCategory,
+            sizeLabel: updatedSizeCategory.sizeLabel
+          };
+        })()
+        : finalRegion;
+      const finalLandHexesForCandidates = [...nextAllHexes, ...enclosedLandPocketHexes];
+
       let finalCandidateHexes = pocketKeySet.size > 0
         ? nextCandidateHexesExclSea.filter((hex) => !pocketKeySet.has(hexKey(hex)))
         : nextCandidateHexesExclSea;
+      if (enclosedLandPocketHexes.length > 0) {
+        finalCandidateHexes = getCandidateHexes(finalLandHexesForCandidates, new Set([...existingSeaKeysBeforeRegion, ...finalSeaKeySetToWrite]));
+      }
       if (demotedSeaKeySet.size > 0) {
-        const blockedCandidateKeys = new Set<string>(nextAllHexes.map(hexKey));
+        const blockedCandidateKeys = new Set<string>(finalLandHexesForCandidates.map(hexKey));
         for (const key of getSeaHexKeys(hexTerrainByKey)) blockedCandidateKeys.add(key);
         for (const key of finalSeaKeySetToWrite) blockedCandidateKeys.add(key);
         finalCandidateHexes = addCandidateHexKeys(finalCandidateHexes, demotedSeaKeySet, blockedCandidateKeys);
@@ -10670,6 +10681,17 @@ export function App() {
         });
         continue;
       }
+
+      const finalRegionWithPoiKinds: Region = {
+        ...finalRegionAfterLandPockets,
+        pointOfInterestKinds: assignPoiKindsForRegion({
+          region: finalRegionAfterLandPockets,
+          roads: roadResult.roads,
+          rivers: riversWithDeltas,
+          hexTerrainByKey: nextHexTerrainByKeyPreview
+        })
+      };
+      const finalRegions = [...regions, finalRegionWithPoiKinds];
 
       const snapshot: MapSnapshot = {
         regions,
