@@ -11695,10 +11695,8 @@ export function App() {
               const region = meta?.regionId ? regions.find((item) => item.id === meta.regionId) : undefined;
               const fill = hex.kind === 'sea' ? SEA_HEX_COLOR : hex.kind === 'candidate' ? undefined : isLakeHex ? LAKE_HEX_COLOR : getBiomeColor(region?.biomeId);
               const biomeTileHref = hex.kind === 'region' && !isLakeHex ? getBiomeTileHref(region?.biomeId) : undefined;
-              const tileImageSize = isMapRotated
-                ? Math.hypot(getHexWidth(hexRenderSize), hexRenderSize * 2)
-                : getHexWidth(hexRenderSize);
-              const tileImageHeight = isMapRotated ? tileImageSize : hexRenderSize * 2;
+              const tileImageSize = getHexWidth(hexRenderSize);
+              const tileImageHeight = hexRenderSize * 2;
               const fallbackBiome = BIOMES[FALLBACK_BIOME_ID];
               const biomePrimaryEmoji = region?.biomePrimaryEmoji ?? fallbackBiome.primaryEmoji;
               const biomeSecondaryEmojis = region?.biomeSecondaryEmojis ?? fallbackBiome.secondaryEmojis;
