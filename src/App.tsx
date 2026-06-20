@@ -3671,14 +3671,26 @@ function chooseRandomRiverControlPoints(
   redVertices: RiverVertex[],
   purpleVertices: RiverVertex[],
   existingRiverEndpointVerticesInRegion: RiverVertex[],
-  preferredStartVertex?: RiverVertex
+  preferredStartVertex?: RiverVertex,
+  preferredEndVertices: RiverVertex[] = []
 ): { startVertex: RiverVertex; middlePurpleVertex?: RiverVertex; endVertex: RiverVertex; startMode: 'existing river endpoint' | 'red vertex' } | null {
+  const choosePreferredEndVertex = (endPool: RiverVertex[], startVertex: RiverVertex): RiverVertex => {
+    const preferredEndKeys = new Set(preferredEndVertices.map((vertex) => vertex.key));
+    const preferredPool = endPool.filter((vertex) => preferredEndKeys.has(vertex.key));
+    if (preferredPool.length > 0) return randomFrom(preferredPool);
+    const maxDistance = Math.max(...endPool.map((vertex) => getRiverVertexDistance(startVertex, vertex)));
+    const farthestVertices = endPool.filter(
+      (vertex) => Math.abs(getRiverVertexDistance(startVertex, vertex) - maxDistance) < 0.001
+    );
+    return randomFrom(farthestVertices);
+  };
+
   if (existingRiverEndpointVerticesInRegion.length > 0) {
     if (redVertices.length < 1) return null;
     const startVertex = randomFrom(existingRiverEndpointVerticesInRegion);
     const endPool = redVertices.filter((vertex) => vertex.key !== startVertex.key);
     if (endPool.length === 0) return null;
-    const endVertex = randomFrom(endPool);
+    const endVertex = choosePreferredEndVertex(endPool, startVertex);
     if (purpleVertices.length === 0) return { startVertex, endVertex, startMode: 'existing river endpoint' };
     const preferredMiddle = purpleVertices.filter((vertex) => vertex.key !== startVertex.key && vertex.key !== endVertex.key);
     const middlePool = preferredMiddle.length > 0 ? preferredMiddle : purpleVertices;
@@ -3690,13 +3702,9 @@ function chooseRandomRiverControlPoints(
     : randomFrom(redVertices);
   const candidateEndVertices = redVertices.filter((vertex) => vertex.key !== startVertex.key);
   if (candidateEndVertices.length === 0) return null;
-  const maxDistance = Math.max(...candidateEndVertices.map((vertex) => getRiverVertexDistance(startVertex, vertex)));
-  const farthestVertices = candidateEndVertices.filter(
-    (vertex) => Math.abs(getRiverVertexDistance(startVertex, vertex) - maxDistance) < 0.001
-  );
-  const endVertex = randomFrom(farthestVertices);
+  const endVertex = choosePreferredEndVertex(candidateEndVertices, startVertex);
   console.log('River red endpoint selection', {
-    mode: 'farthest_red_vertex',
+    mode: preferredEndVertices.some((vertex) => vertex.key === endVertex.key) ? 'preferred_coastal_endpoint' : 'farthest_red_vertex',
     startVertexKey: startVertex.key,
     endVertexKey: endVertex.key,
     distance: getRiverVertexDistance(startVertex, endVertex),
@@ -3711,6 +3719,53 @@ function chooseRandomRiverControlPoints(
   return { startVertex, middlePurpleVertex, endVertex, startMode: 'red vertex' };
 }
 
+
+function uniqueHexes(hexes: AxialHex[]): AxialHex[] {
+  const unique = new Map<string, AxialHex>();
+  for (const hex of hexes) unique.set(hexKey(hex), hex);
+  return Array.from(unique.values());
+}
+
+function getAdjacentSeaHexesForRegion(
+  regionHexes: AxialHex[],
+  hexTerrainByKey: Map<string, HexTerrainData>
+): AxialHex[] {
+  const regionKeys = new Set(regionHexes.map(hexKey));
+  const seaHexes = new Map<string, AxialHex>();
+  for (const hex of regionHexes) {
+    for (const neighbor of getHexNeighbors(hex)) {
+      const key = hexKey(neighbor);
+      if (regionKeys.has(key)) continue;
+      if (hexTerrainByKey.get(key)?.terrainOverride === 'sea') seaHexes.set(key, neighbor);
+    }
+  }
+  return Array.from(seaHexes.values());
+}
+
+function getCandidateHexesNearestToSea(
+  candidateHexes: AxialHex[],
+  hexTerrainByKey: Map<string, HexTerrainData>
+): AxialHex[] {
+  if (candidateHexes.length === 0) return [];
+  const seaHexes = Array.from(getSeaHexKeys(hexTerrainByKey)).map(parseHexKey);
+  if (seaHexes.length === 0) return candidateHexes;
+  const distanceToNearestSea = (candidate: AxialHex): number => Math.min(
+    ...seaHexes.map((seaHex) => hexDistance(candidate, seaHex))
+  );
+  const minDistance = Math.min(...candidateHexes.map(distanceToNearestSea));
+  return candidateHexes.filter((candidate) => distanceToNearestSea(candidate) === minDistance);
+}
+
+function getCoastalRiverEndpointHexes(
+  region: Region,
+  candidateHexes: AxialHex[],
+  hexTerrainByKey: Map<string, HexTerrainData>
+): AxialHex[] {
+  if (!region.isCoastal) return [];
+  const adjacentSeaHexes = getAdjacentSeaHexesForRegion(region.hexes, hexTerrainByKey);
+  if (adjacentSeaHexes.length > 0) return adjacentSeaHexes;
+  return getCandidateHexesNearestToSea(candidateHexes, hexTerrainByKey);
+}
 
 function orderRedRiverStartVerticesBySeaDistance(
   redVertices: RiverVertex[],
@@ -3786,14 +3841,20 @@ function findBestFreeRiverPathFromEndpoints(
   riverGraph: RiverGraph,
   blockedEdgeKeys: Set<string>,
   centerHex: AxialHex | undefined,
-  occupiedVertexKeys: Set<string> = new Set()
+  occupiedVertexKeys: Set<string> = new Set(),
+  preferredEndVertices: RiverVertex[] = []
 ): { controlPoints: { startVertex: RiverVertex; middlePurpleVertex: RiverVertex; endVertex: RiverVertex; startMode: 'existing river endpoint' }; path: RiverVertex[] } | null {
-  if (!centerHex || purpleVertices.length === 0) return null;
+  if (purpleVertices.length === 0) return null;
   let bestTouchingCenter: { controlPoints: { startVertex: RiverVertex; middlePurpleVertex: RiverVertex; endVertex: RiverVertex; startMode: 'existing river endpoint' }; path: RiverVertex[] } | null = null;
   let bestFallback: { controlPoints: { startVertex: RiverVertex; middlePurpleVertex: RiverVertex; endVertex: RiverVertex; startMode: 'existing river endpoint' }; path: RiverVertex[] } | null = null;
+  const preferredEndKeys = new Set(preferredEndVertices.map((vertex) => vertex.key));
+  const endVertices = preferredEndKeys.size > 0
+    ? redVertices.filter((vertex) => preferredEndKeys.has(vertex.key))
+    : redVertices;
+  if (endVertices.length === 0) return null;
 
   for (const endpoint of existingRiverEndpointVerticesInRegion) {
-    for (const redVertex of redVertices) {
+    for (const redVertex of endVertices) {
       if (redVertex.key === endpoint.key) continue;
       for (const middlePurpleVertex of purpleVertices) {
         const controlPoints = { startVertex: endpoint, middlePurpleVertex, endVertex: redVertex, startMode: 'existing river endpoint' as const };
@@ -5773,8 +5834,14 @@ function generateRiverForRegion(
   hexTerrainByKey?: Map<string, HexTerrainData>
 ): RiverGenerationResult {
   try {
-    const riverGraph = buildRiverGraphForRegion(region.hexes, region.hexes, candidateHexes ?? []);
-    const { candidateVertices, neighborRegionVertices } = getRegionSharedVertices(region, regions, candidateHexes ?? []);
+    const terrainMap = hexTerrainByKey ?? new Map<string, HexTerrainData>();
+    const coastalEndpointHexes = getCoastalRiverEndpointHexes(region, candidateHexes ?? [], terrainMap);
+    const riverBoundaryHexes = uniqueHexes([...(candidateHexes ?? []), ...coastalEndpointHexes]);
+    const riverGraph = buildRiverGraphForRegion(region.hexes, region.hexes, riverBoundaryHexes);
+    const { candidateVertices, neighborRegionVertices } = getRegionSharedVertices(region, regions, riverBoundaryHexes);
+    const coastalEndpointVertices = coastalEndpointHexes.length > 0
+      ? getCandidateBoundaryVerticesForRegion(region.hexes, coastalEndpointHexes)
+      : [];
     const orangeKeys = new Set(neighborRegionVertices.map((vertex) => vertex.key));
     const redVertices = candidateVertices.filter((vertex) => !orangeKeys.has(vertex.key));
     const purpleVertices = region.centerHex ? getHexCornerPoints(region.centerHex) : [];
@@ -5784,7 +5851,7 @@ function generateRiverForRegion(
     const touchingEndpoints = findRiverEndpointsTouchingRegion(region, existingRivers, riverGraph);
     const incomingEndpoints = touchingEndpoints.filter((endpoint) => endpoint.endpointType === 'end');
     const outgoingEndpoints = touchingEndpoints.filter((endpoint) => endpoint.endpointType === 'start');
-    const terrainMap = hexTerrainByKey ?? new Map<string, HexTerrainData>();
+    const requireRiverThroughOriginalCenter = !(region.isCoastal && region.biomeLandType === 'settled');
 
     const buildMountainIncomingBoundaryFallback = (
       incomingEndpoint: RiverEndpointTouch,
@@ -5796,8 +5863,9 @@ function generateRiverForRegion(
         purpleVertices,
         riverGraph,
         new Set(usedRiverEdges),
-        region.centerHex,
-        existingRiverVertexKeys
+        requireRiverThroughOriginalCenter ? region.centerHex : undefined,
+        existingRiverVertexKeys,
+        coastalEndpointVertices
       );
 
       if (!endpointPath) {
@@ -6116,8 +6184,9 @@ function generateRiverForRegion(
         purpleVertices,
         riverGraph,
         blockedEdgeKeys,
-        region.centerHex,
-        existingRiverVertexKeys
+        requireRiverThroughOriginalCenter ? region.centerHex : undefined,
+        existingRiverVertexKeys,
+        coastalEndpointVertices
       );
       if (!mainEndpointPath) return { success: false, rivers: existingRivers, reason: 'main_incoming_river_path_not_found' };
       const { controlPoints: mainControlPoints, path: mainPath } = mainEndpointPath;
@@ -6311,8 +6380,9 @@ function generateRiverForRegion(
         purpleVertices,
         riverGraph,
         usedRiverEdges,
-        region.centerHex,
-        existingRiverVertexKeys
+        requireRiverThroughOriginalCenter ? region.centerHex : undefined,
+        existingRiverVertexKeys,
+        coastalEndpointVertices
       );
 
       if (!bestEndpointPath) {
@@ -6369,8 +6439,12 @@ function generateRiverForRegion(
       const findBestMountainSourcePath = (startVertices: RiverVertex[]) => {
         let bestPath: RiverVertex[] | null = null;
         let bestControlPoints: RiverControlPoints | null = null;
+        const coastalEndpointKeys = new Set(coastalEndpointVertices.map((vertex) => vertex.key));
+        const endVertices = coastalEndpointKeys.size > 0
+          ? redVertices.filter((vertex) => coastalEndpointKeys.has(vertex.key))
+          : redVertices;
         for (const startVertex of startVertices) {
-          for (const endVertex of redVertices) {
+          for (const endVertex of endVertices) {
             if (startVertex.key === endVertex.key) continue;
             const controlPoints: RiverControlPoints = { startVertex, endVertex, startMode: 'mountain source', endMode: 'red vertex' };
             const path = buildRiverPathViaControlPoints(controlPoints, riverGraph, usedRiverEdges);
@@ -6383,7 +6457,7 @@ function generateRiverForRegion(
               usedRiverEdges,
               existingRiverVertexKeys
             )) continue;
-            if (!riverPathTouchesCenterHexVertex(path, region.centerHex)) continue;
+            if (requireRiverThroughOriginalCenter && !riverPathTouchesCenterHexVertex(path, region.centerHex)) continue;
             if (!bestPath || path.length < bestPath.length) {
               bestPath = path;
               bestControlPoints = controlPoints;
@@ -6436,7 +6510,13 @@ function generateRiverForRegion(
       : redVertices;
     for (let attempt = 0; attempt < RANDOM_PAIR_ATTEMPTS; attempt += 1) {
       const preferredStartVertex = orderedRedStartVertices[attempt % orderedRedStartVertices.length];
-      const controlPoints = chooseRandomRiverControlPoints(redVertices, purpleVertices, existingRiverEndpointVerticesInRegion, preferredStartVertex);
+      const controlPoints = chooseRandomRiverControlPoints(
+        redVertices,
+        purpleVertices,
+        existingRiverEndpointVerticesInRegion,
+        preferredStartVertex,
+        coastalEndpointVertices
+      );
       if (!controlPoints) continue;
       const path = buildRiverPathViaControlPoints(controlPoints, riverGraph, usedRiverEdges);
       if (!validateRiverPathViaControlPoints(path, controlPoints, riverGraph, redVertices, existingRiverEndpointVerticesInRegion, usedRiverEdges)) continue;
