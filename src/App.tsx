@@ -350,7 +350,10 @@ const BIOME_TILE_HREFS: Partial<Record<BiomeId, string>> = {
   mountains: '/Mountains.png',
   swamp_forest: '/Swamp_forest.png',
   swamp: '/Swamp.png',
+  hilly_woodland: '/Hilly_woodland.png',
+  mountain_woodland: '/Mountain_woodland.png',
   deciduous_woodland: '/Deciduous_woodland.png',
+  mixed_woodland: '/Mixed_woodland.png',
   coniferous_woodland: '/Coniferous%20woodland.png',
   semi_desert: '/Semi-desert.png'
 };
@@ -436,12 +439,12 @@ const BIOMES: Record<BiomeId, Biome> = {
   open_plains: { id: 'open_plains', label: 'Открытые равнины', color: '#C8EE8C', primaryEmoji: '🌱', secondaryEmojis: [], wildWeight: 14, settledWeight: 32, heightLevel: 1 },
   swamp_forest: { id: 'swamp_forest', label: 'Заболоченный лес', color: '#ADDEA5', primaryEmoji: '💧', secondaryEmojis: ['🌳'], wildWeight: 3, settledWeight: 0, heightLevel: 1 },
   swamp: { id: 'swamp', label: 'Болото', color: '#84CE94', primaryEmoji: '💧', secondaryEmojis: ['🌱'], wildWeight: 4, settledWeight: 0, heightLevel: 1 },
-  hilly_woodland: { id: 'hilly_woodland', label: 'Холмистое редколесье', color: '#9A9861', primaryEmoji: '〰️', secondaryEmojis: ['🌱', '🌳'], wildWeight: 2, settledWeight: 2, heightLevel: 2 },
-  mountain_woodland: { id: 'mountain_woodland', label: 'Горное редколесье', color: '#7D8069', primaryEmoji: '⛰', secondaryEmojis: ['🌱', '🌲'], wildWeight: 1, settledWeight: 0, heightLevel: 3 },
+  hilly_woodland: { id: 'hilly_woodland', label: 'Холмистое редколесье', color: '#D7F796', primaryEmoji: '〰️', secondaryEmojis: ['🌱', '🌳'], wildWeight: 2, settledWeight: 2, heightLevel: 2 },
+  mountain_woodland: { id: 'mountain_woodland', label: 'Горное редколесье', color: '#577621', primaryEmoji: '⛰', secondaryEmojis: ['🌱', '🌲'], wildWeight: 1, settledWeight: 0, heightLevel: 3 },
   deciduous_woodland: { id: 'deciduous_woodland', label: 'Лиственное редколесье', color: '#879253', primaryEmoji: '🌱', secondaryEmojis: ['🌳'], wildWeight: 3, settledWeight: 19, heightLevel: 1 },
-  mixed_woodland: { id: 'mixed_woodland', label: 'Смешанное редколесье', color: '#82A568', primaryEmoji: '🌱', secondaryEmojis: ['🌳', '🌲'], wildWeight: 1, settledWeight: 7, heightLevel: 1 },
+  mixed_woodland: { id: 'mixed_woodland', label: 'Смешанное редколесье', color: '#4F9E45', primaryEmoji: '🌱', secondaryEmojis: ['🌳', '🌲'], wildWeight: 1, settledWeight: 7, heightLevel: 1 },
   coniferous_woodland: { id: 'coniferous_woodland', label: 'Хвойное редколесье', color: '#488A40', primaryEmoji: '🌱', secondaryEmojis: ['🌲'], wildWeight: 1, settledWeight: 1, heightLevel: 1 },
-  semi_desert: { id: 'semi_desert', label: 'Полупустыня', color: '#FFCC66', primaryEmoji: '🪨', secondaryEmojis: ['🌱'], wildWeight: 1, settledWeight: 0, heightLevel: 1 }
+  semi_desert: { id: 'semi_desert', label: 'Полупустыня', color: '#E7F79C', primaryEmoji: '🪨', secondaryEmojis: ['🌱'], wildWeight: 1, settledWeight: 0, heightLevel: 1 }
 };
 const FALLBACK_BIOME_ID: BiomeId = 'plain_deciduous_forest';
 const FALLBACK_SETTLED_BIOME_ID: BiomeId = 'open_plains';
@@ -11025,6 +11028,7 @@ export function App() {
   const selectedMeta = selectedHexKey ? metadataMap.get(selectedHexKey) : undefined;
   const selectedTerrain = selectedHexKey ? hexTerrainByKey.get(selectedHexKey) : undefined;
   const isSelectedLake = selectedTerrain?.terrainOverride === 'lake';
+  const isSelectedSea = selectedTerrain?.terrainOverride === 'sea';
   const isSelectedCandidate = selectedHex ? candidateHexes.some((c) => hexKey(c) === selectedHexKey) : false;
   const selectedHexRoadIds = selectedHex
     ? Array.from(new Set(roads
@@ -11759,13 +11763,6 @@ export function App() {
                 );
               })}
               {positionedHexes.hexes.map((hex) => {
-                if (hex.kind === 'sea') {
-                  const position = isMapRotated ? rotateMapPoint(hex.x, hex.y, positionedHexes.height) : hex;
-                  return (
-                    <text key={`sea-emoji-${hex.key}`} x={position.x} y={position.y} textAnchor="middle" dominantBaseline="central" fontSize={18} pointerEvents="none">{SEA_EMOJI}</text>
-                  );
-                }
-
                 const meta = metadataMap.get(hex.key);
                 const terrain = hexTerrainByKey.get(hex.key);
                 const isLakeHex = terrain?.terrainOverride === 'lake';
@@ -11844,6 +11841,8 @@ export function App() {
               <section className="info-block info-block--hex" aria-label={t.selectedHexInfo}>
                 {selectedRegion ? (
                   <p><strong>{SIZE_LABELS[language][selectedRegion.sizeCategory]} {selectedRegion.id}</strong></p>
+                ) : isSelectedSea ? (
+                  <p><strong>{SEA_EMOJI} {t.sea}</strong></p>
                 ) : (
                   <p><strong>{isSelectedCandidate ? t.candidateForRegion : t.noHexSelected}</strong></p>
                 )}
