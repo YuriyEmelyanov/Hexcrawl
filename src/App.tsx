@@ -409,9 +409,14 @@ function getBiomeTileHref(biomeId?: BiomeId): string | undefined {
   return biomeId ? BIOME_TILE_HREFS[biomeId] : undefined;
 }
 
+const MAINLAND_TOUCHES_SEA_NOTICE = 'Материк рядом с морем не создаётся. Выберите другой гекс или замените "Материк" на "Побережье".';
+
 function translateCoastNotice(message: string, language: Language): string {
   if (language === 'en' && message === 'Побережье здесь создать нельзя: из этого региона вытекает река в соседний регион. Реки не текут от побережья вглубь суши (BR-003).') {
     return 'A coast cannot be created here: a river flows from this region into a neighboring region. Rivers do not flow from the coast inland (BR-003).';
+  }
+  if (language === 'en' && message === MAINLAND_TOUCHES_SEA_NOTICE) {
+    return 'A mainland region cannot be created next to the sea. Choose another hex or change "Mainland" to "Coast".';
   }
   return message;
 }
@@ -565,6 +570,15 @@ function getNonSolitarySeaHexKeys(hexTerrainByKey: Map<string, HexTerrainData>):
   for (const key of seaKeys) if (!solitary.has(key)) result.add(key);
   return result;
 }
+
+function getSeaAdjacentHexKeys(seaKeys: Set<string>): Set<string> {
+  const result = new Set<string>();
+  for (const seaKey of seaKeys) {
+    for (const neighbor of getHexNeighbors(parseHexKey(seaKey))) result.add(hexKey(neighbor));
+  }
+  return result;
+}
+
 function getBoundaryHexes(region: Region): AxialHex[] {
   const regionKeys = new Set(region.hexes.map(hexKey));
   return region.hexes.filter((h) => getHexNeighbors(h).some((n) => !regionKeys.has(hexKey(n))));
@@ -4217,7 +4231,8 @@ type GrowthCandidate = {
 export function getGrowthCandidate(
   candidate: AxialHex,
   currentRegionHexes: Set<string>,
-  occupiedHexes: Set<string>
+  occupiedHexes: Set<string>,
+  zeroWeightHexes: Set<string> = new Set()
 ): GrowthCandidate | null {
   let currentRegionNeighborCount = 0;
   let existingRegionNeighborCount = 0;
@@ -4239,7 +4254,7 @@ export function getGrowthCandidate(
     hex: candidate,
     currentRegionNeighborCount,
     existingRegionNeighborCount,
-    totalGrowthWeight: currentRegionNeighborCount + existingRegionNeighborCount
+    totalGrowthWeight: zeroWeightHexes.has(hexKey(candidate)) ? 0 : currentRegionNeighborCount + existingRegionNeighborCount
   };
 }
 
@@ -4250,7 +4265,7 @@ export function weightedPickCandidate(candidates: GrowthCandidate[]): GrowthCand
 
   const totalWeight = candidates.reduce((acc, candidate) => acc + candidate.totalGrowthWeight, 0);
   if (totalWeight <= 0) {
-    return candidates[0];
+    return null;
   }
 
   let roll = Math.random() * totalWeight;
@@ -4298,23 +4313,29 @@ export function getFrontierCandidateHexes(currentRegionHexes: Set<string>, occup
 export function generateConnectedRegionFromAnchor(
   anchorHex: AxialHex,
   size: number,
-  occupiedHexes: Set<string>
+  occupiedHexes: Set<string>,
+  zeroWeightHexes: Set<string> = new Set()
 ): AxialHex[] {
   const targetSize = Math.max(1, size);
   const regionKeys = new Set<string>([hexKey(anchorHex)]);
   while (true) {
     const enclosedAreas = findFillableEnclosedEmptyAreas(regionKeys, occupiedHexes);
     if (enclosedAreas.length > 0) {
+      let addedEnclosedHex = false;
       for (const area of enclosedAreas) {
-        for (const hex of area) regionKeys.add(hexKey(hex));
+        for (const hex of area) {
+          if (zeroWeightHexes.has(hexKey(hex))) continue;
+          regionKeys.add(hexKey(hex));
+          addedEnclosedHex = true;
+        }
       }
-      continue;
+      if (addedEnclosedHex) continue;
     }
 
     if (regionKeys.size >= targetSize) break;
 
     const growthCandidates = getFrontierCandidateHexes(regionKeys, occupiedHexes)
-      .map((candidate) => getGrowthCandidate(candidate, regionKeys, occupiedHexes))
+      .map((candidate) => getGrowthCandidate(candidate, regionKeys, occupiedHexes, zeroWeightHexes))
       .filter((candidate): candidate is GrowthCandidate => candidate !== null);
     const picked = weightedPickCandidate(growthCandidates);
     if (!picked) break;
@@ -9962,6 +9983,15 @@ export function App() {
     const autoCoastRoll = Math.random();
     let firstCoastalFailureReason: CoastalGenerationFailureReason | null = null;
     setCoastNotice(null);
+    const existingSeaKeysForMainland = getSeaHexKeys(hexTerrainByKey);
+    const mainlandZeroWeightHexes = options.coastalPreference === 'mainland'
+      ? getSeaAdjacentHexKeys(existingSeaKeysForMainland)
+      : new Set<string>();
+    if (options.coastalPreference === 'mainland' && mainlandZeroWeightHexes.has(hexKey(anchorHex))) {
+      setCoastNotice(MAINLAND_TOUCHES_SEA_NOTICE);
+      console.warn('Mainland region was not created because selected candidate touches sea', { anchorHex });
+      return;
+    }
     for (let attempt = 0; attempt < maxRegionAttempts; attempt += 1) {
       let targetSize = options.targetSize ?? rollRegionTargetSize();
       const occupiedHexes = new Set(allRegionHexes.map(hexKey));
@@ -9970,8 +10000,8 @@ export function App() {
       const enclosedAnchorArea = findEnclosedEmptyAreaContainingHex(anchorHex, occupiedHexes);
       if (enclosedAnchorArea) targetSize = enclosedAnchorArea.length;
       const regionId = Math.max(0, ...regions.map((region) => region.id)) + 1;
-      let regionHexes = enclosedAnchorArea ?? generateConnectedRegionFromAnchor(anchorHex, targetSize, occupiedHexes);
-      if (!enclosedAnchorArea) {
+      let regionHexes = enclosedAnchorArea ?? generateConnectedRegionFromAnchor(anchorHex, targetSize, occupiedHexes, mainlandZeroWeightHexes);
+      if (!enclosedAnchorArea && options.coastalPreference !== 'mainland') {
         regionHexes = fillSmallEnclosedAreasForRegion(regionHexes, allRegionHexes, getSeaHexKeys(hexTerrainByKey));
       }
       const finalSize = regionHexes.length;
