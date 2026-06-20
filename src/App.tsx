@@ -11695,6 +11695,10 @@ export function App() {
               const region = meta?.regionId ? regions.find((item) => item.id === meta.regionId) : undefined;
               const fill = hex.kind === 'sea' ? SEA_HEX_COLOR : hex.kind === 'candidate' ? undefined : isLakeHex ? LAKE_HEX_COLOR : getBiomeColor(region?.biomeId);
               const biomeTileHref = hex.kind === 'region' && !isLakeHex ? getBiomeTileHref(region?.biomeId) : undefined;
+              const tileImageSize = isMapRotated
+                ? Math.hypot(getHexWidth(hexRenderSize), hexRenderSize * 2)
+                : getHexWidth(hexRenderSize);
+              const tileImageHeight = isMapRotated ? tileImageSize : hexRenderSize * 2;
               const fallbackBiome = BIOMES[FALLBACK_BIOME_ID];
               const biomePrimaryEmoji = region?.biomePrimaryEmoji ?? fallbackBiome.primaryEmoji;
               const biomeSecondaryEmojis = region?.biomeSecondaryEmojis ?? fallbackBiome.secondaryEmojis;
@@ -11725,17 +11729,17 @@ export function App() {
                 >
                   <polygon points={hexPoints(hex.x, hex.y, hexRenderSize)} className={cls} style={{ fill }} />
                   {biomeTileHref ? (
-                    <image
-                      href={biomeTileHref}
-                      x={hex.x - getHexWidth(hexRenderSize) / 2}
-                      y={hex.y - hexRenderSize}
-                      width={getHexWidth(hexRenderSize)}
-                      height={hexRenderSize * 2}
-                      preserveAspectRatio="xMidYMid slice"
-                      transform={isMapRotated ? `rotate(-90 ${hex.x} ${hex.y})` : undefined}
-                      clipPath={`url(#hex-clip-${hex.key})`}
-                      pointerEvents="none"
-                    />
+                    <g clipPath={`url(#hex-clip-${hex.key})`} pointerEvents="none">
+                      <image
+                        href={biomeTileHref}
+                        x={hex.x - tileImageSize / 2}
+                        y={hex.y - tileImageHeight / 2}
+                        width={tileImageSize}
+                        height={tileImageHeight}
+                        preserveAspectRatio="xMidYMid slice"
+                        transform={isMapRotated ? `rotate(-90 ${hex.x} ${hex.y})` : undefined}
+                      />
+                    </g>
                   ) : null}
                   <polygon points={hexPoints(hex.x, hex.y, hexRenderSize)} className={cls} style={{ fill: 'none' }} />
                   {SHOW_HEX_COORDINATES ? <text x={hex.x} y={hex.y + 4} textAnchor="middle" className="hex-label">{hex.q}/{hex.r}</text> : null}
