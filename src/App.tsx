@@ -413,9 +413,6 @@ function getBiomeTileHref(biomeId?: BiomeId): string | undefined {
 }
 
 function translateCoastNotice(message: string, language: Language): string {
-  if (language === 'en' && message === 'Побережье здесь создать нельзя: из этого региона вытекает река в соседний регион. Реки не текут от побережья вглубь суши (BR-003).') {
-    return 'A coast cannot be created here: a river flows from this region into a neighboring region. Rivers do not flow from the coast inland (BR-003).';
-  }
   return message;
 }
 
@@ -8858,7 +8855,6 @@ function getChangedRiverStartingFromSea(previousRivers: River[], nextRivers: Riv
   }) ?? null;
 }
 
-type CoastalGenerationFailureReason = 'outgoing_river_to_existing_region';
 
 function getSeaVertexKeysFromSeaKeys(seaKeys: Iterable<string>): Set<string> {
   const vertexKeys = new Set<string>();
@@ -10121,7 +10117,6 @@ export function App() {
   const addRegionToMap = (anchorHex: AxialHex, options: GenerationOptions = {}) => {
     const maxRegionAttempts = 30;
     const autoCoastRoll = Math.random();
-    let firstCoastalFailureReason: CoastalGenerationFailureReason | null = null;
     setCoastNotice(null);
     const existingSeaKeysForMainland = getSeaHexKeys(hexTerrainByKey);
     const mainlandZeroWeightHexes = options.coastalPreference === 'mainland'
@@ -10181,11 +10176,6 @@ export function App() {
       const existingSeaKeys = getSeaHexKeys(hexTerrainByKey);
       const forcedCoastContinuation = regionForcesCoastContinuation(regionHexes, existingSeaKeys);
       const hasOutgoingRiverToExistingRegion = regionHasOutgoingRiverToExistingRegion(touchingEndpoints);
-      if (options.coastalPreference === 'coast' && hasOutgoingRiverToExistingRegion) {
-        console.warn('Discarding coastal candidate region because it has outgoing river to existing region', { attempt, regionId });
-        if (attempt === 0) firstCoastalFailureReason = 'outgoing_river_to_existing_region';
-        continue;
-      }
       const isCoastalRegion = enclosedAnchorArea ? false
         : options.coastalPreference === 'coast' ? true
         : options.coastalPreference === 'mainland' ? false
@@ -10965,9 +10955,6 @@ export function App() {
         console.warn('Filled sea-locked pocket as bay (no valid land region possible)', { anchorHex, bayHexCount: bayKeys.length });
         return;
       }
-    }
-    if (firstCoastalFailureReason === 'outgoing_river_to_existing_region') {
-      setCoastNotice('Побережье здесь создать нельзя: из этого региона вытекает река в соседний регион. Реки не текут от побережья вглубь суши (BR-003).');
     }
     console.warn('Could not create region after max attempts', {
       anchorHex,
