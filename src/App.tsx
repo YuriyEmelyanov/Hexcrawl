@@ -4812,7 +4812,7 @@ function searchConnectedSeaSubset(
   if (requiredConnectedKeys.size === 0) return null;
   const isValidSeaSet = (seaSet: Set<string>): boolean => {
     const seaKeys = Array.from(seaSet);
-    const coastalValidation = validateCoastalSeaArea(regionHexes, seaKeys, existingSeaKeys, rivers, regionId, existingRegions);
+    const coastalValidation = validateCoastalSeaArea(regionHexes, seaKeys, rivers);
     if (!coastalValidation.valid) return false;
     const allSea = new Set(existingSeaKeys);
     for (const key of seaSet) allSea.add(key);
@@ -4919,13 +4919,36 @@ function getConnectedSeaComponent(startKey: string, seaKeys: Set<string>): Set<s
 }
 
 
-function splitNewSeaKeysByMouthConnectedComponent(newSeaKeys: string[], rivers: River[]): { connectedSeaKeys: string[]; disconnectedSeaKeys: string[] } {
-  const uniqueNewSeaKeys = Array.from(new Set(newSeaKeys));
-  const mouthSeaKey = uniqueNewSeaKeys.find((key) => seaHexTouchesAnyRiverMouth(parseHexKey(key), rivers));
-  if (!mouthSeaKey) return { connectedSeaKeys: uniqueNewSeaKeys, disconnectedSeaKeys: [] };
+function getConnectedSeaComponentFromStarts(startKeys: string[], seaKeys: Set<string>): Set<string> {
+  const connected = new Set<string>();
+  const queue: string[] = [];
+  for (const startKey of startKeys) {
+    if (!seaKeys.has(startKey) || connected.has(startKey)) continue;
+    connected.add(startKey);
+    queue.push(startKey);
+  }
 
-  const newSeaKeySet = new Set(uniqueNewSeaKeys);
-  const connected = getConnectedSeaComponent(mouthSeaKey, newSeaKeySet);
+  for (let cursor = 0; cursor < queue.length; cursor += 1) {
+    const currentKey = queue[cursor];
+    for (const neighbor of getHexNeighbors(parseHexKey(currentKey))) {
+      const neighborKey = hexKey(neighbor);
+      if (!seaKeys.has(neighborKey) || connected.has(neighborKey)) continue;
+      connected.add(neighborKey);
+      queue.push(neighborKey);
+    }
+  }
+  return connected;
+}
+
+function splitNewSeaKeysByMouthConnectedComponent(newSeaKeys: string[], existingSeaKeys: Iterable<string>, rivers: River[]): { connectedSeaKeys: string[]; disconnectedSeaKeys: string[] } {
+  const uniqueNewSeaKeys = Array.from(new Set(newSeaKeys));
+  const combinedSeaKeys = new Set(existingSeaKeys);
+  for (const key of uniqueNewSeaKeys) combinedSeaKeys.add(key);
+
+  const mouthSeaKeys = Array.from(combinedSeaKeys).filter((key) => seaHexTouchesAnyRiverMouth(parseHexKey(key), rivers));
+  if (mouthSeaKeys.length === 0) return { connectedSeaKeys: uniqueNewSeaKeys, disconnectedSeaKeys: [] };
+
+  const connected = getConnectedSeaComponentFromStarts(mouthSeaKeys, combinedSeaKeys);
   return {
     connectedSeaKeys: uniqueNewSeaKeys.filter((key) => connected.has(key)),
     disconnectedSeaKeys: uniqueNewSeaKeys.filter((key) => !connected.has(key))
@@ -5074,10 +5097,7 @@ type CoastalSeaValidationResult = { valid: true } | { valid: false; reason: stri
 function validateCoastalSeaArea(
   regionHexes: AxialHex[],
   seaHexKeys: string[],
-  existingSeaKeys: Set<string>,
-  rivers: River[],
-  regionId: number,
-  existingRegions: Region[]
+  rivers: River[]
 ): CoastalSeaValidationResult {
   const seaKeys = new Set(seaHexKeys);
   if (seaKeys.size === 0) return { valid: false, reason: 'no_sea_hexes' };
@@ -5088,35 +5108,11 @@ function validateCoastalSeaArea(
   const touchesRegion = Array.from(seaKeys).some(seaHexTouchesRegion);
   if (!touchesRegion) return { valid: false, reason: 'sea_area_does_not_touch_region' };
 
-  // Однослойное береговое море: каждый морской гекс примыкает к региону. Это легитимный
-  // берег (а не случайный точечный спавн), поэтому баны «одиночного» и «разорванного» моря
-  // к нему НЕ применяем — берег вполне может быть несколькими отдельными дугами или даже
-  // единичным гексом. Эти баны оставляем только на случай не-берегового моря.
-  const everySeaHexTouchesRegion = Array.from(seaKeys).every(seaHexTouchesRegion);
-  if (!everySeaHexTouchesRegion) {
-    // Каждый гекс нового моря обязан примыкать к другому морю (новому ИЛИ существующему).
-    for (const key of seaKeys) {
-      const touchesNewSea = getHexNeighbors(parseHexKey(key)).some((neighbor) => seaKeys.has(hexKey(neighbor)));
-      const touchesExistingSea = getHexNeighbors(parseHexKey(key)).some((neighbor) => existingSeaKeys.has(hexKey(neighbor)));
-      if (!touchesNewSea && !touchesExistingSea) return { valid: false, reason: 'isolated_sea_hex' };
-    }
-    if (seaKeys.size > 1) {
-      const firstKey = Array.from(seaKeys)[0];
-      if (getConnectedSeaComponent(firstKey, seaKeys).size !== seaKeys.size) return { valid: false, reason: 'disconnected_sea_area' };
-    }
-  }
-
-  // Связность с открытым океаном проверяем для НОВОГО моря: достаточно, чтобы каждый
-  // новый морской гекс дотягивался до океана. Старые уже-оторванные гексы (артефакты
-  // прежней генерации) в существующем море не должны валить новый прибрежный регион.
-  const unreachableSea = getUnreachableSeaKeys(
-    [...existingRegions.flatMap((region) => region.hexes), ...regionHexes],
-    new Set([...existingSeaKeys, ...seaKeys]),
-    rivers
-  );
-  if (Array.from(seaKeys).some((key) => unreachableSea.has(key))) {
-    return { valid: false, reason: 'sea_not_connected_through_open_tiles' };
-  }
+  // Связность моря с открытым океаном здесь больше не проверяем: после
+  // финальной геометрии региона новое море будет отфильтровано только по
+  // связности с морским гексом устья реки. Если устье уже упирается в
+  // существующее море, этот существующий гекс устья становится валидной
+  // затравкой связного компонента.
 
   const riverHeightViolation = getRiverSeaHeightViolation(rivers, seaKeys);
   if (riverHeightViolation) return { valid: false, reason: `sea_height_${riverHeightViolation.reason}` };
@@ -10480,7 +10476,7 @@ export function App() {
         )
         : [];
       const coastalSeaValidation = isCoastalRegion
-        ? validateCoastalSeaArea(regionHexes, seaHexKeys, getSeaHexKeys(hexTerrainByKey), finalizedRivers, regionId, regions)
+        ? validateCoastalSeaArea(regionHexes, seaHexKeys, finalizedRivers)
         : { valid: true as const };
       let effectiveIsCoastalRegion = isCoastalRegion;
       if (coastalSeaValidation.valid === false) {
@@ -10506,22 +10502,8 @@ export function App() {
       const nextRegions = [...regions, finalRegion];
 
       const existingSeaKeysBeforeRegion = getSeaHexKeys(hexTerrainByKey);
-      const newSeaKeySet = new Set(seaHexKeys);
       const allSeaKeys = new Set(existingSeaKeysBeforeRegion);
       for (const key of seaHexKeys) allSeaKeys.add(key);
-      // Старое море, уже оторванное от океана ДО этого региона (артефакт прежней
-      // 3-слойной генерации), не должно блокировать генерацию. Регион бракуем, только если
-      // ОН ухудшил связность: новый морской гекс не дотянулся до океана ИЛИ ранее достижимый
-      // морской гекс стал недостижим. Уже-битые-до гексы пропускаем.
-      const unreachableBeforeRegion = getUnreachableSeaKeys(allRegionHexes, existingSeaKeysBeforeRegion, rivers);
-      const unreachableAfterRegion = getUnreachableSeaKeys(nextAllHexes, allSeaKeys, finalizedRivers);
-      const seaBrokenByThisRegion = Array.from(unreachableAfterRegion).filter(
-        (key) => newSeaKeySet.has(key) || !unreachableBeforeRegion.has(key)
-      );
-      if (seaBrokenByThisRegion.length > 0) {
-        console.warn('Discarding failed coastal candidate region because sea would be disconnected from open tiles', { attempt, regionId, brokenCount: seaBrokenByThisRegion.length });
-        continue;
-      }
       let allNewSeaKeys = [...seaHexKeys];
       const nextCandidateHexesExclSea = getCandidateHexes(nextAllHexes, allSeaKeys);
       if (allNewSeaKeys.length > 0) {
@@ -10750,7 +10732,7 @@ export function App() {
         }
       }
       const createdSeaKeys = [...allNewSeaKeys, ...enclosedPocketKeys, ...seaHoleKeys];
-      const { connectedSeaKeys: finalSeaKeysToWrite, disconnectedSeaKeys: seaKeysDemotedToCandidates } = splitNewSeaKeysByMouthConnectedComponent(createdSeaKeys, riversWithDeltas);
+      const { connectedSeaKeys: finalSeaKeysToWrite, disconnectedSeaKeys: seaKeysDemotedToCandidates } = splitNewSeaKeysByMouthConnectedComponent(createdSeaKeys, existingSeaKeysBeforeRegion, riversWithDeltas);
       const finalSeaKeySetToWrite = new Set(finalSeaKeysToWrite);
       const demotedSeaKeySet = new Set(seaKeysDemotedToCandidates);
       for (const demotedKey of demotedSeaKeySet) pocketKeySet.delete(demotedKey);
@@ -10894,15 +10876,9 @@ export function App() {
       const bayEdgeKeys = getSeaEdgeKeysFromSeaKeys(bayKeys);
       const bayStartsRiverFromSea = getRiverStartingFromSea(rivers, bayVertexKeys, bayEdgeKeys);
       const bayHeightViolation = getRiverSeaHeightViolation(rivers, bayKeys);
-      // 1a: залив не должен создавать "застрявшее" море — всё море (существующее + залив)
-      // обязано оставаться достижимым от открытого океана.
-      const allRegionHexesForBay = regions.flatMap((region) => region.hexes);
-      const bayKeepsSeaReachable = validateSeaConnectivityThroughOpenTiles(
-        allRegionHexesForBay,
-        new Set([...existingSeaForBay, ...bayKeys]),
-        rivers
-      ).valid;
-      if (bayTouchesSea && bayKeepsSeaReachable && !bayStartsRiverFromSea && !bayHeightViolation) {
+      // Залив больше не обязан сохранять достижимость от открытого океана: для моря
+      // после построения региона остаётся только связность с гексом устья реки.
+      if (bayTouchesSea && !bayStartsRiverFromSea && !bayHeightViolation) {
         const snapshot: MapSnapshot = {
           regions,
           candidateHexes,
