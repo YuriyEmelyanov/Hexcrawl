@@ -911,21 +911,6 @@ function getCentralPoiLabel(region: Region, language: Language): string {
 
 type CoastalPreference = 'coast' | 'mainland';
 
-// В проекте пока нет модели моря/океана, поэтому параметр "побережье / материк"
-// влияет только на выбор высоты биома: побережье тянет генерацию к низинам
-// (равнины, болота, редколесья), материк — к возвышенностям (холмы, горы).
-function getCoastalHeightMultiplier(heightLevel: RegionHeightLevel, preference: CoastalPreference): number {
-  if (preference === 'coast') {
-    if (heightLevel === 1) return 2;
-    if (heightLevel === 2) return 1;
-    return 0.2;
-  }
-  // mainland
-  if (heightLevel === 1) return 0.6;
-  if (heightLevel === 2) return 1.3;
-  return 1.7;
-}
-
 // Параметры ручного управления генерацией региона. Любое поле, оставленное
 // пустым (undefined), означает "как раньше" — то есть случайный выбор.
 type GenerationOptions = {
@@ -1030,18 +1015,11 @@ function chooseBiomeId(
   landType: BiomeLandType,
   adjacentBiomeIds: BiomeId[],
   regionId?: number,
-  riverHeightConstraint?: RiverHeightConstraint,
-  coastalPreference?: CoastalPreference
+  riverHeightConstraint?: RiverHeightConstraint
 ): ChooseBiomeResult {
   const baseWeights = {} as Record<BiomeId, number>;
   for (const biome of Object.values(BIOMES)) {
     baseWeights[biome.id] = landType === 'settled' ? biome.settledWeight : biome.wildWeight;
-  }
-
-  if (coastalPreference) {
-    for (const biome of Object.values(BIOMES)) {
-      baseWeights[biome.id] *= getCoastalHeightMultiplier(biome.heightLevel, coastalPreference);
-    }
   }
 
   const uniqueAdjacentBiomeIds = new Set(adjacentBiomeIds);
@@ -10183,9 +10161,6 @@ export function App() {
         : hasOutgoingRiverToExistingRegion ? false
         : regions.length === 0 ? autoCoastRoll < START_REGION_AUTO_COAST_PROBABILITY
         : autoCoastRoll < coastProbabilityFromSpan(computeMapMaxSpanTiles(allRegionHexes));
-      // Прибрежный регион тяготеет к низинам (уровень моря).
-      const effectiveCoastalPreference: CoastalPreference | undefined =
-        options.coastalPreference ?? (isCoastalRegion ? 'coast' : undefined);
       const biomeLandType = options.landType ?? (regions.length === 0 ? 'settled' : chooseCoastalAwareLandType(isCoastalRegion));
       // Выбор биома: либо принудительно заданный пользователем, либо обычный
       // взвешенный выбор. Принудительный биом всё равно проверяется на
@@ -10196,7 +10171,7 @@ export function App() {
             ? { biomeId: options.biomeId }
             : { biomeId: null, reason: 'river_height_constraint_failed' };
         }
-        return chooseBiomeId(biomeLandType, adjacentBiomeIds, regionId, constraint, effectiveCoastalPreference);
+        return chooseBiomeId(biomeLandType, adjacentBiomeIds, regionId, constraint);
       };
       const candidateRegionForRiverCheck: Region = {
         ...candidateRegionForTopologyCheck,
