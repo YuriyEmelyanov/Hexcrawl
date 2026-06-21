@@ -10343,8 +10343,16 @@ export function App() {
       for (const [key, terrain] of lakesByHex) nextHexTerrainByKeyPreview.set(key, terrain);
       mergeAdjacentLakeIds(nextHexTerrainByKeyPreview);
       const nextAllHexes = nextRegionsForRiverGeneration.flatMap((r) => r.hexes);
-      // Реки не строятся через морские гексы — исключаем существующее море из фронта.
-      const nextCandidateHexes = getCandidateHexes(nextAllHexes, existingSeaForRivers);
+      // Реки не строятся через морские гексы — исключаем существующее море из фронта,
+      // кроме уже существующего моря рядом с новым прибрежным регионом: эти гексы
+      // нужны графу реки как явные приоритетные цели для устья.
+      const existingSeaRiverMouthTargetHexes = isCoastalRegion
+        ? getAdjacentSeaHexesForRegion(regionHexes, nextHexTerrainByKeyPreview)
+        : [];
+      const nextCandidateHexes = uniqueHexes([
+        ...getCandidateHexes(nextAllHexes, existingSeaForRivers),
+        ...existingSeaRiverMouthTargetHexes
+      ]);
       const riverResult = enclosedAnchorArea
         ? { success: true as const, rivers: riversForGeneration }
         : generateRiverForRegion(
