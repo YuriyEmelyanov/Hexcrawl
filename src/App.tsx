@@ -8919,13 +8919,20 @@ function getRiverSeaHeightViolation(
     }
 
     for (let index = 1; index < path.length; index += 1) {
-      if (index !== mouthIndex && seaVertexKeys.has(path[index].key)) {
+      const currentEdgeKey = edgeKey(path[index - 1], path[index]);
+      const isLastEdgeToMouth = index === mouthIndex;
+      const isPenultimateVertexOnSeaMouthEdge = index === mouthIndex - 1 && seaEdgeKeys.has(edgeKey(path[index], path[mouthIndex]));
+
+      // A river that flows into an existing sea can share the final sea edge
+      // with the coastline: both endpoints of that last edge are corners of
+      // the sea hex. Treat the penultimate endpoint as part of the mouth, not
+      // as an inland "river touches sea away from mouth" violation.
+      if (index !== mouthIndex && !isPenultimateVertexOnSeaMouthEdge && seaVertexKeys.has(path[index].key)) {
         return { river, reason: 'non_mouth_vertex_sea' };
       }
 
-      const currentEdgeKey = edgeKey(path[index - 1], path[index]);
       if (!seaEdgeKeys.has(currentEdgeKey)) continue;
-      if (index !== mouthIndex) {
+      if (!isLastEdgeToMouth) {
         return { river, reason: 'non_mouth_edge_sea' };
       }
     }
