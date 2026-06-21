@@ -10577,20 +10577,22 @@ export function App() {
         const extendedRivers = extendChangedRiverMouthsToSeaIfPossible(
           riversForGeneration,
           finalizedRivers,
-          allNewSeaKeys,
+          allSeaKeys,
           seaExtensionGraph
         );
         // Применяем удлинение устья только если оно НЕ создаёт контакт реки с морем
-        // вне устья. Иначе устье «уезжает» в море несколькими вершинами и регион
-        // отбраковывается (non_mouth_vertex_sea) — оставляем корректное устье у берега.
-        if (!getRiverSeaHeightViolation(extendedRivers, allNewSeaKeys)) {
+        // вне устья. Проверяем всё море (старое + новое): у побережья рядом с уже
+        // существующим морем устье должно иметь право дотянуться именно до соседнего
+        // старого морского гекса, иначе попытка позднее бракуется как касание моря
+        // не-устьевой вершиной.
+        if (!getRiverSeaHeightViolation(extendedRivers, allSeaKeys)) {
           finalizedRivers = extendedRivers;
         }
       }
       const riverStartingFromSeaAfterExtension = getRiverStartingFromSea(
         finalizedRivers,
-        getSeaVertexKeysFromSeaKeys(allNewSeaKeys),
-        getSeaEdgeKeysFromSeaKeys(allNewSeaKeys)
+        getSeaVertexKeysFromSeaKeys(allSeaKeys),
+        getSeaEdgeKeysFromSeaKeys(allSeaKeys)
       );
       if (riverStartingFromSeaAfterExtension) {
         console.warn('Discarding failed candidate region because a river starts from sea after extension', {
@@ -10600,7 +10602,7 @@ export function App() {
         });
         continue;
       }
-      const riverSeaHeightViolationAfterExtension = getRiverSeaHeightViolation(finalizedRivers, allNewSeaKeys);
+      const riverSeaHeightViolationAfterExtension = getRiverSeaHeightViolation(finalizedRivers, allSeaKeys);
       if (riverSeaHeightViolationAfterExtension) {
         console.warn('Discarding failed candidate region because a river violates sea height after extension', {
           attempt,
@@ -10670,17 +10672,17 @@ export function App() {
         const extendedWithDeltas = extendChangedRiverMouthsToSeaIfPossible(
           riversForGeneration,
           riversWithDeltas,
-          allNewSeaKeys,
+          allSeaKeys,
           seaExtensionGraph
         );
-        if (!getRiverSeaHeightViolation(extendedWithDeltas, allNewSeaKeys)) {
+        if (!getRiverSeaHeightViolation(extendedWithDeltas, allSeaKeys)) {
           riversWithDeltas = extendedWithDeltas;
         }
       }
       const riverStartingFromSeaAfterDeltas = getRiverStartingFromSea(
         riversWithDeltas,
-        getSeaVertexKeysFromSeaKeys(allNewSeaKeys),
-        getSeaEdgeKeysFromSeaKeys(allNewSeaKeys)
+        getSeaVertexKeysFromSeaKeys(allSeaKeys),
+        getSeaEdgeKeysFromSeaKeys(allSeaKeys)
       );
       if (riverStartingFromSeaAfterDeltas) {
         console.warn('Discarding failed candidate region because a river starts from sea after deltas', {
@@ -10690,7 +10692,7 @@ export function App() {
         });
         continue;
       }
-      const riverSeaHeightViolationAfterDeltas = getRiverSeaHeightViolation(riversWithDeltas, allNewSeaKeys);
+      const riverSeaHeightViolationAfterDeltas = getRiverSeaHeightViolation(riversWithDeltas, allSeaKeys);
       if (riverSeaHeightViolationAfterDeltas) {
         console.warn('Discarding failed candidate region because a river violates sea height after deltas', {
           attempt,
@@ -10735,7 +10737,7 @@ export function App() {
       // final sector rebuild, so later path/sanitize/delta changes cannot
       // overwrite the local mountain-region upstream tributary reduction.
       riversWithDeltas = applySingleMountainUpstreamTributaryDrop(regionForRiverGeneration, riversWithDeltas);
-      const finalRiverSeaHeightViolation = getRiverSeaHeightViolation(riversWithDeltas, allNewSeaKeys);
+      const finalRiverSeaHeightViolation = getRiverSeaHeightViolation(riversWithDeltas, allSeaKeys);
       if (finalRiverSeaHeightViolation) {
         console.warn('Discarding failed candidate region because a river violates final sea height', {
           attempt,
