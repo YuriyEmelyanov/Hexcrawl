@@ -412,14 +412,9 @@ function getBiomeTileHref(biomeId?: BiomeId): string | undefined {
   return biomeId ? BIOME_TILE_HREFS[biomeId] : undefined;
 }
 
-const MAINLAND_TOUCHES_SEA_NOTICE = 'Материк рядом с морем не создаётся. Выберите другой гекс или замените "Материк" на "Побережье".';
-
 function translateCoastNotice(message: string, language: Language): string {
   if (language === 'en' && message === 'Побережье здесь создать нельзя: из этого региона вытекает река в соседний регион. Реки не текут от побережья вглубь суши (BR-003).') {
     return 'A coast cannot be created here: a river flows from this region into a neighboring region. Rivers do not flow from the coast inland (BR-003).';
-  }
-  if (language === 'en' && message === MAINLAND_TOUCHES_SEA_NOTICE) {
-    return 'A mainland region cannot be created next to the sea. Choose another hex or change "Mainland" to "Coast".';
   }
   return message;
 }
@@ -9966,8 +9961,6 @@ export function App() {
   const [genLandType, setGenLandType] = useState<'auto' | BiomeLandType>('auto');
   const [genBiome, setGenBiome] = useState<'auto' | BiomeId>('auto');
   const [genCoastal, setGenCoastal] = useState<'auto' | CoastalPreference>('mainland');
-  // Режим ручной "кисти берега": клик по гексу кромки делает его морем и обратно.
-  const [seaBrushActive, setSeaBrushActive] = useState(false);
   // Уведомление пользователю (например, почему не создалось побережье).
   const [coastNotice, setCoastNotice] = useState<string | null>(null);
   const [clickPromptCandidateKey, setClickPromptCandidateKey] = useState<string | null>(null);
@@ -10134,11 +10127,6 @@ export function App() {
     const mainlandZeroWeightHexes = options.coastalPreference === 'mainland'
       ? getSeaAdjacentHexKeys(existingSeaKeysForMainland)
       : new Set<string>();
-    if (options.coastalPreference === 'mainland' && mainlandZeroWeightHexes.has(hexKey(anchorHex))) {
-      setCoastNotice(MAINLAND_TOUCHES_SEA_NOTICE);
-      console.warn('Mainland region was not created because selected candidate touches sea', { anchorHex });
-      return;
-    }
     for (let attempt = 0; attempt < maxRegionAttempts; attempt += 1) {
       let targetSize = options.targetSize ?? rollRegionTargetSize();
       const occupiedHexes = new Set(allRegionHexes.map(hexKey));
@@ -10160,10 +10148,8 @@ export function App() {
       }
       const adjacentBiomeIds = getAdjacentRegionBiomes(regionHexes, regionByHexKey);
       const nextAllHexesPreview = [...allRegionHexes, ...regionHexes];
-      // Морские гексы не считаются кандидатами при построении рек (реки не должны
-      // выходить из воды) — исключаем уже существующее море из речного фронта.
       const existingSeaForRivers = getSeaHexKeys(hexTerrainByKey);
-      const nextCandidateHexesPreview = getCandidateHexes(nextAllHexesPreview, existingSeaForRivers);
+      const nextCandidateHexesPreview = getCandidateHexes(nextAllHexesPreview);
       const candidateRegionForTopologyCheck: Region = {
         id: regionId,
         hexes: regionHexes,
@@ -10350,14 +10336,15 @@ export function App() {
       for (const [key, terrain] of lakesByHex) nextHexTerrainByKeyPreview.set(key, terrain);
       mergeAdjacentLakeIds(nextHexTerrainByKeyPreview);
       const nextAllHexes = nextRegionsForRiverGeneration.flatMap((r) => r.hexes);
-      // Реки не строятся через морские гексы — исключаем существующее море из фронта,
-      // кроме уже существующего моря рядом с новым прибрежным регионом: эти гексы
-      // нужны графу реки как явные приоритетные цели для устья.
+      // Обычный речной фронт не фильтрует существующее море заранее. Исключение — новый
+      // прибрежный регион: море убирается из общего фронта и добавляется обратно только
+      // рядом с этим регионом как явная цель устья. У материка нет дополнительных
+      // ограничений по морю: sea-adjacent гексы просто имеют нулевой вес роста.
       const existingSeaRiverMouthTargetHexes = isCoastalRegion
         ? getAdjacentSeaHexesForRegion(regionHexes, nextHexTerrainByKeyPreview)
         : [];
       const nextCandidateHexes = uniqueHexes([
-        ...getCandidateHexes(nextAllHexes, existingSeaForRivers),
+        ...getCandidateHexes(nextAllHexes, isCoastalRegion ? existingSeaForRivers : undefined),
         ...existingSeaRiverMouthTargetHexes
       ]);
       const riverResult = enclosedAnchorArea
@@ -11000,7 +10987,6 @@ export function App() {
     setIsMapRotated(false);
     setHistory([]);
     setPendingRegen(null);
-    setSeaBrushActive(false);
   };
 
   // Текущие параметры генерации, собранные из выпадающих списков.
@@ -11012,21 +10998,6 @@ export function App() {
     biomeId: genBiome === 'auto' ? undefined : genBiome,
     coastalPreference: genCoastal === 'auto' ? undefined : genCoastal
   });
-
-  // Ручная кисть берега: переключает гекс кромки между морем и сушей-кандидатом.
-  // Гексы регионов не трогаются. После правки пересчитываем фронт роста.
-  const toggleSeaHex = (hex: AxialHex) => {
-    const key = hexKey(hex);
-    if (metadataMap.has(key)) return; // это гекс региона — не трогаем
-    const nextTerrain = new Map(hexTerrainByKey);
-    if (nextTerrain.get(key)?.terrainOverride === 'sea') {
-      nextTerrain.delete(key);
-    } else {
-      nextTerrain.set(key, { terrainOverride: 'sea' });
-    }
-    setHexTerrainByKey(nextTerrain);
-    setCandidateHexes(getCandidateHexes(allRegionHexes, getSeaHexKeys(nextTerrain)));
-  };
 
   // Удаление последнего региона = восстановление снимка состояния, сделанного
   // перед его добавлением. Это надёжно откатывает и реки, и дороги, в том
@@ -11745,10 +11716,7 @@ export function App() {
                 <g
                   key={`${hex.kind}-${hex.key}`}
                   onClick={() => {
-                    if (seaBrushActive) {
-                      // В режиме кисти клик по кромке/морю переключает море, по региону — игнор.
-                      if (hex.kind !== 'region') toggleSeaHex({ q: hex.q, r: hex.r });
-                    } else if (hex.kind === 'candidate') {
+                    if (hex.kind === 'candidate') {
                       addRegionToMap({ q: hex.q, r: hex.r }, buildGenerationOptions());
                     } else {
                       setSelectedHex({ q: hex.q, r: hex.r });
