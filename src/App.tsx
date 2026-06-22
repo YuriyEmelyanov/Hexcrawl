@@ -10435,7 +10435,6 @@ export function App() {
         continue;
       }
       const preliminaryCenterHex = coastalRiverMouthCenterHex ?? centerHex;
-      const centerHexMovedToRiverMouth = !isSameHex(preliminaryCenterHex, centerHex);
 
       const preliminaryPointsOfInterest = assignPointsOfInterestForRegion(regionHexes, preliminaryCenterHex, regionTerrainByHex);
       const preliminaryRegion: Region = {
@@ -10475,23 +10474,11 @@ export function App() {
           roadResult.roads
         )
         : [];
-      const coastalSeaValidation = isCoastalRegion
-        ? validateCoastalSeaArea(regionHexes, seaHexKeys, finalizedRivers)
-        : { valid: true as const };
+      // Прибрежный режим больше не отбраковывает попытку из-за того,
+      // удалось или не удалось сгенерировать валидное море: регион может
+      // сохраниться даже без морских гексов или с морем, которое последующие
+      // шаги демотируют/исправят.
       let effectiveIsCoastalRegion = isCoastalRegion;
-      if (coastalSeaValidation.valid === false) {
-        if (!centerHexMovedToRiverMouth && options.coastalPreference !== 'coast' && coastalSeaValidation.reason === 'no_sea_hexes') {
-          seaHexKeys = [];
-          effectiveIsCoastalRegion = false;
-        } else {
-          console.warn('Discarding failed coastal candidate region because sea area is invalid', { attempt, regionId, reason: coastalSeaValidation.reason });
-          continue;
-        }
-      }
-      if (effectiveIsCoastalRegion && seaHexKeys.length === 0) {
-        console.warn('Discarding failed coastal candidate region because no sea hexes were generated', { attempt, regionId });
-        continue;
-      }
       const finalCenterHex = preliminaryCenterHex;
       const finalRegion: Region = {
         ...preliminaryRegion,
@@ -10790,18 +10777,8 @@ export function App() {
         });
         continue;
       }
-      // Река «море-в-море»: проверяем против ВСЕГО моря (существующее + новое + карманы + дырки).
-      const finalAllSeaKeys = [...existingSeaKeysBeforeRegion, ...finalSeaKeysToWrite];
-      const finalNewSeaHeightViolation = getRiverSeaHeightViolation(riversWithDeltas, finalAllSeaKeys);
-      if (finalNewSeaHeightViolation) {
-        console.warn('Discarding failed candidate region because final new sea touches a river away from its mouth', {
-          attempt,
-          regionId,
-          riverId: finalNewSeaHeightViolation.river.id,
-          reason: finalNewSeaHeightViolation.reason
-        });
-        continue;
-      }
+      // Финальная проверка «река море-в-море» отключена: такие конфигурации
+      // больше не отбраковывают построенный кандидатный регион.
 
       const finalRegionWithPoiKinds: Region = {
         ...finalRegionAfterLandPockets,
