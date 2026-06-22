@@ -4941,18 +4941,38 @@ function getConnectedSeaComponentFromStarts(startKeys: string[], seaKeys: Set<st
   return connected;
 }
 
-function splitNewSeaKeysByMouthConnectedComponent(newSeaKeys: string[], existingSeaKeys: Iterable<string>, rivers: River[]): { connectedSeaKeys: string[]; disconnectedSeaKeys: string[] } {
+function getConnectedSeaComponents(seaKeys: Set<string>): Set<string>[] {
+  const remaining = new Set(seaKeys);
+  const components: Set<string>[] = [];
+
+  while (remaining.size > 0) {
+    const startKey = Array.from(remaining)[0];
+    const component = getConnectedSeaComponent(startKey, seaKeys);
+    components.push(component);
+    for (const key of component) remaining.delete(key);
+  }
+
+  return components;
+}
+
+function splitNewSeaKeysByMouthConnectedComponent(newSeaKeys: string[], existingSeaKeys: Iterable<string>, _rivers: River[]): { connectedSeaKeys: string[]; disconnectedSeaKeys: string[] } {
   const uniqueNewSeaKeys = Array.from(new Set(newSeaKeys));
-  const combinedSeaKeys = new Set(existingSeaKeys);
+  const existingSeaSet = new Set(existingSeaKeys);
+  const combinedSeaKeys = new Set(existingSeaSet);
   for (const key of uniqueNewSeaKeys) combinedSeaKeys.add(key);
 
-  const mouthSeaKeys = Array.from(combinedSeaKeys).filter((key) => seaHexTouchesAnyRiverMouth(parseHexKey(key), rivers));
-  if (mouthSeaKeys.length === 0) return { connectedSeaKeys: uniqueNewSeaKeys, disconnectedSeaKeys: [] };
+  let selectedComponent: Set<string> | null = null;
+  if (existingSeaSet.size > 0) {
+    selectedComponent = getConnectedSeaComponentFromStarts(Array.from(existingSeaSet), combinedSeaKeys);
+  } else {
+    const components = getConnectedSeaComponents(new Set(uniqueNewSeaKeys));
+    selectedComponent = components.sort((a, b) => b.size - a.size)[0] ?? null;
+  }
 
-  const connected = getConnectedSeaComponentFromStarts(mouthSeaKeys, combinedSeaKeys);
+  if (!selectedComponent) return { connectedSeaKeys: [], disconnectedSeaKeys: uniqueNewSeaKeys };
   return {
-    connectedSeaKeys: uniqueNewSeaKeys.filter((key) => connected.has(key)),
-    disconnectedSeaKeys: uniqueNewSeaKeys.filter((key) => !connected.has(key))
+    connectedSeaKeys: uniqueNewSeaKeys.filter((key) => selectedComponent.has(key)),
+    disconnectedSeaKeys: uniqueNewSeaKeys.filter((key) => !selectedComponent.has(key))
   };
 }
 
@@ -5920,6 +5940,69 @@ function generateRiverForRegion(
       });
       return finalizeRiverGenerationForRegion(region, regions, terrainMap, riverGraph, nextRivers, candidateHexes ?? [], candidateVertices, neighborRegionVertices);
     };
+
+    if (region.isCoastal && outgoingEndpoints.length > 0 && incomingEndpoints.length === 0) {
+      const sortedOutgoingEndpoints = [...outgoingEndpoints].sort((a, b) => a.riverId - b.riverId);
+      const mainOutgoingEndpoint = sortedOutgoingEndpoints[0];
+      const orderedStartVertices = orderRedRiverStartVerticesBySeaDistance(redVertices, terrainMap)
+        .filter((vertex) => vertex.key !== mainOutgoingEndpoint.vertex.key);
+      const middlePool = purpleVertices.length > 0 ? purpleVertices : [undefined];
+      let bestPath: RiverVertex[] | null = null;
+      let bestControlPoints: RiverControlPoints | null = null;
+
+      for (const startVertex of orderedStartVertices) {
+        for (const middlePurpleVertex of middlePool) {
+          const controlPoints: RiverControlPoints = {
+            startVertex,
+            ...(middlePurpleVertex ? { middlePurpleVertex } : {}),
+            endVertex: mainOutgoingEndpoint.vertex,
+            startMode: 'red vertex',
+            endMode: 'existing river endpoint'
+          };
+          const path = buildRiverPathViaControlPoints(controlPoints, riverGraph, usedRiverEdges);
+          if (!validateRiverPathViaControlPoints(
+            path,
+            controlPoints,
+            riverGraph,
+            redVertices,
+            [mainOutgoingEndpoint.vertex],
+            usedRiverEdges,
+            existingRiverVertexKeys,
+            new Set([mainOutgoingEndpoint.vertex.key])
+          )) continue;
+          if (!bestPath || path.length < bestPath.length) {
+            bestPath = path;
+            bestControlPoints = controlPoints;
+          }
+        }
+        if (bestPath && bestControlPoints) break;
+      }
+
+      if (!bestPath || !bestControlPoints) {
+        console.warn('Could not connect coastal candidate source to outgoing river', {
+          regionId: region.id,
+          outgoingRiverId: mainOutgoingEndpoint.riverId,
+          redVertexCount: redVertices.length,
+        });
+        return { success: false, rivers: existingRivers, reason: 'coastal_outgoing_path_not_found' };
+      }
+
+      const nextRivers = existingRivers.map((river) => river.id !== mainOutgoingEndpoint.riverId
+        ? river
+        : {
+          ...river,
+          vertexPath: [...bestPath.slice(0, -1), ...river.vertexPath],
+          sectors: prependRiverPathSector(river, bestPath, getOutgoingInteriorConnectorFullness(river, mainOutgoingEndpoint.vertex.key, false), region.id),
+          controlPoints: bestControlPoints
+        });
+
+      for (const river of nextRivers) {
+        validateRiverDirection(river);
+        validateRiverContinuity(river);
+      }
+      validateNoDuplicateRiverEdges(nextRivers);
+      return finalizeRiverGenerationForRegion(region, regions, terrainMap, riverGraph, nextRivers, candidateHexes ?? [], candidateVertices, neighborRegionVertices);
+    }
 
     if (region.heightLevel === 3) {
       const fullnessTwoOrThreeOutgoingEndpoints = outgoingEndpoints
@@ -10271,10 +10354,10 @@ export function App() {
       // В прибрежном освоенном регионе переносим центральный гекс к устью
       // сразу после построения рек, чтобы POI и дороги уже строились от
       // прибрежного центра. Дикий прибрежный регион сохраняет обычный центр.
-      const coastalRiverMouthCenterHex = isCoastalRegion && biomeLandType === 'settled'
+      const coastalRiverMouthCenterHex = isCoastalRegion && biomeLandType === 'settled' && !hasOutgoingRiverToExistingRegion
         ? chooseRiverMouthCenterHex(regionHexes, finalizedRivers)
         : null;
-      if (isCoastalRegion && biomeLandType === 'settled' && !coastalRiverMouthCenterHex) {
+      if (isCoastalRegion && biomeLandType === 'settled' && !hasOutgoingRiverToExistingRegion && !coastalRiverMouthCenterHex) {
         console.warn('Settled coastal candidate region has no center hex touching a boundary river mouth', { attempt, regionId, acceptedOnFinalAttempt: isLastRegionAttempt });
         if (!isLastRegionAttempt) continue;
       }
