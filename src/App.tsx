@@ -9959,6 +9959,7 @@ export function App() {
       ? getSeaAdjacentHexKeys(existingSeaKeysForMainland)
       : new Set<string>();
     for (let attempt = 0; attempt < maxRegionAttempts; attempt += 1) {
+      const isLastRegionAttempt = attempt === maxRegionAttempts - 1;
       let targetSize = options.targetSize ?? rollRegionTargetSize();
       const occupiedHexes = new Set(allRegionHexes.map(hexKey));
       // Море — не суша: рост региона не должен захватывать гексы моря.
@@ -10086,28 +10087,35 @@ export function App() {
         }
 
         if (!biomeChoice.biomeId && biomeChoice.reason === 'river_height_constraint_failed') {
-          console.warn('Region attempt discarded because no biome satisfies river height constraints', {
+          console.warn('Region attempt has no biome satisfying river height constraints', {
             regionId,
             attempt,
             riverHeightConstraint,
             effectiveRiverHeightConstraint,
             trimmedOutgoingRiverIds: outgoingRiverIdsToTrim,
             adjacentBiomeIds,
-            biomeLandType
+            biomeLandType,
+            acceptedWithStandardWeights: isLastRegionAttempt
           });
-          continue;
+          if (!isLastRegionAttempt) continue;
+          biomeChoice = chooseBiomeId(biomeLandType, adjacentBiomeIds, regionId);
+          effectiveRiverHeightConstraint = { reasons: [] };
+          riversForGeneration = rivers;
+
         }
       }
       if (!biomeChoice.biomeId) {
-        console.warn('No biome available for candidate region; retrying region generation', {
+        console.warn('No biome available for candidate region; using standard biome weights on final attempt', {
           regionId,
           attempt,
           riverHeightConstraint,
           effectiveRiverHeightConstraint,
           adjacentBiomeIds,
-          biomeLandType
+          biomeLandType,
+          acceptedWithStandardWeights: isLastRegionAttempt
         });
-        continue;
+        if (!isLastRegionAttempt) continue;
+        biomeChoice = chooseBiomeId(biomeLandType, adjacentBiomeIds, regionId);
       }
       const biomeId = biomeChoice.biomeId;
       const biome = BIOMES[biomeId] ?? BIOMES[FALLBACK_BIOME_ID];
@@ -10170,7 +10178,7 @@ export function App() {
         ...getCandidateHexes(nextAllHexes, isCoastalRegion ? existingSeaForRivers : undefined),
         ...existingSeaRiverMouthTargetHexes
       ]);
-      const riverResult = enclosedAnchorArea
+      const generatedRiverResult = enclosedAnchorArea
         ? { success: true as const, rivers: riversForGeneration }
         : generateRiverForRegion(
           regionForRiverGeneration,
@@ -10179,9 +10187,12 @@ export function App() {
           nextCandidateHexes,
           nextHexTerrainByKeyPreview
         );
-      if (!riverResult.success) {
-        console.warn('Discarding failed candidate region', { attempt, reason: riverResult.reason });
-        continue;
+      const riverResult = generatedRiverResult.success || !isLastRegionAttempt
+        ? generatedRiverResult
+        : { success: true as const, rivers: generatedRiverResult.rivers };
+      if (!generatedRiverResult.success) {
+        console.warn('Candidate region river generation failed', { attempt, reason: generatedRiverResult.reason, acceptedWithoutGeneratedRiver: isLastRegionAttempt });
+        if (!isLastRegionAttempt) continue;
       }
       mergeAdjacentLakeIds(nextHexTerrainByKeyPreview);
 
@@ -10192,8 +10203,8 @@ export function App() {
       const connectedRivers = trimRiverSourcesOffExistingSea(riverResult.rivers, riversForGeneration, existingSeaVertexKeysForTrim);
 
       if (!validateExistingRiverEdgeFullnessPreserved(rivers, connectedRivers)) {
-        console.warn('Discarding failed candidate region because old river edge fullness was not preserved', { attempt });
-        continue;
+        console.warn('Candidate region changed old river edge fullness after sea-source trim', { attempt, acceptedOnFinalAttempt: isLastRegionAttempt });
+        if (!isLastRegionAttempt) continue;
       }
       let finalizedRivers = assignRiverSectors(
         connectedRivers,
@@ -10243,13 +10254,13 @@ export function App() {
         }
       }
       if (!validateExistingRiverEdgeFullnessPreserved(rivers, finalizedRivers)) {
-        console.warn('Discarding failed candidate region because final river sector assignment changed old edge fullness', { attempt });
-        continue;
+        console.warn('Candidate region final river sector assignment changed old edge fullness', { attempt, acceptedOnFinalAttempt: isLastRegionAttempt });
+        if (!isLastRegionAttempt) continue;
       }
       const initialRiverCycleValidation = validateRiverCycleSafety(finalizedRivers);
       if (!initialRiverCycleValidation.valid) {
-        console.warn('Discarding failed candidate region because river cycle was detected', { attempt, regionId, ...initialRiverCycleValidation });
-        continue;
+        console.warn('Candidate region river cycle was detected before sea finalization', { attempt, regionId, acceptedOnFinalAttempt: isLastRegionAttempt, ...initialRiverCycleValidation });
+        if (!isLastRegionAttempt) continue;
       }
 
       const regionTerrainByHex = new Map<string, HexTerrainData>();
@@ -10265,8 +10276,8 @@ export function App() {
         ? chooseRiverMouthCenterHex(regionHexes, finalizedRivers)
         : null;
       if (isCoastalRegion && biomeLandType === 'settled' && !coastalRiverMouthCenterHex) {
-        console.warn('Discarding failed settled coastal candidate region because no center hex touches a boundary river mouth', { attempt, regionId });
-        continue;
+        console.warn('Settled coastal candidate region has no center hex touching a boundary river mouth', { attempt, regionId, acceptedOnFinalAttempt: isLastRegionAttempt });
+        if (!isLastRegionAttempt) continue;
       }
       const preliminaryCenterHex = coastalRiverMouthCenterHex ?? centerHex;
 
@@ -10399,22 +10410,23 @@ export function App() {
       riversWithDeltas = applySingleMountainUpstreamTributaryDrop(regionForRiverGeneration, riversWithDeltas);
       const finalRiverSeaHeightViolation = getRiverSeaHeightViolation(riversWithDeltas, allSeaKeys);
       if (finalRiverSeaHeightViolation) {
-        console.warn('Discarding failed candidate region because a river violates final sea height', {
+        console.warn('Candidate region has a river violating final sea height', {
           attempt,
           regionId,
           riverId: finalRiverSeaHeightViolation.river.id,
-          reason: finalRiverSeaHeightViolation.reason
+          reason: finalRiverSeaHeightViolation.reason,
+          acceptedOnFinalAttempt: isLastRegionAttempt
         });
-        continue;
+        if (!isLastRegionAttempt) continue;
       }
       const finalRiverCycleValidation = validateRiverCycleSafety(riversWithDeltas);
       if (!finalRiverCycleValidation.valid) {
-        console.warn('Discarding failed candidate region because final river cycle was detected', { attempt, regionId, ...finalRiverCycleValidation });
-        continue;
+        console.warn('Candidate region final river cycle was detected', { attempt, regionId, acceptedOnFinalAttempt: isLastRegionAttempt, ...finalRiverCycleValidation });
+        if (!isLastRegionAttempt) continue;
       }
       if (!validateExistingRiverEdgeFullnessPreserved(rivers, riversWithDeltas)) {
-        console.warn('Discarding failed candidate region because final river edge fullness changed old rivers', { attempt, regionId });
-        continue;
+        console.warn('Candidate region final river edge fullness changed old rivers', { attempt, regionId, acceptedOnFinalAttempt: isLastRegionAttempt });
+        if (!isLastRegionAttempt) continue;
       }
       // Запертые кандидатные карманы больше не поглощаются морем: после
       // построения береговой линии они присоединяются к биому строящегося
@@ -10505,16 +10517,17 @@ export function App() {
         finalCandidateHexes = addCandidateHexKeys(finalCandidateHexes, demotedSeaKeySet, blockedCandidateKeys);
       }
       // Item 1: реки, возвращающиеся в уже пройденное озеро, больше не обрезаются.
-      // Некорректная попытка отбраковывается целиком, чтобы генератор искал другой путь.
+      // На финальной попытке сохраняем регион даже с таким нарушением.
       const lakeIdByVertexKey = buildLakeIdByVertexKey(getLakesForRegions(nextRegions, nextHexTerrainByKeyPreview));
       const riverLakeReentryViolation = getRiversLakeReentryViolation(riversWithDeltas, lakeIdByVertexKey);
       if (riverLakeReentryViolation) {
-        console.warn('Discarding failed candidate region because a river re-enters a lake it already left', {
+        console.warn('Candidate region has a river re-entering a lake it already left', {
           attempt,
           regionId,
+          acceptedOnFinalAttempt: isLastRegionAttempt,
           ...riverLakeReentryViolation
         });
-        continue;
+        if (!isLastRegionAttempt) continue;
       }
       // Финальная проверка «река море-в-море» отключена: такие конфигурации
       // больше не отбраковывают построенный кандидатный регион.
