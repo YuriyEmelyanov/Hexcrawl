@@ -6,6 +6,19 @@ type AxialHex = {
   r: number;
 };
 
+type RiverSlopeDirection = 'E' | 'NE' | 'NW' | 'W' | 'SW' | 'SE';
+
+type RiverSlopeInfo = {
+  radius: number;
+  edgeCount: number;
+  totalContribution: number;
+  vector: { x: number; y: number };
+  strength: number;
+  confidence: number;
+  direction: RiverSlopeDirection | 'none';
+  directionScores: Record<RiverSlopeDirection, number>;
+};
+
 type HexType = 'region' | 'candidate' | 'center';
 
 type BiomeLandType = 'settled' | 'wild';
@@ -84,6 +97,7 @@ type Region = {
   pointsOfInterest: AxialHex[];
   pointOfInterestKinds?: Record<string, PoiKind>;
   centralPoiKind?: CentralPoiKind;
+  riverSlope?: RiverSlopeInfo;
   // Прибрежный ли регион. Необязательное поле — старые сохранения без него
   // корректно читаются как "не прибрежный".
   isCoastal?: boolean;
@@ -462,6 +476,21 @@ const HEX_EDGE_DIRECTIONS: AxialHex[] = [
   { q: 0, r: -1 },
   { q: 1, r: -1 }
 ];
+const RIVER_SLOPE_RADIUS = 10;
+const RIVER_SLOPE_DIRECTIONS: { label: RiverSlopeDirection; vector: { x: number; y: number } }[] = [
+  { label: 'E', vector: toPixel(1, 0) },
+  { label: 'NE', vector: toPixel(1, -1) },
+  { label: 'NW', vector: toPixel(0, -1) },
+  { label: 'W', vector: toPixel(-1, 0) },
+  { label: 'SW', vector: toPixel(-1, 1) },
+  { label: 'SE', vector: toPixel(0, 1) }
+].map((direction) => {
+  const length = Math.hypot(direction.vector.x, direction.vector.y) || 1;
+  return {
+    label: direction.label,
+    vector: { x: direction.vector.x / length, y: direction.vector.y / length }
+  };
+});
 
 function hexKey(hex: AxialHex): string {
   return `${hex.q},${hex.r}`;
@@ -4124,6 +4153,115 @@ function hexDistance(a: AxialHex, b: AxialHex): number {
   const z2 = b.r;
   const y2 = -x2 - z2;
   return Math.max(Math.abs(x1 - x2), Math.abs(y1 - y2), Math.abs(z1 - z2));
+}
+
+function createEmptyRiverSlopeDirectionScores(): Record<RiverSlopeDirection, number> {
+  return {
+    E: 0,
+    NE: 0,
+    NW: 0,
+    W: 0,
+    SW: 0,
+    SE: 0
+  };
+}
+
+function getNearestRiverSlopeDirection(from: RiverVertex, to: RiverVertex): RiverSlopeDirection {
+  const dx = to.x - from.x;
+  const dy = to.y - from.y;
+  const length = Math.hypot(dx, dy);
+  if (length === 0) return 'E';
+
+  const nx = dx / length;
+  const ny = dy / length;
+  let best = RIVER_SLOPE_DIRECTIONS[0];
+  let bestDot = -Infinity;
+  for (const direction of RIVER_SLOPE_DIRECTIONS) {
+    const dot = nx * direction.vector.x + ny * direction.vector.y;
+    if (dot > bestDot) {
+      bestDot = dot;
+      best = direction;
+    }
+  }
+  return best.label;
+}
+
+function buildRiverEdgeHexesByKey(hexes: AxialHex[]): Map<string, AxialHex[]> {
+  const edgeHexesByKey = new Map<string, AxialHex[]>();
+  for (const hex of hexes) {
+    for (const edge of getHexEdgesAsVertexPairs(hex)) {
+      const edgeHexes = edgeHexesByKey.get(edge.edgeKey) ?? [];
+      edgeHexes.push(hex);
+      edgeHexesByKey.set(edge.edgeKey, edgeHexes);
+    }
+  }
+  return edgeHexesByKey;
+}
+
+function getRiverSlopeEdgeDistance(centerHex: AxialHex, edgeKeyValue: string, edgeHexesByKey: Map<string, AxialHex[]>): number | null {
+  const edgeHexes = edgeHexesByKey.get(edgeKeyValue);
+  if (!edgeHexes || edgeHexes.length === 0) return null;
+  return Math.min(...edgeHexes.map((hex) => hexDistance(centerHex, hex)));
+}
+
+function calculateRiverSlopeInfo(
+  centerHex: AxialHex,
+  existingHexes: AxialHex[],
+  rivers: River[],
+  radius = RIVER_SLOPE_RADIUS
+): RiverSlopeInfo {
+  const directionScores = createEmptyRiverSlopeDirectionScores();
+  const edgeHexesByKey = buildRiverEdgeHexesByKey(existingHexes);
+  let edgeCount = 0;
+
+  for (const river of rivers) {
+    for (const sector of river.sectors) {
+      for (let i = 1; i < sector.vertexPath.length; i += 1) {
+        const from = sector.vertexPath[i - 1];
+        const to = sector.vertexPath[i];
+        const currentEdgeKey = getRiverEdgeKey(from, to);
+        const rawDistance = getRiverSlopeEdgeDistance(centerHex, currentEdgeKey, edgeHexesByKey);
+        if (rawDistance === null || rawDistance > radius) continue;
+
+        const distance = Math.max(1, rawDistance);
+        const contribution = sector.fullness / distance;
+        const direction = getNearestRiverSlopeDirection(from, to);
+        directionScores[direction] += contribution;
+        edgeCount += 1;
+      }
+    }
+  }
+
+  let vector = { x: 0, y: 0 };
+  for (const direction of RIVER_SLOPE_DIRECTIONS) {
+    const score = directionScores[direction.label];
+    vector = {
+      x: vector.x + direction.vector.x * score,
+      y: vector.y + direction.vector.y * score
+    };
+  }
+
+  const totalContribution = Object.values(directionScores).reduce((sum, score) => sum + score, 0);
+  const strength = Math.hypot(vector.x, vector.y);
+  const confidence = totalContribution > 0 ? strength / totalContribution : 0;
+  const direction = strength > 0
+    ? RIVER_SLOPE_DIRECTIONS.reduce((best, current) => (
+      vector.x * current.vector.x + vector.y * current.vector.y > vector.x * best.vector.x + vector.y * best.vector.y
+        ? current
+        : best
+    ), RIVER_SLOPE_DIRECTIONS[0]).label
+    : 'none';
+
+  return {
+    radius,
+    edgeCount,
+    totalContribution,
+    vector,
+    strength,
+    confidence,
+    direction,
+    directionScores
+  };
 }
 
 type RiverGraphNode = {
@@ -10294,6 +10432,7 @@ export function App() {
       const biomeId = biomeChoice.biomeId;
       const biome = BIOMES[biomeId] ?? BIOMES[FALLBACK_BIOME_ID];
       const heightLevel = BIOMES[biomeId]?.heightLevel ?? 1;
+      const riverSlope = calculateRiverSlopeInfo(centerHex, allRegionHexes, riversForGeneration);
       const { lakesByHex, nextLakeId: computedNextLakeId } = assignLakesForRegion(regionHexes, centerHex, nextLakeId, biomeId);
       const centralPoiKind = assignCentralPoiKindForRegion(biomeLandType, sizeCategory);
       const regionBase: Omit<Region, 'pointsOfInterest'> = {
@@ -10313,6 +10452,7 @@ export function App() {
         biomeSecondaryEmojis: [...biome.secondaryEmojis],
         biomeEmojiLabel: biome.primaryEmoji + biome.secondaryEmojis.join(''),
         centralPoiKind,
+        riverSlope,
         isCoastal: isCoastalRegion
       };
       const regionForRiverGeneration: Region = {
@@ -11759,6 +11899,13 @@ export function App() {
                         <>
                           <p><strong>{t.selectedRegionHeight}:</strong> {getRegionHeightLabel(selectedRegion.heightLevel ?? getRegionHeightLevelFromBiomeId(selectedRegion.biomeId), language)}</p>
                           <p><strong>{t.selectedRegionSize}:</strong> {getRegionSizeDisplay(selectedRegion, language)}</p>
+                          {selectedRegion.riverSlope ? (
+                            <div>
+                              <p><strong>River slope before region:</strong> {selectedRegion.riverSlope.direction}, strength {selectedRegion.riverSlope.strength.toFixed(2)}, confidence {(selectedRegion.riverSlope.confidence * 100).toFixed(0)}%</p>
+                              <p>riverSlope radius: {selectedRegion.riverSlope.radius}, edges: {selectedRegion.riverSlope.edgeCount}, total: {selectedRegion.riverSlope.totalContribution.toFixed(2)}, vector: {selectedRegion.riverSlope.vector.x.toFixed(2)}/{selectedRegion.riverSlope.vector.y.toFixed(2)}</p>
+                              <p>riverSlope directions: E {selectedRegion.riverSlope.directionScores.E.toFixed(2)}; NE {selectedRegion.riverSlope.directionScores.NE.toFixed(2)}; NW {selectedRegion.riverSlope.directionScores.NW.toFixed(2)}; W {selectedRegion.riverSlope.directionScores.W.toFixed(2)}; SW {selectedRegion.riverSlope.directionScores.SW.toFixed(2)}; SE {selectedRegion.riverSlope.directionScores.SE.toFixed(2)}</p>
+                            </div>
+                          ) : null}
                         </>
                       ) : null}
                       <p><strong>centralHex:</strong> {selectedMeta?.isCenter ? t.yes : t.no}</p>
