@@ -3812,6 +3812,34 @@ function orderRedRiverStartVerticesBySeaDistance(
   return [...redVertices].sort((a, b) => distanceToSea(b) - distanceToSea(a));
 }
 
+function getBlockedRiverEndpointBoundaryEdgeKeys(
+  node: RiverGraphNode | undefined,
+  blockedEdgeKeys: Set<string>
+): Set<string> {
+  const nextBlockedEdgeKeys = new Set(blockedEdgeKeys);
+  if (!node?.isCandidateBoundaryVertex) return nextBlockedEdgeKeys;
+
+  // Candidate-facing river endpoints are selected at gate vertices: one edge
+  // leads into the region while two edges lie on the candidate/region border.
+  // The terminal river segment must use the inward edge, so boundary edges are
+  // blocked while pathfinding away from or toward such an endpoint.
+  for (const edgeKey of node.candidateBoundaryIncidentEdgeKeys) {
+    nextBlockedEdgeKeys.add(edgeKey);
+  }
+  return nextBlockedEdgeKeys;
+}
+
+function isInteriorTerminalRiverEdge(
+  endpointVertex: RiverVertex,
+  adjacentVertex: RiverVertex,
+  riverGraph: RiverGraph
+): boolean {
+  const endpointNode = riverGraph.nodes.get(endpointVertex.key);
+  if (!endpointNode?.isCandidateBoundaryVertex) return true;
+  const terminalEdge = riverGraph.edges.get(edgeKey(endpointVertex, adjacentVertex));
+  return Boolean(terminalEdge?.isInsideRegionEdge && !terminalEdge.isCandidateBoundaryEdge);
+}
+
 function buildRiverPathViaControlPoints(
   controlPoints: { startVertex: RiverVertex; middlePurpleVertex?: RiverVertex; endVertex: RiverVertex },
   riverGraph: RiverGraph,
@@ -3821,12 +3849,26 @@ function buildRiverPathViaControlPoints(
   const endNode = riverGraph.nodes.get(controlPoints.endVertex.key);
   if (!startNode || !endNode) return [];
   if (!controlPoints.middlePurpleVertex) {
-    return findRiverPath(startNode, endNode, riverGraph, blockedEdgeKeys).map((node) => ({ key: node.key, x: node.x, y: node.y }));
+    const endpointBlockedEdgeKeys = getBlockedRiverEndpointBoundaryEdgeKeys(
+      endNode,
+      getBlockedRiverEndpointBoundaryEdgeKeys(startNode, blockedEdgeKeys)
+    );
+    return findRiverPath(startNode, endNode, riverGraph, endpointBlockedEdgeKeys).map((node) => ({ key: node.key, x: node.x, y: node.y }));
   }
   const middleNode = riverGraph.nodes.get(controlPoints.middlePurpleVertex.key);
   if (!middleNode) return [];
-  const path1 = findRiverPath(startNode, middleNode, riverGraph, blockedEdgeKeys);
-  const path2 = findRiverPath(middleNode, endNode, riverGraph, blockedEdgeKeys);
+  const path1 = findRiverPath(
+    startNode,
+    middleNode,
+    riverGraph,
+    getBlockedRiverEndpointBoundaryEdgeKeys(startNode, blockedEdgeKeys)
+  );
+  const path2 = findRiverPath(
+    middleNode,
+    endNode,
+    riverGraph,
+    getBlockedRiverEndpointBoundaryEdgeKeys(endNode, blockedEdgeKeys)
+  );
   if (path1.length < 1 || path2.length < 1) return [];
   const joined = [...path1, ...path2.slice(1)];
   return joined.map((node) => ({ key: node.key, x: node.x, y: node.y }));
@@ -3956,10 +3998,10 @@ function validateRiverPathViaControlPoints(
   if (!riverPathEdgeKeys) return false;
   const firstEdge = riverGraph.edges.get(edgeKey(vertexPath[0], vertexPath[1]));
   const lastEdge = riverGraph.edges.get(edgeKey(vertexPath[vertexPath.length - 2], vertexPath[vertexPath.length - 1]));
-  if (controlPoints.startMode === 'red vertex' && !firstEdge?.isRegionBoundaryEdge) return false;
-  if (!lastEdge?.isRegionBoundaryEdge) return false;
-  if (hasCandidateBoundary && controlPoints.startMode === 'red vertex' && !firstEdge?.isCandidateBoundaryEdge) return false;
-  if (hasCandidateBoundary && !lastEdge?.isCandidateBoundaryEdge) return false;
+  if (controlPoints.startMode === 'red vertex' && !firstEdge?.isInsideRegionEdge) return false;
+  if (!lastEdge?.isInsideRegionEdge) return false;
+  if (hasCandidateBoundary && controlPoints.startMode === 'red vertex' && !isInteriorTerminalRiverEdge(vertexPath[0], vertexPath[1], riverGraph)) return false;
+  if (hasCandidateBoundary && !isInteriorTerminalRiverEdge(vertexPath[vertexPath.length - 1], vertexPath[vertexPath.length - 2], riverGraph)) return false;
   if (hasDuplicateEdgeKeys(riverPathEdgeKeys)) return false;
   if (riverPathEdgeKeys.some((pathEdgeKey) => usedRiverEdges.has(pathEdgeKey))) return false;
   if (!riverPathAvoidsOccupiedVertices(vertexPath, occupiedVertexKeys, allowedOccupiedVertexKeys)) return false;
