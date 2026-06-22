@@ -1283,6 +1283,28 @@ function getVertexUsageByKeyForRegion(
   return map;
 }
 
+
+function getCandidateEndpointVerticesForRegion(
+  candidateVertices: RiverVertex[],
+  riverGraph: RiverGraph
+): RiverVertex[] {
+  // A river may enter/leave an ungenerated candidate only through a "gate"
+  // vertex: one incident edge continues inside the current region, while the
+  // other two incident region edges are the shared boundary with candidate
+  // hexes. This keeps river endpoints at candidate corners that can naturally
+  // continue after the candidate becomes a generated region.
+  const endpointVertices = candidateVertices.filter((vertex) => {
+    const node = riverGraph.nodes.get(vertex.key);
+    if (!node?.isCandidateBoundaryVertex) return false;
+    const insideRegionEdgeCount = node.regionIncidentEdgeKeys.filter((edgeKey) => (
+      riverGraph.edges.get(edgeKey)?.isInsideRegionEdge
+    )).length;
+    return insideRegionEdgeCount === 1 && node.candidateBoundaryIncidentEdgeKeys.length === 2;
+  });
+
+  return endpointVertices;
+}
+
 function getLakesForRegion(
   region: Region,
   hexTerrainByKey: Map<string, HexTerrainData>
@@ -5363,7 +5385,8 @@ function ensureMinimumMountainRiversForRegion(
   riverGraph: RiverGraph,
   candidateHexes: AxialHex[],
   candidateVertices: RiverVertex[],
-  neighborRegionVertices: RiverVertex[]
+  neighborRegionVertices: RiverVertex[],
+  candidateEndpointVertices: RiverVertex[] = candidateVertices
 ): River[] {
   const minimumRiverCount = getMinimumMountainRiverCountForRegion(region);
   if (minimumRiverCount <= 0) return rivers;
@@ -5388,7 +5411,7 @@ function ensureMinimumMountainRiversForRegion(
       !existingRiverVertexKeys.has(vertex.key)
       && (!requireCenterHexSource || centerHexVertexKeys.has(vertex.key))
     ));
-    const endVertices = candidateVertices.filter((vertex) => !blockedEndVertexKeys.has(vertex.key));
+    const endVertices = candidateEndpointVertices.filter((vertex) => !blockedEndVertexKeys.has(vertex.key));
 
     const path = buildMinimumMountainRiverPath(sourceVertices, endVertices, riverGraph, usedRiverEdges, existingRiverVertexKeys);
     if (!path) {
@@ -5820,7 +5843,8 @@ function finalizeRiverGenerationForRegion(
   rivers: River[],
   candidateHexes: AxialHex[],
   candidateVertices: RiverVertex[],
-  neighborRegionVertices: RiverVertex[]
+  neighborRegionVertices: RiverVertex[],
+  candidateEndpointVertices: RiverVertex[] = candidateVertices
 ): RiverGenerationResult {
   const riversAfterExistingLogic = tryAddSmallTributaryRiver(region, terrainMap, riverGraph, rivers, candidateHexes);
   const riversWithMinimumMountainRivers = ensureMinimumMountainRiversForRegion(
@@ -5830,14 +5854,15 @@ function finalizeRiverGenerationForRegion(
     riverGraph,
     candidateHexes,
     candidateVertices,
-    neighborRegionVertices
+    neighborRegionVertices,
+    candidateEndpointVertices
   );
   const riversWithRemainingIncomingConnected = connectRemainingIncomingRiversForRegion(
     region,
     terrainMap,
     riverGraph,
     riversWithMinimumMountainRivers,
-    candidateVertices
+    candidateEndpointVertices
   );
   const riversWithRemainingOutgoingConnected = connectRemainingOutgoingRiversForRegion(
     region,
@@ -5876,8 +5901,9 @@ function generateRiverForRegion(
     const coastalEndpointVertices = coastalEndpointHexes.length > 0
       ? getCandidateBoundaryVerticesForRegion(region.hexes, coastalEndpointHexes)
       : [];
+    const candidateEndpointVertices = getCandidateEndpointVerticesForRegion(candidateVertices, riverGraph);
     const orangeKeys = new Set(neighborRegionVertices.map((vertex) => vertex.key));
-    const redVertices = candidateVertices.filter((vertex) => !orangeKeys.has(vertex.key));
+    const redVertices = candidateEndpointVertices.filter((vertex) => !orangeKeys.has(vertex.key));
     const purpleVertices = region.centerHex ? getHexCornerPoints(region.centerHex) : [];
     const existingRiverEndpointVerticesInRegion = getExistingRiverEndpointVerticesInRegion(region, existingRivers, riverGraph);
     const usedRiverEdges = buildUsedRiverEdges(existingRivers);
@@ -5949,7 +5975,7 @@ function generateRiverForRegion(
         incomingRiverId: incomingEndpoint.riverId,
         fallbackReason,
       });
-      return finalizeRiverGenerationForRegion(region, regions, terrainMap, riverGraph, nextRivers, candidateHexes ?? [], candidateVertices, neighborRegionVertices);
+      return finalizeRiverGenerationForRegion(region, regions, terrainMap, riverGraph, nextRivers, candidateHexes ?? [], candidateVertices, neighborRegionVertices, candidateEndpointVertices);
     };
 
     if (region.isCoastal && outgoingEndpoints.length > 0 && incomingEndpoints.length === 0) {
@@ -6012,7 +6038,7 @@ function generateRiverForRegion(
         validateRiverContinuity(river);
       }
       validateNoDuplicateRiverEdges(nextRivers);
-      return finalizeRiverGenerationForRegion(region, regions, terrainMap, riverGraph, nextRivers, candidateHexes ?? [], candidateVertices, neighborRegionVertices);
+      return finalizeRiverGenerationForRegion(region, regions, terrainMap, riverGraph, nextRivers, candidateHexes ?? [], candidateVertices, neighborRegionVertices, candidateEndpointVertices);
     }
 
     if (region.heightLevel === 3) {
@@ -6092,7 +6118,7 @@ function generateRiverForRegion(
           validateRiverContinuity(river);
         }
         validateNoDuplicateRiverEdges(nextRivers);
-        return finalizeRiverGenerationForRegion(region, regions, terrainMap, riverGraph, nextRivers, candidateHexes ?? [], candidateVertices, neighborRegionVertices);
+        return finalizeRiverGenerationForRegion(region, regions, terrainMap, riverGraph, nextRivers, candidateHexes ?? [], candidateVertices, neighborRegionVertices, candidateEndpointVertices);
       }
     }
 
@@ -6247,7 +6273,7 @@ function generateRiverForRegion(
         validateRiverContinuity(river);
       }
       validateNoDuplicateRiverEdges(nextRivers);
-      return finalizeRiverGenerationForRegion(region, regions, terrainMap, riverGraph, nextRivers, candidateHexes ?? [], candidateVertices, neighborRegionVertices);
+      return finalizeRiverGenerationForRegion(region, regions, terrainMap, riverGraph, nextRivers, candidateHexes ?? [], candidateVertices, neighborRegionVertices, candidateEndpointVertices);
     }
 
     if (incomingEndpoints.length >= 2 && outgoingEndpoints.length === 0) {
@@ -6377,7 +6403,7 @@ function generateRiverForRegion(
         validateRiverContinuity(river);
       }
       validateNoDuplicateRiverEdges(nextRivers);
-      return finalizeRiverGenerationForRegion(region, regions, terrainMap, riverGraph, nextRivers, candidateHexes ?? [], candidateVertices, neighborRegionVertices);
+      return finalizeRiverGenerationForRegion(region, regions, terrainMap, riverGraph, nextRivers, candidateHexes ?? [], candidateVertices, neighborRegionVertices, candidateEndpointVertices);
     }
 
     if (touchingEndpoints.length >= 2) {
@@ -6451,7 +6477,7 @@ function generateRiverForRegion(
               validateRiverContinuity(river);
             }
             validateNoDuplicateRiverEdges(mergedWithTributaries);
-            return finalizeRiverGenerationForRegion(region, regions, terrainMap, riverGraph, mergedWithTributaries, candidateHexes ?? [], candidateVertices, neighborRegionVertices);
+            return finalizeRiverGenerationForRegion(region, regions, terrainMap, riverGraph, mergedWithTributaries, candidateHexes ?? [], candidateVertices, neighborRegionVertices, candidateEndpointVertices);
           }
         } else {
           console.warn('Could not connect river pair: no free connector path', {
@@ -6468,7 +6494,7 @@ function generateRiverForRegion(
 
     if (existingRiverEndpointVerticesInRegion.length > 0 && redVertices.length < 1) return { success: false, rivers: existingRivers, reason: 'no_red_vertices_for_extension' };
     if (existingRiverEndpointVerticesInRegion.length === 0 && redVertices.length < 2) {
-      return finalizeRiverGenerationForRegion(region, regions, terrainMap, riverGraph, existingRivers, candidateHexes ?? [], candidateVertices, neighborRegionVertices);
+      return finalizeRiverGenerationForRegion(region, regions, terrainMap, riverGraph, existingRivers, candidateHexes ?? [], candidateVertices, neighborRegionVertices, candidateEndpointVertices);
     }
     if (existingRiverEndpointVerticesInRegion.length > 0) {
       const bestEndpointPath = findBestFreeRiverPathFromEndpoints(
@@ -6524,7 +6550,7 @@ function generateRiverForRegion(
 
       for (const river of nextRivers) validateRiverDirection(river);
       validateNoDuplicateRiverEdges(nextRivers);
-      return finalizeRiverGenerationForRegion(region, regions, terrainMap, riverGraph, nextRivers, candidateHexes ?? [], candidateVertices, neighborRegionVertices);
+      return finalizeRiverGenerationForRegion(region, regions, terrainMap, riverGraph, nextRivers, candidateHexes ?? [], candidateVertices, neighborRegionVertices, candidateEndpointVertices);
     }
 
     if (region.heightLevel === 3) {
@@ -6598,7 +6624,7 @@ function generateRiverForRegion(
         validateRiverContinuity(nextRiver);
       }
       validateNoDuplicateRiverEdges(nextRivers);
-      return finalizeRiverGenerationForRegion(region, regions, terrainMap, riverGraph, nextRivers, candidateHexes ?? [], candidateVertices, neighborRegionVertices);
+      return finalizeRiverGenerationForRegion(region, regions, terrainMap, riverGraph, nextRivers, candidateHexes ?? [], candidateVertices, neighborRegionVertices, candidateEndpointVertices);
     }
 
     const RANDOM_PAIR_ATTEMPTS = 50;
@@ -6647,7 +6673,7 @@ function generateRiverForRegion(
 
       for (const river of nextRivers) validateRiverDirection(river);
       validateNoDuplicateRiverEdges(nextRivers);
-      return finalizeRiverGenerationForRegion(region, regions, terrainMap, riverGraph, nextRivers, candidateHexes ?? [], candidateVertices, neighborRegionVertices);
+      return finalizeRiverGenerationForRegion(region, regions, terrainMap, riverGraph, nextRivers, candidateHexes ?? [], candidateVertices, neighborRegionVertices, candidateEndpointVertices);
     }
   } catch (error) {
     console.warn('river generation failed', { regionId: region.id, error });
