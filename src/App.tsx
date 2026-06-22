@@ -8798,8 +8798,8 @@ function trimRiverSourcesOffExistingSea(
     if (!riverChangedFromPrevious(previousById.get(river.id), river)) return river; // старую неизменную реку не трогаем
     let start = 0;
     while (start < path.length - 1 && seaVertexKeys.has(path[start].key)) start += 1;
-    // Нечего обрезать, либо обрезка оставила бы слишком короткую реку — оставляем как есть,
-    // дальнейшая проверка getChangedRiverStartingFromSea отбракует регион (поведение как раньше).
+    // Нечего обрезать, либо обрезка оставила бы слишком короткую реку — оставляем как есть;
+    // финальная проверка моря разберёт итоговую геометрию после всех правок рек.
     if (start === 0 || path.length - start < 2) return river;
     return { ...river, vertexPath: path.slice(start) };
   });
@@ -8814,21 +8814,6 @@ function getRiverStartingFromSea(rivers: River[], seaVertexKeys: Set<string>, se
     return false;
   }) ?? null;
 }
-
-function getChangedRiverStartingFromSea(previousRivers: River[], nextRivers: River[], seaKeys: Iterable<string>): River | null {
-  const seaKeyList = Array.from(seaKeys);
-  if (seaKeyList.length === 0) return null;
-  const seaVertexKeys = getSeaVertexKeysFromSeaKeys(seaKeyList);
-  const seaEdgeKeys = getSeaEdgeKeysFromSeaKeys(seaKeyList);
-  const previousById = new Map(previousRivers.map((river) => [river.id, river]));
-
-  return nextRivers.find((river) => {
-    const previousRiver = previousById.get(river.id);
-    if (!riverChangedFromPrevious(previousRiver, river)) return false;
-    return getRiverStartingFromSea([river], seaVertexKeys, seaEdgeKeys) !== null;
-  }) ?? null;
-}
-
 
 function getSeaVertexKeysFromSeaKeys(seaKeys: Iterable<string>): Set<string> {
   const vertexKeys = new Set<string>();
@@ -8901,25 +8886,6 @@ function getRiverSeaHeightViolation(
         return { river, reason: 'non_mouth_edge_sea' };
       }
     }
-  }
-
-  return null;
-}
-
-function getChangedRiverSeaHeightViolation(
-  previousRivers: River[],
-  nextRivers: River[],
-  seaKeys: Iterable<string>
-): { river: River; reason: RiverSeaHeightViolationReason } | null {
-  const seaKeyList = Array.from(seaKeys);
-  if (seaKeyList.length === 0) return null;
-
-  const previousById = new Map(previousRivers.map((river) => [river.id, river]));
-  for (const river of nextRivers) {
-    const previousRiver = previousById.get(river.id);
-    if (!riverChangedFromPrevious(previousRiver, river)) continue;
-    const violation = getRiverSeaHeightViolation([river], seaKeyList);
-    if (violation) return violation;
   }
 
   return null;
@@ -9204,110 +9170,6 @@ function riverChangedFromPrevious(previousRiver: River | undefined, river: River
   if (!previousRiver) return true;
   return riverPathSignature(previousRiver) !== riverPathSignature(river)
     || riverSectorsSignature(previousRiver) !== riverSectorsSignature(river);
-}
-
-function findRiverExtensionPathToSea(
-  startVertex: RiverVertex,
-  seaVertexKeys: Set<string>,
-  riverGraph: RiverGraph,
-  usedRiverEdges: Set<string>,
-  blockedVertexKeys: Set<string>,
-  maxExtraEdges = 6
-): RiverVertex[] | null {
-  const startNode = riverGraph.nodes.get(startVertex.key);
-  if (!startNode) return null;
-  if (seaVertexKeys.has(startVertex.key)) return [startVertex];
-
-  const queue: Array<{ key: string; path: string[] }> = [{ key: startVertex.key, path: [startVertex.key] }];
-  const visited = new Set<string>([startVertex.key]);
-
-  for (let cursor = 0; cursor < queue.length; cursor += 1) {
-    const current = queue[cursor];
-    if (current.path.length - 1 >= maxExtraEdges) continue;
-    const currentNode = riverGraph.nodes.get(current.key);
-    if (!currentNode) continue;
-
-    for (const incidentEdgeKey of currentNode.incidentEdgeKeys) {
-      if (usedRiverEdges.has(incidentEdgeKey)) continue;
-      const edge = riverGraph.edges.get(incidentEdgeKey);
-      if (!edge?.touchesRegion) continue;
-      const nextKey = edge.a.key === current.key ? edge.b.key : edge.b.key === current.key ? edge.a.key : null;
-      if (!nextKey || visited.has(nextKey)) continue;
-      if (blockedVertexKeys.has(nextKey) && !seaVertexKeys.has(nextKey)) continue;
-
-      const nextPath = [...current.path, nextKey];
-      if (seaVertexKeys.has(nextKey)) {
-        const result = nextPath.map((key) => riverGraph.nodes.get(key)).filter((node): node is RiverGraphNode => Boolean(node));
-        if (result.length !== nextPath.length) return null;
-        return result.map((node) => ({ key: node.key, x: node.x, y: node.y }));
-      }
-
-      visited.add(nextKey);
-      queue.push({ key: nextKey, path: nextPath });
-    }
-  }
-
-  return null;
-}
-
-function extendRiverMouthToSeaIfPossible(
-  river: River,
-  seaVertexKeys: Set<string>,
-  riverGraph: RiverGraph,
-  usedRiverEdges: Set<string>
-): River {
-  const path = river.vertexPath ?? [];
-  if (path.length < 2) return river;
-  const mouth = path[path.length - 1];
-  if (seaVertexKeys.has(mouth.key)) return river;
-
-  const blockedVertexKeys = new Set(path.map((vertex) => vertex.key));
-  blockedVertexKeys.delete(mouth.key);
-  const extensionPath = findRiverExtensionPathToSea(mouth, seaVertexKeys, riverGraph, usedRiverEdges, blockedVertexKeys);
-  if (!extensionPath || extensionPath.length < 2) return river;
-
-  return {
-    ...river,
-    vertexPath: [...path, ...extensionPath.slice(1)]
-  };
-}
-
-function extendChangedRiverMouthsToSeaIfPossible(
-  previousRivers: River[],
-  nextRivers: River[],
-  seaKeys: Iterable<string>,
-  riverGraph: RiverGraph
-): River[] {
-  const seaKeyList = Array.from(seaKeys);
-  if (seaKeyList.length === 0) return nextRivers;
-
-  const seaVertexKeys = getSeaVertexKeysFromSeaKeys(seaKeyList);
-  if (seaVertexKeys.size === 0) return nextRivers;
-
-  const previousById = new Map(previousRivers.map((river) => [river.id, river]));
-  const usedRiverEdges = buildUsedRiverEdges(nextRivers);
-
-  return nextRivers.map((river) => {
-    const previousRiver = previousById.get(river.id);
-    const changed = riverChangedFromPrevious(previousRiver, river);
-    const mouth = river.vertexPath?.[river.vertexPath.length - 1];
-    const mouthTouchesNewSea = Boolean(mouth && Array.from(seaKeyList).some((key) => getHexCornerPoints(parseHexKey(key)).some((corner) => corner.key === mouth.key)));
-    if (!changed && mouthTouchesNewSea) return river;
-
-    const extendedRiver = extendRiverMouthToSeaIfPossible(river, seaVertexKeys, riverGraph, usedRiverEdges);
-    if (extendedRiver !== river) {
-      for (let index = river.vertexPath.length; index < extendedRiver.vertexPath.length; index += 1) {
-        usedRiverEdges.add(edgeKey(extendedRiver.vertexPath[index - 1], extendedRiver.vertexPath[index]));
-      }
-      console.log('Extended river mouth to sea', {
-        riverId: river.id,
-        oldMouthKey: river.vertexPath[river.vertexPath.length - 1]?.key,
-        newMouthKey: extendedRiver.vertexPath[extendedRiver.vertexPath.length - 1]?.key
-      });
-    }
-
-    return extendedRiver;
-  });
 }
 
 function sanitizeRiversForSea(
@@ -10390,34 +10252,6 @@ export function App() {
         continue;
       }
 
-      // Старое одиночное море (артефакт) не должно блокировать генерацию: реки-vs-старое-море
-      // проверяем против существующего моря БЕЗ одиночных гексов.
-      const existingSeaForRiverChecks = getNonSolitarySeaHexKeys(hexTerrainByKey);
-      const changedRiverStartingFromExistingSea = getChangedRiverStartingFromSea(
-        riversForGeneration,
-        finalizedRivers,
-        existingSeaForRiverChecks
-      );
-      if (changedRiverStartingFromExistingSea) {
-        console.warn('Discarding failed candidate region because a generated river starts from existing sea', {
-          attempt,
-          regionId,
-          riverId: changedRiverStartingFromExistingSea.id
-        });
-        continue;
-      }
-      const existingSeaHeightViolation = getChangedRiverSeaHeightViolation(riversForGeneration, finalizedRivers, existingSeaForRiverChecks);
-      if (existingSeaHeightViolation) {
-        console.warn('Discarding failed candidate region because a river violates sea height before coast generation', {
-          attempt,
-          regionId,
-          riverId: existingSeaHeightViolation.river.id,
-          reason: existingSeaHeightViolation.reason
-        });
-        continue;
-      }
-
-
       const regionTerrainByHex = new Map<string, HexTerrainData>();
       for (const hex of regionHexes) {
         const terrain = nextHexTerrainByKeyPreview.get(hexKey(hex));
@@ -10491,58 +10325,8 @@ export function App() {
       const existingSeaKeysBeforeRegion = getSeaHexKeys(hexTerrainByKey);
       const allSeaKeys = new Set(existingSeaKeysBeforeRegion);
       for (const key of seaHexKeys) allSeaKeys.add(key);
-      let allNewSeaKeys = [...seaHexKeys];
+      const allNewSeaKeys = [...seaHexKeys];
       const nextCandidateHexesExclSea = getCandidateHexes(nextAllHexes, allSeaKeys);
-      if (allNewSeaKeys.length > 0) {
-        const seaExtensionGraph = buildRiverGraphForRegion(regionHexes, nextAllHexes, nextCandidateHexesExclSea);
-        const extendedRivers = extendChangedRiverMouthsToSeaIfPossible(
-          riversForGeneration,
-          finalizedRivers,
-          allSeaKeys,
-          seaExtensionGraph
-        );
-        // Применяем удлинение устья только если оно НЕ создаёт контакт реки с морем
-        // вне устья. Проверяем всё море (старое + новое): у побережья рядом с уже
-        // существующим морем устье должно иметь право дотянуться именно до соседнего
-        // старого морского гекса, иначе попытка позднее бракуется как касание моря
-        // не-устьевой вершиной.
-        if (!getRiverSeaHeightViolation(extendedRivers, allSeaKeys)) {
-          finalizedRivers = extendedRivers;
-        }
-      }
-      const riverStartingFromSeaAfterExtension = getRiverStartingFromSea(
-        finalizedRivers,
-        getSeaVertexKeysFromSeaKeys(allSeaKeys),
-        getSeaEdgeKeysFromSeaKeys(allSeaKeys)
-      );
-      if (riverStartingFromSeaAfterExtension) {
-        console.warn('Discarding failed candidate region because a river starts from sea after extension', {
-          attempt,
-          regionId,
-          riverId: riverStartingFromSeaAfterExtension.id
-        });
-        continue;
-      }
-      const riverSeaHeightViolationAfterExtension = getRiverSeaHeightViolation(finalizedRivers, allSeaKeys);
-      if (riverSeaHeightViolationAfterExtension) {
-        console.warn('Discarding failed candidate region because a river violates sea height after extension', {
-          attempt,
-          regionId,
-          riverId: riverSeaHeightViolationAfterExtension.river.id,
-          reason: riverSeaHeightViolationAfterExtension.reason
-        });
-        continue;
-      }
-
-      const coastalRiverConflictAfterExtension = getCoastalSeaRiverConflict(finalizedRivers, allNewSeaKeys, regionHexes);
-      if (coastalRiverConflictAfterExtension) {
-        console.warn('Discarding failed coastal candidate region because sea touches a river away from its mouth after extension', {
-          attempt,
-          regionId,
-          riverId: coastalRiverConflictAfterExtension.id
-        });
-        continue;
-      }
 
       // Обрезаем у всех рек концевые вершины, торчащие в море, чтобы они
       // заканчивались у берега, а не шли «из моря в море» (учитываем и новое море).
@@ -10588,51 +10372,6 @@ export function App() {
           console.warn('Delta arm generation failed; skipping deltas', error);
         }
       }
-      if (allNewSeaKeys.length > 0) {
-        const seaExtensionGraph = buildRiverGraphForRegion(regionHexes, nextAllHexes, nextCandidateHexesExclSea);
-        const extendedWithDeltas = extendChangedRiverMouthsToSeaIfPossible(
-          riversForGeneration,
-          riversWithDeltas,
-          allSeaKeys,
-          seaExtensionGraph
-        );
-        if (!getRiverSeaHeightViolation(extendedWithDeltas, allSeaKeys)) {
-          riversWithDeltas = extendedWithDeltas;
-        }
-      }
-      const riverStartingFromSeaAfterDeltas = getRiverStartingFromSea(
-        riversWithDeltas,
-        getSeaVertexKeysFromSeaKeys(allSeaKeys),
-        getSeaEdgeKeysFromSeaKeys(allSeaKeys)
-      );
-      if (riverStartingFromSeaAfterDeltas) {
-        console.warn('Discarding failed candidate region because a river starts from sea after deltas', {
-          attempt,
-          regionId,
-          riverId: riverStartingFromSeaAfterDeltas.id
-        });
-        continue;
-      }
-      const riverSeaHeightViolationAfterDeltas = getRiverSeaHeightViolation(riversWithDeltas, allSeaKeys);
-      if (riverSeaHeightViolationAfterDeltas) {
-        console.warn('Discarding failed candidate region because a river violates sea height after deltas', {
-          attempt,
-          regionId,
-          riverId: riverSeaHeightViolationAfterDeltas.river.id,
-          reason: riverSeaHeightViolationAfterDeltas.reason
-        });
-        continue;
-      }
-
-      const coastalRiverConflictAfterDeltas = getCoastalSeaRiverConflict(riversWithDeltas, allNewSeaKeys, regionHexes);
-      if (coastalRiverConflictAfterDeltas) {
-        console.warn('Discarding failed coastal candidate region because sea touches a river away from its mouth after deltas', {
-          attempt,
-          regionId,
-          riverId: coastalRiverConflictAfterDeltas.id
-        });
-        continue;
-      }
 
       riversWithDeltas = restoreInvalidGeneratedRiversForRegion(regionForRiverGeneration, riversForGeneration, riversWithDeltas, nextCandidateHexesExclSea);
       riversWithDeltas = sanitizeRiversForSea(
@@ -10643,8 +10382,8 @@ export function App() {
         allNewSeaKeys,
         regionHexes
       );
-      // Deltas, mouth extension, restoreInvalidGeneratedRiversForRegion, and
-      // sea sanitizing can all change river paths; rebuild sectors one final
+      // Deltas, restoreInvalidGeneratedRiversForRegion, and sea sanitizing can
+      // all change river paths; rebuild sectors one final
       // time so validation and saved debug data use the final geometry.
       riversWithDeltas = assignRiverSectors(
         riversWithDeltas,
