@@ -4955,17 +4955,26 @@ function getConnectedSeaComponents(seaKeys: Set<string>): Set<string>[] {
   return components;
 }
 
-function splitNewSeaKeysByMouthConnectedComponent(newSeaKeys: string[], existingSeaKeys: Iterable<string>, _rivers: River[]): { connectedSeaKeys: string[]; disconnectedSeaKeys: string[] } {
+function splitNewSeaKeysByMouthConnectedComponent(newSeaKeys: string[], existingSeaKeys: Iterable<string>, rivers: River[]): { connectedSeaKeys: string[]; disconnectedSeaKeys: string[] } {
   const uniqueNewSeaKeys = Array.from(new Set(newSeaKeys));
   const existingSeaSet = new Set(existingSeaKeys);
   const combinedSeaKeys = new Set(existingSeaSet);
   for (const key of uniqueNewSeaKeys) combinedSeaKeys.add(key);
 
+  const newSeaKeySet = new Set(uniqueNewSeaKeys);
+  const mouthSeaKeys = uniqueNewSeaKeys.filter((key) => seaHexTouchesAnyRiverMouth(parseHexKey(key), rivers));
+
   let selectedComponent: Set<string> | null = null;
-  if (existingSeaSet.size > 0) {
+  if (mouthSeaKeys.length > 0) {
+    // Если в прибрежном регионе есть устье, сохраняем старое поведение:
+    // оставляем только связанную область моря, достижимую от гекса устья.
+    // Новая логика выбора океанского/самого большого компонента нужна только
+    // для побережья без устья.
+    selectedComponent = getConnectedSeaComponentFromStarts(mouthSeaKeys, combinedSeaKeys);
+  } else if (existingSeaSet.size > 0) {
     selectedComponent = getConnectedSeaComponentFromStarts(Array.from(existingSeaSet), combinedSeaKeys);
   } else {
-    const components = getConnectedSeaComponents(new Set(uniqueNewSeaKeys));
+    const components = getConnectedSeaComponents(newSeaKeySet);
     selectedComponent = components.sort((a, b) => b.size - a.size)[0] ?? null;
   }
 
