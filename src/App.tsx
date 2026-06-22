@@ -3768,8 +3768,9 @@ function getCoastalRiverEndpointHexes(
   hexTerrainByKey: Map<string, HexTerrainData>
 ): AxialHex[] {
   if (!region.isCoastal) return [];
-  const adjacentSeaHexes = getAdjacentSeaHexesForRegion(region.hexes, hexTerrainByKey);
-  if (adjacentSeaHexes.length > 0) return adjacentSeaHexes;
+  // Для прибрежного региона устье ищем только среди сухопутных/пустых
+  // кандидатных гексов: река не должна сразу завершаться в уже существующем
+  // морском гексе. При этом сохраняем приоритет кандидатов, ближайших к морю.
   return getCandidateHexesNearestToSea(candidateHexes, hexTerrainByKey);
 }
 
@@ -10168,15 +10169,13 @@ export function App() {
       mergeAdjacentLakeIds(nextHexTerrainByKeyPreview);
       const nextAllHexes = nextRegionsForRiverGeneration.flatMap((r) => r.hexes);
       // Обычный речной фронт не фильтрует существующее море заранее. Исключение — новый
-      // прибрежный регион: море убирается из общего фронта и добавляется обратно только
-      // рядом с этим регионом как явная цель устья. У материка нет дополнительных
-      // ограничений по морю: sea-adjacent гексы просто имеют нулевой вес роста.
-      const existingSeaRiverMouthTargetHexes = isCoastalRegion
-        ? getAdjacentSeaHexesForRegion(regionHexes, nextHexTerrainByKeyPreview)
-        : [];
+      // прибрежный регион: море убирается из общего фронта, чтобы устье не
+      // выбирало уже существующий морской гекс. Приоритет остаётся у
+      // кандидатных гексов, ближайших к морю (см. getCoastalRiverEndpointHexes).
+      // У материка нет дополнительных ограничений по морю: sea-adjacent гексы
+      // просто имеют нулевой вес роста.
       const nextCandidateHexes = uniqueHexes([
-        ...getCandidateHexes(nextAllHexes, isCoastalRegion ? existingSeaForRivers : undefined),
-        ...existingSeaRiverMouthTargetHexes
+        ...getCandidateHexes(nextAllHexes, isCoastalRegion ? existingSeaForRivers : undefined)
       ]);
       const generatedRiverResult = enclosedAnchorArea
         ? { success: true as const, rivers: riversForGeneration }
