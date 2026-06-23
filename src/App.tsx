@@ -3028,6 +3028,44 @@ function formatHexCount(count: number, language: Language = 'ru'): string {
   return 'гексов';
 }
 
+
+function getRiverSlopeVector(riverSlope?: RiverSlopeInfo): { x: number; y: number } | null {
+  if (!riverSlope || riverSlope.direction === 'none' || riverSlope.strength <= 0) return null;
+  const length = Math.hypot(riverSlope.vector.x, riverSlope.vector.y);
+  if (length <= 0) return null;
+  return { x: riverSlope.vector.x / length, y: riverSlope.vector.y / length };
+}
+
+function getRiverSlopeProjection(vertex: RiverVertex, riverSlope?: RiverSlopeInfo): number | null {
+  const vector = getRiverSlopeVector(riverSlope);
+  if (!vector) return null;
+  return vertex.x * vector.x + vertex.y * vector.y;
+}
+
+function chooseRiverSlopeExtremeVertex(
+  vertices: RiverVertex[],
+  riverSlope: RiverSlopeInfo | undefined,
+  flowPosition: 'downstream' | 'upstream',
+  fallback: (vertices: RiverVertex[]) => RiverVertex
+): RiverVertex {
+  if (vertices.length === 0) return fallback(vertices);
+  const vector = getRiverSlopeVector(riverSlope);
+  if (!vector) return fallback(vertices);
+
+  const scored = vertices.map((vertex) => ({
+    vertex,
+    score: vertex.x * vector.x + vertex.y * vector.y
+  }));
+  const targetScore = flowPosition === 'downstream'
+    ? Math.max(...scored.map((item) => item.score))
+    : Math.min(...scored.map((item) => item.score));
+  const epsilon = 0.001;
+  const extremeVertices = scored
+    .filter((item) => Math.abs(item.score - targetScore) < epsilon)
+    .map((item) => item.vertex);
+  return fallback(extremeVertices);
+}
+
 function getMountainInteriorSourceVertices(
   region: Region,
   regions: Region[],
@@ -3061,7 +3099,7 @@ function findBestPathFromSourceToOutgoingEndpoint(
   outgoingEndpoint: RiverEndpointTouch,
   riverGraph: RiverGraph,
   usedRiverEdges: Set<string>,
-  options?: { requireCenterHexVertex?: AxialHex; occupiedVertexKeys?: Set<string>; allowedOccupiedVertexKeys?: Set<string> }
+  options?: { requireCenterHexVertex?: AxialHex; occupiedVertexKeys?: Set<string>; allowedOccupiedVertexKeys?: Set<string>; riverSlope?: RiverSlopeInfo }
 ): RiverVertex[] | null {
   let bestPath: RiverVertex[] | null = null;
   for (const sourceVertex of sourceVertices) {
@@ -3079,7 +3117,15 @@ function findBestPathFromSourceToOutgoingEndpoint(
     if (!pathEdgeKeys || pathEdgeKeys.some((pathEdgeKey) => usedRiverEdges.has(pathEdgeKey))) continue;
     if (options?.occupiedVertexKeys && !riverPathAvoidsOccupiedVertices(path, options.occupiedVertexKeys, options.allowedOccupiedVertexKeys)) continue;
     if (options?.requireCenterHexVertex && !riverPathTouchesCenterHexVertex(path, options.requireCenterHexVertex)) continue;
-    if (!bestPath || path.length < bestPath.length) bestPath = path;
+    if (!bestPath) {
+      bestPath = path;
+      continue;
+    }
+    const currentProjection = getRiverSlopeProjection(path[0], options?.riverSlope);
+    const bestProjection = getRiverSlopeProjection(bestPath[0], options?.riverSlope);
+    if (currentProjection !== null && bestProjection !== null) {
+      if (currentProjection < bestProjection - 0.001 || (Math.abs(currentProjection - bestProjection) < 0.001 && path.length < bestPath.length)) bestPath = path;
+    } else if (path.length < bestPath.length) bestPath = path;
   }
   return bestPath;
 }
@@ -3089,11 +3135,13 @@ function findBestPathFromLakeToOutgoingEndpoint(
   outgoingEndpoint: RiverEndpointTouch,
   riverGraph: RiverGraph,
   usedRiverEdges: Set<string>,
-  occupiedVertexKeys: Set<string> = new Set()
+  occupiedVertexKeys: Set<string> = new Set(),
+  riverSlope?: RiverSlopeInfo
 ): RiverVertex[] | null {
   return findBestPathFromSourceToOutgoingEndpoint(lakeVertices, outgoingEndpoint, riverGraph, usedRiverEdges, {
     occupiedVertexKeys,
-    allowedOccupiedVertexKeys: new Set([outgoingEndpoint.vertex.key])
+    allowedOccupiedVertexKeys: new Set([outgoingEndpoint.vertex.key]),
+    riverSlope
   });
 }
 
@@ -3677,7 +3725,8 @@ function connectIncomingTributariesToMainPath(
   mainPath: RiverVertex[],
   riverGraph: RiverGraph,
   initialBlockedEdgeKeys: Set<string>,
-  initialOccupiedVertexKeys: Set<string>
+  initialOccupiedVertexKeys: Set<string>,
+  riverSlope?: RiverSlopeInfo
 ): River[] | null {
   if (tributaryEndpoints.length === 0) return rivers;
 
@@ -3697,7 +3746,8 @@ function connectIncomingTributariesToMainPath(
       blockedEdgeKeys,
       new Set([mainPath[0]?.key, mainPath[mainPath.length - 1]?.key].filter((key): key is string => Boolean(key))),
       occupiedVertexKeys,
-      new Set([endpoint.vertex.key, ...allowedTargetKeys])
+      new Set([endpoint.vertex.key, ...allowedTargetKeys]),
+      riverSlope
     );
     if (!tributaryPath) {
       console.warn('Could not connect incoming tributary to through river', {
@@ -3729,17 +3779,18 @@ function chooseRandomRiverControlPoints(
   purpleVertices: RiverVertex[],
   existingRiverEndpointVerticesInRegion: RiverVertex[],
   preferredStartVertex?: RiverVertex,
-  preferredEndVertices: RiverVertex[] = []
+  preferredEndVertices: RiverVertex[] = [],
+  riverSlope?: RiverSlopeInfo
 ): { startVertex: RiverVertex; middlePurpleVertex?: RiverVertex; endVertex: RiverVertex; startMode: 'existing river endpoint' | 'red vertex' } | null {
   const choosePreferredEndVertex = (endPool: RiverVertex[], startVertex: RiverVertex): RiverVertex => {
     const preferredEndKeys = new Set(preferredEndVertices.map((vertex) => vertex.key));
     const preferredPool = endPool.filter((vertex) => preferredEndKeys.has(vertex.key));
-    if (preferredPool.length > 0) return randomFrom(preferredPool);
+    if (preferredPool.length > 0) return chooseRiverSlopeExtremeVertex(preferredPool, riverSlope, 'downstream', randomFrom);
     const maxDistance = Math.max(...endPool.map((vertex) => getRiverVertexDistance(startVertex, vertex)));
     const farthestVertices = endPool.filter(
       (vertex) => Math.abs(getRiverVertexDistance(startVertex, vertex) - maxDistance) < 0.001
     );
-    return randomFrom(farthestVertices);
+    return chooseRiverSlopeExtremeVertex(farthestVertices, riverSlope, 'downstream', randomFrom);
   };
 
   if (existingRiverEndpointVerticesInRegion.length > 0) {
@@ -3756,7 +3807,7 @@ function chooseRandomRiverControlPoints(
   if (redVertices.length < 2) return null;
   const startVertex = preferredStartVertex && redVertices.some((vertex) => vertex.key === preferredStartVertex.key)
     ? preferredStartVertex
-    : randomFrom(redVertices);
+    : chooseRiverSlopeExtremeVertex(redVertices, riverSlope, 'upstream', randomFrom);
   const candidateEndVertices = redVertices.filter((vertex) => vertex.key !== startVertex.key);
   if (candidateEndVertices.length === 0) return null;
   const endVertex = choosePreferredEndVertex(candidateEndVertices, startVertex);
@@ -4432,7 +4483,8 @@ function findBestFreeRiverPathToAnyTarget(
   blockedEdgeKeys: Set<string>,
   excludedTargetVertexKeys: Set<string> = new Set(),
   occupiedVertexKeys: Set<string> = new Set(),
-  allowedOccupiedVertexKeys: Set<string> = new Set()
+  allowedOccupiedVertexKeys: Set<string> = new Set(),
+  riverSlope?: RiverSlopeInfo
 ): RiverVertex[] | null {
   const startNode = riverGraph.nodes.get(startVertex.key);
   if (!startNode || targetVertices.length === 0) return null;
@@ -4452,7 +4504,15 @@ function findBestFreeRiverPathToAnyTarget(
     if (pathEdgeKeys.some((edgeKey) => blockedEdgeKeys.has(edgeKey))) continue;
     if (!riverPathAvoidsOccupiedVertices(path, occupiedVertexKeys, allowedOccupiedVertexKeys)) continue;
 
-    if (!bestPath || path.length < bestPath.length) {
+    if (!bestPath) {
+      bestPath = path;
+      continue;
+    }
+    const currentProjection = getRiverSlopeProjection(path[path.length - 1], riverSlope);
+    const bestProjection = getRiverSlopeProjection(bestPath[bestPath.length - 1], riverSlope);
+    if (currentProjection !== null && bestProjection !== null) {
+      if (currentProjection > bestProjection + 0.001 || (Math.abs(currentProjection - bestProjection) < 0.001 && path.length < bestPath.length)) bestPath = path;
+    } else if (path.length < bestPath.length) {
       bestPath = path;
     }
   }
@@ -5740,7 +5800,8 @@ function getBestIncomingPathToCandidate(
   candidateVertices: RiverVertex[],
   riverGraph: RiverGraph,
   usedRiverEdges: Set<string>,
-  occupiedVertexKeys: Set<string>
+  occupiedVertexKeys: Set<string>,
+  riverSlope?: RiverSlopeInfo
 ): RiverVertex[] | null {
   const targetVertices = candidateVertices.filter((vertex) => (
     vertex.key !== endpoint.vertex.key
@@ -5754,7 +5815,8 @@ function getBestIncomingPathToCandidate(
     usedRiverEdges,
     new Set(),
     occupiedVertexKeys,
-    new Set([endpoint.vertex.key])
+    new Set([endpoint.vertex.key]),
+    riverSlope
   );
 }
 
@@ -5763,7 +5825,8 @@ function getBestIncomingPathToRiverTributary(
   rivers: River[],
   riverGraph: RiverGraph,
   usedRiverEdges: Set<string>,
-  occupiedVertexKeys: Set<string>
+  occupiedVertexKeys: Set<string>,
+  riverSlope?: RiverSlopeInfo
 ): RiverVertex[] | null {
   const targetVerticesByKey = new Map<string, RiverVertex>();
 
@@ -5786,7 +5849,8 @@ function getBestIncomingPathToRiverTributary(
     usedRiverEdges,
     new Set(),
     occupiedVertexKeys,
-    new Set([endpoint.vertex.key, ...targetVertices.map((vertex) => vertex.key)])
+    new Set([endpoint.vertex.key, ...targetVertices.map((vertex) => vertex.key)]),
+    riverSlope
   );
 }
 
@@ -5797,7 +5861,8 @@ function getBestIncomingPathToLake(
   rivers: River[],
   riverGraph: RiverGraph,
   usedRiverEdges: Set<string>,
-  occupiedVertexKeys: Set<string>
+  occupiedVertexKeys: Set<string>,
+  riverSlope?: RiverSlopeInfo
 ): RiverVertex[] | null {
   const lakes = getLakesForRegion(region, terrainMap)
     .map((lake) => ({ lake, hasRiverConnection: lakeHasRiverConnection(lake.hexes, rivers) }))
@@ -5814,9 +5879,20 @@ function getBestIncomingPathToLake(
       usedRiverEdges,
       new Set(),
       occupiedVertexKeys,
-      new Set([endpoint.vertex.key, ...lakeVertices.map((vertex) => vertex.key)])
+      new Set([endpoint.vertex.key, ...lakeVertices.map((vertex) => vertex.key)]),
+      riverSlope
     );
-    if (path && (!bestPath || path.length < bestPath.length)) bestPath = path;
+    if (path) {
+      if (!bestPath) {
+        bestPath = path;
+      } else {
+        const currentProjection = getRiverSlopeProjection(path[path.length - 1], riverSlope);
+        const bestProjection = getRiverSlopeProjection(bestPath[bestPath.length - 1], riverSlope);
+        if (currentProjection !== null && bestProjection !== null) {
+          if (currentProjection > bestProjection + 0.001 || (Math.abs(currentProjection - bestProjection) < 0.001 && path.length < bestPath.length)) bestPath = path;
+        } else if (path.length < bestPath.length) bestPath = path;
+      }
+    }
   }
 
   return bestPath;
@@ -5843,14 +5919,16 @@ function connectRemainingIncomingRiversForRegion(
       candidateVertices,
       riverGraph,
       usedRiverEdges,
-      occupiedVertexKeys
+      occupiedVertexKeys,
+      region.heightLevel === 3 ? undefined : region.riverSlope
     );
     const tributaryPath = candidatePath ? null : getBestIncomingPathToRiverTributary(
       currentConnection.endpoint,
       nextRivers,
       riverGraph,
       usedRiverEdges,
-      occupiedVertexKeys
+      occupiedVertexKeys,
+      region.heightLevel === 3 ? undefined : region.riverSlope
     );
     const lakePath = candidatePath || tributaryPath ? null : getBestIncomingPathToLake(
       currentConnection.endpoint,
@@ -5859,7 +5937,8 @@ function connectRemainingIncomingRiversForRegion(
       nextRivers,
       riverGraph,
       usedRiverEdges,
-      occupiedVertexKeys
+      occupiedVertexKeys,
+      region.heightLevel === 3 ? undefined : region.riverSlope
     );
     const selectedPath = candidatePath ?? tributaryPath ?? lakePath;
     const selectedMode = candidatePath ? 'candidate' : tributaryPath ? 'tributary' : lakePath ? 'lake' : null;
@@ -5932,7 +6011,8 @@ function connectRemainingOutgoingRiversForRegion(
         connection.endpoint,
         riverGraph,
         usedRiverEdges,
-        existingRiverVertexKeys
+        existingRiverVertexKeys,
+        region.heightLevel === 3 ? undefined : region.riverSlope
       );
       if (lakePath && (!selectedPath || lakePath.length < selectedPath.length)) {
         selectedPath = lakePath;
@@ -5956,7 +6036,8 @@ function connectRemainingOutgoingRiversForRegion(
         usedRiverEdges,
         {
           occupiedVertexKeys: existingRiverVertexKeys,
-          allowedOccupiedVertexKeys: new Set([connection.endpoint.vertex.key])
+          allowedOccupiedVertexKeys: new Set([connection.endpoint.vertex.key]),
+          riverSlope: region.heightLevel === 3 ? undefined : region.riverSlope
         }
       );
     }
@@ -6378,7 +6459,8 @@ function generateRiverForRegion(
           connectorPath,
           riverGraph,
           new Set([...blockedEdgeKeys, ...connectorEdgeKeys]),
-          existingRiverVertexKeys
+          existingRiverVertexKeys,
+          region.heightLevel === 3 ? undefined : region.riverSlope
         );
         if (!mergedWithTributaries) {
           const fallbackResult = buildMountainIncomingBoundaryFallback(mainIncomingEndpoint, 'mountain_incoming_tributary_to_through_river_not_found');
@@ -6818,7 +6900,8 @@ function generateRiverForRegion(
         purpleVertices,
         existingRiverEndpointVerticesInRegion,
         preferredStartVertex,
-        coastalEndpointVertices
+        coastalEndpointVertices,
+        region.heightLevel === 3 ? undefined : region.riverSlope
       );
       if (!controlPoints) continue;
       const path = buildRiverPathViaControlPoints(controlPoints, riverGraph, usedRiverEdges);
