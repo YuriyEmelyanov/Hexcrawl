@@ -2346,8 +2346,8 @@ function riverDrainsInto(
   const queue = [sourceRiverId];
   const visited = new Set<number>();
 
-  while (queue.length > 0) {
-    const currentRiverId = queue.shift()!;
+  for (let queueIndex = 0; queueIndex < queue.length; queueIndex += 1) {
+    const currentRiverId = queue[queueIndex]!;
     if (visited.has(currentRiverId)) continue;
     visited.add(currentRiverId);
 
@@ -2728,8 +2728,8 @@ function tryAddEdgeMinorTributaryRiver(
       let bestPath: RiverVertex[] | null = null;
       const queue: RiverVertex[][] = [[startVertex]];
 
-      while (queue.length > 0) {
-        const path = queue.shift();
+      for (let queueIndex = 0; queueIndex < queue.length; queueIndex += 1) {
+        const path = queue[queueIndex];
         if (!path) break;
         const current = path[path.length - 1];
         const segmentCount = path.length - 1;
@@ -4522,8 +4522,8 @@ function findRiverPath(
   const previous = new Map<string, string>();
   const queue: string[] = [startNode.key];
   const visited = new Set<string>([startNode.key]);
-  while (queue.length > 0) {
-    const currentKey = queue.shift()!;
+  for (let queueIndex = 0; queueIndex < queue.length; queueIndex += 1) {
+    const currentKey = queue[queueIndex]!;
     if (currentKey === endNode.key) break;
     const currentNode = riverGraph.nodes.get(currentKey);
     if (!currentNode) continue;
@@ -4625,8 +4625,8 @@ function scanEmptyArea(
   let isOpen = false;
   if (globalVisited) globalVisited.add(startKey);
 
-  while (queue.length > 0) {
-    const current = queue.shift()!;
+  for (let queueIndex = 0; queueIndex < queue.length; queueIndex += 1) {
+    const current = queue[queueIndex]!;
     if (current.q < bbox.minQ || current.q > bbox.maxQ || current.r < bbox.minR || current.r > bbox.maxR) {
       isOpen = true;
       continue;
@@ -4854,8 +4854,8 @@ function fillSmallEnclosedAreasForRegion(
     let touchesOutside = false;
     let touchesCurrentRegion = false;
 
-    while (queue.length > 0) {
-      const key = queue.shift();
+    for (let queueIndex = 0; queueIndex < queue.length; queueIndex += 1) {
+      const key = queue[queueIndex];
       if (!key) continue;
       const hex = candidateHexes.get(key);
       if (!hex) continue;
@@ -7274,8 +7274,8 @@ function assignLakesForRegion(
     const queue = [lakeKey];
     visited.add(lakeKey);
 
-    while (queue.length > 0) {
-      const current = queue.shift();
+    for (let queueIndex = 0; queueIndex < queue.length; queueIndex += 1) {
+      const current = queue[queueIndex];
       if (!current) continue;
       lakesByHex.set(current, { terrainOverride: 'lake', lakeId: nextLakeId });
       const currentHex = regionHexMap.get(current);
@@ -8434,8 +8434,8 @@ function findAlternativeWildRoadPairPaths(options: {
     const bestDepthByHex = new Map<string, number>([[startKey, 1]]);
     let found: AxialHex[] | null = null;
 
-    while (queue.length > 0 && !found) {
-      const path = queue.shift()!;
+    for (let queueIndex = 0; queueIndex < queue.length && !found; queueIndex += 1) {
+      const path = queue[queueIndex]!;
       const current = path[path.length - 1];
       const currentKey = hexKey(current);
       if (path.length > 1 && currentKey === targetKey) {
@@ -8985,8 +8985,8 @@ function findWildTrailPath(options: {
   const queue: AxialHex[][] = [[from]];
   const visited = new Set<string>([startKey]);
 
-  while (queue.length > 0) {
-    const path = queue.shift()!;
+  for (let queueIndex = 0; queueIndex < queue.length; queueIndex += 1) {
+    const path = queue[queueIndex]!;
     const current = path[path.length - 1];
     const currentKey = hexKey(current);
     if (path.length > 1 && currentKey === targetKey) return path;
