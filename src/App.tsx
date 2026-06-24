@@ -4243,6 +4243,23 @@ function getRiverSlopeEdgeDistance(centerHex: AxialHex, edgeKeyValue: string, ed
   return Math.min(...edgeHexes.map((hex) => hexDistance(centerHex, hex)));
 }
 
+function createRandomRiverSlopeInfo(radius: number): RiverSlopeInfo {
+  const direction = randomFrom(RIVER_SLOPE_DIRECTIONS);
+  const directionScores = createEmptyRiverSlopeDirectionScores();
+  directionScores[direction.label] = 1;
+
+  return {
+    radius,
+    edgeCount: 0,
+    totalContribution: 1,
+    vector: direction.vector,
+    strength: 1,
+    confidence: 1,
+    direction: direction.label,
+    directionScores
+  };
+}
+
 function calculateRiverSlopeInfo(
   centerHex: AxialHex,
   existingHexes: AxialHex[],
@@ -4281,6 +4298,10 @@ function calculateRiverSlopeInfo(
   }
 
   const totalContribution = Object.values(directionScores).reduce((sum, score) => sum + score, 0);
+  if (totalContribution <= 0) {
+    return createRandomRiverSlopeInfo(radius);
+  }
+
   const strength = Math.hypot(vector.x, vector.y);
   const confidence = totalContribution > 0 ? strength / totalContribution : 0;
   const direction = strength > 0
