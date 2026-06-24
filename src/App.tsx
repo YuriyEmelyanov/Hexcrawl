@@ -2678,7 +2678,16 @@ function tryAddEdgeMinorTributaryRiver(
       .filter(riverIsRequiredMountainOutgoing)
       .sort((a, b) => (getMountainOutgoingEndpointFullness(b) ?? 0) - (getMountainOutgoingEndpointFullness(a) ?? 0) || a.id - b.id);
     outgoingRiverCount = outgoingRivers.length;
-    const selectedTargetRiver = outgoingRivers[0] ?? null;
+
+    // Prefer a real downstream/outgoing river, but do not treat its absence as a
+    // hard veto for minor tributaries. The slope pass is only a preference: when
+    // there is no stream-flow continuation in the region, a tributary may still
+    // be drawn down the inferred slope into any existing regional river.
+    const fallbackTargetRivers = regionRivers
+      .filter(riverIsRequiredMountainOutgoing)
+      .sort((a, b) => (getMountainOutgoingEndpointFullness(b) ?? 0) - (getMountainOutgoingEndpointFullness(a) ?? 0) || a.id - b.id);
+    const targetRivers = outgoingRivers.length > 0 ? outgoingRivers : fallbackTargetRivers;
+    const selectedTargetRiver = targetRivers[0] ?? null;
     selectedTargetRiverId = selectedTargetRiver?.id ?? null;
 
     if (!selectedTargetRiver) {
