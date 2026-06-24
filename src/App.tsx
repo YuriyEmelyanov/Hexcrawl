@@ -2722,20 +2722,63 @@ function tryAddEdgeMinorTributaryRiver(
       return true;
     };
 
+    const findEdgeTributaryPathToTargetRiver = (startVertex: RiverVertex): RiverVertex[] | null => {
+      const targetVertexKeys = new Set(selectedTargetVertices.map((vertex) => vertex.key));
+      const maxEdgeCount = Math.max(8, Math.min(24, region.hexes.length));
+      let bestPath: RiverVertex[] | null = null;
+      const queue: RiverVertex[][] = [[startVertex]];
+
+      while (queue.length > 0) {
+        const path = queue.shift();
+        if (!path) break;
+        const current = path[path.length - 1];
+        const segmentCount = path.length - 1;
+
+        if (segmentCount >= 2 && targetVertexKeys.has(current.key)) {
+          const trimmedPath = trimPathAtFirstExistingRiverVertex(path);
+          if (validateEdgeTributaryPath(trimmedPath)) {
+            if (!bestPath) {
+              bestPath = trimmedPath;
+            } else {
+              const currentProjection = getRiverSlopeProjection(trimmedPath[trimmedPath.length - 1], riverSlope);
+              const bestProjection = getRiverSlopeProjection(bestPath[bestPath.length - 1], riverSlope);
+              if (currentProjection !== null && bestProjection !== null) {
+                if (currentProjection > bestProjection + 0.001 || (Math.abs(currentProjection - bestProjection) < 0.001 && trimmedPath.length < bestPath.length)) bestPath = trimmedPath;
+              } else if (trimmedPath.length < bestPath.length) bestPath = trimmedPath;
+            }
+            continue;
+          }
+        }
+
+        if (segmentCount >= maxEdgeCount) continue;
+
+        const pathVertexKeys = new Set(path.map((vertex) => vertex.key));
+        const pathEdgeKeys = new Set<string>();
+        for (let index = 1; index < path.length; index += 1) pathEdgeKeys.add(edgeKey(path[index - 1], path[index]));
+
+        const nextVertices = orderRiverSlopeVertices(
+          shuffleArray(getNeighborRiverVertices(current, riverGraph)),
+          riverSlope,
+          'downstream'
+        );
+        for (const nextVertex of nextVertices) {
+          if (pathVertexKeys.has(nextVertex.key)) continue;
+          const nextEdgeKey = edgeKey(current, nextVertex);
+          const graphEdge = riverGraph.edges.get(nextEdgeKey);
+          if (!graphEdge?.isInsideRegionEdge) continue;
+          if (usedRiverEdges.has(nextEdgeKey) || pathEdgeKeys.has(nextEdgeKey)) continue;
+          if (existingRiverVertexKeys.has(nextVertex.key) && !targetVertexKeys.has(nextVertex.key)) continue;
+          if (vertexTouchesAnyHex(nextVertex, candidateHexes) && !targetVertexKeys.has(nextVertex.key)) continue;
+          queue.push([...path, nextVertex]);
+        }
+      }
+
+      return bestPath;
+    };
+
     for (const startVertex of orderRiverSlopeVertices(shuffleArray(startCandidates), riverSlope, 'upstream')) {
-      const pathToTargetRiver = findBestFreeRiverPathToAnyTarget(
-        startVertex,
-        selectedTargetVertices,
-        riverGraph,
-        usedRiverEdges,
-        new Set(),
-        new Set(),
-        new Set([startVertex.key, ...selectedTargetVertices.map((vertex) => vertex.key)]),
-        riverSlope
-      );
-      if (!pathToTargetRiver) continue;
-      const path = trimPathAtFirstExistingRiverVertex(pathToTargetRiver);
-      if (!validateEdgeTributaryPath(path)) continue;
+      const path = findEdgeTributaryPathToTargetRiver(startVertex);
+      if (!path) continue;
 
       const nextRiverId = Math.max(0, ...rivers.map((river) => river.id)) + 1;
       const newRiver: River = {
