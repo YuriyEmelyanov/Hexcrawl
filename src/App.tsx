@@ -2573,7 +2573,8 @@ function tryAddEdgeMinorTributaryRiver(
   terrainMap: Map<string, HexTerrainData>,
   riverGraph: RiverGraph,
   rivers: River[],
-  candidateHexes: AxialHex[]
+  candidateHexes: AxialHex[],
+  riverSlope?: RiverSlopeInfo
 ): River[] {
   let candidateStartCount = 0;
   let outgoingRiverCount = 0;
@@ -2712,12 +2713,16 @@ function tryAddEdgeMinorTributaryRiver(
       return true;
     };
 
-    for (const startVertex of shuffleArray(startCandidates)) {
+    for (const startVertex of orderRiverSlopeVertices(shuffleArray(startCandidates), riverSlope, 'upstream')) {
       const pathToTargetRiver = findBestFreeRiverPathToAnyTarget(
         startVertex,
         selectedTargetVertices,
         riverGraph,
-        usedRiverEdges
+        usedRiverEdges,
+        new Set(),
+        new Set(),
+        new Set([startVertex.key, ...selectedTargetVertices.map((vertex) => vertex.key)]),
+        riverSlope
       );
       if (!pathToTargetRiver) continue;
       const path = trimPathAtFirstExistingRiverVertex(pathToTargetRiver);
@@ -2760,7 +2765,8 @@ function tryAddSmallTributaryRiver(
   terrainMap: Map<string, HexTerrainData>,
   riverGraph: RiverGraph,
   rivers: River[],
-  candidateHexes: AxialHex[]
+  candidateHexes: AxialHex[],
+  riverSlope?: RiverSlopeInfo
 ): River[] {
   const maxSegmentCount = 6;
   const logGeneration = ({
@@ -2795,7 +2801,7 @@ function tryAddSmallTributaryRiver(
   try {
     const hasMountainFullnessTwoOrThreeOutgoingRiver = hasFullnessTwoOrThreeMountainOutgoingRiver(region, rivers, riverGraph);
     if (region.sizeCategory === 'land' || region.sizeCategory === 'vast_land') {
-      return tryAddEdgeMinorTributaryRiver(region, terrainMap, riverGraph, rivers, candidateHexes);
+      return tryAddEdgeMinorTributaryRiver(region, terrainMap, riverGraph, rivers, candidateHexes, riverSlope);
     }
     const supportsInteriorTributary = region.sizeCategory === 'region'
       || region.sizeCategory === 'large_region'
@@ -2811,7 +2817,7 @@ function tryAddSmallTributaryRiver(
     }
     const tryMountainEdgeFallback = (): River[] => {
       if (!hasMountainFullnessTwoOrThreeOutgoingRiver) return rivers;
-      return tryAddEdgeMinorTributaryRiver(region, terrainMap, riverGraph, rivers, candidateHexes);
+      return tryAddEdgeMinorTributaryRiver(region, terrainMap, riverGraph, rivers, candidateHexes, riverSlope);
     };
 
     const existingRiverVertexKeys = new Set(regionRivers.flatMap((river) => river.vertexPath.map((v) => v.key)));
@@ -2866,10 +2872,18 @@ function tryAddSmallTributaryRiver(
       }
       return min;
     };
-    const sortTowardLake = (vertices: RiverVertex[]): RiverVertex[] => {
+    const sortMinorTributaryCandidates = (vertices: RiverVertex[]): RiverVertex[] => {
       const randomized = shuffleArray(vertices);
-      if (freeLakeVertexKeys.size === 0) return randomized;
-      return randomized.sort((a, b) => distanceToNearestLake(a) - distanceToNearestLake(b));
+      return randomized.sort((a, b) => {
+        const projectionA = getRiverSlopeProjection(a, riverSlope);
+        const projectionB = getRiverSlopeProjection(b, riverSlope);
+        if (projectionA !== null && projectionB !== null) {
+          const slopeCompare = projectionA - projectionB;
+          if (Math.abs(slopeCompare) > 0.001) return slopeCompare;
+        }
+        if (freeLakeVertexKeys.size > 0) return distanceToNearestLake(a) - distanceToNearestLake(b);
+        return 0;
+      });
     };
 
     const startCandidatesByKey = new Map<string, RiverVertex>();
@@ -2897,7 +2911,7 @@ function tryAddSmallTributaryRiver(
       ));
       if (firstStepCandidates.length === 0) return null;
 
-      for (const firstStep of sortTowardLake(firstStepCandidates)) {
+      for (const firstStep of sortMinorTributaryCandidates(firstStepCandidates)) {
         const path = [startVertex, firstStep];
         const pathVertexKeys = new Set<string>(path.map((vertex) => vertex.key));
         const pathEdgeKeys = new Set<string>([edgeKey(startVertex, firstStep)]);
@@ -2913,7 +2927,7 @@ function tryAddSmallTributaryRiver(
           ));
           if (nextCandidates.length === 0) break;
 
-          const nextVertex = sortTowardLake(nextCandidates)[0];
+          const nextVertex = sortMinorTributaryCandidates(nextCandidates)[0];
           path.push(nextVertex);
           pathVertexKeys.add(nextVertex.key);
           pathEdgeKeys.add(edgeKey(current, nextVertex));
@@ -2936,7 +2950,7 @@ function tryAddSmallTributaryRiver(
 
     let builtResult: MinorRiverBuildResult | null = null;
     let sawFirstEdgeCandidate = false;
-    for (const startVertex of shuffleArray(startCandidates)) {
+    for (const startVertex of orderRiverSlopeVertices(shuffleArray(startCandidates), riverSlope, 'downstream')) {
       const possibleFirstEdges = getNeighborRiverVertices(startVertex, riverGraph).filter((next) => (
         isValidEdge(startVertex, next, new Set<string>())
         && !isForbiddenInteriorVertex(next)
@@ -6116,7 +6130,14 @@ function finalizeRiverGenerationForRegion(
   neighborRegionVertices: RiverVertex[],
   candidateEndpointVertices: RiverVertex[] = candidateVertices
 ): RiverGenerationResult {
-  const riversAfterExistingLogic = tryAddSmallTributaryRiver(region, terrainMap, riverGraph, rivers, candidateHexes);
+  const riversAfterExistingLogic = tryAddSmallTributaryRiver(
+    region,
+    terrainMap,
+    riverGraph,
+    rivers,
+    candidateHexes,
+    region.heightLevel === 3 ? undefined : region.riverSlope
+  );
   const riversWithMinimumMountainRivers = ensureMinimumMountainRiversForRegion(
     region,
     regions,
@@ -6645,7 +6666,8 @@ function generateRiverForRegion(
           blockedEdgeKeys,
           excludedTributaryTargetVertexKeys,
           existingRiverVertexKeys,
-          new Set([endpoint.vertex.key])
+          new Set([endpoint.vertex.key, ...tributaryTargetVertices.map((vertex) => vertex.key)]),
+          region.heightLevel === 3 ? undefined : region.riverSlope
         );
         if (!tributaryPath) {
           console.warn('Could not connect tributary to main river', {
