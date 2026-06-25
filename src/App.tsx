@@ -85,8 +85,8 @@ type Region = {
   anchorHex: AxialHex;
   targetSize: number;
   finalSize: number;
-  sizeCategory: 'locality' | 'small_region' | 'region' | 'large_region' | 'land' | 'vast_land';
-  sizeLabel: 'Местность' | 'Малый регион' | 'Регион' | 'Большой регион' | 'Край' | 'Обширный край';
+  sizeCategory: 'tract' | 'locality' | 'small_region' | 'region' | 'large_region' | 'land' | 'vast_land';
+  sizeLabel: 'Урочище' | 'Местность' | 'Малый регион' | 'Регион' | 'Большой регион' | 'Край' | 'Обширный край';
   biomeLandType: BiomeLandType;
   heightLevel: RegionHeightLevel;
   biomeId: BiomeId;
@@ -101,6 +101,7 @@ type Region = {
   // Прибрежный ли регион. Необязательное поле — старые сохранения без него
   // корректно читаются как "не прибрежный".
   isCoastal?: boolean;
+  isTract?: boolean;
 };
 
 type HexMeta = {
@@ -410,8 +411,8 @@ const UI_TEXT = {
 } as const;
 
 const SIZE_LABELS: Record<Language, Record<Region['sizeCategory'], string>> = {
-  ru: { locality: 'Местность', small_region: 'Малый регион', region: 'Регион', large_region: 'Большой регион', land: 'Край', vast_land: 'Обширный край' },
-  en: { locality: 'Locality', small_region: 'Small region', region: 'Region', large_region: 'Large region', land: 'Land', vast_land: 'Vast land' }
+  ru: { tract: 'Урочище', locality: 'Местность', small_region: 'Малый регион', region: 'Регион', large_region: 'Большой регион', land: 'Край', vast_land: 'Обширный край' },
+  en: { tract: 'Tract', locality: 'Locality', small_region: 'Small region', region: 'Region', large_region: 'Large region', land: 'Land', vast_land: 'Vast land' }
 };
 
 const BIOME_LABELS_EN: Record<BiomeId, string> = {
@@ -950,7 +951,8 @@ type GenerationOptions = {
 };
 
 const REGION_SIZE_CATEGORY_RANGES: Record<Region['sizeCategory'], [number, number]> = {
-  locality: [5, 10],
+  tract: [1, 5],
+  locality: [6, 10],
   small_region: [11, 20],
   region: [21, 30],
   large_region: [31, 40],
@@ -4223,7 +4225,7 @@ function validateCandidateBoundaryVertices(
 
 export function rollRegionTargetSize(): number {
   const roll = randomInt(1, 100);
-  if (roll <= 5) return randomInt(5, 10);
+  if (roll <= 5) return randomInt(6, 10);
   if (roll <= 40) return randomInt(11, 20);
   if (roll <= 65) return randomInt(21, 30);
   if (roll <= 83) return randomInt(31, 40);
@@ -4232,7 +4234,8 @@ export function rollRegionTargetSize(): number {
 }
 
 export function getRegionSizeCategory(size: number): Pick<Region, 'sizeCategory' | 'sizeLabel'> {
-  if (size >= 5 && size <= 10) return { sizeCategory: 'locality', sizeLabel: 'Местность' };
+  if (size >= 1 && size <= 5) return { sizeCategory: 'tract', sizeLabel: 'Урочище' };
+  if (size >= 6 && size <= 10) return { sizeCategory: 'locality', sizeLabel: 'Местность' };
   if (size >= 11 && size <= 20) return { sizeCategory: 'small_region', sizeLabel: 'Малый регион' };
   if (size >= 21 && size <= 30) return { sizeCategory: 'region', sizeLabel: 'Регион' };
   if (size >= 31 && size <= 40) return { sizeCategory: 'large_region', sizeLabel: 'Большой регион' };
@@ -4770,6 +4773,66 @@ export function generateConnectedRegionFromAnchor(
   }
 
   return Array.from(regionKeys).map(parseHexKey);
+}
+
+function generateFallbackTractFromAnchor(anchorHex: AxialHex, occupiedHexes: Set<string>): AxialHex[] {
+  const targetSize = 5;
+  const regionKeys = new Set<string>([hexKey(anchorHex)]);
+
+  while (regionKeys.size < targetSize) {
+    const growthCandidates = getFrontierCandidateHexes(regionKeys, occupiedHexes)
+      .map((candidate) => getGrowthCandidate(candidate, regionKeys, occupiedHexes))
+      .filter((candidate): candidate is GrowthCandidate => candidate !== null);
+    const picked = weightedPickCandidate(growthCandidates);
+    if (!picked) break;
+    regionKeys.add(hexKey(picked.hex));
+  }
+
+  return Array.from(regionKeys).map(parseHexKey);
+}
+
+function getSeaComponentIds(seaKeys: Set<string>): Map<string, number> {
+  const componentIds = new Map<string, number>();
+  let nextComponentId = 0;
+
+  for (const seaKey of seaKeys) {
+    if (componentIds.has(seaKey)) continue;
+
+    const componentId = nextComponentId;
+    nextComponentId += 1;
+    const queue = [seaKey];
+    componentIds.set(seaKey, componentId);
+
+    for (let index = 0; index < queue.length; index += 1) {
+      const currentKey = queue[index];
+      for (const neighbor of getHexNeighbors(parseHexKey(currentKey))) {
+        const neighborKey = hexKey(neighbor);
+        if (!seaKeys.has(neighborKey) || componentIds.has(neighborKey)) continue;
+        componentIds.set(neighborKey, componentId);
+        queue.push(neighborKey);
+      }
+    }
+  }
+
+  return componentIds;
+}
+
+function getSeaKeysToFillForTractSeaConnection(tractHexes: AxialHex[], existingSeaKeys: Set<string>, candidateHexes: AxialHex[]): string[] {
+  const seaComponentIds = getSeaComponentIds(existingSeaKeys);
+  const touchedSeaComponentIds = new Set<number>();
+  const tractKeys = new Set(tractHexes.map(hexKey));
+
+  for (const tractHex of tractHexes) {
+    for (const neighbor of getHexNeighbors(tractHex)) {
+      const componentId = seaComponentIds.get(hexKey(neighbor));
+      if (componentId !== undefined) touchedSeaComponentIds.add(componentId);
+    }
+  }
+
+  if (touchedSeaComponentIds.size < 2) return [];
+  return candidateHexes
+    .filter((candidate) => getHexNeighbors(candidate).some((neighbor) => tractKeys.has(hexKey(neighbor))))
+    .map(hexKey);
 }
 
 export function chooseRegionCenter(regionHexes: AxialHex[]): AxialHex {
@@ -7302,6 +7365,21 @@ function assignPointsOfInterestForRegion(
   if (poiCount <= 0) return [];
 
   const shuffledEligibleHexes = shuffleArray(eligibleHexes);
+  return shuffledEligibleHexes.slice(0, Math.min(poiCount, shuffledEligibleHexes.length));
+}
+
+function assignPointsOfInterestForTract(regionHexes: AxialHex[]): AxialHex[] {
+  const eligibleCount = regionHexes.length;
+  if (eligibleCount <= 0) return [];
+
+  const maxPoiCount = Math.floor(eligibleCount / 4);
+  const minPoiCount = Math.floor(eligibleCount / 6);
+  if (maxPoiCount < minPoiCount) return [];
+
+  const poiCount = randomInt(minPoiCount, maxPoiCount);
+  if (poiCount <= 0) return [];
+
+  const shuffledEligibleHexes = shuffleArray(regionHexes);
   return shuffledEligibleHexes.slice(0, Math.min(poiCount, shuffledEligibleHexes.length));
 }
 
@@ -10278,7 +10356,7 @@ export function App() {
   // восстановленный снимок, и только потом генерируем регион заново.
   const [pendingRegen, setPendingRegen] = useState<{ anchorHex: AxialHex; options: GenerationOptions } | null>(null);
   // Параметры ручной генерации ('auto' — прежнее случайное поведение).
-  const [genSizeCategory, setGenSizeCategory] = useState<'auto' | Region['sizeCategory']>('auto');
+  const [genSizeCategory, setGenSizeCategory] = useState<'auto' | Exclude<Region['sizeCategory'], 'tract'>>('auto');
   const [genLandType, setGenLandType] = useState<'auto' | BiomeLandType>('auto');
   const [genBiome, setGenBiome] = useState<'auto' | BiomeId>('auto');
   const [genCoastal, setGenCoastal] = useState<'auto' | CoastalPreference>('mainland');
@@ -10295,7 +10373,7 @@ export function App() {
         const key = hexKey(hex);
         map.set(key, {
           regionId: region.id,
-          isCenter: hexKey(region.centerHex) === key,
+          isCenter: !region.isTract && hexKey(region.centerHex) === key,
           isAnchor: hexKey(region.anchorHex) === key
         });
       }
@@ -10439,6 +10517,75 @@ export function App() {
     return map;
   }, [regions, candidateHexes]);
 
+  const addFallbackTractToMap = (anchorHex: AxialHex) => {
+    const regionId = Math.max(0, ...regions.map((region) => region.id)) + 1;
+    const existingSeaKeys = getSeaHexKeys(hexTerrainByKey);
+    const occupiedHexes = new Set(allRegionHexes.map(hexKey));
+    for (const seaKey of existingSeaKeys) occupiedHexes.add(seaKey);
+
+    const regionHexes = generateFallbackTractFromAnchor(anchorHex, occupiedHexes);
+    const finalSize = regionHexes.length;
+    const { sizeCategory, sizeLabel } = getRegionSizeCategory(finalSize);
+    const biomeChoice = chooseBiomeId('wild', getAdjacentRegionBiomes(regionHexes, new Map(regions.flatMap((region) => region.hexes.map((hex) => [hexKey(hex), region] as const)))), regionId);
+    const biomeId = biomeChoice.biomeId ?? FALLBACK_BIOME_ID;
+    const biome = BIOMES[biomeId] ?? BIOMES[FALLBACK_BIOME_ID];
+    const tractRegion: Region = {
+      id: regionId,
+      hexes: regionHexes,
+      // У урочища нет центрального гекса; anchorHex хранится здесь только для
+      // совместимости с общей моделью сохранения и не помечается как центр.
+      centerHex: anchorHex,
+      anchorHex,
+      targetSize: 5,
+      finalSize,
+      sizeCategory,
+      sizeLabel,
+      biomeLandType: 'wild',
+      heightLevel: biome.heightLevel,
+      biomeId,
+      biomeLabel: biome.label,
+      biomePrimaryEmoji: biome.primaryEmoji,
+      biomeSecondaryEmojis: [...biome.secondaryEmojis],
+      biomeEmojiLabel: biome.primaryEmoji + biome.secondaryEmojis.join(''),
+      pointsOfInterest: assignPointsOfInterestForTract(regionHexes),
+      isCoastal: false,
+      isTract: true
+    };
+    const tractRegionWithPoiKinds: Region = {
+      ...tractRegion,
+      pointOfInterestKinds: assignPoiKindsForRegion({
+        region: tractRegion,
+        roads,
+        rivers,
+        hexTerrainByKey
+      })
+    };
+    const finalRegions = [...regions, tractRegionWithPoiKinds];
+    const candidateHexesBeforeSeaBridge = getCandidateHexes(finalRegions.flatMap((region) => region.hexes), existingSeaKeys);
+    const seaKeysToFill = getSeaKeysToFillForTractSeaConnection(regionHexes, existingSeaKeys, candidateHexesBeforeSeaBridge);
+    const finalSeaKeys = new Set([...existingSeaKeys, ...seaKeysToFill]);
+    const finalCandidateHexes = getCandidateHexes(finalRegions.flatMap((region) => region.hexes), finalSeaKeys);
+
+    const snapshot: MapSnapshot = {
+      regions,
+      candidateHexes,
+      rivers,
+      roads: cloneRoads(roads),
+      hexTerrainByKey,
+      nextLakeId,
+      nextRoadId
+    };
+    setHistory((current) => [...current, snapshot]);
+    setRegions(finalRegions);
+    setCandidateHexes(finalCandidateHexes);
+    setHexTerrainByKey(() => {
+      const next = new Map(hexTerrainByKey);
+      for (const key of seaKeysToFill) next.set(key, { terrainOverride: 'sea' });
+      return next;
+    });
+    setSelectedHex(anchorHex);
+  };
+
   const addRegionToMap = (anchorHex: AxialHex, options: GenerationOptions = {}) => {
     const maxRegionAttempts = 30;
     const autoCoastRoll = Math.random();
@@ -10470,6 +10617,15 @@ export function App() {
         regionHexes = fillSmallEnclosedAreasForRegion(regionHexes, allRegionHexes, getSeaHexKeys(hexTerrainByKey));
       }
       const finalSize = regionHexes.length;
+      if (finalSize < 6) {
+        console.warn('Candidate region is smaller than locality; retrying regular generation before fallback tract', {
+          attempt,
+          regionId,
+          finalSize,
+          acceptedAsFallbackTract: isLastRegionAttempt
+        });
+        continue;
+      }
       const { sizeCategory, sizeLabel } = getRegionSizeCategory(finalSize);
       const centerHex = chooseRegionCenter(regionHexes);
       const regionByHexKey = new Map<string, Region>();
@@ -11087,8 +11243,10 @@ export function App() {
 
     console.warn('Could not create region after max attempts', {
       anchorHex,
-      maxRegionAttempts
+      maxRegionAttempts,
+      fallback: 'tract'
     });
+    addFallbackTractToMap(anchorHex);
   };
 
   const resetMap = () => {
