@@ -10540,6 +10540,10 @@ export function App() {
           finalSize,
           acceptedAsFallbackTract: isLastRegionAttempt
         });
+        if (isLastRegionAttempt) {
+          addFallbackTractToMap(anchorHex);
+          return;
+        }
         continue;
       }
       const { sizeCategory, sizeLabel } = getRegionSizeCategory(finalSize);
