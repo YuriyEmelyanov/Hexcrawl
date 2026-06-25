@@ -577,6 +577,14 @@ function getSeaHexKeys(hexTerrainByKey: Map<string, HexTerrainData>): Set<string
   }
   return keys;
 }
+function getSeaHexKeysWithout(
+  hexTerrainByKey: Map<string, HexTerrainData>,
+  landHexes: AxialHex[] = []
+): Set<string> {
+  const seaKeys = getSeaHexKeys(hexTerrainByKey);
+  for (const hex of landHexes) seaKeys.delete(hexKey(hex));
+  return seaKeys;
+}
 // Морские гексы без единого морского соседа — одиночные артефакты. Реки об них спотыкаются
 // (non_mouth_vertex_sea), хотя по сути такого моря быть не должно. Для проверок реки-vs-море
 // их игнорируем, а на коммите лечим (удаляем). Так старые артефакты не блокируют генерацию.
@@ -10440,11 +10448,15 @@ export function App() {
 
   const addFallbackTractToMap = (anchorHex: AxialHex) => {
     const regionId = Math.max(0, ...regions.map((region) => region.id)) + 1;
-    const existingSeaKeys = getSeaHexKeys(hexTerrainByKey);
+    const existingSeaKeys = getSeaHexKeysWithout(hexTerrainByKey, [anchorHex]);
+    // Если якорь урочища всё ещё числится морем в служебных данных,
+    // считаем его будущей сушей уже до расчёта занятых гексов.
     const occupiedHexes = new Set(allRegionHexes.map(hexKey));
     for (const seaKey of existingSeaKeys) occupiedHexes.add(seaKey);
 
     const regionHexes = generateFallbackTractFromAnchor(anchorHex, occupiedHexes);
+    const regionKeySet = new Set(regionHexes.map(hexKey));
+    for (const regionKey of regionKeySet) existingSeaKeys.delete(regionKey);
     const finalSize = regionHexes.length;
     const { sizeCategory, sizeLabel } = getRegionSizeCategory(finalSize);
     const biomeChoice = chooseBiomeId('wild', getAdjacentRegionBiomes(regionHexes, new Map(regions.flatMap((region) => region.hexes.map((hex) => [hexKey(hex), region] as const)))), regionId);
@@ -10485,6 +10497,7 @@ export function App() {
     const candidateHexesBeforeSeaBridge = getCandidateHexes(finalRegions.flatMap((region) => region.hexes), existingSeaKeys);
     const seaKeysToFill = getSeaKeysToFillForTractSeaConnection(regionHexes, existingSeaKeys, candidateHexesBeforeSeaBridge);
     const finalSeaKeys = new Set([...existingSeaKeys, ...seaKeysToFill]);
+    for (const regionKey of regionKeySet) finalSeaKeys.delete(regionKey);
     const finalCandidateHexes = getCandidateHexes(finalRegions.flatMap((region) => region.hexes), finalSeaKeys);
 
     const snapshot: MapSnapshot = {
@@ -10501,7 +10514,10 @@ export function App() {
     setCandidateHexes(finalCandidateHexes);
     setHexTerrainByKey(() => {
       const next = new Map(hexTerrainByKey);
-      for (const key of seaKeysToFill) next.set(key, { terrainOverride: 'sea' });
+      // Новый fallback-регион всегда становится сушей: очищаем старые terrain override
+      // у всех его гексов перед записью актуального моря.
+      for (const regionKey of regionKeySet) next.delete(regionKey);
+      for (const key of finalSeaKeys) next.set(key, { terrainOverride: 'sea' });
       return next;
     });
     setSelectedHex(anchorHex);
@@ -10511,7 +10527,11 @@ export function App() {
     const maxRegionAttempts = 30;
     const autoCoastRoll = Math.random();
     setCoastNotice(null);
+    const anchorKey = hexKey(anchorHex);
     const existingSeaKeysForGrowth = getSeaHexKeys(hexTerrainByKey);
+    // Кликнутый кандидат может визуально быть сушей/серым гексом, но оставаться
+    // морем в hexTerrainByKey. Для роста региона якорь всегда считаем сушей.
+    existingSeaKeysForGrowth.delete(anchorKey);
     const mainlandZeroWeightHexes = options.coastalPreference === 'mainland'
       ? getSeaAdjacentHexKeys(existingSeaKeysForGrowth)
       : new Set<string>();
@@ -10525,6 +10545,7 @@ export function App() {
       // Море — не суша: рост региона не должен захватывать гексы моря.
       for (const seaKey of existingSeaKeysForGrowth) occupiedHexes.add(seaKey);
       const regionId = Math.max(0, ...regions.map((region) => region.id)) + 1;
+      occupiedHexes.delete(anchorKey);
       const regionHexes = generateConnectedRegionFromAnchor(
         anchorHex,
         targetSize,
@@ -10554,8 +10575,11 @@ export function App() {
       }
       const adjacentBiomeIds = getAdjacentRegionBiomes(regionHexes, regionByHexKey);
       const nextAllHexesPreview = [...allRegionHexes, ...regionHexes];
-      const existingSeaForRivers = getSeaHexKeys(hexTerrainByKey);
-      const nextCandidateHexesPreview = getCandidateHexes(nextAllHexesPreview);
+      const regionKeySet = new Set(regionHexes.map(hexKey));
+      const existingSeaForRivers = getSeaHexKeysWithout(hexTerrainByKey, regionHexes);
+      // На время топологических/речных проверок строящийся регион вычищается
+      // из моря, а candidate-фронт строится без существующего моря.
+      const nextCandidateHexesPreview = getCandidateHexes(nextAllHexesPreview, existingSeaForRivers);
       const candidateRegionForTopologyCheck: Region = {
         id: regionId,
         hexes: regionHexes,
@@ -10584,7 +10608,7 @@ export function App() {
         rivers,
         candidateRiverGraph
       );
-      const existingSeaKeys = getSeaHexKeys(hexTerrainByKey);
+      const existingSeaKeys = getSeaHexKeysWithout(hexTerrainByKey, regionHexes);
       const forcedCoastContinuation = regionForcesCoastContinuation(regionHexes, existingSeaKeys);
       const hasOutgoingRiverToExistingRegion = regionHasOutgoingRiverToExistingRegion(touchingEndpoints);
       const isCoastalRegion = options.coastalPreference === 'coast' ? true
@@ -10739,17 +10763,15 @@ export function App() {
       }
       const nextRegionsForRiverGeneration = [...regions, regionForRiverGeneration];
       const nextHexTerrainByKeyPreview = new Map(hexTerrainByKey);
+      for (const regionKey of regionKeySet) nextHexTerrainByKeyPreview.delete(regionKey);
       for (const [key, terrain] of lakesByHex) nextHexTerrainByKeyPreview.set(key, terrain);
       mergeAdjacentLakeIds(nextHexTerrainByKeyPreview);
       const nextAllHexes = nextRegionsForRiverGeneration.flatMap((r) => r.hexes);
-      // Обычный речной фронт не фильтрует существующее море заранее. Исключение — новый
-      // прибрежный регион: море убирается из общего фронта, чтобы устье не
-      // выбирало уже существующий морской гекс. Приоритет остаётся у
-      // кандидатных гексов, ближайших к морю (см. getCoastalRiverEndpointHexes).
-      // У материка нет дополнительных ограничений по морю: sea-adjacent гексы
-      // просто имеют нулевой вес роста.
+      // Речной candidate-фронт не включает существующее море: береговые/речные
+      // проверки должны видеть только реальные кандидаты суши, даже если
+      // визуально серый гекс ещё оставался sea в служебных данных.
       const nextCandidateHexes = uniqueHexes([
-        ...getCandidateHexes(nextAllHexes, isCoastalRegion ? existingSeaForRivers : undefined)
+        ...getCandidateHexes(nextAllHexes, existingSeaForRivers)
       ]);
       const generatedRiverResult = generateRiverForRegion(
         regionForRiverGeneration,
@@ -10770,7 +10792,7 @@ export function App() {
       // Вариант 2 (спасти сушу): если подключение коннектора посадило исток реки на
       // существующее море, подтягиваем исток назад до первой сухопутной вершины (устье
       // не трогаем). Так зажатый морем карман может стать сушей без реки, текущей из моря.
-      const existingSeaVertexKeysForTrim = getSeaVertexKeysFromSeaKeys(getSeaHexKeys(hexTerrainByKey));
+      const existingSeaVertexKeysForTrim = getSeaVertexKeysFromSeaKeys(existingSeaForRivers);
       const connectedRivers = trimRiverSourcesOffExistingSea(riverResult.rivers, riversForGeneration, existingSeaVertexKeysForTrim);
 
       if (!validateExistingRiverEdgeFullnessPreserved(rivers, connectedRivers)) {
@@ -10891,7 +10913,7 @@ export function App() {
       };
       const nextRegions = [...regions, finalRegion];
 
-      const existingSeaKeysBeforeRegion = getSeaHexKeys(hexTerrainByKey);
+      const existingSeaKeysBeforeRegion = getSeaHexKeysWithout(hexTerrainByKey, regionHexes);
       const allSeaKeys = new Set(existingSeaKeysBeforeRegion);
       for (const key of seaHexKeys) allSeaKeys.add(key);
       const allNewSeaKeys = [...seaHexKeys];
@@ -11070,7 +11092,7 @@ export function App() {
       }
       if (demotedSeaKeySet.size > 0) {
         const blockedCandidateKeys = new Set<string>(finalLandHexesForCandidates.map(hexKey));
-        for (const key of getSeaHexKeys(hexTerrainByKey)) blockedCandidateKeys.add(key);
+        for (const key of existingSeaKeysBeforeRegion) blockedCandidateKeys.add(key);
         for (const key of finalSeaKeySetToWrite) blockedCandidateKeys.add(key);
         finalCandidateHexes = addCandidateHexKeys(finalCandidateHexes, demotedSeaKeySet, blockedCandidateKeys);
       }
@@ -11128,7 +11150,13 @@ export function App() {
       setCandidateHexes(finalCandidateHexes);
       setHexTerrainByKey(() => {
         const next = new Map(nextHexTerrainByKeyPreview);
-        for (const key of finalSeaKeysToWrite) next.set(key, { terrainOverride: 'sea' });
+        // Перед финальной записью состояния новый регион всегда удаляется из
+        // старого моря/override-данных, затем записывается только актуальное море.
+        const finalRegionKeySet = new Set(finalRegionWithPoiKinds.hexes.map(hexKey));
+        for (const regionKey of finalRegionKeySet) next.delete(regionKey);
+        for (const key of finalSeaKeysToWrite) {
+          if (!finalRegionKeySet.has(key)) next.set(key, { terrainOverride: 'sea' });
+        }
         // BR-004: озеро, соседствующее с морем, удаляется (гекс возвращается к биому региона).
         // Запускаем при наличии ЛЮБОГО моря (включая существующее), а не только когда регион
         // добавил новое море — иначе озеро в кармане у старого моря оставалось у берега.
