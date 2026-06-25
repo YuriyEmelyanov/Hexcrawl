@@ -11171,7 +11171,11 @@ export function App() {
         // Перед финальной записью состояния новый регион всегда удаляется из
         // старого моря/override-данных, затем записывается только актуальное море.
         const finalRegionKeySet = new Set(finalRegionWithPoiKinds.hexes.map(hexKey));
-        for (const regionKey of finalRegionKeySet) next.delete(regionKey);
+        for (const regionKey of finalRegionKeySet) {
+          const terrain = next.get(regionKey);
+          if (terrain?.terrainOverride === 'lake') continue;
+          next.delete(regionKey);
+        }
         for (const key of finalSeaKeysToWrite) {
           if (!finalRegionKeySet.has(key)) next.set(key, { terrainOverride: 'sea' });
         }
