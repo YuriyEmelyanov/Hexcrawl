@@ -585,6 +585,21 @@ function getSeaHexKeysWithout(
   for (const hex of landHexes) seaKeys.delete(hexKey(hex));
   return seaKeys;
 }
+
+function removeSeaOverridesForCandidateHexes(
+  hexTerrainByKey: Map<string, HexTerrainData>,
+  candidateHexes: AxialHex[]
+): Map<string, HexTerrainData> {
+  if (candidateHexes.length === 0) return hexTerrainByKey;
+  let next: Map<string, HexTerrainData> | null = null;
+  for (const candidateHex of candidateHexes) {
+    const key = hexKey(candidateHex);
+    if (hexTerrainByKey.get(key)?.terrainOverride !== 'sea') continue;
+    if (!next) next = new Map(hexTerrainByKey);
+    next.delete(key);
+  }
+  return next ?? hexTerrainByKey;
+}
 // Морские гексы без единого морского соседа — одиночные артефакты. Реки об них спотыкаются
 // (non_mouth_vertex_sea), хотя по сути такого моря быть не должно. Для проверок реки-vs-море
 // их игнорируем, а на коммите лечим (удаляем). Так старые артефакты не блокируют генерацию.
@@ -8790,7 +8805,7 @@ function getWildRoadCandidateBoundaryHexes(options: {
   for (const candidateHex of candidatesByKey.values()) {
     const candidateKey = hexKey(candidateHex);
     if (regionKeys.has(candidateKey)) continue;
-    if (isLakeHex(candidateHex, hexTerrainByKey) || isSeaHex(candidateHex, hexTerrainByKey)) continue;
+    if (isLakeHex(candidateHex, hexTerrainByKey)) continue;
     if (!getHexNeighbors(candidateHex).some((neighbor) => regionKeys.has(hexKey(neighbor)))) continue;
     boundaryCandidates.set(candidateKey, candidateHex);
   }
@@ -10102,7 +10117,7 @@ function generateRoadsForRegion(options: {
         .filter((target) => {
           const entryKey = hexKey(target.entryHex);
           if (isSameHex(target.entryHex, region.centerHex)) return false;
-          if (isLakeHex(target.entryHex, hexTerrainByKey) || isLakeHex(target.candidateHex, hexTerrainByKey) || isSeaHex(target.entryHex, hexTerrainByKey) || isSeaHex(target.candidateHex, hexTerrainByKey)) return false;
+          if (isLakeHex(target.entryHex, hexTerrainByKey) || isLakeHex(target.candidateHex, hexTerrainByKey) || isSeaHex(target.entryHex, hexTerrainByKey)) return false;
           if (existingRoadHexKeys.has(entryKey)) return false;
           if (isAdjacentToRoadHex(target.entryHex, built)) return false;
           return true;
@@ -10159,7 +10174,6 @@ function generateRoadsForRegion(options: {
           && !isLakeHex(entryHex, hexTerrainByKey)
           && !isLakeHex(candidateHex, hexTerrainByKey)
           && !isSeaHex(entryHex, hexTerrainByKey)
-          && !isSeaHex(candidateHex, hexTerrainByKey)
           && !preBuildEntryAdjacentToRoad
           && roadStartHasExistingRoad
           && !pathHasLakeOrSea
@@ -10292,6 +10306,10 @@ export function App() {
   // Уведомление пользователю (например, почему не создалось побережье).
   const [coastNotice, setCoastNotice] = useState<string | null>(null);
   const [clickPromptCandidateKey, setClickPromptCandidateKey] = useState<string | null>(null);
+
+  useEffect(() => {
+    setHexTerrainByKey((current) => removeSeaOverridesForCandidateHexes(current, candidateHexes));
+  }, [candidateHexes, hexTerrainByKey]);
 
   const allRegionHexes = useMemo(() => regions.flatMap((region) => region.hexes), [regions]);
 
