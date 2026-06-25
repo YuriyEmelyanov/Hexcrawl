@@ -5243,23 +5243,7 @@ function chooseSeaCandidateKeyForRiverMouth(
   return touching[0]?.[0] ?? null;
 }
 
-function getConnectedSeaComponent(startKey: string, seaKeys: Set<string>): Set<string> {
-  const connected = new Set<string>([startKey]);
-  const queue = [startKey];
-  for (let cursor = 0; cursor < queue.length; cursor += 1) {
-    const currentKey = queue[cursor];
-    for (const neighbor of getHexNeighbors(parseHexKey(currentKey))) {
-      const neighborKey = hexKey(neighbor);
-      if (!seaKeys.has(neighborKey) || connected.has(neighborKey)) continue;
-      connected.add(neighborKey);
-      queue.push(neighborKey);
-    }
-  }
-  return connected;
-}
-
-
-function getConnectedSeaComponentFromStarts(startKeys: string[], seaKeys: Set<string>): Set<string> {
+function getConnectedSeaComponent(startKeys: Iterable<string>, seaKeys: Set<string>): Set<string> {
   const connected = new Set<string>();
   const queue: string[] = [];
   for (const startKey of startKeys) {
@@ -5286,7 +5270,7 @@ function getConnectedSeaComponents(seaKeys: Set<string>): Set<string>[] {
 
   while (remaining.size > 0) {
     const startKey = Array.from(remaining)[0];
-    const component = getConnectedSeaComponent(startKey, seaKeys);
+    const component = getConnectedSeaComponent([startKey], seaKeys);
     components.push(component);
     for (const key of component) remaining.delete(key);
   }
@@ -5309,9 +5293,9 @@ function splitNewSeaKeysByMouthConnectedComponent(newSeaKeys: string[], existing
     // оставляем только связанную область моря, достижимую от гекса устья.
     // Новая логика выбора океанского/самого большого компонента нужна только
     // для побережья без устья.
-    selectedComponent = getConnectedSeaComponentFromStarts(mouthSeaKeys, combinedSeaKeys);
+    selectedComponent = getConnectedSeaComponent(mouthSeaKeys, combinedSeaKeys);
   } else if (existingSeaSet.size > 0) {
-    selectedComponent = getConnectedSeaComponentFromStarts(Array.from(existingSeaSet), combinedSeaKeys);
+    selectedComponent = getConnectedSeaComponent(existingSeaSet, combinedSeaKeys);
   } else {
     const components = getConnectedSeaComponents(newSeaKeySet);
     selectedComponent = components.sort((a, b) => b.size - a.size)[0] ?? null;
@@ -5335,7 +5319,7 @@ function addCandidateHexKeys(candidateHexes: AxialHex[], keysToAdd: Iterable<str
 function seaKeysAreConnected(seaKeys: Set<string>): boolean {
   if (seaKeys.size <= 1) return true;
   const firstKey = Array.from(seaKeys)[0];
-  return getConnectedSeaComponent(firstKey, seaKeys).size === seaKeys.size;
+  return getConnectedSeaComponent([firstKey], seaKeys).size === seaKeys.size;
 }
 
 type GlobalSeaValidationResult = { valid: true } | { valid: false; reason: string };
@@ -5792,13 +5776,9 @@ function getRemainingOutgoingConnectionsForRegion(
     .sort((a, b) => a.river.id - b.river.id);
 }
 
-function getOutgoingInteriorConnectorFullness(
-  river: River,
-  outgoingVertexKey: string,
-  connectedToLake: boolean
-): RiverFullness {
+function getOutgoingInteriorConnectorFullness(river: River, outgoingVertexKey: string): RiverFullness {
   const outgoingFullness = getRiverEndpointSectorFullness(river, outgoingVertexKey);
-  return getOutgoingConnectorFullnessFromEndpoint(outgoingFullness, connectedToLake);
+  return getOutgoingConnectorFullnessFromEndpoint(outgoingFullness);
 }
 
 function getAvailableUnconnectedLakesForRegion(
@@ -6139,11 +6119,7 @@ function connectRemainingOutgoingRiversForRegion(
     }
 
     if (selectedLake) usedLakeIds.add(selectedLake.lakeId);
-    const connectorFullness = getOutgoingInteriorConnectorFullness(
-      connection.river,
-      connection.endpoint.vertex.key,
-      Boolean(selectedLake)
-    );
+    const connectorFullness = getOutgoingInteriorConnectorFullness(connection.river, connection.endpoint.vertex.key);
     nextRivers = prependOutgoingRiverConnection(
       nextRivers,
       connection,
@@ -6375,7 +6351,7 @@ function generateRiverForRegion(
         : {
           ...river,
           vertexPath: [...bestPath.slice(0, -1), ...river.vertexPath],
-          sectors: prependRiverPathSector(river, bestPath, getOutgoingInteriorConnectorFullness(river, mainOutgoingEndpoint.vertex.key, false), region.id),
+          sectors: prependRiverPathSector(river, bestPath, getOutgoingInteriorConnectorFullness(river, mainOutgoingEndpoint.vertex.key), region.id),
           controlPoints: bestControlPoints
         });
 
@@ -6454,7 +6430,7 @@ function generateRiverForRegion(
           return {
             ...river,
             vertexPath: [...bestPath.slice(0, -1), ...river.vertexPath],
-            sectors: prependRiverPathSector(river, bestPath, getOutgoingConnectorFullnessFromEndpoint(outgoingFullness, false), region.id),
+            sectors: prependRiverPathSector(river, bestPath, getOutgoingConnectorFullnessFromEndpoint(outgoingFullness), region.id),
             controlPoints: bestControlPoints
           };
         });
@@ -6562,7 +6538,7 @@ function generateRiverForRegion(
         if (!mainPath) return { success: false, rivers: existingRivers, reason: 'mountain_main_outgoing_source_path_not_found' };
         nextRivers = nextRivers.map((river) => river.id !== mainOutgoingEndpoint.riverId
           ? river
-          : { ...river, vertexPath: [...mainPath.slice(0, -1), ...river.vertexPath], sectors: prependRiverPathSector(river, mainPath, getOutgoingInteriorConnectorFullness(river, mainOutgoingEndpoint.vertex.key, false), region.id) });
+          : { ...river, vertexPath: [...mainPath.slice(0, -1), ...river.vertexPath], sectors: prependRiverPathSector(river, mainPath, getOutgoingInteriorConnectorFullness(river, mainOutgoingEndpoint.vertex.key), region.id) });
         const mainPathEdgeKeys = getRiverPathEdgeKeys(mainPath, riverGraph);
         if (!mainPathEdgeKeys) return { success: false, rivers: existingRivers, reason: 'mountain_main_outgoing_edge_keys_not_found' };
         for (const edgeKey of mainPathEdgeKeys) blockedEdgeKeys.add(edgeKey);
@@ -6605,7 +6581,7 @@ function generateRiverForRegion(
         }
         nextRivers = nextRivers.map((river) => river.id !== outgoingEndpoint.riverId
           ? river
-          : { ...river, vertexPath: [...selectedPath.slice(0, -1), ...river.vertexPath], sectors: prependRiverPathSector(river, selectedPath, getOutgoingInteriorConnectorFullness(river, outgoingEndpoint.vertex.key, Boolean(selectedLake)), region.id) });
+          : { ...river, vertexPath: [...selectedPath.slice(0, -1), ...river.vertexPath], sectors: prependRiverPathSector(river, selectedPath, getOutgoingInteriorConnectorFullness(river, outgoingEndpoint.vertex.key), region.id) });
         for (const edgeKey of pathEdgeKeys) blockedEdgeKeys.add(edgeKey);
         console.log('Connecting secondary mountain outgoing river', {
           regionId: region.id,
