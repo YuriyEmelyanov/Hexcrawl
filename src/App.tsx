@@ -11085,54 +11085,6 @@ export function App() {
       return;
     }
 
-    // Вариант 1 (страховка-залив): все попытки сделать сушу провалились. Если клик был по
-    // карману, ПОЛНОСТЬЮ окружённому регионами/морем и примыкающему к существующему морю —
-    // заливаем его морем. СТРОГО: только если ни одна река не начинается из этого залива и не
-    // идёт по нему вне устья (иначе получилась бы река из моря — это запрещено). Если небезопасно
-    // — не заливаем, оставляем честный отказ.
-    const occupiedForBay = new Set<string>();
-    for (const region of regions) for (const hex of region.hexes) occupiedForBay.add(hexKey(hex));
-    const existingSeaForBay = getSeaHexKeys(hexTerrainByKey);
-    for (const key of existingSeaForBay) occupiedForBay.add(key);
-    const bayArea = findEnclosedEmptyAreaContainingHex(anchorHex, occupiedForBay);
-    if (bayArea && bayArea.length > 0) {
-      const bayTouchesSea = bayArea.some((hex) => getHexNeighbors(hex).some((n) => existingSeaForBay.has(hexKey(n))));
-      const bayKeys = bayArea.map(hexKey);
-      const bayVertexKeys = getSeaVertexKeysFromSeaKeys(bayKeys);
-      const bayEdgeKeys = getSeaEdgeKeysFromSeaKeys(bayKeys);
-      const bayStartsRiverFromSea = getRiverStartingFromSea(rivers, bayVertexKeys, bayEdgeKeys);
-      const bayHeightViolation = getRiverSeaHeightViolation(rivers, bayKeys);
-      // Залив больше не обязан сохранять достижимость от открытого океана: для моря
-      // после построения региона остаётся только связность с гексом устья реки.
-      if (bayTouchesSea && !bayStartsRiverFromSea && !bayHeightViolation) {
-        const snapshot: MapSnapshot = {
-          regions,
-          candidateHexes,
-          rivers,
-          roads: cloneRoads(roads),
-          hexTerrainByKey,
-          nextLakeId,
-          nextRoadId
-        };
-        setHistory((current) => [...current, snapshot]);
-        const bayKeySet = new Set(bayKeys);
-        setHexTerrainByKey((current) => {
-          const next = new Map(current);
-          for (const key of bayKeys) next.set(key, { terrainOverride: 'sea' });
-          // BR-004: убрать озёра, ставшие соседями нового моря-залива.
-          const seaSet = getSeaHexKeys(next);
-          for (const [key, terrain] of next) {
-            if (terrain.terrainOverride !== 'lake') continue;
-            if (getHexNeighbors(parseHexKey(key)).some((n) => seaSet.has(hexKey(n)))) next.delete(key);
-          }
-          return next;
-        });
-        setCandidateHexes((current) => current.filter((hex) => !bayKeySet.has(hexKey(hex))));
-        setSelectedHex(anchorHex);
-        console.warn('Filled sea-locked pocket as bay (no valid land region possible)', { anchorHex, bayHexCount: bayKeys.length });
-        return;
-      }
-    }
     console.warn('Could not create region after max attempts', {
       anchorHex,
       maxRegionAttempts
