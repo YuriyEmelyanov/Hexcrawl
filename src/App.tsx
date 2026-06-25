@@ -9512,11 +9512,57 @@ function filterSeaCandidatesByRoadEndpoints(
   return filtered;
 }
 
+function candidateTouchesHexNearLake(
+  hex: AxialHex,
+  existingTerrain: Map<string, HexTerrainData>
+): boolean {
+  return getHexNeighbors(hex).some((neighbor) => (
+    getHexNeighbors(neighbor).some((lakeNeighbor) => existingTerrain.get(hexKey(lakeNeighbor))?.terrainOverride === 'lake')
+  ));
+}
+
+function candidateTouchesHexTouchingRiverStartVertex(hex: AxialHex, rivers: River[]): boolean {
+  const riverStartVertexKeys = new Set(
+    rivers
+      .map((river) => river.vertexPath?.[0]?.key)
+      .filter((key): key is string => typeof key === 'string')
+  );
+  if (riverStartVertexKeys.size === 0) return false;
+
+  return getHexNeighbors(hex).some((neighbor) => (
+    getHexCornerPoints(neighbor).some((vertex) => riverStartVertexKeys.has(vertex.key))
+  ));
+}
+
+function candidateHexHasRiverEdgeAwayFromMouth(
+  hex: AxialHex,
+  rivers: River[],
+  allowedMouthVertexKeys: Set<string>
+): boolean {
+  const hexEdgeKeys = new Set(getHexEdgesAsVertexPairs(hex).map((edge) => edge.edgeKey));
+
+  return rivers.some((river) => {
+    const path = river.vertexPath ?? [];
+    if (path.length < 2) return false;
+
+    const mouthIndex = path.length - 1;
+    for (let index = 1; index < path.length; index += 1) {
+      const currentEdgeKey = edgeKey(path[index - 1], path[index]);
+      if (!hexEdgeKeys.has(currentEdgeKey)) continue;
+      const isLastEdgeToAllowedMouth = index === mouthIndex && allowedMouthVertexKeys.has(path[index].key);
+      if (!isLastEdgeToAllowedMouth) return true;
+    }
+
+    return false;
+  });
+}
+
 // (Дядина модель, п.1) Единый сет «не-морских» гексов — кандидаты, которые НЕ МОГУТ стать
-// морем, потому что касаются объектов, рядом с которыми моря быть не должно:
-//   - реки (вне устья) — как и раньше, через canPlaceSeaHexNearRivers;
+// морем, потому что касаются буферных гексов рядом с объектами, у которых моря быть не должно:
+//   - рёбра рек (вне устья) — как и раньше, через candidateHexHasRiverEdgeAwayFromMouth;
+//   - гексы, касающиеся начальной вершины реки (места, где река втекает в регион);
 //   - концы дорог (но не троп);
-//   - озёра (сосед-гекс с terrainOverride 'lake').
+//   - гексы около озёр.
 // Дальше эти ключи просто выкидываются из кандидатов перед раскладкой моря.
 function getNonSeaCandidateKeys(
   candidates: Map<string, AxialHex>,
@@ -9530,9 +9576,10 @@ function getNonSeaCandidateKeys(
   const nonSea = new Set<string>();
   const roadEndpointKeys = getRoadEndpointHexKeys(roads, centerHexKeys);
   for (const [key, hex] of candidates) {
-    if (!canPlaceSeaHexNearRivers(hex, rivers, allowedMouthVertexKeys, regionHexes)) { nonSea.add(key); continue; }
+    if (candidateHexHasRiverEdgeAwayFromMouth(hex, rivers, allowedMouthVertexKeys)) { nonSea.add(key); continue; }
+    if (candidateTouchesHexTouchingRiverStartVertex(hex, rivers)) { nonSea.add(key); continue; }
     if (candidateTouchesRoadEndpoint(hex, roadEndpointKeys)) { nonSea.add(key); continue; }
-    if (getHexNeighbors(hex).some((neighbor) => existingTerrain.get(hexKey(neighbor))?.terrainOverride === 'lake')) { nonSea.add(key); continue; }
+    if (candidateTouchesHexNearLake(hex, existingTerrain)) { nonSea.add(key); continue; }
   }
   return nonSea;
 }
