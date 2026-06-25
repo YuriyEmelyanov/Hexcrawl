@@ -4876,85 +4876,6 @@ export function getCandidateHexes(allRegionHexes: AxialHex[], excludeKeys?: Set<
   return Array.from(candidates.values());
 }
 
-function fillSmallEnclosedAreasForRegion(
-  regionHexes: AxialHex[],
-  existingRegionHexes: AxialHex[],
-  seaKeys: Set<string>
-): AxialHex[] {
-  const minLocalitySize = REGION_SIZE_CATEGORY_RANGES.locality[0];
-  const currentRegionKeys = new Set(regionHexes.map(hexKey));
-  const occupiedLandKeys = new Set([...existingRegionHexes.map(hexKey), ...currentRegionKeys]);
-  const allKnownHexes = [...existingRegionHexes, ...regionHexes, ...Array.from(seaKeys).map(parseHexKey)];
-  if (allKnownHexes.length === 0) return regionHexes;
-
-  const qs = allKnownHexes.map((hex) => hex.q);
-  const rs = allKnownHexes.map((hex) => hex.r);
-  const minQ = Math.min(...qs) - 1;
-  const maxQ = Math.max(...qs) + 1;
-  const minR = Math.min(...rs) - 1;
-  const maxR = Math.max(...rs) + 1;
-  const candidateKeys = new Set<string>();
-  const candidateHexes = new Map<string, AxialHex>();
-
-  for (let q = minQ; q <= maxQ; q += 1) {
-    for (let r = minR; r <= maxR; r += 1) {
-      const hex = { q, r };
-      const key = hexKey(hex);
-      if (occupiedLandKeys.has(key) || seaKeys.has(key)) continue;
-      candidateKeys.add(key);
-      candidateHexes.set(key, hex);
-    }
-  }
-
-  const visited = new Set<string>();
-  const filledKeys = new Set<string>();
-
-  for (const startKey of candidateKeys) {
-    if (visited.has(startKey)) continue;
-    const queue = [startKey];
-    const componentKeys: string[] = [];
-    visited.add(startKey);
-    let touchesOutside = false;
-    let touchesCurrentRegion = false;
-
-    for (let queueIndex = 0; queueIndex < queue.length; queueIndex += 1) {
-      const key = queue[queueIndex];
-      if (!key) continue;
-      const hex = candidateHexes.get(key);
-      if (!hex) continue;
-      componentKeys.push(key);
-      if (hex.q === minQ || hex.q === maxQ || hex.r === minR || hex.r === maxR) touchesOutside = true;
-
-      for (const neighbor of getHexNeighbors(hex)) {
-        const neighborKey = hexKey(neighbor);
-        if (currentRegionKeys.has(neighborKey)) touchesCurrentRegion = true;
-        if (!candidateKeys.has(neighborKey) || visited.has(neighborKey)) continue;
-        visited.add(neighborKey);
-        queue.push(neighborKey);
-      }
-    }
-
-    if (!touchesOutside && touchesCurrentRegion && componentKeys.length < minLocalitySize) {
-      for (const key of componentKeys) filledKeys.add(key);
-    }
-  }
-
-  if (filledKeys.size === 0) return regionHexes;
-  return [
-    ...regionHexes,
-    ...Array.from(filledKeys).map(parseHexKey)
-  ];
-}
-
-function findEnclosedEmptyAreaContainingHex(anchorHex: AxialHex, occupiedHexes: Set<string>): AxialHex[] | null {
-  const anchorKey = hexKey(anchorHex);
-  if (occupiedHexes.has(anchorKey)) return null;
-  const area = scanEmptyArea(anchorHex, occupiedHexes, buildBoundingBox(occupiedHexes, 2));
-  if (area.isOpen) return null;
-  return Array.from(area.areaKeys).map(parseHexKey);
-}
-
-
 // BR-002: вероятность побережья для нового региона по протяжённости карты.
 // Берётся максимальная протяжённость уже сгенерированной карты по трём осям
 // гекс-сетки, ограничивается 400, и делится на 400.
@@ -10603,19 +10524,14 @@ export function App() {
       const occupiedHexes = new Set(allRegionHexes.map(hexKey));
       // Море — не суша: рост региона не должен захватывать гексы моря.
       for (const seaKey of existingSeaKeysForGrowth) occupiedHexes.add(seaKey);
-      const enclosedAnchorArea = findEnclosedEmptyAreaContainingHex(anchorHex, occupiedHexes);
-      if (enclosedAnchorArea) targetSize = enclosedAnchorArea.length;
       const regionId = Math.max(0, ...regions.map((region) => region.id)) + 1;
-      let regionHexes = enclosedAnchorArea ?? generateConnectedRegionFromAnchor(
+      const regionHexes = generateConnectedRegionFromAnchor(
         anchorHex,
         targetSize,
         occupiedHexes,
         mainlandZeroWeightHexes,
         coastalNeutralNeighborWeightHexes
       );
-      if (!enclosedAnchorArea && options.coastalPreference !== 'mainland') {
-        regionHexes = fillSmallEnclosedAreasForRegion(regionHexes, allRegionHexes, getSeaHexKeys(hexTerrainByKey));
-      }
       const finalSize = regionHexes.length;
       if (finalSize < 6) {
         console.warn('Candidate region is smaller than locality; retrying regular generation before fallback tract', {
@@ -10667,8 +10583,7 @@ export function App() {
       const existingSeaKeys = getSeaHexKeys(hexTerrainByKey);
       const forcedCoastContinuation = regionForcesCoastContinuation(regionHexes, existingSeaKeys);
       const hasOutgoingRiverToExistingRegion = regionHasOutgoingRiverToExistingRegion(touchingEndpoints);
-      const isCoastalRegion = enclosedAnchorArea ? false
-        : options.coastalPreference === 'coast' ? true
+      const isCoastalRegion = options.coastalPreference === 'coast' ? true
         : options.coastalPreference === 'mainland' ? false
         : forcedCoastContinuation ? true
         : hasOutgoingRiverToExistingRegion ? false
@@ -10832,15 +10747,13 @@ export function App() {
       const nextCandidateHexes = uniqueHexes([
         ...getCandidateHexes(nextAllHexes, isCoastalRegion ? existingSeaForRivers : undefined)
       ]);
-      const generatedRiverResult = enclosedAnchorArea
-        ? { success: true as const, rivers: riversForGeneration }
-        : generateRiverForRegion(
-          regionForRiverGeneration,
-          nextRegionsForRiverGeneration,
-          riversForGeneration,
-          nextCandidateHexes,
-          nextHexTerrainByKeyPreview
-        );
+      const generatedRiverResult = generateRiverForRegion(
+        regionForRiverGeneration,
+        nextRegionsForRiverGeneration,
+        riversForGeneration,
+        nextCandidateHexes,
+        nextHexTerrainByKeyPreview
+      );
       const riverResult = generatedRiverResult.success || !isLastRegionAttempt
         ? generatedRiverResult
         : { success: true as const, rivers: generatedRiverResult.rivers };
