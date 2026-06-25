@@ -11212,6 +11212,16 @@ export function App() {
     addFallbackTractToMap(anchorHex);
   };
 
+
+  const safelyAddRegionToMap = (anchorHex: AxialHex, options: GenerationOptions = {}) => {
+    try {
+      addRegionToMap(anchorHex, options);
+    } catch (error) {
+      console.warn('Regular region generation crashed; creating fallback tract', { anchorHex, error });
+      addFallbackTractToMap(anchorHex);
+    }
+  };
+
   const resetMap = () => {
     setRegions([]);
     setCandidateHexes([]);
@@ -11275,7 +11285,7 @@ export function App() {
 
   useEffect(() => {
     if (!pendingRegen) return;
-    addRegionToMap(pendingRegen.anchorHex, pendingRegen.options);
+    safelyAddRegionToMap(pendingRegen.anchorHex, pendingRegen.options);
     setPendingRegen(null);
     // addRegionToMap намеренно не в зависимостях: эффект должен сработать
     // ровно один раз на установку заявки, уже с восстановленным состоянием.
@@ -11954,7 +11964,7 @@ export function App() {
                   key={`${hex.kind}-${hex.key}`}
                   onClick={() => {
                     if (hex.kind === 'candidate') {
-                      addRegionToMap({ q: hex.q, r: hex.r }, buildGenerationOptions());
+                      safelyAddRegionToMap({ q: hex.q, r: hex.r }, buildGenerationOptions());
                     } else {
                       setSelectedHex({ q: hex.q, r: hex.r });
                     }
