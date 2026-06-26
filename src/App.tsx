@@ -627,6 +627,43 @@ function getSeaAdjacentHexKeys(seaKeys: Set<string>): Set<string> {
   return result;
 }
 
+function convertLandlockedSeaComponentsToLakes(
+  hexTerrainByKey: Map<string, HexTerrainData>,
+  regions: Region[],
+  firstLakeId: number
+): { terrainByKey: Map<string, HexTerrainData>; nextLakeId: number } {
+  const seaKeys = getSeaHexKeys(hexTerrainByKey);
+  if (seaKeys.size === 0) return { terrainByKey: hexTerrainByKey, nextLakeId: firstLakeId };
+
+  const landKeys = new Set<string>();
+  for (const region of regions) for (const hex of region.hexes) landKeys.add(hexKey(hex));
+
+  let next: Map<string, HexTerrainData> | null = null;
+  let lakeIdCursor = firstLakeId;
+  for (const component of getConnectedSeaComponents(seaKeys)) {
+    let isFullyEnclosedByLand = true;
+    for (const key of component) {
+      for (const neighbor of getHexNeighbors(parseHexKey(key))) {
+        const neighborKey = hexKey(neighbor);
+        if (component.has(neighborKey)) continue;
+        if (!landKeys.has(neighborKey)) {
+          isFullyEnclosedByLand = false;
+          break;
+        }
+      }
+      if (!isFullyEnclosedByLand) break;
+    }
+
+    if (!isFullyEnclosedByLand) continue;
+    if (!next) next = new Map(hexTerrainByKey);
+    const lakeId = lakeIdCursor;
+    lakeIdCursor += 1;
+    for (const key of component) next.set(key, { terrainOverride: 'lake', lakeId });
+  }
+
+  return { terrainByKey: next ?? hexTerrainByKey, nextLakeId: lakeIdCursor };
+}
+
 function getBoundaryHexes(region: Region): AxialHex[] {
   const regionKeys = new Set(region.hexes.map(hexKey));
   return region.hexes.filter((h) => getHexNeighbors(h).some((n) => !regionKeys.has(hexKey(n))));
@@ -4802,7 +4839,23 @@ function generateFallbackTractFromAnchor(anchorHex: AxialHex, occupiedHexes: Set
   const targetSize = 5;
   const regionKeys = new Set<string>([hexKey(anchorHex)]);
 
-  while (regionKeys.size < targetSize) {
+  while (true) {
+    const enclosedAreas = findFillableEnclosedEmptyAreas(regionKeys, occupiedHexes);
+    if (enclosedAreas.length > 0) {
+      let addedEnclosedHex = false;
+      for (const area of enclosedAreas) {
+        for (const hex of area) {
+          const key = hexKey(hex);
+          if (occupiedHexes.has(key) || regionKeys.has(key)) continue;
+          regionKeys.add(key);
+          addedEnclosedHex = true;
+        }
+      }
+      if (addedEnclosedHex) continue;
+    }
+
+    if (regionKeys.size >= targetSize) break;
+
     const growthCandidates = getFrontierCandidateHexes(regionKeys, occupiedHexes)
       .map((candidate) => getGrowthCandidate(candidate, regionKeys, occupiedHexes))
       .filter((candidate): candidate is GrowthCandidate => candidate !== null);
@@ -4840,10 +4893,11 @@ function getSeaComponentIds(seaKeys: Set<string>): Map<string, number> {
   return componentIds;
 }
 
-function getSeaKeysToFillForTractSeaConnection(tractHexes: AxialHex[], existingSeaKeys: Set<string>, candidateHexes: AxialHex[]): string[] {
+function getSeaKeysToFillForTractSeaTouch(tractHexes: AxialHex[], existingSeaKeys: Set<string>, candidateHexes: AxialHex[]): string[] {
   const seaComponentIds = getSeaComponentIds(existingSeaKeys);
   const touchedSeaComponentIds = new Set<number>();
   const tractKeys = new Set(tractHexes.map(hexKey));
+  const candidateKeys = new Set(candidateHexes.map(hexKey));
 
   for (const tractHex of tractHexes) {
     for (const neighbor of getHexNeighbors(tractHex)) {
@@ -4852,10 +4906,37 @@ function getSeaKeysToFillForTractSeaConnection(tractHexes: AxialHex[], existingS
     }
   }
 
-  if (touchedSeaComponentIds.size < 2) return [];
-  return candidateHexes
-    .filter((candidate) => getHexNeighbors(candidate).some((neighbor) => tractKeys.has(hexKey(neighbor))))
-    .map(hexKey);
+  if (touchedSeaComponentIds.size === 0) return [];
+
+  const touchedSeaKeys = new Set<string>();
+  for (const [seaKey, componentId] of seaComponentIds) {
+    if (touchedSeaComponentIds.has(componentId)) touchedSeaKeys.add(seaKey);
+  }
+
+  const fillKeys = new Set<string>();
+  const queue: string[] = [];
+  for (const candidate of candidateHexes) {
+    const key = hexKey(candidate);
+    if (
+      getHexNeighbors(candidate).some((neighbor) => touchedSeaKeys.has(hexKey(neighbor))) ||
+      getHexNeighbors(candidate).some((neighbor) => tractKeys.has(hexKey(neighbor)) && getHexNeighbors(neighbor).some((n) => touchedSeaKeys.has(hexKey(n))))
+    ) {
+      fillKeys.add(key);
+      queue.push(key);
+    }
+  }
+
+  for (let index = 0; index < queue.length; index += 1) {
+    const currentKey = queue[index];
+    for (const neighbor of getHexNeighbors(parseHexKey(currentKey))) {
+      const neighborKey = hexKey(neighbor);
+      if (!candidateKeys.has(neighborKey) || fillKeys.has(neighborKey)) continue;
+      fillKeys.add(neighborKey);
+      queue.push(neighborKey);
+    }
+  }
+
+  return Array.from(fillKeys);
 }
 
 export function chooseRegionCenter(regionHexes: AxialHex[]): AxialHex {
@@ -10476,7 +10557,6 @@ export function App() {
     const regionKeySet = new Set(regionHexes.map(hexKey));
     for (const regionKey of regionKeySet) existingSeaKeys.delete(regionKey);
     const finalSize = regionHexes.length;
-    const { sizeCategory, sizeLabel } = getRegionSizeCategory(finalSize);
     const biomeChoice = chooseBiomeId('wild', getAdjacentRegionBiomes(regionHexes, new Map(regions.flatMap((region) => region.hexes.map((hex) => [hexKey(hex), region] as const)))), regionId);
     const biomeId = biomeChoice.biomeId ?? FALLBACK_BIOME_ID;
     const biome = BIOMES[biomeId] ?? BIOMES[FALLBACK_BIOME_ID];
@@ -10489,8 +10569,10 @@ export function App() {
       anchorHex,
       targetSize: 5,
       finalSize,
-      sizeCategory,
-      sizeLabel,
+      // Даже если урочище доросло за счёт замкнутой области и стало больше
+      // пяти гексов, оно остаётся урочищем по типу региона.
+      sizeCategory: 'tract',
+      sizeLabel: 'Урочище',
       biomeLandType: 'wild',
       heightLevel: biome.heightLevel,
       biomeId,
@@ -10513,10 +10595,20 @@ export function App() {
     };
     const finalRegions = [...regions, tractRegionWithPoiKinds];
     const candidateHexesBeforeSeaBridge = getCandidateHexes(finalRegions.flatMap((region) => region.hexes), existingSeaKeys);
-    const seaKeysToFill = getSeaKeysToFillForTractSeaConnection(regionHexes, existingSeaKeys, candidateHexesBeforeSeaBridge);
+    const seaKeysToFill = getSeaKeysToFillForTractSeaTouch(regionHexes, existingSeaKeys, candidateHexesBeforeSeaBridge);
     const finalSeaKeys = new Set([...existingSeaKeys, ...seaKeysToFill]);
     for (const regionKey of regionKeySet) finalSeaKeys.delete(regionKey);
     const finalCandidateHexes = getCandidateHexes(finalRegions.flatMap((region) => region.hexes), finalSeaKeys);
+    const nextLakeIdAfterLandlockedSea = (() => {
+      const terrainForLandlockedSeaCheck = new Map(hexTerrainByKey);
+      for (const regionKey of regionKeySet) terrainForLandlockedSeaCheck.delete(regionKey);
+      for (const key of finalSeaKeys) terrainForLandlockedSeaCheck.set(key, { terrainOverride: 'sea' });
+      return convertLandlockedSeaComponentsToLakes(
+        terrainForLandlockedSeaCheck,
+        finalRegions,
+        getNextLakeIdFromTerrain(terrainForLandlockedSeaCheck)
+      ).nextLakeId;
+    })();
 
     const snapshot: MapSnapshot = {
       regions,
@@ -10531,13 +10623,19 @@ export function App() {
     setRegions(finalRegions);
     setCandidateHexes(finalCandidateHexes);
     setHexTerrainByKey(() => {
-      const next = new Map(hexTerrainByKey);
+      let next = new Map(hexTerrainByKey);
       // Новый fallback-регион всегда становится сушей: очищаем старые terrain override
       // у всех его гексов перед записью актуального моря.
       for (const regionKey of regionKeySet) next.delete(regionKey);
       for (const key of finalSeaKeys) next.set(key, { terrainOverride: 'sea' });
+      next = convertLandlockedSeaComponentsToLakes(
+        next,
+        finalRegions,
+        getNextLakeIdFromTerrain(next)
+      ).terrainByKey;
       return next;
     });
+    setNextLakeId(nextLakeIdAfterLandlockedSea);
     setSelectedHex(anchorHex);
   };
 
@@ -11152,6 +11250,23 @@ export function App() {
         })
       };
       const finalRegions = [...regions, finalRegionWithPoiKinds];
+      const nextLakeIdAfterLandlockedSea = (() => {
+        const terrainForLandlockedSeaCheck = new Map(nextHexTerrainByKeyPreview);
+        const finalRegionKeySet = new Set(finalRegionWithPoiKinds.hexes.map(hexKey));
+        for (const regionKey of finalRegionKeySet) {
+          const terrain = terrainForLandlockedSeaCheck.get(regionKey);
+          if (terrain?.terrainOverride === 'lake') continue;
+          terrainForLandlockedSeaCheck.delete(regionKey);
+        }
+        for (const key of finalSeaKeysToWrite) {
+          if (!finalRegionKeySet.has(key)) terrainForLandlockedSeaCheck.set(key, { terrainOverride: 'sea' });
+        }
+        return convertLandlockedSeaComponentsToLakes(
+          terrainForLandlockedSeaCheck,
+          finalRegions,
+          Math.max(computedNextLakeId, getNextLakeIdFromTerrain(terrainForLandlockedSeaCheck))
+        ).nextLakeId;
+      })();
 
       const snapshot: MapSnapshot = {
         regions,
@@ -11167,7 +11282,7 @@ export function App() {
       setRegions(finalRegions);
       setCandidateHexes(finalCandidateHexes);
       setHexTerrainByKey(() => {
-        const next = new Map(nextHexTerrainByKeyPreview);
+        let next = new Map(nextHexTerrainByKeyPreview);
         // Перед финальной записью состояния новый регион всегда удаляется из
         // старого моря/override-данных, затем записывается только актуальное море.
         const finalRegionKeySet = new Set(finalRegionWithPoiKinds.hexes.map(hexKey));
@@ -11179,6 +11294,12 @@ export function App() {
         for (const key of finalSeaKeysToWrite) {
           if (!finalRegionKeySet.has(key)) next.set(key, { terrainOverride: 'sea' });
         }
+        const landlockedSeaResult = convertLandlockedSeaComponentsToLakes(
+          next,
+          finalRegions,
+          Math.max(computedNextLakeId, getNextLakeIdFromTerrain(next))
+        );
+        next = landlockedSeaResult.terrainByKey;
         // BR-004: озеро, соседствующее с морем, удаляется (гекс возвращается к биому региона).
         // Запускаем при наличии ЛЮБОГО моря (включая существующее), а не только когда регион
         // добавил новое море — иначе озеро в кармане у старого моря оставалось у берега.
@@ -11199,7 +11320,7 @@ export function App() {
         mergeAdjacentLakeIds(next);
         return next;
       });
-      setNextLakeId(Math.max(computedNextLakeId, getNextLakeIdFromTerrain(nextHexTerrainByKeyPreview)));
+      setNextLakeId(nextLakeIdAfterLandlockedSea);
 
       setRivers(riversWithDeltas);
       setRoads(roadResult.roads);
