@@ -10777,14 +10777,16 @@ export function App() {
       isTract: true
     };
     const candidateHexesForTractRiverGeneration = getCandidateHexes([...allRegionHexes, ...regionHexes], existingSeaKeys);
-    const generatedTractRiverResult = generateRiverForRegion(
-      tractRegion,
-      [...regions, tractRegion],
-      rivers,
-      candidateHexesForTractRiverGeneration,
-      hexTerrainByKey
-    );
-    const riversAfterTractGeneration = generatedTractRiverResult.success
+    const generatedTractRiverResult = tractHasOutgoingRiver
+      ? generateRiverForRegion(
+        tractRegion,
+        [...regions, tractRegion],
+        rivers,
+        candidateHexesForTractRiverGeneration,
+        hexTerrainByKey
+      )
+      : { success: true as const, rivers };
+    const riversAfterTractGeneration = generatedTractRiverResult.success && tractHasOutgoingRiver
       ? assignRiverSectors(
         generatedTractRiverResult.rivers,
         getLakesForRegions([...regions, tractRegion], hexTerrainByKey),
@@ -11151,13 +11153,15 @@ export function App() {
       const nextCandidateHexes = uniqueHexes([
         ...getCandidateHexes(nextAllHexes, existingSeaForRivers)
       ]);
-      const generatedRiverResult = generateRiverForRegion(
-        regionForRiverGeneration,
-        nextRegionsForRiverGeneration,
-        riversForGeneration,
-        nextCandidateHexes,
-        nextHexTerrainByKeyPreview
-      );
+      const generatedRiverResult = sizeCategory === 'tract' && !tractHasOutgoingRiver
+        ? { success: true as const, rivers: riversForGeneration }
+        : generateRiverForRegion(
+          regionForRiverGeneration,
+          nextRegionsForRiverGeneration,
+          riversForGeneration,
+          nextCandidateHexes,
+          nextHexTerrainByKeyPreview
+        );
       const riverResult = generatedRiverResult.success || !isLastRegionAttempt
         ? generatedRiverResult
         : { success: true as const, rivers: generatedRiverResult.rivers };
