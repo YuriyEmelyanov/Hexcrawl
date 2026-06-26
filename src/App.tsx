@@ -4893,12 +4893,16 @@ function getSeaComponentIds(seaKeys: Set<string>): Map<string, number> {
   return componentIds;
 }
 
-function getSeaKeysToFillForTractSeaTouch(tractHexes: AxialHex[], existingSeaKeys: Set<string>, candidateHexes: AxialHex[]): string[] {
+function getSeaKeysToFillForTractSeaTouch(
+  tractHexes: AxialHex[],
+  existingSeaKeys: Set<string>,
+  candidateHexes: AxialHex[],
+  hexTerrainByKey: Map<string, HexTerrainData>,
+  rivers: River[]
+): string[] {
   const seaComponentIds = getSeaComponentIds(existingSeaKeys);
   const touchedSeaComponentIds = new Set<number>();
   const tractKeys = new Set(tractHexes.map(hexKey));
-  const candidateKeys = new Set(candidateHexes.map(hexKey));
-
   for (const tractHex of tractHexes) {
     for (const neighbor of getHexNeighbors(tractHex)) {
       const componentId = seaComponentIds.get(hexKey(neighbor));
@@ -4913,30 +4917,23 @@ function getSeaKeysToFillForTractSeaTouch(tractHexes: AxialHex[], existingSeaKey
     if (touchedSeaComponentIds.has(componentId)) touchedSeaKeys.add(seaKey);
   }
 
-  const fillKeys = new Set<string>();
-  const queue: string[] = [];
+  const eligibleKeys = new Set<string>();
   for (const candidate of candidateHexes) {
     const key = hexKey(candidate);
-    if (
-      getHexNeighbors(candidate).some((neighbor) => touchedSeaKeys.has(hexKey(neighbor))) ||
-      getHexNeighbors(candidate).some((neighbor) => tractKeys.has(hexKey(neighbor)) && getHexNeighbors(neighbor).some((n) => touchedSeaKeys.has(hexKey(n))))
-    ) {
-      fillKeys.add(key);
-      queue.push(key);
-    }
+    if (!getHexNeighbors(candidate).some((neighbor) => tractKeys.has(hexKey(neighbor)))) continue;
+    if (hexTerrainByKey.get(key)?.terrainOverride === 'lake') continue;
+    if (hexTouchesLake(candidate, hexTerrainByKey)) continue;
+    if (getRiversForHex(candidate, rivers).length > 0) continue;
+    eligibleKeys.add(key);
   }
 
-  for (let index = 0; index < queue.length; index += 1) {
-    const currentKey = queue[index];
-    for (const neighbor of getHexNeighbors(parseHexKey(currentKey))) {
-      const neighborKey = hexKey(neighbor);
-      if (!candidateKeys.has(neighborKey) || fillKeys.has(neighborKey)) continue;
-      fillKeys.add(neighborKey);
-      queue.push(neighborKey);
-    }
-  }
+  if (eligibleKeys.size === 0) return [];
 
-  return Array.from(fillKeys);
+  const seaAndEligibleKeys = new Set<string>(touchedSeaKeys);
+  for (const key of eligibleKeys) seaAndEligibleKeys.add(key);
+  const connectedToTouchedSea = getConnectedSeaComponent(touchedSeaKeys, seaAndEligibleKeys);
+
+  return Array.from(eligibleKeys).filter((key) => connectedToTouchedSea.has(key));
 }
 
 export function chooseRegionCenter(regionHexes: AxialHex[]): AxialHex {
@@ -10442,13 +10439,18 @@ export function App() {
     // он считается сушей — море на гексе региона не рисуется.
     const regionHexKeySet = new Set(allRegionHexes.map(hexKey));
     const seaHexList: AxialHex[] = [];
+    const lakeHexList: AxialHex[] = [];
     for (const [key, terrain] of hexTerrainByKey) {
-      if (terrain.terrainOverride === 'sea' && !regionHexKeySet.has(key)) seaHexList.push(parseHexKey(key));
+      if (regionHexKeySet.has(key)) continue;
+      if (terrain.terrainOverride === 'sea') seaHexList.push(parseHexKey(key));
+      if (terrain.terrainOverride === 'lake') lakeHexList.push(parseHexKey(key));
     }
+    const terrainHexKeySet = new Set([...seaHexList, ...lakeHexList].map(hexKey));
     const all = [
       ...allRegionHexes.map((hex) => ({ ...hex, kind: 'region' as const })),
+      ...lakeHexList.map((hex) => ({ ...hex, kind: 'region' as const })),
       ...seaHexList.map((hex) => ({ ...hex, kind: 'sea' as const })),
-      ...candidateHexes.map((hex) => ({ ...hex, kind: 'candidate' as const }))
+      ...candidateHexes.filter((hex) => !terrainHexKeySet.has(hexKey(hex))).map((hex) => ({ ...hex, kind: 'candidate' as const }))
     ];
     if (all.length === 0) {
       all.push({ ...START_HEX, kind: 'candidate' as const });
@@ -10621,7 +10623,7 @@ export function App() {
     };
     const finalRegions = [...regions, tractRegionWithPoiKinds];
     const candidateHexesBeforeSeaBridge = getCandidateHexes(finalRegions.flatMap((region) => region.hexes), existingSeaKeys);
-    const seaKeysToFill = getSeaKeysToFillForTractSeaTouch(regionHexes, existingSeaKeys, candidateHexesBeforeSeaBridge);
+    const seaKeysToFill = getSeaKeysToFillForTractSeaTouch(regionHexes, existingSeaKeys, candidateHexesBeforeSeaBridge, hexTerrainByKey, rivers);
     const finalSeaKeys = new Set([...existingSeaKeys, ...seaKeysToFill]);
     for (const regionKey of regionKeySet) finalSeaKeys.delete(regionKey);
     const finalCandidateHexes = getCandidateHexes(finalRegions.flatMap((region) => region.hexes), finalSeaKeys);
