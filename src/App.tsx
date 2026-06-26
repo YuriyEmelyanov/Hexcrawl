@@ -6395,6 +6395,51 @@ function generateRiverForRegion(
     const outgoingEndpoints = touchingEndpoints.filter((endpoint) => endpoint.endpointType === 'start');
     const requireRiverThroughOriginalCenter = !(region.isCoastal && region.biomeLandType === 'settled');
 
+    const connectSingleTractOutgoingRiver = (): RiverGenerationResult | null => {
+      if (region.sizeCategory !== 'tract') return null;
+      if (outgoingEndpoints.length === 0) return { success: true, rivers: existingRivers };
+
+      const mainOutgoingEndpoint = [...outgoingEndpoints].sort((a, b) => a.riverId - b.riverId)[0];
+      const blockedEdgeKeys = new Set(usedRiverEdges);
+      const interiorSourceVertices = getMountainInteriorSourceVertices(
+        region,
+        regions,
+        candidateHexes ?? [],
+        riverGraph,
+        candidateVertices,
+        neighborRegionVertices
+      );
+      const mainPath = findBestPathFromSourceToOutgoingEndpoint(interiorSourceVertices, mainOutgoingEndpoint, riverGraph, blockedEdgeKeys, {
+        occupiedVertexKeys: existingRiverVertexKeys,
+        allowedOccupiedVertexKeys: new Set([mainOutgoingEndpoint.vertex.key])
+      });
+      if (!mainPath) {
+        console.warn('Could not connect tract source to outgoing river', {
+          regionId: region.id,
+          outgoingRiverId: mainOutgoingEndpoint.riverId,
+        });
+        return { success: false, rivers: existingRivers, reason: 'tract_outgoing_source_path_not_found' };
+      }
+
+      const nextRivers = existingRivers.map((river) => river.id !== mainOutgoingEndpoint.riverId
+        ? river
+        : {
+          ...river,
+          vertexPath: [...mainPath.slice(0, -1), ...river.vertexPath],
+          sectors: prependRiverPathSector(river, mainPath, 1, region.id)
+        });
+
+      for (const river of nextRivers) {
+        validateRiverDirection(river);
+        validateRiverContinuity(river);
+      }
+      validateNoDuplicateRiverEdges(nextRivers);
+      return { success: true, rivers: nextRivers };
+    };
+
+    const tractOutgoingResult = connectSingleTractOutgoingRiver();
+    if (tractOutgoingResult) return tractOutgoingResult;
+
     const buildMountainIncomingBoundaryFallback = (
       incomingEndpoint: RiverEndpointTouch,
       fallbackReason: string
@@ -10858,7 +10903,7 @@ export function App() {
       )
       : rivers;
     if (!generatedTractRiverResult.success) {
-      console.warn('Fallback tract river generation failed; saving tract without generated river', {
+      console.warn('Fallback tract river source generation failed; saving tract without generated source', {
         regionId,
         reason: generatedTractRiverResult.reason,
         tractHasOutgoingRiver
@@ -11214,6 +11259,8 @@ export function App() {
       const nextCandidateHexes = uniqueHexes([
         ...getCandidateHexes(nextAllHexes, existingSeaForRivers)
       ]);
+      // Урочища не создают самостоятельные новые реки: если есть примыкающая
+      // исходящая река, generateRiverForRegion только добавит ей один исток.
       const generatedRiverResult = sizeCategory === 'tract' && !tractHasOutgoingRiver
         ? { success: true as const, rivers: riversForGeneration }
         : generateRiverForRegion(
