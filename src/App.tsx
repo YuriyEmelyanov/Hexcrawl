@@ -9926,6 +9926,67 @@ function sanitizeRiversForSea(
   return nextRivers;
 }
 
+function riverTouchesSea(river: River, seaVertexKeys: Set<string>, seaEdgeKeys: Set<string>): boolean {
+  const path = river.vertexPath ?? [];
+  if (path.length < 2) return false;
+  if (path.some((vertex) => seaVertexKeys.has(vertex.key))) return true;
+  for (let index = 1; index < path.length; index += 1) {
+    if (seaEdgeKeys.has(edgeKey(path[index - 1], path[index]))) return true;
+  }
+  return false;
+}
+
+function riverTouchesRegion(river: River, regionVertexKeys: Set<string>): boolean {
+  return (river.vertexPath ?? []).some((vertex) => regionVertexKeys.has(vertex.key));
+}
+
+function trimTractRiverSourcesAwayFromSea(
+  rivers: River[],
+  regionHexes: AxialHex[],
+  seaKeys: Iterable<string>
+): River[] {
+  const seaKeyList = Array.from(seaKeys);
+  if (seaKeyList.length === 0) return rivers;
+
+  const seaVertexKeys = getSeaVertexKeysFromSeaKeys(seaKeyList);
+  const seaEdgeKeys = getSeaEdgeKeysFromSeaKeys(seaKeyList);
+  if (seaVertexKeys.size === 0 && seaEdgeKeys.size === 0) return rivers;
+
+  const regionVertexKeys = new Set<string>();
+  for (const hex of regionHexes) {
+    for (const vertex of getHexCornerPoints(hex)) regionVertexKeys.add(vertex.key);
+  }
+
+  let changed = false;
+  const trimmedRivers: River[] = [];
+  for (const river of rivers) {
+    const path = river.vertexPath ?? [];
+    if (path.length < 2 || !riverTouchesRegion(river, regionVertexKeys) || !riverTouchesSea(river, seaVertexKeys, seaEdgeKeys)) {
+      trimmedRivers.push(river);
+      continue;
+    }
+
+    let startIndex = 0;
+    while (
+      path.length - startIndex >= 2 &&
+      riverTouchesSea({ ...river, vertexPath: path.slice(startIndex) }, seaVertexKeys, seaEdgeKeys)
+    ) {
+      startIndex += 1;
+    }
+
+    if (startIndex === 0) {
+      trimmedRivers.push(river);
+      continue;
+    }
+
+    changed = true;
+    const trimmedPath = path.slice(startIndex);
+    if (trimmedPath.length >= 2) trimmedRivers.push({ ...river, vertexPath: trimmedPath });
+  }
+
+  return changed ? trimmedRivers : rivers;
+}
+
 function drawLakeVerticesDebug(lakeVertices: LakeVertex[], offsetX: number, offsetY: number) {
   return lakeVertices.map((vertex) => ({
     key: `dbg-lake-vertex-${vertex.key}`,
@@ -11316,6 +11377,9 @@ export function App() {
         allNewSeaKeys,
         regionHexes
       );
+      if (sizeCategory === 'tract' && allNewSeaKeys.length > 0) {
+        finalizedRivers = trimTractRiverSourcesAwayFromSea(finalizedRivers, regionHexes, allSeaKeys);
+      }
       // sanitizeRiversForSea can trim endpoint vertices and change which region,
       // lake, sea, or boundary each river edge belongs to, so derived sector
       // metadata must be rebuilt before delta generation and validation.
@@ -11355,6 +11419,9 @@ export function App() {
         allNewSeaKeys,
         regionHexes
       );
+      if (sizeCategory === 'tract' && allNewSeaKeys.length > 0) {
+        riversWithDeltas = trimTractRiverSourcesAwayFromSea(riversWithDeltas, regionHexes, allSeaKeys);
+      }
       // Deltas, restoreInvalidGeneratedRiversForRegion, and sea sanitizing can
       // all change river paths; rebuild sectors one final
       // time so validation and saved debug data use the final geometry.
