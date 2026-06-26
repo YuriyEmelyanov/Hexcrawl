@@ -5396,6 +5396,32 @@ function splitNewSeaKeysByMouthConnectedComponent(newSeaKeys: string[], existing
   };
 }
 
+
+function filterCreatedSeaKeysForRegionAdjacentExistingSea(
+  createdSeaKeys: string[],
+  regionHexes: AxialHex[],
+  existingSeaKeys: Set<string>,
+  hexTerrainByKey: Map<string, HexTerrainData>,
+  rivers: River[]
+): string[] {
+  if (createdSeaKeys.length === 0 || existingSeaKeys.size === 0) return createdSeaKeys;
+
+  const regionKeys = new Set(regionHexes.map(hexKey));
+  const eligibleCreatedSeaKeys = new Set<string>();
+  for (const key of new Set(createdSeaKeys)) {
+    const hex = parseHexKey(key);
+    const touchesCreatedRegion = getHexNeighbors(hex).some((neighbor) => regionKeys.has(hexKey(neighbor)));
+    if (!touchesCreatedRegion) continue;
+    if (hexTouchesLake(hex, hexTerrainByKey)) continue;
+    if (getRiversForHex(hex, rivers).length > 0) continue;
+    eligibleCreatedSeaKeys.add(key);
+  }
+  if (eligibleCreatedSeaKeys.size === 0) return [];
+
+  const connectedToExistingSea = getConnectedSeaComponent(existingSeaKeys, new Set([...existingSeaKeys, ...eligibleCreatedSeaKeys]));
+  return Array.from(eligibleCreatedSeaKeys).filter((key) => connectedToExistingSea.has(key));
+}
+
 function addCandidateHexKeys(candidateHexes: AxialHex[], keysToAdd: Iterable<string>, blockedKeys: Set<string> = new Set()): AxialHex[] {
   const nextByKey = new Map(candidateHexes.map((hex) => [hexKey(hex), hex]));
   for (const key of keysToAdd) {
@@ -11165,10 +11191,24 @@ export function App() {
           }
         }
       }
-      const createdSeaKeys = [...allNewSeaKeys, ...enclosedPocketKeys, ...seaHoleKeys];
+      const initialCreatedSeaKeys = [...allNewSeaKeys, ...enclosedPocketKeys, ...seaHoleKeys];
+      let createdSeaKeys = initialCreatedSeaKeys;
+      const finalRegionTouchesExistingSea = finalRegion.hexes.some((hex) => getHexNeighbors(hex).some((neighbor) => existingSeaKeysBeforeRegion.has(hexKey(neighbor))));
+      if (finalRegion.sizeCategory === 'tract' && finalRegionTouchesExistingSea) {
+        createdSeaKeys = filterCreatedSeaKeysForRegionAdjacentExistingSea(
+          createdSeaKeys,
+          finalRegion.hexes,
+          existingSeaKeysBeforeRegion,
+          nextHexTerrainByKeyPreview,
+          riversWithDeltas
+        );
+      }
       const { connectedSeaKeys: finalSeaKeysToWrite, disconnectedSeaKeys: seaKeysDemotedToCandidates } = splitNewSeaKeysByMouthConnectedComponent(createdSeaKeys, existingSeaKeysBeforeRegion, riversWithDeltas);
       const finalSeaKeySetToWrite = new Set(finalSeaKeysToWrite);
       const demotedSeaKeySet = new Set(seaKeysDemotedToCandidates);
+      for (const key of initialCreatedSeaKeys) {
+        if (!finalSeaKeySetToWrite.has(key)) demotedSeaKeySet.add(key);
+      }
       for (const demotedKey of demotedSeaKeySet) pocketKeySet.delete(demotedKey);
 
       // После окончательного выбора морских гексов проверяем, не заперло ли море
