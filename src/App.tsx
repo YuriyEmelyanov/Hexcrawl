@@ -10573,7 +10573,7 @@ export function App() {
     return map;
   }, [regions, candidateHexes]);
 
-  const addFallbackTractToMap = (anchorHex: AxialHex) => {
+  const addFallbackTractToMap = (anchorHex: AxialHex, forceCoastalSea = false) => {
     const regionId = Math.max(0, ...regions.map((region) => region.id)) + 1;
     const existingSeaKeys = getSeaHexKeysWithout(hexTerrainByKey, [anchorHex]);
     // Если якорь урочища всё ещё числится морем в служебных данных,
@@ -10623,8 +10623,27 @@ export function App() {
     };
     const finalRegions = [...regions, tractRegionWithPoiKinds];
     const candidateHexesBeforeSeaBridge = getCandidateHexes(finalRegions.flatMap((region) => region.hexes), existingSeaKeys);
-    const seaKeysToFill = getSeaKeysToFillForTractSeaTouch(regionHexes, existingSeaKeys, candidateHexesBeforeSeaBridge, hexTerrainByKey, rivers);
-    const finalSeaKeys = new Set([...existingSeaKeys, ...seaKeysToFill]);
+    const tractTouchesExistingSea = regionHexes.some((hex) => getHexNeighbors(hex).some((neighbor) => existingSeaKeys.has(hexKey(neighbor))));
+    const seededSeaKeys = new Set(existingSeaKeys);
+    // Если прибрежная генерация была заменена урочищем, но урочище не
+    // касается моря, создаём новый морской seed на случайном гексе-кандидате
+    // границы урочища. Seed, как и дальнейшее заполнение моря, не должен
+    // касаться озёр или рек.
+    if (forceCoastalSea && !tractTouchesExistingSea) {
+      const tractKeys = new Set(regionHexes.map(hexKey));
+      const seedCandidates = candidateHexesBeforeSeaBridge.filter((candidate) => {
+        const key = hexKey(candidate);
+        if (!getHexNeighbors(candidate).some((neighbor) => tractKeys.has(hexKey(neighbor)))) return false;
+        if (hexTerrainByKey.get(key)?.terrainOverride === 'lake') return false;
+        if (hexTouchesLake(candidate, hexTerrainByKey)) return false;
+        if (getRiversForHex(candidate, rivers).length > 0) return false;
+        return true;
+      });
+      const seedSeaHex = randomFrom(seedCandidates);
+      if (seedSeaHex) seededSeaKeys.add(hexKey(seedSeaHex));
+    }
+    const seaKeysToFill = getSeaKeysToFillForTractSeaTouch(regionHexes, seededSeaKeys, candidateHexesBeforeSeaBridge, hexTerrainByKey, rivers);
+    const finalSeaKeys = new Set([...seededSeaKeys, ...seaKeysToFill]);
     for (const regionKey of regionKeySet) finalSeaKeys.delete(regionKey);
     const finalCandidateHexes = getCandidateHexes(finalRegions.flatMap((region) => region.hexes), finalSeaKeys);
     const nextLakeIdAfterLandlockedSea = (() => {
@@ -10761,6 +10780,18 @@ export function App() {
         : hasOutgoingRiverToExistingRegion ? false
         : regions.length === 0 ? autoCoastRoll < START_REGION_AUTO_COAST_PROBABILITY
         : autoCoastRoll < coastProbabilityFromSpan(computeMapMaxSpanTiles(allRegionHexes));
+      const incomingRiverEndpointCount = touchingEndpoints.filter((endpoint) => endpoint.endpointType === 'end').length;
+      const outgoingRiverEndpointCount = touchingEndpoints.filter((endpoint) => endpoint.endpointType === 'start').length;
+      if (isCoastalRegion && (incomingRiverEndpointCount === 0 || outgoingRiverEndpointCount > 0)) {
+        console.warn('Coastal region attempt has invalid river endpoints; replacing it with a coastal tract', {
+          attempt,
+          regionId,
+          incomingRiverEndpointCount,
+          outgoingRiverEndpointCount
+        });
+        addFallbackTractToMap(anchorHex, true);
+        return;
+      }
       const biomeLandType = options.landType ?? (regions.length === 0 ? 'settled' : chooseCoastalAwareLandType(isCoastalRegion));
       // Выбор биома: либо принудительно заданный пользователем, либо обычный
       // взвешенный выбор. Принудительный биом всё равно проверяется на
