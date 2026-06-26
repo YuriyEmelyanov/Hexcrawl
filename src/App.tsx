@@ -1176,6 +1176,58 @@ function chooseBiomeId(
   return { biomeId: fallbackBiomeId };
 }
 
+function chooseBiomeIdAtHeightLevel(
+  landType: BiomeLandType,
+  adjacentBiomeIds: BiomeId[],
+  regionId: number | undefined,
+  requiredHeightLevel: RegionHeightLevel,
+  riverHeightConstraint?: RiverHeightConstraint
+): ChooseBiomeResult {
+  const constrainedWeights = {} as Record<BiomeId, number>;
+  const uniqueAdjacentBiomeIds = new Set(adjacentBiomeIds);
+
+  for (const biome of Object.values(BIOMES)) {
+    const baseWeight = landType === 'settled' ? biome.settledWeight : biome.wildWeight;
+    const incompatibleWithHeight = biome.heightLevel !== requiredHeightLevel;
+    const incompatibleWithRiver = riverHeightConstraint
+      ? !isBiomeAllowedByRiverHeightConstraint(biome.id, riverHeightConstraint)
+      : false;
+    const duplicateAdjacentBiome = uniqueAdjacentBiomeIds.has(biome.id);
+    const incompatibleWithAdjacent = adjacentBiomeIds.some(
+      (adjacentBiomeId) => !isBiomesCompatible(biome.id, adjacentBiomeId, BIOME_COMPATIBILITY_MATRIX)
+    );
+
+    constrainedWeights[biome.id] = incompatibleWithHeight || incompatibleWithRiver || duplicateAdjacentBiome || incompatibleWithAdjacent
+      ? 0
+      : baseWeight;
+  }
+
+  if (Object.values(constrainedWeights).some((weight) => weight > 0)) {
+    return { biomeId: chooseWeightedRandom(constrainedWeights) };
+  }
+
+  const relaxedWeights = {} as Record<BiomeId, number>;
+  for (const biome of Object.values(BIOMES)) {
+    const baseWeight = landType === 'settled' ? biome.settledWeight : biome.wildWeight;
+    const incompatibleWithRiver = riverHeightConstraint
+      ? !isBiomeAllowedByRiverHeightConstraint(biome.id, riverHeightConstraint)
+      : false;
+    relaxedWeights[biome.id] = biome.heightLevel !== requiredHeightLevel || incompatibleWithRiver ? 0 : baseWeight;
+  }
+
+  if (Object.values(relaxedWeights).some((weight) => weight > 0)) {
+    console.log('Biome height filter restored adjacent/incompatible biome weights', {
+      regionId,
+      biomeLandType: landType,
+      adjacentBiomeIds,
+      requiredHeightLevel
+    });
+    return { biomeId: chooseWeightedRandom(relaxedWeights) };
+  }
+
+  return { biomeId: null, reason: 'river_height_constraint_failed' };
+}
+
 function getAdjacentRegionBiomes(regionHexes: AxialHex[], regionByHexKey: Map<string, Region>): BiomeId[] {
   const biomeIds = new Set<BiomeId>();
 
@@ -6474,7 +6526,7 @@ function generateRiverForRegion(
       return finalizeRiverGenerationForRegion(region, regions, terrainMap, riverGraph, nextRivers, candidateHexes ?? [], candidateVertices, neighborRegionVertices, candidateEndpointVertices);
     }
 
-    if (region.heightLevel === 3) {
+    if (region.heightLevel === 3 && region.sizeCategory !== 'tract') {
       const fullnessTwoOrThreeOutgoingEndpoints = outgoingEndpoints
         .map((endpoint) => {
           const river = existingRivers.find((item) => item.id === endpoint.riverId);
@@ -6649,7 +6701,11 @@ function generateRiverForRegion(
         if (!mainPath) return { success: false, rivers: existingRivers, reason: 'mountain_main_outgoing_source_path_not_found' };
         nextRivers = nextRivers.map((river) => river.id !== mainOutgoingEndpoint.riverId
           ? river
-          : { ...river, vertexPath: [...mainPath.slice(0, -1), ...river.vertexPath], sectors: prependRiverPathSector(river, mainPath, getOutgoingInteriorConnectorFullness(river, mainOutgoingEndpoint.vertex.key), region.id) });
+          : {
+            ...river,
+            vertexPath: [...mainPath.slice(0, -1), ...river.vertexPath],
+            sectors: prependRiverPathSector(river, mainPath, region.sizeCategory === 'tract' ? 1 : getOutgoingInteriorConnectorFullness(river, mainOutgoingEndpoint.vertex.key), region.id)
+          });
         const mainPathEdgeKeys = getRiverPathEdgeKeys(mainPath, riverGraph);
         if (!mainPathEdgeKeys) return { success: false, rivers: existingRivers, reason: 'mountain_main_outgoing_edge_keys_not_found' };
         for (const edgeKey of mainPathEdgeKeys) blockedEdgeKeys.add(edgeKey);
@@ -6692,7 +6748,11 @@ function generateRiverForRegion(
         }
         nextRivers = nextRivers.map((river) => river.id !== outgoingEndpoint.riverId
           ? river
-          : { ...river, vertexPath: [...selectedPath.slice(0, -1), ...river.vertexPath], sectors: prependRiverPathSector(river, selectedPath, getOutgoingInteriorConnectorFullness(river, outgoingEndpoint.vertex.key), region.id) });
+          : {
+            ...river,
+            vertexPath: [...selectedPath.slice(0, -1), ...river.vertexPath],
+            sectors: prependRiverPathSector(river, selectedPath, region.sizeCategory === 'tract' ? 1 : getOutgoingInteriorConnectorFullness(river, outgoingEndpoint.vertex.key), region.id)
+          });
         for (const edgeKey of pathEdgeKeys) blockedEdgeKeys.add(edgeKey);
         console.log('Connecting secondary mountain outgoing river', {
           regionId: region.id,
@@ -10870,7 +10930,11 @@ export function App() {
       // Выбор биома: либо принудительно заданный пользователем, либо обычный
       // взвешенный выбор. Принудительный биом всё равно проверяется на
       // совместимость с ограничением высоты от рек.
+      const tractHasOutgoingRiver = sizeCategory === 'tract' && outgoingRiverEndpointCount > 0;
       const pickBiome = (constraint: RiverHeightConstraint): ChooseBiomeResult => {
+        if (tractHasOutgoingRiver) {
+          return chooseBiomeIdAtHeightLevel(biomeLandType, adjacentBiomeIds, regionId, 3, constraint);
+        }
         if (options.biomeId) {
           return isBiomeAllowedByRiverHeightConstraint(options.biomeId, constraint)
             ? { biomeId: options.biomeId }
