@@ -11089,12 +11089,14 @@ export function App() {
         : autoCoastRoll < coastProbabilityFromSpan(computeMapMaxSpanTiles(allRegionHexes));
       const incomingRiverEndpointCount = touchingEndpoints.filter((endpoint) => endpoint.endpointType === 'end').length;
       const outgoingRiverEndpointCount = touchingEndpoints.filter((endpoint) => endpoint.endpointType === 'start').length;
-      if (isCoastalRegion && (incomingRiverEndpointCount === 0 || outgoingRiverEndpointCount > 0)) {
+      const isFirstRegion = regions.length === 0;
+      if (isCoastalRegion && ((incomingRiverEndpointCount === 0 && !isFirstRegion) || outgoingRiverEndpointCount > 0)) {
         console.warn('Coastal region attempt has invalid river endpoints; replacing it with a coastal tract', {
           attempt,
           regionId,
           incomingRiverEndpointCount,
-          outgoingRiverEndpointCount
+          outgoingRiverEndpointCount,
+          isFirstRegion
         });
         addFallbackTractToMap(anchorHex, true);
         return;
