@@ -10710,8 +10710,47 @@ export function App() {
     const regionKeySet = new Set(regionHexes.map(hexKey));
     for (const regionKey of regionKeySet) existingSeaKeys.delete(regionKey);
     const finalSize = regionHexes.length;
-    const biomeChoice = chooseBiomeId('wild', getAdjacentRegionBiomes(regionHexes, new Map(regions.flatMap((region) => region.hexes.map((hex) => [hexKey(hex), region] as const)))), regionId);
-    const biomeId = biomeChoice.biomeId ?? FALLBACK_BIOME_ID;
+    const adjacentBiomeIds = getAdjacentRegionBiomes(regionHexes, new Map(regions.flatMap((region) => region.hexes.map((hex) => [hexKey(hex), region] as const))));
+    const tractCandidateRegionForRiverCheck: Region = {
+      id: regionId,
+      hexes: regionHexes,
+      centerHex: anchorHex,
+      anchorHex,
+      targetSize: 5,
+      finalSize,
+      sizeCategory: 'tract',
+      sizeLabel: 'Урочище',
+      biomeLandType: 'wild',
+      heightLevel: 1,
+      biomeId: FALLBACK_BIOME_ID,
+      biomeLabel: BIOMES[FALLBACK_BIOME_ID].label,
+      biomePrimaryEmoji: BIOMES[FALLBACK_BIOME_ID].primaryEmoji,
+      biomeSecondaryEmojis: [...BIOMES[FALLBACK_BIOME_ID].secondaryEmojis],
+      biomeEmojiLabel: BIOMES[FALLBACK_BIOME_ID].primaryEmoji + BIOMES[FALLBACK_BIOME_ID].secondaryEmojis.join(''),
+      pointsOfInterest: [],
+      isTract: true
+    };
+    const tractCandidateHexesForRiverCheck = getCandidateHexes([...allRegionHexes, ...regionHexes], existingSeaKeys);
+    const tractRiverGraphForCheck = buildRiverGraphForRegion(
+      tractCandidateRegionForRiverCheck.hexes,
+      tractCandidateRegionForRiverCheck.hexes,
+      tractCandidateHexesForRiverCheck
+    );
+    const tractTouchingEndpoints = findRiverEndpointsTouchingRegion(
+      tractCandidateRegionForRiverCheck,
+      rivers,
+      tractRiverGraphForCheck
+    );
+    const tractHasOutgoingRiver = tractTouchingEndpoints.some((endpoint) => endpoint.endpointType === 'start');
+    const biomeChoice = tractHasOutgoingRiver
+      ? chooseBiomeIdAtHeightLevel('wild', adjacentBiomeIds, regionId, 3, getRiverHeightConstraintForCandidateRegion(
+        tractCandidateRegionForRiverCheck,
+        regions,
+        rivers,
+        tractCandidateHexesForRiverCheck
+      ))
+      : chooseBiomeId('wild', adjacentBiomeIds, regionId);
+    const biomeId = biomeChoice.biomeId ?? (tractHasOutgoingRiver ? 'mountains' : FALLBACK_BIOME_ID);
     const biome = BIOMES[biomeId] ?? BIOMES[FALLBACK_BIOME_ID];
     const tractRegion: Region = {
       id: regionId,
@@ -10737,10 +10776,35 @@ export function App() {
       isCoastal: false,
       isTract: true
     };
+    const candidateHexesForTractRiverGeneration = getCandidateHexes([...allRegionHexes, ...regionHexes], existingSeaKeys);
+    const generatedTractRiverResult = generateRiverForRegion(
+      tractRegion,
+      [...regions, tractRegion],
+      rivers,
+      candidateHexesForTractRiverGeneration,
+      hexTerrainByKey
+    );
+    const riversAfterTractGeneration = generatedTractRiverResult.success
+      ? assignRiverSectors(
+        generatedTractRiverResult.rivers,
+        getLakesForRegions([...regions, tractRegion], hexTerrainByKey),
+        [...regions, tractRegion],
+        candidateHexesForTractRiverGeneration,
+        existingSeaKeys,
+        { recalculatedRegionId: regionId }
+      )
+      : rivers;
+    if (!generatedTractRiverResult.success) {
+      console.warn('Fallback tract river generation failed; saving tract without generated river', {
+        regionId,
+        reason: generatedTractRiverResult.reason,
+        tractHasOutgoingRiver
+      });
+    }
     const tractRoadResult = ensureRoadAdjacentTractPoiAndTrail({
       region: tractRegion,
       roads,
-      rivers,
+      rivers: riversAfterTractGeneration,
       hexTerrainByKey,
       nextRoadId
     });
@@ -10749,7 +10813,7 @@ export function App() {
       pointOfInterestKinds: assignPoiKindsForRegion({
         region: tractRoadResult.region,
         roads: tractRoadResult.roads,
-        rivers,
+        rivers: riversAfterTractGeneration,
         hexTerrainByKey
       })
     };
@@ -10768,13 +10832,13 @@ export function App() {
         if (!getHexNeighbors(candidate).some((neighbor) => tractKeys.has(hexKey(neighbor)))) return false;
         if (hexTerrainByKey.get(key)?.terrainOverride === 'lake') return false;
         if (hexTouchesLake(candidate, hexTerrainByKey)) return false;
-        if (getRiversForHex(candidate, rivers).length > 0) return false;
+        if (getRiversForHex(candidate, riversAfterTractGeneration).length > 0) return false;
         return true;
       });
       const seedSeaHex = randomFrom(seedCandidates);
       if (seedSeaHex) seededSeaKeys.add(hexKey(seedSeaHex));
     }
-    const seaKeysToFill = getSeaKeysToFillForTractSeaTouch(regionHexes, seededSeaKeys, candidateHexesBeforeSeaBridge, hexTerrainByKey, rivers);
+    const seaKeysToFill = getSeaKeysToFillForTractSeaTouch(regionHexes, seededSeaKeys, candidateHexesBeforeSeaBridge, hexTerrainByKey, riversAfterTractGeneration);
     const finalSeaKeys = new Set([...seededSeaKeys, ...seaKeysToFill]);
     for (const regionKey of regionKeySet) finalSeaKeys.delete(regionKey);
     const finalCandidateHexes = getCandidateHexes(finalRegions.flatMap((region) => region.hexes), finalSeaKeys);
@@ -10801,6 +10865,7 @@ export function App() {
     setHistory((current) => [...current, snapshot]);
     setRegions(finalRegions);
     setCandidateHexes(finalCandidateHexes);
+    setRivers(riversAfterTractGeneration);
     setHexTerrainByKey(() => {
       let next = new Map(hexTerrainByKey);
       // Новый fallback-регион всегда становится сушей: очищаем старые terrain override
