@@ -9117,6 +9117,71 @@ function getWildRegionTrailBuildCount(region: Region): number {
   return canBuildStandaloneWildRegionRoad(region) ? 2 : 1;
 }
 
+function findRoadOrTrailHexesTouchingRegion(region: Region, roads: Road[]): AxialHex[] {
+  const regionKeys = new Set(region.hexes.map(hexKey));
+  const touchingHexes = new Map<string, AxialHex>();
+
+  for (const road of roads) {
+    for (const segment of road.segments) {
+      for (const hex of [segment.from, segment.to]) {
+        const key = hexKey(hex);
+        if (regionKeys.has(key) || getHexNeighbors(hex).some((neighbor) => regionKeys.has(hexKey(neighbor)))) {
+          touchingHexes.set(key, hex);
+        }
+      }
+    }
+  }
+
+  return Array.from(touchingHexes.values());
+}
+
+function ensureRoadAdjacentTractPoiAndTrail(options: {
+  region: Region;
+  roads: Road[];
+  rivers: River[];
+  hexTerrainByKey: Map<string, HexTerrainData>;
+  nextRoadId: number;
+}): { region: Region; roads: Road[]; nextRoadId: number } {
+  const { region, roads, rivers, hexTerrainByKey } = options;
+  if (region.sizeCategory !== 'tract') return { region, roads, nextRoadId: options.nextRoadId };
+
+  const touchingRoadHexes = findRoadOrTrailHexesTouchingRegion(region, roads)
+    .filter((hex) => !isLakeHex(hex, hexTerrainByKey) && !isSeaHex(hex, hexTerrainByKey));
+  if (touchingRoadHexes.length === 0) return { region, roads, nextRoadId: options.nextRoadId };
+
+  const regionKeys = new Set(region.hexes.map(hexKey));
+  const eligiblePoiHexes = region.hexes.filter((hex) => !isLakeHex(hex, hexTerrainByKey) && !isSeaHex(hex, hexTerrainByKey));
+  if (eligiblePoiHexes.length === 0) return { region, roads, nextRoadId: options.nextRoadId };
+
+  const existingPoiKeys = new Set(region.pointsOfInterest.map(hexKey));
+  const roadHexKeys = getRoadHexKeys(roads);
+  const poiOnTouchingRoad = region.pointsOfInterest.find((poi) => roadHexKeys.has(hexKey(poi)));
+  const nearestDistanceToTouchingRoad = (hex: AxialHex) => Math.min(...touchingRoadHexes.map((roadHex) => hexDistance(hex, roadHex)));
+  const fallbackPoi = [...eligiblePoiHexes].sort((a, b) => nearestDistanceToTouchingRoad(a) - nearestDistanceToTouchingRoad(b))[0];
+  const targetPoi = poiOnTouchingRoad ?? region.pointsOfInterest[0] ?? fallbackPoi;
+  const targetPoiKey = hexKey(targetPoi);
+  const updatedRegion = existingPoiKeys.has(targetPoiKey)
+    ? region
+    : { ...region, pointsOfInterest: [targetPoi, ...region.pointsOfInterest] };
+
+  if (hexHasRoadOrTrail(targetPoi, roads)) {
+    return { region: updatedRegion, roads, nextRoadId: options.nextRoadId };
+  }
+
+  const candidateStarts = touchingRoadHexes
+    .filter((hex) => regionKeys.has(hexKey(hex)) || getHexNeighbors(hex).some((neighbor) => regionKeys.has(hexKey(neighbor))))
+    .sort((a, b) => hexDistance(a, targetPoi) - hexDistance(b, targetPoi));
+
+  for (const start of candidateStarts) {
+    const path = findWildTrailPath({ region: updatedRegion, from: start, target: targetPoi, rivers, hexTerrainByKey });
+    if (!path || roadPathCrossesRiver(path, rivers)) continue;
+    const addResult = addTrailPathWithoutDuplicateSegments({ path, roads, regionId: region.id, nextRoadId: options.nextRoadId });
+    if (addResult.added) return { region: updatedRegion, roads: addResult.roads, nextRoadId: addResult.nextRoadId };
+  }
+
+  return { region: updatedRegion, roads, nextRoadId: options.nextRoadId };
+}
+
 function buildWildRegionTrail(options: {
   region: Region;
   regions: Region[];
@@ -10612,11 +10677,18 @@ export function App() {
       isCoastal: false,
       isTract: true
     };
+    const tractRoadResult = ensureRoadAdjacentTractPoiAndTrail({
+      region: tractRegion,
+      roads,
+      rivers,
+      hexTerrainByKey,
+      nextRoadId
+    });
     const tractRegionWithPoiKinds: Region = {
-      ...tractRegion,
+      ...tractRoadResult.region,
       pointOfInterestKinds: assignPoiKindsForRegion({
-        region: tractRegion,
-        roads,
+        region: tractRoadResult.region,
+        roads: tractRoadResult.roads,
         rivers,
         hexTerrainByKey
       })
@@ -10683,6 +10755,8 @@ export function App() {
       return next;
     });
     setNextLakeId(nextLakeIdAfterLandlockedSea);
+    setRoads(tractRoadResult.roads);
+    setNextRoadId(tractRoadResult.nextRoadId);
     setSelectedHex(anchorHex);
   };
 
