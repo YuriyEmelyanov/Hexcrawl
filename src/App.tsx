@@ -10002,22 +10002,23 @@ function trimTractRiverSourcesAwayFromSea(
     for (const vertex of getHexCornerPoints(hex)) regionVertexKeys.add(vertex.key);
   }
 
+  const sourceStillTouchesSea = (path: RiverVertex[], startIndex: number): boolean => {
+    if (path.length - startIndex < 2) return false;
+    if (seaVertexKeys.has(path[startIndex].key)) return true;
+    return seaEdgeKeys.has(edgeKey(path[startIndex], path[startIndex + 1]));
+  };
+
   let changed = false;
   const trimmedRivers: River[] = [];
   for (const river of rivers) {
     const path = river.vertexPath ?? [];
-    if (path.length < 2 || !riverTouchesRegion(river, regionVertexKeys) || !riverTouchesSea(river, seaVertexKeys, seaEdgeKeys)) {
+    if (path.length < 2 || !riverTouchesRegion(river, regionVertexKeys)) {
       trimmedRivers.push(river);
       continue;
     }
 
     let startIndex = 0;
-    while (
-      path.length - startIndex >= 2 &&
-      riverTouchesSea({ ...river, vertexPath: path.slice(startIndex) }, seaVertexKeys, seaEdgeKeys)
-    ) {
-      startIndex += 1;
-    }
+    while (sourceStillTouchesSea(path, startIndex)) startIndex += 1;
 
     if (startIndex === 0) {
       trimmedRivers.push(river);
@@ -11607,6 +11608,21 @@ export function App() {
         for (const key of existingSeaKeysBeforeRegion) blockedCandidateKeys.add(key);
         for (const key of finalSeaKeySetToWrite) blockedCandidateKeys.add(key);
         finalCandidateHexes = addCandidateHexKeys(finalCandidateHexes, demotedSeaKeySet, blockedCandidateKeys);
+      }
+      if (sizeCategory === 'tract') {
+        const finalSeaKeysForRiverTrim = new Set<string>(existingSeaKeysBeforeRegion);
+        for (const key of finalSeaKeySetToWrite) finalSeaKeysForRiverTrim.add(key);
+        const trimmedRivers = trimTractRiverSourcesAwayFromSea(riversWithDeltas, regionHexes, finalSeaKeysForRiverTrim);
+        if (trimmedRivers !== riversWithDeltas) {
+          riversWithDeltas = assignRiverSectors(
+            trimmedRivers,
+            getLakesForRegions([...regions, finalRegionAfterLandPockets], nextHexTerrainByKeyPreview),
+            [...regions, finalRegionAfterLandPockets],
+            finalCandidateHexes,
+            finalSeaKeysForRiverTrim,
+            { recalculatedRegionId: regionId }
+          );
+        }
       }
       // Item 1: реки, возвращающиеся в уже пройденное озеро, больше не обрезаются.
       // На финальной попытке сохраняем регион даже с таким нарушением.
