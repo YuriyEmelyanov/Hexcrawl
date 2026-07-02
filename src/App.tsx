@@ -1,6 +1,22 @@
 import { type ChangeEvent, type CSSProperties, type KeyboardEvent, type MouseEvent, type TouchEvent, type WheelEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { getOutgoingConnectorFullnessFromEndpoint, type RiverFullness } from './riverFullness';
 
+// Яндекс Метрика: номер счётчика и безопасная отправка цели (reachGoal).
+// window.ym приходит из сниппета в index.html. Если его нет (adblock,
+// локальный запуск, счётчик ещё не прогрузился) — вызов молча игнорируется,
+// чтобы аналитика никогда не могла уронить приложение.
+const YM_COUNTER_ID = 110340124;
+
+type YandexMetrikaFn = (counterId: number, action: string, ...rest: unknown[]) => void;
+
+function trackGoal(goal: string): void {
+  if (typeof window === 'undefined') return;
+  const ym = (window as unknown as { ym?: YandexMetrikaFn }).ym;
+  if (typeof ym === 'function') {
+    ym(YM_COUNTER_ID, 'reachGoal', goal);
+  }
+}
+
 type AxialHex = {
   q: number;
   r: number;
@@ -12193,6 +12209,7 @@ export function App() {
     if (!mapSvgRef.current) return;
     try {
       await exportSvgToPng(mapSvgRef.current, `${EXPORT_FILE_PREFIX}-${getTimestampForFilename()}.png`);
+      trackGoal('export_png');
     } catch (error) {
       console.error('PNG export failed', error);
       window.alert(error instanceof Error ? error.message : t.pngExportError);
@@ -12203,6 +12220,7 @@ export function App() {
     const saveData = createSaveData();
     const blob = new Blob([JSON.stringify(saveData, null, 2)], { type: 'application/json;charset=utf-8' });
     downloadBlob(blob, `${EXPORT_FILE_PREFIX}-${getTimestampForFilename()}.json`);
+    trackGoal('export_json');
   };
 
   const handleImportJsonClick = () => {
@@ -12237,6 +12255,7 @@ export function App() {
       setSelectedHex(parsed.ui.selectedHex ?? START_HEX);
       setIsMapRotated(parsed.ui.isMapRotated);
       updateMapScale(parsed.ui.mapScale);
+      trackGoal('import_json');
     } catch (error) {
       console.error('JSON import failed', error);
       window.alert(error instanceof Error ? error.message : t.jsonImportError);
@@ -12289,7 +12308,10 @@ export function App() {
               <button
                 type="button"
                 className="language-toggle"
-                onClick={() => setLanguage((value) => (value === 'ru' ? 'en' : 'ru'))}
+                onClick={() => {
+                  trackGoal('lang_switch');
+                  setLanguage((value) => (value === 'ru' ? 'en' : 'ru'));
+                }}
                 aria-label={t.switchLanguage}
                 title={t.switchLanguage}
               >
@@ -12501,6 +12523,7 @@ export function App() {
                   key={`${hex.kind}-${hex.key}`}
                   onClick={() => {
                     if (hex.kind === 'candidate') {
+                      trackGoal('region_add');
                       safelyAddRegionToMap({ q: hex.q, r: hex.r }, buildGenerationOptions());
                     } else {
                       setSelectedHex({ q: hex.q, r: hex.r });
