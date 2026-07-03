@@ -779,13 +779,24 @@ function getHexCoordinateLabelLayout(cx: number, cy: number, sourceHeight: numbe
     return { x: bottomEdge.x, y: bottomEdge.y - HEX_SIZE * 0.14, angle: 0 };
   }
 
-  // In the default orientation, place the label along each hex's lower-right edge.
+  // In the default orientation, place the label parallel to the lower-right edge
+  // of the flat-top hex. The p1→p2 edge is angled at 150°/-30° in screen
+  // coordinates, so use -30° for a readable left-to-right baseline.
   const lowerRightStart = points[1];
   const lowerRightEnd = points[2];
+  const edgeMidpoint = {
+    x: (lowerRightStart.x + lowerRightEnd.x) / 2,
+    y: (lowerRightStart.y + lowerRightEnd.y) / 2
+  };
+  const inwardOffset = HEX_SIZE * 0.12;
+  const inwardVector = {
+    x: (cx - edgeMidpoint.x) / (HEX_SIZE * 0.5),
+    y: (cy - edgeMidpoint.y) / (HEX_SIZE * 0.5)
+  };
   return {
-    x: (lowerRightStart.x + lowerRightEnd.x) / 2 - HEX_SIZE * 0.1,
-    y: (lowerRightStart.y + lowerRightEnd.y) / 2 - HEX_SIZE * 0.06,
-    angle: -60
+    x: edgeMidpoint.x + inwardVector.x * inwardOffset,
+    y: edgeMidpoint.y + inwardVector.y * inwardOffset,
+    angle: -30
   };
 }
 
@@ -12810,7 +12821,7 @@ export function App() {
             </g>
             {showHexCoordinates ? (
               <g className="hex-coordinate-layer">
-                {positionedHexes.hexes.map((hex) => {
+                {positionedHexes.hexes.filter((hex) => hex.kind !== 'candidate').map((hex) => {
                   const labelLayout = getHexCoordinateLabelLayout(hex.x, hex.y, positionedHexes.height, isMapRotated);
                   return (
                     <text
@@ -12820,8 +12831,6 @@ export function App() {
                       textAnchor="middle"
                       dominantBaseline="central"
                       className="hex-coordinate-label"
-                      textLength={HEX_SIZE * 0.78}
-                      lengthAdjust="spacingAndGlyphs"
                       transform={labelLayout.angle ? `rotate(${labelLayout.angle} ${labelLayout.x} ${labelLayout.y})` : undefined}
                     >
                       {hex.q}/{hex.r}
