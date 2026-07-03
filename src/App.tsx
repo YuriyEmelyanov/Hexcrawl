@@ -446,7 +446,7 @@ const SVG_EXPORT_STYLES = `
   .hex.click-prompt { stroke:#f7dc6f; stroke-width:2; }
   .click-prompt-label { fill:#fff7bf; stroke:#0c1423; stroke-width:3px; paint-order:stroke; font-size:12px; font-weight:800; pointer-events:none; }
   .hex-label { fill:#f4f8ff; font-size:11px; pointer-events:none; }
-  .hex-coordinate-label { fill:#617187; font-size:6px; font-weight:700; letter-spacing:.02em; pointer-events:none; user-select:none; }
+  .hex-coordinate-label { fill:#253247; font-size:7px; font-weight:700; letter-spacing:.02em; pointer-events:none; user-select:none; }
   .rivers-layer, .roads-layer, .river-debug-layer { pointer-events:none; }
   .river-polyline { fill:none; stroke:#3ea2ff; stroke-linecap:round; stroke-linejoin:round; }
   .river-direction-arrow { stroke:#ffffff; stroke-width:1.2; stroke-linecap:round; }
