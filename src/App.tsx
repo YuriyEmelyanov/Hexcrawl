@@ -1,6 +1,49 @@
 import { type ChangeEvent, type CSSProperties, type KeyboardEvent, type MouseEvent, type TouchEvent, type WheelEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { getOutgoingConnectorFullnessFromEndpoint, type RiverFullness } from './riverFullness';
 
+// ===== ВРЕМЕННОЕ ЛОКАЛЬНОЕ ПРОФИЛИРОВАНИЕ (не пушить, просто удалить блок) =====
+// Ничего не меняет в логике: только замеряет время выбранных функций
+// и печатает сводку в консоль (F12 -> Console) после каждой генерации региона.
+const __profileStats = new Map<string, { calls: number; totalMs: number }>();
+function __profiled<T extends (...args: any[]) => any>(name: string, fn: T): T {
+  return ((...args: any[]) => {
+    const start = performance.now();
+    try {
+      return fn(...args);
+    } finally {
+      const elapsed = performance.now() - start;
+      const entry = __profileStats.get(name) ?? { calls: 0, totalMs: 0 };
+      entry.calls += 1;
+      entry.totalMs += elapsed;
+      __profileStats.set(name, entry);
+    }
+  }) as T;
+}
+function __profileHit(name: string) {
+  const entry = __profileStats.get(name) ?? { calls: 0, totalMs: 0 };
+  entry.calls += 1;
+  __profileStats.set(name, entry);
+}
+let __profileClickStart = 0;
+function __profileBeginClick() {
+  __profileStats.clear();
+  __profileClickStart = performance.now();
+  setTimeout(() => {
+    const totalMs = performance.now() - __profileClickStart;
+    const rows = Array.from(__profileStats.entries())
+      .map(([name, { calls, totalMs: t }]) => ({
+        'функция': name,
+        'вызовов': calls,
+        'сумма мс': Math.round(t * 100) / 100,
+        'среднее мс': Math.round((t / Math.max(1, calls)) * 1000) / 1000
+      }))
+      .sort((a, b) => b['сумма мс'] - a['сумма мс']);
+    console.log(`%c[PROFILE] Регион сгенерирован за ${Math.round(totalMs)} мс`, 'font-weight:bold;color:#2b6b9e;font-size:13px');
+    console.table(rows);
+  }, 0);
+}
+// ===== КОНЕЦ ВРЕМЕННОГО ПРОФИЛИРОВАНИЯ =====
+
 // Яндекс Метрика: номер счётчика и безопасная отправка цели (reachGoal).
 // window.ym приходит из сниппета в index.html. Если его нет (adblock,
 // локальный запуск, счётчик ещё не прогрузился) — вызов молча игнорируется,
@@ -2119,7 +2162,7 @@ function buildSeaMouthBoundary(seaHexKeys: Iterable<string>): { edgeKeys: Set<st
   return { edgeKeys, vertexKeys };
 }
 
-function assignRiverSectors(
+function assignRiverSectorsImpl(
   rivers: River[],
   lakes: Lake[],
   regions: Region[] = [],
@@ -2347,6 +2390,7 @@ function assignRiverSectors(
   }
   return nextRivers;
 }
+const assignRiverSectors = __profiled('assignRiverSectors', assignRiverSectorsImpl);
 
 function getRiverSectorsForHex(hex: AxialHex, rivers: River[]): RiverSector[] {
   const hexEdges = getHexEdgeKeys(hex);
@@ -2490,7 +2534,7 @@ function riverDrainsInto(
   return false;
 }
 
-function wouldCreateRiverDrainageCycle(
+function wouldCreateRiverDrainageCycleImpl(
   rivers: River[],
   upstreamRiverId: number,
   downstreamRiverId: number
@@ -2498,6 +2542,7 @@ function wouldCreateRiverDrainageCycle(
   if (upstreamRiverId === downstreamRiverId) return true;
   return riverDrainsInto(buildRiverDownstreamAdjacency(rivers), downstreamRiverId, upstreamRiverId);
 }
+const wouldCreateRiverDrainageCycle = __profiled('  ↳ wouldCreateRiverDrainageCycle', wouldCreateRiverDrainageCycleImpl);
 
 function hasDirectedCycleInAdjacency<T>(adjacency: Map<T, Set<T>>): boolean {
   const visiting = new Set<T>();
@@ -2942,7 +2987,7 @@ function tryAddEdgeMinorTributaryRiver(
   }
 }
 
-function tryAddSmallTributaryRiver(
+function tryAddSmallTributaryRiverImpl(
   region: Region,
   terrainMap: Map<string, HexTerrainData>,
   riverGraph: RiverGraph,
@@ -3022,11 +3067,22 @@ function tryAddSmallTributaryRiver(
       || Boolean(graphNodeFor(vertex)?.isRegionBoundaryVertex)
       || getRegionHexesTouchingVertex(vertex, region).length < 3
     );
-    const isForbiddenInteriorVertex = (vertex: RiverVertex): boolean => (
-      !graphNodeFor(vertex)
-      || isRegionPerimeterVertex(vertex)
-      || isCandidateAdjacentVertex(vertex)
-    );
+    // Мемоизация: предикат зависит только от vertex.key при фиксированных
+    // region/candidateHexes/graph (в пределах вызова они не меняются). Раньше он
+    // пересчитывался тысячи раз для одних и тех же вершин, каждый раз сканируя все
+    // гексы региона. Кэш возвращает те же значения — путь/реки/карта идентичны.
+    const forbiddenInteriorVertexCache = new Map<string, boolean>();
+    const isForbiddenInteriorVertex = (vertex: RiverVertex): boolean => {
+      const cached = forbiddenInteriorVertexCache.get(vertex.key);
+      if (cached !== undefined) return cached;
+      const result = (
+        !graphNodeFor(vertex)
+        || isRegionPerimeterVertex(vertex)
+        || isCandidateAdjacentVertex(vertex)
+      );
+      forbiddenInteriorVertexCache.set(vertex.key, result);
+      return result;
+    };
     const isFreeLakeVertex = (vertex: RiverVertex): boolean => freeLakeVertexKeys.has(vertex.key);
     const isConnectedLakeVertex = (vertex: RiverVertex): boolean => connectedLakeVertexKeys.has(vertex.key);
     const isValidNextVertex = (vertex: RiverVertex, pathVertexKeys: Set<string>): boolean => {
@@ -3189,6 +3245,7 @@ function tryAddSmallTributaryRiver(
     return rivers;
   }
 }
+const tryAddSmallTributaryRiver = __profiled('    ↳↳ tryAddSmallTributaryRiver', tryAddSmallTributaryRiverImpl);
 
 function getRiversForRegion(region: Region, rivers: River[]): River[] {
   const regionVertexKeys = new Set<string>();
@@ -3307,7 +3364,7 @@ function getMountainInteriorSourceVertices(
   });
 }
 
-function findBestPathFromSourceToOutgoingEndpoint(
+function findBestPathFromSourceToOutgoingEndpointImpl(
   sourceVertices: RiverVertex[],
   outgoingEndpoint: RiverEndpointTouch,
   riverGraph: RiverGraph,
@@ -3342,6 +3399,7 @@ function findBestPathFromSourceToOutgoingEndpoint(
   }
   return bestPath;
 }
+const findBestPathFromSourceToOutgoingEndpoint = __profiled('  ↳ findBestPathFromSourceToOutgoingEndpoint', findBestPathFromSourceToOutgoingEndpointImpl);
 
 function findBestPathFromLakeToOutgoingEndpoint(
   lakeVertices: RiverVertex[],
@@ -3384,7 +3442,7 @@ function validateRiverPathUsesExteriorEndpoints(
   return true;
 }
 
-function getRiverPathEdgeKeys(vertexPath: RiverVertex[], riverGraph: RiverGraph): string[] | undefined {
+function getRiverPathEdgeKeysImpl(vertexPath: RiverVertex[], riverGraph: RiverGraph): string[] | undefined {
   if (!vertexPath || vertexPath.length < 2) return [];
   const edgeKeys: string[] = [];
   for (let i = 1; i < vertexPath.length; i += 1) {
@@ -3394,6 +3452,7 @@ function getRiverPathEdgeKeys(vertexPath: RiverVertex[], riverGraph: RiverGraph)
   }
   return edgeKeys;
 }
+const getRiverPathEdgeKeys = __profiled('  ↳ getRiverPathEdgeKeys', getRiverPathEdgeKeysImpl);
 
 function hasDuplicateEdgeKeys(edgeKeys: string[]): boolean {
   return new Set(edgeKeys).size !== edgeKeys.length;
@@ -3410,7 +3469,7 @@ function buildUsedRiverEdges(rivers: River[]): Set<string> {
   return used;
 }
 
-function validateNoDuplicateRiverEdges(rivers: River[]): void {
+function validateNoDuplicateRiverEdgesImpl(rivers: River[]): void {
   const seen = new Map<string, { regionId: number; riverId: number }>();
 
   for (const river of rivers) {
@@ -3430,12 +3489,13 @@ function validateNoDuplicateRiverEdges(rivers: River[]): void {
     }
   }
 }
+const validateNoDuplicateRiverEdges = __profiled('  ↳ validateNoDuplicateRiverEdges', validateNoDuplicateRiverEdgesImpl);
 
 function reverseRiverPath(vertexPath: RiverVertex[]): RiverVertex[] {
   return [...vertexPath].reverse().map((vertex) => ({ ...vertex }));
 }
 
-function validateRiverDirection(river: River): void {
+function validateRiverDirectionImpl(river: River): void {
   if (!river.vertexPath || river.vertexPath.length < 2) return;
   for (let i = 0; i < river.vertexPath.length - 1; i += 1) {
     if (river.vertexPath[i].key === river.vertexPath[i + 1].key) {
@@ -3460,6 +3520,7 @@ function validateRiverDirection(river: River): void {
     }
   }
 }
+const validateRiverDirection = __profiled('  ↳ validateRiverDirection', validateRiverDirectionImpl);
 
 function findRiverConnectionByStartVertex(rivers: River[], startVertex: RiverVertex): RiverConnection | null {
   for (const river of rivers) {
@@ -3472,7 +3533,7 @@ function findRiverConnectionByStartVertex(rivers: River[], startVertex: RiverVer
   return null;
 }
 
-function validateRiverContinuity(river: River): boolean {
+function validateRiverContinuityImpl(river: River): boolean {
   if (!river?.vertexPath || river.vertexPath.length < 2) return true;
   for (let i = 0; i < river.vertexPath.length - 1; i += 1) {
     const current = river.vertexPath[i];
@@ -3484,6 +3545,7 @@ function validateRiverContinuity(river: River): boolean {
   }
   return true;
 }
+const validateRiverContinuity = __profiled('  ↳ validateRiverContinuity', validateRiverContinuityImpl);
 
 function findRiverEndpointsTouchingRegion(region: Region, rivers: River[], riverGraph: RiverGraph): RiverEndpointTouch[] {
   void region;
@@ -3658,7 +3720,7 @@ function trimConflictingOutgoingRiversAwayFromRegion(
   });
 }
 
-function mergeRiversWithConnector(
+function mergeRiversWithConnectorImpl(
   existingRivers: River[],
   upstreamRiverId: number,
   downstreamRiverId: number,
@@ -3740,6 +3802,7 @@ function mergeRiversWithConnector(
     .filter((river) => river.id !== downstreamRiverId)
     .map((river) => (river.id === upstreamRiverId ? mergedRiver : river));
 }
+const mergeRiversWithConnector = __profiled('  ↳ mergeRiversWithConnector', mergeRiversWithConnectorImpl);
 
 
 function getNextLakeIdFromTerrain(terrainMap: Map<string, HexTerrainData>): number {
@@ -3856,7 +3919,7 @@ function riverTouchesCenterHexArea(river: River, centerHex: AxialHex, riverGraph
     || riverPathTouchesCenterHexVertex(river.vertexPath, centerHex);
 }
 
-function ensureCentralAdjacentLakeWhenNoRiverTouchesCenter(
+function ensureCentralAdjacentLakeWhenNoRiverTouchesCenterImpl(
   region: Region,
   terrainMap: Map<string, HexTerrainData>,
   riverGraph: RiverGraph,
@@ -3883,6 +3946,7 @@ function ensureCentralAdjacentLakeWhenNoRiverTouchesCenter(
     lakeHexKey: hexKey(lakeHex),
   });
 }
+const ensureCentralAdjacentLakeWhenNoRiverTouchesCenter = __profiled('    ↳↳ ensureCentralAdjacentLakeWhenNoRiverTouchesCenter', ensureCentralAdjacentLakeWhenNoRiverTouchesCenterImpl);
 
 function getRiverById(rivers: River[], riverId: number): River | undefined {
   return rivers.find((river) => river.id === riverId);
@@ -4104,7 +4168,7 @@ function isInteriorTerminalRiverEdge(
   return Boolean(terminalEdge?.isInsideRegionEdge && !terminalEdge.isCandidateBoundaryEdge);
 }
 
-function buildRiverPathViaControlPoints(
+function buildRiverPathViaControlPointsImpl(
   controlPoints: { startVertex: RiverVertex; middlePurpleVertex?: RiverVertex; endVertex: RiverVertex },
   riverGraph: RiverGraph,
   blockedEdgeKeys: Set<string> = new Set()
@@ -4137,8 +4201,9 @@ function buildRiverPathViaControlPoints(
   const joined = [...path1, ...path2.slice(1)];
   return joined.map((node) => ({ key: node.key, x: node.x, y: node.y }));
 }
+const buildRiverPathViaControlPoints = __profiled('  ↳ buildRiverPathViaControlPoints', buildRiverPathViaControlPointsImpl);
 
-function findBestConnectorPathBetweenRiverEndpoints(
+function findBestConnectorPathBetweenRiverEndpointsImpl(
   startVertex: RiverVertex,
   endVertex: RiverVertex,
   middleVertices: RiverVertex[],
@@ -4168,8 +4233,9 @@ function findBestConnectorPathBetweenRiverEndpoints(
 
   return bestPath;
 }
+const findBestConnectorPathBetweenRiverEndpoints = __profiled('  ↳ findBestConnectorPathBetweenRiverEndpoints', findBestConnectorPathBetweenRiverEndpointsImpl);
 
-function findBestFreeRiverPathFromEndpoints(
+function findBestFreeRiverPathFromEndpointsImpl(
   existingRiverEndpointVerticesInRegion: RiverVertex[],
   redVertices: RiverVertex[],
   purpleVertices: RiverVertex[],
@@ -4219,6 +4285,7 @@ function findBestFreeRiverPathFromEndpoints(
 
   return bestTouchingCenter ?? bestFallback;
 }
+const findBestFreeRiverPathFromEndpoints = __profiled('  ↳ findBestFreeRiverPathFromEndpoints', findBestFreeRiverPathFromEndpointsImpl);
 
 function riverPathAvoidsOccupiedVertices(
   vertexPath: RiverVertex[],
@@ -4228,7 +4295,7 @@ function riverPathAvoidsOccupiedVertices(
   return vertexPath.every((vertex) => !occupiedVertexKeys.has(vertex.key) || allowedOccupiedVertexKeys.has(vertex.key));
 }
 
-function validateRiverPathViaControlPoints(
+function validateRiverPathViaControlPointsImpl(
   vertexPath: RiverVertex[],
   controlPoints: { startVertex: RiverVertex; middlePurpleVertex?: RiverVertex; endVertex: RiverVertex; startMode: RiverStartMode },
   riverGraph: RiverGraph,
@@ -4271,6 +4338,7 @@ function validateRiverPathViaControlPoints(
   if (!riverPathAvoidsOccupiedVertices(vertexPath, occupiedVertexKeys, allowedOccupiedVertexKeys)) return false;
   return true;
 }
+const validateRiverPathViaControlPoints = __profiled('  ↳ validateRiverPathViaControlPoints', validateRiverPathViaControlPointsImpl);
 
 function getExistingRiverEndpointVerticesInRegion(region: Region, rivers: River[], riverGraph: RiverGraph): RiverVertex[] {
   void region;
@@ -4567,7 +4635,7 @@ function edgeKey(a: RiverVertex, b: RiverVertex): string {
   return [a.key, b.key].sort().join('|');
 }
 
-function buildRiverGraphForRegion(regionHexes: AxialHex[], allHexes: AxialHex[], candidateHexes: AxialHex[] = []): RiverGraph {
+function buildRiverGraphForRegionImpl(regionHexes: AxialHex[], allHexes: AxialHex[], candidateHexes: AxialHex[] = []): RiverGraph {
   const regionKeys = new Set(regionHexes.map(hexKey));
   const allHexSet = new Set(allHexes.map(hexKey));
   const candidateBoundaryEdgeKeys = new Set(
@@ -4643,8 +4711,9 @@ function buildRiverGraphForRegion(regionHexes: AxialHex[], allHexes: AxialHex[],
 
   return { nodes, edges };
 }
+const buildRiverGraphForRegion = __profiled('  ↳ buildRiverGraphForRegion', buildRiverGraphForRegionImpl);
 
-function findRiverPath(
+function findRiverPathImpl(
   startNode: RiverGraphNode,
   endNode: RiverGraphNode,
   riverGraph: RiverGraph,
@@ -4681,8 +4750,9 @@ function findRiverPath(
   }
   return path.reverse();
 }
+const findRiverPath = __profiled('findRiverPath', findRiverPathImpl);
 
-function findBestFreeRiverPathToAnyTarget(
+function findBestFreeRiverPathToAnyTargetImpl(
   startVertex: RiverVertex,
   targetVertices: RiverVertex[],
   riverGraph: RiverGraph,
@@ -4725,6 +4795,7 @@ function findBestFreeRiverPathToAnyTarget(
 
   return bestPath;
 }
+const findBestFreeRiverPathToAnyTarget = __profiled('  ↳ findBestFreeRiverPathToAnyTarget', findBestFreeRiverPathToAnyTargetImpl);
 
 function buildBoundingBox(occupiedHexes: Set<string>, padding = 2): { minQ: number; maxQ: number; minR: number; maxR: number } {
   const occupied = Array.from(occupiedHexes).map(parseHexKey);
@@ -5544,7 +5615,7 @@ function openTileTouchesRiverAwayFromMouth(hex: AxialHex, rivers: River[]): bool
 
 // Возвращает множество морских гексов, НЕ достижимых от открытого океана (снаружи карты)
 // по проходимым тайлам: море + пустые тайлы, не касающиеся реки вне устья; суша — стена.
-function getUnreachableSeaKeys(landHexes: AxialHex[], seaKeys: Iterable<string>, rivers: River[] = []): Set<string> {
+function getUnreachableSeaKeysImpl(landHexes: AxialHex[], seaKeys: Iterable<string>, rivers: River[] = []): Set<string> {
   const seaSet = new Set(seaKeys);
   if (seaSet.size === 0) return new Set<string>();
 
@@ -5614,6 +5685,7 @@ function getUnreachableSeaKeys(landHexes: AxialHex[], seaKeys: Iterable<string>,
   }
   return unreachable;
 }
+const getUnreachableSeaKeys = __profiled('getUnreachableSeaKeys', getUnreachableSeaKeysImpl);
 
 function validateSeaConnectivityThroughOpenTiles(landHexes: AxialHex[], seaKeys: Iterable<string>, rivers: River[] = []): GlobalSeaValidationResult {
   const seaSet = new Set(seaKeys);
@@ -5756,7 +5828,7 @@ function buildLakeIdByVertexKey(lakes: Lake[]): Map<string, number> {
 //   4. Заполняем море от гарантированного наружу по графу кандидатов, пока не упрёмся
 //      в стены (реки/дороги) — это «зелёные галочки». Кандидаты, отрезанные стенами от
 //      гарантированного моря, остаются сушей — это «красные минусы».
-function computeSeaHexKeysForCoastalRegion(
+function computeSeaHexKeysForCoastalRegionImpl(
   regionHexes: AxialHex[],
   centerHex: AxialHex,
   existingTerrain: Map<string, HexTerrainData>,
@@ -5807,6 +5879,7 @@ function computeSeaHexKeysForCoastalRegion(
   }
   return seaKeys;
 }
+const computeSeaHexKeysForCoastalRegion = __profiled('computeSeaHexKeysForCoastalRegion', computeSeaHexKeysForCoastalRegionImpl);
 
 // Выбор освоенности (BR-007): прибрежный регион освоен с вероятностью 40%,
 // материковый — 20%.
@@ -5856,7 +5929,7 @@ function buildMinimumMountainRiverPath(
   return null;
 }
 
-function ensureMinimumMountainRiversForRegion(
+function ensureMinimumMountainRiversForRegionImpl(
   region: Region,
   regions: Region[],
   rivers: River[],
@@ -5928,6 +6001,7 @@ function ensureMinimumMountainRiversForRegion(
 
   return nextRivers;
 }
+const ensureMinimumMountainRiversForRegion = __profiled('    ↳↳ ensureMinimumMountainRiversForRegion', ensureMinimumMountainRiversForRegionImpl);
 
 type RemainingOutgoingConnection = {
   endpoint: RiverEndpointTouch;
@@ -6132,7 +6206,7 @@ function getBestIncomingPathToLake(
   return bestPath;
 }
 
-function connectRemainingIncomingRiversForRegion(
+function connectRemainingIncomingRiversForRegionImpl(
   region: Region,
   terrainMap: Map<string, HexTerrainData>,
   riverGraph: RiverGraph,
@@ -6212,8 +6286,9 @@ function connectRemainingIncomingRiversForRegion(
 
   return nextRivers;
 }
+const connectRemainingIncomingRiversForRegion = __profiled('    ↳↳ connectRemainingIncomingRiversForRegion', connectRemainingIncomingRiversForRegionImpl);
 
-function connectRemainingOutgoingRiversForRegion(
+function connectRemainingOutgoingRiversForRegionImpl(
   region: Region,
   regions: Region[],
   terrainMap: Map<string, HexTerrainData>,
@@ -6325,8 +6400,9 @@ function connectRemainingOutgoingRiversForRegion(
 
   return nextRivers;
 }
+const connectRemainingOutgoingRiversForRegion = __profiled('    ↳↳ connectRemainingOutgoingRiversForRegion', connectRemainingOutgoingRiversForRegionImpl);
 
-function finalizeRiverGenerationForRegion(
+function finalizeRiverGenerationForRegionImpl(
   region: Region,
   regions: Region[],
   terrainMap: Map<string, HexTerrainData>,
@@ -6382,8 +6458,9 @@ function finalizeRiverGenerationForRegion(
 
   return { success: true, rivers: riversWithRemainingOutgoingConnected };
 }
+const finalizeRiverGenerationForRegion = __profiled('  ↳ finalizeRiverGenerationForRegion', finalizeRiverGenerationForRegionImpl);
 
-function generateRiverForRegion(
+function generateRiverForRegionImpl(
   region: Region,
   regions: Region[],
   existingRivers: River[],
@@ -7233,6 +7310,7 @@ function generateRiverForRegion(
 
   return { success: false, rivers: existingRivers, reason: 'no_valid_random_path' };
 }
+const generateRiverForRegion = __profiled('generateRiverForRegion', generateRiverForRegionImpl);
 
 function renderRiverSegments(river: River, offsetX: number, offsetY: number, lakeEdgeKeys: Set<string>) {
   const hexWidth = getHexWidth(HEX_SIZE);
@@ -8189,7 +8267,7 @@ function chooseBestThirdRoadCandidate(candidates: RoadCandidatePath[]): RoadCand
   return randomFrom(best);
 }
 
-function findAlternativeRoadPathsWithinRegion(options: {
+function findAlternativeRoadPathsWithinRegionImpl(options: {
   region: Region; from: AxialHex; target: AxialHex; roads: Road[]; hexTerrainByKey: Map<string, HexTerrainData>; maxAlternatives: number;
 }): AxialHex[][] {
   const { region, from, target, roads, hexTerrainByKey, maxAlternatives } = options;
@@ -8239,6 +8317,7 @@ function findAlternativeRoadPathsWithinRegion(options: {
   }
   return paths;
 }
+const findAlternativeRoadPathsWithinRegion = __profiled('findAlternativeRoadPathsWithinRegion', findAlternativeRoadPathsWithinRegionImpl);
 
 function collectAlternativeRoadPathsToTarget(options: {
   region: Region; fromHex: AxialHex; targetHex: AxialHex; targetIsPoi: boolean; roads: Road[]; rivers: River[];
@@ -8535,7 +8614,49 @@ function findWildIncomingRoadEndpointsForRegion(region: Region, roads: Road[]): 
   return result;
 }
 
-function findLowestRiverCrossingPathWithinWildRegion(options: {
+// Бинарная мин-куча (приоритетная очередь). Заменяет паттерн "sort() на каждой
+// итерации while": извлечение минимума за O(log n) вместо O(n log n).
+// less(a, b) === true означает "a имеет более высокий приоритет (идёт раньше)".
+class MinHeap<T> {
+  private items: T[] = [];
+  constructor(private readonly less: (a: T, b: T) => boolean) {}
+  get size(): number { return this.items.length; }
+  push(item: T): void {
+    const items = this.items;
+    items.push(item);
+    let i = items.length - 1;
+    while (i > 0) {
+      const parent = (i - 1) >> 1;
+      if (!this.less(items[i], items[parent])) break;
+      const tmp = items[i]; items[i] = items[parent]; items[parent] = tmp;
+      i = parent;
+    }
+  }
+  pop(): T | undefined {
+    const items = this.items;
+    if (items.length === 0) return undefined;
+    const top = items[0];
+    const last = items.pop()!;
+    if (items.length > 0) {
+      items[0] = last;
+      let i = 0;
+      const n = items.length;
+      for (;;) {
+        const left = 2 * i + 1;
+        const right = 2 * i + 2;
+        let smallest = i;
+        if (left < n && this.less(items[left], items[smallest])) smallest = left;
+        if (right < n && this.less(items[right], items[smallest])) smallest = right;
+        if (smallest === i) break;
+        const tmp = items[i]; items[i] = items[smallest]; items[smallest] = tmp;
+        i = smallest;
+      }
+    }
+    return top;
+  }
+}
+
+function findLowestRiverCrossingPathWithinWildRegionImpl(options: {
   region: Region;
   from: AxialHex;
   target: AxialHex;
@@ -8556,12 +8677,26 @@ function findLowestRiverCrossingPathWithinWildRegion(options: {
   if (!canTouchRegion(from) || !canTouchRegion(target)) return null;
 
   const riverFullnessByEdge = getRiverCrossingFullnessByEdge(rivers);
-  const queue: Array<{ path: AxialHex[]; cost: number; riverCrossings: number }> = [{ path: [from], cost: 0, riverCrossings: 0 }];
+  // seq — порядковый номер вставки. Как финальный ключ сравнения он воспроизводит
+  // FIFO-порядок стабильной сортировки при полном равенстве (cost, riverCrossings,
+  // path.length), поэтому куча извлекает элементы в том же порядке, что старый
+  // sort()+shift() → возвращается тот же путь → карта не меняется.
+  let seq = 0;
+  const queue = new MinHeap<{ path: AxialHex[]; cost: number; riverCrossings: number; seq: number }>(
+    (a, b) =>
+      a.cost !== b.cost
+        ? a.cost < b.cost
+        : a.riverCrossings !== b.riverCrossings
+          ? a.riverCrossings < b.riverCrossings
+          : a.path.length !== b.path.length
+            ? a.path.length < b.path.length
+            : a.seq < b.seq
+  );
+  queue.push({ path: [from], cost: 0, riverCrossings: 0, seq: seq++ });
   const bestCostByState = new Map<string, number>([[`${startKey}|0`, 0]]);
 
-  while (queue.length > 0) {
-    queue.sort((a, b) => a.cost - b.cost || a.riverCrossings - b.riverCrossings || a.path.length - b.path.length);
-    const current = queue.shift()!;
+  while (queue.size > 0) {
+    const current = queue.pop()!;
     const cur = current.path[current.path.length - 1];
     const curKey = hexKey(cur);
     if (curKey === targetKey) return current.path;
@@ -8587,12 +8722,13 @@ function findLowestRiverCrossingPathWithinWildRegion(options: {
       const previousBestCost = bestCostByState.get(nextStateKey);
       if (previousBestCost !== undefined && previousBestCost <= nextCost) continue;
       bestCostByState.set(nextStateKey, nextCost);
-      queue.push({ path: [...current.path, neighbor], cost: nextCost, riverCrossings: nextRiverCrossings });
+      queue.push({ path: [...current.path, neighbor], cost: nextCost, riverCrossings: nextRiverCrossings, seq: seq++ });
     }
   }
 
   return null;
 }
+const findLowestRiverCrossingPathWithinWildRegion = __profiled('findLowestRiverCrossingPathWithinWildRegion', findLowestRiverCrossingPathWithinWildRegionImpl);
 
 
 function getRoadRegionCenterHexes(road: Road, regions: Region[]): AxialHex[] {
@@ -8629,7 +8765,7 @@ function shouldSkipWildIncomingRoadPairForSharedCenter(a: Road, b: Road, regions
   return roadTouchesKnownRegionCenter(a, regions) && roadTouchesKnownRegionCenter(b, regions);
 }
 
-function findAlternativeWildRoadPairPaths(options: {
+function findAlternativeWildRoadPairPathsImpl(options: {
   region: Region;
   from: AxialHex;
   target: AxialHex;
@@ -8700,6 +8836,7 @@ function findAlternativeWildRoadPairPaths(options: {
 
   return paths;
 }
+const findAlternativeWildRoadPairPaths = __profiled('findAlternativeWildRoadPairPaths', findAlternativeWildRoadPairPathsImpl);
 
 function canAddWildIncomingRoadPairPath(options: {
   path: AxialHex[];
@@ -9749,7 +9886,7 @@ function candidateHexHasRiverEdgeOrSourceAwayFromMouth(
   });
 }
 
-function canPlaceSeaHexNearRivers(
+function canPlaceSeaHexNearRiversImpl(
   hex: AxialHex,
   rivers: River[],
   allowedMouthVertexKeys: Set<string>,
@@ -9757,6 +9894,7 @@ function canPlaceSeaHexNearRivers(
 ): boolean {
   return !candidateHexHasRiverEdgeOrSourceAwayFromMouth(hex, rivers, allowedMouthVertexKeys);
 }
+const canPlaceSeaHexNearRivers = __profiled('canPlaceSeaHexNearRivers', canPlaceSeaHexNearRiversImpl);
 
 function filterSeaCandidatesByRiverInteraction(
   candidates: Map<string, AxialHex>,
@@ -10056,7 +10194,7 @@ function drawLakeVerticesDebug(lakeVertices: LakeVertex[], offsetX: number, offs
     cy: vertex.y + offsetY
   }));
 }
-function generateRoadsForRegion(options: {
+function generateRoadsForRegionImpl(options: {
   region: Region; regions: Region[]; roads: Road[]; rivers: River[]; hexTerrainByKey: Map<string, HexTerrainData>; nextRoadId: number; candidateHexes: AxialHex[];
 }): { roads: Road[]; nextRoadId: number } {
   const { region, regions, roads, hexTerrainByKey, rivers, candidateHexes } = options;
@@ -10625,6 +10763,7 @@ function generateRoadsForRegion(options: {
   }
   return finalizeSettledRoads(connectRemainingPoiWithTrails({ region, roads: built, rivers, hexTerrainByKey, nextRoadId }));
 }
+const generateRoadsForRegion = __profiled('generateRoadsForRegion', generateRoadsForRegionImpl);
 
 export function App() {
   const mapSvgRef = useRef<SVGSVGElement | null>(null);
@@ -11011,6 +11150,7 @@ export function App() {
   };
 
   const addRegionToMap = (anchorHex: AxialHex, options: GenerationOptions = {}) => {
+    __profileBeginClick();
     const maxRegionAttempts = 30;
     const autoCoastRoll = Math.random();
     setCoastNotice(null);
@@ -11026,6 +11166,7 @@ export function App() {
       ? existingSeaKeysForGrowth
       : new Set<string>();
     for (let attempt = 0; attempt < maxRegionAttempts; attempt += 1) {
+      __profileHit('region_attempt (попытки регенерации)');
       const isLastRegionAttempt = attempt === maxRegionAttempts - 1;
       let targetSize = options.targetSize ?? rollRegionTargetSize();
       const occupiedHexes = new Set(allRegionHexes.map(hexKey));
