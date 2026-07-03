@@ -1,11 +1,17 @@
 import { type ChangeEvent, type CSSProperties, type KeyboardEvent, type MouseEvent, type TouchEvent, type WheelEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { getOutgoingConnectorFullnessFromEndpoint, type RiverFullness } from './riverFullness';
 
-// ===== ВРЕМЕННОЕ ЛОКАЛЬНОЕ ПРОФИЛИРОВАНИЕ (не пушить, просто удалить блок) =====
-// Ничего не меняет в логике: только замеряет время выбранных функций
-// и печатает сводку в консоль (F12 -> Console) после каждой генерации региона.
+// ===== ЛОКАЛЬНОЕ ПРОФИЛИРОВАНИЕ (безопасно для прода) =====
+// Включается ТОЛЬКО при ?profile=1 в URL. По умолчанию выключено: __profiled
+// возвращает функцию как есть (ноль накладных), таблица в консоль не печатается,
+// у обычных пользователей ничего не появляется. Для замеров открыть страницу как
+// localhost:5173/?profile=1 и генерировать регион — таблица снова печатается в F12.
+const __PROFILE_ENABLED = typeof window !== 'undefined'
+  && typeof window.location !== 'undefined'
+  && new URLSearchParams(window.location.search).has('profile');
 const __profileStats = new Map<string, { calls: number; totalMs: number }>();
 function __profiled<T extends (...args: any[]) => any>(name: string, fn: T): T {
+  if (!__PROFILE_ENABLED) return fn;
   return ((...args: any[]) => {
     const start = performance.now();
     try {
@@ -20,12 +26,14 @@ function __profiled<T extends (...args: any[]) => any>(name: string, fn: T): T {
   }) as T;
 }
 function __profileHit(name: string) {
+  if (!__PROFILE_ENABLED) return;
   const entry = __profileStats.get(name) ?? { calls: 0, totalMs: 0 };
   entry.calls += 1;
   __profileStats.set(name, entry);
 }
 let __profileClickStart = 0;
 function __profileBeginClick() {
+  if (!__PROFILE_ENABLED) return;
   __profileStats.clear();
   __profileClickStart = performance.now();
   setTimeout(() => {
@@ -2759,7 +2767,8 @@ type EdgeTributaryGenerationReason =
   | 'invalid_result'
   | 'ok';
 
-function tryAddEdgeMinorTributaryRiver(
+const tryAddEdgeMinorTributaryRiver = __profiled('  ↳ tryAddEdgeMinorTributaryRiver', tryAddEdgeMinorTributaryRiverImpl);
+function tryAddEdgeMinorTributaryRiverImpl(
   region: Region,
   terrainMap: Map<string, HexTerrainData>,
   riverGraph: RiverGraph,
@@ -2812,6 +2821,14 @@ function tryAddEdgeMinorTributaryRiver(
     const usedRiverEdges = buildUsedRiverEdges(rivers);
     const regionRivers = getRiversForRegion(region, rivers);
     const existingRiverVertexKeys = new Set(rivers.flatMap((river) => river.vertexPath.map((vertex) => vertex.key)));
+    // Предпосчёт: ключи вершин, касающихся любого кандидатного гекса.
+    // vertexTouchesAnyHex(v, candidateHexes) == candidateTouchingVertexKeys.has(v.key),
+    // но за O(1) вместо скана всех candidateHexes на каждого соседа в BFS.
+    // RNG и порядок путей не затрагиваются — результат побайтно тот же.
+    const candidateTouchingVertexKeys = new Set<string>();
+    for (const hex of candidateHexes) {
+      for (const corner of getHexCornerPoints(hex)) candidateTouchingVertexKeys.add(corner.key);
+    }
     const hasFreeInteriorStep = (vertex: RiverVertex): boolean => {
       const node = riverGraph.nodes.get(vertex.key);
       if (!node) return false;
@@ -2899,7 +2916,7 @@ function tryAddEdgeMinorTributaryRiver(
       if (!candidateBoundaryVertexKeys.has(path[0].key)) return false;
       if (existingRiverVertexKeys.has(path[0].key)) return false;
       const terminalVertex = path[path.length - 1];
-      if (vertexTouchesAnyHex(terminalVertex, candidateHexes)) return false;
+      if (candidateTouchingVertexKeys.has(terminalVertex.key)) return false;
       if (!existingRiverVertexKeys.has(terminalVertex.key)) return false;
       if (path.length === 2) return false;
       if (path[0].key === terminalVertex.key) return false;
@@ -2959,7 +2976,7 @@ function tryAddEdgeMinorTributaryRiver(
           if (!graphEdge?.isInsideRegionEdge) continue;
           if (usedRiverEdges.has(nextEdgeKey) || pathEdgeKeys.has(nextEdgeKey)) continue;
           if (existingRiverVertexKeys.has(nextVertex.key) && !targetVertexKeys.has(nextVertex.key)) continue;
-          if (vertexTouchesAnyHex(nextVertex, candidateHexes) && !targetVertexKeys.has(nextVertex.key)) continue;
+          if (candidateTouchingVertexKeys.has(nextVertex.key) && !targetVertexKeys.has(nextVertex.key)) continue;
           queue.push([...path, nextVertex]);
         }
       }
