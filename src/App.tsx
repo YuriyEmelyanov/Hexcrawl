@@ -311,7 +311,6 @@ type ChooseBiomeResult = {
 
 const HEX_SIZE = 28;
 const SQRT3 = Math.sqrt(3);
-const SHOW_HEX_COORDINATES = false;
 const SHOW_BIOME_EMOJI = true;
 const REGION_CENTER_EMOJI = '★';
 const CENTRAL_POI_DETAILS: Record<CentralPoiKind, { emoji: string; label: Record<Language, string> }> = {
@@ -447,6 +446,7 @@ const SVG_EXPORT_STYLES = `
   .hex.click-prompt { stroke:#f7dc6f; stroke-width:2; }
   .click-prompt-label { fill:#fff7bf; stroke:#0c1423; stroke-width:3px; paint-order:stroke; font-size:12px; font-weight:800; pointer-events:none; }
   .hex-label { fill:#f4f8ff; font-size:11px; pointer-events:none; }
+  .hex-coordinate-label { fill:#617187; font-size:6px; font-weight:700; letter-spacing:.02em; pointer-events:none; user-select:none; }
   .rivers-layer, .roads-layer, .river-debug-layer { pointer-events:none; }
   .river-polyline { fill:none; stroke:#3ea2ff; stroke-linecap:round; stroke-linejoin:round; }
   .river-direction-arrow { stroke:#ffffff; stroke-width:1.2; stroke-linecap:round; }
@@ -472,9 +472,9 @@ type Language = 'ru' | 'en';
 
 const UI_TEXT = {
   ru: {
-    languageName: 'Русский', switchLanguage: 'Switch to English', reset: 'Сбросить', regenerateRegion: 'Перегенерировать регион', deleteLastRegion: 'Удалить последний регион', export: 'Выгрузить', importJson: 'Загрузить JSON', debug: 'Отладка', controlsLabel: 'Управление картой', genParamsLabel: 'Параметры генерации', size: 'Размер', type: 'Тип', biome: 'Биом', coast: 'Берег', auto: 'Авто', settled: 'Освоенный', wild: 'Дикий', coastOption: 'Побережье', mainland: 'Материк', closeNotice: 'Закрыть уведомление', mapAria: 'Карта: перетаскивайте пальцем или мышью, стрелки клавиатуры перемещают область просмотра', rotateMap: 'Повернуть карту на 90 градусов', rotateMapTitle: 'Повернуть карту на 90°', unrotateMap: 'Вернуть исходный поворот карты', showTiles: 'Включить тайлы', showTilesTitle: 'Переключить карту на тайлы', tilesMode: 'Тайлы', emojiMode: 'Эмоджи', showEmoji: 'Включить эмоджи', showEmojiTitle: 'Переключить карту на эмоджи', showPanel: 'Показать панель управления и информации', hidePanel: 'Скрыть панель управления и информации', startPrompt: 'Нажми на стартовый гекс', candidatePrompt: 'Выберите гекс-кандидат для добавления региона', selectedHexInfo: 'Информация о выбранном гексе', candidateForRegion: 'Кандидат для нового региона', noHexSelected: 'Гекс не выбран', lake: 'Озеро', settledRegion: 'Освоенный регион', wildArea: 'Дикая местность', centralPoi: 'Центральная точка интереса', poi: 'Точка интереса', road: 'Дорога', trail: 'Тропа', nearby: 'Рядом:', river: 'Река', sea: 'Море', debugInfo: 'Отладочная информация', regions: 'Регионов', lastRegion: 'Последний регион', regionSize: 'Размер региона', height: 'Высота', targetSize: 'Целевой размер', finalSize: 'Фактический размер региона', poiCount: 'Точек интереса', selectedHex: 'Координаты гекса', selectedRegionHeight: 'Высота выбранного региона', selectedRegionSize: 'Размер выбранного региона', yes: 'да', no: 'нет', roadNumbers: 'Номера дорог', trailNumbers: 'Номера троп', regionPoiCount: 'Точек интереса в регионе', regionRoads: 'Дорог региона', regionTrails: 'Троп региона', regionRivers: 'Реки региона', riverSectors: 'Речные сектора:', sector: 'сектор', fullness: 'полноводность', confluences: 'Слияния:', flowsInto: 'впадает в', regionLakes: 'Озёра региона', selectRegionHex: 'Выберите региональный гекс.', noRiverInRegion: 'В выбранном регионе нет реки для подробной отладки.', pngExportError: 'Не удалось выгрузить PNG-файл.', jsonImportError: 'Не удалось загрузить JSON-файл.', youtubeLabel: 'YouTube канал', telegramLabel: 'Telegram канал', showHeaderLinks: 'Показать кнопки языка и соцсетей', hideHeaderLinks: 'Скрыть кнопки языка и соцсетей' },
+    languageName: 'Русский', switchLanguage: 'Switch to English', reset: 'Сбросить', regenerateRegion: 'Перегенерировать регион', deleteLastRegion: 'Удалить последний регион', export: 'Выгрузить', importJson: 'Загрузить JSON', debug: 'Отладка', controlsLabel: 'Управление картой', genParamsLabel: 'Параметры генерации', size: 'Размер', type: 'Тип', biome: 'Биом', coast: 'Берег', auto: 'Авто', settled: 'Освоенный', wild: 'Дикий', coastOption: 'Побережье', mainland: 'Материк', closeNotice: 'Закрыть уведомление', mapAria: 'Карта: перетаскивайте пальцем или мышью, стрелки клавиатуры перемещают область просмотра', rotateMap: 'Повернуть карту на 90 градусов', rotateMapTitle: 'Повернуть карту на 90°', unrotateMap: 'Вернуть исходный поворот карты', showTiles: 'Включить тайлы', showTilesTitle: 'Переключить карту на тайлы', tilesMode: 'Тайлы', emojiMode: 'Эмоджи', showEmoji: 'Включить эмоджи', showEmojiTitle: 'Переключить карту на эмоджи', hexCoordinatesMode: 'Координаты', showHexCoordinates: 'Показать координаты гексов', showHexCoordinatesTitle: 'Показать или скрыть координаты гексов', showPanel: 'Показать панель управления и информации', hidePanel: 'Скрыть панель управления и информации', startPrompt: 'Нажми на стартовый гекс', candidatePrompt: 'Выберите гекс-кандидат для добавления региона', selectedHexInfo: 'Информация о выбранном гексе', candidateForRegion: 'Кандидат для нового региона', noHexSelected: 'Гекс не выбран', lake: 'Озеро', settledRegion: 'Освоенный регион', wildArea: 'Дикая местность', centralPoi: 'Центральная точка интереса', poi: 'Точка интереса', road: 'Дорога', trail: 'Тропа', nearby: 'Рядом:', river: 'Река', sea: 'Море', debugInfo: 'Отладочная информация', regions: 'Регионов', lastRegion: 'Последний регион', regionSize: 'Размер региона', height: 'Высота', targetSize: 'Целевой размер', finalSize: 'Фактический размер региона', poiCount: 'Точек интереса', selectedHex: 'Координаты гекса', selectedRegionHeight: 'Высота выбранного региона', selectedRegionSize: 'Размер выбранного региона', yes: 'да', no: 'нет', roadNumbers: 'Номера дорог', trailNumbers: 'Номера троп', regionPoiCount: 'Точек интереса в регионе', regionRoads: 'Дорог региона', regionTrails: 'Троп региона', regionRivers: 'Реки региона', riverSectors: 'Речные сектора:', sector: 'сектор', fullness: 'полноводность', confluences: 'Слияния:', flowsInto: 'впадает в', regionLakes: 'Озёра региона', selectRegionHex: 'Выберите региональный гекс.', noRiverInRegion: 'В выбранном регионе нет реки для подробной отладки.', pngExportError: 'Не удалось выгрузить PNG-файл.', jsonImportError: 'Не удалось загрузить JSON-файл.', youtubeLabel: 'YouTube канал', telegramLabel: 'Telegram канал', showHeaderLinks: 'Показать кнопки языка и соцсетей', hideHeaderLinks: 'Скрыть кнопки языка и соцсетей' },
   en: {
-    languageName: 'English', switchLanguage: 'Переключить на русский', reset: 'Reset', regenerateRegion: 'Regenerate region', deleteLastRegion: 'Delete last region', export: 'Export', importJson: 'Load JSON', debug: 'Debug', controlsLabel: 'Map controls', genParamsLabel: 'Generation parameters', size: 'Size', type: 'Type', biome: 'Biome', coast: 'Coast', auto: 'Auto', settled: 'Settled', wild: 'Wild', coastOption: 'Coast', mainland: 'Mainland', closeNotice: 'Close notice', mapAria: 'Map: drag with touch or mouse; keyboard arrows move the viewport', rotateMap: 'Rotate map 90 degrees', rotateMapTitle: 'Rotate map 90°', unrotateMap: 'Restore original map rotation', showTiles: 'Show tiles', showTilesTitle: 'Switch map to tiles', tilesMode: 'Tiles', emojiMode: 'Emoji', showEmoji: 'Show emoji', showEmojiTitle: 'Switch map to emoji', showPanel: 'Show controls and information panel', hidePanel: 'Hide controls and information panel', startPrompt: 'Click the starting hex', candidatePrompt: 'Select a candidate hex to add a region', selectedHexInfo: 'Selected hex information', candidateForRegion: 'Candidate for a new region', noHexSelected: 'No hex selected', lake: 'Lake', settledRegion: 'Settled region', wildArea: 'Wild area', centralPoi: 'Central point of interest', poi: 'Point of interest', road: 'Road', trail: 'Trail', nearby: 'Nearby:', river: 'River', sea: 'Sea', debugInfo: 'Debug information', regions: 'Regions', lastRegion: 'Last region', regionSize: 'Region size', height: 'Height', targetSize: 'Target size', finalSize: 'Final region size', poiCount: 'Points of interest', selectedHex: 'Hex coordinates', selectedRegionHeight: 'Selected region height', selectedRegionSize: 'Selected region size', yes: 'yes', no: 'no', roadNumbers: 'Road numbers', trailNumbers: 'Trail numbers', regionPoiCount: 'Points of interest in region', regionRoads: 'Region roads', regionTrails: 'Region trails', regionRivers: 'Region rivers', riverSectors: 'River sectors:', sector: 'sector', fullness: 'fullness', confluences: 'Confluences:', flowsInto: 'flows into', regionLakes: 'Region lakes', selectRegionHex: 'Select a region hex.', noRiverInRegion: 'The selected region has no river for detailed debugging.', pngExportError: 'Failed to export PNG file.', jsonImportError: 'Failed to load JSON file.', youtubeLabel: 'YouTube channel', telegramLabel: 'Telegram channel', showHeaderLinks: 'Show language and social buttons', hideHeaderLinks: 'Hide language and social buttons' }
+    languageName: 'English', switchLanguage: 'Переключить на русский', reset: 'Reset', regenerateRegion: 'Regenerate region', deleteLastRegion: 'Delete last region', export: 'Export', importJson: 'Load JSON', debug: 'Debug', controlsLabel: 'Map controls', genParamsLabel: 'Generation parameters', size: 'Size', type: 'Type', biome: 'Biome', coast: 'Coast', auto: 'Auto', settled: 'Settled', wild: 'Wild', coastOption: 'Coast', mainland: 'Mainland', closeNotice: 'Close notice', mapAria: 'Map: drag with touch or mouse; keyboard arrows move the viewport', rotateMap: 'Rotate map 90 degrees', rotateMapTitle: 'Rotate map 90°', unrotateMap: 'Restore original map rotation', showTiles: 'Show tiles', showTilesTitle: 'Switch map to tiles', tilesMode: 'Tiles', emojiMode: 'Emoji', showEmoji: 'Show emoji', showEmojiTitle: 'Switch map to emoji', hexCoordinatesMode: 'Coordinates', showHexCoordinates: 'Show hex coordinates', showHexCoordinatesTitle: 'Show or hide hex coordinates', showPanel: 'Show controls and information panel', hidePanel: 'Hide controls and information panel', startPrompt: 'Click the starting hex', candidatePrompt: 'Select a candidate hex to add a region', selectedHexInfo: 'Selected hex information', candidateForRegion: 'Candidate for a new region', noHexSelected: 'No hex selected', lake: 'Lake', settledRegion: 'Settled region', wildArea: 'Wild area', centralPoi: 'Central point of interest', poi: 'Point of interest', road: 'Road', trail: 'Trail', nearby: 'Nearby:', river: 'River', sea: 'Sea', debugInfo: 'Debug information', regions: 'Regions', lastRegion: 'Last region', regionSize: 'Region size', height: 'Height', targetSize: 'Target size', finalSize: 'Final region size', poiCount: 'Points of interest', selectedHex: 'Hex coordinates', selectedRegionHeight: 'Selected region height', selectedRegionSize: 'Selected region size', yes: 'yes', no: 'no', roadNumbers: 'Road numbers', trailNumbers: 'Trail numbers', regionPoiCount: 'Points of interest in region', regionRoads: 'Region roads', regionTrails: 'Region trails', regionRivers: 'Region rivers', riverSectors: 'River sectors:', sector: 'sector', fullness: 'fullness', confluences: 'Confluences:', flowsInto: 'flows into', regionLakes: 'Region lakes', selectRegionHex: 'Select a region hex.', noRiverInRegion: 'The selected region has no river for detailed debugging.', pngExportError: 'Failed to export PNG file.', jsonImportError: 'Failed to load JSON file.', youtubeLabel: 'YouTube channel', telegramLabel: 'Telegram channel', showHeaderLinks: 'Show language and social buttons', hideHeaderLinks: 'Hide language and social buttons' }
 } as const;
 
 const SIZE_LABELS: Record<Language, Record<Region['sizeCategory'], string>> = {
@@ -748,13 +748,45 @@ function hexDistanceFromCenter(hex: AxialHex): number {
   return (Math.abs(hex.q) + Math.abs(hex.q + hex.r) + Math.abs(hex.r)) / 2;
 }
 
-function hexPoints(cx: number, cy: number, size: number) {
-  const points: string[] = [];
+function getHexPolygonPoints(cx: number, cy: number, size: number): Array<{ x: number; y: number }> {
+  const points: Array<{ x: number; y: number }> = [];
   for (let i = 0; i < 6; i += 1) {
     const angle = (Math.PI / 180) * (60 * i - 30);
-    points.push(`${cx + size * Math.cos(angle)},${cy + size * Math.sin(angle)}`);
+    points.push({ x: cx + size * Math.cos(angle), y: cy + size * Math.sin(angle) });
   }
-  return points.join(' ');
+  return points;
+}
+
+function hexPoints(cx: number, cy: number, size: number) {
+  return getHexPolygonPoints(cx, cy, size).map((point) => `${point.x},${point.y}`).join(' ');
+}
+
+function getHexCoordinateLabelLayout(cx: number, cy: number, sourceHeight: number, isRotated: boolean) {
+  const points = getHexPolygonPoints(cx, cy, HEX_SIZE);
+
+  // When the map is rotated, keep labels aligned with the bottom edge of each
+  // individual rotated hex rather than with the overall map viewport.
+  if (isRotated) {
+    const rotatedPoints = points.map((point) => rotateMapPoint(point.x, point.y, sourceHeight));
+    const edgeCandidates = rotatedPoints.map((point, index) => {
+      const nextPoint = rotatedPoints[(index + 1) % rotatedPoints.length];
+      return {
+        x: (point.x + nextPoint.x) / 2,
+        y: (point.y + nextPoint.y) / 2
+      };
+    });
+    const bottomEdge = edgeCandidates.reduce((lowest, edge) => (edge.y > lowest.y ? edge : lowest), edgeCandidates[0]);
+    return { x: bottomEdge.x, y: bottomEdge.y - HEX_SIZE * 0.14, angle: 0 };
+  }
+
+  // In the default orientation, place the label along each hex's lower-right edge.
+  const lowerRightStart = points[1];
+  const lowerRightEnd = points[2];
+  return {
+    x: (lowerRightStart.x + lowerRightEnd.x) / 2 - HEX_SIZE * 0.1,
+    y: (lowerRightStart.y + lowerRightEnd.y) / 2 - HEX_SIZE * 0.06,
+    angle: -60
+  };
 }
 
 
@@ -12144,6 +12176,7 @@ export function App() {
   const [mapScale, setMapScale] = useState(1);
   const [isMapRotated, setIsMapRotated] = useState(false);
   const [useBiomeTiles, setUseBiomeTiles] = useState(true);
+  const [showHexCoordinates, setShowHexCoordinates] = useState(false);
   const [mapToolbarHeight, setMapToolbarHeight] = useState(0);
   const [isSidePanelCollapsed, setIsSidePanelCollapsed] = useState(false);
   const [isHeaderLinksCollapsed, setIsHeaderLinksCollapsed] = useState(false);
@@ -12587,6 +12620,17 @@ export function App() {
                 <span aria-hidden="true">{useBiomeTiles ? '🖼️' : '😀'}</span>
                 <span>{useBiomeTiles ? t.emojiMode : t.tilesMode}</span>
               </button>
+              <button
+                type="button"
+                className={`hex-coordinate-toggle${showHexCoordinates ? ' is-active' : ''}`}
+                onClick={() => setShowHexCoordinates((value) => !value)}
+                aria-pressed={showHexCoordinates}
+                aria-label={t.showHexCoordinates}
+                title={t.showHexCoordinatesTitle}
+              >
+                <span aria-hidden="true">#</span>
+                <span>{t.hexCoordinatesMode}</span>
+              </button>
             </div>
             <div className="gen-params" aria-label={t.genParamsLabel}>
               <label>
@@ -12727,7 +12771,6 @@ export function App() {
                     </g>
                   ) : null}
                   <polygon points={hexPoints(hex.x, hex.y, hexRenderSize)} className={cls} style={{ fill: 'none' }} />
-                  {SHOW_HEX_COORDINATES ? <text x={hex.x} y={hex.y + 4} textAnchor="middle" className="hex-label">{hex.q}/{hex.r}</text> : null}
                 </g>
               );
             })}
@@ -12765,6 +12808,28 @@ export function App() {
               ))}
             </g>
             </g>
+            {showHexCoordinates ? (
+              <g className="hex-coordinate-layer">
+                {positionedHexes.hexes.map((hex) => {
+                  const labelLayout = getHexCoordinateLabelLayout(hex.x, hex.y, positionedHexes.height, isMapRotated);
+                  return (
+                    <text
+                      key={`hex-coordinate-${hex.key}`}
+                      x={labelLayout.x}
+                      y={labelLayout.y}
+                      textAnchor="middle"
+                      dominantBaseline="central"
+                      className="hex-coordinate-label"
+                      textLength={HEX_SIZE * 0.78}
+                      lengthAdjust="spacingAndGlyphs"
+                      transform={labelLayout.angle ? `rotate(${labelLayout.angle} ${labelLayout.x} ${labelLayout.y})` : undefined}
+                    >
+                      {hex.q}/{hex.r}
+                    </text>
+                  );
+                })}
+              </g>
+            ) : null}
             <g className="emoji-layer">
               {positionedHexes.hexes.map((hex) => {
                 const isStartClickPrompt = regions.length === 0 && hex.kind === 'candidate' && hex.key === hexKey(START_HEX);
