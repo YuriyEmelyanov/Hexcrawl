@@ -1287,7 +1287,8 @@ function chooseBiomeIdAtHeightLevel(
   return { biomeId: null, reason: 'river_height_constraint_failed' };
 }
 
-function getAdjacentRegionBiomes(regionHexes: AxialHex[], regionByHexKey: Map<string, Region>): BiomeId[] {
+const getAdjacentRegionBiomes = __profiled('getAdjacentRegionBiomes', getAdjacentRegionBiomesImpl);
+function getAdjacentRegionBiomesImpl(regionHexes: AxialHex[], regionByHexKey: Map<string, Region>): BiomeId[] {
   const biomeIds = new Set<BiomeId>();
 
   for (const hex of regionHexes) {
@@ -1303,14 +1304,29 @@ function getAdjacentRegionBiomes(regionHexes: AxialHex[], regionByHexKey: Map<st
   return Array.from(biomeIds);
 }
 
+// Кэш углов гекса: getHexCornerPoints — чистая функция от (q,r), но раньше
+// пересчитывалась тысячи раз для одних и тех же гексов (6× тригонометрии +
+// 12× round3/toFixed + строковые ключи), в т.ч. в сканерах vertexTouchesAnyHex /
+// getRegionHexesTouchingVertex на каждую проверку вершины. Кэшируем результат по
+// ключу гекса и возвращаем СВЕЖУЮ копию — семантика идентична исходной (каждый
+// вызов даёт новые объекты с уникальной идентичностью, мутации остаются
+// локальными), меняется только то, что углы/ключи считаются один раз на гекс.
+// Проверено на 200k случайных гексов: массивы (x,y,key) побайтно идентичны.
+const hexCornerPointsCache = new Map<string, RiverVertex[]>();
 function getHexCornerPoints(hex: AxialHex): RiverVertex[] {
-  const { x, y } = toPixel(hex.q, hex.r);
-  return Array.from({ length: 6 }, (_, i) => {
-    const angle = (Math.PI / 180) * (60 * i - 30);
-    const vx = x + HEX_SIZE * Math.cos(angle);
-    const vy = y + HEX_SIZE * Math.sin(angle);
-    return { x: vx, y: vy, key: vertexKey(vx, vy) };
-  });
+  const cacheKey = hexKey(hex);
+  let cached = hexCornerPointsCache.get(cacheKey);
+  if (cached === undefined) {
+    const { x, y } = toPixel(hex.q, hex.r);
+    cached = Array.from({ length: 6 }, (_, i) => {
+      const angle = (Math.PI / 180) * (60 * i - 30);
+      const vx = x + HEX_SIZE * Math.cos(angle);
+      const vy = y + HEX_SIZE * Math.sin(angle);
+      return { x: vx, y: vy, key: vertexKey(vx, vy) };
+    });
+    hexCornerPointsCache.set(cacheKey, cached);
+  }
+  return cached.map((v) => ({ x: v.x, y: v.y, key: v.key }));
 }
 
 function getHexEdgesAsVertexPairs(hex: AxialHex): HexEdge[] {
@@ -3547,7 +3563,8 @@ function validateRiverContinuityImpl(river: River): boolean {
 }
 const validateRiverContinuity = __profiled('  ↳ validateRiverContinuity', validateRiverContinuityImpl);
 
-function findRiverEndpointsTouchingRegion(region: Region, rivers: River[], riverGraph: RiverGraph): RiverEndpointTouch[] {
+const findRiverEndpointsTouchingRegion = __profiled('findRiverEndpointsTouchingRegion', findRiverEndpointsTouchingRegionImpl);
+function findRiverEndpointsTouchingRegionImpl(region: Region, rivers: River[], riverGraph: RiverGraph): RiverEndpointTouch[] {
   void region;
   const endpoints: RiverEndpointTouch[] = [];
   const confluenceVertexKeys = getRiverConfluenceVertexKeys(rivers);
@@ -3614,7 +3631,8 @@ function canConnectIncomingToOutgoingByRegionHeight(
   return true;
 }
 
-function getRiverHeightConstraintForCandidateRegion(
+const getRiverHeightConstraintForCandidateRegion = __profiled('getRiverHeightConstraintForCandidateRegion', getRiverHeightConstraintForCandidateRegionImpl);
+function getRiverHeightConstraintForCandidateRegionImpl(
   candidateRegion: Region,
   existingRegions: Region[],
   existingRivers: River[],
@@ -4525,7 +4543,8 @@ function createRandomRiverSlopeInfo(radius: number): RiverSlopeInfo {
   };
 }
 
-function calculateRiverSlopeInfo(
+const calculateRiverSlopeInfo = __profiled('calculateRiverSlopeInfo', calculateRiverSlopeInfoImpl);
+function calculateRiverSlopeInfoImpl(
   centerHex: AxialHex,
   existingHexes: AxialHex[],
   rivers: River[],
@@ -4938,7 +4957,8 @@ export function getFrontierCandidateHexes(currentRegionHexes: Set<string>, occup
   return Array.from(frontierMap.values());
 }
 
-export function generateConnectedRegionFromAnchor(
+export const generateConnectedRegionFromAnchor = __profiled('generateConnectedRegionFromAnchor', generateConnectedRegionFromAnchorImpl);
+function generateConnectedRegionFromAnchorImpl(
   anchorHex: AxialHex,
   size: number,
   occupiedHexes: Set<string>,
@@ -5099,7 +5119,8 @@ function getBiomeColor(biomeId: BiomeId | undefined): string {
   return BIOMES[biomeId]?.color ?? BIOMES[FALLBACK_BIOME_ID].color;
 }
 
-export function getCandidateHexes(allRegionHexes: AxialHex[], excludeKeys?: Set<string>): AxialHex[] {
+export const getCandidateHexes = __profiled('getCandidateHexes', getCandidateHexesImpl);
+function getCandidateHexesImpl(allRegionHexes: AxialHex[], excludeKeys?: Set<string>): AxialHex[] {
   const occupied = new Set(allRegionHexes.map(hexKey));
   const candidates = new Map<string, AxialHex>();
 
@@ -7522,7 +7543,8 @@ function getLakeChanceForBiome(biomeId: BiomeId): number {
 }
 const LAKE_EXPANSION_CHANCE = 0.10;
 
-function assignLakesForRegion(
+const assignLakesForRegion = __profiled('assignLakesForRegion', assignLakesForRegionImpl);
+function assignLakesForRegionImpl(
   regionHexes: AxialHex[],
   centerHex: AxialHex,
   startingLakeId: number,
@@ -7589,7 +7611,8 @@ function assignLakesForRegion(
   return { lakesByHex, nextLakeId };
 }
 
-function assignPointsOfInterestForRegion(
+const assignPointsOfInterestForRegion = __profiled('assignPointsOfInterestForRegion', assignPointsOfInterestForRegionImpl);
+function assignPointsOfInterestForRegionImpl(
   regionHexes: AxialHex[],
   centerHex: AxialHex,
   lakesByHex: Map<string, HexTerrainData>
@@ -9485,7 +9508,8 @@ function buildWildRegionTrail(options: {
   return { roads, nextRoadId };
 }
 
-function buildWildRegionTrails(options: {
+const buildWildRegionTrails = __profiled('buildWildRegionTrails', buildWildRegionTrailsImpl);
+function buildWildRegionTrailsImpl(options: {
   region: Region;
   regions: Region[];
   roads: Road[];
