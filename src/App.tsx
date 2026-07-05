@@ -120,6 +120,7 @@ type SecondaryPoiKind =
   | 'stone_quarry'
   | 'apiary'
   | 'quarry';
+type WaterPoiKind = 'whirlpool' | 'underwater_ruins' | 'water_lair' | 'rocks' | 'underwater_cave' | 'shipwreck';
 type PoiKind = SettlementPoiKind | SecondaryPoiKind;
 type RegionHeightLevel = 1 | 2 | 3;
 
@@ -323,6 +324,14 @@ const CENTRAL_POI_DETAILS: Record<CentralPoiKind, { emoji: string; label: Record
   cursed_place: { emoji: '☠️', label: { ru: 'Проклятое место', en: 'Cursed place' } },
   holy_place: { emoji: '✨', label: { ru: 'Святое место', en: 'Holy place' } }
 };
+const WATER_POI_DETAILS: Record<WaterPoiKind, { emoji: string; label: Record<Language, string> }> = {
+  whirlpool: { emoji: '🌀', label: { ru: 'Водоворот', en: 'Whirlpool' } },
+  underwater_ruins: { emoji: '🏛️', label: { ru: 'Подводные руины', en: 'Underwater ruins' } },
+  water_lair: { emoji: '🐉', label: { ru: 'Логово', en: 'Lair' } },
+  rocks: { emoji: '🪨', label: { ru: 'Скалы', en: 'Rocks' } },
+  underwater_cave: { emoji: '🕳️', label: { ru: 'Подводная пещера', en: 'Underwater cave' } },
+  shipwreck: { emoji: '⛵', label: { ru: 'Кораблекрушение', en: 'Shipwreck' } }
+};
 const POI_DETAILS: Record<PoiKind, { emoji: string; label: Record<Language, string> }> = {
   ...CENTRAL_POI_DETAILS,
   dungeon: { emoji: '🕳️', label: { ru: 'Подземелье', en: 'Dungeon' } },
@@ -394,6 +403,7 @@ type HexcrawlSaveData = {
     rivers: River[];
     roads: Road[];
     terrainByHexKey: Record<string, HexTerrainData>;
+    waterPoiChecksByHexKey?: Record<string, WaterPoiKind | null>;
   };
   counters: {
     nextLakeId: number;
@@ -821,6 +831,10 @@ function isPoiKind(value: unknown): value is PoiKind {
   return typeof value === 'string' && value in POI_DETAILS;
 }
 
+function isWaterPoiKind(value: unknown): value is WaterPoiKind {
+  return typeof value === 'string' && value in WATER_POI_DETAILS;
+}
+
 function isHexTerrainData(value: unknown): value is HexTerrainData {
   if (!isRecord(value)) return false;
   const terrainOverride = value.terrainOverride;
@@ -843,6 +857,12 @@ function assertHexcrawlSaveData(value: unknown): asserts value is ValidatedHexcr
   for (const [key, terrain] of Object.entries(value.map.terrainByHexKey)) {
     if (!isAxialHex(parseHexKey(key))) throw new Error(`Некорректный ключ terrain-гекса ${key}.`);
     if (!isHexTerrainData(terrain)) throw new Error(`Некорректные terrain-данные для гекса ${key}.`);
+  }
+  if (value.map.waterPoiChecksByHexKey !== undefined) {
+    if (!isRecord(value.map.waterPoiChecksByHexKey)) throw new Error('Некорректные проверки водных точек интереса.');
+    for (const [key, kind] of Object.entries(value.map.waterPoiChecksByHexKey)) {
+      if (!isAxialHex(parseHexKey(key)) || (kind !== null && !isWaterPoiKind(kind))) throw new Error(`Некорректная водная точка интереса для гекса ${key}.`);
+    }
   }
   for (const region of value.map.regions) {
     if (!isRecord(region)) throw new Error('Некорректная запись региона.');
@@ -1147,6 +1167,7 @@ type MapSnapshot = {
   hexTerrainByKey: Map<string, HexTerrainData>;
   nextLakeId: number;
   nextRoadId: number;
+  waterPoiChecksByHexKey: Map<string, WaterPoiKind | null>;
 };
 
 function chooseBiomeLandType(regionCount: number): BiomeLandType {
@@ -7896,6 +7917,40 @@ function assignPoiKindsForRegion(options: {
   return Object.keys(assigned).length > 0 ? assigned : undefined;
 }
 
+
+const WATER_POI_KINDS: WaterPoiKind[] = ['whirlpool', 'underwater_ruins', 'water_lair', 'rocks', 'underwater_cave', 'shipwreck'];
+
+function getWaterPoiCandidates(context: 'sea' | BiomeLandType): WaterPoiKind[] {
+  if (context === 'settled') return WATER_POI_KINDS.filter((kind) => kind !== 'shipwreck' && kind !== 'whirlpool' && kind !== 'water_lair');
+  if (context === 'wild') return WATER_POI_KINDS.filter((kind) => kind !== 'shipwreck');
+  return WATER_POI_KINDS;
+}
+
+function assignWaterPoiChecksForHexes(options: {
+  hexes: AxialHex[];
+  context: 'sea' | BiomeLandType;
+  existingChecks: Map<string, WaterPoiKind | null>;
+}): Map<string, WaterPoiKind | null> {
+  const { hexes, context, existingChecks } = options;
+  const next = new Map(existingChecks);
+  const chanceDenominator = context === 'wild' ? 4 : 6;
+  const candidates = getWaterPoiCandidates(context);
+  for (const hex of hexes) {
+    const key = hexKey(hex);
+    if (next.has(key)) continue;
+    const hasAdjacentWaterPoi = getHexNeighbors(hex).some((neighbor) => {
+      const neighborKind = next.get(hexKey(neighbor));
+      return neighborKind !== undefined && neighborKind !== null;
+    });
+    if (hasAdjacentWaterPoi || Math.floor(Math.random() * chanceDenominator) !== 0 || candidates.length === 0) {
+      next.set(key, null);
+    } else {
+      next.set(key, randomFrom(candidates));
+    }
+  }
+  return next;
+}
+
 function getPoiKindForHex(region: Region | undefined, hex: AxialHex): PoiKind | undefined {
   return region?.pointOfInterestKinds?.[hexKey(hex)];
 }
@@ -10866,6 +10921,7 @@ export function App() {
   const [selectedHex, setSelectedHex] = useState<AxialHex | null>(START_HEX);
   const [debugRivers, setDebugRivers] = useState(false);
   const [hexTerrainByKey, setHexTerrainByKey] = useState<Map<string, HexTerrainData>>(new Map());
+  const [waterPoiChecksByHexKey, setWaterPoiChecksByHexKey] = useState<Map<string, WaterPoiKind | null>>(new Map());
   const [nextLakeId, setNextLakeId] = useState(1);
   const [nextRoadId, setNextRoadId] = useState(1);
   // Стек снимков состояния карты: один снимок на каждый добавленный регион.
@@ -11201,12 +11257,30 @@ export function App() {
       ).nextLakeId;
     })();
 
+    const finalHexTerrainByKey = (() => {
+      let next = new Map(hexTerrainByKey);
+      for (const regionKey of regionKeySet) next.delete(regionKey);
+      for (const key of finalSeaKeys) next.set(key, { terrainOverride: 'sea' });
+      next = convertLandlockedSeaComponentsToLakes(next, finalRegions, getNextLakeIdFromTerrain(next)).terrainByKey;
+      return next;
+    })();
+    const nextWaterPoiChecks = assignWaterPoiChecksForHexes({
+      hexes: regionHexes.filter((hex) => finalHexTerrainByKey.get(hexKey(hex))?.terrainOverride === 'lake'),
+      context: tractRegionWithPoiKinds.biomeLandType,
+      existingChecks: assignWaterPoiChecksForHexes({
+        hexes: Array.from(finalSeaKeys).filter((key) => !existingSeaKeys.has(key) && finalHexTerrainByKey.get(key)?.terrainOverride === 'sea').map(parseHexKey),
+        context: 'sea',
+        existingChecks: waterPoiChecksByHexKey
+      })
+    });
+
     const snapshot: MapSnapshot = {
       regions,
       candidateHexes,
       rivers,
       roads: cloneRoads(roads),
       hexTerrainByKey,
+      waterPoiChecksByHexKey,
       nextLakeId,
       nextRoadId
     };
@@ -11214,19 +11288,8 @@ export function App() {
     setRegions(finalRegions);
     setCandidateHexes(finalCandidateHexes);
     setRivers(riversAfterTractGeneration);
-    setHexTerrainByKey(() => {
-      let next = new Map(hexTerrainByKey);
-      // Новый fallback-регион всегда становится сушей: очищаем старые terrain override
-      // у всех его гексов перед записью актуального моря.
-      for (const regionKey of regionKeySet) next.delete(regionKey);
-      for (const key of finalSeaKeys) next.set(key, { terrainOverride: 'sea' });
-      next = convertLandlockedSeaComponentsToLakes(
-        next,
-        finalRegions,
-        getNextLakeIdFromTerrain(next)
-      ).terrainByKey;
-      return next;
-    });
+    setHexTerrainByKey(finalHexTerrainByKey);
+    setWaterPoiChecksByHexKey(nextWaterPoiChecks);
     setNextLakeId(nextLakeIdAfterLandlockedSea);
     setRoads(tractRoadResult.roads);
     setNextRoadId(tractRoadResult.nextRoadId);
@@ -11921,23 +11984,8 @@ export function App() {
         ).nextLakeId;
       })();
 
-      const snapshot: MapSnapshot = {
-        regions,
-        candidateHexes,
-        rivers,
-        roads: cloneRoads(roads),
-        hexTerrainByKey,
-        nextLakeId,
-        nextRoadId
-      };
-      setHistory((current) => [...current, snapshot]);
-
-      setRegions(finalRegions);
-      setCandidateHexes(finalCandidateHexes);
-      setHexTerrainByKey(() => {
+      const finalHexTerrainByKey = (() => {
         let next = new Map(nextHexTerrainByKeyPreview);
-        // Перед финальной записью состояния новый регион всегда удаляется из
-        // старого моря/override-данных, затем записывается только актуальное море.
         const finalRegionKeySet = new Set(finalRegionWithPoiKinds.hexes.map(hexKey));
         for (const regionKey of finalRegionKeySet) {
           const terrain = next.get(regionKey);
@@ -11947,15 +11995,7 @@ export function App() {
         for (const key of finalSeaKeysToWrite) {
           if (!finalRegionKeySet.has(key)) next.set(key, { terrainOverride: 'sea' });
         }
-        const landlockedSeaResult = convertLandlockedSeaComponentsToLakes(
-          next,
-          finalRegions,
-          Math.max(computedNextLakeId, getNextLakeIdFromTerrain(next))
-        );
-        next = landlockedSeaResult.terrainByKey;
-        // BR-004: озеро, соседствующее с морем, удаляется (гекс возвращается к биому региона).
-        // Запускаем при наличии ЛЮБОГО моря (включая существующее), а не только когда регион
-        // добавил новое море — иначе озеро в кармане у старого моря оставалось у берега.
+        next = convertLandlockedSeaComponentsToLakes(next, finalRegions, Math.max(computedNextLakeId, getNextLakeIdFromTerrain(next))).terrainByKey;
         const seaSet = getSeaHexKeys(next);
         if (seaSet.size > 0) {
           for (const [key, terrain] of next) {
@@ -11964,15 +12004,37 @@ export function App() {
             if (touchesSea) next.delete(key);
           }
         }
-        // Лечение одиночного моря: морской гекс без морских соседей обычно артефакт,
-        // но одиночный гекс у устья — валидный однотайловый прибрежный выход реки.
         for (const key of getSolitarySeaHexKeys(getSeaHexKeys(next))) {
           if (seaHexTouchesAnyRiverMouth(parseHexKey(key), riversWithDeltas)) continue;
           next.delete(key);
         }
         mergeAdjacentLakeIds(next);
         return next;
+      })();
+      const finalRegionWaterHexes = finalRegionWithPoiKinds.hexes.filter((hex) => finalHexTerrainByKey.get(hexKey(hex))?.terrainOverride === 'lake');
+      const finalSeaWaterHexes = finalSeaKeysToWrite.filter((key) => finalHexTerrainByKey.get(key)?.terrainOverride === 'sea').map(parseHexKey);
+      const nextWaterPoiChecks = assignWaterPoiChecksForHexes({
+        hexes: finalRegionWaterHexes,
+        context: finalRegionWithPoiKinds.biomeLandType,
+        existingChecks: assignWaterPoiChecksForHexes({ hexes: finalSeaWaterHexes, context: 'sea', existingChecks: waterPoiChecksByHexKey })
       });
+
+      const snapshot: MapSnapshot = {
+        regions,
+        candidateHexes,
+        rivers,
+        roads: cloneRoads(roads),
+        hexTerrainByKey,
+        waterPoiChecksByHexKey,
+        nextLakeId,
+        nextRoadId
+      };
+      setHistory((current) => [...current, snapshot]);
+
+      setRegions(finalRegions);
+      setCandidateHexes(finalCandidateHexes);
+      setHexTerrainByKey(finalHexTerrainByKey);
+      setWaterPoiChecksByHexKey(nextWaterPoiChecks);
       setNextLakeId(nextLakeIdAfterLandlockedSea);
 
       setRivers(riversWithDeltas);
@@ -12008,6 +12070,7 @@ export function App() {
     setNextRoadId(1);
     setSelectedHex(START_HEX);
     setHexTerrainByKey(new Map());
+    setWaterPoiChecksByHexKey(new Map());
     setNextLakeId(1);
     setIsMapRotated(false);
     setHistory([]);
@@ -12033,6 +12096,7 @@ export function App() {
     setRivers(snapshot.rivers);
     setRoads(pruneRoadsToRegionHexes(cloneRoads(snapshot.roads), snapshot.regions));
     setHexTerrainByKey(snapshot.hexTerrainByKey);
+    setWaterPoiChecksByHexKey(snapshot.waterPoiChecksByHexKey);
     setNextLakeId(snapshot.nextLakeId);
     setNextRoadId(snapshot.nextRoadId);
   };
@@ -12094,6 +12158,7 @@ export function App() {
     .map((terrain) => terrain.lakeId)
     .filter((lakeId) => lakeId !== selectedTerrain?.lakeId)));
   const hasNearbySea = nearbyHexes.some((hex) => hexTerrainByKey.get(hexKey(hex))?.terrainOverride === 'sea');
+  const selectedWaterPoiKind = selectedHexKey ? waterPoiChecksByHexKey.get(selectedHexKey) ?? null : null;
 
   const selectedType: HexType | 'none' = !selectedHex
     ? 'none'
@@ -12418,7 +12483,8 @@ export function App() {
       candidateHexes,
       rivers,
       roads,
-      terrainByHexKey: Object.fromEntries(hexTerrainByKey.entries())
+      terrainByHexKey: Object.fromEntries(hexTerrainByKey.entries()),
+      waterPoiChecksByHexKey: Object.fromEntries(waterPoiChecksByHexKey.entries())
     },
     counters: {
       nextLakeId,
@@ -12466,6 +12532,7 @@ export function App() {
       const importedRegions = parsed.map.regions;
       const importedAllHexes = importedRegions.flatMap((region) => region.hexes);
       const importedTerrain = new Map<string, HexTerrainData>(Object.entries(parsed.map.terrainByHexKey));
+      const importedWaterPoiChecks = new Map<string, WaterPoiKind | null>(Object.entries(parsed.map.waterPoiChecksByHexKey ?? {}) as [string, WaterPoiKind | null][]);
       const importedSeaKeys = getSeaHexKeys(importedTerrain);
       const importedCandidateHexes = importedAllHexes.length > 0 ? getCandidateHexes(importedAllHexes, importedSeaKeys) : [];
       const fallbackNextLakeId = Math.max(0, ...Array.from(importedTerrain.values()).map((terrain) => terrain.lakeId ?? 0)) + 1;
@@ -12476,6 +12543,7 @@ export function App() {
       setRivers(parsed.map.rivers);
       setRoads(parsed.map.roads);
       setHexTerrainByKey(importedTerrain);
+      setWaterPoiChecksByHexKey(importedWaterPoiChecks);
       setNextLakeId(Math.max(parsed.counters.nextLakeId, fallbackNextLakeId));
       setNextRoadId(Math.max(parsed.counters.nextRoadId, fallbackNextRoadId));
       setSelectedHex(parsed.ui.selectedHex ?? START_HEX);
@@ -12869,9 +12937,11 @@ export function App() {
                 const biomeTileHref = useBiomeTiles && hex.kind === 'region' && !isLakeHex ? getBiomeTileHref(region?.biomeId) : undefined;
                 const biomeEmojis = biomeTileHref ? [] : [biomePrimaryEmoji, ...biomeSecondaryEmojis.slice(0, 2)];
                 const isPointOfInterest = region?.pointsOfInterest.some((poi) => hexKey(poi) === hex.key) ?? false;
-                const hexEmojis = [...(meta?.isCenter && region ? [getCentralPoiEmoji(region)] : meta?.isCenter ? [REGION_CENTER_EMOJI] : []), ...(isPointOfInterest ? [getPoiEmojiForHex(region, { q: hex.q, r: hex.r })] : []), ...biomeEmojis];
+                const waterPoiKind = waterPoiChecksByHexKey.get(hex.key) ?? null;
+                const waterPoiEmoji = waterPoiKind ? [WATER_POI_DETAILS[waterPoiKind].emoji] : [];
+                const hexEmojis = [...waterPoiEmoji, ...(meta?.isCenter && region ? [getCentralPoiEmoji(region)] : meta?.isCenter ? [REGION_CENTER_EMOJI] : []), ...(isPointOfInterest ? [getPoiEmojiForHex(region, { q: hex.q, r: hex.r })] : []), ...biomeEmojis];
                 const hexEmojiLayout = getHexEmojiLayout(hexEmojis, hex.x, hex.y, HEX_SIZE);
-                return SHOW_BIOME_EMOJI && hex.kind === 'region' && hex.regionId && region && !isLakeHex ? hexEmojiLayout.map((item, index) => {
+                return SHOW_BIOME_EMOJI && (waterPoiKind || (hex.kind === 'region' && hex.regionId && region && !isLakeHex)) ? hexEmojiLayout.map((item, index) => {
                   const position = isMapRotated ? rotateMapPoint(item.x, item.y, positionedHexes.height) : item;
                   return (
                     <text key={`biome-emoji-${hex.key}-${index}`} x={position.x} y={position.y} textAnchor="middle" dominantBaseline="central" fontSize={item.fontSize} pointerEvents="none">{item.emoji}</text>
@@ -12943,6 +13013,7 @@ export function App() {
                   <p><strong>{isSelectedCandidate ? t.candidateForRegion : t.noHexSelected}</strong></p>
                 )}
                 {selectedHex ? <p><strong>{t.selectedHex}:</strong> {selectedHex.q}/{selectedHex.r}</p> : null}
+                {selectedWaterPoiKind ? <p>{WATER_POI_DETAILS[selectedWaterPoiKind].emoji} {WATER_POI_DETAILS[selectedWaterPoiKind].label[language]}</p> : null}
                 {!isSelectedCandidate && selectedRegion ? (
                   <>
                     <p>{isSelectedLake ? `💧 ${t.lake} ${selectedTerrain?.lakeId ?? '—'}` : `${selectedRegion.biomePrimaryEmoji}${selectedRegion.biomeSecondaryEmojis.join('')} ${getBiomeLabel(selectedRegion.biomeId, language)}`}</p>
