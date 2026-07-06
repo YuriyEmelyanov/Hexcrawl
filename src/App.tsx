@@ -361,6 +361,7 @@ const WATER_POI_DETAILS: Record<WaterPoiKind, { emoji: string; label: Record<Lan
   shipwreck: { emoji: '⛵', label: { ru: 'Кораблекрушение', en: 'Shipwreck' } }
 };
 const WATER_POI_KIND_ORDER: WaterPoiKind[] = ['whirlpool', 'underwater_ruins', 'lair', 'rocks', 'underwater_cave', 'shipwreck'];
+const WILD_LAKE_WATER_POI_KIND_ORDER: WaterPoiKind[] = ['whirlpool', 'underwater_ruins', 'lair', 'rocks', 'underwater_cave'];
 const SETTLED_WATER_POI_KIND_ORDER: WaterPoiKind[] = ['underwater_ruins', 'rocks', 'underwater_cave'];
 const POI_EMOJI = '◆';
 const WATER_COLOR = 'var(--water-color)';
@@ -7737,8 +7738,17 @@ function assignPointsOfInterestForTract(regionHexes: AxialHex[]): AxialHex[] {
   return shuffledEligibleHexes.slice(0, Math.min(poiCount, shuffledEligibleHexes.length));
 }
 
-function getWaterPoiKindPool(context: 'sea' | BiomeLandType): WaterPoiKind[] {
-  return context === 'settled' ? SETTLED_WATER_POI_KIND_ORDER : WATER_POI_KIND_ORDER;
+type WaterPoiContext = 'sea' | 'settled_lake' | 'wild_lake';
+
+function getWaterPoiKindPool(context: WaterPoiContext): WaterPoiKind[] {
+  if (context === 'settled_lake') return SETTLED_WATER_POI_KIND_ORDER;
+  if (context === 'wild_lake') return WILD_LAKE_WATER_POI_KIND_ORDER;
+  return WATER_POI_KIND_ORDER;
+}
+
+function getWaterPoiContext(terrain: HexTerrainData, region?: Region): WaterPoiContext {
+  if (terrain.terrainOverride === 'sea') return 'sea';
+  return region?.biomeLandType === 'settled' ? 'settled_lake' : 'wild_lake';
 }
 
 function getRegionByHexKey(regions: Region[]): Map<string, Region> {
@@ -7752,37 +7762,31 @@ function getRegionByHexKey(regions: Region[]): Map<string, Region> {
 function assignWaterPoiLayer(
   existingWaterPoiByKey: Map<string, WaterPoiKind>,
   regions: Region[],
-  hexTerrainByKey: Map<string, HexTerrainData>
+  hexTerrainByKey: Map<string, HexTerrainData>,
+  newlyCheckedWaterHexKeys: Iterable<string>
 ): Map<string, WaterPoiKind> {
   const regionByHexKey = getRegionByHexKey(regions);
-  const waterHexKeys = Array.from(hexTerrainByKey.entries())
-    .filter(([, terrain]) => terrain.terrainOverride === 'lake' || terrain.terrainOverride === 'sea')
-    .map(([key]) => key)
-    .sort();
-  const waterHexKeySet = new Set(waterHexKeys);
   const next = new Map<string, WaterPoiKind>();
   const blockedKeys = new Set<string>();
 
-  for (const key of waterHexKeys) {
-    const existingKind = existingWaterPoiByKey.get(key);
-    if (!existingKind || blockedKeys.has(key)) continue;
-    const hex = parseHexKey(key);
+  for (const [key, existingKind] of Array.from(existingWaterPoiByKey.entries()).sort(([a], [b]) => a.localeCompare(b))) {
     const terrain = hexTerrainByKey.get(key);
-    const region = terrain?.terrainOverride === 'lake' ? regionByHexKey.get(key) : undefined;
-    const pool = getWaterPoiKindPool(terrain?.terrainOverride === 'sea' ? 'sea' : region?.biomeLandType ?? 'wild');
-    if (!pool.includes(existingKind)) continue;
+    if (!terrain || (terrain.terrainOverride !== 'lake' && terrain.terrainOverride !== 'sea') || blockedKeys.has(key)) continue;
+    const hex = parseHexKey(key);
     next.set(key, existingKind);
     blockedKeys.add(key);
     for (const neighbor of getHexNeighbors(hex)) blockedKeys.add(hexKey(neighbor));
   }
 
-  for (const key of waterHexKeys) {
+  const keysToCheckForNewPoi = Array.from(new Set(newlyCheckedWaterHexKeys)).sort();
+
+  for (const key of keysToCheckForNewPoi) {
     if (next.has(key) || blockedKeys.has(key)) continue;
     const terrain = hexTerrainByKey.get(key);
-    if (!terrain || !waterHexKeySet.has(key)) continue;
+    if (!terrain || (terrain.terrainOverride !== 'lake' && terrain.terrainOverride !== 'sea')) continue;
     const region = terrain.terrainOverride === 'lake' ? regionByHexKey.get(key) : undefined;
-    const context: 'sea' | BiomeLandType = terrain.terrainOverride === 'sea' ? 'sea' : region?.biomeLandType ?? 'wild';
-    const chance = context === 'wild' ? 4 : 6;
+    const context = getWaterPoiContext(terrain, region);
+    const chance = context === 'wild_lake' ? 4 : 6;
     if (randomInt(1, chance) !== 1) continue;
     next.set(key, randomFrom(getWaterPoiKindPool(context)));
     blockedKeys.add(key);
@@ -7790,14 +7794,6 @@ function assignWaterPoiLayer(
   }
 
   return next;
-}
-
-function waterPoiMapsEqual(a: Map<string, WaterPoiKind>, b: Map<string, WaterPoiKind>): boolean {
-  if (a.size !== b.size) return false;
-  for (const [key, value] of a) {
-    if (b.get(key) !== value) return false;
-  }
-  return true;
 }
 
 function hexTouchesLake(hex: AxialHex, hexTerrainByKey: Map<string, HexTerrainData>): boolean {
@@ -11308,10 +11304,7 @@ export function App() {
       nextRoadId
     };
     setHistory((current) => [...current, snapshot]);
-    setRegions(finalRegions);
-    setCandidateHexes(finalCandidateHexes);
-    setRivers(riversAfterTractGeneration);
-    setHexTerrainByKey(() => {
+    const finalHexTerrainByKey = (() => {
       let next = new Map(hexTerrainByKey);
       // Новый fallback-регион всегда становится сушей: очищаем старые terrain override
       // у всех его гексов перед записью актуального моря.
@@ -11323,7 +11316,14 @@ export function App() {
         getNextLakeIdFromTerrain(next)
       ).terrainByKey;
       return next;
-    });
+    })();
+    const newlyCreatedSeaKeys = Array.from(finalSeaKeys).filter((key) => !existingSeaKeys.has(key));
+    const newlyCheckedWaterHexKeys = new Set([...regionKeySet, ...newlyCreatedSeaKeys]);
+    setRegions(finalRegions);
+    setCandidateHexes(finalCandidateHexes);
+    setRivers(riversAfterTractGeneration);
+    setHexTerrainByKey(finalHexTerrainByKey);
+    setWaterPoiByKey(assignWaterPoiLayer(waterPoiByKey, finalRegions, finalHexTerrainByKey, newlyCheckedWaterHexKeys));
     setNextLakeId(nextLakeIdAfterLandlockedSea);
     setRoads(tractRoadResult.roads);
     setNextRoadId(tractRoadResult.nextRoadId);
@@ -12030,9 +12030,7 @@ export function App() {
       };
       setHistory((current) => [...current, snapshot]);
 
-      setRegions(finalRegions);
-      setCandidateHexes(finalCandidateHexes);
-      setHexTerrainByKey(() => {
+      const finalHexTerrainByKey = (() => {
         let next = new Map(nextHexTerrainByKeyPreview);
         // Перед финальной записью состояния новый регион всегда удаляется из
         // старого моря/override-данных, затем записывается только актуальное море.
@@ -12070,7 +12068,13 @@ export function App() {
         }
         mergeAdjacentLakeIds(next);
         return next;
-      });
+      })();
+      const finalRegionKeySet = new Set(finalRegionWithPoiKinds.hexes.map(hexKey));
+      const newlyCheckedWaterHexKeys = new Set([...finalRegionKeySet, ...finalSeaKeysToWrite]);
+      setRegions(finalRegions);
+      setCandidateHexes(finalCandidateHexes);
+      setHexTerrainByKey(finalHexTerrainByKey);
+      setWaterPoiByKey(assignWaterPoiLayer(waterPoiByKey, finalRegions, finalHexTerrainByKey, newlyCheckedWaterHexKeys));
       setNextLakeId(nextLakeIdAfterLandlockedSea);
 
       setRivers(riversWithDeltas);
@@ -12169,13 +12173,6 @@ export function App() {
     // ровно один раз на установку заявки, уже с восстановленным состоянием.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pendingRegen]);
-
-  useEffect(() => {
-    setWaterPoiByKey((current) => {
-      const next = assignWaterPoiLayer(current, regions, hexTerrainByKey);
-      return waterPoiMapsEqual(current, next) ? current : next;
-    });
-  }, [regions, hexTerrainByKey]);
 
   const selectedHexKey = selectedHex ? hexKey(selectedHex) : null;
   const selectedMeta = selectedHexKey ? metadataMap.get(selectedHexKey) : undefined;
