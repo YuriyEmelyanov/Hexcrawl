@@ -7759,22 +7759,13 @@ function assignWaterPoiLayer(
   newlyCheckedWaterHexKeys?: Iterable<string>
 ): Map<string, WaterPoiKind> {
   const regionByHexKey = getRegionByHexKey(regions);
-  const waterHexKeys = Array.from(hexTerrainByKey.entries())
-    .filter(([, terrain]) => terrain.terrainOverride === 'lake' || terrain.terrainOverride === 'sea')
-    .map(([key]) => key)
-    .sort();
-  const waterHexKeySet = new Set(waterHexKeys);
   const next = new Map<string, WaterPoiKind>();
   const blockedKeys = new Set<string>();
 
-  for (const key of waterHexKeys) {
-    const existingKind = existingWaterPoiByKey.get(key);
-    if (!existingKind || blockedKeys.has(key)) continue;
-    const hex = parseHexKey(key);
+  for (const [key, existingKind] of Array.from(existingWaterPoiByKey.entries()).sort(([a], [b]) => a.localeCompare(b))) {
     const terrain = hexTerrainByKey.get(key);
-    const region = terrain?.terrainOverride === 'lake' ? regionByHexKey.get(key) : undefined;
-    const pool = getWaterPoiKindPool(terrain?.terrainOverride === 'sea' ? 'sea' : region?.biomeLandType ?? 'wild');
-    if (!pool.includes(existingKind)) continue;
+    if (!terrain || (terrain.terrainOverride !== 'lake' && terrain.terrainOverride !== 'sea') || blockedKeys.has(key)) continue;
+    const hex = parseHexKey(key);
     next.set(key, existingKind);
     blockedKeys.add(key);
     for (const neighbor of getHexNeighbors(hex)) blockedKeys.add(hexKey(neighbor));
@@ -7787,10 +7778,10 @@ function assignWaterPoiLayer(
   for (const key of keysToCheckForNewPoi) {
     if (next.has(key) || blockedKeys.has(key)) continue;
     const terrain = hexTerrainByKey.get(key);
-    if (!terrain || !waterHexKeySet.has(key)) continue;
+    if (!terrain || (terrain.terrainOverride !== 'lake' && terrain.terrainOverride !== 'sea')) continue;
     const region = terrain.terrainOverride === 'lake' ? regionByHexKey.get(key) : undefined;
-    const context: 'sea' | BiomeLandType = terrain.terrainOverride === 'sea' ? 'sea' : region?.biomeLandType ?? 'wild';
-    const chance = context === 'wild' ? 4 : 6;
+    const context = getWaterPoiContext(terrain, region);
+    const chance = context === 'wild_lake' ? 4 : 6;
     if (randomInt(1, chance) !== 1) continue;
     next.set(key, randomFrom(getWaterPoiKindPool(context)));
     blockedKeys.add(key);
