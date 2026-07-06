@@ -7738,17 +7738,10 @@ function assignPointsOfInterestForTract(regionHexes: AxialHex[]): AxialHex[] {
   return shuffledEligibleHexes.slice(0, Math.min(poiCount, shuffledEligibleHexes.length));
 }
 
-type WaterPoiContext = 'sea' | 'settled_lake' | 'wild_lake';
-
-function getWaterPoiKindPool(context: WaterPoiContext): WaterPoiKind[] {
-  if (context === 'settled_lake') return SETTLED_WATER_POI_KIND_ORDER;
-  if (context === 'wild_lake') return WILD_LAKE_WATER_POI_KIND_ORDER;
+function getWaterPoiKindPool(context: 'sea' | BiomeLandType): WaterPoiKind[] {
+  if (context === 'settled') return SETTLED_WATER_POI_KIND_ORDER;
+  if (context === 'wild') return WILD_LAKE_WATER_POI_KIND_ORDER;
   return WATER_POI_KIND_ORDER;
-}
-
-function getWaterPoiContext(terrain: HexTerrainData, region?: Region): WaterPoiContext {
-  if (terrain.terrainOverride === 'sea') return 'sea';
-  return region?.biomeLandType === 'settled' ? 'settled_lake' : 'wild_lake';
 }
 
 function getRegionByHexKey(regions: Region[]): Map<string, Region> {
@@ -7763,7 +7756,7 @@ function assignWaterPoiLayer(
   existingWaterPoiByKey: Map<string, WaterPoiKind>,
   regions: Region[],
   hexTerrainByKey: Map<string, HexTerrainData>,
-  newlyCheckedWaterHexKeys: Iterable<string>
+  newlyCheckedWaterHexKeys?: Iterable<string>
 ): Map<string, WaterPoiKind> {
   const regionByHexKey = getRegionByHexKey(regions);
   const next = new Map<string, WaterPoiKind>();
@@ -7778,7 +7771,9 @@ function assignWaterPoiLayer(
     for (const neighbor of getHexNeighbors(hex)) blockedKeys.add(hexKey(neighbor));
   }
 
-  const keysToCheckForNewPoi = Array.from(new Set(newlyCheckedWaterHexKeys)).sort();
+  const keysToCheckForNewPoi = newlyCheckedWaterHexKeys
+    ? Array.from(new Set(newlyCheckedWaterHexKeys)).filter((key) => waterHexKeySet.has(key)).sort()
+    : waterHexKeys;
 
   for (const key of keysToCheckForNewPoi) {
     if (next.has(key) || blockedKeys.has(key)) continue;
@@ -11317,8 +11312,7 @@ export function App() {
       ).terrainByKey;
       return next;
     })();
-    const newlyCreatedSeaKeys = Array.from(finalSeaKeys).filter((key) => !existingSeaKeys.has(key));
-    const newlyCheckedWaterHexKeys = new Set([...regionKeySet, ...newlyCreatedSeaKeys]);
+    const newlyCheckedWaterHexKeys = new Set([...regionKeySet, ...finalSeaKeys]);
     setRegions(finalRegions);
     setCandidateHexes(finalCandidateHexes);
     setRivers(riversAfterTractGeneration);
