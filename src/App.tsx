@@ -7759,15 +7759,19 @@ function assignWaterPoiLayer(
   newlyCheckedWaterHexKeys?: Iterable<string>
 ): Map<string, WaterPoiKind> {
   const regionByHexKey = getRegionByHexKey(regions);
-  const waterHexKeys = Array.from(hexTerrainByKey.entries())
-    .filter(([, terrain]) => terrain.terrainOverride === 'lake' || terrain.terrainOverride === 'sea')
-    .map(([key]) => key)
-    .sort();
-  const waterHexKeySet = new Set(waterHexKeys);
+  const waterHexKeySet = new Set(
+    Array.from(hexTerrainByKey.entries())
+      .filter(([, terrain]) => terrain.terrainOverride === 'lake' || terrain.terrainOverride === 'sea')
+      .map(([key]) => key)
+  );
   const next = new Map<string, WaterPoiKind>();
   const blockedKeys = new Set<string>();
 
-  for (const key of waterHexKeys) {
+  const existingWaterPoiKeys = Array.from(existingWaterPoiByKey.keys())
+    .filter((key) => waterHexKeySet.has(key))
+    .sort();
+
+  for (const key of existingWaterPoiKeys) {
     const existingKind = existingWaterPoiByKey.get(key);
     if (!existingKind || blockedKeys.has(key)) continue;
     const hex = parseHexKey(key);
@@ -7782,7 +7786,7 @@ function assignWaterPoiLayer(
 
   const keysToCheckForNewPoi = newlyCheckedWaterHexKeys
     ? Array.from(new Set(newlyCheckedWaterHexKeys)).filter((key) => waterHexKeySet.has(key)).sort()
-    : waterHexKeys;
+    : [];
 
   for (const key of keysToCheckForNewPoi) {
     if (next.has(key) || blockedKeys.has(key)) continue;
@@ -11285,6 +11289,9 @@ export function App() {
     const seaKeysToFill = getSeaKeysToFillForTractSeaTouch(regionHexes, seededSeaKeys, candidateHexesBeforeSeaBridge, hexTerrainByKey, riversAfterTractGeneration);
     const finalSeaKeys = new Set([...seededSeaKeys, ...seaKeysToFill]);
     for (const regionKey of regionKeySet) finalSeaKeys.delete(regionKey);
+    const finalSeaKeysToWrite = new Set(
+      Array.from(finalSeaKeys).filter((key) => !existingSeaKeys.has(key))
+    );
     const finalCandidateHexes = getCandidateHexes(finalRegions.flatMap((region) => region.hexes), finalSeaKeys);
     const nextLakeIdAfterLandlockedSea = (() => {
       const terrainForLandlockedSeaCheck = new Map(hexTerrainByKey);
@@ -11321,7 +11328,7 @@ export function App() {
       ).terrainByKey;
       return next;
     })();
-    const newlyCheckedWaterHexKeys = new Set([...regionKeySet, ...finalSeaKeys]);
+    const newlyCheckedWaterHexKeys = new Set([...regionKeySet, ...finalSeaKeysToWrite]);
     setRegions(finalRegions);
     setCandidateHexes(finalCandidateHexes);
     setRivers(riversAfterTractGeneration);
