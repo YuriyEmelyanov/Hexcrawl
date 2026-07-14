@@ -1145,7 +1145,7 @@ type GenerationOptions = {
 };
 
 const REGION_SIZE_CATEGORY_RANGES: Record<Region['sizeCategory'], [number, number]> = {
-  tract: [1, 5],
+  tract: [5, 8],
   locality: [6, 10],
   small_region: [11, 20],
   region: [21, 30],
@@ -1158,6 +1158,12 @@ function rollRegionSizeInCategory(category: Region['sizeCategory']): number {
   const [min, max] = REGION_SIZE_CATEGORY_RANGES[category];
   return randomInt(min, max);
 }
+
+function rollTractTargetSize(): number {
+  return rollRegionSizeInCategory('tract');
+}
+
+const TRACT_GROWTH_WEIGHT_EXPONENT = 1.5;
 
 // Полный снимок состояния карты до добавления очередного региона.
 // Используется для удаления/перегенерации последнего региона: вместо того
@@ -4964,7 +4970,8 @@ export function getGrowthCandidate(
   currentRegionHexes: Set<string>,
   occupiedHexes: Set<string>,
   zeroWeightHexes: Set<string> = new Set(),
-  neutralOccupiedNeighborWeightHexes: Set<string> = new Set()
+  neutralOccupiedNeighborWeightHexes: Set<string> = new Set(),
+  growthWeightExponent = 1
 ): GrowthCandidate | null {
   let currentRegionNeighborCount = 0;
   let existingRegionNeighborCount = 0;
@@ -4986,7 +4993,9 @@ export function getGrowthCandidate(
     hex: candidate,
     currentRegionNeighborCount,
     existingRegionNeighborCount,
-    totalGrowthWeight: zeroWeightHexes.has(hexKey(candidate)) ? 0 : currentRegionNeighborCount + existingRegionNeighborCount
+    totalGrowthWeight: zeroWeightHexes.has(hexKey(candidate))
+      ? 0
+      : Math.pow(currentRegionNeighborCount + existingRegionNeighborCount, growthWeightExponent)
   };
 }
 
@@ -5079,8 +5088,7 @@ function generateConnectedRegionFromAnchorImpl(
   return Array.from(regionKeys).map(parseHexKey);
 }
 
-function generateFallbackTractFromAnchor(anchorHex: AxialHex, occupiedHexes: Set<string>): AxialHex[] {
-  const targetSize = 5;
+function generateFallbackTractFromAnchor(anchorHex: AxialHex, occupiedHexes: Set<string>, targetSize = rollTractTargetSize()): AxialHex[] {
   const regionKeys = new Set<string>([hexKey(anchorHex)]);
 
   while (true) {
@@ -5101,7 +5109,14 @@ function generateFallbackTractFromAnchor(anchorHex: AxialHex, occupiedHexes: Set
     if (regionKeys.size >= targetSize) break;
 
     const growthCandidates = getFrontierCandidateHexes(regionKeys, occupiedHexes)
-      .map((candidate) => getGrowthCandidate(candidate, regionKeys, occupiedHexes))
+      .map((candidate) => getGrowthCandidate(
+        candidate,
+        regionKeys,
+        occupiedHexes,
+        undefined,
+        undefined,
+        TRACT_GROWTH_WEIGHT_EXPONENT
+      ))
       .filter((candidate): candidate is GrowthCandidate => candidate !== null);
     const picked = weightedPickCandidate(growthCandidates);
     if (!picked) break;
@@ -11152,7 +11167,8 @@ export function App() {
     const occupiedHexes = new Set(allRegionHexes.map(hexKey));
     for (const seaKey of existingSeaKeys) occupiedHexes.add(seaKey);
 
-    const regionHexes = generateFallbackTractFromAnchor(anchorHex, occupiedHexes);
+    const targetSize = rollTractTargetSize();
+    const regionHexes = generateFallbackTractFromAnchor(anchorHex, occupiedHexes, targetSize);
     const regionKeySet = new Set(regionHexes.map(hexKey));
     for (const regionKey of regionKeySet) existingSeaKeys.delete(regionKey);
     const finalSize = regionHexes.length;
@@ -11162,7 +11178,7 @@ export function App() {
       hexes: regionHexes,
       centerHex: anchorHex,
       anchorHex,
-      targetSize: 5,
+      targetSize,
       finalSize,
       sizeCategory: 'tract',
       sizeLabel: 'Урочище',
@@ -11205,7 +11221,7 @@ export function App() {
       // совместимости с общей моделью сохранения и не помечается как центр.
       centerHex: anchorHex,
       anchorHex,
-      targetSize: 5,
+      targetSize,
       finalSize,
       // Даже если урочище доросло за счёт замкнутой области и стало больше
       // пяти гексов, оно остаётся урочищем по типу региона.
