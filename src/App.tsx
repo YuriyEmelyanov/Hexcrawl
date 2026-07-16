@@ -12737,9 +12737,6 @@ export function App() {
               </details>
               <button type="button" onClick={handleImportJsonClick} className="secondary">{t.importJson}</button>
               <input ref={jsonImportInputRef} className="visually-hidden" type="file" accept="application/json,.json" onChange={(event) => void handleImportJson(event)} />
-              <button onClick={() => setDebugRivers((v) => !v)} className="secondary">
-                {t.debug}: {debugRivers ? 'ON' : 'OFF'}
-              </button>
               <button
                 type="button"
                 className="rotate-map-button"
@@ -13108,8 +13105,16 @@ export function App() {
                 ) : null}
               </section>
 
-              {debugRivers ? (
-                <section className="info-block info-block--debug" aria-label={t.debugInfo}>
+              <details
+                className="info-block info-block--debug"
+                aria-label={t.debugInfo}
+                open={debugRivers}
+                onToggle={(event) => setDebugRivers(event.currentTarget.open)}
+              >
+                <summary className="debug-summary">
+                  {t.debug}: {debugRivers ? 'ON' : 'OFF'}
+                </summary>
+                <div className="debug-panel-body">
                   {regions.length > 0 && lastRegion ? (
                     <>
                       <p>{t.regions}: {regions.length}</p>
@@ -13257,8 +13262,8 @@ export function App() {
               })() : null}
                     </>
                   ) : null}
-                </section>
-              ) : null}
+                </div>
+              </details>
             </div>
           </aside>
         </div>
