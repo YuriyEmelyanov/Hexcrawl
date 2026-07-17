@@ -12705,6 +12705,11 @@ export function App() {
             </div>
           </div>
           <div id="side-panel-controls" ref={mapToolbarRef} className="map-toolbar" aria-label={t.controlsLabel}>
+            {regions.length === 0 ? (
+              <div className="info-block info-block--prompt map-toolbar__prompt" role="status">{t.startPrompt}</div>
+            ) : regions.length <= 2 && candidateHexes.length > 0 ? (
+              <div className="info-block info-block--prompt map-toolbar__prompt" role="status">{t.candidatePrompt}</div>
+            ) : null}
             <div className="controls">
               <button onClick={resetMap} className="secondary" disabled={regions.length === 0}>{t.reset}</button>
               <button
@@ -13066,12 +13071,6 @@ export function App() {
 
           <aside id="side-panel-info" className="roll-card">
             <div className="info-body">
-              {regions.length === 0 ? (
-                <div className="info-block info-block--prompt" role="status">{t.startPrompt}</div>
-              ) : regions.length <= 2 && candidateHexes.length > 0 ? (
-                <div className="info-block info-block--prompt" role="status">{t.candidatePrompt}</div>
-              ) : null}
-
               <section className="info-block info-block--hex" aria-label={t.selectedHexInfo}>
                 {selectedRegion ? (
                   <p><strong>{SIZE_LABELS[language][selectedRegion.sizeCategory]} {selectedRegion.id}</strong></p>
