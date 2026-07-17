@@ -12711,35 +12711,24 @@ export function App() {
               <div className="info-block info-block--prompt map-toolbar__prompt" role="status">{t.candidatePrompt}</div>
             ) : null}
             <div className="controls">
-              <button onClick={resetMap} className="secondary" disabled={regions.length === 0}>{t.reset}</button>
-              <button
-                type="button"
-                onClick={regenerateLastRegion}
-                className="secondary"
-                disabled={regions.length === 0}
-              >
-                {t.regenerateRegion}
-              </button>
-              <button
-                type="button"
-                onClick={deleteLastRegion}
-                className="secondary"
-                disabled={regions.length === 0}
-              >
-                {t.deleteLastRegion}
-              </button>
-              <details
-                className={`export-menu${regions.length === 0 ? ' is-disabled' : ''}`}
-                onToggle={(event) => {
-                  if (regions.length === 0) event.currentTarget.open = false;
-                }}
-              >
-                <summary className="secondary" aria-disabled={regions.length === 0}>{t.export}</summary>
-                <div className="export-menu__items">
-                  <button type="button" onClick={() => void handleExportPng()} className="secondary">PNG</button>
-                  <button type="button" onClick={handleExportJson} className="secondary">JSON</button>
-                </div>
-              </details>
+              {regions.length > 0 ? (
+                <>
+                  <button onClick={resetMap} className="secondary">{t.reset}</button>
+                  <button type="button" onClick={regenerateLastRegion} className="secondary">
+                    {t.regenerateRegion}
+                  </button>
+                  <button type="button" onClick={deleteLastRegion} className="secondary">
+                    {t.deleteLastRegion}
+                  </button>
+                  <details className="export-menu">
+                    <summary className="secondary">{t.export}</summary>
+                    <div className="export-menu__items">
+                      <button type="button" onClick={() => void handleExportPng()} className="secondary">PNG</button>
+                      <button type="button" onClick={handleExportJson} className="secondary">JSON</button>
+                    </div>
+                  </details>
+                </>
+              ) : null}
               <button type="button" onClick={handleImportJsonClick} className="secondary">{t.importJson}</button>
               <input ref={jsonImportInputRef} className="visually-hidden" type="file" accept="application/json,.json" onChange={(event) => void handleImportJson(event)} />
               <button
@@ -13069,6 +13058,7 @@ export function App() {
             </svg>
           </div>
 
+          {regions.length > 0 ? (
           <aside id="side-panel-info" className="roll-card">
             <div className="info-body">
               <section className="info-block info-block--hex" aria-label={t.selectedHexInfo}>
@@ -13265,6 +13255,7 @@ export function App() {
               </details>
             </div>
           </aside>
+          ) : null}
         </div>
       </section>
 
