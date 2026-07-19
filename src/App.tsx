@@ -12710,65 +12710,7 @@ export function App() {
             ) : regions.length <= 2 && candidateHexes.length > 0 ? (
               <div className="info-block info-block--prompt map-toolbar__prompt" role="status">{t.candidatePrompt}</div>
             ) : null}
-            <div className="controls">
-              {regions.length > 0 ? (
-                <>
-                  <button onClick={resetMap} className="secondary">{t.reset}</button>
-                  <button type="button" onClick={regenerateLastRegion} className="secondary">
-                    {t.regenerateRegion}
-                  </button>
-                  <button type="button" onClick={deleteLastRegion} className="secondary">
-                    {t.deleteLastRegion}
-                  </button>
-                  <details className="export-menu">
-                    <summary className="secondary">{t.export}</summary>
-                    <div className="export-menu__items">
-                      <button type="button" onClick={() => void handleExportPng()} className="secondary">PNG</button>
-                      <button type="button" onClick={handleExportJson} className="secondary">JSON</button>
-                    </div>
-                  </details>
-                </>
-              ) : null}
-              <button type="button" onClick={handleImportJsonClick} className="secondary">{t.importJson}</button>
-              <input ref={jsonImportInputRef} className="visually-hidden" type="file" accept="application/json,.json" onChange={(event) => void handleImportJson(event)} />
-              <button
-                type="button"
-                className="rotate-map-button"
-                onClick={() => setIsMapRotated((value) => !value)}
-                aria-label={isMapRotated ? t.unrotateMap : t.rotateMap}
-                title={isMapRotated ? t.unrotateMap : t.rotateMapTitle}
-              >
-                <svg className="rotate-map-button__icon" viewBox="0 0 64 48" aria-hidden="true" focusable="false">
-                  <polygon
-                    points={isMapRotated ? '32,4 56,16 56,32 32,44 8,32 8,16' : '20,4 44,4 56,24 44,44 20,44 8,24'}
-                    className="rotate-map-button__hex"
-                  />
-                  <text x="32" y="25" className="rotate-map-button__sign">{isMapRotated ? '↺' : '↻'}</text>
-                </svg>
-              </button>
-              <button
-                type="button"
-                className="biome-display-toggle"
-                onClick={() => setUseBiomeTiles((value) => !value)}
-                aria-label={biomeDisplayToggleLabel}
-                title={biomeDisplayToggleTitle}
-              >
-                <span aria-hidden="true">{useBiomeTiles ? '🖼️' : '😀'}</span>
-                <span>{useBiomeTiles ? t.emojiMode : t.tilesMode}</span>
-              </button>
-              <button
-                type="button"
-                className={`hex-coordinate-toggle${showHexCoordinates ? ' is-active' : ''}`}
-                onClick={() => setShowHexCoordinates((value) => !value)}
-                aria-pressed={showHexCoordinates}
-                aria-label={t.showHexCoordinates}
-                title={t.showHexCoordinatesTitle}
-              >
-                <span aria-hidden="true">#</span>
-                <span>{t.hexCoordinatesMode}</span>
-              </button>
-            </div>
-            <div className="gen-params" aria-label={t.genParamsLabel}>
+            <div className="control-block gen-params" aria-label={t.genParamsLabel}>
               <label>
                 {t.size}
                 <select value={genSizeCategory} onChange={(e) => setGenSizeCategory(e.target.value as typeof genSizeCategory)}>
@@ -12806,6 +12748,68 @@ export function App() {
                   <option value="mainland">{t.mainland}</option>
                 </select>
               </label>
+            </div>
+            {regions.length > 0 ? (
+              <div className="control-block controls controls--region-management">
+                  <button onClick={resetMap} className="secondary">{t.reset}</button>
+                  <button type="button" onClick={regenerateLastRegion} className="secondary">
+                    {t.regenerateRegion}
+                  </button>
+                  <button type="button" onClick={deleteLastRegion} className="secondary">
+                    {t.deleteLastRegion}
+                  </button>
+              </div>
+            ) : null}
+            <div className="control-block controls controls--display">
+              <button
+                type="button"
+                className="rotate-map-button"
+                onClick={() => setIsMapRotated((value) => !value)}
+                aria-label={isMapRotated ? t.unrotateMap : t.rotateMap}
+                title={isMapRotated ? t.unrotateMap : t.rotateMapTitle}
+              >
+                <svg className="rotate-map-button__icon" viewBox="0 0 64 48" aria-hidden="true" focusable="false">
+                  <polygon
+                    points={isMapRotated ? '32,4 56,16 56,32 32,44 8,32 8,16' : '20,4 44,4 56,24 44,44 20,44 8,24'}
+                    className="rotate-map-button__hex"
+                  />
+                  <text x="32" y="25" className="rotate-map-button__sign">{isMapRotated ? '↺' : '↻'}</text>
+                </svg>
+              </button>
+              <button
+                type="button"
+                className="biome-display-toggle"
+                onClick={() => setUseBiomeTiles((value) => !value)}
+                aria-label={biomeDisplayToggleLabel}
+                title={biomeDisplayToggleTitle}
+              >
+                <span aria-hidden="true">{useBiomeTiles ? '🖼️' : '😀'}</span>
+                <span>{useBiomeTiles ? t.emojiMode : t.tilesMode}</span>
+              </button>
+              <button
+                type="button"
+                className={`hex-coordinate-toggle${showHexCoordinates ? ' is-active' : ''}`}
+                onClick={() => setShowHexCoordinates((value) => !value)}
+                aria-pressed={showHexCoordinates}
+                aria-label={t.showHexCoordinates}
+                title={t.showHexCoordinatesTitle}
+              >
+                <span aria-hidden="true">#</span>
+                <span>{t.hexCoordinatesMode}</span>
+              </button>
+            </div>
+            <div className="control-block controls controls--transfer">
+              {regions.length > 0 ? (
+                <details className="export-menu">
+                  <summary className="secondary">{t.export}</summary>
+                  <div className="export-menu__items">
+                    <button type="button" onClick={() => void handleExportPng()} className="secondary">PNG</button>
+                    <button type="button" onClick={handleExportJson} className="secondary">JSON</button>
+                  </div>
+                </details>
+              ) : null}
+              <button type="button" onClick={handleImportJsonClick} className="secondary">{t.importJson}</button>
+              <input ref={jsonImportInputRef} className="visually-hidden" type="file" accept="application/json,.json" onChange={(event) => void handleImportJson(event)} />
             </div>
             {coastNotice && (
               <div className="coast-notice" role="status">
