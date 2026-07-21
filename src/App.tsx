@@ -11001,6 +11001,7 @@ export function App() {
   const [biomeOverrideByHexKey, setBiomeOverrideByHexKey] = useState<Map<string, BiomeId>>(new Map());
   const [editingHexBiomeKey, setEditingHexBiomeKey] = useState<string | null>(null);
   const [editingPoiHexKey, setEditingPoiHexKey] = useState<string | null>(null);
+  const [editingCentralPoiRegionId, setEditingCentralPoiRegionId] = useState<number | null>(null);
   const [nextLakeId, setNextLakeId] = useState(1);
   const [nextRoadId, setNextRoadId] = useState(1);
   // Стек снимков состояния карты: один снимок на каждый добавленный регион.
@@ -12282,6 +12283,7 @@ export function App() {
   const isEditingSelectedHexBiome = selectedHexKey !== null && editingHexBiomeKey === selectedHexKey;
   const selectedPoiKind = selectedRegion && selectedHex ? getPoiKindForHex(selectedRegion, selectedHex) : undefined;
   const isEditingSelectedPoi = selectedHexKey !== null && editingPoiHexKey === selectedHexKey;
+  const isEditingSelectedCentralPoi = selectedMeta?.isCenter === true && editingCentralPoiRegionId === selectedRegion?.id;
   const canEditSelectedPoi = Boolean(selectedRegion && selectedHex && !isSelectedLake && !isSelectedSea);
   const waterPoiKindOrder = getWaterPoiKindPool(isSelectedSea ? 'sea' : selectedRegion?.biomeLandType ?? 'wild');
   const setSelectedHexBiomeOverride = (biomeId: BiomeId) => {
@@ -12322,7 +12324,7 @@ export function App() {
     setRegions((currentRegions) => currentRegions.map((region) => (
       region.id === regionId ? { ...region, centralPoiKind: poiKind } : region
     )));
-    setEditingPoiHexKey(null);
+    setEditingCentralPoiRegionId(null);
   };
   const setSelectedWaterPoiKind = (poiKind: WaterPoiKind) => {
     if (!selectedHexKey) return;
@@ -13244,20 +13246,20 @@ export function App() {
                     {selectedMeta?.isCenter ? (
                       <div className="hex-poi-editor">
                         <span>⭐ {getCentralPoiEmoji(selectedRegion)} {getCentralPoiLabel(selectedRegion, language)}</span>
-                        {isEditingSelectedPoi ? (
+                        {isEditingSelectedCentralPoi ? (
                           <select
                             aria-label={t.choosePoi}
                             autoFocus
                             value={selectedRegion.centralPoiKind ?? ''}
                             onChange={(event) => setSelectedCentralPoiKind(event.target.value as CentralPoiKind)}
-                            onBlur={() => setEditingPoiHexKey(null)}
+                            onBlur={() => setEditingCentralPoiRegionId(null)}
                           >
                             {Object.entries(CENTRAL_POI_DETAILS).map(([poiKind, details]) => (
                               <option key={poiKind} value={poiKind}>{details.emoji} {details.label[language]}</option>
                             ))}
                           </select>
                         ) : (
-                          <button type="button" className="hex-biome-editor__button" aria-label={t.editPoi} title={t.editPoi} onClick={() => setEditingPoiHexKey(selectedHexKey)}>✏️</button>
+                          <button type="button" className="hex-biome-editor__button" aria-label={t.editPoi} title={t.editPoi} onClick={() => setEditingCentralPoiRegionId(selectedRegion.id)}>✏️</button>
                         )}
                       </div>
                     ) : null}
