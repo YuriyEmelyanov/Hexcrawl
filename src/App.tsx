@@ -12283,6 +12283,7 @@ export function App() {
   const selectedPoiKind = selectedRegion && selectedHex ? getPoiKindForHex(selectedRegion, selectedHex) : undefined;
   const isEditingSelectedPoi = selectedHexKey !== null && editingPoiHexKey === selectedHexKey;
   const canEditSelectedPoi = Boolean(selectedRegion && selectedHex && !isSelectedLake && !isSelectedSea);
+  const waterPoiKindOrder = getWaterPoiKindPool(isSelectedSea ? 'sea' : selectedRegion?.biomeLandType ?? 'wild');
   const setSelectedHexBiomeOverride = (biomeId: BiomeId) => {
     if (!selectedHexKey) return;
     setBiomeOverrideByHexKey((current) => {
@@ -12313,6 +12314,32 @@ export function App() {
         pointOfInterestKinds: { ...(region.pointOfInterestKinds ?? {}), [selectedHexKey]: poiKind }
       };
     }));
+    setEditingPoiHexKey(null);
+  };
+  const setSelectedCentralPoiKind = (poiKind: CentralPoiKind) => {
+    if (!selectedRegion) return;
+    const regionId = selectedRegion.id;
+    setRegions((currentRegions) => currentRegions.map((region) => (
+      region.id === regionId ? { ...region, centralPoiKind: poiKind } : region
+    )));
+    setEditingPoiHexKey(null);
+  };
+  const setSelectedWaterPoiKind = (poiKind: WaterPoiKind) => {
+    if (!selectedHexKey) return;
+    setWaterPoiByKey((current) => {
+      const next = new Map(current);
+      next.set(selectedHexKey, poiKind);
+      return next;
+    });
+    setEditingPoiHexKey(null);
+  };
+  const deleteSelectedWaterPoi = () => {
+    if (!selectedHexKey) return;
+    setWaterPoiByKey((current) => {
+      const next = new Map(current);
+      next.delete(selectedHexKey);
+      return next;
+    });
     setEditingPoiHexKey(null);
   };
   const deleteSelectedPoi = () => {
@@ -13155,7 +13182,18 @@ export function App() {
                 ) : isSelectedSea ? (
                   <>
                     <p><strong>{SEA_EMOJI} {t.sea}</strong></p>
-                    {selectedWaterPoiKind ? <p>{getWaterPoiEmoji(selectedWaterPoiKind)} {getWaterPoiLabel(selectedWaterPoiKind, language)}</p> : null}
+                    {selectedWaterPoiKind ? (
+                      <div className="hex-poi-editor">
+                        <span>{getWaterPoiEmoji(selectedWaterPoiKind)} {getWaterPoiLabel(selectedWaterPoiKind, language)}</span>
+                        {isEditingSelectedPoi ? (
+                          <select aria-label={t.choosePoi} autoFocus value={selectedWaterPoiKind} onChange={(event) => setSelectedWaterPoiKind(event.target.value as WaterPoiKind)} onBlur={() => setEditingPoiHexKey(null)}>
+                            {waterPoiKindOrder.map((poiKind) => <option key={poiKind} value={poiKind}>{WATER_POI_DETAILS[poiKind].emoji} {WATER_POI_DETAILS[poiKind].label[language]}</option>)}
+                          </select>
+                        ) : <span className="hex-poi-editor__actions"><button type="button" className="hex-biome-editor__button" aria-label={t.editPoi} title={t.editPoi} onClick={() => setEditingPoiHexKey(selectedHexKey)}>✏️</button><button type="button" className="hex-biome-editor__button" aria-label={t.deletePoi} title={t.deletePoi} onClick={deleteSelectedWaterPoi}>🗑️</button></span>}
+                      </div>
+                    ) : isEditingSelectedPoi ? (
+                      <div className="hex-poi-editor"><select aria-label={t.choosePoi} autoFocus defaultValue="" onChange={(event) => { if (event.target.value) setSelectedWaterPoiKind(event.target.value as WaterPoiKind); }} onBlur={() => setEditingPoiHexKey(null)}><option value="" disabled>{t.choosePoi}</option>{waterPoiKindOrder.map((poiKind) => <option key={poiKind} value={poiKind}>{WATER_POI_DETAILS[poiKind].emoji} {WATER_POI_DETAILS[poiKind].label[language]}</option>)}</select></div>
+                    ) : <button type="button" className="hex-coordinate-toggle hex-poi-editor__add" onClick={() => setEditingPoiHexKey(selectedHexKey)}>{t.addPoi}</button>}
                   </>
                 ) : (
                   <p><strong>{isSelectedCandidate ? t.candidateForRegion : t.noHexSelected}</strong></p>
@@ -13202,9 +13240,41 @@ export function App() {
                         ) : null}
                       </div>
                     ) : null}
-                    {selectedWaterPoiKind ? <p>{getWaterPoiEmoji(selectedWaterPoiKind)} {getWaterPoiLabel(selectedWaterPoiKind, language)}</p> : null}
                     <p>{selectedRegion.biomeLandType === 'settled' ? t.settledRegion : t.wildArea}</p>
-                    {selectedMeta?.isCenter ? <p>⭐ {getCentralPoiEmoji(selectedRegion)} {getCentralPoiLabel(selectedRegion, language)}</p> : null}
+                    {selectedMeta?.isCenter ? (
+                      <div className="hex-poi-editor">
+                        <span>⭐ {getCentralPoiEmoji(selectedRegion)} {getCentralPoiLabel(selectedRegion, language)}</span>
+                        {isEditingSelectedPoi ? (
+                          <select
+                            aria-label={t.choosePoi}
+                            autoFocus
+                            value={selectedRegion.centralPoiKind ?? ''}
+                            onChange={(event) => setSelectedCentralPoiKind(event.target.value as CentralPoiKind)}
+                            onBlur={() => setEditingPoiHexKey(null)}
+                          >
+                            {Object.entries(CENTRAL_POI_DETAILS).map(([poiKind, details]) => (
+                              <option key={poiKind} value={poiKind}>{details.emoji} {details.label[language]}</option>
+                            ))}
+                          </select>
+                        ) : (
+                          <button type="button" className="hex-biome-editor__button" aria-label={t.editPoi} title={t.editPoi} onClick={() => setEditingPoiHexKey(selectedHexKey)}>✏️</button>
+                        )}
+                      </div>
+                    ) : null}
+                    {isSelectedLake ? (
+                      selectedWaterPoiKind ? (
+                        <div className="hex-poi-editor">
+                          <span>{getWaterPoiEmoji(selectedWaterPoiKind)} {getWaterPoiLabel(selectedWaterPoiKind, language)}</span>
+                          {isEditingSelectedPoi ? (
+                            <select aria-label={t.choosePoi} autoFocus value={selectedWaterPoiKind} onChange={(event) => setSelectedWaterPoiKind(event.target.value as WaterPoiKind)} onBlur={() => setEditingPoiHexKey(null)}>
+                              {waterPoiKindOrder.map((poiKind) => <option key={poiKind} value={poiKind}>{WATER_POI_DETAILS[poiKind].emoji} {WATER_POI_DETAILS[poiKind].label[language]}</option>)}
+                            </select>
+                          ) : <span className="hex-poi-editor__actions"><button type="button" className="hex-biome-editor__button" aria-label={t.editPoi} title={t.editPoi} onClick={() => setEditingPoiHexKey(selectedHexKey)}>✏️</button><button type="button" className="hex-biome-editor__button" aria-label={t.deletePoi} title={t.deletePoi} onClick={deleteSelectedWaterPoi}>🗑️</button></span>}
+                        </div>
+                      ) : isEditingSelectedPoi ? (
+                        <div className="hex-poi-editor"><select aria-label={t.choosePoi} autoFocus defaultValue="" onChange={(event) => { if (event.target.value) setSelectedWaterPoiKind(event.target.value as WaterPoiKind); }} onBlur={() => setEditingPoiHexKey(null)}><option value="" disabled>{t.choosePoi}</option>{waterPoiKindOrder.map((poiKind) => <option key={poiKind} value={poiKind}>{WATER_POI_DETAILS[poiKind].emoji} {WATER_POI_DETAILS[poiKind].label[language]}</option>)}</select></div>
+                      ) : <button type="button" className="hex-coordinate-toggle hex-poi-editor__add" onClick={() => setEditingPoiHexKey(selectedHexKey)}>{t.addPoi}</button>
+                    ) : null}
                     {canEditSelectedPoi && selectedHex ? (
                       selectedPoiKind ? (
                         <div className="hex-poi-editor">
@@ -13245,9 +13315,9 @@ export function App() {
                             ))}
                           </select>
                         </div>
-                      ) : (
-                        <button type="button" onClick={() => setEditingPoiHexKey(selectedHexKey)}>{t.addPoi}</button>
-                      )
+                      ) : !selectedMeta?.isCenter ? (
+                        <button type="button" className="hex-coordinate-toggle hex-poi-editor__add" onClick={() => setEditingPoiHexKey(selectedHexKey)}>{t.addPoi}</button>
+                      ) : null
                     ) : null}
                     {selectedHexRoadIds.map((roadId) => <p key={`selected-road-${roadId}`}>▬ {t.road} {roadId}</p>)}
                     {selectedHexTrailIds.map((trailId) => <p key={`selected-trail-${trailId}`}>⋯ {t.trail} {trailId}</p>)}
