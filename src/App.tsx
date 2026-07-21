@@ -491,9 +491,9 @@ type Language = 'ru' | 'en';
 
 const UI_TEXT = {
   ru: {
-    languageName: 'Русский', switchLanguage: 'Switch to English', reset: 'Сбросить', regenerateRegion: 'Перегенерировать регион', deleteLastRegion: 'Удалить последний регион', export: 'Выгрузить', importJson: 'Загрузить JSON', debug: 'Отладка', controlsLabel: 'Управление картой', genParamsLabel: 'Параметры генерации', size: 'Размер', type: 'Тип', biome: 'Биом', coast: 'Берег', auto: 'Авто', settled: 'Освоенный', wild: 'Дикий', coastOption: 'Побережье', mainland: 'Материк', closeNotice: 'Закрыть уведомление', mapAria: 'Карта: перетаскивайте пальцем или мышью, стрелки клавиатуры перемещают область просмотра', rotateMap: 'Повернуть карту на 90 градусов', rotateMapTitle: 'Повернуть карту на 90°', unrotateMap: 'Вернуть исходный поворот карты', showTiles: 'Включить тайлы', showTilesTitle: 'Переключить карту на тайлы', tilesMode: 'Тайлы', emojiMode: 'Эмоджи', showEmoji: 'Включить эмоджи', showEmojiTitle: 'Переключить карту на эмоджи', hexCoordinatesMode: 'Координаты', showHexCoordinates: 'Показать координаты гексов', showHexCoordinatesTitle: 'Показать или скрыть координаты гексов', showPanel: 'Показать панель управления и информации', hidePanel: 'Скрыть панель управления и информации', startPrompt: 'Нажми на стартовый гекс', candidatePrompt: 'Выберите гекс-кандидат для добавления региона', selectedHexInfo: 'Информация о выбранном гексе', candidateForRegion: 'Кандидат для нового региона', noHexSelected: 'Гекс не выбран', lake: 'Озеро', settledRegion: 'Освоенный регион', wildArea: 'Дикая местность', centralPoi: 'Центральная точка интереса', poi: 'Точка интереса', road: 'Дорога', trail: 'Тропа', nearby: 'Рядом:', river: 'Река', sea: 'Море', debugInfo: 'Отладочная информация', regions: 'Регионов', lastRegion: 'Последний регион', regionSize: 'Размер региона', height: 'Высота', targetSize: 'Целевой размер', finalSize: 'Фактический размер региона', poiCount: 'Точек интереса', selectedHex: 'Координаты гекса', selectedRegionHeight: 'Высота выбранного региона', selectedRegionSize: 'Размер выбранного региона', yes: 'да', no: 'нет', roadNumbers: 'Номера дорог', trailNumbers: 'Номера троп', regionPoiCount: 'Точек интереса в регионе', regionRoads: 'Дорог региона', regionTrails: 'Троп региона', regionRivers: 'Реки региона', riverSectors: 'Речные сектора:', sector: 'сектор', fullness: 'полноводность', confluences: 'Слияния:', flowsInto: 'впадает в', regionLakes: 'Озёра региона', selectRegionHex: 'Выберите региональный гекс.', noRiverInRegion: 'В выбранном регионе нет реки для подробной отладки.', pngExportError: 'Не удалось выгрузить PNG-файл.', jsonImportError: 'Не удалось загрузить JSON-файл.', youtubeLabel: 'YouTube канал', telegramLabel: 'Telegram канал', showHeaderLinks: 'Показать кнопки языка и соцсетей', hideHeaderLinks: 'Скрыть кнопки языка и соцсетей', editHexBiome: 'Изменить биом гекса', resetHexBiome: 'Сбросить биом гекса' },
+    languageName: 'Русский', switchLanguage: 'Switch to English', reset: 'Сбросить', regenerateRegion: 'Перегенерировать регион', deleteLastRegion: 'Удалить последний регион', export: 'Выгрузить', importJson: 'Загрузить JSON', debug: 'Отладка', controlsLabel: 'Управление картой', genParamsLabel: 'Параметры генерации', size: 'Размер', type: 'Тип', biome: 'Биом', coast: 'Берег', auto: 'Авто', settled: 'Освоенный', wild: 'Дикий', coastOption: 'Побережье', mainland: 'Материк', closeNotice: 'Закрыть уведомление', mapAria: 'Карта: перетаскивайте пальцем или мышью, стрелки клавиатуры перемещают область просмотра', rotateMap: 'Повернуть карту на 90 градусов', rotateMapTitle: 'Повернуть карту на 90°', unrotateMap: 'Вернуть исходный поворот карты', showTiles: 'Включить тайлы', showTilesTitle: 'Переключить карту на тайлы', tilesMode: 'Тайлы', emojiMode: 'Эмоджи', showEmoji: 'Включить эмоджи', showEmojiTitle: 'Переключить карту на эмоджи', hexCoordinatesMode: 'Координаты', showHexCoordinates: 'Показать координаты гексов', showHexCoordinatesTitle: 'Показать или скрыть координаты гексов', showPanel: 'Показать панель управления и информации', hidePanel: 'Скрыть панель управления и информации', startPrompt: 'Нажми на стартовый гекс', candidatePrompt: 'Выберите гекс-кандидат для добавления региона', selectedHexInfo: 'Информация о выбранном гексе', candidateForRegion: 'Кандидат для нового региона', noHexSelected: 'Гекс не выбран', lake: 'Озеро', settledRegion: 'Освоенный регион', wildArea: 'Дикая местность', centralPoi: 'Центральная точка интереса', poi: 'Точка интереса', addPoi: 'Добавить точку интереса', choosePoi: 'Выберите точку интереса', editPoi: 'Редактировать точку интереса', deletePoi: 'Удалить точку интереса', road: 'Дорога', trail: 'Тропа', nearby: 'Рядом:', river: 'Река', sea: 'Море', debugInfo: 'Отладочная информация', regions: 'Регионов', lastRegion: 'Последний регион', regionSize: 'Размер региона', height: 'Высота', targetSize: 'Целевой размер', finalSize: 'Фактический размер региона', poiCount: 'Точек интереса', selectedHex: 'Координаты гекса', selectedRegionHeight: 'Высота выбранного региона', selectedRegionSize: 'Размер выбранного региона', yes: 'да', no: 'нет', roadNumbers: 'Номера дорог', trailNumbers: 'Номера троп', regionPoiCount: 'Точек интереса в регионе', regionRoads: 'Дорог региона', regionTrails: 'Троп региона', regionRivers: 'Реки региона', riverSectors: 'Речные сектора:', sector: 'сектор', fullness: 'полноводность', confluences: 'Слияния:', flowsInto: 'впадает в', regionLakes: 'Озёра региона', selectRegionHex: 'Выберите региональный гекс.', noRiverInRegion: 'В выбранном регионе нет реки для подробной отладки.', pngExportError: 'Не удалось выгрузить PNG-файл.', jsonImportError: 'Не удалось загрузить JSON-файл.', youtubeLabel: 'YouTube канал', telegramLabel: 'Telegram канал', showHeaderLinks: 'Показать кнопки языка и соцсетей', hideHeaderLinks: 'Скрыть кнопки языка и соцсетей', editHexBiome: 'Изменить биом гекса', resetHexBiome: 'Сбросить биом гекса' },
   en: {
-    languageName: 'English', switchLanguage: 'Переключить на русский', reset: 'Reset', regenerateRegion: 'Regenerate region', deleteLastRegion: 'Delete last region', export: 'Export', importJson: 'Load JSON', debug: 'Debug', controlsLabel: 'Map controls', genParamsLabel: 'Generation parameters', size: 'Size', type: 'Type', biome: 'Biome', coast: 'Coast', auto: 'Auto', settled: 'Settled', wild: 'Wild', coastOption: 'Coast', mainland: 'Mainland', closeNotice: 'Close notice', mapAria: 'Map: drag with touch or mouse; keyboard arrows move the viewport', rotateMap: 'Rotate map 90 degrees', rotateMapTitle: 'Rotate map 90°', unrotateMap: 'Restore original map rotation', showTiles: 'Show tiles', showTilesTitle: 'Switch map to tiles', tilesMode: 'Tiles', emojiMode: 'Emoji', showEmoji: 'Show emoji', showEmojiTitle: 'Switch map to emoji', hexCoordinatesMode: 'Coordinates', showHexCoordinates: 'Show hex coordinates', showHexCoordinatesTitle: 'Show or hide hex coordinates', showPanel: 'Show controls and information panel', hidePanel: 'Hide controls and information panel', startPrompt: 'Click the starting hex', candidatePrompt: 'Select a candidate hex to add a region', selectedHexInfo: 'Selected hex information', candidateForRegion: 'Candidate for a new region', noHexSelected: 'No hex selected', lake: 'Lake', settledRegion: 'Settled region', wildArea: 'Wild area', centralPoi: 'Central point of interest', poi: 'Point of interest', road: 'Road', trail: 'Trail', nearby: 'Nearby:', river: 'River', sea: 'Sea', debugInfo: 'Debug information', regions: 'Regions', lastRegion: 'Last region', regionSize: 'Region size', height: 'Height', targetSize: 'Target size', finalSize: 'Final region size', poiCount: 'Points of interest', selectedHex: 'Hex coordinates', selectedRegionHeight: 'Selected region height', selectedRegionSize: 'Selected region size', yes: 'yes', no: 'no', roadNumbers: 'Road numbers', trailNumbers: 'Trail numbers', regionPoiCount: 'Points of interest in region', regionRoads: 'Region roads', regionTrails: 'Region trails', regionRivers: 'Region rivers', riverSectors: 'River sectors:', sector: 'sector', fullness: 'fullness', confluences: 'Confluences:', flowsInto: 'flows into', regionLakes: 'Region lakes', selectRegionHex: 'Select a region hex.', noRiverInRegion: 'The selected region has no river for detailed debugging.', pngExportError: 'Failed to export PNG file.', jsonImportError: 'Failed to load JSON file.', youtubeLabel: 'YouTube channel', telegramLabel: 'Telegram channel', showHeaderLinks: 'Show language and social buttons', hideHeaderLinks: 'Hide language and social buttons', editHexBiome: 'Edit hex biome', resetHexBiome: 'Reset hex biome' }
+    languageName: 'English', switchLanguage: 'Переключить на русский', reset: 'Reset', regenerateRegion: 'Regenerate region', deleteLastRegion: 'Delete last region', export: 'Export', importJson: 'Load JSON', debug: 'Debug', controlsLabel: 'Map controls', genParamsLabel: 'Generation parameters', size: 'Size', type: 'Type', biome: 'Biome', coast: 'Coast', auto: 'Auto', settled: 'Settled', wild: 'Wild', coastOption: 'Coast', mainland: 'Mainland', closeNotice: 'Close notice', mapAria: 'Map: drag with touch or mouse; keyboard arrows move the viewport', rotateMap: 'Rotate map 90 degrees', rotateMapTitle: 'Rotate map 90°', unrotateMap: 'Restore original map rotation', showTiles: 'Show tiles', showTilesTitle: 'Switch map to tiles', tilesMode: 'Tiles', emojiMode: 'Emoji', showEmoji: 'Show emoji', showEmojiTitle: 'Switch map to emoji', hexCoordinatesMode: 'Coordinates', showHexCoordinates: 'Show hex coordinates', showHexCoordinatesTitle: 'Show or hide hex coordinates', showPanel: 'Show controls and information panel', hidePanel: 'Hide controls and information panel', startPrompt: 'Click the starting hex', candidatePrompt: 'Select a candidate hex to add a region', selectedHexInfo: 'Selected hex information', candidateForRegion: 'Candidate for a new region', noHexSelected: 'No hex selected', lake: 'Lake', settledRegion: 'Settled region', wildArea: 'Wild area', centralPoi: 'Central point of interest', poi: 'Point of interest', addPoi: 'Add point of interest', choosePoi: 'Choose a point of interest', editPoi: 'Edit point of interest', deletePoi: 'Delete point of interest', road: 'Road', trail: 'Trail', nearby: 'Nearby:', river: 'River', sea: 'Sea', debugInfo: 'Debug information', regions: 'Regions', lastRegion: 'Last region', regionSize: 'Region size', height: 'Height', targetSize: 'Target size', finalSize: 'Final region size', poiCount: 'Points of interest', selectedHex: 'Hex coordinates', selectedRegionHeight: 'Selected region height', selectedRegionSize: 'Selected region size', yes: 'yes', no: 'no', roadNumbers: 'Road numbers', trailNumbers: 'Trail numbers', regionPoiCount: 'Points of interest in region', regionRoads: 'Region roads', regionTrails: 'Region trails', regionRivers: 'Region rivers', riverSectors: 'River sectors:', sector: 'sector', fullness: 'fullness', confluences: 'Confluences:', flowsInto: 'flows into', regionLakes: 'Region lakes', selectRegionHex: 'Select a region hex.', noRiverInRegion: 'The selected region has no river for detailed debugging.', pngExportError: 'Failed to export PNG file.', jsonImportError: 'Failed to load JSON file.', youtubeLabel: 'YouTube channel', telegramLabel: 'Telegram channel', showHeaderLinks: 'Show language and social buttons', hideHeaderLinks: 'Hide language and social buttons', editHexBiome: 'Edit hex biome', resetHexBiome: 'Reset hex biome' }
 } as const;
 
 const SIZE_LABELS: Record<Language, Record<Region['sizeCategory'], string>> = {
@@ -7879,6 +7879,7 @@ const SECONDARY_POI_KIND_ORDER: SecondaryPoiKind[] = [
   'apiary',
   'quarry'
 ];
+const EDITABLE_POI_KIND_ORDER: PoiKind[] = ['city', 'town', 'village', ...SECONDARY_POI_KIND_ORDER];
 
 function biomeHasForest(biomeId: BiomeId): boolean {
   return biomeId.includes('forest') || biomeId.includes('woodland');
@@ -10999,6 +11000,7 @@ export function App() {
   const [waterPoiByKey, setWaterPoiByKey] = useState<Map<string, WaterPoiKind>>(new Map());
   const [biomeOverrideByHexKey, setBiomeOverrideByHexKey] = useState<Map<string, BiomeId>>(new Map());
   const [editingHexBiomeKey, setEditingHexBiomeKey] = useState<string | null>(null);
+  const [editingPoiHexKey, setEditingPoiHexKey] = useState<string | null>(null);
   const [nextLakeId, setNextLakeId] = useState(1);
   const [nextRoadId, setNextRoadId] = useState(1);
   // Стек снимков состояния карты: один снимок на каждый добавленный регион.
@@ -12278,6 +12280,9 @@ export function App() {
   const selectedHexBiomeOverride = selectedHexKey ? biomeOverrideByHexKey.get(selectedHexKey) : undefined;
   const selectedEffectiveBiomeId = selectedHexBiomeOverride ?? selectedRegion?.biomeId;
   const isEditingSelectedHexBiome = selectedHexKey !== null && editingHexBiomeKey === selectedHexKey;
+  const selectedPoiKind = selectedRegion && selectedHex ? getPoiKindForHex(selectedRegion, selectedHex) : undefined;
+  const isEditingSelectedPoi = selectedHexKey !== null && editingPoiHexKey === selectedHexKey;
+  const canEditSelectedPoi = Boolean(selectedRegion && selectedHex && !isSelectedLake && !isSelectedSea);
   const setSelectedHexBiomeOverride = (biomeId: BiomeId) => {
     if (!selectedHexKey) return;
     setBiomeOverrideByHexKey((current) => {
@@ -12295,6 +12300,35 @@ export function App() {
       return next;
     });
     setEditingHexBiomeKey(null);
+  };
+  const setSelectedPoiKind = (poiKind: PoiKind) => {
+    if (!selectedRegion || !selectedHex || !selectedHexKey) return;
+    const regionId = selectedRegion.id;
+    setRegions((currentRegions) => currentRegions.map((region) => {
+      if (region.id !== regionId) return region;
+      const hasPoi = region.pointsOfInterest.some((poi) => hexKey(poi) === selectedHexKey);
+      return {
+        ...region,
+        pointsOfInterest: hasPoi ? region.pointsOfInterest : [...region.pointsOfInterest, selectedHex],
+        pointOfInterestKinds: { ...(region.pointOfInterestKinds ?? {}), [selectedHexKey]: poiKind }
+      };
+    }));
+    setEditingPoiHexKey(null);
+  };
+  const deleteSelectedPoi = () => {
+    if (!selectedRegion || !selectedHexKey) return;
+    const regionId = selectedRegion.id;
+    setRegions((currentRegions) => currentRegions.map((region) => {
+      if (region.id !== regionId) return region;
+      const pointOfInterestKinds = { ...(region.pointOfInterestKinds ?? {}) };
+      delete pointOfInterestKinds[selectedHexKey];
+      return {
+        ...region,
+        pointsOfInterest: region.pointsOfInterest.filter((poi) => hexKey(poi) !== selectedHexKey),
+        pointOfInterestKinds: Object.keys(pointOfInterestKinds).length > 0 ? pointOfInterestKinds : undefined
+      };
+    }));
+    setEditingPoiHexKey(null);
   };
   const selectedRegionRivers = selectedRegion ? getRiversForRegion(selectedRegion, rivers) : [];
   const selectedRegionRiverSectors = selectedRegion ? getRiverSectorsForRegion(selectedRegion, rivers) : [];
@@ -13171,7 +13205,50 @@ export function App() {
                     {selectedWaterPoiKind ? <p>{getWaterPoiEmoji(selectedWaterPoiKind)} {getWaterPoiLabel(selectedWaterPoiKind, language)}</p> : null}
                     <p>{selectedRegion.biomeLandType === 'settled' ? t.settledRegion : t.wildArea}</p>
                     {selectedMeta?.isCenter ? <p>⭐ {getCentralPoiEmoji(selectedRegion)} {getCentralPoiLabel(selectedRegion, language)}</p> : null}
-                    {selectedRegion.pointsOfInterest.some((poi) => selectedHexKey === hexKey(poi)) && selectedHex ? <p>{getPoiEmojiForHex(selectedRegion, selectedHex)} {getPoiLabelForHex(selectedRegion, selectedHex, language)}</p> : null}
+                    {canEditSelectedPoi && selectedHex ? (
+                      selectedPoiKind ? (
+                        <div className="hex-poi-editor">
+                          <span>{getPoiEmojiForHex(selectedRegion, selectedHex)} {getPoiLabelForHex(selectedRegion, selectedHex, language)}</span>
+                          {isEditingSelectedPoi ? (
+                            <select
+                              aria-label={t.choosePoi}
+                              autoFocus
+                              value={selectedPoiKind}
+                              onChange={(event) => setSelectedPoiKind(event.target.value as PoiKind)}
+                              onBlur={() => setEditingPoiHexKey(null)}
+                            >
+                              {EDITABLE_POI_KIND_ORDER.map((poiKind) => (
+                                <option key={poiKind} value={poiKind}>{POI_DETAILS[poiKind].emoji} {POI_DETAILS[poiKind].label[language]}</option>
+                              ))}
+                            </select>
+                          ) : (
+                            <span className="hex-poi-editor__actions">
+                              <button type="button" className="hex-biome-editor__button" aria-label={t.editPoi} title={t.editPoi} onClick={() => setEditingPoiHexKey(selectedHexKey)}>✏️</button>
+                              {!selectedMeta?.isCenter ? <button type="button" className="hex-biome-editor__button" aria-label={t.deletePoi} title={t.deletePoi} onClick={deleteSelectedPoi}>🗑️</button> : null}
+                            </span>
+                          )}
+                        </div>
+                      ) : isEditingSelectedPoi ? (
+                        <div className="hex-poi-editor">
+                          <select
+                            aria-label={t.choosePoi}
+                            autoFocus
+                            defaultValue=""
+                            onChange={(event) => {
+                              if (event.target.value) setSelectedPoiKind(event.target.value as PoiKind);
+                            }}
+                            onBlur={() => setEditingPoiHexKey(null)}
+                          >
+                            <option value="" disabled>{t.choosePoi}</option>
+                            {EDITABLE_POI_KIND_ORDER.map((poiKind) => (
+                              <option key={poiKind} value={poiKind}>{POI_DETAILS[poiKind].emoji} {POI_DETAILS[poiKind].label[language]}</option>
+                            ))}
+                          </select>
+                        </div>
+                      ) : (
+                        <button type="button" onClick={() => setEditingPoiHexKey(selectedHexKey)}>{t.addPoi}</button>
+                      )
+                    ) : null}
                     {selectedHexRoadIds.map((roadId) => <p key={`selected-road-${roadId}`}>▬ {t.road} {roadId}</p>)}
                     {selectedHexTrailIds.map((trailId) => <p key={`selected-trail-${trailId}`}>⋯ {t.trail} {trailId}</p>)}
                     {nearbyRiverIds.length > 0 || nearbyLakeIds.length > 0 || hasNearbySea ? (
