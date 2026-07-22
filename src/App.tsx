@@ -231,6 +231,15 @@ type RiverConnectorSplit = {
 type RoadKind = 'road' | 'trail';
 type RoadSegment = { from: AxialHex; to: AxialHex; kind: RoadKind };
 type Road = { id: number; regionId: number; segments: RoadSegment[] };
+type RiverCrossingKind = 'bridge' | 'ferry' | 'ford';
+type RiverCrossing = {
+  key: string;
+  roadId: number;
+  roadSegmentKey: string;
+  riverId: number;
+  riverEdgeKey: string;
+  kind: RiverCrossingKind;
+};
 type RoadCandidatePath = {
   basePath: AxialHex[];
   extendedPath: AxialHex[];
@@ -402,13 +411,14 @@ type Biome = {
 
 type HexcrawlSaveData = {
   schema: 'hexcrawl-map';
-  version: 1;
+  version: 2;
   savedAt: string;
   map: {
     regions: Region[];
     candidateHexes: AxialHex[];
     rivers: River[];
     roads: Road[];
+    crossings: RiverCrossing[];
     terrainByHexKey: Record<string, HexTerrainData>;
     waterPoiByHexKey?: Record<string, WaterPoiKind>;
     biomeOverrideByHexKey?: HexBiomeOverrideByKey;
@@ -432,7 +442,7 @@ type ValidatedHexcrawlSaveData = HexcrawlSaveData & {
 };
 
 const HEXCRAWL_SAVE_SCHEMA = 'hexcrawl-map';
-const HEXCRAWL_SAVE_VERSION = 1;
+const HEXCRAWL_SAVE_VERSION = 2;
 const PNG_EXPORT_SCALE = 2;
 const EXPORT_FILE_PREFIX = 'hexcrawl-map';
 const BIOME_TILE_HREFS: Partial<Record<BiomeId, string>> = {
@@ -471,7 +481,9 @@ const SVG_EXPORT_STYLES = `
   .river-direction-arrow { stroke:#ffffff; stroke-width:1.2; stroke-linecap:round; }
   .river-arrow-head { fill:#ffffff; }
   .road-line { stroke:#8b6a3f; stroke-width:3; stroke-linecap:round; }
-  .road-trail-dot { fill:#8b6a3f; }
+  .road-line--ford { opacity:.42; }
+  .trail-line { stroke:#8b6a3f; stroke-width:1.5; stroke-linecap:butt; stroke-dasharray:3 7; }
+  .bridge-rail { fill:none; stroke:#4f3922; stroke-width:1.1; stroke-linecap:round; stroke-linejoin:round; }
   .dbg-node-all { fill:#a0a7b2; opacity:.85; }
   .dbg-node-boundary { fill:#ffd84a; }
   .dbg-node-candidate { fill:#57df63; }
@@ -858,6 +870,16 @@ function isHexTerrainData(value: unknown): value is HexTerrainData {
   );
 }
 
+function isRiverCrossing(value: unknown): value is RiverCrossing {
+  if (!isRecord(value)) return false;
+  return typeof value.key === 'string'
+    && typeof value.roadId === 'number'
+    && typeof value.roadSegmentKey === 'string'
+    && typeof value.riverId === 'number'
+    && typeof value.riverEdgeKey === 'string'
+    && (value.kind === 'bridge' || value.kind === 'ferry' || value.kind === 'ford');
+}
+
 function assertHexcrawlSaveData(value: unknown): asserts value is ValidatedHexcrawlSaveData {
   if (!isRecord(value)) throw new Error('Файл сохранения должен быть JSON-объектом.');
   if (value.schema !== HEXCRAWL_SAVE_SCHEMA) throw new Error('Это не файл сохранения Hexcrawl.');
@@ -866,6 +888,7 @@ function assertHexcrawlSaveData(value: unknown): asserts value is ValidatedHexcr
   if (!Array.isArray(value.map.regions)) throw new Error('В сохранении отсутствует список regions.');
   if (!Array.isArray(value.map.rivers)) throw new Error('В сохранении отсутствует список rivers.');
   if (!Array.isArray(value.map.roads)) throw new Error('В сохранении отсутствует список roads.');
+  if (!Array.isArray(value.map.crossings) || !value.map.crossings.every(isRiverCrossing)) throw new Error('Некорректный список crossings.');
   if (!isRecord(value.map.terrainByHexKey)) throw new Error('В сохранении отсутствует объект terrainByHexKey.');
   for (const [key, terrain] of Object.entries(value.map.terrainByHexKey)) {
     if (!isAxialHex(parseHexKey(key))) throw new Error(`Некорректный ключ terrain-гекса ${key}.`);
@@ -1189,6 +1212,7 @@ type MapSnapshot = {
   candidateHexes: AxialHex[];
   rivers: River[];
   roads: Road[];
+  crossings: RiverCrossing[];
   hexTerrainByKey: Map<string, HexTerrainData>;
   nextLakeId: number;
   nextRoadId: number;
@@ -8149,6 +8173,51 @@ function roadPathCrossesRiver(path: AxialHex[], rivers: River[], minFullness: Ri
   return countRoadPathRiverCrossings(path, rivers, minFullness) > 0;
 }
 
+function getRiverCrossingKey(roadId: number, roadSegmentKey: string, riverId: number): string {
+  return `${roadId}:${roadSegmentKey}:${riverId}`;
+}
+
+// Пересечения создаются после построения геометрии рек и дорог. Уже существующий
+// тип сохраняется, поэтому добавление следующего региона не меняет старые мосты.
+function reconcileRiverCrossings(roads: Road[], rivers: River[], existing: RiverCrossing[]): RiverCrossing[] {
+  const existingByKey = new Map(existing.map((crossing) => [crossing.key, crossing]));
+  const riverByEdge = new Map<string, River[]>();
+  for (const river of rivers) {
+    for (let index = 1; index < river.vertexPath.length; index += 1) {
+      const riverEdgeKey = getRiverEdgeKey(river.vertexPath[index - 1], river.vertexPath[index]);
+      const edgeRivers = riverByEdge.get(riverEdgeKey) ?? [];
+      edgeRivers.push(river);
+      riverByEdge.set(riverEdgeKey, edgeRivers);
+    }
+  }
+
+  const kinds: RiverCrossingKind[] = ['bridge', 'ferry', 'ford'];
+  const crossings: RiverCrossing[] = [];
+  for (const road of roads) {
+    for (const segment of road.segments) {
+      const sharedEdge = getSharedHexEdgeVertexKeys(segment.from, segment.to);
+      if (!sharedEdge) continue;
+      const riverEdgeKey = sharedEdge[0] < sharedEdge[1]
+        ? `${sharedEdge[0]}|${sharedEdge[1]}`
+        : `${sharedEdge[1]}|${sharedEdge[0]}`;
+      const crossedRivers = riverByEdge.get(riverEdgeKey) ?? [];
+      const roadSegmentKey = normalizeRoadSegmentKey(segment.from, segment.to);
+      for (const river of crossedRivers) {
+        const key = getRiverCrossingKey(road.id, roadSegmentKey, river.id);
+        crossings.push(existingByKey.get(key) ?? {
+          key,
+          roadId: road.id,
+          roadSegmentKey,
+          riverId: river.id,
+          riverEdgeKey,
+          kind: randomFrom(kinds)
+        });
+      }
+    }
+  }
+  return crossings;
+}
+
 
 function getPoiKeysOnRoadPath(path: AxialHex[], region: Region): Set<string> {
   const pathKeys = new Set(path.map(hexKey));
@@ -9729,41 +9798,35 @@ function buildWildRegionTrailsImpl(options: {
   return { roads: builtRoads, nextRoadId };
 }
 
-function renderRoadSegments(roads: Road[], offsetX: number, offsetY: number): Array<{ key: string; x1: number; y1: number; x2: number; y2: number; kind: RoadKind }> {
-  const result: Array<{ key: string; x1: number; y1: number; x2: number; y2: number; kind: RoadKind }> = [];
+type RenderedRoadSegment = { key: string; roadId: number; segmentKey: string; x1: number; y1: number; x2: number; y2: number; kind: RoadKind };
+type RenderedRiverCrossing = RiverCrossing & { x: number; y: number; ux: number; uy: number; nx: number; ny: number };
+
+function renderRoadSegments(roads: Road[], offsetX: number, offsetY: number): RenderedRoadSegment[] {
+  const result: RenderedRoadSegment[] = [];
   for (const road of roads) {
     for (let i = 0; i < road.segments.length; i += 1) {
       const s = road.segments[i];
       const p1 = toPixel(s.from.q, s.from.r);
       const p2 = toPixel(s.to.q, s.to.r);
-      result.push({ key: `road-${road.id}-${i}`, x1: p1.x + offsetX, y1: p1.y + offsetY, x2: p2.x + offsetX, y2: p2.y + offsetY, kind: s.kind });
+      result.push({ key: `road-${road.id}-${i}`, roadId: road.id, segmentKey: normalizeRoadSegmentKey(s.from, s.to), x1: p1.x + offsetX, y1: p1.y + offsetY, x2: p2.x + offsetX, y2: p2.y + offsetY, kind: s.kind });
     }
   }
   return result;
 }
 
-function renderTrailDots(
-  roadSegments: Array<{ key: string; x1: number; y1: number; x2: number; y2: number; kind: RoadKind }>
-): Array<{ key: string; x: number; y: number }> {
-  const dots: Array<{ key: string; x: number; y: number }> = [];
-  const dotSpacing = 14;
-  for (const segment of roadSegments) {
-    if (segment.kind !== 'trail') continue;
+function renderRiverCrossings(roadSegments: RenderedRoadSegment[], crossings: RiverCrossing[]): RenderedRiverCrossing[] {
+  const segmentsByKey = new Map(roadSegments.map((segment) => [`${segment.roadId}:${segment.segmentKey}`, segment]));
+  return crossings.flatMap((crossing) => {
+    const segment = segmentsByKey.get(`${crossing.roadId}:${crossing.roadSegmentKey}`);
+    if (!segment) return [];
     const dx = segment.x2 - segment.x1;
     const dy = segment.y2 - segment.y1;
     const length = Math.hypot(dx, dy);
-    if (length < 0.001) continue;
-    const dotCount = Math.max(2, Math.floor(length / dotSpacing) + 1);
-    for (let i = 0; i < dotCount; i += 1) {
-      const t = dotCount === 1 ? 0.5 : i / (dotCount - 1);
-      dots.push({
-        key: `${segment.key}-dot-${i}`,
-        x: segment.x1 + dx * t,
-        y: segment.y1 + dy * t
-      });
-    }
-  }
-  return dots;
+    if (length < 0.001) return [];
+    const ux = dx / length;
+    const uy = dy / length;
+    return [{ ...crossing, x: (segment.x1 + segment.x2) / 2, y: (segment.y1 + segment.y2) / 2, ux, uy, nx: -uy, ny: ux }];
+  });
 }
 
 function getLakeVertices(allHexes: AxialHex[], hexTerrainByKey: Map<string, HexTerrainData>): LakeVertex[] {
@@ -10994,6 +11057,7 @@ export function App() {
   const [candidateHexes, setCandidateHexes] = useState<AxialHex[]>([]);
   const [rivers, setRivers] = useState<River[]>([]);
   const [roads, setRoads] = useState<Road[]>([]);
+  const [crossings, setCrossings] = useState<RiverCrossing[]>([]);
   const [selectedHex, setSelectedHex] = useState<AxialHex | null>(START_HEX);
   const [debugRivers, setDebugRivers] = useState(false);
   const [hexTerrainByKey, setHexTerrainByKey] = useState<Map<string, HexTerrainData>>(new Map());
@@ -11137,7 +11201,7 @@ export function App() {
     const minBaseY = Math.min(...all.map((h) => toPixel(h.q, h.r).y));
     return renderRoadSegments(roads, (HEX_SIZE * SQRT3) / 2 - minBaseX, HEX_SIZE - minBaseY);
   }, [positionedHexes, roads]);
-  const trailDots = useMemo(() => renderTrailDots(roadSegments), [roadSegments]);
+  const renderedCrossings = useMemo(() => renderRiverCrossings(roadSegments, crossings), [roadSegments, crossings]);
 
   const riverOffset = useMemo(() => {
     const all = positionedHexes.hexes;
@@ -11346,6 +11410,7 @@ export function App() {
       candidateHexes,
       rivers,
       roads: cloneRoads(roads),
+      crossings,
       hexTerrainByKey,
       waterPoiByKey,
       biomeOverrideByHexKey,
@@ -11374,6 +11439,7 @@ export function App() {
     setWaterPoiByKey(assignWaterPoiLayer(waterPoiByKey, finalRegions, finalHexTerrainByKey, newlyCheckedWaterHexKeys));
     setNextLakeId(nextLakeIdAfterLandlockedSea);
     setRoads(tractRoadResult.roads);
+    setCrossings(reconcileRiverCrossings(tractRoadResult.roads, riversAfterTractGeneration, crossings));
     setNextRoadId(tractRoadResult.nextRoadId);
     setSelectedHex(anchorHex);
   };
@@ -12071,6 +12137,7 @@ export function App() {
         candidateHexes,
         rivers,
         roads: cloneRoads(roads),
+        crossings,
         hexTerrainByKey,
         waterPoiByKey,
         biomeOverrideByHexKey,
@@ -12128,6 +12195,7 @@ export function App() {
 
       setRivers(riversWithDeltas);
       setRoads(roadResult.roads);
+      setCrossings(reconcileRiverCrossings(roadResult.roads, riversWithDeltas, crossings));
       setNextRoadId(roadResult.nextRoadId);
       setSelectedHex(finalCenterHex);
       return;
@@ -12156,6 +12224,7 @@ export function App() {
     setCandidateHexes([]);
     setRivers([]);
     setRoads([]);
+    setCrossings([]);
     setNextRoadId(1);
     setSelectedHex(START_HEX);
     setHexTerrainByKey(new Map());
@@ -12186,6 +12255,7 @@ export function App() {
     setCandidateHexes(snapshot.candidateHexes);
     setRivers(snapshot.rivers);
     setRoads(pruneRoadsToRegionHexes(cloneRoads(snapshot.roads), snapshot.regions));
+    setCrossings(snapshot.crossings);
     setHexTerrainByKey(snapshot.hexTerrainByKey);
     setWaterPoiByKey(snapshot.waterPoiByKey);
     setBiomeOverrideByHexKey(snapshot.biomeOverrideByHexKey);
@@ -12656,6 +12726,7 @@ export function App() {
       candidateHexes,
       rivers,
       roads,
+      crossings,
       terrainByHexKey: Object.fromEntries(hexTerrainByKey.entries()),
       waterPoiByHexKey: Object.fromEntries(waterPoiByKey.entries()),
       biomeOverrideByHexKey: Object.fromEntries(biomeOverrideByHexKey.entries())
@@ -12717,6 +12788,7 @@ export function App() {
       setCandidateHexes(importedCandidateHexes);
       setRivers(parsed.map.rivers);
       setRoads(parsed.map.roads);
+      setCrossings(parsed.map.crossings);
       setHexTerrainByKey(importedTerrain);
       setWaterPoiByKey(importedWaterPoi);
       setBiomeOverrideByHexKey(importedBiomeOverrides);
@@ -13052,12 +13124,47 @@ export function App() {
               ))}
             </g>
             <g className="roads-layer">
-              {roadSegments.filter((segment) => segment.kind === 'road').map((segment) => (
-                <line key={segment.key} x1={segment.x1} y1={segment.y1} x2={segment.x2} y2={segment.y2} className="road-line" />
-              ))}
-              {trailDots.map((dot) => (
-                <circle key={dot.key} cx={dot.x} cy={dot.y} r={2.1} className="road-trail-dot" />
-              ))}
+              {roadSegments.map((segment) => {
+                const crossing = renderedCrossings.find((item) => item.roadId === segment.roadId && item.roadSegmentKey === segment.segmentKey);
+                if (segment.kind === 'trail') return (
+                  <line key={segment.key} x1={segment.x1} y1={segment.y1} x2={segment.x2} y2={segment.y2} className="trail-line" />
+                );
+                if (!crossing) return <line key={segment.key} x1={segment.x1} y1={segment.y1} x2={segment.x2} y2={segment.y2} className="road-line" />;
+                const gap = 7;
+                const beforeX = crossing.x - crossing.ux * gap;
+                const beforeY = crossing.y - crossing.uy * gap;
+                const afterX = crossing.x + crossing.ux * gap;
+                const afterY = crossing.y + crossing.uy * gap;
+                if (crossing.kind === 'ferry') return (
+                  <g key={segment.key} className="river-crossing river-crossing--ferry">
+                    <line x1={segment.x1} y1={segment.y1} x2={beforeX} y2={beforeY} className="road-line" />
+                    <line x1={afterX} y1={afterY} x2={segment.x2} y2={segment.y2} className="road-line" />
+                  </g>
+                );
+                if (crossing.kind === 'ford') return (
+                  <g key={segment.key} className="river-crossing river-crossing--ford">
+                    <line x1={segment.x1} y1={segment.y1} x2={beforeX} y2={beforeY} className="road-line" />
+                    <line x1={beforeX} y1={beforeY} x2={afterX} y2={afterY} className="road-line road-line--ford" />
+                    <line x1={afterX} y1={afterY} x2={segment.x2} y2={segment.y2} className="road-line" />
+                  </g>
+                );
+                const railOffset = 4;
+                const railLength = 11;
+                return (
+                  <g key={segment.key} className="river-crossing river-crossing--bridge">
+                    <line x1={segment.x1} y1={segment.y1} x2={segment.x2} y2={segment.y2} className="road-line" />
+                    {[-1, 1].map((side) => {
+                      const offset = side * railOffset;
+                      const outerOffset = side * (railOffset + 2);
+                      const startX = crossing.x - crossing.ux * railLength + crossing.nx * outerOffset;
+                      const startY = crossing.y - crossing.uy * railLength + crossing.ny * outerOffset;
+                      const endX = crossing.x + crossing.ux * railLength + crossing.nx * outerOffset;
+                      const endY = crossing.y + crossing.uy * railLength + crossing.ny * outerOffset;
+                      return <polyline key={side} points={`${startX},${startY} ${crossing.x - crossing.ux * (railLength - 3) + crossing.nx * offset},${crossing.y - crossing.uy * (railLength - 3) + crossing.ny * offset} ${crossing.x + crossing.ux * (railLength - 3) + crossing.nx * offset},${crossing.y + crossing.uy * (railLength - 3) + crossing.ny * offset} ${endX},${endY}`} className="bridge-rail" />;
+                    })}
+                  </g>
+                );
+              })}
             </g>
             </g>
             {showHexCoordinates ? (
