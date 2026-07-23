@@ -1,6 +1,7 @@
 import { type ChangeEvent, type CSSProperties, type KeyboardEvent, type MouseEvent, type TouchEvent, type WheelEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { getOutgoingConnectorFullnessFromEndpoint, type RiverFullness } from './riverFullness';
 import { chooseRiverCrossingKind, type RiverCrossingKind } from './riverCrossings';
+import { hasRiverRapids } from './riverRapids';
 
 // ===== ЛОКАЛЬНОЕ ПРОФИЛИРОВАНИЕ (безопасно для прода) =====
 // Включается ТОЛЬКО при ?profile=1 в URL. По умолчанию выключено: __profiled
@@ -478,7 +479,7 @@ const SVG_EXPORT_STYLES = `
   .hex-coordinate-label { fill:#253247; font-size:7px; font-weight:700; letter-spacing:.02em; pointer-events:none; user-select:none; }
   .rivers-layer, .roads-layer, .river-debug-layer { pointer-events:none; }
   .river-polyline { fill:none; stroke:#3ea2ff; stroke-linecap:round; stroke-linejoin:round; }
-  .river-direction-arrow { stroke:#ffffff; stroke-width:1.2; stroke-linecap:round; }
+  .river-direction-arrow, .river-rapid-mark { stroke:#ffffff; stroke-width:1.2; stroke-linecap:round; }
   .river-arrow-head { fill:#ffffff; }
   .road-line { stroke:#8b6a3f; stroke-width:3; stroke-linecap:round; }
   .road-line--ford { opacity:.42; }
@@ -1081,6 +1082,17 @@ function getRiverWidth(hexWidth: number, fullness: RiverFullness): number {
 
 function getRiverArrowScale(fullness: RiverFullness): number {
   return 0.4 + fullness * 0.2;
+}
+
+// A stable pseudo-random roll lets a rapid remain in the same place after any
+// re-render, export, or save/load cycle without adding mutable map state.
+function getStableRandomValue(value: string): number {
+  let hash = 2166136261;
+  for (let index = 0; index < value.length; index += 1) {
+    hash ^= value.charCodeAt(index);
+    hash = Math.imul(hash, 16777619);
+  }
+  return (hash >>> 0) / 0x100000000;
 }
 
 function getRegionHeightLevelFromBiomeId(biomeId: BiomeId): RegionHeightLevel {
@@ -7498,7 +7510,7 @@ function renderRiverSegments(river: River, offsetX: number, offsetY: number, lak
 function renderRiverDirectionArrows(river: River, offsetX: number, offsetY: number, lakeEdgeKeys: Set<string>) {
   const fullnessByEdge = getRiverSectorFullnessByEdge(river);
   const fallbackFullness = getRiverFallbackFullness(river);
-  const arrows: Array<{ key: string; x1: number; y1: number; x2: number; y2: number; fullness: RiverFullness }> = [];
+  const arrows: Array<{ key: string; edgeKey: string; x1: number; y1: number; x2: number; y2: number; fullness: RiverFullness }> = [];
   for (let i = 1; i < river.vertexPath.length; i += 1) {
     const start = river.vertexPath[i - 1];
     const end = river.vertexPath[i];
@@ -7518,6 +7530,7 @@ function renderRiverDirectionArrows(river: River, offsetX: number, offsetY: numb
     const my = (start.y + end.y) / 2;
     arrows.push({
       key: `river-arrow-${river.id}-${i}`,
+      edgeKey: segmentEdgeKey,
       x1: mx - ux * halfArrow + offsetX,
       y1: my - uy * halfArrow + offsetY,
       x2: mx + ux * halfArrow + offsetX,
@@ -7526,6 +7539,45 @@ function renderRiverDirectionArrows(river: River, offsetX: number, offsetY: numb
     });
   }
   return arrows;
+}
+
+function renderRiverRapidMarks(
+  river: River,
+  offsetX: number,
+  offsetY: number,
+  lakeEdgeKeys: Set<string>,
+  rapidEdgeKeys: Set<string>
+) {
+  const fullnessByEdge = getRiverSectorFullnessByEdge(river);
+  const fallbackFullness = getRiverFallbackFullness(river);
+  const marks: Array<{ key: string; x1: number; y1: number; x2: number; y2: number; fullness: RiverFullness }> = [];
+  for (let i = 1; i < river.vertexPath.length; i += 1) {
+    const start = river.vertexPath[i - 1];
+    const end = river.vertexPath[i];
+    const segmentEdgeKey = edgeKey(start, end);
+    if (isLakeEdge(segmentEdgeKey, lakeEdgeKeys) || !rapidEdgeKeys.has(segmentEdgeKey)) continue;
+    const dx = end.x - start.x;
+    const dy = end.y - start.y;
+    const length = Math.hypot(dx, dy);
+    if (length < 0.001) continue;
+    const fullness = fullnessByEdge.get(segmentEdgeKey) ?? fallbackFullness;
+    const nx = -dy / length;
+    const ny = dx / length;
+    const halfMarkLength = Math.max(2.5, getRiverWidth(getHexWidth(HEX_SIZE), fullness) * 0.7);
+    for (const position of [0.38, 0.5, 0.62]) {
+      const x = start.x + dx * position + offsetX;
+      const y = start.y + dy * position + offsetY;
+      marks.push({
+        key: `river-rapid-${river.id}-${i}-${position}`,
+        x1: x - nx * halfMarkLength,
+        y1: y - ny * halfMarkLength,
+        x2: x + nx * halfMarkLength,
+        y2: y + ny * halfMarkLength,
+        fullness
+      });
+    }
+  }
+  return marks;
 }
 
 
@@ -11192,6 +11244,26 @@ export function App() {
     const offsetY = HEX_SIZE - minBaseY;
     return rivers.flatMap((river) => renderRiverSegments(river, offsetX, offsetY, hiddenRiverEdgeKeys));
   }, [positionedHexes, rivers, hiddenRiverEdgeKeys]);
+  const rapidRiverEdgeKeys = useMemo(() => {
+    const crossingEdgeKeys = new Set(crossings.map((crossing) => crossing.riverEdgeKey));
+    const regionHeightById = new Map(regions.map((region) => [region.id, region.heightLevel]));
+    const rapidEdgeKeys = new Set<string>();
+    for (const river of rivers) {
+      const fullnessByEdge = getRiverSectorFullnessByEdge(river);
+      const assignedRegionByEdge = getRiverSectorAssignedRegionByEdge(river);
+      const fallbackFullness = getRiverFallbackFullness(river);
+      for (let index = 1; index < river.vertexPath.length; index += 1) {
+        const riverEdgeKey = edgeKey(river.vertexPath[index - 1], river.vertexPath[index]);
+        if (crossingEdgeKeys.has(riverEdgeKey)) continue;
+        const fullness = fullnessByEdge.get(riverEdgeKey) ?? fallbackFullness;
+        const heightLevel = regionHeightById.get(assignedRegionByEdge.get(riverEdgeKey) ?? river.regionId) ?? 1;
+        if (hasRiverRapids({ fullness, heightLevel }, () => getStableRandomValue(`${river.id}:${riverEdgeKey}`))) {
+          rapidEdgeKeys.add(riverEdgeKey);
+        }
+      }
+    }
+    return rapidEdgeKeys;
+  }, [rivers, crossings, regions]);
   const riverDirectionArrows = useMemo(() => {
     const all = positionedHexes.hexes;
     if (all.length === 0) return [];
@@ -11199,8 +11271,18 @@ export function App() {
     const minBaseY = Math.min(...all.map((h) => toPixel(h.q, h.r).y));
     const offsetX = (HEX_SIZE * SQRT3) / 2 - minBaseX;
     const offsetY = HEX_SIZE - minBaseY;
-    return rivers.flatMap((river) => renderRiverDirectionArrows(river, offsetX, offsetY, hiddenRiverEdgeKeys));
-  }, [positionedHexes, rivers, hiddenRiverEdgeKeys]);
+    return rivers.flatMap((river) => renderRiverDirectionArrows(river, offsetX, offsetY, hiddenRiverEdgeKeys))
+      .filter((arrow) => !rapidRiverEdgeKeys.has(arrow.edgeKey));
+  }, [positionedHexes, rivers, hiddenRiverEdgeKeys, rapidRiverEdgeKeys]);
+  const riverRapidMarks = useMemo(() => {
+    const all = positionedHexes.hexes;
+    if (all.length === 0) return [];
+    const minBaseX = Math.min(...all.map((h) => toPixel(h.q, h.r).x));
+    const minBaseY = Math.min(...all.map((h) => toPixel(h.q, h.r).y));
+    const offsetX = (HEX_SIZE * SQRT3) / 2 - minBaseX;
+    const offsetY = HEX_SIZE - minBaseY;
+    return rivers.flatMap((river) => renderRiverRapidMarks(river, offsetX, offsetY, hiddenRiverEdgeKeys, rapidRiverEdgeKeys));
+  }, [positionedHexes, rivers, hiddenRiverEdgeKeys, rapidRiverEdgeKeys]);
   const roadSegments = useMemo(() => {
     const all = positionedHexes.hexes;
     if (all.length === 0) return [];
@@ -13135,6 +13217,17 @@ export function App() {
                   className="river-direction-arrow"
                   strokeWidth={1.2 * getRiverArrowScale(arrow.fullness)}
                   markerEnd={`url(#river-arrowhead-${arrow.fullness})`}
+                />
+              ))}
+              {riverRapidMarks.map((mark) => (
+                <line
+                  key={mark.key}
+                  x1={mark.x1}
+                  y1={mark.y1}
+                  x2={mark.x2}
+                  y2={mark.y2}
+                  className="river-rapid-mark"
+                  strokeWidth={1.2 * getRiverArrowScale(mark.fullness)}
                 />
               ))}
             </g>
