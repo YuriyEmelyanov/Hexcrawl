@@ -1,5 +1,6 @@
 import { type ChangeEvent, type CSSProperties, type KeyboardEvent, type MouseEvent, type TouchEvent, type WheelEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { getOutgoingConnectorFullnessFromEndpoint, type RiverFullness } from './riverFullness';
+import { chooseRiverCrossingKind, type RiverCrossingKind } from './riverCrossings';
 
 // ===== ЛОКАЛЬНОЕ ПРОФИЛИРОВАНИЕ (безопасно для прода) =====
 // Включается ТОЛЬКО при ?profile=1 в URL. По умолчанию выключено: __profiled
@@ -231,7 +232,6 @@ type RiverConnectorSplit = {
 type RoadKind = 'road' | 'trail';
 type RoadSegment = { from: AxialHex; to: AxialHex; kind: RoadKind };
 type Road = { id: number; regionId: number; segments: RoadSegment[] };
-type RiverCrossingKind = 'bridge' | 'ferry' | 'ford';
 type RiverCrossing = {
   key: string;
   roadId: number;
@@ -8179,8 +8179,10 @@ function getRiverCrossingKey(roadId: number, roadSegmentKey: string, riverId: nu
 
 // Пересечения создаются после построения геометрии рек и дорог. Уже существующий
 // тип сохраняется, поэтому добавление следующего региона не меняет старые мосты.
-function reconcileRiverCrossings(roads: Road[], rivers: River[], existing: RiverCrossing[]): RiverCrossing[] {
+function reconcileRiverCrossings(roads: Road[], rivers: River[], regions: Region[], existing: RiverCrossing[]): RiverCrossing[] {
   const existingByKey = new Map(existing.map((crossing) => [crossing.key, crossing]));
+  const regionById = new Map(regions.map((region) => [region.id, region]));
+  const riverFullnessByEdge = getRiverCrossingFullnessByEdge(rivers);
   const riverByEdge = new Map<string, River[]>();
   for (const river of rivers) {
     for (let index = 1; index < river.vertexPath.length; index += 1) {
@@ -8191,9 +8193,9 @@ function reconcileRiverCrossings(roads: Road[], rivers: River[], existing: River
     }
   }
 
-  const kinds: RiverCrossingKind[] = ['bridge', 'ferry', 'ford'];
   const crossings: RiverCrossing[] = [];
   for (const road of roads) {
+    const region = regionById.get(road.regionId);
     for (const segment of road.segments) {
       const sharedEdge = getSharedHexEdgeVertexKeys(segment.from, segment.to);
       if (!sharedEdge) continue;
@@ -8210,7 +8212,12 @@ function reconcileRiverCrossings(roads: Road[], rivers: River[], existing: River
           roadSegmentKey,
           riverId: river.id,
           riverEdgeKey,
-          kind: randomFrom(kinds)
+          kind: chooseRiverCrossingKind({
+            fullness: riverFullnessByEdge.get(riverEdgeKey) ?? getRiverFallbackFullness(river),
+            heightLevel: region?.heightLevel ?? 1,
+            biomeLandType: region?.biomeLandType ?? 'settled',
+            roadKind: segment.kind
+          })
         });
       }
     }
@@ -11439,7 +11446,7 @@ export function App() {
     setWaterPoiByKey(assignWaterPoiLayer(waterPoiByKey, finalRegions, finalHexTerrainByKey, newlyCheckedWaterHexKeys));
     setNextLakeId(nextLakeIdAfterLandlockedSea);
     setRoads(tractRoadResult.roads);
-    setCrossings(reconcileRiverCrossings(tractRoadResult.roads, riversAfterTractGeneration, crossings));
+    setCrossings(reconcileRiverCrossings(tractRoadResult.roads, riversAfterTractGeneration, finalRegions, crossings));
     setNextRoadId(tractRoadResult.nextRoadId);
     setSelectedHex(anchorHex);
   };
@@ -12195,7 +12202,7 @@ export function App() {
 
       setRivers(riversWithDeltas);
       setRoads(roadResult.roads);
-      setCrossings(reconcileRiverCrossings(roadResult.roads, riversWithDeltas, crossings));
+      setCrossings(reconcileRiverCrossings(roadResult.roads, riversWithDeltas, finalRegions, crossings));
       setNextRoadId(roadResult.nextRoadId);
       setSelectedHex(finalCenterHex);
       return;
