@@ -13284,10 +13284,10 @@ export function App() {
                   key={waterfall.key}
                   className="river-waterfall"
                   href="/waterfall.svg"
-                  x={waterfall.x - 14}
-                  y={waterfall.y - 16}
-                  width={28}
-                  height={32}
+                  x={waterfall.x - 8}
+                  y={waterfall.y - 8}
+                  width={16}
+                  height={16}
                 />
               ))}
             </g>
