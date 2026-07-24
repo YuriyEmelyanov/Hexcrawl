@@ -2,6 +2,7 @@ import { type ChangeEvent, type CSSProperties, type KeyboardEvent, type MouseEve
 import { getOutgoingConnectorFullnessFromEndpoint, type RiverFullness } from './riverFullness';
 import { chooseRiverCrossingKind, type RiverCrossingKind } from './riverCrossings';
 import { hasRiverRapids } from './riverRapids';
+import { hasRiverWaterfall } from './riverWaterfalls';
 
 // ===== ЛОКАЛЬНОЕ ПРОФИЛИРОВАНИЕ (безопасно для прода) =====
 // Включается ТОЛЬКО при ?profile=1 в URL. По умолчанию выключено: __profiled
@@ -480,6 +481,7 @@ const SVG_EXPORT_STYLES = `
   .rivers-layer, .roads-layer, .river-debug-layer { pointer-events:none; }
   .river-polyline { fill:none; stroke:#3ea2ff; stroke-linecap:round; stroke-linejoin:round; }
   .river-direction-arrow, .river-rapid-mark { stroke:#ffffff; stroke-width:1.2; stroke-linecap:round; }
+  .river-waterfall { pointer-events:none; }
   .river-arrow-head { fill:#ffffff; }
   .road-line { stroke:#8b6a3f; stroke-width:3; stroke-linecap:round; }
   .road-line--ford { opacity:.42; }
@@ -11284,6 +11286,51 @@ export function App() {
     const offsetY = HEX_SIZE - minBaseY;
     return rivers.flatMap((river) => renderRiverRapidMarks(river, offsetX, offsetY, hiddenRiverEdgeKeys, rapidRiverEdgeKeys));
   }, [positionedHexes, rivers, hiddenRiverEdgeKeys, rapidRiverEdgeKeys]);
+  const riverWaterfalls = useMemo(() => {
+    const all = positionedHexes.hexes;
+    if (all.length === 0) return [];
+
+    const minBaseX = Math.min(...all.map((hex) => toPixel(hex.q, hex.r).x));
+    const minBaseY = Math.min(...all.map((hex) => toPixel(hex.q, hex.r).y));
+    const offsetX = (HEX_SIZE * SQRT3) / 2 - minBaseX;
+    const offsetY = HEX_SIZE - minBaseY;
+    const regionHeightById = new Map(regions.map((region) => [region.id, region.heightLevel]));
+    const lakeVertexKeys = new Set(lakeVertices.map((vertex) => vertex.key));
+    const confluenceVertexKeys = new Set(getRiverConfluences(rivers).map((confluence) => confluence.vertexKey));
+    const riverStartVertexKeys = new Set(rivers.flatMap((river) => river.vertexPath[0] ? [river.vertexPath[0].key] : []));
+    const waterfallsByVertexKey = new Map<string, { key: string; x: number; y: number }>();
+
+    for (const river of rivers) {
+      const assignedRegionByEdge = getRiverSectorAssignedRegionByEdge(river);
+      for (let index = 0; index < river.vertexPath.length; index += 1) {
+        const vertex = river.vertexPath[index];
+        if (waterfallsByVertexKey.has(vertex.key)) continue;
+
+        const adjacentEdgeKeys = [
+          index > 0 ? edgeKey(river.vertexPath[index - 1], vertex) : undefined,
+          index < river.vertexPath.length - 1 ? edgeKey(vertex, river.vertexPath[index + 1]) : undefined
+        ].filter((edge): edge is string => edge !== undefined);
+        const isInMountainBiome = adjacentEdgeKeys.some((edge) =>
+          regionHeightById.get(assignedRegionByEdge.get(edge) ?? river.regionId) === 3
+        );
+
+        if (!hasRiverWaterfall({
+          heightLevel: isInMountainBiome ? 3 : 1,
+          isRiverStart: riverStartVertexKeys.has(vertex.key),
+          isConfluence: confluenceVertexKeys.has(vertex.key),
+          touchesLake: lakeVertexKeys.has(vertex.key)
+        }, () => getStableRandomValue(`waterfall:${vertex.key}`))) continue;
+
+        waterfallsByVertexKey.set(vertex.key, {
+          key: `river-waterfall-${vertex.key}`,
+          x: vertex.x + offsetX,
+          y: vertex.y + offsetY
+        });
+      }
+    }
+
+    return Array.from(waterfallsByVertexKey.values());
+  }, [positionedHexes, rivers, regions, lakeVertices]);
   const roadSegments = useMemo(() => {
     const all = positionedHexes.hexes;
     if (all.length === 0) return [];
@@ -13230,6 +13277,17 @@ export function App() {
                   y2={mark.y2}
                   className="river-rapid-mark"
                   strokeWidth={1.2 * getRiverArrowScale(mark.fullness)}
+                />
+              ))}
+              {riverWaterfalls.map((waterfall) => (
+                <image
+                  key={waterfall.key}
+                  className="river-waterfall"
+                  href="/waterfall.svg"
+                  x={waterfall.x - 14}
+                  y={waterfall.y - 16}
+                  width={28}
+                  height={32}
                 />
               ))}
             </g>
