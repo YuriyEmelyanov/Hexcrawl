@@ -11298,7 +11298,7 @@ export function App() {
     const lakeVertexKeys = new Set(lakeVertices.map((vertex) => vertex.key));
     const confluenceVertexKeys = new Set(getRiverConfluences(rivers).map((confluence) => confluence.vertexKey));
     const riverStartVertexKeys = new Set(rivers.flatMap((river) => river.vertexPath[0] ? [river.vertexPath[0].key] : []));
-    const waterfallsByVertexKey = new Map<string, { key: string; x: number; y: number }>();
+    const waterfallsByVertexKey = new Map<string, { key: string; vertexKey: string; x: number; y: number }>();
 
     for (const river of rivers) {
       const assignedRegionByEdge = getRiverSectorAssignedRegionByEdge(river);
@@ -11323,6 +11323,7 @@ export function App() {
 
         waterfallsByVertexKey.set(vertex.key, {
           key: `river-waterfall-${vertex.key}`,
+          vertexKey: vertex.key,
           x: vertex.x + offsetX,
           y: vertex.y + offsetY
         });
@@ -12453,6 +12454,12 @@ export function App() {
   const nearbyHexes = selectedHex ? getHexNeighbors(selectedHex) : [];
   const nearbyRivers = selectedHex ? getRiversOnHexEdges(selectedHex, rivers) : [];
   const selectedHexEdgeKeys = selectedHex ? new Set(getHexEdgeKeys(selectedHex)) : new Set<string>();
+  const selectedHexVertexKeys = selectedHex ? new Set(getHexCornerPoints(selectedHex).map((vertex) => vertex.key)) : new Set<string>();
+  const waterfallLabel = language === 'ru' ? 'водопад' : 'waterfall';
+  const waterfallRiverVertexKeys = useMemo(
+    () => new Set(riverWaterfalls.map((waterfall) => waterfall.vertexKey)),
+    [riverWaterfalls]
+  );
   const selectedHexCrossings = selectedHexKey
     ? crossings.filter((crossing) => {
       const road = roads.find((item) => item.id === crossing.roadId);
@@ -13609,7 +13616,11 @@ export function App() {
                           const hasRapids = river.vertexPath.some((vertex, index) => index > 0
                             && selectedHexEdgeKeys.has(edgeKey(river.vertexPath[index - 1], vertex))
                             && rapidRiverEdgeKeys.has(edgeKey(river.vertexPath[index - 1], vertex)));
-                          return <p key={`nearby-river-${river.id}`}><span className="nearby-river-marker" aria-hidden="true">→</span>{hasRapids ? <span className="nearby-river-marker" aria-hidden="true">|||</span> : null} {t.river} {river.id}{hasRapids ? ` (${t.rapids})` : ''}</p>;
+                          const hasWaterfall = river.vertexPath.some((vertex) => (
+                            selectedHexVertexKeys.has(vertex.key) && waterfallRiverVertexKeys.has(vertex.key)
+                          ));
+                          const riverFeatures = [hasWaterfall ? waterfallLabel : null, hasRapids ? t.rapids : null].filter((feature): feature is string => feature !== null);
+                          return <p key={`nearby-river-${river.id}`}><span className="nearby-river-marker" aria-hidden="true">→</span>{hasRapids ? <span className="nearby-river-marker" aria-hidden="true">|||</span> : null}{hasWaterfall ? <img className="nearby-waterfall-marker" src="/waterfall.svg" alt="" aria-hidden="true" /> : null} {t.river} {river.id}{riverFeatures.length > 0 ? ` (${riverFeatures.join(', ')})` : ''}</p>;
                         })}
                         {selectedHexCrossings.map((crossing) => <p key={`selected-crossing-${crossing.key}`}>{crossing.kind === 'bridge' ? '🌉' : crossing.kind === 'ferry' ? '⛴️' : '🌊'} {t[crossing.kind]}</p>)}
                         {nearbyLakeIds.map((lakeId) => <p key={`nearby-lake-${lakeId}`}>💧 {t.lake} {lakeId}</p>)}
