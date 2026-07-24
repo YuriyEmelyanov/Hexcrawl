@@ -484,6 +484,7 @@ const SVG_EXPORT_STYLES = `
   .road-line { stroke:#8b6a3f; stroke-width:3; stroke-linecap:round; }
   .road-line--ford { opacity:.42; }
   .trail-line { stroke:#8b6a3f; stroke-width:1.5; stroke-linecap:butt; stroke-dasharray:3 7; }
+  .trail-line--ford { stroke:#3ea2ff; opacity:.42; }
   .bridge-rail { fill:none; stroke:#4f3922; stroke-width:1.1; stroke-linecap:round; stroke-linejoin:round; }
   .dbg-node-all { fill:#a0a7b2; opacity:.85; }
   .dbg-node-boundary { fill:#ffd84a; }
@@ -13235,10 +13236,8 @@ export function App() {
             <g className="roads-layer">
               {roadSegments.map((segment) => {
                 const crossing = renderedCrossings.find((item) => item.roadId === segment.roadId && item.roadSegmentKey === segment.segmentKey);
-                if (segment.kind === 'trail') return (
-                  <line key={segment.key} x1={segment.x1} y1={segment.y1} x2={segment.x2} y2={segment.y2} className="trail-line" />
-                );
-                if (!crossing) return <line key={segment.key} x1={segment.x1} y1={segment.y1} x2={segment.x2} y2={segment.y2} className="road-line" />;
+                const lineClass = segment.kind === 'trail' ? 'trail-line' : 'road-line';
+                if (!crossing) return <line key={segment.key} x1={segment.x1} y1={segment.y1} x2={segment.x2} y2={segment.y2} className={lineClass} />;
                 const gap = 7;
                 const beforeX = crossing.x - crossing.ux * gap;
                 const beforeY = crossing.y - crossing.uy * gap;
@@ -13246,22 +13245,28 @@ export function App() {
                 const afterY = crossing.y + crossing.uy * gap;
                 if (crossing.kind === 'ferry') return (
                   <g key={segment.key} className="river-crossing river-crossing--ferry">
-                    <line x1={segment.x1} y1={segment.y1} x2={beforeX} y2={beforeY} className="road-line" />
-                    <line x1={afterX} y1={afterY} x2={segment.x2} y2={segment.y2} className="road-line" />
+                    {segment.kind === 'road' && <>
+                      <line x1={segment.x1} y1={segment.y1} x2={beforeX} y2={beforeY} className="road-line" />
+                      <line x1={afterX} y1={afterY} x2={segment.x2} y2={segment.y2} className="road-line" />
+                    </>}
                   </g>
                 );
                 if (crossing.kind === 'ford') return (
                   <g key={segment.key} className="river-crossing river-crossing--ford">
-                    <line x1={segment.x1} y1={segment.y1} x2={beforeX} y2={beforeY} className="road-line" />
-                    <line x1={beforeX} y1={beforeY} x2={afterX} y2={afterY} className="road-line road-line--ford" />
-                    <line x1={afterX} y1={afterY} x2={segment.x2} y2={segment.y2} className="road-line" />
+                    {segment.kind === 'trail' ? (
+                      <line x1={segment.x1} y1={segment.y1} x2={segment.x2} y2={segment.y2} className="trail-line trail-line--ford" />
+                    ) : <>
+                      <line x1={segment.x1} y1={segment.y1} x2={beforeX} y2={beforeY} className="road-line" />
+                      <line x1={beforeX} y1={beforeY} x2={afterX} y2={afterY} className="road-line road-line--ford" />
+                      <line x1={afterX} y1={afterY} x2={segment.x2} y2={segment.y2} className="road-line" />
+                    </>}
                   </g>
                 );
                 const railOffset = 4;
                 const railLength = 11;
                 return (
                   <g key={segment.key} className="river-crossing river-crossing--bridge">
-                    <line x1={segment.x1} y1={segment.y1} x2={segment.x2} y2={segment.y2} className="road-line" />
+                    <line x1={segment.x1} y1={segment.y1} x2={segment.x2} y2={segment.y2} className={lineClass} />
                     {[-1, 1].map((side) => {
                       const offset = side * railOffset;
                       const outerOffset = side * (railOffset + 2);
