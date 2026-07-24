@@ -5,15 +5,18 @@ export type RiverRapidsContext = {
   heightLevel: 1 | 2 | 3;
 };
 
+const RAPIDS_CHANCE_BY_HEIGHT_AND_FULLNESS: Record<RiverRapidsContext['heightLevel'], Record<RiverFullness, number>> = {
+  // Plains
+  1: { 1: 10, 2: 5, 3: 2, 4: 1, 5: 0.1 },
+  // Hills
+  2: { 1: 50, 2: 35, 3: 20, 4: 100, 5: 2 },
+  // Mountains
+  3: { 1: 90, 2: 80, 3: 60, 4: 30, 5: 10 }
+};
+
 /** Returns the chance, in percent, that a river edge has rapids. */
 export function getRiverRapidsChance(context: RiverRapidsContext): number {
-  const fullnessMultiplier = context.fullness === 1 ? 5
-    : context.fullness === 2 ? 4
-      : context.fullness === 3 ? 3
-        : context.fullness === 4 ? 2
-          : 1;
-  const heightMultiplier = context.heightLevel === 3 ? 6 : context.heightLevel === 2 ? 3 : 1;
-  return Math.min(100, 1 * fullnessMultiplier * heightMultiplier);
+  return RAPIDS_CHANCE_BY_HEIGHT_AND_FULLNESS[context.heightLevel][context.fullness];
 }
 
 export function hasRiverRapids(

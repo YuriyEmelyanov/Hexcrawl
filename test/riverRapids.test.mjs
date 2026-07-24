@@ -3,18 +3,22 @@ import test from 'node:test';
 
 import { getRiverRapidsChance, hasRiverRapids } from '../src/riverRapids.ts';
 
-test('calculates rapids chance from fullness and height multipliers', () => {
-  assert.equal(getRiverRapidsChance({ fullness: 5, heightLevel: 1 }), 1);
-  assert.equal(getRiverRapidsChance({ fullness: 4, heightLevel: 1 }), 2);
-  assert.equal(getRiverRapidsChance({ fullness: 3, heightLevel: 1 }), 3);
-  assert.equal(getRiverRapidsChance({ fullness: 2, heightLevel: 1 }), 4);
-  assert.equal(getRiverRapidsChance({ fullness: 1, heightLevel: 1 }), 5);
-  assert.equal(getRiverRapidsChance({ fullness: 2, heightLevel: 2 }), 12);
-  assert.equal(getRiverRapidsChance({ fullness: 1, heightLevel: 3 }), 30);
+test('calculates rapids chance from the height and fullness threshold table', () => {
+  const expectedChances = {
+    1: [10, 5, 2, 1, 0.1],
+    2: [50, 35, 20, 100, 2],
+    3: [90, 80, 60, 30, 10]
+  };
+
+  for (const [heightLevel, chances] of Object.entries(expectedChances)) {
+    for (const [index, chance] of chances.entries()) {
+      assert.equal(getRiverRapidsChance({ fullness: index + 1, heightLevel: Number(heightLevel) }), chance);
+    }
+  }
 });
 
 test('selects rapids when the roll is below the calculated chance', () => {
-  const context = { fullness: 1, heightLevel: 3 };
-  assert.equal(hasRiverRapids(context, () => 0.299), true);
-  assert.equal(hasRiverRapids(context, () => 0.3), false);
+  const context = { fullness: 3, heightLevel: 3 };
+  assert.equal(hasRiverRapids(context, () => 0.599), true);
+  assert.equal(hasRiverRapids(context, () => 0.6), false);
 });
