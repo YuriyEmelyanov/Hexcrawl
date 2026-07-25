@@ -13530,7 +13530,6 @@ export function App() {
                     y={position.y - 8}
                     width={16}
                     height={16}
-                    transform={isMapRotated ? `rotate(90 ${position.x} ${position.y})` : undefined}
                   />
                 );
               })}
