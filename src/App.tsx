@@ -11482,6 +11482,8 @@ export function App() {
     const waterfallsByVertexKey = new Map<string, { key: string; vertexKey: string; x: number; y: number }>();
 
     for (const river of rivers) {
+      const fullnessByEdge = getRiverSectorFullnessByEdge(river);
+      const fallbackFullness = getRiverFallbackFullness(river);
       const assignedRegionByEdge = getRiverSectorAssignedRegionByEdge(river);
       for (let index = 0; index < river.vertexPath.length; index += 1) {
         const vertex = river.vertexPath[index];
@@ -11491,12 +11493,16 @@ export function App() {
           index > 0 ? edgeKey(river.vertexPath[index - 1], vertex) : undefined,
           index < river.vertexPath.length - 1 ? edgeKey(vertex, river.vertexPath[index + 1]) : undefined
         ].filter((edge): edge is string => edge !== undefined);
-        const isInMountainBiome = adjacentEdgeKeys.some((edge) =>
-          regionHeightById.get(assignedRegionByEdge.get(edge) ?? river.regionId) === 3
-        );
+        const heightLevel = Math.max(...adjacentEdgeKeys.map((edge) =>
+          regionHeightById.get(assignedRegionByEdge.get(edge) ?? river.regionId) ?? 1
+        )) as RegionHeightLevel;
+        const fullness = Math.max(...adjacentEdgeKeys.map((edge) =>
+          fullnessByEdge.get(edge) ?? fallbackFullness
+        )) as RiverFullness;
 
         if (!hasRiverWaterfall({
-          heightLevel: isInMountainBiome ? 3 : 1,
+          fullness,
+          heightLevel,
           isRiverStart: riverStartVertexKeys.has(vertex.key),
           isConfluence: confluenceVertexKeys.has(vertex.key),
           touchesLake: lakeVertexKeys.has(vertex.key)
