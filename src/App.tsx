@@ -4043,20 +4043,64 @@ function addLakeAroundRiverSplitVertex(
   const seedHexes = splitVertexTouchingHexes.length > 0 ? splitVertexTouchingHexes : availableRegionHexes;
   const seedHex = randomFrom(seedHexes);
   const regionHexByKey = new Map(availableRegionHexes.map((hex) => [hexKey(hex), hex]));
-  const selectedKeys = new Set<string>([hexKey(seedHex)]);
+  const seedKey = hexKey(seedHex);
+  const selectedKeys = new Set<string>([seedKey]);
+
+  // Расстояние гекс→вершина статично: считаем один раз, а не в компараторе каждого шага.
+  const distByKey = new Map<string, number>();
+  for (const hex of availableRegionHexes) distByKey.set(hexKey(hex), getHexCenterDistanceToVertex(hex, splitVertex));
+
+  // Фронтир ведём инкрементально в порядке ПЕРВОГО ОБНАРУЖЕНИЯ. Раньше фронтир каждый шаг
+  // пересобирался flatMap-ом по всем выбранным и полностью пересортировывался (O(target²·log)).
+  // Порядок обнаружения совпадает с порядком первого вхождения в прежнем flatMap (выбранные
+  // раскрываются в порядке добавления, соседи — в фиксированном порядке), поэтому выбор
+  // «ближайший к вершине, при равенстве — раньше обнаруженный» идентичен прежнему
+  // frontier.sort(byDist)[0] со стабильной сортировкой.
+  const frontierOrder: string[] = [];
+  const frontierSet = new Set<string>();
+  const expandFrontier = (hex: AxialHex) => {
+    for (const neighbor of getHexNeighbors(hex)) {
+      const neighborKey = hexKey(neighbor);
+      if (!regionHexByKey.has(neighborKey)) continue;
+      if (selectedKeys.has(neighborKey) || frontierSet.has(neighborKey)) continue;
+      frontierSet.add(neighborKey);
+      frontierOrder.push(neighborKey);
+    }
+  };
+  expandFrontier(seedHex);
 
   while (selectedKeys.size < targetHexCount && selectedKeys.size < availableRegionHexes.length) {
-    const frontier = Array.from(selectedKeys)
-      .flatMap((key) => getHexNeighbors(regionHexByKey.get(key) ?? seedHex))
-      .filter((hex) => regionHexByKey.has(hexKey(hex)) && !selectedKeys.has(hexKey(hex)))
-      .sort((left, right) => getHexCenterDistanceToVertex(left, splitVertex) - getHexCenterDistanceToVertex(right, splitVertex));
+    // Первый (в порядке обнаружения) невыбранный фронтир-гекс с минимальным расстоянием.
+    let nextKey: string | undefined;
+    let bestDist = Infinity;
+    for (const key of frontierOrder) {
+      if (selectedKeys.has(key)) continue;
+      const dist = distByKey.get(key)!;
+      if (dist < bestDist) {
+        bestDist = dist;
+        nextKey = key;
+      }
+    }
 
-    const nextHex = frontier[0]
-      ?? availableRegionHexes
-        .filter((hex) => !selectedKeys.has(hexKey(hex)))
-        .sort((left, right) => getHexCenterDistanceToVertex(left, splitVertex) - getHexCenterDistanceToVertex(right, splitVertex))[0];
-    if (!nextHex) break;
-    selectedKeys.add(hexKey(nextHex));
+    // Фоллбэк (фронтир исчерпан): ближайший невыбранный по порядку availableRegionHexes,
+    // как и прежний availableRegionHexes.filter(!selected).sort(byDist)[0].
+    if (nextKey === undefined) {
+      let bestFallbackDist = Infinity;
+      for (const hex of availableRegionHexes) {
+        const key = hexKey(hex);
+        if (selectedKeys.has(key)) continue;
+        const dist = distByKey.get(key)!;
+        if (dist < bestFallbackDist) {
+          bestFallbackDist = dist;
+          nextKey = key;
+        }
+      }
+    }
+
+    if (nextKey === undefined) break;
+    selectedKeys.add(nextKey);
+    const nextHex = regionHexByKey.get(nextKey);
+    if (nextHex) expandFrontier(nextHex);
   }
 
   const lakeHexes = Array.from(selectedKeys)
@@ -4963,15 +5007,27 @@ function findBestFreeRiverPathToAnyTargetImpl(
 const findBestFreeRiverPathToAnyTarget = __profiled('  ↳ findBestFreeRiverPathToAnyTarget', findBestFreeRiverPathToAnyTargetImpl);
 
 function buildBoundingBox(occupiedHexes: Set<string>, padding = 2): { minQ: number; maxQ: number; minR: number; maxR: number } {
-  const occupied = Array.from(occupiedHexes).map(parseHexKey);
-  if (occupied.length === 0) {
+  // Один проход вместо четырёх Math.min/max(...spread) с промежуточными .map().
+  // Идентичный результат, без риска переполнения стека на очень больших множествах.
+  let minQ = Infinity;
+  let maxQ = -Infinity;
+  let minR = Infinity;
+  let maxR = -Infinity;
+  for (const key of occupiedHexes) {
+    const { q, r } = parseHexKey(key);
+    if (q < minQ) minQ = q;
+    if (q > maxQ) maxQ = q;
+    if (r < minR) minR = r;
+    if (r > maxR) maxR = r;
+  }
+  if (minQ === Infinity) {
     return { minQ: -padding, maxQ: padding, minR: -padding, maxR: padding };
   }
   return {
-    minQ: Math.min(...occupied.map((h) => h.q)) - padding,
-    maxQ: Math.max(...occupied.map((h) => h.q)) + padding,
-    minR: Math.min(...occupied.map((h) => h.r)) - padding,
-    maxR: Math.max(...occupied.map((h) => h.r)) + padding
+    minQ: minQ - padding,
+    maxQ: maxQ + padding,
+    minR: minR - padding,
+    maxR: maxR + padding
   };
 }
 
@@ -5075,7 +5131,7 @@ export function weightedPickCandidate(candidates: GrowthCandidate[]): GrowthCand
   return candidates[candidates.length - 1];
 }
 
-export function findFillableEnclosedEmptyAreas(
+function findFillableEnclosedEmptyAreasImpl(
   currentRegionHexes: Set<string>,
   occupiedHexes: Set<string>
 ): AxialHex[][] {
@@ -5094,8 +5150,10 @@ export function findFillableEnclosedEmptyAreas(
 
   return enclosedAreas;
 }
+// Профилируется: зовётся на каждом шаге роста региона (см. ?profile).
+export const findFillableEnclosedEmptyAreas = __profiled('findFillableEnclosedEmptyAreas (замыкания, каждый шаг роста)', findFillableEnclosedEmptyAreasImpl);
 
-export function getFrontierCandidateHexes(currentRegionHexes: Set<string>, occupiedHexes: Set<string>): AxialHex[] {
+function getFrontierCandidateHexesImpl(currentRegionHexes: Set<string>, occupiedHexes: Set<string>): AxialHex[] {
   const frontierMap = new Map<string, AxialHex>();
   for (const regionHex of Array.from(currentRegionHexes).map(parseHexKey)) {
     for (const neighbor of getHexNeighbors(regionHex)) {
@@ -5105,6 +5163,8 @@ export function getFrontierCandidateHexes(currentRegionHexes: Set<string>, occup
   }
   return Array.from(frontierMap.values());
 }
+// Профилируется: пересобирает фронтир из всех гексов региона каждый шаг роста (см. ?profile).
+export const getFrontierCandidateHexes = __profiled('getFrontierCandidateHexes (фронтир, каждый шаг роста)', getFrontierCandidateHexesImpl);
 
 export const generateConnectedRegionFromAnchor = __profiled('generateConnectedRegionFromAnchor', generateConnectedRegionFromAnchorImpl);
 function generateConnectedRegionFromAnchorImpl(
@@ -8131,13 +8191,28 @@ function findRoadPathWithinRegion(options: {
   const startKey = hexKey(from);
   if (isLakeHex(from, hexTerrainByKey) || isSeaHex(from, hexTerrainByKey) || targetKeys.size === 0) return null;
   const allowedRoadHexKeys = new Set([startKey, ...allowRoadHexes.map(hexKey), ...Array.from(targetKeys)]);
-  const q: AxialHex[][] = [[from]];
+  // Parent-pointer BFS: очередь хранит только гексы, а не целые пути. Путь восстанавливается
+  // из cameFrom в конце. Порядок обхода и находимый путь идентичны прежней версии на целых
+  // путях (visited-once BFS даёт то же дерево), но per-run стоимость падает с O(V^2) до O(V).
+  const queue: AxialHex[] = [from];
+  const cameFrom = new Map<string, string>();
+  const hexByKey = new Map<string, AxialHex>([[startKey, from]]);
   const visited = new Set<string>([startKey]);
-  while (q.length) {
-    const path = q.shift()!;
-    const cur = path[path.length - 1];
+  for (let head = 0; head < queue.length; head += 1) {
+    const cur = queue[head]!;
     const curKey = hexKey(cur);
-    if (path.length > 1 && targetKeys.has(curKey)) return path;
+    if (curKey !== startKey && targetKeys.has(curKey)) {
+      const path: AxialHex[] = [];
+      let traceKey: string | undefined = curKey;
+      while (traceKey) {
+        const traceHex = hexByKey.get(traceKey);
+        if (!traceHex) break;
+        path.push(traceHex);
+        if (traceKey === startKey) break;
+        traceKey = cameFrom.get(traceKey);
+      }
+      return path.reverse();
+    }
     for (const n of getHexNeighbors(cur)) {
       const nk = hexKey(n);
       if (visited.has(nk) || !regionKeys.has(nk)) continue;
@@ -8147,7 +8222,9 @@ function findRoadPathWithinRegion(options: {
       const allowedRoadHex = allowedRoadHexKeys.has(nk);
       if (hasRoadHex && !allowedRoadHex) continue;
       visited.add(nk);
-      q.push([...path, n]);
+      cameFrom.set(nk, curKey);
+      hexByKey.set(nk, n);
+      queue.push(n);
     }
   }
   return null;
@@ -8627,14 +8704,28 @@ function findAlternativeRoadPathsWithinRegionImpl(options: {
   const pathKeys = new Set<string>();
   const maxAttempts = 12;
   for (let attempt = 0; attempt < maxAttempts && paths.length < maxAlternatives; attempt += 1) {
-    const q: AxialHex[][] = [[from]];
+    // Parent-pointer BFS вместо очереди целых путей. Порядок раскрытия соседей (включая
+    // per-attempt reverse/shuffle/sort для разнообразия) сохранён, поэтому найденный путь
+    // на каждой попытке идентичен прежней версии; убрано лишь копирование путей O(V) на шаг.
+    const queue: AxialHex[] = [from];
+    const cameFrom = new Map<string, string>();
+    const hexByKey = new Map<string, AxialHex>([[startKey, from]]);
     const visited = new Set<string>([startKey]);
     let found: AxialHex[] | null = null;
-    while (q.length > 0 && !found) {
-      const path = q.shift()!;
-      const cur = path[path.length - 1];
-      if (path.length > 1 && hexKey(cur) === targetKey) {
-        found = path;
+    for (let head = 0; head < queue.length && !found; head += 1) {
+      const cur = queue[head]!;
+      const curKey = hexKey(cur);
+      if (curKey !== startKey && curKey === targetKey) {
+        const path: AxialHex[] = [];
+        let traceKey: string | undefined = curKey;
+        while (traceKey) {
+          const traceHex = hexByKey.get(traceKey);
+          if (!traceHex) break;
+          path.push(traceHex);
+          if (traceKey === startKey) break;
+          traceKey = cameFrom.get(traceKey);
+        }
+        found = path.reverse();
         break;
       }
       let neighbors = getHexNeighbors(cur).filter((n) => {
@@ -8650,8 +8741,11 @@ function findAlternativeRoadPathsWithinRegionImpl(options: {
       else if (attempt % 5 === 3) neighbors = [...neighbors].sort((a, b) => hexDistance(a, target) - hexDistance(b, target));
       else if (attempt % 5 === 4) neighbors = [...neighbors].sort((a, b) => hexDistance(b, target) - hexDistance(a, target));
       for (const n of neighbors) {
-        visited.add(hexKey(n));
-        q.push([...path, n]);
+        const nk = hexKey(n);
+        visited.add(nk);
+        cameFrom.set(nk, curKey);
+        hexByKey.set(nk, n);
+        queue.push(n);
       }
     }
     if (!found) continue;
@@ -9687,14 +9781,29 @@ function findWildTrailPath(options: {
   if (!startInside && !targetInside) return null;
 
   const riverFullnessByEdge = getRiverCrossingFullnessByEdge(rivers);
-  const queue: AxialHex[][] = [[from]];
+  // Parent-pointer BFS: очередь хранит гексы, путь восстанавливается из cameFrom. Порядок
+  // раскрытия соседей (shuffleArray на каждом узле) и visited-once логика сохранены, поэтому
+  // находимый путь идентичен прежней версии на целых путях; убрано копирование пути O(V)/шаг.
+  const queue: AxialHex[] = [from];
+  const cameFrom = new Map<string, string>();
+  const hexByKey = new Map<string, AxialHex>([[startKey, from]]);
   const visited = new Set<string>([startKey]);
 
   for (let queueIndex = 0; queueIndex < queue.length; queueIndex += 1) {
-    const path = queue[queueIndex]!;
-    const current = path[path.length - 1];
+    const current = queue[queueIndex]!;
     const currentKey = hexKey(current);
-    if (path.length > 1 && currentKey === targetKey) return path;
+    if (currentKey !== startKey && currentKey === targetKey) {
+      const path: AxialHex[] = [];
+      let traceKey: string | undefined = currentKey;
+      while (traceKey) {
+        const traceHex = hexByKey.get(traceKey);
+        if (!traceHex) break;
+        path.push(traceHex);
+        if (traceKey === startKey) break;
+        traceKey = cameFrom.get(traceKey);
+      }
+      return path.reverse();
+    }
 
     for (const neighbor of shuffleArray(getHexNeighbors(current))) {
       const neighborKey = hexKey(neighbor);
@@ -9705,7 +9814,9 @@ function findWildTrailPath(options: {
       if (isLakeHex(neighbor, hexTerrainByKey) || isSeaHex(neighbor, hexTerrainByKey)) continue;
       if (pathStepCrossesRiver(current, neighbor, riverFullnessByEdge)) continue;
       visited.add(neighborKey);
-      queue.push([...path, neighbor]);
+      cameFrom.set(neighborKey, currentKey);
+      hexByKey.set(neighborKey, neighbor);
+      queue.push(neighbor);
     }
   }
 
@@ -10196,43 +10307,64 @@ function getCoastalSeaRiverConflict(
   return getRiverStartingFromSea(rivers, seaVertexKeys, seaEdgeKeys);
 }
 
+// Инвертированный индекс для морских проверок рек (#4). Строится ОДИН РАЗ по набору рек,
+// затем проверка кандидата — O(1) по его ~6 углам/рёбрам вместо скана всех рек на каждого.
+//   sourceVertexKeys  — вершины-истоки рек (path[0]): кандидат с таким углом морем быть не может.
+//   blockingEdgeKeys  — все рёбра рек, КРОМЕ последнего ребра к разрешённому устью:
+//                       кандидат, чьё ребро совпало с таким, морем быть не может.
+type RiverSeaBlockIndex = { sourceVertexKeys: Set<string>; blockingEdgeKeys: Set<string> };
+
+function buildRiverSeaBlockIndex(rivers: River[], allowedMouthVertexKeys: Set<string>): RiverSeaBlockIndex {
+  const sourceVertexKeys = new Set<string>();
+  const blockingEdgeKeys = new Set<string>();
+  for (const river of rivers) {
+    const path = river.vertexPath ?? [];
+    if (path.length < 2) continue;
+    sourceVertexKeys.add(path[0].key);
+    const mouthIndex = path.length - 1;
+    for (let index = 1; index < path.length; index += 1) {
+      const isLastEdgeToAllowedMouth = index === mouthIndex && allowedMouthVertexKeys.has(path[index].key);
+      if (isLastEdgeToAllowedMouth) continue;
+      blockingEdgeKeys.add(edgeKey(path[index - 1], path[index]));
+    }
+  }
+  return { sourceVertexKeys, blockingEdgeKeys };
+}
+
+// Заблокирован ли кандидат ребром реки вне устья (без проверки истоков).
+function hexBlockedByRiverEdgeIndex(hex: AxialHex, index: RiverSeaBlockIndex): boolean {
+  if (index.blockingEdgeKeys.size === 0) return false;
+  return getHexEdgesAsVertexPairs(hex).some((edge) => index.blockingEdgeKeys.has(edge.edgeKey));
+}
+
+// Заблокирован ли кандидат ребром реки вне устья ИЛИ вершиной-истоком.
+function hexBlockedByRiverEdgeOrSourceIndex(hex: AxialHex, index: RiverSeaBlockIndex): boolean {
+  if (index.sourceVertexKeys.size > 0
+    && getHexCornerPoints(hex).some((vertex) => index.sourceVertexKeys.has(vertex.key))) {
+    return true;
+  }
+  return hexBlockedByRiverEdgeIndex(hex, index);
+}
+
+// Обёртка со старой сигнатурой: строит индекс на месте. В циклах по кандидатам стройте индекс
+// один раз через buildRiverSeaBlockIndex и зовите hexBlockedByRiverEdgeOrSourceIndex напрямую.
 function candidateHexHasRiverEdgeOrSourceAwayFromMouth(
   hex: AxialHex,
   rivers: River[],
   allowedMouthVertexKeys: Set<string>
 ): boolean {
-  const hexVertexKeys = new Set(getHexCornerPoints(hex).map((vertex) => vertex.key));
-  const hexEdgeKeys = new Set(getHexEdgesAsVertexPairs(hex).map((edge) => edge.edgeKey));
-
-  return rivers.some((river) => {
-    const path = river.vertexPath ?? [];
-    if (path.length < 2) return false;
-
-    // Исток — это «конец реки, но не устье»: кандидат с таким углом не должен
-    // становиться морем, иначе река начнётся из моря. Остальные касания вершиной
-    // не блокируют море сами по себе: блокируют только рёбра, реально проходящие
-    // по гексу-кандидату.
-    if (hexVertexKeys.has(path[0].key)) return true;
-
-    const mouthIndex = path.length - 1;
-    for (let index = 1; index < path.length; index += 1) {
-      const currentEdgeKey = edgeKey(path[index - 1], path[index]);
-      if (!hexEdgeKeys.has(currentEdgeKey)) continue;
-      const isLastEdgeToAllowedMouth = index === mouthIndex && allowedMouthVertexKeys.has(path[index].key);
-      if (!isLastEdgeToAllowedMouth) return true;
-    }
-
-    return false;
-  });
+  return hexBlockedByRiverEdgeOrSourceIndex(hex, buildRiverSeaBlockIndex(rivers, allowedMouthVertexKeys));
 }
 
 function canPlaceSeaHexNearRiversImpl(
   hex: AxialHex,
   rivers: River[],
   allowedMouthVertexKeys: Set<string>,
-  _regionHexes: AxialHex[] = []
+  _regionHexes: AxialHex[] = [],
+  index?: RiverSeaBlockIndex
 ): boolean {
-  return !candidateHexHasRiverEdgeOrSourceAwayFromMouth(hex, rivers, allowedMouthVertexKeys);
+  const idx = index ?? buildRiverSeaBlockIndex(rivers, allowedMouthVertexKeys);
+  return !hexBlockedByRiverEdgeOrSourceIndex(hex, idx);
 }
 const canPlaceSeaHexNearRivers = __profiled('canPlaceSeaHexNearRivers', canPlaceSeaHexNearRiversImpl);
 
@@ -10243,8 +10375,9 @@ function filterSeaCandidatesByRiverInteraction(
   regionHexes: AxialHex[] = []
 ): Map<string, AxialHex> {
   const filtered = new Map<string, AxialHex>();
+  const riverSeaBlockIndex = buildRiverSeaBlockIndex(rivers, allowedMouthVertexKeys);
   for (const [key, hex] of candidates) {
-    if (canPlaceSeaHexNearRivers(hex, rivers, allowedMouthVertexKeys, regionHexes)) filtered.set(key, hex);
+    if (canPlaceSeaHexNearRivers(hex, rivers, allowedMouthVertexKeys, regionHexes, riverSeaBlockIndex)) filtered.set(key, hex);
   }
   return filtered;
 }
@@ -10255,7 +10388,7 @@ function filterSeaCandidatesByRiverInteraction(
 // получает «красный крест»: морем стать не может. Поэтому фронт заполнения моря об такие
 // гексы упирается так же, как об реки, а отрезанные ими кандидаты остаются сушей
 // («красные минусы» — не могут быть смежными с морем, потому что кресты мешают).
-function getRoadEndpointHexKeys(roads: Road[], centerHexKeys = new Set<string>()): Set<string> {
+function getRoadEndpointHexKeysImpl(roads: Road[], centerHexKeys = new Set<string>()): Set<string> {
   const keys = new Set<string>();
   const roadHexKeysById = new Map(roads.map((road) => [road.id, getRoadHexKeySet(road, 'road')]));
 
@@ -10282,6 +10415,8 @@ function getRoadEndpointHexKeys(roads: Road[], centerHexKeys = new Set<string>()
   }
   return keys;
 }
+// Профилируется: вложенный roads.some() → ~O(дороги²·концы) (см. ?profile).
+const getRoadEndpointHexKeys = __profiled('getRoadEndpointHexKeys (концы дорог, O(дороги²))', getRoadEndpointHexKeysImpl);
 
 function candidateTouchesRoadEndpoint(hex: AxialHex, roadEndpointKeys: Set<string>): boolean {
   if (roadEndpointKeys.size === 0) return false;
@@ -10311,12 +10446,15 @@ function candidateTouchesHexNearLake(
   ));
 }
 
-function candidateTouchesHexTouchingRiverStartVertex(hex: AxialHex, rivers: River[]): boolean {
-  const riverStartVertexKeys = new Set(
+function buildRiverStartVertexKeys(rivers: River[]): Set<string> {
+  return new Set(
     rivers
       .map((river) => river.vertexPath?.[0]?.key)
       .filter((key): key is string => typeof key === 'string')
   );
+}
+
+function candidateTouchesRiverStartVertexKeys(hex: AxialHex, riverStartVertexKeys: Set<string>): boolean {
   if (riverStartVertexKeys.size === 0) return false;
 
   return getHexNeighbors(hex).some((neighbor) => (
@@ -10324,27 +10462,21 @@ function candidateTouchesHexTouchingRiverStartVertex(hex: AxialHex, rivers: Rive
   ));
 }
 
+function candidateTouchesHexTouchingRiverStartVertex(hex: AxialHex, rivers: River[]): boolean {
+  // Тонкая обёртка над версией с предпосчитанным множеством. Внутри цикла кандидатов
+  // используйте candidateTouchesRiverStartVertexKeys, построив множество один раз, — иначе
+  // riverStartVertexKeys пересобирается из всех рек на каждого кандидата.
+  return candidateTouchesRiverStartVertexKeys(hex, buildRiverStartVertexKeys(rivers));
+}
+
+// Обёртка со старой сигнатурой: строит индекс на месте. В циклах по кандидатам стройте индекс
+// один раз через buildRiverSeaBlockIndex и зовите hexBlockedByRiverEdgeIndex напрямую.
 function candidateHexHasRiverEdgeAwayFromMouth(
   hex: AxialHex,
   rivers: River[],
   allowedMouthVertexKeys: Set<string>
 ): boolean {
-  const hexEdgeKeys = new Set(getHexEdgesAsVertexPairs(hex).map((edge) => edge.edgeKey));
-
-  return rivers.some((river) => {
-    const path = river.vertexPath ?? [];
-    if (path.length < 2) return false;
-
-    const mouthIndex = path.length - 1;
-    for (let index = 1; index < path.length; index += 1) {
-      const currentEdgeKey = edgeKey(path[index - 1], path[index]);
-      if (!hexEdgeKeys.has(currentEdgeKey)) continue;
-      const isLastEdgeToAllowedMouth = index === mouthIndex && allowedMouthVertexKeys.has(path[index].key);
-      if (!isLastEdgeToAllowedMouth) return true;
-    }
-
-    return false;
-  });
+  return hexBlockedByRiverEdgeIndex(hex, buildRiverSeaBlockIndex(rivers, allowedMouthVertexKeys));
 }
 
 // (Дядина модель, п.1) Единый сет «не-морских» гексов — кандидаты, которые НЕ МОГУТ стать
@@ -10365,9 +10497,11 @@ function getNonSeaCandidateKeys(
 ): Set<string> {
   const nonSea = new Set<string>();
   const roadEndpointKeys = getRoadEndpointHexKeys(roads, centerHexKeys);
+  const riverStartVertexKeys = buildRiverStartVertexKeys(rivers);
+  const riverSeaBlockIndex = buildRiverSeaBlockIndex(rivers, allowedMouthVertexKeys);
   for (const [key, hex] of candidates) {
-    if (candidateHexHasRiverEdgeAwayFromMouth(hex, rivers, allowedMouthVertexKeys)) { nonSea.add(key); continue; }
-    if (candidateTouchesHexTouchingRiverStartVertex(hex, rivers)) { nonSea.add(key); continue; }
+    if (hexBlockedByRiverEdgeIndex(hex, riverSeaBlockIndex)) { nonSea.add(key); continue; }
+    if (candidateTouchesRiverStartVertexKeys(hex, riverStartVertexKeys)) { nonSea.add(key); continue; }
     if (candidateTouchesRoadEndpoint(hex, roadEndpointKeys)) { nonSea.add(key); continue; }
     if (candidateTouchesHexNearLake(hex, existingTerrain)) { nonSea.add(key); continue; }
   }
