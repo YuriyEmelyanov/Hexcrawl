@@ -13420,17 +13420,6 @@ export function App() {
                   strokeWidth={1.2 * getRiverArrowScale(mark.fullness)}
                 />
               ))}
-              {riverWaterfalls.map((waterfall) => (
-                <image
-                  key={waterfall.key}
-                  className="river-waterfall"
-                  href="/waterfall.svg"
-                  x={waterfall.x - 8}
-                  y={waterfall.y - 8}
-                  width={16}
-                  height={16}
-                />
-              ))}
             </g>
             <g className="roads-layer">
               {roadSegments.map((segment) => {
@@ -13479,6 +13468,25 @@ export function App() {
                 );
               })}
             </g>
+            </g>
+            <g className="river-waterfalls-layer" pointerEvents="none">
+              {riverWaterfalls.map((waterfall) => {
+                const position = isMapRotated
+                  ? rotateMapPoint(waterfall.x, waterfall.y, positionedHexes.height)
+                  : waterfall;
+                return (
+                  <image
+                    key={waterfall.key}
+                    className="river-waterfall"
+                    href="/waterfall.svg"
+                    x={position.x - 8}
+                    y={position.y - 8}
+                    width={16}
+                    height={16}
+                    transform={isMapRotated ? `rotate(90 ${position.x} ${position.y})` : undefined}
+                  />
+                );
+              })}
             </g>
             {showHexCoordinates ? (
               <g className="hex-coordinate-layer">
