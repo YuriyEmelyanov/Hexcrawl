@@ -5133,13 +5133,14 @@ export function weightedPickCandidate(candidates: GrowthCandidate[]): GrowthCand
 
 function findFillableEnclosedEmptyAreasImpl(
   currentRegionHexes: Set<string>,
-  occupiedHexes: Set<string>
+  occupiedHexes: Set<string>,
+  precomputedFrontier?: AxialHex[]
 ): AxialHex[][] {
   const blockedHexes = new Set([...occupiedHexes, ...currentRegionHexes]);
   const bbox = buildBoundingBox(blockedHexes, 2);
   const visitedEmpty = new Set<string>();
   const enclosedAreas: AxialHex[][] = [];
-  const frontierCandidates = getFrontierCandidateHexes(currentRegionHexes, occupiedHexes);
+  const frontierCandidates = precomputedFrontier ?? getFrontierCandidateHexes(currentRegionHexes, occupiedHexes);
 
   for (const start of frontierCandidates) {
     const startKey = hexKey(start);
@@ -5166,6 +5167,28 @@ function getFrontierCandidateHexesImpl(currentRegionHexes: Set<string>, occupied
 // Профилируется: пересобирает фронтир из всех гексов региона каждый шаг роста (см. ?profile).
 export const getFrontierCandidateHexes = __profiled('getFrontierCandidateHexes (фронтир, каждый шаг роста)', getFrontierCandidateHexesImpl);
 
+// Инкрементальное обновление фронтира при добавлении гекса в регион. Множество фронтира =
+// «пустые не-занятые гексы, соседние с регионом» — то же, что возвращает getFrontierCandidateHexes.
+// Порядок вставки (Map) совпадает с порядком перечисления getFrontierCandidateHexes (гексы региона
+// в порядке добавления × соседи в фиксированном порядке, по первому обнаружению), поэтому список
+// Array.from(frontier.values()) идентичен по составу И порядку. Это важно: и findFillable, и
+// weightedPickCandidate зависят от порядка кандидатов.
+function addHexToRegionWithFrontier(
+  hex: AxialHex,
+  regionKeys: Set<string>,
+  occupiedHexes: Set<string>,
+  frontier: Map<string, AxialHex>
+): void {
+  frontier.delete(hexKey(hex));
+  regionKeys.add(hexKey(hex));
+  for (const neighbor of getHexNeighbors(hex)) {
+    const neighborKey = hexKey(neighbor);
+    if (!regionKeys.has(neighborKey) && !occupiedHexes.has(neighborKey) && !frontier.has(neighborKey)) {
+      frontier.set(neighborKey, neighbor);
+    }
+  }
+}
+
 export const generateConnectedRegionFromAnchor = __profiled('generateConnectedRegionFromAnchor', generateConnectedRegionFromAnchorImpl);
 function generateConnectedRegionFromAnchorImpl(
   anchorHex: AxialHex,
@@ -5176,14 +5199,19 @@ function generateConnectedRegionFromAnchorImpl(
 ): AxialHex[] {
   const targetSize = Math.max(1, size);
   const regionKeys = new Set<string>([hexKey(anchorHex)]);
+  // Инкрементальный фронтир вместо пересборки getFrontierCandidateHexes(regionKeys) каждый шаг.
+  // Считается один раз за итерацию и переиспользуется findFillable-ом и шагом роста.
+  const frontier = new Map<string, AxialHex>();
+  addHexToRegionWithFrontier(anchorHex, regionKeys, occupiedHexes, frontier);
   while (true) {
-    const enclosedAreas = findFillableEnclosedEmptyAreas(regionKeys, occupiedHexes);
+    const frontierCandidates = Array.from(frontier.values());
+    const enclosedAreas = findFillableEnclosedEmptyAreas(regionKeys, occupiedHexes, frontierCandidates);
     if (enclosedAreas.length > 0) {
       let addedEnclosedHex = false;
       for (const area of enclosedAreas) {
         for (const hex of area) {
           if (zeroWeightHexes.has(hexKey(hex))) continue;
-          regionKeys.add(hexKey(hex));
+          addHexToRegionWithFrontier(hex, regionKeys, occupiedHexes, frontier);
           addedEnclosedHex = true;
         }
       }
@@ -5192,12 +5220,12 @@ function generateConnectedRegionFromAnchorImpl(
 
     if (regionKeys.size >= targetSize) break;
 
-    const growthCandidates = getFrontierCandidateHexes(regionKeys, occupiedHexes)
+    const growthCandidates = frontierCandidates
       .map((candidate) => getGrowthCandidate(candidate, regionKeys, occupiedHexes, zeroWeightHexes, neutralOccupiedNeighborWeightHexes))
       .filter((candidate): candidate is GrowthCandidate => candidate !== null);
     const picked = weightedPickCandidate(growthCandidates);
     if (!picked) break;
-    regionKeys.add(hexKey(picked.hex));
+    addHexToRegionWithFrontier(picked.hex, regionKeys, occupiedHexes, frontier);
   }
 
   return Array.from(regionKeys).map(parseHexKey);
@@ -5205,16 +5233,19 @@ function generateConnectedRegionFromAnchorImpl(
 
 function generateFallbackTractFromAnchor(anchorHex: AxialHex, occupiedHexes: Set<string>, targetSize = rollTractTargetSize()): AxialHex[] {
   const regionKeys = new Set<string>([hexKey(anchorHex)]);
+  const frontier = new Map<string, AxialHex>();
+  addHexToRegionWithFrontier(anchorHex, regionKeys, occupiedHexes, frontier);
 
   while (true) {
-    const enclosedAreas = findFillableEnclosedEmptyAreas(regionKeys, occupiedHexes);
+    const frontierCandidates = Array.from(frontier.values());
+    const enclosedAreas = findFillableEnclosedEmptyAreas(regionKeys, occupiedHexes, frontierCandidates);
     if (enclosedAreas.length > 0) {
       let addedEnclosedHex = false;
       for (const area of enclosedAreas) {
         for (const hex of area) {
           const key = hexKey(hex);
           if (occupiedHexes.has(key) || regionKeys.has(key)) continue;
-          regionKeys.add(key);
+          addHexToRegionWithFrontier(hex, regionKeys, occupiedHexes, frontier);
           addedEnclosedHex = true;
         }
       }
@@ -5223,7 +5254,7 @@ function generateFallbackTractFromAnchor(anchorHex: AxialHex, occupiedHexes: Set
 
     if (regionKeys.size >= targetSize) break;
 
-    const growthCandidates = getFrontierCandidateHexes(regionKeys, occupiedHexes)
+    const growthCandidates = frontierCandidates
       .map((candidate) => getGrowthCandidate(
         candidate,
         regionKeys,
@@ -5235,7 +5266,7 @@ function generateFallbackTractFromAnchor(anchorHex: AxialHex, occupiedHexes: Set
       .filter((candidate): candidate is GrowthCandidate => candidate !== null);
     const picked = weightedPickCandidate(growthCandidates);
     if (!picked) break;
-    regionKeys.add(hexKey(picked.hex));
+    addHexToRegionWithFrontier(picked.hex, regionKeys, occupiedHexes, frontier);
   }
 
   return Array.from(regionKeys).map(parseHexKey);
@@ -10392,22 +10423,38 @@ function getRoadEndpointHexKeysImpl(roads: Road[], centerHexKeys = new Set<strin
   const keys = new Set<string>();
   const roadHexKeysById = new Map(roads.map((road) => [road.id, getRoadHexKeySet(road, 'road')]));
 
+  // Инвертированный индекс: гекс → id дорог, чьи гексы его покрывают. Строится один раз
+  // (O(сумма длин дорог)), затем «упирается ли конец в другую дорогу» проверяется по ~6 соседям
+  // за O(1) вместо вложенного roads.some() (было ~O(дороги²·концы)).
+  const roadIdsByHexKey = new Map<string, Set<number>>();
+  for (const [roadId, roadHexKeys] of roadHexKeysById) {
+    for (const roadHexKey of roadHexKeys) {
+      let ids = roadIdsByHexKey.get(roadHexKey);
+      if (!ids) { ids = new Set<number>(); roadIdsByHexKey.set(roadHexKey, ids); }
+      ids.add(roadId);
+    }
+  }
+  const restsAgainstOtherRoad = (hexKeyValue: string, ownRoadId: number): boolean => {
+    const ids = roadIdsByHexKey.get(hexKeyValue);
+    if (!ids) return false;
+    for (const id of ids) if (id !== ownRoadId) return true;
+    return false;
+  };
+
   for (const road of roads) {
     for (const endpoint of getRoadEndpoints(road, 'road')) {
       const endpointKey = hexKey(endpoint);
       if (centerHexKeys.has(endpointKey)) continue;
 
       const ownRoadHexKeys = roadHexKeysById.get(road.id) ?? new Set<string>();
-      const restsAgainstAnotherRoad = roads.some((otherRoad) => {
-        if (otherRoad.id === road.id) return false;
-        const otherRoadHexKeys = roadHexKeysById.get(otherRoad.id);
-        if (!otherRoadHexKeys) return false;
-        if (otherRoadHexKeys.has(endpointKey)) return true;
-        return getHexNeighbors(endpoint).some((neighbor) => {
+      // Эквивалент прежнего: ∃ другая дорога, чьи гексы содержат конец, ИЛИ соседа конца (не
+      // принадлежащего своей дороге). ∃R'(P∨Q) = (∃R'P)∨(∃R'Q), поэтому проверки по индексу
+      // дают тот же результат, что вложенный some.
+      const restsAgainstAnotherRoad = restsAgainstOtherRoad(endpointKey, road.id)
+        || getHexNeighbors(endpoint).some((neighbor) => {
           const neighborKey = hexKey(neighbor);
-          return !ownRoadHexKeys.has(neighborKey) && otherRoadHexKeys.has(neighborKey);
+          return !ownRoadHexKeys.has(neighborKey) && restsAgainstOtherRoad(neighborKey, road.id);
         });
-      });
       if (restsAgainstAnotherRoad) continue;
 
       keys.add(endpointKey);
