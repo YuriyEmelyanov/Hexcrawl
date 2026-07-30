@@ -11569,7 +11569,7 @@ export function App() {
     return map;
   }, [regions, candidateHexes]);
 
-  const addFallbackTractToMap = (anchorHex: AxialHex, forceCoastalSea = false) => {
+  const addFallbackTractToMap = (anchorHex: AxialHex, forceCoastalSea = false, options: GenerationOptions = {}) => {
     const regionId = Math.max(0, ...regions.map((region) => region.id)) + 1;
     const existingSeaKeys = getSeaHexKeysWithout(hexTerrainByKey, [anchorHex]);
     // Если якорь урочища всё ещё числится морем в служебных данных,
@@ -11614,14 +11614,18 @@ export function App() {
       tractRiverGraphForCheck
     );
     const tractHasOutgoingRiver = tractTouchingEndpoints.some((endpoint) => endpoint.endpointType === 'start');
-    const biomeChoice = tractHasOutgoingRiver
-      ? chooseBiomeIdAtHeightLevel('wild', adjacentBiomeIds, regionId, 3, getRiverHeightConstraintForCandidateRegion(
-        tractCandidateRegionForRiverCheck,
-        regions,
-        rivers,
-        tractCandidateHexesForRiverCheck
-      ))
-      : chooseBiomeId('wild', adjacentBiomeIds, regionId);
+    const isFirstRegionWithAutomaticBiome = regions.length === 0 && !options.biomeId;
+    const biomeLandType = options.landType ?? (regions.length === 0 ? 'settled' : 'wild');
+    const biomeChoice = isFirstRegionWithAutomaticBiome
+      ? chooseBiomeIdAtHeightLevel(biomeLandType, adjacentBiomeIds, regionId, 1)
+      : tractHasOutgoingRiver
+        ? chooseBiomeIdAtHeightLevel(biomeLandType, adjacentBiomeIds, regionId, 3, getRiverHeightConstraintForCandidateRegion(
+          tractCandidateRegionForRiverCheck,
+          regions,
+          rivers,
+          tractCandidateHexesForRiverCheck
+        ))
+        : chooseBiomeId(biomeLandType, adjacentBiomeIds, regionId);
     const biomeId = biomeChoice.biomeId ?? (tractHasOutgoingRiver ? 'mountains' : FALLBACK_BIOME_ID);
     const biome = BIOMES[biomeId] ?? BIOMES[FALLBACK_BIOME_ID];
     const tractRegion: Region = {
@@ -11637,7 +11641,7 @@ export function App() {
       // пяти гексов, оно остаётся урочищем по типу региона.
       sizeCategory: 'tract',
       sizeLabel: 'Урочище',
-      biomeLandType: 'wild',
+      biomeLandType,
       heightLevel: biome.heightLevel,
       biomeId,
       biomeLabel: biome.label,
@@ -11810,7 +11814,7 @@ export function App() {
           acceptedAsFallbackTract: isLastRegionAttempt
         });
         if (isLastRegionAttempt) {
-          addFallbackTractToMap(anchorHex);
+          addFallbackTractToMap(anchorHex, false, options);
           return;
         }
         continue;
@@ -11876,7 +11880,7 @@ export function App() {
           outgoingRiverEndpointCount,
           isFirstRegion
         });
-        addFallbackTractToMap(anchorHex, true);
+        addFallbackTractToMap(anchorHex, true, options);
         return;
       }
       const biomeLandType = options.landType ?? (regions.length === 0 ? 'settled' : chooseCoastalAwareLandType(isCoastalRegion));
@@ -11885,6 +11889,9 @@ export function App() {
       // совместимость с ограничением высоты от рек.
       const tractHasOutgoingRiver = sizeCategory === 'tract' && outgoingRiverEndpointCount > 0;
       const pickBiome = (constraint: RiverHeightConstraint): ChooseBiomeResult => {
+        if (isFirstRegion && !options.biomeId) {
+          return chooseBiomeIdAtHeightLevel(biomeLandType, adjacentBiomeIds, regionId, 1, constraint);
+        }
         if (tractHasOutgoingRiver) {
           return chooseBiomeIdAtHeightLevel(biomeLandType, adjacentBiomeIds, regionId, 3, constraint);
         }
@@ -11961,7 +11968,7 @@ export function App() {
             acceptedWithStandardWeights: isLastRegionAttempt
           });
           if (!isLastRegionAttempt) continue;
-          biomeChoice = chooseBiomeId(biomeLandType, adjacentBiomeIds, regionId);
+          biomeChoice = pickBiome({ reasons: [] });
           effectiveRiverHeightConstraint = { reasons: [] };
           riversForGeneration = rivers;
 
@@ -11978,7 +11985,7 @@ export function App() {
           acceptedWithStandardWeights: isLastRegionAttempt
         });
         if (!isLastRegionAttempt) continue;
-        biomeChoice = chooseBiomeId(biomeLandType, adjacentBiomeIds, regionId);
+        biomeChoice = pickBiome({ reasons: [] });
       }
       const biomeId = biomeChoice.biomeId;
       const biome = BIOMES[biomeId] ?? BIOMES[FALLBACK_BIOME_ID];
@@ -12531,7 +12538,7 @@ export function App() {
       maxRegionAttempts,
       fallback: 'tract'
     });
-    addFallbackTractToMap(anchorHex);
+    addFallbackTractToMap(anchorHex, false, options);
   };
 
 
@@ -12540,7 +12547,7 @@ export function App() {
       addRegionToMap(anchorHex, options);
     } catch (error) {
       console.warn('Regular region generation crashed; creating fallback tract', { anchorHex, error });
-      addFallbackTractToMap(anchorHex);
+      addFallbackTractToMap(anchorHex, false, options);
     }
   };
 
