@@ -3,6 +3,7 @@ import { getOutgoingConnectorFullnessFromEndpoint, type RiverFullness } from './
 import { chooseRiverCrossingKind, type RiverCrossingKind } from './riverCrossings';
 import { hasRiverRapids } from './riverRapids';
 import { hasRiverWaterfall } from './riverWaterfalls';
+import { getOnlyOutgoingRiversPreferredHeight } from './biomeHeight';
 
 // ===== ЛОКАЛЬНОЕ ПРОФИЛИРОВАНИЕ (безопасно для прода) =====
 // Включается ТОЛЬКО при ?profile=1 в URL. По умолчанию выключено: __profiled
@@ -314,6 +315,7 @@ type VertexUsage = {
 type RiverHeightConstraint = {
   minHeight?: RegionHeightLevel;
   maxHeight?: RegionHeightLevel;
+  preferredHeight?: RegionHeightLevel;
   reasons: string[];
 };
 type ChooseBiomeResult = {
@@ -1419,6 +1421,21 @@ function chooseBiomeIdAtHeightLevel(
       requiredHeightLevel
     });
     return { biomeId: chooseWeightedRandom(relaxedWeights) };
+  }
+
+  // Some land types intentionally assign zero generation weight to an entire
+  // height (for example, settled mountains). An explicitly preferred/required
+  // height still needs a biome, so use eligible biomes uniformly as a last
+  // exact-height attempt before reporting a river constraint failure.
+  const exactHeightFallbackWeights = {} as Record<BiomeId, number>;
+  for (const biome of Object.values(BIOMES)) {
+    exactHeightFallbackWeights[biome.id] = biome.heightLevel === requiredHeightLevel
+      && (!riverHeightConstraint || isBiomeAllowedByRiverHeightConstraint(biome.id, riverHeightConstraint))
+      ? 1
+      : 0;
+  }
+  if (Object.values(exactHeightFallbackWeights).some((weight) => weight > 0)) {
+    return { biomeId: chooseWeightedRandom(exactHeightFallbackWeights) };
   }
 
   return { biomeId: null, reason: 'river_height_constraint_failed' };
@@ -3815,7 +3832,17 @@ function getRiverHeightConstraintForCandidateRegionImpl(
     }
   }
 
-  return { minHeight, maxHeight, reasons };
+  const preferredHeight = getOnlyOutgoingRiversPreferredHeight(
+    touchingEndpoints.map((endpoint) => ({
+      endpointType: endpoint.endpointType,
+      touchingHeight: findRegionTouchingVertex(endpoint.vertex, existingRegions)?.heightLevel
+    }))
+  );
+  if (preferredHeight !== undefined) {
+    reasons.push(`only outgoing rivers: prefer height ${preferredHeight}`);
+  }
+
+  return { minHeight, maxHeight, preferredHeight, reasons };
 }
 
 function getRegionVertexKeys(regionHexes: AxialHex[]): Set<string> {
@@ -11604,30 +11631,38 @@ export function App() {
       isTract: true
     };
     const tractCandidateHexesForRiverCheck = getCandidateHexes([...allRegionHexes, ...regionHexes], existingSeaKeys);
-    const tractRiverGraphForCheck = buildRiverGraphForRegion(
-      tractCandidateRegionForRiverCheck.hexes,
-      tractCandidateRegionForRiverCheck.hexes,
+    const tractRiverHeightConstraint = getRiverHeightConstraintForCandidateRegion(
+      tractCandidateRegionForRiverCheck,
+      regions,
+      rivers,
       tractCandidateHexesForRiverCheck
     );
-    const tractTouchingEndpoints = findRiverEndpointsTouchingRegion(
-      tractCandidateRegionForRiverCheck,
-      rivers,
-      tractRiverGraphForCheck
-    );
-    const tractHasOutgoingRiver = tractTouchingEndpoints.some((endpoint) => endpoint.endpointType === 'start');
     const isFirstRegionWithAutomaticBiome = regions.length === 0 && !options.biomeId;
     const biomeLandType = options.landType ?? (regions.length === 0 ? 'settled' : 'wild');
-    const biomeChoice = isFirstRegionWithAutomaticBiome
-      ? chooseBiomeIdAtHeightLevel(biomeLandType, adjacentBiomeIds, regionId, 1)
-      : tractHasOutgoingRiver
-        ? chooseBiomeIdAtHeightLevel(biomeLandType, adjacentBiomeIds, regionId, 3, getRiverHeightConstraintForCandidateRegion(
-          tractCandidateRegionForRiverCheck,
-          regions,
-          rivers,
-          tractCandidateHexesForRiverCheck
-        ))
-        : chooseBiomeId(biomeLandType, adjacentBiomeIds, regionId);
-    const biomeId = biomeChoice.biomeId ?? (tractHasOutgoingRiver ? 'mountains' : FALLBACK_BIOME_ID);
+    let biomeChoice: ChooseBiomeResult;
+    if (isFirstRegionWithAutomaticBiome) {
+      biomeChoice = chooseBiomeIdAtHeightLevel(biomeLandType, adjacentBiomeIds, regionId, 1, tractRiverHeightConstraint);
+    } else if (options.biomeId) {
+      biomeChoice = isBiomeAllowedByRiverHeightConstraint(options.biomeId, tractRiverHeightConstraint)
+        ? { biomeId: options.biomeId }
+        : { biomeId: null, reason: 'river_height_constraint_failed' };
+    } else {
+      biomeChoice = tractRiverHeightConstraint.preferredHeight === undefined
+        ? { biomeId: null, reason: 'river_height_constraint_failed' }
+        : chooseBiomeIdAtHeightLevel(
+          biomeLandType,
+          adjacentBiomeIds,
+          regionId,
+          tractRiverHeightConstraint.preferredHeight,
+          tractRiverHeightConstraint
+        );
+      // The exact max-neighbour + 1 height is a preference. If biome weights or
+      // compatibility make it unavailable, retain the normal river minimum.
+      if (!biomeChoice.biomeId) {
+        biomeChoice = chooseBiomeId(biomeLandType, adjacentBiomeIds, regionId, tractRiverHeightConstraint);
+      }
+    }
+    const biomeId = biomeChoice.biomeId ?? (tractRiverHeightConstraint.minHeight !== undefined ? 'mountains' : FALLBACK_BIOME_ID);
     const biome = BIOMES[biomeId] ?? BIOMES[FALLBACK_BIOME_ID];
     const tractRegion: Region = {
       id: regionId,
@@ -11888,18 +11923,24 @@ export function App() {
       // Выбор биома: либо принудительно заданный пользователем, либо обычный
       // взвешенный выбор. Принудительный биом всё равно проверяется на
       // совместимость с ограничением высоты от рек.
-      const tractHasOutgoingRiver = sizeCategory === 'tract' && outgoingRiverEndpointCount > 0;
       const pickBiome = (constraint: RiverHeightConstraint): ChooseBiomeResult => {
         if (isFirstRegion && !options.biomeId) {
           return chooseBiomeIdAtHeightLevel(biomeLandType, adjacentBiomeIds, regionId, 1, constraint);
-        }
-        if (tractHasOutgoingRiver) {
-          return chooseBiomeIdAtHeightLevel(biomeLandType, adjacentBiomeIds, regionId, 3, constraint);
         }
         if (options.biomeId) {
           return isBiomeAllowedByRiverHeightConstraint(options.biomeId, constraint)
             ? { biomeId: options.biomeId }
             : { biomeId: null, reason: 'river_height_constraint_failed' };
+        }
+        if (constraint.preferredHeight !== undefined) {
+          const preferredChoice = chooseBiomeIdAtHeightLevel(
+            biomeLandType,
+            adjacentBiomeIds,
+            regionId,
+            constraint.preferredHeight,
+            constraint
+          );
+          if (preferredChoice.biomeId) return preferredChoice;
         }
         return chooseBiomeId(biomeLandType, adjacentBiomeIds, regionId, constraint);
       };
@@ -11917,6 +11958,7 @@ export function App() {
         regionId,
         minHeight: riverHeightConstraint.minHeight,
         maxHeight: riverHeightConstraint.maxHeight,
+        preferredHeight: riverHeightConstraint.preferredHeight,
         reasons: riverHeightConstraint.reasons
       });
       let riversForGeneration = rivers;
