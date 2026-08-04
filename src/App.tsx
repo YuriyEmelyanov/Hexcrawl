@@ -486,7 +486,7 @@ const SVG_EXPORT_STYLES = `
   .road-line { stroke:#8b6a3f; stroke-width:3; stroke-linecap:round; }
   .road-line--ford { opacity:.42; }
   .trail-line { stroke:#8b6a3f; stroke-width:1.5; stroke-linecap:butt; stroke-dasharray:4.04145 4.04145; stroke-dashoffset:2.02073; }
-  .trail-line--ford { stroke:#3ea2ff; opacity:.42; }
+  .trail-line--ford { stroke-dasharray:none; stroke-dashoffset:0; opacity:.42; }
   .bridge-rail { fill:none; stroke:#4f3922; stroke-width:1.1; stroke-linecap:round; stroke-linejoin:round; }
   .dbg-node-all { fill:#a0a7b2; opacity:.85; }
   .dbg-node-boundary { fill:#ffd84a; }
@@ -10004,6 +10004,7 @@ function buildWildRegionTrailsImpl(options: {
 
 type RenderedRoadSegment = { key: string; roadId: number; segmentKey: string; x1: number; y1: number; x2: number; y2: number; kind: RoadKind };
 type RenderedRiverCrossing = RiverCrossing & { x: number; y: number; ux: number; uy: number; nx: number; ny: number };
+const TRAIL_DASH_LENGTH = 4.04145;
 
 function renderRoadSegments(roads: Road[], offsetX: number, offsetY: number): RenderedRoadSegment[] {
   const result: RenderedRoadSegment[] = [];
@@ -13502,7 +13503,29 @@ export function App() {
                 if (crossing.kind === 'ford') return (
                   <g key={segment.key} className="river-crossing river-crossing--ford">
                     {segment.kind === 'trail' ? (
-                      <line x1={segment.x1} y1={segment.y1} x2={segment.x2} y2={segment.y2} className="trail-line trail-line--ford" />
+                      <>
+                        <line
+                          x1={segment.x1}
+                          y1={segment.y1}
+                          x2={crossing.x - crossing.ux * TRAIL_DASH_LENGTH / 2}
+                          y2={crossing.y - crossing.uy * TRAIL_DASH_LENGTH / 2}
+                          className="trail-line"
+                        />
+                        <line
+                          x1={crossing.x - crossing.ux * TRAIL_DASH_LENGTH / 2}
+                          y1={crossing.y - crossing.uy * TRAIL_DASH_LENGTH / 2}
+                          x2={crossing.x + crossing.ux * TRAIL_DASH_LENGTH / 2}
+                          y2={crossing.y + crossing.uy * TRAIL_DASH_LENGTH / 2}
+                          className="trail-line trail-line--ford"
+                        />
+                        <line
+                          x1={crossing.x + crossing.ux * TRAIL_DASH_LENGTH / 2}
+                          y1={crossing.y + crossing.uy * TRAIL_DASH_LENGTH / 2}
+                          x2={segment.x2}
+                          y2={segment.y2}
+                          className="trail-line"
+                        />
+                      </>
                     ) : <>
                       <line x1={segment.x1} y1={segment.y1} x2={beforeX} y2={beforeY} className="road-line" />
                       <line x1={beforeX} y1={beforeY} x2={afterX} y2={afterY} className="road-line road-line--ford" />
