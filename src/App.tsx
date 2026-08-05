@@ -2950,7 +2950,8 @@ function tryAddEdgeMinorTributaryRiverImpl(
 
   try {
     const hasMountainFullnessTwoOrThreeOutgoingRiver = hasFullnessTwoOrThreeMountainOutgoingRiver(region, rivers, riverGraph);
-    const supportsEdgeTributary = region.sizeCategory === 'land'
+    const supportsEdgeTributary = region.sizeCategory === 'large_region'
+      || region.sizeCategory === 'land'
       || region.sizeCategory === 'vast_land'
       || hasMountainFullnessTwoOrThreeOutgoingRiver;
     if (!supportsEdgeTributary) {
@@ -3206,11 +3207,12 @@ function tryAddSmallTributaryRiverImpl(
 
   try {
     const hasMountainFullnessTwoOrThreeOutgoingRiver = hasFullnessTwoOrThreeMountainOutgoingRiver(region, rivers, riverGraph);
-    if (region.sizeCategory === 'land' || region.sizeCategory === 'vast_land') {
+    if (region.sizeCategory === 'large_region' || region.sizeCategory === 'land' || region.sizeCategory === 'vast_land') {
       return tryAddEdgeMinorTributaryRiver(region, terrainMap, riverGraph, rivers, candidateHexes, riverSlope);
     }
-    const supportsInteriorTributary = region.sizeCategory === 'region'
-      || region.sizeCategory === 'large_region'
+    const supportsInteriorTributary = region.sizeCategory === 'locality'
+      || region.sizeCategory === 'small_region'
+      || region.sizeCategory === 'region'
       || hasMountainFullnessTwoOrThreeOutgoingRiver;
     if (!supportsInteriorTributary) {
       logGeneration({ startCandidates: 0, built: false, reason: 'wrong_region_size', segmentCount: 0, reachedLake: false, targetLakeWasFree: false });
