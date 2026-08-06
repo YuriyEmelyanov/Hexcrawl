@@ -1,5 +1,9 @@
 import { type ChangeEvent, type CSSProperties, type KeyboardEvent, type MouseEvent, type TouchEvent, type WheelEvent, useEffect, useMemo, useRef, useState } from 'react';
-import { getOutgoingConnectorFullnessFromEndpoint, type RiverFullness } from './riverFullness';
+import {
+  getOutgoingConnectorFullnessFromEndpoint,
+  shouldReduceMainRiverUpstreamBeforeConfluence,
+  type RiverFullness
+} from './riverFullness';
 import { chooseRiverCrossingKind, type RiverCrossingKind } from './riverCrossings';
 import { hasRiverRapids } from './riverRapids';
 import { hasRiverWaterfall } from './riverWaterfalls';
@@ -2018,7 +2022,7 @@ type AssignRiverSectorsOptions = {
 type RiverFullnessRuleState = {
   confluenceTributaryFullnessByIndex: Map<number, RiverFullness>;
   allowConfluenceFullnessIncrease: boolean;
-  reduceHeightTwoUpstreamBeforeConfluence: boolean;
+  reduceUpstreamBeforeConfluence: boolean;
   firstConfluenceIndex?: number;
 };
 
@@ -2159,16 +2163,22 @@ function buildRiverFullnessRuleState(
     regionBoundaryVertexKeys,
     extraDownstreamBoundary
   );
-  const reduceHeightTwoUpstreamBeforeConfluence = confluenceIndices.length > 0 && riverEndpointTouchesCandidateBoundary(
-    river,
-    'upstream',
-    candidateBoundaryByHeight,
-    2
-  );
+  const reductionHeight = ([1, 2] as RegionHeightLevel[]).find((heightLevel) => (
+    shouldReduceMainRiverUpstreamBeforeConfluence(
+      heightLevel,
+      confluenceTributaryFullnessByIndex.values()
+    )
+    && riverEndpointTouchesCandidateBoundary(
+      river,
+      'upstream',
+      candidateBoundaryByHeight,
+      heightLevel
+    )
+  ));
   return {
     confluenceTributaryFullnessByIndex,
     allowConfluenceFullnessIncrease,
-    reduceHeightTwoUpstreamBeforeConfluence,
+    reduceUpstreamBeforeConfluence: reductionHeight !== undefined,
     firstConfluenceIndex: confluenceIndices.length > 0 ? Math.min(...confluenceIndices) : undefined
   };
 }
@@ -2210,10 +2220,10 @@ function applyRiverFullnessRules(
     && fromIndex < ruleState.firstConfluenceIndex
     && toIndex <= ruleState.firstConfluenceIndex;
   if (sectorIsUpstreamBeforeConfluence) {
-    const shouldReduceHeightTwo = ruleState.reduceHeightTwoUpstreamBeforeConfluence
+    const shouldReduceUpstream = ruleState.reduceUpstreamBeforeConfluence
       && sectorFullness === 3;
 
-    if (shouldReduceHeightTwo) {
+    if (shouldReduceUpstream) {
       sectorFullness = 2;
     }
   }
@@ -2499,7 +2509,7 @@ function assignRiverSectorsImpl(
         const localReductionAffectsSector = Boolean(
           canRecalculateFullness
           && !preserveKnownFullness
-          && riverFullnessRuleState.reduceHeightTwoUpstreamBeforeConfluence
+          && riverFullnessRuleState.reduceUpstreamBeforeConfluence
           && adjustedFullness.sectorFullness < startingFullness
         );
 
