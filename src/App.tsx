@@ -3845,10 +3845,14 @@ function getRiverHeightConstraintForCandidateRegionImpl(
   }
 
   const preferredHeight = getOnlyOutgoingRiversPreferredHeight(
-    touchingEndpoints.map((endpoint) => ({
-      endpointType: endpoint.endpointType,
-      touchingHeight: findRegionTouchingVertex(endpoint.vertex, existingRegions)?.heightLevel
-    }))
+    touchingEndpoints.map((endpoint) => {
+      const river = existingRivers.find((item) => item.id === endpoint.riverId);
+      return {
+        endpointType: endpoint.endpointType,
+        touchingHeight: findRegionTouchingVertex(endpoint.vertex, existingRegions)?.heightLevel,
+        fullness: river ? getRiverEndpointSectorFullness(river, endpoint.vertex.key) : undefined
+      };
+    })
   );
   if (preferredHeight !== undefined) {
     reasons.push(`only outgoing rivers: prefer height ${preferredHeight}`);
