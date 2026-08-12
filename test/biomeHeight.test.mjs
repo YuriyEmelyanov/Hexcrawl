@@ -19,6 +19,19 @@ test('prefers one level above the highest neighbour for only outgoing rivers', (
   ]), 3);
 });
 
+test('prefers height one when a full river flows into a height-one neighbour', () => {
+  assert.equal(getOnlyOutgoingRiversPreferredHeight([
+    { endpointType: 'start', touchingHeight: 1, fullness: 3 }
+  ]), 1);
+  assert.equal(getOnlyOutgoingRiversPreferredHeight([
+    { endpointType: 'start', touchingHeight: 1, fullness: 5 },
+    { endpointType: 'start', touchingHeight: 2, fullness: 1 }
+  ]), 1);
+  assert.equal(getOnlyOutgoingRiversPreferredHeight([
+    { endpointType: 'start', touchingHeight: 1, fullness: 2 }
+  ]), 2);
+});
+
 test('does not apply the preference without rivers or with an incoming river', () => {
   assert.equal(getOnlyOutgoingRiversPreferredHeight([]), undefined);
   assert.equal(getOnlyOutgoingRiversPreferredHeight([
