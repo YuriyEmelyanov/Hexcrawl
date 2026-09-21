@@ -3,6 +3,7 @@ import { chromium } from 'playwright';
 import fs from 'node:fs/promises';
 import assert from 'node:assert/strict';
 import { fileURLToPath } from 'node:url';
+import { stripVTControlCharacters } from 'node:util';
 
 // Run against the production build, not instrumented source.
 const server = spawn(process.execPath, [fileURLToPath(new URL('../../node_modules/vite/bin/vite.js', import.meta.url)), 'preview', '--host', '127.0.0.1', '--port', '4173', '--strictPort'], {
@@ -11,7 +12,15 @@ const server = spawn(process.execPath, [fileURLToPath(new URL('../../node_module
 let browser;
 try {
   await new Promise((resolve, reject) => {
-    server.stdout.on('data', data => { if (String(data).includes('Local:')) resolve(); });
+    let output = '';
+    const timeout = setTimeout(() => reject(new Error(`Preview did not start within 10 seconds: ${output}`)), 10000);
+    server.stdout.on('data', data => {
+      output += String(data);
+      if (stripVTControlCharacters(output).includes('Local:')) {
+        clearTimeout(timeout);
+        resolve();
+      }
+    });
     server.on('error', reject);
     server.on('exit', code => reject(new Error(`Preview exited: ${code}`)));
   });
