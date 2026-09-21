@@ -24,13 +24,19 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
 
       - name: Install dependencies
         run: npm install
 
-      - name: Build
-        run: npm run build
+      - name: Check types, regression tests and build
+        run: npm run check
+
+      - name: Install browser for generation smoke test
+        run: npx playwright install --with-deps chromium
+
+      - name: Verify generation in the production build
+        run: npm run test:browser
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
