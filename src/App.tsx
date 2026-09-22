@@ -6806,6 +6806,9 @@ function generateRiverForRegionImpl(
 
       const mainOutgoingEndpoint = [...outgoingEndpoints].sort((a, b) => a.riverId - b.riverId)[0];
       const blockedEdgeKeys = new Set(usedRiverEdges);
+      // Sea is excluded from candidates, so candidate/region boundary checks
+      // alone can mistake a coastal vertex for an interior source.
+      const seaSourceVertexKeys = getSeaVertexKeysFromSeaKeys(getSeaHexKeys(terrainMap));
       const interiorSourceVertices = getMountainInteriorSourceVertices(
         region,
         regions,
@@ -6813,7 +6816,7 @@ function generateRiverForRegionImpl(
         riverGraph,
         candidateVertices,
         neighborRegionVertices
-      );
+      ).filter((vertex) => !seaSourceVertexKeys.has(vertex.key));
       const mainPath = findBestPathFromSourceToOutgoingEndpoint(interiorSourceVertices, mainOutgoingEndpoint, riverGraph, blockedEdgeKeys, {
         occupiedVertexKeys: existingRiverVertexKeys,
         allowedOccupiedVertexKeys: new Set([mainOutgoingEndpoint.vertex.key])
