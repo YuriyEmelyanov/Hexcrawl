@@ -586,14 +586,14 @@ const HEX_EDGE_DIRECTIONS: AxialHex[] = [
   { q: 1, r: -1 }
 ];
 const RIVER_SLOPE_RADIUS = 10;
-const RIVER_SLOPE_DIRECTIONS: { label: RiverSlopeDirection; vector: { x: number; y: number } }[] = [
+const RIVER_SLOPE_DIRECTIONS = ([
   { label: 'E', vector: toPixel(1, 0) },
   { label: 'NE', vector: toPixel(1, -1) },
   { label: 'NW', vector: toPixel(0, -1) },
   { label: 'W', vector: toPixel(-1, 0) },
   { label: 'SW', vector: toPixel(-1, 1) },
   { label: 'SE', vector: toPixel(0, 1) }
-].map((direction) => {
+] satisfies { label: RiverSlopeDirection; vector: { x: number; y: number } }[]).map((direction) => {
   const length = Math.hypot(direction.vector.x, direction.vector.y) || 1;
   return {
     label: direction.label,
@@ -1189,7 +1189,7 @@ function getCentralPoiEmoji(region: Region): string {
 }
 
 function getCentralPoiLabel(region: Region, language: Language): string {
-  return region.centralPoiKind ? CENTRAL_POI_DETAILS[region.centralPoiKind]?.label[language] ?? TRANSLATIONS[language].centralPoi : TRANSLATIONS[language].centralPoi;
+  return region.centralPoiKind ? CENTRAL_POI_DETAILS[region.centralPoiKind]?.label[language] ?? UI_TEXT[language].centralPoi : UI_TEXT[language].centralPoi;
 }
 
 type CoastalPreference = 'coast' | 'mainland';
@@ -6039,6 +6039,8 @@ function validateCoastalSeaArea(
 
 function extendSeaToCoastalCenterCandidate(
   regionHexes: AxialHex[],
+  centerHex: AxialHex,
+  existingRegions: Region[],
   seaHexKeys: string[],
   existingTerrain: Map<string, HexTerrainData>,
   occupiedRegionKeys: Set<string>,
@@ -8243,7 +8245,7 @@ function getPoiEmojiForHex(region: Region | undefined, hex: AxialHex): string {
 
 function getPoiLabelForHex(region: Region, hex: AxialHex, language: Language): string {
   const kind = getPoiKindForHex(region, hex);
-  return kind ? POI_DETAILS[kind].label[language] : TRANSLATIONS[language].poi;
+  return kind ? POI_DETAILS[kind].label[language] : UI_TEXT[language].poi;
 }
 
 function getWaterPoiEmoji(kind: WaterPoiKind): string {
@@ -11260,7 +11262,7 @@ function generateRoadsForRegionImpl(options: {
             candidateEndIsCandidate,
             roadStartHasExistingRoad,
             preBuildEntryAdjacentToRoad,
-            pathHasLake,
+            pathHasLakeOrSea,
             trimmedCandidateExitSegment
           });
           console.log('Third settled road result', {
@@ -11705,16 +11707,16 @@ export function App() {
       isTract: true
     };
     const candidateHexesForTractRiverGeneration = getCandidateHexes([...allRegionHexes, ...regionHexes], existingSeaKeys);
-    const generatedTractRiverResult = tractHasOutgoingRiver
-      ? generateRiverForRegion(
+    // The tract branch of the river generator already handles zero outgoing
+    // endpoints and only prepends a source to an existing outgoing river.
+    const generatedTractRiverResult = generateRiverForRegion(
         tractRegion,
         [...regions, tractRegion],
         rivers,
         candidateHexesForTractRiverGeneration,
         hexTerrainByKey
-      )
-      : { success: true as const, rivers };
-    const riversAfterTractGeneration = generatedTractRiverResult.success && tractHasOutgoingRiver
+      );
+    const riversAfterTractGeneration = generatedTractRiverResult.success && generatedTractRiverResult.rivers !== rivers
       ? assignRiverSectors(
         generatedTractRiverResult.rivers,
         getLakesForRegions([...regions, tractRegion], hexTerrainByKey),
@@ -11727,8 +11729,7 @@ export function App() {
     if (!generatedTractRiverResult.success) {
       console.warn('Fallback tract river source generation failed; saving tract without generated source', {
         regionId,
-        reason: generatedTractRiverResult.reason,
-        tractHasOutgoingRiver
+        reason: generatedTractRiverResult.reason
       });
     }
     const tractRoadResult = ensureRoadAdjacentTractPoiAndTrail({
@@ -12047,6 +12048,12 @@ export function App() {
         biomeChoice = pickBiome({ reasons: [] });
       }
       const biomeId = biomeChoice.biomeId;
+      // A failed biome choice must take the same safe tract path as an
+      // exhausted geometry attempt, never commit a region with a null biome.
+      if (!biomeId) {
+        addFallbackTractToMap(anchorHex, isCoastalRegion, options);
+        return;
+      }
       const biome = BIOMES[biomeId] ?? BIOMES[FALLBACK_BIOME_ID];
       const heightLevel = BIOMES[biomeId]?.heightLevel ?? 1;
       const riverSlope = calculateRiverSlopeInfo(centerHex, allRegionHexes, riversForGeneration);
@@ -12107,9 +12114,7 @@ export function App() {
       ]);
       // Урочища не создают самостоятельные новые реки: если есть примыкающая
       // исходящая река, generateRiverForRegion только добавит ей один исток.
-      const generatedRiverResult = sizeCategory === 'tract' && !tractHasOutgoingRiver
-        ? { success: true as const, rivers: riversForGeneration }
-        : generateRiverForRegion(
+      const generatedRiverResult = generateRiverForRegion(
           regionForRiverGeneration,
           nextRegionsForRiverGeneration,
           riversForGeneration,
@@ -12227,6 +12232,8 @@ export function App() {
       let seaHexKeys = isCoastalRegion
         ? extendSeaToCoastalCenterCandidate(
           regionHexes,
+          preliminaryCenterHex,
+          regions,
           computeSeaHexKeysForCoastalRegion(regionHexes, preliminaryCenterHex, nextHexTerrainByKeyPreview, occupiedRegionKeysForSea, regions, finalizedRivers, regionId, roads),
           nextHexTerrainByKeyPreview,
           occupiedRegionKeysForSea,
