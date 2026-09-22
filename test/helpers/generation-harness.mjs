@@ -16,7 +16,8 @@ const instrumented = source.slice(0, lastReturn.getStart(ast)) + `return {
   addFallbackTractToMap, safelyAddRegionToMap, createSaveData, restoreSnapshot, deleteLastRegion
 };` + source.slice(lastReturn.end) + `
 export const testGeometry = { getHexCornerPoints, getHexNeighbors, hexKey, buildRiverGraphForRegion,
-  findRiverEndpointsTouchingRegion, getCandidateHexes, generateRiverForRegion, assertHexcrawlSaveData };
+  findRiverEndpointsTouchingRegion, getCandidateHexes, generateRiverForRegion, assertHexcrawlSaveData, getIncreasedRiverFullnessAfterTributary,
+  addLakeAroundRiverSplitVertex, createInitialRiverSectors };
 `;
 const compiled = ts.transpileModule(instrumented, { compilerOptions: {
   module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020, jsx: ts.JsxEmit.ReactJSX
