@@ -1,8 +1,9 @@
 // Diagnostic observations, not acceptance tests endorsing the legacy behaviour.
 // Run: node test/audit/river-model.mjs
 import { createGenerationHarness } from '../helpers/generation-harness.mjs';
+import {confluenceOutputs} from '../../src/riverModel/core.ts';
 const h = createGenerationHarness(1), g = h.geometry;
-console.log(JSON.stringify({kind:'confluence-helper',cases:[[1,1],[2,3],[3,2],[3,1],[4,3],[5,5]].map(([a,b])=>({a,b,out:g.getIncreasedRiverFullnessAfterTributary(a,b)}))}));
+console.log(JSON.stringify({kind:'confluence-helper',cases:[[1,1],[2,3],[3,2],[3,1],[4,3],[5,5]].map(([a,b])=>({a,b,out:confluenceOutputs(a,b)}))}));
 h.render().addFallbackTractToMap({q:0,r:0});
 const template=h.render().regions[0];
 const terrain=new Map();
