@@ -74,6 +74,10 @@ try {
   await page.locator('input[type=file]').setInputFiles({
     name: 'roundtrip.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(current))
   });
+  // FileReader and React commit asynchronously after setInputFiles returns.
+  // Wait for the imported map before clicking Export on a changing layout.
+  await page.waitForFunction(expected => Array.from(document.querySelectorAll('.debug-panel-body p'))
+    .some(element => element.textContent === `Регионов: ${expected}`), count);
   assert.equal((await snapshot()).map.regions.length, count);
   await page.locator('polygon.hex.candidate').first().dispatchEvent('click');
   assert.equal((await snapshot()).map.regions.length, count + 1);

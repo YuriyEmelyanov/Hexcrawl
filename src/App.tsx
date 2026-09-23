@@ -1,7 +1,7 @@
+import { solveRiverNetwork, validateRiverNetwork, minimumLakeHexes, isFullness, type RiverNetwork as ModelNetwork, type RiverEdge as ModelEdge, type SolveResult as ModelSolveResult } from './riverModel/core';
 import { type ChangeEvent, type CSSProperties, type KeyboardEvent, type MouseEvent, type TouchEvent, type WheelEvent, useEffect, useMemo, useRef, useState } from 'react';
 import {
   getOutgoingConnectorFullnessFromEndpoint,
-  shouldReduceMainRiverUpstreamBeforeConfluence,
   type RiverFullness
 } from './riverFullness';
 import { chooseRiverCrossingKind, type RiverCrossingKind } from './riverCrossings';
@@ -211,6 +211,7 @@ type RiverSector = {
 };
 
 type River = {
+  deltaParentRiverId?: number;
   id: number;
   regionId: number;
   vertexPath: RiverVertex[];
@@ -917,6 +918,12 @@ function assertHexcrawlSaveData(value: unknown): asserts value is ValidatedHexcr
       for (const [poiKey, poiKind] of Object.entries(region.pointOfInterestKinds)) {
         if (!isAxialHex(parseHexKey(poiKey)) || !isPoiKind(poiKind)) throw new Error(`Некорректный тип точки интереса региона ${region.id}.`);
       }
+    }
+  }
+  for (const river of value.map.rivers) {
+    if (!isRecord(river) || !Array.isArray(river.vertexPath) || !Array.isArray(river.sectors)) throw new Error('Некорректная река в сохранении.');
+    for (const sector of river.sectors) {
+      if (!isRecord(sector) || !isFullness(sector.fullness)) throw new Error('Полноводность реки должна быть целым числом от 1 до 5.');
     }
   }
   if (value.map.waterPoiByHexKey !== undefined) {
@@ -1976,338 +1983,7 @@ function getRiverFullnessAtVertex(river: River, vertexKey: string): RiverFullnes
   return fullness ?? getRiverFallbackFullness(river);
 }
 
-function getMaxTributaryFullnessAtVertex(
-  river: River,
-  vertexKey: string,
-  riverIdsByVertexKey: Map<string, Set<number | string>>,
-  riversById: Map<number | string, River>
-): RiverFullness | null {
-  const riverIds = riverIdsByVertexKey.get(vertexKey);
-  if (!riverIds) return null;
-
-  let maxFullness: RiverFullness | null = null;
-  for (const riverId of riverIds) {
-    if (riverId === river.id) continue;
-    const tributary = riversById.get(riverId);
-    if (!tributary) continue;
-    const tributaryMouth = tributary.vertexPath?.[tributary.vertexPath.length - 1];
-    // Only rivers that end at this vertex are true tributaries. Other rivers may
-    // also touch the same vertex as an upstream source or through segment, but
-    // counting them here can apply a downstream river's fullness as an incoming
-    // tributary and incorrectly raise 3 -> 4 -> 5 in one region.
-    if (tributaryMouth?.key !== vertexKey) continue;
-    const tributaryFullness = getRiverFullnessAtVertex(tributary, vertexKey);
-    if (maxFullness === null || tributaryFullness > maxFullness) maxFullness = tributaryFullness;
-  }
-
-  return maxFullness;
-}
-
-function getIncreasedRiverFullnessAfterTributary(
-  currentFullness: RiverFullness,
-  maxTributaryFullness: RiverFullness | null
-): RiverFullness {
-  if (currentFullness === 4 && maxTributaryFullness !== null && maxTributaryFullness >= 3) return 5;
-  if (currentFullness === 3 && maxTributaryFullness !== null && maxTributaryFullness >= 2) return 4;
-  if (currentFullness === 2 && maxTributaryFullness !== null) return 3;
-  return currentFullness;
-}
-
-type CandidateBoundaryByHeight = Map<RegionHeightLevel, { edgeKeys: Set<string>; vertexKeys: Set<string> }>;
-
-type AssignRiverSectorsOptions = {
-  recalculatedRegionId?: number;
-};
-
-type RiverFullnessRuleState = {
-  confluenceTributaryFullnessByIndex: Map<number, RiverFullness>;
-  allowConfluenceFullnessIncrease: boolean;
-  reduceUpstreamBeforeConfluence: boolean;
-  firstConfluenceIndex?: number;
-};
-
-function buildCandidateBoundaryByHeight(regions: Region[] = [], candidateHexes: AxialHex[] = []): CandidateBoundaryByHeight {
-  const boundaryByHeight: CandidateBoundaryByHeight = new Map();
-  if (regions.length === 0 || candidateHexes.length === 0) return boundaryByHeight;
-
-  for (const region of regions) {
-    const boundary = boundaryByHeight.get(region.heightLevel) ?? { edgeKeys: new Set<string>(), vertexKeys: new Set<string>() };
-    for (const edge of getCandidateBoundaryEdgesForRegion(region.hexes, candidateHexes)) {
-      boundary.edgeKeys.add(edge.edgeKey);
-      boundary.vertexKeys.add(edge.from.key);
-      boundary.vertexKeys.add(edge.to.key);
-    }
-    boundaryByHeight.set(region.heightLevel, boundary);
-  }
-
-  return boundaryByHeight;
-}
-
-function riverEndpointTouchesCandidateBoundary(
-  river: River,
-  endpoint: 'upstream' | 'downstream',
-  candidateBoundaryByHeight: CandidateBoundaryByHeight,
-  heightLevel?: RegionHeightLevel,
-  extraBoundary?: { edgeKeys: Set<string>; vertexKeys: Set<string> }
-): boolean {
-  const vertexPath = river.vertexPath ?? [];
-  if (vertexPath.length < 2) return false;
-
-  const boundaries = heightLevel !== undefined
-    ? [candidateBoundaryByHeight.get(heightLevel)].filter((boundary): boundary is { edgeKeys: Set<string>; vertexKeys: Set<string> } => Boolean(boundary))
-    : Array.from(candidateBoundaryByHeight.values());
-  if (boundaries.length === 0 && !extraBoundary) return false;
-
-  const endpointIndex = endpoint === 'upstream' ? 0 : vertexPath.length - 1;
-  const adjacentIndex = endpoint === 'upstream' ? 1 : vertexPath.length - 2;
-  const endpointVertex = vertexPath[endpointIndex];
-  const endpointEdgeKey = getRiverEdgeKey(endpointVertex, vertexPath[adjacentIndex]);
-
-  // Prefer a candidate-facing endpoint edge, but also accept the terminal
-  // endpoint vertex itself. Some valid rivers end on a candidate hex corner while
-  // their last drawn segment follows another incident region edge, so edge-only
-  // matching misses a downstream exit that is still present on the candidate.
-  if (boundaries.some((boundary) => boundary.edgeKeys.has(endpointEdgeKey) || boundary.vertexKeys.has(endpointVertex.key))) {
-    return true;
-  }
-  // Вариант 1: морское устье — тоже валидный низовой выход реки. После установки
-  // моря прибрежная река кончается у моря (не у кандидата), поэтому без этого
-  // правило роста полноводности на слиянии ошибочно выключалось.
-  return Boolean(extraBoundary && (extraBoundary.edgeKeys.has(endpointEdgeKey) || extraBoundary.vertexKeys.has(endpointVertex.key)));
-}
-
-function getConfluenceTributaryFullnessByIndex(
-  river: River,
-  riverIdsByVertexKey: Map<string, Set<number | string>>,
-  riversById: Map<number | string, River>
-): Map<number, RiverFullness> {
-  const result = new Map<number, RiverFullness>();
-  const vertexPath = river.vertexPath ?? [];
-  if (vertexPath.length < 3) return result;
-
-  for (let index = 1; index < vertexPath.length - 1; index += 1) {
-    const maxTributaryFullness = getMaxTributaryFullnessAtVertex(
-      river,
-      vertexPath[index].key,
-      riverIdsByVertexKey,
-      riversById
-    );
-    if (maxTributaryFullness !== null) result.set(index, maxTributaryFullness);
-  }
-
-  return result;
-}
-
-function vertexTouchesCandidateBoundary(
-  vertexPath: RiverVertex[],
-  index: number,
-  candidateBoundaryByHeight: CandidateBoundaryByHeight
-): boolean {
-  const vertex = vertexPath[index];
-  if (!vertex) return false;
-  const previous = vertexPath[index - 1];
-  const next = vertexPath[index + 1];
-  const incidentEdgeKeys = [previous, next]
-    .filter((adjacent): adjacent is RiverVertex => Boolean(adjacent))
-    .map((adjacent) => getRiverEdgeKey(vertex, adjacent));
-
-  return Array.from(candidateBoundaryByHeight.values()).some((boundary) => (
-    boundary.vertexKeys.has(vertex.key)
-    || incidentEdgeKeys.some((edgeKey) => boundary.edgeKeys.has(edgeKey))
-  ));
-}
-
-function firstDownstreamOutletAfterConfluenceTouchesCandidate(
-  river: River,
-  confluenceIndices: number[],
-  candidateBoundaryByHeight: CandidateBoundaryByHeight,
-  regionBoundaryVertexKeys: Set<string>,
-  extraDownstreamBoundary?: { edgeKeys: Set<string>; vertexKeys: Set<string> }
-): boolean {
-  if (confluenceIndices.length === 0) return false;
-  const vertexPath = river.vertexPath ?? [];
-  const firstConfluenceIndex = Math.min(...confluenceIndices);
-
-  // If the final downstream endpoint already faces an ungenerated candidate (or
-  // the sea), the merged flow has an outlet even when the full river path crosses
-  // older region-boundary vertices before reaching that endpoint. The scan below
-  // still protects local intermediate outlets, but endpoint-first detection keeps
-  // confluences in a newly generated region from being hidden by historical
-  // boundary vertices stored in the same river path.
-  if (riverEndpointTouchesCandidateBoundary(river, 'downstream', candidateBoundaryByHeight, undefined, extraDownstreamBoundary)) {
-    return true;
-  }
-
-  for (let index = firstConfluenceIndex + 1; index < vertexPath.length; index += 1) {
-    if (vertexTouchesCandidateBoundary(vertexPath, index, candidateBoundaryByHeight)) return true;
-    if (regionBoundaryVertexKeys.has(vertexPath[index].key)) return false;
-  }
-
-  return false;
-}
-
-function buildRiverFullnessRuleState(
-  river: River,
-  riverIdsByVertexKey: Map<string, Set<number | string>>,
-  riversById: Map<number | string, River>,
-  candidateBoundaryByHeight: CandidateBoundaryByHeight,
-  regionBoundaryVertexKeys: Set<string>,
-  extraDownstreamBoundary?: { edgeKeys: Set<string>; vertexKeys: Set<string> }
-): RiverFullnessRuleState {
-  const confluenceTributaryFullnessByIndex = getConfluenceTributaryFullnessByIndex(river, riverIdsByVertexKey, riversById);
-  const confluenceIndices = Array.from(confluenceTributaryFullnessByIndex.keys());
-  const allowConfluenceFullnessIncrease = firstDownstreamOutletAfterConfluenceTouchesCandidate(
-    river,
-    confluenceIndices,
-    candidateBoundaryByHeight,
-    regionBoundaryVertexKeys,
-    extraDownstreamBoundary
-  );
-  const reductionHeight = ([1, 2] as RegionHeightLevel[]).find((heightLevel) => (
-    shouldReduceMainRiverUpstreamBeforeConfluence(
-      heightLevel,
-      confluenceTributaryFullnessByIndex.values()
-    )
-    && riverEndpointTouchesCandidateBoundary(
-      river,
-      'upstream',
-      candidateBoundaryByHeight,
-      heightLevel
-    )
-  ));
-  return {
-    confluenceTributaryFullnessByIndex,
-    allowConfluenceFullnessIncrease,
-    reduceUpstreamBeforeConfluence: reductionHeight !== undefined,
-    firstConfluenceIndex: confluenceIndices.length > 0 ? Math.min(...confluenceIndices) : undefined
-  };
-}
-
-function isDownstreamOfConfluenceFullnessIncrease(
-  fromIndex: number,
-  ruleState: RiverFullnessRuleState
-): boolean {
-  return ruleState.allowConfluenceFullnessIncrease
-    && Array.from(ruleState.confluenceTributaryFullnessByIndex.keys()).some((confluenceIndex) => confluenceIndex < fromIndex);
-}
-
-function applyRiverFullnessRules(
-  currentDownstreamFullness: RiverFullness,
-  fromIndex: number,
-  toIndex: number,
-  ruleState: RiverFullnessRuleState,
-  allowHeightOneConfluenceIncrease: boolean
-): { downstreamFullness: RiverFullness; sectorFullness: RiverFullness } {
-  let downstreamFullness = currentDownstreamFullness;
-
-  // A confluence can raise the carried downstream fullness only inside a
-  // height-1 region when the combined flow has a downstream candidate exit.
-  // The raised value then propagates through subsequent height-1 sectors.
-  const tributaryFullnessAtSectorStart = ruleState.confluenceTributaryFullnessByIndex.get(fromIndex) ?? null;
-  if (
-    allowHeightOneConfluenceIncrease
-    && ruleState.allowConfluenceFullnessIncrease
-    && tributaryFullnessAtSectorStart !== null
-  ) {
-    downstreamFullness = getIncreasedRiverFullnessAfterTributary(
-      downstreamFullness,
-      tributaryFullnessAtSectorStart
-    );
-  }
-
-  let sectorFullness = downstreamFullness;
-  const sectorIsUpstreamBeforeConfluence = ruleState.firstConfluenceIndex !== undefined
-    && fromIndex < ruleState.firstConfluenceIndex
-    && toIndex <= ruleState.firstConfluenceIndex;
-  if (sectorIsUpstreamBeforeConfluence) {
-    const shouldReduceUpstream = ruleState.reduceUpstreamBeforeConfluence
-      && sectorFullness === 3;
-
-    if (shouldReduceUpstream) {
-      sectorFullness = 2;
-    }
-  }
-
-  return { downstreamFullness, sectorFullness };
-}
-
-
-function applySingleMountainUpstreamTributaryDrop(region: Region, rivers: River[]): River[] {
-  if (region.heightLevel !== 3) return rivers;
-
-  const applyDropForOutgoingFullness = (outgoingFullness: RiverFullness, upstreamFullness: RiverFullness): { foundOutgoing: boolean; rivers: River[] | null } => {
-    let foundOutgoing = false;
-
-    for (const river of rivers) {
-      const sectorTouchesRegion = (sector: RiverSector): boolean => sector.assignedRegionId === region.id
-        || sector.vertexPath.some((vertex) => vertexTouchesAnyHex(vertex, region.hexes));
-      const regionSectors = (river.sectors ?? []).filter(sectorTouchesRegion);
-      const hasOutgoingFullness = regionSectors.some((sector) => (
-        sector.endReason === 'region_boundary'
-        && sector.fullness === outgoingFullness
-      ));
-      if (!hasOutgoingFullness) continue;
-      foundOutgoing = true;
-
-      const mainVertexIndexByKey = new Map<string, number>();
-      river.vertexPath.forEach((vertex, index) => {
-        if (!mainVertexIndexByKey.has(vertex.key)) mainVertexIndexByKey.set(vertex.key, index);
-      });
-
-      const indexedRegionSectors = (river.sectors ?? [])
-        .filter(sectorTouchesRegion)
-        .map((sector) => ({
-          sector,
-          startIndex: mainVertexIndexByKey.get(sector.startVertexKey) ?? Number.POSITIVE_INFINITY,
-          endIndex: mainVertexIndexByKey.get(sector.endVertexKey) ?? Number.POSITIVE_INFINITY
-        }))
-        .filter(({ startIndex, endIndex }) => Number.isFinite(startIndex) && Number.isFinite(endIndex))
-        .sort((a, b) => Math.min(a.startIndex, a.endIndex) - Math.min(b.startIndex, b.endIndex));
-      if (indexedRegionSectors.length === 0) return { foundOutgoing, rivers: null };
-
-      const outgoingSector = indexedRegionSectors[0].sector;
-      if (outgoingSector.fullness !== outgoingFullness) return { foundOutgoing, rivers: null };
-
-      const incomingSector = indexedRegionSectors[indexedRegionSectors.length - 1].sector;
-      if (incomingSector.fullness !== outgoingFullness) return { foundOutgoing, rivers: null };
-
-      const tributaryConnection = rivers
-        .filter((tributary) => tributary.id !== river.id)
-        .map((tributary) => {
-          const tributaryMouth = tributary.vertexPath[tributary.vertexPath.length - 1];
-          const mainIndex = tributaryMouth ? mainVertexIndexByKey.get(tributaryMouth.key) : undefined;
-          if (mainIndex === undefined || mainIndex <= 0 || mainIndex >= river.vertexPath.length - 1) return null;
-          return { vertexKey: tributaryMouth.key, mainIndex };
-        })
-        .filter((item): item is { vertexKey: string; mainIndex: number } => item !== null)
-        .sort((a, b) => a.mainIndex - b.mainIndex)[0];
-
-      if (!tributaryConnection) return { foundOutgoing, rivers: null };
-
-      return { foundOutgoing, rivers: rivers.map((item) => {
-        if (item.id !== river.id) return item;
-        return {
-          ...item,
-          sectors: (item.sectors ?? []).map((sector) => {
-            if (!sectorTouchesRegion(sector)) return sector;
-            const sectorEndIndex = mainVertexIndexByKey.get(sector.endVertexKey);
-            if (sectorEndIndex === undefined || sectorEndIndex > tributaryConnection.mainIndex) return sector;
-            // Assign an exact rule value, not "current fullness - 1", so this rule cannot stack with prior fullness changes.
-            return { ...sector, fullness: upstreamFullness };
-          })
-        };
-      }) };
-    }
-
-    return { foundOutgoing, rivers: null };
-  };
-
-  const fullnessThreeResult = applyDropForOutgoingFullness(3, 2);
-  if (fullnessThreeResult.foundOutgoing) return fullnessThreeResult.rivers ?? rivers;
-
-  const fullnessTwoResult = applyDropForOutgoingFullness(2, 1);
-  return fullnessTwoResult.rivers ?? rivers;
-}
+type AssignRiverSectorsOptions = { recalculatedRegionId?: number };
 
 function validateExistingRiverEdgeFullnessPreserved(previousRivers: River[], nextRivers: River[]): boolean {
   const previousFullnessByEdge = getRiverCrossingFullnessByEdge(previousRivers);
@@ -2365,12 +2041,6 @@ function assignRiverSectorsImpl(
   const lakeExteriorVertexKeysByLakeId = new Map<number, Set<string>>();
   const lakeVertexKeys = new Set<string>();
   const regionBoundaryVertexKeys = getRegionBoundaryVertexKeys(regions);
-  const candidateBoundaryByHeight = buildCandidateBoundaryByHeight(regions, candidateHexes);
-  const regionHeightById = new Map(regions.map((region) => [region.id, region.heightLevel]));
-  const seaMouthBoundary = buildSeaMouthBoundary(seaHexKeys);
-  const extraDownstreamBoundary = seaMouthBoundary.edgeKeys.size > 0 || seaMouthBoundary.vertexKeys.size > 0
-    ? seaMouthBoundary
-    : undefined;
   for (const lake of lakes) {
     const exteriorKeys = new Set(getRegionExteriorVertices(lake.hexes).map((vertex) => vertex.key));
     lakeExteriorVertexKeysByLakeId.set(lake.lakeId, exteriorKeys);
@@ -2393,21 +2063,6 @@ function assignRiverSectorsImpl(
       breakIndices.add(0);
       breakIndices.add(lastIndex);
       const confluenceVertexKeys = new Set<string>();
-      const riverFullnessRuleState = buildRiverFullnessRuleState(
-        river,
-        riverIdsByVertexKey,
-        riversById,
-        candidateBoundaryByHeight,
-        regionBoundaryVertexKeys,
-        extraDownstreamBoundary
-      );
-      // Вариант 2 (нижняя граница): полноводность реки до пересчёта — страховка,
-      // чтобы повторный расчёт после моря не занижал её ниже первого слияния.
-      const priorSectorFullnesses = (river.sectors ?? []).map((sector) => sector.fullness);
-      const priorMaxFullness: RiverFullness | null = priorSectorFullnesses.length > 0
-        ? (Math.max(...priorSectorFullnesses) as RiverFullness)
-        : null;
-
       vertexPath.forEach((vertex, index) => {
         const riverIds = riverIdsByVertexKey.get(vertex.key);
         if (riverIds && Array.from(riverIds).some((riverId) => riverId !== river.id)) {
@@ -2429,7 +2084,6 @@ function assignRiverSectorsImpl(
 
       const sortedBreakIndices = Array.from(breakIndices).sort((a, b) => a - b);
       const sectors: RiverSector[] = [];
-      let downstreamFullness: RiverFullness = fallbackFullness;
 
       for (let i = 1; i < sortedBreakIndices.length; i += 1) {
         const fromIndex = sortedBreakIndices[i - 1];
@@ -2468,79 +2122,7 @@ function assignRiverSectorsImpl(
           'end'
         ) as RiverSector['endReason'];
         const assignedRegionId = getRiverSectorAssignedRegion(edgeKeys, existingAssignedRegionByEdge, river.regionId);
-        const assignedRegionHeight = regionHeightById.get(assignedRegionId);
-        const allowHeightOneConfluenceIncrease = assignedRegionHeight === 1;
-        const canRecalculateFullness = options.recalculatedRegionId === undefined
-          || assignedRegionId === options.recalculatedRegionId;
-        let fullness: RiverFullness;
-
-        const confluenceAffectsSector = canRecalculateFullness
-          && allowHeightOneConfluenceIncrease
-          && riverFullnessRuleState.allowConfluenceFullnessIncrease
-          && (
-            riverFullnessRuleState.confluenceTributaryFullnessByIndex.has(fromIndex)
-            || isDownstreamOfConfluenceFullnessIncrease(fromIndex, riverFullnessRuleState)
-          );
-
-        const preserveKnownFullness = startReason === 'split'
-          || endReason === 'split'
-          || startReason === 'lake'
-          || endReason === 'lake';
-
-        const confluenceAtSectorStart = riverFullnessRuleState.confluenceTributaryFullnessByIndex.has(fromIndex);
-        const startingFullness = confluenceAtSectorStart
-          ? downstreamFullness
-          : baseFullness > downstreamFullness
-            ? baseFullness
-            : downstreamFullness;
-
-        const adjustedFullness = applyRiverFullnessRules(
-          startingFullness,
-          fromIndex,
-          toIndex,
-          riverFullnessRuleState,
-          allowHeightOneConfluenceIncrease
-        );
-        // This reduction is intentionally narrow: only sectors being recalculated
-        // for the new region may apply it, and only before a confluence that has
-        // a height-specific upstream reduction. Existing known fullness used to
-        // mask these local reductions while preserving the carried downstream
-        // fullness after the confluence.
-        const localReductionAffectsSector = Boolean(
-          canRecalculateFullness
-          && !preserveKnownFullness
-          && riverFullnessRuleState.reduceUpstreamBeforeConfluence
-          && adjustedFullness.sectorFullness < startingFullness
-        );
-
-        if (!canRecalculateFullness) {
-          downstreamFullness = baseFullness;
-          fullness = baseFullness;
-        } else if (knownSectorFullness && (!confluenceAffectsSector || preserveKnownFullness) && !localReductionAffectsSector) {
-          downstreamFullness = knownSectorFullness;
-          fullness = knownSectorFullness;
-        } else if (knownSectorFullness) {
-          downstreamFullness = adjustedFullness.downstreamFullness > knownSectorFullness
-            ? adjustedFullness.downstreamFullness
-            : knownSectorFullness;
-          fullness = localReductionAffectsSector
-            ? adjustedFullness.sectorFullness
-            : adjustedFullness.sectorFullness > knownSectorFullness
-              ? adjustedFullness.sectorFullness
-              : knownSectorFullness;
-        } else {
-          downstreamFullness = adjustedFullness.downstreamFullness;
-          fullness = adjustedFullness.sectorFullness;
-
-          if (
-            priorMaxFullness !== null
-            && riverFullnessRuleState.firstConfluenceIndex !== undefined
-            && fromIndex >= riverFullnessRuleState.firstConfluenceIndex
-          ) {
-            if (downstreamFullness < priorMaxFullness) downstreamFullness = priorMaxFullness;
-            if (fullness < priorMaxFullness) fullness = priorMaxFullness;
-          }
-        }
+        const fullness = baseFullness;
         sectors.push({
           id: `${river.id}:sector:${sectorIndex}`,
           riverId: river.id,
@@ -2571,6 +2153,186 @@ function assignRiverSectorsImpl(
   return nextRivers;
 }
 const assignRiverSectors = __profiled('assignRiverSectors', assignRiverSectorsImpl);
+
+// Geometry adapter for RIV-001…018. Old edges are immutable boundary conditions;
+// legacy junctions outside the extension are not silently migrated.
+function buildRegionRiverNetwork(
+  rivers: River[], previous: River[], regions: Region[], candidates: AxialHex[],
+  terrain: Map<string, HexTerrainData>, complete = false
+) {
+  const previousEdges = new Map<string, { from: string; to: string; fullness: RiverFullness; regionId: number }>();
+  for (const river of previous.filter(r => r.deltaParentRiverId === undefined)) {
+    const values = getRiverSectorFullnessByEdge(river);
+    const owners = getRiverSectorAssignedRegionByEdge(river);
+    for (let i = 1; i < river.vertexPath.length; i++) {
+      const a = river.vertexPath[i - 1], b = river.vertexPath[i], key = edgeKey(a, b);
+      previousEdges.set(key, { from: a.key, to: b.key, fullness: values.get(key) ?? 1, regionId: owners.get(key) ?? river.regionId });
+    }
+  }
+  const heights = new Map(regions.map(r => [r.id, r.heightLevel]));
+  const lakeByVertex = new Map<string, string>();
+  const lakeHexes = new Map<string, Set<string>>();
+  for (const lake of getLakesForRegions(regions, terrain)) {
+    const id = `lake:${lake.lakeId}`, hexes = lakeHexes.get(id) ?? new Set<string>();
+    for (const hex of lake.hexes) hexes.add(hexKey(hex));
+    lakeHexes.set(id, hexes);
+    for (const v of lake.vertices) lakeByVertex.set(v.key, id);
+  }
+  const sea = getSeaVertexKeysFromSeaKeys(getSeaHexKeys(terrain));
+  const frontier = new Set(candidates.flatMap(h => getHexCornerPoints(h).map(v => v.key)));
+  const vertices = new Map<string, RiverVertex>();
+  const physical = new Map<string, { edge: ModelEdge; old: boolean; riverId: number }>();
+  const issues: string[] = [];
+  const internalLakeEdges = new Map<string, string>();
+  for (const river of rivers.filter(r => r.deltaParentRiverId === undefined)) {
+    const values = getRiverSectorFullnessByEdge(river), owners = getRiverSectorAssignedRegionByEdge(river);
+    for (let i = 1; i < river.vertexPath.length; i++) {
+      const a = river.vertexPath[i - 1], b = river.vertexPath[i], key = edgeKey(a, b), old = previousEdges.get(key);
+      vertices.set(a.key, a); vertices.set(b.key, b);
+      if (physical.has(key) || internalLakeEdges.has(key)) issues.push(`Duplicate river edge ${key}`);
+      if (old && (old.from !== a.key || old.to !== b.key)) issues.push(`Reversed old edge ${key}`);
+      const regionId = old?.regionId ?? owners.get(key) ?? river.regionId;
+      if (!heights.has(regionId)) issues.push(`Missing owner region ${regionId}`);
+      const from = lakeByVertex.get(a.key) ?? a.key, to = lakeByVertex.get(b.key) ?? b.key;
+      // The drawn path through a lake is not an extra inlet/outlet of that lake.
+      if (from === to) { internalLakeEdges.set(key, from); continue; }
+      physical.set(key, { old: !!old, riverId: river.id, edge: {
+        id: key, from, to, regionId, height: heights.get(regionId) ?? 1,
+        ...(old ? { fullness: old.fullness } : complete ? { fullness: values.get(key) } : {})
+      } });
+    }
+  }
+  for (const key of previousEdges.keys()) if (!physical.has(key) && !internalLakeEdges.has(key)) issues.push(`Missing old river edge ${key}`);
+  const active = new Set<string>();
+  for (const { edge, old } of physical.values()) if (!old || complete) { active.add(edge.from); active.add(edge.to); }
+  // A changed lake must account for all its ports, including fixed old rivers.
+  for (const [key, lake] of internalLakeEdges) if (!previousEdges.has(key)) active.add(lake);
+  const network: ModelNetwork = { nodes: [], edges: [] };
+  for (const { edge } of physical.values()) {
+    if (!active.has(edge.from) && !active.has(edge.to)) continue;
+    const from = active.has(edge.from) ? edge.from : `fixed:start:${edge.id}`;
+    const to = active.has(edge.to) ? edge.to : `fixed:end:${edge.id}`;
+    network.edges.push({ ...edge, from, to });
+    if (from !== edge.from) network.nodes.push({ id: from, kind: 'open' });
+    if (to !== edge.to) network.nodes.push({ id: to, kind: 'open' });
+  }
+  for (const id of active) {
+    const ins = network.edges.filter(e => e.to === id), outs = network.edges.filter(e => e.from === id);
+    if (!ins.length && !outs.length) continue;
+    if (lakeHexes.has(id)) network.nodes.push({ id, kind: 'lake', lakeHexCount: lakeHexes.get(id)!.size });
+    else if (sea.has(id)) {
+      if (outs.length) issues.push(`River flows out of sea at ${id}`);
+      network.nodes.push({ id, kind: 'sea' });
+    } else if (ins.length + outs.length === 1 && frontier.has(id)) network.nodes.push({ id, kind: 'open' });
+    else if (ins.length === 0 && outs.length === 1) network.nodes.push({ id, kind: 'source' });
+    else if (ins.length === 1 && outs.length === 0) {
+      // A closed inland mouth needs a real sink lake, never an invented open border.
+      network.nodes.push({ id, kind: 'lake', lakeHexCount: 0 });
+    } else network.nodes.push({ id, kind: ins.length === 2 && outs.length === 1 ? 'confluence' : 'continuation' });
+  }
+  return { network, issues, vertices, previousEdges, internalLakeEdges };
+}
+
+function solveRiverComponents(network: ModelNetwork): ModelSolveResult {
+  const remaining = new Set(network.nodes.map(n => n.id));
+  const fullness: Record<string, RiverFullness> = {};
+  let states = 0;
+  while (remaining.size) {
+    const ids = new Set<string>([remaining.values().next().value!]);
+    const queue = [...ids];
+    for (const id of queue) for (const e of network.edges) if (e.from === id || e.to === id) {
+      const other = e.from === id ? e.to : e.from;
+      if (!ids.has(other)) { ids.add(other); queue.push(other); }
+    }
+    for (const id of ids) remaining.delete(id);
+    const component = { nodes: network.nodes.filter(n => ids.has(n.id)), edges: network.edges.filter(e => ids.has(e.from)) };
+    const result = solveRiverNetwork(component, { maxStates: 5000 });
+    if (result.status !== 'solved') return result;
+    Object.assign(fullness, result.fullness); states += result.states;
+  }
+  return { status: 'solved', fullness, states, score: [] };
+}
+
+function reconcileRegionRiverModel(
+  rivers: River[], previous: River[], region: Region, regions: Region[],
+  candidates: AxialHex[], terrain: Map<string, HexTerrainData>, allowLakes = true
+): { success: true; rivers: River[]; terrain: Map<string, HexTerrainData> } | { success: false; reason: string } {
+  let nextTerrain = new Map(terrain);
+  const sea = getSeaHexKeys(terrain);
+  // Build lakes only on new land, connected to the actual event, away from sea.
+  const available = region.hexes.filter(h => !getHexNeighbors(h).some(n => sea.has(hexKey(n))) && !sea.has(hexKey(h)));
+  for (let repair = 0; repair <= 8; repair++) {
+    const built = buildRegionRiverNetwork(rivers, previous, regions, candidates, nextTerrain);
+    if (built.issues.length) return { success: false, reason: built.issues.join('; ') };
+    const result = solveRiverComponents(built.network);
+    if (result.status === 'solved') {
+      const checked = validateRiverNetwork({ ...built.network, edges: built.network.edges.map(e => ({ ...e, fullness: result.fullness[e.id] })) });
+      if (!checked.valid) return { success: false, reason: JSON.stringify(checked.issues) };
+      const values = new Map(Object.entries(result.fullness));
+      // Render lake-interior strokes consistently without counting them twice in lake balance.
+      for (const [key, lake] of built.internalLakeEdges) {
+        const outlet = built.network.edges.find(e => e.from === lake) ?? built.network.edges.find(e => e.to === lake);
+        values.set(key, built.previousEdges.get(key)?.fullness ?? (outlet ? result.fullness[outlet.id] : 1));
+      }
+      const changed = rivers.map(river => {
+        const oldValues = getRiverSectorFullnessByEdge(river), owners = getRiverSectorAssignedRegionByEdge(river);
+        if (river.deltaParentRiverId !== undefined) return river;
+        const lakeVertices = new Set(getLakesForRegions(regions, nextTerrain).flatMap(l => l.vertices.map(v => v.key)));
+        const eventReason = (key: string, start: boolean, endpoint: boolean): RiverSector['startReason'] | RiverSector['endReason'] => {
+          if (lakeVertices.has(key)) return 'lake';
+          const event = built.network.nodes.find(n => n.id === key);
+          if (event?.kind === 'confluence') return 'river_confluence';
+          if (endpoint) return start ? 'river_start' : 'river_end';
+          return 'region_boundary';
+        };
+        const sectors: RiverSector[] = [];
+        for (let i = 1; i < river.vertexPath.length; i++) {
+          const a = river.vertexPath[i - 1], b = river.vertexPath[i], key = edgeKey(a, b);
+          const f = built.previousEdges.get(key)?.fullness ?? values.get(key) ?? oldValues.get(key) ?? 1;
+          const owner = built.previousEdges.get(key)?.regionId ?? owners.get(key) ?? river.regionId;
+          const last = sectors[sectors.length - 1];
+          const event = built.network.nodes.find(n => n.id === a.key);
+          if (last && last.fullness === f && last.assignedRegionId === owner && (!event || event.kind === 'continuation') && !lakeVertices.has(a.key)) {
+            last.vertexPath.push(b); last.edgeKeys.push(key); last.endVertexKey = b.key; last.endReason = eventReason(b.key, false, i === river.vertexPath.length - 1) as RiverSector['endReason'];
+          } else sectors.push(...createInitialRiverSectors(river.id, [a, b], f, {
+            startReason: eventReason(a.key, true, i === 1) as RiverSector['startReason'],
+            endReason: eventReason(b.key, false, i === river.vertexPath.length - 1) as RiverSector['endReason']
+          }, owner));
+        }
+        for (let i = 0; i < sectors.length; i++) { sectors[i].id = `${river.id}:sector:${i + 1}`; sectors[i].sectorIndex = i + 1; }
+        const old = previous.find(r => r.id === river.id);
+        return old && JSON.stringify(old.vertexPath) === JSON.stringify(river.vertexPath) && river.sectors.every(s => s.edgeKeys.every(k => built.previousEdges.has(k))) && !river.vertexPath.slice(1, -1).some(v => built.network.nodes.some(n => n.id === v.key && n.kind === 'confluence'))
+          ? old : { ...river, sectors };
+      });
+      return { success: true, rivers: changed, terrain: nextTerrain };
+    }
+    if (!allowLakes || repair === 8 || result.status === 'limit') return { success: false, reason: JSON.stringify(result) };
+    // Ask the same solver how much lake area is required at the conflicting event.
+    const at = result.issues.find(i => i.nodeId)?.nodeId;
+    const node = built.network.nodes.find(n => n.id === at);
+    if (!node || node.kind === 'sea' || node.kind === 'open' || node.kind === 'confluence') return { success: false, reason: JSON.stringify(result) };
+    const virtual = { ...built.network, nodes: built.network.nodes.map(n => n.id === at ? { ...n, kind: 'lake' as const, lakeHexCount: 25 } : n) };
+    const relaxed = solveRiverComponents(virtual);
+    if (relaxed.status !== 'solved') return { success: false, reason: JSON.stringify(result) };
+    const minimum = minimumLakeHexes(virtual.edges.filter(e => e.to === at).map(e => relaxed.fullness[e.id]), virtual.edges.filter(e => e.from === at).map(e => relaxed.fullness[e.id]));
+    if (minimum === null) return { success: false, reason: 'Unsupported source lake outlets' };
+    const existingLakeId = at!.startsWith('lake:') ? Number(at!.slice(5)) : undefined;
+    const selected = new Set<string>();
+    if (existingLakeId !== undefined) for (const [key, t] of nextTerrain) if (t.lakeId === existingLakeId && t.terrainOverride === 'lake') selected.add(key);
+    const seed = available.find(h => getHexCornerPoints(h).some(v => v.key === at) && !nextTerrain.has(hexKey(h)));
+    if (!selected.size && seed) selected.add(hexKey(seed));
+    if (!selected.size) return { success: false, reason: 'No land for required lake' };
+    while (selected.size < minimum) {
+      const next = available.find(h => !selected.has(hexKey(h)) && !nextTerrain.has(hexKey(h)) && getHexNeighbors(h).some(n => selected.has(hexKey(n))));
+      if (!next) return { success: false, reason: 'Insufficient actual lake area' };
+      selected.add(hexKey(next));
+    }
+    const lakeId = existingLakeId ?? getNextLakeIdFromTerrain(nextTerrain);
+    for (const key of selected) nextTerrain.set(key, { terrainOverride: 'lake', lakeId });
+    mergeAdjacentLakeIds(nextTerrain);
+  }
+  return { success: false, reason: 'Lake repair budget exhausted' };
+}
 
 function getRiverSectorsForHex(hex: AxialHex, rivers: River[]): RiverSector[] {
   const hexEdges = getHexEdgeKeys(hex);
@@ -4083,7 +3845,8 @@ function addLakeAroundRiverSplitVertex(
 
   const lakeId = getNextLakeIdFromTerrain(terrainMap);
   const splitVertexTouchingHexes = availableRegionHexes.filter((hex) => getHexCornerPoints(hex).some((corner) => corner.key === splitVertex.key));
-  const seedHexes = splitVertexTouchingHexes.length > 0 ? splitVertexTouchingHexes : availableRegionHexes;
+  if (!splitVertexTouchingHexes.length || availableRegionHexes.length < targetHexCount) return null;
+  const seedHexes = splitVertexTouchingHexes;
   const seedHex = randomFrom(seedHexes);
   const regionHexByKey = new Map(availableRegionHexes.map((hex) => [hexKey(hex), hex]));
   const seedKey = hexKey(seedHex);
@@ -4125,21 +3888,6 @@ function addLakeAroundRiverSplitVertex(
       }
     }
 
-    // Фоллбэк (фронтир исчерпан): ближайший невыбранный по порядку availableRegionHexes,
-    // как и прежний availableRegionHexes.filter(!selected).sort(byDist)[0].
-    if (nextKey === undefined) {
-      let bestFallbackDist = Infinity;
-      for (const hex of availableRegionHexes) {
-        const key = hexKey(hex);
-        if (selectedKeys.has(key)) continue;
-        const dist = distByKey.get(key)!;
-        if (dist < bestFallbackDist) {
-          bestFallbackDist = dist;
-          nextKey = key;
-        }
-      }
-    }
-
     if (nextKey === undefined) break;
     selectedKeys.add(nextKey);
     const nextHex = regionHexByKey.get(nextKey);
@@ -4149,6 +3897,7 @@ function addLakeAroundRiverSplitVertex(
   const lakeHexes = Array.from(selectedKeys)
     .map((key) => regionHexByKey.get(key))
     .filter((hex): hex is AxialHex => Boolean(hex));
+  if (lakeHexes.length < targetHexCount) return null;
   for (const hex of lakeHexes) {
     terrainMap.set(hexKey(hex), { terrainOverride: 'lake', lakeId });
   }
@@ -10154,7 +9903,7 @@ function buildDeltaArmsForRivers(
     if (path.length < 3) continue;
     const mouth = path[path.length - 1];
     if (!seaVertexKeys.has(mouth.key)) continue; // только реки, впадающие в море
-    const fullness = getRiverFallbackFullness(river);
+    const fullness = getRiverDownstreamFullness(river);
     const armCount = fullness === 5 ? 2 : fullness === 4 ? 1 : 0;
     const fullnessRange = fullness === 5 ? 4 : 3;
     for (let a = 0; a < armCount; a += 1) {
@@ -10181,6 +9930,7 @@ function buildDeltaArmsForRivers(
       const armFullness = (1 + Math.floor(Math.random() * fullnessRange)) as RiverFullness;
       const id = nextId++;
       arms.push({
+        deltaParentRiverId: river.id,
         id,
         regionId,
         vertexPath: armPath,
@@ -11709,6 +11459,8 @@ export function App() {
       isCoastal: false,
       isTract: true
     };
+    let tractTerrain = new Map(hexTerrainByKey);
+    for (const key of regionKeySet) tractTerrain.delete(key);
     const candidateHexesForTractRiverGeneration = getCandidateHexes([...allRegionHexes, ...regionHexes], existingSeaKeys);
     // The tract branch of the river generator already handles zero outgoing
     // endpoints and only prepends a source to an existing outgoing river.
@@ -11717,18 +11469,22 @@ export function App() {
         [...regions, tractRegion],
         rivers,
         candidateHexesForTractRiverGeneration,
-        hexTerrainByKey
+        tractTerrain
       );
-    const riversAfterTractGeneration = generatedTractRiverResult.success && generatedTractRiverResult.rivers !== rivers
+    let riversAfterTractGeneration = generatedTractRiverResult.success && generatedTractRiverResult.rivers !== rivers
       ? assignRiverSectors(
         generatedTractRiverResult.rivers,
-        getLakesForRegions([...regions, tractRegion], hexTerrainByKey),
+        getLakesForRegions([...regions, tractRegion], tractTerrain),
         [...regions, tractRegion],
         candidateHexesForTractRiverGeneration,
         existingSeaKeys,
         { recalculatedRegionId: regionId }
       )
       : rivers;
+    const tractModel = reconcileRegionRiverModel(riversAfterTractGeneration, rivers, tractRegion,
+      [...regions, tractRegion], candidateHexesForTractRiverGeneration, tractTerrain);
+    if (tractModel.success) { riversAfterTractGeneration = tractModel.rivers; tractTerrain = tractModel.terrain; }
+    else { riversAfterTractGeneration = rivers; console.warn('Tract keeps old rivers', { reason: tractModel.reason }); }
     if (!generatedTractRiverResult.success) {
       console.warn('Fallback tract river source generation failed; saving tract without generated source', {
         regionId,
@@ -11739,7 +11495,7 @@ export function App() {
       region: tractRegion,
       roads,
       rivers: riversAfterTractGeneration,
-      hexTerrainByKey,
+      hexTerrainByKey: tractTerrain,
       nextRoadId
     });
     const tractRegionWithPoiKinds: Region = {
@@ -11748,7 +11504,7 @@ export function App() {
         region: tractRoadResult.region,
         roads: tractRoadResult.roads,
         rivers: riversAfterTractGeneration,
-        hexTerrainByKey
+        hexTerrainByKey: tractTerrain
       })
     };
     const finalRegions = [...regions, tractRegionWithPoiKinds];
@@ -11764,15 +11520,15 @@ export function App() {
       const seedCandidates = candidateHexesBeforeSeaBridge.filter((candidate) => {
         const key = hexKey(candidate);
         if (!getHexNeighbors(candidate).some((neighbor) => tractKeys.has(hexKey(neighbor)))) return false;
-        if (hexTerrainByKey.get(key)?.terrainOverride === 'lake') return false;
-        if (hexTouchesLake(candidate, hexTerrainByKey)) return false;
+        if (tractTerrain.get(key)?.terrainOverride === 'lake') return false;
+        if (hexTouchesLake(candidate, tractTerrain)) return false;
         if (getRiversForHex(candidate, riversAfterTractGeneration).length > 0) return false;
         return true;
       });
       const seedSeaHex = randomFrom(seedCandidates);
       if (seedSeaHex) seededSeaKeys.add(hexKey(seedSeaHex));
     }
-    const seaKeysToFill = getSeaKeysToFillForTractSeaTouch(regionHexes, seededSeaKeys, candidateHexesBeforeSeaBridge, hexTerrainByKey, riversAfterTractGeneration);
+    const seaKeysToFill = getSeaKeysToFillForTractSeaTouch(regionHexes, seededSeaKeys, candidateHexesBeforeSeaBridge, tractTerrain, riversAfterTractGeneration);
     const finalSeaKeys = new Set([...seededSeaKeys, ...seaKeysToFill]);
     for (const regionKey of regionKeySet) finalSeaKeys.delete(regionKey);
     const finalSeaKeysToWrite = new Set(
@@ -11780,7 +11536,7 @@ export function App() {
     );
     const finalCandidateHexes = getCandidateHexes(finalRegions.flatMap((region) => region.hexes), finalSeaKeys);
     const nextLakeIdAfterLandlockedSea = (() => {
-      const terrainForLandlockedSeaCheck = new Map(hexTerrainByKey);
+      const terrainForLandlockedSeaCheck = new Map(tractTerrain);
       for (const regionKey of regionKeySet) terrainForLandlockedSeaCheck.delete(regionKey);
       for (const key of finalSeaKeys) terrainForLandlockedSeaCheck.set(key, { terrainOverride: 'sea' });
       return convertLandlockedSeaComponentsToLakes(
@@ -11804,10 +11560,10 @@ export function App() {
     };
     setHistory((current) => [...current, snapshot]);
     const finalHexTerrainByKey = (() => {
-      let next = new Map(hexTerrainByKey);
+      let next = new Map(tractTerrain);
       // Новый fallback-регион всегда становится сушей: очищаем старые terrain override
       // у всех его гексов перед записью актуального моря.
-      for (const regionKey of regionKeySet) next.delete(regionKey);
+      for (const regionKey of regionKeySet) if (next.get(regionKey)?.terrainOverride !== 'lake') next.delete(regionKey);
       for (const key of finalSeaKeys) next.set(key, { terrainOverride: 'sea' });
       next = convertLandlockedSeaComponentsToLakes(
         next,
@@ -11822,7 +11578,7 @@ export function App() {
     setRivers(riversAfterTractGeneration);
     setHexTerrainByKey(finalHexTerrainByKey);
     setWaterPoiByKey(assignWaterPoiLayer(waterPoiByKey, finalRegions, finalHexTerrainByKey, newlyCheckedWaterHexKeys));
-    setNextLakeId(nextLakeIdAfterLandlockedSea);
+    setNextLakeId(Math.max(nextLakeIdAfterLandlockedSea, getNextLakeIdFromTerrain(finalHexTerrainByKey)));
     setRoads(tractRoadResult.roads);
     setCrossings(reconcileRiverCrossings(tractRoadResult.roads, riversAfterTractGeneration, finalRegions, crossings));
     setNextRoadId(tractRoadResult.nextRoadId);
@@ -12124,13 +11880,11 @@ export function App() {
           nextCandidateHexes,
           nextHexTerrainByKeyPreview
         );
-      const riverResult = generatedRiverResult.success || !isLastRegionAttempt
-        ? generatedRiverResult
-        : { success: true as const, rivers: generatedRiverResult.rivers };
       if (!generatedRiverResult.success) {
-        console.warn('Candidate region river generation failed', { attempt, reason: generatedRiverResult.reason, acceptedWithoutGeneratedRiver: isLastRegionAttempt });
-        if (!isLastRegionAttempt) continue;
+        console.warn('Candidate river geometry rejected', { attempt, reason: generatedRiverResult.reason });
+        continue;
       }
+      const riverResult = generatedRiverResult;
       mergeAdjacentLakeIds(nextHexTerrainByKeyPreview);
 
       // Вариант 2 (спасти сушу): если подключение коннектора посадило исток реки на
@@ -12295,23 +12049,7 @@ export function App() {
         { recalculatedRegionId: regionId }
       );
 
-      // BR-009: рукава дельты. Изолировано в try/catch — сбой не ломает генерацию,
-      // в худшем случае рукав просто не добавляется.
       let riversWithDeltas = finalizedRivers;
-      if (allNewSeaKeys.length > 0) {
-        try {
-          const seaEdgeKeys = new Set<string>();
-          for (const seaKey of allSeaKeys) {
-            for (const edge of getHexEdgesAsVertexPairs(parseHexKey(seaKey))) seaEdgeKeys.add(edge.edgeKey);
-          }
-          const deltaGraph = buildRiverGraphForRegion(regionHexes, nextAllHexes, nextCandidateHexes);
-          const startRiverId = Math.max(0, ...finalizedRivers.map((r) => r.id)) + 1;
-          const deltaArms = buildDeltaArmsForRivers(finalizedRivers, regionId, deltaGraph, seaVertexKeys, seaEdgeKeys, startRiverId);
-          if (deltaArms.length > 0) riversWithDeltas = [...finalizedRivers, ...deltaArms];
-        } catch (error) {
-          console.warn('Delta arm generation failed; skipping deltas', error);
-        }
-      }
 
       riversWithDeltas = restoreInvalidGeneratedRiversForRegion(regionForRiverGeneration, riversForGeneration, riversWithDeltas, nextCandidateHexesExclSea);
       riversWithDeltas = sanitizeRiversForSea(
@@ -12336,10 +12074,7 @@ export function App() {
         allSeaKeys,
         { recalculatedRegionId: regionId }
       );
-      // Apply this rule only after the last geometry-changing river step and
-      // final sector rebuild, so later path/sanitize/delta changes cannot
-      // overwrite the local mountain-region upstream tributary reduction.
-      riversWithDeltas = applySingleMountainUpstreamTributaryDrop(regionForRiverGeneration, riversWithDeltas);
+
       const finalRiverSeaHeightViolation = getRiverSeaHeightViolation(riversWithDeltas, allSeaKeys);
       if (finalRiverSeaHeightViolation) {
         console.warn('Candidate region has a river violating final sea height', {
@@ -12477,8 +12212,7 @@ export function App() {
           );
         }
       }
-      // Item 1: реки, возвращающиеся в уже пройденное озеро, больше не обрезаются.
-      // На финальной попытке сохраняем регион даже с таким нарушением.
+      // Reject lake re-entry; the final numerical model also rejects directed cycles.
       const lakeIdByVertexKey = buildLakeIdByVertexKey(getLakesForRegions(nextRegions, nextHexTerrainByKeyPreview));
       const riverLakeReentryViolation = getRiversLakeReentryViolation(riversWithDeltas, lakeIdByVertexKey);
       if (riverLakeReentryViolation) {
@@ -12488,11 +12222,68 @@ export function App() {
           acceptedOnFinalAttempt: isLastRegionAttempt,
           ...riverLakeReentryViolation
         });
-        if (!isLastRegionAttempt) continue;
+        continue;
       }
-      // Финальная проверка «река море-в-море» отключена: такие конфигурации
-      // больше не отбраковывают построенный кандидатный регион.
 
+      const modelTerrain = (() => {
+        let next = new Map(nextHexTerrainByKeyPreview);
+        // Перед финальной записью состояния новый регион всегда удаляется из
+        // старого моря/override-данных, затем записывается только актуальное море.
+        const finalRegionKeySet = new Set(finalRegionAfterLandPockets.hexes.map(hexKey));
+        for (const regionKey of finalRegionKeySet) {
+          const terrain = next.get(regionKey);
+          if (terrain?.terrainOverride === 'lake') continue;
+          next.delete(regionKey);
+        }
+        for (const key of finalSeaKeysToWrite) {
+          if (!finalRegionKeySet.has(key)) next.set(key, { terrainOverride: 'sea' });
+        }
+        const landlockedSeaResult = convertLandlockedSeaComponentsToLakes(
+          next,
+          [...regions, finalRegionAfterLandPockets],
+          Math.max(computedNextLakeId, getNextLakeIdFromTerrain(next))
+        );
+        next = landlockedSeaResult.terrainByKey;
+        // BR-004: озеро, соседствующее с морем, удаляется (гекс возвращается к биому региона).
+        // Запускаем при наличии ЛЮБОГО моря (включая существующее), а не только когда регион
+        // добавил новое море — иначе озеро в кармане у старого моря оставалось у берега.
+        const seaSet = getSeaHexKeys(next);
+        if (seaSet.size > 0) {
+          for (const [key, terrain] of next) {
+            if (terrain.terrainOverride !== 'lake') continue;
+            const touchesSea = getHexNeighbors(parseHexKey(key)).some((n) => seaSet.has(hexKey(n)));
+            if (touchesSea) next.delete(key);
+          }
+        }
+        // Лечение одиночного моря: морской гекс без морских соседей обычно артефакт,
+        // но одиночный гекс у устья — валидный однотайловый прибрежный выход реки.
+        for (const key of getSolitarySeaHexKeys(getSeaHexKeys(next))) {
+          if (seaHexTouchesAnyRiverMouth(parseHexKey(key), riversWithDeltas)) continue;
+          next.delete(key);
+        }
+        mergeAdjacentLakeIds(next);
+        return next;
+      })();
+      const modelResult = reconcileRegionRiverModel(
+        riversWithDeltas, rivers, finalRegionAfterLandPockets,
+        [...regions, finalRegionAfterLandPockets], finalCandidateHexes, modelTerrain
+      );
+      if (!modelResult.success) {
+        console.warn('River model rejected region attempt', { attempt, reason: modelResult.reason });
+        continue;
+      }
+      riversWithDeltas = modelResult.rivers;
+      // BR-009 is a coastal rendering/distributary rule, separate from RIV confluences.
+      if (allNewSeaKeys.length > 0) {
+        const finalSea = getSeaHexKeys(modelResult.terrain);
+        const seaBoundary = buildSeaMouthBoundary(finalSea);
+        const graph = buildRiverGraphForRegion(finalRegionAfterLandPockets.hexes, finalLandHexesForCandidates, finalCandidateHexes);
+        const arms = buildDeltaArmsForRivers(riversWithDeltas, regionId, graph, seaBoundary.vertexKeys, seaBoundary.edgeKeys, Math.max(0, ...riversWithDeltas.map(r => r.id)) + 1);
+        riversWithDeltas = [...riversWithDeltas, ...arms];
+      }
+
+      nextHexTerrainByKeyPreview.clear();
+      for (const [key, value] of modelResult.terrain) nextHexTerrainByKeyPreview.set(key, value);
       const hexTerrainByKeyForRoads = new Map(nextHexTerrainByKeyPreview);
       for (const key of finalSeaKeysToWrite) hexTerrainByKeyForRoads.set(key, { terrainOverride: 'sea' });
       const roadResult = generateRoadsForRegion({
@@ -12547,52 +12338,14 @@ export function App() {
       };
       setHistory((current) => [...current, snapshot]);
 
-      const finalHexTerrainByKey = (() => {
-        let next = new Map(nextHexTerrainByKeyPreview);
-        // Перед финальной записью состояния новый регион всегда удаляется из
-        // старого моря/override-данных, затем записывается только актуальное море.
-        const finalRegionKeySet = new Set(finalRegionWithPoiKinds.hexes.map(hexKey));
-        for (const regionKey of finalRegionKeySet) {
-          const terrain = next.get(regionKey);
-          if (terrain?.terrainOverride === 'lake') continue;
-          next.delete(regionKey);
-        }
-        for (const key of finalSeaKeysToWrite) {
-          if (!finalRegionKeySet.has(key)) next.set(key, { terrainOverride: 'sea' });
-        }
-        const landlockedSeaResult = convertLandlockedSeaComponentsToLakes(
-          next,
-          finalRegions,
-          Math.max(computedNextLakeId, getNextLakeIdFromTerrain(next))
-        );
-        next = landlockedSeaResult.terrainByKey;
-        // BR-004: озеро, соседствующее с морем, удаляется (гекс возвращается к биому региона).
-        // Запускаем при наличии ЛЮБОГО моря (включая существующее), а не только когда регион
-        // добавил новое море — иначе озеро в кармане у старого моря оставалось у берега.
-        const seaSet = getSeaHexKeys(next);
-        if (seaSet.size > 0) {
-          for (const [key, terrain] of next) {
-            if (terrain.terrainOverride !== 'lake') continue;
-            const touchesSea = getHexNeighbors(parseHexKey(key)).some((n) => seaSet.has(hexKey(n)));
-            if (touchesSea) next.delete(key);
-          }
-        }
-        // Лечение одиночного моря: морской гекс без морских соседей обычно артефакт,
-        // но одиночный гекс у устья — валидный однотайловый прибрежный выход реки.
-        for (const key of getSolitarySeaHexKeys(getSeaHexKeys(next))) {
-          if (seaHexTouchesAnyRiverMouth(parseHexKey(key), riversWithDeltas)) continue;
-          next.delete(key);
-        }
-        mergeAdjacentLakeIds(next);
-        return next;
-      })();
+      const finalHexTerrainByKey = modelResult.terrain;
       const finalRegionKeySet = new Set(finalRegionWithPoiKinds.hexes.map(hexKey));
       const newlyCheckedWaterHexKeys = new Set([...finalRegionKeySet, ...finalSeaKeysToWrite]);
       setRegions(finalRegions);
       setCandidateHexes(finalCandidateHexes);
       setHexTerrainByKey(finalHexTerrainByKey);
       setWaterPoiByKey(assignWaterPoiLayer(waterPoiByKey, finalRegions, finalHexTerrainByKey, newlyCheckedWaterHexKeys));
-      setNextLakeId(nextLakeIdAfterLandlockedSea);
+      setNextLakeId(Math.max(nextLakeIdAfterLandlockedSea, getNextLakeIdFromTerrain(finalHexTerrainByKey)));
 
       setRivers(riversWithDeltas);
       setRoads(roadResult.roads);
