@@ -12,12 +12,14 @@ const app = ast.statements.find(node => ts.isFunctionDeclaration(node) && node.n
 const lastReturn = app.body.statements.at(-1);
 if (!ts.isReturnStatement(lastReturn)) throw new Error('App must end with its JSX return');
 const instrumented = source.slice(0, lastReturn.getStart(ast)) + `return {
-  regions, rivers, candidateHexes, hexTerrainByKey, history,
+  regions, rivers, roads, candidateHexes, hexTerrainByKey, history,
   addFallbackTractToMap, safelyAddRegionToMap, createSaveData, restoreSnapshot, deleteLastRegion
 };` + source.slice(lastReturn.end) + `
 export const testGeometry = { getHexCornerPoints, getHexNeighbors, hexKey, buildRiverGraphForRegion,
   findRiverEndpointsTouchingRegion, getCandidateHexes, generateRiverForRegion, assertHexcrawlSaveData,
-  buildRegionRiverNetwork, reconcileRegionRiverModel, addLakeAroundRiverSplitVertex, createInitialRiverSectors };
+  buildRegionRiverNetwork, reconcileRegionRiverModel, addLakeAroundRiverSplitVertex, createInitialRiverSectors,
+  generateRoadsForRegionImpl, findIncomingRoadEndpointsForRegion, getRoadEndpointHexKeysImpl,
+  getSettledMainRoadLimit, getWildRegionTrailBuildCount, canBuildStandaloneWildRegionRoad };
 `;
 const compiled = ts.transpileModule(instrumented, { compilerOptions: {
   module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020, jsx: ts.JsxEmit.ReactJSX
