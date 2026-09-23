@@ -32,20 +32,41 @@ try {
   const page = await browser.newPage({ viewport: { width: 1500, height: 1000 } });
   await page.route(/mc\.yandex/, route => route.abort());
   const errors = [];
+  const diagnostic = [];
+  page.on('console', msg => { if (msg.type() === 'error') diagnostic.push(msg.text()); });
   page.on('pageerror', error => errors.push(error.message));
   await page.addInitScript(() => {
+    window.__smokeEvents = [];
+    for (const type of ['pointerdown', 'pointerup', 'click']) document.addEventListener(type, event => {
+      const target = event.target;
+      window.__smokeEvents.push({ type, tag: target.tagName, text: target.textContent?.slice(0, 60), download: target.download });
+      window.__smokeEvents = window.__smokeEvents.slice(-20);
+    }, true);
     let seed = 42;
     Math.random = () => { seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0; return seed / 4294967296; };
   });
   await page.goto('http://127.0.0.1:4173/');
   const selectSize = () => page.locator('.gen-params select').nth(0).selectOption('locality');
   const selectCoast = mode => page.locator('.gen-params select').nth(3).selectOption(mode);
+  // Chromium throttles rapid download bursts. Keep real exports below that
+  // limit; each click must still produce a download and valid saved map.
+  let lastDownloadAt = 0;
   async function snapshot() {
+    const pause = 200 - (Date.now() - lastDownloadAt);
+    if (pause > 0) await new Promise(resolve => setTimeout(resolve, pause));
     const menu = page.locator('details.export-menu');
     if (await menu.getAttribute('open') === null) await menu.locator('summary').click();
-    const downloaded = page.waitForEvent('download');
-    await page.getByRole('button', { name: 'JSON', exact: true }).click();
-    const download = await downloaded;
+    let download;
+    try {
+      [download] = await Promise.all([
+        page.waitForEvent('download'),
+        page.getByRole('button', { name: 'JSON', exact: true }).click()
+      ]);
+    } catch (error) {
+      console.error(JSON.stringify({ errors, diagnostic, events: await page.evaluate(() => window.__smokeEvents) }));
+      throw error;
+    }
+    lastDownloadAt = Date.now();
     return JSON.parse(await fs.readFile(await download.path(), 'utf8'));
   }
   let clicks = 0;
@@ -71,7 +92,11 @@ try {
   assert.equal((await snapshot()).map.regions.length, count);
   await page.getByRole('button', { name: 'Удалить последний регион', exact: true }).click();
   assert.equal((await snapshot()).map.regions.length, count - 1);
-  await page.locator('input[type=file]').setInputFiles({
+  const [chooser] = await Promise.all([
+    page.waitForEvent('filechooser'),
+    page.getByRole('button', { name: 'Загрузить JSON', exact: true }).click()
+  ]);
+  await chooser.setFiles({
     name: 'roundtrip.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(current))
   });
   // FileReader and React commit asynchronously after setInputFiles returns.
