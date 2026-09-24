@@ -18,7 +18,7 @@ const instrumented = source.slice(0, lastReturn.getStart(ast)) + `return {
 export const testGeometry = { getHexCornerPoints, getHexNeighbors, hexKey, buildRiverGraphForRegion,
   findRiverEndpointsTouchingRegion, getCandidateHexes, generateRiverForRegion, assertHexcrawlSaveData,
   buildRegionRiverNetwork, reconcileRegionRiverModel, addLakeAroundRiverSplitVertex, createInitialRiverSectors,
-  generateRoadsForRegionImpl, findIncomingRoadEndpointsForRegion, getRoadEndpointHexKeysImpl,
+  countRoadPathRiverCrossings, findLowestRiverCrossingPathWithinWildRegion, getWildRoadCandidates, chooseBestWildRoadCandidate, collectSettledIncomingRoadPathsToTarget, generateRoadsForRegionImpl, findIncomingRoadEndpointsForRegion, getRoadEndpointHexKeysImpl,
   getSettledMainRoadLimit, getWildRegionTrailBuildCount, canBuildStandaloneWildRegionRoad };
 `;
 const compiled = ts.transpileModule(instrumented, { compilerOptions: {
