@@ -46,6 +46,12 @@ try {
     Math.random = () => { seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0; return seed / 4294967296; };
   });
   await page.goto('http://127.0.0.1:4173/');
+  const standalone = page.getByRole('region', { name: 'Генератор названий' });
+  await standalone.getByRole('combobox', { name: 'Объект' }).selectOption('lake');
+  await standalone.getByRole('combobox', { name: 'Количество' }).selectOption('10');
+  await standalone.getByRole('button', { name: 'Сгенерировать' }).click();
+  assert.equal(await standalone.locator('li').count(), 10);
+  assert.equal(new Set(await standalone.locator('li strong').allTextContents()).size, 10);
   const selectSize = () => page.locator('.gen-params select').nth(0).selectOption('locality');
   const selectCoast = mode => page.locator('.gen-params select').nth(3).selectOption(mode);
   // Chromium throttles rapid download bursts. Keep real exports below that
@@ -83,13 +89,36 @@ try {
       current = await snapshot();
       clicks++;
       assert.equal(current.map.regions.length, i + 1, `${mode}: click ${i + 1}`);
+      assert.equal(current.map.toponyms.model, 'germanic');
+      for (const region of current.map.regions) {
+        const name = current.map.toponyms.names[`region:${region.id}`];
+        assert.ok(name?.en && name?.ru, `missing region name ${region.id}`);
+      }
       assert.equal(errors.length, 0, errors.join('\n'));
     }
     completed.push({ mode, regions: current.map.regions.length });
   }
+  await page.locator('polygon.hex.region, polygon.hex.center').first().dispatchEvent('click');
+  const regionName = page.locator('.info-block--hex .toponym-editor').first();
+  const originalName = current.map.toponyms.names['region:1'].en;
+  await regionName.getByRole('button', { name: 'Другое название' }).click();
+  current = await snapshot();
+  assert.notEqual(current.map.toponyms.names['region:1'].en, originalName);
+  await regionName.getByRole('button', { name: 'Изменить название' }).click();
+  await regionName.getByRole('textbox', { name: 'Название на английском' }).fill('Northwatch');
+  await regionName.getByRole('textbox', { name: 'Название на русском' }).fill('Нортвотч');
+  await regionName.getByRole('button', { name: 'Сохранить' }).click();
+  current = await snapshot();
+  assert.equal(current.map.toponyms.names['region:1'].en, 'Northwatch');
+  assert.equal(current.map.toponyms.names['region:1'].ru, 'Нортвотч');
+  await page.getByRole('button', { name: 'Switch to English' }).click();
+  assert.equal(await regionName.locator('strong').textContent(), 'Northwatch');
+  await page.getByRole('button', { name: 'Переключить на русский' }).click();
+  assert.equal(await regionName.locator('strong').textContent(), 'Нортвотч');
   const count = current.map.regions.length;
   await page.getByRole('button', { name: 'Перегенерировать регион', exact: true }).click();
   assert.equal((await snapshot()).map.regions.length, count);
+  assert.equal((await snapshot()).map.toponyms.names['region:1'].en, 'Northwatch');
   await page.getByRole('button', { name: 'Удалить последний регион', exact: true }).click();
   assert.equal((await snapshot()).map.regions.length, count - 1);
   const [chooser] = await Promise.all([
@@ -104,6 +133,7 @@ try {
   await page.waitForFunction(expected => Array.from(document.querySelectorAll('.debug-panel-body p'))
     .some(element => element.textContent === `Регионов: ${expected}`), count);
   assert.equal((await snapshot()).map.regions.length, count);
+  assert.equal((await snapshot()).map.toponyms.names['region:1'].ru, 'Нортвотч');
   await page.locator('polygon.hex.candidate').first().dispatchEvent('click');
   assert.equal((await snapshot()).map.regions.length, count + 1);
   assert.equal(errors.length, 0, errors.join('\n'));
