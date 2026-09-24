@@ -4,9 +4,10 @@ import { createGenerationHarness } from './helpers/generation-harness.mjs';
 import { DEFAULT_TOPONYM_MODEL, makeToponym, renameToponym, rerollToponym, synchronizeToponyms, TOPONYM_KINDS, TOPONYM_MODEL_IDS } from '../src/toponyms.ts';
 import { GERMANIC_MODEL } from '../src/toponymModels/germanic.ts';
 
-test('one separate Germanic model generates paired names with endings for each feature', () => {
+test('one Germanic model spans distinct formations while keeping each name internally consistent', () => {
   assert.deepEqual(TOPONYM_MODEL_IDS, ['germanic']);
   assert.equal(GERMANIC_MODEL.id, DEFAULT_TOPONYM_MODEL);
+  assert.equal(GERMANIC_MODEL.registers.length, 4);
   const names = TOPONYM_KINDS.map((kind) => makeToponym(1729, 'region:7', kind));
   assert.equal(new Set(names.map((name) => name.en)).size, TOPONYM_KINDS.length);
   for (const name of names) {
@@ -15,6 +16,28 @@ test('one separate Germanic model generates paired names with endings for each f
     assert.equal(name.model, 'germanic');
   }
   assert.deepEqual(makeToponym(1729, 'region:7', 'river'), names[2]);
+  const identify = (name) => GERMANIC_MODEL.registers.findIndex(({ roots, founders, independent, endings }) =>
+    independent[name.kind].some(([en, ru]) => name.en === en && name.ru === ru)
+    || [...roots, ...(name.kind === 'settlement' ? founders : [])].some(([enRoot, ruRoot]) =>
+      endings[name.kind].some(([enEnding, ruEnding]) =>
+        name.en === enRoot + enEnding && name.ru === ruRoot + ruEnding)));
+  const seen = new Set();
+  const riverEndings = new Set();
+  for (let id = 1; id <= 120; id += 1) {
+    const region = makeToponym(1741, `region:${id}`, 'region');
+    const village = makeToponym(1741, `settlement:${id}:0,0`, 'settlement');
+    const river = makeToponym(1741, `river:${id}`, 'river');
+    const register = identify(region);
+    assert.notEqual(register, -1, region.en);
+    assert.equal(identify(village), register, `region ${id} and its settlement`);
+    assert.notEqual(identify(river), -1, river.en);
+    seen.add(register);
+    for (const [index, suffix] of GERMANIC_MODEL.registers[identify(river)].endings.river.entries()) {
+      if (river.en.endsWith(suffix[0])) riverEndings.add(`${identify(river)}:${index}`);
+    }
+  }
+  assert.equal(seen.size, 4);
+  assert.ok(riverEndings.size >= 10, `river generic diversity: ${riverEndings.size}`);
 });
 
 test('many lakes stay unique in both languages and existing names survive growth and order changes', () => {
