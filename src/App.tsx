@@ -8,6 +8,7 @@ import { chooseRiverCrossingKind, type RiverCrossingKind } from './riverCrossing
 import { hasRiverRapids } from './riverRapids';
 import { hasRiverWaterfall } from './riverWaterfalls';
 import { getOnlyOutgoingRiversPreferredHeight } from './biomeHeight';
+import { DEFAULT_TOPONYM_MODEL, isToponymRegistry, renameToponym, rerollToponym, synchronizeToponyms, TOPONYM_KINDS, type Toponym, type ToponymEntity, type ToponymRegistry, type ToponymModelId, type ToponymKind } from './toponyms';
 
 // ===== ЛОКАЛЬНОЕ ПРОФИЛИРОВАНИЕ (безопасно для прода) =====
 // Включается ТОЛЬКО при ?profile=1 в URL. По умолчанию выключено: __profiled
@@ -431,6 +432,7 @@ type HexcrawlSaveData = {
     terrainByHexKey: Record<string, HexTerrainData>;
     waterPoiByHexKey?: Record<string, WaterPoiKind>;
     biomeOverrideByHexKey?: HexBiomeOverrideByKey;
+    toponyms?: { seed: number; model: ToponymModelId; names: ToponymRegistry };
   };
   counters: {
     nextLakeId: number;
@@ -485,6 +487,7 @@ const SVG_EXPORT_STYLES = `
   .click-prompt-label { fill:#fff7bf; stroke:#0c1423; stroke-width:3px; paint-order:stroke; font-size:12px; font-weight:800; pointer-events:none; }
   .hex-label { fill:#f4f8ff; font-size:11px; pointer-events:none; }
   .hex-coordinate-label { fill:#253247; font-size:7px; font-weight:700; letter-spacing:.02em; pointer-events:none; user-select:none; }
+  .toponym-map-label { fill:#fff5dd; stroke:#0c1423; stroke-width:2.5px; paint-order:stroke; font-size:10px; font-weight:800; pointer-events:none; }
   .rivers-layer, .roads-layer, .river-debug-layer { pointer-events:none; }
   .river-polyline { fill:none; stroke:#3ea2ff; stroke-linecap:round; stroke-linejoin:round; }
   .river-direction-arrow, .river-rapid-mark { stroke:#ffffff; stroke-width:1.2; stroke-linecap:round; }
@@ -938,6 +941,12 @@ function assertHexcrawlSaveData(value: unknown): asserts value is ValidatedHexcr
       if (!isAxialHex(parseHexKey(hexKeyValue)) || !isBiomeId(biomeId)) throw new Error(`Некорректное переопределение биома для гекса ${hexKeyValue}.`);
     }
   }
+  if (value.map.toponyms !== undefined) {
+    const names = value.map.toponyms;
+    if (!isRecord(names) || !Number.isSafeInteger(names.seed) || (names.seed as number) < 0
+      || (names.seed as number) > 0xffffffff || names.model !== DEFAULT_TOPONYM_MODEL
+      || !isToponymRegistry(names.names)) throw new Error('Некорректные названия в сохранении.');
+  }
   if (value.map.candidateHexes !== undefined && !Array.isArray(value.map.candidateHexes)) throw new Error('Некорректный список candidateHexes.');
   if (!isRecord(value.counters)) throw new Error('В сохранении отсутствует объект counters.');
   if (typeof value.counters.nextLakeId !== 'number' || !Number.isFinite(value.counters.nextLakeId)) throw new Error('Некорректный счетчик nextLakeId.');
@@ -1208,6 +1217,7 @@ type GenerationOptions = {
   landType?: BiomeLandType;
   biomeId?: BiomeId;
   coastalPreference?: CoastalPreference;
+  previousToponyms?: ToponymRegistry;
 };
 
 const REGION_SIZE_CATEGORY_RANGES: Record<Region['sizeCategory'], [number, number]> = {
@@ -1246,7 +1256,100 @@ type MapSnapshot = {
   nextRoadId: number;
   waterPoiByKey: Map<string, WaterPoiKind>;
   biomeOverrideByHexKey: Map<string, BiomeId>;
+  toponyms: ToponymRegistry;
+  toponymSeed: number;
 };
+
+function getToponymEntities(regions: Region[], rivers: River[], terrain: Map<string, HexTerrainData>): ToponymEntity[] {
+  const entities: ToponymEntity[] = [];
+  for (const region of regions) {
+    const kind: ToponymKind = region.biomeId === 'swamp' || region.biomeId === 'swamp_forest'
+      ? 'swamp'
+      : region.biomeId === 'mountains' || region.biomeId.includes('mountain') ? 'mountain'
+        : region.biomeId.includes('forest') || region.biomeId.includes('woodland') ? 'forest' : 'region';
+    entities.push({ key: `region:${region.id}`, kind });
+    if (region.centralPoiKind && ['capital', 'city', 'town', 'village'].includes(region.centralPoiKind)) {
+      entities.push({ key: `settlement:${region.id}:${hexKey(region.centerHex)}`, kind: 'settlement' });
+    }
+    for (const hex of region.pointsOfInterest) {
+      const key = hexKey(hex);
+      if (['city', 'town', 'village'].includes(region.pointOfInterestKinds?.[key] ?? '')) {
+        entities.push({ key: `settlement:${region.id}:${key}`, kind: 'settlement' });
+      }
+    }
+  }
+  for (const river of rivers) entities.push({ key: `river:${river.id}`, kind: 'river' });
+  for (const lakeId of new Set(Array.from(terrain.values())
+    .filter((item) => item.terrainOverride === 'lake' && item.lakeId !== undefined)
+    .map((item) => item.lakeId!))) entities.push({ key: `lake:${lakeId}`, kind: 'lake' });
+  return entities;
+}
+
+function createToponymSeed(): number {
+  if (typeof crypto !== 'undefined' && typeof crypto.getRandomValues === 'function') {
+    return crypto.getRandomValues(new Uint32Array(1))[0];
+  }
+  return Date.now() >>> 0;
+}
+
+function legacyToponymSeed(regions: Region[]): number {
+  // Stable across imports of the same old (unnamed) map, independent of UI RNG.
+  let value = 2166136261;
+  for (const region of regions) {
+    for (const char of `${region.id}:${region.anchorHex.q},${region.anchorHex.r};`) {
+      value = Math.imul(value ^ char.charCodeAt(0), 16777619);
+    }
+  }
+  return value >>> 0;
+}
+
+const TOPONYM_UI = {
+  ru: {
+    rename: 'Изменить название', reroll: 'Другое название', save: 'Сохранить', cancel: 'Отмена',
+    englishName: 'Название на английском', russianName: 'Название на русском',
+    invalid: 'Введите оба названия (до 80 знаков). Названия на карте не должны повторяться.',
+    generator: 'Генератор названий', model: 'Германская группа', objectType: 'Объект', quantity: 'Количество', generate: 'Сгенерировать',
+    copy: 'Скопировать список', copied: 'Скопировано', copyFailed: 'Выделите названия и скопируйте их вручную.',
+    kinds: { region: 'Регион', settlement: 'Поселение', river: 'Река', lake: 'Озеро', forest: 'Лес', mountain: 'Горы', swamp: 'Болото' }
+  },
+  en: {
+    rename: 'Edit name', reroll: 'Generate another name', save: 'Save', cancel: 'Cancel',
+    englishName: 'English name', russianName: 'Russian name',
+    invalid: 'Enter both names (up to 80 characters). Names on the map must be unique.',
+    generator: 'Place name generator', model: 'Germanic', objectType: 'Feature', quantity: 'Count', generate: 'Generate',
+    copy: 'Copy list', copied: 'Copied', copyFailed: 'Select the names and copy them manually.',
+    kinds: { region: 'Region', settlement: 'Settlement', river: 'River', lake: 'Lake', forest: 'Forest', mountain: 'Mountains', swamp: 'Swamp' }
+  }
+} as const;
+
+function ToponymEditor({ name, language, onRename, onReroll }: {
+  name: Toponym; language: Language; onRename: (en: string, ru: string) => boolean; onReroll: () => void;
+}) {
+  const [editing, setEditing] = useState(false);
+  const [en, setEn] = useState(name.en);
+  const [ru, setRu] = useState(name.ru);
+  const [error, setError] = useState(false);
+  const labels = TOPONYM_UI[language];
+  return (
+    <span className="toponym-editor">
+      {editing ? (
+        <span className="toponym-editor__form">
+          <input autoFocus aria-label={labels.englishName} maxLength={80} value={en} onChange={(event) => setEn(event.target.value)} />
+          <input aria-label={labels.russianName} maxLength={80} value={ru} onChange={(event) => setRu(event.target.value)} />
+          <button type="button" onClick={() => { if (onRename(en, ru)) { setEditing(false); setError(false); } else setError(true); }}>{labels.save}</button>
+          <button type="button" className="secondary" onClick={() => { setEditing(false); setError(false); }}>{labels.cancel}</button>
+          {error ? <span role="alert" className="toponym-editor__error">{labels.invalid}</span> : null}
+        </span>
+      ) : (
+        <>
+          <strong>{name[language]}</strong>
+          <button type="button" className="hex-biome-editor__button" title={labels.rename} aria-label={labels.rename} onClick={() => { setEn(name.en); setRu(name.ru); setEditing(true); }}>✎</button>
+          <button type="button" className="hex-biome-editor__button" title={labels.reroll} aria-label={labels.reroll} onClick={onReroll}>↻</button>
+        </>
+      )}
+    </span>
+  );
+}
 
 function chooseBiomeLandType(regionCount: number): BiomeLandType {
   if (regionCount === 0) return 'settled';
@@ -11015,6 +11118,12 @@ export function App() {
   const [regions, setRegions] = useState<Region[]>([]);
   const [candidateHexes, setCandidateHexes] = useState<AxialHex[]>([]);
   const [rivers, setRivers] = useState<River[]>([]);
+  const [toponyms, setToponyms] = useState<ToponymRegistry>({});
+  const [toponymSeed, setToponymSeed] = useState(createToponymSeed);
+  const [sampleKind, setSampleKind] = useState<ToponymKind>('settlement');
+  const [sampleCount, setSampleCount] = useState(5);
+  const [sampleNames, setSampleNames] = useState<Toponym[]>([]);
+  const [sampleCopyStatus, setSampleCopyStatus] = useState<'copied' | 'failed' | null>(null);
   const [roads, setRoads] = useState<Road[]>([]);
   const [crossings, setCrossings] = useState<RiverCrossing[]>([]);
   const [selectedHex, setSelectedHex] = useState<AxialHex | null>(START_HEX);
@@ -11061,6 +11170,15 @@ export function App() {
     }
     return map;
   }, [regions]);
+
+  useEffect(() => {
+    // Also covers settlements created, changed or deleted by the POI editor.
+    setToponyms((current) => {
+      const next = synchronizeToponyms(current, getToponymEntities(regions, rivers, hexTerrainByKey), toponymSeed);
+      return Object.keys(next).length === Object.keys(current).length
+        && Object.keys(next).every((key) => next[key] === current[key]) ? current : next;
+    });
+  }, [regions, rivers, hexTerrainByKey, toponymSeed]);
 
   const positionedHexes = useMemo(() => {
     const isStartPromptVisible = allRegionHexes.length === 0 && candidateHexes.length === 0;
@@ -11488,6 +11606,8 @@ export function App() {
       hexTerrainByKey,
       waterPoiByKey,
       biomeOverrideByHexKey,
+      toponyms,
+      toponymSeed,
       nextLakeId,
       nextRoadId
     };
@@ -11509,6 +11629,7 @@ export function App() {
     setRegions(finalRegions);
     setCandidateHexes(finalCandidateHexes);
     setRivers(riversAfterTractGeneration);
+    setToponyms(synchronizeToponyms({ ...toponyms, ...options.previousToponyms }, getToponymEntities(finalRegions, riversAfterTractGeneration, finalHexTerrainByKey), toponymSeed));
     setHexTerrainByKey(finalHexTerrainByKey);
     setWaterPoiByKey(assignWaterPoiLayer(waterPoiByKey, finalRegions, finalHexTerrainByKey, newlyCheckedWaterHexKeys));
     setNextLakeId(Math.max(nextLakeIdAfterLandlockedSea, getNextLakeIdFromTerrain(finalHexTerrainByKey)));
@@ -12266,6 +12387,8 @@ export function App() {
         hexTerrainByKey,
         waterPoiByKey,
         biomeOverrideByHexKey,
+        toponyms,
+        toponymSeed,
         nextLakeId,
         nextRoadId
       };
@@ -12281,6 +12404,7 @@ export function App() {
       setNextLakeId(Math.max(nextLakeIdAfterLandlockedSea, getNextLakeIdFromTerrain(finalHexTerrainByKey)));
 
       setRivers(riversWithDeltas);
+      setToponyms(synchronizeToponyms({ ...toponyms, ...options.previousToponyms }, getToponymEntities(finalRegions, riversWithDeltas, finalHexTerrainByKey), toponymSeed));
       setRoads(roadResult.roads);
       setCrossings(reconcileRiverCrossings(roadResult.roads, riversWithDeltas, finalRegions, crossings));
       setNextRoadId(roadResult.nextRoadId);
@@ -12310,6 +12434,8 @@ export function App() {
     setRegions([]);
     setCandidateHexes([]);
     setRivers([]);
+    setToponyms({});
+    setToponymSeed(createToponymSeed());
     setRoads([]);
     setCrossings([]);
     setNextRoadId(1);
@@ -12341,6 +12467,13 @@ export function App() {
     setRegions(snapshot.regions);
     setCandidateHexes(snapshot.candidateHexes);
     setRivers(snapshot.rivers);
+    const survivingEntities = getToponymEntities(snapshot.regions, snapshot.rivers, snapshot.hexTerrainByKey);
+    const retainedNames: ToponymRegistry = { ...(snapshot.toponyms ?? {}) };
+    for (const { key } of survivingEntities) {
+      if (toponyms[key]) retainedNames[key] = toponyms[key];
+    }
+    setToponyms(synchronizeToponyms(retainedNames, survivingEntities, snapshot.toponymSeed ?? toponymSeed));
+    setToponymSeed(snapshot.toponymSeed ?? toponymSeed);
     setRoads(pruneRoadsToRegionHexes(cloneRoads(snapshot.roads), snapshot.regions));
     setCrossings(snapshot.crossings);
     setHexTerrainByKey(snapshot.hexTerrainByKey);
@@ -12371,7 +12504,7 @@ export function App() {
     setHistory(history.slice(0, -1));
     // Генерируем не сразу: ждём, пока React применит восстановленный снимок,
     // иначе addRegionToMap прочитает из замыкания ещё старое состояние.
-    setPendingRegen({ anchorHex: lastAnchor, options: buildGenerationOptions() });
+    setPendingRegen({ anchorHex: lastAnchor, options: { ...buildGenerationOptions(), previousToponyms: toponyms } });
   };
 
   useEffect(() => {
@@ -12831,7 +12964,8 @@ export function App() {
       crossings,
       terrainByHexKey: Object.fromEntries(hexTerrainByKey.entries()),
       waterPoiByHexKey: Object.fromEntries(waterPoiByKey.entries()),
-      biomeOverrideByHexKey: Object.fromEntries(biomeOverrideByHexKey.entries())
+      biomeOverrideByHexKey: Object.fromEntries(biomeOverrideByHexKey.entries()),
+      toponyms: { seed: toponymSeed, model: DEFAULT_TOPONYM_MODEL, names: toponyms }
     },
     counters: {
       nextLakeId,
@@ -12889,6 +13023,9 @@ export function App() {
       setRegions(importedRegions);
       setCandidateHexes(importedCandidateHexes);
       setRivers(parsed.map.rivers);
+      const importedSeed = parsed.map.toponyms?.seed ?? legacyToponymSeed(importedRegions);
+      setToponymSeed(importedSeed);
+      setToponyms(synchronizeToponyms(parsed.map.toponyms?.names ?? {}, getToponymEntities(importedRegions, parsed.map.rivers, importedTerrain), importedSeed));
       setRoads(parsed.map.roads);
       setCrossings(parsed.map.crossings);
       setHexTerrainByKey(importedTerrain);
@@ -12897,6 +13034,8 @@ export function App() {
       setEditingHexBiomeKey(null);
       setNextLakeId(Math.max(parsed.counters.nextLakeId, fallbackNextLakeId));
       setNextRoadId(Math.max(parsed.counters.nextRoadId, fallbackNextRoadId));
+      setHistory([]);
+      setPendingRegen(null);
       setSelectedHex(parsed.ui.selectedHex ?? START_HEX);
       setIsMapRotated(parsed.ui.isMapRotated);
       updateMapScale(parsed.ui.mapScale);
@@ -12905,6 +13044,19 @@ export function App() {
       console.error('JSON import failed', error);
       window.alert(error instanceof Error ? error.message : t.jsonImportError);
     }
+  };
+
+  const renderToponym = (key: string) => {
+    const name = toponyms[key];
+    if (!name) return null;
+    return <ToponymEditor key={key} name={name} language={language}
+      onRename={(en, ru) => {
+        const updated = renameToponym(toponyms, key, en, ru);
+        if (!updated) return false;
+        setToponyms(updated);
+        return true;
+      }}
+      onReroll={() => setToponyms((current) => rerollToponym(current, key, toponymSeed))} />;
   };
 
   if (debugRivers && selectedRegion && selectedCandidateBoundaryDebug) {
@@ -13034,6 +13186,41 @@ export function App() {
                 </select>
               </label>
             </div>
+            <section className="control-block toponym-sampler" aria-label={TOPONYM_UI[language].generator}>
+              <strong>{TOPONYM_UI[language].generator} · {TOPONYM_UI[language].model}</strong>
+              <div className="toponym-sampler__controls">
+                <label>{TOPONYM_UI[language].objectType}
+                  <select value={sampleKind} onChange={(event) => setSampleKind(event.target.value as ToponymKind)}>
+                    {TOPONYM_KINDS.map((kind) => <option key={kind} value={kind}>{TOPONYM_UI[language].kinds[kind]}</option>)}
+                  </select>
+                </label>
+                <label>{TOPONYM_UI[language].quantity}
+                  <select value={sampleCount} onChange={(event) => setSampleCount(Number(event.target.value))}>
+                    {[1, 5, 10, 20].map((count) => <option key={count} value={count}>{count}</option>)}
+                  </select>
+                </label>
+              </div>
+              <button type="button" onClick={() => {
+                const entities = Array.from({ length: sampleCount }, (_, index): ToponymEntity => ({ key: `sample:${index}`, kind: sampleKind }));
+                const result = synchronizeToponyms({}, entities, createToponymSeed());
+                setSampleNames(entities.map(({ key }) => result[key]));
+                setSampleCopyStatus(null);
+              }}>{TOPONYM_UI[language].generate}</button>
+              {sampleNames.length > 0 ? (
+                <>
+                  <ol className="toponym-sampler__results">
+                    {sampleNames.map((name, index) => <li key={index}><strong>{name[language]}</strong><span lang={language === 'ru' ? 'en' : 'ru'}>{name[language === 'ru' ? 'en' : 'ru']}</span></li>)}
+                  </ol>
+                  <button type="button" className="secondary" onClick={async () => {
+                    try {
+                      await navigator.clipboard.writeText(sampleNames.map((name) => `${name.ru}\t${name.en}`).join('\n'));
+                      setSampleCopyStatus('copied');
+                    } catch { setSampleCopyStatus('failed'); }
+                  }}>{TOPONYM_UI[language].copy}</button>
+                  {sampleCopyStatus ? <span role="status">{TOPONYM_UI[language][sampleCopyStatus === 'copied' ? 'copied' : 'copyFailed']}</span> : null}
+                </>
+              ) : null}
+            </section>
             {regions.length > 0 ? (
               <div className="control-block controls controls--region-management">
                   <button onClick={resetMap} className="secondary">{t.reset}</button>
@@ -13391,6 +13578,15 @@ export function App() {
                   );
                 }) : null;
               })}
+              {regions.map((region) => {
+                const center = positionedHexes.hexes.find((hex) => hex.key === hexKey(region.centerHex))
+                  ?? positionedHexes.hexes.find((hex) => hex.key === hexKey(region.anchorHex));
+                const name = toponyms[`region:${region.id}`];
+                if (!center || !name) return null;
+                const position = isMapRotated ? rotateMapPoint(center.x, center.y, positionedHexes.height) : center;
+                return <text key={`toponym-region-${region.id}`} x={position.x} y={position.y + HEX_SIZE * 0.8}
+                  textAnchor="middle" className="toponym-map-label">{name[language]}</text>;
+              })}
             </g>
             {debugRivers ? (
               <g className="river-debug-layer" transform={mapRotationTransform}>
@@ -13444,7 +13640,9 @@ export function App() {
             <div className="info-body">
               <section className="info-block info-block--hex" aria-label={t.selectedHexInfo}>
                 {selectedRegion ? (
-                  <p><strong>{SIZE_LABELS[language][selectedRegion.sizeCategory]} {selectedRegion.id}</strong></p>
+                  <p><strong>{SIZE_LABELS[language][selectedRegion.sizeCategory]}</strong> {renderToponym(`region:${selectedRegion.id}`)}</p>
+                ) : isSelectedLake ? (
+                  <p><strong>💧 {t.lake}</strong> {renderToponym(`lake:${selectedTerrain?.lakeId}`)}</p>
                 ) : isSelectedSea ? (
                   <>
                     <p><strong>{SEA_EMOJI} {t.sea}</strong></p>
@@ -13467,7 +13665,7 @@ export function App() {
                 {selectedHex ? <p><strong>{t.selectedHex}:</strong> {selectedHex.q}/{selectedHex.r}</p> : null}
                 {!isSelectedCandidate && selectedRegion ? (
                   <>
-                    {isSelectedLake ? <p>{`💧 ${t.lake} ${selectedTerrain?.lakeId ?? '—'}`}</p> : selectedEffectiveBiomeId ? (
+                    {isSelectedLake ? <p>💧 {t.lake} {renderToponym(`lake:${selectedTerrain?.lakeId}`)}</p> : selectedEffectiveBiomeId ? (
                       <div className="hex-biome-editor">
                         <span>{BIOMES[selectedEffectiveBiomeId].primaryEmoji}{BIOMES[selectedEffectiveBiomeId].secondaryEmojis.join('')} {getBiomeLabel(selectedEffectiveBiomeId, language)}</span>
                         {isEditingSelectedHexBiome ? (
@@ -13509,7 +13707,7 @@ export function App() {
                     <p>{selectedRegion.biomeLandType === 'settled' ? t.settledRegion : t.wildArea}</p>
                     {selectedMeta?.isCenter ? (
                       <div className="hex-poi-editor">
-                        <span>⭐ {getCentralPoiEmoji(selectedRegion)} {getCentralPoiLabel(selectedRegion, language)}</span>
+                        <span>⭐ {getCentralPoiEmoji(selectedRegion)} {getCentralPoiLabel(selectedRegion, language)} {renderToponym(`settlement:${selectedRegion.id}:${hexKey(selectedRegion.centerHex)}`)}</span>
                         {isEditingSelectedCentralPoi ? (
                           <select
                             aria-label={t.choosePoi}
@@ -13544,7 +13742,7 @@ export function App() {
                     {canEditSelectedPoi && selectedHex ? (
                       selectedPoiKind ? (
                         <div className="hex-poi-editor">
-                          <span>{getPoiEmojiForHex(selectedRegion, selectedHex)} {getPoiLabelForHex(selectedRegion, selectedHex, language)}</span>
+                          <span>{getPoiEmojiForHex(selectedRegion, selectedHex)} {getPoiLabelForHex(selectedRegion, selectedHex, language)} {renderToponym(`settlement:${selectedRegion.id}:${selectedHexKey}`)}</span>
                           {isEditingSelectedPoi ? (
                             <select
                               aria-label={t.choosePoi}
@@ -13598,10 +13796,10 @@ export function App() {
                             selectedHexVertexKeys.has(vertex.key) && waterfallRiverVertexKeys.has(vertex.key)
                           ));
                           const riverFeatures = [hasWaterfall ? waterfallLabel : null, hasRapids ? t.rapids : null].filter((feature): feature is string => feature !== null);
-                          return <p key={`nearby-river-${river.id}`}><span className="nearby-river-marker" aria-hidden="true">→</span>{hasRapids ? <span className="nearby-river-marker" aria-hidden="true">|||</span> : null}{hasWaterfall ? <img className="nearby-waterfall-marker" src="/waterfall.svg" alt="" aria-hidden="true" /> : null} {t.river} {river.id}{riverFeatures.length > 0 ? ` (${riverFeatures.join(', ')})` : ''}</p>;
+                          return <p key={`nearby-river-${river.id}`}><span className="nearby-river-marker" aria-hidden="true">→</span>{hasRapids ? <span className="nearby-river-marker" aria-hidden="true">|||</span> : null}{hasWaterfall ? <img className="nearby-waterfall-marker" src="/waterfall.svg" alt="" aria-hidden="true" /> : null} {t.river} {renderToponym(`river:${river.id}`)}{riverFeatures.length > 0 ? ` (${riverFeatures.join(', ')})` : ''}</p>;
                         })}
                         {selectedHexCrossings.map((crossing) => <p key={`selected-crossing-${crossing.key}`}>{crossing.kind === 'bridge' ? '🌉' : crossing.kind === 'ferry' ? '⛴️' : '🌊'} {t[crossing.kind]}</p>)}
-                        {nearbyLakeIds.map((lakeId) => <p key={`nearby-lake-${lakeId}`}>💧 {t.lake} {lakeId}</p>)}
+                        {nearbyLakeIds.map((lakeId) => <p key={`nearby-lake-${lakeId}`}>💧 {t.lake} {renderToponym(`lake:${lakeId}`)}</p>)}
                         {hasNearbySea ? <p>{t.sea}</p> : null}
                       </div>
                     ) : null}
