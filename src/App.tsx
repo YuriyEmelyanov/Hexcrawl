@@ -8,7 +8,7 @@ import { chooseRiverCrossingKind, type RiverCrossingKind } from './riverCrossing
 import { hasRiverRapids } from './riverRapids';
 import { hasRiverWaterfall } from './riverWaterfalls';
 import { getOnlyOutgoingRiversPreferredHeight } from './biomeHeight';
-import { DEFAULT_TOPONYM_MODEL, isToponymRegistry, renameToponym, rerollToponym, synchronizeToponyms, TOPONYM_KINDS, type Toponym, type ToponymEntity, type ToponymRegistry, type ToponymModelId, type ToponymKind } from './toponyms';
+import { DEFAULT_TOPONYM_MODEL, isToponymRegistry, synchronizeToponyms, type ToponymEntity, type ToponymRegistry, type ToponymModelId, type ToponymKind } from './toponyms';
 
 // ===== ЛОКАЛЬНОЕ ПРОФИЛИРОВАНИЕ (безопасно для прода) =====
 // Включается ТОЛЬКО при ?profile=1 в URL. По умолчанию выключено: __profiled
@@ -487,7 +487,6 @@ const SVG_EXPORT_STYLES = `
   .click-prompt-label { fill:#fff7bf; stroke:#0c1423; stroke-width:3px; paint-order:stroke; font-size:12px; font-weight:800; pointer-events:none; }
   .hex-label { fill:#f4f8ff; font-size:11px; pointer-events:none; }
   .hex-coordinate-label { fill:#253247; font-size:7px; font-weight:700; letter-spacing:.02em; pointer-events:none; user-select:none; }
-  .toponym-map-label { fill:#fff5dd; stroke:#0c1423; stroke-width:2.5px; paint-order:stroke; font-size:10px; font-weight:800; pointer-events:none; }
   .rivers-layer, .roads-layer, .river-debug-layer { pointer-events:none; }
   .river-polyline { fill:none; stroke:#3ea2ff; stroke-linecap:round; stroke-linejoin:round; }
   .river-direction-arrow, .river-rapid-mark { stroke:#ffffff; stroke-width:1.2; stroke-linecap:round; }
@@ -1301,54 +1300,6 @@ function legacyToponymSeed(regions: Region[]): number {
     }
   }
   return value >>> 0;
-}
-
-const TOPONYM_UI = {
-  ru: {
-    rename: 'Изменить название', reroll: 'Другое название', save: 'Сохранить', cancel: 'Отмена',
-    englishName: 'Название на английском', russianName: 'Название на русском',
-    invalid: 'Введите оба названия (до 80 знаков). Названия на карте не должны повторяться.',
-    generator: 'Генератор названий', model: 'Германская группа', objectType: 'Объект', quantity: 'Количество', generate: 'Сгенерировать',
-    copy: 'Скопировать список', copied: 'Скопировано', copyFailed: 'Выделите названия и скопируйте их вручную.',
-    kinds: { region: 'Регион', settlement: 'Поселение', river: 'Река', lake: 'Озеро', forest: 'Лес', mountain: 'Горы', swamp: 'Болото' }
-  },
-  en: {
-    rename: 'Edit name', reroll: 'Generate another name', save: 'Save', cancel: 'Cancel',
-    englishName: 'English name', russianName: 'Russian name',
-    invalid: 'Enter both names (up to 80 characters). Names on the map must be unique.',
-    generator: 'Place name generator', model: 'Germanic', objectType: 'Feature', quantity: 'Count', generate: 'Generate',
-    copy: 'Copy list', copied: 'Copied', copyFailed: 'Select the names and copy them manually.',
-    kinds: { region: 'Region', settlement: 'Settlement', river: 'River', lake: 'Lake', forest: 'Forest', mountain: 'Mountains', swamp: 'Swamp' }
-  }
-} as const;
-
-function ToponymEditor({ name, language, onRename, onReroll }: {
-  name: Toponym; language: Language; onRename: (en: string, ru: string) => boolean; onReroll: () => void;
-}) {
-  const [editing, setEditing] = useState(false);
-  const [en, setEn] = useState(name.en);
-  const [ru, setRu] = useState(name.ru);
-  const [error, setError] = useState(false);
-  const labels = TOPONYM_UI[language];
-  return (
-    <span className="toponym-editor">
-      {editing ? (
-        <span className="toponym-editor__form">
-          <input autoFocus aria-label={labels.englishName} maxLength={80} value={en} onChange={(event) => setEn(event.target.value)} />
-          <input aria-label={labels.russianName} maxLength={80} value={ru} onChange={(event) => setRu(event.target.value)} />
-          <button type="button" onClick={() => { if (onRename(en, ru)) { setEditing(false); setError(false); } else setError(true); }}>{labels.save}</button>
-          <button type="button" className="secondary" onClick={() => { setEditing(false); setError(false); }}>{labels.cancel}</button>
-          {error ? <span role="alert" className="toponym-editor__error">{labels.invalid}</span> : null}
-        </span>
-      ) : (
-        <>
-          <strong>{name[language]}</strong>
-          <button type="button" className="hex-biome-editor__button" title={labels.rename} aria-label={labels.rename} onClick={() => { setEn(name.en); setRu(name.ru); setEditing(true); }}>✎</button>
-          <button type="button" className="hex-biome-editor__button" title={labels.reroll} aria-label={labels.reroll} onClick={onReroll}>↻</button>
-        </>
-      )}
-    </span>
-  );
 }
 
 function chooseBiomeLandType(regionCount: number): BiomeLandType {
@@ -11120,10 +11071,6 @@ export function App() {
   const [rivers, setRivers] = useState<River[]>([]);
   const [toponyms, setToponyms] = useState<ToponymRegistry>({});
   const [toponymSeed, setToponymSeed] = useState(createToponymSeed);
-  const [sampleKind, setSampleKind] = useState<ToponymKind>('settlement');
-  const [sampleCount, setSampleCount] = useState(5);
-  const [sampleNames, setSampleNames] = useState<Toponym[]>([]);
-  const [sampleCopyStatus, setSampleCopyStatus] = useState<'copied' | 'failed' | null>(null);
   const [roads, setRoads] = useState<Road[]>([]);
   const [crossings, setCrossings] = useState<RiverCrossing[]>([]);
   const [selectedHex, setSelectedHex] = useState<AxialHex | null>(START_HEX);
@@ -13048,15 +12995,7 @@ export function App() {
 
   const renderToponym = (key: string) => {
     const name = toponyms[key];
-    if (!name) return null;
-    return <ToponymEditor key={key} name={name} language={language}
-      onRename={(en, ru) => {
-        const updated = renameToponym(toponyms, key, en, ru);
-        if (!updated) return false;
-        setToponyms(updated);
-        return true;
-      }}
-      onReroll={() => setToponyms((current) => rerollToponym(current, key, toponymSeed))} />;
+    return name ? <strong>{name[language]}</strong> : null;
   };
 
   if (debugRivers && selectedRegion && selectedCandidateBoundaryDebug) {
@@ -13186,41 +13125,6 @@ export function App() {
                 </select>
               </label>
             </div>
-            <section className="control-block toponym-sampler" aria-label={TOPONYM_UI[language].generator}>
-              <strong>{TOPONYM_UI[language].generator} · {TOPONYM_UI[language].model}</strong>
-              <div className="toponym-sampler__controls">
-                <label>{TOPONYM_UI[language].objectType}
-                  <select value={sampleKind} onChange={(event) => setSampleKind(event.target.value as ToponymKind)}>
-                    {TOPONYM_KINDS.map((kind) => <option key={kind} value={kind}>{TOPONYM_UI[language].kinds[kind]}</option>)}
-                  </select>
-                </label>
-                <label>{TOPONYM_UI[language].quantity}
-                  <select value={sampleCount} onChange={(event) => setSampleCount(Number(event.target.value))}>
-                    {[1, 5, 10, 20].map((count) => <option key={count} value={count}>{count}</option>)}
-                  </select>
-                </label>
-              </div>
-              <button type="button" onClick={() => {
-                const entities = Array.from({ length: sampleCount }, (_, index): ToponymEntity => ({ key: `sample:${index}`, kind: sampleKind }));
-                const result = synchronizeToponyms({}, entities, createToponymSeed());
-                setSampleNames(entities.map(({ key }) => result[key]));
-                setSampleCopyStatus(null);
-              }}>{TOPONYM_UI[language].generate}</button>
-              {sampleNames.length > 0 ? (
-                <>
-                  <ol className="toponym-sampler__results">
-                    {sampleNames.map((name, index) => <li key={index}><strong>{name[language]}</strong><span lang={language === 'ru' ? 'en' : 'ru'}>{name[language === 'ru' ? 'en' : 'ru']}</span></li>)}
-                  </ol>
-                  <button type="button" className="secondary" onClick={async () => {
-                    try {
-                      await navigator.clipboard.writeText(sampleNames.map((name) => `${name.ru}\t${name.en}`).join('\n'));
-                      setSampleCopyStatus('copied');
-                    } catch { setSampleCopyStatus('failed'); }
-                  }}>{TOPONYM_UI[language].copy}</button>
-                  {sampleCopyStatus ? <span role="status">{TOPONYM_UI[language][sampleCopyStatus === 'copied' ? 'copied' : 'copyFailed']}</span> : null}
-                </>
-              ) : null}
-            </section>
             {regions.length > 0 ? (
               <div className="control-block controls controls--region-management">
                   <button onClick={resetMap} className="secondary">{t.reset}</button>
@@ -13577,15 +13481,6 @@ export function App() {
                     <text key={`biome-emoji-${hex.key}-${index}`} x={position.x} y={position.y} textAnchor="middle" dominantBaseline="central" fontSize={item.fontSize} pointerEvents="none">{item.emoji}</text>
                   );
                 }) : null;
-              })}
-              {regions.map((region) => {
-                const center = positionedHexes.hexes.find((hex) => hex.key === hexKey(region.centerHex))
-                  ?? positionedHexes.hexes.find((hex) => hex.key === hexKey(region.anchorHex));
-                const name = toponyms[`region:${region.id}`];
-                if (!center || !name) return null;
-                const position = isMapRotated ? rotateMapPoint(center.x, center.y, positionedHexes.height) : center;
-                return <text key={`toponym-region-${region.id}`} x={position.x} y={position.y + HEX_SIZE * 0.8}
-                  textAnchor="middle" className="toponym-map-label">{name[language]}</text>;
               })}
             </g>
             {debugRivers ? (

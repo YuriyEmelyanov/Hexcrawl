@@ -29,14 +29,36 @@ function hash(value: string): number {
 }
 
 export function makeToponym(seed: number, key: string, kind: ToponymKind, model: ToponymModelId = DEFAULT_TOPONYM_MODEL, revision = 0, attempt = 0): Toponym {
-  const { roots, endings, qualifiers } = MODELS[model];
+  // Settlements in one region share a formation tradition with that region.
+  const regionId = /^settlement:(\d+):/.exec(key)?.[1];
+  const locality = regionId ? `region:${regionId}` : key;
+  const registers = MODELS[model].registers;
+  const register = registers[hash(`${seed}:${locality}:register`) % registers.length];
+  const { roots, founders, endings, qualifiers, independent } = register;
   const suffixes = endings[kind];
-  const tier = Math.floor(attempt / 512);
-  const variant = attempt % 512;
-  const rootIndex = hash(`${seed}:${key}:${revision}:${variant}:root`) % roots.length;
-  const endingIndex = hash(`${seed}:${key}:${revision}:${variant}:ending`) % suffixes.length;
-  const root = roots[rootIndex];
-  const suffix = suffixes[endingIndex];
+  const tier = Math.floor(attempt / 256);
+  const variant = attempt % 256;
+  const selection = `${seed}:${key}:${kind}:${revision}:${variant}`;
+  // A minority of names are curated complete forms, rather than compounds.
+  const standalone = tier === 0 && hash(`${selection}:form`) % 5 === 0;
+  if (standalone) {
+    const name = independent[kind][hash(`${selection}:whole`) % independent[kind].length];
+    return { en: name[0], ru: name[1], kind, model, revision };
+  }
+  const founder = kind === 'settlement' && hash(`${selection}:founder-form`) % 4 === 0;
+  const rootPool = founder ? founders : roots;
+  const rootIndex = hash(`${selection}:root`) % rootPool.length;
+  const root = rootPool[rootIndex];
+  const endingIndex = hash(`${selection}:ending`) % suffixes.length;
+  // Avoid doubled elements and awkward consonant seams.
+  let suffix = suffixes[endingIndex];
+  for (let offset = 0; offset < suffixes.length; offset += 1) {
+    const candidate = suffixes[(endingIndex + offset) % suffixes.length];
+    if (root[0].toLowerCase() === candidate[0].toLowerCase()
+      || root[0].slice(-1).toLowerCase() === candidate[0][0].toLowerCase()) continue;
+    suffix = candidate;
+    break;
+  }
   const qualifier = tier === 0 ? null : qualifiers[(tier - 1) % qualifiers.length];
   const en = qualifier ? qualifier[0] + root[0][0].toLowerCase() + root[0].slice(1) + suffix[0] : root[0] + suffix[0];
   const ru = qualifier ? qualifier[1] + root[1][0].toLowerCase() + root[1].slice(1) + suffix[1] : root[1] + suffix[1];
