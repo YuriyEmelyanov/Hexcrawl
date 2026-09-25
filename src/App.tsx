@@ -516,9 +516,9 @@ type Language = 'ru' | 'en';
 
 const UI_TEXT = {
   ru: {
-    languageName: 'Русский', switchLanguage: 'Switch to English', reset: 'Сбросить', regenerateRegion: 'Перегенерировать регион', deleteLastRegion: 'Удалить последний регион', export: 'Выгрузить', importJson: 'Загрузить JSON', debug: 'Отладка', controlsLabel: 'Управление картой', genParamsLabel: 'Параметры генерации', size: 'Размер', type: 'Тип', biome: 'Биом', coast: 'Берег', auto: 'Авто', settled: 'Освоенный', wild: 'Дикий', coastOption: 'Побережье', mainland: 'Материк', closeNotice: 'Закрыть уведомление', mapAria: 'Карта: перетаскивайте пальцем или мышью, стрелки клавиатуры перемещают область просмотра', rotateMap: 'Повернуть карту на 90 градусов', rotateMapTitle: 'Повернуть карту на 90°', unrotateMap: 'Вернуть исходный поворот карты', showTiles: 'Включить тайлы', showTilesTitle: 'Переключить карту на тайлы', tilesMode: 'Тайлы', emojiMode: 'Эмоджи', showEmoji: 'Включить эмоджи', showEmojiTitle: 'Переключить карту на эмоджи', hexCoordinatesMode: 'Координаты', showHexCoordinates: 'Показать координаты гексов', showHexCoordinatesTitle: 'Показать или скрыть координаты гексов', showPanel: 'Показать панель управления и информации', hidePanel: 'Скрыть панель управления и информации', startPrompt: 'Нажми на стартовый гекс', candidatePrompt: 'Выберите гекс-кандидат для добавления региона', selectedHexInfo: 'Информация о выбранном гексе', candidateForRegion: 'Кандидат для нового региона', noHexSelected: 'Гекс не выбран', lake: 'Озеро', settledRegion: 'Освоенный регион', wildArea: 'Дикая местность', centralPoi: 'Центральная точка интереса', poi: 'Точка интереса', addPoi: 'Добавить точку интереса', choosePoi: 'Выберите точку интереса', editPoi: 'Редактировать точку интереса', deletePoi: 'Удалить точку интереса', road: 'Дорога', trail: 'Тропа', nearby: 'Рядом:', river: 'Река', rapids: 'пороги', bridge: 'Мост', ferry: 'Переправа', ford: 'Брод', sea: 'Море', debugInfo: 'Отладочная информация', regions: 'Регионов', lastRegion: 'Последний регион', regionSize: 'Размер региона', height: 'Высота', targetSize: 'Целевой размер', finalSize: 'Фактический размер региона', poiCount: 'Точек интереса', selectedHex: 'Координаты гекса', selectedRegionHeight: 'Высота выбранного региона', selectedRegionSize: 'Размер выбранного региона', yes: 'да', no: 'нет', roadNumbers: 'Номера дорог', trailNumbers: 'Номера троп', regionPoiCount: 'Точек интереса в регионе', regionRoads: 'Дорог региона', regionTrails: 'Троп региона', regionRivers: 'Реки региона', riverSectors: 'Речные сектора:', sector: 'сектор', fullness: 'полноводность', confluences: 'Слияния:', flowsInto: 'впадает в', regionLakes: 'Озёра региона', selectRegionHex: 'Выберите региональный гекс.', noRiverInRegion: 'В выбранном регионе нет реки для подробной отладки.', pngExportError: 'Не удалось выгрузить PNG-файл.', jsonImportError: 'Не удалось загрузить JSON-файл.', youtubeLabel: 'YouTube канал', telegramLabel: 'Telegram канал', showHeaderLinks: 'Показать кнопки языка и соцсетей', hideHeaderLinks: 'Скрыть кнопки языка и соцсетей', editHexBiome: 'Изменить биом гекса', resetHexBiome: 'Сбросить биом гекса' },
+    languageName: 'Русский', switchLanguage: 'Switch to English', reset: 'Сбросить', regenerateRegion: 'Перегенерировать регион', deleteLastRegion: 'Удалить последний регион', export: 'Выгрузить', importJson: 'Загрузить JSON', debug: 'Отладка', controlsLabel: 'Управление картой', genParamsLabel: 'Параметры генерации', size: 'Размер', type: 'Тип', biome: 'Биом', coast: 'Берег', auto: 'Авто', settled: 'Освоенный', wild: 'Дикий', coastOption: 'Побережье', mainland: 'Материк', closeNotice: 'Закрыть уведомление', mapAria: 'Карта: перетаскивайте пальцем или мышью, стрелки клавиатуры перемещают область просмотра', rotateMap: 'Повернуть карту на 90 градусов', rotateMapTitle: 'Повернуть карту на 90°', unrotateMap: 'Вернуть исходный поворот карты', showTiles: 'Включить тайлы', showTilesTitle: 'Показывать гексы тайлами', hexesDisplay: 'Гексы', pointsDisplay: 'Точки интереса', iconsMode: 'Значки', showPoiEmojiTitle: 'Показывать точки интереса эмоджи', showPoiIconsTitle: 'Показывать точки интереса значками', tilesMode: 'Тайлы', emojiMode: 'Эмоджи', showEmoji: 'Включить эмоджи', showEmojiTitle: 'Показывать гексы эмоджи', hexCoordinatesMode: 'Координаты', showHexCoordinates: 'Показать координаты гексов', showHexCoordinatesTitle: 'Показать или скрыть координаты гексов', showPanel: 'Показать панель управления и информации', hidePanel: 'Скрыть панель управления и информации', startPrompt: 'Нажми на стартовый гекс', candidatePrompt: 'Выберите гекс-кандидат для добавления региона', selectedHexInfo: 'Информация о выбранном гексе', candidateForRegion: 'Кандидат для нового региона', noHexSelected: 'Гекс не выбран', lake: 'Озеро', settledRegion: 'Освоенный регион', wildArea: 'Дикая местность', centralPoi: 'Центральная точка интереса', poi: 'Точка интереса', addPoi: 'Добавить точку интереса', choosePoi: 'Выберите точку интереса', editPoi: 'Редактировать точку интереса', deletePoi: 'Удалить точку интереса', road: 'Дорога', trail: 'Тропа', nearby: 'Рядом:', river: 'Река', rapids: 'пороги', bridge: 'Мост', ferry: 'Переправа', ford: 'Брод', sea: 'Море', debugInfo: 'Отладочная информация', regions: 'Регионов', lastRegion: 'Последний регион', regionSize: 'Размер региона', height: 'Высота', targetSize: 'Целевой размер', finalSize: 'Фактический размер региона', poiCount: 'Точек интереса', selectedHex: 'Координаты гекса', selectedRegionHeight: 'Высота выбранного региона', selectedRegionSize: 'Размер выбранного региона', yes: 'да', no: 'нет', roadNumbers: 'Номера дорог', trailNumbers: 'Номера троп', regionPoiCount: 'Точек интереса в регионе', regionRoads: 'Дорог региона', regionTrails: 'Троп региона', regionRivers: 'Реки региона', riverSectors: 'Речные сектора:', sector: 'сектор', fullness: 'полноводность', confluences: 'Слияния:', flowsInto: 'впадает в', regionLakes: 'Озёра региона', selectRegionHex: 'Выберите региональный гекс.', noRiverInRegion: 'В выбранном регионе нет реки для подробной отладки.', pngExportError: 'Не удалось выгрузить PNG-файл.', jsonImportError: 'Не удалось загрузить JSON-файл.', youtubeLabel: 'YouTube канал', telegramLabel: 'Telegram канал', showHeaderLinks: 'Показать кнопки языка и соцсетей', hideHeaderLinks: 'Скрыть кнопки языка и соцсетей', editHexBiome: 'Изменить биом гекса', resetHexBiome: 'Сбросить биом гекса' },
   en: {
-    languageName: 'English', switchLanguage: 'Переключить на русский', reset: 'Reset', regenerateRegion: 'Regenerate region', deleteLastRegion: 'Delete last region', export: 'Export', importJson: 'Load JSON', debug: 'Debug', controlsLabel: 'Map controls', genParamsLabel: 'Generation parameters', size: 'Size', type: 'Type', biome: 'Biome', coast: 'Coast', auto: 'Auto', settled: 'Settled', wild: 'Wild', coastOption: 'Coast', mainland: 'Mainland', closeNotice: 'Close notice', mapAria: 'Map: drag with touch or mouse; keyboard arrows move the viewport', rotateMap: 'Rotate map 90 degrees', rotateMapTitle: 'Rotate map 90°', unrotateMap: 'Restore original map rotation', showTiles: 'Show tiles', showTilesTitle: 'Switch map to tiles', tilesMode: 'Tiles', emojiMode: 'Emoji', showEmoji: 'Show emoji', showEmojiTitle: 'Switch map to emoji', hexCoordinatesMode: 'Coordinates', showHexCoordinates: 'Show hex coordinates', showHexCoordinatesTitle: 'Show or hide hex coordinates', showPanel: 'Show controls and information panel', hidePanel: 'Hide controls and information panel', startPrompt: 'Click the starting hex', candidatePrompt: 'Select a candidate hex to add a region', selectedHexInfo: 'Selected hex information', candidateForRegion: 'Candidate for a new region', noHexSelected: 'No hex selected', lake: 'Lake', settledRegion: 'Settled region', wildArea: 'Wild area', centralPoi: 'Central point of interest', poi: 'Point of interest', addPoi: 'Add point of interest', choosePoi: 'Choose a point of interest', editPoi: 'Edit point of interest', deletePoi: 'Delete point of interest', road: 'Road', trail: 'Trail', nearby: 'Nearby:', river: 'River', rapids: 'rapids', bridge: 'Bridge', ferry: 'Ferry', ford: 'Ford', sea: 'Sea', debugInfo: 'Debug information', regions: 'Regions', lastRegion: 'Last region', regionSize: 'Region size', height: 'Height', targetSize: 'Target size', finalSize: 'Final region size', poiCount: 'Points of interest', selectedHex: 'Hex coordinates', selectedRegionHeight: 'Selected region height', selectedRegionSize: 'Selected region size', yes: 'yes', no: 'no', roadNumbers: 'Road numbers', trailNumbers: 'Trail numbers', regionPoiCount: 'Points of interest in region', regionRoads: 'Region roads', regionTrails: 'Region trails', regionRivers: 'Region rivers', riverSectors: 'River sectors:', sector: 'sector', fullness: 'fullness', confluences: 'Confluences:', flowsInto: 'flows into', regionLakes: 'Region lakes', selectRegionHex: 'Select a region hex.', noRiverInRegion: 'The selected region has no river for detailed debugging.', pngExportError: 'Failed to export PNG file.', jsonImportError: 'Failed to load JSON file.', youtubeLabel: 'YouTube channel', telegramLabel: 'Telegram channel', showHeaderLinks: 'Show language and social buttons', hideHeaderLinks: 'Hide language and social buttons', editHexBiome: 'Edit hex biome', resetHexBiome: 'Reset hex biome' }
+    languageName: 'English', switchLanguage: 'Переключить на русский', reset: 'Reset', regenerateRegion: 'Regenerate region', deleteLastRegion: 'Delete last region', export: 'Export', importJson: 'Load JSON', debug: 'Debug', controlsLabel: 'Map controls', genParamsLabel: 'Generation parameters', size: 'Size', type: 'Type', biome: 'Biome', coast: 'Coast', auto: 'Auto', settled: 'Settled', wild: 'Wild', coastOption: 'Coast', mainland: 'Mainland', closeNotice: 'Close notice', mapAria: 'Map: drag with touch or mouse; keyboard arrows move the viewport', rotateMap: 'Rotate map 90 degrees', rotateMapTitle: 'Rotate map 90°', unrotateMap: 'Restore original map rotation', showTiles: 'Show tiles', showTilesTitle: 'Show hexes as tiles', hexesDisplay: 'Hexes', pointsDisplay: 'Points of interest', iconsMode: 'Icons', showPoiEmojiTitle: 'Show points of interest as emoji', showPoiIconsTitle: 'Show points of interest as icons', tilesMode: 'Tiles', emojiMode: 'Emoji', showEmoji: 'Show emoji', showEmojiTitle: 'Show hexes as emoji', hexCoordinatesMode: 'Coordinates', showHexCoordinates: 'Show hex coordinates', showHexCoordinatesTitle: 'Show or hide hex coordinates', showPanel: 'Show controls and information panel', hidePanel: 'Hide controls and information panel', startPrompt: 'Click the starting hex', candidatePrompt: 'Select a candidate hex to add a region', selectedHexInfo: 'Selected hex information', candidateForRegion: 'Candidate for a new region', noHexSelected: 'No hex selected', lake: 'Lake', settledRegion: 'Settled region', wildArea: 'Wild area', centralPoi: 'Central point of interest', poi: 'Point of interest', addPoi: 'Add point of interest', choosePoi: 'Choose a point of interest', editPoi: 'Edit point of interest', deletePoi: 'Delete point of interest', road: 'Road', trail: 'Trail', nearby: 'Nearby:', river: 'River', rapids: 'rapids', bridge: 'Bridge', ferry: 'Ferry', ford: 'Ford', sea: 'Sea', debugInfo: 'Debug information', regions: 'Regions', lastRegion: 'Last region', regionSize: 'Region size', height: 'Height', targetSize: 'Target size', finalSize: 'Final region size', poiCount: 'Points of interest', selectedHex: 'Hex coordinates', selectedRegionHeight: 'Selected region height', selectedRegionSize: 'Selected region size', yes: 'yes', no: 'no', roadNumbers: 'Road numbers', trailNumbers: 'Trail numbers', regionPoiCount: 'Points of interest in region', regionRoads: 'Region roads', regionTrails: 'Region trails', regionRivers: 'Region rivers', riverSectors: 'River sectors:', sector: 'sector', fullness: 'fullness', confluences: 'Confluences:', flowsInto: 'flows into', regionLakes: 'Region lakes', selectRegionHex: 'Select a region hex.', noRiverInRegion: 'The selected region has no river for detailed debugging.', pngExportError: 'Failed to export PNG file.', jsonImportError: 'Failed to load JSON file.', youtubeLabel: 'YouTube channel', telegramLabel: 'Telegram channel', showHeaderLinks: 'Show language and social buttons', hideHeaderLinks: 'Hide language and social buttons', editHexBiome: 'Edit hex biome', resetHexBiome: 'Reset hex biome' }
 } as const;
 
 const SIZE_LABELS: Record<Language, Record<Region['sizeCategory'], string>> = {
@@ -536,6 +536,10 @@ function getBiomeLabel(biomeId: BiomeId, language: Language): string {
 
 function getBiomeTileHref(biomeId?: BiomeId): string | undefined {
   return biomeId ? BIOME_TILE_HREFS[biomeId] : undefined;
+}
+
+function getPoiSvgHref(kind?: CentralPoiKind | PoiKind | WaterPoiKind, water = false): string {
+  return kind ? `/poi/v2/${water ? 'water' : 'land'}/${kind}.svg` : '/poi/v2/unknown.svg';
 }
 
 function translateCoastNotice(message: string, language: Language): string {
@@ -1005,7 +1009,7 @@ function blobToDataUrl(blob: Blob): Promise<string> {
 }
 
 async function inlineExportImageHrefs(svg: SVGSVGElement): Promise<void> {
-  const cache = new Map<string, string>();
+  const cache = new Map<string, Promise<string>>();
   const images = Array.from(svg.querySelectorAll('image'));
 
   await Promise.all(images.map(async (image) => {
@@ -1013,14 +1017,16 @@ async function inlineExportImageHrefs(svg: SVGSVGElement): Promise<void> {
     if (!href || href.startsWith('data:')) return;
 
     const absoluteHref = new URL(href, window.location.href).toString();
-    let dataUrl = cache.get(absoluteHref);
-    if (!dataUrl) {
-      const response = await fetch(absoluteHref);
-      if (!response.ok) throw new Error(`Не удалось загрузить тайл для PNG-экспорта: ${href}`);
-      dataUrl = await blobToDataUrl(await response.blob());
-      cache.set(absoluteHref, dataUrl);
+    let pendingDataUrl = cache.get(absoluteHref);
+    if (!pendingDataUrl) {
+      pendingDataUrl = fetch(absoluteHref).then(async (response) => {
+        if (!response.ok) throw new Error(`Не удалось загрузить изображение для PNG-экспорта: ${href}`);
+        return blobToDataUrl(await response.blob());
+      });
+      cache.set(absoluteHref, pendingDataUrl);
     }
 
+    const dataUrl = await pendingDataUrl;
     image.setAttribute('href', dataUrl);
     image.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', dataUrl);
   }));
@@ -1138,7 +1144,8 @@ function getHexEmojiLayout(
   emojis: string[],
   centerX: number,
   centerY: number,
-  hexRadius: number
+  hexRadius: number,
+  spacing = 1
 ): Array<{ emoji: string; x: number; y: number; fontSize: number }> {
   const visibleEmojis = emojis.slice(0, 4);
 
@@ -1151,26 +1158,26 @@ function getHexEmojiLayout(
   if (visibleEmojis.length === 2) {
     const fontSize = clamp(hexRadius * 0.42, 14, 22);
     return [
-      { emoji: visibleEmojis[0], x: centerX - hexRadius * 0.18, y: centerY, fontSize },
-      { emoji: visibleEmojis[1], x: centerX + hexRadius * 0.18, y: centerY, fontSize }
+      { emoji: visibleEmojis[0], x: centerX - hexRadius * 0.18 * spacing, y: centerY, fontSize },
+      { emoji: visibleEmojis[1], x: centerX + hexRadius * 0.18 * spacing, y: centerY, fontSize }
     ];
   }
 
   if (visibleEmojis.length === 3) {
     const fontSize = clamp(hexRadius * 0.34, 12, 18);
     return [
-      { emoji: visibleEmojis[0], x: centerX, y: centerY - hexRadius * 0.18, fontSize },
-      { emoji: visibleEmojis[1], x: centerX - hexRadius * 0.22, y: centerY + hexRadius * 0.16, fontSize },
-      { emoji: visibleEmojis[2], x: centerX + hexRadius * 0.22, y: centerY + hexRadius * 0.16, fontSize }
+      { emoji: visibleEmojis[0], x: centerX, y: centerY - hexRadius * 0.18 * spacing, fontSize },
+      { emoji: visibleEmojis[1], x: centerX - hexRadius * 0.22 * spacing, y: centerY + hexRadius * 0.16 * spacing, fontSize },
+      { emoji: visibleEmojis[2], x: centerX + hexRadius * 0.22 * spacing, y: centerY + hexRadius * 0.16 * spacing, fontSize }
     ];
   }
 
   const fontSize = clamp(hexRadius * 0.30, 11, 16);
   return [
-    { emoji: visibleEmojis[0], x: centerX - hexRadius * 0.18, y: centerY - hexRadius * 0.16, fontSize },
-    { emoji: visibleEmojis[1], x: centerX + hexRadius * 0.18, y: centerY - hexRadius * 0.16, fontSize },
-    { emoji: visibleEmojis[2], x: centerX - hexRadius * 0.18, y: centerY + hexRadius * 0.17, fontSize },
-    { emoji: visibleEmojis[3], x: centerX + hexRadius * 0.18, y: centerY + hexRadius * 0.17, fontSize }
+    { emoji: visibleEmojis[0], x: centerX - hexRadius * 0.18 * spacing, y: centerY - hexRadius * 0.16 * spacing, fontSize },
+    { emoji: visibleEmojis[1], x: centerX + hexRadius * 0.18 * spacing, y: centerY - hexRadius * 0.16 * spacing, fontSize },
+    { emoji: visibleEmojis[2], x: centerX - hexRadius * 0.18 * spacing, y: centerY + hexRadius * 0.17 * spacing, fontSize },
+    { emoji: visibleEmojis[3], x: centerX + hexRadius * 0.18 * spacing, y: centerY + hexRadius * 0.17 * spacing, fontSize }
   ];
 }
 
@@ -12677,6 +12684,7 @@ export function App() {
   const [mapScale, setMapScale] = useState(1);
   const [isMapRotated, setIsMapRotated] = useState(false);
   const [useBiomeTiles, setUseBiomeTiles] = useState(true);
+  const [usePoiSvg, setUsePoiSvg] = useState(true);
   const [showHexCoordinates, setShowHexCoordinates] = useState(false);
   const [mapToolbarHeight, setMapToolbarHeight] = useState(0);
   const [isSidePanelCollapsed, setIsSidePanelCollapsed] = useState(false);
@@ -12688,8 +12696,10 @@ export function App() {
   const mapCardStyle = { '--map-toolbar-height': `${mapToolbarHeight}px` } as CSSProperties;
   const sidePanelToggleLabel = isSidePanelCollapsed ? t.showPanel : t.hidePanel;
   const headerLinksToggleLabel = isHeaderLinksCollapsed ? t.showHeaderLinks : t.hideHeaderLinks;
-  const biomeDisplayToggleLabel = useBiomeTiles ? t.showEmoji : t.showTiles;
+  const biomeDisplayToggleLabel = `${t.hexesDisplay}: ${useBiomeTiles ? t.tilesMode : t.emojiMode}`;
   const biomeDisplayToggleTitle = useBiomeTiles ? t.showEmojiTitle : t.showTilesTitle;
+  const poiDisplayToggleLabel = `${t.pointsDisplay}: ${usePoiSvg ? t.iconsMode : t.emojiMode}`;
+  const poiDisplayToggleTitle = usePoiSvg ? t.showPoiEmojiTitle : t.showPoiIconsTitle;
 
   useEffect(() => {
     headerLinksAutoCollapseTimerRef.current = window.setTimeout(() => {
@@ -13139,6 +13149,28 @@ export function App() {
             <div className="control-block controls controls--display">
               <button
                 type="button"
+                className="biome-display-toggle"
+                onClick={() => setUseBiomeTiles((value) => !value)}
+                aria-pressed={useBiomeTiles}
+                aria-label={biomeDisplayToggleLabel}
+                title={biomeDisplayToggleTitle}
+              >
+                <span className="display-toggle__label">{t.hexesDisplay}</span>
+                <span>{useBiomeTiles ? t.tilesMode : t.emojiMode}</span>
+              </button>
+              <button
+                type="button"
+                className="poi-display-toggle"
+                onClick={() => setUsePoiSvg((value) => !value)}
+                aria-pressed={usePoiSvg}
+                aria-label={poiDisplayToggleLabel}
+                title={poiDisplayToggleTitle}
+              >
+                <span className="display-toggle__label">{t.pointsDisplay}</span>
+                <span>{usePoiSvg ? t.iconsMode : t.emojiMode}</span>
+              </button>
+              <button
+                type="button"
                 className="rotate-map-button"
                 onClick={() => setIsMapRotated((value) => !value)}
                 aria-label={isMapRotated ? t.unrotateMap : t.rotateMap}
@@ -13151,16 +13183,6 @@ export function App() {
                   />
                   <text x="32" y="25" className="rotate-map-button__sign">{isMapRotated ? '↺' : '↻'}</text>
                 </svg>
-              </button>
-              <button
-                type="button"
-                className="biome-display-toggle"
-                onClick={() => setUseBiomeTiles((value) => !value)}
-                aria-label={biomeDisplayToggleLabel}
-                title={biomeDisplayToggleTitle}
-              >
-                <span aria-hidden="true">{useBiomeTiles ? '🖼️' : '😀'}</span>
-                <span>{useBiomeTiles ? t.emojiMode : t.tilesMode}</span>
               </button>
               <button
                 type="button"
@@ -13467,20 +13489,37 @@ export function App() {
                 const biomeTileHref = useBiomeTiles && hex.kind === 'region' && !isLakeHex ? getBiomeTileHref(effectiveBiomeId) : undefined;
                 const biomeEmojis = biomeTileHref ? [] : [biomePrimaryEmoji, ...biomeSecondaryEmojis.slice(0, 2)];
                 const isPointOfInterest = region?.pointsOfInterest.some((poi) => hexKey(poi) === hex.key) ?? false;
-                const hexEmojis = [...(meta?.isCenter && region ? [getCentralPoiEmoji(region)] : meta?.isCenter ? [REGION_CENTER_EMOJI] : []), ...(isPointOfInterest ? [getPoiEmojiForHex(region, { q: hex.q, r: hex.r })] : []), ...biomeEmojis];
-                const hexEmojiLayout = getHexEmojiLayout(hexEmojis, hex.x, hex.y, HEX_SIZE);
                 if (waterPoiKind) {
                   const position = isMapRotated ? rotateMapPoint(hex.x, hex.y, positionedHexes.height) : hex;
-                  return (
-                    <text key={`water-poi-emoji-${hex.key}`} x={position.x} y={position.y} textAnchor="middle" dominantBaseline="central" fontSize={22} pointerEvents="none">{getWaterPoiEmoji(waterPoiKind)}</text>
+                  return usePoiSvg ? (
+                    <image key={`water-poi-svg-${hex.key}`} className="poi-marker" href={getPoiSvgHref(waterPoiKind, true)} x={position.x - 12} y={position.y - 12} width={24} height={24} pointerEvents="none" role="img" aria-label={getWaterPoiLabel(waterPoiKind, language)} />
+                  ) : (
+                    <text key={`water-poi-emoji-${hex.key}`} className="poi-marker" x={position.x} y={position.y} textAnchor="middle" dominantBaseline="central" fontSize={22} pointerEvents="none">{getWaterPoiEmoji(waterPoiKind)}</text>
                   );
                 }
-                return SHOW_BIOME_EMOJI && hex.kind === 'region' && hex.regionId && region && !isLakeHex ? hexEmojiLayout.map((item, index) => {
+                if (!SHOW_BIOME_EMOJI || hex.kind !== 'region' || !hex.regionId || !region || isLakeHex) return null;
+                const hexMarkers: Array<{ emoji: string; svgHref?: string; label?: string }> = [];
+                if (meta?.isCenter) {
+                  hexMarkers.push({ emoji: getCentralPoiEmoji(region), svgHref: getPoiSvgHref(region.centralPoiKind), label: getCentralPoiLabel(region, language) });
+                }
+                if (isPointOfInterest) {
+                  hexMarkers.push({ emoji: getPoiEmojiForHex(region, hex), svgHref: getPoiSvgHref(getPoiKindForHex(region, hex)), label: getPoiLabelForHex(region, hex, language) });
+                }
+                hexMarkers.push(...biomeEmojis.map((emoji) => ({ emoji })));
+                // SVG silhouettes need more room when sharing a hex with biome emoji or another POI.
+                const spacing = usePoiSvg && hexMarkers.some((marker) => marker.svgHref) ? 1.8 : 1;
+                const hexEmojiLayout = getHexEmojiLayout(hexMarkers.map((marker) => marker.emoji), hex.x, hex.y, HEX_SIZE, spacing);
+                return hexEmojiLayout.map((item, index) => {
                   const position = isMapRotated ? rotateMapPoint(item.x, item.y, positionedHexes.height) : item;
+                  const marker = hexMarkers[index];
+                  if (usePoiSvg && marker.svgHref) {
+                    const size = item.fontSize * 1.5;
+                    return <image key={`poi-svg-${hex.key}-${index}`} className="poi-marker" href={marker.svgHref} x={position.x - size / 2} y={position.y - size / 2} width={size} height={size} pointerEvents="none" role="img" aria-label={marker.label} />;
+                  }
                   return (
-                    <text key={`biome-emoji-${hex.key}-${index}`} x={position.x} y={position.y} textAnchor="middle" dominantBaseline="central" fontSize={item.fontSize} pointerEvents="none">{item.emoji}</text>
+                    <text key={`biome-emoji-${hex.key}-${index}`} className={marker.svgHref ? 'poi-marker' : 'biome-marker'} x={position.x} y={position.y} textAnchor="middle" dominantBaseline="central" fontSize={item.fontSize} pointerEvents="none">{item.emoji}</text>
                   );
-                }) : null;
+                });
               })}
             </g>
             {debugRivers ? (
