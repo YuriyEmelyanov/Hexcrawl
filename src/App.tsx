@@ -153,7 +153,11 @@ type BiomeId =
   | 'deciduous_woodland'
   | 'mixed_woodland'
   | 'coniferous_woodland'
-  | 'semi_desert';
+  | 'semi_desert'
+  | 'dead_forest'
+  | 'dead_woodland'
+  | 'dead_forested_hills'
+  | 'dead_mountain_forest';
 
 type Region = {
   id: number;
@@ -476,7 +480,11 @@ const BIOME_TILE_HREFS: Partial<Record<BiomeId, string>> = {
   deciduous_woodland: '/Deciduous_woodland.png',
   mixed_woodland: '/Mixed_woodland.png',
   coniferous_woodland: '/Coniferous%20woodland.png',
-  semi_desert: '/Semi-desert.png'
+  semi_desert: '/Semi-desert.png',
+  dead_forest: '/dead_forest_heavy.png',
+  dead_woodland: '/dead_forest_wetlands.png',
+  dead_forested_hills: '/dead_forest_hills.png',
+  dead_mountain_forest: '/dead_forest_mountain.png'
 };
 const SVG_EXPORT_STYLES = `
   svg { --water-color: #3ea2ff; background: #0c1423; }
@@ -527,7 +535,7 @@ const SIZE_LABELS: Record<Language, Record<Region['sizeCategory'], string>> = {
 };
 
 const BIOME_LABELS_EN: Record<BiomeId, string> = {
-  plain_deciduous_forest: 'Lowland deciduous forest', plain_mixed_forest: 'Lowland mixed forest', plain_coniferous_forest: 'Lowland coniferous forest', deciduous_forested_hills: 'Deciduous forested hills', mixed_forested_hills: 'Mixed forested hills', coniferous_forested_hills: 'Coniferous forested hills', open_hills: 'Open hills', coniferous_mountain_forest: 'Coniferous mountain forest', mixed_mountain_forest: 'Mixed mountain forest', deciduous_mountain_forest: 'Deciduous mountain forest', mountains: 'Mountains', open_plains: 'Open plains', swamp_forest: 'Swamp forest', swamp: 'Swamp', hilly_woodland: 'Hilly woodland', mountain_woodland: 'Mountain woodland', deciduous_woodland: 'Deciduous woodland', mixed_woodland: 'Mixed woodland', coniferous_woodland: 'Coniferous woodland', semi_desert: 'Semi-desert'
+  plain_deciduous_forest: 'Lowland deciduous forest', plain_mixed_forest: 'Lowland mixed forest', plain_coniferous_forest: 'Lowland coniferous forest', deciduous_forested_hills: 'Deciduous forested hills', mixed_forested_hills: 'Mixed forested hills', coniferous_forested_hills: 'Coniferous forested hills', open_hills: 'Open hills', coniferous_mountain_forest: 'Coniferous mountain forest', mixed_mountain_forest: 'Mixed mountain forest', deciduous_mountain_forest: 'Deciduous mountain forest', mountains: 'Mountains', open_plains: 'Open plains', swamp_forest: 'Swamp forest', swamp: 'Swamp', hilly_woodland: 'Hilly woodland', mountain_woodland: 'Mountain woodland', deciduous_woodland: 'Deciduous woodland', mixed_woodland: 'Mixed woodland', coniferous_woodland: 'Coniferous woodland', semi_desert: 'Semi-desert', dead_forest: 'Dead forest', dead_woodland: 'Dead woodland', dead_forested_hills: 'Dead forested hills', dead_mountain_forest: 'Dead mountain forest'
 };
 
 function getBiomeLabel(biomeId: BiomeId, language: Language): string {
@@ -566,7 +574,11 @@ const BIOMES: Record<BiomeId, Biome> = {
   deciduous_woodland: { id: 'deciduous_woodland', label: 'Лиственное редколесье', color: '#879253', primaryEmoji: '🌱', secondaryEmojis: ['🌳'], wildWeight: 3, settledWeight: 19, heightLevel: 1 },
   mixed_woodland: { id: 'mixed_woodland', label: 'Смешанное редколесье', color: '#4F9E45', primaryEmoji: '🌱', secondaryEmojis: ['🌳', '🌲'], wildWeight: 1, settledWeight: 7, heightLevel: 1 },
   coniferous_woodland: { id: 'coniferous_woodland', label: 'Хвойное редколесье', color: '#488A40', primaryEmoji: '🌱', secondaryEmojis: ['🌲'], wildWeight: 1, settledWeight: 1, heightLevel: 1 },
-  semi_desert: { id: 'semi_desert', label: 'Полупустыня', color: '#E7F79C', primaryEmoji: '🪨', secondaryEmojis: ['🌱'], wildWeight: 1, settledWeight: 0, heightLevel: 1 }
+  semi_desert: { id: 'semi_desert', label: 'Полупустыня', color: '#E7F79C', primaryEmoji: '🪨', secondaryEmojis: ['🌱'], wildWeight: 1, settledWeight: 0, heightLevel: 1 },
+  dead_forest: { id: 'dead_forest', label: 'Мёртвый лес', color: '#8D8D8D', primaryEmoji: '🪾', secondaryEmojis: [], wildWeight: 1, settledWeight: 0, heightLevel: 1 },
+  dead_woodland: { id: 'dead_woodland', label: 'Мёртвое редколесье', color: '#999999', primaryEmoji: '🌾', secondaryEmojis: ['🪾'], wildWeight: 1, settledWeight: 0, heightLevel: 1 },
+  dead_forested_hills: { id: 'dead_forested_hills', label: 'Мёртвый лес на холмах', color: '#919191', primaryEmoji: '〰️', secondaryEmojis: ['🪾'], wildWeight: 1, settledWeight: 0, heightLevel: 2 },
+  dead_mountain_forest: { id: 'dead_mountain_forest', label: 'Мёртвый горный лес', color: '#828282', primaryEmoji: '⛰', secondaryEmojis: ['🪾'], wildWeight: 1, settledWeight: 0, heightLevel: 3 }
 };
 const FALLBACK_BIOME_ID: BiomeId = 'plain_deciduous_forest';
 const FALLBACK_SETTLED_BIOME_ID: BiomeId = 'open_plains';
@@ -1339,7 +1351,20 @@ const BIOME_COMPATIBILITY_MATRIX: BiomeCompatibilityMatrix = {
   semi_desert: { open_hills: true, open_plains: true, hilly_woodland: true, deciduous_woodland: true, mixed_woodland: true, coniferous_woodland: true, semi_desert: true }
 };
 
+// Every pair involving a dead-forest biome is valid except the pairs selected
+// below. The numbered lists correspond to the biome list agreed with the owner.
+const DEAD_FOREST_INCOMPATIBLE_NEIGHBORS: Partial<Record<BiomeId, ReadonlySet<BiomeId>>> = {
+  dead_forest: new Set<BiomeId>(['open_plains', 'swamp', 'semi_desert', 'open_hills', 'coniferous_mountain_forest', 'mixed_mountain_forest', 'deciduous_mountain_forest', 'mountains', 'mountain_woodland', 'dead_mountain_forest']),
+  dead_woodland: new Set<BiomeId>(['coniferous_mountain_forest', 'mixed_mountain_forest', 'deciduous_mountain_forest', 'mountains', 'mountain_woodland', 'dead_mountain_forest']),
+  dead_forested_hills: new Set<BiomeId>(['open_plains', 'swamp', 'semi_desert']),
+  dead_mountain_forest: new Set<BiomeId>(['plain_deciduous_forest', 'plain_mixed_forest', 'plain_coniferous_forest', 'open_plains', 'swamp_forest', 'swamp', 'deciduous_woodland', 'mixed_woodland', 'coniferous_woodland', 'semi_desert', 'dead_forest', 'dead_woodland'])
+};
+
 function isBiomesCompatible(biomeA: BiomeId, biomeB: BiomeId, compatibilityMatrix: BiomeCompatibilityMatrix): boolean {
+  if (DEAD_FOREST_INCOMPATIBLE_NEIGHBORS[biomeA]?.has(biomeB)
+    || DEAD_FOREST_INCOMPATIBLE_NEIGHBORS[biomeB]?.has(biomeA)) return false;
+  if (biomeA in DEAD_FOREST_INCOMPATIBLE_NEIGHBORS
+    || biomeB in DEAD_FOREST_INCOMPATIBLE_NEIGHBORS) return true;
   const direct = compatibilityMatrix[biomeA]?.[biomeB];
   if (typeof direct === 'boolean') return direct;
   const reverse = compatibilityMatrix[biomeB]?.[biomeA];
@@ -1495,21 +1520,8 @@ function chooseBiomeIdAtHeightLevel(
     return { biomeId: chooseWeightedRandom(relaxedWeights) };
   }
 
-  // Some land types intentionally assign zero generation weight to an entire
-  // height (for example, settled mountains). An explicitly preferred/required
-  // height still needs a biome, so use eligible biomes uniformly as a last
-  // exact-height attempt before reporting a river constraint failure.
-  const exactHeightFallbackWeights = {} as Record<BiomeId, number>;
-  for (const biome of Object.values(BIOMES)) {
-    exactHeightFallbackWeights[biome.id] = biome.heightLevel === requiredHeightLevel
-      && (!riverHeightConstraint || isBiomeAllowedByRiverHeightConstraint(biome.id, riverHeightConstraint))
-      ? 1
-      : 0;
-  }
-  if (Object.values(exactHeightFallbackWeights).some((weight) => weight > 0)) {
-    return { biomeId: chooseWeightedRandom(exactHeightFallbackWeights) };
-  }
-
+  // A zero weight stays zero even when a river requires an exact height.
+  // The caller can retry without the preferred height or create a tract.
   return { biomeId: null, reason: 'river_height_constraint_failed' };
 }
 
