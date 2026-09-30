@@ -19,7 +19,8 @@ export const testGeometry = { getHexCornerPoints, getHexNeighbors, hexKey, build
   findRiverEndpointsTouchingRegion, getCandidateHexes, generateRiverForRegion, assertHexcrawlSaveData,
   buildRegionRiverNetwork, reconcileRegionRiverModel, addLakeAroundRiverSplitVertex, createInitialRiverSectors,
   countRoadPathRiverCrossings, findLowestRiverCrossingPathWithinWildRegion, getWildRoadCandidates, chooseBestWildRoadCandidate, collectSettledIncomingRoadPathsToTarget, generateRoadsForRegionImpl, findIncomingRoadEndpointsForRegion, getRoadEndpointHexKeysImpl,
-  getSettledMainRoadLimit, getWildRegionTrailBuildCount, canBuildStandaloneWildRegionRoad };
+  getSettledMainRoadLimit, getWildRegionTrailBuildCount, canBuildStandaloneWildRegionRoad,
+  BIOMES, BIOME_COMPATIBILITY_MATRIX, isBiomesCompatible, chooseBiomeIdAtHeightLevel };
 `;
 const compiled = ts.transpileModule(instrumented, { compilerOptions: {
   module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020, jsx: ts.JsxEmit.ReactJSX
