@@ -123,7 +123,36 @@ try {
   await page.locator('polygon.hex.candidate').first().dispatchEvent('click');
   assert.equal((await snapshot()).map.regions.length, count + 1);
   assert.equal(errors.length, 0, errors.join('\n'));
-  console.log(JSON.stringify({ clicks: clicks + 1, completed, regeneration: true, undo: true, jsonReload: true, pageErrors: errors }));
+  // Inject once into the real production callback, after size selection.
+  // Restore Math.random before throwing so the next action can proceed normally.
+  const injectFailure = () => page.evaluate(() => {
+    const original = Math.random;
+    let calls = 0;
+    Math.random = () => {
+      if (++calls === 3) {
+        Math.random = original;
+        throw new Error('injected browser generation failure');
+      }
+      return original();
+    };
+  });
+  const stable = data => ({ map: data.map, counters: data.counters, ui: data.ui });
+  const beforeFailure = await snapshot();
+  await injectFailure();
+  await page.locator('polygon.hex.candidate').first().dispatchEvent('click');
+  await page.getByRole('alert').waitFor();
+  assert.deepEqual(stable(await snapshot()), stable(beforeFailure));
+  await page.locator('polygon.hex.candidate').first().dispatchEvent('click');
+  assert.equal(await page.getByRole('alert').count(), 0);
+  const beforeRegenFailure = await snapshot();
+  await injectFailure();
+  await page.getByRole('button', { name: 'Перегенерировать регион', exact: true }).click();
+  await page.getByRole('alert').waitFor();
+  assert.deepEqual(stable(await snapshot()), stable(beforeRegenFailure));
+  await page.getByRole('button', { name: 'Удалить последний регион', exact: true }).click();
+  assert.deepEqual((await snapshot()).map, beforeFailure.map);
+  assert.equal(errors.length, 0, errors.join('\n'));
+  console.log(JSON.stringify({ clicks: clicks + 1, completed, regeneration: true, undo: true, jsonReload: true, errorRecovery: true, pageErrors: errors }));
 } finally {
   await browser?.close();
   server.kill();
