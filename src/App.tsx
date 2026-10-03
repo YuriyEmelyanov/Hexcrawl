@@ -1278,6 +1278,18 @@ type MapSnapshot = {
   toponymSeed: number;
 };
 
+// Exact rollback state: unlike user undo, error recovery never recalculates names or roads.
+type GenerationBackup = { map: MapSnapshot; history: MapSnapshot[]; selectedHex: AxialHex | null };
+type GenerationDiagnostic = {
+  kind: 'programming-error';
+  anchorHex: AxialHex;
+  options: GenerationOptions;
+  attempt: number;
+  stage: string;
+  message: string;
+  stack?: string;
+};
+
 function getToponymEntities(regions: Region[], rivers: River[], terrain: Map<string, HexTerrainData>): ToponymEntity[] {
   const entities: ToponymEntity[] = [];
   for (const region of regions) {
@@ -2213,8 +2225,8 @@ function assignRiverSectorsImpl(
 
       return { ...river, sectors };
     } catch (error) {
-      console.warn('Could not assign river sectors', { riverId: river.id, error });
-      return { ...river, sectors: [] };
+      // Constraint rejections return normally; an exception is a programming error.
+      throw error;
     }
   });
 
@@ -3006,9 +3018,8 @@ function tryAddEdgeMinorTributaryRiverImpl(
     logGeneration({ built: false, reason: 'no_valid_path', pathLength: 0 });
     return rivers;
   } catch (error) {
-    console.warn('Edge tributary generation failed', { regionId: region.id, error });
-    logGeneration({ built: false, reason: 'no_valid_path', pathLength: 0 });
-    return rivers;
+    // Constraint rejections return normally; an exception is a programming error.
+    throw error;
   }
 }
 
@@ -3266,9 +3277,8 @@ function tryAddSmallTributaryRiverImpl(
     });
     return nextRivers;
   } catch (error) {
-    console.warn('Minor river generation failed', { regionId: region.id, error });
-    logGeneration({ startCandidates: 0, built: false, reason: 'no_valid_path', segmentCount: 0, reachedLake: false, targetLakeWasFree: false });
-    return rivers;
+    // Constraint rejections return normally; an exception is a programming error.
+    throw error;
   }
 }
 const tryAddSmallTributaryRiver = __profiled('    ↳↳ tryAddSmallTributaryRiver', tryAddSmallTributaryRiverImpl);
@@ -6022,7 +6032,9 @@ function chooseCoastalAwareLandType(isCoastal: boolean): BiomeLandType {
   return Math.random() < settledChance ? 'settled' : 'wild';
 }
 
-type RiverGenerationResult = { success: boolean; rivers: River[]; reason?: string };
+type RiverGenerationResult =
+  | { success: true; rivers: River[] }
+  | { success: false; rivers: River[]; reason: string };
 
 function getMinimumMountainRiverCountForRegion(region: Region): number {
   if (region.heightLevel !== 3) return 0;
@@ -7441,8 +7453,8 @@ function generateRiverForRegionImpl(
       return finalizeRiverGenerationForRegion(region, regions, terrainMap, riverGraph, nextRivers, candidateHexes ?? [], candidateVertices, neighborRegionVertices, candidateEndpointVertices);
     }
   } catch (error) {
-    console.warn('river generation failed', { regionId: region.id, error });
-    return { success: false, rivers: existingRivers, reason: 'exception' };
+    // Constraint rejections return normally; an exception is a programming error.
+    throw error;
   }
 
   return { success: false, rivers: existingRivers, reason: 'no_valid_random_path' };
@@ -11106,13 +11118,15 @@ export function App() {
   const [history, setHistory] = useState<MapSnapshot[]>([]);
   // Отложенная перегенерация: ставим заявку, ждём пока React применит
   // восстановленный снимок, и только потом генерируем регион заново.
-  const [pendingRegen, setPendingRegen] = useState<{ anchorHex: AxialHex; options: GenerationOptions } | null>(null);
+  const [pendingRegen, setPendingRegen] = useState<{ anchorHex: AxialHex; options: GenerationOptions; backup: GenerationBackup } | null>(null);
   // Параметры ручной генерации ('auto' — прежнее случайное поведение).
   const [genSizeCategory, setGenSizeCategory] = useState<'auto' | Exclude<Region['sizeCategory'], 'tract'>>('auto');
   const [genLandType, setGenLandType] = useState<'auto' | BiomeLandType>('auto');
   const [genBiome, setGenBiome] = useState<'auto' | BiomeId>('auto');
   const [genCoastal, setGenCoastal] = useState<'auto' | CoastalPreference>('mainland');
   // Уведомление пользователю (например, почему не создалось побережье).
+  const [generationError, setGenerationError] = useState<GenerationDiagnostic | null>(null);
+  const generationProgress = { attempt: 0, stage: 'region', lastRejection: null as string | null, fallbackReason: null as string | null };
   const [coastNotice, setCoastNotice] = useState<string | null>(null);
   const [clickPromptCandidateKey, setClickPromptCandidateKey] = useState<string | null>(null);
 
@@ -11369,7 +11383,10 @@ export function App() {
     return map;
   }, [regions, candidateHexes]);
 
-  const addFallbackTractToMap = (anchorHex: AxialHex, forceCoastalSea = false, options: GenerationOptions = {}) => {
+  const addFallbackTractToMap = (anchorHex: AxialHex, forceCoastalSea = false, options: GenerationOptions = {}, reason = 'direct_fallback') => {
+    generationProgress.stage = 'tract';
+    generationProgress.fallbackReason = reason;
+    console.warn('Generation constraint fallback', { kind: 'constraint-rejection', reason, anchorHex, attempt: generationProgress.attempt });
     const regionId = Math.max(0, ...regions.map((region) => region.id)) + 1;
     const existingSeaKeys = getSeaHexKeysWithout(hexTerrainByKey, [anchorHex]);
     // Если якорь урочища всё ещё числится морем в служебных данных,
@@ -11577,7 +11594,6 @@ export function App() {
       nextLakeId,
       nextRoadId
     };
-    setHistory((current) => [...current, snapshot]);
     const finalHexTerrainByKey = (() => {
       let next = new Map(tractTerrain);
       // Новый fallback-регион всегда становится сушей: очищаем старые terrain override
@@ -11592,15 +11608,21 @@ export function App() {
       return next;
     })();
     const newlyCheckedWaterHexKeys = new Set([...regionKeySet, ...finalSeaKeysToWrite]);
+    generationProgress.stage = 'prepare_commit';
+    const finalToponyms = synchronizeToponyms({ ...toponyms, ...options.previousToponyms }, getToponymEntities(finalRegions, riversAfterTractGeneration, finalHexTerrainByKey), toponymSeed);
+    const finalWaterPoi = assignWaterPoiLayer(waterPoiByKey, finalRegions, finalHexTerrainByKey, newlyCheckedWaterHexKeys);
+    const finalCrossings = reconcileRiverCrossings(tractRoadResult.roads, riversAfterTractGeneration, finalRegions, crossings);
+    const finalNextLakeId = Math.max(nextLakeIdAfterLandlockedSea, getNextLakeIdFromTerrain(finalHexTerrainByKey));
+    setHistory((current) => [...current, snapshot]);
     setRegions(finalRegions);
     setCandidateHexes(finalCandidateHexes);
     setRivers(riversAfterTractGeneration);
-    setToponyms(synchronizeToponyms({ ...toponyms, ...options.previousToponyms }, getToponymEntities(finalRegions, riversAfterTractGeneration, finalHexTerrainByKey), toponymSeed));
+    setToponyms(finalToponyms);
     setHexTerrainByKey(finalHexTerrainByKey);
-    setWaterPoiByKey(assignWaterPoiLayer(waterPoiByKey, finalRegions, finalHexTerrainByKey, newlyCheckedWaterHexKeys));
-    setNextLakeId(Math.max(nextLakeIdAfterLandlockedSea, getNextLakeIdFromTerrain(finalHexTerrainByKey)));
+    setWaterPoiByKey(finalWaterPoi);
+    setNextLakeId(finalNextLakeId);
     setRoads(tractRoadResult.roads);
-    setCrossings(reconcileRiverCrossings(tractRoadResult.roads, riversAfterTractGeneration, finalRegions, crossings));
+    setCrossings(finalCrossings);
     setNextRoadId(tractRoadResult.nextRoadId);
     setSelectedHex(anchorHex);
   };
@@ -11622,6 +11644,8 @@ export function App() {
       ? existingSeaKeysForGrowth
       : new Set<string>();
     for (let attempt = 0; attempt < maxRegionAttempts; attempt += 1) {
+      generationProgress.attempt = attempt + 1;
+      generationProgress.stage = 'region';
       __profileHit('region_attempt (попытки регенерации)');
       const isLastRegionAttempt = attempt === maxRegionAttempts - 1;
       let targetSize = options.targetSize ?? rollRegionTargetSize();
@@ -11646,7 +11670,7 @@ export function App() {
           acceptedAsFallbackTract: isLastRegionAttempt
         });
         if (isLastRegionAttempt) {
-          addFallbackTractToMap(anchorHex, false, options);
+          addFallbackTractToMap(anchorHex, false, options, 'region_too_small');
           return;
         }
         continue;
@@ -11712,7 +11736,7 @@ export function App() {
           outgoingRiverEndpointCount,
           isFirstRegion
         });
-        addFallbackTractToMap(anchorHex, true, options);
+        addFallbackTractToMap(anchorHex, true, options, 'coastal_river_endpoints_incompatible');
         return;
       }
       const biomeLandType = options.landType ?? (regions.length === 0 ? 'settled' : chooseCoastalAwareLandType(isCoastalRegion));
@@ -11830,7 +11854,7 @@ export function App() {
       // A failed biome choice must take the same safe tract path as an
       // exhausted geometry attempt, never commit a region with a null biome.
       if (!biomeId) {
-        addFallbackTractToMap(anchorHex, isCoastalRegion, options);
+        addFallbackTractToMap(anchorHex, isCoastalRegion, options, biomeChoice.reason ?? 'no_compatible_biome');
         return;
       }
       const biome = BIOMES[biomeId] ?? BIOMES[FALLBACK_BIOME_ID];
@@ -11893,6 +11917,7 @@ export function App() {
       ]);
       // Урочища не создают самостоятельные новые реки: если есть примыкающая
       // исходящая река, generateRiverForRegion только добавит ей один исток.
+      generationProgress.stage = 'rivers';
       const generatedRiverResult = generateRiverForRegion(
           regionForRiverGeneration,
           nextRegionsForRiverGeneration,
@@ -11901,6 +11926,7 @@ export function App() {
           nextHexTerrainByKeyPreview
         );
       if (!generatedRiverResult.success) {
+        generationProgress.lastRejection = generatedRiverResult.reason;
         console.warn('Candidate river geometry rejected', { attempt, reason: generatedRiverResult.reason });
         continue;
       }
@@ -12289,6 +12315,7 @@ export function App() {
         [...regions, finalRegionAfterLandPockets], finalCandidateHexes, modelTerrain
       );
       if (!modelResult.success) {
+        generationProgress.lastRejection = modelResult.reason;
         console.warn('River model rejected region attempt', { attempt, reason: modelResult.reason });
         continue;
       }
@@ -12358,21 +12385,25 @@ export function App() {
         nextLakeId,
         nextRoadId
       };
-      setHistory((current) => [...current, snapshot]);
-
       const finalHexTerrainByKey = modelResult.terrain;
       const finalRegionKeySet = new Set(finalRegionWithPoiKinds.hexes.map(hexKey));
       const newlyCheckedWaterHexKeys = new Set([...finalRegionKeySet, ...finalSeaKeysToWrite]);
+      generationProgress.stage = 'prepare_commit';
+      const finalToponyms = synchronizeToponyms({ ...toponyms, ...options.previousToponyms }, getToponymEntities(finalRegions, riversWithDeltas, finalHexTerrainByKey), toponymSeed);
+      const finalWaterPoi = assignWaterPoiLayer(waterPoiByKey, finalRegions, finalHexTerrainByKey, newlyCheckedWaterHexKeys);
+      const finalCrossings = reconcileRiverCrossings(roadResult.roads, riversWithDeltas, finalRegions, crossings);
+      const finalNextLakeId = Math.max(nextLakeIdAfterLandlockedSea, getNextLakeIdFromTerrain(finalHexTerrainByKey));
+      setHistory((current) => [...current, snapshot]);
       setRegions(finalRegions);
       setCandidateHexes(finalCandidateHexes);
       setHexTerrainByKey(finalHexTerrainByKey);
-      setWaterPoiByKey(assignWaterPoiLayer(waterPoiByKey, finalRegions, finalHexTerrainByKey, newlyCheckedWaterHexKeys));
-      setNextLakeId(Math.max(nextLakeIdAfterLandlockedSea, getNextLakeIdFromTerrain(finalHexTerrainByKey)));
+      setWaterPoiByKey(finalWaterPoi);
+      setNextLakeId(finalNextLakeId);
 
       setRivers(riversWithDeltas);
-      setToponyms(synchronizeToponyms({ ...toponyms, ...options.previousToponyms }, getToponymEntities(finalRegions, riversWithDeltas, finalHexTerrainByKey), toponymSeed));
+      setToponyms(finalToponyms);
       setRoads(roadResult.roads);
-      setCrossings(reconcileRiverCrossings(roadResult.roads, riversWithDeltas, finalRegions, crossings));
+      setCrossings(finalCrossings);
       setNextRoadId(roadResult.nextRoadId);
       setSelectedHex(finalCenterHex);
       return;
@@ -12383,20 +12414,64 @@ export function App() {
       maxRegionAttempts,
       fallback: 'tract'
     });
-    addFallbackTractToMap(anchorHex, false, options);
+    addFallbackTractToMap(anchorHex, false, options, generationProgress.lastRejection ?? 'attempts_exhausted');
   };
 
 
-  const safelyAddRegionToMap = (anchorHex: AxialHex, options: GenerationOptions = {}) => {
+  const captureGenerationBackup = (): GenerationBackup => structuredClone({
+    map: { regions, candidateHexes, rivers, roads, crossings, hexTerrainByKey,
+      waterPoiByKey, biomeOverrideByHexKey, toponyms, toponymSeed, nextLakeId, nextRoadId },
+    history, selectedHex
+  });
+
+  const restoreGenerationBackup = (backup: GenerationBackup) => {
+    const map = backup.map;
+    setRegions(map.regions);
+    setCandidateHexes(map.candidateHexes);
+    setRivers(map.rivers);
+    setRoads(map.roads);
+    setCrossings(map.crossings);
+    setHexTerrainByKey(map.hexTerrainByKey);
+    setWaterPoiByKey(map.waterPoiByKey);
+    setBiomeOverrideByHexKey(map.biomeOverrideByHexKey);
+    setToponyms(map.toponyms);
+    setToponymSeed(map.toponymSeed);
+    setNextLakeId(map.nextLakeId);
+    setNextRoadId(map.nextRoadId);
+    setHistory(backup.history);
+    setSelectedHex(backup.selectedHex);
+  };
+
+  const reportGenerationFailure = (error: unknown, anchorHex: AxialHex, options: GenerationOptions, backup: GenerationBackup) => {
+    restoreGenerationBackup(backup);
+    const diagnostic: GenerationDiagnostic = {
+      kind: 'programming-error', anchorHex, options,
+      attempt: generationProgress.attempt, stage: generationProgress.stage,
+      message: String(error),
+      stack: error && typeof error === 'object' && 'stack' in error ? String(error.stack) : undefined
+    };
+    console.error('Region generation aborted; previous map restored', { ...diagnostic, error });
+    setGenerationError(diagnostic);
+    return { success: false as const, diagnostic };
+  };
+
+  const safelyAddRegionToMap = (anchorHex: AxialHex, options: GenerationOptions = {}, rollback?: GenerationBackup) => {
+    const backup = rollback ?? captureGenerationBackup();
+    setGenerationError(null);
+    generationProgress.attempt = 0;
+    generationProgress.stage = 'region';
+    generationProgress.lastRejection = null;
+    generationProgress.fallbackReason = null;
     try {
       addRegionToMap(anchorHex, options);
+      return { success: true as const, fallbackReason: generationProgress.fallbackReason };
     } catch (error) {
-      console.warn('Regular region generation crashed; creating fallback tract', { anchorHex, error });
-      addFallbackTractToMap(anchorHex, false, options);
+      return reportGenerationFailure(error, anchorHex, options, backup);
     }
   };
 
   const resetMap = () => {
+    setGenerationError(null);
     setRegions([]);
     setCandidateHexes([]);
     setRivers([]);
@@ -12464,19 +12539,30 @@ export function App() {
 
   const regenerateLastRegion = () => {
     if (regions.length === 0 || history.length === 0) return;
+    const backup = captureGenerationBackup();
     const lastAnchor = regions[regions.length - 1].anchorHex;
     const snapshot = history[history.length - 1];
-    restoreSnapshot(snapshot);
-    setHistory(history.slice(0, -1));
-    // Генерируем не сразу: ждём, пока React применит восстановленный снимок,
-    // иначе addRegionToMap прочитает из замыкания ещё старое состояние.
-    setPendingRegen({ anchorHex: lastAnchor, options: { ...buildGenerationOptions(), previousToponyms: toponyms } });
+    generationProgress.stage = 'prepare_regeneration';
+    let options: GenerationOptions = {};
+    try {
+      options = { ...buildGenerationOptions(), previousToponyms: toponyms };
+      restoreSnapshot(snapshot);
+      setHistory(history.slice(0, -1));
+      // Wait for React to apply the snapshot before the generation callback reads it.
+      setPendingRegen({ backup, anchorHex: lastAnchor, options });
+    } catch (error) {
+      reportGenerationFailure(error, lastAnchor, options, backup);
+    }
+  };
+
+  const finishPendingRegeneration = () => {
+    if (!pendingRegen) return;
+    safelyAddRegionToMap(pendingRegen.anchorHex, pendingRegen.options, pendingRegen.backup);
+    setPendingRegen(null);
   };
 
   useEffect(() => {
-    if (!pendingRegen) return;
-    safelyAddRegionToMap(pendingRegen.anchorHex, pendingRegen.options);
-    setPendingRegen(null);
+    finishPendingRegeneration();
     // addRegionToMap намеренно не в зависимостях: эффект должен сработать
     // ровно один раз на установку заявки, уже с восстановленным состоянием.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -13221,6 +13307,14 @@ export function App() {
               <button type="button" onClick={handleImportJsonClick} className="secondary">{t.importJson}</button>
               <input ref={jsonImportInputRef} className="visually-hidden" type="file" accept="application/json,.json" onChange={(event) => void handleImportJson(event)} />
             </div>
+            {generationError && (
+              <div className="coast-notice" role="alert">
+                <span>{language === 'ru'
+                  ? 'Не удалось создать регион из-за ошибки. Прежняя карта сохранена. Можно повторить попытку.'
+                  : 'An error prevented region generation. Your previous map is intact. You can try again.'}</span>
+                <button type="button" onClick={() => setGenerationError(null)} aria-label={t.closeNotice}>×</button>
+              </div>
+            )}
             {coastNotice && (
               <div className="coast-notice" role="status">
                 <span>{translateCoastNotice(coastNotice, language)}</span>

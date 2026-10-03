@@ -77,7 +77,7 @@ for (const directions of combinations) {
         assert.equal(new Set(allKeys).size, allKeys.length, 'regions cannot overlap');
         for (const hex of added.hexes) assert.notEqual(after.hexTerrainByKey.get(h.geometry.hexKey(hex))?.terrainOverride, 'sea');
         assert.ok(!after.candidateHexes.some(hex => h.geometry.hexKey(hex) === h.geometry.hexKey(anchor)));
-        assert.ok(!h.logs.some(log => log.args[0] === 'Regular region generation crashed; creating fallback tract'), 'normal coastal rejection must not throw');
+        assert.ok(!after.generationError, 'normal coastal rejection must not throw');
         if (added.isTract) {
           assert.deepEqual(after.rivers.map(r => r.id), before.rivers.map(r => r.id), 'tract cannot add a river');
           for (const river of before.rivers) {
@@ -96,13 +96,85 @@ for (const directions of combinations) {
 }
 
 
-test('regular exception falls back once and commits exactly one region', () => {
+function savedState(app) {
+  const { savedAt, ...saved } = app.createSaveData();
+  return JSON.stringify({ saved, history: app.history }, (_, value) => value instanceof Map ? [...value] : value);
+}
+
+for (const point of ['exports.generateConnectedRegionFromAnchor', 'getCoastalRiverEndpointHexes', 'assignWaterPoiLayer', 'reconcileRiverCrossings']) {
+  test(`programming error at ${point} preserves map/history and permits recovery`, () => {
+    const h = createGenerationHarness(91);
+    h.render().addFallbackTractToMap({ q: 0, r: 0 });
+    const before = h.render();
+    const snapshot = savedState(before);
+    const anchor = before.candidateHexes[0];
+    const restore = h.injectFunction(point, () => { throw new Error(`injected: ${point}`); });
+    const outcome = before.safelyAddRegionToMap(anchor, { targetSize: 8, coastalPreference: 'mainland' });
+    restore();
+    assert.equal(outcome.success, false);
+    assert.match(outcome.diagnostic.message, /injected/);
+    assert.ok(outcome.diagnostic.stack);
+    assert.ok(outcome.diagnostic.attempt >= 1);
+    assert.equal(h.render().generationError.kind, 'programming-error');
+    assert.equal(savedState(h.render()), snapshot);
+    assert.ok(h.logs.some(log => log.level === 'error'), 'programming error must be reported');
+    h.render().safelyAddRegionToMap(anchor, { targetSize: 8, coastalPreference: 'mainland' });
+    assert.equal(h.render().regions.length, before.regions.length + 1);
+    h.render().deleteLastRegion();
+    assert.equal(JSON.stringify(h.render().regions), JSON.stringify(before.regions));
+  });
+}
+
+test('expected small-region rejection retries then creates one tract', () => {
   const h = createGenerationHarness(91);
-  h.failRegularGeneration();
-  h.render().safelyAddRegionToMap({ q: 0, r: 0 }, { coastalPreference: 'coast' });
-  const result = h.render();
-  assert.equal(result.regions.length, 1);
-  assert.equal(result.regions[0].isTract, true);
-  assert.equal(result.history.length, 1);
-  assert.equal(result.rivers.length, 0);
+  let attempts = 0;
+  const restore = h.injectFunction('exports.generateConnectedRegionFromAnchor', anchor => { attempts++; return [anchor]; });
+  h.render().safelyAddRegionToMap({ q: 0, r: 0 }, { targetSize: 8 });
+  restore();
+  assert.equal(attempts, 30);
+  assert.equal(h.render().regions.length, 1);
+  assert.equal(h.render().regions[0].isTract, true);
+  assert.equal(h.render().history.length, 1);
+  assert.ok(!h.logs.some(log => log.level === 'error'));
+});
+
+for (const targetSize of [1, 8]) {
+  test(`late failure at targetSize=${targetSize} preserves state; successful retry clears error`, () => {
+    const h = createGenerationHarness(14);
+    h.render().safelyAddRegionToMap({ q: 0, r: 0 }, { targetSize: 8 });
+    const before = savedState(h.render());
+    const anchor = h.render().candidateHexes[0];
+    const restore = h.injectFunction('assignWaterPoiLayer', () => { throw new Error('injected late failure'); });
+    const outcome = h.render().safelyAddRegionToMap(anchor, { targetSize });
+    restore();
+    assert.equal(outcome.success, false);
+    assert.equal(outcome.diagnostic.stage, 'prepare_commit');
+    assert.equal(savedState(h.render()), before);
+    assert.equal(h.render().safelyAddRegionToMap(anchor, { targetSize }).success, true);
+    assert.equal(h.render().generationError, null);
+  });
+}
+
+test('failed regeneration restores replaced region, selection and full undo history', () => {
+  const h = createGenerationHarness(52);
+  h.render().safelyAddRegionToMap({ q: 0, r: 0 }, { targetSize: 8 });
+  h.render().safelyAddRegionToMap(h.render().candidateHexes[0], { targetSize: 8 });
+  const before = savedState(h.render());
+  h.render().regenerateLastRegion();
+  assert.ok(h.render().pendingRegen);
+  const restore = h.injectFunction('assignWaterPoiLayer', () => { throw new Error('injected regeneration failure'); });
+  h.render().finishPendingRegeneration();
+  restore();
+  assert.equal(savedState(h.render()), before);
+  assert.equal(h.render().pendingRegen, null);
+  assert.equal(h.render().generationError.kind, 'programming-error');
+  h.render().regenerateLastRegion();
+  h.render().finishPendingRegeneration();
+  assert.equal(h.render().regions.length, 2);
+  assert.equal(h.render().history.length, 2);
+  assert.equal(h.render().generationError, null);
+  h.render().deleteLastRegion();
+  assert.equal(h.render().regions.length, 1);
+  h.render().deleteLastRegion();
+  assert.equal(h.render().regions.length, 0);
 });

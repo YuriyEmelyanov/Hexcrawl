@@ -13,7 +13,8 @@ const lastReturn = app.body.statements.at(-1);
 if (!ts.isReturnStatement(lastReturn)) throw new Error('App must end with its JSX return');
 const instrumented = source.slice(0, lastReturn.getStart(ast)) + `return {
   regions, rivers, roads, candidateHexes, hexTerrainByKey, history, toponyms, toponymSeed, setToponyms,
-  addFallbackTractToMap, safelyAddRegionToMap, createSaveData, restoreSnapshot, deleteLastRegion
+  addFallbackTractToMap, safelyAddRegionToMap, createSaveData, restoreSnapshot, deleteLastRegion,
+  generationError, pendingRegen, regenerateLastRegion, finishPendingRegeneration
 };` + source.slice(lastReturn.end) + `
 export const testGeometry = { getHexCornerPoints, getHexNeighbors, hexKey, buildRiverGraphForRegion,
   findRiverEndpointsTouchingRegion, getCandidateHexes, generateRiverForRegion, assertHexcrawlSaveData,
@@ -45,12 +46,18 @@ export function createGenerationHarness(seed = 1) {
   const context = vm.createContext({ module, exports: module.exports, Math: seededMath, Map, Set,
     console: Object.fromEntries(['log', 'warn', 'error'].map(level => [level, (...args) => logs.push({ level, args })])),
     require: name => name === 'react' ? hooks : localRequire(name.startsWith('./') ? `${name}.ts` : name),
-    performance, URLSearchParams
+    performance, URLSearchParams, structuredClone
   });
   vm.runInContext(compiled, context);
   return {
     render() { cursor = 0; return module.exports.App(); },
     geometry: module.exports.testGeometry, logs,
+    injectFunction(name, replacement) {
+      const original = vm.runInContext(name, context);
+      context.__replacement = replacement;
+      vm.runInContext(`${name} = __replacement`, context);
+      return () => { context.__replacement = original; vm.runInContext(`${name} = __replacement`, context); };
+    },
     failRegularGeneration() { vm.runInContext('exports.generateConnectedRegionFromAnchor = () => { throw new Error("injected regular failure"); }', context); }
   };
 }
