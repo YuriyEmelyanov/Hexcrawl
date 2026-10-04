@@ -45,7 +45,7 @@ function fixture(h, directions, sea = false) {
     if (direction === 'incoming') path.reverse();
     return { id: i + 1, regionId: i + 1, vertexPath: path, sectors: [] };
   });
-  const terrain = new Map(sea ? [['0,-1', { terrainOverride: 'sea' }]] : []);
+  const terrain = new Map(sea ? [['0,-2', { terrainOverride: 'sea' }]] : []);
   const candidates = h.geometry.getCandidateHexes(regions.flatMap(r => r.hexes), new Set(terrain.keys()));
   h.render().restoreSnapshot({ regions, rivers, candidateHexes: candidates, roads: [], crossings: [],
     hexTerrainByKey: terrain, waterPoiByKey: new Map(), biomeOverrideByHexKey: new Map(), nextLakeId: 1, nextRoadId: 1 });
@@ -82,7 +82,7 @@ for (const directions of combinations) {
           assert.deepEqual(after.rivers.map(r => r.id), before.rivers.map(r => r.id), 'tract cannot add a river');
           for (const river of before.rivers) {
             const updated = after.rivers.find(r => r.id === river.id);
-            assert.equal(JSON.stringify(updated.vertexPath.slice(-river.vertexPath.length)), JSON.stringify(river.vertexPath), 'existing river path must be retained');
+            assert.equal(JSON.stringify(updated.vertexPath.slice(updated.vertexPath.findIndex(v => v.key === river.vertexPath[0].key), updated.vertexPath.findIndex(v => v.key === river.vertexPath[0].key) + river.vertexPath.length)), JSON.stringify(river.vertexPath), 'existing river path must be retained');
           }
         }
         h.geometry.assertHexcrawlSaveData(JSON.parse(JSON.stringify(after.createSaveData())));

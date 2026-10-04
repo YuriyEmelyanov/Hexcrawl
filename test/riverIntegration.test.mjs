@@ -67,7 +67,17 @@ test('RIV-EX-01/12/13/15 real map expansion validates each extension in all coas
     for (let i = 0; i < 8; i++) {
       const before = h.render(), anchor = before.candidateHexes[0] ?? (i === 0 ? { q: 0, r: 0 } : null);
       if (!anchor) break;
-      before.safelyAddRegionToMap(anchor, { coastalPreference: i ? mode : 'mainland', targetSize: 15 });
+      const result = before.safelyAddRegionToMap(anchor, { coastalPreference: i ? mode : 'mainland', targetSize: 15 });
+      if (!result.success) {
+        // A constrained coastal pocket may have no room for a required source
+        // lake. RIV-017 forbids the former fallback that silently closed it.
+        assert.equal(result.diagnostic.kind, 'constraint-rejection');
+        assert.equal(JSON.stringify(h.render().regions), JSON.stringify(before.regions));
+        assert.equal(JSON.stringify(h.render().rivers), JSON.stringify(before.rivers));
+        assert.equal(JSON.stringify(h.render().history), JSON.stringify(before.history));
+        assert.equal(JSON.stringify([...h.render().hexTerrainByKey]), JSON.stringify([...before.hexTerrainByKey]));
+        break;
+      }
       assert.equal(h.render().regions.length, before.regions.length + 1);
       checkExtension(h, before.rivers);
       assert.equal(h.logs.some(l => l.args[0] === 'Regular region generation crashed; creating fallback tract'), false);

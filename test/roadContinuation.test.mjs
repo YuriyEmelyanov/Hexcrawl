@@ -20,7 +20,20 @@ for(const [seed,landType,coastalPreference,steps] of [[103,'settled','mainland',
    const oldKeys=new Set(a.regions.flatMap(r=>r.hexes.map(key)));
    const oldEdges=new Set(a.roads.flatMap(r=>r.segments.map(edge)));
    const anchor=a.candidateHexes.length?a.candidateHexes[seed===42?a.candidateHexes.length-1:0]:{q:0,r:0};
-   a.safelyAddRegionToMap(anchor,{landType,coastalPreference:i?coastalPreference:'mainland',targetSize:seed===103?35:15});
+   let result=a.safelyAddRegionToMap(anchor,{landType,coastalPreference:i?coastalPreference:'mainland',targetSize:seed===103?35:15});
+   if(!result.success) {
+    assert.equal(result.diagnostic.kind,'constraint-rejection');
+    assert.equal(JSON.stringify(h.render().createSaveData().map),oldMap);
+    // Continue the road regression from another available frontier, while
+    // retaining the requirement for six successfully generated regions.
+    for(const alternate of a.candidateHexes.filter(h=>key(h)!==key(anchor))) {
+     result=h.render().safelyAddRegionToMap(alternate,{landType,coastalPreference:i?coastalPreference:'mainland',targetSize:seed===103?35:15});
+     if(result.success) break;
+     assert.equal(result.diagnostic.kind,'constraint-rejection');
+     assert.equal(JSON.stringify(h.render().createSaveData().map),oldMap);
+    }
+   }
+   assert.equal(result.success,true,'at least one frontier must remain usable in this fixture');
    const b=h.render();assert.equal(h.logs.some(l=>l.args[0]==='Regular region generation crashed; creating fallback tract'),false);assert.equal(b.regions.length,a.regions.length+1);
    assert.deepEqual(closedEnds(h),[],`step ${i+1}`);
    const region=b.regions.at(-1);

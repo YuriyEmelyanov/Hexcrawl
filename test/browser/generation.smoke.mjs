@@ -4,6 +4,16 @@ import fs from 'node:fs/promises';
 import assert from 'node:assert/strict';
 import { fileURLToPath } from 'node:url';
 import { stripVTControlCharacters } from 'node:util';
+import { createGenerationHarness } from '../helpers/generation-harness.mjs';
+import { validateRiverNetwork } from '../../src/riverModel/core.ts';
+const geometry = createGenerationHarness().geometry;
+function assertRiverTermini(save) {
+  const m = save.map;
+  const built = geometry.buildRegionRiverNetwork(m.rivers, [], m.regions, m.candidateHexes, new Map(Object.entries(m.terrainByHexKey)), true);
+  assert.deepEqual(Array.from(built.issues), []);
+  const checked = validateRiverNetwork(built.network);
+  assert.equal(checked.valid, true, JSON.stringify(checked.issues));
+}
 
 // Run against the production build, not instrumented source.
 const server = spawn(process.execPath, [fileURLToPath(new URL('../../node_modules/vite/bin/vite.js', import.meta.url)), 'preview', '--host', '127.0.0.1', '--port', '4173', '--strictPort'], {
@@ -86,6 +96,7 @@ try {
       current = await snapshot();
       clicks++;
       assert.equal(current.map.regions.length, i + 1, `${mode}: click ${i + 1}`);
+      assertRiverTermini(current);
       assert.equal(current.map.toponyms.model, 'germanic');
       for (const region of current.map.regions) {
         const name = current.map.toponyms.names[`region:${region.id}`];

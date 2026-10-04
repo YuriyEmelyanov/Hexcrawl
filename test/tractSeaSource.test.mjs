@@ -35,7 +35,7 @@ for (const mode of ['coast', 'mainland', undefined]) {
         .flatMap(([key]) => { const [q, r] = key.split(',').map(Number); return g.getHexCornerPoints({ q, r }).map(v => v.key); }));
       assert.equal(after.rivers.length, 1, 'keep the existing river');
       assert.ok(!seaCorners.has(after.rivers[0].vertexPath[0].key), `source touches sea: seed ${seed}`);
-      assert.equal(JSON.stringify(after.rivers[0].vertexPath.slice(-path.length)), JSON.stringify(path));
+      assert.equal(JSON.stringify(after.rivers[0].vertexPath.slice(after.rivers[0].vertexPath.findIndex(v => v.key === path[0].key), after.rivers[0].vertexPath.findIndex(v => v.key === path[0].key) + path.length)), JSON.stringify(path));
       assert.equal(JSON.stringify(after.regions[0]), JSON.stringify(region));
       g.assertHexcrawlSaveData(JSON.parse(JSON.stringify(after.createSaveData())));
       after.deleteLastRegion();
