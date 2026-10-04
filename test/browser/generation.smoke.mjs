@@ -33,6 +33,8 @@ try {
   await page.route(/mc\.yandex/, route => route.abort());
   const errors = [];
   const diagnostic = [];
+  const verboseLogs = [];
+  page.on('console', msg => { if (msg.type() === 'log') verboseLogs.push(msg.text()); });
   page.on('console', msg => { if (msg.type() === 'error') diagnostic.push(msg.text()); });
   page.on('pageerror', error => errors.push(error.message));
   await page.addInitScript(() => {
@@ -152,6 +154,28 @@ try {
   await page.getByRole('button', { name: 'Удалить последний регион', exact: true }).click();
   assert.deepEqual((await snapshot()).map, beforeFailure.map);
   assert.equal(errors.length, 0, errors.join('\n'));
+  assert.deepEqual(verboseLogs, [], 'ordinary mode must not emit debug console.log');
+  // Detailed logs and the existing profiler can be enabled independently.
+  for (const query of ['?generationDebug=1', '?profile=1']) {
+    const probe = await browser.newPage();
+    await probe.route(/mc\.yandex/, route => route.abort());
+    const logs = [];
+    probe.on('console', msg => logs.push({ type: msg.type(), text: msg.text() }));
+    await probe.goto(`http://127.0.0.1:4173/${query}`);
+    await probe.locator('.gen-params select').nth(0).selectOption('locality');
+    await probe.locator('.gen-params select').nth(3).selectOption('mainland');
+    await probe.locator('polygon.hex.candidate').first().dispatchEvent('click');
+    if (query.includes('profile')) {
+      await probe.waitForTimeout(100);
+      assert.ok(logs.some(log => log.text.includes('[PROFILE]')));
+      assert.ok(logs.some(log => log.type === 'table'));
+      assert.ok(!logs.some(log => log.text.includes('Biome selected')));
+    } else {
+      assert.ok(logs.some(log => log.type === 'log' && log.text.includes('Biome selected')));
+      assert.ok(!logs.some(log => log.text.includes('[PROFILE]')));
+    }
+    await probe.close();
+  }
   console.log(JSON.stringify({ clicks: clicks + 1, completed, regeneration: true, undo: true, jsonReload: true, errorRecovery: true, pageErrors: errors }));
 } finally {
   await browser?.close();

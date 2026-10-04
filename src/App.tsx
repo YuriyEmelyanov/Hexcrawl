@@ -1,3 +1,4 @@
+import { createGenerationLogger, MAX_REGION_ATTEMPTS, type GenerationEvent } from './generationDiagnostics';
 import { solveRiverNetwork, validateRiverNetwork, minimumLakeHexes, isFullness, type RiverNetwork as ModelNetwork, type RiverEdge as ModelEdge, type SolveResult as ModelSolveResult } from './riverModel/core';
 import { type ChangeEvent, type CSSProperties, type KeyboardEvent, type MouseEvent, type TouchEvent, type WheelEvent, useEffect, useMemo, useRef, useState } from 'react';
 import {
@@ -9,6 +10,8 @@ import { hasRiverRapids } from './riverRapids';
 import { hasRiverWaterfall } from './riverWaterfalls';
 import { getOnlyOutgoingRiversPreferredHeight } from './biomeHeight';
 import { DEFAULT_TOPONYM_MODEL, isToponymRegistry, synchronizeToponyms, type ToponymEntity, type ToponymRegistry, type ToponymModelId, type ToponymKind } from './toponyms';
+
+const generationLog = createGenerationLogger(typeof window !== 'undefined' ? window.location?.search : '');
 
 // ===== ЛОКАЛЬНОЕ ПРОФИЛИРОВАНИЕ (безопасно для прода) =====
 // Включается ТОЛЬКО при ?profile=1 в URL. По умолчанию выключено: __profiled
@@ -1280,15 +1283,7 @@ type MapSnapshot = {
 
 // Exact rollback state: unlike user undo, error recovery never recalculates names or roads.
 type GenerationBackup = { map: MapSnapshot; history: MapSnapshot[]; selectedHex: AxialHex | null };
-type GenerationDiagnostic = {
-  kind: 'programming-error';
-  anchorHex: AxialHex;
-  options: GenerationOptions;
-  attempt: number;
-  stage: string;
-  message: string;
-  stack?: string;
-};
+type GenerationDiagnostic = ReturnType<typeof generationLog.finish>;
 
 function getToponymEntities(regions: Region[], rivers: River[], terrain: Map<string, HexTerrainData>): ToponymEntity[] {
   const entities: ToponymEntity[] = [];
@@ -1460,7 +1455,7 @@ function chooseBiomeId(
     }
     const relaxedWeightSum = Object.values(relaxedWeights).reduce((acc, value) => acc + value, 0);
 
-    console.log('Biome strict filter had no available weights; restored incompatible biome weights', {
+    generationLog.detail('Biome strict filter had no available weights; restored incompatible biome weights', {
       regionId,
       biomeLandType: landType,
       adjacentBiomeIds
@@ -1523,7 +1518,7 @@ function chooseBiomeIdAtHeightLevel(
   }
 
   if (Object.values(relaxedWeights).some((weight) => weight > 0)) {
-    console.log('Biome height filter restored adjacent/incompatible biome weights', {
+    generationLog.detail('Biome height filter restored adjacent/incompatible biome weights', {
       regionId,
       biomeLandType: landType,
       adjacentBiomeIds,
@@ -2083,7 +2078,7 @@ function validateExistingRiverEdgeFullnessPreserved(previousRivers: River[], nex
   }
 
   if (changedEdges.length > 0) {
-    console.warn('Rejecting river update because existing river edge fullness decreased', { changedEdges });
+    generationLog.warning('Rejecting river update because existing river edge fullness decreased', { changedEdges });
     return false;
   }
   return true;
@@ -2136,7 +2131,7 @@ function assignRiverSectorsImpl(
     try {
       const vertexPath = river.vertexPath ?? [];
       if (vertexPath.length < 2) {
-        console.warn('Could not assign river sectors: river path is too short', { riverId: river.id, vertexCount: vertexPath.length });
+        generationLog.warning('Could not assign river sectors: river path is too short', { riverId: river.id, vertexCount: vertexPath.length });
         return { ...river, sectors: [] };
       }
 
@@ -2232,7 +2227,7 @@ function assignRiverSectorsImpl(
 
   for (const river of nextRivers) {
     if (!river.sectors || river.sectors.length === 0) {
-      console.warn('River has no sectors after assignRiverSectors', river);
+      generationLog.warning('River has no sectors after assignRiverSectors', river);
     }
   }
   return nextRivers;
@@ -2792,7 +2787,7 @@ function tryAddEdgeMinorTributaryRiverImpl(
     reason: EdgeTributaryGenerationReason;
     pathLength: number;
   }) => {
-    console.log('Edge tributary generation', {
+    generationLog.detail('Edge tributary generation', {
       regionId: region.id,
       sizeCategory: region.sizeCategory,
       heightLevel: region.heightLevel,
@@ -3047,7 +3042,7 @@ function tryAddSmallTributaryRiverImpl(
     reachedLake: boolean;
     targetLakeWasFree: boolean;
   }) => {
-    console.log('Minor river generation', {
+    generationLog.detail('Minor river generation', {
       regionId: region.id,
       sizeCategory: region.sizeCategory,
       heightLevel: region.heightLevel,
@@ -3514,7 +3509,7 @@ function validateNoDuplicateRiverEdgesImpl(rivers: River[]): void {
       const key = edgeKey(river.vertexPath[i - 1], river.vertexPath[i]);
 
       if (seen.has(key)) {
-        console.warn('Duplicate river edge detected', {
+        generationLog.warning('Duplicate river edge detected', {
           edgeKey: key,
           first: seen.get(key),
           duplicate: { regionId: river.regionId, riverId: river.id }
@@ -3535,7 +3530,7 @@ function validateRiverDirectionImpl(river: River): void {
   if (!river.vertexPath || river.vertexPath.length < 2) return;
   for (let i = 0; i < river.vertexPath.length - 1; i += 1) {
     if (river.vertexPath[i].key === river.vertexPath[i + 1].key) {
-      console.warn('Broken river direction/order', {
+      generationLog.warning('Broken river direction/order', {
         riverId: river.id,
         index: i,
         currentEnd: river.vertexPath[i],
@@ -3552,7 +3547,7 @@ function validateRiverDirectionImpl(river: River): void {
   }
   for (const [vertexKey, outgoing] of outgoingByVertex.entries()) {
     if (outgoing > 1) {
-      console.warn('Multiple outgoing river segments from one startPoint', { riverId: river.id, vertexKey, outgoing });
+      generationLog.warning('Multiple outgoing river segments from one startPoint', { riverId: river.id, vertexKey, outgoing });
     }
   }
 }
@@ -3575,7 +3570,7 @@ function validateRiverContinuityImpl(river: River): boolean {
     const current = river.vertexPath[i];
     const next = river.vertexPath[i + 1];
     if (!current || !next || current.key === next.key) {
-      console.warn('Broken river continuity', { riverId: river.id, index: i });
+      generationLog.warning('Broken river continuity', { riverId: river.id, index: i });
       return false;
     }
   }
@@ -3759,7 +3754,7 @@ function trimConflictingOutgoingRiversAwayFromRegion(
     const originalStartVertex = river.vertexPath[0]?.key;
     const originalLength = river.vertexPath.length;
     const trimmedRiver = trimOutgoingRiverStartAwayFromRegion(river, regionHexes);
-    console.warn('Trimming outgoing river start away from new region', {
+    generationLog.warning('Trimming outgoing river start away from new region', {
       regionId,
       riverId: river.id,
       originalStartVertex,
@@ -3784,15 +3779,15 @@ function mergeRiversWithConnectorImpl(
   const upstreamRiver = existingRivers.find((river) => river.id === upstreamRiverId);
   const downstreamRiver = existingRivers.find((river) => river.id === downstreamRiverId);
   if (!upstreamRiver || !downstreamRiver) {
-    console.warn('Cannot merge rivers: missing river', { upstreamRiverId, downstreamRiverId });
+    generationLog.warning('Cannot merge rivers: missing river', { upstreamRiverId, downstreamRiverId });
     return null;
   }
   if (wouldCreateRiverDrainageCycle(existingRivers, upstreamRiverId, downstreamRiverId)) {
-    console.warn('Cannot merge rivers: connection would create a drainage cycle', { upstreamRiverId, downstreamRiverId });
+    generationLog.warning('Cannot merge rivers: connection would create a drainage cycle', { upstreamRiverId, downstreamRiverId });
     return null;
   }
   if (!upstreamRiver.vertexPath?.length || !downstreamRiver.vertexPath?.length || connectorPath.length < 2) {
-    console.warn('Cannot merge rivers: invalid path data', { upstreamRiverId, downstreamRiverId });
+    generationLog.warning('Cannot merge rivers: invalid path data', { upstreamRiverId, downstreamRiverId });
     return null;
   }
   const connectorMiddle = connectorPath.slice(1, -1);
@@ -3985,7 +3980,7 @@ function addLakeAroundRiverSplitVertex(
     terrainMap.set(hexKey(hex), { terrainOverride: 'lake', lakeId });
   }
 
-  console.log('Created river fullness drop lake', {
+  generationLog.detail('Created river fullness drop lake', {
     regionId: region.id,
     lakeId,
     requestedLakeHexCount: targetHexCount,
@@ -4022,7 +4017,7 @@ function ensureCentralAdjacentLakeWhenNoRiverTouchesCenterImpl(
 
   const lakeId = getNextLakeIdFromTerrain(terrainMap);
   terrainMap.set(hexKey(lakeHex), { terrainOverride: 'lake', lakeId });
-  console.log('Created central fallback lake because no river touches central hex', {
+  generationLog.detail('Created central fallback lake because no river touches central hex', {
     regionId: region.id,
     lakeId,
     centerHexKey: hexKey(region.centerHex),
@@ -4110,7 +4105,7 @@ function connectIncomingTributariesToMainPath(
       riverSlope
     );
     if (!tributaryPath) {
-      console.warn('Could not connect incoming tributary to through river', {
+      generationLog.warning('Could not connect incoming tributary to through river', {
         regionId: region.id,
         tributaryRiverId: endpoint.riverId,
       });
@@ -4158,7 +4153,7 @@ function chooseRandomRiverControlPoints(
   const candidateEndVertices = redVertices.filter((vertex) => vertex.key !== startVertex.key);
   if (candidateEndVertices.length === 0) return null;
   const endVertex = choosePreferredEndVertex(candidateEndVertices);
-  console.log('River red endpoint selection', {
+  generationLog.detail('River red endpoint selection', {
     mode: 'river_slope',
     startVertexKey: startVertex.key,
     endVertexKey: endVertex.key,
@@ -6112,7 +6107,7 @@ function ensureMinimumMountainRiversForRegionImpl(
 
     const path = buildMinimumMountainRiverPath(sourceVertices, endVertices, riverGraph, usedRiverEdges, existingRiverVertexKeys);
     if (!path) {
-      console.warn('Could not add minimum mountain river', {
+      generationLog.warning('Could not add minimum mountain river', {
         regionId: region.id,
         currentRiverCount: getRiversForRegion(region, nextRivers).length,
         minimumRiverCount,
@@ -6398,7 +6393,7 @@ function connectRemainingIncomingRiversForRegionImpl(
     const selectedMode = candidatePath ? 'candidate' : tributaryPath ? 'tributary' : lakePath ? 'lake' : null;
 
     if (!selectedPath) {
-      console.warn('Could not connect remaining incoming river', {
+      generationLog.warning('Could not connect remaining incoming river', {
         regionId: region.id,
         incomingRiverId: currentConnection.river.id,
         fullness: currentConnection.fullness,
@@ -6421,7 +6416,7 @@ function connectRemainingIncomingRiversForRegionImpl(
     }
     validateNoDuplicateRiverEdges(nextRivers);
 
-    console.log('Connected remaining incoming river', {
+    generationLog.detail('Connected remaining incoming river', {
       regionId: region.id,
       incomingRiverId: currentConnection.river.id,
       fullness: currentConnection.fullness,
@@ -6498,7 +6493,7 @@ function connectRemainingOutgoingRiversForRegionImpl(
     }
 
     if (!selectedPath) {
-      console.warn('Could not connect remaining outgoing river', {
+      generationLog.warning('Could not connect remaining outgoing river', {
         regionId: region.id,
         outgoingRiverId: connection.river.id,
         downstreamRegionId: connection.downstreamRegion.id,
@@ -6510,7 +6505,7 @@ function connectRemainingOutgoingRiversForRegionImpl(
 
     const pathEdgeKeys = getRiverPathEdgeKeys(selectedPath, riverGraph);
     if (!pathEdgeKeys || pathEdgeKeys.some((pathEdgeKey) => usedRiverEdges.has(pathEdgeKey))) {
-      console.warn('Remaining outgoing river connector failed edge validation', {
+      generationLog.warning('Remaining outgoing river connector failed edge validation', {
         regionId: region.id,
         outgoingRiverId: connection.river.id,
       });
@@ -6534,7 +6529,7 @@ function connectRemainingOutgoingRiversForRegionImpl(
     }
     validateNoDuplicateRiverEdges(nextRivers);
 
-    console.log('Connected remaining outgoing river', {
+    generationLog.detail('Connected remaining outgoing river', {
       regionId: region.id,
       outgoingRiverId: connection.river.id,
       downstreamRegionId: connection.downstreamRegion.id,
@@ -6656,7 +6651,7 @@ function generateRiverForRegionImpl(
         allowedOccupiedVertexKeys: new Set([mainOutgoingEndpoint.vertex.key])
       });
       if (!mainPath) {
-        console.warn('Could not connect tract source to outgoing river', {
+        generationLog.warning('Could not connect tract source to outgoing river', {
           regionId: region.id,
           outgoingRiverId: mainOutgoingEndpoint.riverId,
         });
@@ -6698,7 +6693,7 @@ function generateRiverForRegionImpl(
       );
 
       if (!endpointPath) {
-        console.warn('Mountain incoming fallback failed: no boundary path', {
+        generationLog.warning('Mountain incoming fallback failed: no boundary path', {
           regionId: region.id,
           incomingRiverId: incomingEndpoint.riverId,
           fallbackReason,
@@ -6717,7 +6712,7 @@ function generateRiverForRegionImpl(
         existingRiverVertexKeys,
         new Set([incomingEndpoint.vertex.key])
       )) {
-        console.warn('Mountain incoming fallback failed: boundary path validation failed', {
+        generationLog.warning('Mountain incoming fallback failed: boundary path validation failed', {
           regionId: region.id,
           incomingRiverId: incomingEndpoint.riverId,
           fallbackReason,
@@ -6739,7 +6734,7 @@ function generateRiverForRegionImpl(
       }
       validateNoDuplicateRiverEdges(nextRivers);
 
-      console.log('Mountain incoming fallback: incoming river extended to boundary; outgoing rivers will be connected separately', {
+      generationLog.detail('Mountain incoming fallback: incoming river extended to boundary; outgoing rivers will be connected separately', {
         regionId: region.id,
         incomingRiverId: incomingEndpoint.riverId,
         fallbackReason,
@@ -6788,7 +6783,7 @@ function generateRiverForRegionImpl(
       }
 
       if (!bestPath || !bestControlPoints) {
-        console.warn('Could not connect coastal candidate source to outgoing river', {
+        generationLog.warning('Could not connect coastal candidate source to outgoing river', {
           regionId: region.id,
           outgoingRiverId: mainOutgoingEndpoint.riverId,
           redVertexCount: redVertices.length,
@@ -6863,7 +6858,7 @@ function generateRiverForRegionImpl(
         }
 
         if (!bestPath || !bestControlPoints) {
-          console.warn('Could not extend fullness-2/3 outgoing mountain river from candidate boundary through center', {
+          generationLog.warning('Could not extend fullness-2/3 outgoing mountain river from candidate boundary through center', {
             regionId: region.id,
             outgoingRiverId: mainOutgoingEndpoint.riverId,
             redVertexCount: redVertices.length,
@@ -6913,13 +6908,13 @@ function generateRiverForRegionImpl(
       const usedLakeIds = new Set<number>();
       const interiorSourceVertices = getMountainInteriorSourceVertices(region, regions, candidateHexes ?? [], riverGraph, candidateVertices, neighborRegionVertices);
 
-      console.log('Mountain region with outgoing rivers', {
+      generationLog.detail('Mountain region with outgoing rivers', {
         regionId: region.id,
         incomingRiverIds: incomingEndpoints.map((endpoint) => endpoint.riverId),
         outgoingRiverIds: sortedOutgoingEndpoints.map((endpoint) => endpoint.riverId),
         mainOutgoingRiverId: mainOutgoingEndpoint.riverId,
       });
-      console.log('Connecting main mountain outgoing river', {
+      generationLog.detail('Connecting main mountain outgoing river', {
         regionId: region.id,
         mainOutgoingRiverId: mainOutgoingEndpoint.riverId,
         mode: incomingEndpoints.length > 0 ? 'incoming_to_outgoing' : 'interior_source_to_outgoing_through_center',
@@ -7019,7 +7014,7 @@ function generateRiverForRegionImpl(
           usedLakeIds.add(selectedLake.lakeId);
         }
         if (!selectedPath) {
-          console.warn('Could not eagerly connect secondary mountain outgoing river; deferring to final outgoing connector pass', {
+          generationLog.warning('Could not eagerly connect secondary mountain outgoing river; deferring to final outgoing connector pass', {
             regionId: region.id,
             outgoingRiverId: outgoingEndpoint.riverId,
           });
@@ -7027,7 +7022,7 @@ function generateRiverForRegionImpl(
         }
         const pathEdgeKeys = getRiverPathEdgeKeys(selectedPath, riverGraph);
         if (!pathEdgeKeys) {
-          console.warn('Secondary mountain outgoing river has invalid edge keys; deferring to final outgoing connector pass', {
+          generationLog.warning('Secondary mountain outgoing river has invalid edge keys; deferring to final outgoing connector pass', {
             regionId: region.id,
             outgoingRiverId: outgoingEndpoint.riverId,
           });
@@ -7041,7 +7036,7 @@ function generateRiverForRegionImpl(
             sectors: prependRiverPathSector(river, selectedPath, region.sizeCategory === 'tract' ? 1 : getOutgoingInteriorConnectorFullness(river, outgoingEndpoint.vertex.key), region.id)
           });
         for (const edgeKey of pathEdgeKeys) blockedEdgeKeys.add(edgeKey);
-        console.log('Connecting secondary mountain outgoing river', {
+        generationLog.detail('Connecting secondary mountain outgoing river', {
           regionId: region.id,
           outgoingRiverId: outgoingEndpoint.riverId,
           mode: selectedLake ? 'lake_to_outgoing' : 'interior_source_to_outgoing',
@@ -7070,7 +7065,7 @@ function generateRiverForRegionImpl(
       const tributaryIncomingEndpoints = sortedIncomingEndpoints.slice(1);
       const blockedEdgeKeys = new Set(usedRiverEdges);
 
-      console.log('Multiple incoming rivers: building main river and tributaries', {
+      generationLog.detail('Multiple incoming rivers: building main river and tributaries', {
         regionId: region.id,
         incomingRiverIds: sortedIncomingEndpoints.map((endpoint) => endpoint.riverId),
         incomingRiverFullnesses: sortedIncomingEndpoints.map((endpoint) => ({
@@ -7116,7 +7111,7 @@ function generateRiverForRegionImpl(
       const mainBuiltPath = mainEndpointPath.path;
       const tributaryTargetVertices = mainBuiltPath.slice(1, -1);
 
-      console.log('Tributary target vertices for main river', {
+      generationLog.detail('Tributary target vertices for main river', {
         regionId: region.id,
         mainRiverId: mainIncomingEndpoint.riverId,
         mainBuiltPathLength: mainBuiltPath.length,
@@ -7126,7 +7121,7 @@ function generateRiverForRegionImpl(
       });
 
       if (tributaryTargetVertices.length === 0) {
-        console.warn('Main river has no internal vertices for tributary connection', {
+        generationLog.warning('Main river has no internal vertices for tributary connection', {
           regionId: region.id,
           mainRiverId: mainIncomingEndpoint.riverId,
           mainBuiltPathLength: mainBuiltPath.length,
@@ -7156,7 +7151,7 @@ function generateRiverForRegionImpl(
           region.heightLevel === 3 ? undefined : region.riverSlope
         );
         if (!tributaryPath) {
-          console.warn('Could not connect tributary to main river', {
+          generationLog.warning('Could not connect tributary to main river', {
             regionId: region.id,
             tributaryRiverId: endpoint.riverId,
             mainRiverId: mainIncomingEndpoint.riverId,
@@ -7262,13 +7257,13 @@ function generateRiverForRegionImpl(
             return finalizeRiverGenerationForRegion(region, regions, terrainMap, riverGraph, mergedWithTributaries, candidateHexes ?? [], candidateVertices, neighborRegionVertices, candidateEndpointVertices);
           }
         } else {
-          console.warn('Could not connect river pair: no free connector path', {
+          generationLog.warning('Could not connect river pair: no free connector path', {
             regionId: region.id,
             candidatePairs,
           });
         }
       } else {
-        console.warn('Cannot merge rivers automatically: no valid end->start pair', { regionId: region.id, touchingEndpoints });
+        generationLog.warning('Cannot merge rivers automatically: no valid end->start pair', { regionId: region.id, touchingEndpoints });
       }
     }
 
@@ -7291,7 +7286,7 @@ function generateRiverForRegionImpl(
       );
 
       if (!bestEndpointPath) {
-        console.warn('Could not extend river in region: no valid free path', {
+        generationLog.warning('Could not extend river in region: no valid free path', {
           regionId: region.id,
           endpointCount: existingRiverEndpointVerticesInRegion.length,
           redVertexCount: redVertices.length,
@@ -7311,7 +7306,7 @@ function generateRiverForRegionImpl(
         existingRiverVertexKeys,
         new Set([controlPoints.startVertex.key])
       )) {
-        console.warn('Could not extend river in region: no valid free path', {
+        generationLog.warning('Could not extend river in region: no valid free path', {
           regionId: region.id,
           endpointCount: existingRiverEndpointVerticesInRegion.length,
           redVertexCount: redVertices.length,
@@ -7379,7 +7374,7 @@ function generateRiverForRegionImpl(
         ({ bestPath, bestControlPoints } = findBestMountainSourcePath(interiorStartVertices));
       }
 
-      console.log('mountain-source-branch:', {
+      generationLog.detail('mountain-source-branch:', {
         regionId: region.id,
         interiorStartVerticesLength: interiorStartVertices.length,
         preferredStartVerticesLength: preferredStartVertices.length,
@@ -7660,7 +7655,7 @@ function restoreInvalidGeneratedRiversForRegion(
       const issues = validateRiverEndpoints(region, river, riverGraph);
       if (riverEndpointIssuesAreCritical(issues)) {
         const previousRiver = previousById.get(river.id);
-        console.warn(previousRiver ? 'Restoring previous river because generated segment is invalid for region' : 'Removing invalid generated river for region', {
+        generationLog.warning(previousRiver ? 'Restoring previous river because generated segment is invalid for region' : 'Removing invalid generated river for region', {
           regionId: region.id,
           riverId: river.id,
           issues,
@@ -7689,7 +7684,7 @@ function restoreRiversStartingFromSea(previousRivers: River[], nextRivers: River
     let nextRiver: River | null = river;
     if (startVertex && seaVertexKeys.has(startVertex.key)) {
       const previousRiver = previousById.get(river.id);
-      console.warn(previousRiver ? 'Restoring previous river because generated river starts from sea' : 'Removing generated river because it starts from sea', {
+      generationLog.warning(previousRiver ? 'Restoring previous river because generated river starts from sea' : 'Removing generated river because it starts from sea', {
         riverId: river.id,
         startVertexKey: startVertex.key
       });
@@ -7768,7 +7763,7 @@ function assignLakesForRegionImpl(
     nextLakeId += 1;
   }
 
-  console.log('Lakes generated for region', {
+  generationLog.detail('Lakes generated for region', {
     biomeId,
     lakeChance,
     lakeExpansionChance: LAKE_EXPANSION_CHANCE,
@@ -8411,7 +8406,7 @@ function connectRemainingPoiWithTrails(options: {
     }
     if (!connected) skippedPoiKeys.add(hexKey(selectedPoi));
   }
-  console.log('Settled POI trails result', {
+  generationLog.detail('Settled POI trails result', {
     regionId: region.id,
     totalPoi: region.pointsOfInterest.length,
     connectedPoi: region.pointsOfInterest.filter((poi) => hexHasRoadOrTrail(poi, builtRoads)).length,
@@ -9705,7 +9700,7 @@ function buildWildRegionTrail(options: {
   const { region, regions, roads, rivers, hexTerrainByKey, nextRoadId } = options;
   const trailPoints = getWildTrailPoints({ region, regions, roads, hexTerrainByKey });
   if (trailPoints.length < 2) {
-    console.log('Wild trail result', { regionId: region.id, built: false, reason: 'fewer than two eligible points', eligiblePointCount: trailPoints.length });
+    generationLog.detail('Wild trail result', { regionId: region.id, built: false, reason: 'fewer than two eligible points', eligiblePointCount: trailPoints.length });
     return { roads, nextRoadId };
   }
 
@@ -9723,7 +9718,7 @@ function buildWildRegionTrail(options: {
     const path = findWildTrailPath({ region, from: pair.start.hex, target: pair.target.hex, rivers, hexTerrainByKey });
     if (!path || roadPathCrossesRiver(path, rivers)) continue;
     const addResult = addTrailPathWithoutDuplicateSegments({ path, roads, regionId: region.id, nextRoadId });
-    console.log('Wild trail result', {
+    generationLog.detail('Wild trail result', {
       regionId: region.id,
       built: addResult.added,
       from: hexKey(pair.start.hex),
@@ -9735,7 +9730,7 @@ function buildWildRegionTrail(options: {
     if (addResult.added) return { roads: addResult.roads, nextRoadId: addResult.nextRoadId };
   }
 
-  console.log('Wild trail result', { regionId: region.id, built: false, reason: 'no valid path', eligiblePointCount: trailPoints.length });
+  generationLog.detail('Wild trail result', { regionId: region.id, built: false, reason: 'no valid path', eligiblePointCount: trailPoints.length });
   return { roads, nextRoadId };
 }
 
@@ -10472,7 +10467,7 @@ function generateRoadsForRegionImpl(options: {
       const wildCandidate = chooseBestWildRoadCandidate(getWildRoadCandidates({ region, regions, roads: built, rivers, hexTerrainByKey, candidateHexes, usedEndpointKeys: usedWildRoadEndpointKeys }));
       if (!wildCandidate) break;
       const added = addWildRoadCandidateToExistingRoad({ candidate: wildCandidate, roads: built, region, hexTerrainByKey });
-      console.log('Wild road result', {
+      generationLog.detail('Wild road result', {
         regionId: region.id,
         built: added,
         startRoadId: wildCandidate.startRoadId,
@@ -10494,7 +10489,7 @@ function generateRoadsForRegionImpl(options: {
         built = addResult.roads;
         nextRoadId = addResult.nextRoadId;
         builtAnyWildRoad = addResult.added;
-        console.log('Wild candidate road result', {
+        generationLog.detail('Wild candidate road result', {
           regionId: region.id,
           built: addResult.added,
           crossedRiverCount: candidateRoad.crossedRiverCount,
@@ -10504,7 +10499,7 @@ function generateRoadsForRegionImpl(options: {
     }
 
     if (!builtAnyWildRoad) {
-      console.log('Wild road result', {
+      generationLog.detail('Wild road result', {
         regionId: region.id,
         built: false,
         reason: incomingWildRoadCount === 0
@@ -10550,12 +10545,12 @@ function generateRoadsForRegionImpl(options: {
       }));
     const best = chooseBestSettledIncomingRoadCandidate(candidates);
     if (!best) {
-      console.log(logLabel, { regionId: region.id, built: false, reason: 'no valid incoming road path' });
+      generationLog.detail(logLabel, { regionId: region.id, built: false, reason: 'no valid incoming road path' });
       return null;
     }
 
     const added = addRoadFromPath(best.extendedPath, 'road', [best.incoming.endpointHex, best.targetHex]);
-    console.log(logLabel, {
+    generationLog.detail(logLabel, {
       regionId: region.id,
       built: added,
       incomingRoadId: best.incoming.roadId,
@@ -10638,11 +10633,11 @@ function generateRoadsForRegionImpl(options: {
     });
     const best = chooseBestSupplementalSettledRoadCandidate(candidates);
     if (!best) {
-      console.log(logLabel, { regionId: region.id, built: false, reason: 'no valid supplemental center road path' });
+      generationLog.detail(logLabel, { regionId: region.id, built: false, reason: 'no valid supplemental center road path' });
       return false;
     }
     const added = addRoadFromPath(best.extendedPath, 'road', [best.startHex, region.centerHex]);
-    console.log(logLabel, {
+    generationLog.detail(logLabel, {
       regionId: region.id,
       built: added,
       startHex: hexKey(best.startHex),
@@ -10695,11 +10690,11 @@ function generateRoadsForRegionImpl(options: {
     }
     const best = chooseBestSupplementalSettledRoadCandidate(candidates);
     if (!best) {
-      console.log(logLabel, { regionId: region.id, built: false, reason: 'no valid supplemental center-to-candidate-facing path' });
+      generationLog.detail(logLabel, { regionId: region.id, built: false, reason: 'no valid supplemental center-to-candidate-facing path' });
       return false;
     }
     const added = addRoadFromPath(best.extendedPath, 'road', [region.centerHex, best.targetHex]);
-    console.log(logLabel, {
+    generationLog.detail(logLabel, {
       regionId: region.id,
       built: added,
       startHex: hexKey(region.centerHex),
@@ -10720,11 +10715,11 @@ function generateRoadsForRegionImpl(options: {
     const candidates = collectDirectSupplementalCandidates({ startHexes, targetHexes: roadTargets, anchorHex, maxAlternatives: 6 });
     const best = chooseBestSupplementalSettledRoadCandidate(candidates);
     if (!best) {
-      console.log(logLabel, { regionId: region.id, built: false, reason: 'no valid supplemental road-to-road path' });
+      generationLog.detail(logLabel, { regionId: region.id, built: false, reason: 'no valid supplemental road-to-road path' });
       return false;
     }
     const added = addRoadFromPath(best.extendedPath, 'road', [best.startHex, best.targetHex]);
-    console.log(logLabel, {
+    generationLog.detail(logLabel, {
       regionId: region.id,
       built: added,
       startHex: hexKey(best.startHex),
@@ -10836,7 +10831,7 @@ function generateRoadsForRegionImpl(options: {
     const secondBest = chooseBestSettledCandidateRoadCandidate(secondCandidateRoads);
     const secondRoadPath = secondBest ? trimPathToRegionHexes(secondBest.extendedPath, region) : [];
     if (secondBest && addRoadFromPath(secondRoadPath, 'road', [region.centerHex, secondBest.entryHex], new Set([hexKey(secondBest.entryHex)]))) {
-      console.log('Second settled candidate road result', {
+      generationLog.detail('Second settled candidate road result', {
         regionId: region.id,
         built: true,
         candidateHex: hexKey(secondBest.candidateHex),
@@ -10849,7 +10844,7 @@ function generateRoadsForRegionImpl(options: {
       });
       markPoiOnPathAsUsed(secondRoadPath, region, usedRoadPoiKeys);
     } else {
-      console.log('Second settled candidate road result', {
+      generationLog.detail('Second settled candidate road result', {
         regionId: region.id,
         built: false,
         reason: 'no valid candidate road path'
@@ -10929,7 +10924,7 @@ function generateRoadsForRegionImpl(options: {
           && trimmedCandidateExitSegment;
         if (isValid) {
           const added = addRoadFromPath(thirdRoadPath, 'road', [roadHex, entryHex]);
-          console.log('Third settled road result', {
+          generationLog.detail('Third settled road result', {
             regionId: region.id,
             built: added,
             entryHex: hexKey(entryHex),
@@ -10945,7 +10940,7 @@ function generateRoadsForRegionImpl(options: {
           });
           if (added) markPoiOnPathAsUsed(thirdRoadPath, region, usedRoadPoiKeys);
         } else {
-          console.warn('Third settled road validation failed', {
+          generationLog.warning('Third settled road validation failed', {
             regionId: region.id,
             entryHex: hexKey(entryHex),
             candidateHex: hexKey(candidateHex),
@@ -10957,7 +10952,7 @@ function generateRoadsForRegionImpl(options: {
             pathHasLakeOrSea,
             trimmedCandidateExitSegment
           });
-          console.log('Third settled road result', {
+          generationLog.detail('Third settled road result', {
             regionId: region.id,
             built: false,
             entryHex: hexKey(entryHex),
@@ -10973,7 +10968,7 @@ function generateRoadsForRegionImpl(options: {
           });
         }
       } else {
-        console.log('Third settled road result', {
+        generationLog.detail('Third settled road result', {
           regionId: region.id,
           built: false,
           entryHex: null,
@@ -11126,7 +11121,24 @@ export function App() {
   const [genCoastal, setGenCoastal] = useState<'auto' | CoastalPreference>('mainland');
   // Уведомление пользователю (например, почему не создалось побережье).
   const [generationError, setGenerationError] = useState<GenerationDiagnostic | null>(null);
-  const generationProgress = { attempt: 0, stage: 'region', lastRejection: null as string | null, fallbackReason: null as string | null };
+  const generationProgress = {
+    attempt: 0, stage: 'region', lastRejection: null as string | null,
+    fallbackReason: null as string | null, exhausted: false,
+    targetSize: null as number | null, action: 'add' as 'add' | 'regenerate',
+    rejectionCounts: {} as Record<string, number>
+  };
+  const rejectAttempt = (reason: string) => {
+    generationProgress.lastRejection = reason;
+    generationProgress.rejectionCounts[reason] = (generationProgress.rejectionCounts[reason] ?? 0) + 1;
+    generationLog.detail('[generation:attempt-rejected]', { attempt: generationProgress.attempt, reason });
+  };
+  const generationEvent = (anchorHex: AxialHex, options: GenerationOptions, kind: GenerationEvent['kind'], reason: string, result: GenerationEvent['result']): GenerationEvent => ({
+    kind, reason, result, action: generationProgress.action, anchorHex,
+    options: { targetSize: options.targetSize ?? 'auto', landType: options.landType ?? 'auto',
+      biomeId: options.biomeId ?? 'auto', coastalPreference: options.coastalPreference ?? 'auto' },
+    attempt: generationProgress.attempt, stage: generationProgress.stage,
+    targetSize: generationProgress.targetSize, rejectionCounts: generationProgress.rejectionCounts
+  });
   const [coastNotice, setCoastNotice] = useState<string | null>(null);
   const [clickPromptCandidateKey, setClickPromptCandidateKey] = useState<string | null>(null);
 
@@ -11386,7 +11398,7 @@ export function App() {
   const addFallbackTractToMap = (anchorHex: AxialHex, forceCoastalSea = false, options: GenerationOptions = {}, reason = 'direct_fallback') => {
     generationProgress.stage = 'tract';
     generationProgress.fallbackReason = reason;
-    console.warn('Generation constraint fallback', { kind: 'constraint-rejection', reason, anchorHex, attempt: generationProgress.attempt });
+    generationLog.detail('Generation constraint fallback', { reason, anchorHex, attempt: generationProgress.attempt });
     const regionId = Math.max(0, ...regions.map((region) => region.id)) + 1;
     const existingSeaKeys = getSeaHexKeysWithout(hexTerrainByKey, [anchorHex]);
     // Если якорь урочища всё ещё числится морем в служебных данных,
@@ -11502,9 +11514,9 @@ export function App() {
     const tractModel = reconcileRegionRiverModel(riversAfterTractGeneration, rivers, tractRegion,
       [...regions, tractRegion], candidateHexesForTractRiverGeneration, tractTerrain);
     if (tractModel.success) { riversAfterTractGeneration = tractModel.rivers; tractTerrain = tractModel.terrain; }
-    else { riversAfterTractGeneration = rivers; console.warn('Tract keeps old rivers', { reason: tractModel.reason }); }
+    else { riversAfterTractGeneration = rivers; generationLog.warning('Tract keeps old rivers', { reason: tractModel.reason }); }
     if (!generatedTractRiverResult.success) {
-      console.warn('Fallback tract river source generation failed; saving tract without generated source', {
+      generationLog.warning('Fallback tract river source generation failed; saving tract without generated source', {
         regionId,
         reason: generatedTractRiverResult.reason
       });
@@ -11625,11 +11637,13 @@ export function App() {
     setCrossings(finalCrossings);
     setNextRoadId(tractRoadResult.nextRoadId);
     setSelectedHex(anchorHex);
+    generationLog.finish(generationEvent(anchorHex, options,
+      generationProgress.exhausted ? 'attempts-exhausted' : 'tract-created', reason, 'tract'));
   };
 
   const addRegionToMap = (anchorHex: AxialHex, options: GenerationOptions = {}) => {
     __profileBeginClick();
-    const maxRegionAttempts = 30;
+    const maxRegionAttempts = MAX_REGION_ATTEMPTS;
     const autoCoastRoll = Math.random();
     setCoastNotice(null);
     const anchorKey = hexKey(anchorHex);
@@ -11649,6 +11663,7 @@ export function App() {
       __profileHit('region_attempt (попытки регенерации)');
       const isLastRegionAttempt = attempt === maxRegionAttempts - 1;
       let targetSize = options.targetSize ?? rollRegionTargetSize();
+      generationProgress.targetSize = targetSize;
       const occupiedHexes = new Set(allRegionHexes.map(hexKey));
       // Море — не суша: рост региона не должен захватывать гексы моря.
       for (const seaKey of existingSeaKeysForGrowth) occupiedHexes.add(seaKey);
@@ -11663,13 +11678,15 @@ export function App() {
       );
       const finalSize = regionHexes.length;
       if (finalSize < 6) {
-        console.warn('Candidate region is smaller than locality; retrying regular generation before fallback tract', {
+        rejectAttempt('region_too_small');
+        generationLog.warning('Candidate region is smaller than locality; retrying regular generation before fallback tract', {
           attempt,
           regionId,
           finalSize,
           acceptedAsFallbackTract: isLastRegionAttempt
         });
         if (isLastRegionAttempt) {
+          generationProgress.exhausted = true;
           addFallbackTractToMap(anchorHex, false, options, 'region_too_small');
           return;
         }
@@ -11729,7 +11746,7 @@ export function App() {
       const outgoingRiverEndpointCount = touchingEndpoints.filter((endpoint) => endpoint.endpointType === 'start').length;
       const isFirstRegion = regions.length === 0;
       if (isCoastalRegion && ((incomingRiverEndpointCount === 0 && !isFirstRegion) || outgoingRiverEndpointCount > 0)) {
-        console.warn('Coastal region attempt has invalid river endpoints; replacing it with a coastal tract', {
+        generationLog.warning('Coastal region attempt has invalid river endpoints; replacing it with a coastal tract', {
           attempt,
           regionId,
           incomingRiverEndpointCount,
@@ -11739,6 +11756,7 @@ export function App() {
         addFallbackTractToMap(anchorHex, true, options, 'coastal_river_endpoints_incompatible');
         return;
       }
+      generationProgress.stage = 'biome';
       const biomeLandType = options.landType ?? (regions.length === 0 ? 'settled' : chooseCoastalAwareLandType(isCoastalRegion));
       // Выбор биома: либо принудительно заданный пользователем, либо обычный
       // взвешенный выбор. Принудительный биом всё равно проверяется на
@@ -11774,7 +11792,7 @@ export function App() {
         rivers,
         nextCandidateHexesPreview
       );
-      console.log('River height constraint for candidate region', {
+      generationLog.detail('River height constraint for candidate region', {
         regionId,
         minHeight: riverHeightConstraint.minHeight,
         maxHeight: riverHeightConstraint.maxHeight,
@@ -11820,7 +11838,7 @@ export function App() {
         }
 
         if (!biomeChoice.biomeId && biomeChoice.reason === 'river_height_constraint_failed') {
-          console.warn('Region attempt has no biome satisfying river height constraints', {
+          generationLog.warning('Region attempt has no biome satisfying river height constraints', {
             regionId,
             attempt,
             riverHeightConstraint,
@@ -11830,7 +11848,7 @@ export function App() {
             biomeLandType,
             acceptedWithStandardWeights: isLastRegionAttempt
           });
-          if (!isLastRegionAttempt) continue;
+          if (!isLastRegionAttempt) { rejectAttempt('river_height_constraint_failed'); continue; }
           biomeChoice = pickBiome({ reasons: [] });
           effectiveRiverHeightConstraint = { reasons: [] };
           riversForGeneration = rivers;
@@ -11838,7 +11856,7 @@ export function App() {
         }
       }
       if (!biomeChoice.biomeId) {
-        console.warn('No biome available for candidate region; using standard biome weights on final attempt', {
+        generationLog.warning('No biome available for candidate region; using standard biome weights on final attempt', {
           regionId,
           attempt,
           riverHeightConstraint,
@@ -11847,13 +11865,15 @@ export function App() {
           biomeLandType,
           acceptedWithStandardWeights: isLastRegionAttempt
         });
-        if (!isLastRegionAttempt) continue;
+        if (!isLastRegionAttempt) { rejectAttempt('no_compatible_biome'); continue; }
         biomeChoice = pickBiome({ reasons: [] });
       }
       const biomeId = biomeChoice.biomeId;
       // A failed biome choice must take the same safe tract path as an
       // exhausted geometry attempt, never commit a region with a null biome.
       if (!biomeId) {
+        rejectAttempt(biomeChoice.reason ?? 'no_compatible_biome');
+        generationProgress.exhausted = true;
         addFallbackTractToMap(anchorHex, isCoastalRegion, options, biomeChoice.reason ?? 'no_compatible_biome');
         return;
       }
@@ -11886,8 +11906,8 @@ export function App() {
         ...regionBase,
         pointsOfInterest: []
       };
-      console.log('Region size generated', { regionId, targetSize, finalSize, sizeLabel });
-      console.log('Biome selected', {
+      generationLog.detail('Region size generated', { regionId, targetSize, finalSize, sizeLabel });
+      generationLog.detail('Biome selected', {
         regionId,
         regionCount: regions.length,
         biomeLandType,
@@ -11896,7 +11916,7 @@ export function App() {
         selectedBiomeLabel: BIOMES[biomeId]?.label
       });
       if (finalSize > targetSize) {
-        console.log('Region size exceeded target because enclosed areas were filled', {
+        generationLog.detail('Region size exceeded target because enclosed areas were filled', {
           regionId,
           targetSize,
           finalSize,
@@ -11926,8 +11946,8 @@ export function App() {
           nextHexTerrainByKeyPreview
         );
       if (!generatedRiverResult.success) {
-        generationProgress.lastRejection = generatedRiverResult.reason;
-        console.warn('Candidate river geometry rejected', { attempt, reason: generatedRiverResult.reason });
+        rejectAttempt(generatedRiverResult.reason);
+        generationLog.warning('Candidate river geometry rejected', { attempt, reason: generatedRiverResult.reason });
         continue;
       }
       const riverResult = generatedRiverResult;
@@ -11940,8 +11960,8 @@ export function App() {
       const connectedRivers = trimRiverSourcesOffExistingSea(riverResult.rivers, riversForGeneration, existingSeaVertexKeysForTrim);
 
       if (!validateExistingRiverEdgeFullnessPreserved(rivers, connectedRivers)) {
-        console.warn('Candidate region changed old river edge fullness after sea-source trim', { attempt, acceptedOnFinalAttempt: isLastRegionAttempt });
-        if (!isLastRegionAttempt) continue;
+        generationLog.warning('Candidate region changed old river edge fullness after sea-source trim', { attempt, acceptedOnFinalAttempt: isLastRegionAttempt });
+        if (!isLastRegionAttempt) { rejectAttempt('old_fullness_after_sea_trim'); continue; }
       }
       let finalizedRivers = assignRiverSectors(
         connectedRivers,
@@ -11991,13 +12011,13 @@ export function App() {
         }
       }
       if (!validateExistingRiverEdgeFullnessPreserved(rivers, finalizedRivers)) {
-        console.warn('Candidate region final river sector assignment changed old edge fullness', { attempt, acceptedOnFinalAttempt: isLastRegionAttempt });
-        if (!isLastRegionAttempt) continue;
+        generationLog.warning('Candidate region final river sector assignment changed old edge fullness', { attempt, acceptedOnFinalAttempt: isLastRegionAttempt });
+        if (!isLastRegionAttempt) { rejectAttempt('old_fullness_after_sectors'); continue; }
       }
       const initialRiverCycleValidation = validateRiverCycleSafety(finalizedRivers);
       if (!initialRiverCycleValidation.valid) {
-        console.warn('Candidate region river cycle was detected before sea finalization', { attempt, regionId, acceptedOnFinalAttempt: isLastRegionAttempt, ...initialRiverCycleValidation });
-        if (!isLastRegionAttempt) continue;
+        generationLog.warning('Candidate region river cycle was detected before sea finalization', { attempt, regionId, acceptedOnFinalAttempt: isLastRegionAttempt, ...initialRiverCycleValidation });
+        if (!isLastRegionAttempt) { rejectAttempt('river_cycle_before_sea'); continue; }
       }
 
       const regionTerrainByHex = new Map<string, HexTerrainData>();
@@ -12013,8 +12033,8 @@ export function App() {
         ? chooseRiverMouthCenterHex(regionHexes, finalizedRivers)
         : null;
       if (isCoastalRegion && biomeLandType === 'settled' && !hasOutgoingRiverToExistingRegion && !coastalRiverMouthCenterHex) {
-        console.warn('Settled coastal candidate region has no center hex touching a boundary river mouth', { attempt, regionId, acceptedOnFinalAttempt: isLastRegionAttempt });
-        if (!isLastRegionAttempt) continue;
+        generationLog.warning('Settled coastal candidate region has no center hex touching a boundary river mouth', { attempt, regionId, acceptedOnFinalAttempt: isLastRegionAttempt });
+        if (!isLastRegionAttempt) { rejectAttempt('coastal_center_without_mouth'); continue; }
       }
       const preliminaryCenterHex = coastalRiverMouthCenterHex ?? centerHex;
 
@@ -12123,23 +12143,23 @@ export function App() {
 
       const finalRiverSeaHeightViolation = getRiverSeaHeightViolation(riversWithDeltas, allSeaKeys);
       if (finalRiverSeaHeightViolation) {
-        console.warn('Candidate region has a river violating final sea height', {
+        generationLog.warning('Candidate region has a river violating final sea height', {
           attempt,
           regionId,
           riverId: finalRiverSeaHeightViolation.river.id,
           reason: finalRiverSeaHeightViolation.reason,
           acceptedOnFinalAttempt: isLastRegionAttempt
         });
-        if (!isLastRegionAttempt) continue;
+        if (!isLastRegionAttempt) { rejectAttempt('river_sea_height_violation'); continue; }
       }
       const finalRiverCycleValidation = validateRiverCycleSafety(riversWithDeltas);
       if (!finalRiverCycleValidation.valid) {
-        console.warn('Candidate region final river cycle was detected', { attempt, regionId, acceptedOnFinalAttempt: isLastRegionAttempt, ...finalRiverCycleValidation });
-        if (!isLastRegionAttempt) continue;
+        generationLog.warning('Candidate region final river cycle was detected', { attempt, regionId, acceptedOnFinalAttempt: isLastRegionAttempt, ...finalRiverCycleValidation });
+        if (!isLastRegionAttempt) { rejectAttempt('river_cycle_final'); continue; }
       }
       if (!validateExistingRiverEdgeFullnessPreserved(rivers, riversWithDeltas)) {
-        console.warn('Candidate region final river edge fullness changed old rivers', { attempt, regionId, acceptedOnFinalAttempt: isLastRegionAttempt });
-        if (!isLastRegionAttempt) continue;
+        generationLog.warning('Candidate region final river edge fullness changed old rivers', { attempt, regionId, acceptedOnFinalAttempt: isLastRegionAttempt });
+        if (!isLastRegionAttempt) { rejectAttempt('old_fullness_final'); continue; }
       }
       // Запертые кандидатные карманы больше не поглощаются морем: после
       // построения береговой линии они присоединяются к биому строящегося
@@ -12262,7 +12282,8 @@ export function App() {
       const lakeIdByVertexKey = buildLakeIdByVertexKey(getLakesForRegions(nextRegions, nextHexTerrainByKeyPreview));
       const riverLakeReentryViolation = getRiversLakeReentryViolation(riversWithDeltas, lakeIdByVertexKey);
       if (riverLakeReentryViolation) {
-        console.warn('Candidate region has a river re-entering a lake it already left', {
+        rejectAttempt('river_lake_reentry');
+        generationLog.warning('Candidate region has a river re-entering a lake it already left', {
           attempt,
           regionId,
           acceptedOnFinalAttempt: isLastRegionAttempt,
@@ -12310,13 +12331,14 @@ export function App() {
         mergeAdjacentLakeIds(next);
         return next;
       })();
+      generationProgress.stage = 'river_model';
       const modelResult = reconcileRegionRiverModel(
         riversWithDeltas, rivers, finalRegionAfterLandPockets,
         [...regions, finalRegionAfterLandPockets], finalCandidateHexes, modelTerrain
       );
       if (!modelResult.success) {
-        generationProgress.lastRejection = modelResult.reason;
-        console.warn('River model rejected region attempt', { attempt, reason: modelResult.reason });
+        rejectAttempt(modelResult.reason);
+        generationLog.warning('River model rejected region attempt', { attempt, reason: modelResult.reason });
         continue;
       }
       riversWithDeltas = modelResult.rivers;
@@ -12406,10 +12428,12 @@ export function App() {
       setCrossings(finalCrossings);
       setNextRoadId(roadResult.nextRoadId);
       setSelectedHex(finalCenterHex);
+      generationLog.finish(generationEvent(anchorHex, options, 'generated', 'region_created', 'region'));
       return;
     }
 
-    console.warn('Could not create region after max attempts', {
+    generationProgress.exhausted = true;
+    generationLog.detail('Could not create region after max attempts', {
       anchorHex,
       maxRegionAttempts,
       fallback: 'tract'
@@ -12444,13 +12468,11 @@ export function App() {
 
   const reportGenerationFailure = (error: unknown, anchorHex: AxialHex, options: GenerationOptions, backup: GenerationBackup) => {
     restoreGenerationBackup(backup);
-    const diagnostic: GenerationDiagnostic = {
-      kind: 'programming-error', anchorHex, options,
-      attempt: generationProgress.attempt, stage: generationProgress.stage,
+    const diagnostic = generationLog.finish({
+      ...generationEvent(anchorHex, options, 'programming-error', String(error), 'rolled-back'),
       message: String(error),
       stack: error && typeof error === 'object' && 'stack' in error ? String(error.stack) : undefined
-    };
-    console.error('Region generation aborted; previous map restored', { ...diagnostic, error });
+    });
     setGenerationError(diagnostic);
     return { success: false as const, diagnostic };
   };
@@ -12458,6 +12480,11 @@ export function App() {
   const safelyAddRegionToMap = (anchorHex: AxialHex, options: GenerationOptions = {}, rollback?: GenerationBackup) => {
     const backup = rollback ?? captureGenerationBackup();
     setGenerationError(null);
+    generationLog.begin();
+    generationProgress.action = rollback ? 'regenerate' : 'add';
+    generationProgress.exhausted = false;
+    generationProgress.targetSize = null;
+    generationProgress.rejectionCounts = {};
     generationProgress.attempt = 0;
     generationProgress.stage = 'region';
     generationProgress.lastRejection = null;
@@ -12542,6 +12569,8 @@ export function App() {
     const backup = captureGenerationBackup();
     const lastAnchor = regions[regions.length - 1].anchorHex;
     const snapshot = history[history.length - 1];
+    generationLog.begin();
+    generationProgress.action = 'regenerate';
     generationProgress.stage = 'prepare_regeneration';
     let options: GenerationOptions = {};
     try {
@@ -13107,7 +13136,7 @@ export function App() {
   };
 
   if (debugRivers && selectedRegion && selectedCandidateBoundaryDebug) {
-    console.log('Candidate boundary debug', {
+    generationLog.detail('Candidate boundary debug', {
       regionId: selectedRegion.id,
       regionHexesLength: selectedRegion.hexes.length,
       candidateBoundaryEdgesLength: selectedCandidateBoundaryDebug.edges.length,
