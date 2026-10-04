@@ -28,7 +28,7 @@ const compiled = ts.transpileModule(instrumented, { compilerOptions: {
 }}).outputText;
 const localRequire = createRequire(sourceUrl);
 
-export function createGenerationHarness(seed = 1) {
+export function createGenerationHarness(seed = 1, search = '') {
   const state = [];
   let cursor = 0;
   const hooks = {
@@ -43,12 +43,19 @@ export function createGenerationHarness(seed = 1) {
   const seededMath = Object.create(Math);
   seededMath.random = () => { seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0; return seed / 4294967296; };
   const module = { exports: {} };
+  const diagnostics = { exports: {} };
   const context = vm.createContext({ module, exports: module.exports, Math: seededMath, Map, Set,
     console: Object.fromEntries(['log', 'warn', 'error'].map(level => [level, (...args) => logs.push({ level, args })])),
-    require: name => name === 'react' ? hooks : localRequire(name.startsWith('./') ? `${name}.ts` : name),
-    performance, URLSearchParams, structuredClone
+    require: name => name === './generationDiagnostics' ? diagnostics.exports : name === 'react' ? hooks : localRequire(name.startsWith('./') ? `${name}.ts` : name),
+    performance, URLSearchParams, structuredClone, window: { location: { search } }
   });
+  const diagnosticsCode = ts.transpileModule(fs.readFileSync(new URL('../../src/generationDiagnostics.ts', import.meta.url), 'utf8'), {
+    compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020 }
+  }).outputText;
+  context.__diagnostics = diagnostics;
+  vm.runInContext(`(function(exports, module) { ${diagnosticsCode} })(__diagnostics.exports, __diagnostics);`, context);
   vm.runInContext(compiled, context);
+  delete context.window;
   return {
     render() { cursor = 0; return module.exports.App(); },
     geometry: module.exports.testGeometry, logs,
