@@ -49,17 +49,17 @@ test('exhausted attempts produce one contextual summary and no debug stream', ()
   assert.equal(h.render().history.length, 1);
 });
 
-test('ordinary coastal tract is distinct from exhaustion; subsequent actions reset diagnostics', () => {
+test('incompatible coastal endpoints exhaust retries before creating a tract', () => {
   const h = createGenerationHarness(2);
   h.render().addFallbackTractToMap({ q: 0, r: 0 });
   h.logs.length = 0;
   h.render().safelyAddRegionToMap(h.render().candidateHexes[0], { targetSize: 8, coastalPreference: 'coast' });
   const [event] = events(h);
-  assert.equal(event.kind, 'tract-created');
+  assert.equal(event.kind, 'attempts-exhausted');
   assert.equal(event.reason, 'coastal_river_endpoints_incompatible');
-  assert.equal(event.attempt, 1);
+  assert.equal(event.attempt, 30);
   assert.equal(event.result, 'tract');
-  assert.equal(Object.keys(event.rejectionCounts).length, 0);
+  assert.equal(event.rejectionCounts.coastal_river_endpoints_incompatible, 30);
 });
 
 test('late tract failure only reports programming error; diagnostic survives later actions', () => {
