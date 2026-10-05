@@ -84,18 +84,19 @@ try {
   }
   const stable = data => ({ map: data.map, counters: data.counters, ui: data.ui });
   async function addRegion() {
-    const before = await snapshot();
+    const before = await page.locator('details.export-menu').count() ? await snapshot() : null;
     const candidates = page.locator('polygon.hex.candidate');
     const attempts = await candidates.count();
     for (let index = 0; index < attempts; index++) {
       await candidates.nth(index).dispatchEvent('click');
       const after = await snapshot();
       assert.equal(errors.length, 0, errors.join('\n'));
-      if (after.map.regions.length === before.map.regions.length + 1) {
+      if (after.map.regions.length === (before?.map.regions.length ?? 0) + 1) {
         assert.equal(await page.getByRole('alert').count(), 0);
         assertRiverTermini(after);
         return after;
       }
+      assert.ok(before, 'the initial region must be generated');
       assert.match(await page.getByRole('alert').innerText(), /Не удалось разместить корректные истоки и устья рек/);
       assert.deepEqual(stable(after), stable(before), 'constraint rejection must preserve the map and counters');
     }
