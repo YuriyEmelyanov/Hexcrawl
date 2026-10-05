@@ -2427,7 +2427,8 @@ function reconcileRegionRiverModel(
 // old edges/directions/fullness remain fixed in the numerical model.
 function completeRegionRiverEnds(
   rivers: River[], previous: River[], region: Region, regions: Region[],
-  candidates: AxialHex[], terrain: Map<string, HexTerrainData>, previousCandidates: AxialHex[] = []
+  candidates: AxialHex[], terrain: Map<string, HexTerrainData>, previousCandidates: AxialHex[] = [],
+  previousTerrain: Map<string, HexTerrainData> = terrain
 ): ReturnType<typeof reconcileRegionRiverModel> {
   const affected = new Set(region.hexes.flatMap(h => getHexCornerPoints(h).map(v => v.key)));
   const graph = buildRiverGraphForRegion(region.hexes, regions.flatMap(r => r.hexes), candidates);
@@ -2467,7 +2468,14 @@ function completeRegionRiverEnds(
     }
     if (!end) {
       const result = reconcileRegionRiverModel(current, previous, region, regions, candidates, currentTerrain, true, affected);
-      if (!result.success) lastReason = result.reason;
+      if (result.success) {
+        const violation = getNewRiverLakeReentryViolation(result.rivers, regions, result.terrain,
+          previous, regions.filter(r => r.id !== region.id), previousTerrain);
+        if (violation) {
+          lastReason = `river_lake_reentry: river ${violation.riverId}, lake ${violation.lakeId}, vertex ${violation.vertexKey}`;
+          return { success: false, reason: lastReason };
+        }
+      } else lastReason = result.reason;
       return result;
     }
     const { river, vertex, source, fullness } = end;
@@ -6040,42 +6048,41 @@ type RiverLakeReentryViolation = {
   vertexKey: string;
 };
 
-function getRiverLakeReentryViolation(
-  river: River,
-  lakeIdByVertexKey: Map<string, number>
+// Compare each river/lake interaction, not the first violation on the whole map.
+// Unchanged legacy reentries may remain; new contacts, changed lake shapes and
+// changed paths between contacts must be validated even on the same old river.
+function getNewRiverLakeReentryViolation(
+  rivers: River[], regions: Region[], terrain: Map<string, HexTerrainData>,
+  previous: River[], previousRegions: Region[], previousTerrain: Map<string, HexTerrainData>
 ): RiverLakeReentryViolation | null {
-  const path = river.vertexPath;
-  if (path.length < 3) return null;
-
-  const exitedLakeIds = new Set<number>();
-  let previousLakeId = lakeIdByVertexKey.get(path[0].key);
-
-  for (let i = 1; i < path.length; i += 1) {
-    const currentLakeId = lakeIdByVertexKey.get(path[i].key);
-
-    if (previousLakeId !== undefined && currentLakeId !== previousLakeId) {
-      exitedLakeIds.add(previousLakeId);
+  const collect = (items: River[], areas: Region[], water: Map<string, HexTerrainData>) => {
+    const lakes = getLakesForRegions(areas, water);
+    const byVertex = buildLakeIdByVertexKey(lakes);
+    const shapes = new Map<number, Set<string>>();
+    for (const lake of lakes) {
+      const keys = shapes.get(lake.lakeId) ?? new Set<string>();
+      for (const hex of lake.hexes) keys.add(hexKey(hex));
+      shapes.set(lake.lakeId, keys);
     }
-    if (currentLakeId !== undefined && currentLakeId !== previousLakeId && exitedLakeIds.has(currentLakeId)) {
-      return { riverId: river.id, lakeId: currentLakeId, vertexKey: path[i].key };
+    const violations: { signature: string; violation: RiverLakeReentryViolation }[] = [];
+    for (const river of items) {
+      const contacts = new Map<number, number[]>();
+      river.vertexPath.forEach((vertex, index) => {
+        const id = byVertex.get(vertex.key);
+        if (id !== undefined) contacts.set(id, [...(contacts.get(id) ?? []), index]);
+      });
+      for (const [lakeId, indices] of contacts) {
+        const reentry = indices.find((index, i) => i > 0 && index > indices[i - 1] + 1);
+        if (reentry === undefined) continue;
+        const path = river.vertexPath.slice(indices[0], indices[indices.length - 1] + 1).map(v => v.key);
+        violations.push({ signature: JSON.stringify([river.id, [...shapes.get(lakeId)!].sort(), path]),
+          violation: { riverId: river.id, lakeId, vertexKey: river.vertexPath[reentry].key } });
+      }
     }
-
-    previousLakeId = currentLakeId;
-  }
-
-  return null;
-}
-
-function getRiversLakeReentryViolation(
-  rivers: River[],
-  lakeIdByVertexKey: Map<string, number>
-): RiverLakeReentryViolation | null {
-  for (const river of rivers) {
-    const violation = getRiverLakeReentryViolation(river, lakeIdByVertexKey);
-    if (violation) return violation;
-  }
-
-  return null;
+    return violations;
+  };
+  const existing = new Set(collect(previous, previousRegions, previousTerrain).map(item => item.signature));
+  return collect(rivers, regions, terrain).find(item => !existing.has(item.signature))?.violation ?? null;
 }
 
 function buildLakeIdByVertexKey(lakes: Lake[]): Map<string, number> {
@@ -11726,9 +11733,9 @@ export function App() {
     })();
     generationProgress.stage = 'tract_river_endpoints';
     let completed = completeRegionRiverEnds(riversAfterTractGeneration, rivers, tractRegion,
-      finalRegions, finalCandidateHexes, finalHexTerrainByKey, candidateHexes);
+      finalRegions, finalCandidateHexes, finalHexTerrainByKey, candidateHexes, hexTerrainByKey);
     if (!completed.success && riversAfterTractGeneration !== rivers) {
-      completed = completeRegionRiverEnds(rivers, rivers, tractRegion, finalRegions, finalCandidateHexes, finalHexTerrainByKey, candidateHexes);
+      completed = completeRegionRiverEnds(rivers, rivers, tractRegion, finalRegions, finalCandidateHexes, finalHexTerrainByKey, candidateHexes, hexTerrainByKey);
     }
     if (!completed.success) {
       generationLog.warning('Tract river endpoints rejected', { tractAttempt, reason: completed.reason });
@@ -12419,8 +12426,8 @@ export function App() {
         }
       }
       // Reject lake re-entry; the final numerical model also rejects directed cycles.
-      const lakeIdByVertexKey = buildLakeIdByVertexKey(getLakesForRegions(nextRegions, nextHexTerrainByKeyPreview));
-      const riverLakeReentryViolation = getRiversLakeReentryViolation(riversWithDeltas, lakeIdByVertexKey);
+      const riverLakeReentryViolation = getNewRiverLakeReentryViolation(
+        riversWithDeltas, nextRegions, nextHexTerrainByKeyPreview, rivers, regions, hexTerrainByKey);
       if (riverLakeReentryViolation) {
         rejectAttempt('river_lake_reentry');
         generationLog.warning('Candidate region has a river re-entering a lake it already left', {
@@ -12474,7 +12481,7 @@ export function App() {
       generationProgress.stage = 'river_model';
       const modelResult = completeRegionRiverEnds(
         riversWithDeltas, rivers, finalRegionAfterLandPockets,
-        [...regions, finalRegionAfterLandPockets], finalCandidateHexes, modelTerrain, candidateHexes
+        [...regions, finalRegionAfterLandPockets], finalCandidateHexes, modelTerrain, candidateHexes, hexTerrainByKey
       );
       if (!modelResult.success) {
         rejectAttempt(modelResult.reason);
