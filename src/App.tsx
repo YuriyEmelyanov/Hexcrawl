@@ -11883,13 +11883,16 @@ export function App() {
       const outgoingRiverEndpointCount = touchingEndpoints.filter((endpoint) => endpoint.endpointType === 'start').length;
       const isFirstRegion = regions.length === 0;
       if (isCoastalRegion && ((incomingRiverEndpointCount === 0 && !isFirstRegion) || outgoingRiverEndpointCount > 0)) {
-        generationLog.warning('Coastal region attempt has invalid river endpoints; replacing it with a coastal tract', {
+        rejectAttempt('coastal_river_endpoints_incompatible');
+        generationLog.warning('Coastal region attempt has invalid river endpoints; retrying before fallback tract', {
           attempt,
           regionId,
           incomingRiverEndpointCount,
           outgoingRiverEndpointCount,
           isFirstRegion
         });
+        if (!isLastRegionAttempt) continue;
+        generationProgress.exhausted = true;
         addFallbackTractToMap(anchorHex, true, options, 'coastal_river_endpoints_incompatible');
         return;
       }
