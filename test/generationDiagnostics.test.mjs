@@ -91,10 +91,10 @@ test('late tract failure only reports programming error; diagnostic survives lat
 
 test('last rejection records lake reentry rather than a stale earlier river failure', () => {
   const h = createGenerationHarness(14);
-  h.injectFunction('getRiversLakeReentryViolation', () => ({ riverId: 1, lakeId: 1 }));
+  h.injectFunction('getNewRiverLakeReentryViolation', () => ({ riverId: 1, lakeId: 1, vertexKey: 'injected' }));
   h.render().safelyAddRegionToMap({ q: 0, r: 0 }, { targetSize: 8, coastalPreference: 'mainland' });
   const [event] = events(h);
-  assert.equal(event.kind, 'attempts-exhausted');
-  assert.equal(event.reason, 'river_lake_reentry');
+  assert.equal(event.kind, 'constraint-rejection');
+  assert.match(event.reason, /river_lake_reentry/);
   assert.ok(event.rejectionCounts.river_lake_reentry > 0);
 });

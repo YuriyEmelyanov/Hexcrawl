@@ -16,7 +16,7 @@ const instrumented = source.slice(0, lastReturn.getStart(ast)) + `return {
   addFallbackTractToMap, safelyAddRegionToMap, createSaveData, restoreSnapshot, deleteLastRegion,
   generationError, pendingRegen, regenerateLastRegion, finishPendingRegeneration
 };` + source.slice(lastReturn.end) + `
-export const testGeometry = { getHexCornerPoints, getHexNeighbors, hexKey, buildRiverGraphForRegion,
+export const testGeometry = { getNewRiverLakeReentryViolation, getHexCornerPoints, getHexNeighbors, hexKey, buildRiverGraphForRegion,
   findRiverEndpointsTouchingRegion, getCandidateHexes, generateRiverForRegion, assertHexcrawlSaveData,
   buildRegionRiverNetwork, reconcileRegionRiverModel, completeRegionRiverEnds, addLakeAroundRiverSplitVertex, createInitialRiverSectors,
   countRoadPathRiverCrossings, findLowestRiverCrossingPathWithinWildRegion, getWildRoadCandidates, chooseBestWildRoadCandidate, collectSettledIncomingRoadPathsToTarget, generateRoadsForRegionImpl, findIncomingRoadEndpointsForRegion, getRoadEndpointHexKeysImpl,
