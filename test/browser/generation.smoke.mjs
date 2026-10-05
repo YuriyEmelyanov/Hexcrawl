@@ -183,6 +183,29 @@ try {
   assert.deepEqual((await snapshot()).map, beforeFailure.map);
   assert.equal(errors.length, 0, errors.join('\n'));
   assert.deepEqual(verboseLogs, [], 'ordinary mode must not emit debug console.log');
+  // Regression: a sea-blocked pocket must generate atomically in the real UI.
+  const pocket = JSON.parse(await fs.readFile(new URL('../fixtures/sea-pocket-map.json', import.meta.url), 'utf8'));
+  const [pocketChooser] = await Promise.all([
+    page.waitForEvent('filechooser'), page.getByRole('button', { name: 'Загрузить JSON', exact: true }).click()
+  ]);
+  await pocketChooser.setFiles({ name: 'sea-pocket.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(pocket)) });
+  await page.waitForFunction(expected => Array.from(document.querySelectorAll('.debug-panel-body p'))
+    .some(element => element.textContent === `Регионов: ${expected}`), pocket.map.regions.length);
+  await page.locator('.gen-params select').nth(0).selectOption('auto');
+  await selectCoast('mainland');
+  const pocketBefore = await snapshot();
+  await page.evaluate(() => {
+    let seed = 1;
+    Math.random = () => { seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0; return seed / 4294967296; };
+  });
+  await page.locator('polygon.hex.candidate[data-hex-key="3,-3"]').dispatchEvent('click', {}, { timeout: 120000 });
+  const pocketAfter = await snapshot();
+  assert.equal(pocketAfter.map.regions.length, pocketBefore.map.regions.length + 1);
+  assert.deepEqual(pocketAfter.map.regions.slice(0, -1), pocketBefore.map.regions);
+  assert.equal(await page.getByRole('alert').count(), 0);
+  await page.getByRole('button', { name: 'Удалить последний регион', exact: true }).click();
+  assert.deepEqual((await snapshot()).map, pocketBefore.map);
+  assert.equal(errors.length, 0, errors.join('\n'));
   // Detailed logs and the existing profiler can be enabled independently.
   for (const query of ['?generationDebug=1', '?profile=1']) {
     const probe = await browser.newPage();
