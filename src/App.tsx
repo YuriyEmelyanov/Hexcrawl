@@ -2428,7 +2428,8 @@ function reconcileRegionRiverModel(
 function completeRegionRiverEnds(
   rivers: River[], previous: River[], region: Region, regions: Region[],
   candidates: AxialHex[], terrain: Map<string, HexTerrainData>, previousCandidates: AxialHex[] = [],
-  previousTerrain: Map<string, HexTerrainData> = terrain
+  previousTerrain: Map<string, HexTerrainData> = terrain,
+  forcedClosedEnds: Set<string> = new Set()
 ): ReturnType<typeof reconcileRegionRiverModel> {
   const affected = new Set(region.hexes.flatMap(h => getHexCornerPoints(h).map(v => v.key)));
   const graph = buildRiverGraphForRegion(region.hexes, regions.flatMap(r => r.hexes), candidates);
@@ -2436,6 +2437,7 @@ function completeRegionRiverEnds(
   for (const hex of previousCandidates) for (const vertex of getHexCornerPoints(hex)) {
     if (!frontier.has(vertex.key)) affected.add(vertex.key);
   }
+  for (const key of forcedClosedEnds) { frontier.delete(key); affected.add(key); }
   let budget = 128;
   let lastReason = 'No compatible river termination';
   const search = (current: River[], currentTerrain: Map<string, HexTerrainData>, depth: number): ReturnType<typeof reconcileRegionRiverModel> => {
@@ -11262,6 +11264,7 @@ export function App() {
     attempt: 0, tractAttempt: 0, stage: 'region', lastRejection: null as string | null,
     fallbackReason: null as string | null, constraintFailure: null as string | null, exhausted: false,
     targetSize: null as number | null, action: 'add' as 'add' | 'regenerate',
+    seaRecoveryAttempt: 0, reclaimedSeaKeys: [] as string[],
     rejectionCounts: {} as Record<string, number>
   };
   const rejectAttempt = (reason: string) => {
@@ -11274,6 +11277,7 @@ export function App() {
     options: { targetSize: options.targetSize ?? 'auto', landType: options.landType ?? 'auto',
       biomeId: options.biomeId ?? 'auto', coastalPreference: options.coastalPreference ?? 'auto' },
     attempt: generationProgress.attempt, tractAttempt: generationProgress.tractAttempt, stage: generationProgress.stage,
+    seaRecoveryAttempt: generationProgress.seaRecoveryAttempt, reclaimedSeaKeys: generationProgress.reclaimedSeaKeys,
     targetSize: generationProgress.targetSize, rejectionCounts: generationProgress.rejectionCounts
   });
   const [coastNotice, setCoastNotice] = useState<string | null>(null);
@@ -11532,7 +11536,41 @@ export function App() {
     return map;
   }, [regions, candidateHexes]);
 
-  const addFallbackTractToMap = (anchorHex: AxialHex, forceCoastalSea = false, options: GenerationOptions = {}, reason = 'direct_fallback', tractAttempt = 1): void => {
+  // Trial terrain is local to the synchronous generation call, never written on its own.
+  const originalGenerationTerrain = hexTerrainByKey;
+  const originalGenerationCandidates = candidateHexes;
+  const recoveryClosedEnds = (anchor: AxialHex) => generationProgress.seaRecoveryAttempt
+    ? new Set(getHexCornerPoints(anchor).map(v => v.key)) : new Set<string>();
+  const seaRecoveryPlans = function* (anchor: AxialHex): Generator<string[]> {
+    const land = new Set(allRegionHexes.map(hexKey));
+    const mouths = new Set(rivers.flatMap(r => r.vertexPath.length ? [r.vertexPath[r.vertexPath.length - 1].key] : []));
+    const eligible = new Set([...hexTerrainByKey].filter(([key, terrain]) => {
+      if (terrain.terrainOverride !== 'sea' || land.has(key)) return false;
+      const [q, r] = key.split(',').map(Number);
+      if (Math.max(Math.abs(q - anchor.q), Math.abs(r - anchor.r), Math.abs(q + r - anchor.q - anchor.r)) > 3) return false;
+      return !getHexCornerPoints({ q, r }).some(v => mouths.has(v.key));
+    }).map(([key]) => key));
+    // Breadth first: fewer removed cells first. A bounded local search, not a
+    // claim of a global minimum or a guarantee for arbitrary coastlines.
+    const queue: string[][] = [[]];
+    const seen = new Set<string>();
+    let tried = 0;
+    for (let index = 0; index < queue.length && tried < 30; index++) {
+      const keys = queue[index];
+      if (keys.length) { tried++; yield keys; }
+      if (keys.length >= 6) continue;
+      const frontier = [anchor, ...keys.map(key => { const [q, r] = key.split(',').map(Number); return { q, r }; })];
+      for (const hex of frontier) for (const neighbor of getHexNeighbors(hex)) {
+        const key = hexKey(neighbor);
+        if (!eligible.has(key) || keys.includes(key)) continue;
+        const next = [...keys, key].sort();
+        const signature = next.join(';');
+        if (!seen.has(signature)) { seen.add(signature); queue.push(next); }
+      }
+    }
+  };
+
+  const addFallbackTractToMap = (anchorHex: AxialHex, forceCoastalSea = false, options: GenerationOptions = {}, reason = 'direct_fallback', tractAttempt = 1, hexTerrainByKey = originalGenerationTerrain, candidateHexes = originalGenerationCandidates): void => {
     generationProgress.tractAttempt = tractAttempt;
     generationProgress.stage = 'tract';
     generationProgress.fallbackReason = reason;
@@ -11706,11 +11744,11 @@ export function App() {
 
     const snapshot: MapSnapshot = {
       regions,
-      candidateHexes,
+      candidateHexes: originalGenerationCandidates,
       rivers,
       roads: cloneRoads(roads),
       crossings,
-      hexTerrainByKey,
+      hexTerrainByKey: originalGenerationTerrain,
       waterPoiByKey,
       biomeOverrideByHexKey,
       toponyms,
@@ -11733,14 +11771,14 @@ export function App() {
     })();
     generationProgress.stage = 'tract_river_endpoints';
     let completed = completeRegionRiverEnds(riversAfterTractGeneration, rivers, tractRegion,
-      finalRegions, finalCandidateHexes, finalHexTerrainByKey, candidateHexes, hexTerrainByKey);
+      finalRegions, finalCandidateHexes, finalHexTerrainByKey, candidateHexes, originalGenerationTerrain, recoveryClosedEnds(anchorHex));
     if (!completed.success && riversAfterTractGeneration !== rivers) {
-      completed = completeRegionRiverEnds(rivers, rivers, tractRegion, finalRegions, finalCandidateHexes, finalHexTerrainByKey, candidateHexes, hexTerrainByKey);
+      completed = completeRegionRiverEnds(rivers, rivers, tractRegion, finalRegions, finalCandidateHexes, finalHexTerrainByKey, candidateHexes, originalGenerationTerrain, recoveryClosedEnds(anchorHex));
     }
     if (!completed.success) {
       generationLog.warning('Tract river endpoints rejected', { tractAttempt, reason: completed.reason });
       if (tractAttempt < MAX_REGION_ATTEMPTS) {
-        addFallbackTractToMap(anchorHex, forceCoastalSea, options, reason, tractAttempt + 1);
+        addFallbackTractToMap(anchorHex, forceCoastalSea, options, reason, tractAttempt + 1, hexTerrainByKey, candidateHexes);
         return;
       }
       generationProgress.constraintFailure = completed.reason;
@@ -11785,8 +11823,7 @@ export function App() {
       generationProgress.exhausted ? 'attempts-exhausted' : 'tract-created', reason, 'tract'));
   };
 
-  const addRegionToMap = (anchorHex: AxialHex, options: GenerationOptions = {}) => {
-    __profileBeginClick();
+  const addRegionToMap = (anchorHex: AxialHex, options: GenerationOptions = {}, hexTerrainByKey = originalGenerationTerrain, candidateHexes = originalGenerationCandidates) => {
     const maxRegionAttempts = MAX_REGION_ATTEMPTS;
     const autoCoastRoll = Math.random();
     setCoastNotice(null);
@@ -11831,7 +11868,7 @@ export function App() {
         });
         if (isLastRegionAttempt) {
           generationProgress.exhausted = true;
-          addFallbackTractToMap(anchorHex, false, options, 'region_too_small');
+          addFallbackTractToMap(anchorHex, false, options, 'region_too_small', 1, hexTerrainByKey, candidateHexes);
           return;
         }
         continue;
@@ -11900,7 +11937,7 @@ export function App() {
         });
         if (!isLastRegionAttempt) continue;
         generationProgress.exhausted = true;
-        addFallbackTractToMap(anchorHex, true, options, 'coastal_river_endpoints_incompatible');
+        addFallbackTractToMap(anchorHex, true, options, 'coastal_river_endpoints_incompatible', 1, hexTerrainByKey, candidateHexes);
         return;
       }
       generationProgress.stage = 'biome';
@@ -12021,7 +12058,7 @@ export function App() {
       if (!biomeId) {
         rejectAttempt(biomeChoice.reason ?? 'no_compatible_biome');
         generationProgress.exhausted = true;
-        addFallbackTractToMap(anchorHex, isCoastalRegion, options, biomeChoice.reason ?? 'no_compatible_biome');
+        addFallbackTractToMap(anchorHex, isCoastalRegion, options, biomeChoice.reason ?? 'no_compatible_biome', 1, hexTerrainByKey, candidateHexes);
         return;
       }
       const biome = BIOMES[biomeId] ?? BIOMES[FALLBACK_BIOME_ID];
@@ -12481,7 +12518,7 @@ export function App() {
       generationProgress.stage = 'river_model';
       const modelResult = completeRegionRiverEnds(
         riversWithDeltas, rivers, finalRegionAfterLandPockets,
-        [...regions, finalRegionAfterLandPockets], finalCandidateHexes, modelTerrain, candidateHexes, hexTerrainByKey
+        [...regions, finalRegionAfterLandPockets], finalCandidateHexes, modelTerrain, candidateHexes, originalGenerationTerrain, recoveryClosedEnds(anchorHex)
       );
       if (!modelResult.success) {
         rejectAttempt(modelResult.reason);
@@ -12548,11 +12585,11 @@ export function App() {
 
       const snapshot: MapSnapshot = {
         regions,
-        candidateHexes,
+        candidateHexes: originalGenerationCandidates,
         rivers,
         roads: cloneRoads(roads),
         crossings,
-        hexTerrainByKey,
+        hexTerrainByKey: originalGenerationTerrain,
         waterPoiByKey,
         biomeOverrideByHexKey,
         toponyms,
@@ -12591,7 +12628,7 @@ export function App() {
       maxRegionAttempts,
       fallback: 'tract'
     });
-    addFallbackTractToMap(anchorHex, false, options, generationProgress.lastRejection ?? 'attempts_exhausted');
+    addFallbackTractToMap(anchorHex, false, options, generationProgress.lastRejection ?? 'attempts_exhausted', 1, hexTerrainByKey, candidateHexes);
   };
 
 
@@ -12638,6 +12675,8 @@ export function App() {
     generationProgress.exhausted = false;
     generationProgress.targetSize = null;
     generationProgress.rejectionCounts = {};
+    generationProgress.seaRecoveryAttempt = 0;
+    generationProgress.reclaimedSeaKeys = [];
     generationProgress.attempt = 0;
     generationProgress.tractAttempt = 0;
     generationProgress.stage = 'region';
@@ -12645,7 +12684,23 @@ export function App() {
     generationProgress.fallbackReason = null;
     generationProgress.constraintFailure = null;
     try {
+      __profileBeginClick();
       addRegionToMap(anchorHex, options);
+      if (generationProgress.constraintFailure) {
+        for (const keys of seaRecoveryPlans(anchorHex)) {
+          generationLog.warning('Retrying generation with local sea reclamation', { keys, reason: generationProgress.constraintFailure });
+          generationProgress.seaRecoveryAttempt++;
+          generationProgress.reclaimedSeaKeys = keys;
+          generationProgress.tractAttempt = 0;
+          generationProgress.constraintFailure = null;
+          generationProgress.exhausted = false;
+          const trialTerrain = new Map(hexTerrainByKey);
+          for (const key of keys) trialTerrain.delete(key);
+          const trialCandidates = getCandidateHexes(allRegionHexes, getSeaHexKeys(trialTerrain));
+          addRegionToMap(anchorHex, options, trialTerrain, trialCandidates);
+          if (!generationProgress.constraintFailure) break;
+        }
+      }
       if (generationProgress.constraintFailure) {
         restoreGenerationBackup(backup);
         const diagnostic = generationLog.finish(generationEvent(anchorHex, options,
@@ -13594,7 +13649,7 @@ export function App() {
                     }
                   }}
                 >
-                  <polygon points={hexPoints(hex.x, hex.y, hexRenderSize)} className={cls} style={{ fill }} />
+                  <polygon data-hex-key={hex.key} points={hexPoints(hex.x, hex.y, hexRenderSize)} className={cls} style={{ fill }} />
                   {biomeTileHref ? (
                     <g clipPath={`url(#hex-clip-${hex.key})`} pointerEvents="none">
                       <image

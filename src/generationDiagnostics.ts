@@ -1,5 +1,5 @@
 // Bump when generation rules/algorithms change, independently of save format.
-export const GENERATION_ALGORITHM_VERSION = 'regions-2026-10-05.3';
+export const GENERATION_ALGORITHM_VERSION = 'regions-2026-10-05.4';
 export const MAX_REGION_ATTEMPTS = 30;
 
 export type GenerationOutcome = 'generated' | 'tract-created' | 'attempts-exhausted' | 'programming-error' | 'constraint-rejection';
@@ -10,6 +10,8 @@ export type GenerationEvent = {
   options: Record<string, unknown>;
   attempt: number;
   tractAttempt?: number;
+  seaRecoveryAttempt?: number;
+  reclaimedSeaKeys?: string[];
   stage: string;
   reason: string;
   result: 'region' | 'tract' | 'rolled-back';
