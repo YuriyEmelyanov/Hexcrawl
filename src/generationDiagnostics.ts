@@ -1,14 +1,15 @@
 // Bump when generation rules/algorithms change, independently of save format.
-export const GENERATION_ALGORITHM_VERSION = 'regions-2026-10-04.1';
+export const GENERATION_ALGORITHM_VERSION = 'regions-2026-10-05.1';
 export const MAX_REGION_ATTEMPTS = 30;
 
-export type GenerationOutcome = 'generated' | 'tract-created' | 'attempts-exhausted' | 'programming-error';
+export type GenerationOutcome = 'generated' | 'tract-created' | 'attempts-exhausted' | 'programming-error' | 'constraint-rejection';
 export type GenerationEvent = {
   kind: GenerationOutcome;
   action: 'add' | 'regenerate';
   anchorHex: { q: number; r: number };
   options: Record<string, unknown>;
   attempt: number;
+  tractAttempt?: number;
   stage: string;
   reason: string;
   result: 'region' | 'tract' | 'rolled-back';

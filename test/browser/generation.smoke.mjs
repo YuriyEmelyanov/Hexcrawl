@@ -4,6 +4,16 @@ import fs from 'node:fs/promises';
 import assert from 'node:assert/strict';
 import { fileURLToPath } from 'node:url';
 import { stripVTControlCharacters } from 'node:util';
+import { createGenerationHarness } from '../helpers/generation-harness.mjs';
+import { validateRiverNetwork } from '../../src/riverModel/core.ts';
+const geometry = createGenerationHarness().geometry;
+function assertRiverTermini(save) {
+  const m = save.map;
+  const built = geometry.buildRegionRiverNetwork(m.rivers, [], m.regions, m.candidateHexes, new Map(Object.entries(m.terrainByHexKey)), true);
+  assert.deepEqual(Array.from(built.issues), []);
+  const checked = validateRiverNetwork(built.network);
+  assert.equal(checked.valid, true, JSON.stringify(checked.issues));
+}
 
 // Run against the production build, not instrumented source.
 const server = spawn(process.execPath, [fileURLToPath(new URL('../../node_modules/vite/bin/vite.js', import.meta.url)), 'preview', '--host', '127.0.0.1', '--port', '4173', '--strictPort'], {
@@ -72,6 +82,26 @@ try {
     lastDownloadAt = Date.now();
     return JSON.parse(await fs.readFile(await download.path(), 'utf8'));
   }
+  const stable = data => ({ map: data.map, counters: data.counters, ui: data.ui });
+  async function addRegion() {
+    const before = await page.locator('details.export-menu').count() ? await snapshot() : null;
+    const candidates = page.locator('polygon.hex.candidate');
+    const attempts = await candidates.count();
+    for (let index = 0; index < attempts; index++) {
+      await candidates.nth(index).dispatchEvent('click');
+      const after = await snapshot();
+      assert.equal(errors.length, 0, errors.join('\n'));
+      if (after.map.regions.length === (before?.map.regions.length ?? 0) + 1) {
+        assert.equal(await page.getByRole('alert').count(), 0);
+        assertRiverTermini(after);
+        return after;
+      }
+      assert.ok(before, 'the initial region must be generated');
+      assert.match(await page.getByRole('alert').innerText(), /Не удалось разместить корректные истоки и устья рек/);
+      assert.deepEqual(stable(after), stable(before), 'constraint rejection must preserve the map and counters');
+    }
+    assert.fail(`No region could be added at any of ${attempts} candidate hexes`);
+  }
   let clicks = 0;
   let current;
   const completed = [];
@@ -82,10 +112,10 @@ try {
       // Coast may close an island completely. There is no candidate to click then.
       if (i > 0 && current.map.candidateHexes.length === 0) break;
       await selectCoast(i === 0 ? 'mainland' : mode);
-      await page.locator('polygon.hex.candidate').first().dispatchEvent('click');
-      current = await snapshot();
+      current = await addRegion();
       clicks++;
       assert.equal(current.map.regions.length, i + 1, `${mode}: click ${i + 1}`);
+      assertRiverTermini(current);
       assert.equal(current.map.toponyms.model, 'germanic');
       for (const region of current.map.regions) {
         const name = current.map.toponyms.names[`region:${region.id}`];
@@ -122,8 +152,7 @@ try {
     .some(element => element.textContent === `Регионов: ${expected}`), count);
   assert.equal((await snapshot()).map.regions.length, count);
   assert.equal((await snapshot()).map.toponyms.names['region:1'].ru, regionName.ru);
-  await page.locator('polygon.hex.candidate').first().dispatchEvent('click');
-  assert.equal((await snapshot()).map.regions.length, count + 1);
+  assert.equal((await addRegion()).map.regions.length, count + 1);
   assert.equal(errors.length, 0, errors.join('\n'));
   // Inject once into the real production callback, after size selection.
   // Restore Math.random before throwing so the next action can proceed normally.
@@ -138,13 +167,12 @@ try {
       return original();
     };
   });
-  const stable = data => ({ map: data.map, counters: data.counters, ui: data.ui });
   const beforeFailure = await snapshot();
   await injectFailure();
   await page.locator('polygon.hex.candidate').first().dispatchEvent('click');
   await page.getByRole('alert').waitFor();
   assert.deepEqual(stable(await snapshot()), stable(beforeFailure));
-  await page.locator('polygon.hex.candidate').first().dispatchEvent('click');
+  await addRegion();
   assert.equal(await page.getByRole('alert').count(), 0);
   const beforeRegenFailure = await snapshot();
   await injectFailure();

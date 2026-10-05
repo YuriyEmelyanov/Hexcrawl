@@ -2238,7 +2238,7 @@ const assignRiverSectors = __profiled('assignRiverSectors', assignRiverSectorsIm
 // legacy junctions outside the extension are not silently migrated.
 function buildRegionRiverNetwork(
   rivers: River[], previous: River[], regions: Region[], candidates: AxialHex[],
-  terrain: Map<string, HexTerrainData>, complete = false
+  terrain: Map<string, HexTerrainData>, complete = false, affectedVertices: Set<string> = new Set()
 ) {
   const previousEdges = new Map<string, { from: string; to: string; fullness: RiverFullness; regionId: number }>();
   for (const river of previous.filter(r => r.deltaParentRiverId === undefined)) {
@@ -2285,6 +2285,14 @@ function buildRegionRiverNetwork(
   for (const key of previousEdges.keys()) if (!physical.has(key) && !internalLakeEdges.has(key)) issues.push(`Missing old river edge ${key}`);
   const active = new Set<string>();
   for (const { edge, old } of physical.values()) if (!old || complete) { active.add(edge.from); active.add(edge.to); }
+  // Existing geometry can acquire a new source/mouth when its frontier closes.
+  // Activate affected old ends (and lake ports), not unrelated legacy defects.
+  const degree = new Map<string, number>();
+  for (const { edge } of physical.values()) for (const id of [edge.from, edge.to]) degree.set(id, (degree.get(id) ?? 0) + 1);
+  for (const key of affectedVertices) {
+    const id = lakeByVertex.get(key) ?? key;
+    if (degree.get(id) === 1 || lakeHexes.has(id)) active.add(id);
+  }
   // A changed lake must account for all its ports, including fixed old rivers.
   for (const [key, lake] of internalLakeEdges) if (!previousEdges.has(key)) active.add(lake);
   const network: ModelNetwork = { nodes: [], edges: [] };
@@ -2335,14 +2343,15 @@ function solveRiverComponents(network: ModelNetwork): ModelSolveResult {
 
 function reconcileRegionRiverModel(
   rivers: River[], previous: River[], region: Region, regions: Region[],
-  candidates: AxialHex[], terrain: Map<string, HexTerrainData>, allowLakes = true
+  candidates: AxialHex[], terrain: Map<string, HexTerrainData>, allowLakes = true,
+  affectedVertices = new Set(region.hexes.flatMap(h => getHexCornerPoints(h).map(v => v.key)))
 ): { success: true; rivers: River[]; terrain: Map<string, HexTerrainData> } | { success: false; reason: string } {
   let nextTerrain = new Map(terrain);
   const sea = getSeaHexKeys(terrain);
   // Build lakes only on new land, connected to the actual event, away from sea.
   const available = region.hexes.filter(h => !getHexNeighbors(h).some(n => sea.has(hexKey(n))) && !sea.has(hexKey(h)));
   for (let repair = 0; repair <= 8; repair++) {
-    const built = buildRegionRiverNetwork(rivers, previous, regions, candidates, nextTerrain);
+    const built = buildRegionRiverNetwork(rivers, previous, regions, candidates, nextTerrain, false, affectedVertices);
     if (built.issues.length) return { success: false, reason: built.issues.join('; ') };
     const result = solveRiverComponents(built.network);
     if (result.status === 'solved') {
@@ -2412,6 +2421,127 @@ function reconcileRegionRiverModel(
     mergeAdjacentLakeIds(nextTerrain);
   }
   return { success: false, reason: 'Lake repair budget exhausted' };
+}
+
+// Complete every closed end touched by the new land. All trials are detached;
+// old edges/directions/fullness remain fixed in the numerical model.
+function completeRegionRiverEnds(
+  rivers: River[], previous: River[], region: Region, regions: Region[],
+  candidates: AxialHex[], terrain: Map<string, HexTerrainData>, previousCandidates: AxialHex[] = []
+): ReturnType<typeof reconcileRegionRiverModel> {
+  const affected = new Set(region.hexes.flatMap(h => getHexCornerPoints(h).map(v => v.key)));
+  const graph = buildRiverGraphForRegion(region.hexes, regions.flatMap(r => r.hexes), candidates);
+  const frontier = new Set(candidates.flatMap(h => getHexCornerPoints(h).map(v => v.key)));
+  for (const hex of previousCandidates) for (const vertex of getHexCornerPoints(hex)) {
+    if (!frontier.has(vertex.key)) affected.add(vertex.key);
+  }
+  let budget = 128;
+  let lastReason = 'No compatible river termination';
+  const search = (current: River[], currentTerrain: Map<string, HexTerrainData>, depth: number): ReturnType<typeof reconcileRegionRiverModel> => {
+    if (--budget < 0 || depth > 24) return { success: false, reason: 'River endpoint search budget exhausted' };
+    const sea = getSeaVertexKeysFromSeaKeys(getSeaHexKeys(currentTerrain));
+    const lakes = new Set(getLakesForRegions(regions, currentTerrain).flatMap(l => l.vertices.map(v => v.key)));
+    const ins = new Map<string, number>(), outs = new Map<string, number>();
+    for (const river of current.filter(r => r.deltaParentRiverId === undefined)) {
+      for (let i = 1; i < river.vertexPath.length; i++) {
+        const a = river.vertexPath[i - 1].key, b = river.vertexPath[i].key;
+        outs.set(a, (outs.get(a) ?? 0) + 1); ins.set(b, (ins.get(b) ?? 0) + 1);
+      }
+    }
+    let end: { river: River; vertex: RiverVertex; source: boolean; fullness: RiverFullness } | undefined;
+    for (const river of current.filter(r => r.deltaParentRiverId === undefined)) {
+      const values = getRiverSectorFullnessByEdge(river);
+      for (const source of [false, true]) {
+        const path = river.vertexPath;
+        if (path.length < 2) continue;
+        const vertex = source ? path[0] : path[path.length - 1];
+        if (!affected.has(vertex.key) || frontier.has(vertex.key) || lakes.has(vertex.key)) continue;
+        const terminal = source ? !ins.has(vertex.key) && outs.get(vertex.key) === 1 : !outs.has(vertex.key) && ins.get(vertex.key) === 1;
+        if (!terminal) continue;
+        const fullness = values.get(source ? edgeKey(path[0], path[1]) : edgeKey(path[path.length - 2], vertex)) ?? 1;
+        if ((!source && sea.has(vertex.key)) || (source && fullness === 1 && !sea.has(vertex.key))) continue;
+        end = { river, vertex, source, fullness };
+        break;
+      }
+      if (end) break;
+    }
+    if (!end) {
+      const result = reconcileRegionRiverModel(current, previous, region, regions, candidates, currentTerrain, true, affected);
+      if (!result.success) lastReason = result.reason;
+      return result;
+    }
+    const { river, vertex, source, fullness } = end;
+    const used = buildUsedRiverEdges(current);
+    const occupied = new Set(current.flatMap(r => r.vertexPath.map(v => v.key)));
+    const available = region.hexes.filter(h => !currentTerrain.has(hexKey(h)) &&
+      !getHexNeighbors(h).some(n => currentTerrain.get(hexKey(n))?.terrainOverride === 'sea'));
+    const lakeSites = new Set(available.flatMap(h => getHexCornerPoints(h).map(v => v.key)));
+    const targets = [...graph.nodes.values()].filter(v => v.key !== vertex.key && (
+      source ? !sea.has(v.key) && (lakes.has(v.key) || frontier.has(v.key) || lakeSites.has(v.key) || ins.get(v.key) === 1 && !outs.has(v.key))
+        : sea.has(v.key) || lakes.has(v.key) || frontier.has(v.key) || lakeSites.has(v.key) || occupied.has(v.key)
+    ));
+    const priority = (key: string) => !source && sea.has(key) ? 0 : lakes.has(key) || occupied.has(key) ? 1 : frontier.has(key) ? 3 : 2;
+    const paths = targets.flatMap(target => {
+      const blocked = new Set(used);
+      // Block forbidden vertices during search, not only after finding a shortest
+      // path: otherwise a valid detour could be missed.
+      for (const edge of graph.edges.values()) {
+        if ([edge.a.key, edge.b.key].some(k => k !== vertex.key && k !== target.key && (occupied.has(k) || sea.has(k) || lakes.has(k)))) blocked.add(edge.key);
+        if (source && (sea.has(edge.a.key) || sea.has(edge.b.key))) blocked.add(edge.key);
+      }
+      const start = graph.nodes.get(vertex.key);
+      const path = start ? findRiverPath(start, target, graph, blocked).map(v => ({ key: v.key, x: v.x, y: v.y })) : [];
+      return path.length >= 2 ? [{ path, rank: priority(target.key) }] : [];
+    });
+    // An adequate lake directly at the old end is also a candidate.
+    if (lakeSites.has(vertex.key) && !sea.has(vertex.key)) paths.push({ path: [vertex], rank: 2 });
+    paths.sort((a, b) => a.rank - b.rank || a.path.length - b.path.length);
+    for (const { path } of paths) {
+      if (budget <= 0) break;
+      const terminal = path[path.length - 1];
+      const terrainTrials: Map<string, HexTerrainData>[] = [];
+      const needsLake = !sea.has(terminal.key) && !lakes.has(terminal.key) && !frontier.has(terminal.key) && (!occupied.has(terminal.key) || path.length === 1);
+      if (needsLake) {
+        const count = source ? Math.max(1, fullness - 1) : fullness;
+        // Try each seed component; don't confuse one disconnected pocket with
+        // absence of enough connected lake area elsewhere at this vertex.
+        const selections: AxialHex[][] = [];
+        for (const seed of available.filter(h => getHexCornerPoints(h).some(v => v.key === terminal.key))) {
+          const trial = [seed], keys = new Set([hexKey(seed)]);
+          for (let i = 0; i < trial.length && trial.length < count; i++) {
+            for (const next of available) {
+              if (trial.length >= count) break;
+              if (!keys.has(hexKey(next)) && getHexNeighbors(trial[i]).some(n => hexKey(n) === hexKey(next))) { trial.push(next); keys.add(hexKey(next)); }
+            }
+          }
+          if (trial.length >= count) selections.push(trial);
+        }
+        for (const selected of selections) {
+          const nextTerrain = new Map(currentTerrain);
+          const lakeId = getNextLakeIdFromTerrain(nextTerrain);
+          for (const hex of selected) nextTerrain.set(hexKey(hex), { terrainOverride: 'lake', lakeId });
+          mergeAdjacentLakeIds(nextTerrain);
+          terrainTrials.push(nextTerrain);
+        }
+      } else terrainTrials.push(new Map(currentTerrain));
+      const directed = source ? [...path].reverse() : path;
+      const extended = path.length === 1 ? current : current.map(r => r.id !== river.id ? r : {
+        ...r,
+        vertexPath: source ? [...directed.slice(0, -1), ...r.vertexPath] : [...r.vertexPath, ...directed.slice(1)],
+        sectors: source ? prependRiverPathSector(r, directed, fullness, region.id) : appendRiverPathSector(r, directed, fullness, region.id)
+      });
+      if (!validateRiverCycleSafety(extended).valid) continue;
+      for (const nextTerrain of terrainTrials) {
+        if (budget <= 0) break;
+        const result = search(extended, nextTerrain, depth + 1);
+        if (result.success) return result;
+        lastReason = result.reason;
+      }
+    }
+    if (budget <= 0) lastReason = 'River endpoint search budget exhausted';
+    return { success: false, reason: `Unresolved ${source ? 'source' : 'mouth'} of river ${river.id} at ${vertex.key}: ${lastReason}` };
+  };
+  return search(rivers, terrain, 0);
 }
 
 function getRiverSectorsForHex(hex: AxialHex, rivers: River[]): RiverSector[] {
@@ -11122,8 +11252,8 @@ export function App() {
   // Уведомление пользователю (например, почему не создалось побережье).
   const [generationError, setGenerationError] = useState<GenerationDiagnostic | null>(null);
   const generationProgress = {
-    attempt: 0, stage: 'region', lastRejection: null as string | null,
-    fallbackReason: null as string | null, exhausted: false,
+    attempt: 0, tractAttempt: 0, stage: 'region', lastRejection: null as string | null,
+    fallbackReason: null as string | null, constraintFailure: null as string | null, exhausted: false,
     targetSize: null as number | null, action: 'add' as 'add' | 'regenerate',
     rejectionCounts: {} as Record<string, number>
   };
@@ -11136,7 +11266,7 @@ export function App() {
     kind, reason, result, action: generationProgress.action, anchorHex,
     options: { targetSize: options.targetSize ?? 'auto', landType: options.landType ?? 'auto',
       biomeId: options.biomeId ?? 'auto', coastalPreference: options.coastalPreference ?? 'auto' },
-    attempt: generationProgress.attempt, stage: generationProgress.stage,
+    attempt: generationProgress.attempt, tractAttempt: generationProgress.tractAttempt, stage: generationProgress.stage,
     targetSize: generationProgress.targetSize, rejectionCounts: generationProgress.rejectionCounts
   });
   const [coastNotice, setCoastNotice] = useState<string | null>(null);
@@ -11395,7 +11525,8 @@ export function App() {
     return map;
   }, [regions, candidateHexes]);
 
-  const addFallbackTractToMap = (anchorHex: AxialHex, forceCoastalSea = false, options: GenerationOptions = {}, reason = 'direct_fallback') => {
+  const addFallbackTractToMap = (anchorHex: AxialHex, forceCoastalSea = false, options: GenerationOptions = {}, reason = 'direct_fallback', tractAttempt = 1): void => {
+    generationProgress.tractAttempt = tractAttempt;
     generationProgress.stage = 'tract';
     generationProgress.fallbackReason = reason;
     generationLog.detail('Generation constraint fallback', { reason, anchorHex, attempt: generationProgress.attempt });
@@ -11492,35 +11623,9 @@ export function App() {
     let tractTerrain = new Map(hexTerrainByKey);
     for (const key of regionKeySet) tractTerrain.delete(key);
     const candidateHexesForTractRiverGeneration = getCandidateHexes([...allRegionHexes, ...regionHexes], existingSeaKeys);
-    // The tract branch of the river generator already handles zero outgoing
-    // endpoints and only prepends a source to an existing outgoing river.
-    const generatedTractRiverResult = generateRiverForRegion(
-        tractRegion,
-        [...regions, tractRegion],
-        rivers,
-        candidateHexesForTractRiverGeneration,
-        tractTerrain
-      );
-    let riversAfterTractGeneration = generatedTractRiverResult.success && generatedTractRiverResult.rivers !== rivers
-      ? assignRiverSectors(
-        generatedTractRiverResult.rivers,
-        getLakesForRegions([...regions, tractRegion], tractTerrain),
-        [...regions, tractRegion],
-        candidateHexesForTractRiverGeneration,
-        existingSeaKeys,
-        { recalculatedRegionId: regionId }
-      )
-      : rivers;
-    const tractModel = reconcileRegionRiverModel(riversAfterTractGeneration, rivers, tractRegion,
-      [...regions, tractRegion], candidateHexesForTractRiverGeneration, tractTerrain);
-    if (tractModel.success) { riversAfterTractGeneration = tractModel.rivers; tractTerrain = tractModel.terrain; }
-    else { riversAfterTractGeneration = rivers; generationLog.warning('Tract keeps old rivers', { reason: tractModel.reason }); }
-    if (!generatedTractRiverResult.success) {
-      generationLog.warning('Fallback tract river source generation failed; saving tract without generated source', {
-        regionId,
-        reason: generatedTractRiverResult.reason
-      });
-    }
+    const tentative = generateRiverForRegion(tractRegion, [...regions, tractRegion], rivers,
+      candidateHexesForTractRiverGeneration, tractTerrain);
+    let riversAfterTractGeneration = tentative.success ? tentative.rivers : rivers;
     let tractRoadResult = ensureRoadAdjacentTractPoiAndTrail({
       region: tractRegion,
       roads,
@@ -11619,6 +11724,38 @@ export function App() {
       ).terrainByKey;
       return next;
     })();
+    generationProgress.stage = 'tract_river_endpoints';
+    let completed = completeRegionRiverEnds(riversAfterTractGeneration, rivers, tractRegion,
+      finalRegions, finalCandidateHexes, finalHexTerrainByKey, candidateHexes);
+    if (!completed.success && riversAfterTractGeneration !== rivers) {
+      completed = completeRegionRiverEnds(rivers, rivers, tractRegion, finalRegions, finalCandidateHexes, finalHexTerrainByKey, candidateHexes);
+    }
+    if (!completed.success) {
+      generationLog.warning('Tract river endpoints rejected', { tractAttempt, reason: completed.reason });
+      if (tractAttempt < MAX_REGION_ATTEMPTS) {
+        addFallbackTractToMap(anchorHex, forceCoastalSea, options, reason, tractAttempt + 1);
+        return;
+      }
+      generationProgress.constraintFailure = completed.reason;
+      return;
+    }
+    riversAfterTractGeneration = completed.rivers;
+    finalHexTerrainByKey.clear();
+    for (const [key, value] of completed.terrain) finalHexTerrainByKey.set(key, value);
+    // Route tract roads against the actual water and final river geometry.
+    tractRoadResult = ensureRoadAdjacentTractPoiAndTrail({
+      region: tractRegion, roads, rivers: riversAfterTractGeneration,
+      hexTerrainByKey: finalHexTerrainByKey, nextRoadId
+    });
+    tractRoadResult = { ...tractRoadResult, ...completeRegionRoadConnections({
+      region: tractRegionWithPoiKinds, regions, roads: tractRoadResult.roads,
+      hexTerrainByKey: finalHexTerrainByKey, nextRoadId: tractRoadResult.nextRoadId
+    }) };
+    finalRegions[finalRegions.length - 1] = {
+      ...tractRoadResult.region,
+      pointOfInterestKinds: assignPoiKindsForRegion({ region: tractRoadResult.region,
+        roads: tractRoadResult.roads, rivers: riversAfterTractGeneration, hexTerrainByKey: finalHexTerrainByKey })
+    };
     const newlyCheckedWaterHexKeys = new Set([...regionKeySet, ...finalSeaKeysToWrite]);
     generationProgress.stage = 'prepare_commit';
     const finalToponyms = synchronizeToponyms({ ...toponyms, ...options.previousToponyms }, getToponymEntities(finalRegions, riversAfterTractGeneration, finalHexTerrainByKey), toponymSeed);
@@ -12332,9 +12469,9 @@ export function App() {
         return next;
       })();
       generationProgress.stage = 'river_model';
-      const modelResult = reconcileRegionRiverModel(
+      const modelResult = completeRegionRiverEnds(
         riversWithDeltas, rivers, finalRegionAfterLandPockets,
-        [...regions, finalRegionAfterLandPockets], finalCandidateHexes, modelTerrain
+        [...regions, finalRegionAfterLandPockets], finalCandidateHexes, modelTerrain, candidateHexes
       );
       if (!modelResult.success) {
         rejectAttempt(modelResult.reason);
@@ -12364,6 +12501,12 @@ export function App() {
         nextRoadId,
         candidateHexes: finalCandidateHexes
       });
+
+      if (finalRegionAfterLandPockets.biomeLandType === 'settled' && !finalRegionAfterLandPockets.isTract &&
+        roadResult.roads.filter(road => road.regionId === regionId && road.segments.some(segment => segment.kind === 'road')).length < getSettledMainRoadLimit(finalRegionAfterLandPockets)) {
+        rejectAttempt('road_minimum_after_river_completion');
+        continue;
+      }
 
       const finalRegionWithPoiKinds: Region = {
         ...finalRegionAfterLandPockets,
@@ -12486,11 +12629,20 @@ export function App() {
     generationProgress.targetSize = null;
     generationProgress.rejectionCounts = {};
     generationProgress.attempt = 0;
+    generationProgress.tractAttempt = 0;
     generationProgress.stage = 'region';
     generationProgress.lastRejection = null;
     generationProgress.fallbackReason = null;
+    generationProgress.constraintFailure = null;
     try {
       addRegionToMap(anchorHex, options);
+      if (generationProgress.constraintFailure) {
+        restoreGenerationBackup(backup);
+        const diagnostic = generationLog.finish(generationEvent(anchorHex, options,
+          'constraint-rejection', generationProgress.constraintFailure, 'rolled-back'));
+        setGenerationError(diagnostic);
+        return { success: false as const, diagnostic };
+      }
       return { success: true as const, fallbackReason: generationProgress.fallbackReason };
     } catch (error) {
       return reportGenerationFailure(error, anchorHex, options, backup);
@@ -13338,7 +13490,9 @@ export function App() {
             </div>
             {generationError && (
               <div className="coast-notice" role="alert">
-                <span>{language === 'ru'
+                <span>{generationError.kind === 'constraint-rejection'
+                  ? (language === 'ru' ? 'Не удалось разместить корректные истоки и устья рек. Прежняя карта сохранена. Попробуйте другой размер или соседний гекс.' : 'Could not place valid river sources and mouths. Your previous map is intact. Try another size or neighboring hex.')
+                  : language === 'ru'
                   ? 'Не удалось создать регион из-за ошибки. Прежняя карта сохранена. Можно повторить попытку.'
                   : 'An error prevented region generation. Your previous map is intact. You can try again.'}</span>
                 <button type="button" onClick={() => setGenerationError(null)} aria-label={t.closeNotice}>×</button>
