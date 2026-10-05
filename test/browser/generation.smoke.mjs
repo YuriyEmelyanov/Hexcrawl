@@ -82,6 +82,25 @@ try {
     lastDownloadAt = Date.now();
     return JSON.parse(await fs.readFile(await download.path(), 'utf8'));
   }
+  const stable = data => ({ map: data.map, counters: data.counters, ui: data.ui });
+  async function addRegion() {
+    const before = await snapshot();
+    const candidates = page.locator('polygon.hex.candidate');
+    const attempts = await candidates.count();
+    for (let index = 0; index < attempts; index++) {
+      await candidates.nth(index).dispatchEvent('click');
+      const after = await snapshot();
+      assert.equal(errors.length, 0, errors.join('\n'));
+      if (after.map.regions.length === before.map.regions.length + 1) {
+        assert.equal(await page.getByRole('alert').count(), 0);
+        assertRiverTermini(after);
+        return after;
+      }
+      assert.match(await page.getByRole('alert').innerText(), /Не удалось разместить корректные истоки и устья рек/);
+      assert.deepEqual(stable(after), stable(before), 'constraint rejection must preserve the map and counters');
+    }
+    assert.fail(`No region could be added at any of ${attempts} candidate hexes`);
+  }
   let clicks = 0;
   let current;
   const completed = [];
@@ -92,8 +111,7 @@ try {
       // Coast may close an island completely. There is no candidate to click then.
       if (i > 0 && current.map.candidateHexes.length === 0) break;
       await selectCoast(i === 0 ? 'mainland' : mode);
-      await page.locator('polygon.hex.candidate').first().dispatchEvent('click');
-      current = await snapshot();
+      current = await addRegion();
       clicks++;
       assert.equal(current.map.regions.length, i + 1, `${mode}: click ${i + 1}`);
       assertRiverTermini(current);
@@ -133,8 +151,7 @@ try {
     .some(element => element.textContent === `Регионов: ${expected}`), count);
   assert.equal((await snapshot()).map.regions.length, count);
   assert.equal((await snapshot()).map.toponyms.names['region:1'].ru, regionName.ru);
-  await page.locator('polygon.hex.candidate').first().dispatchEvent('click');
-  assert.equal((await snapshot()).map.regions.length, count + 1);
+  assert.equal((await addRegion()).map.regions.length, count + 1);
   assert.equal(errors.length, 0, errors.join('\n'));
   // Inject once into the real production callback, after size selection.
   // Restore Math.random before throwing so the next action can proceed normally.
@@ -149,13 +166,12 @@ try {
       return original();
     };
   });
-  const stable = data => ({ map: data.map, counters: data.counters, ui: data.ui });
   const beforeFailure = await snapshot();
   await injectFailure();
   await page.locator('polygon.hex.candidate').first().dispatchEvent('click');
   await page.getByRole('alert').waitFor();
   assert.deepEqual(stable(await snapshot()), stable(beforeFailure));
-  await page.locator('polygon.hex.candidate').first().dispatchEvent('click');
+  await addRegion();
   assert.equal(await page.getByRole('alert').count(), 0);
   const beforeRegenFailure = await snapshot();
   await injectFailure();
