@@ -75,7 +75,7 @@ try {
   })), expectedHrefs);
   assert.ok(assetResults.every(Boolean), 'Every rendered marker must load a real SVG asset');
 
-  // All four independent combinations, with the existing emoji mode retained.
+  // All six independent combinations, with the existing emoji mode retained.
   await hexToggle.click();
   assert.equal(await tiles.count(), 0);
   assert.equal(await svgPois.count(), 39);
@@ -85,10 +85,19 @@ try {
   assert.equal(await emojiPois.count(), 39);
   assert.ok(await biomeEmoji.count() > 0);
   await hexToggle.click();
-  assert.ok(await tiles.count() > 0);
+  assert.equal(await hexToggle.getAttribute('aria-label'), 'Гексы: Цвет');
+  assert.equal(await tiles.count(), 0);
   assert.equal(await emojiPois.count(), 39);
   assert.equal(await biomeEmoji.count(), 0);
+  assert.equal(await page.locator('.biome-color-layer').count(), 1);
+  assert.equal(await page.locator('#biome-color-land-clip polygon').count(), 37, 'Lakes are excluded from the blended land');
   await poiToggle.click();
+  assert.equal(await svgPois.count(), 39);
+  const colorPng = await download('PNG');
+  assert.ok(colorPng.length > 1000, 'Color mode exports a PNG with POIs');
+  await hexToggle.click();
+  assert.ok(await tiles.count() > 0);
+  assert.equal(await page.locator('.biome-color-layer').count(), 0);
 
   async function download(format) {
     const menu = page.locator('details.export-menu');
@@ -144,9 +153,42 @@ try {
       assert.ok(box.x >= 0 && box.x + box.width <= width, `Toggle outside viewport at ${width}px`);
     }
   }
+  // Two broad land colours and a lake: check exported pixels, not just SVG attributes.
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  const colorMap = structuredClone(savedMap);
+  colorMap.map.waterPoiByHexKey = {};
+  colorMap.map.regions[0].pointsOfInterest = [];
+  colorMap.map.regions[0].pointOfInterestKinds = {};
+  colorMap.map.biomeOverrideByHexKey = Object.fromEntries(hexes.filter(hex => hex.q >= 4).map(hex => [key(hex), 'semi_desert']));
+  await page.locator('input[type=file]').setInputFiles({ name: 'color-map.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(colorMap)) });
+  await hexToggle.click();
+  await hexToggle.click();
+  assert.equal(await hexToggle.getAttribute('data-mode'), 'color');
+  const samples = await page.locator('.map-viewport > svg').evaluate(svg => {
+    const center = key => {
+      const box = svg.querySelector(`[data-hex-key="${key}"]`).getBBox();
+      return { x: box.x + box.width / 2, y: box.y + box.height / 2 };
+    };
+    const a = center('3,2'), b = center('4,2');
+    const mid = (a.x + b.x) / 2;
+    return [center('1,2'), {x: mid - 5, y: a.y}, {x: mid + 5, y: a.y}, center('5,2'), center('6,4')];
+  });
+  const terrainPng = await download('PNG');
+  const rgb = await page.evaluate(async ({ data, samples }) => {
+    const image = new Image(); image.src = `data:image/png;base64,${data}`; await image.decode();
+    const canvas = document.createElement('canvas'); canvas.width = image.width; canvas.height = image.height;
+    const ctx = canvas.getContext('2d'); ctx.drawImage(image, 0, 0);
+    return samples.map(p => [...ctx.getImageData(Math.round(p.x * 2), Math.round(p.y * 2), 1, 1).data].slice(0, 3));
+  }, {data: terrainPng.toString('base64'), samples});
+  assert.ok(Math.abs(rgb[0][0] - 172) <= 2, `Forest center keeps palette colour: ${rgb}`);
+  assert.ok(rgb[1][0] > rgb[0][0] && rgb[1][0] < rgb[2][0] && rgb[2][0] < rgb[3][0], `Both sides of the boundary blend gradually: ${rgb}`);
+  assert.ok(Math.abs(rgb[3][0] - 213) <= 2, `Dry center keeps palette colour: ${rgb}`);
+  assert.deepEqual(rgb[4], [151, 182, 188], 'Lake stays water coloured without land bleed');
+  await page.getByRole('button', { name: 'Switch to English', exact: true }).click();
+  assert.equal(await hexToggle.getAttribute('aria-label'), 'Hexes: Color');
   if (process.env.POI_QA_SCREENSHOT) await page.locator('.controls--display').screenshot({ path: process.env.POI_QA_SCREENSHOT });
   assert.deepEqual(errors, []);
-  console.log('POI display passed: 39 SVGs, four mode combinations, old save, upright rotation, PNG pixels, JSON preservation, RU/EN, 320/390px controls.');
+  console.log('POI display passed: 39 SVGs, six mode combinations, old save, upright rotation, PNG pixels, JSON preservation, RU/EN, 320/390px controls.');
 } finally {
   if (browser) await browser.close();
   server.kill();

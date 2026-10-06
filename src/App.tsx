@@ -597,6 +597,36 @@ const BIOMES: Record<BiomeId, Biome> = {
   dead_forested_hills: { id: 'dead_forested_hills', label: 'Мёртвый лес на холмах', color: '#919191', primaryEmoji: '〰️', secondaryEmojis: ['🪾'], wildWeight: 1, settledWeight: 0, heightLevel: 2 },
   dead_mountain_forest: { id: 'dead_mountain_forest', label: 'Мёртвый горный лес', color: '#828282', primaryEmoji: '⛰', secondaryEmojis: ['🪾'], wildWeight: 1, settledWeight: 0, heightLevel: 3 }
 };
+// Colour describes the ground family; vegetation density and elevation belong
+// to future illustration layers. Keep this exhaustive when adding a biome.
+const BIOME_GROUND_COLORS: Record<BiomeId, string> = {
+  plain_deciduous_forest: '#acb78b',
+  plain_mixed_forest: '#acb78b',
+  plain_coniferous_forest: '#acb78b',
+  deciduous_forested_hills: '#acb78b',
+  mixed_forested_hills: '#acb78b',
+  coniferous_forested_hills: '#acb78b',
+  deciduous_mountain_forest: '#acb78b',
+  mixed_mountain_forest: '#acb78b',
+  coniferous_mountain_forest: '#acb78b',
+  deciduous_woodland: '#acb78b',
+  mixed_woodland: '#acb78b',
+  coniferous_woodland: '#acb78b',
+  hilly_woodland: '#acb78b',
+  mountain_woodland: '#acb78b',
+  open_plains: '#c7c69a',
+  open_hills: '#c7c69a',
+  mountains: '#beb5a2',
+  swamp: '#a4afa0',
+  swamp_forest: '#a4afa0',
+  semi_desert: '#d5c397',
+  dead_forest: '#b8b09a',
+  dead_woodland: '#b8b09a',
+  dead_forested_hills: '#b8b09a',
+  dead_mountain_forest: '#b8b09a'
+};
+const GROUND_WATER_COLOR = '#97b6bc';
+
 const FALLBACK_BIOME_ID: BiomeId = 'plain_deciduous_forest';
 const FALLBACK_SETTLED_BIOME_ID: BiomeId = 'open_plains';
 const FALLBACK_WILD_BIOME_ID: BiomeId = 'plain_deciduous_forest';
@@ -13217,7 +13247,11 @@ export function App() {
   const [isMobileLayout, setIsMobileLayout] = useState(() => (typeof window === 'undefined' ? false : window.matchMedia(MOBILE_LAYOUT_QUERY).matches));
   const [mapScale, setMapScale] = useState(1);
   const [isMapRotated, setIsMapRotated] = useState(false);
-  const [useBiomeTiles, setUseBiomeTiles] = useState(true);
+  const [biomeDisplayMode, setBiomeDisplayMode] = useState<'tiles' | 'emoji' | 'color'>('tiles');
+  const useBiomeTiles = biomeDisplayMode === 'tiles';
+  const useBiomeColor = biomeDisplayMode === 'color';
+  const colorModeLabel = language === 'ru' ? 'Цвет' : 'Color';
+  const biomeModeLabel = useBiomeTiles ? t.tilesMode : useBiomeColor ? colorModeLabel : t.emojiMode;
   const [usePoiSvg, setUsePoiSvg] = useState(true);
   const [showHexCoordinates, setShowHexCoordinates] = useState(false);
   const [mapToolbarHeight, setMapToolbarHeight] = useState(0);
@@ -13230,8 +13264,19 @@ export function App() {
   const mapCardStyle = { '--map-toolbar-height': `${mapToolbarHeight}px` } as CSSProperties;
   const sidePanelToggleLabel = isSidePanelCollapsed ? t.showPanel : t.hidePanel;
   const headerLinksToggleLabel = isHeaderLinksCollapsed ? t.showHeaderLinks : t.hideHeaderLinks;
-  const biomeDisplayToggleLabel = `${t.hexesDisplay}: ${useBiomeTiles ? t.tilesMode : t.emojiMode}`;
-  const biomeDisplayToggleTitle = useBiomeTiles ? t.showEmojiTitle : t.showTilesTitle;
+  const biomeDisplayToggleLabel = `${t.hexesDisplay}: ${biomeModeLabel}`;
+  const biomeDisplayToggleTitle = useBiomeTiles ? t.showEmojiTitle : useBiomeColor ? t.showTilesTitle : (language === 'ru' ? 'Показывать гексы цветом' : 'Show hexes as colors');
+  const colorLandHexes = useMemo(() => {
+    if (!useBiomeColor) return [];
+    const regionBiomes = new Map(regions.map(region => [region.id, region.biomeId]));
+    return positionedHexes.hexes
+      .filter(hex => hex.kind === 'region' && hexTerrainByKey.get(hex.key)?.terrainOverride !== 'lake')
+      .map(hex => ({
+        key: hex.key,
+        points: hexPoints(hex.x, hex.y, HEX_SIZE),
+        color: BIOME_GROUND_COLORS[biomeOverrideByHexKey.get(hex.key) ?? regionBiomes.get(hex.regionId ?? -1) ?? FALLBACK_BIOME_ID]
+      }));
+  }, [useBiomeColor, positionedHexes, regions, hexTerrainByKey, biomeOverrideByHexKey]);
   const poiDisplayToggleLabel = `${t.pointsDisplay}: ${usePoiSvg ? t.iconsMode : t.emojiMode}`;
   const poiDisplayToggleTitle = usePoiSvg ? t.showPoiEmojiTitle : t.showPoiIconsTitle;
 
@@ -13700,13 +13745,13 @@ export function App() {
               <button
                 type="button"
                 className="biome-display-toggle"
-                onClick={() => setUseBiomeTiles((value) => !value)}
-                aria-pressed={useBiomeTiles}
+                onClick={() => setBiomeDisplayMode(mode => mode === 'tiles' ? 'emoji' : mode === 'emoji' ? 'color' : 'tiles')}
+                data-mode={biomeDisplayMode}
                 aria-label={biomeDisplayToggleLabel}
                 title={biomeDisplayToggleTitle}
               >
                 <span className="display-toggle__label">{t.hexesDisplay}</span>
-                <span>{useBiomeTiles ? t.tilesMode : t.emojiMode}</span>
+                <span>{biomeModeLabel}</span>
               </button>
               <button
                 type="button"
@@ -13795,6 +13840,7 @@ export function App() {
           >
             <svg
               ref={mapSvgRef}
+              data-biome-display={biomeDisplayMode}
               viewBox={`0 0 ${displayMapWidth} ${displayMapHeight}`}
               preserveAspectRatio="xMinYMin meet"
               style={{ width: `${displayMapWidth * mapScale}px`, height: `${displayMapHeight * mapScale}px` }}
@@ -13815,6 +13861,26 @@ export function App() {
               ))}
             </defs>
             <g className="map-rotation-layer" transform={mapRotationTransform}>
+            {useBiomeColor && colorLandHexes.length > 0 ? (
+              <g className="biome-color-layer" pointerEvents="none">
+                <defs>
+                  <clipPath id="biome-color-land-clip">
+                    {colorLandHexes.map(hex => <polygon key={hex.key} points={hex.points} />)}
+                  </clipPath>
+                  <filter id="biome-color-blend" filterUnits="userSpaceOnUse" x={-HEX_SIZE} y={-HEX_SIZE} width={positionedHexes.width + HEX_SIZE * 2} height={positionedHexes.height + HEX_SIZE * 2} colorInterpolationFilters="sRGB">
+                    {/* About a quarter hex on either side of a boundary. */}
+                    <feGaussianBlur stdDeviation={HEX_SIZE * 0.17} />
+                    {/* Normalize opacity at coasts; the outer clip keeps water sharp. */}
+                    <feComponentTransfer><feFuncA type="linear" slope={0} intercept={1} /></feComponentTransfer>
+                  </filter>
+                </defs>
+                <g clipPath="url(#biome-color-land-clip)">
+                  <g filter="url(#biome-color-blend)">
+                    {colorLandHexes.map(hex => <polygon key={hex.key} points={hex.points} fill={hex.color} stroke={hex.color} strokeWidth={0.4} />)}
+                  </g>
+                </g>
+              </g>
+            ) : null}
             {positionedHexes.hexes.map((hex) => {
               const meta = metadataMap.get(hex.key);
               const isStartClickPrompt = regions.length === 0 && hex.kind === 'candidate' && hex.key === hexKey(START_HEX);
@@ -13825,7 +13891,8 @@ export function App() {
               const isLakeHex = terrain?.terrainOverride === 'lake';
               const region = meta?.regionId ? regions.find((item) => item.id === meta.regionId) : undefined;
               const effectiveBiomeId = biomeOverrideByHexKey.get(hex.key) ?? region?.biomeId ?? FALLBACK_BIOME_ID;
-              const fill = hex.kind === 'sea' ? SEA_HEX_COLOR : hex.kind === 'candidate' ? undefined : isLakeHex ? LAKE_HEX_COLOR : getBiomeColor(effectiveBiomeId);
+              const fill = hex.kind === 'candidate' ? undefined : useBiomeColor ? (hex.kind === 'sea' || isLakeHex ? GROUND_WATER_COLOR : 'transparent') : hex.kind === 'sea' ? SEA_HEX_COLOR : isLakeHex ? LAKE_HEX_COLOR : getBiomeColor(effectiveBiomeId);
+              const gridStyle = useBiomeColor && hex.kind !== 'candidate' ? { stroke: 'rgba(87, 82, 66, 0.22)', strokeWidth: 0.55 } : {};
               const biomeTileHref = useBiomeTiles && hex.kind === 'region' && !isLakeHex ? getBiomeTileHref(effectiveBiomeId) : undefined;
               const tileImageSize = getHexWidth(hexRenderSize);
               const tileImageHeight = hexRenderSize * 2;
@@ -13855,7 +13922,7 @@ export function App() {
                     }
                   }}
                 >
-                  <polygon data-hex-key={hex.key} points={hexPoints(hex.x, hex.y, hexRenderSize)} className={cls} style={{ fill }} />
+                  <polygon data-hex-key={hex.key} points={hexPoints(hex.x, hex.y, hexRenderSize)} className={cls} style={{ fill, ...(useBiomeColor ? { stroke: 'none' } : {}) }} />
                   {biomeTileHref ? (
                     <g clipPath={`url(#hex-clip-${hex.key})`} pointerEvents="none">
                       <image
@@ -13869,7 +13936,7 @@ export function App() {
                       />
                     </g>
                   ) : null}
-                  <polygon points={hexPoints(hex.x, hex.y, hexRenderSize)} className={cls} style={{ fill: 'none' }} />
+                  <polygon points={hexPoints(hex.x, hex.y, hexRenderSize)} className={cls} style={{ fill: 'none', ...gridStyle }} />
                 </g>
               );
             })}
@@ -14053,7 +14120,7 @@ export function App() {
                 const biomePrimaryEmoji = effectiveBiome.primaryEmoji;
                 const biomeSecondaryEmojis = effectiveBiome.secondaryEmojis;
                 const biomeTileHref = useBiomeTiles && hex.kind === 'region' && !isLakeHex ? getBiomeTileHref(effectiveBiomeId) : undefined;
-                const biomeEmojis = biomeTileHref ? [] : [biomePrimaryEmoji, ...biomeSecondaryEmojis.slice(0, 2)];
+                const biomeEmojis = biomeTileHref || useBiomeColor ? [] : [biomePrimaryEmoji, ...biomeSecondaryEmojis.slice(0, 2)];
                 const isPointOfInterest = region?.pointsOfInterest.some((poi) => hexKey(poi) === hex.key) ?? false;
                 if (waterPoiKind) {
                   const position = isMapRotated ? rotateMapPoint(hex.x, hex.y, positionedHexes.height) : hex;
