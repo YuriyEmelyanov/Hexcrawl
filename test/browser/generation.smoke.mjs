@@ -245,6 +245,7 @@ try {
   await page.getByRole('button',{name:'Удалить последний регион',exact:true}).click();
   assert.equal(await page.locator('.obstacles-layer line').count(),0);
   await page.locator('input[type="file"]').setInputFiles({name:'mythic.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(kingdomSave))});
+  await page.waitForFunction(()=>document.querySelectorAll('.obstacles-layer line').length===24,{},{timeout:10000});
   assert.equal(await page.locator('.obstacles-layer line').count(),24);
   assert.deepEqual((await snapshot()).map,kingdomSave.map);
   assert.deepEqual(errors,[]);
