@@ -14,6 +14,7 @@ if (!ts.isReturnStatement(lastReturn)) throw new Error('App must end with its JS
 const instrumented = source.slice(0, lastReturn.getStart(ast)) + `return {
   regions, rivers, roads, candidateHexes, hexTerrainByKey, history, toponyms, toponymSeed, setToponyms,
   addFallbackTractToMap, safelyAddRegionToMap, createSaveData, restoreSnapshot, deleteLastRegion,
+  kingdoms, obstacles, generationMode, setGenerationMode, kingdomJob, startKingdom, advanceKingdom,
   generationError, pendingRegen, regenerateLastRegion, finishPendingRegeneration
 };` + source.slice(lastReturn.end) + `
 export const testGeometry = { getNewRiverLakeReentryViolation, getHexCornerPoints, getHexNeighbors, hexKey, buildRiverGraphForRegion,
@@ -46,9 +47,18 @@ export function createGenerationHarness(seed = 1, search = '') {
   const diagnostics = { exports: {} };
   const context = vm.createContext({ module, exports: module.exports, Math: seededMath, Map, Set,
     console: Object.fromEntries(['log', 'warn', 'error'].map(level => [level, (...args) => logs.push({ level, args })])),
-    require: name => name === './generationDiagnostics' ? diagnostics.exports : name === 'react' ? hooks : localRequire(name.startsWith('./') ? `${name}.ts` : name),
+    require: name => name.startsWith('./modes/') ? loadMode(new URL(`../../src/${name}.ts`, import.meta.url)) : name === './generationDiagnostics' ? diagnostics.exports : name === 'react' ? hooks : localRequire(name.startsWith('./') ? `${name}.ts` : name),
     performance, URLSearchParams, structuredClone, window: { location: { search } }
   });
+  const modeCache = new Map();
+  function loadMode(url) {
+    if (modeCache.has(url.href)) return modeCache.get(url.href).exports;
+    const loaded = { exports: {} }; modeCache.set(url.href, loaded);
+    const code = ts.transpileModule(fs.readFileSync(url, 'utf8'), {compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2020}}).outputText;
+    const execute = vm.runInContext(`(function(exports,module,require){${code}\n})`,context);
+    execute(loaded.exports,loaded,name=>loadMode(new URL(name.endsWith('.ts')?name:`${name}.ts`,url)));
+    return loaded.exports;
+  }
   const diagnosticsCode = ts.transpileModule(fs.readFileSync(new URL('../../src/generationDiagnostics.ts', import.meta.url), 'utf8'), {
     compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020 }
   }).outputText;

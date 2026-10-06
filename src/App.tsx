@@ -1,3 +1,9 @@
+import { validateKingdomLayers } from './modes/persistence';
+import { findKingdomOrigin, kingdomHexes, kingdomKeys, connectionPath, distance, type Kingdom, type GenerationMode } from './modes/kingdoms';
+import { modeRegionSize } from './modes/regionSize';
+import { MYTHIC_POI, mythicPoiChoices, initialMythicPoints, allocateKingdomPoi, type MythicPoi } from './modes/pointsOfInterest';
+import { createObstacles, pairKey, type Obstacle } from './modes/obstacles';
+import { kingdomBoundary } from './modes/kingdomBoundaries';
 import { createGenerationLogger, MAX_REGION_ATTEMPTS, type GenerationEvent } from './generationDiagnostics';
 import { solveRiverNetwork, validateRiverNetwork, minimumLakeHexes, isFullness, type RiverNetwork as ModelNetwork, type RiverEdge as ModelEdge, type SolveResult as ModelSolveResult } from './riverModel/core';
 import { type ChangeEvent, type CSSProperties, type KeyboardEvent, type MouseEvent, type TouchEvent, type WheelEvent, useEffect, useMemo, useRef, useState } from 'react';
@@ -101,7 +107,7 @@ type RiverSlopeInfo = {
 type HexType = 'region' | 'candidate' | 'center';
 
 type BiomeLandType = 'settled' | 'wild';
-type CentralPoiKind = 'capital' | 'city' | 'town' | 'village' | 'lair' | 'ruins' | 'cursed_place' | 'holy_place';
+type CentralPoiKind = MythicPoi | 'capital' | 'city' | 'town' | 'village' | 'lair' | 'ruins' | 'cursed_place' | 'holy_place';
 type SettlementPoiKind = Extract<CentralPoiKind, 'city' | 'town' | 'village'>;
 type SecondaryPoiKind =
   | 'dungeon'
@@ -132,7 +138,7 @@ type SecondaryPoiKind =
   | 'stone_quarry'
   | 'apiary'
   | 'quarry';
-type PoiKind = SettlementPoiKind | SecondaryPoiKind;
+type PoiKind = MythicPoi | SettlementPoiKind | SecondaryPoiKind;
 type WaterPoiKind = 'whirlpool' | 'underwater_ruins' | 'lair' | 'rocks' | 'underwater_cave' | 'shipwreck';
 type RegionHeightLevel = 1 | 2 | 3;
 
@@ -163,6 +169,9 @@ type BiomeId =
   | 'dead_mountain_forest';
 
 type Region = {
+  generationMode?: GenerationMode;
+  kingdomId?: number;
+  suppressCentralPoi?: boolean;
   id: number;
   hexes: AxialHex[];
   centerHex: AxialHex;
@@ -341,6 +350,7 @@ const SQRT3 = Math.sqrt(3);
 const SHOW_BIOME_EMOJI = true;
 const REGION_CENTER_EMOJI = '★';
 const CENTRAL_POI_DETAILS: Record<CentralPoiKind, { emoji: string; label: Record<Language, string> }> = {
+  ...MYTHIC_POI,
   capital: { emoji: '👑', label: { ru: 'Столица', en: 'Capital' } },
   city: { emoji: '🏰', label: { ru: 'Город', en: 'City' } },
   town: { emoji: '🏘️', label: { ru: 'Городок', en: 'Town' } },
@@ -431,6 +441,8 @@ type HexcrawlSaveData = {
   version: 2;
   savedAt: string;
   map: {
+    kingdoms?: Kingdom[];
+    obstacles?: Obstacle[];
     regions: Region[];
     candidateHexes: AxialHex[];
     rivers: River[];
@@ -446,6 +458,7 @@ type HexcrawlSaveData = {
     nextRoadId: number;
   };
   ui: {
+    generationMode?: GenerationMode;
     selectedHex: AxialHex | null;
     isMapRotated: boolean;
     mapScale: number;
@@ -550,6 +563,7 @@ function getBiomeTileHref(biomeId?: BiomeId): string | undefined {
 }
 
 function getPoiSvgHref(kind?: CentralPoiKind | PoiKind | WaterPoiKind, water = false): string {
+  if (kind && kind in MYTHIC_POI) kind = MYTHIC_POI[kind as MythicPoi].icon as PoiKind;
   return kind ? `/poi/v2/${water ? 'water' : 'land'}/${kind}.svg` : '/poi/v2/unknown.svg';
 }
 
@@ -941,6 +955,7 @@ function assertHexcrawlSaveData(value: unknown): asserts value is ValidatedHexcr
       }
     }
   }
+  validateKingdomLayers(value.map, getHexEdgeKeys);
   for (const river of value.map.rivers) {
     if (!isRecord(river) || !Array.isArray(river.vertexPath) || !Array.isArray(river.sectors)) throw new Error('Некорректная река в сохранении.');
     for (const sector of river.sectors) {
@@ -970,6 +985,7 @@ function assertHexcrawlSaveData(value: unknown): asserts value is ValidatedHexcr
   if (typeof value.counters.nextLakeId !== 'number' || !Number.isFinite(value.counters.nextLakeId)) throw new Error('Некорректный счетчик nextLakeId.');
   if (typeof value.counters.nextRoadId !== 'number' || !Number.isFinite(value.counters.nextRoadId)) throw new Error('Некорректный счетчик nextRoadId.');
   if (!isRecord(value.ui)) throw new Error('В сохранении отсутствует объект ui.');
+  if (value.ui.generationMode !== undefined && value.ui.generationMode !== 'classic' && value.ui.generationMode !== 'mythic') throw new Error('Некорректный режим генерации.');
   if (value.ui.selectedHex !== null && value.ui.selectedHex !== undefined && !isAxialHex(value.ui.selectedHex)) throw new Error('Некорректный selectedHex.');
 }
 
@@ -1234,6 +1250,10 @@ type CoastalPreference = 'coast' | 'mainland';
 // Параметры ручного управления генерацией региона. Любое поле, оставленное
 // пустым (undefined), означает "как раньше" — то есть случайный выбор.
 type GenerationOptions = {
+  mode?: GenerationMode;
+  kingdomId?: number;
+  kingdomArea?: Set<string>;
+  forbiddenHexes?: Set<string>;
   targetSize?: number;
   landType?: BiomeLandType;
   biomeId?: BiomeId;
@@ -1267,6 +1287,8 @@ const TRACT_GROWTH_WEIGHT_EXPONENT = 1.5;
 // чтобы пытаться "откатить" все побочные эффекты генерации рек и дорог
 // (которые могут менять соседние регионы), мы просто восстанавливаем снимок.
 type MapSnapshot = {
+  kingdoms?: Kingdom[];
+  obstacles?: Obstacle[];
   regions: Region[];
   candidateHexes: AxialHex[];
   rivers: River[];
@@ -1283,6 +1305,7 @@ type MapSnapshot = {
 
 // Exact rollback state: unlike user undo, error recovery never recalculates names or roads.
 type GenerationBackup = { map: MapSnapshot; history: MapSnapshot[]; selectedHex: AxialHex | null };
+type KingdomJob = { preferredAnchor?: AxialHex; recoveries?: number; failureBackup?: GenerationBackup; backup: GenerationBackup; origin: AxialHex; anchor: AxialHex; id: number; startCount: number; steps: number; phase: 'connect' | 'build'; first: boolean; };
 type GenerationDiagnostic = ReturnType<typeof generationLog.finish>;
 
 function getToponymEntities(regions: Region[], rivers: River[], terrain: Map<string, HexTerrainData>): ToponymEntity[] {
@@ -1293,7 +1316,7 @@ function getToponymEntities(regions: Region[], rivers: River[], terrain: Map<str
       : region.biomeId === 'mountains' || region.biomeId.includes('mountain') ? 'mountain'
         : region.biomeId.includes('forest') || region.biomeId.includes('woodland') ? 'forest' : 'region';
     entities.push({ key: `region:${region.id}`, kind });
-    if (region.centralPoiKind && ['capital', 'city', 'town', 'village'].includes(region.centralPoiKind)) {
+    if (region.centralPoiKind && ['capital', 'city', 'town', 'village', 'throne', 'holding_city', 'holding_castle', 'holding_tower', 'holding_stronghold', 'dwelling'].includes(region.centralPoiKind)) {
       entities.push({ key: `settlement:${region.id}:${hexKey(region.centerHex)}`, kind: 'settlement' });
     }
     for (const hex of region.pointsOfInterest) {
@@ -5205,7 +5228,8 @@ function generateConnectedRegionFromAnchorImpl(
   size: number,
   occupiedHexes: Set<string>,
   zeroWeightHexes: Set<string> = new Set(),
-  neutralOccupiedNeighborWeightHexes: Set<string> = new Set()
+  neutralOccupiedNeighborWeightHexes: Set<string> = new Set(),
+  capSize = false
 ): AxialHex[] {
   const targetSize = Math.max(1, size);
   const regionKeys = new Set<string>([hexKey(anchorHex)]);
@@ -5214,12 +5238,14 @@ function generateConnectedRegionFromAnchorImpl(
   const frontier = new Map<string, AxialHex>();
   addHexToRegionWithFrontier(anchorHex, regionKeys, occupiedHexes, frontier);
   while (true) {
+    if (capSize && regionKeys.size >= targetSize) break;
     const frontierCandidates = Array.from(frontier.values());
     const enclosedAreas = findFillableEnclosedEmptyAreas(regionKeys, occupiedHexes, frontierCandidates);
     if (enclosedAreas.length > 0) {
       let addedEnclosedHex = false;
       for (const area of enclosedAreas) {
         for (const hex of area) {
+          if (capSize && regionKeys.size >= targetSize) break;
           if (zeroWeightHexes.has(hexKey(hex))) continue;
           addHexToRegionWithFrontier(hex, regionKeys, occupiedHexes, frontier);
           addedEnclosedHex = true;
@@ -5241,18 +5267,20 @@ function generateConnectedRegionFromAnchorImpl(
   return Array.from(regionKeys).map(parseHexKey);
 }
 
-function generateFallbackTractFromAnchor(anchorHex: AxialHex, occupiedHexes: Set<string>, targetSize = rollTractTargetSize()): AxialHex[] {
+function generateFallbackTractFromAnchor(anchorHex: AxialHex, occupiedHexes: Set<string>, targetSize = rollTractTargetSize(), capSize = false): AxialHex[] {
   const regionKeys = new Set<string>([hexKey(anchorHex)]);
   const frontier = new Map<string, AxialHex>();
   addHexToRegionWithFrontier(anchorHex, regionKeys, occupiedHexes, frontier);
 
   while (true) {
+    if (capSize && regionKeys.size >= targetSize) break;
     const frontierCandidates = Array.from(frontier.values());
     const enclosedAreas = findFillableEnclosedEmptyAreas(regionKeys, occupiedHexes, frontierCandidates);
     if (enclosedAreas.length > 0) {
       let addedEnclosedHex = false;
       for (const area of enclosedAreas) {
         for (const hex of area) {
+          if (capSize && regionKeys.size >= targetSize) break;
           const key = hexKey(hex);
           if (occupiedHexes.has(key) || regionKeys.has(key)) continue;
           addHexToRegionWithFrontier(hex, regionKeys, occupiedHexes, frontier);
@@ -8878,7 +8906,7 @@ function appendIncomingRoadEndpointToPath(path: AxialHex[], endpointHex: AxialHe
 }
 
 function getRegionCenterHexKeys(regions: Region[]): Set<string> {
-  return new Set(regions.map((region) => hexKey(region.centerHex)));
+  return new Set(regions.filter(region=>!region.suppressCentralPoi).map((region) => hexKey(region.centerHex)));
 }
 
 function findIncomingRoadEndpointsForRegion(
@@ -9648,7 +9676,7 @@ function getRoadHexKeysByKind(roads: Road[], kind: RoadKind): Set<string> {
 
 function getPoiLikeHexesForRegion(region: Region): AxialHex[] {
   const points = new Map<string, AxialHex>();
-  points.set(hexKey(region.centerHex), region.centerHex);
+  if (!region.suppressCentralPoi && !(region.generationMode==='mythic' && region.isTract)) points.set(hexKey(region.centerHex), region.centerHex);
   for (const poi of region.pointsOfInterest) points.set(hexKey(poi), poi);
   return Array.from(points.values());
 }
@@ -11167,7 +11195,7 @@ function completeRegionRoadConnections(options: {
   const regionKeys = new Set(region.hexes.map(hexKey));
   const allRegions = [...regions.filter(r => r.id !== region.id), region];
   const occupied = new Set(allRegions.flatMap(r => r.hexes.map(hexKey)));
-  const destinations = new Set(allRegions.flatMap(r => [...(r.isTract ? [] : [r.centerHex]), ...r.pointsOfInterest].map(hexKey)));
+  const destinations = new Set(allRegions.flatMap(r => [...(r.isTract || r.suppressCentralPoi ? [] : [r.centerHex]), ...r.pointsOfInterest].map(hexKey)));
   const isDry = (hex: AxialHex) => !isLakeHex(hex, hexTerrainByKey) && !isSeaHex(hex, hexTerrainByKey);
   const hasExit = (hex: AxialHex) => getHexNeighbors(hex).some(n => !occupied.has(hexKey(n)) && isDry(n));
   const degree = (key: string) => new Set(built.flatMap(r => r.segments.flatMap(s =>
@@ -11231,6 +11259,10 @@ export function App() {
   const jsonImportInputRef = useRef<HTMLInputElement | null>(null);
   const [language, setLanguage] = useState<Language>('ru');
   const t = UI_TEXT[language];
+  const [generationMode, setGenerationMode] = useState<GenerationMode>('classic');
+  const [kingdoms, setKingdoms] = useState<Kingdom[]>([]);
+  const [obstacles, setObstacles] = useState<Obstacle[]>([]);
+  const [kingdomJob, setKingdomJob] = useState<KingdomJob | null>(null);
   const [regions, setRegions] = useState<Region[]>([]);
   const [candidateHexes, setCandidateHexes] = useState<AxialHex[]>([]);
   const [rivers, setRivers] = useState<River[]>([]);
@@ -11274,7 +11306,7 @@ export function App() {
   };
   const generationEvent = (anchorHex: AxialHex, options: GenerationOptions, kind: GenerationEvent['kind'], reason: string, result: GenerationEvent['result']): GenerationEvent => ({
     kind, reason, result, action: generationProgress.action, anchorHex,
-    options: { targetSize: options.targetSize ?? 'auto', landType: options.landType ?? 'auto',
+    options: { mode: options.mode ?? 'classic', targetSize: options.targetSize ?? 'auto', landType: options.landType ?? 'auto',
       biomeId: options.biomeId ?? 'auto', coastalPreference: options.coastalPreference ?? 'auto' },
     attempt: generationProgress.attempt, tractAttempt: generationProgress.tractAttempt, stage: generationProgress.stage,
     seaRecoveryAttempt: generationProgress.seaRecoveryAttempt, reclaimedSeaKeys: generationProgress.reclaimedSeaKeys,
@@ -11296,7 +11328,7 @@ export function App() {
         const key = hexKey(hex);
         map.set(key, {
           regionId: region.id,
-          isCenter: !region.isTract && hexKey(region.centerHex) === key,
+          isCenter: !region.isTract && !region.suppressCentralPoi && hexKey(region.centerHex) === key,
           isAnchor: hexKey(region.anchorHex) === key
         });
       }
@@ -11582,8 +11614,9 @@ export function App() {
     const occupiedHexes = new Set(allRegionHexes.map(hexKey));
     for (const seaKey of existingSeaKeys) occupiedHexes.add(seaKey);
 
-    const targetSize = rollTractTargetSize();
-    const regionHexes = generateFallbackTractFromAnchor(anchorHex, occupiedHexes, targetSize);
+    for (const blocked of options.forbiddenHexes ?? []) occupiedHexes.add(blocked);
+    const targetSize = options.mode === 'mythic' ? Math.min(5, options.targetSize ?? modeRegionSize('mythic', rollTractTargetSize)) : rollTractTargetSize();
+    const regionHexes = generateFallbackTractFromAnchor(anchorHex, occupiedHexes, targetSize, options.mode === 'mythic');
     const regionKeySet = new Set(regionHexes.map(hexKey));
     for (const regionKey of regionKeySet) existingSeaKeys.delete(regionKey);
     const finalSize = regionHexes.length;
@@ -11615,7 +11648,7 @@ export function App() {
       tractCandidateHexesForRiverCheck
     );
     const isFirstRegionWithAutomaticBiome = regions.length === 0 && !options.biomeId;
-    const biomeLandType = options.landType ?? (regions.length === 0 ? 'settled' : 'wild');
+    const biomeLandType = options.mode === 'mythic' ? 'wild' : options.landType ?? (regions.length === 0 ? 'settled' : 'wild');
     let biomeChoice: ChooseBiomeResult;
     if (isFirstRegionWithAutomaticBiome) {
       biomeChoice = chooseBiomeIdAtHeightLevel(biomeLandType, adjacentBiomeIds, regionId, 1, tractRiverHeightConstraint);
@@ -11642,6 +11675,7 @@ export function App() {
     const biomeId = biomeChoice.biomeId ?? (tractRiverHeightConstraint.minHeight !== undefined ? 'mountains' : FALLBACK_BIOME_ID);
     const biome = BIOMES[biomeId] ?? BIOMES[FALLBACK_BIOME_ID];
     const tractRegion: Region = {
+      generationMode: options.mode, kingdomId: options.kingdomId,
       id: regionId,
       hexes: regionHexes,
       // У урочища нет центрального гекса; anchorHex хранится здесь только для
@@ -11661,7 +11695,7 @@ export function App() {
       biomePrimaryEmoji: biome.primaryEmoji,
       biomeSecondaryEmojis: [...biome.secondaryEmojis],
       biomeEmojiLabel: biome.primaryEmoji + biome.secondaryEmojis.join(''),
-      pointsOfInterest: assignPointsOfInterestForTract(regionHexes),
+      pointsOfInterest: options.mode === 'mythic' ? initialMythicPoints(regionHexes, null, () => true) : assignPointsOfInterestForTract(regionHexes),
       isCoastal: false,
       isTract: true
     };
@@ -11720,7 +11754,7 @@ export function App() {
     // The fallback sea fill must respect the same real road exits as ordinary
     // generation. Keep unexplored land available; never change existing water.
     const occupiedForRoads = new Set(finalRegions.flatMap(r => r.hexes.map(hexKey)));
-    const destinationKeys = new Set(finalRegions.flatMap(r => [...(r.isTract ? [] : [r.centerHex]), ...r.pointsOfInterest].map(hexKey)));
+    const destinationKeys = new Set(finalRegions.flatMap(r => [...(r.isTract || r.suppressCentralPoi ? [] : [r.centerHex]), ...r.pointsOfInterest].map(hexKey)));
     for (const endpointKey of getRoadEndpointHexKeysImpl(tractRoadResult.roads, destinationKeys)) {
       for (const neighbor of getHexNeighbors(parseHexKey(endpointKey))) {
         const key = hexKey(neighbor);
@@ -11743,6 +11777,7 @@ export function App() {
     })();
 
     const snapshot: MapSnapshot = {
+        kingdoms, obstacles,
       regions,
       candidateHexes: originalGenerationCandidates,
       rivers,
@@ -11784,6 +11819,15 @@ export function App() {
       generationProgress.constraintFailure = completed.reason;
       return;
     }
+    if (options.mode === 'mythic') {
+      const full = buildRegionRiverNetwork(completed.rivers, [], finalRegions, finalCandidateHexes, completed.terrain, true);
+      if (full.issues.length || !validateRiverNetwork(full.network).valid) {
+        if (tractAttempt < MAX_REGION_ATTEMPTS) {
+          addFallbackTractToMap(anchorHex, forceCoastalSea, options, reason, tractAttempt + 1, hexTerrainByKey, candidateHexes);
+        } else generationProgress.constraintFailure = 'mythic_full_river_network';
+        return;
+      }
+    }
     riversAfterTractGeneration = completed.rivers;
     finalHexTerrainByKey.clear();
     for (const [key, value] of completed.terrain) finalHexTerrainByKey.set(key, value);
@@ -11805,8 +11849,11 @@ export function App() {
     generationProgress.stage = 'prepare_commit';
     const finalToponyms = synchronizeToponyms({ ...toponyms, ...options.previousToponyms }, getToponymEntities(finalRegions, riversAfterTractGeneration, finalHexTerrainByKey), toponymSeed);
     const finalWaterPoi = assignWaterPoiLayer(waterPoiByKey, finalRegions, finalHexTerrainByKey, newlyCheckedWaterHexKeys);
+      if (options.mode === 'mythic') for (const key of newlyCheckedWaterHexKeys) finalWaterPoi.delete(key);
     const finalCrossings = reconcileRiverCrossings(tractRoadResult.roads, riversAfterTractGeneration, finalRegions, crossings);
     const finalNextLakeId = Math.max(nextLakeIdAfterLandlockedSea, getNextLakeIdFromTerrain(finalHexTerrainByKey));
+    const finalRoadPairs = new Set(tractRoadResult.roads.flatMap(r=>r.segments.map(s=>pairKey(s.from,s.to))));
+    if (obstacles.some(o => finalRoadPairs.has(pairKey(o.hex,o.neighborHex)))) throw new Error('Дорога пересекает препятствие.');
     setHistory((current) => [...current, snapshot]);
     setRegions(finalRegions);
     setCandidateHexes(finalCandidateHexes);
@@ -11824,6 +11871,10 @@ export function App() {
   };
 
   const addRegionToMap = (anchorHex: AxialHex, options: GenerationOptions = {}, hexTerrainByKey = originalGenerationTerrain, candidateHexes = originalGenerationCandidates) => {
+    if (options.mode === 'mythic' && (options.targetSize ?? 12) <= 5) {
+      addFallbackTractToMap(anchorHex, false, options, 'mythic_d12_tract', 1, hexTerrainByKey, candidateHexes);
+      return;
+    }
     const maxRegionAttempts = MAX_REGION_ATTEMPTS;
     const autoCoastRoll = Math.random();
     setCoastNotice(null);
@@ -11849,13 +11900,15 @@ export function App() {
       // Море — не суша: рост региона не должен захватывать гексы моря.
       for (const seaKey of existingSeaKeysForGrowth) occupiedHexes.add(seaKey);
       const regionId = Math.max(0, ...regions.map((region) => region.id)) + 1;
+      for (const blocked of options.forbiddenHexes ?? []) occupiedHexes.add(blocked);
       occupiedHexes.delete(anchorKey);
       const regionHexes = generateConnectedRegionFromAnchor(
         anchorHex,
         targetSize,
         occupiedHexes,
         mainlandZeroWeightHexes,
-        coastalNeutralNeighborWeightHexes
+        coastalNeutralNeighborWeightHexes,
+        options.mode === 'mythic'
       );
       const finalSize = regionHexes.length;
       if (finalSize < 6) {
@@ -11874,7 +11927,8 @@ export function App() {
         continue;
       }
       const { sizeCategory, sizeLabel } = getRegionSizeCategory(finalSize);
-      const centerHex = chooseRegionCenter(regionHexes);
+      const centerCandidates = options.kingdomArea ? regionHexes.filter(h => options.kingdomArea!.has(hexKey(h))) : regionHexes;
+      const centerHex = chooseRegionCenter(centerCandidates.length ? centerCandidates : regionHexes);
       const regionByHexKey = new Map<string, Region>();
       for (const region of regions) {
         for (const hex of region.hexes) regionByHexKey.set(hexKey(hex), region);
@@ -12067,6 +12121,7 @@ export function App() {
       const { lakesByHex, nextLakeId: computedNextLakeId } = assignLakesForRegion(regionHexes, centerHex, nextLakeId, biomeId);
       const centralPoiKind = assignCentralPoiKindForRegion(biomeLandType, sizeCategory);
       const regionBase: Omit<Region, 'pointsOfInterest'> = {
+        generationMode: options.mode, kingdomId: options.kingdomId,
         id: regionId,
         hexes: regionHexes,
         centerHex,
@@ -12222,7 +12277,7 @@ export function App() {
       }
       const preliminaryCenterHex = coastalRiverMouthCenterHex ?? centerHex;
 
-      const preliminaryPointsOfInterest = assignPointsOfInterestForRegion(regionHexes, preliminaryCenterHex, regionTerrainByHex);
+      const preliminaryPointsOfInterest = options.mode === 'mythic' ? initialMythicPoints(regionHexes, preliminaryCenterHex, h => !isLakeHex(h, regionTerrainByHex)) : assignPointsOfInterestForRegion(regionHexes, preliminaryCenterHex, regionTerrainByHex);
       const preliminaryRegion: Region = {
         ...regionForRiverGeneration,
         centerHex: preliminaryCenterHex,
@@ -12415,7 +12470,7 @@ export function App() {
       for (const region of regions) for (const hex of region.hexes) occupiedForLandPockets.add(hexKey(hex));
       const enclosedLandPocketKeys = new Set<string>();
       for (const area of findFillableEnclosedEmptyAreas(new Set(finalRegion.hexes.map(hexKey)), occupiedForLandPockets)) {
-        for (const hex of area) enclosedLandPocketKeys.add(hexKey(hex));
+        for (const hex of area) if (options.mode !== 'mythic' && !options.forbiddenHexes?.has(hexKey(hex))) enclosedLandPocketKeys.add(hexKey(hex));
       }
       for (const key of enclosedLandPocketKeys) pocketKeySet.add(key);
       const enclosedLandPocketHexes = Array.from(enclosedLandPocketKeys).map(parseHexKey);
@@ -12584,6 +12639,7 @@ export function App() {
       })();
 
       const snapshot: MapSnapshot = {
+        kingdoms, obstacles,
         regions,
         candidateHexes: originalGenerationCandidates,
         rivers,
@@ -12598,11 +12654,17 @@ export function App() {
         nextRoadId
       };
       const finalHexTerrainByKey = modelResult.terrain;
+      if (options.mode === 'mythic') {
+        const full = buildRegionRiverNetwork(riversWithDeltas, [], finalRegions, finalCandidateHexes, finalHexTerrainByKey, true);
+        if (full.issues.length || !validateRiverNetwork(full.network).valid) { rejectAttempt('mythic_full_river_network'); continue; }
+      }
+
       const finalRegionKeySet = new Set(finalRegionWithPoiKinds.hexes.map(hexKey));
       const newlyCheckedWaterHexKeys = new Set([...finalRegionKeySet, ...finalSeaKeysToWrite]);
       generationProgress.stage = 'prepare_commit';
       const finalToponyms = synchronizeToponyms({ ...toponyms, ...options.previousToponyms }, getToponymEntities(finalRegions, riversWithDeltas, finalHexTerrainByKey), toponymSeed);
       const finalWaterPoi = assignWaterPoiLayer(waterPoiByKey, finalRegions, finalHexTerrainByKey, newlyCheckedWaterHexKeys);
+      if (options.mode === 'mythic') for (const key of newlyCheckedWaterHexKeys) finalWaterPoi.delete(key);
       const finalCrossings = reconcileRiverCrossings(roadResult.roads, riversWithDeltas, finalRegions, crossings);
       const finalNextLakeId = Math.max(nextLakeIdAfterLandlockedSea, getNextLakeIdFromTerrain(finalHexTerrainByKey));
       setHistory((current) => [...current, snapshot]);
@@ -12633,13 +12695,15 @@ export function App() {
 
 
   const captureGenerationBackup = (): GenerationBackup => structuredClone({
-    map: { regions, candidateHexes, rivers, roads, crossings, hexTerrainByKey,
+    map: { kingdoms, obstacles, regions, candidateHexes, rivers, roads, crossings, hexTerrainByKey,
       waterPoiByKey, biomeOverrideByHexKey, toponyms, toponymSeed, nextLakeId, nextRoadId },
     history, selectedHex
   });
 
   const restoreGenerationBackup = (backup: GenerationBackup) => {
     const map = backup.map;
+    setKingdoms(map.kingdoms ?? []);
+    setObstacles(map.obstacles ?? []);
     setRegions(map.regions);
     setCandidateHexes(map.candidateHexes);
     setRivers(map.rivers);
@@ -12687,7 +12751,7 @@ export function App() {
       __profileBeginClick();
       addRegionToMap(anchorHex, options);
       if (generationProgress.constraintFailure) {
-        for (const keys of seaRecoveryPlans(anchorHex)) {
+        for (const keys of (kingdomJob ? [] : seaRecoveryPlans(anchorHex))) {
           generationLog.warning('Retrying generation with local sea reclamation', { keys, reason: generationProgress.constraintFailure });
           generationProgress.seaRecoveryAttempt++;
           generationProgress.reclaimedSeaKeys = keys;
@@ -12714,8 +12778,118 @@ export function App() {
     }
   };
 
+  const startKingdom = (anchor: AxialHex, failureBackup?: GenerationBackup) => {
+    if (kingdomJob) return;
+    const backup = captureGenerationBackup();
+    try {
+      const occupied = new Set([...allRegionHexes.map(hexKey), ...hexTerrainByKey.keys()]);
+      const origin = findKingdomOrigin(anchor, occupied);
+      const area = kingdomKeys(origin);
+      setGenerationError(null);
+      setKingdomJob({backup,failureBackup,origin,anchor,id:Math.max(0,...kingdoms.map(k=>k.id))+1,startCount:regions.length,steps:0,phase:area.has(hexKey(anchor))?'build':'connect',first:true});
+    } catch(error) { reportGenerationFailure(error,anchor,{},failureBackup ?? backup); }
+  };
+
+  const finishKingdom = (job: KingdomJob) => {
+    const area = kingdomKeys(job.origin);
+    const dry = (h:AxialHex) => !hexTerrainByKey.get(hexKey(h))?.terrainOverride;
+    let members = regions.filter(r=>r.kingdomId===job.id);
+    const eligible = members.filter(r=>!r.isTract && area.has(hexKey(r.centerHex)) && dry(r.centerHex));
+    const settled = eligible.filter(r=>r.biomeLandType==='settled');
+    for (const region of eligible.filter(r=>r.biomeLandType==='wild').sort((a,b)=>b.finalSize-a.finalSize)) {
+      if(settled.length>=4)break;
+      const choice=chooseBiomeIdAtHeightLevel('settled',[],region.id,region.heightLevel,{reasons:[]});
+      if(!choice.biomeId)continue;
+      const biome=BIOMES[choice.biomeId];
+      const promoted:Region={...region,biomeLandType:'settled',biomeId:biome.id,biomeLabel:biome.label,biomePrimaryEmoji:biome.primaryEmoji,biomeSecondaryEmojis:[...biome.secondaryEmojis],biomeEmojiLabel:biome.primaryEmoji+biome.secondaryEmojis.join('')};
+      members=members.map(r=>r.id===promoted.id?promoted:r);settled.push(promoted);
+    }
+    const assigned=allocateKingdomPoi(members,area,dry).map(r=>({...r,suppressCentralPoi:!r.isTract&&!r.centralPoiKind}));
+    const byId=new Map(assigned.map(r=>[r.id,r]));
+    const finalRegions=regions.map(r=>byId.get(r.id)??r);
+    // Rebuild only this action's regions, in generation order, from the exact
+    // pre-action road network. Earlier regions and their segments remain fixed.
+    let rebuiltRoads=cloneRoads(job.backup.map.roads),roadId=job.backup.map.nextRoadId;
+    const processed=finalRegions.slice(0,job.backup.map.regions.length);
+    for(const region of finalRegions.slice(job.backup.map.regions.length)) {
+      processed.push(region);
+      const candidates=getCandidateHexes(processed.flatMap(r=>r.hexes),getSeaHexKeys(hexTerrainByKey));
+      const result=generateRoadsForRegion({region,regions:processed,roads:rebuiltRoads,rivers,hexTerrainByKey,nextRoadId:roadId,candidateHexes:candidates});
+      rebuiltRoads=result.roads;roadId=result.nextRoadId;
+    }
+    const heights=new Map(finalRegions.flatMap(r=>r.hexes.map(h=>[hexKey(h),r.heightLevel] as const)));
+    const riverEdges=new Set(rivers.flatMap(r=>r.vertexPath.slice(1).map((v,i)=>edgeKey(r.vertexPath[i],v))));
+    const roadPairs=new Set(rebuiltRoads.flatMap(r=>r.segments.map(s=>pairKey(s.from,s.to))));
+    if(obstacles.some(o=>roadPairs.has(pairKey(o.hex,o.neighborHex))))throw new Error('Дорога пересекла существующее препятствие.');
+    const addedObstacles=createObstacles(job.id,kingdomHexes(job.origin),getHexEdgesAsVertexPairs,h=>heights.get(hexKey(h))??0,h=>!dry(h),riverEdges,roadPairs);
+    const names=synchronizeToponyms({},[{key:`kingdom:${job.id}`,kind:'region'}],toponymSeed);
+    const kingdom:Kingdom={id:job.id,origin:job.origin,anchor:job.anchor,regionIds:assigned.map(r=>r.id),name:names[`kingdom:${job.id}`],color:`hsl(${Math.round((job.id*137.508)%360)} 65% 68%)`};
+    const water=new Map(waterPoiByKey);
+    for(const r of members)for(const h of r.hexes)water.delete(hexKey(h));
+    setRegions(finalRegions);
+    setRoads(rebuiltRoads);setNextRoadId(roadId);
+    setCrossings(reconcileRiverCrossings(rebuiltRoads,rivers,finalRegions,crossings));
+    setWaterPoiByKey(water);
+    setToponyms(synchronizeToponyms(toponyms,getToponymEntities(finalRegions,rivers,hexTerrainByKey),toponymSeed));
+    setKingdoms([...kingdoms,kingdom]);setObstacles([...obstacles,...addedObstacles]);
+    setHistory([...job.backup.history,job.backup.map]);
+    setSelectedHex(assigned.find(r=>r.centralPoiKind==='throne')!.centerHex);
+    setKingdomJob(null);
+  };
+
+  const advanceKingdom = () => {
+    const job=kingdomJob;if(!job)return;
+    try {
+      if(!job.first && regions.length===job.startCount+1) {
+        const first=regions[job.startCount];
+        if(first.isTract || first.biomeLandType!=='settled' || ![11,12].includes(first.finalSize)) {
+          if((job.recoveries??0)>=12)throw new Error('Не удалось создать первый освоенный регион на 11–12 гексов.');
+          restoreSnapshot(history[history.length-1]);setHistory(history.slice(0,-1));
+          setKingdomJob({...job,first:true,recoveries:(job.recoveries??0)+1,steps:job.steps+1});return;
+        }
+      }
+      if(job.steps>300)throw new Error('Превышен лимит построения королевства.');
+      const area=kingdomKeys(job.origin),occupied=new Set([...allRegionHexes.map(hexKey),...hexTerrainByKey.keys()]);
+      if(job.phase==='connect') {
+        const path=connectionPath(job.anchor,area,new Set([...job.backup.map.regions.flatMap(r=>r.hexes.map(hexKey)),...hexTerrainByKey.keys()]));
+        const next=path.find(h=>!occupied.has(hexKey(h)));
+        if(!next||area.has(hexKey(next))) {setKingdomJob({...job,phase:'build',startCount:regions.length});return;}
+        const result=safelyAddRegionToMap(next,{coastalPreference:'mainland',forbiddenHexes:area});
+        if(!result.success)throw new Error('Не удалось построить соединительный регион.');
+        setKingdomJob({...job,steps:job.steps+1});return;
+      }
+      const uncovered=kingdomHexes(job.origin).filter(h=>!occupied.has(hexKey(h)));
+      if(!uncovered.length) {finishKingdom(job);return;}
+      // The first settlement is placed near the middle to allow its full 11/12
+      // cells. Later anchors belong to the rectangle and touch the built map.
+      const center=kingdomHexes(job.origin)[78];
+      const candidates=job.first?uncovered:uncovered.filter(h=>getHexNeighbors(h).some(n=>occupied.has(hexKey(n))));
+      if(!candidates.length)throw new Error('Не найден следующий гекс королевства.');
+      const anchor=job.preferredAnchor && !occupied.has(hexKey(job.preferredAnchor)) ? job.preferredAnchor : job.first&&area.has(hexKey(job.anchor))&&!occupied.has(hexKey(job.anchor))?job.anchor:candidates.sort((a,b)=>distance(a,center)-distance(b,center))[0];
+      const targetSize=modeRegionSize('mythic',rollRegionTargetSize,job.first);
+      const result=safelyAddRegionToMap(anchor,{mode:'mythic',kingdomId:job.id,kingdomArea:area,targetSize,landType:job.first?'settled':undefined,coastalPreference:'mainland'});
+      if(!result.success) {
+        if(result.diagnostic.kind==='constraint-rejection' && regions.length>job.startCount+1 && (job.recoveries??0)<12) {
+          restoreSnapshot(history[history.length-1]);setHistory(history.slice(0,-1));
+          setKingdomJob({...job,preferredAnchor:anchor,recoveries:(job.recoveries??0)+1,steps:job.steps+1});return;
+        }
+        throw new Error('Не удалось построить регион королевства.');
+      }
+      setKingdomJob({...job,preferredAnchor:undefined,first:false,steps:job.steps+1});
+    } catch(error) {reportGenerationFailure(error,job.anchor,{mode:'mythic'},job.failureBackup ?? job.backup);setKingdomJob(null);}
+  };
+  useEffect(()=>{
+    if(!kingdomJob)return;
+    const timer=window.setTimeout(advanceKingdom,0);
+    return ()=>window.clearTimeout(timer);
+  },[kingdomJob]);
+
   const resetMap = () => {
+    if (kingdomJob) return;
     setGenerationError(null);
+    setKingdoms([]);
+    setObstacles([]);
+    setKingdomJob(null);
     setRegions([]);
     setCandidateHexes([]);
     setRivers([]);
@@ -12749,6 +12923,8 @@ export function App() {
   // перед его добавлением. Это надёжно откатывает и реки, и дороги, в том
   // числе изменения, которые новый регион внёс в соседние регионы.
   const restoreSnapshot = (snapshot: MapSnapshot) => {
+    setKingdoms(snapshot.kingdoms ?? []);
+    setObstacles(snapshot.obstacles ?? []);
     setRegions(snapshot.regions);
     setCandidateHexes(snapshot.candidateHexes);
     setRivers(snapshot.rivers);
@@ -12769,6 +12945,7 @@ export function App() {
   };
 
   const deleteLastRegion = () => {
+    if (kingdomJob) return;
     if (history.length === 0) return;
     const snapshot = history[history.length - 1];
     restoreSnapshot(snapshot);
@@ -12782,16 +12959,18 @@ export function App() {
   };
 
   const regenerateLastRegion = () => {
+    if (kingdomJob) return;
     if (regions.length === 0 || history.length === 0) return;
     const backup = captureGenerationBackup();
-    const lastAnchor = regions[regions.length - 1].anchorHex;
+    const lastKingdom = kingdoms.find(k=>k.regionIds.includes(regions[regions.length-1].id));
+    const lastAnchor = lastKingdom?.anchor ?? regions[regions.length - 1].anchorHex;
     const snapshot = history[history.length - 1];
     generationLog.begin();
     generationProgress.action = 'regenerate';
     generationProgress.stage = 'prepare_regeneration';
     let options: GenerationOptions = {};
     try {
-      options = { ...buildGenerationOptions(), previousToponyms: toponyms };
+      options = { ...buildGenerationOptions(), mode: lastKingdom ? 'mythic' : 'classic', previousToponyms: toponyms };
       restoreSnapshot(snapshot);
       setHistory(history.slice(0, -1));
       // Wait for React to apply the snapshot before the generation callback reads it.
@@ -12803,7 +12982,8 @@ export function App() {
 
   const finishPendingRegeneration = () => {
     if (!pendingRegen) return;
-    safelyAddRegionToMap(pendingRegen.anchorHex, pendingRegen.options, pendingRegen.backup);
+    if (pendingRegen.options.mode === 'mythic') startKingdom(pendingRegen.anchorHex, pendingRegen.backup);
+    else safelyAddRegionToMap(pendingRegen.anchorHex, pendingRegen.options, pendingRegen.backup);
     setPendingRegen(null);
   };
 
@@ -12881,6 +13061,10 @@ export function App() {
 
   const lastRegion = regions[regions.length - 1];
   const selectedRegion = selectedMeta ? regions.find((region) => region.id === selectedMeta.regionId) : undefined;
+  const selectedKingdom = selectedRegion ? kingdoms.find(k=>k.regionIds.includes(selectedRegion.id)) : undefined;
+  const selectedObstacles = selectedHex ? obstacles.filter(o=>hexKey(o.hex)===hexKey(selectedHex)||hexKey(o.neighborHex)===hexKey(selectedHex)) : [];
+  const editableCentralKinds = generationMode === 'mythic' ? mythicPoiChoices(selectedRegion?.biomeLandType==='settled',true) : ['capital','city','town','village','lair','ruins','cursed_place','holy_place'];
+  const editablePoiKinds: PoiKind[] = generationMode === 'mythic' ? mythicPoiChoices(selectedRegion?.biomeLandType==='settled',false) : EDITABLE_POI_KIND_ORDER.filter(k=>!(k in MYTHIC_POI)||k==='ruins');
   const selectedHexBiomeOverride = selectedHexKey ? biomeOverrideByHexKey.get(selectedHexKey) : undefined;
   const selectedEffectiveBiomeId = selectedHexBiomeOverride ?? selectedRegion?.biomeId;
   const isEditingSelectedHexBiome = selectedHexKey !== null && editingHexBiomeKey === selectedHexKey;
@@ -12888,8 +13072,9 @@ export function App() {
   const isEditingSelectedPoi = selectedHexKey !== null && editingPoiHexKey === selectedHexKey;
   const isEditingSelectedCentralPoi = selectedMeta?.isCenter === true && editingCentralPoiRegionId === selectedRegion?.id;
   const canEditSelectedPoi = Boolean(selectedRegion && selectedHex && !isSelectedLake && !isSelectedSea);
-  const waterPoiKindOrder = getWaterPoiKindPool(isSelectedSea ? 'sea' : selectedRegion?.biomeLandType ?? 'wild');
+  const waterPoiKindOrder = generationMode === 'mythic' ? [] : getWaterPoiKindPool(isSelectedSea ? 'sea' : selectedRegion?.biomeLandType ?? 'wild');
   const setSelectedHexBiomeOverride = (biomeId: BiomeId) => {
+    if(kingdomJob)return;
     if (!selectedHexKey) return;
     setBiomeOverrideByHexKey((current) => {
       const next = new Map(current);
@@ -12908,6 +13093,7 @@ export function App() {
     setEditingHexBiomeKey(null);
   };
   const setSelectedPoiKind = (poiKind: PoiKind) => {
+    if(kingdomJob)return;
     if (!selectedRegion || !selectedHex || !selectedHexKey) return;
     const regionId = selectedRegion.id;
     setRegions((currentRegions) => currentRegions.map((region) => {
@@ -12922,6 +13108,7 @@ export function App() {
     setEditingPoiHexKey(null);
   };
   const setSelectedCentralPoiKind = (poiKind: CentralPoiKind) => {
+    if(kingdomJob)return;
     if (!selectedRegion) return;
     const regionId = selectedRegion.id;
     setRegions((currentRegions) => currentRegions.map((region) => (
@@ -12930,6 +13117,7 @@ export function App() {
     setEditingCentralPoiRegionId(null);
   };
   const setSelectedWaterPoiKind = (poiKind: WaterPoiKind) => {
+    if(kingdomJob)return;
     if (!selectedHexKey) return;
     setWaterPoiByKey((current) => {
       const next = new Map(current);
@@ -12939,6 +13127,7 @@ export function App() {
     setEditingPoiHexKey(null);
   };
   const deleteSelectedWaterPoi = () => {
+    if(kingdomJob)return;
     if (!selectedHexKey) return;
     setWaterPoiByKey((current) => {
       const next = new Map(current);
@@ -12948,6 +13137,7 @@ export function App() {
     setEditingPoiHexKey(null);
   };
   const deleteSelectedPoi = () => {
+    if(kingdomJob)return;
     if (!selectedRegion || !selectedHexKey) return;
     const regionId = selectedRegion.id;
     setRegions((currentRegions) => currentRegions.map((region) => {
@@ -13258,6 +13448,7 @@ export function App() {
     version: HEXCRAWL_SAVE_VERSION,
     savedAt: new Date().toISOString(),
     map: {
+      kingdoms, obstacles,
       regions,
       candidateHexes,
       rivers,
@@ -13273,6 +13464,7 @@ export function App() {
       nextRoadId
     },
     ui: {
+      generationMode,
       selectedHex,
       isMapRotated,
       mapScale
@@ -13280,6 +13472,7 @@ export function App() {
   });
 
   const handleExportPng = async () => {
+    if(kingdomJob)return;
     if (!mapSvgRef.current) return;
     try {
       await exportSvgToPng(mapSvgRef.current, `${EXPORT_FILE_PREFIX}-${getTimestampForFilename()}.png`);
@@ -13291,6 +13484,7 @@ export function App() {
   };
 
   const handleExportJson = () => {
+    if(kingdomJob)return;
     const saveData = createSaveData();
     const blob = new Blob([JSON.stringify(saveData, null, 2)], { type: 'application/json;charset=utf-8' });
     downloadBlob(blob, `${EXPORT_FILE_PREFIX}-${getTimestampForFilename()}.json`);
@@ -13298,6 +13492,7 @@ export function App() {
   };
 
   const handleImportJsonClick = () => {
+    if(kingdomJob)return;
     jsonImportInputRef.current?.click();
   };
 
@@ -13321,6 +13516,10 @@ export function App() {
       const importedBiomeOverrides = new Map<string, BiomeId>(Object.entries(parsed.map.biomeOverrideByHexKey ?? {}).filter(([, biomeId]) => isBiomeId(biomeId)) as Array<[string, BiomeId]>);
       const fallbackNextRoadId = Math.max(0, ...parsed.map.roads.map((road) => road.id)) + 1;
 
+      setKingdoms(parsed.map.kingdoms ?? []);
+      setObstacles(parsed.map.obstacles ?? []);
+      setGenerationMode(parsed.ui.generationMode ?? 'classic');
+      setKingdomJob(null);
       setRegions(importedRegions);
       setCandidateHexes(importedCandidateHexes);
       setRivers(parsed.map.rivers);
@@ -13440,7 +13639,13 @@ export function App() {
             ) : regions.length <= 2 && candidateHexes.length > 0 ? (
               <div className="info-block info-block--prompt map-toolbar__prompt" role="status">{t.candidatePrompt}</div>
             ) : null}
-            <div className="control-block gen-params" aria-label={t.genParamsLabel}>
+            <div className="control-block mode-selector"><label>{language === 'ru' ? 'Режим' : 'Mode'}
+              <select aria-label={language === 'ru' ? 'Режим' : 'Mode'} value={generationMode} disabled={!!kingdomJob} onChange={e=>setGenerationMode(e.target.value as GenerationMode)}>
+                <option value="classic">{language === 'ru' ? 'Классический режим' : 'Classic mode'}</option>
+                <option value="mythic">Mythic Bastionland</option>
+              </select></label></div>
+            {kingdomJob ? <p role="status" className="kingdom-progress">{language === 'ru' ? 'Создание королевства…' : 'Building kingdom…'} {kingdomHexes(kingdomJob.origin).filter(h=>metadataMap.has(hexKey(h))).length}/144</p> : null}
+            {generationMode === 'classic' ? <div className="control-block gen-params" aria-label={t.genParamsLabel}>
               <label>
                 {t.size}
                 <select value={genSizeCategory} onChange={(e) => setGenSizeCategory(e.target.value as typeof genSizeCategory)}>
@@ -13479,13 +13684,14 @@ export function App() {
                 </select>
               </label>
             </div>
+            : null}
             {regions.length > 0 ? (
               <div className="control-block controls controls--region-management">
-                  <button onClick={resetMap} className="secondary">{t.reset}</button>
-                  <button type="button" onClick={regenerateLastRegion} className="secondary">
+                  <button disabled={!!kingdomJob} onClick={resetMap} className="secondary">{t.reset}</button>
+                  <button type="button" disabled={!!kingdomJob} onClick={regenerateLastRegion} className="secondary">
                     {t.regenerateRegion}
                   </button>
-                  <button type="button" onClick={deleteLastRegion} className="secondary">
+                  <button type="button" disabled={!!kingdomJob} onClick={deleteLastRegion} className="secondary">
                     {t.deleteLastRegion}
                   </button>
               </div>
@@ -13643,7 +13849,7 @@ export function App() {
                   onClick={() => {
                     if (hex.kind === 'candidate') {
                       trackGoal('region_add');
-                      safelyAddRegionToMap({ q: hex.q, r: hex.r }, buildGenerationOptions());
+                      if (!kingdomJob) { if (generationMode === 'mythic') startKingdom({q:hex.q,r:hex.r}); else safelyAddRegionToMap({ q: hex.q, r: hex.r }, buildGenerationOptions()); }
                     } else {
                       setSelectedHex({ q: hex.q, r: hex.r });
                     }
@@ -13772,6 +13978,12 @@ export function App() {
                 );
               })}
             </g>
+            </g>
+            <g className="kingdom-boundaries" transform={mapRotationTransform} pointerEvents="none">
+              {kingdoms.flatMap(k=>kingdomBoundary(k,getHexEdgesAsVertexPairs).map(e=><line key={`${k.id}:${e.edgeKey}`} x1={e.from.x+riverOffset.x} y1={e.from.y+riverOffset.y} x2={e.to.x+riverOffset.x} y2={e.to.y+riverOffset.y} stroke={k.color} strokeWidth={3} strokeDasharray="6 4" />))}
+            </g>
+            <g className="obstacles-layer" transform={mapRotationTransform} pointerEvents="none">
+              {obstacles.map(o=>{const e=getHexEdgesAsVertexPairs(o.hex).find(e=>e.edgeKey===o.edgeKey);return e?<line key={o.edgeKey} x1={e.from.x+riverOffset.x} y1={e.from.y+riverOffset.y} x2={e.to.x+riverOffset.x} y2={e.to.y+riverOffset.y} stroke="#a95650" strokeWidth={3} />:null;})}
             </g>
             <g className="river-waterfalls-layer" pointerEvents="none">
               {riverWaterfalls.map((waterfall) => {
@@ -13927,6 +14139,7 @@ export function App() {
           <aside id="side-panel-info" className="roll-card">
             <div className="info-body">
               <section className="info-block info-block--hex" aria-label={t.selectedHexInfo}>
+                {selectedKingdom ? <p><strong>{language === 'ru' ? 'Королевство' : 'Kingdom'}: {selectedKingdom.name[language]}</strong></p> : null}
                 {selectedRegion ? (
                   <p><strong>{SIZE_LABELS[language][selectedRegion.sizeCategory]}</strong> {renderToponym(`region:${selectedRegion.id}`)}</p>
                 ) : isSelectedLake ? (
@@ -13945,7 +14158,7 @@ export function App() {
                       </div>
                     ) : isEditingSelectedPoi ? (
                       <div className="hex-poi-editor"><select aria-label={t.choosePoi} autoFocus defaultValue="" onChange={(event) => { if (event.target.value) setSelectedWaterPoiKind(event.target.value as WaterPoiKind); }} onBlur={() => setEditingPoiHexKey(null)}><option value="" disabled>{t.choosePoi}</option>{waterPoiKindOrder.map((poiKind) => <option key={poiKind} value={poiKind}>{WATER_POI_DETAILS[poiKind].emoji} {WATER_POI_DETAILS[poiKind].label[language]}</option>)}</select></div>
-                    ) : <button type="button" className="hex-coordinate-toggle hex-poi-editor__add" onClick={() => setEditingPoiHexKey(selectedHexKey)}>{t.addPoi}</button>}
+                    ) : generationMode !== 'mythic' ? <button type="button" className="hex-coordinate-toggle hex-poi-editor__add" onClick={() => setEditingPoiHexKey(selectedHexKey)}>{t.addPoi}</button> : null}
                   </>
                 ) : (
                   <p><strong>{isSelectedCandidate ? t.candidateForRegion : t.noHexSelected}</strong></p>
@@ -14004,7 +14217,7 @@ export function App() {
                             onChange={(event) => setSelectedCentralPoiKind(event.target.value as CentralPoiKind)}
                             onBlur={() => setEditingCentralPoiRegionId(null)}
                           >
-                            {Object.entries(CENTRAL_POI_DETAILS).map(([poiKind, details]) => (
+                            {Object.entries(CENTRAL_POI_DETAILS).filter(([kind])=>editableCentralKinds.includes(kind as MythicPoi)).map(([poiKind, details]) => (
                               <option key={poiKind} value={poiKind}>{details.emoji} {details.label[language]}</option>
                             ))}
                           </select>
@@ -14025,7 +14238,7 @@ export function App() {
                         </div>
                       ) : isEditingSelectedPoi ? (
                         <div className="hex-poi-editor"><select aria-label={t.choosePoi} autoFocus defaultValue="" onChange={(event) => { if (event.target.value) setSelectedWaterPoiKind(event.target.value as WaterPoiKind); }} onBlur={() => setEditingPoiHexKey(null)}><option value="" disabled>{t.choosePoi}</option>{waterPoiKindOrder.map((poiKind) => <option key={poiKind} value={poiKind}>{WATER_POI_DETAILS[poiKind].emoji} {WATER_POI_DETAILS[poiKind].label[language]}</option>)}</select></div>
-                      ) : <button type="button" className="hex-coordinate-toggle hex-poi-editor__add" onClick={() => setEditingPoiHexKey(selectedHexKey)}>{t.addPoi}</button>
+                      ) : generationMode !== 'mythic' ? <button type="button" className="hex-coordinate-toggle hex-poi-editor__add" onClick={() => setEditingPoiHexKey(selectedHexKey)}>{t.addPoi}</button> : null
                     ) : null}
                     {canEditSelectedPoi && selectedHex ? (
                       selectedPoiKind ? (
@@ -14039,7 +14252,7 @@ export function App() {
                               onChange={(event) => setSelectedPoiKind(event.target.value as PoiKind)}
                               onBlur={() => setEditingPoiHexKey(null)}
                             >
-                              {EDITABLE_POI_KIND_ORDER.map((poiKind) => (
+                              {editablePoiKinds.map((poiKind) => (
                                 <option key={poiKind} value={poiKind}>{POI_DETAILS[poiKind].emoji} {POI_DETAILS[poiKind].label[language]}</option>
                               ))}
                             </select>
@@ -14062,7 +14275,7 @@ export function App() {
                             onBlur={() => setEditingPoiHexKey(null)}
                           >
                             <option value="" disabled>{t.choosePoi}</option>
-                            {EDITABLE_POI_KIND_ORDER.map((poiKind) => (
+                            {editablePoiKinds.map((poiKind) => (
                               <option key={poiKind} value={poiKind}>{POI_DETAILS[poiKind].emoji} {POI_DETAILS[poiKind].label[language]}</option>
                             ))}
                           </select>
@@ -14073,7 +14286,7 @@ export function App() {
                     ) : null}
                     {selectedHexRoadIds.map((roadId) => <p key={`selected-road-${roadId}`}>▬ {t.road} {roadId}</p>)}
                     {selectedHexTrailIds.map((trailId) => <p key={`selected-trail-${trailId}`}>⋯ {t.trail} {trailId}</p>)}
-                    {nearbyRivers.length > 0 || selectedHexCrossings.length > 0 || nearbyLakeIds.length > 0 || hasNearbySea ? (
+                    {selectedObstacles.length > 0 || nearbyRivers.length > 0 || selectedHexCrossings.length > 0 || nearbyLakeIds.length > 0 || hasNearbySea ? (
                       <div>
                         <strong>{t.nearby}</strong>
                         {nearbyRivers.map((river) => {
@@ -14086,6 +14299,7 @@ export function App() {
                           const riverFeatures = [hasWaterfall ? waterfallLabel : null, hasRapids ? t.rapids : null].filter((feature): feature is string => feature !== null);
                           return <p key={`nearby-river-${river.id}`}><span className="nearby-river-marker" aria-hidden="true">→</span>{hasRapids ? <span className="nearby-river-marker" aria-hidden="true">|||</span> : null}{hasWaterfall ? <img className="nearby-waterfall-marker" src="/waterfall.svg" alt="" aria-hidden="true" /> : null} {t.river} {renderToponym(`river:${river.id}`)}{riverFeatures.length > 0 ? ` (${riverFeatures.join(', ')})` : ''}</p>;
                         })}
+                        {selectedObstacles.map(o=><p key={o.edgeKey} style={{color:'#bd6a64'}}>━ {language==='ru'?'Препятствие':'Barrier'} ({hexKey(o.hex)===selectedHexKey?hexKey(o.neighborHex):hexKey(o.hex)})</p>)}
                         {selectedHexCrossings.map((crossing) => <p key={`selected-crossing-${crossing.key}`}>{crossing.kind === 'bridge' ? '🌉' : crossing.kind === 'ferry' ? '⛴️' : '🌊'} {t[crossing.kind]}</p>)}
                         {nearbyLakeIds.map((lakeId) => <p key={`nearby-lake-${lakeId}`}>💧 {t.lake} {renderToponym(`lake:${lakeId}`)}</p>)}
                         {hasNearbySea ? <p>{t.sea}</p> : null}
