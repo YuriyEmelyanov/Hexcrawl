@@ -227,6 +227,28 @@ try {
     }
     await probe.close();
   }
+  await page.goto('http://127.0.0.1:4173/');
+  await page.getByRole('combobox',{name:'Режим',exact:true}).selectOption('mythic');
+  assert.equal(await page.locator('.gen-params').count(),0);
+  await page.locator('polygon.hex.candidate').first().dispatchEvent('click');
+  await page.waitForFunction(()=>document.querySelectorAll('.obstacles-layer line').length===24,{},{timeout:120000});
+  assert.equal(await page.locator('.kingdom-progress').count(),0);
+  const kingdomSave=await snapshot();
+  assert.equal(kingdomSave.map.kingdoms.length,1);
+  assert.equal(kingdomSave.map.obstacles.length,24);
+  assert.ok(await page.locator('.kingdom-boundaries line').count()>0);
+  assert.ok((await page.locator('#side-panel-info').innerText()).includes('Королевство'));
+  await page.locator('.rotate-map-button').click();
+  assert.equal(await page.locator('.obstacles-layer').getAttribute('transform'),await page.locator('.map-rotation-layer').getAttribute('transform'));
+  await page.getByRole('combobox',{name:'Режим',exact:true}).selectOption('classic');
+  assert.deepEqual((await snapshot()).map,kingdomSave.map);
+  await page.getByRole('button',{name:'Удалить последний регион',exact:true}).click();
+  assert.equal(await page.locator('.obstacles-layer line').count(),0);
+  await page.locator('input[type="file"]').setInputFiles({name:'mythic.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(kingdomSave))});
+  await page.waitForFunction(()=>document.querySelectorAll('.obstacles-layer line').length===24,{},{timeout:10000});
+  assert.equal(await page.locator('.obstacles-layer line').count(),24);
+  assert.deepEqual((await snapshot()).map,kingdomSave.map);
+  assert.deepEqual(errors,[]);
   console.log(JSON.stringify({ clicks: clicks + 1, completed, regeneration: true, undo: true, jsonReload: true, errorRecovery: true, pageErrors: errors }));
 } finally {
   await browser?.close();
