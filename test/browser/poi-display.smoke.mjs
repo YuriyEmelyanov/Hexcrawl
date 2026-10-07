@@ -173,7 +173,11 @@ try {
     const mid = (a.x + b.x) / 2;
     return [center('1,2'), {x: mid - 5, y: a.y}, {x: mid + 5, y: a.y}, center('5,2'), center('6,4')];
   });
+  // This assertion isolates the ground blend underneath the new opaque canopy.
+  // Full forest PNGs are checked/exported by terrain-color.smoke.mjs.
+  await page.locator('.forest-layer').evaluate(n => n.style.visibility = 'hidden');
   const terrainPng = await download('PNG');
+  await page.locator('.forest-layer').evaluate(n => n.style.removeProperty('visibility'));
   const rgb = await page.evaluate(async ({ data, samples }) => {
     const image = new Image(); image.src = `data:image/png;base64,${data}`; await image.decode();
     const canvas = document.createElement('canvas'); canvas.width = image.width; canvas.height = image.height;
