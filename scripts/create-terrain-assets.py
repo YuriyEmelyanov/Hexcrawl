@@ -48,7 +48,7 @@ def dry(style):
 # Four distinct landforms per family, authored at tile scale. No central void.
 def mountain_range(peaks, base):
     contour=f'M{peaks[0][0]-14} {base}' + ''.join(f'L{x} {y}L{x+9} {y+17}' for x,y in peaks) + f'L{peaks[-1][0]+20} {base}'
-    art=path(contour+'Z','none',0,'#A4A08A',.24)
+    art=path(contour+'Z','none',0,'#B6B3A7',1)
     for x,y in peaks:
         art+=path(f'M{x} {y}L{x+9} {y+17}L{x+20} {base}L{x+3} {base-3}L{x+4} {y+23}Z','none',0,'#615F50',.48)
         art+=path(f'M{x} {y}L{x-3} {y+12}L{x+2} {y+22}L{x-2} {base-4}','#4A4B40',1.15)
