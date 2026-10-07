@@ -17,3 +17,9 @@ jobs:
       - run: npm run check
       - run: npx playwright install --with-deps chromium
       - run: npm run test:browser
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: terrain-render-preview
+          path: reports/terrain-v2-*.png
+          if-no-files-found: ignore

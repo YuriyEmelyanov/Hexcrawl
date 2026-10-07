@@ -1,3 +1,5 @@
+import { BIOME_GROUND_COLORS, WATER_PALETTE, terrainAsset } from './rendering/terrainStyle';
+import { LakeWater } from './rendering/LakeWater';
 import { validateKingdomLayers } from './modes/persistence';
 import { findKingdomOrigin, kingdomHexes, kingdomKeys, connectionPath, distance, type Kingdom, type GenerationMode } from './modes/kingdoms';
 import { modeRegionSize } from './modes/regionSize';
@@ -512,10 +514,10 @@ const SVG_EXPORT_STYLES = `
   .hex-label { fill:#f4f8ff; font-size:11px; pointer-events:none; }
   .hex-coordinate-label { fill:#253247; font-size:7px; font-weight:700; letter-spacing:.02em; pointer-events:none; user-select:none; }
   .rivers-layer, .roads-layer, .river-debug-layer { pointer-events:none; }
-  .river-polyline { fill:none; stroke:#3ea2ff; stroke-linecap:round; stroke-linejoin:round; }
-  .river-direction-arrow, .river-rapid-mark { stroke:#ffffff; stroke-width:1.2; stroke-linecap:round; }
+  .river-polyline { fill:none; stroke:var(--water-color); stroke-linecap:round; stroke-linejoin:round; }
+  .river-direction-arrow, .river-rapid-mark { stroke:var(--water-marks, #ffffff); stroke-width:1.2; stroke-linecap:round; }
   .river-waterfall { pointer-events:none; }
-  .river-arrow-head { fill:#ffffff; }
+  .river-arrow-head { fill:var(--water-marks, #ffffff); }
   .road-line { stroke:#8b6a3f; stroke-width:3; stroke-linecap:round; }
   .road-line--ford { opacity:.42; }
   .trail-line { stroke:#8b6a3f; stroke-width:1.5; stroke-linecap:butt; stroke-dasharray:4.04145 4.04145; stroke-dashoffset:2.02073; }
@@ -597,35 +599,9 @@ const BIOMES: Record<BiomeId, Biome> = {
   dead_forested_hills: { id: 'dead_forested_hills', label: 'Мёртвый лес на холмах', color: '#919191', primaryEmoji: '〰️', secondaryEmojis: ['🪾'], wildWeight: 1, settledWeight: 0, heightLevel: 2 },
   dead_mountain_forest: { id: 'dead_mountain_forest', label: 'Мёртвый горный лес', color: '#828282', primaryEmoji: '⛰', secondaryEmojis: ['🪾'], wildWeight: 1, settledWeight: 0, heightLevel: 3 }
 };
-// Colour describes the ground family; vegetation density and elevation belong
-// to future illustration layers. Keep this exhaustive when adding a biome.
-const BIOME_GROUND_COLORS: Record<BiomeId, string> = {
-  plain_deciduous_forest: '#acb78b',
-  plain_mixed_forest: '#acb78b',
-  plain_coniferous_forest: '#acb78b',
-  deciduous_forested_hills: '#acb78b',
-  mixed_forested_hills: '#acb78b',
-  coniferous_forested_hills: '#acb78b',
-  deciduous_mountain_forest: '#acb78b',
-  mixed_mountain_forest: '#acb78b',
-  coniferous_mountain_forest: '#acb78b',
-  deciduous_woodland: '#acb78b',
-  mixed_woodland: '#acb78b',
-  coniferous_woodland: '#acb78b',
-  hilly_woodland: '#acb78b',
-  mountain_woodland: '#acb78b',
-  open_plains: '#c7c69a',
-  open_hills: '#c7c69a',
-  mountains: '#beb5a2',
-  swamp: '#a4afa0',
-  swamp_forest: '#a4afa0',
-  semi_desert: '#d5c397',
-  dead_forest: '#b8b09a',
-  dead_woodland: '#b8b09a',
-  dead_forested_hills: '#b8b09a',
-  dead_mountain_forest: '#b8b09a'
-};
-const GROUND_WATER_COLOR = '#97b6bc';
+// Compile-time coverage of every biome in the drawing palette.
+const GROUND_COLORS: Record<BiomeId, string> = BIOME_GROUND_COLORS;
+const GROUND_WATER_COLOR = WATER_PALETTE.sea;
 
 const FALLBACK_BIOME_ID: BiomeId = 'plain_deciduous_forest';
 const FALLBACK_SETTLED_BIOME_ID: BiomeId = 'open_plains';
@@ -13274,9 +13250,10 @@ export function App() {
       .map(hex => ({
         key: hex.key,
         points: hexPoints(hex.x, hex.y, HEX_SIZE),
-        color: BIOME_GROUND_COLORS[biomeOverrideByHexKey.get(hex.key) ?? regionBiomes.get(hex.regionId ?? -1) ?? FALLBACK_BIOME_ID]
+        color: GROUND_COLORS[biomeOverrideByHexKey.get(hex.key) ?? regionBiomes.get(hex.regionId ?? -1) ?? FALLBACK_BIOME_ID]
       }));
   }, [useBiomeColor, positionedHexes, regions, hexTerrainByKey, biomeOverrideByHexKey]);
+  const colorLakeHexes = useMemo(() => useBiomeColor ? positionedHexes.hexes.filter(hex => hexTerrainByKey.get(hex.key)?.terrainOverride === 'lake') : [], [useBiomeColor, positionedHexes, hexTerrainByKey]);
   const poiDisplayToggleLabel = `${t.pointsDisplay}: ${usePoiSvg ? t.iconsMode : t.emojiMode}`;
   const poiDisplayToggleTitle = usePoiSvg ? t.showPoiEmojiTitle : t.showPoiIconsTitle;
 
@@ -13843,7 +13820,7 @@ export function App() {
               data-biome-display={biomeDisplayMode}
               viewBox={`0 0 ${displayMapWidth} ${displayMapHeight}`}
               preserveAspectRatio="xMinYMin meet"
-              style={{ width: `${displayMapWidth * mapScale}px`, height: `${displayMapHeight * mapScale}px` }}
+              style={{ width: `${displayMapWidth * mapScale}px`, height: `${displayMapHeight * mapScale}px`, '--water-color': useBiomeColor ? WATER_PALETTE.river : WATER_COLOR, '--water-marks': useBiomeColor ? WATER_PALETTE.marks : '#ffffff' } as CSSProperties}
             >
             <defs>
               {([1, 2, 3, 4, 5] as RiverFullness[]).map((fullness) => {
@@ -13868,8 +13845,8 @@ export function App() {
                     {colorLandHexes.map(hex => <polygon key={hex.key} points={hex.points} />)}
                   </clipPath>
                   <filter id="biome-color-blend" filterUnits="userSpaceOnUse" x={-HEX_SIZE} y={-HEX_SIZE} width={positionedHexes.width + HEX_SIZE * 2} height={positionedHexes.height + HEX_SIZE * 2} colorInterpolationFilters="sRGB">
-                    {/* About a quarter hex on either side of a boundary. */}
-                    <feGaussianBlur stdDeviation={HEX_SIZE * 0.17} />
+                    {/* A broad land transition, twice the initial blend width. */}
+                    <feGaussianBlur stdDeviation={HEX_SIZE * 0.34} />
                     {/* Normalize opacity at coasts; the outer clip keeps water sharp. */}
                     <feComponentTransfer><feFuncA type="linear" slope={0} intercept={1} /></feComponentTransfer>
                   </filter>
@@ -13881,6 +13858,7 @@ export function App() {
                 </g>
               </g>
             ) : null}
+            {useBiomeColor ? <LakeWater cells={colorLakeHexes} radius={HEX_SIZE} points={hexPoints} /> : null}
             {positionedHexes.hexes.map((hex) => {
               const meta = metadataMap.get(hex.key);
               const isStartClickPrompt = regions.length === 0 && hex.kind === 'candidate' && hex.key === hexKey(START_HEX);
@@ -13891,7 +13869,7 @@ export function App() {
               const isLakeHex = terrain?.terrainOverride === 'lake';
               const region = meta?.regionId ? regions.find((item) => item.id === meta.regionId) : undefined;
               const effectiveBiomeId = biomeOverrideByHexKey.get(hex.key) ?? region?.biomeId ?? FALLBACK_BIOME_ID;
-              const fill = hex.kind === 'candidate' ? undefined : useBiomeColor ? (hex.kind === 'sea' || isLakeHex ? GROUND_WATER_COLOR : 'transparent') : hex.kind === 'sea' ? SEA_HEX_COLOR : isLakeHex ? LAKE_HEX_COLOR : getBiomeColor(effectiveBiomeId);
+              const fill = hex.kind === 'candidate' ? undefined : useBiomeColor ? (hex.kind === 'sea' ? GROUND_WATER_COLOR : 'transparent') : hex.kind === 'sea' ? SEA_HEX_COLOR : isLakeHex ? LAKE_HEX_COLOR : getBiomeColor(effectiveBiomeId);
               const gridStyle = useBiomeColor && hex.kind !== 'candidate' ? { stroke: 'rgba(87, 82, 66, 0.22)', strokeWidth: 0.55 } : {};
               const biomeTileHref = useBiomeTiles && hex.kind === 'region' && !isLakeHex ? getBiomeTileHref(effectiveBiomeId) : undefined;
               const tileImageSize = getHexWidth(hexRenderSize);
@@ -13934,6 +13912,16 @@ export function App() {
                         preserveAspectRatio="xMidYMid slice"
                         transform={isMapRotated ? `rotate(-90 ${hex.x} ${hex.y})` : undefined}
                       />
+                    </g>
+                  ) : null}
+                  {useBiomeColor && hex.kind === 'region' && !isLakeHex ? (
+                    <g clipPath={`url(#hex-clip-${hex.key})`} pointerEvents="none">
+                      <image className="terrain-overlay" data-terrain-key={hex.key}
+                        href={terrainAsset(effectiveBiomeId, hex.q, hex.r, toponymSeed)}
+                        x={hex.x - tileImageSize / 2} y={hex.y - tileImageHeight / 2}
+                        width={tileImageSize} height={tileImageHeight}
+                        preserveAspectRatio="xMidYMid meet"
+                        transform={isMapRotated ? `rotate(-90 ${hex.x} ${hex.y})` : undefined} />
                     </g>
                   ) : null}
                   <polygon points={hexPoints(hex.x, hex.y, hexRenderSize)} className={cls} style={{ fill: 'none', ...gridStyle }} />
@@ -14061,7 +14049,7 @@ export function App() {
                   <image
                     key={waterfall.key}
                     className="river-waterfall"
-                    href="/waterfall.svg"
+                    href={useBiomeColor ? '/waterfall-color.svg' : '/waterfall.svg'}
                     x={position.x - 8}
                     y={position.y - 8}
                     width={16}
@@ -14364,7 +14352,7 @@ export function App() {
                             selectedHexVertexKeys.has(vertex.key) && waterfallRiverVertexKeys.has(vertex.key)
                           ));
                           const riverFeatures = [hasWaterfall ? waterfallLabel : null, hasRapids ? t.rapids : null].filter((feature): feature is string => feature !== null);
-                          return <p key={`nearby-river-${river.id}`}><span className="nearby-river-marker" aria-hidden="true">→</span>{hasRapids ? <span className="nearby-river-marker" aria-hidden="true">|||</span> : null}{hasWaterfall ? <img className="nearby-waterfall-marker" src="/waterfall.svg" alt="" aria-hidden="true" /> : null} {t.river} {renderToponym(`river:${river.id}`)}{riverFeatures.length > 0 ? ` (${riverFeatures.join(', ')})` : ''}</p>;
+                          return <p key={`nearby-river-${river.id}`}><span className="nearby-river-marker" aria-hidden="true">→</span>{hasRapids ? <span className="nearby-river-marker" aria-hidden="true">|||</span> : null}{hasWaterfall ? <img className="nearby-waterfall-marker" src={useBiomeColor ? '/waterfall-color.svg' : '/waterfall.svg'} alt="" aria-hidden="true" /> : null} {t.river} {renderToponym(`river:${river.id}`)}{riverFeatures.length > 0 ? ` (${riverFeatures.join(', ')})` : ''}</p>;
                         })}
                         {selectedObstacles.map(o=><p key={o.edgeKey} style={{color:'#bd6a64'}}>━ {language==='ru'?'Препятствие':'Barrier'} ({hexKey(o.hex)===selectedHexKey?hexKey(o.neighborHex):hexKey(o.hex)})</p>)}
                         {selectedHexCrossings.map((crossing) => <p key={`selected-crossing-${crossing.key}`}>{crossing.kind === 'bridge' ? '🌉' : crossing.kind === 'ferry' ? '⛴️' : '🌊'} {t[crossing.kind]}</p>)}
