@@ -13820,7 +13820,7 @@ export function App() {
               data-biome-display={biomeDisplayMode}
               viewBox={`0 0 ${displayMapWidth} ${displayMapHeight}`}
               preserveAspectRatio="xMinYMin meet"
-              style={{ width: `${displayMapWidth * mapScale}px`, height: `${displayMapHeight * mapScale}px`, '--water-color': useBiomeColor ? WATER_PALETTE.river : WATER_COLOR, '--water-marks': useBiomeColor ? WATER_PALETTE.marks : '#ffffff' } as CSSProperties}
+              style={{ width: `${displayMapWidth * mapScale}px`, height: `${displayMapHeight * mapScale}px`, '--water-color': useBiomeColor ? WATER_PALETTE.river : '#3ea2ff', '--water-marks': useBiomeColor ? WATER_PALETTE.marks : '#ffffff' } as CSSProperties}
             >
             <defs>
               {([1, 2, 3, 4, 5] as RiverFullness[]).map((fullness) => {

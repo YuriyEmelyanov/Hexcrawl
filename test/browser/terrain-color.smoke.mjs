@@ -44,7 +44,17 @@ try {
   }
   const overlays=()=>page.locator('image.terrain-overlay').evaluateAll(nodes=>Object.fromEntries(nodes.map(n=>[n.dataset.terrainKey,n.getAttribute('href')])));
   await importMap(fixture);
-  await toggle.click();await toggle.click();
+  // Regression: the non-colour inline CSS variable used to reference itself.
+  for (const mode of ['tiles','emoji']) {
+    const colours=await page.locator('.map-viewport > svg').evaluate(svg=>({
+      river:getComputedStyle(svg.querySelector('.river-polyline')).stroke,
+      lake:[...svg.querySelectorAll('polygon.hex')].filter(n=>n.style.fill==='var(--water-color)').map(n=>getComputedStyle(n).fill)
+    }));
+    assert.equal(colours.river,'rgb(62, 162, 255)',`${mode} river visible`);
+    assert.ok(colours.lake.length>0,`${mode} lake sample exists`);
+    assert.ok(colours.lake.every(c=>c==='rgb(62, 162, 255)'),`${mode} lakes blue`);
+    await toggle.click();
+  }
   await page.waitForFunction(()=>document.querySelectorAll('image.terrain-overlay').length>0);
   const before=await overlays();
   assert.ok(Object.keys(before).length>100);
@@ -56,7 +66,7 @@ try {
     waterfall:[...svg.querySelectorAll('.river-waterfall')].map(n=>n.getAttribute('href'))
   }));
   assert.equal(features.river,'rgb(72, 173, 181)');assert.equal(features.marks,'rgb(157, 227, 229)');
-  assert.equal(features.lake,48);assert.ok(features.waterfall.every(h=>h==='/waterfall-color.svg'));
+  assert.equal(features.lake,1);assert.ok(features.waterfall.every(h=>h==='/waterfall-color.svg'));
   const png=await download('PNG');
   await fs.mkdir(new URL('../../reports/',import.meta.url),{recursive:true});
   await fs.writeFile(new URL('../../reports/terrain-v2-map.png',import.meta.url),png);
