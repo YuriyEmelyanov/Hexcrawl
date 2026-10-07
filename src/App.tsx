@@ -1,3 +1,5 @@
+import { ForestLayer } from './rendering/ForestLayer';
+import { forestKind } from './rendering/forestGeometry';
 import { BIOME_GROUND_COLORS, WATER_PALETTE, terrainAsset } from './rendering/terrainStyle';
 import { LakeWater } from './rendering/LakeWater';
 import { validateKingdomLayers } from './modes/persistence';
@@ -13253,6 +13255,13 @@ export function App() {
         color: GROUND_COLORS[biomeOverrideByHexKey.get(hex.key) ?? regionBiomes.get(hex.regionId ?? -1) ?? FALLBACK_BIOME_ID]
       }));
   }, [useBiomeColor, positionedHexes, regions, hexTerrainByKey, biomeOverrideByHexKey]);
+  const forestCells = useMemo(() => {
+    if (!useBiomeColor) return [];
+    const regionBiomes = new Map(regions.map(region => [region.id, region.biomeId]));
+    return positionedHexes.hexes.filter(hex => hex.kind === 'region' && hexTerrainByKey.get(hex.key)?.terrainOverride !== 'lake')
+      .map(hex => ({...hex, biome: biomeOverrideByHexKey.get(hex.key) ?? regionBiomes.get(hex.regionId ?? -1) ?? FALLBACK_BIOME_ID}))
+      .filter(hex => forestKind(hex.biome));
+  }, [useBiomeColor, positionedHexes, regions, hexTerrainByKey, biomeOverrideByHexKey]);
   const colorLakeHexes = useMemo(() => useBiomeColor ? positionedHexes.hexes.filter(hex => hexTerrainByKey.get(hex.key)?.terrainOverride === 'lake') : [], [useBiomeColor, positionedHexes, hexTerrainByKey]);
   const poiDisplayToggleLabel = `${t.pointsDisplay}: ${usePoiSvg ? t.iconsMode : t.emojiMode}`;
   const poiDisplayToggleTitle = usePoiSvg ? t.showPoiEmojiTitle : t.showPoiIconsTitle;
@@ -13859,6 +13868,7 @@ export function App() {
               </g>
             ) : null}
             {useBiomeColor ? <LakeWater cells={colorLakeHexes} radius={HEX_SIZE} points={hexPoints} /> : null}
+            {useBiomeColor ? <ForestLayer cells={forestCells} radius={HEX_SIZE} seed={toponymSeed} /> : null}
             {positionedHexes.hexes.map((hex) => {
               const meta = metadataMap.get(hex.key);
               const isStartClickPrompt = regions.length === 0 && hex.kind === 'candidate' && hex.key === hexKey(START_HEX);
@@ -13914,7 +13924,7 @@ export function App() {
                       />
                     </g>
                   ) : null}
-                  {useBiomeColor && hex.kind === 'region' && !isLakeHex ? (
+                  {useBiomeColor && hex.kind === 'region' && !isLakeHex && !forestKind(effectiveBiomeId) ? (
                     <g clipPath={`url(#hex-clip-${hex.key})`} pointerEvents="none">
                       <image className="terrain-overlay" data-terrain-key={hex.key}
                         href={terrainAsset(effectiveBiomeId, hex.q, hex.r, toponymSeed)}
