@@ -71,7 +71,7 @@ export function buildForest(cells:ForestCell[],radius:number,seed:number):Canopy
    const rand=rng(hash(`${edge.c.q},${edge.c.r}:${edge.i}`,seed));
    knots.push({x:edge.a.x-(dy/l+py/pl)*radius*.085,y:edge.a.y+(dx/l+px/pl)*radius*.085});
    for(let k=1;k<=4;k++){
-    const t=k/5,inset=radius*(.015+rand()*.25);
+    const t=k/5,inset=radius*(.015+rand()*.36);
     knots.push({x:edge.a.x+dx*t-dy/l*inset,y:edge.a.y+dy*t+dx/l*inset});
    }
   }
@@ -81,9 +81,9 @@ export function buildForest(cells:ForestCell[],radius:number,seed:number):Canopy
  // Four or five independently-shaped groves, each fully contained in its hex.
  for(const c of cells.filter(c=>forestKind(c.biome)==='sparse')){
   const rand=rng(hash(`${c.q},${c.r}:groves`,seed));const count=rand()<.5?4:5;
-  const phase=rand()*.4;
+  const phase=rand()*Math.PI*2;
   for(let i=0;i<count;i++){
-   const angle=-Math.PI/2+i*2*Math.PI/count+phase;
+   const angle=-Math.PI/2+i*2*Math.PI/count+phase+(rand()-.5)*.16;
    const distance=radius*(.34+rand()*.07);
    const x=c.x+Math.cos(angle)*distance,y=c.y+Math.sin(angle)*distance;
    const rx=radius*(.20+rand()*.050),ry=radius*(.155+rand()*.045);
