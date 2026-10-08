@@ -57,8 +57,9 @@ try {
   }
   await page.waitForFunction(()=>document.querySelectorAll('image.terrain-overlay').length>0);
   const before=await overlays();
-  assert.ok(Object.keys(before).length>100);
-  assert.ok(Object.values(before).includes('/terrain/v2/tree.svg'));
+  assert.ok(Object.keys(before).length>20);
+  assert.ok(!Object.values(before).includes('/terrain/v2/tree.svg'));
+  assert.ok(await page.locator('.forest-canopy').count()>0);
   const features=await page.locator('.map-viewport > svg').evaluate(svg=>({
     river:getComputedStyle(svg.querySelector('.river-polyline')).stroke,
     marks:getComputedStyle(svg.querySelector('.river-direction-arrow')).stroke,
@@ -119,6 +120,28 @@ try {
   await importMap(sample);const grown=await overlays();
   for(const [key,href]of Object.entries(stable))if(key!=='0,0')assert.equal(grown[key],href);
   assert.match(grown['0,0'],/mountains-/);
+  // Review sample uses the real import handler, App layers and normal PNG export.
+  const forestSample=JSON.parse(await fs.readFile(new URL('../fixtures/forest-review-map.json',import.meta.url),'utf8'));
+  await importMap(forestSample);
+  const forestPaths=()=>page.locator('.forest-canopy').evaluateAll(ns=>ns.map(n=>n.getAttribute('d')));
+  const originalForest=await forestPaths();
+  assert.ok(originalForest.length>10);
+  const groups=await page.locator('[data-forest-kind="sparse"]').evaluateAll(ns=>{
+    const counts={};for(const n of ns)counts[n.dataset.forestHex]=(counts[n.dataset.forestHex]||0)+1;return counts;
+  });
+  assert.ok(Object.keys(groups).length>=5);
+  assert.ok(Object.values(groups).every(n=>n>=4&&n<=5));
+  assert.equal(await page.locator('[data-forest-kind="dense"]').count(),1);
+  assert.equal(await page.locator('image[href="/terrain/v2/tree.svg"]').count(),0);
+  await fs.writeFile(new URL('../../reports/forest-generator-sample.png',import.meta.url),await download('PNG'));
+  const forestSave=JSON.parse((await download('JSON')).toString());
+  await importMap(forestSave);
+  assert.deepEqual(await forestPaths(),originalForest,'Forest outline and groves survive save/load');
+  await fs.writeFile(new URL('../../reports/forest-generator-sample.json',import.meta.url),JSON.stringify(forestSave,null,2));
+  // A real hole in the forest must remain ground, not be filled by the inner contour.
+  forestSave.map.biomeOverrideByHexKey['3,4']='open_plains';
+  await importMap(forestSave);
+  await fs.writeFile(new URL('../../reports/forest-generator-glade.png',import.meta.url),await download('PNG'));
   assert.deepEqual(errors,[]);
   console.log('Terrain v2: all 20 assets, stable variants, old/Mythic saves, water colours, lake/island pixels, rotation, map expansion, PNG exports passed.');
 } finally {if(browser)await browser.close();server.kill();}
