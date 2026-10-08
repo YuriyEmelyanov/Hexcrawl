@@ -90,7 +90,7 @@ try {
   assert.equal(await emojiPois.count(), 39);
   assert.equal(await biomeEmoji.count(), 0);
   assert.equal(await page.locator('.biome-color-layer').count(), 1);
-  assert.equal(await page.locator('#biome-color-land-clip polygon').count(), 37, 'Lakes are excluded from the blended land');
+  assert.equal(await page.locator('#biome-color-land-clip polygon').count(), 42, 'Land underlays include dry margins around natural lakes');
   await poiToggle.click();
   assert.equal(await svgPois.count(), 39);
   const colorPng = await download('PNG');
