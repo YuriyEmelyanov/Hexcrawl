@@ -66,6 +66,7 @@ try {
   assert.equal(await hexToggle.getAttribute('aria-label'), 'Гексы: Тайлы');
   assert.equal(await poiToggle.getAttribute('aria-label'), 'Точки интереса: Значки');
   assert.ok(await tiles.count() > 0);
+  for(const hex of waterHexes.slice(0,5))assert.equal(await page.locator(`[data-hex-key="${key(hex)}"]`).locator("..").locator("image.biome-tile").count(),0,'Lake cell has colour only');
   assert.equal(await biomeEmoji.count(), 0);
   const expectedHrefs = [...landKinds.map(kind => `/poi/v2/land/${kind}.svg`), ...waterKinds.map(kind => `/poi/v2/water/${kind}.svg`), '/poi/v2/unknown.svg'].sort();
   assert.deepEqual((await svgPois.evaluateAll(nodes => nodes.map(node => node.getAttribute('href')))).sort(), expectedHrefs);

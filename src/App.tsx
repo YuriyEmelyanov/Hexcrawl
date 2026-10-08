@@ -13862,9 +13862,9 @@ export function App() {
               const isLakeHex = terrain?.terrainOverride === 'lake';
               const region = meta?.regionId ? regions.find((item) => item.id === meta.regionId) : undefined;
               const effectiveBiomeId = biomeOverrideByHexKey.get(hex.key) ?? region?.biomeId ?? FALLBACK_BIOME_ID;
-              const fill = hex.kind === 'candidate' ? undefined : useBiomeColor ? (hex.kind === 'sea' ? GROUND_WATER_COLOR : 'transparent') : hex.kind === 'sea' ? SEA_HEX_COLOR : getBiomeColor(effectiveBiomeId);
+              const fill = hex.kind === 'candidate' ? undefined : useBiomeColor ? (hex.kind === 'sea' ? GROUND_WATER_COLOR : 'transparent') : hex.kind === 'sea' ? SEA_HEX_COLOR : isLakeHex ? WATER_PALETTE.deep : getBiomeColor(effectiveBiomeId);
               const gridStyle = useBiomeColor && hex.kind !== 'candidate' ? { stroke: 'rgba(87, 82, 66, 0.22)', strokeWidth: 0.55 } : {};
-              const biomeTileHref = useBiomeTiles && hex.kind === 'region' ? getBiomeTileHref(effectiveBiomeId) : undefined;
+              const biomeTileHref = useBiomeTiles && hex.kind === 'region' && !isLakeHex ? getBiomeTileHref(effectiveBiomeId) : undefined;
               const tileImageSize = getHexWidth(hexRenderSize);
               const tileImageHeight = hexRenderSize * 2;
               const effectiveBiome = BIOMES[effectiveBiomeId] ?? BIOMES[FALLBACK_BIOME_ID];
@@ -13896,7 +13896,7 @@ export function App() {
                   <polygon data-hex-key={hex.key} points={hexPoints(hex.x, hex.y, hexRenderSize)} className={cls} style={{ fill, ...(useBiomeColor ? { stroke: 'none' } : {}) }} />
                   {biomeTileHref ? (
                     <g clipPath={`url(#hex-clip-${hex.key})`} pointerEvents="none">
-                      <image
+                      <image className="biome-tile"
                         href={biomeTileHref}
                         x={hex.x - tileImageSize / 2}
                         y={hex.y - tileImageHeight / 2}
@@ -13921,7 +13921,7 @@ export function App() {
                 </g>
               );
             })}
-            <LakeWater cells={lakeCells} radius={HEX_SIZE} points={hexPoints} seed={toponymSeed} segments={riverSegments} />
+            {useBiomeColor ? <LakeWater cells={lakeCells} radius={HEX_SIZE} seed={toponymSeed} segments={riverSegments} /> : null}
             <g className="rivers-layer">
               {riverSegments.map((segment) => (
                 <line
@@ -14101,7 +14101,7 @@ export function App() {
                 const effectiveBiome = BIOMES[effectiveBiomeId] ?? BIOMES[FALLBACK_BIOME_ID];
                 const biomePrimaryEmoji = effectiveBiome.primaryEmoji;
                 const biomeSecondaryEmojis = effectiveBiome.secondaryEmojis;
-                const biomeTileHref = useBiomeTiles && hex.kind === 'region' ? getBiomeTileHref(effectiveBiomeId) : undefined;
+                const biomeTileHref = useBiomeTiles && hex.kind === 'region' && !isLakeHex ? getBiomeTileHref(effectiveBiomeId) : undefined;
                 const biomeEmojis = biomeTileHref || useBiomeColor ? [] : [biomePrimaryEmoji, ...biomeSecondaryEmojis.slice(0, 2)];
                 const isPointOfInterest = region?.pointsOfInterest.some((poi) => hexKey(poi) === hex.key) ?? false;
                 if (waterPoiKind) {

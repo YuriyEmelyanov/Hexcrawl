@@ -22,32 +22,83 @@ export function smoothLakeLoop(ps:WaterPoint[]):string{
  for(let i=0;i<ps.length;i++)d+=`Q${at(ps[i])} ${at(mid(ps[i],ps[(i+1)%ps.length]))}`;
  return d+'Z';
 }
-// Smooth the signed distance field of the whole cell union, then contour it.
-// This removes cell-corner geometry before adding seeded coastal variation.
+// Contour one lake-wide field. Bridges widen shared sides before shoreline
+// variation, so consecutive cells do not become individual pinched lobes.
 function fieldShore(cells:LakeCell[],edges:{a:WaterPoint;b:WaterPoint}[],r:number,id:string,seed:number):WaterPoint[][]{
  const step=r*.07,x0=Math.min(...cells.map(c=>c.x))-r*1.3,y0=Math.min(...cells.map(c=>c.y))-r*1.3;
  const w=Math.ceil((Math.max(...cells.map(c=>c.x))+r*1.3-x0)/step)+1,h=Math.ceil((Math.max(...cells.map(c=>c.y))+r*1.3-y0)/step)+1;
  const preparedEdges=edges.map(e=>({...e,dx:e.b.x-e.a.x,dy:e.b.y-e.a.y,lengthSquared:(e.b.x-e.a.x)**2+(e.b.y-e.a.y)**2}));
+ const byKey=new Map(cells.map(c=>[`${c.q},${c.r}`,c]));
+ const bridges=cells.flatMap(c=>directions.slice(0,3).flatMap(([dq,dr])=>{
+  const n=byKey.get(`${c.q+dq},${c.r+dr}`);if(!n)return [];
+  const dx=n.x-c.x,dy=n.y-c.y;return [{a:c,dx,dy,lengthSquared:dx*dx+dy*dy}];
+ }));
+ const unionField=new Float64Array(w*h),bridgeField=new Float64Array(w*h);
  let field=new Float64Array(w*h);
  for(let y=0;y<h;y++)for(let x=0;x<w;x++){
   const p={x:x0+x*step,y:y0+y*step};let distanceSquared=Infinity;
   for(const e of preparedEdges){const px=p.x-e.a.x,py=p.y-e.a.y,t=Math.max(0,Math.min(1,(px*e.dx+py*e.dy)/e.lengthSquared));
    const ex=px-e.dx*t,ey=py-e.dy*t;distanceSquared=Math.min(distanceSquared,ex*ex+ey*ey);}
-  field[y*w+x]=(cells.some(c=>inLakeCell(p,c,r))?1:-1)*Math.sqrt(distanceSquared);
+  const index=y*w+x;
+  unionField[index]=(cells.some(c=>inLakeCell(p,c,r))?1:-1)*Math.sqrt(distanceSquared);
+  let bridgeDistanceSquared=Infinity;
+  for(const b of bridges){const px=p.x-b.a.x,py=p.y-b.a.y,t=Math.max(0,Math.min(1,(px*b.dx+py*b.dy)/b.lengthSquared));
+   const bx=px-b.dx*t,by=py-b.dy*t;bridgeDistanceSquared=Math.min(bridgeDistanceSquared,bx*bx+by*by);}
+  bridgeField[index]=r*.72-Math.sqrt(bridgeDistanceSquared);
+  field[index]=Math.max(unionField[index],bridgeField[index]);
  }
- const kernel=[1,8,28,56,70,56,28,8,1];
- const xi=Array.from({length:w},(_,x)=>Int32Array.from(kernel,(_,k)=>Math.max(0,Math.min(w-1,x+k-4))));
- const yi=Array.from({length:h},(_,y)=>Int32Array.from(kernel,(_,k)=>Math.max(0,Math.min(h-1,y+k-4))*w));
- for(let pass=0;pass<4;pass++){
-  const horizontal=pass%2===0,next=new Float64Array(w*h);
-  for(let y=0;y<h;y++)for(let x=0;x<w;x++){let v=0;for(let k=0;k<9;k++)v+=kernel[k]*field[horizontal?y*w+xi[x][k]:yi[y][k]+x];next[y*w+x]=v/256;}field=next;
+ // A broad safety envelope avoids allowing the old hex-shaped boundary
+ // to imprint itself on large pleses whenever the basin reaches the margin.
+ const blurSigma=.85/.07,kernelRadius=Math.ceil(blurSigma*3);
+ const weights=Array.from({length:kernelRadius*2+1},(_,i)=>Math.exp(-((i-kernelRadius)**2)/(2*blurSigma*blurSigma)));
+ const weightSum=weights.reduce((a,b)=>a+b,0);for(let k=0;k<weights.length;k++)weights[k]/=weightSum;
+ const horizontal=new Float64Array(w*h),envelope=new Float64Array(w*h);
+ for(let y=0;y<h;y++)for(let x=0;x<w;x++){let sum=0;for(let k=0;k<weights.length;k++)sum+=weights[k]*unionField[y*w+Math.max(0,Math.min(w-1,x+k-kernelRadius))];horizontal[y*w+x]=sum;}
+ for(let y=0;y<h;y++)for(let x=0;x<w;x++){let sum=0;for(let k=0;k<weights.length;k++)sum+=weights[k]*horizontal[Math.max(0,Math.min(h-1,y+k-kernelRadius))*w+x];envelope[y*w+x]=sum;}
+ // A continuous basin density defines the whole outline. Its broad kernels
+ // overlap across several cells; exposed hex sides do not shape the shoreline.
+ const sigma=r*.82,variance=2*sigma*sigma;
+ const holes:WaterPoint[]=[];
+ // Detect enclosed missing cells once; they have their own free shoreline.
+ const minQ=Math.min(...cells.map(c=>c.q))-1,maxQ=Math.max(...cells.map(c=>c.q))+1;
+ const minR=Math.min(...cells.map(c=>c.r))-1,maxR=Math.max(...cells.map(c=>c.r))+1;
+ const missing=new Set<string>();for(let rr=minR;rr<=maxR;rr++)for(let q=minQ;q<=maxQ;q++)if(!byKey.has(`${q},${rr}`))missing.add(`${q},${rr}`);
+ while(missing.size){const start=missing.values().next().value!,todo=[start],component:string[]=[];missing.delete(start);let outside=false;
+  while(todo.length){const k=todo.pop()!,[q,rr]=k.split(',').map(Number);component.push(k);if(q===minQ||q===maxQ||rr===minR||rr===maxR)outside=true;
+   for(const[dq,dr]of directions){const nk=`${q+dq},${rr+dr}`;if(missing.delete(nk))todo.push(nk);}}
+  if(!outside)for(const k of component){const[q,rr]=k.split(',').map(Number);holes.push({x:cells[0].x+Math.sqrt(3)*r*(q-cells[0].q+(rr-cells[0].r)/2),y:cells[0].y+r*1.5*(rr-cells[0].r)});}
  }
- const p1=random(id+':field1',seed)*6.283,p2=random(id+':field2',seed)*6.283,p3=random(id+':field3',seed)*6.283;
+ const p1=random(id+':basin1',seed)*Math.PI*2,p2=random(id+':basin2',seed)*Math.PI*2,p3=random(id+':basin3',seed)*Math.PI*2;
  for(let y=0;y<h;y++)for(let x=0;x<w;x++){
-  const xx=(x0+x*step-cells[0].x)/r,yy=(y0+y*step-cells[0].y)/r;
-  const inset=r*(.24+.06*Math.sin(xx*1.8+yy*.9+p1)+.045*Math.sin(xx*.7-yy*2.2+p2)+.025*Math.cos(xx*3.1+yy*2.7+p3));
-  field[y*w+x]-=inset;
+  const px=x0+x*step,py=y0+y*step,xx=(px-cells[0].x)/r,yy=(py-cells[0].y)/r;
+  let density=0;
+  for(const c of cells)density+=Math.exp(-((px-c.x)**2+(py-c.y)**2)/variance);
+  // Large off-grid changes create unequal reaches, bays and peninsulas first.
+  // Finer detail only follows that larger shape.
+  const threshold=.82+.26*Math.sin(xx*.68+yy*.43+p1)+.18*Math.sin(xx*1.31-yy*.97+p2)
+   +.065*Math.cos(xx*3.4+yy*2.8+p3)+.025*Math.sin(xx*8.1-yy*6.7+p1+p2);
+  const index=y*w+x;
+  const channel=bridgeField[index]-r*(.36+.055*Math.sin(xx*.71+yy*.53+p3));
+  const nearIsland=holes.some(c=>Math.hypot(px-c.x,py-c.y)<r*1.3);
+  let value=Math.min(nearIsland?Infinity:Math.max(envelope[index]+r*(.25-.14*Math.sin(xx*.67+yy*.89+p2)-.05*Math.cos(xx*2.8+yy*2.2+p3)-.025*Math.sin(xx*7.1-yy*5.3+p1)),bridgeField[index]-r*.40),Math.max((density-threshold)*r,channel));
+  for(const c of holes){const dx=px-c.x,dy=py-c.y,a=Math.atan2(dy,dx);
+   const rho=r*Math.max(.88,.95+.05*Math.sin(2*a+p2)+.045*Math.sin(3*a+p1)+.025*Math.cos(5*a+p3));
+   value=Math.min(value,Math.hypot(dx,dy)-rho);}
+  field[index]=value;
  }
+ // Fit excessive spill with broad local adjustments, not pointwise hex
+ // clipping or a global shrink that would erase every large reach.
+ const outside:number[]=[];
+ for(let y=0;y<h;y++)for(let x=0;x<w;x++)if(!cells.some(c=>inLakeCell({x:x0+x*step,y:y0+y*step},c,r,r*.18)))outside.push(y*w+x);
+ for(let pass=0;pass<64;pass++){
+  let worst=-1,excess=0;for(const i of outside)if(field[i]>excess){excess=field[i];worst=i;}
+  if(worst<0)break;
+  const cx=worst%w,cy=Math.floor(worst/w),sigma=.75/.07;
+  for(let y=0;y<h;y++)for(let x=0;x<w;x++){const i=y*w+x,penalty=(excess+r*.04)*Math.exp(-((x-cx)**2+(y-cy)**2)/(2*sigma*sigma));
+   field[i]=Math.max(field[i]-penalty,bridgeField[i]-r*.40);}
+ }
+ // Rare remaining outliers after the bounded fit retain the spill limit.
+ if(outside.some(i=>field[i]>0))for(let i=0;i<field.length;i++)field[i]=Math.min(field[i],unionField[i]+r*.23);
  type S={a:WaterPoint;b:WaterPoint};const segments:S[]=[];
  for(let y=0;y<h-1;y++)for(let x=0;x<w-1;x++){
   const ps=[{x:x0+x*step,y:y0+y*step},{x:x0+(x+1)*step,y:y0+y*step},{x:x0+(x+1)*step,y:y0+(y+1)*step},{x:x0+x*step,y:y0+(y+1)*step}];
@@ -86,14 +137,14 @@ export function buildNaturalLakes(cells:NaturalLakeCell[],radius:number,seed:num
   }else if(group.length>1)loops=fieldShore(group,edges,radius,id,seed);
   if(group.length===1&&!cached){
    const c=group[0],rotation=random(id+':rotation',seed)*Math.PI*2;
-   const p2=random(id+':two',seed)*Math.PI*2,p3=random(id+':three',seed)*Math.PI*2,p5=random(id+':five',seed)*Math.PI*2;
+   const p2=random(id+':two',seed)*Math.PI*2,p3=random(id+':three',seed)*Math.PI*2,p5=random(id+':five',seed)*Math.PI*2,p8=random(id+':eight',seed)*Math.PI*2;
    const oval=random(id+':oval',seed)*.07;
    const ox=(random(id+':ox',seed)-.5)*radius*.065,oy=(random(id+':oy',seed)-.5)*radius*.065;
-   // A free shoreline inside the hex's inscribed circle. The six corners of
-   // the cell play no role in its shape; connected river mouths are added below.
-   loops.splice(0,loops.length,Array.from({length:20},(_,i)=>{
-    const a=i*Math.PI/10+rotation;
-    const rho=radius*Math.min(.80,Math.max(.38,.61+(.09+oval)*Math.sin(2*a+p2)+.11*Math.sin(3*a+p3)+.055*Math.sin(5*a+p5)));
+   // Independent shoreline frequencies add bays and small headlands. A little
+   // spill beyond the original cell is allowed; no neighbouring cell changes type.
+   loops.splice(0,loops.length,Array.from({length:48},(_,i)=>{
+    const a=i*Math.PI/24+rotation;
+    const rho=radius*Math.min(.98,Math.max(.40,.68+(.10+oval)*Math.sin(2*a+p2)+.11*Math.sin(3*a+p3)+.075*Math.sin(5*a+p5)+.045*Math.sin(8*a+p8)+.025*Math.cos(11*a+p2)));
     return{x:c.x+ox+Math.cos(a)*rho,y:c.y+oy+Math.sin(a)*rho};
    }));
   }

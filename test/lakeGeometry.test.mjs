@@ -10,11 +10,11 @@ test('lake contours are stable after reload and input reordering; unrelated lake
  assert.deepEqual(expanded.find(s=>s.cells.length===3),buildNaturalLakes(cells,radius,71)[0]);
  assert.notEqual(buildNaturalLakes(cells,radius,71)[0].path,buildNaturalLakes(cells,radius,72)[0].path);
 });
-test('single-cell lakes have distinct normalized silhouettes and points inside their cells',()=>{
+test('single-cell lakes have distinct silhouettes with bounded visual spill',()=>{
  const seen=new Set();
  for(let id=1;id<=50;id++){
  const c=cell(0,0,id),s=buildNaturalLakes([c],radius,19)[0];assert.equal(s.loops.length,1);seen.add(s.path);
- for(const p of s.loops[0])assert.ok(inLakeCell(p,c,radius));
+ for(const p of s.loops[0])assert.ok(inLakeCell(p,c,radius,radius*.16));
  }assert.equal(seen.size,50);
 });
 test('multi-cell lake shares one contour; island remains a separate hole; identities do not merge',()=>{
@@ -45,4 +45,26 @@ test('bounded per-layer cache reuses unchanged lakes, including map-origin trans
  buildNaturalLakes([...cells,cell(1,1)],radius,19,[],cache);assert.equal(cache.misses,3);
  for(let i=0;i<90;i++)buildNaturalLakes([cell(i*3,0,i+100)],radius,19,[],cache);
  assert.ok(cache.entries.size<=64);assert.ok(cache.points<=100000);
+});
+
+test('consecutive lake cells retain broad joins instead of hex-edge pinches',()=>{
+ for(const seed of [1,19,71,71612]){
+  const shape=buildNaturalLakes([0,1,2,3].map(q=>cell(q,0,91)),radius,seed)[0];
+  for(const q of [.5,1.5,2.5]){
+   const x=Math.sqrt(3)*radius*q,ys=[];
+   for(const loop of shape.loops)for(let i=0;i<loop.length;i++){
+    const a=loop[i],b=loop[(i+1)%loop.length];
+    if((a.x<x)!==(b.x<x))ys.push(a.y+(b.y-a.y)*(x-a.x)/(b.x-a.x));
+   }
+   assert.equal(ys.length,2);assert.ok(Math.max(...ys)-Math.min(...ys)>radius*.60,`join width at ${q}, seed ${seed}`);
+  }
+ }
+});
+test('multi-cell shoreline can spill slightly but stays within the bounded neighbouring margin',()=>{
+ const cells=[cell(0,0),cell(1,0),cell(1,1),cell(2,1)];let spills=0;
+ for(const seed of [1,19,71,71612])for(const loop of buildNaturalLakes(cells,radius,seed)[0].loops)for(const p of loop){
+  assert.ok(cells.some(c=>inLakeCell(p,c,radius,radius*.30)));
+  if(!cells.some(c=>inLakeCell(p,c,radius)))spills++;
+ }
+ assert.ok(spills>0,'Variation crosses old hex edges rather than being clipped');
 });
