@@ -44,8 +44,7 @@ try {
   }
   const overlays=()=>page.locator('image.terrain-overlay').evaluateAll(nodes=>Object.fromEntries(nodes.map(n=>[n.dataset.terrainKey,n.getAttribute('href')])));
   await importMap(fixture);
-  // Water geometry and colours are shared by all display modes.
-  let lakePaths;
+  // Schematic modes use whole lake hexes; all modes retain the same water palette.
   for (const mode of ['tiles','emoji']) {
     const features=await page.locator('.map-viewport > svg').evaluate(svg=>({
       river:getComputedStyle(svg.querySelector('.river-polyline')).stroke,
@@ -55,8 +54,14 @@ try {
     }));
     assert.equal(features.river,'rgb(21, 157, 172)',`${mode} river colour`);
     assert.equal(features.marks,'rgb(139, 219, 221)',`${mode} flow colour`);
-    assert.ok(features.paths.length>0,`${mode} natural lakes exist`);
-    if(lakePaths)assert.deepEqual(features.paths,lakePaths,'Mode changes preserve lake shapes');else lakePaths=features.paths;
+    assert.equal(features.paths.length,0,`${mode} uses schematic lake hexes`);
+    const lakeKeys=Object.entries(fixture.map.terrainByHexKey).filter(([,v])=>v.terrainOverride==='lake').map(([k])=>k);
+    assert.ok(lakeKeys.length>0);
+    for(const key of lakeKeys){
+      const hex=page.locator(`[data-hex-key="${key}"]`);
+      assert.equal(await hex.evaluate(n=>getComputedStyle(n).fill),'rgb(17, 127, 140)',`${mode} lake hex keeps the deep water palette`);
+      assert.equal(await hex.locator('..').locator('image.biome-tile').count(),0);
+    }
     assert.ok(features.waterfall.every(h=>h==='/waterfall-color.svg'));
     const png=await download('PNG');assert.ok(png.length>10000,`${mode} PNG export`);
     await toggle.click();
@@ -73,7 +78,7 @@ try {
   }));
   assert.equal(features.river,'rgb(21, 157, 172)');assert.equal(features.marks,'rgb(139, 219, 221)');
   assert.ok(features.lake>1);
-  assert.deepEqual(await page.locator('[data-lake-shape] clipPath[id$="-shape"] > path').evaluateAll(nodes=>nodes.map(n=>n.getAttribute('d'))),lakePaths);assert.ok(features.waterfall.every(h=>h==='/waterfall-color.svg'));
+  const lakePaths=await page.locator('[data-lake-shape] clipPath[id$="-shape"] > path').evaluateAll(nodes=>nodes.map(n=>n.getAttribute('d')));assert.ok(lakePaths.length>0);assert.ok(features.waterfall.every(h=>h==='/waterfall-color.svg'));
   const png=await download('PNG');
   await fs.mkdir(new URL('../../reports/',import.meta.url),{recursive:true});
   await fs.writeFile(new URL('../../reports/terrain-v2-map.png',import.meta.url),png);
@@ -83,6 +88,7 @@ try {
   assert.deepEqual(saved.map.roads,fixture.map.roads);
   await importMap(saved);assert.deepEqual(await overlays(),before,'JSON reload preserves variants');
   await toggle.click();await toggle.click();await toggle.click();assert.deepEqual(await overlays(),before,'Mode changes preserve variants');
+  assert.deepEqual(await page.locator('[data-lake-shape] clipPath[id$="-shape"] > path').evaluateAll(nodes=>nodes.map(n=>n.getAttribute('d'))),lakePaths,'Returning to Color restores the same lake geometry');
   await page.locator('.rotate-map-button').click();
   assert.deepEqual(await overlays(),before);
   assert.ok(await page.locator('image.terrain-overlay').first().evaluate(n=>Math.abs(n.getCTM().b)<.001),'Artwork remains upright');
