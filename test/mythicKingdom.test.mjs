@@ -10,11 +10,14 @@ function validate(h,k) {
   const app=h.render(),area=kingdomKeys(k.origin),rs=app.regions.filter(r=>k.regionIds.includes(r.id));
   const land=new Set(rs.flatMap(r=>r.hexes.map(key)));
   assert.equal(area.size,144);assert.ok([...area].every(k=>land.has(k)), 'all cells covered');
-  assert.equal(rs[0].biomeLandType,'settled');assert.ok([11,12].includes(rs[0].finalSize),'first region size');
+  assert.equal(key(rs[0].centerHex),key(kingdomHexes(k.origin)[78]));assert.equal(key(rs[0].anchorHex),key(rs[0].centerHex));assert.equal(rs[0].centralPoiKind,'throne');
+  const occupied=new Set([...app.regions.flatMap(r=>r.hexes.map(key)),...app.hexTerrainByKey.keys()]);
+  assert.equal(h.geometry.findFillableEnclosedEmptyAreas(land,occupied).length,0,'no enclosed ungenerated pockets');
+  assert.equal(rs[0].biomeLandType,'settled');assert.ok([11,12].includes(rs[0].targetSize) && rs[0].finalSize>=rs[0].targetSize,'first region size');
   const counts=new Map(),mythIds=new Set();
   for(const r of rs){
-    assert.ok(r.hexes.some(h=>area.has(key(h))));assert.ok(r.targetSize>=1&&r.targetSize<=12);assert.ok(r.finalSize<=12);
-    if(r.isTract){assert.equal(r.biomeLandType,'wild');assert.ok(r.finalSize<=5);}
+    assert.ok(r.hexes.some(h=>area.has(key(h))));assert.ok(r.targetSize>=1&&r.targetSize<=12);
+    if(r.isTract){assert.equal(r.biomeLandType,'wild');assert.ok(r.targetSize<=5);}
     const pois=[...(r.centralPoiKind?[[r.centerHex,r.centralPoiKind,true]]:[]),...r.pointsOfInterest.map(h=>[h,r.pointOfInterestKinds[key(h)],false])];
     for(const [h,kind,central] of pois){assert.ok(mythicPoiChoices(r.biomeLandType==='settled',central).includes(kind),`${kind} in ${r.id}`);assert.ok(!app.hexTerrainByKey.get(key(h))?.terrainOverride);if(kind==='myth'){assert.ok(area.has(key(h)));assert.ok(!mythIds.has(r.id));mythIds.add(r.id);}if(area.has(key(h)))counts.set(kind,(counts.get(kind)||0)+1);}
   }
@@ -62,4 +65,44 @@ test('late exception rolls back entire kingdom',()=>{
 test('nearest free rectangle and disjoint territory',()=>{
   const occupied=kingdomKeys({q:0,r:0}),anchor={q:12,r:0},origin=findKingdomOrigin(anchor,occupied);
   assert.ok(kingdomKeys(origin).has(key(anchor)));assert.ok(kingdomHexes(origin).every(h=>!occupied.has(key(h))));
+});
+
+test('first settled region starts at the rectangle center, including its throne',()=>{
+  const h=createGenerationHarness(7);
+  h.render().startKingdom({q:0,r:0});
+  const center=kingdomHexes(h.render().kingdomJob.origin)[78];
+  h.render().advanceKingdom();
+  assert.equal(key(h.render().regions[0].anchorHex),key(center));
+  const app=finish(h),first=app.regions[0];
+  assert.equal(first.centralPoiKind,'throne');assert.equal(key(first.centerHex),key(center));
+});
+test('Mythic growth fills an enclosed pocket even when the target is already reached',()=>{
+  const h=createGenerationHarness(7),anchor={q:2,r:0},occupied=new Set();
+  for(let q=-2;q<=2;q++)for(let r=-2;r<=2;r++)
+    if(Math.max(Math.abs(q),Math.abs(r),Math.abs(q+r))===2 && !(q===2&&r===0))occupied.add(key({q,r}));
+  for(const cells of [h.geometry.generateConnectedRegionFromAnchorImpl(anchor,1,occupied,new Set(),new Set()),h.geometry.generateFallbackTractFromAnchor(anchor,occupied,1)]){
+    assert.equal(cells.length,8);assert.ok(cells.some(h=>key(h)==='0,0'));
+    assert.equal(h.geometry.findFillableEnclosedEmptyAreas(new Set(cells.map(key)),occupied).length,0);
+  }
+});
+
+test('real Mythic handler absorbs a pocket beyond the roll and undo restores it',()=>{
+  for(const targetSize of [1,6]){
+    const h=createGenerationHarness(23),radius=targetSize===1?2:3,anchor={q:radius,r:0};
+    h.render().addFallbackTractToMap({q:-10,r:0});
+    const template=h.render().regions[0],hexes=[];
+    for(let q=-radius;q<=radius;q++)for(let r=-radius;r<=radius;r++)
+      if(Math.max(Math.abs(q),Math.abs(r),Math.abs(q+r))===radius && !(q===radius&&r===0))hexes.push({q,r});
+    const old={...template,hexes,anchorHex:hexes[0],centerHex:hexes[0],finalSize:hexes.length,pointsOfInterest:[],pointOfInterestKinds:{}};
+    h.render().restoreSnapshot({regions:[old],rivers:[],roads:[],crossings:[],candidateHexes:[anchor],hexTerrainByKey:new Map(),waterPoiByKey:new Map(),biomeOverrideByHexKey:new Map(),nextLakeId:1,nextRoadId:1});
+    const before=JSON.stringify(h.render().createSaveData().map);
+    const result=h.render().safelyAddRegionToMap(anchor,{mode:'mythic',targetSize,coastalPreference:'mainland'});
+    assert.equal(result.success,true,JSON.stringify(result));
+    const app=h.render(),added=app.regions.at(-1);
+    assert.equal(added.targetSize,targetSize);assert.equal(added.finalSize,targetSize===1?8:20);
+    assert.ok(added.hexes.some(h=>key(h)==='0,0'));
+    assert.equal(JSON.stringify(app.regions[0]),JSON.stringify(old));
+    h.geometry.assertHexcrawlSaveData(JSON.parse(JSON.stringify(app.createSaveData())));
+    h.render().deleteLastRegion();assert.equal(JSON.stringify(h.render().createSaveData().map),before);
+  }
 });

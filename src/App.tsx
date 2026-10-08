@@ -1259,6 +1259,7 @@ type GenerationOptions = {
   mode?: GenerationMode;
   kingdomId?: number;
   kingdomArea?: Set<string>;
+  fixedCenter?: AxialHex;
   forbiddenHexes?: Set<string>;
   targetSize?: number;
   landType?: BiomeLandType;
@@ -5234,8 +5235,7 @@ function generateConnectedRegionFromAnchorImpl(
   size: number,
   occupiedHexes: Set<string>,
   zeroWeightHexes: Set<string> = new Set(),
-  neutralOccupiedNeighborWeightHexes: Set<string> = new Set(),
-  capSize = false
+  neutralOccupiedNeighborWeightHexes: Set<string> = new Set()
 ): AxialHex[] {
   const targetSize = Math.max(1, size);
   const regionKeys = new Set<string>([hexKey(anchorHex)]);
@@ -5244,14 +5244,12 @@ function generateConnectedRegionFromAnchorImpl(
   const frontier = new Map<string, AxialHex>();
   addHexToRegionWithFrontier(anchorHex, regionKeys, occupiedHexes, frontier);
   while (true) {
-    if (capSize && regionKeys.size >= targetSize) break;
     const frontierCandidates = Array.from(frontier.values());
     const enclosedAreas = findFillableEnclosedEmptyAreas(regionKeys, occupiedHexes, frontierCandidates);
     if (enclosedAreas.length > 0) {
       let addedEnclosedHex = false;
       for (const area of enclosedAreas) {
         for (const hex of area) {
-          if (capSize && regionKeys.size >= targetSize) break;
           if (zeroWeightHexes.has(hexKey(hex))) continue;
           addHexToRegionWithFrontier(hex, regionKeys, occupiedHexes, frontier);
           addedEnclosedHex = true;
@@ -5273,20 +5271,18 @@ function generateConnectedRegionFromAnchorImpl(
   return Array.from(regionKeys).map(parseHexKey);
 }
 
-function generateFallbackTractFromAnchor(anchorHex: AxialHex, occupiedHexes: Set<string>, targetSize = rollTractTargetSize(), capSize = false): AxialHex[] {
+function generateFallbackTractFromAnchor(anchorHex: AxialHex, occupiedHexes: Set<string>, targetSize = rollTractTargetSize()): AxialHex[] {
   const regionKeys = new Set<string>([hexKey(anchorHex)]);
   const frontier = new Map<string, AxialHex>();
   addHexToRegionWithFrontier(anchorHex, regionKeys, occupiedHexes, frontier);
 
   while (true) {
-    if (capSize && regionKeys.size >= targetSize) break;
     const frontierCandidates = Array.from(frontier.values());
     const enclosedAreas = findFillableEnclosedEmptyAreas(regionKeys, occupiedHexes, frontierCandidates);
     if (enclosedAreas.length > 0) {
       let addedEnclosedHex = false;
       for (const area of enclosedAreas) {
         for (const hex of area) {
-          if (capSize && regionKeys.size >= targetSize) break;
           const key = hexKey(hex);
           if (occupiedHexes.has(key) || regionKeys.has(key)) continue;
           addHexToRegionWithFrontier(hex, regionKeys, occupiedHexes, frontier);
@@ -11622,7 +11618,7 @@ export function App() {
 
     for (const blocked of options.forbiddenHexes ?? []) occupiedHexes.add(blocked);
     const targetSize = options.mode === 'mythic' ? Math.min(5, options.targetSize ?? modeRegionSize('mythic', rollTractTargetSize)) : rollTractTargetSize();
-    const regionHexes = generateFallbackTractFromAnchor(anchorHex, occupiedHexes, targetSize, options.mode === 'mythic');
+    const regionHexes = generateFallbackTractFromAnchor(anchorHex, occupiedHexes, targetSize);
     const regionKeySet = new Set(regionHexes.map(hexKey));
     for (const regionKey of regionKeySet) existingSeaKeys.delete(regionKey);
     const finalSize = regionHexes.length;
@@ -11913,8 +11909,7 @@ export function App() {
         targetSize,
         occupiedHexes,
         mainlandZeroWeightHexes,
-        coastalNeutralNeighborWeightHexes,
-        options.mode === 'mythic'
+        coastalNeutralNeighborWeightHexes
       );
       const finalSize = regionHexes.length;
       if (finalSize < 6) {
@@ -11934,7 +11929,7 @@ export function App() {
       }
       const { sizeCategory, sizeLabel } = getRegionSizeCategory(finalSize);
       const centerCandidates = options.kingdomArea ? regionHexes.filter(h => options.kingdomArea!.has(hexKey(h))) : regionHexes;
-      const centerHex = chooseRegionCenter(centerCandidates.length ? centerCandidates : regionHexes);
+      const centerHex = options.fixedCenter ?? chooseRegionCenter(centerCandidates.length ? centerCandidates : regionHexes);
       const regionByHexKey = new Map<string, Region>();
       for (const region of regions) {
         for (const hex of region.hexes) regionByHexKey.set(hexKey(hex), region);
@@ -12476,7 +12471,7 @@ export function App() {
       for (const region of regions) for (const hex of region.hexes) occupiedForLandPockets.add(hexKey(hex));
       const enclosedLandPocketKeys = new Set<string>();
       for (const area of findFillableEnclosedEmptyAreas(new Set(finalRegion.hexes.map(hexKey)), occupiedForLandPockets)) {
-        for (const hex of area) if (options.mode !== 'mythic' && !options.forbiddenHexes?.has(hexKey(hex))) enclosedLandPocketKeys.add(hexKey(hex));
+        for (const hex of area) if (!options.forbiddenHexes?.has(hexKey(hex))) enclosedLandPocketKeys.add(hexKey(hex));
       }
       for (const key of enclosedLandPocketKeys) pocketKeySet.add(key);
       const enclosedLandPocketHexes = Array.from(enclosedLandPocketKeys).map(parseHexKey);
@@ -12848,7 +12843,7 @@ export function App() {
     try {
       if(!job.first && regions.length===job.startCount+1) {
         const first=regions[job.startCount];
-        if(first.isTract || first.biomeLandType!=='settled' || ![11,12].includes(first.finalSize)) {
+        if(first.isTract || first.biomeLandType!=='settled' || (![11,12].includes(first.targetSize) || first.finalSize < first.targetSize)) {
           if((job.recoveries??0)>=12)throw new Error('Не удалось создать первый освоенный регион на 11–12 гексов.');
           restoreSnapshot(history[history.length-1]);setHistory(history.slice(0,-1));
           setKingdomJob({...job,first:true,recoveries:(job.recoveries??0)+1,steps:job.steps+1});return;
@@ -12866,14 +12861,14 @@ export function App() {
       }
       const uncovered=kingdomHexes(job.origin).filter(h=>!occupied.has(hexKey(h)));
       if(!uncovered.length) {finishKingdom(job);return;}
-      // The first settlement is placed near the middle to allow its full 11/12
-      // cells. Later anchors belong to the rectangle and touch the built map.
+      // The throne and first settlement start at offset column 6, row 6.
+      // Later anchors belong to the rectangle and touch the built map.
       const center=kingdomHexes(job.origin)[78];
       const candidates=job.first?uncovered:uncovered.filter(h=>getHexNeighbors(h).some(n=>occupied.has(hexKey(n))));
       if(!candidates.length)throw new Error('Не найден следующий гекс королевства.');
-      const anchor=job.preferredAnchor && !occupied.has(hexKey(job.preferredAnchor)) ? job.preferredAnchor : job.first&&area.has(hexKey(job.anchor))&&!occupied.has(hexKey(job.anchor))?job.anchor:candidates.sort((a,b)=>distance(a,center)-distance(b,center))[0];
+      const anchor=job.first ? center : job.preferredAnchor && !occupied.has(hexKey(job.preferredAnchor)) ? job.preferredAnchor : candidates.sort((a,b)=>distance(a,center)-distance(b,center))[0];
       const targetSize=modeRegionSize('mythic',rollRegionTargetSize,job.first);
-      const result=safelyAddRegionToMap(anchor,{mode:'mythic',kingdomId:job.id,kingdomArea:area,targetSize,landType:job.first?'settled':undefined,coastalPreference:'mainland'});
+      const result=safelyAddRegionToMap(anchor,{mode:'mythic',kingdomId:job.id,kingdomArea:area,fixedCenter:job.first?center:undefined,targetSize,landType:job.first?'settled':undefined,coastalPreference:'mainland'});
       if(!result.success) {
         if(result.diagnostic.kind==='constraint-rejection' && regions.length>job.startCount+1 && (job.recoveries??0)<12) {
           restoreSnapshot(history[history.length-1]);setHistory(history.slice(0,-1));

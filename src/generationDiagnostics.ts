@@ -1,5 +1,5 @@
 // Bump when generation rules/algorithms change, independently of save format.
-export const GENERATION_ALGORITHM_VERSION = 'regions-2026-10-06-mythic.1';
+export const GENERATION_ALGORITHM_VERSION = 'regions-2026-10-08-mythic.2';
 export const MAX_REGION_ATTEMPTS = 30;
 
 export type GenerationOutcome = 'generated' | 'tract-created' | 'attempts-exhausted' | 'programming-error' | 'constraint-rejection';
