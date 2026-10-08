@@ -44,15 +44,21 @@ try {
   }
   const overlays=()=>page.locator('image.terrain-overlay').evaluateAll(nodes=>Object.fromEntries(nodes.map(n=>[n.dataset.terrainKey,n.getAttribute('href')])));
   await importMap(fixture);
-  // Regression: the non-colour inline CSS variable used to reference itself.
+  // Water geometry and colours are shared by all display modes.
+  let lakePaths;
   for (const mode of ['tiles','emoji']) {
-    const colours=await page.locator('.map-viewport > svg').evaluate(svg=>({
+    const features=await page.locator('.map-viewport > svg').evaluate(svg=>({
       river:getComputedStyle(svg.querySelector('.river-polyline')).stroke,
-      lake:[...svg.querySelectorAll('polygon.hex')].filter(n=>n.style.fill==='var(--water-color)').map(n=>getComputedStyle(n).fill)
+      marks:getComputedStyle(svg.querySelector('.river-direction-arrow')).stroke,
+      paths:[...svg.querySelectorAll('[data-lake-shape] clipPath[id$="-shape"] > path')].map(n=>n.getAttribute('d')),
+      waterfall:[...svg.querySelectorAll('.river-waterfall')].map(n=>n.getAttribute('href'))
     }));
-    assert.equal(colours.river,'rgb(62, 162, 255)',`${mode} river visible`);
-    assert.ok(colours.lake.length>0,`${mode} lake sample exists`);
-    assert.ok(colours.lake.every(c=>c==='rgb(62, 162, 255)'),`${mode} lakes blue`);
+    assert.equal(features.river,'rgb(21, 157, 172)',`${mode} river colour`);
+    assert.equal(features.marks,'rgb(139, 219, 221)',`${mode} flow colour`);
+    assert.ok(features.paths.length>0,`${mode} natural lakes exist`);
+    if(lakePaths)assert.deepEqual(features.paths,lakePaths,'Mode changes preserve lake shapes');else lakePaths=features.paths;
+    assert.ok(features.waterfall.every(h=>h==='/waterfall-color.svg'));
+    const png=await download('PNG');assert.ok(png.length>10000,`${mode} PNG export`);
     await toggle.click();
   }
   await page.waitForFunction(()=>document.querySelectorAll('image.terrain-overlay').length>0);
@@ -65,8 +71,9 @@ try {
     lake:svg.querySelectorAll('.lake-water-layer path').length,
     waterfall:[...svg.querySelectorAll('.river-waterfall')].map(n=>n.getAttribute('href'))
   }));
-  assert.equal(features.river,'rgb(72, 173, 181)');assert.equal(features.marks,'rgb(157, 227, 229)');
-  assert.equal(features.lake,1);assert.ok(features.waterfall.every(h=>h==='/waterfall-color.svg'));
+  assert.equal(features.river,'rgb(21, 157, 172)');assert.equal(features.marks,'rgb(139, 219, 221)');
+  assert.ok(features.lake>1);
+  assert.deepEqual(await page.locator('[data-lake-shape] clipPath[id$="-shape"] > path').evaluateAll(nodes=>nodes.map(n=>n.getAttribute('d'))),lakePaths);assert.ok(features.waterfall.every(h=>h==='/waterfall-color.svg'));
   const png=await download('PNG');
   await fs.mkdir(new URL('../../reports/',import.meta.url),{recursive:true});
   await fs.writeFile(new URL('../../reports/terrain-v2-map.png',import.meta.url),png);
@@ -103,16 +110,21 @@ try {
   // Sample clear water inside the broad lake and beside its island, avoiding grid strokes.
   const points=await page.locator('.map-viewport > svg').evaluate(svg=>{
     const c=(key,dx=0)=>{const b=svg.querySelector(`[data-hex-key="${key}"]`).getBBox();return{x:b.x+b.width/2+dx,y:b.y+b.height/2+3};};
-    return [c('12,9'),c('10,9',28*Math.sqrt(3)/2+2),c('1,2'),c('10,9')];
+    return [c('12,9'),c('1,2'),c('10,9')];
   });
-  const pixels=await page.evaluate(async({data,points})=>{
+  const {pixels,shallow}=await page.evaluate(async({data,points})=>{
     const im=new Image();im.src=`data:image/png;base64,${data}`;await im.decode();
     const c=document.createElement('canvas');c.width=im.width;c.height=im.height;const x=c.getContext('2d');x.drawImage(im,0,0);
-    return points.map(p=>[...x.getImageData(Math.round(p.x*2),Math.round(p.y*2),1,1).data].slice(0,3));
+    const rgb=p=>[...x.getImageData(Math.round(p.x*2),Math.round(p.y*2),1,1).data].slice(0,3);
+    const pixels=points.map(rgb);
+    // Find actual water beside the island rather than assuming the hex edge is shoreline.
+    const shallow=[];
+    for(let t=0;t<=1;t+=.005){const p={x:points[2].x+(points[0].x-points[2].x)*t,y:points[2].y+(points[0].y-points[2].y)*t};const v=rgb(p);if(v[0]>=17&&v[0]<=22&&v[1]>=127&&v[1]<=158&&v[2]>=140&&v[2]<=173)shallow.push(v);}
+    return {pixels,shallow};
   },{data:atlas.toString('base64'),points});
-  assert.ok(pixels[0][0]<pixels[1][0] && pixels[0][1]<pixels[1][1],`Island shore is lighter than deep water: ${pixels}`);
-  assert.ok(pixels[2][1]>pixels[0][1],`Small lake stays lighter: ${pixels}`);
-  assert.ok(pixels[3][0]>100,`Island stays land coloured: ${pixels}`);
+  assert.ok(shallow.some(v=>v[1]>pixels[0][1]+15),`Island shore has a lighter water band: ${JSON.stringify({pixels,shallow})}`);
+  assert.ok(Math.abs(pixels[1][0]-17)<3 && Math.abs(pixels[1][1]-127)<3 && Math.abs(pixels[1][2]-140)<3,`Single lake reaches the same deep plateau: ${pixels}`);
+  assert.ok(pixels[2][0]>100,`Island stays land coloured: ${pixels}`);
   const stable=await overlays();
   // Expanding a map does not shuffle old cells. Also check a manual biome override.
   sample.map.regions[0].hexes.push({q:-1,r:0});sample.map.biomeOverrideByHexKey['0,0']='mountains';
