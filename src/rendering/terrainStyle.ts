@@ -1,5 +1,5 @@
 // Presentation only. Never consume the generation RNG here.
-export const WATER_PALETTE = { river: '#48ADB5', deep: '#287F8B', marks: '#9DE3E5', sea: '#97B6BC' } as const;
+export const WATER_PALETTE = { river: '#159DAC', deep: '#117F8C', marks: '#8BDBDD', sea: '#97B6BC' } as const;
 export const BIOME_GROUND_COLORS = {
   plain_deciduous_forest: '#91B575', plain_mixed_forest: '#91B575', plain_coniferous_forest: '#91B575',
   deciduous_forested_hills: '#91B575', mixed_forested_hills: '#91B575', coniferous_forested_hills: '#91B575',

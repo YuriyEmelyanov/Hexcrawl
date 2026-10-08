@@ -1,25 +1,35 @@
-import { useMemo } from 'react';
-import { lakeShorePath, WATER_PALETTE, type LakeCell } from './terrainStyle';
+import { useMemo, useRef, memo } from 'react';
+import { buildNaturalLakes, createLakeGeometryCache, type NaturalLakeCell, type WaterSegment } from './lakeGeometry';
+import { WATER_PALETTE } from './terrainStyle';
 
-export function LakeWater({ cells, radius, points }: { cells: LakeCell[]; radius: number; points: (x:number,y:number,r:number)=>string }) {
-  const shore = useMemo(() => lakeShorePath(cells, radius), [cells, radius]);
-  if (!cells.length) return null;
-  const minX=Math.min(...cells.map(c=>c.x))-3*radius;
-  const minY=Math.min(...cells.map(c=>c.y))-3*radius;
-  const width=Math.max(...cells.map(c=>c.x))-minX+3*radius;
-  const height=Math.max(...cells.map(c=>c.y))-minY+3*radius;
-  // Blur one shoreline colour field, just like the land colour layer. No
-  // nested offset bands: their hexagonal medial axes produced visible stars.
-  return <g className="lake-water-layer" pointerEvents="none">
-    <defs>
-      <clipPath id="lake-water-clip">{cells.map(c => <polygon key={`${c.q},${c.r}`} points={points(c.x,c.y,radius)} />)}</clipPath>
-      <filter id="lake-water-blend" filterUnits="userSpaceOnUse" x={minX} y={minY} width={width} height={height} colorInterpolationFilters="sRGB">
-        <feGaussianBlur stdDeviation={radius*0.55} />
-      </filter>
-    </defs>
-    <g clipPath="url(#lake-water-clip)">
-      {cells.map(c => <polygon key={`${c.q},${c.r}`} points={points(c.x,c.y,radius)} fill={WATER_PALETTE.deep} stroke={WATER_PALETTE.deep} strokeWidth={0.5} />)}
-      <path d={shore} fill="none" stroke={WATER_PALETTE.river} strokeWidth={radius*1.6} strokeLinecap="round" strokeLinejoin="round" filter="url(#lake-water-blend)" />
-    </g>
+function LakeWaterImpl({cells,radius,seed=0,segments=[],points}:{cells:NaturalLakeCell[];radius:number;seed?:number;segments?:WaterSegment[];points:(x:number,y:number,r:number)=>string}){
+ const cache=useRef<ReturnType<typeof createLakeGeometryCache>>();
+ if(!cache.current)cache.current=createLakeGeometryCache();
+ const lakes=useMemo(()=>buildNaturalLakes(cells,radius,seed,segments,cache.current),[cells,radius,seed,segments]);
+ return <g className="lake-water-layer" pointerEvents="none">{lakes.map(lake=>{
+  const id=lake.key,b=lake.bounds;
+  const silhouette=<><path d={lake.path} fillRule="evenodd" fill="white"/>{lake.mouths.map(m=><path key={m.key} d={m.path} fill="white"/>)}</>;
+  return <g key={id} data-lake-shape={id}>
+   <defs>
+    <clipPath id={`${id}-hull`}>{lake.cells.map(c=><polygon key={`${c.q},${c.r}`} points={points(c.x,c.y,radius)}/>)}</clipPath>
+    <clipPath id={`${id}-shape`}><path d={lake.path} clipRule="evenodd"/>{lake.mouths.map(m=><path key={m.key} d={m.path}/>)}</clipPath>
+    <filter id={`${id}-depth-filter`} filterUnits="userSpaceOnUse" x={b.x} y={b.y} width={b.width} height={b.height} colorInterpolationFilters="sRGB">
+     <feGaussianBlur stdDeviation={radius*.22}/>
+     {/* Continuous shallow band, then an exact constant deep plateau. The
+         combined silhouette includes inlets and islands before filtering. */}
+     <feComponentTransfer><feFuncA type="table" tableValues="0 0 0 0 0 0 0.12 0.42 0.78 1 1"/></feComponentTransfer>
+    </filter>
+    <mask id={`${id}-depth`} maskUnits="userSpaceOnUse" x={b.x} y={b.y} width={b.width} height={b.height}>
+     <g filter={`url(#${id}-depth-filter)`}><g clipPath={`url(#${id}-hull)`}>{silhouette}</g></g>
+    </mask>
+   </defs>
+   <g clipPath={`url(#${id}-hull)`}><g clipPath={`url(#${id}-shape)`}>
+    <rect {...b} fill={WATER_PALETTE.river}/>
+    <rect {...b} fill={WATER_PALETTE.deep} mask={`url(#${id}-depth)`}/>
+   </g></g>
   </g>;
+ })}</g>;
 }
+
+// Skip React reconstruction of identical filters and paths during viewport changes.
+export const LakeWater=memo(LakeWaterImpl);
