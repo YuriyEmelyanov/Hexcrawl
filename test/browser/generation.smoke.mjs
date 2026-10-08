@@ -235,6 +235,12 @@ try {
   assert.equal(await page.locator('.kingdom-progress').count(),0);
   const kingdomSave=await snapshot();
   assert.equal(kingdomSave.map.kingdoms.length,1);
+  const kingdom=kingdomSave.map.kingdoms[0];
+  const throneRegion=kingdomSave.map.regions.find(r=>r.id===kingdom.regionIds[0]);
+  const throneHex={q:kingdom.origin.q+3,r:kingdom.origin.r+6};
+  assert.deepEqual(throneRegion.anchorHex,throneHex);
+  assert.deepEqual(throneRegion.centerHex,throneHex);
+  assert.equal(throneRegion.centralPoiKind,'throne');
   assert.equal(kingdomSave.map.obstacles.length,24);
   assert.ok(await page.locator('.kingdom-boundaries line').count()>0);
   assert.ok((await page.locator('#side-panel-info').innerText()).includes('Королевство'));
