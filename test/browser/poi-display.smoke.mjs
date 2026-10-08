@@ -183,7 +183,7 @@ try {
   assert.ok(Math.abs(rgb[0][0] - 145) <= 2, `Forest center keeps palette colour: ${rgb}`);
   assert.ok(rgb[1][0] > rgb[0][0] && rgb[1][0] < rgb[2][0] && rgb[2][0] < rgb[3][0], `Both sides of the boundary blend gradually: ${rgb}`);
   assert.ok(Math.abs(rgb[3][0] - 205) <= 2, `Dry center keeps palette colour: ${rgb}`);
-  assert.ok(rgb[4][0] >= 40 && rgb[4][0] <= 72 && rgb[4][2] > rgb[4][1], `Lake stays within the water palette: ${rgb[4]}`);
+  assert.ok(rgb[4].every((v,i)=>Math.abs(v-[17,127,140][i])<=2), `Lake center reaches the deep water plateau: ${rgb[4]}`);
   await page.getByRole('button', { name: 'Switch to English', exact: true }).click();
   assert.equal(await hexToggle.getAttribute('aria-label'), 'Hexes: Color');
   if (process.env.POI_QA_SCREENSHOT) await page.locator('.controls--display').screenshot({ path: process.env.POI_QA_SCREENSHOT });
