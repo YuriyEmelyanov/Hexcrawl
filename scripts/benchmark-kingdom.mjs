@@ -6,6 +6,8 @@ import {createHash} from 'node:crypto';
 import {stripVTControlCharacters} from 'node:util';
 
 const server=spawn(process.execPath,['node_modules/vite/bin/vite.js','preview','--host','127.0.0.1','--port','4178','--strictPort'],{stdio:['ignore','pipe','inherit']});
+const baselineServer=spawn(process.execPath,['node_modules/vite/bin/vite.js','preview','--host','127.0.0.1','--port','4179','--strictPort','--outDir','dist-baseline'],{stdio:['ignore','pipe','inherit']});
+const baselineReady=new Promise((resolve,reject)=>{let out='';const t=setTimeout(()=>reject(Error('Baseline server timeout')),15000);baselineServer.stdout.on('data',d=>{out+=d;if(stripVTControlCharacters(out).includes('Local:')){clearTimeout(t);resolve();}});baselineServer.on('error',reject);});
 const modes=['emoji','tiles','color'], seeds=[42,7,123,2026,99,314159,8675309,271828,654321,123456789];
 const rows=[],drawRows=[];let browser;
 async function assets(dir,prefix=''){
@@ -16,6 +18,7 @@ async function assets(dir,prefix=''){
 }
 try{
  await new Promise((resolve,reject)=>{let out='';const t=setTimeout(()=>reject(Error('Server timeout')),15000);server.stdout.on('data',d=>{out+=d;if(stripVTControlCharacters(out).includes('Local:')){clearTimeout(t);resolve();}});server.on('error',reject);});
+ await baselineReady;
  browser=await chromium.launch({headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
  const page=await browser.newPage({viewport:{width:1500,height:1000}});
  const baseline=await browser.newPage({viewport:{width:1500,height:1000}});
@@ -32,6 +35,7 @@ try{
  });
  const paths=await assets('public');
  async function run(mode,seed,warmup=false){
+  await page.bringToFront();
   await page.goto('http://127.0.0.1:4178/');
   await page.locator('.mode-selector select').selectOption('mythic');
   const toggle=page.locator('.biome-display-toggle');
@@ -56,7 +60,7 @@ try{
      requestAnimationFrame(()=>requestAnimationFrame(()=>resolve({generationMs:generationEnd-start,renderMs:performance.now()-generationEnd,domMs:endDom-start,visibleMs:performance.now()-start,randomDraws:window.__randomDraws,alert:document.querySelector('[role=alert]')?.textContent??null,hexes:document.querySelectorAll('polygon.hex.region,polygon.hex.center').length,svgElements:document.querySelector('[data-biome-display]')?.querySelectorAll('*').length})));
     }
    });
-   observer.observe(document.querySelector('.content'),{childList:true,subtree:true,attributes:true,attributeFilter:['disabled']});
+   observer.observe(document.querySelector('.content'),{childList:true,subtree:true,attributes:true,attributeFilter:['disabled','data-render-phase']});
    const start=performance.now();candidate.dispatchEvent(new MouseEvent('click',{bubbles:true}));
   }),seed);
   const menu=page.locator('details.export-menu');if(await menu.getAttribute('open')===null)await menu.locator('summary').click();
@@ -65,6 +69,7 @@ try{
   const row={mode,seed,warmup,...result,kingdoms:save.map.kingdoms.length,regions:save.map.regions.length,mapHash:createHash('sha256').update(JSON.stringify(save.map)).digest('hex')};
   
   if(mode==='color'&&!warmup){
+   await baseline.bringToFront();
    await baseline.goto('http://127.0.0.1:4179/');
    await baseline.locator('.biome-display-toggle').click();
    await baseline.evaluate(async paths=>{
@@ -80,6 +85,7 @@ try{
    const newSvg=await page.locator('svg[data-biome-display]').evaluate(n=>n.innerHTML);
    const domIdentical=oldSvg===newSvg;
    const oldPng=await baseline.locator('svg[data-biome-display]').screenshot({animations:'disabled'});
+   await page.bringToFront();
    const newPng=await page.locator('svg[data-biome-display]').screenshot({animations:'disabled'});
    const pngIdentical=oldPng.equals(newPng);
    const draw={seed,baselineMs:oldDrawMs,optimizedMs:row.renderMs,speedup:oldDrawMs/row.renderMs,domIdentical,pngIdentical};drawRows.push(draw);console.log('DRAW_SAMPLE '+JSON.stringify(draw));
@@ -103,4 +109,4 @@ try{
  const report={drawSummary,drawRows,version:process.env.BENCH_BASE_SHA,environment:{platform:os.platform(),cpu:os.cpus()[0]?.model,vcpus:os.cpus().length,browser:browser.version(),viewport:{width:1500,height:1000},headless:true},method:'Empty map; Mythic Bastionland kingdom 12x12; SVG POI unchanged; all image assets and fonts preloaded; crypto seed fixed and analytics blocked; tutorial hint RNG disabled only in benchmark builds; one excluded warmup per mode; ten paired deterministic random seeds; rotated mode order; browser clock from click handler dispatch to completion DOM commit plus two animation frames. No CPU throttling.',identicalMaps,summary,rows};
  await fs.writeFile('reports/kingdom-benchmark.json',JSON.stringify(report,null,2));console.log('KINGDOM_REPORT '+JSON.stringify(report));
  if(!identicalMaps)throw Error('Mode changed generated map; paired comparison invalid');
-}finally{if(browser)await browser.close();server.kill();}
+}finally{if(browser)await browser.close();server.kill();baselineServer.kill();}
