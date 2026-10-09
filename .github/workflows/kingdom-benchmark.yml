@@ -1,0 +1,26 @@
+name: Kingdom display benchmark
+on:
+  push:
+    branches: [bench/kingdom-display-20261009]
+permissions:
+  contents: read
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm ci
+      - run: npm run build
+      - run: npx playwright install --with-deps chromium
+      - run: node scripts/benchmark-kingdom.mjs
+        env:
+          BENCH_BASE_SHA: d6f82abb2e2e8c9ca1a75f092456a49ae6a9dc12
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: kingdom-display-benchmark
+          path: reports/kingdom-benchmark.json
