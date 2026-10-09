@@ -51,13 +51,13 @@ try{
    const select=document.querySelector('.mode-selector select');
    const candidate=document.querySelector('polygon.hex.candidate');
    if(!candidate)return reject(Error('No starting candidate'));
-   let seen=false,endDom,generationEnd;const t=setTimeout(()=>{observer.disconnect();reject(Error('Kingdom timed out'));},120000);
+   let seen=false,endDom,generationEnd,basicOnly=true;const t=setTimeout(()=>{observer.disconnect();reject(Error('Kingdom timed out'));},120000);
    const observer=new MutationObserver(()=>{
-    if(select.disabled)seen=true;
+    if(select.disabled){seen=true;if(document.querySelector('.forest-canopy-layer, .terrain-overlay, .biome-tile, .poi-marker, .roads-layer line, .rivers-layer line'))basicOnly=false;}
     if(seen&&!select.disabled&&!generationEnd)generationEnd=performance.now();
     if(generationEnd&&document.querySelector('[data-render-phase]')?.getAttribute('data-render-phase')==='ready'){
      endDom=performance.now();observer.disconnect();clearTimeout(t);
-     requestAnimationFrame(()=>requestAnimationFrame(()=>resolve({generationMs:generationEnd-start,renderMs:performance.now()-generationEnd,domMs:endDom-start,visibleMs:performance.now()-start,randomDraws:window.__randomDraws,alert:document.querySelector('[role=alert]')?.textContent??null,hexes:document.querySelectorAll('polygon.hex.region,polygon.hex.center').length,svgElements:document.querySelector('[data-biome-display]')?.querySelectorAll('*').length})));
+     requestAnimationFrame(()=>requestAnimationFrame(()=>resolve({basicOnly,generationMs:generationEnd-start,renderMs:performance.now()-generationEnd,domMs:endDom-start,visibleMs:performance.now()-start,randomDraws:window.__randomDraws,alert:document.querySelector('[role=alert]')?.textContent??null,hexes:document.querySelectorAll('polygon.hex.region,polygon.hex.center').length,svgElements:document.querySelector('[data-biome-display]')?.querySelectorAll('*').length})));
     }
    });
    observer.observe(document.querySelector('.content'),{childList:true,subtree:true,attributes:true,attributeFilter:['disabled','data-render-phase']});
@@ -94,7 +94,7 @@ try{
 
   rows.push(row);console.log('KINGDOM_SAMPLE '+JSON.stringify(row));
   await fs.mkdir('reports',{recursive:true});await fs.writeFile('reports/kingdom-benchmark.json',JSON.stringify({rows,drawRows},null,2));
-  if(row.alert||row.kingdoms!==1||errors.length)throw Error('Incomplete kingdom '+JSON.stringify({row,errors}));
+  if(!row.basicOnly||row.alert||row.kingdoms!==1||errors.length)throw Error('Incomplete kingdom '+JSON.stringify({row,errors}));
  }
  for(const mode of modes)await run(mode,777,true);
  if(new Set(rows.map(r=>r.mapHash)).size!==1)throw Error('Warmup maps differ '+JSON.stringify(rows));
