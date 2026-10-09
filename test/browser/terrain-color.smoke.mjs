@@ -68,8 +68,13 @@ try {
   }
   await page.waitForFunction(()=>document.querySelectorAll('image.terrain-overlay').length>0);
   const before=await overlays();
-  assert.ok(Object.keys(before).length>100);
-  assert.ok(Object.values(before).includes('/terrain/v2/tree.svg'));
+  const expectedOverlayCount = fixture.map.regions.flatMap(region => region.hexes.map(hex => ({region,hex}))).filter(({region,hex}) => {
+    const key = `${hex.q},${hex.r}`;
+    return !fixture.map.terrainByHexKey?.[key]?.terrainOverride && ['open_plains','open_hills','mountains','swamp','semi_desert'].includes(fixture.map.biomeOverrideByHexKey?.[key] ?? region.biomeId);
+  }).length;
+  assert.equal(Object.keys(before).length, expectedOverlayCount);
+  assert.ok(!Object.values(before).includes('/terrain/v2/tree.svg'));
+  assert.ok(await page.locator('.forest-canopy-layer').count());
   const features=await page.locator('.map-viewport > svg').evaluate(svg=>({
     river:getComputedStyle(svg.querySelector('.river-polyline')).stroke,
     marks:getComputedStyle(svg.querySelector('.river-direction-arrow')).stroke,

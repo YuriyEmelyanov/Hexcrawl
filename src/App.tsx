@@ -1,3 +1,6 @@
+import {ForestCanopy} from './rendering/ForestCanopy';
+import {ColorHexGrid} from './rendering/ColorHexGrid';
+import {forestFamily,FOREST_GROUND} from './rendering/forestStyle';
 import { BIOME_GROUND_COLORS, WATER_PALETTE, terrainAsset } from './rendering/terrainStyle';
 import { LakeWater } from './rendering/LakeWater';
 import { validateKingdomLayers } from './modes/persistence';
@@ -13244,10 +13247,17 @@ export function App() {
       .map(hex => ({
         key: hex.key,
         points: hexPoints(hex.x, hex.y, HEX_SIZE),
-        color: GROUND_COLORS[biomeOverrideByHexKey.get(hex.key) ?? regionBiomes.get(hex.regionId ?? -1) ?? FALLBACK_BIOME_ID]
+        color: forestFamily(biomeOverrideByHexKey.get(hex.key) ?? regionBiomes.get(hex.regionId ?? -1) ?? FALLBACK_BIOME_ID) ? FOREST_GROUND : GROUND_COLORS[biomeOverrideByHexKey.get(hex.key) ?? regionBiomes.get(hex.regionId ?? -1) ?? FALLBACK_BIOME_ID]
       }));
   }, [useBiomeColor, positionedHexes, regions, hexTerrainByKey, biomeOverrideByHexKey]);
   const lakeCells = useMemo(() => positionedHexes.hexes.filter(hex => hexTerrainByKey.get(hex.key)?.terrainOverride === 'lake').map(hex=>({...hex,lakeId:hexTerrainByKey.get(hex.key)?.lakeId})), [positionedHexes, hexTerrainByKey]);
+  const forestCells = useMemo(() => {
+    if (!useBiomeColor) return [];
+    const biomes = new Map(regions.map(region => [region.id, region.biomeId]));
+    return positionedHexes.hexes.filter(hex => hex.kind === 'region' && !hexTerrainByKey.get(hex.key)?.terrainOverride)
+      .map(hex => ({...hex, biome: biomeOverrideByHexKey.get(hex.key) ?? biomes.get(hex.regionId ?? -1) ?? FALLBACK_BIOME_ID}))
+      .filter(hex => forestFamily(hex.biome));
+  }, [useBiomeColor, positionedHexes, regions, hexTerrainByKey, biomeOverrideByHexKey]);
   const poiDisplayToggleLabel = `${t.pointsDisplay}: ${usePoiSvg ? t.iconsMode : t.emojiMode}`;
   const poiDisplayToggleTitle = usePoiSvg ? t.showPoiEmojiTitle : t.showPoiIconsTitle;
 
@@ -13817,6 +13827,12 @@ export function App() {
               style={{ width: `${displayMapWidth * mapScale}px`, height: `${displayMapHeight * mapScale}px`, '--water-color': WATER_PALETTE.river, '--water-marks': WATER_PALETTE.marks } as CSSProperties}
             >
             <defs>
+              <filter id="poi-white-outline" x="-15%" y="-15%" width="130%" height="130%" colorInterpolationFilters="sRGB">
+                <feMorphology in="SourceAlpha" operator="dilate" radius="0.65" result="poi-rim"/>
+                <feFlood floodColor="#FFFFFF" result="poi-white"/>
+                <feComposite in="poi-white" in2="poi-rim" operator="in" result="poi-outline"/>
+                <feMerge><feMergeNode in="poi-outline"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
               {([1, 2, 3, 4, 5] as RiverFullness[]).map((fullness) => {
                 const markerSize = 5 * getRiverArrowScale(fullness);
                 return (
@@ -13863,7 +13879,7 @@ export function App() {
               const region = meta?.regionId ? regions.find((item) => item.id === meta.regionId) : undefined;
               const effectiveBiomeId = biomeOverrideByHexKey.get(hex.key) ?? region?.biomeId ?? FALLBACK_BIOME_ID;
               const fill = hex.kind === 'candidate' ? undefined : useBiomeColor ? (hex.kind === 'sea' ? GROUND_WATER_COLOR : 'transparent') : hex.kind === 'sea' ? SEA_HEX_COLOR : isLakeHex ? WATER_PALETTE.deep : getBiomeColor(effectiveBiomeId);
-              const gridStyle = useBiomeColor && hex.kind !== 'candidate' ? { stroke: 'rgba(87, 82, 66, 0.22)', strokeWidth: 0.55 } : {};
+              const gridStyle = useBiomeColor && hex.kind !== 'candidate' ? { stroke: 'none' } : {};
               const biomeTileHref = useBiomeTiles && hex.kind === 'region' && !isLakeHex ? getBiomeTileHref(effectiveBiomeId) : undefined;
               const tileImageSize = getHexWidth(hexRenderSize);
               const tileImageHeight = hexRenderSize * 2;
@@ -13921,7 +13937,10 @@ export function App() {
                 </g>
               );
             })}
-            {useBiomeColor ? <LakeWater cells={lakeCells} radius={HEX_SIZE} seed={toponymSeed} segments={riverSegments} /> : null}
+            {useBiomeColor ? <>
+              <ForestCanopy cells={forestCells} radius={HEX_SIZE} seed={toponymSeed} width={positionedHexes.width} height={positionedHexes.height} />
+              <LakeWater cells={lakeCells} radius={HEX_SIZE} seed={toponymSeed} segments={riverSegments} />
+            </> : null}
             <g className="rivers-layer">
               {riverSegments.map((segment) => (
                 <line
@@ -14107,9 +14126,9 @@ export function App() {
                 if (waterPoiKind) {
                   const position = isMapRotated ? rotateMapPoint(hex.x, hex.y, positionedHexes.height) : hex;
                   return usePoiSvg ? (
-                    <image key={`water-poi-svg-${hex.key}`} className="poi-marker" href={getPoiSvgHref(waterPoiKind, true)} x={position.x - 12} y={position.y - 12} width={24} height={24} pointerEvents="none" role="img" aria-label={getWaterPoiLabel(waterPoiKind, language)} />
+                    <image key={`water-poi-svg-${hex.key}`} className="poi-marker" filter="url(#poi-white-outline)" href={getPoiSvgHref(waterPoiKind, true)} x={position.x - 10} y={position.y - 10} width={20} height={20} pointerEvents="none" role="img" aria-label={getWaterPoiLabel(waterPoiKind, language)} />
                   ) : (
-                    <text key={`water-poi-emoji-${hex.key}`} className="poi-marker" x={position.x} y={position.y} textAnchor="middle" dominantBaseline="central" fontSize={22} pointerEvents="none">{getWaterPoiEmoji(waterPoiKind)}</text>
+                    <text key={`water-poi-emoji-${hex.key}`} className="poi-marker" filter="url(#poi-white-outline)" x={position.x} y={position.y} textAnchor="middle" dominantBaseline="central" fontSize={18.5} pointerEvents="none">{getWaterPoiEmoji(waterPoiKind)}</text>
                   );
                 }
                 if (!SHOW_BIOME_EMOJI || hex.kind !== 'region' || !hex.regionId || !region || isLakeHex) return null;
@@ -14128,11 +14147,11 @@ export function App() {
                   const position = isMapRotated ? rotateMapPoint(item.x, item.y, positionedHexes.height) : item;
                   const marker = hexMarkers[index];
                   if (usePoiSvg && marker.svgHref) {
-                    const size = item.fontSize * 1.5;
-                    return <image key={`poi-svg-${hex.key}-${index}`} className="poi-marker" href={marker.svgHref} x={position.x - size / 2} y={position.y - size / 2} width={size} height={size} pointerEvents="none" role="img" aria-label={marker.label} />;
+                    const size = item.fontSize * 1.25;
+                    return <image key={`poi-svg-${hex.key}-${index}`} className="poi-marker" filter="url(#poi-white-outline)" href={marker.svgHref} x={position.x - size / 2} y={position.y - size / 2} width={size} height={size} pointerEvents="none" role="img" aria-label={marker.label} />;
                   }
                   return (
-                    <text key={`biome-emoji-${hex.key}-${index}`} className={marker.svgHref ? 'poi-marker' : 'biome-marker'} x={position.x} y={position.y} textAnchor="middle" dominantBaseline="central" fontSize={item.fontSize} pointerEvents="none">{item.emoji}</text>
+                    <text key={`biome-emoji-${hex.key}-${index}`} className={marker.svgHref ? 'poi-marker' : 'biome-marker'} filter={marker.svgHref ? 'url(#poi-white-outline)' : undefined} x={position.x} y={position.y} textAnchor="middle" dominantBaseline="central" fontSize={marker.svgHref ? item.fontSize * .84 : item.fontSize} pointerEvents="none">{item.emoji}</text>
                   );
                 });
               })}
@@ -14181,6 +14200,7 @@ export function App() {
                 ))}
               </g>
             ) : null}
+            {useBiomeColor ? <g className="top-hex-grid" transform={mapRotationTransform}><ColorHexGrid cells={positionedHexes.hexes.filter(hex => hex.kind !== 'candidate')} radius={HEX_SIZE} /></g> : null}
             </svg>
           </div>
 
