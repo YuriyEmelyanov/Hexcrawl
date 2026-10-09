@@ -14,7 +14,7 @@ test('seeded terrain variation is stable and avoids all six neighbours, includin
     assert.deepEqual([...seen].sort(),[1,2,3,4]);
   }
 });
-test('all twenty overlays exist as distinct transparent SVGs; forest relief uses only the placeholder',()=>{
+test('all twenty overlays exist as distinct transparent SVGs; forests use vector canopy without tree overlays',()=>{
   const contents=[];
   for(const biome of OPEN_TERRAINS) for(let i=1;i<=4;i++) {
     const s=fs.readFileSync(new URL(`../public/terrain/v2/${biome}-${i}.svg`,import.meta.url),'utf8');
@@ -22,7 +22,7 @@ test('all twenty overlays exist as distinct transparent SVGs; forest relief uses
   }
   assert.equal(new Set(contents).size,20);
   for(const biome of ['plain_coniferous_forest','deciduous_forested_hills','dead_mountain_forest','mountain_woodland','swamp_forest'])
-    assert.equal(terrainAsset(biome,1,2,3),'/terrain/v2/tree.svg');
+    assert.equal(terrainAsset(biome,1,2,3),'');
 });
 test('lake shoreline removes shared edges while preserving island edges',()=>{
   const cell=(q,r)=>({q,r,x:Math.sqrt(3)*(q+r/2)*28,y:42*r});

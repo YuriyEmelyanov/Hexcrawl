@@ -32,7 +32,7 @@ export function terrainVariant(q: number, r: number, seed: number): number {
 export function terrainAsset(biome: string, q: number, r: number, seed: number): string {
   return (OPEN_TERRAINS as readonly string[]).includes(biome)
     ? `/terrain/v2/${biome}-${terrainVariant(q,r,seed)}.svg`
-    : '/terrain/v2/tree.svg';
+    : '';
 }
 export type LakeCell = { q: number; r: number; x: number; y: number };
 const neighbours = [[1,0],[0,1],[-1,1],[-1,0],[0,-1],[1,-1]];

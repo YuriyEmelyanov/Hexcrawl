@@ -76,7 +76,13 @@ try {
   })), expectedHrefs);
   assert.ok(assetResults.every(Boolean), 'Every rendered marker must load a real SVG asset');
 
+  async function checkPoiOutlines() {
+    assert.ok(await page.locator('.poi-marker').evaluateAll(nodes => nodes.every(n => n.getAttribute('filter') === 'url(#poi-white-outline)')));
+    assert.equal(await page.locator('#poi-white-outline feMorphology').getAttribute('radius'), '0.65');
+  }
+  await checkPoiOutlines();
   // All six independent combinations, with the existing emoji mode retained.
+  await checkPoiOutlines();
   await hexToggle.click();
   assert.equal(await tiles.count(), 0);
   assert.equal(await svgPois.count(), 39);
@@ -85,6 +91,7 @@ try {
   assert.equal(await svgPois.count(), 0);
   assert.equal(await emojiPois.count(), 39);
   assert.ok(await biomeEmoji.count() > 0);
+  await checkPoiOutlines();
   await hexToggle.click();
   assert.equal(await hexToggle.getAttribute('aria-label'), 'Гексы: Цвет');
   assert.equal(await tiles.count(), 0);
@@ -96,6 +103,7 @@ try {
   assert.equal(await svgPois.count(), 39);
   const colorPng = await download('PNG');
   assert.ok(colorPng.length > 1000, 'Color mode exports a PNG with POIs');
+  await checkPoiOutlines();
   await hexToggle.click();
   assert.ok(await tiles.count() > 0);
   assert.equal(await page.locator('.biome-color-layer').count(), 0);
@@ -107,8 +115,8 @@ try {
     return fs.readFile(await file.path());
   }
   const capital = page.locator('image.poi-marker[href$="/land/capital.svg"]');
-  assert.equal(await capital.getAttribute('width'), '24');
-  const markerPosition = () => capital.evaluate(node => ({ x: +node.getAttribute('x') + 12, y: +node.getAttribute('y') + 12 }));
+  assert.equal(await capital.getAttribute('width'), '20');
+  const markerPosition = () => capital.evaluate(node => ({ x: +node.getAttribute('x') + +node.getAttribute('width') / 2, y: +node.getAttribute('y') + +node.getAttribute('height') / 2 }));
   const before = await markerPosition();
   const mapHeight = await page.locator('.map-viewport > svg').evaluate(node => node.viewBox.baseVal.height);
   await page.locator('.rotate-map-button').click();
@@ -158,11 +166,14 @@ try {
   await page.setViewportSize({ width: 1440, height: 1000 });
   const colorMap = structuredClone(savedMap);
   colorMap.map.waterPoiByHexKey = {};
+  colorMap.map.regions[0].biomeId = 'open_plains';
   colorMap.map.regions[0].pointsOfInterest = [];
   colorMap.map.regions[0].pointOfInterestKinds = {};
   colorMap.map.biomeOverrideByHexKey = Object.fromEntries(hexes.filter(hex => hex.q >= 4).map(hex => [key(hex), 'semi_desert']));
   await page.locator('input[type=file]').setInputFiles({ name: 'color-map.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(colorMap)) });
+  await checkPoiOutlines();
   await hexToggle.click();
+  await checkPoiOutlines();
   await hexToggle.click();
   assert.equal(await hexToggle.getAttribute('data-mode'), 'color');
   const samples = await page.locator('.map-viewport > svg').evaluate(svg => {
@@ -181,7 +192,7 @@ try {
     const ctx = canvas.getContext('2d'); ctx.drawImage(image, 0, 0);
     return samples.map(p => [...ctx.getImageData(Math.round(p.x * 2), Math.round(p.y * 2), 1, 1).data].slice(0, 3));
   }, {data: terrainPng.toString('base64'), samples});
-  assert.ok(Math.abs(rgb[0][0] - 145) <= 2, `Forest center keeps palette colour: ${rgb}`);
+  assert.ok(Math.abs(rgb[0][0] - 180) <= 2, `Plains center keeps palette colour: ${rgb}`);
   assert.ok(rgb[1][0] > rgb[0][0] && rgb[1][0] < rgb[2][0] && rgb[2][0] < rgb[3][0], `Both sides of the boundary blend gradually: ${rgb}`);
   assert.ok(Math.abs(rgb[3][0] - 205) <= 2, `Dry center keeps palette colour: ${rgb}`);
   assert.ok(rgb[4].every((v,i)=>Math.abs(v-[17,127,140][i])<=2), `Lake center reaches the deep water plateau: ${rgb[4]}`);
