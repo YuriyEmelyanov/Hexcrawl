@@ -26,10 +26,17 @@ try{
  assert.equal(await toggle.getAttribute('data-mode'),'color');
  assert.equal(await page.locator('image.terrain-overlay').count(),0);
  assert.equal(await page.locator('.forest-canopy-layer').count(),1);
+ assert.equal(await page.locator('#forest-union-outline').count(),1);
+ assert.equal(await page.locator('.forest-canopy-layer [stroke="#242A16"]').count(),0,'Individual outlines must not leave internal seams');
  assert.equal(await page.locator('[data-woodland-key="0,0"]').getAttribute('data-woodland-mode'),'clearings');
  assert.equal(await page.locator('[data-woodland-key="2,-1"]').getAttribute('data-woodland-mode'),'islands');
  for(const patch of await page.locator('[data-woodland-key]').all())assert.ok([3,4].includes(await patch.locator('path').count()));
  const signatures=()=>page.locator('[data-woodland-key]').evaluateAll(ns=>Object.fromEntries(ns.map(n=>[n.dataset.woodlandKey,{composition:n.dataset.composition,rotation:n.dataset.rotation,paths:[...n.querySelectorAll('path')].map(p=>p.getAttribute('d'))}])));
+ const canopyBeforeLake=await page.locator('[data-forest-shape="dense"]').getAttribute('d');
+ save.map.terrainByHexKey={'-1,0':{terrainOverride:'lake',lakeId:900}};await load();
+ assert.equal(await page.locator('[data-forest-shape="dense"]').getAttribute('d'),canopyBeforeLake,'Lake overlays rather than replacing canopy');
+ assert.equal(await page.locator('.lake-water-layer [data-lake-shape]').count(),1);
+ assert.ok(await page.locator('[fill="#91B575"]').count()>0,'Original forest ground restored');
  const before=await signatures();await toggle.click();await toggle.click();await toggle.click();assert.deepEqual(await signatures(),before);
  await page.locator('.rotate-map-button').click();assert.deepEqual(await signatures(),before);
  assert.ok(await page.locator('.top-hex-grid').evaluate(n=>n===n.parentElement.lastElementChild));
@@ -40,5 +47,9 @@ try{
  await fs.mkdir(new URL('../../reports/',import.meta.url),{recursive:true});await fs.writeFile(new URL('../../reports/terrain-v2-forest.png',import.meta.url),bytes);
  save.map.regions[0].hexes.push({q:3,r:0});save.map.biomeOverrideByHexKey['3,0']='deciduous_woodland';await load();
  const grown=await signatures();for(const [k,v]of Object.entries(before))assert.deepEqual(grown[k],v);
+ save.map.regions[0].biomeId='deciduous_woodland';save.map.regions[0].woodlandStyle='clearings';save.map.biomeOverrideByHexKey={};await load();
+ assert.equal(await page.locator('[data-woodland-mode="islands"]').count(),0);
+ assert.equal(await page.locator('[data-woodland-mode="clearings"]').count(),hexes.length-1);
+ assert.equal(await page.locator('[data-woodland-key="-1,0"]').count(),0,'No woodland contours on lake hexes');
  assert.deepEqual(errors,[]);console.log('Forest display: Color only, 3/4 islands and clearings, stable growth, rotation, top grid and real PNG export passed.');
 }finally{if(browser)await browser.close();server.kill();}

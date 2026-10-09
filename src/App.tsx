@@ -1,6 +1,8 @@
+import {assignWoodlandStyle,chooseWoodlandStyle,type WoodlandStyle} from './modes/woodlandStyle';
+import {buildNaturalLakes,createLakeGeometryCache} from './rendering/lakeGeometry';
 import {ForestCanopy} from './rendering/ForestCanopy';
 import {ColorHexGrid} from './rendering/ColorHexGrid';
-import {forestFamily,FOREST_GROUND} from './rendering/forestStyle';
+import {forestFamily} from './rendering/forestStyle';
 import { BIOME_GROUND_COLORS, WATER_PALETTE, terrainAsset } from './rendering/terrainStyle';
 import { LakeWater } from './rendering/LakeWater';
 import { validateKingdomLayers } from './modes/persistence';
@@ -176,6 +178,7 @@ type BiomeId =
 type Region = {
   generationMode?: GenerationMode;
   kingdomId?: number;
+  woodlandStyle?: WoodlandStyle;
   suppressCentralPoi?: boolean;
   id: number;
   hexes: AxialHex[];
@@ -955,6 +958,7 @@ function assertHexcrawlSaveData(value: unknown): asserts value is ValidatedHexcr
     if (!isAxialHex(region.centerHex)) throw new Error(`Некорректный centerHex региона ${region.id}.`);
     if (!isAxialHex(region.anchorHex)) throw new Error(`Некорректный anchorHex региона ${region.id}.`);
     if (!Array.isArray(region.pointsOfInterest) || !region.pointsOfInterest.every(isAxialHex)) throw new Error(`Некорректные точки интереса региона ${region.id}.`);
+    if (region.woodlandStyle !== undefined && region.woodlandStyle !== 'islands' && region.woodlandStyle !== 'clearings') throw new Error(`Некорректный вариант редколесья региона ${region.id}.`);
     if (region.centralPoiKind !== undefined && !isCentralPoiKind(region.centralPoiKind)) throw new Error(`Некорректная центральная точка интереса региона ${region.id}.`);
     if (region.pointOfInterestKinds !== undefined) {
       if (!isRecord(region.pointOfInterestKinds)) throw new Error(`Некорректные типы точек интереса региона ${region.id}.`);
@@ -11849,6 +11853,7 @@ export function App() {
       pointOfInterestKinds: assignPoiKindsForRegion({ region: tractRoadResult.region,
         roads: tractRoadResult.roads, rivers: riversAfterTractGeneration, hexTerrainByKey: finalHexTerrainByKey })
     };
+    finalRegions[finalRegions.length - 1] = assignWoodlandStyle(finalRegions[finalRegions.length - 1], regions, biomeOverrideByHexKey);
     const newlyCheckedWaterHexKeys = new Set([...regionKeySet, ...finalSeaKeysToWrite]);
     generationProgress.stage = 'prepare_commit';
     const finalToponyms = synchronizeToponyms({ ...toponyms, ...options.previousToponyms }, getToponymEntities(finalRegions, riversAfterTractGeneration, finalHexTerrainByKey), toponymSeed);
@@ -12622,7 +12627,7 @@ export function App() {
           hexTerrainByKey: hexTerrainByKeyForRoads
         })
       };
-      const finalRegions = [...regions, finalRegionWithPoiKinds];
+      const finalRegions = [...regions, assignWoodlandStyle(finalRegionWithPoiKinds, regions, biomeOverrideByHexKey)];
       const nextLakeIdAfterLandlockedSea = (() => {
         const terrainForLandlockedSeaCheck = new Map(nextHexTerrainByKeyPreview);
         const finalRegionKeySet = new Set(finalRegionWithPoiKinds.hexes.map(hexKey));
@@ -13247,17 +13252,22 @@ export function App() {
       .map(hex => ({
         key: hex.key,
         points: hexPoints(hex.x, hex.y, HEX_SIZE),
-        color: forestFamily(biomeOverrideByHexKey.get(hex.key) ?? regionBiomes.get(hex.regionId ?? -1) ?? FALLBACK_BIOME_ID) ? FOREST_GROUND : GROUND_COLORS[biomeOverrideByHexKey.get(hex.key) ?? regionBiomes.get(hex.regionId ?? -1) ?? FALLBACK_BIOME_ID]
+        color: GROUND_COLORS[biomeOverrideByHexKey.get(hex.key) ?? regionBiomes.get(hex.regionId ?? -1) ?? FALLBACK_BIOME_ID]
       }));
   }, [useBiomeColor, positionedHexes, regions, hexTerrainByKey, biomeOverrideByHexKey]);
   const lakeCells = useMemo(() => positionedHexes.hexes.filter(hex => hexTerrainByKey.get(hex.key)?.terrainOverride === 'lake').map(hex=>({...hex,lakeId:hexTerrainByKey.get(hex.key)?.lakeId})), [positionedHexes, hexTerrainByKey]);
   const forestCells = useMemo(() => {
     if (!useBiomeColor) return [];
     const biomes = new Map(regions.map(region => [region.id, region.biomeId]));
-    return positionedHexes.hexes.filter(hex => hex.kind === 'region' && !hexTerrainByKey.get(hex.key)?.terrainOverride)
-      .map(hex => ({...hex, biome: biomeOverrideByHexKey.get(hex.key) ?? biomes.get(hex.regionId ?? -1) ?? FALLBACK_BIOME_ID}))
+    const candidates = new Set(positionedHexes.hexes.filter(hex=>hex.kind==='candidate').map(hex=>hex.key));
+    const openLand = new Set(positionedHexes.hexes.filter(hex=>hex.kind==='region'&&!hexTerrainByKey.get(hex.key)?.terrainOverride&&!forestFamily(biomeOverrideByHexKey.get(hex.key)??biomes.get(hex.regionId??-1)??FALLBACK_BIOME_ID)).map(hex=>hex.key));
+    const styles = new Map(regions.filter(r=>r.biomeId.includes('woodland')).map(r=>[r.id,chooseWoodlandStyle(r,regions.slice(0,regions.indexOf(r)),biomeOverrideByHexKey)]));
+    return positionedHexes.hexes.filter(hex => hex.kind === 'region' && hexTerrainByKey.get(hex.key)?.terrainOverride !== 'sea')
+      .map(hex => ({...hex, lake:hexTerrainByKey.get(hex.key)?.terrainOverride==='lake', openSides:[[1,0],[0,1],[-1,1],[-1,0],[0,-1],[1,-1]].flatMap(([q,r],side)=>openLand.has(`${hex.q+q},${hex.r+r}`)?[side]:[]), straightSides:[[1,0],[0,1],[-1,1],[-1,0],[0,-1],[1,-1]].flatMap(([q,r],side)=>candidates.has(`${hex.q+q},${hex.r+r}`)?[side]:[]), woodlandStyle:styles.get(hex.regionId ?? -1), biome: biomeOverrideByHexKey.get(hex.key) ?? biomes.get(hex.regionId ?? -1) ?? FALLBACK_BIOME_ID}))
       .filter(hex => forestFamily(hex.biome));
   }, [useBiomeColor, positionedHexes, regions, hexTerrainByKey, biomeOverrideByHexKey]);
+  const lakeGeometryCache = useRef(createLakeGeometryCache());
+  const lakeShapes = useMemo(()=>useBiomeColor ? buildNaturalLakes(lakeCells,HEX_SIZE,toponymSeed,riverSegments,lakeGeometryCache.current) : [],[useBiomeColor,lakeCells,toponymSeed,riverSegments]);
   const poiDisplayToggleLabel = `${t.pointsDisplay}: ${usePoiSvg ? t.iconsMode : t.emojiMode}`;
   const poiDisplayToggleTitle = usePoiSvg ? t.showPoiEmojiTitle : t.showPoiIconsTitle;
 
@@ -13938,8 +13948,8 @@ export function App() {
               );
             })}
             {useBiomeColor ? <>
-              <ForestCanopy cells={forestCells} radius={HEX_SIZE} seed={toponymSeed} width={positionedHexes.width} height={positionedHexes.height} />
-              <LakeWater cells={lakeCells} radius={HEX_SIZE} seed={toponymSeed} segments={riverSegments} />
+              <ForestCanopy waterSegments={riverSegments} lakes={lakeShapes} cells={forestCells} radius={HEX_SIZE} seed={toponymSeed} width={positionedHexes.width} height={positionedHexes.height} />
+              <LakeWater shapes={lakeShapes} cells={lakeCells} radius={HEX_SIZE} seed={toponymSeed} segments={riverSegments} />
             </> : null}
             <g className="rivers-layer">
               {riverSegments.map((segment) => (
