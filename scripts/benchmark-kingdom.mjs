@@ -18,9 +18,11 @@ try{
  await new Promise((resolve,reject)=>{let out='';const t=setTimeout(()=>reject(Error('Server timeout')),15000);server.stdout.on('data',d=>{out+=d;if(stripVTControlCharacters(out).includes('Local:')){clearTimeout(t);resolve();}});server.on('error',reject);});
  browser=await chromium.launch({headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
  const page=await browser.newPage({viewport:{width:1500,height:1000}});
+ await page.route(/mc\.yandex/,route=>route.abort());
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
  await page.addInitScript(()=>{
-  window.__setSeed=seed=>{let s=seed>>>0;Math.random=()=>{s=(Math.imul(s,1664525)+1013904223)>>>0;return s/4294967296;};};window.__setSeed(1);
+  let cryptoSeed=12345;Object.defineProperty(crypto,'getRandomValues',{value:array=>{for(let i=0;i<array.length;i++){cryptoSeed=(Math.imul(cryptoSeed,1664525)+1013904223)>>>0;array[i]=cryptoSeed;}return array;}});
+  window.__setSeed=seed=>{let s=seed>>>0;window.__randomDraws=0;Math.random=()=>{window.__randomDraws++;s=(Math.imul(s,1664525)+1013904223)>>>0;return s/4294967296;};};window.__setSeed(1);
  });
  const paths=await assets('public');
  async function run(mode,seed,warmup=false){
@@ -44,7 +46,7 @@ try{
     if(select.disabled)seen=true;
     if(seen&&!select.disabled){
      endDom=performance.now();observer.disconnect();clearTimeout(t);
-     requestAnimationFrame(()=>requestAnimationFrame(()=>resolve({domMs:endDom-start,visibleMs:performance.now()-start,alert:document.querySelector('[role=alert]')?.textContent??null,hexes:document.querySelectorAll('polygon.hex.region,polygon.hex.center').length,svgElements:document.querySelector('[data-biome-display]')?.querySelectorAll('*').length})));
+     requestAnimationFrame(()=>requestAnimationFrame(()=>resolve({domMs:endDom-start,visibleMs:performance.now()-start,randomDraws:window.__randomDraws,alert:document.querySelector('[role=alert]')?.textContent??null,hexes:document.querySelectorAll('polygon.hex.region,polygon.hex.center').length,svgElements:document.querySelector('[data-biome-display]')?.querySelectorAll('*').length})));
     }
    });
    observer.observe(document.querySelector('.content'),{childList:true,subtree:true,attributes:true,attributeFilter:['disabled']});
@@ -59,11 +61,15 @@ try{
   if(row.alert||row.kingdoms!==1||errors.length)throw Error('Incomplete kingdom '+JSON.stringify({row,errors}));
  }
  for(const mode of modes)await run(mode,777,true);
- for(let i=0;i<seeds.length;i++)for(let j=0;j<3;j++)await run(modes[(i+j)%3],seeds[i]);
+ if(new Set(rows.map(r=>r.mapHash)).size!==1)throw Error('Warmup maps differ '+JSON.stringify(rows));
+ for(let i=0;i<seeds.length;i++){
+  for(let j=0;j<3;j++)await run(modes[(i+j)%3],seeds[i]);
+  if(new Set(rows.filter(r=>!r.warmup&&r.seed===seeds[i]).map(r=>r.mapHash)).size!==1)throw Error('Paired maps differ for seed '+seeds[i]);
+ }
  const samples=rows.filter(r=>!r.warmup),summary={};
  for(const mode of modes){const values=samples.filter(r=>r.mode===mode).map(r=>r.visibleMs).sort((a,b)=>a-b);summary[mode]={n:values.length,meanMs:values.reduce((a,b)=>a+b,0)/values.length,medianMs:(values[4]+values[5])/2,minMs:values[0],maxMs:values.at(-1),stdMs:Math.sqrt(values.reduce((n,v)=>n+(v-values.reduce((a,b)=>a+b,0)/values.length)**2,0)/(values.length-1)),meanDomMs:samples.filter(r=>r.mode===mode).reduce((n,r)=>n+r.domMs,0)/values.length};}
  const identicalMaps=seeds.every(seed=>new Set(samples.filter(r=>r.seed===seed).map(r=>r.mapHash)).size===1);
- const report={version:process.env.BENCH_BASE_SHA,environment:{platform:os.platform(),cpu:os.cpus()[0]?.model,vcpus:os.cpus().length,browser:browser.version(),viewport:{width:1500,height:1000},headless:true},method:'Empty map; Mythic Bastionland kingdom 12x12; SVG POI unchanged; all image assets and fonts preloaded; one excluded warmup per mode; ten paired deterministic random seeds; rotated mode order; browser clock from click handler dispatch to completion DOM commit plus two animation frames. No CPU throttling.',identicalMaps,summary,rows};
+ const report={version:process.env.BENCH_BASE_SHA,environment:{platform:os.platform(),cpu:os.cpus()[0]?.model,vcpus:os.cpus().length,browser:browser.version(),viewport:{width:1500,height:1000},headless:true},method:'Empty map; Mythic Bastionland kingdom 12x12; SVG POI unchanged; all image assets and fonts preloaded; crypto seed fixed and analytics blocked; one excluded warmup per mode; ten paired deterministic random seeds; rotated mode order; browser clock from click handler dispatch to completion DOM commit plus two animation frames. No CPU throttling.',identicalMaps,summary,rows};
  await fs.writeFile('reports/kingdom-benchmark.json',JSON.stringify(report,null,2));console.log('KINGDOM_REPORT '+JSON.stringify(report));
  if(!identicalMaps)throw Error('Mode changed generated map; paired comparison invalid');
 }finally{if(browser)await browser.close();server.kill();}
