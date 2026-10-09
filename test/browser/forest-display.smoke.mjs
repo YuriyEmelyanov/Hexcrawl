@@ -26,6 +26,8 @@ try{
  assert.equal(await toggle.getAttribute('data-mode'),'color');
  assert.equal(await page.locator('image.terrain-overlay').count(),0);
  assert.equal(await page.locator('.forest-canopy-layer').count(),1);
+ assert.equal(await page.locator('#forest-union-outline').count(),1);
+ assert.equal(await page.locator('.forest-canopy-layer [stroke="#242A16"]').count(),0,'Individual outlines must not leave internal seams');
  assert.equal(await page.locator('[data-woodland-key="0,0"]').getAttribute('data-woodland-mode'),'clearings');
  assert.equal(await page.locator('[data-woodland-key="2,-1"]').getAttribute('data-woodland-mode'),'islands');
  for(const patch of await page.locator('[data-woodland-key]').all())assert.ok([3,4].includes(await patch.locator('path').count()));
@@ -47,6 +49,7 @@ try{
  const grown=await signatures();for(const [k,v]of Object.entries(before))assert.deepEqual(grown[k],v);
  save.map.regions[0].biomeId='deciduous_woodland';save.map.regions[0].woodlandStyle='clearings';save.map.biomeOverrideByHexKey={};await load();
  assert.equal(await page.locator('[data-woodland-mode="islands"]').count(),0);
- assert.equal(await page.locator('[data-woodland-mode="clearings"]').count(),hexes.length);
+ assert.equal(await page.locator('[data-woodland-mode="clearings"]').count(),hexes.length-1);
+ assert.equal(await page.locator('[data-woodland-key="-1,0"]').count(),0,'No woodland contours on lake hexes');
  assert.deepEqual(errors,[]);console.log('Forest display: Color only, 3/4 islands and clearings, stable growth, rotation, top grid and real PNG export passed.');
 }finally{if(browser)await browser.close();server.kill();}

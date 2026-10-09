@@ -13260,9 +13260,10 @@ export function App() {
     if (!useBiomeColor) return [];
     const biomes = new Map(regions.map(region => [region.id, region.biomeId]));
     const candidates = new Set(positionedHexes.hexes.filter(hex=>hex.kind==='candidate').map(hex=>hex.key));
+    const openLand = new Set(positionedHexes.hexes.filter(hex=>hex.kind==='region'&&!hexTerrainByKey.get(hex.key)?.terrainOverride&&!forestFamily(biomeOverrideByHexKey.get(hex.key)??biomes.get(hex.regionId??-1)??FALLBACK_BIOME_ID)).map(hex=>hex.key));
     const styles = new Map(regions.filter(r=>r.biomeId.includes('woodland')).map(r=>[r.id,chooseWoodlandStyle(r,regions.slice(0,regions.indexOf(r)),biomeOverrideByHexKey)]));
     return positionedHexes.hexes.filter(hex => hex.kind === 'region' && hexTerrainByKey.get(hex.key)?.terrainOverride !== 'sea')
-      .map(hex => ({...hex, straightSides:[[1,0],[0,1],[-1,1],[-1,0],[0,-1],[1,-1]].flatMap(([q,r],side)=>candidates.has(`${hex.q+q},${hex.r+r}`)?[side]:[]), woodlandStyle:styles.get(hex.regionId ?? -1), biome: biomeOverrideByHexKey.get(hex.key) ?? biomes.get(hex.regionId ?? -1) ?? FALLBACK_BIOME_ID}))
+      .map(hex => ({...hex, lake:hexTerrainByKey.get(hex.key)?.terrainOverride==='lake', openSides:[[1,0],[0,1],[-1,1],[-1,0],[0,-1],[1,-1]].flatMap(([q,r],side)=>openLand.has(`${hex.q+q},${hex.r+r}`)?[side]:[]), straightSides:[[1,0],[0,1],[-1,1],[-1,0],[0,-1],[1,-1]].flatMap(([q,r],side)=>candidates.has(`${hex.q+q},${hex.r+r}`)?[side]:[]), woodlandStyle:styles.get(hex.regionId ?? -1), biome: biomeOverrideByHexKey.get(hex.key) ?? biomes.get(hex.regionId ?? -1) ?? FALLBACK_BIOME_ID}))
       .filter(hex => forestFamily(hex.biome));
   }, [useBiomeColor, positionedHexes, regions, hexTerrainByKey, biomeOverrideByHexKey]);
   const lakeGeometryCache = useRef(createLakeGeometryCache());

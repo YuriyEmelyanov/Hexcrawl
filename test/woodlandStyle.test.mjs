@@ -30,3 +30,9 @@ test('water cuts an exterior bank but does not divide the forest interior',()=>{
  assert.equal(forestWaterBoundary([cell(0,0)],radius,[river],[]).cuts.length,1);
  assert.equal(forestWaterBoundary([cell(0,0),cell(1,0)],radius,[river],[]).cuts.length,0);
 });
+
+test('lakes do not reshape neighbouring forest banks',()=>{
+ const cells=[{q:0,r:0,x:0,y:0,biome:'plain_deciduous_forest'}];
+ const lake={cells:[{q:1,r:0}],loops:[[{x:24,y:-14},{x:24,y:14},{x:50,y:14},{x:50,y:-14}]]};
+ assert.deepEqual(forestWaterBoundary(cells,28,[],[lake]),{cuts:[],banks:[]});
+});

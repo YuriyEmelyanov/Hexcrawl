@@ -58,3 +58,19 @@ test('candidate-facing crown edges remain exactly straight',()=>{
  let a=values.slice(0,2);
  for(let i=2;i<values.length;i+=6){const c1=values.slice(i,i+2),c2=values.slice(i+2,i+4),b=values.slice(i+4,i+6);for(const p of [c1,c2])assert.ok(Math.abs((b[0]-a[0])*(p[1]-a[1])-(b[1]-a[1])*(p[0]-a[0]))<.05);a=b;}
 });
+test('woodland lake hexes suppress shapes and retain the underlying canopy',()=>{
+ for(const mode of ['islands','clearings']){
+  const c={...cell(0,0,'deciduous_woodland'),woodlandStyle:mode};
+  const original=buildForestGeometry([c],28,53),lake=buildForestGeometry([{...c,lake:true}],28,53);
+  assert.ok(original.woodlands.length);assert.equal(lake.woodlands.length,0);assert.equal(lake.canopy.length,1);
+  assert.deepEqual(lake.canopy,buildForestGeometry([cell(0,0)],28,53).canopy);
+ }
+});
+test('bridges preserve the original size and placement of source woodland contours',()=>{
+ for(const mode of ['islands','clearings']){
+  const c={...cell(0,0,'deciduous_woodland'),woodlandStyle:mode,openSides:[0,1,2,3,4,5]};
+  const g=buildForestGeometry([c,cell(1,0),cell(-1,0,'open_plains')],28,53);
+  assert.deepEqual(g.woodlands[0].paths,woodlandPaths(0,0,0,0,28,53).paths);
+  assert.ok(Array.isArray(g.bridges));assert.ok(Array.isArray(g.clearingBridges));
+ }
+});

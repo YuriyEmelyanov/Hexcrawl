@@ -1,7 +1,7 @@
 import type {ForestCell} from './forestGeometry.ts';
 import type {LakeShape,WaterSegment} from './lakeGeometry.ts';
 import {isWoodland} from './forestStyle.ts';
-export function forestWaterBoundary(cells:ForestCell[],radius:number,rivers:WaterSegment[],lakes:LakeShape[]){
+export function forestWaterBoundary(cells:ForestCell[],radius:number,rivers:WaterSegment[],_lakes:LakeShape[]){
  const cuts:string[]=[],banks:string[]=[];
  if(!cells.length)return{cuts,banks};
  const origin=cells[0],byKey=new Map(cells.map(c=>[`${c.q},${c.r}`,c]));
@@ -24,13 +24,6 @@ export function forestWaterBoundary(cells:ForestCell[],radius:number,rivers:Wate
   if(!isWoodland(forest.biome)||forest.woodlandStyle==='clearings')banks.push(quad(x1,y1,x2,y2,nx,ny,0,radius*.4));
  };
  for(const s of rivers)boundary(s.x1,s.y1,s.x2,s.y2,radius*.16);
- const forestKeys=new Set(byKey.keys());
- for(const lake of lakes){
-  // A lake on a forest hex retains that hex's underlying canopy.
-  if(lake.cells.every(c=>forestKeys.has(`${c.q},${c.r}`)))continue;
-  for(const loop of lake.loops)for(let i=0;i<loop.length;i++){
-   const a=loop[i],b=loop[(i+1)%loop.length];boundary(a.x,a.y,b.x,b.y,radius*.3);
-  }
- }
+ // Lakes overlay the original canopy without bank extensions or shoreline cuts.
  return{cuts,banks};
 }
