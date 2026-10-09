@@ -13522,7 +13522,7 @@ export function App() {
   });
 
   const handleExportPng = async () => {
-    if(kingdomJob)return;
+    if (!renderDetails) return;
     if (!mapSvgRef.current) return;
     try {
       await exportSvgToPng(mapSvgRef.current, `${EXPORT_FILE_PREFIX}-${getTimestampForFilename()}.png`);
@@ -13694,6 +13694,7 @@ export function App() {
                 <option value="classic">{language === 'ru' ? 'Классический режим' : 'Classic mode'}</option>
                 <option value="mythic">Mythic Bastionland</option>
               </select></label></div>
+            {!kingdomJob && !detailedRenderReady ? <p role="status" className="kingdom-progress">{language === 'ru' ? 'Отрисовка карты…' : 'Drawing map…'}</p> : null}
             {kingdomJob ? <p role="status" className="kingdom-progress">{language === 'ru' ? 'Создание королевства…' : 'Building kingdom…'} {kingdomHexes(kingdomJob.origin).filter(h=>metadataMap.has(hexKey(h))).length}/144</p> : null}
             {generationMode === 'classic' ? <div className="control-block gen-params" aria-label={t.genParamsLabel}>
               <label>
@@ -13801,7 +13802,7 @@ export function App() {
                 <details className="export-menu">
                   <summary className="secondary">{t.export}</summary>
                   <div className="export-menu__items">
-                    <button type="button" onClick={() => void handleExportPng()} className="secondary">PNG</button>
+                    <button type="button" disabled={!renderDetails} onClick={() => void handleExportPng()} className="secondary">PNG</button>
                     <button type="button" onClick={handleExportJson} className="secondary">JSON</button>
                   </div>
                 </details>
