@@ -13923,7 +13923,7 @@ export function App() {
                       />
                     </g>
                   ) : null}
-                  {useBiomeColor && hex.kind === 'region' && !isLakeHex ? (
+                  {useBiomeColor && hex.kind === 'region' && !isLakeHex && terrainAsset(effectiveBiomeId, hex.q, hex.r, toponymSeed) ? (
                     <g clipPath={`url(#hex-clip-${hex.key})`} pointerEvents="none">
                       <image className="terrain-overlay" data-terrain-key={hex.key}
                         href={terrainAsset(effectiveBiomeId, hex.q, hex.r, toponymSeed)}
