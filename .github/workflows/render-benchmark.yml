@@ -1,7 +1,6 @@
 name: Deferred kingdom rendering benchmark
 on:
-  push:
-    branches: [perf/deferred-kingdom-render-20261010]
+  workflow_dispatch:
 permissions:
   contents: read
 jobs:
@@ -10,6 +9,8 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 24
