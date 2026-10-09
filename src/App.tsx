@@ -1,6 +1,6 @@
 import {assignWoodlandStyle,chooseWoodlandStyle,type WoodlandStyle} from './modes/woodlandStyle';
 import {buildNaturalLakes,createLakeGeometryCache} from './rendering/lakeGeometry';
-import {ForestCanopy} from './rendering/ForestCanopy';
+import {ForestCanopy,ForestWaterEdge} from './rendering/ForestCanopy';
 import {ColorHexGrid} from './rendering/ColorHexGrid';
 import {forestFamily} from './rendering/forestStyle';
 import { BIOME_GROUND_COLORS, WATER_PALETTE, terrainAsset } from './rendering/terrainStyle';
@@ -13963,6 +13963,7 @@ export function App() {
                   strokeWidth={segment.width}
                 />
               ))}
+              {useBiomeColor && forestCells.length ? <ForestWaterEdge/> : null}
               {riverDirectionArrows.map((arrow) => (
                 <line
                   key={arrow.key}

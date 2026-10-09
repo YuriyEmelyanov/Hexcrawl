@@ -1,6 +1,7 @@
 import {FOREST_EDGES, WOODLAND_COMPOSITIONS} from './forestTemplates.ts';
-import {forestFamily,isWoodland} from './forestStyle.ts';
+import {forestFamily,isWoodland as regularWoodland} from './forestStyle.ts';
 export type ForestCell={q:number;r:number;x:number;y:number;biome:string;woodlandStyle?:'islands'|'clearings';straightSides?:number[];openSides?:number[];lake?:boolean};
+const isWoodland=(biome:string)=>regularWoodland(biome)||biome==='swamp_forest';
 type Point=number[];
 type Cubic={start:Point;c1:Point;c2:Point;end:Point};
 export type WoodlandPatch={key:string;cell:ForestCell;mode:'islands'|'clearings';composition:string;rotation:number;paths:string[]};
@@ -25,7 +26,7 @@ export function buildForestGeometry(cells:ForestCell[],radius:number,seed:number
  // Clearings belong to continuous canopy; boundary woodland is rendered as islands.
  // Requiring six dense neighbours also keeps holes away from the outer crown.
  const woodlands:WoodlandPatch[]=forest.filter(c=>isWoodland(c.biome)&&!c.lake).map(c=>({key:key(c),cell:c,
-  mode:c.woodlandStyle??(directions.every(([dq,dr])=>{const n=byKey.get(`${c.q+dq},${c.r+dr}`);return n&&!isWoodland(n.biome);})?'clearings':'islands'),
+  mode:c.biome==='swamp_forest'?'islands':c.woodlandStyle??(directions.every(([dq,dr])=>{const n=byKey.get(`${c.q+dq},${c.r+dr}`);return n&&!isWoodland(n.biome);})?'clearings':'islands'),
   ...woodlandPaths(c.q,c.r,c.x,c.y,radius,seed)}));
  const islands=new Set(woodlands.filter(p=>p.mode==='islands').map(p=>p.key));
  const dense=forest.filter(c=>!islands.has(key(c))),keys=new Set(dense.map(key));

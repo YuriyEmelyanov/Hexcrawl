@@ -30,6 +30,7 @@ export function terrainVariant(q: number, r: number, seed: number): number {
   return permutations[hash(seed ^ 0x51f15e) % permutations.length][index] + 1;
 }
 export function terrainAsset(biome: string, q: number, r: number, seed: number): string {
+  if(biome==='swamp_forest')biome='swamp';
   return (OPEN_TERRAINS as readonly string[]).includes(biome)
     ? `/terrain/v2/${biome}-${terrainVariant(q,r,seed)}.svg`
     : '';

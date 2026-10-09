@@ -21,8 +21,9 @@ test('all twenty overlays exist as distinct transparent SVGs; forests use vector
     assert.match(s,/viewBox="0 0 100 116"/);assert.doesNotMatch(s,/<rect|<image|<text/);contents.push(s);
   }
   assert.equal(new Set(contents).size,20);
-  for(const biome of ['plain_coniferous_forest','deciduous_forested_hills','dead_mountain_forest','mountain_woodland','swamp_forest'])
+  for(const biome of ['plain_coniferous_forest','deciduous_forested_hills','dead_mountain_forest','mountain_woodland'])
     assert.equal(terrainAsset(biome,1,2,3),'');
+  assert.equal(terrainAsset('swamp_forest',1,2,3),terrainAsset('swamp',1,2,3));
 });
 test('lake shoreline removes shared edges while preserving island edges',()=>{
   const cell=(q,r)=>({q,r,x:Math.sqrt(3)*(q+r/2)*28,y:42*r});

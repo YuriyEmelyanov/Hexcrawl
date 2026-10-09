@@ -16,7 +16,7 @@ try{
  const hexes=[];for(let q=-2;q<=2;q++)for(let r=-2;r<=2;r++)if(Math.max(Math.abs(q),Math.abs(r),Math.abs(q+r))<=2)hexes.push({q,r});
  save.map.kingdoms=[];save.map.obstacles=[];save.map.rivers=[];save.map.roads=[];save.map.crossings=[];save.map.waterPoiByHexKey={};save.map.terrainByHexKey={};
  save.map.regions=[{...save.map.regions[0],id:1,hexes,centerHex:{q:0,r:0},anchorHex:{q:0,r:0},biomeId:'plain_deciduous_forest',generationMode:'classic',kingdomId:undefined,suppressCentralPoi:false,centralPoiKind:'capital',pointsOfInterest:[],pointOfInterestKinds:{}}];
- save.map.candidateHexes=[];save.map.biomeOverrideByHexKey={'0,0':'deciduous_woodland','2,-1':'dead_woodland','-2,1':'coniferous_woodland','1,0':'plain_mixed_forest','-1,0':'plain_coniferous_forest','0,1':'swamp_forest'};
+ save.map.candidateHexes=[];save.map.biomeOverrideByHexKey={'0,0':'deciduous_woodland','2,-1':'dead_woodland','-2,1':'coniferous_woodland','1,0':'plain_mixed_forest','-1,0':'plain_coniferous_forest','2,0':'swamp_forest'};
  save.ui={...save.ui,generationMode:'classic',isMapRotated:false,selectedHex:null,mapScale:2};
  const load=async()=>{await page.locator('input[type=file]').setInputFiles({name:'forest.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(save))});await page.waitForTimeout(150);};
  await load();const toggle=page.locator('.biome-display-toggle');
@@ -24,7 +24,10 @@ try{
  await toggle.click();assert.equal(await page.locator('.forest-canopy-layer').count(),0);
  await toggle.click();
  assert.equal(await toggle.getAttribute('data-mode'),'color');
- assert.equal(await page.locator('image.terrain-overlay').count(),0);
+ assert.equal(await page.locator('image.terrain-overlay').count(),1,'Swamp forest keeps the swamp ground overlay');
+ assert.equal(await page.locator('[data-woodland-key="2,0"]').getAttribute('data-woodland-mode'),'islands');
+ assert.equal(await page.locator('[data-tree-marks="edge"]').count(),1);
+ assert.equal(await page.locator('[data-tree-marks="inside"]').count(),1);
  assert.equal(await page.locator('.forest-canopy-layer').count(),1);
  assert.equal(await page.locator('#forest-union-outline').count(),1);
  assert.equal(await page.locator('.forest-canopy-layer [stroke="#242A16"]').count(),0,'Individual outlines must not leave internal seams');
