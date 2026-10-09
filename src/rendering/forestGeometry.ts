@@ -62,6 +62,10 @@ export function buildForestGeometry(cells:ForestCell[],radius:number,seed:number
   if(patch.mode==='islands'&&!neighbours)continue;
   const target=patch.mode==='islands'?boundary:openBoundary;
   const nearby=target.filter(p=>Math.hypot(p[0]-patch.cell.x,p[1]-patch.cell.y)<radius*1.15);
+  // Index the exact original samples. Only points within the maximum join
+  // distance can improve the match; retain original indices to resolve ties.
+  const size=radius*.15,grid=new Map<string,{point:Point;index:number}[]>();
+  nearby.forEach((point,index)=>{const k=`${Math.floor(point[0]/size)},${Math.floor(point[1]/size)}`;const bucket=grid.get(k)??[];bucket.push({point,index});grid.set(k,bucket);});
   for(const d of patch.paths){
    const numbers=d.match(/-?\d+(?:\.\d+)?/g)!.map(Number),samples:Point[]=[];
    let start=numbers.slice(0,2);
@@ -69,7 +73,14 @@ export function buildForestGeometry(cells:ForestCell[],radius:number,seed:number
     for(let j=0;j<=8;j++){const t=j/8,u=1-t;samples.push([0,1].map(k=>u*u*u*start[k]+3*u*u*t*c1[k]+3*u*t*t*c2[k]+t*t*t*end[k]));}start=end;
    }
    let distance=radius*.15,a:Point|undefined,b:Point|undefined;
-   for(const p of samples)for(const q of nearby){const n=Math.hypot(p[0]-q[0],p[1]-q[1]);if(n<distance){distance=n;a=p;b=q;}}
+   for(const p of samples){
+    const gx=Math.floor(p[0]/size),gy=Math.floor(p[1]/size);
+    let improved=false,chosenIndex=Infinity;
+    for(let ix=gx-1;ix<=gx+1;ix++)for(let iy=gy-1;iy<=gy+1;iy++)for(const {point:q,index} of grid.get(`${ix},${iy}`)??[]){
+     const n=Math.hypot(p[0]-q[0],p[1]-q[1]);
+     if(n<distance||(improved&&n===distance&&index<chosenIndex)){distance=n;a=p;b=q;improved=true;chosenIndex=index;}
+    }
+   }
    if(a&&b){
     let dx=b[0]-a[0],dy=b[1]-a[1],n=Math.hypot(dx,dy);
     if(n<radius*.001){dx=b[0]-patch.cell.x;dy=b[1]-patch.cell.y;n=Math.hypot(dx,dy)||1;}
