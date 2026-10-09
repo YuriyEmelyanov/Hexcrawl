@@ -70,7 +70,7 @@ try {
   const before=await overlays();
   const expectedOverlayCount = fixture.map.regions.flatMap(region => region.hexes.map(hex => ({region,hex}))).filter(({region,hex}) => {
     const key = `${hex.q},${hex.r}`;
-    return !fixture.map.terrainByHexKey?.[key]?.terrainOverride && ['open_plains','open_hills','mountains','swamp','semi_desert'].includes(fixture.map.biomeOverrideByHexKey?.[key] ?? region.biomeId);
+    return !fixture.map.terrainByHexKey?.[key]?.terrainOverride && ['open_plains','open_hills','mountains','swamp','swamp_forest','semi_desert'].includes(fixture.map.biomeOverrideByHexKey?.[key] ?? region.biomeId);
   }).length;
   assert.equal(Object.keys(before).length, expectedOverlayCount);
   assert.ok(!Object.values(before).includes('/terrain/v2/tree.svg'));
