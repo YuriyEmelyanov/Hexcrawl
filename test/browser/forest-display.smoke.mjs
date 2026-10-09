@@ -50,8 +50,10 @@ try{
  const bytes=await fs.readFile(await download.path());assert.ok(bytes.length>10000);
  await fs.mkdir(new URL('../../reports/',import.meta.url),{recursive:true});await fs.writeFile(new URL('../../reports/terrain-v2-forest.png',import.meta.url),bytes);
  save.map.regions[0].hexes.push({q:3,r:0});save.map.biomeOverrideByHexKey['3,0']='deciduous_woodland';await load();
+ await page.locator('[data-woodland-key="3,0"]').waitFor({state:'attached'});
  const grown=await signatures();for(const [k,v]of Object.entries(before))assert.deepEqual(grown[k],v);
  save.map.regions[0].biomeId='deciduous_woodland';save.map.regions[0].woodlandStyle='clearings';save.map.biomeOverrideByHexKey={};await load();
+ await page.waitForFunction(()=>document.querySelectorAll('[data-woodland-mode="islands"]').length===0 && document.querySelectorAll('[data-woodland-mode="clearings"]').length===18);
  assert.equal(await page.locator('[data-woodland-mode="islands"]').count(),0);
  assert.equal(await page.locator('[data-woodland-mode="clearings"]').count(),hexes.length-1);
  assert.equal(await page.locator('[data-woodland-key="-1,0"]').count(),0,'No woodland contours on lake hexes');
