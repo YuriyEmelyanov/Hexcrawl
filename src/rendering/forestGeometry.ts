@@ -1,10 +1,10 @@
 import {FOREST_EDGES, WOODLAND_COMPOSITIONS} from './forestTemplates.ts';
 import {forestFamily,isWoodland} from './forestStyle.ts';
-export type ForestCell={q:number;r:number;x:number;y:number;biome:string};
+export type ForestCell={q:number;r:number;x:number;y:number;biome:string;woodlandStyle?:'islands'|'clearings';straightSides?:number[]};
 type Point=number[];
 type Cubic={start:Point;c1:Point;c2:Point;end:Point};
 export type WoodlandPatch={key:string;cell:ForestCell;mode:'islands'|'clearings';composition:string;rotation:number;paths:string[]};
-export type ForestGeometry={canopy:string[];woodlands:WoodlandPatch[]};
+export type ForestGeometry={canopy:string[];bridges:string[];woodlands:WoodlandPatch[]};
 const directions=[[1,0],[0,1],[-1,1],[-1,0],[0,-1],[1,-1]];
 const key=(c:{q:number;r:number})=>`${c.q},${c.r}`;
 const pointKey=(p:Point)=>p.map(v=>Math.round(v*10000)).join(',');
@@ -25,7 +25,7 @@ export function buildForestGeometry(cells:ForestCell[],radius:number,seed:number
  // Clearings belong to continuous canopy; boundary woodland is rendered as islands.
  // Requiring six dense neighbours also keeps holes away from the outer crown.
  const woodlands:WoodlandPatch[]=forest.filter(c=>isWoodland(c.biome)).map(c=>({key:key(c),cell:c,
-  mode:directions.every(([dq,dr])=>{const n=byKey.get(`${c.q+dq},${c.r+dr}`);return n&&!isWoodland(n.biome);})?'clearings':'islands',
+  mode:c.woodlandStyle??(directions.every(([dq,dr])=>{const n=byKey.get(`${c.q+dq},${c.r+dr}`);return n&&!isWoodland(n.biome);})?'clearings':'islands'),
   ...woodlandPaths(c.q,c.r,c.x,c.y,radius,seed)}));
  const islands=new Set(woodlands.filter(p=>p.mode==='islands').map(p=>p.key));
  const dense=forest.filter(c=>!islands.has(key(c))),keys=new Set(dense.map(key));
@@ -35,22 +35,43 @@ export function buildForestGeometry(cells:ForestCell[],radius:number,seed:number
   const vs=Array.from({length:6},(_,i)=>{const a=(i*60-30)*Math.PI/180;return[cell.x+radius*Math.cos(a),cell.y+radius*Math.sin(a)];});
   for(let side=0;side<6;side++){const [dq,dr]=directions[side];if(!keys.has(`${cell.q+dq},${cell.r+dr}`))edges.push({a:vs[side],b:vs[(side+1)%6],cell,side});}
  }
- const starts=new Map(edges.map(e=>[pointKey(e.a),e])),used=new Set<Edge>(),canopy:string[]=[];
+ const starts=new Map(edges.map(e=>[pointKey(e.a),e])),used=new Set<Edge>(),canopy:string[]=[],boundary:Point[]=[];
  for(const first of edges){if(used.has(first))continue;const loop:Edge[]=[];let e:Edge|undefined=first;
   while(e&&!used.has(e)){used.add(e);loop.push(e);e=starts.get(pointKey(e.b));}
   const segments:Cubic[]=[];
   for(let i=0;i<loop.length;i++){
    const {a,b,cell,side}=loop[i],h=forestHash(`edge:${key(cell)}:${side}`,seed),dx=b[0]-a[0],dy=b[1]-a[1];
-   const ss=transform(reflectForestEdge(FOREST_EDGES[h%FOREST_EDGES.length].segments,(h>>>12)%4),([x,y])=>[a[0]+dx*x-dy*y,a[1]+dy*x+dx*y]);
+   const straight=cell.straightSides?.includes(side);
+   const ss=straight?[{start:a,c1:[a[0]+dx/3,a[1]+dy/3],c2:[a[0]+dx*2/3,a[1]+dy*2/3],end:b}]:transform(reflectForestEdge(FOREST_EDGES[h%FOREST_EDGES.length].segments,(h>>>12)%4),([x,y])=>[a[0]+dx*x-dy*y,a[1]+dy*x+dx*y]);
    // Align only the endpoint handles, retaining the approved intermediate geometry.
    const previous=loop[(i+loop.length-1)%loop.length].a,next=loop[(i+1)%loop.length].b;
    const handle=(origin:Point,through:Point,control:Point,sign:number)=>{const vx=through[0]-origin[0],vy=through[1]-origin[1],length=Math.hypot(vx,vy),distance=Math.hypot(control[0]-origin[0],control[1]-origin[1]);return[origin[0]+sign*vx/length*distance,origin[1]+sign*vy/length*distance];};
    const t0=[b[0]-previous[0],b[1]-previous[1]],t1=[next[0]-a[0],next[1]-a[1]];
-   ss[0].c1=handle(a,[a[0]+t0[0],a[1]+t0[1]],ss[0].c1,1);
-   ss[ss.length-1].c2=handle(b,[b[0]+t1[0],b[1]+t1[1]],ss[ss.length-1].c2,-1);
+   if(!straight)ss[0].c1=handle(a,[a[0]+t0[0],a[1]+t0[1]],ss[0].c1,1);
+   if(!straight)ss[ss.length-1].c2=handle(b,[b[0]+t1[0],b[1]+t1[1]],ss[ss.length-1].c2,-1);
+   for(const seg of ss)for(let j=0;j<=8;j++){const t=j/8,u=1-t;boundary.push([0,1].map(k=>u*u*u*seg.start[k]+3*u*u*t*seg.c1[k]+3*u*t*t*seg.c2[k]+t*t*t*seg.end[k]));}
    segments.push(...ss);
   }
   if(segments.length)canopy.push(path(segments));
  }
- return{canopy,woodlands};
+ const bridges:string[]=[];
+ // Close only narrow seams at a dense/open contact; keep the accepted islands.
+ for(const patch of woodlands.filter(p=>p.mode==='islands')){
+  const neighbours=directions.some(([q,r])=>keys.has(`${patch.cell.q+q},${patch.cell.r+r}`));
+  if(!neighbours)continue;
+  for(const d of patch.paths){
+   const numbers=d.match(/-?\d+(?:\.\d+)?/g)!.map(Number),samples:Point[]=[];
+   let start=numbers.slice(0,2);
+   for(let i=2;i<numbers.length;i+=6){const c1=numbers.slice(i,i+2),c2=numbers.slice(i+2,i+4),end=numbers.slice(i+4,i+6);
+    for(let j=0;j<=8;j++){const t=j/8,u=1-t;samples.push([0,1].map(k=>u*u*u*start[k]+3*u*u*t*c1[k]+3*u*t*t*c2[k]+t*t*t*end[k]));}start=end;
+   }
+   let distance=radius*.15,a:Point|undefined,b:Point|undefined;
+   const nearby=boundary.filter(p=>Math.hypot(p[0]-patch.cell.x,p[1]-patch.cell.y)<radius*1.15);
+   for(const p of samples)for(const q of nearby){const n=Math.hypot(p[0]-q[0],p[1]-q[1]);if(n<distance){distance=n;a=p;b=q;}}
+   if(a&&b){const dx=b[0]-a[0],dy=b[1]-a[1],n=Math.hypot(dx,dy)||1,w=radius*.075,nx=-dy/n*w,ny=dx/n*w;
+    bridges.push(`M${a[0]+nx},${a[1]+ny}Q${a[0]},${a[1]} ${a[0]-nx},${a[1]-ny}L${b[0]-nx},${b[1]-ny}Q${b[0]},${b[1]} ${b[0]+nx},${b[1]+ny}Z`);
+   }
+  }
+ }
+ return{canopy,bridges,woodlands};
 }

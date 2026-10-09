@@ -47,3 +47,14 @@ test('coordinate selection survives map growth, reordering and biome edits',()=>
  assert.deepEqual(woodlandPaths(-3,2,0,0,28,472),woodlandPaths(-3,2,0,0,28,472));
  assert.notDeepEqual(woodlandPaths(-3,2,0,0,28,472),woodlandPaths(-3,2,0,0,28,473));
 });
+test('a frozen clearing style covers the whole open region, including its outer cells',()=>{
+ const cells=[{...cell(0,0,'deciduous_woodland'),woodlandStyle:'clearings'},{...cell(1,0,'deciduous_woodland'),woodlandStyle:'clearings'}];
+ const g=buildForestGeometry(cells,28,3);assert.equal(g.canopy.length,1);assert.ok(g.woodlands.every(p=>p.mode==='clearings'));
+});
+test('candidate-facing crown edges remain exactly straight',()=>{
+ const g=buildForestGeometry([{...cell(0,0),straightSides:[0,1,2,3,4,5]}],28,3);
+ const values=g.canopy[0].match(/-?\d+(?:\.\d+)?/g).map(Number);
+ assert.equal(values.length,38,'six straight cubic edges');
+ let a=values.slice(0,2);
+ for(let i=2;i<values.length;i+=6){const c1=values.slice(i,i+2),c2=values.slice(i+2,i+4),b=values.slice(i+4,i+6);for(const p of [c1,c2])assert.ok(Math.abs((b[0]-a[0])*(p[1]-a[1])-(b[1]-a[1])*(p[0]-a[0]))<.05);a=b;}
+});
