@@ -3,10 +3,11 @@ import {chromium} from 'playwright';
 import fs from 'node:fs/promises';
 import assert from 'node:assert/strict';
 import {fileURLToPath} from 'node:url';
+import {stripVTControlCharacters} from 'node:util';
 const server=spawn(process.execPath,[fileURLToPath(new URL('../../node_modules/vite/bin/vite.js',import.meta.url)),'preview','--host','127.0.0.1','--port','4176','--strictPort'],{cwd:new URL('../../',import.meta.url),stdio:['ignore','pipe','inherit']});
 let browser;
 try{
- await new Promise((resolve,reject)=>{let out='';const t=setTimeout(()=>reject(new Error('Forest preview timeout')),10000);server.stdout.on('data',d=>{out+=d;if(out.includes('Local:')){clearTimeout(t);resolve();}});server.on('error',reject);});
+ await new Promise((resolve,reject)=>{let out='';const t=setTimeout(()=>reject(new Error('Forest preview timeout')),10000);server.stdout.on('data',d=>{out+=d;if(stripVTControlCharacters(out).includes('Local:')){clearTimeout(t);resolve();}});server.on('error',reject);});
  browser=await chromium.launch({executablePath:process.env.CHROMIUM_EXECUTABLE_PATH||undefined,headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
  const page=await browser.newPage({viewport:{width:1440,height:1000}}),errors=[];
  page.on('pageerror',e=>errors.push(e.message));await page.route(/mc\.yandex/,r=>r.abort());
