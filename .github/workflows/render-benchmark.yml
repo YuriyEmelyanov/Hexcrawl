@@ -1,0 +1,53 @@
+name: Deferred kingdom rendering benchmark
+on:
+  push:
+    branches: [perf/deferred-kingdom-render-20261010]
+    paths: ['.github/workflows/render-benchmark.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm ci
+      - run: npm run check
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:browser
+      - name: Build production baseline and optimized comparison
+        run: |
+          cp src/App.tsx /tmp/optimized-app.tsx
+          cp src/rendering/forestGeometry.ts /tmp/optimized-geometry.ts
+          git show d6f82abb2e2e8c9ca1a75f092456a49ae6a9dc12:src/App.tsx > src/App.tsx
+          git show d6f82abb2e2e8c9ca1a75f092456a49ae6a9dc12:src/rendering/forestGeometry.ts > src/rendering/forestGeometry.ts
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('src/App.tsx')
+          p.write_text(p.read_text().replace('availableKeys[Math.floor(Math.random() * availableKeys.length)]', 'availableKeys[0]'))
+          PY
+          npm run build
+          mv dist dist-baseline
+          cp /tmp/optimized-app.tsx src/App.tsx
+          cp /tmp/optimized-geometry.ts src/rendering/forestGeometry.ts
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('src/App.tsx')
+          p.write_text(p.read_text().replace('availableKeys[Math.floor(Math.random() * availableKeys.length)]', 'availableKeys[0]'))
+          PY
+          npm run build
+      - run: node scripts/benchmark-kingdom.mjs
+        env:
+          BENCH_BASE_SHA: d6f82abb2e2e8c9ca1a75f092456a49ae6a9dc12
+          BENCH_NEW_SHA: ddeb78c084a00cf6dc914d0b340cd200a6ed8dfa
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: deferred-rendering-results
+          path: reports/

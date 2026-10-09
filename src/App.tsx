@@ -11271,6 +11271,7 @@ export function App() {
   const [kingdoms, setKingdoms] = useState<Kingdom[]>([]);
   const [obstacles, setObstacles] = useState<Obstacle[]>([]);
   const [kingdomJob, setKingdomJob] = useState<KingdomJob | null>(null);
+  const [detailedRenderReady, setDetailedRenderReady] = useState(true);
   const [regions, setRegions] = useState<Region[]>([]);
   const [candidateHexes, setCandidateHexes] = useState<AxialHex[]>([]);
   const [rivers, setRivers] = useState<River[]>([]);
@@ -12794,6 +12795,7 @@ export function App() {
       const origin = findKingdomOrigin(anchor, occupied);
       const area = kingdomKeys(origin);
       setGenerationError(null);
+      setDetailedRenderReady(false);
       setKingdomJob({backup,failureBackup,origin,anchor,id:Math.max(0,...kingdoms.map(k=>k.id))+1,startCount:regions.length,steps:0,phase:area.has(hexKey(anchor))?'build':'connect',first:true});
     } catch(error) { reportGenerationFailure(error,anchor,{},failureBackup ?? backup); }
   };
@@ -12891,6 +12893,16 @@ export function App() {
     const timer=window.setTimeout(advanceKingdom,0);
     return ()=>window.clearTimeout(timer);
   },[kingdomJob]);
+
+  // Let the completed basic map paint before building the detailed SVG once.
+  useEffect(() => {
+    if (kingdomJob || detailedRenderReady) return;
+    let secondFrame = 0;
+    const firstFrame = requestAnimationFrame(() => {
+      secondFrame = requestAnimationFrame(() => setDetailedRenderReady(true));
+    });
+    return () => { cancelAnimationFrame(firstFrame); cancelAnimationFrame(secondFrame); };
+  }, [kingdomJob, detailedRenderReady]);
 
   const resetMap = () => {
     if (kingdomJob) return;
@@ -13228,6 +13240,8 @@ export function App() {
   const [biomeDisplayMode, setBiomeDisplayMode] = useState<'tiles' | 'emoji' | 'color'>('tiles');
   const useBiomeTiles = biomeDisplayMode === 'tiles';
   const useBiomeColor = biomeDisplayMode === 'color';
+  const renderDetails = !kingdomJob && detailedRenderReady;
+  const renderBiomeColor = useBiomeColor && renderDetails;
   const colorModeLabel = language === 'ru' ? 'Цвет' : 'Color';
   const biomeModeLabel = useBiomeTiles ? t.tilesMode : useBiomeColor ? colorModeLabel : t.emojiMode;
   const [usePoiSvg, setUsePoiSvg] = useState(true);
@@ -13245,7 +13259,7 @@ export function App() {
   const biomeDisplayToggleLabel = `${t.hexesDisplay}: ${biomeModeLabel}`;
   const biomeDisplayToggleTitle = useBiomeTiles ? t.showEmojiTitle : useBiomeColor ? t.showTilesTitle : (language === 'ru' ? 'Показывать гексы цветом' : 'Show hexes as colors');
   const colorLandHexes = useMemo(() => {
-    if (!useBiomeColor) return [];
+    if (!renderBiomeColor) return [];
     const regionBiomes = new Map(regions.map(region => [region.id, region.biomeId]));
     return positionedHexes.hexes
       .filter(hex => hex.kind === 'region')
@@ -13254,10 +13268,10 @@ export function App() {
         points: hexPoints(hex.x, hex.y, HEX_SIZE),
         color: GROUND_COLORS[biomeOverrideByHexKey.get(hex.key) ?? regionBiomes.get(hex.regionId ?? -1) ?? FALLBACK_BIOME_ID]
       }));
-  }, [useBiomeColor, positionedHexes, regions, hexTerrainByKey, biomeOverrideByHexKey]);
+  }, [renderBiomeColor, positionedHexes, regions, hexTerrainByKey, biomeOverrideByHexKey]);
   const lakeCells = useMemo(() => positionedHexes.hexes.filter(hex => hexTerrainByKey.get(hex.key)?.terrainOverride === 'lake').map(hex=>({...hex,lakeId:hexTerrainByKey.get(hex.key)?.lakeId})), [positionedHexes, hexTerrainByKey]);
   const forestCells = useMemo(() => {
-    if (!useBiomeColor) return [];
+    if (!renderBiomeColor) return [];
     const biomes = new Map(regions.map(region => [region.id, region.biomeId]));
     const candidates = new Set(positionedHexes.hexes.filter(hex=>hex.kind==='candidate').map(hex=>hex.key));
     const openLand = new Set(positionedHexes.hexes.filter(hex=>hex.kind==='region'&&!hexTerrainByKey.get(hex.key)?.terrainOverride&&!forestFamily(biomeOverrideByHexKey.get(hex.key)??biomes.get(hex.regionId??-1)??FALLBACK_BIOME_ID)).map(hex=>hex.key));
@@ -13265,9 +13279,9 @@ export function App() {
     return positionedHexes.hexes.filter(hex => hex.kind === 'region' && hexTerrainByKey.get(hex.key)?.terrainOverride !== 'sea')
       .map(hex => ({...hex, lake:hexTerrainByKey.get(hex.key)?.terrainOverride==='lake', openSides:[[1,0],[0,1],[-1,1],[-1,0],[0,-1],[1,-1]].flatMap(([q,r],side)=>openLand.has(`${hex.q+q},${hex.r+r}`)?[side]:[]), straightSides:[[1,0],[0,1],[-1,1],[-1,0],[0,-1],[1,-1]].flatMap(([q,r],side)=>candidates.has(`${hex.q+q},${hex.r+r}`)?[side]:[]), woodlandStyle:styles.get(hex.regionId ?? -1), biome: biomeOverrideByHexKey.get(hex.key) ?? biomes.get(hex.regionId ?? -1) ?? FALLBACK_BIOME_ID}))
       .filter(hex => forestFamily(hex.biome));
-  }, [useBiomeColor, positionedHexes, regions, hexTerrainByKey, biomeOverrideByHexKey]);
+  }, [renderBiomeColor, positionedHexes, regions, hexTerrainByKey, biomeOverrideByHexKey]);
   const lakeGeometryCache = useRef(createLakeGeometryCache());
-  const lakeShapes = useMemo(()=>useBiomeColor ? buildNaturalLakes(lakeCells,HEX_SIZE,toponymSeed,riverSegments,lakeGeometryCache.current) : [],[useBiomeColor,lakeCells,toponymSeed,riverSegments]);
+  const lakeShapes = useMemo(()=>renderBiomeColor ? buildNaturalLakes(lakeCells,HEX_SIZE,toponymSeed,riverSegments,lakeGeometryCache.current) : [],[renderBiomeColor,lakeCells,toponymSeed,riverSegments]);
   const poiDisplayToggleLabel = `${t.pointsDisplay}: ${usePoiSvg ? t.iconsMode : t.emojiMode}`;
   const poiDisplayToggleTitle = usePoiSvg ? t.showPoiEmojiTitle : t.showPoiIconsTitle;
 
@@ -13508,7 +13522,7 @@ export function App() {
   });
 
   const handleExportPng = async () => {
-    if(kingdomJob)return;
+    if (!renderDetails) return;
     if (!mapSvgRef.current) return;
     try {
       await exportSvgToPng(mapSvgRef.current, `${EXPORT_FILE_PREFIX}-${getTimestampForFilename()}.png`);
@@ -13680,6 +13694,7 @@ export function App() {
                 <option value="classic">{language === 'ru' ? 'Классический режим' : 'Classic mode'}</option>
                 <option value="mythic">Mythic Bastionland</option>
               </select></label></div>
+            {!kingdomJob && !detailedRenderReady ? <p role="status" className="kingdom-progress">{language === 'ru' ? 'Отрисовка карты…' : 'Drawing map…'}</p> : null}
             {kingdomJob ? <p role="status" className="kingdom-progress">{language === 'ru' ? 'Создание королевства…' : 'Building kingdom…'} {kingdomHexes(kingdomJob.origin).filter(h=>metadataMap.has(hexKey(h))).length}/144</p> : null}
             {generationMode === 'classic' ? <div className="control-block gen-params" aria-label={t.genParamsLabel}>
               <label>
@@ -13787,7 +13802,7 @@ export function App() {
                 <details className="export-menu">
                   <summary className="secondary">{t.export}</summary>
                   <div className="export-menu__items">
-                    <button type="button" onClick={() => void handleExportPng()} className="secondary">PNG</button>
+                    <button type="button" disabled={!renderDetails} onClick={() => void handleExportPng()} className="secondary">PNG</button>
                     <button type="button" onClick={handleExportJson} className="secondary">JSON</button>
                   </div>
                 </details>
@@ -13832,6 +13847,7 @@ export function App() {
             <svg
               ref={mapSvgRef}
               data-biome-display={biomeDisplayMode}
+              data-render-phase={kingdomJob ? 'generation' : renderDetails ? 'ready' : 'render-pending'}
               viewBox={`0 0 ${displayMapWidth} ${displayMapHeight}`}
               preserveAspectRatio="xMinYMin meet"
               style={{ width: `${displayMapWidth * mapScale}px`, height: `${displayMapHeight * mapScale}px`, '--water-color': WATER_PALETTE.river, '--water-marks': WATER_PALETTE.marks } as CSSProperties}
@@ -13858,7 +13874,7 @@ export function App() {
               ))}
             </defs>
             <g className="map-rotation-layer" transform={mapRotationTransform}>
-            {useBiomeColor && colorLandHexes.length > 0 ? (
+            {renderBiomeColor && colorLandHexes.length > 0 ? (
               <g className="biome-color-layer" pointerEvents="none">
                 <defs>
                   <clipPath id="biome-color-land-clip">
@@ -13888,9 +13904,9 @@ export function App() {
               const isLakeHex = terrain?.terrainOverride === 'lake';
               const region = meta?.regionId ? regions.find((item) => item.id === meta.regionId) : undefined;
               const effectiveBiomeId = biomeOverrideByHexKey.get(hex.key) ?? region?.biomeId ?? FALLBACK_BIOME_ID;
-              const fill = hex.kind === 'candidate' ? undefined : useBiomeColor ? (hex.kind === 'sea' ? GROUND_WATER_COLOR : 'transparent') : hex.kind === 'sea' ? SEA_HEX_COLOR : isLakeHex ? WATER_PALETTE.deep : getBiomeColor(effectiveBiomeId);
-              const gridStyle = useBiomeColor && hex.kind !== 'candidate' ? { stroke: 'none' } : {};
-              const biomeTileHref = useBiomeTiles && hex.kind === 'region' && !isLakeHex ? getBiomeTileHref(effectiveBiomeId) : undefined;
+              const fill = hex.kind === 'candidate' ? undefined : !renderDetails ? (hex.kind === 'sea' ? SEA_HEX_COLOR : isLakeHex ? WATER_PALETTE.deep : GROUND_COLORS[effectiveBiomeId]) : useBiomeColor ? (hex.kind === 'sea' ? GROUND_WATER_COLOR : 'transparent') : hex.kind === 'sea' ? SEA_HEX_COLOR : isLakeHex ? WATER_PALETTE.deep : getBiomeColor(effectiveBiomeId);
+              const gridStyle = renderBiomeColor && hex.kind !== 'candidate' ? { stroke: 'none' } : {};
+              const biomeTileHref = renderDetails && useBiomeTiles && hex.kind === 'region' && !isLakeHex ? getBiomeTileHref(effectiveBiomeId) : undefined;
               const tileImageSize = getHexWidth(hexRenderSize);
               const tileImageHeight = hexRenderSize * 2;
               const effectiveBiome = BIOMES[effectiveBiomeId] ?? BIOMES[FALLBACK_BIOME_ID];
@@ -13919,7 +13935,7 @@ export function App() {
                     }
                   }}
                 >
-                  <polygon data-hex-key={hex.key} points={hexPoints(hex.x, hex.y, hexRenderSize)} className={cls} style={{ fill, ...(useBiomeColor ? { stroke: 'none' } : {}) }} />
+                  <polygon data-hex-key={hex.key} points={hexPoints(hex.x, hex.y, hexRenderSize)} className={cls} style={{ fill, ...(renderBiomeColor ? { stroke: 'none' } : {}) }} />
                   {biomeTileHref ? (
                     <g clipPath={`url(#hex-clip-${hex.key})`} pointerEvents="none">
                       <image className="biome-tile"
@@ -13933,7 +13949,7 @@ export function App() {
                       />
                     </g>
                   ) : null}
-                  {useBiomeColor && hex.kind === 'region' && !isLakeHex && terrainAsset(effectiveBiomeId, hex.q, hex.r, toponymSeed) ? (
+                  {renderBiomeColor && hex.kind === 'region' && !isLakeHex && terrainAsset(effectiveBiomeId, hex.q, hex.r, toponymSeed) ? (
                     <g clipPath={`url(#hex-clip-${hex.key})`} pointerEvents="none">
                       <image className="terrain-overlay" data-terrain-key={hex.key}
                         href={terrainAsset(effectiveBiomeId, hex.q, hex.r, toponymSeed)}
@@ -13947,12 +13963,12 @@ export function App() {
                 </g>
               );
             })}
-            {useBiomeColor ? <>
+            {renderBiomeColor ? <>
               <ForestCanopy waterSegments={riverSegments} lakes={lakeShapes} cells={forestCells} radius={HEX_SIZE} seed={toponymSeed} width={positionedHexes.width} height={positionedHexes.height} />
               <LakeWater shapes={lakeShapes} cells={lakeCells} radius={HEX_SIZE} seed={toponymSeed} segments={riverSegments} />
             </> : null}
             <g className="rivers-layer">
-              {riverSegments.map((segment) => (
+              {renderDetails && riverSegments.map((segment) => (
                 <line
                   key={segment.key}
                   x1={segment.x1}
@@ -13963,8 +13979,8 @@ export function App() {
                   strokeWidth={segment.width}
                 />
               ))}
-              {useBiomeColor && forestCells.length ? <ForestWaterEdge/> : null}
-              {riverDirectionArrows.map((arrow) => (
+              {renderBiomeColor && forestCells.length ? <ForestWaterEdge/> : null}
+              {renderDetails && riverDirectionArrows.map((arrow) => (
                 <line
                   key={arrow.key}
                   x1={arrow.x1}
@@ -13976,7 +13992,7 @@ export function App() {
                   markerEnd={`url(#river-arrowhead-${arrow.fullness})`}
                 />
               ))}
-              {riverRapidMarks.map((mark) => (
+              {renderDetails && riverRapidMarks.map((mark) => (
                 <line
                   key={mark.key}
                   x1={mark.x1}
@@ -13989,7 +14005,7 @@ export function App() {
               ))}
             </g>
             <g className="roads-layer">
-              {roadSegments.map((segment) => {
+              {renderDetails && roadSegments.map((segment) => {
                 const crossing = renderedCrossings.find((item) => item.roadId === segment.roadId && item.roadSegmentKey === segment.segmentKey);
                 const lineClass = segment.kind === 'trail' ? 'trail-line' : 'road-line';
                 if (!crossing) return <line key={segment.key} x1={segment.x1} y1={segment.y1} x2={segment.x2} y2={segment.y2} className={lineClass} />;
@@ -14059,13 +14075,13 @@ export function App() {
             </g>
             </g>
             <g className="kingdom-boundaries" transform={mapRotationTransform} pointerEvents="none">
-              {kingdoms.flatMap(k=>kingdomBoundary(k,getHexEdgesAsVertexPairs).map(e=><line key={`${k.id}:${e.edgeKey}`} x1={e.from.x+riverOffset.x} y1={e.from.y+riverOffset.y} x2={e.to.x+riverOffset.x} y2={e.to.y+riverOffset.y} stroke={k.color} strokeWidth={3} strokeDasharray="6 4" />))}
+              {renderDetails && kingdoms.flatMap(k=>kingdomBoundary(k,getHexEdgesAsVertexPairs).map(e=><line key={`${k.id}:${e.edgeKey}`} x1={e.from.x+riverOffset.x} y1={e.from.y+riverOffset.y} x2={e.to.x+riverOffset.x} y2={e.to.y+riverOffset.y} stroke={k.color} strokeWidth={3} strokeDasharray="6 4" />))}
             </g>
             <g className="obstacles-layer" transform={mapRotationTransform} pointerEvents="none">
-              {obstacles.map(o=>{const e=getHexEdgesAsVertexPairs(o.hex).find(e=>e.edgeKey===o.edgeKey);return e?<line key={o.edgeKey} x1={e.from.x+riverOffset.x} y1={e.from.y+riverOffset.y} x2={e.to.x+riverOffset.x} y2={e.to.y+riverOffset.y} stroke="#a95650" strokeWidth={3} />:null;})}
+              {renderDetails && obstacles.map(o=>{const e=getHexEdgesAsVertexPairs(o.hex).find(e=>e.edgeKey===o.edgeKey);return e?<line key={o.edgeKey} x1={e.from.x+riverOffset.x} y1={e.from.y+riverOffset.y} x2={e.to.x+riverOffset.x} y2={e.to.y+riverOffset.y} stroke="#a95650" strokeWidth={3} />:null;})}
             </g>
             <g className="river-waterfalls-layer" pointerEvents="none">
-              {riverWaterfalls.map((waterfall) => {
+              {renderDetails && riverWaterfalls.map((waterfall) => {
                 const position = isMapRotated
                   ? rotateMapPoint(waterfall.x, waterfall.y, positionedHexes.height)
                   : waterfall;
@@ -14103,6 +14119,7 @@ export function App() {
               </g>
             ) : null}
             <g className="emoji-layer">
+              {renderDetails && <>
               {positionedHexes.hexes.map((hex) => {
                 const isStartClickPrompt = regions.length === 0 && hex.kind === 'candidate' && hex.key === hexKey(START_HEX);
                 const isCandidateClickPrompt = regions.length >= 1 && regions.length <= 2 && hex.kind === 'candidate' && hex.key === clickPromptCandidateKey;
@@ -14131,7 +14148,7 @@ export function App() {
                 const effectiveBiome = BIOMES[effectiveBiomeId] ?? BIOMES[FALLBACK_BIOME_ID];
                 const biomePrimaryEmoji = effectiveBiome.primaryEmoji;
                 const biomeSecondaryEmojis = effectiveBiome.secondaryEmojis;
-                const biomeTileHref = useBiomeTiles && hex.kind === 'region' && !isLakeHex ? getBiomeTileHref(effectiveBiomeId) : undefined;
+                const biomeTileHref = renderDetails && useBiomeTiles && hex.kind === 'region' && !isLakeHex ? getBiomeTileHref(effectiveBiomeId) : undefined;
                 const biomeEmojis = biomeTileHref || useBiomeColor ? [] : [biomePrimaryEmoji, ...biomeSecondaryEmojis.slice(0, 2)];
                 const isPointOfInterest = region?.pointsOfInterest.some((poi) => hexKey(poi) === hex.key) ?? false;
                 if (waterPoiKind) {
@@ -14166,6 +14183,7 @@ export function App() {
                   );
                 });
               })}
+              </>}
             </g>
             {debugRivers ? (
               <g className="river-debug-layer" transform={mapRotationTransform}>
@@ -14211,7 +14229,7 @@ export function App() {
                 ))}
               </g>
             ) : null}
-            {useBiomeColor ? <g className="top-hex-grid" transform={mapRotationTransform}><ColorHexGrid cells={positionedHexes.hexes.filter(hex => hex.kind !== 'candidate')} radius={HEX_SIZE} /></g> : null}
+            {renderBiomeColor ? <g className="top-hex-grid" transform={mapRotationTransform}><ColorHexGrid cells={positionedHexes.hexes.filter(hex => hex.kind !== 'candidate')} radius={HEX_SIZE} /></g> : null}
             </svg>
           </div>
 
