@@ -1,9 +1,18 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {createHash} from 'node:crypto';
 import {buildForestGeometry,reflectForestEdge,woodlandPaths} from '../src/rendering/forestGeometry.ts';
 import {FOREST_EDGES,WOODLAND_COMPOSITIONS} from '../src/rendering/forestTemplates.ts';
 const dirs=[[1,0],[0,1],[-1,1],[-1,0],[0,-1],[1,-1]];
 const cell=(q,r,biome='plain_deciduous_forest')=>({q,r,x:Math.sqrt(3)*(q+r/2)*28,y:42*r,biome});
+test('indexed joins retain the approved large-map geometry exactly',()=>{
+ const approved=new Map([[1,'a3487d470afc49baa12e3b550df6292c53369d9190ed8b802e1ce9818d75253c'],[7,'08df4bf8b6bf03178896778014882bd555267e460f6febd24363bd4b08c3ac48'],[20,'4795baac722a76e26cc268785c6c5c4dc83a325de0a67acf094a482492360217']]);
+ for(const [seed,expected] of approved){
+  const cells=[];for(let q=0;q<16;q++)for(let r=0;r<12;r++)cells.push({q,r,x:Math.sqrt(3)*28*(q+r/2),y:42*r,biome:(q*31+r*17+seed)%3?'plain_deciduous_forest':'deciduous_woodland',woodlandStyle:(q+r+seed)%2?'islands':'clearings'});
+  const actual=createHash('sha256').update(JSON.stringify(buildForestGeometry(cells,28,seed))).digest('hex');
+  assert.equal(actual,expected,`approved contours and bridges for seed ${seed}`);
+ }
+});
 test('four edge reflections preserve exact endpoints and are reversible',()=>{
  for(const e of FOREST_EDGES)for(let v=0;v<4;v++){
   const ss=reflectForestEdge(e.segments,v);
