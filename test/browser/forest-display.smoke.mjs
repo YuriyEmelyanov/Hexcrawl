@@ -53,7 +53,7 @@ try{
  await page.locator('[data-woodland-key="3,0"]').waitFor({state:'attached'});
  const grown=await signatures();for(const [k,v]of Object.entries(before))assert.deepEqual(grown[k],v);
  save.map.regions[0].biomeId='deciduous_woodland';save.map.regions[0].woodlandStyle='clearings';save.map.biomeOverrideByHexKey={};await load();
- await page.waitForFunction(()=>document.querySelectorAll('[data-woodland-mode="islands"]').length===0 && document.querySelectorAll('[data-woodland-mode="clearings"]').length===18);
+ await page.waitForFunction(expected=>document.querySelectorAll('[data-woodland-mode="islands"]').length===0 && document.querySelectorAll('[data-woodland-mode="clearings"]').length===expected,hexes.length-1);
  assert.equal(await page.locator('[data-woodland-mode="islands"]').count(),0);
  assert.equal(await page.locator('[data-woodland-mode="clearings"]').count(),hexes.length-1);
  assert.equal(await page.locator('[data-woodland-key="-1,0"]').count(),0,'No woodland contours on lake hexes');
