@@ -21,7 +21,7 @@ export function forestWaterBoundary(cells:ForestCell[],radius:number,rivers:Wate
   if(Boolean(left)===Boolean(right))return;
   const forest=left??right!;if(!left){nx=-nx;ny=-ny;}
   cuts.push(quad(x1,y1,x2,y2,nx,ny,0,-radius*.45));
-  if(!isWoodland(forest.biome)||forest.woodlandStyle==='clearings')banks.push(quad(x1,y1,x2,y2,nx,ny,0,radius*.4));
+  if((!isWoodland(forest.biome)&&forest.biome!=='swamp_forest')||forest.woodlandStyle==='clearings')banks.push(quad(x1,y1,x2,y2,nx,ny,0,radius*.4));
  };
  for(const s of rivers)boundary(s.x1,s.y1,s.x2,s.y2,radius*.16);
  // Lakes overlay the original canopy without bank extensions or shoreline cuts.
