@@ -37,6 +37,7 @@ try{
  const signatures=()=>page.locator('[data-woodland-key]').evaluateAll(ns=>Object.fromEntries(ns.map(n=>[n.dataset.woodlandKey,{composition:n.dataset.composition,rotation:n.dataset.rotation,paths:[...n.querySelectorAll('path')].map(p=>p.getAttribute('d'))}])));
  const canopyBeforeLake=await page.locator('[data-forest-shape="dense"]').getAttribute('d');
  save.map.terrainByHexKey={'-1,0':{terrainOverride:'lake',lakeId:900}};await load();
+ await page.locator('.lake-water-layer [data-lake-shape]').waitFor({state:'attached'});
  assert.equal(await page.locator('[data-forest-shape="dense"]').getAttribute('d'),canopyBeforeLake,'Lake overlays rather than replacing canopy');
  assert.equal(await page.locator('.lake-water-layer [data-lake-shape]').count(),1);
  assert.ok(await page.locator('[fill="#91B575"]').count()>0,'Original forest ground restored');
