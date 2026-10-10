@@ -1,7 +1,7 @@
 // Test-only instrumentation. Run in a disposable checkout before building.
 import fs from 'node:fs';import ts from 'typescript';
-const targets=new Set(['App','advanceKingdom','finishKingdom','captureGenerationBackup','generateConnectedRegionFromAnchorImpl','generateRoadsForRegionImpl','completeRegionRoadConnections','buildRegionRiverNetwork','buildRiverGraphForRegion','getCandidateBoundaryEdgesForRegion','getCandidateBoundaryVerticesForRegion','validateCandidateBoundaryVertices','getRegionSharedVertices','findRoadPathWithinRegion','buildForestGeometry','buildForestTreeMarks','forestWaterBoundary']);
-for(const path of ['src/App.tsx','src/rendering/forestGeometry.ts','src/rendering/forestTreeMarks.ts','src/rendering/forestWaterBoundary.ts']){
+const targets=new Set(['completeRegionRiverEnds','reconcileRegionRiverModel','solveRiverComponents','validateRiverCycleSafety','findRiverPathImpl','solveRiverNetwork','validateRiverNetwork','advanceKingdom','finishKingdom','captureGenerationBackup','generateConnectedRegionFromAnchorImpl','generateRoadsForRegionImpl','completeRegionRoadConnections','buildRegionRiverNetwork','buildRiverGraphForRegion','getCandidateBoundaryEdgesForRegion','getCandidateBoundaryVerticesForRegion','validateCandidateBoundaryVertices','getRegionSharedVertices','findRoadPathWithinRegion','buildForestGeometry','buildForestTreeMarks','forestWaterBoundary']);
+for(const path of ['src/riverModel/core.ts','src/App.tsx','src/rendering/forestGeometry.ts','src/rendering/forestTreeMarks.ts','src/rendering/forestWaterBoundary.ts']){
  let source=fs.readFileSync(path,'utf8');const ast=ts.createSourceFile(path,source,ts.ScriptTarget.Latest,true,path.endsWith('tsx')?ts.ScriptKind.TSX:ts.ScriptKind.TS),edits=[];
  function walk(n){let name=ts.isFunctionDeclaration(n)?n.name?.text:ts.isArrowFunction(n)&&ts.isVariableDeclaration(n.parent)?n.parent.name.getText(ast):undefined;
   if(name&&targets.has(name)&&n.body&&ts.isBlock(n.body)){
