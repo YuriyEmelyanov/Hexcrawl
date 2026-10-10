@@ -1,7 +1,7 @@
 name: Sequential kingdom stress
 on:
   push:
-    branches: [diagnostics/kingdom-growth-20261010]
+    branches: [diagnostics/river-search-20261011]
     paths: [.github/workflows/kingdom-growth.yml]
   workflow_dispatch:
 permissions:
@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        seed: [42, 7, 123]
+        seed: [42]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -26,7 +26,8 @@ jobs:
       - run: node scripts/stress-kingdom-growth.mjs
         env:
           GROWTH_SEED: ${{ matrix.seed }}
-          GROWTH_MAX: 8
+          GROWTH_MAX: 5
+          GROWTH_MODE: emoji
       - uses: actions/upload-artifact@v4
         if: always()
         with:
