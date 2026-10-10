@@ -46,7 +46,7 @@ try {
   await importMap(fixture);
   // Schematic modes use whole lake hexes; all modes retain the same water palette.
   for (const mode of ['tiles','emoji']) {
-    const features=await page.locator('.map-viewport > svg').evaluate(svg=>({
+    const features=await page.locator('.map-viewport .map-stage > svg').evaluate(svg=>({
       river:getComputedStyle(svg.querySelector('.river-polyline')).stroke,
       marks:getComputedStyle(svg.querySelector('.river-direction-arrow')).stroke,
       paths:[...svg.querySelectorAll('[data-lake-shape] clipPath[id$="-shape"] > path')].map(n=>n.getAttribute('d')),
@@ -75,7 +75,7 @@ try {
   assert.equal(Object.keys(before).length, expectedOverlayCount);
   assert.ok(!Object.values(before).includes('/terrain/v2/tree.svg'));
   assert.ok(await page.locator('.forest-canopy-layer').count());
-  const features=await page.locator('.map-viewport > svg').evaluate(svg=>({
+  const features=await page.locator('.map-viewport .map-stage > svg').evaluate(svg=>({
     river:getComputedStyle(svg.querySelector('.river-polyline')).stroke,
     marks:getComputedStyle(svg.querySelector('.river-direction-arrow')).stroke,
     lake:svg.querySelectorAll('.lake-water-layer path').length,
@@ -119,7 +119,7 @@ try {
   const atlas=await download('PNG');
   await fs.writeFile(new URL('../../reports/terrain-v2-atlas.png',import.meta.url),atlas);
   // Sample clear water inside the broad lake and beside its island, avoiding grid strokes.
-  const points=await page.locator('.map-viewport > svg').evaluate(svg=>{
+  const points=await page.locator('.map-viewport .map-stage > svg').evaluate(svg=>{
     const c=(key,dx=0)=>{const b=svg.querySelector(`[data-hex-key="${key}"]`).getBBox();return{x:b.x+b.width/2+dx,y:b.y+b.height/2+3};};
     return [c('12,9'),c('1,2'),c('10,9')];
   });
