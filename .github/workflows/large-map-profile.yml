@@ -1,0 +1,29 @@
+name: Large map profile
+on:
+  push:
+    branches: [perf/large-map-navigation-20261010]
+    paths: [.github/workflows/large-map-profile.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  profile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm ci
+      - run: npm run build
+      - run: npx playwright install --with-deps chromium
+      - run: node scripts/profile-large-map.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: large-map-profile
+          path: reports/large-map-profile.json
+          if-no-files-found: ignore
