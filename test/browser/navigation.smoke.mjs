@@ -71,8 +71,11 @@ try{
  const menu=page.locator('details.export-menu');await menu.locator('summary').click();
  const [jsonDownload]=await Promise.all([page.waitForEvent('download'),page.getByRole('button',{name:'JSON',exact:true}).click()]);const exported=JSON.parse(await fs.readFile(await jsonDownload.path(),'utf8'));assert.ok(Math.abs(exported.ui.mapScale-burst.scale)<.0001,'Export stores live navigation scale');
  const [pngDownload]=await Promise.all([page.waitForEvent('download'),page.getByRole('button',{name:'PNG',exact:true}).click()]);const png=await fs.readFile(await pngDownload.path());assert.ok(png.length>10000,'PNG still exports after zoom and rotation');
+ // Compositor caching ends after input, preserving sharp vectors at rest.
+ await page.waitForFunction(()=>!document.querySelector('.map-viewport').classList.contains('is-navigating'));
+ assert.equal(await page.locator('.map-stage > svg').evaluate(s=>getComputedStyle(s).willChange),'auto');
  let baseline;
- if(process.env.NAV_BASELINE){const old=await setup(4181);baseline=await exercise(old,false);await old.close();}
+ if(process.env.NAV_BASELINE){const old=await setup(4181);baseline=await exercise(old,false);await old.locator('.rotate-map-button').click();await old.locator('details.export-menu summary').click();const [oldDownload]=await Promise.all([old.waitForEvent('download'),old.getByRole('button',{name:'PNG',exact:true}).click()]);assert.ok(png.equals(await fs.readFile(await oldDownload.path())),'Navigation preserves byte-identical full PNG output');await old.close();}
  assert.deepEqual(errors,[]);
  console.log('NAVIGATION_REPORT '+JSON.stringify({environment:{browser:browser.version(),viewport:'1500x1000',headless:true,cpuThrottling:false},map:{hexes:400,mode:'color',description:'Dense forest with woodland clearings'},optimized:result,baseline}));
  console.log('Navigation: batched wheel zoom, unchanged SVG artwork, focal point, drag, rotation, live JSON scale and PNG export passed.');
