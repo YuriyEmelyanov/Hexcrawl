@@ -27,7 +27,7 @@ try{
  const configs=process.env.LARGE_BASELINE?[{label:'baseline',port:4183},{label:'optimized',port:4182}]:[{label:'current',port:4182}];
  for(const count of [1,3,6])for(const config of configs){
   const p=await browser.newPage({viewport:{width:1500,height:1000}});await p.route(/mc\.yandex/,r=>r.abort());const errors=[];p.on('pageerror',e=>errors.push(e.message));p.on('dialog',async d=>{errors.push(d.message());await d.dismiss();});
-  await p.goto(`http://127.0.0.1:${config.port}/`);await p.locator('input[type=file]').setInputFiles({name:'large-map.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(fixture(base,count)))});await p.waitForFunction(n=>document.querySelectorAll('polygon.hex.region,polygon.hex.center').length===n,count*400);
+  await p.goto(`http://127.0.0.1:${config.port}/`);await p.locator('input[type=file]').setInputFiles({name:'large-map.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(fixture(base,count)))});try{await p.waitForFunction(n=>document.querySelectorAll('polygon.hex.region,polygon.hex.center').length===n,count*400);}catch(e){throw Error('Import failed: '+JSON.stringify(errors)+' '+await p.locator('.map-viewport').innerText());}
   const toggle=p.locator('.biome-display-toggle');while(await toggle.getAttribute('data-mode')!=='color')await toggle.click();await p.locator('.forest-canopy-layer').first().waitFor({state:'attached'});await p.waitForTimeout(500);
   const cdp=await p.context().newCDPSession(p);await cdp.send('Performance.enable');
   for(const ablation of process.env.LARGE_BASELINE?['normal']:['normal','no-effects']){
