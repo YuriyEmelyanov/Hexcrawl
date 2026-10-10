@@ -13,7 +13,7 @@ import { createObstacles, pairKey, type Obstacle } from './modes/obstacles';
 import { kingdomBoundary } from './modes/kingdomBoundaries';
 import { createGenerationLogger, MAX_REGION_ATTEMPTS, type GenerationEvent } from './generationDiagnostics';
 import { solveRiverNetwork, validateRiverNetwork, minimumLakeHexes, isFullness, type RiverNetwork as ModelNetwork, type RiverEdge as ModelEdge, type SolveResult as ModelSolveResult } from './riverModel/core';
-import { type ChangeEvent, type CSSProperties, type KeyboardEvent, type MouseEvent, type TouchEvent, type WheelEvent, useEffect, useMemo, useRef, useState } from 'react';
+import { type ChangeEvent, type CSSProperties, type KeyboardEvent, type MouseEvent, type WheelEvent, useEffect, useMemo, useRef, useState } from 'react';
 import {
   getOutgoingConnectorFullnessFromEndpoint,
   type RiverFullness
@@ -1024,6 +1024,8 @@ async function createExportSvgClone(svg: SVGSVGElement): Promise<SVGSVGElement> 
   clone.setAttribute('height', String(viewBox.height));
   clone.style.width = '';
   clone.style.height = '';
+  clone.style.transform = '';
+  clone.style.willChange = '';
 
   const style = document.createElementNS('http://www.w3.org/2000/svg', 'style');
   style.textContent = SVG_EXPORT_STYLES;
@@ -11261,6 +11263,12 @@ export function App() {
   const mapSvgRef = useRef<SVGSVGElement | null>(null);
   const mapViewportRef = useRef<HTMLDivElement | null>(null);
   const mapScaleRef = useRef(1);
+  const mapStageRef = useRef<HTMLDivElement | null>(null);
+  const mapZoomFrameRef = useRef<number | null>(null);
+  const mapNavigationIdleRef = useRef<number | null>(null);
+  const pendingMapZoomRef = useRef<{ scale: number; clientX?: number; clientY?: number } | null>(null);
+  const mapPanFrameRef = useRef<number | null>(null);
+  const pendingMapPanRef = useRef<{ left: number; top: number } | null>(null);
   const pinchZoomRef = useRef<{ distance: number; scale: number } | null>(null);
   const mapDragRef = useRef<{ pointerId: number; startX: number; startY: number; scrollLeft: number; scrollTop: number } | null>(null);
   const mapToolbarRef = useRef<HTMLDivElement | null>(null);
@@ -13235,7 +13243,6 @@ export function App() {
     : [];
   const selectedCandidateBoundaryDebug = selectedRegion ? candidateBoundaryDebugByRegion.get(selectedRegion.id) : undefined;
   const [isMobileLayout, setIsMobileLayout] = useState(() => (typeof window === 'undefined' ? false : window.matchMedia(MOBILE_LAYOUT_QUERY).matches));
-  const [mapScale, setMapScale] = useState(1);
   const [isMapRotated, setIsMapRotated] = useState(false);
   const [biomeDisplayMode, setBiomeDisplayMode] = useState<'tiles' | 'emoji' | 'color'>('tiles');
   const useBiomeTiles = biomeDisplayMode === 'tiles';
@@ -13345,47 +13352,84 @@ export function App() {
 
   const clampMapScale = (scale: number) => Math.min(MAX_MAP_SCALE, Math.max(MIN_MAP_SCALE, scale));
 
+  const beginMapNavigation = () => {
+    mapViewportRef.current?.classList.add('is-navigating');
+    if (mapNavigationIdleRef.current !== null) clearTimeout(mapNavigationIdleRef.current);
+    mapNavigationIdleRef.current = window.setTimeout(() => {
+      mapNavigationIdleRef.current = null;
+      // Release the cached raster so vectors regain full sharpness at the new scale.
+      mapViewportRef.current?.classList.remove('is-navigating');
+    }, 180);
+  };
+
+  // Navigation changes only the composited SVG layer, never React map state.
   const applyMapScale = (scale: number) => {
     const nextScale = clampMapScale(scale);
     mapScaleRef.current = nextScale;
-    setMapScale(nextScale);
+    const svg = mapSvgRef.current;
+    const stage = mapStageRef.current;
+    if (svg && stage) {
+      stage.style.width = `${svg.viewBox.baseVal.width * nextScale}px`;
+      stage.style.height = `${svg.viewBox.baseVal.height * nextScale}px`;
+      svg.style.transform = `translateZ(0) scale(${nextScale})`;
+    }
     return nextScale;
   };
 
   const updateMapScale = (scale: number) => {
+    if (mapZoomFrameRef.current !== null) cancelAnimationFrame(mapZoomFrameRef.current);
+    mapZoomFrameRef.current = null;
+    pendingMapZoomRef.current = null;
     applyMapScale(scale);
   };
 
   const zoomMapAtPoint = (scale: number, clientX?: number, clientY?: number) => {
-    const viewport = mapViewportRef.current;
-    const previousScale = mapScaleRef.current;
-    const nextScale = clampMapScale(scale);
-    if (!viewport || previousScale === nextScale) {
-      applyMapScale(nextScale);
-      return;
-    }
-
-    const rect = viewport.getBoundingClientRect();
-    const focalX = (clientX ?? rect.left + rect.width / 2) - rect.left;
-    const focalY = (clientY ?? rect.top + rect.height / 2) - rect.top;
-    const mapX = (viewport.scrollLeft + focalX) / previousScale;
-    const mapY = (viewport.scrollTop + focalY) / previousScale;
-
-    applyMapScale(nextScale);
-
-    window.requestAnimationFrame(() => {
-      viewport.scrollLeft = mapX * nextScale - focalX;
-      viewport.scrollTop = mapY * nextScale - focalY;
+    beginMapNavigation();
+    pendingMapZoomRef.current = { scale: clampMapScale(scale), clientX, clientY };
+    if (mapZoomFrameRef.current !== null) return;
+    mapZoomFrameRef.current = requestAnimationFrame(() => {
+      mapZoomFrameRef.current = null;
+      const pending = pendingMapZoomRef.current;
+      pendingMapZoomRef.current = null;
+      const viewport = mapViewportRef.current;
+      const svg = mapSvgRef.current;
+      if (!pending || !viewport || !svg) return;
+      const previousScale = mapScaleRef.current;
+      if (pending.scale === previousScale) return;
+      const viewportRect = viewport.getBoundingClientRect();
+      const focalX = pending.clientX ?? viewportRect.left + viewport.clientWidth / 2;
+      const focalY = pending.clientY ?? viewportRect.top + viewport.clientHeight / 2;
+      const before = svg.getBoundingClientRect();
+      const mapX = (focalX - before.left) / previousScale;
+      const mapY = (focalY - before.top) / previousScale;
+      applyMapScale(pending.scale);
+      const after = svg.getBoundingClientRect();
+      viewport.scrollLeft += after.left + mapX * pending.scale - focalX;
+      viewport.scrollTop += after.top + mapY * pending.scale - focalY;
     });
   };
 
-  const getTouchDistance = (touches: React.TouchList) => {
+  const panMapTo = (left: number, top: number) => {
+    pendingMapPanRef.current = { left, top };
+    if (mapPanFrameRef.current !== null) return;
+    mapPanFrameRef.current = requestAnimationFrame(() => {
+      mapPanFrameRef.current = null;
+      const pending = pendingMapPanRef.current;
+      pendingMapPanRef.current = null;
+      if (pending && mapViewportRef.current) {
+        mapViewportRef.current.scrollLeft = pending.left;
+        mapViewportRef.current.scrollTop = pending.top;
+      }
+    });
+  };
+
+  const getTouchDistance = (touches: TouchList) => {
     const [first, second] = [touches.item(0), touches.item(1)];
     if (!first || !second) return 0;
     return Math.hypot(second.clientX - first.clientX, second.clientY - first.clientY);
   };
 
-  const getTouchCenter = (touches: React.TouchList) => {
+  const getTouchCenter = (touches: TouchList) => {
     const [first, second] = [touches.item(0), touches.item(1)];
     if (!first || !second) return null;
     return {
@@ -13394,10 +13438,11 @@ export function App() {
     };
   };
 
-  const handleMapWheel = (event: WheelEvent<HTMLDivElement>) => {
+  const handleMapWheel = (event: Pick<WheelEvent<HTMLDivElement>, 'preventDefault' | 'deltaY' | 'deltaMode' | 'clientX' | 'clientY'>) => {
     event.preventDefault();
-    const zoomFactor = Math.exp(-event.deltaY * WHEEL_ZOOM_SENSITIVITY);
-    zoomMapAtPoint(mapScaleRef.current * zoomFactor, event.clientX, event.clientY);
+    const delta = event.deltaY * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? (mapViewportRef.current?.clientHeight ?? 800) : 1);
+    const zoomFactor = Math.exp(-delta * WHEEL_ZOOM_SENSITIVITY);
+    zoomMapAtPoint((pendingMapZoomRef.current?.scale ?? mapScaleRef.current) * zoomFactor, event.clientX, event.clientY);
   };
 
 
@@ -13407,6 +13452,7 @@ export function App() {
     const viewport = mapViewportRef.current;
     if (!viewport) return;
 
+    beginMapNavigation();
     viewport.focus({ preventScroll: true });
     mapDragRef.current = {
       pointerId: event.button,
@@ -13431,8 +13477,7 @@ export function App() {
       return;
     }
 
-    viewport.scrollLeft = drag.scrollLeft - (event.clientX - drag.startX);
-    viewport.scrollTop = drag.scrollTop - (event.clientY - drag.startY);
+    panMapTo(drag.scrollLeft - (event.clientX - drag.startX), drag.scrollTop - (event.clientY - drag.startY));
     event.preventDefault();
   };
 
@@ -13466,7 +13511,7 @@ export function App() {
     event.preventDefault();
   };
 
-  const handleMapTouchStart = (event: TouchEvent<HTMLDivElement>) => {
+  const handleMapTouchStart = (event: Pick<TouchEvent, 'touches'>) => {
     if (event.touches.length !== 2) {
       pinchZoomRef.current = null;
       return;
@@ -13478,7 +13523,7 @@ export function App() {
     };
   };
 
-  const handleMapTouchMove = (event: TouchEvent<HTMLDivElement>) => {
+  const handleMapTouchMove = (event: Pick<TouchEvent, 'touches' | 'preventDefault'>) => {
     if (event.touches.length !== 2 || !pinchZoomRef.current) return;
     event.preventDefault();
 
@@ -13489,9 +13534,32 @@ export function App() {
     zoomMapAtPoint(pinchZoomRef.current.scale * (distance / pinchZoomRef.current.distance), center.x, center.y);
   };
 
-  const handleMapTouchEnd = (event: TouchEvent<HTMLDivElement>) => {
+  const handleMapTouchEnd = (event: Pick<TouchEvent, 'touches'>) => {
     if (event.touches.length < 2) pinchZoomRef.current = null;
   };
+
+  useEffect(() => {
+    const viewport = mapViewportRef.current;
+    if (!viewport) return;
+    // React delegates wheel/touch as passive listeners; cancellation must be native.
+    viewport.addEventListener('scroll', beginMapNavigation, { passive: true });
+    viewport.addEventListener('wheel', handleMapWheel, { passive: false });
+    viewport.addEventListener('touchstart', handleMapTouchStart, { passive: true });
+    viewport.addEventListener('touchmove', handleMapTouchMove, { passive: false });
+    viewport.addEventListener('touchend', handleMapTouchEnd);
+    viewport.addEventListener('touchcancel', handleMapTouchEnd);
+    return () => {
+      viewport.removeEventListener('scroll', beginMapNavigation);
+      viewport.removeEventListener('wheel', handleMapWheel);
+      viewport.removeEventListener('touchstart', handleMapTouchStart);
+      viewport.removeEventListener('touchmove', handleMapTouchMove);
+      viewport.removeEventListener('touchend', handleMapTouchEnd);
+      viewport.removeEventListener('touchcancel', handleMapTouchEnd);
+      if (mapZoomFrameRef.current !== null) cancelAnimationFrame(mapZoomFrameRef.current);
+      if (mapPanFrameRef.current !== null) cancelAnimationFrame(mapPanFrameRef.current);
+      if (mapNavigationIdleRef.current !== null) clearTimeout(mapNavigationIdleRef.current);
+    };
+  }, []);
 
   const createSaveData = (): HexcrawlSaveData => ({
     schema: HEXCRAWL_SAVE_SCHEMA,
@@ -13517,7 +13585,7 @@ export function App() {
       generationMode,
       selectedHex,
       isMapRotated,
-      mapScale
+      mapScale: pendingMapZoomRef.current?.scale ?? mapScaleRef.current
     }
   });
 
@@ -13832,25 +13900,21 @@ export function App() {
             className="map-viewport"
             tabIndex={0}
             aria-label={t.mapAria}
-            onWheel={handleMapWheel}
             onMouseDown={handleMapMouseDown}
             onMouseMove={handleMapMouseMove}
             onMouseUp={handleMapMouseUp}
             onMouseLeave={handleMapMouseUp}
             onContextMenu={(event) => event.preventDefault()}
             onKeyDown={handleMapKeyDown}
-            onTouchStart={handleMapTouchStart}
-            onTouchMove={handleMapTouchMove}
-            onTouchEnd={handleMapTouchEnd}
-            onTouchCancel={handleMapTouchEnd}
           >
+            <div ref={mapStageRef} className="map-stage" style={{ width: `${displayMapWidth * mapScaleRef.current}px`, height: `${displayMapHeight * mapScaleRef.current}px` }}>
             <svg
               ref={mapSvgRef}
               data-biome-display={biomeDisplayMode}
               data-render-phase={kingdomJob ? 'generation' : renderDetails ? 'ready' : 'render-pending'}
               viewBox={`0 0 ${displayMapWidth} ${displayMapHeight}`}
               preserveAspectRatio="xMinYMin meet"
-              style={{ width: `${displayMapWidth * mapScale}px`, height: `${displayMapHeight * mapScale}px`, '--water-color': WATER_PALETTE.river, '--water-marks': WATER_PALETTE.marks } as CSSProperties}
+              style={{ width: `${displayMapWidth}px`, height: `${displayMapHeight}px`, transform: `translateZ(0) scale(${mapScaleRef.current})`, '--water-color': WATER_PALETTE.river, '--water-marks': WATER_PALETTE.marks } as CSSProperties}
             >
             <defs>
               <filter id="poi-white-outline" x="-15%" y="-15%" width="130%" height="130%" colorInterpolationFilters="sRGB">
@@ -14231,6 +14295,7 @@ export function App() {
             ) : null}
             {renderBiomeColor ? <g className="top-hex-grid" transform={mapRotationTransform}><ColorHexGrid cells={positionedHexes.hexes.filter(hex => hex.kind !== 'candidate')} radius={HEX_SIZE} /></g> : null}
             </svg>
+            </div>
           </div>
 
           {regions.length > 0 ? (

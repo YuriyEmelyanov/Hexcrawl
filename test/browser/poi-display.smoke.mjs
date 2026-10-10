@@ -118,7 +118,7 @@ try {
   assert.equal(await capital.getAttribute('width'), '20');
   const markerPosition = () => capital.evaluate(node => ({ x: +node.getAttribute('x') + +node.getAttribute('width') / 2, y: +node.getAttribute('y') + +node.getAttribute('height') / 2 }));
   const before = await markerPosition();
-  const mapHeight = await page.locator('.map-viewport > svg').evaluate(node => node.viewBox.baseVal.height);
+  const mapHeight = await page.locator('.map-viewport .map-stage > svg').evaluate(node => node.viewBox.baseVal.height);
   await page.locator('.rotate-map-button').click();
   const after = await markerPosition();
   assert.ok(Math.abs(after.x - (mapHeight - before.y)) < 0.001);
@@ -176,7 +176,7 @@ try {
   await checkPoiOutlines();
   await hexToggle.click();
   assert.equal(await hexToggle.getAttribute('data-mode'), 'color');
-  const samples = await page.locator('.map-viewport > svg').evaluate(svg => {
+  const samples = await page.locator('.map-viewport .map-stage > svg').evaluate(svg => {
     const center = key => {
       const box = svg.querySelector(`[data-hex-key="${key}"]`).getBBox();
       return { x: box.x + box.width / 2, y: box.y + box.height / 2 };
