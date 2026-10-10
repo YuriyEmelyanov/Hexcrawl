@@ -1,0 +1,34 @@
+name: Sequential kingdom stress
+on:
+  push:
+    branches: [diagnostics/kingdom-growth-20261010]
+    paths: [.github/workflows/kingdom-growth.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  stress:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      matrix:
+        seed: [42, 7, 123]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm ci
+      - run: node scripts/instrument-kingdom-growth.mjs
+      - run: npm run build
+      - run: npx playwright install --with-deps chromium
+      - run: node scripts/stress-kingdom-growth.mjs
+        env:
+          GROWTH_SEED: ${{ matrix.seed }}
+          GROWTH_MAX: 8
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: kingdom-growth-${{ matrix.seed }}
+          path: reports/growth/
