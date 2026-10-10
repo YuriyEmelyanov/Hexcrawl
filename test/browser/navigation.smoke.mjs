@@ -18,14 +18,16 @@ try{
  const save=JSON.parse(await fs.readFile(new URL('../fixtures/terrain-display-map.json',import.meta.url),'utf8'));
  const hexes=[];for(let q=0;q<20;q++)for(let r=0;r<20;r++)hexes.push({q,r});
  save.map.kingdoms=[];save.map.obstacles=[];save.map.rivers=[];save.map.roads=[];save.map.crossings=[];save.map.terrainByHexKey={};save.map.waterPoiByHexKey={};save.map.biomeOverrideByHexKey={};save.map.candidateHexes=[];
- save.map.regions=[{...save.map.regions[0],id:1,hexes,centerHex:{q:10,r:10},anchorHex:{q:10,r:10},biomeId:'plain_deciduous_forest',pointsOfInterest:[{q:8,r:8}],pointOfInterestKinds:{'8,8':'ruins'}}];
+ save.map.regions=[{...save.map.regions[0],id:1,hexes,centerHex:{q:10,r:10},anchorHex:{q:10,r:10},biomeId:'plain_deciduous_forest',generationMode:'classic',kingdomId:undefined,suppressCentralPoi:false,centralPoiKind:'capital',pointsOfInterest:[{q:8,r:8}],pointOfInterestKinds:{'8,8':'ruins'}}];
  for(const h of hexes)if(h.q%4===0)save.map.biomeOverrideByHexKey[`${h.q},${h.r}`]='deciduous_woodland';
- save.ui={...save.ui,mapScale:1.5,isMapRotated:false,selectedHex:null};
+ save.ui={...save.ui,generationMode:'classic',mapScale:1.5,isMapRotated:false,selectedHex:null};
  const errors=[];
  async function setup(port){
-  const page=await browser.newPage({viewport:{width:1500,height:1000}});page.on('pageerror',e=>errors.push(e.message));await page.route(/mc\.yandex/,r=>r.abort());
+  const page=await browser.newPage({viewport:{width:1500,height:1000}});page.on('pageerror',e=>errors.push(e.message));page.on('dialog',async d=>{errors.push(d.message());await d.dismiss();});await page.route(/mc\.yandex/,r=>r.abort());
   await page.goto(`http://127.0.0.1:${port}/`);
   await page.locator('input[type=file]').setInputFiles({name:'navigation.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(save))});
+  await page.waitForFunction(()=>document.querySelectorAll('polygon.hex.region,polygon.hex.center').length>=400);
+  assert.deepEqual(errors,[], 'Fixture import must succeed before navigation');
   const toggle=page.locator('.biome-display-toggle');while(await toggle.getAttribute('data-mode')!=='color')await toggle.click();
   await page.locator('.forest-canopy-layer').waitFor({state:'attached'});
   await page.evaluate(async()=>{await document.fonts.ready;await Promise.all([...document.images].map(i=>i.decode().catch(()=>{})));await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));});return page;
