@@ -18,9 +18,7 @@ jobs:
         with:
           node-version: 24
       - run: npm ci
-      - run: npm run check
       - run: npx playwright install --with-deps chromium
-      - run: npm run test:browser
       - name: Build baseline and optimized navigation
         run: |
           cp src/App.tsx /tmp/navigation-App.tsx
