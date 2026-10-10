@@ -19,6 +19,7 @@ try{
  const hexes=[];for(let q=0;q<20;q++)for(let r=0;r<20;r++)hexes.push({q,r});
  save.map.kingdoms=[];save.map.obstacles=[];save.map.rivers=[];save.map.roads=[];save.map.crossings=[];save.map.terrainByHexKey={};save.map.waterPoiByHexKey={};save.map.biomeOverrideByHexKey={};save.map.candidateHexes=[];
  save.map.regions=[{...save.map.regions[0],id:1,hexes,centerHex:{q:10,r:10},anchorHex:{q:10,r:10},biomeId:'plain_deciduous_forest',generationMode:'classic',kingdomId:undefined,suppressCentralPoi:false,centralPoiKind:'capital',pointsOfInterest:[{q:8,r:8}],pointOfInterestKinds:{'8,8':'ruins'}}];
+ save.map.regions=Array.from({length:3},(_,i)=>({...save.map.regions[0],id:i+1,hexes:hexes.filter(h=>Math.min(2,Math.floor(h.q/7))===i),centerHex:{q:i*7+3,r:10},anchorHex:{q:i*7+3,r:10},pointsOfInterest:i===0?[{q:8,r:8}]:[],pointOfInterestKinds:i===0?{'8,8':'ruins'}:{}}));
  for(const h of hexes)if(h.q%4===0)save.map.biomeOverrideByHexKey[`${h.q},${h.r}`]='deciduous_woodland';
  save.ui={...save.ui,generationMode:'classic',mapScale:1.5,isMapRotated:false,selectedHex:null};
  const errors=[];
@@ -77,7 +78,7 @@ try{
  await page.waitForFunction(()=>!document.querySelector('.map-viewport').classList.contains('is-navigating'));
  assert.equal(await page.locator('.map-stage > svg').evaluate(s=>getComputedStyle(s).willChange),'auto');
  let baseline;
- if(process.env.NAV_BASELINE){const old=await setup(4181);baseline=await exercise(old,false);await old.locator('.rotate-map-button').click();await old.locator('details.export-menu summary').click();const [oldDownload]=await Promise.all([old.waitForEvent('download'),old.getByRole('button',{name:'PNG',exact:true}).click()]);assert.ok(png.equals(await fs.readFile(await oldDownload.path())),'Navigation preserves byte-identical full PNG output');await old.close();}
+ if(process.env.NAV_BASELINE){const old=await setup(4181);baseline=await exercise(old,false);await old.locator('.rotate-map-button').click();assert.equal(await old.locator('[data-biome-display]').evaluate(s=>s.innerHTML),await page.locator('[data-biome-display]').evaluate(s=>s.innerHTML),'Artwork matches the production baseline');console.log('NAV_TIMINGS '+JSON.stringify({optimized:result,baseline}));await old.locator('details.export-menu summary').click();const [oldDownload]=await Promise.all([old.waitForEvent('download'),old.getByRole('button',{name:'PNG',exact:true}).click()]);assert.ok(png.equals(await fs.readFile(await oldDownload.path())),'Navigation preserves byte-identical full PNG output');await old.close();}
  assert.deepEqual(errors,[]);
  console.log('NAVIGATION_REPORT '+JSON.stringify({environment:{browser:browser.version(),viewport:'1500x1000',headless:true,cpuThrottling:false},map:{hexes:400,mode:'color',description:'Dense forest with woodland clearings'},optimized:result,baseline}));
  console.log('Navigation: batched wheel zoom, unchanged SVG artwork, focal point, drag, rotation, live JSON scale and PNG export passed.');
