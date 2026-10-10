@@ -11,7 +11,11 @@ const ast = ts.createSourceFile('App.tsx', source, ts.ScriptTarget.Latest, true,
 const app = ast.statements.find(node => ts.isFunctionDeclaration(node) && node.name?.text === 'App');
 const lastReturn = app.body.statements.at(-1);
 if (!ts.isReturnStatement(lastReturn)) throw new Error('App must end with its JSX return');
-const instrumented = source.slice(0, lastReturn.getStart(ast)) + `return {
+// The retained artwork belongs to the DOM renderer, not the generation harness.
+const artwork = app.body.statements.flatMap(node => ts.isVariableStatement(node) ? [...node.declarationList.declarations] : []).find(node => node.name.getText(ast) === 'mapArtwork');
+let prefix = source.slice(0, lastReturn.getStart(ast));
+if (artwork?.initializer) prefix = prefix.slice(0, artwork.initializer.getStart(ast)) + 'undefined' + prefix.slice(artwork.initializer.end);
+const instrumented = prefix + `return {
   regions, rivers, roads, candidateHexes, hexTerrainByKey, history, toponyms, toponymSeed, setToponyms,
   addFallbackTractToMap, safelyAddRegionToMap, createSaveData, restoreSnapshot, deleteLastRegion,
   kingdoms, obstacles, generationMode, setGenerationMode, kingdomJob, startKingdom, advanceKingdom,
@@ -47,7 +51,7 @@ export function createGenerationHarness(seed = 1, search = '') {
   const diagnostics = { exports: {} };
   const context = vm.createContext({ module, exports: module.exports, Math: seededMath, Map, Set,
     console: Object.fromEntries(['log', 'warn', 'error'].map(level => [level, (...args) => logs.push({ level, args })])),
-    require: name => name.startsWith('./modes/') ? loadMode(new URL(`../../src/${name}.ts`, import.meta.url)) : name === './generationDiagnostics' ? diagnostics.exports : name === 'react' ? hooks : localRequire(name.startsWith('./') ? `${name}.ts` : name),
+    require: name => (name.startsWith('./modes/') || name.startsWith('./rendering/')) ? loadMode(new URL(`../../src/${name}.ts`, import.meta.url)) : name === './generationDiagnostics' ? diagnostics.exports : name === 'react' ? hooks : localRequire(name.startsWith('./') ? `${name}.ts` : name),
     performance, URLSearchParams, structuredClone, window: { location: { search } }
   });
   const modeCache = new Map();

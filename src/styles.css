@@ -170,3 +170,7 @@ svg { display:block; border:0; background:#0c1423; border-radius:0; transform-or
 .mode-selector select { width:100%; min-width:0; background:#0c1423; color:#eef4ff; border:1px solid #375386; border-radius:8px; padding:.45rem .5rem; font-size:.85rem; }
 .kingdom-progress { color:#d3c69c; padding:0 .75rem; margin:0; font-size:.85rem; }
 button:disabled,select:disabled { opacity:.55; cursor:wait; }
+
+.map-motion-buffer { position:absolute; left:0; top:0; display:none; pointer-events:none; transform-origin:0 0; }
+.map-viewport.has-motion-buffer.is-navigating .map-motion-buffer { display:block; will-change:transform; }
+.map-viewport.has-motion-buffer.is-navigating .map-stage > svg { opacity:0; will-change:auto; }

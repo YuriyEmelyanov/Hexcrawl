@@ -1,3 +1,4 @@
+import { installViewportRasterCache } from './rendering/viewportRasterCache';
 import {assignWoodlandStyle,chooseWoodlandStyle,type WoodlandStyle} from './modes/woodlandStyle';
 import {buildNaturalLakes,createLakeGeometryCache} from './rendering/lakeGeometry';
 import {ForestCanopy,ForestWaterEdge} from './rendering/ForestCanopy';
@@ -13680,242 +13681,19 @@ export function App() {
     });
   }
 
-  return (
-    <div className="app">
-      <section className="content">
-        <div className={`map-card${isSidePanelCollapsed ? ' is-panel-collapsed' : ''}`} style={mapCardStyle}>
-          <button
-            type="button"
-            className="side-panel-toggle"
-            onClick={() => setIsSidePanelCollapsed((value) => !value)}
-            aria-expanded={!isSidePanelCollapsed}
-            aria-controls="side-panel-controls side-panel-info"
-            aria-label={sidePanelToggleLabel}
-            title={sidePanelToggleLabel}
-          >
-            <span className="side-panel-toggle__desktop" aria-hidden="true">{isSidePanelCollapsed ? '›' : '‹'}</span>
-            <span className="side-panel-toggle__mobile" aria-hidden="true">{isSidePanelCollapsed ? '⌃' : '⌄'}</span>
-            <span className="visually-hidden">{sidePanelToggleLabel}</span>
-          </button>
-          <div className={`header-links${isHeaderLinksCollapsed ? ' is-collapsed' : ''}`} aria-label="Social links">
-            <button
-              type="button"
-              className="header-links-toggle"
-              onClick={toggleHeaderLinks}
-              aria-expanded={!isHeaderLinksCollapsed}
-              aria-controls="header-links-actions"
-              aria-label={headerLinksToggleLabel}
-              title={headerLinksToggleLabel}
-            >
-              <span className="header-links-toggle__desktop" aria-hidden="true">{isHeaderLinksCollapsed ? '‹' : '›'}</span>
-              <span className="header-links-toggle__mobile" aria-hidden="true">{isHeaderLinksCollapsed ? '⌄' : '⌃'}</span>
-              <span className="visually-hidden">{headerLinksToggleLabel}</span>
-            </button>
-            <div id="header-links-actions" className="header-links__actions">
-              <button
-                type="button"
-                className="language-toggle"
-                onClick={() => {
-                  trackGoal('lang_switch');
-                  setLanguage((value) => (value === 'ru' ? 'en' : 'ru'));
-                }}
-                aria-label={t.switchLanguage}
-                title={t.switchLanguage}
-              >
-                {language === 'ru' ? 'EN' : 'RU'}
-              </button>
-              <a
-                className="social-link social-link--telegram"
-                href={TELEGRAM_URL}
-                target="_blank"
-                rel="noreferrer"
-                aria-label={t.telegramLabel}
-                title={t.telegramLabel}
-              >
-                <svg className="social-link__icon" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false">
-                  <path d="M21.7 4.1c.3-1-.6-1.8-1.5-1.4L2.7 9.5c-1 .4-.9 1.8.1 2.1l4.5 1.4 1.7 5.5c.3.9 1.4 1.1 2 .4l2.5-2.6 4.8 3.5c.8.6 1.9.1 2.1-.9l3.3-14.8ZM8.2 12.2l8.8-5.4c.4-.2.8.3.4.6l-7.3 6.7-.3 3.1-1.6-5Z" />
-                </svg>
-              </a>
-              <a
-                className="social-link social-link--youtube"
-                href={YOUTUBE_URL}
-                target="_blank"
-                rel="noreferrer"
-                aria-label={t.youtubeLabel}
-                title={t.youtubeLabel}
-              >
-                <svg className="social-link__icon" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false">
-                  <path d="M21.6 7.2a2.7 2.7 0 0 0-1.9-1.9C18 4.8 12 4.8 12 4.8s-6 0-7.7.5a2.7 2.7 0 0 0-1.9 1.9A28 28 0 0 0 2 12a28 28 0 0 0 .4 4.8 2.7 2.7 0 0 0 1.9 1.9c1.7.5 7.7.5 7.7.5s6 0 7.7-.5a2.7 2.7 0 0 0 1.9-1.9A28 28 0 0 0 22 12a28 28 0 0 0-.4-4.8Z" />
-                  <path className="social-link__cutout" d="m10 15.4 5.2-3.4L10 8.6v6.8Z" />
-                </svg>
-              </a>
-            </div>
-          </div>
-          <div id="side-panel-controls" ref={mapToolbarRef} className="map-toolbar" aria-label={t.controlsLabel}>
-            {regions.length === 0 ? (
-              <div className="info-block info-block--prompt map-toolbar__prompt" role="status">{t.startPrompt}</div>
-            ) : regions.length <= 2 && candidateHexes.length > 0 ? (
-              <div className="info-block info-block--prompt map-toolbar__prompt" role="status">{t.candidatePrompt}</div>
-            ) : null}
-            <div className="control-block mode-selector"><label>{language === 'ru' ? 'Режим' : 'Mode'}
-              <select aria-label={language === 'ru' ? 'Режим' : 'Mode'} value={generationMode} disabled={!!kingdomJob} onChange={e=>setGenerationMode(e.target.value as GenerationMode)}>
-                <option value="classic">{language === 'ru' ? 'Классический режим' : 'Classic mode'}</option>
-                <option value="mythic">Mythic Bastionland</option>
-              </select></label></div>
-            {!kingdomJob && !detailedRenderReady ? <p role="status" className="kingdom-progress">{language === 'ru' ? 'Отрисовка карты…' : 'Drawing map…'}</p> : null}
-            {kingdomJob ? <p role="status" className="kingdom-progress">{language === 'ru' ? 'Создание королевства…' : 'Building kingdom…'} {kingdomHexes(kingdomJob.origin).filter(h=>metadataMap.has(hexKey(h))).length}/144</p> : null}
-            {generationMode === 'classic' ? <div className="control-block gen-params" aria-label={t.genParamsLabel}>
-              <label>
-                {t.size}
-                <select value={genSizeCategory} onChange={(e) => setGenSizeCategory(e.target.value as typeof genSizeCategory)}>
-                  <option value="auto">{t.auto}</option>
-                  <option value="locality">{SIZE_LABELS[language].locality}</option>
-                  <option value="small_region">{SIZE_LABELS[language].small_region}</option>
-                  <option value="region">{SIZE_LABELS[language].region}</option>
-                  <option value="large_region">{SIZE_LABELS[language].large_region}</option>
-                  <option value="land">{SIZE_LABELS[language].land}</option>
-                  <option value="vast_land">{SIZE_LABELS[language].vast_land}</option>
-                </select>
-              </label>
-              <label>
-                {t.type}
-                <select value={genLandType} onChange={(e) => setGenLandType(e.target.value as typeof genLandType)}>
-                  <option value="auto">{t.auto}</option>
-                  <option value="settled">{t.settled}</option>
-                  <option value="wild">{t.wild}</option>
-                </select>
-              </label>
-              <label>
-                {t.biome}
-                <select value={genBiome} onChange={(e) => setGenBiome(e.target.value as typeof genBiome)}>
-                  <option value="auto">{t.auto}</option>
-                  {(Object.values(BIOMES)).map((biome) => (
-                    <option key={biome.id} value={biome.id}>{getBiomeLabel(biome.id, language)}</option>
-                  ))}
-                </select>
-              </label>
-              <label>
-                {t.coast}
-                <select value={genCoastal} onChange={(e) => setGenCoastal(e.target.value as typeof genCoastal)}>
-                  <option value="auto">{t.auto}</option>
-                  <option value="coast">{t.coastOption}</option>
-                  <option value="mainland">{t.mainland}</option>
-                </select>
-              </label>
-            </div>
-            : null}
-            {regions.length > 0 ? (
-              <div className="control-block controls controls--region-management">
-                  <button disabled={!!kingdomJob} onClick={resetMap} className="secondary">{t.reset}</button>
-                  <button type="button" disabled={!!kingdomJob} onClick={regenerateLastRegion} className="secondary">
-                    {t.regenerateRegion}
-                  </button>
-                  <button type="button" disabled={!!kingdomJob} onClick={deleteLastRegion} className="secondary">
-                    {t.deleteLastRegion}
-                  </button>
-              </div>
-            ) : null}
-            <div className="control-block controls controls--display">
-              <button
-                type="button"
-                className="biome-display-toggle"
-                onClick={() => setBiomeDisplayMode(mode => mode === 'tiles' ? 'emoji' : mode === 'emoji' ? 'color' : 'tiles')}
-                data-mode={biomeDisplayMode}
-                aria-label={biomeDisplayToggleLabel}
-                title={biomeDisplayToggleTitle}
-              >
-                <span className="display-toggle__label">{t.hexesDisplay}</span>
-                <span>{biomeModeLabel}</span>
-              </button>
-              <button
-                type="button"
-                className="poi-display-toggle"
-                onClick={() => setUsePoiSvg((value) => !value)}
-                aria-pressed={usePoiSvg}
-                aria-label={poiDisplayToggleLabel}
-                title={poiDisplayToggleTitle}
-              >
-                <span className="display-toggle__label">{t.pointsDisplay}</span>
-                <span>{usePoiSvg ? t.iconsMode : t.emojiMode}</span>
-              </button>
-              <button
-                type="button"
-                className="rotate-map-button"
-                onClick={() => setIsMapRotated((value) => !value)}
-                aria-label={isMapRotated ? t.unrotateMap : t.rotateMap}
-                title={isMapRotated ? t.unrotateMap : t.rotateMapTitle}
-              >
-                <svg className="rotate-map-button__icon" viewBox="0 0 64 48" aria-hidden="true" focusable="false">
-                  <polygon
-                    points={isMapRotated ? '32,4 56,16 56,32 32,44 8,32 8,16' : '20,4 44,4 56,24 44,44 20,44 8,24'}
-                    className="rotate-map-button__hex"
-                  />
-                  <text x="32" y="25" className="rotate-map-button__sign">{isMapRotated ? '↺' : '↻'}</text>
-                </svg>
-              </button>
-              <button
-                type="button"
-                className={`hex-coordinate-toggle${showHexCoordinates ? ' is-active' : ''}`}
-                onClick={() => setShowHexCoordinates((value) => !value)}
-                aria-pressed={showHexCoordinates}
-                aria-label={t.showHexCoordinates}
-                title={t.showHexCoordinatesTitle}
-              >
-                <span aria-hidden="true">#</span>
-                <span>{t.hexCoordinatesMode}</span>
-              </button>
-            </div>
-            <div className="control-block controls controls--transfer">
-              {regions.length > 0 ? (
-                <details className="export-menu">
-                  <summary className="secondary">{t.export}</summary>
-                  <div className="export-menu__items">
-                    <button type="button" disabled={!renderDetails} onClick={() => void handleExportPng()} className="secondary">PNG</button>
-                    <button type="button" onClick={handleExportJson} className="secondary">JSON</button>
-                  </div>
-                </details>
-              ) : null}
-              <button type="button" onClick={handleImportJsonClick} className="secondary">{t.importJson}</button>
-              <input ref={jsonImportInputRef} className="visually-hidden" type="file" accept="application/json,.json" onChange={(event) => void handleImportJson(event)} />
-            </div>
-            {generationError && (
-              <div className="coast-notice" role="alert">
-                <span>{generationError.kind === 'constraint-rejection'
-                  ? (language === 'ru' ? 'Не удалось разместить корректные истоки и устья рек. Прежняя карта сохранена. Попробуйте другой размер или соседний гекс.' : 'Could not place valid river sources and mouths. Your previous map is intact. Try another size or neighboring hex.')
-                  : language === 'ru'
-                  ? 'Не удалось создать регион из-за ошибки. Прежняя карта сохранена. Можно повторить попытку.'
-                  : 'An error prevented region generation. Your previous map is intact. You can try again.'}</span>
-                <button type="button" onClick={() => setGenerationError(null)} aria-label={t.closeNotice}>×</button>
-              </div>
-            )}
-            {coastNotice && (
-              <div className="coast-notice" role="status">
-                <span>{translateCoastNotice(coastNotice, language)}</span>
-                <button type="button" onClick={() => setCoastNotice(null)} aria-label={t.closeNotice}>×</button>
-              </div>
-            )}
-          </div>
-          <div
-            ref={mapViewportRef}
-            className="map-viewport"
-            tabIndex={0}
-            aria-label={t.mapAria}
-            onMouseDown={handleMapMouseDown}
-            onMouseMove={handleMapMouseMove}
-            onMouseUp={handleMapMouseUp}
-            onMouseLeave={handleMapMouseUp}
-            onContextMenu={(event) => event.preventDefault()}
-            onKeyDown={handleMapKeyDown}
-          >
-            <div ref={mapStageRef} className="map-stage" style={{ width: `${displayMapWidth * mapScaleRef.current}px`, height: `${displayMapHeight * mapScaleRef.current}px` }}>
-            <svg
-              ref={mapSvgRef}
-              data-biome-display={biomeDisplayMode}
-              data-render-phase={kingdomJob ? 'generation' : renderDetails ? 'ready' : 'render-pending'}
-              viewBox={`0 0 ${displayMapWidth} ${displayMapHeight}`}
-              preserveAspectRatio="xMinYMin meet"
-              style={{ width: `${displayMapWidth}px`, height: `${displayMapHeight}px`, transform: `translateZ(0) scale(${mapScaleRef.current})`, '--water-color': WATER_PALETTE.river, '--water-marks': WATER_PALETTE.marks } as CSSProperties}
-            >
+  // Artwork is independent of panel selection; candidate actions always use current options.
+  const mapHexClickRef = useRef<(hex: typeof positionedHexes.hexes[number]) => void>(() => {});
+  mapHexClickRef.current = hex => {
+    if (hex.kind === 'candidate') {
+      trackGoal('region_add');
+      if (!kingdomJob) {
+        if (generationMode === 'mythic') startKingdom({ q: hex.q, r: hex.r });
+        else safelyAddRegionToMap({ q: hex.q, r: hex.r }, buildGenerationOptions());
+      }
+    } else setSelectedHex({ q: hex.q, r: hex.r });
+  };
+  const mapMotionCanvasRef = useRef<HTMLCanvasElement>(null);
+  const mapArtwork = useMemo(() => (<>
             <defs>
               <filter id="poi-white-outline" x="-15%" y="-15%" width="130%" height="130%" colorInterpolationFilters="sRGB">
                 <feMorphology in="SourceAlpha" operator="dilate" radius="0.65" result="poi-rim"/>
@@ -13990,14 +13768,7 @@ export function App() {
               return (
                 <g
                   key={`${hex.kind}-${hex.key}`}
-                  onClick={() => {
-                    if (hex.kind === 'candidate') {
-                      trackGoal('region_add');
-                      if (!kingdomJob) { if (generationMode === 'mythic') startKingdom({q:hex.q,r:hex.r}); else safelyAddRegionToMap({ q: hex.q, r: hex.r }, buildGenerationOptions()); }
-                    } else {
-                      setSelectedHex({ q: hex.q, r: hex.r });
-                    }
-                  }}
+                  onClick={() => mapHexClickRef.current(hex)}
                 >
                   <polygon data-hex-key={hex.key} points={hexPoints(hex.x, hex.y, hexRenderSize)} className={cls} style={{ fill, ...(renderBiomeColor ? { stroke: 'none' } : {}) }} />
                   {biomeTileHref ? (
@@ -14294,7 +14065,255 @@ export function App() {
               </g>
             ) : null}
             {renderBiomeColor ? <g className="top-hex-grid" transform={mapRotationTransform}><ColorHexGrid cells={positionedHexes.hexes.filter(hex => hex.kind !== 'candidate')} radius={HEX_SIZE} /></g> : null}
+  </>), [
+    biomeOverrideByHexKey, candidateBoundaryDebugByRegion, clickPromptCandidateKey, colorLandHexes, debugRivers, debugVerticesByRegion, forestCells, hexTerrainByKey, isMapRotated, kingdoms, lakeCells, lakeShapes, lakeVerticesDebug, language, mapHexClickRef, mapRotationTransform, metadataMap, obstacles, positionedHexes, regions, renderBiomeColor, renderDetails, renderedCrossings, riverDirectionArrows, riverGraphsByRegion, riverOffset, riverRapidMarks, riverSegments, riverWaterfalls, rivers, roadSegments, debugRivers ? selectedRegion : undefined, showHexCoordinates, toponymSeed, useBiomeColor, useBiomeTiles, usePoiSvg, waterPoiByKey
+  ]);
+
+  useEffect(() => {
+    const viewport = mapViewportRef.current, svg = mapSvgRef.current, canvas = mapMotionCanvasRef.current;
+    if (!viewport || !svg || !canvas || !renderBiomeColor || !renderDetails || positionedHexes.hexes.length < 600) return;
+    return installViewportRasterCache({ viewport, svg, canvas, scale: () => mapScaleRef.current, rotated: isMapRotated, originalHeight: positionedHexes.height, snapshot: createExportSvgClone, onNavigate: beginMapNavigation });
+  }, [mapArtwork, renderBiomeColor, renderDetails, positionedHexes, isMapRotated]);
+
+  return (
+    <div className="app">
+      <section className="content">
+        <div className={`map-card${isSidePanelCollapsed ? ' is-panel-collapsed' : ''}`} style={mapCardStyle}>
+          <button
+            type="button"
+            className="side-panel-toggle"
+            onClick={() => setIsSidePanelCollapsed((value) => !value)}
+            aria-expanded={!isSidePanelCollapsed}
+            aria-controls="side-panel-controls side-panel-info"
+            aria-label={sidePanelToggleLabel}
+            title={sidePanelToggleLabel}
+          >
+            <span className="side-panel-toggle__desktop" aria-hidden="true">{isSidePanelCollapsed ? '›' : '‹'}</span>
+            <span className="side-panel-toggle__mobile" aria-hidden="true">{isSidePanelCollapsed ? '⌃' : '⌄'}</span>
+            <span className="visually-hidden">{sidePanelToggleLabel}</span>
+          </button>
+          <div className={`header-links${isHeaderLinksCollapsed ? ' is-collapsed' : ''}`} aria-label="Social links">
+            <button
+              type="button"
+              className="header-links-toggle"
+              onClick={toggleHeaderLinks}
+              aria-expanded={!isHeaderLinksCollapsed}
+              aria-controls="header-links-actions"
+              aria-label={headerLinksToggleLabel}
+              title={headerLinksToggleLabel}
+            >
+              <span className="header-links-toggle__desktop" aria-hidden="true">{isHeaderLinksCollapsed ? '‹' : '›'}</span>
+              <span className="header-links-toggle__mobile" aria-hidden="true">{isHeaderLinksCollapsed ? '⌄' : '⌃'}</span>
+              <span className="visually-hidden">{headerLinksToggleLabel}</span>
+            </button>
+            <div id="header-links-actions" className="header-links__actions">
+              <button
+                type="button"
+                className="language-toggle"
+                onClick={() => {
+                  trackGoal('lang_switch');
+                  setLanguage((value) => (value === 'ru' ? 'en' : 'ru'));
+                }}
+                aria-label={t.switchLanguage}
+                title={t.switchLanguage}
+              >
+                {language === 'ru' ? 'EN' : 'RU'}
+              </button>
+              <a
+                className="social-link social-link--telegram"
+                href={TELEGRAM_URL}
+                target="_blank"
+                rel="noreferrer"
+                aria-label={t.telegramLabel}
+                title={t.telegramLabel}
+              >
+                <svg className="social-link__icon" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false">
+                  <path d="M21.7 4.1c.3-1-.6-1.8-1.5-1.4L2.7 9.5c-1 .4-.9 1.8.1 2.1l4.5 1.4 1.7 5.5c.3.9 1.4 1.1 2 .4l2.5-2.6 4.8 3.5c.8.6 1.9.1 2.1-.9l3.3-14.8ZM8.2 12.2l8.8-5.4c.4-.2.8.3.4.6l-7.3 6.7-.3 3.1-1.6-5Z" />
+                </svg>
+              </a>
+              <a
+                className="social-link social-link--youtube"
+                href={YOUTUBE_URL}
+                target="_blank"
+                rel="noreferrer"
+                aria-label={t.youtubeLabel}
+                title={t.youtubeLabel}
+              >
+                <svg className="social-link__icon" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false">
+                  <path d="M21.6 7.2a2.7 2.7 0 0 0-1.9-1.9C18 4.8 12 4.8 12 4.8s-6 0-7.7.5a2.7 2.7 0 0 0-1.9 1.9A28 28 0 0 0 2 12a28 28 0 0 0 .4 4.8 2.7 2.7 0 0 0 1.9 1.9c1.7.5 7.7.5 7.7.5s6 0 7.7-.5a2.7 2.7 0 0 0 1.9-1.9A28 28 0 0 0 22 12a28 28 0 0 0-.4-4.8Z" />
+                  <path className="social-link__cutout" d="m10 15.4 5.2-3.4L10 8.6v6.8Z" />
+                </svg>
+              </a>
+            </div>
+          </div>
+          <div id="side-panel-controls" ref={mapToolbarRef} className="map-toolbar" aria-label={t.controlsLabel}>
+            {regions.length === 0 ? (
+              <div className="info-block info-block--prompt map-toolbar__prompt" role="status">{t.startPrompt}</div>
+            ) : regions.length <= 2 && candidateHexes.length > 0 ? (
+              <div className="info-block info-block--prompt map-toolbar__prompt" role="status">{t.candidatePrompt}</div>
+            ) : null}
+            <div className="control-block mode-selector"><label>{language === 'ru' ? 'Режим' : 'Mode'}
+              <select aria-label={language === 'ru' ? 'Режим' : 'Mode'} value={generationMode} disabled={!!kingdomJob} onChange={e=>setGenerationMode(e.target.value as GenerationMode)}>
+                <option value="classic">{language === 'ru' ? 'Классический режим' : 'Classic mode'}</option>
+                <option value="mythic">Mythic Bastionland</option>
+              </select></label></div>
+            {!kingdomJob && !detailedRenderReady ? <p role="status" className="kingdom-progress">{language === 'ru' ? 'Отрисовка карты…' : 'Drawing map…'}</p> : null}
+            {kingdomJob ? <p role="status" className="kingdom-progress">{language === 'ru' ? 'Создание королевства…' : 'Building kingdom…'} {kingdomHexes(kingdomJob.origin).filter(h=>metadataMap.has(hexKey(h))).length}/144</p> : null}
+            {generationMode === 'classic' ? <div className="control-block gen-params" aria-label={t.genParamsLabel}>
+              <label>
+                {t.size}
+                <select value={genSizeCategory} onChange={(e) => setGenSizeCategory(e.target.value as typeof genSizeCategory)}>
+                  <option value="auto">{t.auto}</option>
+                  <option value="locality">{SIZE_LABELS[language].locality}</option>
+                  <option value="small_region">{SIZE_LABELS[language].small_region}</option>
+                  <option value="region">{SIZE_LABELS[language].region}</option>
+                  <option value="large_region">{SIZE_LABELS[language].large_region}</option>
+                  <option value="land">{SIZE_LABELS[language].land}</option>
+                  <option value="vast_land">{SIZE_LABELS[language].vast_land}</option>
+                </select>
+              </label>
+              <label>
+                {t.type}
+                <select value={genLandType} onChange={(e) => setGenLandType(e.target.value as typeof genLandType)}>
+                  <option value="auto">{t.auto}</option>
+                  <option value="settled">{t.settled}</option>
+                  <option value="wild">{t.wild}</option>
+                </select>
+              </label>
+              <label>
+                {t.biome}
+                <select value={genBiome} onChange={(e) => setGenBiome(e.target.value as typeof genBiome)}>
+                  <option value="auto">{t.auto}</option>
+                  {(Object.values(BIOMES)).map((biome) => (
+                    <option key={biome.id} value={biome.id}>{getBiomeLabel(biome.id, language)}</option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                {t.coast}
+                <select value={genCoastal} onChange={(e) => setGenCoastal(e.target.value as typeof genCoastal)}>
+                  <option value="auto">{t.auto}</option>
+                  <option value="coast">{t.coastOption}</option>
+                  <option value="mainland">{t.mainland}</option>
+                </select>
+              </label>
+            </div>
+            : null}
+            {regions.length > 0 ? (
+              <div className="control-block controls controls--region-management">
+                  <button disabled={!!kingdomJob} onClick={resetMap} className="secondary">{t.reset}</button>
+                  <button type="button" disabled={!!kingdomJob} onClick={regenerateLastRegion} className="secondary">
+                    {t.regenerateRegion}
+                  </button>
+                  <button type="button" disabled={!!kingdomJob} onClick={deleteLastRegion} className="secondary">
+                    {t.deleteLastRegion}
+                  </button>
+              </div>
+            ) : null}
+            <div className="control-block controls controls--display">
+              <button
+                type="button"
+                className="biome-display-toggle"
+                onClick={() => setBiomeDisplayMode(mode => mode === 'tiles' ? 'emoji' : mode === 'emoji' ? 'color' : 'tiles')}
+                data-mode={biomeDisplayMode}
+                aria-label={biomeDisplayToggleLabel}
+                title={biomeDisplayToggleTitle}
+              >
+                <span className="display-toggle__label">{t.hexesDisplay}</span>
+                <span>{biomeModeLabel}</span>
+              </button>
+              <button
+                type="button"
+                className="poi-display-toggle"
+                onClick={() => setUsePoiSvg((value) => !value)}
+                aria-pressed={usePoiSvg}
+                aria-label={poiDisplayToggleLabel}
+                title={poiDisplayToggleTitle}
+              >
+                <span className="display-toggle__label">{t.pointsDisplay}</span>
+                <span>{usePoiSvg ? t.iconsMode : t.emojiMode}</span>
+              </button>
+              <button
+                type="button"
+                className="rotate-map-button"
+                onClick={() => setIsMapRotated((value) => !value)}
+                aria-label={isMapRotated ? t.unrotateMap : t.rotateMap}
+                title={isMapRotated ? t.unrotateMap : t.rotateMapTitle}
+              >
+                <svg className="rotate-map-button__icon" viewBox="0 0 64 48" aria-hidden="true" focusable="false">
+                  <polygon
+                    points={isMapRotated ? '32,4 56,16 56,32 32,44 8,32 8,16' : '20,4 44,4 56,24 44,44 20,44 8,24'}
+                    className="rotate-map-button__hex"
+                  />
+                  <text x="32" y="25" className="rotate-map-button__sign">{isMapRotated ? '↺' : '↻'}</text>
+                </svg>
+              </button>
+              <button
+                type="button"
+                className={`hex-coordinate-toggle${showHexCoordinates ? ' is-active' : ''}`}
+                onClick={() => setShowHexCoordinates((value) => !value)}
+                aria-pressed={showHexCoordinates}
+                aria-label={t.showHexCoordinates}
+                title={t.showHexCoordinatesTitle}
+              >
+                <span aria-hidden="true">#</span>
+                <span>{t.hexCoordinatesMode}</span>
+              </button>
+            </div>
+            <div className="control-block controls controls--transfer">
+              {regions.length > 0 ? (
+                <details className="export-menu">
+                  <summary className="secondary">{t.export}</summary>
+                  <div className="export-menu__items">
+                    <button type="button" disabled={!renderDetails} onClick={() => void handleExportPng()} className="secondary">PNG</button>
+                    <button type="button" onClick={handleExportJson} className="secondary">JSON</button>
+                  </div>
+                </details>
+              ) : null}
+              <button type="button" onClick={handleImportJsonClick} className="secondary">{t.importJson}</button>
+              <input ref={jsonImportInputRef} className="visually-hidden" type="file" accept="application/json,.json" onChange={(event) => void handleImportJson(event)} />
+            </div>
+            {generationError && (
+              <div className="coast-notice" role="alert">
+                <span>{generationError.kind === 'constraint-rejection'
+                  ? (language === 'ru' ? 'Не удалось разместить корректные истоки и устья рек. Прежняя карта сохранена. Попробуйте другой размер или соседний гекс.' : 'Could not place valid river sources and mouths. Your previous map is intact. Try another size or neighboring hex.')
+                  : language === 'ru'
+                  ? 'Не удалось создать регион из-за ошибки. Прежняя карта сохранена. Можно повторить попытку.'
+                  : 'An error prevented region generation. Your previous map is intact. You can try again.'}</span>
+                <button type="button" onClick={() => setGenerationError(null)} aria-label={t.closeNotice}>×</button>
+              </div>
+            )}
+            {coastNotice && (
+              <div className="coast-notice" role="status">
+                <span>{translateCoastNotice(coastNotice, language)}</span>
+                <button type="button" onClick={() => setCoastNotice(null)} aria-label={t.closeNotice}>×</button>
+              </div>
+            )}
+          </div>
+          <div
+            ref={mapViewportRef}
+            className="map-viewport"
+            tabIndex={0}
+            aria-label={t.mapAria}
+            onMouseDown={handleMapMouseDown}
+            onMouseMove={handleMapMouseMove}
+            onMouseUp={handleMapMouseUp}
+            onMouseLeave={handleMapMouseUp}
+            onContextMenu={(event) => event.preventDefault()}
+            onKeyDown={handleMapKeyDown}
+          >
+            <div ref={mapStageRef} className="map-stage" style={{ width: `${displayMapWidth * mapScaleRef.current}px`, height: `${displayMapHeight * mapScaleRef.current}px` }}>
+            <svg
+              ref={mapSvgRef}
+              data-biome-display={biomeDisplayMode}
+              data-render-phase={kingdomJob ? 'generation' : renderDetails ? 'ready' : 'render-pending'}
+              viewBox={`0 0 ${displayMapWidth} ${displayMapHeight}`}
+              preserveAspectRatio="xMinYMin meet"
+              style={{ width: `${displayMapWidth}px`, height: `${displayMapHeight}px`, transform: `translateZ(0) scale(${mapScaleRef.current})`, '--water-color': WATER_PALETTE.river, '--water-marks': WATER_PALETTE.marks } as CSSProperties}
+            >
+            {mapArtwork}
             </svg>
+            <canvas ref={mapMotionCanvasRef} className="map-motion-buffer" aria-hidden="true" />
             </div>
           </div>
 
