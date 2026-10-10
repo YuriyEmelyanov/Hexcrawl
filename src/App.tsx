@@ -14072,7 +14072,7 @@ export function App() {
   useEffect(() => {
     const viewport = mapViewportRef.current, svg = mapSvgRef.current, canvas = mapMotionCanvasRef.current;
     if (!viewport || !svg || !canvas || !renderBiomeColor || !renderDetails || positionedHexes.hexes.length < 600) return;
-    return installViewportRasterCache({ viewport, svg, canvas, scale: () => mapScaleRef.current, rotated: isMapRotated, originalHeight: positionedHexes.height, snapshot: createExportSvgClone });
+    return installViewportRasterCache({ viewport, svg, canvas, scale: () => mapScaleRef.current, rotated: isMapRotated, originalHeight: positionedHexes.height, snapshot: createExportSvgClone, onNavigate: beginMapNavigation });
   }, [mapArtwork, renderBiomeColor, renderDetails, positionedHexes, isMapRotated]);
 
   return (
