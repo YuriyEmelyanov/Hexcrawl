@@ -11265,6 +11265,7 @@ export function App() {
   const mapScaleRef = useRef(1);
   const mapStageRef = useRef<HTMLDivElement | null>(null);
   const mapZoomFrameRef = useRef<number | null>(null);
+  const mapNavigationIdleRef = useRef<number | null>(null);
   const pendingMapZoomRef = useRef<{ scale: number; clientX?: number; clientY?: number } | null>(null);
   const mapPanFrameRef = useRef<number | null>(null);
   const pendingMapPanRef = useRef<{ left: number; top: number } | null>(null);
@@ -13351,6 +13352,16 @@ export function App() {
 
   const clampMapScale = (scale: number) => Math.min(MAX_MAP_SCALE, Math.max(MIN_MAP_SCALE, scale));
 
+  const beginMapNavigation = () => {
+    mapViewportRef.current?.classList.add('is-navigating');
+    if (mapNavigationIdleRef.current !== null) clearTimeout(mapNavigationIdleRef.current);
+    mapNavigationIdleRef.current = window.setTimeout(() => {
+      mapNavigationIdleRef.current = null;
+      // Release the cached raster so vectors regain full sharpness at the new scale.
+      mapViewportRef.current?.classList.remove('is-navigating');
+    }, 180);
+  };
+
   // Navigation changes only the composited SVG layer, never React map state.
   const applyMapScale = (scale: number) => {
     const nextScale = clampMapScale(scale);
@@ -13373,6 +13384,7 @@ export function App() {
   };
 
   const zoomMapAtPoint = (scale: number, clientX?: number, clientY?: number) => {
+    beginMapNavigation();
     pendingMapZoomRef.current = { scale: clampMapScale(scale), clientX, clientY };
     if (mapZoomFrameRef.current !== null) return;
     mapZoomFrameRef.current = requestAnimationFrame(() => {
@@ -13440,6 +13452,7 @@ export function App() {
     const viewport = mapViewportRef.current;
     if (!viewport) return;
 
+    beginMapNavigation();
     viewport.focus({ preventScroll: true });
     mapDragRef.current = {
       pointerId: event.button,
@@ -13529,12 +13542,14 @@ export function App() {
     const viewport = mapViewportRef.current;
     if (!viewport) return;
     // React delegates wheel/touch as passive listeners; cancellation must be native.
+    viewport.addEventListener('scroll', beginMapNavigation, { passive: true });
     viewport.addEventListener('wheel', handleMapWheel, { passive: false });
     viewport.addEventListener('touchstart', handleMapTouchStart, { passive: true });
     viewport.addEventListener('touchmove', handleMapTouchMove, { passive: false });
     viewport.addEventListener('touchend', handleMapTouchEnd);
     viewport.addEventListener('touchcancel', handleMapTouchEnd);
     return () => {
+      viewport.removeEventListener('scroll', beginMapNavigation);
       viewport.removeEventListener('wheel', handleMapWheel);
       viewport.removeEventListener('touchstart', handleMapTouchStart);
       viewport.removeEventListener('touchmove', handleMapTouchMove);
@@ -13542,6 +13557,7 @@ export function App() {
       viewport.removeEventListener('touchcancel', handleMapTouchEnd);
       if (mapZoomFrameRef.current !== null) cancelAnimationFrame(mapZoomFrameRef.current);
       if (mapPanFrameRef.current !== null) cancelAnimationFrame(mapPanFrameRef.current);
+      if (mapNavigationIdleRef.current !== null) clearTimeout(mapNavigationIdleRef.current);
     };
   }, []);
 
