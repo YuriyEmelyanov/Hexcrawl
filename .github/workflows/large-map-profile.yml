@@ -18,9 +18,18 @@ jobs:
         with:
           node-version: 24
       - run: npm ci
+      - name: Build published baseline
+        run: |
+          git worktree add /tmp/hexcrawl-baseline effd99f42080d4fa9c6623fc69ddd55860b68965
+          ln -s "$GITHUB_WORKSPACE/node_modules" /tmp/hexcrawl-baseline/node_modules
+          cd /tmp/hexcrawl-baseline
+          npm run build
+          cp -R dist "$GITHUB_WORKSPACE/dist-baseline"
       - run: npm run build
       - run: npx playwright install --with-deps chromium
       - run: node scripts/profile-large-map.mjs
+        env:
+          LARGE_BASELINE: dist-baseline
       - uses: actions/upload-artifact@v4
         if: always()
         with:
