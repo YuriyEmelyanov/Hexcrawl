@@ -27,7 +27,7 @@ try{
  const configs=process.env.LARGE_BASELINE?[{label:'baseline',port:4183},{label:'optimized',port:4182}]:[{label:'current',port:4182}];
  for(const count of [1,3,6])for(const config of configs){
   const p=await browser.newPage({viewport:{width:1500,height:1000}});await p.route(/mc\.yandex/,r=>r.abort());const errors=[];p.on('pageerror',e=>errors.push(e.message));p.on('dialog',async d=>{errors.push(d.message());await d.dismiss();});
-  await p.goto(`http://127.0.0.1:${config.port}/`);await p.locator('input[type=file]').setInputFiles({name:'large-map.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(fixture(base,count)))});try{await p.waitForFunction(n=>document.querySelectorAll('polygon.hex.region,polygon.hex.center').length===n,count*400);}catch(e){throw Error('Import failed: '+JSON.stringify(errors)+' '+await p.locator('.map-viewport').innerText());}
+  await p.goto(`http://127.0.0.1:${config.port}/`);await p.locator('input[type=file]').setInputFiles({name:'large-map.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(fixture(base,count)))});try{await p.waitForFunction(n=>document.querySelectorAll('polygon.hex.region[data-hex-key],polygon.hex.center[data-hex-key]').length===n,count*400);}catch(e){throw Error('Import failed: '+JSON.stringify(errors)+' '+await p.locator('.map-viewport').innerText());}
   const toggle=p.locator('.biome-display-toggle');while(await toggle.getAttribute('data-mode')!=='color')await toggle.click();await p.locator('.forest-canopy-layer').first().waitFor({state:'attached'});await p.waitForTimeout(500);
   const cdp=await p.context().newCDPSession(p);await cdp.send('Performance.enable');
   for(const ablation of process.env.LARGE_BASELINE?['normal']:['normal','no-effects']){
@@ -43,7 +43,7 @@ try{
     v.dispatchEvent(new MouseEvent('mousedown',{bubbles:true,cancelable:true,button:0,buttons:1,clientX:x,clientY:y}));
     for(let i=1;i<=24;i++){v.dispatchEvent(new MouseEvent('mousemove',{bubbles:true,cancelable:true,buttons:1,clientX:x-i*4,clientY:y-i*2}));await frame(samples.pan);}v.dispatchEvent(new MouseEvent('mouseup',{bubbles:true}));
     for(let i=0;i<4;i++){
-     const hex=[...svg.querySelectorAll('polygon.hex.region')].filter(n=>{const b=n.getBoundingClientRect();return b.left>rect.left&&b.right<rect.right&&b.top>rect.top&&b.bottom<rect.bottom;})[i];
+     const hex=[...svg.querySelectorAll('polygon.hex.region[data-hex-key]')].filter(n=>{const b=n.getBoundingClientRect();return b.left>rect.left&&b.right<rect.right&&b.top>rect.top&&b.bottom<rect.bottom;})[i];
      if(!hex)throw Error('No visible hex for selection');const start=performance.now();hex.dispatchEvent(new MouseEvent('click',{bubbles:true}));await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));samples.selection.push(performance.now()-start);
     }
     style?.remove();const stats=a=>{a.sort((a,b)=>a-b);return{medianMs:a[Math.floor(a.length*.5)],p95Ms:a[Math.floor(a.length*.95)],over50:a.filter(x=>x>50).length,n:a.length};};
