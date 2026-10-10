@@ -1,6 +1,6 @@
 # Map navigation
 
-Wheel zoom and two-finger pinch scale the existing SVG using a composited CSS transform. SVG dimensions stay fixed in map coordinates. A separate map stage supplies the scaled scrolling bounds. Mouse drag and zoom updates are coalesced to at most one update per animation frame. Single-finger scrolling remains native; wheel and pinch cancellation use non-passive native listeners.
+Wheel zoom and two-finger pinch scale the existing SVG using a composited CSS transform. SVG dimensions stay fixed in map coordinates. A separate map stage supplies the scaled scrolling bounds. Mouse drag and zoom updates are coalesced to at most one update per animation frame. The compositor hint is released 180 ms after input stops so the browser can rasterize vectors sharply at the final scale. Single-finger scrolling remains native; wheel and pinch cancellation use non-passive native listeners.
 
 Navigation does not update React application state or rebuild forest, water, POI or terrain artwork. The wheel focal point uses the actual SVG bounds, including the centered position of small maps. Scale is clamped as before; wheel delta units are normalized. Import restores the live scale; JSON reads the latest scale, including queued input. PNG export clears navigation transforms and exports the complete original map at its original coordinates. Rotation continues to use the original artwork transform.
 
