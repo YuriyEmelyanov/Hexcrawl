@@ -3,10 +3,10 @@ type WindowRect = { x: number; y: number; width: number; height: number };
 type Entry = WindowRect & { scale: number };
 const PIXEL_BUDGET = 8_000_000;
 const HALO = 112; // More than every blur, offset and morphology kernel combined.
-export function installViewportRasterCache({ viewport, svg, canvas, scale, rotated, originalHeight, snapshot }: {
+export function installViewportRasterCache({ viewport, svg, canvas, scale, rotated, originalHeight, snapshot, onNavigate }: {
   viewport: HTMLElement; svg: SVGSVGElement; canvas: HTMLCanvasElement;
   scale: () => number; rotated: boolean; originalHeight: number;
-  snapshot: (svg: SVGSVGElement) => Promise<SVGSVGElement>;
+  snapshot: (svg: SVGSVGElement) => Promise<SVGSVGElement>; onNavigate: () => void;
 }): () => void {
   let entry: Entry | undefined, stopped = false, capturing = false, timer = 0;
   const visible = (): WindowRect => {
@@ -63,11 +63,11 @@ export function installViewportRasterCache({ viewport, svg, canvas, scale, rotat
     } finally { if (url) URL.revokeObjectURL(url); capturing = false; if (!stopped) schedule(); }
   };
   const schedule = () => { if (stopped) return; clearTimeout(timer); timer = window.setTimeout(prepare, 250); };
-  const onScroll = () => { sync(); schedule(); };
+  const onScroll = () => { onNavigate(); sync(); schedule(); };
   const observer = new MutationObserver(() => { sync(); schedule(); });
   observer.observe(svg, { attributes: true, attributeFilter: ['style'] });
   observer.observe(viewport, { attributes: true, attributeFilter: ['class'] });
-  const resize = new ResizeObserver(onScroll); resize.observe(viewport);
+  const resize = new ResizeObserver(() => { sync(); schedule(); }); resize.observe(viewport);
   viewport.addEventListener('scroll', onScroll, { passive: true }); schedule();
   return () => {
     stopped = true; clearTimeout(timer); observer.disconnect(); resize.disconnect(); viewport.removeEventListener('scroll', onScroll);
