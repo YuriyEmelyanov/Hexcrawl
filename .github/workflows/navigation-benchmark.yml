@@ -1,0 +1,35 @@
+name: Map navigation benchmark
+on:
+  push:
+    branches: [perf/smooth-map-navigation-20261010]
+    paths: [.github/workflows/navigation-benchmark.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm ci
+      - run: npm run check
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:browser
+      - name: Build baseline and optimized navigation
+        run: |
+          cp src/App.tsx /tmp/navigation-App.tsx
+          cp src/styles.css /tmp/navigation-styles.css
+          git show 6e62bfa05832ec24bb0c0d26fdd0483b5df68e7c:src/App.tsx > src/App.tsx
+          git show 6e62bfa05832ec24bb0c0d26fdd0483b5df68e7c:src/styles.css > src/styles.css
+          npm run build
+          mv dist dist-baseline
+          cp /tmp/navigation-App.tsx src/App.tsx
+          cp /tmp/navigation-styles.css src/styles.css
+          npm run build
+      - run: NAV_BASELINE=dist-baseline node test/browser/navigation.smoke.mjs
