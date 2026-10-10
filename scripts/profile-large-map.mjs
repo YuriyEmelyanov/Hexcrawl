@@ -37,6 +37,11 @@ try{
   if(config.label==='baseline')artworks.set(count,artwork);else if(artworks.has(count))assert.equal(artwork,artworks.get(count),'Vector artwork is identical');
   if(config.label==='optimized'&&count>1){
    await p.waitForFunction(()=>document.querySelector('.map-motion-buffer')?.dataset.cache==='ready',{},{timeout:30000});
+   await p.evaluate(()=>{const v=document.querySelector('.map-viewport');v.scrollLeft+=20;});
+   await p.waitForFunction(()=>document.querySelector('.map-viewport').classList.contains('has-motion-buffer'));
+   assert.equal(await p.locator('.map-stage > svg').evaluate(s=>getComputedStyle(s).opacity),'0','Native scrolling uses the buffer');
+   await p.waitForFunction(()=>!document.querySelector('.map-viewport').classList.contains('is-navigating'));
+   assert.equal(await p.locator('.map-stage > svg').evaluate(s=>getComputedStyle(s).opacity),'1','Sharp SVG returns at rest');
    const vector=await p.locator('.map-viewport').screenshot();
    await p.evaluate(()=>document.querySelector('.map-viewport').classList.add('is-navigating'));
    await p.waitForFunction(()=>document.querySelector('.map-viewport').classList.contains('has-motion-buffer'));
