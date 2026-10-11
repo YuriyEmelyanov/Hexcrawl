@@ -29,6 +29,33 @@ for (const direction of ['source', 'mouth']) {
 }
 
 const newHexes = [{q:0,r:0}, {q:0,r:1}, {q:-1,r:1}, {q:1,r:0}, {q:1,r:-1}, {q:1,r:1}];
+test('RIV-017 closed mouth prefers reachable unexplored land to a new lake', () => {
+  const {g,region,river,anchor,terrain} = fixture('mouth',3);
+  const added = {...region,id:2,hexes:newHexes,anchorHex:anchor,generationMode:'mythic'};
+  const candidates = g.getCandidateHexes([...region.hexes,...newHexes],new Set());
+  const result = g.completeRegionRiverEnds([river],[river],added,[region,added],candidates,terrain);
+  assert.equal(result.success,true,result.reason);
+  assert.equal(result.terrain.size,0,'do not terminate inland while a continuation is possible');
+  assert.ok(result.rivers[0].vertexPath.length>river.vertexPath.length);
+  const frontier = new Set(candidates.flatMap(h=>g.getHexCornerPoints(h).map(v=>v.key)));
+  assert.ok(frontier.has(result.rivers[0].vertexPath.at(-1).key));
+});
+
+test('RIV-017 real Mythic tract retains an open upper river instead of inventing an inland source', () => {
+  const {h,g,anchor}=fixture('source',3);
+  h.injectFunction('generateFallbackTractFromAnchor',()=>newHexes);
+  const before=JSON.stringify(h.render().createSaveData().map);
+  const result=h.render().safelyAddRegionToMap(anchor,{mode:'mythic',targetSize:5,coastalPreference:'mainland'});
+  assert.equal(result.success,true,JSON.stringify(result));
+  const app=h.render();
+  assert.equal([...app.hexTerrainByKey.values()].filter(t=>t.terrainOverride==='lake').length,0);
+  const frontier=new Set(app.candidateHexes.flatMap(h=>g.getHexCornerPoints(h).map(v=>v.key)));
+  assert.ok(frontier.has(app.rivers[0].vertexPath[0].key));
+  g.assertHexcrawlSaveData(JSON.parse(JSON.stringify(app.createSaveData())));
+  app.deleteLastRegion();
+  assert.equal(JSON.stringify(h.render().createSaveData().map),before);
+});
+
 function oldEdges(rivers) {
   return Object.fromEntries(rivers.flatMap(r => r.sectors.flatMap(s => s.edgeKeys.map(k => [k, s.fullness]))));
 }
@@ -106,6 +133,31 @@ test('incoming river can finish in another river without changing either old cha
   assert.ok(result.rivers[1].vertexPath.some(v=>v.key===result.rivers[0].vertexPath.at(-1).key));
   assert.equal(result.terrain.size,0);
   for(const [key,f] of Object.entries(oldEdges([river,other]))) assert.equal(oldEdges(result.rivers)[key],f);
+});
+
+test('RIV-015/017 real Mythic tract joins compatible incoming and outgoing rivers before making a lake', () => {
+  const {h,g,region,river,anchor}=fixture('mouth',3);
+  const otherHex={q:1,r:-1},corners=g.getHexCornerPoints(otherHex);
+  const ac=new Set(g.getHexCornerPoints(anchor).map(v=>v.key));
+  const i=corners.findIndex((v,j)=>ac.has(v.key)&&!ac.has(corners[(j+1)%6].key));
+  const path=[corners[i],corners[(i+1)%6],corners[(i+2)%6]];
+  const other={id:2,regionId:2,vertexPath:path,sectors:g.createInitialRiverSectors(2,path,3,{},2)};
+  const oldRegion={...region,id:2,hexes:[otherHex]};
+  const land=newHexes.filter(h=>h.q!==otherHex.q||h.r!==otherHex.r);
+  h.render().restoreSnapshot({regions:[region,oldRegion],rivers:[river,other],roads:[],crossings:[],
+    candidateHexes:g.getCandidateHexes([...region.hexes,otherHex],new Set()),hexTerrainByKey:new Map(),
+    waterPoiByKey:new Map(),biomeOverrideByHexKey:new Map(),nextLakeId:1,nextRoadId:1});
+  const before=JSON.stringify(h.render().createSaveData().map);
+  h.injectFunction('generateFallbackTractFromAnchor',()=>land);
+  const result=h.render().safelyAddRegionToMap(anchor,{mode:'mythic',targetSize:5,coastalPreference:'mainland'});
+  assert.equal(result.success,true,JSON.stringify(result));
+  const app=h.render();
+  assert.equal([...app.hexTerrainByKey.values()].filter(t=>t.terrainOverride==='lake').length,0);
+  assert.ok(app.rivers[1].vertexPath.some(v=>v.key===app.rivers[0].vertexPath.at(-1).key));
+  for(const [key,f] of Object.entries(oldEdges([river,other])))assert.equal(oldEdges(app.rivers)[key],f);
+  g.assertHexcrawlSaveData(JSON.parse(JSON.stringify(app.createSaveData())));
+  app.deleteLastRegion();
+  assert.equal(JSON.stringify(h.render().createSaveData().map),before);
 });
 
 test('closing several mouths handles every river, not just the lowest ID', () => {
