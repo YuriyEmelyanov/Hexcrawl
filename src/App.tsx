@@ -2529,7 +2529,11 @@ function completeRegionRiverEnds(
       source ? !sea.has(v.key) && (lakes.has(v.key) || frontier.has(v.key) || lakeSites.has(v.key) || ins.get(v.key) === 1 && !outs.has(v.key))
         : sea.has(v.key) || lakes.has(v.key) || frontier.has(v.key) || lakeSites.has(v.key) || occupied.has(v.key)
     ));
-    const priority = (key: string) => !source && sea.has(key) ? 0 : lakes.has(key) || occupied.has(key) ? 1 : frontier.has(key) ? 3 : 2;
+    // Keep flowing through compatible existing water or into unexplored land
+    // before consuming new land for a source/sink lake.
+    const preferOpenContinuation = region.generationMode === 'mythic';
+    const priority = (key: string) => !source && sea.has(key) ? 0 : lakes.has(key) || occupied.has(key) ? 1
+      : frontier.has(key) ? (preferOpenContinuation ? 2 : 3) : (preferOpenContinuation ? 3 : 2);
     const paths = targets.flatMap(target => {
       const blocked = new Set(used);
       // Block forbidden vertices during search, not only after finding a shortest
@@ -2543,7 +2547,7 @@ function completeRegionRiverEnds(
       return path.length >= 2 ? [{ path, rank: priority(target.key) }] : [];
     });
     // An adequate lake directly at the old end is also a candidate.
-    if (lakeSites.has(vertex.key) && !sea.has(vertex.key)) paths.push({ path: [vertex], rank: 2 });
+    if (lakeSites.has(vertex.key) && !sea.has(vertex.key)) paths.push({ path: [vertex], rank: preferOpenContinuation ? 3 : 2 });
     paths.sort((a, b) => a.rank - b.rank || a.path.length - b.path.length);
     for (const { path } of paths) {
       if (budget <= 0) break;
@@ -6806,6 +6810,12 @@ function generateRiverForRegionImpl(
     const incomingEndpoints = touchingEndpoints.filter((endpoint) => endpoint.endpointType === 'end');
     const outgoingEndpoints = touchingEndpoints.filter((endpoint) => endpoint.endpointType === 'start');
     const requireRiverThroughOriginalCenter = !(region.isCoastal && region.biomeLandType === 'settled');
+
+    // Mythic tracts defer closed ends to the shared search on the final
+    // frontier, before inventing an inland source or creating a new lake.
+    if (region.sizeCategory === 'tract' && region.generationMode === 'mythic') {
+      return { success: true, rivers: existingRivers };
+    }
 
     const connectSingleTractOutgoingRiver = (): RiverGenerationResult | null => {
       if (region.sizeCategory !== 'tract') return null;
