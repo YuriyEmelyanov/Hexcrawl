@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-22",
+  "timezone": "Europe/Moscow",
+  "run_id": "2026-10-22:d3c146c3c048160fa83b57dad6824a8f8faf3bca:initial",
+  "baseline_sha": "d3c146c3c048160fa83b57dad6824a8f8faf3bca",
+  "strategy": {
+    "version": "0.1",
+    "status": "pending_approval",
+    "ref": "docs/strategy/vision.md",
+    "branch": "strategy/agent-vision-2026-10-22",
+    "sha": null,
+    "approval_ref": null
+  },
+  "budget_status": "unknown",
+  "execution_allowed": false,
+  "facts": [
+    "Score-модель перенесена: 50 критериев, сумма1000, исторический baseline262.5.",
+    "Текущий score не подтверждён.",
+    "Существующие CI и Mythic Bastionland не следует разрабатывать повторно."
+  ],
+  "tasks": [
+    {
+      "task_id": "HX-STR-001",
+      "status": "awaiting_approval",
+      "strategy_version": "0.1",
+      "baseline_sha": "d3c146c3c048160fa83b57dad6824a8f8faf3bca",
+      "owner_role": "strategist",
+      "outcome": "Достоверный baseline всех50 критериев и очередь из трёх следующих работ.",
+      "criterion_id": null,
+      "current_grade": null,
+      "target_grade": null,
+      "potential_delta": null,
+      "confidence": null,
+      "dependencies": [
+        "approved_strategy",
+        "confirmed_budget"
+      ],
+      "scope": "Сверить критерии с текущими исходниками и имеющимся evidence; неизвестное маркировать, не назначать произвольный grade. Новые масштабные прогоны оценить отдельно.",
+      "acceptance_checks": [
+        "50 строк с критериями, grade или unverified, evidence и SHA",
+        "Отдельные historical/current состояния",
+        "Три кандидата с delta, зависимостями, стоимостью и проверкой"
+      ],
+      "evidence_path": "agent-work/evidence/baseline-2026-10-22.md",
+      "budget": {
+        "status": "requires_approval",
+        "limit": null
+      },
+      "stop_conditions": [
+        "нет утверждения",
+        "нет измеренного бюджета",
+        "исчерпан согласованный бюджет"
+      ],
+      "expected_output": [
+        "agent-work/score/current-score.json",
+        "agent-work/backlog.json"
+      ],
+      "approval_ref": null,
+      "rollback": "Задача только проверяет и добавляет evidence, не изменяет продукт."
+    }
+  ],
+  "decisions_needed": [
+    "Утвердить видение0.1 и порядок этапов",
+    "Согласовать единый реестр задач в agent-operations",
+    "Дать исходные показания/окна usage и бюджет первого аудита",
+    "Согласовать пакет очистки после карты переноса требований"
+  ],
+  "deferred_candidates": [
+    {
+      "task": "Единый RNG и состояние сохранения",
+      "reason": "Нужны baseline, scope и бюджет."
+    },
+    {
+      "task": "Связанные истории регионов",
+      "reason": "Сначала проверить зависимости сохранения и редактирования; допустим отдельный малый прототип."
+    }
+  ],
+  "blockers": [
+    "strategy_pending_approval",
+    "blocked_budget"
+  ],
+  "result_refs": [
+    "docs/strategy/vision.md",
+    "docs/strategy/score-model.md",
+    "docs/strategy/source-audit.md"
+  ],
+  "plan_id": "2026-10-22:d3c146c3c048160fa83b57dad6824a8f8faf3bca",
+  "plan_revision": 1
+}
