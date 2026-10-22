@@ -12,7 +12,7 @@
     "sha": "f89530abe1e237493dddb533502bb772ae1ab4e5",
     "approval_ref": "owner-approval-2026-10-22-vision"
   },
-  "budget_status": "unknown",
+  "budget_status": "bounded_baseline_approved_future_work_not_approved",
   "execution_allowed": false,
   "facts": [
     "За сутки 21.10 20:56 — 22.10 20:56 МСК в main вошёл PR470; сравнение с прежним baseline содержит только Markdown-документы, код продукта не изменён.",
@@ -21,12 +21,13 @@
     "В бэклоге 42 записи: 1 done, 1 awaiting_approval, остальные proposed/implemented_unverified. Наличие CI не подтверждает всю зрелость S09-C03.",
     "Пять открытых PR:458 (draft preview),320,201,190,146. Открытый PR не доказывает актуальность дефекта или отсутствие функции в main.",
     "Текущий score не оценён. Изменение документации не даёт основания начислять баллы продукта.",
-    "Решение владельца о времени21:00 имеет приоритет над устаревшим01:00 в main-документах; оперативный latest уже содержит21:00."
+    "Решение владельца о времени21:00 имеет приоритет над устаревшим01:00 в main-документах; оперативный latest уже содержит21:00.",
+    "Владелец согласовал HX-STR-001; ограниченный evidence audit выполнен. Баллы не включают непроверенные внешние критерии."
   ],
   "tasks": [
     {
       "task_id": "HX-STR-001",
-      "status": "awaiting_approval",
+      "status": "done",
       "strategy_version": "1.0",
       "baseline_sha": "f89530abe1e237493dddb533502bb772ae1ab4e5",
       "owner_role": "analyst_reviewer",
@@ -36,10 +37,7 @@
       "target_grade": null,
       "potential_delta": null,
       "confidence": null,
-      "dependencies": [
-        "confirmed_budget",
-        "task_scope_approval"
-      ],
+      "dependencies": [],
       "scope": "Один ограниченный проход по текущему main и существующим evidence/CI; без изменений продукта, новых нагрузочных серий, изображений, внешних исследований и запуска исполнителей. Сопоставить evidence с50 критериями, выделить критические пробелы и учесть старые открытые PR без их автоматического принятия.",
       "acceptance_checks": [
         "Ровно50 уникальных criterion_id, весов в сумме1000; grade только при достаточном evidence, иначе unverified; для каждого источник/SHA/метод/ограничения.",
@@ -49,9 +47,10 @@
       ],
       "evidence_path": "agent-work/evidence/baseline-f89530a.md",
       "budget": {
-        "status": "requires_approval",
+        "status": "owner_approved_bounded_scope",
         "limit": null,
-        "proposed_scope_cap": "Один проход по имеющимся evidence; без новых массовых прогонов. Стоимость: средняя, уверенность низкая; допустимость по лимитам пока неизвестна."
+        "actual_usage": "unknown",
+        "scope_cap": "Один проход, без массовых прогонов/делегирования/изменений продукта; выполнен."
       },
       "stop_conditions": [
         "нет согласования задачи или проверяемого бюджета — не начинать",
@@ -63,13 +62,14 @@
         "agent-work/evidence/baseline-f89530a.md",
         "agent-work/backlog.json"
       ],
-      "approval_ref": null,
-      "rollback": "Только операционные записи; при ошибке исправить отдельным коммитом, сохранив прежнюю историю."
+      "approval_ref": "owner-approval-2026-10-22-baseline-audit",
+      "rollback": "Только операционные записи; при ошибке исправить отдельным коммитом, сохранив прежнюю историю.",
+      "result_ref": "agent-work/evidence/baseline-f89530a.md",
+      "completed_on": "2026-10-22"
     }
   ],
   "decisions_needed": [
-    "Утвердить ограниченный scope HX-STR-001: baseline по50 критериям на существующих evidence, без доработок продукта и массовых прогонов.",
-    "Определить проверяемый бюджет задачи и резерв в пределах общего потолка50%; пока данные недоступны, исполнение blocked_budget."
+    "Выбрать следующую доработку из трёх кандидатов и согласовать её scope/ресурсы; baseline повторно не согласовывать."
   ],
   "deferred_candidates": [
     {
@@ -87,18 +87,18 @@
       "reason": "Полезен для ранних пользователей, но сначала нужно подтвердить пригодность сценария. Затем отдельный краткий бриф: аудитория, материал, канал, CTA, измерение; публикация отдельно."
     }
   ],
-  "blockers": [
-    "blocked_budget",
-    "task_scope_approval_required"
-  ],
+  "blockers": [],
   "result_refs": [
     "https://github.com/YuriyEmelyanov/Hexcrawl/pull/470",
     "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/39762899075",
-    "https://github.com/YuriyEmelyanov/Hexcrawl/compare/d3c146c3c048160fa83b57dad6824a8f8faf3bca...f89530abe1e237493dddb533502bb772ae1ab4e5"
+    "https://github.com/YuriyEmelyanov/Hexcrawl/compare/d3c146c3c048160fa83b57dad6824a8f8faf3bca...f89530abe1e237493dddb533502bb772ae1ab4e5",
+    "agent-work/evidence/baseline-f89530a.md",
+    "agent-work/score/current-score.json",
+    "agent-work/score/next-candidates.json"
   ],
   "plan_id": "2026-10-22:f89530abe1e237493dddb533502bb772ae1ab4e5",
-  "plan_revision": 5,
-  "status": "blocked_budget",
+  "plan_revision": 6,
+  "status": "baseline_completed_next_candidates_proposed",
   "planning_for": "2026-10-23",
   "reflection": {
     "observation": "Предыдущий план запрашивал уже исполненный merge и содержал старый baseline/расписание; latest и approvals были свежее.",

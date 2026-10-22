@@ -12,14 +12,11 @@
     {
       "task_id": "HX-STR-001",
       "title": "Актуальный baseline50 критериев",
-      "status": "awaiting_approval",
+      "status": "done",
       "criterion_id": null,
       "potential_delta": null,
-      "approval_ref": null,
-      "dependencies": [
-        "confirmed_budget",
-        "task_scope_approval"
-      ],
+      "approval_ref": "owner-approval-2026-10-22-baseline-audit",
+      "dependencies": [],
       "baseline_sha": "f89530abe1e237493dddb533502bb772ae1ab4e5",
       "scope": "Один ограниченный проход по текущему main и существующим evidence/CI; без изменений продукта, новых нагрузочных серий, изображений, внешних исследований и запуска исполнителей. Сопоставить evidence с50 критериями, выделить критические пробелы и учесть старые открытые PR без их автоматического принятия.",
       "acceptance_checks": [
@@ -29,13 +26,17 @@
         "Отдельно показано, какие выводы нельзя сделать по имеющимся тестам; проверяющий может воспроизвести ссылки на evidence."
       ],
       "budget": {
-        "status": "requires_approval",
+        "status": "owner_approved_bounded_scope",
         "limit": null,
-        "proposed_scope_cap": "Один проход по имеющимся evidence; без новых массовых прогонов. Стоимость: средняя, уверенность низкая; допустимость по лимитам пока неизвестна."
+        "actual_usage": "unknown",
+        "scope_cap": "Один проход, без массовых прогонов/делегирования/изменений продукта; выполнен."
       },
       "recommended_priority": 1,
       "last_reviewed_on": "2026-10-22",
-      "plan_ref": "agent-work/plans/2026-10-22.json"
+      "plan_ref": "agent-work/plans/2026-10-22.json",
+      "result_ref": "agent-work/evidence/baseline-f89530a.md",
+      "result_sha": "f89530abe1e237493dddb533502bb772ae1ab4e5",
+      "completed_on": "2026-10-22"
     },
     {
       "task_id": "HX-CLEAN-001",
@@ -68,7 +69,13 @@
       },
       "dependencies": [
         "evidence_review"
-      ]
+      ],
+      "evidence_review": {
+        "date": "2026-10-22",
+        "baseline_sha": "f89530abe1e237493dddb533502bb772ae1ab4e5",
+        "result_ref": "agent-work/evidence/baseline-f89530a.md",
+        "note": "Сопоставлено с кодом и CI; исходная приёмка карточки не реконструирована, поэтому done не назначен автоматически."
+      }
     },
     {
       "task_id": "HX-BL-002",
@@ -83,7 +90,13 @@
       },
       "dependencies": [
         "evidence_review"
-      ]
+      ],
+      "evidence_review": {
+        "date": "2026-10-22",
+        "baseline_sha": "f89530abe1e237493dddb533502bb772ae1ab4e5",
+        "result_ref": "agent-work/evidence/baseline-f89530a.md",
+        "note": "Сопоставлено с кодом и CI; исходная приёмка карточки не реконструирована, поэтому done не назначен автоматически."
+      }
     },
     {
       "task_id": "HX-BL-003",
@@ -98,7 +111,40 @@
       },
       "dependencies": [
         "scope_and_budget_approval"
-      ]
+      ],
+      "baseline_recommendation": {
+        "task_id": "HX-BL-003",
+        "priority": 3,
+        "title": "Устранить воспроизводимую задержку на растущей карте по числу гексов",
+        "status": "proposed",
+        "criterion_ids": [
+          "S09-C01"
+        ],
+        "baseline_grades": {
+          "S09-C01": 2
+        },
+        "target_grades": {
+          "S09-C01": null
+        },
+        "potential_delta": null,
+        "confidence": "medium_for_diagnostic_low_for_gain",
+        "estimated_total_cost": "M с жёсткой остановкой: фиксированные профили, одно найденное узкое место, один PR",
+        "reason": "В текущем CI есть навигация 400/1200 на синтетическом лесе; нет замеров роста, генерации и отрисовки заполненной карты и реального Android. Предыдущие жалобы владельца указывают на ценность, но не доказывают дефект текущего SHA.",
+        "dependencies": [
+          "owner_scope_and_N_threshold_approval"
+        ],
+        "scope": "Предложенный профиль N=400/1200/2400 требует согласования. Сохранить одинаковые версии, состав и качество карт; отдельно измерить add/expansion, render и navigation через реальные действия. Учесть отказы/незавершённые операции. Выбрать одно воспроизведённое узкое место и исправить; без подтверждения не менять алгоритмы.",
+        "acceptance": [
+          "Перед прогоном согласованы устройства, N, состав карт, число повторов, холодные/тёплые запуски, timeout и пороги. Указаны N до/после, прирост гексов и режим.",
+          "Есть сохранение и шаги воспроизведения задержки; генерация, рендер и навигация измеряются раздельно; сбои не исключены из распределения.",
+          "До/после сравнение на тех же fixtures/параметрах; карта и PNG сохраняют качество, проверки географии/сохранений проходят.",
+          "Android заявляется только при реальном замере на согласованном устройстве; эмуляция отдельно обозначена.",
+          "Если узкого места нет — сохранить отрицательный результат, не проводить бессрочный поиск и не начислять баллы."
+        ],
+        "stop": "После фиксированного профиля и одного исправления; если нужен новый алгоритм или другая подсистема, отдельное согласование.",
+        "score_condition": "Прирост неизвестен. Сохраняется G2; G3 возможен только при проверках, обработке ошибок и подтверждении владельцем/пользователями. G4 требует всех условий, утверждённых N/порогов и сравнительного evidence."
+      },
+      "recommended_priority": 3
     },
     {
       "task_id": "HX-BL-004",
@@ -158,7 +204,13 @@
       },
       "dependencies": [
         "evidence_review"
-      ]
+      ],
+      "evidence_review": {
+        "date": "2026-10-22",
+        "baseline_sha": "f89530abe1e237493dddb533502bb772ae1ab4e5",
+        "result_ref": "agent-work/evidence/baseline-f89530a.md",
+        "note": "Сопоставлено с кодом и CI; исходная приёмка карточки не реконструирована, поэтому done не назначен автоматически."
+      }
     },
     {
       "task_id": "HX-BL-008",
@@ -218,7 +270,13 @@
       },
       "dependencies": [
         "evidence_review"
-      ]
+      ],
+      "evidence_review": {
+        "date": "2026-10-22",
+        "baseline_sha": "f89530abe1e237493dddb533502bb772ae1ab4e5",
+        "result_ref": "agent-work/evidence/baseline-f89530a.md",
+        "note": "Сопоставлено с кодом и CI; исходная приёмка карточки не реконструирована, поэтому done не назначен автоматически."
+      }
     },
     {
       "task_id": "HX-BL-012",
@@ -239,7 +297,7 @@
       "task_id": "HX-BL-013",
       "title": "Редактирование гекса и POI",
       "criterion_id": "S03-C01",
-      "status": "proposed",
+      "status": "partially_implemented",
       "potential_delta": null,
       "approval_ref": null,
       "source": {
@@ -248,7 +306,9 @@
       },
       "dependencies": [
         "scope_and_budget_approval"
-      ]
+      ],
+      "baseline_finding": "Биом и POI уже редактируются; вода, принадлежность региону и отмена неполные.",
+      "evidence_ref": "agent-work/evidence/baseline-f89530a.md"
     },
     {
       "task_id": "HX-BL-014",
@@ -263,7 +323,13 @@
       },
       "dependencies": [
         "evidence_review"
-      ]
+      ],
+      "evidence_review": {
+        "date": "2026-10-22",
+        "baseline_sha": "f89530abe1e237493dddb533502bb772ae1ab4e5",
+        "result_ref": "agent-work/evidence/baseline-f89530a.md",
+        "note": "Сопоставлено с кодом и CI; исходная приёмка карточки не реконструирована, поэтому done не назначен автоматически."
+      }
     },
     {
       "task_id": "HX-BL-015",
@@ -278,7 +344,13 @@
       },
       "dependencies": [
         "evidence_review"
-      ]
+      ],
+      "evidence_review": {
+        "date": "2026-10-22",
+        "baseline_sha": "f89530abe1e237493dddb533502bb772ae1ab4e5",
+        "result_ref": "agent-work/evidence/baseline-f89530a.md",
+        "note": "Сопоставлено с кодом и CI; исходная приёмка карточки не реконструирована, поэтому done не назначен автоматически."
+      }
     },
     {
       "task_id": "HX-BL-016",
@@ -293,7 +365,13 @@
       },
       "dependencies": [
         "evidence_review"
-      ]
+      ],
+      "evidence_review": {
+        "date": "2026-10-22",
+        "baseline_sha": "f89530abe1e237493dddb533502bb772ae1ab4e5",
+        "result_ref": "agent-work/evidence/baseline-f89530a.md",
+        "note": "Сопоставлено с кодом и CI; исходная приёмка карточки не реконструирована, поэтому done не назначен автоматически."
+      }
     },
     {
       "task_id": "HX-BL-017",
@@ -308,7 +386,13 @@
       },
       "dependencies": [
         "evidence_review"
-      ]
+      ],
+      "evidence_review": {
+        "date": "2026-10-22",
+        "baseline_sha": "f89530abe1e237493dddb533502bb772ae1ab4e5",
+        "result_ref": "agent-work/evidence/baseline-f89530a.md",
+        "note": "Сопоставлено с кодом и CI; исходная приёмка карточки не реконструирована, поэтому done не назначен автоматически."
+      }
     },
     {
       "task_id": "HX-BL-018",
@@ -374,7 +458,7 @@
       "task_id": "HX-BL-022",
       "title": "Индикация выбранного гекса",
       "criterion_id": "S04-C02",
-      "status": "proposed",
+      "status": "partially_implemented",
       "potential_delta": null,
       "approval_ref": null,
       "source": {
@@ -383,13 +467,15 @@
       },
       "dependencies": [
         "scope_and_budget_approval"
-      ]
+      ],
+      "baseline_finding": "Выбранный гекс и select существуют; исходный запрос требует уточнения до новой реализации.",
+      "evidence_ref": "agent-work/evidence/baseline-f89530a.md"
     },
     {
       "task_id": "HX-BL-023",
       "title": "Общий режим редактирования",
       "criterion_id": "S03-C01",
-      "status": "proposed",
+      "status": "partially_implemented",
       "potential_delta": null,
       "approval_ref": null,
       "source": {
@@ -398,7 +484,9 @@
       },
       "dependencies": [
         "scope_and_budget_approval"
-      ]
+      ],
+      "baseline_finding": "Панель ручных правок существует; общий безопасный режим не завершён.",
+      "evidence_ref": "agent-work/evidence/baseline-f89530a.md"
     },
     {
       "task_id": "HX-BL-024",
@@ -428,7 +516,13 @@
       },
       "dependencies": [
         "evidence_review"
-      ]
+      ],
+      "evidence_review": {
+        "date": "2026-10-22",
+        "baseline_sha": "f89530abe1e237493dddb533502bb772ae1ab4e5",
+        "result_ref": "agent-work/evidence/baseline-f89530a.md",
+        "note": "Сопоставлено с кодом и CI; исходная приёмка карточки не реконструирована, поэтому done не назначен автоматически."
+      }
     },
     {
       "task_id": "HX-BL-026",
@@ -495,7 +589,7 @@
       "title": "Единый RNG, состояние и воспроизводимое продолжение",
       "criterion_id": "S02-C01",
       "status": "proposed",
-      "potential_delta": null,
+      "potential_delta": 7.5,
       "approval_ref": null,
       "source": {
         "document": "previous-backlog",
@@ -503,7 +597,41 @@
       },
       "dependencies": [
         "scope_and_budget_approval"
-      ]
+      ],
+      "baseline_recommendation": {
+        "task_id": "HX-BL-030",
+        "priority": 2,
+        "title": "Воспроизводимое продолжение: master seed и состояние случайности",
+        "status": "proposed",
+        "criterion_ids": [
+          "S02-C01"
+        ],
+        "baseline_grades": {
+          "S02-C01": 0
+        },
+        "target_grades": {
+          "S02-C01": 1
+        },
+        "potential_delta": 7.5,
+        "confidence": "medium",
+        "estimated_total_cost": "M–L: случайность распределена между App и modes; границы изменения заранее зафиксировать",
+        "reason": "Текущий diagnostic прямо сообщает RNG state=null; тестовый seeded Math не переносится в продукт. Воспроизведение ошибок и продолжение после save/load требуют настоящего RNG.",
+        "dependencies": [
+          "owner_scope_approval",
+          "совместимый контракт сохранения из HX-NEXT-001 либо отдельная проверка его сохранности"
+        ],
+        "scope": "Ввести master seed и независимые сохраняемые потоки географии/POI; сохранить независимость имён и визуала. Два сценария: последовательное расширение; save/load→следующее действие; дополнительно восстановление RNG при rollback/undo. Совместимость старых файлов задана явно; не обещать восстановить неизвестную старую случайность.",
+        "acceptance": [
+          "Одинаковые version/seed/options/actions дают одинаковые смысловые данные; сравнение исключает только технический savedAt.",
+          "Непрерывное A→B→C совпадает с A→B→export/import→C; undo→повтор совпадает; сбой не сдвигает RNG после восстановления.",
+          "Изменение визуала/имён не меняет географию; обязательные потоки охвачены проверками через production handlers.",
+          "Файлы без RNG открываются без изменения старых объектов; новый режим продолжения явно определён; версия схемы отделена от версии генератора.",
+          "npm run check, test:browser; fixtures и негативные результаты сохранены."
+        ],
+        "stop": "Защита произвольных сущностей, полный reroll и переписывание генератора — отдельные задачи. Если без них расширяется scope, остановиться с конкретным предложением.",
+        "score_condition": "Плановый первый переход G0→G1 (+7.5); G2 (+15 от baseline) только после подтверждения обычных сценариев критерия, не начисляется заранее."
+      },
+      "recommended_priority": 2
     },
     {
       "task_id": "HX-BL-031",
@@ -593,7 +721,13 @@
       },
       "dependencies": [
         "evidence_review"
-      ]
+      ],
+      "evidence_review": {
+        "date": "2026-10-22",
+        "baseline_sha": "f89530abe1e237493dddb533502bb772ae1ab4e5",
+        "result_ref": "agent-work/evidence/baseline-f89530a.md",
+        "note": "Сопоставлено с кодом и CI; исходная приёмка карточки не реконструирована, поэтому done не назначен автоматически."
+      }
     },
     {
       "task_id": "HX-BL-037",
@@ -608,7 +742,13 @@
       },
       "dependencies": [
         "evidence_review"
-      ]
+      ],
+      "evidence_review": {
+        "date": "2026-10-22",
+        "baseline_sha": "f89530abe1e237493dddb533502bb772ae1ab4e5",
+        "result_ref": "agent-work/evidence/baseline-f89530a.md",
+        "note": "Сопоставлено с кодом и CI; исходная приёмка карточки не реконструирована, поэтому done не назначен автоматически."
+      }
     },
     {
       "task_id": "HX-BL-038",
@@ -623,7 +763,13 @@
       },
       "dependencies": [
         "evidence_review"
-      ]
+      ],
+      "evidence_review": {
+        "date": "2026-10-22",
+        "baseline_sha": "f89530abe1e237493dddb533502bb772ae1ab4e5",
+        "result_ref": "agent-work/evidence/baseline-f89530a.md",
+        "note": "Сопоставлено с кодом и CI; исходная приёмка карточки не реконструирована, поэтому done не назначен автоматически."
+      }
     },
     {
       "task_id": "HX-BL-039",
@@ -654,11 +800,46 @@
       "dependencies": [
         "scope_and_budget_approval"
       ]
+    },
+    {
+      "task_id": "HX-NEXT-001",
+      "priority": 1,
+      "title": "Безопасные изменения карты: атомарный импорт и отмена ручных правок",
+      "status": "proposed",
+      "criterion_ids": [
+        "S09-C04",
+        "S03-C05"
+      ],
+      "baseline_grades": {
+        "S09-C04": 1,
+        "S03-C05": 1
+      },
+      "target_grades": {
+        "S09-C04": 2,
+        "S03-C05": 2
+      },
+      "potential_delta": 7.5,
+      "confidence": "medium",
+      "estimated_total_cost": "M: ограниченный продуктовый PR, проверка повреждённых файлов и regression; не оценка процента подписки",
+      "reason": "Уже существующие ручные правки обходят историю; импорт не проверяет всю структуру roads/ID/references/ui. Сначала защитить текущий результат мастера. Подтверждённой потери данных в этом аудите нет.",
+      "dependencies": [
+        "owner_scope_approval"
+      ],
+      "scope": "Довести полную подготовку импортируемого состояния до первой записи React state; валидировать ID/ссылки/roads/ui/координаты. Единая история для существующих biome/POI edits, import и reset; undo/redo этих операций. Без нового редактора воды/регионов, контента и широкого рефакторинга.",
+      "acceptance": [
+        "Невалидные roads/ID/references/ui и будущая версия отвергаются, текущая карта, выбор и история неизменны; UI остаётся рабочим.",
+        "На корпусе текущих fixtures и старых optional fields import→export сохраняет смысловые данные и возможность продолжения.",
+        "Правки биома/сухопутного и водного POI, reset и успешный import отменяются и повторяются без потерь; generation rollback/regenerate tests не регрессируют.",
+        "Не менее 100 смешанных обратимых операций проверены через настоящий UI; именованные версии вне первого scope, поэтому G4 не заявлять.",
+        "npm run check и test:browser на Node24, отчёт и acceptance fixtures."
+      ],
+      "stop": "Если нужны миграции неизвестных старых версий или меняется географический алгоритм — зафиксировать отдельную зависимость и не расширять PR.",
+      "score_condition": "+2.5 за безопасный импорт/сохранность и +5 за отдельное доказательство отмены изменений. Один round-trip не используется как доказательство обоих результатов."
     }
   ],
   "last_review": {
     "date": "2026-10-22",
     "baseline_sha": "f89530abe1e237493dddb533502bb772ae1ab4e5",
-    "note": "Продуктовых изменений за окно не обнаружено; реализованные, но непроверенные кандидаты не переведены в done."
+    "note": "HX-STR-001 выполнена. 50 критериев, 178.75 подтверждено, 70 unverified; три следующие доработки proposed. Непроверенные исходные карточки не закрыты автоматически."
   }
 }
