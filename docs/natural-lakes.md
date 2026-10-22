@@ -7,3 +7,4 @@ River, flow and rapids colours are #159DAC and #8BDBDD in all modes. Waterfalls 
 A bounded per-layer LRU cache retains up to 64 shorelines and 100,000 points, reusing translated shapes while updating river mouths independently. Existing sea, forest, land palette, terrain artwork and POI styling are preserved.
 
 Validation: Node.js 24 `npm run check` covers type checking, 154 regression tests and the production build. Geometry checks cover deterministic curves, connected basins, island holes, river mouths, caching and bounded spill. Additional seeded checks covered 200 single lakes and 90 chain/bend/island cases. Browser smoke checks hex-shaped lakes in Tiles/Emoji, natural contours in Color, stable contours after switching modes, retained water colours, suppressed lake-cell tile images, PNG export, import/save, rotation, islands and deep single-cell water. Release browser results are recorded in CI.
+

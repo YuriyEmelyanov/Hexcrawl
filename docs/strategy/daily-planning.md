@@ -1,10 +1,10 @@
 # Ежедневное планирование HexCrawl
 
-Статус: проект регламента; расписание запускает только планирование, пока стратегия и задачи не утверждены.
+Статус: регламент утверждённого видения1.0. Запуск ежедневно в01:00 Europe/Moscow. Исполнение требует утверждённой задачи и проверяемого бюджета.
 
 ## Вход и порядок
 
-1. Прочитать AGENTS.md main; найти утверждённое видение по конкретному ref/SHA и approval_ref, включая утверждённую ветку до merge. Если его нет, читать vision.md в strategy/agent-vision-2026-10-22 и отметить strategy_pending_approval.
+1. Прочитать AGENTS.md; действующие видение1.0 и score-модель1.1 находятся в strategy/agent-vision-2026-10-22 до merge (после merge — main). Использовать утверждённую версию/ref/SHA. Score-модель: docs/strategy/score-model.md; производительность — по числу гексов N.
 2. Прочитать agent-operations: latest.json, предыдущий план/результаты, backlog.json, approvals.json, budget.json если существуют. Отсутствие данных не заменять выдуманными записями.
 3. Сравнить текущий main SHA с предыдущим. Читать только изменения, относящиеся к задачам; открытые PR и подтверждённую обратную связь. Не повторять полный аудит без основания.
 4. Проверить действующие согласования и бюджет. Если бюджет неизвестен, только короткий план blocked_budget; не запускать исполнителей. Если стратегия не утверждена, новые продуктовые задачи только proposed.
@@ -32,14 +32,14 @@
   "run_id": "YYYY-MM-DD:BASE_SHA:ATTEMPT",
   "plan_revision": 1,
   "baseline_sha": "BASE_SHA",
-  "strategy": {"version": "0.1", "status": "pending_approval", "ref": "docs/strategy/vision.md", "sha": null, "approval_ref": null},
+  "strategy": {"version": "1.0", "status": "approved", "ref": "docs/strategy/vision.md", "sha": null, "approval_ref": null},
   "budget_status": "unknown",
   "execution_allowed": false,
   "facts": [],
   "tasks": [],
   "decisions_needed": [],
   "deferred_candidates": [],
-  "blockers": ["strategy_pending_approval", "blocked_budget"],
+  "blockers": ["blocked_budget"],
   "result_refs": []
 }
 ```
@@ -47,3 +47,4 @@
 Каждый tasks item использует обязательные поля поручения из vision.md, статус и отдельное разрешение на выпуск. Неизвестный grade = null, возможный delta = null до расчёта. JSON не допускает вымышленных current_score, token_spend или owner_approval.
 
 В MD: изменения за сутки; доступные подтверждённые факты; одна рекомендуемая задача; назначение роли; критерии и evidence; что заблокировано; что согласовать. Latest содержит дату и пути файлов с версией/SHA, чтобы следующий агент не искал результат по переписке.
+
