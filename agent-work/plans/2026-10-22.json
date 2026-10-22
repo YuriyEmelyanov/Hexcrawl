@@ -2,88 +2,107 @@
   "schema_version": 1,
   "date": "2026-10-22",
   "timezone": "Europe/Moscow",
-  "run_id": "2026-10-22:d3c146c3c048160fa83b57dad6824a8f8faf3bca:initial",
-  "baseline_sha": "d3c146c3c048160fa83b57dad6824a8f8faf3bca",
+  "run_id": "2026-10-22:f89530abe1e237493dddb533502bb772ae1ab4e5:evening",
+  "baseline_sha": "f89530abe1e237493dddb533502bb772ae1ab4e5",
   "strategy": {
     "version": "1.0",
     "status": "approved",
     "ref": "docs/strategy/vision.md",
-    "branch": "strategy/agent-vision-2026-10-22",
-    "sha": "df43218743f8c97c1e5a7a5d20e5ddd89c8ad9dd",
+    "branch": "main",
+    "sha": "f89530abe1e237493dddb533502bb772ae1ab4e5",
     "approval_ref": "owner-approval-2026-10-22-vision"
   },
   "budget_status": "unknown",
   "execution_allowed": false,
   "facts": [
-    "Score-модель перенесена: 50 критериев, сумма1000, исторический baseline262.5.",
-    "Текущий score не подтверждён.",
-    "Существующие CI и Mythic Bastionland не следует разрабатывать повторно.",
-    "Ежедневное планирование включено: 01:00 Europe/Moscow, первый запуск23.10.2026.",
-    "Видение1.0 утверждено22.10.2026; cleanup подготовлен в PR470. Score1.1 канонически находится в docs/strategy/score-model.md."
+    "За сутки 21.10 20:56 — 22.10 20:56 МСК в main вошёл PR470; сравнение с прежним baseline содержит только Markdown-документы, код продукта не изменён.",
+    "HX-CLEAN-001 завершена; merge f89530abe1e237493dddb533502bb772ae1ab4e5. Повторное разрешение на PR470 не требуется.",
+    "Workflow39762899075 завершён успешно: типы/регрессионные тесты/сборка, браузерная проверка генерации production build, публикация.",
+    "В бэклоге 42 записи: 1 done, 1 awaiting_approval, остальные proposed/implemented_unverified. Наличие CI не подтверждает всю зрелость S09-C03.",
+    "Пять открытых PR:458 (draft preview),320,201,190,146. Открытый PR не доказывает актуальность дефекта или отсутствие функции в main.",
+    "Текущий score не оценён. Изменение документации не даёт основания начислять баллы продукта.",
+    "Решение владельца о времени21:00 имеет приоритет над устаревшим01:00 в main-документах; оперативный latest уже содержит21:00."
   ],
   "tasks": [
     {
       "task_id": "HX-STR-001",
       "status": "awaiting_approval",
-      "strategy_version": "0.1",
-      "baseline_sha": "d3c146c3c048160fa83b57dad6824a8f8faf3bca",
-      "owner_role": "strategist",
-      "outcome": "Достоверный baseline всех50 критериев и очередь из трёх следующих работ.",
+      "strategy_version": "1.0",
+      "baseline_sha": "f89530abe1e237493dddb533502bb772ae1ab4e5",
+      "owner_role": "analyst_reviewer",
+      "outcome": "Таблица фактического состояния50 критериев на одном SHA и три обоснованных следующих кандидата; неизвестное явно отмечено.",
       "criterion_id": null,
       "current_grade": null,
       "target_grade": null,
       "potential_delta": null,
       "confidence": null,
       "dependencies": [
-        "approved_strategy",
-        "confirmed_budget"
+        "confirmed_budget",
+        "task_scope_approval"
       ],
-      "scope": "Сверить критерии с текущими исходниками и имеющимся evidence; неизвестное маркировать, не назначать произвольный grade. Новые масштабные прогоны оценить отдельно.",
+      "scope": "Один ограниченный проход по текущему main и существующим evidence/CI; без изменений продукта, новых нагрузочных серий, изображений, внешних исследований и запуска исполнителей. Сопоставить evidence с50 критериями, выделить критические пробелы и учесть старые открытые PR без их автоматического принятия.",
       "acceptance_checks": [
-        "50 строк с критериями, grade или unverified, evidence и SHA",
-        "Отдельные historical/current состояния",
-        "Три кандидата с delta, зависимостями, стоимостью и проверкой"
+        "Ровно50 уникальных criterion_id, весов в сумме1000; grade только при достаточном evidence, иначе unverified; для каждого источник/SHA/метод/ограничения.",
+        "Подтверждённые баллы и непроверенная доля показаны раздельно; историческая оценка не перенесена.",
+        "Три следующие задачи сопоставлены по цели, риску потери данных, зависимостям, ожидаемому эффекту и затратам; неизвестные delta не выдуманы.",
+        "Отдельно показано, какие выводы нельзя сделать по имеющимся тестам; проверяющий может воспроизвести ссылки на evidence."
       ],
-      "evidence_path": "agent-work/evidence/baseline-2026-10-22.md",
+      "evidence_path": "agent-work/evidence/baseline-f89530a.md",
       "budget": {
         "status": "requires_approval",
-        "limit": null
+        "limit": null,
+        "proposed_scope_cap": "Один проход по имеющимся evidence; без новых массовых прогонов. Стоимость: средняя, уверенность низкая; допустимость по лимитам пока неизвестна."
       },
       "stop_conditions": [
-        "нет утверждения",
-        "нет измеренного бюджета",
-        "исчерпан согласованный бюджет"
+        "нет согласования задачи или проверяемого бюджета — не начинать",
+        "baseline изменился — зафиксировать и пересогласовать затронутый scope",
+        "исчерпан согласованный бюджет или требуется новый тяжёлый прогон — сохранить частичный результат и остановиться"
       ],
       "expected_output": [
         "agent-work/score/current-score.json",
+        "agent-work/evidence/baseline-f89530a.md",
         "agent-work/backlog.json"
       ],
       "approval_ref": null,
-      "rollback": "Задача только проверяет и добавляет evidence, не изменяет продукт."
+      "rollback": "Только операционные записи; при ошибке исправить отдельным коммитом, сохранив прежнюю историю."
     }
   ],
   "decisions_needed": [
-    "Дать исходные показания/окна usage и бюджет первого аудита",
-    "Отдельное разрешение на merge конкретного результата PR470; подтверждение бюджета и scope baseline."
+    "Утвердить ограниченный scope HX-STR-001: baseline по50 критериям на существующих evidence, без доработок продукта и массовых прогонов.",
+    "Определить проверяемый бюджет задачи и резерв в пределах общего потолка50%; пока данные недоступны, исполнение blocked_budget."
   ],
   "deferred_candidates": [
     {
-      "task": "Единый RNG и состояние сохранения",
-      "reason": "Нужны baseline, scope и бюджет."
+      "task_id": "HX-BL-003",
+      "task": "Оптимизация производительности",
+      "reason": "Один из ближайших кандидатов, но свежих замеров/локализованного узкого места нет; перед оптимизацией нужны baseline и согласованный профиль."
     },
     {
-      "task": "Связанные истории регионов",
-      "reason": "Сначала проверить зависимости сохранения и редактирования; допустим отдельный малый прототип."
+      "task_id": "HX-BL-040",
+      "task": "Связанные истории и слухи",
+      "reason": "Сильный вклад в игровой результат; перед реализацией нужно проверить зависимости сохранения/редактирования, иначе дорого переделывать."
+    },
+    {
+      "task": "Маркетинговый эксперимент «регион → первая экспедиция»",
+      "reason": "Полезен для ранних пользователей, но сначала нужно подтвердить пригодность сценария. Затем отдельный краткий бриф: аудитория, материал, канал, CTA, измерение; публикация отдельно."
     }
   ],
   "blockers": [
-    "blocked_budget"
+    "blocked_budget",
+    "task_scope_approval_required"
   ],
   "result_refs": [
-    "docs/strategy/vision.md",
-    "docs/strategy/score-model.md",
-    "docs/strategy/source-audit.md"
+    "https://github.com/YuriyEmelyanov/Hexcrawl/pull/470",
+    "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/39762899075",
+    "https://github.com/YuriyEmelyanov/Hexcrawl/compare/d3c146c3c048160fa83b57dad6824a8f8faf3bca...f89530abe1e237493dddb533502bb772ae1ab4e5"
   ],
-  "plan_id": "2026-10-22:d3c146c3c048160fa83b57dad6824a8f8faf3bca",
-  "plan_revision": 4
+  "plan_id": "2026-10-22:f89530abe1e237493dddb533502bb772ae1ab4e5",
+  "plan_revision": 5,
+  "status": "blocked_budget",
+  "planning_for": "2026-10-23",
+  "reflection": {
+    "observation": "Предыдущий план запрашивал уже исполненный merge и содержал старый baseline/расписание; latest и approvals были свежее.",
+    "adjustment": "Каждый план согласовывать с фактическим main, approvals и решениями владельца; повторно не запрашивать закрытые решения.",
+    "cost_forecast_result": "Данных о фактических затратах и завершённом baseline нет; точность оценок пока не измерена."
+  }
 }
