@@ -126,7 +126,7 @@ test('incoming river can finish in another river without changing either old cha
   const i=corners.findIndex((v,j)=>ac.has(v.key)&&!ac.has(corners[(j+1)%6].key));
   const path=[corners[i],corners[(i+1)%6],corners[(i+2)%6]];
   const other={id:2,regionId:2,vertexPath:path,sectors:g.createInitialRiverSectors(2,path,1,{},2)};
-  const oldRegion={...region,id:2,hexes:[otherHex]};
+  const oldRegion={...region,id:2,hexes:[otherHex],centerHex:otherHex,anchorHex:otherHex};
   const added={...region,id:3,hexes:[anchor]};
   const result=g.completeRegionRiverEnds([river,other],[river,other],added,[region,oldRegion,added],[],terrain);
   assert.equal(result.success,true,result.reason);
@@ -142,7 +142,7 @@ test('RIV-015/017 real Mythic tract joins compatible incoming and outgoing river
   const i=corners.findIndex((v,j)=>ac.has(v.key)&&!ac.has(corners[(j+1)%6].key));
   const path=[corners[i],corners[(i+1)%6],corners[(i+2)%6]];
   const other={id:2,regionId:2,vertexPath:path,sectors:g.createInitialRiverSectors(2,path,3,{},2)};
-  const oldRegion={...region,id:2,hexes:[otherHex]};
+  const oldRegion={...region,id:2,hexes:[otherHex],centerHex:otherHex,anchorHex:otherHex};
   const land=newHexes.filter(h=>h.q!==otherHex.q||h.r!==otherHex.r);
   h.render().restoreSnapshot({regions:[region,oldRegion],rivers:[river,other],roads:[],crossings:[],
     candidateHexes:g.getCandidateHexes([...region.hexes,otherHex],new Set()),hexTerrainByKey:new Map(),

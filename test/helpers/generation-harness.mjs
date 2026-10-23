@@ -19,7 +19,10 @@ const instrumented = prefix + `return {
   regions, rivers, roads, candidateHexes, hexTerrainByKey, history, toponyms, toponymSeed, setToponyms,
   addFallbackTractToMap, safelyAddRegionToMap, createSaveData, restoreSnapshot, deleteLastRegion,
   kingdoms, obstacles, generationMode, setGenerationMode, kingdomJob, startKingdom, advanceKingdom,
-  generationError, pendingRegen, regenerateLastRegion, finishPendingRegeneration
+  generationError, pendingRegen, regenerateLastRegion, finishPendingRegeneration,
+  handleImportJson, resetMap, undoMap, redoMap, undoHistory, redoHistory, captureDocument, selectedHex, setSelectedHex,
+  setSelectedHexBiomeOverride, resetSelectedHexBiomeOverride, setSelectedPoiKind, setSelectedCentralPoiKind,
+  setSelectedWaterPoiKind, deleteSelectedWaterPoi, deleteSelectedPoi, isImporting
 };` + source.slice(lastReturn.end) + `
 export const testGeometry = { generateConnectedRegionFromAnchorImpl, generateFallbackTractFromAnchor, findFillableEnclosedEmptyAreas, getNewRiverLakeReentryViolation, getHexCornerPoints, getHexNeighbors, hexKey, buildRiverGraphForRegion,
   findRiverEndpointsTouchingRegion, getCandidateHexes, generateRiverForRegion, assertHexcrawlSaveData,
@@ -42,7 +45,8 @@ export function createGenerationHarness(seed = 1, search = '') {
       if (!(index in state)) state[index] = typeof initial === 'function' ? initial() : initial;
       return [state[index], value => { state[index] = typeof value === 'function' ? value(state[index]) : value; }];
     },
-    useRef: current => ({ current }), useMemo: fn => fn(), useEffect() {}
+    useRef(current) { const index=cursor++; if(!(index in state)) state[index]={current}; return state[index]; },
+    useMemo: fn => fn(), useEffect() {}
   };
   const logs = [];
   const seededMath = Object.create(Math);
@@ -73,6 +77,7 @@ export function createGenerationHarness(seed = 1, search = '') {
   return {
     render() { cursor = 0; return module.exports.App(); },
     geometry: module.exports.testGeometry, logs,
+    setWindow(value) { context.window=value; },
     injectFunction(name, replacement) {
       const original = vm.runInContext(name, context);
       context.__replacement = replacement;
