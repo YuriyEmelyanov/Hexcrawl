@@ -1,0 +1,306 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-030",
+  "spec_version": "1.0",
+  "role": "reviewer",
+  "run_id": "2026-10-25:reviewer:HX-BL-030:0058",
+  "checked_at": "2026-10-24T22:03:11Z",
+  "repository": "YuriyEmelyanov/Hexcrawl",
+  "pull_request": 472,
+  "base_sha": "6aaefa8896e7aac163cfcd5c2ca896ac60fc54d0",
+  "head_sha": "ffb5e85311420b14fe509819ec26b420606ce0dd",
+  "verdict": "changes_requested",
+  "release_ready": false,
+  "summary": "Two independent contract failures reproduced: stale classic callback corrupts undo semantics; non-auto classic options advance Mythic regenerate checkpoint RNG.",
+  "findings": [
+    {
+      "id": "R1",
+      "priority": "P2",
+      "title": "Reject stale classic generation callbacks before drawing RNG or capturing a second transaction",
+      "path": "src/App.tsx",
+      "line": 13024,
+      "related_lines": [
+        12743,
+        12817,
+        13027
+      ],
+      "contract": [
+        "TX-06",
+        "AC-09"
+      ],
+      "method": "Independent real App handler harness with React hook storage substituted; no algorithm or production RNG replacement.",
+      "steps": [
+        "Create seed 0 classic world; choose locality.",
+        "Capture generateAt from one render. Invoke at (0,0); render committed result.",
+        "Invoke the same captured callback at (0,0) again; render and undo."
+      ],
+      "expected": "Second callback is stale and makes no change to document, RNG, or history.",
+      "actual": "First: 1 region/1 undo, streams geography=872447858 poi=2590494572. Duplicate: 1 region/2 undo, streams geography=2752802268 poi=2526553375. Undo duplicate: 0 regions while retaining RNG after first action.",
+      "impact": "Violates stale-callback contract and produces an undo transaction that does not restore the first committed map. The failure is proven at the production handler boundary; ordinary physical mouse double-click reachability was not independently reproduced in a local browser.",
+      "requested_change": "Validate action/document freshness from authoritative refs before any seed/options draw and commit; add regression covering repeated captured classic callbacks and exact undo contents."
+    },
+    {
+      "id": "R2",
+      "priority": "P2",
+      "title": "Preserve pre-option RNG in Mythic regeneration checkpoint",
+      "path": "src/App.tsx",
+      "line": 13097,
+      "related_lines": [
+        12870,
+        12920,
+        12931,
+        13110
+      ],
+      "contract": [
+        "TX-05",
+        "TX-04",
+        "AC-04"
+      ],
+      "method": "Independent real App handler sequence with product mulberry32 and complete multi-step kingdom generation.",
+      "steps": [
+        "Seed 0; choose locality in classic controls, then switch to Mythic.",
+        "Generate one complete kingdom. Its current geography is 1193655228.",
+        "Regenerate last kingdom to completion; inspect its generation checkpoint.",
+        "Delete last kingdom and inspect RNG."
+      ],
+      "expected": "Regenerate checkpoint contains restored base world and RNG at the start of regeneration: geography=1193655228, poi=1266212832.",
+      "actual": "buildGenerationOptions consumes hidden classic locality draw first, moving geography to 3025221041. startKingdom captures this advanced RNG; final checkpoint and delete-last both restore geography=3025221041 instead of 1193655228.",
+      "impact": "The new Mythic checkpoint does not represent the RNG start of regenerate required by TX-05. Existing tests use auto size, so option preparation spends no draw and misses this case.",
+      "requested_change": "Carry the original regeneration-start RNG into the base-map checkpoint, keeping full failure backup separate; avoid irrelevant hidden classic option draws for Mythic if compatible with the contract. Add non-auto classic-control→Mythic regenerate/delete tests."
+    }
+  ],
+  "checks": [
+    {
+      "command": "npm ci && npm run check",
+      "node": "v24.22.1",
+      "status": "passed",
+      "tests": 211,
+      "passed": 211,
+      "failed": 0,
+      "evidence": "agent-work/evidence/review-HX-BL-030-ffb5e85/hx-review-check.log"
+    },
+    {
+      "command": "Independent Python uint32 vector and fixture manifest SHA256 validation",
+      "status": "passed",
+      "draws": 60,
+      "fixtures": 11
+    },
+    {
+      "command": "node ../hx-review-repro.mjs",
+      "status": "passed_as_negative_regression",
+      "expected_failures_confirmed": [
+        "R1",
+        "R2"
+      ],
+      "evidence": "agent-work/evidence/review-HX-BL-030-ffb5e85/hx-review-repro-output.json"
+    },
+    {
+      "command": "npm run test:browser",
+      "status": "blocked",
+      "reason": "Local Chromium executable absent. Independent npx playwright install chromium attempt failed: downloaded ZIP truncated/invalid.",
+      "evidence": [
+        "agent-work/evidence/review-HX-BL-030-ffb5e85/hx-review-local-browser.log",
+        "agent-work/evidence/review-HX-BL-030-ffb5e85/hx-review-browser-install.log"
+      ]
+    }
+  ],
+  "ci": {
+    "run_id": 40117916104,
+    "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40117916104",
+    "status": "success",
+    "checkout_sha": "7e52db5fe82e42e18f3d3de6b5c428bb764c2be3",
+    "checkout_tree": "7d902225c0e911d56434d553f29444026c92052e",
+    "head_tree": "7d902225c0e911d56434d553f29444026c92052e",
+    "tree_match_method": "Fetched refs/pull/472/merge and independently compared git rev-parse HEAD^{tree} origin/pr472-merge^{tree}; full checkout/job logs inspected.",
+    "jobs": [
+      {
+        "id": 120943005151,
+        "name": "check",
+        "status": "success",
+        "evidence": "agent-work/evidence/review-HX-BL-030-ffb5e85/hx-review-ci-120943005151.log"
+      },
+      {
+        "id": 120943005106,
+        "name": "browser",
+        "status": "success",
+        "evidence": "agent-work/evidence/review-HX-BL-030-ffb5e85/hx-review-ci-120943005106.log"
+      },
+      {
+        "id": 120943004932,
+        "name": "world-random",
+        "status": "success",
+        "evidence": "agent-work/evidence/review-HX-BL-030-ffb5e85/hx-review-ci-120943004932.log"
+      }
+    ],
+    "ui_profiles": {
+      "seeds": [
+        0,
+        1,
+        123456789,
+        4294967295
+      ],
+      "modes": [
+        "classic",
+        "mythic"
+      ],
+      "assertions": "Fresh first unit; full JSON continuation after save/load; undo-repeat; future RNG invalid import; runtime unexpected Math.random guard."
+    }
+  },
+  "acceptance_assessment": {
+    "AC-01": "pass: source/module tests plus independently computed 60 known vector draws and existing independent-context continuation coverage.",
+    "AC-02": "partial: CI verifies all eight profiles and three units, but fresh-context equality is asserted on first unit; remaining full equality is the continuation scenario.",
+    "AC-03": "pass_with_local_browser_limitation: CI full UI continuation on eight profiles, exact tree confirmed; local handler continuation rerun in 211-test check.",
+    "AC-04": "fail: R2; ordinary undo/regenerate tests otherwise green, all full spec combinations not proven.",
+    "AC-05": "partial: unit rollback, failed regeneration, sea recovery, Mythic late-error tests green; complete new failure matrix not independently established.",
+    "AC-06": "partial: source separation and runtime fallback guards pass; complete styles/language/navigation/export/rename→next-world production comparison not present in new RNG acceptance.",
+    "AC-07": "partial: v2 supported corpus browser roundtrip/continuation green; RNG-v3 manifest hashes independently checked, but new test imports only import-v2 manifest, not full rng-v3 corpus action matrix in both modes.",
+    "AC-08": "partial: structural validator and existing negative/redo tests green; complete new malformed RNG matrix not exercised at production UI.",
+    "AC-09": "fail: R1; delayed import and pendingRegen/kingdom dedup coverage passes ordinary cases.",
+    "AC-10": "partial: detached logger state and source/action fields inspected; complete initial-JSON+recorded-action replay matrix not independently established.",
+    "AC-11": "partial: local Node24 check 211/211 and CI browser/RNG green on exact tree; full newly specified acceptance not implemented/proven."
+  },
+  "score_assessment": {
+    "model_version": "1.1",
+    "source": "agent-operations@e20d7eff50f1535f635d5d0f39d12d4c0f14c008:agent-work/score/current-score.json",
+    "current_total_points": 186.25,
+    "registry_changed": false,
+    "provisional_delta_points": 7.5,
+    "provisional_total_if_later_accepted_and_released": 193.75,
+    "assessments": [
+      {
+        "criterion_id": "S02-C01",
+        "before": {
+          "grade": "G0",
+          "points": 0
+        },
+        "after": {
+          "grade": "G1",
+          "points": 7.5
+        },
+        "delta_points": 7.5,
+        "status": "provisional_prototype_not_releasable",
+        "assessed_sha": "ffb5e85311420b14fe509819ec26b420606ce0dd",
+        "model_version": "1.1",
+        "method": "Exact-head source inspection, independently rerun Node24 check, independent handler regressions, CI full-log review on identical tree.",
+        "evidence": [
+          "agent-work/evidence/review-HX-BL-030-ffb5e85/hx-review-check.log",
+          "agent-work/evidence/review-HX-BL-030-ffb5e85/hx-review-repro-output.json",
+          "agent-work/evidence/review-HX-BL-030-ffb5e85/hx-review-ci-120943004932.log",
+          "agent-work/evidence/review-HX-BL-030-ffb5e85/hx-review-ci-120943005106.log"
+        ],
+        "limitations": "G1 is supported by isolated functioning master seed/independent streams/continuation in eight UI profiles, despite R1/R2. This is a provisional code assessment, not task acceptance or score registry update. Protected local reroll and comparison absent; no basis for G4 or user-confirmed G3."
+      },
+      {
+        "criterion_id": "S02-C03",
+        "before": {
+          "grade": "G1",
+          "points": 5
+        },
+        "after": {
+          "grade": "G1",
+          "points": 5
+        },
+        "delta_points": 0,
+        "status": "no_new_credit_partial_regression_evidence",
+        "assessed_sha": "ffb5e85311420b14fe509819ec26b420606ce0dd",
+        "model_version": "1.1",
+        "method": "Exact-head source inspection, independently rerun Node24 check, independent handler regressions, CI full-log review on identical tree.",
+        "evidence": [
+          "agent-work/evidence/review-HX-BL-030-ffb5e85/hx-review-check.log",
+          "agent-work/evidence/review-HX-BL-030-ffb5e85/hx-review-repro-output.json",
+          "agent-work/evidence/review-HX-BL-030-ffb5e85/hx-review-ci-120943004932.log",
+          "agent-work/evidence/review-HX-BL-030-ffb5e85/hx-review-ci-120943005106.log"
+        ],
+        "limitations": "Before/after are unchanged registry values, not a new claim that all regression gates pass. R1/R2 block package release; complete new acceptance is not proven. No double-counting migration/undo/export benefits."
+      },
+      {
+        "criterion_id": "S03-C05",
+        "before": {
+          "grade": "G2",
+          "points": 10
+        },
+        "after": {
+          "grade": "G2",
+          "points": 10
+        },
+        "delta_points": 0,
+        "status": "impacted_blocked_no_new_credit",
+        "assessed_sha": "ffb5e85311420b14fe509819ec26b420606ce0dd",
+        "model_version": "1.1",
+        "method": "Exact-head source inspection, independently rerun Node24 check, independent handler regressions, CI full-log review on identical tree.",
+        "evidence": [
+          "agent-work/evidence/review-HX-BL-030-ffb5e85/hx-review-check.log",
+          "agent-work/evidence/review-HX-BL-030-ffb5e85/hx-review-repro-output.json",
+          "agent-work/evidence/review-HX-BL-030-ffb5e85/hx-review-ci-120943004932.log",
+          "agent-work/evidence/review-HX-BL-030-ffb5e85/hx-review-ci-120943005106.log"
+        ],
+        "limitations": "Before/after are unchanged registry values, not a new claim that all regression gates pass. R1/R2 block package release; complete new acceptance is not proven. No double-counting migration/undo/export benefits."
+      },
+      {
+        "criterion_id": "S04-C04",
+        "before": {
+          "grade": "G2",
+          "points": 7.5
+        },
+        "after": {
+          "grade": "G2",
+          "points": 7.5
+        },
+        "delta_points": 0,
+        "status": "no_new_credit_partial_regression_evidence",
+        "assessed_sha": "ffb5e85311420b14fe509819ec26b420606ce0dd",
+        "model_version": "1.1",
+        "method": "Exact-head source inspection, independently rerun Node24 check, independent handler regressions, CI full-log review on identical tree.",
+        "evidence": [
+          "agent-work/evidence/review-HX-BL-030-ffb5e85/hx-review-check.log",
+          "agent-work/evidence/review-HX-BL-030-ffb5e85/hx-review-repro-output.json",
+          "agent-work/evidence/review-HX-BL-030-ffb5e85/hx-review-ci-120943004932.log",
+          "agent-work/evidence/review-HX-BL-030-ffb5e85/hx-review-ci-120943005106.log"
+        ],
+        "limitations": "Before/after are unchanged registry values, not a new claim that all regression gates pass. R1/R2 block package release; complete new acceptance is not proven. No double-counting migration/undo/export benefits."
+      },
+      {
+        "criterion_id": "S09-C04",
+        "before": {
+          "grade": "G2",
+          "points": 5
+        },
+        "after": {
+          "grade": "G2",
+          "points": 5
+        },
+        "delta_points": 0,
+        "status": "impacted_blocked_no_new_credit",
+        "assessed_sha": "ffb5e85311420b14fe509819ec26b420606ce0dd",
+        "model_version": "1.1",
+        "method": "Exact-head source inspection, independently rerun Node24 check, independent handler regressions, CI full-log review on identical tree.",
+        "evidence": [
+          "agent-work/evidence/review-HX-BL-030-ffb5e85/hx-review-check.log",
+          "agent-work/evidence/review-HX-BL-030-ffb5e85/hx-review-repro-output.json",
+          "agent-work/evidence/review-HX-BL-030-ffb5e85/hx-review-ci-120943004932.log",
+          "agent-work/evidence/review-HX-BL-030-ffb5e85/hx-review-ci-120943005106.log"
+        ],
+        "limitations": "Before/after are unchanged registry values, not a new claim that all regression gates pass. R1/R2 block package release; complete new acceptance is not proven. No double-counting migration/undo/export benefits."
+      }
+    ]
+  },
+  "limitations": [
+    "Review did not mutate product code, merge, deploy, or shared operations state.",
+    "Local browser execution unavailable; successful CI logs are independently inspected evidence on an identical Git tree, not a local browser rerun.",
+    "R1 is reproducible at production-handler boundary with hook harness; physical UI double-click reachability unverified.",
+    "Finite corpus/seeds do not establish universal correctness, 10000/100000 maps, or comparative superiority.",
+    "Complete AC coverage has explicit partial/fail statuses; green CI alone is not spec acceptance."
+  ],
+  "status": "changes_requested",
+  "independent_agent": true,
+  "independent_agent_name": "/root/independent_review",
+  "claim_commit": "47f998b7a8133a2937a624cdfff2fc658effaaac",
+  "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/472#pullrequestreview-5640218508",
+  "evidence_ref": "agent-work/evidence/review-HX-BL-030-ffb5e85/hx-review-evidence.md",
+  "next_role": "developer",
+  "next_step": "Исправить R1/R2 и закрыть partial acceptance по spec1.0; npm run check и оба browser набора на новом SHA, затем независимая проверка.",
+  "claim_released": true,
+  "score_changed": false,
+  "main_changed": false,
+  "published": false
+}
