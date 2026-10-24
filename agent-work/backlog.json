@@ -805,7 +805,7 @@
       "task_id": "HX-NEXT-001",
       "priority": 1,
       "title": "Безопасные изменения карты: атомарный импорт и отмена ручных правок",
-      "status": "review_ready",
+      "status": "changes_requested",
       "criterion_ids": [
         "S09-C04",
         "S03-C05"
@@ -840,18 +840,8 @@
       "spec_version": "1.0",
       "spec_status": "ready_for_development",
       "execution_allowed": true,
-      "owner_role": "reviewer",
-      "claim": {
-        "run_id": "2026-10-24:reviewer:HX-NEXT-001:manual",
-        "role": "reviewer",
-        "task_id": "HX-NEXT-001",
-        "started_at": "2026-10-24T12:34:36.311Z",
-        "lease_expires_at": "2026-10-24T14:34:36.311Z",
-        "branch": "agent/hx-next-001-safe-import-history",
-        "base_sha": "f89530abe1e237493dddb533502bb772ae1ab4e5",
-        "head_sha": "459a813168bba07d6196a279fbc7e807127f6a6c",
-        "last_checkpoint": "independent_review_started"
-      },
+      "owner_role": "developer",
+      "claim": null,
       "branch": "agent/hx-next-001-safe-import-history",
       "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/471",
       "head_sha": "459a813168bba07d6196a279fbc7e807127f6a6c",
@@ -860,9 +850,9 @@
         "status": "not_requested",
         "approved_sha": null
       },
-      "next_step": "Проверяющий: независимо проверить SHA 459a813168bba07d6196a279fbc7e807127f6a6c по spec 1.0 и рискам регрессий; сохранить evidence. Любое изменение SHA требует новой проверки. Merge/release не выполнять без отдельного решения владельца.",
-      "result_ref": "agent-work/results/2026-10-24-developer-HX-NEXT-001.json",
-      "evidence_ref": "agent-work/evidence/HX-NEXT-001-developer-459a813.md",
+      "next_step": "Программист: устранить F1 (исчерпание counter/entity IDs), добавить regression, выполнить Node24 check/browser и передать новый SHA на независимое review; merge/release запрещены.",
+      "result_ref": "agent-work/results/2026-10-24-reviewer-HX-NEXT-001.json",
+      "evidence_ref": "agent-work/evidence/HX-NEXT-001-reviewer-459a813.md",
       "developer_result": {
         "completed_at": "2026-10-24T07:35:00Z",
         "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40074304045",
@@ -877,6 +867,22 @@
           "coverage": "full suite; corpus round-trip/continuation, invalid/preparation/read failures, serialized import, all existing manual edit families, 100 mixed UI undo/redo operations, classic/Mythic generation checkpoints, RU/EN"
         },
         "release_status": "not_approved"
+      },
+      "reviewer_result": {
+        "status": "changes_requested",
+        "decision": "return_to_developer",
+        "head_sha": "459a813168bba07d6196a279fbc7e807127f6a6c",
+        "spec_version": "1.0",
+        "finding_ids": [
+          "F1"
+        ],
+        "checks": {
+          "node_check": "pass_189",
+          "extra_negative_import_cases": 42,
+          "browser_repeat": "blocked_environment",
+          "ci_browser": "pass_same_tree"
+        },
+        "score_changed": false
       }
     }
   ],
