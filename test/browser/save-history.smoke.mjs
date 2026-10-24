@@ -70,6 +70,8 @@ try {
    await addRegion();await button('Отменить').click();assert.deepEqual(await snapshot(),saved,entry.path+' undo continuation');
  }
  // F1: exhausted imported counters/IDs must not commit an invalid generation.
+ // Explicit category/anchor reproduces the allocation under the saved product RNG.
+ await page.locator('.gen-params select').nth(0).selectOption('locality');
  for(const family of ['roadCounter','regionId']) {
    const data=family==='regionId'?structuredClone(fixture):JSON.parse(await fs.readFile(new URL('../fixtures/import-v2/baseline-classic.json',import.meta.url)));
    if(family==='regionId')data.map.regions[0].id=Number.MAX_SAFE_INTEGER;
@@ -78,13 +80,14 @@ try {
    await biome('open_hills');const edited=await snapshot();await button('Отменить').click();
    const before=await snapshot();
    await page.evaluate(()=>{let seed=42;Math.random=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};});
-   await page.locator('polygon.hex.candidate').first().dispatchEvent('click');
+   await (family==='roadCounter'?page.locator('polygon.hex.candidate[data-hex-key="2,0"]'):page.locator('polygon.hex.candidate').first()).dispatchEvent('click');
    await page.getByRole('alert').waitFor({state:'visible'});
    assert.deepEqual(await snapshot(),before,family+' rollback');
    assert.equal(await button('Повторить').isEnabled(),true,family+' preserves redo');
    await button('Повторить').click();assert.deepEqual(await snapshot(),edited,family+' exact redo');
    await button('Отменить').click();assert.deepEqual(await snapshot(),before,family+' exact undo');
  }
+ await page.locator('.gen-params select').nth(0).selectOption('auto');
  await load(fixture);assert.equal(await button('Удалить последний регион').isDisabled(),true);
  await select('1,0');await transaction(()=>biome('open_hills'));await transaction(()=>button('Сбросить биом гекса').click());
  await transaction(()=>poi('ruins'));await transaction(()=>poi('lair'));await transaction(()=>button('Удалить точку интереса').click());
