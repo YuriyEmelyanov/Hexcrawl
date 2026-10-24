@@ -588,21 +588,21 @@
       "task_id": "HX-BL-030",
       "title": "Единый RNG, состояние и воспроизводимое продолжение",
       "criterion_id": "S02-C01",
-      "status": "proposed",
+      "status": "approved",
       "potential_delta": 7.5,
-      "approval_ref": null,
+      "approval_ref": "owner-approval-2026-10-24-HX-BL-030",
       "source": {
         "document": "previous-backlog",
         "tab": "t.5rtd5i1jaoe9"
       },
       "dependencies": [
-        "owner_scope_approval"
+        "business_analyst_specification"
       ],
       "baseline_recommendation": {
         "task_id": "HX-BL-030",
         "priority": 2,
         "title": "Воспроизводимое продолжение: master seed и состояние случайности",
-        "status": "proposed",
+        "status": "approved",
         "criterion_ids": [
           "S02-C01"
         ],
@@ -617,8 +617,7 @@
         "estimated_total_cost": "M–L: случайность распределена между App и modes; границы изменения заранее зафиксировать",
         "reason": "Текущий diagnostic прямо сообщает RNG state=null; тестовый seeded Math не переносится в продукт. Воспроизведение ошибок и продолжение после save/load требуют настоящего RNG.",
         "dependencies": [
-          "owner_scope_approval",
-          "совместимый контракт сохранения из HX-NEXT-001 либо отдельная проверка его сохранности"
+          "business_analyst_specification"
         ],
         "scope": "Ввести master seed и независимые сохраняемые потоки географии/POI; сохранить независимость имён и визуала. Два сценария: последовательное расширение; save/load→следующее действие; дополнительно восстановление RNG при rollback/undo. Совместимость старых файлов задана явно; не обещать восстановить неизвестную старую случайность.",
         "acceptance": [
@@ -634,7 +633,7 @@
       "recommended_priority": 1,
       "last_reviewed_on": "2026-10-24",
       "proposal_ref": "agent-work/proposals/2026-10-24-HX-BL-030.md",
-      "proposal_status": "awaiting_owner_approval",
+      "proposal_status": "approved",
       "proposal_baseline_sha": "6aaefa8896e7aac163cfcd5c2ca896ac60fc54d0",
       "proposal": {
         "problem": "Одна и та же последовательность расширения карты после загрузки или отмены не гарантирует тот же результат: общий master seed и сохраняемое состояние RNG отсутствуют.",
@@ -665,7 +664,7 @@
           "HX-NEXT-001 опубликован на 6aaefa8896e7aac163cfcd5c2ca896ac60fc54d0; score_update completed"
         ],
         "dependencies_remaining": [
-          "Утверждение владельцем задачи и её границ; затем спецификация аналитика"
+          "Спецификация аналитика перед реализацией"
         ],
         "sources": [
           "docs/strategy/vision.md#4-порядок-развития-по-зависимостям",
@@ -674,8 +673,11 @@
           "agent-work/results/2026-10-24-strategist-score-update-HX-NEXT-001.json",
           "https://github.com/YuriyEmelyanov/Hexcrawl/blob/6aaefa8896e7aac163cfcd5c2ca896ac60fc54d0/src/App.tsx"
         ],
-        "approval_ref": null
-      }
+        "approval_ref": "owner-approval-2026-10-24-HX-BL-030"
+      },
+      "approved_on": "2026-10-24",
+      "next_role": "business_analyst",
+      "next_step": "Подготовить спецификацию HX-BL-030 в утверждённых границах; затем реализация и независимая проверка; выпуск отдельно."
     },
     {
       "task_id": "HX-BL-031",
