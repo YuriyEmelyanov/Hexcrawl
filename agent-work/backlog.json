@@ -805,7 +805,7 @@
       "task_id": "HX-NEXT-001",
       "priority": 1,
       "title": "Безопасные изменения карты: атомарный импорт и отмена ручных правок",
-      "status": "in_progress",
+      "status": "review_ready",
       "criterion_ids": [
         "S09-C04",
         "S03-C05"
@@ -840,28 +840,19 @@
       "spec_version": "1.0",
       "spec_status": "ready_for_development",
       "execution_allowed": true,
-      "owner_role": "developer",
-      "claim": {
-        "run_id": "2026-10-24:developer:HX-NEXT-001:F1",
-        "role": "developer",
-        "task_id": "HX-NEXT-001",
-        "started_at": "2026-10-24T13:26:26.756Z",
-        "lease_expires_at": "2026-10-24T15:26:26.756Z",
-        "branch": "agent/hx-next-001-safe-import-history",
-        "base_sha": "459a813168bba07d6196a279fbc7e807127f6a6c",
-        "last_checkpoint": "F1 reproduction and bounded fix"
-      },
+      "owner_role": "reviewer",
+      "claim": null,
       "branch": "agent/hx-next-001-safe-import-history",
       "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/471",
-      "head_sha": "459a813168bba07d6196a279fbc7e807127f6a6c",
+      "head_sha": "50d8b6f2414faa1f204cdd2a7ed936533707592c",
       "checks_status": "passed",
       "release_approval": {
         "status": "not_requested",
         "approved_sha": null
       },
-      "next_step": "Программист: устранить F1 (исчерпание counter/entity IDs), добавить regression, выполнить Node24 check/browser и передать новый SHA на независимое review; merge/release запрещены.",
-      "result_ref": "agent-work/results/2026-10-24-reviewer-HX-NEXT-001.json",
-      "evidence_ref": "agent-work/evidence/HX-NEXT-001-reviewer-459a813.md",
+      "next_step": "Независимый reviewer: повторить F1 и регрессии spec1.0 на head50d8b6f2414faa1f204cdd2a7ed936533707592c; автоматический перенос прежнего verdict запрещён; merge/deploy не разрешены.",
+      "result_ref": "agent-work/results/2026-10-24-developer-HX-NEXT-001-F1.json",
+      "evidence_ref": "agent-work/evidence/HX-NEXT-001-developer-F1-50d8b6f.md",
       "developer_result": {
         "completed_at": "2026-10-24T07:35:00Z",
         "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40074304045",
@@ -892,6 +883,64 @@
           "ci_browser": "pass_same_tree"
         },
         "score_changed": false
+      },
+      "developer_correction": {
+        "schema_version": 1,
+        "run_id": "2026-10-24:developer:HX-NEXT-001:F1",
+        "role": "developer",
+        "task_id": "HX-NEXT-001",
+        "status": "review_ready",
+        "spec_ref": "agent-work/specs/HX-NEXT-001.md",
+        "spec_version": "1.0",
+        "base_sha": "f89530abe1e237493dddb533502bb772ae1ab4e5",
+        "previous_head_sha": "459a813168bba07d6196a279fbc7e807127f6a6c",
+        "head_sha": "50d8b6f2414faa1f204cdd2a7ed936533707592c",
+        "tree_sha": "1b9b9d438edb03ffc86bd65b26804e7439ca437b",
+        "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/471",
+        "addressed_findings": [
+          "F1"
+        ],
+        "evidence_ref": "agent-work/evidence/HX-NEXT-001-developer-F1-50d8b6f.md",
+        "checks": {
+          "node": "24.22.1",
+          "node_check": "pass_195",
+          "typescript": "pass",
+          "build": "pass",
+          "extra_negative_import_cases": 42,
+          "browser_local": "blocked_environment_missing_chromium_1234",
+          "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40099004854",
+          "ci_run_id": 40099004854,
+          "ci_job_id": 120887104458,
+          "ci_merge_sha": "0630deb10839cab859f4a281e73fd6e24587b407",
+          "ci_tree_matches_head": true,
+          "ci": "success",
+          "ci_browser": "pass_full_suite_chromium_151.0.7922.34",
+          "ci_node": "24.21.0"
+        },
+        "limitations": [
+          "Finite regression set does not prove absence of all defects",
+          "Local browser execution blocked; CI browser outcome recorded separately",
+          "Independent review of the new SHA is still required"
+        ],
+        "claim_released": true,
+        "score_changed": false,
+        "main_changed": false,
+        "release_approval": {
+          "status": "not_requested",
+          "approved_sha": null
+        },
+        "next_role": "reviewer",
+        "next_step": "Независимый reviewer: повторить F1 и регрессии spec1.0 на head50d8b6f2414faa1f204cdd2a7ed936533707592c; автоматический перенос прежнего verdict запрещён; merge/deploy не разрешены.",
+        "additional_snapshot_fix": "Prepare Mythic finalCrossings once for map and history; first CI exposed independent random crossing choices",
+        "negative_evidence": [
+          {
+            "run_id": 40098442242,
+            "head_sha": "71b62fcd55db5ee9e305a332e1502008cd58a73f",
+            "status": "failure",
+            "reason": "Mythic regenerate redo snapshot crossings differ from committed map; fixed on final head"
+          }
+        ],
+        "completed_at": "2026-10-24T13:44:37.995Z"
       }
     }
   ],
