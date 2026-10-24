@@ -1,0 +1,187 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-NEXT-001",
+  "role": "reviewer",
+  "run_id": "2026-10-24:reviewer:HX-NEXT-001:score-assessment",
+  "completed_at": "2026-10-24T14:57:53.937368+00:00",
+  "status": "score_assessment_complete",
+  "scope": "Limited independent post-release assessment of S09-C04 and S03-C05 only; not a new full code review or registry application.",
+  "score_assessment": {
+    "model_version": "1.1",
+    "model_path": "docs/strategy/score-model.md",
+    "model_blob_sha": "c05bffac61f425085e6878f7709c25e1dfc2ffb4",
+    "release_sha": "6aaefa8896e7aac163cfcd5c2ca896ac60fc54d0",
+    "reviewed_head_sha": "50d8b6f2414faa1f204cdd2a7ed936533707592c",
+    "tree_sha": "1b9b9d438edb03ffc86bd65b26804e7439ca437b",
+    "release_tree_equals_reviewed_head": true,
+    "spec_version": "1.0",
+    "assessment_method": "Independent fresh-context code/test/evidence review, narrow production-handler repetition, exact Git tree comparison and direct release CI/deploy logs. Forecast not used as proof.",
+    "criteria": [
+      {
+        "criterion_id": "S09-C04",
+        "weight": 10,
+        "before": {
+          "grade": 1,
+          "points": 2.5
+        },
+        "after": {
+          "grade": 2,
+          "points": 5
+        },
+        "delta": 2.5,
+        "status": "confirmed",
+        "evidence_ids": [
+          "E1",
+          "E2",
+          "E3",
+          "E4",
+          "E5"
+        ],
+        "method": "Compare baseline deficiencies with structural validation and fully prepared import transaction; independently repeat malformed/preparation failure preservation, corpus round-trip and safe continuation; inspect real UI release acceptance.",
+        "rationale": "Ordinary supported import errors preserve current document and both stacks, supported v2 data round-trips without layer/name loss within documented normalization, and destructive import/reset are reversible. This exceeds isolated prototype G1 and meets ordinary-scenario G2.",
+        "limitations": [
+          "Finite supported v2 corpus and ordinary scenarios; no exhaustive malformed-input/fuzz proof.",
+          "Local browser not rerun: prior independent reviewer documented missing Chromium/download failure; this assessment directly inspected successful release CI logs on exact released SHA.",
+          "No independent user confirmation sufficient for G3; no comparative evidence for G4.",
+          "Does not assert support for unknown formats or universal absence of data loss."
+        ]
+      },
+      {
+        "criterion_id": "S03-C05",
+        "weight": 20,
+        "before": {
+          "grade": 1,
+          "points": 5
+        },
+        "after": {
+          "grade": 2,
+          "points": 10
+        },
+        "delta": 5,
+        "status": "confirmed",
+        "evidence_ids": [
+          "E1",
+          "E2",
+          "E3",
+          "E4",
+          "E5"
+        ],
+        "method": "Inspect detached exact snapshots, 100-entry stacks, no-op/error semantics and independent generation checkpoints; repeat manual-family/100 mixed handler tests; inspect release UI 100 mixed successful mutations with each undo/redo snapshot and classic/Mythic cases.",
+        "rationale": "Existing manual edit families, import/reset, generation/delete/regenerate are reversible in ordinary tested scenarios, with 100 exact undo/redo steps. Named versions are absent, so full target is incomplete; automated coverage alone does not establish G3 user confirmation.",
+        "limitations": [
+          "Local browser not rerun: prior independent reviewer documented missing Chromium/download failure; this assessment directly inspected successful release CI logs on exact released SHA.",
+          "No independent user confirmation sufficient for G3; no comparative evidence for G4.",
+          "Named map versions and persisted history absent; 100 transactions retained only within current session.",
+          "Large-map snapshot memory, real mobile devices, unknown legacy formats and unrelated criteria not reassessed."
+        ]
+      }
+    ],
+    "confirmed_delta": 7.5,
+    "evidence": [
+      {
+        "id": "E1",
+        "kind": "baseline_registry",
+        "ref": "agent-work/score/current-score.json",
+        "baseline_sha": "f89530abe1e237493dddb533502bb772ae1ab4e5",
+        "model_blob_sha": "c05bffac61f425085e6878f7709c25e1dfc2ffb4"
+      },
+      {
+        "id": "E2",
+        "kind": "source_and_tests",
+        "sha": "6aaefa8896e7aac163cfcd5c2ca896ac60fc54d0",
+        "paths": [
+          "src/saveValidation.ts",
+          "src/App.tsx:12687-12747",
+          "src/App.tsx:13623-13667",
+          "test/saveSafety.test.mjs",
+          "test/mapTransactions.test.mjs",
+          "test/browser/save-history.smoke.mjs",
+          "test/fixtures/import-v2/manifest.json"
+        ]
+      },
+      {
+        "id": "E3",
+        "kind": "independently_repeated_narrow_tests",
+        "command": "node --test test/saveSafety.test.mjs test/mapTransactions.test.mjs",
+        "sha": "50d8b6f2414faa1f204cdd2a7ed936533707592c",
+        "node": "24.22.1",
+        "tests": 25,
+        "passed": 25,
+        "failed": 0,
+        "duration_ms": 10562.049622,
+        "method": "Existing production-handler VM harness, not a browser; existing dependencies reused."
+      },
+      {
+        "id": "E4",
+        "kind": "direct_release_ci_log_review",
+        "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40103159125",
+        "build_job_id": 120899274218,
+        "deploy_job_id": 120900189200,
+        "checkout_sha": "6aaefa8896e7aac163cfcd5c2ca896ac60fc54d0",
+        "node": "24.21.0",
+        "tests": 195,
+        "passed": 195,
+        "failed": 0,
+        "browser": "Chromium 151.0.7922.34",
+        "browser_acceptance_at": "2026-10-24T14:39:17.4975262Z",
+        "deployment_success_at": "2026-10-24T14:39:34.9857890Z",
+        "result": "TypeScript/build and all browser suites succeeded; Pages deploy reports success for exact release SHA."
+      },
+      {
+        "id": "E5",
+        "kind": "prior_independent_review_reused_with_provenance",
+        "ref": "agent-work/evidence/HX-NEXT-001-reviewer-50d8b6f.md",
+        "sha": "50d8b6f2414faa1f204cdd2a7ed936533707592c",
+        "note": "42 negative cases, whole-document Mythic checks and concurrency checks retained as prior evidence, not rerun claims."
+      }
+    ],
+    "limitations": [
+      "Finite supported v2 corpus and ordinary scenarios; no exhaustive malformed-input/fuzz proof.",
+      "Local browser not rerun: prior independent reviewer documented missing Chromium/download failure; this assessment directly inspected successful release CI logs on exact released SHA.",
+      "No independent user confirmation sufficient for G3; no comparative evidence for G4.",
+      "Named map versions and persisted history absent; 100 transactions retained only within current session.",
+      "Large-map snapshot memory, real mobile devices, unknown legacy formats and unrelated criteria not reassessed."
+    ],
+    "no_double_counting": {
+      "verified": true,
+      "reason": "S09-C04 credit uses rejected-import preservation and lossless supported round-trip; S03-C05 uses separate mutation undo/redo and 100-step evidence. Same package is not sole evidence for both; no credit assigned to seed determinism, migrations, named versions, export/interchange or other criteria.",
+      "history_path": "agent-work/score/history.json",
+      "history_exists": false,
+      "duplicate_event_found": false,
+      "deduplication_key_fields": [
+        "task_id",
+        "release_sha",
+        "model_version",
+        "criterion_id"
+      ]
+    },
+    "regressions": {
+      "status": "none_observed_in_bounded_scope",
+      "evidence_ids": [
+        "E3",
+        "E4",
+        "E5"
+      ],
+      "note": "25 narrow tests and exact-release 195-test/full-browser CI pass, including safe-ID continuation and Mythic snapshot regression. No full 50-criterion regression audit claimed."
+    },
+    "registry_validation": {
+      "criterion_count": 50,
+      "unique_criterion_count": 50,
+      "weight_total": 1000,
+      "confirmed_points_before": 178.75,
+      "unverified_weight_before": 70,
+      "coefficients_valid": true,
+      "weights_changed": false,
+      "projected_confirmed_points": 186.25,
+      "projected_unverified_weight": 70,
+      "projection_applied": false
+    }
+  },
+  "evidence_ref": "agent-work/evidence/HX-NEXT-001-score-assessment-6aaefa8.md",
+  "claim_released": true,
+  "score_registry_changed": false,
+  "score_history_changed": false,
+  "score_update_status": "pending_strategist_update",
+  "next_role": "strategist",
+  "next_step": "Verify released SHA/assessment/model and absent deduplication keys; apply +7.5 exactly once to current-score/history and latest in separate strategist stage."
+}
