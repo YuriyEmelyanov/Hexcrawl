@@ -1,4 +1,4 @@
-import { validateSaveStructure, SaveValidationError } from './saveValidation';
+import { validateSaveStructure, SaveValidationError, assertGeneratedIds } from './saveValidation';
 import { installViewportRasterCache } from './rendering/viewportRasterCache';
 import {assignWoodlandStyle,chooseWoodlandStyle,type WoodlandStyle} from './modes/woodlandStyle';
 import {buildNaturalLakes,createLakeGeometryCache} from './rendering/lakeGeometry';
@@ -12739,6 +12739,7 @@ export function App() {
   };
   const recordGenerated = (checkpoint: MapSnapshot, map: MapSnapshot, selection: AxialHex,
     backup?: GenerationBackup, checkpoints = history) => {
+    assertGeneratedIds(map);
     if (kingdomJob && !backup) return; // internal kingdom steps form one transaction at finish
     const before = backup?.document ?? captureDocument();
     recordTransaction(before, { ...captureDocument(), map, selectedHex: selection,
@@ -12839,12 +12840,14 @@ export function App() {
     if (importInFlight.current || kingdomJob) return;
     const backup = captureGenerationBackup();
     try {
+      const id = Math.max(0,...kingdoms.map(k=>k.id))+1;
+      if (!Number.isSafeInteger(id)) throw new SaveValidationError('map.kingdoms','ID overflow');
       const occupied = new Set([...allRegionHexes.map(hexKey), ...hexTerrainByKey.keys()]);
       const origin = findKingdomOrigin(anchor, occupied);
       const area = kingdomKeys(origin);
       setGenerationError(null);
       setDetailedRenderReady(false);
-      setKingdomJob({backup,failureBackup,origin,anchor,id:Math.max(0,...kingdoms.map(k=>k.id))+1,startCount:regions.length,steps:0,phase:area.has(hexKey(anchor))?'build':'connect',first:true});
+      setKingdomJob({backup,failureBackup,origin,anchor,id,startCount:regions.length,steps:0,phase:area.has(hexKey(anchor))?'build':'connect',first:true});
     } catch(error) { reportGenerationFailure(error,anchor,{},failureBackup ?? backup); }
   };
 

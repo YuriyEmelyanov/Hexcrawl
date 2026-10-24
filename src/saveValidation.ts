@@ -29,6 +29,22 @@ function uniqueIds(values: unknown[], p: string) {
   return ids;
 }
 function reference(v: unknown, ids: Set<number>, p: string) { if (!ids.has(integer(v,p))) fail(p,'missing reference'); }
+// Check a generated proposal before any map/history setter, including internal
+// Mythic steps. A safe imported ID can still overflow on the next allocation.
+export function assertGeneratedIds(map: {
+  regions: {id: number}[]; rivers: {id: number}[]; roads: {id: number}[];
+  kingdoms?: {id: number}[]; hexTerrainByKey: Map<string, {lakeId?: number}>;
+  nextLakeId: number; nextRoadId: number;
+}): void {
+  for (const field of ['regions','rivers','roads','kingdoms'] as const) uniqueIds(map[field] ?? [], 'map.'+field);
+  for (const field of ['nextLakeId','nextRoadId'] as const) integer(map[field], 'counters.'+field);
+  // Save import normalizes these two counters to max(existing)+1.
+  for (const road of map.roads) if (road.id === Number.MAX_SAFE_INTEGER) fail('counters.nextRoadId','counter overflow');
+  for (const [key, terrain] of map.hexTerrainByKey) if (terrain.lakeId !== undefined) {
+    integer(terrain.lakeId, 'map.terrainByHexKey.'+key+'.lakeId');
+    if (terrain.lakeId === Number.MAX_SAFE_INTEGER) fail('counters.nextLakeId','counter overflow');
+  }
+}
 export function validateSaveStructure(value: unknown, domain: {
   biome: (v: unknown)=>boolean; poi: (v: unknown)=>boolean; centralPoi: (v: unknown)=>boolean; waterPoi: (v: unknown)=>boolean;
   names: (v: unknown)=>boolean; toponymModel: string; kingdoms: (map: RecordValue)=>void;
