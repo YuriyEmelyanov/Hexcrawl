@@ -19,7 +19,7 @@ try{
  const hexes=[];for(let q=0;q<20;q++)for(let r=0;r<20;r++)hexes.push({q,r});
  save.map.kingdoms=[];save.map.obstacles=[];save.map.rivers=[];save.map.roads=[];save.map.crossings=[];save.map.terrainByHexKey={};save.map.waterPoiByHexKey={};save.map.biomeOverrideByHexKey={};save.map.candidateHexes=[];
  save.map.regions=[{...save.map.regions[0],id:1,hexes,centerHex:{q:10,r:10},anchorHex:{q:10,r:10},biomeId:'plain_deciduous_forest',generationMode:'classic',kingdomId:undefined,suppressCentralPoi:false,centralPoiKind:'capital',pointsOfInterest:[{q:8,r:8}],pointOfInterestKinds:{'8,8':'ruins'}}];
- save.map.regions=Array.from({length:3},(_,i)=>({...save.map.regions[0],id:i+1,hexes:hexes.filter(h=>Math.min(2,Math.floor(h.q/7))===i),centerHex:{q:i*7+3,r:10},anchorHex:{q:i*7+3,r:10},pointsOfInterest:i===0?[{q:8,r:8}]:[],pointOfInterestKinds:i===0?{'8,8':'ruins'}:{}}));
+ save.map.regions=Array.from({length:3},(_,i)=>({...save.map.regions[0],id:i+1,hexes:hexes.filter(h=>Math.min(2,Math.floor(h.q/7))===i),centerHex:{q:i*7+3,r:10},anchorHex:{q:i*7+3,r:10},pointsOfInterest:i===0?[{q:3,r:8}]:[],pointOfInterestKinds:i===0?{'3,8':'ruins'}:{}}));
  for(const h of hexes)if(h.q%4===0)save.map.biomeOverrideByHexKey[`${h.q},${h.r}`]='deciduous_woodland';
  save.ui={...save.ui,generationMode:'classic',mapScale:1.5,isMapRotated:false,selectedHex:null};
  const errors=[];
