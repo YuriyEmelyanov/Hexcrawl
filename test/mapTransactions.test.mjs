@@ -86,3 +86,35 @@ test('pending file read serializes imports and blocks edits, generation and rese
   assert.deepEqual(stable(h.render()),before);finish(JSON.stringify(fixture));await first;
   assert.equal(h.render().isImporting,false);assert.equal(h.render().undoHistory.length,2);
 });
+
+test('all manifest saves round-trip unchanged entities, names and can continue then undo',async()=>{
+  const manifest=JSON.parse(fs.readFileSync(new URL('./fixtures/import-v2/manifest.json',import.meta.url)));
+  const crypto=await import('node:crypto');
+  for(const item of manifest.entries) {
+    const bytes=fs.readFileSync(new URL('../'+item.path,import.meta.url));
+    assert.equal(crypto.createHash('sha256').update(bytes).digest('hex'),item.sha256,item.path);
+    const data=JSON.parse(bytes),{h,alerts}=setup(42);await load(h,data);
+    assert.deepEqual(alerts,[],item.path);
+    const saved=stable(h.render());
+    for(const layer of ['regions','rivers','roads','crossings','terrainByHexKey']) assert.deepEqual(saved.map[layer],data.map[layer],item.path+' '+layer);
+    for(const layer of ['kingdoms','obstacles','waterPoiByHexKey','biomeOverrideByHexKey'])assert.deepEqual(saved.map[layer],data.map[layer]??(layer==='kingdoms'||layer==='obstacles'?[]:{}),item.path+' '+layer);
+    if(data.map.toponyms)for(const [key,name] of Object.entries(data.map.toponyms.names))assert.deepEqual(saved.map.toponyms.names[key],name,item.path+' name '+key);
+    h.geometry.assertHexcrawlSaveData(serial(h.render().createSaveData()));
+    // Reload the normalized export: only savedAt may change.
+    await load(h,saved);assert.deepEqual(stable(h.render()),saved,item.path+' normalized roundtrip');
+    const anchor=h.render().candidateHexes[0]??{q:0,r:0};
+    const result=h.render().safelyAddRegionToMap(anchor,{targetSize:8,coastalPreference:'mainland'});
+    assert.equal(result.success,true,item.path+' continuation '+JSON.stringify(result));
+    h.render().undoMap();assert.deepEqual(stable(h.render()),saved,item.path+' undo continuation');
+  }
+});
+test('no-op and failed imports preserve redo; fresh edit clears it; reset on empty is a no-op',async()=>{
+  const {h}=setup();h.render().resetMap();assert.equal(h.render().undoHistory.length,0);
+  await load(h,fixture);const r=h.render().regions[0];h.render().setSelectedHex(r.centerHex);
+  h.render().setSelectedHexBiomeOverride('open_hills');h.render().setSelectedHexBiomeOverride('open_plains');h.render().undoMap();
+  const stacks=serial([h.render().undoHistory,h.render().redoHistory]);
+  h.render().setSelectedHexBiomeOverride('open_hills');
+  await h.render().handleImportJson({target:{files:[],value:''}});
+  assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks);
+  h.render().setSelectedHexBiomeOverride('semi_desert');assert.equal(h.render().redoHistory.length,0);
+});
