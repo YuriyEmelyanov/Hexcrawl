@@ -1,3 +1,4 @@
+import { generationValidationPath } from './worldRandom.ts';
 // Structural validation only: accepting a save never reroutes its rivers or roads.
 // App supplies its current enums and kingdom contract to avoid a second domain model.
 type RecordValue = Record<string, unknown>;
@@ -50,7 +51,8 @@ export function validateSaveStructure(value: unknown, domain: {
   names: (v: unknown)=>boolean; toponymModel: string; kingdoms: (map: RecordValue)=>void;
 }): void {
   const data=record(value,'$');
-  oneOf(data.schema,['hexcrawl-map'],'schema'); oneOf(data.version,[2],'version');
+  oneOf(data.schema,['hexcrawl-map'],'schema'); oneOf(data.version,[2,3],'version');
+  if (data.version === 3 || data.generation !== undefined) { const path = generationValidationPath(data.generation); if (path) fail(path,'unsupported or invalid RNG state'); }
   const map=record(data.map,'map'), ui=record(data.ui,'ui'), counters=record(data.counters,'counters');
   const regions=array(map.regions,'map.regions'), rivers=array(map.rivers,'map.rivers'), roads=array(map.roads,'map.roads');
   const regionIds=uniqueIds(regions,'map.regions'), riverIds=uniqueIds(rivers,'map.rivers'), roadIds=uniqueIds(roads,'map.roads');

@@ -44,8 +44,9 @@ test('exhausted attempts produce one contextual summary and no debug stream', ()
   assert.equal(event.options.targetSize, 8);
   assert.equal(event.options.coastalPreference, 'mainland');
   assert.equal(JSON.stringify(event.anchorHex), JSON.stringify(anchor));
-  assert.equal(event.random.source, 'Math.random');
-  assert.equal(event.random.state, null);
+  assert.equal(event.random.before.rngVersion, 'mulberry32-v1');
+  assert.ok(event.random.after.streams);
+  assert.notDeepEqual(event.random.before.streams, event.random.after.streams);
   assert.equal(h.render().history.length, 1);
 });
 

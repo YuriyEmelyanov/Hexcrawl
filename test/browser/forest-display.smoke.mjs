@@ -12,6 +12,8 @@ try{
  const page=await browser.newPage({viewport:{width:1440,height:1000}}),errors=[];
  page.on('pageerror',e=>errors.push(e.message));await page.route(/mc\.yandex/,r=>r.abort());
  await page.goto('http://127.0.0.1:4176/');
+  await page.getByRole('textbox',{name:'Seed мира',exact:true}).fill('42');
+  await page.getByRole('textbox',{name:'Seed мира',exact:true}).press('Tab');
  const save=JSON.parse(await fs.readFile(new URL('../fixtures/terrain-display-map.json',import.meta.url),'utf8'));
  const hexes=[];for(let q=-2;q<=2;q++)for(let r=-2;r<=2;r++)if(Math.max(Math.abs(q),Math.abs(r),Math.abs(q+r))<=2)hexes.push({q,r});
  save.map.kingdoms=[];save.map.obstacles=[];save.map.rivers=[];save.map.roads=[];save.map.crossings=[];save.map.waterPoiByHexKey={};save.map.terrainByHexKey={};

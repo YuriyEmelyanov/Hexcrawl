@@ -1,3 +1,4 @@
+import {createGenerationState} from '../../src/worldRandom.ts';
 import {spawn} from 'node:child_process';
 import {chromium} from 'playwright';
 import fs from 'node:fs/promises';
@@ -32,6 +33,8 @@ try {
    };
  });
  await page.goto('http://127.0.0.1:4181/');
+  await page.getByRole('textbox',{name:'Seed мира',exact:true}).fill('42');
+  await page.getByRole('textbox',{name:'Seed мира',exact:true}).press('Tab');
  const button=name=>page.getByRole('button',{name,exact:true});
  async function snapshot(){
    await page.evaluate(()=>window.__exported=null);
@@ -70,7 +73,7 @@ try {
  for(const family of ['roadCounter','regionId']) {
    const data=family==='regionId'?structuredClone(fixture):JSON.parse(await fs.readFile(new URL('../fixtures/import-v2/baseline-classic.json',import.meta.url)));
    if(family==='regionId')data.map.regions[0].id=Number.MAX_SAFE_INTEGER;
-   else data.counters.nextRoadId=Number.MAX_SAFE_INTEGER;
+   else {data.counters.nextRoadId=Number.MAX_SAFE_INTEGER;data.generation=createGenerationState(0);}
    await load(data);await select(`${data.map.regions[0].centerHex.q},${data.map.regions[0].centerHex.r}`);
    await biome('open_hills');const edited=await snapshot();await button('Отменить').click();
    const before=await snapshot();

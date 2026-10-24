@@ -1,0 +1,34 @@
+src/riverWaterfalls.ts:30:  random: () => number = Math.random
+src/App.tsx:1:import { type RandomStreams, type GenerationState, fallbackRandomStreams, poiRandomStreams, createGenerationState, cloneGenerationState, draw, toponymSeedFor, newWorldSeed, isUint32 } from './worldRandom';
+src/App.tsx:1077:  return Math.floor(rng.geography() * (upper - lower + 1)) + lower;
+src/App.tsx:1193:  return values[Math.floor(rng.geography() * values.length)];
+src/App.tsx:1312:  if (typeof crypto !== 'undefined' && typeof crypto.getRandomValues === 'function') {
+src/App.tsx:1313:    return crypto.getRandomValues(new Uint32Array(1))[0];
+src/App.tsx:1331:  return Math.floor(rng.geography() * 100) + 1 <= 20 ? 'settled' : 'wild';
+src/App.tsx:1384:  let roll = rng.geography() * total;
+src/App.tsx:5135:  let roll = rng.geography() * totalWeight;
+src/App.tsx:6169:  return rng.geography() < settledChance ? 'settled' : 'wild';
+src/App.tsx:7872:    if (rng.geography() < lakeChance) selectedLakeKeys.add(key);
+src/App.tsx:7884:    if (rng.geography() < LAKE_EXPANSION_CHANCE) selectedLakeKeys.add(key);
+src/App.tsx:8408:          }, rng.geography)
+src/App.tsx:10043:      const armFullness = (1 + Math.floor(rng.geography() * fullnessRange)) as RiverFullness;
+src/App.tsx:11234:  const [initialGeneration] = useState(() => createGenerationState(newWorldSeed()));
+src/App.tsx:11402:      return availableKeys[Math.floor(rng.geography() * availableKeys.length)] ?? null;
+src/App.tsx:11619:    const targetSize = options.mode === 'mythic' ? Math.min(5, options.targetSize ?? modeRegionSize('mythic', rollTractTargetSize, undefined, rng.geography)) : rollTractTargetSize(rng);
+src/App.tsx:11699:      pointsOfInterest: options.mode === 'mythic' ? initialMythicPoints(regionHexes, null, () => true, rng.poi) : assignPointsOfInterestForTract(regionHexes, rng),
+src/App.tsx:11886:    const autoCoastRoll = rng.geography();
+src/App.tsx:12286:      const preliminaryPointsOfInterest = options.mode === 'mythic' ? initialMythicPoints(regionHexes, preliminaryCenterHex, h => !isLakeHex(h, regionTerrainByHex), rng.poi) : assignPointsOfInterestForRegion(regionHexes, preliminaryCenterHex, regionTerrainByHex, rng);
+src/App.tsx:12896:    const assigned=allocateKingdomPoi(members,area,dry, rng.poi).map(r=>({...r,suppressCentralPoi:!r.isTract&&!r.centralPoiKind}));
+src/App.tsx:12913:    const addedObstacles=createObstacles(job.id,kingdomHexes(job.origin),getHexEdgesAsVertexPairs,h=>heights.get(hexKey(h))??0,h=>!dry(h),riverEdges,roadPairs, rng.geography);
+src/App.tsx:12968:      const targetSize=modeRegionSize('mythic',()=>rollRegionTargetSize(rng),job.first, rng.geography);
+src/App.tsx:13003:    const newGeneration = createGenerationState(newWorldSeed());
+src/riverCrossings.ts:32:  random: () => number = Math.random
+src/modes/regionSize.ts:2:export function modeRegionSize(mode: GenerationMode, classic: () => number, first = false, random = Math.random): number {
+src/modes/obstacles.ts:4:export function createObstacles(kingdomId:number, hexes:Hex[], edges:(h:Hex)=>Edge[], height:(h:Hex)=>number, water:(h:Hex)=>boolean, riverEdges:Set<string>, roadPairs:Set<string>, random:()=>number = Math.random):Obstacle[] {
+src/modes/pointsOfInterest.ts:23:export function initialMythicPoints(hexes:Hex[], center:Hex|null, dry:(h:Hex)=>boolean, random:()=>number = Math.random):Hex[] {
+src/modes/pointsOfInterest.ts:30:export function allocateKingdomPoi<R extends PoiRegion>(input:R[], area:Set<string>, dry:(h:Hex)=>boolean, random:()=>number = Math.random):R[] {
+src/riverRapids.ts:24:  random: () => number = Math.random
+src/worldRandom.ts:10:export const fallbackRandomStreams: RandomStreams = { geography: () => Math.random(), poi: () => Math.random() };
+src/worldRandom.ts:11:export const poiRandomStreams = (rng: RandomStreams): RandomStreams => ({ geography: rng.poi, poi: rng.poi });
+src/worldRandom.ts:27:export function newWorldSeed(): number {
+src/worldRandom.ts:29:  return crypto.getRandomValues(new Uint32Array(1))[0];

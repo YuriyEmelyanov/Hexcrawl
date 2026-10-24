@@ -26,6 +26,8 @@ try{
  async function setup(port){
   const page=await browser.newPage({viewport:{width:1500,height:1000}});page.on('pageerror',e=>errors.push(e.message));page.on('dialog',async d=>{errors.push(d.message());await d.dismiss();});await page.route(/mc\.yandex/,r=>r.abort());
   await page.goto(`http://127.0.0.1:${port}/`);
+  await page.getByRole('textbox',{name:'Seed мира',exact:true}).fill('42');
+  await page.getByRole('textbox',{name:'Seed мира',exact:true}).press('Tab');
   await page.locator('input[type=file]').setInputFiles({name:'navigation.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(save))});
   await page.waitForFunction(()=>document.querySelectorAll('polygon.hex.region,polygon.hex.center').length>=400);
   assert.deepEqual(errors,[], 'Fixture import must succeed before navigation');
