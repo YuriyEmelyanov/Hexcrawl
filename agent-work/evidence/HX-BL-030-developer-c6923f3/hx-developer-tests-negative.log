@@ -1,0 +1,62 @@
+✖ R1 stale classic callbacks cannot draw or append a transaction, before or after a render (198.935935ms)
+✖ R2 Mythic regenerate ignores hidden classic size controls and checkpoints pre-action RNG (2520.549369ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3586.518083
+
+✖ failing tests:
+
+test at test/worldContinuation.test.mjs:79:1
+✖ R1 stale classic callbacks cannot draw or append a transaction, before or after a render (198.935935ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  2 !== 1
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/bb71cea1fbf0/hexcrawl/test/worldContinuation.test.mjs:88:52)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 2,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/worldContinuation.test.mjs:96:1
+✖ R2 Mythic regenerate ignores hidden classic size controls and checkpoints pre-action RNG (2520.549369ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+      generatorVersion: 'regions-2026-10-24-rng.1',
+      masterSeed: 0,
+      rngVersion: 'mulberry32-v1',
+      streams: {
+  +     geography: 3025221041,
+  -     geography: 1193655228,
+        poi: 1266212832
+      }
+    }
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/bb71cea1fbf0/hexcrawl/test/worldContinuation.test.mjs:101:9)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { generatorVersion: 'regions-2026-10-24-rng.1', rngVersion: 'mulberry32-v1', masterSeed: 0, streams: { geography: 3025221041, poi: 1266212832 } },
+    expected: { generatorVersion: 'regions-2026-10-24-rng.1', rngVersion: 'mulberry32-v1', masterSeed: 0, streams: { geography: 1193655228, poi: 1266212832 } },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

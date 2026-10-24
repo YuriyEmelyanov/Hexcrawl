@@ -1,0 +1,134 @@
+{
+  "task": "HX-BL-030",
+  "spec": "1.0",
+  "head": "ffb5e85311420b14fe509819ec26b420606ce0dd",
+  "node": "v24.22.1",
+  "findings": [
+    {
+      "id": "R1",
+      "contract": "TX-06 / AC-09",
+      "first": {
+        "regions": 1,
+        "undo": 1,
+        "redo": 0,
+        "generation": {
+          "generatorVersion": "regions-2026-10-24-rng.1",
+          "rngVersion": "mulberry32-v1",
+          "masterSeed": 0,
+          "streams": {
+            "geography": 872447858,
+            "poi": 2590494572
+          }
+        },
+        "canonical_json_sha256": "cff35d9f8a011ab2d7082975dc274caca9a398cb4fe21fa2980c8425f8a623a1"
+      },
+      "duplicate": {
+        "regions": 1,
+        "undo": 2,
+        "redo": 0,
+        "generation": {
+          "generatorVersion": "regions-2026-10-24-rng.1",
+          "rngVersion": "mulberry32-v1",
+          "masterSeed": 0,
+          "streams": {
+            "geography": 2752802268,
+            "poi": 2526553375
+          }
+        },
+        "canonical_json_sha256": "db270118e44c7a4313d0dc87fa19dfa936ee6bd30dfd0e97180fa39be8529b0f"
+      },
+      "undo": {
+        "regions": 0,
+        "undo": 1,
+        "redo": 1,
+        "generation": {
+          "generatorVersion": "regions-2026-10-24-rng.1",
+          "rngVersion": "mulberry32-v1",
+          "masterSeed": 0,
+          "streams": {
+            "geography": 872447858,
+            "poi": 2590494572
+          }
+        },
+        "canonical_json_sha256": "fbb491aaa60b537d05de7907802d339fef788c4a6a56306ee5d639b779b5992a"
+      },
+      "expected": "stale/repeated callback is rejected without RNG or history mutation",
+      "actual": "same captured callback consumes RNG twice, replaces first map, creates a second transaction whose undo removes first region"
+    },
+    {
+      "id": "R2",
+      "contract": "TX-05, TX-04 / AC-04",
+      "before": {
+        "regions": 26,
+        "undo": 1,
+        "redo": 0,
+        "generation": {
+          "generatorVersion": "regions-2026-10-24-rng.1",
+          "rngVersion": "mulberry32-v1",
+          "masterSeed": 0,
+          "streams": {
+            "geography": 1193655228,
+            "poi": 1266212832
+          }
+        },
+        "canonical_json_sha256": "b5ee6721d1bd0466cd08509136d5fa4856a7e9058a38fb6afd364df6cefd3bac"
+      },
+      "pending": {
+        "regions": 0,
+        "undo": 1,
+        "redo": 0,
+        "generation": {
+          "generatorVersion": "regions-2026-10-24-rng.1",
+          "rngVersion": "mulberry32-v1",
+          "masterSeed": 0,
+          "streams": {
+            "geography": 3025221041,
+            "poi": 1266212832
+          }
+        },
+        "canonical_json_sha256": "dae69ff7c6c20f4729910f2ecf5c3fca9faa901d34f819a9dc6b8c40081885da"
+      },
+      "checkpoint": {
+        "generatorVersion": "regions-2026-10-24-rng.1",
+        "rngVersion": "mulberry32-v1",
+        "masterSeed": 0,
+        "streams": {
+          "geography": 3025221041,
+          "poi": 1266212832
+        }
+      },
+      "after": {
+        "regions": 37,
+        "undo": 2,
+        "redo": 0,
+        "generation": {
+          "generatorVersion": "regions-2026-10-24-rng.1",
+          "rngVersion": "mulberry32-v1",
+          "masterSeed": 0,
+          "streams": {
+            "geography": 2199732368,
+            "poi": 1013778841
+          }
+        },
+        "canonical_json_sha256": "afd15e25d19913468abac98b715b6609c8a6e68bb066b077e15dfb68cdff2764"
+      },
+      "deleted": {
+        "regions": 0,
+        "undo": 3,
+        "redo": 0,
+        "generation": {
+          "generatorVersion": "regions-2026-10-24-rng.1",
+          "rngVersion": "mulberry32-v1",
+          "masterSeed": 0,
+          "streams": {
+            "geography": 3025221041,
+            "poi": 1266212832
+          }
+        },
+        "canonical_json_sha256": "62184b37d06a0addae4113c4d32ba05a48ce960850359b278a3f87ce9a511e41"
+      },
+      "expected": "new regenerate checkpoint stores base map with RNG at start of regenerate (before option preparation)",
+      "actual": "hidden classic locality preparation spends geography before Mythic backup; checkpoint and delete-last restore the advanced state"
+    }
+  ]
+}

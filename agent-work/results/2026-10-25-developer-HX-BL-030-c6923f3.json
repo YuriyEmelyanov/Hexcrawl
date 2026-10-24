@@ -1,0 +1,122 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-030",
+  "spec_version": "1.0",
+  "role": "developer",
+  "run_id": "2026-10-25:developer:HX-BL-030:R1-R2",
+  "date": "2026-10-25",
+  "status": "review_ready",
+  "release_ready": false,
+  "role_selection_reason": "Утверждённая задача имеет R1/R2 проверяющего; перед началом активного claim не было.",
+  "base_sha": "6aaefa8896e7aac163cfcd5c2ca896ac60fc54d0",
+  "previous_head_sha": "ffb5e85311420b14fe509819ec26b420606ce0dd",
+  "head_sha": "c6923f37559a8ce00e0bb995e19c32fb22f3941c",
+  "branch": "agent/HX-BL-030-rng",
+  "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/472",
+  "spec_ref": "agent-work/specs/HX-BL-030.md",
+  "evidence_ref": "agent-work/evidence/HX-BL-030-developer-c6923f3.md",
+  "findings": [
+    {
+      "id": "R1",
+      "status": "addressed_pending_independent_review",
+      "evidence": "Negative regression before App edits; same-batch/stale callbacks preserve full document and stacks, exact undo/redo on final SHA."
+    },
+    {
+      "id": "R2",
+      "status": "addressed_pending_independent_review",
+      "evidence": "Hidden locality->Mythic regeneration checkpoint, delete/undo/redo/repeat and sequential regenerate. Handler and production browser regression."
+    }
+  ],
+  "ci": {
+    "run_id": 40141169603,
+    "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40141169603",
+    "status": "success",
+    "checkout_sha": "6b58e1c41daf9ff06bd30ad5d446247a0db01c96",
+    "head_tree": "4c3c6befc14667addb02b610b345e0127184b43c",
+    "merge_tree_matches_head": true,
+    "node": "24",
+    "chromium": "151.0.7922.34",
+    "tests": 215,
+    "jobs": [
+      {
+        "id": 121013037862,
+        "name": "check",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 121013038021,
+        "name": "world-random",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 121013038090,
+        "name": "browser",
+        "status": "completed",
+        "conclusion": "success"
+      }
+    ]
+  },
+  "local_checks": {
+    "node": "v24.22.1",
+    "npm_run_check": "passed:213 tests + tsc/build before final 2 tests appended",
+    "final_fixture_and_malformed_tests": "passed:2/2",
+    "r1_r2_negative_before": "0/2 pass expected",
+    "world_continuation": "16/16 pass",
+    "browser": "blocked:missing Chromium; both browser suites passed in CI"
+  },
+  "acceptance_status": "R1/R2 corrected with expanded evidence; full spec acceptance is not declared. Remaining partial limits are listed individually in evidence.",
+  "acceptance_limits": [
+    "AC-05: full independent failure matrix still needs assessment",
+    "AC-06: complete visual/navigation/rename->next-world comparison not added",
+    "AC-07: full handler manifest roundtrip/next-action both modes added; two deterministic Mythic rejections recorded, whole v3 UI matrix not added",
+    "AC-08: malformed RNG matrix added at production handler; not all cases duplicated in browser",
+    "AC-09: stale/same-batch callback tested; physical double-click independently unproven",
+    "AC-10: complete JSON+diagnostic-action replay matrix not added"
+  ],
+  "score_evidence": {
+    "model_version": "1.1",
+    "criterion_id": "S02-C01",
+    "before": {
+      "grade": "G0",
+      "points": 0
+    },
+    "expected": {
+      "grade": "G1",
+      "points": 7.5,
+      "delta": 7.5,
+      "status": "unconfirmed_forecast"
+    },
+    "regression_criteria": [
+      "S02-C03",
+      "S03-C05",
+      "S04-C04",
+      "S09-C04"
+    ],
+    "registry_changed": false,
+    "current_total": 186.25,
+    "unverified_weight": 70,
+    "independent_score_assessment_required": true
+  },
+  "next_role": "reviewer",
+  "next_step": "Независимая проверка точного c6923f3, R1/R2 и оставшихся partial AC; новый score_assessment до release handoff.",
+  "release_approval": "not_requested",
+  "owner_decisions_needed": [],
+  "automation_health": {
+    "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-10-24T22:59:31.403Z",
+      "is_enabled": true
+    },
+    "end": {
+      "checked_at": "2026-10-24T23:12:47.728Z",
+      "is_enabled": true
+    },
+    "restored_during_this_run": false,
+    "errors": [],
+    "schedule_unchanged": true
+  },
+  "claim_released": true,
+  "completed_at": "2026-10-24T23:13:19.571Z"
+}
