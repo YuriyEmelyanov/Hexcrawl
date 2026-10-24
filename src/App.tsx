@@ -11324,14 +11324,8 @@ export function App() {
     return map;
   }, [regions]);
 
-  useEffect(() => {
-    // Also covers settlements created, changed or deleted by the POI editor.
-    setToponyms((current) => {
-      const next = synchronizeToponyms(current, getToponymEntities(regions, rivers, hexTerrainByKey), toponymSeed);
-      return Object.keys(next).length === Object.keys(current).length
-        && Object.keys(next).every((key) => next[key] === current[key]) ? current : next;
-    });
-  }, [regions, rivers, hexTerrainByKey, toponymSeed]);
+  // Each mutation prepares names before commit. No post-commit normalizer may
+  // rewrite an imported map or a snapshot restored by undo/redo.
 
   const positionedHexes = useMemo(() => {
     const isStartPromptVisible = allRegionHexes.length === 0 && candidateHexes.length === 0;
@@ -11847,7 +11841,7 @@ export function App() {
       rivers: riversAfterTractGeneration, roads: tractRoadResult.roads, crossings: finalCrossings,
       hexTerrainByKey: finalHexTerrainByKey, waterPoiByKey: finalWaterPoi, toponyms: finalToponyms,
       nextLakeId: finalNextLakeId, nextRoadId: tractRoadResult.nextRoadId }, anchorHex, pendingRegen?.backup);
-    setHistory((current) => [...current, snapshot]);
+    setHistory((current) => [...current, structuredClone(snapshot)]);
     setRegions(finalRegions);
     setCandidateHexes(finalCandidateHexes);
     setRivers(riversAfterTractGeneration);
@@ -12663,7 +12657,7 @@ export function App() {
         rivers: riversWithDeltas, roads: roadResult.roads, crossings: finalCrossings,
         hexTerrainByKey: finalHexTerrainByKey, waterPoiByKey: finalWaterPoi, toponyms: finalToponyms,
         nextLakeId: finalNextLakeId, nextRoadId: roadResult.nextRoadId }, finalCenterHex, pendingRegen?.backup);
-      setHistory((current) => [...current, snapshot]);
+      setHistory((current) => [...current, structuredClone(snapshot)]);
       setRegions(finalRegions);
       setCandidateHexes(finalCandidateHexes);
       setHexTerrainByKey(finalHexTerrainByKey);
@@ -12698,7 +12692,7 @@ export function App() {
     setEditingHexBiomeKey(null); setEditingPoiHexKey(null); setEditingCentralPoiRegionId(null);
   };
   const recordTransaction = (before: DocumentSnapshot, after: DocumentSnapshot) => {
-    const transaction = structuredClone({ before, after });
+    const transaction = { before: copyDocument(before), after: copyDocument(after) };
     setUndoHistory(current => [...current, transaction].slice(-100));
     setRedoHistory([]);
   };
@@ -12710,12 +12704,19 @@ export function App() {
     setToponyms(map.toponyms); setToponymSeed(map.toponymSeed);
     setNextLakeId(map.nextLakeId); setNextRoadId(map.nextRoadId);
   };
+  // Checkpoints are detached once at generation commit and thereafter immutable.
+  // Share those checkpoints between transactions instead of copying the whole
+  // map's generation history for every POI click.
+  const copyDocument = (doc: DocumentSnapshot): DocumentSnapshot => ({
+    ...doc, map: structuredClone(doc.map), selectedHex: doc.selectedHex ? {...doc.selectedHex} : null,
+    generationHistory: [...doc.generationHistory]
+  });
   const applyPreparedDocument = (doc: DocumentSnapshot) => {
     applyExactMap(doc.map); setHistory(doc.generationHistory); setSelectedHex(doc.selectedHex);
     setGenerationMode(doc.generationMode); setIsMapRotated(doc.isMapRotated);
     updateMapScale(doc.mapScale); setPendingRegen(null); closeEditors();
   };
-  const applyDocument = (value: DocumentSnapshot) => applyPreparedDocument(structuredClone(value));
+  const applyDocument = (value: DocumentSnapshot) => applyPreparedDocument(copyDocument(value));
   const mutationBlocked = () => importInFlight.current || !!kingdomJob || !!pendingRegen;
   const undoMap = () => {
     if (mutationBlocked() || !undoHistory.length) return;
@@ -12741,13 +12742,12 @@ export function App() {
     if (kingdomJob && !backup) return; // internal kingdom steps form one transaction at finish
     const before = backup?.document ?? captureDocument();
     recordTransaction(before, { ...captureDocument(), map, selectedHex: selection,
-      generationHistory: [...checkpoints, checkpoint] });
+      generationHistory: [...checkpoints, structuredClone(checkpoint)] });
   };
 
-  const captureGenerationBackup = (): GenerationBackup => structuredClone({
-    map: { kingdoms, obstacles, regions, candidateHexes, rivers, roads, crossings, hexTerrainByKey,
-      waterPoiByKey, biomeOverrideByHexKey, toponyms, toponymSeed, nextLakeId, nextRoadId },
-    history, selectedHex, document: captureDocument(), undo: undoHistory, redo: redoHistory
+  const captureGenerationBackup = (): GenerationBackup => ({
+    map: structuredClone(captureMap()), history: [...history], selectedHex: selectedHex ? {...selectedHex} : null,
+    document: copyDocument(captureDocument()), undo: undoHistory, redo: redoHistory
   });
 
   const restoreGenerationBackup = (backup: GenerationBackup) => {
@@ -12895,7 +12895,7 @@ export function App() {
     setWaterPoiByKey(water);
     setToponyms(synchronizeToponyms(toponyms,getToponymEntities(finalRegions,rivers,hexTerrainByKey),toponymSeed));
     setKingdoms([...kingdoms,kingdom]);setObstacles([...obstacles,...addedObstacles]);
-    setHistory([...job.backup.history,job.backup.map]);
+    setHistory([...job.backup.history,structuredClone(job.backup.map)]);
     setSelectedHex(assigned.find(r=>r.centralPoiKind==='throne')!.centerHex);
     setKingdomJob(null);
   };
@@ -12985,6 +12985,7 @@ export function App() {
   // перед его добавлением. Это надёжно откатывает и реки, и дороги, в том
   // числе изменения, которые новый регион внёс в соседние регионы.
   const restoreSnapshot = (snapshot: MapSnapshot) => {
+    snapshot = structuredClone(snapshot);
     setKingdoms(snapshot.kingdoms ?? []);
     setObstacles(snapshot.obstacles ?? []);
     setRegions(snapshot.regions);
@@ -13629,7 +13630,8 @@ export function App() {
       const hexes=imported.map.regions.flatMap(r=>r.hexes);
       const candidates=hexes.length?getCandidateHexes(hexes,getSeaHexKeys(terrain)):[];
       const seed=imported.map.toponyms?.seed ?? legacyToponymSeed(imported.map.regions);
-      const names=synchronizeToponyms(imported.map.toponyms?.names ?? {},getToponymEntities(imported.map.regions,imported.map.rivers,terrain),seed);
+      const retainedNames=imported.map.toponyms?.names ?? {};
+      const names={...synchronizeToponyms(retainedNames,getToponymEntities(imported.map.regions,imported.map.rivers,terrain),seed),...retainedNames};
       const validSelection=new Set([...hexes.map(hexKey),...candidates.map(hexKey),...terrain.keys()]);
       const selection=imported.ui.selectedHex;
       const before=captureDocument();
@@ -13645,14 +13647,17 @@ export function App() {
         isMapRotated:imported.ui.isMapRotated,mapScale:clamp(imported.ui.mapScale,MIN_MAP_SCALE,MAX_MAP_SCALE)
       };
       // Everything that can fail (including deep copies) is prepared before the first setter.
-      const prepared=structuredClone(after), transaction=structuredClone({before,after});
+      const prepared=copyDocument(after), transaction={before:copyDocument(before),after:copyDocument(after)};
       setUndoHistory(current=>[...current,transaction].slice(-100)); setRedoHistory([]);
       applyPreparedDocument(prepared); setGenerationError(null); trackGoal('import_json');
     } catch(error) {
       console.error('JSON import failed',error);
       const path=error instanceof SaveValidationError?error.path:'$';
-      window.alert(language==='ru'?`Не удалось загрузить JSON (${stage}, ${path}). Текущая карта сохранена.`
-        :`Failed to load JSON (${stage}, ${path}). Your current map is intact.`);
+      const category=language==='ru'
+        ? ({read:'ошибка чтения файла',json:'ошибка синтаксиса JSON',validation:'некорректные данные',preparation:'ошибка подготовки карты'}[stage])
+        : ({read:'file read error',json:'invalid JSON syntax',validation:'invalid map data',preparation:'map preparation error'}[stage]);
+      window.alert(language==='ru'?`Не удалось загрузить JSON: ${category} (${path}). Текущая карта сохранена.`
+        :`Failed to load JSON: ${category} (${path}). Your current map is intact.`);
     } finally { importInFlight.current=false; setIsImporting(false); }
   };
 
