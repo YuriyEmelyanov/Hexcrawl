@@ -16,8 +16,9 @@ const artwork = app.body.statements.flatMap(node => ts.isVariableStatement(node)
 let prefix = source.slice(0, lastReturn.getStart(ast));
 if (artwork?.initializer) prefix = prefix.slice(0, artwork.initializer.getStart(ast)) + 'undefined' + prefix.slice(artwork.initializer.end);
 const instrumented = prefix + `return {
+  generationRef, seedInput, setSeedInput, setGenSizeCategory, applyWorldSeed, buildGenerationOptions, generateAt,
   regions, rivers, roads, candidateHexes, hexTerrainByKey, history, toponyms, toponymSeed, setToponyms,
-  addFallbackTractToMap, safelyAddRegionToMap, createSaveData, restoreSnapshot, deleteLastRegion,
+  addFallbackTractToMap, safelyAddRegionToMap, createSaveData, restoreSnapshot: snapshot => restoreSnapshot({...snapshot, generation: snapshot.generation ?? cloneGenerationState(generationRef.current)}), deleteLastRegion,
   kingdoms, obstacles, generationMode, setGenerationMode, kingdomJob, startKingdom, advanceKingdom,
   generationError, pendingRegen, regenerateLastRegion, finishPendingRegeneration,
   handleImportJson, resetMap, undoMap, redoMap, undoHistory, redoHistory, captureDocument, selectedHex, setSelectedHex,
@@ -53,9 +54,9 @@ export function createGenerationHarness(seed = 1, search = '') {
   seededMath.random = () => { seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0; return seed / 4294967296; };
   const module = { exports: {} };
   const diagnostics = { exports: {} };
-  const context = vm.createContext({ module, exports: module.exports, Math: seededMath, Map, Set,
+  const context = vm.createContext({ module, exports: module.exports, Math: seededMath, Map, Set, crypto: {getRandomValues(a){ a[0]=seed >>> 0; return a; }},
     console: Object.fromEntries(['log', 'warn', 'error'].map(level => [level, (...args) => logs.push({ level, args })])),
-    require: name => (name.startsWith('./modes/') || name.startsWith('./rendering/')) ? loadMode(new URL(`../../src/${name}.ts`, import.meta.url)) : name === './generationDiagnostics' ? diagnostics.exports : name === 'react' ? hooks : localRequire(name.startsWith('./') ? `${name}.ts` : name),
+    require: name => (name.startsWith('./modes/') || name.startsWith('./rendering/') || name === './worldRandom' || name === './saveValidation') ? loadMode(new URL(`../../src/${name}.ts`, import.meta.url)) : name === './generationDiagnostics' ? diagnostics.exports : name === 'react' ? hooks : localRequire(name.startsWith('./') ? `${name}.ts` : name),
     performance, URLSearchParams, structuredClone, window: { location: { search } }
   });
   const modeCache = new Map();
@@ -67,16 +68,13 @@ export function createGenerationHarness(seed = 1, search = '') {
     execute(loaded.exports,loaded,name=>loadMode(new URL(name.endsWith('.ts')?name:`${name}.ts`,url)));
     return loaded.exports;
   }
-  const diagnosticsCode = ts.transpileModule(fs.readFileSync(new URL('../../src/generationDiagnostics.ts', import.meta.url), 'utf8'), {
-    compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020 }
-  }).outputText;
-  context.__diagnostics = diagnostics;
-  vm.runInContext(`(function(exports, module) { ${diagnosticsCode} })(__diagnostics.exports, __diagnostics);`, context);
+  Object.assign(diagnostics.exports, loadMode(new URL('../../src/generationDiagnostics.ts', import.meta.url)));
   vm.runInContext(compiled, context);
   delete context.window;
   return {
     render() { cursor = 0; return module.exports.App(); },
     geometry: module.exports.testGeometry, logs,
+    guardRandom() { seededMath.random = () => { throw Error("Unexpected Math.random in world operation"); }; },
     setWindow(value) { context.window=value; },
     injectFunction(name, replacement) {
       const original = vm.runInContext(name, context);
