@@ -12887,14 +12887,15 @@ export function App() {
     const kingdom:Kingdom={id:job.id,origin:job.origin,anchor:job.anchor,regionIds:assigned.map(r=>r.id),name:names[`kingdom:${job.id}`],color:`hsl(${Math.round((job.id*137.508)%360)} 65% 68%)`};
     const water=new Map(waterPoiByKey);
     for(const r of members)for(const h of r.hexes)water.delete(hexKey(h));
+    const finalCrossings=reconcileRiverCrossings(rebuiltRoads,rivers,finalRegions,crossings);
     recordGenerated(job.backup.map, { ...captureMap(), regions: finalRegions, roads: rebuiltRoads,
-      nextRoadId: roadId, crossings: reconcileRiverCrossings(rebuiltRoads,rivers,finalRegions,crossings),
+      nextRoadId: roadId, crossings: finalCrossings,
       waterPoiByKey: water, toponyms: synchronizeToponyms(toponyms,getToponymEntities(finalRegions,rivers,hexTerrainByKey),toponymSeed),
       kingdoms: [...kingdoms,kingdom], obstacles: [...obstacles,...addedObstacles] },
       assigned.find(r=>r.centralPoiKind==='throne')!.centerHex, job.failureBackup ?? job.backup, job.backup.history);
     setRegions(finalRegions);
     setRoads(rebuiltRoads);setNextRoadId(roadId);
-    setCrossings(reconcileRiverCrossings(rebuiltRoads,rivers,finalRegions,crossings));
+    setCrossings(finalCrossings);
     setWaterPoiByKey(water);
     setToponyms(synchronizeToponyms(toponyms,getToponymEntities(finalRegions,rivers,hexTerrainByKey),toponymSeed));
     setKingdoms([...kingdoms,kingdom]);setObstacles([...obstacles,...addedObstacles]);
