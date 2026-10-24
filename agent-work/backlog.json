@@ -805,7 +805,7 @@
       "task_id": "HX-NEXT-001",
       "priority": 1,
       "title": "Безопасные изменения карты: атомарный импорт и отмена ручных правок",
-      "status": "review_ready",
+      "status": "awaiting_release_approval",
       "criterion_ids": [
         "S09-C04",
         "S03-C05"
@@ -841,17 +841,7 @@
       "spec_status": "ready_for_development",
       "execution_allowed": true,
       "owner_role": "reviewer",
-      "claim": {
-        "run_id": "2026-10-24:reviewer:HX-NEXT-001:50d8b6f-independent",
-        "role": "reviewer",
-        "task_id": "HX-NEXT-001",
-        "started_at": "2026-10-24T14:06:14.317535+00:00",
-        "lease_expires_at": "2026-10-24T16:06:14.317535+00:00",
-        "branch": "agent/hx-next-001-safe-import-history",
-        "base_sha": "f89530abe1e237493dddb533502bb772ae1ab4e5",
-        "head_sha": "50d8b6f2414faa1f204cdd2a7ed936533707592c",
-        "last_checkpoint": "Fresh-context independent review claimed; no product changes"
-      },
+      "claim": null,
       "branch": "agent/hx-next-001-safe-import-history",
       "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/471",
       "head_sha": "50d8b6f2414faa1f204cdd2a7ed936533707592c",
@@ -860,9 +850,9 @@
         "status": "not_requested",
         "approved_sha": null
       },
-      "next_step": "Независимый reviewer: повторить F1 и регрессии spec1.0 на head50d8b6f2414faa1f204cdd2a7ed936533707592c; автоматический перенос прежнего verdict запрещён; merge/deploy не разрешены.",
-      "result_ref": "agent-work/results/2026-10-24-developer-HX-NEXT-001-F1.json",
-      "evidence_ref": "agent-work/evidence/HX-NEXT-001-developer-F1-50d8b6f.md",
+      "next_step": "Ожидать отдельного решения владельца о выпуске проверенного SHA50d8b6f; merge/deploy не разрешены, новые задачи не начинать.",
+      "result_ref": "agent-work/results/2026-10-24-reviewer-HX-NEXT-001-50d8b6f.json",
+      "evidence_ref": "agent-work/evidence/HX-NEXT-001-reviewer-50d8b6f.md",
       "developer_result": {
         "completed_at": "2026-10-24T07:35:00Z",
         "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40074304045",
@@ -879,20 +869,66 @@
         "release_status": "not_approved"
       },
       "reviewer_result": {
-        "status": "changes_requested",
-        "decision": "return_to_developer",
-        "head_sha": "459a813168bba07d6196a279fbc7e807127f6a6c",
+        "schema_version": 1,
+        "run_id": "2026-10-24:reviewer:HX-NEXT-001:50d8b6f-independent",
+        "role": "reviewer",
+        "task_id": "HX-NEXT-001",
+        "status": "awaiting_release_approval",
+        "review_verdict": "accepted",
         "spec_version": "1.0",
-        "finding_ids": [
+        "spec_ref": "agent-work/specs/HX-NEXT-001.md",
+        "head_sha": "50d8b6f2414faa1f204cdd2a7ed936533707592c",
+        "base_sha": "f89530abe1e237493dddb533502bb772ae1ab4e5",
+        "tree_sha": "1b9b9d438edb03ffc86bd65b26804e7439ca437b",
+        "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/471",
+        "evidence_ref": "agent-work/evidence/HX-NEXT-001-reviewer-50d8b6f.md",
+        "independent_agent": true,
+        "claim_commit": "1ba2a294daeadfef2143e334041d9115024832b2",
+        "addressed_findings": [
           "F1"
         ],
+        "open_blocking_findings": [],
         "checks": {
-          "node_check": "pass_189",
-          "extra_negative_import_cases": 42,
-          "browser_repeat": "blocked_environment",
-          "ci_browser": "pass_same_tree"
+          "node": "24.22.1",
+          "node_check": "pass_195",
+          "typescript": "pass",
+          "build": "pass",
+          "diff_check": "pass",
+          "independent_negative_imports": 42,
+          "independent_boundary_cases": 4,
+          "independent_mythic_document_snapshot_seeds": [
+            16,
+            29
+          ],
+          "independent_concurrency": [
+            "kingdomJob",
+            "pendingRegen"
+          ],
+          "browser_local": "blocked_environment_missing_chromium_1234",
+          "browser_install": "failed_download_invalid_zip_code_1",
+          "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40099004854",
+          "ci_job_id": 120887104458,
+          "ci_merge_sha": "0630deb10839cab859f4a281e73fd6e24587b407",
+          "ci_tree_matches_head": true,
+          "ci_logs_independently_read": true,
+          "ci_browser": "pass_full_suite_chromium_151.0.7922.34"
         },
-        "score_changed": false
+        "limitations": [
+          "Independent local browser execution blocked, installation failed; UI evidence is independently inspected CI on identical tree",
+          "Finite tests; existing dependencies reused; no clean npm ci",
+          "Not a master user acceptance or G3/G4 proof; no large-map memory or mobile assessment"
+        ],
+        "claim_released": true,
+        "score_changed": false,
+        "main_changed": false,
+        "product_changed": false,
+        "release_approval": {
+          "status": "not_requested",
+          "approved_sha": null
+        },
+        "next_role": null,
+        "next_step": "Ожидать отдельного решения владельца о выпуске проверенного SHA50d8b6f; merge/deploy не разрешены, новые задачи не начинать.",
+        "completed_at": "2026-10-24T14:10:35.333962+00:00"
       },
       "developer_correction": {
         "schema_version": 1,
@@ -951,14 +987,32 @@
           }
         ],
         "completed_at": "2026-10-24T13:44:37.995Z"
+      },
+      "previous_reviewer_result": {
+        "status": "changes_requested",
+        "decision": "return_to_developer",
+        "head_sha": "459a813168bba07d6196a279fbc7e807127f6a6c",
+        "spec_version": "1.0",
+        "finding_ids": [
+          "F1"
+        ],
+        "checks": {
+          "node_check": "pass_189",
+          "extra_negative_import_cases": 42,
+          "browser_repeat": "blocked_environment",
+          "ci_browser": "pass_same_tree"
+        },
+        "score_changed": false
       }
     }
   ],
   "last_review": {
     "date": "2026-10-24",
-    "role": "business_analyst",
-    "baseline_sha": "f89530abe1e237493dddb533502bb772ae1ab4e5",
-    "note": "Решения владельца применены. HX-NEXT-001 готова к разработке; остальные предложенные задачи не утверждены. Score не пересчитан.",
-    "result_ref": "agent-work/results/2026-10-24-analyst-HX-NEXT-001.json"
+    "role": "reviewer",
+    "head_sha": "50d8b6f2414faa1f204cdd2a7ed936533707592c",
+    "spec_version": "1.0",
+    "verdict": "accepted",
+    "result_ref": "agent-work/results/2026-10-24-reviewer-HX-NEXT-001-50d8b6f.json",
+    "note": "Independent repeat; local browser blocked and install failed; exact-tree CI inspected. No score/release approval."
   }
 }
