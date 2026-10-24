@@ -21,14 +21,14 @@ try{
   const button=name=>page.getByRole('button',{name,exact:true});
   const snapshot=async()=>{await page.evaluate(()=>window.__exported=null);const menu=page.locator('details.export-menu');if(await menu.getAttribute('open')===null)await menu.locator('summary').click();await button('JSON').click();await page.waitForFunction(()=>window.__exported!==null);return page.evaluate(()=>{const d=window.__exported;delete d.savedAt;return d;});};
   const load=async data=>{await page.locator('input[type=file]').setInputFiles({name:'map.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(data))});await page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);};
-  const unit=async()=>{await page.locator('polygon.hex.candidate').first().dispatchEvent('click');await page.waitForFunction(()=>!document.querySelector('.kingdom-progress')?.textContent.includes('Создание королевства'),null,{timeout:180000});await page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);const alert=page.getByRole('alert');assert.equal(await alert.count(),0,await alert.allTextContents());assert.deepEqual(errors,[]);return snapshot();};
+  const unit=async()=>{const before=await snapshot();const anchor=before.map.candidateHexes[0]??{q:0,r:0};console.log('action',mode,seed,anchor,before.generation.streams);await page.locator(`polygon.hex.candidate[data-hex-key="${anchor.q},${anchor.r}"]`).dispatchEvent('click');await page.waitForFunction(()=>!document.querySelector('.kingdom-progress')?.textContent.includes('Создание королевства'),null,{timeout:180000});await page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);const alert=page.getByRole('alert');assert.equal(await alert.count(),0,await alert.allTextContents());assert.deepEqual(errors,[]);return snapshot();};
   return {context,page,button,snapshot,load,unit};
  }
  for(const mode of ['classic','mythic'])for(const seed of [0,1,123456789,4294967295]){
   const a=await open(seed,mode),b=await open(seed,mode);
   try{
    const a1=await a.unit(),b1=await b.unit();assert.deepEqual(a1,b1,`fresh ${mode}/${seed}`);
-   await a.unit();const middle=await a.snapshot();await b.load(middle);
+   await a.unit();const middle=await a.snapshot();await b.load(middle);assert.deepEqual(await b.snapshot(),middle,`loaded checkpoint ${mode}/${seed}`);
    const final=await a.unit();assert.deepEqual(await b.unit(),final,`continuation ${mode}/${seed}`);
    await a.button('Отменить').click();assert.deepEqual(await a.snapshot(),middle);assert.deepEqual(await a.unit(),final,`undo-repeat ${mode}/${seed}`);
    // Invalid future RNG leaves document and redo unchanged.
