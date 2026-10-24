@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "date": "2026-10-24",
+  "date": "2026-10-25",
   "branch": "agent-operations",
   "plan_json": "agent-work/plans/2026-10-23.json",
   "plan_md": "agent-work/plans/2026-10-23.md",
@@ -29,10 +29,10 @@
   "run_id": "2026-10-25:reviewer:HX-BL-030:0058",
   "plan_revision": 1,
   "baseline_sha": "f89530abe1e237493dddb533502bb772ae1ab4e5",
-  "status": "review_in_progress",
+  "status": "changes_requested",
   "planning_for": "2026-10-24",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
-  "last_reviewed_on": "2026-10-24",
+  "last_reviewed_on": "2026-10-25",
   "baseline_result": "agent-work/evidence/baseline-f89530a.md",
   "score_path": "agent-work/score/current-score.json",
   "next_candidates_path": "agent-work/score/next-candidates.json",
@@ -46,24 +46,14 @@
   "schedule_frequency": "hourly",
   "process_path": "agent-work/process.md",
   "current_role": "reviewer",
-  "next_role": "reviewer",
+  "next_role": "developer",
   "current_task_id": "HX-BL-030",
   "spec_path": "agent-work/specs/HX-BL-030.md",
   "spec_version": "1.0",
-  "result_path": "agent-work/results/2026-10-24-developer-HX-BL-030.json",
-  "handoff_commit_sha": "b26fdd9e4198ba3c54f1fb5f419a2fa1826f7f76",
-  "active_claim": {
-    "run_id": "2026-10-25:reviewer:HX-BL-030:0058",
-    "role": "reviewer",
-    "task_id": "HX-BL-030",
-    "started_at": "2026-10-24T21:58:16Z",
-    "lease_expires_at": "2026-10-24T23:58:16Z",
-    "branch": "agent/HX-BL-030-rng",
-    "base_sha": "6aaefa8896e7aac163cfcd5c2ca896ac60fc54d0",
-    "head_sha": "ffb5e85311420b14fe509819ec26b420606ce0dd",
-    "last_checkpoint": "independent_review_start"
-  },
-  "next_step": "Независимо проверить PR472 на ffb5e85311420b14fe509819ec26b420606ce0dd по spec1.0 и evidence; сохранить verdict и обязательный score_assessment.",
+  "result_path": "agent-work/results/2026-10-25-reviewer-HX-BL-030-ffb5e85.json",
+  "handoff_commit_sha": "8e8151a96a8ca33f467e3ad10f7f4693a69144d8",
+  "active_claim": null,
+  "next_step": "Исправить R1/R2 и закрыть partial acceptance по spec1.0; npm run check и оба browser набора на новом SHA, затем независимая проверка.",
   "owner_decisions_needed": [],
   "release_approval": {
     "status": "not_requested",
@@ -71,14 +61,14 @@
     "approved_sha": null
   },
   "historical_plan_status": "План23.10 сохранён как история; его блокировки и предложенный процесс заменены decisions24.10 в approvals/process/budget и текущим handoff.",
-  "evidence_path": "agent-work/evidence/HX-BL-030-developer.md",
+  "evidence_path": "agent-work/evidence/review-HX-BL-030-ffb5e85/hx-review-evidence.md",
   "branch_name": "agent/HX-BL-030-rng",
   "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/472",
   "head_sha": "ffb5e85311420b14fe509819ec26b420606ce0dd",
   "checks_status": "passed",
   "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40117916104",
-  "review_verdict": null,
-  "review_url": null,
+  "review_verdict": "changes_requested",
+  "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/472#pullrequestreview-5640218508",
   "role_selection_mode": "ready_work_priority",
   "role_selection_source": "agent-work/process.md",
   "process_decision_ref": "owner-decision-2026-10-24-dynamic-roles",
@@ -130,8 +120,8 @@
   "score_update_task_id": "HX-NEXT-001",
   "score_update_release_sha": "6aaefa8896e7aac163cfcd5c2ca896ac60fc54d0",
   "score_process_decision_ref": "owner-decision-2026-10-24-score-responsibilities",
-  "score_assessment_ref": "agent-work/results/2026-10-24-score-assessment-HX-NEXT-001.json",
-  "role_selection_reason": "review_ready PR472 на точном SHA; активного claim нет",
+  "score_assessment_ref": "agent-work/results/2026-10-25-reviewer-HX-BL-030-ffb5e85.json",
+  "role_selection_reason": "Утверждённая HX-BL-030 передана review_ready на точном SHA без активного claim; независимый агент завершил проверку.",
   "score_update_result_ref": "agent-work/results/2026-10-24-strategist-score-update-HX-NEXT-001.json",
   "score_update_completed_at": "2026-10-24T15:02:07.209915+00:00",
   "score_update_delta": 7.5,
@@ -141,10 +131,10 @@
   "approval_ref": "owner-approval-2026-10-24-HX-BL-030",
   "last_completed_stage": {
     "task_id": "HX-BL-030",
-    "role": "developer",
-    "status": "review_ready",
+    "role": "reviewer",
+    "status": "changes_requested",
     "head_sha": "ffb5e85311420b14fe509819ec26b420606ce0dd",
-    "result_ref": "agent-work/results/2026-10-24-developer-HX-BL-030.json"
+    "result_ref": "agent-work/results/2026-10-25-reviewer-HX-BL-030-ffb5e85.json"
   },
   "previous_release_approval": {
     "status": "approved_and_executed",
@@ -156,21 +146,22 @@
   "base_sha": "6aaefa8896e7aac163cfcd5c2ca896ac60fc54d0",
   "automation_health": {
     "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
-    "decision_ref": "owner-decision-2026-10-25-automation-health",
     "start": {
+      "checked_at": "2026-10-24T21:58:16Z",
       "is_enabled": true,
-      "checked_at": null,
-      "time_limitation": "Проверка выполнена перед изменением инструкции; точное время отдельного чтения не записано."
+      "time_note": "Timestamp recorded immediately after initial peek."
     },
     "end": {
-      "is_enabled": true,
-      "checked_at": "2026-10-24T21:04:45.888Z",
-      "prompt_readback_verified": true
+      "checked_at": "2026-10-24T22:06:18Z",
+      "is_enabled": true
     },
-    "restored_during_this_change": false,
-    "instructions_ref": "agent-work/process.md",
-    "operations_agents_ref": "AGENTS.md",
-    "schedule_unchanged": true,
-    "errors": []
-  }
+    "restored_during_this_run": false,
+    "errors": [],
+    "schedule_unchanged": true
+  },
+  "open_findings": [
+    "R1",
+    "R2"
+  ],
+  "current_review_score_assessment_status": "provisional_prototype_not_releasable"
 }
