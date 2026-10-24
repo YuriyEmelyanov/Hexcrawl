@@ -805,7 +805,7 @@
       "task_id": "HX-NEXT-001",
       "priority": 1,
       "title": "Безопасные изменения карты: атомарный импорт и отмена ручных правок",
-      "status": "ready_for_development",
+      "status": "review_ready",
       "criterion_ids": [
         "S09-C04",
         "S03-C05"
@@ -840,17 +840,34 @@
       "spec_version": "1.0",
       "spec_status": "ready_for_development",
       "execution_allowed": true,
-      "owner_role": "developer",
+      "owner_role": "reviewer",
       "claim": null,
-      "branch": null,
-      "pr": null,
-      "head_sha": null,
-      "checks_status": "pending_implementation",
+      "branch": "agent/hx-next-001-safe-import-history",
+      "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/471",
+      "head_sha": "459a813168bba07d6196a279fbc7e807127f6a6c",
+      "checks_status": "passed",
       "release_approval": {
         "status": "not_requested",
         "approved_sha": null
       },
-      "next_step": "Программист: взять claim по process.md, сверить main и реализовать spec1.0; сначала регрессии, затем код, Node24 check/browser и PR для независимой проверки."
+      "next_step": "Проверяющий: независимо проверить SHA 459a813168bba07d6196a279fbc7e807127f6a6c по spec 1.0 и рискам регрессий; сохранить evidence. Любое изменение SHA требует новой проверки. Merge/release не выполнять без отдельного решения владельца.",
+      "result_ref": "agent-work/results/2026-10-24-developer-HX-NEXT-001.json",
+      "evidence_ref": "agent-work/evidence/HX-NEXT-001-developer-459a813.md",
+      "developer_result": {
+        "completed_at": "2026-10-24T07:35:00Z",
+        "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40074304045",
+        "node_check": {
+          "status": "success",
+          "tests_passed": 189,
+          "typescript": "success",
+          "build": "success"
+        },
+        "browser_check": {
+          "status": "success",
+          "coverage": "full suite; corpus round-trip/continuation, invalid/preparation/read failures, serialized import, all existing manual edit families, 100 mixed UI undo/redo operations, classic/Mythic generation checkpoints, RU/EN"
+        },
+        "release_status": "not_approved"
+      }
     }
   ],
   "last_review": {
