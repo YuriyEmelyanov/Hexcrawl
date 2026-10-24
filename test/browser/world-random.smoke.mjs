@@ -28,6 +28,7 @@ try{
   const a=await open(seed,mode),b=await open(seed,mode);
   try{
    const a1=await a.unit(),b1=await b.unit();assert.deepEqual(a1,b1,`fresh ${mode}/${seed}`);
+   if(mode==='classic'&&seed===0){await a.page.waitForTimeout(5500);assert.deepEqual(await a.snapshot(),a1,'animated click hint never consumes world RNG');}
    await a.unit();const middle=await a.snapshot();await b.load(middle);assert.deepEqual(await b.snapshot(),middle,`loaded checkpoint ${mode}/${seed}`);
    const final=await a.unit();assert.deepEqual(await b.unit(),final,`continuation ${mode}/${seed}`);
    await a.button('Отменить').click();assert.deepEqual(await a.snapshot(),middle);assert.deepEqual(await a.unit(),final,`undo-repeat ${mode}/${seed}`);

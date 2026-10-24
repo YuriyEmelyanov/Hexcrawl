@@ -11399,7 +11399,8 @@ export function App() {
       const availableKeys = candidateKeys.length > 1
         ? candidateKeys.filter((candidateKey) => candidateKey !== previousKey)
         : candidateKeys;
-      return availableKeys[Math.floor(rng.geography() * availableKeys.length)] ?? null;
+      // The animated click hint is presentation only; never advance a world stream.
+      return availableKeys[Math.floor(getStableRandomValue(`${generationRef.current.masterSeed}:click-hint:${previousKey ?? 'initial'}`) * availableKeys.length)] ?? null;
     };
 
     setClickPromptCandidateKey((previousKey) => pickRandomCandidateKey(previousKey));
