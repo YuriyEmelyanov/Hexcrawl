@@ -29,12 +29,35 @@ try{
   try{
    const a1=await a.unit(),b1=await b.unit();assert.deepEqual(a1,b1,`fresh ${mode}/${seed}`);
    if(mode==='classic'&&seed===0){await a.page.waitForTimeout(5500);assert.deepEqual(await a.snapshot(),a1,'animated click hint never consumes world RNG');}
-   await a.unit();const middle=await a.snapshot();await b.load(middle);assert.deepEqual(await b.snapshot(),middle,`loaded checkpoint ${mode}/${seed}`);
-   const final=await a.unit();assert.deepEqual(await b.unit(),final,`continuation ${mode}/${seed}`);
+   const middle=await a.unit();assert.deepEqual(await b.unit(),middle,`fresh second ${mode}/${seed}`);
+   const final=await a.unit();assert.deepEqual(await b.unit(),final,`fresh third ${mode}/${seed}`);
+   await a.button('Отменить').click();assert.deepEqual(await a.snapshot(),middle);
+   await b.load(middle);assert.deepEqual(await b.snapshot(),middle,`loaded checkpoint ${mode}/${seed}`);
+   assert.deepEqual(await a.unit(),final,`repeat third ${mode}/${seed}`);assert.deepEqual(await b.unit(),final,`continuation ${mode}/${seed}`);
    await a.button('Отменить').click();assert.deepEqual(await a.snapshot(),middle);assert.deepEqual(await a.unit(),final,`undo-repeat ${mode}/${seed}`);
    // Invalid future RNG leaves document and redo unchanged.
    await a.button('Отменить').click();const invalid=structuredClone(middle);invalid.generation.rngVersion='future';await a.load(invalid);assert.deepEqual(await a.snapshot(),middle);assert.equal(await a.button('Повторить').isEnabled(),true);
    console.log(`world RNG production UI ${mode}/${seed}: fresh, continuation, undo-repeat, invalid import passed`);
   }finally{await a.context.close();await b.context.close();}
  }
+ // R2: carry a non-auto classic setting into Mythic and exercise the public
+ // regenerate/delete/undo controls, with whole JSON comparisons.
+ const r=await open(0,'classic');
+ try{
+  await r.page.getByRole('combobox',{name:'Режим',exact:true}).selectOption('mythic');
+  const before=await r.unit();
+  const regenerate=async()=>{
+   await r.button('Перегенерировать регион').click();
+   await r.page.waitForFunction(()=>!document.querySelector('.kingdom-progress')?.textContent.includes('Создание королевства'),null,{timeout:180000});
+   await r.page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);
+   return r.snapshot();
+  };
+  const after=await regenerate();
+  await r.button('Удалить последний регион').click();
+  const deleted=await r.snapshot();assert.equal(deleted.map.regions.length,0);assert.deepEqual(deleted.generation,before.generation,'R2 pre-regenerate RNG');
+  await r.button('Отменить').click();assert.deepEqual(await r.snapshot(),after);
+  await r.button('Отменить').click();assert.deepEqual(await r.snapshot(),before);
+  assert.deepEqual(await regenerate(),after,'R2 undo/regenerate exact repeat');
+  console.log('R2 Mythic hidden classic locality: regenerate/delete/undo/repeat passed');
+ }finally{await r.context.close();}
 }finally{await browser?.close();server.kill('SIGTERM');}

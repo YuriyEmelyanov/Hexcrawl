@@ -11233,6 +11233,10 @@ const generateRoadsForRegion = __profiled('generateRoadsForRegion', (options: Pa
 export function App() {
   const [initialGeneration] = useState(() => createGenerationState(newWorldSeed()));
   const generationRef = useRef(cloneGenerationState(initialGeneration));
+  // Synchronous revision invalidates callbacks from an older document, including
+  // duplicate events in the same batch before React has rendered the commit.
+  const documentRevision = useRef(0);
+  const renderedDocumentRevision = documentRevision.current;
   const activeGenerationBefore = useRef<GenerationState | null>(null);
   const activeGenerationBackup = useRef<GenerationBackup | null>(null);
   const [seedInput, setSeedInput] = useState(String(initialGeneration.masterSeed));
@@ -12714,6 +12718,7 @@ export function App() {
     setEditingHexBiomeKey(null); setEditingPoiHexKey(null); setEditingCentralPoiRegionId(null);
   };
   const recordTransaction = (before: DocumentSnapshot, after: DocumentSnapshot) => {
+    documentRevision.current++;
     const transaction = { before: copyDocument(before), after: copyDocument(after) };
     setUndoHistory(current => [...current, transaction].slice(-100));
     setRedoHistory([]);
@@ -12735,12 +12740,14 @@ export function App() {
     generationHistory: [...doc.generationHistory]
   });
   const applyPreparedDocument = (doc: DocumentSnapshot) => {
+    documentRevision.current++;
     applyExactMap(doc.map); setHistory(doc.generationHistory); setSelectedHex(doc.selectedHex);
     setGenerationMode(doc.generationMode); setIsMapRotated(doc.isMapRotated);
     updateMapScale(doc.mapScale); setPendingRegen(null); closeEditors();
   };
   const applyDocument = (value: DocumentSnapshot) => applyPreparedDocument(copyDocument(value));
-  const mutationBlocked = () => importInFlight.current || kingdomInFlight.current || !!kingdomJob || !!pendingRegen;
+  const mutationBlocked = () => documentRevision.current !== renderedDocumentRevision
+    || importInFlight.current || kingdomInFlight.current || !!kingdomJob || !!pendingRegen;
   const undoMap = () => {
     if (mutationBlocked() || !undoHistory.length) return;
     const transaction = undoHistory[undoHistory.length - 1];
@@ -13023,6 +13030,7 @@ export function App() {
   };
   const generateAt = (anchor: AxialHex) => {
     if (mutationBlocked() || !applyWorldSeed()) return;
+    documentRevision.current++;
     if (generationMode === 'mythic') { startKingdom(anchor); return; }
     const backup = captureGenerationBackup();
     try { const options = buildGenerationOptions(); safelyAddRegionToMap(anchor, options, backup); }
@@ -13084,6 +13092,7 @@ export function App() {
   const regenerateLastRegion = () => {
     if (mutationBlocked()) return;
     if (regions.length === 0 || history.length === 0) return;
+    documentRevision.current++;
     const backup = captureGenerationBackup();
     const lastKingdom = kingdoms.find(k=>k.regionIds.includes(regions[regions.length-1].id));
     const lastAnchor = lastKingdom?.anchor ?? regions[regions.length - 1].anchorHex;
@@ -13094,7 +13103,11 @@ export function App() {
     let options: GenerationOptions = {};
     try {
       activeGenerationBefore.current = cloneGenerationState(backup.map.generation);
-      options = { ...buildGenerationOptions(), mode: lastKingdom ? 'mythic' : 'classic', previousToponyms: toponyms };
+      // Mythic owns its size/biome controls. Hidden classic controls must not
+      // consume RNG before startKingdom captures its regeneration checkpoint.
+      options = lastKingdom
+        ? { mode: 'mythic', previousToponyms: toponyms }
+        : { ...buildGenerationOptions(), mode: 'classic', previousToponyms: toponyms };
       restoreSnapshot({...snapshot, generation: cloneGenerationState(generationRef.current)});
       setHistory(history.slice(0, -1));
       // Wait for React to apply the snapshot before the generation callback reads it.

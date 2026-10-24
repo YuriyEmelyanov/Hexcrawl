@@ -75,3 +75,78 @@ test('Mythic regenerate and delete checkpoints restore exact RNG',()=>{
  h.render().undoMap();assert.deepEqual(stable(h.render()),before);regen();assert.deepEqual(stable(h.render()),after);
  const checkpoint=serial(h.render().history.at(-1).generation);h.render().deleteLastRegion();assert.deepEqual(stable(h.render()).generation,checkpoint);h.render().undoMap();assert.deepEqual(stable(h.render()),after);
 });
+
+test('R1 stale classic callbacks cannot draw or append a transaction, before or after a render',()=>{
+ for(const rerender of [false,true]){
+  const h=setup(0);h.render().setGenSizeCategory('locality');
+  const empty=stable(h.render()),callback=h.render().generateAt;
+  callback({q:0,r:0});
+  // Without render, the second invocation is in the same React event batch.
+  if(!rerender)callback({q:0,r:0});
+  const first=stable(h.render()),hist=serial([h.render().undoHistory,h.render().redoHistory]);
+  if(rerender)callback({q:0,r:0});
+  assert.equal(h.render().regions.length,1);assert.equal(h.render().undoHistory.length,1);
+  assert.deepEqual(stable(h.render()),first);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),hist);
+  h.render().undoMap();assert.deepEqual(stable(h.render()),empty);
+  h.render().redoMap();assert.deepEqual(stable(h.render()),first);
+  callback({q:0,r:0});assert.deepEqual(stable(h.render()),first,'old callback also stays stale after undo/redo');
+ }
+});
+
+test('R2 Mythic regenerate ignores hidden classic size controls and checkpoints pre-action RNG',()=>{
+ const h=setup(0);h.render().setGenSizeCategory('locality');h.render().setGenerationMode('mythic');unit(h,'mythic');
+ const first=stable(h.render());
+ const regen=()=>{h.render().regenerateLastRegion();h.render().finishPendingRegeneration();for(let i=0;i<310&&h.render().kingdomJob;i++)h.render().advanceKingdom();assert.equal(h.render().generationError,null);};
+ regen();const second=stable(h.render());
+ assert.deepEqual(serial(h.render().history.at(-1).generation),first.generation);
+ h.render().deleteLastRegion();assert.equal(h.render().regions.length,0);assert.deepEqual(stable(h.render()).generation,first.generation);
+ h.render().undoMap();assert.deepEqual(stable(h.render()),second);
+ h.render().undoMap();assert.deepEqual(stable(h.render()),first);regen();assert.deepEqual(stable(h.render()),second);
+ regen();const third=stable(h.render());assert.notDeepEqual(third,second);
+ assert.deepEqual(serial(h.render().history.at(-1).generation),second.generation);
+ h.render().undoMap();assert.deepEqual(stable(h.render()),second);h.render().redoMap();assert.deepEqual(stable(h.render()),third);
+});
+
+test('entire v2 and rng-v3 fixture manifests roundtrip and continue in both modes',async()=>{
+ const fs=await import('node:fs');
+ for(const name of ['import-v2','rng-v3']){
+  const manifest=JSON.parse(fs.readFileSync(new URL(`./fixtures/${name}/manifest.json`,import.meta.url)));
+  for(const entry of manifest.entries)for(const mode of ['classic','mythic']){
+   const data=JSON.parse(fs.readFileSync(new URL('../'+entry.path,import.meta.url)));
+   const h=setup(7),g=setup(8);await load(h,data);await load(g,data);
+   const normalized=stable(h.render());assert.deepEqual(stable(g.render()),normalized,entry.path);
+   await load(g,normalized);assert.deepEqual(stable(g.render()),normalized,entry.path+' roundtrip');
+   h.render().setGenerationMode(mode);g.render().setGenerationMode(mode);
+   const attempt=world=>{
+    const app=world.render(),anchor=app.candidateHexes[0]??{q:0,r:0};
+    if(mode==='classic')app.safelyAddRegionToMap(anchor,options);
+    else{app.startKingdom(anchor);for(let i=0;i<310&&world.render().kingdomJob;i++)world.render().advanceKingdom();}
+    return world.render().generationError?.reason??null;
+   };
+   const original=stable(h.render()),reason=attempt(h);assert.equal(attempt(g),reason,entry.path+' deterministic outcome');
+   assert.deepEqual(stable(h.render()),stable(g.render()),entry.path+' '+mode+' continuation');
+   if(reason)assert.deepEqual(stable(h.render()),original,entry.path+' rejected continuation rolls back');
+   console.log(`fixture continuation ${entry.path}/${mode}: ${reason??'committed'}`);
+  }
+ }
+});
+
+test('complete malformed RNG value classes reject atomically with redo',async()=>{
+ const h=setup(0);unit(h,'classic');h.render().undoMap();
+ const before=stable(h.render()),hist=serial([h.render().undoHistory,h.render().redoHistory]);
+ const cases=[undefined,null,[],true,'rng',{},
+  ...[undefined,null,[],1,'streams',{}, {geography:0}].map(streams=>({...before.generation,streams})),
+  ...[-1,4294967296,0.5,'0',null].flatMap(value=>[
+   {...before.generation,masterSeed:value},
+   {...before.generation,streams:{...before.generation.streams,geography:value}},
+   {...before.generation,streams:{...before.generation.streams,poi:value}}]),
+  {...before.generation,rngVersion:'future'}, {...before.generation,generatorVersion:'future'}];
+ for(const version of [2,3])for(const generation of cases){
+  // v2 absent generation is the supported legacy format, not a malformed RNG.
+  if(version===2&&generation===undefined)continue;
+  await load(h,{...before,version,generation});assert.deepEqual(stable(h.render()),before);
+  assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),hist);
+ }
+ await load(h,{...before,version:999});assert.deepEqual(stable(h.render()),before);
+ assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),hist);
+});
