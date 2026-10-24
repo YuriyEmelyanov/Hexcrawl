@@ -26,7 +26,7 @@
   },
   "lessons_path": "agent-work/lessons.md",
   "plan_id": "2026-10-23:f89530abe1e237493dddb533502bb772ae1ab4e5",
-  "run_id": "2026-10-24:reviewer:HX-NEXT-001:score-assessment",
+  "run_id": "2026-10-24:strategist:HX-NEXT-001:score-update",
   "plan_revision": 1,
   "baseline_sha": "f89530abe1e237493dddb533502bb772ae1ab4e5",
   "status": "published",
@@ -45,14 +45,23 @@
   "schedule_start_at": "2026-10-24T01:00:00+03:00",
   "schedule_frequency": "hourly",
   "process_path": "agent-work/process.md",
-  "current_role": "reviewer",
-  "next_role": "strategist",
+  "current_role": "strategist",
+  "next_role": null,
   "current_task_id": "HX-NEXT-001",
   "spec_path": "agent-work/specs/HX-NEXT-001.md",
   "spec_version": "1.0",
   "result_path": "agent-work/results/2026-10-24-score-assessment-HX-NEXT-001.json",
   "handoff_commit_sha": "d3d5d120b5891d50b5cf0d91ee6d6792f7d45dec",
-  "active_claim": null,
+  "active_claim": {
+    "run_id": "2026-10-24:strategist:HX-NEXT-001:score-update",
+    "role": "strategist",
+    "task_id": "HX-NEXT-001",
+    "started_at": "2026-10-24T15:00:53.667463+00:00",
+    "lease_expires_at": "2026-10-24T17:00:53.667463+00:00",
+    "branch": "agent-operations",
+    "base_sha": "f33732b6f642a5fb2724ab7d2e114e37a37b43b8",
+    "last_checkpoint": "Начат обязательный пересчёт после независимой оценки выпущенного PR471; повторное начисление запрещено."
+  },
   "next_step": "Verify released SHA/assessment/model and absent deduplication keys; apply +7.5 exactly once to current-score/history and latest in separate strategist stage.",
   "owner_decisions_needed": [],
   "release_approval": {
@@ -118,9 +127,10 @@
     "next_role": "strategist",
     "next_step": "Сверить результат выпуска и предложить следующую задачу владельцу; новые proposed задачи без согласования не начинать."
   },
-  "score_update_status": "pending_strategist_update",
+  "score_update_status": "in_progress",
   "score_update_task_id": "HX-NEXT-001",
   "score_update_release_sha": "6aaefa8896e7aac163cfcd5c2ca896ac60fc54d0",
   "score_process_decision_ref": "owner-decision-2026-10-24-score-responsibilities",
-  "score_assessment_ref": "agent-work/results/2026-10-24-score-assessment-HX-NEXT-001.json"
+  "score_assessment_ref": "agent-work/results/2026-10-24-score-assessment-HX-NEXT-001.json",
+  "role_selection_reason": "Released HX-NEXT-001 has confirmed independent score_assessment and pending strategist registry update; no active claim or higher-priority executable task."
 }
