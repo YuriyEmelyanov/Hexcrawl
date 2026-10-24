@@ -3,10 +3,10 @@
   "model_path": "docs/strategy/score-model.md",
   "model_blob_sha": "c05bffac61f425085e6878f7709c25e1dfc2ffb4",
   "baseline_sha": "f89530abe1e237493dddb533502bb772ae1ab4e5",
-  "checked_on": "2026-10-22",
-  "scope": "Однократная проверка текущего main по существующим code/tests/CI; без изменений продукта, массовых прогонов и внешних исследований.",
+  "checked_on": "2026-10-24",
+  "scope": "Ограниченный baseline22.10 плюс независимая оценка S09-C04 и S03-C05 по выпуску PR471; остальные48 критериев не переоценены.",
   "summary": {
-    "confirmed_points": 178.75,
+    "confirmed_points": 186.25,
     "total_weight": 1000,
     "assessed_criteria": 45,
     "unverified_criteria": 5,
@@ -279,22 +279,26 @@
     },
     {
       "criterion_id": "S03-C05",
-      "grade": 1,
+      "grade": 2,
       "evidence_ids": [
         "E02",
         "E09",
-        "E12"
+        "E12",
+        "HX-NEXT-001:S03-C05"
       ],
-      "finding": "Снимки позволяют отменять добавление последнего региона и восстанавливать неудачную генерацию.",
-      "limitations": "Правки биомов/POI не пишутся в history; reset/import очищают её; redo, именованных версий и приёмки 100 операций нет.",
+      "finding": "Existing manual edit families, import/reset, generation/delete/regenerate are reversible in ordinary tested scenarios, with 100 exact undo/redo steps. Named versions are absent, so full target is incomplete; automated coverage alone does not establish G3 user confirmation.",
+      "limitations": "Local browser not rerun: prior independent reviewer documented missing Chromium/download failure; this assessment directly inspected successful release CI logs on exact released SHA.; No independent user confirmation sufficient for G3; no comparative evidence for G4.; Named map versions and persisted history absent; 100 transactions retained only within current session.; Large-map snapshot memory, real mobile devices, unknown legacy formats and unrelated criteria not reassessed.",
       "title": "Undo / redo и версии",
       "weight": 20,
       "target": "Все изменения обратимы; минимум 100 операций и именованные версии карты",
       "baseline_sha": "f89530abe1e237493dddb533502bb772ae1ab4e5",
-      "checked_on": "2026-10-22",
-      "method": "existing_ci_and_source_review",
+      "checked_on": "2026-10-24",
+      "method": "Inspect detached exact snapshots, 100-entry stacks, no-op/error semantics and independent generation checkpoints; repeat manual-family/100 mixed handler tests; inspect release UI 100 mixed successful mutations with each undo/redo snapshot and classic/Mythic cases.",
       "status": "assessed",
-      "points": 5.0
+      "points": 10,
+      "assessed_sha": "6aaefa8896e7aac163cfcd5c2ca896ac60fc54d0",
+      "score_assessment_ref": "agent-work/results/2026-10-24-score-assessment-HX-NEXT-001.json",
+      "last_task_id": "HX-NEXT-001"
     },
     {
       "criterion_id": "S04-C01",
@@ -814,22 +818,26 @@
     },
     {
       "criterion_id": "S09-C04",
-      "grade": 1,
+      "grade": 2,
       "evidence_ids": [
         "E02",
         "E09",
-        "E12"
+        "E12",
+        "HX-NEXT-001:S09-C04"
       ],
-      "finding": "Проверка части входных данных до загрузки и откат неудачной генерации реализованы.",
-      "limitations": "Валидация roads/ID/references/ui неполная; импорт применяет несколько setState; правки/reset/import не имеют общей отмены. Повреждение карты не воспроизводилось в этом аудите.",
+      "finding": "Ordinary supported import errors preserve current document and both stacks, supported v2 data round-trips without layer/name loss within documented normalization, and destructive import/reset are reversible. This exceeds isolated prototype G1 and meets ordinary-scenario G2.",
+      "limitations": "Finite supported v2 corpus and ordinary scenarios; no exhaustive malformed-input/fuzz proof.; Local browser not rerun: prior independent reviewer documented missing Chromium/download failure; this assessment directly inspected successful release CI logs on exact released SHA.; No independent user confirmation sufficient for G3; no comparative evidence for G4.; Does not assert support for unknown formats or universal absence of data loss.",
       "title": "Безопасность данных",
       "weight": 10,
       "target": "Ошибочный импорт не меняет карту; разрушительные действия обратимы; round-trip без потерь",
       "baseline_sha": "f89530abe1e237493dddb533502bb772ae1ab4e5",
-      "checked_on": "2026-10-22",
-      "method": "existing_ci_and_source_review",
+      "checked_on": "2026-10-24",
+      "method": "Compare baseline deficiencies with structural validation and fully prepared import transaction; independently repeat malformed/preparation failure preservation, corpus round-trip and safe continuation; inspect real UI release acceptance.",
       "status": "assessed",
-      "points": 2.5
+      "points": 5,
+      "assessed_sha": "6aaefa8896e7aac163cfcd5c2ca896ac60fc54d0",
+      "score_assessment_ref": "agent-work/results/2026-10-24-score-assessment-HX-NEXT-001.json",
+      "last_task_id": "HX-NEXT-001"
     },
     {
       "criterion_id": "S09-C05",
@@ -1229,6 +1237,50 @@
       "method": "Прочитаны список и статусы; PR190 не означает отсутствия JSON/PNG — они уже в main; PR458 draft preview не принят; 320/201/146 не подтверждают актуальность дефекта без воспроизведения.",
       "baseline_sha": "f89530abe1e237493dddb533502bb772ae1ab4e5",
       "checked_on": "2026-10-22"
+    },
+    "HX-NEXT-001:S09-C04": {
+      "title": "Независимое заключение по S09-C04",
+      "release_sha": "6aaefa8896e7aac163cfcd5c2ca896ac60fc54d0",
+      "reviewed_head_sha": "50d8b6f2414faa1f204cdd2a7ed936533707592c",
+      "checked_on": "2026-10-24",
+      "assessment_ref": "agent-work/results/2026-10-24-score-assessment-HX-NEXT-001.json",
+      "evidence_ref": "agent-work/evidence/HX-NEXT-001-score-assessment-6aaefa8.md",
+      "method": "Compare baseline deficiencies with structural validation and fully prepared import transaction; independently repeat malformed/preparation failure preservation, corpus round-trip and safe continuation; inspect real UI release acceptance.",
+      "evidence_ids_in_assessment": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5"
+      ],
+      "urls": [
+        "https://github.com/YuriyEmelyanov/Hexcrawl/blob/f33732b6f642a5fb2724ab7d2e114e37a37b43b8/agent-work/results/2026-10-24-score-assessment-HX-NEXT-001.json",
+        "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40103159125"
+      ]
+    },
+    "HX-NEXT-001:S03-C05": {
+      "title": "Независимое заключение по S03-C05",
+      "release_sha": "6aaefa8896e7aac163cfcd5c2ca896ac60fc54d0",
+      "reviewed_head_sha": "50d8b6f2414faa1f204cdd2a7ed936533707592c",
+      "checked_on": "2026-10-24",
+      "assessment_ref": "agent-work/results/2026-10-24-score-assessment-HX-NEXT-001.json",
+      "evidence_ref": "agent-work/evidence/HX-NEXT-001-score-assessment-6aaefa8.md",
+      "method": "Inspect detached exact snapshots, 100-entry stacks, no-op/error semantics and independent generation checkpoints; repeat manual-family/100 mixed handler tests; inspect release UI 100 mixed successful mutations with each undo/redo snapshot and classic/Mythic cases.",
+      "evidence_ids_in_assessment": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5"
+      ],
+      "urls": [
+        "https://github.com/YuriyEmelyanov/Hexcrawl/blob/f33732b6f642a5fb2724ab7d2e114e37a37b43b8/agent-work/results/2026-10-24-score-assessment-HX-NEXT-001.json",
+        "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40103159125"
+      ]
     }
-  }
+  },
+  "model_version": "1.1",
+  "latest_release_sha": "6aaefa8896e7aac163cfcd5c2ca896ac60fc54d0",
+  "last_score_update_at": "2026-10-24T15:02:07.209915+00:00",
+  "history_ref": "agent-work/score/history.json"
 }
