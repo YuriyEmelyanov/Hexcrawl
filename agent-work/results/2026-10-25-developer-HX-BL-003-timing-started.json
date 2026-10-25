@@ -3,47 +3,46 @@
   "run_id": "2026-10-25:developer:HX-BL-003:1805Z",
   "role": "developer",
   "task_id": "HX-BL-003",
-  "status": "baseline_timing_running",
+  "status": "baseline_timing_retry_running",
   "stage": "awaiting_external_CI",
-  "head_sha": "19f119036d3e12b2ac04c63fb6a17bcc507356fc",
-  "harness_sha": "4fc9f229e9b3329c74a37abe4514aebc6b008e8e",
+  "head_sha": "603fe11e0e1ff52ee83616790c3f93b33e6f4a70",
+  "harness_sha": "603fe11e0e1ff52ee83616790c3f93b33e6f4a70",
   "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474",
-  "workflow_run_id": 40220545363,
-  "workflow_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40220545363",
+  "workflow_run_id": 40228996488,
+  "workflow_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40228996488",
   "environment_manifest": "reports/HX-BL-003/timing-environment.json",
   "harness_report": "reports/HX-BL-003/timing-harness.md",
   "timing_results": "pending; no numbers claimed",
   "checks": {
-    "id": 40220549239,
-    "status": "completed",
-    "conclusion": "success",
-    "head": "4fc9f229e9b3329c74a37abe4514aebc6b008e8e"
+    "id": 40229001061,
+    "status": "in_progress",
+    "conclusion": null,
+    "head": "603fe11e0e1ff52ee83616790c3f93b33e6f4a70"
   },
   "local_checks": [
-    "node --check all3scripts",
-    "YAML parse",
-    "unique transformation guards",
-    "tsc --noEmit on ephemeral instrumented baseline"
+    "node --check patched timing script",
+    "synthetic selector null/duplicate/malformed/invisible targets and timeout guards passed"
   ],
   "product_source_changed": false,
   "optimization_started": false,
   "score_changed": false,
-  "next_step": "Inspect existing run40220545363 and ordinary/profiled artifacts; do not start duplicate corpus or baseline. Retain harness failures before changes. Choose diagnosis only after P1 metrics and trace.",
+  "next_step": "Inspect existing retry40228996488 artifacts and exact environment head; no duplicate run. Require full ordinary series and separate traces before diagnosis; source product unchanged.",
   "resume_guard": {
     "same_run_id": "2026-10-25:developer:HX-BL-003:1805Z",
-    "environment_head": "19f119036d3e12b2ac04c63fb6a17bcc507356fc",
-    "run_id": 40220545363,
-    "required": "Re-read branch/head/latest. Continue own waiting claim only if unchanged, otherwise inspect new actor."
+    "environment_head": "603fe11e0e1ff52ee83616790c3f93b33e6f4a70",
+    "harness_head": "603fe11e0e1ff52ee83616790c3f93b33e6f4a70",
+    "run_id": 40228996488,
+    "required": "Re-read head/latest and verify any self-generated environment commit on same timing retry before resuming."
   },
   "automation_health": {
     "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-10-25T18:58:50.151Z",
+      "checked_at": "2026-10-25T20:00:52.776Z",
       "is_enabled": true,
       "status": "checked"
     },
     "end": {
-      "checked_at": "2026-10-25T19:02:01.109Z",
+      "checked_at": "2026-10-25T20:04:54.216Z",
       "is_enabled": true,
       "status": "checked"
     },
@@ -59,5 +58,18 @@
       "step": "Collect cold, warmup and all five warm actions on seven checkpoints",
       "action": "Continue waiting on existing CI; no duplicate run, source change or optimization."
     }
-  ]
+  ],
+  "interrupted_run": {
+    "id": 40220545363,
+    "conclusion": "cancelled",
+    "completed_records": 48,
+    "selection_errors": 20,
+    "complete_four_selections": 0,
+    "full_json_equal": 48,
+    "artifact_id": 12612465494,
+    "report": "reports/HX-BL-003/interrupted-run40220545363.md",
+    "raw_records": "reports/HX-BL-003/interrupted-run40220545363.json",
+    "profiled_series": "skipped",
+    "limitation": "incomplete P1; no performance acceptance"
+  }
 }
