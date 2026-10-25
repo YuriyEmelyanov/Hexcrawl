@@ -5,6 +5,7 @@ import os from 'node:os';
 import {createHash} from 'node:crypto';
 import {fileURLToPath} from 'node:url';
 import assert from 'node:assert/strict';
+import {stripVTControlCharacters} from 'node:util';
 import {chromium} from 'playwright';
 
 const root=fileURLToPath(new URL('../',import.meta.url));
@@ -38,7 +39,7 @@ async function persist(name,data){const bytes=JSON.stringify(data,null,2)+'\n';a
 async function checkpoint(){await fs.writeFile(output+'manifest.json',JSON.stringify(manifest,null,2)+'\n');}
 async function bounded(promise,label){let timer;try{return await Promise.race([promise,new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('external180s timeout: '+label)),180000);})]);}finally{clearTimeout(timer);}}
 try{
-  await new Promise((resolve,reject)=>{let text='';const timer=setTimeout(()=>reject(Error('Preview server startup timeout')),15000);server.stdout.on('data',d=>{text+=d;if(text.includes('Local:')){clearTimeout(timer);resolve();}});server.on('error',reject);});
+  await new Promise((resolve,reject)=>{let text='';const timer=setTimeout(()=>reject(Error('Preview server startup timeout: '+stripVTControlCharacters(text))),15000);server.stdout.on('data',d=>{text+=d;if(stripVTControlCharacters(text).includes('Local:')){clearTimeout(timer);resolve();}});server.on('error',reject);server.on('exit',code=>{clearTimeout(timer);reject(Error('Preview exited '+code+': '+stripVTControlCharacters(text)));});});
   browser=await chromium.launch({headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});manifest.browser=browser.version();
   for(const spec of cases){
     const record={...spec,steps:[],checkpoints:[],unreached:[...targets],errors:[],status:'preparing'};manifest.cases.push(record);await checkpoint();
