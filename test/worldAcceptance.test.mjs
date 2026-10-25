@@ -10,6 +10,23 @@ function finish(h){for(let i=0;i<310&&h.render().kingdomJob;i++)h.render().advan
 function add(h){h.render().generateAt(h.render().candidateHexes[0]??{q:0,r:0});finish(h);assert.equal(h.render().generationError,null);}
 function regenerate(h){h.render().regenerateLastRegion();h.render().finishPendingRegeneration();finish(h);}
 
+for(const mode of ['classic','mythic'])test(`R5 consumed regeneration A stays inert after B and undo/redo ${mode}`,()=>{
+ const h=setup(mode);add(h);
+ h.render().regenerateLastRegion();const old=h.render().finishPendingRegeneration;old();finish(h);
+ regenerate(h);assert.equal(h.render().generationError,null);
+ function assertOldIsInert(stage){
+  const before=save(h),stacks=histories(h),document=copy(h.render().captureDocument()),logCount=h.logs.length;
+  old();assert.equal(h.render().kingdomJob,null,`${stage}: stale request must not start a job`);
+  assert.deepEqual(save(h),before,`${stage}: full saved document and both RNG streams`);
+  assert.deepEqual(copy(h.render().captureDocument()),document,`${stage}: session document/checkpoints`);
+  assert.deepEqual(histories(h),stacks,`${stage}: both transaction stacks`);
+  assert.equal(h.logs.length,logCount,`${stage}: no new generation event`);
+ }
+ assertOldIsInert('after B');
+ h.render().undoMap();assert.ok(h.render().redoHistory.length);assertOldIsInert('after undo with redo');
+ h.render().redoMap();assertOldIsInert('after redo');
+});
+
 test('R3 late Mythic regeneration failure retains original action and detached inputs',()=>{
  const h=setup('mythic');add(h);const before=save(h),stacks=histories(h);h.logs.length=0;
  h.render().regenerateLastRegion();h.render().finishPendingRegeneration();

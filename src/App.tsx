@@ -11266,7 +11266,7 @@ export function App() {
   const [obstacles, setObstacles] = useState<Obstacle[]>([]);
   const kingdomInFlight = useRef(false);
   const advancedJobs = useRef(new WeakSet<KingdomJob>());
-  const lastPendingRegen = useRef<object | null>(null);
+  const consumedRegenerations = useRef(new WeakSet<object>());
   const [kingdomJob, setKingdomJob] = useState<KingdomJob | null>(null);
   const [detailedRenderReady, setDetailedRenderReady] = useState(true);
   const [regions, setRegions] = useState<Region[]>([]);
@@ -13123,8 +13123,11 @@ export function App() {
   };
 
   const finishPendingRegeneration = () => {
-    if (!pendingRegen || lastPendingRegen.current===pendingRegen) return;
-    lastPendingRegen.current=pendingRegen;
+    // Keep every consumed request inert, including a captured A callback after B.
+    // Reject stale renders before starting a job, drawing RNG or using a backup.
+    if (!pendingRegen || consumedRegenerations.current.has(pendingRegen)
+      || documentRevision.current !== renderedDocumentRevision) return;
+    consumedRegenerations.current.add(pendingRegen);
     if (pendingRegen.options.mode === 'mythic') startKingdom(pendingRegen.anchorHex, pendingRegen.backup, pendingRegen.actionContext);
     else safelyAddRegionToMap(pendingRegen.anchorHex, pendingRegen.options, pendingRegen.backup);
     setPendingRegen(null);
