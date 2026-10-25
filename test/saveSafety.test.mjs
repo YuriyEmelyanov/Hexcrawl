@@ -1,3 +1,4 @@
+import {createGenerationState} from '../src/worldRandom.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -56,7 +57,7 @@ for (const family of ['roadCounter','regionId','lakeCounter','riverId']) {
     t.setWindow({alert:m=>{throw Error(m)},matchMedia:()=>({matches:false})});
     t.injectFunction('readTextFile',async f=>f.text);
     const data=JSON.parse(fs.readFileSync(new URL(`./fixtures/import-v2/${family==='regionId'?'manual-edit-map':'baseline-classic'}.json`,import.meta.url)));
-    if(family==='roadCounter')data.counters.nextRoadId=Number.MAX_SAFE_INTEGER;
+    if(family==='roadCounter'){data.counters.nextRoadId=Number.MAX_SAFE_INTEGER;data.generation=createGenerationState(0);}
     if(family==='lakeCounter')data.counters.nextLakeId=Number.MAX_SAFE_INTEGER;
     if(family==='regionId')data.map.regions[0].id=Number.MAX_SAFE_INTEGER;
     if(family==='riverId') {

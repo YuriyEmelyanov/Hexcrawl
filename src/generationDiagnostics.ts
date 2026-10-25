@@ -1,5 +1,6 @@
 // Bump when generation rules/algorithms change, independently of save format.
-export const GENERATION_ALGORITHM_VERSION = 'regions-2026-10-08-mythic.2';
+import { GENERATOR_VERSION, type GenerationState } from './worldRandom.ts';
+export const GENERATION_ALGORITHM_VERSION = GENERATOR_VERSION;
 export const MAX_REGION_ATTEMPTS = 30;
 
 export type GenerationOutcome = 'generated' | 'tract-created' | 'attempts-exhausted' | 'programming-error' | 'constraint-rejection';
@@ -19,6 +20,8 @@ export type GenerationEvent = {
   targetSize: number | null;
   message?: string;
   stack?: string;
+  random?: { before: GenerationState; after: GenerationState };
+  inputOptions?: Record<string, unknown>;
 };
 
 // No global console interception. Profiling remains completely independent.
@@ -38,7 +41,7 @@ export function createGenerationLogger(search = '', sink: Pick<Console, 'log' | 
         ...event, algorithmVersion: GENERATION_ALGORITHM_VERSION,
         maxAttempts: MAX_REGION_ATTEMPTS, warningCounts,
         // Replace with the common RNG snapshot when that generator is introduced.
-        random: { source: 'Math.random', state: null }
+        random: event.random ?? null
       });
       warningCounts = {};
       if (event.kind === 'programming-error') sink.error('[generation]', record);

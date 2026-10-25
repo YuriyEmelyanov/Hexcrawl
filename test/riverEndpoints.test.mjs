@@ -7,7 +7,7 @@ function fixture(direction, fullness = 3, sea = false) {
   h.render().addFallbackTractToMap({ q: -5, r: 0 });
   const hex = { q: -1, r: 0 }, anchor = { q: 0, r: 0 };
   const template = h.render().regions[0];
-  const region = { ...template, id: 1, hexes: [hex], anchorHex: hex, centerHex: hex, finalSize: 1, pointsOfInterest: [] };
+  const region = { ...template, id: 1, hexes: [hex], anchorHex: hex, centerHex: hex, finalSize: 1, pointsOfInterest: [], pointOfInterestKinds: {} };
   const ac = new Set(g.getHexCornerPoints(anchor).map(v => v.key)), cs = g.getHexCornerPoints(hex);
   const i = cs.findIndex((v, j) => ac.has(v.key) && !ac.has(cs[(j + 1) % 6].key));
   const path = [cs[i], cs[(i + 1) % 6], cs[(i + 2) % 6]];

@@ -107,7 +107,8 @@ test('RIV-EX-03/19 adapter solves real sector directions at a junction and prese
 });
 
 test('RIV-EX-08 tract lake source uses actual area and retains exact old downstream flow', () => {
-  const { h, snapshot, anchor } = outgoingFixture(2, 3);
+  // mulberry32-v1 seed 0 reproduces the same required source-lake extension.
+  const { h, snapshot, anchor } = outgoingFixture(0, 3);
   h.render().safelyAddRegionToMap(anchor, { coastalPreference: 'mainland', targetSize: 1 });
   checkExtension(h, snapshot.rivers);
   assert.ok(h.render().rivers[0].vertexPath.length > snapshot.rivers[0].vertexPath.length, 'source was actually connected');

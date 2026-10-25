@@ -1,3 +1,4 @@
+import { type RandomStreams, type GenerationState, fallbackRandomStreams, poiRandomStreams, createGenerationState, cloneGenerationState, draw, toponymSeedFor, newWorldSeed, isUint32 } from './worldRandom';
 import { validateSaveStructure, SaveValidationError, assertGeneratedIds } from './saveValidation';
 import { installViewportRasterCache } from './rendering/viewportRasterCache';
 import {assignWoodlandStyle,chooseWoodlandStyle,type WoodlandStyle} from './modes/woodlandStyle';
@@ -447,7 +448,8 @@ type Biome = {
 
 type HexcrawlSaveData = {
   schema: 'hexcrawl-map';
-  version: 2;
+  version: 2 | 3;
+  generation?: GenerationState;
   savedAt: string;
   map: {
     kingdoms?: Kingdom[];
@@ -482,7 +484,7 @@ type ValidatedHexcrawlSaveData = HexcrawlSaveData & {
 };
 
 const HEXCRAWL_SAVE_SCHEMA = 'hexcrawl-map';
-const HEXCRAWL_SAVE_VERSION = 2;
+const HEXCRAWL_SAVE_VERSION = 3;
 const PNG_EXPORT_SCALE = 2;
 const EXPORT_FILE_PREFIX = 'hexcrawl-map';
 const BIOME_TILE_HREFS: Partial<Record<BiomeId, string>> = {
@@ -1069,16 +1071,16 @@ function readTextFile(file: File): Promise<string> {
   });
 }
 
-function randomInt(min: number, max: number): number {
+function randomInt(min: number, max: number, rng: RandomStreams = fallbackRandomStreams): number {
   const lower = Math.ceil(min);
   const upper = Math.floor(max);
-  return Math.floor(Math.random() * (upper - lower + 1)) + lower;
+  return Math.floor(rng.geography() * (upper - lower + 1)) + lower;
 }
 
-function shuffleArray<T>(values: T[]): T[] {
+function shuffleArray<T>(values: T[], rng: RandomStreams = fallbackRandomStreams): T[] {
   const result = [...values];
   for (let i = result.length - 1; i > 0; i -= 1) {
-    const j = randomInt(0, i);
+    const j = randomInt(0, i, rng);
     [result[i], result[j]] = [result[j], result[i]];
   }
   return result;
@@ -1187,13 +1189,13 @@ function vertexKey(x: number, y: number): string {
   return `${round3(x)},${round3(y)}`;
 }
 
-function randomFrom<T>(values: T[]): T {
-  return values[Math.floor(Math.random() * values.length)];
+function randomFrom<T>(values: T[], rng: RandomStreams = fallbackRandomStreams): T {
+  return values[Math.floor(rng.geography() * values.length)];
 }
 
 
-function assignCentralPoiKindForRegion(biomeLandType: BiomeLandType, sizeCategory: Region['sizeCategory']): CentralPoiKind {
-  if (biomeLandType === 'wild') return randomFrom(WILD_CENTRAL_POI_KINDS);
+function assignCentralPoiKindForRegion(biomeLandType: BiomeLandType, sizeCategory: Region['sizeCategory'], rng: RandomStreams = fallbackRandomStreams): CentralPoiKind {
+  if (biomeLandType === 'wild') return randomFrom(WILD_CENTRAL_POI_KINDS, poiRandomStreams(rng));
   if (sizeCategory === 'vast_land') return 'capital';
   if (sizeCategory === 'land' || sizeCategory === 'large_region') return 'city';
   if (sizeCategory === 'region' || sizeCategory === 'small_region') return 'town';
@@ -1235,13 +1237,13 @@ const REGION_SIZE_CATEGORY_RANGES: Record<Region['sizeCategory'], [number, numbe
   vast_land: [51, 60]
 };
 
-function rollRegionSizeInCategory(category: Region['sizeCategory']): number {
+function rollRegionSizeInCategory(category: Region['sizeCategory'], rng: RandomStreams = fallbackRandomStreams): number {
   const [min, max] = REGION_SIZE_CATEGORY_RANGES[category];
-  return randomInt(min, max);
+  return randomInt(min, max, rng);
 }
 
-function rollTractTargetSize(): number {
-  return rollRegionSizeInCategory('tract');
+function rollTractTargetSize(rng: RandomStreams = fallbackRandomStreams): number {
+  return rollRegionSizeInCategory('tract', rng);
 }
 
 const TRACT_GROWTH_WEIGHT_EXPONENT = 1.5;
@@ -1251,6 +1253,7 @@ const TRACT_GROWTH_WEIGHT_EXPONENT = 1.5;
 // чтобы пытаться "откатить" все побочные эффекты генерации рек и дорог
 // (которые могут менять соседние регионы), мы просто восстанавливаем снимок.
 type MapSnapshot = {
+  generation: GenerationState;
   kingdoms?: Kingdom[];
   obstacles?: Obstacle[];
   regions: Region[];
@@ -1277,7 +1280,8 @@ type GenerationBackup = {
   map: MapSnapshot; history: MapSnapshot[]; selectedHex: AxialHex | null;
   document?: DocumentSnapshot; undo?: MapTransaction[]; redo?: MapTransaction[];
 };
-type KingdomJob = { preferredAnchor?: AxialHex; recoveries?: number; failureBackup?: GenerationBackup; backup: GenerationBackup; origin: AxialHex; anchor: AxialHex; id: number; startCount: number; steps: number; phase: 'connect' | 'build'; first: boolean; };
+type GenerationActionContext = { action: 'add' | 'regenerate'; inputOptions: Record<string, unknown> };
+type KingdomJob = { actionContext: GenerationActionContext; preferredAnchor?: AxialHex; recoveries?: number; failureBackup?: GenerationBackup; backup: GenerationBackup; origin: AxialHex; anchor: AxialHex; id: number; startCount: number; steps: number; phase: 'connect' | 'build'; first: boolean; };
 type GenerationDiagnostic = ReturnType<typeof generationLog.finish>;
 
 function getToponymEntities(regions: Region[], rivers: River[], terrain: Map<string, HexTerrainData>): ToponymEntity[] {
@@ -1323,9 +1327,9 @@ function legacyToponymSeed(regions: Region[]): number {
   return value >>> 0;
 }
 
-function chooseBiomeLandType(regionCount: number): BiomeLandType {
+function chooseBiomeLandType(regionCount: number, rng: RandomStreams = fallbackRandomStreams): BiomeLandType {
   if (regionCount === 0) return 'settled';
-  return Math.floor(Math.random() * 100) + 1 <= 20 ? 'settled' : 'wild';
+  return Math.floor(rng.geography() * 100) + 1 <= 20 ? 'settled' : 'wild';
 }
 
 type BiomeCompatibilityMatrix = Partial<Record<BiomeId, Partial<Record<BiomeId, boolean>>>>;
@@ -1375,10 +1379,10 @@ function isBiomesCompatible(biomeA: BiomeId, biomeB: BiomeId, compatibilityMatri
 }
 
 
-function chooseWeightedRandom(weights: Record<BiomeId, number>): BiomeId {
+function chooseWeightedRandom(weights: Record<BiomeId, number>, rng: RandomStreams = fallbackRandomStreams): BiomeId {
   const total = Object.values(weights).reduce((acc, value) => acc + value, 0);
   if (total <= 0) return FALLBACK_BIOME_ID;
-  let roll = Math.random() * total;
+  let roll = rng.geography() * total;
   for (const biomeId of Object.keys(weights) as BiomeId[]) {
     roll -= weights[biomeId];
     if (roll <= 0) return biomeId;
@@ -1403,7 +1407,7 @@ function chooseBiomeId(
   landType: BiomeLandType,
   adjacentBiomeIds: BiomeId[],
   regionId?: number,
-  riverHeightConstraint?: RiverHeightConstraint
+  riverHeightConstraint?: RiverHeightConstraint, rng: RandomStreams = fallbackRandomStreams
 ): ChooseBiomeResult {
   const baseWeights = {} as Record<BiomeId, number>;
   for (const biome of Object.values(BIOMES)) {
@@ -1435,7 +1439,7 @@ function chooseBiomeId(
   }
 
   const strictWeightSum = Object.values(strictWeights).reduce((acc, value) => acc + value, 0);
-  if (strictWeightSum > 0) return { biomeId: chooseWeightedRandom(strictWeights) };
+  if (strictWeightSum > 0) return { biomeId: chooseWeightedRandom(strictWeights, rng) };
 
   if (adjacentBiomeIds.length > 0) {
     const relaxedWeights = { ...baseWeights };
@@ -1456,7 +1460,7 @@ function chooseBiomeId(
       adjacentBiomeIds
     });
 
-    if (relaxedWeightSum > 0) return { biomeId: chooseWeightedRandom(relaxedWeights) };
+    if (relaxedWeightSum > 0) return { biomeId: chooseWeightedRandom(relaxedWeights, rng) };
   }
 
   const fallbackBiomeId = landType === 'settled'
@@ -1478,7 +1482,7 @@ function chooseBiomeIdAtHeightLevel(
   adjacentBiomeIds: BiomeId[],
   regionId: number | undefined,
   requiredHeightLevel: RegionHeightLevel,
-  riverHeightConstraint?: RiverHeightConstraint
+  riverHeightConstraint?: RiverHeightConstraint, rng: RandomStreams = fallbackRandomStreams
 ): ChooseBiomeResult {
   const constrainedWeights = {} as Record<BiomeId, number>;
   const uniqueAdjacentBiomeIds = new Set(adjacentBiomeIds);
@@ -1500,7 +1504,7 @@ function chooseBiomeIdAtHeightLevel(
   }
 
   if (Object.values(constrainedWeights).some((weight) => weight > 0)) {
-    return { biomeId: chooseWeightedRandom(constrainedWeights) };
+    return { biomeId: chooseWeightedRandom(constrainedWeights, rng) };
   }
 
   const relaxedWeights = {} as Record<BiomeId, number>;
@@ -1519,7 +1523,7 @@ function chooseBiomeIdAtHeightLevel(
       adjacentBiomeIds,
       requiredHeightLevel
     });
-    return { biomeId: chooseWeightedRandom(relaxedWeights) };
+    return { biomeId: chooseWeightedRandom(relaxedWeights, rng) };
   }
 
   // A zero weight stays zero even when a river requires an exact height.
@@ -2911,7 +2915,7 @@ function tryAddEdgeMinorTributaryRiverImpl(
   riverGraph: RiverGraph,
   rivers: River[],
   candidateHexes: AxialHex[],
-  riverSlope?: RiverSlopeInfo
+  riverSlope?: RiverSlopeInfo, rng: RandomStreams = fallbackRandomStreams
 ): River[] {
   let candidateStartCount = 0;
   let outgoingRiverCount = 0;
@@ -3103,7 +3107,7 @@ function tryAddEdgeMinorTributaryRiverImpl(
         for (let index = 1; index < path.length; index += 1) pathEdgeKeys.add(edgeKey(path[index - 1], path[index]));
 
         const nextVertices = orderRiverSlopeVertices(
-          shuffleArray(getNeighborRiverVertices(current, riverGraph)),
+          shuffleArray(getNeighborRiverVertices(current, riverGraph), rng),
           riverSlope,
           'downstream'
         );
@@ -3122,7 +3126,7 @@ function tryAddEdgeMinorTributaryRiverImpl(
       return bestPath;
     };
 
-    for (const startVertex of orderRiverSlopeVertices(shuffleArray(startCandidates), riverSlope, 'upstream')) {
+    for (const startVertex of orderRiverSlopeVertices(shuffleArray(startCandidates, rng), riverSlope, 'upstream')) {
       const path = findEdgeTributaryPathToTargetRiver(startVertex);
       if (!path) continue;
 
@@ -3163,7 +3167,7 @@ function tryAddSmallTributaryRiverImpl(
   riverGraph: RiverGraph,
   rivers: River[],
   candidateHexes: AxialHex[],
-  riverSlope?: RiverSlopeInfo
+  riverSlope?: RiverSlopeInfo, rng: RandomStreams = fallbackRandomStreams
 ): River[] {
   const maxSegmentCount = 6;
   const logGeneration = ({
@@ -3198,7 +3202,7 @@ function tryAddSmallTributaryRiverImpl(
   try {
     const hasMountainFullnessTwoOrThreeOutgoingRiver = hasFullnessTwoOrThreeMountainOutgoingRiver(region, rivers, riverGraph);
     if (region.sizeCategory === 'large_region' || region.sizeCategory === 'land' || region.sizeCategory === 'vast_land') {
-      return tryAddEdgeMinorTributaryRiver(region, terrainMap, riverGraph, rivers, candidateHexes, riverSlope);
+      return tryAddEdgeMinorTributaryRiver(region, terrainMap, riverGraph, rivers, candidateHexes, riverSlope, rng);
     }
     const supportsInteriorTributary = region.sizeCategory === 'locality'
       || region.sizeCategory === 'small_region'
@@ -3215,7 +3219,7 @@ function tryAddSmallTributaryRiverImpl(
     }
     const tryMountainEdgeFallback = (): River[] => {
       if (!hasMountainFullnessTwoOrThreeOutgoingRiver) return rivers;
-      return tryAddEdgeMinorTributaryRiver(region, terrainMap, riverGraph, rivers, candidateHexes, riverSlope);
+      return tryAddEdgeMinorTributaryRiver(region, terrainMap, riverGraph, rivers, candidateHexes, riverSlope, rng);
     };
 
     const existingRiverVertexKeys = new Set(regionRivers.flatMap((river) => river.vertexPath.map((v) => v.key)));
@@ -3282,7 +3286,7 @@ function tryAddSmallTributaryRiverImpl(
       return min;
     };
     const sortMinorTributaryCandidates = (vertices: RiverVertex[]): RiverVertex[] => {
-      const randomized = shuffleArray(vertices);
+      const randomized = shuffleArray(vertices, rng);
       return randomized.sort((a, b) => {
         const projectionA = getRiverSlopeProjection(a, riverSlope);
         const projectionB = getRiverSlopeProjection(b, riverSlope);
@@ -3359,7 +3363,7 @@ function tryAddSmallTributaryRiverImpl(
 
     let builtResult: MinorRiverBuildResult | null = null;
     let sawFirstEdgeCandidate = false;
-    for (const startVertex of orderRiverSlopeVertices(shuffleArray(startCandidates), riverSlope, 'downstream')) {
+    for (const startVertex of orderRiverSlopeVertices(shuffleArray(startCandidates, rng), riverSlope, 'downstream')) {
       const possibleFirstEdges = getNeighborRiverVertices(startVertex, riverGraph).filter((next) => (
         isValidEdge(startVertex, next, new Set<string>())
         && !isForbiddenInteriorVertex(next)
@@ -3586,12 +3590,12 @@ function findBestPathFromLakeToOutgoingEndpoint(
   });
 }
 
-function chooseRandomRegionExteriorVertexPair(regionExteriorVertices: RiverVertex[]): { startVertex: RiverVertex; endVertex: RiverVertex } | null {
+function chooseRandomRegionExteriorVertexPair(regionExteriorVertices: RiverVertex[], rng: RandomStreams = fallbackRandomStreams): { startVertex: RiverVertex; endVertex: RiverVertex } | null {
   if (regionExteriorVertices.length < 2) return null;
-  const startVertex = randomFrom(regionExteriorVertices);
+  const startVertex = randomFrom(regionExteriorVertices, rng);
   const endPool = regionExteriorVertices.filter((vertex) => vertex.key !== startVertex.key);
   if (endPool.length === 0) return null;
-  return { startVertex, endVertex: randomFrom(endPool) };
+  return { startVertex, endVertex: randomFrom(endPool, rng) };
 }
 
 function validateRiverPathUsesExteriorEndpoints(
@@ -4054,7 +4058,7 @@ function addLakeAroundRiverSplitVertex(
   region: Region,
   splitVertex: RiverVertex,
   lakeHexCount: number,
-  terrainMap: Map<string, HexTerrainData>
+  terrainMap: Map<string, HexTerrainData>, rng: RandomStreams = fallbackRandomStreams
 ): { lakeId: number; hexes: AxialHex[] } | null {
   const targetHexCount = Math.max(1, lakeHexCount);
   const availableRegionHexes = region.hexes.filter((hex) => !isLakeHex(hex, terrainMap));
@@ -4064,7 +4068,7 @@ function addLakeAroundRiverSplitVertex(
   const splitVertexTouchingHexes = availableRegionHexes.filter((hex) => getHexCornerPoints(hex).some((corner) => corner.key === splitVertex.key));
   if (!splitVertexTouchingHexes.length || availableRegionHexes.length < targetHexCount) return null;
   const seedHexes = splitVertexTouchingHexes;
-  const seedHex = randomFrom(seedHexes);
+  const seedHex = randomFrom(seedHexes, rng);
   const regionHexByKey = new Map(availableRegionHexes.map((hex) => [hexKey(hex), hex]));
   const seedKey = hexKey(seedHex);
   const selectedKeys = new Set<string>([seedKey]);
@@ -4180,7 +4184,7 @@ function buildConnectorSplitForFullnessDrop(
   upstreamVertex: RiverVertex,
   downstreamRiverId: number,
   downstreamVertex: RiverVertex,
-  connectorPath: RiverVertex[]
+  connectorPath: RiverVertex[], rng: RandomStreams = fallbackRandomStreams
 ): RiverConnectorSplit | null | undefined {
   const upstreamFullness = getEndpointFullnessForRiver(existingRivers, upstreamRiverId, upstreamVertex.key);
   const downstreamFullness = getEndpointFullnessForRiver(existingRivers, downstreamRiverId, downstreamVertex.key);
@@ -4191,7 +4195,7 @@ function buildConnectorSplitForFullnessDrop(
   if (splitCandidateVertices.length === 0) return null;
 
   return {
-    vertex: randomFrom(splitCandidateVertices),
+    vertex: randomFrom(splitCandidateVertices, rng),
     upstreamFullness,
     downstreamFullness
   };
@@ -4200,14 +4204,14 @@ function buildConnectorSplitForFullnessDrop(
 function addConnectorSplitLakeIfNeeded(
   region: Region,
   terrainMap: Map<string, HexTerrainData>,
-  connectorSplit?: RiverConnectorSplit
+  connectorSplit?: RiverConnectorSplit, rng: RandomStreams = fallbackRandomStreams
 ): void {
   if (!connectorSplit) return;
   addLakeAroundRiverSplitVertex(
     region,
     connectorSplit.vertex,
     connectorSplit.upstreamFullness - connectorSplit.downstreamFullness,
-    terrainMap
+    terrainMap, rng
   );
 }
 
@@ -4272,23 +4276,23 @@ function chooseRandomRiverControlPoints(
   redVertices: RiverVertex[],
   purpleVertices: RiverVertex[],
   existingRiverEndpointVerticesInRegion: RiverVertex[],
-  riverSlope?: RiverSlopeInfo
+  riverSlope?: RiverSlopeInfo, rng: RandomStreams = fallbackRandomStreams
 ): { startVertex: RiverVertex; middlePurpleVertex?: RiverVertex; endVertex: RiverVertex; startMode: 'existing river endpoint' | 'red vertex' } | null {
-  const choosePreferredEndVertex = (endPool: RiverVertex[]): RiverVertex => chooseRiverSlopeExtremeVertex(endPool, riverSlope, 'downstream', randomFrom);
+  const choosePreferredEndVertex = (endPool: RiverVertex[]): RiverVertex => chooseRiverSlopeExtremeVertex(endPool, riverSlope, 'downstream', vertices => randomFrom(vertices, rng));
 
   if (existingRiverEndpointVerticesInRegion.length > 0) {
     if (redVertices.length < 1) return null;
-    const startVertex = randomFrom(existingRiverEndpointVerticesInRegion);
+    const startVertex = randomFrom(existingRiverEndpointVerticesInRegion, rng);
     const endPool = redVertices.filter((vertex) => vertex.key !== startVertex.key);
     if (endPool.length === 0) return null;
     const endVertex = choosePreferredEndVertex(endPool);
     if (purpleVertices.length === 0) return { startVertex, endVertex, startMode: 'existing river endpoint' };
     const preferredMiddle = purpleVertices.filter((vertex) => vertex.key !== startVertex.key && vertex.key !== endVertex.key);
     const middlePool = preferredMiddle.length > 0 ? preferredMiddle : purpleVertices;
-    return { startVertex, middlePurpleVertex: randomFrom(middlePool), endVertex, startMode: 'existing river endpoint' };
+    return { startVertex, middlePurpleVertex: randomFrom(middlePool, rng), endVertex, startMode: 'existing river endpoint' };
   }
   if (redVertices.length < 2) return null;
-  const startVertex = chooseRiverSlopeExtremeVertex(redVertices, riverSlope, 'upstream', randomFrom);
+  const startVertex = chooseRiverSlopeExtremeVertex(redVertices, riverSlope, 'upstream', vertices => randomFrom(vertices, rng));
   const candidateEndVertices = redVertices.filter((vertex) => vertex.key !== startVertex.key);
   if (candidateEndVertices.length === 0) return null;
   const endVertex = choosePreferredEndVertex(candidateEndVertices);
@@ -4304,7 +4308,7 @@ function chooseRandomRiverControlPoints(
     (vertex) => vertex.key !== startVertex.key && vertex.key !== endVertex.key
   );
   const middlePool = preferredMiddle.length > 0 ? preferredMiddle : purpleVertices;
-  const middlePurpleVertex = randomFrom(middlePool);
+  const middlePurpleVertex = randomFrom(middlePool, rng);
   return { startVertex, middlePurpleVertex, endVertex, startMode: 'red vertex' };
 }
 
@@ -4636,14 +4640,14 @@ function validateCandidateBoundaryVertices(
   return candidateBoundaryVertices.filter((vertex) => !validVertexKeys.has(vertex.key));
 }
 
-export function rollRegionTargetSize(): number {
-  const roll = randomInt(1, 100);
-  if (roll <= 5) return randomInt(6, 10);
-  if (roll <= 40) return randomInt(11, 20);
-  if (roll <= 65) return randomInt(21, 30);
-  if (roll <= 83) return randomInt(31, 40);
-  if (roll <= 95) return randomInt(41, 50);
-  return randomInt(51, 60);
+export function rollRegionTargetSize(rng: RandomStreams = fallbackRandomStreams): number {
+  const roll = randomInt(1, 100, rng);
+  if (roll <= 5) return randomInt(6, 10, rng);
+  if (roll <= 40) return randomInt(11, 20, rng);
+  if (roll <= 65) return randomInt(21, 30, rng);
+  if (roll <= 83) return randomInt(31, 40, rng);
+  if (roll <= 95) return randomInt(41, 50, rng);
+  return randomInt(51, 60, rng);
 }
 
 export function getRegionSizeCategory(size: number): Pick<Region, 'sizeCategory' | 'sizeLabel'> {
@@ -4725,8 +4729,8 @@ function getRiverSlopeEdgeDistance(centerHex: AxialHex, edgeKeyValue: string, ed
   return Math.min(...edgeHexes.map((hex) => hexDistance(centerHex, hex)));
 }
 
-function createRandomRiverSlopeInfo(radius: number): RiverSlopeInfo {
-  const direction = randomFrom(RIVER_SLOPE_DIRECTIONS);
+function createRandomRiverSlopeInfo(radius: number, rng: RandomStreams = fallbackRandomStreams): RiverSlopeInfo {
+  const direction = randomFrom(RIVER_SLOPE_DIRECTIONS, rng);
   const directionScores = createEmptyRiverSlopeDirectionScores();
   directionScores[direction.label] = 1;
 
@@ -4747,7 +4751,7 @@ function calculateRiverSlopeInfoImpl(
   centerHex: AxialHex,
   existingHexes: AxialHex[],
   rivers: River[],
-  radius = RIVER_SLOPE_RADIUS
+  radius = RIVER_SLOPE_RADIUS, rng: RandomStreams = fallbackRandomStreams
 ): RiverSlopeInfo {
   const directionScores = createEmptyRiverSlopeDirectionScores();
   const edgeHexesByKey = buildRiverEdgeHexesByKey(existingHexes);
@@ -4782,7 +4786,7 @@ function calculateRiverSlopeInfoImpl(
 
   const totalContribution = Object.values(directionScores).reduce((sum, score) => sum + score, 0);
   if (totalContribution <= 0) {
-    return createRandomRiverSlopeInfo(radius);
+    return createRandomRiverSlopeInfo(radius, rng);
   }
 
   const strength = Math.hypot(vector.x, vector.y);
@@ -5119,7 +5123,7 @@ export function getGrowthCandidate(
   };
 }
 
-export function weightedPickCandidate(candidates: GrowthCandidate[]): GrowthCandidate | null {
+export function weightedPickCandidate(candidates: GrowthCandidate[], rng: RandomStreams = fallbackRandomStreams): GrowthCandidate | null {
   if (candidates.length === 0) {
     return null;
   }
@@ -5129,7 +5133,7 @@ export function weightedPickCandidate(candidates: GrowthCandidate[]): GrowthCand
     return null;
   }
 
-  let roll = Math.random() * totalWeight;
+  let roll = rng.geography() * totalWeight;
   for (const candidate of candidates) {
     roll -= candidate.totalGrowthWeight;
     if (roll <= 0) {
@@ -5204,7 +5208,7 @@ function generateConnectedRegionFromAnchorImpl(
   size: number,
   occupiedHexes: Set<string>,
   zeroWeightHexes: Set<string> = new Set(),
-  neutralOccupiedNeighborWeightHexes: Set<string> = new Set()
+  neutralOccupiedNeighborWeightHexes: Set<string> = new Set(), rng: RandomStreams = fallbackRandomStreams
 ): AxialHex[] {
   const targetSize = Math.max(1, size);
   const regionKeys = new Set<string>([hexKey(anchorHex)]);
@@ -5232,7 +5236,7 @@ function generateConnectedRegionFromAnchorImpl(
     const growthCandidates = frontierCandidates
       .map((candidate) => getGrowthCandidate(candidate, regionKeys, occupiedHexes, zeroWeightHexes, neutralOccupiedNeighborWeightHexes))
       .filter((candidate): candidate is GrowthCandidate => candidate !== null);
-    const picked = weightedPickCandidate(growthCandidates);
+    const picked = weightedPickCandidate(growthCandidates, rng);
     if (!picked) break;
     addHexToRegionWithFrontier(picked.hex, regionKeys, occupiedHexes, frontier);
   }
@@ -5240,7 +5244,8 @@ function generateConnectedRegionFromAnchorImpl(
   return Array.from(regionKeys).map(parseHexKey);
 }
 
-function generateFallbackTractFromAnchor(anchorHex: AxialHex, occupiedHexes: Set<string>, targetSize = rollTractTargetSize()): AxialHex[] {
+function generateFallbackTractFromAnchor(anchorHex: AxialHex, occupiedHexes: Set<string>, targetSize: number | undefined = undefined, rng: RandomStreams = fallbackRandomStreams): AxialHex[] {
+  targetSize ??= rollTractTargetSize(rng);
   const regionKeys = new Set<string>([hexKey(anchorHex)]);
   const frontier = new Map<string, AxialHex>();
   addHexToRegionWithFrontier(anchorHex, regionKeys, occupiedHexes, frontier);
@@ -5273,7 +5278,7 @@ function generateFallbackTractFromAnchor(anchorHex: AxialHex, occupiedHexes: Set
         TRACT_GROWTH_WEIGHT_EXPONENT
       ))
       .filter((candidate): candidate is GrowthCandidate => candidate !== null);
-    const picked = weightedPickCandidate(growthCandidates);
+    const picked = weightedPickCandidate(growthCandidates, rng);
     if (!picked) break;
     addHexToRegionWithFrontier(picked.hex, regionKeys, occupiedHexes, frontier);
   }
@@ -5350,7 +5355,7 @@ function getSeaKeysToFillForTractSeaTouch(
   return Array.from(eligibleKeys).filter((key) => connectedToTouchedSea.has(key));
 }
 
-export function chooseRegionCenter(regionHexes: AxialHex[]): AxialHex {
+export function chooseRegionCenter(regionHexes: AxialHex[], rng: RandomStreams = fallbackRandomStreams): AxialHex {
   if (regionHexes.length === 1) {
     return regionHexes[0];
   }
@@ -5366,7 +5371,7 @@ export function chooseRegionCenter(regionHexes: AxialHex[]): AxialHex {
     .filter(({ sameRegionNeighborCount }) => sameRegionNeighborCount === maxNeighborCount)
     .map(({ hex }) => hex);
 
-  return randomFrom(bestCenterCandidates);
+  return randomFrom(bestCenterCandidates, rng);
 }
 
 function getBiomeColor(biomeId: BiomeId | undefined): string {
@@ -5442,7 +5447,7 @@ function getHexSameRegionNeighborCount(hex: AxialHex, regionKeys: Set<string>): 
   return getHexNeighbors(hex).filter((neighbor) => regionKeys.has(hexKey(neighbor))).length;
 }
 
-function chooseCoastalCenterHex(regionHexes: AxialHex[], seaKeys: Set<string>, rivers: River[]): AxialHex | null {
+function chooseCoastalCenterHex(regionHexes: AxialHex[], seaKeys: Set<string>, rivers: River[], rng: RandomStreams = fallbackRandomStreams): AxialHex | null {
   const regionKeys = new Set(regionHexes.map(hexKey));
   const candidates = regionHexes.filter((hex) => {
     const seaNeighbors = getHexNeighbors(hex).filter((neighbor) => seaKeys.has(hexKey(neighbor)));
@@ -5457,10 +5462,10 @@ function chooseCoastalCenterHex(regionHexes: AxialHex[], seaKeys: Set<string>, r
   if (candidates.length === 0) return null;
 
   const maxNeighborCount = Math.max(...candidates.map((hex) => getHexSameRegionNeighborCount(hex, regionKeys)));
-  return randomFrom(candidates.filter((hex) => getHexSameRegionNeighborCount(hex, regionKeys) === maxNeighborCount));
+  return randomFrom(candidates.filter((hex) => getHexSameRegionNeighborCount(hex, regionKeys) === maxNeighborCount), rng);
 }
 
-function chooseRiverMouthCenterHex(regionHexes: AxialHex[], rivers: River[]): AxialHex | null {
+function chooseRiverMouthCenterHex(regionHexes: AxialHex[], rivers: River[], rng: RandomStreams = fallbackRandomStreams): AxialHex | null {
   const regionKeys = new Set(regionHexes.map(hexKey));
   const boundaryMouths = rivers
     .map((river) => {
@@ -5490,15 +5495,15 @@ function chooseRiverMouthCenterHex(regionHexes: AxialHex[], rivers: River[]): Ax
   if (candidates.length === 0) return null;
 
   const maxNeighborCount = Math.max(...candidates.map((hex) => getHexSameRegionNeighborCount(hex, regionKeys)));
-  return randomFrom(candidates.filter((hex) => getHexSameRegionNeighborCount(hex, regionKeys) === maxNeighborCount));
+  return randomFrom(candidates.filter((hex) => getHexSameRegionNeighborCount(hex, regionKeys) === maxNeighborCount), rng);
 }
 
-function chooseSeaAdjacentCenterHex(regionHexes: AxialHex[], seaKeys: Set<string>): AxialHex | null {
+function chooseSeaAdjacentCenterHex(regionHexes: AxialHex[], seaKeys: Set<string>, rng: RandomStreams = fallbackRandomStreams): AxialHex | null {
   const regionKeys = new Set(regionHexes.map(hexKey));
   const candidates = regionHexes.filter((hex) => getHexNeighbors(hex).some((neighbor) => seaKeys.has(hexKey(neighbor))));
   if (candidates.length === 0) return null;
   const maxNeighborCount = Math.max(...candidates.map((hex) => getHexSameRegionNeighborCount(hex, regionKeys)));
-  return randomFrom(candidates.filter((hex) => getHexSameRegionNeighborCount(hex, regionKeys) === maxNeighborCount));
+  return randomFrom(candidates.filter((hex) => getHexSameRegionNeighborCount(hex, regionKeys) === maxNeighborCount), rng);
 }
 
 function getClaimableSeaNeighborKey(
@@ -5610,7 +5615,7 @@ function getExpandableSeaNeighborKeys(seaKeys: Set<string>, candidates: Map<stri
   return Array.from(frontier);
 }
 
-function expandConnectedSeaArea(seaKeys: Set<string>, candidates: Map<string, AxialHex>): Set<string> {
+function expandConnectedSeaArea(seaKeys: Set<string>, candidates: Map<string, AxialHex>, rng: RandomStreams = fallbackRandomStreams): Set<string> {
   const nextSeaKeys = new Set(seaKeys);
   const firstFrontier = getExpandableSeaNeighborKeys(nextSeaKeys, candidates);
   const extraCount = Math.max(firstFrontier.length, Math.floor(candidates.size * 0.6));
@@ -5625,7 +5630,7 @@ function expandConnectedSeaArea(seaKeys: Set<string>, candidates: Map<string, Ax
       (left, right) => hexDistanceFromCenter(parseHexKey(right)) - hexDistanceFromCenter(parseHexKey(left))
     );
     const outwardPool = sortedByOutward.slice(0, Math.max(1, Math.ceil(sortedByOutward.length / 2)));
-    nextSeaKeys.add(randomFrom(outwardPool));
+    nextSeaKeys.add(randomFrom(outwardPool, rng));
   }
 
   return nextSeaKeys;
@@ -6012,10 +6017,10 @@ function extendSeaToCoastalCenterCandidate(
   occupiedRegionKeys: Set<string>,
   rivers: River[],
   allowedMouthVertexKeys: Set<string>,
-  roads: Road[] = []
+  roads: Road[] = [], rng: RandomStreams = fallbackRandomStreams
 ): string[] {
   const seaKeys = new Set(seaHexKeys);
-  if (chooseCoastalCenterHex(regionHexes, seaKeys, rivers)) return Array.from(seaKeys);
+  if (chooseCoastalCenterHex(regionHexes, seaKeys, rivers, rng)) return Array.from(seaKeys);
 
   const regionKeys = new Set(regionHexes.map(hexKey));
   const rawCandidates = getSeaCandidateHexesForRegion(regionHexes, existingTerrain, occupiedRegionKeys);
@@ -6034,7 +6039,7 @@ function extendSeaToCoastalCenterCandidate(
     if (!seaKey) continue;
     // Один слой: добавляем только примыкающий к региону морской гекс, без многошаговых путей.
     seaKeys.add(seaKey);
-    if (chooseCoastalCenterHex(regionHexes, seaKeys, rivers)) break;
+    if (chooseCoastalCenterHex(regionHexes, seaKeys, rivers, rng)) break;
   }
 
   return Array.from(seaKeys);
@@ -6160,9 +6165,9 @@ const computeSeaHexKeysForCoastalRegion = __profiled('computeSeaHexKeysForCoasta
 
 // Выбор освоенности (BR-007): прибрежный регион освоен с вероятностью 40%,
 // материковый — 20%.
-function chooseCoastalAwareLandType(isCoastal: boolean): BiomeLandType {
+function chooseCoastalAwareLandType(isCoastal: boolean, rng: RandomStreams = fallbackRandomStreams): BiomeLandType {
   const settledChance = isCoastal ? 0.4 : 0.2;
-  return Math.random() < settledChance ? 'settled' : 'wild';
+  return rng.geography() < settledChance ? 'settled' : 'wild';
 }
 
 type RiverGenerationResult =
@@ -6690,7 +6695,7 @@ function finalizeRiverGenerationForRegionImpl(
   candidateHexes: AxialHex[],
   candidateVertices: RiverVertex[],
   neighborRegionVertices: RiverVertex[],
-  candidateEndpointVertices: RiverVertex[] = candidateVertices
+  candidateEndpointVertices: RiverVertex[] = candidateVertices, rng: RandomStreams = fallbackRandomStreams
 ): RiverGenerationResult {
   const riversAfterExistingLogic = tryAddSmallTributaryRiver(
     region,
@@ -6698,7 +6703,7 @@ function finalizeRiverGenerationForRegionImpl(
     riverGraph,
     rivers,
     candidateHexes,
-    region.heightLevel === 3 ? undefined : region.riverSlope
+    region.heightLevel === 3 ? undefined : region.riverSlope, rng
   );
   const riversWithMinimumMountainRivers = ensureMinimumMountainRiversForRegion(
     region,
@@ -6744,7 +6749,7 @@ function generateRiverForRegionImpl(
   regions: Region[],
   existingRivers: River[],
   candidateHexes?: AxialHex[],
-  hexTerrainByKey?: Map<string, HexTerrainData>
+  hexTerrainByKey?: Map<string, HexTerrainData>, rng: RandomStreams = fallbackRandomStreams
 ): RiverGenerationResult {
   try {
     const terrainMap = hexTerrainByKey ?? new Map<string, HexTerrainData>();
@@ -6883,7 +6888,7 @@ function generateRiverForRegionImpl(
         incomingRiverId: incomingEndpoint.riverId,
         fallbackReason,
       });
-      return finalizeRiverGenerationForRegion(region, regions, terrainMap, riverGraph, nextRivers, candidateHexes ?? [], candidateVertices, neighborRegionVertices, candidateEndpointVertices);
+      return finalizeRiverGenerationForRegion(region, regions, terrainMap, riverGraph, nextRivers, candidateHexes ?? [], candidateVertices, neighborRegionVertices, candidateEndpointVertices, rng);
     };
 
     if (region.isCoastal && outgoingEndpoints.length > 0 && incomingEndpoints.length === 0) {
@@ -6949,7 +6954,7 @@ function generateRiverForRegionImpl(
         validateRiverContinuity(river);
       }
       validateNoDuplicateRiverEdges(nextRivers);
-      return finalizeRiverGenerationForRegion(region, regions, terrainMap, riverGraph, nextRivers, candidateHexes ?? [], candidateVertices, neighborRegionVertices, candidateEndpointVertices);
+      return finalizeRiverGenerationForRegion(region, regions, terrainMap, riverGraph, nextRivers, candidateHexes ?? [], candidateVertices, neighborRegionVertices, candidateEndpointVertices, rng);
     }
 
     if (region.heightLevel === 3 && region.sizeCategory !== 'tract') {
@@ -7029,7 +7034,7 @@ function generateRiverForRegionImpl(
           validateRiverContinuity(river);
         }
         validateNoDuplicateRiverEdges(nextRivers);
-        return finalizeRiverGenerationForRegion(region, regions, terrainMap, riverGraph, nextRivers, candidateHexes ?? [], candidateVertices, neighborRegionVertices, candidateEndpointVertices);
+        return finalizeRiverGenerationForRegion(region, regions, terrainMap, riverGraph, nextRivers, candidateHexes ?? [], candidateVertices, neighborRegionVertices, candidateEndpointVertices, rng);
       }
     }
 
@@ -7089,7 +7094,7 @@ function generateRiverForRegionImpl(
           mainIncomingEndpoint.vertex,
           mainOutgoingEndpoint.riverId,
           mainOutgoingEndpoint.vertex,
-          connectorPath
+          connectorPath, rng
         );
         if (connectorSplit === null) {
           const fallbackResult = buildMountainIncomingBoundaryFallback(mainIncomingEndpoint, 'mountain_main_outgoing_fullness_drop_split_not_found');
@@ -7116,7 +7121,7 @@ function generateRiverForRegionImpl(
           const fallbackResult = buildMountainIncomingBoundaryFallback(mainIncomingEndpoint, 'mountain_incoming_tributary_to_through_river_not_found');
           return fallbackResult ?? { success: false, rivers: existingRivers, reason: 'mountain_incoming_tributary_to_through_river_not_found' };
         }
-        addConnectorSplitLakeIfNeeded(region, terrainMap, connectorSplit);
+        addConnectorSplitLakeIfNeeded(region, terrainMap, connectorSplit, rng);
         nextRivers = mergedWithTributaries;
         for (const edgeKey of connectorEdgeKeys) blockedEdgeKeys.add(edgeKey);
       } else {
@@ -7193,7 +7198,7 @@ function generateRiverForRegionImpl(
         validateRiverContinuity(river);
       }
       validateNoDuplicateRiverEdges(nextRivers);
-      return finalizeRiverGenerationForRegion(region, regions, terrainMap, riverGraph, nextRivers, candidateHexes ?? [], candidateVertices, neighborRegionVertices, candidateEndpointVertices);
+      return finalizeRiverGenerationForRegion(region, regions, terrainMap, riverGraph, nextRivers, candidateHexes ?? [], candidateVertices, neighborRegionVertices, candidateEndpointVertices, rng);
     }
 
     if (incomingEndpoints.length >= 2 && outgoingEndpoints.length === 0) {
@@ -7324,7 +7329,7 @@ function generateRiverForRegionImpl(
         validateRiverContinuity(river);
       }
       validateNoDuplicateRiverEdges(nextRivers);
-      return finalizeRiverGenerationForRegion(region, regions, terrainMap, riverGraph, nextRivers, candidateHexes ?? [], candidateVertices, neighborRegionVertices, candidateEndpointVertices);
+      return finalizeRiverGenerationForRegion(region, regions, terrainMap, riverGraph, nextRivers, candidateHexes ?? [], candidateVertices, neighborRegionVertices, candidateEndpointVertices, rng);
     }
 
     if (touchingEndpoints.length >= 2) {
@@ -7355,7 +7360,7 @@ function generateRiverForRegionImpl(
               pair.left.vertex,
               pair.right.riverId,
               pair.right.vertex,
-              connectorPath
+              connectorPath, rng
             );
             if (connectorSplit === null) return null;
             return { pair, connectorPath, connectorSplit };
@@ -7392,13 +7397,13 @@ function generateRiverForRegionImpl(
             if (!mergedWithTributaries) {
               return { success: false, rivers: existingRivers, reason: 'incoming_tributary_to_through_river_not_found' };
             }
-            addConnectorSplitLakeIfNeeded(region, terrainMap, bestConnector.connectorSplit);
+            addConnectorSplitLakeIfNeeded(region, terrainMap, bestConnector.connectorSplit, rng);
             for (const river of mergedWithTributaries) {
               validateRiverDirection(river);
               validateRiverContinuity(river);
             }
             validateNoDuplicateRiverEdges(mergedWithTributaries);
-            return finalizeRiverGenerationForRegion(region, regions, terrainMap, riverGraph, mergedWithTributaries, candidateHexes ?? [], candidateVertices, neighborRegionVertices, candidateEndpointVertices);
+            return finalizeRiverGenerationForRegion(region, regions, terrainMap, riverGraph, mergedWithTributaries, candidateHexes ?? [], candidateVertices, neighborRegionVertices, candidateEndpointVertices, rng);
           }
         } else {
           generationLog.warning('Could not connect river pair: no free connector path', {
@@ -7415,7 +7420,7 @@ function generateRiverForRegionImpl(
 
     if (existingRiverEndpointVerticesInRegion.length > 0 && redVertices.length < 1) return { success: false, rivers: existingRivers, reason: 'no_red_vertices_for_extension' };
     if (existingRiverEndpointVerticesInRegion.length === 0 && redVertices.length < 2) {
-      return finalizeRiverGenerationForRegion(region, regions, terrainMap, riverGraph, existingRivers, candidateHexes ?? [], candidateVertices, neighborRegionVertices, candidateEndpointVertices);
+      return finalizeRiverGenerationForRegion(region, regions, terrainMap, riverGraph, existingRivers, candidateHexes ?? [], candidateVertices, neighborRegionVertices, candidateEndpointVertices, rng);
     }
     if (existingRiverEndpointVerticesInRegion.length > 0) {
       const bestEndpointPath = findBestFreeRiverPathFromEndpoints(
@@ -7471,7 +7476,7 @@ function generateRiverForRegionImpl(
 
       for (const river of nextRivers) validateRiverDirection(river);
       validateNoDuplicateRiverEdges(nextRivers);
-      return finalizeRiverGenerationForRegion(region, regions, terrainMap, riverGraph, nextRivers, candidateHexes ?? [], candidateVertices, neighborRegionVertices, candidateEndpointVertices);
+      return finalizeRiverGenerationForRegion(region, regions, terrainMap, riverGraph, nextRivers, candidateHexes ?? [], candidateVertices, neighborRegionVertices, candidateEndpointVertices, rng);
     }
 
     if (region.heightLevel === 3) {
@@ -7545,7 +7550,7 @@ function generateRiverForRegionImpl(
         validateRiverContinuity(nextRiver);
       }
       validateNoDuplicateRiverEdges(nextRivers);
-      return finalizeRiverGenerationForRegion(region, regions, terrainMap, riverGraph, nextRivers, candidateHexes ?? [], candidateVertices, neighborRegionVertices, candidateEndpointVertices);
+      return finalizeRiverGenerationForRegion(region, regions, terrainMap, riverGraph, nextRivers, candidateHexes ?? [], candidateVertices, neighborRegionVertices, candidateEndpointVertices, rng);
     }
 
     const RANDOM_PAIR_ATTEMPTS = 50;
@@ -7554,7 +7559,7 @@ function generateRiverForRegionImpl(
         redVertices,
         purpleVertices,
         existingRiverEndpointVerticesInRegion,
-        region.riverSlope
+        region.riverSlope, rng
       );
       if (!controlPoints) continue;
       const path = buildRiverPathViaControlPoints(controlPoints, riverGraph, usedRiverEdges);
@@ -7589,7 +7594,7 @@ function generateRiverForRegionImpl(
 
       for (const river of nextRivers) validateRiverDirection(river);
       validateNoDuplicateRiverEdges(nextRivers);
-      return finalizeRiverGenerationForRegion(region, regions, terrainMap, riverGraph, nextRivers, candidateHexes ?? [], candidateVertices, neighborRegionVertices, candidateEndpointVertices);
+      return finalizeRiverGenerationForRegion(region, regions, terrainMap, riverGraph, nextRivers, candidateHexes ?? [], candidateVertices, neighborRegionVertices, candidateEndpointVertices, rng);
     }
   } catch (error) {
     // Constraint rejections return normally; an exception is a programming error.
@@ -7855,7 +7860,7 @@ function assignLakesForRegionImpl(
   regionHexes: AxialHex[],
   centerHex: AxialHex,
   startingLakeId: number,
-  biomeId: BiomeId
+  biomeId: BiomeId, rng: RandomStreams = fallbackRandomStreams
 ): { lakesByHex: Map<string, HexTerrainData>; nextLakeId: number } {
   const centerKey = hexKey(centerHex);
   const regionHexMap = new Map(regionHexes.map((hex) => [hexKey(hex), hex]));
@@ -7865,7 +7870,7 @@ function assignLakesForRegionImpl(
   for (const hex of regionHexes) {
     const key = hexKey(hex);
     if (key === centerKey) continue;
-    if (Math.random() < lakeChance) selectedLakeKeys.add(key);
+    if (rng.geography() < lakeChance) selectedLakeKeys.add(key);
   }
 
   const firstPassLakeKeys = new Set(selectedLakeKeys);
@@ -7877,7 +7882,7 @@ function assignLakesForRegionImpl(
     const touchesFirstPassLake = getHexNeighbors(hex).some((neighbor) => firstPassLakeKeys.has(hexKey(neighbor)));
     if (!touchesFirstPassLake) continue;
 
-    if (Math.random() < LAKE_EXPANSION_CHANCE) selectedLakeKeys.add(key);
+    if (rng.geography() < LAKE_EXPANSION_CHANCE) selectedLakeKeys.add(key);
   }
 
   const lakesByHex = new Map<string, HexTerrainData>();
@@ -7922,7 +7927,7 @@ const assignPointsOfInterestForRegion = __profiled('assignPointsOfInterestForReg
 function assignPointsOfInterestForRegionImpl(
   regionHexes: AxialHex[],
   centerHex: AxialHex,
-  lakesByHex: Map<string, HexTerrainData>
+  lakesByHex: Map<string, HexTerrainData>, rng: RandomStreams = fallbackRandomStreams
 ): AxialHex[] {
   const centerKey = hexKey(centerHex);
   const eligibleHexes = regionHexes.filter((hex) => {
@@ -7938,14 +7943,14 @@ function assignPointsOfInterestForRegionImpl(
   const minPoiCount = Math.floor(eligibleCount / 6);
   if (maxPoiCount < minPoiCount) return [];
 
-  const poiCount = randomInt(minPoiCount, maxPoiCount);
+  const poiCount = randomInt(minPoiCount, maxPoiCount, poiRandomStreams(rng));
   if (poiCount <= 0) return [];
 
-  const shuffledEligibleHexes = shuffleArray(eligibleHexes);
+  const shuffledEligibleHexes = shuffleArray(eligibleHexes, poiRandomStreams(rng));
   return shuffledEligibleHexes.slice(0, Math.min(poiCount, shuffledEligibleHexes.length));
 }
 
-function assignPointsOfInterestForTract(regionHexes: AxialHex[]): AxialHex[] {
+function assignPointsOfInterestForTract(regionHexes: AxialHex[], rng: RandomStreams = fallbackRandomStreams): AxialHex[] {
   const eligibleCount = regionHexes.length;
   if (eligibleCount <= 0) return [];
 
@@ -7953,10 +7958,10 @@ function assignPointsOfInterestForTract(regionHexes: AxialHex[]): AxialHex[] {
   const minPoiCount = Math.floor(eligibleCount / 6);
   if (maxPoiCount < minPoiCount) return [];
 
-  const poiCount = randomInt(minPoiCount, maxPoiCount);
+  const poiCount = randomInt(minPoiCount, maxPoiCount, poiRandomStreams(rng));
   if (poiCount <= 0) return [];
 
-  const shuffledEligibleHexes = shuffleArray(regionHexes);
+  const shuffledEligibleHexes = shuffleArray(regionHexes, poiRandomStreams(rng));
   return shuffledEligibleHexes.slice(0, Math.min(poiCount, shuffledEligibleHexes.length));
 }
 
@@ -7978,7 +7983,7 @@ function assignWaterPoiLayer(
   existingWaterPoiByKey: Map<string, WaterPoiKind>,
   regions: Region[],
   hexTerrainByKey: Map<string, HexTerrainData>,
-  newlyCheckedWaterHexKeys?: Iterable<string>
+  newlyCheckedWaterHexKeys?: Iterable<string>, rng: RandomStreams = fallbackRandomStreams
 ): Map<string, WaterPoiKind> {
   const regionByHexKey = getRegionByHexKey(regions);
   const waterHexKeySet = new Set(
@@ -8017,8 +8022,8 @@ function assignWaterPoiLayer(
     const region = terrain.terrainOverride === 'lake' ? regionByHexKey.get(key) : undefined;
     const context: 'sea' | BiomeLandType = terrain.terrainOverride === 'sea' ? 'sea' : region?.biomeLandType ?? 'wild';
     const chance = context === 'wild' ? 4 : 6;
-    if (randomInt(1, chance) !== 1) continue;
-    next.set(key, randomFrom(getWaterPoiKindPool(context)));
+    if (randomInt(1, chance, poiRandomStreams(rng)) !== 1) continue;
+    next.set(key, randomFrom(getWaterPoiKindPool(context), poiRandomStreams(rng)));
     blockedKeys.add(key);
     for (const neighbor of getHexNeighbors(parseHexKey(key))) blockedKeys.add(hexKey(neighbor));
   }
@@ -8126,8 +8131,8 @@ function secondaryPoiKindCanAppearInRegion(
   }
 }
 
-function assignSecondaryPoiKindsForRegion(region: Region, roads: Road[], assigned: Record<string, PoiKind>): void {
-  for (const poi of shuffleArray(region.pointsOfInterest)) {
+function assignSecondaryPoiKindsForRegion(region: Region, roads: Road[], assigned: Record<string, PoiKind>, rng: RandomStreams = fallbackRandomStreams): void {
+  for (const poi of shuffleArray(region.pointsOfInterest, poiRandomStreams(rng))) {
     const poiKey = hexKey(poi);
     if (assigned[poiKey] !== undefined) continue;
 
@@ -8138,7 +8143,7 @@ function assignSecondaryPoiKindsForRegion(region: Region, roads: Road[], assigne
 
     if (candidates.length === 0) continue;
 
-    assigned[poiKey] = randomFrom(candidates);
+    assigned[poiKey] = randomFrom(candidates, poiRandomStreams(rng));
   }
 }
 
@@ -8147,7 +8152,7 @@ function assignPoiKindsForRegion(options: {
   roads: Road[];
   rivers: River[];
   hexTerrainByKey: Map<string, HexTerrainData>;
-}): Record<string, PoiKind> | undefined {
+}, rng: RandomStreams = fallbackRandomStreams): Record<string, PoiKind> | undefined {
   const { region, roads, rivers, hexTerrainByKey } = options;
   const assigned: Record<string, PoiKind> = { ...(region.pointOfInterestKinds ?? {}) };
 
@@ -8161,7 +8166,7 @@ function assignPoiKindsForRegion(options: {
       && hexTouchesRiverOrLake(poi, rivers, hexTerrainByKey)
     );
     if (wildVillagePoi) assigned[hexKey(wildVillagePoi)] = 'village';
-    assignSecondaryPoiKindsForRegion(region, roads, assigned);
+    assignSecondaryPoiKindsForRegion(region, roads, assigned, poiRandomStreams(rng));
     return Object.keys(assigned).length > 0 ? assigned : undefined;
   }
 
@@ -8205,7 +8210,7 @@ function assignPoiKindsForRegion(options: {
     assignFirstMatching('village', hasWater);
   }
 
-  assignSecondaryPoiKindsForRegion(region, roads, assigned);
+  assignSecondaryPoiKindsForRegion(region, roads, assigned, poiRandomStreams(rng));
 
   return Object.keys(assigned).length > 0 ? assigned : undefined;
 }
@@ -8363,7 +8368,7 @@ function getRiverCrossingKey(roadId: number, roadSegmentKey: string, riverId: nu
 
 // Пересечения создаются после построения геометрии рек и дорог. Уже существующий
 // тип сохраняется, поэтому добавление следующего региона не меняет старые мосты.
-function reconcileRiverCrossings(roads: Road[], rivers: River[], regions: Region[], existing: RiverCrossing[]): RiverCrossing[] {
+function reconcileRiverCrossings(roads: Road[], rivers: River[], regions: Region[], existing: RiverCrossing[], rng: RandomStreams = fallbackRandomStreams): RiverCrossing[] {
   const existingByKey = new Map(existing.map((crossing) => [crossing.key, crossing]));
   const regionById = new Map(regions.map((region) => [region.id, region]));
   const riverFullnessByEdge = getRiverCrossingFullnessByEdge(rivers);
@@ -8401,7 +8406,7 @@ function reconcileRiverCrossings(roads: Road[], rivers: River[], regions: Region
             heightLevel: region?.heightLevel ?? 1,
             biomeLandType: region?.biomeLandType ?? 'settled',
             roadKind: segment.kind
-          })
+          }, rng.geography)
         });
       }
     }
@@ -8422,7 +8427,7 @@ function getPoiKeysOnRoadPath(path: AxialHex[], region: Region): Set<string> {
   return touchedPoiKeys;
 }
 
-function chooseBestRoadCandidate(candidates: RoadCandidatePath[]): RoadCandidatePath | null {
+function chooseBestRoadCandidate(candidates: RoadCandidatePath[], rng: RandomStreams = fallbackRandomStreams): RoadCandidatePath | null {
   if (candidates.length === 0) return null;
   const minCrossings = Math.min(...candidates.map((candidate) => candidate.crossedRiverCount));
   let bestCandidates = candidates.filter((candidate) => candidate.crossedRiverCount === minCrossings);
@@ -8430,7 +8435,7 @@ function chooseBestRoadCandidate(candidates: RoadCandidatePath[]): RoadCandidate
   bestCandidates = bestCandidates.filter((candidate) => candidate.extendedPath.length === minLength);
   const maxPoiCount = Math.max(...bestCandidates.map((candidate) => candidate.touchedPoiCount));
   bestCandidates = bestCandidates.filter((candidate) => candidate.touchedPoiCount === maxPoiCount);
-  return randomFrom(bestCandidates);
+  return randomFrom(bestCandidates, rng);
 }
 
 function hexHasRoad(hex: AxialHex, roads: Road[]): boolean {
@@ -8651,7 +8656,7 @@ type SettledCandidateRoadCandidate = RoadCandidatePath & {
   candidateDistanceFromAnchor: number;
 };
 
-function chooseBestSettledCandidateRoadCandidate(candidates: SettledCandidateRoadCandidate[]): SettledCandidateRoadCandidate | null {
+function chooseBestSettledCandidateRoadCandidate(candidates: SettledCandidateRoadCandidate[], rng: RandomStreams = fallbackRandomStreams): SettledCandidateRoadCandidate | null {
   if (candidates.length === 0) return null;
   const maxDistance = Math.max(...candidates.map((candidate) => candidate.candidateDistanceFromAnchor));
   let bestCandidates = candidates.filter((candidate) => candidate.candidateDistanceFromAnchor === maxDistance);
@@ -8665,10 +8670,10 @@ function chooseBestSettledCandidateRoadCandidate(candidates: SettledCandidateRoa
   const maxPoiCount = Math.max(...bestCandidates.map((candidate) => candidate.touchedPoiCount));
   bestCandidates = bestCandidates.filter((candidate) => candidate.touchedPoiCount === maxPoiCount);
 
-  return randomFrom(bestCandidates);
+  return randomFrom(bestCandidates, rng);
 }
 
-function chooseBestSupplementalSettledRoadCandidate(candidates: SupplementalSettledRoadCandidate[]): SupplementalSettledRoadCandidate | null {
+function chooseBestSupplementalSettledRoadCandidate(candidates: SupplementalSettledRoadCandidate[], rng: RandomStreams = fallbackRandomStreams): SupplementalSettledRoadCandidate | null {
   if (candidates.length === 0) return null;
   const maxPoiCount = Math.max(...candidates.map((c) => c.touchedPoiCount));
   let best = candidates.filter((c) => c.touchedPoiCount === maxPoiCount);
@@ -8682,10 +8687,10 @@ function chooseBestSupplementalSettledRoadCandidate(candidates: SupplementalSett
   const minLength = Math.min(...best.map((c) => c.extendedPath.length));
   best = best.filter((c) => c.extendedPath.length === minLength);
 
-  return randomFrom(best);
+  return randomFrom(best, rng);
 }
 
-function chooseBestThirdRoadCandidate(candidates: RoadCandidatePath[]): RoadCandidatePath | null {
+function chooseBestThirdRoadCandidate(candidates: RoadCandidatePath[], rng: RandomStreams = fallbackRandomStreams): RoadCandidatePath | null {
   if (candidates.length === 0) return null;
   const maxPoiCount = Math.max(...candidates.map((c) => c.touchedPoiCount));
   let best = candidates.filter((c) => c.touchedPoiCount === maxPoiCount);
@@ -8696,12 +8701,12 @@ function chooseBestThirdRoadCandidate(candidates: RoadCandidatePath[]): RoadCand
   const minLength = Math.min(...best.map((c) => c.extendedPath.length));
   best = best.filter((c) => c.extendedPath.length === minLength);
 
-  return randomFrom(best);
+  return randomFrom(best, rng);
 }
 
 function findAlternativeRoadPathsWithinRegionImpl(options: {
   region: Region; from: AxialHex; target: AxialHex; roads: Road[]; hexTerrainByKey: Map<string, HexTerrainData>; maxAlternatives: number;
-}): AxialHex[][] {
+}, rng: RandomStreams = fallbackRandomStreams): AxialHex[][] {
   const { region, from, target, roads, hexTerrainByKey, maxAlternatives } = options;
   const regionKeys = new Set(region.hexes.map(hexKey));
   const startKey = hexKey(from);
@@ -8747,7 +8752,7 @@ function findAlternativeRoadPathsWithinRegionImpl(options: {
         return true;
       });
       if (attempt % 5 === 1) neighbors = neighbors.reverse();
-      else if (attempt % 5 === 2) neighbors = shuffleArray(neighbors);
+      else if (attempt % 5 === 2) neighbors = shuffleArray(neighbors, rng);
       else if (attempt % 5 === 3) neighbors = [...neighbors].sort((a, b) => hexDistance(a, target) - hexDistance(b, target));
       else if (attempt % 5 === 4) neighbors = [...neighbors].sort((a, b) => hexDistance(b, target) - hexDistance(a, target));
       for (const n of neighbors) {
@@ -8771,10 +8776,10 @@ const findAlternativeRoadPathsWithinRegion = __profiled('findAlternativeRoadPath
 function collectAlternativeRoadPathsToTarget(options: {
   region: Region; fromHex: AxialHex; targetHex: AxialHex; targetIsPoi: boolean; roads: Road[]; rivers: River[];
   hexTerrainByKey: Map<string, HexTerrainData>; usedRoadPoiKeys: Set<string>; maxAlternatives: number;
-}): RoadCandidatePath[] {
+}, rng: RandomStreams = fallbackRandomStreams): RoadCandidatePath[] {
   const { region, fromHex, targetHex, targetIsPoi, roads, rivers, hexTerrainByKey, usedRoadPoiKeys, maxAlternatives } = options;
   const candidates: RoadCandidatePath[] = [];
-  const basePaths = findAlternativeRoadPathsWithinRegion({ region, from: fromHex, target: targetHex, roads, hexTerrainByKey, maxAlternatives });
+  const basePaths = findAlternativeRoadPathsWithinRegion({ region, from: fromHex, target: targetHex, roads, hexTerrainByKey, maxAlternatives }, rng);
   for (const basePath of basePaths) {
     const extendedPath = extendRoadPathInSameDirectionWithinRegion({ path: basePath, region, roads, hexTerrainByKey });
     if (!canAddRoadPath({ path: extendedPath, roads, region, hexTerrainByKey, allowedRoadHexes: [fromHex, targetHex, extendedPath[extendedPath.length - 1]], allowedDuplicateHexKeys: new Set([hexKey(targetHex)]) })) continue;
@@ -8915,7 +8920,7 @@ function findIncomingRoadEndpointsForRegion(
 }
 
 
-function chooseBestSettledIncomingRoadCandidate(candidates: SettledIncomingRoadCandidate[]): SettledIncomingRoadCandidate | null {
+function chooseBestSettledIncomingRoadCandidate(candidates: SettledIncomingRoadCandidate[], rng: RandomStreams = fallbackRandomStreams): SettledIncomingRoadCandidate | null {
   if (candidates.length === 0) return null;
   const endpointCandidates = candidates.filter((candidate) => candidate.incoming.touchKind === 'endpoint');
   const priorityCandidates = endpointCandidates.length > 0 ? endpointCandidates : candidates;
@@ -8925,7 +8930,7 @@ function chooseBestSettledIncomingRoadCandidate(candidates: SettledIncomingRoadC
   bestCandidates = bestCandidates.filter((candidate) => candidate.crossedRiverCount === minCrossings);
   const minLength = Math.min(...bestCandidates.map((candidate) => candidate.extendedPath.length));
   bestCandidates = bestCandidates.filter((candidate) => candidate.extendedPath.length === minLength);
-  return randomFrom(bestCandidates);
+  return randomFrom(bestCandidates, rng);
 }
 
 function collectSettledIncomingRoadPathsToTarget(options: {
@@ -8937,7 +8942,7 @@ function collectSettledIncomingRoadPathsToTarget(options: {
   hexTerrainByKey: Map<string, HexTerrainData>;
   usedRoadPoiKeys: Set<string>;
   maxAlternatives: number;
-}): SettledIncomingRoadCandidate[] {
+}, rng: RandomStreams = fallbackRandomStreams): SettledIncomingRoadCandidate[] {
   const { region, incoming, targetHexes, roads, rivers, hexTerrainByKey, usedRoadPoiKeys, maxAlternatives } = options;
   const candidates: SettledIncomingRoadCandidate[] = [];
   const targetKeys = new Set(targetHexes.map(hexKey));
@@ -8951,7 +8956,7 @@ function collectSettledIncomingRoadPathsToTarget(options: {
       roads,
       hexTerrainByKey,
       maxAlternatives
-    });
+    }, rng);
 
     for (const basePath of basePaths) {
       const extendedPath = buildPathFromIncomingRoadEndpoint(incoming.endpointHex, basePath);
@@ -9153,7 +9158,7 @@ function findAlternativeWildRoadPairPathsImpl(options: {
   roads: Road[];
   hexTerrainByKey: Map<string, HexTerrainData>;
   maxAlternatives: number;
-}): AxialHex[][] {
+}, rng: RandomStreams = fallbackRandomStreams): AxialHex[][] {
   const { region, from, target, roads, hexTerrainByKey, maxAlternatives } = options;
   const regionKeys = new Set(region.hexes.map(hexKey));
   const centerKey = hexKey(region.centerHex);
@@ -9195,7 +9200,7 @@ function findAlternativeWildRoadPairPathsImpl(options: {
       });
 
       if (attempt % 5 === 1) neighbors = neighbors.reverse();
-      else if (attempt % 5 === 2) neighbors = shuffleArray(neighbors);
+      else if (attempt % 5 === 2) neighbors = shuffleArray(neighbors, rng);
       else if (attempt % 5 === 3) neighbors = [...neighbors].sort((a, b) => hexDistance(a, target) - hexDistance(b, target));
       else if (attempt % 5 === 4) neighbors = [...neighbors].sort((a, b) => hexDistance(b, target) - hexDistance(a, target));
 
@@ -9257,7 +9262,7 @@ function getWildIncomingRoadPairCandidates(options: {
   roads: Road[];
   rivers: River[];
   hexTerrainByKey: Map<string, HexTerrainData>;
-}): WildIncomingRoadPairCandidate[] {
+}, rng: RandomStreams = fallbackRandomStreams): WildIncomingRoadPairCandidate[] {
   const { region, regions, roads, rivers, hexTerrainByKey } = options;
   const incoming = findIncomingRoadEndpointsForRegion(region, roads, hexTerrainByKey, false, getRegionCenterHexKeys(regions))
     .filter((incomingEndpoint) => !isSameHex(incomingEndpoint.endpointHex, region.centerHex) && !isLakeHex(incomingEndpoint.endpointHex, hexTerrainByKey));
@@ -9281,7 +9286,7 @@ function getWildIncomingRoadPairCandidates(options: {
         roads,
         hexTerrainByKey,
         maxAlternatives: 5
-      });
+      }, rng);
 
       for (const innerPath of innerPaths) {
         const fullPath = appendIncomingRoadEndpointToPath(buildPathFromIncomingRoadEndpoint(start.endpointHex, innerPath), target.endpointHex);
@@ -9299,13 +9304,13 @@ function getWildIncomingRoadPairCandidates(options: {
   return candidates;
 }
 
-function chooseBestWildIncomingRoadPairCandidate(candidates: WildIncomingRoadPairCandidate[]): WildIncomingRoadPairCandidate | null {
+function chooseBestWildIncomingRoadPairCandidate(candidates: WildIncomingRoadPairCandidate[], rng: RandomStreams = fallbackRandomStreams): WildIncomingRoadPairCandidate | null {
   if (candidates.length === 0) return null;
   const minRiverCrossings = Math.min(...candidates.map((candidate) => candidate.crossedRiverCount));
   let best = candidates.filter((candidate) => candidate.crossedRiverCount === minRiverCrossings);
   const minLength = Math.min(...best.map((candidate) => candidate.path.length));
   best = best.filter((candidate) => candidate.path.length === minLength);
-  return randomFrom(best);
+  return randomFrom(best, rng);
 }
 
 function addWildIncomingRoadPairCandidate(options: {
@@ -9458,7 +9463,7 @@ function getWildRoadCandidates(options: {
   return result;
 }
 
-function chooseBestWildRoadCandidate(candidates: WildRoadCandidate[]): WildRoadCandidate | null {
+function chooseBestWildRoadCandidate(candidates: WildRoadCandidate[], rng: RandomStreams = fallbackRandomStreams): WildRoadCandidate | null {
   if (candidates.length === 0) return null;
   const minRiverCrossings = Math.min(...candidates.map((candidate) => candidate.crossedRiverCount));
   let best = candidates.filter((candidate) => candidate.crossedRiverCount === minRiverCrossings);
@@ -9466,7 +9471,7 @@ function chooseBestWildRoadCandidate(candidates: WildRoadCandidate[]): WildRoadC
   best = best.filter((candidate) => candidate.targetDistanceFromStartRoadCenter === maxTargetDistanceFromStartRoadCenter);
   const minLength = Math.min(...best.map((candidate) => candidate.path.length));
   best = best.filter((candidate) => candidate.path.length === minLength);
-  return randomFrom(best);
+  return randomFrom(best, rng);
 }
 
 function canAttachWildRoadCandidateToExistingRoad(options: {
@@ -9604,11 +9609,11 @@ function getWildCandidateRoadCandidates(options: {
   return candidates;
 }
 
-function chooseBestWildCandidateRoadCandidate(candidates: WildCandidateRoadCandidate[]): WildCandidateRoadCandidate | null {
+function chooseBestWildCandidateRoadCandidate(candidates: WildCandidateRoadCandidate[], rng: RandomStreams = fallbackRandomStreams): WildCandidateRoadCandidate | null {
   if (candidates.length === 0) return null;
   const minRiverCrossings = Math.min(...candidates.map((candidate) => candidate.crossedRiverCount));
   const best = candidates.filter((candidate) => candidate.crossedRiverCount === minRiverCrossings);
-  return randomFrom(best);
+  return randomFrom(best, rng);
 }
 
 function addWildCandidateRoadCandidate(options: {
@@ -9705,7 +9710,7 @@ function findWildTrailPath(options: {
   target: AxialHex;
   rivers: River[];
   hexTerrainByKey: Map<string, HexTerrainData>;
-}): AxialHex[] | null {
+}, rng: RandomStreams = fallbackRandomStreams): AxialHex[] | null {
   const { region, from, target, rivers, hexTerrainByKey } = options;
   const regionKeys = new Set(region.hexes.map(hexKey));
   const startKey = hexKey(from);
@@ -9742,7 +9747,7 @@ function findWildTrailPath(options: {
       return path.reverse();
     }
 
-    for (const neighbor of shuffleArray(getHexNeighbors(current))) {
+    for (const neighbor of shuffleArray(getHexNeighbors(current), rng)) {
       const neighborKey = hexKey(neighbor);
       if (visited.has(neighborKey)) continue;
       const neighborIsTarget = neighborKey === targetKey;
@@ -9792,7 +9797,7 @@ function ensureRoadAdjacentTractPoiAndTrail(options: {
   rivers: River[];
   hexTerrainByKey: Map<string, HexTerrainData>;
   nextRoadId: number;
-}): { region: Region; roads: Road[]; nextRoadId: number } {
+}, rng: RandomStreams = fallbackRandomStreams): { region: Region; roads: Road[]; nextRoadId: number } {
   const { region, roads, rivers, hexTerrainByKey } = options;
   if (region.sizeCategory !== 'tract') return { region, roads, nextRoadId: options.nextRoadId };
 
@@ -9824,7 +9829,7 @@ function ensureRoadAdjacentTractPoiAndTrail(options: {
     .sort((a, b) => hexDistance(a, targetPoi) - hexDistance(b, targetPoi));
 
   for (const start of candidateStarts) {
-    const path = findWildTrailPath({ region: updatedRegion, from: start, target: targetPoi, rivers, hexTerrainByKey });
+    const path = findWildTrailPath({ region: updatedRegion, from: start, target: targetPoi, rivers, hexTerrainByKey }, rng);
     if (!path || roadPathCrossesRiver(path, rivers)) continue;
     const addResult = addTrailPathWithoutDuplicateSegments({ path, roads, regionId: region.id, nextRoadId: options.nextRoadId });
     if (addResult.added) return { region: updatedRegion, roads: addResult.roads, nextRoadId: addResult.nextRoadId };
@@ -9840,7 +9845,7 @@ function buildWildRegionTrail(options: {
   rivers: River[];
   hexTerrainByKey: Map<string, HexTerrainData>;
   nextRoadId: number;
-}): { roads: Road[]; nextRoadId: number } {
+}, rng: RandomStreams = fallbackRandomStreams): { roads: Road[]; nextRoadId: number } {
   const { region, regions, roads, rivers, hexTerrainByKey, nextRoadId } = options;
   const trailPoints = getWildTrailPoints({ region, regions, roads, hexTerrainByKey });
   if (trailPoints.length < 2) {
@@ -9858,8 +9863,8 @@ function buildWildRegionTrail(options: {
     }
   }
 
-  for (const pair of shuffleArray(pairCandidates)) {
-    const path = findWildTrailPath({ region, from: pair.start.hex, target: pair.target.hex, rivers, hexTerrainByKey });
+  for (const pair of shuffleArray(pairCandidates, rng)) {
+    const path = findWildTrailPath({ region, from: pair.start.hex, target: pair.target.hex, rivers, hexTerrainByKey }, rng);
     if (!path || roadPathCrossesRiver(path, rivers)) continue;
     const addResult = addTrailPathWithoutDuplicateSegments({ path, roads, regionId: region.id, nextRoadId });
     generationLog.detail('Wild trail result', {
@@ -9886,7 +9891,7 @@ function buildWildRegionTrailsImpl(options: {
   rivers: River[];
   hexTerrainByKey: Map<string, HexTerrainData>;
   nextRoadId: number;
-}): { roads: Road[]; nextRoadId: number } {
+}, rng: RandomStreams = fallbackRandomStreams): { roads: Road[]; nextRoadId: number } {
   const { region, regions, rivers, hexTerrainByKey } = options;
   const trailBuildCount = getWildRegionTrailBuildCount(region);
   let builtRoads = options.roads;
@@ -9900,7 +9905,7 @@ function buildWildRegionTrailsImpl(options: {
       rivers,
       hexTerrainByKey,
       nextRoadId
-    });
+    }, rng);
     builtRoads = result.roads;
     nextRoadId = result.nextRoadId;
   }
@@ -10001,7 +10006,7 @@ function buildDeltaArmsForRivers(
   riverGraph: RiverGraph,
   seaVertexKeys: Set<string>,
   seaEdgeKeys: Set<string>,
-  startRiverId: number
+  startRiverId: number, rng: RandomStreams = fallbackRandomStreams
 ): River[] {
   const arms: River[] = [];
   const usedVertexKeys = new Set(rivers.flatMap((r) => r.vertexPath.map((v) => v.key)));
@@ -10036,7 +10041,7 @@ function buildDeltaArmsForRivers(
       }
       if (!target) continue;
       const armPath = [branch, target];
-      const armFullness = (1 + Math.floor(Math.random() * fullnessRange)) as RiverFullness;
+      const armFullness = (1 + Math.floor(rng.geography() * fullnessRange)) as RiverFullness;
       const id = nextId++;
       arms.push({
         deltaParentRiverId: river.id,
@@ -10595,7 +10600,7 @@ function drawLakeVerticesDebug(lakeVertices: LakeVertex[], offsetX: number, offs
 }
 function generateRoadsForRegionImpl(options: {
   region: Region; regions: Region[]; roads: Road[]; rivers: River[]; hexTerrainByKey: Map<string, HexTerrainData>; nextRoadId: number; candidateHexes: AxialHex[];
-}): { roads: Road[]; nextRoadId: number } {
+}, rng: RandomStreams = fallbackRandomStreams): { roads: Road[]; nextRoadId: number } {
   const { region, regions, roads, hexTerrainByKey, rivers, candidateHexes } = options;
   const usedRoadPoiKeys = new Set<string>();
   let nextRoadId = options.nextRoadId;
@@ -10608,7 +10613,7 @@ function generateRoadsForRegionImpl(options: {
     const incomingWildRoadCount = getUniqueIncomingRoadCount(incomingWildRoadEndpoints);
     const usedWildRoadEndpointKeys = new Set<string>();
     while (true) {
-      const wildCandidate = chooseBestWildRoadCandidate(getWildRoadCandidates({ region, regions, roads: built, rivers, hexTerrainByKey, candidateHexes, usedEndpointKeys: usedWildRoadEndpointKeys }));
+      const wildCandidate = chooseBestWildRoadCandidate(getWildRoadCandidates({ region, regions, roads: built, rivers, hexTerrainByKey, candidateHexes, usedEndpointKeys: usedWildRoadEndpointKeys }), rng);
       if (!wildCandidate) break;
       const added = addWildRoadCandidateToExistingRoad({ candidate: wildCandidate, roads: built, region, hexTerrainByKey });
       generationLog.detail('Wild road result', {
@@ -10627,7 +10632,7 @@ function generateRoadsForRegionImpl(options: {
     }
 
     if (!builtAnyWildRoad && incomingWildRoadCount === 0 && canBuildStandaloneWildRegionRoad(region)) {
-      const candidateRoad = chooseBestWildCandidateRoadCandidate(getWildCandidateRoadCandidates({ region, roads: built, rivers, hexTerrainByKey, candidateHexes }));
+      const candidateRoad = chooseBestWildCandidateRoadCandidate(getWildCandidateRoadCandidates({ region, roads: built, rivers, hexTerrainByKey, candidateHexes }), rng);
       if (candidateRoad) {
         const addResult = addWildCandidateRoadCandidate({ candidate: candidateRoad, roads: built, region, hexTerrainByKey, nextRoadId });
         built = addResult.roads;
@@ -10658,7 +10663,7 @@ function generateRoadsForRegionImpl(options: {
       rivers,
       hexTerrainByKey,
       nextRoadId
-    });
+    }, rng);
   }
 
   const boundaryHexes = getBoundaryHexes(region);
@@ -10686,8 +10691,8 @@ function generateRoadsForRegionImpl(options: {
         hexTerrainByKey,
         usedRoadPoiKeys,
         maxAlternatives: 6
-      }));
-    const best = chooseBestSettledIncomingRoadCandidate(candidates);
+      }, rng));
+    const best = chooseBestSettledIncomingRoadCandidate(candidates, rng);
     if (!best) {
       generationLog.detail(logLabel, { regionId: region.id, built: false, reason: 'no valid incoming road path' });
       return null;
@@ -10746,7 +10751,7 @@ function generateRoadsForRegionImpl(options: {
           roads: built,
           hexTerrainByKey,
           maxAlternatives: options.maxAlternatives
-        });
+        }, rng);
         for (const basePath of basePaths) {
           if (!canAddRoadPath({ path: basePath, roads: built, region, hexTerrainByKey, allowedRoadHexes: [startHex, targetHex] })) continue;
           const touchedPoiKeys = getPoiKeysOnRoadPath(basePath, region);
@@ -10775,7 +10780,7 @@ function generateRoadsForRegionImpl(options: {
       anchorHex,
       maxAlternatives: 6
     });
-    const best = chooseBestSupplementalSettledRoadCandidate(candidates);
+    const best = chooseBestSupplementalSettledRoadCandidate(candidates, rng);
     if (!best) {
       generationLog.detail(logLabel, { regionId: region.id, built: false, reason: 'no valid supplemental center road path' });
       return false;
@@ -10814,7 +10819,7 @@ function generateRoadsForRegionImpl(options: {
         roads: built,
         hexTerrainByKey,
         maxAlternatives: 6
-      });
+      }, rng);
       for (const basePath of basePaths) {
         if (!canAddRoadPath({ path: basePath, roads: built, region, hexTerrainByKey, allowedRoadHexes: [region.centerHex, targetHex] })) continue;
         const touchedPoiKeys = getPoiKeysOnRoadPath(basePath, region);
@@ -10832,7 +10837,7 @@ function generateRoadsForRegionImpl(options: {
         });
       }
     }
-    const best = chooseBestSupplementalSettledRoadCandidate(candidates);
+    const best = chooseBestSupplementalSettledRoadCandidate(candidates, rng);
     if (!best) {
       generationLog.detail(logLabel, { regionId: region.id, built: false, reason: 'no valid supplemental center-to-candidate-facing path' });
       return false;
@@ -10857,7 +10862,7 @@ function generateRoadsForRegionImpl(options: {
     const roadTargets = getNonLakeRoadHexesInRegion(region, built, hexTerrainByKey);
     const startHexes = getCandidateFacingSupplementalEndpoints(anchorHex);
     const candidates = collectDirectSupplementalCandidates({ startHexes, targetHexes: roadTargets, anchorHex, maxAlternatives: 6 });
-    const best = chooseBestSupplementalSettledRoadCandidate(candidates);
+    const best = chooseBestSupplementalSettledRoadCandidate(candidates, rng);
     if (!best) {
       generationLog.detail(logLabel, { regionId: region.id, built: false, reason: 'no valid supplemental road-to-road path' });
       return false;
@@ -10911,14 +10916,14 @@ function generateRoadsForRegionImpl(options: {
     const firstFallbackTargets = getAvailableRoadFallbackHexes({ region, fromHex: region.centerHex, roads: built, hexTerrainByKey, usedRoadPoiKeys, excludeHexKeys: new Set([hexKey(region.centerHex)]) });
     let firstBest: RoadCandidatePath | null = null;
     for (const targetPoi of firstPoiTargets) {
-      const candidates = collectAlternativeRoadPathsToTarget({ region, fromHex: region.centerHex, targetHex: targetPoi, targetIsPoi: true, roads: built, rivers, hexTerrainByKey, usedRoadPoiKeys, maxAlternatives: maxCandidates });
-      firstBest = chooseBestRoadCandidate(candidates);
+      const candidates = collectAlternativeRoadPathsToTarget({ region, fromHex: region.centerHex, targetHex: targetPoi, targetIsPoi: true, roads: built, rivers, hexTerrainByKey, usedRoadPoiKeys, maxAlternatives: maxCandidates }, rng);
+      firstBest = chooseBestRoadCandidate(candidates, rng);
       if (firstBest) break;
     }
     if (!firstBest) {
       for (const fallbackHex of firstFallbackTargets) {
-        const candidates = collectAlternativeRoadPathsToTarget({ region, fromHex: region.centerHex, targetHex: fallbackHex, targetIsPoi: false, roads: built, rivers, hexTerrainByKey, usedRoadPoiKeys, maxAlternatives: maxCandidates });
-        firstBest = chooseBestRoadCandidate(candidates);
+        const candidates = collectAlternativeRoadPathsToTarget({ region, fromHex: region.centerHex, targetHex: fallbackHex, targetIsPoi: false, roads: built, rivers, hexTerrainByKey, usedRoadPoiKeys, maxAlternatives: maxCandidates }, rng);
+        firstBest = chooseBestRoadCandidate(candidates, rng);
         if (firstBest) break;
       }
     }
@@ -10952,7 +10957,7 @@ function generateRoadsForRegionImpl(options: {
         roads: built,
         hexTerrainByKey,
         maxAlternatives: maxCandidates
-      });
+      }, rng);
       for (const basePath of basePaths) {
         const extendedPath = [...basePath, target.candidateHex];
         if (!canAddRoadPath({ path: extendedPath, roads: built, region, hexTerrainByKey, allowedRoadHexes: [region.centerHex], allowedDuplicateHexKeys: new Set([hexKey(target.entryHex)]) })) continue;
@@ -10972,7 +10977,7 @@ function generateRoadsForRegionImpl(options: {
         });
       }
     }
-    const secondBest = chooseBestSettledCandidateRoadCandidate(secondCandidateRoads);
+    const secondBest = chooseBestSettledCandidateRoadCandidate(secondCandidateRoads, rng);
     const secondRoadPath = secondBest ? trimPathToRegionHexes(secondBest.extendedPath, region) : [];
     if (secondBest && addRoadFromPath(secondRoadPath, 'road', [region.centerHex, secondBest.entryHex], new Set([hexKey(secondBest.entryHex)]))) {
       generationLog.detail('Second settled candidate road result', {
@@ -11044,7 +11049,7 @@ function generateRoadsForRegionImpl(options: {
         }
         if (thirdCandidates.length >= 10) break;
       }
-      const thirdBest = chooseBestThirdRoadCandidate(thirdCandidates);
+      const thirdBest = chooseBestThirdRoadCandidate(thirdCandidates, rng);
       const thirdRoadPath = thirdBest ? trimPathToRegionHexes(thirdBest.extendedPath, region) : [];
       if (thirdBest && thirdRoadPath.length >= 2) {
         const roadHex = thirdRoadPath[0];
@@ -11223,10 +11228,24 @@ function completeRegionRoadConnections(options: {
   }
   return { roads: built, nextRoadId };
 }
-const generateRoadsForRegion = __profiled('generateRoadsForRegion', (options: Parameters<typeof generateRoadsForRegionImpl>[0]) =>
-  completeRegionRoadConnections({ ...options, ...generateRoadsForRegionImpl(options) }));
+const generateRoadsForRegion = __profiled('generateRoadsForRegion', (options: Parameters<typeof generateRoadsForRegionImpl>[0], rng: RandomStreams = fallbackRandomStreams) =>
+  completeRegionRoadConnections({ ...options, ...generateRoadsForRegionImpl(options, rng) }));
 
 export function App() {
+  const [initialGeneration] = useState(() => createGenerationState(newWorldSeed()));
+  const generationRef = useRef(cloneGenerationState(initialGeneration));
+  // Synchronous revision invalidates callbacks from an older document, including
+  // duplicate events in the same batch before React has rendered the commit.
+  const documentRevision = useRef(0);
+  const renderedDocumentRevision = documentRevision.current;
+  const activeGenerationBefore = useRef<GenerationState | null>(null);
+  const activeGenerationBackup = useRef<GenerationBackup | null>(null);
+  const [seedInput, setSeedInput] = useState(String(initialGeneration.masterSeed));
+  const [seedError, setSeedError] = useState(false);
+  const [legacyNotice, setLegacyNotice] = useState(false);
+  const rng: RandomStreams = { geography: () => draw(generationRef.current, 'geography'), poi: () => draw(generationRef.current, 'poi') };
+  const restoreGeneration = (state: GenerationState) => { generationRef.current = cloneGenerationState(state); setSeedInput(String(state.masterSeed)); setSeedError(false); };
+
   const mapSvgRef = useRef<SVGSVGElement | null>(null);
   const mapViewportRef = useRef<HTMLDivElement | null>(null);
   const mapScaleRef = useRef(1);
@@ -11245,13 +11264,16 @@ export function App() {
   const [generationMode, setGenerationMode] = useState<GenerationMode>('classic');
   const [kingdoms, setKingdoms] = useState<Kingdom[]>([]);
   const [obstacles, setObstacles] = useState<Obstacle[]>([]);
+  const kingdomInFlight = useRef(false);
+  const advancedJobs = useRef(new WeakSet<KingdomJob>());
+  const consumedRegenerations = useRef(new WeakSet<object>());
   const [kingdomJob, setKingdomJob] = useState<KingdomJob | null>(null);
   const [detailedRenderReady, setDetailedRenderReady] = useState(true);
   const [regions, setRegions] = useState<Region[]>([]);
   const [candidateHexes, setCandidateHexes] = useState<AxialHex[]>([]);
   const [rivers, setRivers] = useState<River[]>([]);
   const [toponyms, setToponyms] = useState<ToponymRegistry>({});
-  const [toponymSeed, setToponymSeed] = useState(createToponymSeed);
+  const [toponymSeed, setToponymSeed] = useState(() => toponymSeedFor(initialGeneration.masterSeed));
   const [roads, setRoads] = useState<Road[]>([]);
   const [crossings, setCrossings] = useState<RiverCrossing[]>([]);
   const [selectedHex, setSelectedHex] = useState<AxialHex | null>(START_HEX);
@@ -11272,7 +11294,7 @@ export function App() {
   const [history, setHistory] = useState<MapSnapshot[]>([]);
   // Отложенная перегенерация: ставим заявку, ждём пока React применит
   // восстановленный снимок, и только потом генерируем регион заново.
-  const [pendingRegen, setPendingRegen] = useState<{ anchorHex: AxialHex; options: GenerationOptions; backup: GenerationBackup } | null>(null);
+  const [pendingRegen, setPendingRegen] = useState<{ anchorHex: AxialHex; options: GenerationOptions; backup: GenerationBackup; actionContext: GenerationActionContext } | null>(null);
   // Параметры ручной генерации ('auto' — прежнее случайное поведение).
   const [genSizeCategory, setGenSizeCategory] = useState<'auto' | Exclude<Region['sizeCategory'], 'tract'>>('auto');
   const [genLandType, setGenLandType] = useState<'auto' | BiomeLandType>('auto');
@@ -11280,6 +11302,7 @@ export function App() {
   const [genCoastal, setGenCoastal] = useState<'auto' | CoastalPreference>('mainland');
   // Уведомление пользователю (например, почему не создалось побережье).
   const [generationError, setGenerationError] = useState<GenerationDiagnostic | null>(null);
+  const captureGenerationInputs = () => ({ sizeCategory: genSizeCategory, landType: genLandType, biome: genBiome, coastal: genCoastal, mode: generationMode });
   const generationProgress = {
     attempt: 0, tractAttempt: 0, stage: 'region', lastRejection: null as string | null,
     fallbackReason: null as string | null, constraintFailure: null as string | null, exhausted: false,
@@ -11292,12 +11315,14 @@ export function App() {
     generationProgress.rejectionCounts[reason] = (generationProgress.rejectionCounts[reason] ?? 0) + 1;
     generationLog.detail('[generation:attempt-rejected]', { attempt: generationProgress.attempt, reason });
   };
-  const generationEvent = (anchorHex: AxialHex, options: GenerationOptions, kind: GenerationEvent['kind'], reason: string, result: GenerationEvent['result']): GenerationEvent => ({
-    kind, reason, result, action: generationProgress.action, anchorHex,
+  const generationEvent = (anchorHex: AxialHex, options: GenerationOptions, kind: GenerationEvent['kind'], reason: string, result: GenerationEvent['result'], context?: GenerationActionContext): GenerationEvent => ({
+    kind, reason, result, action: context?.action ?? generationProgress.action, anchorHex,
     options: { mode: options.mode ?? 'classic', targetSize: options.targetSize ?? 'auto', landType: options.landType ?? 'auto',
       biomeId: options.biomeId ?? 'auto', coastalPreference: options.coastalPreference ?? 'auto' },
     attempt: generationProgress.attempt, tractAttempt: generationProgress.tractAttempt, stage: generationProgress.stage,
     seaRecoveryAttempt: generationProgress.seaRecoveryAttempt, reclaimedSeaKeys: generationProgress.reclaimedSeaKeys,
+    random: { before: cloneGenerationState(activeGenerationBefore.current ?? generationRef.current), after: cloneGenerationState(generationRef.current) },
+    inputOptions: context?.inputOptions ?? captureGenerationInputs(),
     targetSize: generationProgress.targetSize, rejectionCounts: generationProgress.rejectionCounts
   });
   const [coastNotice, setCoastNotice] = useState<string | null>(null);
@@ -11380,7 +11405,8 @@ export function App() {
       const availableKeys = candidateKeys.length > 1
         ? candidateKeys.filter((candidateKey) => candidateKey !== previousKey)
         : candidateKeys;
-      return availableKeys[Math.floor(Math.random() * availableKeys.length)] ?? null;
+      // The animated click hint is presentation only; never advance a world stream.
+      return availableKeys[Math.floor(getStableRandomValue(`${generationRef.current.masterSeed}:click-hint:${previousKey ?? 'initial'}`) * availableKeys.length)] ?? null;
     };
 
     setClickPromptCandidateKey((previousKey) => pickRandomCandidateKey(previousKey));
@@ -11597,8 +11623,8 @@ export function App() {
     for (const seaKey of existingSeaKeys) occupiedHexes.add(seaKey);
 
     for (const blocked of options.forbiddenHexes ?? []) occupiedHexes.add(blocked);
-    const targetSize = options.mode === 'mythic' ? Math.min(5, options.targetSize ?? modeRegionSize('mythic', rollTractTargetSize)) : rollTractTargetSize();
-    const regionHexes = generateFallbackTractFromAnchor(anchorHex, occupiedHexes, targetSize);
+    const targetSize = options.mode === 'mythic' ? Math.min(5, options.targetSize ?? modeRegionSize('mythic', rollTractTargetSize, undefined, rng.geography)) : rollTractTargetSize(rng);
+    const regionHexes = generateFallbackTractFromAnchor(anchorHex, occupiedHexes, targetSize, rng);
     const regionKeySet = new Set(regionHexes.map(hexKey));
     for (const regionKey of regionKeySet) existingSeaKeys.delete(regionKey);
     const finalSize = regionHexes.length;
@@ -11633,7 +11659,7 @@ export function App() {
     const biomeLandType = options.mode === 'mythic' ? 'wild' : options.landType ?? (regions.length === 0 ? 'settled' : 'wild');
     let biomeChoice: ChooseBiomeResult;
     if (isFirstRegionWithAutomaticBiome) {
-      biomeChoice = chooseBiomeIdAtHeightLevel(biomeLandType, adjacentBiomeIds, regionId, 1, tractRiverHeightConstraint);
+      biomeChoice = chooseBiomeIdAtHeightLevel(biomeLandType, adjacentBiomeIds, regionId, 1, tractRiverHeightConstraint, rng);
     } else if (options.biomeId) {
       biomeChoice = isBiomeAllowedByRiverHeightConstraint(options.biomeId, tractRiverHeightConstraint)
         ? { biomeId: options.biomeId }
@@ -11646,12 +11672,12 @@ export function App() {
           adjacentBiomeIds,
           regionId,
           tractRiverHeightConstraint.preferredHeight,
-          tractRiverHeightConstraint
+          tractRiverHeightConstraint, rng
         );
       // The exact max-neighbour + 1 height is a preference. If biome weights or
       // compatibility make it unavailable, retain the normal river minimum.
       if (!biomeChoice.biomeId) {
-        biomeChoice = chooseBiomeId(biomeLandType, adjacentBiomeIds, regionId, tractRiverHeightConstraint);
+        biomeChoice = chooseBiomeId(biomeLandType, adjacentBiomeIds, regionId, tractRiverHeightConstraint, rng);
       }
     }
     const biomeId = biomeChoice.biomeId ?? (tractRiverHeightConstraint.minHeight !== undefined ? 'mountains' : FALLBACK_BIOME_ID);
@@ -11677,7 +11703,7 @@ export function App() {
       biomePrimaryEmoji: biome.primaryEmoji,
       biomeSecondaryEmojis: [...biome.secondaryEmojis],
       biomeEmojiLabel: biome.primaryEmoji + biome.secondaryEmojis.join(''),
-      pointsOfInterest: options.mode === 'mythic' ? initialMythicPoints(regionHexes, null, () => true) : assignPointsOfInterestForTract(regionHexes),
+      pointsOfInterest: options.mode === 'mythic' ? initialMythicPoints(regionHexes, null, () => true, rng.poi) : assignPointsOfInterestForTract(regionHexes, rng),
       isCoastal: false,
       isTract: true
     };
@@ -11685,7 +11711,7 @@ export function App() {
     for (const key of regionKeySet) tractTerrain.delete(key);
     const candidateHexesForTractRiverGeneration = getCandidateHexes([...allRegionHexes, ...regionHexes], existingSeaKeys);
     const tentative = generateRiverForRegion(tractRegion, [...regions, tractRegion], rivers,
-      candidateHexesForTractRiverGeneration, tractTerrain);
+      candidateHexesForTractRiverGeneration, tractTerrain, rng);
     let riversAfterTractGeneration = tentative.success ? tentative.rivers : rivers;
     let tractRoadResult = ensureRoadAdjacentTractPoiAndTrail({
       region: tractRegion,
@@ -11693,7 +11719,7 @@ export function App() {
       rivers: riversAfterTractGeneration,
       hexTerrainByKey: tractTerrain,
       nextRoadId
-    });
+    }, rng);
     const tractRegionWithPoiKinds: Region = {
       ...tractRoadResult.region,
       pointOfInterestKinds: assignPoiKindsForRegion({
@@ -11701,7 +11727,7 @@ export function App() {
         roads: tractRoadResult.roads,
         rivers: riversAfterTractGeneration,
         hexTerrainByKey: tractTerrain
-      })
+      }, rng)
     };
     const finalRegions = [...regions, tractRegionWithPoiKinds];
     const candidateHexesBeforeSeaBridge = getCandidateHexes(finalRegions.flatMap((region) => region.hexes), existingSeaKeys);
@@ -11721,7 +11747,7 @@ export function App() {
         if (getRiversForHex(candidate, riversAfterTractGeneration).length > 0) return false;
         return true;
       });
-      const seedSeaHex = randomFrom(seedCandidates);
+      const seedSeaHex = randomFrom(seedCandidates, rng);
       if (seedSeaHex) seededSeaKeys.add(hexKey(seedSeaHex));
     }
     const seaKeysToFill = getSeaKeysToFillForTractSeaTouch(regionHexes, seededSeaKeys, candidateHexesBeforeSeaBridge, tractTerrain, riversAfterTractGeneration);
@@ -11759,6 +11785,7 @@ export function App() {
     })();
 
     const snapshot: MapSnapshot = {
+        generation: cloneGenerationState(activeGenerationBefore.current ?? generationRef.current),
         kingdoms, obstacles,
       regions,
       candidateHexes: originalGenerationCandidates,
@@ -11817,7 +11844,7 @@ export function App() {
     tractRoadResult = ensureRoadAdjacentTractPoiAndTrail({
       region: tractRegion, roads, rivers: riversAfterTractGeneration,
       hexTerrainByKey: finalHexTerrainByKey, nextRoadId
-    });
+    }, rng);
     tractRoadResult = { ...tractRoadResult, ...completeRegionRoadConnections({
       region: tractRegionWithPoiKinds, regions, roads: tractRoadResult.roads,
       hexTerrainByKey: finalHexTerrainByKey, nextRoadId: tractRoadResult.nextRoadId
@@ -11825,15 +11852,15 @@ export function App() {
     finalRegions[finalRegions.length - 1] = {
       ...tractRoadResult.region,
       pointOfInterestKinds: assignPoiKindsForRegion({ region: tractRoadResult.region,
-        roads: tractRoadResult.roads, rivers: riversAfterTractGeneration, hexTerrainByKey: finalHexTerrainByKey })
+        roads: tractRoadResult.roads, rivers: riversAfterTractGeneration, hexTerrainByKey: finalHexTerrainByKey }, rng)
     };
     finalRegions[finalRegions.length - 1] = assignWoodlandStyle(finalRegions[finalRegions.length - 1], regions, biomeOverrideByHexKey);
     const newlyCheckedWaterHexKeys = new Set([...regionKeySet, ...finalSeaKeysToWrite]);
     generationProgress.stage = 'prepare_commit';
     const finalToponyms = synchronizeToponyms({ ...toponyms, ...options.previousToponyms }, getToponymEntities(finalRegions, riversAfterTractGeneration, finalHexTerrainByKey), toponymSeed);
-    const finalWaterPoi = assignWaterPoiLayer(waterPoiByKey, finalRegions, finalHexTerrainByKey, newlyCheckedWaterHexKeys);
+    const finalWaterPoi = assignWaterPoiLayer(waterPoiByKey, finalRegions, finalHexTerrainByKey, newlyCheckedWaterHexKeys, rng);
       if (options.mode === 'mythic') for (const key of newlyCheckedWaterHexKeys) finalWaterPoi.delete(key);
-    const finalCrossings = reconcileRiverCrossings(tractRoadResult.roads, riversAfterTractGeneration, finalRegions, crossings);
+    const finalCrossings = reconcileRiverCrossings(tractRoadResult.roads, riversAfterTractGeneration, finalRegions, crossings, rng);
     const finalNextLakeId = Math.max(nextLakeIdAfterLandlockedSea, getNextLakeIdFromTerrain(finalHexTerrainByKey));
     const finalRoadPairs = new Set(tractRoadResult.roads.flatMap(r=>r.segments.map(s=>pairKey(s.from,s.to))));
     if (obstacles.some(o => finalRoadPairs.has(pairKey(o.hex,o.neighborHex)))) throw new Error('Дорога пересекает препятствие.');
@@ -11863,7 +11890,7 @@ export function App() {
       return;
     }
     const maxRegionAttempts = MAX_REGION_ATTEMPTS;
-    const autoCoastRoll = Math.random();
+    const autoCoastRoll = rng.geography();
     setCoastNotice(null);
     const anchorKey = hexKey(anchorHex);
     const existingSeaKeysForGrowth = getSeaHexKeys(hexTerrainByKey);
@@ -11881,7 +11908,7 @@ export function App() {
       generationProgress.stage = 'region';
       __profileHit('region_attempt (попытки регенерации)');
       const isLastRegionAttempt = attempt === maxRegionAttempts - 1;
-      let targetSize = options.targetSize ?? rollRegionTargetSize();
+      let targetSize = options.targetSize ?? rollRegionTargetSize(rng);
       generationProgress.targetSize = targetSize;
       const occupiedHexes = new Set(allRegionHexes.map(hexKey));
       // Море — не суша: рост региона не должен захватывать гексы моря.
@@ -11894,7 +11921,7 @@ export function App() {
         targetSize,
         occupiedHexes,
         mainlandZeroWeightHexes,
-        coastalNeutralNeighborWeightHexes
+        coastalNeutralNeighborWeightHexes, rng
       );
       const finalSize = regionHexes.length;
       if (finalSize < 6) {
@@ -11914,7 +11941,7 @@ export function App() {
       }
       const { sizeCategory, sizeLabel } = getRegionSizeCategory(finalSize);
       const centerCandidates = options.kingdomArea ? regionHexes.filter(h => options.kingdomArea!.has(hexKey(h))) : regionHexes;
-      const centerHex = options.fixedCenter ?? chooseRegionCenter(centerCandidates.length ? centerCandidates : regionHexes);
+      const centerHex = options.fixedCenter ?? chooseRegionCenter(centerCandidates.length ? centerCandidates : regionHexes, rng);
       const regionByHexKey = new Map<string, Region>();
       for (const region of regions) {
         for (const hex of region.hexes) regionByHexKey.set(hexKey(hex), region);
@@ -11981,13 +12008,13 @@ export function App() {
         return;
       }
       generationProgress.stage = 'biome';
-      const biomeLandType = options.landType ?? (regions.length === 0 ? 'settled' : chooseCoastalAwareLandType(isCoastalRegion));
+      const biomeLandType = options.landType ?? (regions.length === 0 ? 'settled' : chooseCoastalAwareLandType(isCoastalRegion, rng));
       // Выбор биома: либо принудительно заданный пользователем, либо обычный
       // взвешенный выбор. Принудительный биом всё равно проверяется на
       // совместимость с ограничением высоты от рек.
       const pickBiome = (constraint: RiverHeightConstraint): ChooseBiomeResult => {
         if (isFirstRegion && !options.biomeId) {
-          return chooseBiomeIdAtHeightLevel(biomeLandType, adjacentBiomeIds, regionId, 1, constraint);
+          return chooseBiomeIdAtHeightLevel(biomeLandType, adjacentBiomeIds, regionId, 1, constraint, rng);
         }
         if (options.biomeId) {
           return isBiomeAllowedByRiverHeightConstraint(options.biomeId, constraint)
@@ -12000,11 +12027,11 @@ export function App() {
             adjacentBiomeIds,
             regionId,
             constraint.preferredHeight,
-            constraint
+            constraint, rng
           );
           if (preferredChoice.biomeId) return preferredChoice;
         }
-        return chooseBiomeId(biomeLandType, adjacentBiomeIds, regionId, constraint);
+        return chooseBiomeId(biomeLandType, adjacentBiomeIds, regionId, constraint, rng);
       };
       const candidateRegionForRiverCheck: Region = {
         ...candidateRegionForTopologyCheck,
@@ -12103,9 +12130,9 @@ export function App() {
       }
       const biome = BIOMES[biomeId] ?? BIOMES[FALLBACK_BIOME_ID];
       const heightLevel = BIOMES[biomeId]?.heightLevel ?? 1;
-      const riverSlope = calculateRiverSlopeInfo(centerHex, allRegionHexes, riversForGeneration);
-      const { lakesByHex, nextLakeId: computedNextLakeId } = assignLakesForRegion(regionHexes, centerHex, nextLakeId, biomeId);
-      const centralPoiKind = assignCentralPoiKindForRegion(biomeLandType, sizeCategory);
+      const riverSlope = calculateRiverSlopeInfo(centerHex, allRegionHexes, riversForGeneration, undefined, rng);
+      const { lakesByHex, nextLakeId: computedNextLakeId } = assignLakesForRegion(regionHexes, centerHex, nextLakeId, biomeId, rng);
+      const centralPoiKind = assignCentralPoiKindForRegion(biomeLandType, sizeCategory, rng);
       const regionBase: Omit<Region, 'pointsOfInterest'> = {
         generationMode: options.mode, kingdomId: options.kingdomId,
         id: regionId,
@@ -12168,7 +12195,7 @@ export function App() {
           nextRegionsForRiverGeneration,
           riversForGeneration,
           nextCandidateHexes,
-          nextHexTerrainByKeyPreview
+          nextHexTerrainByKeyPreview, rng
         );
       if (!generatedRiverResult.success) {
         rejectAttempt(generatedRiverResult.reason);
@@ -12255,7 +12282,7 @@ export function App() {
       // сразу после построения рек, чтобы POI и дороги уже строились от
       // прибрежного центра. Дикий прибрежный регион сохраняет обычный центр.
       const coastalRiverMouthCenterHex = isCoastalRegion && biomeLandType === 'settled' && !hasOutgoingRiverToExistingRegion
-        ? chooseRiverMouthCenterHex(regionHexes, finalizedRivers)
+        ? chooseRiverMouthCenterHex(regionHexes, finalizedRivers, rng)
         : null;
       if (isCoastalRegion && biomeLandType === 'settled' && !hasOutgoingRiverToExistingRegion && !coastalRiverMouthCenterHex) {
         generationLog.warning('Settled coastal candidate region has no center hex touching a boundary river mouth', { attempt, regionId, acceptedOnFinalAttempt: isLastRegionAttempt });
@@ -12263,7 +12290,7 @@ export function App() {
       }
       const preliminaryCenterHex = coastalRiverMouthCenterHex ?? centerHex;
 
-      const preliminaryPointsOfInterest = options.mode === 'mythic' ? initialMythicPoints(regionHexes, preliminaryCenterHex, h => !isLakeHex(h, regionTerrainByHex)) : assignPointsOfInterestForRegion(regionHexes, preliminaryCenterHex, regionTerrainByHex);
+      const preliminaryPointsOfInterest = options.mode === 'mythic' ? initialMythicPoints(regionHexes, preliminaryCenterHex, h => !isLakeHex(h, regionTerrainByHex), rng.poi) : assignPointsOfInterestForRegion(regionHexes, preliminaryCenterHex, regionTerrainByHex, rng);
       const preliminaryRegion: Region = {
         ...regionForRiverGeneration,
         centerHex: preliminaryCenterHex,
@@ -12287,7 +12314,7 @@ export function App() {
           occupiedRegionKeysForSea,
           finalizedRivers,
           allowedSeaMouthVertexKeys,
-          roads
+          roads, rng
         )
         : [];
       // Прибрежный режим больше не отбраковывает попытку из-за того,
@@ -12572,7 +12599,7 @@ export function App() {
         const finalSea = getSeaHexKeys(modelResult.terrain);
         const seaBoundary = buildSeaMouthBoundary(finalSea);
         const graph = buildRiverGraphForRegion(finalRegionAfterLandPockets.hexes, finalLandHexesForCandidates, finalCandidateHexes);
-        const arms = buildDeltaArmsForRivers(riversWithDeltas, regionId, graph, seaBoundary.vertexKeys, seaBoundary.edgeKeys, Math.max(0, ...riversWithDeltas.map(r => r.id)) + 1);
+        const arms = buildDeltaArmsForRivers(riversWithDeltas, regionId, graph, seaBoundary.vertexKeys, seaBoundary.edgeKeys, Math.max(0, ...riversWithDeltas.map(r => r.id)) + 1, rng);
         riversWithDeltas = [...riversWithDeltas, ...arms];
       }
 
@@ -12588,7 +12615,7 @@ export function App() {
         hexTerrainByKey: hexTerrainByKeyForRoads,
         nextRoadId,
         candidateHexes: finalCandidateHexes
-      });
+      }, rng);
 
       if (finalRegionAfterLandPockets.biomeLandType === 'settled' && !finalRegionAfterLandPockets.isTract &&
         roadResult.roads.filter(road => road.regionId === regionId && road.segments.some(segment => segment.kind === 'road')).length < getSettledMainRoadLimit(finalRegionAfterLandPockets)) {
@@ -12603,7 +12630,7 @@ export function App() {
           roads: roadResult.roads,
           rivers: riversWithDeltas,
           hexTerrainByKey: hexTerrainByKeyForRoads
-        })
+        }, rng)
       };
       const finalRegions = [...regions, assignWoodlandStyle(finalRegionWithPoiKinds, regions, biomeOverrideByHexKey)];
       const nextLakeIdAfterLandlockedSea = (() => {
@@ -12625,6 +12652,7 @@ export function App() {
       })();
 
       const snapshot: MapSnapshot = {
+        generation: cloneGenerationState(activeGenerationBefore.current ?? generationRef.current),
         kingdoms, obstacles,
         regions,
         candidateHexes: originalGenerationCandidates,
@@ -12649,9 +12677,9 @@ export function App() {
       const newlyCheckedWaterHexKeys = new Set([...finalRegionKeySet, ...finalSeaKeysToWrite]);
       generationProgress.stage = 'prepare_commit';
       const finalToponyms = synchronizeToponyms({ ...toponyms, ...options.previousToponyms }, getToponymEntities(finalRegions, riversWithDeltas, finalHexTerrainByKey), toponymSeed);
-      const finalWaterPoi = assignWaterPoiLayer(waterPoiByKey, finalRegions, finalHexTerrainByKey, newlyCheckedWaterHexKeys);
+      const finalWaterPoi = assignWaterPoiLayer(waterPoiByKey, finalRegions, finalHexTerrainByKey, newlyCheckedWaterHexKeys, rng);
       if (options.mode === 'mythic') for (const key of newlyCheckedWaterHexKeys) finalWaterPoi.delete(key);
-      const finalCrossings = reconcileRiverCrossings(roadResult.roads, riversWithDeltas, finalRegions, crossings);
+      const finalCrossings = reconcileRiverCrossings(roadResult.roads, riversWithDeltas, finalRegions, crossings, rng);
       const finalNextLakeId = Math.max(nextLakeIdAfterLandlockedSea, getNextLakeIdFromTerrain(finalHexTerrainByKey));
       recordGenerated(snapshot, { ...captureMap(), regions: finalRegions, candidateHexes: finalCandidateHexes,
         rivers: riversWithDeltas, roads: roadResult.roads, crossings: finalCrossings,
@@ -12684,7 +12712,7 @@ export function App() {
   };
 
 
-  const captureMap = (): MapSnapshot => ({ kingdoms, obstacles, regions, candidateHexes, rivers, roads, crossings,
+  const captureMap = (): MapSnapshot => ({ generation: cloneGenerationState(generationRef.current), kingdoms, obstacles, regions, candidateHexes, rivers, roads, crossings,
     hexTerrainByKey, waterPoiByKey, biomeOverrideByHexKey, toponyms, toponymSeed, nextLakeId, nextRoadId });
   const captureDocument = (): DocumentSnapshot => ({ map: captureMap(), generationHistory: history, selectedHex,
     generationMode, isMapRotated, mapScale: pendingMapZoomRef.current?.scale ?? mapScaleRef.current });
@@ -12692,11 +12720,13 @@ export function App() {
     setEditingHexBiomeKey(null); setEditingPoiHexKey(null); setEditingCentralPoiRegionId(null);
   };
   const recordTransaction = (before: DocumentSnapshot, after: DocumentSnapshot) => {
+    documentRevision.current++;
     const transaction = { before: copyDocument(before), after: copyDocument(after) };
     setUndoHistory(current => [...current, transaction].slice(-100));
     setRedoHistory([]);
   };
   const applyExactMap = (map: MapSnapshot) => {
+    restoreGeneration(map.generation);
     setKingdoms(map.kingdoms ?? []); setObstacles(map.obstacles ?? []);
     setRegions(map.regions); setCandidateHexes(map.candidateHexes); setRivers(map.rivers);
     setRoads(map.roads); setCrossings(map.crossings); setHexTerrainByKey(map.hexTerrainByKey);
@@ -12712,12 +12742,14 @@ export function App() {
     generationHistory: [...doc.generationHistory]
   });
   const applyPreparedDocument = (doc: DocumentSnapshot) => {
+    documentRevision.current++;
     applyExactMap(doc.map); setHistory(doc.generationHistory); setSelectedHex(doc.selectedHex);
     setGenerationMode(doc.generationMode); setIsMapRotated(doc.isMapRotated);
     updateMapScale(doc.mapScale); setPendingRegen(null); closeEditors();
   };
   const applyDocument = (value: DocumentSnapshot) => applyPreparedDocument(copyDocument(value));
-  const mutationBlocked = () => importInFlight.current || !!kingdomJob || !!pendingRegen;
+  const mutationBlocked = () => documentRevision.current !== renderedDocumentRevision
+    || importInFlight.current || kingdomInFlight.current || !!kingdomJob || !!pendingRegen;
   const undoMap = () => {
     if (mutationBlocked() || !undoHistory.length) return;
     const transaction = undoHistory[undoHistory.length - 1];
@@ -12740,8 +12772,9 @@ export function App() {
   const recordGenerated = (checkpoint: MapSnapshot, map: MapSnapshot, selection: AxialHex,
     backup?: GenerationBackup, checkpoints = history) => {
     assertGeneratedIds(map);
+    if (!kingdomJob) backup ??= activeGenerationBackup.current ?? undefined;
     if (kingdomJob && !backup) return; // internal kingdom steps form one transaction at finish
-    const before = backup?.document ?? captureDocument();
+    const before = backup?.document ?? { ...captureDocument(), map: { ...captureMap(), generation: cloneGenerationState(checkpoint.generation) } };
     recordTransaction(before, { ...captureDocument(), map, selectedHex: selection,
       generationHistory: [...checkpoints, structuredClone(checkpoint)] });
   };
@@ -12753,6 +12786,7 @@ export function App() {
 
   const restoreGenerationBackup = (backup: GenerationBackup) => {
     const map = backup.map;
+    restoreGeneration(map.generation);
     setKingdoms(map.kingdoms ?? []);
     setObstacles(map.obstacles ?? []);
     setRegions(map.regions);
@@ -12777,10 +12811,11 @@ export function App() {
     if (backup.redo) setRedoHistory(backup.redo);
   };
 
-  const reportGenerationFailure = (error: unknown, anchorHex: AxialHex, options: GenerationOptions, backup: GenerationBackup) => {
+  const reportGenerationFailure = (error: unknown, anchorHex: AxialHex, options: GenerationOptions, backup: GenerationBackup, context?: GenerationActionContext) => {
     restoreGenerationBackup(backup);
+    activeGenerationBefore.current = cloneGenerationState(backup.map.generation);
     const diagnostic = generationLog.finish({
-      ...generationEvent(anchorHex, options, 'programming-error', String(error), 'rolled-back'),
+      ...generationEvent(anchorHex, options, 'programming-error', String(error), 'rolled-back', context),
       message: String(error),
       stack: error && typeof error === 'object' && 'stack' in error ? String(error.stack) : undefined
     });
@@ -12791,9 +12826,11 @@ export function App() {
   const safelyAddRegionToMap = (anchorHex: AxialHex, options: GenerationOptions = {}, rollback?: GenerationBackup) => {
     if (importInFlight.current) return { success: false as const, diagnostic: generationError! };
     const backup = rollback ?? captureGenerationBackup();
+    activeGenerationBefore.current = cloneGenerationState(backup.map.generation);
+    activeGenerationBackup.current = backup;
     setGenerationError(null);
     generationLog.begin();
-    generationProgress.action = rollback ? 'regenerate' : 'add';
+    generationProgress.action = pendingRegen ? 'regenerate' : 'add';
     generationProgress.exhausted = false;
     generationProgress.targetSize = null;
     generationProgress.rejectionCounts = {};
@@ -12836,9 +12873,12 @@ export function App() {
     }
   };
 
-  const startKingdom = (anchor: AxialHex, failureBackup?: GenerationBackup) => {
-    if (importInFlight.current || kingdomJob) return;
+  const startKingdom = (anchor: AxialHex, failureBackup?: GenerationBackup, context?: GenerationActionContext) => {
+    if (importInFlight.current || kingdomInFlight.current || kingdomJob) return;
+    kingdomInFlight.current = true;
     const backup = captureGenerationBackup();
+    // User action context outlives pendingRegen and every React render/tick.
+    const actionContext = context ?? { action: failureBackup ? 'regenerate' : 'add', inputOptions: captureGenerationInputs() };
     try {
       const id = Math.max(0,...kingdoms.map(k=>k.id))+1;
       if (!Number.isSafeInteger(id)) throw new SaveValidationError('map.kingdoms','ID overflow');
@@ -12847,8 +12887,8 @@ export function App() {
       const area = kingdomKeys(origin);
       setGenerationError(null);
       setDetailedRenderReady(false);
-      setKingdomJob({backup,failureBackup,origin,anchor,id,startCount:regions.length,steps:0,phase:area.has(hexKey(anchor))?'build':'connect',first:true});
-    } catch(error) { reportGenerationFailure(error,anchor,{},failureBackup ?? backup); }
+      setKingdomJob({backup,failureBackup,actionContext,origin,anchor,id,startCount:regions.length,steps:0,phase:area.has(hexKey(anchor))?'build':'connect',first:true});
+    } catch(error) { kingdomInFlight.current=false; reportGenerationFailure(error,anchor,{mode:'mythic'},failureBackup ?? backup,actionContext); }
   };
 
   const finishKingdom = (job: KingdomJob) => {
@@ -12859,13 +12899,13 @@ export function App() {
     const settled = eligible.filter(r=>r.biomeLandType==='settled');
     for (const region of eligible.filter(r=>r.biomeLandType==='wild').sort((a,b)=>b.finalSize-a.finalSize)) {
       if(settled.length>=4)break;
-      const choice=chooseBiomeIdAtHeightLevel('settled',[],region.id,region.heightLevel,{reasons:[]});
+      const choice=chooseBiomeIdAtHeightLevel('settled',[],region.id,region.heightLevel,{reasons:[]}, rng);
       if(!choice.biomeId)continue;
       const biome=BIOMES[choice.biomeId];
       const promoted:Region={...region,biomeLandType:'settled',biomeId:biome.id,biomeLabel:biome.label,biomePrimaryEmoji:biome.primaryEmoji,biomeSecondaryEmojis:[...biome.secondaryEmojis],biomeEmojiLabel:biome.primaryEmoji+biome.secondaryEmojis.join('')};
       members=members.map(r=>r.id===promoted.id?promoted:r);settled.push(promoted);
     }
-    const assigned=allocateKingdomPoi(members,area,dry).map(r=>({...r,suppressCentralPoi:!r.isTract&&!r.centralPoiKind}));
+    const assigned=allocateKingdomPoi(members,area,dry, rng.poi).map(r=>({...r,suppressCentralPoi:!r.isTract&&!r.centralPoiKind}));
     const byId=new Map(assigned.map(r=>[r.id,r]));
     const finalRegions=regions.map(r=>byId.get(r.id)??r);
     // Rebuild only this action's regions, in generation order, from the exact
@@ -12875,19 +12915,19 @@ export function App() {
     for(const region of finalRegions.slice(job.backup.map.regions.length)) {
       processed.push(region);
       const candidates=getCandidateHexes(processed.flatMap(r=>r.hexes),getSeaHexKeys(hexTerrainByKey));
-      const result=generateRoadsForRegion({region,regions:processed,roads:rebuiltRoads,rivers,hexTerrainByKey,nextRoadId:roadId,candidateHexes:candidates});
+      const result=generateRoadsForRegion({region,regions:processed,roads:rebuiltRoads,rivers,hexTerrainByKey,nextRoadId:roadId,candidateHexes:candidates}, rng);
       rebuiltRoads=result.roads;roadId=result.nextRoadId;
     }
     const heights=new Map(finalRegions.flatMap(r=>r.hexes.map(h=>[hexKey(h),r.heightLevel] as const)));
     const riverEdges=new Set(rivers.flatMap(r=>r.vertexPath.slice(1).map((v,i)=>edgeKey(r.vertexPath[i],v))));
     const roadPairs=new Set(rebuiltRoads.flatMap(r=>r.segments.map(s=>pairKey(s.from,s.to))));
     if(obstacles.some(o=>roadPairs.has(pairKey(o.hex,o.neighborHex))))throw new Error('Дорога пересекла существующее препятствие.');
-    const addedObstacles=createObstacles(job.id,kingdomHexes(job.origin),getHexEdgesAsVertexPairs,h=>heights.get(hexKey(h))??0,h=>!dry(h),riverEdges,roadPairs);
+    const addedObstacles=createObstacles(job.id,kingdomHexes(job.origin),getHexEdgesAsVertexPairs,h=>heights.get(hexKey(h))??0,h=>!dry(h),riverEdges,roadPairs, rng.geography);
     const names=synchronizeToponyms({},[{key:`kingdom:${job.id}`,kind:'region'}],toponymSeed);
     const kingdom:Kingdom={id:job.id,origin:job.origin,anchor:job.anchor,regionIds:assigned.map(r=>r.id),name:names[`kingdom:${job.id}`],color:`hsl(${Math.round((job.id*137.508)%360)} 65% 68%)`};
     const water=new Map(waterPoiByKey);
     for(const r of members)for(const h of r.hexes)water.delete(hexKey(h));
-    const finalCrossings=reconcileRiverCrossings(rebuiltRoads,rivers,finalRegions,crossings);
+    const finalCrossings=reconcileRiverCrossings(rebuiltRoads,rivers,finalRegions,crossings, rng);
     recordGenerated(job.backup.map, { ...captureMap(), regions: finalRegions, roads: rebuiltRoads,
       nextRoadId: roadId, crossings: finalCrossings,
       waterPoiByKey: water, toponyms: synchronizeToponyms(toponyms,getToponymEntities(finalRegions,rivers,hexTerrainByKey),toponymSeed),
@@ -12901,17 +12941,22 @@ export function App() {
     setKingdoms([...kingdoms,kingdom]);setObstacles([...obstacles,...addedObstacles]);
     setHistory([...job.backup.history,structuredClone(job.backup.map)]);
     setSelectedHex(assigned.find(r=>r.centralPoiKind==='throne')!.centerHex);
-    setKingdomJob(null);
+    activeGenerationBefore.current = cloneGenerationState((job.failureBackup ?? job.backup).map.generation);
+    generationProgress.action = job.failureBackup ? 'regenerate' : 'add';
+    generationLog.finish(generationEvent(job.anchor,{mode:'mythic'},'generated','kingdom_created','region',job.actionContext));
+    kingdomInFlight.current=false; setKingdomJob(null);
   };
 
   const advanceKingdom = () => {
-    const job=kingdomJob;if(!job)return;
+    const job=kingdomJob;if(!job || advancedJobs.current.has(job))return;
+    // A consumed tick remains stale even after a newer tick has executed.
+    advancedJobs.current.add(job);
     try {
       if(!job.first && regions.length===job.startCount+1) {
         const first=regions[job.startCount];
         if(first.isTract || first.biomeLandType!=='settled' || (![11,12].includes(first.targetSize) || first.finalSize < first.targetSize)) {
           if((job.recoveries??0)>=12)throw new Error('Не удалось создать первый освоенный регион на 11–12 гексов.');
-          restoreSnapshot(history[history.length-1]);setHistory(history.slice(0,-1));
+          restoreSnapshot({...history[history.length-1], generation: cloneGenerationState(generationRef.current)});setHistory(history.slice(0,-1));
           setKingdomJob({...job,first:true,recoveries:(job.recoveries??0)+1,steps:job.steps+1});return;
         }
       }
@@ -12933,17 +12978,17 @@ export function App() {
       const candidates=job.first?uncovered:uncovered.filter(h=>getHexNeighbors(h).some(n=>occupied.has(hexKey(n))));
       if(!candidates.length)throw new Error('Не найден следующий гекс королевства.');
       const anchor=job.first ? center : job.preferredAnchor && !occupied.has(hexKey(job.preferredAnchor)) ? job.preferredAnchor : candidates.sort((a,b)=>distance(a,center)-distance(b,center))[0];
-      const targetSize=modeRegionSize('mythic',rollRegionTargetSize,job.first);
+      const targetSize=modeRegionSize('mythic',()=>rollRegionTargetSize(rng),job.first, rng.geography);
       const result=safelyAddRegionToMap(anchor,{mode:'mythic',kingdomId:job.id,kingdomArea:area,fixedCenter:job.first?center:undefined,targetSize,landType:job.first?'settled':undefined,coastalPreference:'mainland'});
       if(!result.success) {
         if(result.diagnostic.kind==='constraint-rejection' && regions.length>job.startCount+1 && (job.recoveries??0)<12) {
-          restoreSnapshot(history[history.length-1]);setHistory(history.slice(0,-1));
+          restoreSnapshot({...history[history.length-1], generation: cloneGenerationState(generationRef.current)});setHistory(history.slice(0,-1));
           setKingdomJob({...job,preferredAnchor:anchor,recoveries:(job.recoveries??0)+1,steps:job.steps+1});return;
         }
         throw new Error('Не удалось построить регион королевства.');
       }
       setKingdomJob({...job,preferredAnchor:undefined,first:false,steps:job.steps+1});
-    } catch(error) {reportGenerationFailure(error,job.anchor,{mode:'mythic'},job.failureBackup ?? job.backup);setKingdomJob(null);}
+    } catch(error) {reportGenerationFailure(error,job.anchor,{mode:'mythic'},job.failureBackup ?? job.backup,job.actionContext);kingdomInFlight.current=false;setKingdomJob(null);}
   };
   useEffect(()=>{
     if(!kingdomJob)return;
@@ -12968,18 +13013,40 @@ export function App() {
       && !Object.keys(toponyms).length && nextLakeId===1 && nextRoadId===1 && !isMapRotated
       && selectedHex?.q===START_HEX.q && selectedHex?.r===START_HEX.r) return;
     const before=captureDocument();
-    const after: DocumentSnapshot = { ...before, map: { kingdoms: [], obstacles: [], regions: [], candidateHexes: [],
+    const newGeneration = createGenerationState(newWorldSeed());
+    const after: DocumentSnapshot = { ...before, map: { generation: newGeneration, kingdoms: [], obstacles: [], regions: [], candidateHexes: [],
       rivers: [], roads: [], crossings: [], hexTerrainByKey: new Map(), waterPoiByKey: new Map(), biomeOverrideByHexKey: new Map(),
-      toponyms: {}, toponymSeed: createToponymSeed(), nextLakeId: 1, nextRoadId: 1 },
+      toponyms: {}, toponymSeed: toponymSeedFor(newGeneration.masterSeed), nextLakeId: 1, nextRoadId: 1 },
       generationHistory: [], selectedHex: START_HEX, isMapRotated: false };
     recordTransaction(before,after); applyDocument(after); setGenerationError(null);
+  };
+
+  const applyWorldSeed = () => {
+    if (mutationBlocked()) return false;
+    if (regions.length || hexTerrainByKey.size || kingdoms.length) return true;
+    const seed = /^\d+$/.test(seedInput) ? Number(seedInput) : NaN;
+    if (!isUint32(seed)) { setSeedError(true); return false; }
+    setSeedError(false);
+    if (seed === generationRef.current.masterSeed) return true;
+    const before = captureDocument();
+    const map = {...before.map, generation: createGenerationState(seed), toponymSeed: toponymSeedFor(seed)};
+    recordTransaction(before, {...before, map}); applyExactMap(map);
+    return true;
+  };
+  const generateAt = (anchor: AxialHex) => {
+    if (mutationBlocked() || !applyWorldSeed()) return;
+    documentRevision.current++;
+    if (generationMode === 'mythic') { startKingdom(anchor); return; }
+    const backup = captureGenerationBackup();
+    try { const options = buildGenerationOptions(); safelyAddRegionToMap(anchor, options, backup); }
+    catch(error) { reportGenerationFailure(error, anchor, {}, backup); }
   };
 
   // Текущие параметры генерации, собранные из выпадающих списков.
   // Размер перебрасывается в момент вызова, чтобы каждая генерация в рамках
   // выбранной категории давала новое случайное значение из её диапазона.
   const buildGenerationOptions = (): GenerationOptions => ({
-    targetSize: genSizeCategory === 'auto' ? undefined : rollRegionSizeInCategory(genSizeCategory),
+    targetSize: genSizeCategory === 'auto' ? undefined : rollRegionSizeInCategory(genSizeCategory, rng),
     landType: genLandType === 'auto' ? undefined : genLandType,
     biomeId: genBiome === 'auto' ? undefined : genBiome,
     coastalPreference: genCoastal === 'auto' ? undefined : genCoastal
@@ -12990,6 +13057,7 @@ export function App() {
   // числе изменения, которые новый регион внёс в соседние регионы.
   const restoreSnapshot = (snapshot: MapSnapshot) => {
     snapshot = structuredClone(snapshot);
+    restoreGeneration(snapshot.generation);
     setKingdoms(snapshot.kingdoms ?? []);
     setObstacles(snapshot.obstacles ?? []);
     setRegions(snapshot.regions);
@@ -13029,6 +13097,7 @@ export function App() {
   const regenerateLastRegion = () => {
     if (mutationBlocked()) return;
     if (regions.length === 0 || history.length === 0) return;
+    documentRevision.current++;
     const backup = captureGenerationBackup();
     const lastKingdom = kingdoms.find(k=>k.regionIds.includes(regions[regions.length-1].id));
     const lastAnchor = lastKingdom?.anchor ?? regions[regions.length - 1].anchorHex;
@@ -13038,19 +13107,28 @@ export function App() {
     generationProgress.stage = 'prepare_regeneration';
     let options: GenerationOptions = {};
     try {
-      options = { ...buildGenerationOptions(), mode: lastKingdom ? 'mythic' : 'classic', previousToponyms: toponyms };
-      restoreSnapshot(snapshot);
+      activeGenerationBefore.current = cloneGenerationState(backup.map.generation);
+      // Mythic owns its size/biome controls. Hidden classic controls must not
+      // consume RNG before startKingdom captures its regeneration checkpoint.
+      options = lastKingdom
+        ? { mode: 'mythic', previousToponyms: toponyms }
+        : { ...buildGenerationOptions(), mode: 'classic', previousToponyms: toponyms };
+      restoreSnapshot({...snapshot, generation: cloneGenerationState(generationRef.current)});
       setHistory(history.slice(0, -1));
       // Wait for React to apply the snapshot before the generation callback reads it.
-      setPendingRegen({ backup, anchorHex: lastAnchor, options });
+      setPendingRegen({ backup, anchorHex: lastAnchor, options, actionContext: { action: 'regenerate', inputOptions: captureGenerationInputs() } });
     } catch (error) {
       reportGenerationFailure(error, lastAnchor, options, backup);
     }
   };
 
   const finishPendingRegeneration = () => {
-    if (!pendingRegen) return;
-    if (pendingRegen.options.mode === 'mythic') startKingdom(pendingRegen.anchorHex, pendingRegen.backup);
+    // Keep every consumed request inert, including a captured A callback after B.
+    // Reject stale renders before starting a job, drawing RNG or using a backup.
+    if (!pendingRegen || consumedRegenerations.current.has(pendingRegen)
+      || documentRevision.current !== renderedDocumentRevision) return;
+    consumedRegenerations.current.add(pendingRegen);
+    if (pendingRegen.options.mode === 'mythic') startKingdom(pendingRegen.anchorHex, pendingRegen.backup, pendingRegen.actionContext);
     else safelyAddRegionToMap(pendingRegen.anchorHex, pendingRegen.options, pendingRegen.backup);
     setPendingRegen(null);
   };
@@ -13570,6 +13648,7 @@ export function App() {
 
   const createSaveData = (): HexcrawlSaveData => ({
     schema: HEXCRAWL_SAVE_SCHEMA,
+    generation: cloneGenerationState(generationRef.current),
     version: HEXCRAWL_SAVE_VERSION,
     savedAt: new Date().toISOString(),
     map: {
@@ -13597,7 +13676,7 @@ export function App() {
   });
 
   const handleExportPng = async () => {
-    if (!renderDetails) return;
+    if (mutationBlocked() || !renderDetails) return;
     if (!mapSvgRef.current) return;
     try {
       await exportSvgToPng(mapSvgRef.current, `${EXPORT_FILE_PREFIX}-${getTimestampForFilename()}.png`);
@@ -13609,7 +13688,7 @@ export function App() {
   };
 
   const handleExportJson = () => {
-    if(kingdomJob)return;
+    if(mutationBlocked())return;
     const saveData = createSaveData();
     const blob = new Blob([JSON.stringify(saveData, null, 2)], { type: 'application/json;charset=utf-8' });
     downloadBlob(blob, `${EXPORT_FILE_PREFIX}-${getTimestampForFilename()}.json`);
@@ -13640,7 +13719,7 @@ export function App() {
       const selection=imported.ui.selectedHex;
       const before=captureDocument();
       const after:DocumentSnapshot={
-        map:{kingdoms:imported.map.kingdoms ?? [],obstacles:imported.map.obstacles ?? [],regions:imported.map.regions,
+        map:{generation: imported.generation ?? createGenerationState(seed >>> 0), kingdoms:imported.map.kingdoms ?? [],obstacles:imported.map.obstacles ?? [],regions:imported.map.regions,
           candidateHexes:candidates,rivers:imported.map.rivers,roads:imported.map.roads,crossings:imported.map.crossings,
           hexTerrainByKey:terrain,waterPoiByKey:new Map(Object.entries(imported.map.waterPoiByHexKey ?? {})),
           biomeOverrideByHexKey:new Map(Object.entries(imported.map.biomeOverrideByHexKey ?? {})),toponyms:names,toponymSeed:seed,
@@ -13653,15 +13732,15 @@ export function App() {
       // Everything that can fail (including deep copies) is prepared before the first setter.
       const prepared=copyDocument(after), transaction={before:copyDocument(before),after:copyDocument(after)};
       setUndoHistory(current=>[...current,transaction].slice(-100)); setRedoHistory([]);
-      applyPreparedDocument(prepared); setGenerationError(null); trackGoal('import_json');
+      applyPreparedDocument(prepared); setLegacyNotice(!imported.generation); setGenerationError(null); trackGoal('import_json');
     } catch(error) {
       console.error('JSON import failed',error);
       const path=error instanceof SaveValidationError?error.path:'$';
       const category=language==='ru'
         ? ({read:'ошибка чтения файла',json:'ошибка синтаксиса JSON',validation:'некорректные данные',preparation:'ошибка подготовки карты'}[stage])
         : ({read:'file read error',json:'invalid JSON syntax',validation:'invalid map data',preparation:'map preparation error'}[stage]);
-      window.alert(language==='ru'?`Не удалось загрузить JSON: ${category} (${path}). Текущая карта сохранена.`
-        :`Failed to load JSON: ${category} (${path}). Your current map is intact.`);
+      window.alert(language==='ru'?`Не удалось загрузить JSON: ${category} (${path}: ${error instanceof SaveValidationError ? error.reason : category}). Текущая карта сохранена.`
+        :`Failed to load JSON: ${category} (${path}: ${error instanceof SaveValidationError ? error.reason : category}). Your current map is intact.`);
     } finally { importInFlight.current=false; setIsImporting(false); }
   };
 
@@ -13688,8 +13767,7 @@ export function App() {
     if (hex.kind === 'candidate') {
       trackGoal('region_add');
       if (!kingdomJob) {
-        if (generationMode === 'mythic') startKingdom({ q: hex.q, r: hex.r });
-        else safelyAddRegionToMap({ q: hex.q, r: hex.r }, buildGenerationOptions());
+        generateAt({ q: hex.q, r: hex.r });
       }
     } else setSelectedHex({ q: hex.q, r: hex.r });
   };
@@ -14153,6 +14231,12 @@ export function App() {
             ) : regions.length <= 2 && candidateHexes.length > 0 ? (
               <div className="info-block info-block--prompt map-toolbar__prompt" role="status">{t.candidatePrompt}</div>
             ) : null}
+            <div className="control-block"><label>{language === 'ru' ? 'Seed мира' : 'World seed'}
+              <input aria-label={language === 'ru' ? 'Seed мира' : 'World seed'} inputMode="numeric" value={seedInput}
+                readOnly={!!regions.length || !!hexTerrainByKey.size || !!kingdoms.length}
+                disabled={mutationBlocked()} onChange={e=>{setSeedInput(e.target.value);setSeedError(false);}} onBlur={applyWorldSeed} />
+            </label>{seedError ? <p role="alert">{language === 'ru' ? 'Seed: целое число от 0 до 4294967295.' : 'Seed: integer from 0 to 4294967295.'}</p> : null}</div>
+            {legacyNotice ? <p role="status">{language === 'ru' ? 'Старая карта: seed задан для дальнейшего продолжения' : 'Legacy map: seed assigned for future continuation'}</p> : null}
             <div className="control-block mode-selector"><label>{language === 'ru' ? 'Режим' : 'Mode'}
               <select aria-label={language === 'ru' ? 'Режим' : 'Mode'} value={generationMode} disabled={isImporting || !!pendingRegen || !!kingdomJob} onChange={e=>{ if(!mutationBlocked()) setGenerationMode(e.target.value as GenerationMode); }}>
                 <option value="classic">{language === 'ru' ? 'Классический режим' : 'Classic mode'}</option>

@@ -1,3 +1,4 @@
+import {createGenerationState} from '../../src/worldRandom.ts';
 import { spawn } from 'node:child_process';
 import { chromium } from 'playwright';
 import fs from 'node:fs/promises';
@@ -58,6 +59,8 @@ try {
     Math.random = () => { seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0; return seed / 4294967296; };
   });
   await page.goto('http://127.0.0.1:4173/');
+  await page.getByRole('textbox',{name:'Seed мира',exact:true}).fill('42');
+  await page.getByRole('textbox',{name:'Seed мира',exact:true}).press('Tab');
   assert.equal(await page.getByRole('region', { name: 'Генератор названий' }).count(), 0);
   const selectSize = () => page.locator('.gen-params select').nth(0).selectOption('locality');
   const selectCoast = mode => page.locator('.gen-params select').nth(3).selectOption(mode);
@@ -82,7 +85,7 @@ try {
     lastDownloadAt = Date.now();
     return JSON.parse(await fs.readFile(await download.path(), 'utf8'));
   }
-  const stable = data => ({ map: data.map, counters: data.counters, ui: data.ui });
+  const stable = data => { const {savedAt,...document}=data; return document; };
   async function addRegion() {
     const before = await page.locator('details.export-menu').count() ? await snapshot() : null;
     const candidates = page.locator('polygon.hex.candidate');
@@ -154,17 +157,17 @@ try {
   assert.equal((await snapshot()).map.toponyms.names['region:1'].ru, regionName.ru);
   assert.equal((await addRegion()).map.regions.length, count + 1);
   assert.equal(errors.length, 0, errors.join('\n'));
-  // Inject once into the real production callback, after size selection.
-  // Restore Math.random before throwing so the next action can proceed normally.
+  // Inject once at the real transaction copy boundary after size selection.
+  // RNG no longer uses Math.random; restore cloning before throwing so rollback works.
   const injectFailure = () => page.evaluate(() => {
-    const original = Math.random;
+    const original = window.structuredClone;
     let calls = 0;
-    Math.random = () => {
+    window.structuredClone = value => {
       if (++calls === 3) {
-        Math.random = original;
+        window.structuredClone = original;
         throw new Error('injected browser generation failure');
       }
-      return original();
+      return original(value);
     };
   });
   const beforeFailure = await snapshot();
@@ -185,6 +188,7 @@ try {
   assert.deepEqual(verboseLogs, [], 'ordinary mode must not emit debug console.log');
   // Regression: a sea-blocked pocket must generate atomically in the real UI.
   const pocket = JSON.parse(await fs.readFile(new URL('../fixtures/sea-pocket-map.json', import.meta.url), 'utf8'));
+  pocket.generation=createGenerationState(1); // fixed continuation input for the sea-recovery regression
   const [pocketChooser] = await Promise.all([
     page.waitForEvent('filechooser'), page.getByRole('button', { name: 'Загрузить JSON', exact: true }).click()
   ]);
@@ -194,10 +198,6 @@ try {
   await page.locator('.gen-params select').nth(0).selectOption('auto');
   await selectCoast('mainland');
   const pocketBefore = await snapshot();
-  await page.evaluate(() => {
-    let seed = 1;
-    Math.random = () => { seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0; return seed / 4294967296; };
-  });
   await page.locator('polygon.hex.candidate[data-hex-key="3,-3"]').dispatchEvent('click', {}, { timeout: 120000 });
   const pocketAfter = await snapshot();
   assert.equal(pocketAfter.map.regions.length, pocketBefore.map.regions.length + 1);
@@ -228,6 +228,8 @@ try {
     await probe.close();
   }
   await page.goto('http://127.0.0.1:4173/');
+  await page.getByRole('textbox',{name:'Seed мира',exact:true}).fill('42');
+  await page.getByRole('textbox',{name:'Seed мира',exact:true}).press('Tab');
   await page.getByRole('combobox',{name:'Режим',exact:true}).selectOption('mythic');
   assert.equal(await page.locator('.gen-params').count(),0);
   await page.locator('polygon.hex.candidate').first().dispatchEvent('click');
