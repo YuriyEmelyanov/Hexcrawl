@@ -1,17 +1,22 @@
 {
-  "schema_version": 1,
-  "model_version": "1.0",
+  "schema_version": 2,
+  "model_version": "1.1",
   "checked_on": "2026-10-25",
   "horizon": "rolling_12_months",
   "unit": "unique_active_preparing_gm",
-  "ranking_status": "not_defined",
-  "ranked_system_ids": [],
+  "ranking_status": "provisional_among_four_not_approved_top",
+  "ranked_system_ids": [
+    "SD",
+    "PF2",
+    "OSE",
+    "FL"
+  ],
   "languages": [
     "RU",
     "EN"
   ],
-  "global_annual_forecast_status": "not_estimable_from_available_data",
-  "source_warning": "Platform users and crowdfunding backers are not annual active GMs. Scenario inputs are arbitrary hypotheses, not measured rates or confidence bounds.",
+  "global_annual_forecast_status": "proxy_based_low_confidence_estimate",
+  "source_warning": "Observed anchors are campaign counts, not annual GMs. k/g/H/B/R/C are explicit analyst assumptions informed by proxies and task fit; arithmetic estimates are not observed populations. Low/high scenarios are not proven bounds or confidence intervals.",
   "systems": [
     {
       "id": "PF2",
@@ -21,24 +26,57 @@
       ],
       "foundry_most_played": 0.1849,
       "foundry_installed": 0.2758,
-      "h": [
-        0.01,
-        0.05,
-        0.15
-      ],
-      "b": [
-        0.25,
-        0.5,
-        0.75
-      ],
-      "annual_active_gms": null,
-      "hexcrawl_share": null,
-      "incremental_need_share": null,
-      "annual_reach": null,
-      "actual_use_conversion": null,
-      "annual_demand": null,
-      "annual_users": null,
-      "market_estimate_status": "unknown_missing_measured_inputs",
+      "annual_active_gms": {
+        "low": 60000,
+        "reference": 200000,
+        "high": 700000,
+        "status": "proxy_inference"
+      },
+      "hexcrawl_share": {
+        "values": [
+          0.02,
+          0.06,
+          0.15
+        ],
+        "status": "assumption"
+      },
+      "incremental_need_share": {
+        "values": [
+          0.2,
+          0.4,
+          0.6
+        ],
+        "status": "assumption"
+      },
+      "annual_reach": {
+        "values": [
+          0.1,
+          0.2,
+          0.5
+        ],
+        "status": "assumption"
+      },
+      "actual_use_conversion": {
+        "values": [
+          0.1,
+          0.25,
+          0.3
+        ],
+        "status": "assumption"
+      },
+      "annual_demand": {
+        "low": 240,
+        "reference": 4800,
+        "high": 63000,
+        "status": "proxy_inference"
+      },
+      "annual_users": {
+        "low": 2.4000000000000004,
+        "reference": 240,
+        "high": 9450,
+        "status": "conditional_acquisition_scenario_not_current_forecast"
+      },
+      "market_estimate_status": "low_confidence_proxy_inference",
       "fit_evidence": "previous_registry_provisional_not_reaudited",
       "illustrative_scenarios": [
         {
@@ -71,6 +109,68 @@
           "users_per_1000": 22.5,
           "status": "assumption_not_forecast"
         }
+      ],
+      "observed_values": {
+        "annual_active_gms": null,
+        "hexcrawl_share": null,
+        "incremental_need_share": null,
+        "annual_reach": null,
+        "actual_use_conversion": null
+      },
+      "proxy_anchor": {
+        "count": 100000,
+        "source": "P01",
+        "status": "observed_proxy_not_gm_population"
+      },
+      "proxy_scenarios": [
+        {
+          "name": "cautious",
+          "anchor": 100000,
+          "k": 3,
+          "g": 0.2,
+          "h": 0.02,
+          "b": 0.2,
+          "r": 0.1,
+          "c": 0.1,
+          "annual_active_gms": 60000,
+          "annual_hexcrawl_gms": 1200,
+          "annual_demand": 240,
+          "conditional_annual_users": 2.4000000000000004,
+          "status": "inferred_from_assumed_coefficients",
+          "coefficient_status": "assumption"
+        },
+        {
+          "name": "reference",
+          "anchor": 100000,
+          "k": 8,
+          "g": 0.25,
+          "h": 0.06,
+          "b": 0.4,
+          "r": 0.2,
+          "c": 0.25,
+          "annual_active_gms": 200000,
+          "annual_hexcrawl_gms": 12000,
+          "annual_demand": 4800,
+          "conditional_annual_users": 240,
+          "status": "inferred_from_assumed_coefficients",
+          "coefficient_status": "assumption"
+        },
+        {
+          "name": "high",
+          "anchor": 100000,
+          "k": 20,
+          "g": 0.35,
+          "h": 0.15,
+          "b": 0.6,
+          "r": 0.5,
+          "c": 0.3,
+          "annual_active_gms": 700000,
+          "annual_hexcrawl_gms": 105000,
+          "annual_demand": 63000,
+          "conditional_annual_users": 9450,
+          "status": "inferred_from_assumed_coefficients",
+          "coefficient_status": "assumption"
+        }
       ]
     },
     {
@@ -81,24 +181,57 @@
       ],
       "foundry_most_played": null,
       "foundry_installed": null,
-      "h": [
-        0.1,
-        0.3,
-        0.6
-      ],
-      "b": [
-        0.25,
-        0.5,
-        0.75
-      ],
-      "annual_active_gms": null,
-      "hexcrawl_share": null,
-      "incremental_need_share": null,
-      "annual_reach": null,
-      "actual_use_conversion": null,
-      "annual_demand": null,
-      "annual_users": null,
-      "market_estimate_status": "unknown_missing_measured_inputs",
+      "annual_active_gms": {
+        "low": 6685.349999999999,
+        "reference": 19101,
+        "high": 45842.4,
+        "status": "proxy_inference"
+      },
+      "hexcrawl_share": {
+        "values": [
+          0.2,
+          0.4,
+          0.65
+        ],
+        "status": "assumption"
+      },
+      "incremental_need_share": {
+        "values": [
+          0.3,
+          0.5,
+          0.7
+        ],
+        "status": "assumption"
+      },
+      "annual_reach": {
+        "values": [
+          0.1,
+          0.2,
+          0.5
+        ],
+        "status": "assumption"
+      },
+      "actual_use_conversion": {
+        "values": [
+          0.1,
+          0.25,
+          0.3
+        ],
+        "status": "assumption"
+      },
+      "annual_demand": {
+        "low": 401.121,
+        "reference": 3820.2000000000003,
+        "high": 20858.292,
+        "status": "proxy_inference"
+      },
+      "annual_users": {
+        "low": 4.01121,
+        "reference": 191.01000000000002,
+        "high": 3128.7438,
+        "status": "conditional_acquisition_scenario_not_current_forecast"
+      },
+      "market_estimate_status": "low_confidence_proxy_inference",
       "fit_evidence": "previous_registry_provisional_not_reaudited",
       "illustrative_scenarios": [
         {
@@ -130,6 +263,68 @@
           "demand_per_1000": 450,
           "users_per_1000": 90,
           "status": "assumption_not_forecast"
+        }
+      ],
+      "observed_values": {
+        "annual_active_gms": null,
+        "hexcrawl_share": null,
+        "incremental_need_share": null,
+        "annual_reach": null,
+        "actual_use_conversion": null
+      },
+      "proxy_anchor": {
+        "count": 6367,
+        "source": "P03",
+        "status": "observed_proxy_not_gm_population"
+      },
+      "proxy_scenarios": [
+        {
+          "name": "cautious",
+          "anchor": 6367,
+          "k": 3,
+          "g": 0.35,
+          "h": 0.2,
+          "b": 0.3,
+          "r": 0.1,
+          "c": 0.1,
+          "annual_active_gms": 6685.349999999999,
+          "annual_hexcrawl_gms": 1337.07,
+          "annual_demand": 401.121,
+          "conditional_annual_users": 4.01121,
+          "status": "inferred_from_assumed_coefficients",
+          "coefficient_status": "assumption"
+        },
+        {
+          "name": "reference",
+          "anchor": 6367,
+          "k": 6,
+          "g": 0.5,
+          "h": 0.4,
+          "b": 0.5,
+          "r": 0.2,
+          "c": 0.25,
+          "annual_active_gms": 19101,
+          "annual_hexcrawl_gms": 7640.400000000001,
+          "annual_demand": 3820.2000000000003,
+          "conditional_annual_users": 191.01000000000002,
+          "status": "inferred_from_assumed_coefficients",
+          "coefficient_status": "assumption"
+        },
+        {
+          "name": "high",
+          "anchor": 6367,
+          "k": 12,
+          "g": 0.6,
+          "h": 0.65,
+          "b": 0.7,
+          "r": 0.5,
+          "c": 0.3,
+          "annual_active_gms": 45842.4,
+          "annual_hexcrawl_gms": 29797.56,
+          "annual_demand": 20858.292,
+          "conditional_annual_users": 3128.7438,
+          "status": "inferred_from_assumed_coefficients",
+          "coefficient_status": "assumption"
         }
       ]
     },
@@ -141,24 +336,57 @@
       ],
       "foundry_most_played": 0.0052,
       "foundry_installed": 0.022,
-      "h": [
-        0.1,
-        0.3,
-        0.6
-      ],
-      "b": [
-        0.25,
-        0.5,
-        0.75
-      ],
-      "annual_active_gms": null,
-      "hexcrawl_share": null,
-      "incremental_need_share": null,
-      "annual_reach": null,
-      "actual_use_conversion": null,
-      "annual_demand": null,
-      "annual_users": null,
-      "market_estimate_status": "unknown_missing_measured_inputs",
+      "annual_active_gms": {
+        "low": 12137.3,
+        "reference": 34678,
+        "high": 83227.2,
+        "status": "proxy_inference"
+      },
+      "hexcrawl_share": {
+        "values": [
+          0.15,
+          0.35,
+          0.6
+        ],
+        "status": "assumption"
+      },
+      "incremental_need_share": {
+        "values": [
+          0.3,
+          0.5,
+          0.7
+        ],
+        "status": "assumption"
+      },
+      "annual_reach": {
+        "values": [
+          0.1,
+          0.2,
+          0.5
+        ],
+        "status": "assumption"
+      },
+      "actual_use_conversion": {
+        "values": [
+          0.1,
+          0.25,
+          0.3
+        ],
+        "status": "assumption"
+      },
+      "annual_demand": {
+        "low": 546.1784999999999,
+        "reference": 6068.65,
+        "high": 34955.424,
+        "status": "proxy_inference"
+      },
+      "annual_users": {
+        "low": 5.461784999999999,
+        "reference": 303.4325,
+        "high": 5243.3135999999995,
+        "status": "conditional_acquisition_scenario_not_current_forecast"
+      },
+      "market_estimate_status": "low_confidence_proxy_inference",
       "fit_evidence": "previous_registry_provisional_not_reaudited",
       "illustrative_scenarios": [
         {
@@ -191,6 +419,68 @@
           "users_per_1000": 90,
           "status": "assumption_not_forecast"
         }
+      ],
+      "observed_values": {
+        "annual_active_gms": null,
+        "hexcrawl_share": null,
+        "incremental_need_share": null,
+        "annual_reach": null,
+        "actual_use_conversion": null
+      },
+      "proxy_anchor": {
+        "count": 17339,
+        "source": "P02",
+        "status": "observed_proxy_not_gm_population"
+      },
+      "proxy_scenarios": [
+        {
+          "name": "cautious",
+          "anchor": 17339,
+          "k": 2,
+          "g": 0.35,
+          "h": 0.15,
+          "b": 0.3,
+          "r": 0.1,
+          "c": 0.1,
+          "annual_active_gms": 12137.3,
+          "annual_hexcrawl_gms": 1820.5949999999998,
+          "annual_demand": 546.1784999999999,
+          "conditional_annual_users": 5.461784999999999,
+          "status": "inferred_from_assumed_coefficients",
+          "coefficient_status": "assumption"
+        },
+        {
+          "name": "reference",
+          "anchor": 17339,
+          "k": 4,
+          "g": 0.5,
+          "h": 0.35,
+          "b": 0.5,
+          "r": 0.2,
+          "c": 0.25,
+          "annual_active_gms": 34678,
+          "annual_hexcrawl_gms": 12137.3,
+          "annual_demand": 6068.65,
+          "conditional_annual_users": 303.4325,
+          "status": "inferred_from_assumed_coefficients",
+          "coefficient_status": "assumption"
+        },
+        {
+          "name": "high",
+          "anchor": 17339,
+          "k": 8,
+          "g": 0.6,
+          "h": 0.6,
+          "b": 0.7,
+          "r": 0.5,
+          "c": 0.3,
+          "annual_active_gms": 83227.2,
+          "annual_hexcrawl_gms": 49936.32,
+          "annual_demand": 34955.424,
+          "conditional_annual_users": 5243.3135999999995,
+          "status": "inferred_from_assumed_coefficients",
+          "coefficient_status": "assumption"
+        }
       ]
     },
     {
@@ -201,24 +491,57 @@
       ],
       "foundry_most_played": 0.0028,
       "foundry_installed": 0.0155,
-      "h": [
-        0.5,
-        0.75,
-        0.95
-      ],
-      "b": [
-        0.1,
-        0.3,
-        0.6
-      ],
-      "annual_active_gms": null,
-      "hexcrawl_share": null,
-      "incremental_need_share": null,
-      "annual_reach": null,
-      "actual_use_conversion": null,
-      "annual_demand": null,
-      "annual_users": null,
-      "market_estimate_status": "unknown_missing_measured_inputs",
+      "annual_active_gms": {
+        "low": 4555.95,
+        "reference": 13017,
+        "high": 31240.8,
+        "status": "proxy_inference"
+      },
+      "hexcrawl_share": {
+        "values": [
+          0.65,
+          0.8,
+          0.95
+        ],
+        "status": "assumption"
+      },
+      "incremental_need_share": {
+        "values": [
+          0.1,
+          0.25,
+          0.45
+        ],
+        "status": "assumption"
+      },
+      "annual_reach": {
+        "values": [
+          0.1,
+          0.2,
+          0.5
+        ],
+        "status": "assumption"
+      },
+      "actual_use_conversion": {
+        "values": [
+          0.1,
+          0.25,
+          0.3
+        ],
+        "status": "assumption"
+      },
+      "annual_demand": {
+        "low": 296.13675,
+        "reference": 2603.4,
+        "high": 13355.442,
+        "status": "proxy_inference"
+      },
+      "annual_users": {
+        "low": 2.9613675,
+        "reference": 130.17000000000002,
+        "high": 2003.3162999999997,
+        "status": "conditional_acquisition_scenario_not_current_forecast"
+      },
+      "market_estimate_status": "low_confidence_proxy_inference",
       "fit_evidence": "previous_registry_provisional_not_reaudited",
       "illustrative_scenarios": [
         {
@@ -250,6 +573,68 @@
           "demand_per_1000": 570,
           "users_per_1000": 114,
           "status": "assumption_not_forecast"
+        }
+      ],
+      "observed_values": {
+        "annual_active_gms": null,
+        "hexcrawl_share": null,
+        "incremental_need_share": null,
+        "annual_reach": null,
+        "actual_use_conversion": null
+      },
+      "proxy_anchor": {
+        "count": 4339,
+        "source": "P04",
+        "status": "observed_proxy_not_gm_population"
+      },
+      "proxy_scenarios": [
+        {
+          "name": "cautious",
+          "anchor": 4339,
+          "k": 3,
+          "g": 0.35,
+          "h": 0.65,
+          "b": 0.1,
+          "r": 0.1,
+          "c": 0.1,
+          "annual_active_gms": 4555.95,
+          "annual_hexcrawl_gms": 2961.3675,
+          "annual_demand": 296.13675,
+          "conditional_annual_users": 2.9613675,
+          "status": "inferred_from_assumed_coefficients",
+          "coefficient_status": "assumption"
+        },
+        {
+          "name": "reference",
+          "anchor": 4339,
+          "k": 6,
+          "g": 0.5,
+          "h": 0.8,
+          "b": 0.25,
+          "r": 0.2,
+          "c": 0.25,
+          "annual_active_gms": 13017,
+          "annual_hexcrawl_gms": 10413.6,
+          "annual_demand": 2603.4,
+          "conditional_annual_users": 130.17000000000002,
+          "status": "inferred_from_assumed_coefficients",
+          "coefficient_status": "assumption"
+        },
+        {
+          "name": "high",
+          "anchor": 4339,
+          "k": 12,
+          "g": 0.6,
+          "h": 0.95,
+          "b": 0.45,
+          "r": 0.5,
+          "c": 0.3,
+          "annual_active_gms": 31240.8,
+          "annual_hexcrawl_gms": 29678.76,
+          "annual_demand": 13355.442,
+          "conditional_annual_users": 2003.3162999999997,
+          "status": "inferred_from_assumed_coefficients",
+          "coefficient_status": "assumption"
         }
       ]
     }
@@ -309,33 +694,7 @@
     "most_played_definition": "system of world with largest playtime per user over past year",
     "scope": "not global; not GM count; not hexcrawl frequency"
   },
-  "synthetic_portfolio": {
-    "assumed_gms": 100000,
-    "status": "fictional_scale_and_distribution_not_market_forecast",
-    "distribution": "Foundry most-played fractions hypothetically assigned to GMs",
-    "results": [
-      {
-        "id": "PF2",
-        "assumed_gms": 18490,
-        "reference_users": 23.1125
-      },
-      {
-        "id": "SD",
-        "assumed_gms": 520,
-        "reference_users": 3.9000000000000004
-      },
-      {
-        "id": "FL",
-        "assumed_gms": 280,
-        "reference_users": 3.1500000000000004
-      }
-    ]
-  },
   "excluded_observations": [
-    {
-      "claim": "100000 PF2 Humble sales",
-      "reason": "edition/date not unambiguously verified from retrieved primary index; full page 403"
-    },
     {
       "claim": "12523 unique OSE Month users",
       "reason": "17-project aggregate; cross-project deduplication not established"
@@ -344,5 +703,114 @@
   "current_product_support": "not_reaudited",
   "product_score_change": 0,
   "interface_change": false,
-  "feature_change": false
+  "feature_change": false,
+  "scope": {
+    "market": "international with RU/EN-capable future support",
+    "as_of": "2026-10-25",
+    "horizon_start": "2026-10-25",
+    "horizon_end_exclusive": "2027-10-25",
+    "support_condition": "All mandatory requirements of each chosen scenario met; usable English and Russian. Not current product forecast.",
+    "ranking_basis": "Reference annual_demand D; conditional U uses common reach/conversion so same order",
+    "confidence": "low; assumption-driven; not confidence interval",
+    "RU_only_estimate": null,
+    "RU_only_reason": "No sourced language/geography split; do not assign international values to current RU-only reach."
+  },
+  "previous_illustrative_v1_0": {
+    "synthetic_portfolio": {
+      "assumed_gms": 100000,
+      "status": "fictional_scale_and_distribution_not_market_forecast",
+      "distribution": "Foundry most-played fractions hypothetically assigned to GMs",
+      "results": [
+        {
+          "id": "PF2",
+          "assumed_gms": 18490,
+          "reference_users": 23.1125
+        },
+        {
+          "id": "SD",
+          "assumed_gms": 520,
+          "reference_users": 3.9000000000000004
+        },
+        {
+          "id": "FL",
+          "assumed_gms": 280,
+          "reference_users": 3.1500000000000004
+        }
+      ]
+    },
+    "description": "Historical illustration only; superseded for absolute estimates by explicit proxy model."
+  },
+  "proxy_formula": "M=anchor*k*g; D=M*H*B; U=D*R*C",
+  "proxy_parameter_definitions": {
+    "k": "Hypothetical broader unique acquired/interested owner pool relative to one campaign, including other channels; not sum of campaigns.",
+    "g": "Combined share of that hypothetical pool active as GM during the 12-month horizon.",
+    "H": "Share of active GMs using hexcrawl in horizon.",
+    "B": "Share of hexcrawl GMs with incremental map/content need relative to alternatives, under sufficient support.",
+    "R": "Annual reach among suitable GMs given active outreach scenario.",
+    "C": "Actual use among reached suitable GMs."
+  },
+  "proxy_sources": [
+    {
+      "id": "P01",
+      "url": "https://5d-blog.com/record-breaking-pathfinder-rpg-humble-bundle-extended/",
+      "published_on": "2023-02-23",
+      "count": 100000,
+      "qualifier": "over; rounded down to 100000 anchor",
+      "type": "republished_Paizo_press_release",
+      "corroboration": "https://www.forbes.com/sites/robwieland/2023/02/27/a-look-inside-the-digital-tools-of-pathfinder-nexus/",
+      "limitation": "legacy PF2 audience proxy; Remaster retention included in g; not unique current GMs"
+    },
+    {
+      "id": "P02",
+      "url": "https://www.kickstarter.com/projects/shadowdarkrpg/western-reaches",
+      "count": 17339,
+      "type": "primary_current_campaign_counter",
+      "limitation": "mixed player/GM and setting buyers; not all require new geography"
+    },
+    {
+      "id": "P03",
+      "url": "https://www.kickstarter.com/projects/exaltedfuneral/old-school-essentials-fantasy-rpg-box-sets",
+      "count": 6367,
+      "type": "primary_campaign_counter",
+      "limitation": "Classic+Advanced family; not Classic-only"
+    },
+    {
+      "id": "P04",
+      "url": "https://www.kickstarter.com/projects/1192053011/forbidden-lands-rpg-book-of-beasts-and-the-bloodmarch",
+      "count": 4339,
+      "type": "primary_campaign_counter",
+      "limitation": "2021 supplements, ongoing activity correction assumed"
+    }
+  ],
+  "restored_observation": {
+    "claim": "over 100000 PF2 Humble bundles in Feb 2023",
+    "reason": "Dated Paizo press release republished and corroborating Forbes article resolve edition/date; accepted as historical proxy only."
+  },
+  "sensitivity": {
+    "PF2_H_to_match_SD_with_other_reference_inputs": 0.075858125,
+    "PF2_H_to_match_OSE": 0.0477525,
+    "FL_B_to_match_OSE": 0.36684719981562575,
+    "coherent_scenario_orders": {
+      "cautious": [
+        "SD",
+        "OSE",
+        "FL",
+        "PF2"
+      ],
+      "reference": [
+        "SD",
+        "PF2",
+        "OSE",
+        "FL"
+      ],
+      "high": [
+        "PF2",
+        "SD",
+        "OSE",
+        "FL"
+      ]
+    }
+  },
+  "overlap_warning": "Do not sum rows as unique GMs. Overlap unmeasured; no arbitrary deduplication factor introduced.",
+  "current_product_forecast": null
 }
