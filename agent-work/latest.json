@@ -50,7 +50,7 @@
   "current_task_id": "HX-BL-003",
   "spec_path": "agent-work/specs/HX-BL-003.md",
   "spec_version": "1.0",
-  "result_path": "agent-work/results/2026-10-25-HX-BL-003-output-freeze-and-handoff.json",
+  "result_path": "agent-work/results/2026-10-25-developer-HX-BL-003-timing-started.json",
   "handoff_commit_sha": "4193e28bf55197644bf93de9a623cb347914611c",
   "active_claim": {
     "run_id": "2026-10-25:developer:HX-BL-003:1805Z",
@@ -58,11 +58,13 @@
     "task_id": "HX-BL-003",
     "started_at": "2026-10-25T18:06:22.677Z",
     "branch": "agent/hx-bl-003-performance",
-    "head_sha": "a278166de27d147ea6252ccfebe47fb401eb09f6",
-    "status": "timing_harness_implementation",
-    "last_checkpoint": "Frozen inputs and 42 outputs retained; prepare identical external timing probes before baseline. No source optimization."
+    "head_sha": "19f119036d3e12b2ac04c63fb6a17bcc507356fc",
+    "status": "awaiting_external_CI",
+    "last_checkpoint": "P1 harness4fc9f229 committed, actual environment19f11903 frozen before timing. Existing CI40220545363 ordinary series running; inspect artifacts without duplicate runs; no optimization.",
+    "last_checkpoint_at": "2026-10-25T18:53:10.299Z",
+    "result_ref": "agent-work/results/2026-10-25-developer-HX-BL-003-timing-started.json"
   },
-  "next_step": "Реализовать и закрепить timing harness P1, затем запуск baseline серии.",
+  "next_step": "Inspect existing run40220545363 and ordinary/profiled artifacts; do not start duplicate corpus or baseline. Retain harness failures before changes. Choose diagnosis only after P1 metrics and trace.",
   "owner_decisions_needed": [],
   "release_approval": {
     "task_id": "HX-BL-003",
@@ -73,9 +75,9 @@
   "evidence_path": "reports/HX-BL-003/baseline-output-freeze.md",
   "branch_name": "agent/hx-bl-003-performance",
   "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474",
-  "head_sha": "a278166de27d147ea6252ccfebe47fb401eb09f6",
-  "checks_status": "baseline_output_audit_passed_final_head_manifest_only",
-  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40205950120",
+  "head_sha": "19f119036d3e12b2ac04c63fb6a17bcc507356fc",
+  "checks_status": "check_pass_harness_P1_timing_running",
+  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40220545363",
   "review_verdict": null,
   "review_url": null,
   "role_selection_mode": "ready_work_priority",
@@ -233,14 +235,17 @@
   "automation_health": {
     "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-10-25T18:05:17.564Z",
+      "checked_at": "2026-10-25T18:41:58.669Z",
       "is_enabled": true,
       "status": "checked"
     },
     "end": {
-      "status": "pending",
-      "is_enabled": null
-    }
+      "checked_at": "2026-10-25T18:53:11.348Z",
+      "is_enabled": true,
+      "status": "checked"
+    },
+    "restored_during_this_run": false,
+    "errors": []
   },
   "open_findings": [],
   "current_review_score_assessment_status": "not_started_HX-BL-003",
@@ -250,7 +255,7 @@
     "model_path": "agent-work/market/target-audience-model.md",
     "register_path": "agent-work/market/systems-register.md",
     "recorded_on": "2026-10-25",
-    "status": "initial_results_recorded",
+    "status": "expanded_registry_43_with_10_working_development_references",
     "assessed_systems": [
       "Pathfinder 2 Remaster / Hexploration",
       "OSE Classic Fantasy",
@@ -260,7 +265,7 @@
     "source": "owner instruction in current conversation: save approach and existing results; expand table later",
     "results_commit_sha": "368d9bfd8bffe180cebdf2fe5281fa5265ca3c88",
     "evidence_status": "discussion results preserved; provisional and unchecked items retained; not independent re-review",
-    "next_step": "Требования четырёх игр уже использовать при подготовке задач; топ-5/10/20 ещё не определён. Новые игры и переоценки — отдельное продолжение реестра.",
+    "next_step": "Проверить остаток правил Knave/актуальногоS&W и незакрытые задачи Dolmenwood/TOR;не удалять прежние игры.",
     "product_score_changed": false,
     "automation_health": {
       "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
@@ -275,8 +280,8 @@
       "restored_during_this_run": false,
       "errors": []
     },
-    "ranking_status": "not_defined",
-    "current_reference_set": "four_assessed_systems_without_ranking",
+    "ranking_status": "owner_threshold_D_gt_1000_working_pool",
+    "current_reference_set": "10 working references; estimates and rules audits partly unverified",
     "product_score_revision": {
       "version": "1.2",
       "status": "prepared_in_pr",
@@ -300,7 +305,23 @@
         "restored_during_this_run": false,
         "errors": []
       }
-    }
+    },
+    "registry_entry_count": 43,
+    "development_reference_ids": [
+      "DND5",
+      "MB",
+      "KNAVE2",
+      "PF2",
+      "SD",
+      "WWN",
+      "OSE",
+      "FL",
+      "MAUS",
+      "SWC"
+    ],
+    "ranking_path": "agent-work/market/development-priorities.json",
+    "latest_result_ref": "agent-work/results/2026-10-25-market-ten-candidates.json",
+    "latest_report": "agent-work/market/additional-candidates-2026-10-25.md"
   },
   "previous_score_assessment_ref": "agent-work/results/2026-10-25-reviewer-HX-BL-030-855cfd5.json",
   "addressed_findings_pending_review": [],
