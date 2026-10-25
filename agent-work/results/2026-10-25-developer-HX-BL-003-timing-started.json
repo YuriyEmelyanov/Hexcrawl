@@ -3,48 +3,57 @@
   "run_id": "2026-10-25:developer:HX-BL-003:1805Z",
   "role": "developer",
   "task_id": "HX-BL-003",
-  "status": "baseline_timing_retry_running",
+  "status": "single_optimization_paired_comparison_running",
   "stage": "awaiting_external_CI",
-  "head_sha": "c8d5d506dfcacddfae5ac8cea60603b04797670c",
-  "harness_sha": "603fe11e0e1ff52ee83616790c3f93b33e6f4a70",
+  "head_sha": "598832c2fa12ac528e896cfe7c223703bc6ac716",
+  "harness_sha": "96a2a8979ce2ef8ad10e5174392dbe2bb0b899d5",
   "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474",
-  "workflow_run_id": 40228996488,
-  "workflow_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40228996488",
+  "workflow_run_id": 40243424173,
+  "workflow_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40243424173",
   "environment_manifest": "reports/HX-BL-003/timing-environment.json",
   "harness_report": "reports/HX-BL-003/timing-harness.md",
-  "timing_results": "pending; no numbers claimed",
+  "timing_results": "Baseline collected and diagnosed; paired speed/visual/safety acceptance pending, no gain claimed.",
   "checks": {
-    "id": 40229001061,
-    "status": "completed",
-    "conclusion": "success",
-    "head": "603fe11e0e1ff52ee83616790c3f93b33e6f4a70"
+    "id": 40243428888,
+    "status": "in_progress",
+    "conclusion": null,
+    "head": "96a2a8979ce2ef8ad10e5174392dbe2bb0b899d5"
   },
-  "local_checks": [
-    "node --check patched timing script",
-    "synthetic selector null/duplicate/malformed/invisible targets and timeout guards passed"
-  ],
-  "product_source_changed": false,
-  "optimization_started": false,
+  "local_checks": {
+    "node": "v24.22.1",
+    "command": "npm run check",
+    "exit_code": 0,
+    "tests": 236,
+    "pass": 236,
+    "fail": 0,
+    "scope": "same product src as candidate; exact full commit CI remains pending",
+    "log": "agent-work/evidence/HX-BL-003-developer/candidate-96a2a89-local-check.log",
+    "browser": "unavailable: repeated CDN ZIP truncated; exact-SHA browser/rng CI pending",
+    "paired_js_syntax": "passed",
+    "workflow_yaml": "passed"
+  },
+  "product_source_changed": true,
+  "optimization_started": true,
   "score_changed": false,
-  "next_step": "Inspect existing retry40228996488 artifacts and exact environment head; no duplicate run. Require full ordinary series and separate traces before diagnosis; source product unchanged.",
+  "next_step": "Inspect existing paired40243424173 and Check40243428888; analyze generation_ms targetN2400 for both seeds, all P1 regression limits, visual parity and debug counts. No second bottleneck; complete exact-SHA safety then independent reviewer.",
   "resume_guard": {
     "same_run_id": "2026-10-25:developer:HX-BL-003:1805Z",
-    "environment_head": "c8d5d506dfcacddfae5ac8cea60603b04797670c",
-    "harness_head": "603fe11e0e1ff52ee83616790c3f93b33e6f4a70",
-    "run_id": 40228996488,
-    "required": "Re-read head/latest and verify any self-generated environment commit on same timing retry before resuming."
+    "environment_head": "598832c2fa12ac528e896cfe7c223703bc6ac716",
+    "candidate_sha": "96a2a8979ce2ef8ad10e5174392dbe2bb0b899d5",
+    "run_id": 40243424173,
+    "required": "Re-read latest/head and existing paired CI; environment-only head598832c verified parent96a2a89. No duplicate paired collection."
   },
   "automation_health": {
     "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-10-25T20:56:26.155Z",
-      "is_enabled": true,
-      "status": "checked"
+      "checked_at": "2026-10-25T22:57:25.316Z",
+      "status": "checked",
+      "is_enabled": true
     },
     "end": {
-      "checked_at": "2026-10-25T20:56:58.400Z",
-      "is_enabled": true,
-      "status": "checked"
+      "checked_at": "2026-10-25T23:10:15.087Z",
+      "status": "checked",
+      "is_enabled": true
     },
     "restored_during_this_run": false,
     "errors": []
@@ -82,5 +91,29 @@
     "raw_records": "reports/HX-BL-003/interrupted-run40220545363.json",
     "profiled_series": "skipped",
     "limitation": "incomplete P1; no performance acceptance"
-  }
+  },
+  "baseline_result": {
+    "run_id": 40228996488,
+    "status": "completed",
+    "conclusion": "success",
+    "ordinary_rows": 49,
+    "profiled_rows": 12,
+    "full_json_equal": 61,
+    "script_errors": 0,
+    "incomplete_selection_rows": 28,
+    "diagnosis_sha": "83b0ccfb97c069db1e8a471969f55dd6ccf38860",
+    "trace_archive_hash_verified": true,
+    "trace_self_fraction_large": [
+      0.24770730196093158,
+      0.24675236271028647,
+      0.22861529352908244,
+      0.22984703093848816,
+      0.23452902785044413
+    ]
+  },
+  "product_change": "Only closed river-debug derived vertex-usage memo guard; no generation rule/RNG/visual change.",
+  "candidate_sha": "96a2a8979ce2ef8ad10e5174392dbe2bb0b899d5",
+  "environment_head": "598832c2fa12ac528e896cfe7c223703bc6ac716",
+  "score_model_version": "1.2",
+  "score_assessment_status": "pending_independent_review"
 }
