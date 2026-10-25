@@ -1,0 +1,194 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-030",
+  "spec_version": "1.0",
+  "role": "independent_reviewer",
+  "independent_agent": "/root/independent_review",
+  "checked_at": "2026-10-25T00:06:24.227195+00:00",
+  "head_sha": "c6923f37559a8ce00e0bb995e19c32fb22f3941c",
+  "base_sha": "6aaefa8896e7aac163cfcd5c2ca896ac60fc54d0",
+  "tree": "4c3c6befc14667addb02b610b345e0127184b43c",
+  "verdict": "changes_requested",
+  "release_ready": false,
+  "findings": [
+    {
+      "id": "R3",
+      "priority": "P2",
+      "path": "src/App.tsx",
+      "line": 12986,
+      "contract": [
+        "DIAG-01",
+        "AC-10"
+      ],
+      "title": "Preserve regenerate action in final late Mythic failure diagnostic",
+      "expected": "Final diagnostic action=regenerate, referring to original full-document action",
+      "actual": "Final diagnostic action=add after failed late Mythic regenerate; original whole document and both histories correctly restored",
+      "repro": "review-c6923f3-diagnostic.mjs",
+      "evidence": "review-c6923f3-diagnostic.json",
+      "requested_change": "Carry original user action across kingdom ticks; replay original JSON plus recorded add/regenerate action for both success/failure, distinguish final whole action from internal region steps; reconstruct regenerate checkpoint prerequisites via documented action prefix/test setup, preserving TX04 import/history boundary; clarify literal bare-JSON replay if needed"
+    }
+  ],
+  "previous_findings": [
+    {
+      "id": "R1",
+      "status": "fixed",
+      "method": "Independent same captured classic callback before/after render; exact document/RNG, one transaction and exact undo/redo"
+    },
+    {
+      "id": "R2",
+      "status": "fixed",
+      "method": "Independent locality controls then Mythic regenerate/delete/undo; checkpoint equals pre-regenerate RNG. Classic variant independently passes too."
+    }
+  ],
+  "acceptance_assessment": {
+    "AC-01": "pass: vector/restore/interleaving tests",
+    "AC-02": "pass: exact-tree UI CI eight profiles three units",
+    "AC-03": "pass: production UI continuation and local handler fresh import",
+    "AC-04": "partial: fixes pass; required combined manual POI/biome/name plus delete/regenerate both-mode full snapshots remains",
+    "AC-05": "partial: programming/late-regenerate rollback proven, full constraint/no-commit/control/fallback/prepare-regen matrix remains",
+    "AC-06": "partial: complete production UI nonmutating action sequence plus next-world comparison remains",
+    "AC-07": "pass: both manifests import/roundtrip/continue both modes at handler boundary, seed0/max UI profiles",
+    "AC-08": "partial: malformed handler matrix passes; nonempty map with redo UI negative/seed/no-op/file-cancel matrix remains",
+    "AC-09": "partial: R1/pending duplicates pass; physical UI/effect/delayed import/export-busy matrix remains",
+    "AC-10": "fail: R3; complete original-JSON+recorded-action replay matrix remains",
+    "AC-11": "partial: check/CI green, missing acceptance cases need CI inclusion"
+  },
+  "checks": [
+    {
+      "command": "npm ci && npm run check",
+      "node": "v24.22.1",
+      "status": "passed",
+      "evidence": "review-c6923f3-check.log",
+      "tests": 215,
+      "passed": 215,
+      "failed": 0,
+      "exit_code": 0
+    },
+    {
+      "command": "node review-c6923f3-independent.mjs",
+      "status": "passed",
+      "evidence": "review-c6923f3-independent.json"
+    },
+    {
+      "command": "node review-c6923f3-diagnostic.mjs",
+      "status": "expected_negative_confirmed",
+      "evidence": "review-c6923f3-diagnostic.json"
+    }
+  ],
+  "ci": {
+    "run_id": 40141169603,
+    "status": "success",
+    "provenance": "Root independently read all three CI logs; exact-head synthetic merge tree confirmed",
+    "synthetic_merge_sha": "6b58e1c41daf9ff06bd30ad5d446247a0db01c96",
+    "tests": 215,
+    "local_browser_rerun": false
+  },
+  "score_assessment": {
+    "model_version": "1.1",
+    "current_total_points": 186.25,
+    "registry_changed": false,
+    "assessed_sha": "c6923f37559a8ce00e0bb995e19c32fb22f3941c",
+    "S02-C01": {
+      "before": {
+        "grade": "G0",
+        "points": 0
+      },
+      "after_provisional": {
+        "grade": "G1",
+        "points": 7.5
+      },
+      "delta_provisional": 7.5,
+      "status": "functioning_prototype_not_task_accepted_or_released",
+      "method": "Independent handler R1/R2/checkpoint/late-failure proofs, exact-tree UI continuation CI, source audit and local Node24 check",
+      "limitations": "R3 plus required acceptance evidence gaps; no higher grade or universal/comparative claim"
+    },
+    "adjacent": [
+      {
+        "criterion_id": "S02-C03",
+        "before_grade": "G1",
+        "after_grade": "G1",
+        "before_points": 5,
+        "after_points": 5,
+        "delta": 0,
+        "status": "no_demonstrated_grade_regression_no_new_credit"
+      },
+      {
+        "criterion_id": "S03-C05",
+        "before_grade": "G2",
+        "after_grade": "G2",
+        "before_points": 10,
+        "after_points": 10,
+        "delta": 0,
+        "status": "no_demonstrated_grade_regression_no_new_credit"
+      },
+      {
+        "criterion_id": "S04-C04",
+        "before_grade": "G2",
+        "after_grade": "G2",
+        "before_points": 7.5,
+        "after_points": 7.5,
+        "delta": 0,
+        "status": "no_demonstrated_grade_regression_no_new_credit"
+      },
+      {
+        "criterion_id": "S09-C04",
+        "before_grade": "G2",
+        "after_grade": "G2",
+        "before_points": 5,
+        "after_points": 5,
+        "delta": 0,
+        "status": "no_demonstrated_grade_regression_no_new_credit"
+      }
+    ],
+    "possible_total_after_later_acceptance_release": 193.75
+  },
+  "evidence_report": "review-c6923f3-evidence.md",
+  "limitations": [
+    "No local browser rerun; root-verified exact-tree CI used.",
+    "Product source and existing checkout untouched.",
+    "Finite tests do not prove all seeds or 10000/100000 maps.",
+    "No GitHub/claim/score/automation mutation by independent reviewer.",
+    "Regenerate replay requires documented checkpoint/action-prefix reconstruction; JSON intentionally excludes session history (TX04), which must not be changed to satisfy replay.",
+    "AC07 tests allow a deterministic rejected continuation with full rollback; lake-reentry and sea-pocket Mythic next actions reject. This is not evidence every corpus action produces a successful new kingdom."
+  ],
+  "run_id": "2026-10-25:reviewer:HX-BL-030:c6923f3",
+  "status": "changes_requested",
+  "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/472#pullrequestreview-5640690959",
+  "evidence_ref": "agent-work/evidence/review-HX-BL-030-c6923f3/review.md",
+  "next_role": "developer",
+  "next_step": "Исправить R3 и закрыть ограниченную матрицу AC-04/05/06/08/09/10 из review.md; затем независимая проверка нового SHA.",
+  "owner_decisions_needed": [],
+  "automation_health": {
+    "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "status": "checked_on_retry",
+      "is_enabled": true,
+      "checked_at": null,
+      "checked_between": [
+        "2026-10-25T00:01:22.097218Z",
+        "2026-10-25T00:02:39.370Z"
+      ],
+      "time_note": "Exact retry timestamp not captured; bounds from run start and subsequent claim timestamp."
+    },
+    "end": {
+      "checked_at": "2026-10-25T00:09:41.764Z",
+      "is_enabled": true,
+      "status": "checked",
+      "error": null
+    },
+    "restored_during_this_run": false,
+    "errors": [
+      {
+        "phase": "initial_start_peek",
+        "message": "The task was found, but its run result could not be read.",
+        "resolved_by": "retry confirmed is_enabled=true"
+      }
+    ],
+    "schedule_unchanged": true
+  },
+  "claim_released": true,
+  "main_changed": false,
+  "published": false,
+  "score_changed": false,
+  "completed_at": "2026-10-25T00:09:47.992Z"
+}
