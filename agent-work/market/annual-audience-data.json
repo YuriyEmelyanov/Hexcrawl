@@ -1,13 +1,13 @@
 {
-  "schema_version": 2,
-  "model_version": "1.1",
+  "schema_version": 3,
+  "model_version": "1.2",
   "checked_on": "2026-10-25",
   "horizon": "rolling_12_months",
   "unit": "unique_active_preparing_gm",
-  "ranking_status": "provisional_among_four_not_approved_top",
+  "ranking_status": "provisional_among_four_after_method_change_not_approved_top",
   "ranked_system_ids": [
-    "SD",
     "PF2",
+    "SD",
     "OSE",
     "FL"
   ],
@@ -16,7 +16,7 @@
     "EN"
   ],
   "global_annual_forecast_status": "proxy_based_low_confidence_estimate",
-  "source_warning": "Observed anchors are campaign counts, not annual GMs. k/g/H/B/R/C are explicit analyst assumptions informed by proxies and task fit; arithmetic estimates are not observed populations. Low/high scenarios are not proven bounds or confidence intervals.",
+  "source_warning": "Observed anchors are campaign counts, not annual GMs. k/g/H/T/w/x/R/C are explicit analyst assumptions informed by proxies and task fit; arithmetic estimates are not observed populations. Low/high scenarios are not proven bounds or confidence intervals.",
   "systems": [
     {
       "id": "PF2",
@@ -40,14 +40,6 @@
         ],
         "status": "assumption"
       },
-      "incremental_need_share": {
-        "values": [
-          0.2,
-          0.4,
-          0.6
-        ],
-        "status": "assumption"
-      },
       "annual_reach": {
         "values": [
           0.1,
@@ -65,18 +57,18 @@
         "status": "assumption"
       },
       "annual_demand": {
-        "low": 240,
-        "reference": 4800,
-        "high": 63000,
-        "status": "proxy_inference"
+        "low": 282,
+        "reference": 5640,
+        "high": 74025,
+        "status": "proxy_inference_with_explicit_fit_filter"
       },
       "annual_users": {
-        "low": 2.4000000000000004,
-        "reference": 240,
-        "high": 9450,
+        "low": 2.8200000000000003,
+        "reference": 282,
+        "high": 11103.75,
         "status": "conditional_acquisition_scenario_not_current_forecast"
       },
-      "market_estimate_status": "low_confidence_proxy_inference",
+      "market_estimate_status": "low_confidence_proxy_inference_fit_linked",
       "fit_evidence": "previous_registry_provisional_not_reaudited",
       "illustrative_scenarios": [
         {
@@ -125,53 +117,323 @@
       "proxy_scenarios": [
         {
           "name": "cautious",
-          "anchor": 100000,
-          "k": 3,
-          "g": 0.2,
+          "annual_active_gms": 60000,
           "h": 0.02,
-          "b": 0.2,
+          "unmet_primary_task_share": 0.25,
+          "fit_task_share": 0.94,
+          "unknown_applicability_assumption": 0,
+          "annual_demand": 282,
+          "annual_users": 2.8200000000000003,
           "r": 0.1,
           "c": 0.1,
-          "annual_active_gms": 60000,
-          "annual_hexcrawl_gms": 1200,
-          "annual_demand": 240,
-          "conditional_annual_users": 2.4000000000000004,
-          "status": "inferred_from_assumed_coefficients",
-          "coefficient_status": "assumption"
+          "contributions": [
+            {
+              "criterion_id": "B1",
+              "primary_need_share": 0.08,
+              "points": 2,
+              "applicability": 1,
+              "annual_demand": 24
+            },
+            {
+              "criterion_id": "B2",
+              "primary_need_share": 0.05,
+              "points": 2,
+              "applicability": 1,
+              "annual_demand": 15
+            },
+            {
+              "criterion_id": "B3",
+              "primary_need_share": 0.08,
+              "points": 2,
+              "applicability": 1,
+              "annual_demand": 24
+            },
+            {
+              "criterion_id": "B4",
+              "primary_need_share": 0.04,
+              "points": 0,
+              "applicability": 0,
+              "annual_demand": 0
+            },
+            {
+              "criterion_id": "C1",
+              "primary_need_share": 0.1,
+              "points": 2,
+              "applicability": 1,
+              "annual_demand": 30
+            },
+            {
+              "criterion_id": "C2",
+              "primary_need_share": 0.2,
+              "points": 2,
+              "applicability": 1,
+              "annual_demand": 60
+            },
+            {
+              "criterion_id": "C3",
+              "primary_need_share": 0.1,
+              "points": 1,
+              "applicability": 1,
+              "annual_demand": 30
+            },
+            {
+              "criterion_id": "C4",
+              "primary_need_share": 0.1,
+              "points": 1,
+              "applicability": 1,
+              "annual_demand": 30
+            },
+            {
+              "criterion_id": "C5",
+              "primary_need_share": 0.1,
+              "points": 1,
+              "applicability": 1,
+              "annual_demand": 30
+            },
+            {
+              "criterion_id": "C6",
+              "primary_need_share": 0.05,
+              "points": 1,
+              "applicability": 1,
+              "annual_demand": 15
+            },
+            {
+              "criterion_id": "D1",
+              "primary_need_share": 0.08,
+              "points": 1,
+              "applicability": 1,
+              "annual_demand": 24
+            },
+            {
+              "criterion_id": "D2",
+              "primary_need_share": 0.02,
+              "points": 0,
+              "applicability": 0,
+              "annual_demand": 0
+            }
+          ]
         },
         {
           "name": "reference",
-          "anchor": 100000,
-          "k": 8,
-          "g": 0.25,
+          "annual_active_gms": 200000,
           "h": 0.06,
-          "b": 0.4,
+          "unmet_primary_task_share": 0.5,
+          "fit_task_share": 0.94,
+          "unknown_applicability_assumption": 0.5,
+          "annual_demand": 5640,
+          "annual_users": 282,
           "r": 0.2,
           "c": 0.25,
-          "annual_active_gms": 200000,
-          "annual_hexcrawl_gms": 12000,
-          "annual_demand": 4800,
-          "conditional_annual_users": 240,
-          "status": "inferred_from_assumed_coefficients",
-          "coefficient_status": "assumption"
+          "contributions": [
+            {
+              "criterion_id": "B1",
+              "primary_need_share": 0.08,
+              "points": 2,
+              "applicability": 1,
+              "annual_demand": 480
+            },
+            {
+              "criterion_id": "B2",
+              "primary_need_share": 0.05,
+              "points": 2,
+              "applicability": 1,
+              "annual_demand": 300
+            },
+            {
+              "criterion_id": "B3",
+              "primary_need_share": 0.08,
+              "points": 2,
+              "applicability": 1,
+              "annual_demand": 480
+            },
+            {
+              "criterion_id": "B4",
+              "primary_need_share": 0.04,
+              "points": 0,
+              "applicability": 0,
+              "annual_demand": 0
+            },
+            {
+              "criterion_id": "C1",
+              "primary_need_share": 0.1,
+              "points": 2,
+              "applicability": 1,
+              "annual_demand": 600
+            },
+            {
+              "criterion_id": "C2",
+              "primary_need_share": 0.2,
+              "points": 2,
+              "applicability": 1,
+              "annual_demand": 1200
+            },
+            {
+              "criterion_id": "C3",
+              "primary_need_share": 0.1,
+              "points": 1,
+              "applicability": 1,
+              "annual_demand": 600
+            },
+            {
+              "criterion_id": "C4",
+              "primary_need_share": 0.1,
+              "points": 1,
+              "applicability": 1,
+              "annual_demand": 600
+            },
+            {
+              "criterion_id": "C5",
+              "primary_need_share": 0.1,
+              "points": 1,
+              "applicability": 1,
+              "annual_demand": 600
+            },
+            {
+              "criterion_id": "C6",
+              "primary_need_share": 0.05,
+              "points": 1,
+              "applicability": 1,
+              "annual_demand": 300
+            },
+            {
+              "criterion_id": "D1",
+              "primary_need_share": 0.08,
+              "points": 1,
+              "applicability": 1,
+              "annual_demand": 480
+            },
+            {
+              "criterion_id": "D2",
+              "primary_need_share": 0.02,
+              "points": 0,
+              "applicability": 0,
+              "annual_demand": 0
+            }
+          ]
         },
         {
           "name": "high",
-          "anchor": 100000,
-          "k": 20,
-          "g": 0.35,
+          "annual_active_gms": 700000,
           "h": 0.15,
-          "b": 0.6,
+          "unmet_primary_task_share": 0.75,
+          "fit_task_share": 0.94,
+          "unknown_applicability_assumption": 1,
+          "annual_demand": 74025,
+          "annual_users": 11103.75,
           "r": 0.5,
           "c": 0.3,
-          "annual_active_gms": 700000,
-          "annual_hexcrawl_gms": 105000,
-          "annual_demand": 63000,
-          "conditional_annual_users": 9450,
-          "status": "inferred_from_assumed_coefficients",
-          "coefficient_status": "assumption"
+          "contributions": [
+            {
+              "criterion_id": "B1",
+              "primary_need_share": 0.08,
+              "points": 2,
+              "applicability": 1,
+              "annual_demand": 6300
+            },
+            {
+              "criterion_id": "B2",
+              "primary_need_share": 0.05,
+              "points": 2,
+              "applicability": 1,
+              "annual_demand": 3937.5
+            },
+            {
+              "criterion_id": "B3",
+              "primary_need_share": 0.08,
+              "points": 2,
+              "applicability": 1,
+              "annual_demand": 6300
+            },
+            {
+              "criterion_id": "B4",
+              "primary_need_share": 0.04,
+              "points": 0,
+              "applicability": 0,
+              "annual_demand": 0
+            },
+            {
+              "criterion_id": "C1",
+              "primary_need_share": 0.1,
+              "points": 2,
+              "applicability": 1,
+              "annual_demand": 7875
+            },
+            {
+              "criterion_id": "C2",
+              "primary_need_share": 0.2,
+              "points": 2,
+              "applicability": 1,
+              "annual_demand": 15750
+            },
+            {
+              "criterion_id": "C3",
+              "primary_need_share": 0.1,
+              "points": 1,
+              "applicability": 1,
+              "annual_demand": 7875
+            },
+            {
+              "criterion_id": "C4",
+              "primary_need_share": 0.1,
+              "points": 1,
+              "applicability": 1,
+              "annual_demand": 7875
+            },
+            {
+              "criterion_id": "C5",
+              "primary_need_share": 0.1,
+              "points": 1,
+              "applicability": 1,
+              "annual_demand": 7875
+            },
+            {
+              "criterion_id": "C6",
+              "primary_need_share": 0.05,
+              "points": 1,
+              "applicability": 1,
+              "annual_demand": 3937.5
+            },
+            {
+              "criterion_id": "D1",
+              "primary_need_share": 0.08,
+              "points": 1,
+              "applicability": 1,
+              "annual_demand": 6300
+            },
+            {
+              "criterion_id": "D2",
+              "primary_need_share": 0.02,
+              "points": 0,
+              "applicability": 0,
+              "annual_demand": 0
+            }
+          ]
         }
-      ]
+      ],
+      "fit_profile": {
+        "A1": 2,
+        "A2": 2,
+        "A3": 2,
+        "A4": 0,
+        "B1": 2,
+        "B2": 2,
+        "B3": 2,
+        "B4": 0,
+        "C1": 2,
+        "C2": 2,
+        "C3": 1,
+        "C4": 1,
+        "C5": 1,
+        "C6": 1,
+        "D1": 1,
+        "D2": 0
+      },
+      "fit_task_share": {
+        "low": 0.94,
+        "reference": 0.94,
+        "high": 0.94,
+        "status": "modeled_primary_task_coverage"
+      }
     },
     {
       "id": "OSE",
@@ -195,14 +457,6 @@
         ],
         "status": "assumption"
       },
-      "incremental_need_share": {
-        "values": [
-          0.3,
-          0.5,
-          0.7
-        ],
-        "status": "assumption"
-      },
       "annual_reach": {
         "values": [
           0.1,
@@ -220,18 +474,18 @@
         "status": "assumption"
       },
       "annual_demand": {
-        "low": 401.121,
-        "reference": 3820.2000000000003,
-        "high": 20858.292,
-        "status": "proxy_inference"
+        "low": 277.442025,
+        "reference": 3457.2810000000004,
+        "high": 21901.2066,
+        "status": "proxy_inference_with_explicit_fit_filter"
       },
       "annual_users": {
-        "low": 4.01121,
-        "reference": 191.01000000000002,
-        "high": 3128.7438,
+        "low": 2.7744202500000004,
+        "reference": 172.86405000000002,
+        "high": 3285.1809900000003,
         "status": "conditional_acquisition_scenario_not_current_forecast"
       },
-      "market_estimate_status": "low_confidence_proxy_inference",
+      "market_estimate_status": "low_confidence_proxy_inference_fit_linked",
       "fit_evidence": "previous_registry_provisional_not_reaudited",
       "illustrative_scenarios": [
         {
@@ -280,53 +534,323 @@
       "proxy_scenarios": [
         {
           "name": "cautious",
-          "anchor": 6367,
-          "k": 3,
-          "g": 0.35,
+          "annual_active_gms": 6685.349999999999,
           "h": 0.2,
-          "b": 0.3,
+          "unmet_primary_task_share": 0.25,
+          "fit_task_share": 0.83,
+          "unknown_applicability_assumption": 0,
+          "annual_demand": 277.442025,
+          "annual_users": 2.7744202500000004,
           "r": 0.1,
           "c": 0.1,
-          "annual_active_gms": 6685.349999999999,
-          "annual_hexcrawl_gms": 1337.07,
-          "annual_demand": 401.121,
-          "conditional_annual_users": 4.01121,
-          "status": "inferred_from_assumed_coefficients",
-          "coefficient_status": "assumption"
+          "contributions": [
+            {
+              "criterion_id": "B1",
+              "primary_need_share": 0.08,
+              "points": 2,
+              "applicability": 1,
+              "annual_demand": 26.7414
+            },
+            {
+              "criterion_id": "B2",
+              "primary_need_share": 0.05,
+              "points": 2,
+              "applicability": 1,
+              "annual_demand": 16.713375
+            },
+            {
+              "criterion_id": "B3",
+              "primary_need_share": 0.08,
+              "points": 2,
+              "applicability": 1,
+              "annual_demand": 26.7414
+            },
+            {
+              "criterion_id": "B4",
+              "primary_need_share": 0.04,
+              "points": 1,
+              "applicability": 1,
+              "annual_demand": 13.3707
+            },
+            {
+              "criterion_id": "C1",
+              "primary_need_share": 0.1,
+              "points": 2,
+              "applicability": 1,
+              "annual_demand": 33.42675
+            },
+            {
+              "criterion_id": "C2",
+              "primary_need_share": 0.2,
+              "points": 2,
+              "applicability": 1,
+              "annual_demand": 66.8535
+            },
+            {
+              "criterion_id": "C3",
+              "primary_need_share": 0.1,
+              "points": 1,
+              "applicability": 1,
+              "annual_demand": 33.42675
+            },
+            {
+              "criterion_id": "C4",
+              "primary_need_share": 0.1,
+              "points": null,
+              "applicability": 0,
+              "annual_demand": 0
+            },
+            {
+              "criterion_id": "C5",
+              "primary_need_share": 0.1,
+              "points": 1,
+              "applicability": 1,
+              "annual_demand": 33.42675
+            },
+            {
+              "criterion_id": "C6",
+              "primary_need_share": 0.05,
+              "points": null,
+              "applicability": 0,
+              "annual_demand": 0
+            },
+            {
+              "criterion_id": "D1",
+              "primary_need_share": 0.08,
+              "points": 1,
+              "applicability": 1,
+              "annual_demand": 26.7414
+            },
+            {
+              "criterion_id": "D2",
+              "primary_need_share": 0.02,
+              "points": 0,
+              "applicability": 0,
+              "annual_demand": 0
+            }
+          ]
         },
         {
           "name": "reference",
-          "anchor": 6367,
-          "k": 6,
-          "g": 0.5,
+          "annual_active_gms": 19101,
           "h": 0.4,
-          "b": 0.5,
+          "unmet_primary_task_share": 0.5,
+          "fit_task_share": 0.905,
+          "unknown_applicability_assumption": 0.5,
+          "annual_demand": 3457.2810000000004,
+          "annual_users": 172.86405000000002,
           "r": 0.2,
           "c": 0.25,
-          "annual_active_gms": 19101,
-          "annual_hexcrawl_gms": 7640.400000000001,
-          "annual_demand": 3820.2000000000003,
-          "conditional_annual_users": 191.01000000000002,
-          "status": "inferred_from_assumed_coefficients",
-          "coefficient_status": "assumption"
+          "contributions": [
+            {
+              "criterion_id": "B1",
+              "primary_need_share": 0.08,
+              "points": 2,
+              "applicability": 1,
+              "annual_demand": 305.61600000000004
+            },
+            {
+              "criterion_id": "B2",
+              "primary_need_share": 0.05,
+              "points": 2,
+              "applicability": 1,
+              "annual_demand": 191.01000000000002
+            },
+            {
+              "criterion_id": "B3",
+              "primary_need_share": 0.08,
+              "points": 2,
+              "applicability": 1,
+              "annual_demand": 305.61600000000004
+            },
+            {
+              "criterion_id": "B4",
+              "primary_need_share": 0.04,
+              "points": 1,
+              "applicability": 1,
+              "annual_demand": 152.80800000000002
+            },
+            {
+              "criterion_id": "C1",
+              "primary_need_share": 0.1,
+              "points": 2,
+              "applicability": 1,
+              "annual_demand": 382.02000000000004
+            },
+            {
+              "criterion_id": "C2",
+              "primary_need_share": 0.2,
+              "points": 2,
+              "applicability": 1,
+              "annual_demand": 764.0400000000001
+            },
+            {
+              "criterion_id": "C3",
+              "primary_need_share": 0.1,
+              "points": 1,
+              "applicability": 1,
+              "annual_demand": 382.02000000000004
+            },
+            {
+              "criterion_id": "C4",
+              "primary_need_share": 0.1,
+              "points": null,
+              "applicability": 0.5,
+              "annual_demand": 191.01000000000002
+            },
+            {
+              "criterion_id": "C5",
+              "primary_need_share": 0.1,
+              "points": 1,
+              "applicability": 1,
+              "annual_demand": 382.02000000000004
+            },
+            {
+              "criterion_id": "C6",
+              "primary_need_share": 0.05,
+              "points": null,
+              "applicability": 0.5,
+              "annual_demand": 95.50500000000001
+            },
+            {
+              "criterion_id": "D1",
+              "primary_need_share": 0.08,
+              "points": 1,
+              "applicability": 1,
+              "annual_demand": 305.61600000000004
+            },
+            {
+              "criterion_id": "D2",
+              "primary_need_share": 0.02,
+              "points": 0,
+              "applicability": 0,
+              "annual_demand": 0
+            }
+          ]
         },
         {
           "name": "high",
-          "anchor": 6367,
-          "k": 12,
-          "g": 0.6,
+          "annual_active_gms": 45842.4,
           "h": 0.65,
-          "b": 0.7,
+          "unmet_primary_task_share": 0.75,
+          "fit_task_share": 0.98,
+          "unknown_applicability_assumption": 1,
+          "annual_demand": 21901.2066,
+          "annual_users": 3285.1809900000003,
           "r": 0.5,
           "c": 0.3,
-          "annual_active_gms": 45842.4,
-          "annual_hexcrawl_gms": 29797.56,
-          "annual_demand": 20858.292,
-          "conditional_annual_users": 3128.7438,
-          "status": "inferred_from_assumed_coefficients",
-          "coefficient_status": "assumption"
+          "contributions": [
+            {
+              "criterion_id": "B1",
+              "primary_need_share": 0.08,
+              "points": 2,
+              "applicability": 1,
+              "annual_demand": 1787.8536000000001
+            },
+            {
+              "criterion_id": "B2",
+              "primary_need_share": 0.05,
+              "points": 2,
+              "applicability": 1,
+              "annual_demand": 1117.4085000000002
+            },
+            {
+              "criterion_id": "B3",
+              "primary_need_share": 0.08,
+              "points": 2,
+              "applicability": 1,
+              "annual_demand": 1787.8536000000001
+            },
+            {
+              "criterion_id": "B4",
+              "primary_need_share": 0.04,
+              "points": 1,
+              "applicability": 1,
+              "annual_demand": 893.9268000000001
+            },
+            {
+              "criterion_id": "C1",
+              "primary_need_share": 0.1,
+              "points": 2,
+              "applicability": 1,
+              "annual_demand": 2234.8170000000005
+            },
+            {
+              "criterion_id": "C2",
+              "primary_need_share": 0.2,
+              "points": 2,
+              "applicability": 1,
+              "annual_demand": 4469.634000000001
+            },
+            {
+              "criterion_id": "C3",
+              "primary_need_share": 0.1,
+              "points": 1,
+              "applicability": 1,
+              "annual_demand": 2234.8170000000005
+            },
+            {
+              "criterion_id": "C4",
+              "primary_need_share": 0.1,
+              "points": null,
+              "applicability": 1,
+              "annual_demand": 2234.8170000000005
+            },
+            {
+              "criterion_id": "C5",
+              "primary_need_share": 0.1,
+              "points": 1,
+              "applicability": 1,
+              "annual_demand": 2234.8170000000005
+            },
+            {
+              "criterion_id": "C6",
+              "primary_need_share": 0.05,
+              "points": null,
+              "applicability": 1,
+              "annual_demand": 1117.4085000000002
+            },
+            {
+              "criterion_id": "D1",
+              "primary_need_share": 0.08,
+              "points": 1,
+              "applicability": 1,
+              "annual_demand": 1787.8536000000001
+            },
+            {
+              "criterion_id": "D2",
+              "primary_need_share": 0.02,
+              "points": 0,
+              "applicability": 0,
+              "annual_demand": 0
+            }
+          ]
         }
-      ]
+      ],
+      "fit_profile": {
+        "A1": 2,
+        "A2": 2,
+        "A3": 2,
+        "A4": 2,
+        "B1": 2,
+        "B2": 2,
+        "B3": 2,
+        "B4": 1,
+        "C1": 2,
+        "C2": 2,
+        "C3": 1,
+        "C4": null,
+        "C5": 1,
+        "C6": null,
+        "D1": 1,
+        "D2": 0
+      },
+      "fit_task_share": {
+        "low": 0.83,
+        "reference": 0.905,
+        "high": 0.98,
+        "status": "modeled_primary_task_coverage"
+      }
     },
     {
       "id": "SD",
@@ -350,14 +874,6 @@
         ],
         "status": "assumption"
       },
-      "incremental_need_share": {
-        "values": [
-          0.3,
-          0.5,
-          0.7
-        ],
-        "status": "assumption"
-      },
       "annual_reach": {
         "values": [
           0.1,
@@ -375,18 +891,18 @@
         "status": "assumption"
       },
       "annual_demand": {
-        "low": 546.1784999999999,
-        "reference": 6068.65,
-        "high": 34955.424,
-        "status": "proxy_inference"
+        "low": 332.2585875,
+        "reference": 4885.263250000001,
+        "high": 32957.9712,
+        "status": "proxy_inference_with_explicit_fit_filter"
       },
       "annual_users": {
-        "low": 5.461784999999999,
-        "reference": 303.4325,
-        "high": 5243.3135999999995,
+        "low": 3.322585875,
+        "reference": 244.26316250000005,
+        "high": 4943.69568,
         "status": "conditional_acquisition_scenario_not_current_forecast"
       },
-      "market_estimate_status": "low_confidence_proxy_inference",
+      "market_estimate_status": "low_confidence_proxy_inference_fit_linked",
       "fit_evidence": "previous_registry_provisional_not_reaudited",
       "illustrative_scenarios": [
         {
@@ -435,53 +951,323 @@
       "proxy_scenarios": [
         {
           "name": "cautious",
-          "anchor": 17339,
-          "k": 2,
-          "g": 0.35,
+          "annual_active_gms": 12137.3,
           "h": 0.15,
-          "b": 0.3,
+          "unmet_primary_task_share": 0.25,
+          "fit_task_share": 0.73,
+          "unknown_applicability_assumption": 0,
+          "annual_demand": 332.2585875,
+          "annual_users": 3.322585875,
           "r": 0.1,
           "c": 0.1,
-          "annual_active_gms": 12137.3,
-          "annual_hexcrawl_gms": 1820.5949999999998,
-          "annual_demand": 546.1784999999999,
-          "conditional_annual_users": 5.461784999999999,
-          "status": "inferred_from_assumed_coefficients",
-          "coefficient_status": "assumption"
+          "contributions": [
+            {
+              "criterion_id": "B1",
+              "primary_need_share": 0.08,
+              "points": 2,
+              "applicability": 1,
+              "annual_demand": 36.411899999999996
+            },
+            {
+              "criterion_id": "B2",
+              "primary_need_share": 0.05,
+              "points": 2,
+              "applicability": 1,
+              "annual_demand": 22.757437499999998
+            },
+            {
+              "criterion_id": "B3",
+              "primary_need_share": 0.08,
+              "points": 2,
+              "applicability": 1,
+              "annual_demand": 36.411899999999996
+            },
+            {
+              "criterion_id": "B4",
+              "primary_need_share": 0.04,
+              "points": 1,
+              "applicability": 1,
+              "annual_demand": 18.205949999999998
+            },
+            {
+              "criterion_id": "C1",
+              "primary_need_share": 0.1,
+              "points": 2,
+              "applicability": 1,
+              "annual_demand": 45.514874999999996
+            },
+            {
+              "criterion_id": "C2",
+              "primary_need_share": 0.2,
+              "points": 2,
+              "applicability": 1,
+              "annual_demand": 91.02974999999999
+            },
+            {
+              "criterion_id": "C3",
+              "primary_need_share": 0.1,
+              "points": null,
+              "applicability": 0,
+              "annual_demand": 0
+            },
+            {
+              "criterion_id": "C4",
+              "primary_need_share": 0.1,
+              "points": 0,
+              "applicability": 0,
+              "annual_demand": 0
+            },
+            {
+              "criterion_id": "C5",
+              "primary_need_share": 0.1,
+              "points": 1,
+              "applicability": 1,
+              "annual_demand": 45.514874999999996
+            },
+            {
+              "criterion_id": "C6",
+              "primary_need_share": 0.05,
+              "points": null,
+              "applicability": 0,
+              "annual_demand": 0
+            },
+            {
+              "criterion_id": "D1",
+              "primary_need_share": 0.08,
+              "points": 1,
+              "applicability": 1,
+              "annual_demand": 36.411899999999996
+            },
+            {
+              "criterion_id": "D2",
+              "primary_need_share": 0.02,
+              "points": 0,
+              "applicability": 0,
+              "annual_demand": 0
+            }
+          ]
         },
         {
           "name": "reference",
-          "anchor": 17339,
-          "k": 4,
-          "g": 0.5,
+          "annual_active_gms": 34678,
           "h": 0.35,
-          "b": 0.5,
+          "unmet_primary_task_share": 0.5,
+          "fit_task_share": 0.805,
+          "unknown_applicability_assumption": 0.5,
+          "annual_demand": 4885.263250000001,
+          "annual_users": 244.26316250000005,
           "r": 0.2,
           "c": 0.25,
-          "annual_active_gms": 34678,
-          "annual_hexcrawl_gms": 12137.3,
-          "annual_demand": 6068.65,
-          "conditional_annual_users": 303.4325,
-          "status": "inferred_from_assumed_coefficients",
-          "coefficient_status": "assumption"
+          "contributions": [
+            {
+              "criterion_id": "B1",
+              "primary_need_share": 0.08,
+              "points": 2,
+              "applicability": 1,
+              "annual_demand": 485.49199999999996
+            },
+            {
+              "criterion_id": "B2",
+              "primary_need_share": 0.05,
+              "points": 2,
+              "applicability": 1,
+              "annual_demand": 303.4325
+            },
+            {
+              "criterion_id": "B3",
+              "primary_need_share": 0.08,
+              "points": 2,
+              "applicability": 1,
+              "annual_demand": 485.49199999999996
+            },
+            {
+              "criterion_id": "B4",
+              "primary_need_share": 0.04,
+              "points": 1,
+              "applicability": 1,
+              "annual_demand": 242.74599999999998
+            },
+            {
+              "criterion_id": "C1",
+              "primary_need_share": 0.1,
+              "points": 2,
+              "applicability": 1,
+              "annual_demand": 606.865
+            },
+            {
+              "criterion_id": "C2",
+              "primary_need_share": 0.2,
+              "points": 2,
+              "applicability": 1,
+              "annual_demand": 1213.73
+            },
+            {
+              "criterion_id": "C3",
+              "primary_need_share": 0.1,
+              "points": null,
+              "applicability": 0.5,
+              "annual_demand": 303.4325
+            },
+            {
+              "criterion_id": "C4",
+              "primary_need_share": 0.1,
+              "points": 0,
+              "applicability": 0,
+              "annual_demand": 0
+            },
+            {
+              "criterion_id": "C5",
+              "primary_need_share": 0.1,
+              "points": 1,
+              "applicability": 1,
+              "annual_demand": 606.865
+            },
+            {
+              "criterion_id": "C6",
+              "primary_need_share": 0.05,
+              "points": null,
+              "applicability": 0.5,
+              "annual_demand": 151.71625
+            },
+            {
+              "criterion_id": "D1",
+              "primary_need_share": 0.08,
+              "points": 1,
+              "applicability": 1,
+              "annual_demand": 485.49199999999996
+            },
+            {
+              "criterion_id": "D2",
+              "primary_need_share": 0.02,
+              "points": 0,
+              "applicability": 0,
+              "annual_demand": 0
+            }
+          ]
         },
         {
           "name": "high",
-          "anchor": 17339,
-          "k": 8,
-          "g": 0.6,
+          "annual_active_gms": 83227.2,
           "h": 0.6,
-          "b": 0.7,
+          "unmet_primary_task_share": 0.75,
+          "fit_task_share": 0.88,
+          "unknown_applicability_assumption": 1,
+          "annual_demand": 32957.9712,
+          "annual_users": 4943.69568,
           "r": 0.5,
           "c": 0.3,
-          "annual_active_gms": 83227.2,
-          "annual_hexcrawl_gms": 49936.32,
-          "annual_demand": 34955.424,
-          "conditional_annual_users": 5243.3135999999995,
-          "status": "inferred_from_assumed_coefficients",
-          "coefficient_status": "assumption"
+          "contributions": [
+            {
+              "criterion_id": "B1",
+              "primary_need_share": 0.08,
+              "points": 2,
+              "applicability": 1,
+              "annual_demand": 2996.1792
+            },
+            {
+              "criterion_id": "B2",
+              "primary_need_share": 0.05,
+              "points": 2,
+              "applicability": 1,
+              "annual_demand": 1872.612
+            },
+            {
+              "criterion_id": "B3",
+              "primary_need_share": 0.08,
+              "points": 2,
+              "applicability": 1,
+              "annual_demand": 2996.1792
+            },
+            {
+              "criterion_id": "B4",
+              "primary_need_share": 0.04,
+              "points": 1,
+              "applicability": 1,
+              "annual_demand": 1498.0896
+            },
+            {
+              "criterion_id": "C1",
+              "primary_need_share": 0.1,
+              "points": 2,
+              "applicability": 1,
+              "annual_demand": 3745.224
+            },
+            {
+              "criterion_id": "C2",
+              "primary_need_share": 0.2,
+              "points": 2,
+              "applicability": 1,
+              "annual_demand": 7490.448
+            },
+            {
+              "criterion_id": "C3",
+              "primary_need_share": 0.1,
+              "points": null,
+              "applicability": 1,
+              "annual_demand": 3745.224
+            },
+            {
+              "criterion_id": "C4",
+              "primary_need_share": 0.1,
+              "points": 0,
+              "applicability": 0,
+              "annual_demand": 0
+            },
+            {
+              "criterion_id": "C5",
+              "primary_need_share": 0.1,
+              "points": 1,
+              "applicability": 1,
+              "annual_demand": 3745.224
+            },
+            {
+              "criterion_id": "C6",
+              "primary_need_share": 0.05,
+              "points": null,
+              "applicability": 1,
+              "annual_demand": 1872.612
+            },
+            {
+              "criterion_id": "D1",
+              "primary_need_share": 0.08,
+              "points": 1,
+              "applicability": 1,
+              "annual_demand": 2996.1792
+            },
+            {
+              "criterion_id": "D2",
+              "primary_need_share": 0.02,
+              "points": 0,
+              "applicability": 0,
+              "annual_demand": 0
+            }
+          ]
         }
-      ]
+      ],
+      "fit_profile": {
+        "A1": 2,
+        "A2": 2,
+        "A3": 2,
+        "A4": 0,
+        "B1": 2,
+        "B2": 2,
+        "B3": 2,
+        "B4": 1,
+        "C1": 2,
+        "C2": 2,
+        "C3": null,
+        "C4": 0,
+        "C5": 1,
+        "C6": null,
+        "D1": 1,
+        "D2": 0
+      },
+      "fit_task_share": {
+        "low": 0.73,
+        "reference": 0.805,
+        "high": 0.88,
+        "status": "modeled_primary_task_coverage"
+      }
     },
     {
       "id": "FL",
@@ -505,14 +1291,6 @@
         ],
         "status": "assumption"
       },
-      "incremental_need_share": {
-        "values": [
-          0.1,
-          0.25,
-          0.45
-        ],
-        "status": "assumption"
-      },
       "annual_reach": {
         "values": [
           0.1,
@@ -530,18 +1308,18 @@
         "status": "assumption"
       },
       "annual_demand": {
-        "low": 296.13675,
-        "reference": 2603.4,
-        "high": 13355.442,
-        "status": "proxy_inference"
+        "low": 407.18803125000005,
+        "reference": 3124.080000000001,
+        "high": 14468.395499999999,
+        "status": "proxy_inference_with_explicit_fit_filter"
       },
       "annual_users": {
-        "low": 2.9613675,
-        "reference": 130.17000000000002,
-        "high": 2003.3162999999997,
+        "low": 4.071880312500001,
+        "reference": 156.20400000000006,
+        "high": 2170.2593249999995,
         "status": "conditional_acquisition_scenario_not_current_forecast"
       },
-      "market_estimate_status": "low_confidence_proxy_inference",
+      "market_estimate_status": "low_confidence_proxy_inference_fit_linked",
       "fit_evidence": "previous_registry_provisional_not_reaudited",
       "illustrative_scenarios": [
         {
@@ -590,53 +1368,323 @@
       "proxy_scenarios": [
         {
           "name": "cautious",
-          "anchor": 4339,
-          "k": 3,
-          "g": 0.35,
+          "annual_active_gms": 4555.95,
           "h": 0.65,
-          "b": 0.1,
+          "unmet_primary_task_share": 0.25,
+          "fit_task_share": 0.55,
+          "unknown_applicability_assumption": 0,
+          "annual_demand": 407.18803125000005,
+          "annual_users": 4.071880312500001,
           "r": 0.1,
           "c": 0.1,
-          "annual_active_gms": 4555.95,
-          "annual_hexcrawl_gms": 2961.3675,
-          "annual_demand": 296.13675,
-          "conditional_annual_users": 2.9613675,
-          "status": "inferred_from_assumed_coefficients",
-          "coefficient_status": "assumption"
+          "contributions": [
+            {
+              "criterion_id": "B1",
+              "primary_need_share": 0.08,
+              "points": 0,
+              "applicability": 0,
+              "annual_demand": 0
+            },
+            {
+              "criterion_id": "B2",
+              "primary_need_share": 0.05,
+              "points": 0,
+              "applicability": 0,
+              "annual_demand": 0
+            },
+            {
+              "criterion_id": "B3",
+              "primary_need_share": 0.08,
+              "points": 0,
+              "applicability": 0,
+              "annual_demand": 0
+            },
+            {
+              "criterion_id": "B4",
+              "primary_need_share": 0.04,
+              "points": 0,
+              "applicability": 0,
+              "annual_demand": 0
+            },
+            {
+              "criterion_id": "C1",
+              "primary_need_share": 0.1,
+              "points": 2,
+              "applicability": 1,
+              "annual_demand": 74.0341875
+            },
+            {
+              "criterion_id": "C2",
+              "primary_need_share": 0.2,
+              "points": 2,
+              "applicability": 1,
+              "annual_demand": 148.068375
+            },
+            {
+              "criterion_id": "C3",
+              "primary_need_share": 0.1,
+              "points": 1,
+              "applicability": 1,
+              "annual_demand": 74.0341875
+            },
+            {
+              "criterion_id": "C4",
+              "primary_need_share": 0.1,
+              "points": null,
+              "applicability": 0,
+              "annual_demand": 0
+            },
+            {
+              "criterion_id": "C5",
+              "primary_need_share": 0.1,
+              "points": 1,
+              "applicability": 1,
+              "annual_demand": 74.0341875
+            },
+            {
+              "criterion_id": "C6",
+              "primary_need_share": 0.05,
+              "points": 1,
+              "applicability": 1,
+              "annual_demand": 37.01709375
+            },
+            {
+              "criterion_id": "D1",
+              "primary_need_share": 0.08,
+              "points": 0,
+              "applicability": 0,
+              "annual_demand": 0
+            },
+            {
+              "criterion_id": "D2",
+              "primary_need_share": 0.02,
+              "points": 0,
+              "applicability": 0,
+              "annual_demand": 0
+            }
+          ]
         },
         {
           "name": "reference",
-          "anchor": 4339,
-          "k": 6,
-          "g": 0.5,
+          "annual_active_gms": 13017,
           "h": 0.8,
-          "b": 0.25,
+          "unmet_primary_task_share": 0.5,
+          "fit_task_share": 0.6000000000000001,
+          "unknown_applicability_assumption": 0.5,
+          "annual_demand": 3124.080000000001,
+          "annual_users": 156.20400000000006,
           "r": 0.2,
           "c": 0.25,
-          "annual_active_gms": 13017,
-          "annual_hexcrawl_gms": 10413.6,
-          "annual_demand": 2603.4,
-          "conditional_annual_users": 130.17000000000002,
-          "status": "inferred_from_assumed_coefficients",
-          "coefficient_status": "assumption"
+          "contributions": [
+            {
+              "criterion_id": "B1",
+              "primary_need_share": 0.08,
+              "points": 0,
+              "applicability": 0,
+              "annual_demand": 0
+            },
+            {
+              "criterion_id": "B2",
+              "primary_need_share": 0.05,
+              "points": 0,
+              "applicability": 0,
+              "annual_demand": 0
+            },
+            {
+              "criterion_id": "B3",
+              "primary_need_share": 0.08,
+              "points": 0,
+              "applicability": 0,
+              "annual_demand": 0
+            },
+            {
+              "criterion_id": "B4",
+              "primary_need_share": 0.04,
+              "points": 0,
+              "applicability": 0,
+              "annual_demand": 0
+            },
+            {
+              "criterion_id": "C1",
+              "primary_need_share": 0.1,
+              "points": 2,
+              "applicability": 1,
+              "annual_demand": 520.6800000000001
+            },
+            {
+              "criterion_id": "C2",
+              "primary_need_share": 0.2,
+              "points": 2,
+              "applicability": 1,
+              "annual_demand": 1041.3600000000001
+            },
+            {
+              "criterion_id": "C3",
+              "primary_need_share": 0.1,
+              "points": 1,
+              "applicability": 1,
+              "annual_demand": 520.6800000000001
+            },
+            {
+              "criterion_id": "C4",
+              "primary_need_share": 0.1,
+              "points": null,
+              "applicability": 0.5,
+              "annual_demand": 260.34000000000003
+            },
+            {
+              "criterion_id": "C5",
+              "primary_need_share": 0.1,
+              "points": 1,
+              "applicability": 1,
+              "annual_demand": 520.6800000000001
+            },
+            {
+              "criterion_id": "C6",
+              "primary_need_share": 0.05,
+              "points": 1,
+              "applicability": 1,
+              "annual_demand": 260.34000000000003
+            },
+            {
+              "criterion_id": "D1",
+              "primary_need_share": 0.08,
+              "points": 0,
+              "applicability": 0,
+              "annual_demand": 0
+            },
+            {
+              "criterion_id": "D2",
+              "primary_need_share": 0.02,
+              "points": 0,
+              "applicability": 0,
+              "annual_demand": 0
+            }
+          ]
         },
         {
           "name": "high",
-          "anchor": 4339,
-          "k": 12,
-          "g": 0.6,
+          "annual_active_gms": 31240.8,
           "h": 0.95,
-          "b": 0.45,
+          "unmet_primary_task_share": 0.75,
+          "fit_task_share": 0.65,
+          "unknown_applicability_assumption": 1,
+          "annual_demand": 14468.395499999999,
+          "annual_users": 2170.2593249999995,
           "r": 0.5,
           "c": 0.3,
-          "annual_active_gms": 31240.8,
-          "annual_hexcrawl_gms": 29678.76,
-          "annual_demand": 13355.442,
-          "conditional_annual_users": 2003.3162999999997,
-          "status": "inferred_from_assumed_coefficients",
-          "coefficient_status": "assumption"
+          "contributions": [
+            {
+              "criterion_id": "B1",
+              "primary_need_share": 0.08,
+              "points": 0,
+              "applicability": 0,
+              "annual_demand": 0
+            },
+            {
+              "criterion_id": "B2",
+              "primary_need_share": 0.05,
+              "points": 0,
+              "applicability": 0,
+              "annual_demand": 0
+            },
+            {
+              "criterion_id": "B3",
+              "primary_need_share": 0.08,
+              "points": 0,
+              "applicability": 0,
+              "annual_demand": 0
+            },
+            {
+              "criterion_id": "B4",
+              "primary_need_share": 0.04,
+              "points": 0,
+              "applicability": 0,
+              "annual_demand": 0
+            },
+            {
+              "criterion_id": "C1",
+              "primary_need_share": 0.1,
+              "points": 2,
+              "applicability": 1,
+              "annual_demand": 2225.907
+            },
+            {
+              "criterion_id": "C2",
+              "primary_need_share": 0.2,
+              "points": 2,
+              "applicability": 1,
+              "annual_demand": 4451.814
+            },
+            {
+              "criterion_id": "C3",
+              "primary_need_share": 0.1,
+              "points": 1,
+              "applicability": 1,
+              "annual_demand": 2225.907
+            },
+            {
+              "criterion_id": "C4",
+              "primary_need_share": 0.1,
+              "points": null,
+              "applicability": 1,
+              "annual_demand": 2225.907
+            },
+            {
+              "criterion_id": "C5",
+              "primary_need_share": 0.1,
+              "points": 1,
+              "applicability": 1,
+              "annual_demand": 2225.907
+            },
+            {
+              "criterion_id": "C6",
+              "primary_need_share": 0.05,
+              "points": 1,
+              "applicability": 1,
+              "annual_demand": 1112.9535
+            },
+            {
+              "criterion_id": "D1",
+              "primary_need_share": 0.08,
+              "points": 0,
+              "applicability": 0,
+              "annual_demand": 0
+            },
+            {
+              "criterion_id": "D2",
+              "primary_need_share": 0.02,
+              "points": 0,
+              "applicability": 0,
+              "annual_demand": 0
+            }
+          ]
         }
-      ]
+      ],
+      "fit_profile": {
+        "A1": 2,
+        "A2": 2,
+        "A3": 2,
+        "A4": 2,
+        "B1": 0,
+        "B2": 0,
+        "B3": 0,
+        "B4": 0,
+        "C1": 2,
+        "C2": 2,
+        "C3": 1,
+        "C4": null,
+        "C5": 1,
+        "C6": 1,
+        "D1": 0,
+        "D2": 0
+      },
+      "fit_task_share": {
+        "low": 0.55,
+        "reference": 0.6000000000000001,
+        "high": 0.65,
+        "status": "modeled_primary_task_coverage"
+      }
     }
   ],
   "crowdfunding_observations": [
@@ -710,7 +1758,7 @@
     "horizon_start": "2026-10-25",
     "horizon_end_exclusive": "2027-10-25",
     "support_condition": "All mandatory requirements of each chosen scenario met; usable English and Russian. Not current product forecast.",
-    "ranking_basis": "Reference annual_demand D; conditional U uses common reach/conversion so same order",
+    "ranking_basis": "Reference D after explicit criterion-linked fit filter; common R/C preserve order",
     "confidence": "low; assumption-driven; not confidence interval",
     "RU_only_estimate": null,
     "RU_only_reason": "No sourced language/geography split; do not assign international values to current RU-only reach."
@@ -740,14 +1788,16 @@
     },
     "description": "Historical illustration only; superseded for absolute estimates by explicit proxy model."
   },
-  "proxy_formula": "M=anchor*k*g; D=M*H*B; U=D*R*C",
+  "proxy_formula": "M=anchor*K*G (prior population scenarios retained); D=M*H*T*sum(w_j*x_ij); U=D*R*C",
   "proxy_parameter_definitions": {
     "k": "Hypothetical broader unique acquired/interested owner pool relative to one campaign, including other channels; not sum of campaigns.",
     "g": "Combined share of that hypothetical pool active as GM during the 12-month horizon.",
     "H": "Share of active GMs using hexcrawl in horizon.",
-    "B": "Share of hexcrawl GMs with incremental map/content need relative to alternatives, under sufficient support.",
     "R": "Annual reach among suitable GMs given active outreach scenario.",
-    "C": "Actual use among reached suitable GMs."
+    "C": "Actual use among reached suitable GMs.",
+    "T": "Share with unmet main preparation need before checking fit; common expert scenario 25/50/75%.",
+    "w": "Assumed common mutually-exclusive main task shares sum to 1",
+    "x": "1/0/? from registry B/C/D; unknown assumed 0/0.5/1 by scenario"
   },
   "proxy_sources": [
     {
@@ -787,19 +1837,30 @@
     "reason": "Dated Paizo press release republished and corroborating Forbes article resolve edition/date; accepted as historical proxy only."
   },
   "sensitivity": {
-    "PF2_H_to_match_SD_with_other_reference_inputs": 0.075858125,
-    "PF2_H_to_match_OSE": 0.0477525,
-    "FL_B_to_match_OSE": 0.36684719981562575,
+    "counterfactual_tests": {
+      "PF2_C5_removed": {
+        "D_before": 5640,
+        "D_after": 5040,
+        "delta": -600
+      },
+      "FL_B1_added": {
+        "D_before": 3124.080000000001,
+        "D_after": 3540.6240000000007,
+        "delta": 416.54400000000004
+      },
+      "all_tasks_absent_D": 0,
+      "all_tasks_present": "M*H*T"
+    },
     "coherent_scenario_orders": {
       "cautious": [
-        "SD",
-        "OSE",
         "FL",
-        "PF2"
-      ],
-      "reference": [
         "SD",
         "PF2",
+        "OSE"
+      ],
+      "reference": [
+        "PF2",
+        "SD",
         "OSE",
         "FL"
       ],
@@ -809,8 +1870,401 @@
         "OSE",
         "FL"
       ]
-    }
+    },
+    "warning": "Counterfactuals are math tests, not re-scored rules."
   },
   "overlap_warning": "Do not sum rows as unique GMs. Overlap unmeasured; no arbitrary deduplication factor introduced.",
-  "current_product_forecast": null
+  "current_product_forecast": null,
+  "previous_v1_1_results": {
+    "status": "superseded_not_additional_population",
+    "systems": [
+      {
+        "id": "PF2",
+        "annual_demand": {
+          "low": 240,
+          "reference": 4800,
+          "high": 63000,
+          "status": "proxy_inference"
+        },
+        "annual_users": {
+          "low": 2.4000000000000004,
+          "reference": 240,
+          "high": 9450,
+          "status": "conditional_acquisition_scenario_not_current_forecast"
+        },
+        "proxy_scenarios": [
+          {
+            "name": "cautious",
+            "anchor": 100000,
+            "k": 3,
+            "g": 0.2,
+            "h": 0.02,
+            "b": 0.2,
+            "r": 0.1,
+            "c": 0.1,
+            "annual_active_gms": 60000,
+            "annual_hexcrawl_gms": 1200,
+            "annual_demand": 240,
+            "conditional_annual_users": 2.4000000000000004,
+            "status": "inferred_from_assumed_coefficients",
+            "coefficient_status": "assumption"
+          },
+          {
+            "name": "reference",
+            "anchor": 100000,
+            "k": 8,
+            "g": 0.25,
+            "h": 0.06,
+            "b": 0.4,
+            "r": 0.2,
+            "c": 0.25,
+            "annual_active_gms": 200000,
+            "annual_hexcrawl_gms": 12000,
+            "annual_demand": 4800,
+            "conditional_annual_users": 240,
+            "status": "inferred_from_assumed_coefficients",
+            "coefficient_status": "assumption"
+          },
+          {
+            "name": "high",
+            "anchor": 100000,
+            "k": 20,
+            "g": 0.35,
+            "h": 0.15,
+            "b": 0.6,
+            "r": 0.5,
+            "c": 0.3,
+            "annual_active_gms": 700000,
+            "annual_hexcrawl_gms": 105000,
+            "annual_demand": 63000,
+            "conditional_annual_users": 9450,
+            "status": "inferred_from_assumed_coefficients",
+            "coefficient_status": "assumption"
+          }
+        ]
+      },
+      {
+        "id": "OSE",
+        "annual_demand": {
+          "low": 401.121,
+          "reference": 3820.2000000000003,
+          "high": 20858.292,
+          "status": "proxy_inference"
+        },
+        "annual_users": {
+          "low": 4.01121,
+          "reference": 191.01000000000002,
+          "high": 3128.7438,
+          "status": "conditional_acquisition_scenario_not_current_forecast"
+        },
+        "proxy_scenarios": [
+          {
+            "name": "cautious",
+            "anchor": 6367,
+            "k": 3,
+            "g": 0.35,
+            "h": 0.2,
+            "b": 0.3,
+            "r": 0.1,
+            "c": 0.1,
+            "annual_active_gms": 6685.349999999999,
+            "annual_hexcrawl_gms": 1337.07,
+            "annual_demand": 401.121,
+            "conditional_annual_users": 4.01121,
+            "status": "inferred_from_assumed_coefficients",
+            "coefficient_status": "assumption"
+          },
+          {
+            "name": "reference",
+            "anchor": 6367,
+            "k": 6,
+            "g": 0.5,
+            "h": 0.4,
+            "b": 0.5,
+            "r": 0.2,
+            "c": 0.25,
+            "annual_active_gms": 19101,
+            "annual_hexcrawl_gms": 7640.400000000001,
+            "annual_demand": 3820.2000000000003,
+            "conditional_annual_users": 191.01000000000002,
+            "status": "inferred_from_assumed_coefficients",
+            "coefficient_status": "assumption"
+          },
+          {
+            "name": "high",
+            "anchor": 6367,
+            "k": 12,
+            "g": 0.6,
+            "h": 0.65,
+            "b": 0.7,
+            "r": 0.5,
+            "c": 0.3,
+            "annual_active_gms": 45842.4,
+            "annual_hexcrawl_gms": 29797.56,
+            "annual_demand": 20858.292,
+            "conditional_annual_users": 3128.7438,
+            "status": "inferred_from_assumed_coefficients",
+            "coefficient_status": "assumption"
+          }
+        ]
+      },
+      {
+        "id": "SD",
+        "annual_demand": {
+          "low": 546.1784999999999,
+          "reference": 6068.65,
+          "high": 34955.424,
+          "status": "proxy_inference"
+        },
+        "annual_users": {
+          "low": 5.461784999999999,
+          "reference": 303.4325,
+          "high": 5243.3135999999995,
+          "status": "conditional_acquisition_scenario_not_current_forecast"
+        },
+        "proxy_scenarios": [
+          {
+            "name": "cautious",
+            "anchor": 17339,
+            "k": 2,
+            "g": 0.35,
+            "h": 0.15,
+            "b": 0.3,
+            "r": 0.1,
+            "c": 0.1,
+            "annual_active_gms": 12137.3,
+            "annual_hexcrawl_gms": 1820.5949999999998,
+            "annual_demand": 546.1784999999999,
+            "conditional_annual_users": 5.461784999999999,
+            "status": "inferred_from_assumed_coefficients",
+            "coefficient_status": "assumption"
+          },
+          {
+            "name": "reference",
+            "anchor": 17339,
+            "k": 4,
+            "g": 0.5,
+            "h": 0.35,
+            "b": 0.5,
+            "r": 0.2,
+            "c": 0.25,
+            "annual_active_gms": 34678,
+            "annual_hexcrawl_gms": 12137.3,
+            "annual_demand": 6068.65,
+            "conditional_annual_users": 303.4325,
+            "status": "inferred_from_assumed_coefficients",
+            "coefficient_status": "assumption"
+          },
+          {
+            "name": "high",
+            "anchor": 17339,
+            "k": 8,
+            "g": 0.6,
+            "h": 0.6,
+            "b": 0.7,
+            "r": 0.5,
+            "c": 0.3,
+            "annual_active_gms": 83227.2,
+            "annual_hexcrawl_gms": 49936.32,
+            "annual_demand": 34955.424,
+            "conditional_annual_users": 5243.3135999999995,
+            "status": "inferred_from_assumed_coefficients",
+            "coefficient_status": "assumption"
+          }
+        ]
+      },
+      {
+        "id": "FL",
+        "annual_demand": {
+          "low": 296.13675,
+          "reference": 2603.4,
+          "high": 13355.442,
+          "status": "proxy_inference"
+        },
+        "annual_users": {
+          "low": 2.9613675,
+          "reference": 130.17000000000002,
+          "high": 2003.3162999999997,
+          "status": "conditional_acquisition_scenario_not_current_forecast"
+        },
+        "proxy_scenarios": [
+          {
+            "name": "cautious",
+            "anchor": 4339,
+            "k": 3,
+            "g": 0.35,
+            "h": 0.65,
+            "b": 0.1,
+            "r": 0.1,
+            "c": 0.1,
+            "annual_active_gms": 4555.95,
+            "annual_hexcrawl_gms": 2961.3675,
+            "annual_demand": 296.13675,
+            "conditional_annual_users": 2.9613675,
+            "status": "inferred_from_assumed_coefficients",
+            "coefficient_status": "assumption"
+          },
+          {
+            "name": "reference",
+            "anchor": 4339,
+            "k": 6,
+            "g": 0.5,
+            "h": 0.8,
+            "b": 0.25,
+            "r": 0.2,
+            "c": 0.25,
+            "annual_active_gms": 13017,
+            "annual_hexcrawl_gms": 10413.6,
+            "annual_demand": 2603.4,
+            "conditional_annual_users": 130.17000000000002,
+            "status": "inferred_from_assumed_coefficients",
+            "coefficient_status": "assumption"
+          },
+          {
+            "name": "high",
+            "anchor": 4339,
+            "k": 12,
+            "g": 0.6,
+            "h": 0.95,
+            "b": 0.45,
+            "r": 0.5,
+            "c": 0.3,
+            "annual_active_gms": 31240.8,
+            "annual_hexcrawl_gms": 29678.76,
+            "annual_demand": 13355.442,
+            "conditional_annual_users": 2003.3162999999997,
+            "status": "inferred_from_assumed_coefficients",
+            "coefficient_status": "assumption"
+          }
+        ]
+      }
+    ],
+    "reason": "Old B conflated fit and residual need; replaced, not multiplied again."
+  },
+  "fit_linkage": {
+    "formula": "D=M*H*T*sum(w_j*x_ij); U=D*R*C",
+    "status": "explicit_criterion_to_primary_task_mapping",
+    "source_registry_path": "agent-work/market/systems-register.md",
+    "weights": {
+      "B1": 0.08,
+      "B2": 0.05,
+      "B3": 0.08,
+      "B4": 0.04,
+      "C1": 0.1,
+      "C2": 0.2,
+      "C3": 0.1,
+      "C4": 0.1,
+      "C5": 0.1,
+      "C6": 0.05,
+      "D1": 0.08,
+      "D2": 0.02
+    },
+    "weight_status": "assumed_common_distribution_of_mutually_exclusive_primary_needs_not_score_weights",
+    "task_share_T": [
+      0.25,
+      0.5,
+      0.75
+    ],
+    "task_share_T_status": "common_expert_prior_before_fit_filter; not observed; intergame alternative satisfaction not quantified",
+    "unknown_x": [
+      0,
+      0.5,
+      1
+    ],
+    "unknown_x_status": "scenario assumptions about applicability, not population fractions",
+    "profiles": {
+      "PF2": {
+        "A1": 2,
+        "A2": 2,
+        "A3": 2,
+        "A4": 0,
+        "B1": 2,
+        "B2": 2,
+        "B3": 2,
+        "B4": 0,
+        "C1": 2,
+        "C2": 2,
+        "C3": 1,
+        "C4": 1,
+        "C5": 1,
+        "C6": 1,
+        "D1": 1,
+        "D2": 0
+      },
+      "OSE": {
+        "A1": 2,
+        "A2": 2,
+        "A3": 2,
+        "A4": 2,
+        "B1": 2,
+        "B2": 2,
+        "B3": 2,
+        "B4": 1,
+        "C1": 2,
+        "C2": 2,
+        "C3": 1,
+        "C4": null,
+        "C5": 1,
+        "C6": null,
+        "D1": 1,
+        "D2": 0
+      },
+      "SD": {
+        "A1": 2,
+        "A2": 2,
+        "A3": 2,
+        "A4": 0,
+        "B1": 2,
+        "B2": 2,
+        "B3": 2,
+        "B4": 1,
+        "C1": 2,
+        "C2": 2,
+        "C3": null,
+        "C4": 0,
+        "C5": 1,
+        "C6": null,
+        "D1": 1,
+        "D2": 0
+      },
+      "FL": {
+        "A1": 2,
+        "A2": 2,
+        "A3": 2,
+        "A4": 2,
+        "B1": 0,
+        "B2": 0,
+        "B3": 0,
+        "B4": 0,
+        "C1": 2,
+        "C2": 2,
+        "C3": 1,
+        "C4": null,
+        "C5": 1,
+        "C6": 1,
+        "D1": 0,
+        "D2": 0
+      }
+    },
+    "criterion_maxima": {
+      "A1": 2,
+      "A2": 2,
+      "A3": 2,
+      "A4": 2,
+      "B1": 2,
+      "B2": 2,
+      "B3": 2,
+      "B4": 1,
+      "C1": 2,
+      "C2": 2,
+      "C3": 1,
+      "C4": 1,
+      "C5": 1,
+      "C6": 1,
+      "D1": 1,
+      "D2": 1
+    },
+    "A_block_role": "scenario and H; no independent multiplier at fixed H",
+    "current_product_coverage": "not_measured"
+  }
 }
