@@ -137,6 +137,15 @@ try{
    await a.page.waitForFunction(()=>!document.querySelector('.kingdom-progress'),null,{timeout:180000});
    const one=await a.snapshot();assert.deepEqual(one,await b.unit(),'double-click only one generation');
    await a.button('Отменить').click();assert.equal((await a.snapshot()).map.regions.length,0);await a.button('Повторить').click();assert.deepEqual(await a.snapshot(),one);
+   if(mode==='mythic'){
+    await a.page.evaluate(()=>{window.__holdKingdom=true;window.__kingdomTick=null;});await a.button('Перегенерировать регион').click();
+    await a.page.waitForFunction(()=>!!window.__kingdomTick);await a.page.evaluate(()=>window.__exported=null);await a.button('JSON').dispatchEvent('click');assert.equal(await a.page.evaluate(()=>window.__exported),null);
+    await a.page.evaluate(()=>{window.__holdKingdom=false;const tick=window.__kingdomTick;tick();tick();});
+    await b.button('Перегенерировать регион').click();
+    for(const target of [a,b])await target.page.waitForFunction(()=>!document.querySelector('.kingdom-progress'),null,{timeout:180000});
+    const regenerated=await a.snapshot();assert.deepEqual(regenerated,await b.snapshot(),'duplicate real pending/kingdom effect');
+    await a.button('Отменить').click();assert.deepEqual(await a.snapshot(),one);await a.button('Повторить').click();assert.deepEqual(await a.snapshot(),regenerated);await a.button('Отменить').click();
+   }
    await a.page.evaluate(()=>window.__delayRead=true);await a.page.locator('input[type=file]').setInputFiles({name:'delayed.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(one))});
    await a.page.evaluate(()=>window.__exported=null);await a.button('JSON').dispatchEvent('click');assert.equal(await a.page.evaluate(()=>window.__exported),null);
    await a.page.locator('polygon.hex.candidate').first().dispatchEvent('click');await a.page.evaluate(()=>window.__releaseRead());await a.page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);

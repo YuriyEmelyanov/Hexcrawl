@@ -102,3 +102,11 @@ for(const mode of ['classic','mythic'])test(`AC06 names restored before next ful
  assert.deepEqual(save(a).generation,before.generation);a.render().setToponyms(names);assert.deepEqual(save(a),before);
  add(a);add(b);assert.deepEqual(save(a),save(b));
 });
+
+test('AC09 consumed Mythic tick remains stale after newer tick and after completion',()=>{
+ const h=setup('mythic'),control=setup('mythic');h.render().generateAt({q:0,r:0});
+ const old=h.render().advanceKingdom;old();const first=save(h);old();assert.deepEqual(save(h),first);
+ h.render().advanceKingdom();const second=save(h),stacks=histories(h);old();assert.deepEqual(save(h),second);assert.deepEqual(histories(h),stacks);
+ finish(h);add(control);const completed=save(h);assert.deepEqual(completed,save(control));
+ old();assert.deepEqual(save(h),completed);assert.equal(h.render().kingdomJob,null);
+});

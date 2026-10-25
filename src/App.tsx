@@ -11265,7 +11265,7 @@ export function App() {
   const [kingdoms, setKingdoms] = useState<Kingdom[]>([]);
   const [obstacles, setObstacles] = useState<Obstacle[]>([]);
   const kingdomInFlight = useRef(false);
-  const lastAdvancedJob = useRef<KingdomJob | null>(null);
+  const advancedJobs = useRef(new WeakSet<KingdomJob>());
   const lastPendingRegen = useRef<object | null>(null);
   const [kingdomJob, setKingdomJob] = useState<KingdomJob | null>(null);
   const [detailedRenderReady, setDetailedRenderReady] = useState(true);
@@ -12948,8 +12948,9 @@ export function App() {
   };
 
   const advanceKingdom = () => {
-    const job=kingdomJob;if(!job || lastAdvancedJob.current===job)return;
-    lastAdvancedJob.current=job;
+    const job=kingdomJob;if(!job || advancedJobs.current.has(job))return;
+    // A consumed tick remains stale even after a newer tick has executed.
+    advancedJobs.current.add(job);
     try {
       if(!job.first && regions.length===job.startCount+1) {
         const first=regions[job.startCount];
