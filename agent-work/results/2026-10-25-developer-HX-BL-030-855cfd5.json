@@ -1,0 +1,176 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-030",
+  "spec_version": "1.0",
+  "role": "developer",
+  "run_id": "2026-10-25:developer:HX-BL-030:R3",
+  "status": "review_ready",
+  "role_selection_reason": "Утверждённая HX-BL-030 имеет замечание R3 и ограниченную AC-матрицу; безопасно продолжен собственный незавершённый claim после сверки GitHub и workspace.",
+  "base_sha": "6aaefa8896e7aac163cfcd5c2ca896ac60fc54d0",
+  "previous_head_sha": "c6923f37559a8ce00e0bb995e19c32fb22f3941c",
+  "head_sha": "855cfd5b8cd2e70e1013d92b5dc9e6e21be063d0",
+  "head_tree": "498d29de8e18bc62a329f3ede52f7073362a3a50",
+  "branch": "agent/HX-BL-030-rng",
+  "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/472",
+  "comment_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/472#issuecomment-6392929225",
+  "evidence_ref": "agent-work/evidence/HX-BL-030-developer-855cfd5.md",
+  "artifact_directory": "agent-work/evidence/HX-BL-030-developer-855cfd5/",
+  "findings": [
+    {
+      "id": "R3",
+      "status": "addressed_pending_independent_review",
+      "change": "Original action and input categories travel in pendingRegen/KingdomJob context to final success/failure diagnostics.",
+      "negative_evidence": "run2-R3-negative.log",
+      "tests": "worldAcceptance R3 and 8 action replay scenarios"
+    },
+    {
+      "id": "R4",
+      "status": "developer_discovered_addressed_pending_independent_review",
+      "contract": "TX-06/AC-09",
+      "previous_defect": "tick A -> tick B -> captured old A replaced two regions by one and advanced both streams",
+      "change": "App-local WeakSet of consumed job objects; repeated tick stays stale after later ticks and completion.",
+      "negative_evidence": "run3-stale-tick-negative-summary.json",
+      "tests": "AC09 consumed Mythic tick and production browser duplicate paused effect during regeneration"
+    }
+  ],
+  "ci": {
+    "run_id": 40157589419,
+    "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40157589419",
+    "status": "success",
+    "checkout_sha": "952d9b1e953039b420b73c9735b583b3a3fb8129",
+    "merge_tree_matches_head": true,
+    "tree": "498d29de8e18bc62a329f3ede52f7073362a3a50",
+    "node": "24",
+    "chromium": "151.0.7922.34",
+    "tests": 234,
+    "passed": 234,
+    "failed": 0,
+    "jobs": [
+      {
+        "id": 121062362196,
+        "name": "world-random",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 121062362336,
+        "name": "check",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 121062362337,
+        "name": "browser",
+        "status": "completed",
+        "conclusion": "success"
+      }
+    ]
+  },
+  "local_checks": {
+    "node": "v24.22.1",
+    "new_acceptance_initial": "16/16",
+    "both_stream_assertions": "2/2, asserted outside production catch",
+    "final_consumed_tick": "1/1",
+    "final_types": "passed",
+    "browser_syntax": "passed",
+    "npm_run_check": "233/233 + build; intermediate, files changed during run, not single-final-SHA evidence",
+    "test_browser": "blocked: Chromium executable absent; final browser evidence from successful CI"
+  },
+  "acceptance_evidence": {
+    "AC01_AC03": "existing vectors, fresh triples, continuation preserved",
+    "AC04": "both-mode mixed manual content/delete/regenerate, exact RNG/JSON/undo/redo",
+    "AC05": "both streams advanced before injected exception, constraint rollback, redo/control continuation, prepare regeneration failure, committed tract fallback",
+    "AC06": "both-mode production UI display/language/navigation/PNG/JSON -> next full world; registry name isolation in handler",
+    "AC07": "v2/v3 manifest both modes retained; two deterministic Mythic rejections with rollback explicitly recorded",
+    "AC08": "unit/browser malformed classes on nonempty map with redo, seed invalid/no-op/cancellation",
+    "AC09": "physical double click, busy export/import, repeated paused real tick, consumed old job after newer tick",
+    "AC10": "8 replay scenarios and detached diagnostics; regeneration restores checkpoint through documented action prefix",
+    "AC11": "234 tests/types/build plus standard and RNG browser suites passed in frozen CI"
+  },
+  "limitations": [
+    "Developer evidence is not independent task acceptance or score confirmation.",
+    "Names have registry/state editing; no text-field rename UI was introduced or claimed.",
+    "Session history is not exported; regenerate replay restores prerequisite checkpoint by an action prefix.",
+    "Full dev-mode StrictMode mount separately unproven; real paused tick repetitions and handler callbacks tested.",
+    "Finite seed/corpus checks do not prove all worlds; deterministic rejection is not successful expansion.",
+    "Local final browser unavailable; CI runs identical Git tree."
+  ],
+  "score_evidence": {
+    "model_version": "1.1",
+    "criterion_id": "S02-C01",
+    "before": {
+      "grade": "G0",
+      "points": 0
+    },
+    "expected": {
+      "grade": "G1",
+      "points": 7.5,
+      "delta": 7.5,
+      "status": "unconfirmed_forecast"
+    },
+    "regression_criteria": [
+      {
+        "criterion_id": "S02-C03",
+        "grade": "G1",
+        "points": 5,
+        "requested_delta": 0
+      },
+      {
+        "criterion_id": "S03-C05",
+        "grade": "G2",
+        "points": 10,
+        "requested_delta": 0
+      },
+      {
+        "criterion_id": "S04-C04",
+        "grade": "G2",
+        "points": 7.5,
+        "requested_delta": 0
+      },
+      {
+        "criterion_id": "S09-C04",
+        "grade": "G2",
+        "points": 5,
+        "requested_delta": 0
+      }
+    ],
+    "registry_changed": false,
+    "current_total": 186.25,
+    "unverified_weight": 70,
+    "independent_score_assessment_required": true
+  },
+  "next_role": "reviewer",
+  "next_step": "Независимая проверка точного855cfd5, R3/R4 и расширенной AC-матрицы; новая score_assessment до передачи на согласование выпуска.",
+  "owner_decisions_needed": [],
+  "release_approval": "not_requested",
+  "main_changed": false,
+  "published": false,
+  "claim_released": true,
+  "automation_health": {
+    "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-10-25T03:05:13.395Z",
+      "is_enabled": true,
+      "status": "checked",
+      "error": null
+    },
+    "end": {
+      "checked_at": "2026-10-25T03:25:56.370Z",
+      "is_enabled": true,
+      "status": "checked",
+      "error": null
+    },
+    "restored_during_this_run": false,
+    "errors": [],
+    "schedule_unchanged": true,
+    "previous_interrupted_execution": {
+      "end": {
+        "status": "unchecked",
+        "is_enabled": null,
+        "checked_at": null,
+        "reason": "Own developer execution resumed before prior final handoff; no end-status evidence exists."
+      }
+    }
+  },
+  "completed_at": "2026-10-25T03:26:27.078Z"
+}
