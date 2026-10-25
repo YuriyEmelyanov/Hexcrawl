@@ -1,0 +1,327 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-030",
+  "spec_version": "1.0",
+  "role": "independent_reviewer",
+  "independent_agent": "/root/review_855cfd5",
+  "checked_at": "2026-10-25T04:00:02.907481+00:00",
+  "head_sha": "855cfd5b8cd2e70e1013d92b5dc9e6e21be063d0",
+  "base_sha": "6aaefa8896e7aac163cfcd5c2ca896ac60fc54d0",
+  "tree": "498d29de8e18bc62a329f3ede52f7073362a3a50",
+  "verdict": "changes_requested",
+  "release_ready": false,
+  "findings": [
+    {
+      "id": "R5",
+      "priority": "P2",
+      "path": "src/App.tsx",
+      "line": 13126,
+      "end_line": 13131,
+      "contract": [
+        "TX-06",
+        "AC-09"
+      ],
+      "title": "An already consumed pending regeneration becomes runnable after a newer request",
+      "expected": "Every consumed request stays stale; repeat causes no draw, commit, document/history change or old rollback.",
+      "actual": "lastPendingRegen stores only most recently executed request. A executes, B replaces ref, then captured A passes identity guard and executes using old render state/backup. Classic appends transaction; Mythic can replace newer kingdom and restore older undo stack.",
+      "steps": [
+        "Seed0, locality; select classic or Mythic and generate one unit.",
+        "Request regenerate A; capture current finishPendingRegeneration closure; run it and finish kingdom if any.",
+        "Request and finish regenerate B. Save full JSON except savedAt and both histories.",
+        "Invoke captured A closure again; finish kingdom if any; compare document, RNG and histories."
+      ],
+      "evidence": [
+        "independent.mjs",
+        "independent.log",
+        "R5-classic.json",
+        "R5-mythic.json"
+      ],
+      "requested_change": "Make consumed pending request identity/freshness permanent for App lifetime, analogous to consumed kingdom-job protection; prevent stale request from launching generation or restoring old backup. Add bounded A→B→captured A regression in both modes comparing exact document, both RNG and both histories with no new draw; exercise after undo/redo as relevant. No history export or new UI is requested.",
+      "reachability_limit": "Production handler closure regression; no claim of ordinary physical UI automatically retaining and replaying that old closure."
+    }
+  ],
+  "previous_findings": [
+    {
+      "id": "R1",
+      "status": "fixed_independently_rechecked",
+      "evidence": "fixed-regressions.mjs / fixed-regressions.log"
+    },
+    {
+      "id": "R2",
+      "status": "fixed_independently_rechecked",
+      "evidence": "fixed-regressions.mjs / fixed-regressions.log"
+    },
+    {
+      "id": "R3",
+      "status": "fixed_independently_rechecked",
+      "evidence": "fixed-regressions.mjs / fixed-regressions.log"
+    },
+    {
+      "id": "R4",
+      "status": "fixed_independently_rechecked",
+      "evidence": "fixed-regressions.mjs / fixed-regressions.log"
+    }
+  ],
+  "acceptance_assessment": {
+    "AC-01": {
+      "status": "pass",
+      "evidence_and_limits": "Frozen suite: independent Python vectors seeds 0/1/max, both streams ten draws, cloning/restoration/interleaving. Source uint32 arithmetic and toponym derivation inspected. Reviewer separately saved/executed Python reference-vectors.py against all expected numbers: pass."
+    },
+    "AC-02": {
+      "status": "pass",
+      "evidence_and_limits": "Root independently verified exact-tree CI browser eight seed/mode profiles, three successful units each and full JSON comparisons; production seed field/actions and runtime Math.random guard inspected."
+    },
+    "AC-03": {
+      "status": "pass",
+      "evidence_and_limits": "Exact-tree browser fresh/import continuation in both modes; frozen handler continuation suite includes real multistep Mythic, not a mocked generator."
+    },
+    "AC-04": {
+      "status": "pass",
+      "evidence_and_limits": "Frozen mixed manual POI/biome/name/delete/regenerate tests compare full snapshots and current/checkpoint RNG. Independent R1/R2 probes pass. Registry name edit is model boundary evidence; no text rename UI exists or is newly required."
+    },
+    "AC-05": {
+      "status": "pass",
+      "evidence_and_limits": "Frozen suite includes both streams actually spent before injected errors, both-mode constraint rollback with redo/clean control, prepare-regenerate failure, late Mythic rollback, successful tract fallback. Independent R3 late failure passed. Attempts exhaustion commits tract in existing rules, so no imaginary separate no-commit outcome required."
+    },
+    "AC-06": {
+      "status": "pass",
+      "evidence_and_limits": "Exact-tree UI CI display/language/navigation/rotation/PNG/JSON then next full world both modes; handler registry rename/restore and source stream audit. Small view roundoff reconciled to identical control view explicitly."
+    },
+    "AC-07": {
+      "status": "pass_with_limit",
+      "evidence_and_limits": "Both frozen manifests imported/roundtripped/next action in both modes; v2 objects preserved, v3 streams retained. Lake-reentry/sea-pocket Mythic continuation deterministic rejection with complete rollback is accurately recorded, not claimed successful expansion. Seed0/max UI covered."
+    },
+    "AC-08": {
+      "status": "pass",
+      "evidence_and_limits": "Frozen nonempty-map redo malformed v2/v3 and browser invalid input/no-op/file cancel matrices. Parser validates before setters and does not ignore v2 generation."
+    },
+    "AC-09": {
+      "status": "fail",
+      "evidence_and_limits": "Independent R5: consumed pendingRegen callback A executes after newer pendingRegen B, moving both RNG/document/histories in both modes. R1 and R4 pass, and exact-tree CI covers double click, delayed import, busy export and repeated real effect tick. No claim of full dev-mode remount testing."
+    },
+    "AC-10": {
+      "status": "pass_with_limit",
+      "evidence_and_limits": "Independent R3 proves late regenerate action/categories and exact rollback. Frozen eight replay combinations add/regenerate x modes x success/failure compare full outcome. Regenerate requires documented deterministic session action prefix; TX04 excludes history from JSON, so bare imported JSON cannot itself enable regenerate."
+    },
+    "AC-11": {
+      "status": "pass_checks_not_acceptance",
+      "evidence_and_limits": "Node24 frozen check recorded separately; root verified CI40157589419 check234 and both browser jobs on same tree. Acceptance tests are included in CI; R5 demonstrates coverage hole, not failed CI. Production Math.random is restricted to compatibility defaults; guarded real paths exercised."
+    }
+  },
+  "checks": [
+    {
+      "command": "npm run check",
+      "node": "v24.22.1",
+      "status": "passed",
+      "evidence": "check.log",
+      "tests": 234,
+      "passed": 234,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "exit_code": 0,
+      "duration_test_ms": 848476.64986,
+      "types": "passed",
+      "production_build": "passed"
+    },
+    {
+      "command": "node fixed-regressions.mjs",
+      "status": "passed",
+      "evidence": "fixed-regressions.log"
+    },
+    {
+      "command": "node independent.mjs",
+      "status": "negative_defect_confirmed_both_modes",
+      "evidence": "independent.log"
+    },
+    {
+      "command": "python reference-vectors.py",
+      "status": "passed",
+      "evidence": "reference-vectors.log"
+    }
+  ],
+  "ci": {
+    "run_id": 40157589419,
+    "status": "success",
+    "provenance": "Root freshly fetched all three logs and checked PR merge tree equality; independent reviewer inspected workflow/tests/source and consumes explicit root provenance.",
+    "synthetic_merge_sha": "952d9b1e953039b420b73c9735b583b3a3fb8129",
+    "tree": "498d29de8e18bc62a329f3ede52f7073362a3a50",
+    "tests": 234,
+    "browser": "Chromium151.0.7922.34",
+    "local_browser_rerun": false
+  },
+  "score_assessment": {
+    "model_version": "1.1",
+    "assessed_sha": "855cfd5b8cd2e70e1013d92b5dc9e6e21be063d0",
+    "current_total_points": 186.25,
+    "registry_changed": false,
+    "S02-C01": {
+      "before": {
+        "grade": "G0",
+        "points": 0
+      },
+      "after_provisional": {
+        "grade": "G1",
+        "points": 7.5
+      },
+      "delta_provisional": 7.5,
+      "status": "functioning_prototype_task_not_accepted_or_released",
+      "method": "Saved explicit RNG/source audit, exact-tree eight-profile UI continuation, frozen suite and independent R1–R4 handler probes.",
+      "limitations": "R5 blocks acceptance; no protected local reroll, universal-seed proof, comparative proof or higher grade."
+    },
+    "adjacent": [
+      {
+        "criterion_id": "S02-C03",
+        "before_grade": "G1",
+        "after_grade": "G1",
+        "before_points": 5,
+        "after_points": 5,
+        "delta": 0,
+        "status": "no_new_credit_no_demonstrated_grade_change",
+        "limitations": "Unpublished candidate R5 is safety/history regression to fix before release; current released registry unchanged."
+      },
+      {
+        "criterion_id": "S03-C05",
+        "before_grade": "G2",
+        "after_grade": "G2",
+        "before_points": 10,
+        "after_points": 10,
+        "delta": 0,
+        "status": "no_new_credit_no_demonstrated_grade_change",
+        "limitations": "Unpublished candidate R5 is safety/history regression to fix before release; current released registry unchanged."
+      },
+      {
+        "criterion_id": "S04-C04",
+        "before_grade": "G2",
+        "after_grade": "G2",
+        "before_points": 7.5,
+        "after_points": 7.5,
+        "delta": 0,
+        "status": "no_new_credit_no_demonstrated_grade_change",
+        "limitations": "Unpublished candidate R5 is safety/history regression to fix before release; current released registry unchanged."
+      },
+      {
+        "criterion_id": "S09-C04",
+        "before_grade": "G2",
+        "after_grade": "G2",
+        "before_points": 5,
+        "after_points": 5,
+        "delta": 0,
+        "status": "no_new_credit_no_demonstrated_grade_change",
+        "limitations": "Unpublished candidate R5 is safety/history regression to fix before release; current released registry unchanged."
+      }
+    ],
+    "possible_total_after_acceptance_release": 193.75,
+    "assessments": [
+      {
+        "model_version": "1.1",
+        "assessed_sha": "855cfd5b8cd2e70e1013d92b5dc9e6e21be063d0",
+        "evidence": [
+          "check.log",
+          "fixed-regressions.log",
+          "independent.log",
+          "ci-verification.md (root)"
+        ],
+        "limitations": "R5 blocks task/safety/history acceptance. Grades are provisional retained prototype assessments, not a claim every gate passes. No new credit before accepted release; published registry unchanged.",
+        "criterion_id": "S02-C01",
+        "before_grade": "G0",
+        "before_points": 0,
+        "after_grade": "G1",
+        "after_points": 7.5,
+        "delta": 7.5,
+        "status": "provisional_functioning_prototype_not_accepted",
+        "method": "Source saved streams and independent vector reference; exact-tree UI continuation CI; independent R1–R4 handlers; R5 safety failure retained."
+      },
+      {
+        "model_version": "1.1",
+        "assessed_sha": "855cfd5b8cd2e70e1013d92b5dc9e6e21be063d0",
+        "evidence": [
+          "check.log",
+          "fixed-regressions.log",
+          "independent.log",
+          "ci-verification.md (root)"
+        ],
+        "limitations": "R5 blocks task/safety/history acceptance. Grades are provisional retained prototype assessments, not a claim every gate passes. No new credit before accepted release; published registry unchanged.",
+        "criterion_id": "S02-C03",
+        "before_grade": "G1",
+        "before_points": 5,
+        "after_grade": "G1",
+        "after_points": 5,
+        "delta": 0,
+        "status": "provisional_retention_no_new_credit",
+        "method": "Frozen corpus migration/roundtrip/continuation both modes and source parser audit."
+      },
+      {
+        "model_version": "1.1",
+        "assessed_sha": "855cfd5b8cd2e70e1013d92b5dc9e6e21be063d0",
+        "evidence": [
+          "check.log",
+          "fixed-regressions.log",
+          "independent.log",
+          "ci-verification.md (root)"
+        ],
+        "limitations": "R5 blocks task/safety/history acceptance. Grades are provisional retained prototype assessments, not a claim every gate passes. No new credit before accepted release; published registry unchanged.",
+        "criterion_id": "S03-C05",
+        "before_grade": "G2",
+        "before_points": 10,
+        "after_grade": "G2",
+        "after_points": 10,
+        "delta": 0,
+        "status": "provisional_retention_no_new_credit",
+        "method": "Frozen100-history/mixed edits/undo/redo and independent R1/R2/R3; R5 stale callback erases candidate history."
+      },
+      {
+        "model_version": "1.1",
+        "assessed_sha": "855cfd5b8cd2e70e1013d92b5dc9e6e21be063d0",
+        "evidence": [
+          "check.log",
+          "fixed-regressions.log",
+          "independent.log",
+          "ci-verification.md (root)"
+        ],
+        "limitations": "R5 blocks task/safety/history acceptance. Grades are provisional retained prototype assessments, not a claim every gate passes. No new credit before accepted release; published registry unchanged.",
+        "criterion_id": "S04-C04",
+        "before_grade": "G2",
+        "before_points": 7.5,
+        "after_grade": "G2",
+        "after_points": 7.5,
+        "delta": 0,
+        "status": "provisional_retention_no_new_credit",
+        "method": "Frozen roundtrip corpus plus exact-tree UI JSON/PNG evidence and source saved-state audit."
+      },
+      {
+        "model_version": "1.1",
+        "assessed_sha": "855cfd5b8cd2e70e1013d92b5dc9e6e21be063d0",
+        "evidence": [
+          "check.log",
+          "fixed-regressions.log",
+          "independent.log",
+          "ci-verification.md (root)"
+        ],
+        "limitations": "R5 blocks task/safety/history acceptance. Grades are provisional retained prototype assessments, not a claim every gate passes. No new credit before accepted release; published registry unchanged.",
+        "criterion_id": "S09-C04",
+        "before_grade": "G2",
+        "before_points": 5,
+        "after_grade": "G2",
+        "after_points": 5,
+        "delta": 0,
+        "status": "provisional_retention_no_new_credit",
+        "method": "Frozen malformed/nonempty-redo/rollback matrices and independent full rollback; R5 stale pending safety regression."
+      }
+    ]
+  },
+  "limitations": [
+    "No local Chromium rerun: executable unavailable; exact-tree independently root-verified CI used.",
+    "Harness runs real production handlers with hook storage and no effects; browser effect evidence is CI only.",
+    "Name registry edits do not establish a text rename UI.",
+    "Regenerate replay uses documented checkpoint-building action prefix, preserving TX04.",
+    "Deterministic fixture rejection does not prove all inputs expand successfully.",
+    "Production StrictMode wrapper and repeated effects are covered; a separate development remount run is not claimed.",
+    "Finite tests do not prove every seed or 10000/100000 maps."
+  ],
+  "scope": "No tracked product or operations changes, GitHub writes, merge, deploy, score update, or automation changes by this reviewer. Root handles persistence and run health.",
+  "next_role": "developer",
+  "next_step": "Fix R5 and preserve existing R1–R4 and accepted bounded matrix; independent review on new exact SHA.",
+  "persistent_evidence_note": "Root packages local full R5 snapshots as R5-snapshots.zip with raw-file hash manifest in agent-work/evidence/review-HX-BL-030-855cfd5/; raw files remain local.",
+  "completed_at": "2026-10-25T04:11:53.622384+00:00"
+}
