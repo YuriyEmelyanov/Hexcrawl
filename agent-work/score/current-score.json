@@ -3,10 +3,10 @@
   "model_path": "docs/strategy/score-model.md",
   "model_blob_sha": "c05bffac61f425085e6878f7709c25e1dfc2ffb4",
   "baseline_sha": "f89530abe1e237493dddb533502bb772ae1ab4e5",
-  "checked_on": "2026-10-24",
-  "scope": "Ограниченный baseline22.10 плюс независимая оценка S09-C04 и S03-C05 по выпуску PR471; остальные48 критериев не переоценены.",
+  "checked_on": "2026-10-25",
+  "scope": "Ограниченный baseline плюс оценки выпуска HX-NEXT-001 и пяти затронутых критериев HX-BL-030; остальные45 критериев этим выпуском не переоценены.",
   "summary": {
-    "confirmed_points": 186.25,
+    "confirmed_points": 193.75,
     "total_weight": 1000,
     "assessed_criteria": 45,
     "unverified_criteria": 5,
@@ -52,7 +52,7 @@
       "checked_on": "2026-10-22",
       "method": "existing_ci_and_source_review",
       "status": "assessed",
-      "points": 20.0
+      "points": 20
     },
     {
       "criterion_id": "S01-C03",
@@ -71,7 +71,7 @@
       "checked_on": "2026-10-22",
       "method": "existing_ci_and_source_review",
       "status": "assessed",
-      "points": 15.0
+      "points": 15
     },
     {
       "criterion_id": "S01-C04",
@@ -109,25 +109,30 @@
       "checked_on": "2026-10-22",
       "method": "existing_ci_and_source_review",
       "status": "assessed",
-      "points": 5.0
+      "points": 5
     },
     {
       "criterion_id": "S02-C01",
-      "grade": 0,
+      "grade": 1,
       "evidence_ids": [
         "E08",
-        "E09"
+        "E09",
+        "HX-BL-030:S02-C01"
       ],
-      "finding": "Общего master seed и сохраняемого RNG географии нет; Math.random используется в App и режимах.",
-      "limitations": "Seed имён и подмена Math.random в тестах не являются реализацией целевого механизма.",
+      "finding": "Master seed и независимые сохраняемые geography/poi работают в проверенных сценариях classic/Mythic; continuation после load/undo, rollback и запрет повторных callback подтверждены. G1: ограниченный работающий прототип, не полное условие G4.",
+      "limitations": "Bounded working prototype of master seed, streams, continuation and undo. Protected independent-object local reroll is not implemented; no full G4 or broad all-seed proof. G1 is supported by actual observed behavior, not the spec forecast.; Local frozen check exit0; stored log incomplete, count236 comes only from complete same-tree CI. Finite evidence; registry not changed before release.",
       "title": "Master seed, независимые потоки и продолжение",
       "weight": 30,
       "target": "Одинаковые версия генератора, seed, параметры и последовательность действий дают идентичный мир. Сохранение/загрузка и undo восстанавливают состояние случайности; следующее действие воспроизводимо. Локальный reroll не меняет защищённые и независимые объекты; случайность визуала и названий не сдвигает географию.",
       "baseline_sha": "f89530abe1e237493dddb533502bb772ae1ab4e5",
-      "checked_on": "2026-10-22",
-      "method": "existing_ci_and_source_review",
+      "checked_on": "2026-10-25",
+      "method": "Independent exact-SHA source/handler review plus frozen Node checks and root-verified same-tree CI browser evidence",
       "status": "assessed",
-      "points": 0.0
+      "points": 7.5,
+      "assessed_sha": "103d31b9f6f5c76b1f6b45d9d6664fe3f75dd63b",
+      "reviewed_head_sha": "202570a4b97beb2090225ef4e485b00a43c34fb5",
+      "score_assessment_ref": "agent-work/results/2026-10-25-reviewer-HX-BL-030-202570a.json",
+      "last_task_id": "HX-BL-030"
     },
     {
       "criterion_id": "S02-C02",
@@ -146,7 +151,7 @@
       "checked_on": "2026-10-22",
       "method": "existing_ci_and_source_review",
       "status": "assessed",
-      "points": 5.0
+      "points": 5
     },
     {
       "criterion_id": "S02-C03",
@@ -154,18 +159,23 @@
       "evidence_ids": [
         "E02",
         "E09",
-        "E10"
+        "E10",
+        "HX-BL-030:S02-C03"
       ],
       "finding": "Формат version=2 принимает часть старых файлов без новых optional fields.",
-      "limitations": "Другие версии отвергаются; нет опубликованного корпуса поддерживаемых версий и цепочки миграций; версия алгоритма не сохраняется в карте.",
+      "limitations": "v2/v3 compatibility is required regression preservation here; no additional migration score awarded.; Local frozen check exit0; stored log incomplete, count236 comes only from complete same-tree CI. Finite evidence; registry not changed before release.",
       "title": "Версии схемы, миграции и продолжение карты",
       "weight": 20,
       "target": "Все сохранения официально поддерживаемых прошлых версий из зафиксированного корпуса автоматически открываются без потери данных и допускают продолжение работы. Версия схемы и генератора различаются; старые принятые объекты не пересоздаются при загрузке. Миграции, отсутствие новых полей и несовместимые будущие версии имеют явное проверенное поведение.",
       "baseline_sha": "f89530abe1e237493dddb533502bb772ae1ab4e5",
-      "checked_on": "2026-10-22",
-      "method": "existing_ci_and_source_review",
+      "checked_on": "2026-10-25",
+      "method": "Independent exact-SHA source/handler review plus frozen Node checks and root-verified same-tree CI browser evidence",
       "status": "assessed",
-      "points": 5.0
+      "points": 5,
+      "assessed_sha": "103d31b9f6f5c76b1f6b45d9d6664fe3f75dd63b",
+      "reviewed_head_sha": "202570a4b97beb2090225ef4e485b00a43c34fb5",
+      "score_assessment_ref": "agent-work/results/2026-10-25-reviewer-HX-BL-030-202570a.json",
+      "last_task_id": "HX-BL-030"
     },
     {
       "criterion_id": "S02-C04",
@@ -257,7 +267,7 @@
       "checked_on": "2026-10-22",
       "method": "existing_ci_and_source_review",
       "status": "assessed",
-      "points": 0.0
+      "points": 0
     },
     {
       "criterion_id": "S03-C04",
@@ -275,7 +285,7 @@
       "checked_on": "2026-10-22",
       "method": "existing_ci_and_source_review",
       "status": "assessed",
-      "points": 0.0
+      "points": 0
     },
     {
       "criterion_id": "S03-C05",
@@ -284,21 +294,23 @@
         "E02",
         "E09",
         "E12",
-        "HX-NEXT-001:S03-C05"
+        "HX-NEXT-001:S03-C05",
+        "HX-BL-030:S03-C05"
       ],
       "finding": "Existing manual edit families, import/reset, generation/delete/regenerate are reversible in ordinary tested scenarios, with 100 exact undo/redo steps. Named versions are absent, so full target is incomplete; automated coverage alone does not establish G3 user confirmation.",
-      "limitations": "Local browser not rerun: prior independent reviewer documented missing Chromium/download failure; this assessment directly inspected successful release CI logs on exact released SHA.; No independent user confirmation sufficient for G3; no comparative evidence for G4.; Named map versions and persisted history absent; 100 transactions retained only within current session.; Large-map snapshot memory, real mobile devices, unknown legacy formats and unrelated criteria not reassessed.",
+      "limitations": "Existing mixed100-history behavior retained; no named versions, broader all-edit completeness or new separate gain.; Local frozen check exit0; stored log incomplete, count236 comes only from complete same-tree CI. Finite evidence; registry not changed before release.",
       "title": "Undo / redo и версии",
       "weight": 20,
       "target": "Все изменения обратимы; минимум 100 операций и именованные версии карты",
       "baseline_sha": "f89530abe1e237493dddb533502bb772ae1ab4e5",
-      "checked_on": "2026-10-24",
-      "method": "Inspect detached exact snapshots, 100-entry stacks, no-op/error semantics and independent generation checkpoints; repeat manual-family/100 mixed handler tests; inspect release UI 100 mixed successful mutations with each undo/redo snapshot and classic/Mythic cases.",
+      "checked_on": "2026-10-25",
+      "method": "Independent exact-SHA source/handler review plus frozen Node checks and root-verified same-tree CI browser evidence",
       "status": "assessed",
       "points": 10,
-      "assessed_sha": "6aaefa8896e7aac163cfcd5c2ca896ac60fc54d0",
-      "score_assessment_ref": "agent-work/results/2026-10-24-score-assessment-HX-NEXT-001.json",
-      "last_task_id": "HX-NEXT-001"
+      "assessed_sha": "103d31b9f6f5c76b1f6b45d9d6664fe3f75dd63b",
+      "score_assessment_ref": "agent-work/results/2026-10-25-reviewer-HX-BL-030-202570a.json",
+      "last_task_id": "HX-BL-030",
+      "reviewed_head_sha": "202570a4b97beb2090225ef4e485b00a43c34fb5"
     },
     {
       "criterion_id": "S04-C01",
@@ -316,7 +328,7 @@
       "checked_on": "2026-10-22",
       "method": "existing_ci_and_source_review",
       "status": "assessed",
-      "points": 5.0
+      "points": 5
     },
     {
       "criterion_id": "S04-C02",
@@ -354,7 +366,7 @@
       "checked_on": "2026-10-22",
       "method": "existing_ci_and_source_review",
       "status": "assessed",
-      "points": 5.0
+      "points": 5
     },
     {
       "criterion_id": "S04-C04",
@@ -362,18 +374,23 @@
       "evidence_ids": [
         "E02",
         "E09",
-        "E14"
+        "E14",
+        "HX-BL-030:S04-C04"
       ],
       "finding": "PNG и JSON проверяются в браузере; имена, водные POI и визуальные варианты проходят существующие проверки.",
-      "limitations": "Нет полного корпуса round-trip, экспорта по роли игрока и отдельного пользовательского SVG-экспорта; визуальные настройки не все входят в save.",
+      "limitations": "Full corpus JSON roundtrip retained; RNG reproducibility counted only under S02-C01; no new export/format breadth credit.; Local frozen check exit0; stored log incomplete, count236 comes only from complete same-tree CI. Finite evidence; registry not changed before release.",
       "title": "Экспорт и импорт без потери данных",
       "weight": 15,
       "target": "PNG, SVG и JSON поддерживают заявленные слои/стили; изображение соответствует показанному виду и выбранной роли. 100% round-trip JSON на утверждённом корпусе сохраняет сущности, связи, имена, состояние и параметры продолжения. Механизм воспроизводимости оценивается в S02-C01; обмен ссылкой и seed — в S08-C05.",
       "baseline_sha": "f89530abe1e237493dddb533502bb772ae1ab4e5",
-      "checked_on": "2026-10-22",
-      "method": "existing_ci_and_source_review",
+      "checked_on": "2026-10-25",
+      "method": "Independent exact-SHA source/handler review plus frozen Node checks and root-verified same-tree CI browser evidence",
       "status": "assessed",
-      "points": 7.5
+      "points": 7.5,
+      "assessed_sha": "103d31b9f6f5c76b1f6b45d9d6664fe3f75dd63b",
+      "reviewed_head_sha": "202570a4b97beb2090225ef4e485b00a43c34fb5",
+      "score_assessment_ref": "agent-work/results/2026-10-25-reviewer-HX-BL-030-202570a.json",
+      "last_task_id": "HX-BL-030"
     },
     {
       "criterion_id": "S04-C05",
@@ -392,7 +409,7 @@
       "checked_on": "2026-10-22",
       "method": "existing_ci_and_source_review",
       "status": "assessed",
-      "points": 5.0
+      "points": 5
     },
     {
       "criterion_id": "S05-C01",
@@ -428,7 +445,7 @@
       "checked_on": "2026-10-22",
       "method": "existing_ci_and_source_review",
       "status": "assessed",
-      "points": 0.0
+      "points": 0
     },
     {
       "criterion_id": "S05-C03",
@@ -446,7 +463,7 @@
       "checked_on": "2026-10-22",
       "method": "existing_ci_and_source_review",
       "status": "assessed",
-      "points": 0.0
+      "points": 0
     },
     {
       "criterion_id": "S05-C04",
@@ -464,7 +481,7 @@
       "checked_on": "2026-10-22",
       "method": "existing_ci_and_source_review",
       "status": "assessed",
-      "points": 0.0
+      "points": 0
     },
     {
       "criterion_id": "S05-C05",
@@ -482,7 +499,7 @@
       "checked_on": "2026-10-22",
       "method": "existing_ci_and_source_review",
       "status": "assessed",
-      "points": 0.0
+      "points": 0
     },
     {
       "criterion_id": "S06-C01",
@@ -500,7 +517,7 @@
       "checked_on": "2026-10-22",
       "method": "existing_ci_and_source_review",
       "status": "assessed",
-      "points": 0.0
+      "points": 0
     },
     {
       "criterion_id": "S06-C02",
@@ -518,7 +535,7 @@
       "checked_on": "2026-10-22",
       "method": "existing_ci_and_source_review",
       "status": "assessed",
-      "points": 0.0
+      "points": 0
     },
     {
       "criterion_id": "S06-C03",
@@ -536,7 +553,7 @@
       "checked_on": "2026-10-22",
       "method": "existing_ci_and_source_review",
       "status": "assessed",
-      "points": 0.0
+      "points": 0
     },
     {
       "criterion_id": "S06-C04",
@@ -554,7 +571,7 @@
       "checked_on": "2026-10-22",
       "method": "existing_ci_and_source_review",
       "status": "assessed",
-      "points": 0.0
+      "points": 0
     },
     {
       "criterion_id": "S06-C05",
@@ -572,7 +589,7 @@
       "checked_on": "2026-10-22",
       "method": "existing_ci_and_source_review",
       "status": "assessed",
-      "points": 0.0
+      "points": 0
     },
     {
       "criterion_id": "S07-C01",
@@ -591,7 +608,7 @@
       "checked_on": "2026-10-22",
       "method": "existing_ci_and_source_review",
       "status": "assessed",
-      "points": 0.0
+      "points": 0
     },
     {
       "criterion_id": "S07-C02",
@@ -609,7 +626,7 @@
       "checked_on": "2026-10-22",
       "method": "existing_ci_and_source_review",
       "status": "assessed",
-      "points": 0.0
+      "points": 0
     },
     {
       "criterion_id": "S07-C03",
@@ -627,7 +644,7 @@
       "checked_on": "2026-10-22",
       "method": "existing_ci_and_source_review",
       "status": "assessed",
-      "points": 5.0
+      "points": 5
     },
     {
       "criterion_id": "S07-C04",
@@ -646,7 +663,7 @@
       "checked_on": "2026-10-22",
       "method": "existing_ci_and_source_review",
       "status": "assessed",
-      "points": 0.0
+      "points": 0
     },
     {
       "criterion_id": "S07-C05",
@@ -665,7 +682,7 @@
       "checked_on": "2026-10-22",
       "method": "existing_ci_and_source_review",
       "status": "assessed",
-      "points": 0.0
+      "points": 0
     },
     {
       "criterion_id": "S08-C01",
@@ -683,7 +700,7 @@
       "checked_on": "2026-10-22",
       "method": "existing_ci_and_source_review",
       "status": "assessed",
-      "points": 5.0
+      "points": 5
     },
     {
       "criterion_id": "S08-C02",
@@ -701,7 +718,7 @@
       "checked_on": "2026-10-22",
       "method": "existing_ci_and_source_review",
       "status": "assessed",
-      "points": 0.0
+      "points": 0
     },
     {
       "criterion_id": "S08-C03",
@@ -719,7 +736,7 @@
       "checked_on": "2026-10-22",
       "method": "existing_ci_and_source_review",
       "status": "assessed",
-      "points": 0.0
+      "points": 0
     },
     {
       "criterion_id": "S08-C04",
@@ -737,7 +754,7 @@
       "checked_on": "2026-10-22",
       "method": "existing_ci_and_source_review",
       "status": "assessed",
-      "points": 0.0
+      "points": 0
     },
     {
       "criterion_id": "S08-C05",
@@ -756,7 +773,7 @@
       "checked_on": "2026-10-22",
       "method": "existing_ci_and_source_review",
       "status": "assessed",
-      "points": 0.0
+      "points": 0
     },
     {
       "criterion_id": "S09-C01",
@@ -775,7 +792,7 @@
       "checked_on": "2026-10-22",
       "method": "existing_ci_and_source_review",
       "status": "assessed",
-      "points": 10.0
+      "points": 10
     },
     {
       "criterion_id": "S09-C02",
@@ -795,7 +812,7 @@
       "checked_on": "2026-10-22",
       "method": "existing_ci_and_source_review",
       "status": "assessed",
-      "points": 5.0
+      "points": 5
     },
     {
       "criterion_id": "S09-C03",
@@ -814,7 +831,7 @@
       "checked_on": "2026-10-22",
       "method": "existing_ci_and_source_review",
       "status": "assessed",
-      "points": 10.0
+      "points": 10
     },
     {
       "criterion_id": "S09-C04",
@@ -823,21 +840,23 @@
         "E02",
         "E09",
         "E12",
-        "HX-NEXT-001:S09-C04"
+        "HX-NEXT-001:S09-C04",
+        "HX-BL-030:S09-C04"
       ],
       "finding": "Ordinary supported import errors preserve current document and both stacks, supported v2 data round-trips without layer/name loss within documented normalization, and destructive import/reset are reversible. This exceeds isolated prototype G1 and meets ordinary-scenario G2.",
-      "limitations": "Finite supported v2 corpus and ordinary scenarios; no exhaustive malformed-input/fuzz proof.; Local browser not rerun: prior independent reviewer documented missing Chromium/download failure; this assessment directly inspected successful release CI logs on exact released SHA.; No independent user confirmation sufficient for G3; no comparative evidence for G4.; Does not assert support for unknown formats or universal absence of data loss.",
+      "limitations": "Atomic import/rollback/stale callback safety retained; same undo/import work not counted twice.; Local frozen check exit0; stored log incomplete, count236 comes only from complete same-tree CI. Finite evidence; registry not changed before release.",
       "title": "Безопасность данных",
       "weight": 10,
       "target": "Ошибочный импорт не меняет карту; разрушительные действия обратимы; round-trip без потерь",
       "baseline_sha": "f89530abe1e237493dddb533502bb772ae1ab4e5",
-      "checked_on": "2026-10-24",
-      "method": "Compare baseline deficiencies with structural validation and fully prepared import transaction; independently repeat malformed/preparation failure preservation, corpus round-trip and safe continuation; inspect real UI release acceptance.",
+      "checked_on": "2026-10-25",
+      "method": "Independent exact-SHA source/handler review plus frozen Node checks and root-verified same-tree CI browser evidence",
       "status": "assessed",
       "points": 5,
-      "assessed_sha": "6aaefa8896e7aac163cfcd5c2ca896ac60fc54d0",
-      "score_assessment_ref": "agent-work/results/2026-10-24-score-assessment-HX-NEXT-001.json",
-      "last_task_id": "HX-NEXT-001"
+      "assessed_sha": "103d31b9f6f5c76b1f6b45d9d6664fe3f75dd63b",
+      "score_assessment_ref": "agent-work/results/2026-10-25-reviewer-HX-BL-030-202570a.json",
+      "last_task_id": "HX-BL-030",
+      "reviewed_head_sha": "202570a4b97beb2090225ef4e485b00a43c34fb5"
     },
     {
       "criterion_id": "S09-C05",
@@ -1277,10 +1296,94 @@
         "https://github.com/YuriyEmelyanov/Hexcrawl/blob/f33732b6f642a5fb2724ab7d2e114e37a37b43b8/agent-work/results/2026-10-24-score-assessment-HX-NEXT-001.json",
         "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40103159125"
       ]
+    },
+    "HX-BL-030:S02-C01": {
+      "task_id": "HX-BL-030",
+      "release_sha": "103d31b9f6f5c76b1f6b45d9d6664fe3f75dd63b",
+      "reviewed_sha": "202570a4b97beb2090225ef4e485b00a43c34fb5",
+      "method": "Independent exact-SHA source/handler review plus frozen Node checks and root-verified same-tree CI browser evidence",
+      "evidence": [
+        "agent-work/evidence/review-HX-BL-030-202570a/audit.log",
+        "agent-work/evidence/review-HX-BL-030-202570a/check.log",
+        "agent-work/evidence/review-HX-BL-030-202570a/r1-r4.log",
+        "agent-work/evidence/review-HX-BL-030-202570a/r5-results.json",
+        "agent-work/evidence/review-HX-BL-030-202570a/ci-world-random.log",
+        "agent-work/evidence/review-HX-BL-030-202570a/random-audit.txt"
+      ],
+      "assessment_ref": "agent-work/results/2026-10-25-reviewer-HX-BL-030-202570a.json",
+      "limitations": [
+        "Bounded working prototype of master seed, streams, continuation and undo. Protected independent-object local reroll is not implemented; no full G4 or broad all-seed proof. G1 is supported by actual observed behavior, not the spec forecast.",
+        "Local frozen check exit0; stored log incomplete, count236 comes only from complete same-tree CI. Finite evidence; registry not changed before release."
+      ]
+    },
+    "HX-BL-030:S02-C03": {
+      "task_id": "HX-BL-030",
+      "release_sha": "103d31b9f6f5c76b1f6b45d9d6664fe3f75dd63b",
+      "reviewed_sha": "202570a4b97beb2090225ef4e485b00a43c34fb5",
+      "method": "Independent exact-SHA source/handler review plus frozen Node checks and root-verified same-tree CI browser evidence",
+      "evidence": [
+        "agent-work/evidence/review-HX-BL-030-202570a/check.log",
+        "agent-work/evidence/review-HX-BL-030-202570a/ci-browser.log"
+      ],
+      "assessment_ref": "agent-work/results/2026-10-25-reviewer-HX-BL-030-202570a.json",
+      "limitations": [
+        "v2/v3 compatibility is required regression preservation here; no additional migration score awarded.",
+        "Local frozen check exit0; stored log incomplete, count236 comes only from complete same-tree CI. Finite evidence; registry not changed before release."
+      ]
+    },
+    "HX-BL-030:S03-C05": {
+      "task_id": "HX-BL-030",
+      "release_sha": "103d31b9f6f5c76b1f6b45d9d6664fe3f75dd63b",
+      "reviewed_sha": "202570a4b97beb2090225ef4e485b00a43c34fb5",
+      "method": "Independent exact-SHA source/handler review plus frozen Node checks and root-verified same-tree CI browser evidence",
+      "evidence": [
+        "agent-work/evidence/review-HX-BL-030-202570a/check.log",
+        "agent-work/evidence/review-HX-BL-030-202570a/r1-r4.log",
+        "agent-work/evidence/review-HX-BL-030-202570a/r5-results.json",
+        "agent-work/evidence/review-HX-BL-030-202570a/ci-browser.log"
+      ],
+      "assessment_ref": "agent-work/results/2026-10-25-reviewer-HX-BL-030-202570a.json",
+      "limitations": [
+        "Existing mixed100-history behavior retained; no named versions, broader all-edit completeness or new separate gain.",
+        "Local frozen check exit0; stored log incomplete, count236 comes only from complete same-tree CI. Finite evidence; registry not changed before release."
+      ]
+    },
+    "HX-BL-030:S04-C04": {
+      "task_id": "HX-BL-030",
+      "release_sha": "103d31b9f6f5c76b1f6b45d9d6664fe3f75dd63b",
+      "reviewed_sha": "202570a4b97beb2090225ef4e485b00a43c34fb5",
+      "method": "Independent exact-SHA source/handler review plus frozen Node checks and root-verified same-tree CI browser evidence",
+      "evidence": [
+        "agent-work/evidence/review-HX-BL-030-202570a/check.log",
+        "agent-work/evidence/review-HX-BL-030-202570a/ci-browser.log",
+        "agent-work/evidence/review-HX-BL-030-202570a/ci-world-random.log"
+      ],
+      "assessment_ref": "agent-work/results/2026-10-25-reviewer-HX-BL-030-202570a.json",
+      "limitations": [
+        "Full corpus JSON roundtrip retained; RNG reproducibility counted only under S02-C01; no new export/format breadth credit.",
+        "Local frozen check exit0; stored log incomplete, count236 comes only from complete same-tree CI. Finite evidence; registry not changed before release."
+      ]
+    },
+    "HX-BL-030:S09-C04": {
+      "task_id": "HX-BL-030",
+      "release_sha": "103d31b9f6f5c76b1f6b45d9d6664fe3f75dd63b",
+      "reviewed_sha": "202570a4b97beb2090225ef4e485b00a43c34fb5",
+      "method": "Independent exact-SHA source/handler review plus frozen Node checks and root-verified same-tree CI browser evidence",
+      "evidence": [
+        "agent-work/evidence/review-HX-BL-030-202570a/check.log",
+        "agent-work/evidence/review-HX-BL-030-202570a/r1-r4.log",
+        "agent-work/evidence/review-HX-BL-030-202570a/r5-results.json",
+        "agent-work/evidence/review-HX-BL-030-202570a/ci-world-random.log"
+      ],
+      "assessment_ref": "agent-work/results/2026-10-25-reviewer-HX-BL-030-202570a.json",
+      "limitations": [
+        "Atomic import/rollback/stale callback safety retained; same undo/import work not counted twice.",
+        "Local frozen check exit0; stored log incomplete, count236 comes only from complete same-tree CI. Finite evidence; registry not changed before release."
+      ]
     }
   },
   "model_version": "1.1",
-  "latest_release_sha": "6aaefa8896e7aac163cfcd5c2ca896ac60fc54d0",
-  "last_score_update_at": "2026-10-24T15:02:07.209915+00:00",
+  "latest_release_sha": "103d31b9f6f5c76b1f6b45d9d6664fe3f75dd63b",
+  "last_score_update_at": "2026-10-25T08:02:18.946Z",
   "history_ref": "agent-work/score/history.json"
 }
