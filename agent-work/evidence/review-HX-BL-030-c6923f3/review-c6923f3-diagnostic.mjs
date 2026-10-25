@@ -1,0 +1,16 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import {createGenerationHarness} from './review-c6923f3/test/helpers/generation-harness.mjs';
+const copy=x=>JSON.parse(JSON.stringify(x));const save=h=>{const d=copy(h.render().createSaveData());delete d.savedAt;return d;};
+const h=createGenerationHarness(0,'?generationDebug=1');h.render();h.guardRandom();h.render().setGenSizeCategory('locality');h.render().setGenerationMode('mythic');h.render().generateAt({q:0,r:0});
+for(let i=0;i<310&&h.render().kingdomJob;i++)h.render().advanceKingdom();assert.equal(h.render().generationError,null);
+const before=save(h),hist=copy([h.render().undoHistory,h.render().redoHistory]);h.logs.length=0;
+h.render().regenerateLastRegion();h.render().finishPendingRegeneration();
+for(let i=0;i<3&&h.render().kingdomJob;i++)h.render().advanceKingdom();
+const attempted=copy(h.render().generationRef.current);const restore=h.injectFunction('chooseRegionCenter',()=>{throw Error('independent late Mythic regenerate injection');});
+for(let i=0;i<310&&h.render().kingdomJob;i++)h.render().advanceKingdom();restore();
+assert.ok(h.render().generationError);assert.deepEqual(save(h),before);assert.deepEqual(copy([h.render().undoHistory,h.render().redoHistory]),hist);
+const event=copy(h.logs.filter(l=>l.args[0]==='[generation]').at(-1).args[1]);
+assert.equal(event.kind,'programming-error');assert.equal(event.action,'add');assert.deepEqual(event.random.before,before.generation);assert.deepEqual(event.random.after,before.generation);
+const out={sha:'c6923f37559a8ce00e0bb995e19c32fb22f3941c',node:process.version,case:'late Mythic regenerate failure',expectedAction:'regenerate',actualAction:event.action,attempted,before:before.generation,event,rollbackPass:true,historiesPreserved:true};
+fs.writeFileSync('/workspace/scratch/bb71cea1fbf0/review-c6923f3-diagnostic.json',JSON.stringify(out,null,2));console.log(JSON.stringify(out,null,2));
