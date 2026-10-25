@@ -132,7 +132,8 @@ test('entire v2 and rng-v3 fixture manifests roundtrip and continue in both mode
 });
 
 test('complete malformed RNG value classes reject atomically with redo',async()=>{
- const h=setup(0);unit(h,'classic');h.render().undoMap();
+ const h=setup(0);unit(h,'classic');unit(h,'classic');h.render().undoMap();
+ assert.ok(h.render().regions.length,'malformed matrix starts on a nonempty map');
  const before=stable(h.render()),hist=serial([h.render().undoHistory,h.render().redoHistory]);
  const cases=[undefined,null,[],true,'rng',{},
   ...[undefined,null,[],1,'streams',{}, {geography:0}].map(streams=>({...before.generation,streams})),

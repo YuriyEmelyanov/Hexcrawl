@@ -1280,7 +1280,8 @@ type GenerationBackup = {
   map: MapSnapshot; history: MapSnapshot[]; selectedHex: AxialHex | null;
   document?: DocumentSnapshot; undo?: MapTransaction[]; redo?: MapTransaction[];
 };
-type KingdomJob = { preferredAnchor?: AxialHex; recoveries?: number; failureBackup?: GenerationBackup; backup: GenerationBackup; origin: AxialHex; anchor: AxialHex; id: number; startCount: number; steps: number; phase: 'connect' | 'build'; first: boolean; };
+type GenerationActionContext = { action: 'add' | 'regenerate'; inputOptions: Record<string, unknown> };
+type KingdomJob = { actionContext: GenerationActionContext; preferredAnchor?: AxialHex; recoveries?: number; failureBackup?: GenerationBackup; backup: GenerationBackup; origin: AxialHex; anchor: AxialHex; id: number; startCount: number; steps: number; phase: 'connect' | 'build'; first: boolean; };
 type GenerationDiagnostic = ReturnType<typeof generationLog.finish>;
 
 function getToponymEntities(regions: Region[], rivers: River[], terrain: Map<string, HexTerrainData>): ToponymEntity[] {
@@ -11293,7 +11294,7 @@ export function App() {
   const [history, setHistory] = useState<MapSnapshot[]>([]);
   // Отложенная перегенерация: ставим заявку, ждём пока React применит
   // восстановленный снимок, и только потом генерируем регион заново.
-  const [pendingRegen, setPendingRegen] = useState<{ anchorHex: AxialHex; options: GenerationOptions; backup: GenerationBackup } | null>(null);
+  const [pendingRegen, setPendingRegen] = useState<{ anchorHex: AxialHex; options: GenerationOptions; backup: GenerationBackup; actionContext: GenerationActionContext } | null>(null);
   // Параметры ручной генерации ('auto' — прежнее случайное поведение).
   const [genSizeCategory, setGenSizeCategory] = useState<'auto' | Exclude<Region['sizeCategory'], 'tract'>>('auto');
   const [genLandType, setGenLandType] = useState<'auto' | BiomeLandType>('auto');
@@ -11301,6 +11302,7 @@ export function App() {
   const [genCoastal, setGenCoastal] = useState<'auto' | CoastalPreference>('mainland');
   // Уведомление пользователю (например, почему не создалось побережье).
   const [generationError, setGenerationError] = useState<GenerationDiagnostic | null>(null);
+  const captureGenerationInputs = () => ({ sizeCategory: genSizeCategory, landType: genLandType, biome: genBiome, coastal: genCoastal, mode: generationMode });
   const generationProgress = {
     attempt: 0, tractAttempt: 0, stage: 'region', lastRejection: null as string | null,
     fallbackReason: null as string | null, constraintFailure: null as string | null, exhausted: false,
@@ -11313,14 +11315,14 @@ export function App() {
     generationProgress.rejectionCounts[reason] = (generationProgress.rejectionCounts[reason] ?? 0) + 1;
     generationLog.detail('[generation:attempt-rejected]', { attempt: generationProgress.attempt, reason });
   };
-  const generationEvent = (anchorHex: AxialHex, options: GenerationOptions, kind: GenerationEvent['kind'], reason: string, result: GenerationEvent['result']): GenerationEvent => ({
-    kind, reason, result, action: generationProgress.action, anchorHex,
+  const generationEvent = (anchorHex: AxialHex, options: GenerationOptions, kind: GenerationEvent['kind'], reason: string, result: GenerationEvent['result'], context?: GenerationActionContext): GenerationEvent => ({
+    kind, reason, result, action: context?.action ?? generationProgress.action, anchorHex,
     options: { mode: options.mode ?? 'classic', targetSize: options.targetSize ?? 'auto', landType: options.landType ?? 'auto',
       biomeId: options.biomeId ?? 'auto', coastalPreference: options.coastalPreference ?? 'auto' },
     attempt: generationProgress.attempt, tractAttempt: generationProgress.tractAttempt, stage: generationProgress.stage,
     seaRecoveryAttempt: generationProgress.seaRecoveryAttempt, reclaimedSeaKeys: generationProgress.reclaimedSeaKeys,
     random: { before: cloneGenerationState(activeGenerationBefore.current ?? generationRef.current), after: cloneGenerationState(generationRef.current) },
-    inputOptions: { sizeCategory: genSizeCategory, landType: genLandType, biome: genBiome, coastal: genCoastal, mode: generationMode },
+    inputOptions: context?.inputOptions ?? captureGenerationInputs(),
     targetSize: generationProgress.targetSize, rejectionCounts: generationProgress.rejectionCounts
   });
   const [coastNotice, setCoastNotice] = useState<string | null>(null);
@@ -12809,11 +12811,11 @@ export function App() {
     if (backup.redo) setRedoHistory(backup.redo);
   };
 
-  const reportGenerationFailure = (error: unknown, anchorHex: AxialHex, options: GenerationOptions, backup: GenerationBackup) => {
+  const reportGenerationFailure = (error: unknown, anchorHex: AxialHex, options: GenerationOptions, backup: GenerationBackup, context?: GenerationActionContext) => {
     restoreGenerationBackup(backup);
     activeGenerationBefore.current = cloneGenerationState(backup.map.generation);
     const diagnostic = generationLog.finish({
-      ...generationEvent(anchorHex, options, 'programming-error', String(error), 'rolled-back'),
+      ...generationEvent(anchorHex, options, 'programming-error', String(error), 'rolled-back', context),
       message: String(error),
       stack: error && typeof error === 'object' && 'stack' in error ? String(error.stack) : undefined
     });
@@ -12871,10 +12873,12 @@ export function App() {
     }
   };
 
-  const startKingdom = (anchor: AxialHex, failureBackup?: GenerationBackup) => {
+  const startKingdom = (anchor: AxialHex, failureBackup?: GenerationBackup, context?: GenerationActionContext) => {
     if (importInFlight.current || kingdomInFlight.current || kingdomJob) return;
     kingdomInFlight.current = true;
     const backup = captureGenerationBackup();
+    // User action context outlives pendingRegen and every React render/tick.
+    const actionContext = context ?? { action: failureBackup ? 'regenerate' : 'add', inputOptions: captureGenerationInputs() };
     try {
       const id = Math.max(0,...kingdoms.map(k=>k.id))+1;
       if (!Number.isSafeInteger(id)) throw new SaveValidationError('map.kingdoms','ID overflow');
@@ -12883,8 +12887,8 @@ export function App() {
       const area = kingdomKeys(origin);
       setGenerationError(null);
       setDetailedRenderReady(false);
-      setKingdomJob({backup,failureBackup,origin,anchor,id,startCount:regions.length,steps:0,phase:area.has(hexKey(anchor))?'build':'connect',first:true});
-    } catch(error) { kingdomInFlight.current=false; reportGenerationFailure(error,anchor,{},failureBackup ?? backup); }
+      setKingdomJob({backup,failureBackup,actionContext,origin,anchor,id,startCount:regions.length,steps:0,phase:area.has(hexKey(anchor))?'build':'connect',first:true});
+    } catch(error) { kingdomInFlight.current=false; reportGenerationFailure(error,anchor,{mode:'mythic'},failureBackup ?? backup,actionContext); }
   };
 
   const finishKingdom = (job: KingdomJob) => {
@@ -12939,7 +12943,7 @@ export function App() {
     setSelectedHex(assigned.find(r=>r.centralPoiKind==='throne')!.centerHex);
     activeGenerationBefore.current = cloneGenerationState((job.failureBackup ?? job.backup).map.generation);
     generationProgress.action = job.failureBackup ? 'regenerate' : 'add';
-    generationLog.finish(generationEvent(job.anchor,{mode:'mythic'},'generated','kingdom_created','region'));
+    generationLog.finish(generationEvent(job.anchor,{mode:'mythic'},'generated','kingdom_created','region',job.actionContext));
     kingdomInFlight.current=false; setKingdomJob(null);
   };
 
@@ -12983,7 +12987,7 @@ export function App() {
         throw new Error('Не удалось построить регион королевства.');
       }
       setKingdomJob({...job,preferredAnchor:undefined,first:false,steps:job.steps+1});
-    } catch(error) {reportGenerationFailure(error,job.anchor,{mode:'mythic'},job.failureBackup ?? job.backup);kingdomInFlight.current=false;setKingdomJob(null);}
+    } catch(error) {reportGenerationFailure(error,job.anchor,{mode:'mythic'},job.failureBackup ?? job.backup,job.actionContext);kingdomInFlight.current=false;setKingdomJob(null);}
   };
   useEffect(()=>{
     if(!kingdomJob)return;
@@ -13111,7 +13115,7 @@ export function App() {
       restoreSnapshot({...snapshot, generation: cloneGenerationState(generationRef.current)});
       setHistory(history.slice(0, -1));
       // Wait for React to apply the snapshot before the generation callback reads it.
-      setPendingRegen({ backup, anchorHex: lastAnchor, options });
+      setPendingRegen({ backup, anchorHex: lastAnchor, options, actionContext: { action: 'regenerate', inputOptions: captureGenerationInputs() } });
     } catch (error) {
       reportGenerationFailure(error, lastAnchor, options, backup);
     }
@@ -13120,7 +13124,7 @@ export function App() {
   const finishPendingRegeneration = () => {
     if (!pendingRegen || lastPendingRegen.current===pendingRegen) return;
     lastPendingRegen.current=pendingRegen;
-    if (pendingRegen.options.mode === 'mythic') startKingdom(pendingRegen.anchorHex, pendingRegen.backup);
+    if (pendingRegen.options.mode === 'mythic') startKingdom(pendingRegen.anchorHex, pendingRegen.backup, pendingRegen.actionContext);
     else safelyAddRegionToMap(pendingRegen.anchorHex, pendingRegen.options, pendingRegen.backup);
     setPendingRegen(null);
   };
