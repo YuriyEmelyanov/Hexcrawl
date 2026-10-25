@@ -72,16 +72,15 @@ for(const mode of ['classic','mythic'])test(`AC04 mixed manual content and gener
 for(const mode of ['classic','mythic'])for(const kind of ['programming','constraint'])
 test(`AC05 ${mode}/${kind} rollback with redo and next clean control`,()=>{
  const h=setup(mode);add(h);h.render().setSelectedHex(h.render().regions[0].centerHex);h.render().setSelectedHexBiomeOverride('open_hills');h.render().undoMap();
- const before=save(h),stacks=histories(h);
+ const before=save(h),stacks=histories(h);let attempted;
  const restore=kind==='programming'
   ?h.injectFunction('assignWaterPoiLayer',()=>{
-   const state=h.render().generationRef.current;
-   assert.notEqual(state.streams.geography,before.generation.streams.geography);
-   assert.notEqual(state.streams.poi,before.generation.streams.poi);
+   attempted=copy(h.render().generationRef.current);
    throw Error('after both streams advanced');
   })
   :h.injectFunction('getNewRiverLakeReentryViolation',()=>({riverId:1,lakeId:1,vertexKey:'injected'}));
  h.render().generateAt(h.render().candidateHexes[0]);finish(h);restore();
+ if(kind==='programming'){assert.ok(attempted);assert.notEqual(attempted.streams.geography,before.generation.streams.geography);assert.notEqual(attempted.streams.poi,before.generation.streams.poi);}
  assert.ok(h.render().generationError);assert.deepEqual(save(h),before);assert.deepEqual(histories(h),stacks);
  const control=setup(mode);add(control);control.render().setSelectedHex(control.render().regions[0].centerHex);control.render().setSelectedHexBiomeOverride('open_hills');control.render().undoMap();
  add(h);add(control);assert.deepEqual(save(h),save(control));
