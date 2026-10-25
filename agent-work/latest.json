@@ -29,7 +29,7 @@
   "run_id": "2026-10-25:reviewer:HX-BL-030:202570a",
   "plan_revision": 1,
   "baseline_sha": "f89530abe1e237493dddb533502bb772ae1ab4e5",
-  "status": "review_in_progress",
+  "status": "awaiting_release_approval",
   "planning_for": "2026-10-24",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-10-25",
@@ -46,47 +46,47 @@
   "schedule_frequency": "hourly",
   "process_path": "agent-work/process.md",
   "current_role": "reviewer",
-  "next_role": "reviewer",
+  "next_role": "developer",
   "current_task_id": "HX-BL-030",
   "spec_path": "agent-work/specs/HX-BL-030.md",
   "spec_version": "1.0",
-  "result_path": "agent-work/results/2026-10-25-developer-HX-BL-030-202570a.json",
-  "handoff_commit_sha": "89e28f224f5716d12fbc062b4bb809efde1b100c",
-  "active_claim": {
-    "run_id": "2026-10-25:reviewer:HX-BL-030:202570a",
-    "role": "reviewer",
-    "task_id": "HX-BL-030",
-    "head_sha": "202570a4b97beb2090225ef4e485b00a43c34fb5",
-    "started_at": "2026-10-25T06:01:23.549Z",
-    "lease_expires_at": "2026-10-25T09:01:35.451Z",
-    "resumed_at": "2026-10-25T07:01:35.451Z",
-    "recovery_evidence": "Same root run_id and exactSHA; detached worktree/evidence path present, no previous agent/process alive; interrupted log not accepted as full check."
-  },
-  "next_step": "Независимая проверка202570a свежим агентом: R5 обоих режимов, весь пакет, актуальный score_assessment. Затем отдельное согласование выпуска.",
-  "owner_decisions_needed": [],
+  "result_path": "agent-work/results/2026-10-25-reviewer-HX-BL-030-202570a.json",
+  "handoff_commit_sha": "cd20e26c07677e0d04e85322883c793aabdac116",
+  "active_claim": null,
+  "next_step": "Ожидается отдельное разрешение владельца на merge/выпуск PR472, точный проверенный SHA202570a4b97beb2090225ef4e485b00a43c34fb5; до разрешения не публиковать.",
+  "owner_decisions_needed": [
+    {
+      "decision": "authorize_release",
+      "task_id": "HX-BL-030",
+      "pr": 472,
+      "candidate_sha": "202570a4b97beb2090225ef4e485b00a43c34fb5",
+      "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/472#pullrequestreview-5642037831"
+    }
+  ],
   "release_approval": {
-    "status": "not_requested",
+    "status": "awaiting_owner_approval",
     "task_id": "HX-BL-030",
+    "candidate_sha": "202570a4b97beb2090225ef4e485b00a43c34fb5",
     "approved_sha": null
   },
   "historical_plan_status": "План23.10 сохранён как история; его блокировки и предложенный процесс заменены decisions24.10 в approvals/process/budget и текущим handoff.",
-  "evidence_path": "agent-work/evidence/HX-BL-030-developer-202570a.md",
+  "evidence_path": "agent-work/evidence/review-HX-BL-030-202570a/report.md",
   "branch_name": "agent/HX-BL-030-rng",
   "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/472",
   "head_sha": "202570a4b97beb2090225ef4e485b00a43c34fb5",
   "checks_status": "passed",
   "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40164382105",
-  "review_verdict": "pending_new_sha",
-  "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/472#pullrequestreview-5641416535",
+  "review_verdict": "accepted",
+  "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/472#pullrequestreview-5642037831",
   "role_selection_mode": "ready_work_priority",
   "role_selection_source": "agent-work/process.md",
   "process_decision_ref": "owner-decision-2026-10-24-dynamic-roles",
   "process_commit_sha": "e7e046530757ae2067de13a4075fb0526ca429ee",
   "previous_review": {
-    "head_sha": "c6923f37559a8ce00e0bb995e19c32fb22f3941c",
+    "head_sha": "855cfd5b8cd2e70e1013d92b5dc9e6e21be063d0",
     "verdict": "changes_requested",
-    "result_ref": "agent-work/results/2026-10-25-reviewer-HX-BL-030-c6923f3.json",
-    "url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/472#pullrequestreview-5640690959"
+    "result_ref": "agent-work/results/2026-10-25-reviewer-HX-BL-030-855cfd5.json",
+    "url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/472#pullrequestreview-5641416535"
   },
   "release_result": {
     "schema_version": 1,
@@ -130,8 +130,8 @@
   "score_update_task_id": "HX-NEXT-001",
   "score_update_release_sha": "6aaefa8896e7aac163cfcd5c2ca896ac60fc54d0",
   "score_process_decision_ref": "owner-decision-2026-10-24-score-responsibilities",
-  "score_assessment_ref": "agent-work/results/2026-10-25-reviewer-HX-BL-030-855cfd5.json",
-  "role_selection_reason": "Review_ready точного202570a с успешными проверками и без active_claim; R5 ожидает независимого подтверждения.",
+  "score_assessment_ref": "agent-work/results/2026-10-25-reviewer-HX-BL-030-202570a.json",
+  "role_selection_reason": "review_ready точного202570a с успешными проверками; собственный незавершённый claim безопасно восстановлен, отдельный свежий агент завершил независимую приёмку.",
   "score_update_result_ref": "agent-work/results/2026-10-24-strategist-score-update-HX-NEXT-001.json",
   "score_update_completed_at": "2026-10-24T15:02:07.209915+00:00",
   "score_update_delta": 7.5,
@@ -141,10 +141,10 @@
   "approval_ref": "owner-approval-2026-10-24-HX-BL-030",
   "last_completed_stage": {
     "task_id": "HX-BL-030",
-    "role": "developer",
-    "status": "review_ready",
+    "role": "reviewer",
+    "status": "accepted",
     "head_sha": "202570a4b97beb2090225ef4e485b00a43c34fb5",
-    "result_ref": "agent-work/results/2026-10-25-developer-HX-BL-030-202570a.json"
+    "result_ref": "agent-work/results/2026-10-25-reviewer-HX-BL-030-202570a.json"
   },
   "previous_release_approval": {
     "status": "approved_and_executed",
@@ -162,15 +162,17 @@
       "status": "checked"
     },
     "end": {
-      "status": "pending",
-      "is_enabled": null
+      "checked_at": "2026-10-25T07:16:28.517Z",
+      "status": "checked",
+      "is_enabled": true,
+      "error": null
     },
     "restored_during_this_run": false,
     "errors": [],
     "schedule_unchanged": true
   },
   "open_findings": [],
-  "current_review_score_assessment_status": "requires_revalidation_new_sha",
+  "current_review_score_assessment_status": "confirmed_bounded_pre_release",
   "target_audience_research": {
     "model_version": "1.0",
     "model_max_points": 25,
@@ -229,15 +231,14 @@
       }
     }
   },
-  "previous_score_assessment_ref": "agent-work/results/2026-10-25-reviewer-HX-BL-030-c6923f3.json",
-  "addressed_findings_pending_review": [
-    "R5"
-  ],
+  "previous_score_assessment_ref": "agent-work/results/2026-10-25-reviewer-HX-BL-030-855cfd5.json",
+  "addressed_findings_pending_review": [],
   "verified_fixed_findings": [
     "R1",
     "R2",
     "R3",
-    "R4"
+    "R4",
+    "R5"
   ],
   "recovery_health": {
     "previous_start": {
@@ -261,6 +262,6 @@
     "R2": "verified_fixed",
     "R3": "verified_fixed",
     "R4": "verified_fixed",
-    "R5": "addressed_pending_review"
+    "R5": "verified_fixed"
   }
 }
