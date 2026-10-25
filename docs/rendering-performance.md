@@ -46,3 +46,7 @@ scripts/benchmark-kingdom.mjs сравнивает текущую сборку �
 
 Проверки: npm run check, npm run test:browser, раздельный браузерный benchmark.
 
+
+## HX-BL-003: derived river-debug vertex index
+
+The all-region vertex-usage index used only by selectedRedVertex diagnostic counts is computed while the river-debug panel is open. Opening the panel recomputes the same index with current regions/candidates; closing it releases the derived map. Geography, generation rules, RNG streams, artwork and exports are unchanged. Other diagnostic calculations remain unchanged. The P1 diagnosis is frozen in reports/HX-BL-003/diagnosis.json; performance gain and full safety acceptance remain pending paired AB/BA and independent review.

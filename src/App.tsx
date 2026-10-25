@@ -13199,11 +13199,13 @@ export function App() {
 
   const regionExteriorVertexUsageByRegion = useMemo(() => {
     const map = new Map<number, Map<string, VertexUsage>>();
+    // Only the river-debug panel consumes this all-region diagnostic index.
+    if (!debugRivers) return map;
     for (const region of regions) {
       map.set(region.id, getVertexUsageByKeyForRegion(region, regions, candidateHexes));
     }
     return map;
-  }, [regions, candidateHexes]);
+  }, [regions, candidateHexes, debugRivers]);
 
   const lastRegion = regions[regions.length - 1];
   const selectedRegion = selectedMeta ? regions.find((region) => region.id === selectedMeta.regionId) : undefined;
