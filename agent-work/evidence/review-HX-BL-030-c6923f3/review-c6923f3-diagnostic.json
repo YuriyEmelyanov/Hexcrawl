@@ -1,0 +1,83 @@
+{
+  "sha": "c6923f37559a8ce00e0bb995e19c32fb22f3941c",
+  "node": "v24.22.1",
+  "case": "late Mythic regenerate failure",
+  "expectedAction": "regenerate",
+  "actualAction": "add",
+  "attempted": {
+    "generatorVersion": "regions-2026-10-24-rng.1",
+    "rngVersion": "mulberry32-v1",
+    "masterSeed": 0,
+    "streams": {
+      "geography": 3762210205,
+      "poi": 3473849527
+    }
+  },
+  "before": {
+    "generatorVersion": "regions-2026-10-24-rng.1",
+    "rngVersion": "mulberry32-v1",
+    "masterSeed": 0,
+    "streams": {
+      "geography": 1193655228,
+      "poi": 1266212832
+    }
+  },
+  "event": {
+    "kind": "programming-error",
+    "reason": "Error: Не удалось построить регион королевства.",
+    "result": "rolled-back",
+    "action": "add",
+    "anchorHex": {
+      "q": 0,
+      "r": 0
+    },
+    "options": {
+      "mode": "mythic",
+      "targetSize": "auto",
+      "landType": "auto",
+      "biomeId": "auto",
+      "coastalPreference": "auto"
+    },
+    "attempt": 1,
+    "tractAttempt": 0,
+    "stage": "region",
+    "seaRecoveryAttempt": 0,
+    "reclaimedSeaKeys": [],
+    "random": {
+      "before": {
+        "generatorVersion": "regions-2026-10-24-rng.1",
+        "rngVersion": "mulberry32-v1",
+        "masterSeed": 0,
+        "streams": {
+          "geography": 1193655228,
+          "poi": 1266212832
+        }
+      },
+      "after": {
+        "generatorVersion": "regions-2026-10-24-rng.1",
+        "rngVersion": "mulberry32-v1",
+        "masterSeed": 0,
+        "streams": {
+          "geography": 1193655228,
+          "poi": 1266212832
+        }
+      }
+    },
+    "inputOptions": {
+      "sizeCategory": "locality",
+      "landType": "auto",
+      "biome": "auto",
+      "coastal": "mainland",
+      "mode": "mythic"
+    },
+    "targetSize": 10,
+    "rejectionCounts": {},
+    "message": "Error: Не удалось построить регион королевства.",
+    "stack": "Error: Не удалось построить регион королевства.\n    at Object.advanceKingdom (evalmachine.<anonymous>:11263:23)\n    at file:///workspace/scratch/bb71cea1fbf0/review-c6923f3-diagnostic.mjs:11:57\n    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)\n    at async node:internal/modules/esm/loader:647:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)",
+    "algorithmVersion": "regions-2026-10-24-rng.1",
+    "maxAttempts": 30,
+    "warningCounts": {}
+  },
+  "rollbackPass": true,
+  "historiesPreserved": true
+}
