@@ -36,9 +36,14 @@
       },
       "joint_fix_assessment": {
         "candidate_task_id": "HX-BL-003",
-        "status": "pending_analyst_and_developer_assessment",
-        "reason": "Текущая003 — производительность с неизменным UI. Косметическая правка явно запрошена владельцем, но не включается молча в performance-пакет: оценить независимость, риск и проверки, зафиксировать отдельный scope/commit и раскрыть UI-изменение; если совместное включение мешает чистоте paired benchmark — отложить отдельным небольшим пакетом.",
-        "included": false
+        "status": "developer_assessed_defer",
+        "decision": "defer",
+        "included": false,
+        "assessed_at": "2026-10-25T11:02:35.472Z",
+        "assessed_by": "developer",
+        "reason": "Косметическая правка не связана с подтверждённым performance bottleneck. Отдельный небольшой пакет сохраняет неизменные условия P1 и прозрачность UI-согласования; поле seed не меняется в PR474.",
+        "analyst_status": "pending_independent_scope_assessment",
+        "evidence_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474"
       },
       "acceptance": [
         "Поле ниже выгрузки/загрузки на desktop и узком экране без перекрытий.",
@@ -51,7 +56,7 @@
       "head_sha": null,
       "release_sha": null,
       "result_ref": null,
-      "next_step": "Аналитик и разработчик оценивают совместимость с HX-BL-003; подготовить визуальный пример правки, затем реализовать в явно обозначенных границах.",
+      "next_step": "Отдельная небольшая UI-правка с до/после; аналитик учитывает developer defer. Владелец уже запросил изменение, выпуск отдельно.",
       "score_impact": "score-neutral; отдельный прирост не заявлен"
     }
   ]
