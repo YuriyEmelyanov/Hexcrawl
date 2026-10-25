@@ -1,0 +1,496 @@
+{
+  "schema_version": 1,
+  "role": "reviewer",
+  "task_id": "HX-BL-030",
+  "spec_version": "1.0",
+  "head_sha": "202570a4b97beb2090225ef4e485b00a43c34fb5",
+  "tree_sha": "f2fc6c9a6519e63eb94b5bd30699146b733191ac",
+  "base_sha": "6aaefa8896e7aac163cfcd5c2ca896ac60fc54d0",
+  "pr": 472,
+  "verdict": "accepted",
+  "release_ready": true,
+  "release_authorized": false,
+  "findings": [],
+  "resolved_findings": [
+    {
+      "id": "R1",
+      "status": "verified_fixed_on_current_sha"
+    },
+    {
+      "id": "R2",
+      "status": "verified_fixed_on_current_sha"
+    },
+    {
+      "id": "R3",
+      "status": "verified_fixed_on_current_sha"
+    },
+    {
+      "id": "R4",
+      "status": "verified_fixed_on_current_sha"
+    },
+    {
+      "id": "R5",
+      "status": "verified_fixed_on_current_sha"
+    }
+  ],
+  "ac_matrix": [
+    {
+      "id": "AC-01",
+      "status": "pass_bounded",
+      "method": "Independent Python uint32 implementation matched all 60 stored vector values (seeds0/1/max ×10 ×2); Node vectors also clone/serialize/restore and stream isolation.",
+      "evidence": [
+        "audit.py",
+        "audit.log",
+        "check.log"
+      ]
+    },
+    {
+      "id": "AC-02",
+      "status": "pass_bounded",
+      "method": "Root freshly retrieved CI browser logs; 2 fresh production contexts, 3 units, 8 seed/mode profiles; full JSON except savedAt. Reviewed exact browser test source.",
+      "evidence": [
+        "ci-world-random.log",
+        "root-ci-verification.md"
+      ]
+    },
+    {
+      "id": "AC-03",
+      "status": "pass_bounded",
+      "method": "Production handler continuation tests and exact-tree CI UI A/B/export/import/C equality include full map, names, counters, UI and RNG.",
+      "evidence": [
+        "check.log",
+        "ci-world-random.log"
+      ]
+    },
+    {
+      "id": "AC-04",
+      "status": "pass_bounded",
+      "method": "Mixed manual POI/biome/registry names, regenerate/delete checkpoint, exact undo/redo and sequential regeneration covered; independently reran R1/R2 and R5 snapshots.",
+      "evidence": [
+        "r1-r4.log",
+        "r5.log",
+        "check.log",
+        "ci-browser.log"
+      ]
+    },
+    {
+      "id": "AC-05",
+      "status": "pass_bounded",
+      "method": "Both-stream failure, constraint rejection, prepare-regenerate, tract fallback and late Mythic failure rollback; R3 independent replay preserved original regenerate action and categories.",
+      "evidence": [
+        "r1-r4.log",
+        "check.log"
+      ]
+    },
+    {
+      "id": "AC-06",
+      "status": "pass_bounded",
+      "method": "Source audit explicit stream plumbing and runtime Math.random guard; independent vectors; display/navigation/PNG/JSON isolation followed by full next-world equality in exact-tree browser CI; name registry restoration at handler boundary.",
+      "evidence": [
+        "random-audit.txt",
+        "audit.log",
+        "check.log",
+        "ci-world-random.log"
+      ]
+    },
+    {
+      "id": "AC-07",
+      "status": "pass_bounded",
+      "method": "All19 manifest entries hash verified; v2/v3 manifests import/roundtrip and subsequent action in both modes; initial/advanced states and seed boundaries covered.",
+      "evidence": [
+        "audit.log",
+        "check.log",
+        "ci-browser.log",
+        "ci-world-random.log"
+      ]
+    },
+    {
+      "id": "AC-08",
+      "status": "pass_bounded",
+      "method": "Malformed RNG classes/v2 known generation/future versions on nonempty map with redo; invalid seed and file cancel preserve state.",
+      "evidence": [
+        "check.log",
+        "ci-world-random.log"
+      ]
+    },
+    {
+      "id": "AC-09",
+      "status": "pass_bounded",
+      "method": "Independent new R5 11-case reproduction includes oldA during new pending/job and after undo/redo; R1/R4 rerun. Exact-tree browser covers physical double-click, effects, busy export, delayed import.",
+      "evidence": [
+        "r5-results.json",
+        "snapshots.zip",
+        "snapshots-manifest.json",
+        "r1-r4.log",
+        "ci-world-random.log"
+      ]
+    },
+    {
+      "id": "AC-10",
+      "status": "pass_bounded",
+      "method": "Node acceptance replays original JSON+recorded actions, including documented regenerate session prefix and failures; detached inputs/events. Independent R3 verifies late failure context.",
+      "evidence": [
+        "check.log",
+        "r1-r4.log"
+      ]
+    },
+    {
+      "id": "AC-11",
+      "status": "pass_bounded",
+      "method": "Node24 frozen check types/unit/build and exact-tree mandatory3-job CI; prior import/100-history/sea-recovery/Mythic browser suites; explicit source inventory and runtime guard.",
+      "evidence": [
+        "check.log",
+        "ci-check.log",
+        "ci-browser.log",
+        "ci-world-random.log",
+        "root-ci-verification.md"
+      ]
+    }
+  ],
+  "checks": {
+    "node": "24.22.1",
+    "npm_run_check": {
+      "status": "pass",
+      "exit_code": 0,
+      "evidence": [
+        "check.log",
+        "verification-exit.md",
+        "verification-exit.json"
+      ],
+      "local_count_claimed": null,
+      "limitation": "Tool session28705 completed exit0 and fresh final build observed; log pathname replaced during execution, losing final summary/build tail. Full236pass count comes from exact-tree CI, not partial local log."
+    },
+    "independent_r5": {
+      "status": "pass",
+      "cases": 11,
+      "exit_code": 0,
+      "native_deep_equal": true,
+      "serialization": "tagged $map/$set entries preserve full session state"
+    },
+    "independent_r1_r4": {
+      "status": "pass",
+      "exit_code": 0
+    },
+    "independent_python_vectors_and_score": {
+      "status": "pass",
+      "exit_code": 0
+    },
+    "fixture_hashes": {
+      "status": "pass",
+      "entries": 19
+    },
+    "local_browser": {
+      "status": "blocked_environment",
+      "reason": "Chromium executable absent",
+      "evidence": "local-browser.log"
+    },
+    "ci": {
+      "run_id": 40164382105,
+      "status": "success",
+      "jobs": [
+        "check",
+        "browser",
+        "world-random"
+      ],
+      "checkout_sha": "5dcec8324554ce2c7603d7d7511841374fcc68d2",
+      "same_tree": true,
+      "verification_owner": "root fresh API logs and git fetch; independent reviewer read logs/source",
+      "evidence": "root-ci-verification.md"
+    },
+    "source_unchanged": {
+      "git_diff_exit": 0,
+      "sha": "202570a4b97beb2090225ef4e485b00a43c34fb5",
+      "tree": "f2fc6c9a6519e63eb94b5bd30699146b733191ac"
+    }
+  },
+  "scope": "Entire approved HX-BL-030 package AC01–11, R1–R5 regression review. Product/GitHub/score/main read-only; report artifacts only. Separate fresh agent resumed incomplete prior review.",
+  "limitations": [
+    "Finite fixed-seed/corpus scenarios do not prove all seeds or 10000/100000 runs.",
+    "Local Chromium absent; direct launch failed. No download/reinstall attempted. Browser conclusions rely on root freshly verified GitHub job logs and exact head-tree equivalence, not a local browser execution.",
+    "Generation harness retains production handlers/algorithms but substitutes React hook storage and final JSX; it does not execute real React effects/DOM. CI covers that boundary.",
+    "Names editable via registry/model only; no text naming UI claimed.",
+    "Regenerate replay recreates session prefix/checkpoint. Session history is intentionally not exported (TX-04).",
+    "Mythic lake-reentry/sea-pocket fixtures may deterministically reject with full rollback; successful generation for every input is not required.",
+    "Protected local reroll, broader game coverage, user validation and competitive leadership are outside this task. OSE/PF2Hexploration/Shadowdark/ForbiddenLands are contextual targets; top5/10/20 undefined. Model1.2 PR473 excluded.",
+    "Previous interrupted partial check.log was overwritten due a relative-path preservation error; it is unavailable and is not counted as completed evidence. Only fresh full check may be accepted.",
+    "Fresh frozen check completed exit0, but stored check.log lost its final tail after pathname inode replacement during execution (new birth07:10:37). check-completion.json records tool completion and dist evidence; full count236 is independently available in CI. Replacement actor/cause not established."
+  ],
+  "score_assessment": {
+    "model_version": "1.1",
+    "assessed_sha": "202570a4b97beb2090225ef4e485b00a43c34fb5",
+    "assessments": [
+      {
+        "model_version": "1.1",
+        "criterion_id": "S02-C01",
+        "before_grade": "G0",
+        "before_points": 0,
+        "after_grade": "G1",
+        "after_points": 7.5,
+        "delta": 7.5,
+        "sha": "202570a4b97beb2090225ef4e485b00a43c34fb5",
+        "status": "confirmed_bounded_pre_release",
+        "method": "Independent exact-SHA source/handler review plus frozen Node checks and root-verified same-tree CI browser evidence",
+        "evidence": [
+          "agent-work/evidence/review-HX-BL-030-202570a/audit.log",
+          "agent-work/evidence/review-HX-BL-030-202570a/check.log",
+          "agent-work/evidence/review-HX-BL-030-202570a/r1-r4.log",
+          "agent-work/evidence/review-HX-BL-030-202570a/r5-results.json",
+          "agent-work/evidence/review-HX-BL-030-202570a/ci-world-random.log",
+          "agent-work/evidence/review-HX-BL-030-202570a/random-audit.txt"
+        ],
+        "limitations": [
+          "Bounded working prototype of master seed, streams, continuation and undo. Protected independent-object local reroll is not implemented; no full G4 or broad all-seed proof. G1 is supported by actual observed behavior, not the spec forecast.",
+          "Local frozen check exit0; stored log incomplete, count236 comes only from complete same-tree CI. Finite evidence; registry not changed before release."
+        ],
+        "assessed_sha": "202570a4b97beb2090225ef4e485b00a43c34fb5"
+      },
+      {
+        "model_version": "1.1",
+        "criterion_id": "S02-C03",
+        "before_grade": "G1",
+        "before_points": 5,
+        "after_grade": "G1",
+        "after_points": 5,
+        "delta": 0,
+        "sha": "202570a4b97beb2090225ef4e485b00a43c34fb5",
+        "status": "confirmed_bounded_pre_release",
+        "method": "Independent exact-SHA source/handler review plus frozen Node checks and root-verified same-tree CI browser evidence",
+        "evidence": [
+          "agent-work/evidence/review-HX-BL-030-202570a/check.log",
+          "agent-work/evidence/review-HX-BL-030-202570a/ci-browser.log"
+        ],
+        "limitations": [
+          "v2/v3 compatibility is required regression preservation here; no additional migration score awarded.",
+          "Local frozen check exit0; stored log incomplete, count236 comes only from complete same-tree CI. Finite evidence; registry not changed before release."
+        ],
+        "assessed_sha": "202570a4b97beb2090225ef4e485b00a43c34fb5"
+      },
+      {
+        "model_version": "1.1",
+        "criterion_id": "S03-C05",
+        "before_grade": "G2",
+        "before_points": 10,
+        "after_grade": "G2",
+        "after_points": 10,
+        "delta": 0,
+        "sha": "202570a4b97beb2090225ef4e485b00a43c34fb5",
+        "status": "confirmed_bounded_pre_release",
+        "method": "Independent exact-SHA source/handler review plus frozen Node checks and root-verified same-tree CI browser evidence",
+        "evidence": [
+          "agent-work/evidence/review-HX-BL-030-202570a/check.log",
+          "agent-work/evidence/review-HX-BL-030-202570a/r1-r4.log",
+          "agent-work/evidence/review-HX-BL-030-202570a/r5-results.json",
+          "agent-work/evidence/review-HX-BL-030-202570a/ci-browser.log"
+        ],
+        "limitations": [
+          "Existing mixed100-history behavior retained; no named versions, broader all-edit completeness or new separate gain.",
+          "Local frozen check exit0; stored log incomplete, count236 comes only from complete same-tree CI. Finite evidence; registry not changed before release."
+        ],
+        "assessed_sha": "202570a4b97beb2090225ef4e485b00a43c34fb5"
+      },
+      {
+        "model_version": "1.1",
+        "criterion_id": "S04-C04",
+        "before_grade": "G2",
+        "before_points": 7.5,
+        "after_grade": "G2",
+        "after_points": 7.5,
+        "delta": 0,
+        "sha": "202570a4b97beb2090225ef4e485b00a43c34fb5",
+        "status": "confirmed_bounded_pre_release",
+        "method": "Independent exact-SHA source/handler review plus frozen Node checks and root-verified same-tree CI browser evidence",
+        "evidence": [
+          "agent-work/evidence/review-HX-BL-030-202570a/check.log",
+          "agent-work/evidence/review-HX-BL-030-202570a/ci-browser.log",
+          "agent-work/evidence/review-HX-BL-030-202570a/ci-world-random.log"
+        ],
+        "limitations": [
+          "Full corpus JSON roundtrip retained; RNG reproducibility counted only under S02-C01; no new export/format breadth credit.",
+          "Local frozen check exit0; stored log incomplete, count236 comes only from complete same-tree CI. Finite evidence; registry not changed before release."
+        ],
+        "assessed_sha": "202570a4b97beb2090225ef4e485b00a43c34fb5"
+      },
+      {
+        "model_version": "1.1",
+        "criterion_id": "S09-C04",
+        "before_grade": "G2",
+        "before_points": 5,
+        "after_grade": "G2",
+        "after_points": 5,
+        "delta": 0,
+        "sha": "202570a4b97beb2090225ef4e485b00a43c34fb5",
+        "status": "confirmed_bounded_pre_release",
+        "method": "Independent exact-SHA source/handler review plus frozen Node checks and root-verified same-tree CI browser evidence",
+        "evidence": [
+          "agent-work/evidence/review-HX-BL-030-202570a/check.log",
+          "agent-work/evidence/review-HX-BL-030-202570a/r1-r4.log",
+          "agent-work/evidence/review-HX-BL-030-202570a/r5-results.json",
+          "agent-work/evidence/review-HX-BL-030-202570a/ci-world-random.log"
+        ],
+        "limitations": [
+          "Atomic import/rollback/stale callback safety retained; same undo/import work not counted twice.",
+          "Local frozen check exit0; stored log incomplete, count236 comes only from complete same-tree CI. Finite evidence; registry not changed before release."
+        ],
+        "assessed_sha": "202570a4b97beb2090225ef4e485b00a43c34fb5"
+      }
+    ],
+    "current_total_points": 186.25,
+    "unverified_weight": 70,
+    "total_delta": 7.5,
+    "possible_total_after_exact_accepted_release": 193.75,
+    "registry_changed": false,
+    "double_counting_check": "Only S02-C01 receives+7.5; adjacent criteria retained with delta0."
+  },
+  "score_integrity": {
+    "model_version": "1.1",
+    "criteria": 50,
+    "total_weight": 1000,
+    "coefficients": [
+      0,
+      0.25,
+      0.5,
+      0.75,
+      1
+    ],
+    "published_points_unchanged": 186.25,
+    "unverified_weight_unchanged": 70,
+    "double_counting": "Only S02-C01 delta+7.5 proposed for an eventual exact reviewed release; other four delta0",
+    "published_score_changed": false,
+    "prospective_delta": 7.5
+  },
+  "automation_health": {
+    "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-10-25T07:00:30.725Z",
+      "is_enabled": true,
+      "status": "checked"
+    },
+    "end": {
+      "checked_at": "2026-10-25T07:16:28.517Z",
+      "status": "checked",
+      "is_enabled": true,
+      "error": null
+    },
+    "restored_during_this_run": false,
+    "errors": [],
+    "schedule_unchanged": true
+  },
+  "next_step": "Ожидается отдельное разрешение владельца на merge/выпуск PR472, точный проверенный SHA202570a4b97beb2090225ef4e485b00a43c34fb5; до разрешения не публиковать.",
+  "release_readiness_meaning": "Technically ready for separate owner authorization; does not authorize merge/deploy.",
+  "snapshot_archive": {
+    "path": "agent-work/evidence/review-HX-BL-030-202570a/snapshots.zip",
+    "manifest": "agent-work/evidence/review-HX-BL-030-202570a/snapshots-manifest.json",
+    "bytes": 968859,
+    "sha256": "9e33da768adde641b5ac2f6d260f78e57c2eb0cc729604ee6610bd38c0f22455",
+    "git_blob": "113bea730d66c1ab0cd439466a65b79dba1568a6",
+    "provided_by": "root final packaging"
+  },
+  "run_id": "2026-10-25:reviewer:HX-BL-030:202570a",
+  "independent_agent_name": "/root/review_202570a_resume",
+  "status": "awaiting_release_approval",
+  "role_selection_reason": "review_ready точного202570a с успешными проверками; собственный незавершённый claim безопасно восстановлен, отдельный свежий агент завершил независимую приёмку.",
+  "completed_at": "2026-10-25T07:16:28.518Z",
+  "evidence_ref": "agent-work/evidence/review-HX-BL-030-202570a/report.md",
+  "raw_independent_report_ref": "agent-work/evidence/review-HX-BL-030-202570a/report.json",
+  "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/472#pullrequestreview-5642037831",
+  "score_model_integrity": {
+    "model_version": "1.1",
+    "model_blob_sha": "c05bffac61f425085e6878f7709c25e1dfc2ffb4",
+    "registry_model_sha_matches": true,
+    "model_rows": 50,
+    "model_unique_ids": 50,
+    "model_total_weight": 1000,
+    "registry_rows": 50,
+    "registry_weights_match": true,
+    "coefficients": {
+      "0": 0,
+      "1": 0.25,
+      "2": 0.5,
+      "3": 0.75,
+      "4": 1
+    },
+    "recomputed_points": 186.25,
+    "recomputed_unverified_weight": 70,
+    "registry_unchanged": true,
+    "scope": "No credit awarded before release; model1.2 PR473 not substituted."
+  },
+  "independent_agent_automation_health": {
+    "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-10-25T07:05:16Z",
+      "is_enabled": true,
+      "status": "checked",
+      "error": null,
+      "note": "Initial peek at resumed start also true; this timestamp is an explicit timed reaffirmation."
+    },
+    "end": {
+      "checked_at": "2026-10-25T07:13:07Z",
+      "is_enabled": true,
+      "status": "checked",
+      "error": null
+    },
+    "restored_during_this_run": false,
+    "errors": []
+  },
+  "recovery_health": {
+    "previous_start": {
+      "checked_at": "2026-10-25T06:01:02.748Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "previous_end": {
+      "status": "unchecked",
+      "is_enabled": null,
+      "reason": "Предыдущая попытка независимой проверки прервана до итогового результата; сохранён только частичный check.log. Процессов node/npm нет."
+    },
+    "resume_start": {
+      "checked_at": "2026-10-25T07:00:30.725Z",
+      "is_enabled": true,
+      "status": "checked"
+    }
+  },
+  "ci": {
+    "run_id": 40164382105,
+    "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40164382105",
+    "jobs": [
+      {
+        "id": 121082303561,
+        "name": "check",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 121082303463,
+        "name": "browser",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 121082303525,
+        "name": "world-random",
+        "status": "completed",
+        "conclusion": "success"
+      }
+    ],
+    "head_sha": "202570a4b97beb2090225ef4e485b00a43c34fb5",
+    "checkout_merge_sha": "5dcec8324554ce2c7603d7d7511841374fcc68d2",
+    "tree_sha": "f2fc6c9a6519e63eb94b5bd30699146b733191ac",
+    "tree_matches_head": true,
+    "independent_root_verification": "agent-work/evidence/review-HX-BL-030-202570a/root-ci-verification.md"
+  },
+  "previous_review_ref": "agent-work/results/2026-10-25-reviewer-HX-BL-030-855cfd5.json",
+  "next_role": "developer",
+  "owner_decisions_needed": [
+    {
+      "decision": "authorize_release",
+      "task_id": "HX-BL-030",
+      "pr": 472,
+      "candidate_sha": "202570a4b97beb2090225ef4e485b00a43c34fb5",
+      "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/472#pullrequestreview-5642037831"
+    }
+  ],
+  "claim_released": true,
+  "main_changed": false,
+  "published": false,
+  "score_changed": false
+}
