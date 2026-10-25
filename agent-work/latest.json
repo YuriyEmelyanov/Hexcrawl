@@ -26,10 +26,10 @@
   },
   "lessons_path": "agent-work/lessons.md",
   "plan_id": "2026-10-23:f89530abe1e237493dddb533502bb772ae1ab4e5",
-  "run_id": "2026-10-25:reviewer:HX-BL-030:202570a",
+  "run_id": "2026-10-25:developer:HX-BL-030:release",
   "plan_revision": 1,
   "baseline_sha": "f89530abe1e237493dddb533502bb772ae1ab4e5",
-  "status": "awaiting_release_approval",
+  "status": "release_in_progress",
   "planning_for": "2026-10-24",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-10-25",
@@ -45,29 +45,30 @@
   "schedule_start_at": "2026-10-24T01:00:00+03:00",
   "schedule_frequency": "hourly",
   "process_path": "agent-work/process.md",
-  "current_role": "reviewer",
+  "current_role": "developer",
   "next_role": "developer",
   "current_task_id": "HX-BL-030",
   "spec_path": "agent-work/specs/HX-BL-030.md",
   "spec_version": "1.0",
   "result_path": "agent-work/results/2026-10-25-reviewer-HX-BL-030-202570a.json",
   "handoff_commit_sha": "cd20e26c07677e0d04e85322883c793aabdac116",
-  "active_claim": null,
-  "next_step": "Ожидается отдельное разрешение владельца на merge/выпуск PR472, точный проверенный SHA202570a4b97beb2090225ef4e485b00a43c34fb5; до разрешения не публиковать.",
-  "owner_decisions_needed": [
-    {
-      "decision": "authorize_release",
-      "task_id": "HX-BL-030",
-      "pr": 472,
-      "candidate_sha": "202570a4b97beb2090225ef4e485b00a43c34fb5",
-      "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/472#pullrequestreview-5642037831"
-    }
-  ],
-  "release_approval": {
-    "status": "awaiting_owner_approval",
+  "active_claim": {
+    "run_id": "2026-10-25:developer:HX-BL-030:release",
+    "role": "developer",
     "task_id": "HX-BL-030",
-    "candidate_sha": "202570a4b97beb2090225ef4e485b00a43c34fb5",
-    "approved_sha": null
+    "stage": "release",
+    "head_sha": "202570a4b97beb2090225ef4e485b00a43c34fb5",
+    "started_at": "2026-10-25T07:32:11.322Z",
+    "lease_expires_at": "2026-10-25T09:32:11.322Z"
+  },
+  "next_step": "Ожидается отдельное разрешение владельца на merge/выпуск PR472, точный проверенный SHA202570a4b97beb2090225ef4e485b00a43c34fb5; до разрешения не публиковать.",
+  "owner_decisions_needed": [],
+  "release_approval": {
+    "status": "approved",
+    "approved_sha": "202570a4b97beb2090225ef4e485b00a43c34fb5",
+    "approval_ref": "owner-release-2026-10-25-HX-BL-030",
+    "pr": 472,
+    "date": "2026-10-25"
   },
   "historical_plan_status": "План23.10 сохранён как история; его блокировки и предложенный процесс заменены decisions24.10 в approvals/process/budget и текущим handoff.",
   "evidence_path": "agent-work/evidence/review-HX-BL-030-202570a/report.md",
@@ -131,7 +132,7 @@
   "score_update_release_sha": "6aaefa8896e7aac163cfcd5c2ca896ac60fc54d0",
   "score_process_decision_ref": "owner-decision-2026-10-24-score-responsibilities",
   "score_assessment_ref": "agent-work/results/2026-10-25-reviewer-HX-BL-030-202570a.json",
-  "role_selection_reason": "review_ready точного202570a с успешными проверками; собственный незавершённый claim безопасно восстановлен, отдельный свежий агент завершил независимую приёмку.",
+  "role_selection_reason": "Явное поручение владельца «Разрешаю выпуск» принятого exact202570a.",
   "score_update_result_ref": "agent-work/results/2026-10-24-strategist-score-update-HX-NEXT-001.json",
   "score_update_completed_at": "2026-10-24T15:02:07.209915+00:00",
   "score_update_delta": 7.5,
@@ -157,15 +158,13 @@
   "automation_health": {
     "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-10-25T07:00:30.725Z",
+      "checked_at": "2026-10-25T07:31:22.688Z",
       "is_enabled": true,
       "status": "checked"
     },
     "end": {
-      "checked_at": "2026-10-25T07:16:28.517Z",
-      "status": "checked",
-      "is_enabled": true,
-      "error": null
+      "status": "pending",
+      "is_enabled": null
     },
     "restored_during_this_run": false,
     "errors": [],
