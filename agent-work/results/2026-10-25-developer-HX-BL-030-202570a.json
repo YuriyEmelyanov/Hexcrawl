@@ -1,0 +1,175 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-25",
+  "task_id": "HX-BL-030",
+  "spec_version": "1.0",
+  "role": "developer",
+  "run_id": "2026-10-25:developer:HX-BL-030:R5",
+  "status": "review_ready",
+  "role_selection_reason": "Единственное открытое замечание R5 независимого review по утверждённой задаче, активного claim не было.",
+  "base_sha": "6aaefa8896e7aac163cfcd5c2ca896ac60fc54d0",
+  "fix_base_sha": "855cfd5b8cd2e70e1013d92b5dc9e6e21be063d0",
+  "head_sha": "202570a4b97beb2090225ef4e485b00a43c34fb5",
+  "tree_sha": "f2fc6c9a6519e63eb94b5bd30699146b733191ac",
+  "branch": "agent/HX-BL-030-rng",
+  "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/472",
+  "completion_comment_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/472#issuecomment-6393815648",
+  "evidence_ref": "agent-work/evidence/HX-BL-030-developer-202570a.md",
+  "evidence_archive": {
+    "path": "agent-work/evidence/HX-BL-030-developer-202570a/R5-evidence.zip",
+    "blob_sha": "96e2e38a3ff25cb3ba4470ed38a740429335d43c",
+    "manifest": "agent-work/evidence/HX-BL-030-developer-202570a/manifest.json"
+  },
+  "changes": [
+    "R5: App-local WeakSet consumed pending requests; stale document revision check before job/RNG/backup.",
+    "Two production-handler regressions: A→B→old A, after undo with redo, after redo; full save, session document, both RNG/stacks/logs.",
+    "ADR and region contract updated; no generation algorithm/schema/weight change."
+  ],
+  "checks": {
+    "status": "passed",
+    "node_local": "24.22.1",
+    "local_check": {
+      "exit_code": 0,
+      "tests": 236,
+      "pass": 236,
+      "fail": 0,
+      "skip": 0,
+      "cancel": 0,
+      "duration_ms": 313434.875379,
+      "log": "agent-work/evidence/HX-BL-030-developer-202570a/check.log"
+    },
+    "regression_before": {
+      "base_app_sha": "855cfd5b8cd2e70e1013d92b5dc9e6e21be063d0",
+      "tests": 2,
+      "pass": 0,
+      "fail": 2
+    },
+    "regression_after": {
+      "tests": 2,
+      "pass": 2,
+      "fail": 0
+    },
+    "ci": {
+      "run_id": 40164382105,
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40164382105",
+      "jobs": [
+        {
+          "id": 121082303463,
+          "name": "browser",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 121082303525,
+          "name": "world-random",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 121082303561,
+          "name": "check",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ],
+      "checkout_merge_sha": "5dcec8324554ce2c7603d7d7511841374fcc68d2",
+      "tree_matches_head": true,
+      "node": "24.21.0",
+      "chromium": "151.0.7922.34"
+    }
+  },
+  "verified_fixed_findings": [
+    "R1",
+    "R2",
+    "R3",
+    "R4"
+  ],
+  "verified_fixed_source_sha": "855cfd5b8cd2e70e1013d92b5dc9e6e21be063d0",
+  "open_findings": [],
+  "addressed_findings_pending_review": [
+    "R5"
+  ],
+  "review_verdict": "pending_new_sha",
+  "previous_review_ref": "agent-work/results/2026-10-25-reviewer-HX-BL-030-855cfd5.json",
+  "score_evidence": {
+    "model_version": "1.1",
+    "status": "requires_independent_assessment_new_sha",
+    "published_total_unchanged": 186.25,
+    "unverified_weight": 70,
+    "criteria": [
+      {
+        "criterion_id": "S02-C01",
+        "before_grade": "G0",
+        "before_points": 0,
+        "expected_delta": 7.5,
+        "confirmed_delta": null
+      },
+      {
+        "criterion_id": "S02-C03",
+        "before_grade": "G1",
+        "before_points": 5,
+        "expected_delta": 0,
+        "confirmed_delta": null
+      },
+      {
+        "criterion_id": "S03-C05",
+        "before_grade": "G2",
+        "before_points": 10,
+        "expected_delta": 0,
+        "confirmed_delta": null
+      },
+      {
+        "criterion_id": "S04-C04",
+        "before_grade": "G2",
+        "before_points": 7.5,
+        "expected_delta": 0,
+        "confirmed_delta": null
+      },
+      {
+        "criterion_id": "S09-C04",
+        "before_grade": "G2",
+        "before_points": 5,
+        "expected_delta": 0,
+        "confirmed_delta": null
+      }
+    ],
+    "evidence": "agent-work/evidence/HX-BL-030-developer-202570a.md",
+    "old_assessment_not_reused_for_new_sha": true
+  },
+  "limitations": [
+    "No local Chromium rerun: executable unavailable; exact-tree independently root-verified CI used.",
+    "Harness runs real production handlers with hook storage and no effects; browser effect evidence is CI only.",
+    "Name registry edits do not establish a text rename UI.",
+    "Regenerate replay uses documented checkpoint-building action prefix, preserving TX04.",
+    "Deterministic fixture rejection does not prove all inputs expand successfully.",
+    "Production StrictMode wrapper and repeated effects are covered; a separate development remount run is not claimed.",
+    "Finite tests do not prove every seed or 10000/100000 maps.",
+    "R5 scripts rerun by developer; independent review of202570a pending."
+  ],
+  "automation_health": {
+    "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-10-25T05:05:21.861Z",
+      "is_enabled": true,
+      "status": "checked",
+      "error": null
+    },
+    "end": {
+      "checked_at": "2026-10-25T05:15:34.856Z",
+      "is_enabled": true,
+      "status": "checked",
+      "error": null
+    },
+    "restored_during_this_run": false,
+    "errors": [],
+    "schedule_unchanged": true
+  },
+  "next_role": "reviewer",
+  "next_step": "Независимая проверка202570a свежим агентом: R5 обоих режимов, весь пакет, актуальный score_assessment. Затем отдельное согласование выпуска.",
+  "claim_released": true,
+  "main_changed": false,
+  "published": false,
+  "score_changed": false,
+  "owner_decisions_needed": [],
+  "completed_at": "2026-10-25T05:15:51.338Z"
+}
