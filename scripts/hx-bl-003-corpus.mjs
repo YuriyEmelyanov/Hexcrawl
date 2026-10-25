@@ -14,11 +14,12 @@ const sha=x=>createHash('sha256').update(x).digest('hex');
 const baseline='103d31b9f6f5c76b1f6b45d9d6664fe3f75dd63b';
 const cases=[{mode:'mythic',seed:0},{mode:'mythic',seed:123456789},{mode:'classic',seed:1}];
 const targets=[400,1200,2400];
-// Count occupied, playable map hexes; also disclose terrain-only (water) cells.
+// N counts all uniquely occupied cells, including terrain-only water.
 function composition(d){
   const keys=new Set(d.map.regions.flatMap(r=>r.hexes.map(h=>`${h.q},${h.r}`)));
+  const allKeys=new Set([...keys,...Object.keys(d.map.terrainByHexKey??{})]);
   const biomes={};for(const r of d.map.regions)biomes[r.biomeId]=(biomes[r.biomeId]??0)+r.hexes.length;
-  return {N:keys.size,terrainOnly:Object.keys(d.map.terrainByHexKey??{}).filter(k=>!keys.has(k)).length,
+  return {N:allKeys.size,regionHexes:keys.size,terrainOnly:allKeys.size-keys.size,
     biomes,regions:d.map.regions.length,kingdoms:d.map.kingdoms.length,rivers:d.map.rivers.length,
     roads:d.map.roads.length,waterPoi:Object.keys(d.map.waterPoiByHexKey??{}).length,
     poi:d.map.regions.reduce((n,r)=>n+(r.pointsOfInterest?.length??0),0)};
@@ -30,7 +31,7 @@ const manifest={schema_version:1,task_id:'HX-BL-003',protocol:'P1/spec1.0',stage
   created_at:new Date().toISOString(),node:process.version,playwright:JSON.parse(await fs.readFile(root+'node_modules/playwright/package.json','utf8')).version,
   lock_sha256:sha(await fs.readFile(root+'package-lock.json')),environment:{platform:os.platform(),release:os.release(),cpu:os.cpus()[0]?.model,vcpus:os.cpus().length,ram_bytes:os.totalmem(),runner:process.env.RUNNER_NAME??os.hostname(),runner_os_image:process.env.ImageVersion??null},
   browser:null,browser_executable:chromium.executablePath(),viewport:{width:1500,height:1000},deviceScaleFactor:1,mapScale:1.5,language:'ru',rotation:false,headless:true,cpu_throttling:false,
-  generation:{cases,targets,max_attempts_per_case:100,timeout_ms:180000,candidate_order:'numeric q ascending, then r; each candidate once until next success',N_definition:'unique hex coordinates in map.regions; terrain-only water separately counted',input_method:'real production candidate click; production RNG; defaults except classic locality/mainland'},
+  generation:{cases,targets,max_attempts_per_case:100,timeout_ms:180000,candidate_order:'numeric q ascending, then r; each candidate once until next success',N_definition:'union of unique map.regions hex coordinates and terrainByHexKey coordinates; region and terrain-only counts also retained',input_method:'real production candidate click; production RNG; defaults except classic locality/mainland'},
   measurement_plan:{cold:1,warmup:1,warm:5,paired_order:'AB/BA alternating',generation:'handler start to prepared committed document',render:'document completion to detailed artwork commit plus two rAF',navigation:{wheel_steps:24,wheel_delta:[-12,12],drag_steps:24,drag_delta:[-4,-2],scroll:[500,300],settle_ms:700,pause_ms:220},timeout_ms:180000,statistics:'median/min/max/nearest-rank p95; cold separate; all outcomes retained'},
   exclusions:['savedAt is wall clock metadata, retained in files but excluded from semantic equality; no other fields excluded'],
   cases:[],files:[],status:'preparing'};
@@ -73,7 +74,7 @@ try{
         const before=composition(d);const step={attempt,anchor,before,started_at:new Date().toISOString(),outcome:'pending'};record.steps.push(step);
         try{
           await bounded((async()=>{await page.locator(`polygon.hex.candidate[data-hex-key="${anchor.q},${anchor.r}"]`).dispatchEvent('click');await ready();d=await snapshot();})(),'candidate '+JSON.stringify(anchor));
-          step.after=composition(d);step.alerts=await page.getByRole('alert').allTextContents();step.outcome=step.after.N>before.N?'success':step.alerts.length?'expected_rejection':'no_growth';step.finished_at=new Date().toISOString();
+          step.after=composition(d);step.alerts=await page.getByRole('alert').allTextContents();step.outcome=step.after.N>before.N?'success':step.alerts.some(t=>t.includes('Не удалось создать регион из-за ошибки'))?'error':step.alerts.length?'expected_rejection':'no_growth';step.finished_at=new Date().toISOString();
           if(step.outcome==='success')attempted=new Set();else attempted.add(`${anchor.q},${anchor.r}`);
           for(const target of [...record.unreached])if(step.after.N>=target){
             // Normalize ONLY presentation configuration before freezing input, using real import.
@@ -86,6 +87,7 @@ try{
           }
           await checkpoint();
           console.log('CORPUS_STEP '+JSON.stringify({mode:spec.mode,seed:spec.seed,attempt,outcome:step.outcome,N:step.after.N}));
+          if(step.outcome==='error'){record.status='product_error';break;}
           if(record.errors.length)throw Error('Browser errors; see manifest');
         }catch(e){step.outcome=String(e).includes('timeout')?'timeout':'error';step.error=String(e);record.status=step.outcome;await checkpoint();break;}
       }

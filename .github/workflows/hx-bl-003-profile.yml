@@ -6,6 +6,9 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
+concurrency:
+  group: hx-bl-003-corpus-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   corpus:
     runs-on: ubuntu-latest
