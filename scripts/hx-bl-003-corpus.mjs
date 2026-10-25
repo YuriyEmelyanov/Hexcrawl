@@ -64,7 +64,11 @@ try{
       record.options=await page.locator('.gen-params select').evaluateAll(nodes=>nodes.map(n=>({value:n.value,options:[...n.options].map(o=>({value:o.value,label:o.text}))})));
       let d=await bounded(snapshot(),'initial export');let attempted=new Set();
       for(let attempt=1;attempt<=100&&record.unreached.length;attempt++){
-        const candidates=[...d.map.candidateHexes].sort((a,b)=>a.q-b.q||a.r-b.r);
+        // An empty document serializes candidateHexes=[], while the real UI
+        // displays START_HEX 0/0. Read the actual clickable candidates, including
+        // that initial UI-only anchor; never fabricate a generation location.
+        const candidates=await page.locator('polygon.hex.candidate[data-hex-key]').evaluateAll(nodes=>nodes.map(n=>{const [q,r]=n.dataset.hexKey.split(',').map(Number);return {q,r};}));
+        candidates.sort((a,b)=>a.q-b.q||a.r-b.r);
         const anchor=candidates.find(h=>!attempted.has(`${h.q},${h.r}`));if(!anchor){record.status='no_untried_candidates';break;}
         const before=composition(d);const step={attempt,anchor,before,started_at:new Date().toISOString(),outcome:'pending'};record.steps.push(step);
         try{
