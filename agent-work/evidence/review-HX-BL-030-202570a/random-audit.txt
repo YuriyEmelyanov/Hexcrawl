@@ -1,0 +1,73 @@
+review-202570a/src/riverCrossings.ts:32:  random: () => number = Math.random
+review-202570a/src/worldRandom.ts:10:export const fallbackRandomStreams: RandomStreams = { geography: () => Math.random(), poi: () => Math.random() };
+review-202570a/src/worldRandom.ts:27:export function newWorldSeed(): number {
+review-202570a/src/riverRapids.ts:24:  random: () => number = Math.random
+review-202570a/src/generationDiagnostics.ts:44:        random: event.random ?? null
+review-202570a/src/riverWaterfalls.ts:30:  random: () => number = Math.random
+review-202570a/src/modes/pointsOfInterest.ts:23:export function initialMythicPoints(hexes:Hex[], center:Hex|null, dry:(h:Hex)=>boolean, random:()=>number = Math.random):Hex[] {
+review-202570a/src/modes/pointsOfInterest.ts:30:export function allocateKingdomPoi<R extends PoiRegion>(input:R[], area:Set<string>, dry:(h:Hex)=>boolean, random:()=>number = Math.random):R[] {
+review-202570a/src/modes/obstacles.ts:4:export function createObstacles(kingdomId:number, hexes:Hex[], edges:(h:Hex)=>Edge[], height:(h:Hex)=>number, water:(h:Hex)=>boolean, riverEdges:Set<string>, roadPairs:Set<string>, random:()=>number = Math.random):Obstacle[] {
+review-202570a/src/modes/regionSize.ts:2:export function modeRegionSize(mode: GenerationMode, classic: () => number, first = false, random = Math.random): number {
+review-202570a/src/App.tsx:1:import { type RandomStreams, type GenerationState, fallbackRandomStreams, poiRandomStreams, createGenerationState, cloneGenerationState, draw, toponymSeedFor, newWorldSeed, isUint32 } from './worldRandom';
+review-202570a/src/App.tsx:1074:function randomInt(min: number, max: number, rng: RandomStreams = fallbackRandomStreams): number {
+review-202570a/src/App.tsx:1080:function shuffleArray<T>(values: T[], rng: RandomStreams = fallbackRandomStreams): T[] {
+review-202570a/src/App.tsx:1192:function randomFrom<T>(values: T[], rng: RandomStreams = fallbackRandomStreams): T {
+review-202570a/src/App.tsx:1197:function assignCentralPoiKindForRegion(biomeLandType: BiomeLandType, sizeCategory: Region['sizeCategory'], rng: RandomStreams = fallbackRandomStreams): CentralPoiKind {
+review-202570a/src/App.tsx:1240:function rollRegionSizeInCategory(category: Region['sizeCategory'], rng: RandomStreams = fallbackRandomStreams): number {
+review-202570a/src/App.tsx:1245:function rollTractTargetSize(rng: RandomStreams = fallbackRandomStreams): number {
+review-202570a/src/App.tsx:1330:function chooseBiomeLandType(regionCount: number, rng: RandomStreams = fallbackRandomStreams): BiomeLandType {
+review-202570a/src/App.tsx:1382:function chooseWeightedRandom(weights: Record<BiomeId, number>, rng: RandomStreams = fallbackRandomStreams): BiomeId {
+review-202570a/src/App.tsx:1410:  riverHeightConstraint?: RiverHeightConstraint, rng: RandomStreams = fallbackRandomStreams
+review-202570a/src/App.tsx:1485:  riverHeightConstraint?: RiverHeightConstraint, rng: RandomStreams = fallbackRandomStreams
+review-202570a/src/App.tsx:2918:  riverSlope?: RiverSlopeInfo, rng: RandomStreams = fallbackRandomStreams
+review-202570a/src/App.tsx:3170:  riverSlope?: RiverSlopeInfo, rng: RandomStreams = fallbackRandomStreams
+review-202570a/src/App.tsx:3593:function chooseRandomRegionExteriorVertexPair(regionExteriorVertices: RiverVertex[], rng: RandomStreams = fallbackRandomStreams): { startVertex: RiverVertex; endVertex: RiverVertex } | null {
+review-202570a/src/App.tsx:4061:  terrainMap: Map<string, HexTerrainData>, rng: RandomStreams = fallbackRandomStreams
+review-202570a/src/App.tsx:4187:  connectorPath: RiverVertex[], rng: RandomStreams = fallbackRandomStreams
+review-202570a/src/App.tsx:4207:  connectorSplit?: RiverConnectorSplit, rng: RandomStreams = fallbackRandomStreams
+review-202570a/src/App.tsx:4279:  riverSlope?: RiverSlopeInfo, rng: RandomStreams = fallbackRandomStreams
+review-202570a/src/App.tsx:4643:export function rollRegionTargetSize(rng: RandomStreams = fallbackRandomStreams): number {
+review-202570a/src/App.tsx:4732:function createRandomRiverSlopeInfo(radius: number, rng: RandomStreams = fallbackRandomStreams): RiverSlopeInfo {
+review-202570a/src/App.tsx:4754:  radius = RIVER_SLOPE_RADIUS, rng: RandomStreams = fallbackRandomStreams
+review-202570a/src/App.tsx:5126:export function weightedPickCandidate(candidates: GrowthCandidate[], rng: RandomStreams = fallbackRandomStreams): GrowthCandidate | null {
+review-202570a/src/App.tsx:5211:  neutralOccupiedNeighborWeightHexes: Set<string> = new Set(), rng: RandomStreams = fallbackRandomStreams
+review-202570a/src/App.tsx:5247:function generateFallbackTractFromAnchor(anchorHex: AxialHex, occupiedHexes: Set<string>, targetSize: number | undefined = undefined, rng: RandomStreams = fallbackRandomStreams): AxialHex[] {
+review-202570a/src/App.tsx:5358:export function chooseRegionCenter(regionHexes: AxialHex[], rng: RandomStreams = fallbackRandomStreams): AxialHex {
+review-202570a/src/App.tsx:5450:function chooseCoastalCenterHex(regionHexes: AxialHex[], seaKeys: Set<string>, rivers: River[], rng: RandomStreams = fallbackRandomStreams): AxialHex | null {
+review-202570a/src/App.tsx:5468:function chooseRiverMouthCenterHex(regionHexes: AxialHex[], rivers: River[], rng: RandomStreams = fallbackRandomStreams): AxialHex | null {
+review-202570a/src/App.tsx:5501:function chooseSeaAdjacentCenterHex(regionHexes: AxialHex[], seaKeys: Set<string>, rng: RandomStreams = fallbackRandomStreams): AxialHex | null {
+review-202570a/src/App.tsx:5618:function expandConnectedSeaArea(seaKeys: Set<string>, candidates: Map<string, AxialHex>, rng: RandomStreams = fallbackRandomStreams): Set<string> {
+review-202570a/src/App.tsx:6020:  roads: Road[] = [], rng: RandomStreams = fallbackRandomStreams
+review-202570a/src/App.tsx:6168:function chooseCoastalAwareLandType(isCoastal: boolean, rng: RandomStreams = fallbackRandomStreams): BiomeLandType {
+review-202570a/src/App.tsx:6698:  candidateEndpointVertices: RiverVertex[] = candidateVertices, rng: RandomStreams = fallbackRandomStreams
+review-202570a/src/App.tsx:6752:  hexTerrainByKey?: Map<string, HexTerrainData>, rng: RandomStreams = fallbackRandomStreams
+review-202570a/src/App.tsx:7863:  biomeId: BiomeId, rng: RandomStreams = fallbackRandomStreams
+review-202570a/src/App.tsx:7930:  lakesByHex: Map<string, HexTerrainData>, rng: RandomStreams = fallbackRandomStreams
+review-202570a/src/App.tsx:7953:function assignPointsOfInterestForTract(regionHexes: AxialHex[], rng: RandomStreams = fallbackRandomStreams): AxialHex[] {
+review-202570a/src/App.tsx:7986:  newlyCheckedWaterHexKeys?: Iterable<string>, rng: RandomStreams = fallbackRandomStreams
+review-202570a/src/App.tsx:8134:function assignSecondaryPoiKindsForRegion(region: Region, roads: Road[], assigned: Record<string, PoiKind>, rng: RandomStreams = fallbackRandomStreams): void {
+review-202570a/src/App.tsx:8155:}, rng: RandomStreams = fallbackRandomStreams): Record<string, PoiKind> | undefined {
+review-202570a/src/App.tsx:8371:function reconcileRiverCrossings(roads: Road[], rivers: River[], regions: Region[], existing: RiverCrossing[], rng: RandomStreams = fallbackRandomStreams): RiverCrossing[] {
+review-202570a/src/App.tsx:8430:function chooseBestRoadCandidate(candidates: RoadCandidatePath[], rng: RandomStreams = fallbackRandomStreams): RoadCandidatePath | null {
+review-202570a/src/App.tsx:8659:function chooseBestSettledCandidateRoadCandidate(candidates: SettledCandidateRoadCandidate[], rng: RandomStreams = fallbackRandomStreams): SettledCandidateRoadCandidate | null {
+review-202570a/src/App.tsx:8676:function chooseBestSupplementalSettledRoadCandidate(candidates: SupplementalSettledRoadCandidate[], rng: RandomStreams = fallbackRandomStreams): SupplementalSettledRoadCandidate | null {
+review-202570a/src/App.tsx:8693:function chooseBestThirdRoadCandidate(candidates: RoadCandidatePath[], rng: RandomStreams = fallbackRandomStreams): RoadCandidatePath | null {
+review-202570a/src/App.tsx:8709:}, rng: RandomStreams = fallbackRandomStreams): AxialHex[][] {
+review-202570a/src/App.tsx:8779:}, rng: RandomStreams = fallbackRandomStreams): RoadCandidatePath[] {
+review-202570a/src/App.tsx:8923:function chooseBestSettledIncomingRoadCandidate(candidates: SettledIncomingRoadCandidate[], rng: RandomStreams = fallbackRandomStreams): SettledIncomingRoadCandidate | null {
+review-202570a/src/App.tsx:8945:}, rng: RandomStreams = fallbackRandomStreams): SettledIncomingRoadCandidate[] {
+review-202570a/src/App.tsx:9161:}, rng: RandomStreams = fallbackRandomStreams): AxialHex[][] {
+review-202570a/src/App.tsx:9265:}, rng: RandomStreams = fallbackRandomStreams): WildIncomingRoadPairCandidate[] {
+review-202570a/src/App.tsx:9307:function chooseBestWildIncomingRoadPairCandidate(candidates: WildIncomingRoadPairCandidate[], rng: RandomStreams = fallbackRandomStreams): WildIncomingRoadPairCandidate | null {
+review-202570a/src/App.tsx:9466:function chooseBestWildRoadCandidate(candidates: WildRoadCandidate[], rng: RandomStreams = fallbackRandomStreams): WildRoadCandidate | null {
+review-202570a/src/App.tsx:9612:function chooseBestWildCandidateRoadCandidate(candidates: WildCandidateRoadCandidate[], rng: RandomStreams = fallbackRandomStreams): WildCandidateRoadCandidate | null {
+review-202570a/src/App.tsx:9713:}, rng: RandomStreams = fallbackRandomStreams): AxialHex[] | null {
+review-202570a/src/App.tsx:9800:}, rng: RandomStreams = fallbackRandomStreams): { region: Region; roads: Road[]; nextRoadId: number } {
+review-202570a/src/App.tsx:9848:}, rng: RandomStreams = fallbackRandomStreams): { roads: Road[]; nextRoadId: number } {
+review-202570a/src/App.tsx:9894:}, rng: RandomStreams = fallbackRandomStreams): { roads: Road[]; nextRoadId: number } {
+review-202570a/src/App.tsx:10009:  startRiverId: number, rng: RandomStreams = fallbackRandomStreams
+review-202570a/src/App.tsx:10603:}, rng: RandomStreams = fallbackRandomStreams): { roads: Road[]; nextRoadId: number } {
+review-202570a/src/App.tsx:11231:const generateRoadsForRegion = __profiled('generateRoadsForRegion', (options: Parameters<typeof generateRoadsForRegionImpl>[0], rng: RandomStreams = fallbackRandomStreams) =>
+review-202570a/src/App.tsx:11235:  const [initialGeneration] = useState(() => createGenerationState(newWorldSeed()));
+review-202570a/src/App.tsx:11324:    random: { before: cloneGenerationState(activeGenerationBefore.current ?? generationRef.current), after: cloneGenerationState(generationRef.current) },
+review-202570a/src/App.tsx:13016:    const newGeneration = createGenerationState(newWorldSeed());
