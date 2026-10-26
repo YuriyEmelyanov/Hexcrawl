@@ -3,13 +3,13 @@
   "run_id": "2026-10-25:developer:HX-BL-003:1805Z",
   "role": "developer",
   "task_id": "HX-BL-003",
-  "status": "single_optimization_paired_comparison_running",
+  "status": "paired_export_isolation_retry_running",
   "stage": "awaiting_external_CI",
-  "head_sha": "598832c2fa12ac528e896cfe7c223703bc6ac716",
-  "harness_sha": "96a2a8979ce2ef8ad10e5174392dbe2bb0b899d5",
+  "head_sha": "739e3de36587533bf3d2f3196072270f4695fa8a",
+  "harness_sha": "00f5e4adcc4a027948ca3a82fcd625211eb890cd",
   "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474",
-  "workflow_run_id": 40243424173,
-  "workflow_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40243424173",
+  "workflow_run_id": 40252325923,
+  "workflow_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40252325923",
   "environment_manifest": "reports/HX-BL-003/timing-environment.json",
   "harness_report": "reports/HX-BL-003/timing-harness.md",
   "timing_results": "Baseline collected and diagnosed; paired speed/visual/safety acceptance pending, no gain claimed.",
@@ -58,23 +58,24 @@
   "product_source_changed": true,
   "optimization_started": true,
   "score_changed": false,
-  "next_step": "Inspect existing paired40243424173 and Check40243428888; analyze generation_ms targetN2400 for both seeds, all P1 regression limits, visual parity and debug counts. No second bottleneck; complete exact-SHA safety then independent reviewer.",
+  "next_step": "Inspect existing recovery40252325923. Analyze complete timing pairs and isolated visual report; if PNG blocked retain explicit blocked, no repeated PNG loops. Original product96a2a89 safety CI passed; new full-SHA check40252330019 pending. No second optimization or release.",
   "resume_guard": {
     "same_run_id": "2026-10-25:developer:HX-BL-003:1805Z",
-    "environment_head": "598832c2fa12ac528e896cfe7c223703bc6ac716",
-    "candidate_sha": "96a2a8979ce2ef8ad10e5174392dbe2bb0b899d5",
-    "run_id": 40243424173,
-    "required": "Re-read latest/head and existing paired CI; environment-only head598832c verified parent96a2a89. No duplicate paired collection."
+    "environment_head": "739e3de36587533bf3d2f3196072270f4695fa8a",
+    "harness_sha": "00f5e4adcc4a027948ca3a82fcd625211eb890cd",
+    "product_source_sha": "96a2a8979ce2ef8ad10e5174392dbe2bb0b899d5",
+    "run_id": 40252325923,
+    "required": "Re-read latest and verify environment-only advance if any; inspect existing run; do not duplicate."
   },
   "automation_health": {
     "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-10-25T23:59:33.597Z",
+      "checked_at": "2026-10-26T00:55:54.592Z",
       "status": "checked",
       "is_enabled": true
     },
     "end": {
-      "checked_at": "2026-10-25T23:59:59.567Z",
+      "checked_at": "2026-10-26T01:05:16.248Z",
       "status": "checked",
       "is_enabled": true
     },
@@ -146,5 +147,35 @@
   "candidate_sha": "96a2a8979ce2ef8ad10e5174392dbe2bb0b899d5",
   "environment_head": "598832c2fa12ac528e896cfe7c223703bc6ac716",
   "score_model_version": "1.2",
-  "score_assessment_status": "pending_independent_review"
+  "score_assessment_status": "pending_independent_review",
+  "prior_paired_failure": {
+    "run_id": 40243424173,
+    "artifact_id": 12620008175,
+    "archive_sha256": "e9a991f2be85ac12a0b0aca047ac2d03a2cc7f4dd8314e233ee26ad5f6e20f21",
+    "download_hash_verified": true,
+    "raw_rows": 98,
+    "completed_expansions": 82,
+    "real_png_timeouts": 4,
+    "not_executed_after_context_failure": 16,
+    "full_svg_equal": 7,
+    "png_pixel_equal": 5,
+    "full_png_blocked": [
+      "mythic-0-N2400.json",
+      "mythic-123456789-N2400.json"
+    ],
+    "report": "reports/HX-BL-003/paired-run40243424173-recovery.json",
+    "performance_acceptance": "insufficient_evidence: only1 warm pair at each target seed",
+    "export_root_cause": "unknown"
+  },
+  "measurement_recovery": {
+    "sha": "00f5e4adcc4a027948ca3a82fcd625211eb890cd",
+    "product_source_changed_since_96a2a89": false,
+    "latency": "same full7checkpointAB/BA series both variants on one new runner; no PNG wait during latency",
+    "visual": "original full-quality PNG exported after timing, fresh Chromium process per variant/checkpoint; frozenAFTER import/fullJSON verified",
+    "checks": [
+      "node --check both scripts passed",
+      "YAML parse and protocol guards passed"
+    ],
+    "stop": "If isolated PNG fails again, blocked_visual acceptance; no further automatic PNG repeats or product scope expansion."
+  }
 }
