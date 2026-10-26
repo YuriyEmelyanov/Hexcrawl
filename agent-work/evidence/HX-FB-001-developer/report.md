@@ -34,7 +34,7 @@ Baseline main: 103d31b9f6f5c76b1f6b45d9d6664fe3f75dd63b.
 
 ## Обычные проверки
 
-Финальный Check40284793669: статус фиксируется в result registry и отдельных полных логах после завершения.
+Финальный [Check40284793669](https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40284793669), head415349bc9fb9ce72fb2a8bc5e777cc98ea515bd0, attempt1: все3jobs success. Check job121445805437:236/236 Node-тестов, TypeScript/build success; browser job121445804852: весь штатный smoke/history набор success; world-random job121445805231: uint32 seeds0/1/123456789/MAX, classic/Mythic, fresh/continuation/undo/invalid import, busy guards success. Полные ci-check.log, ci-browser.log и ci-rng.log приложены. Chromium installer в стандартном browser job занял около8минут, затем тесты прошли; повторов CI не было.
 Локальный Node24.22.1 npm run check на исходной реализацииb2a59d4:236/236, TypeScript/build success. На415349b App.tsx не менялся; изменены scoped CSS и проверочный harness/документация. Локальная установка Chromium завершилась ошибкой повреждённого CDN ZIP; локальная browser-приёмка не заявляется. CI использует реальный Chromium.
 
 Старые Check40283931887 иUI40283931861 наb2a59d4 прошли, но ручной просмотр выявил перекрытие меню, которое прежняя isVisible-проверка пропускала. Эти результаты не заменяют проверки415349b. Сохранены prior-ui-result.json и prior-ci-ui.log; artifact12633915272 имеет SHA2565275ff12f94983c350a6a5655ba11eb53e248831d166974b3e71de63517219d3.

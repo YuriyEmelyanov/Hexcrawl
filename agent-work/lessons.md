@@ -105,3 +105,6 @@
 
 
 26.10.2026 — HX-FB-001 analyst: blocked003 does not block an already owner-requested UI correction. Process explicitly recognizes requestedfeedback as authorized; used existingHX-FB-001/register rather than duplicatebacklogID. SourceDOM placesseedaboveMode; transferseparate. Spec1.0 movesexistinginput+seedmessages belowtransfer, keeps itoutsideexportdetails andpreservesblur/readOnly/busy/RNG. A source-based schematic is clearly not a runtimescreenshot; developer still owes exactSHAbeforeafter andchecks. Historical1.1 beforegrades remain separate from pending1.2; expectedscore-neutral, no supportpoints. [Spec](specs/HX-FB-001.md). Performancecandidate/P1 unchanged.
+
+
+26.10.2026 — HX-FB-001 developer: isVisible() alone did not prove a seed row was unobscured: initial UI CI on b2a59d4 passed, but actual screenshot inspection caught export popup overlap. On415349b reserve space only while the menu is open and assert popup bottom <= seed-block top. Closed-menu layout stays compact. Final exact-head Check (236/236 + build + browser + RNG) and UI passed;22 actual desktop/mobile RU/EN screenshots and full logs saved. Finite evidence and local CDN failure are explicit; review and score1.2 assessment remain independent, release separate. [Evidence](evidence/HX-FB-001-developer/report.md).
