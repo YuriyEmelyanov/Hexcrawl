@@ -1,0 +1,87 @@
+name: HX-BL-003 approved V2 validation
+on:
+  push:
+    branches: [agent/hx-bl-003-performance]
+    paths: [.github/workflows/hx-bl-003-v2.yml]
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: hx-bl-003-approved-v2
+  cancel-in-progress: false
+jobs:
+  validation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - uses: actions/download-artifact@v4
+        with:
+          name: HX-BL-003-baseline-outputs
+          run-id: 40200788539
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: reports/HX-BL-003/baseline-outputs
+      - name: Verify corpus and original output hashes; syntax only
+        run: |
+          python - <<'PY'
+          import hashlib,json,pathlib,zipfile
+          p=pathlib.Path('reports/HX-BL-003/corpus/fixed-corpus.zip')
+          assert hashlib.sha256(p.read_bytes()).hexdigest()=='55dddd3df58d45ad33578678ec239e61d966c6972dbaa7e8cd2fd8c510ff5913'
+          with zipfile.ZipFile(p) as z:
+              assert all(not n.startswith('/') and '..' not in pathlib.PurePosixPath(n).parts for n in z.namelist())
+              z.extractall(p.parent)
+          p=pathlib.Path('reports/HX-BL-003/baseline-outputs')
+          m=json.loads((p/'manifest.json').read_text())
+          for f in m['files']:
+              data=(p/f['path']).read_bytes()
+              assert hashlib.sha256(data).hexdigest()==f['sha256'] and len(data)==f['bytes']
+          PY
+          node --check scripts/hx-bl-003-v2.mjs
+          node --check scripts/hx-bl-003-v2-probes.js
+          python -m py_compile scripts/hx-bl-003-v2-analyze.py
+      - name: Build frozen uninstrumented A and B production sources
+        run: |
+          git worktree add --detach /tmp/hx003-pair-baseline 103d31b9f6f5c76b1f6b45d9d6664fe3f75dd63b
+          git worktree add --detach /tmp/hx003-pair-candidate 739e3de36587533bf3d2f3196072270f4695fa8a
+          git diff --exit-code 739e3de36587533bf3d2f3196072270f4695fa8a HEAD -- src public package.json package-lock.json
+          for variant in baseline candidate; do
+            target="/tmp/hx003-pair-$variant"
+            ln -s "$GITHUB_WORKSPACE/node_modules" "$target/node_modules"
+            (cd "$target" && npx tsc --noEmit && npx vite build)
+          done
+      - name: Freeze actual environment before any new measurement
+        run: |
+          node --input-type=module - <<'JS'
+          import fs from 'node:fs';import os from 'node:os';import {execFileSync} from 'node:child_process';import {createHash} from 'node:crypto';import {chromium} from 'playwright';
+          const hash=b=>createHash('sha256').update(b).digest('hex');
+          const browser=await chromium.launch({headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});const version=browser.version();await browser.close();
+          const names=['scripts/hx-bl-003-v2.mjs','scripts/hx-bl-003-v2-probes.js','scripts/hx-bl-003-v2-analyze.py','.github/workflows/hx-bl-003-v2.yml','reports/HX-BL-003/v2-protocol-manifest.json'];
+          const env={protocol:'P1-V2/addendum1.0',created_at:new Date().toISOString(),baseline_sha:'103d31b9f6f5c76b1f6b45d9d6664fe3f75dd63b',candidate_sha:'739e3de36587533bf3d2f3196072270f4695fa8a',harness_sha:process.env.GITHUB_SHA,node:process.version,playwright:JSON.parse(fs.readFileSync('node_modules/playwright/package.json')).version,chromium_version:version,chromium_path:chromium.executablePath(),platform:os.platform(),release:os.release(),cpu:os.cpus()[0].model,vcpus:os.cpus().length,ram_bytes:os.totalmem(),runner:process.env.RUNNER_NAME,image:process.env.ImageVersion,run_id:process.env.GITHUB_RUN_ID,run_attempt:process.env.GITHUB_RUN_ATTEMPT,lock_sha256:hash(fs.readFileSync('package-lock.json')),files:names.map(path=>({path,sha256:hash(fs.readFileSync(path))})),artifact_source:{id:12602421349,run_id:40200788539,name:'HX-BL-003-baseline-outputs',archive_sha256:'57fe9053543b46afa02c972e180b5f14c9f0087e199a8c126c030cc36e47167e'},runtime_tree:execFileSync('git',['rev-parse','HEAD:src'],{encoding:'utf8'}).trim()};
+          fs.mkdirSync('reports/HX-BL-003/v2',{recursive:true});fs.writeFileSync('reports/HX-BL-003/v2/environment.json',JSON.stringify(env,null,2)+'\n');
+          JS
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add reports/HX-BL-003/v2/environment.json
+          git commit -m "test: freeze actual V2 environment before bounded measurement"
+          git push origin HEAD:refs/heads/agent/hx-bl-003-v2-environment-${GITHUB_RUN_ID}
+      - name: Single approved V2 measurement; never rerun automatically
+        run: node scripts/hx-bl-003-v2.mjs
+      - name: Compute prospective navigation statistic and full decoded pixel parity
+        if: always()
+        run: |
+          python -m pip install Pillow
+          python scripts/hx-bl-003-v2-analyze.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: HX-BL-003-V2-validation
+          path: reports/HX-BL-003/v2/
+          if-no-files-found: error
