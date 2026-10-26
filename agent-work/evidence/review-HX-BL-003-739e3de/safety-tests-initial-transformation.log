@@ -1,0 +1,1197 @@
+✔ import is one exact transaction; invalid and preparation failure preserve both stacks (787.40464ms)
+✔ all existing manual families, import, reset, and 100 exact undo/redo snapshots (5636.257425ms)
+✔ manual edits do not replace generation checkpoints, regenerate rollback retains undo and redo (450.12095ms)
+✔ pending file read serializes imports and blocks edits, generation and reset (164.38598ms)
+✔ all manifest saves round-trip unchanged entities, names and can continue then undo (3805.939211ms)
+✔ no-op and failed imports preserve redo; fresh edit clears it; reset on empty is a no-op (204.57203ms)
+✔ R5 consumed regeneration A stays inert after B and undo/redo classic (706.993678ms)
+✔ R5 consumed regeneration A stays inert after B and undo/redo mythic (5325.77409ms)
+✔ R3 late Mythic regeneration failure retains original action and detached inputs (2592.590302ms)
+✔ AC10 recorded action replay classic/add/success (328.128334ms)
+✔ AC10 recorded action replay classic/add/failure (296.182203ms)
+✔ AC10 recorded action replay classic/regenerate/success (336.944675ms)
+✔ AC10 recorded action replay classic/regenerate/failure (415.167559ms)
+✔ AC10 recorded action replay mythic/add/success (11546.142142ms)
+✔ AC10 recorded action replay mythic/add/failure (2547.589003ms)
+✔ AC10 recorded action replay mythic/regenerate/success (10329.810413ms)
+✔ AC10 recorded action replay mythic/regenerate/failure (11987.150069ms)
+✔ AC04 mixed manual content and generation checkpoints classic (193.135927ms)
+✔ AC04 mixed manual content and generation checkpoints mythic (5079.28202ms)
+✔ AC05 classic/programming rollback with redo and next clean control (269.610357ms)
+✔ AC05 classic/constraint rollback with redo and next clean control (1725.862363ms)
+✔ AC05 mythic/programming rollback with redo and next clean control (12482.828768ms)
+✔ AC05 mythic/constraint rollback with redo and next clean control (24792.298162ms)
+✔ AC05 prepare-regenerate error and successful tract fallback preserve exact stream semantics (239.555353ms)
+✔ AC06 names restored before next full world classic (249.183172ms)
+✔ AC06 names restored before next full world mythic (12443.599691ms)
+✔ AC09 consumed Mythic tick remains stale after newer tick and after completion (2661.213607ms)
+fixture continuation test/fixtures/lake-reentry-map.json/classic: committed
+fixture continuation test/fixtures/lake-reentry-map.json/mythic: Error: Не удалось построить регион королевства.
+fixture continuation test/fixtures/sea-pocket-map.json/classic: committed
+fixture continuation test/fixtures/sea-pocket-map.json/mythic: Error: Не удалось соединить выбранный гекс с королевством.
+fixture continuation test/fixtures/terrain-display-map.json/classic: committed
+fixture continuation test/fixtures/terrain-display-map.json/mythic: committed
+fixture continuation test/fixtures/road-entry-zigzags.json/classic: committed
+fixture continuation test/fixtures/road-entry-zigzags.json/mythic: committed
+fixture continuation test/fixtures/import-v2/baseline-empty.json/classic: committed
+fixture continuation test/fixtures/import-v2/baseline-empty.json/mythic: committed
+fixture continuation test/fixtures/import-v2/baseline-classic.json/classic: committed
+fixture continuation test/fixtures/import-v2/baseline-classic.json/mythic: committed
+fixture continuation test/fixtures/import-v2/baseline-mythic.json/classic: committed
+fixture continuation test/fixtures/import-v2/baseline-mythic.json/mythic: committed
+fixture continuation test/fixtures/import-v2/legacy-optionals.json/classic: committed
+fixture continuation test/fixtures/import-v2/legacy-optionals.json/mythic: committed
+fixture continuation test/fixtures/lake-reentry-map.json/classic: committed
+fixture continuation test/fixtures/lake-reentry-map.json/mythic: Error: Не удалось построить регион королевства.
+fixture continuation test/fixtures/sea-pocket-map.json/classic: committed
+fixture continuation test/fixtures/sea-pocket-map.json/mythic: Error: Не удалось соединить выбранный гекс с королевством.
+fixture continuation test/fixtures/terrain-display-map.json/classic: committed
+fixture continuation test/fixtures/terrain-display-map.json/mythic: committed
+fixture continuation test/fixtures/road-entry-zigzags.json/classic: committed
+fixture continuation test/fixtures/road-entry-zigzags.json/mythic: committed
+fixture continuation test/fixtures/import-v2/baseline-empty.json/classic: committed
+fixture continuation test/fixtures/import-v2/baseline-empty.json/mythic: committed
+fixture continuation test/fixtures/import-v2/baseline-classic.json/classic: committed
+fixture continuation test/fixtures/import-v2/baseline-classic.json/mythic: committed
+fixture continuation test/fixtures/import-v2/baseline-mythic.json/classic: committed
+fixture continuation test/fixtures/import-v2/baseline-mythic.json/mythic: committed
+fixture continuation test/fixtures/import-v2/legacy-optionals.json/classic: committed
+fixture continuation test/fixtures/import-v2/legacy-optionals.json/mythic: committed
+fixture continuation test/fixtures/rng-v3/empty.json/classic: committed
+fixture continuation test/fixtures/rng-v3/empty.json/mythic: committed
+fixture continuation test/fixtures/rng-v3/classic.json/classic: committed
+fixture continuation test/fixtures/rng-v3/classic.json/mythic: committed
+fixture continuation test/fixtures/rng-v3/mythic.json/classic: committed
+fixture continuation test/fixtures/rng-v3/mythic.json/mythic: committed
+✔ production document exports RNG and undo restores continuation (558.974458ms)
+✖ production streams/continuation/undo classic/0 (261.154364ms)
+✖ production streams/continuation/undo mythic/0 (6924.375509ms)
+✖ production streams/continuation/undo classic/1 (239.717699ms)
+✖ production streams/continuation/undo mythic/1 (4973.947824ms)
+✖ production streams/continuation/undo classic/123456789 (248.73179ms)
+✖ production streams/continuation/undo mythic/123456789 (4315.999986ms)
+✖ production streams/continuation/undo classic/4294967295 (177.175996ms)
+✖ production streams/continuation/undo mythic/4294967295 (6685.596498ms)
+✔ classic and late Mythic failures restore RNG and both histories (4539.548225ms)
+✔ v2 migration and v3 validation are deterministic and atomic with redo (1948.998506ms)
+✔ regenerate uses current RNG and undo/repeat restores same variant (187.343605ms)
+✔ seed validation, repeated renders, pre-options exception and duplicate pending callback (87.280846ms)
+✔ Mythic regenerate and delete checkpoints restore exact RNG (3448.942168ms)
+✔ R1 stale classic callbacks cannot draw or append a transaction, before or after a render (248.101002ms)
+✔ R2 Mythic regenerate ignores hidden classic size controls and checkpoints pre-action RNG (4954.422828ms)
+✔ entire v2 and rng-v3 fixture manifests roundtrip and continue in both modes (109001.278608ms)
+✔ complete malformed RNG value classes reject atomically with redo (413.815697ms)
+✔ reject road wrong structure (3.99325ms)
+✔ reject fractional axial (1.967997ms)
+✔ reject duplicate region id (0.362355ms)
+✔ reject invalid region enum (0.312261ms)
+✔ reject noncanonical terrain key (0.432269ms)
+✔ reject wrong rotation type (0.737389ms)
+✔ reject wrong scale type (0.469614ms)
+✔ reject unsafe next road counter (0.391158ms)
+✔ reject dangling water POI (0.554139ms)
+✔ supported corpus: lake-reentry-map (9.577149ms)
+✔ supported corpus: sea-pocket-map (4.593546ms)
+✔ supported corpus: terrain-display-map (11.851259ms)
+✔ supported corpus: road-entry-zigzags (3.709491ms)
+✔ generated proposals reject overflow in every allocated ID namespace and counter (0.897406ms)
+✔ imported boundary roadCounter: production continuation stays valid or rolls back whole document (352.702155ms)
+✔ imported boundary regionId: production continuation stays valid or rolls back whole document (368.739017ms)
+✔ imported boundary lakeCounter: production continuation stays valid or rolls back whole document (184.787121ms)
+✔ imported boundary riverId: production continuation stays valid or rolls back whole document (153.640885ms)
+✔ exhausted kingdom ID refuses production start and preserves document and both stacks (489.083427ms)
+✔ R5 consumed regeneration A stays inert after B and undo/redo classic (575.725816ms)
+✔ R5 consumed regeneration A stays inert after B and undo/redo mythic (5668.519083ms)
+✔ R3 late Mythic regeneration failure retains original action and detached inputs (2687.274672ms)
+✔ AC10 recorded action replay classic/add/success (348.051584ms)
+✔ AC10 recorded action replay classic/add/failure (310.372387ms)
+✔ AC10 recorded action replay classic/regenerate/success (338.080273ms)
+✔ AC10 recorded action replay classic/regenerate/failure (397.994238ms)
+✔ AC10 recorded action replay mythic/add/success (11787.763316ms)
+✔ AC10 recorded action replay mythic/add/failure (2627.527398ms)
+✔ AC10 recorded action replay mythic/regenerate/success (10474.599031ms)
+✔ AC10 recorded action replay mythic/regenerate/failure (11756.801105ms)
+✔ AC04 mixed manual content and generation checkpoints classic (178.058362ms)
+✔ AC04 mixed manual content and generation checkpoints mythic (5318.176395ms)
+✔ AC05 classic/programming rollback with redo and next clean control (372.819299ms)
+✔ AC05 classic/constraint rollback with redo and next clean control (1506.9103ms)
+✔ AC05 mythic/programming rollback with redo and next clean control (12540.73239ms)
+✔ AC05 mythic/constraint rollback with redo and next clean control (24762.934286ms)
+✔ AC05 prepare-regenerate error and successful tract fallback preserve exact stream semantics (244.108982ms)
+✔ AC06 names restored before next full world classic (295.633611ms)
+✔ AC06 names restored before next full world mythic (12844.727278ms)
+✔ AC09 consumed Mythic tick remains stale after newer tick and after completion (2689.200571ms)
+fixture continuation test/fixtures/lake-reentry-map.json/classic: committed
+fixture continuation test/fixtures/lake-reentry-map.json/mythic: Error: Не удалось построить регион королевства.
+fixture continuation test/fixtures/sea-pocket-map.json/classic: committed
+fixture continuation test/fixtures/sea-pocket-map.json/mythic: Error: Не удалось соединить выбранный гекс с королевством.
+fixture continuation test/fixtures/terrain-display-map.json/classic: committed
+fixture continuation test/fixtures/terrain-display-map.json/mythic: committed
+fixture continuation test/fixtures/road-entry-zigzags.json/classic: committed
+fixture continuation test/fixtures/road-entry-zigzags.json/mythic: committed
+fixture continuation test/fixtures/import-v2/baseline-empty.json/classic: committed
+fixture continuation test/fixtures/import-v2/baseline-empty.json/mythic: committed
+fixture continuation test/fixtures/import-v2/baseline-classic.json/classic: committed
+fixture continuation test/fixtures/import-v2/baseline-classic.json/mythic: committed
+fixture continuation test/fixtures/import-v2/baseline-mythic.json/classic: committed
+fixture continuation test/fixtures/import-v2/baseline-mythic.json/mythic: committed
+fixture continuation test/fixtures/import-v2/legacy-optionals.json/classic: committed
+fixture continuation test/fixtures/import-v2/legacy-optionals.json/mythic: committed
+fixture continuation test/fixtures/lake-reentry-map.json/classic: committed
+fixture continuation test/fixtures/lake-reentry-map.json/mythic: Error: Не удалось построить регион королевства.
+fixture continuation test/fixtures/sea-pocket-map.json/classic: committed
+fixture continuation test/fixtures/sea-pocket-map.json/mythic: Error: Не удалось соединить выбранный гекс с королевством.
+fixture continuation test/fixtures/terrain-display-map.json/classic: committed
+fixture continuation test/fixtures/terrain-display-map.json/mythic: committed
+fixture continuation test/fixtures/road-entry-zigzags.json/classic: committed
+fixture continuation test/fixtures/road-entry-zigzags.json/mythic: committed
+fixture continuation test/fixtures/import-v2/baseline-empty.json/classic: committed
+fixture continuation test/fixtures/import-v2/baseline-empty.json/mythic: committed
+fixture continuation test/fixtures/import-v2/baseline-classic.json/classic: committed
+fixture continuation test/fixtures/import-v2/baseline-classic.json/mythic: committed
+fixture continuation test/fixtures/import-v2/baseline-mythic.json/classic: committed
+fixture continuation test/fixtures/import-v2/baseline-mythic.json/mythic: committed
+fixture continuation test/fixtures/import-v2/legacy-optionals.json/classic: committed
+fixture continuation test/fixtures/import-v2/legacy-optionals.json/mythic: committed
+fixture continuation test/fixtures/rng-v3/empty.json/classic: committed
+fixture continuation test/fixtures/rng-v3/empty.json/mythic: committed
+fixture continuation test/fixtures/rng-v3/classic.json/classic: committed
+fixture continuation test/fixtures/rng-v3/classic.json/mythic: committed
+fixture continuation test/fixtures/rng-v3/mythic.json/classic: committed
+fixture continuation test/fixtures/rng-v3/mythic.json/mythic: committed
+✔ production document exports RNG and undo restores continuation (374.942006ms)
+✔ production streams/continuation/undo classic/0 (475.833186ms)
+✔ production streams/continuation/undo mythic/0 (31238.748462ms)
+✔ production streams/continuation/undo classic/1 (271.071492ms)
+✔ production streams/continuation/undo mythic/1 (45397.321496ms)
+✔ production streams/continuation/undo classic/123456789 (236.499343ms)
+✔ production streams/continuation/undo mythic/123456789 (25575.46016ms)
+✔ production streams/continuation/undo classic/4294967295 (326.773247ms)
+✔ production streams/continuation/undo mythic/4294967295 (39882.250239ms)
+✔ classic and late Mythic failures restore RNG and both histories (4605.393875ms)
+✔ v2 migration and v3 validation are deterministic and atomic with redo (1728.716338ms)
+✔ regenerate uses current RNG and undo/repeat restores same variant (145.50481ms)
+✔ seed validation, repeated renders, pre-options exception and duplicate pending callback (82.623301ms)
+✔ Mythic regenerate and delete checkpoints restore exact RNG (3127.815355ms)
+✔ R1 stale classic callbacks cannot draw or append a transaction, before or after a render (198.891221ms)
+✔ R2 Mythic regenerate ignores hidden classic size controls and checkpoints pre-action RNG (4422.081521ms)
+✔ entire v2 and rng-v3 fixture manifests roundtrip and continue in both modes (99028.65575ms)
+✔ complete malformed RNG value classes reject atomically with redo (352.11721ms)
+ℹ tests 103
+ℹ suites 0
+ℹ pass 95
+ℹ fail 8
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 259515.222493
+
+✖ failing tests:
+
+test at test/reviewer-native-continuation.mjs:22:85
+✖ production streams/continuation/undo classic/0 (261.154364ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  ... Skipped lines
+  
+    {
+      counters: {
+        nextLakeId: 1,
+        nextRoadId: 6
+      },
+  ...
+            finalSize: 8,
+  -         generationMode: undefined,
+            heightLevel: 1,
+            hexes: [
+              {
+                q: 0,
+                r: 0
+  ...
+            isCoastal: false,
+  -         kingdomId: undefined,
+            pointOfInterestKinds: {
+              '1,0': 'tower'
+            },
+            pointsOfInterest: [
+              {
+  ...
+            finalSize: 8,
+  -         generationMode: undefined,
+            heightLevel: 2,
+            hexes: [
+              {
+                q: -1,
+                r: 0
+  ...
+            isCoastal: false,
+  -         kingdomId: undefined,
+            pointOfInterestKinds: {
+              '-1,-2': 'fort'
+            },
+            pointsOfInterest: [
+              {
+  
+      at TestContext.<anonymous> (file:///tmp/hx003-review-independent-repo/test/reviewer-native-continuation.mjs:24:80)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { schema: 'hexcrawl-map', generation: { generatorVersion: 'regions-2026-10-24-rng.1', rngVersion: 'mulberry32-v1', masterSeed: 0, streams: [Object] }, version: 3, map: { kingdoms: [], obstacles: [], regions: [Array], candidateHexes: [Array], rivers: [Array], roads: [Array], crossings: [Array], terrainByHexKey: {}, waterPoiByHexKey: {}, biomeOverrideByHexKey: {}, toponyms: [Object] }, counters: { nextLakeId: 1, nextRoadId: 6 }, ui: { generationMode: 'classic', selectedHex: [Object], isMapRotated: false, mapScale: 1 } },
+    expected: { schema: 'hexcrawl-map', generation: { generatorVersion: 'regions-2026-10-24-rng.1', rngVersion: 'mulberry32-v1', masterSeed: 0, streams: [Object] }, version: 3, map: { kingdoms: [], obstacles: [], regions: [Array], candidateHexes: [Array], rivers: [Array], roads: [Array], crossings: [Array], terrainByHexKey: {}, waterPoiByHexKey: {}, biomeOverrideByHexKey: {}, toponyms: [Object] }, counters: { nextLakeId: 1, nextRoadId: 6 }, ui: { generationMode: 'classic', selectedHex: [Object], isMapRotated: false, mapScale: 1 } },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/reviewer-native-continuation.mjs:22:85
+✖ production streams/continuation/undo mythic/0 (6924.375509ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  ... Skipped lines
+  
+    {
+      counters: {
+        nextLakeId: 14,
+        nextRoadId: 44
+      },
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 4,
+            generationMode: 'mythic',
+            heightLevel: 2,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 3,
+            generationMode: 'mythic',
+            heightLevel: 2,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 5,
+            generationMode: 'mythic',
+            heightLevel: 1,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 3,
+            generationMode: 'mythic',
+            heightLevel: 1,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 5,
+            generationMode: 'mythic',
+            heightLevel: 1,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 1,
+            generationMode: 'mythic',
+            heightLevel: 2,
+            hexes: [
+              {
+  ...
+            finalSize: 9,
+  -         generationMode: undefined,
+            heightLevel: 2,
+            hexes: [
+              {
+                q: -1,
+                r: 13
+  ...
+            isCoastal: false,
+  -         kingdomId: undefined,
+            pointOfInterestKinds: {
+              '-1,14': 'mill'
+            },
+            pointsOfInterest: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 1,
+            generationMode: 'mythic',
+            heightLevel: 1,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 5,
+            generationMode: 'mythic',
+            heightLevel: 2,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 5,
+            generationMode: 'mythic',
+            heightLevel: 1,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 2,
+            generationMode: 'mythic',
+            heightLevel: 1,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 1,
+            generationMode: 'mythic',
+            heightLevel: 1,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 6,
+            generationMode: 'mythic',
+            heightLevel: 3,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 4,
+            generationMode: 'mythic',
+            heightLevel: 3,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 2,
+            generationMode: 'mythic',
+            heightLevel: 1,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 4,
+            generationMode: 'mythic',
+            heightLevel: 3,
+            hexes: [
+              {
+  
+      at TestContext.<anonymous> (file:///tmp/hx003-review-independent-repo/test/reviewer-native-continuation.mjs:24:80)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { schema: 'hexcrawl-map', generation: { generatorVersion: 'regions-2026-10-24-rng.1', rngVersion: 'mulberry32-v1', masterSeed: 0, streams: [Object] }, version: 3, map: { kingdoms: [Array], obstacles: [Array], regions: [Array], candidateHexes: [Array], rivers: [Array], roads: [Array], crossings: [Array], terrainByHexKey: [Object], waterPoiByHexKey: {}, biomeOverrideByHexKey: {}, toponyms: [Object] }, counters: { nextLakeId: 14, nextRoadId: 44 }, ui: { generationMode: 'mythic', selectedHex: [Object], isMapRotated: false, mapScale: 1 } },
+    expected: { schema: 'hexcrawl-map', generation: { generatorVersion: 'regions-2026-10-24-rng.1', rngVersion: 'mulberry32-v1', masterSeed: 0, streams: [Object] }, version: 3, map: { kingdoms: [Array], obstacles: [Array], regions: [Array], candidateHexes: [Array], rivers: [Array], roads: [Array], crossings: [Array], terrainByHexKey: [Object], waterPoiByHexKey: {}, biomeOverrideByHexKey: {}, toponyms: [Object] }, counters: { nextLakeId: 14, nextRoadId: 44 }, ui: { generationMode: 'mythic', selectedHex: [Object], isMapRotated: false, mapScale: 1 } },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/reviewer-native-continuation.mjs:22:85
+✖ production streams/continuation/undo classic/1 (239.717699ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  ... Skipped lines
+  
+    {
+      counters: {
+        nextLakeId: 1,
+        nextRoadId: 3
+      },
+  ...
+            finalSize: 8,
+  -         generationMode: undefined,
+            heightLevel: 1,
+            hexes: [
+              {
+                q: 0,
+                r: 0
+  ...
+            isCoastal: false,
+  -         kingdomId: undefined,
+            pointOfInterestKinds: {
+              '0,0': 'statue'
+            },
+            pointsOfInterest: [
+              {
+  ...
+            finalSize: 8,
+  -         generationMode: undefined,
+            heightLevel: 1,
+            hexes: [
+              {
+                q: 1,
+                r: -1
+  ...
+            isCoastal: false,
+  -         kingdomId: undefined,
+            pointOfInterestKinds: {
+              '1,1': 'statue'
+            },
+            pointsOfInterest: [
+              {
+  
+      at TestContext.<anonymous> (file:///tmp/hx003-review-independent-repo/test/reviewer-native-continuation.mjs:24:80)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { schema: 'hexcrawl-map', generation: { generatorVersion: 'regions-2026-10-24-rng.1', rngVersion: 'mulberry32-v1', masterSeed: 1, streams: [Object] }, version: 3, map: { kingdoms: [], obstacles: [], regions: [Array], candidateHexes: [Array], rivers: [Array], roads: [Array], crossings: [Array], terrainByHexKey: {}, waterPoiByHexKey: {}, biomeOverrideByHexKey: {}, toponyms: [Object] }, counters: { nextLakeId: 1, nextRoadId: 3 }, ui: { generationMode: 'classic', selectedHex: [Object], isMapRotated: false, mapScale: 1 } },
+    expected: { schema: 'hexcrawl-map', generation: { generatorVersion: 'regions-2026-10-24-rng.1', rngVersion: 'mulberry32-v1', masterSeed: 1, streams: [Object] }, version: 3, map: { kingdoms: [], obstacles: [], regions: [Array], candidateHexes: [Array], rivers: [Array], roads: [Array], crossings: [Array], terrainByHexKey: {}, waterPoiByHexKey: {}, biomeOverrideByHexKey: {}, toponyms: [Object] }, counters: { nextLakeId: 1, nextRoadId: 3 }, ui: { generationMode: 'classic', selectedHex: [Object], isMapRotated: false, mapScale: 1 } },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/reviewer-native-continuation.mjs:22:85
+✖ production streams/continuation/undo mythic/1 (4973.947824ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  ... Skipped lines
+  
+    {
+      counters: {
+        nextLakeId: 7,
+        nextRoadId: 32
+      },
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 5,
+            generationMode: 'mythic',
+            heightLevel: 1,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 2,
+            generationMode: 'mythic',
+            heightLevel: 1,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 1,
+            generationMode: 'mythic',
+            heightLevel: 2,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 5,
+            generationMode: 'mythic',
+            heightLevel: 1,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 5,
+            generationMode: 'mythic',
+            heightLevel: 1,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 1,
+            generationMode: 'mythic',
+            heightLevel: 1,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 1,
+            generationMode: 'mythic',
+            heightLevel: 1,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 1,
+            generationMode: 'mythic',
+            heightLevel: 2,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 2,
+            generationMode: 'mythic',
+            heightLevel: 1,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 4,
+            generationMode: 'mythic',
+            heightLevel: 3,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 1,
+            generationMode: 'mythic',
+            heightLevel: 1,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 2,
+            generationMode: 'mythic',
+            heightLevel: 1,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 4,
+            generationMode: 'mythic',
+            heightLevel: 3,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 5,
+            generationMode: 'mythic',
+            heightLevel: 3,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 2,
+            generationMode: 'mythic',
+            heightLevel: 1,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 5,
+            generationMode: 'mythic',
+            heightLevel: 1,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 1,
+            generationMode: 'mythic',
+            heightLevel: 1,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 1,
+            generationMode: 'mythic',
+            heightLevel: 1,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 3,
+            generationMode: 'mythic',
+            heightLevel: 1,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 2,
+            generationMode: 'mythic',
+            heightLevel: 1,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 2,
+            generationMode: 'mythic',
+            heightLevel: 1,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 3,
+            generationMode: 'mythic',
+            heightLevel: 1,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 2,
+            generationMode: 'mythic',
+            heightLevel: 1,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 4,
+            generationMode: 'mythic',
+            heightLevel: 1,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 2,
+            generationMode: 'mythic',
+            heightLevel: 3,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 2,
+            generationMode: 'mythic',
+            heightLevel: 3,
+            hexes: [
+              {
+  
+      at TestContext.<anonymous> (file:///tmp/hx003-review-independent-repo/test/reviewer-native-continuation.mjs:24:80)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { schema: 'hexcrawl-map', generation: { generatorVersion: 'regions-2026-10-24-rng.1', rngVersion: 'mulberry32-v1', masterSeed: 1, streams: [Object] }, version: 3, map: { kingdoms: [Array], obstacles: [Array], regions: [Array], candidateHexes: [Array], rivers: [Array], roads: [Array], crossings: [Array], terrainByHexKey: [Object], waterPoiByHexKey: {}, biomeOverrideByHexKey: {}, toponyms: [Object] }, counters: { nextLakeId: 7, nextRoadId: 32 }, ui: { generationMode: 'mythic', selectedHex: [Object], isMapRotated: false, mapScale: 1 } },
+    expected: { schema: 'hexcrawl-map', generation: { generatorVersion: 'regions-2026-10-24-rng.1', rngVersion: 'mulberry32-v1', masterSeed: 1, streams: [Object] }, version: 3, map: { kingdoms: [Array], obstacles: [Array], regions: [Array], candidateHexes: [Array], rivers: [Array], roads: [Array], crossings: [Array], terrainByHexKey: [Object], waterPoiByHexKey: {}, biomeOverrideByHexKey: {}, toponyms: [Object] }, counters: { nextLakeId: 7, nextRoadId: 32 }, ui: { generationMode: 'mythic', selectedHex: [Object], isMapRotated: false, mapScale: 1 } },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/reviewer-native-continuation.mjs:22:85
+✖ production streams/continuation/undo classic/123456789 (248.73179ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  ... Skipped lines
+  
+    {
+      counters: {
+        nextLakeId: 1,
+        nextRoadId: 4
+      },
+  ...
+            finalSize: 8,
+  -         generationMode: undefined,
+            heightLevel: 1,
+            hexes: [
+              {
+                q: 0,
+                r: 0
+  ...
+            isCoastal: false,
+  -         kingdomId: undefined,
+            pointOfInterestKinds: {
+              '-2,1': 'graveyard'
+            },
+            pointsOfInterest: [
+              {
+  ...
+            finalSize: 8,
+  -         generationMode: undefined,
+            heightLevel: 1,
+            hexes: [
+              {
+                q: 1,
+                r: -1
+  ...
+            isCoastal: false,
+  -         kingdomId: undefined,
+            pointOfInterestKinds: {
+              '3,-4': 'dungeon'
+            },
+            pointsOfInterest: [
+              {
+  
+      at TestContext.<anonymous> (file:///tmp/hx003-review-independent-repo/test/reviewer-native-continuation.mjs:24:80)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { schema: 'hexcrawl-map', generation: { generatorVersion: 'regions-2026-10-24-rng.1', rngVersion: 'mulberry32-v1', masterSeed: 123456789, streams: [Object] }, version: 3, map: { kingdoms: [], obstacles: [], regions: [Array], candidateHexes: [Array], rivers: [Array], roads: [Array], crossings: [Array], terrainByHexKey: {}, waterPoiByHexKey: {}, biomeOverrideByHexKey: {}, toponyms: [Object] }, counters: { nextLakeId: 1, nextRoadId: 4 }, ui: { generationMode: 'classic', selectedHex: [Object], isMapRotated: false, mapScale: 1 } },
+    expected: { schema: 'hexcrawl-map', generation: { generatorVersion: 'regions-2026-10-24-rng.1', rngVersion: 'mulberry32-v1', masterSeed: 123456789, streams: [Object] }, version: 3, map: { kingdoms: [], obstacles: [], regions: [Array], candidateHexes: [Array], rivers: [Array], roads: [Array], crossings: [Array], terrainByHexKey: {}, waterPoiByHexKey: {}, biomeOverrideByHexKey: {}, toponyms: [Object] }, counters: { nextLakeId: 1, nextRoadId: 4 }, ui: { generationMode: 'classic', selectedHex: [Object], isMapRotated: false, mapScale: 1 } },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/reviewer-native-continuation.mjs:22:85
+✖ production streams/continuation/undo mythic/123456789 (4315.999986ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  ... Skipped lines
+  
+    {
+      counters: {
+        nextLakeId: 9,
+        nextRoadId: 51
+      },
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 2,
+            generationMode: 'mythic',
+            heightLevel: 2,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 1,
+            generationMode: 'mythic',
+            heightLevel: 3,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 3,
+            generationMode: 'mythic',
+            heightLevel: 3,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 1,
+            generationMode: 'mythic',
+            heightLevel: 2,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 5,
+            generationMode: 'mythic',
+            heightLevel: 1,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 3,
+            generationMode: 'mythic',
+            heightLevel: 2,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 4,
+            generationMode: 'mythic',
+            heightLevel: 1,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 3,
+            generationMode: 'mythic',
+            heightLevel: 2,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 3,
+            generationMode: 'mythic',
+            heightLevel: 3,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 1,
+            generationMode: 'mythic',
+            heightLevel: 1,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 3,
+            generationMode: 'mythic',
+            heightLevel: 1,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 1,
+            generationMode: 'mythic',
+            heightLevel: 1,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 2,
+            generationMode: 'mythic',
+            heightLevel: 2,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 5,
+            generationMode: 'mythic',
+            heightLevel: 2,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 2,
+            generationMode: 'mythic',
+            heightLevel: 1,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 4,
+            generationMode: 'mythic',
+            heightLevel: 1,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 1,
+            generationMode: 'mythic',
+            heightLevel: 2,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 4,
+            generationMode: 'mythic',
+            heightLevel: 3,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 3,
+            generationMode: 'mythic',
+            heightLevel: 2,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 5,
+            generationMode: 'mythic',
+            heightLevel: 2,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 9,
+            generationMode: 'mythic',
+            heightLevel: 2,
+            hexes: [
+              {
+  
+      at TestContext.<anonymous> (file:///tmp/hx003-review-independent-repo/test/reviewer-native-continuation.mjs:24:80)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { schema: 'hexcrawl-map', generation: { generatorVersion: 'regions-2026-10-24-rng.1', rngVersion: 'mulberry32-v1', masterSeed: 123456789, streams: [Object] }, version: 3, map: { kingdoms: [Array], obstacles: [Array], regions: [Array], candidateHexes: [Array], rivers: [Array], roads: [Array], crossings: [Array], terrainByHexKey: [Object], waterPoiByHexKey: {}, biomeOverrideByHexKey: {}, toponyms: [Object] }, counters: { nextLakeId: 9, nextRoadId: 51 }, ui: { generationMode: 'mythic', selectedHex: [Object], isMapRotated: false, mapScale: 1 } },
+    expected: { schema: 'hexcrawl-map', generation: { generatorVersion: 'regions-2026-10-24-rng.1', rngVersion: 'mulberry32-v1', masterSeed: 123456789, streams: [Object] }, version: 3, map: { kingdoms: [Array], obstacles: [Array], regions: [Array], candidateHexes: [Array], rivers: [Array], roads: [Array], crossings: [Array], terrainByHexKey: [Object], waterPoiByHexKey: {}, biomeOverrideByHexKey: {}, toponyms: [Object] }, counters: { nextLakeId: 9, nextRoadId: 51 }, ui: { generationMode: 'mythic', selectedHex: [Object], isMapRotated: false, mapScale: 1 } },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/reviewer-native-continuation.mjs:22:85
+✖ production streams/continuation/undo classic/4294967295 (177.175996ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  ... Skipped lines
+  
+    {
+      counters: {
+        nextLakeId: 2,
+        nextRoadId: 4
+      },
+  ...
+            finalSize: 8,
+  -         generationMode: undefined,
+            heightLevel: 1,
+            hexes: [
+              {
+                q: 0,
+                r: 0
+  ...
+            isCoastal: false,
+  -         kingdomId: undefined,
+            pointOfInterestKinds: {
+              '1,1': 'mill'
+            },
+            pointsOfInterest: [
+              {
+  ...
+            finalSize: 8,
+  -         generationMode: undefined,
+            heightLevel: 1,
+            hexes: [
+              {
+                q: 1,
+                r: 0
+  ...
+            isCoastal: false,
+  -         kingdomId: undefined,
+            pointOfInterestKinds: {
+              '-2,3': 'camp'
+            },
+            pointsOfInterest: [
+              {
+  
+      at TestContext.<anonymous> (file:///tmp/hx003-review-independent-repo/test/reviewer-native-continuation.mjs:24:80)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { schema: 'hexcrawl-map', generation: { generatorVersion: 'regions-2026-10-24-rng.1', rngVersion: 'mulberry32-v1', masterSeed: 4294967295, streams: [Object] }, version: 3, map: { kingdoms: [], obstacles: [], regions: [Array], candidateHexes: [Array], rivers: [Array], roads: [Array], crossings: [Array], terrainByHexKey: [Object], waterPoiByHexKey: {}, biomeOverrideByHexKey: {}, toponyms: [Object] }, counters: { nextLakeId: 2, nextRoadId: 4 }, ui: { generationMode: 'classic', selectedHex: [Object], isMapRotated: false, mapScale: 1 } },
+    expected: { schema: 'hexcrawl-map', generation: { generatorVersion: 'regions-2026-10-24-rng.1', rngVersion: 'mulberry32-v1', masterSeed: 4294967295, streams: [Object] }, version: 3, map: { kingdoms: [], obstacles: [], regions: [Array], candidateHexes: [Array], rivers: [Array], roads: [Array], crossings: [Array], terrainByHexKey: [Object], waterPoiByHexKey: {}, biomeOverrideByHexKey: {}, toponyms: [Object] }, counters: { nextLakeId: 2, nextRoadId: 4 }, ui: { generationMode: 'classic', selectedHex: [Object], isMapRotated: false, mapScale: 1 } },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/reviewer-native-continuation.mjs:22:85
+✖ production streams/continuation/undo mythic/4294967295 (6685.596498ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  ... Skipped lines
+  
+    {
+      counters: {
+        nextLakeId: 18,
+        nextRoadId: 49
+      },
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 5,
+            generationMode: 'mythic',
+            heightLevel: 3,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 2,
+            generationMode: 'mythic',
+            heightLevel: 3,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 4,
+            generationMode: 'mythic',
+            heightLevel: 2,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 5,
+            generationMode: 'mythic',
+            heightLevel: 1,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 2,
+            generationMode: 'mythic',
+            heightLevel: 2,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 2,
+            generationMode: 'mythic',
+            heightLevel: 2,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 3,
+            generationMode: 'mythic',
+            heightLevel: 1,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 3,
+            generationMode: 'mythic',
+            heightLevel: 3,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 5,
+            generationMode: 'mythic',
+            heightLevel: 3,
+            hexes: [
+              {
+  ...
+            finalSize: 1,
+  -         generationMode: undefined,
+            heightLevel: 1,
+            hexes: [
+              {
+                q: -1,
+                r: 12
+  ...
+            isTract: true,
+  -         kingdomId: undefined,
+            pointOfInterestKinds: {
+              '-1,12': 'obelisk'
+            },
+            pointsOfInterest: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 1,
+            generationMode: 'mythic',
+            heightLevel: 1,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 3,
+            generationMode: 'mythic',
+            heightLevel: 1,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 5,
+            generationMode: 'mythic',
+            heightLevel: 1,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 1,
+            generationMode: 'mythic',
+            heightLevel: 1,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 5,
+            generationMode: 'mythic',
+            heightLevel: 3,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 2,
+            generationMode: 'mythic',
+            heightLevel: 1,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 5,
+            generationMode: 'mythic',
+            heightLevel: 1,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 2,
+            generationMode: 'mythic',
+            heightLevel: 1,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 2,
+            generationMode: 'mythic',
+            heightLevel: 1,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 3,
+            generationMode: 'mythic',
+            heightLevel: 1,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 1,
+            generationMode: 'mythic',
+            heightLevel: 1,
+            hexes: [
+              {
+  ...
+            },
+  -         centralPoiKind: undefined,
+            finalSize: 4,
+            generationMode: 'mythic',
+            heightLevel: 1,
+            hexes: [
+              {
+  
+      at TestContext.<anonymous> (file:///tmp/hx003-review-independent-repo/test/reviewer-native-continuation.mjs:24:80)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { schema: 'hexcrawl-map', generation: { generatorVersion: 'regions-2026-10-24-rng.1', rngVersion: 'mulberry32-v1', masterSeed: 4294967295, streams: [Object] }, version: 3, map: { kingdoms: [Array], obstacles: [Array], regions: [Array], candidateHexes: [Array], rivers: [Array], roads: [Array], crossings: [Array], terrainByHexKey: [Object], waterPoiByHexKey: {}, biomeOverrideByHexKey: {}, toponyms: [Object] }, counters: { nextLakeId: 18, nextRoadId: 49 }, ui: { generationMode: 'mythic', selectedHex: [Object], isMapRotated: false, mapScale: 1 } },
+    expected: { schema: 'hexcrawl-map', generation: { generatorVersion: 'regions-2026-10-24-rng.1', rngVersion: 'mulberry32-v1', masterSeed: 4294967295, streams: [Object] }, version: 3, map: { kingdoms: [Array], obstacles: [Array], regions: [Array], candidateHexes: [Array], rivers: [Array], roads: [Array], crossings: [Array], terrainByHexKey: [Object], waterPoiByHexKey: {}, biomeOverrideByHexKey: {}, toponyms: [Object] }, counters: { nextLakeId: 18, nextRoadId: 49 }, ui: { generationMode: 'mythic', selectedHex: [Object], isMapRotated: false, mapScale: 1 } },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
