@@ -1,6 +1,6 @@
 # HX-BL-003 — bounded developer result, 26.10.2026
 
-Status: **blocked_visual / performance acceptance incomplete**. Independent review of exact head739e3de36587533bf3d2f3196072270f4695fa8a is the next stage; this is not a release-ready package.
+Status: **blocked_visual / performance acceptance incomplete**. Independent review of exact head739e3de36587533bf3d2f3196072270f4695fa8a completed with changes_requested; this is not a release-ready package.
 
 One product optimization remains96a2a8979ce2ef8ad10e5174392dbe2bb0b899d5: closed river-debug panel skips its unused all-region vertex-usage derived index. Diagnosis83b0ccf preceded it. Measurement-only recovery00f5e4 and environment-only child739e3de introduce no second product optimization. Main remains103d31b9f6f5c76b1f6b45d9d6664fe3f75dd63b. Interface and map behavior were intended to stay unchanged; HX-FB-001 remains deferred.
 
@@ -22,11 +22,15 @@ The protocol did not pre-register across-repeat navigation aggregation. Both sta
 ## Visual and error limitations
 All7 fullSVG pairs independently byte-equal. All5 available PNG pairs independently decoded and exact RGBA bytes compared equal (all channels, dimensions unchanged). Two nominal2400 checkpoints each fail full-quality PNG download after180s in BOTH versions even with fresh isolated Chromium process per export. Root cause unknown. No scale/export/product changes or further PNG retries permitted by this bounded recovery. Overall AC06 blocked.
 
-28 asset ERR_ABORTED requests are recorded in candidate mythic0/N1200 firstwarm. No JS error/fullJSON mismatch; request root cause is not established or excused. Fresh-import visual requests also retained in visual report. Four-visible-selection scenario incomplete56/98 rows (large maps0visible); no synthetic replacement. Classic1200/2400 remain unreachable within original100attempt corpus limit.
+28 asset ERR_ABORTED requests are recorded in candidate mythic-123456789-N400.json, iteration0 (first measured warm). The previous mythic0/N1200 attribution was an error, corrected against the unchanged raw rows after independent finding HX003-RV3. No JS error/fullJSON mismatch; request root cause is not established or excused. Fresh-import visual requests also retained in visual report. Four-visible-selection scenario incomplete56/98 rows (large maps0visible); no synthetic replacement. Classic1200/2400 remain unreachable within original100attempt corpus limit.
 
 ## Verification and handoff
 Exact00f5e4 Check40252330019 passed236/236 tests, browser and world-random; full logs already retained.739e3de only changes paired-environment.json. This developer result does not replace independent review or claim full undo/nativeMapSet coverage from savedJSON alone.
 
-Reviewer next: independently inspect exact739e3de, raw artifact/logs and semantic/visual comparisons; assess navigation/errors and AC01–08 plus existing R1–R5/native-snapshot safety evidence. Record explicit blocked/changes-requested or other supported verdict and score_assessment under active model1.2 for S09-C01,S02-C01,S03-C05,S04-C04,S09-C04. Historical1.1 before grades are not automatically1.2 evidence. No automatic PNG rerun, second optimization, threshold change, release or new task. Do not pass AC06 without missing evidence or new explicit owner decision. No score increase; no release approval requested.
+Independent review completed: [changes_requested and score_assessment1.2](../review-HX-BL-003-739e3de/report.md), including partial safety/selection evidence. Developer response corrects RV3 and audits existing resource paths; it does not override the review verdict. Ordinary exacthead Check40252463579 remains action_required with zero jobs; no supported approval/dispatch capability is exposed. No CI run/pass is claimed. Historical1.1 before grades are not automatically1.2 evidence. No automatic PNG rerun, second optimization, threshold change, release or new task. Do not pass AC06 without missing evidence or new explicit owner decision. No score increase; no release approval requested.
 
 [Artifact12624578941](https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40252325923/artifacts/12624578941),266826020bytes, SHA25645d3a461852a4181c1aa705a715b3423fba0c8e3735f7fe096e7801060df4cfd downloaded/hashverified. Raw timing, visual reports, fulljoblog, independent analysis and analysis script retained alongside this report in agent-operations. Source ZIP preserves all98outputJSONs and fullSVG/availablePNG. Recorded 2026-10-26T03:11:12.459Z.
+
+
+## Correction and existing-resource audit — 26.10.2026
+All28 canceled URLs map to existing nonempty public/ blobs on exact739e3de (treeb7ec8c5f439b0d78069b4dbc92efc527bb506362). All28 are referenced in both paired and isolated A/B finalSVG for the correctly identified checkpoint. This establishes source presence and final references, not successful request lifecycle, image decode in that iteration or rootcause. Original raw/logs remain unchanged. See [resource audit](resource-audit-rv3.json) and [developer response](review-response.md). Full acceptance remains blocked; no source/quality/threshold/score/main changes.

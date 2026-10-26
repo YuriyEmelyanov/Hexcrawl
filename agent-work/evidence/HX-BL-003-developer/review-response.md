@@ -1,0 +1,10 @@
+# HX-BL-003 — developer response to independent review,26.10.2026
+
+ExactsourceSHA739e3de36587533bf3d2f3196072270f4695fa8a unchanged; PR474 remainsdraft/notaccepted. No product/main/site/score changes or measurementreruns.
+
+- HX003-RV3: corrected developerreport/paired-analysis/PR attribution to candidate mythic-123456789-N400.json iteration0,28ERR_ABORTED. Raw unchanged. Downloaded same artifact12624578941 and verifiedSHA25645d3a461852a4181c1aa705a715b3423fba0c8e3735f7fe096e7801060df4cfd;28/28URLs exist as publicblobs on exacttree and all28 appear in all4finalSVGs (pairedA/B+isolatedA/B). Rootcause remainsunknown; sourcepresence/reference is not decode/requestsuccess. [Audit](resource-audit-rv3.json). Correction addressed_pending_review, not selfaccepted.
+- HX003-RV4: freshGET Check40252463579 still completed/action_required,0jobs. ExposedGitHub tools provide only job/failedjobrerun, no approve/fullworkflowdispatch; no failed/runningjob exists to rerun. ghCLI unavailable. Do not create fake sourcecommit/close-reopenPR to provokeCI, do not claimtestsrun. ExactheadCI remainsblocked_capability; this is one acceptanceblock, not fulltechnicalblockofteam.
+- HX003-RV1/RV2 remainblocked/inconclusive. Targetgenerationevidence retained, poolednavigationguardnotwaived. HX003-RV5partialcoverage/nativeSetlimits retained. Independentreview/score_assessment not overwritten.
+- HX-FB-001 staysdeferred, noUIchange. No newtests needed for evidence-only correction; no runtime/sourceedit.
+
+Safe authorizedresponse complete. Next: ownerdecision on concrete [HX-BL-003-V2 boundedvalidationplan](../../proposals/HX-BL-003-V2-validation.md). It is not executed: maximum4diagnosticfullPNGexports plus20measurednavigationactions onexisting2inputs, samequality/guards, nosecondoptimization, oneattempt/60minstop. If approved, analyst recordsprospectiveaddendum first. Untilthen preservecandidateblocked outside main; do not review sameunchangedmeasurement evidence repeatedly. NormalCIaction can be resolved separately by accountcapability without changingthisplan or acceptingpackage.

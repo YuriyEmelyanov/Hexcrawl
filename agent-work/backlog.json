@@ -102,7 +102,7 @@
       "task_id": "HX-BL-003",
       "title": "Производительность генерации и навигации по числу гексов",
       "criterion_id": "S09-C01",
-      "status": "changes_requested",
+      "status": "blocked_awaiting_owner_validation_plan",
       "potential_delta": null,
       "approval_ref": "owner-approval-2026-10-25-HX-BL-003",
       "source": {
@@ -229,8 +229,8 @@
         "approval_ref": "owner-approval-2026-10-25-HX-BL-003",
         "next_step": "Программист: закрепить корпус и P1 manifest до baseline замеров, затем профиль и одно подтверждённое узкое место по spec1.0."
       },
-      "next_role": "developer",
-      "next_step": "Программист: исправить RV3 attribution по существующему raw (candidate mythic123456789/N400 iteration0), сохранить явный непрошедший результат; при необходимости завершить обычный exact739e3de CI без PNG/benchmark. RV1/RV2 остаются blocked/inconclusive. Не начинать вторую оптимизацию/PNG/viewport/benchmark series; при отсутствии уже существующего полного evidence сохранить кандидат вне main и передать конкретный bounded validation plan на отдельное решение. Повторный review только при новых существенных evidence/SHA.",
+      "next_role": "strategist",
+      "next_step": "Ожидается утверждение владельцем плана HX-BL-003-V2 (до4 диагностических fullPNG попыток и20 navigation actions, один60минпакет, без изменения качества/порогов/продукта). После утверждения аналитик фиксируетprospectiveP1addendum. Отдельно требуется доступное GitHub действие для Check40252463579. До решения: кандидатblocked внеmain, без PNG/benchmark и повторного полногоreview техжеданных.",
       "spec_ref": "agent-work/specs/HX-BL-003.md",
       "spec_version": "1.0",
       "spec_status": "ready_for_development",
@@ -252,7 +252,7 @@
       "branch": "agent/hx-bl-003-performance",
       "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474",
       "head_sha": "739e3de36587533bf3d2f3196072270f4695fa8a",
-      "checks_status": "parent_runtime_pass_exacthead_action_required",
+      "checks_status": "exacthead_action_required_no_jobs_capability_blocked",
       "evidence_ref": "reports/HX-BL-003/diagnosis.json",
       "corpus_ci": {
         "id": 40187550999,
@@ -299,9 +299,9 @@
       },
       "paired_failure_ref": "reports/HX-BL-003/paired-run40243424173-recovery.json",
       "measurement_recovery_sha": "00f5e4adcc4a027948ca3a82fcd625211eb890cd",
-      "developer_result_status": "blocked_visual_pending_independent_assessment",
+      "developer_result_status": "authorized_evidence_corrections_complete_validation_blocked",
       "review_request": {
-        "status": "completed_changes_requested",
+        "status": "completed_changes_requested_no_automatic_full_rereview",
         "exact_sha": "739e3de36587533bf3d2f3196072270f4695fa8a",
         "scope": "Reviewer: independently assess exact739e3de and saved raw artifacts/AC01–08, navigationp95 ambiguity/errors and score1.2; explicit blocked/changes_requested allowed. No PNG rerun, no second optimization, no release.",
         "required_score_model": "1.2",
@@ -577,7 +577,60 @@
       "score_assessment_status": "recorded_model1.2_insufficient_evidence_no_points",
       "acceptance_status": "blocked_incomplete",
       "automatic_measurement_rerun_allowed": false,
-      "repeat_review_requires": "material new evidence or changed source SHA"
+      "repeat_review_requires": "material new evidence or changed source SHA",
+      "developer_response_ref": "agent-work/results/2026-10-26-developer-HX-BL-003-review-response.json",
+      "developer_finding_response": {
+        "HX003-RV1": {
+          "status": "blocked",
+          "reason": "2largePNGpairs missing; priorboundedretry exhausted. No newexport."
+        },
+        "HX003-RV2": {
+          "status": "inconclusive",
+          "reason": "Bothnavigationestimators retained; no favorableaggregation ornewnavseries."
+        },
+        "HX003-RV3": {
+          "status": "addressed_pending_independent_confirmation",
+          "correct_input": "mythic-123456789-N400.json",
+          "variant": "candidate",
+          "iteration": 0,
+          "count": 28,
+          "report_corrected": true,
+          "analysis_corrected": true,
+          "pr_corrected": true,
+          "raw_unchanged": true,
+          "resources_present": 28,
+          "referenced_in_each_final_svg": 28,
+          "root_cause": "unknown",
+          "audit_ref": "agent-work/evidence/HX-BL-003-developer/resource-audit-rv3.json"
+        },
+        "HX003-RV4": {
+          "status": "blocked_capability",
+          "run_id": 40252463579,
+          "conclusion": "action_required",
+          "head_sha": "739e3de36587533bf3d2f3196072270f4695fa8a",
+          "jobs": 0,
+          "limitation": "Connectedtools exposejob/failedjobrerun but no workflowapproval/dispatch; ghCLI notavailable. Noeligiblefailedjob. No rerun attempted or success asserted."
+        },
+        "HX003-RV5": {
+          "status": "partial_evidence_retained",
+          "reason": "No newnativeSet/largecorpusselection acceptance claimed."
+        }
+      },
+      "validation_plan": {
+        "id": "HX-BL-003-V2",
+        "status": "proposed_requires_explicit_owner_approval",
+        "path": "agent-work/proposals/HX-BL-003-V2-validation.md",
+        "max_png_attempts": 4,
+        "max_measured_navigation_actions": 20,
+        "max_workflow_attempts": 1,
+        "job_timeout_minutes": 60,
+        "quality_or_threshold_change": false,
+        "paid_spend_allowed": false
+      },
+      "owner_decisions_needed": [
+        "approve_or_decline_HX-BL-003-V2_validation",
+        "resolve_GitHub_action_required_Check40252463579"
+      ]
     },
     {
       "task_id": "HX-BL-004",
