@@ -1,0 +1,26 @@
+[
+  {
+    "sha": "38845c83506e2347c2cd32fcbe118617fee13c72",
+    "filename": "reports/HX-BL-003/v2-protocol-manifest.json",
+    "status": "modified",
+    "additions": 2,
+    "deletions": 2,
+    "changes": 4,
+    "blob_url": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/df879cb8d68cf876397aa5611f561a48482ae191/reports%2FHX-BL-003%2Fv2-protocol-manifest.json",
+    "raw_url": "https://github.com/YuriyEmelyanov/Hexcrawl/raw/df879cb8d68cf876397aa5611f561a48482ae191/reports%2FHX-BL-003%2Fv2-protocol-manifest.json",
+    "contents_url": "https://api.github.com/repos/YuriyEmelyanov/Hexcrawl/contents/reports%2FHX-BL-003%2Fv2-protocol-manifest.json?ref=df879cb8d68cf876397aa5611f561a48482ae191",
+    "patch": "@@ -36,7 +36,7 @@\n     },\n     {\n       \"path\": \"test/hx-bl-003-v2-harness.test.mjs\",\n-      \"sha256\": \"d1f95fb8dfce7eecb947cb9d9ec7428cceb914123528e22ea364442303d0054f\"\n+      \"sha256\": \"5fb708e8198b847fcb2e0293bc4fc3ef08e4f164d5db2dd74a1f4b8fe519c345\"\n     },\n     {\n       \"path\": \".github/workflows/hx-bl-003-v2.yml\",\n@@ -48,7 +48,7 @@\n     }\n   ],\n   \"stage\": \"harness_corrections_only_no_measurement\",\n-  \"review_ref\": \"https://github.com/YuriyEmelyanov/Hexcrawl/pull/474#pullrequestreview-5651769890\",\n+  \"review_ref\": \"https://github.com/YuriyEmelyanov/Hexcrawl/pull/474#pullrequestreview-5655108027\",\n   \"workflow_attempts_used\": 1,\n   \"automatic_measurement_rerun_allowed\": false\n }"
+  },
+  {
+    "sha": "c2df19095429b90c7783bdeb72f209d788f23dc9",
+    "filename": "test/hx-bl-003-v2-harness.test.mjs",
+    "status": "modified",
+    "additions": 4,
+    "deletions": 2,
+    "changes": 6,
+    "blob_url": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/df879cb8d68cf876397aa5611f561a48482ae191/test%2Fhx-bl-003-v2-harness.test.mjs",
+    "raw_url": "https://github.com/YuriyEmelyanov/Hexcrawl/raw/df879cb8d68cf876397aa5611f561a48482ae191/test%2Fhx-bl-003-v2-harness.test.mjs",
+    "contents_url": "https://api.github.com/repos/YuriyEmelyanov/Hexcrawl/contents/test%2Fhx-bl-003-v2-harness.test.mjs?ref=df879cb8d68cf876397aa5611f561a48482ae191",
+    "patch": "@@ -20,7 +20,7 @@ async function ownedChild(t,{closeHangs=false}={}){\n }\n test('external watchdog confirms real owned child exit and latches abort before any next work',async t=>{\n   const fixture=await ownedChild(t),events=[];\n-  const supervisor=new BrowserSupervisor({timeoutMs:20,cleanupMs:200,record:e=>events.push(e)});\n+  const supervisor=new BrowserSupervisor({timeoutMs:20,cleanupMs:5000,record:e=>events.push(e)});\n   await supervisor.start(fixture.chromium);\n   await assert.rejects(supervisor.run(()=>new Promise(()=>{}),'stalled operation'),PackageAbort);\n   assert(fixture.child.signalCode||fixture.child.exitCode!==null);\n@@ -32,7 +32,8 @@ test('external watchdog confirms real owned child exit and latches abort before\n });\n test('hanging graceful cleanup escalates to kill and waits for observed child exit',async t=>{\n   const fixture=await ownedChild(t,{closeHangs:true}),events=[];\n-  const supervisor=new BrowserSupervisor({cleanupMs:20,record:e=>events.push(e)});\n+  // Real child-process termination uses the production cleanup budget, not a20ms OS deadline.\n+  const supervisor=new BrowserSupervisor({cleanupMs:5000,record:e=>events.push(e)});\n   await supervisor.start(fixture.chromium);await supervisor.dispose();\n   assert.equal(supervisor.owner,null);assert(fixture.child.signalCode);\n   assert(events.some(e=>e.type==='graceful_close_failed'));\n@@ -46,3 +47,4 @@ test('unconfirmed kill remains fatal and cannot start another row or process',as\n   assert(events.some(e=>e.type==='browser_exit_unconfirmed'));\n   let called=0;await assert.rejects(supervisor.run(()=>{called++;},'must not run'),PackageAbort);assert.equal(called,0);\n });\n+"
+  }
+]

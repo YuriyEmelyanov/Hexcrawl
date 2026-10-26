@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-10-26:developer:HX-BL-003-test-stability:1704Z",
+  "role": "developer",
+  "task_id": "HX-BL-003",
+  "status": "awaiting_exact_sha_normal_CI",
+  "base_sha": "86a7e941a823e32e7c7cf9cfde78bb247ffc8194",
+  "head_sha": "df879cb8d68cf876397aa5611f561a48482ae191",
+  "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474",
+  "branch": "agent/hx-bl-003-performance",
+  "addressed_findings_pending_review": [
+    "HX003-V2-R4"
+  ],
+  "implementation": "Only existing Node cleanup tests use5000ms OSprocess exit budget instead of200/20ms; assertions/production unchanged; manifest hash refreshed.",
+  "test_change_summary": {
+    "base_sha": "86a7e941a823e32e7c7cf9cfde78bb247ffc8194",
+    "head_sha": "df879cb8d68cf876397aa5611f561a48482ae191",
+    "suite": "Node node:test",
+    "added": 0,
+    "removed": 0,
+    "modified": 2,
+    "scenario_risk": "Flaky real-child kill/exit under20ms/200ms schedulebudget; retain observedexit and abort assertions.",
+    "reuse_or_new_reason": "Modify two existing cases; no new scenario required. Production5000ms default unchanged.",
+    "source": "ExactGitHub compare testfile patch and same4test()definitions",
+    "execution": {
+      "focused_runs": 3,
+      "executed_per_run": 4,
+      "passed_per_run": 4,
+      "failed": 0,
+      "skipped": 0
+    },
+    "python": "unchanged_not_rerun",
+    "normal_ci": "pending"
+  },
+  "normal_ci": {
+    "run_id": 40365396181,
+    "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40365396181",
+    "status": "queued"
+  },
+  "runtime_changed": false,
+  "harness_runtime_changed": false,
+  "workflow_changed": false,
+  "measurements_executed": 0,
+  "new_png_exports": 0,
+  "workflow_attempts_used": 1,
+  "automatic_measurement_rerun_allowed": false,
+  "score_model_version": "1.2",
+  "score_changed": false,
+  "main_changed": false,
+  "published": false,
+  "evidence_ref": "agent-work/evidence/HX-BL-003-V2-test-stability/report.md",
+  "next_role": "developer",
+  "next_step": "Finish normalCI exactdf879cb; then limitedindependentreview R4/testsummary, no benchmark/PNG/capreset.",
+  "automation_health": {
+    "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-10-26T17:04:02.714Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "end": {
+      "status": "unchecked",
+      "is_enabled": null,
+      "reason": "in_progress"
+    },
+    "restored_during_this_run": false,
+    "errors": []
+  }
+}
