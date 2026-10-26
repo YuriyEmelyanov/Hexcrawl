@@ -108,3 +108,6 @@
 
 
 26.10.2026 — HX-FB-001 developer: isVisible() alone did not prove a seed row was unobscured: initial UI CI on b2a59d4 passed, but actual screenshot inspection caught export popup overlap. On415349b reserve space only while the menu is open and assert popup bottom <= seed-block top. Closed-menu layout stays compact. Final exact-head Check (236/236 + build + browser + RNG) and UI passed;22 actual desktop/mobile RU/EN screenshots and full logs saved. Finite evidence and local CDN failure are explicit; review and score1.2 assessment remain independent, release separate. [Evidence](evidence/HX-FB-001-developer/report.md).
+
+
+26.10.2026 — HX-BL-003-V2 analyst: owner «Разрешаю замер» supersedes prior awaiting-approval state; do not request the same authorization again. Frozen original P1/spec1.0 retained, prospective addendum fixes pooled120-frame nearest-rank p95 independently for zoom/pan with original >10% AND >10ms guard. Exactly20 measured navigation actions +4warmups and at most4PNG exports; allnegative data retained, no new generation series/quality change. Addendum alone does not close CI, large history/selection or constitute measured success. [P1-V2](specs/HX-BL-003-P1-V2.md). PR475 review queue preserved.

@@ -1,6 +1,8 @@
 # HX-BL-003 — Производительность растущей карты
 
-Версия 1.0, 25.10.2026. Статус: ready_for_development.
+Версия 1.1,26.10.2026. Статус: ready_for_developer_harness_freeze.
+
+Исходный P1/spec1.0 сохранён без изменений в [архиве](archive/HX-BL-003-spec1.0.md). Для нового утверждённого пакета HX-BL-003-V2 обязательно [перспективное дополнение P1-V2](HX-BL-003-P1-V2.md). Оно определяет только новую ограниченную допроверку; исходные AC/пороги и отрицательное evidence сохраняются. Разрешение: owner-approval-2026-10-26-HX-BL-003-V2. Модель1.2 действует операционно; раздел1.1 ниже является историей, не текущей шкалой.
 Основание: owner-approval-2026-10-25-HX-BL-003, прямое «Утверждаю» после [предложения](../proposals/2026-10-25-HX-BL-003.md). Разрешены спецификация и реализация в этих границах; выпуск согласуется отдельно.
 Базовый продукт: 103d31b9f6f5c76b1f6b45d9d6664fe3f75dd63b, дерево f2fc6c9a6519e63eb94b5bd30699146b733191ac.
 
@@ -59,8 +61,8 @@ AC06: SVG/PNG и artwork/navigation соответствуют правилам 
 AC07: на конечном SHA Node24 npm run check, npm run test:browser и npm run test:browser:rng; соответствующие профильные invariants, если затронуты. Exact SHA, команды, версии, exit codes и полные логи. Локальная недоступность браузера явно отделена от CI evidence на том же дереве.
 AC08: независимый reviewer перепроверяет конкретный SHA, воспроизводит целевой paired профиль и safety сценарии; score_assessment и ограничения обязательны. При negative_result достаточно independently verified отчёта/harness без продуктовой правки и без обещания ускорения.
 
-## Score-передача, модель1.1
-Источник before: agent-work/score/current-score.json, blob327a3051d9684a22e76d434649417190ef0fd1ee; docs/strategy/score-model.md blobc05bffac61f425085e6878f7709c25e1dfc2ffb4. Продукт193.75/1000, unverified_weight70. Модель1.2 из PR473 ещё не действующая.
+## Историческая Score-передача, модель1.1 (срез25.10; заменена операционной моделью1.2)
+Источник before: agent-work/score/current-score.json, blob327a3051d9684a22e76d434649417190ef0fd1ee; docs/strategy/score-model.md blobc05bffac61f425085e6878f7709c25e1dfc2ffb4. Продукт193.75/1000, unverified_weight70. На момент spec1.0 модель1.2 ещё не действовала; с owner-decision-2026-10-26-activate-score-1.2 применяется1.2. Before/expected/evidence по текущей модели см. P1-V2; исторические числа ниже не переносить автоматически.
 | criterion_id | До | Ожидаемый переход/delta | Отдельное evidence |
 |---|---|---|---|
 | S09-C01 | G2 /10, вес20 | unknown; сохранениеG2 допустимо, автоматического прироста нет | P1 manifest, все raw timings, paired before/after, trace, ошибки и ограничения; G3 требует отдельного user confirmation, G4/Android не заявляются |
