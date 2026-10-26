@@ -1,0 +1,1355 @@
+﻿2026-10-26T09:16:12.1104215Z Current runner version: '2.338.0'
+2026-10-26T09:16:12.1124667Z ##[group]Runner Image Provisioner
+2026-10-26T09:16:12.1125439Z Hosted Compute Agent
+2026-10-26T09:16:12.1126016Z Version: 20261021.618
+2026-10-26T09:16:12.1127021Z Commit: 21505ad2541d5be6135ed84fc33697146cf75b8e
+2026-10-26T09:16:12.1127725Z Build Date: 2026-10-21T00:45:21Z
+2026-10-26T09:16:12.1128307Z Worker ID: {333a75fe-efd0-48f5-972c-402e72418a30}
+2026-10-26T09:16:12.1128932Z Region: westus3
+2026-10-26T09:16:12.1129439Z Cloud: Azure
+2026-10-26T09:16:12.1129892Z ##[endgroup]
+2026-10-26T09:16:12.1131552Z ##[group]Operating System
+2026-10-26T09:16:12.1132086Z Ubuntu
+2026-10-26T09:16:12.1132500Z 24.04.5
+2026-10-26T09:16:12.1133028Z LTS
+2026-10-26T09:16:12.1133456Z ##[endgroup]
+2026-10-26T09:16:12.1133983Z ##[group]Runner Image
+2026-10-26T09:16:12.1134490Z Image: ubuntu-24.04
+2026-10-26T09:16:12.1134974Z Version: 20261012.334.1
+2026-10-26T09:16:12.1136117Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261012.334/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-26T09:16:12.1137725Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261012.334
+2026-10-26T09:16:12.1138564Z ##[endgroup]
+2026-10-26T09:16:12.1139601Z ##[group]GITHUB_TOKEN Permissions
+2026-10-26T09:16:12.1141403Z Actions: read
+2026-10-26T09:16:12.1141906Z Contents: write
+2026-10-26T09:16:12.1142459Z Metadata: read
+2026-10-26T09:16:12.1142926Z ##[endgroup]
+2026-10-26T09:16:12.1144692Z Secret source: Actions
+2026-10-26T09:16:12.1145484Z Cache mode: write
+2026-10-26T09:16:12.1146076Z Prepare workflow directory
+2026-10-26T09:16:12.1417698Z Prepare all required actions
+2026-10-26T09:16:12.1457757Z Getting action download info
+2026-10-26T09:16:12.4648576Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-10-26T09:16:12.5768265Z Download action repository 'actions/setup-node@v4' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+2026-10-26T09:16:12.7257467Z Download action repository 'actions/download-artifact@v4' (SHA:d3f86a106a0bac45b974a628896c90dbdf5c8093)
+2026-10-26T09:16:13.5374237Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2026-10-26T09:16:13.8734669Z Complete job name: validation
+2026-10-26T09:16:13.9511347Z ##[group]Run actions/checkout@v4
+2026-10-26T09:16:13.9512098Z with:
+2026-10-26T09:16:13.9512522Z   ref: d713cb9d11c0cd00bfda1eaf13a7489f58e48634
+2026-10-26T09:16:13.9513060Z   fetch-depth: 0
+2026-10-26T09:16:13.9513465Z   repository: YuriyEmelyanov/Hexcrawl
+2026-10-26T09:16:13.9518188Z   token: ***
+2026-10-26T09:16:13.9518585Z   ssh-strict: true
+2026-10-26T09:16:13.9518982Z   ssh-user: git
+2026-10-26T09:16:13.9519371Z   persist-credentials: true
+2026-10-26T09:16:13.9519801Z   clean: true
+2026-10-26T09:16:13.9520197Z   sparse-checkout-cone-mode: true
+2026-10-26T09:16:13.9520658Z   fetch-tags: false
+2026-10-26T09:16:13.9521077Z   show-progress: true
+2026-10-26T09:16:13.9521475Z   lfs: false
+2026-10-26T09:16:13.9521834Z   submodules: false
+2026-10-26T09:16:13.9522263Z   set-safe-directory: true
+2026-10-26T09:16:13.9522704Z   allow-unsafe-pr-checkout: false
+2026-10-26T09:16:13.9523478Z ##[endgroup]
+2026-10-26T09:16:14.0357972Z Syncing repository: YuriyEmelyanov/Hexcrawl
+2026-10-26T09:16:14.0359709Z ##[group]Getting Git version info
+2026-10-26T09:16:14.0360377Z Working directory is '/home/runner/work/Hexcrawl/Hexcrawl'
+2026-10-26T09:16:14.0361361Z [command]/usr/bin/git version
+2026-10-26T09:16:14.0405143Z git version 2.55.0
+2026-10-26T09:16:14.0421724Z ##[endgroup]
+2026-10-26T09:16:14.0451303Z Temporarily overriding HOME='/home/runner/work/_temp/c53a6fc4-f9be-4f0c-a06d-9ec146d4ab49' before making global git config changes
+2026-10-26T09:16:14.0453932Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-26T09:16:14.0456893Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/Hexcrawl/Hexcrawl
+2026-10-26T09:16:14.0500983Z Deleting the contents of '/home/runner/work/Hexcrawl/Hexcrawl'
+2026-10-26T09:16:14.0505284Z ##[group]Initializing the repository
+2026-10-26T09:16:14.0509136Z [command]/usr/bin/git init /home/runner/work/Hexcrawl/Hexcrawl
+2026-10-26T09:16:14.0609342Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-26T09:16:14.0620313Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-26T09:16:14.0621783Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-26T09:16:14.0623455Z hint: call:
+2026-10-26T09:16:14.0624018Z hint:
+2026-10-26T09:16:14.0624756Z hint: 	git config --global init.defaultBranch <name>
+2026-10-26T09:16:14.0625810Z hint:
+2026-10-26T09:16:14.0626817Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-26T09:16:14.0628203Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-26T09:16:14.0629282Z hint:
+2026-10-26T09:16:14.0629858Z hint: 	git branch -m <name>
+2026-10-26T09:16:14.0630514Z hint:
+2026-10-26T09:16:14.0631378Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-26T09:16:14.0632376Z Initialized empty Git repository in /home/runner/work/Hexcrawl/Hexcrawl/.git/
+2026-10-26T09:16:14.0637032Z [command]/usr/bin/git remote add origin https://github.com/YuriyEmelyanov/Hexcrawl
+2026-10-26T09:16:14.0665250Z ##[endgroup]
+2026-10-26T09:16:14.0666513Z ##[group]Disabling automatic garbage collection
+2026-10-26T09:16:14.0669256Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-26T09:16:14.0698328Z ##[endgroup]
+2026-10-26T09:16:14.0699357Z ##[group]Setting up auth
+2026-10-26T09:16:14.0707309Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-26T09:16:14.0778263Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-26T09:16:14.1076834Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-26T09:16:14.1108447Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-26T09:16:14.1329639Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-26T09:16:14.1359301Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-26T09:16:14.1549328Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-26T09:16:14.1586582Z ##[endgroup]
+2026-10-26T09:16:14.1587763Z ##[group]Fetching the repository
+2026-10-26T09:16:14.1595537Z [command]/usr/bin/git -c protocol.version=2 fetch --prune --no-recurse-submodules origin +refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/*
+2026-10-26T09:16:16.6838424Z From https://github.com/YuriyEmelyanov/Hexcrawl
+2026-10-26T09:16:16.6842708Z  * [new branch]      Coordinates             -> origin/Coordinates
+2026-10-26T09:16:16.6843445Z  * [new branch]      Tract                   -> origin/Tract
+2026-10-26T09:16:16.6844266Z  * [new branch]      agent-operations        -> origin/agent-operations
+2026-10-26T09:16:16.6844988Z  * [new branch]      agent/HX-BL-030-rng     -> origin/agent/HX-BL-030-rng
+2026-10-26T09:16:16.6845651Z  * [new branch]      agent/hx-bl-003-performance -> origin/agent/hx-bl-003-performance
+2026-10-26T09:16:16.6846767Z  * [new branch]      agent/hx-fb-001-seed-row -> origin/agent/hx-fb-001-seed-row
+2026-10-26T09:16:16.6847628Z  * [new branch]      agent/hx-next-001-safe-import-history -> origin/agent/hx-next-001-safe-import-history
+2026-10-26T09:16:16.6849474Z  * [new branch]      assets/poi-svg-review-2026-09-25 -> origin/assets/poi-svg-review-2026-09-25
+2026-10-26T09:16:16.6850441Z  * [new branch]      bench/kingdom-display-20261009 -> origin/bench/kingdom-display-20261009
+2026-10-26T09:16:16.6851572Z  * [new branch]      chore/generation-diagnostics -> origin/chore/generation-diagnostics
+2026-10-26T09:16:16.6852385Z  * [new branch]      chore/lock-dependencies-013 -> origin/chore/lock-dependencies-013
+2026-10-26T09:16:16.6853043Z  * [new branch]      codex-02hazc            -> origin/codex-02hazc
+2026-10-26T09:16:16.6853680Z  * [new branch]      codex-0key18            -> origin/codex-0key18
+2026-10-26T09:16:16.6854468Z  * [new branch]      codex-0pp77q            -> origin/codex-0pp77q
+2026-10-26T09:16:16.6855116Z  * [new branch]      codex-0yoe0y            -> origin/codex-0yoe0y
+2026-10-26T09:16:16.6855597Z  * [new branch]      codex-1h9s2j            -> origin/codex-1h9s2j
+2026-10-26T09:16:16.6855956Z  * [new branch]      codex-23i27j            -> origin/codex-23i27j
+2026-10-26T09:16:16.6856727Z  * [new branch]      codex-2546gj            -> origin/codex-2546gj
+2026-10-26T09:16:16.6857212Z  * [new branch]      codex-2ij82h            -> origin/codex-2ij82h
+2026-10-26T09:16:16.6857637Z  * [new branch]      codex-2uqhcl            -> origin/codex-2uqhcl
+2026-10-26T09:16:16.6858016Z  * [new branch]      codex-2v650w            -> origin/codex-2v650w
+2026-10-26T09:16:16.6858370Z  * [new branch]      codex-30d1s9            -> origin/codex-30d1s9
+2026-10-26T09:16:16.6858744Z  * [new branch]      codex-33rb1h            -> origin/codex-33rb1h
+2026-10-26T09:16:16.6859103Z  * [new branch]      codex-37ww0k            -> origin/codex-37ww0k
+2026-10-26T09:16:16.6859469Z  * [new branch]      codex-39jibw            -> origin/codex-39jibw
+2026-10-26T09:16:16.6859832Z  * [new branch]      codex-3rpg1i            -> origin/codex-3rpg1i
+2026-10-26T09:16:16.6860206Z  * [new branch]      codex-3up2mx            -> origin/codex-3up2mx
+2026-10-26T09:16:16.6860607Z  * [new branch]      codex-3wpakx            -> origin/codex-3wpakx
+2026-10-26T09:16:16.6861064Z  * [new branch]      codex-44ndym            -> origin/codex-44ndym
+2026-10-26T09:16:16.6861532Z  * [new branch]      codex-45s1wi            -> origin/codex-45s1wi
+2026-10-26T09:16:16.6861968Z  * [new branch]      codex-48a93l            -> origin/codex-48a93l
+2026-10-26T09:16:16.6862529Z  * [new branch]      codex-5mhlo5            -> origin/codex-5mhlo5
+2026-10-26T09:16:16.6863358Z  * [new branch]      codex-5qhyq4            -> origin/codex-5qhyq4
+2026-10-26T09:16:16.6864034Z  * [new branch]      codex-600a53            -> origin/codex-600a53
+2026-10-26T09:16:16.6864623Z  * [new branch]      codex-6gi14a            -> origin/codex-6gi14a
+2026-10-26T09:16:16.6865208Z  * [new branch]      codex-6urrhy            -> origin/codex-6urrhy
+2026-10-26T09:16:16.6865757Z  * [new branch]      codex-6v6rtw            -> origin/codex-6v6rtw
+2026-10-26T09:16:16.6867165Z  * [new branch]      codex-6wiqe0            -> origin/codex-6wiqe0
+2026-10-26T09:16:16.6867792Z  * [new branch]      codex-6ym1wq            -> origin/codex-6ym1wq
+2026-10-26T09:16:16.6868366Z  * [new branch]      codex-6zo59e            -> origin/codex-6zo59e
+2026-10-26T09:16:16.6868940Z  * [new branch]      codex-7kztzc            -> origin/codex-7kztzc
+2026-10-26T09:16:16.6869491Z  * [new branch]      codex-7r492t            -> origin/codex-7r492t
+2026-10-26T09:16:16.6870072Z  * [new branch]      codex-84c0ed            -> origin/codex-84c0ed
+2026-10-26T09:16:16.6870626Z  * [new branch]      codex-852kik            -> origin/codex-852kik
+2026-10-26T09:16:16.6871171Z  * [new branch]      codex-8a69zw            -> origin/codex-8a69zw
+2026-10-26T09:16:16.6871918Z  * [new branch]      codex-8m6m65            -> origin/codex-8m6m65
+2026-10-26T09:16:16.6872515Z  * [new branch]      codex-8pkyti            -> origin/codex-8pkyti
+2026-10-26T09:16:16.6873322Z  * [new branch]      codex-8xv8x4            -> origin/codex-8xv8x4
+2026-10-26T09:16:16.6873894Z  * [new branch]      codex-9ed2iq            -> origin/codex-9ed2iq
+2026-10-26T09:16:16.6874443Z  * [new branch]      codex-9j3va0            -> origin/codex-9j3va0
+2026-10-26T09:16:16.6874853Z  * [new branch]      codex-9nb9a2            -> origin/codex-9nb9a2
+2026-10-26T09:16:16.6875351Z  * [new branch]      codex-9x06io            -> origin/codex-9x06io
+2026-10-26T09:16:16.6875693Z  * [new branch]      codex-ab9xiv            -> origin/codex-ab9xiv
+2026-10-26T09:16:16.6876044Z  * [new branch]      codex-ai8cjn            -> origin/codex-ai8cjn
+2026-10-26T09:16:16.6876687Z  * [new branch]      codex-axax8q            -> origin/codex-axax8q
+2026-10-26T09:16:16.6877251Z  * [new branch]      codex-b0an86            -> origin/codex-b0an86
+2026-10-26T09:16:16.6877802Z  * [new branch]      codex-b2zj8d            -> origin/codex-b2zj8d
+2026-10-26T09:16:16.6878351Z  * [new branch]      codex-byllhw            -> origin/codex-byllhw
+2026-10-26T09:16:16.6878908Z  * [new branch]      codex-cghe5t            -> origin/codex-cghe5t
+2026-10-26T09:16:16.6879489Z  * [new branch]      codex-cgledt            -> origin/codex-cgledt
+2026-10-26T09:16:16.6880074Z  * [new branch]      codex-ct0w8g            -> origin/codex-ct0w8g
+2026-10-26T09:16:16.6880647Z  * [new branch]      codex-cym5e1            -> origin/codex-cym5e1
+2026-10-26T09:16:16.6881238Z  * [new branch]      codex-dlxp3o            -> origin/codex-dlxp3o
+2026-10-26T09:16:16.6881908Z  * [new branch]      codex-ei4ca7            -> origin/codex-ei4ca7
+2026-10-26T09:16:16.6882530Z  * [new branch]      codex-ezq8qy            -> origin/codex-ezq8qy
+2026-10-26T09:16:16.6883179Z  * [new branch]      codex-f06g70            -> origin/codex-f06g70
+2026-10-26T09:16:16.6883596Z  * [new branch]      codex-f0ut5v            -> origin/codex-f0ut5v
+2026-10-26T09:16:16.6883959Z  * [new branch]      codex-f1ed6w            -> origin/codex-f1ed6w
+2026-10-26T09:16:16.6884319Z  * [new branch]      codex-f2ihb1            -> origin/codex-f2ihb1
+2026-10-26T09:16:16.6884846Z  * [new branch]      codex-f2pe10            -> origin/codex-f2pe10
+2026-10-26T09:16:16.6885211Z  * [new branch]      codex-floz39            -> origin/codex-floz39
+2026-10-26T09:16:16.6885572Z  * [new branch]      codex-flygwi            -> origin/codex-flygwi
+2026-10-26T09:16:16.6885949Z  * [new branch]      codex-fpj38l            -> origin/codex-fpj38l
+2026-10-26T09:16:16.6886488Z  * [new branch]      codex-fs9f1w            -> origin/codex-fs9f1w
+2026-10-26T09:16:16.6887032Z  * [new branch]      codex-gavtkg            -> origin/codex-gavtkg
+2026-10-26T09:16:16.6887413Z  * [new branch]      codex-gbqtgz            -> origin/codex-gbqtgz
+2026-10-26T09:16:16.6887788Z  * [new branch]      codex-ggk62x            -> origin/codex-ggk62x
+2026-10-26T09:16:16.6888172Z  * [new branch]      codex-gnad93            -> origin/codex-gnad93
+2026-10-26T09:16:16.6888540Z  * [new branch]      codex-gocv1v            -> origin/codex-gocv1v
+2026-10-26T09:16:16.6888927Z  * [new branch]      codex-gucdqc            -> origin/codex-gucdqc
+2026-10-26T09:16:16.6889300Z  * [new branch]      codex-hxe67g            -> origin/codex-hxe67g
+2026-10-26T09:16:16.6889671Z  * [new branch]      codex-i145md            -> origin/codex-i145md
+2026-10-26T09:16:16.6890040Z  * [new branch]      codex-i60frb            -> origin/codex-i60frb
+2026-10-26T09:16:16.6890422Z  * [new branch]      codex-k5gqt8            -> origin/codex-k5gqt8
+2026-10-26T09:16:16.6890790Z  * [new branch]      codex-kq30fw            -> origin/codex-kq30fw
+2026-10-26T09:16:16.6891163Z  * [new branch]      codex-ky1ut2            -> origin/codex-ky1ut2
+2026-10-26T09:16:16.6891544Z  * [new branch]      codex-laimoz            -> origin/codex-laimoz
+2026-10-26T09:16:16.6891910Z  * [new branch]      codex-mqmw2f            -> origin/codex-mqmw2f
+2026-10-26T09:16:16.6892273Z  * [new branch]      codex-mu22h4            -> origin/codex-mu22h4
+2026-10-26T09:16:16.6892643Z  * [new branch]      codex-n0wk77            -> origin/codex-n0wk77
+2026-10-26T09:16:16.6893005Z  * [new branch]      codex-n9rk1v            -> origin/codex-n9rk1v
+2026-10-26T09:16:16.6893372Z  * [new branch]      codex-ndbrn7            -> origin/codex-ndbrn7
+2026-10-26T09:16:16.6893739Z  * [new branch]      codex-o46g5l            -> origin/codex-o46g5l
+2026-10-26T09:16:16.6894218Z  * [new branch]      codex-o7ozwc            -> origin/codex-o7ozwc
+2026-10-26T09:16:16.6894594Z  * [new branch]      codex-oiaixs            -> origin/codex-oiaixs
+2026-10-26T09:16:16.6894972Z  * [new branch]      codex-orgl1g            -> origin/codex-orgl1g
+2026-10-26T09:16:16.6895571Z  * [new branch]      codex-oxhkk7            -> origin/codex-oxhkk7
+2026-10-26T09:16:16.6896798Z  * [new branch]      codex-pld4x9            -> origin/codex-pld4x9
+2026-10-26T09:16:16.6897450Z  * [new branch]      codex-qb9st9            -> origin/codex-qb9st9
+2026-10-26T09:16:16.6898242Z  * [new branch]      codex-qdjg25            -> origin/codex-qdjg25
+2026-10-26T09:16:16.6898830Z  * [new branch]      codex-qh3vap            -> origin/codex-qh3vap
+2026-10-26T09:16:16.6899324Z  * [new branch]      codex-qma0xo            -> origin/codex-qma0xo
+2026-10-26T09:16:16.6899915Z  * [new branch]      codex-qqtmlp            -> origin/codex-qqtmlp
+2026-10-26T09:16:16.6900522Z  * [new branch]      codex-qrieb8            -> origin/codex-qrieb8
+2026-10-26T09:16:16.6901142Z  * [new branch]      codex-qtmvtp            -> origin/codex-qtmvtp
+2026-10-26T09:16:16.6901744Z  * [new branch]      codex-qvfnm7            -> origin/codex-qvfnm7
+2026-10-26T09:16:16.6902387Z  * [new branch]      codex-r73fnn            -> origin/codex-r73fnn
+2026-10-26T09:16:16.6903035Z  * [new branch]      codex-ra2ou3            -> origin/codex-ra2ou3
+2026-10-26T09:16:16.6903688Z  * [new branch]      codex-red6sz            -> origin/codex-red6sz
+2026-10-26T09:16:16.6904334Z  * [new branch]      codex-s1lanp            -> origin/codex-s1lanp
+2026-10-26T09:16:16.6904954Z  * [new branch]      codex-scxvts            -> origin/codex-scxvts
+2026-10-26T09:16:16.6905547Z  * [new branch]      codex-se8zcz            -> origin/codex-se8zcz
+2026-10-26T09:16:16.6906350Z  * [new branch]      codex-tpur7n            -> origin/codex-tpur7n
+2026-10-26T09:16:16.6907089Z  * [new branch]      codex-ttit7k            -> origin/codex-ttit7k
+2026-10-26T09:16:16.6907775Z  * [new branch]      codex-ueypwr            -> origin/codex-ueypwr
+2026-10-26T09:16:16.6908376Z  * [new branch]      codex-up44ho            -> origin/codex-up44ho
+2026-10-26T09:16:16.6909081Z  * [new branch]      codex-usd1ge            -> origin/codex-usd1ge
+2026-10-26T09:16:16.6909459Z  * [new branch]      codex-v0wmvo            -> origin/codex-v0wmvo
+2026-10-26T09:16:16.6909838Z  * [new branch]      codex-v2x2e0            -> origin/codex-v2x2e0
+2026-10-26T09:16:16.6910207Z  * [new branch]      codex-v6uanu            -> origin/codex-v6uanu
+2026-10-26T09:16:16.6910577Z  * [new branch]      codex-vycn7m            -> origin/codex-vycn7m
+2026-10-26T09:16:16.6910944Z  * [new branch]      codex-wdbir9            -> origin/codex-wdbir9
+2026-10-26T09:16:16.6911307Z  * [new branch]      codex-wgi49i            -> origin/codex-wgi49i
+2026-10-26T09:16:16.6911668Z  * [new branch]      codex-wiojpz            -> origin/codex-wiojpz
+2026-10-26T09:16:16.6912126Z  * [new branch]      codex-wntsci            -> origin/codex-wntsci
+2026-10-26T09:16:16.6912570Z  * [new branch]      codex-wwe62v            -> origin/codex-wwe62v
+2026-10-26T09:16:16.6912928Z  * [new branch]      codex-x4lim2            -> origin/codex-x4lim2
+2026-10-26T09:16:16.6913459Z  * [new branch]      codex-xoj8cg            -> origin/codex-xoj8cg
+2026-10-26T09:16:16.6913821Z  * [new branch]      codex-y0ooq5            -> origin/codex-y0ooq5
+2026-10-26T09:16:16.6914188Z  * [new branch]      codex-yerlnb            -> origin/codex-yerlnb
+2026-10-26T09:16:16.6914550Z  * [new branch]      codex-yn0kqn            -> origin/codex-yn0kqn
+2026-10-26T09:16:16.6914907Z  * [new branch]      codex-ynqjtt            -> origin/codex-ynqjtt
+2026-10-26T09:16:16.6915269Z  * [new branch]      codex-yoht9g            -> origin/codex-yoht9g
+2026-10-26T09:16:16.6915622Z  * [new branch]      codex-yt99n7            -> origin/codex-yt99n7
+2026-10-26T09:16:16.6915990Z  * [new branch]      codex-z3vpyd            -> origin/codex-z3vpyd
+2026-10-26T09:16:16.6916793Z  * [new branch]      codex-z6r3mw            -> origin/codex-z6r3mw
+2026-10-26T09:16:16.6917384Z  * [new branch]      codex-zr7s8n            -> origin/codex-zr7s8n
+2026-10-26T09:16:16.6917955Z  * [new branch]      codex/-coastal-effectivecoastalpreference -> origin/codex/-coastal-effectivecoastalpreference
+2026-10-26T09:16:16.6918490Z  * [new branch]      codex/-id               -> origin/codex/-id
+2026-10-26T09:16:16.6918861Z  * [new branch]      codex/-poi              -> origin/codex/-poi
+2026-10-26T09:16:16.6919249Z  * [new branch]      codex/-river-slope      -> origin/codex/-river-slope
+2026-10-26T09:16:16.6919642Z  * [new branch]      codex/-svg              -> origin/codex/-svg
+2026-10-26T09:16:16.6920063Z  * [new branch]      codex/-youtube-telegram -> origin/codex/-youtube-telegram
+2026-10-26T09:16:16.6920700Z  * [new branch]      codex/add-constraints-for-small-river-generation -> origin/codex/add-constraints-for-small-river-generation
+2026-10-26T09:16:16.6921390Z  * [new branch]      codex/add-debug-mode-for-river-graph -> origin/codex/add-debug-mode-for-river-graph
+2026-10-26T09:16:16.6922167Z  * [new branch]      codex/add-edgekey-uniqueness-validation-for-rivers -> origin/codex/add-edgekey-uniqueness-validation-for-rivers
+2026-10-26T09:16:16.6923433Z  * [new branch]      codex/add-flowlevel-increase-at-river-confluence -> origin/codex/add-flowlevel-increase-at-river-confluence
+2026-10-26T09:16:16.6924566Z  * [new branch]      codex/add-flowlevel-parameter-to-rivers -> origin/codex/add-flowlevel-parameter-to-rivers
+2026-10-26T09:16:16.6925238Z  * [new branch]      codex/add-forest-tile.png-as-hex-overlay -> origin/codex/add-forest-tile.png-as-hex-overlay
+2026-10-26T09:16:16.6925912Z  * [new branch]      codex/add-logic-for-heightlevel-3-rivers -> origin/codex/add-logic-for-heightlevel-3-rivers
+2026-10-26T09:16:16.6927072Z  * [new branch]      codex/add-map-rotation-button-functionality -> origin/codex/add-map-rotation-button-functionality
+2026-10-26T09:16:16.6928187Z  * [new branch]      codex/add-minor-river-logic-for-edges -> origin/codex/add-minor-river-logic-for-edges
+2026-10-26T09:16:16.6929340Z  * [new branch]      codex/add-points-of-interest-generation-and-display -> origin/codex/add-points-of-interest-generation-and-display
+2026-10-26T09:16:16.6930347Z  * [new branch]      codex/add-procedural-river-network-to-hexcrawl-generator -> origin/codex/add-procedural-river-network-to-hexcrawl-generator
+2026-10-26T09:16:16.6931216Z  * [new branch]      codex/add-purple-vertices-for-centralhex-in-debug-mode -> origin/codex/add-purple-vertices-for-centralhex-in-debug-mode
+2026-10-26T09:16:16.6931978Z  * [new branch]      codex/add-random-terrain-type-per-region -> origin/codex/add-random-terrain-type-per-region
+2026-10-26T09:16:16.6932672Z  * [new branch]      codex/add-restriction-on-connecting-wild-roads -> origin/codex/add-restriction-on-connecting-wild-roads
+2026-10-26T09:16:16.6933408Z  * [new branch]      codex/add-river-condition-for-biome-elevation-2 -> origin/codex/add-river-condition-for-biome-elevation-2
+2026-10-26T09:16:16.6934119Z  * [new branch]      codex/add-river-condition-for-biome-height -> origin/codex/add-river-condition-for-biome-height
+2026-10-26T09:16:16.6934820Z  * [new branch]      codex/add-river-continuation-between-regions -> origin/codex/add-river-continuation-between-regions
+2026-10-26T09:16:16.6935567Z  * [new branch]      codex/add-river-creation-logic-based-on-region-size -> origin/codex/add-river-creation-logic-based-on-region-size
+2026-10-26T09:16:16.6936582Z  * [new branch]      codex/add-river-flow-change-implementation -> origin/codex/add-river-flow-change-implementation
+2026-10-26T09:16:16.6937317Z  * [new branch]      codex/add-river-flow-condition-for-biome-height-1 -> origin/codex/add-river-flow-condition-for-biome-height-1
+2026-10-26T09:16:16.6938011Z  * [new branch]      codex/add-river-flow-direction-arrows -> origin/codex/add-river-flow-direction-arrows
+2026-10-26T09:16:16.6938727Z  * [new branch]      codex/add-river-flow-logic-for-region-height-three -> origin/codex/add-river-flow-logic-for-region-height-three
+2026-10-26T09:16:16.6939685Z  * [new branch]      codex/add-river-generation-logic-for-mountainous-regions -> origin/codex/add-river-generation-logic-for-mountainous-regions
+2026-10-26T09:16:16.6940546Z  * [new branch]      codex/add-river-height-constraints-to-region-creation -> origin/codex/add-river-height-constraints-to-region-creation
+2026-10-26T09:16:16.6941296Z  * [new branch]      codex/add-river-logic-for-height-3-region -> origin/codex/add-river-logic-for-height-3-region
+2026-10-26T09:16:16.6941961Z  * [new branch]      codex/add-river-logic-for-height-3-regions -> origin/codex/add-river-logic-for-height-3-regions
+2026-10-26T09:16:16.6943182Z  * [new branch]      codex/add-river-network-validation-and-diagnostics -> origin/codex/add-river-network-validation-and-diagnostics
+2026-10-26T09:16:16.6944286Z  * [new branch]      codex/add-river-sector-segmentation -> origin/codex/add-river-sector-segmentation
+2026-10-26T09:16:16.6945396Z  * [new branch]      codex/add-river-segments-fullness-parameter -> origin/codex/add-river-segments-fullness-parameter
+2026-10-26T09:16:16.6946606Z  * [new branch]      codex/add-road-connecting-two-hex-candidates -> origin/codex/add-road-connecting-two-hex-candidates
+2026-10-26T09:16:16.6947284Z  * [new branch]      codex/add-road-generation-and-display -> origin/codex/add-road-generation-and-display
+2026-10-26T09:16:16.6947875Z  * [new branch]      codex/add-scroll-for-hidden-hexes -> origin/codex/add-scroll-for-hidden-hexes
+2026-10-26T09:16:16.6948509Z  * [new branch]      codex/add-small-river-generation-in-app.tsx -> origin/codex/add-small-river-generation-in-app.tsx
+2026-10-26T09:16:16.6949189Z  * [new branch]      codex/add-toggle-for-buttons-and-info-block -> origin/codex/add-toggle-for-buttons-and-info-block
+2026-10-26T09:16:16.6949807Z  * [new branch]      codex/add-trail-construction-logic -> origin/codex/add-trail-construction-logic
+2026-10-26T09:16:16.6950404Z  * [new branch]      codex/adjust-layout-for-screen-design -> origin/codex/adjust-layout-for-screen-design
+2026-10-26T09:16:16.6951011Z  * [new branch]      codex/build-roads-in-wild-terrain -> origin/codex/build-roads-in-wild-terrain
+2026-10-26T09:16:16.6951784Z  * [new branch]      codex/center-first-hex-and-position-info-block -> origin/codex/center-first-hex-and-position-info-block
+2026-10-26T09:16:16.6952437Z  * [new branch]      codex/check-github-pages-workflow -> origin/codex/check-github-pages-workflow
+2026-10-26T09:16:16.6953082Z  * [new branch]      codex/clarify-river-rules-in-region-creation -> origin/codex/clarify-river-rules-in-region-creation
+2026-10-26T09:16:16.6953803Z  * [new branch]      codex/conduct-deep-audit-of-hexcrawl-repository -> origin/codex/conduct-deep-audit-of-hexcrawl-repository
+2026-10-26T09:16:16.6954542Z  * [new branch]      codex/create-project-structure-for-hexcrawl-map -> origin/codex/create-project-structure-for-hexcrawl-map
+2026-10-26T09:16:16.6955219Z  * [new branch]      codex/debug-last-implementation-issue -> origin/codex/debug-last-implementation-issue
+2026-10-26T09:16:16.6955835Z  * [new branch]      codex/debug-river-flow-in-sector-3 -> origin/codex/debug-river-flow-in-sector-3
+2026-10-26T09:16:16.6956584Z  * [new branch]      codex/debug-river-flow-increase-issue -> origin/codex/debug-river-flow-increase-issue
+2026-10-26T09:16:16.6957138Z  * [new branch]      codex/debug-river-flow-issue -> origin/codex/debug-river-flow-issue
+2026-10-26T09:16:16.6957757Z  * [new branch]      codex/describe-river-segment-flow-assessment -> origin/codex/describe-river-segment-flow-assessment
+2026-10-26T09:16:16.6958474Z  * [new branch]      codex/describe-road-construction-in-wild-region -> origin/codex/describe-road-construction-in-wild-region
+2026-10-26T09:16:16.6959226Z  * [new branch]      codex/determine-inflow-river-status-in-new-region -> origin/codex/determine-inflow-river-status-in-new-region
+2026-10-26T09:16:16.6959935Z  * [new branch]      codex/determine-routes-in-wild-region -> origin/codex/determine-routes-in-wild-region
+2026-10-26T09:16:16.6960690Z  * [new branch]      codex/enhance-road-generation-in-app.tsx -> origin/codex/enhance-road-generation-in-app.tsx
+2026-10-26T09:16:16.6961329Z  * [new branch]      codex/ensure-atomic-region-generation -> origin/codex/ensure-atomic-region-generation
+2026-10-26T09:16:16.6962043Z  * [new branch]      codex/ensure-dropdown-menu-displays-above-elements -> origin/codex/ensure-dropdown-menu-displays-above-elements
+2026-10-26T09:16:16.6962819Z  * [new branch]      codex/explain-code-reducing-discharge-from-6-to-2 -> origin/codex/explain-code-reducing-discharge-from-6-to-2
+2026-10-26T09:16:16.6963566Z  * [new branch]      codex/explain-rivers-originating-from-a-region -> origin/codex/explain-rivers-originating-from-a-region
+2026-10-26T09:16:16.6964247Z  * [new branch]      codex/explain-sector-changes-in-regions -> origin/codex/explain-sector-changes-in-regions
+2026-10-26T09:16:16.6964942Z  * [new branch]      codex/explain-tributary-formation-at-elevation-1 -> origin/codex/explain-tributary-formation-at-elevation-1
+2026-10-26T09:16:16.6965681Z  * [new branch]      codex/find-and-remove-flood-code-for-height-3 -> origin/codex/find-and-remove-flood-code-for-height-3
+2026-10-26T09:16:16.6966635Z  * [new branch]      codex/find-and-remove-flood-code-for-height-3-9sh67x -> origin/codex/find-and-remove-flood-code-for-height-3-9sh67x
+2026-10-26T09:16:16.6967443Z  * [new branch]      codex/find-and-remove-flood-code-for-height-3-qowxp9 -> origin/codex/find-and-remove-flood-code-for-height-3-qowxp9
+2026-10-26T09:16:16.6968225Z  * [new branch]      codex/find-and-remove-flood-code-for-height-3-w13xcc -> origin/codex/find-and-remove-flood-code-for-height-3-w13xcc
+2026-10-26T09:16:16.6968921Z  * [new branch]      codex/find-biome-information-for-hexes -> origin/codex/find-biome-information-for-hexes
+2026-10-26T09:16:16.6969577Z  * [new branch]      codex/find-cases-for-region-under-5-hectares -> origin/codex/find-cases-for-region-under-5-hectares
+2026-10-26T09:16:16.6970260Z  * [new branch]      codex/find-cases-of-river-discharge-decrease -> origin/codex/find-cases-of-river-discharge-decrease
+2026-10-26T09:16:16.6971100Z  * [new branch]      codex/find-crossing-river-regulations-for-trails -> origin/codex/find-crossing-river-regulations-for-trails
+2026-10-26T09:16:16.6971816Z  * [new branch]      codex/find-definition-of-new-lake-criteria -> origin/codex/find-definition-of-new-lake-criteria
+2026-10-26T09:16:16.6972490Z  * [new branch]      codex/find-exit-hex-for-road-in-wild-region -> origin/codex/find-exit-hex-for-road-in-wild-region
+2026-10-26T09:16:16.6973229Z  * [new branch]      codex/find-height-restrictions-for-waterway-segments -> origin/codex/find-height-restrictions-for-waterway-segments
+2026-10-26T09:16:16.6973988Z  * [new branch]      codex/find-hex-candidate-for-road-construction -> origin/codex/find-hex-candidate-for-road-construction
+2026-10-26T09:16:16.6974732Z  * [new branch]      codex/find-how-region-size-affects-river-formation -> origin/codex/find-how-region-size-affects-river-formation
+2026-10-26T09:16:16.6975482Z  * [new branch]      codex/find-how-two-rivers-connect-in-new-region -> origin/codex/find-how-two-rivers-connect-in-new-region
+2026-10-26T09:16:16.6976300Z  * [new branch]      codex/find-method-to-build-second-road -> origin/codex/find-method-to-build-second-road
+2026-10-26T09:16:16.6977058Z  * [new branch]      codex/find-out-if-sea-hexes-count-as-occupied -> origin/codex/find-out-if-sea-hexes-count-as-occupied
+2026-10-26T09:16:16.6977685Z  * [new branch]      codex/find-path-to-hex-candidate -> origin/codex/find-path-to-hex-candidate
+2026-10-26T09:16:16.6978303Z  * [new branch]      codex/find-primary-river-for-region-creation -> origin/codex/find-primary-river-for-region-creation
+2026-10-26T09:16:16.6979004Z  * [new branch]      codex/find-river-crossing-restrictions-in-code -> origin/codex/find-river-crossing-restrictions-in-code
+2026-10-26T09:16:16.6979671Z  * [new branch]      codex/find-river-display-width-formula -> origin/codex/find-river-display-width-formula
+2026-10-26T09:16:16.6980425Z  * [new branch]      codex/find-river-length-rules-in-region-3 -> origin/codex/find-river-length-rules-in-region-3
+2026-10-26T09:16:16.6981091Z  * [new branch]      codex/find-river-tributary-creation-points -> origin/codex/find-river-tributary-creation-points
+2026-10-26T09:16:16.6981815Z  * [new branch]      codex/find-road-connection-priority-for-new-region -> origin/codex/find-road-connection-priority-for-new-region
+2026-10-26T09:16:16.6982580Z  * [new branch]      codex/find-road-construction-schedule-in-wild-areas -> origin/codex/find-road-construction-schedule-in-wild-areas
+2026-10-26T09:16:16.6983303Z  * [new branch]      codex/find-second-road-generation-in-regions -> origin/codex/find-second-road-generation-in-regions
+2026-10-26T09:16:16.6983966Z  * [new branch]      codex/find-sector-information-for-region-2 -> origin/codex/find-sector-information-for-region-2
+2026-10-26T09:16:16.6984643Z  * [new branch]      codex/find-standard-river-confluence-notation -> origin/codex/find-standard-river-confluence-notation
+2026-10-26T09:16:16.6985193Z  * [new branch]      codex/fix-5-7           -> origin/codex/fix-5-7
+2026-10-26T09:16:16.6985587Z  * [new branch]      codex/fix-5-7-iixeqs    -> origin/codex/fix-5-7-iixeqs
+2026-10-26T09:16:16.6986362Z  * [new branch]      codex/fix-candidate-boundary-vertices-classification -> origin/codex/fix-candidate-boundary-vertices-classification
+2026-10-26T09:16:16.6987084Z  * [new branch]      codex/fix-central-hex-selection-logic -> origin/codex/fix-central-hex-selection-logic
+2026-10-26T09:16:16.6987762Z  * [new branch]      codex/fix-dropdown-menu-display-on-export-button -> origin/codex/fix-dropdown-menu-display-on-export-button
+2026-10-26T09:16:16.6988422Z  * [new branch]      codex/fix-emoji-biome-display-in-svg -> origin/codex/fix-emoji-biome-display-in-svg
+2026-10-26T09:16:16.6989090Z  * [new branch]      codex/fix-flowlevel-calculation-for-river-sectors -> origin/codex/fix-flowlevel-calculation-for-river-sectors
+2026-10-26T09:16:16.6989897Z  * [new branch]      codex/fix-flowlevel-calculation-for-river-sectors-58tqn9 -> origin/codex/fix-flowlevel-calculation-for-river-sectors-58tqn9
+2026-10-26T09:16:16.6990891Z  * [new branch]      codex/fix-flowlevel-calculation-for-river-sectors-pmk7c1 -> origin/codex/fix-flowlevel-calculation-for-river-sectors-pmk7c1
+2026-10-26T09:16:16.6991613Z  * [new branch]      codex/fix-flowlevel-inheritance-logic -> origin/codex/fix-flowlevel-inheritance-logic
+2026-10-26T09:16:16.6992303Z  * [new branch]      codex/fix-getexistingriverendpointverticesinregion -> origin/codex/fix-getexistingriverendpointverticesinregion
+2026-10-26T09:16:16.6992960Z  * [new branch]      codex/fix-github-pages-workflow -> origin/codex/fix-github-pages-workflow
+2026-10-26T09:16:16.6993588Z  * [new branch]      codex/fix-hex-edge-neighbor-direction-mapping -> origin/codex/fix-hex-edge-neighbor-direction-mapping
+2026-10-26T09:16:16.6994287Z  * [new branch]      codex/fix-hexcrawl-map-region-expansion-logic -> origin/codex/fix-hexcrawl-map-region-expansion-logic
+2026-10-26T09:16:16.6994950Z  * [new branch]      codex/fix-incoming-roads-counting-logic -> origin/codex/fix-incoming-roads-counting-logic
+2026-10-26T09:16:16.6995607Z  * [new branch]      codex/fix-influx-visibility-in-small-regions -> origin/codex/fix-influx-visibility-in-small-regions
+2026-10-26T09:16:16.6996398Z  * [new branch]      codex/fix-loading-forest-tile.png-from-raw-url -> origin/codex/fix-loading-forest-tile.png-from-raw-url
+2026-10-26T09:16:16.6997083Z  * [new branch]      codex/fix-logic-for-minor-river-generation -> origin/codex/fix-logic-for-minor-river-generation
+2026-10-26T09:16:16.6997715Z  * [new branch]      codex/fix-logic-for-river-flow-changes -> origin/codex/fix-logic-for-river-flow-changes
+2026-10-26T09:16:16.6998347Z  * [new branch]      codex/fix-minor-river-generation-in-app.tsx -> origin/codex/fix-minor-river-generation-in-app.tsx
+2026-10-26T09:16:16.6998949Z  * [new branch]      codex/fix-path-to-forest-tile.png -> origin/codex/fix-path-to-forest-tile.png
+2026-10-26T09:16:16.6999677Z  * [new branch]      codex/fix-red-point-definition-in-debug-mode -> origin/codex/fix-red-point-definition-in-debug-mode
+2026-10-26T09:16:16.7000359Z  * [new branch]      codex/fix-red-vertices-exclusion-from-rivers -> origin/codex/fix-red-vertices-exclusion-from-rivers
+2026-10-26T09:16:16.7001026Z  * [new branch]      codex/fix-region-creation-after-size-update -> origin/codex/fix-region-creation-after-size-update
+2026-10-26T09:16:16.7001685Z  * [new branch]      codex/fix-region-creation-logic-for-rivers -> origin/codex/fix-region-creation-logic-for-rivers
+2026-10-26T09:16:16.7002363Z  * [new branch]      codex/fix-region-creation-on-stream-connection -> origin/codex/fix-region-creation-on-stream-connection
+2026-10-26T09:16:16.7003171Z  * [new branch]      codex/fix-region-formation-error-due-to-missing-shufflearray -> origin/codex/fix-region-formation-error-due-to-missing-shufflearray
+2026-10-26T09:16:16.7003948Z  * [new branch]      codex/fix-river-connection-logic-in-app.tsx -> origin/codex/fix-river-connection-logic-in-app.tsx
+2026-10-26T09:16:16.7004608Z  * [new branch]      codex/fix-river-construction-vertex-overlap -> origin/codex/fix-river-construction-vertex-overlap
+2026-10-26T09:16:16.7005296Z  * [new branch]      codex/fix-river-continuation-and-merging-logic -> origin/codex/fix-river-continuation-and-merging-logic
+2026-10-26T09:16:16.7005924Z  * [new branch]      codex/fix-river-continuation-logic -> origin/codex/fix-river-continuation-logic
+2026-10-26T09:16:16.7006549Z  * [new branch]      codex/fix-river-debug-issues -> origin/codex/fix-river-debug-issues
+2026-10-26T09:16:16.7007198Z  * [new branch]      codex/fix-river-drawing-thickness-based-on-flowlevel -> origin/codex/fix-river-drawing-thickness-based-on-flowlevel
+2026-10-26T09:16:16.7007923Z  * [new branch]      codex/fix-river-end-selection-near-sea-hexes -> origin/codex/fix-river-end-selection-near-sea-hexes
+2026-10-26T09:16:16.7008562Z  * [new branch]      codex/fix-river-end-selection-process -> origin/codex/fix-river-end-selection-process
+2026-10-26T09:16:16.7009154Z  * [new branch]      codex/fix-river-endpoint-selection -> origin/codex/fix-river-endpoint-selection
+2026-10-26T09:16:16.7009915Z  * [new branch]      codex/fix-river-endpoints-selection-logic -> origin/codex/fix-river-endpoints-selection-logic
+2026-10-26T09:16:16.7010642Z  * [new branch]      codex/fix-river-endpoints-to-use-boundary-edges -> origin/codex/fix-river-endpoints-to-use-boundary-edges
+2026-10-26T09:16:16.7011332Z  * [new branch]      codex/fix-river-extension-for-new-region -> origin/codex/fix-river-extension-for-new-region
+2026-10-26T09:16:16.7011962Z  * [new branch]      codex/fix-river-flow-adjustment-logic -> origin/codex/fix-river-flow-adjustment-logic
+2026-10-26T09:16:16.7012575Z  * [new branch]      codex/fix-river-flow-cases-for-height-3 -> origin/codex/fix-river-flow-cases-for-height-3
+2026-10-26T09:16:16.7013191Z  * [new branch]      codex/fix-river-flow-logic-in-region -> origin/codex/fix-river-flow-logic-in-region
+2026-10-26T09:16:16.7013828Z  * [new branch]      codex/fix-river-flow-logic-inconsistency -> origin/codex/fix-river-flow-logic-inconsistency
+2026-10-26T09:16:16.7014444Z  * [new branch]      codex/fix-river-flow-to-remain-at-1 -> origin/codex/fix-river-flow-to-remain-at-1
+2026-10-26T09:16:16.7015058Z  * [new branch]      codex/fix-river-flow-to-remain-at-1-ol14ri -> origin/codex/fix-river-flow-to-remain-at-1-ol14ri
+2026-10-26T09:16:16.7015666Z  * [new branch]      codex/fix-river-flowincrement-logic -> origin/codex/fix-river-flowincrement-logic
+2026-10-26T09:16:16.7016391Z  * [new branch]      codex/fix-river-generation-for-new-regions -> origin/codex/fix-river-generation-for-new-regions
+2026-10-26T09:16:16.7017049Z  * [new branch]      codex/fix-river-generation-in-new-region -> origin/codex/fix-river-generation-in-new-region
+2026-10-26T09:16:16.7017769Z  * [new branch]      codex/fix-river-generation-logic-for-heightlevel-3 -> origin/codex/fix-river-generation-logic-for-heightlevel-3
+2026-10-26T09:16:16.7018526Z  * [new branch]      codex/fix-river-generation-to-prevent-overlaps -> origin/codex/fix-river-generation-to-prevent-overlaps
+2026-10-26T09:16:16.7019492Z  * [new branch]      codex/fix-river-height-constraint-fallback-in-addregiontomap -> origin/codex/fix-river-height-constraint-fallback-in-addregiontomap
+2026-10-26T09:16:16.7020224Z  * [new branch]      codex/fix-river-logic-in-region-2 -> origin/codex/fix-river-logic-in-region-2
+2026-10-26T09:16:16.7020818Z  * [new branch]      codex/fix-river-mechanics-for-hex-edges -> origin/codex/fix-river-mechanics-for-hex-edges
+2026-10-26T09:16:16.7021434Z  * [new branch]      codex/fix-river-mechanics-in-hex-grid -> origin/codex/fix-river-mechanics-in-hex-grid
+2026-10-26T09:16:16.7022065Z  * [new branch]      codex/fix-river-path-center-hex-validation -> origin/codex/fix-river-path-center-hex-validation
+2026-10-26T09:16:16.7022645Z  * [new branch]      codex/fix-river-sector-edges -> origin/codex/fix-river-sector-edges
+2026-10-26T09:16:16.7023237Z  * [new branch]      codex/fix-river-sector-splitting-with-lakes -> origin/codex/fix-river-sector-splitting-with-lakes
+2026-10-26T09:16:16.7023869Z  * [new branch]      codex/fix-river-self-inflow-issue -> origin/codex/fix-river-self-inflow-issue
+2026-10-26T09:16:16.7024522Z  * [new branch]      codex/fix-road-connection-issue-between-regions -> origin/codex/fix-road-connection-issue-between-regions
+2026-10-26T09:16:16.7025238Z  * [new branch]      codex/fix-road-generation-logic-in-src/app.tsx -> origin/codex/fix-road-generation-logic-in-src/app.tsx
+2026-10-26T09:16:16.7025843Z  * [new branch]      codex/fix-road-logic-in-app.tsx -> origin/codex/fix-road-logic-in-app.tsx
+2026-10-26T09:16:16.7026578Z  * [new branch]      codex/fix-road-segment-handling-in-hex-candidates -> origin/codex/fix-road-segment-handling-in-hex-candidates
+2026-10-26T09:16:16.7027339Z  * [new branch]      codex/fix-small-tributary-river-generation-logic -> origin/codex/fix-small-tributary-river-generation-logic
+2026-10-26T09:16:16.7028089Z  * [new branch]      codex/fix-terrain-handling-for-fallback-regions -> origin/codex/fix-terrain-handling-for-fallback-regions
+2026-10-26T09:16:16.7028939Z  * [new branch]      codex/fix-tributary-connection-logic-in-app.tsx -> origin/codex/fix-tributary-connection-logic-in-app.tsx
+2026-10-26T09:16:16.7029679Z  * [new branch]      codex/fix-visibility-of-generate-region-button -> origin/codex/fix-visibility-of-generate-region-button
+2026-10-26T09:16:16.7030431Z  * [new branch]      codex/implement-biome-generation-restrictions -> origin/codex/implement-biome-generation-restrictions
+2026-10-26T09:16:16.7031267Z  * [new branch]      codex/implement-map-export-to-image-format -> origin/codex/implement-map-export-to-image-format
+2026-10-26T09:16:16.7032373Z  * [new branch]      codex/implement-map-export-to-image-format-0etmas -> origin/codex/implement-map-export-to-image-format-0etmas
+2026-10-26T09:16:16.7033306Z  * [new branch]      codex/implement-region-generation-rules -> origin/codex/implement-region-generation-rules
+2026-10-26T09:16:16.7034040Z  * [new branch]      codex/implement-river-system-logic-for-regions -> origin/codex/implement-river-system-logic-for-regions
+2026-10-26T09:16:16.7034799Z  * [new branch]      codex/implement-road-construction-in-wilderness -> origin/codex/implement-road-construction-in-wilderness
+2026-10-26T09:16:16.7035588Z  * [new branch]      codex/implement-road-construction-logic-for-regions -> origin/codex/implement-road-construction-logic-for-regions
+2026-10-26T09:16:16.7036491Z  * [new branch]      codex/implement-small-tributary-river-generation -> origin/codex/implement-small-tributary-river-generation
+2026-10-26T09:16:16.7037199Z  * [new branch]      codex/implement-standard-zoom-controls -> origin/codex/implement-standard-zoom-controls
+2026-10-26T09:16:16.7037886Z  * [new branch]      codex/implement-trail-logic-for-settled-region -> origin/codex/implement-trail-logic-for-settled-region
+2026-10-26T09:16:16.7038663Z  * [new branch]      codex/increase-terrain-tile-overlay-size-and-opacity -> origin/codex/increase-terrain-tile-overlay-size-and-opacity
+2026-10-26T09:16:16.7039648Z  * [new branch]      codex/increase-zoom-removal-range-and-remove-buttons -> origin/codex/increase-zoom-removal-range-and-remove-buttons
+2026-10-26T09:16:16.7040464Z  * [new branch]      codex/investigate-flow-reduction-logic-for-regions -> origin/codex/investigate-flow-reduction-logic-for-regions
+2026-10-26T09:16:16.7041298Z  * [new branch]      codex/investigate-flow-reduction-logic-for-regions-lbc40q -> origin/codex/investigate-flow-reduction-logic-for-regions-lbc40q
+2026-10-26T09:16:16.7042149Z  * [new branch]      codex/investigate-region-water-flow-generation-issue -> origin/codex/investigate-region-water-flow-generation-issue
+2026-10-26T09:16:16.7042994Z  * [new branch]      codex/investigate-river-flow-change-after-region-merge -> origin/codex/investigate-river-flow-change-after-region-merge
+2026-10-26T09:16:16.7043794Z  * [new branch]      codex/investigate-river-flow-correction-issue -> origin/codex/investigate-river-flow-correction-issue
+2026-10-26T09:16:16.7044511Z  * [new branch]      codex/investigate-river-flow-decrease-issue -> origin/codex/investigate-river-flow-decrease-issue
+2026-10-26T09:16:16.7045260Z  * [new branch]      codex/investigate-river-flow-increase-from-3-to-5 -> origin/codex/investigate-river-flow-increase-from-3-to-5
+2026-10-26T09:16:16.7045984Z  * [new branch]      codex/investigate-river-flow-increase-logic -> origin/codex/investigate-river-flow-increase-logic
+2026-10-26T09:16:16.7046796Z  * [new branch]      codex/investigate-river-flow-inheritance-issue -> origin/codex/investigate-river-flow-inheritance-issue
+2026-10-26T09:16:16.7047512Z  * [new branch]      codex/investigate-river-flow-reduction-issue -> origin/codex/investigate-river-flow-reduction-issue
+2026-10-26T09:16:16.7048210Z  * [new branch]      codex/investigate-river-merging-volume-issue -> origin/codex/investigate-river-merging-volume-issue
+2026-10-26T09:16:16.7048959Z  * [new branch]      codex/investigate-road-behavior-in-wilderness-region -> origin/codex/investigate-road-behavior-in-wilderness-region
+2026-10-26T09:16:16.7049712Z  * [new branch]      codex/investigate-road-connection-issue -> origin/codex/investigate-road-connection-issue
+2026-10-26T09:16:16.7050536Z  * [new branch]      codex/investigate-road-connection-issue-xzzbxq -> origin/codex/investigate-road-connection-issue-xzzbxq
+2026-10-26T09:16:16.7051367Z  * [new branch]      codex/investigate-road-connectivity-issue-in-swamp-region -> origin/codex/investigate-road-connectivity-issue-in-swamp-region
+2026-10-26T09:16:16.7052187Z  * [new branch]      codex/investigate-road-construction-logic-issue -> origin/codex/investigate-road-construction-logic-issue
+2026-10-26T09:16:16.7052876Z  * [new branch]      codex/investigate-road-end-logic-issue -> origin/codex/investigate-road-end-logic-issue
+2026-10-26T09:16:16.7053553Z  * [new branch]      codex/investigate-road-end-logic-issue-8bfl9b -> origin/codex/investigate-road-end-logic-issue-8bfl9b
+2026-10-26T09:16:16.7054343Z  * [new branch]      codex/investigate-terrain-generation-logic-for-rivers -> origin/codex/investigate-terrain-generation-logic-for-rivers
+2026-10-26T09:16:16.7055093Z  * [new branch]      codex/link-collapse-button-to-info-block -> origin/codex/link-collapse-button-to-info-block
+2026-10-26T09:16:16.7055730Z  * [new branch]      codex/locate-code-for-river-truncation -> origin/codex/locate-code-for-river-truncation
+2026-10-26T09:16:16.7056465Z  * [new branch]      codex/locate-removal-of-lake-creation -> origin/codex/locate-removal-of-lake-creation
+2026-10-26T09:16:16.7057148Z  * [new branch]      codex/locate-river-confluence-handling-logic -> origin/codex/locate-river-confluence-handling-logic
+2026-10-26T09:16:16.7057768Z  * [new branch]      codex/locate-river-logic-issues -> origin/codex/locate-river-logic-issues
+2026-10-26T09:16:16.7058360Z  * [new branch]      codex/locate-road-crossing-removal-by-id -> origin/codex/locate-road-crossing-removal-by-id
+2026-10-26T09:16:16.7059045Z  * [new branch]      codex/locate-second-road-generation-in-region -> origin/codex/locate-second-road-generation-in-region
+2026-10-26T09:16:16.7059856Z  * [new branch]      codex/make-buttons-inactive-when-no-region -> origin/codex/make-buttons-inactive-when-no-region
+2026-10-26T09:16:16.7060478Z  * [new branch]      codex/merge-rivers-in-new-region -> origin/codex/merge-rivers-in-new-region
+2026-10-26T09:16:16.7061191Z  * [new branch]      codex/refactor-additional-river-logic-for-edge-regions -> origin/codex/refactor-additional-river-logic-for-edge-regions
+2026-10-26T09:16:16.7061909Z  * [new branch]      codex/refactor-biome-display-on-map -> origin/codex/refactor-biome-display-on-map
+2026-10-26T09:16:16.7062517Z  * [new branch]      codex/refactor-biome-generation-logic -> origin/codex/refactor-biome-generation-logic
+2026-10-26T09:16:16.7063202Z  * [new branch]      codex/refactor-biome-land-type-logic-in-app.tsx -> origin/codex/refactor-biome-land-type-logic-in-app.tsx
+2026-10-26T09:16:16.7063933Z  * [new branch]      codex/refactor-hexcrawl-generator-to-add-rivers -> origin/codex/refactor-hexcrawl-generator-to-add-rivers
+2026-10-26T09:16:16.7064659Z  * [new branch]      codex/refactor-lake-creation-logic-in-app.tsx -> origin/codex/refactor-lake-creation-logic-in-app.tsx
+2026-10-26T09:16:16.7065388Z  * [new branch]      codex/refactor-lake-vertices-and-river-rendering -> origin/codex/refactor-lake-vertices-and-river-rendering
+2026-10-26T09:16:16.7066106Z  * [new branch]      codex/refactor-minor-river-generation-logic -> origin/codex/refactor-minor-river-generation-logic
+2026-10-26T09:16:16.7066941Z  * [new branch]      codex/refactor-minor-river-generation-logic-0neoti -> origin/codex/refactor-minor-river-generation-logic-0neoti
+2026-10-26T09:16:16.7067720Z  * [new branch]      codex/refactor-mvp-into-hexcrawl-area-generator -> origin/codex/refactor-mvp-into-hexcrawl-area-generator
+2026-10-26T09:16:16.7068477Z  * [new branch]      codex/refactor-point-of-interest-generation-order -> origin/codex/refactor-point-of-interest-generation-order
+2026-10-26T09:16:16.7069315Z  * [new branch]      codex/refactor-region-creation-with-river-height-fallback -> origin/codex/refactor-region-creation-with-river-height-fallback
+2026-10-26T09:16:16.7070185Z  * [new branch]      codex/refactor-region-growth-algorithm -> origin/codex/refactor-region-growth-algorithm
+2026-10-26T09:16:16.7070831Z  * [new branch]      codex/refactor-region-height-in-app.tsx -> origin/codex/refactor-region-height-in-app.tsx
+2026-10-26T09:16:16.7071499Z  * [new branch]      codex/refactor-region-hex-filling-algorithm -> origin/codex/refactor-region-hex-filling-algorithm
+2026-10-26T09:16:16.7072269Z  * [new branch]      codex/refactor-region-size-determination-and-display -> origin/codex/refactor-region-size-determination-and-display
+2026-10-26T09:16:16.7073052Z  * [new branch]      codex/refactor-river-endpoints-selection-logic -> origin/codex/refactor-river-endpoints-selection-logic
+2026-10-26T09:16:16.7073773Z  * [new branch]      codex/refactor-river-flowlevel-to-sector-level -> origin/codex/refactor-river-flowlevel-to-sector-level
+2026-10-26T09:16:16.7074464Z  * [new branch]      codex/refactor-river-logic-to-graph-model -> origin/codex/refactor-river-logic-to-graph-model
+2026-10-26T09:16:16.7075116Z  * [new branch]      codex/refactor-road-construction-logic -> origin/codex/refactor-road-construction-logic
+2026-10-26T09:16:16.7075762Z  * [new branch]      codex/refactor-road-rules-for-wild-terrain -> origin/codex/refactor-road-rules-for-wild-terrain
+2026-10-26T09:16:16.7076565Z  * [new branch]      codex/refactor-road-selection-logic-in-app.tsx -> origin/codex/refactor-road-selection-logic-in-app.tsx
+2026-10-26T09:16:16.7077283Z  * [new branch]      codex/refactor-third-road-construction-logic -> origin/codex/refactor-third-road-construction-logic
+2026-10-26T09:16:16.7078028Z  * [new branch]      codex/refactor-tryaddedgeminortributaryriver-logic -> origin/codex/refactor-tryaddedgeminortributaryriver-logic
+2026-10-26T09:16:16.7078742Z  * [new branch]      codex/remove-all-river-flow-related-code -> origin/codex/remove-all-river-flow-related-code
+2026-10-26T09:16:16.7079510Z  * [new branch]      codex/remove-duplicate-river-sector-block -> origin/codex/remove-duplicate-river-sector-block
+2026-10-26T09:16:16.7080259Z  * [new branch]      codex/remove-excess-space-and-fix-button-positioning -> origin/codex/remove-excess-space-and-fix-button-positioning
+2026-10-26T09:16:16.7081031Z  * [new branch]      codex/remove-minimum-length-criterion-for-roads -> origin/codex/remove-minimum-length-criterion-for-roads
+2026-10-26T09:16:16.7081738Z  * [new branch]      codex/remove-minor-river-generation-stage -> origin/codex/remove-minor-river-generation-stage
+2026-10-26T09:16:16.7082381Z  * [new branch]      codex/remove-sector-breakdown-on-inflow -> origin/codex/remove-sector-breakdown-on-inflow
+2026-10-26T09:16:16.7083072Z  * [new branch]      codex/replace-river-width-calculation-with-table -> origin/codex/replace-river-width-calculation-with-table
+2026-10-26T09:16:16.7083784Z  * [new branch]      codex/restore-river-flow-logic-for-height-3 -> origin/codex/restore-river-flow-logic-for-height-3
+2026-10-26T09:16:16.7084455Z  * [new branch]      codex/revert-last-changes-on-river-logic -> origin/codex/revert-last-changes-on-river-logic
+2026-10-26T09:16:16.7085067Z  * [new branch]      codex/revert-last-two-merged-tasks -> origin/codex/revert-last-two-merged-tasks
+2026-10-26T09:16:16.7085717Z  * [new branch]      codex/revise-road-generation-logic-in-app.tsx -> origin/codex/revise-road-generation-logic-in-app.tsx
+2026-10-26T09:16:16.7086497Z  * [new branch]      codex/rewrite-minor-river-logic-in-app.tsx -> origin/codex/rewrite-minor-river-logic-in-app.tsx
+2026-10-26T09:16:16.7087208Z  * [new branch]      codex/safely-update-river-generation-endpoints -> origin/codex/safely-update-river-generation-endpoints
+2026-10-26T09:16:16.7087940Z  * [new branch]      codex/separate-debug-points-into-red-and-orange -> origin/codex/separate-debug-points-into-red-and-orange
+2026-10-26T09:16:16.7088631Z  * [new branch]      codex/set-lake-color-to-match-river-color -> origin/codex/set-lake-color-to-match-river-color
+2026-10-26T09:16:16.7089493Z  * [new branch]      codex/setup-vite-react-app-deployment-on-github-pages -> origin/codex/setup-vite-react-app-deployment-on-github-pages
+2026-10-26T09:16:16.7090268Z  * [new branch]      codex/simplify-and-redesign-river-mechanics -> origin/codex/simplify-and-redesign-river-mechanics
+2026-10-26T09:16:16.7090972Z  * [new branch]      codex/simplify-flowlevel-logic-in-riversector -> origin/codex/simplify-flowlevel-logic-in-riversector
+2026-10-26T09:16:16.7091648Z  * [new branch]      codex/simplify-river-endpoints-selection -> origin/codex/simplify-river-endpoints-selection
+2026-10-26T09:16:16.7092394Z  * [new branch]      codex/suggest-pathfinding-logic-for-road-construction -> origin/codex/suggest-pathfinding-logic-for-road-construction
+2026-10-26T09:16:16.7093271Z  * [new branch]      codex/suggest-pathfinding-logic-for-road-construction-1vfgau -> origin/codex/suggest-pathfinding-logic-for-road-construction-1vfgau
+2026-10-26T09:16:16.7094048Z  * [new branch]      codex/trim-road-segment-outside-region -> origin/codex/trim-road-segment-outside-region
+2026-10-26T09:16:16.7094658Z  * [new branch]      codex/update-base-for-github-pages -> origin/codex/update-base-for-github-pages
+2026-10-26T09:16:16.7095330Z  * [new branch]      codex/update-biome-selection-for-outgoing-rivers -> origin/codex/update-biome-selection-for-outgoing-rivers
+2026-10-26T09:16:16.7096079Z  * [new branch]      codex/update-central-hex-display-with-star-emoji -> origin/codex/update-central-hex-display-with-star-emoji
+2026-10-26T09:16:16.7096892Z  * [new branch]      codex/update-debug-point-color-priority -> origin/codex/update-debug-point-color-priority
+2026-10-26T09:16:16.7097580Z  * [new branch]      codex/update-endvertex-selection-for-new-river -> origin/codex/update-endvertex-selection-for-new-river
+2026-10-26T09:16:16.7098250Z  * [new branch]      codex/update-hexagon-to-show-click-me -> origin/codex/update-hexagon-to-show-click-me
+2026-10-26T09:16:16.7099034Z  * [new branch]      codex/update-hexcrawl-region-generator-ui -> origin/codex/update-hexcrawl-region-generator-ui
+2026-10-26T09:16:16.7099745Z  * [new branch]      codex/update-hide-button-design-and-placement -> origin/codex/update-hide-button-design-and-placement
+2026-10-26T09:16:16.7100438Z  * [new branch]      codex/update-info-block-visibility-logic -> origin/codex/update-info-block-visibility-logic
+2026-10-26T09:16:16.7101231Z  * [new branch]      codex/update-initial-river-fullness-and-region-info-display -> origin/codex/update-initial-river-fullness-and-region-info-display
+2026-10-26T09:16:16.7102036Z  * [new branch]      codex/update-lake-expansion-logic-in-app.tsx -> origin/codex/update-lake-expansion-logic-in-app.tsx
+2026-10-26T09:16:16.7102669Z  * [new branch]      codex/update-lake-hex-display-logic -> origin/codex/update-lake-hex-display-logic
+2026-10-26T09:16:16.7103339Z  * [new branch]      codex/update-point-of-interest-formula-in-app.tsx -> origin/codex/update-point-of-interest-formula-in-app.tsx
+2026-10-26T09:16:16.7104163Z  * [new branch]      codex/update-point-of-interest-formula-in-app.tsx-6tmay1 -> origin/codex/update-point-of-interest-formula-in-app.tsx-6tmay1
+2026-10-26T09:16:16.7104908Z  * [new branch]      codex/update-region-fill-colors-by-biome -> origin/codex/update-region-fill-colors-by-biome
+2026-10-26T09:16:16.7105552Z  * [new branch]      codex/update-region-generation-algorithm -> origin/codex/update-region-generation-algorithm
+2026-10-26T09:16:16.7106242Z  * [new branch]      codex/update-region-growth-algorithm -> origin/codex/update-region-growth-algorithm
+2026-10-26T09:16:16.7106881Z  * [new branch]      codex/update-region-growth-algorithm-g2h34s -> origin/codex/update-region-growth-algorithm-g2h34s
+2026-10-26T09:16:16.7107590Z  * [new branch]      codex/update-region-size-calculation-algorithm -> origin/codex/update-region-size-calculation-algorithm
+2026-10-26T09:16:16.7108365Z  * [new branch]      codex/update-region-size-calculation-algorithm-9yfn2n -> origin/codex/update-region-size-calculation-algorithm-9yfn2n
+2026-10-26T09:16:16.7109075Z  * [new branch]      codex/update-river-generation-logic -> origin/codex/update-river-generation-logic
+2026-10-26T09:16:16.7109833Z  * [new branch]      codex/update-river-generation-logic-in-app.tsx -> origin/codex/update-river-generation-logic-in-app.tsx
+2026-10-26T09:16:16.7110530Z  * [new branch]      codex/update-river-sector-flowlevel-logic -> origin/codex/update-river-sector-flowlevel-logic
+2026-10-26T09:16:16.7111254Z  * [new branch]      codex/update-river-starting-logic-to-use-endpoints -> origin/codex/update-river-starting-logic-to-use-endpoints
+2026-10-26T09:16:16.7112059Z  * [new branch]      codex/update-road-generation-logic-for-settled-region -> origin/codex/update-road-generation-logic-for-settled-region
+2026-10-26T09:16:16.7112790Z  * [new branch]      codex/update-trail-river-crossing-rules -> origin/codex/update-trail-river-crossing-rules
+2026-10-26T09:16:16.7113503Z  * [new branch]      codex/update-tryaddedgeminortributaryriver-logic -> origin/codex/update-tryaddedgeminortributaryriver-logic
+2026-10-26T09:16:16.7114223Z  * [new branch]      codex/update-ui-elements-and-button-layout -> origin/codex/update-ui-elements-and-button-layout
+2026-10-26T09:16:16.7114926Z  * [new branch]      codex/update-visual-styles-for-trails-and-arrows -> origin/codex/update-visual-styles-for-trails-and-arrows
+2026-10-26T09:16:16.7115599Z  * [new branch]      codex/update-wild-region-road-criteria -> origin/codex/update-wild-region-road-criteria
+2026-10-26T09:16:16.7116267Z  * [new branch]      codex/verify-river-clipping-issue -> origin/codex/verify-river-clipping-issue
+2026-10-26T09:16:16.7116851Z  * [new branch]      diagnostics/kingdom-growth-20261010 -> origin/diagnostics/kingdom-growth-20261010
+2026-10-26T09:16:16.7117420Z  * [new branch]      diagnostics/river-search-20261011 -> origin/diagnostics/river-search-20261011
+2026-10-26T09:16:16.7117885Z  * [new branch]      docs/river-model        -> origin/docs/river-model
+2026-10-26T09:16:16.7118409Z  * [new branch]      docs/road-model-audit   -> origin/docs/road-model-audit
+2026-10-26T09:16:16.7118964Z  * [new branch]      docs/score-model-game-coverage-2026-10-25 -> origin/docs/score-model-game-coverage-2026-10-25
+2026-10-26T09:16:16.7119507Z  * [new branch]      feat/dead-forest-biomes -> origin/feat/dead-forest-biomes
+2026-10-26T09:16:16.7119993Z  * [new branch]      feat/germanic-toponyms-20260924 -> origin/feat/germanic-toponyms-20260924
+2026-10-26T09:16:16.7120464Z  * [new branch]      feat/river-model-core   -> origin/feat/river-model-core
+2026-10-26T09:16:16.7120929Z  * [new branch]      feat/river-model-integration -> origin/feat/river-model-integration
+2026-10-26T09:16:16.7121383Z  * [new branch]      feature/biome-color     -> origin/feature/biome-color
+2026-10-26T09:16:16.7121853Z  * [new branch]      feature/dolmenwood-forest-color -> origin/feature/dolmenwood-forest-color
+2026-10-26T09:16:16.7122377Z  * [new branch]      feature/lake-basins-color-only -> origin/feature/lake-basins-color-only
+2026-10-26T09:16:16.7122874Z  * [new branch]      feature/mythic-bastionland -> origin/feature/mythic-bastionland
+2026-10-26T09:16:16.7123378Z  * [new branch]      feature/natural-lakes-all-modes -> origin/feature/natural-lakes-all-modes
+2026-10-26T09:16:16.7123860Z  * [new branch]      feature/terrain-color-v2 -> origin/feature/terrain-color-v2
+2026-10-26T09:16:16.7124272Z  * [new branch]      fix-info                -> origin/fix-info
+2026-10-26T09:16:16.7124684Z  * [new branch]      fix/closed-river-endpoints -> origin/fix/closed-river-endpoints
+2026-10-26T09:16:16.7125159Z  * [new branch]      fix/coastal-region-fallback -> origin/fix/coastal-region-fallback
+2026-10-26T09:16:16.7125628Z  * [new branch]      fix/coastal-region-retries -> origin/fix/coastal-region-retries
+2026-10-26T09:16:16.7126095Z  * [new branch]      fix/dead-forest-tile-format -> origin/fix/dead-forest-tile-format
+2026-10-26T09:16:16.7126698Z  * [new branch]      fix/forest-canopy-light-20261009 -> origin/fix/forest-canopy-light-20261009
+2026-10-26T09:16:16.7127281Z  * [new branch]      fix/forest-import-readiness-20261009 -> origin/fix/forest-import-readiness-20261009
+2026-10-26T09:16:16.7127970Z  * [new branch]      fix/forest-water-woodland-contacts -> origin/fix/forest-water-woodland-contacts
+2026-10-26T09:16:16.7128528Z  * [new branch]      fix/generation-error-handling -> origin/fix/generation-error-handling
+2026-10-26T09:16:16.7129003Z  * [new branch]      fix/lake-reentry-scope  -> origin/fix/lake-reentry-scope
+2026-10-26T09:16:16.7129481Z  * [new branch]      fix/mythic-center-and-pockets -> origin/fix/mythic-center-and-pockets
+2026-10-26T09:16:16.7130047Z  * [new branch]      fix/mythic-tract-river-continuation -> origin/fix/mythic-tract-river-continuation
+2026-10-26T09:16:16.7130595Z  * [new branch]      fix/reclaim-sea-for-generation -> origin/fix/reclaim-sea-for-generation
+2026-10-26T09:16:16.7131060Z  * [new branch]      fix/road-continuation   -> origin/fix/road-continuation
+2026-10-26T09:16:16.7131530Z  * [new branch]      fix/road-route-from-endpoint -> origin/fix/road-route-from-endpoint
+2026-10-26T09:16:16.7132023Z  * [new branch]      fix/terrain-water-and-art -> origin/fix/terrain-water-and-art
+2026-10-26T09:16:16.7132567Z  * [new branch]      fix/toponym-scope-and-variety-20260924 -> origin/fix/toponym-scope-and-variety-20260924
+2026-10-26T09:16:16.7133131Z  * [new branch]      fix/tract-source-away-from-sea -> origin/fix/tract-source-away-from-sea
+2026-10-26T09:16:16.7133560Z  * [new branch]      main                    -> origin/main
+2026-10-26T09:16:16.7134034Z  * [new branch]      perf/deferred-kingdom-render-20261010 -> origin/perf/deferred-kingdom-render-20261010
+2026-10-26T09:16:16.7134621Z  * [new branch]      perf/large-map-navigation-20261010 -> origin/perf/large-map-navigation-20261010
+2026-10-26T09:16:16.7135189Z  * [new branch]      perf/smooth-map-navigation-20261010 -> origin/perf/smooth-map-navigation-20261010
+2026-10-26T09:16:16.7135812Z  * [new branch]      prototype/forest-canopy -> origin/prototype/forest-canopy
+2026-10-26T09:16:16.7136377Z  * [new branch]      prototype/forest-review -> origin/prototype/forest-review
+2026-10-26T09:16:16.7136960Z  * [new branch]      revert-18-codex/fix-river-continuation-logic -> origin/revert-18-codex/fix-river-continuation-logic
+2026-10-26T09:16:16.7137700Z  * [new branch]      revert-19-codex/fix-river-generation-for-new-regions -> origin/revert-19-codex/fix-river-generation-for-new-regions
+2026-10-26T09:16:16.7138451Z  * [new branch]      revert-20-codex/fix-river-mechanics-for-hex-edges -> origin/revert-20-codex/fix-river-mechanics-for-hex-edges
+2026-10-26T09:16:16.7139256Z  * [new branch]      revert-21-codex/add-river-network-validation-and-diagnostics -> origin/revert-21-codex/add-river-network-validation-and-diagnostics
+2026-10-26T09:16:16.7140119Z  * [new branch]      revert-30-codex/fix-river-endpoints-to-use-boundary-edges -> origin/revert-30-codex/fix-river-endpoints-to-use-boundary-edges
+2026-10-26T09:16:16.7140758Z  * [new branch]      revert-393-codex-f1ed6w -> origin/revert-393-codex-f1ed6w
+2026-10-26T09:16:16.7141218Z  * [new branch]      revert-396-codex-f2pe10 -> origin/revert-396-codex-f2pe10
+2026-10-26T09:16:16.7141938Z  * [new branch]      revert-9-codex/add-procedural-river-network-to-hexcrawl-generator -> origin/revert-9-codex/add-procedural-river-network-to-hexcrawl-generator
+2026-10-26T09:16:16.7142585Z  * [new branch]      sea_poi                 -> origin/sea_poi
+2026-10-26T09:16:16.7142932Z  * [new branch]      sea_poi_2               -> origin/sea_poi_2
+2026-10-26T09:16:16.7143285Z  * [new branch]      sea_poi_3               -> origin/sea_poi_3
+2026-10-26T09:16:16.7143733Z  * [new branch]      strategy/agent-vision-2026-10-22 -> origin/strategy/agent-vision-2026-10-22
+2026-10-26T09:16:16.7144306Z  * [new branch]      style/oblique-forest-preview-20261011 -> origin/style/oblique-forest-preview-20261011
+2026-10-26T09:16:16.7144849Z  * [new branch]      test/browser-download-pacing -> origin/test/browser-download-pacing
+2026-10-26T09:16:16.7146405Z [command]/usr/bin/git rev-parse --verify --quiet d713cb9d11c0cd00bfda1eaf13a7489f58e48634^{object}
+2026-10-26T09:16:16.7146847Z d713cb9d11c0cd00bfda1eaf13a7489f58e48634
+2026-10-26T09:16:16.7147696Z ##[endgroup]
+2026-10-26T09:16:16.7148082Z ##[group]Determining the checkout info
+2026-10-26T09:16:16.7148473Z ##[endgroup]
+2026-10-26T09:16:16.7148722Z [command]/usr/bin/git sparse-checkout disable
+2026-10-26T09:16:16.7181908Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-26T09:16:16.7250127Z ##[group]Checking out the ref
+2026-10-26T09:16:16.7253671Z [command]/usr/bin/git checkout --progress --force d713cb9d11c0cd00bfda1eaf13a7489f58e48634
+2026-10-26T09:16:16.7734229Z Note: switching to 'd713cb9d11c0cd00bfda1eaf13a7489f58e48634'.
+2026-10-26T09:16:16.7734575Z 
+2026-10-26T09:16:16.7734791Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-10-26T09:16:16.7735243Z changes and commit them, and you can discard any commits you make in this
+2026-10-26T09:16:16.7735760Z state without impacting any branches by switching back to a branch.
+2026-10-26T09:16:16.7736007Z 
+2026-10-26T09:16:16.7736373Z If you want to create a new branch to retain commits you create, you may
+2026-10-26T09:16:16.7736820Z do so (now or later) by using -c with the switch command. Example:
+2026-10-26T09:16:16.7737048Z 
+2026-10-26T09:16:16.7737167Z   git switch -c <new-branch-name>
+2026-10-26T09:16:16.7737339Z 
+2026-10-26T09:16:16.7737459Z Or undo this operation with:
+2026-10-26T09:16:16.7737609Z 
+2026-10-26T09:16:16.7737716Z   git switch -
+2026-10-26T09:16:16.7737839Z 
+2026-10-26T09:16:16.7738047Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-10-26T09:16:16.7738306Z 
+2026-10-26T09:16:16.7738568Z HEAD is now at d713cb9 test(performance): freeze approved V2 navigation and PNG diagnostic package
+2026-10-26T09:16:16.7748458Z ##[endgroup]
+2026-10-26T09:16:16.7791272Z [command]/usr/bin/git log -1 --format=%H
+2026-10-26T09:16:16.7813775Z d713cb9d11c0cd00bfda1eaf13a7489f58e48634
+2026-10-26T09:16:16.8081481Z ##[group]Run actions/setup-node@v4
+2026-10-26T09:16:16.8081889Z with:
+2026-10-26T09:16:16.8082186Z   node-version: 24
+2026-10-26T09:16:16.8082515Z   always-auth: false
+2026-10-26T09:16:16.8082840Z   check-latest: false
+2026-10-26T09:16:16.8086106Z   token: ***
+2026-10-26T09:16:16.8086581Z ##[endgroup]
+2026-10-26T09:16:16.9430495Z Found in cache @ /opt/hostedtoolcache/node/24.21.0/x64
+2026-10-26T09:16:16.9434226Z (node:2083) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-26T09:16:16.9435247Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-26T09:16:16.9436734Z ##[group]Environment details
+2026-10-26T09:16:22.2362931Z node: v24.21.0
+2026-10-26T09:16:22.2363276Z npm: 11.19.0
+2026-10-26T09:16:22.2363512Z yarn: 1.22.22
+2026-10-26T09:16:22.2364624Z ##[endgroup]
+2026-10-26T09:16:22.2488783Z ##[group]Run npm ci
+2026-10-26T09:16:22.2489046Z [36;1mnpm ci[0m
+2026-10-26T09:16:22.2795129Z shell: /usr/bin/bash -e {0}
+2026-10-26T09:16:22.2795369Z ##[endgroup]
+2026-10-26T09:16:26.1392631Z 
+2026-10-26T09:16:26.1398551Z added 71 packages, and audited 72 packages in 4s
+2026-10-26T09:16:26.1398817Z 
+2026-10-26T09:16:26.1398976Z 7 packages are looking for funding
+2026-10-26T09:16:26.1399227Z   run `npm fund` for details
+2026-10-26T09:16:26.1473761Z 
+2026-10-26T09:16:26.1474301Z 2 vulnerabilities (1 moderate, 1 high)
+2026-10-26T09:16:26.1474597Z 
+2026-10-26T09:16:26.1474847Z To address all issues (including breaking changes), run:
+2026-10-26T09:16:26.1475163Z   npm audit fix --force
+2026-10-26T09:16:26.1475294Z 
+2026-10-26T09:16:26.1475398Z Run `npm audit` for details.
+2026-10-26T09:16:26.1482100Z npm warn install-scripts 1 package has install scripts not yet covered by allowScripts:
+2026-10-26T09:16:26.1483092Z npm warn install-scripts   esbuild@0.21.5 (postinstall: node install.js)
+2026-10-26T09:16:26.1483661Z npm warn install-scripts
+2026-10-26T09:16:26.1484484Z npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow.
+2026-10-26T09:16:26.1914197Z ##[group]Run npx playwright install --with-deps chromium
+2026-10-26T09:16:26.1914575Z [36;1mnpx playwright install --with-deps chromium[0m
+2026-10-26T09:16:26.1974708Z shell: /usr/bin/bash -e {0}
+2026-10-26T09:16:26.1974930Z ##[endgroup]
+2026-10-26T09:16:26.9000322Z Installing dependencies...
+2026-10-26T09:16:26.9065231Z Switching to root user to install dependencies...
+2026-10-26T09:16:27.0848281Z Get:1 https://packages.microsoft.com/ubuntu/24.04/prod noble InRelease [3600 B]
+2026-10-26T09:16:27.1036429Z Get:2 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+2026-10-26T09:16:27.1406429Z Hit:3 http://azure.archive.ubuntu.com/ubuntu noble InRelease
+2026-10-26T09:16:27.1414890Z Get:4 http://azure.archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]
+2026-10-26T09:16:27.1485302Z Get:5 http://azure.archive.ubuntu.com/ubuntu noble-backports InRelease [126 kB]
+2026-10-26T09:16:27.1536514Z Get:6 http://azure.archive.ubuntu.com/ubuntu noble-security InRelease [126 kB]
+2026-10-26T09:16:27.1945183Z Get:7 https://packages.microsoft.com/ubuntu/24.04/prod noble/main armhf Packages [12.4 kB]
+2026-10-26T09:16:27.2142945Z Get:8 https://packages.microsoft.com/ubuntu/24.04/prod noble/main arm64 Packages [598 kB]
+2026-10-26T09:16:27.2227052Z Get:9 https://packages.microsoft.com/ubuntu/24.04/prod noble/main amd64 Packages [661 kB]
+2026-10-26T09:16:27.2966448Z Get:10 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages [1400 kB]
+2026-10-26T09:16:27.3138066Z Get:11 http://azure.archive.ubuntu.com/ubuntu noble-updates/main Translation-en [310 kB]
+2026-10-26T09:16:27.3177395Z Get:12 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 Packages [1706 kB]
+2026-10-26T09:16:27.3235736Z Get:13 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe Translation-en [342 kB]
+2026-10-26T09:16:27.3249235Z Get:14 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted amd64 Packages [1805 kB]
+2026-10-26T09:16:27.3338058Z Get:15 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted Translation-en [411 kB]
+2026-10-26T09:16:27.3839988Z Get:16 http://azure.archive.ubuntu.com/ubuntu noble-security/main amd64 Packages [1146 kB]
+2026-10-26T09:16:27.3895191Z Get:17 http://azure.archive.ubuntu.com/ubuntu noble-security/main Translation-en [231 kB]
+2026-10-26T09:16:27.3911974Z Get:18 http://azure.archive.ubuntu.com/ubuntu noble-security/universe amd64 Packages [1222 kB]
+2026-10-26T09:16:27.3969601Z Get:19 http://azure.archive.ubuntu.com/ubuntu noble-security/universe Translation-en [246 kB]
+2026-10-26T09:16:27.4398144Z Get:20 http://azure.archive.ubuntu.com/ubuntu noble-security/restricted amd64 Packages [1713 kB]
+2026-10-26T09:16:27.4482366Z Get:21 http://azure.archive.ubuntu.com/ubuntu noble-security/restricted Translation-en [392 kB]
+2026-10-26T09:16:39.3462828Z Fetched 12.6 MB in 1s (11.2 MB/s)
+2026-10-26T09:16:40.0722801Z Reading package lists...
+2026-10-26T09:16:40.0926517Z Reading package lists...
+2026-10-26T09:16:40.2701401Z Building dependency tree...
+2026-10-26T09:16:40.2708325Z Reading state information...
+2026-10-26T09:16:40.3979568Z libasound2t64 is already the newest version (1.2.11-1ubuntu0.3).
+2026-10-26T09:16:40.3980327Z libasound2t64 set to manually installed.
+2026-10-26T09:16:40.3980955Z libatk-bridge2.0-0t64 is already the newest version (2.52.0-1build1).
+2026-10-26T09:16:40.3981564Z libatk-bridge2.0-0t64 set to manually installed.
+2026-10-26T09:16:40.3982120Z libatk1.0-0t64 is already the newest version (2.52.0-1build1).
+2026-10-26T09:16:40.3982648Z libatk1.0-0t64 set to manually installed.
+2026-10-26T09:16:40.3983162Z libatspi2.0-0t64 is already the newest version (2.52.0-1build1).
+2026-10-26T09:16:40.3983677Z libatspi2.0-0t64 set to manually installed.
+2026-10-26T09:16:40.3984168Z libcairo2 is already the newest version (1.18.0-3build1).
+2026-10-26T09:16:40.3984652Z libcairo2 set to manually installed.
+2026-10-26T09:16:40.3985210Z libcups2t64 is already the newest version (2.4.7-1.2ubuntu7.14).
+2026-10-26T09:16:40.3986755Z libcups2t64 set to manually installed.
+2026-10-26T09:16:40.3987337Z libdbus-1-3 is already the newest version (1.14.10-4ubuntu4.1).
+2026-10-26T09:16:40.3987914Z libdbus-1-3 set to manually installed.
+2026-10-26T09:16:40.3988499Z libdrm2 is already the newest version (2.4.125-1ubuntu0.1~24.04.2).
+2026-10-26T09:16:40.3989081Z libdrm2 set to manually installed.
+2026-10-26T09:16:40.3989602Z libgbm1 is already the newest version (25.2.8-0ubuntu0.24.04.4).
+2026-10-26T09:16:40.3990102Z libgbm1 set to manually installed.
+2026-10-26T09:16:40.3990601Z libnspr4 is already the newest version (2:4.35-1.1build1).
+2026-10-26T09:16:40.3991016Z libnspr4 set to manually installed.
+2026-10-26T09:16:40.3991474Z libpango-1.0-0 is already the newest version (1.52.1+ds-1build1).
+2026-10-26T09:16:40.3991802Z libpango-1.0-0 set to manually installed.
+2026-10-26T09:16:40.3992128Z libx11-6 is already the newest version (2:1.8.7-1ubuntu0.1).
+2026-10-26T09:16:40.3992431Z libx11-6 set to manually installed.
+2026-10-26T09:16:40.3992721Z libxcb1 is already the newest version (1.15-1ubuntu2).
+2026-10-26T09:16:40.3993109Z libxcb1 set to manually installed.
+2026-10-26T09:16:40.3993495Z libxcomposite1 is already the newest version (1:0.4.5-1build3).
+2026-10-26T09:16:40.3993817Z libxcomposite1 set to manually installed.
+2026-10-26T09:16:40.3994136Z libxdamage1 is already the newest version (1:1.1.6-1build1).
+2026-10-26T09:16:40.3994433Z libxdamage1 set to manually installed.
+2026-10-26T09:16:40.3994839Z libxext6 is already the newest version (2:1.3.4-1build2).
+2026-10-26T09:16:40.3995138Z libxext6 set to manually installed.
+2026-10-26T09:16:40.3995451Z libxfixes3 is already the newest version (1:6.0.0-2build1).
+2026-10-26T09:16:40.3995755Z libxfixes3 set to manually installed.
+2026-10-26T09:16:40.3996067Z libxkbcommon0 is already the newest version (1.6.0-1build1).
+2026-10-26T09:16:40.3996617Z libxkbcommon0 set to manually installed.
+2026-10-26T09:16:40.3997359Z libxrandr2 is already the newest version (2:1.5.2-2build1).
+2026-10-26T09:16:40.3997669Z libxrandr2 set to manually installed.
+2026-10-26T09:16:40.3998065Z fonts-noto-color-emoji is already the newest version (2.047-0ubuntu0.24.04.1).
+2026-10-26T09:16:40.3998493Z libfontconfig1 is already the newest version (2.15.0-1.1ubuntu2).
+2026-10-26T09:16:40.3998841Z libfontconfig1 set to manually installed.
+2026-10-26T09:16:40.3999211Z libfreetype6 is already the newest version (2.13.2+dfsg-1ubuntu0.2).
+2026-10-26T09:16:40.3999550Z libfreetype6 set to manually installed.
+2026-10-26T09:16:40.3999876Z fonts-liberation is already the newest version (1:2.1.5-3).
+2026-10-26T09:16:40.4000205Z fonts-liberation set to manually installed.
+2026-10-26T09:16:40.4000537Z The following additional packages will be installed:
+2026-10-26T09:16:40.4000897Z   gir1.2-glib-2.0 libglib2.0-bin libglib2.0-data libnss3-tools
+2026-10-26T09:16:40.4001212Z   xfonts-encodings xfonts-utils xserver-common
+2026-10-26T09:16:40.4001467Z Suggested packages:
+2026-10-26T09:16:40.4001653Z   low-memory-monitor
+2026-10-26T09:16:40.4001846Z Recommended packages:
+2026-10-26T09:16:40.4002084Z   fonts-ipafont-mincho fonts-tlwg-loma xfonts-base
+2026-10-26T09:16:40.4456290Z The following NEW packages will be installed:
+2026-10-26T09:16:40.4457025Z   fonts-freefont-ttf fonts-ipafont-gothic fonts-tlwg-loma-otf fonts-unifont
+2026-10-26T09:16:40.4461504Z   fonts-wqy-zenhei xfonts-cyrillic xfonts-encodings xfonts-scalable
+2026-10-26T09:16:40.4462053Z   xfonts-utils
+2026-10-26T09:16:40.4464522Z The following packages will be upgraded:
+2026-10-26T09:16:40.4465862Z   gir1.2-glib-2.0 libglib2.0-0t64 libglib2.0-bin libglib2.0-data libnss3
+2026-10-26T09:16:40.4469065Z   libnss3-tools xserver-common xvfb
+2026-10-26T09:16:40.4610775Z 8 upgraded, 9 newly installed, 0 to remove and 92 not upgraded.
+2026-10-26T09:16:40.4611319Z Need to get 25.9 MB of archives.
+2026-10-26T09:16:40.4611855Z After this operation, 79.5 MB of additional disk space will be used.
+2026-10-26T09:16:40.4612496Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+2026-10-26T09:16:41.2214008Z Get:2 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-ipafont-gothic all 00303-21ubuntu1 [3513 kB]
+2026-10-26T09:18:05.3218435Z Get:3 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libglib2.0-data all 2.80.0-6ubuntu3.10 [50.2 kB]
+2026-10-26T09:18:07.1966997Z Get:4 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libglib2.0-bin amd64 2.80.0-6ubuntu3.10 [97.9 kB]
+2026-10-26T09:18:10.1178933Z Get:5 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 gir1.2-glib-2.0 amd64 2.80.0-6ubuntu3.10 [183 kB]
+2026-10-26T09:18:14.7254400Z Get:6 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libglib2.0-0t64 amd64 2.80.0-6ubuntu3.10 [1548 kB]
+2026-10-26T09:21:10.3397772Z Ign:6 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libglib2.0-0t64 amd64 2.80.0-6ubuntu3.10
+2026-10-26T09:21:10.9158854Z Get:7 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 fonts-freefont-ttf all 20211204+svn4273-2 [5641 kB]
+2026-10-26T09:23:32.7305948Z Get:8 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-tlwg-loma-otf all 1:0.7.3-1 [107 kB]
+2026-10-26T09:23:36.0318285Z Get:9 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-unifont all 1:15.1.01-1build1 [2993 kB]
+2026-10-26T09:24:51.3218934Z Get:10 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-wqy-zenhei all 0.9.45-8 [7472 kB]
+2026-10-26T09:28:00.2944927Z Get:11 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libnss3 amd64 2:3.98-1ubuntu0.3 [1445 kB]
+2026-10-26T09:28:36.5070581Z Get:12 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libnss3-tools amd64 2:3.98-1ubuntu0.3 [615 kB]
+2026-10-26T09:28:52.4700117Z Get:13 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 xfonts-encodings all 1:1.0.5-0ubuntu2 [578 kB]
+2026-10-26T09:29:08.0212999Z Get:14 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 xfonts-utils amd64 1:7.7+6build3 [94.4 kB]
+2026-10-26T09:29:10.9670799Z Get:15 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 xfonts-cyrillic all 1:1.0.5+nmu1 [384 kB]
+2026-10-26T09:29:21.1254388Z Get:16 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 xfonts-scalable all 1:1.0.3-1.3 [304 kB]
+2026-10-26T09:29:29.8177454Z Get:17 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 xserver-common all 2:21.1.12-1ubuntu1.9 [35.0 kB]
+2026-10-26T09:29:31.1179970Z Get:18 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 xvfb amd64 2:21.1.12-1ubuntu1.9 [877 kB]
+2026-10-26T09:29:53.7519818Z Get:6 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libglib2.0-0t64 amd64 2.80.0-6ubuntu3.10 [1548 kB]
+2026-10-26T09:30:01.9225207Z Fetched 24.7 MB in 13min 21s (30.9 kB/s)
+2026-10-26T09:30:01.9607146Z Selecting previously unselected package fonts-ipafont-gothic.
+2026-10-26T09:30:02.0230337Z (Reading database ... 
+2026-10-26T09:30:02.0231006Z (Reading database ... 5%
+2026-10-26T09:30:02.0231429Z (Reading database ... 10%
+2026-10-26T09:30:02.0231726Z (Reading database ... 15%
+2026-10-26T09:30:02.0232022Z (Reading database ... 20%
+2026-10-26T09:30:02.0232303Z (Reading database ... 25%
+2026-10-26T09:30:02.0232570Z (Reading database ... 30%
+2026-10-26T09:30:02.0232873Z (Reading database ... 35%
+2026-10-26T09:30:02.0233164Z (Reading database ... 40%
+2026-10-26T09:30:02.0233434Z (Reading database ... 45%
+2026-10-26T09:30:02.0233713Z (Reading database ... 50%
+2026-10-26T09:30:02.0578999Z (Reading database ... 55%
+2026-10-26T09:30:02.4600100Z (Reading database ... 60%
+2026-10-26T09:30:02.7636021Z (Reading database ... 65%
+2026-10-26T09:30:03.0262334Z (Reading database ... 70%
+2026-10-26T09:30:03.3606980Z (Reading database ... 75%
+2026-10-26T09:30:03.7610607Z (Reading database ... 80%
+2026-10-26T09:30:04.4646573Z (Reading database ... 85%
+2026-10-26T09:30:05.7769353Z (Reading database ... 90%
+2026-10-26T09:30:06.7879839Z (Reading database ... 95%
+2026-10-26T09:30:06.7880235Z (Reading database ... 100%
+2026-10-26T09:30:06.7880589Z (Reading database ... 203540 files and directories currently installed.)
+2026-10-26T09:30:06.7923678Z Preparing to unpack .../00-fonts-ipafont-gothic_00303-21ubuntu1_all.deb ...
+2026-10-26T09:30:06.8096687Z Unpacking fonts-ipafont-gothic (00303-21ubuntu1) ...
+2026-10-26T09:30:07.0475219Z Preparing to unpack .../01-libglib2.0-data_2.80.0-6ubuntu3.10_all.deb ...
+2026-10-26T09:30:07.0493973Z Unpacking libglib2.0-data (2.80.0-6ubuntu3.10) over (2.80.0-6ubuntu3.9) ...
+2026-10-26T09:30:07.0876988Z Preparing to unpack .../02-libglib2.0-bin_2.80.0-6ubuntu3.10_amd64.deb ...
+2026-10-26T09:30:07.0893702Z Unpacking libglib2.0-bin (2.80.0-6ubuntu3.10) over (2.80.0-6ubuntu3.9) ...
+2026-10-26T09:30:07.1555877Z Preparing to unpack .../03-gir1.2-glib-2.0_2.80.0-6ubuntu3.10_amd64.deb ...
+2026-10-26T09:30:07.1573541Z Unpacking gir1.2-glib-2.0:amd64 (2.80.0-6ubuntu3.10) over (2.80.0-6ubuntu3.9) ...
+2026-10-26T09:30:07.1950244Z Preparing to unpack .../04-libglib2.0-0t64_2.80.0-6ubuntu3.10_amd64.deb ...
+2026-10-26T09:30:07.2054868Z Unpacking libglib2.0-0t64:amd64 (2.80.0-6ubuntu3.10) over (2.80.0-6ubuntu3.9) ...
+2026-10-26T09:30:07.2588755Z Selecting previously unselected package fonts-freefont-ttf.
+2026-10-26T09:30:07.2702102Z Preparing to unpack .../05-fonts-freefont-ttf_20211204+svn4273-2_all.deb ...
+2026-10-26T09:30:07.2711272Z Unpacking fonts-freefont-ttf (20211204+svn4273-2) ...
+2026-10-26T09:30:07.3601593Z Selecting previously unselected package fonts-tlwg-loma-otf.
+2026-10-26T09:30:07.3714030Z Preparing to unpack .../06-fonts-tlwg-loma-otf_1%3a0.7.3-1_all.deb ...
+2026-10-26T09:30:07.3721177Z Unpacking fonts-tlwg-loma-otf (1:0.7.3-1) ...
+2026-10-26T09:30:07.3900271Z Selecting previously unselected package fonts-unifont.
+2026-10-26T09:30:07.4010421Z Preparing to unpack .../07-fonts-unifont_1%3a15.1.01-1build1_all.deb ...
+2026-10-26T09:30:07.4017929Z Unpacking fonts-unifont (1:15.1.01-1build1) ...
+2026-10-26T09:30:07.6107860Z Selecting previously unselected package fonts-wqy-zenhei.
+2026-10-26T09:30:07.6219252Z Preparing to unpack .../08-fonts-wqy-zenhei_0.9.45-8_all.deb ...
+2026-10-26T09:30:07.6303349Z Unpacking fonts-wqy-zenhei (0.9.45-8) ...
+2026-10-26T09:30:08.0803804Z Preparing to unpack .../09-libnss3_2%3a3.98-1ubuntu0.3_amd64.deb ...
+2026-10-26T09:30:08.0824145Z Unpacking libnss3:amd64 (2:3.98-1ubuntu0.3) over (2:3.98-1ubuntu0.2) ...
+2026-10-26T09:30:08.1340210Z Preparing to unpack .../10-libnss3-tools_2%3a3.98-1ubuntu0.3_amd64.deb ...
+2026-10-26T09:30:08.1355857Z Unpacking libnss3-tools (2:3.98-1ubuntu0.3) over (2:3.98-1ubuntu0.2) ...
+2026-10-26T09:30:08.1779242Z Selecting previously unselected package xfonts-encodings.
+2026-10-26T09:30:08.1892422Z Preparing to unpack .../11-xfonts-encodings_1%3a1.0.5-0ubuntu2_all.deb ...
+2026-10-26T09:30:08.1898600Z Unpacking xfonts-encodings (1:1.0.5-0ubuntu2) ...
+2026-10-26T09:30:08.2124679Z Selecting previously unselected package xfonts-utils.
+2026-10-26T09:30:08.2231994Z Preparing to unpack .../12-xfonts-utils_1%3a7.7+6build3_amd64.deb ...
+2026-10-26T09:30:08.2237377Z Unpacking xfonts-utils (1:7.7+6build3) ...
+2026-10-26T09:30:08.2676766Z Selecting previously unselected package xfonts-cyrillic.
+2026-10-26T09:30:08.2786597Z Preparing to unpack .../13-xfonts-cyrillic_1%3a1.0.5+nmu1_all.deb ...
+2026-10-26T09:30:08.2791805Z Unpacking xfonts-cyrillic (1:1.0.5+nmu1) ...
+2026-10-26T09:30:08.3060503Z Selecting previously unselected package xfonts-scalable.
+2026-10-26T09:30:08.3170904Z Preparing to unpack .../14-xfonts-scalable_1%3a1.0.3-1.3_all.deb ...
+2026-10-26T09:30:08.3176482Z Unpacking xfonts-scalable (1:1.0.3-1.3) ...
+2026-10-26T09:30:08.3522873Z Preparing to unpack .../15-xserver-common_2%3a21.1.12-1ubuntu1.9_all.deb ...
+2026-10-26T09:30:08.3539786Z Unpacking xserver-common (2:21.1.12-1ubuntu1.9) over (2:21.1.12-1ubuntu1.8) ...
+2026-10-26T09:30:08.3839488Z Preparing to unpack .../16-xvfb_2%3a21.1.12-1ubuntu1.9_amd64.deb ...
+2026-10-26T09:30:08.3855972Z Unpacking xvfb (2:21.1.12-1ubuntu1.9) over (2:21.1.12-1ubuntu1.8) ...
+2026-10-26T09:30:08.4544274Z Setting up fonts-wqy-zenhei (0.9.45-8) ...
+2026-10-26T09:30:08.4648976Z Setting up fonts-freefont-ttf (20211204+svn4273-2) ...
+2026-10-26T09:30:08.4663785Z Setting up libnss3:amd64 (2:3.98-1ubuntu0.3) ...
+2026-10-26T09:30:08.4679200Z Setting up libglib2.0-0t64:amd64 (2.80.0-6ubuntu3.10) ...
+2026-10-26T09:30:08.4891161Z Setting up libglib2.0-data (2.80.0-6ubuntu3.10) ...
+2026-10-26T09:30:08.4904425Z Setting up fonts-tlwg-loma-otf (1:0.7.3-1) ...
+2026-10-26T09:30:08.4918120Z Setting up xfonts-encodings (1:1.0.5-0ubuntu2) ...
+2026-10-26T09:30:08.4931726Z Setting up gir1.2-glib-2.0:amd64 (2.80.0-6ubuntu3.10) ...
+2026-10-26T09:30:08.4944749Z Setting up fonts-ipafont-gothic (00303-21ubuntu1) ...
+2026-10-26T09:30:08.5000284Z update-alternatives: using /usr/share/fonts/opentype/ipafont-gothic/ipag.ttf to provide /usr/share/fonts/truetype/fonts-japanese-gothic.ttf (fonts-japanese-gothic.ttf) in auto mode
+2026-10-26T09:30:08.5013712Z Setting up xserver-common (2:21.1.12-1ubuntu1.9) ...
+2026-10-26T09:30:08.5027755Z Setting up libnss3-tools (2:3.98-1ubuntu0.3) ...
+2026-10-26T09:30:08.5041821Z Setting up fonts-unifont (1:15.1.01-1build1) ...
+2026-10-26T09:30:08.5055394Z Setting up xvfb (2:21.1.12-1ubuntu1.9) ...
+2026-10-26T09:30:08.5068619Z Setting up libglib2.0-bin (2.80.0-6ubuntu3.10) ...
+2026-10-26T09:30:08.5082371Z Setting up xfonts-utils (1:7.7+6build3) ...
+2026-10-26T09:30:08.5115901Z Setting up xfonts-cyrillic (1:1.0.5+nmu1) ...
+2026-10-26T09:30:08.5626601Z Setting up xfonts-scalable (1:1.0.3-1.3) ...
+2026-10-26T09:30:08.6020417Z Processing triggers for libc-bin (2.39-0ubuntu8.9) ...
+2026-10-26T09:30:11.0856744Z Processing triggers for man-db (2.12.0-4build2) ...
+2026-10-26T09:30:11.0881242Z Not building database; man-db/auto-update is not 'true'.
+2026-10-26T09:30:11.0889889Z Processing triggers for fontconfig (2.15.0-1.1ubuntu2) ...
+2026-10-26T09:30:12.2988487Z 
+2026-10-26T09:30:12.2989083Z Running kernel seems to be up-to-date.
+2026-10-26T09:30:12.2989415Z 
+2026-10-26T09:30:12.2989807Z Restarting services...
+2026-10-26T09:30:12.3295936Z  systemctl restart php8.3-fpm.service polkit.service udisks2.service
+2026-10-26T09:30:12.4396594Z 
+2026-10-26T09:30:12.4397314Z Service restarts being deferred:
+2026-10-26T09:30:12.4398075Z  systemctl restart ModemManager.service
+2026-10-26T09:30:12.4398843Z  systemctl restart networkd-dispatcher.service
+2026-10-26T09:30:12.4399296Z 
+2026-10-26T09:30:12.4399633Z No containers need to be restarted.
+2026-10-26T09:30:12.4399990Z 
+2026-10-26T09:30:12.4400344Z No user sessions are running outdated binaries.
+2026-10-26T09:30:12.4400753Z 
+2026-10-26T09:30:12.4401146Z No VM guests are running outdated hypervisor (qemu) binaries on this host.
+2026-10-26T09:30:13.3946909Z Downloading Chrome for Testing 151.0.7922.34 (playwright chromium v1234) from https://cdn.playwright.dev/builds/cft/151.0.7922.34/linux64/chrome-linux64.zip
+2026-10-26T09:30:14.3854100Z |                                                                                |   0% of 184.3 MiB
+2026-10-26T09:30:14.5115204Z |■■■■■■■■                                                                        |  10% of 184.3 MiB
+2026-10-26T09:30:14.5900559Z |■■■■■■■■■■■■■■■■                                                                |  20% of 184.3 MiB
+2026-10-26T09:30:14.6524138Z |■■■■■■■■■■■■■■■■■■■■■■■■                                                        |  30% of 184.3 MiB
+2026-10-26T09:30:14.7153199Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                                |  40% of 184.3 MiB
+2026-10-26T09:30:14.7751969Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                        |  50% of 184.3 MiB
+2026-10-26T09:30:14.8193435Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                |  60% of 184.3 MiB
+2026-10-26T09:30:14.8805462Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                        |  70% of 184.3 MiB
+2026-10-26T09:30:14.9227761Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                |  80% of 184.3 MiB
+2026-10-26T09:30:14.9904497Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■        |  90% of 184.3 MiB
+2026-10-26T09:30:15.0462796Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■| 100% of 184.3 MiB
+2026-10-26T09:30:17.4261064Z Chrome for Testing 151.0.7922.34 (playwright chromium v1234) downloaded to /home/runner/.cache/ms-playwright/chromium-1234
+2026-10-26T09:30:17.4264003Z Downloading FFmpeg (playwright ffmpeg v1011) from https://cdn.playwright.dev/dbazure/download/playwright/builds/ffmpeg/1011/ffmpeg-linux.zip
+2026-10-26T09:30:18.3127391Z |                                                                                |   0% of 2.3 MiB
+2026-10-26T09:30:18.3161511Z |■■■■■■■■                                                                        |  10% of 2.3 MiB
+2026-10-26T09:30:18.3177026Z |■■■■■■■■■■■■■■■■                                                                |  20% of 2.3 MiB
+2026-10-26T09:30:18.3199849Z |■■■■■■■■■■■■■■■■■■■■■■■■                                                        |  30% of 2.3 MiB
+2026-10-26T09:30:18.3214790Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                                |  40% of 2.3 MiB
+2026-10-26T09:30:18.3231837Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                        |  50% of 2.3 MiB
+2026-10-26T09:30:18.3242785Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                |  60% of 2.3 MiB
+2026-10-26T09:30:18.3262493Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                        |  70% of 2.3 MiB
+2026-10-26T09:30:18.3269171Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                |  80% of 2.3 MiB
+2026-10-26T09:30:18.3278653Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■        |  90% of 2.3 MiB
+2026-10-26T09:30:18.3285168Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■| 100% of 2.3 MiB
+2026-10-26T09:30:18.3757201Z FFmpeg (playwright ffmpeg v1011) downloaded to /home/runner/.cache/ms-playwright/ffmpeg-1011
+2026-10-26T09:30:18.3760015Z Downloading Chrome Headless Shell 151.0.7922.34 (playwright chromium-headless-shell v1234) from https://cdn.playwright.dev/builds/cft/151.0.7922.34/linux64/chrome-headless-shell-linux64.zip
+2026-10-26T09:30:19.3063042Z |                                                                                |   0% of 114.7 MiB
+2026-10-26T09:30:19.3992001Z |■■■■■■■■                                                                        |  10% of 114.7 MiB
+2026-10-26T09:30:19.4643332Z |■■■■■■■■■■■■■■■■                                                                |  20% of 114.7 MiB
+2026-10-26T09:30:19.5183491Z |■■■■■■■■■■■■■■■■■■■■■■■■                                                        |  30% of 114.7 MiB
+2026-10-26T09:30:19.5626497Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                                |  40% of 114.7 MiB
+2026-10-26T09:30:19.6051421Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                        |  50% of 114.7 MiB
+2026-10-26T09:30:19.6526795Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                |  60% of 114.7 MiB
+2026-10-26T09:30:19.6850107Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                        |  70% of 114.7 MiB
+2026-10-26T09:30:19.7146798Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                |  80% of 114.7 MiB
+2026-10-26T09:30:19.7567978Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■        |  90% of 114.7 MiB
+2026-10-26T09:30:19.7923022Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■| 100% of 114.7 MiB
+2026-10-26T09:30:21.5517684Z Chrome Headless Shell 151.0.7922.34 (playwright chromium-headless-shell v1234) downloaded to /home/runner/.cache/ms-playwright/chromium_headless_shell-1234
+2026-10-26T09:30:21.5763896Z ##[group]Run actions/download-artifact@v4
+2026-10-26T09:30:21.5764137Z with:
+2026-10-26T09:30:21.5764309Z   name: HX-BL-003-baseline-outputs
+2026-10-26T09:30:21.5764663Z   run-id: 40200788539
+2026-10-26T09:30:21.5766884Z   github-token: ***
+2026-10-26T09:30:21.5767103Z   path: reports/HX-BL-003/baseline-outputs
+2026-10-26T09:30:21.5767336Z   merge-multiple: false
+2026-10-26T09:30:21.5767532Z   repository: YuriyEmelyanov/Hexcrawl
+2026-10-26T09:30:21.5767745Z ##[endgroup]
+2026-10-26T09:30:21.6978015Z Downloading single artifact
+2026-10-26T09:30:21.7039167Z (node:3086) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-26T09:30:21.7039803Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-26T09:30:21.7202647Z (node:3086) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-10-26T09:30:21.9982200Z Preparing to download the following artifacts:
+2026-10-26T09:30:21.9983763Z - HX-BL-003-baseline-outputs (ID: 12602421349, Size: 272371118, Expected Digest: sha256:57fe9053543b46afa02c972e180b5f14c9f0087e199a8c126c030cc36e47167e)
+2026-10-26T09:30:22.0024084Z Downloading artifact '12602421349' from 'YuriyEmelyanov/Hexcrawl'
+2026-10-26T09:30:22.2489474Z Redirecting to blob download url: https://productionresultssa1.blob.core.windows.net/actions-results/21ea9020-56fe-8b7c-b353-316a62b69c7e/workflow-job-run-d42743e2-ece4-5e5b-b5ba-71dd0a94a878/artifacts/be5570844d06667f2d71a74f2d5f88ee044dded3b347c20be1b420f301e3b4d6.zip
+2026-10-26T09:30:22.2490658Z Starting download of artifact to: /home/runner/work/Hexcrawl/Hexcrawl/reports/HX-BL-003/baseline-outputs
+2026-10-26T09:30:22.5219776Z (node:3086) [DEP0005] DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
+2026-10-26T09:30:41.5497543Z SHA256 digest of downloaded artifact is 57fe9053543b46afa02c972e180b5f14c9f0087e199a8c126c030cc36e47167e
+2026-10-26T09:30:41.5498353Z Artifact download completed successfully.
+2026-10-26T09:30:41.5498771Z Total of 1 artifact(s) downloaded
+2026-10-26T09:30:41.5503959Z Download artifact has finished successfully
+2026-10-26T09:30:41.5640301Z ##[group]Run python - <<'PY'
+2026-10-26T09:30:41.5640556Z [36;1mpython - <<'PY'[0m
+2026-10-26T09:30:41.5640770Z [36;1mimport hashlib,json,pathlib,zipfile[0m
+2026-10-26T09:30:41.5641107Z [36;1mp=pathlib.Path('reports/HX-BL-003/corpus/fixed-corpus.zip')[0m
+2026-10-26T09:30:41.5641684Z [36;1massert hashlib.sha256(p.read_bytes()).hexdigest()=='55dddd3df58d45ad33578678ec239e61d966c6972dbaa7e8cd2fd8c510ff5913'[0m
+2026-10-26T09:30:41.5642198Z [36;1mwith zipfile.ZipFile(p) as z:[0m
+2026-10-26T09:30:41.5642579Z [36;1m    assert all(not n.startswith('/') and '..' not in pathlib.PurePosixPath(n).parts for n in z.namelist())[0m
+2026-10-26T09:30:41.5642957Z [36;1m    z.extractall(p.parent)[0m
+2026-10-26T09:30:41.5643217Z [36;1mp=pathlib.Path('reports/HX-BL-003/baseline-outputs')[0m
+2026-10-26T09:30:41.5643527Z [36;1mm=json.loads((p/'manifest.json').read_text())[0m
+2026-10-26T09:30:41.5643765Z [36;1mfor f in m['files']:[0m
+2026-10-26T09:30:41.5643995Z [36;1m    data=(p/f['path']).read_bytes()[0m
+2026-10-26T09:30:41.5644317Z [36;1m    assert hashlib.sha256(data).hexdigest()==f['sha256'] and len(data)==f['bytes'][0m
+2026-10-26T09:30:41.5644627Z [36;1mPY[0m
+2026-10-26T09:30:41.5644808Z [36;1mnode --check scripts/hx-bl-003-v2.mjs[0m
+2026-10-26T09:30:41.5645067Z [36;1mnode --check scripts/hx-bl-003-v2-probes.js[0m
+2026-10-26T09:30:41.5645353Z [36;1mpython -m py_compile scripts/hx-bl-003-v2-analyze.py[0m
+2026-10-26T09:30:41.5701778Z shell: /usr/bin/bash -e {0}
+2026-10-26T09:30:41.5701993Z ##[endgroup]
+2026-10-26T09:30:42.0509084Z ##[group]Run git worktree add --detach /tmp/hx003-pair-baseline 103d31b9f6f5c76b1f6b45d9d6664fe3f75dd63b
+2026-10-26T09:30:42.0509667Z [36;1mgit worktree add --detach /tmp/hx003-pair-baseline 103d31b9f6f5c76b1f6b45d9d6664fe3f75dd63b[0m
+2026-10-26T09:30:42.0510319Z [36;1mgit worktree add --detach /tmp/hx003-pair-candidate 739e3de36587533bf3d2f3196072270f4695fa8a[0m
+2026-10-26T09:30:42.0510866Z [36;1mgit diff --exit-code 739e3de36587533bf3d2f3196072270f4695fa8a HEAD -- src public package.json package-lock.json[0m
+2026-10-26T09:30:42.0511302Z [36;1mfor variant in baseline candidate; do[0m
+2026-10-26T09:30:42.0511553Z [36;1m  target="/tmp/hx003-pair-$variant"[0m
+2026-10-26T09:30:42.0511840Z [36;1m  ln -s "$GITHUB_WORKSPACE/node_modules" "$target/node_modules"[0m
+2026-10-26T09:30:42.0512158Z [36;1m  (cd "$target" && npx tsc --noEmit && npx vite build)[0m
+2026-10-26T09:30:42.0512400Z [36;1mdone[0m
+2026-10-26T09:30:42.0567941Z shell: /usr/bin/bash -e {0}
+2026-10-26T09:30:42.0568185Z ##[endgroup]
+2026-10-26T09:30:42.0653348Z Preparing worktree (detached HEAD 103d31b)
+2026-10-26T09:30:42.0977156Z HEAD is now at 103d31b Merge PR #472: reproducible world continuation
+2026-10-26T09:30:42.0997496Z Preparing worktree (detached HEAD 739e3de)
+2026-10-26T09:30:42.1306638Z HEAD is now at 739e3de test(performance): freeze actual paired runner before AB/BA collection
+2026-10-26T09:30:45.7251476Z [36mvite v5.4.21 [32mbuilding for production...[36m[39m
+2026-10-26T09:30:45.7726339Z transforming...
+2026-10-26T09:30:52.7709879Z [32m✓[39m 60 modules transformed.
+2026-10-26T09:30:53.1237940Z rendering chunks...
+2026-10-26T09:30:53.1339376Z computing gzip size...
+2026-10-26T09:30:53.1650067Z [2mdist/[22m[32mindex.html                 [39m[1m[2m  1.35 kB[22m[1m[22m[2m │ gzip:   0.78 kB[22m
+2026-10-26T09:30:53.1650782Z [33m
+2026-10-26T09:30:53.1651309Z (!) Some chunks are larger than 500 kB after minification. Consider:
+2026-10-26T09:30:53.1651990Z - Using dynamic import() to code-split the application
+2026-10-26T09:30:53.1653041Z - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+2026-10-26T09:30:53.1654125Z - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.[39m
+2026-10-26T09:30:53.1655460Z [2mdist/[22m[2massets/[22m[35mindex-By-3o-dh.css  [39m[1m[2m 15.25 kB[22m[1m[22m[2m │ gzip:   3.74 kB[22m
+2026-10-26T09:30:53.1656815Z [2mdist/[22m[2massets/[22m[36mindex-izFvywi0.js   [39m[1m[33m945.58 kB[39m[22m[2m │ gzip: 292.27 kB[22m
+2026-10-26T09:30:53.1657651Z [32m✓ built in 7.42s[39m
+2026-10-26T09:30:56.7086758Z [36mvite v5.4.21 [32mbuilding for production...[36m[39m
+2026-10-26T09:30:56.7531136Z transforming...
+2026-10-26T09:31:03.6557655Z [32m✓[39m 60 modules transformed.
+2026-10-26T09:31:04.0030304Z rendering chunks...
+2026-10-26T09:31:04.0127057Z computing gzip size...
+2026-10-26T09:31:04.0438776Z [2mdist/[22m[32mindex.html                 [39m[1m[2m  1.35 kB[22m[1m[22m[2m │ gzip:   0.78 kB[22m
+2026-10-26T09:31:04.0439554Z [33m
+2026-10-26T09:31:04.0440313Z [2mdist/[22m[2massets/[22m[35mindex-By-3o-dh.css  [39m[1m[2m 15.25 kB[22m[1m[22m[2m │ gzip:   3.74 kB[22m
+2026-10-26T09:31:04.0441285Z (!) Some chunks are larger than 500 kB after minification. Consider:
+2026-10-26T09:31:04.0442274Z [2mdist/[22m[2massets/[22m[36mindex-Ca4aT0U8.js   [39m[1m[33m945.60 kB[39m[22m[2m │ gzip: 292.29 kB[22m
+2026-10-26T09:31:04.0443166Z - Using dynamic import() to code-split the application
+2026-10-26T09:31:04.0443681Z [32m✓ built in 7.32s[39m
+2026-10-26T09:31:04.0444586Z - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+2026-10-26T09:31:04.0445652Z - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.[39m
+2026-10-26T09:31:04.1161925Z ##[group]Run node --input-type=module - <<'JS'
+2026-10-26T09:31:04.1162250Z [36;1mnode --input-type=module - <<'JS'[0m
+2026-10-26T09:31:04.1162796Z [36;1mimport fs from 'node:fs';import os from 'node:os';import {execFileSync} from 'node:child_process';import {createHash} from 'node:crypto';import {chromium} from 'playwright';[0m
+2026-10-26T09:31:04.1163523Z [36;1mconst hash=b=>createHash('sha256').update(b).digest('hex');[0m
+2026-10-26T09:31:04.1164126Z [36;1mconst browser=await chromium.launch({headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});const version=browser.version();await browser.close();[0m
+2026-10-26T09:31:04.1164997Z [36;1mconst names=['scripts/hx-bl-003-v2.mjs','scripts/hx-bl-003-v2-probes.js','scripts/hx-bl-003-v2-analyze.py','.github/workflows/hx-bl-003-v2.yml','reports/HX-BL-003/v2-protocol-manifest.json'];[0m
+2026-10-26T09:31:04.1168266Z [36;1mconst env={protocol:'P1-V2/addendum1.0',created_at:new Date().toISOString(),baseline_sha:'103d31b9f6f5c76b1f6b45d9d6664fe3f75dd63b',candidate_sha:'739e3de36587533bf3d2f3196072270f4695fa8a',harness_sha:process.env.GITHUB_SHA,node:process.version,playwright:JSON.parse(fs.readFileSync('node_modules/playwright/package.json')).version,chromium_version:version,chromium_path:chromium.executablePath(),platform:os.platform(),release:os.release(),cpu:os.cpus()[0].model,vcpus:os.cpus().length,ram_bytes:os.totalmem(),runner:process.env.RUNNER_NAME,image:process.env.ImageVersion,run_id:process.env.GITHUB_RUN_ID,run_attempt:process.env.GITHUB_RUN_ATTEMPT,lock_sha256:hash(fs.readFileSync('package-lock.json')),files:names.map(path=>({path,sha256:hash(fs.readFileSync(path))})),artifact_source:{id:12602421349,run_id:40200788539,name:'HX-BL-003-baseline-outputs',archive_sha256:'57fe9053543b46afa02c972e180b5f14c9f0087e199a8c126c030cc36e47167e'},runtime_tree:execFileSync('git',['rev-parse','HEAD:src'],{encoding:'utf8'}).trim()};[0m
+2026-10-26T09:31:04.1171336Z [36;1mfs.mkdirSync('reports/HX-BL-003/v2',{recursive:true});fs.writeFileSync('reports/HX-BL-003/v2/environment.json',JSON.stringify(env,null,2)+'\n');[0m
+2026-10-26T09:31:04.1171796Z [36;1mJS[0m
+2026-10-26T09:31:04.1171982Z [36;1mgit config user.name github-actions[bot][0m
+2026-10-26T09:31:04.1172319Z [36;1mgit config user.email 41898282+github-actions[bot]@users.noreply.github.com[0m
+2026-10-26T09:31:04.1172667Z [36;1mgit add reports/HX-BL-003/v2/environment.json[0m
+2026-10-26T09:31:04.1173011Z [36;1mgit commit -m "test: freeze actual V2 environment before bounded measurement"[0m
+2026-10-26T09:31:04.1173433Z [36;1mgit push origin HEAD:refs/heads/agent/hx-bl-003-v2-environment-${GITHUB_RUN_ID}[0m
+2026-10-26T09:31:04.1229430Z shell: /usr/bin/bash -e {0}
+2026-10-26T09:31:04.1229639Z ##[endgroup]
+2026-10-26T09:31:05.5128247Z [detached HEAD 5d3b1ed] test: freeze actual V2 environment before bounded measurement
+2026-10-26T09:31:05.5129000Z  1 file changed, 50 insertions(+)
+2026-10-26T09:31:05.5129437Z  create mode 100644 reports/HX-BL-003/v2/environment.json
+2026-10-26T09:31:07.2498600Z remote: 
+2026-10-26T09:31:07.2499445Z remote: Create a pull request for 'agent/hx-bl-003-v2-environment-40298230168' on GitHub by visiting:        
+2026-10-26T09:31:07.2516129Z remote:      https://github.com/YuriyEmelyanov/Hexcrawl/pull/new/agent/hx-bl-003-v2-environment-40298230168        
+2026-10-26T09:31:07.2516727Z remote: 
+2026-10-26T09:31:07.2516995Z To https://github.com/YuriyEmelyanov/Hexcrawl
+2026-10-26T09:31:07.2517352Z  * [new branch]      HEAD -> agent/hx-bl-003-v2-environment-40298230168
+2026-10-26T09:31:07.2594928Z ##[group]Run node scripts/hx-bl-003-v2.mjs
+2026-10-26T09:31:07.2595210Z [36;1mnode scripts/hx-bl-003-v2.mjs[0m
+2026-10-26T09:31:07.2651098Z shell: /usr/bin/bash -e {0}
+2026-10-26T09:31:07.2651308Z ##[endgroup]
+2026-10-26T09:31:07.5630389Z ##[error]Process completed with exit code 1.
+2026-10-26T09:31:07.5672677Z ##[group]Run python -m pip install Pillow
+2026-10-26T09:31:07.5672962Z [36;1mpython -m pip install Pillow[0m
+2026-10-26T09:31:07.5673201Z [36;1mpython scripts/hx-bl-003-v2-analyze.py[0m
+2026-10-26T09:31:07.5729381Z shell: /usr/bin/bash -e {0}
+2026-10-26T09:31:07.5729592Z ##[endgroup]
+2026-10-26T09:31:08.7847386Z Defaulting to user installation because normal site-packages is not writeable
+2026-10-26T09:31:10.0100080Z Collecting Pillow
+2026-10-26T09:31:10.0604698Z   Downloading pillow-13.0.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (9.1 kB)
+2026-10-26T09:31:10.0832913Z Downloading pillow-13.0.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (7.1 MB)
+2026-10-26T09:31:10.2281861Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.1/7.1 MB 50.3 MB/s eta 0:00:00
+2026-10-26T09:31:10.4419845Z Installing collected packages: Pillow
+2026-10-26T09:31:10.6965297Z Successfully installed Pillow-13.0.0
+2026-10-26T09:31:10.8126622Z {
+2026-10-26T09:31:10.8127113Z   "protocol": "P1-V2/addendum1.0",
+2026-10-26T09:31:10.8127455Z   "unit": "ms",
+2026-10-26T09:31:10.8127946Z   "nesting": "120 frames nested in five measured actions; not 120 independent repetitions",
+2026-10-26T09:31:10.8128453Z   "navigation": [
+2026-10-26T09:31:10.8128669Z     {
+2026-10-26T09:31:10.8128936Z       "input": "mythic-0-N1200.json",
+2026-10-26T09:31:10.8129244Z       "phase": "zoom",
+2026-10-26T09:31:10.8129500Z       "variants": {
+2026-10-26T09:31:10.8129740Z         "A": {
+2026-10-26T09:31:10.8129981Z           "complete": false,
+2026-10-26T09:31:10.8130287Z           "pooled": null,
+2026-10-26T09:31:10.8130555Z           "per_run": [
+2026-10-26T09:31:10.8130796Z             {
+2026-10-26T09:31:10.8131027Z               "iteration": 0,
+2026-10-26T09:31:10.8131350Z               "status": "not_executed",
+2026-10-26T09:31:10.8131666Z               "stats": null
+2026-10-26T09:31:10.8131929Z             },
+2026-10-26T09:31:10.8132154Z             {
+2026-10-26T09:31:10.8132377Z               "iteration": 1,
+2026-10-26T09:31:10.8132589Z               "status": "not_executed",
+2026-10-26T09:31:10.8132795Z               "stats": null
+2026-10-26T09:31:10.8132969Z             },
+2026-10-26T09:31:10.8133115Z             {
+2026-10-26T09:31:10.8133269Z               "iteration": 2,
+2026-10-26T09:31:10.8133480Z               "status": "not_executed",
+2026-10-26T09:31:10.8133677Z               "stats": null
+2026-10-26T09:31:10.8133849Z             },
+2026-10-26T09:31:10.8133997Z             {
+2026-10-26T09:31:10.8134162Z               "iteration": 3,
+2026-10-26T09:31:10.8134378Z               "status": "not_executed",
+2026-10-26T09:31:10.8134596Z               "stats": null
+2026-10-26T09:31:10.8134825Z             },
+2026-10-26T09:31:10.8134977Z             {
+2026-10-26T09:31:10.8135132Z               "iteration": 4,
+2026-10-26T09:31:10.8135341Z               "status": "not_executed",
+2026-10-26T09:31:10.8135543Z               "stats": null
+2026-10-26T09:31:10.8135715Z             }
+2026-10-26T09:31:10.8135867Z           ],
+2026-10-26T09:31:10.8136046Z           "median_per_run_p95": null
+2026-10-26T09:31:10.8136444Z         },
+2026-10-26T09:31:10.8136594Z         "B": {
+2026-10-26T09:31:10.8136754Z           "complete": false,
+2026-10-26T09:31:10.8136943Z           "pooled": null,
+2026-10-26T09:31:10.8137118Z           "per_run": [
+2026-10-26T09:31:10.8137280Z             {
+2026-10-26T09:31:10.8137437Z               "iteration": 0,
+2026-10-26T09:31:10.8137642Z               "status": "not_executed",
+2026-10-26T09:31:10.8137842Z               "stats": null
+2026-10-26T09:31:10.8138027Z             },
+2026-10-26T09:31:10.8138170Z             {
+2026-10-26T09:31:10.8138319Z               "iteration": 1,
+2026-10-26T09:31:10.8138518Z               "status": "not_executed",
+2026-10-26T09:31:10.8138710Z               "stats": null
+2026-10-26T09:31:10.8138874Z             },
+2026-10-26T09:31:10.8139017Z             {
+2026-10-26T09:31:10.8139169Z               "iteration": 2,
+2026-10-26T09:31:10.8139636Z               "status": "not_executed",
+2026-10-26T09:31:10.8139837Z               "stats": null
+2026-10-26T09:31:10.8140001Z             },
+2026-10-26T09:31:10.8140141Z             {
+2026-10-26T09:31:10.8140290Z               "iteration": 3,
+2026-10-26T09:31:10.8140492Z               "status": "not_executed",
+2026-10-26T09:31:10.8140680Z               "stats": null
+2026-10-26T09:31:10.8140839Z             },
+2026-10-26T09:31:10.8140982Z             {
+2026-10-26T09:31:10.8141127Z               "iteration": 4,
+2026-10-26T09:31:10.8141321Z               "status": "not_executed",
+2026-10-26T09:31:10.8141656Z               "stats": null
+2026-10-26T09:31:10.8141818Z             }
+2026-10-26T09:31:10.8141960Z           ],
+2026-10-26T09:31:10.8142133Z           "median_per_run_p95": null
+2026-10-26T09:31:10.8142323Z         }
+2026-10-26T09:31:10.8142462Z       },
+2026-10-26T09:31:10.8142648Z       "status": "incomplete_inconclusive"
+2026-10-26T09:31:10.8142848Z     },
+2026-10-26T09:31:10.8142988Z     {
+2026-10-26T09:31:10.8143161Z       "input": "mythic-0-N1200.json",
+2026-10-26T09:31:10.8143361Z       "phase": "pan",
+2026-10-26T09:31:10.8143530Z       "variants": {
+2026-10-26T09:31:10.8143686Z         "A": {
+2026-10-26T09:31:10.8143848Z           "complete": false,
+2026-10-26T09:31:10.8144030Z           "pooled": null,
+2026-10-26T09:31:10.8144204Z           "per_run": [
+2026-10-26T09:31:10.8144362Z             {
+2026-10-26T09:31:10.8144512Z               "iteration": 0,
+2026-10-26T09:31:10.8144711Z               "status": "not_executed",
+2026-10-26T09:31:10.8144909Z               "stats": null
+2026-10-26T09:31:10.8145080Z             },
+2026-10-26T09:31:10.8145223Z             {
+2026-10-26T09:31:10.8145371Z               "iteration": 1,
+2026-10-26T09:31:10.8145567Z               "status": "not_executed",
+2026-10-26T09:31:10.8145758Z               "stats": null
+2026-10-26T09:31:10.8145928Z             },
+2026-10-26T09:31:10.8146074Z             {
+2026-10-26T09:31:10.8146374Z               "iteration": 2,
+2026-10-26T09:31:10.8146575Z               "status": "not_executed",
+2026-10-26T09:31:10.8146767Z               "stats": null
+2026-10-26T09:31:10.8146932Z             },
+2026-10-26T09:31:10.8147072Z             {
+2026-10-26T09:31:10.8147224Z               "iteration": 3,
+2026-10-26T09:31:10.8147419Z               "status": "not_executed",
+2026-10-26T09:31:10.8147608Z               "stats": null
+2026-10-26T09:31:10.8147772Z             },
+2026-10-26T09:31:10.8147912Z             {
+2026-10-26T09:31:10.8148069Z               "iteration": 4,
+2026-10-26T09:31:10.8148275Z               "status": "not_executed",
+2026-10-26T09:31:10.8148480Z               "stats": null
+2026-10-26T09:31:10.8148649Z             }
+2026-10-26T09:31:10.8148795Z           ],
+2026-10-26T09:31:10.8148969Z           "median_per_run_p95": null
+2026-10-26T09:31:10.8149156Z         },
+2026-10-26T09:31:10.8149305Z         "B": {
+2026-10-26T09:31:10.8149464Z           "complete": false,
+2026-10-26T09:31:10.8149678Z           "pooled": null,
+2026-10-26T09:31:10.8149859Z           "per_run": [
+2026-10-26T09:31:10.8150022Z             {
+2026-10-26T09:31:10.8150176Z               "iteration": 0,
+2026-10-26T09:31:10.8150388Z               "status": "not_executed",
+2026-10-26T09:31:10.8150591Z               "stats": null
+2026-10-26T09:31:10.8150762Z             },
+2026-10-26T09:31:10.8150910Z             {
+2026-10-26T09:31:10.8151059Z               "iteration": 1,
+2026-10-26T09:31:10.8151258Z               "status": "not_executed",
+2026-10-26T09:31:10.8151451Z               "stats": null
+2026-10-26T09:31:10.8151621Z             },
+2026-10-26T09:31:10.8151768Z             {
+2026-10-26T09:31:10.8151916Z               "iteration": 2,
+2026-10-26T09:31:10.8152110Z               "status": "not_executed",
+2026-10-26T09:31:10.8152301Z               "stats": null
+2026-10-26T09:31:10.8152467Z             },
+2026-10-26T09:31:10.8152613Z             {
+2026-10-26T09:31:10.8152762Z               "iteration": 3,
+2026-10-26T09:31:10.8152957Z               "status": "not_executed",
+2026-10-26T09:31:10.8153305Z               "stats": null
+2026-10-26T09:31:10.8153475Z             },
+2026-10-26T09:31:10.8153616Z             {
+2026-10-26T09:31:10.8153767Z               "iteration": 4,
+2026-10-26T09:31:10.8153961Z               "status": "not_executed",
+2026-10-26T09:31:10.8154153Z               "stats": null
+2026-10-26T09:31:10.8154317Z             }
+2026-10-26T09:31:10.8154459Z           ],
+2026-10-26T09:31:10.8154631Z           "median_per_run_p95": null
+2026-10-26T09:31:10.8154826Z         }
+2026-10-26T09:31:10.8154967Z       },
+2026-10-26T09:31:10.8155245Z       "status": "incomplete_inconclusive"
+2026-10-26T09:31:10.8155472Z     },
+2026-10-26T09:31:10.8155614Z     {
+2026-10-26T09:31:10.8155786Z       "input": "mythic-0-N2400.json",
+2026-10-26T09:31:10.8155986Z       "phase": "zoom",
+2026-10-26T09:31:10.8156308Z       "variants": {
+2026-10-26T09:31:10.8156500Z         "A": {
+2026-10-26T09:31:10.8156661Z           "complete": false,
+2026-10-26T09:31:10.8156846Z           "pooled": null,
+2026-10-26T09:31:10.8157026Z           "per_run": [
+2026-10-26T09:31:10.8157185Z             {
+2026-10-26T09:31:10.8157340Z               "iteration": 0,
+2026-10-26T09:31:10.8157538Z               "status": "not_executed",
+2026-10-26T09:31:10.8157733Z               "stats": null
+2026-10-26T09:31:10.8157907Z             },
+2026-10-26T09:31:10.8158053Z             {
+2026-10-26T09:31:10.8158208Z               "iteration": 1,
+2026-10-26T09:31:10.8158415Z               "status": "not_executed",
+2026-10-26T09:31:10.8158615Z               "stats": null
+2026-10-26T09:31:10.8158788Z             },
+2026-10-26T09:31:10.8158934Z             {
+2026-10-26T09:31:10.8159086Z               "iteration": 2,
+2026-10-26T09:31:10.8159287Z               "status": "not_executed",
+2026-10-26T09:31:10.8159484Z               "stats": null
+2026-10-26T09:31:10.8159650Z             },
+2026-10-26T09:31:10.8159792Z             {
+2026-10-26T09:31:10.8159940Z               "iteration": 3,
+2026-10-26T09:31:10.8160133Z               "status": "not_executed",
+2026-10-26T09:31:10.8160327Z               "stats": null
+2026-10-26T09:31:10.8160494Z             },
+2026-10-26T09:31:10.8160642Z             {
+2026-10-26T09:31:10.8160788Z               "iteration": 4,
+2026-10-26T09:31:10.8160982Z               "status": "not_executed",
+2026-10-26T09:31:10.8161172Z               "stats": null
+2026-10-26T09:31:10.8161336Z             }
+2026-10-26T09:31:10.8161479Z           ],
+2026-10-26T09:31:10.8161655Z           "median_per_run_p95": null
+2026-10-26T09:31:10.8161845Z         },
+2026-10-26T09:31:10.8161988Z         "B": {
+2026-10-26T09:31:10.8162147Z           "complete": false,
+2026-10-26T09:31:10.8162330Z           "pooled": null,
+2026-10-26T09:31:10.8162504Z           "per_run": [
+2026-10-26T09:31:10.8162670Z             {
+2026-10-26T09:31:10.8162819Z               "iteration": 0,
+2026-10-26T09:31:10.8163017Z               "status": "not_executed",
+2026-10-26T09:31:10.8163210Z               "stats": null
+2026-10-26T09:31:10.8163375Z             },
+2026-10-26T09:31:10.8163522Z             {
+2026-10-26T09:31:10.8163672Z               "iteration": 1,
+2026-10-26T09:31:10.8163871Z               "status": "not_executed",
+2026-10-26T09:31:10.8164062Z               "stats": null
+2026-10-26T09:31:10.8164227Z             },
+2026-10-26T09:31:10.8164367Z             {
+2026-10-26T09:31:10.8164514Z               "iteration": 2,
+2026-10-26T09:31:10.8164708Z               "status": "not_executed",
+2026-10-26T09:31:10.8164900Z               "stats": null
+2026-10-26T09:31:10.8165062Z             },
+2026-10-26T09:31:10.8165204Z             {
+2026-10-26T09:31:10.8165356Z               "iteration": 3,
+2026-10-26T09:31:10.8165552Z               "status": "not_executed",
+2026-10-26T09:31:10.8165743Z               "stats": null
+2026-10-26T09:31:10.8165911Z             },
+2026-10-26T09:31:10.8166052Z             {
+2026-10-26T09:31:10.8166334Z               "iteration": 4,
+2026-10-26T09:31:10.8166534Z               "status": "not_executed",
+2026-10-26T09:31:10.8166723Z               "stats": null
+2026-10-26T09:31:10.8167089Z             }
+2026-10-26T09:31:10.8167243Z           ],
+2026-10-26T09:31:10.8167413Z           "median_per_run_p95": null
+2026-10-26T09:31:10.8167601Z         }
+2026-10-26T09:31:10.8167756Z       },
+2026-10-26T09:31:10.8167932Z       "status": "incomplete_inconclusive"
+2026-10-26T09:31:10.8168132Z     },
+2026-10-26T09:31:10.8168273Z     {
+2026-10-26T09:31:10.8168446Z       "input": "mythic-0-N2400.json",
+2026-10-26T09:31:10.8168647Z       "phase": "pan",
+2026-10-26T09:31:10.8168815Z       "variants": {
+2026-10-26T09:31:10.8168973Z         "A": {
+2026-10-26T09:31:10.8169232Z           "complete": false,
+2026-10-26T09:31:10.8169415Z           "pooled": null,
+2026-10-26T09:31:10.8169595Z           "per_run": [
+2026-10-26T09:31:10.8169761Z             {
+2026-10-26T09:31:10.8169920Z               "iteration": 0,
+2026-10-26T09:31:10.8170125Z               "status": "not_executed",
+2026-10-26T09:31:10.8170326Z               "stats": null
+2026-10-26T09:31:10.8170493Z             },
+2026-10-26T09:31:10.8170646Z             {
+2026-10-26T09:31:10.8170796Z               "iteration": 1,
+2026-10-26T09:31:10.8171006Z               "status": "not_executed",
+2026-10-26T09:31:10.8171200Z               "stats": null
+2026-10-26T09:31:10.8171364Z             },
+2026-10-26T09:31:10.8171505Z             {
+2026-10-26T09:31:10.8171654Z               "iteration": 2,
+2026-10-26T09:31:10.8171854Z               "status": "not_executed",
+2026-10-26T09:31:10.8172047Z               "stats": null
+2026-10-26T09:31:10.8172209Z             },
+2026-10-26T09:31:10.8172350Z             {
+2026-10-26T09:31:10.8172504Z               "iteration": 3,
+2026-10-26T09:31:10.8172697Z               "status": "not_executed",
+2026-10-26T09:31:10.8172892Z               "stats": null
+2026-10-26T09:31:10.8173056Z             },
+2026-10-26T09:31:10.8173200Z             {
+2026-10-26T09:31:10.8173347Z               "iteration": 4,
+2026-10-26T09:31:10.8173539Z               "status": "not_executed",
+2026-10-26T09:31:10.8173732Z               "stats": null
+2026-10-26T09:31:10.8173905Z             }
+2026-10-26T09:31:10.8174051Z           ],
+2026-10-26T09:31:10.8174232Z           "median_per_run_p95": null
+2026-10-26T09:31:10.8174421Z         },
+2026-10-26T09:31:10.8174564Z         "B": {
+2026-10-26T09:31:10.8174725Z           "complete": false,
+2026-10-26T09:31:10.8174911Z           "pooled": null,
+2026-10-26T09:31:10.8175082Z           "per_run": [
+2026-10-26T09:31:10.8175240Z             {
+2026-10-26T09:31:10.8175394Z               "iteration": 0,
+2026-10-26T09:31:10.8175591Z               "status": "not_executed",
+2026-10-26T09:31:10.8175789Z               "stats": null
+2026-10-26T09:31:10.8175955Z             },
+2026-10-26T09:31:10.8176103Z             {
+2026-10-26T09:31:10.8176436Z               "iteration": 1,
+2026-10-26T09:31:10.8176632Z               "status": "not_executed",
+2026-10-26T09:31:10.8176822Z               "stats": null
+2026-10-26T09:31:10.8176988Z             },
+2026-10-26T09:31:10.8177132Z             {
+2026-10-26T09:31:10.8177293Z               "iteration": 2,
+2026-10-26T09:31:10.8177492Z               "status": "not_executed",
+2026-10-26T09:31:10.8177683Z               "stats": null
+2026-10-26T09:31:10.8177845Z             },
+2026-10-26T09:31:10.8177987Z             {
+2026-10-26T09:31:10.8178135Z               "iteration": 3,
+2026-10-26T09:31:10.8178343Z               "status": "not_executed",
+2026-10-26T09:31:10.8178532Z               "stats": null
+2026-10-26T09:31:10.8178696Z             },
+2026-10-26T09:31:10.8178836Z             {
+2026-10-26T09:31:10.8178985Z               "iteration": 4,
+2026-10-26T09:31:10.8179185Z               "status": "not_executed",
+2026-10-26T09:31:10.8179378Z               "stats": null
+2026-10-26T09:31:10.8179541Z             }
+2026-10-26T09:31:10.8179680Z           ],
+2026-10-26T09:31:10.8179850Z           "median_per_run_p95": null
+2026-10-26T09:31:10.8180039Z         }
+2026-10-26T09:31:10.8180177Z       },
+2026-10-26T09:31:10.8180352Z       "status": "incomplete_inconclusive"
+2026-10-26T09:31:10.8180663Z     }
+2026-10-26T09:31:10.8180805Z   ],
+2026-10-26T09:31:10.8180947Z   "png": [
+2026-10-26T09:31:10.8181087Z     {
+2026-10-26T09:31:10.8181261Z       "input": "mythic-0-N2400-after",
+2026-10-26T09:31:10.8181485Z       "status": "blocked_missing_png"
+2026-10-26T09:31:10.8181677Z     },
+2026-10-26T09:31:10.8181813Z     {
+2026-10-26T09:31:10.8181991Z       "input": "mythic-123456789-N2400-after",
+2026-10-26T09:31:10.8182234Z       "status": "blocked_missing_png"
+2026-10-26T09:31:10.8182424Z     }
+2026-10-26T09:31:10.8182612Z   ],
+2026-10-26T09:31:10.8182865Z   "counts": {
+2026-10-26T09:31:10.8183147Z     "measured_actions_attempted": 0,
+2026-10-26T09:31:10.8183478Z     "warmups_attempted": 0,
+2026-10-26T09:31:10.8183768Z     "png_click_attempts": 0
+2026-10-26T09:31:10.8184029Z   },
+2026-10-26T09:31:10.8184287Z   "full_product_acceptance": false,
+2026-10-26T09:31:10.8185083Z   "unresolved": "Original CI/safety/selection findings require independent review; bounded pass alone does not accept whole product."
+2026-10-26T09:31:10.8185527Z }
+2026-10-26T09:31:10.8224018Z ##[group]Run actions/upload-artifact@v4
+2026-10-26T09:31:10.8224253Z with:
+2026-10-26T09:31:10.8224421Z   name: HX-BL-003-V2-validation
+2026-10-26T09:31:10.8224623Z   path: reports/HX-BL-003/v2/
+2026-10-26T09:31:10.8224818Z   if-no-files-found: error
+2026-10-26T09:31:10.8225001Z   compression-level: 6
+2026-10-26T09:31:10.8225173Z   overwrite: false
+2026-10-26T09:31:10.8225341Z   include-hidden-files: false
+2026-10-26T09:31:10.8225524Z ##[endgroup]
+2026-10-26T09:31:10.9513349Z (node:3356) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-26T09:31:10.9514025Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-26T09:31:10.9573900Z With the provided path, there will be 4 files uploaded
+2026-10-26T09:31:10.9578441Z Artifact name is valid!
+2026-10-26T09:31:10.9579113Z Root directory input is valid!
+2026-10-26T09:31:11.3052922Z Beginning upload of artifact content to blob storage
+2026-10-26T09:31:11.3253509Z (node:3356) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-10-26T09:31:11.5440203Z Uploaded bytes 3669
+2026-10-26T09:31:11.6009922Z Finished uploading artifact content to blob storage!
+2026-10-26T09:31:11.6010729Z SHA256 digest of uploaded artifact zip is 571b6212ae1a9f97630ead3b94cf72d588cc4be1b0ede28d7529ff770bea38e4
+2026-10-26T09:31:11.6011439Z Finalizing artifact upload
+2026-10-26T09:31:12.0971606Z Artifact HX-BL-003-V2-validation.zip successfully finalized. Artifact ID 12639668025
+2026-10-26T09:31:12.0972671Z Artifact HX-BL-003-V2-validation has been successfully uploaded! Final size is 3669 bytes. Artifact ID is 12639668025
+2026-10-26T09:31:12.0977537Z Artifact download URL: https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40298230168/artifacts/12639668025
+2026-10-26T09:31:12.1229979Z Post job cleanup.
+2026-10-26T09:31:12.1904593Z [command]/usr/bin/git version
+2026-10-26T09:31:12.1940791Z git version 2.55.0
+2026-10-26T09:31:12.1970730Z Temporarily overriding HOME='/home/runner/work/_temp/8af24cd4-dd1b-4b57-ace1-abeabe81cb6a' before making global git config changes
+2026-10-26T09:31:12.1971822Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-26T09:31:12.1992141Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/Hexcrawl/Hexcrawl
+2026-10-26T09:31:12.2457354Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-26T09:31:12.2493132Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-26T09:31:12.2721742Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-26T09:31:12.2747384Z http.https://github.com/.extraheader
+2026-10-26T09:31:12.2756358Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-10-26T09:31:12.3172463Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-26T09:31:12.3385385Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-26T09:31:12.3417983Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-26T09:31:12.3728393Z Cleaning up orphan processes
+2026-10-26T09:31:12.4072780Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/download-artifact@v4, actions/setup-node@v4, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
