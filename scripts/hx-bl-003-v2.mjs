@@ -1,9 +1,9 @@
 import fs from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 import {execFileSync,spawn} from 'node:child_process';
-import os from 'node:os';
 import assert from 'node:assert/strict';
 import {chromium} from 'playwright';
+import {BrowserSupervisor, PackageAbort, validateResourceClass} from './hx-bl-003-v2-supervision.mjs';
 const root=new URL('../',import.meta.url).pathname, out=root+'reports/HX-BL-003/v2/';
 const A='103d31b9f6f5c76b1f6b45d9d6664fe3f75dd63b', B='739e3de36587533bf3d2f3196072270f4695fa8a';
 const hash=b=>createHash('sha256').update(b).digest('hex');
@@ -18,12 +18,12 @@ const result={protocol:'P1-V2/addendum1.0',baseline_sha:A,candidate_sha:B,harnes
 await fs.mkdir(out,{recursive:true});
 async function persist(){await fs.writeFile(out+'raw.json',JSON.stringify(result,null,2)+'\n');}
 await persist();
-async function bounded(p,label){let t;try{return await Promise.race([p,new Promise((_,reject)=>t=setTimeout(()=>reject(Error('external180s timeout '+label)),180000))]);}finally{clearTimeout(t);}}
+const supervisor=new BrowserSupervisor({record:async event=>{(result.browser_lifecycle??=[]).push({...event,wall:new Date().toISOString()});await persist();}});
+const bounded=(work,label,ms)=>supervisor.run(work,label,ms);
 const semantic=d=>{d=structuredClone(d);delete d.savedAt;return d;};
 async function imagePaths(dir,prefix=''){const paths=[];for(const e of await fs.readdir(dir,{withFileTypes:true})){if(e.isDirectory())paths.push(...await imagePaths(dir+'/'+e.name,prefix+e.name+'/'));else if(/\.(png|svg|webp)$/.test(e.name))paths.push('/'+prefix+e.name);}return paths;}
 const preloadPaths=await imagePaths(root+'public');
 let browser;const servers=[];
-async function closeBrowser(b){if(!b)return;await Promise.race([b.close().catch(()=>{}),new Promise(resolve=>setTimeout(resolve,5000))]);}
 async function createPage(b,variant,row,diagnostics=false){
  const context=await b.newContext({viewport:{width:1500,height:1000},deviceScaleFactor:1,locale:'ru-RU'}),page=await context.newPage();page.setDefaultTimeout(180000);
  const events=[];if(row)row.events=events;const event=(type,data={})=>events.push({type,wall:new Date().toISOString(),monotonic:performance.now(),...data});
@@ -33,7 +33,7 @@ async function createPage(b,variant,row,diagnostics=false){
  await page.route(/mc\.yandex/,r=>r.abort());
  await page.addInitScript(()=>{const read=FileReader.prototype.readAsText;FileReader.prototype.readAsText=function(...args){window.__HX003_IMPORT=false;this.addEventListener('loadend',()=>requestAnimationFrame(()=>requestAnimationFrame(()=>window.__HX003_IMPORT=true)),{once:true});return read.apply(this,args);};});
  if(diagnostics)await page.addInitScript({path:root+'scripts/hx-bl-003-v2-probes.js'});
- const port=variant==='A'?4185:4186;await bounded(page.goto('http://127.0.0.1:'+port+'/'),'page load');event('page_loaded');
+ const port=variant==='A'?4185:4186;await bounded(()=>page.goto('http://127.0.0.1:'+port+'/'),'page load');event('page_loaded');
  async function ready(){await page.waitForFunction(()=>document.querySelector('.map-stage > svg')?.getAttribute('data-render-phase')==='ready'&&!document.querySelector('.controls--transfer > button')?.disabled);await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));}
  async function assets(){await page.evaluate(async()=>{await document.fonts.ready;const urls=[...new Set([...document.querySelectorAll('.map-stage > svg image')].map(n=>n.getAttribute('href')??n.getAttribute('xlink:href')).filter(Boolean))];for(let i=0;i<urls.length;i+=12)await Promise.all(urls.slice(i,i+12).map(src=>new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>img.decode().then(resolve,reject);img.onerror=()=>reject(Error('asset '+src));img.src=src;})));});}
  async function menu(){const m=page.locator('details.export-menu');if(await m.getAttribute('open')===null)await m.locator('summary').click();}
@@ -53,23 +53,23 @@ async function nav(page){return page.evaluate(async()=>{
 });}
 try{
  const env=JSON.parse(await fs.readFile(out+'environment.json','utf8'));result.environment=env;assert.equal(env.run_attempt,'1','single workflow attempt only');
- assert.equal(env.chromium_version,'151.0.7922.34');assert.equal(env.playwright,'1.62.1');assert.match(env.node,/^v24\./);assert.equal(env.vcpus,4);assert(env.ram_bytes>=15e9&&env.ram_bytes<=18e9,'same standard16GB resource class');assert.match(env.cpu,/AMD EPYC 7763/,'same prior paired CPU profile');
+ validateResourceClass(env); // Actual CPU remains recorded; A/B share the one locally owned browser/host.
  assert.equal(hash(await fs.readFile(root+'package-lock.json')),'6b7a348067a218afce320ca370bee8cd323eff14fbdf9a24fbbfc5e3deedcee7');
  for(const [i,input]of navInputs.entries())assert.equal(hash(await fs.readFile(root+'reports/HX-BL-003/corpus/'+input)),inputHashes[i]);
  for(const [i,input]of pngInputs.entries())assert.equal(hash(await fs.readFile(root+'reports/HX-BL-003/baseline-outputs/'+input)),pngHashes[i]);
  for(const[name,port]of[['baseline',4185],['candidate',4186]]){const server=spawn(process.execPath,[root+'node_modules/vite/bin/vite.js','preview','--host','127.0.0.1','--port',String(port),'--strictPort','--outDir','/tmp/hx003-pair-'+name+'/dist'],{cwd:root,stdio:['ignore','pipe','inherit']});servers.push(server);await new Promise((resolve,reject)=>{const t=setTimeout(()=>reject(Error('server timeout')),15000);server.stdout.on('data',b=>{if(String(b).includes('http://127.0.0.1')){clearTimeout(t);resolve();}});server.on('error',reject);});}
- browser=await chromium.launch({headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});assert.equal(browser.version(),env.chromium_version);
+ browser=await supervisor.start(chromium);assert.equal(browser.version(),env.chromium_version);
  result.measurement_started=true;await persist();
  for(const input of navInputs){const runners={};try{
-  for(const variant of['A','B']){const runner=await createPage(browser,variant);runners[variant]=runner;await bounded(runner.page.evaluate(async paths=>{window.__HX003_IMAGES=[];for(let i=0;i<paths.length;i+=12)await Promise.all(paths.slice(i,i+12).map(src=>new Promise((resolve,reject)=>{const img=new Image();window.__HX003_IMAGES.push(img);img.onload=()=>img.decode().then(resolve,reject);img.onerror=()=>reject(Error('preload '+src));img.src=src;})));await document.fonts.ready;},preloadPaths),'preload');}
-  const unusable=new Set();for(const row of navPlan.filter(r=>r.input===input)){const r=runners[row.variant];if(unusable.has(row.variant)){row.reason='context unusable after timeout';continue;}const first=r.events.length;row.status='preparing';row.started_at=new Date().toISOString();await persist();try{row.before=await bounded(r.restore(root+'reports/HX-BL-003/corpus/'+input),'restore');row.navigation=await bounded(nav(r.page),'navigation');for(const phase of['zoom','pan'])assert(row.navigation[phase].length===24&&row.navigation[phase].every(Number.isFinite));assert(!r.events.slice(first).some(e=>e.type==='pageerror'||e.type==='dialog'),'JS error');row.status='success';}catch(e){row.error=String(e);row.status=/timeout/i.test(String(e))?'timeout':'error';if(row.status==='timeout')unusable.add(row.variant);}finally{row.events=r.events.slice(first);row.completed_at=new Date().toISOString();await persist();console.log('V2_NAV '+JSON.stringify({input,variant:row.variant,iteration:row.iteration,status:row.status}));}}
- }catch(e){result.errors.push({input,error:String(e)});}finally{for(const r of Object.values(runners))await r.context.close().catch(()=>{});}}
- await closeBrowser(browser);browser=null;
+  for(const variant of['A','B']){const runner=await bounded(()=>createPage(browser,variant),'navigation context preparation');runners[variant]=runner;await bounded(()=>runner.page.evaluate(async paths=>{window.__HX003_IMAGES=[];for(let i=0;i<paths.length;i+=12)await Promise.all(paths.slice(i,i+12).map(src=>new Promise((resolve,reject)=>{const img=new Image();window.__HX003_IMAGES.push(img);img.onload=()=>img.decode().then(resolve,reject);img.onerror=()=>reject(Error('preload '+src));img.src=src;})));await document.fonts.ready;},preloadPaths),'preload');}
+  for(const row of navPlan.filter(r=>r.input===input)){const r=runners[row.variant];const first=r.events.length;row.status='preparing';row.started_at=new Date().toISOString();await persist();try{row.before=await bounded(()=>r.restore(root+'reports/HX-BL-003/corpus/'+input),'restore');row.navigation=await bounded(()=>nav(r.page),'navigation');for(const phase of['zoom','pan'])assert(row.navigation[phase].length===24&&row.navigation[phase].every(Number.isFinite));assert(!r.events.slice(first).some(e=>e.type==='pageerror'||e.type==='dialog'),'JS error');row.status='success';}catch(e){row.error=String(e);row.status=/timeout/i.test(String(e))?'timeout':'error';throw e;}finally{row.events=r.events.slice(first);row.completed_at=new Date().toISOString();await persist();console.log('V2_NAV '+JSON.stringify({input,variant:row.variant,iteration:row.iteration,status:row.status}));}}
+ }catch(e){result.errors.push({input,error:String(e)});throw e;}finally{if(!supervisor.aborted)for(const r of Object.values(runners))await bounded(()=>r.context.close(),'context cleanup',5000);}}
+ await supervisor.dispose({reason:'navigation complete'});browser=null;
  for(const row of pngPlan){let b,r;row.status='preparing';row.started_at=new Date().toISOString();await persist();try{
-  b=await chromium.launch({headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});b.on('disconnected',()=>r?.event('browser_disconnected'));assert.equal(b.version(),env.chromium_version);r=await createPage(b,row.variant,row,true);row.events=r.events;await bounded(r.restore(root+'reports/HX-BL-003/baseline-outputs/'+row.input),'PNG restore');await r.menu();const stem=out+row.variant+'-'+row.input.replace(/\.json$/,'');await fs.writeFile(stem+'.svg',await r.page.locator('.map-stage > svg').evaluate(n=>n.outerHTML));row.svg=stem+'.svg';row.status='exporting';row.attempted=true;r.event('png_click_start');await persist();
-  await bounded((async()=>{const[d]=await Promise.all([r.page.waitForEvent('download'),r.page.getByRole('button',{name:'PNG',exact:true}).click()]);r.event('download_event');await fs.copyFile(await d.path(),stem+'.png');r.event('copy_complete');row.png=stem+'.png';row.png_sha256=hash(await fs.readFile(row.png));row.png_bytes=(await fs.stat(row.png)).size;})(),'PNG click/download/copy');
-  row.status='captured';row.memory=await bounded(r.page.evaluate(()=>performance.memory?{used:performance.memory.usedJSHeapSize,total:performance.memory.totalJSHeapSize,limit:performance.memory.jsHeapSizeLimit}:null),'memory');
- }catch(e){row.status=/timeout/i.test(String(e))?'timeout':'error';row.error=String(e);process.exitCode=1;}finally{await closeBrowser(b);row.completed_at=new Date().toISOString();await persist();console.log('V2_PNG '+JSON.stringify({input:row.input,variant:row.variant,status:row.status,attempted:row.attempted}));}}
+  b=await supervisor.start(chromium);b.on('disconnected',()=>r?.event('browser_disconnected'));assert.equal(b.version(),env.chromium_version);r=await bounded(()=>createPage(b,row.variant,row,true),'PNG context preparation');row.events=r.events;await bounded(()=>r.restore(root+'reports/HX-BL-003/baseline-outputs/'+row.input),'PNG restore');await bounded(()=>r.menu(),'PNG menu preparation');const stem=out+row.variant+'-'+row.input.replace(/\.json$/,'');await fs.writeFile(stem+'.svg',await bounded(()=>r.page.locator('.map-stage > svg').evaluate(n=>n.outerHTML),'SVG snapshot'));row.svg=stem+'.svg';row.status='exporting';row.attempted=true;r.event('png_click_start');await persist();
+  await bounded(async()=>{const[d]=await Promise.all([r.page.waitForEvent('download'),r.page.getByRole('button',{name:'PNG',exact:true}).click()]);r.event('download_event');await fs.copyFile(await d.path(),stem+'.png');r.event('copy_complete');row.png=stem+'.png';row.png_sha256=hash(await fs.readFile(row.png));row.png_bytes=(await fs.stat(row.png)).size;},'PNG click/download/copy');
+  row.status='captured';row.memory=await bounded(()=>r.page.evaluate(()=>performance.memory?{used:performance.memory.usedJSHeapSize,total:performance.memory.totalJSHeapSize,limit:performance.memory.jsHeapSizeLimit}:null),'memory');
+ }catch(e){row.status=/timeout/i.test(String(e))?'timeout':'error';row.error=String(e);process.exitCode=1;if(e instanceof PackageAbort)throw e;}finally{try{await supervisor.dispose({reason:'PNG row complete'});}finally{row.completed_at=new Date().toISOString();await persist();console.log('V2_PNG '+JSON.stringify({input:row.input,variant:row.variant,status:row.status,attempted:row.attempted}));}}}
  result.status='collection_complete_not_product_acceptance';
 }catch(e){result.status='blocked';result.errors.push({error:String(e)});process.exitCode=1;}
-finally{await closeBrowser(browser);for(const s of servers)s.kill();result.completed_at=new Date().toISOString();await persist();}
+finally{try{await supervisor.dispose({force:supervisor.aborted,reason:'package final cleanup'});}catch(e){result.status='blocked_cleanup_unconfirmed';result.errors.push({error:String(e)});process.exitCode=1;}finally{for(const s of servers)s.kill();result.completed_at=new Date().toISOString();await persist();}}

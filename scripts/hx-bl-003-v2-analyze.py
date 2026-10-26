@@ -12,11 +12,23 @@ for name in ['mythic-0-N1200.json','mythic-0-N2400.json']:
     for phase in ['zoom','pan']:
         group={'input':name,'phase':phase,'variants':{}}
         for variant in ['A','B']:
-            rows=[x for x in r['nav'] if x['input']==name and x['variant']==variant and isinstance(x['iteration'],int)]
+            indexed=[(i,x) for i,x in enumerate(r['nav']) if x['input']==name and x['variant']==variant]
+            warmups=[(i,x) for i,x in indexed if x['iteration']=='warmup']
+            measured=[(i,x) for i,x in indexed if type(x['iteration']) is int]
+            rows=[x for _,x in measured]
             frames=[v for x in rows for v in x.get('navigation',{}).get(phase,[])]
-            complete=len(rows)==5 and all(x['status']=='success' and len(x.get('navigation',{}).get(phase,[]))==24 for x in rows) and len(frames)==120 and stats(frames) is not None
+            protocol_errors=[]
+            if len(warmups)!=1: protocol_errors.append('exactly_one_warmup_required')
+            else:
+                wi,warm=warmups[0]
+                if warm['status']!='success': protocol_errors.append('warmup_not_successful')
+                warmframes=warm.get('navigation',{}).get(phase,[])
+                if len(warmframes)!=24 or stats(warmframes) is None: protocol_errors.append('warmup_frames_incomplete')
+                if any(i<=wi for i,_ in measured): protocol_errors.append('warmup_must_precede_measured_actions')
+            if [x['iteration'] for x in rows]!=list(range(5)): protocol_errors.append('measured_iteration_order_invalid')
+            complete=not protocol_errors and len(rows)==5 and all(x['status']=='success' and len(x.get('navigation',{}).get(phase,[]))==24 for x in rows) and len(frames)==120 and stats(frames) is not None
             per=[{'iteration':x['iteration'],'status':x['status'],'stats':stats(x.get('navigation',{}).get(phase,[]))} for x in rows]
-            group['variants'][variant]={'complete':complete,'pooled':stats(frames),'per_run':per,'median_per_run_p95':stats([x['stats']['p95'] for x in per if x['stats']])['median'] if all(x['stats'] for x in per) and len(per)==5 else None}
+            group['variants'][variant]={'complete':complete,'protocol_errors':protocol_errors,'warmups':[dict(position=i,status=x['status']) for i,x in warmups],'pooled':stats(frames),'per_run':per,'median_per_run_p95':stats([x['stats']['p95'] for x in per if x['stats']])['median'] if all(x['stats'] for x in per) and len(per)==5 else None}
         if all(v['complete'] for v in group['variants'].values()):
             a,b=[group['variants'][v]['pooled']['p95'] for v in ['A','B']]
             group.update(delta_ms=b-a,relative_delta=(b-a)/a if a else None,guard_breach=b-a>10 and b>1.1*a,status='nonpassing' if b-a>10 and b>1.1*a else 'bounded_guard_pass')
