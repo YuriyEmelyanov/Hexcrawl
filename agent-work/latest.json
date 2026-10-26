@@ -26,10 +26,10 @@
   },
   "lessons_path": "agent-work/lessons.md",
   "plan_id": "2026-10-23:f89530abe1e237493dddb533502bb772ae1ab4e5",
-  "run_id": "2026-10-26:reviewer:HX-BL-003-df879cb:1800Z",
+  "run_id": "2026-10-26:developer:HX-BL-003:manual-measure-1852Z",
   "plan_revision": 1,
   "baseline_sha": "f89530abe1e237493dddb533502bb772ae1ab4e5",
-  "status": "blocked_validation",
+  "status": "in_progress",
   "planning_for": "2026-10-24",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-10-25",
@@ -45,15 +45,21 @@
   "schedule_start_at": "2026-10-24T01:00:00+03:00",
   "schedule_frequency": "hourly",
   "process_path": "agent-work/process.md",
-  "current_role": "reviewer",
-  "next_role": "reviewer",
+  "current_role": "developer",
+  "next_role": "developer",
   "current_task_id": "HX-BL-003",
   "spec_path": "agent-work/specs/HX-BL-003.md",
   "spec_version": "1.1",
   "result_path": "agent-work/results/2026-10-26-reviewer-HX-BL-003-df879cb.json",
   "handoff_commit_sha": "a8c51fe84d7917025b22518ff329f73b464b210d",
-  "active_claim": null,
-  "next_step": "Независимая проверка готового PR475 на415349bc9fb9ce72fb2a8bc5e777cc98ea515bd0 поspec1.1; HX-BL-003 передан стратегу для конкретного уточнения исполнения уже разрешённого замера при сохранении cap/evidence.",
+  "active_claim": {
+    "run_id": "2026-10-26:developer:HX-BL-003:manual-measure-1852Z",
+    "role": "developer",
+    "task_id": "HX-BL-003",
+    "status": "preparing_authorized_measurement",
+    "started_at": "2026-10-26T18:53:28.985Z"
+  },
+  "next_step": "Выполнить один явно разрешённый дополнительный V2 workflow на принятом df879cb; сохранить raw, исходы и передать независимому reviewer.",
   "owner_decisions_needed": [],
   "release_approval": {
     "task_id": "HX-BL-003",
@@ -199,7 +205,7 @@
   "score_update_release_sha": "103d31b9f6f5c76b1f6b45d9d6664fe3f75dd63b",
   "score_process_decision_ref": "owner-decision-2026-10-24-score-responsibilities",
   "score_assessment_ref": "agent-work/results/2026-10-25-reviewer-HX-BL-030-202570a.json",
-  "role_selection_reason": "ExactSHA df879cb review_ready, normalCI passed, no activeclaim; verify R4 corrective change",
+  "role_selection_reason": "Явное поручение владельца выполнить замер474 сейчас; исправленный harness принят независимым reviewer.",
   "score_update_result_ref": "agent-work/results/2026-10-25-strategist-score-update-HX-BL-030.json",
   "score_update_completed_at": "2026-10-25T08:02:18.946Z",
   "score_update_delta": 7.5,
@@ -525,16 +531,16 @@
   "blocked_task_handoffs": {
     "HX-BL-003": {
       "task_id": "HX-BL-003",
-      "status": "blocked_validation",
+      "status": "measurement_preparing",
       "head_sha": "df879cb8d68cf876397aa5611f561a48482ae191",
       "branch_name": "agent/hx-bl-003-performance",
       "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474",
       "spec_path": "agent-work/specs/HX-BL-003.md",
       "result_path": "agent-work/results/2026-10-26-reviewer-HX-BL-003-df879cb.json",
-      "next_step": "Сопоставить разрешение владельца «Разрешаю замер», нулевой raw run40298230168 и проверенный df879cb; подготовить конкретное ограниченное уточнение исполнения утверждённого пакета с прежними20navigation+4warmups/4PNG/60min/качеством и порогами. Сохранить историю1/1; не запрашивать повторное утверждение самой задачи и не запускать измерение автоматически в обход действующего cap.",
+      "next_step": "Выполнить один явно разрешённый дополнительный V2 workflow на принятом df879cb; сохранить raw, исходы и передать независимому reviewer.",
       "validation_plan": {
         "id": "HX-BL-003-V2",
-        "status": "harness_changes_requested_no_new_measured_workflow",
+        "status": "explicit_execution_reauthorized",
         "path": "agent-work/proposals/HX-BL-003-V2-validation.md",
         "max_png_attempts": 4,
         "max_measured_navigation_actions": 20,
@@ -545,11 +551,25 @@
         "approval_ref": "owner-approval-2026-10-26-HX-BL-003-V2",
         "approved_on": "2026-10-26",
         "addendum_ref": "agent-work/specs/HX-BL-003-P1-V2.md",
+        "warmups": 4,
         "measurement_started": false,
         "workflow_attempts_used": 1,
         "measured_actions_attempted": 0,
         "png_click_attempts": 0,
-        "measurement_allowed": false
+        "environment_discrepancy": {
+          "actual_cpu": "AMD EPYC 9V74 80-Core Processor",
+          "guard_required_cpu": "AMD EPYC 7763",
+          "same_vcpus": true,
+          "same_ram_bytes": true,
+          "same_browser_version": true,
+          "interpretation": "Exact CPU guard was a conservative developer interpretation of same profile; resourceclass vs exactmodel ambiguity requires technical independent assessment, not another approval of the already-approved task."
+        },
+        "measurement_allowed": true,
+        "execution_approval_ref": "owner-execute-2026-10-26-HX-BL-003-V2-after-harness-review",
+        "additional_workflow_attempts": 1,
+        "prior_attempts_preserved": [
+          40298230168
+        ]
       },
       "owner_decisions_needed": [],
       "review_verdict": "HX003-V2-R4_verified_fixed_limited_harness_acceptance",
@@ -559,7 +579,7 @@
       "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40365396181",
       "automatic_measurement_rerun_allowed": false,
       "canonical_task_path": "agent-work/backlog.json#HX-BL-003",
-      "next_role": "strategist",
+      "next_role": "developer",
       "approval_result_ref": "agent-work/results/2026-10-26-HX-BL-003-V2-owner-approval.json",
       "spec_version": "1.1",
       "addendum_ref": "agent-work/specs/HX-BL-003-P1-V2.md",
@@ -610,9 +630,9 @@
   "updated_at": "2026-10-26T18:05:26.448Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
-    "status": "harness_accepted_measured_execution_blocked_attemptcap",
-    "next_role": "strategist",
-    "next_step": "Сопоставить разрешение владельца «Разрешаю замер», нулевой raw run40298230168 и проверенный df879cb; подготовить конкретное ограниченное уточнение исполнения утверждённого пакета с прежними20navigation+4warmups/4PNG/60min/качеством и порогами. Сохранить историю1/1; не запрашивать повторное утверждение самой задачи и не запускать измерение автоматически в обход действующего cap.",
+    "status": "claimed_execution_reauthorized",
+    "next_role": "developer",
+    "next_step": "Выполнить один явно разрешённый дополнительный V2 workflow на принятом df879cb; сохранить raw, исходы и передать независимому reviewer.",
     "approval_ref": "owner-approval-2026-10-26-HX-BL-003-V2",
     "result_ref": "agent-work/results/2026-10-26-HX-BL-003-V2-owner-approval.json",
     "automation_health": {
@@ -660,8 +680,9 @@
       "interpretation": "Exact CPU guard was a conservative developer interpretation of same profile; resourceclass vs exactmodel ambiguity requires technical independent assessment, not another approval of the already-approved task."
     },
     "developer_result_ref": "agent-work/results/2026-10-26-developer-HX-BL-003-V2.json",
-    "measurement_allowed": false,
-    "review_ref": "agent-work/results/2026-10-26-reviewer-HX-BL-003-df879cb.json"
+    "measurement_allowed": true,
+    "review_ref": "agent-work/results/2026-10-26-reviewer-HX-BL-003-df879cb.json",
+    "execution_approval_ref": "owner-execute-2026-10-26-HX-BL-003-V2-after-harness-review"
   },
   "ready_task_handoffs": {
     "HX-FB-001": {
