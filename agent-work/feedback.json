@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
-  "updated_on": "2026-10-25",
+  "updated_on": "2026-10-26",
   "purpose": "Единый реестр замечаний и багов после доработок; связан с backlog, не дублирует reviewer findings на конкретном SHA.",
   "records": [
     {
       "id": "HX-FB-001",
       "type": "ui_remark",
-      "status": "open",
+      "status": "planned",
       "reported_on": "2026-10-25",
       "reported_by": "owner",
       "source": "Прямое сообщение владельца в текущем чате25.10.2026; URL сообщения недоступен.",
@@ -19,7 +19,7 @@
         "Обычное состояние поля использует спокойное оформление существующих второстепенных полей: без отдельного яркого акцента; сохраняются читаемость, видимый focus и обозначение ошибки.",
         "Правила seed, генерация, импорт/экспорт и валидация не меняются."
       ],
-      "verification_status": "owner_report_not_independently_reproduced",
+      "verification_status": "source_order_confirmed_visual_owner_report_mockup_prepared",
       "priority": "normal",
       "approval": {
         "status": "owner_requested",
@@ -31,8 +31,10 @@
         "functionality": false,
         "before": "По сообщению владельца поле слишком яркое и расположено не под выгрузкой/загрузкой.",
         "after": "Поле находится под выгрузкой/загрузкой и визуально соответствует второстепенным полям.",
-        "example_status": "pending_before_after_screenshot_or_mockup",
-        "requirement": "При подготовке правки показать текущий и предлагаемый/фактический вид по правилам согласования."
+        "example_status": "schematic_before_after_available",
+        "requirement": "При подготовке правки показать текущий и предлагаемый/фактический вид по правилам согласования.",
+        "example_ref": "agent-work/evidence/HX-FB-001-analyst/seed-before-after.svg",
+        "example_limit": "Not screenshot/notimplementation; developer must provide actualbeforeafter"
       },
       "joint_fix_assessment": {
         "candidate_task_id": "HX-BL-003",
@@ -42,8 +44,10 @@
         "assessed_at": "2026-10-25T11:02:35.472Z",
         "assessed_by": "developer",
         "reason": "Косметическая правка не связана с подтверждённым performance bottleneck. Отдельный небольшой пакет сохраняет неизменные условия P1 и прозрачность UI-согласования; поле seed не меняется в PR474.",
-        "analyst_status": "pending_independent_scope_assessment",
-        "evidence_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474"
+        "analyst_status": "completed_defer_separate_package",
+        "evidence_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474",
+        "analyst_result_ref": "agent-work/results/2026-10-26-analyst-HX-FB-001.json",
+        "analyst_assessed_at": "2026-10-26T06:13:45.257Z"
       },
       "acceptance": [
         "Поле ниже выгрузки/загрузки на desktop и узком экране без перекрытий.",
@@ -55,9 +59,13 @@
       "pr": null,
       "head_sha": null,
       "release_sha": null,
-      "result_ref": null,
-      "next_step": "Отдельная небольшая UI-правка с до/после; аналитик учитывает developer defer. Владелец уже запросил изменение, выпуск отдельно.",
-      "score_impact": "score-neutral; отдельный прирост не заявлен"
+      "result_ref": "agent-work/results/2026-10-26-analyst-HX-FB-001.json",
+      "next_step": "Разработчик: реализовать HX-FB-001 отдельным PR от актуального main по spec1.0, показать фактические before/after, выполнить нужные проверки и передать независимому reviewer. Выпуск отдельно.",
+      "score_impact": "score-neutral; отдельный прирост не заявлен",
+      "spec_ref": "agent-work/specs/HX-FB-001.md",
+      "spec_version": "1.0",
+      "spec_status": "ready_for_development",
+      "next_role": "developer"
     }
   ]
 }
