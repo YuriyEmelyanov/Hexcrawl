@@ -70,6 +70,61 @@
       "next_role": "reviewer",
       "evidence_ref": "agent-work/evidence/HX-FB-001-developer/report.md",
       "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40284793669"
+    },
+    {
+      "id": "HX-FB-002",
+      "type": "po_technical_concern",
+      "category": "test_suite_maintainability",
+      "status": "planned",
+      "reported_on": "2026-10-26",
+      "reported_by": "owner_PO",
+      "source": "Прямое поручение владельца: записать аудит тестов как тревогу PO о бесполезном коде; обосновывать новые тесты и кратко сообщать их число и назначение. URL сообщения недоступен.",
+      "title": "Аудит полезности и стоимости тестов; прозрачность роста набора для PO",
+      "description": "PO не понимает состав сообщаемых240тестов и опасается роста бесполезного/дублирующегося/устаревшего кода. Это техническая управленческая тревога, не пользовательский опыт и не воспроизведённый дефект. Число240 — контекст сообщения, не новая проверка main.",
+      "related_task_id": "HX-BL-003",
+      "verification_status": "owner_concern_recorded_audit_not_performed",
+      "priority": "normal",
+      "approval": {
+        "status": "owner_requested_audit",
+        "ref": "owner-decision-2026-10-26-test-governance",
+        "release_approved": false
+      },
+      "expected_behavior": [
+        "Разовый каталог актуального набора по группам: что защищает, где запускается и сколько занимает; реальные количества отдельно по suite/SHA.",
+        "Проверить дублирование одного сценария/пути, удалённый код и отменённые требования, тесты деталей реализации, нестабильность и дорогую повторную подготовку.",
+        "Каждая рекомендация keep/merge/update/remove имеет конкретные тесты, источник действующего требования, evidence и риск потери покрытия; никакой квоты числа тестов.",
+        "Программист и reviewer оценивают необходимость новых тестов и кратко показывают +/−/изменено и назначение в отчётах."
+      ],
+      "joint_fix_assessment": {
+        "candidate_task_id": "HX-BL-003",
+        "decision": "defer",
+        "included": false,
+        "reason": "Общий аудит не относится к одному performance bottleneck; не задерживать текущую допроверку. Новое правило отчётов применяется сразу.",
+        "assessed_by": "coordinator",
+        "analyst_status": "pending",
+        "developer_status": "pending"
+      },
+      "acceptance": [
+        "Понятный PO каталог групп тестов и отдельные фактические числа по suite/base/head; 240 не используется без проверки.",
+        "Список конкретных кандидатов на объединение/обновление/удаление с обоснованием и сохранением независимых уровней unit/integration/browser.",
+        "Зафиксированы длительность/нестабильность по доступным логам либо unknown; тяжёлые новые серии не запускаются без необходимости.",
+        "Рекомендации и выполненная очистка различаются; текущая разработка/замер не заблокированы общим аудитом.",
+        "В последующих отчётах разработчика/reviewer есть краткая сводка изменения тестов и их назначения."
+      ],
+      "user_visible_change": {
+        "interface": false,
+        "functionality": false,
+        "note": "Техническое замечание PO, не UX; изменение поведения продукта не входит в аудит."
+      },
+      "branch": null,
+      "pr": null,
+      "head_sha": null,
+      "release_sha": null,
+      "result_ref": "agent-work/results/2026-10-26-test-governance.json",
+      "next_role": "strategist",
+      "next_step": "После текущей HX-BL-003 выделить ограниченный аудит существующего набора; сейчас применять обоснование тестов и короткий отчёт.",
+      "audit_status": "not_started",
+      "score_impact": "unknown; дополнительные баллы не заявлены"
     }
   ]
 }
