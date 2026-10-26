@@ -4,7 +4,7 @@
   "resumed_by": "2026-10-26:developer:HX-BL-003:collect-2003Z",
   "role": "developer",
   "task_id": "HX-BL-003",
-  "status": "measurement_collected_awaiting_normal_rng_retry",
+  "status": "review_ready_negative_navigation_guard",
   "head_sha": "86100c390d8d4cf66cee6e87589be64ce51687e5",
   "fixed_harness_sha": "a669d6654514871af09f0716750f727306676476",
   "baseline_sha": "103d31b9f6f5c76b1f6b45d9d6664fe3f75dd63b",
@@ -196,10 +196,32 @@
     "retry": {
       "job_id": 121817945407,
       "requested_once": true,
-      "status": "in_progress",
-      "scope": "normalCI RNGonly, not measuredworkflow"
+      "status": "completed",
+      "scope": "normalCI RNGonly, not measuredworkflow",
+      "conclusion": "success"
     },
-    "note": "Original RNG job cancelled after roughly15min includinglongbrowserinstall; exactcause notproven, full logretained."
+    "note": "Original RNG job cancelled after roughly15min includinglongbrowserinstall; exactcause notproven, full logretained.",
+    "jobs": [
+      {
+        "id": 121817945407,
+        "name": "world-random",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 121817947840,
+        "name": "check",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 121818021567,
+        "name": "browser",
+        "status": "completed",
+        "conclusion": "success"
+      }
+    ],
+    "conclusion": "success_after_single_rng_retry"
   },
   "score_model_version": "1.2",
   "score_changed": false,
@@ -251,8 +273,8 @@
   "main_changed": false,
   "published": false,
   "evidence_ref": "agent-work/evidence/HX-BL-003-run40388046863/report.md",
-  "next_role": "developer",
-  "next_step": "Finish one normalRNGCIretry onexact86100; then independentreview raw/P95/PNG/currentharness and score1.2, no measuredrerun/secondoptimization.",
+  "next_role": "reviewer",
+  "next_step": "Независимо проверить86100c390d8d4cf66cee6e87589be64ce51687e5: saveAs/harness/manifest/env,20navigation+4warmups, пересчитатьpooledp95/guards, декодировать2PNGпары и оценить RV1/RV2/RV4/RV5 +score_assessment1.2. N2400zoomnonpassing не скрывать за зелёнымworkflow; никаких новых измерений/оптимизации/выпуска.",
   "automation_health": {
     "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
@@ -261,11 +283,14 @@
       "is_enabled": true
     },
     "end": {
-      "status": "unchecked",
-      "is_enabled": null,
-      "reason": "collecting currentrun"
+      "checked_at": "2026-10-26T20:12:16.864Z",
+      "is_enabled": true,
+      "status": "checked"
     },
     "restored_during_this_run": false,
     "errors": []
-  }
+  },
+  "completed_at": "2026-10-26T20:13:07.480Z",
+  "claim_released": true,
+  "recovery_evidence": "Persisted manual claim was awaiting only externalrun40388046863; terminalsuccess exact86100 matched source/claim; persistedmanualhandoff explicitly requested artifact/raw/log collection then review. Resumed samecanonicalrun, no lease-based takeover/sourcechange/repeatedmeasure."
 }

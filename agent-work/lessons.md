@@ -133,3 +133,6 @@
 
 
 26.10.2026 — independentdf879cbreview confirmsR4correction: sameassertions,8manifesthashes,onefocused4/4pass. [Result](results/2026-10-26-reviewer-HX-BL-003-df879cb.json). Teststabilityfindingclosed withinfiniteoffline scope; productPNG/navigation/historygaps notclosed. Remaining003block is concrete executionplan mismatch: onepreflight-onlyworkflowconsumed1/1 while measuredactions0. Handoff boundedplanreconciliation tostrategist, not anotherharnessrepair or silentcapreset; preservePR475readyqueue. No newpermanenttest.
+
+
+26.10.2026 — V2run40388046863finallycollected20navigation+4warmups/4PNG. BothlargePNGpairs exactdecodedRGBAequal, butN2400zoompooledp95A166.554→B483.300ms guardnonpassing. [Evidence](evidence/HX-BL-003-run40388046863/report.md). Greenworkflow meanscollectionexecuted, not allacceptancepassed; preserveboundednegativeoutcome anddo notpickfavorableestimator. Causalregressionnotprovenby5pairs. OldRNGCIcancellationretained, single normaljobretry succeeded; no measuredrerun. Independentreview/scoreassessmentnext, no productpoints.

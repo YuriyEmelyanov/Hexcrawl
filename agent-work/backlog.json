@@ -102,7 +102,7 @@
       "task_id": "HX-BL-003",
       "title": "Производительность генерации и навигации по числу гексов",
       "criterion_id": "S09-C01",
-      "status": "in_progress",
+      "status": "review_ready",
       "potential_delta": null,
       "approval_ref": "owner-approval-2026-10-25-HX-BL-003",
       "source": {
@@ -229,24 +229,15 @@
         "approval_ref": "owner-approval-2026-10-25-HX-BL-003",
         "next_step": "Программист: закрепить корпус и P1 manifest до baseline замеров, затем профиль и одно подтверждённое узкое место по spec1.0."
       },
-      "next_role": "developer",
-      "next_step": "Следить за существующим run40388046863; сохранить artifact/raw/логи и передать независимой проверке после завершения. Не запускать дубль.",
+      "next_role": "reviewer",
+      "next_step": "Независимо проверить86100c390d8d4cf66cee6e87589be64ce51687e5: saveAs/harness/manifest/env,20navigation+4warmups, пересчитатьpooledp95/guards, декодировать2PNGпары и оценить RV1/RV2/RV4/RV5 +score_assessment1.2. N2400zoomnonpassing не скрывать за зелёнымworkflow; никаких новых измерений/оптимизации/выпуска.",
       "spec_ref": "agent-work/specs/HX-BL-003.md",
       "spec_version": "1.1",
       "spec_status": "ready_for_developer_harness_freeze",
       "execution_allowed": true,
-      "owner_role": "strategist",
-      "claim": {
-        "role": "developer",
-        "task_id": "HX-BL-003",
-        "status": "awaiting_external_CI",
-        "started_at": "2026-10-26T18:53:28.985Z",
-        "head_sha": "86100c390d8d4cf66cee6e87589be64ce51687e5",
-        "validation_run_id": 40388046863,
-        "last_checkpoint_at": "2026-10-26T19:35:53.129Z",
-        "run_id": "2026-10-26:developer:HX-BL-003:manual-measure-1852Z"
-      },
-      "result_ref": "agent-work/results/2026-10-26-developer-HX-BL-003-saveAs-restart.json",
+      "owner_role": "reviewer",
+      "claim": null,
+      "result_ref": "agent-work/results/2026-10-26-developer-HX-BL-003-V2-completed.json",
       "feedback_assessment": {
         "register_ref": "agent-work/feedback.json",
         "candidate_ids": [
@@ -261,8 +252,8 @@
       "branch": "agent/hx-bl-003-performance",
       "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474",
       "head_sha": "86100c390d8d4cf66cee6e87589be64ce51687e5",
-      "checks_status": "normal_CI_and_validation_in_progress",
-      "evidence_ref": "agent-work/evidence/review-HX-BL-003-df879cb/report.md",
+      "checks_status": "normal_CI_passed_after_single_RNG_retry",
+      "evidence_ref": "agent-work/evidence/HX-BL-003-run40388046863/report.md",
       "corpus_ci": {
         "id": 40187550999,
         "status": "completed",
@@ -271,7 +262,7 @@
       },
       "result_branch": "agent/hx-bl-003-performance",
       "corpus_status": "input_and_output_manifests_frozen",
-      "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40388046863",
+      "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40388056032",
       "baseline_timing": {
         "id": 40228996488,
         "status": "completed",
@@ -338,7 +329,7 @@
         "visual": "agent-work/evidence/HX-BL-003-developer/isolated-visual-raw.json",
         "log": "agent-work/evidence/HX-BL-003-developer/ci-recovery-40252325923.log"
       },
-      "review_verdict": "HX003-V2-R4_verified_fixed_limited_harness_acceptance",
+      "review_verdict": "pending_new_sha_and_measurement",
       "reviewed_sha": "df879cb8d68cf876397aa5611f561a48482ae191",
       "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474#pullrequestreview-5656724813",
       "review_result_ref": "agent-work/results/2026-10-26-reviewer-HX-BL-003-df879cb.json",
@@ -553,11 +544,11 @@
           "points_awarded": 0
         }
       ],
-      "score_assessment_status": "model1.2_insufficient_evidence_no_award_no_historical_migration",
+      "score_assessment_status": "pending_new_sha_model1.2",
       "acceptance_status": "blocked_incomplete_product_harness_accepted",
       "automatic_measurement_rerun_allowed": false,
       "repeat_review_requires": "material new evidence or changed source SHA",
-      "developer_response_ref": "agent-work/results/2026-10-26-developer-HX-BL-003-test-stability.json",
+      "developer_response_ref": "agent-work/results/2026-10-26-developer-HX-BL-003-V2-completed.json",
       "developer_finding_response": {
         "HX003-RV1": {
           "status": "blocked",
@@ -597,7 +588,7 @@
       },
       "validation_plan": {
         "id": "HX-BL-003-V2",
-        "status": "workflow_running_after_saveAs_fix",
+        "status": "measurement_completed_negative_navigation_guard_review_ready",
         "path": "agent-work/proposals/HX-BL-003-V2-validation.md",
         "max_png_attempts": 4,
         "max_measured_navigation_actions": 20,
@@ -605,14 +596,14 @@
         "job_timeout_minutes": 60,
         "quality_or_threshold_change": false,
         "paid_spend_allowed": false,
-        "approval_ref": "owner-approval-2026-10-26-HX-BL-003-V2",
+        "approval_ref": "owner-restart-2026-10-26-HX-BL-003-after-saveAs-fix",
         "approved_on": "2026-10-26",
         "addendum_ref": "agent-work/specs/HX-BL-003-P1-V2.md",
         "warmups": 4,
-        "measurement_started": null,
-        "workflow_attempts_used": 1,
-        "measured_actions_attempted": 0,
-        "png_click_attempts": 0,
+        "measurement_started": true,
+        "workflow_attempts_used": 3,
+        "measured_actions_attempted": 20,
+        "png_click_attempts": 4,
         "environment_discrepancy": {
           "actual_cpu": "AMD EPYC 9V74 80-Core Processor",
           "guard_required_cpu": "AMD EPYC 7763",
@@ -621,7 +612,7 @@
           "same_browser_version": true,
           "interpretation": "Exact CPU guard was a conservative developer interpretation of same profile; resourceclass vs exactmodel ambiguity requires technical independent assessment, not another approval of the already-approved task."
         },
-        "measurement_allowed": true,
+        "measurement_allowed": false,
         "execution_approval_ref": "owner-restart-2026-10-26-HX-BL-003-after-saveAs-fix",
         "additional_workflow_attempts": 1,
         "prior_attempts_preserved": [
@@ -631,7 +622,8 @@
         "prior_attempts_used": 1,
         "new_attempts_used": 1,
         "total_attempts_used": 3,
-        "max_total_authorized_workflow_attempts": 3
+        "max_total_authorized_workflow_attempts": 3,
+        "warmups_attempted": 4
       },
       "owner_decisions_needed": [],
       "measurement_execution_allowed_after": "prospective_P1_addendum_and_frozen_harness_SHA",
@@ -641,8 +633,11 @@
       "validation_run": {
         "id": 40388046863,
         "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40388046863",
-        "status": "in_progress",
-        "conclusion": null
+        "status": "completed",
+        "conclusion": "success",
+        "job_id": 121801437428,
+        "attempt": 1,
+        "environment_commit": "92b8629297c8fe696d95d34990bd48b40fce4344"
       },
       "previous_review": {
         "sha": "86a7e941a823e32e7c7cf9cfde78bb247ffc8194",
@@ -650,10 +645,10 @@
         "result_ref": "agent-work/results/2026-10-26-reviewer-HX-BL-003-86a7e94.json"
       },
       "finding_status": {
-        "HX003-RV1": "blocked_missing_two_large_PNG_pairs",
-        "HX003-RV2": "inconclusive_prior_guard_breaches_no_new_navigation",
+        "HX003-RV1": "new_two_large_PNG_pairs_exact_RGBA_equal_pending_independent_review",
+        "HX003-RV2": "new_N2400zoom_guard_breach_pending_independent_review",
         "HX003-RV3": "attribution_correction_verified_source_paths_verified_final_SVG_reference_audit_retained_not_redownloaded",
-        "HX003-RV4": "resolved_for_new_exact_head_d713_normalCI40298240249_success_historical739_action_required_unchanged",
+        "HX003-RV4": "new_exact86100_CI_success_after_one_normal_RNG_retry_pending_review",
         "HX003-RV5": "partial_large_native_history_selection_limitations_retained",
         "HX003-V2-R1": "verified_fixed_source_offline_scope",
         "HX003-V2-R2": "verified_fixed_source_offline_scope",
@@ -661,69 +656,170 @@
         "HX003-V2-R4": "verified_fixed_limited_source_offline_scope"
       },
       "test_change_summary": {
-        "base_sha": "86a7e941a823e32e7c7cf9cfde78bb247ffc8194",
-        "head_sha": "df879cb8d68cf876397aa5611f561a48482ae191",
+        "base_sha": "86100c390d8d4cf66cee6e87589be64ce51687e5",
+        "head_sha": "86100c390d8d4cf66cee6e87589be64ce51687e5",
         "added": 0,
         "removed": 0,
-        "modified": 2,
-        "total_definitions": 4,
-        "suite": "Node node:test",
-        "scenario_risk": "OS kill/exit can exceed20ms/200ms even with correct implementation. Existing cases verify actual owned child exit, abort latch/no next work, graceful escalation, unconfirmed exit fatality.",
-        "reuse_or_new_reason": "Modify the two existing real-process cases; no new scenario or case necessary. Fake unconfirmed-exit5ms and intentional operation20ms remain. Assertion sensitivity retained. Five-second intentional graceful hang is a bounded test cost.",
-        "count_source": "Exact base/head test contents and two-path compare; repeat runs do not add definitions",
-        "reviewer_code_changes": {
-          "added": 0,
-          "removed": 0,
-          "modified": 0
-        },
-        "execution": {
-          "runs": 1,
-          "executed": 4,
-          "passed": 4,
-          "failed": 0,
-          "skipped": 0,
-          "cancelled": 0,
-          "node": "v24.22.1",
-          "duration_ms": 5230.783528,
-          "log": "agent-work/evidence/review-HX-BL-003-df879cb/node-test.log",
-          "second_run": false
-        },
-        "normal_ci": {
-          "run_id": 40365396181,
-          "head_sha": "df879cb8d68cf876397aa5611f561a48482ae191",
-          "conclusion": "success",
-          "jobs": [
-            {
-              "id": 121721589214,
-              "name": "browser",
-              "conclusion": "success"
-            },
-            {
-              "id": 121721589415,
-              "name": "world-random",
-              "conclusion": "success"
-            },
-            {
-              "id": 121721589476,
-              "name": "check",
-              "conclusion": "success"
-            }
-          ],
-          "tests": 240,
-          "passed": 240,
-          "failed": 0,
-          "skipped": 0
-        }
+        "modified": 0,
+        "source": "No source edits during externalresultcollection",
+        "reuse_or_new_reason": "Read archivedresults/recomputeonly; normalcanceledRNGjob retriedonce. No measuredactions repeated."
       },
       "coordination_handoff": {
-        "task_id": "HX-BL-003",
-        "responsible": "strategist",
-        "status": "pending_bounded_execution_plan_reconciliation",
-        "reason": "Approved V2 measurement has not occurred: run40298230168 stopped atpreflight with0navigation/0warmup/0PNG; plan nevertheless limits workflowattempts1 and records1used. Correctedharness nowverified, productRV1/RV2/RV5remain. Reviewer has no authority to reset explicitattemptcap.",
-        "minimal_next_step": "Сопоставить разрешение владельца «Разрешаю замер», нулевой raw run40298230168 и проверенный df879cb; подготовить конкретное ограниченное уточнение исполнения утверждённого пакета с прежними20navigation+4warmups/4PNG/60min/качеством и порогами. Сохранить историю1/1; не запрашивать повторное утверждение самой задачи и не запускать измерение автоматически в обход действующего cap.",
-        "no_new_measurements_in_this_handoff": true
+        "status": "superseded_by_explicit_owner_restart_and_completed_measurement",
+        "approval_ref": "owner-restart-2026-10-26-HX-BL-003-after-saveAs-fix",
+        "result_ref": "agent-work/results/2026-10-26-developer-HX-BL-003-V2-completed.json"
       },
-      "diagnosis_ref": "agent-work/evidence/HX-BL-003-run40382000933/diagnosis.md"
+      "diagnosis_ref": "agent-work/evidence/HX-BL-003-run40382000933/diagnosis.md",
+      "current_validation_result": {
+        "artifact": {
+          "id": 12684286700,
+          "bytes": 162310969,
+          "sha256": "c729258618dd5251709b1417508229684bea8725c07a000bc0bedb7b147b5f04",
+          "download_hash_verified": true,
+          "manifest_entries_verified": 12,
+          "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40388046863/artifacts/12684286700"
+        },
+        "counts": {
+          "measured_navigation": 20,
+          "warmups": 4,
+          "png_clicks": 4,
+          "nav_status_success": 24,
+          "png_captured": 4
+        },
+        "navigation": [
+          {
+            "input": "mythic-0-N1200.json",
+            "phase": "zoom",
+            "variants": {
+              "A": {
+                "frames": 120,
+                "p95": 766.7000000000044,
+                "complete": true
+              },
+              "B": {
+                "frames": 120,
+                "p95": 816.7000000000044,
+                "complete": true
+              }
+            },
+            "delta_ms": 50,
+            "relative_delta": 0.06521455588887393,
+            "guard_breach": false
+          },
+          {
+            "input": "mythic-0-N1200.json",
+            "phase": "pan",
+            "variants": {
+              "A": {
+                "frames": 120,
+                "p95": 133.2679999999964,
+                "complete": true
+              },
+              "B": {
+                "frames": 120,
+                "p95": 116.64199999999983,
+                "complete": true
+              }
+            },
+            "delta_ms": -16.625999999996566,
+            "relative_delta": -0.12475613050392453,
+            "guard_breach": false
+          },
+          {
+            "input": "mythic-0-N2400.json",
+            "phase": "zoom",
+            "variants": {
+              "A": {
+                "frames": 120,
+                "p95": 166.55399999999645,
+                "complete": true
+              },
+              "B": {
+                "frames": 120,
+                "p95": 483.3000000000029,
+                "complete": true
+              }
+            },
+            "delta_ms": 316.74600000000646,
+            "relative_delta": 1.9017615908354841,
+            "guard_breach": true
+          },
+          {
+            "input": "mythic-0-N2400.json",
+            "phase": "pan",
+            "variants": {
+              "A": {
+                "frames": 120,
+                "p95": 216.57600000000093,
+                "complete": true
+              },
+              "B": {
+                "frames": 120,
+                "p95": 233.3000000000029,
+                "complete": true
+              }
+            },
+            "delta_ms": 16.72400000000198,
+            "relative_delta": 0.0772200059101742,
+            "guard_breach": false
+          }
+        ],
+        "png": [
+          {
+            "input": "mythic-0-N2400-after",
+            "pairs": [
+              {
+                "variant": "A",
+                "size": [
+                  18284,
+                  10780
+                ],
+                "file_sha256": "f3c17053fc5769fa4fbee5a1092e55f7e9ead0339075704780bdc42f10bcdc3b",
+                "rgba_sha256": "1a5795a4fe8aeb988d30fdcc12824971632c8ec89eab88222f1a6de966483cab"
+              },
+              {
+                "variant": "B",
+                "size": [
+                  18284,
+                  10780
+                ],
+                "file_sha256": "f3c17053fc5769fa4fbee5a1092e55f7e9ead0339075704780bdc42f10bcdc3b",
+                "rgba_sha256": "1a5795a4fe8aeb988d30fdcc12824971632c8ec89eab88222f1a6de966483cab"
+              }
+            ],
+            "all_decoded_rgba_equal": true,
+            "full_decoded_rgba_bytes_exactly_compared": true,
+            "rgba_bytes_per_image": 788406080
+          },
+          {
+            "input": "mythic-123456789-N2400-after",
+            "pairs": [
+              {
+                "variant": "A",
+                "size": [
+                  17508,
+                  12376
+                ],
+                "file_sha256": "1ffc3158a01ef0d385c1aed65d1fba318b51724a329ea8f8cb3e51d11ae208b0",
+                "rgba_sha256": "81be1959c9738384d8e9a08c796b63eaa2a3f40ead6add5e6031fe4a25d37cfd"
+              },
+              {
+                "variant": "B",
+                "size": [
+                  17508,
+                  12376
+                ],
+                "file_sha256": "1ffc3158a01ef0d385c1aed65d1fba318b51724a329ea8f8cb3e51d11ae208b0",
+                "rgba_sha256": "81be1959c9738384d8e9a08c796b63eaa2a3f40ead6add5e6031fe4a25d37cfd"
+              }
+            ],
+            "all_decoded_rgba_equal": true,
+            "full_decoded_rgba_bytes_exactly_compared": true,
+            "rgba_bytes_per_image": 866716032
+          }
+        ],
+        "acceptance": "developer_nonpassing_navigation_guard_not_product_accepted"
+      }
     },
     {
       "task_id": "HX-BL-004",
