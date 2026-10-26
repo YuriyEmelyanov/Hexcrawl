@@ -11,6 +11,7 @@ permissions:
   contents: read
 jobs:
   seed-ui:
+    if: github.head_ref == 'agent/hx-fb-001-seed-row' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:

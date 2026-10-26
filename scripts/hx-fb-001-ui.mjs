@@ -35,7 +35,7 @@ try {
     for(const value of ['', '-1', '1.5', '1e3', '4294967296','abc']){await t.seed().fill(value);await t.seed().press('Tab');assert.equal(await t.seed().getAttribute('aria-invalid'),'true');assert.deepEqual(await t.snapshot(),before);}
     await t.page.locator('.world-seed-control').screenshot({path:out+stem+'-error.png'});
     await t.seed().fill('0');await t.seed().press('Tab');assert.equal(await t.seed().getAttribute('aria-invalid'),null);assert.equal((await t.snapshot()).generation.masterSeed,0);
-    const m=t.page.locator('details.export-menu');await m.locator('summary').click();assert(await t.seed().isVisible());assert(await t.page.getByRole('button',{name:'PNG',exact:true}).isVisible());await t.page.screenshot({path:out+stem+'-menu.png'});await m.locator('summary').click();
+    const m=t.page.locator('details.export-menu');await m.locator('summary').click();await t.seed().scrollIntoViewIfNeeded();assert(await t.seed().isVisible());assert(await t.page.getByRole('button',{name:'PNG',exact:true}).isVisible());const popup=await t.page.locator('.export-menu__items').boundingBox(),seedBlock=await t.page.locator('.world-seed-control').boundingBox();assert(popup&&seedBlock&&popup.y+popup.height<=seedBlock.y,'Open export popup must not cover seed row');await t.page.screenshot({path:out+stem+'-menu.png'});await m.locator('summary').click();
     rows.push({kind:'layout_and_input',variant,width,lang,...layout,invalid_inputs:6,valid_boundaries:true});
    }
   }finally{await t.context.close();}
