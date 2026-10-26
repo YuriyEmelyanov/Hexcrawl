@@ -29,7 +29,7 @@
   "run_id": "2026-10-26:developer:HX-BL-003-test-stability:1704Z",
   "plan_revision": 1,
   "baseline_sha": "f89530abe1e237493dddb533502bb772ae1ab4e5",
-  "status": "in_progress",
+  "status": "review_ready",
   "planning_for": "2026-10-24",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-10-25",
@@ -46,24 +46,13 @@
   "schedule_frequency": "hourly",
   "process_path": "agent-work/process.md",
   "current_role": "developer",
-  "next_role": "developer",
+  "next_role": "reviewer",
   "current_task_id": "HX-BL-003",
   "spec_path": "agent-work/specs/HX-BL-003.md",
   "spec_version": "1.1",
   "result_path": "agent-work/results/2026-10-26-developer-HX-BL-003-test-stability.json",
-  "handoff_commit_sha": "cba63fc660a5c2ed044045167ac60312fa3aca83",
-  "active_claim": {
-    "run_id": "2026-10-26:developer:HX-BL-003-test-stability:1704Z",
-    "role": "developer",
-    "task_id": "HX-BL-003",
-    "started_at": "2026-10-26T17:04:39.935Z",
-    "lease_expires_at": "2026-10-26T19:04:39.935Z",
-    "status": "in_progress",
-    "head_sha": "df879cb8d68cf876397aa5611f561a48482ae191",
-    "scope": "R4 existing Node test stability only; no new cases/no measured workflow",
-    "last_checkpoint_at": "2026-10-26T17:06:44.789Z",
-    "last_checkpoint": "2existingNodecases adjusted;3focusedruns4/4passed, exactsource frozen; normalCIpending, no measurements"
-  },
+  "handoff_commit_sha": "c68beb295c8bda3c5394b80d94a101714efb7d6c",
+  "active_claim": null,
   "next_step": "Finish normalCI exactdf879cb; then limitedindependentreview R4/testsummary, no benchmark/PNG/capreset.",
   "owner_decisions_needed": [],
   "release_approval": {
@@ -76,9 +65,9 @@
   "branch_name": "agent/hx-bl-003-performance",
   "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474",
   "head_sha": "df879cb8d68cf876397aa5611f561a48482ae191",
-  "checks_status": "normal_CI_in_progress",
+  "checks_status": "passed_exact_sha",
   "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40365396181",
-  "review_verdict": "changes_requested_for_test_stability",
+  "review_verdict": "pending_new_sha",
   "role_selection_mode": "ready_work_priority",
   "role_selection_source": "agent-work/process.md",
   "process_decision_ref": "owner-decision-2026-10-24-dynamic-roles",
@@ -218,7 +207,7 @@
   "next_task_proposal_ref": null,
   "next_task_id": "HX-BL-003",
   "approval_ref": "owner-decision-2026-10-25-feedback-register",
-  "last_completed_stage": "independent_harness_review",
+  "last_completed_stage": "developer_existing_test_stability_fix",
   "previous_release_approval": {
     "status": "approved_and_executed",
     "approved_sha": "50d8b6f2414faa1f204cdd2a7ed936533707592c",
@@ -235,11 +224,12 @@
       "is_enabled": true
     },
     "end": {
-      "status": "unchecked",
-      "is_enabled": null
+      "checked_at": "2026-10-26T17:12:49.920Z",
+      "status": "checked",
+      "is_enabled": true
     },
-    "errors": [],
-    "restored_during_this_run": false
+    "restored_during_this_run": false,
+    "errors": []
   },
   "open_findings": [
     {
@@ -364,7 +354,9 @@
     "recorded_at": "2026-10-25T19:25:50.361Z"
   },
   "previous_score_assessment_ref": "agent-work/results/2026-10-25-reviewer-HX-BL-030-855cfd5.json",
-  "addressed_findings_pending_review": [],
+  "addressed_findings_pending_review": [
+    "HX003-V2-R4"
+  ],
   "verified_fixed_findings": [
     "R1",
     "R2",
@@ -406,7 +398,7 @@
     "HX003-V2-R1": "verified_fixed_source_offline_scope",
     "HX003-V2-R2": "verified_fixed_source_offline_scope",
     "HX003-V2-R3": "verified_fixed_source_offline_scope",
-    "HX003-V2-R4": "open_test_stability_fix"
+    "HX003-V2-R4": "addressed_pending_independent_review"
   },
   "previous_release_result": {
     "schema_version": 1,
@@ -459,7 +451,7 @@
   "deployment_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40173164222",
   "next_task_execution_allowed": true,
   "last_release_pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/472",
-  "last_material_result_path": "agent-work/results/2026-10-26-reviewer-HX-BL-003-86a7e94.json",
+  "last_material_result_path": "agent-work/results/2026-10-26-developer-HX-BL-003-test-stability.json",
   "last_wait_check_at": "2026-10-26T02:02:01.846Z",
   "spec_status": "ready_for_developer_harness_freeze",
   "previous_task_release_approval": {
@@ -511,45 +503,47 @@
     "next_step": "Apply1.2 to next specification/review; preserve1.1 prior assessment until evidence-based reassessment; game breadth unverified."
   },
   "previous_active_claim": {
-    "run_id": "2026-10-26:reviewer:HX-BL-003-86a7e94:1557Z",
+    "run_id": "2026-10-26:developer:HX-BL-003-test-stability:1704Z",
+    "role": "developer",
     "task_id": "HX-BL-003",
-    "role": "reviewer",
-    "head_sha": "86a7e941a823e32e7c7cf9cfde78bb247ffc8194",
-    "started_at": "2026-10-26T15:57:51.325Z",
-    "lease_expires_at": "2026-10-26T17:57:51.325Z",
-    "status": "completed_changes_requested",
-    "scope": "Independent limited source/offline review of3harnessfixes and test necessity; no measured workflow",
-    "completed_at": "2026-10-26T16:05:55.835Z"
+    "started_at": "2026-10-26T17:04:39.935Z",
+    "lease_expires_at": "2026-10-26T19:04:39.935Z",
+    "status": "completed_review_ready",
+    "head_sha": "df879cb8d68cf876397aa5611f561a48482ae191",
+    "scope": "R4 existing Node test stability only; no new cases/no measured workflow",
+    "last_checkpoint_at": "2026-10-26T17:06:44.789Z",
+    "last_checkpoint": "2existingNodecases adjusted;3focusedruns4/4passed, exactsource frozen; normalCIpending, no measurements",
+    "completed_at": "2026-10-26T17:12:49.920Z"
   },
   "review_request": {
     "task_id": "HX-BL-003",
-    "status": "completed_changes_requested",
-    "head_sha": "86a7e941a823e32e7c7cf9cfde78bb247ffc8194",
+    "status": "ready",
+    "head_sha": "df879cb8d68cf876397aa5611f561a48482ae191",
     "independent_agent_required": true,
     "spec_ref": "agent-work/specs/HX-BL-003.md",
     "addendum_ref": "agent-work/specs/HX-BL-003-P1-V2.md",
-    "evidence_ref": "agent-work/evidence/HX-BL-003-V2-harness-fixes/report.md",
-    "result_ref": "agent-work/results/2026-10-26-reviewer-HX-BL-003-86a7e94.json",
-    "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40337416043",
+    "evidence_ref": "agent-work/evidence/HX-BL-003-V2-test-stability/report.md",
+    "result_ref": "agent-work/results/2026-10-26-developer-HX-BL-003-test-stability.json",
+    "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40365396181",
     "score_assessment_required": true,
     "score_model_version": "1.2",
     "no_new_measurements": true,
-    "scope": "Независимая ограниченная проверка 86a7e94: три исправления harness, offline tests и CI; score_assessment1.2. Без реального замера, PNG или сброса cap1/1."
+    "scope": "Finish normalCI exactdf879cb; then limitedindependentreview R4/testsummary, no benchmark/PNG/capreset."
   },
   "reviewed_sha": "86a7e941a823e32e7c7cf9cfde78bb247ffc8194",
-  "current_review_score_assessment_ref": "agent-work/results/2026-10-26-reviewer-HX-BL-003-86a7e94.json",
+  "current_review_score_assessment_ref": null,
   "automatic_measurement_rerun_allowed": false,
   "repeat_review_requires": "material new evidence or changed source SHA",
   "blocked_task_handoffs": {
     "HX-BL-003": {
       "task_id": "HX-BL-003",
-      "status": "changes_requested",
-      "head_sha": "86a7e941a823e32e7c7cf9cfde78bb247ffc8194",
+      "status": "review_ready",
+      "head_sha": "df879cb8d68cf876397aa5611f561a48482ae191",
       "branch_name": "agent/hx-bl-003-performance",
       "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474",
       "spec_path": "agent-work/specs/HX-BL-003.md",
-      "result_path": "agent-work/results/2026-10-26-reviewer-HX-BL-003-86a7e94.json",
-      "next_step": "Стабилизировать существующий Node-тест graceful cleanup: достаточный бюджет OS kill/exit, без изменения production thresholds и без новых test cases. Затем точечный offline прогон и обычный exact-headCI; передать новый SHA независимому reviewer. Реальный замер не запускать/счётчик1/1 не сбрасывать.",
+      "result_path": "agent-work/results/2026-10-26-developer-HX-BL-003-test-stability.json",
+      "next_step": "Finish normalCI exactdf879cb; then limitedindependentreview R4/testsummary, no benchmark/PNG/capreset.",
       "validation_plan": {
         "id": "HX-BL-003-V2",
         "status": "harness_changes_requested_no_new_measured_workflow",
@@ -570,14 +564,14 @@
         "measurement_allowed": false
       },
       "owner_decisions_needed": [],
-      "review_verdict": "changes_requested_for_test_stability",
+      "review_verdict": "pending_new_sha",
       "reviewed_sha": "86a7e941a823e32e7c7cf9cfde78bb247ffc8194",
       "current_review_score_assessment_ref": "agent-work/results/2026-10-26-reviewer-HX-BL-003-86a7e94.json",
       "checks_status": "passed_exact_sha",
-      "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40337416043",
+      "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40365396181",
       "automatic_measurement_rerun_allowed": false,
       "canonical_task_path": "agent-work/backlog.json#HX-BL-003",
-      "next_role": "developer",
+      "next_role": "reviewer",
       "approval_result_ref": "agent-work/results/2026-10-26-HX-BL-003-V2-owner-approval.json",
       "spec_version": "1.1",
       "addendum_ref": "agent-work/specs/HX-BL-003-P1-V2.md",
@@ -615,13 +609,13 @@
     "evidence_ref": "agent-work/evidence/HX-FB-001-developer/report.md",
     "next_role": "reviewer"
   },
-  "owner_decisions_note": "Три исходныхharnessfindingпроверены; воспроизведён flaky20msNodecleanup test. Коротко исправить существующийтест; новыхtestcasesне требуется. PR475review_ready сохранён; общийаудитHX-FB-002после003. Замер/выпускнеисполнены, cap1/1сохранён, повторноеутверждениесамойзадачине запрашивается.",
-  "updated_at": "2026-10-26T17:06:44.789Z",
+  "owner_decisions_note": "R4двухсуществующихNodeтестовисправлен;3focusedruns4/4иnormalCI240/browser/RNGpassed. Следующийэтапнезависимыйreviewdf879cb. Новыхтестовнет;PR475сохранён;замернеисполнен/cap1/1не сброшен;выпускотдельно.",
+  "updated_at": "2026-10-26T17:12:49.920Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
-    "status": "harness_test_stability_changes_requested_no_measurement",
-    "next_role": "developer",
-    "next_step": "Стабилизировать существующий Node-тест graceful cleanup: достаточный бюджет OS kill/exit, без изменения production thresholds и без новых test cases. Затем точечный offline прогон и обычный exact-headCI; передать новый SHA независимому reviewer. Реальный замер не запускать/счётчик1/1 не сбрасывать.",
+    "status": "harness_test_stability_corrected_pending_independent_review_no_measurement",
+    "next_role": "reviewer",
+    "next_step": "Finish normalCI exactdf879cb; then limitedindependentreview R4/testsummary, no benchmark/PNG/capreset.",
     "approval_ref": "owner-approval-2026-10-26-HX-BL-003-V2",
     "result_ref": "agent-work/results/2026-10-26-HX-BL-003-V2-owner-approval.json",
     "automation_health": {
@@ -761,54 +755,23 @@
     }
   },
   "test_change_summary": {
-    "base_sha": "d713cb9d11c0cd00bfda1eaf13a7489f58e48634",
-    "head_sha": "86a7e941a823e32e7c7cf9cfde78bb247ffc8194",
-    "source": "GitHub compare exact SHAs; four test() and seven unittest test_ methods in new files",
-    "suites": [
-      {
-        "suite": "Node node:test",
-        "added": 4,
-        "removed": 0,
-        "modified": 0,
-        "scenario_risk": "resource-class, watchdog process exit/no next work, graceful escalation, fatal unconfirmed exit",
-        "reuse_or_new_reason": "Distinct new supervisor contracts; shared fixture and existing runner; useful observable process behavior. Keep cases, stabilize existing OS deadline.",
-        "executed": 4,
-        "passed": 3,
-        "failed": 1,
-        "skipped": 0,
-        "targeted_repeat": {
-          "executed": 1,
-          "passed": 1,
-          "failed": 0,
-          "skipped": 0
-        }
-      },
-      {
-        "suite": "Python unittest analyzer",
-        "added": 7,
-        "removed": 0,
-        "modified": 0,
-        "scenario_risk": "valid control, failed/missing/late/bad warmup, duplicate iteration, strict guard boundary",
-        "reuse_or_new_reason": "Synthetic fixture tests distinct completeness defects and unchanged guard. Existing analyzer reused, no browser/large maps.",
-        "executed": 7,
-        "passed": 7,
-        "failed": 0,
-        "skipped": 0
-      }
-    ],
-    "current_reviewer_changes": {
-      "added": 0,
-      "removed": 0,
-      "modified": 0
+    "base_sha": "86a7e941a823e32e7c7cf9cfde78bb247ffc8194",
+    "head_sha": "df879cb8d68cf876397aa5611f561a48482ae191",
+    "suite": "Node node:test",
+    "added": 0,
+    "removed": 0,
+    "modified": 2,
+    "scenario_risk": "Flaky real-child kill/exit under20ms/200ms schedulebudget; retain observedexit and abort assertions.",
+    "reuse_or_new_reason": "Modify two existing cases; no new scenario required. Production5000ms default unchanged.",
+    "source": "ExactGitHub compare testfile patch and same4test()definitions",
+    "execution": {
+      "focused_runs": 3,
+      "executed_per_run": 4,
+      "passed_per_run": 4,
+      "failed": 0,
+      "skipped": 0
     },
-    "temporary_diagnostics": "One unchanged targeted rerun for observed failure; not a new permanent case",
-    "normal_ci": {
-      "node_executed": 240,
-      "node_passed": 240,
-      "node_failed": 0,
-      "node_skipped": 0,
-      "browser": "success_separate",
-      "rng": "success_separate"
-    }
+    "python": "unchanged_not_rerun",
+    "normal_ci": "pending"
   }
 }
