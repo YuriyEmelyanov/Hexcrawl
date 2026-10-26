@@ -230,7 +230,7 @@
         "next_step": "Программист: закрепить корпус и P1 manifest до baseline замеров, затем профиль и одно подтверждённое узкое место по spec1.0."
       },
       "next_role": "developer",
-      "next_step": "Дождаться существующего Check40385577128 на a669d665; сохранить логи и передать ограниченную независимую проверку двух saveAs-callsite и raw40382000933. Новый benchmark/PNG в диагностическом запуске не выполнялся.",
+      "next_step": "Следить за существующим run40388046863; сохранить artifact/raw/логи и передать независимой проверке после завершения. Не запускать дубль.",
       "spec_ref": "agent-work/specs/HX-BL-003.md",
       "spec_version": "1.1",
       "spec_status": "ready_for_developer_harness_freeze",
@@ -239,14 +239,14 @@
       "claim": {
         "role": "developer",
         "task_id": "HX-BL-003",
-        "status": "awaiting_fix_normal_CI",
+        "status": "awaiting_external_CI",
         "started_at": "2026-10-26T18:53:28.985Z",
-        "head_sha": "a669d6654514871af09f0716750f727306676476",
-        "validation_run_id": 40382000933,
-        "last_checkpoint_at": "2026-10-26T19:20:14.787Z",
+        "head_sha": "86100c390d8d4cf66cee6e87589be64ce51687e5",
+        "validation_run_id": 40388046863,
+        "last_checkpoint_at": "2026-10-26T19:35:53.129Z",
         "run_id": "2026-10-26:developer:HX-BL-003:manual-measure-1852Z"
       },
-      "result_ref": "agent-work/results/2026-10-26-reviewer-HX-BL-003-df879cb.json",
+      "result_ref": "agent-work/results/2026-10-26-developer-HX-BL-003-saveAs-restart.json",
       "feedback_assessment": {
         "register_ref": "agent-work/feedback.json",
         "candidate_ids": [
@@ -260,8 +260,8 @@
       },
       "branch": "agent/hx-bl-003-performance",
       "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474",
-      "head_sha": "a669d6654514871af09f0716750f727306676476",
-      "checks_status": "running_exact_sha",
+      "head_sha": "86100c390d8d4cf66cee6e87589be64ce51687e5",
+      "checks_status": "normal_CI_and_validation_in_progress",
       "evidence_ref": "agent-work/evidence/review-HX-BL-003-df879cb/report.md",
       "corpus_ci": {
         "id": 40187550999,
@@ -271,7 +271,7 @@
       },
       "result_branch": "agent/hx-bl-003-performance",
       "corpus_status": "input_and_output_manifests_frozen",
-      "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40385577128",
+      "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40388046863",
       "baseline_timing": {
         "id": 40228996488,
         "status": "completed",
@@ -597,7 +597,7 @@
       },
       "validation_plan": {
         "id": "HX-BL-003-V2",
-        "status": "failed_first_warmup_download_API",
+        "status": "workflow_running_after_saveAs_fix",
         "path": "agent-work/proposals/HX-BL-003-V2-validation.md",
         "max_png_attempts": 4,
         "max_measured_navigation_actions": 20,
@@ -621,8 +621,8 @@
           "same_browser_version": true,
           "interpretation": "Exact CPU guard was a conservative developer interpretation of same profile; resourceclass vs exactmodel ambiguity requires technical independent assessment, not another approval of the already-approved task."
         },
-        "measurement_allowed": false,
-        "execution_approval_ref": "owner-execute-2026-10-26-HX-BL-003-V2-after-harness-review",
+        "measurement_allowed": true,
+        "execution_approval_ref": "owner-restart-2026-10-26-HX-BL-003-after-saveAs-fix",
         "additional_workflow_attempts": 1,
         "prior_attempts_preserved": [
           40298230168
@@ -630,8 +630,8 @@
         "validation_run_id": 40382000933,
         "prior_attempts_used": 1,
         "new_attempts_used": 1,
-        "total_attempts_used": 2,
-        "max_total_authorized_workflow_attempts": 2
+        "total_attempts_used": 3,
+        "max_total_authorized_workflow_attempts": 3
       },
       "owner_decisions_needed": [],
       "measurement_execution_allowed_after": "prospective_P1_addendum_and_frozen_harness_SHA",
@@ -639,16 +639,10 @@
       "analyst_result_ref": "agent-work/results/2026-10-26-analyst-HX-BL-003-V2.json",
       "spec_archive_ref": "agent-work/specs/archive/HX-BL-003-spec1.0.md",
       "validation_run": {
-        "id": 40382000933,
-        "status": "completed",
-        "conclusion": "failure",
-        "head_sha": "2ab6886cc745c742bd4e8acf1261d5bec2885bf6",
-        "counts": {
-          "measured_actions_attempted": 0,
-          "warmups_attempted": 1,
-          "png_click_attempts": 0
-        },
-        "error": "Download.path unavailable over chromium.connect"
+        "id": 40388046863,
+        "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40388046863",
+        "status": "in_progress",
+        "conclusion": null
       },
       "previous_review": {
         "sha": "86a7e941a823e32e7c7cf9cfde78bb247ffc8194",
