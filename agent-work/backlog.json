@@ -102,7 +102,7 @@
       "task_id": "HX-BL-003",
       "title": "Производительность генерации и навигации по числу гексов",
       "criterion_id": "S09-C01",
-      "status": "review_ready",
+      "status": "changes_requested",
       "potential_delta": null,
       "approval_ref": "owner-approval-2026-10-25-HX-BL-003",
       "source": {
@@ -229,15 +229,15 @@
         "approval_ref": "owner-approval-2026-10-25-HX-BL-003",
         "next_step": "Программист: закрепить корпус и P1 manifest до baseline замеров, затем профиль и одно подтверждённое узкое место по spec1.0."
       },
-      "next_role": "reviewer",
-      "next_step": "Независимо проверить86100c390d8d4cf66cee6e87589be64ce51687e5: saveAs/harness/manifest/env,20navigation+4warmups, пересчитатьpooledp95/guards, декодировать2PNGпары и оценить RV1/RV2/RV4/RV5 +score_assessment1.2. N2400zoomnonpassing не скрывать за зелёнымworkflow; никаких новых измерений/оптимизации/выпуска.",
+      "next_role": "developer",
+      "next_step": "Один ограниченный статический разбор существующих raw timestamps, порядка AB/BA и исходного пути навигации: объяснить наблюдаемую связь с первым/вторым действием и пределы причинного вывода. Сохранить все строки и неизменный primary/guard; подготовить отрицательный report-only результат либо конкретную развилку для координатора. Без новых замеров, второго bottleneck или продуктовой оптимизации. До решения RV2/RV5 пакет не принят и не выпускается.",
       "spec_ref": "agent-work/specs/HX-BL-003.md",
       "spec_version": "1.1",
       "spec_status": "ready_for_developer_harness_freeze",
       "execution_allowed": true,
-      "owner_role": "reviewer",
+      "owner_role": "developer",
       "claim": null,
-      "result_ref": "agent-work/results/2026-10-26-developer-HX-BL-003-V2-completed.json",
+      "result_ref": "agent-work/results/2026-10-27-reviewer-HX-BL-003-86100.json",
       "feedback_assessment": {
         "register_ref": "agent-work/feedback.json",
         "candidate_ids": [
@@ -253,7 +253,7 @@
       "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474",
       "head_sha": "86100c390d8d4cf66cee6e87589be64ce51687e5",
       "checks_status": "normal_CI_passed_after_single_RNG_retry",
-      "evidence_ref": "agent-work/evidence/HX-BL-003-run40388046863/report.md",
+      "evidence_ref": "agent-work/evidence/review-HX-BL-003-86100/report.md",
       "corpus_ci": {
         "id": 40187550999,
         "status": "completed",
@@ -329,25 +329,20 @@
         "visual": "agent-work/evidence/HX-BL-003-developer/isolated-visual-raw.json",
         "log": "agent-work/evidence/HX-BL-003-developer/ci-recovery-40252325923.log"
       },
-      "review_verdict": "pending_new_sha_and_measurement",
-      "reviewed_sha": "df879cb8d68cf876397aa5611f561a48482ae191",
-      "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474#pullrequestreview-5656724813",
-      "review_result_ref": "agent-work/results/2026-10-26-reviewer-HX-BL-003-df879cb.json",
-      "review_evidence_ref": "agent-work/evidence/review-HX-BL-003-df879cb/report.md",
+      "review_verdict": "nonpassing_navigation_guard_product_blocked",
+      "reviewed_sha": "86100c390d8d4cf66cee6e87589be64ce51687e5",
+      "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474#pullrequestreview-5659064586",
+      "review_result_ref": "agent-work/results/2026-10-27-reviewer-HX-BL-003-86100.json",
+      "review_evidence_ref": "agent-work/evidence/review-HX-BL-003-86100/report.md",
       "open_findings": [
-        {
-          "id": "HX003-RV1",
-          "severity": "blocking",
-          "area": "visual",
-          "finding": "Missing both nominal2400PNG pairs;AC06explicitblocked.",
-          "required": "Keepblocked; noautomaticrerun. Existing equivalent fullquality evidence may be evaluated if it exists; otherwise owner must choose bounded revised validation plan or acceptance/specchange, or negative/report-only package withoutproductoptimization."
-        },
         {
           "id": "HX003-RV2",
           "severity": "blocking",
           "area": "navigation",
-          "finding": "Pooled p95 guard exceeded;repeatmedian estimator masks tail distribution;causalregressionunproven.",
-          "required": "Retain both estimators and allframes; reportinconclusive. Define aggregation prospectively before any newlyauthorized validation. No threshold/corpus/secondoptimization change in current task."
+          "finding": "New V2 N2400zoom pooledp95 166.554→483.300ms (+316.746/+190.176%) breaches registeredguard. Secondactionhigher peractionp95 in5/5pairs; causalrootcause unproved.",
+          "required": "Один ограниченный статический разбор существующих raw timestamps, порядка AB/BA и исходного пути навигации: объяснить наблюдаемую связь с первым/вторым действием и пределы причинного вывода. Сохранить все строки и неизменный primary/guard; подготовить отрицательный report-only результат либо конкретную развилку для координатора. Без новых замеров, второго bottleneck или продуктовой оптимизации. До решения RV2/RV5 пакет не принят и не выпускается.",
+          "evidence_ref": "agent-work/evidence/review-HX-BL-003-86100/offline-result.json",
+          "status": "blocking_negative_guard"
         },
         {
           "id": "HX003-RV5",
@@ -366,7 +361,7 @@
             "model_version": "1.1",
             "grade": "G2",
             "points": 10,
-            "source": "specP1-V2 and prior reviewer739e3de/current-score historical reference"
+            "source": "P1-V2 historical section; previousreview739e3de"
           },
           "before": {
             "grade": null,
@@ -383,16 +378,17 @@
             "points": null,
             "status": "unknown"
           },
-          "sha": "df879cb8d68cf876397aa5611f561a48482ae191",
+          "sha": "86100c390d8d4cf66cee6e87589be64ce51687e5",
           "baseline_sha": "103d31b9f6f5c76b1f6b45d9d6664fe3f75dd63b",
-          "method": "Limited exact-source R4 correction review; eight SHA256 matches; one independent offline Node24 run4/4. Runtime unchanged. Normal exact-head CI independently checked by parent.",
+          "method": "Fresh-context independent archivedraw/source/hash/decodedpixel verification; bounded reuse original independentreview; parent exact-headCI read",
           "evidence": [
-            "agent-work/evidence/review-HX-BL-003-df879cb/node-test.log",
-            "agent-work/evidence/review-HX-BL-003-df879cb/verification.log",
-            "agent-work/evidence/review-HX-BL-003-df879cb/normal-ci-check.log",
-            "agent-work/results/2026-10-26-reviewer-HX-BL-003-df879cb.json"
+            "agent-work/evidence/review-HX-BL-003-86100/offline-result.json",
+            "agent-work/evidence/review-HX-BL-003-86100/offline-review.py",
+            "agent-work/evidence/review-HX-BL-003-86100/offline-review.log",
+            "agent-work/evidence/review-HX-BL-003-86100/normal-ci-check.log",
+            "agent-work/evidence/review-HX-BL-003-739e3de/report.md"
           ],
-          "limits": "No navigation measurement; prior guard breaches/limited5repeat evidence; Android/full latency grade not established.",
+          "limits": "Original limited generation gains34.41%/36.15% retained; new nonpassingnavigation guard. No realAndroid/userconfirmation or full grade.",
           "points_awarded": 0
         },
         {
@@ -403,7 +399,7 @@
             "model_version": "1.1",
             "grade": "G1",
             "points": 7.5,
-            "source": "specP1-V2 and prior reviewer739e3de/current-score historical reference"
+            "source": "P1-V2 historical section; previousreview739e3de"
           },
           "before": {
             "grade": null,
@@ -420,16 +416,17 @@
             "points": null,
             "status": "unknown"
           },
-          "sha": "df879cb8d68cf876397aa5611f561a48482ae191",
+          "sha": "86100c390d8d4cf66cee6e87589be64ce51687e5",
           "baseline_sha": "103d31b9f6f5c76b1f6b45d9d6664fe3f75dd63b",
-          "method": "Limited exact-source R4 correction review; eight SHA256 matches; one independent offline Node24 run4/4. Runtime unchanged. Normal exact-head CI independently checked by parent.",
+          "method": "Fresh-context independent archivedraw/source/hash/decodedpixel verification; bounded reuse original independentreview; parent exact-headCI read",
           "evidence": [
-            "agent-work/evidence/review-HX-BL-003-df879cb/node-test.log",
-            "agent-work/evidence/review-HX-BL-003-df879cb/verification.log",
-            "agent-work/evidence/review-HX-BL-003-df879cb/normal-ci-check.log",
-            "agent-work/results/2026-10-26-reviewer-HX-BL-003-df879cb.json"
+            "agent-work/evidence/review-HX-BL-003-86100/offline-result.json",
+            "agent-work/evidence/review-HX-BL-003-86100/offline-review.py",
+            "agent-work/evidence/review-HX-BL-003-86100/offline-review.log",
+            "agent-work/evidence/review-HX-BL-003-86100/normal-ci-check.log",
+            "agent-work/evidence/review-HX-BL-003-739e3de/report.md"
           ],
-          "limits": "Runtime parity and exact-head RNG CI; bounded prior seeds and continuation do not establish complete1.2 criterion or game breadth.",
+          "limits": "Prior fullJSON/RNG evidence and currentCI retained via exact runtimeparity; navigation is not independent full reproducibility/reroll coverage.",
           "points_awarded": 0
         },
         {
@@ -440,7 +437,7 @@
             "model_version": "1.1",
             "grade": "G2",
             "points": 10,
-            "source": "specP1-V2 and prior reviewer739e3de/current-score historical reference"
+            "source": "P1-V2 historical section; previousreview739e3de"
           },
           "before": {
             "grade": null,
@@ -457,16 +454,17 @@
             "points": null,
             "status": "unknown"
           },
-          "sha": "df879cb8d68cf876397aa5611f561a48482ae191",
+          "sha": "86100c390d8d4cf66cee6e87589be64ce51687e5",
           "baseline_sha": "103d31b9f6f5c76b1f6b45d9d6664fe3f75dd63b",
-          "method": "Limited exact-source R4 correction review; eight SHA256 matches; one independent offline Node24 run4/4. Runtime unchanged. Normal exact-head CI independently checked by parent.",
+          "method": "Fresh-context independent archivedraw/source/hash/decodedpixel verification; bounded reuse original independentreview; parent exact-headCI read",
           "evidence": [
-            "agent-work/evidence/review-HX-BL-003-df879cb/node-test.log",
-            "agent-work/evidence/review-HX-BL-003-df879cb/verification.log",
-            "agent-work/evidence/review-HX-BL-003-df879cb/normal-ci-check.log",
-            "agent-work/results/2026-10-26-reviewer-HX-BL-003-df879cb.json"
+            "agent-work/evidence/review-HX-BL-003-86100/offline-result.json",
+            "agent-work/evidence/review-HX-BL-003-86100/offline-review.py",
+            "agent-work/evidence/review-HX-BL-003-86100/offline-review.log",
+            "agent-work/evidence/review-HX-BL-003-86100/normal-ci-check.log",
+            "agent-work/evidence/review-HX-BL-003-739e3de/report.md"
           ],
-          "limits": "Ordinary CI retained; no new all-large native undo/redo/continuation, named versions evidence insufficient.",
+          "limits": "Original focused native snapshots and CI retained; complete large native sequences/namedversions not established.",
           "points_awarded": 0
         },
         {
@@ -477,7 +475,7 @@
             "model_version": "1.1",
             "grade": "G2",
             "points": 7.5,
-            "source": "specP1-V2 and prior reviewer739e3de/current-score historical reference"
+            "source": "P1-V2 historical section; previousreview739e3de"
           },
           "before": {
             "grade": null,
@@ -494,16 +492,17 @@
             "points": null,
             "status": "unknown"
           },
-          "sha": "df879cb8d68cf876397aa5611f561a48482ae191",
+          "sha": "86100c390d8d4cf66cee6e87589be64ce51687e5",
           "baseline_sha": "103d31b9f6f5c76b1f6b45d9d6664fe3f75dd63b",
-          "method": "Limited exact-source R4 correction review; eight SHA256 matches; one independent offline Node24 run4/4. Runtime unchanged. Normal exact-head CI independently checked by parent.",
+          "method": "Fresh-context independent archivedraw/source/hash/decodedpixel verification; bounded reuse original independentreview; parent exact-headCI read",
           "evidence": [
-            "agent-work/evidence/review-HX-BL-003-df879cb/node-test.log",
-            "agent-work/evidence/review-HX-BL-003-df879cb/verification.log",
-            "agent-work/evidence/review-HX-BL-003-df879cb/normal-ci-check.log",
-            "agent-work/results/2026-10-26-reviewer-HX-BL-003-df879cb.json"
+            "agent-work/evidence/review-HX-BL-003-86100/offline-result.json",
+            "agent-work/evidence/review-HX-BL-003-86100/offline-review.py",
+            "agent-work/evidence/review-HX-BL-003-86100/offline-review.log",
+            "agent-work/evidence/review-HX-BL-003-86100/normal-ci-check.log",
+            "agent-work/evidence/review-HX-BL-003-739e3de/report.md"
           ],
-          "limits": "No newPNG; two large pairs remain absent. Old JSON/SVG evidence not a replacement.",
+          "limits": "Two large decodedRGBA gaps now closed plus priorJSON/SVG; not a full layers/styles/role/corpus evaluation.",
           "points_awarded": 0
         },
         {
@@ -514,7 +513,7 @@
             "model_version": "1.1",
             "grade": "G2",
             "points": 5,
-            "source": "specP1-V2 and prior reviewer739e3de/current-score historical reference"
+            "source": "P1-V2 historical section; previousreview739e3de"
           },
           "before": {
             "grade": null,
@@ -531,21 +530,22 @@
             "points": null,
             "status": "unknown"
           },
-          "sha": "df879cb8d68cf876397aa5611f561a48482ae191",
+          "sha": "86100c390d8d4cf66cee6e87589be64ce51687e5",
           "baseline_sha": "103d31b9f6f5c76b1f6b45d9d6664fe3f75dd63b",
-          "method": "Limited exact-source R4 correction review; eight SHA256 matches; one independent offline Node24 run4/4. Runtime unchanged. Normal exact-head CI independently checked by parent.",
+          "method": "Fresh-context independent archivedraw/source/hash/decodedpixel verification; bounded reuse original independentreview; parent exact-headCI read",
           "evidence": [
-            "agent-work/evidence/review-HX-BL-003-df879cb/node-test.log",
-            "agent-work/evidence/review-HX-BL-003-df879cb/verification.log",
-            "agent-work/evidence/review-HX-BL-003-df879cb/normal-ci-check.log",
-            "agent-work/results/2026-10-26-reviewer-HX-BL-003-df879cb.json"
+            "agent-work/evidence/review-HX-BL-003-86100/offline-result.json",
+            "agent-work/evidence/review-HX-BL-003-86100/offline-review.py",
+            "agent-work/evidence/review-HX-BL-003-86100/offline-review.log",
+            "agent-work/evidence/review-HX-BL-003-86100/normal-ci-check.log",
+            "agent-work/evidence/review-HX-BL-003-739e3de/report.md"
           ],
-          "limits": "Same runtime/prior safety plus ordinaryCI; no new complete destructive-action/large native history evidence.",
+          "limits": "Prior rollback/import/stalecallback safety and currentCI retained; complete destructiveaction/nativehistory scope not newly established.",
           "points_awarded": 0
         }
       ],
-      "score_assessment_status": "pending_new_sha_model1.2",
-      "acceptance_status": "blocked_incomplete_product_harness_accepted",
+      "score_assessment_status": "model1.2_insufficient_evidence_no_award_no_historical_migration",
+      "acceptance_status": "blocked_navigation_guard_and_partial_native_history",
       "automatic_measurement_rerun_allowed": false,
       "repeat_review_requires": "material new evidence or changed source SHA",
       "developer_response_ref": "agent-work/results/2026-10-26-developer-HX-BL-003-V2-completed.json",
@@ -588,7 +588,7 @@
       },
       "validation_plan": {
         "id": "HX-BL-003-V2",
-        "status": "measurement_completed_negative_navigation_guard_review_ready",
+        "status": "independently_reviewed_nonpassing_no_automatic_rerun",
         "path": "agent-work/proposals/HX-BL-003-V2-validation.md",
         "max_png_attempts": 4,
         "max_measured_navigation_actions": 20,
@@ -640,29 +640,35 @@
         "environment_commit": "92b8629297c8fe696d95d34990bd48b40fce4344"
       },
       "previous_review": {
-        "sha": "86a7e941a823e32e7c7cf9cfde78bb247ffc8194",
-        "url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474#pullrequestreview-5655108027",
-        "result_ref": "agent-work/results/2026-10-26-reviewer-HX-BL-003-86a7e94.json"
+        "sha": "df879cb8d68cf876397aa5611f561a48482ae191",
+        "url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474#pullrequestreview-5656724813",
+        "result_ref": "agent-work/results/2026-10-26-reviewer-HX-BL-003-df879cb.json"
       },
       "finding_status": {
-        "HX003-RV1": "new_two_large_PNG_pairs_exact_RGBA_equal_pending_independent_review",
-        "HX003-RV2": "new_N2400zoom_guard_breach_pending_independent_review",
+        "HX003-RV1": "resolved_two_large_PNG_pairs_independently_exact_RGBA_equal",
+        "HX003-RV2": "blocking_registered_N2400zoom_guard_breach_causality_unproven",
         "HX003-RV3": "attribution_correction_verified_source_paths_verified_final_SVG_reference_audit_retained_not_redownloaded",
-        "HX003-RV4": "new_exact86100_CI_success_after_one_normal_RNG_retry_pending_review",
-        "HX003-RV5": "partial_large_native_history_selection_limitations_retained",
+        "HX003-RV4": "resolved_current_exact86100_normalCI_attempt2_success",
+        "HX003-RV5": "partial_unresolved_large_native_history_selection",
         "HX003-V2-R1": "verified_fixed_source_offline_scope",
         "HX003-V2-R2": "verified_fixed_source_offline_scope",
         "HX003-V2-R3": "verified_fixed_source_offline_scope",
         "HX003-V2-R4": "verified_fixed_limited_source_offline_scope"
       },
       "test_change_summary": {
-        "base_sha": "86100c390d8d4cf66cee6e87589be64ce51687e5",
+        "base_sha": "df879cb8d68cf876397aa5611f561a48482ae191",
         "head_sha": "86100c390d8d4cf66cee6e87589be64ce51687e5",
         "added": 0,
         "removed": 0,
         "modified": 0,
-        "source": "No source edits during externalresultcollection",
-        "reuse_or_new_reason": "Read archivedresults/recomputeonly; normalcanceledRNGjob retriedonce. No measuredactions repeated."
+        "count_source": "Exact GitHub compare; onlyworkflow/manifest/download-diagnosis/harnessfile; no testfile changes",
+        "suites": "Node/Python permanentcases unchanged",
+        "reuse_or_new_reason": "Archive analysis and full PNG decode suffice for this independent measured-result review; no newpermanenttestneeded",
+        "temporary_review_diagnostic": {
+          "kind": "offline archive/hash/statistics/decoded-RGBA verification",
+          "permanent_test_cases_added": 0,
+          "new_browser_measurements": 0
+        }
       },
       "coordination_handoff": {
         "status": "superseded_by_explicit_owner_restart_and_completed_measurement",
@@ -1799,17 +1805,20 @@
     }
   ],
   "last_review": {
-    "date": "2026-10-25",
+    "date": "2026-10-27",
     "role": "reviewer",
-    "task_id": "HX-BL-030",
-    "head_sha": "ffb5e85311420b14fe509819ec26b420606ce0dd",
-    "spec_version": "1.0",
-    "verdict": "changes_requested",
+    "task_id": "HX-BL-003",
+    "head_sha": "86100c390d8d4cf66cee6e87589be64ce51687e5",
+    "verdict": "nonpassing_navigation_guard_product_blocked",
     "finding_ids": [
-      "R1",
-      "R2"
+      "HX003-RV2",
+      "HX003-RV5"
     ],
-    "result_ref": "agent-work/results/2026-10-25-reviewer-HX-BL-030-ffb5e85.json",
+    "resolved_finding_ids": [
+      "HX003-RV1",
+      "HX003-RV4"
+    ],
+    "result_ref": "agent-work/results/2026-10-27-reviewer-HX-BL-003-86100.json",
     "independent_agent": true
   },
   "last_score_assessment": {

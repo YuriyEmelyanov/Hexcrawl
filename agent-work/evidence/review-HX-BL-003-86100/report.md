@@ -1,0 +1,33 @@
+# Независимая проверка завершённого V2
+
+Вердикт: измерительный пакет86100c390d8d4cf66cee6e87589be64ce51687e5 проверен; результат nonpassing, продуктовая приёмка и выпуск blocked. Свежий отдельный reviewer независимо перепроверил архив12684286700/run40388046863, исходники и сырые данные. Новых browser/benchmark/PNG запусков, workflow dispatch/rerun, исходных или GitHub изменений не было.
+
+ZIP162310969bytes/SHA256c729258618dd5251709b1417508229684bea8725c07a000bc0bedb7b147b5f04 совпал с GitHub metadata. Каждый ZIP member сверен с распакованным файлом; все12 записей artifact manifest проверены. Собственный offline-review.py пересчитал raw без вызова разработческого анализатора. Подтверждены ровно20measured actions+4warmups, порядок AB/BA/AB/BA/AB, 24finiteframes каждой фазы каждого action и120frames на input/variant/phase, nearest-rank114/120. Сверены timestamps/deltas, все secondarystats/pairedratios сохранены в offline-result.json. Frames вложены в5actions и не являются120независимыми повторениями.
+
+| Группа | A pooledp95,ms | B pooledp95,ms | Δms | Δ% | Guard |
+|---|---:|---:|---:|---:|---|
+|N1200zoom|766.700|816.700|50.000|6.521|pass|
+|N1200pan|133.268|116.642|-16.626|-12.476|pass|
+|N2400zoom|166.554|483.300|316.746|190.176|nonpassing|
+|N2400pan|216.576|233.300|16.724|7.722|pass|
+
+RV2 остаётся блокирующим: строгие >10ms И >10% нарушены в N2400zoom. Причинная регрессия по этой малой серии не установлена. В каждом N2400zoom AB/BApair второе действие имеет более высокий per-actionp95; ассоциация5/5 не устанавливает источник, не даёт права менять агрегат и не оправдывает новый замер. Исходные отрицательные результаты и прежние оба агрегата сохраняются; новая prospective статистика не переоценивает их задним числом.
+
+RV1 закрыт для отсутствовавших двух больших PNG-пар: полное decodedRGBA равенство18284×10780 (788406080bytes) и17508×12376 (866716032bytes). Сначала A декодирован полосами32строки во временный файл, затем B декодирован отдельно и каждый байт сравнен с A. Одновременно две огромные картинки в RAM не держались. Совпали также дополнительные RGBA SHA2561a5795a4fe8aeb988d30fdcc12824971632c8ec89eab88222f1a6de966483cab и81be1959c9738384d8e9a08c796b63eaa2a3f40ead6add5e6031fe4a25d37cfd. Ровно4PNG clicks/captured,5spawn/5confirmedexit; незарегистрированных повторов в raw нет. Это чтение уже полученных файлов, не новый export.
+
+Все исходные environment hashes и8protocol-manifest file hashes независимо совпали с точными GitHub исходниками. Frozen environment92b8629 — прямой потомок86100, добавляет только environment.json; его содержимое равно архивному, запись19:48:15.841Z предшествует первому warmup19:48:18.905Z. Node24.21.0, Playwright1.62.1, Chromium151.0.7922.34,4vCPU,16766414848RAM, actualAMD EPYC9V74. CPU не выдаётся за прежний7763; новый парный ресурсный класс соответствует принятому harness. Результаты разных hosts не объединяются. Git-root trees подтверждают86100=739e3de по src37539a2a4df68f5a8bcf04b2eee4281ac2f08a8d,public,package,lock,index; baseline srcd371464e7a5221c04bbf16659bcd6f6cf8adb3ba. Workflow собирает именно production103d31b/739e3de и проверяет runtime diff. SaveAs меняет ровно2download callsite, дожидается сохранения до чтения; общий restore-snapshot безопасен при строго последовательных действиях. Product exporter/quality не менялись. Trigger только push своей ветки с изменением workflow; exact86100workflow/manifest проверены, исполнение связано с owner-restart, automaticrerunfalse, прежние два неудачных run сохранены.
+
+RV3 сохраняется с правильной атрибуцией: исторические28ERR_ABORTED — candidate/mythic123456789/N400/iteration0. Старые visual asset cancellations и причины180sPNGtimeouts не объявляются объяснёнными новым успехом. Текущие4requestfailed — одинаково заблокированная аналитика mc.yandex, по одному наPNG. Новых rawerrors/pageerrors/dialogs нет. Диагностическое ограничение:8encode records получили type=image/png, потому что MIME payload перетёр eventname. По method/width/height и bytes однозначно различаются4toBlobstart и4callback этой серии; raw не переписан. Это не препятствует decodedPNG сравнению и не требует ещё одного исправления/экспорта.
+
+RV4 закрыт текущим exact86100 CI: root независимо проверил run40388056032 attempt2, check240passed/0failed/0skipped, browser/world-randomsuccess и полные логи. Исходный RNGcancelled и единственный обычный CIretry сохранены отдельно. Старый739e3de action_required остаётся историей. Успех V2workflow означает завершение сбора, не приёмку guard.
+
+RV5 остаётся partial: прежние56/98selection rows неполны; полные large nativeMap/Set undo/redo/import/continuation sequences не появились. V2не включает эти действия. Ранее проверенные49JSONpairs/7SVGpairs(14SVGfiles)/5smallPNGpairs, generation34.41%/36.15%, focusednative/safety и первоначальные ошибки reviewerharness остаются с прежними ограничениями; полный аудит заново не выполнялся. Нельзя выдать новуюPNG/CI за закрытие safety или за новое generationускорение.
+
+Score-assessment1.2: отдельно все5ID и веса20/30/20/15/10 в result.json. Before/after/deltaunknown/insufficient_evidence; исторические1.1 G2/10,G1/7.5,G2/10,G2/7.5,G2/5 отделены. Операционные vision/scoremodel прочитаны. Баллы не мигрируют и до выпуска не начисляются; технические критерии не получают искусственное требование20НРИ.
+
+Следующий этап разработчика в разрешённых границах — зафиксировать непрошедший пакет и ограниченно разобрать существующие rawtimestamps/ABBAorder/navpath, сохранив все строки и строгий guard. Затем подготовить report-only negative вариант либо конкретную координационную развилку; не переименовывать PR с продуктовой правкой в принятый negative package. Никакого второго bottleneck, нового benchmark, автоматического rerun или повторного согласования уже выполненного V2. До устранения оснований RV2/RV5 продукт остаётся вне main.
+
+Automation actualpeek start/end подтвердили enabledtrue; точное время start не было записано и намеренноnull. End21:07:34UTC непосредственно послеpeek. Изменения scheduler не выполнялись, будущее состояние не гарантируется. Parent сохраняет GitHub evidence/COMMENT/состояние и latest последним.
+
+
+GitHub review: https://github.com/YuriyEmelyanov/Hexcrawl/pull/474#pullrequestreview-5659064586. Канонический результат: agent-work/results/2026-10-27-reviewer-HX-BL-003-86100.json. Родитель сохранил отдельно полные логи точного SHA и сверил50критериев/1000баллов, коэффициентыG0–G4 без изменения. Историческая формулировка SVG уточнена:7пар/14файлов. Нулевая сводка изменений тестов хранится только в structured evidence, пользовательская строка опущена по решению владельца.

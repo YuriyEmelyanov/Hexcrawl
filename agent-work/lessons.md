@@ -136,3 +136,6 @@
 
 
 26.10.2026 — V2run40388046863finallycollected20navigation+4warmups/4PNG. BothlargePNGpairs exactdecodedRGBAequal, butN2400zoompooledp95A166.554→B483.300ms guardnonpassing. [Evidence](evidence/HX-BL-003-run40388046863/report.md). Greenworkflow meanscollectionexecuted, not allacceptancepassed; preserveboundednegativeoutcome anddo notpickfavorableestimator. Causalregressionnotprovenby5pairs. OldRNGCIcancellationretained, single normaljobretry succeeded; no measuredrerun. Independentreview/scoreassessmentnext, no productpoints.
+
+
+27.10.2026 — независимая V2-проверка закрыла RV1 (все decoded RGBA-байты обеих больших PNG-пар) и RV4 (exact86100 CI). RV2 остаётся: зарегистрированный pooled p95 большой карты 166.554→483.300ms. Во всех5AB/BAпарах второе действие имеет больший per-actionp95; это диагностическая ассоциация, не доказанная причина и не право заменить основной агрегат. [Независимый отчёт](evidence/review-HX-BL-003-86100/report.md). Следующий шаг — один статический разбор существующих timestamps/nav path и отрицательная передача, без нового замера/второй оптимизации. RV5 partial сохранён, баллы не начислены.
