@@ -55,7 +55,6 @@
   "active_claim": null,
   "next_step": "Независимая проверка точного415349bc9fb9ce72fb2a8bc5e777cc98ea515bd0 по spec1.1, включая фактические снимки и все AC; score_assessment по модели1.2. Публикация отдельно.",
   "owner_decisions_needed": [
-    "approve_or_decline_HX-BL-003-V2_validation",
     "resolve_GitHub_action_required_Check40252463579"
   ],
   "release_approval": {
@@ -502,26 +501,27 @@
   "blocked_task_handoffs": {
     "HX-BL-003": {
       "task_id": "HX-BL-003",
-      "status": "blocked_awaiting_owner_validation_plan",
+      "status": "validation_approved_pending_P1_addendum",
       "head_sha": "739e3de36587533bf3d2f3196072270f4695fa8a",
       "branch_name": "agent/hx-bl-003-performance",
       "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474",
       "spec_path": "agent-work/specs/HX-BL-003.md",
       "result_path": "agent-work/results/2026-10-26-developer-HX-BL-003-review-response.json",
-      "next_step": "Ожидается утверждение владельцем плана HX-BL-003-V2 (до4 диагностических fullPNG попыток и20 navigation actions, один60минпакет, без изменения качества/порогов/продукта). После утверждения аналитик фиксируетprospectiveP1addendum. Отдельно требуется доступное GitHub действие для Check40252463579. До решения: кандидатblocked внеmain, без PNG/benchmark и повторного полногоreview техжеданных.",
+      "next_step": "Аналитик: зафиксировать до новых замеров дополнение P1 по утверждённому HX-BL-003-V2; затем программист выполняет один пакет до4 PNG и20 навигационных действий, максимум60мин. Порог/качество неизменны, публикация отдельно.",
       "validation_plan": {
         "id": "HX-BL-003-V2",
-        "status": "proposed_requires_explicit_owner_approval",
+        "status": "approved_pending_P1_addendum",
         "path": "agent-work/proposals/HX-BL-003-V2-validation.md",
         "max_png_attempts": 4,
         "max_measured_navigation_actions": 20,
         "max_workflow_attempts": 1,
         "job_timeout_minutes": 60,
         "quality_or_threshold_change": false,
-        "paid_spend_allowed": false
+        "paid_spend_allowed": false,
+        "approval_ref": "owner-approval-2026-10-26-HX-BL-003-V2",
+        "approved_on": "2026-10-26"
       },
       "owner_decisions_needed": [
-        "approve_or_decline_HX-BL-003-V2_validation",
         "resolve_GitHub_action_required_Check40252463579"
       ],
       "review_verdict": "changes_requested",
@@ -531,7 +531,9 @@
       "checks_status": "exacthead_action_required_no_jobs_capability_blocked",
       "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40252463579",
       "automatic_measurement_rerun_allowed": false,
-      "canonical_task_path": "agent-work/backlog.json#HX-BL-003"
+      "canonical_task_path": "agent-work/backlog.json#HX-BL-003",
+      "next_role": "business_analyst",
+      "approval_result_ref": "agent-work/results/2026-10-26-HX-BL-003-V2-owner-approval.json"
     }
   },
   "mockup_path": "agent-work/evidence/HX-FB-001-analyst/seed-before-after.svg",
@@ -565,6 +567,29 @@
     "evidence_ref": "agent-work/evidence/HX-FB-001-developer/report.md",
     "next_role": "reviewer"
   },
-  "owner_decisions_note": "Pending decisions belong to blockedHX-BL-003; no additional taskapproval needed for owner-requestedHX-FB-001. Release remains separate.",
-  "updated_at": "2026-10-26T07:30:49.616Z"
+  "owner_decisions_note": "HX-BL-003-V2 measurement approved26.10.2026; do not ask again. CI action_required remains technical dependency. Release separately approved; existing claims must not be overwritten.",
+  "updated_at": "2026-10-26T07:30:49.616Z",
+  "authorized_validation_handoff": {
+    "task_id": "HX-BL-003",
+    "status": "ready_for_analyst_P1_addendum",
+    "next_role": "business_analyst",
+    "next_step": "Аналитик: зафиксировать до новых замеров дополнение P1 по утверждённому HX-BL-003-V2; затем программист выполняет один пакет до4 PNG и20 навигационных действий, максимум60мин. Порог/качество неизменны, публикация отдельно.",
+    "approval_ref": "owner-approval-2026-10-26-HX-BL-003-V2",
+    "result_ref": "agent-work/results/2026-10-26-HX-BL-003-V2-owner-approval.json",
+    "automation_health": {
+      "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "start": {
+        "checked_at": "2026-10-26T07:48:07.713Z",
+        "status": "checked",
+        "is_enabled": true
+      },
+      "end": {
+        "checked_at": "2026-10-26T07:49:44.103Z",
+        "status": "checked",
+        "is_enabled": true
+      },
+      "restored_during_this_run": false,
+      "errors": []
+    }
+  }
 }
