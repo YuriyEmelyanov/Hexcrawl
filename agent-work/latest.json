@@ -50,19 +50,19 @@
   "current_task_id": "HX-BL-003",
   "spec_path": "agent-work/specs/HX-BL-003.md",
   "spec_version": "1.1",
-  "result_path": "agent-work/results/2026-10-26-developer-HX-BL-003-download-diagnosis.json",
+  "result_path": "agent-work/results/2026-10-26-developer-HX-BL-003-saveAs-restart.json",
   "handoff_commit_sha": "a8c51fe84d7917025b22518ff329f73b464b210d",
   "active_claim": {
     "role": "developer",
     "task_id": "HX-BL-003",
-    "status": "awaiting_fix_normal_CI",
+    "status": "awaiting_external_CI",
     "started_at": "2026-10-26T18:53:28.985Z",
-    "head_sha": "a669d6654514871af09f0716750f727306676476",
-    "validation_run_id": 40382000933,
-    "last_checkpoint_at": "2026-10-26T19:20:14.787Z",
+    "head_sha": "86100c390d8d4cf66cee6e87589be64ce51687e5",
+    "validation_run_id": 40388046863,
+    "last_checkpoint_at": "2026-10-26T19:35:53.129Z",
     "run_id": "2026-10-26:developer:HX-BL-003:manual-measure-1852Z"
   },
-  "next_step": "Дождаться существующего Check40385577128 на a669d665; сохранить логи и передать ограниченную независимую проверку двух saveAs-callsite и raw40382000933. Новый benchmark/PNG в диагностическом запуске не выполнялся.",
+  "next_step": "Следить за существующим run40388046863; сохранить artifact/raw/логи и передать независимой проверке после завершения. Не запускать дубль.",
   "owner_decisions_needed": [],
   "release_approval": {
     "task_id": "HX-BL-003",
@@ -73,9 +73,9 @@
   "evidence_path": "agent-work/evidence/HX-BL-003-run40382000933/diagnosis.md",
   "branch_name": "agent/hx-bl-003-performance",
   "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474",
-  "head_sha": "a669d6654514871af09f0716750f727306676476",
-  "checks_status": "running_exact_sha",
-  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40385577128",
+  "head_sha": "86100c390d8d4cf66cee6e87589be64ce51687e5",
+  "checks_status": "normal_CI_and_validation_in_progress",
+  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40388046863",
   "review_verdict": null,
   "role_selection_mode": "ready_work_priority",
   "role_selection_source": "agent-work/process.md",
@@ -228,12 +228,12 @@
   "automation_health": {
     "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-10-26T19:15:18.115Z",
+      "checked_at": "2026-10-26T19:33:09.510Z",
       "status": "checked",
       "is_enabled": true
     },
     "end": {
-      "checked_at": "2026-10-26T19:20:25.678Z",
+      "checked_at": "2026-10-26T19:35:23.373Z",
       "status": "checked",
       "is_enabled": true
     },
@@ -520,16 +520,16 @@
   "blocked_task_handoffs": {
     "HX-BL-003": {
       "task_id": "HX-BL-003",
-      "status": "failed_warmup_fix_CI_pending",
-      "head_sha": "a669d6654514871af09f0716750f727306676476",
+      "status": "validation_workflow_running",
+      "head_sha": "86100c390d8d4cf66cee6e87589be64ce51687e5",
       "branch_name": "agent/hx-bl-003-performance",
       "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474",
       "spec_path": "agent-work/specs/HX-BL-003.md",
-      "result_path": "agent-work/results/2026-10-26-developer-HX-BL-003-download-diagnosis.json",
-      "next_step": "Дождаться существующего Check40385577128 на a669d665; сохранить логи и передать ограниченную независимую проверку двух saveAs-callsite и raw40382000933. Новый benchmark/PNG в диагностическом запуске не выполнялся.",
+      "result_path": "agent-work/results/2026-10-26-developer-HX-BL-003-saveAs-restart.json",
+      "next_step": "Следить за существующим run40388046863; сохранить artifact/raw/логи и передать независимой проверке после завершения. Не запускать дубль.",
       "validation_plan": {
         "id": "HX-BL-003-V2",
-        "status": "failed_first_warmup_download_API",
+        "status": "workflow_running_after_saveAs_fix",
         "path": "agent-work/proposals/HX-BL-003-V2-validation.md",
         "max_png_attempts": 4,
         "max_measured_navigation_actions": 20,
@@ -553,8 +553,8 @@
           "same_browser_version": true,
           "interpretation": "Exact CPU guard was a conservative developer interpretation of same profile; resourceclass vs exactmodel ambiguity requires technical independent assessment, not another approval of the already-approved task."
         },
-        "measurement_allowed": false,
-        "execution_approval_ref": "owner-execute-2026-10-26-HX-BL-003-V2-after-harness-review",
+        "measurement_allowed": true,
+        "execution_approval_ref": "owner-restart-2026-10-26-HX-BL-003-after-saveAs-fix",
         "additional_workflow_attempts": 1,
         "prior_attempts_preserved": [
           40298230168
@@ -562,15 +562,15 @@
         "validation_run_id": 40382000933,
         "prior_attempts_used": 1,
         "new_attempts_used": 1,
-        "total_attempts_used": 2,
-        "max_total_authorized_workflow_attempts": 2
+        "total_attempts_used": 3,
+        "max_total_authorized_workflow_attempts": 3
       },
       "owner_decisions_needed": [],
       "review_verdict": null,
       "reviewed_sha": null,
       "current_review_score_assessment_ref": "agent-work/results/2026-10-26-reviewer-HX-BL-003-df879cb.json",
-      "checks_status": "running_exact_sha",
-      "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40385577128",
+      "checks_status": "normal_CI_and_validation_in_progress",
+      "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40388046863",
       "automatic_measurement_rerun_allowed": false,
       "canonical_task_path": "agent-work/backlog.json#HX-BL-003",
       "next_role": "developer",
@@ -624,11 +624,11 @@
   "updated_at": "2026-10-26T19:04:14.492Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
-    "status": "failed_warmup_fix_CI_pending",
+    "status": "workflow_running_after_saveAs_fix",
     "next_role": "developer",
-    "next_step": "Дождаться существующего Check40385577128 на a669d665; сохранить логи и передать ограниченную независимую проверку двух saveAs-callsite и raw40382000933. Новый benchmark/PNG в диагностическом запуске не выполнялся.",
+    "next_step": "Следить за существующим run40388046863; сохранить artifact/raw/логи и передать независимой проверке после завершения. Не запускать дубль.",
     "approval_ref": "owner-approval-2026-10-26-HX-BL-003-V2",
-    "result_ref": "agent-work/results/2026-10-26-developer-HX-BL-003-download-diagnosis.json",
+    "result_ref": "agent-work/results/2026-10-26-developer-HX-BL-003-saveAs-restart.json",
     "automation_health": {
       "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
       "start": {
@@ -647,19 +647,20 @@
     "addendum_ref": "agent-work/specs/HX-BL-003-P1-V2.md",
     "addendum_commit_sha": "1421459bd428d42f78bfe8776b55c8bd5d862c1d",
     "spec_version": "1.1",
-    "measurement_started": true,
+    "measurement_started": null,
     "analyst_result_ref": "agent-work/results/2026-10-26-analyst-HX-BL-003-V2.json",
-    "validation_run_id": 40382000933,
-    "workflow_attempts_used": 2,
+    "validation_run_id": 40388046863,
+    "workflow_attempts_used": 3,
     "counts": {
       "measured_actions_attempted": 0,
       "warmups_attempted": 1,
       "png_click_attempts": 0
     },
     "validation_run": {
-      "id": 40382000933,
-      "status": "completed",
-      "conclusion": "failure"
+      "id": 40388046863,
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40388046863",
+      "status": "in_progress",
+      "conclusion": null
     },
     "environment_discrepancy": {
       "actual_cpu": "AMD EPYC 9V74 80-Core Processor",
@@ -670,10 +671,10 @@
       "interpretation": "Exact CPU guard was a conservative developer interpretation of same profile; resourceclass vs exactmodel ambiguity requires technical independent assessment, not another approval of the already-approved task."
     },
     "developer_result_ref": "agent-work/results/2026-10-26-developer-HX-BL-003-V2.json",
-    "measurement_allowed": false,
+    "measurement_allowed": true,
     "review_ref": "agent-work/results/2026-10-26-reviewer-HX-BL-003-df879cb.json",
-    "execution_approval_ref": "owner-execute-2026-10-26-HX-BL-003-V2-after-harness-review",
-    "head_sha": "a669d6654514871af09f0716750f727306676476"
+    "execution_approval_ref": "owner-restart-2026-10-26-HX-BL-003-after-saveAs-fix",
+    "head_sha": "86100c390d8d4cf66cee6e87589be64ce51687e5"
   },
   "ready_task_handoffs": {
     "HX-FB-001": {
@@ -761,7 +762,10 @@
       },
       "restored_during_this_run": false,
       "errors": []
-    }
+    },
+    "report_unchanged_tests": false,
+    "report_rule": "Только при добавлении/удалении/изменении тестов; при нулях строку полностью опускать.",
+    "latest_reporting_decision_ref": "owner-decision-2026-10-26-omit-unchanged-test-report"
   },
   "test_change_summary": {
     "base_sha": "86a7e941a823e32e7c7cf9cfde78bb247ffc8194",
