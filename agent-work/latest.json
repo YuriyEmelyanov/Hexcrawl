@@ -29,7 +29,7 @@
   "run_id": "2026-10-26:developer:HX-BL-003-harness-fixes:1401Z",
   "plan_revision": 1,
   "baseline_sha": "f89530abe1e237493dddb533502bb772ae1ab4e5",
-  "status": "in_progress",
+  "status": "review_ready",
   "planning_for": "2026-10-24",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-10-25",
@@ -46,26 +46,14 @@
   "schedule_frequency": "hourly",
   "process_path": "agent-work/process.md",
   "current_role": "developer",
-  "next_role": "developer",
+  "next_role": "reviewer",
   "current_task_id": "HX-BL-003",
   "spec_path": "agent-work/specs/HX-BL-003.md",
   "spec_version": "1.1",
   "result_path": "agent-work/results/2026-10-26-developer-HX-BL-003-harness-fixes.json",
-  "handoff_commit_sha": "a350787f47727706841891be3773da28dff1ee87",
-  "active_claim": {
-    "run_id": "2026-10-26:developer:HX-BL-003-harness-fixes:1401Z",
-    "role": "developer",
-    "task_id": "HX-BL-003",
-    "started_at": "2026-10-26T14:02:11.651Z",
-    "lease_expires_at": "2026-10-26T16:02:11.651Z",
-    "status": "in_progress",
-    "base_head_sha": "d713cb9d11c0cd00bfda1eaf13a7489f58e48634",
-    "scope": "Fix three independent V2 harness findings only; offline tests, no measured workflow.",
-    "head_sha": "86a7e941a823e32e7c7cf9cfde78bb247ffc8194",
-    "last_checkpoint_at": "2026-10-26T14:14:19.144Z",
-    "last_checkpoint": "Threeharnessfixes at86a7e94;4Node/7Pythonoffline checks passed; normalCIinprogress; no measured workflow."
-  },
-  "next_step": "Finish existing normalCI on86a7e94, retain logs, then independent limited source/offline review. No measured workflow/new PNG/navigation series.",
+  "handoff_commit_sha": "8f3bc29f8c45d1d97fdf098fa8e58befe7102c11",
+  "active_claim": null,
+  "next_step": "Независимая ограниченная проверка 86a7e94: три исправления harness, offline tests и CI; score_assessment1.2. Без реального замера, PNG или сброса cap1/1.",
   "owner_decisions_needed": [],
   "release_approval": {
     "task_id": "HX-BL-003",
@@ -77,9 +65,9 @@
   "branch_name": "agent/hx-bl-003-performance",
   "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474",
   "head_sha": "86a7e941a823e32e7c7cf9cfde78bb247ffc8194",
-  "checks_status": "normal_CI_in_progress",
+  "checks_status": "passed_exact_sha",
   "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40337416043",
-  "review_verdict": "changes_requested",
+  "review_verdict": "pending_new_sha",
   "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474#pullrequestreview-5651769890",
   "role_selection_mode": "ready_work_priority",
   "role_selection_source": "agent-work/process.md",
@@ -220,13 +208,7 @@
   "next_task_proposal_ref": null,
   "next_task_id": "HX-BL-003",
   "approval_ref": "owner-decision-2026-10-25-feedback-register",
-  "last_completed_stage": {
-    "task_id": "HX-BL-003",
-    "role": "reviewer",
-    "status": "changes_requested",
-    "head_sha": "d713cb9d11c0cd00bfda1eaf13a7489f58e48634",
-    "result_ref": "agent-work/results/2026-10-26-reviewer-HX-BL-003-d713cb9.json"
-  },
+  "last_completed_stage": "developer_harness_corrections",
   "previous_release_approval": {
     "status": "approved_and_executed",
     "approved_sha": "50d8b6f2414faa1f204cdd2a7ed936533707592c",
@@ -243,12 +225,17 @@
       "is_enabled": true
     },
     "end": {
-      "status": "unchecked",
-      "is_enabled": null,
-      "reason": "Run in progress"
+      "checked_at": "2026-10-26T15:10:42.838Z",
+      "status": "checked",
+      "is_enabled": true
     },
     "restored_during_this_run": false,
-    "errors": []
+    "errors": [],
+    "resume_start": {
+      "checked_at": "2026-10-26T15:08:00.431Z",
+      "status": "checked",
+      "is_enabled": true
+    }
   },
   "open_findings": [
     {
@@ -303,7 +290,7 @@
       "observed": "Offline synthetic reproduction saved; current actual artifact correctly incomplete."
     }
   ],
-  "current_review_score_assessment_status": "completed_insufficient_evidence_model1.2",
+  "current_review_score_assessment_status": "pending_new_sha_model1.2",
   "target_audience_research": {
     "model_version": "1.1",
     "model_max_points": 25,
@@ -394,7 +381,11 @@
     "recorded_at": "2026-10-25T19:25:50.361Z"
   },
   "previous_score_assessment_ref": "agent-work/results/2026-10-25-reviewer-HX-BL-030-855cfd5.json",
-  "addressed_findings_pending_review": [],
+  "addressed_findings_pending_review": [
+    "HX003-V2-R1",
+    "HX003-V2-R2",
+    "HX003-V2-R3"
+  ],
   "verified_fixed_findings": [
     "R1",
     "R2",
@@ -430,9 +421,9 @@
     "HX003-RV3": "attribution_correction_verified_source_paths_verified_final_SVG_reference_audit_retained_not_redownloaded",
     "HX003-RV4": "resolved_for_new_exact_head_d713_normalCI40298240249_success_historical739_action_required_unchanged",
     "HX003-RV5": "partial_large_native_history_selection_limitations_retained",
-    "HX003-V2-R1": "open_harness_fix",
-    "HX003-V2-R2": "open_harness_fix",
-    "HX003-V2-R3": "open_harness_fix"
+    "HX003-V2-R1": "addressed_pending_independent_review",
+    "HX003-V2-R2": "addressed_pending_independent_review",
+    "HX003-V2-R3": "addressed_pending_independent_review"
   },
   "previous_release_result": {
     "schema_version": 1,
@@ -485,7 +476,7 @@
   "deployment_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40173164222",
   "next_task_execution_allowed": true,
   "last_release_pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/472",
-  "last_material_result_path": "agent-work/results/2026-10-26-reviewer-HX-BL-003-d713cb9.json",
+  "last_material_result_path": "agent-work/results/2026-10-26-developer-HX-BL-003-harness-fixes.json",
   "last_wait_check_at": "2026-10-26T02:02:01.846Z",
   "spec_status": "ready_for_developer_harness_freeze",
   "previous_task_release_approval": {
@@ -536,51 +527,48 @@
     "next_step": "Apply1.2 to next specification/review; preserve1.1 prior assessment until evidence-based reassessment; game breadth unverified."
   },
   "previous_active_claim": {
-    "run_id": "2026-10-26:reviewer:HX-BL-003-d713cb9:1207Z",
-    "role": "reviewer",
+    "run_id": "2026-10-26:developer:HX-BL-003-harness-fixes:1401Z",
+    "role": "developer",
     "task_id": "HX-BL-003",
-    "head_sha": "d713cb9d11c0cd00bfda1eaf13a7489f58e48634",
-    "started_at": "2026-10-26T12:07:39.434Z",
-    "lease_expires_at": "2026-10-26T14:07:39.434Z",
-    "status": "completed_changes_requested",
-    "scope": "Limited independent review of V2 harness/preflight/raw/CI on d713cb9; no performance rerun/source edits",
-    "recovered_from": "2026-10-26:reviewer:HX-BL-003-d713cb9:1001Z",
-    "recovery_evidence": "Previous fresh reviewer failed with actual usage-limit message; no live child remains; no final verdict saved, exact PR head unchanged. Resume own claim, not takeover based on lease.",
-    "independent_agent": "/root/review_d713_resume",
-    "last_checkpoint_at": "2026-10-26T12:09:38.927Z",
-    "last_checkpoint": "Resumed after actual prior usage limit; independent child reviewing current exactSHA, no new measurement",
-    "completed_at": "2026-10-26T12:18:20.797Z"
+    "started_at": "2026-10-26T14:02:11.651Z",
+    "lease_expires_at": "2026-10-26T16:02:11.651Z",
+    "status": "completed",
+    "base_head_sha": "d713cb9d11c0cd00bfda1eaf13a7489f58e48634",
+    "scope": "Fix three independent V2 harness findings only; offline tests, no measured workflow.",
+    "head_sha": "86a7e941a823e32e7c7cf9cfde78bb247ffc8194",
+    "last_checkpoint_at": "2026-10-26T14:14:19.144Z",
+    "last_checkpoint": "Threeharnessfixes at86a7e94;4Node/7Pythonoffline checks passed; normalCIinprogress; no measured workflow.",
+    "completed_at": "2026-10-26T15:10:43.263Z"
   },
   "review_request": {
     "task_id": "HX-BL-003",
-    "status": "completed_changes_requested",
-    "head_sha": "d713cb9d11c0cd00bfda1eaf13a7489f58e48634",
+    "status": "ready",
+    "head_sha": "86a7e941a823e32e7c7cf9cfde78bb247ffc8194",
     "independent_agent_required": true,
     "spec_ref": "agent-work/specs/HX-BL-003.md",
-    "spec_version": "1.1",
     "addendum_ref": "agent-work/specs/HX-BL-003-P1-V2.md",
-    "evidence_ref": "agent-work/evidence/HX-BL-003-V2-developer/report.md",
-    "scope": "Ограниченная независимая проверка d713cb9: новый harness, CPU model guard versus4vCPU/16GB resourceclass, raw0actions, normalCI/runtime parity, оставшиеся RV1–RV5 и score_assessment1.2. Без повторного benchmark; PR475review_ready сохранён.",
-    "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40298240249",
+    "evidence_ref": "agent-work/evidence/HX-BL-003-V2-harness-fixes/report.md",
+    "result_ref": "agent-work/results/2026-10-26-developer-HX-BL-003-harness-fixes.json",
+    "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40337416043",
     "score_assessment_required": true,
     "score_model_version": "1.2",
     "no_new_measurements": true,
-    "result_ref": "agent-work/results/2026-10-26-reviewer-HX-BL-003-d713cb9.json"
+    "scope": "Независимая ограниченная проверка 86a7e94: три исправления harness, offline tests и CI; score_assessment1.2. Без реального замера, PNG или сброса cap1/1."
   },
   "reviewed_sha": "d713cb9d11c0cd00bfda1eaf13a7489f58e48634",
-  "current_review_score_assessment_ref": "agent-work/results/2026-10-26-reviewer-HX-BL-003-d713cb9.json",
+  "current_review_score_assessment_ref": null,
   "automatic_measurement_rerun_allowed": false,
   "repeat_review_requires": "material new evidence or changed source SHA",
   "blocked_task_handoffs": {
     "HX-BL-003": {
       "task_id": "HX-BL-003",
-      "status": "changes_requested",
-      "head_sha": "d713cb9d11c0cd00bfda1eaf13a7489f58e48634",
+      "status": "review_ready",
+      "head_sha": "86a7e941a823e32e7c7cf9cfde78bb247ffc8194",
       "branch_name": "agent/hx-bl-003-performance",
       "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474",
       "spec_path": "agent-work/specs/HX-BL-003.md",
-      "result_path": "agent-work/results/2026-10-26-reviewer-HX-BL-003-d713cb9.json",
-      "next_step": "Prepare harness-only fixes for exactCPU requirement, timeout disposal and warmup completeness, with offline tests and no workflow execution; preserve exhausted single-attemptcap and raw negative evidence. Return concrete corrected harness/plan for limited review. Further measured execution remains outside remaining attempt budget; do not silently reset cap or automatically request repeat approval of same task. Keep product outside main; PR475 queue unchanged.",
+      "result_path": "agent-work/results/2026-10-26-developer-HX-BL-003-harness-fixes.json",
+      "next_step": "Независимая ограниченная проверка 86a7e94: три исправления harness, offline tests и CI; score_assessment1.2. Без реального замера, PNG или сброса cap1/1.",
       "validation_plan": {
         "id": "HX-BL-003-V2",
         "status": "harness_changes_requested_no_new_measured_workflow",
@@ -601,15 +589,15 @@
         "measurement_allowed": false
       },
       "owner_decisions_needed": [],
-      "review_verdict": "changes_requested",
+      "review_verdict": "pending_new_sha",
       "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474#pullrequestreview-5651769890",
       "reviewed_sha": "d713cb9d11c0cd00bfda1eaf13a7489f58e48634",
       "current_review_score_assessment_ref": "agent-work/results/2026-10-26-reviewer-HX-BL-003-d713cb9.json",
       "checks_status": "passed_exact_sha",
-      "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40298240249",
+      "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40337416043",
       "automatic_measurement_rerun_allowed": false,
       "canonical_task_path": "agent-work/backlog.json#HX-BL-003",
-      "next_role": "developer",
+      "next_role": "reviewer",
       "approval_result_ref": "agent-work/results/2026-10-26-HX-BL-003-V2-owner-approval.json",
       "spec_version": "1.1",
       "addendum_ref": "agent-work/specs/HX-BL-003-P1-V2.md",
@@ -647,13 +635,13 @@
     "evidence_ref": "agent-work/evidence/HX-FB-001-developer/report.md",
     "next_role": "reviewer"
   },
-  "owner_decisions_note": "V2 уже утверждён; повторное продуктовое утверждение не запрашивается. Программист исправляет только harness/offline checks по3новымfindings; measured workflow сейчас не запускать, cap1/1не сбрасывать. RV4 закрыт дляd713exactCI. PR475 остаётся review_ready. Публикация отдельно.",
-  "updated_at": "2026-10-26T12:19:31.233Z",
+  "owner_decisions_note": "Следующий этап: независимая ограниченная проверка исправленного harness86a7e94. Продукт не принят; реальный замер не повторять, cap1/1 не сбрасывать. PR475review_ready сохранён. Выпуск отдельно.",
+  "updated_at": "2026-10-26T15:10:43.263Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
-    "status": "harness_changes_requested_no_new_measured_workflow",
-    "next_role": "developer",
-    "next_step": "Prepare harness-only fixes for exactCPU requirement, timeout disposal and warmup completeness, with offline tests and no workflow execution; preserve exhausted single-attemptcap and raw negative evidence. Return concrete corrected harness/plan for limited review. Further measured execution remains outside remaining attempt budget; do not silently reset cap or automatically request repeat approval of same task. Keep product outside main; PR475 queue unchanged.",
+    "status": "harness_corrected_pending_independent_review_no_measurement",
+    "next_role": "reviewer",
+    "next_step": "Независимая ограниченная проверка 86a7e94: три исправления harness, offline tests и CI; score_assessment1.2. Без реального замера, PNG или сброса cap1/1.",
     "approval_ref": "owner-approval-2026-10-26-HX-BL-003-V2",
     "result_ref": "agent-work/results/2026-10-26-HX-BL-003-V2-owner-approval.json",
     "automation_health": {
@@ -769,5 +757,6 @@
       "Initial id argument rejected; actual corrected peek succeeded."
     ],
     "schedule_unchanged": true
-  }
+  },
+  "previous_reviewed_sha": "d713cb9d11c0cd00bfda1eaf13a7489f58e48634"
 }
