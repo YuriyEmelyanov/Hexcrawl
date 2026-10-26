@@ -18,3 +18,8 @@ No interface/map/content/action/format change. Intention: retain identical map w
 
 ## Approval and alternative
 Owner approved this exact bounded verification plan26.10.2026: «Разрешаю замер». Approval is recorded in approvals.json. Prepare the prospective P1 addendum before measurement; then execute this single bounded package. Do not require the same owner approval again. Unlimited reruns remain unauthorized. CI approval capability remains a separate technical dependency. This is a technical validation proposal for the current approvedtask, not a nextproducttask or authorization ofpublication.
+
+
+## Исполнение по прямому поручению владельца26.10.2026
+
+После независимого принятия harness df879cb владелец прямо поручил: «Выполеяй замер по474. Кто это должен делать? программист?». Решение owner-execute-2026-10-26-HX-BL-003-V2-after-harness-review разрешает **одну дополнительную workflow-попытку** на принятом исправленном harness. Исторический run40298230168/attempt1 с0navigation/0warmup/0PNG не обнулён и сохраняется. Новый пакет: прежние20measured+4warmups/4PNG/60min, прежниеinput/качество/пороги, без новойоптимизации. Всего разрешено2workflowпопытки с учётом исторической; повторов новой попытки автоматически нет. Программист запустил run40382000933 на2ab6886cc745c742bd4e8acf1261d5bec2885bf6; изменение от принятого df879cb — только комментарий workflow для trigger и executionmanifest. Продукт/скрипты/testcases неизменны. Новый workflow публикует фактическое environment ДО измерения в отдельную ветку и сохраняет partialraw всегда. Старые ограничения остальных AC остаются в силе. Проверяющий оценивает результаты на точномSHA, выпуск отдельно.
