@@ -29,7 +29,7 @@
   "run_id": "2026-10-26:developer:HX-BL-003-V2:0910Z",
   "plan_revision": 1,
   "baseline_sha": "f89530abe1e237493dddb533502bb772ae1ab4e5",
-  "status": "in_progress",
+  "status": "review_ready_with_blocked_validation",
   "planning_for": "2026-10-24",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-10-25",
@@ -46,54 +46,39 @@
   "schedule_frequency": "hourly",
   "process_path": "agent-work/process.md",
   "current_role": "developer",
-  "next_role": "developer",
+  "next_role": "reviewer",
   "current_task_id": "HX-BL-003",
   "spec_path": "agent-work/specs/HX-BL-003.md",
   "spec_version": "1.1",
   "result_path": "agent-work/results/2026-10-26-developer-HX-BL-003-V2.json",
-  "handoff_commit_sha": "1421459bd428d42f78bfe8776b55c8bd5d862c1d",
-  "active_claim": {
-    "run_id": "2026-10-26:developer:HX-BL-003-V2:0910Z",
-    "role": "developer",
-    "task_id": "HX-BL-003",
-    "status": "in_progress",
-    "started_at": "2026-10-26T09:10:42.259Z",
-    "lease_expires_at": "2026-10-26T11:10:42.259Z",
-    "base_sha": "103d31b9f6f5c76b1f6b45d9d6664fe3f75dd63b",
-    "candidate_sha": "739e3de36587533bf3d2f3196072270f4695fa8a",
-    "scope": "approved bounded V2 validation; harness only",
-    "head_sha": "d713cb9d11c0cd00bfda1eaf13a7489f58e48634",
-    "validation_run_id": 40298230168,
-    "last_checkpoint_at": "2026-10-26T09:24:52.767Z",
-    "last_checkpoint": "d713cb9 normal CI all3success,236tests; localcheckpass. V2 workflow40298230168 still installingChromium, no measurement confirmed. No repeat."
-  },
-  "next_step": "Await existing single V2 workflow and exact-head normal CI, preserve all outputs/logs; no retry of measured package. Then independent review finald713cb9 original+new evidence, no release.",
-  "owner_decisions_needed": [
-    "resolve_GitHub_action_required_Check40252463579"
-  ],
+  "handoff_commit_sha": "d68318d565eaab66dab195c83df26192193bab9b",
+  "active_claim": null,
+  "next_step": "Ограниченная независимая проверка d713cb9: новый harness, CPU model guard versus4vCPU/16GB resourceclass, raw0actions, normalCI/runtime parity, оставшиеся RV1–RV5 и score_assessment1.2. Без повторного benchmark; PR475review_ready сохранён.",
+  "owner_decisions_needed": [],
   "release_approval": {
     "task_id": "HX-BL-003",
     "status": "not_requested",
     "approved_sha": null
   },
   "historical_plan_status": "План23.10 сохранён как история; его блокировки и предложенный процесс заменены decisions24.10 в approvals/process/budget и текущим handoff.",
-  "evidence_path": "reports/HX-BL-003/v2-protocol-manifest.json",
+  "evidence_path": "agent-work/evidence/HX-BL-003-V2-developer/report.md",
   "branch_name": "agent/hx-bl-003-performance",
   "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474",
   "head_sha": "d713cb9d11c0cd00bfda1eaf13a7489f58e48634",
   "checks_status": "passed_exact_sha",
   "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40298240249",
-  "review_verdict": "changes_requested",
-  "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474#pullrequestreview-5647353819",
+  "review_verdict": null,
+  "review_url": null,
   "role_selection_mode": "ready_work_priority",
   "role_selection_source": "agent-work/process.md",
   "process_decision_ref": "owner-decision-2026-10-24-dynamic-roles",
   "process_commit_sha": "e7e046530757ae2067de13a4075fb0526ca429ee",
   "previous_review": {
-    "head_sha": "855cfd5b8cd2e70e1013d92b5dc9e6e21be063d0",
+    "task_id": "HX-BL-003",
+    "head_sha": "739e3de36587533bf3d2f3196072270f4695fa8a",
     "verdict": "changes_requested",
-    "result_ref": "agent-work/results/2026-10-25-reviewer-HX-BL-030-855cfd5.json",
-    "url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/472#pullrequestreview-5641416535"
+    "result_ref": "agent-work/results/2026-10-26-reviewer-HX-BL-003-739e3de.json",
+    "url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474#pullrequestreview-5647353819"
   },
   "release_result": {
     "schema_version": 1,
@@ -225,9 +210,10 @@
   "approval_ref": "owner-decision-2026-10-25-feedback-register",
   "last_completed_stage": {
     "task_id": "HX-BL-003",
-    "role": "business_analyst",
-    "status": "specification_addendum_ready",
-    "result_ref": "agent-work/results/2026-10-26-analyst-HX-BL-003-V2.json"
+    "role": "developer",
+    "status": "review_ready_with_blocked_validation",
+    "head_sha": "d713cb9d11c0cd00bfda1eaf13a7489f58e48634",
+    "result_ref": "agent-work/results/2026-10-26-developer-HX-BL-003-V2.json"
   },
   "previous_release_approval": {
     "status": "approved_and_executed",
@@ -245,15 +231,15 @@
       "is_enabled": true
     },
     "end": {
-      "status": "unchecked",
-      "is_enabled": null,
-      "reason": "run in progress"
+      "checked_at": "2026-10-26T09:35:57.281Z",
+      "status": "checked",
+      "is_enabled": true
     },
     "restored_during_this_run": false,
     "errors": []
   },
   "open_findings": [],
-  "current_review_score_assessment_status": "not_started_HX-FB-001",
+  "current_review_score_assessment_status": "pending_independent_HX-BL-003-d713cb9",
   "target_audience_research": {
     "model_version": "1.1",
     "model_max_points": 25,
@@ -427,7 +413,7 @@
   "deployment_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40173164222",
   "next_task_execution_allowed": true,
   "last_release_pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/472",
-  "last_material_result_path": "agent-work/results/2026-10-26-analyst-HX-BL-003-V2.json",
+  "last_material_result_path": "agent-work/results/2026-10-26-developer-HX-BL-003-V2.json",
   "last_wait_check_at": "2026-10-26T02:02:01.846Z",
   "spec_status": "ready_for_developer_harness_freeze",
   "previous_task_release_approval": {
@@ -478,33 +464,53 @@
     "next_step": "Apply1.2 to next specification/review; preserve1.1 prior assessment until evidence-based reassessment; game breadth unverified."
   },
   "previous_active_claim": {
-    "run_id": "2026-10-26:analyst:HX-BL-003-V2:0817Z",
-    "role": "business_analyst",
+    "run_id": "2026-10-26:developer:HX-BL-003-V2:0910Z",
+    "role": "developer",
     "task_id": "HX-BL-003",
-    "started_at": "2026-10-26T08:18:29.371Z",
-    "lease_expires_at": "2026-10-26T10:18:29.371Z",
-    "status": "completed_specification_addendum_ready",
-    "scope": "Prospective approved V2 P1 addendum only; no measurement, source/main/deploy changes.",
-    "completed_at": "2026-10-26T08:22:58.485Z"
+    "status": "completed_blocked_preflight_review_ready",
+    "started_at": "2026-10-26T09:10:42.259Z",
+    "lease_expires_at": "2026-10-26T11:10:42.259Z",
+    "base_sha": "103d31b9f6f5c76b1f6b45d9d6664fe3f75dd63b",
+    "candidate_sha": "739e3de36587533bf3d2f3196072270f4695fa8a",
+    "scope": "approved bounded V2 validation; harness only",
+    "head_sha": "d713cb9d11c0cd00bfda1eaf13a7489f58e48634",
+    "validation_run_id": 40298230168,
+    "last_checkpoint_at": "2026-10-26T09:24:52.767Z",
+    "last_checkpoint": "d713cb9 normal CI all3success,236tests; localcheckpass. V2 workflow40298230168 still installingChromium, no measurement confirmed. No repeat.",
+    "completed_at": "2026-10-26T09:36:53.213Z"
   },
-  "review_request": null,
-  "reviewed_sha": "739e3de36587533bf3d2f3196072270f4695fa8a",
-  "current_review_score_assessment_ref": "agent-work/results/2026-10-26-reviewer-HX-BL-003-739e3de.json",
+  "review_request": {
+    "task_id": "HX-BL-003",
+    "status": "ready",
+    "head_sha": "d713cb9d11c0cd00bfda1eaf13a7489f58e48634",
+    "independent_agent_required": true,
+    "spec_ref": "agent-work/specs/HX-BL-003.md",
+    "spec_version": "1.1",
+    "addendum_ref": "agent-work/specs/HX-BL-003-P1-V2.md",
+    "evidence_ref": "agent-work/evidence/HX-BL-003-V2-developer/report.md",
+    "scope": "Ограниченная независимая проверка d713cb9: новый harness, CPU model guard versus4vCPU/16GB resourceclass, raw0actions, normalCI/runtime parity, оставшиеся RV1–RV5 и score_assessment1.2. Без повторного benchmark; PR475review_ready сохранён.",
+    "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40298240249",
+    "score_assessment_required": true,
+    "score_model_version": "1.2",
+    "no_new_measurements": true
+  },
+  "reviewed_sha": null,
+  "current_review_score_assessment_ref": null,
   "automatic_measurement_rerun_allowed": false,
   "repeat_review_requires": "material new evidence or changed source SHA",
   "blocked_task_handoffs": {
     "HX-BL-003": {
       "task_id": "HX-BL-003",
-      "status": "ready_for_developer_validation",
-      "head_sha": "739e3de36587533bf3d2f3196072270f4695fa8a",
+      "status": "review_ready_with_blocked_validation",
+      "head_sha": "d713cb9d11c0cd00bfda1eaf13a7489f58e48634",
       "branch_name": "agent/hx-bl-003-performance",
       "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474",
       "spec_path": "agent-work/specs/HX-BL-003.md",
-      "result_path": "agent-work/results/2026-10-26-developer-HX-BL-003-review-response.json",
-      "next_step": "Программист: закрепить harness-only SHA/manifest по HX-BL-003-P1-V2, затем выполнить один разрешённый пакет до4PNG и20navigation actions (+4warmups), максимум60мин; сохранить все результаты и передать независимому reviewer. Выпуск отдельно.",
+      "result_path": "agent-work/results/2026-10-26-developer-HX-BL-003-V2.json",
+      "next_step": "Ограниченная независимая проверка d713cb9: новый harness, CPU model guard versus4vCPU/16GB resourceclass, raw0actions, normalCI/runtime parity, оставшиеся RV1–RV5 и score_assessment1.2. Без повторного benchmark; PR475review_ready сохранён.",
       "validation_plan": {
         "id": "HX-BL-003-V2",
-        "status": "approved_addendum_ready",
+        "status": "blocked_preflight_after_single_workflow_attempt",
         "path": "agent-work/proposals/HX-BL-003-V2-validation.md",
         "max_png_attempts": 4,
         "max_measured_navigation_actions": 20,
@@ -515,20 +521,21 @@
         "approval_ref": "owner-approval-2026-10-26-HX-BL-003-V2",
         "approved_on": "2026-10-26",
         "addendum_ref": "agent-work/specs/HX-BL-003-P1-V2.md",
-        "measurement_started": false
+        "measurement_started": false,
+        "workflow_attempts_used": 1,
+        "measured_actions_attempted": 0,
+        "png_click_attempts": 0
       },
-      "owner_decisions_needed": [
-        "resolve_GitHub_action_required_Check40252463579"
-      ],
-      "review_verdict": "changes_requested",
+      "owner_decisions_needed": [],
+      "review_verdict": null,
       "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474#pullrequestreview-5647353819",
-      "reviewed_sha": "739e3de36587533bf3d2f3196072270f4695fa8a",
-      "current_review_score_assessment_ref": "agent-work/results/2026-10-26-reviewer-HX-BL-003-739e3de.json",
-      "checks_status": "exacthead_action_required_no_jobs_capability_blocked",
-      "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40252463579",
+      "reviewed_sha": null,
+      "current_review_score_assessment_ref": null,
+      "checks_status": "passed_exact_sha",
+      "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40298240249",
       "automatic_measurement_rerun_allowed": false,
       "canonical_task_path": "agent-work/backlog.json#HX-BL-003",
-      "next_role": "developer",
+      "next_role": "reviewer",
       "approval_result_ref": "agent-work/results/2026-10-26-HX-BL-003-V2-owner-approval.json",
       "spec_version": "1.1",
       "addendum_ref": "agent-work/specs/HX-BL-003-P1-V2.md",
@@ -566,13 +573,13 @@
     "evidence_ref": "agent-work/evidence/HX-FB-001-developer/report.md",
     "next_role": "reviewer"
   },
-  "owner_decisions_note": "Замер HX-BL-003-V2 разрешён, перспективное P1 дополнение закреплено. Программисту не нужно повторное утверждение этого пакета; CI action_required — отдельная техническая зависимость. PR475 review_ready сохранён в ready_task_handoffs. Публикация отдельно.",
-  "updated_at": "2026-10-26T08:23:33.027Z",
+  "owner_decisions_note": "V2 already approved; no repeat task approval requested. Exact-head normalCI passed. Single V2 attempt stopped at exactCPU guard before0measured actions; bounded independent review resolves resourceclass interpretation and negative evidence. PR475 remains review_ready; no release approved.",
+  "updated_at": "2026-10-26T09:37:43.976Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
-    "status": "workflow_in_progress",
-    "next_role": "developer",
-    "next_step": "Программист: закрепить harness-only SHA/manifest по HX-BL-003-P1-V2, затем выполнить один разрешённый пакет до4PNG и20navigation actions (+4warmups), максимум60мин; сохранить все результаты и передать независимому reviewer. Выпуск отдельно.",
+    "status": "blocked_preflight_review_ready",
+    "next_role": "reviewer",
+    "next_step": "Ограниченная независимая проверка d713cb9: новый harness, CPU model guard versus4vCPU/16GB resourceclass, raw0actions, normalCI/runtime parity, оставшиеся RV1–RV5 и score_assessment1.2. Без повторного benchmark; PR475review_ready сохранён.",
     "approval_ref": "owner-approval-2026-10-26-HX-BL-003-V2",
     "result_ref": "agent-work/results/2026-10-26-HX-BL-003-V2-owner-approval.json",
     "automation_health": {
@@ -595,7 +602,31 @@
     "spec_version": "1.1",
     "measurement_started": false,
     "analyst_result_ref": "agent-work/results/2026-10-26-analyst-HX-BL-003-V2.json",
-    "validation_run_id": 40298230168
+    "validation_run_id": 40298230168,
+    "workflow_attempts_used": 1,
+    "counts": {
+      "measured_actions_attempted": 0,
+      "warmups_attempted": 0,
+      "png_click_attempts": 0
+    },
+    "validation_run": {
+      "id": 40298230168,
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40298230168",
+      "status": "completed",
+      "attempt": 1,
+      "job_id": 121489428120,
+      "conclusion": "failure",
+      "measurement_step_exit_code": 1
+    },
+    "environment_discrepancy": {
+      "actual_cpu": "AMD EPYC 9V74 80-Core Processor",
+      "guard_required_cpu": "AMD EPYC 7763",
+      "same_vcpus": true,
+      "same_ram_bytes": true,
+      "same_browser_version": true,
+      "interpretation": "Exact CPU guard was a conservative developer interpretation of same profile; resourceclass vs exactmodel ambiguity requires technical independent assessment, not another approval of the already-approved task."
+    },
+    "developer_result_ref": "agent-work/results/2026-10-26-developer-HX-BL-003-V2.json"
   },
   "ready_task_handoffs": {
     "HX-FB-001": {
