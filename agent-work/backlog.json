@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "model_version": "1.1",
-  "updated_on": "2026-10-26",
+  "updated_on": "2026-10-27",
   "strategy_version": "1.0",
   "note": "Перенесённые идеи, не разрешение на реализацию. implemented_unverified означает наличие функции/отметки о выполнении, а не G3/G4. criterion_id — предлагаемое отнесение, не начисленный эффект. Полные уникальные детали сохранены в снимке исходного документа.",
   "source_snapshot": {
@@ -102,7 +102,7 @@
       "task_id": "HX-BL-003",
       "title": "Производительность генерации и навигации по числу гексов",
       "criterion_id": "S09-C01",
-      "status": "changes_requested",
+      "status": "blocked_report_only",
       "potential_delta": null,
       "approval_ref": "owner-approval-2026-10-25-HX-BL-003",
       "source": {
@@ -229,13 +229,13 @@
         "approval_ref": "owner-approval-2026-10-25-HX-BL-003",
         "next_step": "Программист: закрепить корпус и P1 manifest до baseline замеров, затем профиль и одно подтверждённое узкое место по spec1.0."
       },
-      "next_role": "developer",
-      "next_step": "Один ограниченный статический разбор существующих raw timestamps, порядка AB/BA и исходного пути навигации: объяснить наблюдаемую связь с первым/вторым действием и пределы причинного вывода. Сохранить все строки и неизменный primary/guard; подготовить отрицательный report-only результат либо конкретную развилку для координатора. Без новых замеров, второго bottleneck или продуктовой оптимизации. До решения RV2/RV5 пакет не принят и не выпускается.",
+      "next_role": "strategist",
+      "next_step": "Стратег: завершить ограниченную серию HX-BL-003 отрицательным report-only и выбрать конкретную развилку: непринятый пакет без выпуска либо отдельное предложение владельцу минимальной проверки cache/order и недостающей nativehistory. Не повторять анализ/замеры автоматически; PR475 review_ready сохранён.",
       "spec_ref": "agent-work/specs/HX-BL-003.md",
       "spec_version": "1.1",
       "spec_status": "ready_for_developer_harness_freeze",
       "execution_allowed": true,
-      "owner_role": "developer",
+      "owner_role": "strategist",
       "claim": null,
       "result_ref": "agent-work/results/2026-10-27-reviewer-HX-BL-003-86100.json",
       "feedback_assessment": {
@@ -253,7 +253,7 @@
       "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474",
       "head_sha": "86100c390d8d4cf66cee6e87589be64ce51687e5",
       "checks_status": "normal_CI_passed_after_single_RNG_retry",
-      "evidence_ref": "agent-work/evidence/review-HX-BL-003-86100/report.md",
+      "evidence_ref": "agent-work/evidence/HX-BL-003-static-diagnosis-2026-10-27/report.md",
       "corpus_ci": {
         "id": 40187550999,
         "status": "completed",
@@ -299,7 +299,7 @@
       },
       "paired_failure_ref": "reports/HX-BL-003/paired-run40243424173-recovery.json",
       "measurement_recovery_sha": "00f5e4adcc4a027948ca3a82fcd625211eb890cd",
-      "developer_result_status": "download_api_error_diagnosed_fix_normal_CI_running",
+      "developer_result_status": "completed_negative_report_only",
       "review_request": {
         "status": "completed_changes_requested",
         "exact_sha": "d713cb9d11c0cd00bfda1eaf13a7489f58e48634",
@@ -548,15 +548,16 @@
       "acceptance_status": "blocked_navigation_guard_and_partial_native_history",
       "automatic_measurement_rerun_allowed": false,
       "repeat_review_requires": "material new evidence or changed source SHA",
-      "developer_response_ref": "agent-work/results/2026-10-26-developer-HX-BL-003-V2-completed.json",
+      "developer_response_ref": "agent-work/results/2026-10-27-developer-HX-BL-003-static-diagnosis.json",
       "developer_finding_response": {
         "HX003-RV1": {
           "status": "blocked",
           "reason": "2largePNGpairs missing; priorboundedretry exhausted. No newexport."
         },
         "HX003-RV2": {
-          "status": "inconclusive",
-          "reason": "Bothnavigationestimators retained; no favorableaggregation ornewnavseries."
+          "status": "negative_guard_retained_causal_hypothesis_only",
+          "result_ref": "agent-work/results/2026-10-27-developer-HX-BL-003-static-diagnosis.json",
+          "reason": "First/second relation with early frames and nonquiesced cache path; no trace establishes cause"
         },
         "HX003-RV3": {
           "status": "addressed_pending_independent_confirmation",
@@ -588,7 +589,7 @@
       },
       "validation_plan": {
         "id": "HX-BL-003-V2",
-        "status": "independently_reviewed_nonpassing_no_automatic_rerun",
+        "status": "completed_nonpassing_no_automatic_rerun",
         "path": "agent-work/proposals/HX-BL-003-V2-validation.md",
         "max_png_attempts": 4,
         "max_measured_navigation_actions": 20,
@@ -618,7 +619,7 @@
         "prior_attempts_preserved": [
           40298230168
         ],
-        "validation_run_id": 40382000933,
+        "validation_run_id": 40388046863,
         "prior_attempts_used": 1,
         "new_attempts_used": 1,
         "total_attempts_used": 3,
@@ -825,6 +826,13 @@
           }
         ],
         "acceptance": "developer_nonpassing_navigation_guard_not_product_accepted"
+      },
+      "developer_static_diagnosis": {
+        "status": "completed_negative_report_only",
+        "result_ref": "agent-work/results/2026-10-27-developer-HX-BL-003-static-diagnosis.json",
+        "head_sha": "86100c390d8d4cf66cee6e87589be64ce51687e5",
+        "next_role": "strategist",
+        "new_measurements": 0
       }
     },
     {
