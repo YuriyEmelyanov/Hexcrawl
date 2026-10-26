@@ -1,0 +1,2120 @@
+﻿2026-10-26T19:35:13.3187306Z Current runner version: '2.338.0'
+2026-10-26T19:35:13.3208418Z ##[group]Runner Image Provisioner
+2026-10-26T19:35:13.3209191Z Hosted Compute Agent
+2026-10-26T19:35:13.3209687Z Version: 20261021.618
+2026-10-26T19:35:13.3210202Z Commit: 21505ad2541d5be6135ed84fc33697146cf75b8e
+2026-10-26T19:35:13.3210840Z Build Date: 2026-10-21T00:45:21Z
+2026-10-26T19:35:13.3211401Z Worker ID: {0af1f6d5-eea1-48db-bd3e-13baf37e54a0}
+2026-10-26T19:35:13.3212191Z Region: westus3
+2026-10-26T19:35:13.3212655Z Cloud: Azure
+2026-10-26T19:35:13.3213099Z ##[endgroup]
+2026-10-26T19:35:13.3214661Z ##[group]Operating System
+2026-10-26T19:35:13.3215210Z Ubuntu
+2026-10-26T19:35:13.3215630Z 24.04.5
+2026-10-26T19:35:13.3216105Z LTS
+2026-10-26T19:35:13.3216530Z ##[endgroup]
+2026-10-26T19:35:13.3217002Z ##[group]Runner Image
+2026-10-26T19:35:13.3217572Z Image: ubuntu-24.04
+2026-10-26T19:35:13.3218025Z Version: 20261012.334.1
+2026-10-26T19:35:13.3219060Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261012.334/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-26T19:35:13.3220284Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261012.334
+2026-10-26T19:35:13.3221119Z ##[endgroup]
+2026-10-26T19:35:13.3222180Z ##[group]GITHUB_TOKEN Permissions
+2026-10-26T19:35:13.3223918Z Actions: read
+2026-10-26T19:35:13.3224400Z Contents: write
+2026-10-26T19:35:13.3224953Z Metadata: read
+2026-10-26T19:35:13.3225439Z ##[endgroup]
+2026-10-26T19:35:13.3227157Z Secret source: Actions
+2026-10-26T19:35:13.3227940Z Cache mode: write
+2026-10-26T19:35:13.3228509Z Prepare workflow directory
+2026-10-26T19:35:13.3489501Z Prepare all required actions
+2026-10-26T19:35:13.3529304Z Getting action download info
+2026-10-26T19:35:13.6818801Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-10-26T19:35:13.8067248Z Download action repository 'actions/setup-node@v4' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+2026-10-26T19:35:13.9093733Z Download action repository 'actions/download-artifact@v4' (SHA:d3f86a106a0bac45b974a628896c90dbdf5c8093)
+2026-10-26T19:35:14.6883352Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2026-10-26T19:35:14.9071537Z Complete job name: validation
+2026-10-26T19:35:14.9779861Z ##[group]Run actions/checkout@v4
+2026-10-26T19:35:14.9780583Z with:
+2026-10-26T19:35:14.9781012Z   ref: 86100c390d8d4cf66cee6e87589be64ce51687e5
+2026-10-26T19:35:14.9781529Z   fetch-depth: 0
+2026-10-26T19:35:14.9782146Z   repository: YuriyEmelyanov/Hexcrawl
+2026-10-26T19:35:14.9785659Z   token: ***
+2026-10-26T19:35:14.9786053Z   ssh-strict: true
+2026-10-26T19:35:14.9786444Z   ssh-user: git
+2026-10-26T19:35:14.9786836Z   persist-credentials: true
+2026-10-26T19:35:14.9787262Z   clean: true
+2026-10-26T19:35:14.9787663Z   sparse-checkout-cone-mode: true
+2026-10-26T19:35:14.9788130Z   fetch-tags: false
+2026-10-26T19:35:14.9788537Z   show-progress: true
+2026-10-26T19:35:14.9788938Z   lfs: false
+2026-10-26T19:35:14.9789300Z   submodules: false
+2026-10-26T19:35:14.9789727Z   set-safe-directory: true
+2026-10-26T19:35:14.9790163Z   allow-unsafe-pr-checkout: false
+2026-10-26T19:35:14.9790785Z ##[endgroup]
+2026-10-26T19:35:15.0579813Z Syncing repository: YuriyEmelyanov/Hexcrawl
+2026-10-26T19:35:15.0581713Z ##[group]Getting Git version info
+2026-10-26T19:35:15.0582645Z Working directory is '/home/runner/work/Hexcrawl/Hexcrawl'
+2026-10-26T19:35:15.0584101Z [command]/usr/bin/git version
+2026-10-26T19:35:15.0669058Z git version 2.55.0
+2026-10-26T19:35:15.0686219Z ##[endgroup]
+2026-10-26T19:35:15.0699408Z Temporarily overriding HOME='/home/runner/work/_temp/a21828df-82fe-460f-bb1c-cb7b86df88ac' before making global git config changes
+2026-10-26T19:35:15.0701397Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-26T19:35:15.0704388Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/Hexcrawl/Hexcrawl
+2026-10-26T19:35:15.0750194Z Deleting the contents of '/home/runner/work/Hexcrawl/Hexcrawl'
+2026-10-26T19:35:15.0754967Z ##[group]Initializing the repository
+2026-10-26T19:35:15.0758821Z [command]/usr/bin/git init /home/runner/work/Hexcrawl/Hexcrawl
+2026-10-26T19:35:15.0856808Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-26T19:35:15.0857986Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-26T19:35:15.0858993Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-26T19:35:15.0859631Z hint: call:
+2026-10-26T19:35:15.0859975Z hint:
+2026-10-26T19:35:15.0860422Z hint: 	git config --global init.defaultBranch <name>
+2026-10-26T19:35:15.0860951Z hint:
+2026-10-26T19:35:15.0861447Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-26T19:35:15.0862662Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-26T19:35:15.0863581Z hint:
+2026-10-26T19:35:15.0864175Z hint: 	git branch -m <name>
+2026-10-26T19:35:15.0864902Z hint:
+2026-10-26T19:35:15.0865771Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-26T19:35:15.0866641Z Initialized empty Git repository in /home/runner/work/Hexcrawl/Hexcrawl/.git/
+2026-10-26T19:35:15.0874932Z [command]/usr/bin/git remote add origin https://github.com/YuriyEmelyanov/Hexcrawl
+2026-10-26T19:35:15.0916292Z ##[endgroup]
+2026-10-26T19:35:15.0916985Z ##[group]Disabling automatic garbage collection
+2026-10-26T19:35:15.0919807Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-26T19:35:15.0946098Z ##[endgroup]
+2026-10-26T19:35:15.0946738Z ##[group]Setting up auth
+2026-10-26T19:35:15.0962987Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-26T19:35:15.1002209Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-26T19:35:15.1329044Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-26T19:35:15.1360263Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-26T19:35:15.1547500Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-26T19:35:15.1578210Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-26T19:35:15.1765136Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-26T19:35:15.1800067Z ##[endgroup]
+2026-10-26T19:35:15.1801235Z ##[group]Fetching the repository
+2026-10-26T19:35:15.1808890Z [command]/usr/bin/git -c protocol.version=2 fetch --prune --no-recurse-submodules origin +refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/*
+2026-10-26T19:35:16.9374203Z From https://github.com/YuriyEmelyanov/Hexcrawl
+2026-10-26T19:35:16.9375715Z  * [new branch]      Coordinates             -> origin/Coordinates
+2026-10-26T19:35:16.9376302Z  * [new branch]      Tract                   -> origin/Tract
+2026-10-26T19:35:16.9376917Z  * [new branch]      agent-operations        -> origin/agent-operations
+2026-10-26T19:35:16.9377585Z  * [new branch]      agent/HX-BL-030-rng     -> origin/agent/HX-BL-030-rng
+2026-10-26T19:35:16.9378291Z  * [new branch]      agent/hx-bl-003-performance -> origin/agent/hx-bl-003-performance
+2026-10-26T19:35:16.9379184Z  * [new branch]      agent/hx-bl-003-v2-environment-40298230168 -> origin/agent/hx-bl-003-v2-environment-40298230168
+2026-10-26T19:35:16.9380306Z  * [new branch]      agent/hx-bl-003-v2-environment-40382000933 -> origin/agent/hx-bl-003-v2-environment-40382000933
+2026-10-26T19:35:16.9381148Z  * [new branch]      agent/hx-fb-001-seed-row -> origin/agent/hx-fb-001-seed-row
+2026-10-26T19:35:16.9382094Z  * [new branch]      agent/hx-next-001-safe-import-history -> origin/agent/hx-next-001-safe-import-history
+2026-10-26T19:35:16.9383348Z  * [new branch]      assets/poi-svg-review-2026-09-25 -> origin/assets/poi-svg-review-2026-09-25
+2026-10-26T19:35:16.9384185Z  * [new branch]      bench/kingdom-display-20261009 -> origin/bench/kingdom-display-20261009
+2026-10-26T19:35:16.9384948Z  * [new branch]      chore/generation-diagnostics -> origin/chore/generation-diagnostics
+2026-10-26T19:35:16.9385767Z  * [new branch]      chore/lock-dependencies-013 -> origin/chore/lock-dependencies-013
+2026-10-26T19:35:16.9386494Z  * [new branch]      codex-02hazc            -> origin/codex-02hazc
+2026-10-26T19:35:16.9387039Z  * [new branch]      codex-0key18            -> origin/codex-0key18
+2026-10-26T19:35:16.9387409Z  * [new branch]      codex-0pp77q            -> origin/codex-0pp77q
+2026-10-26T19:35:16.9387768Z  * [new branch]      codex-0yoe0y            -> origin/codex-0yoe0y
+2026-10-26T19:35:16.9388133Z  * [new branch]      codex-1h9s2j            -> origin/codex-1h9s2j
+2026-10-26T19:35:16.9388508Z  * [new branch]      codex-23i27j            -> origin/codex-23i27j
+2026-10-26T19:35:16.9388863Z  * [new branch]      codex-2546gj            -> origin/codex-2546gj
+2026-10-26T19:35:16.9389216Z  * [new branch]      codex-2ij82h            -> origin/codex-2ij82h
+2026-10-26T19:35:16.9389704Z  * [new branch]      codex-2uqhcl            -> origin/codex-2uqhcl
+2026-10-26T19:35:16.9390246Z  * [new branch]      codex-2v650w            -> origin/codex-2v650w
+2026-10-26T19:35:16.9390720Z  * [new branch]      codex-30d1s9            -> origin/codex-30d1s9
+2026-10-26T19:35:16.9391087Z  * [new branch]      codex-33rb1h            -> origin/codex-33rb1h
+2026-10-26T19:35:16.9391434Z  * [new branch]      codex-37ww0k            -> origin/codex-37ww0k
+2026-10-26T19:35:16.9391935Z  * [new branch]      codex-39jibw            -> origin/codex-39jibw
+2026-10-26T19:35:16.9392615Z  * [new branch]      codex-3rpg1i            -> origin/codex-3rpg1i
+2026-10-26T19:35:16.9393085Z  * [new branch]      codex-3up2mx            -> origin/codex-3up2mx
+2026-10-26T19:35:16.9393629Z  * [new branch]      codex-3wpakx            -> origin/codex-3wpakx
+2026-10-26T19:35:16.9394019Z  * [new branch]      codex-44ndym            -> origin/codex-44ndym
+2026-10-26T19:35:16.9394619Z  * [new branch]      codex-45s1wi            -> origin/codex-45s1wi
+2026-10-26T19:35:16.9394974Z  * [new branch]      codex-48a93l            -> origin/codex-48a93l
+2026-10-26T19:35:16.9395342Z  * [new branch]      codex-5mhlo5            -> origin/codex-5mhlo5
+2026-10-26T19:35:16.9395702Z  * [new branch]      codex-5qhyq4            -> origin/codex-5qhyq4
+2026-10-26T19:35:16.9396067Z  * [new branch]      codex-600a53            -> origin/codex-600a53
+2026-10-26T19:35:16.9396416Z  * [new branch]      codex-6gi14a            -> origin/codex-6gi14a
+2026-10-26T19:35:16.9396780Z  * [new branch]      codex-6urrhy            -> origin/codex-6urrhy
+2026-10-26T19:35:16.9397534Z  * [new branch]      codex-6v6rtw            -> origin/codex-6v6rtw
+2026-10-26T19:35:16.9398176Z  * [new branch]      codex-6wiqe0            -> origin/codex-6wiqe0
+2026-10-26T19:35:16.9398602Z  * [new branch]      codex-6ym1wq            -> origin/codex-6ym1wq
+2026-10-26T19:35:16.9398982Z  * [new branch]      codex-6zo59e            -> origin/codex-6zo59e
+2026-10-26T19:35:16.9399373Z  * [new branch]      codex-7kztzc            -> origin/codex-7kztzc
+2026-10-26T19:35:16.9399730Z  * [new branch]      codex-7r492t            -> origin/codex-7r492t
+2026-10-26T19:35:16.9400076Z  * [new branch]      codex-84c0ed            -> origin/codex-84c0ed
+2026-10-26T19:35:16.9400436Z  * [new branch]      codex-852kik            -> origin/codex-852kik
+2026-10-26T19:35:16.9400780Z  * [new branch]      codex-8a69zw            -> origin/codex-8a69zw
+2026-10-26T19:35:16.9401124Z  * [new branch]      codex-8m6m65            -> origin/codex-8m6m65
+2026-10-26T19:35:16.9401472Z  * [new branch]      codex-8pkyti            -> origin/codex-8pkyti
+2026-10-26T19:35:16.9401989Z  * [new branch]      codex-8xv8x4            -> origin/codex-8xv8x4
+2026-10-26T19:35:16.9402488Z  * [new branch]      codex-9ed2iq            -> origin/codex-9ed2iq
+2026-10-26T19:35:16.9402840Z  * [new branch]      codex-9j3va0            -> origin/codex-9j3va0
+2026-10-26T19:35:16.9403195Z  * [new branch]      codex-9nb9a2            -> origin/codex-9nb9a2
+2026-10-26T19:35:16.9403550Z  * [new branch]      codex-9x06io            -> origin/codex-9x06io
+2026-10-26T19:35:16.9403894Z  * [new branch]      codex-ab9xiv            -> origin/codex-ab9xiv
+2026-10-26T19:35:16.9404266Z  * [new branch]      codex-ai8cjn            -> origin/codex-ai8cjn
+2026-10-26T19:35:16.9404697Z  * [new branch]      codex-axax8q            -> origin/codex-axax8q
+2026-10-26T19:35:16.9405088Z  * [new branch]      codex-b0an86            -> origin/codex-b0an86
+2026-10-26T19:35:16.9405445Z  * [new branch]      codex-b2zj8d            -> origin/codex-b2zj8d
+2026-10-26T19:35:16.9405810Z  * [new branch]      codex-byllhw            -> origin/codex-byllhw
+2026-10-26T19:35:16.9406173Z  * [new branch]      codex-cghe5t            -> origin/codex-cghe5t
+2026-10-26T19:35:16.9406556Z  * [new branch]      codex-cgledt            -> origin/codex-cgledt
+2026-10-26T19:35:16.9406948Z  * [new branch]      codex-ct0w8g            -> origin/codex-ct0w8g
+2026-10-26T19:35:16.9407317Z  * [new branch]      codex-cym5e1            -> origin/codex-cym5e1
+2026-10-26T19:35:16.9407694Z  * [new branch]      codex-dlxp3o            -> origin/codex-dlxp3o
+2026-10-26T19:35:16.9408100Z  * [new branch]      codex-ei4ca7            -> origin/codex-ei4ca7
+2026-10-26T19:35:16.9408459Z  * [new branch]      codex-ezq8qy            -> origin/codex-ezq8qy
+2026-10-26T19:35:16.9408833Z  * [new branch]      codex-f06g70            -> origin/codex-f06g70
+2026-10-26T19:35:16.9409194Z  * [new branch]      codex-f0ut5v            -> origin/codex-f0ut5v
+2026-10-26T19:35:16.9409549Z  * [new branch]      codex-f1ed6w            -> origin/codex-f1ed6w
+2026-10-26T19:35:16.9409906Z  * [new branch]      codex-f2ihb1            -> origin/codex-f2ihb1
+2026-10-26T19:35:16.9410314Z  * [new branch]      codex-f2pe10            -> origin/codex-f2pe10
+2026-10-26T19:35:16.9410695Z  * [new branch]      codex-floz39            -> origin/codex-floz39
+2026-10-26T19:35:16.9411185Z  * [new branch]      codex-flygwi            -> origin/codex-flygwi
+2026-10-26T19:35:16.9411565Z  * [new branch]      codex-fpj38l            -> origin/codex-fpj38l
+2026-10-26T19:35:16.9412158Z  * [new branch]      codex-fs9f1w            -> origin/codex-fs9f1w
+2026-10-26T19:35:16.9412555Z  * [new branch]      codex-gavtkg            -> origin/codex-gavtkg
+2026-10-26T19:35:16.9412939Z  * [new branch]      codex-gbqtgz            -> origin/codex-gbqtgz
+2026-10-26T19:35:16.9413330Z  * [new branch]      codex-ggk62x            -> origin/codex-ggk62x
+2026-10-26T19:35:16.9413735Z  * [new branch]      codex-gnad93            -> origin/codex-gnad93
+2026-10-26T19:35:16.9414114Z  * [new branch]      codex-gocv1v            -> origin/codex-gocv1v
+2026-10-26T19:35:16.9414493Z  * [new branch]      codex-gucdqc            -> origin/codex-gucdqc
+2026-10-26T19:35:16.9414885Z  * [new branch]      codex-hxe67g            -> origin/codex-hxe67g
+2026-10-26T19:35:16.9415267Z  * [new branch]      codex-i145md            -> origin/codex-i145md
+2026-10-26T19:35:16.9415648Z  * [new branch]      codex-i60frb            -> origin/codex-i60frb
+2026-10-26T19:35:16.9416026Z  * [new branch]      codex-k5gqt8            -> origin/codex-k5gqt8
+2026-10-26T19:35:16.9416400Z  * [new branch]      codex-kq30fw            -> origin/codex-kq30fw
+2026-10-26T19:35:16.9416775Z  * [new branch]      codex-ky1ut2            -> origin/codex-ky1ut2
+2026-10-26T19:35:16.9417153Z  * [new branch]      codex-laimoz            -> origin/codex-laimoz
+2026-10-26T19:35:16.9417530Z  * [new branch]      codex-mqmw2f            -> origin/codex-mqmw2f
+2026-10-26T19:35:16.9417901Z  * [new branch]      codex-mu22h4            -> origin/codex-mu22h4
+2026-10-26T19:35:16.9418281Z  * [new branch]      codex-n0wk77            -> origin/codex-n0wk77
+2026-10-26T19:35:16.9418783Z  * [new branch]      codex-n9rk1v            -> origin/codex-n9rk1v
+2026-10-26T19:35:16.9419153Z  * [new branch]      codex-ndbrn7            -> origin/codex-ndbrn7
+2026-10-26T19:35:16.9419530Z  * [new branch]      codex-o46g5l            -> origin/codex-o46g5l
+2026-10-26T19:35:16.9419900Z  * [new branch]      codex-o7ozwc            -> origin/codex-o7ozwc
+2026-10-26T19:35:16.9420271Z  * [new branch]      codex-oiaixs            -> origin/codex-oiaixs
+2026-10-26T19:35:16.9420638Z  * [new branch]      codex-orgl1g            -> origin/codex-orgl1g
+2026-10-26T19:35:16.9421004Z  * [new branch]      codex-oxhkk7            -> origin/codex-oxhkk7
+2026-10-26T19:35:16.9421373Z  * [new branch]      codex-pld4x9            -> origin/codex-pld4x9
+2026-10-26T19:35:16.9421894Z  * [new branch]      codex-qb9st9            -> origin/codex-qb9st9
+2026-10-26T19:35:16.9422282Z  * [new branch]      codex-qdjg25            -> origin/codex-qdjg25
+2026-10-26T19:35:16.9422658Z  * [new branch]      codex-qh3vap            -> origin/codex-qh3vap
+2026-10-26T19:35:16.9423218Z  * [new branch]      codex-qma0xo            -> origin/codex-qma0xo
+2026-10-26T19:35:16.9423797Z  * [new branch]      codex-qqtmlp            -> origin/codex-qqtmlp
+2026-10-26T19:35:16.9424251Z  * [new branch]      codex-qrieb8            -> origin/codex-qrieb8
+2026-10-26T19:35:16.9424643Z  * [new branch]      codex-qtmvtp            -> origin/codex-qtmvtp
+2026-10-26T19:35:16.9425038Z  * [new branch]      codex-qvfnm7            -> origin/codex-qvfnm7
+2026-10-26T19:35:16.9425421Z  * [new branch]      codex-r73fnn            -> origin/codex-r73fnn
+2026-10-26T19:35:16.9425909Z  * [new branch]      codex-ra2ou3            -> origin/codex-ra2ou3
+2026-10-26T19:35:16.9426293Z  * [new branch]      codex-red6sz            -> origin/codex-red6sz
+2026-10-26T19:35:16.9426751Z  * [new branch]      codex-s1lanp            -> origin/codex-s1lanp
+2026-10-26T19:35:16.9427147Z  * [new branch]      codex-scxvts            -> origin/codex-scxvts
+2026-10-26T19:35:16.9427532Z  * [new branch]      codex-se8zcz            -> origin/codex-se8zcz
+2026-10-26T19:35:16.9428006Z  * [new branch]      codex-tpur7n            -> origin/codex-tpur7n
+2026-10-26T19:35:16.9428537Z  * [new branch]      codex-ttit7k            -> origin/codex-ttit7k
+2026-10-26T19:35:16.9428938Z  * [new branch]      codex-ueypwr            -> origin/codex-ueypwr
+2026-10-26T19:35:16.9429337Z  * [new branch]      codex-up44ho            -> origin/codex-up44ho
+2026-10-26T19:35:16.9429736Z  * [new branch]      codex-usd1ge            -> origin/codex-usd1ge
+2026-10-26T19:35:16.9430135Z  * [new branch]      codex-v0wmvo            -> origin/codex-v0wmvo
+2026-10-26T19:35:16.9430546Z  * [new branch]      codex-v2x2e0            -> origin/codex-v2x2e0
+2026-10-26T19:35:16.9430946Z  * [new branch]      codex-v6uanu            -> origin/codex-v6uanu
+2026-10-26T19:35:16.9431471Z  * [new branch]      codex-vycn7m            -> origin/codex-vycn7m
+2026-10-26T19:35:16.9432080Z  * [new branch]      codex-wdbir9            -> origin/codex-wdbir9
+2026-10-26T19:35:16.9432706Z  * [new branch]      codex-wgi49i            -> origin/codex-wgi49i
+2026-10-26T19:35:16.9433108Z  * [new branch]      codex-wiojpz            -> origin/codex-wiojpz
+2026-10-26T19:35:16.9433559Z  * [new branch]      codex-wntsci            -> origin/codex-wntsci
+2026-10-26T19:35:16.9433975Z  * [new branch]      codex-wwe62v            -> origin/codex-wwe62v
+2026-10-26T19:35:16.9434376Z  * [new branch]      codex-x4lim2            -> origin/codex-x4lim2
+2026-10-26T19:35:16.9434746Z  * [new branch]      codex-xoj8cg            -> origin/codex-xoj8cg
+2026-10-26T19:35:16.9435114Z  * [new branch]      codex-y0ooq5            -> origin/codex-y0ooq5
+2026-10-26T19:35:16.9435478Z  * [new branch]      codex-yerlnb            -> origin/codex-yerlnb
+2026-10-26T19:35:16.9435847Z  * [new branch]      codex-yn0kqn            -> origin/codex-yn0kqn
+2026-10-26T19:35:16.9436220Z  * [new branch]      codex-ynqjtt            -> origin/codex-ynqjtt
+2026-10-26T19:35:16.9436717Z  * [new branch]      codex-yoht9g            -> origin/codex-yoht9g
+2026-10-26T19:35:16.9437079Z  * [new branch]      codex-yt99n7            -> origin/codex-yt99n7
+2026-10-26T19:35:16.9437450Z  * [new branch]      codex-z3vpyd            -> origin/codex-z3vpyd
+2026-10-26T19:35:16.9437816Z  * [new branch]      codex-z6r3mw            -> origin/codex-z6r3mw
+2026-10-26T19:35:16.9438179Z  * [new branch]      codex-zr7s8n            -> origin/codex-zr7s8n
+2026-10-26T19:35:16.9438845Z  * [new branch]      codex/-coastal-effectivecoastalpreference -> origin/codex/-coastal-effectivecoastalpreference
+2026-10-26T19:35:16.9439409Z  * [new branch]      codex/-id               -> origin/codex/-id
+2026-10-26T19:35:16.9439783Z  * [new branch]      codex/-poi              -> origin/codex/-poi
+2026-10-26T19:35:16.9440181Z  * [new branch]      codex/-river-slope      -> origin/codex/-river-slope
+2026-10-26T19:35:16.9440569Z  * [new branch]      codex/-svg              -> origin/codex/-svg
+2026-10-26T19:35:16.9440983Z  * [new branch]      codex/-youtube-telegram -> origin/codex/-youtube-telegram
+2026-10-26T19:35:16.9441600Z  * [new branch]      codex/add-constraints-for-small-river-generation -> origin/codex/add-constraints-for-small-river-generation
+2026-10-26T19:35:16.9442464Z  * [new branch]      codex/add-debug-mode-for-river-graph -> origin/codex/add-debug-mode-for-river-graph
+2026-10-26T19:35:16.9443165Z  * [new branch]      codex/add-edgekey-uniqueness-validation-for-rivers -> origin/codex/add-edgekey-uniqueness-validation-for-rivers
+2026-10-26T19:35:16.9443945Z  * [new branch]      codex/add-flowlevel-increase-at-river-confluence -> origin/codex/add-flowlevel-increase-at-river-confluence
+2026-10-26T19:35:16.9444646Z  * [new branch]      codex/add-flowlevel-parameter-to-rivers -> origin/codex/add-flowlevel-parameter-to-rivers
+2026-10-26T19:35:16.9445302Z  * [new branch]      codex/add-forest-tile.png-as-hex-overlay -> origin/codex/add-forest-tile.png-as-hex-overlay
+2026-10-26T19:35:16.9445960Z  * [new branch]      codex/add-logic-for-heightlevel-3-rivers -> origin/codex/add-logic-for-heightlevel-3-rivers
+2026-10-26T19:35:16.9446667Z  * [new branch]      codex/add-map-rotation-button-functionality -> origin/codex/add-map-rotation-button-functionality
+2026-10-26T19:35:16.9447475Z  * [new branch]      codex/add-minor-river-logic-for-edges -> origin/codex/add-minor-river-logic-for-edges
+2026-10-26T19:35:16.9448226Z  * [new branch]      codex/add-points-of-interest-generation-and-display -> origin/codex/add-points-of-interest-generation-and-display
+2026-10-26T19:35:16.9449063Z  * [new branch]      codex/add-procedural-river-network-to-hexcrawl-generator -> origin/codex/add-procedural-river-network-to-hexcrawl-generator
+2026-10-26T19:35:16.9449917Z  * [new branch]      codex/add-purple-vertices-for-centralhex-in-debug-mode -> origin/codex/add-purple-vertices-for-centralhex-in-debug-mode
+2026-10-26T19:35:16.9450661Z  * [new branch]      codex/add-random-terrain-type-per-region -> origin/codex/add-random-terrain-type-per-region
+2026-10-26T19:35:16.9451372Z  * [new branch]      codex/add-restriction-on-connecting-wild-roads -> origin/codex/add-restriction-on-connecting-wild-roads
+2026-10-26T19:35:16.9452307Z  * [new branch]      codex/add-river-condition-for-biome-elevation-2 -> origin/codex/add-river-condition-for-biome-elevation-2
+2026-10-26T19:35:16.9453019Z  * [new branch]      codex/add-river-condition-for-biome-height -> origin/codex/add-river-condition-for-biome-height
+2026-10-26T19:35:16.9453708Z  * [new branch]      codex/add-river-continuation-between-regions -> origin/codex/add-river-continuation-between-regions
+2026-10-26T19:35:16.9454450Z  * [new branch]      codex/add-river-creation-logic-based-on-region-size -> origin/codex/add-river-creation-logic-based-on-region-size
+2026-10-26T19:35:16.9455176Z  * [new branch]      codex/add-river-flow-change-implementation -> origin/codex/add-river-flow-change-implementation
+2026-10-26T19:35:16.9455897Z  * [new branch]      codex/add-river-flow-condition-for-biome-height-1 -> origin/codex/add-river-flow-condition-for-biome-height-1
+2026-10-26T19:35:16.9456731Z  * [new branch]      codex/add-river-flow-direction-arrows -> origin/codex/add-river-flow-direction-arrows
+2026-10-26T19:35:16.9457443Z  * [new branch]      codex/add-river-flow-logic-for-region-height-three -> origin/codex/add-river-flow-logic-for-region-height-three
+2026-10-26T19:35:16.9458269Z  * [new branch]      codex/add-river-generation-logic-for-mountainous-regions -> origin/codex/add-river-generation-logic-for-mountainous-regions
+2026-10-26T19:35:16.9459106Z  * [new branch]      codex/add-river-height-constraints-to-region-creation -> origin/codex/add-river-height-constraints-to-region-creation
+2026-10-26T19:35:16.9459844Z  * [new branch]      codex/add-river-logic-for-height-3-region -> origin/codex/add-river-logic-for-height-3-region
+2026-10-26T19:35:16.9460498Z  * [new branch]      codex/add-river-logic-for-height-3-regions -> origin/codex/add-river-logic-for-height-3-regions
+2026-10-26T19:35:16.9461224Z  * [new branch]      codex/add-river-network-validation-and-diagnostics -> origin/codex/add-river-network-validation-and-diagnostics
+2026-10-26T19:35:16.9462087Z  * [new branch]      codex/add-river-sector-segmentation -> origin/codex/add-river-sector-segmentation
+2026-10-26T19:35:16.9462736Z  * [new branch]      codex/add-river-segments-fullness-parameter -> origin/codex/add-river-segments-fullness-parameter
+2026-10-26T19:35:16.9463427Z  * [new branch]      codex/add-road-connecting-two-hex-candidates -> origin/codex/add-road-connecting-two-hex-candidates
+2026-10-26T19:35:16.9464079Z  * [new branch]      codex/add-road-generation-and-display -> origin/codex/add-road-generation-and-display
+2026-10-26T19:35:16.9464815Z  * [new branch]      codex/add-scroll-for-hidden-hexes -> origin/codex/add-scroll-for-hidden-hexes
+2026-10-26T19:35:16.9465442Z  * [new branch]      codex/add-small-river-generation-in-app.tsx -> origin/codex/add-small-river-generation-in-app.tsx
+2026-10-26T19:35:16.9466125Z  * [new branch]      codex/add-toggle-for-buttons-and-info-block -> origin/codex/add-toggle-for-buttons-and-info-block
+2026-10-26T19:35:16.9466755Z  * [new branch]      codex/add-trail-construction-logic -> origin/codex/add-trail-construction-logic
+2026-10-26T19:35:16.9467465Z  * [new branch]      codex/adjust-layout-for-screen-design -> origin/codex/adjust-layout-for-screen-design
+2026-10-26T19:35:16.9468281Z  * [new branch]      codex/build-roads-in-wild-terrain -> origin/codex/build-roads-in-wild-terrain
+2026-10-26T19:35:16.9469243Z  * [new branch]      codex/center-first-hex-and-position-info-block -> origin/codex/center-first-hex-and-position-info-block
+2026-10-26T19:35:16.9469887Z  * [new branch]      codex/check-github-pages-workflow -> origin/codex/check-github-pages-workflow
+2026-10-26T19:35:16.9470517Z  * [new branch]      codex/clarify-river-rules-in-region-creation -> origin/codex/clarify-river-rules-in-region-creation
+2026-10-26T19:35:16.9471349Z  * [new branch]      codex/conduct-deep-audit-of-hexcrawl-repository -> origin/codex/conduct-deep-audit-of-hexcrawl-repository
+2026-10-26T19:35:16.9472733Z  * [new branch]      codex/create-project-structure-for-hexcrawl-map -> origin/codex/create-project-structure-for-hexcrawl-map
+2026-10-26T19:35:16.9473862Z  * [new branch]      codex/debug-last-implementation-issue -> origin/codex/debug-last-implementation-issue
+2026-10-26T19:35:16.9474860Z  * [new branch]      codex/debug-river-flow-in-sector-3 -> origin/codex/debug-river-flow-in-sector-3
+2026-10-26T19:35:16.9475869Z  * [new branch]      codex/debug-river-flow-increase-issue -> origin/codex/debug-river-flow-increase-issue
+2026-10-26T19:35:16.9476822Z  * [new branch]      codex/debug-river-flow-issue -> origin/codex/debug-river-flow-issue
+2026-10-26T19:35:16.9477877Z  * [new branch]      codex/describe-river-segment-flow-assessment -> origin/codex/describe-river-segment-flow-assessment
+2026-10-26T19:35:16.9479158Z  * [new branch]      codex/describe-road-construction-in-wild-region -> origin/codex/describe-road-construction-in-wild-region
+2026-10-26T19:35:16.9480929Z  * [new branch]      codex/determine-inflow-river-status-in-new-region -> origin/codex/determine-inflow-river-status-in-new-region
+2026-10-26T19:35:16.9482230Z  * [new branch]      codex/determine-routes-in-wild-region -> origin/codex/determine-routes-in-wild-region
+2026-10-26T19:35:16.9483236Z  * [new branch]      codex/enhance-road-generation-in-app.tsx -> origin/codex/enhance-road-generation-in-app.tsx
+2026-10-26T19:35:16.9484214Z  * [new branch]      codex/ensure-atomic-region-generation -> origin/codex/ensure-atomic-region-generation
+2026-10-26T19:35:16.9485316Z  * [new branch]      codex/ensure-dropdown-menu-displays-above-elements -> origin/codex/ensure-dropdown-menu-displays-above-elements
+2026-10-26T19:35:16.9486584Z  * [new branch]      codex/explain-code-reducing-discharge-from-6-to-2 -> origin/codex/explain-code-reducing-discharge-from-6-to-2
+2026-10-26T19:35:16.9487792Z  * [new branch]      codex/explain-rivers-originating-from-a-region -> origin/codex/explain-rivers-originating-from-a-region
+2026-10-26T19:35:16.9488922Z  * [new branch]      codex/explain-sector-changes-in-regions -> origin/codex/explain-sector-changes-in-regions
+2026-10-26T19:35:16.9490125Z  * [new branch]      codex/explain-tributary-formation-at-elevation-1 -> origin/codex/explain-tributary-formation-at-elevation-1
+2026-10-26T19:35:16.9491331Z  * [new branch]      codex/find-and-remove-flood-code-for-height-3 -> origin/codex/find-and-remove-flood-code-for-height-3
+2026-10-26T19:35:16.9492713Z  * [new branch]      codex/find-and-remove-flood-code-for-height-3-9sh67x -> origin/codex/find-and-remove-flood-code-for-height-3-9sh67x
+2026-10-26T19:35:16.9494038Z  * [new branch]      codex/find-and-remove-flood-code-for-height-3-qowxp9 -> origin/codex/find-and-remove-flood-code-for-height-3-qowxp9
+2026-10-26T19:35:16.9495241Z  * [new branch]      codex/find-and-remove-flood-code-for-height-3-w13xcc -> origin/codex/find-and-remove-flood-code-for-height-3-w13xcc
+2026-10-26T19:35:16.9495952Z  * [new branch]      codex/find-biome-information-for-hexes -> origin/codex/find-biome-information-for-hexes
+2026-10-26T19:35:16.9496630Z  * [new branch]      codex/find-cases-for-region-under-5-hectares -> origin/codex/find-cases-for-region-under-5-hectares
+2026-10-26T19:35:16.9497471Z  * [new branch]      codex/find-cases-of-river-discharge-decrease -> origin/codex/find-cases-of-river-discharge-decrease
+2026-10-26T19:35:16.9498197Z  * [new branch]      codex/find-crossing-river-regulations-for-trails -> origin/codex/find-crossing-river-regulations-for-trails
+2026-10-26T19:35:16.9498907Z  * [new branch]      codex/find-definition-of-new-lake-criteria -> origin/codex/find-definition-of-new-lake-criteria
+2026-10-26T19:35:16.9499596Z  * [new branch]      codex/find-exit-hex-for-road-in-wild-region -> origin/codex/find-exit-hex-for-road-in-wild-region
+2026-10-26T19:35:16.9500329Z  * [new branch]      codex/find-height-restrictions-for-waterway-segments -> origin/codex/find-height-restrictions-for-waterway-segments
+2026-10-26T19:35:16.9501277Z  * [new branch]      codex/find-hex-candidate-for-road-construction -> origin/codex/find-hex-candidate-for-road-construction
+2026-10-26T19:35:16.9502657Z  * [new branch]      codex/find-how-region-size-affects-river-formation -> origin/codex/find-how-region-size-affects-river-formation
+2026-10-26T19:35:16.9503588Z  * [new branch]      codex/find-how-two-rivers-connect-in-new-region -> origin/codex/find-how-two-rivers-connect-in-new-region
+2026-10-26T19:35:16.9504269Z  * [new branch]      codex/find-method-to-build-second-road -> origin/codex/find-method-to-build-second-road
+2026-10-26T19:35:16.9504943Z  * [new branch]      codex/find-out-if-sea-hexes-count-as-occupied -> origin/codex/find-out-if-sea-hexes-count-as-occupied
+2026-10-26T19:35:16.9505563Z  * [new branch]      codex/find-path-to-hex-candidate -> origin/codex/find-path-to-hex-candidate
+2026-10-26T19:35:16.9506198Z  * [new branch]      codex/find-primary-river-for-region-creation -> origin/codex/find-primary-river-for-region-creation
+2026-10-26T19:35:16.9507059Z  * [new branch]      codex/find-river-crossing-restrictions-in-code -> origin/codex/find-river-crossing-restrictions-in-code
+2026-10-26T19:35:16.9507729Z  * [new branch]      codex/find-river-display-width-formula -> origin/codex/find-river-display-width-formula
+2026-10-26T19:35:16.9508358Z  * [new branch]      codex/find-river-length-rules-in-region-3 -> origin/codex/find-river-length-rules-in-region-3
+2026-10-26T19:35:16.9509015Z  * [new branch]      codex/find-river-tributary-creation-points -> origin/codex/find-river-tributary-creation-points
+2026-10-26T19:35:16.9509732Z  * [new branch]      codex/find-road-connection-priority-for-new-region -> origin/codex/find-road-connection-priority-for-new-region
+2026-10-26T19:35:16.9510650Z  * [new branch]      codex/find-road-construction-schedule-in-wild-areas -> origin/codex/find-road-construction-schedule-in-wild-areas
+2026-10-26T19:35:16.9511380Z  * [new branch]      codex/find-second-road-generation-in-regions -> origin/codex/find-second-road-generation-in-regions
+2026-10-26T19:35:16.9512411Z  * [new branch]      codex/find-sector-information-for-region-2 -> origin/codex/find-sector-information-for-region-2
+2026-10-26T19:35:16.9513556Z  * [new branch]      codex/find-standard-river-confluence-notation -> origin/codex/find-standard-river-confluence-notation
+2026-10-26T19:35:16.9514467Z  * [new branch]      codex/fix-5-7           -> origin/codex/fix-5-7
+2026-10-26T19:35:16.9515112Z  * [new branch]      codex/fix-5-7-iixeqs    -> origin/codex/fix-5-7-iixeqs
+2026-10-26T19:35:16.9516097Z  * [new branch]      codex/fix-candidate-boundary-vertices-classification -> origin/codex/fix-candidate-boundary-vertices-classification
+2026-10-26T19:35:16.9517289Z  * [new branch]      codex/fix-central-hex-selection-logic -> origin/codex/fix-central-hex-selection-logic
+2026-10-26T19:35:16.9518392Z  * [new branch]      codex/fix-dropdown-menu-display-on-export-button -> origin/codex/fix-dropdown-menu-display-on-export-button
+2026-10-26T19:35:16.9519535Z  * [new branch]      codex/fix-emoji-biome-display-in-svg -> origin/codex/fix-emoji-biome-display-in-svg
+2026-10-26T19:35:16.9520909Z  * [new branch]      codex/fix-flowlevel-calculation-for-river-sectors -> origin/codex/fix-flowlevel-calculation-for-river-sectors
+2026-10-26T19:35:16.9522405Z  * [new branch]      codex/fix-flowlevel-calculation-for-river-sectors-58tqn9 -> origin/codex/fix-flowlevel-calculation-for-river-sectors-58tqn9
+2026-10-26T19:35:16.9523851Z  * [new branch]      codex/fix-flowlevel-calculation-for-river-sectors-pmk7c1 -> origin/codex/fix-flowlevel-calculation-for-river-sectors-pmk7c1
+2026-10-26T19:35:16.9525084Z  * [new branch]      codex/fix-flowlevel-inheritance-logic -> origin/codex/fix-flowlevel-inheritance-logic
+2026-10-26T19:35:16.9526214Z  * [new branch]      codex/fix-getexistingriverendpointverticesinregion -> origin/codex/fix-getexistingriverendpointverticesinregion
+2026-10-26T19:35:16.9527387Z  * [new branch]      codex/fix-github-pages-workflow -> origin/codex/fix-github-pages-workflow
+2026-10-26T19:35:16.9528046Z  * [new branch]      codex/fix-hex-edge-neighbor-direction-mapping -> origin/codex/fix-hex-edge-neighbor-direction-mapping
+2026-10-26T19:35:16.9528764Z  * [new branch]      codex/fix-hexcrawl-map-region-expansion-logic -> origin/codex/fix-hexcrawl-map-region-expansion-logic
+2026-10-26T19:35:16.9529423Z  * [new branch]      codex/fix-incoming-roads-counting-logic -> origin/codex/fix-incoming-roads-counting-logic
+2026-10-26T19:35:16.9530088Z  * [new branch]      codex/fix-influx-visibility-in-small-regions -> origin/codex/fix-influx-visibility-in-small-regions
+2026-10-26T19:35:16.9530784Z  * [new branch]      codex/fix-loading-forest-tile.png-from-raw-url -> origin/codex/fix-loading-forest-tile.png-from-raw-url
+2026-10-26T19:35:16.9531462Z  * [new branch]      codex/fix-logic-for-minor-river-generation -> origin/codex/fix-logic-for-minor-river-generation
+2026-10-26T19:35:16.9532256Z  * [new branch]      codex/fix-logic-for-river-flow-changes -> origin/codex/fix-logic-for-river-flow-changes
+2026-10-26T19:35:16.9533106Z  * [new branch]      codex/fix-minor-river-generation-in-app.tsx -> origin/codex/fix-minor-river-generation-in-app.tsx
+2026-10-26T19:35:16.9533913Z  * [new branch]      codex/fix-path-to-forest-tile.png -> origin/codex/fix-path-to-forest-tile.png
+2026-10-26T19:35:16.9534886Z  * [new branch]      codex/fix-red-point-definition-in-debug-mode -> origin/codex/fix-red-point-definition-in-debug-mode
+2026-10-26T19:35:16.9536007Z  * [new branch]      codex/fix-red-vertices-exclusion-from-rivers -> origin/codex/fix-red-vertices-exclusion-from-rivers
+2026-10-26T19:35:16.9537128Z  * [new branch]      codex/fix-region-creation-after-size-update -> origin/codex/fix-region-creation-after-size-update
+2026-10-26T19:35:16.9537800Z  * [new branch]      codex/fix-region-creation-logic-for-rivers -> origin/codex/fix-region-creation-logic-for-rivers
+2026-10-26T19:35:16.9538481Z  * [new branch]      codex/fix-region-creation-on-stream-connection -> origin/codex/fix-region-creation-on-stream-connection
+2026-10-26T19:35:16.9539312Z  * [new branch]      codex/fix-region-formation-error-due-to-missing-shufflearray -> origin/codex/fix-region-formation-error-due-to-missing-shufflearray
+2026-10-26T19:35:16.9540089Z  * [new branch]      codex/fix-river-connection-logic-in-app.tsx -> origin/codex/fix-river-connection-logic-in-app.tsx
+2026-10-26T19:35:16.9540763Z  * [new branch]      codex/fix-river-construction-vertex-overlap -> origin/codex/fix-river-construction-vertex-overlap
+2026-10-26T19:35:16.9541453Z  * [new branch]      codex/fix-river-continuation-and-merging-logic -> origin/codex/fix-river-continuation-and-merging-logic
+2026-10-26T19:35:16.9542347Z  * [new branch]      codex/fix-river-continuation-logic -> origin/codex/fix-river-continuation-logic
+2026-10-26T19:35:16.9542876Z  * [new branch]      codex/fix-river-debug-issues -> origin/codex/fix-river-debug-issues
+2026-10-26T19:35:16.9543522Z  * [new branch]      codex/fix-river-drawing-thickness-based-on-flowlevel -> origin/codex/fix-river-drawing-thickness-based-on-flowlevel
+2026-10-26T19:35:16.9544280Z  * [new branch]      codex/fix-river-end-selection-near-sea-hexes -> origin/codex/fix-river-end-selection-near-sea-hexes
+2026-10-26T19:35:16.9545100Z  * [new branch]      codex/fix-river-end-selection-process -> origin/codex/fix-river-end-selection-process
+2026-10-26T19:35:16.9545692Z  * [new branch]      codex/fix-river-endpoint-selection -> origin/codex/fix-river-endpoint-selection
+2026-10-26T19:35:16.9546307Z  * [new branch]      codex/fix-river-endpoints-selection-logic -> origin/codex/fix-river-endpoints-selection-logic
+2026-10-26T19:35:16.9547000Z  * [new branch]      codex/fix-river-endpoints-to-use-boundary-edges -> origin/codex/fix-river-endpoints-to-use-boundary-edges
+2026-10-26T19:35:16.9547677Z  * [new branch]      codex/fix-river-extension-for-new-region -> origin/codex/fix-river-extension-for-new-region
+2026-10-26T19:35:16.9548291Z  * [new branch]      codex/fix-river-flow-adjustment-logic -> origin/codex/fix-river-flow-adjustment-logic
+2026-10-26T19:35:16.9548916Z  * [new branch]      codex/fix-river-flow-cases-for-height-3 -> origin/codex/fix-river-flow-cases-for-height-3
+2026-10-26T19:35:16.9549533Z  * [new branch]      codex/fix-river-flow-logic-in-region -> origin/codex/fix-river-flow-logic-in-region
+2026-10-26T19:35:16.9550156Z  * [new branch]      codex/fix-river-flow-logic-inconsistency -> origin/codex/fix-river-flow-logic-inconsistency
+2026-10-26T19:35:16.9550758Z  * [new branch]      codex/fix-river-flow-to-remain-at-1 -> origin/codex/fix-river-flow-to-remain-at-1
+2026-10-26T19:35:16.9551370Z  * [new branch]      codex/fix-river-flow-to-remain-at-1-ol14ri -> origin/codex/fix-river-flow-to-remain-at-1-ol14ri
+2026-10-26T19:35:16.9552145Z  * [new branch]      codex/fix-river-flowincrement-logic -> origin/codex/fix-river-flowincrement-logic
+2026-10-26T19:35:16.9552765Z  * [new branch]      codex/fix-river-generation-for-new-regions -> origin/codex/fix-river-generation-for-new-regions
+2026-10-26T19:35:16.9553415Z  * [new branch]      codex/fix-river-generation-in-new-region -> origin/codex/fix-river-generation-in-new-region
+2026-10-26T19:35:16.9554295Z  * [new branch]      codex/fix-river-generation-logic-for-heightlevel-3 -> origin/codex/fix-river-generation-logic-for-heightlevel-3
+2026-10-26T19:35:16.9555047Z  * [new branch]      codex/fix-river-generation-to-prevent-overlaps -> origin/codex/fix-river-generation-to-prevent-overlaps
+2026-10-26T19:35:16.9555904Z  * [new branch]      codex/fix-river-height-constraint-fallback-in-addregiontomap -> origin/codex/fix-river-height-constraint-fallback-in-addregiontomap
+2026-10-26T19:35:16.9556626Z  * [new branch]      codex/fix-river-logic-in-region-2 -> origin/codex/fix-river-logic-in-region-2
+2026-10-26T19:35:16.9557213Z  * [new branch]      codex/fix-river-mechanics-for-hex-edges -> origin/codex/fix-river-mechanics-for-hex-edges
+2026-10-26T19:35:16.9557834Z  * [new branch]      codex/fix-river-mechanics-in-hex-grid -> origin/codex/fix-river-mechanics-in-hex-grid
+2026-10-26T19:35:16.9558479Z  * [new branch]      codex/fix-river-path-center-hex-validation -> origin/codex/fix-river-path-center-hex-validation
+2026-10-26T19:35:16.9559048Z  * [new branch]      codex/fix-river-sector-edges -> origin/codex/fix-river-sector-edges
+2026-10-26T19:35:16.9559637Z  * [new branch]      codex/fix-river-sector-splitting-with-lakes -> origin/codex/fix-river-sector-splitting-with-lakes
+2026-10-26T19:35:16.9560238Z  * [new branch]      codex/fix-river-self-inflow-issue -> origin/codex/fix-river-self-inflow-issue
+2026-10-26T19:35:16.9560885Z  * [new branch]      codex/fix-road-connection-issue-between-regions -> origin/codex/fix-road-connection-issue-between-regions
+2026-10-26T19:35:16.9561590Z  * [new branch]      codex/fix-road-generation-logic-in-src/app.tsx -> origin/codex/fix-road-generation-logic-in-src/app.tsx
+2026-10-26T19:35:16.9562412Z  * [new branch]      codex/fix-road-logic-in-app.tsx -> origin/codex/fix-road-logic-in-app.tsx
+2026-10-26T19:35:16.9563051Z  * [new branch]      codex/fix-road-segment-handling-in-hex-candidates -> origin/codex/fix-road-segment-handling-in-hex-candidates
+2026-10-26T19:35:16.9563804Z  * [new branch]      codex/fix-small-tributary-river-generation-logic -> origin/codex/fix-small-tributary-river-generation-logic
+2026-10-26T19:35:16.9564653Z  * [new branch]      codex/fix-terrain-handling-for-fallback-regions -> origin/codex/fix-terrain-handling-for-fallback-regions
+2026-10-26T19:35:16.9565396Z  * [new branch]      codex/fix-tributary-connection-logic-in-app.tsx -> origin/codex/fix-tributary-connection-logic-in-app.tsx
+2026-10-26T19:35:16.9566119Z  * [new branch]      codex/fix-visibility-of-generate-region-button -> origin/codex/fix-visibility-of-generate-region-button
+2026-10-26T19:35:16.9566843Z  * [new branch]      codex/implement-biome-generation-restrictions -> origin/codex/implement-biome-generation-restrictions
+2026-10-26T19:35:16.9567529Z  * [new branch]      codex/implement-map-export-to-image-format -> origin/codex/implement-map-export-to-image-format
+2026-10-26T19:35:16.9568253Z  * [new branch]      codex/implement-map-export-to-image-format-0etmas -> origin/codex/implement-map-export-to-image-format-0etmas
+2026-10-26T19:35:16.9568953Z  * [new branch]      codex/implement-region-generation-rules -> origin/codex/implement-region-generation-rules
+2026-10-26T19:35:16.9569626Z  * [new branch]      codex/implement-river-system-logic-for-regions -> origin/codex/implement-river-system-logic-for-regions
+2026-10-26T19:35:16.9570351Z  * [new branch]      codex/implement-road-construction-in-wilderness -> origin/codex/implement-road-construction-in-wilderness
+2026-10-26T19:35:16.9571116Z  * [new branch]      codex/implement-road-construction-logic-for-regions -> origin/codex/implement-road-construction-logic-for-regions
+2026-10-26T19:35:16.9572038Z  * [new branch]      codex/implement-small-tributary-river-generation -> origin/codex/implement-small-tributary-river-generation
+2026-10-26T19:35:16.9572724Z  * [new branch]      codex/implement-standard-zoom-controls -> origin/codex/implement-standard-zoom-controls
+2026-10-26T19:35:16.9573512Z  * [new branch]      codex/implement-trail-logic-for-settled-region -> origin/codex/implement-trail-logic-for-settled-region
+2026-10-26T19:35:16.9574276Z  * [new branch]      codex/increase-terrain-tile-overlay-size-and-opacity -> origin/codex/increase-terrain-tile-overlay-size-and-opacity
+2026-10-26T19:35:16.9575071Z  * [new branch]      codex/increase-zoom-removal-range-and-remove-buttons -> origin/codex/increase-zoom-removal-range-and-remove-buttons
+2026-10-26T19:35:16.9575857Z  * [new branch]      codex/investigate-flow-reduction-logic-for-regions -> origin/codex/investigate-flow-reduction-logic-for-regions
+2026-10-26T19:35:16.9576685Z  * [new branch]      codex/investigate-flow-reduction-logic-for-regions-lbc40q -> origin/codex/investigate-flow-reduction-logic-for-regions-lbc40q
+2026-10-26T19:35:16.9577514Z  * [new branch]      codex/investigate-region-water-flow-generation-issue -> origin/codex/investigate-region-water-flow-generation-issue
+2026-10-26T19:35:16.9578327Z  * [new branch]      codex/investigate-river-flow-change-after-region-merge -> origin/codex/investigate-river-flow-change-after-region-merge
+2026-10-26T19:35:16.9579095Z  * [new branch]      codex/investigate-river-flow-correction-issue -> origin/codex/investigate-river-flow-correction-issue
+2026-10-26T19:35:16.9579782Z  * [new branch]      codex/investigate-river-flow-decrease-issue -> origin/codex/investigate-river-flow-decrease-issue
+2026-10-26T19:35:16.9580506Z  * [new branch]      codex/investigate-river-flow-increase-from-3-to-5 -> origin/codex/investigate-river-flow-increase-from-3-to-5
+2026-10-26T19:35:16.9581216Z  * [new branch]      codex/investigate-river-flow-increase-logic -> origin/codex/investigate-river-flow-increase-logic
+2026-10-26T19:35:16.9582059Z  * [new branch]      codex/investigate-river-flow-inheritance-issue -> origin/codex/investigate-river-flow-inheritance-issue
+2026-10-26T19:35:16.9582766Z  * [new branch]      codex/investigate-river-flow-reduction-issue -> origin/codex/investigate-river-flow-reduction-issue
+2026-10-26T19:35:16.9583459Z  * [new branch]      codex/investigate-river-merging-volume-issue -> origin/codex/investigate-river-merging-volume-issue
+2026-10-26T19:35:16.9584320Z  * [new branch]      codex/investigate-road-behavior-in-wilderness-region -> origin/codex/investigate-road-behavior-in-wilderness-region
+2026-10-26T19:35:16.9585046Z  * [new branch]      codex/investigate-road-connection-issue -> origin/codex/investigate-road-connection-issue
+2026-10-26T19:35:16.9585721Z  * [new branch]      codex/investigate-road-connection-issue-xzzbxq -> origin/codex/investigate-road-connection-issue-xzzbxq
+2026-10-26T19:35:16.9586513Z  * [new branch]      codex/investigate-road-connectivity-issue-in-swamp-region -> origin/codex/investigate-road-connectivity-issue-in-swamp-region
+2026-10-26T19:35:16.9587300Z  * [new branch]      codex/investigate-road-construction-logic-issue -> origin/codex/investigate-road-construction-logic-issue
+2026-10-26T19:35:16.9587977Z  * [new branch]      codex/investigate-road-end-logic-issue -> origin/codex/investigate-road-end-logic-issue
+2026-10-26T19:35:16.9588641Z  * [new branch]      codex/investigate-road-end-logic-issue-8bfl9b -> origin/codex/investigate-road-end-logic-issue-8bfl9b
+2026-10-26T19:35:16.9589423Z  * [new branch]      codex/investigate-terrain-generation-logic-for-rivers -> origin/codex/investigate-terrain-generation-logic-for-rivers
+2026-10-26T19:35:16.9590147Z  * [new branch]      codex/link-collapse-button-to-info-block -> origin/codex/link-collapse-button-to-info-block
+2026-10-26T19:35:16.9590765Z  * [new branch]      codex/locate-code-for-river-truncation -> origin/codex/locate-code-for-river-truncation
+2026-10-26T19:35:16.9591375Z  * [new branch]      codex/locate-removal-of-lake-creation -> origin/codex/locate-removal-of-lake-creation
+2026-10-26T19:35:16.9592177Z  * [new branch]      codex/locate-river-confluence-handling-logic -> origin/codex/locate-river-confluence-handling-logic
+2026-10-26T19:35:16.9592917Z  * [new branch]      codex/locate-river-logic-issues -> origin/codex/locate-river-logic-issues
+2026-10-26T19:35:16.9593509Z  * [new branch]      codex/locate-road-crossing-removal-by-id -> origin/codex/locate-road-crossing-removal-by-id
+2026-10-26T19:35:16.9594188Z  * [new branch]      codex/locate-second-road-generation-in-region -> origin/codex/locate-second-road-generation-in-region
+2026-10-26T19:35:16.9594865Z  * [new branch]      codex/make-buttons-inactive-when-no-region -> origin/codex/make-buttons-inactive-when-no-region
+2026-10-26T19:35:16.9595467Z  * [new branch]      codex/merge-rivers-in-new-region -> origin/codex/merge-rivers-in-new-region
+2026-10-26T19:35:16.9596153Z  * [new branch]      codex/refactor-additional-river-logic-for-edge-regions -> origin/codex/refactor-additional-river-logic-for-edge-regions
+2026-10-26T19:35:16.9596857Z  * [new branch]      codex/refactor-biome-display-on-map -> origin/codex/refactor-biome-display-on-map
+2026-10-26T19:35:16.9597453Z  * [new branch]      codex/refactor-biome-generation-logic -> origin/codex/refactor-biome-generation-logic
+2026-10-26T19:35:16.9598123Z  * [new branch]      codex/refactor-biome-land-type-logic-in-app.tsx -> origin/codex/refactor-biome-land-type-logic-in-app.tsx
+2026-10-26T19:35:16.9598845Z  * [new branch]      codex/refactor-hexcrawl-generator-to-add-rivers -> origin/codex/refactor-hexcrawl-generator-to-add-rivers
+2026-10-26T19:35:16.9599547Z  * [new branch]      codex/refactor-lake-creation-logic-in-app.tsx -> origin/codex/refactor-lake-creation-logic-in-app.tsx
+2026-10-26T19:35:16.9600259Z  * [new branch]      codex/refactor-lake-vertices-and-river-rendering -> origin/codex/refactor-lake-vertices-and-river-rendering
+2026-10-26T19:35:16.9600963Z  * [new branch]      codex/refactor-minor-river-generation-logic -> origin/codex/refactor-minor-river-generation-logic
+2026-10-26T19:35:16.9601688Z  * [new branch]      codex/refactor-minor-river-generation-logic-0neoti -> origin/codex/refactor-minor-river-generation-logic-0neoti
+2026-10-26T19:35:16.9602601Z  * [new branch]      codex/refactor-mvp-into-hexcrawl-area-generator -> origin/codex/refactor-mvp-into-hexcrawl-area-generator
+2026-10-26T19:35:16.9603459Z  * [new branch]      codex/refactor-point-of-interest-generation-order -> origin/codex/refactor-point-of-interest-generation-order
+2026-10-26T19:35:16.9604268Z  * [new branch]      codex/refactor-region-creation-with-river-height-fallback -> origin/codex/refactor-region-creation-with-river-height-fallback
+2026-10-26T19:35:16.9605002Z  * [new branch]      codex/refactor-region-growth-algorithm -> origin/codex/refactor-region-growth-algorithm
+2026-10-26T19:35:16.9605622Z  * [new branch]      codex/refactor-region-height-in-app.tsx -> origin/codex/refactor-region-height-in-app.tsx
+2026-10-26T19:35:16.9606281Z  * [new branch]      codex/refactor-region-hex-filling-algorithm -> origin/codex/refactor-region-hex-filling-algorithm
+2026-10-26T19:35:16.9607023Z  * [new branch]      codex/refactor-region-size-determination-and-display -> origin/codex/refactor-region-size-determination-and-display
+2026-10-26T19:35:16.9607794Z  * [new branch]      codex/refactor-river-endpoints-selection-logic -> origin/codex/refactor-river-endpoints-selection-logic
+2026-10-26T19:35:16.9608507Z  * [new branch]      codex/refactor-river-flowlevel-to-sector-level -> origin/codex/refactor-river-flowlevel-to-sector-level
+2026-10-26T19:35:16.9609184Z  * [new branch]      codex/refactor-river-logic-to-graph-model -> origin/codex/refactor-river-logic-to-graph-model
+2026-10-26T19:35:16.9609820Z  * [new branch]      codex/refactor-road-construction-logic -> origin/codex/refactor-road-construction-logic
+2026-10-26T19:35:16.9610459Z  * [new branch]      codex/refactor-road-rules-for-wild-terrain -> origin/codex/refactor-road-rules-for-wild-terrain
+2026-10-26T19:35:16.9611136Z  * [new branch]      codex/refactor-road-selection-logic-in-app.tsx -> origin/codex/refactor-road-selection-logic-in-app.tsx
+2026-10-26T19:35:16.9611950Z  * [new branch]      codex/refactor-third-road-construction-logic -> origin/codex/refactor-third-road-construction-logic
+2026-10-26T19:35:16.9612793Z  * [new branch]      codex/refactor-tryaddedgeminortributaryriver-logic -> origin/codex/refactor-tryaddedgeminortributaryriver-logic
+2026-10-26T19:35:16.9613507Z  * [new branch]      codex/remove-all-river-flow-related-code -> origin/codex/remove-all-river-flow-related-code
+2026-10-26T19:35:16.9614149Z  * [new branch]      codex/remove-duplicate-river-sector-block -> origin/codex/remove-duplicate-river-sector-block
+2026-10-26T19:35:16.9614880Z  * [new branch]      codex/remove-excess-space-and-fix-button-positioning -> origin/codex/remove-excess-space-and-fix-button-positioning
+2026-10-26T19:35:16.9615638Z  * [new branch]      codex/remove-minimum-length-criterion-for-roads -> origin/codex/remove-minimum-length-criterion-for-roads
+2026-10-26T19:35:16.9616323Z  * [new branch]      codex/remove-minor-river-generation-stage -> origin/codex/remove-minor-river-generation-stage
+2026-10-26T19:35:16.9616957Z  * [new branch]      codex/remove-sector-breakdown-on-inflow -> origin/codex/remove-sector-breakdown-on-inflow
+2026-10-26T19:35:16.9617647Z  * [new branch]      codex/replace-river-width-calculation-with-table -> origin/codex/replace-river-width-calculation-with-table
+2026-10-26T19:35:16.9618354Z  * [new branch]      codex/restore-river-flow-logic-for-height-3 -> origin/codex/restore-river-flow-logic-for-height-3
+2026-10-26T19:35:16.9618999Z  * [new branch]      codex/revert-last-changes-on-river-logic -> origin/codex/revert-last-changes-on-river-logic
+2026-10-26T19:35:16.9619599Z  * [new branch]      codex/revert-last-two-merged-tasks -> origin/codex/revert-last-two-merged-tasks
+2026-10-26T19:35:16.9620227Z  * [new branch]      codex/revise-road-generation-logic-in-app.tsx -> origin/codex/revise-road-generation-logic-in-app.tsx
+2026-10-26T19:35:16.9620887Z  * [new branch]      codex/rewrite-minor-river-logic-in-app.tsx -> origin/codex/rewrite-minor-river-logic-in-app.tsx
+2026-10-26T19:35:16.9621565Z  * [new branch]      codex/safely-update-river-generation-endpoints -> origin/codex/safely-update-river-generation-endpoints
+2026-10-26T19:35:16.9622522Z  * [new branch]      codex/separate-debug-points-into-red-and-orange -> origin/codex/separate-debug-points-into-red-and-orange
+2026-10-26T19:35:16.9623204Z  * [new branch]      codex/set-lake-color-to-match-river-color -> origin/codex/set-lake-color-to-match-river-color
+2026-10-26T19:35:16.9623936Z  * [new branch]      codex/setup-vite-react-app-deployment-on-github-pages -> origin/codex/setup-vite-react-app-deployment-on-github-pages
+2026-10-26T19:35:16.9624673Z  * [new branch]      codex/simplify-and-redesign-river-mechanics -> origin/codex/simplify-and-redesign-river-mechanics
+2026-10-26T19:35:16.9625350Z  * [new branch]      codex/simplify-flowlevel-logic-in-riversector -> origin/codex/simplify-flowlevel-logic-in-riversector
+2026-10-26T19:35:16.9626016Z  * [new branch]      codex/simplify-river-endpoints-selection -> origin/codex/simplify-river-endpoints-selection
+2026-10-26T19:35:16.9626750Z  * [new branch]      codex/suggest-pathfinding-logic-for-road-construction -> origin/codex/suggest-pathfinding-logic-for-road-construction
+2026-10-26T19:35:16.9627609Z  * [new branch]      codex/suggest-pathfinding-logic-for-road-construction-1vfgau -> origin/codex/suggest-pathfinding-logic-for-road-construction-1vfgau
+2026-10-26T19:35:16.9628371Z  * [new branch]      codex/trim-road-segment-outside-region -> origin/codex/trim-road-segment-outside-region
+2026-10-26T19:35:16.9628960Z  * [new branch]      codex/update-base-for-github-pages -> origin/codex/update-base-for-github-pages
+2026-10-26T19:35:16.9629611Z  * [new branch]      codex/update-biome-selection-for-outgoing-rivers -> origin/codex/update-biome-selection-for-outgoing-rivers
+2026-10-26T19:35:16.9630346Z  * [new branch]      codex/update-central-hex-display-with-star-emoji -> origin/codex/update-central-hex-display-with-star-emoji
+2026-10-26T19:35:16.9631021Z  * [new branch]      codex/update-debug-point-color-priority -> origin/codex/update-debug-point-color-priority
+2026-10-26T19:35:16.9631933Z  * [new branch]      codex/update-endvertex-selection-for-new-river -> origin/codex/update-endvertex-selection-for-new-river
+2026-10-26T19:35:16.9632607Z  * [new branch]      codex/update-hexagon-to-show-click-me -> origin/codex/update-hexagon-to-show-click-me
+2026-10-26T19:35:16.9633223Z  * [new branch]      codex/update-hexcrawl-region-generator-ui -> origin/codex/update-hexcrawl-region-generator-ui
+2026-10-26T19:35:16.9633900Z  * [new branch]      codex/update-hide-button-design-and-placement -> origin/codex/update-hide-button-design-and-placement
+2026-10-26T19:35:16.9634563Z  * [new branch]      codex/update-info-block-visibility-logic -> origin/codex/update-info-block-visibility-logic
+2026-10-26T19:35:16.9635327Z  * [new branch]      codex/update-initial-river-fullness-and-region-info-display -> origin/codex/update-initial-river-fullness-and-region-info-display
+2026-10-26T19:35:16.9636107Z  * [new branch]      codex/update-lake-expansion-logic-in-app.tsx -> origin/codex/update-lake-expansion-logic-in-app.tsx
+2026-10-26T19:35:16.9636744Z  * [new branch]      codex/update-lake-hex-display-logic -> origin/codex/update-lake-hex-display-logic
+2026-10-26T19:35:16.9637410Z  * [new branch]      codex/update-point-of-interest-formula-in-app.tsx -> origin/codex/update-point-of-interest-formula-in-app.tsx
+2026-10-26T19:35:16.9638197Z  * [new branch]      codex/update-point-of-interest-formula-in-app.tsx-6tmay1 -> origin/codex/update-point-of-interest-formula-in-app.tsx-6tmay1
+2026-10-26T19:35:16.9638928Z  * [new branch]      codex/update-region-fill-colors-by-biome -> origin/codex/update-region-fill-colors-by-biome
+2026-10-26T19:35:16.9639560Z  * [new branch]      codex/update-region-generation-algorithm -> origin/codex/update-region-generation-algorithm
+2026-10-26T19:35:16.9640162Z  * [new branch]      codex/update-region-growth-algorithm -> origin/codex/update-region-growth-algorithm
+2026-10-26T19:35:16.9640786Z  * [new branch]      codex/update-region-growth-algorithm-g2h34s -> origin/codex/update-region-growth-algorithm-g2h34s
+2026-10-26T19:35:16.9641489Z  * [new branch]      codex/update-region-size-calculation-algorithm -> origin/codex/update-region-size-calculation-algorithm
+2026-10-26T19:35:16.9642504Z  * [new branch]      codex/update-region-size-calculation-algorithm-9yfn2n -> origin/codex/update-region-size-calculation-algorithm-9yfn2n
+2026-10-26T19:35:16.9643199Z  * [new branch]      codex/update-river-generation-logic -> origin/codex/update-river-generation-logic
+2026-10-26T19:35:16.9643843Z  * [new branch]      codex/update-river-generation-logic-in-app.tsx -> origin/codex/update-river-generation-logic-in-app.tsx
+2026-10-26T19:35:16.9644521Z  * [new branch]      codex/update-river-sector-flowlevel-logic -> origin/codex/update-river-sector-flowlevel-logic
+2026-10-26T19:35:16.9645221Z  * [new branch]      codex/update-river-starting-logic-to-use-endpoints -> origin/codex/update-river-starting-logic-to-use-endpoints
+2026-10-26T19:35:16.9646017Z  * [new branch]      codex/update-road-generation-logic-for-settled-region -> origin/codex/update-road-generation-logic-for-settled-region
+2026-10-26T19:35:16.9646738Z  * [new branch]      codex/update-trail-river-crossing-rules -> origin/codex/update-trail-river-crossing-rules
+2026-10-26T19:35:16.9647425Z  * [new branch]      codex/update-tryaddedgeminortributaryriver-logic -> origin/codex/update-tryaddedgeminortributaryriver-logic
+2026-10-26T19:35:16.9648129Z  * [new branch]      codex/update-ui-elements-and-button-layout -> origin/codex/update-ui-elements-and-button-layout
+2026-10-26T19:35:16.9648821Z  * [new branch]      codex/update-visual-styles-for-trails-and-arrows -> origin/codex/update-visual-styles-for-trails-and-arrows
+2026-10-26T19:35:16.9649482Z  * [new branch]      codex/update-wild-region-road-criteria -> origin/codex/update-wild-region-road-criteria
+2026-10-26T19:35:16.9650067Z  * [new branch]      codex/verify-river-clipping-issue -> origin/codex/verify-river-clipping-issue
+2026-10-26T19:35:16.9650730Z  * [new branch]      diagnostics/kingdom-growth-20261010 -> origin/diagnostics/kingdom-growth-20261010
+2026-10-26T19:35:16.9651275Z  * [new branch]      diagnostics/river-search-20261011 -> origin/diagnostics/river-search-20261011
+2026-10-26T19:35:16.9651862Z  * [new branch]      docs/river-model        -> origin/docs/river-model
+2026-10-26T19:35:16.9652275Z  * [new branch]      docs/road-model-audit   -> origin/docs/road-model-audit
+2026-10-26T19:35:16.9652801Z  * [new branch]      docs/score-model-game-coverage-2026-10-25 -> origin/docs/score-model-game-coverage-2026-10-25
+2026-10-26T19:35:16.9653330Z  * [new branch]      feat/dead-forest-biomes -> origin/feat/dead-forest-biomes
+2026-10-26T19:35:16.9653813Z  * [new branch]      feat/germanic-toponyms-20260924 -> origin/feat/germanic-toponyms-20260924
+2026-10-26T19:35:16.9654281Z  * [new branch]      feat/river-model-core   -> origin/feat/river-model-core
+2026-10-26T19:35:16.9654729Z  * [new branch]      feat/river-model-integration -> origin/feat/river-model-integration
+2026-10-26T19:35:16.9655182Z  * [new branch]      feature/biome-color     -> origin/feature/biome-color
+2026-10-26T19:35:16.9655647Z  * [new branch]      feature/dolmenwood-forest-color -> origin/feature/dolmenwood-forest-color
+2026-10-26T19:35:16.9656185Z  * [new branch]      feature/lake-basins-color-only -> origin/feature/lake-basins-color-only
+2026-10-26T19:35:16.9656667Z  * [new branch]      feature/mythic-bastionland -> origin/feature/mythic-bastionland
+2026-10-26T19:35:16.9657154Z  * [new branch]      feature/natural-lakes-all-modes -> origin/feature/natural-lakes-all-modes
+2026-10-26T19:35:16.9657626Z  * [new branch]      feature/terrain-color-v2 -> origin/feature/terrain-color-v2
+2026-10-26T19:35:16.9658016Z  * [new branch]      fix-info                -> origin/fix-info
+2026-10-26T19:35:16.9658419Z  * [new branch]      fix/closed-river-endpoints -> origin/fix/closed-river-endpoints
+2026-10-26T19:35:16.9658885Z  * [new branch]      fix/coastal-region-fallback -> origin/fix/coastal-region-fallback
+2026-10-26T19:35:16.9659348Z  * [new branch]      fix/coastal-region-retries -> origin/fix/coastal-region-retries
+2026-10-26T19:35:16.9659802Z  * [new branch]      fix/dead-forest-tile-format -> origin/fix/dead-forest-tile-format
+2026-10-26T19:35:16.9660414Z  * [new branch]      fix/forest-canopy-light-20261009 -> origin/fix/forest-canopy-light-20261009
+2026-10-26T19:35:16.9660987Z  * [new branch]      fix/forest-import-readiness-20261009 -> origin/fix/forest-import-readiness-20261009
+2026-10-26T19:35:16.9661554Z  * [new branch]      fix/forest-water-woodland-contacts -> origin/fix/forest-water-woodland-contacts
+2026-10-26T19:35:16.9662197Z  * [new branch]      fix/generation-error-handling -> origin/fix/generation-error-handling
+2026-10-26T19:35:16.9662675Z  * [new branch]      fix/lake-reentry-scope  -> origin/fix/lake-reentry-scope
+2026-10-26T19:35:16.9663155Z  * [new branch]      fix/mythic-center-and-pockets -> origin/fix/mythic-center-and-pockets
+2026-10-26T19:35:16.9663696Z  * [new branch]      fix/mythic-tract-river-continuation -> origin/fix/mythic-tract-river-continuation
+2026-10-26T19:35:16.9664243Z  * [new branch]      fix/reclaim-sea-for-generation -> origin/fix/reclaim-sea-for-generation
+2026-10-26T19:35:16.9664712Z  * [new branch]      fix/road-continuation   -> origin/fix/road-continuation
+2026-10-26T19:35:16.9665155Z  * [new branch]      fix/road-route-from-endpoint -> origin/fix/road-route-from-endpoint
+2026-10-26T19:35:16.9665621Z  * [new branch]      fix/terrain-water-and-art -> origin/fix/terrain-water-and-art
+2026-10-26T19:35:16.9666154Z  * [new branch]      fix/toponym-scope-and-variety-20260924 -> origin/fix/toponym-scope-and-variety-20260924
+2026-10-26T19:35:16.9666708Z  * [new branch]      fix/tract-source-away-from-sea -> origin/fix/tract-source-away-from-sea
+2026-10-26T19:35:16.9667132Z  * [new branch]      main                    -> origin/main
+2026-10-26T19:35:16.9667598Z  * [new branch]      perf/deferred-kingdom-render-20261010 -> origin/perf/deferred-kingdom-render-20261010
+2026-10-26T19:35:16.9668306Z  * [new branch]      perf/large-map-navigation-20261010 -> origin/perf/large-map-navigation-20261010
+2026-10-26T19:35:16.9668902Z  * [new branch]      perf/smooth-map-navigation-20261010 -> origin/perf/smooth-map-navigation-20261010
+2026-10-26T19:35:16.9669407Z  * [new branch]      prototype/forest-canopy -> origin/prototype/forest-canopy
+2026-10-26T19:35:16.9669839Z  * [new branch]      prototype/forest-review -> origin/prototype/forest-review
+2026-10-26T19:35:16.9670400Z  * [new branch]      revert-18-codex/fix-river-continuation-logic -> origin/revert-18-codex/fix-river-continuation-logic
+2026-10-26T19:35:16.9671120Z  * [new branch]      revert-19-codex/fix-river-generation-for-new-regions -> origin/revert-19-codex/fix-river-generation-for-new-regions
+2026-10-26T19:35:16.9671992Z  * [new branch]      revert-20-codex/fix-river-mechanics-for-hex-edges -> origin/revert-20-codex/fix-river-mechanics-for-hex-edges
+2026-10-26T19:35:16.9672799Z  * [new branch]      revert-21-codex/add-river-network-validation-and-diagnostics -> origin/revert-21-codex/add-river-network-validation-and-diagnostics
+2026-10-26T19:35:16.9673661Z  * [new branch]      revert-30-codex/fix-river-endpoints-to-use-boundary-edges -> origin/revert-30-codex/fix-river-endpoints-to-use-boundary-edges
+2026-10-26T19:35:16.9674287Z  * [new branch]      revert-393-codex-f1ed6w -> origin/revert-393-codex-f1ed6w
+2026-10-26T19:35:16.9674711Z  * [new branch]      revert-396-codex-f2pe10 -> origin/revert-396-codex-f2pe10
+2026-10-26T19:35:16.9675405Z  * [new branch]      revert-9-codex/add-procedural-river-network-to-hexcrawl-generator -> origin/revert-9-codex/add-procedural-river-network-to-hexcrawl-generator
+2026-10-26T19:35:16.9676042Z  * [new branch]      sea_poi                 -> origin/sea_poi
+2026-10-26T19:35:16.9676399Z  * [new branch]      sea_poi_2               -> origin/sea_poi_2
+2026-10-26T19:35:16.9676744Z  * [new branch]      sea_poi_3               -> origin/sea_poi_3
+2026-10-26T19:35:16.9677180Z  * [new branch]      strategy/agent-vision-2026-10-22 -> origin/strategy/agent-vision-2026-10-22
+2026-10-26T19:35:16.9677748Z  * [new branch]      style/oblique-forest-preview-20261011 -> origin/style/oblique-forest-preview-20261011
+2026-10-26T19:35:16.9678401Z  * [new branch]      test/browser-download-pacing -> origin/test/browser-download-pacing
+2026-10-26T19:35:16.9679865Z [command]/usr/bin/git rev-parse --verify --quiet 86100c390d8d4cf66cee6e87589be64ce51687e5^{object}
+2026-10-26T19:35:16.9680305Z 86100c390d8d4cf66cee6e87589be64ce51687e5
+2026-10-26T19:35:16.9681017Z ##[endgroup]
+2026-10-26T19:35:16.9681382Z ##[group]Determining the checkout info
+2026-10-26T19:35:16.9681901Z ##[endgroup]
+2026-10-26T19:35:16.9682182Z [command]/usr/bin/git sparse-checkout disable
+2026-10-26T19:35:16.9682817Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-26T19:35:16.9683611Z ##[group]Checking out the ref
+2026-10-26T19:35:16.9683991Z [command]/usr/bin/git checkout --progress --force 86100c390d8d4cf66cee6e87589be64ce51687e5
+2026-10-26T19:35:16.9844659Z Note: switching to '86100c390d8d4cf66cee6e87589be64ce51687e5'.
+2026-10-26T19:35:16.9844940Z 
+2026-10-26T19:35:16.9845155Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-10-26T19:35:16.9845684Z changes and commit them, and you can discard any commits you make in this
+2026-10-26T19:35:16.9846316Z state without impacting any branches by switching back to a branch.
+2026-10-26T19:35:16.9846659Z 
+2026-10-26T19:35:16.9846943Z If you want to create a new branch to retain commits you create, you may
+2026-10-26T19:35:16.9847600Z do so (now or later) by using -c with the switch command. Example:
+2026-10-26T19:35:16.9847941Z 
+2026-10-26T19:35:16.9848120Z   git switch -c <new-branch-name>
+2026-10-26T19:35:16.9848367Z 
+2026-10-26T19:35:16.9848541Z Or undo this operation with:
+2026-10-26T19:35:16.9848769Z 
+2026-10-26T19:35:16.9848916Z   git switch -
+2026-10-26T19:35:16.9849104Z 
+2026-10-26T19:35:16.9849410Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-10-26T19:35:16.9849975Z 
+2026-10-26T19:35:16.9850233Z HEAD is now at 86100c3 test(performance): launch owner-ordered V2 run after download transport fix
+2026-10-26T19:35:16.9856431Z ##[endgroup]
+2026-10-26T19:35:16.9893063Z [command]/usr/bin/git log -1 --format=%H
+2026-10-26T19:35:16.9915046Z 86100c390d8d4cf66cee6e87589be64ce51687e5
+2026-10-26T19:35:17.0145579Z ##[group]Run actions/setup-node@v4
+2026-10-26T19:35:17.0145856Z with:
+2026-10-26T19:35:17.0146062Z   node-version: 24
+2026-10-26T19:35:17.0146289Z   always-auth: false
+2026-10-26T19:35:17.0146509Z   check-latest: false
+2026-10-26T19:35:17.0148648Z   token: ***
+2026-10-26T19:35:17.0148854Z ##[endgroup]
+2026-10-26T19:35:17.1240645Z Found in cache @ /opt/hostedtoolcache/node/24.21.0/x64
+2026-10-26T19:35:17.1241377Z ##[group]Environment details
+2026-10-26T19:35:17.1242474Z (node:2051) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-26T19:35:17.1243840Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-26T19:35:19.1968297Z node: v24.21.0
+2026-10-26T19:35:19.1968618Z npm: 11.19.0
+2026-10-26T19:35:19.1968878Z yarn: 1.22.22
+2026-10-26T19:35:19.1970091Z ##[endgroup]
+2026-10-26T19:35:19.2125139Z ##[group]Run npm ci
+2026-10-26T19:35:19.2125370Z [36;1mnpm ci[0m
+2026-10-26T19:35:19.2404778Z shell: /usr/bin/bash -e {0}
+2026-10-26T19:35:19.2405029Z ##[endgroup]
+2026-10-26T19:35:21.9050725Z 
+2026-10-26T19:35:21.9058429Z added 71 packages, and audited 72 packages in 3s
+2026-10-26T19:35:21.9058837Z 
+2026-10-26T19:35:21.9059450Z 7 packages are looking for funding
+2026-10-26T19:35:21.9060185Z   run `npm fund` for details
+2026-10-26T19:35:21.9162091Z 
+2026-10-26T19:35:21.9162576Z 2 vulnerabilities (1 moderate, 1 high)
+2026-10-26T19:35:21.9162863Z 
+2026-10-26T19:35:21.9163196Z To address all issues (including breaking changes), run:
+2026-10-26T19:35:21.9163558Z   npm audit fix --force
+2026-10-26T19:35:21.9163702Z 
+2026-10-26T19:35:21.9163851Z Run `npm audit` for details.
+2026-10-26T19:35:21.9170200Z npm warn install-scripts 1 package has install scripts not yet covered by allowScripts:
+2026-10-26T19:35:21.9171094Z npm warn install-scripts   esbuild@0.21.5 (postinstall: node install.js)
+2026-10-26T19:35:21.9171633Z npm warn install-scripts
+2026-10-26T19:35:21.9172544Z npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow.
+2026-10-26T19:35:21.9594311Z ##[group]Run npx playwright install --with-deps chromium
+2026-10-26T19:35:21.9594660Z [36;1mnpx playwright install --with-deps chromium[0m
+2026-10-26T19:35:21.9650523Z shell: /usr/bin/bash -e {0}
+2026-10-26T19:35:21.9650737Z ##[endgroup]
+2026-10-26T19:35:22.5901488Z Installing dependencies...
+2026-10-26T19:35:22.5965702Z Switching to root user to install dependencies...
+2026-10-26T19:35:22.6783745Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+2026-10-26T19:35:22.7316924Z Get:6 https://packages.microsoft.com/ubuntu/24.04/prod noble InRelease [3600 B]
+2026-10-26T19:35:22.7901502Z Get:7 https://packages.microsoft.com/ubuntu/24.04/prod noble/main amd64 Packages [661 kB]
+2026-10-26T19:35:22.8203915Z Get:8 https://packages.microsoft.com/ubuntu/24.04/prod noble/main armhf Packages [12.4 kB]
+2026-10-26T19:35:22.8288163Z Get:9 https://packages.microsoft.com/ubuntu/24.04/prod noble/main arm64 Packages [598 kB]
+2026-10-26T19:35:25.1437284Z Hit:2 http://azure.archive.ubuntu.com/ubuntu noble InRelease
+2026-10-26T19:35:25.1454098Z Get:3 http://azure.archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]
+2026-10-26T19:35:25.1462319Z Get:4 http://azure.archive.ubuntu.com/ubuntu noble-backports InRelease [126 kB]
+2026-10-26T19:35:25.1474660Z Get:5 http://azure.archive.ubuntu.com/ubuntu noble-security InRelease [126 kB]
+2026-10-26T19:35:25.2304703Z Get:10 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages [1400 kB]
+2026-10-26T19:35:25.2371080Z Get:11 http://azure.archive.ubuntu.com/ubuntu noble-updates/main Translation-en [310 kB]
+2026-10-26T19:35:25.2391896Z Get:12 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 Packages [1706 kB]
+2026-10-26T19:35:25.2473132Z Get:13 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe Translation-en [342 kB]
+2026-10-26T19:35:25.2494380Z Get:14 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted amd64 Packages [1805 kB]
+2026-10-26T19:35:25.2574088Z Get:15 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted Translation-en [411 kB]
+2026-10-26T19:35:25.3137177Z Get:16 http://azure.archive.ubuntu.com/ubuntu noble-security/main amd64 Packages [1146 kB]
+2026-10-26T19:35:25.3197346Z Get:17 http://azure.archive.ubuntu.com/ubuntu noble-security/main Translation-en [231 kB]
+2026-10-26T19:35:25.3210877Z Get:18 http://azure.archive.ubuntu.com/ubuntu noble-security/universe amd64 Packages [1223 kB]
+2026-10-26T19:35:25.3283559Z Get:19 http://azure.archive.ubuntu.com/ubuntu noble-security/universe Translation-en [246 kB]
+2026-10-26T19:35:25.3702126Z Get:20 http://azure.archive.ubuntu.com/ubuntu noble-security/restricted amd64 Packages [1713 kB]
+2026-10-26T19:35:25.3779095Z Get:21 http://azure.archive.ubuntu.com/ubuntu noble-security/restricted Translation-en [392 kB]
+2026-10-26T19:35:32.3970813Z Fetched 12.6 MB in 3s (3695 kB/s)
+2026-10-26T19:35:33.1054512Z Reading package lists...
+2026-10-26T19:35:33.1259730Z Reading package lists...
+2026-10-26T19:35:33.2917106Z Building dependency tree...
+2026-10-26T19:35:33.2923222Z Reading state information...
+2026-10-26T19:35:33.4174112Z libasound2t64 is already the newest version (1.2.11-1ubuntu0.3).
+2026-10-26T19:35:33.4174668Z libasound2t64 set to manually installed.
+2026-10-26T19:35:33.4175165Z libatk-bridge2.0-0t64 is already the newest version (2.52.0-1build1).
+2026-10-26T19:35:33.4175653Z libatk-bridge2.0-0t64 set to manually installed.
+2026-10-26T19:35:33.4176123Z libatk1.0-0t64 is already the newest version (2.52.0-1build1).
+2026-10-26T19:35:33.4176547Z libatk1.0-0t64 set to manually installed.
+2026-10-26T19:35:33.4177044Z libatspi2.0-0t64 is already the newest version (2.52.0-1build1).
+2026-10-26T19:35:33.4177511Z libatspi2.0-0t64 set to manually installed.
+2026-10-26T19:35:33.4177975Z libcairo2 is already the newest version (1.18.0-3build1).
+2026-10-26T19:35:33.4178404Z libcairo2 set to manually installed.
+2026-10-26T19:35:33.4178893Z libcups2t64 is already the newest version (2.4.7-1.2ubuntu7.14).
+2026-10-26T19:35:33.4179820Z libcups2t64 set to manually installed.
+2026-10-26T19:35:33.4180356Z libdbus-1-3 is already the newest version (1.14.10-4ubuntu4.1).
+2026-10-26T19:35:33.4180860Z libdbus-1-3 set to manually installed.
+2026-10-26T19:35:33.4181383Z libdrm2 is already the newest version (2.4.125-1ubuntu0.1~24.04.2).
+2026-10-26T19:35:33.4182102Z libdrm2 set to manually installed.
+2026-10-26T19:35:33.4182635Z libgbm1 is already the newest version (25.2.8-0ubuntu0.24.04.4).
+2026-10-26T19:35:33.4183195Z libgbm1 set to manually installed.
+2026-10-26T19:35:33.4183685Z libnspr4 is already the newest version (2:4.35-1.1build1).
+2026-10-26T19:35:33.4184156Z libnspr4 set to manually installed.
+2026-10-26T19:35:33.4184660Z libpango-1.0-0 is already the newest version (1.52.1+ds-1build1).
+2026-10-26T19:35:33.4185150Z libpango-1.0-0 set to manually installed.
+2026-10-26T19:35:33.4185641Z libx11-6 is already the newest version (2:1.8.7-1ubuntu0.1).
+2026-10-26T19:35:33.4186117Z libx11-6 set to manually installed.
+2026-10-26T19:35:33.4186565Z libxcb1 is already the newest version (1.15-1ubuntu2).
+2026-10-26T19:35:33.4187000Z libxcb1 set to manually installed.
+2026-10-26T19:35:33.4187485Z libxcomposite1 is already the newest version (1:0.4.5-1build3).
+2026-10-26T19:35:33.4187983Z libxcomposite1 set to manually installed.
+2026-10-26T19:35:33.4188493Z libxdamage1 is already the newest version (1:1.1.6-1build1).
+2026-10-26T19:35:33.4188982Z libxdamage1 set to manually installed.
+2026-10-26T19:35:33.4189460Z libxext6 is already the newest version (2:1.3.4-1build2).
+2026-10-26T19:35:33.4189916Z libxext6 set to manually installed.
+2026-10-26T19:35:33.4190638Z libxfixes3 is already the newest version (1:6.0.0-2build1).
+2026-10-26T19:35:33.4191116Z libxfixes3 set to manually installed.
+2026-10-26T19:35:33.4191630Z libxkbcommon0 is already the newest version (1.6.0-1build1).
+2026-10-26T19:35:33.4192307Z libxkbcommon0 set to manually installed.
+2026-10-26T19:35:33.4192803Z libxrandr2 is already the newest version (2:1.5.2-2build1).
+2026-10-26T19:35:33.4193287Z libxrandr2 set to manually installed.
+2026-10-26T19:35:33.4193885Z fonts-noto-color-emoji is already the newest version (2.047-0ubuntu0.24.04.1).
+2026-10-26T19:35:33.4194575Z libfontconfig1 is already the newest version (2.15.0-1.1ubuntu2).
+2026-10-26T19:35:33.4195099Z libfontconfig1 set to manually installed.
+2026-10-26T19:35:33.4195629Z libfreetype6 is already the newest version (2.13.2+dfsg-1ubuntu0.2).
+2026-10-26T19:35:33.4196124Z libfreetype6 set to manually installed.
+2026-10-26T19:35:33.4196619Z fonts-liberation is already the newest version (1:2.1.5-3).
+2026-10-26T19:35:33.4197130Z fonts-liberation set to manually installed.
+2026-10-26T19:35:33.4197640Z The following additional packages will be installed:
+2026-10-26T19:35:33.4198177Z   gir1.2-glib-2.0 libglib2.0-bin libglib2.0-data libnss3-tools
+2026-10-26T19:35:33.4198686Z   xfonts-encodings xfonts-utils xserver-common
+2026-10-26T19:35:33.4199089Z Suggested packages:
+2026-10-26T19:35:33.4199365Z   low-memory-monitor
+2026-10-26T19:35:33.4199649Z Recommended packages:
+2026-10-26T19:35:33.4200021Z   fonts-ipafont-mincho fonts-tlwg-loma xfonts-base
+2026-10-26T19:35:33.5833815Z The following NEW packages will be installed:
+2026-10-26T19:35:33.5834327Z   fonts-freefont-ttf fonts-ipafont-gothic fonts-tlwg-loma-otf fonts-unifont
+2026-10-26T19:35:33.5837909Z   fonts-wqy-zenhei xfonts-cyrillic xfonts-encodings xfonts-scalable
+2026-10-26T19:35:33.5838720Z   xfonts-utils
+2026-10-26T19:35:33.5840821Z The following packages will be upgraded:
+2026-10-26T19:35:33.5842279Z   gir1.2-glib-2.0 libglib2.0-0t64 libglib2.0-bin libglib2.0-data libnss3
+2026-10-26T19:35:33.5845505Z   libnss3-tools xserver-common xvfb
+2026-10-26T19:35:33.5989380Z 8 upgraded, 9 newly installed, 0 to remove and 96 not upgraded.
+2026-10-26T19:35:33.5989920Z Need to get 25.9 MB of archives.
+2026-10-26T19:35:33.5990435Z After this operation, 79.5 MB of additional disk space will be used.
+2026-10-26T19:35:33.5991022Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+2026-10-26T19:35:34.4875328Z Get:2 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-ipafont-gothic all 00303-21ubuntu1 [3513 kB]
+2026-10-26T19:36:52.3886074Z Ign:2 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-ipafont-gothic all 00303-21ubuntu1
+2026-10-26T19:37:06.6976575Z Get:3 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libglib2.0-data all 2.80.0-6ubuntu3.10 [50.2 kB]
+2026-10-26T19:37:08.4894257Z Get:4 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libglib2.0-bin amd64 2.80.0-6ubuntu3.10 [97.9 kB]
+2026-10-26T19:37:11.7343093Z Get:5 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 gir1.2-glib-2.0 amd64 2.80.0-6ubuntu3.10 [183 kB]
+2026-10-26T19:37:16.5746358Z Get:6 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libglib2.0-0t64 amd64 2.80.0-6ubuntu3.10 [1548 kB]
+2026-10-26T19:37:54.9360584Z Get:7 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 fonts-freefont-ttf all 20211204+svn4273-2 [5641 kB]
+2026-10-26T19:40:17.9533309Z Get:8 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-tlwg-loma-otf all 1:0.7.3-1 [107 kB]
+2026-10-26T19:40:22.0054989Z Get:9 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-unifont all 1:15.1.01-1build1 [2993 kB]
+2026-10-26T19:41:40.4214560Z Get:10 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-wqy-zenhei all 0.9.45-8 [7472 kB]
+2026-10-26T19:44:45.2895068Z Get:11 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libnss3 amd64 2:3.98-1ubuntu0.3 [1445 kB]
+2026-10-26T19:45:20.1254319Z Get:12 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libnss3-tools amd64 2:3.98-1ubuntu0.3 [615 kB]
+2026-10-26T19:45:35.4718693Z Get:13 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 xfonts-encodings all 1:1.0.5-0ubuntu2 [578 kB]
+2026-10-26T19:45:49.8407586Z Get:14 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 xfonts-utils amd64 1:7.7+6build3 [94.4 kB]
+2026-10-26T19:45:52.6572986Z Get:15 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 xfonts-cyrillic all 1:1.0.5+nmu1 [384 kB]
+2026-10-26T19:46:02.3960000Z Get:16 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 xfonts-scalable all 1:1.0.3-1.3 [304 kB]
+2026-10-26T19:46:10.2650177Z Get:17 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 xserver-common all 2:21.1.12-1ubuntu1.9 [35.0 kB]
+2026-10-26T19:46:11.4596034Z Get:18 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 xvfb amd64 2:21.1.12-1ubuntu1.9 [877 kB]
+2026-10-26T19:46:33.7688873Z Get:2 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-ipafont-gothic all 00303-21ubuntu1 [3513 kB]
+2026-10-26T19:47:13.5929782Z Fetched 24.1 MB in 11min 40s (34.5 kB/s)
+2026-10-26T19:47:13.6121110Z Selecting previously unselected package fonts-ipafont-gothic.
+2026-10-26T19:47:13.6361000Z (Reading database ... 
+2026-10-26T19:47:13.6361327Z (Reading database ... 5%
+2026-10-26T19:47:13.6361630Z (Reading database ... 10%
+2026-10-26T19:47:13.6363012Z (Reading database ... 15%
+2026-10-26T19:47:13.6363406Z (Reading database ... 20%
+2026-10-26T19:47:13.6363715Z (Reading database ... 25%
+2026-10-26T19:47:13.6364002Z (Reading database ... 30%
+2026-10-26T19:47:13.6364299Z (Reading database ... 35%
+2026-10-26T19:47:13.6364580Z (Reading database ... 40%
+2026-10-26T19:47:13.6364855Z (Reading database ... 45%
+2026-10-26T19:47:13.6365134Z (Reading database ... 50%
+2026-10-26T19:47:13.6400454Z (Reading database ... 55%
+2026-10-26T19:47:13.7475739Z (Reading database ... 60%
+2026-10-26T19:47:13.9389013Z (Reading database ... 65%
+2026-10-26T19:47:14.1438995Z (Reading database ... 70%
+2026-10-26T19:47:14.3446869Z (Reading database ... 75%
+2026-10-26T19:47:14.4097818Z (Reading database ... 80%
+2026-10-26T19:47:14.5468013Z (Reading database ... 85%
+2026-10-26T19:47:14.6686357Z (Reading database ... 90%
+2026-10-26T19:47:14.7617850Z (Reading database ... 95%
+2026-10-26T19:47:14.7618203Z (Reading database ... 100%
+2026-10-26T19:47:14.7618550Z (Reading database ... 203540 files and directories currently installed.)
+2026-10-26T19:47:14.7656072Z Preparing to unpack .../00-fonts-ipafont-gothic_00303-21ubuntu1_all.deb ...
+2026-10-26T19:47:14.7811471Z Unpacking fonts-ipafont-gothic (00303-21ubuntu1) ...
+2026-10-26T19:47:15.0134911Z Preparing to unpack .../01-libglib2.0-data_2.80.0-6ubuntu3.10_all.deb ...
+2026-10-26T19:47:15.0152227Z Unpacking libglib2.0-data (2.80.0-6ubuntu3.10) over (2.80.0-6ubuntu3.9) ...
+2026-10-26T19:47:15.0429970Z Preparing to unpack .../02-libglib2.0-bin_2.80.0-6ubuntu3.10_amd64.deb ...
+2026-10-26T19:47:15.0448644Z Unpacking libglib2.0-bin (2.80.0-6ubuntu3.10) over (2.80.0-6ubuntu3.9) ...
+2026-10-26T19:47:15.0942278Z Preparing to unpack .../03-gir1.2-glib-2.0_2.80.0-6ubuntu3.10_amd64.deb ...
+2026-10-26T19:47:15.0960432Z Unpacking gir1.2-glib-2.0:amd64 (2.80.0-6ubuntu3.10) over (2.80.0-6ubuntu3.9) ...
+2026-10-26T19:47:15.1646409Z Preparing to unpack .../04-libglib2.0-0t64_2.80.0-6ubuntu3.10_amd64.deb ...
+2026-10-26T19:47:15.1702694Z Unpacking libglib2.0-0t64:amd64 (2.80.0-6ubuntu3.10) over (2.80.0-6ubuntu3.9) ...
+2026-10-26T19:47:15.2328544Z Selecting previously unselected package fonts-freefont-ttf.
+2026-10-26T19:47:15.2438890Z Preparing to unpack .../05-fonts-freefont-ttf_20211204+svn4273-2_all.deb ...
+2026-10-26T19:47:15.2445881Z Unpacking fonts-freefont-ttf (20211204+svn4273-2) ...
+2026-10-26T19:47:15.3347540Z Selecting previously unselected package fonts-tlwg-loma-otf.
+2026-10-26T19:47:15.3457159Z Preparing to unpack .../06-fonts-tlwg-loma-otf_1%3a0.7.3-1_all.deb ...
+2026-10-26T19:47:15.3465178Z Unpacking fonts-tlwg-loma-otf (1:0.7.3-1) ...
+2026-10-26T19:47:15.3635906Z Selecting previously unselected package fonts-unifont.
+2026-10-26T19:47:15.3741529Z Preparing to unpack .../07-fonts-unifont_1%3a15.1.01-1build1_all.deb ...
+2026-10-26T19:47:15.3747664Z Unpacking fonts-unifont (1:15.1.01-1build1) ...
+2026-10-26T19:47:15.5636009Z Selecting previously unselected package fonts-wqy-zenhei.
+2026-10-26T19:47:15.5745471Z Preparing to unpack .../08-fonts-wqy-zenhei_0.9.45-8_all.deb ...
+2026-10-26T19:47:15.5831278Z Unpacking fonts-wqy-zenhei (0.9.45-8) ...
+2026-10-26T19:47:16.0363025Z Preparing to unpack .../09-libnss3_2%3a3.98-1ubuntu0.3_amd64.deb ...
+2026-10-26T19:47:16.0383161Z Unpacking libnss3:amd64 (2:3.98-1ubuntu0.3) over (2:3.98-1ubuntu0.2) ...
+2026-10-26T19:47:16.0961491Z Preparing to unpack .../10-libnss3-tools_2%3a3.98-1ubuntu0.3_amd64.deb ...
+2026-10-26T19:47:16.0977413Z Unpacking libnss3-tools (2:3.98-1ubuntu0.3) over (2:3.98-1ubuntu0.2) ...
+2026-10-26T19:47:16.1360325Z Selecting previously unselected package xfonts-encodings.
+2026-10-26T19:47:16.1468642Z Preparing to unpack .../11-xfonts-encodings_1%3a1.0.5-0ubuntu2_all.deb ...
+2026-10-26T19:47:16.1473938Z Unpacking xfonts-encodings (1:1.0.5-0ubuntu2) ...
+2026-10-26T19:47:16.1691964Z Selecting previously unselected package xfonts-utils.
+2026-10-26T19:47:16.1795144Z Preparing to unpack .../12-xfonts-utils_1%3a7.7+6build3_amd64.deb ...
+2026-10-26T19:47:16.1800300Z Unpacking xfonts-utils (1:7.7+6build3) ...
+2026-10-26T19:47:16.2059000Z Selecting previously unselected package xfonts-cyrillic.
+2026-10-26T19:47:16.2161645Z Preparing to unpack .../13-xfonts-cyrillic_1%3a1.0.5+nmu1_all.deb ...
+2026-10-26T19:47:16.2167558Z Unpacking xfonts-cyrillic (1:1.0.5+nmu1) ...
+2026-10-26T19:47:16.2429329Z Selecting previously unselected package xfonts-scalable.
+2026-10-26T19:47:16.2530400Z Preparing to unpack .../14-xfonts-scalable_1%3a1.0.3-1.3_all.deb ...
+2026-10-26T19:47:16.2536288Z Unpacking xfonts-scalable (1:1.0.3-1.3) ...
+2026-10-26T19:47:16.2818744Z Preparing to unpack .../15-xserver-common_2%3a21.1.12-1ubuntu1.9_all.deb ...
+2026-10-26T19:47:16.2833763Z Unpacking xserver-common (2:21.1.12-1ubuntu1.9) over (2:21.1.12-1ubuntu1.8) ...
+2026-10-26T19:47:16.3112839Z Preparing to unpack .../16-xvfb_2%3a21.1.12-1ubuntu1.9_amd64.deb ...
+2026-10-26T19:47:16.3128385Z Unpacking xvfb (2:21.1.12-1ubuntu1.9) over (2:21.1.12-1ubuntu1.8) ...
+2026-10-26T19:47:16.3703821Z Setting up fonts-wqy-zenhei (0.9.45-8) ...
+2026-10-26T19:47:16.3800205Z Setting up fonts-freefont-ttf (20211204+svn4273-2) ...
+2026-10-26T19:47:16.3815159Z Setting up libnss3:amd64 (2:3.98-1ubuntu0.3) ...
+2026-10-26T19:47:16.3830596Z Setting up libglib2.0-0t64:amd64 (2.80.0-6ubuntu3.10) ...
+2026-10-26T19:47:16.4000858Z Setting up libglib2.0-data (2.80.0-6ubuntu3.10) ...
+2026-10-26T19:47:16.4014844Z Setting up fonts-tlwg-loma-otf (1:0.7.3-1) ...
+2026-10-26T19:47:16.4027880Z Setting up xfonts-encodings (1:1.0.5-0ubuntu2) ...
+2026-10-26T19:47:16.4041975Z Setting up gir1.2-glib-2.0:amd64 (2.80.0-6ubuntu3.10) ...
+2026-10-26T19:47:16.4055462Z Setting up fonts-ipafont-gothic (00303-21ubuntu1) ...
+2026-10-26T19:47:16.4109656Z update-alternatives: using /usr/share/fonts/opentype/ipafont-gothic/ipag.ttf to provide /usr/share/fonts/truetype/fonts-japanese-gothic.ttf (fonts-japanese-gothic.ttf) in auto mode
+2026-10-26T19:47:16.4121295Z Setting up xserver-common (2:21.1.12-1ubuntu1.9) ...
+2026-10-26T19:47:16.4134876Z Setting up libnss3-tools (2:3.98-1ubuntu0.3) ...
+2026-10-26T19:47:16.4147491Z Setting up fonts-unifont (1:15.1.01-1build1) ...
+2026-10-26T19:47:16.4161537Z Setting up xvfb (2:21.1.12-1ubuntu1.9) ...
+2026-10-26T19:47:16.4174763Z Setting up libglib2.0-bin (2.80.0-6ubuntu3.10) ...
+2026-10-26T19:47:16.4188032Z Setting up xfonts-utils (1:7.7+6build3) ...
+2026-10-26T19:47:16.4219178Z Setting up xfonts-cyrillic (1:1.0.5+nmu1) ...
+2026-10-26T19:47:16.4467732Z Setting up xfonts-scalable (1:1.0.3-1.3) ...
+2026-10-26T19:47:16.4745485Z Processing triggers for libc-bin (2.39-0ubuntu8.9) ...
+2026-10-26T19:47:16.6970843Z Processing triggers for man-db (2.12.0-4build2) ...
+2026-10-26T19:47:16.6989313Z Not building database; man-db/auto-update is not 'true'.
+2026-10-26T19:47:16.6998364Z Processing triggers for fontconfig (2.15.0-1.1ubuntu2) ...
+2026-10-26T19:47:17.2290284Z 
+2026-10-26T19:47:17.2290802Z Running kernel seems to be up-to-date.
+2026-10-26T19:47:17.2291103Z 
+2026-10-26T19:47:17.2599276Z Restarting services...
+2026-10-26T19:47:17.2599829Z  systemctl restart php8.3-fpm.service polkit.service udisks2.service
+2026-10-26T19:47:17.3604251Z 
+2026-10-26T19:47:17.3605060Z Service restarts being deferred:
+2026-10-26T19:47:17.3605696Z  systemctl restart ModemManager.service
+2026-10-26T19:47:17.3606314Z  systemctl restart networkd-dispatcher.service
+2026-10-26T19:47:17.3606721Z 
+2026-10-26T19:47:17.3607013Z No containers need to be restarted.
+2026-10-26T19:47:17.3612230Z 
+2026-10-26T19:47:17.3622460Z No user sessions are running outdated binaries.
+2026-10-26T19:47:17.3622838Z 
+2026-10-26T19:47:17.3623353Z No VM guests are running outdated hypervisor (qemu) binaries on this host.
+2026-10-26T19:47:18.1213431Z Downloading Chrome for Testing 151.0.7922.34 (playwright chromium v1234) from https://cdn.playwright.dev/builds/cft/151.0.7922.34/linux64/chrome-linux64.zip
+2026-10-26T19:47:19.0821155Z |                                                                                |   0% of 184.3 MiB
+2026-10-26T19:47:19.2555753Z |■■■■■■■■                                                                        |  10% of 184.3 MiB
+2026-10-26T19:47:19.3210320Z |■■■■■■■■■■■■■■■■                                                                |  20% of 184.3 MiB
+2026-10-26T19:47:19.3862851Z |■■■■■■■■■■■■■■■■■■■■■■■■                                                        |  30% of 184.3 MiB
+2026-10-26T19:47:19.4568389Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                                |  40% of 184.3 MiB
+2026-10-26T19:47:19.5262498Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                        |  50% of 184.3 MiB
+2026-10-26T19:47:19.5893304Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                |  60% of 184.3 MiB
+2026-10-26T19:47:19.6539224Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                        |  70% of 184.3 MiB
+2026-10-26T19:47:19.7228609Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                |  80% of 184.3 MiB
+2026-10-26T19:47:19.7683227Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■        |  90% of 184.3 MiB
+2026-10-26T19:47:19.8603715Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■| 100% of 184.3 MiB
+2026-10-26T19:47:22.2296614Z Chrome for Testing 151.0.7922.34 (playwright chromium v1234) downloaded to /home/runner/.cache/ms-playwright/chromium-1234
+2026-10-26T19:47:22.2299048Z Downloading FFmpeg (playwright ffmpeg v1011) from https://cdn.playwright.dev/dbazure/download/playwright/builds/ffmpeg/1011/ffmpeg-linux.zip
+2026-10-26T19:47:23.1251723Z |                                                                                |   0% of 2.3 MiB
+2026-10-26T19:47:23.1478482Z |■■■■■■■■                                                                        |  10% of 2.3 MiB
+2026-10-26T19:47:23.1574786Z |■■■■■■■■■■■■■■■■                                                                |  20% of 2.3 MiB
+2026-10-26T19:47:23.1645253Z |■■■■■■■■■■■■■■■■■■■■■■■■                                                        |  30% of 2.3 MiB
+2026-10-26T19:47:23.1720112Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                                |  40% of 2.3 MiB
+2026-10-26T19:47:23.1738863Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                        |  50% of 2.3 MiB
+2026-10-26T19:47:23.1804901Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                |  60% of 2.3 MiB
+2026-10-26T19:47:23.1816669Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                        |  70% of 2.3 MiB
+2026-10-26T19:47:23.1826312Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                |  80% of 2.3 MiB
+2026-10-26T19:47:23.1884484Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■        |  90% of 2.3 MiB
+2026-10-26T19:47:23.1894201Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■| 100% of 2.3 MiB
+2026-10-26T19:47:23.2343658Z FFmpeg (playwright ffmpeg v1011) downloaded to /home/runner/.cache/ms-playwright/ffmpeg-1011
+2026-10-26T19:47:23.2345930Z Downloading Chrome Headless Shell 151.0.7922.34 (playwright chromium-headless-shell v1234) from https://cdn.playwright.dev/builds/cft/151.0.7922.34/linux64/chrome-headless-shell-linux64.zip
+2026-10-26T19:47:24.1844655Z |                                                                                |   0% of 114.7 MiB
+2026-10-26T19:47:24.3198550Z |■■■■■■■■                                                                        |  10% of 114.7 MiB
+2026-10-26T19:47:24.3870145Z |■■■■■■■■■■■■■■■■                                                                |  20% of 114.7 MiB
+2026-10-26T19:47:24.4267551Z |■■■■■■■■■■■■■■■■■■■■■■■■                                                        |  30% of 114.7 MiB
+2026-10-26T19:47:24.4753971Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                                |  40% of 114.7 MiB
+2026-10-26T19:47:24.5268589Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                        |  50% of 114.7 MiB
+2026-10-26T19:47:24.5570482Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                |  60% of 114.7 MiB
+2026-10-26T19:47:24.5878996Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                        |  70% of 114.7 MiB
+2026-10-26T19:47:24.6341403Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                |  80% of 114.7 MiB
+2026-10-26T19:47:24.6584758Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■        |  90% of 114.7 MiB
+2026-10-26T19:47:24.6906217Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■| 100% of 114.7 MiB
+2026-10-26T19:47:26.4669747Z Chrome Headless Shell 151.0.7922.34 (playwright chromium-headless-shell v1234) downloaded to /home/runner/.cache/ms-playwright/chromium_headless_shell-1234
+2026-10-26T19:47:26.4896724Z ##[group]Run actions/download-artifact@v4
+2026-10-26T19:47:26.4896965Z with:
+2026-10-26T19:47:26.4897141Z   name: HX-BL-003-baseline-outputs
+2026-10-26T19:47:26.4897359Z   run-id: 40200788539
+2026-10-26T19:47:26.4899460Z   github-token: ***
+2026-10-26T19:47:26.4899669Z   path: reports/HX-BL-003/baseline-outputs
+2026-10-26T19:47:26.4899896Z   merge-multiple: false
+2026-10-26T19:47:26.4900092Z   repository: YuriyEmelyanov/Hexcrawl
+2026-10-26T19:47:26.4900300Z ##[endgroup]
+2026-10-26T19:47:26.6067828Z Downloading single artifact
+2026-10-26T19:47:26.6124183Z (node:3106) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-26T19:47:26.6124859Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-26T19:47:26.6288619Z (node:3106) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-10-26T19:47:26.9080518Z Preparing to download the following artifacts:
+2026-10-26T19:47:26.9081248Z - HX-BL-003-baseline-outputs (ID: 12602421349, Size: 272371118, Expected Digest: sha256:57fe9053543b46afa02c972e180b5f14c9f0087e199a8c126c030cc36e47167e)
+2026-10-26T19:47:26.9105766Z Downloading artifact '12602421349' from 'YuriyEmelyanov/Hexcrawl'
+2026-10-26T19:47:27.1179975Z Redirecting to blob download url: https://productionresultssa1.blob.core.windows.net/actions-results/21ea9020-56fe-8b7c-b353-316a62b69c7e/workflow-job-run-d42743e2-ece4-5e5b-b5ba-71dd0a94a878/artifacts/be5570844d06667f2d71a74f2d5f88ee044dded3b347c20be1b420f301e3b4d6.zip
+2026-10-26T19:47:27.1181195Z Starting download of artifact to: /home/runner/work/Hexcrawl/Hexcrawl/reports/HX-BL-003/baseline-outputs
+2026-10-26T19:47:27.4321526Z (node:3106) [DEP0005] DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
+2026-10-26T19:47:52.6526489Z SHA256 digest of downloaded artifact is 57fe9053543b46afa02c972e180b5f14c9f0087e199a8c126c030cc36e47167e
+2026-10-26T19:47:52.6527175Z Artifact download completed successfully.
+2026-10-26T19:47:52.6527719Z Total of 1 artifact(s) downloaded
+2026-10-26T19:47:52.6533687Z Download artifact has finished successfully
+2026-10-26T19:47:52.7518794Z ##[group]Run python - <<'PY'
+2026-10-26T19:47:52.7519056Z [36;1mpython - <<'PY'[0m
+2026-10-26T19:47:52.7519273Z [36;1mimport hashlib,json,pathlib,zipfile[0m
+2026-10-26T19:47:52.7519584Z [36;1mp=pathlib.Path('reports/HX-BL-003/corpus/fixed-corpus.zip')[0m
+2026-10-26T19:47:52.7520087Z [36;1massert hashlib.sha256(p.read_bytes()).hexdigest()=='55dddd3df58d45ad33578678ec239e61d966c6972dbaa7e8cd2fd8c510ff5913'[0m
+2026-10-26T19:47:52.7520535Z [36;1mwith zipfile.ZipFile(p) as z:[0m
+2026-10-26T19:47:52.7520930Z [36;1m    assert all(not n.startswith('/') and '..' not in pathlib.PurePosixPath(n).parts for n in z.namelist())[0m
+2026-10-26T19:47:52.7521319Z [36;1m    z.extractall(p.parent)[0m
+2026-10-26T19:47:52.7521588Z [36;1mp=pathlib.Path('reports/HX-BL-003/baseline-outputs')[0m
+2026-10-26T19:47:52.7522143Z [36;1mm=json.loads((p/'manifest.json').read_text())[0m
+2026-10-26T19:47:52.7522387Z [36;1mfor f in m['files']:[0m
+2026-10-26T19:47:52.7522632Z [36;1m    data=(p/f['path']).read_bytes()[0m
+2026-10-26T19:47:52.7522955Z [36;1m    assert hashlib.sha256(data).hexdigest()==f['sha256'] and len(data)==f['bytes'][0m
+2026-10-26T19:47:52.7523259Z [36;1mPY[0m
+2026-10-26T19:47:52.7523437Z [36;1mnode --check scripts/hx-bl-003-v2.mjs[0m
+2026-10-26T19:47:52.7523691Z [36;1mnode --check scripts/hx-bl-003-v2-probes.js[0m
+2026-10-26T19:47:52.7523972Z [36;1mpython -m py_compile scripts/hx-bl-003-v2-analyze.py[0m
+2026-10-26T19:47:52.7579248Z shell: /usr/bin/bash -e {0}
+2026-10-26T19:47:52.7579590Z ##[endgroup]
+2026-10-26T19:47:53.4252928Z ##[group]Run git worktree add --detach /tmp/hx003-pair-baseline 103d31b9f6f5c76b1f6b45d9d6664fe3f75dd63b
+2026-10-26T19:47:53.4253514Z [36;1mgit worktree add --detach /tmp/hx003-pair-baseline 103d31b9f6f5c76b1f6b45d9d6664fe3f75dd63b[0m
+2026-10-26T19:47:53.4254008Z [36;1mgit worktree add --detach /tmp/hx003-pair-candidate 739e3de36587533bf3d2f3196072270f4695fa8a[0m
+2026-10-26T19:47:53.4254596Z [36;1mgit diff --exit-code 739e3de36587533bf3d2f3196072270f4695fa8a HEAD -- src public package.json package-lock.json[0m
+2026-10-26T19:47:53.4255043Z [36;1mfor variant in baseline candidate; do[0m
+2026-10-26T19:47:53.4255298Z [36;1m  target="/tmp/hx003-pair-$variant"[0m
+2026-10-26T19:47:53.4255586Z [36;1m  ln -s "$GITHUB_WORKSPACE/node_modules" "$target/node_modules"[0m
+2026-10-26T19:47:53.4255900Z [36;1m  (cd "$target" && npx tsc --noEmit && npx vite build)[0m
+2026-10-26T19:47:53.4256147Z [36;1mdone[0m
+2026-10-26T19:47:53.4311114Z shell: /usr/bin/bash -e {0}
+2026-10-26T19:47:53.4311373Z ##[endgroup]
+2026-10-26T19:47:53.4472033Z Preparing worktree (detached HEAD 103d31b)
+2026-10-26T19:47:53.4765960Z HEAD is now at 103d31b Merge PR #472: reproducible world continuation
+2026-10-26T19:47:53.4786230Z Preparing worktree (detached HEAD 739e3de)
+2026-10-26T19:47:53.5101065Z HEAD is now at 739e3de test(performance): freeze actual paired runner before AB/BA collection
+2026-10-26T19:47:57.2091044Z [36mvite v5.4.21 [32mbuilding for production...[36m[39m
+2026-10-26T19:47:57.2649819Z transforming...
+2026-10-26T19:48:04.2694653Z [32m✓[39m 60 modules transformed.
+2026-10-26T19:48:04.5213136Z rendering chunks...
+2026-10-26T19:48:04.5308541Z computing gzip size...
+2026-10-26T19:48:04.5619174Z [2mdist/[22m[32mindex.html                 [39m[1m[2m  1.35 kB[22m[1m[22m[2m │ gzip:   0.78 kB[22m
+2026-10-26T19:48:04.5620283Z [2mdist/[22m[2massets/[22m[35mindex-By-3o-dh.css  [39m[1m[2m 15.25 kB[22m[1m[22m[2m │ gzip:   3.74 kB[22m
+2026-10-26T19:48:04.5621123Z [2mdist/[22m[2massets/[22m[36mindex-izFvywi0.js   [39m[1m[33m945.58 kB[39m[22m[2m │ gzip: 292.27 kB[22m
+2026-10-26T19:48:04.5621608Z [33m
+2026-10-26T19:48:04.5622137Z (!) Some chunks are larger than 500 kB after minification. Consider:
+2026-10-26T19:48:04.5622517Z - Using dynamic import() to code-split the application
+2026-10-26T19:48:04.5623136Z - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+2026-10-26T19:48:04.5624120Z - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.[39m
+2026-10-26T19:48:04.5624536Z [32m✓ built in 7.33s[39m
+2026-10-26T19:48:08.0334534Z [36mvite v5.4.21 [32mbuilding for production...[36m[39m
+2026-10-26T19:48:08.0821200Z transforming...
+2026-10-26T19:48:14.9487711Z [32m✓[39m 60 modules transformed.
+2026-10-26T19:48:15.1971541Z rendering chunks...
+2026-10-26T19:48:15.2067289Z computing gzip size...
+2026-10-26T19:48:15.2374549Z [2mdist/[22m[32mindex.html                 [39m[1m[2m  1.35 kB[22m[1m[22m[2m │ gzip:   0.78 kB[22m
+2026-10-26T19:48:15.2375673Z [2mdist/[22m[2massets/[22m[35mindex-By-3o-dh.css  [39m[1m[2m 15.25 kB[22m[1m[22m[2m │ gzip:   3.74 kB[22m
+2026-10-26T19:48:15.2376423Z [2mdist/[22m[2massets/[22m[36mindex-Ca4aT0U8.js   [39m[1m[33m945.60 kB[39m[22m[2m │ gzip: 292.29 kB[22m
+2026-10-26T19:48:15.2376878Z [33m
+2026-10-26T19:48:15.2377260Z (!) Some chunks are larger than 500 kB after minification. Consider:
+2026-10-26T19:48:15.2377649Z - Using dynamic import() to code-split the application
+2026-10-26T19:48:15.2378275Z - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+2026-10-26T19:48:15.2379260Z - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.[39m
+2026-10-26T19:48:15.2379690Z [32m✓ built in 7.18s[39m
+2026-10-26T19:48:15.3094642Z ##[group]Run node --input-type=module - <<'JS'
+2026-10-26T19:48:15.3095095Z [36;1mnode --input-type=module - <<'JS'[0m
+2026-10-26T19:48:15.3095639Z [36;1mimport fs from 'node:fs';import os from 'node:os';import {execFileSync} from 'node:child_process';import {createHash} from 'node:crypto';import {chromium} from 'playwright';[0m
+2026-10-26T19:48:15.3096222Z [36;1mconst hash=b=>createHash('sha256').update(b).digest('hex');[0m
+2026-10-26T19:48:15.3096803Z [36;1mconst browser=await chromium.launch({headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});const version=browser.version();await browser.close();[0m
+2026-10-26T19:48:15.3097666Z [36;1mconst names=['scripts/hx-bl-003-v2.mjs','scripts/hx-bl-003-v2-probes.js','scripts/hx-bl-003-v2-analyze.py','.github/workflows/hx-bl-003-v2.yml','reports/HX-BL-003/v2-protocol-manifest.json'];[0m
+2026-10-26T19:48:15.3100784Z [36;1mconst env={protocol:'P1-V2/addendum1.0',created_at:new Date().toISOString(),baseline_sha:'103d31b9f6f5c76b1f6b45d9d6664fe3f75dd63b',candidate_sha:'739e3de36587533bf3d2f3196072270f4695fa8a',harness_sha:process.env.GITHUB_SHA,node:process.version,playwright:JSON.parse(fs.readFileSync('node_modules/playwright/package.json')).version,chromium_version:version,chromium_path:chromium.executablePath(),platform:os.platform(),release:os.release(),cpu:os.cpus()[0].model,vcpus:os.cpus().length,ram_bytes:os.totalmem(),runner:process.env.RUNNER_NAME,image:process.env.ImageVersion,run_id:process.env.GITHUB_RUN_ID,run_attempt:process.env.GITHUB_RUN_ATTEMPT,lock_sha256:hash(fs.readFileSync('package-lock.json')),files:names.map(path=>({path,sha256:hash(fs.readFileSync(path))})),artifact_source:{id:12602421349,run_id:40200788539,name:'HX-BL-003-baseline-outputs',archive_sha256:'57fe9053543b46afa02c972e180b5f14c9f0087e199a8c126c030cc36e47167e'},runtime_tree:execFileSync('git',['rev-parse','HEAD:src'],{encoding:'utf8'}).trim()};[0m
+2026-10-26T19:48:15.3104111Z [36;1mfs.mkdirSync('reports/HX-BL-003/v2',{recursive:true});fs.writeFileSync('reports/HX-BL-003/v2/environment.json',JSON.stringify(env,null,2)+'\n');[0m
+2026-10-26T19:48:15.3104580Z [36;1mJS[0m
+2026-10-26T19:48:15.3104765Z [36;1mgit config user.name github-actions[bot][0m
+2026-10-26T19:48:15.3105102Z [36;1mgit config user.email 41898282+github-actions[bot]@users.noreply.github.com[0m
+2026-10-26T19:48:15.3105452Z [36;1mgit add reports/HX-BL-003/v2/environment.json[0m
+2026-10-26T19:48:15.3105784Z [36;1mgit commit -m "test: freeze actual V2 environment before bounded measurement"[0m
+2026-10-26T19:48:15.3106220Z [36;1mgit push origin HEAD:refs/heads/agent/hx-bl-003-v2-environment-${GITHUB_RUN_ID}[0m
+2026-10-26T19:48:15.3161065Z shell: /usr/bin/bash -e {0}
+2026-10-26T19:48:15.3161273Z ##[endgroup]
+2026-10-26T19:48:15.8860941Z [detached HEAD 92b8629] test: freeze actual V2 environment before bounded measurement
+2026-10-26T19:48:15.8861532Z  1 file changed, 50 insertions(+)
+2026-10-26T19:48:15.8862100Z  create mode 100644 reports/HX-BL-003/v2/environment.json
+2026-10-26T19:48:17.4011690Z remote: 
+2026-10-26T19:48:17.4012658Z remote: Create a pull request for 'agent/hx-bl-003-v2-environment-40388046863' on GitHub by visiting:        
+2026-10-26T19:48:17.4013753Z remote:      https://github.com/YuriyEmelyanov/Hexcrawl/pull/new/agent/hx-bl-003-v2-environment-40388046863        
+2026-10-26T19:48:17.4014372Z remote: 
+2026-10-26T19:48:17.4027674Z To https://github.com/YuriyEmelyanov/Hexcrawl
+2026-10-26T19:48:17.4028047Z  * [new branch]      HEAD -> agent/hx-bl-003-v2-environment-40388046863
+2026-10-26T19:48:17.4100170Z ##[group]Run node scripts/hx-bl-003-v2.mjs
+2026-10-26T19:48:17.4100570Z [36;1mnode scripts/hx-bl-003-v2.mjs[0m
+2026-10-26T19:48:17.4165879Z shell: /usr/bin/bash -e {0}
+2026-10-26T19:48:17.4166101Z ##[endgroup]
+2026-10-26T19:48:28.1161519Z V2_NAV {"input":"mythic-0-N1200.json","variant":"A","iteration":"warmup","status":"success"}
+2026-10-26T19:48:36.8184935Z V2_NAV {"input":"mythic-0-N1200.json","variant":"B","iteration":"warmup","status":"success"}
+2026-10-26T19:48:45.0511334Z V2_NAV {"input":"mythic-0-N1200.json","variant":"A","iteration":0,"status":"success"}
+2026-10-26T19:48:53.1012472Z V2_NAV {"input":"mythic-0-N1200.json","variant":"B","iteration":0,"status":"success"}
+2026-10-26T19:49:01.4839435Z V2_NAV {"input":"mythic-0-N1200.json","variant":"B","iteration":1,"status":"success"}
+2026-10-26T19:49:10.2667651Z V2_NAV {"input":"mythic-0-N1200.json","variant":"A","iteration":1,"status":"success"}
+2026-10-26T19:49:18.9833144Z V2_NAV {"input":"mythic-0-N1200.json","variant":"A","iteration":2,"status":"success"}
+2026-10-26T19:49:27.3828849Z V2_NAV {"input":"mythic-0-N1200.json","variant":"B","iteration":2,"status":"success"}
+2026-10-26T19:49:36.1825283Z V2_NAV {"input":"mythic-0-N1200.json","variant":"B","iteration":3,"status":"success"}
+2026-10-26T19:49:44.9656996Z V2_NAV {"input":"mythic-0-N1200.json","variant":"A","iteration":3,"status":"success"}
+2026-10-26T19:49:53.9483282Z V2_NAV {"input":"mythic-0-N1200.json","variant":"A","iteration":4,"status":"success"}
+2026-10-26T19:50:02.4647748Z V2_NAV {"input":"mythic-0-N1200.json","variant":"B","iteration":4,"status":"success"}
+2026-10-26T19:50:15.7646179Z V2_NAV {"input":"mythic-0-N2400.json","variant":"A","iteration":"warmup","status":"success"}
+2026-10-26T19:50:28.0641072Z V2_NAV {"input":"mythic-0-N2400.json","variant":"B","iteration":"warmup","status":"success"}
+2026-10-26T19:50:39.0799132Z V2_NAV {"input":"mythic-0-N2400.json","variant":"A","iteration":0,"status":"success"}
+2026-10-26T19:50:49.9964147Z V2_NAV {"input":"mythic-0-N2400.json","variant":"B","iteration":0,"status":"success"}
+2026-10-26T19:51:01.6626811Z V2_NAV {"input":"mythic-0-N2400.json","variant":"B","iteration":1,"status":"success"}
+2026-10-26T19:51:13.7787437Z V2_NAV {"input":"mythic-0-N2400.json","variant":"A","iteration":1,"status":"success"}
+2026-10-26T19:51:24.9284156Z V2_NAV {"input":"mythic-0-N2400.json","variant":"A","iteration":2,"status":"success"}
+2026-10-26T19:51:36.1945146Z V2_NAV {"input":"mythic-0-N2400.json","variant":"B","iteration":2,"status":"success"}
+2026-10-26T19:51:47.1276663Z V2_NAV {"input":"mythic-0-N2400.json","variant":"B","iteration":3,"status":"success"}
+2026-10-26T19:51:59.5768358Z V2_NAV {"input":"mythic-0-N2400.json","variant":"A","iteration":3,"status":"success"}
+2026-10-26T19:52:13.5602411Z V2_NAV {"input":"mythic-0-N2400.json","variant":"A","iteration":4,"status":"success"}
+2026-10-26T19:52:24.3425853Z V2_NAV {"input":"mythic-0-N2400.json","variant":"B","iteration":4,"status":"success"}
+2026-10-26T19:54:42.3753746Z V2_PNG {"input":"mythic-0-N2400-after.json","variant":"A","status":"captured","attempted":true}
+2026-10-26T19:57:01.4383472Z V2_PNG {"input":"mythic-0-N2400-after.json","variant":"B","status":"captured","attempted":true}
+2026-10-26T19:59:34.2985098Z V2_PNG {"input":"mythic-123456789-N2400-after.json","variant":"A","status":"captured","attempted":true}
+2026-10-26T20:02:00.5240440Z V2_PNG {"input":"mythic-123456789-N2400-after.json","variant":"B","status":"captured","attempted":true}
+2026-10-26T20:02:00.5544493Z ##[group]Run python -m pip install Pillow
+2026-10-26T20:02:00.5544794Z [36;1mpython -m pip install Pillow[0m
+2026-10-26T20:02:00.5545065Z [36;1mpython scripts/hx-bl-003-v2-analyze.py[0m
+2026-10-26T20:02:00.5600464Z shell: /usr/bin/bash -e {0}
+2026-10-26T20:02:00.5600671Z ##[endgroup]
+2026-10-26T20:02:01.4289760Z Defaulting to user installation because normal site-packages is not writeable
+2026-10-26T20:02:02.1564653Z Collecting Pillow
+2026-10-26T20:02:02.2003416Z   Downloading pillow-13.0.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (9.1 kB)
+2026-10-26T20:02:02.2229807Z Downloading pillow-13.0.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (7.1 MB)
+2026-10-26T20:02:02.3591906Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.1/7.1 MB 53.7 MB/s eta 0:00:00
+2026-10-26T20:02:02.5648028Z Installing collected packages: Pillow
+2026-10-26T20:02:02.8135596Z Successfully installed Pillow-13.0.0
+2026-10-26T20:02:07.9161271Z {
+2026-10-26T20:02:07.9162243Z   "protocol": "P1-V2/addendum1.0",
+2026-10-26T20:02:07.9162599Z   "unit": "ms",
+2026-10-26T20:02:07.9163115Z   "nesting": "120 frames nested in five measured actions; not 120 independent repetitions",
+2026-10-26T20:02:07.9163764Z   "navigation": [
+2026-10-26T20:02:07.9164023Z     {
+2026-10-26T20:02:07.9164284Z       "input": "mythic-0-N1200.json",
+2026-10-26T20:02:07.9164602Z       "phase": "zoom",
+2026-10-26T20:02:07.9164876Z       "variants": {
+2026-10-26T20:02:07.9165121Z         "A": {
+2026-10-26T20:02:07.9165367Z           "complete": true,
+2026-10-26T20:02:07.9165688Z           "protocol_errors": [],
+2026-10-26T20:02:07.9165981Z           "warmups": [
+2026-10-26T20:02:07.9166220Z             {
+2026-10-26T20:02:07.9166460Z               "position": 0,
+2026-10-26T20:02:07.9166699Z               "status": "success"
+2026-10-26T20:02:07.9166889Z             }
+2026-10-26T20:02:07.9167039Z           ],
+2026-10-26T20:02:07.9167196Z           "pooled": {
+2026-10-26T20:02:07.9167365Z             "n": 120,
+2026-10-26T20:02:07.9167578Z             "min": 16.59999999999127,
+2026-10-26T20:02:07.9167790Z             "max": 2583.199999999997,
+2026-10-26T20:02:07.9168004Z             "p95": 766.7000000000044,
+2026-10-26T20:02:07.9168223Z             "median": 16.69999999999709,
+2026-10-26T20:02:07.9168422Z             "over50": 15,
+2026-10-26T20:02:07.9168603Z             "over500": 11,
+2026-10-26T20:02:07.9168799Z             "over50_fraction": 0.125,
+2026-10-26T20:02:07.9169031Z             "over500_fraction": 0.09166666666666666
+2026-10-26T20:02:07.9169241Z           },
+2026-10-26T20:02:07.9169398Z           "per_run": [
+2026-10-26T20:02:07.9169560Z             {
+2026-10-26T20:02:07.9169717Z               "iteration": 0,
+2026-10-26T20:02:07.9169919Z               "status": "success",
+2026-10-26T20:02:07.9170112Z               "stats": {
+2026-10-26T20:02:07.9170281Z                 "n": 24,
+2026-10-26T20:02:07.9170481Z                 "min": 16.599999999998545,
+2026-10-26T20:02:07.9170703Z                 "max": 2516.5,
+2026-10-26T20:02:07.9170905Z                 "p95": 583.3019999999997,
+2026-10-26T20:02:07.9171125Z                 "median": 16.700000000000728,
+2026-10-26T20:02:07.9171338Z                 "over50": 2,
+2026-10-26T20:02:07.9171519Z                 "over500": 2,
+2026-10-26T20:02:07.9171739Z                 "over50_fraction": 0.08333333333333333,
+2026-10-26T20:02:07.9172204Z                 "over500_fraction": 0.08333333333333333
+2026-10-26T20:02:07.9172413Z               }
+2026-10-26T20:02:07.9172564Z             },
+2026-10-26T20:02:07.9172714Z             {
+2026-10-26T20:02:07.9172867Z               "iteration": 1,
+2026-10-26T20:02:07.9173067Z               "status": "success",
+2026-10-26T20:02:07.9173254Z               "stats": {
+2026-10-26T20:02:07.9173424Z                 "n": 24,
+2026-10-26T20:02:07.9173615Z                 "min": 16.599999999998545,
+2026-10-26T20:02:07.9173827Z                 "max": 2583.199999999997,
+2026-10-26T20:02:07.9174039Z                 "p95": 766.7000000000044,
+2026-10-26T20:02:07.9174475Z                 "median": 16.69999999999709,
+2026-10-26T20:02:07.9174688Z                 "over50": 4,
+2026-10-26T20:02:07.9174874Z                 "over500": 3,
+2026-10-26T20:02:07.9175091Z                 "over50_fraction": 0.16666666666666666,
+2026-10-26T20:02:07.9175327Z                 "over500_fraction": 0.125
+2026-10-26T20:02:07.9175520Z               }
+2026-10-26T20:02:07.9175672Z             },
+2026-10-26T20:02:07.9175816Z             {
+2026-10-26T20:02:07.9175965Z               "iteration": 2,
+2026-10-26T20:02:07.9176160Z               "status": "success",
+2026-10-26T20:02:07.9176344Z               "stats": {
+2026-10-26T20:02:07.9176510Z                 "n": 24,
+2026-10-26T20:02:07.9176698Z                 "min": 16.599999999998545,
+2026-10-26T20:02:07.9176914Z                 "max": 2533.2000000000044,
+2026-10-26T20:02:07.9177123Z                 "p95": 766.5999999999985,
+2026-10-26T20:02:07.9177341Z                 "median": 16.69999999999709,
+2026-10-26T20:02:07.9177549Z                 "over50": 3,
+2026-10-26T20:02:07.9177733Z                 "over500": 2,
+2026-10-26T20:02:07.9177936Z                 "over50_fraction": 0.125,
+2026-10-26T20:02:07.9178292Z                 "over500_fraction": 0.08333333333333333
+2026-10-26T20:02:07.9178503Z               }
+2026-10-26T20:02:07.9178653Z             },
+2026-10-26T20:02:07.9178799Z             {
+2026-10-26T20:02:07.9178951Z               "iteration": 3,
+2026-10-26T20:02:07.9179152Z               "status": "success",
+2026-10-26T20:02:07.9179341Z               "stats": {
+2026-10-26T20:02:07.9179511Z                 "n": 24,
+2026-10-26T20:02:07.9179692Z                 "min": 16.59999999999127,
+2026-10-26T20:02:07.9179899Z                 "max": 2533.300000000003,
+2026-10-26T20:02:07.9180104Z                 "p95": 749.8999999999942,
+2026-10-26T20:02:07.9180323Z                 "median": 16.69999999999709,
+2026-10-26T20:02:07.9180522Z                 "over50": 3,
+2026-10-26T20:02:07.9180697Z                 "over500": 2,
+2026-10-26T20:02:07.9180897Z                 "over50_fraction": 0.125,
+2026-10-26T20:02:07.9181126Z                 "over500_fraction": 0.08333333333333333
+2026-10-26T20:02:07.9181333Z               }
+2026-10-26T20:02:07.9181485Z             },
+2026-10-26T20:02:07.9181627Z             {
+2026-10-26T20:02:07.9181881Z               "iteration": 4,
+2026-10-26T20:02:07.9182072Z               "status": "success",
+2026-10-26T20:02:07.9182256Z               "stats": {
+2026-10-26T20:02:07.9182419Z                 "n": 24,
+2026-10-26T20:02:07.9182603Z                 "min": 16.59999999999127,
+2026-10-26T20:02:07.9182808Z                 "max": 2533.199999999997,
+2026-10-26T20:02:07.9183013Z                 "p95": 766.7000000000116,
+2026-10-26T20:02:07.9183229Z                 "median": 16.69999999999709,
+2026-10-26T20:02:07.9183422Z                 "over50": 3,
+2026-10-26T20:02:07.9183594Z                 "over500": 2,
+2026-10-26T20:02:07.9183791Z                 "over50_fraction": 0.125,
+2026-10-26T20:02:07.9184020Z                 "over500_fraction": 0.08333333333333333
+2026-10-26T20:02:07.9184219Z               }
+2026-10-26T20:02:07.9184364Z             }
+2026-10-26T20:02:07.9184514Z           ],
+2026-10-26T20:02:07.9184699Z           "median_per_run_p95": 766.5999999999985
+2026-10-26T20:02:07.9184914Z         },
+2026-10-26T20:02:07.9185059Z         "B": {
+2026-10-26T20:02:07.9185217Z           "complete": true,
+2026-10-26T20:02:07.9185419Z           "protocol_errors": [],
+2026-10-26T20:02:07.9185607Z           "warmups": [
+2026-10-26T20:02:07.9185769Z             {
+2026-10-26T20:02:07.9185927Z               "position": 1,
+2026-10-26T20:02:07.9186124Z               "status": "success"
+2026-10-26T20:02:07.9186309Z             }
+2026-10-26T20:02:07.9186451Z           ],
+2026-10-26T20:02:07.9186597Z           "pooled": {
+2026-10-26T20:02:07.9186761Z             "n": 120,
+2026-10-26T20:02:07.9186945Z             "min": 16.59999999999127,
+2026-10-26T20:02:07.9187157Z             "max": 2833.2000000000007,
+2026-10-26T20:02:07.9187502Z             "p95": 816.7000000000044,
+2026-10-26T20:02:07.9187733Z             "median": 16.69999999999709,
+2026-10-26T20:02:07.9187935Z             "over50": 17,
+2026-10-26T20:02:07.9188111Z             "over500": 11,
+2026-10-26T20:02:07.9188329Z             "over50_fraction": 0.14166666666666666,
+2026-10-26T20:02:07.9188575Z             "over500_fraction": 0.09166666666666666
+2026-10-26T20:02:07.9188775Z           },
+2026-10-26T20:02:07.9188926Z           "per_run": [
+2026-10-26T20:02:07.9189087Z             {
+2026-10-26T20:02:07.9189243Z               "iteration": 0,
+2026-10-26T20:02:07.9189449Z               "status": "success",
+2026-10-26T20:02:07.9189641Z               "stats": {
+2026-10-26T20:02:07.9189811Z                 "n": 24,
+2026-10-26T20:02:07.9189998Z                 "min": 16.599999999998545,
+2026-10-26T20:02:07.9190212Z                 "max": 2833.2000000000007,
+2026-10-26T20:02:07.9190422Z                 "p95": 233.27799999999843,
+2026-10-26T20:02:07.9190643Z                 "median": 16.69999999999709,
+2026-10-26T20:02:07.9190849Z                 "over50": 2,
+2026-10-26T20:02:07.9191031Z                 "over500": 1,
+2026-10-26T20:02:07.9191343Z                 "over50_fraction": 0.08333333333333333,
+2026-10-26T20:02:07.9191597Z                 "over500_fraction": 0.041666666666666664
+2026-10-26T20:02:07.9191996Z               }
+2026-10-26T20:02:07.9192154Z             },
+2026-10-26T20:02:07.9192304Z             {
+2026-10-26T20:02:07.9192456Z               "iteration": 1,
+2026-10-26T20:02:07.9192654Z               "status": "success",
+2026-10-26T20:02:07.9192839Z               "stats": {
+2026-10-26T20:02:07.9193003Z                 "n": 24,
+2026-10-26T20:02:07.9193190Z                 "min": 16.599999999998545,
+2026-10-26T20:02:07.9193398Z                 "max": 2499.9000000000015,
+2026-10-26T20:02:07.9193610Z                 "p95": 816.7000000000044,
+2026-10-26T20:02:07.9193828Z                 "median": 16.69999999999709,
+2026-10-26T20:02:07.9194027Z                 "over50": 5,
+2026-10-26T20:02:07.9194205Z                 "over500": 3,
+2026-10-26T20:02:07.9194420Z                 "over50_fraction": 0.20833333333333334,
+2026-10-26T20:02:07.9194655Z                 "over500_fraction": 0.125
+2026-10-26T20:02:07.9194844Z               }
+2026-10-26T20:02:07.9194995Z             },
+2026-10-26T20:02:07.9195139Z             {
+2026-10-26T20:02:07.9195290Z               "iteration": 2,
+2026-10-26T20:02:07.9195486Z               "status": "success",
+2026-10-26T20:02:07.9195670Z               "stats": {
+2026-10-26T20:02:07.9195832Z                 "n": 24,
+2026-10-26T20:02:07.9196014Z                 "min": 16.59999999999127,
+2026-10-26T20:02:07.9196220Z                 "max": 2566.600000000006,
+2026-10-26T20:02:07.9196429Z                 "p95": 816.5999999999985,
+2026-10-26T20:02:07.9196647Z                 "median": 16.69999999999709,
+2026-10-26T20:02:07.9196840Z                 "over50": 3,
+2026-10-26T20:02:07.9197013Z                 "over500": 2,
+2026-10-26T20:02:07.9197211Z                 "over50_fraction": 0.125,
+2026-10-26T20:02:07.9197439Z                 "over500_fraction": 0.08333333333333333
+2026-10-26T20:02:07.9197648Z               }
+2026-10-26T20:02:07.9197797Z             },
+2026-10-26T20:02:07.9197940Z             {
+2026-10-26T20:02:07.9198093Z               "iteration": 3,
+2026-10-26T20:02:07.9198283Z               "status": "success",
+2026-10-26T20:02:07.9198462Z               "stats": {
+2026-10-26T20:02:07.9198624Z                 "n": 24,
+2026-10-26T20:02:07.9198808Z                 "min": 16.59999999999127,
+2026-10-26T20:02:07.9199026Z                 "max": 2516.600000000006,
+2026-10-26T20:02:07.9209652Z                 "p95": 850,
+2026-10-26T20:02:07.9210056Z                 "median": 16.69999999999709,
+2026-10-26T20:02:07.9210391Z                 "over50": 3,
+2026-10-26T20:02:07.9210649Z                 "over500": 2,
+2026-10-26T20:02:07.9210876Z                 "over50_fraction": 0.125,
+2026-10-26T20:02:07.9211138Z                 "over500_fraction": 0.08333333333333333
+2026-10-26T20:02:07.9211514Z               }
+2026-10-26T20:02:07.9211677Z             },
+2026-10-26T20:02:07.9211944Z             {
+2026-10-26T20:02:07.9212183Z               "iteration": 4,
+2026-10-26T20:02:07.9212397Z               "status": "success",
+2026-10-26T20:02:07.9212606Z               "stats": {
+2026-10-26T20:02:07.9212777Z                 "n": 24,
+2026-10-26T20:02:07.9212969Z                 "min": 16.59999999999127,
+2026-10-26T20:02:07.9213187Z                 "max": 2549.800000000003,
+2026-10-26T20:02:07.9213396Z                 "p95": 783.3999999999942,
+2026-10-26T20:02:07.9213616Z                 "median": 16.69999999999709,
+2026-10-26T20:02:07.9213829Z                 "over50": 4,
+2026-10-26T20:02:07.9214016Z                 "over500": 3,
+2026-10-26T20:02:07.9214238Z                 "over50_fraction": 0.16666666666666666,
+2026-10-26T20:02:07.9214477Z                 "over500_fraction": 0.125
+2026-10-26T20:02:07.9214674Z               }
+2026-10-26T20:02:07.9214832Z             }
+2026-10-26T20:02:07.9214991Z           ],
+2026-10-26T20:02:07.9215182Z           "median_per_run_p95": 816.5999999999985
+2026-10-26T20:02:07.9215514Z         }
+2026-10-26T20:02:07.9215654Z       },
+2026-10-26T20:02:07.9215803Z       "delta_ms": 50.0,
+2026-10-26T20:02:07.9216002Z       "relative_delta": 0.06521455588887402,
+2026-10-26T20:02:07.9216216Z       "guard_breach": false,
+2026-10-26T20:02:07.9216430Z       "status": "bounded_guard_pass",
+2026-10-26T20:02:07.9216638Z       "paired": [
+2026-10-26T20:02:07.9216797Z         {
+2026-10-26T20:02:07.9216947Z           "iteration": 0,
+2026-10-26T20:02:07.9217141Z           "A_p95": 583.3019999999997,
+2026-10-26T20:02:07.9217351Z           "B_p95": 233.27799999999843,
+2026-10-26T20:02:07.9217577Z           "delta_ms": -350.02400000000125,
+2026-10-26T20:02:07.9217801Z           "ratio": 0.3999266246301205
+2026-10-26T20:02:07.9217987Z         },
+2026-10-26T20:02:07.9218128Z         {
+2026-10-26T20:02:07.9218275Z           "iteration": 1,
+2026-10-26T20:02:07.9218468Z           "A_p95": 766.7000000000044,
+2026-10-26T20:02:07.9218676Z           "B_p95": 816.7000000000044,
+2026-10-26T20:02:07.9218864Z           "delta_ms": 50.0,
+2026-10-26T20:02:07.9219062Z           "ratio": 1.065214555888874
+2026-10-26T20:02:07.9219246Z         },
+2026-10-26T20:02:07.9219384Z         {
+2026-10-26T20:02:07.9219533Z           "iteration": 2,
+2026-10-26T20:02:07.9219730Z           "A_p95": 766.5999999999985,
+2026-10-26T20:02:07.9219933Z           "B_p95": 816.5999999999985,
+2026-10-26T20:02:07.9220119Z           "delta_ms": 50.0,
+2026-10-26T20:02:07.9220312Z           "ratio": 1.0652230628750328
+2026-10-26T20:02:07.9220489Z         },
+2026-10-26T20:02:07.9220630Z         {
+2026-10-26T20:02:07.9220780Z           "iteration": 3,
+2026-10-26T20:02:07.9220966Z           "A_p95": 749.8999999999942,
+2026-10-26T20:02:07.9221147Z           "B_p95": 850,
+2026-10-26T20:02:07.9221337Z           "delta_ms": 100.10000000000582,
+2026-10-26T20:02:07.9221557Z           "ratio": 1.1334844645952882
+2026-10-26T20:02:07.9221826Z         },
+2026-10-26T20:02:07.9221980Z         {
+2026-10-26T20:02:07.9222126Z           "iteration": 4,
+2026-10-26T20:02:07.9222322Z           "A_p95": 766.7000000000116,
+2026-10-26T20:02:07.9222525Z           "B_p95": 783.3999999999942,
+2026-10-26T20:02:07.9222731Z           "delta_ms": 16.699999999982538,
+2026-10-26T20:02:07.9222944Z           "ratio": 1.021781661666861
+2026-10-26T20:02:07.9223134Z         }
+2026-10-26T20:02:07.9223276Z       ]
+2026-10-26T20:02:07.9223417Z     },
+2026-10-26T20:02:07.9223558Z     {
+2026-10-26T20:02:07.9223729Z       "input": "mythic-0-N1200.json",
+2026-10-26T20:02:07.9223934Z       "phase": "pan",
+2026-10-26T20:02:07.9224109Z       "variants": {
+2026-10-26T20:02:07.9224277Z         "A": {
+2026-10-26T20:02:07.9224439Z           "complete": true,
+2026-10-26T20:02:07.9224647Z           "protocol_errors": [],
+2026-10-26T20:02:07.9224837Z           "warmups": [
+2026-10-26T20:02:07.9225001Z             {
+2026-10-26T20:02:07.9225161Z               "position": 0,
+2026-10-26T20:02:07.9225494Z               "status": "success"
+2026-10-26T20:02:07.9225681Z             }
+2026-10-26T20:02:07.9225827Z           ],
+2026-10-26T20:02:07.9225984Z           "pooled": {
+2026-10-26T20:02:07.9226145Z             "n": 120,
+2026-10-26T20:02:07.9226324Z             "min": 16.59999999999127,
+2026-10-26T20:02:07.9226519Z             "max": 700,
+2026-10-26T20:02:07.9226699Z             "p95": 133.2679999999964,
+2026-10-26T20:02:07.9226904Z             "median": 16.69999999999709,
+2026-10-26T20:02:07.9227101Z             "over50": 10,
+2026-10-26T20:02:07.9227271Z             "over500": 5,
+2026-10-26T20:02:07.9227476Z             "over50_fraction": 0.08333333333333333,
+2026-10-26T20:02:07.9227735Z             "over500_fraction": 0.041666666666666664
+2026-10-26T20:02:07.9227943Z           },
+2026-10-26T20:02:07.9228096Z           "per_run": [
+2026-10-26T20:02:07.9228258Z             {
+2026-10-26T20:02:07.9228414Z               "iteration": 0,
+2026-10-26T20:02:07.9228618Z               "status": "success",
+2026-10-26T20:02:07.9228823Z               "stats": {
+2026-10-26T20:02:07.9228994Z                 "n": 24,
+2026-10-26T20:02:07.9229284Z                 "min": 16.599999999998545,
+2026-10-26T20:02:07.9229506Z                 "max": 616.7999999999993,
+2026-10-26T20:02:07.9229721Z                 "p95": 133.20000000000073,
+2026-10-26T20:02:07.9229938Z                 "median": 16.700000000000728,
+2026-10-26T20:02:07.9230147Z                 "over50": 2,
+2026-10-26T20:02:07.9230327Z                 "over500": 1,
+2026-10-26T20:02:07.9230545Z                 "over50_fraction": 0.08333333333333333,
+2026-10-26T20:02:07.9230798Z                 "over500_fraction": 0.041666666666666664
+2026-10-26T20:02:07.9231008Z               }
+2026-10-26T20:02:07.9231160Z             },
+2026-10-26T20:02:07.9231310Z             {
+2026-10-26T20:02:07.9231460Z               "iteration": 1,
+2026-10-26T20:02:07.9231655Z               "status": "success",
+2026-10-26T20:02:07.9231933Z               "stats": {
+2026-10-26T20:02:07.9232099Z                 "n": 24,
+2026-10-26T20:02:07.9232284Z                 "min": 16.599999999998545,
+2026-10-26T20:02:07.9232500Z                 "max": 633.3999999999942,
+2026-10-26T20:02:07.9232718Z                 "p95": 116.5679999999993,
+2026-10-26T20:02:07.9232932Z                 "median": 16.69999999999709,
+2026-10-26T20:02:07.9233134Z                 "over50": 2,
+2026-10-26T20:02:07.9233306Z                 "over500": 1,
+2026-10-26T20:02:07.9233519Z                 "over50_fraction": 0.08333333333333333,
+2026-10-26T20:02:07.9233770Z                 "over500_fraction": 0.041666666666666664
+2026-10-26T20:02:07.9233976Z               }
+2026-10-26T20:02:07.9234123Z             },
+2026-10-26T20:02:07.9234266Z             {
+2026-10-26T20:02:07.9234413Z               "iteration": 2,
+2026-10-26T20:02:07.9234604Z               "status": "success",
+2026-10-26T20:02:07.9234791Z               "stats": {
+2026-10-26T20:02:07.9234953Z                 "n": 24,
+2026-10-26T20:02:07.9235132Z                 "min": 16.599999999998545,
+2026-10-26T20:02:07.9235343Z                 "max": 616.5999999999985,
+2026-10-26T20:02:07.9235551Z                 "p95": 133.34199999999691,
+2026-10-26T20:02:07.9235771Z                 "median": 16.69999999999709,
+2026-10-26T20:02:07.9235969Z                 "over50": 2,
+2026-10-26T20:02:07.9236142Z                 "over500": 1,
+2026-10-26T20:02:07.9236353Z                 "over50_fraction": 0.08333333333333333,
+2026-10-26T20:02:07.9236595Z                 "over500_fraction": 0.041666666666666664
+2026-10-26T20:02:07.9236797Z               }
+2026-10-26T20:02:07.9236942Z             },
+2026-10-26T20:02:07.9237099Z             {
+2026-10-26T20:02:07.9237249Z               "iteration": 3,
+2026-10-26T20:02:07.9237438Z               "status": "success",
+2026-10-26T20:02:07.9237621Z               "stats": {
+2026-10-26T20:02:07.9237779Z                 "n": 24,
+2026-10-26T20:02:07.9237962Z                 "min": 16.59999999999127,
+2026-10-26T20:02:07.9238160Z                 "max": 700,
+2026-10-26T20:02:07.9238476Z                 "p95": 83.24199999999837,
+2026-10-26T20:02:07.9238692Z                 "median": 16.69999999999709,
+2026-10-26T20:02:07.9238892Z                 "over50": 2,
+2026-10-26T20:02:07.9239161Z                 "over500": 1,
+2026-10-26T20:02:07.9239369Z                 "over50_fraction": 0.08333333333333333,
+2026-10-26T20:02:07.9239611Z                 "over500_fraction": 0.041666666666666664
+2026-10-26T20:02:07.9239813Z               }
+2026-10-26T20:02:07.9239957Z             },
+2026-10-26T20:02:07.9240100Z             {
+2026-10-26T20:02:07.9240248Z               "iteration": 4,
+2026-10-26T20:02:07.9240439Z               "status": "success",
+2026-10-26T20:02:07.9240628Z               "stats": {
+2026-10-26T20:02:07.9240789Z                 "n": 24,
+2026-10-26T20:02:07.9240987Z                 "min": 16.59999999999127,
+2026-10-26T20:02:07.9241205Z                 "max": 616.7000000000116,
+2026-10-26T20:02:07.9241415Z                 "p95": 133.2679999999964,
+2026-10-26T20:02:07.9241635Z                 "median": 16.69999999999709,
+2026-10-26T20:02:07.9241939Z                 "over50": 2,
+2026-10-26T20:02:07.9242123Z                 "over500": 1,
+2026-10-26T20:02:07.9242455Z                 "over50_fraction": 0.08333333333333333,
+2026-10-26T20:02:07.9242711Z                 "over500_fraction": 0.041666666666666664
+2026-10-26T20:02:07.9242923Z               }
+2026-10-26T20:02:07.9243085Z             }
+2026-10-26T20:02:07.9243236Z           ],
+2026-10-26T20:02:07.9243425Z           "median_per_run_p95": 133.20000000000073
+2026-10-26T20:02:07.9243633Z         },
+2026-10-26T20:02:07.9243777Z         "B": {
+2026-10-26T20:02:07.9243937Z           "complete": true,
+2026-10-26T20:02:07.9244139Z           "protocol_errors": [],
+2026-10-26T20:02:07.9244337Z           "warmups": [
+2026-10-26T20:02:07.9244501Z             {
+2026-10-26T20:02:07.9244656Z               "position": 1,
+2026-10-26T20:02:07.9244853Z               "status": "success"
+2026-10-26T20:02:07.9245033Z             }
+2026-10-26T20:02:07.9245179Z           ],
+2026-10-26T20:02:07.9245336Z           "pooled": {
+2026-10-26T20:02:07.9245497Z             "n": 120,
+2026-10-26T20:02:07.9245681Z             "min": 16.59999999999127,
+2026-10-26T20:02:07.9245877Z             "max": 700,
+2026-10-26T20:02:07.9246066Z             "p95": 116.64199999999983,
+2026-10-26T20:02:07.9246286Z             "median": 16.69999999999709,
+2026-10-26T20:02:07.9246492Z             "over50": 11,
+2026-10-26T20:02:07.9246664Z             "over500": 5,
+2026-10-26T20:02:07.9246867Z             "over50_fraction": 0.09166666666666666,
+2026-10-26T20:02:07.9247120Z             "over500_fraction": 0.041666666666666664
+2026-10-26T20:02:07.9247326Z           },
+2026-10-26T20:02:07.9247475Z           "per_run": [
+2026-10-26T20:02:07.9247638Z             {
+2026-10-26T20:02:07.9247792Z               "iteration": 0,
+2026-10-26T20:02:07.9247995Z               "status": "success",
+2026-10-26T20:02:07.9248189Z               "stats": {
+2026-10-26T20:02:07.9248357Z                 "n": 24,
+2026-10-26T20:02:07.9248547Z                 "min": 16.599999999998545,
+2026-10-26T20:02:07.9248752Z                 "max": 700,
+2026-10-26T20:02:07.9248951Z                 "p95": 83.26800000000367,
+2026-10-26T20:02:07.9249168Z                 "median": 16.69999999999709,
+2026-10-26T20:02:07.9249369Z                 "over50": 2,
+2026-10-26T20:02:07.9249542Z                 "over500": 1,
+2026-10-26T20:02:07.9249759Z                 "over50_fraction": 0.08333333333333333,
+2026-10-26T20:02:07.9250009Z                 "over500_fraction": 0.041666666666666664
+2026-10-26T20:02:07.9250215Z               }
+2026-10-26T20:02:07.9250365Z             },
+2026-10-26T20:02:07.9250516Z             {
+2026-10-26T20:02:07.9250680Z               "iteration": 1,
+2026-10-26T20:02:07.9250888Z               "status": "success",
+2026-10-26T20:02:07.9251084Z               "stats": {
+2026-10-26T20:02:07.9251251Z                 "n": 24,
+2026-10-26T20:02:07.9251435Z                 "min": 16.599999999998545,
+2026-10-26T20:02:07.9251850Z                 "max": 616.5999999999985,
+2026-10-26T20:02:07.9252168Z                 "p95": 116.64199999999983,
+2026-10-26T20:02:07.9252394Z                 "median": 16.69999999999709,
+2026-10-26T20:02:07.9252597Z                 "over50": 3,
+2026-10-26T20:02:07.9252770Z                 "over500": 1,
+2026-10-26T20:02:07.9252972Z                 "over50_fraction": 0.125,
+2026-10-26T20:02:07.9253207Z                 "over500_fraction": 0.041666666666666664
+2026-10-26T20:02:07.9253413Z               }
+2026-10-26T20:02:07.9253563Z             },
+2026-10-26T20:02:07.9253709Z             {
+2026-10-26T20:02:07.9253860Z               "iteration": 2,
+2026-10-26T20:02:07.9254049Z               "status": "success",
+2026-10-26T20:02:07.9254232Z               "stats": {
+2026-10-26T20:02:07.9254393Z                 "n": 24,
+2026-10-26T20:02:07.9254573Z                 "min": 16.59999999999127,
+2026-10-26T20:02:07.9254767Z                 "max": 700,
+2026-10-26T20:02:07.9254953Z                 "p95": 83.30800000000454,
+2026-10-26T20:02:07.9255173Z                 "median": 16.69999999999709,
+2026-10-26T20:02:07.9255386Z                 "over50": 2,
+2026-10-26T20:02:07.9255698Z                 "over500": 1,
+2026-10-26T20:02:07.9255918Z                 "over50_fraction": 0.08333333333333333,
+2026-10-26T20:02:07.9256187Z                 "over500_fraction": 0.041666666666666664
+2026-10-26T20:02:07.9256398Z               }
+2026-10-26T20:02:07.9256552Z             },
+2026-10-26T20:02:07.9256700Z             {
+2026-10-26T20:02:07.9256858Z               "iteration": 3,
+2026-10-26T20:02:07.9257060Z               "status": "success",
+2026-10-26T20:02:07.9257257Z               "stats": {
+2026-10-26T20:02:07.9257426Z                 "n": 24,
+2026-10-26T20:02:07.9257615Z                 "min": 16.59999999999127,
+2026-10-26T20:02:07.9257829Z                 "max": 616.7000000000116,
+2026-10-26T20:02:07.9258039Z                 "p95": 133.24199999999837,
+2026-10-26T20:02:07.9258267Z                 "median": 16.69999999999709,
+2026-10-26T20:02:07.9258494Z                 "over50": 2,
+2026-10-26T20:02:07.9258677Z                 "over500": 1,
+2026-10-26T20:02:07.9258897Z                 "over50_fraction": 0.08333333333333333,
+2026-10-26T20:02:07.9259142Z                 "over500_fraction": 0.041666666666666664
+2026-10-26T20:02:07.9259347Z               }
+2026-10-26T20:02:07.9259501Z             },
+2026-10-26T20:02:07.9259653Z             {
+2026-10-26T20:02:07.9259805Z               "iteration": 4,
+2026-10-26T20:02:07.9259998Z               "status": "success",
+2026-10-26T20:02:07.9260185Z               "stats": {
+2026-10-26T20:02:07.9260348Z                 "n": 24,
+2026-10-26T20:02:07.9260531Z                 "min": 16.59999999999127,
+2026-10-26T20:02:07.9260746Z                 "max": 633.3000000000029,
+2026-10-26T20:02:07.9260956Z                 "p95": 116.64199999999255,
+2026-10-26T20:02:07.9261175Z                 "median": 16.69999999999709,
+2026-10-26T20:02:07.9261375Z                 "over50": 2,
+2026-10-26T20:02:07.9261555Z                 "over500": 1,
+2026-10-26T20:02:07.9261925Z                 "over50_fraction": 0.08333333333333333,
+2026-10-26T20:02:07.9262233Z                 "over500_fraction": 0.041666666666666664
+2026-10-26T20:02:07.9262437Z               }
+2026-10-26T20:02:07.9262588Z             }
+2026-10-26T20:02:07.9262732Z           ],
+2026-10-26T20:02:07.9262924Z           "median_per_run_p95": 116.64199999999255
+2026-10-26T20:02:07.9263135Z         }
+2026-10-26T20:02:07.9263283Z       },
+2026-10-26T20:02:07.9263456Z       "delta_ms": -16.625999999996566,
+2026-10-26T20:02:07.9263687Z       "relative_delta": -0.12475613050392455,
+2026-10-26T20:02:07.9263898Z       "guard_breach": false,
+2026-10-26T20:02:07.9264103Z       "status": "bounded_guard_pass",
+2026-10-26T20:02:07.9264304Z       "paired": [
+2026-10-26T20:02:07.9264461Z         {
+2026-10-26T20:02:07.9264610Z           "iteration": 0,
+2026-10-26T20:02:07.9264805Z           "A_p95": 133.20000000000073,
+2026-10-26T20:02:07.9265012Z           "B_p95": 83.26800000000367,
+2026-10-26T20:02:07.9265341Z           "delta_ms": -49.93199999999706,
+2026-10-26T20:02:07.9265556Z           "ratio": 0.6251351351351593
+2026-10-26T20:02:07.9265747Z         },
+2026-10-26T20:02:07.9265888Z         {
+2026-10-26T20:02:07.9266037Z           "iteration": 1,
+2026-10-26T20:02:07.9266226Z           "A_p95": 116.5679999999993,
+2026-10-26T20:02:07.9266429Z           "B_p95": 116.64199999999983,
+2026-10-26T20:02:07.9266648Z           "delta_ms": 0.07400000000052387,
+2026-10-26T20:02:07.9266864Z           "ratio": 1.0006348225928259
+2026-10-26T20:02:07.9267043Z         },
+2026-10-26T20:02:07.9267181Z         {
+2026-10-26T20:02:07.9267327Z           "iteration": 2,
+2026-10-26T20:02:07.9267508Z           "A_p95": 133.34199999999691,
+2026-10-26T20:02:07.9267708Z           "B_p95": 83.30800000000454,
+2026-10-26T20:02:07.9267915Z           "delta_ms": -50.033999999992375,
+2026-10-26T20:02:07.9268120Z           "ratio": 0.6247693899896992
+2026-10-26T20:02:07.9268299Z         },
+2026-10-26T20:02:07.9268433Z         {
+2026-10-26T20:02:07.9268583Z           "iteration": 3,
+2026-10-26T20:02:07.9268768Z           "A_p95": 83.24199999999837,
+2026-10-26T20:02:07.9269078Z           "B_p95": 133.24199999999837,
+2026-10-26T20:02:07.9269265Z           "delta_ms": 50.0,
+2026-10-26T20:02:07.9269460Z           "ratio": 1.600658321520398
+2026-10-26T20:02:07.9269643Z         },
+2026-10-26T20:02:07.9269777Z         {
+2026-10-26T20:02:07.9269919Z           "iteration": 4,
+2026-10-26T20:02:07.9270101Z           "A_p95": 133.2679999999964,
+2026-10-26T20:02:07.9270299Z           "B_p95": 116.64199999999255,
+2026-10-26T20:02:07.9270503Z           "delta_ms": -16.62600000000384,
+2026-10-26T20:02:07.9270713Z           "ratio": 0.8752438694960208
+2026-10-26T20:02:07.9270890Z         }
+2026-10-26T20:02:07.9271027Z       ]
+2026-10-26T20:02:07.9271175Z     },
+2026-10-26T20:02:07.9271316Z     {
+2026-10-26T20:02:07.9271486Z       "input": "mythic-0-N2400.json",
+2026-10-26T20:02:07.9271682Z       "phase": "zoom",
+2026-10-26T20:02:07.9271961Z       "variants": {
+2026-10-26T20:02:07.9272120Z         "A": {
+2026-10-26T20:02:07.9272279Z           "complete": true,
+2026-10-26T20:02:07.9272489Z           "protocol_errors": [],
+2026-10-26T20:02:07.9272686Z           "warmups": [
+2026-10-26T20:02:07.9272847Z             {
+2026-10-26T20:02:07.9273006Z               "position": 12,
+2026-10-26T20:02:07.9273205Z               "status": "success"
+2026-10-26T20:02:07.9273388Z             }
+2026-10-26T20:02:07.9273537Z           ],
+2026-10-26T20:02:07.9273687Z           "pooled": {
+2026-10-26T20:02:07.9273853Z             "n": 120,
+2026-10-26T20:02:07.9274015Z             "min": 16.5,
+2026-10-26T20:02:07.9274202Z             "max": 2699.899999999994,
+2026-10-26T20:02:07.9274406Z             "p95": 166.55399999999645,
+2026-10-26T20:02:07.9274732Z             "median": 16.69999999999709,
+2026-10-26T20:02:07.9274930Z             "over50": 11,
+2026-10-26T20:02:07.9275101Z             "over500": 4,
+2026-10-26T20:02:07.9275307Z             "over50_fraction": 0.09166666666666666,
+2026-10-26T20:02:07.9275558Z             "over500_fraction": 0.03333333333333333
+2026-10-26T20:02:07.9275759Z           },
+2026-10-26T20:02:07.9275918Z           "per_run": [
+2026-10-26T20:02:07.9276075Z             {
+2026-10-26T20:02:07.9276226Z               "iteration": 0,
+2026-10-26T20:02:07.9276424Z               "status": "success",
+2026-10-26T20:02:07.9276614Z               "stats": {
+2026-10-26T20:02:07.9276781Z                 "n": 24,
+2026-10-26T20:02:07.9276971Z                 "min": 16.599999999998545,
+2026-10-26T20:02:07.9277185Z                 "max": 49.84799999999814,
+2026-10-26T20:02:07.9277397Z                 "p95": 16.80000000000291,
+2026-10-26T20:02:07.9277608Z                 "median": 16.69999999999709,
+2026-10-26T20:02:07.9277808Z                 "over50": 0,
+2026-10-26T20:02:07.9277989Z                 "over500": 0,
+2026-10-26T20:02:07.9278194Z                 "over50_fraction": 0.0,
+2026-10-26T20:02:07.9278412Z                 "over500_fraction": 0.0
+2026-10-26T20:02:07.9278756Z               }
+2026-10-26T20:02:07.9278914Z             },
+2026-10-26T20:02:07.9279062Z             {
+2026-10-26T20:02:07.9279218Z               "iteration": 1,
+2026-10-26T20:02:07.9279419Z               "status": "success",
+2026-10-26T20:02:07.9279603Z               "stats": {
+2026-10-26T20:02:07.9279767Z                 "n": 24,
+2026-10-26T20:02:07.9279933Z                 "min": 16.5,
+2026-10-26T20:02:07.9280126Z                 "max": 2699.899999999994,
+2026-10-26T20:02:07.9280335Z                 "p95": 966.5999999999985,
+2026-10-26T20:02:07.9280553Z                 "median": 16.69999999999709,
+2026-10-26T20:02:07.9280751Z                 "over50": 6,
+2026-10-26T20:02:07.9280934Z                 "over500": 2,
+2026-10-26T20:02:07.9281133Z                 "over50_fraction": 0.25,
+2026-10-26T20:02:07.9281368Z                 "over500_fraction": 0.08333333333333333
+2026-10-26T20:02:07.9281575Z               }
+2026-10-26T20:02:07.9281728Z             },
+2026-10-26T20:02:07.9281968Z             {
+2026-10-26T20:02:07.9282125Z               "iteration": 2,
+2026-10-26T20:02:07.9282319Z               "status": "success",
+2026-10-26T20:02:07.9282606Z               "stats": {
+2026-10-26T20:02:07.9282770Z                 "n": 24,
+2026-10-26T20:02:07.9282954Z                 "min": 16.59999999999127,
+2026-10-26T20:02:07.9283162Z                 "max": 49.98399999999674,
+2026-10-26T20:02:07.9283368Z                 "p95": 16.80000000000291,
+2026-10-26T20:02:07.9283580Z                 "median": 16.69999999999709,
+2026-10-26T20:02:07.9283776Z                 "over50": 0,
+2026-10-26T20:02:07.9283947Z                 "over500": 0,
+2026-10-26T20:02:07.9284144Z                 "over50_fraction": 0.0,
+2026-10-26T20:02:07.9284359Z                 "over500_fraction": 0.0
+2026-10-26T20:02:07.9284547Z               }
+2026-10-26T20:02:07.9284696Z             },
+2026-10-26T20:02:07.9284837Z             {
+2026-10-26T20:02:07.9284990Z               "iteration": 3,
+2026-10-26T20:02:07.9285188Z               "status": "success",
+2026-10-26T20:02:07.9285379Z               "stats": {
+2026-10-26T20:02:07.9285544Z                 "n": 24,
+2026-10-26T20:02:07.9285728Z                 "min": 16.59999999999127,
+2026-10-26T20:02:07.9285938Z                 "max": 2649.800000000003,
+2026-10-26T20:02:07.9286145Z                 "p95": 633.2540000000008,
+2026-10-26T20:02:07.9286358Z                 "median": 16.69999999999709,
+2026-10-26T20:02:07.9286553Z                 "over50": 3,
+2026-10-26T20:02:07.9286726Z                 "over500": 2,
+2026-10-26T20:02:07.9286921Z                 "over50_fraction": 0.125,
+2026-10-26T20:02:07.9287151Z                 "over500_fraction": 0.08333333333333333
+2026-10-26T20:02:07.9287360Z               }
+2026-10-26T20:02:07.9287513Z             },
+2026-10-26T20:02:07.9287658Z             {
+2026-10-26T20:02:07.9287807Z               "iteration": 4,
+2026-10-26T20:02:07.9288000Z               "status": "success",
+2026-10-26T20:02:07.9288181Z               "stats": {
+2026-10-26T20:02:07.9288341Z                 "n": 24,
+2026-10-26T20:02:07.9288532Z                 "min": 16.59999999999127,
+2026-10-26T20:02:07.9288739Z                 "max": 483.3000000000029,
+2026-10-26T20:02:07.9288953Z                 "p95": 66.62799999999697,
+2026-10-26T20:02:07.9289165Z                 "median": 16.69999999999709,
+2026-10-26T20:02:07.9289361Z                 "over50": 2,
+2026-10-26T20:02:07.9289534Z                 "over500": 0,
+2026-10-26T20:02:07.9289748Z                 "over50_fraction": 0.08333333333333333,
+2026-10-26T20:02:07.9289976Z                 "over500_fraction": 0.0
+2026-10-26T20:02:07.9290165Z               }
+2026-10-26T20:02:07.9290313Z             }
+2026-10-26T20:02:07.9290454Z           ],
+2026-10-26T20:02:07.9290640Z           "median_per_run_p95": 66.62799999999697
+2026-10-26T20:02:07.9290849Z         },
+2026-10-26T20:02:07.9290994Z         "B": {
+2026-10-26T20:02:07.9291146Z           "complete": true,
+2026-10-26T20:02:07.9291346Z           "protocol_errors": [],
+2026-10-26T20:02:07.9291537Z           "warmups": [
+2026-10-26T20:02:07.9291887Z             {
+2026-10-26T20:02:07.9292047Z               "position": 13,
+2026-10-26T20:02:07.9292247Z               "status": "success"
+2026-10-26T20:02:07.9292442Z             }
+2026-10-26T20:02:07.9292604Z           ],
+2026-10-26T20:02:07.9292752Z           "pooled": {
+2026-10-26T20:02:07.9292913Z             "n": 120,
+2026-10-26T20:02:07.9293096Z             "min": 16.59999999999127,
+2026-10-26T20:02:07.9293306Z             "max": 2916.600000000006,
+2026-10-26T20:02:07.9293508Z             "p95": 483.3000000000029,
+2026-10-26T20:02:07.9293712Z             "median": 16.69999999999709,
+2026-10-26T20:02:07.9293909Z             "over50": 13,
+2026-10-26T20:02:07.9294079Z             "over500": 6,
+2026-10-26T20:02:07.9294280Z             "over50_fraction": 0.10833333333333334,
+2026-10-26T20:02:07.9294515Z             "over500_fraction": 0.05
+2026-10-26T20:02:07.9294702Z           },
+2026-10-26T20:02:07.9294850Z           "per_run": [
+2026-10-26T20:02:07.9295010Z             {
+2026-10-26T20:02:07.9295168Z               "iteration": 0,
+2026-10-26T20:02:07.9295362Z               "status": "success",
+2026-10-26T20:02:07.9295656Z               "stats": {
+2026-10-26T20:02:07.9295822Z                 "n": 24,
+2026-10-26T20:02:07.9296011Z                 "min": 16.599999999998545,
+2026-10-26T20:02:07.9296224Z                 "max": 2566.5999999999985,
+2026-10-26T20:02:07.9296436Z                 "p95": 983.2999999999956,
+2026-10-26T20:02:07.9296650Z                 "median": 16.69999999999709,
+2026-10-26T20:02:07.9296853Z                 "over50": 5,
+2026-10-26T20:02:07.9297026Z                 "over500": 2,
+2026-10-26T20:02:07.9297236Z                 "over50_fraction": 0.20833333333333334,
+2026-10-26T20:02:07.9297482Z                 "over500_fraction": 0.08333333333333333
+2026-10-26T20:02:07.9297684Z               }
+2026-10-26T20:02:07.9297832Z             },
+2026-10-26T20:02:07.9297982Z             {
+2026-10-26T20:02:07.9298132Z               "iteration": 1,
+2026-10-26T20:02:07.9298330Z               "status": "success",
+2026-10-26T20:02:07.9298517Z               "stats": {
+2026-10-26T20:02:07.9298678Z                 "n": 24,
+2026-10-26T20:02:07.9298864Z                 "min": 16.599999999998545,
+2026-10-26T20:02:07.9299078Z                 "max": 466.70000000000437,
+2026-10-26T20:02:07.9299286Z                 "p95": 83.25600000000122,
+2026-10-26T20:02:07.9299497Z                 "median": 16.69999999999709,
+2026-10-26T20:02:07.9299691Z                 "over50": 2,
+2026-10-26T20:02:07.9299863Z                 "over500": 0,
+2026-10-26T20:02:07.9300071Z                 "over50_fraction": 0.08333333333333333,
+2026-10-26T20:02:07.9300303Z                 "over500_fraction": 0.0
+2026-10-26T20:02:07.9300493Z               }
+2026-10-26T20:02:07.9300640Z             },
+2026-10-26T20:02:07.9300785Z             {
+2026-10-26T20:02:07.9300932Z               "iteration": 2,
+2026-10-26T20:02:07.9301125Z               "status": "success",
+2026-10-26T20:02:07.9301313Z               "stats": {
+2026-10-26T20:02:07.9301480Z                 "n": 24,
+2026-10-26T20:02:07.9301660Z                 "min": 16.60000000000582,
+2026-10-26T20:02:07.9301963Z                 "max": 2916.600000000006,
+2026-10-26T20:02:07.9302167Z                 "p95": 966.5499999999884,
+2026-10-26T20:02:07.9302450Z                 "median": 16.69999999999709,
+2026-10-26T20:02:07.9302678Z                 "over50": 2,
+2026-10-26T20:02:07.9302848Z                 "over500": 2,
+2026-10-26T20:02:07.9303053Z                 "over50_fraction": 0.08333333333333333,
+2026-10-26T20:02:07.9303292Z                 "over500_fraction": 0.08333333333333333
+2026-10-26T20:02:07.9303495Z               }
+2026-10-26T20:02:07.9303651Z             },
+2026-10-26T20:02:07.9303793Z             {
+2026-10-26T20:02:07.9303942Z               "iteration": 3,
+2026-10-26T20:02:07.9304135Z               "status": "success",
+2026-10-26T20:02:07.9304316Z               "stats": {
+2026-10-26T20:02:07.9304479Z                 "n": 24,
+2026-10-26T20:02:07.9304772Z                 "min": 16.59999999999127,
+2026-10-26T20:02:07.9304989Z                 "max": 483.3000000000029,
+2026-10-26T20:02:07.9305199Z                 "p95": 66.69999999999709,
+2026-10-26T20:02:07.9305443Z                 "median": 16.69999999999709,
+2026-10-26T20:02:07.9305640Z                 "over50": 2,
+2026-10-26T20:02:07.9305812Z                 "over500": 0,
+2026-10-26T20:02:07.9306024Z                 "over50_fraction": 0.08333333333333333,
+2026-10-26T20:02:07.9306251Z                 "over500_fraction": 0.0
+2026-10-26T20:02:07.9306439Z               }
+2026-10-26T20:02:07.9306584Z             },
+2026-10-26T20:02:07.9306728Z             {
+2026-10-26T20:02:07.9306877Z               "iteration": 4,
+2026-10-26T20:02:07.9307072Z               "status": "success",
+2026-10-26T20:02:07.9307257Z               "stats": {
+2026-10-26T20:02:07.9307417Z                 "n": 24,
+2026-10-26T20:02:07.9307599Z                 "min": 16.60000000000582,
+2026-10-26T20:02:07.9307814Z                 "max": 2666.5999999999767,
+2026-10-26T20:02:07.9308029Z                 "p95": 633.2380000000121,
+2026-10-26T20:02:07.9308244Z                 "median": 16.699999999982538,
+2026-10-26T20:02:07.9308555Z                 "over50": 2,
+2026-10-26T20:02:07.9308727Z                 "over500": 2,
+2026-10-26T20:02:07.9308933Z                 "over50_fraction": 0.08333333333333333,
+2026-10-26T20:02:07.9309171Z                 "over500_fraction": 0.08333333333333333
+2026-10-26T20:02:07.9309374Z               }
+2026-10-26T20:02:07.9309529Z             }
+2026-10-26T20:02:07.9309673Z           ],
+2026-10-26T20:02:07.9309855Z           "median_per_run_p95": 633.2380000000121
+2026-10-26T20:02:07.9310061Z         }
+2026-10-26T20:02:07.9310198Z       },
+2026-10-26T20:02:07.9310363Z       "delta_ms": 316.74600000000646,
+2026-10-26T20:02:07.9310582Z       "relative_delta": 1.9017615908354841,
+2026-10-26T20:02:07.9310793Z       "guard_breach": true,
+2026-10-26T20:02:07.9310976Z       "status": "nonpassing",
+2026-10-26T20:02:07.9311154Z       "paired": [
+2026-10-26T20:02:07.9311316Z         {
+2026-10-26T20:02:07.9311465Z           "iteration": 0,
+2026-10-26T20:02:07.9311659Z           "A_p95": 16.80000000000291,
+2026-10-26T20:02:07.9311963Z           "B_p95": 983.2999999999956,
+2026-10-26T20:02:07.9312166Z           "delta_ms": 966.4999999999927,
+2026-10-26T20:02:07.9312381Z           "ratio": 58.5297619047515
+2026-10-26T20:02:07.9312569Z         },
+2026-10-26T20:02:07.9312709Z         {
+2026-10-26T20:02:07.9312857Z           "iteration": 1,
+2026-10-26T20:02:07.9313050Z           "A_p95": 966.5999999999985,
+2026-10-26T20:02:07.9313250Z           "B_p95": 83.25600000000122,
+2026-10-26T20:02:07.9313457Z           "delta_ms": -883.3439999999973,
+2026-10-26T20:02:07.9313671Z           "ratio": 0.08613283674736329
+2026-10-26T20:02:07.9313858Z         },
+2026-10-26T20:02:07.9313999Z         {
+2026-10-26T20:02:07.9314147Z           "iteration": 2,
+2026-10-26T20:02:07.9314331Z           "A_p95": 16.80000000000291,
+2026-10-26T20:02:07.9314531Z           "B_p95": 966.5499999999884,
+2026-10-26T20:02:07.9314738Z           "delta_ms": 949.7499999999854,
+2026-10-26T20:02:07.9314950Z           "ratio": 57.53273809522744
+2026-10-26T20:02:07.9315138Z         },
+2026-10-26T20:02:07.9315282Z         {
+2026-10-26T20:02:07.9315428Z           "iteration": 3,
+2026-10-26T20:02:07.9315612Z           "A_p95": 633.2540000000008,
+2026-10-26T20:02:07.9315813Z           "B_p95": 66.69999999999709,
+2026-10-26T20:02:07.9316019Z           "delta_ms": -566.5540000000037,
+2026-10-26T20:02:07.9316234Z           "ratio": 0.10532898331474733
+2026-10-26T20:02:07.9316434Z         },
+2026-10-26T20:02:07.9316575Z         {
+2026-10-26T20:02:07.9316724Z           "iteration": 4,
+2026-10-26T20:02:07.9316914Z           "A_p95": 66.62799999999697,
+2026-10-26T20:02:07.9317119Z           "B_p95": 633.2380000000121,
+2026-10-26T20:02:07.9317324Z           "delta_ms": 566.6100000000151,
+2026-10-26T20:02:07.9317543Z           "ratio": 9.504082367773922
+2026-10-26T20:02:07.9317724Z         }
+2026-10-26T20:02:07.9317865Z       ]
+2026-10-26T20:02:07.9318121Z     },
+2026-10-26T20:02:07.9318267Z     {
+2026-10-26T20:02:07.9318434Z       "input": "mythic-0-N2400.json",
+2026-10-26T20:02:07.9318640Z       "phase": "pan",
+2026-10-26T20:02:07.9318810Z       "variants": {
+2026-10-26T20:02:07.9318970Z         "A": {
+2026-10-26T20:02:07.9319129Z           "complete": true,
+2026-10-26T20:02:07.9319333Z           "protocol_errors": [],
+2026-10-26T20:02:07.9319523Z           "warmups": [
+2026-10-26T20:02:07.9319685Z             {
+2026-10-26T20:02:07.9319846Z               "position": 12,
+2026-10-26T20:02:07.9320045Z               "status": "success"
+2026-10-26T20:02:07.9320231Z             }
+2026-10-26T20:02:07.9320376Z           ],
+2026-10-26T20:02:07.9320526Z           "pooled": {
+2026-10-26T20:02:07.9320688Z             "n": 120,
+2026-10-26T20:02:07.9320854Z             "min": 16.5,
+2026-10-26T20:02:07.9321025Z             "max": 850,
+2026-10-26T20:02:07.9321211Z             "p95": 216.57600000000093,
+2026-10-26T20:02:07.9321431Z             "median": 16.69999999999709,
+2026-10-26T20:02:07.9321624Z             "over50": 15,
+2026-10-26T20:02:07.9321881Z             "over500": 5,
+2026-10-26T20:02:07.9322178Z             "over50_fraction": 0.125,
+2026-10-26T20:02:07.9322409Z             "over500_fraction": 0.041666666666666664
+2026-10-26T20:02:07.9322619Z           },
+2026-10-26T20:02:07.9322771Z           "per_run": [
+2026-10-26T20:02:07.9322932Z             {
+2026-10-26T20:02:07.9323085Z               "iteration": 0,
+2026-10-26T20:02:07.9323287Z               "status": "success",
+2026-10-26T20:02:07.9323477Z               "stats": {
+2026-10-26T20:02:07.9323646Z                 "n": 24,
+2026-10-26T20:02:07.9323836Z                 "min": 16.599999999998545,
+2026-10-26T20:02:07.9324049Z                 "max": 783.3000000000029,
+2026-10-26T20:02:07.9324260Z                 "p95": 233.37599999999657,
+2026-10-26T20:02:07.9324480Z                 "median": 16.69999999999709,
+2026-10-26T20:02:07.9324681Z                 "over50": 3,
+2026-10-26T20:02:07.9324865Z                 "over500": 1,
+2026-10-26T20:02:07.9325064Z                 "over50_fraction": 0.125,
+2026-10-26T20:02:07.9325302Z                 "over500_fraction": 0.041666666666666664
+2026-10-26T20:02:07.9325512Z               }
+2026-10-26T20:02:07.9325670Z             },
+2026-10-26T20:02:07.9325817Z             {
+2026-10-26T20:02:07.9325970Z               "iteration": 1,
+2026-10-26T20:02:07.9326164Z               "status": "success",
+2026-10-26T20:02:07.9326350Z               "stats": {
+2026-10-26T20:02:07.9326514Z                 "n": 24,
+2026-10-26T20:02:07.9326688Z                 "min": 16.5,
+2026-10-26T20:02:07.9326883Z                 "max": 783.3000000000029,
+2026-10-26T20:02:07.9327098Z                 "p95": 216.57600000000093,
+2026-10-26T20:02:07.9327313Z                 "median": 16.69999999999709,
+2026-10-26T20:02:07.9327512Z                 "over50": 3,
+2026-10-26T20:02:07.9327686Z                 "over500": 1,
+2026-10-26T20:02:07.9327890Z                 "over50_fraction": 0.125,
+2026-10-26T20:02:07.9328126Z                 "over500_fraction": 0.041666666666666664
+2026-10-26T20:02:07.9328337Z               }
+2026-10-26T20:02:07.9328492Z             },
+2026-10-26T20:02:07.9328635Z             {
+2026-10-26T20:02:07.9328785Z               "iteration": 2,
+2026-10-26T20:02:07.9328984Z               "status": "success",
+2026-10-26T20:02:07.9329167Z               "stats": {
+2026-10-26T20:02:07.9329333Z                 "n": 24,
+2026-10-26T20:02:07.9329507Z                 "min": 16.5,
+2026-10-26T20:02:07.9329697Z                 "max": 783.3999999999942,
+2026-10-26T20:02:07.9329908Z                 "p95": 216.57600000000093,
+2026-10-26T20:02:07.9330123Z                 "median": 16.69999999999709,
+2026-10-26T20:02:07.9330320Z                 "over50": 3,
+2026-10-26T20:02:07.9330493Z                 "over500": 1,
+2026-10-26T20:02:07.9330689Z                 "over50_fraction": 0.125,
+2026-10-26T20:02:07.9330920Z                 "over500_fraction": 0.041666666666666664
+2026-10-26T20:02:07.9331238Z               }
+2026-10-26T20:02:07.9331393Z             },
+2026-10-26T20:02:07.9331537Z             {
+2026-10-26T20:02:07.9331693Z               "iteration": 3,
+2026-10-26T20:02:07.9331973Z               "status": "success",
+2026-10-26T20:02:07.9332173Z               "stats": {
+2026-10-26T20:02:07.9332345Z                 "n": 24,
+2026-10-26T20:02:07.9332532Z                 "min": 16.59999999999127,
+2026-10-26T20:02:07.9332734Z                 "max": 850,
+2026-10-26T20:02:07.9332930Z                 "p95": 183.27599999999802,
+2026-10-26T20:02:07.9333147Z                 "median": 16.69999999999709,
+2026-10-26T20:02:07.9333344Z                 "over50": 3,
+2026-10-26T20:02:07.9333518Z                 "over500": 1,
+2026-10-26T20:02:07.9333721Z                 "over50_fraction": 0.125,
+2026-10-26T20:02:07.9333955Z                 "over500_fraction": 0.041666666666666664
+2026-10-26T20:02:07.9334162Z               }
+2026-10-26T20:02:07.9338998Z             },
+2026-10-26T20:02:07.9339193Z             {
+2026-10-26T20:02:07.9339378Z               "iteration": 4,
+2026-10-26T20:02:07.9339596Z               "status": "success",
+2026-10-26T20:02:07.9339958Z               "stats": {
+2026-10-26T20:02:07.9340136Z                 "n": 24,
+2026-10-26T20:02:07.9340331Z                 "min": 16.59999999999127,
+2026-10-26T20:02:07.9340550Z                 "max": 750.1000000000058,
+2026-10-26T20:02:07.9340744Z                 "p95": 216.5,
+2026-10-26T20:02:07.9340952Z                 "median": 16.69999999999709,
+2026-10-26T20:02:07.9341166Z                 "over50": 3,
+2026-10-26T20:02:07.9341351Z                 "over500": 1,
+2026-10-26T20:02:07.9341557Z                 "over50_fraction": 0.125,
+2026-10-26T20:02:07.9341960Z                 "over500_fraction": 0.041666666666666664
+2026-10-26T20:02:07.9342257Z               }
+2026-10-26T20:02:07.9342420Z             }
+2026-10-26T20:02:07.9342583Z           ],
+2026-10-26T20:02:07.9342777Z           "median_per_run_p95": 216.57600000000093
+2026-10-26T20:02:07.9342991Z         },
+2026-10-26T20:02:07.9343148Z         "B": {
+2026-10-26T20:02:07.9343314Z           "complete": true,
+2026-10-26T20:02:07.9343529Z           "protocol_errors": [],
+2026-10-26T20:02:07.9343729Z           "warmups": [
+2026-10-26T20:02:07.9343896Z             {
+2026-10-26T20:02:07.9344056Z               "position": 13,
+2026-10-26T20:02:07.9344259Z               "status": "success"
+2026-10-26T20:02:07.9344441Z             }
+2026-10-26T20:02:07.9344587Z           ],
+2026-10-26T20:02:07.9344745Z           "pooled": {
+2026-10-26T20:02:07.9344914Z             "n": 120,
+2026-10-26T20:02:07.9345094Z             "min": 16.599999999976717,
+2026-10-26T20:02:07.9345311Z             "max": 966.6999999999825,
+2026-10-26T20:02:07.9345520Z             "p95": 233.3000000000029,
+2026-10-26T20:02:07.9345730Z             "median": 16.69999999999709,
+2026-10-26T20:02:07.9345934Z             "over50": 13,
+2026-10-26T20:02:07.9346107Z             "over500": 5,
+2026-10-26T20:02:07.9346311Z             "over50_fraction": 0.10833333333333334,
+2026-10-26T20:02:07.9346568Z             "over500_fraction": 0.041666666666666664
+2026-10-26T20:02:07.9346775Z           },
+2026-10-26T20:02:07.9346930Z           "per_run": [
+2026-10-26T20:02:07.9347097Z             {
+2026-10-26T20:02:07.9347253Z               "iteration": 0,
+2026-10-26T20:02:07.9347455Z               "status": "success",
+2026-10-26T20:02:07.9347646Z               "stats": {
+2026-10-26T20:02:07.9347816Z                 "n": 24,
+2026-10-26T20:02:07.9348003Z                 "min": 16.599999999998545,
+2026-10-26T20:02:07.9348226Z                 "max": 766.6000000000058,
+2026-10-26T20:02:07.9348440Z                 "p95": 233.29999999999563,
+2026-10-26T20:02:07.9348659Z                 "median": 16.69999999999709,
+2026-10-26T20:02:07.9348866Z                 "over50": 3,
+2026-10-26T20:02:07.9349047Z                 "over500": 1,
+2026-10-26T20:02:07.9349246Z                 "over50_fraction": 0.125,
+2026-10-26T20:02:07.9349485Z                 "over500_fraction": 0.041666666666666664
+2026-10-26T20:02:07.9349811Z               }
+2026-10-26T20:02:07.9349968Z             },
+2026-10-26T20:02:07.9350119Z             {
+2026-10-26T20:02:07.9350276Z               "iteration": 1,
+2026-10-26T20:02:07.9350473Z               "status": "success",
+2026-10-26T20:02:07.9350666Z               "stats": {
+2026-10-26T20:02:07.9350830Z                 "n": 24,
+2026-10-26T20:02:07.9351014Z                 "min": 16.599999999998545,
+2026-10-26T20:02:07.9351223Z                 "max": 916.5999999999985,
+2026-10-26T20:02:07.9351417Z                 "p95": 150,
+2026-10-26T20:02:07.9351614Z                 "median": 16.69999999999709,
+2026-10-26T20:02:07.9351909Z                 "over50": 2,
+2026-10-26T20:02:07.9352086Z                 "over500": 1,
+2026-10-26T20:02:07.9352305Z                 "over50_fraction": 0.08333333333333333,
+2026-10-26T20:02:07.9352555Z                 "over500_fraction": 0.041666666666666664
+2026-10-26T20:02:07.9352762Z               }
+2026-10-26T20:02:07.9352907Z             },
+2026-10-26T20:02:07.9353069Z             {
+2026-10-26T20:02:07.9353219Z               "iteration": 2,
+2026-10-26T20:02:07.9353416Z               "status": "success",
+2026-10-26T20:02:07.9353719Z               "stats": {
+2026-10-26T20:02:07.9353882Z                 "n": 24,
+2026-10-26T20:02:07.9354069Z                 "min": 16.59999999999127,
+2026-10-26T20:02:07.9354284Z                 "max": 783.3999999999942,
+2026-10-26T20:02:07.9354494Z                 "p95": 233.3000000000029,
+2026-10-26T20:02:07.9354705Z                 "median": 16.69999999999709,
+2026-10-26T20:02:07.9354907Z                 "over50": 3,
+2026-10-26T20:02:07.9355080Z                 "over500": 1,
+2026-10-26T20:02:07.9355275Z                 "over50_fraction": 0.125,
+2026-10-26T20:02:07.9355506Z                 "over500_fraction": 0.041666666666666664
+2026-10-26T20:02:07.9355710Z               }
+2026-10-26T20:02:07.9355855Z             },
+2026-10-26T20:02:07.9355997Z             {
+2026-10-26T20:02:07.9356145Z               "iteration": 3,
+2026-10-26T20:02:07.9356341Z               "status": "success",
+2026-10-26T20:02:07.9356531Z               "stats": {
+2026-10-26T20:02:07.9356700Z                 "n": 24,
+2026-10-26T20:02:07.9356883Z                 "min": 16.59999999999127,
+2026-10-26T20:02:07.9357091Z                 "max": 766.6000000000058,
+2026-10-26T20:02:07.9357298Z                 "p95": 233.34199999998964,
+2026-10-26T20:02:07.9357512Z                 "median": 16.69999999999709,
+2026-10-26T20:02:07.9357710Z                 "over50": 3,
+2026-10-26T20:02:07.9357883Z                 "over500": 1,
+2026-10-26T20:02:07.9358076Z                 "over50_fraction": 0.125,
+2026-10-26T20:02:07.9358305Z                 "over500_fraction": 0.041666666666666664
+2026-10-26T20:02:07.9358507Z               }
+2026-10-26T20:02:07.9358652Z             },
+2026-10-26T20:02:07.9358801Z             {
+2026-10-26T20:02:07.9358952Z               "iteration": 4,
+2026-10-26T20:02:07.9359142Z               "status": "success",
+2026-10-26T20:02:07.9359324Z               "stats": {
+2026-10-26T20:02:07.9359490Z                 "n": 24,
+2026-10-26T20:02:07.9359673Z                 "min": 16.599999999976717,
+2026-10-26T20:02:07.9359891Z                 "max": 966.6999999999825,
+2026-10-26T20:02:07.9360100Z                 "p95": 149.94200000001,
+2026-10-26T20:02:07.9360320Z                 "median": 16.70000000001164,
+2026-10-26T20:02:07.9360524Z                 "over50": 2,
+2026-10-26T20:02:07.9360706Z                 "over500": 1,
+2026-10-26T20:02:07.9360921Z                 "over50_fraction": 0.08333333333333333,
+2026-10-26T20:02:07.9361185Z                 "over500_fraction": 0.041666666666666664
+2026-10-26T20:02:07.9361396Z               }
+2026-10-26T20:02:07.9361549Z             }
+2026-10-26T20:02:07.9361696Z           ],
+2026-10-26T20:02:07.9361990Z           "median_per_run_p95": 233.29999999999563
+2026-10-26T20:02:07.9362201Z         }
+2026-10-26T20:02:07.9362348Z       },
+2026-10-26T20:02:07.9362517Z       "delta_ms": 16.72400000000198,
+2026-10-26T20:02:07.9362855Z       "relative_delta": 0.07722000591017429,
+2026-10-26T20:02:07.9363068Z       "guard_breach": false,
+2026-10-26T20:02:07.9363278Z       "status": "bounded_guard_pass",
+2026-10-26T20:02:07.9363483Z       "paired": [
+2026-10-26T20:02:07.9363638Z         {
+2026-10-26T20:02:07.9363794Z           "iteration": 0,
+2026-10-26T20:02:07.9363990Z           "A_p95": 233.37599999999657,
+2026-10-26T20:02:07.9364200Z           "B_p95": 233.29999999999563,
+2026-10-26T20:02:07.9364417Z           "delta_ms": -0.07600000000093132,
+2026-10-26T20:02:07.9364649Z           "ratio": 0.9996743452625766
+2026-10-26T20:02:07.9364842Z         },
+2026-10-26T20:02:07.9364984Z         {
+2026-10-26T20:02:07.9365133Z           "iteration": 1,
+2026-10-26T20:02:07.9365334Z           "A_p95": 216.57600000000093,
+2026-10-26T20:02:07.9365528Z           "B_p95": 150,
+2026-10-26T20:02:07.9365723Z           "delta_ms": -66.57600000000093,
+2026-10-26T20:02:07.9365950Z           "ratio": 0.6925975177304935
+2026-10-26T20:02:07.9366137Z         },
+2026-10-26T20:02:07.9366282Z         {
+2026-10-26T20:02:07.9366431Z           "iteration": 2,
+2026-10-26T20:02:07.9366620Z           "A_p95": 216.57600000000093,
+2026-10-26T20:02:07.9366924Z           "B_p95": 233.3000000000029,
+2026-10-26T20:02:07.9367133Z           "delta_ms": 16.72400000000198,
+2026-10-26T20:02:07.9367351Z           "ratio": 1.0772200059101742
+2026-10-26T20:02:07.9367532Z         },
+2026-10-26T20:02:07.9367673Z         {
+2026-10-26T20:02:07.9367822Z           "iteration": 3,
+2026-10-26T20:02:07.9368008Z           "A_p95": 183.27599999999802,
+2026-10-26T20:02:07.9368212Z           "B_p95": 233.34199999998964,
+2026-10-26T20:02:07.9368425Z           "delta_ms": 50.06599999999162,
+2026-10-26T20:02:07.9368633Z           "ratio": 1.2731727012810852
+2026-10-26T20:02:07.9368815Z         },
+2026-10-26T20:02:07.9368955Z         {
+2026-10-26T20:02:07.9369100Z           "iteration": 4,
+2026-10-26T20:02:07.9369269Z           "A_p95": 216.5,
+2026-10-26T20:02:07.9369459Z           "B_p95": 149.94200000001,
+2026-10-26T20:02:07.9369678Z           "delta_ms": -66.55799999998999,
+2026-10-26T20:02:07.9369893Z           "ratio": 0.6925727482679447
+2026-10-26T20:02:07.9370077Z         }
+2026-10-26T20:02:07.9370217Z       ]
+2026-10-26T20:02:07.9370359Z     }
+2026-10-26T20:02:07.9370504Z   ],
+2026-10-26T20:02:07.9370649Z   "png": [
+2026-10-26T20:02:07.9370792Z     {
+2026-10-26T20:02:07.9370965Z       "input": "mythic-0-N2400-after",
+2026-10-26T20:02:07.9371183Z       "status": "pixels_equal",
+2026-10-26T20:02:07.9371371Z       "A_size": [
+2026-10-26T20:02:07.9371533Z         18284,
+2026-10-26T20:02:07.9371692Z         10780
+2026-10-26T20:02:07.9371916Z       ],
+2026-10-26T20:02:07.9372060Z       "B_size": [
+2026-10-26T20:02:07.9372213Z         18284,
+2026-10-26T20:02:07.9372365Z         10780
+2026-10-26T20:02:07.9372506Z       ],
+2026-10-26T20:02:07.9372671Z       "pixels_equal": true
+2026-10-26T20:02:07.9372845Z     },
+2026-10-26T20:02:07.9372985Z     {
+2026-10-26T20:02:07.9373175Z       "input": "mythic-123456789-N2400-after",
+2026-10-26T20:02:07.9373417Z       "status": "pixels_equal",
+2026-10-26T20:02:07.9373600Z       "A_size": [
+2026-10-26T20:02:07.9373767Z         17508,
+2026-10-26T20:02:07.9373919Z         12376
+2026-10-26T20:02:07.9374062Z       ],
+2026-10-26T20:02:07.9374205Z       "B_size": [
+2026-10-26T20:02:07.9374357Z         17508,
+2026-10-26T20:02:07.9374500Z         12376
+2026-10-26T20:02:07.9374640Z       ],
+2026-10-26T20:02:07.9374796Z       "pixels_equal": true
+2026-10-26T20:02:07.9374968Z     }
+2026-10-26T20:02:07.9375105Z   ],
+2026-10-26T20:02:07.9375249Z   "counts": {
+2026-10-26T20:02:07.9375430Z     "measured_actions_attempted": 20,
+2026-10-26T20:02:07.9375642Z     "warmups_attempted": 4,
+2026-10-26T20:02:07.9375832Z     "png_click_attempts": 4
+2026-10-26T20:02:07.9376005Z   },
+2026-10-26T20:02:07.9376177Z   "full_product_acceptance": false,
+2026-10-26T20:02:07.9376682Z   "unresolved": "Original CI/safety/selection findings require independent review; bounded pass alone does not accept whole product."
+2026-10-26T20:02:07.9377249Z }
+2026-10-26T20:02:07.9580961Z ##[group]Run actions/upload-artifact@v4
+2026-10-26T20:02:07.9581186Z with:
+2026-10-26T20:02:07.9581369Z   name: HX-BL-003-V2-validation
+2026-10-26T20:02:07.9581446Z   path: reports/HX-BL-003/v2/
+2026-10-26T20:02:07.9581523Z   if-no-files-found: error
+2026-10-26T20:02:07.9581592Z   compression-level: 6
+2026-10-26T20:02:07.9581663Z   overwrite: false
+2026-10-26T20:02:07.9581738Z   include-hidden-files: false
+2026-10-26T20:02:07.9582020Z ##[endgroup]
+2026-10-26T20:02:08.0822694Z (node:3824) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-26T20:02:08.0823448Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-26T20:02:08.0939161Z With the provided path, there will be 13 files uploaded
+2026-10-26T20:02:08.0962934Z Artifact name is valid!
+2026-10-26T20:02:08.0992556Z Root directory input is valid!
+2026-10-26T20:02:08.4585406Z Beginning upload of artifact content to blob storage
+2026-10-26T20:02:08.7057707Z (node:3824) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-10-26T20:02:09.6679157Z Uploaded bytes 8388608
+2026-10-26T20:02:09.9593009Z Uploaded bytes 16777216
+2026-10-26T20:02:10.0723231Z Uploaded bytes 25165824
+2026-10-26T20:02:10.4253066Z Uploaded bytes 33554432
+2026-10-26T20:02:11.3660908Z Uploaded bytes 41943040
+2026-10-26T20:02:11.7307255Z Uploaded bytes 50331648
+2026-10-26T20:02:11.7625317Z Uploaded bytes 58720256
+2026-10-26T20:02:12.0414264Z Uploaded bytes 67108864
+2026-10-26T20:02:13.4362582Z Uploaded bytes 75497472
+2026-10-26T20:02:13.4969052Z Uploaded bytes 83886080
+2026-10-26T20:02:13.6942729Z Uploaded bytes 92274688
+2026-10-26T20:02:13.7548817Z Uploaded bytes 100663296
+2026-10-26T20:02:13.9598104Z Uploaded bytes 109051904
+2026-10-26T20:02:14.9577544Z Uploaded bytes 117440512
+2026-10-26T20:02:15.6061069Z Uploaded bytes 125829120
+2026-10-26T20:02:16.0335351Z Uploaded bytes 134217728
+2026-10-26T20:02:16.1120871Z Uploaded bytes 142606336
+2026-10-26T20:02:17.4633207Z Uploaded bytes 150994944
+2026-10-26T20:02:17.6227791Z Uploaded bytes 159383552
+2026-10-26T20:02:18.1336341Z Uploaded bytes 162310969
+2026-10-26T20:02:18.1963969Z Finished uploading artifact content to blob storage!
+2026-10-26T20:02:18.1966505Z SHA256 digest of uploaded artifact zip is c729258618dd5251709b1417508229684bea8725c07a000bc0bedb7b147b5f04
+2026-10-26T20:02:18.1968280Z Finalizing artifact upload
+2026-10-26T20:02:18.9197692Z Artifact HX-BL-003-V2-validation.zip successfully finalized. Artifact ID 12684286700
+2026-10-26T20:02:18.9198544Z Artifact HX-BL-003-V2-validation has been successfully uploaded! Final size is 162310969 bytes. Artifact ID is 12684286700
+2026-10-26T20:02:18.9205093Z Artifact download URL: https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40388046863/artifacts/12684286700
+2026-10-26T20:02:18.9412410Z Post job cleanup.
+2026-10-26T20:02:19.0372894Z (node:3839) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-26T20:02:19.0373956Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-26T20:02:19.0544368Z Post job cleanup.
+2026-10-26T20:02:19.1320346Z [command]/usr/bin/git version
+2026-10-26T20:02:19.1404020Z git version 2.55.0
+2026-10-26T20:02:19.1462640Z Temporarily overriding HOME='/home/runner/work/_temp/df2330c3-7ff7-499d-80d4-c2092f58e940' before making global git config changes
+2026-10-26T20:02:19.1463705Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-26T20:02:19.1464472Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/Hexcrawl/Hexcrawl
+2026-10-26T20:02:19.1543878Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-26T20:02:19.1594827Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-26T20:02:19.2023300Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-26T20:02:19.2066963Z http.https://github.com/.extraheader
+2026-10-26T20:02:19.2083212Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-10-26T20:02:19.2111559Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-26T20:02:19.2329441Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-26T20:02:19.2360818Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-26T20:02:19.2688499Z Cleaning up orphan processes
+2026-10-26T20:02:19.3025233Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/download-artifact@v4, actions/setup-node@v4, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

@@ -1,0 +1,492 @@
+﻿2026-10-26T19:35:16.5442699Z Current runner version: '2.338.0'
+2026-10-26T19:35:16.5463742Z ##[group]Runner Image Provisioner
+2026-10-26T19:35:16.5464502Z Hosted Compute Agent
+2026-10-26T19:35:16.5464997Z Version: 20261021.618
+2026-10-26T19:35:16.5465508Z Commit: 21505ad2541d5be6135ed84fc33697146cf75b8e
+2026-10-26T19:35:16.5466145Z Build Date: 2026-10-21T00:45:21Z
+2026-10-26T19:35:16.5466700Z Worker ID: {adf8a95f-b709-4330-81ca-bc8ee1eab64a}
+2026-10-26T19:35:16.5467253Z Region: westus3
+2026-10-26T19:35:16.5467775Z Cloud: Azure
+2026-10-26T19:35:16.5468220Z ##[endgroup]
+2026-10-26T19:35:16.5469590Z ##[group]Operating System
+2026-10-26T19:35:16.5470106Z Ubuntu
+2026-10-26T19:35:16.5470547Z 24.04.5
+2026-10-26T19:35:16.5471019Z LTS
+2026-10-26T19:35:16.5471444Z ##[endgroup]
+2026-10-26T19:35:16.5471934Z ##[group]Runner Image
+2026-10-26T19:35:16.5472442Z Image: ubuntu-24.04
+2026-10-26T19:35:16.5472955Z Version: 20261012.334.1
+2026-10-26T19:35:16.5474017Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261012.334/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-26T19:35:16.5475270Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261012.334
+2026-10-26T19:35:16.5476057Z ##[endgroup]
+2026-10-26T19:35:16.5477015Z ##[group]GITHUB_TOKEN Permissions
+2026-10-26T19:35:16.5478521Z Contents: read
+2026-10-26T19:35:16.5479187Z Metadata: read
+2026-10-26T19:35:16.5479721Z ##[endgroup]
+2026-10-26T19:35:16.5481427Z Secret source: Actions
+2026-10-26T19:35:16.5482224Z Cache mode: write
+2026-10-26T19:35:16.5482794Z Prepare workflow directory
+2026-10-26T19:35:16.5807455Z Prepare all required actions
+2026-10-26T19:35:16.5846001Z Getting action download info
+2026-10-26T19:35:16.9001758Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-10-26T19:35:16.9790156Z Download action repository 'actions/setup-node@v4' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+2026-10-26T19:35:17.1729437Z Complete job name: check
+2026-10-26T19:35:17.2436627Z ##[group]Run actions/checkout@v4
+2026-10-26T19:35:17.2437300Z with:
+2026-10-26T19:35:17.2437666Z   repository: YuriyEmelyanov/Hexcrawl
+2026-10-26T19:35:17.2441038Z   token: ***
+2026-10-26T19:35:17.2441403Z   ssh-strict: true
+2026-10-26T19:35:17.2441756Z   ssh-user: git
+2026-10-26T19:35:17.2442116Z   persist-credentials: true
+2026-10-26T19:35:17.2442501Z   clean: true
+2026-10-26T19:35:17.2442859Z   sparse-checkout-cone-mode: true
+2026-10-26T19:35:17.2443269Z   fetch-depth: 1
+2026-10-26T19:35:17.2443608Z   fetch-tags: false
+2026-10-26T19:35:17.2443959Z   show-progress: true
+2026-10-26T19:35:17.2444305Z   lfs: false
+2026-10-26T19:35:17.2444630Z   submodules: false
+2026-10-26T19:35:17.2444979Z   set-safe-directory: true
+2026-10-26T19:35:17.2445379Z   allow-unsafe-pr-checkout: false
+2026-10-26T19:35:17.2445986Z ##[endgroup]
+2026-10-26T19:35:17.3254139Z Syncing repository: YuriyEmelyanov/Hexcrawl
+2026-10-26T19:35:17.3256087Z ##[group]Getting Git version info
+2026-10-26T19:35:17.3256995Z Working directory is '/home/runner/work/Hexcrawl/Hexcrawl'
+2026-10-26T19:35:17.3258189Z [command]/usr/bin/git version
+2026-10-26T19:35:17.3337316Z git version 2.55.0
+2026-10-26T19:35:17.3354604Z ##[endgroup]
+2026-10-26T19:35:17.3368451Z Temporarily overriding HOME='/home/runner/work/_temp/5e9c56e5-3428-451f-ad26-f861bac08b96' before making global git config changes
+2026-10-26T19:35:17.3370448Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-26T19:35:17.3373357Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/Hexcrawl/Hexcrawl
+2026-10-26T19:35:17.3421693Z Deleting the contents of '/home/runner/work/Hexcrawl/Hexcrawl'
+2026-10-26T19:35:17.3429134Z ##[group]Initializing the repository
+2026-10-26T19:35:17.3430112Z [command]/usr/bin/git init /home/runner/work/Hexcrawl/Hexcrawl
+2026-10-26T19:35:17.3533713Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-26T19:35:17.3535130Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-26T19:35:17.3536626Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-26T19:35:17.3537622Z hint: call:
+2026-10-26T19:35:17.3538158Z hint:
+2026-10-26T19:35:17.3538802Z hint: 	git config --global init.defaultBranch <name>
+2026-10-26T19:35:17.3539689Z hint:
+2026-10-26T19:35:17.3540516Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-26T19:35:17.3541660Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-26T19:35:17.3542630Z hint:
+2026-10-26T19:35:17.3543243Z hint: 	git branch -m <name>
+2026-10-26T19:35:17.3543913Z hint:
+2026-10-26T19:35:17.3544943Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-26T19:35:17.3546160Z Initialized empty Git repository in /home/runner/work/Hexcrawl/Hexcrawl/.git/
+2026-10-26T19:35:17.3548241Z [command]/usr/bin/git remote add origin https://github.com/YuriyEmelyanov/Hexcrawl
+2026-10-26T19:35:17.3598243Z ##[endgroup]
+2026-10-26T19:35:17.3599612Z ##[group]Disabling automatic garbage collection
+2026-10-26T19:35:17.3603408Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-26T19:35:17.3633104Z ##[endgroup]
+2026-10-26T19:35:17.3633969Z ##[group]Setting up auth
+2026-10-26T19:35:17.3639476Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-26T19:35:17.3680051Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-26T19:35:17.4014651Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-26T19:35:17.4046700Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-26T19:35:17.4232687Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-26T19:35:17.4261759Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-26T19:35:17.4446538Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-26T19:35:17.4481965Z ##[endgroup]
+2026-10-26T19:35:17.4482684Z ##[group]Fetching the repository
+2026-10-26T19:35:17.4490001Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +302001b828b57a9d09b27b623d9d3fcecf13d64f:refs/remotes/pull/474/merge
+2026-10-26T19:35:18.4567431Z From https://github.com/YuriyEmelyanov/Hexcrawl
+2026-10-26T19:35:18.4569225Z  * [new ref]         302001b828b57a9d09b27b623d9d3fcecf13d64f -> pull/474/merge
+2026-10-26T19:35:18.4572152Z ##[endgroup]
+2026-10-26T19:35:18.4573096Z ##[group]Determining the checkout info
+2026-10-26T19:35:18.4574169Z ##[endgroup]
+2026-10-26T19:35:18.4576800Z [command]/usr/bin/git sparse-checkout disable
+2026-10-26T19:35:18.4619376Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-26T19:35:18.4645552Z ##[group]Checking out the ref
+2026-10-26T19:35:18.4648661Z [command]/usr/bin/git checkout --progress --force refs/remotes/pull/474/merge
+2026-10-26T19:35:18.4961290Z Note: switching to 'refs/remotes/pull/474/merge'.
+2026-10-26T19:35:18.4962246Z 
+2026-10-26T19:35:18.4963051Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-10-26T19:35:18.4964721Z changes and commit them, and you can discard any commits you make in this
+2026-10-26T19:35:18.4966040Z state without impacting any branches by switching back to a branch.
+2026-10-26T19:35:18.4966816Z 
+2026-10-26T19:35:18.4967544Z If you want to create a new branch to retain commits you create, you may
+2026-10-26T19:35:18.4969457Z do so (now or later) by using -c with the switch command. Example:
+2026-10-26T19:35:18.4970490Z 
+2026-10-26T19:35:18.4970978Z   git switch -c <new-branch-name>
+2026-10-26T19:35:18.4972068Z 
+2026-10-26T19:35:18.4972569Z Or undo this operation with:
+2026-10-26T19:35:18.4973401Z 
+2026-10-26T19:35:18.4973917Z   git switch -
+2026-10-26T19:35:18.4974595Z 
+2026-10-26T19:35:18.4975591Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-10-26T19:35:18.4977055Z 
+2026-10-26T19:35:18.4978594Z HEAD is now at 302001b Merge 86100c390d8d4cf66cee6e87589be64ce51687e5 into 103d31b9f6f5c76b1f6b45d9d6664fe3f75dd63b
+2026-10-26T19:35:18.4984002Z ##[endgroup]
+2026-10-26T19:35:18.5010803Z [command]/usr/bin/git log -1 --format=%H
+2026-10-26T19:35:18.5033653Z 302001b828b57a9d09b27b623d9d3fcecf13d64f
+2026-10-26T19:35:18.5351210Z ##[group]Run actions/setup-node@v4
+2026-10-26T19:35:18.5352143Z with:
+2026-10-26T19:35:18.5352854Z   node-version: 24
+2026-10-26T19:35:18.5353608Z   always-auth: false
+2026-10-26T19:35:18.5354396Z   check-latest: false
+2026-10-26T19:35:18.5361962Z   token: ***
+2026-10-26T19:35:18.5362686Z ##[endgroup]
+2026-10-26T19:35:18.6528270Z Found in cache @ /opt/hostedtoolcache/node/24.21.0/x64
+2026-10-26T19:35:18.6531224Z (node:2050) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-26T19:35:18.6533577Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-26T19:35:18.6535717Z ##[group]Environment details
+2026-10-26T19:35:18.9665179Z node: v24.21.0
+2026-10-26T19:35:18.9665584Z npm: 11.19.0
+2026-10-26T19:35:18.9665890Z yarn: 1.22.22
+2026-10-26T19:35:18.9666770Z ##[endgroup]
+2026-10-26T19:35:18.9788697Z ##[group]Run npm ci
+2026-10-26T19:35:18.9789265Z [36;1mnpm ci[0m
+2026-10-26T19:35:19.0019493Z shell: /usr/bin/bash -e {0}
+2026-10-26T19:35:19.0019792Z ##[endgroup]
+2026-10-26T19:35:20.9518230Z 
+2026-10-26T19:35:20.9524461Z added 71 packages, and audited 72 packages in 2s
+2026-10-26T19:35:20.9524945Z 
+2026-10-26T19:35:20.9525159Z 7 packages are looking for funding
+2026-10-26T19:35:20.9525549Z   run `npm fund` for details
+2026-10-26T19:35:20.9611087Z 
+2026-10-26T19:35:20.9611601Z 2 vulnerabilities (1 moderate, 1 high)
+2026-10-26T19:35:20.9611982Z 
+2026-10-26T19:35:20.9612321Z To address all issues (including breaking changes), run:
+2026-10-26T19:35:20.9612762Z   npm audit fix --force
+2026-10-26T19:35:20.9612961Z 
+2026-10-26T19:35:20.9613149Z Run `npm audit` for details.
+2026-10-26T19:35:20.9619567Z npm warn install-scripts 1 package has install scripts not yet covered by allowScripts:
+2026-10-26T19:35:20.9620531Z npm warn install-scripts   esbuild@0.21.5 (postinstall: node install.js)
+2026-10-26T19:35:20.9621082Z npm warn install-scripts
+2026-10-26T19:35:20.9621920Z npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow.
+2026-10-26T19:35:21.0044020Z ##[group]Run npm run check
+2026-10-26T19:35:21.0044274Z [36;1mnpm run check[0m
+2026-10-26T19:35:21.0103948Z shell: /usr/bin/bash -e {0}
+2026-10-26T19:35:21.0104178Z ##[endgroup]
+2026-10-26T19:35:21.0945125Z 
+2026-10-26T19:35:21.0945723Z > hexcrawl-mvp@0.1.0 check
+2026-10-26T19:35:21.0946281Z > tsc --noEmit && npm test && npm run build
+2026-10-26T19:35:21.0946548Z 
+2026-10-26T19:35:24.2049318Z 
+2026-10-26T19:35:24.2049932Z > hexcrawl-mvp@0.1.0 test
+2026-10-26T19:35:24.2050498Z > node --test test/*.test.mjs
+2026-10-26T19:35:24.2050783Z 
+2026-10-26T19:35:24.3477878Z ✔ prefers one level above the highest neighbour for only outgoing rivers (0.948095ms)
+2026-10-26T19:35:24.3479401Z ✔ prefers height one when a full river flows into a height-one neighbour (0.173791ms)
+2026-10-26T19:35:24.3510133Z ✔ does not apply the preference without rivers or with an incoming river (0.236515ms)
+2026-10-26T19:35:24.3539950Z ✔ keeps the normal fallback when no neighbouring height is known (0.164478ms)
+2026-10-26T19:35:27.5782826Z ✔ auto coast retries an incompatible shape before choosing a tract (1539.837175ms)
+2026-10-26T19:35:33.8384722Z ✔ dead forest labels, weights, heights and symmetric neighbour rules (285.641161ms)
+2026-10-26T19:35:33.8407772Z ✔ automatic settled generation never chooses a zero-weight dead forest, even at exact height (7123.361605ms)
+2026-10-26T19:35:33.8410050Z ✔ the real region handler stores and restores each dead-forest biome (371.01386ms)
+2026-10-26T19:35:33.9152414Z ✔ indexed joins retain the approved large-map geometry exactly (1231.541874ms)
+2026-10-26T19:35:33.9157427Z ✔ four edge reflections preserve exact endpoints and are reversible (25.797217ms)
+2026-10-26T19:35:33.9170625Z ✔ approved compositions retain exactly 3 or 4 closed contours and stay inside all rotated hexes (55.505306ms)
+2026-10-26T19:35:33.9172726Z ✔ dense canopy removes shared edges and retains a field hole; woodland islands are separate (40.863268ms)
+2026-10-26T19:35:33.9174769Z ✔ coordinate selection survives map growth, reordering and biome edits (6.578889ms)
+2026-10-26T19:35:33.9176119Z ✔ a frozen clearing style covers the whole open region, including its outer cells (18.830084ms)
+2026-10-26T19:35:33.9177072Z ✔ candidate-facing crown edges remain exactly straight (2.752157ms)
+2026-10-26T19:35:33.9194224Z ✔ woodland lake hexes suppress shapes and retain the underlying canopy (26.451044ms)
+2026-10-26T19:35:33.9195449Z ✔ bridges preserve the original size and placement of source woodland contours (27.1632ms)
+2026-10-26T19:35:33.9196908Z ✔ diagnostics default off; detailed logging does not change generation or randomness (542.314257ms)
+2026-10-26T19:35:33.9200368Z ✔ exhausted attempts produce one contextual summary and no debug stream (87.86386ms)
+2026-10-26T19:35:33.9201646Z ✔ incompatible coastal endpoints exhaust retries before creating a tract (165.792307ms)
+2026-10-26T19:35:33.9202906Z ✔ late tract failure only reports programming error; diagnostic survives later actions (110.734923ms)
+2026-10-26T19:35:33.9205070Z ✔ last rejection records lake reentry rather than a stale earlier river failure (317.539968ms)
+2026-10-26T19:35:33.9206431Z ✔ recorded CPU identity is not the resource-class gate; unsupported resources still fail (2.715712ms)
+2026-10-26T19:35:33.9207949Z ✔ external watchdog confirms real owned child exit and latches abort before any next work (64.856051ms)
+2026-10-26T19:35:33.9248478Z ✔ hanging graceful cleanup escalates to kill and waits for observed child exit (5032.711342ms)
+2026-10-26T19:35:33.9249899Z ✔ unconfirmed kill remains fatal and cannot start another row or process (12.132008ms)
+2026-10-26T19:35:33.9251252Z ✔ lake contours are stable after reload and input reordering; unrelated lakes cannot change them (182.261808ms)
+2026-10-26T19:35:33.9252667Z ✔ single-cell lakes have distinct silhouettes with bounded visual spill (6.870457ms)
+2026-10-26T19:35:33.9253997Z ✔ multi-cell lake shares one contour; island remains a separate hole; identities do not merge (59.106335ms)
+2026-10-26T19:35:33.9255840Z ✔ river inlet and outlet anchors both receive a connected mouth, regardless of direction (3.329705ms)
+2026-10-26T19:35:33.9257395Z ✔ bounded per-layer cache reuses unchanged lakes, including map-origin translations, and invalidates changed data (270.274932ms)
+2026-10-26T19:35:33.9258766Z ✔ consecutive lake cells retain broad joins instead of hex-edge pinches (257.340651ms)
+2026-10-26T19:35:33.9268989Z ✔ multi-cell shoreline can spill slightly but stays within the bounded neighbouring margin (152.416932ms)
+2026-10-26T19:35:56.7570615Z ✔ unchanged saved lake reentry does not force a new inland region into a tract (616.64808ms)
+2026-10-26T19:35:56.7600289Z ✔ final endpoint completion rejects a newly introduced lake with reentry on an old river (188.158106ms)
+2026-10-26T19:35:56.7601604Z ✔ legacy reentry allowance does not hide a new river, a changed path, or a resized lake (193.65987ms)
+2026-10-26T19:35:56.7602762Z ✔ late lake introduction is rejected by real regular and tract callbacks, then work can continue (24306.659364ms)
+2026-10-26T19:35:56.8081748Z ✔ import is one exact transaction; invalid and preparation failure preserve both stacks (651.814372ms)
+2026-10-26T19:35:56.8116500Z ✔ all existing manual families, import, reset, and 100 exact undo/redo snapshots (6353.87227ms)
+2026-10-26T19:35:56.8147058Z ✔ manual edits do not replace generation checkpoints, regenerate rollback retains undo and redo (461.667004ms)
+2026-10-26T19:35:56.8181126Z ✔ pending file read serializes imports and blocks edits, generation and reset (233.671595ms)
+2026-10-26T19:35:56.8182456Z ✔ all manifest saves round-trip unchanged entities, names and can continue then undo (4507.191648ms)
+2026-10-26T19:35:56.8183912Z ✔ no-op and failed imports preserve redo; fresh edit clears it; reset on empty is a no-op (242.357307ms)
+2026-10-26T19:35:56.8188406Z ✔ kingdom quotas, d12 sizes, save, classic extension and atomic undo (6778.966221ms)
+2026-10-26T19:35:56.8190101Z ✔ classic to mythic, second kingdom and regeneration preserve earlier regions (10322.570914ms)
+2026-10-26T19:35:56.8191108Z ✔ late exception rolls back entire kingdom (143.208842ms)
+2026-10-26T19:35:56.8191915Z ✔ nearest free rectangle and disjoint territory (0.677618ms)
+2026-10-26T19:35:56.8192930Z ✔ first settled region starts at the rectangle center, including its throne (1829.141389ms)
+2026-10-26T19:35:56.8194112Z ✔ Mythic growth fills an enclosed pocket even when the target is already reached (90.091353ms)
+2026-10-26T19:35:56.8195258Z ✔ real Mythic handler absorbs a pocket beyond the roll and undo restores it (276.708672ms)
+2026-10-26T19:36:13.8656250Z ✔ fallback commits a tract with the clicked anchor and no independent river (338.620782ms)
+2026-10-26T19:36:13.8661525Z ✔ coast click without touching river endpoints creates a region (211.182339ms)
+2026-10-26T19:36:13.8676297Z ✔ candidate click: no rivers, sea=false, mode=auto (589.945089ms)
+2026-10-26T19:36:13.8690940Z ✔ candidate click: no rivers, sea=false, mode=coast (847.026139ms)
+2026-10-26T19:36:13.8692986Z ✔ candidate click: no rivers, sea=false, mode=mainland (577.637997ms)
+2026-10-26T19:36:13.8694046Z ✔ candidate click: no rivers, sea=true, mode=auto (663.079435ms)
+2026-10-26T19:36:13.8695065Z ✔ candidate click: no rivers, sea=true, mode=coast (765.284028ms)
+2026-10-26T19:36:13.8695943Z ✔ candidate click: no rivers, sea=true, mode=mainland (488.413888ms)
+2026-10-26T19:36:13.8696838Z ✔ candidate click: incoming, sea=false, mode=auto (480.694799ms)
+2026-10-26T19:36:13.8697684Z ✔ candidate click: incoming, sea=false, mode=coast (486.851183ms)
+2026-10-26T19:36:13.8785846Z ✔ candidate click: incoming, sea=false, mode=mainland (470.800754ms)
+2026-10-26T19:36:13.8810958Z ✔ candidate click: incoming, sea=true, mode=auto (467.886252ms)
+2026-10-26T19:36:13.8816148Z ✔ candidate click: incoming, sea=true, mode=coast (536.470263ms)
+2026-10-26T19:36:13.8846227Z ✔ candidate click: incoming, sea=true, mode=mainland (548.762984ms)
+2026-10-26T19:36:13.8876011Z ✔ candidate click: outgoing, sea=false, mode=auto (607.940444ms)
+2026-10-26T19:36:13.8900177Z ✔ candidate click: outgoing, sea=false, mode=coast (855.399613ms)
+2026-10-26T19:36:13.8904853Z ✔ candidate click: outgoing, sea=false, mode=mainland (666.408895ms)
+2026-10-26T19:36:13.8929845Z ✔ candidate click: outgoing, sea=true, mode=auto (855.750837ms)
+2026-10-26T19:36:13.8959774Z ✔ candidate click: outgoing, sea=true, mode=coast (871.301811ms)
+2026-10-26T19:36:13.8986221Z ✔ candidate click: outgoing, sea=true, mode=mainland (585.903383ms)
+2026-10-26T19:36:13.9000304Z ✔ candidate click: incoming+incoming, sea=false, mode=auto (597.329335ms)
+2026-10-26T19:36:13.9009877Z ✔ candidate click: incoming+incoming, sea=false, mode=coast (783.103185ms)
+2026-10-26T19:36:13.9030333Z ✔ candidate click: incoming+incoming, sea=false, mode=mainland (795.769943ms)
+2026-10-26T19:36:13.9031570Z ✔ candidate click: incoming+incoming, sea=true, mode=auto (882.675154ms)
+2026-10-26T19:36:13.9032679Z ✔ candidate click: incoming+incoming, sea=true, mode=coast (861.401305ms)
+2026-10-26T19:36:13.9033730Z ✔ candidate click: incoming+incoming, sea=true, mode=mainland (595.450611ms)
+2026-10-26T19:36:13.9034442Z ✔ candidate click: outgoing+outgoing, sea=false, mode=auto (518.049216ms)
+2026-10-26T19:36:13.9035128Z ✔ candidate click: outgoing+outgoing, sea=false, mode=coast (735.999458ms)
+2026-10-26T19:36:13.9035819Z ✔ candidate click: outgoing+outgoing, sea=false, mode=mainland (570.047634ms)
+2026-10-26T19:36:13.9036792Z ✔ candidate click: outgoing+outgoing, sea=true, mode=auto (862.812616ms)
+2026-10-26T19:36:13.9037438Z ✔ candidate click: outgoing+outgoing, sea=true, mode=coast (791.25232ms)
+2026-10-26T19:36:13.9038078Z ✔ candidate click: outgoing+outgoing, sea=true, mode=mainland (462.872074ms)
+2026-10-26T19:36:13.9038744Z ✔ candidate click: incoming+outgoing, sea=false, mode=auto (588.071911ms)
+2026-10-26T19:36:13.9039920Z ✔ candidate click: incoming+outgoing, sea=false, mode=coast (806.195744ms)
+2026-10-26T19:36:13.9041010Z ✔ candidate click: incoming+outgoing, sea=false, mode=mainland (451.729484ms)
+2026-10-26T19:36:13.9042003Z ✔ candidate click: incoming+outgoing, sea=true, mode=auto (769.905471ms)
+2026-10-26T19:36:13.9042996Z ✔ candidate click: incoming+outgoing, sea=true, mode=coast (750.32518ms)
+2026-10-26T19:36:13.9043943Z ✔ candidate click: incoming+outgoing, sea=true, mode=mainland (541.565295ms)
+2026-10-26T19:36:13.9045337Z ✔ programming error at exports.generateConnectedRegionFromAnchor preserves map/history and permits recovery (120.083818ms)
+2026-10-26T19:36:13.9046816Z ✔ programming error at getCoastalRiverEndpointHexes preserves map/history and permits recovery (94.869816ms)
+2026-10-26T19:36:13.9048168Z ✔ programming error at assignWaterPoiLayer preserves map/history and permits recovery (180.233322ms)
+2026-10-26T19:36:13.9049646Z ✔ programming error at reconcileRiverCrossings preserves map/history and permits recovery (111.260967ms)
+2026-10-26T19:36:13.9050837Z ✔ expected small-region rejection retries then creates one tract (121.274128ms)
+2026-10-26T19:36:13.9052022Z ✔ late failure at targetSize=1 preserves state; successful retry clears error (134.653138ms)
+2026-10-26T19:36:13.9053209Z ✔ late failure at targetSize=8 preserves state; successful retry clears error (138.730469ms)
+2026-10-26T19:36:13.9054397Z ✔ failed regeneration restores replaced region, selection and full undo history (573.153592ms)
+2026-10-26T19:36:14.0308148Z ✔ calculates bridge chance from all applicable modifiers (1.018952ms)
+2026-10-26T19:36:14.0340020Z ✔ splits non-bridge crossings between ferry and ford with modifiers (0.284468ms)
+2026-10-26T19:36:14.0429856Z ✔ fullness three and above selects a ferry from the non-bridge remainder (0.202224ms)
+2026-10-26T19:36:14.0530423Z ✔ unchanged old source is checked when new land closes its frontier (342.521565ms)
+2026-10-26T19:36:14.0531303Z ✔ unchanged old mouth is checked when new land closes its frontier (189.00527ms)
+2026-10-26T19:36:14.0559268Z ✔ RIV-017 closed mouth prefers reachable unexplored land to a new lake (158.434771ms)
+2026-10-26T19:36:14.0560936Z ✔ RIV-017 real Mythic tract retains an open upper river instead of inventing an inland source (189.275377ms)
+2026-10-26T19:36:14.0561945Z ✔ closed source F=1 has a valid real terminus and keeps old flow (159.177918ms)
+2026-10-26T19:36:14.0562762Z ✔ closed source F=3 has a valid real terminus and keeps old flow (92.442747ms)
+2026-10-26T19:36:14.0563555Z ✔ closed source F=5 has a valid real terminus and keeps old flow (123.326232ms)
+2026-10-26T19:36:14.0564366Z ✔ closed mouth F=1 has a valid real terminus and keeps old flow (105.568515ms)
+2026-10-26T19:36:14.0565143Z ✔ closed mouth F=3 has a valid real terminus and keeps old flow (105.476683ms)
+2026-10-26T19:36:14.0565924Z ✔ closed mouth F=5 has a valid real terminus and keeps old flow (139.770315ms)
+2026-10-26T19:36:14.0566766Z ✔ closed mouth is extended to reachable sea, without changing old edges (93.043036ms)
+2026-10-26T19:36:14.0567738Z ✔ real tract handler closes a mouth; save/undo/recovery retain old map and history (106.931495ms)
+2026-10-26T19:36:14.0568791Z ✔ insufficient source lake area is an atomic expected rejection, never a broken success (193.09155ms)
+2026-10-26T19:36:14.0569995Z ✔ incoming river can finish in another river without changing either old channel (99.741483ms)
+2026-10-26T19:36:14.0571187Z ✔ RIV-015/017 real Mythic tract joins compatible incoming and outgoing rivers before making a lake (115.239367ms)
+2026-10-26T19:36:14.0572454Z ✔ closing several mouths handles every river, not just the lowest ID (88.40827ms)
+2026-10-26T19:36:14.0573203Z ✔ outgoing connector keeps endpoint fullness (0.760284ms)
+2026-10-26T19:36:14.0574068Z ✔ reduces a height-one main river upstream when a fullness-one tributary joins it (0.148864ms)
+2026-10-26T19:36:14.0575005Z ✔ keeps the existing height-two upstream reduction for any tributary (0.115423ms)
+2026-10-26T19:36:14.0576081Z ✔ AUD-01/02 RIV-EX-07/08/15/16 real upstream clicks preserve fixed flows and validate new sources (4614.228509ms)
+2026-10-26T19:36:14.0577183Z ✔ AUD-03 RIV-EX-16 lake placement is atomic when actual connected area is insufficient (86.958641ms)
+2026-10-26T19:36:14.0578251Z ✔ AUD-04 imported numeric fullness outside 1…5 is rejected without mutating the map (77.047698ms)
+2026-10-26T19:36:14.0609603Z ✔ RIV-EX-01/12/13/15 real map expansion validates each extension in all coast modes (7150.306472ms)
+2026-10-26T19:36:14.0610841Z ✔ RIV-EX-03/19 adapter solves real sector directions at a junction and preserves region ownership (101.197336ms)
+2026-10-26T19:36:14.0611993Z ✔ RIV-EX-08 tract lake source uses actual area and retains exact old downstream flow (121.304745ms)
+2026-10-26T19:36:14.0612984Z ✔ RIV-EX-21 lake shared by two regions counts unique hexes and all ports once (75.324898ms)
+2026-10-26T19:36:14.0613893Z ✔ RIV-004/005/013 all 125 triples, symmetry and inverse share the accepted relation (20.978365ms)
+2026-10-26T19:36:14.0614668Z ✔ RIV-EX-01 / AUD-01 no change at region or height boundary (1.853307ms)
+2026-10-26T19:36:14.0615254Z ✔ RIV-EX-02 weak tributary cannot raise 3 (0.307753ms)
+2026-10-26T19:36:14.0615945Z ✔ RIV-EX-03 / EX-22 region height two selects 2, lowland selects 3 (0.524088ms)
+2026-10-26T19:36:14.0616641Z ✔ RIV-EX-04/05 known downstream values are hard constraints (0.329816ms)
+2026-10-26T19:36:14.0617217Z ✔ RIV-EX-06 any tributary can join 5 (2.481842ms)
+2026-10-26T19:36:14.0617853Z ✔ RIV-EX-07 / AUD-02 true source always 1, independent of height (0.527653ms)
+2026-10-26T19:36:14.0618525Z ✔ RIV-EX-08/17 lake source minimum size, not equality (3.977191ms)
+2026-10-26T19:36:14.0619407Z ✔ RIV-EX-09/10/18/23/24 flowing lakes: exhaustive values and sizes (6.177419ms)
+2026-10-26T19:36:14.0620056Z ✔ RIV-EX-11 closed lake absorbs the sum once (0.490738ms)
+2026-10-26T19:36:14.0620737Z ✔ RIV-EX-12 every fullness may enter sea, never emerge from it (1.744604ms)
+2026-10-26T19:36:14.0621383Z ✔ RIV-EX-14 open upstream is not a source (0.196505ms)
+2026-10-26T19:36:14.0622171Z ✔ RIV-EX-15 numerical scope: input immutable, fixed values survive JSON roundtrip (0.782617ms)
+2026-10-26T19:36:14.0622922Z ✔ RIV-EX-16 numerical scope: actual area one cannot justify drop by two (0.594174ms)
+2026-10-26T19:36:14.0623399Z ✔ RIV-EX-19/20 growth downstream, reduced new upstream (0.553382ms)
+2026-10-26T19:36:14.0623838Z ✔ RIV-EX-21 multi-inlet/outlet lake uses aggregate budget (0.955136ms)
+2026-10-26T19:36:14.0624289Z ✔ RIV-001 / AUD-04 reject invalid numeric values at runtime (0.542415ms)
+2026-10-26T19:36:14.0624841Z ✔ RIV-006 / topology: unsupported degree, duplicate ids, dangling edges and cycles (0.331359ms)
+2026-10-26T19:36:14.0625459Z ✔ RIV-EX-13 two confluences propagate constraints both ways; order invariant (3.694456ms)
+2026-10-26T19:36:14.0626043Z ✔ bounded search reports limit, never false impossibility or a partial optimum (0.231408ms)
+2026-10-26T19:36:14.0626599Z ✔ calculates rapids chance from the height and fullness threshold table (1.020404ms)
+2026-10-26T19:36:14.0627092Z ✔ selects rapids when the roll is below the calculated chance (0.19948ms)
+2026-10-26T19:36:14.0627650Z ✔ permits waterfalls at every height away from river starts, lakes, and confluences (3.192961ms)
+2026-10-26T19:36:14.0628168Z ✔ calculates waterfall chance from height and river fullness (0.299941ms)
+2026-10-26T19:36:14.0628669Z ✔ selects a waterfall only when the roll is below its calculated chance (0.168643ms)
+2026-10-26T19:36:14.0629868Z ✔ ROAD-AUD-01 closed exits: 103/settled/mainland (1836.860179ms)
+2026-10-26T19:36:14.0630676Z ✔ ROAD-AUD-01 closed exits: 103/wild/mainland (1741.162094ms)
+2026-10-26T19:36:14.0631313Z ✔ ROAD-AUD-01 closed exits: 42/settled/coast (1119.846091ms)
+2026-10-26T19:36:14.0631915Z ✔ ROAD-AUD-01 closed exits: 103/wild/coast (3141.332625ms)
+2026-10-26T19:36:14.0632543Z ✔ ROAD-AUD-01 closed exits: 103/settled/coast (3452.022168ms)
+2026-10-26T19:36:14.0633274Z ✔ ROAD-AUD-02 adjacent roads remain open until physically joined (106.748917ms)
+2026-10-26T19:36:14.0634011Z ✔ ROAD-AUD-03 center can be an incoming road entry (170.608937ms)
+2026-10-26T19:36:14.0634684Z ✔ route starts at old endpoint: user map region 3 (349.25583ms)
+2026-10-26T19:36:14.0635355Z ✔ route starts at old endpoint: user map region 4 (210.423211ms)
+2026-10-26T19:36:14.0636187Z ✔ settled incoming path searches from the old road hex through the new region (108.52602ms)
+2026-10-26T19:36:14.0637161Z ✔ two old road endpoints cannot be joined by a segment wholly outside the new region (92.954867ms)
+2026-10-26T19:36:16.5744263Z ✔ reject road wrong structure (3.269927ms)
+2026-10-26T19:36:16.5755988Z ✔ reject fractional axial (0.262225ms)
+2026-10-26T19:36:16.5756833Z ✔ reject duplicate region id (0.359521ms)
+2026-10-26T19:36:16.5757460Z ✔ reject invalid region enum (0.260401ms)
+2026-10-26T19:36:16.5758086Z ✔ reject noncanonical terrain key (0.309555ms)
+2026-10-26T19:36:16.5794045Z ✔ reject wrong rotation type (1.312313ms)
+2026-10-26T19:36:16.5819765Z ✔ reject wrong scale type (0.402476ms)
+2026-10-26T19:36:16.5877785Z ✔ reject unsafe next road counter (0.521204ms)
+2026-10-26T19:36:16.5909626Z ✔ reject dangling water POI (0.395364ms)
+2026-10-26T19:36:16.5939670Z ✔ supported corpus: lake-reentry-map (9.161555ms)
+2026-10-26T19:36:16.6019844Z ✔ supported corpus: sea-pocket-map (3.873954ms)
+2026-10-26T19:36:16.6043696Z ✔ supported corpus: terrain-display-map (11.420011ms)
+2026-10-26T19:36:16.6069884Z ✔ supported corpus: road-entry-zigzags (1.624973ms)
+2026-10-26T19:36:16.6070836Z ✔ generated proposals reject overflow in every allocated ID namespace and counter (1.01094ms)
+2026-10-26T19:36:16.6073627Z ✔ imported boundary roadCounter: production continuation stays valid or rolls back whole document (299.170302ms)
+2026-10-26T19:36:16.6074911Z ✔ imported boundary regionId: production continuation stays valid or rolls back whole document (382.795249ms)
+2026-10-26T19:36:16.6076166Z ✔ imported boundary lakeCounter: production continuation stays valid or rolls back whole document (174.258574ms)
+2026-10-26T19:36:16.6077380Z ✔ imported boundary riverId: production continuation stays valid or rolls back whole document (169.734122ms)
+2026-10-26T19:36:16.6079126Z ✔ exhausted kingdom ID refuses production start and preserves document and both stacks (557.313394ms)
+2026-10-26T19:36:55.0656715Z ✔ 3/-3 sea recovery preserves old map, river ends and undo: auto (15293.481738ms)
+2026-10-26T19:36:55.0679138Z ✔ 3/-3 sea recovery preserves old map, river ends and undo: mainland (2734.946284ms)
+2026-10-26T19:36:55.0692081Z ✔ 3/-3 sea recovery preserves old map, river ends and undo: coast (14498.619234ms)
+2026-10-26T19:36:55.0720082Z ✔ exhausted sea recovery and programming errors leave map and history unchanged (7564.056663ms)
+2026-10-26T19:36:55.1939441Z ✔ seeded terrain variation is stable and avoids all six neighbours, including negative coordinates (34.124955ms)
+2026-10-26T19:36:55.1974686Z ✔ all twenty overlays exist as distinct transparent SVGs; forests use vector canopy without tree overlays (7.077171ms)
+2026-10-26T19:36:55.2060201Z ✔ lake shoreline removes shared edges while preserving island edges (0.81814ms)
+2026-10-26T19:36:55.2075070Z ✔ one Germanic model spans distinct formations while keeping each name internally consistent (12.016669ms)
+2026-10-26T19:36:55.2089865Z ✔ many lakes stay unique in both languages and existing names survive growth and order changes (2.044535ms)
+2026-10-26T19:36:55.2109850Z ✔ reroll preserves the model, renames accept paired values and reject duplicates (0.39276ms)
+2026-10-26T19:36:55.2159871Z ✔ real map handlers save names, keep old names on growth, and restore them on undo (258.807181ms)
+2026-10-26T19:36:55.2190534Z ✔ manual edits to old and regenerated regions survive the region history rollback (344.501866ms)
+2026-10-26T19:36:55.2209792Z ✔ tract source stays away from existing sea: coast (1180.530911ms)
+2026-10-26T19:36:55.2219745Z ✔ tract source stays away from existing sea: mainland (627.986755ms)
+2026-10-26T19:36:55.2269688Z ✔ tract source stays away from existing sea: auto (566.884834ms)
+2026-10-26T19:36:55.2270881Z ✔ only the starting contact chooses islands or clearings; persisted choice wins (1.195838ms)
+2026-10-26T19:36:55.2300064Z ✔ real tract callback persists woodland style, save validates it and undo restores the original map (438.624925ms)
+2026-10-26T19:36:55.2339802Z ✔ water cuts an exterior bank but does not divide the forest interior (0.636007ms)
+2026-10-26T19:36:55.2340632Z ✔ lakes do not reshape neighbouring forest banks (0.975887ms)
+2026-10-26T19:38:02.9683557Z ✔ R5 consumed regeneration A stays inert after B and undo/redo classic (396.259907ms)
+2026-10-26T19:38:02.9695742Z ✔ R5 consumed regeneration A stays inert after B and undo/redo mythic (6005.592395ms)
+2026-10-26T19:38:02.9696843Z ✔ R3 late Mythic regeneration failure retains original action and detached inputs (3257.906847ms)
+2026-10-26T19:38:02.9697717Z ✔ AC10 recorded action replay classic/add/success (495.239912ms)
+2026-10-26T19:38:02.9698445Z ✔ AC10 recorded action replay classic/add/failure (372.738824ms)
+2026-10-26T19:38:02.9699344Z ✔ AC10 recorded action replay classic/regenerate/success (405.638656ms)
+2026-10-26T19:38:02.9700128Z ✔ AC10 recorded action replay classic/regenerate/failure (452.481659ms)
+2026-10-26T19:38:02.9700867Z ✔ AC10 recorded action replay mythic/add/success (14537.042352ms)
+2026-10-26T19:38:02.9701560Z ✔ AC10 recorded action replay mythic/add/failure (3333.90964ms)
+2026-10-26T19:38:02.9706183Z ✔ AC10 recorded action replay mythic/regenerate/success (10115.472698ms)
+2026-10-26T19:38:02.9709293Z ✔ AC10 recorded action replay mythic/regenerate/failure (10764.925871ms)
+2026-10-26T19:38:02.9713672Z ✔ AC04 mixed manual content and generation checkpoints classic (163.860625ms)
+2026-10-26T19:38:02.9719818Z ✔ AC04 mixed manual content and generation checkpoints mythic (4714.164682ms)
+2026-10-26T19:38:02.9722751Z ✔ AC05 classic/programming rollback with redo and next clean control (256.27136ms)
+2026-10-26T19:38:02.9723697Z ✔ AC05 classic/constraint rollback with redo and next clean control (1258.786294ms)
+2026-10-26T19:38:02.9724628Z ✔ AC05 mythic/programming rollback with redo and next clean control (11051.960653ms)
+2026-10-26T19:38:02.9725946Z ✔ AC05 mythic/constraint rollback with redo and next clean control (21510.375253ms)
+2026-10-26T19:38:02.9727055Z ✔ AC05 prepare-regenerate error and successful tract fallback preserve exact stream semantics (305.866935ms)
+2026-10-26T19:38:02.9727975Z ✔ AC06 names restored before next full world classic (254.585448ms)
+2026-10-26T19:38:02.9728747Z ✔ AC06 names restored before next full world mythic (10591.020826ms)
+2026-10-26T19:38:02.9729839Z ✔ AC09 consumed Mythic tick remains stale after newer tick and after completion (2320.949447ms)
+2026-10-26T19:38:44.7282953Z fixture continuation test/fixtures/lake-reentry-map.json/classic: committed
+2026-10-26T19:38:49.9030654Z fixture continuation test/fixtures/lake-reentry-map.json/mythic: Error: Не удалось построить регион королевства.
+2026-10-26T19:38:53.1597977Z fixture continuation test/fixtures/sea-pocket-map.json/classic: committed
+2026-10-26T19:38:53.4914797Z fixture continuation test/fixtures/sea-pocket-map.json/mythic: Error: Не удалось соединить выбранный гекс с королевством.
+2026-10-26T19:38:53.9408807Z fixture continuation test/fixtures/terrain-display-map.json/classic: committed
+2026-10-26T19:39:01.3591707Z fixture continuation test/fixtures/terrain-display-map.json/mythic: committed
+2026-10-26T19:39:01.6527573Z fixture continuation test/fixtures/road-entry-zigzags.json/classic: committed
+2026-10-26T19:39:07.1027951Z fixture continuation test/fixtures/road-entry-zigzags.json/mythic: committed
+2026-10-26T19:39:07.2281838Z fixture continuation test/fixtures/import-v2/baseline-empty.json/classic: committed
+2026-10-26T19:39:09.4067723Z fixture continuation test/fixtures/import-v2/baseline-empty.json/mythic: committed
+2026-10-26T19:39:09.5979338Z fixture continuation test/fixtures/import-v2/baseline-classic.json/classic: committed
+2026-10-26T19:39:11.8944359Z fixture continuation test/fixtures/import-v2/baseline-classic.json/mythic: committed
+2026-10-26T19:39:12.3509867Z fixture continuation test/fixtures/import-v2/baseline-mythic.json/classic: committed
+2026-10-26T19:39:20.2667148Z fixture continuation test/fixtures/import-v2/baseline-mythic.json/mythic: committed
+2026-10-26T19:39:20.4139632Z fixture continuation test/fixtures/import-v2/legacy-optionals.json/classic: committed
+2026-10-26T19:39:22.8570342Z fixture continuation test/fixtures/import-v2/legacy-optionals.json/mythic: committed
+2026-10-26T19:39:23.4747513Z fixture continuation test/fixtures/lake-reentry-map.json/classic: committed
+2026-10-26T19:39:28.7042589Z fixture continuation test/fixtures/lake-reentry-map.json/mythic: Error: Не удалось построить регион королевства.
+2026-10-26T19:39:31.9504344Z fixture continuation test/fixtures/sea-pocket-map.json/classic: committed
+2026-10-26T19:39:32.2770565Z fixture continuation test/fixtures/sea-pocket-map.json/mythic: Error: Не удалось соединить выбранный гекс с королевством.
+2026-10-26T19:39:32.7303292Z fixture continuation test/fixtures/terrain-display-map.json/classic: committed
+2026-10-26T19:39:39.9563604Z fixture continuation test/fixtures/terrain-display-map.json/mythic: committed
+2026-10-26T19:39:40.2042002Z fixture continuation test/fixtures/road-entry-zigzags.json/classic: committed
+2026-10-26T19:39:45.7706414Z fixture continuation test/fixtures/road-entry-zigzags.json/mythic: committed
+2026-10-26T19:39:45.8970311Z fixture continuation test/fixtures/import-v2/baseline-empty.json/classic: committed
+2026-10-26T19:39:48.1897024Z fixture continuation test/fixtures/import-v2/baseline-empty.json/mythic: committed
+2026-10-26T19:39:48.3737339Z fixture continuation test/fixtures/import-v2/baseline-classic.json/classic: committed
+2026-10-26T19:39:50.6930079Z fixture continuation test/fixtures/import-v2/baseline-classic.json/mythic: committed
+2026-10-26T19:39:51.1639282Z fixture continuation test/fixtures/import-v2/baseline-mythic.json/classic: committed
+2026-10-26T19:39:59.1379508Z fixture continuation test/fixtures/import-v2/baseline-mythic.json/mythic: committed
+2026-10-26T19:39:59.2859198Z fixture continuation test/fixtures/import-v2/legacy-optionals.json/classic: committed
+2026-10-26T19:40:01.7132672Z fixture continuation test/fixtures/import-v2/legacy-optionals.json/mythic: committed
+2026-10-26T19:40:01.8481873Z fixture continuation test/fixtures/rng-v3/empty.json/classic: committed
+2026-10-26T19:40:03.8723855Z fixture continuation test/fixtures/rng-v3/empty.json/mythic: committed
+2026-10-26T19:40:04.0181893Z fixture continuation test/fixtures/rng-v3/classic.json/classic: committed
+2026-10-26T19:40:06.8592874Z fixture continuation test/fixtures/rng-v3/classic.json/mythic: committed
+2026-10-26T19:40:07.3356819Z fixture continuation test/fixtures/rng-v3/mythic.json/classic: committed
+2026-10-26T19:40:15.3754388Z fixture continuation test/fixtures/rng-v3/mythic.json/mythic: committed
+2026-10-26T19:40:15.6975212Z ✔ production document exports RNG and undo restores continuation (365.000665ms)
+2026-10-26T19:40:15.6977452Z ✔ production streams/continuation/undo classic/0 (412.828714ms)
+2026-10-26T19:40:15.6978473Z ✔ production streams/continuation/undo mythic/0 (33605.154625ms)
+2026-10-26T19:40:15.6980467Z ✔ production streams/continuation/undo classic/1 (289.298993ms)
+2026-10-26T19:40:15.6982687Z ✔ production streams/continuation/undo mythic/1 (40435.203029ms)
+2026-10-26T19:40:15.6985076Z ✔ production streams/continuation/undo classic/123456789 (274.187761ms)
+2026-10-26T19:40:15.6987491Z ✔ production streams/continuation/undo mythic/123456789 (21604.789047ms)
+2026-10-26T19:40:15.6990242Z ✔ production streams/continuation/undo classic/4294967295 (279.740374ms)
+2026-10-26T19:40:15.6993267Z ✔ production streams/continuation/undo mythic/4294967295 (32184.771194ms)
+2026-10-26T19:40:15.6995115Z ✔ classic and late Mythic failures restore RNG and both histories (3870.697602ms)
+2026-10-26T19:40:15.6997320Z ✔ v2 migration and v3 validation are deterministic and atomic with redo (1446.275504ms)
+2026-10-26T19:40:15.7000939Z ✔ regenerate uses current RNG and undo/repeat restores same variant (194.335772ms)
+2026-10-26T19:40:15.7002128Z ✔ seed validation, repeated renders, pre-options exception and duplicate pending callback (86.443752ms)
+2026-10-26T19:40:15.7006278Z ✔ Mythic regenerate and delete checkpoints restore exact RNG (2821.997687ms)
+2026-10-26T19:40:15.7025071Z ✔ R1 stale classic callbacks cannot draw or append a transaction, before or after a render (151.776683ms)
+2026-10-26T19:40:15.7060613Z ✔ R2 Mythic regenerate ignores hidden classic size controls and checkpoints pre-action RNG (4152.155379ms)
+2026-10-26T19:40:15.7086660Z ✔ entire v2 and rng-v3 fixture manifests roundtrip and continue in both modes (91227.847101ms)
+2026-10-26T19:40:15.7139733Z ✔ complete malformed RNG value classes reject atomically with redo (319.100472ms)
+2026-10-26T19:40:15.8671743Z ✔ mulberry32 matches independent Python uint32 vectors, both independent streams (1.865385ms)
+2026-10-26T19:40:15.8672727Z ✔ saved RNG validation never accepts incomplete/unsupported state (0.31249ms)
+2026-10-26T19:40:15.8674836Z ℹ tests 240
+2026-10-26T19:40:15.8675110Z ℹ suites 0
+2026-10-26T19:40:15.8675353Z ℹ pass 240
+2026-10-26T19:40:15.8675589Z ℹ fail 0
+2026-10-26T19:40:15.8675865Z ℹ cancelled 0
+2026-10-26T19:40:15.8676042Z ℹ skipped 0
+2026-10-26T19:40:15.8676202Z ℹ todo 0
+2026-10-26T19:40:15.8676405Z ℹ duration_ms 291633.60506
+2026-10-26T19:40:15.9482311Z 
+2026-10-26T19:40:15.9482859Z > hexcrawl-mvp@0.1.0 build
+2026-10-26T19:40:15.9483245Z > vite build
+2026-10-26T19:40:15.9483398Z 
+2026-10-26T19:40:16.0840034Z [36mvite v5.4.21 [32mbuilding for production...[36m[39m
+2026-10-26T19:40:16.1302663Z transforming...
+2026-10-26T19:40:23.0293587Z [32m✓[39m 60 modules transformed.
+2026-10-26T19:40:23.2877597Z rendering chunks...
+2026-10-26T19:40:23.2973639Z computing gzip size...
+2026-10-26T19:40:23.3283761Z [2mdist/[22m[32mindex.html                 [39m[1m[2m  1.35 kB[22m[1m[22m[2m │ gzip:   0.78 kB[22m
+2026-10-26T19:40:23.3284581Z [33m
+2026-10-26T19:40:23.3285374Z [2mdist/[22m[2massets/[22m[35mindex-By-3o-dh.css  [39m[1m[2m 15.25 kB[22m[1m[22m[2m │ gzip:   3.74 kB[22m
+2026-10-26T19:40:23.3286369Z (!) Some chunks are larger than 500 kB after minification. Consider:
+2026-10-26T19:40:23.3287691Z [2mdist/[22m[2massets/[22m[36mindex-Ca4aT0U8.js   [39m[1m[33m945.60 kB[39m[22m[2m │ gzip: 292.29 kB[22m
+2026-10-26T19:40:23.3288434Z - Using dynamic import() to code-split the application
+2026-10-26T19:40:23.3289548Z - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+2026-10-26T19:40:23.3290644Z - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.[39m
+2026-10-26T19:40:23.3291179Z [32m✓ built in 7.22s[39m
+2026-10-26T19:40:23.4099805Z Post job cleanup.
+2026-10-26T19:40:23.5034486Z (node:2543) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-26T19:40:23.5035115Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-26T19:40:23.5175580Z Post job cleanup.
+2026-10-26T19:40:23.5859278Z [command]/usr/bin/git version
+2026-10-26T19:40:23.5896285Z git version 2.55.0
+2026-10-26T19:40:23.5929632Z Temporarily overriding HOME='/home/runner/work/_temp/ff9834ed-705d-43f0-89f5-2512ba418285' before making global git config changes
+2026-10-26T19:40:23.5930450Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-26T19:40:23.5934340Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/Hexcrawl/Hexcrawl
+2026-10-26T19:40:23.5968020Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-26T19:40:23.5997048Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-26T19:40:23.6202754Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-26T19:40:23.6227358Z http.https://github.com/.extraheader
+2026-10-26T19:40:23.6236785Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-10-26T19:40:23.6274212Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-26T19:40:23.6488240Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-26T19:40:23.6524934Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-26T19:40:23.6858521Z Cleaning up orphan processes
+2026-10-26T19:40:23.7145703Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
