@@ -102,7 +102,7 @@
       "task_id": "HX-BL-003",
       "title": "Производительность генерации и навигации по числу гексов",
       "criterion_id": "S09-C01",
-      "status": "changes_requested",
+      "status": "review_ready",
       "potential_delta": null,
       "approval_ref": "owner-approval-2026-10-25-HX-BL-003",
       "source": {
@@ -229,15 +229,15 @@
         "approval_ref": "owner-approval-2026-10-25-HX-BL-003",
         "next_step": "Программист: закрепить корпус и P1 manifest до baseline замеров, затем профиль и одно подтверждённое узкое место по spec1.0."
       },
-      "next_role": "developer",
-      "next_step": "Стабилизировать существующий Node-тест graceful cleanup: достаточный бюджет OS kill/exit, без изменения production thresholds и без новых test cases. Затем точечный offline прогон и обычный exact-headCI; передать новый SHA независимому reviewer. Реальный замер не запускать/счётчик1/1 не сбрасывать.",
+      "next_role": "reviewer",
+      "next_step": "Независимая ограниченная проверка df879cb: R4 двух существующих Node-тестов и manifest, результаты3focused4/4 и exact-headCI240/browser/RNG; актуальный score_assessment1.2. Без нового замера/PNG/сбросаcap1/1.",
       "spec_ref": "agent-work/specs/HX-BL-003.md",
       "spec_version": "1.1",
       "spec_status": "ready_for_developer_harness_freeze",
       "execution_allowed": true,
-      "owner_role": "developer",
+      "owner_role": "reviewer",
       "claim": null,
-      "result_ref": "agent-work/results/2026-10-26-reviewer-HX-BL-003-86a7e94.json",
+      "result_ref": "agent-work/results/2026-10-26-developer-HX-BL-003-test-stability.json",
       "feedback_assessment": {
         "register_ref": "agent-work/feedback.json",
         "candidate_ids": [
@@ -251,9 +251,9 @@
       },
       "branch": "agent/hx-bl-003-performance",
       "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474",
-      "head_sha": "86a7e941a823e32e7c7cf9cfde78bb247ffc8194",
+      "head_sha": "df879cb8d68cf876397aa5611f561a48482ae191",
       "checks_status": "passed_exact_sha",
-      "evidence_ref": "agent-work/evidence/HX-BL-003-V2-harness-fixes/report.md",
+      "evidence_ref": "agent-work/evidence/HX-BL-003-V2-test-stability/report.md",
       "corpus_ci": {
         "id": 40187550999,
         "status": "completed",
@@ -262,7 +262,7 @@
       },
       "result_branch": "agent/hx-bl-003-performance",
       "corpus_status": "input_and_output_manifests_frozen",
-      "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40337416043",
+      "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40365396181",
       "baseline_timing": {
         "id": 40228996488,
         "status": "completed",
@@ -329,7 +329,7 @@
         "visual": "agent-work/evidence/HX-BL-003-developer/isolated-visual-raw.json",
         "log": "agent-work/evidence/HX-BL-003-developer/ci-recovery-40252325923.log"
       },
-      "review_verdict": "changes_requested_for_test_stability",
+      "review_verdict": "pending_new_sha",
       "reviewed_sha": "86a7e941a823e32e7c7cf9cfde78bb247ffc8194",
       "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474#pullrequestreview-5655108027",
       "review_result_ref": "agent-work/results/2026-10-26-reviewer-HX-BL-003-86a7e94.json",
@@ -363,7 +363,8 @@
           "line": 35,
           "title": "Real child-process exit is given a flaky20ms cleanup deadline",
           "evidence": "Independent exact-source Node run3/4pass: graceful cleanup escalation test failed DeadlineExceeded force browser kill. One unchanged targeted repeat1/1pass. cleanupMs20 bounds both intentional graceful hang and OS kill/exit. Production5000ms not reproduced defective.",
-          "required": "Modify existing test: separate short intentional graceful-close timer from generous real process kill/exit budget, or use sufficient cleanup budget; assess200ms sibling. Preserve observable exit and no-next-work assertions. No new logical test or product threshold change required."
+          "required": "Modify existing test: separate short intentional graceful-close timer from generous real process kill/exit budget, or use sufficient cleanup budget; assess200ms sibling. Preserve observable exit and no-next-work assertions. No new logical test or product threshold change required.",
+          "status": "addressed_pending_independent_review"
         }
       ],
       "score_assessment": [
@@ -558,11 +559,11 @@
           "points_awarded": 0
         }
       ],
-      "score_assessment_status": "recorded_model1.2_insufficient_evidence_no_points",
+      "score_assessment_status": "pending_new_sha_model1.2",
       "acceptance_status": "blocked_incomplete",
       "automatic_measurement_rerun_allowed": false,
       "repeat_review_requires": "material new evidence or changed source SHA",
-      "developer_response_ref": "agent-work/results/2026-10-26-developer-HX-BL-003-harness-fixes.json",
+      "developer_response_ref": "agent-work/results/2026-10-26-developer-HX-BL-003-test-stability.json",
       "developer_finding_response": {
         "HX003-RV1": {
           "status": "blocked",
@@ -602,7 +603,7 @@
       },
       "validation_plan": {
         "id": "HX-BL-003-V2",
-        "status": "harness_test_stability_changes_requested_no_measurement",
+        "status": "harness_test_stability_corrected_pending_independent_review_no_measurement",
         "path": "agent-work/proposals/HX-BL-003-V2-validation.md",
         "max_png_attempts": 4,
         "max_measured_navigation_actions": 20,
@@ -655,50 +656,26 @@
         "HX003-V2-R1": "verified_fixed_source_offline_scope",
         "HX003-V2-R2": "verified_fixed_source_offline_scope",
         "HX003-V2-R3": "verified_fixed_source_offline_scope",
-        "HX003-V2-R4": "open_test_stability_fix"
+        "HX003-V2-R4": "addressed_pending_independent_review"
       },
       "test_change_summary": {
-        "base_sha": "d713cb9d11c0cd00bfda1eaf13a7489f58e48634",
-        "head_sha": "86a7e941a823e32e7c7cf9cfde78bb247ffc8194",
-        "source": "GitHub compare exact SHAs; four test() and seven unittest test_ methods in new files",
-        "suites": [
-          {
-            "suite": "Node node:test",
-            "added": 4,
-            "removed": 0,
-            "modified": 0,
-            "scenario_risk": "resource-class, watchdog process exit/no next work, graceful escalation, fatal unconfirmed exit",
-            "reuse_or_new_reason": "Distinct new supervisor contracts; shared fixture and existing runner; useful observable process behavior. Keep cases, stabilize existing OS deadline.",
-            "executed": 4,
-            "passed": 3,
-            "failed": 1,
-            "skipped": 0,
-            "targeted_repeat": {
-              "executed": 1,
-              "passed": 1,
-              "failed": 0,
-              "skipped": 0
-            }
-          },
-          {
-            "suite": "Python unittest analyzer",
-            "added": 7,
-            "removed": 0,
-            "modified": 0,
-            "scenario_risk": "valid control, failed/missing/late/bad warmup, duplicate iteration, strict guard boundary",
-            "reuse_or_new_reason": "Synthetic fixture tests distinct completeness defects and unchanged guard. Existing analyzer reused, no browser/large maps.",
-            "executed": 7,
-            "passed": 7,
-            "failed": 0,
-            "skipped": 0
-          }
-        ],
-        "current_reviewer_changes": {
-          "added": 0,
-          "removed": 0,
-          "modified": 0
+        "base_sha": "86a7e941a823e32e7c7cf9cfde78bb247ffc8194",
+        "head_sha": "df879cb8d68cf876397aa5611f561a48482ae191",
+        "suite": "Node node:test",
+        "added": 0,
+        "removed": 0,
+        "modified": 2,
+        "scenario_risk": "Flaky real-child kill/exit under20ms/200ms schedulebudget; retain observedexit and abort assertions.",
+        "reuse_or_new_reason": "Modify two existing cases; no new scenario required. Production5000ms default unchanged.",
+        "source": "ExactGitHub compare testfile patch and same4test()definitions",
+        "execution": {
+          "focused_runs": 3,
+          "executed_per_run": 4,
+          "passed_per_run": 4,
+          "failed": 0,
+          "skipped": 0
         },
-        "temporary_diagnostics": "One unchanged targeted rerun for observed failure; not a new permanent case",
+        "python": "unchanged_not_rerun",
         "normal_ci": {
           "node_executed": 240,
           "node_passed": 240,

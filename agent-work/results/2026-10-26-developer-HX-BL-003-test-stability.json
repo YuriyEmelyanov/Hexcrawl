@@ -3,7 +3,7 @@
   "run_id": "2026-10-26:developer:HX-BL-003-test-stability:1704Z",
   "role": "developer",
   "task_id": "HX-BL-003",
-  "status": "awaiting_exact_sha_normal_CI",
+  "status": "review_ready",
   "base_sha": "86a7e941a823e32e7c7cf9cfde78bb247ffc8194",
   "head_sha": "df879cb8d68cf876397aa5611f561a48482ae191",
   "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474",
@@ -30,12 +30,42 @@
       "skipped": 0
     },
     "python": "unchanged_not_rerun",
-    "normal_ci": "pending"
+    "normal_ci": {
+      "node_executed": 240,
+      "node_passed": 240,
+      "node_failed": 0,
+      "node_skipped": 0,
+      "browser": "success_separate",
+      "rng": "success_separate"
+    }
   },
   "normal_ci": {
     "run_id": 40365396181,
     "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40365396181",
-    "status": "queued"
+    "status": "completed",
+    "conclusion": "success",
+    "head_sha": "df879cb8d68cf876397aa5611f561a48482ae191",
+    "jobs": [
+      {
+        "id": 121721589214,
+        "name": "browser",
+        "conclusion": "success"
+      },
+      {
+        "id": 121721589415,
+        "name": "world-random",
+        "conclusion": "success"
+      },
+      {
+        "id": 121721589476,
+        "name": "check",
+        "conclusion": "success"
+      }
+    ],
+    "tests": 240,
+    "passed": 240,
+    "failed": 0,
+    "skipped": 0
   },
   "runtime_changed": false,
   "harness_runtime_changed": false,
@@ -49,8 +79,8 @@
   "main_changed": false,
   "published": false,
   "evidence_ref": "agent-work/evidence/HX-BL-003-V2-test-stability/report.md",
-  "next_role": "developer",
-  "next_step": "Finish normalCI exactdf879cb; then limitedindependentreview R4/testsummary, no benchmark/PNG/capreset.",
+  "next_role": "reviewer",
+  "next_step": "Независимая ограниченная проверка df879cb: R4 двух существующих Node-тестов и manifest, результаты3focused4/4 и exact-headCI240/browser/RNG; актуальный score_assessment1.2. Без нового замера/PNG/сбросаcap1/1.",
   "automation_health": {
     "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
@@ -59,11 +89,22 @@
       "is_enabled": true
     },
     "end": {
-      "status": "unchecked",
-      "is_enabled": null,
-      "reason": "in_progress"
+      "checked_at": "2026-10-26T17:11:44.402Z",
+      "status": "checked",
+      "is_enabled": true
     },
     "restored_during_this_run": false,
     "errors": []
-  }
+  },
+  "completed_at": "2026-10-26T17:12:10.211Z",
+  "claim_released": true,
+  "normal_runs": [
+    {
+      "id": 40365396181,
+      "name": "Check",
+      "head_sha": "df879cb8d68cf876397aa5611f561a48482ae191",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ]
 }

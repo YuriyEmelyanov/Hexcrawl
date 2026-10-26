@@ -127,3 +127,6 @@
 ###26.10.2026 — не связывать намеренный тестовый timeout с бюджетом ОС
 
 Независимый86a7review: graceful-close test сcleanupMs20 упал наforcekill, неизменённый targetedrepeat прошёл; Python7/7. [Evidence](evidence/review-HX-BL-003-86a7e94/report.md). Полезность4Node/7Pythoncases подтверждена ограниченной проверкой, но короткий таймер для искусственного зависания не должен становиться жёстким сроком планирования ОС/реальногоexit. Корректировка: стабилизировать существующий тест, не добавлять новый и не менять production5000ms. Уверенность высокая в воспроизведённой нестабильности, productionдефект не установлен. Статус: проверяется.
+
+
+26.10.2026 — R4correction atdf879cb8d68cf876397aa5611f561a48482ae191: kept same4Nodecases, modified2cleanupbudgets to5000ms while retaining observedexit/abort assertions.3focusedruns4/4 and exactheadCI240/browser/RNG passed. Cost intentionalhang~5s per focusedrun; finitepass evidence, not universalstabilityproof. [Result](results/2026-10-26-developer-HX-BL-003-test-stability.json). Independentreview next; no newtest, benchmark or productscore.
