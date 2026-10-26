@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "role": "developer",
+  "task_id": "HX-BL-003",
+  "status": "root_cause_verified_fix_committed_normal_CI_pending",
+  "failed_run_id": 40382000933,
+  "artifact_id": 12679398333,
+  "artifact_sha256": "4d18b1e33d6c10c56e083d73cfdcbf6fd8fb302dda4bb8c7c53d85540cd14048",
+  "artifact_download_hash_verified": true,
+  "counts": {
+    "measured_actions_attempted": 0,
+    "warmups_attempted": 1,
+    "png_click_attempts": 0
+  },
+  "error": "Path is not available when connecting remotely. Use saveAs() to save a local copy.",
+  "cause": "BrowserSupervisor uses launchServer + chromium.connect; Download.path throws for remote-connected clients. First JSON snapshot in restore fails before nav. PNG callsite had same latent defect.",
+  "failed_sha": "2ab6886cc745c742bd4e8acf1261d5bec2885bf6",
+  "head_sha": "a669d6654514871af09f0716750f727306676476",
+  "fix": "Replace both Download.path reads with awaited saveAs: JSON local snapshot then parse; PNG save to same output path then hash/compare.",
+  "api_source": "https://playwright.dev/docs/api/class-download",
+  "evidence_ref": "agent-work/evidence/HX-BL-003-run40382000933/diagnosis.md",
+  "normal_ci": {
+    "id": 40385577128,
+    "status": "in_progress",
+    "conclusion": null,
+    "head_sha": "a669d6654514871af09f0716750f727306676476"
+  },
+  "verification": {
+    "node": "v24.22.1",
+    "command": "node --check changed script",
+    "exit_code": 0,
+    "remaining_download_path_calls": 0,
+    "real_remote_download_smoke": false,
+    "limitation": "Actual saveAs transport and full restore flow not re-executed in this diagnostic run; no claim that benchmark/PNG acceptance passes."
+  },
+  "test_change_summary": {
+    "base_sha": "2ab6886cc745c742bd4e8acf1261d5bec2885bf6",
+    "head_sha": "a669d6654514871af09f0716750f727306676476",
+    "added": 0,
+    "removed": 0,
+    "modified": 0,
+    "count_source": "Exact compare only script/manifest/diagnostic report; no test definition changes.",
+    "reuse_or_new_reason": "Diagnosis backed by raw/API contract; no assertion mirroring a string replacement. Existing supervisor tests do not cover actual connected-browser download; limitation explicit."
+  },
+  "measurement_rerun": false,
+  "product_changed": false,
+  "main_changed": false,
+  "product_score_changed": false,
+  "automation_health": {
+    "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-10-26T19:15:18.115Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "end": {
+      "checked_at": "2026-10-26T19:20:25.678Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restored_during_this_run": false,
+    "errors": []
+  },
+  "next_step": "Дождаться существующего Check40385577128 на a669d665; сохранить логи и передать ограниченную независимую проверку двух saveAs-callsite и raw40382000933. Новый benchmark/PNG в диагностическом запуске не выполнялся."
+}
