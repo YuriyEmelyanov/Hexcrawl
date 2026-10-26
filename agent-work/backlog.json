@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "model_version": "1.1",
-  "updated_on": "2026-10-25",
+  "updated_on": "2026-10-26",
   "strategy_version": "1.0",
   "note": "Перенесённые идеи, не разрешение на реализацию. implemented_unverified означает наличие функции/отметки о выполнении, а не G3/G4. criterion_id — предлагаемое отнесение, не начисленный эффект. Полные уникальные детали сохранены в снимке исходного документа.",
   "source_snapshot": {
@@ -102,7 +102,7 @@
       "task_id": "HX-BL-003",
       "title": "Производительность генерации и навигации по числу гексов",
       "criterion_id": "S09-C01",
-      "status": "blocked_awaiting_owner_validation_plan",
+      "status": "validation_approved_pending_P1_addendum",
       "potential_delta": null,
       "approval_ref": "owner-approval-2026-10-25-HX-BL-003",
       "source": {
@@ -229,8 +229,8 @@
         "approval_ref": "owner-approval-2026-10-25-HX-BL-003",
         "next_step": "Программист: закрепить корпус и P1 manifest до baseline замеров, затем профиль и одно подтверждённое узкое место по spec1.0."
       },
-      "next_role": "strategist",
-      "next_step": "Ожидается утверждение владельцем плана HX-BL-003-V2 (до4 диагностических fullPNG попыток и20 navigation actions, один60минпакет, без изменения качества/порогов/продукта). После утверждения аналитик фиксируетprospectiveP1addendum. Отдельно требуется доступное GitHub действие для Check40252463579. До решения: кандидатblocked внеmain, без PNG/benchmark и повторного полногоreview техжеданных.",
+      "next_role": "business_analyst",
+      "next_step": "Аналитик: зафиксировать до новых замеров дополнение P1 по утверждённому HX-BL-003-V2; затем программист выполняет один пакет до4 PNG и20 навигационных действий, максимум60мин. Порог/качество неизменны, публикация отдельно.",
       "spec_ref": "agent-work/specs/HX-BL-003.md",
       "spec_version": "1.0",
       "spec_status": "ready_for_development",
@@ -618,19 +618,21 @@
       },
       "validation_plan": {
         "id": "HX-BL-003-V2",
-        "status": "proposed_requires_explicit_owner_approval",
+        "status": "approved_pending_P1_addendum",
         "path": "agent-work/proposals/HX-BL-003-V2-validation.md",
         "max_png_attempts": 4,
         "max_measured_navigation_actions": 20,
         "max_workflow_attempts": 1,
         "job_timeout_minutes": 60,
         "quality_or_threshold_change": false,
-        "paid_spend_allowed": false
+        "paid_spend_allowed": false,
+        "approval_ref": "owner-approval-2026-10-26-HX-BL-003-V2",
+        "approved_on": "2026-10-26"
       },
       "owner_decisions_needed": [
-        "approve_or_decline_HX-BL-003-V2_validation",
         "resolve_GitHub_action_required_Check40252463579"
-      ]
+      ],
+      "measurement_execution_allowed_after": "prospective_P1_addendum_and_frozen_harness_SHA"
     },
     {
       "task_id": "HX-BL-004",
