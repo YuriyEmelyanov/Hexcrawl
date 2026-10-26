@@ -2,7 +2,7 @@ name: HX-BL-003 P1 paired comparison
 on:
   push:
     branches: [agent/hx-bl-003-performance]
-    paths: [.github/workflows/hx-bl-003-paired.yml, scripts/hx-bl-003-paired.mjs]
+    paths: [.github/workflows/hx-bl-003-paired.yml, scripts/hx-bl-003-paired.mjs, scripts/hx-bl-003-visual.mjs]
   workflow_dispatch:
 permissions:
   contents: write
@@ -68,7 +68,8 @@ jobs:
           env.phase='paired_environment_frozen_before_latency';
           env.candidate_sha=execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim();
           env.pair_order=['AB','BA','AB','BA','AB','BA','AB'];
-          env.files.push({path:'scripts/hx-bl-003-paired.mjs',sha256:createHash('sha256').update(fs.readFileSync('scripts/hx-bl-003-paired.mjs')).digest('hex')});
+          for(const path of ['scripts/hx-bl-003-paired.mjs','scripts/hx-bl-003-visual.mjs'])env.files.push({path,sha256:createHash('sha256').update(fs.readFileSync(path)).digest('hex')});
+          env.visual_series='separate fresh Chromium process per variant/checkpoint after all latency pairs;180s export limit unchanged';
           fs.writeFileSync('reports/HX-BL-003/paired-environment.json',JSON.stringify(env,null,2)+'\n');
           JS
           git config user.name github-actions[bot]
@@ -79,13 +80,16 @@ jobs:
           git push origin HEAD:refs/heads/agent/hx-bl-003-performance
       - name: Paired cold warmup and five warm repetitions on seven checkpoints
         run: node scripts/hx-bl-003-paired.mjs
+      - name: Isolated full PNG export after latency contexts are closed
+        run: node scripts/hx-bl-003-visual.mjs
       - name: Compare full SVG and decoded PNG pixels
+        if: always()
         run: |
           python -m pip install Pillow
           python - <<'PY'
           from PIL import Image,ImageChops
           import pathlib,json
-          p=pathlib.Path('reports/HX-BL-003/timing/paired');rows=[]
+          p=pathlib.Path('reports/HX-BL-003/timing/isolated-visual');rows=[]
           files=list(p.glob('A-*.svg'));assert len(files)==7
           for a in files:
               b=a.with_name('B-'+a.name[2:]);assert a.read_bytes()==b.read_bytes(),a.name
@@ -101,5 +105,6 @@ jobs:
           name: HX-BL-003-P1-paired
           path: |
             reports/HX-BL-003/timing/paired/
+            reports/HX-BL-003/timing/isolated-visual/
             reports/HX-BL-003/paired-environment.json
           if-no-files-found: error
