@@ -1,0 +1,2508 @@
+{
+  "run_id": 40252325923,
+  "artifact_id": 12624578941,
+  "archive_sha256": "45d3a461852a4181c1aa705a715b3423fba0c8e3735f7fe096e7801060df4cfd",
+  "environment": {
+    "schema_version": 1,
+    "protocol": "P1/spec1.0",
+    "phase": "paired_environment_frozen_before_latency",
+    "baseline_sha": "103d31b9f6f5c76b1f6b45d9d6664fe3f75dd63b",
+    "harness_commit": "00f5e4adcc4a027948ca3a82fcd625211eb890cd",
+    "node": "v24.21.0",
+    "playwright": "1.62.1",
+    "chromium_version": "151.0.7922.34",
+    "chromium_path": "/home/runner/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome",
+    "lock_sha256": "6b7a348067a218afce320ca370bee8cd323eff14fbdf9a24fbbfc5e3deedcee7",
+    "os": {
+      "platform": "linux",
+      "release": "6.17.0-1022-azure",
+      "cpu": "AMD EPYC 7763 64-Core Processor",
+      "vcpus": 4,
+      "ram_bytes": 16766414848,
+      "runner": "GitHub Actions 1000001123",
+      "image": "20261023.334.3"
+    },
+    "viewport": {
+      "width": 1500,
+      "height": 1000
+    },
+    "dpr": 1,
+    "scale": 1.5,
+    "rotation": false,
+    "language": "ru",
+    "headless": true,
+    "cpu_throttling": false,
+    "analytics": "mc.yandex blocked identically",
+    "warm_runs": 5,
+    "warmup": 1,
+    "cold_contexts": 1,
+    "timeout_ms": 180000,
+    "collection_order": "manifest checkpoint order; cold,warmup,0,1,2,3,4",
+    "selection_samples": 4,
+    "trace_cases": [
+      "mythic-0-N400.json",
+      "mythic-0-N2400.json"
+    ],
+    "trace_series": "separate subsequent series; all five warm actions per selected checkpoint; never merge trace timings into primary series",
+    "before_after_pairing": "Not an optimization comparison. Future AB/BA requires both versions repeated on same runner. This baseline alone cannot establish gain.",
+    "created_at": "2026-10-26T01:05:12.111Z",
+    "files": [
+      {
+        "path": "scripts/hx-bl-003-instrument.mjs",
+        "sha256": "e58aa56f00acc1ddc5da9b4ddcd640599872c8d47ffd3c3f3d0cfefc18bfe5bb"
+      },
+      {
+        "path": "scripts/hx-bl-003-timing.mjs",
+        "sha256": "ff20cf0bbe7acc9e0cb1feb4839a2f4f93d58fa11f81003787fbf5d48317df6e"
+      },
+      {
+        "path": "scripts/hx-bl-003-environment.mjs",
+        "sha256": "f2d0b2b5288007ef4af6b1c41cabbcaabf4443352acfcd72a24a3e61a188e77a"
+      },
+      {
+        "path": "reports/HX-BL-003/corpus/manifest.json",
+        "sha256": "c17c66bd906bb00f044927be5cf535a0c0f559dadb64bba31cfbd676ae80443a"
+      },
+      {
+        "path": "scripts/hx-bl-003-paired.mjs",
+        "sha256": "ff1c76fb58adbc93607376247e145d2e196d88a8a360e95252f89d35f720ca77"
+      },
+      {
+        "path": "scripts/hx-bl-003-visual.mjs",
+        "sha256": "75e6fb3988f0512d16a7b053050e66dd89123c5a5615e45cca748e96d1801589"
+      }
+    ],
+    "candidate_sha": "00f5e4adcc4a027948ca3a82fcd625211eb890cd",
+    "pair_order": [
+      "AB",
+      "BA",
+      "AB",
+      "BA",
+      "AB",
+      "BA",
+      "AB"
+    ],
+    "visual_series": "separate fresh Chromium process per variant/checkpoint after all latency pairs;180s export limit unchanged"
+  },
+  "rows": 98,
+  "errors": [],
+  "groups": [
+    {
+      "input": "mythic-0-N400.json",
+      "N_before": 418,
+      "N_after": 602,
+      "metrics": {
+        "generation_ms": {
+          "baseline": {
+            "n": 5,
+            "min": 4088.4000000000233,
+            "median": 4213.100000000006,
+            "max": 4295.700000000012,
+            "p95": 4295.700000000012
+          },
+          "candidate": {
+            "n": 5,
+            "min": 3168.4000000000233,
+            "median": 3304.5,
+            "max": 3511.2000000000116,
+            "p95": 3511.2000000000116
+          },
+          "saving_ms": 908.6000000000058,
+          "saving_fraction": 0.21566067741093364,
+          "paired_candidate_over_baseline": [
+            0.8334005838930969,
+            0.7515096194354701,
+            0.8082624009392382,
+            0.7375747840864154,
+            0.807452961417381
+          ],
+          "wins": 5
+        },
+        "render_ms": {
+          "baseline": {
+            "n": 5,
+            "min": 703.6000000000349,
+            "median": 749.7000000000116,
+            "max": 827.3999999999942,
+            "p95": 827.3999999999942
+          },
+          "candidate": {
+            "n": 5,
+            "min": 599.7000000000116,
+            "median": 637.3999999999942,
+            "max": 780.8000000000175,
+            "p95": 780.8000000000175
+          },
+          "saving_ms": 112.30000000001746,
+          "saving_fraction": 0.14979325063360774,
+          "paired_candidate_over_baseline": [
+            0.8502067493663923,
+            0.9436789944404435,
+            0.7403703703703848,
+            0.8756824863502872,
+            0.9917566799317137
+          ],
+          "wins": 5
+        },
+        "e2e_ms": {
+          "baseline": {
+            "n": 5,
+            "min": 4801.300000000047,
+            "median": 4962.8000000000175,
+            "max": 5100,
+            "p95": 5100
+          },
+          "candidate": {
+            "n": 5,
+            "min": 3793.9000000000233,
+            "median": 3991.7000000000116,
+            "max": 4148.600000000006,
+            "p95": 4148.600000000006
+          },
+          "saving_ms": 971.1000000000058,
+          "saving_fraction": 0.1956758281615222,
+          "paired_candidate_over_baseline": [
+            0.8359393890545642,
+            0.7826862745098062,
+            0.7970357667809883,
+            0.7572654690618809,
+            0.8344615000104058
+          ],
+          "wins": 5
+        }
+      },
+      "navigation": {
+        "zoom": {
+          "baseline_per_run_p95": [
+            33.30000000000291,
+            33.30000000001746,
+            33.39999999999418,
+            33.29999999998836,
+            16.800000000017462
+          ],
+          "candidate_per_run_p95": [
+            33.40000000000873,
+            16.69999999999709,
+            33.30000000001746,
+            33.39999999999418,
+            16.79999999998836
+          ],
+          "baseline_median_p95": 33.30000000000291,
+          "candidate_median_p95": 33.30000000001746,
+          "baseline_pooled_p95": 33.30000000001746,
+          "candidate_pooled_p95": 33.39999999999418
+        },
+        "pan": {
+          "baseline_per_run_p95": [
+            133.40000000000873,
+            133.30000000001746,
+            133.29999999998836,
+            150.10000000000582,
+            133.29999999998836
+          ],
+          "candidate_per_run_p95": [
+            133.29999999998836,
+            116.69999999999709,
+            100,
+            133.29999999998836,
+            116.59999999997672
+          ],
+          "baseline_median_p95": 133.30000000001746,
+          "candidate_median_p95": 116.69999999999709,
+          "baseline_pooled_p95": 133.40000000000873,
+          "candidate_pooled_p95": 133.29999999998836
+        }
+      },
+      "cold_e2e": {
+        "baseline": 5597.900000000009,
+        "candidate": 4264.399999999994
+      },
+      "target_gain_pass": null
+    },
+    {
+      "input": "mythic-0-N1200.json",
+      "N_before": 1208,
+      "N_after": 1429,
+      "metrics": {
+        "generation_ms": {
+          "baseline": {
+            "n": 5,
+            "min": 26012.70000000007,
+            "median": 26070.900000000023,
+            "max": 27487.699999999953,
+            "p95": 27487.699999999953
+          },
+          "candidate": {
+            "n": 5,
+            "min": 16929.800000000047,
+            "median": 18927,
+            "max": 19753,
+            "p95": 19753
+          },
+          "saving_ms": 7143.900000000023,
+          "saving_fraction": 0.2740181581763582,
+          "paired_candidate_over_baseline": [
+            0.7593598511496287,
+            0.6211832928909998,
+            0.7259818418236418,
+            0.6171371496894236,
+            0.7539668218970876
+          ],
+          "wins": 5
+        },
+        "render_ms": {
+          "baseline": {
+            "n": 5,
+            "min": 2036.5,
+            "median": 2067.20000000007,
+            "max": 2223.1999999999534,
+            "p95": 2223.1999999999534
+          },
+          "candidate": {
+            "n": 5,
+            "min": 1718.0999999999767,
+            "median": 1809.3000000000466,
+            "max": 1908.7999999999302,
+            "p95": 1908.7999999999302
+          },
+          "saving_ms": 257.9000000000233,
+          "saving_fraction": 0.12475812693499157,
+          "paired_candidate_over_baseline": [
+            0.9109129267357441,
+            0.8752418730650084,
+            0.7728049658150471,
+            0.9283143663067666,
+            0.8521973974957034
+          ],
+          "wins": 5
+        },
+        "e2e_ms": {
+          "baseline": {
+            "n": 5,
+            "min": 28083.800000000047,
+            "median": 28294.099999999977,
+            "max": 29554.900000000023,
+            "p95": 29554.900000000023
+          },
+          "candidate": {
+            "n": 5,
+            "min": 18838.599999999977,
+            "median": 20645.099999999977,
+            "max": 21652.800000000047,
+            "p95": 21652.800000000047
+          },
+          "saving_ms": 7649,
+          "saving_fraction": 0.27033904594950914,
+          "paired_candidate_over_baseline": [
+            0.7706088980472132,
+            0.6389532700161373,
+            0.7296609540504909,
+            0.6388348197633008,
+            0.7610900234298781
+          ],
+          "wins": 5
+        }
+      },
+      "navigation": {
+        "zoom": {
+          "baseline_per_run_p95": [
+            66.55400000000373,
+            49.90000000002328,
+            66.70000000001164,
+            33.40000000002328,
+            33.300000000046566
+          ],
+          "candidate_per_run_p95": [
+            883.2999999999884,
+            66.59600000001956,
+            33.300000000046566,
+            49.92800000007264,
+            33.29999999993015
+          ],
+          "baseline_median_p95": 49.90000000002328,
+          "candidate_median_p95": 49.92800000007264,
+          "baseline_pooled_p95": 49.9660000000149,
+          "candidate_pooled_p95": 66.59600000001956
+        },
+        "pan": {
+          "baseline_per_run_p95": [
+            166.60000000000582,
+            166.59999999997672,
+            99.94200000003912,
+            116.70000000006985,
+            166.60000000009313
+          ],
+          "candidate_per_run_p95": [
+            99.89999999996508,
+            99.94199999998091,
+            166.66800000000512,
+            166.54200000001583,
+            166.64199999999255
+          ],
+          "baseline_median_p95": 166.59999999997672,
+          "candidate_median_p95": 166.54200000001583,
+          "baseline_pooled_p95": 166.60000000000582,
+          "candidate_pooled_p95": 166.64199999999255
+        }
+      },
+      "cold_e2e": {
+        "baseline": 29295.599999999977,
+        "candidate": 19757.29999999999
+      },
+      "target_gain_pass": null
+    },
+    {
+      "input": "mythic-0-N2400.json",
+      "N_before": 2493,
+      "N_after": 2714,
+      "metrics": {
+        "generation_ms": {
+          "baseline": {
+            "n": 5,
+            "min": 91299.30000000028,
+            "median": 102550.6000000001,
+            "max": 104805.5,
+            "p95": 104805.5
+          },
+          "candidate": {
+            "n": 5,
+            "min": 63794.799999999814,
+            "median": 67263.19999999995,
+            "max": 71834.3999999999,
+            "p95": 71834.3999999999
+          },
+          "saving_ms": 35287.40000000014,
+          "saving_fraction": 0.3440974504293501,
+          "paired_candidate_over_baseline": [
+            0.6470807234722511,
+            0.6232354218051533,
+            0.7004776178783921,
+            0.6853406786070295,
+            0.7448907056242468
+          ],
+          "wins": 5
+        },
+        "render_ms": {
+          "baseline": {
+            "n": 5,
+            "min": 4797.5,
+            "median": 5410,
+            "max": 5970.5,
+            "p95": 5970.5
+          },
+          "candidate": {
+            "n": 5,
+            "min": 3887.7000000001863,
+            "median": 4048.2000000001863,
+            "max": 4323.399999999907,
+            "p95": 4323.399999999907
+          },
+          "saving_ms": 1361.7999999998137,
+          "saving_fraction": 0.2517190388169711,
+          "paired_candidate_over_baseline": [
+            0.7722920517560246,
+            0.6792252496018224,
+            0.7241269575412288,
+            0.8103595622720555,
+            0.8383275694258039
+          ],
+          "wins": 5
+        },
+        "e2e_ms": {
+          "baseline": {
+            "n": 5,
+            "min": 96128.20000000019,
+            "median": 108521.1000000001,
+            "max": 110644.80000000005,
+            "p95": 110644.80000000005
+          },
+          "candidate": {
+            "n": 5,
+            "min": 67682.5,
+            "median": 71441.30000000005,
+            "max": 76157.79999999981,
+            "p95": 76157.79999999981
+          },
+          "saving_ms": 37079.80000000005,
+          "saving_fraction": 0.34168286167390505,
+          "paired_candidate_over_baseline": [
+            0.6532749566335379,
+            0.6261902954318678,
+            0.7017787324308337,
+            0.6914682225489165,
+            0.7495844091536099
+          ],
+          "wins": 5
+        }
+      },
+      "navigation": {
+        "zoom": {
+          "baseline_per_run_p95": [
+            33.300000000046566,
+            16.800000000046566,
+            99.9000000001397,
+            83.32799999997951,
+            83.26800000015646
+          ],
+          "candidate_per_run_p95": [
+            83.32799999997951,
+            83.30799999996088,
+            83.29799999995157,
+            83.32799999997951,
+            33.300000000046566
+          ],
+          "baseline_median_p95": 83.26800000015646,
+          "candidate_median_p95": 83.30799999996088,
+          "baseline_pooled_p95": 66.64199999999255,
+          "candidate_pooled_p95": 83.30799999996088
+        },
+        "pan": {
+          "baseline_per_run_p95": [
+            299.9420000000391,
+            283.20999999996275,
+            283.29999999981374,
+            183.27600000007078,
+            266.67599999997765
+          ],
+          "candidate_per_run_p95": [
+            183.31000000005588,
+            199.94200000003912,
+            183.34199999994598,
+            299.9760000000242,
+            299.9760000000242
+          ],
+          "baseline_median_p95": 283.20999999996275,
+          "candidate_median_p95": 199.94200000003912,
+          "baseline_pooled_p95": 283.29999999981374,
+          "candidate_pooled_p95": 299.9760000000242
+        }
+      },
+      "cold_e2e": {
+        "baseline": 98467.59999999986,
+        "candidate": 72562.20000000019
+      },
+      "target_gain_pass": true
+    },
+    {
+      "input": "mythic-123456789-N400.json",
+      "N_before": 586,
+      "N_after": 793,
+      "metrics": {
+        "generation_ms": {
+          "baseline": {
+            "n": 5,
+            "min": 11142.5,
+            "median": 11955.200000000186,
+            "max": 12082.100000000093,
+            "p95": 12082.100000000093
+          },
+          "candidate": {
+            "n": 5,
+            "min": 8468.600000000093,
+            "median": 8592.600000000093,
+            "max": 11886.69999999972,
+            "p95": 11886.69999999972
+          },
+          "saving_ms": 3362.600000000093,
+          "saving_fraction": 0.2812667291220591,
+          "paired_candidate_over_baseline": [
+            0.9979933840444334,
+            0.7603141126317984,
+            0.7083612152034229,
+            0.7664561624220819,
+            0.7136651688939483
+          ],
+          "wins": 5
+        },
+        "render_ms": {
+          "baseline": {
+            "n": 5,
+            "min": 1027.3999999999069,
+            "median": 1059.2999999998137,
+            "max": 1155.2999999998137,
+            "p95": 1155.2999999998137
+          },
+          "candidate": {
+            "n": 5,
+            "min": 979.7999999998137,
+            "median": 1026.7999999998137,
+            "max": 1066.1000000000931,
+            "p95": 1066.1000000000931
+          },
+          "saving_ms": 32.5,
+          "saving_fraction": 0.030680638157279064,
+          "paired_candidate_over_baseline": [
+            0.9682807807809584,
+            1.006419333522402,
+            0.9859804109851216,
+            0.9733307377847875,
+            0.8480914048298898
+          ],
+          "wins": 4
+        },
+        "e2e_ms": {
+          "baseline": {
+            "n": 5,
+            "min": 12201.799999999814,
+            "median": 12996.600000000093,
+            "max": 13195.399999999907,
+            "p95": 13195.399999999907
+          },
+          "candidate": {
+            "n": 5,
+            "min": 9495.399999999907,
+            "median": 9572.399999999907,
+            "max": 12918.5,
+            "p95": 12918.5
+          },
+          "saving_ms": 3424.2000000001863,
+          "saving_fraction": 0.2634689072526785,
+          "paired_candidate_over_baseline": [
+            0.9955533977589598,
+            0.7816797521677172,
+            0.7306064663065601,
+            0.7826690567908697,
+            0.7254346211558554
+          ],
+          "wins": 5
+        }
+      },
+      "navigation": {
+        "zoom": {
+          "baseline_per_run_p95": [
+            33.26199999998789,
+            800,
+            833.2999999999884,
+            16.800000000046566,
+            816.5819999999949
+          ],
+          "candidate_per_run_p95": [
+            983.2999999999884,
+            49.89400000000023,
+            49.89400000002934,
+            33.29999999998836,
+            33.29999999998836
+          ],
+          "baseline_median_p95": 800,
+          "candidate_median_p95": 49.89400000000023,
+          "baseline_pooled_p95": 450,
+          "candidate_pooled_p95": 133.29999999998836
+        },
+        "pan": {
+          "baseline_per_run_p95": [
+            66.66799999997602,
+            33.30000000001746,
+            100,
+            100,
+            100
+          ],
+          "candidate_per_run_p95": [
+            66.64199999999255,
+            66.69999999998254,
+            66.60000000003492,
+            33.300000000046566,
+            66.5680000000284
+          ],
+          "baseline_median_p95": 100,
+          "candidate_median_p95": 66.60000000003492,
+          "baseline_pooled_p95": 100,
+          "candidate_pooled_p95": 66.64199999999255
+        }
+      },
+      "cold_e2e": {
+        "baseline": 13143.80000000028,
+        "candidate": 10461.600000000093
+      },
+      "target_gain_pass": null
+    },
+    {
+      "input": "mythic-123456789-N1200.json",
+      "N_before": 1209,
+      "N_after": 1393,
+      "metrics": {
+        "generation_ms": {
+          "baseline": {
+            "n": 5,
+            "min": 25616.299999999814,
+            "median": 26261.600000000093,
+            "max": 28014.200000000186,
+            "p95": 28014.200000000186
+          },
+          "candidate": {
+            "n": 5,
+            "min": 17773.600000000093,
+            "median": 18628.299999999814,
+            "max": 19397,
+            "p95": 19397
+          },
+          "saving_ms": 7633.300000000279,
+          "saving_fraction": 0.29066393517532263,
+          "paired_candidate_over_baseline": [
+            0.7222930924177435,
+            0.6388923756684068,
+            0.7386069394096297,
+            0.6344496719520806,
+            0.727770989565254
+          ],
+          "wins": 5
+        },
+        "render_ms": {
+          "baseline": {
+            "n": 5,
+            "min": 1861.7000000001863,
+            "median": 1939.5,
+            "max": 2155.2000000001863,
+            "p95": 2155.2000000001863
+          },
+          "candidate": {
+            "n": 5,
+            "min": 1627,
+            "median": 1674.4000000003725,
+            "max": 1789.1000000000931,
+            "p95": 1789.1000000000931
+          },
+          "saving_ms": 265.09999999962747,
+          "saving_fraction": 0.13668471255459008,
+          "paired_candidate_over_baseline": [
+            0.9050786285124552,
+            0.7769116555309149,
+            0.8337682915462112,
+            0.8443175921120913,
+            0.8836547241765391
+          ],
+          "wins": 5
+        },
+        "e2e_ms": {
+          "baseline": {
+            "n": 5,
+            "min": 27478,
+            "median": 28407.400000000373,
+            "max": 30038.30000000028,
+            "p95": 30038.30000000028
+          },
+          "candidate": {
+            "n": 5,
+            "min": 19400.600000000093,
+            "median": 20287.899999999907,
+            "max": 21186.100000000093,
+            "p95": 21186.100000000093
+          },
+          "saving_ms": 8119.500000000466,
+          "saving_fraction": 0.28582341220950735,
+          "paired_candidate_over_baseline": [
+            0.7350775333573646,
+            0.6487950383343932,
+            0.7457951097249244,
+            0.6479566617236441,
+            0.7383324841691501
+          ],
+          "wins": 5
+        }
+      },
+      "navigation": {
+        "zoom": {
+          "baseline_per_run_p95": [
+            49.9320000000007,
+            16.70000000001164,
+            49.8859999999986,
+            33.32600000000093,
+            16.79999999993015
+          ],
+          "candidate_per_run_p95": [
+            66.59999999997672,
+            33.40000000002328,
+            66.59999999997672,
+            33.288000000000466,
+            16.800000000046566
+          ],
+          "baseline_median_p95": 33.32600000000093,
+          "candidate_median_p95": 33.40000000002328,
+          "baseline_pooled_p95": 33.40000000002328,
+          "candidate_pooled_p95": 33.40000000002328
+        },
+        "pan": {
+          "baseline_per_run_p95": [
+            83.30800000001909,
+            149.94200000003912,
+            99.94199999998091,
+            149.84199999994598,
+            150
+          ],
+          "candidate_per_run_p95": [
+            149.96799999999348,
+            83.29999999998836,
+            149.90000000002328,
+            83.30799999996088,
+            100
+          ],
+          "baseline_median_p95": 149.84199999994598,
+          "candidate_median_p95": 100,
+          "baseline_pooled_p95": 149.94200000003912,
+          "candidate_pooled_p95": 149.90000000002328
+        }
+      },
+      "cold_e2e": {
+        "baseline": 28421.399999999907,
+        "candidate": 20344.100000000093
+      },
+      "target_gain_pass": null
+    },
+    {
+      "input": "mythic-123456789-N2400.json",
+      "N_before": 2410,
+      "N_after": 2590,
+      "metrics": {
+        "generation_ms": {
+          "baseline": {
+            "n": 5,
+            "min": 84852.60000000056,
+            "median": 86968.60000000056,
+            "max": 89507.19999999925,
+            "p95": 89507.19999999925
+          },
+          "candidate": {
+            "n": 5,
+            "min": 54310.60000000056,
+            "median": 55528.200000000186,
+            "max": 58244.90000000037,
+            "p95": 58244.90000000037
+          },
+          "saving_ms": 31440.400000000373,
+          "saving_fraction": 0.3615143856518349,
+          "paired_candidate_over_baseline": [
+            0.641684867394698,
+            0.6163640408479825,
+            0.6697233254300977,
+            0.6067735333023602,
+            0.666621883124385
+          ],
+          "wins": 5
+        },
+        "render_ms": {
+          "baseline": {
+            "n": 5,
+            "min": 4314.899999999441,
+            "median": 4500.799999999814,
+            "max": 4598.899999999441,
+            "p95": 4598.899999999441
+          },
+          "candidate": {
+            "n": 5,
+            "min": 3363.5,
+            "median": 3555.399999999441,
+            "max": 3760.5,
+            "p95": 3760.5
+          },
+          "saving_ms": 945.4000000003725,
+          "saving_fraction": 0.21005154639184404,
+          "paired_candidate_over_baseline": [
+            0.8081230003555672,
+            0.7693144012699623,
+            0.8310313584230867,
+            0.7931911475993096,
+            0.7795082157177305
+          ],
+          "wins": 5
+        },
+        "e2e_ms": {
+          "baseline": {
+            "n": 5,
+            "min": 89167.5,
+            "median": 91493.70000000019,
+            "max": 93989.59999999963,
+            "p95": 93989.59999999963
+          },
+          "candidate": {
+            "n": 5,
+            "min": 57866,
+            "median": 59165.40000000037,
+            "max": 62005.40000000037,
+            "p95": 62005.40000000037
+          },
+          "saving_ms": 32328.299999999814,
+          "saving_fraction": 0.3533390823630452,
+          "paired_candidate_over_baseline": [
+            0.6499135504933278,
+            0.6239152091858807,
+            0.677701306210157,
+            0.6156638606824609,
+            0.6720845599573898
+          ],
+          "wins": 5
+        }
+      },
+      "navigation": {
+        "zoom": {
+          "baseline_per_run_p95": [
+            83.20999999996275,
+            83.29999999993015,
+            33.40000000002328,
+            66.69999999995343,
+            66.60000000009313
+          ],
+          "candidate_per_run_p95": [
+            66.62799999990966,
+            33.300000000046566,
+            33.39999999990687,
+            83.24399999994785,
+            83.30599999986589
+          ],
+          "baseline_median_p95": 66.69999999995343,
+          "candidate_median_p95": 66.62799999990966,
+          "baseline_pooled_p95": 66.69999999995343,
+          "candidate_pooled_p95": 66.62799999990966
+        },
+        "pan": {
+          "baseline_per_run_p95": [
+            166.61000000010245,
+            183.37599999993108,
+            316.67600000009406,
+            283.341999999946,
+            283.20999999996275
+          ],
+          "candidate_per_run_p95": [
+            166.61000000010245,
+            300.04200000001583,
+            283.341999999946,
+            233.27599999983795,
+            266.67599999997765
+          ],
+          "baseline_median_p95": 283.20999999996275,
+          "candidate_median_p95": 266.67599999997765,
+          "baseline_pooled_p95": 283.341999999946,
+          "candidate_pooled_p95": 283.341999999946
+        }
+      },
+      "cold_e2e": {
+        "baseline": 93122.79999999981,
+        "candidate": 60184.799999999814
+      },
+      "target_gain_pass": true
+    },
+    {
+      "input": "classic-1-N400.json",
+      "N_before": 405,
+      "N_after": 414,
+      "metrics": {
+        "generation_ms": {
+          "baseline": {
+            "n": 5,
+            "min": 59.40000000037253,
+            "median": 63.60000000055879,
+            "max": 81.29999999981374,
+            "p95": 81.29999999981374
+          },
+          "candidate": {
+            "n": 5,
+            "min": 59.5,
+            "median": 65.69999999925494,
+            "max": 77.8999999994412,
+            "p95": 77.8999999994412
+          },
+          "saving_ms": -2.0999999986961484,
+          "saving_fraction": -0.033018867903737384,
+          "paired_candidate_over_baseline": [
+            1.0330188679037373,
+            1.0016835016772196,
+            0.9524564183691798,
+            0.9237392374013635,
+            1.1339155749524017
+          ],
+          "wins": 2
+        },
+        "render_ms": {
+          "baseline": {
+            "n": 5,
+            "min": 117.29999999981374,
+            "median": 121,
+            "max": 126.90000000037253,
+            "p95": 126.90000000037253
+          },
+          "candidate": {
+            "n": 5,
+            "min": 92.29999999981374,
+            "median": 95.40000000037253,
+            "max": 104.5,
+            "p95": 104.5
+          },
+          "saving_ms": 25.59999999962747,
+          "saving_fraction": 0.21157024793080553,
+          "paired_candidate_over_baseline": [
+            0.7565424266507087,
+            0.7634408602170417,
+            0.8173553719039052,
+            0.7509850275770998,
+            0.890878090367996
+          ],
+          "wins": 5
+        },
+        "e2e_ms": {
+          "baseline": {
+            "n": 5,
+            "min": 180.29999999981374,
+            "median": 186,
+            "max": 208.20000000018626,
+            "p95": 208.20000000018626
+          },
+          "candidate": {
+            "n": 5,
+            "min": 151.79999999981374,
+            "median": 161.09999999962747,
+            "max": 182.3999999994412,
+            "p95": 182.3999999994412
+          },
+          "saving_ms": 24.90000000037253,
+          "saving_fraction": 0.13387096774393833,
+          "paired_candidate_over_baseline": [
+            0.8492356352106973,
+            0.8419301164723825,
+            0.8636610537725008,
+            0.8184438040356392,
+            0.9806451612873183
+          ],
+          "wins": 5
+        }
+      },
+      "navigation": {
+        "zoom": {
+          "baseline_per_run_p95": [
+            33.399999999999636,
+            33.400000000001455,
+            33.400000000001455,
+            33.400000000001455,
+            33.30000000000291
+          ],
+          "candidate_per_run_p95": [
+            33.30000000000291,
+            33.39999999999782,
+            33.400000000001455,
+            33.30000000000291,
+            33.39999999999418
+          ],
+          "baseline_median_p95": 33.400000000001455,
+          "candidate_median_p95": 33.39999999999418,
+          "baseline_pooled_p95": 33.400000000001455,
+          "candidate_pooled_p95": 33.39999999999782
+        },
+        "pan": {
+          "baseline_per_run_p95": [
+            16.799999999999272,
+            16.799999999999272,
+            16.80000000000291,
+            16.700000000004366,
+            16.700000000004366
+          ],
+          "candidate_per_run_p95": [
+            16.700000000000728,
+            16.799999999999272,
+            16.700000000004366,
+            16.799999999995634,
+            16.700000000004366
+          ],
+          "baseline_median_p95": 16.799999999999272,
+          "candidate_median_p95": 16.700000000004366,
+          "baseline_pooled_p95": 16.799999999999272,
+          "candidate_pooled_p95": 16.799999999995634
+        }
+      },
+      "cold_e2e": {
+        "baseline": 276.69999999925494,
+        "candidate": 228.09999999962747
+      },
+      "target_gain_pass": null
+    }
+  ],
+  "regressions": [],
+  "full_json_pairs_equal": 49,
+  "visual_report": {
+    "protocol": "P1/spec1.0",
+    "environment": {
+      "schema_version": 1,
+      "protocol": "P1/spec1.0",
+      "phase": "paired_environment_frozen_before_latency",
+      "baseline_sha": "103d31b9f6f5c76b1f6b45d9d6664fe3f75dd63b",
+      "harness_commit": "00f5e4adcc4a027948ca3a82fcd625211eb890cd",
+      "node": "v24.21.0",
+      "playwright": "1.62.1",
+      "chromium_version": "151.0.7922.34",
+      "chromium_path": "/home/runner/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome",
+      "lock_sha256": "6b7a348067a218afce320ca370bee8cd323eff14fbdf9a24fbbfc5e3deedcee7",
+      "os": {
+        "platform": "linux",
+        "release": "6.17.0-1022-azure",
+        "cpu": "AMD EPYC 7763 64-Core Processor",
+        "vcpus": 4,
+        "ram_bytes": 16766414848,
+        "runner": "GitHub Actions 1000001123",
+        "image": "20261023.334.3"
+      },
+      "viewport": {
+        "width": 1500,
+        "height": 1000
+      },
+      "dpr": 1,
+      "scale": 1.5,
+      "rotation": false,
+      "language": "ru",
+      "headless": true,
+      "cpu_throttling": false,
+      "analytics": "mc.yandex blocked identically",
+      "warm_runs": 5,
+      "warmup": 1,
+      "cold_contexts": 1,
+      "timeout_ms": 180000,
+      "collection_order": "manifest checkpoint order; cold,warmup,0,1,2,3,4",
+      "selection_samples": 4,
+      "trace_cases": [
+        "mythic-0-N400.json",
+        "mythic-0-N2400.json"
+      ],
+      "trace_series": "separate subsequent series; all five warm actions per selected checkpoint; never merge trace timings into primary series",
+      "before_after_pairing": "Not an optimization comparison. Future AB/BA requires both versions repeated on same runner. This baseline alone cannot establish gain.",
+      "created_at": "2026-10-26T01:05:12.111Z",
+      "files": [
+        {
+          "path": "scripts/hx-bl-003-instrument.mjs",
+          "sha256": "e58aa56f00acc1ddc5da9b4ddcd640599872c8d47ffd3c3f3d0cfefc18bfe5bb"
+        },
+        {
+          "path": "scripts/hx-bl-003-timing.mjs",
+          "sha256": "ff20cf0bbe7acc9e0cb1feb4839a2f4f93d58fa11f81003787fbf5d48317df6e"
+        },
+        {
+          "path": "scripts/hx-bl-003-environment.mjs",
+          "sha256": "f2d0b2b5288007ef4af6b1c41cabbcaabf4443352acfcd72a24a3e61a188e77a"
+        },
+        {
+          "path": "reports/HX-BL-003/corpus/manifest.json",
+          "sha256": "c17c66bd906bb00f044927be5cf535a0c0f559dadb64bba31cfbd676ae80443a"
+        },
+        {
+          "path": "scripts/hx-bl-003-paired.mjs",
+          "sha256": "ff1c76fb58adbc93607376247e145d2e196d88a8a360e95252f89d35f720ca77"
+        },
+        {
+          "path": "scripts/hx-bl-003-visual.mjs",
+          "sha256": "75e6fb3988f0512d16a7b053050e66dd89123c5a5615e45cca748e96d1801589"
+        }
+      ],
+      "candidate_sha": "00f5e4adcc4a027948ca3a82fcd625211eb890cd",
+      "pair_order": [
+        "AB",
+        "BA",
+        "AB",
+        "BA",
+        "AB",
+        "BA",
+        "AB"
+      ],
+      "visual_series": "separate fresh Chromium process per variant/checkpoint after all latency pairs;180s export limit unchanged"
+    },
+    "method": "one fresh Chromium process per variant/checkpoint; import frozen expected AFTER document; unchanged production SVG/PNG export; no latency evidence",
+    "rows": [
+      {
+        "input": "mythic-0-N400.json",
+        "variant": "A",
+        "status": "captured",
+        "started_at": "2026-10-26T02:34:02.107Z",
+        "errors": [],
+        "failed_requests": [
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/open_hills-3.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/open_hills-4.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/open_hills-1.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/open_hills-2.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/open_plains-4.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/open_plains-1.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/open_plains-3.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/open_plains-2.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/semi_desert-3.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/swamp-3.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/swamp-4.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/swamp-2.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/semi_desert-1.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/semi_desert-4.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/semi_desert-2.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/waterfall-color.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/poi/v2/land/capital.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/swamp-1.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/poi/v2/land/holy_place.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/poi/v2/land/lair.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/poi/v2/land/village.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/poi/v2/land/ruins.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/poi/v2/land/monastery.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/poi/v2/land/cursed_place.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/poi/v2/land/obelisk.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/poi/v2/land/stronghold.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/poi/v2/land/city.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/poi/v2/land/castle.svg",
+            "error": "net::ERR_ABORTED"
+          }
+        ],
+        "full_json_equal": true,
+        "svg": "/home/runner/work/Hexcrawl/Hexcrawl/reports/HX-BL-003/timing/isolated-visual/A-mythic-0-N400.svg",
+        "png": "/home/runner/work/Hexcrawl/Hexcrawl/reports/HX-BL-003/timing/isolated-visual/A-mythic-0-N400.png",
+        "completed_at": "2026-10-26T02:34:26.608Z"
+      },
+      {
+        "input": "mythic-0-N400.json",
+        "variant": "B",
+        "status": "captured",
+        "started_at": "2026-10-26T02:34:26.609Z",
+        "errors": [],
+        "failed_requests": [
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/open_hills-3.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/open_hills-4.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/open_hills-1.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/open_hills-2.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/open_plains-4.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/open_plains-3.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/open_plains-2.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/semi_desert-3.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/open_plains-1.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/swamp-3.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/swamp-4.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/swamp-2.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/semi_desert-1.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/semi_desert-4.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/semi_desert-2.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/swamp-1.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/waterfall-color.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/poi/v2/land/capital.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/poi/v2/land/holy_place.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/poi/v2/land/lair.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/poi/v2/land/village.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/poi/v2/land/ruins.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/poi/v2/land/monastery.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/poi/v2/land/cursed_place.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/poi/v2/land/obelisk.svg",
+            "error": "net::ERR_ABORTED"
+          }
+        ],
+        "full_json_equal": true,
+        "svg": "/home/runner/work/Hexcrawl/Hexcrawl/reports/HX-BL-003/timing/isolated-visual/B-mythic-0-N400.svg",
+        "png": "/home/runner/work/Hexcrawl/Hexcrawl/reports/HX-BL-003/timing/isolated-visual/B-mythic-0-N400.png",
+        "completed_at": "2026-10-26T02:34:51.132Z"
+      },
+      {
+        "input": "mythic-0-N1200.json",
+        "variant": "A",
+        "status": "captured",
+        "started_at": "2026-10-26T02:34:51.132Z",
+        "errors": [],
+        "failed_requests": [
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/open_hills-3.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/open_hills-4.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/open_hills-2.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/open_plains-4.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/open_hills-1.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/open_plains-1.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/open_plains-3.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/open_plains-2.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/semi_desert-3.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/swamp-3.svg",
+            "error": "net::ERR_ABORTED"
+          }
+        ],
+        "full_json_equal": true,
+        "svg": "/home/runner/work/Hexcrawl/Hexcrawl/reports/HX-BL-003/timing/isolated-visual/A-mythic-0-N1200.svg",
+        "png": "/home/runner/work/Hexcrawl/Hexcrawl/reports/HX-BL-003/timing/isolated-visual/A-mythic-0-N1200.png",
+        "completed_at": "2026-10-26T02:36:10.938Z"
+      },
+      {
+        "input": "mythic-0-N1200.json",
+        "variant": "B",
+        "status": "captured",
+        "started_at": "2026-10-26T02:36:10.938Z",
+        "errors": [],
+        "failed_requests": [
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/open_hills-3.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/open_hills-4.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/open_hills-1.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/open_hills-2.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/open_plains-4.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/open_plains-1.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/open_plains-3.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/open_plains-2.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/swamp-3.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/semi_desert-3.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/swamp-4.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/swamp-2.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/semi_desert-1.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/semi_desert-4.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/swamp-1.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/semi_desert-2.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/mountains-2.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/mountains-4.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/mountains-3.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/waterfall-color.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/poi/v2/land/capital.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/mountains-1.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/poi/v2/land/holy_place.svg",
+            "error": "net::ERR_ABORTED"
+          }
+        ],
+        "full_json_equal": true,
+        "svg": "/home/runner/work/Hexcrawl/Hexcrawl/reports/HX-BL-003/timing/isolated-visual/B-mythic-0-N1200.svg",
+        "png": "/home/runner/work/Hexcrawl/Hexcrawl/reports/HX-BL-003/timing/isolated-visual/B-mythic-0-N1200.png",
+        "completed_at": "2026-10-26T02:37:30.307Z"
+      },
+      {
+        "input": "mythic-0-N2400.json",
+        "variant": "A",
+        "status": "blocked",
+        "started_at": "2026-10-26T02:37:30.308Z",
+        "errors": [],
+        "failed_requests": [
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/open_hills-3.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/open_hills-4.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/open_hills-1.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/open_hills-2.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/open_plains-1.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/open_plains-4.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/open_plains-2.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/open_plains-3.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/semi_desert-3.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/swamp-3.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/swamp-4.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/semi_desert-1.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/swamp-2.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/semi_desert-4.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/semi_desert-2.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/swamp-1.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/mountains-2.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/mountains-4.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/mountains-3.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/waterfall-color.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/poi/v2/land/capital.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/poi/v2/land/holy_place.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/poi/v2/land/lair.svg",
+            "error": "net::ERR_ABORTED"
+          }
+        ],
+        "full_json_equal": true,
+        "svg": "/home/runner/work/Hexcrawl/Hexcrawl/reports/HX-BL-003/timing/isolated-visual/A-mythic-0-N2400.svg",
+        "error": "TimeoutError: page.waitForEvent: Timeout 180000ms exceeded while waiting for event \"download\"\n=========================== logs ===========================\nwaiting for event \"download\"\n============================================================",
+        "png_pixels_verified": false,
+        "completed_at": "2026-10-26T02:40:48.101Z"
+      },
+      {
+        "input": "mythic-0-N2400.json",
+        "variant": "B",
+        "status": "blocked",
+        "started_at": "2026-10-26T02:40:48.102Z",
+        "errors": [],
+        "failed_requests": [],
+        "full_json_equal": true,
+        "svg": "/home/runner/work/Hexcrawl/Hexcrawl/reports/HX-BL-003/timing/isolated-visual/B-mythic-0-N2400.svg",
+        "error": "TimeoutError: page.waitForEvent: Timeout 180000ms exceeded while waiting for event \"download\"\n=========================== logs ===========================\nwaiting for event \"download\"\n============================================================",
+        "png_pixels_verified": false,
+        "completed_at": "2026-10-26T02:44:05.112Z"
+      },
+      {
+        "input": "mythic-123456789-N400.json",
+        "variant": "A",
+        "status": "captured",
+        "started_at": "2026-10-26T02:44:05.113Z",
+        "errors": [],
+        "failed_requests": [
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/open_plains-2.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/open_plains-1.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/open_plains-4.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/open_plains-3.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/open_hills-2.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/open_hills-3.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/open_hills-4.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/open_hills-1.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/mountains-2.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/mountains-4.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/mountains-3.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/semi_desert-3.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/semi_desert-1.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/semi_desert-4.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/semi_desert-2.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/swamp-4.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/swamp-1.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/swamp-2.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/swamp-3.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/waterfall-color.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/poi/v2/land/capital.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/poi/v2/land/monastery.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/mountains-1.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/poi/v2/land/stronghold.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/poi/v2/land/cursed_place.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/poi/v2/land/lair.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/poi/v2/land/holy_place.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/poi/v2/land/ruins.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/poi/v2/land/village.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/poi/v2/land/obelisk.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/poi/v2/land/tower.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/poi/v2/land/castle.svg",
+            "error": "net::ERR_ABORTED"
+          }
+        ],
+        "full_json_equal": true,
+        "svg": "/home/runner/work/Hexcrawl/Hexcrawl/reports/HX-BL-003/timing/isolated-visual/A-mythic-123456789-N400.svg",
+        "png": "/home/runner/work/Hexcrawl/Hexcrawl/reports/HX-BL-003/timing/isolated-visual/A-mythic-123456789-N400.png",
+        "completed_at": "2026-10-26T02:44:39.789Z"
+      },
+      {
+        "input": "mythic-123456789-N400.json",
+        "variant": "B",
+        "status": "captured",
+        "started_at": "2026-10-26T02:44:39.790Z",
+        "errors": [],
+        "failed_requests": [
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/open_plains-2.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/open_plains-1.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/open_plains-4.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/open_plains-3.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/open_hills-2.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/open_hills-3.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/open_hills-4.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/open_hills-1.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/mountains-4.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/mountains-2.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/mountains-3.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/semi_desert-3.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/semi_desert-1.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/semi_desert-4.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/semi_desert-2.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/swamp-4.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/swamp-1.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/swamp-2.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/swamp-3.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/mountains-1.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/waterfall-color.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/poi/v2/land/capital.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/poi/v2/land/monastery.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/poi/v2/land/stronghold.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/poi/v2/land/cursed_place.svg",
+            "error": "net::ERR_ABORTED"
+          }
+        ],
+        "full_json_equal": true,
+        "svg": "/home/runner/work/Hexcrawl/Hexcrawl/reports/HX-BL-003/timing/isolated-visual/B-mythic-123456789-N400.svg",
+        "png": "/home/runner/work/Hexcrawl/Hexcrawl/reports/HX-BL-003/timing/isolated-visual/B-mythic-123456789-N400.png",
+        "completed_at": "2026-10-26T02:45:12.389Z"
+      },
+      {
+        "input": "mythic-123456789-N1200.json",
+        "variant": "A",
+        "status": "captured",
+        "started_at": "2026-10-26T02:45:12.389Z",
+        "errors": [],
+        "failed_requests": [
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/open_plains-2.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/open_plains-1.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/open_plains-4.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/open_plains-3.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/open_hills-2.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/open_hills-3.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/open_hills-4.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/open_hills-1.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/mountains-2.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/mountains-4.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/mountains-3.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/semi_desert-3.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/semi_desert-1.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/semi_desert-4.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/semi_desert-2.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/swamp-4.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/swamp-1.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/swamp-2.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/swamp-3.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/mountains-1.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/waterfall-color.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/poi/v2/land/capital.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/poi/v2/land/monastery.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/poi/v2/land/stronghold.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/poi/v2/land/cursed_place.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/poi/v2/land/lair.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/poi/v2/land/holy_place.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/poi/v2/land/ruins.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/poi/v2/land/village.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/poi/v2/land/obelisk.svg",
+            "error": "net::ERR_ABORTED"
+          }
+        ],
+        "full_json_equal": true,
+        "svg": "/home/runner/work/Hexcrawl/Hexcrawl/reports/HX-BL-003/timing/isolated-visual/A-mythic-123456789-N1200.svg",
+        "png": "/home/runner/work/Hexcrawl/Hexcrawl/reports/HX-BL-003/timing/isolated-visual/A-mythic-123456789-N1200.png",
+        "completed_at": "2026-10-26T02:46:30.913Z"
+      },
+      {
+        "input": "mythic-123456789-N1200.json",
+        "variant": "B",
+        "status": "captured",
+        "started_at": "2026-10-26T02:46:30.913Z",
+        "errors": [],
+        "failed_requests": [
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/open_plains-2.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/open_plains-1.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/open_plains-4.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/open_plains-3.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/open_hills-2.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/open_hills-3.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/open_hills-4.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/open_hills-1.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/mountains-2.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/mountains-4.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/mountains-3.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/semi_desert-3.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/semi_desert-1.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/semi_desert-4.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/semi_desert-2.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/swamp-4.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/waterfall-color.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/swamp-1.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/swamp-2.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/swamp-3.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/mountains-1.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/poi/v2/land/monastery.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/poi/v2/land/capital.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/poi/v2/land/stronghold.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/poi/v2/land/cursed_place.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/poi/v2/land/obelisk.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/poi/v2/land/lair.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/poi/v2/land/holy_place.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/poi/v2/land/ruins.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/poi/v2/land/village.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/poi/v2/land/tower.svg",
+            "error": "net::ERR_ABORTED"
+          }
+        ],
+        "full_json_equal": true,
+        "svg": "/home/runner/work/Hexcrawl/Hexcrawl/reports/HX-BL-003/timing/isolated-visual/B-mythic-123456789-N1200.svg",
+        "png": "/home/runner/work/Hexcrawl/Hexcrawl/reports/HX-BL-003/timing/isolated-visual/B-mythic-123456789-N1200.png",
+        "completed_at": "2026-10-26T02:47:47.304Z"
+      },
+      {
+        "input": "mythic-123456789-N2400.json",
+        "variant": "A",
+        "status": "blocked",
+        "started_at": "2026-10-26T02:47:47.304Z",
+        "errors": [],
+        "failed_requests": [
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/open_plains-2.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/open_plains-1.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/open_plains-4.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/open_plains-3.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/open_hills-2.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/open_hills-3.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/open_hills-4.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/mountains-2.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/open_hills-1.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/mountains-4.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/mountains-3.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/semi_desert-3.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/semi_desert-1.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/semi_desert-4.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/semi_desert-2.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/swamp-4.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/swamp-1.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/swamp-2.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/waterfall-color.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/swamp-3.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/terrain/v2/mountains-1.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/poi/v2/land/capital.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/poi/v2/land/monastery.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/poi/v2/land/stronghold.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/poi/v2/land/cursed_place.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/poi/v2/land/lair.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/poi/v2/land/holy_place.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4185/poi/v2/land/ruins.svg",
+            "error": "net::ERR_ABORTED"
+          }
+        ],
+        "full_json_equal": true,
+        "svg": "/home/runner/work/Hexcrawl/Hexcrawl/reports/HX-BL-003/timing/isolated-visual/A-mythic-123456789-N2400.svg",
+        "error": "TimeoutError: page.waitForEvent: Timeout 180000ms exceeded while waiting for event \"download\"\n=========================== logs ===========================\nwaiting for event \"download\"\n============================================================",
+        "png_pixels_verified": false,
+        "completed_at": "2026-10-26T02:51:05.110Z"
+      },
+      {
+        "input": "mythic-123456789-N2400.json",
+        "variant": "B",
+        "status": "blocked",
+        "started_at": "2026-10-26T02:51:05.110Z",
+        "errors": [],
+        "failed_requests": [
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/open_plains-2.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/open_plains-1.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/open_plains-4.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/open_plains-3.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/open_hills-2.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/open_hills-3.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/open_hills-4.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/open_hills-1.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/mountains-2.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/mountains-4.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/mountains-3.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/semi_desert-3.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/semi_desert-1.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/swamp-4.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/semi_desert-4.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/semi_desert-2.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/swamp-1.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/swamp-2.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/swamp-3.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/waterfall-color.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/poi/v2/land/capital.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/poi/v2/land/monastery.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/poi/v2/land/stronghold.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/poi/v2/land/cursed_place.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/terrain/v2/mountains-1.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/poi/v2/land/lair.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/poi/v2/land/holy_place.svg",
+            "error": "net::ERR_ABORTED"
+          },
+          {
+            "url": "http://127.0.0.1:4186/poi/v2/land/ruins.svg",
+            "error": "net::ERR_ABORTED"
+          }
+        ],
+        "full_json_equal": true,
+        "svg": "/home/runner/work/Hexcrawl/Hexcrawl/reports/HX-BL-003/timing/isolated-visual/B-mythic-123456789-N2400.svg",
+        "error": "TimeoutError: page.waitForEvent: Timeout 180000ms exceeded while waiting for event \"download\"\n=========================== logs ===========================\nwaiting for event \"download\"\n============================================================",
+        "png_pixels_verified": false,
+        "completed_at": "2026-10-26T02:54:21.255Z"
+      },
+      {
+        "input": "classic-1-N400.json",
+        "variant": "A",
+        "status": "captured",
+        "started_at": "2026-10-26T02:54:21.256Z",
+        "errors": [],
+        "failed_requests": [],
+        "full_json_equal": true,
+        "svg": "/home/runner/work/Hexcrawl/Hexcrawl/reports/HX-BL-003/timing/isolated-visual/A-classic-1-N400.svg",
+        "png": "/home/runner/work/Hexcrawl/Hexcrawl/reports/HX-BL-003/timing/isolated-visual/A-classic-1-N400.png",
+        "completed_at": "2026-10-26T02:54:23.676Z"
+      },
+      {
+        "input": "classic-1-N400.json",
+        "variant": "B",
+        "status": "captured",
+        "started_at": "2026-10-26T02:54:23.677Z",
+        "errors": [],
+        "failed_requests": [],
+        "full_json_equal": true,
+        "svg": "/home/runner/work/Hexcrawl/Hexcrawl/reports/HX-BL-003/timing/isolated-visual/B-classic-1-N400.svg",
+        "png": "/home/runner/work/Hexcrawl/Hexcrawl/reports/HX-BL-003/timing/isolated-visual/B-classic-1-N400.png",
+        "completed_at": "2026-10-26T02:54:26.035Z"
+      }
+    ]
+  },
+  "visual_pairs": [
+    {
+      "checkpoint": "classic-1-N400",
+      "svg_equal": true,
+      "png_equal": true,
+      "size": [
+        12367,
+        1708
+      ]
+    },
+    {
+      "checkpoint": "mythic-0-N1200",
+      "svg_equal": true,
+      "png_equal": true,
+      "size": [
+        9991,
+        6832
+      ]
+    },
+    {
+      "checkpoint": "mythic-0-N2400",
+      "svg_equal": true,
+      "png_equal": null,
+      "limitation": "Full PNG missing after180s in both variants; visual acceptance blocked"
+    },
+    {
+      "checkpoint": "mythic-0-N400",
+      "svg_equal": true,
+      "png_equal": true,
+      "size": [
+        4559,
+        3220
+      ]
+    },
+    {
+      "checkpoint": "mythic-123456789-N1200",
+      "svg_equal": true,
+      "png_equal": true,
+      "size": [
+        9603,
+        6916
+      ]
+    },
+    {
+      "checkpoint": "mythic-123456789-N2400",
+      "svg_equal": true,
+      "png_equal": null,
+      "limitation": "Full PNG missing after180s in both variants; visual acceptance blocked"
+    },
+    {
+      "checkpoint": "mythic-123456789-N400",
+      "svg_equal": true,
+      "png_equal": true,
+      "size": [
+        5626,
+        3976
+      ]
+    }
+  ],
+  "outcomes": {
+    "success": 98
+  },
+  "browser_errors": 0,
+  "failed_requests": 28,
+  "incomplete_selection_rows": 56,
+  "status": "blocked_visual",
+  "performance_gate_pass": false,
+  "full_acceptance": false,
+  "score_changed": false,
+  "navigation_aggregation_note": "Protocol specifies navigation p95 but does not pre-register aggregation across5 repeats. Report both median of per-run p95 and pooled120-frame p95; do not select favorable result post hoc.",
+  "navigation_pooled_regressions": [
+    {
+      "input": "mythic-0-N1200.json",
+      "metric": "zoom",
+      "baseline": 49.9660000000149,
+      "candidate": 66.59600000001956
+    },
+    {
+      "input": "mythic-0-N2400.json",
+      "metric": "zoom",
+      "baseline": 66.64199999999255,
+      "candidate": 83.30799999996088
+    }
+  ],
+  "target_generation_gate_pass": true,
+  "performance_acceptance": "Target generation passes both seeds; navigation regression-free acceptance not established: pooled p95 exceeds guard on2 groups although median per-run p95 does not. Requires independent assessment, no selective reaggregation/retry.",
+  "visual_pixel_method": "DecodedRGBA dimensions and exact byte arrays compared, all channels including alpha; five available pairs identical.",
+  "failed_request_limitation": "28 ERR_ABORTED asset requests in candidate mythic0/N1200 first warm row; zero JS errors and full semantic output matches. Not silently treated as harmless; independent review must assess. Visual fresh-import aborted requests retained separately."
+}

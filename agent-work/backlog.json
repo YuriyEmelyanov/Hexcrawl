@@ -102,7 +102,7 @@
       "task_id": "HX-BL-003",
       "title": "Производительность генерации и навигации по числу гексов",
       "criterion_id": "S09-C01",
-      "status": "in_progress",
+      "status": "blocked_visual",
       "potential_delta": null,
       "approval_ref": "owner-approval-2026-10-25-HX-BL-003",
       "source": {
@@ -229,8 +229,8 @@
         "approval_ref": "owner-approval-2026-10-25-HX-BL-003",
         "next_step": "Программист: закрепить корпус и P1 manifest до baseline замеров, затем профиль и одно подтверждённое узкое место по spec1.0."
       },
-      "next_role": "developer",
-      "next_step": "Inspect existing recovery40252325923. Full-SHA Check40252330019 passed236/browser/RNG. Analyze all timing pairs then isolated visual report; PNG fails again =>blocked_visual, no further PNG repeats. No second product optimization/release.",
+      "next_role": "reviewer",
+      "next_step": "Reviewer: independently assess exact739e3de and saved raw artifacts/AC01–08, navigationp95 ambiguity/errors and score1.2; explicit blocked/changes_requested allowed. No PNG rerun, no second optimization, no release.",
       "spec_ref": "agent-work/specs/HX-BL-003.md",
       "spec_version": "1.0",
       "spec_status": "ready_for_development",
@@ -252,7 +252,7 @@
       "branch": "agent/hx-bl-003-performance",
       "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474",
       "head_sha": "739e3de36587533bf3d2f3196072270f4695fa8a",
-      "checks_status": "check_browser_rng_pass_00f5e4_recovery_paired_running",
+      "checks_status": "check_browser_rng_pass_target_speed_pass_full_acceptance_blocked",
       "evidence_ref": "reports/HX-BL-003/diagnosis.json",
       "corpus_ci": {
         "id": 40187550999,
@@ -298,7 +298,38 @@
         ]
       },
       "paired_failure_ref": "reports/HX-BL-003/paired-run40243424173-recovery.json",
-      "measurement_recovery_sha": "00f5e4adcc4a027948ca3a82fcd625211eb890cd"
+      "measurement_recovery_sha": "00f5e4adcc4a027948ca3a82fcd625211eb890cd",
+      "developer_result_status": "blocked_visual_pending_independent_assessment",
+      "review_request": {
+        "status": "ready_for_bounded_review_with_known_blockers",
+        "exact_sha": "739e3de36587533bf3d2f3196072270f4695fa8a",
+        "scope": "Reviewer: independently assess exact739e3de and saved raw artifacts/AC01–08, navigationp95 ambiguity/errors and score1.2; explicit blocked/changes_requested allowed. No PNG rerun, no second optimization, no release.",
+        "required_score_model": "1.2",
+        "release_ready": false
+      },
+      "paired_recovery_result": {
+        "run_id": 40252325923,
+        "status": "completed",
+        "conclusion": "failure",
+        "artifact_id": 12624578941,
+        "archive_sha256": "45d3a461852a4181c1aa705a715b3423fba0c8e3735f7fe096e7801060df4cfd",
+        "download_hash_verified": true,
+        "rows": 98,
+        "success": 98,
+        "js_errors": 0,
+        "full_json_pairs_equal": 49,
+        "svg_pairs_equal": 7,
+        "png_pairs_equal": 5,
+        "png_checkpoints_blocked": 2,
+        "target_generation_gate_pass": true,
+        "performance_acceptance": "incomplete_navigation_p95_and_request_errors",
+        "visual_acceptance": "blocked",
+        "full_acceptance": false,
+        "analysis": "agent-work/evidence/HX-BL-003-developer/paired-analysis.json",
+        "raw": "agent-work/evidence/HX-BL-003-developer/paired-raw.json",
+        "visual": "agent-work/evidence/HX-BL-003-developer/isolated-visual-raw.json",
+        "log": "agent-work/evidence/HX-BL-003-developer/ci-recovery-40252325923.log"
+      }
     },
     {
       "task_id": "HX-BL-004",

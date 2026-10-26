@@ -90,3 +90,9 @@
 
 
 26.10.2026 — paired40243424173 captured7identicalSVG pairs/5pixel-identicalPNG pairs; fullPNG on2large checkpoints timed out in BOTH variants. The first-warm export was outside latency marks but inside the iteration, so its timeout poisoned remaining contexts: only1target warm pair,16not-executed rows mislabeled as timeouts. Source generation was already complete/equal before4real export waits. Do not count not-executed actions as censored180s generation. Recovery00f5e4 keeps same product96a2a89 and latency protocol, isolates full-quality exports after all timing, one fresh browser process per export, retains errors in finally and explicitnot_executed. PNG rootcause unknown; fresh-process isolation is a resource hypothesis, not confirmed diagnosis. One bounded recovery40252325923; another PNG failure =>blocked visual acceptance, no endless repeats or export product rewrite. No speed/score acceptance yet.
+
+
+## 26.10.2026 — HX-BL-003: отдельный экспорт сохраняет измерения, но не снимает блокировку
+- Проверяемый результат40252325923: после отделенияPNG все98 latency expansions завершились, targetgeneration34.41%/36.15%,5/5wins; fullPNG двух большихкарт снова timeout180s в обеихверсиях. ПричинаPNG неизвестна; boundedretry исчерпан, blocked_visual, без новых повторов/изменениякачества.
+- Не выбирать агрегацию после результата: median(per-run navigationp95) проходит, pooled120framesp95 превышаетguard на2zoomгруппах. Сохранены оба и потенциальнаярегрессия; полнаяприёмка не объявлена. Для будущих протоколов агрегат заранее; текущие пороги не переписывать.
+- FullJSON49pairs и7SVGpairs равны;5PNGpairs проверены exactdecodedRGBAbytes. Это не заменяет недостающие2PNG/nativeSnapshot safety/независимуюпроверку. Evidence: agent-work/evidence/HX-BL-003-developer/paired-recovery-result.md.
