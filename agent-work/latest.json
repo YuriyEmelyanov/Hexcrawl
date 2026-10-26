@@ -50,7 +50,7 @@
   "current_task_id": "HX-BL-003",
   "spec_path": "agent-work/specs/HX-BL-003.md",
   "spec_version": "1.1",
-  "result_path": "agent-work/results/2026-10-26-reviewer-HX-BL-003-86a7e94.json",
+  "result_path": "agent-work/results/2026-10-26-developer-HX-BL-003-test-stability.json",
   "handoff_commit_sha": "cba63fc660a5c2ed044045167ac60312fa3aca83",
   "active_claim": {
     "run_id": "2026-10-26:developer:HX-BL-003-test-stability:1704Z",
@@ -59,10 +59,12 @@
     "started_at": "2026-10-26T17:04:39.935Z",
     "lease_expires_at": "2026-10-26T19:04:39.935Z",
     "status": "in_progress",
-    "head_sha": "86a7e941a823e32e7c7cf9cfde78bb247ffc8194",
-    "scope": "R4 existing Node test stability only; no new cases/no measured workflow"
+    "head_sha": "df879cb8d68cf876397aa5611f561a48482ae191",
+    "scope": "R4 existing Node test stability only; no new cases/no measured workflow",
+    "last_checkpoint_at": "2026-10-26T17:06:44.789Z",
+    "last_checkpoint": "2existingNodecases adjusted;3focusedruns4/4passed, exactsource frozen; normalCIpending, no measurements"
   },
-  "next_step": "Стабилизировать существующий Node-тест graceful cleanup: достаточный бюджет OS kill/exit, без изменения production thresholds и без новых test cases. Затем точечный offline прогон и обычный exact-headCI; передать новый SHA независимому reviewer. Реальный замер не запускать/счётчик1/1 не сбрасывать.",
+  "next_step": "Finish normalCI exactdf879cb; then limitedindependentreview R4/testsummary, no benchmark/PNG/capreset.",
   "owner_decisions_needed": [],
   "release_approval": {
     "task_id": "HX-BL-003",
@@ -70,12 +72,12 @@
     "approved_sha": null
   },
   "historical_plan_status": "План23.10 сохранён как история; его блокировки и предложенный процесс заменены decisions24.10 в approvals/process/budget и текущим handoff.",
-  "evidence_path": "agent-work/evidence/review-HX-BL-003-86a7e94/report.md",
+  "evidence_path": "agent-work/evidence/HX-BL-003-V2-test-stability/report.md",
   "branch_name": "agent/hx-bl-003-performance",
   "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474",
-  "head_sha": "86a7e941a823e32e7c7cf9cfde78bb247ffc8194",
-  "checks_status": "passed_exact_sha",
-  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40337416043",
+  "head_sha": "df879cb8d68cf876397aa5611f561a48482ae191",
+  "checks_status": "normal_CI_in_progress",
+  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40365396181",
   "review_verdict": "changes_requested_for_test_stability",
   "role_selection_mode": "ready_work_priority",
   "role_selection_source": "agent-work/process.md",
@@ -271,7 +273,7 @@
       "required": "Modify existing test: separate short intentional graceful-close timer from generous real process kill/exit budget, or use sufficient cleanup budget; assess200ms sibling. Preserve observable exit and no-next-work assertions. No new logical test or product threshold change required."
     }
   ],
-  "current_review_score_assessment_status": "recorded_model1.2_insufficient_evidence_no_points",
+  "current_review_score_assessment_status": "pending_new_sha_model1.2",
   "target_audience_research": {
     "model_version": "1.1",
     "model_max_points": 25,
@@ -614,7 +616,7 @@
     "next_role": "reviewer"
   },
   "owner_decisions_note": "Три исходныхharnessfindingпроверены; воспроизведён flaky20msNodecleanup test. Коротко исправить существующийтест; новыхtestcasesне требуется. PR475review_ready сохранён; общийаудитHX-FB-002после003. Замер/выпускнеисполнены, cap1/1сохранён, повторноеутверждениесамойзадачине запрашивается.",
-  "updated_at": "2026-10-26T16:05:55.835Z",
+  "updated_at": "2026-10-26T17:06:44.789Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
     "status": "harness_test_stability_changes_requested_no_measurement",
