@@ -26,7 +26,7 @@
   },
   "lessons_path": "agent-work/lessons.md",
   "plan_id": "2026-10-23:f89530abe1e237493dddb533502bb772ae1ab4e5",
-  "run_id": "2026-10-26:reviewer:HX-BL-003-d713cb9:1207Z",
+  "run_id": "2026-10-26:developer:HX-BL-003-harness-fixes:1401Z",
   "plan_revision": 1,
   "baseline_sha": "f89530abe1e237493dddb533502bb772ae1ab4e5",
   "status": "in_progress",
@@ -50,7 +50,7 @@
   "current_task_id": "HX-BL-003",
   "spec_path": "agent-work/specs/HX-BL-003.md",
   "spec_version": "1.1",
-  "result_path": "agent-work/results/2026-10-26-reviewer-HX-BL-003-d713cb9.json",
+  "result_path": "agent-work/results/2026-10-26-developer-HX-BL-003-harness-fixes.json",
   "handoff_commit_sha": "a350787f47727706841891be3773da28dff1ee87",
   "active_claim": {
     "run_id": "2026-10-26:developer:HX-BL-003-harness-fixes:1401Z",
@@ -60,9 +60,12 @@
     "lease_expires_at": "2026-10-26T16:02:11.651Z",
     "status": "in_progress",
     "base_head_sha": "d713cb9d11c0cd00bfda1eaf13a7489f58e48634",
-    "scope": "Fix three independent V2 harness findings only; offline tests, no measured workflow."
+    "scope": "Fix three independent V2 harness findings only; offline tests, no measured workflow.",
+    "head_sha": "86a7e941a823e32e7c7cf9cfde78bb247ffc8194",
+    "last_checkpoint_at": "2026-10-26T14:14:19.144Z",
+    "last_checkpoint": "Threeharnessfixes at86a7e94;4Node/7Pythonoffline checks passed; normalCIinprogress; no measured workflow."
   },
-  "next_step": "Prepare harness-only fixes for exactCPU requirement, timeout disposal and warmup completeness, with offline tests and no workflow execution; preserve exhausted single-attemptcap and raw negative evidence. Return concrete corrected harness/plan for limited review. Further measured execution remains outside remaining attempt budget; do not silently reset cap or automatically request repeat approval of same task. Keep product outside main; PR475 queue unchanged.",
+  "next_step": "Finish existing normalCI on86a7e94, retain logs, then independent limited source/offline review. No measured workflow/new PNG/navigation series.",
   "owner_decisions_needed": [],
   "release_approval": {
     "task_id": "HX-BL-003",
@@ -73,9 +76,9 @@
   "evidence_path": "agent-work/evidence/review-HX-BL-003-d713cb9/report.md",
   "branch_name": "agent/hx-bl-003-performance",
   "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474",
-  "head_sha": "d713cb9d11c0cd00bfda1eaf13a7489f58e48634",
-  "checks_status": "passed_exact_sha",
-  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40298240249",
+  "head_sha": "86a7e941a823e32e7c7cf9cfde78bb247ffc8194",
+  "checks_status": "normal_CI_in_progress",
+  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40337416043",
   "review_verdict": "changes_requested",
   "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474#pullrequestreview-5651769890",
   "role_selection_mode": "ready_work_priority",
@@ -235,18 +238,17 @@
   "automation_health": {
     "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-10-26T12:07:13.922Z",
+      "checked_at": "2026-10-26T14:01:29.169Z",
       "status": "checked",
       "is_enabled": true
     },
     "end": {
-      "checked_at": "2026-10-26T12:17:05.205Z",
-      "status": "checked",
-      "is_enabled": true
+      "status": "unchecked",
+      "is_enabled": null,
+      "reason": "Run in progress"
     },
     "restored_during_this_run": false,
-    "errors": [],
-    "schedule_unchanged": true
+    "errors": []
   },
   "open_findings": [
     {
