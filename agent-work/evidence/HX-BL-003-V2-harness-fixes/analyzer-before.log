@@ -1,0 +1,75 @@
+FFF.F.F
+======================================================================
+FAIL: test_bad_warmup_frames (__main__.Completeness.test_bad_warmup_frames)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/hx003-harness-fixes/scripts/hx-bl-003-v2-analyze.test.py", line 31, in test_bad_warmup_frames
+    r=fixture();r['nav'][0]['navigation']['zoom'].pop();self.assert_incomplete(r)
+                                                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/hx003-harness-fixes/scripts/hx-bl-003-v2-analyze.test.py", line 20, in assert_incomplete
+    self.assertEqual(s['navigation'][0]['status'],'incomplete_inconclusive')
+AssertionError: 'bounded_guard_pass' != 'incomplete_inconclusive'
+- bounded_guard_pass
++ incomplete_inconclusive
+
+
+======================================================================
+FAIL: test_duplicate_measured_iteration (__main__.Completeness.test_duplicate_measured_iteration)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/hx003-harness-fixes/scripts/hx-bl-003-v2-analyze.test.py", line 33, in test_duplicate_measured_iteration
+    r=fixture();r['nav'][4]['iteration']=0;self.assert_incomplete(r)
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/hx003-harness-fixes/scripts/hx-bl-003-v2-analyze.test.py", line 20, in assert_incomplete
+    self.assertEqual(s['navigation'][0]['status'],'incomplete_inconclusive')
+AssertionError: 'bounded_guard_pass' != 'incomplete_inconclusive'
+- bounded_guard_pass
++ incomplete_inconclusive
+
+
+======================================================================
+FAIL: test_failed_warmup (__main__.Completeness.test_failed_warmup)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/hx003-harness-fixes/scripts/hx-bl-003-v2-analyze.test.py", line 25, in test_failed_warmup
+    r=fixture();r['nav'][0]['status']='error';self.assert_incomplete(r)
+                                              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/hx003-harness-fixes/scripts/hx-bl-003-v2-analyze.test.py", line 20, in assert_incomplete
+    self.assertEqual(s['navigation'][0]['status'],'incomplete_inconclusive')
+AssertionError: 'bounded_guard_pass' != 'incomplete_inconclusive'
+- bounded_guard_pass
++ incomplete_inconclusive
+
+
+======================================================================
+FAIL: test_missing_warmup (__main__.Completeness.test_missing_warmup)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/hx003-harness-fixes/scripts/hx-bl-003-v2-analyze.test.py", line 27, in test_missing_warmup
+    r=fixture();r['nav'].pop(0);self.assert_incomplete(r)
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/hx003-harness-fixes/scripts/hx-bl-003-v2-analyze.test.py", line 20, in assert_incomplete
+    self.assertEqual(s['navigation'][0]['status'],'incomplete_inconclusive')
+AssertionError: 'bounded_guard_pass' != 'incomplete_inconclusive'
+- bounded_guard_pass
++ incomplete_inconclusive
+
+
+======================================================================
+FAIL: test_warmup_after_measurements (__main__.Completeness.test_warmup_after_measurements)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/hx003-harness-fixes/scripts/hx-bl-003-v2-analyze.test.py", line 29, in test_warmup_after_measurements
+    r=fixture();r['nav'].append(r['nav'].pop(0));self.assert_incomplete(r)
+                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/hx003-harness-fixes/scripts/hx-bl-003-v2-analyze.test.py", line 20, in assert_incomplete
+    self.assertEqual(s['navigation'][0]['status'],'incomplete_inconclusive')
+AssertionError: 'bounded_guard_pass' != 'incomplete_inconclusive'
+- bounded_guard_pass
++ incomplete_inconclusive
+
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.423s
+
+FAILED (failures=5)
