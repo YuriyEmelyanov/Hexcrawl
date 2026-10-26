@@ -230,21 +230,20 @@
         "next_step": "Программист: закрепить корпус и P1 manifest до baseline замеров, затем профиль и одно подтверждённое узкое место по spec1.0."
       },
       "next_role": "developer",
-      "next_step": "Следить за существующим40382000933: без duplicate/rerun. После завершения сохранить artifact/raw/логи, пересчитать результаты и передать независимому reviewer.",
+      "next_step": "Дождаться существующего Check40385577128 на a669d665; сохранить логи и передать ограниченную независимую проверку двух saveAs-callsite и raw40382000933. Новый benchmark/PNG в диагностическом запуске не выполнялся.",
       "spec_ref": "agent-work/specs/HX-BL-003.md",
       "spec_version": "1.1",
       "spec_status": "ready_for_developer_harness_freeze",
       "execution_allowed": true,
       "owner_role": "strategist",
       "claim": {
-        "run_id": "2026-10-26:developer:HX-BL-003:manual-measure-1852Z",
         "role": "developer",
         "task_id": "HX-BL-003",
-        "status": "awaiting_external_CI",
+        "status": "awaiting_fix_normal_CI",
         "started_at": "2026-10-26T18:53:28.985Z",
-        "head_sha": "2ab6886cc745c742bd4e8acf1261d5bec2885bf6",
+        "head_sha": "a669d6654514871af09f0716750f727306676476",
         "validation_run_id": 40382000933,
-        "last_checkpoint_at": "2026-10-26T18:56:07.770Z"
+        "last_checkpoint_at": "2026-10-26T19:20:14.787Z"
       },
       "result_ref": "agent-work/results/2026-10-26-reviewer-HX-BL-003-df879cb.json",
       "feedback_assessment": {
@@ -260,8 +259,8 @@
       },
       "branch": "agent/hx-bl-003-performance",
       "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474",
-      "head_sha": "2ab6886cc745c742bd4e8acf1261d5bec2885bf6",
-      "checks_status": "passed_exact_sha",
+      "head_sha": "a669d6654514871af09f0716750f727306676476",
+      "checks_status": "running_exact_sha",
       "evidence_ref": "agent-work/evidence/review-HX-BL-003-df879cb/report.md",
       "corpus_ci": {
         "id": 40187550999,
@@ -271,7 +270,7 @@
       },
       "result_branch": "agent/hx-bl-003-performance",
       "corpus_status": "input_and_output_manifests_frozen",
-      "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40365396181",
+      "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40385577128",
       "baseline_timing": {
         "id": 40228996488,
         "status": "completed",
@@ -308,7 +307,7 @@
       },
       "paired_failure_ref": "reports/HX-BL-003/paired-run40243424173-recovery.json",
       "measurement_recovery_sha": "00f5e4adcc4a027948ca3a82fcd625211eb890cd",
-      "developer_result_status": "reviewed_changes_requested",
+      "developer_result_status": "download_api_error_diagnosed_fix_normal_CI_running",
       "review_request": {
         "status": "completed_changes_requested",
         "exact_sha": "d713cb9d11c0cd00bfda1eaf13a7489f58e48634",
@@ -597,7 +596,7 @@
       },
       "validation_plan": {
         "id": "HX-BL-003-V2",
-        "status": "workflow_running",
+        "status": "failed_first_warmup_download_API",
         "path": "agent-work/proposals/HX-BL-003-V2-validation.md",
         "max_png_attempts": 4,
         "max_measured_navigation_actions": 20,
@@ -621,7 +620,7 @@
           "same_browser_version": true,
           "interpretation": "Exact CPU guard was a conservative developer interpretation of same profile; resourceclass vs exactmodel ambiguity requires technical independent assessment, not another approval of the already-approved task."
         },
-        "measurement_allowed": true,
+        "measurement_allowed": false,
         "execution_approval_ref": "owner-execute-2026-10-26-HX-BL-003-V2-after-harness-review",
         "additional_workflow_attempts": 1,
         "prior_attempts_preserved": [
@@ -640,11 +639,15 @@
       "spec_archive_ref": "agent-work/specs/archive/HX-BL-003-spec1.0.md",
       "validation_run": {
         "id": 40382000933,
-        "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40382000933",
-        "status": "in_progress",
-        "conclusion": null,
+        "status": "completed",
+        "conclusion": "failure",
         "head_sha": "2ab6886cc745c742bd4e8acf1261d5bec2885bf6",
-        "attempt": 1
+        "counts": {
+          "measured_actions_attempted": 0,
+          "warmups_attempted": 1,
+          "png_click_attempts": 0
+        },
+        "error": "Download.path unavailable over chromium.connect"
       },
       "previous_review": {
         "sha": "86a7e941a823e32e7c7cf9cfde78bb247ffc8194",
@@ -724,7 +727,8 @@
         "reason": "Approved V2 measurement has not occurred: run40298230168 stopped atpreflight with0navigation/0warmup/0PNG; plan nevertheless limits workflowattempts1 and records1used. Correctedharness nowverified, productRV1/RV2/RV5remain. Reviewer has no authority to reset explicitattemptcap.",
         "minimal_next_step": "Сопоставить разрешение владельца «Разрешаю замер», нулевой raw run40298230168 и проверенный df879cb; подготовить конкретное ограниченное уточнение исполнения утверждённого пакета с прежними20navigation+4warmups/4PNG/60min/качеством и порогами. Сохранить историю1/1; не запрашивать повторное утверждение самой задачи и не запускать измерение автоматически в обход действующего cap.",
         "no_new_measurements_in_this_handoff": true
-      }
+      },
+      "diagnosis_ref": "agent-work/evidence/HX-BL-003-run40382000933/diagnosis.md"
     },
     {
       "task_id": "HX-BL-004",
