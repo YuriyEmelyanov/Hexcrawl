@@ -102,7 +102,7 @@
       "task_id": "HX-BL-003",
       "title": "Производительность генерации и навигации по числу гексов",
       "criterion_id": "S09-C01",
-      "status": "blocked_validation",
+      "status": "in_progress",
       "potential_delta": null,
       "approval_ref": "owner-approval-2026-10-25-HX-BL-003",
       "source": {
@@ -229,14 +229,20 @@
         "approval_ref": "owner-approval-2026-10-25-HX-BL-003",
         "next_step": "Программист: закрепить корпус и P1 manifest до baseline замеров, затем профиль и одно подтверждённое узкое место по spec1.0."
       },
-      "next_role": "strategist",
-      "next_step": "Сопоставить разрешение владельца «Разрешаю замер», нулевой raw run40298230168 и проверенный df879cb; подготовить конкретное ограниченное уточнение исполнения утверждённого пакета с прежними20navigation+4warmups/4PNG/60min/качеством и порогами. Сохранить историю1/1; не запрашивать повторное утверждение самой задачи и не запускать измерение автоматически в обход действующего cap.",
+      "next_role": "developer",
+      "next_step": "Выполнить один явно разрешённый дополнительный V2 workflow на принятом df879cb; сохранить raw, исходы и передать независимому reviewer.",
       "spec_ref": "agent-work/specs/HX-BL-003.md",
       "spec_version": "1.1",
       "spec_status": "ready_for_developer_harness_freeze",
       "execution_allowed": true,
       "owner_role": "strategist",
-      "claim": null,
+      "claim": {
+        "run_id": "2026-10-26:developer:HX-BL-003:manual-measure-1852Z",
+        "role": "developer",
+        "task_id": "HX-BL-003",
+        "status": "preparing_authorized_measurement",
+        "started_at": "2026-10-26T18:53:28.985Z"
+      },
       "result_ref": "agent-work/results/2026-10-26-reviewer-HX-BL-003-df879cb.json",
       "feedback_assessment": {
         "register_ref": "agent-work/feedback.json",
@@ -588,7 +594,7 @@
       },
       "validation_plan": {
         "id": "HX-BL-003-V2",
-        "status": "harness_accepted_measured_execution_blocked_attemptcap",
+        "status": "explicit_execution_reauthorized",
         "path": "agent-work/proposals/HX-BL-003-V2-validation.md",
         "max_png_attempts": 4,
         "max_measured_navigation_actions": 20,
@@ -611,7 +617,13 @@
           "same_ram_bytes": true,
           "same_browser_version": true,
           "interpretation": "Exact CPU guard was a conservative developer interpretation of same profile; resourceclass vs exactmodel ambiguity requires technical independent assessment, not another approval of the already-approved task."
-        }
+        },
+        "measurement_allowed": true,
+        "execution_approval_ref": "owner-execute-2026-10-26-HX-BL-003-V2-after-harness-review",
+        "additional_workflow_attempts": 1,
+        "prior_attempts_preserved": [
+          40298230168
+        ]
       },
       "owner_decisions_needed": [],
       "measurement_execution_allowed_after": "prospective_P1_addendum_and_frozen_harness_SHA",
