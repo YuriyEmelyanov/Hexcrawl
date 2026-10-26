@@ -20,7 +20,7 @@ async function ownedChild(t,{closeHangs=false}={}){
 }
 test('external watchdog confirms real owned child exit and latches abort before any next work',async t=>{
   const fixture=await ownedChild(t),events=[];
-  const supervisor=new BrowserSupervisor({timeoutMs:20,cleanupMs:200,record:e=>events.push(e)});
+  const supervisor=new BrowserSupervisor({timeoutMs:20,cleanupMs:5000,record:e=>events.push(e)});
   await supervisor.start(fixture.chromium);
   await assert.rejects(supervisor.run(()=>new Promise(()=>{}),'stalled operation'),PackageAbort);
   assert(fixture.child.signalCode||fixture.child.exitCode!==null);
@@ -32,7 +32,8 @@ test('external watchdog confirms real owned child exit and latches abort before 
 });
 test('hanging graceful cleanup escalates to kill and waits for observed child exit',async t=>{
   const fixture=await ownedChild(t,{closeHangs:true}),events=[];
-  const supervisor=new BrowserSupervisor({cleanupMs:20,record:e=>events.push(e)});
+  // Real child-process termination uses the production cleanup budget, not a20ms OS deadline.
+  const supervisor=new BrowserSupervisor({cleanupMs:5000,record:e=>events.push(e)});
   await supervisor.start(fixture.chromium);await supervisor.dispose();
   assert.equal(supervisor.owner,null);assert(fixture.child.signalCode);
   assert(events.some(e=>e.type==='graceful_close_failed'));
@@ -46,3 +47,4 @@ test('unconfirmed kill remains fatal and cannot start another row or process',as
   assert(events.some(e=>e.type==='browser_exit_unconfirmed'));
   let called=0;await assert.rejects(supervisor.run(()=>{called++;},'must not run'),PackageAbort);assert.equal(called,0);
 });
+
