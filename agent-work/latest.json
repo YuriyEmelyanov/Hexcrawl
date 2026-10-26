@@ -29,7 +29,7 @@
   "run_id": "2026-10-26:reviewer:HX-BL-003:0403Z",
   "plan_revision": 1,
   "baseline_sha": "f89530abe1e237493dddb533502bb772ae1ab4e5",
-  "status": "independent_review_in_progress",
+  "status": "changes_requested",
   "planning_for": "2026-10-24",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-10-25",
@@ -46,24 +46,14 @@
   "schedule_frequency": "hourly",
   "process_path": "agent-work/process.md",
   "current_role": "reviewer",
-  "next_role": "reviewer",
+  "next_role": "developer",
   "current_task_id": "HX-BL-003",
   "spec_path": "agent-work/specs/HX-BL-003.md",
   "spec_version": "1.0",
-  "result_path": "agent-work/results/2026-10-25-developer-HX-BL-003-timing-started.json",
-  "handoff_commit_sha": "ccb333eecea12b703c0234feb641376fdca27625",
-  "active_claim": {
-    "run_id": "2026-10-26:reviewer:HX-BL-003:0403Z",
-    "role": "reviewer",
-    "task_id": "HX-BL-003",
-    "started_at": "2026-10-26T04:03:09.203Z",
-    "branch": "agent/hx-bl-003-performance",
-    "head_sha": "739e3de36587533bf3d2f3196072270f4695fa8a",
-    "status": "in_progress",
-    "independent_agent": "review_hx003",
-    "scope": "Bounded independent exact-SHA assessment of existing artifacts and safety; no PNG/benchmark rerun, no product change or release."
-  },
-  "next_step": "Reviewer: independently assess exact739e3de and saved raw artifacts/AC01–08, navigationp95 ambiguity/errors and score1.2; explicit blocked/changes_requested allowed. No PNG rerun, no second optimization, no release.",
+  "result_path": "agent-work/results/2026-10-26-reviewer-HX-BL-003-739e3de.json",
+  "handoff_commit_sha": "97be3cf5fb08286e3a949da7f69066bd0db00cf7",
+  "active_claim": null,
+  "next_step": "Программист: исправить RV3 attribution по существующему raw (candidate mythic123456789/N400 iteration0), сохранить явный непрошедший результат; при необходимости завершить обычный exact739e3de CI без PNG/benchmark. RV1/RV2 остаются blocked/inconclusive. Не начинать вторую оптимизацию/PNG/viewport/benchmark series; при отсутствии уже существующего полного evidence сохранить кандидат вне main и передать конкретный bounded validation plan на отдельное решение. Повторный review только при новых существенных evidence/SHA.",
   "owner_decisions_needed": [],
   "release_approval": {
     "task_id": "HX-BL-003",
@@ -71,14 +61,14 @@
     "approved_sha": null
   },
   "historical_plan_status": "План23.10 сохранён как история; его блокировки и предложенный процесс заменены decisions24.10 в approvals/process/budget и текущим handoff.",
-  "evidence_path": "reports/HX-BL-003/diagnosis.json",
+  "evidence_path": "agent-work/evidence/review-HX-BL-003-739e3de/report.md",
   "branch_name": "agent/hx-bl-003-performance",
   "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474",
   "head_sha": "739e3de36587533bf3d2f3196072270f4695fa8a",
-  "checks_status": "check_browser_rng_pass_target_speed_pass_full_acceptance_blocked",
+  "checks_status": "parent_runtime_pass_exacthead_action_required",
   "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40252325923",
-  "review_verdict": null,
-  "review_url": null,
+  "review_verdict": "changes_requested",
+  "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474#pullrequestreview-5647353819",
   "role_selection_mode": "ready_work_priority",
   "role_selection_source": "agent-work/process.md",
   "process_decision_ref": "owner-decision-2026-10-24-dynamic-roles",
@@ -219,10 +209,10 @@
   "approval_ref": "owner-approval-2026-10-25-HX-BL-003",
   "last_completed_stage": {
     "task_id": "HX-BL-003",
-    "role": "developer",
-    "status": "completed_with_visual_navigation_blockers",
+    "role": "reviewer",
+    "status": "changes_requested",
     "head_sha": "739e3de36587533bf3d2f3196072270f4695fa8a",
-    "result_ref": "agent-work/results/2026-10-25-developer-HX-BL-003-timing-started.json"
+    "result_ref": "agent-work/results/2026-10-26-reviewer-HX-BL-003-739e3de.json"
   },
   "previous_release_approval": {
     "status": "approved_and_executed",
@@ -235,20 +225,56 @@
   "automation_health": {
     "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-10-26T03:07:10.719Z",
+      "checked_at": "2026-10-26T04:03:09.203Z",
       "status": "checked",
       "is_enabled": true
     },
     "end": {
-      "checked_at": "2026-10-26T03:11:32.536Z",
+      "checked_at": "2026-10-26T04:19:33.768Z",
       "status": "checked",
       "is_enabled": true
     },
     "restored_during_this_run": false,
     "errors": []
   },
-  "open_findings": [],
-  "current_review_score_assessment_status": "not_started_HX-BL-003",
+  "open_findings": [
+    {
+      "id": "HX003-RV1",
+      "severity": "blocking",
+      "area": "visual",
+      "finding": "Missing both nominal2400PNG pairs;AC06explicitblocked.",
+      "required": "Keepblocked; noautomaticrerun. Existing equivalent fullquality evidence may be evaluated if it exists; otherwise owner must choose bounded revised validation plan or acceptance/specchange, or negative/report-only package withoutproductoptimization."
+    },
+    {
+      "id": "HX003-RV2",
+      "severity": "blocking",
+      "area": "navigation",
+      "finding": "Pooled p95 guard exceeded;repeatmedian estimator masks tail distribution;causalregressionunproven.",
+      "required": "Retain both estimators and allframes; reportinconclusive. Define aggregation prospectively before any newlyauthorized validation. No threshold/corpus/secondoptimization change in current task."
+    },
+    {
+      "id": "HX003-RV3",
+      "severity": "medium",
+      "area": "evidence_accuracy",
+      "finding": "Developer report misattributes28ERR_ABORTED to mythic0N1200;raw actually candidate mythic123456789N400 iteration0.",
+      "required": "Correct report/PR/handoff attribution using existingraw. Audit canceledrequest paths vs final SVG/assets using existingdata; do not assertnoerrors or assetrootcausewithoutproof."
+    },
+    {
+      "id": "HX003-RV4",
+      "severity": "blocking_for_release",
+      "area": "CI",
+      "finding": "Exacthead Checkaction_required, notpassed; parentruntimeevidence strong but not exactheadgate.",
+      "required": "Developer may resolve normal CI approval/execution on frozenreviewedhead if authorized, preserveexactrunlogs andtreefacts; thisalone cannotclose visual/navigation blockers. Reviewerdoesnotapprove/rerunCIhere."
+    },
+    {
+      "id": "HX003-RV5",
+      "severity": "limitation",
+      "area": "safety_selection",
+      "finding": "Fullpairedlarge nativeundo/redo/continuation and56selectioncases incomplete.",
+      "required": "PreserveexplicitpartialAC02/05/08; do notdeclareallnativeMapSetcoverage. Anynewexpensivecorpus/viewportseries requiresrevisedboundedplan, notautomaticloop."
+    }
+  ],
+  "current_review_score_assessment_status": "recorded_model1.2_insufficient_evidence_no_points",
   "target_audience_research": {
     "model_version": "1.1",
     "model_max_points": 25,
@@ -422,7 +448,7 @@
   "deployment_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40173164222",
   "next_task_execution_allowed": true,
   "last_release_pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/472",
-  "last_material_result_path": "agent-work/results/2026-10-25-developer-HX-BL-003-timing-started.json",
+  "last_material_result_path": "agent-work/results/2026-10-26-reviewer-HX-BL-003-739e3de.json",
   "last_wait_check_at": "2026-10-26T02:02:01.846Z",
   "spec_status": "ready_for_development",
   "previous_task_release_approval": {
@@ -484,20 +510,19 @@
     "next_step": "Apply1.2 to next specification/review; preserve1.1 prior assessment until evidence-based reassessment; game breadth unverified."
   },
   "previous_active_claim": {
-    "run_id": "2026-10-25:developer:HX-BL-003:1805Z",
-    "role": "developer",
+    "run_id": "2026-10-26:reviewer:HX-BL-003:0403Z",
+    "role": "reviewer",
     "task_id": "HX-BL-003",
-    "started_at": "2026-10-25T18:06:22.677Z",
+    "started_at": "2026-10-26T04:03:09.203Z",
     "branch": "agent/hx-bl-003-performance",
     "head_sha": "739e3de36587533bf3d2f3196072270f4695fa8a",
-    "status": "completed_with_blockers",
-    "last_checkpoint": "Recovery40252325923 still collecting same7checkpointAB/BA latency pairs; isolated PNG phase pending. Exact00f5e4 Check40252330019 passed236/browser/RNG with full logs retained. No duplicate run/source change/performance claim.",
-    "last_checkpoint_at": "2026-10-26T02:02:01.846Z",
-    "result_ref": "agent-work/results/2026-10-25-developer-HX-BL-003-timing-started.json",
-    "completed_at": "2026-10-26T03:12:33.577Z"
+    "status": "completed_changes_requested",
+    "independent_agent": "review_hx003",
+    "scope": "Bounded independent exact-SHA assessment of existing artifacts and safety; no PNG/benchmark rerun, no product change or release.",
+    "completed_at": "2026-10-26T04:19:33.768Z"
   },
   "review_request": {
-    "status": "ready_for_bounded_review_with_known_blockers",
+    "status": "completed_changes_requested",
     "exact_sha": "739e3de36587533bf3d2f3196072270f4695fa8a",
     "scope": "Reviewer: independently assess exact739e3de and saved raw artifacts/AC01–08, navigationp95 ambiguity/errors and score1.2; explicit blocked/changes_requested allowed. No PNG rerun, no second optimization, no release.",
     "required_score_model": "1.2",
@@ -525,5 +550,14 @@
     "raw": "agent-work/evidence/HX-BL-003-developer/paired-raw.json",
     "visual": "agent-work/evidence/HX-BL-003-developer/isolated-visual-raw.json",
     "log": "agent-work/evidence/HX-BL-003-developer/ci-recovery-40252325923.log"
-  }
+  },
+  "reviewed_sha": "739e3de36587533bf3d2f3196072270f4695fa8a",
+  "current_review_score_assessment_ref": "agent-work/results/2026-10-26-reviewer-HX-BL-003-739e3de.json",
+  "automatic_measurement_rerun_allowed": false,
+  "repeat_review_requires": "material new evidence or changed source SHA",
+  "conditional_owner_decisions": [
+    "Existingbudget retry limit exhausted; any new PNG/benchmark/viewportseries requires explicit revisedboundedplan",
+    "Choose retaining blockedcandidate pending newplan, or report-only negativepackage without productchange as specified for negative_result; candidate deletion is not compulsory at reviewstage",
+    "Any criterion/quality/aggregation acceptance revision requires explicit prospectiveapproval; do not silentlyuse favorable estimator"
+  ]
 }
