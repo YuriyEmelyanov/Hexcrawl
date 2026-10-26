@@ -117,3 +117,8 @@
 
 
 26.10.2026 — independent d713cb9 review recovered after actual usage-limit interruption; prior endcheck remains unchecked, current actualstart/end true. CPU model7763 was recorded, not required hardwareidentity:4vCPU/~16GB9V74 satisfies resourceclass for a fresh samehost A/B pair, but old/newseries remain separate. Found latent Promise.race timeout that doesn't stop work/confirmexit and analyzer guard_pass despite4failedsynthetic warmups. Offline reproduction preserved; current artifact still0/0/0, not a productregression. New exact-head236/browser/RNG verifiesRV4; old739action_required unchanged. Fix harness offline first, don't silently spend another measuredworkflow or resetcap1/1. No repeat productapproval request; PR475 queue preserved. [Review](evidence/review-HX-BL-003-d713cb9/report.md).
+
+
+### 26.10.2026 — проверять остановку измерителя отдельно от измерения
+
+Наблюдение: три замечания harness исправлены на86a7e94, supervisor4/4 и analyzer7/7 offline, exact-head CI240/240. [Evidence](evidence/HX-BL-003-V2-harness-fixes/report.md). Promise.race сам по себе не прекращает работу; владение процессом и наблюдаемый exit проверяются отдельным disposable Node child. Уверенность высокая для offline сценариев; реальный зависший Chromium не проверен. Следующий шаг — независимая проверка lifecycle и warmup completeness без нового замера. Статус: проверяется; продуктовые performance/PNG ограничения не закрыты.

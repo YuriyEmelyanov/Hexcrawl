@@ -102,7 +102,7 @@
       "task_id": "HX-BL-003",
       "title": "Производительность генерации и навигации по числу гексов",
       "criterion_id": "S09-C01",
-      "status": "changes_requested",
+      "status": "review_ready",
       "potential_delta": null,
       "approval_ref": "owner-approval-2026-10-25-HX-BL-003",
       "source": {
@@ -229,15 +229,15 @@
         "approval_ref": "owner-approval-2026-10-25-HX-BL-003",
         "next_step": "Программист: закрепить корпус и P1 manifest до baseline замеров, затем профиль и одно подтверждённое узкое место по spec1.0."
       },
-      "next_role": "developer",
-      "next_step": "Prepare harness-only fixes for exactCPU requirement, timeout disposal and warmup completeness, with offline tests and no workflow execution; preserve exhausted single-attemptcap and raw negative evidence. Return concrete corrected harness/plan for limited review. Further measured execution remains outside remaining attempt budget; do not silently reset cap or automatically request repeat approval of same task. Keep product outside main; PR475 queue unchanged.",
+      "next_role": "reviewer",
+      "next_step": "Независимая ограниченная проверка 86a7e94: три исправления harness, offline tests и CI; score_assessment1.2. Без реального замера, PNG или сброса cap1/1.",
       "spec_ref": "agent-work/specs/HX-BL-003.md",
       "spec_version": "1.1",
       "spec_status": "ready_for_developer_harness_freeze",
       "execution_allowed": true,
-      "owner_role": "developer",
+      "owner_role": "reviewer",
       "claim": null,
-      "result_ref": "agent-work/results/2026-10-26-reviewer-HX-BL-003-d713cb9.json",
+      "result_ref": "agent-work/results/2026-10-26-developer-HX-BL-003-harness-fixes.json",
       "feedback_assessment": {
         "register_ref": "agent-work/feedback.json",
         "candidate_ids": [
@@ -251,9 +251,9 @@
       },
       "branch": "agent/hx-bl-003-performance",
       "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474",
-      "head_sha": "d713cb9d11c0cd00bfda1eaf13a7489f58e48634",
+      "head_sha": "86a7e941a823e32e7c7cf9cfde78bb247ffc8194",
       "checks_status": "passed_exact_sha",
-      "evidence_ref": "agent-work/evidence/HX-BL-003-V2-developer/report.md",
+      "evidence_ref": "agent-work/evidence/HX-BL-003-V2-harness-fixes/report.md",
       "corpus_ci": {
         "id": 40187550999,
         "status": "completed",
@@ -262,7 +262,7 @@
       },
       "result_branch": "agent/hx-bl-003-performance",
       "corpus_status": "input_and_output_manifests_frozen",
-      "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40298240249",
+      "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40337416043",
       "baseline_timing": {
         "id": 40228996488,
         "status": "completed",
@@ -329,7 +329,7 @@
         "visual": "agent-work/evidence/HX-BL-003-developer/isolated-visual-raw.json",
         "log": "agent-work/evidence/HX-BL-003-developer/ci-recovery-40252325923.log"
       },
-      "review_verdict": "changes_requested",
+      "review_verdict": "pending_new_sha",
       "reviewed_sha": "d713cb9d11c0cd00bfda1eaf13a7489f58e48634",
       "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474#pullrequestreview-5651769890",
       "review_result_ref": "agent-work/results/2026-10-26-reviewer-HX-BL-003-d713cb9.json",
@@ -364,7 +364,8 @@
           "title": "Exact CPU-model assertion exceeds approved resource-profile requirement",
           "evidence": "P1-V2 says same resource profile (4vCPU, about16GB; recorded EPYC7763). Actual9V74 has4vCPU and16766414848 bytes RAM, required Chromium151.0.7922.34. Assertion blocks before input checks/servers/actions. Exact model is additional developer restriction, not an approved requirement.",
           "required": "Check declared resource class and same host for each new A/B pair; record actual model; retain old/new environment separation. Fix harness without triggering a new measured workflow.",
-          "observed": "Actual preflight failure in run40298230168; no product-performance conclusion."
+          "observed": "Actual preflight failure in run40298230168; no product-performance conclusion.",
+          "status": "addressed_pending_independent_review"
         },
         {
           "id": "HX003-V2-R2",
@@ -374,7 +375,8 @@
           "title": "External timeout rejects caller but does not stop timed-out browser work",
           "evidence": "bounded() only Promise.race; line65 marks variant unusable while continuing other variant in same browser. Pending restore/evaluate can continue during B actions. line66 context.close is unbounded. closeBrowser line26 returns after5s without confirming process exit/force kill, then PNG loop may launch next browser.",
           "required": "Abort and confirm disposal of timed-out context/process before continuing another row; if disposal cannot be confirmed stop package and persist not_executed. Bound cleanup and save lifecycle/exit evidence.",
-          "observed": "Static control-flow defect; no timeout reproduced and no actual affected measurement in current zero-action artifact."
+          "observed": "Static control-flow defect; no timeout reproduced and no actual affected measurement in current zero-action artifact.",
+          "status": "addressed_pending_independent_review"
         },
         {
           "id": "HX003-V2-R3",
@@ -384,7 +386,8 @@
           "title": "Navigation completeness ignores failed warmup",
           "evidence": "Only int iteration rows are validated; four errored warmups plus20successful synthetic measured rows produce all4 bounded_guard_pass groups. P1 requires one successful explicit warmup for each input/variant before5measured actions.",
           "required": "Retain raw/statistics, mark protocol completeness nonpassing/inconclusive when required warmup is absent/failed or out of order. Do not discard measured rows or add retries.",
-          "observed": "Offline synthetic reproduction saved; current actual artifact correctly incomplete."
+          "observed": "Offline synthetic reproduction saved; current actual artifact correctly incomplete.",
+          "status": "addressed_pending_independent_review"
         }
       ],
       "score_assessment": [
@@ -599,11 +602,11 @@
           "points_awarded": 0
         }
       ],
-      "score_assessment_status": "recorded_model1.2_insufficient_evidence_no_points",
+      "score_assessment_status": "pending_new_sha_model1.2",
       "acceptance_status": "blocked_incomplete",
       "automatic_measurement_rerun_allowed": false,
       "repeat_review_requires": "material new evidence or changed source SHA",
-      "developer_response_ref": "agent-work/results/2026-10-26-developer-HX-BL-003-review-response.json",
+      "developer_response_ref": "agent-work/results/2026-10-26-developer-HX-BL-003-harness-fixes.json",
       "developer_finding_response": {
         "HX003-RV1": {
           "status": "blocked",
@@ -643,7 +646,7 @@
       },
       "validation_plan": {
         "id": "HX-BL-003-V2",
-        "status": "harness_changes_requested_no_new_measured_workflow",
+        "status": "harness_corrected_pending_independent_review_no_measurement",
         "path": "agent-work/proposals/HX-BL-003-V2-validation.md",
         "max_png_attempts": 4,
         "max_measured_navigation_actions": 20,
@@ -693,9 +696,9 @@
         "HX003-RV3": "attribution_correction_verified_source_paths_verified_final_SVG_reference_audit_retained_not_redownloaded",
         "HX003-RV4": "resolved_for_new_exact_head_d713_normalCI40298240249_success_historical739_action_required_unchanged",
         "HX003-RV5": "partial_large_native_history_selection_limitations_retained",
-        "HX003-V2-R1": "open_harness_fix",
-        "HX003-V2-R2": "open_harness_fix",
-        "HX003-V2-R3": "open_harness_fix"
+        "HX003-V2-R1": "addressed_pending_independent_review",
+        "HX003-V2-R2": "addressed_pending_independent_review",
+        "HX003-V2-R3": "addressed_pending_independent_review"
       }
     },
     {

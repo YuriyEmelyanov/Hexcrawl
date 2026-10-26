@@ -3,7 +3,7 @@
   "run_id": "2026-10-26:developer:HX-BL-003-harness-fixes:1401Z",
   "role": "developer",
   "task_id": "HX-BL-003",
-  "status": "awaiting_exact_sha_normal_CI",
+  "status": "review_ready",
   "base_head_sha": "d713cb9d11c0cd00bfda1eaf13a7489f58e48634",
   "head_sha": "86a7e941a823e32e7c7cf9cfde78bb247ffc8194",
   "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474",
@@ -30,11 +30,35 @@
   "normal_ci": {
     "run_id": 40337416043,
     "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40337416043",
-    "status": "in_progress"
+    "status": "completed",
+    "conclusion": "success",
+    "head_sha": "86a7e941a823e32e7c7cf9cfde78bb247ffc8194",
+    "tests": 240,
+    "jobs": [
+      {
+        "id": 121622608883,
+        "name": "world-random",
+        "conclusion": "success",
+        "head_sha": "86a7e941a823e32e7c7cf9cfde78bb247ffc8194"
+      },
+      {
+        "id": 121622609622,
+        "name": "browser",
+        "conclusion": "success",
+        "head_sha": "86a7e941a823e32e7c7cf9cfde78bb247ffc8194"
+      },
+      {
+        "id": 121622609650,
+        "name": "check",
+        "conclusion": "success",
+        "head_sha": "86a7e941a823e32e7c7cf9cfde78bb247ffc8194"
+      }
+    ]
   },
   "local_check": {
-    "status": "in_progress",
-    "node": "24.22.1"
+    "status": "unverified_after_context_recovery",
+    "node": "24.22.1",
+    "limitation": "Previous local check was started; transient filesystem/session unavailable on recovery. No local completion claimed. Exact-head Node24 npm run check CI passed240/240, tsc/build."
   },
   "runtime_changed": false,
   "workflow_files_changed": false,
@@ -48,8 +72,8 @@
   "score_changed": false,
   "main_changed": false,
   "published": false,
-  "next_role": "developer",
-  "next_step": "Finish existing normalCI on86a7e94, retain logs, then independent limited source/offline review. No measured workflow/new PNG/navigation series.",
+  "next_role": "reviewer",
+  "next_step": "Независимая ограниченная проверка 86a7e94: три исправления harness, offline tests и CI; score_assessment1.2. Без реального замера, PNG или сброса cap1/1.",
   "evidence_ref": "agent-work/evidence/HX-BL-003-V2-harness-fixes/report.md",
   "automation_health": {
     "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
@@ -59,11 +83,22 @@
       "is_enabled": true
     },
     "end": {
-      "status": "unchecked",
-      "is_enabled": null,
-      "reason": "Run in progress"
+      "checked_at": "2026-10-26T15:08:46.679Z",
+      "status": "checked",
+      "is_enabled": true
     },
     "restored_during_this_run": false,
-    "errors": []
+    "errors": [],
+    "resume_start": {
+      "checked_at": "2026-10-26T15:08:00.431Z",
+      "status": "checked",
+      "is_enabled": true
+    }
+  },
+  "completed_at": "2026-10-26T15:09:22.783Z",
+  "claim_released": true,
+  "recovery": {
+    "reason": "Resumed own saved claim after context/runtime replacement; exact source SHA, prior offline evidence and completed CI recovered from GitHub.",
+    "previous_end_unchecked": true
   }
 }
