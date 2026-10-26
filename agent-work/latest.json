@@ -26,7 +26,7 @@
   },
   "lessons_path": "agent-work/lessons.md",
   "plan_id": "2026-10-23:f89530abe1e237493dddb533502bb772ae1ab4e5",
-  "run_id": "2026-10-26:analyst:HX-BL-003-V2:0817Z",
+  "run_id": "2026-10-26:developer:HX-BL-003-V2:0910Z",
   "plan_revision": 1,
   "baseline_sha": "f89530abe1e237493dddb533502bb772ae1ab4e5",
   "status": "in_progress",
@@ -50,7 +50,7 @@
   "current_task_id": "HX-BL-003",
   "spec_path": "agent-work/specs/HX-BL-003.md",
   "spec_version": "1.1",
-  "result_path": "agent-work/results/2026-10-26-analyst-HX-BL-003-V2.json",
+  "result_path": "agent-work/results/2026-10-26-developer-HX-BL-003-V2.json",
   "handoff_commit_sha": "1421459bd428d42f78bfe8776b55c8bd5d862c1d",
   "active_claim": {
     "run_id": "2026-10-26:developer:HX-BL-003-V2:0910Z",
@@ -61,9 +61,12 @@
     "lease_expires_at": "2026-10-26T11:10:42.259Z",
     "base_sha": "103d31b9f6f5c76b1f6b45d9d6664fe3f75dd63b",
     "candidate_sha": "739e3de36587533bf3d2f3196072270f4695fa8a",
-    "scope": "approved bounded V2 validation; harness only"
+    "scope": "approved bounded V2 validation; harness only",
+    "head_sha": "d713cb9d11c0cd00bfda1eaf13a7489f58e48634",
+    "validation_run_id": 40298230168,
+    "last_checkpoint_at": "2026-10-26T09:17:23.378Z"
   },
-  "next_step": "Программист: закрепить harness-only SHA/manifest по HX-BL-003-P1-V2, затем выполнить один разрешённый пакет до4PNG и20navigation actions (+4warmups), максимум60мин; сохранить все результаты и передать независимому reviewer. Выпуск отдельно.",
+  "next_step": "Await existing single V2 workflow and exact-head normal CI, preserve all outputs/logs; no retry of measured package. Then independent review finald713cb9 original+new evidence, no release.",
   "owner_decisions_needed": [
     "resolve_GitHub_action_required_Check40252463579"
   ],
@@ -73,12 +76,12 @@
     "approved_sha": null
   },
   "historical_plan_status": "План23.10 сохранён как история; его блокировки и предложенный процесс заменены decisions24.10 в approvals/process/budget и текущим handoff.",
-  "evidence_path": "agent-work/specs/HX-BL-003-P1-V2.md",
+  "evidence_path": "reports/HX-BL-003/v2-protocol-manifest.json",
   "branch_name": "agent/hx-bl-003-performance",
   "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474",
-  "head_sha": "739e3de36587533bf3d2f3196072270f4695fa8a",
-  "checks_status": "exacthead_action_required_no_jobs_capability_blocked",
-  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40252463579",
+  "head_sha": "d713cb9d11c0cd00bfda1eaf13a7489f58e48634",
+  "checks_status": "in_progress_exact_sha",
+  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40298240249",
   "review_verdict": "changes_requested",
   "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474#pullrequestreview-5647353819",
   "role_selection_mode": "ready_work_priority",
@@ -236,14 +239,14 @@
   "automation_health": {
     "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-10-26T08:17:14.753Z",
+      "checked_at": "2026-10-26T09:10:20.128Z",
       "status": "checked",
       "is_enabled": true
     },
     "end": {
-      "checked_at": "2026-10-26T08:22:58.485Z",
-      "status": "checked",
-      "is_enabled": true
+      "status": "unchecked",
+      "is_enabled": null,
+      "reason": "run in progress"
     },
     "restored_during_this_run": false,
     "errors": []
@@ -566,7 +569,7 @@
   "updated_at": "2026-10-26T08:23:33.027Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
-    "status": "ready_for_developer_harness_freeze",
+    "status": "workflow_in_progress",
     "next_role": "developer",
     "next_step": "Программист: закрепить harness-only SHA/manifest по HX-BL-003-P1-V2, затем выполнить один разрешённый пакет до4PNG и20navigation actions (+4warmups), максимум60мин; сохранить все результаты и передать независимому reviewer. Выпуск отдельно.",
     "approval_ref": "owner-approval-2026-10-26-HX-BL-003-V2",
@@ -590,7 +593,8 @@
     "addendum_commit_sha": "1421459bd428d42f78bfe8776b55c8bd5d862c1d",
     "spec_version": "1.1",
     "measurement_started": false,
-    "analyst_result_ref": "agent-work/results/2026-10-26-analyst-HX-BL-003-V2.json"
+    "analyst_result_ref": "agent-work/results/2026-10-26-analyst-HX-BL-003-V2.json",
+    "validation_run_id": 40298230168
   },
   "ready_task_handoffs": {
     "HX-FB-001": {
