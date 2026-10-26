@@ -1,0 +1,56 @@
+scripts/hx-bl-003-v2.mjs a65fa9aaed06e444ed1c2e47d0cf35231a5459e3ae461214280699a044aca8d6 MATCH
+scripts/hx-bl-003-v2-supervision.mjs f686b71f8665a5a3032b2972a3181d00eb9684d916c6814f88b0b31286bfeba9 MATCH
+scripts/hx-bl-003-v2-probes.js 61487e23d264024b92d166befef35f23cce20d7a0adcc82a14bb5692eb13b7c7 MATCH
+scripts/hx-bl-003-v2-analyze.py 3423e6803a364b65a0e7866682e7760ec014ab82451a4ef8a30594cef322ff79 MATCH
+scripts/hx-bl-003-v2-analyze.test.py fbd9d27cf1732a3bf157e4225c10e8a4dcb5abef50881a1a1a5630ec84354ec7 MATCH
+test/hx-bl-003-v2-harness.test.mjs 5fb708e8198b847fcb2e0293bc4fc3ef08e4f164d5db2dd74a1f4b8fe519c345 MATCH
+.github/workflows/hx-bl-003-v2.yml d6e7eb3fbce54c493d138c202baffce6c912dabfa73c4fdcea6ece872c0ea627 MATCH
+docs/HX-BL-003-V2-harness-fixes.md 0d7afa6da8b7583fe6db4b3cb761e8ece0332d1eb7ebfbc3d6fea2bd8be2c1d4 MATCH
+--- base/test/hx-bl-003-v2-harness.test.mjs
++++ head/test/hx-bl-003-v2-harness.test.mjs
+@@ -20,7 +20,7 @@
+ }
+ test('external watchdog confirms real owned child exit and latches abort before any next work',async t=>{
+   const fixture=await ownedChild(t),events=[];
+-  const supervisor=new BrowserSupervisor({timeoutMs:20,cleanupMs:200,record:e=>events.push(e)});
++  const supervisor=new BrowserSupervisor({timeoutMs:20,cleanupMs:5000,record:e=>events.push(e)});
+   await supervisor.start(fixture.chromium);
+   await assert.rejects(supervisor.run(()=>new Promise(()=>{}),'stalled operation'),PackageAbort);
+   assert(fixture.child.signalCode||fixture.child.exitCode!==null);
+@@ -32,7 +32,8 @@
+ });
+ test('hanging graceful cleanup escalates to kill and waits for observed child exit',async t=>{
+   const fixture=await ownedChild(t,{closeHangs:true}),events=[];
+-  const supervisor=new BrowserSupervisor({cleanupMs:20,record:e=>events.push(e)});
++  // Real child-process termination uses the production cleanup budget, not a20ms OS deadline.
++  const supervisor=new BrowserSupervisor({cleanupMs:5000,record:e=>events.push(e)});
+   await supervisor.start(fixture.chromium);await supervisor.dispose();
+   assert.equal(supervisor.owner,null);assert(fixture.child.signalCode);
+   assert(events.some(e=>e.type==='graceful_close_failed'));
+@@ -46,3 +47,4 @@
+   assert(events.some(e=>e.type==='browser_exit_unconfirmed'));
+   let called=0;await assert.rejects(supervisor.run(()=>{called++;},'must not run'),PackageAbort);assert.equal(called,0);
+ });
++
+
+--- base/reports/HX-BL-003/v2-protocol-manifest.json
++++ head/reports/HX-BL-003/v2-protocol-manifest.json
+@@ -36,7 +36,7 @@
+     },
+     {
+       "path": "test/hx-bl-003-v2-harness.test.mjs",
+-      "sha256": "d1f95fb8dfce7eecb947cb9d9ec7428cceb914123528e22ea364442303d0054f"
++      "sha256": "5fb708e8198b847fcb2e0293bc4fc3ef08e4f164d5db2dd74a1f4b8fe519c345"
+     },
+     {
+       "path": ".github/workflows/hx-bl-003-v2.yml",
+@@ -48,7 +48,7 @@
+     }
+   ],
+   "stage": "harness_corrections_only_no_measurement",
+-  "review_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474#pullrequestreview-5651769890",
++  "review_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474#pullrequestreview-5655108027",
+   "workflow_attempts_used": 1,
+   "automatic_measurement_rerun_allowed": false
+ }
+

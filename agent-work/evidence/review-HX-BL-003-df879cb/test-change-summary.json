@@ -1,0 +1,55 @@
+{
+  "base_sha": "86a7e941a823e32e7c7cf9cfde78bb247ffc8194",
+  "head_sha": "df879cb8d68cf876397aa5611f561a48482ae191",
+  "added": 0,
+  "removed": 0,
+  "modified": 2,
+  "total_definitions": 4,
+  "suite": "Node node:test",
+  "scenario_risk": "OS kill/exit can exceed20ms/200ms even with correct implementation. Existing cases verify actual owned child exit, abort latch/no next work, graceful escalation, unconfirmed exit fatality.",
+  "reuse_or_new_reason": "Modify the two existing real-process cases; no new scenario or case necessary. Fake unconfirmed-exit5ms and intentional operation20ms remain. Assertion sensitivity retained. Five-second intentional graceful hang is a bounded test cost.",
+  "count_source": "Exact base/head test contents and two-path compare; repeat runs do not add definitions",
+  "reviewer_code_changes": {
+    "added": 0,
+    "removed": 0,
+    "modified": 0
+  },
+  "execution": {
+    "runs": 1,
+    "executed": 4,
+    "passed": 4,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "node": "v24.22.1",
+    "duration_ms": 5230.783528,
+    "log": "agent-work/evidence/review-HX-BL-003-df879cb/node-test.log",
+    "second_run": false
+  },
+  "normal_ci": {
+    "run_id": 40365396181,
+    "head_sha": "df879cb8d68cf876397aa5611f561a48482ae191",
+    "conclusion": "success",
+    "jobs": [
+      {
+        "id": 121721589214,
+        "name": "browser",
+        "conclusion": "success"
+      },
+      {
+        "id": 121721589415,
+        "name": "world-random",
+        "conclusion": "success"
+      },
+      {
+        "id": 121721589476,
+        "name": "check",
+        "conclusion": "success"
+      }
+    ],
+    "tests": 240,
+    "passed": 240,
+    "failed": 0,
+    "skipped": 0
+  }
+}
