@@ -1,5 +1,5 @@
 # HX-BL-003-V2 — proposed bounded validation plan
-Status: proposed / not executable until explicit owner approval.26.10.2026. Existing taskHX-BL-003, candidate739e3de, baseline103d31b. No new product development, change of quality/acceptance thresholds or release permission.
+Status: approved by owner26.10.2026 («Разрешаю замер»), approval_ref=owner-approval-2026-10-26-HX-BL-003-V2. Execution after prospective P1 addendum and frozen harness SHA. Existing taskHX-BL-003, candidate739e3de, baseline103d31b. No new product development, change of quality/acceptance thresholds or release permission.
 
 ## Why
 Independent review of [PR474](https://github.com/YuriyEmelyanov/Hexcrawl/pull/474#pullrequestreview-5647353819) verified targetgeneration34.41%/36.15% but cannot accept missing2large PNG pairs and navigation aggregation. Existing bounded retry is exhausted; this plan is not approval to repeat it. Candidate remains outside main. RV3 evidence correction/source-path audit completed; RV4exactheadCI remains action_required because approval capability unavailable in connected tools.
@@ -17,4 +17,4 @@ No interface/map/content/action/format change. Intention: retain identical map w
 7. Independent reviewer assesses exactfrozenfinalSHA, normalCI, safety/resourceevidence and original/newresults together, updates score_assessment1.2. Unknown/zero/negativevalid; no automaticpointincrease, no release. Existing fastgeneration result does not replace remaining AC05largehistory/selection limitations; any unmetrequirement stays explicitblocked, no silentwaiver.
 
 ## Approval and alternative
-Owner may approve this exact bounded verification plan, keep candidate blocked, or request a report-only negative package without productchange. No option is assumed. Until explicit approval, only read/correct existingevidence/ordinaryCI; no newmeasurement series. This is a technical validation proposal for the current approvedtask, not a nextproducttask or authorization ofpublication.
+Owner approved this exact bounded verification plan26.10.2026: «Разрешаю замер». Approval is recorded in approvals.json. Prepare the prospective P1 addendum before measurement; then execute this single bounded package. Do not require the same owner approval again. Unlimited reruns remain unauthorized. CI approval capability remains a separate technical dependency. This is a technical validation proposal for the current approvedtask, not a nextproducttask or authorization ofpublication.
