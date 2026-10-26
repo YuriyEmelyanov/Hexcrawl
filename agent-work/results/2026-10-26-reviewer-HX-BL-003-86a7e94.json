@@ -1,0 +1,416 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-10-26:reviewer:HX-BL-003-86a7e94:1557Z",
+  "role": "reviewer",
+  "task_id": "HX-BL-003",
+  "head_sha": "86a7e941a823e32e7c7cf9cfde78bb247ffc8194",
+  "base_review_sha": "d713cb9d11c0cd00bfda1eaf13a7489f58e48634",
+  "status": "changes_requested",
+  "verdict": "changes_requested_for_test_stability",
+  "independent_agent": "/root/review_86a7_harness",
+  "independence": "Fresh context independent child; parent retains developer context and does not substitute own review for child.",
+  "finding_ids": [
+    "HX003-V2-R4"
+  ],
+  "findings": [
+    {
+      "id": "HX003-V2-R4",
+      "severity": "medium",
+      "path": "test/hx-bl-003-v2-harness.test.mjs",
+      "line": 35,
+      "title": "Real child-process exit is given a flaky20ms cleanup deadline",
+      "evidence": "Independent exact-source Node run3/4pass: graceful cleanup escalation test failed DeadlineExceeded force browser kill. One unchanged targeted repeat1/1pass. cleanupMs20 bounds both intentional graceful hang and OS kill/exit. Production5000ms not reproduced defective.",
+      "required": "Modify existing test: separate short intentional graceful-close timer from generous real process kill/exit budget, or use sufficient cleanup budget; assess200ms sibling. Preserve observable exit and no-next-work assertions. No new logical test or product threshold change required."
+    }
+  ],
+  "verified_fixed_findings": [
+    "HX003-V2-R1",
+    "HX003-V2-R2",
+    "HX003-V2-R3"
+  ],
+  "fixed_scope": "Source/offline lifecycle and protocol completeness; real hung Chromium not tested.",
+  "retained_limitations": [
+    "RV1 missing2largePNGpairs",
+    "RV2 prior navigation inconclusive",
+    "RV5 partial large native history/selection"
+  ],
+  "checks": {
+    "normal_ci": {
+      "run_id": 40337416043,
+      "head_sha": "86a7e941a823e32e7c7cf9cfde78bb247ffc8194",
+      "conclusion": "success",
+      "jobs": [
+        {
+          "id": 121622608883,
+          "name": "world-random",
+          "conclusion": "success"
+        },
+        {
+          "id": 121622609622,
+          "name": "browser",
+          "conclusion": "success"
+        },
+        {
+          "id": 121622609650,
+          "name": "check",
+          "conclusion": "success"
+        }
+      ]
+    },
+    "independent_node": {
+      "executed": 4,
+      "passed": 3,
+      "failed": 1,
+      "skipped": 0
+    },
+    "unchanged_targeted_repeat": {
+      "executed": 1,
+      "passed": 1
+    },
+    "independent_python": {
+      "executed": 7,
+      "passed": 7,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "test_change_summary": {
+    "base_sha": "d713cb9d11c0cd00bfda1eaf13a7489f58e48634",
+    "head_sha": "86a7e941a823e32e7c7cf9cfde78bb247ffc8194",
+    "source": "GitHub compare exact SHAs; four test() and seven unittest test_ methods in new files",
+    "suites": [
+      {
+        "suite": "Node node:test",
+        "added": 4,
+        "removed": 0,
+        "modified": 0,
+        "scenario_risk": "resource-class, watchdog process exit/no next work, graceful escalation, fatal unconfirmed exit",
+        "reuse_or_new_reason": "Distinct new supervisor contracts; shared fixture and existing runner; useful observable process behavior. Keep cases, stabilize existing OS deadline.",
+        "executed": 4,
+        "passed": 3,
+        "failed": 1,
+        "skipped": 0,
+        "targeted_repeat": {
+          "executed": 1,
+          "passed": 1,
+          "failed": 0,
+          "skipped": 0
+        }
+      },
+      {
+        "suite": "Python unittest analyzer",
+        "added": 7,
+        "removed": 0,
+        "modified": 0,
+        "scenario_risk": "valid control, failed/missing/late/bad warmup, duplicate iteration, strict guard boundary",
+        "reuse_or_new_reason": "Synthetic fixture tests distinct completeness defects and unchanged guard. Existing analyzer reused, no browser/large maps.",
+        "executed": 7,
+        "passed": 7,
+        "failed": 0,
+        "skipped": 0
+      }
+    ],
+    "current_reviewer_changes": {
+      "added": 0,
+      "removed": 0,
+      "modified": 0
+    },
+    "temporary_diagnostics": "One unchanged targeted rerun for observed failure; not a new permanent case",
+    "normal_ci": {
+      "node_executed": 240,
+      "node_passed": 240,
+      "node_failed": 0,
+      "node_skipped": 0,
+      "browser": "success_separate",
+      "rng": "success_separate"
+    }
+  },
+  "score_assessment": [
+    {
+      "model_version": "1.2",
+      "criterion_id": "S09-C01",
+      "weight": 20,
+      "historical_before": {
+        "model_version": "1.1",
+        "grade": "G2",
+        "points": 10,
+        "source": "specP1-V2 and prior reviewer739e3de/current-score historical reference"
+      },
+      "before": {
+        "grade": null,
+        "points": null,
+        "status": "unknown_pending_reassessment"
+      },
+      "after": {
+        "grade": null,
+        "points": null,
+        "status": "insufficient_evidence_for_complete_model_1_2_grade"
+      },
+      "delta": {
+        "grade": null,
+        "points": null,
+        "status": "unknown"
+      },
+      "sha": "86a7e941a823e32e7c7cf9cfde78bb247ffc8194",
+      "baseline_sha": "103d31b9f6f5c76b1f6b45d9d6664fe3f75dd63b",
+      "method": "Fresh independent agent exact-source inspection; eight manifest SHA256 matches; runtime/workflow diff; Node4(3pass/1fail), unchanged targeted1pass, Python7pass; parent exact-head normalCI review. No benchmark/PNG.",
+      "evidence": [
+        "agent-work/evidence/review-HX-BL-003-86a7e94/report.md",
+        "agent-work/evidence/review-HX-BL-003-86a7e94/node-test.log",
+        "agent-work/evidence/review-HX-BL-003-86a7e94/node-targeted-test.log",
+        "agent-work/evidence/review-HX-BL-003-86a7e94/python-test.log",
+        "agent-work/evidence/review-HX-BL-003-86a7e94/normal-ci-check.log"
+      ],
+      "limits": "No navigation measurement; prior guard breaches/limited5repeat evidence; Android/full latency grade not established.",
+      "points_awarded": 0
+    },
+    {
+      "model_version": "1.2",
+      "criterion_id": "S02-C01",
+      "weight": 30,
+      "historical_before": {
+        "model_version": "1.1",
+        "grade": "G1",
+        "points": 7.5,
+        "source": "specP1-V2 and prior reviewer739e3de/current-score historical reference"
+      },
+      "before": {
+        "grade": null,
+        "points": null,
+        "status": "unknown_pending_reassessment"
+      },
+      "after": {
+        "grade": null,
+        "points": null,
+        "status": "insufficient_evidence_for_complete_model_1_2_grade"
+      },
+      "delta": {
+        "grade": null,
+        "points": null,
+        "status": "unknown"
+      },
+      "sha": "86a7e941a823e32e7c7cf9cfde78bb247ffc8194",
+      "baseline_sha": "103d31b9f6f5c76b1f6b45d9d6664fe3f75dd63b",
+      "method": "Fresh independent agent exact-source inspection; eight manifest SHA256 matches; runtime/workflow diff; Node4(3pass/1fail), unchanged targeted1pass, Python7pass; parent exact-head normalCI review. No benchmark/PNG.",
+      "evidence": [
+        "agent-work/evidence/review-HX-BL-003-86a7e94/report.md",
+        "agent-work/evidence/review-HX-BL-003-86a7e94/node-test.log",
+        "agent-work/evidence/review-HX-BL-003-86a7e94/node-targeted-test.log",
+        "agent-work/evidence/review-HX-BL-003-86a7e94/python-test.log",
+        "agent-work/evidence/review-HX-BL-003-86a7e94/normal-ci-check.log"
+      ],
+      "limits": "Runtime parity and exact-head RNG CI; bounded prior seeds and continuation do not establish complete1.2 criterion or game breadth.",
+      "points_awarded": 0
+    },
+    {
+      "model_version": "1.2",
+      "criterion_id": "S03-C05",
+      "weight": 20,
+      "historical_before": {
+        "model_version": "1.1",
+        "grade": "G2",
+        "points": 10,
+        "source": "specP1-V2 and prior reviewer739e3de/current-score historical reference"
+      },
+      "before": {
+        "grade": null,
+        "points": null,
+        "status": "unknown_pending_reassessment"
+      },
+      "after": {
+        "grade": null,
+        "points": null,
+        "status": "insufficient_evidence_for_complete_model_1_2_grade"
+      },
+      "delta": {
+        "grade": null,
+        "points": null,
+        "status": "unknown"
+      },
+      "sha": "86a7e941a823e32e7c7cf9cfde78bb247ffc8194",
+      "baseline_sha": "103d31b9f6f5c76b1f6b45d9d6664fe3f75dd63b",
+      "method": "Fresh independent agent exact-source inspection; eight manifest SHA256 matches; runtime/workflow diff; Node4(3pass/1fail), unchanged targeted1pass, Python7pass; parent exact-head normalCI review. No benchmark/PNG.",
+      "evidence": [
+        "agent-work/evidence/review-HX-BL-003-86a7e94/report.md",
+        "agent-work/evidence/review-HX-BL-003-86a7e94/node-test.log",
+        "agent-work/evidence/review-HX-BL-003-86a7e94/node-targeted-test.log",
+        "agent-work/evidence/review-HX-BL-003-86a7e94/python-test.log",
+        "agent-work/evidence/review-HX-BL-003-86a7e94/normal-ci-check.log"
+      ],
+      "limits": "Ordinary CI retained; no new all-large native undo/redo/continuation, named versions evidence insufficient.",
+      "points_awarded": 0
+    },
+    {
+      "model_version": "1.2",
+      "criterion_id": "S04-C04",
+      "weight": 15,
+      "historical_before": {
+        "model_version": "1.1",
+        "grade": "G2",
+        "points": 7.5,
+        "source": "specP1-V2 and prior reviewer739e3de/current-score historical reference"
+      },
+      "before": {
+        "grade": null,
+        "points": null,
+        "status": "unknown_pending_reassessment"
+      },
+      "after": {
+        "grade": null,
+        "points": null,
+        "status": "insufficient_evidence_for_complete_model_1_2_grade"
+      },
+      "delta": {
+        "grade": null,
+        "points": null,
+        "status": "unknown"
+      },
+      "sha": "86a7e941a823e32e7c7cf9cfde78bb247ffc8194",
+      "baseline_sha": "103d31b9f6f5c76b1f6b45d9d6664fe3f75dd63b",
+      "method": "Fresh independent agent exact-source inspection; eight manifest SHA256 matches; runtime/workflow diff; Node4(3pass/1fail), unchanged targeted1pass, Python7pass; parent exact-head normalCI review. No benchmark/PNG.",
+      "evidence": [
+        "agent-work/evidence/review-HX-BL-003-86a7e94/report.md",
+        "agent-work/evidence/review-HX-BL-003-86a7e94/node-test.log",
+        "agent-work/evidence/review-HX-BL-003-86a7e94/node-targeted-test.log",
+        "agent-work/evidence/review-HX-BL-003-86a7e94/python-test.log",
+        "agent-work/evidence/review-HX-BL-003-86a7e94/normal-ci-check.log"
+      ],
+      "limits": "No newPNG; two large pairs remain absent. Old JSON/SVG evidence not a replacement.",
+      "points_awarded": 0
+    },
+    {
+      "model_version": "1.2",
+      "criterion_id": "S09-C04",
+      "weight": 10,
+      "historical_before": {
+        "model_version": "1.1",
+        "grade": "G2",
+        "points": 5,
+        "source": "specP1-V2 and prior reviewer739e3de/current-score historical reference"
+      },
+      "before": {
+        "grade": null,
+        "points": null,
+        "status": "unknown_pending_reassessment"
+      },
+      "after": {
+        "grade": null,
+        "points": null,
+        "status": "insufficient_evidence_for_complete_model_1_2_grade"
+      },
+      "delta": {
+        "grade": null,
+        "points": null,
+        "status": "unknown"
+      },
+      "sha": "86a7e941a823e32e7c7cf9cfde78bb247ffc8194",
+      "baseline_sha": "103d31b9f6f5c76b1f6b45d9d6664fe3f75dd63b",
+      "method": "Fresh independent agent exact-source inspection; eight manifest SHA256 matches; runtime/workflow diff; Node4(3pass/1fail), unchanged targeted1pass, Python7pass; parent exact-head normalCI review. No benchmark/PNG.",
+      "evidence": [
+        "agent-work/evidence/review-HX-BL-003-86a7e94/report.md",
+        "agent-work/evidence/review-HX-BL-003-86a7e94/node-test.log",
+        "agent-work/evidence/review-HX-BL-003-86a7e94/node-targeted-test.log",
+        "agent-work/evidence/review-HX-BL-003-86a7e94/python-test.log",
+        "agent-work/evidence/review-HX-BL-003-86a7e94/normal-ci-check.log"
+      ],
+      "limits": "Same runtime/prior safety plus ordinaryCI; no new complete destructive-action/large native history evidence.",
+      "points_awarded": 0
+    }
+  ],
+  "score_assessment_status": "recorded_model1.2_insufficient_evidence_no_points",
+  "model_check": {
+    "version": "1.2",
+    "criteria": 50,
+    "total_weight": 1000,
+    "coefficients": {
+      "G0": 0,
+      "G1": 0.25,
+      "G2": 0.5,
+      "G3": 0.75,
+      "G4": 1
+    },
+    "weights_changed": false
+  },
+  "manifest_verification": {
+    "independent_agent": "8/8SHA256 exactAPIcontent matched; abc vector control",
+    "parent": "6materialized files SHA256 matched; probes/workflow not materialized in localdirectory; independentAPIverification retained"
+  },
+  "changed_paths": [
+    {
+      "filename": "docs/HX-BL-003-V2-harness-fixes.md",
+      "status": "added"
+    },
+    {
+      "filename": "reports/HX-BL-003/v2-protocol-manifest.json",
+      "status": "modified"
+    },
+    {
+      "filename": "scripts/hx-bl-003-v2-analyze.py",
+      "status": "modified"
+    },
+    {
+      "filename": "scripts/hx-bl-003-v2-analyze.test.py",
+      "status": "added"
+    },
+    {
+      "filename": "scripts/hx-bl-003-v2-supervision.mjs",
+      "status": "added"
+    },
+    {
+      "filename": "scripts/hx-bl-003-v2.mjs",
+      "status": "modified"
+    },
+    {
+      "filename": "test/hx-bl-003-v2-harness.test.mjs",
+      "status": "added"
+    }
+  ],
+  "runtime_changed": false,
+  "workflow_changed": false,
+  "measurements_executed": 0,
+  "new_png_exports": 0,
+  "workflow_attempts_used": 1,
+  "automatic_measurement_rerun_allowed": false,
+  "score_changed": false,
+  "main_changed": false,
+  "published": false,
+  "next_role": "developer",
+  "next_step": "Стабилизировать существующий Node-тест graceful cleanup: достаточный бюджет OS kill/exit, без изменения production thresholds и без новых test cases. Затем точечный offline прогон и обычный exact-headCI; передать новый SHA независимому reviewer. Реальный замер не запускать/счётчик1/1 не сбрасывать.",
+  "evidence_ref": "agent-work/evidence/review-HX-BL-003-86a7e94/report.md",
+  "automation_health": {
+    "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-10-26T15:57:41.167Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "end": {
+      "checked_at": "2026-10-26T16:03:31.436Z",
+      "is_enabled": true,
+      "status": "checked"
+    },
+    "restored_during_this_run": false,
+    "errors": []
+  },
+  "independent_reviewer_automation_health": {
+    "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "status": "checked",
+      "is_enabled": true,
+      "checked_at": null,
+      "note": "Actual initial peek succeeded; exact timestamp not captured; subsequent shell clock15:58:48Z"
+    },
+    "end": {
+      "status": "checked",
+      "is_enabled": true,
+      "checked_at": "2026-10-26T16:02:31Z"
+    },
+    "restored_during_this_run": false,
+    "errors": []
+  },
+  "completed_at": "2026-10-26T16:04:38.657Z",
+  "claim_released": true,
+  "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474",
+  "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474#pullrequestreview-5655108027",
+  "github_review_event": "COMMENT"
+}

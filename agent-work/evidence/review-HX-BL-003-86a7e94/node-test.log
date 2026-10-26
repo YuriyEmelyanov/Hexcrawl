@@ -1,0 +1,27 @@
+✔ recorded CPU identity is not the resource-class gate; unsupported resources still fail (6.976971ms)
+✔ external watchdog confirms real owned child exit and latches abort before any next work (1364.693518ms)
+✖ hanging graceful cleanup escalates to kill and waits for observed child exit (508.752099ms)
+✔ unconfirmed kill remains fatal and cannot start another row or process (13.458477ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 3
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2275.280347
+
+✖ failing tests:
+
+test at test/hx-bl-003-v2-harness.test.mjs:33:1
+✖ hanging graceful cleanup escalates to kill and waits for observed child exit (508.752099ms)
+  PackageAbort: owned browser exit unconfirmed; no further actions permitted
+      at BrowserSupervisor.dispose (file:///tmp/review-86a7-harness/scripts/hx-bl-003-v2-supervision.mjs:94:13)
+      at async TestContext.<anonymous> (file:///tmp/review-86a7-harness/test/hx-bl-003-v2-harness.test.mjs:36:44)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    [cause]: DeadlineExceeded: external timeout: force browser kill
+        at Timeout.<anonymous> (file:///tmp/review-86a7-harness/scripts/hx-bl-003-v2-supervision.mjs:14:68)
+        at listOnTimeout (node:internal/timers:685:17)
+        at process.processTimers (node:internal/timers:618:7)
+  }
