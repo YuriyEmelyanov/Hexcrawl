@@ -29,7 +29,7 @@
   "run_id": "2026-10-26:developer:HX-BL-003:manual-measure-1852Z",
   "plan_revision": 1,
   "baseline_sha": "f89530abe1e237493dddb533502bb772ae1ab4e5",
-  "status": "in_progress",
+  "status": "review_ready",
   "planning_for": "2026-10-24",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-10-25",
@@ -46,26 +46,14 @@
   "schedule_frequency": "hourly",
   "process_path": "agent-work/process.md",
   "current_role": "developer",
-  "next_role": "developer",
+  "next_role": "reviewer",
   "current_task_id": "HX-BL-003",
   "spec_path": "agent-work/specs/HX-BL-003.md",
   "spec_version": "1.1",
   "result_path": "agent-work/results/2026-10-26-developer-HX-BL-003-V2-completed.json",
-  "handoff_commit_sha": "a8c51fe84d7917025b22518ff329f73b464b210d",
-  "active_claim": {
-    "role": "developer",
-    "task_id": "HX-BL-003",
-    "status": "collecting_completed_external_result",
-    "started_at": "2026-10-26T18:53:28.985Z",
-    "head_sha": "86100c390d8d4cf66cee6e87589be64ce51687e5",
-    "validation_run_id": 40388046863,
-    "last_checkpoint_at": "2026-10-26T20:10:12.193Z",
-    "run_id": "2026-10-26:developer:HX-BL-003:manual-measure-1852Z",
-    "resumed_at": "2026-10-26T20:04:58.950Z",
-    "resume_check": "Explicit existing handoff is to collect this externalrun; run40388046863 terminalsuccess, exact86100headmatchesclaim; manualresponse handed off whileawaitingCI. No lease-based takeover, no new source/run.",
-    "last_checkpoint": "Artifact162310969bytes hashverified; raw+recomputed+fullPNGbyteschecks saved; normalRNGretryinprogress"
-  },
-  "next_step": "Замер40388046863собран:20actions/4warmups/4PNG; N2400zoomguardnonpassing. ЗавершитьединственныйповторобычногоRNGCI и передать независимомуreviewer86100. Новыйзамернезапускать.",
+  "handoff_commit_sha": "111423aeb1c8c382fc50378936e219d3b62a588e",
+  "active_claim": null,
+  "next_step": "Независимо проверить86100c390d8d4cf66cee6e87589be64ce51687e5: saveAs/harness/manifest/env,20navigation+4warmups, пересчитатьpooledp95/guards, декодировать2PNGпары и оценить RV1/RV2/RV4/RV5 +score_assessment1.2. N2400zoomnonpassing не скрывать за зелёнымworkflow; никаких новых измерений/оптимизации/выпуска.",
   "owner_decisions_needed": [],
   "release_approval": {
     "task_id": "HX-BL-003",
@@ -77,9 +65,9 @@
   "branch_name": "agent/hx-bl-003-performance",
   "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474",
   "head_sha": "86100c390d8d4cf66cee6e87589be64ce51687e5",
-  "checks_status": "measurement_collection_success_navigation_guard_nonpassing_normal_rng_retry",
-  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40388046863",
-  "review_verdict": null,
+  "checks_status": "passed_exact_sha_after_single_normal_RNG_retry",
+  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40388056032",
+  "review_verdict": "pending_current_measurement_review",
   "role_selection_mode": "ready_work_priority",
   "role_selection_source": "agent-work/process.md",
   "process_decision_ref": "owner-decision-2026-10-24-dynamic-roles",
@@ -217,9 +205,9 @@
   "score_update_delta": 7.5,
   "score_history_path": "agent-work/score/history.json",
   "next_task_proposal_ref": null,
-  "next_task_id": "HX-FB-001",
+  "next_task_id": "HX-BL-003",
   "approval_ref": "owner-decision-2026-10-25-feedback-register",
-  "last_completed_stage": "independent_R4_limited_harness_acceptance",
+  "last_completed_stage": "developer_V2_measurement_and_recalculation",
   "previous_release_approval": {
     "status": "approved_and_executed",
     "approved_sha": "50d8b6f2414faa1f204cdd2a7ed936533707592c",
@@ -236,8 +224,9 @@
       "is_enabled": true
     },
     "end": {
-      "status": "unchecked",
-      "is_enabled": null
+      "checked_at": "2026-10-26T20:14:03.098Z",
+      "status": "checked",
+      "is_enabled": true
     },
     "restored_during_this_run": false,
     "errors": []
@@ -265,7 +254,7 @@
       "required": "PreserveexplicitpartialAC02/05/08; do notdeclareallnativeMapSetcoverage. Anynewexpensivecorpus/viewportseries requiresrevisedboundedplan, notautomaticloop."
     }
   ],
-  "current_review_score_assessment_status": "model1.2_insufficient_evidence_no_award_no_historical_migration",
+  "current_review_score_assessment_status": "pending_new_sha_model1.2",
   "target_audience_research": {
     "model_version": "1.1",
     "model_max_points": 25,
@@ -391,10 +380,10 @@
     "R3": "verified_fixed",
     "R4": "verified_fixed",
     "R5": "verified_fixed",
-    "HX003-RV1": "blocked_missing_two_large_PNG_pairs",
-    "HX003-RV2": "inconclusive_prior_guard_breaches_no_new_navigation",
+    "HX003-RV1": "new_two_large_PNG_pairs_exact_RGBA_equal_pending_independent_review",
+    "HX003-RV2": "new_N2400zoom_guard_breach_pending_independent_review",
     "HX003-RV3": "attribution_correction_verified_source_paths_verified_final_SVG_reference_audit_retained_not_redownloaded",
-    "HX003-RV4": "resolved_for_new_exact_head_d713_normalCI40298240249_success_historical739_action_required_unchanged",
+    "HX003-RV4": "current86100_normal_CI_success_after_one_RNG_retry_pending_review",
     "HX003-RV5": "partial_large_native_history_selection_limitations_retained",
     "HX003-V2-R1": "verified_fixed_source_offline_scope",
     "HX003-V2-R2": "verified_fixed_source_offline_scope",
@@ -452,7 +441,7 @@
   "deployment_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40173164222",
   "next_task_execution_allowed": true,
   "last_release_pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/472",
-  "last_material_result_path": "agent-work/results/2026-10-26-reviewer-HX-BL-003-df879cb.json",
+  "last_material_result_path": "agent-work/results/2026-10-26-developer-HX-BL-003-V2-completed.json",
   "last_wait_check_at": "2026-10-26T19:04:14.491Z",
   "spec_status": "ready_for_developer_harness_freeze",
   "previous_task_release_approval": {
@@ -504,31 +493,59 @@
     "next_step": "Apply1.2 to next specification/review; preserve1.1 prior assessment until evidence-based reassessment; game breadth unverified."
   },
   "previous_active_claim": {
-    "run_id": "2026-10-26:reviewer:HX-BL-003-df879cb:1800Z",
-    "role": "reviewer",
+    "role": "developer",
     "task_id": "HX-BL-003",
-    "head_sha": "df879cb8d68cf876397aa5611f561a48482ae191",
-    "started_at": "2026-10-26T18:00:44.890Z",
-    "lease_expires_at": "2026-10-26T20:00:44.890Z",
-    "status": "completed_limited_harness_accepted",
-    "scope": "Independent limited R4 existing-test review; no measurements",
-    "completed_at": "2026-10-26T18:05:26.447Z"
+    "status": "completed_review_ready",
+    "started_at": "2026-10-26T18:53:28.985Z",
+    "head_sha": "86100c390d8d4cf66cee6e87589be64ce51687e5",
+    "validation_run_id": 40388046863,
+    "last_checkpoint_at": "2026-10-26T20:10:12.193Z",
+    "run_id": "2026-10-26:developer:HX-BL-003:manual-measure-1852Z",
+    "resumed_at": "2026-10-26T20:04:58.950Z",
+    "resume_check": "Explicit existing handoff is to collect this externalrun; run40388046863 terminalsuccess, exact86100headmatchesclaim; manualresponse handed off whileawaitingCI. No lease-based takeover, no new source/run.",
+    "last_checkpoint": "Artifact162310969bytes hashverified; raw+recomputed+fullPNGbyteschecks saved; normalRNGretryinprogress",
+    "completed_at": "2026-10-26T20:14:03.098Z",
+    "result_ref": "agent-work/results/2026-10-26-developer-HX-BL-003-V2-completed.json"
   },
-  "review_request": null,
+  "review_request": {
+    "task_id": "HX-BL-003",
+    "status": "ready",
+    "head_sha": "86100c390d8d4cf66cee6e87589be64ce51687e5",
+    "independent_agent_required": true,
+    "spec_ref": "agent-work/specs/HX-BL-003.md",
+    "spec_version": "1.1",
+    "addendum_ref": "agent-work/specs/HX-BL-003-P1-V2.md",
+    "evidence_ref": "agent-work/evidence/HX-BL-003-run40388046863/report.md",
+    "result_ref": "agent-work/results/2026-10-26-developer-HX-BL-003-V2-completed.json",
+    "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40388056032",
+    "validation_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40388046863",
+    "artifact": {
+      "id": 12684286700,
+      "bytes": 162310969,
+      "sha256": "c729258618dd5251709b1417508229684bea8725c07a000bc0bedb7b147b5f04",
+      "download_hash_verified": true,
+      "manifest_entries_verified": 12,
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40388046863/artifacts/12684286700"
+    },
+    "score_assessment_required": true,
+    "score_model_version": "1.2",
+    "no_new_measurements": true,
+    "scope": "Независимо проверить86100c390d8d4cf66cee6e87589be64ce51687e5: saveAs/harness/manifest/env,20navigation+4warmups, пересчитатьpooledp95/guards, декодировать2PNGпары и оценить RV1/RV2/RV4/RV5 +score_assessment1.2. N2400zoomnonpassing не скрывать за зелёнымworkflow; никаких новых измерений/оптимизации/выпуска."
+  },
   "reviewed_sha": null,
-  "current_review_score_assessment_ref": "agent-work/results/2026-10-26-reviewer-HX-BL-003-df879cb.json",
+  "current_review_score_assessment_ref": null,
   "automatic_measurement_rerun_allowed": false,
   "repeat_review_requires": "material new evidence or changed source SHA",
   "blocked_task_handoffs": {
     "HX-BL-003": {
       "task_id": "HX-BL-003",
-      "status": "validation_workflow_running",
+      "status": "review_ready",
       "head_sha": "86100c390d8d4cf66cee6e87589be64ce51687e5",
       "branch_name": "agent/hx-bl-003-performance",
       "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474",
       "spec_path": "agent-work/specs/HX-BL-003.md",
-      "result_path": "agent-work/results/2026-10-26-developer-HX-BL-003-saveAs-restart.json",
-      "next_step": "Следить за существующим run40388046863; сохранить artifact/raw/логи и передать независимой проверке после завершения. Не запускать дубль.",
+      "result_path": "agent-work/results/2026-10-26-developer-HX-BL-003-V2-completed.json",
+      "next_step": "Независимо проверить86100c390d8d4cf66cee6e87589be64ce51687e5: saveAs/harness/manifest/env,20navigation+4warmups, пересчитатьpooledp95/guards, декодировать2PNGпары и оценить RV1/RV2/RV4/RV5 +score_assessment1.2. N2400zoomnonpassing не скрывать за зелёнымworkflow; никаких новых измерений/оптимизации/выпуска.",
       "validation_plan": {
         "id": "HX-BL-003-V2",
         "status": "workflow_running_after_saveAs_fix",
@@ -568,26 +585,23 @@
         "max_total_authorized_workflow_attempts": 3
       },
       "owner_decisions_needed": [],
-      "review_verdict": null,
+      "review_verdict": "pending_current_measurement_review",
       "reviewed_sha": null,
       "current_review_score_assessment_ref": "agent-work/results/2026-10-26-reviewer-HX-BL-003-df879cb.json",
       "checks_status": "normal_CI_and_validation_in_progress",
-      "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40388046863",
+      "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40388056032",
       "automatic_measurement_rerun_allowed": false,
       "canonical_task_path": "agent-work/backlog.json#HX-BL-003",
-      "next_role": "developer",
+      "next_role": "reviewer",
       "approval_result_ref": "agent-work/results/2026-10-26-HX-BL-003-V2-owner-approval.json",
       "spec_version": "1.1",
       "addendum_ref": "agent-work/specs/HX-BL-003-P1-V2.md",
       "analyst_result_ref": "agent-work/results/2026-10-26-analyst-HX-BL-003-V2.json",
       "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474#pullrequestreview-5656724813",
       "coordination_handoff": {
-        "task_id": "HX-BL-003",
-        "responsible": "strategist",
-        "status": "pending_bounded_execution_plan_reconciliation",
-        "reason": "Approved V2 measurement has not occurred: run40298230168 stopped atpreflight with0navigation/0warmup/0PNG; plan nevertheless limits workflowattempts1 and records1used. Correctedharness nowverified, productRV1/RV2/RV5remain. Reviewer has no authority to reset explicitattemptcap.",
-        "minimal_next_step": "Сопоставить разрешение владельца «Разрешаю замер», нулевой raw run40298230168 и проверенный df879cb; подготовить конкретное ограниченное уточнение исполнения утверждённого пакета с прежними20navigation+4warmups/4PNG/60min/качеством и порогами. Сохранить историю1/1; не запрашивать повторное утверждение самой задачи и не запускать измерение автоматически в обход действующего cap.",
-        "no_new_measurements_in_this_handoff": true
+        "status": "superseded_by_explicit_owner_restart_and_completed_measurement",
+        "approval_ref": "owner-restart-2026-10-26-HX-BL-003-after-saveAs-fix",
+        "result_ref": "agent-work/results/2026-10-26-developer-HX-BL-003-V2-completed.json"
       }
     }
   },
@@ -622,15 +636,15 @@
     "evidence_ref": "agent-work/evidence/HX-FB-001-developer/report.md",
     "next_role": "reviewer"
   },
-  "owner_decisions_note": "R4закрыт:независимо4/4,8hashesmatched;скриптпринятвограниченномscope,продукт003покане принят. Конкретныйblock:1/1workflowизрасходованнаpreflightс0actions;стратегготовитуточнениеисполненияужеразрешённогопакетабезмолчаливогосбросаcap/повторногоодобрениясамойзадачи. Естьдругаяготоваяутверждённаяработа:независимыйreviewPR475. Выпускнеразрешён.",
-  "updated_at": "2026-10-26T20:10:12.193Z",
+  "owner_decisions_note": "ТретийявноразрешённыйV2прогонсобран20navigation/4warmups/4PNG. ОбебольшиеPNGпарыexactRGBAequal; N2400zoomguardnonpassing166.554→483.3ms. Обычныйexact86100CIпрошёлпосле1повтораcancelledRNGjob;измерениенеповторялось. Следующийэтапнезависимыйreview86100/score1.2. Нетновогозапросаодобрениязадачи/выпуска; продуктнепринят,баллынеповышены. PR475сохранён.",
+  "updated_at": "2026-10-26T20:14:03.098Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
-    "status": "workflow_running_after_saveAs_fix",
-    "next_role": "developer",
-    "next_step": "Следить за существующим run40388046863; сохранить artifact/raw/логи и передать независимой проверке после завершения. Не запускать дубль.",
-    "approval_ref": "owner-approval-2026-10-26-HX-BL-003-V2",
-    "result_ref": "agent-work/results/2026-10-26-developer-HX-BL-003-saveAs-restart.json",
+    "status": "measurement_completed_negative_navigation_guard_review_ready",
+    "next_role": "reviewer",
+    "next_step": "Независимо проверить86100c390d8d4cf66cee6e87589be64ce51687e5: saveAs/harness/manifest/env,20navigation+4warmups, пересчитатьpooledp95/guards, декодировать2PNGпары и оценить RV1/RV2/RV4/RV5 +score_assessment1.2. N2400zoomnonpassing не скрывать за зелёнымworkflow; никаких новых измерений/оптимизации/выпуска.",
+    "approval_ref": "owner-restart-2026-10-26-HX-BL-003-after-saveAs-fix",
+    "result_ref": "agent-work/results/2026-10-26-developer-HX-BL-003-V2-completed.json",
     "automation_health": {
       "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
       "start": {
@@ -649,20 +663,25 @@
     "addendum_ref": "agent-work/specs/HX-BL-003-P1-V2.md",
     "addendum_commit_sha": "1421459bd428d42f78bfe8776b55c8bd5d862c1d",
     "spec_version": "1.1",
-    "measurement_started": null,
+    "measurement_started": true,
     "analyst_result_ref": "agent-work/results/2026-10-26-analyst-HX-BL-003-V2.json",
     "validation_run_id": 40388046863,
     "workflow_attempts_used": 3,
     "counts": {
-      "measured_actions_attempted": 0,
-      "warmups_attempted": 1,
-      "png_click_attempts": 0
+      "measured_navigation": 20,
+      "warmups": 4,
+      "png_clicks": 4,
+      "nav_status_success": 24,
+      "png_captured": 4
     },
     "validation_run": {
       "id": 40388046863,
       "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40388046863",
-      "status": "in_progress",
-      "conclusion": null
+      "status": "completed",
+      "conclusion": "success",
+      "job_id": 121801437428,
+      "attempt": 1,
+      "environment_commit": "92b8629297c8fe696d95d34990bd48b40fce4344"
     },
     "environment_discrepancy": {
       "actual_cpu": "AMD EPYC 9V74 80-Core Processor",
@@ -673,7 +692,7 @@
       "interpretation": "Exact CPU guard was a conservative developer interpretation of same profile; resourceclass vs exactmodel ambiguity requires technical independent assessment, not another approval of the already-approved task."
     },
     "developer_result_ref": "agent-work/results/2026-10-26-developer-HX-BL-003-V2.json",
-    "measurement_allowed": true,
+    "measurement_allowed": false,
     "review_ref": "agent-work/results/2026-10-26-reviewer-HX-BL-003-df879cb.json",
     "execution_approval_ref": "owner-restart-2026-10-26-HX-BL-003-after-saveAs-fix",
     "head_sha": "86100c390d8d4cf66cee6e87589be64ce51687e5"
@@ -826,12 +845,9 @@
   },
   "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474#pullrequestreview-5656724813",
   "coordination_handoff": {
-    "task_id": "HX-BL-003",
-    "responsible": "strategist",
-    "status": "pending_bounded_execution_plan_reconciliation",
-    "reason": "Approved V2 measurement has not occurred: run40298230168 stopped atpreflight with0navigation/0warmup/0PNG; plan nevertheless limits workflowattempts1 and records1used. Correctedharness nowverified, productRV1/RV2/RV5remain. Reviewer has no authority to reset explicitattemptcap.",
-    "minimal_next_step": "Сопоставить разрешение владельца «Разрешаю замер», нулевой raw run40298230168 и проверенный df879cb; подготовить конкретное ограниченное уточнение исполнения утверждённого пакета с прежними20navigation+4warmups/4PNG/60min/качеством и порогами. Сохранить историю1/1; не запрашивать повторное утверждение самой задачи и не запускать измерение автоматически в обход действующего cap.",
-    "no_new_measurements_in_this_handoff": true
+    "status": "superseded_by_explicit_owner_restart_and_completed_measurement",
+    "approval_ref": "owner-restart-2026-10-26-HX-BL-003-after-saveAs-fix",
+    "result_ref": "agent-work/results/2026-10-26-developer-HX-BL-003-V2-completed.json"
   },
   "last_readiness_check": {
     "status": "completed_external_CI_result_collection",
@@ -862,5 +878,21 @@
       "restored_during_this_run": false,
       "errors": []
     }
+  },
+  "validation_run": {
+    "id": 40388046863,
+    "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40388046863",
+    "status": "completed",
+    "conclusion": "success",
+    "job_id": 121801437428,
+    "attempt": 1,
+    "environment_commit": "92b8629297c8fe696d95d34990bd48b40fce4344"
+  },
+  "validation_counts": {
+    "measured_navigation": 20,
+    "warmups": 4,
+    "png_clicks": 4,
+    "nav_status_success": 24,
+    "png_captured": 4
   }
 }
