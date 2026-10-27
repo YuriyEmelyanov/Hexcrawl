@@ -1,0 +1,112 @@
+{
+  "schema_version": 1,
+  "task_id": "three-scenario-ranking-and-vision-2026-10-27",
+  "role": "strategist_analyst",
+  "role_selection_reason": "Прямое поручение владельца обновить рейтинг, затем видение; отдельная операционная работа не пересекается с активной разработкой HX-BL-024.",
+  "status": "completed_expert_recalculation_with_explicit_limits",
+  "owner_decision_ref": "owner-decision-2026-10-27-three-scenario-ranking",
+  "ranking_ref": "agent-work/market/three-scenario-ranking-2026-10-27.json",
+  "report_ref": "agent-work/market/three-scenario-ranking-2026-10-27.md",
+  "ranking_blob_sha": "bbfdf68af1cc4f8274033f604aaeed11dddea0d3",
+  "vision_ref": "agent-work/strategy/vision.md",
+  "vision_blob_sha": "5d726ac8d70c75db6d2a1f4a014a28684acfabad",
+  "ordering": "ranking created/readback verified and activated before vision write",
+  "coverage": {
+    "registry": 53,
+    "calculated": 45,
+    "unknown": [
+      "FATE",
+      "BFRPG",
+      "BTW",
+      "SYM",
+      "TSL",
+      "IRON"
+    ],
+    "excluded": [
+      "CSB",
+      "SWB"
+    ]
+  },
+  "validation": {
+    "rank_checks": [
+      {
+        "name": "registry IDs unique and preserved",
+        "passed": true
+      },
+      {
+        "name": "low ranks total",
+        "passed": true
+      },
+      {
+        "name": "low mean-rank independently via pairwise counts",
+        "passed": true
+      },
+      {
+        "name": "reference ranks total",
+        "passed": true
+      },
+      {
+        "name": "reference mean-rank independently via pairwise counts",
+        "passed": true
+      },
+      {
+        "name": "high ranks total",
+        "passed": true
+      },
+      {
+        "name": "high mean-rank independently via pairwise counts",
+        "passed": true
+      }
+    ],
+    "script": "agent-work/market/recompute-three-scenario-ranking.mjs",
+    "command": "node check.mjs source.json result.json (local exact saved contents)",
+    "exit_code": 0,
+    "output": "Verified: frozen input blob,53 IDs,45 games x3 scenarios x3 parameter sets, formulas, tied ranks, six unknown and two exclusions.",
+    "readback_verified": true,
+    "initial_shell_materialization": "Argument list too long; no files created by that attempt. Materialized through apply_patch and reran successfully.",
+    "product_tests_run": false
+  },
+  "limitations": {
+    "D": "M * p_s * T_s",
+    "U": "D_s * R_s * C_s",
+    "overall": "(rank_create + rank_develop + rank_play_now) / 3; lower is higher priority",
+    "weights": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+    ],
+    "ties": "Average occupied ranks, including modeled zero ties; equal overall means tied final place; alphabetic ID display only, not tie-break",
+    "population_unit": "Potential GMs over12months, not players or active current app users",
+    "source_mapping": {
+      "create": "old create",
+      "develop": "old enrich + combine_modules (old mutually exclusive primary segments)",
+      "play_now": "old conduct as PROVISIONAL suitable-use proxy, conditional on table-ready regional material; not generic VTT/campaign management"
+    },
+    "overlap": "Each scenario is separate. Current inputs are conservative primary-segment slices; secondary use is not estimated. Real audiences overlap; do not sum D/U across scenarios or games into unique users.",
+    "unknowns": "Missing M yields null ranks/forecasts, not zero or last place. Zero creation p in6ready/journey games is inherited modeled focus on canonical map, not observed absence of homebrew use; explicitly test sensitivity.",
+    "source_coefficients": "M,T,R,C and legacy p preserved; no invented new prevalence survey. All estimates expert/proxy. R/C common so ranking byD equals ranking byU in this snapshot.",
+    "play_now_gap": "Saved conduct figures are interim proxy, not a validated forecast of session-ready demand. Readiness of locations/links/NPC situations/usable procedures is a product requirement and unknown current support; counts must be refined with actual scenario research.",
+    "eligibility": "All45 calculable games ranked regardless of old D>1000 eligibility. Existing model1.2 cohort/threshold not rewritten. Per-scenario D>1000 flags are research candidates, not automatic membership."
+  },
+  "score_model_changed": false,
+  "product_score_changed": false,
+  "old_models_and_cohort_preserved": true,
+  "main_changed": false,
+  "active_developer_claim_preserved": true,
+  "next_step": "Команда продолжает активную HX-BL-024; при новых предложениях указывает primary_scenario и целевые игры по соответствующему рейтингу. Дальнейшее рыночное уточнение адресное: play_now proxy, creation0готовыхмиров, M/platform bias и6unknown; новые продукты требуют собственного утверждения.",
+  "automation_health": {
+    "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-10-27T20:40:04.959Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "end": {
+      "checked_at": "2026-10-27T20:47:38.261Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restored_during_this_run": false,
+    "errors": []
+  }
+}
