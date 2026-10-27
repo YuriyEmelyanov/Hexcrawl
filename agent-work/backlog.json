@@ -1205,7 +1205,7 @@
       "task_id": "HX-BL-024",
       "title": "Заметки мастера",
       "criterion_id": "S05-C01",
-      "status": "ready_for_development",
+      "status": "review_ready",
       "potential_delta": null,
       "approval_ref": "owner-approval-2026-10-27-HX-BL-024",
       "source": {
@@ -1282,15 +1282,15 @@
       "recommended_priority": "next_product_slice",
       "current_model_version": "1.2",
       "execution_allowed": true,
-      "next_role": "developer",
-      "next_step": "Реализовать notes по spec1.0 в отдельной ветке от актуального main; v4/чтениеv2-v3, точный undo/redo и защита ручного текста; показать desktop/390px RU/EN; необходимые CI и PR → независимый reviewer exactSHA. Выпуск отдельно.",
+      "next_role": "reviewer",
+      "next_step": "Независимо проверить b586051 по spec1.0, полезность тестов и score_assessment1.2; использовать свежего агента. Затем замечания программисту либо отдельное согласование выпуска.",
       "release_approved": false,
       "test_catalog_ref": "agent-work/evidence/HX-FB-002-test-catalog/catalog.md",
       "test_catalog_status": "completed",
       "spec_ref": "agent-work/specs/HX-BL-024.md",
       "spec_version": "1.0",
       "spec_status": "ready_for_development",
-      "result_ref": "agent-work/results/2026-10-27-analyst-HX-BL-024.json",
+      "result_ref": "agent-work/results/2026-10-28-developer-HX-BL-024.json",
       "claim": null,
       "baseline_sha": "02c2fd5fcbdb2042f2708709ce4f20dfd7354787",
       "feedback_assessment": {
@@ -1333,7 +1333,36 @@
         "source_main_sha": "02c2fd5fcbdb2042f2708709ce4f20dfd7354787",
         "blocking": false,
         "presented_in": "current task conversation, image output with commentary"
-      }
+      },
+      "branch": "agent/hx-bl-024-gm-notes",
+      "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/476",
+      "head_sha": "b586051ccb3a7cb219b77e9908ddd79b97febd51",
+      "checks": {
+        "status": "passed",
+        "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40568440359",
+        "node": {
+          "executed": 247,
+          "passed": 247,
+          "skipped": 0
+        },
+        "jobs": [
+          "check",
+          "browser",
+          "world-random"
+        ]
+      },
+      "evidence_ref": "agent-work/evidence/HX-BL-024-b586051/report.md",
+      "ui_actual_preview": {
+        "status": "presented",
+        "head_sha": "b586051ccb3a7cb219b77e9908ddd79b97febd51",
+        "path": "agent-work/evidence/HX-BL-024-b586051/ui/manifest.json",
+        "limitation": "Local Chromium153 lacks some emoji fonts",
+        "blocking": false
+      },
+      "primary_scenario": "develop_existing",
+      "secondary_scenarios": [
+        "play_now_manual_notes_only"
+      ]
     },
     {
       "task_id": "HX-BL-025",
