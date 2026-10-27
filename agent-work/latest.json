@@ -29,7 +29,7 @@
   "run_id": "2026-10-27:reviewer:HX-BL-003-release-risk:1203Z",
   "plan_revision": 1,
   "baseline_sha": "f89530abe1e237493dddb533502bb772ae1ab4e5",
-  "status": "risk_review_completed_owner_ac_decision_pending",
+  "status": "audit_completed_next_approved_spec_ready",
   "planning_for": "2026-10-27",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-10-25",
@@ -45,23 +45,15 @@
   "schedule_start_at": "2026-10-24T01:00:00+03:00",
   "schedule_frequency": "hourly",
   "process_path": "agent-work/process.md",
-  "current_role": "reviewer",
+  "current_role": "business_analyst",
   "next_role": "business_analyst",
-  "current_task_id": "HX-BL-003",
+  "current_task_id": "HX-FB-002",
   "spec_path": null,
   "spec_version": null,
-  "result_path": "agent-work/results/2026-10-27-reviewer-HX-BL-003-release-risk.json",
+  "result_path": "agent-work/results/2026-10-27-analyst-HX-FB-002-test-catalog.json",
   "handoff_commit_sha": "5b2efd70f68e805ec47c6058ea4105103bd10624",
-  "active_claim": {
-    "run_id": "2026-10-27T13-HX-FB-002-audit",
-    "task_id": "HX-FB-002",
-    "role": "business_analyst",
-    "status": "in_progress",
-    "started_at": "2026-10-27T13:03:37.654Z",
-    "scope": "Approved one-off static test catalog; no execution/deletion/product changes",
-    "handoff_ref": "agent-work/handoffs/2026-10-27-HX-FB-002-audit.json"
-  },
-  "next_step": "Аналитик выполняет уже разрешённый HX-FB-002, затем спецификацию approved HX-BL-024. Для003 ожидается утверждение конкретной замены приёмки по agent-work/handoffs/2026-10-27-HX-BL-003-minimal-release-package.json; после решения — программист, чистый пакет и exactSHA проверки. Новых замеров/выпуска сейчас нет.",
+  "active_claim": null,
+  "next_step": "Аналитик готовит спецификацию утверждённой HX-BL-024 «Заметки мастера»: plain-text у гекса, JSON/совместимость, undo/redo, UI до/после и score1.2. Каталог HX-FB-002 завершён; очистка — отдельно по рекомендациям. Для003 всё ещё ожидается owner AC decision, без новых замеров/выпуска.",
   "owner_decisions_needed": [
     {
       "task_id": "HX-BL-003",
@@ -212,7 +204,7 @@
   "score_update_delta": null,
   "score_history_path": "agent-work/score/history.json",
   "next_task_proposal_ref": "agent-work/proposals/2026-10-27-HX-BL-024-master-notes.md",
-  "next_task_id": "HX-FB-002",
+  "next_task_id": "HX-BL-024",
   "approval_ref": "owner-decision-2026-10-25-feedback-register",
   "last_completed_stage": "independent_release_risk_review_minimal_plan_proposed",
   "previous_release_approval": {
@@ -226,25 +218,25 @@
   "automation_health": {
     "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-10-27T12:17:50.312Z",
+      "checked_at": "2026-10-27T13:03:07.684Z",
       "status": "checked",
-      "is_enabled": true
-    },
-    "end": {
-      "checked_at": "2026-10-27T12:20:43.343Z",
-      "status": "checked",
-      "is_enabled": true
+      "is_enabled": true,
+      "evidence": "Actual peek in this continued conversation"
     },
     "restored_during_this_run": false,
     "errors": [],
     "checkpoints": [
       {
-        "checked_at": "2026-10-27T12:19:05.328Z",
+        "checked_at": "2026-10-27T15:06:26.258Z",
         "status": "checked",
         "is_enabled": true
       }
     ],
-    "context": "manual_score_model1.2_activation_reaffirmation"
+    "end": {
+      "checked_at": "2026-10-27T15:11:41.256Z",
+      "status": "checked",
+      "is_enabled": true
+    }
   },
   "open_findings": [
     {
@@ -648,7 +640,7 @@
   "deployment_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40452592898",
   "next_task_execution_allowed": true,
   "last_release_pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/475",
-  "last_material_result_path": "agent-work/results/2026-10-27-strategist-HX-BL-003-next-stage.json",
+  "last_material_result_path": "agent-work/results/2026-10-27-analyst-HX-FB-002-test-catalog.json",
   "last_wait_check_at": "2026-10-26T19:04:14.491Z",
   "spec_status": "independently_verified",
   "previous_task_release_approval": {
@@ -818,10 +810,11 @@
   "mockup_path": "agent-work/evidence/HX-FB-001-analyst/seed-before-after.svg",
   "feedback_handoff": {
     "task_id": "HX-FB-002",
-    "status": "ready_approved",
-    "handoff_ref": "agent-work/handoffs/2026-10-27-HX-FB-002-audit.json",
-    "next_role": "business_analyst",
-    "next_step": "Разовый каталог и evidence-кандидаты keep/merge/update/remove без новых прогонов/удалений"
+    "status": "audit_completed_recommendations_pending",
+    "result_ref": "agent-work/results/2026-10-27-analyst-HX-FB-002-test-catalog.json",
+    "evidence_ref": "agent-work/evidence/HX-FB-002-test-catalog/catalog.md",
+    "next_role": "strategist_manager",
+    "next_step": "Решить отдельно узкий cleanup AUD-02/03/04; готовую спецификацию024 не задерживать."
   },
   "owner_decisions_note": "Подтвердить предложенную адресную замену большого незавершённого historygate для003. HX-BL-024 уже утверждён, повторного согласования задачи не нужно; выпуск474 отдельно.",
   "updated_at": "2026-10-27T12:28:51.237Z",
@@ -1194,7 +1187,7 @@
     "nav_status_success": 24,
     "png_captured": 4
   },
-  "evidence_ref": "agent-work/evidence/HX-BL-003-release-risk-58adcce/report.md",
+  "evidence_ref": "agent-work/evidence/HX-FB-002-test-catalog/catalog.md",
   "static_diagnosis_handoff": {
     "status": "coordinated_nextstage_proposed",
     "result_ref": "agent-work/results/2026-10-27-developer-HX-BL-003-static-diagnosis.json",
@@ -1283,7 +1276,7 @@
     }
   },
   "last_secondary_result_ref": "agent-work/results/2026-10-27-analyst-HX-BL-003-V3.json",
-  "execution_note": "Только ужеготовая approved работа HX-FB-002/спецификация024. Новый этап003 условен ownerACdecision; benchmark/release не разрешены.",
+  "execution_note": "Разрешены спецификация/разработка024 в утверждённых границах. Аудит002 выполнен, cleanup не начат.003 AC amendment/release не одобрены.",
   "completed_validation_handoffs": {
     "HX-BL-003": {
       "task_id": "HX-BL-003",
@@ -1444,7 +1437,7 @@
   "historical_unverified_weight": 70,
   "historical_score_model_version": "1.1",
   "score_update_awarded_points": 0,
-  "handoff_ref": "agent-work/handoffs/2026-10-27-HX-FB-002-audit.json",
+  "handoff_ref": "agent-work/proposals/2026-10-27-HX-BL-024-master-notes.md",
   "previous_feedback_handoff": {
     "task_id": "HX-FB-001",
     "register": "agent-work/feedback.json",
@@ -1487,8 +1480,9 @@
       "execution_allowed": true,
       "release_approved": false,
       "next_role": "business_analyst",
-      "next_step": "Подготовить пригодную разработчику спецификацию HX-BL-024: поле plain-text заметки в информации о гексе, JSON save/load, совместимость, undo/redo и сценарий UI; затем реализация и независимая проверка. Выпуск отдельно.",
-      "result_ref": "agent-work/results/2026-10-27-HX-BL-024-owner-approval.json"
+      "next_step": "Аналитик готовит спецификацию утверждённой HX-BL-024 «Заметки мастера»: plain-text у гекса, JSON/совместимость, undo/redo, UI до/после и score1.2. Каталог HX-FB-002 завершён; очистка — отдельно по рекомендациям. Для003 всё ещё ожидается owner AC decision, без новых замеров/выпуска.",
+      "result_ref": "agent-work/results/2026-10-27-HX-BL-024-owner-approval.json",
+      "test_catalog_ref": "agent-work/evidence/HX-FB-002-test-catalog/catalog.md"
     }
   },
   "master_notes_approval": {
@@ -1591,5 +1585,23 @@
         "is_enabled": true
       }
     ]
+  },
+  "previous_completed_claim": {
+    "run_id": "2026-10-27T13-HX-FB-002-audit",
+    "task_id": "HX-FB-002",
+    "role": "business_analyst",
+    "status": "in_progress",
+    "started_at": "2026-10-27T13:03:37.654Z",
+    "scope": "Approved one-off static test catalog; no execution/deletion/product changes",
+    "handoff_ref": "agent-work/handoffs/2026-10-27-HX-FB-002-audit.json"
+  },
+  "test_audit": {
+    "task_id": "HX-FB-002",
+    "status": "completed",
+    "result_ref": "agent-work/results/2026-10-27-analyst-HX-FB-002-test-catalog.json",
+    "catalog_ref": "agent-work/evidence/HX-FB-002-test-catalog/catalog.md",
+    "recommendations_ref": "agent-work/evidence/HX-FB-002-test-catalog/recommendations.json",
+    "product_changes": false,
+    "new_executions": 0
   }
 }
