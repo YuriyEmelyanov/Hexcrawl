@@ -158,3 +158,6 @@
 - Один V3 завершён по43мин soft deadline: навигация20+2+2 полна, native history3/4; четвёртый partial сохранён. Три полные большие safety-последовательности заняли примерно9–11мин каждая в этом конечном наборе. Это evidence для будущего расчёта объёма, не новая generation timing серия и не основание расширить текущий cap/повторить запуск.
 - Проверенный finite guardpass не стирает прежний V2 negative; trace с готовым cache не доказывает незавершённую подготовку как причину stalls. Causality unknown, недостающие действия не заменять экстраполяцией. Итог остановить report-only, без очередного цикла подготовки.
 - Evidence: agent-work/evidence/HX-BL-003-V3-run40462370787/report.md и agent-work/evidence/review-HX-BL-003-V3-58adcce/result.json.
+
+
+27.10.2026 — стратег обработал выпуск475 по идентичному reviewed/released tree3892b812. Model1.2 reviewer grades unknown не превращаются в193.75 балла1.1 или в нулевую оценку продукта: releaseevent completed/award0, delta unknown; прежний реестр1.1 архивирован без потери,50весов/1000 и коэффициенты сохранены.003 закрыт как ограниченный report-only: evidence gap не объявлен дефектом; запрет выпуска не останавливает команду. Готова разрешённая передача HX-FB-002 и конкретное предложение HX-BL-024. Источник: results/2026-10-27-strategist-score475-next-work.json.
