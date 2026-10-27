@@ -14231,12 +14231,6 @@ export function App() {
             ) : regions.length <= 2 && candidateHexes.length > 0 ? (
               <div className="info-block info-block--prompt map-toolbar__prompt" role="status">{t.candidatePrompt}</div>
             ) : null}
-            <div className="control-block"><label>{language === 'ru' ? 'Seed мира' : 'World seed'}
-              <input aria-label={language === 'ru' ? 'Seed мира' : 'World seed'} inputMode="numeric" value={seedInput}
-                readOnly={!!regions.length || !!hexTerrainByKey.size || !!kingdoms.length}
-                disabled={mutationBlocked()} onChange={e=>{setSeedInput(e.target.value);setSeedError(false);}} onBlur={applyWorldSeed} />
-            </label>{seedError ? <p role="alert">{language === 'ru' ? 'Seed: целое число от 0 до 4294967295.' : 'Seed: integer from 0 to 4294967295.'}</p> : null}</div>
-            {legacyNotice ? <p role="status">{language === 'ru' ? 'Старая карта: seed задан для дальнейшего продолжения' : 'Legacy map: seed assigned for future continuation'}</p> : null}
             <div className="control-block mode-selector"><label>{language === 'ru' ? 'Режим' : 'Mode'}
               <select aria-label={language === 'ru' ? 'Режим' : 'Mode'} value={generationMode} disabled={isImporting || !!pendingRegen || !!kingdomJob} onChange={e=>{ if(!mutationBlocked()) setGenerationMode(e.target.value as GenerationMode); }}>
                 <option value="classic">{language === 'ru' ? 'Классический режим' : 'Classic mode'}</option>
@@ -14359,6 +14353,17 @@ export function App() {
                 </details>
               <button type="button" disabled={isImporting || !!pendingRegen || !!kingdomJob} onClick={handleImportJsonClick} className="secondary">{t.importJson}</button>
               <input ref={jsonImportInputRef} className="visually-hidden" type="file" accept="application/json,.json" onChange={(event) => void handleImportJson(event)} />
+            </div>
+            <div className="control-block world-seed-control">
+              <label className="world-seed-control__row">
+                <span>{language === 'ru' ? 'Seed мира' : 'World seed'}</span>
+                <input aria-label={language === 'ru' ? 'Seed мира' : 'World seed'} inputMode="numeric" value={seedInput}
+                  aria-invalid={seedError || undefined} aria-describedby={seedError ? 'world-seed-error' : undefined}
+                  readOnly={!!regions.length || !!hexTerrainByKey.size || !!kingdoms.length}
+                  disabled={mutationBlocked()} onChange={e=>{setSeedInput(e.target.value);setSeedError(false);}} onBlur={applyWorldSeed} />
+              </label>
+              {seedError ? <p id="world-seed-error" className="world-seed-control__error" role="alert">{language === 'ru' ? 'Seed: целое число от 0 до 4294967295.' : 'Seed: integer from 0 to 4294967295.'}</p> : null}
+              {legacyNotice ? <p className="world-seed-control__notice" role="status">{language === 'ru' ? 'Старая карта: seed задан для дальнейшего продолжения' : 'Legacy map: seed assigned for future continuation'}</p> : null}
             </div>
             {generationError && (
               <div className="coast-notice" role="alert">

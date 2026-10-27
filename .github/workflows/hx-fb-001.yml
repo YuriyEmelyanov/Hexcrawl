@@ -1,0 +1,41 @@
+name: HX-FB-001 UI acceptance
+on:
+  pull_request:
+    paths:
+      - src/App.tsx
+      - src/styles.css
+      - scripts/hx-fb-001-ui.mjs
+      - .github/workflows/hx-fb-001.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  seed-ui:
+    if: github.head_ref == 'agent/hx-fb-001-seed-row' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Build exact published baseline and candidate
+        run: |
+          git worktree add --detach /tmp/hx-fb-baseline 103d31b9f6f5c76b1f6b45d9d6664fe3f75dd63b
+          ln -s "$GITHUB_WORKSPACE/node_modules" /tmp/hx-fb-baseline/node_modules
+          cd /tmp/hx-fb-baseline
+          "$GITHUB_WORKSPACE/node_modules/.bin/vite" build
+          cd "$GITHUB_WORKSPACE"
+          npm run build
+      - name: Actual before-after screenshots and UI safety
+        run: HX_FB_BASE_DIST=/tmp/hx-fb-baseline/dist node scripts/hx-fb-001-ui.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: HX-FB-001-UI
+          path: reports/HX-FB-001/
+          if-no-files-found: error
