@@ -1,0 +1,13 @@
+import fs from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import {createHash} from 'node:crypto';
+const [root,output]=process.argv.slice(2);
+assert(root?.startsWith('/tmp/hx003-v3-history-') && output, 'history-only ephemeral worktree');
+const path=root+'/src/App.tsx',before=await fs.readFile(path,'utf8');
+const marker='  return (\n    <div className="app">';
+assert.equal(before.split(marker).length-1,1,'exact source seam');
+const accessor='  (window as any).__HX003_V3_READ = () => structuredClone({document:captureDocument(), generation:generationRef.current, undo:undoHistory, redo:redoHistory});\n';
+const after=before.replace(marker,accessor+marker);
+await fs.writeFile(path,after);
+const hash=x=>createHash('sha256').update(x).digest('hex');
+await fs.writeFile(output,JSON.stringify({path:'src/App.tsx',before_sha256:hash(before),after_sha256:hash(after),marker,inserted:accessor,scope:'history-only read accessor; no new mutation handler, hook, branch or RNG write'},null,2)+'\n');

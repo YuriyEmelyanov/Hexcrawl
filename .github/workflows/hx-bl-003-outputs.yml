@@ -1,0 +1,50 @@
+name: HX-BL-003 baseline outputs
+on:
+  push:
+    branches: [agent/hx-bl-003-performance]
+    paths: [.github/workflows/hx-bl-003-outputs.yml, scripts/hx-bl-003-outputs.mjs]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: hx-bl-003-outputs-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  outputs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Verify and unpack immutable input corpus
+        run: |
+          python - <<'PY'
+          import hashlib,pathlib,zipfile
+          p=pathlib.Path('reports/HX-BL-003/corpus/fixed-corpus.zip')
+          assert hashlib.sha256(p.read_bytes()).hexdigest()=='55dddd3df58d45ad33578678ec239e61d966c6972dbaa7e8cd2fd8c510ff5913'
+          with zipfile.ZipFile(p) as z:
+              for i in z.infolist():
+                  assert not i.filename.startswith('/') and '..' not in pathlib.PurePosixPath(i.filename).parts
+              z.extractall(p.parent)
+          PY
+      - name: Build exact baseline product
+        run: |
+          git worktree add /tmp/hx003-outputs-product 103d31b9f6f5c76b1f6b45d9d6664fe3f75dd63b
+          ln -s "$GITHUB_WORKSPACE/node_modules" /tmp/hx003-outputs-product/node_modules
+          cd /tmp/hx003-outputs-product
+          npm run build
+          cp -R dist "$GITHUB_WORKSPACE/dist"
+      - name: Prepare baseline documents and full artwork without timing
+        run: node scripts/hx-bl-003-outputs.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: HX-BL-003-baseline-outputs
+          path: reports/HX-BL-003/baseline-outputs/
+          if-no-files-found: error

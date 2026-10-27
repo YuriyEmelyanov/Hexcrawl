@@ -1,0 +1,15 @@
+import fs from 'node:fs/promises';
+import os from 'node:os';
+import {execFileSync} from 'node:child_process';
+import {createHash} from 'node:crypto';
+import {chromium} from 'playwright';
+import assert from 'node:assert/strict';
+const hash=b=>createHash('sha256').update(b).digest('hex');
+const version=JSON.parse(await fs.readFile('node_modules/playwright/package.json','utf8')).version;
+assert.equal(version,'1.62.1');assert.equal(process.versions.node.split('.')[0],'24');
+const browser=await chromium.launch({headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
+const manifest={schema_version:1,protocol:'P1/spec1.0',phase:'environment_frozen_before_baseline_timing',baseline_sha:'103d31b9f6f5c76b1f6b45d9d6664fe3f75dd63b',harness_commit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),node:process.version,playwright:version,chromium_version:browser.version(),chromium_path:chromium.executablePath(),lock_sha256:hash(await fs.readFile('package-lock.json')),os:{platform:os.platform(),release:os.release(),cpu:os.cpus()[0]?.model,vcpus:os.cpus().length,ram_bytes:os.totalmem(),runner:process.env.RUNNER_NAME??os.hostname(),image:process.env.ImageVersion??null},viewport:{width:1500,height:1000},dpr:1,scale:1.5,rotation:false,language:'ru',headless:true,cpu_throttling:false,analytics:'mc.yandex blocked identically',warm_runs:5,warmup:1,cold_contexts:1,timeout_ms:180000,collection_order:'manifest checkpoint order; cold,warmup,0,1,2,3,4',selection_samples:4,trace_cases:['mythic-0-N400.json','mythic-0-N2400.json'],trace_series:'separate subsequent series; all five warm actions per selected checkpoint; never merge trace timings into primary series',before_after_pairing:'Not an optimization comparison. Future AB/BA requires both versions repeated on same runner. This baseline alone cannot establish gain.',created_at:new Date().toISOString(),files:[]};
+await browser.close();
+for(const path of ['scripts/hx-bl-003-instrument.mjs','scripts/hx-bl-003-timing.mjs','scripts/hx-bl-003-environment.mjs','reports/HX-BL-003/corpus/manifest.json'])manifest.files.push({path,sha256:hash(await fs.readFile(path))});
+await fs.writeFile('reports/HX-BL-003/timing-environment.json',JSON.stringify(manifest,null,2)+'\n');
+console.log(JSON.stringify(manifest));
