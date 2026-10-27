@@ -155,7 +155,13 @@
     ],
     "expected_generation_outcome": "Generated growth; matched standard rejection recorded but scenarioincomplete for positivecontinuation, no alternateanchor/retry",
     "comparison": "A/B corresponding snapshots fulltypedcontents; rawJSON savedAt only excluded; ui.selectedHex exception only selection assertions, not generalhistorycomparisons",
-    "generation_timing_not_reported": true
+    "generation_timing_not_reported": true,
+    "initial_baseline_comparison": {
+      "capture": "Full typed fresh P before first import; preserve every raw field and stack",
+      "local_validation": "P.undo/redo empty; initial import S0.undo exactly [{before:P.document,after:S0.document}], S0.redo empty",
+      "cross_variant": "P may differ only masterSeed and derived initial geography/poi/toponymSeed after validating derivations and equality of all remaining fields. Only exact validated undo[0].before replaced by explicit P-reference token during A/B comparison; full raw is never modified. All postimport document/RNG/other transaction contents compare exactly.",
+      "scope": "Startup entropy comparison clarification; no RNG override, new actions, changed thresholds or product behavior"
+    }
   },
   "score": {
     "model_version": "1.2",
