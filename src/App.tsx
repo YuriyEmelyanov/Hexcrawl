@@ -14475,7 +14475,7 @@ export function App() {
             </div>
           </div>
 
-          {regions.length > 0 ? (
+          {regions.length > 0 || hexTerrainByKey.size > 0 ? (
           <aside id="side-panel-info" className="roll-card">
             <div className="info-body">
               <section className="info-block info-block--hex" aria-label={t.selectedHexInfo}>

@@ -62,6 +62,11 @@ try {
  async function transaction(action){const before=await snapshot();await action();const after=await snapshot();assert.notDeepEqual(after,before);await button('Отменить').click();assert.deepEqual(await snapshot(),before);await button('Повторить').click();assert.deepEqual(await snapshot(),after);return after;}
  // HX-BL-024: one bounded real-React editor lifecycle, reusing import/select/export helpers.
  await fs.mkdir(new URL('reports/HX-BL-024/',root),{recursive:true});
+ // UI-05 regression: a valid water-only document has no region, but must expose notes.
+ const waterOnly=JSON.parse(await fs.readFile(new URL('../fixtures/import-v2/baseline-empty.json',import.meta.url)));
+ waterOnly.map.terrainByHexKey={'-1,0':{terrainOverride:'sea'}};waterOnly.ui.selectedHex={q:-1,r:0};
+ await load(waterOnly);await page.getByRole('textbox',{name:'Заметки мастера',exact:true}).fill('Sea 🗝');
+ await button('Сохранить').click();assert.equal((await snapshot()).map.gmNotesByHexKey['-1,0'],'Sea 🗝');
  await load(fixture);
  const noteHex=fixture.map.regions[0].hexes[0], noteKey=`${noteHex.q},${noteHex.r}`;
  const other=fixture.map.regions[0].hexes.find(h=>`${h.q},${h.r}`!==noteKey);
