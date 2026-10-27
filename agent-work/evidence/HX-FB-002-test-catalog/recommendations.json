@@ -1,0 +1,134 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-FB-002",
+  "status": "audit_completed_candidates_not_implemented",
+  "date": "2026-10-27",
+  "base_sha": "02c2fd5fcbdb2042f2708709ce4f20dfd7354787",
+  "main_sha": "02c2fd5fcbdb2042f2708709ce4f20dfd7354787",
+  "unmerged_474_sha": "58adcce787549ff6baa3d0dd9f14dac6b34b9a97",
+  "seed_reviewed_sha": "415349bc9fb9ce72fb2a8bc5e777cc98ea515bd0",
+  "confirmed_redundant_test_cases_for_removal": [],
+  "recommendations": [
+    {
+      "id": "AUD-01",
+      "decision": "keep",
+      "target": "Node unit/integration + browser save-history + browser RNG",
+      "evidence": [
+        "test/mapTransactions.test.mjs:19–111",
+        "test/worldContinuation.test.mjs:22–147",
+        "test/browser/save-history.smoke.mjs:67–153",
+        "test/browser/world-random.smoke.mjs:31–153"
+      ],
+      "finding": "Сходные действия проверяются на разных границах: pure validation/VM callbacks и настоящий React/FileReader/DOM/effects. Количество совпадающих слов undo/import не доказывает дубликат.",
+      "risk_if_removed": "Потеря проверки DOM событий, асинхронной занятости или отдельного RNG-контракта.",
+      "next_action": "Сохранить разные уровни; повторную подготовку можно сокращать отдельно.",
+      "authority": "no_cleanup_execution_in_this_audit"
+    },
+    {
+      "id": "AUD-02",
+      "decision": "update",
+      "target": "test/worldContinuation.test.mjs:110–132; test/mapTransactions.test.mjs:90–108",
+      "evidence": [
+        "v2 manifest has8 entries; rng-v3 manifest11, including the same8 paths",
+        "worldContinuation corpus case loops both manifests and both modes",
+        "archived corpus case139467.801705ms"
+      ],
+      "finding": "8общих путей перечислены дважды внутри RNG corpus test. Дополнительно общий v2 corpus обходит mapTransactions и browser. Это подтверждённое пересечение входов/подготовки, не доказательство одинаковых assertions: старые save/map/name invariants отличаются от продолжения RNG.",
+      "risk_if_removed": "Простая дедупликация может потерять проверку различающейся migration/normalization политики двух manifests.",
+      "next_action": "Предложение узкой правки: сформировать union по path+sha256+normalization/ожиданиям; для одинакового входа подготовить один изолированный старт, сохранив обе группы assertions и classic/Mythic. Если ожидания различаются — не объединять. Длительность после изменения unknown.",
+      "authority": "candidate_only_needs_scope_acceptance"
+    },
+    {
+      "id": "AUD-03",
+      "decision": "update",
+      "target": "test/helpers/generation-harness.mjs:63–70",
+      "evidence": [
+        "modeCache is new per createGenerationHarness",
+        "loadMode reads/transpiles each TS module anew per harness",
+        "worldContinuation8seed×mode scenarios total220+seconds plus corpus139seconds"
+      ],
+      "finding": "Повторная TS-трансляция на каждом отдельном harness видна по коду; её доля в общей длительности не измерена.",
+      "risk_if_removed": "Общий кеш module.exports/VM может смешать RNG, Map/Set и замены функций между тестами.",
+      "next_action": "Кандидат: кешировать только неизменяемый текст трансляции по exact source/content, оставляя новый context, exports, state, modeCache для каждого harness. Не менять production и не уменьшать матрицу. Перед принятием показать изоляцию и сопоставимый существующий прогон.",
+      "authority": "candidate_only_no_speed_claim"
+    },
+    {
+      "id": "AUD-04",
+      "decision": "update",
+      "target": "test/generationDiagnostics.test.mjs:16–24",
+      "evidence": [
+        "host Math.random overridden to0.5 and createToponymSeed injected",
+        "main App.tsx has createToponymSeed declaration at1312 and no other occurrences",
+        "docs/world-random.md forbids production RNG fallback"
+      ],
+      "finding": "Комментарий/подмена унаследованы от прежнего RNG: подмена createToponymSeed не влияет на production путь в этом SHA. Это найденная устаревшая подготовка, а не основание удалять сам тест диагностик.",
+      "risk_if_removed": "Удаление всей проверки потеряет invariance debug logging и ошибки без commit.",
+      "next_action": "Кандидат remove obsolete setup: убрать неиспользуемый inject и host-global Math.random override; сохранить сравнение полного документа и проверку логов. Использовать уже имеющийся guardRandom там, где он проверяет действующий контракт; отдельный новый тест не нужен.",
+      "authority": "candidate_only"
+    },
+    {
+      "id": "AUD-05",
+      "decision": "keep_for_release_then_update_routing",
+      "target": "scripts/hx-fb-001-ui.mjs:22–55; .github/workflows/hx-fb-001.yml",
+      "evidence": [
+        "4layout rows +2semantic rows",
+        "seedUI baseline pinned103d31b; candidate415349",
+        "existing RNG smoke compares two same-version apps; UI compares baseline/candidate",
+        "workflow seed-ui gated to agent/hx-fb-001-seed-row or manual",
+        "UI stage26seconds in run40284793677"
+      ],
+      "finding": "4layout rows имеют уникальный контракт геометрии/перекрытия/языков/ширин.2semantic rows пересекают RNG/history, но уникально сравнивают полные документы между версиями и синхронизацию seed после reset. Доказанного бесполезного дубликата нет. Фиксированный старый baseline и ветка уже выпущенного PR непригодны как универсальный future PR gate.",
+      "risk_if_removed": "Слепое удаление обеих semantic rows уберёт единственное в этом harness cross-version comparison; новый shared helper сам по себе не даёт покрытия.",
+      "next_action": "Сохранить исторический release harness/evidence. При отдельно принятой очистке отделить текущие4layout rows от opt-in cross-version2rows, сделать актуальный trigger/явно выбираемую пару SHA. Не запускать старую пару на каждом косметическом PR; обычный RNG gate сохранить.24invalid input subcases не считать24новыми случаями.",
+      "authority": "candidate_only_not_retroactive_review_rejection"
+    },
+    {
+      "id": "AUD-06",
+      "decision": "keep_and_separate",
+      "target": "PR474 supervisor/analyzer/measurement tooling",
+      "evidence": [
+        "test/hx-bl-003-v2-harness.test.mjs has4 node cases",
+        "scripts/hx-bl-003-v2-analyze.test.py has7 unittest methods",
+        "V3 navigation20measured+2warmup+2trace; native histories3/4;43minsoftcap"
+      ],
+      "finding": "Это проверка измерителя и конечные исследовательские серии, не240проверок выпущенного продукта.4supervisor cases защищают процесс/kill/resource gate,7analyzercases — полноту/порог. Публикуемый малый App guard не требует автоматически переносить весь архив tooling.",
+      "risk_if_removed": "Удаление архива потеряет воспроизводимость прошлых отрицательных результатов; перенос в каждый CI раздует обычную проверку.",
+      "next_action": "Не переносить measurement workflows/scripts в будущий минимальный release package474 без отдельной необходимости; сохранить историю/evidence. Никаких новых запусков, удалений или изменения AC этим аудитом не разрешено.",
+      "authority": "existing_conditional_HX-BL-003_handoff_owner_decision_pending"
+    }
+  ],
+  "stability": "unknown: finite archived successful run, no multi-run flake analysis",
+  "score": {
+    "model": "1.2",
+    "effect": "score-neutral audit; no product transition",
+    "before_grade": "unknown",
+    "after_grade": "unknown",
+    "delta": null
+  },
+  "test_change_summary": {
+    "base_sha": "02c2fd5fcbdb2042f2708709ce4f20dfd7354787",
+    "head_sha": "02c2fd5fcbdb2042f2708709ce4f20dfd7354787",
+    "added": 0,
+    "removed": 0,
+    "modified": 0,
+    "suite": "all existing product suites",
+    "scenario_risk": "Read-only catalog; requirements and useful overlap mapped",
+    "reuse_or_new_reason": "No test edits or executions authorized/needed for static audit",
+    "count_source": "No product/test source writes; exact same base/head; archived runner236cases reconciled with28source files",
+    "executed_this_audit": 0,
+    "passed_this_audit": 0,
+    "skipped_this_audit": 0,
+    "reused_previous_run": {
+      "id": 40284793669,
+      "node": {
+        "executed": 236,
+        "passed": 236,
+        "failed": 0,
+        "skipped": 0
+      },
+      "browser_commands": 7,
+      "rng_logical_groups": 16
+    },
+    "temporary_reviewer_diagnostics": 0
+  }
+}
