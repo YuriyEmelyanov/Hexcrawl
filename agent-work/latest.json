@@ -53,14 +53,8 @@
   "result_path": "agent-work/results/2026-10-27-strategist-score475-next-work.json",
   "handoff_commit_sha": "5774daf957802a381876aa55e395b463314226c9",
   "active_claim": null,
-  "next_step": "Выполнить разовый approved каталог HX-FB-002; ожидается утверждение владельцем задачи HX-BL-024.",
-  "owner_decisions_needed": [
-    {
-      "task_id": "HX-BL-024",
-      "decision": "Approve small master-notes development slice",
-      "release_permission_separate": true
-    }
-  ],
+  "next_step": "Аналитик: завершить готовый разовый каталог HX-FB-002, затем подготовить спецификацию утверждённой HX-BL-024 «Заметки мастера». После спецификации — программист и независимая проверка; выпуск отдельно.",
+  "owner_decisions_needed": [],
   "release_approval": {
     "task_id": "HX-FB-001",
     "status": "approved_and_executed",
@@ -217,24 +211,17 @@
   "automation_health": {
     "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-10-27T10:59:28.329Z",
+      "checked_at": "2026-10-27T11:31:41.826Z",
       "status": "checked",
       "is_enabled": true
     },
     "end": {
-      "checked_at": "2026-10-27T11:07:02.027Z",
+      "checked_at": "2026-10-27T11:32:28.232Z",
       "status": "checked",
       "is_enabled": true
     },
     "restored_during_this_run": false,
-    "errors": [],
-    "checkpoints": [
-      {
-        "checked_at": "2026-10-27T11:05:27.219Z",
-        "status": "checked",
-        "is_enabled": true
-      }
-    ]
+    "errors": []
   },
   "open_findings": [
     {
@@ -1316,5 +1303,38 @@
     "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/475#pullrequestreview-5660726955",
     "next_step": "Замечание закрыто после подтверждённой публикации.",
     "release_sha": "02c2fd5fcbdb2042f2708709ce4f20dfd7354787"
+  },
+  "approved_task_handoffs": {
+    "HX-BL-024": {
+      "task_id": "HX-BL-024",
+      "status": "approved_pending_specification",
+      "approval_ref": "owner-approval-2026-10-27-HX-BL-024",
+      "proposal_ref": "agent-work/proposals/2026-10-27-HX-BL-024-master-notes.md",
+      "execution_allowed": true,
+      "release_approved": false,
+      "next_role": "business_analyst",
+      "next_step": "Подготовить пригодную разработчику спецификацию HX-BL-024: поле plain-text заметки в информации о гексе, JSON save/load, совместимость, undo/redo и сценарий UI; затем реализация и независимая проверка. Выпуск отдельно.",
+      "result_ref": "agent-work/results/2026-10-27-HX-BL-024-owner-approval.json"
+    }
+  },
+  "master_notes_approval": {
+    "approval_ref": "owner-approval-2026-10-27-HX-BL-024",
+    "result_ref": "agent-work/results/2026-10-27-HX-BL-024-owner-approval.json",
+    "status": "approved",
+    "automation_health": {
+      "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "start": {
+        "checked_at": "2026-10-27T11:31:41.826Z",
+        "status": "checked",
+        "is_enabled": true
+      },
+      "end": {
+        "checked_at": "2026-10-27T11:32:28.232Z",
+        "status": "checked",
+        "is_enabled": true
+      },
+      "restored_during_this_run": false,
+      "errors": []
+    }
   }
 }
