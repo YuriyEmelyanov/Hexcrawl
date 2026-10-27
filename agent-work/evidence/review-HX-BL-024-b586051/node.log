@@ -1,0 +1,57 @@
+✔ import is one exact transaction; invalid and preparation failure preserve both stacks (690.289743ms)
+✔ all existing manual families, import, reset, and 100 exact undo/redo snapshots (6330.165607ms)
+✔ manual edits do not replace generation checkpoints, regenerate rollback retains undo and redo (401.618547ms)
+✔ pending file read serializes imports and blocks edits, generation and reset (166.168233ms)
+✔ all manifest saves round-trip unchanged entities, names and can continue then undo (4179.559707ms)
+✔ no-op and failed imports preserve redo; fresh edit clears it; reset on empty is a no-op (216.18907ms)
+✔ notes save/clear are exact transactions, no-op/cancel preserve redo and dirty commands are inert (428.226704ms)
+✔ import replaces notes exactly and legacy imports clear them; malformed notes preserve full history (269.150281ms)
+✔ delete retains latest surviving notes, confirms loss, undo restores; generation conflict is rejected before commit (26696.434316ms)
+✔ reject notes null container (5.061709ms)
+✔ reject notes array container (0.511428ms)
+✔ reject notes scalar container (0.466102ms)
+✔ reject notes non-string (0.415588ms)
+✔ reject notes noncanonical key (0.370092ms)
+✔ reject notes orphan (0.346597ms)
+✔ reject notes prototype key (0.392314ms)
+✔ reject road wrong structure (0.621038ms)
+✔ reject fractional axial (0.469046ms)
+✔ reject duplicate region id (0.545128ms)
+✔ reject invalid region enum (0.368128ms)
+✔ reject noncanonical terrain key (0.481835ms)
+✔ reject wrong rotation type (0.609822ms)
+✔ reject wrong scale type (0.622851ms)
+✔ reject unsafe next road counter (0.41695ms)
+✔ reject dangling water POI (0.552919ms)
+✔ supported corpus: lake-reentry-map (16.09948ms)
+✔ supported corpus: sea-pocket-map (10.606175ms)
+✔ supported corpus: terrain-display-map (17.074015ms)
+✔ supported corpus: road-entry-zigzags (3.321979ms)
+✔ generated proposals reject overflow in every allocated ID namespace and counter (1.420949ms)
+✔ imported boundary roadCounter: production continuation stays valid or rolls back whole document (268.292986ms)
+✔ imported boundary regionId: production continuation stays valid or rolls back whole document (273.65927ms)
+✔ imported boundary lakeCounter: production continuation stays valid or rolls back whole document (145.657824ms)
+✔ imported boundary riverId: production continuation stays valid or rolls back whole document (117.967454ms)
+✔ exhausted kingdom ID refuses production start and preserves document and both stacks (534.067832ms)
+✔ notes versions 2/3/4 accept exact text on actual land/water; v4 requires RNG and future versions reject (1.468358ms)
+fixture continuation test/fixtures/lake-reentry-map.json/classic: committed
+fixture continuation test/fixtures/lake-reentry-map.json/mythic: Error: Не удалось построить регион королевства.
+fixture continuation test/fixtures/sea-pocket-map.json/classic: committed
+fixture continuation test/fixtures/sea-pocket-map.json/mythic: Error: Не удалось соединить выбранный гекс с королевством.
+fixture continuation test/fixtures/terrain-display-map.json/classic: committed
+fixture continuation test/fixtures/terrain-display-map.json/mythic: committed
+fixture continuation test/fixtures/road-entry-zigzags.json/classic: committed
+fixture continuation test/fixtures/road-entry-zigzags.json/mythic: committed
+fixture continuation test/fixtures/import-v2/baseline-empty.json/classic: committed
+fixture continuation test/fixtures/import-v2/baseline-empty.json/mythic: committed
+fixture continuation test/fixtures/import-v2/baseline-classic.json/classic: committed
+fixture continuation test/fixtures/import-v2/baseline-classic.json/mythic: committed
+fixture continuation test/fixtures/import-v2/baseline-mythic.json/classic: committed
+fixture continuation test/fixtures/import-v2/baseline-mythic.json/mythic: committed
+fixture continuation test/fixtures/import-v2/legacy-optionals.json/classic: committed
+fixture continuation test/fixtures/import-v2/legacy-optionals.json/mythic: committed
+fixture continuation test/fixtures/lake-reentry-map.json/classic: committed
+fixture continuation test/fixtures/lake-reentry-map.json/mythic: Error: Не удалось построить регион королевства.
+fixture continuation test/fixtures/sea-pocket-map.json/classic: committed
+fixture continuation test/fixtures/sea-pocket-map.json/mythic: Error: Не удалось соединить выбранный гекс с королевством.
+fixture continuation test/fixtures/terrain-display-map.json/classic: committed

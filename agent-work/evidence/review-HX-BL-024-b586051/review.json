@@ -1,0 +1,182 @@
+{
+  "task_id": "HX-BL-024",
+  "pr": 476,
+  "head_sha": "b586051ccb3a7cb219b77e9908ddd79b97febd51",
+  "base_sha": "02c2fd5fcbdb2042f2708709ce4f20dfd7354787",
+  "tree": "d6ac6f261b6638d274233be51582bd84ca4b31e7",
+  "verdict": "changes_requested",
+  "findings": [
+    {
+      "id": "F1",
+      "priority": "P2",
+      "requirement": "HIST-05",
+      "location": "src/App.tsx:14434",
+      "summary": "Notes-loss regeneration conflict hidden behind generic retry alert",
+      "repro": "ui-conflict.mjs",
+      "evidence": [
+        "conflict-ui.png",
+        "ui-conflict.log",
+        "conflict.log"
+      ],
+      "rollback": "exact full document and both histories preserved in natural reproduction"
+    }
+  ],
+  "test_change_summary": {
+    "added": 11,
+    "removed": 0,
+    "modified": 2,
+    "suite": "Node logical runner cases",
+    "matrix_added_subcases": {
+      "Node": 30,
+      "browser_RNG": 60
+    },
+    "browser_added_scenario_groups": 2,
+    "count_source": "exact base-to-head diff",
+    "necessity": "keep; extend existing React runner for F1"
+  },
+  "checks": {
+    "targeted_node": {
+      "passed": 12,
+      "failed": 0,
+      "skipped": 0
+    },
+    "notes_validation_repeat": {
+      "passed": 8,
+      "failed": 0,
+      "skipped": 0
+    },
+    "tsc": "pass",
+    "build": "pass",
+    "save_history_browser": "pass",
+    "natural_conflict_handler": "pass with UX defect",
+    "natural_conflict_browser": "pass with UX defect",
+    "broad_node": "stopped; incomplete, not pass",
+    "full_check": "not independently rerun",
+    "full_browser": "not independently rerun",
+    "browser_rng": "not independently rerun"
+  },
+  "score_assessment": {
+    "model_version": "1.2",
+    "criteria": [
+      {
+        "criterion_id": "S05-C01",
+        "weight": 25,
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unknown"
+        },
+        "after": {
+          "grade": null,
+          "points": null,
+          "status": "insufficient_evidence"
+        },
+        "delta": null,
+        "head_sha": "b586051ccb3a7cb219b77e9908ddd79b97febd51",
+        "evidence": "report.md#independent-score_assessment12",
+        "quality": "bounded observed behavior; see report criterion row",
+        "breadth": "unverified gaming breadth for S05-C01; technical bounds described in report for others",
+        "limits": "No complete criterion-wide baseline/after assessment; no speculative transition"
+      },
+      {
+        "criterion_id": "S03-C05",
+        "weight": 20,
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unknown"
+        },
+        "after": {
+          "grade": null,
+          "points": null,
+          "status": "insufficient_evidence"
+        },
+        "delta": null,
+        "head_sha": "b586051ccb3a7cb219b77e9908ddd79b97febd51",
+        "evidence": "report.md#independent-score_assessment12",
+        "quality": "bounded observed behavior; see report criterion row",
+        "breadth": "unverified gaming breadth for S05-C01; technical bounds described in report for others",
+        "limits": "No complete criterion-wide baseline/after assessment; no speculative transition"
+      },
+      {
+        "criterion_id": "S04-C04",
+        "weight": 15,
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unknown"
+        },
+        "after": {
+          "grade": null,
+          "points": null,
+          "status": "insufficient_evidence"
+        },
+        "delta": null,
+        "head_sha": "b586051ccb3a7cb219b77e9908ddd79b97febd51",
+        "evidence": "report.md#independent-score_assessment12",
+        "quality": "bounded observed behavior; see report criterion row",
+        "breadth": "unverified gaming breadth for S05-C01; technical bounds described in report for others",
+        "limits": "No complete criterion-wide baseline/after assessment; no speculative transition"
+      },
+      {
+        "criterion_id": "S09-C04",
+        "weight": 10,
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unknown"
+        },
+        "after": {
+          "grade": null,
+          "points": null,
+          "status": "insufficient_evidence"
+        },
+        "delta": null,
+        "head_sha": "b586051ccb3a7cb219b77e9908ddd79b97febd51",
+        "evidence": "report.md#independent-score_assessment12",
+        "quality": "bounded observed behavior; see report criterion row",
+        "breadth": "unverified gaming breadth for S05-C01; technical bounds described in report for others",
+        "limits": "No complete criterion-wide baseline/after assessment; no speculative transition"
+      },
+      {
+        "criterion_id": "S02-C01",
+        "weight": 30,
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unknown"
+        },
+        "after": {
+          "grade": null,
+          "points": null,
+          "status": "insufficient_evidence"
+        },
+        "delta": null,
+        "head_sha": "b586051ccb3a7cb219b77e9908ddd79b97febd51",
+        "evidence": "report.md#independent-score_assessment12",
+        "quality": "bounded observed behavior; see report criterion row",
+        "breadth": "unverified gaming breadth for S05-C01; technical bounds described in report for others",
+        "limits": "No complete criterion-wide baseline/after assessment; no speculative transition"
+      }
+    ],
+    "confirmed_delta": null,
+    "product_score_updated": false
+  },
+  "automation_health": {
+    "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "is_enabled": true,
+      "at": null,
+      "timing": "actual peek at start of review; wall timestamp not recorded"
+    },
+    "end": {
+      "is_enabled": true,
+      "at": "2026-10-27T22:06:17.129015+00:00"
+    },
+    "restoration": false,
+    "errors": [
+      "Initial id parameter binding error, corrected to jawbone_id"
+    ]
+  },
+  "limits": "Bounded independent fresh-context review; exact SHA only; no release approval."
+}
