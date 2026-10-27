@@ -1,0 +1,178 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-003",
+  "stage_id": "HX-BL-003-V3",
+  "version": "1.0",
+  "status": "ready_for_harness_preparation",
+  "approval_ref": "owner-approval-2026-10-27-HX-BL-003-V3",
+  "source": {
+    "baseline_sha": "103d31b9f6f5c76b1f6b45d9d6664fe3f75dd63b",
+    "candidate_sha": "739e3de36587533bf3d2f3196072270f4695fa8a",
+    "prior_harness_sha": "86100c390d8d4cf66cee6e87589be64ce51687e5",
+    "main_or_PR475_must_not_be_included": true
+  },
+  "inputs": {
+    "navigation": {
+      "path": "reports/HX-BL-003/corpus/mythic-0-N2400.json",
+      "sha256": "90ad8db4f1eda2631ecd96dc130d750b2b6d5c0f736cbe08d3159a9f59175e2a",
+      "N": 2493
+    },
+    "history": [
+      {
+        "path": "reports/HX-BL-003/baseline-outputs/mythic-0-N2400-after.json",
+        "sha256": "d379e39077c9468fc16ffff15027657ca8073010dd8b011f88b6876cf2378391",
+        "N": 2714
+      },
+      {
+        "path": "reports/HX-BL-003/baseline-outputs/mythic-123456789-N2400-after.json",
+        "sha256": "280d98bc93c053827143e36c6597781346a8edb32ac21c30733f430225ba3171",
+        "N": 2590
+      }
+    ],
+    "origin": "Existing frozen003corpus/output manifests; unavailable=>blocked, no regeneration"
+  },
+  "caps": {
+    "workflow_attempts": 1,
+    "job_minutes": 45,
+    "soft_deadline_minutes": 43,
+    "measured_nav_actions": 20,
+    "warmup_nav_actions": 2,
+    "trace_only_nav_actions": 2,
+    "history_sequences": 4,
+    "history_generations_per_sequence": 2,
+    "selection_clicks_per_history_sequence": 4,
+    "png_exports": 0,
+    "generation_timing_series": 0,
+    "automatic_retry": false,
+    "per_operation_ms": 180000,
+    "cleanup_ms": 5000
+  },
+  "environment": {
+    "node_major": 24,
+    "playwright": "1.62.1",
+    "chromium": "151.0.7922.34",
+    "resource_class": {
+      "vcpus": 4,
+      "ram_bytes": 16766414848,
+      "exact_cpu_model_required": false,
+      "ram_bytes_note": "Historical reference; actual class about16GB, record actual, not exact identity"
+    },
+    "viewport": {
+      "width": 1500,
+      "height": 1000
+    },
+    "deviceScaleFactor": 1,
+    "locale": "ru-RU",
+    "mapScale": 1.5,
+    "isMapRotated": false,
+    "mode": "mythic",
+    "display": "color",
+    "production": true,
+    "paid_resources": false,
+    "lock_sha256": "6b7a348067a218afce320ca370bee8cd323eff14fbdf9a24fbbfc5e3deedcee7"
+  },
+  "order": {
+    "warmups": [
+      "A",
+      "B"
+    ],
+    "measured_pair_order": [
+      "AB",
+      "BA",
+      "AB",
+      "BA",
+      "AB",
+      "BA",
+      "AB",
+      "BA",
+      "AB",
+      "BA"
+    ],
+    "trace_only": [
+      "A",
+      "B"
+    ],
+    "history": [
+      "mythic-0-N2400-after/A",
+      "mythic-0-N2400-after/B",
+      "mythic-123456789-N2400-after/A",
+      "mythic-123456789-N2400-after/B"
+    ],
+    "phase_order": [
+      "navigation_warmups",
+      "navigation_measured",
+      "trace_only",
+      "history"
+    ]
+  },
+  "navigation": {
+    "same_live_two_contexts": true,
+    "import_before_each_action": true,
+    "preload_same_as_V2": true,
+    "scrollLeft": 500,
+    "scrollTop": 300,
+    "pre_nav_sleep_ms": 700,
+    "zoom_frames": 24,
+    "zoom_deltas": "first12 -12; last12 +12",
+    "inter_phase_sleep_ms": 220,
+    "pan_frames": 24,
+    "pan_dx_per_step": 4,
+    "pan_dy_per_step": 2,
+    "final_sleep_ms": 220,
+    "no_cache_quiescence_wait": true,
+    "no_bring_to_front_or_context_recreation_between_measured_rows": true,
+    "no_heavy_trace_or_CPU_sampling_in_measured_rows": true
+  },
+  "statistics": {
+    "primary": "pooled nearest-rank p95 pervariant/phase, all240frames (10actions×24), 1-based rank228",
+    "guard": "B-A>10ms AND B>1.10*A",
+    "both_zoom_pan_required": true,
+    "secondary": [
+      "10peractionp95 rank23/24",
+      "median10peractionp95 =mean middle2",
+      "pooledmax",
+      "fraction>50ms and>500ms",
+      "paired delta/ratio",
+      "position-stratified p95 rank114/120 diagnostic only",
+      "import/settle and per-pageidle"
+    ],
+    "frames_not_independent": true,
+    "baseline_zero": "relative ratio null+reason; absolute delta retained",
+    "missing_or_nonfinite": "incomplete; no replacement, removal, imputation or timeout-as-success",
+    "old_V2_nonpassing_retained": true
+  },
+  "history": {
+    "method": "Real UI production handlers in separate ephemeral history-only observation builds; source patch read-only snapshot accessor, no exposed mutation handlers or altered productbehavior; offline review before workflow",
+    "capture": "structuredClone(captureDocument(),generationRef.current,undoHistory,redoHistory) insidepage; typed Map/Set transfer, never plainJSON flatten",
+    "sequence": [
+      "import frozenfixture->S0,J0,U0,R0",
+      "deterministic visiblecandidate click, atmostone completedMythickingdom->S1,J1,U1,R1",
+      "undo->S0, redo->S1; stacks move same transaction exactly",
+      "import downloadedJ0->I0; document==S0 (generationHistory=[]); import creates legitimate newundo checkpoint,redo empty",
+      "same anchor and inputs continue once->I1; fullJSON/nativeworld==S1, stacks compared against explicit import+generation model, not against preimportlength",
+      "undo->I0,redo->I1; no extra generation",
+      "select4distinctvisiblevalidhexes atfinalI1; only selectedHex and JSONui.selectedHex maychange; map/RNG/generationHistory/transactionstacks unchanged"
+    ],
+    "expected_generation_outcome": "Generated growth; matched standard rejection recorded but scenarioincomplete for positivecontinuation, no alternateanchor/retry",
+    "comparison": "A/B corresponding snapshots fulltypedcontents; rawJSON savedAt only excluded; ui.selectedHex exception only selection assertions, not generalhistorycomparisons",
+    "generation_timing_not_reported": true
+  },
+  "score": {
+    "model_version": "1.2",
+    "criterion_ids": [
+      "S09-C01",
+      "S02-C01",
+      "S03-C05",
+      "S04-C04",
+      "S09-C04"
+    ],
+    "before_grade": "unknown",
+    "before_points": null,
+    "expected_grade": "unknown",
+    "expected_delta": null,
+    "expected_effect": "unknown/possibly score-neutral; no award before release"
+  },
+  "required_offline_review_before_workflow": true,
+  "measurement_authorized_after": "harness freeze + exactSHA normalCI + independent offlineharness check; no repeatedownerapproval needed",
+  "release_allowed": false
+}
