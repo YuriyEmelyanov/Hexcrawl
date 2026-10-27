@@ -1205,7 +1205,7 @@
       "task_id": "HX-BL-024",
       "title": "Заметки мастера",
       "criterion_id": "S05-C01",
-      "status": "approved",
+      "status": "ready_for_development",
       "potential_delta": null,
       "approval_ref": "owner-approval-2026-10-27-HX-BL-024",
       "source": {
@@ -1282,11 +1282,47 @@
       "recommended_priority": "next_product_slice",
       "current_model_version": "1.2",
       "execution_allowed": true,
-      "next_role": "business_analyst",
-      "next_step": "Аналитик готовит спецификацию утверждённой HX-BL-024. Каталог HX-FB-002 готов; опираться на существующие transaction/RNG/browser cases, добавляя только отдельный контракт заметки. Выпуск отдельно.",
+      "next_role": "developer",
+      "next_step": "Реализовать notes по spec1.0 в отдельной ветке от актуального main; v4/чтениеv2-v3, точный undo/redo и защита ручного текста; показать desktop/390px RU/EN; необходимые CI и PR → независимый reviewer exactSHA. Выпуск отдельно.",
       "release_approved": false,
       "test_catalog_ref": "agent-work/evidence/HX-FB-002-test-catalog/catalog.md",
-      "test_catalog_status": "completed"
+      "test_catalog_status": "completed",
+      "spec_ref": "agent-work/specs/HX-BL-024.md",
+      "spec_version": "1.0",
+      "spec_status": "ready_for_development",
+      "result_ref": "agent-work/results/2026-10-27-analyst-HX-BL-024.json",
+      "claim": null,
+      "baseline_sha": "02c2fd5fcbdb2042f2708709ce4f20dfd7354787",
+      "feedback_assessment": {
+        "included_ids": [],
+        "decisions": [
+          {
+            "id": "HX-FB-001",
+            "decision": "defer",
+            "reason": "Already published475; no seed UI rework"
+          },
+          {
+            "id": "HX-FB-002",
+            "decision": "reuse_catalog_defer_cleanup",
+            "reason": "Reuse transaction/validation/browser coverage; no unapproved cleanup"
+          }
+        ]
+      },
+      "score_forecast": {
+        "model_version": "1.2",
+        "criterion_ids": [
+          "S05-C01",
+          "S03-C05",
+          "S04-C04",
+          "S09-C04",
+          "S02-C01"
+        ],
+        "before_grade": "unknown",
+        "expected_after": "unknown",
+        "expected_delta": null,
+        "support_breadth": "unverified",
+        "module_combination": "manual note foundation only, no module assembly implementation"
+      }
     },
     {
       "task_id": "HX-BL-025",
