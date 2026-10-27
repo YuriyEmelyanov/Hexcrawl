@@ -1,0 +1,1922 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-FB-002",
+  "main_sha": "02c2fd5fcbdb2042f2708709ce4f20dfd7354787",
+  "source": "Static source declarations expanded to runner registrations, reconciled to archived Check40284793669; source files read at exact main SHA",
+  "count": 236,
+  "files": [
+    {
+      "file": "test/biomeHeight.test.mjs",
+      "count": 4,
+      "declarations": [
+        {
+          "line": 6,
+          "text": "test('prefers one level above the highest neighbour for only outgoing rivers', () => {"
+        },
+        {
+          "line": 22,
+          "text": "test('prefers height one when a full river flows into a height-one neighbour', () => {"
+        },
+        {
+          "line": 35,
+          "text": "test('does not apply the preference without rivers or with an incoming river', () => {"
+        },
+        {
+          "line": 43,
+          "text": "test('keeps the normal fallback when no neighbouring height is known', () => {"
+        }
+      ],
+      "observed_cases": [
+        {
+          "name": "prefers one level above the highest neighbour for only outgoing rivers",
+          "duration_ms": 1.314815
+        },
+        {
+          "name": "prefers height one when a full river flows into a height-one neighbour",
+          "duration_ms": 0.21972
+        },
+        {
+          "name": "does not apply the preference without rivers or with an incoming river",
+          "duration_ms": 0.221153
+        },
+        {
+          "name": "keeps the normal fallback when no neighbouring height is known",
+          "duration_ms": 0.189744
+        }
+      ],
+      "observed_sum_ms": 1.9454319999999998,
+      "purpose": "Высота по входящим/исходящим рекам и fallback",
+      "requirement": "docs/region-generation.md",
+      "recommendation": "keep",
+      "duration_scope": "Sum of observed per-case durations in one archived run; concurrent groups must not be summed as elapsed CI time"
+    },
+    {
+      "file": "test/coastalRetries.test.mjs",
+      "count": 1,
+      "declarations": [
+        {
+          "line": 6,
+          "text": "test('auto coast retries an incompatible shape before choosing a tract', () => {"
+        }
+      ],
+      "observed_cases": [
+        {
+          "name": "auto coast retries an incompatible shape before choosing a tract",
+          "duration_ms": 1975.402762
+        }
+      ],
+      "observed_sum_ms": 1975.402762,
+      "purpose": "Повтор при несовместимом береге вместо преждевременного урочища",
+      "requirement": "docs/region-generation.md",
+      "recommendation": "keep",
+      "duration_scope": "Sum of observed per-case durations in one archived run; concurrent groups must not be summed as elapsed CI time"
+    },
+    {
+      "file": "test/deadForestBiomes.test.mjs",
+      "count": 3,
+      "declarations": [
+        {
+          "line": 22,
+          "text": "test('dead forest labels, weights, heights and symmetric neighbour rules', () => {"
+        },
+        {
+          "line": 46,
+          "text": "test('automatic settled generation never chooses a zero-weight dead forest, even at exact height', () => {"
+        },
+        {
+          "line": 56,
+          "text": "test('the real region handler stores and restores each dead-forest biome', () => {"
+        }
+      ],
+      "observed_cases": [
+        {
+          "name": "dead forest labels, weights, heights and symmetric neighbour rules",
+          "duration_ms": 440.802048
+        },
+        {
+          "name": "automatic settled generation never chooses a zero-weight dead forest, even at exact height",
+          "duration_ms": 10929.056229
+        },
+        {
+          "name": "the real region handler stores and restores each dead-forest biome",
+          "duration_ms": 388.567228
+        }
+      ],
+      "observed_sum_ms": 11758.425505,
+      "purpose": "Мёртвые леса: таблицы, совместимость, ручное сохранение",
+      "requirement": "docs/region-generation.md",
+      "recommendation": "keep",
+      "duration_scope": "Sum of observed per-case durations in one archived run; concurrent groups must not be summed as elapsed CI time"
+    },
+    {
+      "file": "test/forestGeometry.test.mjs",
+      "count": 9,
+      "declarations": [
+        {
+          "line": 8,
+          "text": "test('indexed joins retain the approved large-map geometry exactly',()=>{"
+        },
+        {
+          "line": 16,
+          "text": "test('four edge reflections preserve exact endpoints and are reversible',()=>{"
+        },
+        {
+          "line": 24,
+          "text": "test('approved compositions retain exactly 3 or 4 closed contours and stay inside all rotated hexes',()=>{"
+        },
+        {
+          "line": 38,
+          "text": "test('dense canopy removes shared edges and retains a field hole; woodland islands are separate',()=>{"
+        },
+        {
+          "line": 51,
+          "text": "test('coordinate selection survives map growth, reordering and biome edits',()=>{"
+        },
+        {
+          "line": 59,
+          "text": "test('a frozen clearing style covers the whole open region, including its outer cells',()=>{"
+        },
+        {
+          "line": 63,
+          "text": "test('candidate-facing crown edges remain exactly straight',()=>{"
+        },
+        {
+          "line": 70,
+          "text": "test('woodland lake hexes suppress shapes and retain the underlying canopy',()=>{"
+        },
+        {
+          "line": 78,
+          "text": "test('bridges preserve the original size and placement of source woodland contours',()=>{"
+        }
+      ],
+      "observed_cases": [
+        {
+          "name": "indexed joins retain the approved large-map geometry exactly",
+          "duration_ms": 1813.06196
+        },
+        {
+          "name": "four edge reflections preserve exact endpoints and are reversible",
+          "duration_ms": 22.704269
+        },
+        {
+          "name": "approved compositions retain exactly 3 or 4 closed contours and stay inside all rotated hexes",
+          "duration_ms": 66.54583
+        },
+        {
+          "name": "dense canopy removes shared edges and retains a field hole; woodland islands are separate",
+          "duration_ms": 60.498553
+        },
+        {
+          "name": "coordinate selection survives map growth, reordering and biome edits",
+          "duration_ms": 4.802081
+        },
+        {
+          "name": "a frozen clearing style covers the whole open region, including its outer cells",
+          "duration_ms": 18.263813
+        },
+        {
+          "name": "candidate-facing crown edges remain exactly straight",
+          "duration_ms": 0.76179
+        },
+        {
+          "name": "woodland lake hexes suppress shapes and retain the underlying canopy",
+          "duration_ms": 21.582047
+        },
+        {
+          "name": "bridges preserve the original size and placement of source woodland contours",
+          "duration_ms": 41.122019
+        }
+      ],
+      "observed_sum_ms": 2049.3423620000003,
+      "purpose": "Контуры, стыки, 3–4 острова/просвета, устойчивость рисунка",
+      "requirement": "docs/forest-rendering.md",
+      "recommendation": "keep",
+      "duration_scope": "Sum of observed per-case durations in one archived run; concurrent groups must not be summed as elapsed CI time"
+    },
+    {
+      "file": "test/generationDiagnostics.test.mjs",
+      "count": 5,
+      "declarations": [
+        {
+          "line": 11,
+          "text": "test('diagnostics default off; detailed logging does not change generation or randomness', () => {"
+        },
+        {
+          "line": 31,
+          "text": "test('exhausted attempts produce one contextual summary and no debug stream', () => {"
+        },
+        {
+          "line": 53,
+          "text": "test('incompatible coastal endpoints exhaust retries before creating a tract', () => {"
+        },
+        {
+          "line": 66,
+          "text": "test('late tract failure only reports programming error; diagnostic survives later actions', () => {"
+        },
+        {
+          "line": 93,
+          "text": "test('last rejection records lake reentry rather than a stale earlier river failure', () => {"
+        }
+      ],
+      "observed_cases": [
+        {
+          "name": "diagnostics default off; detailed logging does not change generation or randomness",
+          "duration_ms": 1075.010026
+        },
+        {
+          "name": "exhausted attempts produce one contextual summary and no debug stream",
+          "duration_ms": 129.389046
+        },
+        {
+          "name": "incompatible coastal endpoints exhaust retries before creating a tract",
+          "duration_ms": 326.689997
+        },
+        {
+          "name": "late tract failure only reports programming error; diagnostic survives later actions",
+          "duration_ms": 175.191801
+        },
+        {
+          "name": "last rejection records lake reentry rather than a stale earlier river failure",
+          "duration_ms": 458.43202
+        }
+      ],
+      "observed_sum_ms": 2164.71289,
+      "purpose": "Логи без изменения мира; причины отказов и recovery",
+      "requirement": "docs/region-generation.md",
+      "recommendation": "keep",
+      "duration_scope": "Sum of observed per-case durations in one archived run; concurrent groups must not be summed as elapsed CI time"
+    },
+    {
+      "file": "test/lakeGeometry.test.mjs",
+      "count": 7,
+      "declarations": [
+        {
+          "line": 6,
+          "text": "test('lake contours are stable after reload and input reordering; unrelated lakes cannot change them',()=>{"
+        },
+        {
+          "line": 13,
+          "text": "test('single-cell lakes have distinct silhouettes with bounded visual spill',()=>{"
+        },
+        {
+          "line": 20,
+          "text": "test('multi-cell lake shares one contour; island remains a separate hole; identities do not merge',()=>{"
+        },
+        {
+          "line": 25,
+          "text": "test('river inlet and outlet anchors both receive a connected mouth, regardless of direction',()=>{"
+        },
+        {
+          "line": 33,
+          "text": "test('bounded per-layer cache reuses unchanged lakes, including map-origin translations, and invalidates changed data',async()=>{"
+        },
+        {
+          "line": 50,
+          "text": "test('consecutive lake cells retain broad joins instead of hex-edge pinches',()=>{"
+        },
+        {
+          "line": 63,
+          "text": "test('multi-cell shoreline can spill slightly but stays within the bounded neighbouring margin',()=>{"
+        }
+      ],
+      "observed_cases": [
+        {
+          "name": "lake contours are stable after reload and input reordering; unrelated lakes cannot change them",
+          "duration_ms": 300.242756
+        },
+        {
+          "name": "single-cell lakes have distinct silhouettes with bounded visual spill",
+          "duration_ms": 24.029269
+        },
+        {
+          "name": "multi-cell lake shares one contour; island remains a separate hole; identities do not merge",
+          "duration_ms": 228.948625
+        },
+        {
+          "name": "river inlet and outlet anchors both receive a connected mouth, regardless of direction",
+          "duration_ms": 1.240502
+        },
+        {
+          "name": "bounded per-layer cache reuses unchanged lakes, including map-origin translations, and invalidates changed data",
+          "duration_ms": 726.065786
+        },
+        {
+          "name": "consecutive lake cells retain broad joins instead of hex-edge pinches",
+          "duration_ms": 182.825961
+        },
+        {
+          "name": "multi-cell shoreline can spill slightly but stays within the bounded neighbouring margin",
+          "duration_ms": 208.331692
+        }
+      ],
+      "observed_sum_ms": 1671.684591,
+      "purpose": "Форма/острова/устья, кеш и стабильность озёр",
+      "requirement": "docs/natural-lakes.md",
+      "recommendation": "keep",
+      "duration_scope": "Sum of observed per-case durations in one archived run; concurrent groups must not be summed as elapsed CI time"
+    },
+    {
+      "file": "test/lakeReentry.test.mjs",
+      "count": 4,
+      "declarations": [
+        {
+          "line": 12,
+          "text": "test('unchanged saved lake reentry does not force a new inland region into a tract', () => {"
+        },
+        {
+          "line": 25,
+          "text": "test('final endpoint completion rejects a newly introduced lake with reentry on an old river', () => {"
+        },
+        {
+          "line": 33,
+          "text": "test('legacy reentry allowance does not hide a new river, a changed path, or a resized lake', () => {"
+        },
+        {
+          "line": 51,
+          "text": "test('late lake introduction is rejected by real regular and tract callbacks, then work can continue', () => {"
+        }
+      ],
+      "observed_cases": [
+        {
+          "name": "unchanged saved lake reentry does not force a new inland region into a tract",
+          "duration_ms": 1125.634139
+        },
+        {
+          "name": "final endpoint completion rejects a newly introduced lake with reentry on an old river",
+          "duration_ms": 306.188536
+        },
+        {
+          "name": "legacy reentry allowance does not hide a new river, a changed path, or a resized lake",
+          "duration_ms": 323.418946
+        },
+        {
+          "name": "late lake introduction is rejected by real regular and tract callbacks, then work can continue",
+          "duration_ms": 32271.691578
+        }
+      ],
+      "observed_sum_ms": 34026.933199,
+      "purpose": "Запрет нового повторного входа реки в озеро при совместимости старой карты",
+      "requirement": "docs/river-model.md",
+      "recommendation": "keep",
+      "duration_scope": "Sum of observed per-case durations in one archived run; concurrent groups must not be summed as elapsed CI time"
+    },
+    {
+      "file": "test/mapTransactions.test.mjs",
+      "count": 6,
+      "declarations": [
+        {
+          "line": 19,
+          "text": "test('import is one exact transaction; invalid and preparation failure preserve both stacks',async()=>{"
+        },
+        {
+          "line": 32,
+          "text": "test('all existing manual families, import, reset, and 100 exact undo/redo snapshots',async()=>{"
+        },
+        {
+          "line": 69,
+          "text": "test('manual edits do not replace generation checkpoints, regenerate rollback retains undo and redo',()=>{"
+        },
+        {
+          "line": 80,
+          "text": "test('pending file read serializes imports and blocks edits, generation and reset',async()=>{"
+        },
+        {
+          "line": 90,
+          "text": "test('all manifest saves round-trip unchanged entities, names and can continue then undo',async()=>{"
+        },
+        {
+          "line": 111,
+          "text": "test('no-op and failed imports preserve redo; fresh edit clears it; reset on empty is a no-op',async()=>{"
+        }
+      ],
+      "observed_cases": [
+        {
+          "name": "import is one exact transaction; invalid and preparation failure preserve both stacks",
+          "duration_ms": 893.364745
+        },
+        {
+          "name": "all existing manual families, import, reset, and 100 exact undo/redo snapshots",
+          "duration_ms": 9849.74445
+        },
+        {
+          "name": "manual edits do not replace generation checkpoints, regenerate rollback retains undo and redo",
+          "duration_ms": 672.990853
+        },
+        {
+          "name": "pending file read serializes imports and blocks edits, generation and reset",
+          "duration_ms": 357.775144
+        },
+        {
+          "name": "all manifest saves round-trip unchanged entities, names and can continue then undo",
+          "duration_ms": 6477.845092
+        },
+        {
+          "name": "no-op and failed imports preserve redo; fresh edit clears it; reset on empty is a no-op",
+          "duration_ms": 368.497824
+        }
+      ],
+      "observed_sum_ms": 18620.218107999997,
+      "purpose": "Атомарный импорт, ручные семейства,100undo/redo, занятость",
+      "requirement": "docs/specs/HX-NEXT-001.md",
+      "recommendation": "keep",
+      "duration_scope": "Sum of observed per-case durations in one archived run; concurrent groups must not be summed as elapsed CI time"
+    },
+    {
+      "file": "test/mythicKingdom.test.mjs",
+      "count": 7,
+      "declarations": [
+        {
+          "line": 37,
+          "text": "test('kingdom quotas, d12 sizes, save, classic extension and atomic undo',()=>{"
+        },
+        {
+          "line": 50,
+          "text": "test('classic to mythic, second kingdom and regeneration preserve earlier regions',()=>{"
+        },
+        {
+          "line": 60,
+          "text": "test('late exception rolls back entire kingdom',()=>{"
+        },
+        {
+          "line": 67,
+          "text": "test('nearest free rectangle and disjoint territory',()=>{"
+        },
+        {
+          "line": 72,
+          "text": "test('first settled region starts at the rectangle center, including its throne',()=>{"
+        },
+        {
+          "line": 81,
+          "text": "test('Mythic growth fills an enclosed pocket even when the target is already reached',()=>{"
+        },
+        {
+          "line": 91,
+          "text": "test('real Mythic handler absorbs a pocket beyond the roll and undo restores it',()=>{"
+        }
+      ],
+      "observed_cases": [
+        {
+          "name": "kingdom quotas, d12 sizes, save, classic extension and atomic undo",
+          "duration_ms": 10605.823723
+        },
+        {
+          "name": "classic to mythic, second kingdom and regeneration preserve earlier regions",
+          "duration_ms": 16500.139628
+        },
+        {
+          "name": "late exception rolls back entire kingdom",
+          "duration_ms": 200.956229
+        },
+        {
+          "name": "nearest free rectangle and disjoint territory",
+          "duration_ms": 0.836349
+        },
+        {
+          "name": "first settled region starts at the rectangle center, including its throne",
+          "duration_ms": 2778.658677
+        },
+        {
+          "name": "Mythic growth fills an enclosed pocket even when the target is already reached",
+          "duration_ms": 147.238617
+        },
+        {
+          "name": "real Mythic handler absorbs a pocket beyond the roll and undo restores it",
+          "duration_ms": 339.21145
+        }
+      ],
+      "observed_sum_ms": 30572.864672999996,
+      "purpose": "Квоты, размер, размещение, продолжение и атомарный откат королевства",
+      "requirement": "docs/mythic-bastionland.md",
+      "recommendation": "keep",
+      "duration_scope": "Sum of observed per-case durations in one archived run; concurrent groups must not be summed as elapsed CI time"
+    },
+    {
+      "file": "test/regionGeneration.test.mjs",
+      "count": 46,
+      "declarations": [
+        {
+          "line": 5,
+          "text": "test('fallback commits a tract with the clicked anchor and no independent river', () => {"
+        },
+        {
+          "line": 16,
+          "text": "test('coast click without touching river endpoints creates a region', () => {"
+        },
+        {
+          "line": 63,
+          "text": "test(`candidate click: ${directions.join('+') || 'no rivers'}, sea=${sea}, mode=${mode ?? 'auto'}`, () => {"
+        },
+        {
+          "line": 105,
+          "text": "test(`programming error at ${point} preserves map/history and permits recovery`, () => {"
+        },
+        {
+          "line": 128,
+          "text": "test('expected small-region rejection retries then creates one tract', () => {"
+        },
+        {
+          "line": 142,
+          "text": "test(`late failure at targetSize=${targetSize} preserves state; successful retry clears error`, () => {"
+        },
+        {
+          "line": 158,
+          "text": "test('failed regeneration restores replaced region, selection and full undo history', () => {"
+        }
+      ],
+      "observed_cases": [
+        {
+          "name": "fallback commits a tract with the clicked anchor and no independent river",
+          "duration_ms": 385.582815
+        },
+        {
+          "name": "coast click without touching river endpoints creates a region",
+          "duration_ms": 303.85165
+        },
+        {
+          "name": "candidate click: no rivers, sea=false, mode=auto",
+          "duration_ms": 852.017397
+        },
+        {
+          "name": "candidate click: no rivers, sea=false, mode=coast",
+          "duration_ms": 936.690314
+        },
+        {
+          "name": "candidate click: no rivers, sea=false, mode=mainland",
+          "duration_ms": 602.799758
+        },
+        {
+          "name": "candidate click: no rivers, sea=true, mode=auto",
+          "duration_ms": 969.272346
+        },
+        {
+          "name": "candidate click: no rivers, sea=true, mode=coast",
+          "duration_ms": 872.86914
+        },
+        {
+          "name": "candidate click: no rivers, sea=true, mode=mainland",
+          "duration_ms": 788.155675
+        },
+        {
+          "name": "candidate click: incoming, sea=false, mode=auto",
+          "duration_ms": 801.172617
+        },
+        {
+          "name": "candidate click: incoming, sea=false, mode=coast",
+          "duration_ms": 831.906175
+        },
+        {
+          "name": "candidate click: incoming, sea=false, mode=mainland",
+          "duration_ms": 789.979586
+        },
+        {
+          "name": "candidate click: incoming, sea=true, mode=auto",
+          "duration_ms": 673.97003
+        },
+        {
+          "name": "candidate click: incoming, sea=true, mode=coast",
+          "duration_ms": 515.740497
+        },
+        {
+          "name": "candidate click: incoming, sea=true, mode=mainland",
+          "duration_ms": 700.021995
+        },
+        {
+          "name": "candidate click: outgoing, sea=false, mode=auto",
+          "duration_ms": 751.033102
+        },
+        {
+          "name": "candidate click: outgoing, sea=false, mode=coast",
+          "duration_ms": 1046.472248
+        },
+        {
+          "name": "candidate click: outgoing, sea=false, mode=mainland",
+          "duration_ms": 762.164589
+        },
+        {
+          "name": "candidate click: outgoing, sea=true, mode=auto",
+          "duration_ms": 1091.335595
+        },
+        {
+          "name": "candidate click: outgoing, sea=true, mode=coast",
+          "duration_ms": 1073.030042
+        },
+        {
+          "name": "candidate click: outgoing, sea=true, mode=mainland",
+          "duration_ms": 852.728463
+        },
+        {
+          "name": "candidate click: incoming+incoming, sea=false, mode=auto",
+          "duration_ms": 789.582839
+        },
+        {
+          "name": "candidate click: incoming+incoming, sea=false, mode=coast",
+          "duration_ms": 1174.860977
+        },
+        {
+          "name": "candidate click: incoming+incoming, sea=false, mode=mainland",
+          "duration_ms": 1166.717504
+        },
+        {
+          "name": "candidate click: incoming+incoming, sea=true, mode=auto",
+          "duration_ms": 1432.549561
+        },
+        {
+          "name": "candidate click: incoming+incoming, sea=true, mode=coast",
+          "duration_ms": 1245.811946
+        },
+        {
+          "name": "candidate click: incoming+incoming, sea=true, mode=mainland",
+          "duration_ms": 833.939921
+        },
+        {
+          "name": "candidate click: outgoing+outgoing, sea=false, mode=auto",
+          "duration_ms": 797.514226
+        },
+        {
+          "name": "candidate click: outgoing+outgoing, sea=false, mode=coast",
+          "duration_ms": 1126.657751
+        },
+        {
+          "name": "candidate click: outgoing+outgoing, sea=false, mode=mainland",
+          "duration_ms": 660.492785
+        },
+        {
+          "name": "candidate click: outgoing+outgoing, sea=true, mode=auto",
+          "duration_ms": 967.898394
+        },
+        {
+          "name": "candidate click: outgoing+outgoing, sea=true, mode=coast",
+          "duration_ms": 1108.349477
+        },
+        {
+          "name": "candidate click: outgoing+outgoing, sea=true, mode=mainland",
+          "duration_ms": 1084.546337
+        },
+        {
+          "name": "candidate click: incoming+outgoing, sea=false, mode=auto",
+          "duration_ms": 749.351319
+        },
+        {
+          "name": "candidate click: incoming+outgoing, sea=false, mode=coast",
+          "duration_ms": 1028.747268
+        },
+        {
+          "name": "candidate click: incoming+outgoing, sea=false, mode=mainland",
+          "duration_ms": 766.987068
+        },
+        {
+          "name": "candidate click: incoming+outgoing, sea=true, mode=auto",
+          "duration_ms": 878.146211
+        },
+        {
+          "name": "candidate click: incoming+outgoing, sea=true, mode=coast",
+          "duration_ms": 940.942409
+        },
+        {
+          "name": "candidate click: incoming+outgoing, sea=true, mode=mainland",
+          "duration_ms": 749.910539
+        },
+        {
+          "name": "programming error at exports.generateConnectedRegionFromAnchor preserves map/history and permits recovery",
+          "duration_ms": 129.587015
+        },
+        {
+          "name": "programming error at getCoastalRiverEndpointHexes preserves map/history and permits recovery",
+          "duration_ms": 156.498621
+        },
+        {
+          "name": "programming error at assignWaterPoiLayer preserves map/history and permits recovery",
+          "duration_ms": 174.898145
+        },
+        {
+          "name": "programming error at reconcileRiverCrossings preserves map/history and permits recovery",
+          "duration_ms": 139.141042
+        },
+        {
+          "name": "expected small-region rejection retries then creates one tract",
+          "duration_ms": 115.256507
+        },
+        {
+          "name": "late failure at targetSize=1 preserves state; successful retry clears error",
+          "duration_ms": 206.943394
+        },
+        {
+          "name": "late failure at targetSize=8 preserves state; successful retry clears error",
+          "duration_ms": 201.926534
+        },
+        {
+          "name": "failed regeneration restores replaced region, selection and full undo history",
+          "duration_ms": 677.192074
+        }
+      ],
+      "observed_sum_ms": 34905.24389799999,
+      "purpose": "36комбинаций river/sea/coast + ошибки/откат/fallback",
+      "requirement": "docs/region-generation.md",
+      "recommendation": "keep",
+      "duration_scope": "Sum of observed per-case durations in one archived run; concurrent groups must not be summed as elapsed CI time"
+    },
+    {
+      "file": "test/riverCrossings.test.mjs",
+      "count": 3,
+      "declarations": [
+        {
+          "line": 8,
+          "text": "test('calculates bridge chance from all applicable modifiers', () => {"
+        },
+        {
+          "line": 13,
+          "text": "test('splits non-bridge crossings between ferry and ford with modifiers', () => {"
+        },
+        {
+          "line": 21,
+          "text": "test('fullness three and above selects a ferry from the non-bridge remainder', () => {"
+        }
+      ],
+      "observed_cases": [
+        {
+          "name": "calculates bridge chance from all applicable modifiers",
+          "duration_ms": 1.557593
+        },
+        {
+          "name": "splits non-bridge crossings between ferry and ford with modifiers",
+          "duration_ms": 0.413931
+        },
+        {
+          "name": "fullness three and above selects a ferry from the non-bridge remainder",
+          "duration_ms": 0.273119
+        }
+      ],
+      "observed_sum_ms": 2.244643,
+      "purpose": "Вероятности моста/брода/парома",
+      "requirement": "docs/river-model.md",
+      "recommendation": "keep",
+      "duration_scope": "Sum of observed per-case durations in one archived run; concurrent groups must not be summed as elapsed CI time"
+    },
+    {
+      "file": "test/riverEndpoints.test.mjs",
+      "count": 16,
+      "declarations": [
+        {
+          "line": 23,
+          "text": "test(`unchanged old ${direction} is checked when new land closes its frontier`, () => {"
+        },
+        {
+          "line": 32,
+          "text": "test('RIV-017 closed mouth prefers reachable unexplored land to a new lake', () => {"
+        },
+        {
+          "line": 44,
+          "text": "test('RIV-017 real Mythic tract retains an open upper river instead of inventing an inland source', () => {"
+        },
+        {
+          "line": 63,
+          "text": "test(`closed ${direction} F=${fullness} has a valid real terminus and keeps old flow`, () => {"
+        },
+        {
+          "line": 78,
+          "text": "test('closed mouth is extended to reachable sea, without changing old edges', () => {"
+        },
+        {
+          "line": 89,
+          "text": "test('real tract handler closes a mouth; save/undo/recovery retain old map and history', () => {"
+        },
+        {
+          "line": 105,
+          "text": "test('insufficient source lake area is an atomic expected rejection, never a broken success', () => {"
+        },
+        {
+          "line": 122,
+          "text": "test('incoming river can finish in another river without changing either old channel', () => {"
+        },
+        {
+          "line": 138,
+          "text": "test('RIV-015/017 real Mythic tract joins compatible incoming and outgoing rivers before making a lake', () => {"
+        },
+        {
+          "line": 163,
+          "text": "test('closing several mouths handles every river, not just the lowest ID', () => {"
+        }
+      ],
+      "observed_cases": [
+        {
+          "name": "unchanged old source is checked when new land closes its frontier",
+          "duration_ms": 428.694496
+        },
+        {
+          "name": "unchanged old mouth is checked when new land closes its frontier",
+          "duration_ms": 227.405266
+        },
+        {
+          "name": "RIV-017 closed mouth prefers reachable unexplored land to a new lake",
+          "duration_ms": 231.104926
+        },
+        {
+          "name": "RIV-017 real Mythic tract retains an open upper river instead of inventing an inland source",
+          "duration_ms": 213.954714
+        },
+        {
+          "name": "closed source F=1 has a valid real terminus and keeps old flow",
+          "duration_ms": 146.256394
+        },
+        {
+          "name": "closed source F=3 has a valid real terminus and keeps old flow",
+          "duration_ms": 184.83047
+        },
+        {
+          "name": "closed source F=5 has a valid real terminus and keeps old flow",
+          "duration_ms": 120.090504
+        },
+        {
+          "name": "closed mouth F=1 has a valid real terminus and keeps old flow",
+          "duration_ms": 176.401115
+        },
+        {
+          "name": "closed mouth F=3 has a valid real terminus and keeps old flow",
+          "duration_ms": 118.059559
+        },
+        {
+          "name": "closed mouth F=5 has a valid real terminus and keeps old flow",
+          "duration_ms": 158.058802
+        },
+        {
+          "name": "closed mouth is extended to reachable sea, without changing old edges",
+          "duration_ms": 142.360656
+        },
+        {
+          "name": "real tract handler closes a mouth; save/undo/recovery retain old map and history",
+          "duration_ms": 142.854607
+        },
+        {
+          "name": "insufficient source lake area is an atomic expected rejection, never a broken success",
+          "duration_ms": 238.114533
+        },
+        {
+          "name": "incoming river can finish in another river without changing either old channel",
+          "duration_ms": 135.990645
+        },
+        {
+          "name": "RIV-015/017 real Mythic tract joins compatible incoming and outgoing rivers before making a lake",
+          "duration_ms": 158.426467
+        },
+        {
+          "name": "closing several mouths handles every river, not just the lowest ID",
+          "duration_ms": 157.105227
+        }
+      ],
+      "observed_sum_ms": 2979.7083810000004,
+      "purpose": "Истоки/устья при закрытии фронтира, сохранение старого русла",
+      "requirement": "docs/river-model.md",
+      "recommendation": "keep",
+      "duration_scope": "Sum of observed per-case durations in one archived run; concurrent groups must not be summed as elapsed CI time"
+    },
+    {
+      "file": "test/riverFullness.test.mjs",
+      "count": 3,
+      "declarations": [
+        {
+          "line": 9,
+          "text": "test('outgoing connector keeps endpoint fullness', () => {"
+        },
+        {
+          "line": 14,
+          "text": "test('reduces a height-one main river upstream when a fullness-one tributary joins it', () => {"
+        },
+        {
+          "line": 19,
+          "text": "test('keeps the existing height-two upstream reduction for any tributary', () => {"
+        }
+      ],
+      "observed_cases": [
+        {
+          "name": "outgoing connector keeps endpoint fullness",
+          "duration_ms": 1.606434
+        },
+        {
+          "name": "reduces a height-one main river upstream when a fullness-one tributary joins it",
+          "duration_ms": 0.29507
+        },
+        {
+          "name": "keeps the existing height-two upstream reduction for any tributary",
+          "duration_ms": 0.228797
+        }
+      ],
+      "observed_sum_ms": 2.130301,
+      "purpose": "Полноводность исходящего соединения и upstream reduction",
+      "requirement": "docs/river-model.md",
+      "recommendation": "keep",
+      "duration_scope": "Sum of observed per-case durations in one archived run; concurrent groups must not be summed as elapsed CI time"
+    },
+    {
+      "file": "test/riverIntegration.test.mjs",
+      "count": 7,
+      "declarations": [
+        {
+          "line": 32,
+          "text": "test('AUD-01/02 RIV-EX-07/08/15/16 real upstream clicks preserve fixed flows and validate new sources', () => {"
+        },
+        {
+          "line": 47,
+          "text": "test('AUD-03 RIV-EX-16 lake placement is atomic when actual connected area is insufficient', () => {"
+        },
+        {
+          "line": 54,
+          "text": "test('AUD-04 imported numeric fullness outside 1…5 is rejected without mutating the map', () => {"
+        },
+        {
+          "line": 64,
+          "text": "test('RIV-EX-01/12/13/15 real map expansion validates each extension in all coast modes', () => {"
+        },
+        {
+          "line": 88,
+          "text": "test('RIV-EX-03/19 adapter solves real sector directions at a junction and preserves region ownership', () => {"
+        },
+        {
+          "line": 109,
+          "text": "test('RIV-EX-08 tract lake source uses actual area and retains exact old downstream flow', () => {"
+        },
+        {
+          "line": 119,
+          "text": "test('RIV-EX-21 lake shared by two regions counts unique hexes and all ports once', () => {"
+        }
+      ],
+      "observed_cases": [
+        {
+          "name": "AUD-01/02 RIV-EX-07/08/15/16 real upstream clicks preserve fixed flows and validate new sources",
+          "duration_ms": 6373.12865
+        },
+        {
+          "name": "AUD-03 RIV-EX-16 lake placement is atomic when actual connected area is insufficient",
+          "duration_ms": 106.037267
+        },
+        {
+          "name": "AUD-04 imported numeric fullness outside 1…5 is rejected without mutating the map",
+          "duration_ms": 115.463139
+        },
+        {
+          "name": "RIV-EX-01/12/13/15 real map expansion validates each extension in all coast modes",
+          "duration_ms": 9729.683733
+        },
+        {
+          "name": "RIV-EX-03/19 adapter solves real sector directions at a junction and preserves region ownership",
+          "duration_ms": 144.047493
+        },
+        {
+          "name": "RIV-EX-08 tract lake source uses actual area and retains exact old downstream flow",
+          "duration_ms": 165.95236
+        },
+        {
+          "name": "RIV-EX-21 lake shared by two regions counts unique hexes and all ports once",
+          "duration_ms": 138.166688
+        }
+      ],
+      "observed_sum_ms": 16772.47933,
+      "purpose": "Численная модель в реальных обработчиках; сохранность старых потоков",
+      "requirement": "docs/river-model.md",
+      "recommendation": "keep",
+      "duration_scope": "Sum of observed per-case durations in one archived run; concurrent groups must not be summed as elapsed CI time"
+    },
+    {
+      "file": "test/riverModel.test.mjs",
+      "count": 20,
+      "declarations": [
+        {
+          "line": 25,
+          "text": "test('RIV-004/005/013 all 125 triples, symmetry and inverse share the accepted relation',()=>{"
+        },
+        {
+          "line": 37,
+          "text": "test('RIV-EX-01 / AUD-01 no change at region or height boundary',()=>{"
+        },
+        {
+          "line": 44,
+          "text": "test('RIV-EX-02 weak tributary cannot raise 3',()=>assert.equal(solved(junction('confluence',[3,1],[undefined])).out0,3));"
+        },
+        {
+          "line": 45,
+          "text": "test('RIV-EX-03 / EX-22 region height two selects 2, lowland selects 3',()=>{"
+        },
+        {
+          "line": 49,
+          "text": "test('RIV-EX-04/05 known downstream values are hard constraints',()=>{"
+        },
+        {
+          "line": 53,
+          "text": "test('RIV-EX-06 any tributary can join 5',()=>{"
+        },
+        {
+          "line": 56,
+          "text": "test('RIV-EX-07 / AUD-02 true source always 1, independent of height',()=>{"
+        },
+        {
+          "line": 62,
+          "text": "test('RIV-EX-08/17 lake source minimum size, not equality',()=>{"
+        },
+        {
+          "line": 70,
+          "text": "test('RIV-EX-09/10/18/23/24 flowing lakes: exhaustive values and sizes',()=>{"
+        },
+        {
+          "line": 80,
+          "text": "test('RIV-EX-11 closed lake absorbs the sum once',()=>{"
+        },
+        {
+          "line": 86,
+          "text": "test('RIV-EX-12 every fullness may enter sea, never emerge from it',()=>{"
+        },
+        {
+          "line": 90,
+          "text": "test('RIV-EX-14 open upstream is not a source',()=>{"
+        },
+        {
+          "line": 94,
+          "text": "test('RIV-EX-15 numerical scope: input immutable, fixed values survive JSON roundtrip',()=>{"
+        },
+        {
+          "line": 99,
+          "text": "test('RIV-EX-16 numerical scope: actual area one cannot justify drop by two',()=>{"
+        },
+        {
+          "line": 103,
+          "text": "test('RIV-EX-19/20 growth downstream, reduced new upstream',()=>{"
+        },
+        {
+          "line": 109,
+          "text": "test('RIV-EX-21 multi-inlet/outlet lake uses aggregate budget',()=>{"
+        },
+        {
+          "line": 116,
+          "text": "test('RIV-001 / AUD-04 reject invalid numeric values at runtime',()=>{"
+        },
+        {
+          "line": 124,
+          "text": "test('RIV-006 / topology: unsupported degree, duplicate ids, dangling edges and cycles',()=>{"
+        },
+        {
+          "line": 136,
+          "text": "test('RIV-EX-13 two confluences propagate constraints both ways; order invariant',()=>{"
+        },
+        {
+          "line": 152,
+          "text": "test('bounded search reports limit, never false impossibility or a partial optimum',()=>{"
+        }
+      ],
+      "observed_cases": [
+        {
+          "name": "RIV-004/005/013 all 125 triples, symmetry and inverse share the accepted relation",
+          "duration_ms": 28.287194
+        },
+        {
+          "name": "RIV-EX-01 / AUD-01 no change at region or height boundary",
+          "duration_ms": 0.828233
+        },
+        {
+          "name": "RIV-EX-02 weak tributary cannot raise 3",
+          "duration_ms": 0.423359
+        },
+        {
+          "name": "RIV-EX-03 / EX-22 region height two selects 2, lowland selects 3",
+          "duration_ms": 0.663326
+        },
+        {
+          "name": "RIV-EX-04/05 known downstream values are hard constraints",
+          "duration_ms": 0.513066
+        },
+        {
+          "name": "RIV-EX-06 any tributary can join 5",
+          "duration_ms": 0.933029
+        },
+        {
+          "name": "RIV-EX-07 / AUD-02 true source always 1, independent of height",
+          "duration_ms": 1.217479
+        },
+        {
+          "name": "RIV-EX-08/17 lake source minimum size, not equality",
+          "duration_ms": 1.053924
+        },
+        {
+          "name": "RIV-EX-09/10/18/23/24 flowing lakes: exhaustive values and sizes",
+          "duration_ms": 2.684493
+        },
+        {
+          "name": "RIV-EX-11 closed lake absorbs the sum once",
+          "duration_ms": 3.285052
+        },
+        {
+          "name": "RIV-EX-12 every fullness may enter sea, never emerge from it",
+          "duration_ms": 0.459036
+        },
+        {
+          "name": "RIV-EX-14 open upstream is not a source",
+          "duration_ms": 0.271126
+        },
+        {
+          "name": "RIV-EX-15 numerical scope: input immutable, fixed values survive JSON roundtrip",
+          "duration_ms": 0.825118
+        },
+        {
+          "name": "RIV-EX-16 numerical scope: actual area one cannot justify drop by two",
+          "duration_ms": 0.341907
+        },
+        {
+          "name": "RIV-EX-19/20 growth downstream, reduced new upstream",
+          "duration_ms": 1.902646
+        },
+        {
+          "name": "RIV-EX-21 multi-inlet/outlet lake uses aggregate budget",
+          "duration_ms": 0.883206
+        },
+        {
+          "name": "RIV-001 / AUD-04 reject invalid numeric values at runtime",
+          "duration_ms": 3.311943
+        },
+        {
+          "name": "RIV-006 / topology: unsupported degree, duplicate ids, dangling edges and cycles",
+          "duration_ms": 0.488862
+        },
+        {
+          "name": "RIV-EX-13 two confluences propagate constraints both ways; order invariant",
+          "duration_ms": 3.746632
+        },
+        {
+          "name": "bounded search reports limit, never false impossibility or a partial optimum",
+          "duration_ms": 1.450634
+        }
+      ],
+      "observed_sum_ms": 53.570265000000006,
+      "purpose": "RIV-числа,125троек, озёрный бюджет, топология и bounded search",
+      "requirement": "docs/river-model.md",
+      "recommendation": "keep",
+      "duration_scope": "Sum of observed per-case durations in one archived run; concurrent groups must not be summed as elapsed CI time"
+    },
+    {
+      "file": "test/riverRapids.test.mjs",
+      "count": 2,
+      "declarations": [
+        {
+          "line": 6,
+          "text": "test('calculates rapids chance from the height and fullness threshold table', () => {"
+        },
+        {
+          "line": 20,
+          "text": "test('selects rapids when the roll is below the calculated chance', () => {"
+        }
+      ],
+      "observed_cases": [
+        {
+          "name": "calculates rapids chance from the height and fullness threshold table",
+          "duration_ms": 1.521175
+        },
+        {
+          "name": "selects rapids when the roll is below the calculated chance",
+          "duration_ms": 0.347508
+        }
+      ],
+      "observed_sum_ms": 1.8686829999999999,
+      "purpose": "Таблица вероятности порогов",
+      "requirement": "docs/river-model.md",
+      "recommendation": "keep",
+      "duration_scope": "Sum of observed per-case durations in one archived run; concurrent groups must not be summed as elapsed CI time"
+    },
+    {
+      "file": "test/riverWaterfalls.test.mjs",
+      "count": 3,
+      "declarations": [
+        {
+          "line": 8,
+          "text": "test('permits waterfalls at every height away from river starts, lakes, and confluences', () => {"
+        },
+        {
+          "line": 17,
+          "text": "test('calculates waterfall chance from height and river fullness', () => {"
+        },
+        {
+          "line": 31,
+          "text": "test('selects a waterfall only when the roll is below its calculated chance', () => {"
+        }
+      ],
+      "observed_cases": [
+        {
+          "name": "permits waterfalls at every height away from river starts, lakes, and confluences",
+          "duration_ms": 1.415698
+        },
+        {
+          "name": "calculates waterfall chance from height and river fullness",
+          "duration_ms": 0.576124
+        },
+        {
+          "name": "selects a waterfall only when the roll is below its calculated chance",
+          "duration_ms": 0.296373
+        }
+      ],
+      "observed_sum_ms": 2.288195,
+      "purpose": "Допустимость и вероятность водопадов",
+      "requirement": "docs/river-model.md",
+      "recommendation": "keep",
+      "duration_scope": "Sum of observed per-case durations in one archived run; concurrent groups must not be summed as elapsed CI time"
+    },
+    {
+      "file": "test/roadContinuation.test.mjs",
+      "count": 7,
+      "declarations": [
+        {
+          "line": 16,
+          "text": "test(`ROAD-AUD-01 closed exits: ${seed}/${landType}/${coastalPreference}`,()=>{"
+        },
+        {
+          "line": 53,
+          "text": "test('ROAD-AUD-02 adjacent roads remain open until physically joined',()=>{"
+        },
+        {
+          "line": 61,
+          "text": "test('ROAD-AUD-03 center can be an incoming road entry',()=>{"
+        }
+      ],
+      "observed_cases": [
+        {
+          "name": "ROAD-AUD-01 closed exits: 103/settled/mainland",
+          "duration_ms": 2452.065737
+        },
+        {
+          "name": "ROAD-AUD-01 closed exits: 103/wild/mainland",
+          "duration_ms": 2446.059477
+        },
+        {
+          "name": "ROAD-AUD-01 closed exits: 42/settled/coast",
+          "duration_ms": 1481.717059
+        },
+        {
+          "name": "ROAD-AUD-01 closed exits: 103/wild/coast",
+          "duration_ms": 4460.869937
+        },
+        {
+          "name": "ROAD-AUD-01 closed exits: 103/settled/coast",
+          "duration_ms": 5090.251943
+        },
+        {
+          "name": "ROAD-AUD-02 adjacent roads remain open until physically joined",
+          "duration_ms": 165.01367
+        },
+        {
+          "name": "ROAD-AUD-03 center can be an incoming road entry",
+          "duration_ms": 185.501324
+        }
+      ],
+      "observed_sum_ms": 16281.479147000002,
+      "purpose": "ROAD-AUD01–03: выходы, соединения и допустимая точка входа",
+      "requirement": "docs/road-model.md",
+      "recommendation": "keep",
+      "duration_scope": "Sum of observed per-case durations in one archived run; concurrent groups must not be summed as elapsed CI time"
+    },
+    {
+      "file": "test/roadEntry.test.mjs",
+      "count": 4,
+      "declarations": [
+        {
+          "line": 8,
+          "text": "test(`route starts at old endpoint: user map region ${regionId}`,()=>{"
+        },
+        {
+          "line": 26,
+          "text": "test('settled incoming path searches from the old road hex through the new region',()=>{"
+        },
+        {
+          "line": 39,
+          "text": "test('two old road endpoints cannot be joined by a segment wholly outside the new region',()=>{"
+        }
+      ],
+      "observed_cases": [
+        {
+          "name": "route starts at old endpoint: user map region 3",
+          "duration_ms": 515.558732
+        },
+        {
+          "name": "route starts at old endpoint: user map region 4",
+          "duration_ms": 364.145576
+        },
+        {
+          "name": "settled incoming path searches from the old road hex through the new region",
+          "duration_ms": 195.621888
+        },
+        {
+          "name": "two old road endpoints cannot be joined by a segment wholly outside the new region",
+          "duration_ms": 193.689412
+        }
+      ],
+      "observed_sum_ms": 1269.015608,
+      "purpose": "Дорога входит со старого endpoint, не обходит новый регион",
+      "requirement": "docs/road-model.md",
+      "recommendation": "keep",
+      "duration_scope": "Sum of observed per-case durations in one archived run; concurrent groups must not be summed as elapsed CI time"
+    },
+    {
+      "file": "test/saveSafety.test.mjs",
+      "count": 19,
+      "declarations": [
+        {
+          "line": 21,
+          "text": "for (const [name, mutate] of Object.entries(cases)) test(`reject ${name}`, () => {"
+        },
+        {
+          "line": 26,
+          "text": "test(`supported corpus: ${filename}`, () => {"
+        },
+        {
+          "line": 32,
+          "text": "test('generated proposals reject overflow in every allocated ID namespace and counter', () => {"
+        },
+        {
+          "line": 55,
+          "text": "test(`imported boundary ${family}: production continuation stays valid or rolls back whole document`, async () => {"
+        },
+        {
+          "line": 82,
+          "text": "test('exhausted kingdom ID refuses production start and preserves document and both stacks', async () => {"
+        }
+      ],
+      "observed_cases": [
+        {
+          "name": "reject road wrong structure",
+          "duration_ms": 4.578283
+        },
+        {
+          "name": "reject fractional axial",
+          "duration_ms": 0.433849
+        },
+        {
+          "name": "reject duplicate region id",
+          "duration_ms": 0.495984
+        },
+        {
+          "name": "reject invalid region enum",
+          "duration_ms": 0.428097
+        },
+        {
+          "name": "reject noncanonical terrain key",
+          "duration_ms": 0.482109
+        },
+        {
+          "name": "reject wrong rotation type",
+          "duration_ms": 0.942547
+        },
+        {
+          "name": "reject wrong scale type",
+          "duration_ms": 0.577276
+        },
+        {
+          "name": "reject unsafe next road counter",
+          "duration_ms": 0.501405
+        },
+        {
+          "name": "reject dangling water POI",
+          "duration_ms": 0.60094
+        },
+        {
+          "name": "supported corpus: lake-reentry-map",
+          "duration_ms": 16.939003
+        },
+        {
+          "name": "supported corpus: sea-pocket-map",
+          "duration_ms": 4.52851
+        },
+        {
+          "name": "supported corpus: terrain-display-map",
+          "duration_ms": 21.012582
+        },
+        {
+          "name": "supported corpus: road-entry-zigzags",
+          "duration_ms": 4.825374
+        },
+        {
+          "name": "generated proposals reject overflow in every allocated ID namespace and counter",
+          "duration_ms": 1.536634
+        },
+        {
+          "name": "imported boundary roadCounter: production continuation stays valid or rolls back whole document",
+          "duration_ms": 361.775578
+        },
+        {
+          "name": "imported boundary regionId: production continuation stays valid or rolls back whole document",
+          "duration_ms": 500.729764
+        },
+        {
+          "name": "imported boundary lakeCounter: production continuation stays valid or rolls back whole document",
+          "duration_ms": 235.836877
+        },
+        {
+          "name": "imported boundary riverId: production continuation stays valid or rolls back whole document",
+          "duration_ms": 221.779637
+        },
+        {
+          "name": "exhausted kingdom ID refuses production start and preserves document and both stacks",
+          "duration_ms": 915.757138
+        }
+      ],
+      "observed_sum_ms": 2293.761587,
+      "purpose": "Структура/типы/ID/ссылки, safe integer и атомарный отказ",
+      "requirement": "docs/specs/HX-NEXT-001.md",
+      "recommendation": "keep",
+      "duration_scope": "Sum of observed per-case durations in one archived run; concurrent groups must not be summed as elapsed CI time"
+    },
+    {
+      "file": "test/seaRecovery.test.mjs",
+      "count": 4,
+      "declarations": [
+        {
+          "line": 10,
+          "text": "for (const mode of ['auto', 'mainland', 'coast']) test(`3/-3 sea recovery preserves old map, river ends and undo: ${mode}`,()=>{"
+        },
+        {
+          "line": 43,
+          "text": "test('exhausted sea recovery and programming errors leave map and history unchanged',()=>{"
+        }
+      ],
+      "observed_cases": [
+        {
+          "name": "3/-3 sea recovery preserves old map, river ends and undo: auto",
+          "duration_ms": 21856.036262
+        },
+        {
+          "name": "3/-3 sea recovery preserves old map, river ends and undo: mainland",
+          "duration_ms": 3744.035153
+        },
+        {
+          "name": "3/-3 sea recovery preserves old map, river ends and undo: coast",
+          "duration_ms": 17414.998366
+        },
+        {
+          "name": "exhausted sea recovery and programming errors leave map and history unchanged",
+          "duration_ms": 9819.490668
+        }
+      ],
+      "observed_sum_ms": 52834.560449,
+      "purpose": "Реальная карта sea-pocket, восстановление берега и отказ без потери",
+      "requirement": "docs/region-generation.md",
+      "recommendation": "keep",
+      "duration_scope": "Sum of observed per-case durations in one archived run; concurrent groups must not be summed as elapsed CI time"
+    },
+    {
+      "file": "test/terrainStyle.test.mjs",
+      "count": 3,
+      "declarations": [
+        {
+          "line": 6,
+          "text": "test('seeded terrain variation is stable and avoids all six neighbours, including negative coordinates',()=>{"
+        },
+        {
+          "line": 17,
+          "text": "test('all twenty overlays exist as distinct transparent SVGs; forests use vector canopy without tree overlays',()=>{"
+        },
+        {
+          "line": 28,
+          "text": "test('lake shoreline removes shared edges while preserving island edges',()=>{"
+        }
+      ],
+      "observed_cases": [
+        {
+          "name": "seeded terrain variation is stable and avoids all six neighbours, including negative coordinates",
+          "duration_ms": 37.707484
+        },
+        {
+          "name": "all twenty overlays exist as distinct transparent SVGs; forests use vector canopy without tree overlays",
+          "duration_ms": 2.395885
+        },
+        {
+          "name": "lake shoreline removes shared edges while preserving island edges",
+          "duration_ms": 1.152738
+        }
+      ],
+      "observed_sum_ms": 41.256107,
+      "purpose": "20SVG, детерминированные варианты/соседи, берег и цвет воды",
+      "requirement": "docs/biome-color.md",
+      "recommendation": "keep",
+      "duration_scope": "Sum of observed per-case durations in one archived run; concurrent groups must not be summed as elapsed CI time"
+    },
+    {
+      "file": "test/toponyms.test.mjs",
+      "count": 5,
+      "declarations": [
+        {
+          "line": 7,
+          "text": "test('one Germanic model spans distinct formations while keeping each name internally consistent', () => {"
+        },
+        {
+          "line": 43,
+          "text": "test('many lakes stay unique in both languages and existing names survive growth and order changes', () => {"
+        },
+        {
+          "line": 57,
+          "text": "test('reroll preserves the model, renames accept paired values and reject duplicates', () => {"
+        },
+        {
+          "line": 73,
+          "text": "test('real map handlers save names, keep old names on growth, and restore them on undo', () => {"
+        },
+        {
+          "line": 95,
+          "text": "test('manual edits to old and regenerated regions survive the region history rollback', () => {"
+        }
+      ],
+      "observed_cases": [
+        {
+          "name": "one Germanic model spans distinct formations while keeping each name internally consistent",
+          "duration_ms": 35.117329
+        },
+        {
+          "name": "many lakes stay unique in both languages and existing names survive growth and order changes",
+          "duration_ms": 3.734058
+        },
+        {
+          "name": "reroll preserves the model, renames accept paired values and reject duplicates",
+          "duration_ms": 0.565874
+        },
+        {
+          "name": "real map handlers save names, keep old names on growth, and restore them on undo",
+          "duration_ms": 384.157561
+        },
+        {
+          "name": "manual edits to old and regenerated regions survive the region history rollback",
+          "duration_ms": 387.827209
+        }
+      ],
+      "observed_sum_ms": 811.402031,
+      "purpose": "RU/EN-имена, уникальность, рост, переименование и сохранение",
+      "requirement": "docs/toponym-generation.md",
+      "recommendation": "keep",
+      "duration_scope": "Sum of observed per-case durations in one archived run; concurrent groups must not be summed as elapsed CI time"
+    },
+    {
+      "file": "test/tractSeaSource.test.mjs",
+      "count": 3,
+      "declarations": [
+        {
+          "line": 6,
+          "text": "test(`tract source stays away from existing sea: ${mode ?? 'auto'}`, () => {"
+        }
+      ],
+      "observed_cases": [
+        {
+          "name": "tract source stays away from existing sea: coast",
+          "duration_ms": 1682.002839
+        },
+        {
+          "name": "tract source stays away from existing sea: mainland",
+          "duration_ms": 871.656317
+        },
+        {
+          "name": "tract source stays away from existing sea: auto",
+          "duration_ms": 912.845703
+        }
+      ],
+      "observed_sum_ms": 3466.5048589999997,
+      "purpose": "Исток урочища не появляется в существующем море",
+      "requirement": "docs/river-model.md",
+      "recommendation": "keep",
+      "duration_scope": "Sum of observed per-case durations in one archived run; concurrent groups must not be summed as elapsed CI time"
+    },
+    {
+      "file": "test/woodlandStyle.test.mjs",
+      "count": 4,
+      "declarations": [
+        {
+          "line": 7,
+          "text": "test('only the starting contact chooses islands or clearings; persisted choice wins',()=>{"
+        },
+        {
+          "line": 15,
+          "text": "test('real tract callback persists woodland style, save validates it and undo restores the original map',()=>{"
+        },
+        {
+          "line": 27,
+          "text": "test('water cuts an exterior bank but does not divide the forest interior',()=>{"
+        },
+        {
+          "line": 34,
+          "text": "test('lakes do not reshape neighbouring forest banks',()=>{"
+        }
+      ],
+      "observed_cases": [
+        {
+          "name": "only the starting contact chooses islands or clearings; persisted choice wins",
+          "duration_ms": 1.449982
+        },
+        {
+          "name": "real tract callback persists woodland style, save validates it and undo restores the original map",
+          "duration_ms": 630.433282
+        },
+        {
+          "name": "water cuts an exterior bank but does not divide the forest interior",
+          "duration_ms": 0.789421
+        },
+        {
+          "name": "lakes do not reshape neighbouring forest banks",
+          "duration_ms": 1.203011
+        }
+      ],
+      "observed_sum_ms": 633.8756959999998,
+      "purpose": "Стиль первого контакта, сохранение и граница лес/вода",
+      "requirement": "docs/forest-rendering.md",
+      "recommendation": "keep",
+      "duration_scope": "Sum of observed per-case durations in one archived run; concurrent groups must not be summed as elapsed CI time"
+    },
+    {
+      "file": "test/worldAcceptance.test.mjs",
+      "count": 21,
+      "declarations": [
+        {
+          "line": 13,
+          "text": "for(const mode of ['classic','mythic'])test(`R5 consumed regeneration A stays inert after B and undo/redo ${mode}`,()=>{"
+        },
+        {
+          "line": 30,
+          "text": "test('R3 late Mythic regeneration failure retains original action and detached inputs',()=>{"
+        },
+        {
+          "line": 50,
+          "text": "test(`AC10 recorded action replay ${mode}/${action}/${failing?'failure':'success'}`,async()=>{"
+        },
+        {
+          "line": 71,
+          "text": "for(const mode of ['classic','mythic'])test(`AC04 mixed manual content and generation checkpoints ${mode}`,()=>{"
+        },
+        {
+          "line": 90,
+          "text": "test(`AC05 ${mode}/${kind} rollback with redo and next clean control`,()=>{"
+        },
+        {
+          "line": 106,
+          "text": "test('AC05 prepare-regenerate error and successful tract fallback preserve exact stream semantics',()=>{"
+        },
+        {
+          "line": 116,
+          "text": "for(const mode of ['classic','mythic'])test(`AC06 names restored before next full world ${mode}`,()=>{"
+        },
+        {
+          "line": 123,
+          "text": "test('AC09 consumed Mythic tick remains stale after newer tick and after completion',()=>{"
+        }
+      ],
+      "observed_cases": [
+        {
+          "name": "R5 consumed regeneration A stays inert after B and undo/redo classic",
+          "duration_ms": 599.892412
+        },
+        {
+          "name": "R5 consumed regeneration A stays inert after B and undo/redo mythic",
+          "duration_ms": 9258.316514
+        },
+        {
+          "name": "R3 late Mythic regeneration failure retains original action and detached inputs",
+          "duration_ms": 5294.593283
+        },
+        {
+          "name": "AC10 recorded action replay classic/add/success",
+          "duration_ms": 519.264287
+        },
+        {
+          "name": "AC10 recorded action replay classic/add/failure",
+          "duration_ms": 395.663461
+        },
+        {
+          "name": "AC10 recorded action replay classic/regenerate/success",
+          "duration_ms": 497.091191
+        },
+        {
+          "name": "AC10 recorded action replay classic/regenerate/failure",
+          "duration_ms": 545.248397
+        },
+        {
+          "name": "AC10 recorded action replay mythic/add/success",
+          "duration_ms": 23094.904015
+        },
+        {
+          "name": "AC10 recorded action replay mythic/add/failure",
+          "duration_ms": 4278.976364
+        },
+        {
+          "name": "AC10 recorded action replay mythic/regenerate/success",
+          "duration_ms": 14996.439835
+        },
+        {
+          "name": "AC10 recorded action replay mythic/regenerate/failure",
+          "duration_ms": 17742.364993
+        },
+        {
+          "name": "AC04 mixed manual content and generation checkpoints classic",
+          "duration_ms": 289.446249
+        },
+        {
+          "name": "AC04 mixed manual content and generation checkpoints mythic",
+          "duration_ms": 7045.088799
+        },
+        {
+          "name": "AC05 classic/programming rollback with redo and next clean control",
+          "duration_ms": 380.569016
+        },
+        {
+          "name": "AC05 classic/constraint rollback with redo and next clean control",
+          "duration_ms": 1780.648093
+        },
+        {
+          "name": "AC05 mythic/programming rollback with redo and next clean control",
+          "duration_ms": 17118.000123
+        },
+        {
+          "name": "AC05 mythic/constraint rollback with redo and next clean control",
+          "duration_ms": 31783.446373
+        },
+        {
+          "name": "AC05 prepare-regenerate error and successful tract fallback preserve exact stream semantics",
+          "duration_ms": 299.228849
+        },
+        {
+          "name": "AC06 names restored before next full world classic",
+          "duration_ms": 328.566649
+        },
+        {
+          "name": "AC06 names restored before next full world mythic",
+          "duration_ms": 16460.791109
+        },
+        {
+          "name": "AC09 consumed Mythic tick remains stale after newer tick and after completion",
+          "duration_ms": 3369.154164
+        }
+      ],
+      "observed_sum_ms": 156077.694176,
+      "purpose": "Replay, устаревшие callback, смешанные правки, RNG rollback",
+      "requirement": "docs/HX-BL-030.md",
+      "recommendation": "keep",
+      "duration_scope": "Sum of observed per-case durations in one archived run; concurrent groups must not be summed as elapsed CI time"
+    },
+    {
+      "file": "test/worldContinuation.test.mjs",
+      "count": 18,
+      "declarations": [
+        {
+          "line": 6,
+          "text": "test('production document exports RNG and undo restores continuation',()=>{"
+        },
+        {
+          "line": 22,
+          "text": "for(const seed of [0,1,123456789,4294967295])for(const mode of ['classic','mythic'])test(`production streams/continuation/undo ${mode}/${seed}`,async()=>{"
+        },
+        {
+          "line": 29,
+          "text": "test('classic and late Mythic failures restore RNG and both histories',()=>{"
+        },
+        {
+          "line": 40,
+          "text": "test('v2 migration and v3 validation are deterministic and atomic with redo',async()=>{"
+        },
+        {
+          "line": 54,
+          "text": "test('regenerate uses current RNG and undo/repeat restores same variant',()=>{"
+        },
+        {
+          "line": 62,
+          "text": "test('seed validation, repeated renders, pre-options exception and duplicate pending callback',()=>{"
+        },
+        {
+          "line": 71,
+          "text": "test('Mythic regenerate and delete checkpoints restore exact RNG',()=>{"
+        },
+        {
+          "line": 79,
+          "text": "test('R1 stale classic callbacks cannot draw or append a transaction, before or after a render',()=>{"
+        },
+        {
+          "line": 96,
+          "text": "test('R2 Mythic regenerate ignores hidden classic size controls and checkpoints pre-action RNG',()=>{"
+        },
+        {
+          "line": 110,
+          "text": "test('entire v2 and rng-v3 fixture manifests roundtrip and continue in both modes',async()=>{"
+        },
+        {
+          "line": 134,
+          "text": "test('complete malformed RNG value classes reject atomically with redo',async()=>{"
+        }
+      ],
+      "observed_cases": [
+        {
+          "name": "production document exports RNG and undo restores continuation",
+          "duration_ms": 498.370258
+        },
+        {
+          "name": "production streams/continuation/undo classic/0",
+          "duration_ms": 546.829333
+        },
+        {
+          "name": "production streams/continuation/undo mythic/0",
+          "duration_ms": 58756.558192
+        },
+        {
+          "name": "production streams/continuation/undo classic/1",
+          "duration_ms": 507.778052
+        },
+        {
+          "name": "production streams/continuation/undo mythic/1",
+          "duration_ms": 66060.960214
+        },
+        {
+          "name": "production streams/continuation/undo classic/123456789",
+          "duration_ms": 420.7672
+        },
+        {
+          "name": "production streams/continuation/undo mythic/123456789",
+          "duration_ms": 39583.947544
+        },
+        {
+          "name": "production streams/continuation/undo classic/4294967295",
+          "duration_ms": 314.861711
+        },
+        {
+          "name": "production streams/continuation/undo mythic/4294967295",
+          "duration_ms": 56237.543804
+        },
+        {
+          "name": "classic and late Mythic failures restore RNG and both histories",
+          "duration_ms": 5923.109724
+        },
+        {
+          "name": "v2 migration and v3 validation are deterministic and atomic with redo",
+          "duration_ms": 2033.803798
+        },
+        {
+          "name": "regenerate uses current RNG and undo/repeat restores same variant",
+          "duration_ms": 195.934741
+        },
+        {
+          "name": "seed validation, repeated renders, pre-options exception and duplicate pending callback",
+          "duration_ms": 111.661524
+        },
+        {
+          "name": "Mythic regenerate and delete checkpoints restore exact RNG",
+          "duration_ms": 4249.47239
+        },
+        {
+          "name": "R1 stale classic callbacks cannot draw or append a transaction, before or after a render",
+          "duration_ms": 267.145472
+        },
+        {
+          "name": "R2 Mythic regenerate ignores hidden classic size controls and checkpoints pre-action RNG",
+          "duration_ms": 6227.65659
+        },
+        {
+          "name": "entire v2 and rng-v3 fixture manifests roundtrip and continue in both modes",
+          "duration_ms": 139467.801705
+        },
+        {
+          "name": "complete malformed RNG value classes reject atomically with redo",
+          "duration_ms": 456.452644
+        }
+      ],
+      "observed_sum_ms": 381860.654896,
+      "purpose": "Seed/потоки,8mode×seed, v2/v3, corpus и продолжение",
+      "requirement": "docs/world-random.md",
+      "recommendation": "keep",
+      "duration_scope": "Sum of observed per-case durations in one archived run; concurrent groups must not be summed as elapsed CI time"
+    },
+    {
+      "file": "test/worldRandom.test.mjs",
+      "count": 2,
+      "declarations": [
+        {
+          "line": 6,
+          "text": "test('mulberry32 matches independent Python uint32 vectors, both independent streams',()=>{"
+        },
+        {
+          "line": 16,
+          "text": "test('saved RNG validation never accepts incomplete/unsupported state',()=>{"
+        }
+      ],
+      "observed_cases": [
+        {
+          "name": "mulberry32 matches independent Python uint32 vectors, both independent streams",
+          "duration_ms": 3.125496
+        },
+        {
+          "name": "saved RNG validation never accepts incomplete/unsupported state",
+          "duration_ms": 0.467582
+        }
+      ],
+      "observed_sum_ms": 3.593078,
+      "purpose": "Независимые uint32 vectors и validation генератора",
+      "requirement": "docs/world-random.md",
+      "recommendation": "keep",
+      "duration_scope": "Sum of observed per-case durations in one archived run; concurrent groups must not be summed as elapsed CI time"
+    }
+  ],
+  "observed_run": {
+    "id": 40284793669,
+    "head_sha": "415349bc9fb9ce72fb2a8bc5e777cc98ea515bd0",
+    "tree": "3892b812c0910eced73c8abf676f17cb267bba11",
+    "log_ref": "agent-work/evidence/HX-FB-001-developer/ci-check.log",
+    "log_blob": "ee34ae7287fac4f9bf1602833e01ada4afe1eef9",
+    "node_wall_ms": 461170.814988,
+    "executed": 236,
+    "passed": 236,
+    "failed": 0,
+    "skipped": 0
+  },
+  "new_executions": 0
+}
