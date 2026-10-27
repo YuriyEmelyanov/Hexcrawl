@@ -105,7 +105,7 @@ try{
     ...[undefined,null,[],1,'streams',{}, {geography:0}].map(streams=>({...g,streams})),
     ...[-1,4294967296,0.5,'0',null].flatMap(value=>[{...g,masterSeed:value},{...g,streams:{...g.streams,geography:value}},{...g,streams:{...g.streams,poi:value}}]),
     {...g,rngVersion:'future'},{...g,generatorVersion:'future'}];
-   for(const version of [2,3])for(const generation of invalid){if(version===2&&generation===undefined)continue;await a.load({...before,version,generation});assert.deepEqual(await a.snapshot(),before);assert.equal(await a.button('Повторить').isEnabled(),true);}
+   for(const version of [2,3,4])for(const generation of invalid){if(version===2&&generation===undefined)continue;await a.load({...before,version,generation});assert.deepEqual(await a.snapshot(),before);assert.equal(await a.button('Повторить').isEnabled(),true);}
    await a.load({...before,version:999});assert.deepEqual(await a.snapshot(),before);
    await a.page.locator('input[type=file]').setInputFiles([]);assert.deepEqual(await a.snapshot(),before);
    await a.button('Повторить').click();assert.deepEqual(await a.snapshot(),second);await a.button('Отменить').click();assert.deepEqual(await a.snapshot(),before);

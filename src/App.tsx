@@ -448,7 +448,7 @@ type Biome = {
 
 type HexcrawlSaveData = {
   schema: 'hexcrawl-map';
-  version: 2 | 3;
+  version: 2 | 3 | 4;
   generation?: GenerationState;
   savedAt: string;
   map: {
@@ -459,6 +459,7 @@ type HexcrawlSaveData = {
     rivers: River[];
     roads: Road[];
     crossings: RiverCrossing[];
+    gmNotesByHexKey?: Record<string, string>;
     terrainByHexKey: Record<string, HexTerrainData>;
     waterPoiByHexKey?: Record<string, WaterPoiKind>;
     biomeOverrideByHexKey?: HexBiomeOverrideByKey;
@@ -478,13 +479,14 @@ type HexcrawlSaveData = {
 
 type ValidatedHexcrawlSaveData = HexcrawlSaveData & {
   map: HexcrawlSaveData['map'] & {
+    gmNotesByHexKey?: Record<string, string>;
     terrainByHexKey: Record<string, HexTerrainData>;
     waterPoiByHexKey?: Record<string, WaterPoiKind>;
   };
 };
 
 const HEXCRAWL_SAVE_SCHEMA = 'hexcrawl-map';
-const HEXCRAWL_SAVE_VERSION = 3;
+const HEXCRAWL_SAVE_VERSION = 4;
 const PNG_EXPORT_SCALE = 2;
 const EXPORT_FILE_PREFIX = 'hexcrawl-map';
 const BIOME_TILE_HREFS: Partial<Record<BiomeId, string>> = {
@@ -1253,6 +1255,7 @@ const TRACT_GROWTH_WEIGHT_EXPONENT = 1.5;
 // чтобы пытаться "откатить" все побочные эффекты генерации рек и дорог
 // (которые могут менять соседние регионы), мы просто восстанавливаем снимок.
 type MapSnapshot = {
+  gmNotesByHexKey: Record<string, string>;
   generation: GenerationState;
   kingdoms?: Kingdom[];
   obstacles?: Obstacle[];
@@ -11288,6 +11291,19 @@ export function App() {
   const [nextRoadId, setNextRoadId] = useState(1);
   const importInFlight = useRef(false);
   const [isImporting, setIsImporting] = useState(false);
+  const [gmNotesByHexKey, setGmNotesByHexKey] = useState<Record<string, string>>({});
+  const [notesDraft, setNotesDraft] = useState<{key: string; text: string} | null>(null);
+  const notesDraftRef = useRef<{key: string; text: string} | null>(null);
+  const notesDirtyRef = useRef(false);
+  const [notesNotice, setNotesNotice] = useState(false);
+  const notesSelectionRef = useRef<string | null>(null);
+  notesSelectionRef.current = selectedHex ? hexKey(selectedHex) : null;
+  const clearNotesDraft = () => { notesDraftRef.current = null; notesDirtyRef.current = false; setNotesDraft(null); setNotesNotice(false); };
+  useEffect(() => {
+    const beforeUnload = (event: BeforeUnloadEvent) => { if (notesDirtyRef.current) { event.preventDefault(); event.returnValue = ''; } };
+    window.addEventListener('beforeunload', beforeUnload);
+    return () => window.removeEventListener('beforeunload', beforeUnload);
+  }, []);
   const [undoHistory, setUndoHistory] = useState<MapTransaction[]>([]);
   const [redoHistory, setRedoHistory] = useState<MapTransaction[]>([]);
   // Generation checkpoints are separate from the user's undo/redo timeline.
@@ -11785,6 +11801,7 @@ export function App() {
     })();
 
     const snapshot: MapSnapshot = {
+        gmNotesByHexKey: {...gmNotesByHexKey},
         generation: cloneGenerationState(activeGenerationBefore.current ?? generationRef.current),
         kingdoms, obstacles,
       regions,
@@ -12652,6 +12669,7 @@ export function App() {
       })();
 
       const snapshot: MapSnapshot = {
+        gmNotesByHexKey: {...gmNotesByHexKey},
         generation: cloneGenerationState(activeGenerationBefore.current ?? generationRef.current),
         kingdoms, obstacles,
         regions,
@@ -12712,7 +12730,7 @@ export function App() {
   };
 
 
-  const captureMap = (): MapSnapshot => ({ generation: cloneGenerationState(generationRef.current), kingdoms, obstacles, regions, candidateHexes, rivers, roads, crossings,
+  const captureMap = (): MapSnapshot => ({ gmNotesByHexKey, generation: cloneGenerationState(generationRef.current), kingdoms, obstacles, regions, candidateHexes, rivers, roads, crossings,
     hexTerrainByKey, waterPoiByKey, biomeOverrideByHexKey, toponyms, toponymSeed, nextLakeId, nextRoadId });
   const captureDocument = (): DocumentSnapshot => ({ map: captureMap(), generationHistory: history, selectedHex,
     generationMode, isMapRotated, mapScale: pendingMapZoomRef.current?.scale ?? mapScaleRef.current });
@@ -12726,6 +12744,7 @@ export function App() {
     setRedoHistory([]);
   };
   const applyExactMap = (map: MapSnapshot) => {
+    setGmNotesByHexKey({...map.gmNotesByHexKey}); clearNotesDraft();
     restoreGeneration(map.generation);
     setKingdoms(map.kingdoms ?? []); setObstacles(map.obstacles ?? []);
     setRegions(map.regions); setCandidateHexes(map.candidateHexes); setRivers(map.rivers);
@@ -12748,8 +12767,41 @@ export function App() {
     updateMapScale(doc.mapScale); setPendingRegen(null); closeEditors();
   };
   const applyDocument = (value: DocumentSnapshot) => applyPreparedDocument(copyDocument(value));
-  const mutationBlocked = () => documentRevision.current !== renderedDocumentRevision
+  const documentBusy = () => documentRevision.current !== renderedDocumentRevision
     || importInFlight.current || kingdomInFlight.current || !!kingdomJob || !!pendingRegen;
+  const mutationBlocked = (notify = true) => {
+    if (notesDirtyRef.current) { if (notify) setNotesNotice(true); return true; }
+    return documentBusy();
+  };
+  const changeNotesDraft = (key: string, text: string) => {
+    if (documentBusy() || notesSelectionRef.current !== key
+      || (!hexTerrainByKey.has(key) && !regions.some(r => r.hexes.some(h => hexKey(h) === key)))) return;
+    const draft = {key, text}; notesDraftRef.current = draft; setNotesDraft(draft);
+    notesDirtyRef.current = text !== (gmNotesByHexKey[key] ?? ''); setNotesNotice(false);
+  };
+  const saveNotesDraft = () => {
+    if (documentBusy()) return;
+    const draft = notesDraftRef.current;
+    if (!draft || draft.key !== notesSelectionRef.current) return;
+    if (draft.text === (gmNotesByHexKey[draft.key] ?? '')) { clearNotesDraft(); return; }
+    const notes = {...gmNotesByHexKey};
+    if (draft.text === '') delete notes[draft.key]; else notes[draft.key] = draft.text;
+    const before = captureDocument(), map = {...before.map, gmNotesByHexKey: notes};
+    recordTransaction(before, {...before, map}); applyExactMap(map);
+  };
+  const cancelNotesDraft = () => { if (!documentBusy()) clearNotesDraft(); };
+  const actualHexKeys = (map: Pick<MapSnapshot, 'regions' | 'hexTerrainByKey'>) =>
+    new Set([...map.regions.flatMap(r => r.hexes.map(hexKey)), ...map.hexTerrainByKey.keys()]);
+  const notesForSurvivingHexes = (map: Pick<MapSnapshot, 'regions' | 'hexTerrainByKey'>) => {
+    const keys = actualHexKeys(map);
+    return Object.fromEntries(Object.entries(gmNotesByHexKey).filter(([key]) => keys.has(key)));
+  };
+  const confirmNotesRemoval = (notes: Record<string, string>) => {
+    const removed = Object.keys(gmNotesByHexKey).filter(key => !(key in notes));
+    return !removed.length || window.confirm(language === 'ru'
+      ? `Удалить заметки мастера (${removed.length}) в гексах ${removed.join('; ')}? Их можно восстановить отменой.`
+      : `Delete GM notes (${removed.length}) at ${removed.join('; ')}? Undo can restore them.`);
+  };
   const undoMap = () => {
     if (mutationBlocked() || !undoHistory.length) return;
     const transaction = undoHistory[undoHistory.length - 1];
@@ -12775,6 +12827,12 @@ export function App() {
     if (!kingdomJob) backup ??= activeGenerationBackup.current ?? undefined;
     if (kingdomJob && !backup) return; // internal kingdom steps form one transaction at finish
     const before = backup?.document ?? { ...captureDocument(), map: { ...captureMap(), generation: cloneGenerationState(checkpoint.generation) } };
+    const notes = before.map.gmNotesByHexKey ?? gmNotesByHexKey;
+    const keys = actualHexKeys(map), missing = Object.keys(notes).filter(key => !keys.has(key));
+    if (missing.length) throw new Error(language === 'ru'
+      ? `Генерация удаляет гексы с заметками (${missing.length}): ${missing.join('; ')}. Сначала перенесите или очистите заметки.`
+      : `Generation removes hexes with notes (${missing.length}): ${missing.join('; ')}. Move or clear the notes first.`);
+    map.gmNotesByHexKey = {...notes}; setGmNotesByHexKey(map.gmNotesByHexKey);
     recordTransaction(before, { ...captureDocument(), map, selectedHex: selection,
       generationHistory: [...checkpoints, structuredClone(checkpoint)] });
   };
@@ -12786,6 +12844,7 @@ export function App() {
 
   const restoreGenerationBackup = (backup: GenerationBackup) => {
     const map = backup.map;
+    setGmNotesByHexKey({...map.gmNotesByHexKey}); clearNotesDraft();
     restoreGeneration(map.generation);
     setKingdoms(map.kingdoms ?? []);
     setObstacles(map.obstacles ?? []);
@@ -13012,9 +13071,10 @@ export function App() {
       && !hexTerrainByKey.size && !waterPoiByKey.size && !biomeOverrideByHexKey.size && !candidateHexes.length
       && !Object.keys(toponyms).length && nextLakeId===1 && nextRoadId===1 && !isMapRotated
       && selectedHex?.q===START_HEX.q && selectedHex?.r===START_HEX.r) return;
+    if (!confirmNotesRemoval({})) return;
     const before=captureDocument();
     const newGeneration = createGenerationState(newWorldSeed());
-    const after: DocumentSnapshot = { ...before, map: { generation: newGeneration, kingdoms: [], obstacles: [], regions: [], candidateHexes: [],
+    const after: DocumentSnapshot = { ...before, map: { gmNotesByHexKey: {}, generation: newGeneration, kingdoms: [], obstacles: [], regions: [], candidateHexes: [],
       rivers: [], roads: [], crossings: [], hexTerrainByKey: new Map(), waterPoiByKey: new Map(), biomeOverrideByHexKey: new Map(),
       toponyms: {}, toponymSeed: toponymSeedFor(newGeneration.masterSeed), nextLakeId: 1, nextRoadId: 1 },
       generationHistory: [], selectedHex: START_HEX, isMapRotated: false };
@@ -13085,7 +13145,9 @@ export function App() {
     const entities = getToponymEntities(checkpoint.regions, checkpoint.rivers, checkpoint.hexTerrainByKey);
     const retainedNames: ToponymRegistry = { ...(checkpoint.toponyms ?? {}) };
     for (const {key} of entities) if(toponyms[key]) retainedNames[key]=toponyms[key];
-    const map = { ...checkpoint, toponymSeed: checkpoint.toponymSeed ?? toponymSeed,
+    const retainedNotes = notesForSurvivingHexes(checkpoint);
+    if (!confirmNotesRemoval(retainedNotes)) return;
+    const map = { ...checkpoint, gmNotesByHexKey: retainedNotes, toponymSeed: checkpoint.toponymSeed ?? toponymSeed,
       toponyms: synchronizeToponyms(retainedNames,entities,checkpoint.toponymSeed ?? toponymSeed),
       roads: pruneRoadsToRegionHexes(cloneRoads(checkpoint.roads),checkpoint.regions) };
     const before = captureDocument();
@@ -13141,6 +13203,9 @@ export function App() {
   }, [pendingRegen]);
 
   const selectedHexKey = selectedHex ? hexKey(selectedHex) : null;
+  const canEditNotes = !!selectedHexKey && (hexTerrainByKey.has(selectedHexKey) || regions.some(r => r.hexes.some(h => hexKey(h) === selectedHexKey)));
+  const notesValue = notesDraft?.key === selectedHexKey ? notesDraft.text : (selectedHexKey ? gmNotesByHexKey[selectedHexKey] ?? '' : '');
+  const notesDirty = !!notesDraft && notesDraft.text !== (gmNotesByHexKey[notesDraft.key] ?? '');
   const selectedMeta = selectedHexKey ? metadataMap.get(selectedHexKey) : undefined;
   const selectedTerrain = selectedHexKey ? hexTerrainByKey.get(selectedHexKey) : undefined;
   const selectedWaterPoiKind = selectedHexKey ? waterPoiByKey.get(selectedHexKey) : undefined;
@@ -13652,6 +13717,7 @@ export function App() {
     version: HEXCRAWL_SAVE_VERSION,
     savedAt: new Date().toISOString(),
     map: {
+      gmNotesByHexKey: {...gmNotesByHexKey},
       kingdoms, obstacles,
       regions,
       candidateHexes,
@@ -13719,7 +13785,7 @@ export function App() {
       const selection=imported.ui.selectedHex;
       const before=captureDocument();
       const after:DocumentSnapshot={
-        map:{generation: imported.generation ?? createGenerationState(seed >>> 0), kingdoms:imported.map.kingdoms ?? [],obstacles:imported.map.obstacles ?? [],regions:imported.map.regions,
+        map:{gmNotesByHexKey: Object.fromEntries(Object.entries(imported.map.gmNotesByHexKey ?? {}).filter(([,text]) => text !== '')), generation: imported.generation ?? createGenerationState(seed >>> 0), kingdoms:imported.map.kingdoms ?? [],obstacles:imported.map.obstacles ?? [],regions:imported.map.regions,
           candidateHexes:candidates,rivers:imported.map.rivers,roads:imported.map.roads,crossings:imported.map.crossings,
           hexTerrainByKey:terrain,waterPoiByKey:new Map(Object.entries(imported.map.waterPoiByHexKey ?? {})),
           biomeOverrideByHexKey:new Map(Object.entries(imported.map.biomeOverrideByHexKey ?? {})),toponyms:names,toponymSeed:seed,
@@ -13734,7 +13800,7 @@ export function App() {
       setUndoHistory(current=>[...current,transaction].slice(-100)); setRedoHistory([]);
       applyPreparedDocument(prepared); setLegacyNotice(!imported.generation); setGenerationError(null); trackGoal('import_json');
     } catch(error) {
-      console.error('JSON import failed',error);
+      console.error('JSON import failed', {stage, path: error instanceof SaveValidationError ? error.path : '$'});
       const path=error instanceof SaveValidationError?error.path:'$';
       const category=language==='ru'
         ? ({read:'ошибка чтения файла',json:'ошибка синтаксиса JSON',validation:'некорректные данные',preparation:'ошибка подготовки карты'}[stage])
@@ -14360,7 +14426,7 @@ export function App() {
                 <input aria-label={language === 'ru' ? 'Seed мира' : 'World seed'} inputMode="numeric" value={seedInput}
                   aria-invalid={seedError || undefined} aria-describedby={seedError ? 'world-seed-error' : undefined}
                   readOnly={!!regions.length || !!hexTerrainByKey.size || !!kingdoms.length}
-                  disabled={mutationBlocked()} onChange={e=>{setSeedInput(e.target.value);setSeedError(false);}} onBlur={applyWorldSeed} />
+                  disabled={mutationBlocked(false)} onChange={e=>{setSeedInput(e.target.value);setSeedError(false);}} onBlur={applyWorldSeed} />
               </label>
               {seedError ? <p id="world-seed-error" className="world-seed-control__error" role="alert">{language === 'ru' ? 'Seed: целое число от 0 до 4294967295.' : 'Seed: integer from 0 to 4294967295.'}</p> : null}
               {legacyNotice ? <p className="world-seed-control__notice" role="status">{language === 'ru' ? 'Старая карта: seed задан для дальнейшего продолжения' : 'Legacy map: seed assigned for future continuation'}</p> : null}
@@ -14428,11 +14494,11 @@ export function App() {
                           <select aria-label={t.choosePoi} autoFocus value={selectedWaterPoiKind} onChange={(event) => setSelectedWaterPoiKind(event.target.value as WaterPoiKind)} onBlur={() => setEditingPoiHexKey(null)}>
                             {waterPoiKindOrder.map((poiKind) => <option key={poiKind} value={poiKind}>{WATER_POI_DETAILS[poiKind].emoji} {WATER_POI_DETAILS[poiKind].label[language]}</option>)}
                           </select>
-                        ) : <span className="hex-poi-editor__actions"><button type="button" className="hex-biome-editor__button" aria-label={t.editPoi} title={t.editPoi} onClick={() => setEditingPoiHexKey(selectedHexKey)}>✏️</button><button type="button" className="hex-biome-editor__button" aria-label={t.deletePoi} title={t.deletePoi} onClick={deleteSelectedWaterPoi}>🗑️</button></span>}
+                        ) : <span className="hex-poi-editor__actions"><button type="button" className="hex-biome-editor__button" aria-label={t.editPoi} title={t.editPoi} onClick={() => { if (!mutationBlocked()) setEditingPoiHexKey(selectedHexKey); }}>✏️</button><button type="button" className="hex-biome-editor__button" aria-label={t.deletePoi} title={t.deletePoi} onClick={deleteSelectedWaterPoi}>🗑️</button></span>}
                       </div>
                     ) : isEditingSelectedPoi ? (
                       <div className="hex-poi-editor"><select aria-label={t.choosePoi} autoFocus defaultValue="" onChange={(event) => { if (event.target.value) setSelectedWaterPoiKind(event.target.value as WaterPoiKind); }} onBlur={() => setEditingPoiHexKey(null)}><option value="" disabled>{t.choosePoi}</option>{waterPoiKindOrder.map((poiKind) => <option key={poiKind} value={poiKind}>{WATER_POI_DETAILS[poiKind].emoji} {WATER_POI_DETAILS[poiKind].label[language]}</option>)}</select></div>
-                    ) : generationMode !== 'mythic' ? <button type="button" className="hex-coordinate-toggle hex-poi-editor__add" onClick={() => setEditingPoiHexKey(selectedHexKey)}>{t.addPoi}</button> : null}
+                    ) : generationMode !== 'mythic' ? <button type="button" className="hex-coordinate-toggle hex-poi-editor__add" onClick={() => { if (!mutationBlocked()) setEditingPoiHexKey(selectedHexKey); }}>{t.addPoi}</button> : null}
                   </>
                 ) : (
                   <p><strong>{isSelectedCandidate ? t.candidateForRegion : t.noHexSelected}</strong></p>
@@ -14461,7 +14527,7 @@ export function App() {
                             className="hex-biome-editor__button"
                             aria-label={t.editHexBiome}
                             title={t.editHexBiome}
-                            onClick={() => selectedHexKey && setEditingHexBiomeKey(selectedHexKey)}
+                            onClick={() => { if (!mutationBlocked() && selectedHexKey) setEditingHexBiomeKey(selectedHexKey); }}
                           >
                             ✏️
                           </button>
@@ -14496,7 +14562,7 @@ export function App() {
                             ))}
                           </select>
                         ) : (
-                          <button type="button" className="hex-biome-editor__button" aria-label={t.editPoi} title={t.editPoi} onClick={() => setEditingCentralPoiRegionId(selectedRegion.id)}>✏️</button>
+                          <button type="button" className="hex-biome-editor__button" aria-label={t.editPoi} title={t.editPoi} onClick={() => { if (!mutationBlocked()) setEditingCentralPoiRegionId(selectedRegion.id); }}>✏️</button>
                         )}
                       </div>
                     ) : null}
@@ -14508,11 +14574,11 @@ export function App() {
                             <select aria-label={t.choosePoi} autoFocus value={selectedWaterPoiKind} onChange={(event) => setSelectedWaterPoiKind(event.target.value as WaterPoiKind)} onBlur={() => setEditingPoiHexKey(null)}>
                               {waterPoiKindOrder.map((poiKind) => <option key={poiKind} value={poiKind}>{WATER_POI_DETAILS[poiKind].emoji} {WATER_POI_DETAILS[poiKind].label[language]}</option>)}
                             </select>
-                          ) : <span className="hex-poi-editor__actions"><button type="button" className="hex-biome-editor__button" aria-label={t.editPoi} title={t.editPoi} onClick={() => setEditingPoiHexKey(selectedHexKey)}>✏️</button><button type="button" className="hex-biome-editor__button" aria-label={t.deletePoi} title={t.deletePoi} onClick={deleteSelectedWaterPoi}>🗑️</button></span>}
+                          ) : <span className="hex-poi-editor__actions"><button type="button" className="hex-biome-editor__button" aria-label={t.editPoi} title={t.editPoi} onClick={() => { if (!mutationBlocked()) setEditingPoiHexKey(selectedHexKey); }}>✏️</button><button type="button" className="hex-biome-editor__button" aria-label={t.deletePoi} title={t.deletePoi} onClick={deleteSelectedWaterPoi}>🗑️</button></span>}
                         </div>
                       ) : isEditingSelectedPoi ? (
                         <div className="hex-poi-editor"><select aria-label={t.choosePoi} autoFocus defaultValue="" onChange={(event) => { if (event.target.value) setSelectedWaterPoiKind(event.target.value as WaterPoiKind); }} onBlur={() => setEditingPoiHexKey(null)}><option value="" disabled>{t.choosePoi}</option>{waterPoiKindOrder.map((poiKind) => <option key={poiKind} value={poiKind}>{WATER_POI_DETAILS[poiKind].emoji} {WATER_POI_DETAILS[poiKind].label[language]}</option>)}</select></div>
-                      ) : generationMode !== 'mythic' ? <button type="button" className="hex-coordinate-toggle hex-poi-editor__add" onClick={() => setEditingPoiHexKey(selectedHexKey)}>{t.addPoi}</button> : null
+                      ) : generationMode !== 'mythic' ? <button type="button" className="hex-coordinate-toggle hex-poi-editor__add" onClick={() => { if (!mutationBlocked()) setEditingPoiHexKey(selectedHexKey); }}>{t.addPoi}</button> : null
                     ) : null}
                     {canEditSelectedPoi && selectedHex ? (
                       selectedPoiKind ? (
@@ -14532,7 +14598,7 @@ export function App() {
                             </select>
                           ) : (
                             <span className="hex-poi-editor__actions">
-                              <button type="button" className="hex-biome-editor__button" aria-label={t.editPoi} title={t.editPoi} onClick={() => setEditingPoiHexKey(selectedHexKey)}>✏️</button>
+                              <button type="button" className="hex-biome-editor__button" aria-label={t.editPoi} title={t.editPoi} onClick={() => { if (!mutationBlocked()) setEditingPoiHexKey(selectedHexKey); }}>✏️</button>
                               {!selectedMeta?.isCenter ? <button type="button" className="hex-biome-editor__button" aria-label={t.deletePoi} title={t.deletePoi} onClick={deleteSelectedPoi}>🗑️</button> : null}
                             </span>
                           )}
@@ -14555,7 +14621,7 @@ export function App() {
                           </select>
                         </div>
                       ) : !selectedMeta?.isCenter ? (
-                        <button type="button" className="hex-coordinate-toggle hex-poi-editor__add" onClick={() => setEditingPoiHexKey(selectedHexKey)}>{t.addPoi}</button>
+                        <button type="button" className="hex-coordinate-toggle hex-poi-editor__add" onClick={() => { if (!mutationBlocked()) setEditingPoiHexKey(selectedHexKey); }}>{t.addPoi}</button>
                       ) : null
                     ) : null}
                     {selectedHexRoadIds.map((roadId) => <p key={`selected-road-${roadId}`}>▬ {t.road} {roadId}</p>)}
@@ -14581,6 +14647,20 @@ export function App() {
                     ) : null}
                   </>
                 ) : null}
+                {canEditNotes && selectedHexKey ? <div className="gm-notes">
+                  <label htmlFor="gm-notes-text">{language === 'ru' ? 'Заметки мастера' : 'GM notes'}</label>
+                  <textarea id="gm-notes-text" rows={6} value={notesValue}
+                    disabled={isImporting || !!pendingRegen || !!kingdomJob}
+                    onKeyDown={event => event.stopPropagation()}
+                    onChange={event => changeNotesDraft(selectedHexKey, event.target.value)} />
+                  <p className="gm-notes__hint">{language === 'ru' ? 'Часть карты и полного JSON. Не экспорт для игроков.' : 'Included in the map and full JSON. Not a player export.'}</p>
+                  {notesDirty ? <p role="status">{language === 'ru' ? 'Изменения не сохранены' : 'Unsaved changes'}</p> : null}
+                  {notesNotice ? <p role="alert">{language === 'ru' ? 'Сохраните или отмените изменения заметки' : 'Save or cancel the note changes'}</p> : null}
+                  <div className="gm-notes__actions">
+                    <button type="button" className="secondary" disabled={!notesDirty || isImporting || !!pendingRegen || !!kingdomJob} onClick={saveNotesDraft}>{language === 'ru' ? 'Сохранить' : 'Save'}</button>
+                    <button type="button" className="secondary" disabled={!notesDirty || isImporting || !!pendingRegen || !!kingdomJob} onClick={cancelNotesDraft}>{language === 'ru' ? 'Отменить изменения' : 'Cancel changes'}</button>
+                  </div>
+                </div> : null}
               </section>
 
               <details

@@ -38,6 +38,13 @@ jobs:
           path: reports/terrain-v2-*.png
           if-no-files-found: ignore
 
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: HX-BL-024-UI
+          path: reports/HX-BL-024/
+          if-no-files-found: ignore
+
   world-random:
     runs-on: ubuntu-latest
     timeout-minutes: 15
