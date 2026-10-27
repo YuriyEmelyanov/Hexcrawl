@@ -145,3 +145,6 @@
 
 
 27.10.2026 — независимый HX-FB-001 accepted_with_limits на415349: фактические22PNG и hashархива проверены, popupgeometry ловит перекрытие, которое isVisible не ловил. Legacy/collapse/OSclipboard — sourcecontract evidence, не новый ручной browserpass; границы явно сохранены. CI syntheticmergecc5094a имеет точное дерево head415349. НовыйUIharness —6логическихстрок(4layoutmatrix+2A/Bsemantic),24invalidподслучая отдельно, не добавлять к236Node. A/Bполныйдокумент полезен дополнительно к sameversionRNG. [Заключение](evidence/review-HX-FB-001-415349/report.md). Выпуск отдельно, score1.2unknown/award0.
+
+
+27.10.2026 — стратег завершил текущую серию003 как negative/report-only: gain34–36% не заменяет navigationguard и nativehistory. Предложен один отдельный V3 в существующей003 (proposed, не разрешение исполнения): сбалансированный порядок, наблюдение cache/trace отдельно от timing,4целевыеnativehistoryпути, один45-минworkflow безавтоповтора. [Предложение](proposals/2026-10-27-HX-BL-003-final-validation.md). Уверенность в причине низкая; ценность — решение о безопасном ускорении, не рост баллов. Если unknown сохраняется, не начинать новый цикл ремонта измерителя. PR475 accepted415349 ждёт отдельного выпуска; цель/пороги/веса неизменны.
