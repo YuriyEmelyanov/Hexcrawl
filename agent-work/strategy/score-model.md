@@ -24,23 +24,24 @@ G0 — отсутствует; G1 — прототип работает в от�
 
 Пул определяется правилом reference_D > 1000 и документированным подходящим сценарием, без квоты на число игр. D — сценарная оценка потенциальной потребности, не измеренная аудитория и не факт поддержки. Источник: [единый рейтинг](../market/development-priorities.json). Оценка пригодности /25 и Q служат исследованию рынка, не заменяют продуктовую оценку /1000.
 
-Рабочий срез26.10.2026 опирается на сохранённый расчёт25.10: 53записи,11игр в пуле. Пограничные и неполные аудиты сохраняются явно; все прежние записи остаются в реестре. При новом подтверждённом расчёте обновляются версия и состав среза; прошлые evidence сохраняются.
+Рабочий срез27.10.2026: 53 записи,12 игр в пуле. Версия рейтинга2026-10-27-DW-FL-1; [равноправная проверка DW/FL](../market/DW-FL-ranking-2026-10-27.md). Предыдущий срез11игр сохранён в истории рейтинга/матрицы. Проверены основания сценариев и расчёт, размер рынка остаётся экспертным, не измеренным.
 
 | Место | Игра | Опорный D | Ограничение |
 |---|---|---:|---|
 | 1 | D&D 5e | 9159 | partial_new_audit_provisional |
-| 2 | Mythic Bastionland | 5982 | partial_rules_audit |
-| 3 | Knave 2e | 5942 | partial_primary_publisher_screening |
-| 4 | Pathfinder 2 | 5640 | previous_audit_carried_forward_without_new_validation |
-| 5 | Shadowdark | 4885 | previous_audit_carried_forward_without_new_validation |
-| 6 | Worlds Without Number | 3632 | partial_rules_audit |
-| 7 | Old-School Essentials | 3457 | previous_audit_carried_forward |
-| 8 | Forbidden Lands | 3124 | previous_audit_carried_forward_without_new_validation |
-| 9 | Mausritter | 1433 | partial_rules_audit_from_primary_indexed_SRD |
-| 10 | Swords & Wizardry Complete | 1328 | partial_older_edition_audit_family_population_proxy |
-| 11 | ACKS II / Judges Journal | 1094 | Пограничное прохождение; чувствительность к H |
+| 2 | Dolmenwood | 7821 | Проверен сценарий собственных мест; M/H/T экспертные |
+| 3 | Mythic Bastionland | 5982 | partial_rules_audit |
+| 4 | Knave 2e | 5942 | partial_primary_publisher_screening |
+| 5 | Pathfinder 2 | 5640 | previous_audit_carried_forward_without_new_validation |
+| 6 | Shadowdark | 4885 | previous_audit_carried_forward_without_new_validation |
+| 7 | Worlds Without Number | 3632 | partial_rules_audit |
+| 8 | Old-School Essentials | 3457 | previous_audit_carried_forward |
+| 9 | Forbidden Lands | 3124 | Проверен сценарий собственных мест; M/H/T экспертные |
+| 10 | Mausritter | 1433 | partial_rules_audit_from_primary_indexed_SRD |
+| 11 | Swords & Wizardry Complete | 1328 | partial_older_edition_audit_family_population_proxy |
+| 12 | ACKS II / Judges Journal | 1094 | undefined |
 
-Срез широты: топ-5=DND5, MB, KNAVE2, PF2, SD; топ-10=DND5, MB, KNAVE2, PF2, SD, WWN, OSE, FL, MAUS, SWC. Топ-20 пока не сформирован: в пуле11игр. Не добирать его играми ниже порога или без обоснованного сценария;11/11 не объявлять выполнением топ-20. G4 по игровым критериям с требованием топ-20 остаётся неподтверждённым до формирования и проверки полного набора; технические критерии этим не блокируются. Ступени5/10/20 не являются ограничением размера пула.
+Срез широты: топ-5=DND5, DW, MB, KNAVE2, PF2; топ-10=DND5, DW, MB, KNAVE2, PF2, SD, WWN, OSE, FL, MAUS. Топ-20 пока не сформирован: в пуле12игр. Не добирать его играми ниже порога или без обоснованного сценария;12/12 не объявлять выполнением топ-20. G4 по игровым критериям с требованием топ-20 остаётся неподтверждённым до формирования и проверки полного набора; технические критерии этим не блокируются. Ступени5/10/20 не являются ограничением размера пула. Изменение когорты не начисляет баллы продукта и не разрешает разработку/выпуск.
 
 ### Матрица требований и покрытия
 
