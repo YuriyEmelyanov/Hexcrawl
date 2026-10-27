@@ -43,7 +43,7 @@
   "plan_file_shas": null,
   "process_change_status": "dynamic_roles_approved_and_recorded",
   "schedule_start_at": "2026-10-24T01:00:00+03:00",
-  "schedule_frequency": "hourly",
+  "schedule_frequency": "every_three_hours",
   "process_path": "agent-work/process.md",
   "current_role": "developer",
   "next_role": "reviewer",
@@ -226,14 +226,15 @@
   "automation_health": {
     "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-10-27T21:42:05.110Z",
+      "checked_at": "2026-10-27T22:01:20.109Z",
       "status": "checked",
       "is_enabled": true
     },
     "end": {
-      "checked_at": "2026-10-27T21:51:46.048Z",
+      "checked_at": "2026-10-27T22:08:21.267Z",
       "status": "checked",
-      "is_enabled": true
+      "is_enabled": true,
+      "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261028T000000\nRRULE:FREQ=DAILY;BYHOUR=0,3,6,9,12,15,18,21;BYMINUTE=0;BYSECOND=0\nEND:VEVENT"
     },
     "restored_during_this_run": false,
     "errors": []
@@ -918,7 +919,7 @@
     "next_step": "Решить отдельно узкий cleanup AUD-02/03/04; готовую спецификацию024 не задерживать."
   },
   "owner_decisions_note": "Подтвердить предложенную адресную замену большого незавершённого historygate для003. HX-BL-024 уже утверждён, повторного согласования задачи не нужно; выпуск474 отдельно.",
-  "updated_at": "2026-10-27T21:52:07.755Z",
+  "updated_at": "2026-10-27T22:08:35.124Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
     "stage_id": "V3",
@@ -1376,7 +1377,7 @@
       "errors": []
     }
   },
-  "last_secondary_result_ref": "agent-work/results/2026-10-28-catalog-candidate-ranking.json",
+  "last_secondary_result_ref": "agent-work/results/2026-10-28-catalog-pass2.json",
   "execution_note": "Разрешены спецификация/разработка024 в утверждённых границах. Аудит002 выполнен, cleanup не начат.003 AC amendment/release не одобрены.",
   "completed_validation_handoffs": {
     "HX-BL-003": {
@@ -1670,12 +1671,12 @@
   "previous_automation_health": {
     "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-10-27T21:25:33.317Z",
+      "checked_at": "2026-10-27T21:42:05.110Z",
       "status": "checked",
       "is_enabled": true
     },
     "end": {
-      "checked_at": "2026-10-27T21:31:37.111Z",
+      "checked_at": "2026-10-27T21:51:46.048Z",
       "status": "checked",
       "is_enabled": true
     },
@@ -1894,19 +1895,45 @@
   "market_catalog_ranking": {
     "status": "completed_with_explicit_unknowns",
     "as_of": "2026-10-28",
-    "model_version": "three-scenario-ranks-1.1-catalog-extension",
-    "report_ref": "agent-work/market/three-scenario-ranking-2026-10-28.md",
-    "data_ref": "agent-work/market/three-scenario-ranking-2026-10-28.json",
-    "result_ref": "agent-work/results/2026-10-28-catalog-candidate-ranking.json",
-    "calculated": 56,
-    "unknown": 12,
-    "new_calculated": 11,
+    "model_version": "three-scenario-ranks-1.2-catalog-pass2",
+    "report_ref": "agent-work/market/three-scenario-ranking-2026-10-28-pass2.md",
+    "data_ref": "agent-work/market/three-scenario-ranking-2026-10-28-pass2.json",
+    "result_ref": "agent-work/results/2026-10-28-catalog-pass2.json",
+    "calculated": 70,
+    "unknown": 18,
+    "new_calculated": 14,
     "new_unknown": 6,
     "provisional_new_top10": [
-      "AWN",
-      "VAARN"
+      "MOTH",
+      "ROOT"
     ],
-    "next_step": "Выбирать игровые референсы по сценарию задачи;6новыхunknown не ранжировать до получения опорных данных.",
+    "next_step": "Завершить широкую перепись; адресно проверить наземной/региональный сценарийMothership и связьмодулей, незакрытуюпотребностьRootсучётомKeeper, островныемаршрутыPirateBorg. Не начинатьновуюразработкубезутверждения.",
     "product_score_changed": false
-  }
+  },
+  "market_catalog_pass2": {
+    "status": "completed_with_explicit_unknowns",
+    "as_of": "2026-10-28",
+    "role": "strategist_manager",
+    "report_ref": "agent-work/market/three-scenario-ranking-2026-10-28-pass2.md",
+    "data_ref": "agent-work/market/three-scenario-ranking-2026-10-28-pass2.json",
+    "result_ref": "agent-work/results/2026-10-28-catalog-pass2.json",
+    "new_candidates": 20,
+    "new_calculated": 14,
+    "new_unknown": 6,
+    "total_calculated": 70,
+    "total_unknown": 18,
+    "games_or_families": 88,
+    "next_step": "Завершить широкую перепись; адресно проверить наземной/региональный сценарийMothership и связьмодулей, незакрытуюпотребностьRootсучётомKeeper, островныемаршрутыPirateBorg. Не начинатьновуюразработкубезутверждения."
+  },
+  "schedule_hours": [
+    0,
+    3,
+    6,
+    9,
+    12,
+    15,
+    18,
+    21
+  ],
+  "schedule_decision_ref": "owner-decision-2026-10-28-three-hour-schedule"
 }
