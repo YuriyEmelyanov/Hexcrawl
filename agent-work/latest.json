@@ -26,10 +26,10 @@
   },
   "lessons_path": "agent-work/lessons.md",
   "plan_id": "2026-10-27:coordination:HX-BL-003",
-  "run_id": "2026-10-27:strategist:score475-next-work:1059Z",
+  "run_id": "2026-10-27:reviewer:HX-BL-003-release-risk:1203Z",
   "plan_revision": 1,
   "baseline_sha": "f89530abe1e237493dddb533502bb772ae1ab4e5",
-  "status": "release_risk_review_in_progress",
+  "status": "risk_review_completed_owner_ac_decision_pending",
   "planning_for": "2026-10-27",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-10-25",
@@ -46,24 +46,22 @@
   "schedule_frequency": "hourly",
   "process_path": "agent-work/process.md",
   "current_role": "reviewer",
-  "next_role": "reviewer",
+  "next_role": "business_analyst",
   "current_task_id": "HX-BL-003",
   "spec_path": null,
   "spec_version": null,
-  "result_path": "agent-work/results/2026-10-27-strategist-score475-next-work.json",
-  "handoff_commit_sha": "5774daf957802a381876aa55e395b463314226c9",
-  "active_claim": {
-    "run_id": "2026-10-27:reviewer:HX-BL-003-release-risk:1203Z",
-    "role": "reviewer",
-    "task_id": "HX-BL-003",
-    "stage": "release_risk_review",
-    "status": "in_progress",
-    "started_at": "2026-10-27T12:03:26.798Z",
-    "independent_agent": "/root/hx003_release_risk",
-    "scope": "Source/existing evidence review only; no newmeasurements/product edits/tests/release"
-  },
-  "next_step": "Проверяющий: по agent-work/handoffs/2026-10-27-HX-BL-003-release-risk-review.md сопоставить локальный diff с существующими тестами и evidence, обосновать минимальные недостающие проверки и применимость четвёртого сценария. Без новых замеров/изменения продукта/публикации. Затем конкретная передача программисту; HX-FB-002 и approved HX-BL-024 остаются в очереди.",
-  "owner_decisions_needed": [],
+  "result_path": "agent-work/results/2026-10-27-reviewer-HX-BL-003-release-risk.json",
+  "handoff_commit_sha": "5b2efd70f68e805ec47c6058ea4105103bd10624",
+  "active_claim": null,
+  "next_step": "Аналитик выполняет уже разрешённый HX-FB-002, затем спецификацию approved HX-BL-024. Для003 ожидается утверждение конкретной замены приёмки по agent-work/handoffs/2026-10-27-HX-BL-003-minimal-release-package.json; после решения — программист, чистый пакет и exactSHA проверки. Новых замеров/выпуска сейчас нет.",
+  "owner_decisions_needed": [
+    {
+      "task_id": "HX-BL-003",
+      "type": "acceptance_amendment",
+      "proposal_ref": "agent-work/handoffs/2026-10-27-HX-BL-003-minimal-release-package.json",
+      "release_permission_separate": true
+    }
+  ],
   "release_approval": {
     "task_id": "HX-FB-001",
     "status": "approved_and_executed",
@@ -73,13 +71,13 @@
     "deployment_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40452592898"
   },
   "historical_plan_status": "План23.10 сохранён как история; его блокировки и предложенный процесс заменены decisions24.10 в approvals/process/budget и текущим handoff.",
-  "evidence_path": "agent-work/results/2026-10-27-strategist-score475-next-work.json",
-  "branch_name": "agent-operations",
-  "pr": null,
-  "head_sha": "02c2fd5fcbdb2042f2708709ce4f20dfd7354787",
-  "checks_status": "release_tree_match_deploy_success_score_structure_verified",
-  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40452592898",
-  "review_verdict": "accepted_with_limits",
+  "evidence_path": "agent-work/evidence/HX-BL-003-release-risk-58adcce/report.md",
+  "branch_name": "agent/hx-bl-003-performance",
+  "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474",
+  "head_sha": "58adcce787549ff6baa3d0dd9f14dac6b34b9a97",
+  "checks_status": "read_only_source_existing_coverage_and_prior_exact_head_CI_reviewed",
+  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40461625216",
+  "review_verdict": "bounded_risk_minimal_plan_proposed_not_product_acceptance",
   "role_selection_mode": "ready_work_priority",
   "role_selection_source": "agent-work/process.md",
   "process_decision_ref": "owner-decision-2026-10-24-dynamic-roles",
@@ -200,15 +198,15 @@
   "score_update_release_sha": "02c2fd5fcbdb2042f2708709ce4f20dfd7354787",
   "score_process_decision_ref": "owner-decision-2026-10-24-score-responsibilities",
   "score_assessment_ref": "agent-work/results/2026-10-27-reviewer-HX-FB-001-415349.json",
-  "role_selection_reason": "Latest explicit owner instruction prioritizes narrow release-risk review003; no activeclaim.",
+  "role_selection_reason": "Latest explicitowner instruction requests narrow independentrelease-risk review before otherqueuedwork; noforeignclaim.",
   "score_update_result_ref": "agent-work/results/2026-10-27-strategist-score475-next-work.json",
   "score_update_completed_at": "2026-10-27T11:05:27.220Z",
   "score_update_delta": null,
   "score_history_path": "agent-work/score/history.json",
   "next_task_proposal_ref": "agent-work/proposals/2026-10-27-HX-BL-024-master-notes.md",
-  "next_task_id": "HX-BL-003",
+  "next_task_id": "HX-FB-002",
   "approval_ref": "owner-decision-2026-10-25-feedback-register",
-  "last_completed_stage": "release475_score_event_and_actionable_next_work",
+  "last_completed_stage": "independent_release_risk_review_minimal_plan_proposed",
   "previous_release_approval": {
     "status": "approved_and_executed",
     "approved_sha": "50d8b6f2414faa1f204cdd2a7ed936533707592c",
@@ -220,17 +218,24 @@
   "automation_health": {
     "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-10-27T11:39:40.567Z",
-      "status": "checked",
-      "is_enabled": true
+      "checked_at": "2026-10-27T12:02:55.304Z",
+      "is_enabled": true,
+      "status": "checked"
     },
     "end": {
-      "checked_at": "2026-10-27T11:41:11.160Z",
+      "checked_at": "2026-10-27T12:14:36.970Z",
       "status": "checked",
       "is_enabled": true
     },
     "restored_during_this_run": false,
-    "errors": []
+    "errors": [],
+    "checkpoints": [
+      {
+        "checked_at": "2026-10-27T12:11:26.933Z",
+        "status": "checked",
+        "is_enabled": true
+      }
+    ]
   },
   "open_findings": [
     {
@@ -252,7 +257,7 @@
       "evidence_ref": "agent-work/evidence/review-HX-BL-003-V3-58adcce/result.json"
     }
   ],
-  "current_review_score_assessment_status": "unknown_grades_no_award_release_event_processed",
+  "current_review_score_assessment_status": "insufficient_evidence_no_award_future_package_unknown",
   "target_audience_research": {
     "model_version": "1.1",
     "model_max_points": 25,
@@ -564,38 +569,41 @@
     "next_step": "Apply1.2 to next specification/review; preserve1.1 prior assessment until evidence-based reassessment; game breadth unverified."
   },
   "previous_active_claim": {
-    "run_id": "2026-10-27:strategist:score475-next-work:1059Z",
-    "role": "strategist",
-    "task_id": "HX-FB-001",
-    "scope": "Apply released475 assessment, coordinate completed003 and concrete next work/proposal",
+    "run_id": "2026-10-27:reviewer:HX-BL-003-release-risk:1203Z",
+    "role": "reviewer",
+    "task_id": "HX-BL-003",
+    "stage": "release_risk_review",
     "status": "completed",
-    "started_at": "2026-10-27T11:00:31.359Z",
-    "completed_at": "2026-10-27T11:05:27.220Z"
+    "started_at": "2026-10-27T12:03:26.798Z",
+    "independent_agent": "/root/hx003_release_risk",
+    "scope": "Source/existing evidence review only; no newmeasurements/product edits/tests/release",
+    "completed_at": "2026-10-27T12:12:46.356Z"
   },
   "review_request": {
     "task_id": "HX-BL-003",
-    "stage": "V3_result",
-    "status": "completed_negative_report_only",
+    "stage": "release_risk_review",
+    "status": "completed_owner_AC_decision_pending",
     "head_sha": "58adcce787549ff6baa3d0dd9f14dac6b34b9a97",
-    "result_ref": "agent-work/evidence/review-HX-BL-003-V3-58adcce/result.json",
-    "independent_agent": "/root/review_v3_result_58adcce",
-    "score_assessment_required": true,
-    "score_assessment_status": "saved_model1.2_unknown_no_award"
+    "result_ref": "agent-work/results/2026-10-27-reviewer-HX-BL-003-release-risk.json",
+    "independent_result_ref": "agent-work/evidence/HX-BL-003-release-risk-58adcce/result.json",
+    "confirmed_defects": [],
+    "product_acceptance": false,
+    "score_assessment_saved": true
   },
-  "reviewed_sha": "415349bc9fb9ce72fb2a8bc5e777cc98ea515bd0",
-  "current_review_score_assessment_ref": "agent-work/results/2026-10-27-reviewer-HX-FB-001-415349.json",
+  "reviewed_sha": "58adcce787549ff6baa3d0dd9f14dac6b34b9a97",
+  "current_review_score_assessment_ref": "agent-work/results/2026-10-27-reviewer-HX-BL-003-release-risk.json",
   "automatic_measurement_rerun_allowed": false,
   "repeat_review_requires": "material new evidence or changed source SHA",
   "blocked_task_handoffs": {
     "HX-BL-003": {
       "task_id": "HX-BL-003",
-      "status": "validation_phase_closed_package_held",
+      "status": "risk_review_completed_owner_ac_decision_pending",
       "head_sha": "58adcce787549ff6baa3d0dd9f14dac6b34b9a97",
       "branch_name": "agent/hx-bl-003-performance",
       "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474",
       "spec_path": "agent-work/specs/HX-BL-003.md",
-      "result_path": "agent-work/results/2026-10-27-developer-HX-BL-003-V3.json",
-      "next_step": "Подготовить адресную оценку рисков/покрытия; запрет новых замеров и выпуска сохраняется.",
+      "result_path": "agent-work/results/2026-10-27-reviewer-HX-BL-003-release-risk.json",
+      "next_step": "Ожидается утверждение замены приёмки HX-BL-003; затем программист по минимальной передаче и независимый finalSHA review.",
       "validation_plan": {
         "id": "HX-BL-003-V2",
         "status": "completed_nonpassing_no_automatic_rerun",
@@ -636,14 +644,14 @@
         "warmups_attempted": 4
       },
       "owner_decisions_needed": [],
-      "review_verdict": "negative_report_only",
+      "review_verdict": "bounded_risk_minimal_plan_proposed_not_product_acceptance",
       "reviewed_sha": "86100c390d8d4cf66cee6e87589be64ce51687e5",
       "current_review_score_assessment_ref": "agent-work/evidence/review-HX-BL-003-V3-58adcce/result.json",
       "checks_status": "exact_head_normal_CI_success",
       "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40461625216",
       "automatic_measurement_rerun_allowed": false,
       "canonical_task_path": "agent-work/backlog.json#HX-BL-003",
-      "next_role": "reviewer",
+      "next_role": "owner",
       "approval_result_ref": "agent-work/results/2026-10-26-HX-BL-003-V2-owner-approval.json",
       "spec_version": "1.1",
       "addendum_ref": "agent-work/specs/HX-BL-003-P1-V2.md",
@@ -661,10 +669,16 @@
       "followup_approval_ref": "owner-approval-2026-10-27-HX-BL-003-V3",
       "v3_spec_ref": "agent-work/specs/HX-BL-003-P1-V3.md",
       "v3_protocol_ref": "agent-work/specs/HX-BL-003-P1-V3.json",
-      "evidence_ref": "agent-work/evidence/HX-BL-003-V3-run40462370787/report.md",
-      "review_result_ref": "agent-work/evidence/review-HX-BL-003-V3-58adcce/result.json",
+      "evidence_ref": "agent-work/evidence/HX-BL-003-release-risk-58adcce/report.md",
+      "review_result_ref": "agent-work/evidence/HX-BL-003-release-risk-58adcce/result.json",
       "strategy_decision_ref": "agent-work/results/2026-10-27-strategist-score475-next-work.json",
-      "release_readiness_handoff_ref": "agent-work/handoffs/2026-10-27-HX-BL-003-release-risk-review.md"
+      "release_readiness_handoff_ref": "agent-work/handoffs/2026-10-27-HX-BL-003-release-risk-review.md",
+      "acceptance_change_proposal": {
+        "type": "acceptance_amendment",
+        "status": "proposed",
+        "decision_text": "Для чистого пакета единственной оптимизации заменить обязательное завершение четвёртой большой V3history на один короткий real-React debug lifecycle на существующих малых fixtures + штатные exact-head check/browser/RNG и независимую проверку итогового пакета. Цели сохранности данных/RNG/undo не ослаблять; старыйV3V305/V306 навсегда incomplete.",
+        "reason": "По независимому коду индекс влияет только на diagnostic counts; missingfourth OFF-history не добавляет уникальной ветки этой правки. Реальный непокрытый риск — React memo/onToggle/source refresh."
+      }
     }
   },
   "mockup_path": "agent-work/evidence/HX-FB-001-analyst/seed-before-after.svg",
@@ -675,8 +689,8 @@
     "next_role": "business_analyst",
     "next_step": "Разовый каталог и evidence-кандидаты keep/merge/update/remove без новых прогонов/удалений"
   },
-  "owner_decisions_note": "Утвердить HX-BL-024 для дальнейшей разработки. Уже разрешённый HX-FB-002 может выполняться сейчас;474 не предлагается к выпуску/повтору.",
-  "updated_at": "2026-10-27T11:07:06.918Z",
+  "owner_decisions_note": "Подтвердить предложенную адресную замену большого незавершённого historygate для003. HX-BL-024 уже утверждён, повторного согласования задачи не нужно; выпуск474 отдельно.",
+  "updated_at": "2026-10-27T12:14:45.083Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
     "stage_id": "V3",
@@ -860,13 +874,16 @@
     },
     "HX-BL-003-release-risk-review": {
       "task_id": "HX-BL-003",
-      "status": "ready_for_risk_review",
+      "status": "completed_owner_AC_decision_pending",
       "path": "agent-work/handoffs/2026-10-27-HX-BL-003-release-risk-review.md",
-      "result_ref": "agent-work/results/2026-10-27-HX-BL-003-release-next-step.json",
-      "next_role": "reviewer",
+      "result_ref": "agent-work/results/2026-10-27-reviewer-HX-BL-003-release-risk.json",
+      "next_role": "owner",
       "preparation_authorized": true,
       "measurement_allowed": false,
-      "release_approved": false
+      "release_approved": false,
+      "independent_ref": "agent-work/evidence/HX-BL-003-release-risk-58adcce/result.json",
+      "next_handoff_ref": "agent-work/handoffs/2026-10-27-HX-BL-003-minimal-release-package.json",
+      "new_execution_authorized_by_review": false
     }
   },
   "independent_reviewer_automation_health": {
@@ -983,7 +1000,7 @@
       "src/styles.css"
     ]
   },
-  "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/agent-operations/agent-work/evidence/review-HX-BL-003-V3-58adcce/report.md",
+  "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/agent-operations/agent-work/evidence/HX-BL-003-release-risk-58adcce/report.md",
   "coordination_handoff": {
     "status": "completed_actionable_outcome",
     "current_package_task_id": "HX-BL-003",
@@ -1043,7 +1060,7 @@
     "nav_status_success": 24,
     "png_captured": 4
   },
-  "evidence_ref": "agent-work/evidence/HX-BL-003-V3-run40462370787/report.md",
+  "evidence_ref": "agent-work/evidence/HX-BL-003-release-risk-58adcce/report.md",
   "static_diagnosis_handoff": {
     "status": "coordinated_nextstage_proposed",
     "result_ref": "agent-work/results/2026-10-27-developer-HX-BL-003-static-diagnosis.json",
@@ -1092,10 +1109,13 @@
   },
   "previous_review_request": {
     "task_id": "HX-BL-003",
-    "stage": "V3_offline_harness",
-    "status": "accepted",
+    "stage": "V3_result",
+    "status": "completed_negative_report_only",
     "head_sha": "58adcce787549ff6baa3d0dd9f14dac6b34b9a97",
-    "result_ref": "agent-work/evidence/HX-BL-003-V3-harness-58adcce/result.json"
+    "result_ref": "agent-work/evidence/review-HX-BL-003-V3-58adcce/result.json",
+    "independent_agent": "/root/review_v3_result_58adcce",
+    "score_assessment_required": true,
+    "score_assessment_status": "saved_model1.2_unknown_no_award"
   },
   "previous_plan": {
     "plan_json": "agent-work/plans/2026-10-23.json",
@@ -1129,7 +1149,7 @@
     }
   },
   "last_secondary_result_ref": "agent-work/results/2026-10-27-analyst-HX-BL-003-V3.json",
-  "execution_note": "Approved evidence-only HX-FB-002 audit ready; HX-BL-024 implementation requires ownerapproval; no474rerun/release",
+  "execution_note": "Только ужеготовая approved работа HX-FB-002/спецификация024. Новый этап003 условен ownerACdecision; benchmark/release не разрешены.",
   "completed_validation_handoffs": {
     "HX-BL-003": {
       "task_id": "HX-BL-003",
@@ -1359,13 +1379,30 @@
   },
   "release_risk_review_handoff": {
     "task_id": "HX-BL-003",
-    "status": "ready_for_risk_review",
+    "status": "completed_owner_AC_decision_pending",
     "path": "agent-work/handoffs/2026-10-27-HX-BL-003-release-risk-review.md",
-    "result_ref": "agent-work/results/2026-10-27-HX-BL-003-release-next-step.json",
-    "next_role": "reviewer",
+    "result_ref": "agent-work/results/2026-10-27-reviewer-HX-BL-003-release-risk.json",
+    "next_role": "owner",
     "preparation_authorized": true,
     "measurement_allowed": false,
-    "release_approved": false
+    "release_approved": false,
+    "independent_ref": "agent-work/evidence/HX-BL-003-release-risk-58adcce/result.json",
+    "next_handoff_ref": "agent-work/handoffs/2026-10-27-HX-BL-003-minimal-release-package.json",
+    "new_execution_authorized_by_review": false
   },
-  "previous_queue_next_step": "Аналитик: завершить готовый разовый каталог HX-FB-002, затем подготовить спецификацию утверждённой HX-BL-024 «Заметки мастера». После спецификации — программист и независимая проверка; выпуск отдельно."
+  "previous_queue_next_step": "Аналитик: завершить готовый разовый каталог HX-FB-002, затем подготовить спецификацию утверждённой HX-BL-024 «Заметки мастера». После спецификации — программист и независимая проверка; выпуск отдельно.",
+  "actual_main_sha": "02c2fd5fcbdb2042f2708709ce4f20dfd7354787",
+  "future_head_sha": null,
+  "future_tree_sha": null,
+  "current_package_release_approval": {
+    "task_id": "HX-BL-003",
+    "status": "not_approved",
+    "future_sha": null,
+    "acceptance_decision_pending": true
+  },
+  "current_risk_findings": {
+    "confirmed_defects": [],
+    "coverage_gap": "realReact debug toggle/nonzerocounts/currentSource refresh",
+    "conditional_programmer_handoff": "agent-work/handoffs/2026-10-27-HX-BL-003-minimal-release-package.json"
+  }
 }
