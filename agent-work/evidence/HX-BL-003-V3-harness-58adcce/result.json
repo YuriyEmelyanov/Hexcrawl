@@ -1,0 +1,120 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-003",
+  "stage_id": "HX-BL-003-V3",
+  "role": "independent_offline_reviewer",
+  "head_sha": "58adcce787549ff6baa3d0dd9f14dac6b34b9a97",
+  "base_sha": "86100c390d8d4cf66cee6e87589be64ce51687e5",
+  "previous_review_head": "7f4ee86e8780b255389b988251e396de31f2cc34",
+  "verdict": "accepted",
+  "scope": "offline_harness_gate_only",
+  "findings": [],
+  "fixed_findings": [
+    "V3-HR-01",
+    "V3-HR-02"
+  ],
+  "execution_condition": "Successful normal exact-head CI must also be confirmed before one approved execution branch creation at the same SHA",
+  "product_acceptance": false,
+  "release_allowed": false,
+  "measured_attempt_consumed": false,
+  "open_product_findings": [
+    "RV2",
+    "RV5"
+  ],
+  "report": "report.md",
+  "evidence": "offline-diagnostics.json",
+  "canonical_protocol": {
+    "md_commit": "4c497e202869f602ca3dd68a719d3bf28b9c1653",
+    "md_blob": "bc64e1279719320bb9dff70ff3cdd4eef349b615",
+    "json_commit": "8830f1cef0b55619a94607906c06389deb18af20",
+    "json_blob": "7323ba0da07c41b4e972e28aff7512889dcfd3df"
+  },
+  "automation_health": {
+    "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-10-27T06:31:45.868Z",
+      "is_enabled": true,
+      "error": false
+    },
+    "end": {
+      "at": "2026-10-27T06:33:41.152Z",
+      "is_enabled": true,
+      "error": false
+    },
+    "restored": false
+  },
+  "test_change_summary": {
+    "base_sha": "86100c390d8d4cf66cee6e87589be64ce51687e5",
+    "head_sha": "58adcce787549ff6baa3d0dd9f14dac6b34b9a97",
+    "added": 0,
+    "removed": 0,
+    "modified": 0,
+    "suite": "all permanent suites",
+    "count_source": "exact git diff/source review",
+    "scenario_risk": "Initial startup transaction baseline and immutable source/build inventory",
+    "reuse_or_new_reason": "Existing Check commands/cases reused; bounded measurement and pure reviewer diagnostics separate",
+    "reviewer_diagnostics": {
+      "positive": "valid startup entropy, raw preservation, typed roundtrip, empty startup Maps",
+      "negative_cases_rejected": 5
+    },
+    "normal_ci": "Collected by parent; not asserted passed"
+  },
+  "score_assessment": {
+    "model_version": "1.2",
+    "head_sha": "58adcce787549ff6baa3d0dd9f14dac6b34b9a97",
+    "method": "Independent exact-source offline gate and pure diagnostics",
+    "criteria": [
+      {
+        "criterion_id": "S09-C01",
+        "before_grade": "unknown",
+        "before_points": null,
+        "after_grade": "unknown",
+        "after_points": null,
+        "delta": null,
+        "status": "insufficient_evidence",
+        "awarded": 0
+      },
+      {
+        "criterion_id": "S02-C01",
+        "before_grade": "unknown",
+        "before_points": null,
+        "after_grade": "unknown",
+        "after_points": null,
+        "delta": null,
+        "status": "insufficient_evidence",
+        "awarded": 0
+      },
+      {
+        "criterion_id": "S03-C05",
+        "before_grade": "unknown",
+        "before_points": null,
+        "after_grade": "unknown",
+        "after_points": null,
+        "delta": null,
+        "status": "insufficient_evidence",
+        "awarded": 0
+      },
+      {
+        "criterion_id": "S04-C04",
+        "before_grade": "unknown",
+        "before_points": null,
+        "after_grade": "unknown",
+        "after_points": null,
+        "delta": null,
+        "status": "insufficient_evidence",
+        "awarded": 0
+      },
+      {
+        "criterion_id": "S09-C04",
+        "before_grade": "unknown",
+        "before_points": null,
+        "after_grade": "unknown",
+        "after_points": null,
+        "delta": null,
+        "status": "insufficient_evidence",
+        "awarded": 0
+      }
+    ],
+    "limitations": "No product transition or release acceptance; RV2/RV5 remain open"
+  }
+}
