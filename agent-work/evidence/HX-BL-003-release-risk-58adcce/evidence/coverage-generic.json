@@ -1,0 +1,168 @@
+[
+  {
+    "path": "test/audit/road-model.mjs",
+    "matches": [
+      {
+        "line": 9,
+        "text": "const summary={clicks:0,tracts:0,interiorDeadEnds:0,sealedDeadEnds:0,belowRoadMinimum:0,tractsBelowSettledReference:0,belowWildTrailAttempts:0,oldSegmentsRemoved:0,oldInteriorSegmentsAdded:0,undoMismatch:0};"
+      },
+      {
+        "line": 35,
+        "text": " summary.clicks++;summary.tracts+=!!region.isTract;"
+      },
+      {
+        "line": 36,
+        "text": " summary.interiorDeadEnds+=dead.filter(d=>d.kind==='interior').length;"
+      },
+      {
+        "line": 37,
+        "text": " summary.sealedDeadEnds+=dead.filter(d=>d.kind==='sealed').length;"
+      },
+      {
+        "line": 38,
+        "text": " summary.belowRoadMinimum+=!region.isTract&&roadMinimum!==null&&mainRoadCount<roadMinimum;"
+      },
+      {
+        "line": 39,
+        "text": " summary.tractsBelowSettledReference+=!!region.isTract&&roadMinimum!==null&&mainRoadCount<roadMinimum;"
+      },
+      {
+        "line": 40,
+        "text": " summary.belowWildTrailAttempts+=wildTrailAttempts!==null&&trailCount<wildTrailAttempts;"
+      },
+      {
+        "line": 41,
+        "text": " summary.oldSegmentsRemoved+=removed.length;summary.oldInteriorSegmentsAdded+=addedOld.length;"
+      },
+      {
+        "line": 52,
+        "text": " if(JSON.stringify(h.render().createSaveData().map)!==JSON.stringify(before.map))summary.undoMismatch++;"
+      },
+      {
+        "line": 69,
+        "text": "emit({kind:'summary',...summary});"
+      }
+    ]
+  },
+  {
+    "path": "test/browser/forest-display.smoke.mjs",
+    "matches": [
+      {
+        "line": 50,
+        "text": " const menu=page.locator('details.export-menu');if(await menu.getAttribute('open')===null)await menu.locator('summary').click();"
+      }
+    ]
+  },
+  {
+    "path": "test/browser/generation.smoke.mjs",
+    "matches": [
+      {
+        "line": 73,
+        "text": "    const menu = page.locator('details.export-menu');"
+      },
+      {
+        "line": 74,
+        "text": "    if (await menu.getAttribute('open') === null) await menu.locator('summary').click();"
+      },
+      {
+        "line": 90,
+        "text": "    const before = await page.locator('details.export-menu').count() ? await snapshot() : null;"
+      },
+      {
+        "line": 154,
+        "text": "  await page.waitForFunction(expected => Array.from(document.querySelectorAll('.debug-panel-body p'))"
+      },
+      {
+        "line": 188,
+        "text": "  assert.deepEqual(verboseLogs, [], 'ordinary mode must not emit debug console.log');"
+      },
+      {
+        "line": 196,
+        "text": "  await page.waitForFunction(expected => Array.from(document.querySelectorAll('.debug-panel-body p'))"
+      }
+    ]
+  },
+  {
+    "path": "test/browser/navigation.smoke.mjs",
+    "matches": [
+      {
+        "line": 76,
+        "text": " const menu=page.locator('details.export-menu');await menu.locator('summary').click();"
+      },
+      {
+        "line": 83,
+        "text": " if(process.env.NAV_BASELINE){const old=await setup(4181);baseline=await exercise(old,false);await old.locator('.rotate-map-button').click();assert.equal(await old.locator('[data-biome-display]').evaluate(s=>s.innerHTML),await page.locator('[data-biome-display]').evaluate(s=>s.innerHTML),'Artwork matches the production baseline');console.log('NAV_TIMINGS '+JSON.stringify({optimized:result,baseline}));await old.locator('details.export-menu summary').click();const [oldDownload]=await Promise.all([old.waitForEvent('download'),old.getByRole('button',{name:'PNG',exact:true}).click()]);assert.ok(png.equals(await fs.readFile(await oldDownload.path())),'Navigation preserves byte-identical full PNG output');await old.close();}"
+      }
+    ]
+  },
+  {
+    "path": "test/browser/poi-display.smoke.mjs",
+    "matches": [
+      {
+        "line": 114,
+        "text": "    const menu = page.locator('details.export-menu');"
+      },
+      {
+        "line": 115,
+        "text": "    if (await menu.getAttribute('open') === null) await menu.locator('summary').click();"
+      }
+    ]
+  },
+  {
+    "path": "test/browser/save-history.smoke.mjs",
+    "matches": [
+      {
+        "line": 41,
+        "text": "   const menu=page.locator('details.export-menu');if(await menu.getAttribute('open')===null)await menu.locator('summary').click();"
+      }
+    ]
+  },
+  {
+    "path": "test/browser/terrain-color.smoke.mjs",
+    "matches": [
+      {
+        "line": 42,
+        "text": "    const menu=page.locator('details.export-menu');"
+      },
+      {
+        "line": 43,
+        "text": "    if(await menu.getAttribute('open')===null) await menu.locator('summary').click();"
+      }
+    ]
+  },
+  {
+    "path": "test/browser/world-random.smoke.mjs",
+    "matches": [
+      {
+        "line": 26,
+        "text": "  const snapshot=async()=>{await page.evaluate(()=>window.__exported=null);const menu=page.locator('details.export-menu');if(await menu.getAttribute('open')===null)await menu.locator('summary').click();await button('JSON').click();await page.waitForFunction(()=>window.__exported!==null);return page.evaluate(()=>{const d=window.__exported;delete d.savedAt;return d;});};"
+      },
+      {
+        "line": 92,
+        "text": "   const png=a.button('PNG');await png.waitFor();await a.page.waitForFunction(()=>!document.querySelector('details.export-menu button').disabled);"
+      },
+      {
+        "line": 132,
+        "text": "    const menu=a.page.locator('details.export-menu');if(await menu.getAttribute('open')===null)await menu.locator('summary').click();"
+      }
+    ]
+  },
+  {
+    "path": "test/generationDiagnostics.test.mjs",
+    "matches": [
+      {
+        "line": 31,
+        "text": "test('exhausted attempts produce one contextual summary and no debug stream', () => {"
+      }
+    ]
+  },
+  {
+    "path": "test/seaRecovery.test.mjs",
+    "matches": [
+      {
+        "line": 16,
+        "text": " assert.equal(event.length,1,'one summary for the entire action');"
+      }
+    ]
+  }
+]

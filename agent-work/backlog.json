@@ -102,7 +102,7 @@
       "task_id": "HX-BL-003",
       "title": "Производительность генерации и навигации по числу гексов",
       "criterion_id": "S09-C01",
-      "status": "validation_phase_closed_package_held",
+      "status": "risk_review_completed_owner_ac_decision_pending",
       "potential_delta": null,
       "approval_ref": "owner-approval-2026-10-25-HX-BL-003",
       "source": {
@@ -229,11 +229,11 @@
         "approval_ref": "owner-approval-2026-10-25-HX-BL-003",
         "next_step": "Программист: закрепить корпус и P1 manifest до baseline замеров, затем профиль и одно подтверждённое узкое место по spec1.0."
       },
-      "next_role": "reviewer",
-      "next_step": "Независимо оценить риск локальной оптимизации и существующее покрытие по agent-work/handoffs/2026-10-27-HX-BL-003-release-risk-review.md; выдать минимальный адресный план доведения до выпуска, без новых замеров. Пакет остаётся удержанным.",
+      "next_role": "owner",
+      "next_step": "Ожидается утверждение замены приёмки HX-BL-003; затем программист по минимальной передаче и независимый finalSHA review.",
       "spec_ref": "agent-work/specs/HX-BL-003.md",
       "spec_version": "1.2",
-      "spec_status": "ready_for_V3_harness_preparation",
+      "spec_status": "existing_spec_retained_acceptance_amendment_proposed",
       "execution_allowed": false,
       "owner_role": "strategist",
       "claim": null,
@@ -330,11 +330,11 @@
         "visual": "agent-work/evidence/HX-BL-003-developer/isolated-visual-raw.json",
         "log": "agent-work/evidence/HX-BL-003-developer/ci-recovery-40252325923.log"
       },
-      "review_verdict": "negative_report_only",
+      "review_verdict": "bounded_risk_minimal_plan_proposed_not_product_acceptance",
       "reviewed_sha": "58adcce787549ff6baa3d0dd9f14dac6b34b9a97",
       "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474#pullrequestreview-5659064586",
-      "review_result_ref": "agent-work/evidence/review-HX-BL-003-V3-58adcce/result.json",
-      "review_evidence_ref": "agent-work/evidence/review-HX-BL-003-V3-58adcce/report.md",
+      "review_result_ref": "agent-work/results/2026-10-27-reviewer-HX-BL-003-release-risk.json",
+      "review_evidence_ref": "agent-work/evidence/HX-BL-003-release-risk-58adcce/report.md",
       "open_findings": [
         {
           "id": "HX003-RV2",
@@ -357,9 +357,12 @@
       ],
       "score_assessment": {
         "model_version": "1.2",
-        "sha": "58adcce787549ff6baa3d0dd9f14dac6b34b9a97",
-        "awarded_points": 0,
-        "released_score_changed": false,
+        "model_path": "agent-work/strategy/score-model.md",
+        "model_blob": "bf22bd53a75f5f337c637bf94922d12915ffbd74",
+        "review_sha": "58adcce787549ff6baa3d0dd9f14dac6b34b9a97",
+        "status": "insufficient_evidence",
+        "award": 0,
+        "product_score_changed": false,
         "criteria": [
           {
             "criterion_id": "S09-C01",
@@ -369,10 +372,17 @@
             "before_points": null,
             "after_points": null,
             "delta": null,
+            "award": 0,
             "status": "insufficient_evidence",
-            "method": "finite raw statistics, typed-native/JSON and trace offline review",
-            "evidence": "diagnostics.json; report.md; run40462370787",
-            "limitations": "Finite guard pass; no validated causal attribution or broad performance/Android threshold proof; previous V2 negative retained."
+            "review_sha": "58adcce787549ff6baa3d0dd9f14dac6b34b9a97",
+            "method": "read_only_code_existing_test_and_preserved_evidence_review",
+            "evidence": [
+              "report.md#risk--existing-coverage--gap",
+              "evidence/check-run.json",
+              "evidence/check-jobs.json",
+              "evidence/priorreview.txt"
+            ],
+            "limitations": "Preserved V2/V3 finite measurements; conflicting navigation outcomes and unknown causality, no final-main package evidence."
           },
           {
             "criterion_id": "S02-C01",
@@ -382,10 +392,17 @@
             "before_points": null,
             "after_points": null,
             "delta": null,
+            "award": 0,
             "status": "insufficient_evidence",
-            "method": "finite raw statistics, typed-native/JSON and trace offline review",
-            "evidence": "diagnostics.json; report.md; run40462370787",
-            "limitations": "Complete input0 A/B comparison and three local sequences validated; input1 B continuation/history/selection incomplete. Finite fixtures do not establish full model1.2 grade."
+            "review_sha": "58adcce787549ff6baa3d0dd9f14dac6b34b9a97",
+            "method": "read_only_code_existing_test_and_preserved_evidence_review",
+            "evidence": [
+              "report.md#risk--existing-coverage--gap",
+              "evidence/check-run.json",
+              "evidence/check-jobs.json",
+              "evidence/priorreview.txt"
+            ],
+            "limitations": "No RNG calls in guarded path; existing browser RNG exact-head success; targeted debug invariance missing."
           },
           {
             "criterion_id": "S03-C05",
@@ -395,10 +412,17 @@
             "before_points": null,
             "after_points": null,
             "delta": null,
+            "award": 0,
             "status": "insufficient_evidence",
-            "method": "finite raw statistics, typed-native/JSON and trace offline review",
-            "evidence": "diagnostics.json; report.md; run40462370787",
-            "limitations": "Complete input0 A/B comparison and three local sequences validated; input1 B continuation/history/selection incomplete. Finite fixtures do not establish full model1.2 grade."
+            "review_sha": "58adcce787549ff6baa3d0dd9f14dac6b34b9a97",
+            "method": "read_only_code_existing_test_and_preserved_evidence_review",
+            "evidence": [
+              "report.md#risk--existing-coverage--gap",
+              "evidence/check-run.json",
+              "evidence/check-jobs.json",
+              "evidence/priorreview.txt"
+            ],
+            "limitations": "Existing Node/browser transactions plus partial V3 typed native snapshots; pending clean-head exact checks/debug lifecycle."
           },
           {
             "criterion_id": "S04-C04",
@@ -408,10 +432,17 @@
             "before_points": null,
             "after_points": null,
             "delta": null,
+            "award": 0,
             "status": "insufficient_evidence",
-            "method": "finite raw statistics, typed-native/JSON and trace offline review",
-            "evidence": "diagnostics.json; report.md; run40462370787",
-            "limitations": "Complete input0 A/B comparison and three local sequences validated; input1 B continuation/history/selection incomplete. Finite fixtures do not establish full model1.2 grade."
+            "review_sha": "58adcce787549ff6baa3d0dd9f14dac6b34b9a97",
+            "method": "read_only_code_existing_test_and_preserved_evidence_review",
+            "evidence": [
+              "report.md#risk--existing-coverage--gap",
+              "evidence/check-run.json",
+              "evidence/check-jobs.json",
+              "evidence/priorreview.txt"
+            ],
+            "limitations": "Existing save-history roundtrip and preserved historical output evidence; no final clean-tree assessment."
           },
           {
             "criterion_id": "S09-C04",
@@ -421,15 +452,22 @@
             "before_points": null,
             "after_points": null,
             "delta": null,
+            "award": 0,
             "status": "insufficient_evidence",
-            "method": "finite raw statistics, typed-native/JSON and trace offline review",
-            "evidence": "diagnostics.json; report.md; run40462370787",
-            "limitations": "Complete input0 A/B comparison and three local sequences validated; input1 B continuation/history/selection incomplete. Finite fixtures do not establish full model1.2 grade."
+            "review_sha": "58adcce787549ff6baa3d0dd9f14dac6b34b9a97",
+            "method": "read_only_code_existing_test_and_preserved_evidence_review",
+            "evidence": [
+              "report.md#risk--existing-coverage--gap",
+              "evidence/check-run.json",
+              "evidence/check-jobs.json",
+              "evidence/priorreview.txt"
+            ],
+            "limitations": "Existing rollback/busy/delayed-import tests; guard adds no async callbacks; future head unverified."
           }
         ]
       },
-      "score_assessment_status": "insufficient_evidence_model1.2_unknown_no_award",
-      "acceptance_status": "not_release_ready",
+      "score_assessment_status": "insufficient_evidence_1.2_no_award_no_final_package",
+      "acceptance_status": "owner_AC_decision_then_clean_package_checks_pending",
       "automatic_measurement_rerun_allowed": false,
       "repeat_review_requires": "material new evidence or changed source SHA",
       "developer_response_ref": "agent-work/results/2026-10-27-developer-HX-BL-003-static-diagnosis.json",
@@ -510,7 +548,14 @@
         "max_total_authorized_workflow_attempts": 3,
         "warmups_attempted": 4
       },
-      "owner_decisions_needed": [],
+      "owner_decisions_needed": [
+        {
+          "task_id": "HX-BL-003",
+          "type": "acceptance_amendment",
+          "proposal_ref": "agent-work/handoffs/2026-10-27-HX-BL-003-minimal-release-package.json",
+          "release_permission_separate": true
+        }
+      ],
       "measurement_execution_allowed_after": "V3harness freeze + exactSHA CI + independent offline review; currently protocol only",
       "validation_addendum_ref": "agent-work/specs/HX-BL-003-P1-V3.md",
       "analyst_result_ref": "agent-work/results/2026-10-27-analyst-HX-BL-003-V3.json",
@@ -527,9 +572,9 @@
         "reason": "43min global soft deadline; final archive uploaded before45min cap"
       },
       "previous_review": {
-        "sha": "df879cb8d68cf876397aa5611f561a48482ae191",
-        "url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474#pullrequestreview-5656724813",
-        "result_ref": "agent-work/results/2026-10-26-reviewer-HX-BL-003-df879cb.json"
+        "head_sha": "58adcce787549ff6baa3d0dd9f14dac6b34b9a97",
+        "result_ref": "agent-work/evidence/review-HX-BL-003-V3-58adcce/result.json",
+        "verdict": "negative_report_only"
       },
       "finding_status": {
         "HX003-RV1": "resolved_two_large_PNG_pairs_independently_exact_RGBA_equal",
@@ -798,7 +843,21 @@
         "preparation_authorized_by": "Прямое поручение27.10 «Подготовь следующий шаг для этой задачи»",
         "measurement_allowed": false,
         "release_approved": false
-      }
+      },
+      "release_risk_review_handoff": {
+        "status": "completed",
+        "path": "agent-work/handoffs/2026-10-27-HX-BL-003-release-risk-review.md",
+        "result_ref": "agent-work/results/2026-10-27-reviewer-HX-BL-003-release-risk.json",
+        "independent_ref": "agent-work/evidence/HX-BL-003-release-risk-58adcce/result.json",
+        "next_handoff_ref": "agent-work/handoffs/2026-10-27-HX-BL-003-minimal-release-package.json"
+      },
+      "acceptance_change_proposal": {
+        "type": "acceptance_amendment",
+        "status": "proposed",
+        "decision_text": "Для чистого пакета единственной оптимизации заменить обязательное завершение четвёртой большой V3history на один короткий real-React debug lifecycle на существующих малых fixtures + штатные exact-head check/browser/RNG и независимую проверку итогового пакета. Цели сохранности данных/RNG/undo не ослаблять; старыйV3V305/V306 навсегда incomplete.",
+        "reason": "По независимому коду индекс влияет только на diagnostic counts; missingfourth OFF-history не добавляет уникальной ветки этой правки. Реальный непокрытый риск — React memo/onToggle/source refresh."
+      },
+      "minimal_release_handoff_ref": "agent-work/handoffs/2026-10-27-HX-BL-003-minimal-release-package.json"
     },
     {
       "task_id": "HX-BL-004",

@@ -161,3 +161,6 @@
 
 
 27.10.2026 — стратег обработал выпуск475 по идентичному reviewed/released tree3892b812. Model1.2 reviewer grades unknown не превращаются в193.75 балла1.1 или в нулевую оценку продукта: releaseevent completed/award0, delta unknown; прежний реестр1.1 архивирован без потери,50весов/1000 и коэффициенты сохранены.003 закрыт как ограниченный report-only: evidence gap не объявлен дефектом; запрет выпуска не останавливает команду. Готова разрешённая передача HX-FB-002 и конкретное предложение HX-BL-024. Источник: results/2026-10-27-strategist-score475-next-work.json.
+
+
+27.10.2026 — independent003risk review: число200+/240проверок не закрывает React useMemo/onToggle, когдаNodeharnessвыполняетfnнемедленно. Выявленодиннепокрытыйпуть — ненулевыеdiagnosticcountsпослеоткрытия/обновленияпанели. Generationhelperвызываетсяотдельно; guardedhelperнепишетdocument/RNG, нопишетgeometrycache — не называтьегострогочистым. ПропущеннаячетвёртаяlargeOFFhistoryнеимеетуникальнойветкиэтойлокальнойправки; предложитьявнуюмалуюACзамену, анеповторятьgenericnativehistory. ExistingfinalSHARng/savehistoryпокрываютобщиеundo/import;новыйnativeaccessorнеявляетсябазовымтребованием. Source/evidence: evidence/HX-BL-003-release-risk-58adcce/report.md. РешениеACещёнепринято; непубликоватьподвидомreviewacceptance.
