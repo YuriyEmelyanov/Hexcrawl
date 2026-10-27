@@ -1,0 +1,294 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-10-27:reviewer:HX-FB-001:0003Z",
+  "date": "2026-10-27",
+  "role": "reviewer",
+  "task_id": "HX-FB-001",
+  "status": "accepted_awaiting_release_approval",
+  "review_verdict": "accepted_with_limits",
+  "base_sha": "103d31b9f6f5c76b1f6b45d9d6664fe3f75dd63b",
+  "head_sha": "415349bc9fb9ce72fb2a8bc5e777cc98ea515bd0",
+  "independent_agent": "/root/review_seed_415349",
+  "spec_ref": "agent-work/specs/HX-FB-001.md",
+  "spec_version": "1.1",
+  "evidence_ref": "agent-work/evidence/review-HX-FB-001-415349/report.md",
+  "independent_result_ref": "agent-work/evidence/review-HX-FB-001-415349/independent-result.json",
+  "checks": {
+    "normal_run": {
+      "id": 40284793669,
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "415349bc9fb9ce72fb2a8bc5e777cc98ea515bd0"
+    },
+    "ui_run": {
+      "id": 40284793677,
+      "status": "completed",
+      "conclusion": "success",
+      "job_id": 121445804690
+    },
+    "tested_commit": {
+      "sha": "cc5094a62fe173eaa559c1362cf823315ff49455",
+      "tree": "3892b812c0910eced73c8abf676f17cb267bba11",
+      "parents": [
+        "103d31b9f6f5c76b1f6b45d9d6664fe3f75dd63b",
+        "415349bc9fb9ce72fb2a8bc5e777cc98ea515bd0"
+      ]
+    },
+    "head_commit": {
+      "sha": "415349bc9fb9ce72fb2a8bc5e777cc98ea515bd0",
+      "tree": "3892b812c0910eced73c8abf676f17cb267bba11",
+      "parents": [
+        "b2a59d452776f56683806ef524c6606d5e9adf14"
+      ]
+    },
+    "same_tree": true,
+    "node": {
+      "tests": 236,
+      "passed": 236,
+      "failed": 0,
+      "skipped": 0
+    },
+    "browser": {
+      "commands": 7,
+      "status": "passed",
+      "not_summed_with_node": true
+    },
+    "rng": {
+      "status": "passed",
+      "modes": [
+        "classic",
+        "mythic"
+      ],
+      "seeds": [
+        0,
+        1,
+        123456789,
+        4294967295
+      ],
+      "additional": "invalid/noop/busy/delayedimport and history guards"
+    },
+    "logs_fetched_from_GitHub": true
+  },
+  "test_change_summary": {
+    "base_sha": "103d31b9f6f5c76b1f6b45d9d6664fe3f75dd63b",
+    "head_sha": "415349bc9fb9ce72fb2a8bc5e777cc98ea515bd0",
+    "count_source": "Exact GitHub compare5paths and scripts/hx-fb-001-ui.mjs loops + archivedresult rows6; count logical runnerrows, notassertions/screenshots",
+    "added": 6,
+    "removed": 0,
+    "modified": 0,
+    "suites": [
+      {
+        "suite": "Node check",
+        "added": 0,
+        "removed": 0,
+        "modified": 0,
+        "executed": 236,
+        "passed": 236,
+        "skipped": 0
+      },
+      {
+        "suite": "Existing browser smoke/RNG",
+        "added": 0,
+        "removed": 0,
+        "modified": 0,
+        "execution": "All existing commands success; not summed with236Nodecases",
+        "logical_case_count": "not recomputed; sourceunchanged"
+      },
+      {
+        "suite": "HX-FB-001 standalone UIacceptance",
+        "added": 6,
+        "removed": 0,
+        "modified": 0,
+        "executed": 6,
+        "passed": 6,
+        "skipped": 0,
+        "parameterization": {
+          "layout_and_input": 4,
+          "widths": [
+            1500,
+            390
+          ],
+          "languages": [
+            "ru",
+            "en"
+          ],
+          "invalid_input_subcases": 24,
+          "semantic_roundtrip": 2,
+          "modes": [
+            "classic",
+            "mythic"
+          ]
+        },
+        "scenario_risk": "Seedlayout/10digittext/menuoverlap/focus/validation plus A/BfullJSON/streams/undo/importcontinuation",
+        "reuse_or_new_reason": "existing RNG/history coverage lacks requested layout/geometry and bounded before-after UI snapshot comparisons",
+        "evidence": "UI40284793677 and full job121445804690 log"
+      }
+    ],
+    "temporary_review_diagnostics": {
+      "kind": "Independent artifact SHA256/source/22image inspection",
+      "permanent_cases_added": 0,
+      "new_browser_runs": 0
+    },
+    "changed_paths": [
+      ".github/workflows/hx-fb-001.yml",
+      "docs/seed-control.md",
+      "scripts/hx-fb-001-ui.mjs",
+      "src/App.tsx",
+      "src/styles.css"
+    ]
+  },
+  "score_assessment": {
+    "model_version": "1.2",
+    "status": "score_neutral_regression_review_grades_insufficient_evidence",
+    "awarded_points": 0,
+    "criteria": [
+      {
+        "criterion_id": "S02-C01",
+        "weight": 30,
+        "before": {
+          "model": "1.2",
+          "grade": "unknown",
+          "points": null
+        },
+        "after": {
+          "model": "1.2",
+          "grade": "unknown",
+          "points": null
+        },
+        "delta_points": null,
+        "expected_effect": "score-neutral",
+        "historical_1_1": {
+          "grade": "G1",
+          "points": 7.5
+        },
+        "sha": "415349bc9fb9ce72fb2a8bc5e777cc98ea515bd0",
+        "method": "independent source/harness/artifact inspection; complementary exact-content CI root verification",
+        "evidence": "seed/streams/full-document first-next-continuation",
+        "limitation": "Finite regression scope insufficient for full1.2regrading; historical1.1not migrated"
+      },
+      {
+        "criterion_id": "S03-C05",
+        "weight": 20,
+        "before": {
+          "model": "1.2",
+          "grade": "unknown",
+          "points": null
+        },
+        "after": {
+          "model": "1.2",
+          "grade": "unknown",
+          "points": null
+        },
+        "delta_points": null,
+        "expected_effect": "score-neutral",
+        "historical_1_1": {
+          "grade": "G2",
+          "points": 10
+        },
+        "sha": "415349bc9fb9ce72fb2a8bc5e777cc98ea515bd0",
+        "method": "independent source/harness/artifact inspection; complementary exact-content CI root verification",
+        "evidence": "undo/redo/reset and unchanged transaction guards",
+        "limitation": "Finite regression scope insufficient for full1.2regrading; historical1.1not migrated"
+      },
+      {
+        "criterion_id": "S04-C04",
+        "weight": 15,
+        "before": {
+          "model": "1.2",
+          "grade": "unknown",
+          "points": null
+        },
+        "after": {
+          "model": "1.2",
+          "grade": "unknown",
+          "points": null
+        },
+        "delta_points": null,
+        "expected_effect": "score-neutral",
+        "historical_1_1": {
+          "grade": "G2",
+          "points": 7.5
+        },
+        "sha": "415349bc9fb9ce72fb2a8bc5e777cc98ea515bd0",
+        "method": "independent source/harness/artifact inspection; complementary exact-content CI root verification",
+        "evidence": "JSON full-document transfer plus menu frames",
+        "limitation": "Finite regression scope insufficient for full1.2regrading; historical1.1not migrated"
+      },
+      {
+        "criterion_id": "S09-C04",
+        "weight": 10,
+        "before": {
+          "model": "1.2",
+          "grade": "unknown",
+          "points": null
+        },
+        "after": {
+          "model": "1.2",
+          "grade": "unknown",
+          "points": null
+        },
+        "delta_points": null,
+        "expected_effect": "score-neutral",
+        "historical_1_1": {
+          "grade": "G2",
+          "points": 5
+        },
+        "sha": "415349bc9fb9ce72fb2a8bc5e777cc98ea515bd0",
+        "method": "independent source/harness/artifact inspection; complementary exact-content CI root verification",
+        "evidence": "invalid seed no-mutation and import/busy guards",
+        "limitation": "Finite regression scope insufficient for full1.2regrading; historical1.1not migrated"
+      }
+    ]
+  },
+  "score_changed": false,
+  "blocking_findings": [],
+  "limitations": [
+    "No fresh local browser run; archived actual Chromium images, harness and exact-content CI inspected.",
+    "Legacy notice rendering, whole-panel collapse/expand and OS clipboard copy established by unchanged source contracts, not freshly exercised browser interactions.",
+    "Finite devices/seeds/scenarios; no universal accessibility/RNG claim."
+  ],
+  "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/475#pullrequestreview-5660726955",
+  "formal_review_event": "COMMENT (own PR); operational verdict accepted_with_limits",
+  "product_change": "Seed label/input onecompactrow belowtransfer; darkscopedCSS and popupclearance; no RNG/JSON/generationbehaviorchange",
+  "user_example": "agent-work/evidence/HX-FB-001-developer/screenshots/candidate-390-ru.png",
+  "release_allowed": false,
+  "release_approval_required_for": "415349bc9fb9ce72fb2a8bc5e777cc98ea515bd0",
+  "feedback_closed": false,
+  "next_role": "strategist",
+  "next_step": "Стратег: координационная развилка по завершённому отрицательному разбору HX-BL-003; PR475 принят415349 и ожидает отдельного разрешения владельца на выпуск. Не повторять review/benchmark без новых evidence.",
+  "automation_health": {
+    "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-10-27T00:03:16.514Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "end": {
+      "checked_at": "2026-10-27T00:07:48.897Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restored_during_this_run": false,
+    "errors": []
+  },
+  "independent_automation_health": {
+    "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-10-27T00:04:20Z",
+      "status": "checked",
+      "is_enabled": true,
+      "timestamp_note": "Recorded first clock immediately after initial peek; actual peek completed before this timestamp, not an exact request timestamp."
+    },
+    "end": {
+      "checked_at": "2026-10-27T00:05:48Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restored_during_this_run": false,
+    "errors": []
+  },
+  "completed_at": "2026-10-27T00:07:48.898Z",
+  "claim_released": true,
+  "main_changed": false,
+  "published": false
+}

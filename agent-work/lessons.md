@@ -142,3 +142,6 @@
 
 
 27.10.2026 — bounded static003: N2400 второй slot5/5медленнее, stallsвпервых7zoomframes; наN1200неуниверсально. Обестраницыостаютсяживыми, idle raster-cache prepare250ms/snapshot/decode не синхронизирован с ready/assets+700ms, finalcache=ready не доказываетstartcache=ready. Это конкретная гипотеза overlap, не CPUtrace/доказаннаяпричина. Не вычитать performance.now междустраницами; wallidle доимпорта считатьотдельно. [Разбор](evidence/HX-BL-003-static-diagnosis-2026-10-27/report.md). Отрицательныйreport-only переданстратегу; primary/guardсохранены, повторов/новойоптимизациинет.
+
+
+27.10.2026 — независимый HX-FB-001 accepted_with_limits на415349: фактические22PNG и hashархива проверены, popupgeometry ловит перекрытие, которое isVisible не ловил. Legacy/collapse/OSclipboard — sourcecontract evidence, не новый ручной browserpass; границы явно сохранены. CI syntheticmergecc5094a имеет точное дерево head415349. НовыйUIharness —6логическихстрок(4layoutmatrix+2A/Bsemantic),24invalidподслучая отдельно, не добавлять к236Node. A/Bполныйдокумент полезен дополнительно к sameversionRNG. [Заключение](evidence/review-HX-FB-001-415349/report.md). Выпуск отдельно, score1.2unknown/award0.
