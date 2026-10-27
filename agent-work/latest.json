@@ -29,7 +29,7 @@
   "run_id": "2026-10-27:developer:HX-FB-001:owner-release",
   "plan_revision": 1,
   "baseline_sha": "f89530abe1e237493dddb533502bb772ae1ab4e5",
-  "status": "release_in_progress",
+  "status": "published_score_update_pending",
   "planning_for": "2026-10-27",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-10-25",
@@ -38,7 +38,7 @@
   "next_candidates_path": "agent-work/score/next-candidates.json",
   "confirmed_points": 193.75,
   "unverified_weight": 70,
-  "last_completed_task": "HX-BL-030",
+  "last_completed_task": "HX-FB-001",
   "budget_status": "owner_waived_usage_gate",
   "plan_file_shas": null,
   "process_change_status": "dynamic_roles_approved_and_recorded",
@@ -46,38 +46,29 @@
   "schedule_frequency": "hourly",
   "process_path": "agent-work/process.md",
   "current_role": "developer",
-  "next_role": "owner",
+  "next_role": "strategist",
   "current_task_id": "HX-FB-001",
   "spec_path": "agent-work/specs/HX-FB-001.md",
   "spec_version": "1.1",
   "result_path": "agent-work/results/2026-10-27-developer-HX-FB-001-release.json",
   "handoff_commit_sha": "2385b5e27e981aa136e8b7f5d13273bda95780e9",
-  "active_claim": {
-    "run_id": "2026-10-27:developer:HX-FB-001:owner-release",
-    "role": "developer",
-    "task_id": "HX-FB-001",
-    "status": "awaiting_release_deployment",
-    "started_at": "2026-10-27T04:57:17.970Z",
-    "head_sha": "415349bc9fb9ce72fb2a8bc5e777cc98ea515bd0",
-    "approval_ref": "owner-release-2026-10-27-HX-FB-001",
-    "deployment_run_id": 40452592898,
-    "merge_sha": "02c2fd5fcbdb2042f2708709ce4f20dfd7354787",
-    "last_checkpoint_at": "2026-10-27T04:58:30.474Z"
-  },
-  "next_step": "Observe existing deploy40452592898; verify exact merge tree and live output; no duplicate release. After publication score_update_pending strategist; V3 protocol already approved.",
+  "active_claim": null,
+  "next_step": "Стратег: обработать событие опубликованного02c2fd5 по review415349b/модели1.2 без переноса unknown grades и двойного начисления; затем передать уже утверждённыйV3аналитику.",
   "owner_decisions_needed": [],
   "release_approval": {
     "task_id": "HX-FB-001",
-    "status": "approved",
+    "status": "approved_and_executed",
     "approved_sha": "415349bc9fb9ce72fb2a8bc5e777cc98ea515bd0",
-    "approval_ref": "owner-release-2026-10-27-HX-FB-001"
+    "approval_ref": "owner-release-2026-10-27-HX-FB-001",
+    "merge_sha": "02c2fd5fcbdb2042f2708709ce4f20dfd7354787",
+    "deployment_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40452592898"
   },
   "historical_plan_status": "План23.10 сохранён как история; его блокировки и предложенный процесс заменены decisions24.10 в approvals/process/budget и текущим handoff.",
-  "evidence_path": "agent-work/evidence/review-HX-BL-003-86100/report.md",
+  "evidence_path": "agent-work/evidence/release-HX-FB-001-02c2fd5/report.md",
   "branch_name": "agent/hx-fb-001-seed-row",
   "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/475",
   "head_sha": "415349bc9fb9ce72fb2a8bc5e777cc98ea515bd0",
-  "checks_status": "deployment_in_progress",
+  "checks_status": "deploy_success_live_assets_match",
   "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40452592898",
   "review_verdict": "accepted_with_limits",
   "role_selection_mode": "ready_work_priority",
@@ -97,7 +88,7 @@
     "date": "2026-10-27",
     "role": "developer",
     "task_id": "HX-FB-001",
-    "status": "merged_deployment_in_progress",
+    "status": "published",
     "approved_head_sha": "415349bc9fb9ce72fb2a8bc5e777cc98ea515bd0",
     "merge_sha": "02c2fd5fcbdb2042f2708709ce4f20dfd7354787",
     "tree_sha": "3892b812c0910eced73c8abf676f17cb267bba11",
@@ -108,11 +99,11 @@
     "score_assessment_ref": "agent-work/results/2026-10-27-reviewer-HX-FB-001-415349.json",
     "score_model_version": "1.2",
     "score_changed": false,
-    "score_update_status": "awaiting_publication",
+    "score_update_status": "pending",
     "deployment_run_id": 40452592898,
     "deployment_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40452592898",
     "site": "https://app.hexcrawl.ru/",
-    "published": false,
+    "published": true,
     "main_changed": true,
     "release_475_only": true,
     "pr474_excluded": true,
@@ -130,14 +121,73 @@
       "scope": "This release operation introduces no tests beyond accepted PR475; reviewed package has6standalone UI logical cases already reported by reviewer.",
       "user_report_omitted": true
     },
-    "next_step": "Observe existing deploy40452592898; verify exact merge tree and live output; no duplicate release. After publication score_update_pending strategist; V3 protocol already approved.",
-    "rollback": "Reviewed revert of merge02c2fd5 with parent1 in a separate package if confirmed regression."
+    "next_step": "Стратег: обработать событие опубликованного02c2fd5 по review415349b/модели1.2 без переноса unknown grades и двойного начисления; затем передать уже утверждённыйV3аналитику.",
+    "rollback": "Reviewed revert of merge02c2fd5 with parent1 in a separate package if confirmed regression.",
+    "completed_at": "2026-10-27T05:07:24.770Z",
+    "deployment": {
+      "id": 40452592898,
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "02c2fd5fcbdb2042f2708709ce4f20dfd7354787",
+      "updated_at": "2026-10-27T05:05:15Z"
+    },
+    "site_check": {
+      "checked_at": "2026-10-27T05:05:46.433559+00:00",
+      "site": "https://app.hexcrawl.ru/",
+      "status": 200,
+      "expected_merge_sha": "02c2fd5fcbdb2042f2708709ce4f20dfd7354787",
+      "artifact_id": 12711132176,
+      "html_assets": [
+        "/assets/index-CrKVGpFe.js",
+        "/assets/index-deSmYW8R.css"
+      ],
+      "assets": [
+        {
+          "path": "/assets/index-CrKVGpFe.js",
+          "bytes": 952085,
+          "sha256": "be3b2c9ef07e5719c4dc1282beed3bcebcc72ebf44eeacfebede26a827741d41",
+          "status": 200,
+          "actual_sha256": "be3b2c9ef07e5719c4dc1282beed3bcebcc72ebf44eeacfebede26a827741d41",
+          "matches_build_artifact": true,
+          "referenced_by_live_html": true
+        },
+        {
+          "path": "/assets/index-deSmYW8R.css",
+          "bytes": 16132,
+          "sha256": "a37483a13cf25eeb6ffc08d2bfaa7e1f56213f178d664e440f9b36ec30fc0a19",
+          "status": 200,
+          "actual_sha256": "a37483a13cf25eeb6ffc08d2bfaa7e1f56213f178d664e440f9b36ec30fc0a19",
+          "matches_build_artifact": true,
+          "referenced_by_live_html": true
+        }
+      ],
+      "new_package_served": true
+    },
+    "evidence_ref": "agent-work/evidence/release-HX-FB-001-02c2fd5/report.md",
+    "score_update_responsible": "strategist",
+    "next_role": "strategist",
+    "claim_released": true,
+    "automation_health": {
+      "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "start": {
+        "checked_at": "2026-10-27T04:56:01.058Z",
+        "status": "checked",
+        "is_enabled": true
+      },
+      "end": {
+        "checked_at": "2026-10-27T05:08:14.168Z",
+        "status": "checked",
+        "is_enabled": true
+      },
+      "restored_during_this_run": false,
+      "errors": []
+    }
   },
-  "score_update_status": "awaiting_publication",
-  "score_update_task_id": "HX-BL-030",
-  "score_update_release_sha": "103d31b9f6f5c76b1f6b45d9d6664fe3f75dd63b",
+  "score_update_status": "pending",
+  "score_update_task_id": "HX-FB-001",
+  "score_update_release_sha": "02c2fd5fcbdb2042f2708709ce4f20dfd7354787",
   "score_process_decision_ref": "owner-decision-2026-10-24-score-responsibilities",
-  "score_assessment_ref": "agent-work/results/2026-10-25-reviewer-HX-BL-030-202570a.json",
+  "score_assessment_ref": "agent-work/results/2026-10-27-reviewer-HX-FB-001-415349.json",
   "role_selection_reason": "Priority9: executable queue empty, no activeclaim or new approval; existing V3proposal still current; separate475releaseapproval pending",
   "score_update_result_ref": "agent-work/results/2026-10-25-strategist-score-update-HX-BL-030.json",
   "score_update_completed_at": "2026-10-25T08:02:18.946Z",
@@ -158,12 +208,12 @@
   "automation_health": {
     "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-10-27T04:03:22.499Z",
+      "checked_at": "2026-10-27T04:56:01.058Z",
       "status": "checked",
       "is_enabled": true
     },
     "end": {
-      "checked_at": "2026-10-27T04:04:14.164Z",
+      "checked_at": "2026-10-27T05:08:14.168Z",
       "status": "checked",
       "is_enabled": true
     },
@@ -326,41 +376,118 @@
   },
   "previous_release_result": {
     "schema_version": 1,
-    "task_id": "HX-NEXT-001",
+    "task_id": "HX-BL-030",
     "role": "developer",
-    "run_id": "2026-10-24:developer:HX-NEXT-001:release",
-    "date": "2026-10-24",
+    "run_id": "2026-10-25:developer:HX-BL-030:release",
     "status": "published",
-    "approved_head_sha": "50d8b6f2414faa1f204cdd2a7ed936533707592c",
-    "merge_sha": "6aaefa8896e7aac163cfcd5c2ca896ac60fc54d0",
-    "tree_sha": "1b9b9d438edb03ffc86bd65b26804e7439ca437b",
+    "approved_head_sha": "202570a4b97beb2090225ef4e485b00a43c34fb5",
+    "merge_sha": "103d31b9f6f5c76b1f6b45d9d6664fe3f75dd63b",
+    "tree_sha": "f2fc6c9a6519e63eb94b5bd30699146b733191ac",
     "merge_tree_matches_review": true,
-    "approval_ref": "owner-release-2026-10-24-HX-NEXT-001",
-    "review_evidence": "agent-work/evidence/HX-NEXT-001-reviewer-50d8b6f.md",
-    "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/471",
-    "deployment_run_id": 40103159125,
-    "deployment_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40103159125",
+    "approval_ref": "owner-release-2026-10-25-HX-BL-030",
+    "review_ref": "agent-work/results/2026-10-25-reviewer-HX-BL-030-202570a.json",
+    "deployment_run_id": 40173164222,
+    "deployment_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40173164222",
     "site": "https://app.hexcrawl.ru/",
     "score_changed": false,
-    "rollback": "Revert merge 6aaefa8896e7aac163cfcd5c2ca896ac60fc54d0 with parent 1 in a separate reviewed PR if a regression is found.",
-    "completed_at": "2026-10-24T14:40:24.406Z",
+    "automation_health": {
+      "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "start": {
+        "checked_at": "2026-10-25T07:31:22.688Z",
+        "is_enabled": true,
+        "status": "checked"
+      },
+      "end": {
+        "checked_at": "2026-10-25T07:57:01.695Z",
+        "status": "checked",
+        "is_enabled": true,
+        "error": null
+      },
+      "restored_during_this_run": false,
+      "errors": [],
+      "schedule_unchanged": true
+    },
+    "deployment_attempts": [
+      {
+        "attempt": 1,
+        "status": "completed",
+        "conclusion": "cancelled",
+        "build_job_id": 121108127954,
+        "started_at": "2026-10-25T07:32:42Z",
+        "completed_at": "2026-10-25T07:42:57Z",
+        "node_tests": 236,
+        "node_pass": 236,
+        "node_fail": 0,
+        "build": "success",
+        "browser": "cancelled",
+        "pages_deploy": "skipped",
+        "limitation": "Cancellation after615s is consistent with configured10-minute job timeout; no newer main deployment found.",
+        "log": "agent-work/evidence/release-HX-BL-030-103d31b/attempt-1-build.log"
+      },
+      {
+        "attempt": 2,
+        "status": "completed",
+        "conclusion": "success",
+        "same_sha": true,
+        "build_job_id": 121110326152,
+        "deploy_job_id": 121112133522,
+        "node_tests": 236,
+        "node_pass": 236,
+        "node_fail": 0,
+        "browser": "success",
+        "pages_deploy": "success",
+        "build_log": "agent-work/evidence/release-HX-BL-030-103d31b/attempt-2-build.log",
+        "deploy_log": "agent-work/evidence/release-HX-BL-030-103d31b/attempt-2-deploy.log"
+      }
+    ],
+    "published": true,
+    "completed_at": "2026-10-25T07:57:02.297Z",
     "deployment": {
+      "id": 40173164222,
       "status": "completed",
       "conclusion": "success",
-      "head_sha": "6aaefa8896e7aac163cfcd5c2ca896ac60fc54d0",
-      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40103159125",
-      "updated_at": "2026-10-24T14:39:37Z"
+      "head_sha": "103d31b9f6f5c76b1f6b45d9d6664fe3f75dd63b",
+      "run_attempt": 2,
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40173164222",
+      "updated_at": "2026-10-25T07:53:45Z"
     },
     "site_check": {
+      "site": "https://app.hexcrawl.ru/",
+      "checked_at": "2026-10-25T07:54:25.086798+00:00",
       "status": 200,
-      "js_asset": "/assets/index-Cw-wxDhb.js",
-      "js_status": 200,
-      "css_status": 200,
-      "method": "HTTP GET of published HTML and referenced JS/CSS; no additional manual browser acceptance"
+      "assets": [
+        {
+          "path": "/assets/index-izFvywi0.js",
+          "status": 200,
+          "bytes": 951834,
+          "sha256": "a8390a97521812e2df6aea91c14ee1013252b0303996d9294cf4fa181862c647",
+          "matches_reviewed_local_build": true
+        },
+        {
+          "path": "/assets/index-By-3o-dh.css",
+          "status": 200,
+          "bytes": 15259,
+          "sha256": "d03bf3994907097f223df69b1a92c2e2523d7026da390d3d00d6919e2896952c",
+          "matches_reviewed_local_build": true
+        }
+      ],
+      "new_package_served": true,
+      "method": "HTTP GET of live HTML and referenced JS/CSS; full SHA256 comparison with frozen reviewed local build. No additional manual browser acceptance."
     },
-    "claim_released": true,
+    "evidence_ref": "agent-work/evidence/release-HX-BL-030-103d31b/report.md",
+    "score_update_status": "completed",
+    "score_update_responsible": "strategist",
+    "score_update_release_sha": "103d31b9f6f5c76b1f6b45d9d6664fe3f75dd63b",
+    "score_assessment_ref": "agent-work/results/2026-10-25-reviewer-HX-BL-030-202570a.json",
     "next_role": "strategist",
-    "next_step": "Сверить результат выпуска и предложить следующую задачу владельцу; новые proposed задачи без согласования не начинать."
+    "next_step": "Обязательный пересчёт оценки по опубликованному103d31b и принятому202570a (одно дерево); затем конкретное предложение следующей задачи в том же запуске.",
+    "claim_released": true,
+    "owner_decisions_needed": [],
+    "rollback": "Reviewed revert of merge103d31b with parent1 in a separate package if regression confirmed.",
+    "main_changed": true,
+    "score_update_completed_at": "2026-10-25T08:02:18.946Z",
+    "score_update_result_ref": "agent-work/results/2026-10-25-strategist-score-update-HX-BL-030.json",
+    "score_update_status_at_developer_handoff": "pending"
   },
   "previous_score_update": {
     "status": "completed",
@@ -373,8 +500,8 @@
   "score_update_responsible": "strategist",
   "merge_sha": "02c2fd5fcbdb2042f2708709ce4f20dfd7354787",
   "deployment_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40452592898",
-  "next_task_execution_allowed": false,
-  "last_release_pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/472",
+  "next_task_execution_allowed": true,
+  "last_release_pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/475",
   "last_material_result_path": "agent-work/results/2026-10-27-strategist-HX-BL-003-next-stage.json",
   "last_wait_check_at": "2026-10-26T19:04:14.491Z",
   "spec_status": "independently_verified",
@@ -398,7 +525,6 @@
     "decision_ref": "owner-decision-2026-10-25-feedback-register",
     "result_ref": "agent-work/results/2026-10-25-feedback-register.json",
     "open_ids": [
-      "HX-FB-001",
       "HX-FB-002"
     ],
     "joint_fix_assessment": "developer_defer_analyst_pending",
@@ -427,14 +553,17 @@
     "next_step": "Apply1.2 to next specification/review; preserve1.1 prior assessment until evidence-based reassessment; game breadth unverified."
   },
   "previous_active_claim": {
-    "run_id": "2026-10-27:strategist:HX-BL-003-coordination:0102Z",
-    "task_id": "HX-BL-003",
-    "role": "strategist",
-    "status": "completed_proposal_saved",
-    "started_at": "2026-10-27T01:03:50.883Z",
-    "scope": "Coordinate completed negative003 and propose one bounded nextstage; no implementation/specification/benchmark",
-    "completed_at": "2026-10-27T01:07:46.488Z",
-    "result_ref": "agent-work/results/2026-10-27-strategist-HX-BL-003-next-stage.json"
+    "run_id": "2026-10-27:developer:HX-FB-001:owner-release",
+    "role": "developer",
+    "task_id": "HX-FB-001",
+    "status": "completed_published",
+    "started_at": "2026-10-27T04:57:17.970Z",
+    "head_sha": "415349bc9fb9ce72fb2a8bc5e777cc98ea515bd0",
+    "approval_ref": "owner-release-2026-10-27-HX-FB-001",
+    "deployment_run_id": 40452592898,
+    "merge_sha": "02c2fd5fcbdb2042f2708709ce4f20dfd7354787",
+    "last_checkpoint_at": "2026-10-27T04:58:30.474Z",
+    "completed_at": "2026-10-27T05:07:24.770Z"
   },
   "review_request": {
     "task_id": "HX-FB-001",
@@ -527,7 +656,7 @@
     "task_id": "HX-FB-001",
     "register": "agent-work/feedback.json",
     "spec_path": "agent-work/specs/HX-FB-001.md",
-    "status": "accepted_awaiting_release_approval",
+    "status": "published_closed",
     "score_forecast": "score-neutral",
     "spec_version": "1.1",
     "owner_correction": "Seed label/input in one compact row",
@@ -549,13 +678,14 @@
     },
     "head_sha": "415349bc9fb9ce72fb2a8bc5e777cc98ea515bd0",
     "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/475",
-    "result_ref": "agent-work/results/2026-10-27-reviewer-HX-FB-001-415349.json",
+    "result_ref": "agent-work/results/2026-10-27-developer-HX-FB-001-release.json",
     "evidence_ref": "agent-work/evidence/HX-FB-001-developer/report.md",
-    "next_role": "owner",
+    "next_role": null,
     "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/475#pullrequestreview-5660726955",
-    "next_step": "Ожидается отдельное разрешение владельца на выпуск PR475 exact415349bc9fb9ce72fb2a8bc5e777cc98ea515bd0; feedback закрыть только после публикации."
+    "next_step": "Замечание закрыто после подтверждённой публикации.",
+    "release_sha": "02c2fd5fcbdb2042f2708709ce4f20dfd7354787"
   },
-  "owner_decisions_note": "Предложен один новый этапHX-BL-003-V3: до20navigation+2warmups+2trace-only/4nativehistorysequences,1workflow≤45min безretry,PNG/новойоптимизации. Доутверждениянетполнойспецификации/исполнения. ТекущиеV2+staticэтапыcompletednegative_report_only, пакетнепринят. PR475accepted415349отдельнождётразрешениявыпуска. Scoreunchanged.",
+  "owner_decisions_note": "Оба решения владельца27.10 сохранены:475 опубликован;474V3 утверждён, протокол аналитика после обработки scoreevent. Дополнительного утверждения самого V3 не требуется; выпуск474 отдельно.",
   "updated_at": "2026-10-27T04:04:14.576Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
