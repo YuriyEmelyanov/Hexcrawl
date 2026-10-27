@@ -1,4 +1,4 @@
-# Операционные источники — 26.10.2026
+# Операционные источники — 27.10.2026
 
 В ветке agent-operations действуют [видение](../agent-work/strategy/vision.md) и [score-модель1.2](../agent-work/strategy/score-model.md), введённые прямым поручением владельца. [Матрица поддержки](../agent-work/score/game-coverage.json), [процесс](../agent-work/process.md). Доменные документы ниже читать в main; это операционная надстройка, не публикация сайта.
 
@@ -10,8 +10,8 @@
 
 | Источник | Роль |
 |---|---|
-| [Видение](strategy/vision.md) | Утверждено22.10: цель, приоритеты, роли, бюджет, согласования |
-| [Score-модель1.1](strategy/score-model.md) | Утверждена22.10: 50 критериев/1000; производительность по числу гексов |
+| [Действующее видение](../agent-work/strategy/vision.md) | Операционная редакция; решения владельца и модель1.2 |
+| [Действующая score-модель1.2](../agent-work/strategy/score-model.md) | 50 критериев/1000; обязательна всем ролям; копия main1.1 историческая |
 | [Планирование](strategy/daily-planning.md) | Результаты в agent-operations/agent-work/latest.json |
 | [Разработка](development-workflow.md) | Проверки, evidence, приёмка и откат |
 | agent-operations/agent-work/backlog.json | Единый реестр кандидатов/статусов; не разрешение начать работу |
