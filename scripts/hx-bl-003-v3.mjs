@@ -117,7 +117,7 @@ const N=d=>new Set([...d.map.regions.flatMap(r=>r.hexes.map(h=>`${h.q},${h.r}`))
 async function nativeSnapshot(r,row,step){
  const typed=await bounded(()=>r.page.evaluate(()=>{if(typeof window.__HX003_V3_READ!=='function')throw Error('history read-only seam absent');return window.__HX003_V3_ENCODE(window.__HX003_V3_READ());}),'native snapshot '+step);
  const state=decodeNative(typed),containers=containerManifest(state);
- assert(containers.some(c=>c.type==='Map'&&c.size>0),'native nonempty Map entries required');
+ assert(step==='P' || containers.some(c=>c.type==='Map'&&c.size>0),'native nonempty Map entries required');
  const bytes=Buffer.from(JSON.stringify(typed)),path=out+row.id+'-'+step+'.native.json.gz';await fs.writeFile(path,gzipSync(bytes));
  row.snapshots[step]={path,sha256:hash(bytes),uncompressed_bytes:bytes.length,containers};return state;
 }
@@ -153,7 +153,9 @@ async function runHistory(row){
  let browser,r;row.status='preparing';row.started_at=new Date().toISOString();await persist();
  try{
   browser=await supervisor.start(chromium);r=await bounded(()=>createRunner(browser,row.variant,true),'history context');
+  await bounded(r.ready,'fresh history ready');const P=await nativeSnapshot(r,row,'P');assert.deepEqual(P.undo,[]);assert.deepEqual(P.redo,[]);
   const initial=await bounded(()=>r.restore(root+row.input.path,row.id+'-J0'),'history initial import'),S0=await nativeSnapshot(r,row,'S0');
+  assertCommit(P,S0);
   assert.deepEqual(S0.generation,initial.data.generation);assert.deepEqual(S0.document.map.generation,initial.data.generation);
   const anchor=initial.data.map.candidateHexes[0];assert(anchor&&Number.isInteger(anchor.q)&&Number.isInteger(anchor.r),'frozen first candidate anchor');row.anchor=anchor;
   const first=await continueOnce(r,row,anchor,'J1');assert(N(first.data)>N(initial.data),'history must exercise committed growth');
@@ -172,10 +174,28 @@ async function compareHistories(){
   if(!row.complete)continue;
   try{
    assert.deepEqual(a.anchor,b.anchor);assert.deepEqual(Object.keys(a.snapshots),Object.keys(b.snapshots));
+   const read=async e=>decodeNative(JSON.parse(gunzipSync(await fs.readFile(e.path)).toString('utf8')));
+   const pa=await read(a.snapshots.P),pb=await read(b.snapshots.P);
+   const startupComparable=p=>{
+    const v=structuredClone(p),g=v.generation,seed=g.masterSeed;
+    assert(Number.isInteger(seed)&&seed>=0&&seed<=0xffffffff);
+    assert.deepEqual(v.document.map.generation,g);
+    assert.equal(g.streams.geography,seed>>>0);assert.equal(g.streams.poi,(seed^0x9E3779B9)>>>0);
+    assert.equal(v.document.map.toponymSeed,(seed^0x85EBCA6B)>>>0);
+    for(const rng of [v.generation,v.document.map.generation]){rng.masterSeed=0;rng.streams.geography=0;rng.streams.poi=0;}
+    v.document.map.toponymSeed=0;return v;
+   };
+   assert.deepEqual(startupComparable(pa),startupComparable(pb),'A/B fresh baseline differs only validated entropy-derived fields');
+   const comparable=(state,P)=>{
+    const v=structuredClone(state);assert(v.undo.length>0);
+    assert.deepEqual(v.undo[0].before,P.document,'only exact validated initial pre-import document may differ');
+    v.undo[0].before={initial_preimport_baseline:'validated_full_raw_P_retained'};return v;
+   };
    for(const step of Object.keys(a.snapshots)){
-    const read=async e=>decodeNative(JSON.parse(gunzipSync(await fs.readFile(e.path)).toString('utf8')));
-    assert.deepEqual(await read(a.snapshots[step]),await read(b.snapshots[step]),'A/B native '+step);
+    if(step==='P')continue;
+    assert.deepEqual(comparable(await read(a.snapshots[step]),pa),comparable(await read(b.snapshots[step]),pb),'A/B native '+step);
    }
+   row.initial_baseline_rule='P full raw retained; initial entropy derivation validated; only undo[0].before references distinct P; every postimport field exact';
    for(const step of ['J0','J1','I1'])assert.deepEqual(semantic(JSON.parse(await fs.readFile(a.json_paths[step],'utf8'))),semantic(JSON.parse(await fs.readFile(b.json_paths[step],'utf8'))));
    row.equal=true;
   }catch(e){row.equal=false;row.error=String(e);row.error_stack=e.stack;result.errors.push({comparison:row.input,error:String(e)});}

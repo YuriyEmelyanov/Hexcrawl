@@ -12,6 +12,16 @@ const protocol=JSON.parse(await fs.readFile('reports/HX-BL-003/v3-protocol.json'
 for(const input of [protocol.inputs.navigation,...protocol.inputs.history])assert.equal(hash(await fs.readFile(input.path)),input.sha256,input.path);
 const version=execFileSync(chromium.executablePath(),['--version'],{encoding:'utf8'}).match(/\d+\.\d+\.\d+\.\d+/)?.[0];
 const env={created_at:new Date().toISOString(),protocol:'P1-V3/1.0',harness_sha:process.env.GITHUB_SHA,baseline_sha:protocol.source.baseline_sha,candidate_sha:protocol.source.candidate_sha,node:process.version,playwright:JSON.parse(await fs.readFile('node_modules/playwright/package.json','utf8')).version,chromium_version:version,chromium_path:chromium.executablePath(),platform:os.platform(),release:os.release(),cpu:os.cpus()[0].model,vcpus:os.cpus().length,ram_bytes:os.totalmem(),runner:process.env.RUNNER_NAME,image:process.env.ImageVersion,run_id:process.env.GITHUB_RUN_ID,run_attempt:process.env.GITHUB_RUN_ATTEMPT,job_started_ms:Number(process.env.HX_V3_JOB_STARTED_MS),lock_sha256:hash(await fs.readFile('package-lock.json')),files:manifest.files,inputs:[protocol.inputs.navigation,...protocol.inputs.history],artifact_source:{run_id:40200788539,name:'HX-BL-003-baseline-outputs'}};
+async function entries(base,rel=''){
+ const result=[];for(const e of (await fs.readdir(base+'/'+rel,{withFileTypes:true})).sort((a,b)=>a.name.localeCompare(b.name))){const path=rel?rel+'/'+e.name:e.name;if(e.isDirectory())result.push(...await entries(base,path));else if(e.isFile()){const bytes=await fs.readFile(base+'/'+path);result.push({path,bytes:bytes.length,sha256:hash(bytes)});}else throw Error('Unexpected source/build symlink '+path);}return result;
+}
+env.build_manifests=[];
+for(const variant of ['baseline','candidate'])for(const kind of ['production','history']){
+ const base='/tmp/'+(kind==='production'?'hx003-pair-':'hx003-v3-history-')+variant;
+ const files=[];for(const dir of ['src','public','dist'])for(const e of await entries(base+'/'+dir))files.push({...e,path:dir+'/'+e.path});
+ for(const path of ['package.json','package-lock.json','index.html','vite.config.ts']){const bytes=await fs.readFile(base+'/'+path);files.push({path,bytes:bytes.length,sha256:hash(bytes)});}
+ env.build_manifests.push({variant,kind,source_sha:execFileSync('git',['rev-parse','HEAD'],{cwd:base,encoding:'utf8'}).trim(),files});
+}
 await fs.mkdir(out,{recursive:true});
 await fs.writeFile(out+'environment.json',JSON.stringify(env,null,2)+'\n');
 await fs.copyFile('reports/HX-BL-003/v3-harness-manifest.json',out+'harness-manifest.json');
