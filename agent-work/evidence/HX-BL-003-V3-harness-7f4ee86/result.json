@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-003",
+  "stage_id": "HX-BL-003-V3",
+  "role": "independent_offline_reviewer",
+  "head_sha": "7f4ee86e8780b255389b988251e396de31f2cc34",
+  "base_sha": "86100c390d8d4cf66cee6e87589be64ce51687e5",
+  "ops_spec_sha": "9f2180bb25bdd748a69789863c45697f37f49026",
+  "verdict": "changes_requested",
+  "findings": [
+    {
+      "id": "V3-HR-01",
+      "severity": "blocking",
+      "title": "Random startup before-document makes full A/B history stacks incomparable",
+      "source": "scripts/hx-bl-003-v3.mjs:175-177",
+      "evidence": "offline-diagnostics.json"
+    },
+    {
+      "id": "V3-HR-02",
+      "severity": "V301_gap",
+      "title": "Preflight lacks source and built artifact SHA256 inventories",
+      "source": "scripts/hx-bl-003-v3-freeze.mjs:14"
+    }
+  ],
+  "measured_attempt_consumed": false,
+  "product_acceptance": false,
+  "open_product_findings": [
+    "RV2",
+    "RV5"
+  ],
+  "report": "report.md",
+  "automation_health": {
+    "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "is_enabled": true,
+      "utc": null,
+      "timestamp_limitation": "Actual successful peek confirmed true during review; timestamp not captured on that call. Two earlier attempts used invalid argument keys and returned argument_binding error."
+    },
+    "end": {
+      "is_enabled": true,
+      "utc": "2026-10-27T06:29:51.201Z",
+      "error": false
+    },
+    "restored": false
+  },
+  "test_change_summary": {
+    "base_sha": "86100c390d8d4cf66cee6e87589be64ce51687e5",
+    "head_sha": "7f4ee86e8780b255389b988251e396de31f2cc34",
+    "added": 0,
+    "removed": 0,
+    "modified": 0,
+    "suite": "all permanent suites",
+    "count_source": "exact git diff name-status plus source review",
+    "reuse_or_new_reason": "Existing Check cases reused; exact-head checkout correction. New bounded measurement actions are not permanent cases.",
+    "reviewer_diagnostics": "Pure source-faithful initial-import model and typed codec/statistics; no browser or product actions",
+    "normal_ci": "Parent collecting; not asserted passed"
+  },
+  "score_assessment": {
+    "model_version": "1.2",
+    "head_sha": "7f4ee86e8780b255389b988251e396de31f2cc34",
+    "method": "Offline harness review; no measured product outcome",
+    "criterion_ids": [
+      {
+        "criterion_id": "S09-C01",
+        "before_grade": "unknown",
+        "before_points": null,
+        "after_grade": "unknown",
+        "after_points": null,
+        "delta": null,
+        "status": "insufficient_evidence",
+        "awarded": 0
+      },
+      {
+        "criterion_id": "S02-C01",
+        "before_grade": "unknown",
+        "before_points": null,
+        "after_grade": "unknown",
+        "after_points": null,
+        "delta": null,
+        "status": "insufficient_evidence",
+        "awarded": 0
+      },
+      {
+        "criterion_id": "S03-C05",
+        "before_grade": "unknown",
+        "before_points": null,
+        "after_grade": "unknown",
+        "after_points": null,
+        "delta": null,
+        "status": "insufficient_evidence",
+        "awarded": 0
+      },
+      {
+        "criterion_id": "S04-C04",
+        "before_grade": "unknown",
+        "before_points": null,
+        "after_grade": "unknown",
+        "after_points": null,
+        "delta": null,
+        "status": "insufficient_evidence",
+        "awarded": 0
+      },
+      {
+        "criterion_id": "S09-C04",
+        "before_grade": "unknown",
+        "before_points": null,
+        "after_grade": "unknown",
+        "after_points": null,
+        "delta": null,
+        "status": "insufficient_evidence",
+        "awarded": 0
+      }
+    ],
+    "limitations": "Harness gate only; RV2/RV5 remain open; no current award or 1.1 carryover"
+  }
+}
