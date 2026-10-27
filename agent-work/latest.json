@@ -46,14 +46,14 @@
   "schedule_frequency": "hourly",
   "process_path": "agent-work/process.md",
   "current_role": "strategist",
-  "next_role": "business_analyst",
+  "next_role": "reviewer",
   "current_task_id": "HX-FB-001",
   "spec_path": null,
   "spec_version": null,
   "result_path": "agent-work/results/2026-10-27-strategist-score475-next-work.json",
   "handoff_commit_sha": "5774daf957802a381876aa55e395b463314226c9",
   "active_claim": null,
-  "next_step": "Аналитик: завершить готовый разовый каталог HX-FB-002, затем подготовить спецификацию утверждённой HX-BL-024 «Заметки мастера». После спецификации — программист и независимая проверка; выпуск отдельно.",
+  "next_step": "Проверяющий: по agent-work/handoffs/2026-10-27-HX-BL-003-release-risk-review.md сопоставить локальный diff с существующими тестами и evidence, обосновать минимальные недостающие проверки и применимость четвёртого сценария. Без новых замеров/изменения продукта/публикации. Затем конкретная передача программисту; HX-FB-002 и approved HX-BL-024 остаются в очереди.",
   "owner_decisions_needed": [],
   "release_approval": {
     "task_id": "HX-FB-001",
@@ -197,7 +197,7 @@
   "score_update_delta": null,
   "score_history_path": "agent-work/score/history.json",
   "next_task_proposal_ref": "agent-work/proposals/2026-10-27-HX-BL-024-master-notes.md",
-  "next_task_id": "HX-FB-002",
+  "next_task_id": "HX-BL-003",
   "approval_ref": "owner-decision-2026-10-25-feedback-register",
   "last_completed_stage": "release475_score_event_and_actionable_next_work",
   "previous_release_approval": {
@@ -211,12 +211,12 @@
   "automation_health": {
     "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-10-27T11:31:41.826Z",
+      "checked_at": "2026-10-27T11:39:40.567Z",
       "status": "checked",
       "is_enabled": true
     },
     "end": {
-      "checked_at": "2026-10-27T11:32:28.232Z",
+      "checked_at": "2026-10-27T11:41:11.160Z",
       "status": "checked",
       "is_enabled": true
     },
@@ -586,7 +586,7 @@
       "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474",
       "spec_path": "agent-work/specs/HX-BL-003.md",
       "result_path": "agent-work/results/2026-10-27-developer-HX-BL-003-V3.json",
-      "next_step": "Измерительная фаза закрыта; новых этапов/выпуска474 не разрешено. Команда выполняет HX-FB-002.",
+      "next_step": "Подготовить адресную оценку рисков/покрытия; запрет новых замеров и выпуска сохраняется.",
       "validation_plan": {
         "id": "HX-BL-003-V2",
         "status": "completed_nonpassing_no_automatic_rerun",
@@ -634,7 +634,7 @@
       "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40461625216",
       "automatic_measurement_rerun_allowed": false,
       "canonical_task_path": "agent-work/backlog.json#HX-BL-003",
-      "next_role": null,
+      "next_role": "reviewer",
       "approval_result_ref": "agent-work/results/2026-10-26-HX-BL-003-V2-owner-approval.json",
       "spec_version": "1.1",
       "addendum_ref": "agent-work/specs/HX-BL-003-P1-V2.md",
@@ -654,7 +654,8 @@
       "v3_protocol_ref": "agent-work/specs/HX-BL-003-P1-V3.json",
       "evidence_ref": "agent-work/evidence/HX-BL-003-V3-run40462370787/report.md",
       "review_result_ref": "agent-work/evidence/review-HX-BL-003-V3-58adcce/result.json",
-      "strategy_decision_ref": "agent-work/results/2026-10-27-strategist-score475-next-work.json"
+      "strategy_decision_ref": "agent-work/results/2026-10-27-strategist-score475-next-work.json",
+      "release_readiness_handoff_ref": "agent-work/handoffs/2026-10-27-HX-BL-003-release-risk-review.md"
     }
   },
   "mockup_path": "agent-work/evidence/HX-FB-001-analyst/seed-before-after.svg",
@@ -847,6 +848,16 @@
       "completion": "Каталог+кандидаты с ограничениями сохранены; стратег принимает дальнейший узкий план, массовая очистка не начинается",
       "score_effect": "unknown/score-neutral; рост числа/удаление тестов сами по себе баллов не дают",
       "handoff_ref": "agent-work/handoffs/2026-10-27-HX-FB-002-audit.json"
+    },
+    "HX-BL-003-release-risk-review": {
+      "task_id": "HX-BL-003",
+      "status": "ready_for_risk_review",
+      "path": "agent-work/handoffs/2026-10-27-HX-BL-003-release-risk-review.md",
+      "result_ref": "agent-work/results/2026-10-27-HX-BL-003-release-next-step.json",
+      "next_role": "reviewer",
+      "preparation_authorized": true,
+      "measurement_allowed": false,
+      "release_approved": false
     }
   },
   "independent_reviewer_automation_health": {
@@ -1336,5 +1347,16 @@
       "restored_during_this_run": false,
       "errors": []
     }
-  }
+  },
+  "release_risk_review_handoff": {
+    "task_id": "HX-BL-003",
+    "status": "ready_for_risk_review",
+    "path": "agent-work/handoffs/2026-10-27-HX-BL-003-release-risk-review.md",
+    "result_ref": "agent-work/results/2026-10-27-HX-BL-003-release-next-step.json",
+    "next_role": "reviewer",
+    "preparation_authorized": true,
+    "measurement_allowed": false,
+    "release_approved": false
+  },
+  "previous_queue_next_step": "Аналитик: завершить готовый разовый каталог HX-FB-002, затем подготовить спецификацию утверждённой HX-BL-024 «Заметки мастера». После спецификации — программист и независимая проверка; выпуск отдельно."
 }
