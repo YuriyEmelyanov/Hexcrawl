@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "model_version": "1.2",
-  "updated_on": "2026-10-28",
+  "updated_on": "2026-10-29",
   "strategy_version": "1.0",
   "note": "Перенесённые идеи, не разрешение на реализацию. implemented_unverified означает наличие функции/отметки о выполнении, а не G3/G4. criterion_id — предлагаемое отнесение, не начисленный эффект. Полные уникальные детали сохранены в снимке исходного документа.",
   "source_snapshot": {
@@ -1206,7 +1206,7 @@
       "task_id": "HX-BL-023",
       "title": "Общий режим редактирования",
       "criterion_id": "S03-C01",
-      "status": "approved_spec_revision_required",
+      "status": "ready_for_development",
       "potential_delta": null,
       "approval_ref": "owner-decision-2026-10-28-editor-and-MB-content-before-outreach",
       "source": {
@@ -1221,16 +1221,16 @@
       "previous_status": "ready_for_development",
       "recommended_priority": 1,
       "execution_allowed": true,
-      "spec_status": "revision_required_full_editor_scope",
-      "next_role": "business_analyst",
-      "next_step": "Включить все шесть возможностей в общий утверждённый набор HX-BL-023, вместе с ранее заданными биомами/дорогами/реками/водой/названиями/препятствиями. Подготовить последовательные срезы по пользе и зависимостям и показать UI; не ждать повторного утверждения старта этих функций. Выпуск каждого проверенного пакета отдельно.",
+      "spec_status": "ready_E1_names_remaining_stage_specs_pending",
+      "next_role": "developer",
+      "next_step": "Отдельный PR exactbase/headSHA, штатные check/browser, evidence N01–N07 и фактическийUI desktop390 RU/EN; review_ready",
       "related_task_ids": [
         "HX-BL-013",
         "HX-BL-018",
         "HX-BL-019",
         "HX-BL-028"
       ],
-      "handoff_ref": "agent-work/handoffs/2026-10-28-HX-BL-023-slice-A.json",
+      "handoff_ref": "agent-work/handoffs/2026-10-29-HX-BL-023-E1-names.json",
       "owner_priority_decision": {
         "id": "owner-decision-2026-10-28-editor-and-MB-content-before-outreach",
         "date": "2026-10-28",
@@ -1263,32 +1263,33 @@
       },
       "release_approved": false,
       "spec_ref": "agent-work/specs/HX-BL-023.md",
-      "spec_version": "1.0",
-      "active_slice": {
-        "status": "selection_to_be_revised",
-        "previous_proposal": "A_batch_biome",
-        "reason": "Массовый выбор гексов — вспомогательное удобство, не обоснованный главный результат редактора. Выбрать последовательность по недостающим возможностям и пользовательскому результату, а не только простоте реализации."
-      },
+      "spec_version": "2.0",
+      "active_slice": "E1_names",
       "ui_preview": {
-        "version": "1",
+        "version": "2.0",
         "status": "shown_proposal_not_implementation",
-        "desktop": "agent-work/evidence/HX-BL-023-analysis/desktop.png",
-        "narrow": "agent-work/evidence/HX-BL-023-analysis/narrow.png",
-        "states": "agent-work/evidence/HX-BL-023-analysis/states.png",
-        "shown_at": "2026-10-28T18:07:55.217Z",
-        "channel": "existing task conversation"
+        "shown_at": "2026-10-28T21:13:54.509Z",
+        "channel": "existing task conversation",
+        "desktop": "agent-work/evidence/HX-BL-023-editor-v2/desktop.png",
+        "narrow": "agent-work/evidence/HX-BL-023-editor-v2/narrow.png",
+        "states": "agent-work/evidence/HX-BL-023-editor-v2/states.png",
+        "source_format": "SVG with embedded prior exact-main screenshot; vector control proposal",
+        "not_live_implementation": true
       },
       "scope_remaining": [
-        "POI relocation/dependencies",
-        "manual roads/trails",
-        "water and region membership",
-        "continuous brushes if justified"
+        "E2 hex/region biomes",
+        "E3 roads/trails/crossings",
+        "E4 obstacles",
+        "E5 river paths/direction/fullness/rapids/waterfalls",
+        "E6 lakes/sea",
+        "E7 height/regions",
+        "E8 POI relocation/further entity names/integrated readiness"
       ],
-      "marketing_gate_status": "not_passed_full_editor_remains",
+      "marketing_gate_status": "not_passed_full023_remains",
       "score_forecast": {
         "model_version": "1.2",
         "criterion_ids": [
-          "S03-C01",
+          "S02-C02",
           "S03-C05",
           "S04-C04",
           "S09-C04"
@@ -1317,7 +1318,7 @@
         "Расположение POI: Проверить перенос существующей точки; смена типа/имени не равна переносу"
       ],
       "existing_POI_editing_note": "Точки интереса уже можно менять; инвентаризировать и сохранить, не выдавать за новую возможность.",
-      "previous_active_slice": "A_batch_biome",
+      "previous_active_slice": "A_batch_biome_superseded",
       "obstacles_scope_ref": "owner-decision-2026-10-28-editor-obstacles",
       "additional_editor_candidates": {
         "status": "owner_approved_in_scope",
@@ -1361,7 +1362,9 @@
           }
         ]
       },
-      "additional_functions_approval_ref": "owner-decision-2026-10-28-editor-additional-functions-approved"
+      "additional_functions_approval_ref": "owner-decision-2026-10-28-editor-additional-functions-approved",
+      "capability_matrix_ref": "agent-work/evidence/HX-BL-023-editor-v2/capability-matrix.json",
+      "analyst_result_ref": "agent-work/results/2026-10-29-analyst-HX-BL-023-editor-v2.json"
     },
     {
       "task_id": "HX-BL-024",
