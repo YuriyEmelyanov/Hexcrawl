@@ -1444,7 +1444,7 @@
       "task_id": "HX-BL-027",
       "title": "Подложка-картинка и перенос фиксированного мира",
       "criterion_id": "S03-C01",
-      "status": "proposed",
+      "status": "deferred_by_owner_prerequisites_missing",
       "potential_delta": null,
       "approval_ref": null,
       "source": {
@@ -1452,6 +1452,7 @@
         "tab": "t.2fjhoui3gxo7"
       },
       "dependencies": [
+        "Решение владельца28.10: полноценное ручное построение слоя гекскроула ИЛИ пригодная автоматизация — до возврата027 на согласование.",
         "Утверждение владельцем старта именно этого среза027; текущий статус proposed не разрешает spec/dev",
         "Принятые save/undo/RNG контракты main02c2fd5; совместимость notes exact e01dcbf/PR476. Выпуск476 не блокирует отдельное проектирование после027approval; любой совместный release потребует проверки всего пакета и своего разрешения",
         "Аналитик определяет безопасные проверяемые лимиты размера/разрешения изображения и способ self-contained JSON; никаких сетевых URL/платных API",
@@ -1459,7 +1460,7 @@
       ],
       "proposal": {
         "task_id": "HX-BL-027",
-        "status": "proposed",
+        "status": "deferred_by_owner",
         "date": "2026-10-28",
         "title": "Одна сохраняемая подложка готовой карты для ручной подготовки",
         "primary_scenario": "develop_existing",
@@ -1491,7 +1492,7 @@
           "preview_status": "proposal_text_only; visual proposal required after task approval, not yet shown",
           "preview_policy": "Аналитик после утверждения готовит/показывает desktop390px proposal и состояния, продолжая spec без отдельного design approval"
         },
-        "priority_reason": "Первый конкретный мост от готового материала к имеющимся редакторам/заметкам; соответствует этапуC контроль мастера и сценарию develop. Не обещает готовность полного региона/всех правил. Не требуется новый движок контента.",
+        "priority_reason": "Текущий срез отклонён как преждевременный: сначала инструмент построения слоя. Прежняя аргументация сохранена как история.",
         "alternatives": [
           {
             "task_id": "HX-BL-040",
@@ -1588,10 +1589,12 @@
         "execution_allowed": false,
         "release_approved": false,
         "next_role_after_approval": "business_analyst",
-        "next_step": "Ожидается утверждение владельцем задачи HX-BL-027 в указанном срезе. Затем аналитик готовит пригодную spec/визуал, далее programmer и independentreview; выпуск отдельно."
+        "next_step": "Вернуться после появления полноценного ручного редактора слоя гекскроула ИЛИ пригодного автоматического инструмента; повторный старт отдельно утверждает владелец. Сейчас спецификацию/разработку027 не начинать.",
+        "owner_decision_ref": "owner-decision-2026-10-28-defer-HX-BL-027",
+        "priority_reason_historical": "Первый конкретный мост от готового материала к имеющимся редакторам/заметкам; соответствует этапуC контроль мастера и сценарию develop. Не обещает готовность полного региона/всех правил. Не требуется новый движок контента."
       },
       "proposal_ref": "agent-work/proposals/2026-10-28-HX-BL-027-map-underlay.md",
-      "proposal_status": "awaiting_owner_start_approval",
+      "proposal_status": "deferred_not_cancelled",
       "execution_allowed": false,
       "release_approved": false,
       "primary_scenario": "develop_existing",
@@ -1620,9 +1623,31 @@
           "Нет автоматического прироста или переноса193.75 по1.1"
         ]
       },
-      "next_role": "owner",
-      "next_step": "Ожидается утверждение владельцем задачи HX-BL-027 в указанном срезе. Затем аналитик готовит пригодную spec/визуал, далее programmer и independentreview; выпуск отдельно.",
-      "recommended_priority": "next_product_slice_after_notes"
+      "next_role": "strategist",
+      "next_step": "Вернуться после появления полноценного ручного редактора слоя гекскроула ИЛИ пригодного автоматического инструмента; повторный старт отдельно утверждает владелец. Сейчас спецификацию/разработку027 не начинать.",
+      "recommended_priority": "deferred_until_useful_hex_layer_workflow",
+      "owner_decision": {
+        "id": "owner-decision-2026-10-28-defer-HX-BL-027",
+        "date": "2026-10-28",
+        "task_id": "HX-BL-027",
+        "type": "owner_priority_and_dependency_decision",
+        "status": "deferred_not_cancelled",
+        "source": "Владелец отклоняет текущий старт как несвоевременный: подложка нужна, но после полноценного ручного редактора слоя гекскроула либо автоматического инструмента (возможный путь — ИИ).",
+        "reason": "Одна подложка не позволяет мастеру построить поверх готовой картинки нужный слой гекскроула при нынешнем ограниченном редактировании.",
+        "revisit_condition": {
+          "logic": "OR",
+          "conditions": [
+            "Полноценный ручной редактор позволяет построить нужный слой гекскроула поверх исходного материала.",
+            "Есть пригодный автоматический инструмент построения/переноса слоя; ИИ рассматривается как возможный подход, не уже выбранная архитектура."
+          ]
+        },
+        "future_needed": true,
+        "execution_allowed": false,
+        "release_approved": false,
+        "ai_development_authorized": false,
+        "paid_services_authorized": false,
+        "do_not_repropose_without": "Новые evidence выполнения зависимости или явное новое поручение владельца. После появления предпосылки предложить актуализированный срез на старт, не начинать автоматически."
+      }
     },
     {
       "task_id": "HX-BL-028",
@@ -2247,6 +2272,13 @@
   "model_path": "agent-work/strategy/score-model.md",
   "model_activation_ref": "owner-decision-2026-10-26-activate-score-1.2",
   "next_product_recommendation": {
+    "task_id": "HX-BL-024",
+    "status": "approved_ui_revision_ready_for_development",
+    "reason": "Текущая разрешённая работа — замечания владельца к заметкам поspec1.1;027отложена.",
+    "next_role": "developer",
+    "handoff_ref": "agent-work/handoffs/2026-10-28-HX-BL-024-autosave-ui.md"
+  },
+  "previous_product_recommendation": {
     "task_id": "HX-BL-027",
     "proposal_ref": "agent-work/proposals/2026-10-28-HX-BL-027-map-underlay.md",
     "status": "proposed",
