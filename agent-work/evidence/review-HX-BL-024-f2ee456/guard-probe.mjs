@@ -1,0 +1,11 @@
+import {createGenerationHarness} from './repo/test/helpers/generation-harness.mjs';
+import fs from 'node:fs';import assert from 'node:assert/strict';
+const h=createGenerationHarness(42);h.render();h.setWindow({alert(){},matchMedia:()=>({matches:false})});h.injectFunction('readTextFile',async f=>f.text);
+const fixture=JSON.parse(fs.readFileSync(new URL('./repo/test/fixtures/import-v2/manual-edit-map.json',import.meta.url)));
+const load=()=>h.render().handleImportJson({target:{files:[{text:JSON.stringify(fixture)}],value:'file'}});
+await load();const [a,b]=fixture.map.regions[0].hexes;const ak=`${a.q},${a.r}`,bk=`${b.q},${b.r}`;
+h.render().setSelectedHex(a);const stale=h.render().changeNotesText;h.render().setSelectedHex(b);h.render();
+const before=structuredClone(h.render().captureDocument());stale(ak,'STALE');assert.deepEqual(structuredClone(h.render().captureDocument()),before);
+const oldWorld=h.render().changeNotesText;await load();oldWorld(bk,'OLDWORLD');assert.equal(h.render().createSaveData().map.gmNotesByHexKey[bk],undefined);
+h.render().setSelectedHex(a);const cb=h.render().changeNotesText;let release;h.injectFunction('readTextFile',()=>new Promise(resolve=>{release=resolve;}));const pending=load();cb(ak,'BUSY');assert.equal(h.render().createSaveData().map.gmNotesByHexKey[ak],undefined);release(JSON.stringify(fixture));await pending;
+console.log(JSON.stringify({staleSelectionInert:true,staleRevisionInert:true,importBusyInert:true}));

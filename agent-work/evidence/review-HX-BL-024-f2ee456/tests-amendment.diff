@@ -1,0 +1,160 @@
+diff --git a/test/browser/save-history.smoke.mjs b/test/browser/save-history.smoke.mjs
+index e97b6d4..9fad635 100644
+--- a/test/browser/save-history.smoke.mjs
++++ b/test/browser/save-history.smoke.mjs
+@@ -65,40 +65,57 @@ try {
+  // UI-05 regression: a valid water-only document has no region, but must expose notes.
+  const waterOnly=JSON.parse(await fs.readFile(new URL('../fixtures/import-v2/baseline-empty.json',import.meta.url)));
+  waterOnly.map.terrainByHexKey={'-1,0':{terrainOverride:'sea'}};waterOnly.ui.selectedHex={q:-1,r:0};
+- await load(waterOnly);await page.getByRole('textbox',{name:'Заметки мастера',exact:true}).fill('Sea 🗝');
+- await button('Сохранить').click();assert.equal((await snapshot()).map.gmNotesByHexKey['-1,0'],'Sea 🗝');
++ async function openNotes(){
++   const add=button('+ Добавить заметку');
++   if(await add.count()) await add.click();
++   else if(!await page.locator('#gm-notes-text').count()) await page.locator('#gm-notes-label').click();
++   return page.locator('#gm-notes-text');
++ }
++ await load(waterOnly);await (await openNotes()).fill('Sea 🗝');
++ assert.equal((await snapshot()).map.gmNotesByHexKey['-1,0'],'Sea 🗝');
+  await load(fixture);
+  const noteHex=fixture.map.regions[0].hexes[0], noteKey=`${noteHex.q},${noteHex.r}`;
+  const other=fixture.map.regions[0].hexes.find(h=>`${h.q},${h.r}`!==noteKey);
+- await select(noteKey);
+- const notes=page.getByRole('textbox',{name:'Заметки мастера',exact:true});
+- await notes.scrollIntoViewIfNeeded();
++ await select(noteKey);assert.equal(await page.locator('#gm-notes-text').count(),0);
++ await button('+ Добавить заметку').scrollIntoViewIfNeeded();
+  await page.screenshot({path:fileURLToPath(new URL('reports/HX-BL-024/desktop-empty.png',root))});
+  const cleanNotes=await snapshot(), noteText='  🗝 <b>Жрец пропал</b>\nСледы ведут к броду.  ';
+- await notes.fill(noteText);await notes.press('Enter');await notes.press('Backspace');
+- await select(`${other.q},${other.r}`);await button('Отменить').click();
++ await openNotes();assert.equal(await page.locator('#gm-notes-text').evaluate(e=>e===document.activeElement),true);
++ await page.locator('#gm-notes-label').click();assert.deepEqual(await snapshot(),cleanNotes,'empty open-close no transaction');
++ const notes=await openNotes();await notes.fill(noteText);await notes.press('Enter');await notes.press('Backspace');
+  assert.equal(await notes.inputValue(),noteText);
+- await page.getByRole('alert').filter({hasText:'Сохраните или отмените'}).waitFor();
+- await notes.scrollIntoViewIfNeeded();await page.screenshot({path:fileURLToPath(new URL('reports/HX-BL-024/desktop-dirty.png',root))});
+- await button('Сохранить').click();const savedNotes=await snapshot();assert.equal(savedNotes.version,4);assert.equal(savedNotes.map.gmNotesByHexKey[noteKey],noteText);
++ await page.locator('.gm-notes [role=status]').filter({hasText:'Сохранено'}).waitFor();
++ await notes.scrollIntoViewIfNeeded();await page.screenshot({path:fileURLToPath(new URL('reports/HX-BL-024/desktop-editor.png',root))});
++ // No debounce wait: selection/export must retain the final character.
++ await select(`${other.q},${other.r}`);assert.equal(await page.locator('#gm-notes-text').count(),0);
++ await select(noteKey);assert.equal(await page.locator('.gm-notes__text').textContent(),noteText);
++ const savedNotes=await snapshot();assert.equal(savedNotes.version,4);assert.equal(savedNotes.map.gmNotesByHexKey[noteKey],noteText);
+  const stripNotes=d=>{d=structuredClone(d);delete d.map.gmNotesByHexKey;return d;};
+  assert.deepEqual(stripNotes(savedNotes),stripNotes(cleanNotes));
+  assert.equal(await page.locator('svg').first().textContent().then(s=>s.includes('Жрец пропал')),false);
++ assert.equal(await button('Сохранить').count(),0);assert.equal(await button('Отменить изменения').count(),0);
+  await button('Отменить').click();assert.deepEqual(await snapshot(),cleanNotes);
+- await notes.fill('cancel');await button('Отменить изменения').click();assert.equal(await button('Повторить').isEnabled(),true);
++ // Net-zero input in one unbroken series must restore the existing redo branch.
++ await openNotes();await notes.fill('temporary');await notes.fill('');await page.locator('#gm-notes-label').click();
++ assert.equal(await button('Повторить').isEnabled(),true);
+  await button('Повторить').click();assert.deepEqual(await snapshot(),savedNotes);
+- await button('Switch to English').click();await page.getByRole('textbox',{name:'GM notes',exact:true}).scrollIntoViewIfNeeded();
++ // Distinct500ms series undo as units. IME composition stays one history group.
++ await openNotes();await notes.fill(noteText+'A');await page.waitForTimeout(550);await notes.fill(noteText+'AB');
++ await button('Отменить').click();assert.equal((await snapshot()).map.gmNotesByHexKey[noteKey],noteText+'A');
++ await button('Отменить').click();assert.deepEqual(await snapshot(),savedNotes);
++ await openNotes();await notes.dispatchEvent('compositionstart');await notes.fill(noteText+'中');await page.waitForTimeout(550);await notes.fill(noteText+'中文');await notes.dispatchEvent('compositionend');
++ await button('Отменить').click();assert.deepEqual(await snapshot(),savedNotes);
++ await openNotes();await button('Switch to English').click();await notes.scrollIntoViewIfNeeded();
+  await page.screenshot({path:fileURLToPath(new URL('reports/HX-BL-024/desktop-en.png',root))});
+- await page.setViewportSize({width:390,height:844});await page.getByRole('textbox',{name:'GM notes',exact:true}).scrollIntoViewIfNeeded();
++ await page.setViewportSize({width:390,height:844});await notes.scrollIntoViewIfNeeded();
+  await page.screenshot({path:fileURLToPath(new URL('reports/HX-BL-024/narrow-en.png',root))});
+  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=390),true);
+  await page.setViewportSize({width:1500,height:1100});await button('Переключить на русский').click();
+  await page.evaluate(()=>window.__delayRead=true);
+  await page.locator('input[type=file]').setInputFiles({name:'notes.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(savedNotes))});
+  await page.waitForFunction(()=>window.__releaseRead!==undefined);
+- assert.equal(await page.getByRole('textbox',{name:'Заметки мастера',exact:true}).isDisabled(),true);
+- await page.getByRole('textbox',{name:'Заметки мастера',exact:true}).scrollIntoViewIfNeeded();
+- await page.screenshot({path:fileURLToPath(new URL('reports/HX-BL-024/desktop-busy.png',root))});
++ assert.equal(await notes.isDisabled(),true);
++ await notes.scrollIntoViewIfNeeded();await page.screenshot({path:fileURLToPath(new URL('reports/HX-BL-024/desktop-busy.png',root))});
+  await page.evaluate(()=>{window.__releaseRead();delete window.__releaseRead;});
+  await page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);
+  assert.deepEqual(await snapshot(),savedNotes);
+@@ -112,7 +129,7 @@ try {
+  await button('Перегенерировать регион').waitFor();
+  const conflictMap=await snapshot();assert.equal(conflictMap.map.regions[0].hexes.length,27);
+  for(const hex of conflictMap.map.regions[0].hexes){
+-   await select(`${hex.q},${hex.r}`);await page.getByRole('textbox',{name:'Заметки мастера',exact:true}).fill('keep');await button('Сохранить').click();
++   await select(`${hex.q},${hex.r}`);await (await openNotes()).fill('keep');
+  }
+  const conflictBefore=await snapshot();
+  await page.locator('.gen-params select').nth(0).selectOption('locality');
+diff --git a/test/helpers/generation-harness.mjs b/test/helpers/generation-harness.mjs
+index 2f3d777..bbcd5e0 100644
+--- a/test/helpers/generation-harness.mjs
++++ b/test/helpers/generation-harness.mjs
+@@ -16,7 +16,7 @@ const artwork = app.body.statements.flatMap(node => ts.isVariableStatement(node)
+ let prefix = source.slice(0, lastReturn.getStart(ast));
+ if (artwork?.initializer) prefix = prefix.slice(0, artwork.initializer.getStart(ast)) + 'undefined' + prefix.slice(artwork.initializer.end);
+ const instrumented = prefix + `return {
+-  gmNotesByHexKey, changeNotesDraft, saveNotesDraft, cancelNotesDraft, notesDirty, notesNotice, recordGenerated, captureGenerationBackup,
++  gmNotesByHexKey, changeNotesText, finishNotesGroup, openNotesEditor, toggleNotesEditor, recordGenerated, captureGenerationBackup,
+   generationRef, seedInput, setSeedInput, setGenSizeCategory, applyWorldSeed, buildGenerationOptions, generateAt,
+   regions, rivers, roads, candidateHexes, hexTerrainByKey, history, toponyms, toponymSeed, setToponyms,
+   addFallbackTractToMap, safelyAddRegionToMap, createSaveData, restoreSnapshot: snapshot => restoreSnapshot({...snapshot, generation: snapshot.generation ?? cloneGenerationState(generationRef.current)}), deleteLastRegion,
+@@ -58,7 +58,7 @@ export function createGenerationHarness(seed = 1, search = '') {
+   const context = vm.createContext({ module, exports: module.exports, Math: seededMath, Map, Set, crypto: {getRandomValues(a){ a[0]=seed >>> 0; return a; }},
+     console: Object.fromEntries(['log', 'warn', 'error'].map(level => [level, (...args) => logs.push({ level, args })])),
+     require: name => (name.startsWith('./modes/') || name.startsWith('./rendering/') || name === './worldRandom' || name === './saveValidation') ? loadMode(new URL(`../../src/${name}.ts`, import.meta.url)) : name === './generationDiagnostics' ? diagnostics.exports : name === 'react' ? hooks : localRequire(name.startsWith('./') ? `${name}.ts` : name),
+-    performance, URLSearchParams, structuredClone, window: { location: { search } }
++    performance, URLSearchParams, structuredClone, setTimeout, clearTimeout, window: { location: { search } }
+   });
+   const modeCache = new Map();
+   function loadMode(url) {
+diff --git a/test/mapTransactions.test.mjs b/test/mapTransactions.test.mjs
+index ea1175d..a581f00 100644
+--- a/test/mapTransactions.test.mjs
++++ b/test/mapTransactions.test.mjs
+@@ -121,24 +121,22 @@ test('no-op and failed imports preserve redo; fresh edit clears it; reset on emp
+ 
+ 
+ // HIST/UI notes contract: use existing production handler harness and full-document comparisons.
+-test('notes save/clear are exact transactions, no-op/cancel preserve redo and dirty commands are inert',async()=>{
++test('notes autosave coalesces a series, preserves redo on no-op, and commits before other operations',async()=>{
+   const {h}=setup();await load(h,fixture);
+   const hex=fixture.map.regions[0].hexes[0],key=`${hex.q},${hex.r}`;
+-  h.render().setSelectedHex(hex);const before=stable(h.render());
+-  h.render().changeNotesDraft(key,'  🗝 <b>text</b>\nsecond  ');
+-  const dirty=stable(h.render()), stacks=serial([h.render().undoHistory,h.render().redoHistory]);
+-  for(const action of [()=>h.render().undoMap(),()=>h.render().resetMap(),()=>h.render().deleteLastRegion(),()=>h.render().generateAt({q:100,r:100}),()=>h.render().handleImportJson({target:{files:[{text:JSON.stringify(fixture)}],value:'x'}})]) {
+-    await action(); assert.deepEqual(stable(h.render()),dirty);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks);
+-  }
+-  h.render().saveNotesDraft();const after=stable(h.render());
+-  assert.equal(after.map.gmNotesByHexKey[key],'  🗝 <b>text</b>\nsecond  ');
++  h.render().setSelectedHex(hex);const before=stable(h.render()),count=h.render().undoHistory.length;
++  for(const text of ['  🗝','  🗝 <b>text</b>','  🗝 <b>text</b>\nsecond  ']) h.render().changeNotesText(key,text);
++  const after=stable(h.render());assert.equal(after.map.gmNotesByHexKey[key],'  🗝 <b>text</b>\nsecond  ');
++  assert.equal(h.render().undoHistory.length,count+1,'one entry for input series');
+   const without=d=>{d=structuredClone(d);delete d.map.gmNotesByHexKey;return d;};
+   assert.deepEqual(without(before),without(after));assertUndoRedo(h,before,after);
+   h.render().undoMap();const redo=serial(h.render().redoHistory);
+-  h.render().changeNotesDraft(key,'');h.render().saveNotesDraft();assert.deepEqual(serial(h.render().redoHistory),redo);
+-  h.render().changeNotesDraft(key,'cancel');h.render().cancelNotesDraft();assert.deepEqual(serial(h.render().redoHistory),redo);
+-  h.render().redoMap();h.render().changeNotesDraft(key,'');h.render().saveNotesDraft();assert.equal(stable(h.render()).map.gmNotesByHexKey[key],undefined);
+-  h.render().undoMap();assert.deepEqual(stable(h.render()),after);
++  h.render().changeNotesText(key,'temporary');h.render().changeNotesText(key,'');h.render().finishNotesGroup();
++  assert.deepEqual(serial(h.render().redoHistory),redo,'net-noop restores prior redo');
++  h.render().redoMap();h.render().changeNotesText(key,'');h.render().finishNotesGroup();
++  assert.equal(stable(h.render()).map.gmNotesByHexKey[key],undefined);h.render().undoMap();assert.deepEqual(stable(h.render()),after);
++  h.render().changeNotesText(key,'last character!');await load(h,fixture);h.render().undoMap();
++  assert.equal(stable(h.render()).map.gmNotesByHexKey[key],'last character!','import starts after latest text');
+ });
+ test('import replaces notes exactly and legacy imports clear them; malformed notes preserve full history',async()=>{
+   const {h,alerts}=setup();const key=fixture.map.regions[0].hexes.map(h=>`${h.q},${h.r}`)[0];
+@@ -152,8 +150,8 @@ test('delete retains latest surviving notes, confirms loss, undo restores; gener
+   const {h}=setup();h.setWindow({alert(){},confirm:()=>false,matchMedia:()=>({matches:false})});
+   h.render().addFallbackTractToMap({q:0,r:0});h.render().addFallbackTractToMap(h.render().candidateHexes[0]);
+   const a=h.render().regions[0].hexes[0],ak=`${a.q},${a.r}`,b=h.render().regions[1].hexes[0],bk=`${b.q},${b.r}`;
+-  h.render().setSelectedHex(a);h.render().changeNotesDraft(ak,'latest first');h.render().saveNotesDraft();
+-  h.render().setSelectedHex(b);h.render().changeNotesDraft(bk,'second');h.render().saveNotesDraft();const before=stable(h.render());
++  h.render().setSelectedHex(a);h.render().changeNotesText(ak,'latest first');h.render().finishNotesGroup();
++  h.render().setSelectedHex(b);h.render().changeNotesText(bk,'second');h.render().finishNotesGroup();const before=stable(h.render());
+   h.render().deleteLastRegion();assert.deepEqual(stable(h.render()),before);
+   h.setWindow({alert(){},confirm:()=>true,matchMedia:()=>({matches:false})});h.render().deleteLastRegion();
+   assert.deepEqual(stable(h.render()).map.gmNotesByHexKey,{[ak]:'latest first'});assertUndoRedo(h,before,stable(h.render()));

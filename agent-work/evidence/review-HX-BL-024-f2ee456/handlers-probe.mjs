@@ -1,0 +1,20 @@
+import {createGenerationHarness} from './repo/test/helpers/generation-harness.mjs';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+const setup=()=>{const h=createGenerationHarness(42);h.render();h.setWindow({alert(){},confirm:()=>true,matchMedia:()=>({matches:false})});h.render().setGenSizeCategory('region');h.render().generateAt({q:0,r:0});assert.equal(h.render().regions[0].hexes.length,27);return h;};
+const plain=setup();const initial=structuredClone(plain.render().createSaveData());
+plain.render().setGenSizeCategory('locality');plain.render().regenerateLastRegion();plain.render().finishPendingRegeneration();
+const actual=plain.render().createSaveData();
+const keys=map=>new Set([...map.regions.flatMap(r=>r.hexes.map(x=>`${x.q},${x.r}`)),...Object.keys(map.terrainByHexKey)]);
+const finalKeys=keys(actual.map);const lost=[...keys(initial.map)].filter(k=>!finalKeys.has(k));assert.equal(lost.length,19);
+const h=setup();for(const hex of h.render().regions[0].hexes){h.render().setSelectedHex(hex);h.render().changeNotesText(`${hex.q},${hex.r}`,'keep');h.render().finishNotesGroup();}
+const hex=h.render().regions[0].hexes[0];h.render().setSelectedHex(hex);h.render().changeNotesText(`${hex.q},${hex.r}`,'second');h.render().finishNotesGroup();h.render().undoMap();
+assert.equal(h.render().redoHistory.length,1);
+const before=structuredClone(h.render().captureDocument()),history=structuredClone([h.render().undoHistory,h.render().redoHistory]);
+h.render().setGenSizeCategory('locality');h.render().regenerateLastRegion();h.render().finishPendingRegeneration();
+const diagnostic=structuredClone(h.render().generationError);
+assert.deepEqual(structuredClone(h.render().captureDocument()),before);assert.deepEqual(structuredClone([h.render().undoHistory,h.render().redoHistory]),history);
+assert.deepEqual([...diagnostic.notesLossHexKeys].sort(),lost.sort());assert.equal(diagnostic.kind,'constraint-rejection');assert.equal(diagnostic.reason,'notes_loss_conflict');assert.equal(diagnostic.result,'rolled-back');assert(!diagnostic.message.includes('keep'));
+const generic=setup();const genericBefore=structuredClone(generic.render().captureDocument()),genericHistory=structuredClone([generic.render().undoHistory,generic.render().redoHistory]);generic.failRegularGeneration();generic.render().setGenSizeCategory('locality');generic.render().regenerateLastRegion();generic.render().finishPendingRegeneration();
+const genericError=structuredClone(generic.render().generationError);assert.equal(genericError.kind,'programming-error');assert.equal(genericError.notesLossHexKeys,undefined);assert.deepEqual(structuredClone(generic.render().captureDocument()),genericBefore);assert.deepEqual(structuredClone([generic.render().undoHistory,generic.render().redoHistory]),genericHistory);
+const result={lostCoordinates:lost,notesConflictDiagnostic:diagnostic,genericFailureDiagnostic:genericError,fullDocumentHistoryRngCheckpointRollback:true,nonemptyRedoRestored:true};fs.writeFileSync(new URL('./handlers.json',import.meta.url),JSON.stringify(result,null,2));console.log(JSON.stringify(result,null,2));
