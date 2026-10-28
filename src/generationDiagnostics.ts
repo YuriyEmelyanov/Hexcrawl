@@ -19,6 +19,7 @@ export type GenerationEvent = {
   rejectionCounts: Record<string, number>;
   targetSize: number | null;
   message?: string;
+  notesLossHexKeys?: string[];
   stack?: string;
   random?: { before: GenerationState; after: GenerationState };
   inputOptions?: Record<string, unknown>;

@@ -51,8 +51,8 @@ export function validateSaveStructure(value: unknown, domain: {
   names: (v: unknown)=>boolean; toponymModel: string; kingdoms: (map: RecordValue)=>void;
 }): void {
   const data=record(value,'$');
-  oneOf(data.schema,['hexcrawl-map'],'schema'); oneOf(data.version,[2,3],'version');
-  if (data.version === 3 || data.generation !== undefined) { const path = generationValidationPath(data.generation); if (path) fail(path,'unsupported or invalid RNG state'); }
+  oneOf(data.schema,['hexcrawl-map'],'schema'); oneOf(data.version,[2,3,4],'version');
+  if (data.version === 3 || data.version === 4 || data.generation !== undefined) { const path = generationValidationPath(data.generation); if (path) fail(path,'unsupported or invalid RNG state'); }
   const map=record(data.map,'map'), ui=record(data.ui,'ui'), counters=record(data.counters,'counters');
   const regions=array(map.regions,'map.regions'), rivers=array(map.rivers,'map.rivers'), roads=array(map.roads,'map.roads');
   const regionIds=uniqueIds(regions,'map.regions'), riverIds=uniqueIds(rivers,'map.rivers'), roadIds=uniqueIds(roads,'map.roads');
@@ -99,6 +99,13 @@ export function validateSaveStructure(value: unknown, domain: {
     const p='map.terrainByHexKey.'+k; hexKey(k,p); const t=record(v,p);
     if(t.terrainOverride!==undefined) oneOf(t.terrainOverride,['lake','sea'],p+'.terrainOverride');
     if(t.lakeId!==undefined) maxLake=Math.max(maxLake,integer(t.lakeId,p+'.lakeId'));
+  }
+  if (map.gmNotesByHexKey !== undefined) {
+    for (const [k,v] of Object.entries(record(map.gmNotesByHexKey, 'map.gmNotesByHexKey'))) {
+      const p = 'map.gmNotesByHexKey[' + JSON.stringify(k) + ']';
+      hexKey(k,p); text(v,p);
+      if (!land.has(k) && !Object.prototype.hasOwnProperty.call(terrain,k)) fail(p,'note requires an existing hex');
+    }
   }
   for(const f of ['waterPoiByHexKey','biomeOverrideByHexKey']) if(map[f]!==undefined) for(const [k,v] of Object.entries(record(map[f],'map.'+f))) {
     const p='map.'+f+'.'+k; hexKey(k,p);

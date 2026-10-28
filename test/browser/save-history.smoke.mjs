@@ -60,6 +60,90 @@ try {
    assert.fail('No candidate could generate a region');
  }
  async function transaction(action){const before=await snapshot();await action();const after=await snapshot();assert.notDeepEqual(after,before);await button('Отменить').click();assert.deepEqual(await snapshot(),before);await button('Повторить').click();assert.deepEqual(await snapshot(),after);return after;}
+ // HX-BL-024: one bounded real-React editor lifecycle, reusing import/select/export helpers.
+ await fs.mkdir(new URL('reports/HX-BL-024/',root),{recursive:true});
+ // UI-05 regression: a valid water-only document has no region, but must expose notes.
+ const waterOnly=JSON.parse(await fs.readFile(new URL('../fixtures/import-v2/baseline-empty.json',import.meta.url)));
+ waterOnly.map.terrainByHexKey={'-1,0':{terrainOverride:'sea'}};waterOnly.ui.selectedHex={q:-1,r:0};
+ async function openNotes(){
+   const add=button('+ Добавить заметку');
+   if(await add.count()) await add.click();
+   else if(!await page.locator('#gm-notes-text').count()) await page.locator('#gm-notes-label').click();
+   return page.locator('#gm-notes-text');
+ }
+ await load(waterOnly);await (await openNotes()).fill('Sea 🗝');
+ assert.equal((await snapshot()).map.gmNotesByHexKey['-1,0'],'Sea 🗝');
+ await load(fixture);
+ const noteHex=fixture.map.regions[0].hexes[0], noteKey=`${noteHex.q},${noteHex.r}`;
+ const other=fixture.map.regions[0].hexes.find(h=>`${h.q},${h.r}`!==noteKey);
+ await select(noteKey);assert.equal(await page.locator('#gm-notes-text').count(),0);
+ await button('+ Добавить заметку').scrollIntoViewIfNeeded();
+ await page.screenshot({path:fileURLToPath(new URL('reports/HX-BL-024/desktop-empty.png',root))});
+ const cleanNotes=await snapshot(), noteText='  🗝 <b>Жрец пропал</b>\nСледы ведут к броду.  ';
+ await openNotes();assert.equal(await page.locator('#gm-notes-text').evaluate(e=>e===document.activeElement),true);
+ await page.locator('#gm-notes-label').click();assert.deepEqual(await snapshot(),cleanNotes,'empty open-close no transaction');
+ const notes=await openNotes();await notes.fill(noteText);await notes.press('Enter');await notes.press('Backspace');
+ assert.equal(await notes.inputValue(),noteText);
+ await page.locator('.gm-notes [role=status]').filter({hasText:'Сохранено'}).waitFor();
+ await notes.scrollIntoViewIfNeeded();await page.screenshot({path:fileURLToPath(new URL('reports/HX-BL-024/desktop-editor.png',root))});
+ // No debounce wait: selection/export must retain the final character.
+ await select(`${other.q},${other.r}`);assert.equal(await page.locator('#gm-notes-text').count(),0);
+ await select(noteKey);assert.equal(await page.locator('.gm-notes__text').textContent(),noteText);
+ const savedNotes=await snapshot();assert.equal(savedNotes.version,4);assert.equal(savedNotes.map.gmNotesByHexKey[noteKey],noteText);
+ const stripNotes=d=>{d=structuredClone(d);delete d.map.gmNotesByHexKey;return d;};
+ assert.deepEqual(stripNotes(savedNotes),stripNotes(cleanNotes));
+ assert.equal(await page.locator('svg').first().textContent().then(s=>s.includes('Жрец пропал')),false);
+ assert.equal(await button('Сохранить').count(),0);assert.equal(await button('Отменить изменения').count(),0);
+ await button('Отменить').click();assert.deepEqual(await snapshot(),cleanNotes);
+ // Net-zero input in one unbroken series must restore the existing redo branch.
+ await openNotes();await notes.fill('temporary');await notes.fill('');await page.locator('#gm-notes-label').click();
+ assert.equal(await button('Повторить').isEnabled(),true);
+ await button('Повторить').click();assert.deepEqual(await snapshot(),savedNotes);
+ // Distinct500ms series undo as units. IME composition stays one history group.
+ await openNotes();await notes.fill(noteText+'A');await page.waitForTimeout(550);await notes.fill(noteText+'AB');
+ await button('Отменить').click();assert.equal((await snapshot()).map.gmNotesByHexKey[noteKey],noteText+'A');
+ await button('Отменить').click();assert.deepEqual(await snapshot(),savedNotes);
+ await openNotes();await notes.dispatchEvent('compositionstart');await notes.fill(noteText+'中');await page.waitForTimeout(550);await notes.fill(noteText+'中文');await notes.dispatchEvent('compositionend');
+ await button('Отменить').click();assert.deepEqual(await snapshot(),savedNotes);
+ await openNotes();await button('Switch to English').click();await notes.scrollIntoViewIfNeeded();
+ await page.screenshot({path:fileURLToPath(new URL('reports/HX-BL-024/desktop-en.png',root))});
+ await page.setViewportSize({width:390,height:844});await notes.scrollIntoViewIfNeeded();
+ await page.screenshot({path:fileURLToPath(new URL('reports/HX-BL-024/narrow-en.png',root))});
+ assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=390),true);
+ await page.setViewportSize({width:1500,height:1100});await button('Переключить на русский').click();
+ await page.evaluate(()=>window.__delayRead=true);
+ await page.locator('input[type=file]').setInputFiles({name:'notes.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(savedNotes))});
+ await page.waitForFunction(()=>window.__releaseRead!==undefined);
+ assert.equal(await notes.isDisabled(),true);
+ await notes.scrollIntoViewIfNeeded();await page.screenshot({path:fileURLToPath(new URL('reports/HX-BL-024/desktop-busy.png',root))});
+ await page.evaluate(()=>{window.__releaseRead();delete window.__releaseRead;});
+ await page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);
+ assert.deepEqual(await snapshot(),savedNotes);
+ await load(fixture);
+ // HIST-05 / HX024-R1: extend editor lifecycle with the natural reviewer reproduction.
+ await button('Сбросить').click();
+ await page.getByRole('textbox',{name:'Seed мира',exact:true}).fill('42');
+ await page.getByRole('textbox',{name:'Seed мира',exact:true}).press('Tab');
+ await page.locator('.gen-params select').nth(0).selectOption('region');
+ await page.locator('polygon.hex.candidate').first().dispatchEvent('click');
+ await button('Перегенерировать регион').waitFor();
+ const conflictMap=await snapshot();assert.equal(conflictMap.map.regions[0].hexes.length,27);
+ for(const hex of conflictMap.map.regions[0].hexes){
+   await select(`${hex.q},${hex.r}`);await (await openNotes()).fill('keep');
+ }
+ const conflictBefore=await snapshot();
+ await page.locator('.gen-params select').nth(0).selectOption('locality');
+ await button('Перегенерировать регион').click();
+ const conflictAlert=page.getByRole('alert').filter({hasText:'Сначала перенесите или очистите заметки'});
+ await conflictAlert.waitFor();const conflictText=await conflictAlert.textContent();
+ assert.match(conflictText,/\(19\)/);assert.match(conflictText,/-?\d+,-?\d+/);assert(!conflictText.includes('Можно повторить попытку'));
+ assert.deepEqual(await snapshot(),conflictBefore,'notes-loss refusal preserves whole map and RNG');
+ await conflictAlert.scrollIntoViewIfNeeded();await page.screenshot({path:fileURLToPath(new URL('reports/HX-BL-024/conflict-ru.png',root))});
+ await button('Switch to English').click();
+ const conflictEnglish=page.getByRole('alert').filter({hasText:'Move or clear the notes first'});
+ await conflictEnglish.waitFor();assert.match(await conflictEnglish.textContent(),/\(19\)/);
+ await conflictEnglish.scrollIntoViewIfNeeded();await page.screenshot({path:fileURLToPath(new URL('reports/HX-BL-024/conflict-en.png',root))});
+ await button('Переключить на русский').click();await load(fixture);
  // COMP-03/04: the whole corpus, including real bug maps, not a subset.
  for(const entry of manifest.entries){
    const data=JSON.parse(await fs.readFile(new URL(entry.path,root)));await load(data);const saved=await snapshot();

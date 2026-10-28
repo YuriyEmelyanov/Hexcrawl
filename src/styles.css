@@ -185,3 +185,15 @@ button:disabled,select:disabled { opacity:.55; cursor:wait; }
 .map-motion-buffer { position:absolute; left:0; top:0; display:none; pointer-events:none; transform-origin:0 0; }
 .map-viewport.has-motion-buffer.is-navigating .map-motion-buffer { display:block; will-change:transform; }
 .map-viewport.has-motion-buffer.is-navigating .map-stage > svg { opacity:0; will-change:auto; }
+
+
+/* GM text remains outside map artwork and export SVG. */
+.gm-notes { margin-top: 1rem; min-width: 0; }
+/* Reuse the panel typography and field colors rather than a separate card. */
+.gm-notes__heading { display: flex; align-items: center; flex-wrap: wrap; gap: .5rem; margin-bottom: .5rem; }
+.gm-notes__toggle, .gm-notes__text { font: inherit; color: inherit; background: none; border: 0; box-shadow: none; padding: 0; text-align: left; cursor: pointer; }
+.gm-notes__toggle { font-weight: 600; }
+.gm-notes__text { display: block; white-space: pre-wrap; overflow-wrap: anywhere; max-width: 100%; }
+.gm-notes__status { font-size: .85em; color: var(--muted); }
+.gm-notes textarea { display: block; box-sizing: border-box; width: 100%; min-width: 0; resize: vertical; font: inherit; color: inherit; background: rgba(20,31,50,.92); border: 1px solid rgba(42,59,92,.9); border-radius: 10px; padding: .6rem; }
+.gm-notes textarea:focus-visible, .gm-notes__toggle:focus-visible, .gm-notes__text:focus-visible { outline: 2px solid #617187; outline-offset: 2px; }

@@ -42,7 +42,7 @@ test('v2 migration and v3 validation are deterministic and atomic with redo',asy
  for(const entry of manifest.entries){
   const data=JSON.parse(fs.readFileSync(new URL('../'+entry.path,import.meta.url)));
   const h=setup(2),g=setup(3);await load(h,data);await load(g,data);
-  const save=stable(h.render());assert.equal(save.version,3);assert.deepEqual(stable(g.render()),save);
+  const save=stable(h.render());assert.equal(save.version,4);assert.deepEqual(stable(g.render()),save);
   for(const key of ['regions','rivers','roads','crossings','terrainByHexKey'])assert.deepEqual(save.map[key],data.map[key]);
   await load(g,save);assert.deepEqual(stable(g.render()),save);
  }
@@ -142,7 +142,7 @@ test('complete malformed RNG value classes reject atomically with redo',async()=
    {...before.generation,streams:{...before.generation.streams,geography:value}},
    {...before.generation,streams:{...before.generation.streams,poi:value}}]),
   {...before.generation,rngVersion:'future'}, {...before.generation,generatorVersion:'future'}];
- for(const version of [2,3])for(const generation of cases){
+ for(const version of [2,3,4])for(const generation of cases){
   // v2 absent generation is the supported legacy format, not a malformed RNG.
   if(version===2&&generation===undefined)continue;
   await load(h,{...before,version,generation});assert.deepEqual(stable(h.render()),before);

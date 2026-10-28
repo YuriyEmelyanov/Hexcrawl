@@ -8,6 +8,13 @@ const h = createGenerationHarness(42);
 h.render().addFallbackTractToMap({q:0,r:0});
 const valid = JSON.parse(JSON.stringify(h.render().createSaveData()));
 const cases = {
+  'notes null container': d => d.map.gmNotesByHexKey = null,
+  'notes array container': d => d.map.gmNotesByHexKey = [],
+  'notes scalar container': d => d.map.gmNotesByHexKey = 'secret',
+  'notes non-string': d => d.map.gmNotesByHexKey = {'0,0': 42},
+  'notes noncanonical key': d => d.map.gmNotesByHexKey = {'00,0': 'secret'},
+  'notes orphan': d => d.map.gmNotesByHexKey = {'99999,99999': 'secret'},
+  'notes prototype key': d => d.map.gmNotesByHexKey = JSON.parse('{"__proto__":"secret"}'),
   'road wrong structure': d => d.map.roads.push({id:1,regionId:1,segments:'broken'}),
   'fractional axial': d => d.map.regions[0].hexes[0].q = 0.5,
   'duplicate region id': d => d.map.regions.push(structuredClone(d.map.regions[0])),
@@ -93,4 +100,20 @@ test('exhausted kingdom ID refuses production start and preserves document and b
   assert.equal(t.render().kingdomJob,null);assert.ok(t.render().generationError);
   assert.deepEqual(structuredClone(t.render().captureDocument()),before);assert.deepEqual(structuredClone([t.render().undoHistory,t.render().redoHistory]),stacks);
   t.geometry.assertHexcrawlSaveData(JSON.parse(JSON.stringify(t.render().createSaveData())));
+});
+
+
+// DATA-03/04: distinct format contract, reusing the same structural validator.
+test('notes versions 2/3/4 accept exact text on actual land/water; v4 requires RNG and future versions reject', () => {
+  const land=valid.map.regions[0].hexes[0], k=`${land.q},${land.r}`;
+  for(const version of [2,3,4]) {
+    const data=structuredClone(valid); data.version=version;
+    data.map.terrainByHexKey['-999,0']={terrainOverride:'sea'};
+    data.map.gmNotesByHexKey={[k]:'  🗝 <script>not HTML</script>\r\n ', '-999,0':'sea'};
+    assert.doesNotThrow(()=>h.geometry.assertHexcrawlSaveData(data));
+    delete data.map.gmNotesByHexKey;assert.doesNotThrow(()=>h.geometry.assertHexcrawlSaveData(data));
+  }
+  const bad=structuredClone(valid);bad.version=4;delete bad.generation;
+  assert.throws(()=>h.geometry.assertHexcrawlSaveData(bad));
+  bad.version=5;assert.throws(()=>h.geometry.assertHexcrawlSaveData(bad));
 });

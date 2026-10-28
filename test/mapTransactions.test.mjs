@@ -118,3 +118,55 @@ test('no-op and failed imports preserve redo; fresh edit clears it; reset on emp
   assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks);
   h.render().setSelectedHexBiomeOverride('semi_desert');assert.equal(h.render().redoHistory.length,0);
 });
+
+
+// HIST/UI notes contract: use existing production handler harness and full-document comparisons.
+test('notes autosave coalesces a series, preserves redo on no-op, and commits before other operations',async()=>{
+  const {h}=setup();await load(h,fixture);
+  const hex=fixture.map.regions[0].hexes[0],key=`${hex.q},${hex.r}`;
+  h.render().setSelectedHex(hex);const before=stable(h.render()),count=h.render().undoHistory.length;
+  for(const text of ['  🗝','  🗝 <b>text</b>','  🗝 <b>text</b>\nsecond  ']) h.render().changeNotesText(key,text);
+  const after=stable(h.render());assert.equal(after.map.gmNotesByHexKey[key],'  🗝 <b>text</b>\nsecond  ');
+  assert.equal(h.render().undoHistory.length,count+1,'one entry for input series');
+  const without=d=>{d=structuredClone(d);delete d.map.gmNotesByHexKey;return d;};
+  assert.deepEqual(without(before),without(after));assertUndoRedo(h,before,after);
+  h.render().undoMap();const redo=serial(h.render().redoHistory);
+  h.render().changeNotesText(key,'temporary');h.render().changeNotesText(key,'');h.render().finishNotesGroup();
+  assert.deepEqual(serial(h.render().redoHistory),redo,'net-noop restores prior redo');
+  h.render().redoMap();h.render().changeNotesText(key,'');h.render().finishNotesGroup();
+  assert.equal(stable(h.render()).map.gmNotesByHexKey[key],undefined);h.render().undoMap();assert.deepEqual(stable(h.render()),after);
+  h.render().changeNotesText(key,'last character!');await load(h,fixture);h.render().undoMap();
+  assert.equal(stable(h.render()).map.gmNotesByHexKey[key],'last character!','import starts after latest text');
+});
+test('import replaces notes exactly and legacy imports clear them; malformed notes preserve full history',async()=>{
+  const {h,alerts}=setup();const key=fixture.map.regions[0].hexes.map(h=>`${h.q},${h.r}`)[0];
+  const a=structuredClone(fixture);a.map.gmNotesByHexKey={[key]:'  A\r\n🗝  '};await load(h,a);const before=stable(h.render());
+  const b=structuredClone(a);b.map.gmNotesByHexKey={[key]:'B'};await load(h,b);assertUndoRedo(h,before,stable(h.render()));
+  const data=stable(h.render()), stacks=serial([h.render().undoHistory,h.render().redoHistory]);
+  b.map.gmNotesByHexKey[key]=null;await load(h,b);assert.equal(alerts.length,1);assert.deepEqual(stable(h.render()),data);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks);
+  await load(h,fixture);assert.deepEqual(stable(h.render()).map.gmNotesByHexKey,{});h.render().undoMap();assert.deepEqual(stable(h.render()),data);
+});
+test('delete retains latest surviving notes, confirms loss, undo restores; generation conflict is rejected before commit',async()=>{
+  const {h}=setup();h.setWindow({alert(){},confirm:()=>false,matchMedia:()=>({matches:false})});
+  h.render().addFallbackTractToMap({q:0,r:0});h.render().addFallbackTractToMap(h.render().candidateHexes[0]);
+  const a=h.render().regions[0].hexes[0],ak=`${a.q},${a.r}`,b=h.render().regions[1].hexes[0],bk=`${b.q},${b.r}`;
+  h.render().setSelectedHex(a);h.render().changeNotesText(ak,'latest first');h.render().finishNotesGroup();
+  h.render().setSelectedHex(b);h.render().changeNotesText(bk,'second');h.render().finishNotesGroup();const before=stable(h.render());
+  h.render().deleteLastRegion();assert.deepEqual(stable(h.render()),before);
+  h.setWindow({alert(){},confirm:()=>true,matchMedia:()=>({matches:false})});h.render().deleteLastRegion();
+  assert.deepEqual(stable(h.render()).map.gmNotesByHexKey,{[ak]:'latest first'});assertUndoRedo(h,before,stable(h.render()));
+  const doc=h.render().captureDocument(),stacks=serial([h.render().undoHistory,h.render().redoHistory]);
+  const map={...doc.map,regions:[],hexTerrainByKey:new Map()};
+  assert.throws(()=>h.render().recordGenerated(doc.map,map,a,h.render().captureGenerationBackup()),/notes|заметк/);
+  assert.deepEqual(serial(h.render().captureDocument()),serial(doc));assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks);
+  // Force the actual generation finalizer to propose losing a noted water hex.
+  const source=stable(h.render());source.map.terrainByHexKey['999,999']={terrainOverride:'sea'};source.map.gmNotesByHexKey['999,999']='keep sea';
+  await load(h,source);const exact=serial(h.render().captureDocument()),timeline=serial([h.render().undoHistory,h.render().redoHistory]);
+  const restores=[];
+  for(const name of ['completeRegionRiverEnds','reconcileRegionRiverModel']) {
+    const original=h.geometry[name];restores.push(h.injectFunction(name,(...args)=>{const result=original(...args);if(result.terrain){result.terrain=new Map(result.terrain);result.terrain.delete('999,999');}return result;}));
+  }
+  const result=h.render().safelyAddRegionToMap(h.render().candidateHexes[0],{targetSize:8,coastalPreference:'mainland'});
+  restores.forEach(restore=>restore());assert.equal(result.success,false);assert.match(result.diagnostic.message,/999,999/);
+  assert.deepEqual(serial(h.render().captureDocument()),exact);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),timeline);
+});
