@@ -1,0 +1,107 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-10-28-strategist-next-HX-BL-027",
+  "role": "strategist_manager",
+  "task_id": "HX-BL-027",
+  "date": "2026-10-28",
+  "role_selection_reason": "Priority8: approved024 accepted, no release permission;003 acceptance amendment external dependency; no active claims or executable other task; no concrete next product proposal beyond completed024",
+  "status": "proposal_ready_awaiting_owner",
+  "proposal_ref": "agent-work/proposals/2026-10-28-HX-BL-027-map-underlay.md",
+  "plan_ref": "agent-work/plans/2026-10-28-next-product.json",
+  "task_start_authorized": false,
+  "next_role": "owner",
+  "next_role_after_approval": "business_analyst",
+  "next_task_id": "HX-BL-027",
+  "next_step": "Ожидается утверждение владельцем задачи HX-BL-027 в указанном срезе. Затем аналитик готовит пригодную spec/визуал, далее programmer и independentreview; выпуск отдельно.",
+  "product_effect": {
+    "interface": true,
+    "functionality": true,
+    "before": "У мастера есть картинка территории с деревней и бродом; её приходится открывать рядом с картой HexCrawl.",
+    "after": "Загружает картинку, совмещает её с сеткой, выбирает гекс брода и пишет свою заметку. Переключатель скрывает/показывает исходную карту; после JSON save/load картинка и её положение совпадают.",
+    "preview_status": "proposal_text_only; visual proposal required after task approval, not yet shown",
+    "preview_policy": "Аналитик после утверждения готовит/показывает desktop390px proposal и состояния, продолжая spec без отдельного design approval"
+  },
+  "score": {
+    "model_version": "1.2",
+    "before_grade": "unknown",
+    "before_points": null,
+    "expected_after_grade": "unknown",
+    "expected_delta": null,
+    "baseline_source": "agent-work/score/current-score.json@4b77df30f887c104d92e8531a61305d52900e8d2",
+    "criterion_ids": [
+      "S04-C03",
+      "S04-C04",
+      "S03-C05",
+      "S09-C04"
+    ],
+    "evidence_by_criterion": {
+      "S04-C03": "Сохраняемая визуальная подложка/переключение; не карта игроков/туман войны/права",
+      "S04-C04": "Self-contained JSON с изображением/transform, legacy compatibility; отсутствие image export явно ограничивает полноту",
+      "S03-C05": "Обратимые действия подложки; не именованные версии всей карты",
+      "S09-C04": "Атомарность неверных/слишком больших изображений и сохранность документа"
+    },
+    "not_claimed": [
+      "S03-C01: картинка не реализует редактирование воды/принадлежности",
+      "S08-C04: картинка не реализует правила НРИ или совместимость модулей",
+      "Нет автоматического прироста или переноса193.75 по1.1"
+    ]
+  },
+  "queue_checks": {
+    "main_sha": "02c2fd5fcbdb2042f2708709ce4f20dfd7354787",
+    "pr476_head": "e01dcbf577558200493323f408ec2285ef4d3947",
+    "pr476_state": "open_unmerged_accepted",
+    "release_permission": "absent_owner_decision_required",
+    "active_claim_at_start": null,
+    "other_ready_approved_tasks": [],
+    "task003": "owner_acceptance_amendment_pending_no_automatic_measurement",
+    "feedback002": "catalog_completed_cleanup_not_authorized",
+    "proposal_duplicates": "Only024and003/030 proposal files existed;027 was empty proposed backlog record, expanded same ID"
+  },
+  "source_evidence": {
+    "agents_sha": "892f5f28bd20ac6027782f08c9cd9dffc9178159",
+    "index_sha": "7fc1234f427f1cdd5f731ee4cd98344d2ca14da5",
+    "backlog_start_sha": "53b757c5f1933207451267158d213ab671822427",
+    "approvals_sha": "033c7f4c152e1f1cd4c78dbb52e6d37fcfa7b61a",
+    "budget_sha": "96a4d74dcd8ad38aaed6158e8126ba4b09c73736",
+    "model_sha": "87f0b2b72dbdb16406eaacde4ac53624f8ecac7a",
+    "vision_sha": "b43b590d3ed422eaa641c21100c8b50c74d421bc",
+    "ranking_sha": "bbcb18500c696fd9a7bd4fddec9f9c790488c944",
+    "prior_review_ref": "agent-work/results/2026-10-28-reviewer-HX-BL-024-e01dcbf.json",
+    "lessons_sha": "2e821eb63551ca4be9e8e6f8013d6d1e090e7678"
+  },
+  "scope_limits": [
+    "Proposal only; no full spec/UI preview or implementation before owner start approval",
+    "No new market research, repeated audit,benchmark/workflow/test executions",
+    "No changed score/main/release"
+  ],
+  "test_change_summary": {
+    "base_sha": "02c2fd5fcbdb2042f2708709ce4f20dfd7354787",
+    "head_sha": "02c2fd5fcbdb2042f2708709ce4f20dfd7354787",
+    "added": 0,
+    "removed": 0,
+    "modified": 0,
+    "suite": "none",
+    "scenario_risk": "operational proposal only",
+    "reuse_or_new_reason": "No product/test edits; reused prior accepted evidence",
+    "source": "Operational files changed only",
+    "executed": 0,
+    "passed": 0,
+    "skipped": 0
+  },
+  "automation_health": {
+    "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-10-28T06:02:58.176Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restored_during_this_run": false,
+    "errors": [],
+    "end": {
+      "checked_at": "2026-10-28T06:06:29.912Z",
+      "status": "checked",
+      "is_enabled": true
+    }
+  },
+  "completed_at": "2026-10-28T06:06:29.912Z"
+}
