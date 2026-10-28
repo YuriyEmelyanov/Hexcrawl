@@ -524,6 +524,51 @@
         "paid_services_approved": false
       },
       "score_impact": "unknown; критерии/веса модели1.2 не меняются, прирост не подтверждён"
+    },
+    {
+      "id": "owner-decision-2026-10-28-editor-obstacles",
+      "date": "2026-10-28",
+      "type": "task_scope_clarification",
+      "task_id": "HX-BL-023",
+      "status": "approved_owner_instruction",
+      "source": "«Ещё на карте препятствия есть. Их тоже. Может я чего ещё забыл?»",
+      "approved_addition": "Добавление, удаление и изменение расположения препятствий на рёбрах карты; описать ограничения соседства/пересечения с водой, реками и дорогами.",
+      "previous_scope_ref": "owner-decision-2026-10-28-editor-functional-scope",
+      "additional_candidates_not_approved": [
+        {
+          "element": "Переправы",
+          "actions": "Мост/брод/переправа: добавление, удаление, смена типа",
+          "basis": "src/riverCrossings.ts RiverCrossingKind; App.tsx RiverCrossing"
+        },
+        {
+          "element": "Тропы",
+          "actions": "Отдельно учесть дороги и тропы, смену типа участка",
+          "basis": "App.tsx RoadKind road|trail"
+        },
+        {
+          "element": "Параметры рек",
+          "actions": "Правка маршрута, направления и полноводности, а не только создание/удаление",
+          "basis": "App.tsx River.vertexPath/RiverSector.fullness; docs/river-model.md"
+        },
+        {
+          "element": "Высота местности",
+          "actions": "Уточнить нужна ли отдельная правка высоты региона; биом и высота различаются",
+          "basis": "App.tsx Region.heightLevel/biomeId"
+        },
+        {
+          "element": "Границы и принадлежность",
+          "actions": "Перенос гексов между регионами/изменение границ; отдельная от биома возможность",
+          "basis": "App.tsx Region.hexes/kingdomId"
+        },
+        {
+          "element": "Расположение POI",
+          "actions": "Проверить перенос существующей точки; смена типа/имени не равна переносу",
+          "basis": "agent-work/evidence/HX-BL-023-analysis/audit.md"
+        }
+      ],
+      "next_role": "business_analyst",
+      "next_step": "Включить препятствия в уточняемую spec023. Кандидатов рассмотреть в инвентаризации и плане, явно отделить рекомендации от утверждённого объёма. Не начинать их разработку автоматически.",
+      "score_impact": "unknown; score unchanged"
     }
   ],
   "merge_approval": {
