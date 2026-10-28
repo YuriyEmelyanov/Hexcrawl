@@ -1286,6 +1286,14 @@ type GenerationBackup = {
 type GenerationActionContext = { action: 'add' | 'regenerate'; inputOptions: Record<string, unknown> };
 type KingdomJob = { actionContext: GenerationActionContext; preferredAnchor?: AxialHex; recoveries?: number; failureBackup?: GenerationBackup; backup: GenerationBackup; origin: AxialHex; anchor: AxialHex; id: number; startCount: number; steps: number; phase: 'connect' | 'build'; first: boolean; };
 type GenerationDiagnostic = ReturnType<typeof generationLog.finish>;
+// Expected refusal: only canonical coordinates, never the note text, reach UI.
+class NotesLossConflict extends Error {
+  constructor(readonly hexKeys: string[]) {
+    super(`Generation removes hexes with notes (${hexKeys.length}): ${hexKeys.join('; ')}. Move or clear the notes first.`);
+    this.name = 'NotesLossConflict';
+  }
+}
+
 
 function getToponymEntities(regions: Region[], rivers: River[], terrain: Map<string, HexTerrainData>): ToponymEntity[] {
   const entities: ToponymEntity[] = [];
@@ -12829,9 +12837,7 @@ export function App() {
     const before = backup?.document ?? { ...captureDocument(), map: { ...captureMap(), generation: cloneGenerationState(checkpoint.generation) } };
     const notes = before.map.gmNotesByHexKey ?? gmNotesByHexKey;
     const keys = actualHexKeys(map), missing = Object.keys(notes).filter(key => !keys.has(key));
-    if (missing.length) throw new Error(language === 'ru'
-      ? `Генерация удаляет гексы с заметками (${missing.length}): ${missing.join('; ')}. Сначала перенесите или очистите заметки.`
-      : `Generation removes hexes with notes (${missing.length}): ${missing.join('; ')}. Move or clear the notes first.`);
+    if (missing.length) throw new NotesLossConflict(missing);
     map.gmNotesByHexKey = {...notes}; setGmNotesByHexKey(map.gmNotesByHexKey);
     recordTransaction(before, { ...captureDocument(), map, selectedHex: selection,
       generationHistory: [...checkpoints, structuredClone(checkpoint)] });
@@ -12873,8 +12879,11 @@ export function App() {
   const reportGenerationFailure = (error: unknown, anchorHex: AxialHex, options: GenerationOptions, backup: GenerationBackup, context?: GenerationActionContext) => {
     restoreGenerationBackup(backup);
     activeGenerationBefore.current = cloneGenerationState(backup.map.generation);
+    const notesLossHexKeys = error instanceof NotesLossConflict ? [...error.hexKeys] : undefined;
     const diagnostic = generationLog.finish({
-      ...generationEvent(anchorHex, options, 'programming-error', String(error), 'rolled-back', context),
+      ...generationEvent(anchorHex, options, notesLossHexKeys ? 'constraint-rejection' : 'programming-error',
+        notesLossHexKeys ? 'notes_loss_conflict' : String(error), 'rolled-back', context),
+      ...(notesLossHexKeys ? { notesLossHexKeys } : {}),
       message: String(error),
       stack: error && typeof error === 'object' && 'stack' in error ? String(error.stack) : undefined
     });
@@ -14433,7 +14442,11 @@ export function App() {
             </div>
             {generationError && (
               <div className="coast-notice" role="alert">
-                <span>{generationError.kind === 'constraint-rejection'
+                <span>{generationError.notesLossHexKeys?.length
+                  ? (language === 'ru'
+                    ? `Генерация не применена: исчезли бы гексы с заметками (${generationError.notesLossHexKeys.length}): ${generationError.notesLossHexKeys.join('; ')}. Сначала перенесите или очистите заметки. Прежняя карта сохранена.`
+                    : `Generation was not applied: hexes with notes would disappear (${generationError.notesLossHexKeys.length}): ${generationError.notesLossHexKeys.join('; ')}. Move or clear the notes first. Your previous map is intact.`)
+                  : generationError.kind === 'constraint-rejection'
                   ? (language === 'ru' ? 'Не удалось разместить корректные истоки и устья рек. Прежняя карта сохранена. Попробуйте другой размер или соседний гекс.' : 'Could not place valid river sources and mouths. Your previous map is intact. Try another size or neighboring hex.')
                   : language === 'ru'
                   ? 'Не удалось создать регион из-за ошибки. Прежняя карта сохранена. Можно повторить попытку.'

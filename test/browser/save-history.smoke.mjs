@@ -103,6 +103,30 @@ try {
  await page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);
  assert.deepEqual(await snapshot(),savedNotes);
  await load(fixture);
+ // HIST-05 / HX024-R1: extend editor lifecycle with the natural reviewer reproduction.
+ await button('Сбросить').click();
+ await page.getByRole('textbox',{name:'Seed мира',exact:true}).fill('42');
+ await page.getByRole('textbox',{name:'Seed мира',exact:true}).press('Tab');
+ await page.locator('.gen-params select').nth(0).selectOption('region');
+ await page.locator('polygon.hex.candidate').first().dispatchEvent('click');
+ await button('Перегенерировать регион').waitFor();
+ const conflictMap=await snapshot();assert.equal(conflictMap.map.regions[0].hexes.length,27);
+ for(const hex of conflictMap.map.regions[0].hexes){
+   await select(`${hex.q},${hex.r}`);await page.getByRole('textbox',{name:'Заметки мастера',exact:true}).fill('keep');await button('Сохранить').click();
+ }
+ const conflictBefore=await snapshot();
+ await page.locator('.gen-params select').nth(0).selectOption('locality');
+ await button('Перегенерировать регион').click();
+ const conflictAlert=page.getByRole('alert').filter({hasText:'Сначала перенесите или очистите заметки'});
+ await conflictAlert.waitFor();const conflictText=await conflictAlert.textContent();
+ assert.match(conflictText,/\(19\)/);assert.match(conflictText,/-?\d+,-?\d+/);assert(!conflictText.includes('Можно повторить попытку'));
+ assert.deepEqual(await snapshot(),conflictBefore,'notes-loss refusal preserves whole map and RNG');
+ await conflictAlert.scrollIntoViewIfNeeded();await page.screenshot({path:fileURLToPath(new URL('reports/HX-BL-024/conflict-ru.png',root))});
+ await button('Switch to English').click();
+ const conflictEnglish=page.getByRole('alert').filter({hasText:'Move or clear the notes first'});
+ await conflictEnglish.waitFor();assert.match(await conflictEnglish.textContent(),/\(19\)/);
+ await conflictEnglish.scrollIntoViewIfNeeded();await page.screenshot({path:fileURLToPath(new URL('reports/HX-BL-024/conflict-en.png',root))});
+ await button('Переключить на русский').click();await load(fixture);
  // COMP-03/04: the whole corpus, including real bug maps, not a subset.
  for(const entry of manifest.entries){
    const data=JSON.parse(await fs.readFile(new URL(entry.path,root)));await load(data);const saved=await snapshot();

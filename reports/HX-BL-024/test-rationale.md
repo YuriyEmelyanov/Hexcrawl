@@ -9,3 +9,6 @@ Extend the existing real-React save/history smoke with two bounded notes scenari
 Arithmetic/runner counts, exact head and actual results are recorded in the operational handoff. Screenshots are evidence, not test cases. The reviewer must independently assess usefulness and sensitivity; counts do not establish coverage completeness.
 
 UI-05 reproduction found during temporary real-browser diagnosis: the old information-panel wrapper required a region, hiding the new editor on a valid sea-only document. Expand the existing wrapper condition to actual terrain, and keep the water-only regression within the existing browser save/history runner. This is not covered by a land map with a water POI.
+
+## F1 correction, base b586051
+HIST-05 requires a visible actionable refusal, not merely a diagnostic string or correct rollback. Existing production-handler loss checks and the real editor/history scenario already cover state; extend that same real-React lifecycle with seed42 region→locality, visible count/coordinates and recovery advice in RU/EN plus exact before/after. This modifies one existing browser scenario group, adds no standalone runner/case or second history corpus. A dedicated notes-conflict type/structured key list keeps arbitrary programming-error text out of UI.
