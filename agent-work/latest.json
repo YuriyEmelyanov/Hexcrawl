@@ -204,7 +204,7 @@
   "score_update_delta": null,
   "score_history_path": "agent-work/score/history.json",
   "next_task_proposal_ref": null,
-  "next_task_id": "HX-BL-024",
+  "next_task_id": "HX-BL-023",
   "approval_ref": "owner-approval-2026-10-27-HX-BL-024",
   "last_completed_stage": "HX024_R1_developer_fix_checks",
   "previous_release_approval": {
@@ -218,17 +218,17 @@
   "automation_health": {
     "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-10-28T09:01:06.373Z",
+      "checked_at": "2026-10-28T11:39:33.721Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "end": {
+      "checked_at": "2026-10-28T11:42:01.829Z",
       "status": "checked",
       "is_enabled": true
     },
     "restored_during_this_run": false,
-    "errors": [],
-    "end": {
-      "checked_at": "2026-10-28T09:17:02.605Z",
-      "status": "checked",
-      "is_enabled": true
-    }
+    "errors": []
   },
   "open_findings": [
     {
@@ -908,7 +908,7 @@
     "next_step": "Решить отдельно узкий cleanup AUD-02/03/04; готовую спецификацию024 не задерживать."
   },
   "owner_decisions_note": "Подтвердить предложенную адресную замену большого незавершённого historygate для003. HX-BL-024 уже утверждён, повторного согласования задачи не нужно; выпуск474 отдельно.",
-  "updated_at": "2026-10-28T09:17:02.605Z",
+  "updated_at": "2026-10-28T11:42:19.213Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
     "stage_id": "V3",
@@ -1374,7 +1374,7 @@
       "errors": []
     }
   },
-  "last_secondary_result_ref": "agent-work/results/2026-10-28-strategist-defer-HX-BL-027.json",
+  "last_secondary_result_ref": "agent-work/results/2026-10-28-strategist-editor-MB-priorities.json",
   "execution_note": "Разрешены спецификация/разработка024 в утверждённых границах. Аудит002 выполнен, cleanup не начат.003 AC amendment/release не одобрены.",
   "completed_validation_handoffs": {
     "HX-BL-003": {
@@ -1531,7 +1531,7 @@
       "errors": []
     }
   },
-  "next_product_task_id": null,
+  "next_product_task_id": "HX-BL-023",
   "historical_confirmed_points": 193.75,
   "historical_unverified_weight": 70,
   "historical_score_model_version": "1.1",
@@ -1585,6 +1585,16 @@
       "spec_ref": "agent-work/specs/HX-BL-024.md",
       "spec_version": "1.0",
       "head_sha": "e01dcbf577558200493323f408ec2285ef4d3947"
+    },
+    "HX-BL-023": {
+      "status": "analysis_ready",
+      "next_role": "business_analyst",
+      "handoff_ref": "agent-work/handoffs/2026-10-28-editor-and-MB-content-priorities.md"
+    },
+    "HX-BL-041": {
+      "status": "analysis_inventory_after_editor_priority",
+      "next_role": "business_analyst",
+      "handoff_ref": "agent-work/handoffs/2026-10-28-editor-and-MB-content-priorities.md"
     }
   },
   "master_notes_approval": {
@@ -2031,5 +2041,21 @@
       "execution_allowed": false
     }
   },
-  "deferred_proposal_ref": "agent-work/proposals/2026-10-28-HX-BL-027-map-underlay.md"
+  "deferred_proposal_ref": "agent-work/proposals/2026-10-28-HX-BL-027-map-underlay.md",
+  "owner_product_priorities": {
+    "decision_ref": "owner-decision-2026-10-28-editor-and-MB-content-before-outreach",
+    "ordered_task_ids": [
+      "HX-BL-023",
+      "HX-BL-041"
+    ],
+    "handoff_ref": "agent-work/handoffs/2026-10-28-editor-and-MB-content-priorities.md",
+    "status": "analysis_ready",
+    "next_step": "023: определить первый полезный срез редактора и подготовитьspec/UI;041: полныйпереченькатегорийMBи спецификацииследом. Готовыйreview024сохраняется приоритетнымэтапом."
+  },
+  "marketing_readiness_gate": {
+    "outreach": "targeted invitation ofGMs to useHexCrawl",
+    "required_task_id": "HX-BL-023",
+    "condition": "Не приглашать ведущих к использованию до подтверждённой пригодности редактора; наличие кнопок само по себе не прохождение. Подготовка материалов продвижения допустима без отправки.",
+    "MB_content_requirement": "Связанный второй приоритет; минимально достаточный MB-набор и критерий готовности к демонстрации зафиксировать в спецификации, не считать «и т.д.» готовым закрытым перечнем."
+  }
 }
