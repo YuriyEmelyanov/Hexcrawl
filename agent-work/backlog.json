@@ -1221,9 +1221,9 @@
       "previous_status": "ready_for_development",
       "recommended_priority": 1,
       "execution_allowed": true,
-      "spec_status": "revision_required_owner_scope",
+      "spec_status": "revision_required_full_editor_scope",
       "next_role": "business_analyst",
-      "next_step": "Переработать HX-BL-023: матрица уже есть/частично/нет по перечисленным действиям на актуальном main, согласованные взаимодействия суши/моря/озёр/рек/дорог, UI инструментов и последовательные пригодные разработке срезы. Объяснить первый срез через пользу и зависимости; показать макет без отдельного ожидания ответа. Включить добавление/удаление/перенос препятствий; сверить переправы, тропы, параметры рек, высоты, границы и перенос POI как предложения, не молчаливое расширение.",
+      "next_step": "Включить все шесть возможностей в общий утверждённый набор HX-BL-023, вместе с ранее заданными биомами/дорогами/реками/водой/названиями/препятствиями. Подготовить последовательные срезы по пользе и зависимостям и показать UI; не ждать повторного утверждения старта этих функций. Выпуск каждого проверенного пакета отдельно.",
       "related_task_ids": [
         "HX-BL-013",
         "HX-BL-018",
@@ -1308,46 +1308,60 @@
         "Менять названия всех именуемых элементов карты",
         "Добавлять и удалять озёра",
         "Добавлять и удалять море",
-        "Добавление, удаление и изменение расположения препятствий на рёбрах карты; описать ограничения соседства/пересечения с водой, реками и дорогами."
+        "Добавление, удаление и изменение расположения препятствий на рёбрах карты; описать ограничения соседства/пересечения с водой, реками и дорогами.",
+        "Переправы: Мост/брод/переправа: добавление, удаление, смена типа",
+        "Тропы: Отдельно учесть дороги и тропы, смену типа участка",
+        "Параметры рек: Правка маршрута, направления и полноводности, а не только создание/удаление",
+        "Высота местности: Уточнить нужна ли отдельная правка высоты региона; биом и высота различаются",
+        "Границы и принадлежность: Перенос гексов между регионами/изменение границ; отдельная от биома возможность",
+        "Расположение POI: Проверить перенос существующей точки; смена типа/имени не равна переносу"
       ],
       "existing_POI_editing_note": "Точки интереса уже можно менять; инвентаризировать и сохранить, не выдавать за новую возможность.",
       "previous_active_slice": "A_batch_biome",
       "obstacles_scope_ref": "owner-decision-2026-10-28-editor-obstacles",
       "additional_editor_candidates": {
-        "status": "proposed_for_scope_review_not_implementation_approval",
+        "status": "owner_approved_in_scope",
+        "approval_ref": "owner-decision-2026-10-28-editor-additional-functions-approved",
         "items": [
           {
             "element": "Переправы",
             "actions": "Мост/брод/переправа: добавление, удаление, смена типа",
-            "basis": "src/riverCrossings.ts RiverCrossingKind; App.tsx RiverCrossing"
+            "basis": "src/riverCrossings.ts RiverCrossingKind; App.tsx RiverCrossing",
+            "status": "owner_approved"
           },
           {
             "element": "Тропы",
             "actions": "Отдельно учесть дороги и тропы, смену типа участка",
-            "basis": "App.tsx RoadKind road|trail"
+            "basis": "App.tsx RoadKind road|trail",
+            "status": "owner_approved"
           },
           {
             "element": "Параметры рек",
             "actions": "Правка маршрута, направления и полноводности, а не только создание/удаление",
-            "basis": "App.tsx River.vertexPath/RiverSector.fullness; docs/river-model.md"
+            "basis": "App.tsx River.vertexPath/RiverSector.fullness; docs/river-model.md",
+            "status": "owner_approved"
           },
           {
             "element": "Высота местности",
             "actions": "Уточнить нужна ли отдельная правка высоты региона; биом и высота различаются",
-            "basis": "App.tsx Region.heightLevel/biomeId"
+            "basis": "App.tsx Region.heightLevel/biomeId",
+            "status": "owner_approved"
           },
           {
             "element": "Границы и принадлежность",
             "actions": "Перенос гексов между регионами/изменение границ; отдельная от биома возможность",
-            "basis": "App.tsx Region.hexes/kingdomId"
+            "basis": "App.tsx Region.hexes/kingdomId",
+            "status": "owner_approved"
           },
           {
             "element": "Расположение POI",
             "actions": "Проверить перенос существующей точки; смена типа/имени не равна переносу",
-            "basis": "agent-work/evidence/HX-BL-023-analysis/audit.md"
+            "basis": "agent-work/evidence/HX-BL-023-analysis/audit.md",
+            "status": "owner_approved"
           }
         ]
-      }
+      },
+      "additional_functions_approval_ref": "owner-decision-2026-10-28-editor-additional-functions-approved"
     },
     {
       "task_id": "HX-BL-024",
