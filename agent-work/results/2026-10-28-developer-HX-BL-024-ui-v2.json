@@ -1,0 +1,181 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-10-28-developer-HX-BL-024-ui-v2",
+  "date": "2026-10-28",
+  "role": "developer",
+  "task_id": "HX-BL-024",
+  "stage": "UIv2_owner_amendment",
+  "role_selection_reason": "Approved task has owner-requested correction/spec1.1 and ready analyst handoff, no active claim",
+  "status": "review_ready",
+  "head_sha": "f2ee456d42d0b4fb49c533d6bed89f5a2ea23d49",
+  "tree_sha": "2053bb2917202879843984dc48ba1cbc290ed1d7",
+  "base_sha": "02c2fd5fcbdb2042f2708709ce4f20dfd7354787",
+  "amendment_base_sha": "e01dcbf577558200493323f408ec2285ef4d3947",
+  "branch": "agent/hx-bl-024-gm-notes",
+  "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/476",
+  "spec_ref": "agent-work/specs/HX-BL-024.md",
+  "spec_version": "1.1",
+  "included_feedback_ids": [
+    "HX-FB-003"
+  ],
+  "evidence_ref": "agent-work/evidence/HX-BL-024-ui-v2-f2ee456/report.md",
+  "handoff_ref": "agent-work/handoffs/2026-10-28-HX-BL-024-review-f2ee456.json",
+  "ui_preview": {
+    "task_id": "HX-BL-024",
+    "spec_version": "1.1",
+    "head_sha": "f2ee456d42d0b4fb49c533d6bed89f5a2ea23d49",
+    "tree_sha": "2053bb2917202879843984dc48ba1cbc290ed1d7",
+    "method": "Actual production Vite build + Chromium153 using existing test fixtures; temporary screenshot script, not generated mockup",
+    "states": [
+      "empty",
+      "read",
+      "editor"
+    ],
+    "sizes": [
+      "desktop",
+      "390px"
+    ],
+    "paths": [
+      "empty-desktop.png",
+      "read-desktop.png",
+      "editor-desktop.png",
+      "editor-narrow.png"
+    ],
+    "shown_in_current_conversation": [
+      "empty-desktop.png",
+      "editor-narrow.png"
+    ],
+    "status": "presented_actual",
+    "before_ref": "agent-work/evidence/HX-BL-024-F1-e01dcbf/ui-manifest.json",
+    "limits": [
+      "Current document autosave, no disk/cloud persistence until JSON export",
+      "Chromium153 lacks some emoji glyphs; plain-text sample chosen"
+    ]
+  },
+  "checks": {
+    "node_version": "24.22.1",
+    "local_check": {
+      "executed": 247,
+      "passed": 247,
+      "failed": 0,
+      "skipped": 0,
+      "tsc": "pass",
+      "build": "pass"
+    },
+    "local_react_save_history": "pass Chromium153.0.8010.0; fullcorpus/100mixedhistory/newUI/F1",
+    "ci": {
+      "run_id": 40662021153,
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40662021153",
+      "head_sha": "f2ee456d42d0b4fb49c533d6bed89f5a2ea23d49",
+      "jobs": [
+        {
+          "name": "check",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "browser",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "world-random",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    }
+  },
+  "test_change_summary": {
+    "base_sha": "e01dcbf577558200493323f408ec2285ef4d3947",
+    "head_sha": "f2ee456d42d0b4fb49c533d6bed89f5a2ea23d49",
+    "source": "Exact git diff, comparable existing logical cases, no new standalone runner",
+    "suites": [
+      {
+        "suite": "Node node:test",
+        "added": 0,
+        "removed": 0,
+        "modified": 2,
+        "scenario_risk": "Autosave series/noop redo/stale import contract; delete-surviving-notes setup now flushes input group",
+        "reuse_or_new_reason": "Replaced old draft-blocked/SaveCancel requirements in existing case; retained malformed and RNG coverage"
+      },
+      {
+        "suite": "Browser save-history",
+        "added": 0,
+        "removed": 0,
+        "modified": 2,
+        "unit": "water-only and editor lifecycle bounded groups",
+        "modified_subpaths": 1,
+        "scenario_risk": "Click-to-open, immediate navigation/export, grouped undo, no-op redo, IME, busy, RUEN390px; existing F1 conflict path uses autosave",
+        "reuse_or_new_reason": "Same script and full corpus, no duplicate100-operation suite"
+      }
+    ],
+    "temporary_diagnostics": {
+      "scripts": 1,
+      "kind": "UI screenshots only",
+      "permanent_cases_added": 0
+    }
+  },
+  "score_evidence": {
+    "model_version": "1.2",
+    "criterion_ids": [
+      "S05-C01",
+      "S03-C05",
+      "S04-C04",
+      "S09-C04",
+      "S02-C01"
+    ],
+    "before_grade": null,
+    "after_grade": null,
+    "delta": null,
+    "confirmed": false,
+    "separate_evidence": {
+      "S05-C01": "Actual empty/read/editor UI and manual notes, not full contextual card",
+      "S03-C05": "Input series, no-op redo,500ms/IME groups,full100mixedhistory",
+      "S04-C04": "Full JSON corpus and immediateexport preserve notes",
+      "S09-C04": "Busy/stale guards, import + F1 rollback",
+      "S02-C01": "Existing exacthead RNG CI and unchanged generator"
+    }
+  },
+  "main_changed": false,
+  "published": false,
+  "release_approved": false,
+  "independent_review_required": true,
+  "old_review": "e01/spec1.0 accepted historical; not currentUIv2 approval",
+  "next_role": "reviewer",
+  "next_task_id": "HX-BL-024",
+  "next_step": "Независимо проверить f2ee456 по spec1.1/HX-FB-003 и обновить score_assessment1.2; затем исправления либо отдельное разрешение выпуска.",
+  "automation_health": {
+    "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-10-28T09:01:06.373Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restored_during_this_run": false,
+    "errors": [],
+    "end": {
+      "checked_at": "2026-10-28T09:17:02.605Z",
+      "status": "checked",
+      "is_enabled": true
+    }
+  },
+  "operational_errors": [
+    {
+      "action": "initial latest claim write",
+      "status": "auto_review_rejected_then_safely_resolved",
+      "reason": "Reviewer flagged risk of enabling deferred027; verified owner/backlog execution_allowed=false and rewrote stale next_product_proposal explicitly deferred/false. Only024 claim acquired."
+    },
+    {
+      "action": "initial tsc path",
+      "status": "corrected",
+      "reason": "Nonexistent tsconfig.build.json command; project npmcheck including tsc--noEmit passed"
+    }
+  ],
+  "limitations": [
+    "Developer checks do not replace independent review on newSHA",
+    "Current-document autosave, not file/cloud persistence",
+    "Finite checks, local emoji font limitation"
+  ],
+  "completed_at": "2026-10-28T09:17:02.605Z"
+}
