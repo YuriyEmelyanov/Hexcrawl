@@ -1,0 +1,225 @@
+diff --git a/test/browser/save-history.smoke.mjs b/test/browser/save-history.smoke.mjs
+index d50bbf7..e97b6d4 100644
+--- a/test/browser/save-history.smoke.mjs
++++ b/test/browser/save-history.smoke.mjs
+@@ -60,6 +60,73 @@ try {
+    assert.fail('No candidate could generate a region');
+  }
+  async function transaction(action){const before=await snapshot();await action();const after=await snapshot();assert.notDeepEqual(after,before);await button('Отменить').click();assert.deepEqual(await snapshot(),before);await button('Повторить').click();assert.deepEqual(await snapshot(),after);return after;}
++ // HX-BL-024: one bounded real-React editor lifecycle, reusing import/select/export helpers.
++ await fs.mkdir(new URL('reports/HX-BL-024/',root),{recursive:true});
++ // UI-05 regression: a valid water-only document has no region, but must expose notes.
++ const waterOnly=JSON.parse(await fs.readFile(new URL('../fixtures/import-v2/baseline-empty.json',import.meta.url)));
++ waterOnly.map.terrainByHexKey={'-1,0':{terrainOverride:'sea'}};waterOnly.ui.selectedHex={q:-1,r:0};
++ await load(waterOnly);await page.getByRole('textbox',{name:'Заметки мастера',exact:true}).fill('Sea 🗝');
++ await button('Сохранить').click();assert.equal((await snapshot()).map.gmNotesByHexKey['-1,0'],'Sea 🗝');
++ await load(fixture);
++ const noteHex=fixture.map.regions[0].hexes[0], noteKey=`${noteHex.q},${noteHex.r}`;
++ const other=fixture.map.regions[0].hexes.find(h=>`${h.q},${h.r}`!==noteKey);
++ await select(noteKey);
++ const notes=page.getByRole('textbox',{name:'Заметки мастера',exact:true});
++ await notes.scrollIntoViewIfNeeded();
++ await page.screenshot({path:fileURLToPath(new URL('reports/HX-BL-024/desktop-empty.png',root))});
++ const cleanNotes=await snapshot(), noteText='  🗝 <b>Жрец пропал</b>\nСледы ведут к броду.  ';
++ await notes.fill(noteText);await notes.press('Enter');await notes.press('Backspace');
++ await select(`${other.q},${other.r}`);await button('Отменить').click();
++ assert.equal(await notes.inputValue(),noteText);
++ await page.getByRole('alert').filter({hasText:'Сохраните или отмените'}).waitFor();
++ await notes.scrollIntoViewIfNeeded();await page.screenshot({path:fileURLToPath(new URL('reports/HX-BL-024/desktop-dirty.png',root))});
++ await button('Сохранить').click();const savedNotes=await snapshot();assert.equal(savedNotes.version,4);assert.equal(savedNotes.map.gmNotesByHexKey[noteKey],noteText);
++ const stripNotes=d=>{d=structuredClone(d);delete d.map.gmNotesByHexKey;return d;};
++ assert.deepEqual(stripNotes(savedNotes),stripNotes(cleanNotes));
++ assert.equal(await page.locator('svg').first().textContent().then(s=>s.includes('Жрец пропал')),false);
++ await button('Отменить').click();assert.deepEqual(await snapshot(),cleanNotes);
++ await notes.fill('cancel');await button('Отменить изменения').click();assert.equal(await button('Повторить').isEnabled(),true);
++ await button('Повторить').click();assert.deepEqual(await snapshot(),savedNotes);
++ await button('Switch to English').click();await page.getByRole('textbox',{name:'GM notes',exact:true}).scrollIntoViewIfNeeded();
++ await page.screenshot({path:fileURLToPath(new URL('reports/HX-BL-024/desktop-en.png',root))});
++ await page.setViewportSize({width:390,height:844});await page.getByRole('textbox',{name:'GM notes',exact:true}).scrollIntoViewIfNeeded();
++ await page.screenshot({path:fileURLToPath(new URL('reports/HX-BL-024/narrow-en.png',root))});
++ assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=390),true);
++ await page.setViewportSize({width:1500,height:1100});await button('Переключить на русский').click();
++ await page.evaluate(()=>window.__delayRead=true);
++ await page.locator('input[type=file]').setInputFiles({name:'notes.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(savedNotes))});
++ await page.waitForFunction(()=>window.__releaseRead!==undefined);
++ assert.equal(await page.getByRole('textbox',{name:'Заметки мастера',exact:true}).isDisabled(),true);
++ await page.getByRole('textbox',{name:'Заметки мастера',exact:true}).scrollIntoViewIfNeeded();
++ await page.screenshot({path:fileURLToPath(new URL('reports/HX-BL-024/desktop-busy.png',root))});
++ await page.evaluate(()=>{window.__releaseRead();delete window.__releaseRead;});
++ await page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);
++ assert.deepEqual(await snapshot(),savedNotes);
++ await load(fixture);
++ // HIST-05 / HX024-R1: extend editor lifecycle with the natural reviewer reproduction.
++ await button('Сбросить').click();
++ await page.getByRole('textbox',{name:'Seed мира',exact:true}).fill('42');
++ await page.getByRole('textbox',{name:'Seed мира',exact:true}).press('Tab');
++ await page.locator('.gen-params select').nth(0).selectOption('region');
++ await page.locator('polygon.hex.candidate').first().dispatchEvent('click');
++ await button('Перегенерировать регион').waitFor();
++ const conflictMap=await snapshot();assert.equal(conflictMap.map.regions[0].hexes.length,27);
++ for(const hex of conflictMap.map.regions[0].hexes){
++   await select(`${hex.q},${hex.r}`);await page.getByRole('textbox',{name:'Заметки мастера',exact:true}).fill('keep');await button('Сохранить').click();
++ }
++ const conflictBefore=await snapshot();
++ await page.locator('.gen-params select').nth(0).selectOption('locality');
++ await button('Перегенерировать регион').click();
++ const conflictAlert=page.getByRole('alert').filter({hasText:'Сначала перенесите или очистите заметки'});
++ await conflictAlert.waitFor();const conflictText=await conflictAlert.textContent();
++ assert.match(conflictText,/\(19\)/);assert.match(conflictText,/-?\d+,-?\d+/);assert(!conflictText.includes('Можно повторить попытку'));
++ assert.deepEqual(await snapshot(),conflictBefore,'notes-loss refusal preserves whole map and RNG');
++ await conflictAlert.scrollIntoViewIfNeeded();await page.screenshot({path:fileURLToPath(new URL('reports/HX-BL-024/conflict-ru.png',root))});
++ await button('Switch to English').click();
++ const conflictEnglish=page.getByRole('alert').filter({hasText:'Move or clear the notes first'});
++ await conflictEnglish.waitFor();assert.match(await conflictEnglish.textContent(),/\(19\)/);
++ await conflictEnglish.scrollIntoViewIfNeeded();await page.screenshot({path:fileURLToPath(new URL('reports/HX-BL-024/conflict-en.png',root))});
++ await button('Переключить на русский').click();await load(fixture);
+  // COMP-03/04: the whole corpus, including real bug maps, not a subset.
+  for(const entry of manifest.entries){
+    const data=JSON.parse(await fs.readFile(new URL(entry.path,root)));await load(data);const saved=await snapshot();
+diff --git a/test/browser/world-random.smoke.mjs b/test/browser/world-random.smoke.mjs
+index 1f51cb9..880d59e 100644
+--- a/test/browser/world-random.smoke.mjs
++++ b/test/browser/world-random.smoke.mjs
+@@ -105,7 +105,7 @@ try{
+     ...[undefined,null,[],1,'streams',{}, {geography:0}].map(streams=>({...g,streams})),
+     ...[-1,4294967296,0.5,'0',null].flatMap(value=>[{...g,masterSeed:value},{...g,streams:{...g.streams,geography:value}},{...g,streams:{...g.streams,poi:value}}]),
+     {...g,rngVersion:'future'},{...g,generatorVersion:'future'}];
+-   for(const version of [2,3])for(const generation of invalid){if(version===2&&generation===undefined)continue;await a.load({...before,version,generation});assert.deepEqual(await a.snapshot(),before);assert.equal(await a.button('Повторить').isEnabled(),true);}
++   for(const version of [2,3,4])for(const generation of invalid){if(version===2&&generation===undefined)continue;await a.load({...before,version,generation});assert.deepEqual(await a.snapshot(),before);assert.equal(await a.button('Повторить').isEnabled(),true);}
+    await a.load({...before,version:999});assert.deepEqual(await a.snapshot(),before);
+    await a.page.locator('input[type=file]').setInputFiles([]);assert.deepEqual(await a.snapshot(),before);
+    await a.button('Повторить').click();assert.deepEqual(await a.snapshot(),second);await a.button('Отменить').click();assert.deepEqual(await a.snapshot(),before);
+diff --git a/test/helpers/generation-harness.mjs b/test/helpers/generation-harness.mjs
+index e5c1c52..2f3d777 100644
+--- a/test/helpers/generation-harness.mjs
++++ b/test/helpers/generation-harness.mjs
+@@ -16,6 +16,7 @@ const artwork = app.body.statements.flatMap(node => ts.isVariableStatement(node)
+ let prefix = source.slice(0, lastReturn.getStart(ast));
+ if (artwork?.initializer) prefix = prefix.slice(0, artwork.initializer.getStart(ast)) + 'undefined' + prefix.slice(artwork.initializer.end);
+ const instrumented = prefix + `return {
++  gmNotesByHexKey, changeNotesDraft, saveNotesDraft, cancelNotesDraft, notesDirty, notesNotice, recordGenerated, captureGenerationBackup,
+   generationRef, seedInput, setSeedInput, setGenSizeCategory, applyWorldSeed, buildGenerationOptions, generateAt,
+   regions, rivers, roads, candidateHexes, hexTerrainByKey, history, toponyms, toponymSeed, setToponyms,
+   addFallbackTractToMap, safelyAddRegionToMap, createSaveData, restoreSnapshot: snapshot => restoreSnapshot({...snapshot, generation: snapshot.generation ?? cloneGenerationState(generationRef.current)}), deleteLastRegion,
+diff --git a/test/mapTransactions.test.mjs b/test/mapTransactions.test.mjs
+index b172d4e..ea1175d 100644
+--- a/test/mapTransactions.test.mjs
++++ b/test/mapTransactions.test.mjs
+@@ -118,3 +118,57 @@ test('no-op and failed imports preserve redo; fresh edit clears it; reset on emp
+   assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks);
+   h.render().setSelectedHexBiomeOverride('semi_desert');assert.equal(h.render().redoHistory.length,0);
+ });
++
++
++// HIST/UI notes contract: use existing production handler harness and full-document comparisons.
++test('notes save/clear are exact transactions, no-op/cancel preserve redo and dirty commands are inert',async()=>{
++  const {h}=setup();await load(h,fixture);
++  const hex=fixture.map.regions[0].hexes[0],key=`${hex.q},${hex.r}`;
++  h.render().setSelectedHex(hex);const before=stable(h.render());
++  h.render().changeNotesDraft(key,'  🗝 <b>text</b>\nsecond  ');
++  const dirty=stable(h.render()), stacks=serial([h.render().undoHistory,h.render().redoHistory]);
++  for(const action of [()=>h.render().undoMap(),()=>h.render().resetMap(),()=>h.render().deleteLastRegion(),()=>h.render().generateAt({q:100,r:100}),()=>h.render().handleImportJson({target:{files:[{text:JSON.stringify(fixture)}],value:'x'}})]) {
++    await action(); assert.deepEqual(stable(h.render()),dirty);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks);
++  }
++  h.render().saveNotesDraft();const after=stable(h.render());
++  assert.equal(after.map.gmNotesByHexKey[key],'  🗝 <b>text</b>\nsecond  ');
++  const without=d=>{d=structuredClone(d);delete d.map.gmNotesByHexKey;return d;};
++  assert.deepEqual(without(before),without(after));assertUndoRedo(h,before,after);
++  h.render().undoMap();const redo=serial(h.render().redoHistory);
++  h.render().changeNotesDraft(key,'');h.render().saveNotesDraft();assert.deepEqual(serial(h.render().redoHistory),redo);
++  h.render().changeNotesDraft(key,'cancel');h.render().cancelNotesDraft();assert.deepEqual(serial(h.render().redoHistory),redo);
++  h.render().redoMap();h.render().changeNotesDraft(key,'');h.render().saveNotesDraft();assert.equal(stable(h.render()).map.gmNotesByHexKey[key],undefined);
++  h.render().undoMap();assert.deepEqual(stable(h.render()),after);
++});
++test('import replaces notes exactly and legacy imports clear them; malformed notes preserve full history',async()=>{
++  const {h,alerts}=setup();const key=fixture.map.regions[0].hexes.map(h=>`${h.q},${h.r}`)[0];
++  const a=structuredClone(fixture);a.map.gmNotesByHexKey={[key]:'  A\r\n🗝  '};await load(h,a);const before=stable(h.render());
++  const b=structuredClone(a);b.map.gmNotesByHexKey={[key]:'B'};await load(h,b);assertUndoRedo(h,before,stable(h.render()));
++  const data=stable(h.render()), stacks=serial([h.render().undoHistory,h.render().redoHistory]);
++  b.map.gmNotesByHexKey[key]=null;await load(h,b);assert.equal(alerts.length,1);assert.deepEqual(stable(h.render()),data);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks);
++  await load(h,fixture);assert.deepEqual(stable(h.render()).map.gmNotesByHexKey,{});h.render().undoMap();assert.deepEqual(stable(h.render()),data);
++});
++test('delete retains latest surviving notes, confirms loss, undo restores; generation conflict is rejected before commit',async()=>{
++  const {h}=setup();h.setWindow({alert(){},confirm:()=>false,matchMedia:()=>({matches:false})});
++  h.render().addFallbackTractToMap({q:0,r:0});h.render().addFallbackTractToMap(h.render().candidateHexes[0]);
++  const a=h.render().regions[0].hexes[0],ak=`${a.q},${a.r}`,b=h.render().regions[1].hexes[0],bk=`${b.q},${b.r}`;
++  h.render().setSelectedHex(a);h.render().changeNotesDraft(ak,'latest first');h.render().saveNotesDraft();
++  h.render().setSelectedHex(b);h.render().changeNotesDraft(bk,'second');h.render().saveNotesDraft();const before=stable(h.render());
++  h.render().deleteLastRegion();assert.deepEqual(stable(h.render()),before);
++  h.setWindow({alert(){},confirm:()=>true,matchMedia:()=>({matches:false})});h.render().deleteLastRegion();
++  assert.deepEqual(stable(h.render()).map.gmNotesByHexKey,{[ak]:'latest first'});assertUndoRedo(h,before,stable(h.render()));
++  const doc=h.render().captureDocument(),stacks=serial([h.render().undoHistory,h.render().redoHistory]);
++  const map={...doc.map,regions:[],hexTerrainByKey:new Map()};
++  assert.throws(()=>h.render().recordGenerated(doc.map,map,a,h.render().captureGenerationBackup()),/notes|заметк/);
++  assert.deepEqual(serial(h.render().captureDocument()),serial(doc));assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks);
++  // Force the actual generation finalizer to propose losing a noted water hex.
++  const source=stable(h.render());source.map.terrainByHexKey['999,999']={terrainOverride:'sea'};source.map.gmNotesByHexKey['999,999']='keep sea';
++  await load(h,source);const exact=serial(h.render().captureDocument()),timeline=serial([h.render().undoHistory,h.render().redoHistory]);
++  const restores=[];
++  for(const name of ['completeRegionRiverEnds','reconcileRegionRiverModel']) {
++    const original=h.geometry[name];restores.push(h.injectFunction(name,(...args)=>{const result=original(...args);if(result.terrain){result.terrain=new Map(result.terrain);result.terrain.delete('999,999');}return result;}));
++  }
++  const result=h.render().safelyAddRegionToMap(h.render().candidateHexes[0],{targetSize:8,coastalPreference:'mainland'});
++  restores.forEach(restore=>restore());assert.equal(result.success,false);assert.match(result.diagnostic.message,/999,999/);
++  assert.deepEqual(serial(h.render().captureDocument()),exact);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),timeline);
++});
+diff --git a/test/saveSafety.test.mjs b/test/saveSafety.test.mjs
+index c31263e..0af3656 100644
+--- a/test/saveSafety.test.mjs
++++ b/test/saveSafety.test.mjs
+@@ -8,6 +8,13 @@ const h = createGenerationHarness(42);
+ h.render().addFallbackTractToMap({q:0,r:0});
+ const valid = JSON.parse(JSON.stringify(h.render().createSaveData()));
+ const cases = {
++  'notes null container': d => d.map.gmNotesByHexKey = null,
++  'notes array container': d => d.map.gmNotesByHexKey = [],
++  'notes scalar container': d => d.map.gmNotesByHexKey = 'secret',
++  'notes non-string': d => d.map.gmNotesByHexKey = {'0,0': 42},
++  'notes noncanonical key': d => d.map.gmNotesByHexKey = {'00,0': 'secret'},
++  'notes orphan': d => d.map.gmNotesByHexKey = {'99999,99999': 'secret'},
++  'notes prototype key': d => d.map.gmNotesByHexKey = JSON.parse('{"__proto__":"secret"}'),
+   'road wrong structure': d => d.map.roads.push({id:1,regionId:1,segments:'broken'}),
+   'fractional axial': d => d.map.regions[0].hexes[0].q = 0.5,
+   'duplicate region id': d => d.map.regions.push(structuredClone(d.map.regions[0])),
+@@ -94,3 +101,19 @@ test('exhausted kingdom ID refuses production start and preserves document and b
+   assert.deepEqual(structuredClone(t.render().captureDocument()),before);assert.deepEqual(structuredClone([t.render().undoHistory,t.render().redoHistory]),stacks);
+   t.geometry.assertHexcrawlSaveData(JSON.parse(JSON.stringify(t.render().createSaveData())));
+ });
++
++
++// DATA-03/04: distinct format contract, reusing the same structural validator.
++test('notes versions 2/3/4 accept exact text on actual land/water; v4 requires RNG and future versions reject', () => {
++  const land=valid.map.regions[0].hexes[0], k=`${land.q},${land.r}`;
++  for(const version of [2,3,4]) {
++    const data=structuredClone(valid); data.version=version;
++    data.map.terrainByHexKey['-999,0']={terrainOverride:'sea'};
++    data.map.gmNotesByHexKey={[k]:'  🗝 <script>not HTML</script>\r\n ', '-999,0':'sea'};
++    assert.doesNotThrow(()=>h.geometry.assertHexcrawlSaveData(data));
++    delete data.map.gmNotesByHexKey;assert.doesNotThrow(()=>h.geometry.assertHexcrawlSaveData(data));
++  }
++  const bad=structuredClone(valid);bad.version=4;delete bad.generation;
++  assert.throws(()=>h.geometry.assertHexcrawlSaveData(bad));
++  bad.version=5;assert.throws(()=>h.geometry.assertHexcrawlSaveData(bad));
++});
+diff --git a/test/worldContinuation.test.mjs b/test/worldContinuation.test.mjs
+index 2fa76f2..2c7f789 100644
+--- a/test/worldContinuation.test.mjs
++++ b/test/worldContinuation.test.mjs
+@@ -42,7 +42,7 @@ test('v2 migration and v3 validation are deterministic and atomic with redo',asy
+  for(const entry of manifest.entries){
+   const data=JSON.parse(fs.readFileSync(new URL('../'+entry.path,import.meta.url)));
+   const h=setup(2),g=setup(3);await load(h,data);await load(g,data);
+-  const save=stable(h.render());assert.equal(save.version,3);assert.deepEqual(stable(g.render()),save);
++  const save=stable(h.render());assert.equal(save.version,4);assert.deepEqual(stable(g.render()),save);
+   for(const key of ['regions','rivers','roads','crossings','terrainByHexKey'])assert.deepEqual(save.map[key],data.map[key]);
+   await load(g,save);assert.deepEqual(stable(g.render()),save);
+  }
+@@ -142,7 +142,7 @@ test('complete malformed RNG value classes reject atomically with redo',async()=
+    {...before.generation,streams:{...before.generation.streams,geography:value}},
+    {...before.generation,streams:{...before.generation.streams,poi:value}}]),
+   {...before.generation,rngVersion:'future'}, {...before.generation,generatorVersion:'future'}];
+- for(const version of [2,3])for(const generation of cases){
++ for(const version of [2,3,4])for(const generation of cases){
+   // v2 absent generation is the supported legacy format, not a malformed RNG.
+   if(version===2&&generation===undefined)continue;
+   await load(h,{...before,version,generation});assert.deepEqual(stable(h.render()),before);
