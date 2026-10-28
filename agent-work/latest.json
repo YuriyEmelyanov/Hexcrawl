@@ -29,7 +29,7 @@
   "run_id": "2026-10-28-strategist-next-HX-BL-027",
   "plan_revision": 1,
   "baseline_sha": "f89530abe1e237493dddb533502bb772ae1ab4e5",
-  "status": "awaiting_owner_task_start_approval",
+  "status": "spec1.1_ready_for_development",
   "planning_for": "2026-10-28",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-10-25",
@@ -45,15 +45,15 @@
   "schedule_start_at": "2026-10-24T01:00:00+03:00",
   "schedule_frequency": "every_three_hours",
   "process_path": "agent-work/process.md",
-  "current_role": "strategist_manager",
-  "next_role": "owner",
-  "current_task_id": "HX-BL-027",
+  "current_role": "business_analyst",
+  "next_role": "developer",
+  "current_task_id": "HX-BL-024",
   "spec_path": "agent-work/specs/HX-BL-024.md",
-  "spec_version": "1.0",
-  "result_path": "agent-work/results/2026-10-28-strategist-next-HX-BL-027.json",
+  "spec_version": "1.1",
+  "result_path": "agent-work/results/2026-10-28-analyst-HX-BL-024-ui-v2.json",
   "handoff_commit_sha": "5b2efd70f68e805ec47c6058ea4105103bd10624",
   "active_claim": null,
-  "next_step": "Ожидается утверждение владельцем задачи HX-BL-027 в указанном срезе. Затем аналитик готовит пригодную spec/визуал, далее programmer и independentreview; выпуск отдельно.",
+  "next_step": "Реализовать click-to-open/автосохранение по spec1.1 вPR476, актуализировать прежнийsave-historylifecycle/необходимыеCI, предъявитьфактическийвидинаправитьnewSHAнанезависимыйreview. Дизайнответнеблокирует.",
   "owner_decisions_needed": [
     {
       "task_id": "HX-BL-003",
@@ -218,17 +218,17 @@
   "automation_health": {
     "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-10-28T06:02:58.176Z",
-      "status": "checked",
-      "is_enabled": true
+      "checked_at": "2026-10-28T07:40:01.766Z",
+      "is_enabled": true,
+      "status": "checked"
+    },
+    "end": {
+      "checked_at": "2026-10-28T07:45:28.079Z",
+      "is_enabled": true,
+      "status": "checked"
     },
     "restored_during_this_run": false,
-    "errors": [],
-    "end": {
-      "checked_at": "2026-10-28T06:06:29.912Z",
-      "status": "checked",
-      "is_enabled": true
-    }
+    "errors": []
   },
   "open_findings": [
     {
@@ -737,7 +737,7 @@
   "last_release_pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/475",
   "last_material_result_path": "agent-work/results/2026-10-27-analyst-HX-FB-002-test-catalog.json",
   "last_wait_check_at": "2026-10-26T19:04:14.491Z",
-  "spec_status": "independently_verified",
+  "spec_status": "ready_for_development",
   "previous_task_release_approval": {
     "status": "approved_and_executed",
     "task_id": "HX-BL-030",
@@ -911,7 +911,7 @@
     "next_step": "Решить отдельно узкий cleanup AUD-02/03/04; готовую спецификацию024 не задерживать."
   },
   "owner_decisions_note": "Подтвердить предложенную адресную замену большого незавершённого historygate для003. HX-BL-024 уже утверждён, повторного согласования задачи не нужно; выпуск474 отдельно.",
-  "updated_at": "2026-10-28T06:06:29.912Z",
+  "updated_at": "2026-10-28T07:45:56.288Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
     "stage_id": "V3",
@@ -1105,6 +1105,11 @@
       "independent_ref": "agent-work/evidence/HX-BL-003-release-risk-58adcce/result.json",
       "next_handoff_ref": "agent-work/handoffs/2026-10-27-HX-BL-003-minimal-release-package.json",
       "new_execution_authorized_by_review": false
+    },
+    "HX-BL-024-ui-v2": {
+      "status": "ready_for_development",
+      "next_role": "developer",
+      "handoff_ref": "agent-work/handoffs/2026-10-28-HX-BL-024-autosave-ui.md"
     }
   },
   "independent_reviewer_automation_health": {
@@ -1700,9 +1705,10 @@
     "new_executions": 0
   },
   "previous_completed_work": {
-    "task_id": "market-DW-FL-ranking",
-    "result_ref": "agent-work/results/2026-10-27-market-DW-FL-ranking.json",
-    "status": "market_ranking_completed_next_approved_spec_ready"
+    "task_id": "HX-BL-027",
+    "status": "awaiting_owner_task_start_approval",
+    "result_path": "agent-work/results/2026-10-28-strategist-next-HX-BL-027.json",
+    "next_step": "Ожидается утверждение владельцем задачи HX-BL-027 в указанном срезе. Затем аналитик готовит пригодную spec/визуал, далее programmer и independentreview; выпуск отдельно."
   },
   "score_cohort_version": "2026-10-27-DW-FL-1",
   "vision_module_combination": {
@@ -1865,9 +1871,8 @@
   },
   "task_release_permission": {
     "task_id": "HX-BL-024",
-    "status": "not_approved",
-    "accepted_sha": "e01dcbf577558200493323f408ec2285ef4d3947",
-    "handoff_ref": "agent-work/handoffs/2026-10-28-HX-BL-024-release-e01dcbf.json"
+    "status": "not_granted",
+    "reason": "OwnerUIamendmentrequiresnewheadreview;olde01acceptedunderspec1.0isnotamendedpackage."
   },
   "market_catalog_discovery": {
     "date": "2026-10-28",
@@ -1953,5 +1958,42 @@
     "proposal_ref": "agent-work/proposals/2026-10-28-HX-BL-027-map-underlay.md",
     "next_role_after_approval": "business_analyst",
     "execution_allowed": false
+  },
+  "ui_amendment": {
+    "schema_version": 1,
+    "date": "2026-10-28",
+    "role": "business_analyst",
+    "task_id": "HX-BL-024",
+    "role_selection_reason": "Актуальное прямое замечание владельца меняет UI/сохранение принятой, но не выпущенной задачи; нужна актуализация пригодной спецификации перед программированием.",
+    "status": "spec1.1_ready_for_development",
+    "owner_decision_ref": "owner-decision-2026-10-28-HX-BL-024-ui-v2",
+    "spec_ref": "agent-work/specs/HX-BL-024.md",
+    "spec_version": "1.1",
+    "design_ref": "agent-work/design/HX-BL-024/v2/states.svg",
+    "preview_status": "presented_proposal_not_actual_implementation",
+    "handoff_ref": "agent-work/handoffs/2026-10-28-HX-BL-024-autosave-ui.md",
+    "feedback_id": "HX-FB-003",
+    "base_head_sha": "e01dcbf577558200493323f408ec2285ef4d3947",
+    "implementation_status": "not_started",
+    "product_code_changed": false,
+    "release_approved": false,
+    "product_score_changed": false,
+    "next_role": "developer",
+    "next_step": "Реализовать click-to-open/автосохранение по spec1.1 вPR476, актуализировать прежнийsave-historylifecycle/необходимыеCI, предъявитьфактическийвидинаправитьnewSHAнанезависимыйreview. Дизайнответнеблокирует.",
+    "automation_health": {
+      "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "start": {
+        "checked_at": "2026-10-28T07:40:01.766Z",
+        "is_enabled": true,
+        "status": "checked"
+      },
+      "end": {
+        "checked_at": "2026-10-28T07:45:28.079Z",
+        "is_enabled": true,
+        "status": "checked"
+      },
+      "restored_during_this_run": false,
+      "errors": []
+    }
   }
 }
