@@ -26,10 +26,10 @@
   },
   "lessons_path": "agent-work/lessons.md",
   "plan_id": "2026-10-27:coordination:HX-BL-003",
-  "run_id": "2026-10-28-reviewer-HX-BL-024-b586051",
+  "run_id": "2026-10-28-developer-HX-BL-024-F1",
   "plan_revision": 1,
   "baseline_sha": "f89530abe1e237493dddb533502bb772ae1ab4e5",
-  "status": "changes_requested",
+  "status": "review_ready",
   "planning_for": "2026-10-27",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-10-25",
@@ -45,23 +45,15 @@
   "schedule_start_at": "2026-10-24T01:00:00+03:00",
   "schedule_frequency": "every_three_hours",
   "process_path": "agent-work/process.md",
-  "current_role": "reviewer",
-  "next_role": "developer",
+  "current_role": "developer",
+  "next_role": "reviewer",
   "current_task_id": "HX-BL-024",
   "spec_path": "agent-work/specs/HX-BL-024.md",
   "spec_version": "1.0",
-  "result_path": "agent-work/results/2026-10-28-reviewer-HX-BL-024-b586051.json",
+  "result_path": "agent-work/results/2026-10-28-developer-HX-BL-024-F1.json",
   "handoff_commit_sha": "5b2efd70f68e805ec47c6058ea4105103bd10624",
-  "active_claim": {
-    "run_id": "2026-10-28-developer-HX-BL-024-F1",
-    "task_id": "HX-BL-024",
-    "role": "developer",
-    "stage": "fix_F1",
-    "status": "in_progress",
-    "started_at": "2026-10-28T00:05:29.496Z",
-    "scope": "Bounded HIST-05 localized actionable refusal and real UI assertion"
-  },
-  "next_step": "Исправить HX024-R1/F1 по готовой ограниченной передаче; затем независимая проверка нового SHA",
+  "active_claim": null,
+  "next_step": "Независимо перепроверить e01dcbf/F1 и обновить score_assessment1.2; затем исправления либо отдельное разрешение публикации",
   "owner_decisions_needed": [
     {
       "task_id": "HX-BL-003",
@@ -79,13 +71,13 @@
     "deployment_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40452592898"
   },
   "historical_plan_status": "План23.10 сохранён как история; его блокировки и предложенный процесс заменены decisions24.10 в approvals/process/budget и текущим handoff.",
-  "evidence_path": "agent-work/evidence/review-HX-BL-024-b586051/report.md",
+  "evidence_path": "agent-work/evidence/HX-BL-024-F1-e01dcbf/report.md",
   "branch_name": "agent/hx-bl-024-gm-notes",
   "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/476",
-  "head_sha": "b586051ccb3a7cb219b77e9908ddd79b97febd51",
+  "head_sha": "e01dcbf577558200493323f408ec2285ef4d3947",
   "checks_status": "passed_exact_SHA",
-  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40568440359",
-  "review_verdict": "changes_requested",
+  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40606769344",
+  "review_verdict": "pending_independent_recheck",
   "role_selection_mode": "ready_work_priority",
   "role_selection_source": "agent-work/process.md",
   "process_decision_ref": "owner-decision-2026-10-24-dynamic-roles",
@@ -206,7 +198,7 @@
   "score_update_release_sha": "02c2fd5fcbdb2042f2708709ce4f20dfd7354787",
   "score_process_decision_ref": "owner-decision-2026-10-24-score-responsibilities",
   "score_assessment_ref": "agent-work/results/2026-10-27-reviewer-HX-FB-001-415349.json",
-  "role_selection_reason": "Ready exact-SHA independent review after completed developer claim; separate owner-requested catalog pass already started in task chat and not duplicated",
+  "role_selection_reason": "Approved task has concrete independent finding F1/HX024-R1 and ready bounded fix handoff; no active foreign claim",
   "score_update_result_ref": "agent-work/results/2026-10-27-strategist-score475-next-work.json",
   "score_update_completed_at": "2026-10-27T11:05:27.220Z",
   "score_update_delta": null,
@@ -214,7 +206,7 @@
   "next_task_proposal_ref": "agent-work/proposals/2026-10-27-HX-BL-024-master-notes.md",
   "next_task_id": "HX-BL-024",
   "approval_ref": "owner-approval-2026-10-27-HX-BL-024",
-  "last_completed_stage": "independent_review_b586051_changes_requested",
+  "last_completed_stage": "HX024_R1_developer_fix_checks",
   "previous_release_approval": {
     "status": "approved_and_executed",
     "approved_sha": "50d8b6f2414faa1f204cdd2a7ed936533707592c",
@@ -226,14 +218,14 @@
   "automation_health": {
     "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-10-27T22:00:33.113Z",
+      "checked_at": "2026-10-28T00:05:08.528Z",
       "status": "checked",
       "is_enabled": true
     },
     "restored_during_this_run": false,
     "errors": [],
     "end": {
-      "checked_at": "2026-10-27T22:08:57.514Z",
+      "checked_at": "2026-10-28T00:18:10.219Z",
       "status": "checked",
       "is_enabled": true
     }
@@ -261,15 +253,16 @@
       "id": "HX024-R1",
       "task_id": "HX-BL-024",
       "priority": "P2",
-      "status": "open",
+      "status": "developer_fixed_pending_independent_review",
       "head_sha": "b586051ccb3a7cb219b77e9908ddd79b97febd51",
       "requirement": "HIST-05",
       "finding": "Actual alert hides notes-loss count/coordinates and move-or-clear recovery; exact rollback passes",
-      "responsible": "developer",
-      "handoff_ref": "agent-work/handoffs/2026-10-28-HX-BL-024-fix-F1.json"
+      "responsible": "reviewer",
+      "handoff_ref": "agent-work/handoffs/2026-10-28-HX-BL-024-review-e01dcbf.json",
+      "fixed_head_sha": "e01dcbf577558200493323f408ec2285ef4d3947"
     }
   ],
-  "current_review_score_assessment_status": "completed_insufficient_evidence_no_points",
+  "current_review_score_assessment_status": "pending_new_SHA_e01dcbf",
   "target_audience_research": {
     "model_version": "1.1",
     "model_max_points": 25,
@@ -1694,15 +1687,15 @@
     "errors": []
   },
   "previous_completed_claim": {
-    "run_id": "2026-10-28-reviewer-HX-BL-024-b586051",
-    "role": "reviewer",
+    "run_id": "2026-10-28-developer-HX-BL-024-F1",
     "task_id": "HX-BL-024",
+    "role": "developer",
+    "stage": "fix_F1",
     "status": "completed",
-    "started_at": "2026-10-27T22:00:57.757Z",
-    "head_sha": "b586051ccb3a7cb219b77e9908ddd79b97febd51",
-    "scope": "Independent exact-SHA review via fresh agent; no product changes/release; catalog research not duplicated",
-    "completed_at": "2026-10-27T22:08:57.514Z",
-    "result_ref": "agent-work/results/2026-10-28-reviewer-HX-BL-024-b586051.json"
+    "started_at": "2026-10-28T00:05:29.496Z",
+    "scope": "Bounded HIST-05 localized actionable refusal and real UI assertion",
+    "completed_at": "2026-10-28T00:18:10.219Z",
+    "result_ref": "agent-work/results/2026-10-28-developer-HX-BL-024-F1.json"
   },
   "test_audit": {
     "task_id": "HX-FB-002",
@@ -1862,21 +1855,25 @@
       "errors": []
     }
   },
-  "previous_result_path": "agent-work/results/2026-10-28-developer-HX-BL-024.json",
-  "handoff_path": "agent-work/handoffs/2026-10-28-HX-BL-024-fix-F1.json",
+  "previous_result_path": "agent-work/results/2026-10-28-reviewer-HX-BL-024-b586051.json",
+  "handoff_path": "agent-work/handoffs/2026-10-28-HX-BL-024-review-e01dcbf.json",
   "ui_actual_preview": {
     "status": "presented_actual",
-    "head_sha": "b586051ccb3a7cb219b77e9908ddd79b97febd51",
-    "path": "agent-work/evidence/HX-BL-024-b586051/ui/manifest.json",
-    "limitations": [
-      "Local screenshot browser lacks some emoji fonts",
-      "Memory/full JSON only; no autosave/player-safe export"
+    "head_sha": "e01dcbf577558200493323f408ec2285ef4d3947",
+    "path": "agent-work/evidence/HX-BL-024-F1-e01dcbf/ui-manifest.json",
+    "sizes": [
+      "desktop",
+      "390px"
+    ],
+    "languages": [
+      "ru",
+      "en"
     ]
   },
   "task_release_permission": {
     "task_id": "HX-BL-024",
     "status": "not_approved",
-    "review_blocker": "HX024-R1/HIST-05"
+    "independent_review_required_on": "e01dcbf577558200493323f408ec2285ef4d3947"
   },
   "market_catalog_discovery": {
     "date": "2026-10-28",
