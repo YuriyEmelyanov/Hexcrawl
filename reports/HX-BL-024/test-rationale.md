@@ -12,3 +12,6 @@ UI-05 reproduction found during temporary real-browser diagnosis: the old inform
 
 ## F1 correction, base b586051
 HIST-05 requires a visible actionable refusal, not merely a diagnostic string or correct rollback. Existing production-handler loss checks and the real editor/history scenario already cover state; extend that same real-React lifecycle with seed42 region→locality, visible count/coordinates and recovery advice in RU/EN plus exact before/after. This modifies one existing browser scenario group, adds no standalone runner/case or second history corpus. A dedicated notes-conflict type/structured key list keeps arbitrary programming-error text out of UI.
+
+
+UIv2 owner correction: extend the existing notes transaction case and real React editor lifecycle, replacing obsolete Save/Cancel/dirty-block assertions. Risks: loss of last input on immediate navigation/export, per-character undo growth, no-op destroying redo, IME splitting groups, stale input crossing imported worlds. Reuse current notes/RNG/malformed and existing full100-operation corpus; no new runner or duplicate corpus.

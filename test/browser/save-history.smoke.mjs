@@ -65,40 +65,57 @@ try {
  // UI-05 regression: a valid water-only document has no region, but must expose notes.
  const waterOnly=JSON.parse(await fs.readFile(new URL('../fixtures/import-v2/baseline-empty.json',import.meta.url)));
  waterOnly.map.terrainByHexKey={'-1,0':{terrainOverride:'sea'}};waterOnly.ui.selectedHex={q:-1,r:0};
- await load(waterOnly);await page.getByRole('textbox',{name:'Заметки мастера',exact:true}).fill('Sea 🗝');
- await button('Сохранить').click();assert.equal((await snapshot()).map.gmNotesByHexKey['-1,0'],'Sea 🗝');
+ async function openNotes(){
+   const add=button('+ Добавить заметку');
+   if(await add.count()) await add.click();
+   else if(!await page.locator('#gm-notes-text').count()) await page.locator('#gm-notes-label').click();
+   return page.locator('#gm-notes-text');
+ }
+ await load(waterOnly);await (await openNotes()).fill('Sea 🗝');
+ assert.equal((await snapshot()).map.gmNotesByHexKey['-1,0'],'Sea 🗝');
  await load(fixture);
  const noteHex=fixture.map.regions[0].hexes[0], noteKey=`${noteHex.q},${noteHex.r}`;
  const other=fixture.map.regions[0].hexes.find(h=>`${h.q},${h.r}`!==noteKey);
- await select(noteKey);
- const notes=page.getByRole('textbox',{name:'Заметки мастера',exact:true});
- await notes.scrollIntoViewIfNeeded();
+ await select(noteKey);assert.equal(await page.locator('#gm-notes-text').count(),0);
+ await button('+ Добавить заметку').scrollIntoViewIfNeeded();
  await page.screenshot({path:fileURLToPath(new URL('reports/HX-BL-024/desktop-empty.png',root))});
  const cleanNotes=await snapshot(), noteText='  🗝 <b>Жрец пропал</b>\nСледы ведут к броду.  ';
- await notes.fill(noteText);await notes.press('Enter');await notes.press('Backspace');
- await select(`${other.q},${other.r}`);await button('Отменить').click();
+ await openNotes();assert.equal(await page.locator('#gm-notes-text').evaluate(e=>e===document.activeElement),true);
+ await page.locator('#gm-notes-label').click();assert.deepEqual(await snapshot(),cleanNotes,'empty open-close no transaction');
+ const notes=await openNotes();await notes.fill(noteText);await notes.press('Enter');await notes.press('Backspace');
  assert.equal(await notes.inputValue(),noteText);
- await page.getByRole('alert').filter({hasText:'Сохраните или отмените'}).waitFor();
- await notes.scrollIntoViewIfNeeded();await page.screenshot({path:fileURLToPath(new URL('reports/HX-BL-024/desktop-dirty.png',root))});
- await button('Сохранить').click();const savedNotes=await snapshot();assert.equal(savedNotes.version,4);assert.equal(savedNotes.map.gmNotesByHexKey[noteKey],noteText);
+ await page.locator('.gm-notes [role=status]').filter({hasText:'Сохранено'}).waitFor();
+ await notes.scrollIntoViewIfNeeded();await page.screenshot({path:fileURLToPath(new URL('reports/HX-BL-024/desktop-editor.png',root))});
+ // No debounce wait: selection/export must retain the final character.
+ await select(`${other.q},${other.r}`);assert.equal(await page.locator('#gm-notes-text').count(),0);
+ await select(noteKey);assert.equal(await page.locator('.gm-notes__text').textContent(),noteText);
+ const savedNotes=await snapshot();assert.equal(savedNotes.version,4);assert.equal(savedNotes.map.gmNotesByHexKey[noteKey],noteText);
  const stripNotes=d=>{d=structuredClone(d);delete d.map.gmNotesByHexKey;return d;};
  assert.deepEqual(stripNotes(savedNotes),stripNotes(cleanNotes));
  assert.equal(await page.locator('svg').first().textContent().then(s=>s.includes('Жрец пропал')),false);
+ assert.equal(await button('Сохранить').count(),0);assert.equal(await button('Отменить изменения').count(),0);
  await button('Отменить').click();assert.deepEqual(await snapshot(),cleanNotes);
- await notes.fill('cancel');await button('Отменить изменения').click();assert.equal(await button('Повторить').isEnabled(),true);
+ // Net-zero input in one unbroken series must restore the existing redo branch.
+ await openNotes();await notes.fill('temporary');await notes.fill('');await page.locator('#gm-notes-label').click();
+ assert.equal(await button('Повторить').isEnabled(),true);
  await button('Повторить').click();assert.deepEqual(await snapshot(),savedNotes);
- await button('Switch to English').click();await page.getByRole('textbox',{name:'GM notes',exact:true}).scrollIntoViewIfNeeded();
+ // Distinct500ms series undo as units. IME composition stays one history group.
+ await openNotes();await notes.fill(noteText+'A');await page.waitForTimeout(550);await notes.fill(noteText+'AB');
+ await button('Отменить').click();assert.equal((await snapshot()).map.gmNotesByHexKey[noteKey],noteText+'A');
+ await button('Отменить').click();assert.deepEqual(await snapshot(),savedNotes);
+ await openNotes();await notes.dispatchEvent('compositionstart');await notes.fill(noteText+'中');await page.waitForTimeout(550);await notes.fill(noteText+'中文');await notes.dispatchEvent('compositionend');
+ await button('Отменить').click();assert.deepEqual(await snapshot(),savedNotes);
+ await openNotes();await button('Switch to English').click();await notes.scrollIntoViewIfNeeded();
  await page.screenshot({path:fileURLToPath(new URL('reports/HX-BL-024/desktop-en.png',root))});
- await page.setViewportSize({width:390,height:844});await page.getByRole('textbox',{name:'GM notes',exact:true}).scrollIntoViewIfNeeded();
+ await page.setViewportSize({width:390,height:844});await notes.scrollIntoViewIfNeeded();
  await page.screenshot({path:fileURLToPath(new URL('reports/HX-BL-024/narrow-en.png',root))});
  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=390),true);
  await page.setViewportSize({width:1500,height:1100});await button('Переключить на русский').click();
  await page.evaluate(()=>window.__delayRead=true);
  await page.locator('input[type=file]').setInputFiles({name:'notes.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(savedNotes))});
  await page.waitForFunction(()=>window.__releaseRead!==undefined);
- assert.equal(await page.getByRole('textbox',{name:'Заметки мастера',exact:true}).isDisabled(),true);
- await page.getByRole('textbox',{name:'Заметки мастера',exact:true}).scrollIntoViewIfNeeded();
- await page.screenshot({path:fileURLToPath(new URL('reports/HX-BL-024/desktop-busy.png',root))});
+ assert.equal(await notes.isDisabled(),true);
+ await notes.scrollIntoViewIfNeeded();await page.screenshot({path:fileURLToPath(new URL('reports/HX-BL-024/desktop-busy.png',root))});
  await page.evaluate(()=>{window.__releaseRead();delete window.__releaseRead;});
  await page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);
  assert.deepEqual(await snapshot(),savedNotes);
@@ -112,7 +129,7 @@ try {
  await button('Перегенерировать регион').waitFor();
  const conflictMap=await snapshot();assert.equal(conflictMap.map.regions[0].hexes.length,27);
  for(const hex of conflictMap.map.regions[0].hexes){
-   await select(`${hex.q},${hex.r}`);await page.getByRole('textbox',{name:'Заметки мастера',exact:true}).fill('keep');await button('Сохранить').click();
+   await select(`${hex.q},${hex.r}`);await (await openNotes()).fill('keep');
  }
  const conflictBefore=await snapshot();
  await page.locator('.gen-params select').nth(0).selectOption('locality');

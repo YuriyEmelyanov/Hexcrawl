@@ -11300,20 +11300,29 @@ export function App() {
   const importInFlight = useRef(false);
   const [isImporting, setIsImporting] = useState(false);
   const [gmNotesByHexKey, setGmNotesByHexKey] = useState<Record<string, string>>({});
-  const [notesDraft, setNotesDraft] = useState<{key: string; text: string} | null>(null);
-  const notesDraftRef = useRef<{key: string; text: string} | null>(null);
-  const notesDirtyRef = useRef(false);
-  const [notesNotice, setNotesNotice] = useState(false);
+  const notesMapRef = useRef(gmNotesByHexKey);
+  notesMapRef.current = gmNotesByHexKey;
+  const [notesEditorKey, setNotesEditorKey] = useState<string | null>(null);
+  const notesTextRef = useRef<HTMLTextAreaElement | null>(null);
+  const [notesError, setNotesError] = useState(false);
   const notesSelectionRef = useRef<string | null>(null);
   notesSelectionRef.current = selectedHex ? hexKey(selectedHex) : null;
-  const clearNotesDraft = () => { notesDraftRef.current = null; notesDirtyRef.current = false; setNotesDraft(null); setNotesNotice(false); };
-  useEffect(() => {
-    const beforeUnload = (event: BeforeUnloadEvent) => { if (notesDirtyRef.current) { event.preventDefault(); event.returnValue = ''; } };
-    window.addEventListener('beforeunload', beforeUnload);
-    return () => window.removeEventListener('beforeunload', beforeUnload);
-  }, []);
   const [undoHistory, setUndoHistory] = useState<MapTransaction[]>([]);
   const [redoHistory, setRedoHistory] = useState<MapTransaction[]>([]);
+  const undoHistoryRef = useRef(undoHistory), redoHistoryRef = useRef(redoHistory);
+  undoHistoryRef.current = undoHistory; redoHistoryRef.current = redoHistory;
+  const notesGroupRef = useRef<{key: string; before: DocumentSnapshot; undo: MapTransaction[]; redo: MapTransaction[]} | null>(null);
+  const notesTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const notesComposingRef = useRef(false);
+  const finishNotesGroup = () => {
+    if (notesTimerRef.current !== null) clearTimeout(notesTimerRef.current);
+    notesTimerRef.current = null; notesGroupRef.current = null;
+  };
+  const clearNotesDraft = () => { finishNotesGroup(); setNotesEditorKey(null); setNotesError(false); };
+  const updateNotesMap = (notes: Record<string, string>) => { notesMapRef.current = notes; setGmNotesByHexKey(notes); };
+  useEffect(() => { finishNotesGroup(); setNotesEditorKey(null); setNotesError(false); }, [selectedHex?.q, selectedHex?.r]);
+  useEffect(() => { if (notesEditorKey) notesTextRef.current?.focus(); }, [notesEditorKey]);
+  useEffect(() => () => { if (notesTimerRef.current !== null) clearTimeout(notesTimerRef.current); }, []);
   // Generation checkpoints are separate from the user's undo/redo timeline.
   const [history, setHistory] = useState<MapSnapshot[]>([]);
   // Отложенная перегенерация: ставим заявку, ждём пока React применит
@@ -11809,7 +11818,7 @@ export function App() {
     })();
 
     const snapshot: MapSnapshot = {
-        gmNotesByHexKey: {...gmNotesByHexKey},
+        gmNotesByHexKey: {...notesMapRef.current},
         generation: cloneGenerationState(activeGenerationBefore.current ?? generationRef.current),
         kingdoms, obstacles,
       regions,
@@ -12677,7 +12686,7 @@ export function App() {
       })();
 
       const snapshot: MapSnapshot = {
-        gmNotesByHexKey: {...gmNotesByHexKey},
+        gmNotesByHexKey: {...notesMapRef.current},
         generation: cloneGenerationState(activeGenerationBefore.current ?? generationRef.current),
         kingdoms, obstacles,
         regions,
@@ -12738,7 +12747,7 @@ export function App() {
   };
 
 
-  const captureMap = (): MapSnapshot => ({ gmNotesByHexKey, generation: cloneGenerationState(generationRef.current), kingdoms, obstacles, regions, candidateHexes, rivers, roads, crossings,
+  const captureMap = (): MapSnapshot => ({ gmNotesByHexKey: notesMapRef.current, generation: cloneGenerationState(generationRef.current), kingdoms, obstacles, regions, candidateHexes, rivers, roads, crossings,
     hexTerrainByKey, waterPoiByKey, biomeOverrideByHexKey, toponyms, toponymSeed, nextLakeId, nextRoadId });
   const captureDocument = (): DocumentSnapshot => ({ map: captureMap(), generationHistory: history, selectedHex,
     generationMode, isMapRotated, mapScale: pendingMapZoomRef.current?.scale ?? mapScaleRef.current });
@@ -12752,7 +12761,7 @@ export function App() {
     setRedoHistory([]);
   };
   const applyExactMap = (map: MapSnapshot) => {
-    setGmNotesByHexKey({...map.gmNotesByHexKey}); clearNotesDraft();
+    updateNotesMap({...map.gmNotesByHexKey}); clearNotesDraft();
     restoreGeneration(map.generation);
     setKingdoms(map.kingdoms ?? []); setObstacles(map.obstacles ?? []);
     setRegions(map.regions); setCandidateHexes(map.candidateHexes); setRivers(map.rivers);
@@ -12777,50 +12786,63 @@ export function App() {
   const applyDocument = (value: DocumentSnapshot) => applyPreparedDocument(copyDocument(value));
   const documentBusy = () => documentRevision.current !== renderedDocumentRevision
     || importInFlight.current || kingdomInFlight.current || !!kingdomJob || !!pendingRegen;
-  const mutationBlocked = (notify = true) => {
-    if (notesDirtyRef.current) { if (notify) setNotesNotice(true); return true; }
-    return documentBusy();
+  const mutationBlocked = (finishGroup = true) => {
+    if (documentBusy()) return true;
+    if (finishGroup) finishNotesGroup();
+    return false;
   };
-  const changeNotesDraft = (key: string, text: string) => {
+  // Every input is already part of the document. Only history entries coalesce;
+  // no timer may later write a pending value into another hex or imported world.
+  const changeNotesText = (key: string, text: string) => {
     if (documentBusy() || notesSelectionRef.current !== key
       || (!hexTerrainByKey.has(key) && !regions.some(r => r.hexes.some(h => hexKey(h) === key)))) return;
-    const draft = {key, text}; notesDraftRef.current = draft; setNotesDraft(draft);
-    notesDirtyRef.current = text !== (gmNotesByHexKey[key] ?? ''); setNotesNotice(false);
+    if (text === (notesMapRef.current[key] ?? '')) return;
+    if (notesGroupRef.current?.key !== key) finishNotesGroup();
+    const group = notesGroupRef.current ?? {key, before: copyDocument(captureDocument()),
+      undo: undoHistoryRef.current, redo: redoHistoryRef.current};
+    notesGroupRef.current = group;
+    const notes = {...notesMapRef.current};
+    if (text === '') delete notes[key]; else notes[key] = text;
+    const after = copyDocument({...captureDocument(), map: {...captureMap(), gmNotesByHexKey: notes}});
+    const noChange = text === (group.before.map.gmNotesByHexKey[key] ?? '');
+    const undo = noChange ? group.undo : [...group.undo, {before: group.before, after}].slice(-100);
+    const redo = noChange ? group.redo : [];
+    documentRevision.current++;
+    undoHistoryRef.current = undo; redoHistoryRef.current = redo;
+    setUndoHistory(undo); setRedoHistory(redo); updateNotesMap(notes); setNotesError(false);
+    if (notesTimerRef.current !== null) clearTimeout(notesTimerRef.current);
+    if (!notesComposingRef.current) notesTimerRef.current = setTimeout(finishNotesGroup, 500);
   };
-  const saveNotesDraft = () => {
-    if (documentBusy()) return;
-    const draft = notesDraftRef.current;
-    if (!draft || draft.key !== notesSelectionRef.current) return;
-    if (draft.text === (gmNotesByHexKey[draft.key] ?? '')) { clearNotesDraft(); return; }
-    const notes = {...gmNotesByHexKey};
-    if (draft.text === '') delete notes[draft.key]; else notes[draft.key] = draft.text;
-    const before = captureDocument(), map = {...before.map, gmNotesByHexKey: notes};
-    recordTransaction(before, {...before, map}); applyExactMap(map);
+  const openNotesEditor = (key: string) => { if (!mutationBlocked()) setNotesEditorKey(key); };
+  const toggleNotesEditor = (key: string) => {
+    if (mutationBlocked()) return;
+    setNotesEditorKey(current => current === key ? null : key);
   };
-  const cancelNotesDraft = () => { if (!documentBusy()) clearNotesDraft(); };
   const actualHexKeys = (map: Pick<MapSnapshot, 'regions' | 'hexTerrainByKey'>) =>
     new Set([...map.regions.flatMap(r => r.hexes.map(hexKey)), ...map.hexTerrainByKey.keys()]);
   const notesForSurvivingHexes = (map: Pick<MapSnapshot, 'regions' | 'hexTerrainByKey'>) => {
     const keys = actualHexKeys(map);
-    return Object.fromEntries(Object.entries(gmNotesByHexKey).filter(([key]) => keys.has(key)));
+    return Object.fromEntries(Object.entries(notesMapRef.current).filter(([key]) => keys.has(key)));
   };
   const confirmNotesRemoval = (notes: Record<string, string>) => {
-    const removed = Object.keys(gmNotesByHexKey).filter(key => !(key in notes));
+    const removed = Object.keys(notesMapRef.current).filter(key => !(key in notes));
     return !removed.length || window.confirm(language === 'ru'
       ? `Удалить заметки мастера (${removed.length}) в гексах ${removed.join('; ')}? Их можно восстановить отменой.`
       : `Delete GM notes (${removed.length}) at ${removed.join('; ')}? Undo can restore them.`);
   };
   const undoMap = () => {
-    if (mutationBlocked() || !undoHistory.length) return;
-    const transaction = undoHistory[undoHistory.length - 1];
+    if (mutationBlocked() || !undoHistoryRef.current.length) return;
+    const currentUndo = undoHistoryRef.current;
+    const transaction = currentUndo[currentUndo.length - 1];
     applyDocument(transaction.before);
-    setUndoHistory(undoHistory.slice(0,-1)); setRedoHistory(current => [...current, transaction]);
+    setUndoHistory(currentUndo.slice(0,-1)); setRedoHistory(current => [...current, transaction]);
   };
   const redoMap = () => {
-    if (mutationBlocked() || !redoHistory.length) return;
-    const transaction = redoHistory[redoHistory.length - 1];
+    if (mutationBlocked() || !redoHistoryRef.current.length) return;
+    const currentRedo = redoHistoryRef.current;
+    const transaction = currentRedo[currentRedo.length - 1];
     applyDocument(transaction.after);
-    setRedoHistory(redoHistory.slice(0,-1)); setUndoHistory(current => [...current, transaction].slice(-100));
+    setRedoHistory(currentRedo.slice(0,-1)); setUndoHistory(current => [...current, transaction].slice(-100));
   };
   const commitManualMap = (map: MapSnapshot) => {
     // Prepare names before any state write; undo/redo then restore exact values.
@@ -12838,7 +12860,7 @@ export function App() {
     const notes = before.map.gmNotesByHexKey ?? gmNotesByHexKey;
     const keys = actualHexKeys(map), missing = Object.keys(notes).filter(key => !keys.has(key));
     if (missing.length) throw new NotesLossConflict(missing);
-    map.gmNotesByHexKey = {...notes}; setGmNotesByHexKey(map.gmNotesByHexKey);
+    map.gmNotesByHexKey = {...notes}; updateNotesMap(map.gmNotesByHexKey);
     recordTransaction(before, { ...captureDocument(), map, selectedHex: selection,
       generationHistory: [...checkpoints, structuredClone(checkpoint)] });
   };
@@ -12850,7 +12872,7 @@ export function App() {
 
   const restoreGenerationBackup = (backup: GenerationBackup) => {
     const map = backup.map;
-    setGmNotesByHexKey({...map.gmNotesByHexKey}); clearNotesDraft();
+    updateNotesMap({...map.gmNotesByHexKey}); clearNotesDraft();
     restoreGeneration(map.generation);
     setKingdoms(map.kingdoms ?? []);
     setObstacles(map.obstacles ?? []);
@@ -13213,8 +13235,8 @@ export function App() {
 
   const selectedHexKey = selectedHex ? hexKey(selectedHex) : null;
   const canEditNotes = !!selectedHexKey && (hexTerrainByKey.has(selectedHexKey) || regions.some(r => r.hexes.some(h => hexKey(h) === selectedHexKey)));
-  const notesValue = notesDraft?.key === selectedHexKey ? notesDraft.text : (selectedHexKey ? gmNotesByHexKey[selectedHexKey] ?? '' : '');
-  const notesDirty = !!notesDraft && notesDraft.text !== (gmNotesByHexKey[notesDraft.key] ?? '');
+  const notesValue = selectedHexKey ? gmNotesByHexKey[selectedHexKey] ?? '' : '';
+  const notesOpen = notesEditorKey === selectedHexKey;
   const selectedMeta = selectedHexKey ? metadataMap.get(selectedHexKey) : undefined;
   const selectedTerrain = selectedHexKey ? hexTerrainByKey.get(selectedHexKey) : undefined;
   const selectedWaterPoiKind = selectedHexKey ? waterPoiByKey.get(selectedHexKey) : undefined;
@@ -13726,7 +13748,7 @@ export function App() {
     version: HEXCRAWL_SAVE_VERSION,
     savedAt: new Date().toISOString(),
     map: {
-      gmNotesByHexKey: {...gmNotesByHexKey},
+      gmNotesByHexKey: {...notesMapRef.current},
       kingdoms, obstacles,
       regions,
       candidateHexes,
@@ -14661,18 +14683,31 @@ export function App() {
                   </>
                 ) : null}
                 {canEditNotes && selectedHexKey ? <div className="gm-notes">
-                  <label htmlFor="gm-notes-text">{language === 'ru' ? 'Заметки мастера' : 'GM notes'}</label>
-                  <textarea id="gm-notes-text" rows={6} value={notesValue}
-                    disabled={isImporting || !!pendingRegen || !!kingdomJob}
-                    onKeyDown={event => event.stopPropagation()}
-                    onChange={event => changeNotesDraft(selectedHexKey, event.target.value)} />
-                  <p className="gm-notes__hint">{language === 'ru' ? 'Часть карты и полного JSON. Не экспорт для игроков.' : 'Included in the map and full JSON. Not a player export.'}</p>
-                  {notesDirty ? <p role="status">{language === 'ru' ? 'Изменения не сохранены' : 'Unsaved changes'}</p> : null}
-                  {notesNotice ? <p role="alert">{language === 'ru' ? 'Сохраните или отмените изменения заметки' : 'Save or cancel the note changes'}</p> : null}
-                  <div className="gm-notes__actions">
-                    <button type="button" className="secondary" disabled={!notesDirty || isImporting || !!pendingRegen || !!kingdomJob} onClick={saveNotesDraft}>{language === 'ru' ? 'Сохранить' : 'Save'}</button>
-                    <button type="button" className="secondary" disabled={!notesDirty || isImporting || !!pendingRegen || !!kingdomJob} onClick={cancelNotesDraft}>{language === 'ru' ? 'Отменить изменения' : 'Cancel changes'}</button>
-                  </div>
+                  {!notesOpen && !notesValue ? <button type="button" className="hex-coordinate-toggle hex-poi-editor__add"
+                    disabled={isImporting || !!pendingRegen || !!kingdomJob} onClick={() => openNotesEditor(selectedHexKey)}>
+                    {language === 'ru' ? '+ Добавить заметку' : '+ Add note'}
+                  </button> : <>
+                    <div className="gm-notes__heading">
+                      <button id="gm-notes-label" type="button" className="gm-notes__toggle" aria-expanded={notesOpen}
+                        aria-controls="gm-notes-content" disabled={isImporting || !!pendingRegen || !!kingdomJob}
+                        onClick={() => toggleNotesEditor(selectedHexKey)}>
+                        {language === 'ru' ? 'Заметки мастера' : 'GM notes'} <span aria-hidden="true">{notesOpen ? '▴' : '▾'}</span>
+                      </button>
+                      <span className="gm-notes__status" role="status" aria-live="polite">{notesOpen && notesValue ? (language === 'ru' ? '✓ Сохранено' : '✓ Saved') : ''}</span>
+                    </div>
+                    <div id="gm-notes-content">
+                      {notesOpen ? <textarea ref={notesTextRef} id="gm-notes-text" aria-labelledby="gm-notes-label" rows={6} value={notesValue}
+                        disabled={isImporting || !!pendingRegen || !!kingdomJob}
+                        onKeyDown={event => event.stopPropagation()}
+                        onCompositionStart={() => { notesComposingRef.current = true; if (notesTimerRef.current !== null) clearTimeout(notesTimerRef.current); }}
+                        onCompositionEnd={event => { notesComposingRef.current = false; changeNotesText(selectedHexKey, event.currentTarget.value); notesTimerRef.current = setTimeout(finishNotesGroup, 500); }}
+                        onBlur={() => { notesComposingRef.current = false; finishNotesGroup(); }}
+                        onChange={event => changeNotesText(selectedHexKey, event.target.value)} />
+                        : <button type="button" className="gm-notes__text" disabled={isImporting || !!pendingRegen || !!kingdomJob}
+                          onClick={() => openNotesEditor(selectedHexKey)}>{notesValue}</button>}
+                    </div>
+                    {notesError ? <p role="alert">{language === 'ru' ? 'Не удалось изменить заметку' : 'The note could not be changed'}</p> : null}
+                  </>}
                 </div> : null}
               </section>
 

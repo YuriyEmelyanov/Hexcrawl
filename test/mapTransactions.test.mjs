@@ -121,24 +121,22 @@ test('no-op and failed imports preserve redo; fresh edit clears it; reset on emp
 
 
 // HIST/UI notes contract: use existing production handler harness and full-document comparisons.
-test('notes save/clear are exact transactions, no-op/cancel preserve redo and dirty commands are inert',async()=>{
+test('notes autosave coalesces a series, preserves redo on no-op, and commits before other operations',async()=>{
   const {h}=setup();await load(h,fixture);
   const hex=fixture.map.regions[0].hexes[0],key=`${hex.q},${hex.r}`;
-  h.render().setSelectedHex(hex);const before=stable(h.render());
-  h.render().changeNotesDraft(key,'  🗝 <b>text</b>\nsecond  ');
-  const dirty=stable(h.render()), stacks=serial([h.render().undoHistory,h.render().redoHistory]);
-  for(const action of [()=>h.render().undoMap(),()=>h.render().resetMap(),()=>h.render().deleteLastRegion(),()=>h.render().generateAt({q:100,r:100}),()=>h.render().handleImportJson({target:{files:[{text:JSON.stringify(fixture)}],value:'x'}})]) {
-    await action(); assert.deepEqual(stable(h.render()),dirty);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks);
-  }
-  h.render().saveNotesDraft();const after=stable(h.render());
-  assert.equal(after.map.gmNotesByHexKey[key],'  🗝 <b>text</b>\nsecond  ');
+  h.render().setSelectedHex(hex);const before=stable(h.render()),count=h.render().undoHistory.length;
+  for(const text of ['  🗝','  🗝 <b>text</b>','  🗝 <b>text</b>\nsecond  ']) h.render().changeNotesText(key,text);
+  const after=stable(h.render());assert.equal(after.map.gmNotesByHexKey[key],'  🗝 <b>text</b>\nsecond  ');
+  assert.equal(h.render().undoHistory.length,count+1,'one entry for input series');
   const without=d=>{d=structuredClone(d);delete d.map.gmNotesByHexKey;return d;};
   assert.deepEqual(without(before),without(after));assertUndoRedo(h,before,after);
   h.render().undoMap();const redo=serial(h.render().redoHistory);
-  h.render().changeNotesDraft(key,'');h.render().saveNotesDraft();assert.deepEqual(serial(h.render().redoHistory),redo);
-  h.render().changeNotesDraft(key,'cancel');h.render().cancelNotesDraft();assert.deepEqual(serial(h.render().redoHistory),redo);
-  h.render().redoMap();h.render().changeNotesDraft(key,'');h.render().saveNotesDraft();assert.equal(stable(h.render()).map.gmNotesByHexKey[key],undefined);
-  h.render().undoMap();assert.deepEqual(stable(h.render()),after);
+  h.render().changeNotesText(key,'temporary');h.render().changeNotesText(key,'');h.render().finishNotesGroup();
+  assert.deepEqual(serial(h.render().redoHistory),redo,'net-noop restores prior redo');
+  h.render().redoMap();h.render().changeNotesText(key,'');h.render().finishNotesGroup();
+  assert.equal(stable(h.render()).map.gmNotesByHexKey[key],undefined);h.render().undoMap();assert.deepEqual(stable(h.render()),after);
+  h.render().changeNotesText(key,'last character!');await load(h,fixture);h.render().undoMap();
+  assert.equal(stable(h.render()).map.gmNotesByHexKey[key],'last character!','import starts after latest text');
 });
 test('import replaces notes exactly and legacy imports clear them; malformed notes preserve full history',async()=>{
   const {h,alerts}=setup();const key=fixture.map.regions[0].hexes.map(h=>`${h.q},${h.r}`)[0];
@@ -152,8 +150,8 @@ test('delete retains latest surviving notes, confirms loss, undo restores; gener
   const {h}=setup();h.setWindow({alert(){},confirm:()=>false,matchMedia:()=>({matches:false})});
   h.render().addFallbackTractToMap({q:0,r:0});h.render().addFallbackTractToMap(h.render().candidateHexes[0]);
   const a=h.render().regions[0].hexes[0],ak=`${a.q},${a.r}`,b=h.render().regions[1].hexes[0],bk=`${b.q},${b.r}`;
-  h.render().setSelectedHex(a);h.render().changeNotesDraft(ak,'latest first');h.render().saveNotesDraft();
-  h.render().setSelectedHex(b);h.render().changeNotesDraft(bk,'second');h.render().saveNotesDraft();const before=stable(h.render());
+  h.render().setSelectedHex(a);h.render().changeNotesText(ak,'latest first');h.render().finishNotesGroup();
+  h.render().setSelectedHex(b);h.render().changeNotesText(bk,'second');h.render().finishNotesGroup();const before=stable(h.render());
   h.render().deleteLastRegion();assert.deepEqual(stable(h.render()),before);
   h.setWindow({alert(){},confirm:()=>true,matchMedia:()=>({matches:false})});h.render().deleteLastRegion();
   assert.deepEqual(stable(h.render()).map.gmNotesByHexKey,{[ak]:'latest first'});assertUndoRedo(h,before,stable(h.render()));
