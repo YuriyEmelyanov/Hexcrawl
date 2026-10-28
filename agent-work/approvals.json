@@ -568,7 +568,67 @@
       ],
       "next_role": "business_analyst",
       "next_step": "Включить препятствия в уточняемую spec023. Кандидатов рассмотреть в инвентаризации и плане, явно отделить рекомендации от утверждённого объёма. Не начинать их разработку автоматически.",
-      "score_impact": "unknown; score unchanged"
+      "score_impact": "unknown; score unchanged",
+      "additional_candidates_approval": {
+        "status": "all_six_owner_approved",
+        "decision_ref": "owner-decision-2026-10-28-editor-additional-functions-approved",
+        "date": "2026-10-28"
+      }
+    },
+    {
+      "id": "owner-decision-2026-10-28-editor-additional-functions-approved",
+      "date": "2026-10-28",
+      "type": "task_scope_approval",
+      "task_id": "HX-BL-023",
+      "status": "approved_owner_instruction",
+      "source": "«ОК. Добавь эти функции.» — ответ на таблицу из шести дополнительных возможностей редактора в текущем чате.",
+      "approved_capabilities": [
+        {
+          "element": "Переправы",
+          "actions": "Мост/брод/переправа: добавление, удаление, смена типа",
+          "basis": "src/riverCrossings.ts RiverCrossingKind; App.tsx RiverCrossing",
+          "status": "owner_approved"
+        },
+        {
+          "element": "Тропы",
+          "actions": "Отдельно учесть дороги и тропы, смену типа участка",
+          "basis": "App.tsx RoadKind road|trail",
+          "status": "owner_approved"
+        },
+        {
+          "element": "Параметры рек",
+          "actions": "Правка маршрута, направления и полноводности, а не только создание/удаление",
+          "basis": "App.tsx River.vertexPath/RiverSector.fullness; docs/river-model.md",
+          "status": "owner_approved"
+        },
+        {
+          "element": "Высота местности",
+          "actions": "Уточнить нужна ли отдельная правка высоты региона; биом и высота различаются",
+          "basis": "App.tsx Region.heightLevel/biomeId",
+          "status": "owner_approved"
+        },
+        {
+          "element": "Границы и принадлежность",
+          "actions": "Перенос гексов между регионами/изменение границ; отдельная от биома возможность",
+          "basis": "App.tsx Region.hexes/kingdomId",
+          "status": "owner_approved"
+        },
+        {
+          "element": "Расположение POI",
+          "actions": "Проверить перенос существующей точки; смена типа/имени не равна переносу",
+          "basis": "agent-work/evidence/HX-BL-023-analysis/audit.md",
+          "status": "owner_approved"
+        }
+      ],
+      "supersedes_candidate_status_in": "owner-decision-2026-10-28-editor-obstacles",
+      "authorization": {
+        "analysis": true,
+        "development_after_suitable_spec": true,
+        "release_approved": false
+      },
+      "next_role": "business_analyst",
+      "next_step": "Включить все шесть возможностей в общий утверждённый набор HX-BL-023, вместе с ранее заданными биомами/дорогами/реками/водой/названиями/препятствиями. Подготовить последовательные срезы по пользе и зависимостям и показать UI; не ждать повторного утверждения старта этих функций. Выпуск каждого проверенного пакета отдельно.",
+      "score_impact": "unknown; нет автоматического начисления баллов или изменения модели"
     }
   ],
   "merge_approval": {
