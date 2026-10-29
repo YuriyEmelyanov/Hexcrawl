@@ -2,7 +2,7 @@
   "schema_version": 1,
   "date": "2026-10-29",
   "branch": "agent-operations",
-  "plan_json": "agent-work/handoffs/2026-10-29-HX-BL-023-E1-review-24fa342.json",
+  "plan_json": "agent-work/handoffs/2026-10-29-HX-BL-023-E1-F1.json",
   "plan_md": null,
   "strategy_branch": "main",
   "strategy_status": "approved",
@@ -29,7 +29,7 @@
   "run_id": "2026-10-29-reviewer-HX-BL-023-E1-24fa342",
   "plan_revision": 1,
   "baseline_sha": "a7a8cc58987e97c4495c405374c6a4145f3bc9ff",
-  "status": "in_progress",
+  "status": "changes_requested",
   "planning_for": "2026-10-29",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-10-25",
@@ -46,23 +46,14 @@
   "schedule_frequency": "every_three_hours",
   "process_path": "agent-work/process.md",
   "current_role": "reviewer",
-  "next_role": "reviewer",
+  "next_role": "developer",
   "current_task_id": "HX-BL-023",
   "spec_path": "agent-work/specs/HX-BL-023.md",
   "spec_version": "2.0",
-  "result_path": "agent-work/results/2026-10-29-developer-HX-BL-023-E1.json",
+  "result_path": "agent-work/results/2026-10-29-reviewer-HX-BL-023-E1-24fa342.json",
   "handoff_commit_sha": "438de4af964574b36a79d33319f20ba8a976f5b7",
-  "active_claim": {
-    "run_id": "2026-10-29-reviewer-HX-BL-023-E1-24fa342",
-    "task_id": "HX-BL-023",
-    "stage_id": "E1_names",
-    "role": "reviewer",
-    "started_at": "2026-10-29T03:07:27.493Z",
-    "lease_expires_at": "2026-10-29T05:07:27.493Z",
-    "head_sha": "24fa342cfacefdf604281ac0dc414912d6726433",
-    "status": "in_progress"
-  },
-  "next_step": "Fresh-context independent exact24fa342 review against N01–N07, useful-test assessment and score_assessment1.2; no transfer of previous acceptance.",
+  "active_claim": null,
+  "next_step": "Исправить HX023-E1-F1: разрешить просмотр существующих гексов при dirty-имени без потери черновика; сохранить блокировку mutations. Передать новый точный SHA независимому reviewer.",
   "owner_decisions_needed": [
     {
       "task_id": "HX-BL-003",
@@ -88,9 +79,9 @@
   "branch_name": "agent/hx023-e1-names",
   "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/478",
   "head_sha": "24fa342cfacefdf604281ac0dc414912d6726433",
-  "checks_status": "success_local_check_full_browser_and_all_CI_jobs",
+  "checks_status": "local_Node248_browser7_and_CI_passed_but_F1_confirmed",
   "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40794199705",
-  "review_verdict": null,
+  "review_verdict": "changes_requested",
   "role_selection_mode": "ready_work_priority",
   "role_selection_source": "agent-work/process.md",
   "process_decision_ref": "owner-decision-2026-10-24-dynamic-roles",
@@ -229,8 +220,8 @@
   "score_update_task_id": "HX-BL-024",
   "score_update_release_sha": "a7a8cc58987e97c4495c405374c6a4145f3bc9ff",
   "score_process_decision_ref": "owner-decision-2026-10-24-score-responsibilities",
-  "score_assessment_ref": "agent-work/results/2026-10-28-reviewer-HX-BL-024-f2ee456.json",
-  "role_selection_reason": "Ready exact SHA24fa342 in PR478, completed developer claim, independent review required by priority4.",
+  "score_assessment_ref": "agent-work/evidence/review-HX-BL-023-E1-24fa342/score_assessment.json",
+  "role_selection_reason": "Priority4: exact review_ready PR478 and completed developer claim; independent fresh-context agent required because coordinator authored candidate previously",
   "score_update_result_ref": "agent-work/results/2026-10-28-strategist-score-HX-BL-024-a7a8cc5.json",
   "score_update_completed_at": "2026-10-28T15:08:45.525Z",
   "score_update_delta": null,
@@ -250,17 +241,18 @@
   "automation_health": {
     "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-10-29T00:03:47.735Z",
+      "checked_at": "2026-10-29T03:06:51.395Z",
       "status": "checked",
       "is_enabled": true
     },
     "end": {
-      "checked_at": "2026-10-29T00:44:15.708Z",
+      "checked_at": "2026-10-29T03:22:30.013Z",
       "status": "checked",
       "is_enabled": true
     },
     "restored_during_this_run": false,
-    "errors": []
+    "errors": [],
+    "limitation": "Observed at calls only; no guarantee after run completion"
   },
   "open_findings": [
     {
@@ -282,7 +274,7 @@
       "evidence_ref": "agent-work/evidence/review-HX-BL-003-V3-58adcce/result.json"
     }
   ],
-  "current_review_score_assessment_status": "pending_independent_review_E1",
+  "current_review_score_assessment_status": "completed_insufficient_evidence_no_award",
   "target_audience_research": {
     "model_version": "1.1",
     "model_max_points": 25,
@@ -930,7 +922,7 @@
     "next_step": "Решить отдельно узкий cleanup AUD-02/03/04; готовую спецификацию024 не задерживать."
   },
   "owner_decisions_note": "Подтвердить предложенную адресную замену большого незавершённого historygate для003. HX-BL-024 уже утверждён, повторного согласования задачи не нужно; выпуск474 отдельно.",
-  "updated_at": "2026-10-29T00:45:20.547Z",
+  "updated_at": "2026-10-29T03:23:16.366Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
     "stage_id": "V3",
@@ -1134,12 +1126,13 @@
     "HX-BL-023": {
       "task_id": "HX-BL-023",
       "stage_id": "E1_names",
-      "status": "review_ready",
+      "status": "changes_requested",
       "head_sha": "24fa342cfacefdf604281ac0dc414912d6726433",
       "spec_version": "2.0",
-      "handoff_ref": "agent-work/handoffs/2026-10-29-HX-BL-023-E1-review-24fa342.json",
+      "handoff_ref": "agent-work/handoffs/2026-10-29-HX-BL-023-E1-F1.json",
       "execution_allowed": true,
-      "next_role": "reviewer"
+      "next_role": "developer",
+      "role": "developer"
     }
   },
   "independent_reviewer_automation_health": {
@@ -1253,7 +1246,7 @@
       "src/styles.css"
     ]
   },
-  "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/476#pullrequestreview-5682403774",
+  "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/478#pullrequestreview-5692465528",
   "coordination_handoff": {
     "status": "completed_actionable_outcome",
     "current_package_task_id": "HX-BL-003",
@@ -1313,7 +1306,7 @@
     "nav_status_success": 24,
     "png_captured": 4
   },
-  "evidence_ref": "agent-work/evidence/review-HX-BL-024-f2ee456/report.md",
+  "evidence_ref": "agent-work/evidence/review-HX-BL-023-E1-24fa342/report.md",
   "static_diagnosis_handoff": {
     "status": "coordinated_nextstage_proposed",
     "result_ref": "agent-work/results/2026-10-27-developer-HX-BL-003-static-diagnosis.json",
@@ -1580,7 +1573,7 @@
   "historical_unverified_weight": 70,
   "historical_score_model_version": "1.1",
   "score_update_awarded_points": 0,
-  "handoff_ref": "agent-work/handoffs/2026-10-28-HX-BL-024-release-f2ee456.json",
+  "handoff_ref": "agent-work/handoffs/2026-10-29-HX-BL-023-E1-F1.json",
   "previous_feedback_handoff": {
     "task_id": "HX-FB-001",
     "register": "agent-work/feedback.json",
@@ -2123,20 +2116,16 @@
     "result_ref": "agent-work/results/2026-10-28-strategist-score-HX-BL-024-a7a8cc5.json"
   },
   "previous_claim": {
-    "run_id": "2026-10-29-developer-HX-BL-023-E1",
+    "run_id": "2026-10-29-reviewer-HX-BL-023-E1-24fa342",
     "task_id": "HX-BL-023",
     "stage_id": "E1_names",
-    "role": "developer",
-    "started_at": "2026-10-29T00:04:29.146Z",
-    "lease_expires_at": "2026-10-29T02:04:29.146Z",
-    "base_sha": "a7a8cc58987e97c4495c405374c6a4145f3bc9ff",
-    "branch": "agent/hx023-e1-names",
-    "last_checkpoint": "Implementation and exact tree saved in PR478; final local check/browser pending. Negative translated-selector log retained.",
+    "role": "reviewer",
+    "started_at": "2026-10-29T03:07:27.493Z",
+    "lease_expires_at": "2026-10-29T05:07:27.493Z",
     "head_sha": "24fa342cfacefdf604281ac0dc414912d6726433",
-    "pr": 478,
     "status": "completed",
-    "completed_at": "2026-10-29T00:44:15.708Z",
-    "result_ref": "agent-work/results/2026-10-29-developer-HX-BL-023-E1.json"
+    "completed_at": "2026-10-29T03:22:51.532Z",
+    "result_ref": "agent-work/results/2026-10-29-reviewer-HX-BL-023-E1-24fa342.json"
   },
   "active_slice": "E1_names",
   "last_completed_stage_task_id": "HX-BL-023",
@@ -2161,12 +2150,12 @@
   "next_product_recommendation": {
     "task_id": "HX-BL-023",
     "stage_id": "E1_names",
-    "status": "review_ready",
+    "status": "changes_requested",
     "execution_allowed": true,
-    "next_role": "reviewer",
+    "next_role": "developer",
     "head_sha": "24fa342cfacefdf604281ac0dc414912d6726433",
-    "handoff_ref": "agent-work/handoffs/2026-10-29-HX-BL-023-E1-review-24fa342.json",
-    "reason": "E1 implementation completed with exact tree checks and actual UI; independent review/score assessment next. Remaining editor stages preserved."
+    "handoff_ref": "agent-work/handoffs/2026-10-29-HX-BL-023-E1-F1.json",
+    "reason": "Independent exact24fa342 production UI reproduced F1; bounded correction is already authorized."
   },
   "owner_editor_scope": {
     "decision_ref": "owner-decision-2026-10-28-editor-functional-scope",
@@ -2188,10 +2177,10 @@
       "Расположение POI: Проверить перенос существующей точки; смена типа/имени не равна переносу"
     ],
     "existing_POI_editing_note": "Точки интереса уже можно менять; инвентаризировать и сохранить, не выдавать за новую возможность.",
-    "status": "E1_review_ready_full_scope_remains",
+    "status": "E1_changes_requested_full_scope_remains",
     "result_ref": "agent-work/results/2026-10-28-HX-BL-023-owner-scope.json",
-    "next_role": "reviewer",
-    "next_step": "Fresh-context independent exact24fa342 review against N01–N07, useful-test assessment and score_assessment1.2; no transfer of previous acceptance.",
+    "next_role": "developer",
+    "next_step": "Исправить HX023-E1-F1: разрешить просмотр существующих гексов при dirty-имени без потери черновика; сохранить блокировку mutations. Передать новый точный SHA независимому reviewer.",
     "obstacles_decision_ref": "owner-decision-2026-10-28-editor-obstacles",
     "omission_candidates": [
       {
@@ -2237,7 +2226,8 @@
     "spec_version": "2.0",
     "analysis_result_ref": "agent-work/results/2026-10-29-analyst-HX-BL-023-editor-v2.json",
     "capability_matrix_ref": "agent-work/evidence/HX-BL-023-editor-v2/capability-matrix.json",
-    "developer_result_ref": "agent-work/results/2026-10-29-developer-HX-BL-023-E1.json"
+    "developer_result_ref": "agent-work/results/2026-10-29-developer-HX-BL-023-E1.json",
+    "review_result_ref": "agent-work/results/2026-10-29-reviewer-HX-BL-023-E1-24fa342.json"
   },
   "rules_research": {
     "DND5": {
@@ -2270,7 +2260,7 @@
     }
   },
   "full_editor_ready": false,
-  "current_task_score_assessment_status": "pending_independent_review_E1",
+  "current_task_score_assessment_status": "completed_insufficient_evidence_no_award",
   "published": false,
   "main_changed": false,
   "ui_actual": {
@@ -2284,5 +2274,6 @@
     "english_narrow": "agent-work/evidence/HX-BL-023-E1-24fa342/narrow-en.png",
     "saved_narrow": "agent-work/evidence/HX-BL-023-E1-24fa342/saved-390.png",
     "proposal": false
-  }
+  },
+  "review_result_ref": "agent-work/results/2026-10-29-reviewer-HX-BL-023-E1-24fa342.json"
 }
