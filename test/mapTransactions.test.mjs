@@ -227,8 +227,12 @@ test('direct names change only the captured locale; exact history, validation, l
 // Reuse the actual-handler harness rather than a second transaction implementation.
 test('region biome respects stored height and canonical neighbors, keeps all overrides and exact metadata/history',async()=>{
   const {h}=setup();await load(h,fixture);
+  const legacy=stable(h.render());const legacyKey=Object.keys(legacy.map.toponyms.names).find(k=>k.startsWith('region:'));
+  legacy.map.toponyms.names[legacyKey].kind='river'; // accepted old metadata, unrelated to terrain
+  h.geometry.assertHexcrawlSaveData(legacy);await load(h,legacy);
   const r=h.render().regions[0];h.render().setSelectedHex(r.centerHex);
   h.render().setSelectedHexBiomeOverride('semi_desert');
+  assert.deepEqual(stable(h.render()).map.toponyms,legacy.map.toponyms,'local terrain preserves literal legacy name metadata');
   const before=stable(h.render()), stacks=serial([h.render().undoHistory,h.render().redoHistory]);
   const choices=Object.values(h.geometry.BIOMES).filter(b=>b.heightLevel===r.heightLevel);
   assert.equal(choices.length,({1:12,2:6,3:6})[r.heightLevel]);

@@ -12873,11 +12873,11 @@ export function App() {
     applyDocument(transaction.after);
     setRedoHistory(currentRedo.slice(0,-1)); setUndoHistory(current => [...current, transaction].slice(-100));
   };
-  const commitManualMap = (map: MapSnapshot) => {
+  const commitManualMap = (map: MapSnapshot, reconcileNames = true) => {
     try {
       // Prepare every clone before the first history/revision/state write.
-      const prepared = structuredClone({ ...map, toponyms: synchronizeToponyms(map.toponyms,
-        getToponymEntities(map.regions, map.rivers, map.hexTerrainByKey), map.toponymSeed) });
+      const prepared = structuredClone({ ...map, toponyms: reconcileNames ? synchronizeToponyms(map.toponyms,
+        getToponymEntities(map.regions, map.rivers, map.hexTerrainByKey), map.toponymSeed) : map.toponyms });
       const before = captureDocument(), after = { ...before, map: prepared };
       recordTransaction(before, after); applyExactMap(prepared); closeEditors();
       return true;
@@ -13354,13 +13354,13 @@ export function App() {
     if(mutationBlocked() || !selectedHexKey || notesSelectionRef.current !== selectedHexKey || !selectedRegion || isSelectedLake || isSelectedSea || !(biomeId in BIOMES)) return;
     if(biomeOverrideByHexKey.get(selectedHexKey)===biomeId) { closeEditors(); return; }
     const layer=new Map(biomeOverrideByHexKey); layer.set(selectedHexKey,biomeId);
-    commitManualMap({...captureMap(), biomeOverrideByHexKey:layer});
+    commitManualMap({...captureMap(), biomeOverrideByHexKey:layer}, false);
   };
   const resetSelectedHexBiomeOverride = () => {
     if(mutationBlocked() || !selectedHexKey || notesSelectionRef.current !== selectedHexKey) return;
     if(!biomeOverrideByHexKey.has(selectedHexKey)) { closeEditors(); return; }
     const layer=new Map(biomeOverrideByHexKey); layer.delete(selectedHexKey);
-    commitManualMap({...captureMap(), biomeOverrideByHexKey:layer});
+    commitManualMap({...captureMap(), biomeOverrideByHexKey:layer}, false);
   };
   const setSelectedPoiKind = (poiKind: PoiKind) => {
     if(mutationBlocked() || notesSelectionRef.current !== selectedHexKey || !editablePoiKinds.includes(poiKind) || !canEditSelectedPoi || selectedMeta?.isCenter || !selectedRegion || !selectedHex || !selectedHexKey) return;
@@ -13413,7 +13413,7 @@ export function App() {
     const biome = BIOMES[biomeId];
     commitManualMap({...captureMap(), regions: regions.map(r => r.id !== selectedRegion.id ? r : {...r,
       biomeId, biomeLabel: biome.label, biomePrimaryEmoji: biome.primaryEmoji,
-      biomeSecondaryEmojis: [...biome.secondaryEmojis], biomeEmojiLabel: biome.primaryEmoji + biome.secondaryEmojis.join('')})});
+      biomeSecondaryEmojis: [...biome.secondaryEmojis], biomeEmojiLabel: biome.primaryEmoji + biome.secondaryEmojis.join('')})}, false);
   };
   const selectedRegionRivers = selectedRegion ? getRiversForRegion(selectedRegion, rivers) : [];
   const selectedRegionRiverSectors = selectedRegion ? getRiverSectorsForRegion(selectedRegion, rivers) : [];
