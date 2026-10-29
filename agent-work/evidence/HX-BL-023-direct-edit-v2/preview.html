@@ -1,0 +1,70 @@
+<div id="hc-direct-preview" class="viz-dotted-background">
+<style>
+#hc-direct-preview{--hc-surface:light-dark(#f5f8fc,#111b2d);--hc-ink:light-dark(#17283d,#e5e9f0);--hc-line:light-dark(#c7d2e2,#30425f);--hc-mark:light-dark(#3b628a,#98badf);--hc-input:light-dark(#ffffff,#192b43);font-family:system-ui,sans-serif;padding:12px;color:var(--hc-ink);box-sizing:border-box}
+#hc-direct-preview *{box-sizing:border-box}
+#hc-direct-preview .hc-screen{max-width:660px;margin:auto;background:var(--hc-surface);border:1px solid var(--hc-line);border-radius:16px;padding:20px;font-size:16px;line-height:1.5}
+#hc-direct-preview .hc-top{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:start}
+#hc-direct-preview h3{margin:0;font-size:20px;line-height:1.5}
+#hc-direct-preview .hc-toggle{font:inherit;border:1px solid var(--hc-line);background:var(--hc-input);color:inherit;border-radius:9px;min-height:44px;padding:8px 12px}
+#hc-direct-preview .hc-row{margin:8px 0;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+#hc-direct-preview .hc-subhead{font-weight:600;margin:18px 0 2px}
+#hc-direct-preview .hc-value{display:inline-block;min-width:0;max-width:100%;vertical-align:middle}
+#hc-direct-preview .hc-value button{font:inherit;color:inherit;border:0;background:none;padding:6px 0;min-height:44px;max-width:100%;text-align:left;overflow-wrap:anywhere}
+#hc-direct-preview .hc-screen[data-editing="true"] .hc-value button{border-bottom:1px dashed var(--hc-mark)}
+#hc-direct-preview .hc-value button:disabled{color:inherit;opacity:1}
+#hc-direct-preview .hc-value input,#hc-direct-preview .hc-value select,#hc-direct-preview .hc-value textarea{font:inherit;color:inherit;background:var(--hc-input);border:1px solid var(--hc-mark);border-radius:7px;min-height:44px;padding:8px;width:100%;max-width:100%}
+#hc-direct-preview .hc-value select{min-width:160px}
+#hc-direct-preview .hc-notes{display:block;width:100%}
+#hc-direct-preview .hc-notes button{width:100%;font-weight:400}
+#hc-direct-preview .hc-error{font-size:14px;color:light-dark(#a7192e,#ffc2ca);display:block}
+#hc-direct-preview .hc-status{font-size:13px;min-height:20px;margin:12px 0 0;color:var(--hc-mark)}
+#hc-direct-preview [hidden]{display:none!important}
+@media(max-width:420px){#hc-direct-preview .hc-screen{padding:16px}#hc-direct-preview h3{font-size:18px}#hc-direct-preview .hc-top{gap:8px}}
+</style>
+<section class="hc-screen" data-editing="true" aria-label="Предложение интерфейса общего редактирования">
+  <div class="hc-top">
+    <h3>Местность <span class="hc-value" data-kind="name" data-value="Хогланд" aria-label="Название региона"><button type="button" class="cursor-interaction">Хогланд</button></span></h3>
+    <button type="button" class="hc-toggle cursor-interaction" aria-pressed="true">Готово</button>
+  </div>
+  <p class="hc-row"><span class="hc-value" data-kind="region" data-value="open_plains" aria-label="Биом региона"><button type="button" class="cursor-interaction">Открытые равнины</button></span></p>
+  <p class="hc-row">Освоенный регион</p>
+  <p class="hc-subhead">Гекс 1/−1</p>
+  <p class="hc-row">Местность: <span class="hc-value" data-kind="hex" data-value="inherit" aria-label="Местность гекса"><button type="button" class="cursor-interaction">как в регионе</button></span></p>
+  <p class="hc-row">⭐ 🏠 <span class="hc-value" data-kind="poi" data-value="village" aria-label="Тип поселения"><button type="button" class="cursor-interaction">Деревня</button></span> <strong class="hc-value" data-kind="name" data-value="Остерхаузен" aria-label="Название деревни"><button type="button" class="cursor-interaction">Остерхаузен</button></strong></p>
+  <p class="hc-subhead">Рядом</p>
+  <p class="hc-row">➡️ Река <strong class="hc-value" data-kind="name" data-value="Хартбек" aria-label="Название реки"><button type="button" class="cursor-interaction">Хартбек</button></strong></p>
+  <p class="hc-row">💧 Озеро <strong class="hc-value" data-kind="name" data-value="Брамлейк" aria-label="Название озера"><button type="button" class="cursor-interaction">Брамлейк</button></strong></p>
+  <p class="hc-subhead">Заметки мастера</p>
+  <div class="hc-value hc-notes" data-kind="notes" data-value="Под старым дубом спрятан ключ." aria-label="Заметка мастера"><button type="button" class="cursor-interaction">Под старым дубом спрятан ключ.</button></div>
+  <p class="hc-status" aria-live="polite"></p>
+</section>
+<script>
+(()=>{
+ const root=document.getElementById('hc-direct-preview'),screen=root.querySelector('.hc-screen'),toggle=root.querySelector('.hc-toggle'),status=root.querySelector('.hc-status');
+ const flat=[['plain_deciduous_forest','Равнинный лиственный лес'],['plain_mixed_forest','Равнинный смешанный лес'],['plain_coniferous_forest','Равнинный хвойный лес'],['open_plains','Открытые равнины'],['swamp_forest','Заболоченный лес'],['swamp','Болото'],['deciduous_woodland','Лиственное редколесье'],['mixed_woodland','Смешанное редколесье'],['coniferous_woodland','Хвойное редколесье'],['semi_desert','Полупустыня'],['dead_forest','Мёртвый лес'],['dead_woodland','Мёртвое редколесье']];
+ const all=[...flat,['deciduous_forested_hills','Лиственные лесистые холмы'],['mixed_forested_hills','Смешанные лесистые холмы'],['coniferous_forested_hills','Хвойные лесистые холмы'],['open_hills','Открытые холмы'],['hilly_woodland','Холмистое редколесье'],['dead_forested_hills','Мёртвый лес на холмах'],['coniferous_mountain_forest','Хвойный горный лес'],['mixed_mountain_forest','Смешанный горный лес'],['deciduous_mountain_forest','Лиственный горный лес'],['mountains','Горы'],['mountain_woodland','Горное редколесье'],['dead_mountain_forest','Мёртвый горный лес']];
+ const kinds=[['capital','Столица'],['city','Город'],['town','Городок'],['village','Деревня'],['lair','Логово'],['ruins','Руины'],['cursed_place','Проклятое место'],['holy_place','Святое место']];
+ let active=null;
+ const finish=(commit=true)=>{
+  if(!active)return true;const {field,control,button}=active;let value=control.value;
+  if(commit&&field.dataset.kind==='name'){
+   value=value.trim();if(!value||value.length>80||/[\u0000-\u001f\u007f]/.test(value)){let error=field.querySelector('.hc-error');if(!error){error=document.createElement('span');error.className='hc-error';error.setAttribute('role','alert');field.append(error)}error.textContent='Введите название от 1 до 80 символов.';control.setAttribute('aria-invalid','true');control.focus();return false}
+  }
+  if(commit){field.dataset.value=value;button.textContent=control.tagName==='SELECT'?control.selectedOptions[0].textContent:value||'Добавить заметку';status.textContent='Сохранено в примере'}
+  control.remove();field.querySelector('.hc-error')?.remove();button.hidden=false;active=null;return true;
+ };
+ root.querySelectorAll('.hc-value').forEach(field=>{
+  const button=field.querySelector('button');button.addEventListener('click',()=>{
+   if(screen.dataset.editing!=='true'||!finish())return;status.textContent='';const kind=field.dataset.kind,control=document.createElement(kind==='notes'?'textarea':['region','hex','poi'].includes(kind)?'select':'input');control.setAttribute('aria-label',field.getAttribute('aria-label'));
+   if(control.tagName==='SELECT'){const options=kind==='region'?flat:kind==='hex'?[['inherit','Как в регионе'],...all]:kinds;for(const [value,text]of options){const option=document.createElement('option');option.value=value;option.textContent=text;control.append(option)}}
+   if(control.tagName==='TEXTAREA')control.rows=3;control.value=field.dataset.value;button.hidden=true;field.append(control);active={field,control,button};control.focus();
+   control.addEventListener('change',()=>{if(control.tagName==='SELECT')finish()});
+   control.addEventListener('input',()=>{if(kind==='notes'){field.dataset.value=control.value;button.textContent=control.value||'Добавить заметку';status.textContent='Сохранено в примере'}});
+   control.addEventListener('blur',()=>{if(active?.control===control)finish()});
+   control.addEventListener('keydown',event=>{if(event.key==='Escape'){event.preventDefault();finish(false);button.focus()}else if(event.key==='Enter'&&kind!=='notes'){event.preventDefault();if(finish())button.focus()}});
+  });
+ });
+ toggle.addEventListener('click',()=>{if(!finish())return;const on=screen.dataset.editing!=='true';screen.dataset.editing=String(on);toggle.textContent=on?'Готово':'Редактировать';toggle.setAttribute('aria-pressed',String(on));root.querySelectorAll('.hc-value button').forEach(button=>button.disabled=!on);status.textContent=''});
+})();
+</script>
+</div>
