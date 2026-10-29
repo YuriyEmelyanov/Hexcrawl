@@ -13932,6 +13932,7 @@ export function App() {
       cancelNameDraft(); setNameStatus('stale'); return false;
     }
     const pair = {ru:expected.ru.trim(), en:expected.en.trim()};
+    if (pair.ru === current.ru && pair.en === current.en) { cancelNameDraft(); return true; }
     const errors: {ru?: string; en?: string; general?: string} = {};
     for (const field of ['ru','en'] as const) {
       if (!pair[field] || pair[field].length > 80 || /[\u0000-\u001f\u007f]/.test(pair[field]))
@@ -13940,7 +13941,6 @@ export function App() {
         errors[field] = language === 'ru' ? 'Такое название уже есть. Выберите другое.' : 'This name is already used. Choose another.';
     }
     if (Object.keys(errors).length) { setNameErrors(errors); return false; }
-    if (pair.ru === current.ru && pair.en === current.en) { cancelNameDraft(); return true; }
     try {
       // All potentially throwing preparation precedes revision/history/state writes.
       const map = structuredClone(captureMap());
@@ -14588,7 +14588,7 @@ export function App() {
                   <button type="button" className="secondary" onClick={cancelNameDraft}>{language === 'ru' ? 'Отменить' : 'Cancel'}</button>
                 </form>}
                 {nameDialog && <div role="dialog" aria-modal="false" aria-labelledby="name-dialog-title" className="map-names__dialog"><p id="name-dialog-title">{language === 'ru' ? 'Сохранить изменение названия перед переходом?' : 'Save the name change before leaving?'}</p>
-                  <button type="button" onClick={() => {const next=nameDialog;if(saveNameDraft(nameDraft)){setNameDialog(null);setNameTransition(next);}}}>{language === 'ru' ? 'Сохранить и перейти' : 'Save and continue'}</button>
+                  <button type="button" autoFocus onClick={() => {const next=nameDialog;if(saveNameDraft(nameDraft)){setNameDialog(null);setNameTransition(next);}}}>{language === 'ru' ? 'Сохранить и перейти' : 'Save and continue'}</button>
                   <button type="button" className="secondary" onClick={() => {const next=nameDialog;cancelNameDraft();showNameTarget(next.key,next.origin);}}>{language === 'ru' ? 'Отбросить и перейти' : 'Discard and continue'}</button>
                   <button type="button" className="secondary" onClick={() => {setNameDialog(null);nameFocusRef.current?.focus();}}>{language === 'ru' ? 'Остаться' : 'Stay'}</button>
                 </div>}

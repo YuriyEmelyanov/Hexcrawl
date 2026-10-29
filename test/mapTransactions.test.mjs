@@ -176,7 +176,12 @@ test('name editor uses one shared transaction for registry and kingdom names; di
   // App boundary, its distinct kingdom storage and delayed document handlers.
   const {h}=setup();
   const source=JSON.parse(fs.readFileSync(new URL('./fixtures/import-v2/baseline-mythic.json',import.meta.url)));
+  source.map.kingdoms[0].name.ru='x'.repeat(81); // previously valid legacy kingdom name
   await load(h,source);
+  const legacyStacks=serial([h.render().undoHistory,h.render().redoHistory]);
+  h.render().showNameTarget('kingdom:'+source.map.kingdoms[0].id);
+  assert.equal(h.render().saveNameDraft(),true,'unchanged legacy name is a no-op');
+  assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),legacyStacks);
   const targets=h.render().nameTargets;
   for(const type of ['region','settlement','river','lake','kingdom']) {
     const target=targets.find(t=>t.type===type);assert.ok(target,type+' target');
