@@ -113,7 +113,7 @@ try {
  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true,'390px no overflow');
  await button('Switch to English').click();assert.equal(await page.getByRole('textbox',{name:'Russian name',exact:true}).inputValue(),'Эринин');
  await page.screenshot({path:fileURLToPath(new URL('reports/HX-BL-023-E1/narrow-en.png',root)),fullPage:true});
- await page.setViewportSize({width:1500,height:1100});await nameForm().scrollIntoViewIfNeeded();await page.screenshot({path:fileURLToPath(new URL('reports/HX-BL-023-E1/desktop-en.png',root)),fullPage:true});
+ await page.setViewportSize({width:1500,height:1100});await page.getByRole('form',{name:'Edit map name',exact:true}).scrollIntoViewIfNeeded();await page.screenshot({path:fileURLToPath(new URL('reports/HX-BL-023-E1/desktop-en.png',root)),fullPage:true});
  await page.getByRole('button',{name:'Переключить на русский',exact:true}).click();
  await page.screenshot({path:fileURLToPath(new URL('reports/HX-BL-023-E1/desktop-ru.png',root)),fullPage:true});
  await nameForm().getByRole('button',{name:'Сохранить название',exact:true}).click();
