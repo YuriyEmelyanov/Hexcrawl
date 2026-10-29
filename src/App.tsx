@@ -13985,13 +13985,17 @@ export function App() {
   // Artwork is independent of panel selection; candidate actions always use current options.
   const mapHexClickRef = useRef<(hex: typeof positionedHexes.hexes[number]) => void>(() => {});
   mapHexClickRef.current = hex => {
-    if (mutationBlocked()) return;
+    if (documentBusy()) return;
     if (hex.kind === 'candidate') {
+      if (mutationBlocked()) return;
       trackGoal('region_add');
       if (!kingdomJob) {
         generateAt({ q: hex.q, r: hex.r });
       }
-    } else setSelectedHex({ q: hex.q, r: hex.r });
+    } else {
+      finishNotesGroup();
+      setSelectedHex({ q: hex.q, r: hex.r });
+    }
   };
   const mapMotionCanvasRef = useRef<HTMLCanvasElement>(null);
   const mapArtwork = useMemo(() => (<>

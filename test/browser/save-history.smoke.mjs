@@ -76,6 +76,19 @@ try {
    assert.equal(await button('Сбросить').isDisabled(),true);
    await page.locator('polygon.hex.candidate').first().dispatchEvent('click');
    assert.deepEqual(await snapshot(),before,'candidate cannot generate with dirty rename');
+   if(i===0) {
+     const existing=page.locator('polygon.hex[data-hex-key]:not(.candidate)');
+     const keys=await existing.evaluateAll(es=>es.map(el=>el.dataset.hexKey));
+     assert.ok(keys.length>1);
+     await select(keys[0]);
+     const firstInfo=await page.locator('#side-panel-info').innerText();
+     await select(keys[1]);
+     assert.notEqual(await page.locator('#side-panel-info').innerText(),firstInfo,'existing-hex inspection remains available with dirty rename');
+     assert.equal(await nameForm().getByRole('textbox',{name:'Русское название',exact:true}).inputValue(),ru,'browsing preserves RU draft');
+     assert.equal(await nameForm().getByRole('textbox',{name:'Английское название',exact:true}).inputValue(),en,'browsing preserves EN draft');
+     assert.deepEqual(await snapshot(),before,'browsing does not change document/RNG');
+     assert.equal(await page.locator('.controls--history button').first().isDisabled(),true,'browsing keeps history mutations blocked');
+   }
    const after=await transaction(()=>nameForm().getByRole('button',{name:'Сохранить название',exact:true}).click());
    const expected=structuredClone(before);
    if(type==='kingdom') {
