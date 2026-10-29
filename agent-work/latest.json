@@ -2,7 +2,7 @@
   "schema_version": 1,
   "date": "2026-10-29",
   "branch": "agent-operations",
-  "plan_json": "agent-work/handoffs/2026-10-29-HX-BL-023-E1-F1.json",
+  "plan_json": "agent-work/handoffs/2026-10-29-HX-BL-023-E1-review-d92ecdd.json",
   "plan_md": null,
   "strategy_branch": "main",
   "strategy_status": "approved",
@@ -29,7 +29,7 @@
   "run_id": "2026-10-29-developer-HX-BL-023-E1-F1",
   "plan_revision": 1,
   "baseline_sha": "a7a8cc58987e97c4495c405374c6a4145f3bc9ff",
-  "status": "in_progress",
+  "status": "review_ready",
   "planning_for": "2026-10-29",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-10-25",
@@ -46,25 +46,14 @@
   "schedule_frequency": "every_three_hours",
   "process_path": "agent-work/process.md",
   "current_role": "developer",
-  "next_role": "developer",
+  "next_role": "reviewer",
   "current_task_id": "HX-BL-023",
   "spec_path": "agent-work/specs/HX-BL-023.md",
   "spec_version": "2.0",
-  "result_path": "agent-work/results/2026-10-29-reviewer-HX-BL-023-E1-24fa342.json",
+  "result_path": "agent-work/results/2026-10-29-developer-HX-BL-023-E1-F1.json",
   "handoff_commit_sha": "438de4af964574b36a79d33319f20ba8a976f5b7",
-  "active_claim": {
-    "run_id": "2026-10-29-developer-HX-BL-023-E1-F1",
-    "task_id": "HX-BL-023",
-    "stage_id": "E1_names_F1",
-    "role": "developer",
-    "started_at": "2026-10-29T06:05:47.079Z",
-    "lease_expires_at": "2026-10-29T08:05:47.079Z",
-    "head_sha": "ceba2b6b8a937fda374b5817f0998c166d683a77",
-    "status": "in_progress",
-    "last_checkpoint": "F1 fix and regression exact tree in PR478; check/browser executing; negative regression saved",
-    "pr": 478
-  },
-  "next_step": "Исправить HX023-E1-F1: разрешить просмотр существующих гексов при dirty-имени без потери черновика; сохранить блокировку mutations. Передать новый точный SHA независимому reviewer.",
+  "active_claim": null,
+  "next_step": "Fresh-context reviewer independently verifies exact d92ecdd, F1 plus N01–N07 and new score_assessment1.2; prior acceptance not transferred.",
   "owner_decisions_needed": [
     {
       "task_id": "HX-BL-003",
@@ -89,10 +78,10 @@
   "evidence_path": "agent-work/evidence/HX-BL-023-E1-24fa342/report.md",
   "branch_name": "agent/hx023-e1-names",
   "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/478",
-  "head_sha": "ceba2b6b8a937fda374b5817f0998c166d683a77",
-  "checks_status": "local_Node248_browser7_and_CI_passed_but_F1_confirmed",
+  "head_sha": "d92ecdd7ca8c5b7293a4f3e2e6efde93f944c57c",
+  "checks_status": "success_final_exact_SHA_CI_check_browser_world_random",
   "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40794199705",
-  "review_verdict": "changes_requested",
+  "review_verdict": null,
   "role_selection_mode": "ready_work_priority",
   "role_selection_source": "agent-work/process.md",
   "process_decision_ref": "owner-decision-2026-10-24-dynamic-roles",
@@ -231,8 +220,8 @@
   "score_update_task_id": "HX-BL-024",
   "score_update_release_sha": "a7a8cc58987e97c4495c405374c6a4145f3bc9ff",
   "score_process_decision_ref": "owner-decision-2026-10-24-score-responsibilities",
-  "score_assessment_ref": "agent-work/evidence/review-HX-BL-023-E1-24fa342/score_assessment.json",
-  "role_selection_reason": "Priority3: confirmed reviewer HX023-E1-F1, approved bounded correction, no foreign claim.",
+  "score_assessment_ref": null,
+  "role_selection_reason": "Priority3 confirmed reviewer finding HX023-E1-F1; approved bounded correction, no foreign claim.",
   "score_update_result_ref": "agent-work/results/2026-10-28-strategist-score-HX-BL-024-a7a8cc5.json",
   "score_update_completed_at": "2026-10-28T15:08:45.525Z",
   "score_update_delta": null,
@@ -252,18 +241,18 @@
   "automation_health": {
     "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-10-29T03:06:51.395Z",
-      "status": "checked",
-      "is_enabled": true
+      "checked_at": "2026-10-29T06:05:25.007Z",
+      "is_enabled": true,
+      "status": "checked"
     },
     "end": {
-      "checked_at": "2026-10-29T03:22:30.013Z",
+      "checked_at": "2026-10-29T06:23:47.404Z",
       "status": "checked",
       "is_enabled": true
     },
     "restored_during_this_run": false,
     "errors": [],
-    "limitation": "Observed at calls only; no guarantee after run completion"
+    "limitation": "Actual start/end observations only; no guarantee after completion"
   },
   "open_findings": [
     {
@@ -285,7 +274,7 @@
       "evidence_ref": "agent-work/evidence/review-HX-BL-003-V3-58adcce/result.json"
     }
   ],
-  "current_review_score_assessment_status": "completed_insufficient_evidence_no_award",
+  "current_review_score_assessment_status": "pending_new_SHA_independent_review",
   "target_audience_research": {
     "model_version": "1.1",
     "model_max_points": 25,
@@ -598,7 +587,9 @@
     "placements_scope": "Legacy preparation-slice DW2/FL9 retained; new campaign placements in campaign_vtt_revision.placements_among_calculated"
   },
   "previous_score_assessment_ref": "agent-work/results/2026-10-25-reviewer-HX-BL-030-855cfd5.json",
-  "addressed_findings_pending_review": [],
+  "addressed_findings_pending_review": [
+    "HX023-E1-F1"
+  ],
   "verified_fixed_findings": [
     "R1",
     "R2",
@@ -641,7 +632,7 @@
     "HX003-V2-R3": "verified_fixed_source_offline_scope",
     "HX003-V2-R4": "verified_fixed_limited_source_offline_scope",
     "HX024-R1": "verified_fixed_exact_e01dcbf",
-    "HX023-E1-F1": "confirmed_P2_existing_hex_browsing_blocked_dirty_name_on24fa342"
+    "HX023-E1-F1": "addressed_by_developer_on_d92ecdd_pending_independent_review"
   },
   "previous_release_result": {
     "schema_version": 1,
@@ -760,7 +751,7 @@
   "deployment_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40699991274",
   "next_task_execution_allowed": true,
   "last_release_pr": 476,
-  "last_material_result_path": "agent-work/results/2026-10-29-reviewer-HX-BL-023-E1-24fa342.json",
+  "last_material_result_path": "agent-work/results/2026-10-29-developer-HX-BL-023-E1-F1.json",
   "last_wait_check_at": "2026-10-26T19:04:14.491Z",
   "spec_status": "revision_required_full_editor_scope",
   "previous_task_release_approval": {
@@ -827,17 +818,17 @@
   },
   "review_request": {
     "task_id": "HX-BL-023",
-    "stage_id": "E1_names",
-    "status": "completed_changes_requested",
-    "head_sha": "24fa342cfacefdf604281ac0dc414912d6726433",
+    "stage_id": "E1_names_F1",
+    "head_sha": "d92ecdd7ca8c5b7293a4f3e2e6efde93f944c57c",
+    "status": "review_ready",
     "spec_version": "2.0",
-    "result_ref": "agent-work/results/2026-10-29-reviewer-HX-BL-023-E1-24fa342.json",
-    "score_assessment_saved": true
+    "handoff_ref": "agent-work/handoffs/2026-10-29-HX-BL-023-E1-review-d92ecdd.json",
+    "score_assessment_saved": false
   },
-  "reviewed_sha": "24fa342cfacefdf604281ac0dc414912d6726433",
-  "current_review_score_assessment_ref": "agent-work/evidence/review-HX-BL-023-E1-24fa342/score_assessment.json",
+  "reviewed_sha": null,
+  "current_review_score_assessment_ref": null,
   "automatic_measurement_rerun_allowed": false,
-  "repeat_review_requires": "New exact implementation SHA after HX023-E1-F1 correction; no transfer of prior verdict",
+  "repeat_review_requires": "Fresh-context independent exact d92ecdd review, including F1 and score_assessment1.2",
   "blocked_task_handoffs": {
     "HX-BL-003": {
       "task_id": "HX-BL-003",
@@ -935,7 +926,7 @@
     "next_step": "Решить отдельно узкий cleanup AUD-02/03/04; готовую спецификацию024 не задерживать."
   },
   "owner_decisions_note": "Подтвердить предложенную адресную замену большого незавершённого historygate для003. HX-BL-024 уже утверждён, повторного согласования задачи не нужно; выпуск474 отдельно.",
-  "updated_at": "2026-10-29T03:23:16.366Z",
+  "updated_at": "2026-10-29T06:24:52.142Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
     "stage_id": "V3",
@@ -1138,36 +1129,18 @@
     },
     "HX-BL-023": {
       "task_id": "HX-BL-023",
-      "stage_id": "E1_names",
-      "status": "changes_requested",
-      "head_sha": "24fa342cfacefdf604281ac0dc414912d6726433",
+      "stage_id": "E1_names_F1",
+      "status": "review_ready",
+      "head_sha": "d92ecdd7ca8c5b7293a4f3e2e6efde93f944c57c",
       "spec_version": "2.0",
-      "handoff_ref": "agent-work/handoffs/2026-10-29-HX-BL-023-E1-F1.json",
+      "handoff_ref": "agent-work/handoffs/2026-10-29-HX-BL-023-E1-review-d92ecdd.json",
       "execution_allowed": true,
-      "next_role": "developer",
-      "role": "developer"
+      "next_role": "reviewer",
+      "role": "reviewer"
     }
   },
-  "independent_reviewer_automation_health": {
-    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
-    "start": {
-      "is_enabled": true,
-      "checked_at_utc": null,
-      "checked_before_utc": "2026-10-29T03:08:46Z",
-      "timestamp_limitation": "Exact start call clock was not separately captured; upper bound is first persisted source snapshot. Raw actual peek retained.",
-      "evidence": "automation-start-raw.json"
-    },
-    "end": {
-      "checked_at_utc": "2026-10-29 03:19:39 UTC",
-      "is_enabled": true,
-      "evidence": "automation-end-raw.json"
-    },
-    "restoration_performed": false,
-    "schedule_changed": false,
-    "errors": [],
-    "limitation": "Observed status at two calls only; not guarantee of subsequent service state."
-  },
-  "previous_reviewed_sha": "e01dcbf577558200493323f408ec2285ef4d3947",
+  "independent_reviewer_automation_health": null,
+  "previous_reviewed_sha": "24fa342cfacefdf604281ac0dc414912d6726433",
   "test_governance": {
     "decision_ref": "owner-decision-2026-10-26-test-governance",
     "feedback_id": "HX-FB-002",
@@ -1265,7 +1238,7 @@
       "src/styles.css"
     ]
   },
-  "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/478#pullrequestreview-5692465528",
+  "review_url": null,
   "coordination_handoff": {
     "status": "completed_actionable_outcome",
     "current_package_task_id": "HX-BL-003",
@@ -1325,7 +1298,7 @@
     "nav_status_success": 24,
     "png_captured": 4
   },
-  "evidence_ref": "agent-work/evidence/review-HX-BL-023-E1-24fa342/report.md",
+  "evidence_ref": "agent-work/evidence/HX-BL-023-E1-F1-d92ecdd/report.md",
   "static_diagnosis_handoff": {
     "status": "coordinated_nextstage_proposed",
     "result_ref": "agent-work/results/2026-10-27-developer-HX-BL-003-static-diagnosis.json",
@@ -1389,11 +1362,12 @@
     }
   },
   "previous_review_request": {
-    "task_id": "HX-BL-024",
-    "status": "completed_accepted",
-    "head_sha": "f2ee456d42d0b4fb49c533d6bed89f5a2ea23d49",
-    "spec_version": "1.1",
-    "result_ref": "agent-work/results/2026-10-28-reviewer-HX-BL-024-f2ee456.json",
+    "task_id": "HX-BL-023",
+    "stage_id": "E1_names",
+    "status": "completed_changes_requested",
+    "head_sha": "24fa342cfacefdf604281ac0dc414912d6726433",
+    "spec_version": "2.0",
+    "result_ref": "agent-work/results/2026-10-29-reviewer-HX-BL-023-E1-24fa342.json",
     "score_assessment_saved": true
   },
   "previous_plan": {
@@ -1428,7 +1402,7 @@
     }
   },
   "last_secondary_result_ref": "agent-work/results/2026-10-28-developer-HX-BL-024-release.json",
-  "execution_note": "HX-BL-023 E1: разрешено узкое исправление F1 и независимая проверка нового SHA; публикация не разрешена. Остальные15 возможностей утверждены, пригодные specs следующих этапов ещё нужны.003 без новых замеров/выпуска,002cleanupне разрешён.",
+  "execution_note": "F1 исправлен программистом, finalCI success. Свежая независимая проверка d92ecdd — следующий этап; публикация отдельно. Полный редактор/marketing gate ещё не готовы.",
   "completed_validation_handoffs": {
     "HX-BL-003": {
       "task_id": "HX-BL-003",
@@ -1589,7 +1563,7 @@
   "historical_unverified_weight": 70,
   "historical_score_model_version": "1.1",
   "score_update_awarded_points": 0,
-  "handoff_ref": "agent-work/handoffs/2026-10-29-HX-BL-023-E1-F1.json",
+  "handoff_ref": "agent-work/handoffs/2026-10-29-HX-BL-023-E1-review-d92ecdd.json",
   "previous_feedback_handoff": {
     "task_id": "HX-FB-001",
     "register": "agent-work/feedback.json",
@@ -1920,7 +1894,7 @@
       "errors": []
     }
   },
-  "previous_result_path": "agent-work/results/2026-10-28-developer-HX-BL-024-release-477.json",
+  "previous_result_path": "agent-work/results/2026-10-29-reviewer-HX-BL-023-E1-24fa342.json",
   "handoff_path": "agent-work/handoffs/2026-10-29-HX-BL-023-E1-review-24fa342.json",
   "ui_actual_preview": {
     "task_id": "HX-BL-024",
@@ -2036,7 +2010,7 @@
     21
   ],
   "schedule_decision_ref": "owner-decision-2026-10-28-three-hour-schedule",
-  "tree_sha": "ac623078a06c48ad718e828ffea38bc0a077afa0",
+  "tree_sha": "2e74b1aa11b571cc2a566aec67f8c805f79f4730",
   "accepted_release_pending": null,
   "next_product_proposal": {
     "task_id": "HX-BL-027",
@@ -2132,18 +2106,18 @@
     "result_ref": "agent-work/results/2026-10-28-strategist-score-HX-BL-024-a7a8cc5.json"
   },
   "previous_claim": {
-    "run_id": "2026-10-29-reviewer-HX-BL-023-E1-24fa342",
+    "run_id": "2026-10-29-developer-HX-BL-023-E1-F1",
     "task_id": "HX-BL-023",
-    "stage_id": "E1_names",
-    "role": "reviewer",
-    "started_at": "2026-10-29T03:07:27.493Z",
-    "lease_expires_at": "2026-10-29T05:07:27.493Z",
-    "head_sha": "24fa342cfacefdf604281ac0dc414912d6726433",
+    "stage_id": "E1_names_F1",
+    "role": "developer",
+    "started_at": "2026-10-29T06:05:47.079Z",
+    "lease_expires_at": "2026-10-29T08:05:47.079Z",
+    "head_sha": "d92ecdd7ca8c5b7293a4f3e2e6efde93f944c57c",
     "status": "completed",
-    "completed_at": "2026-10-29T03:22:51.532Z",
-    "result_ref": "agent-work/results/2026-10-29-reviewer-HX-BL-023-E1-24fa342.json"
+    "completed_at": "2026-10-29T06:24:10.597Z",
+    "result_ref": "agent-work/results/2026-10-29-developer-HX-BL-023-E1-F1.json"
   },
-  "active_slice": "E1_names",
+  "active_slice": "E1_names_F1",
   "last_completed_stage_task_id": "HX-BL-023",
   "ui_preview": {
     "version": "2.0",
@@ -2165,13 +2139,13 @@
   },
   "next_product_recommendation": {
     "task_id": "HX-BL-023",
-    "stage_id": "E1_names",
-    "status": "changes_requested",
+    "stage_id": "E1_names_F1",
+    "status": "review_ready",
     "execution_allowed": true,
-    "next_role": "developer",
-    "head_sha": "24fa342cfacefdf604281ac0dc414912d6726433",
-    "handoff_ref": "agent-work/handoffs/2026-10-29-HX-BL-023-E1-F1.json",
-    "reason": "Independent exact24fa342 production UI reproduced F1; bounded correction is already authorized."
+    "next_role": "reviewer",
+    "head_sha": "d92ecdd7ca8c5b7293a4f3e2e6efde93f944c57c",
+    "handoff_ref": "agent-work/handoffs/2026-10-29-HX-BL-023-E1-review-d92ecdd.json",
+    "reason": "Programmer addressed confirmed F1; exact final CI all success, fresh independent review next."
   },
   "owner_editor_scope": {
     "decision_ref": "owner-decision-2026-10-28-editor-functional-scope",
@@ -2193,10 +2167,10 @@
       "Расположение POI: Проверить перенос существующей точки; смена типа/имени не равна переносу"
     ],
     "existing_POI_editing_note": "Точки интереса уже можно менять; инвентаризировать и сохранить, не выдавать за новую возможность.",
-    "status": "E1_changes_requested_full_scope_remains",
+    "status": "E1_F1_review_ready_full_scope_remains",
     "result_ref": "agent-work/results/2026-10-28-HX-BL-023-owner-scope.json",
-    "next_role": "developer",
-    "next_step": "Исправить HX023-E1-F1: разрешить просмотр существующих гексов при dirty-имени без потери черновика; сохранить блокировку mutations. Передать новый точный SHA независимому reviewer.",
+    "next_role": "reviewer",
+    "next_step": "Fresh-context reviewer independently verifies exact d92ecdd, F1 plus N01–N07 and new score_assessment1.2; prior acceptance not transferred.",
     "obstacles_decision_ref": "owner-decision-2026-10-28-editor-obstacles",
     "omission_candidates": [
       {
@@ -2242,7 +2216,7 @@
     "spec_version": "2.0",
     "analysis_result_ref": "agent-work/results/2026-10-29-analyst-HX-BL-023-editor-v2.json",
     "capability_matrix_ref": "agent-work/evidence/HX-BL-023-editor-v2/capability-matrix.json",
-    "developer_result_ref": "agent-work/results/2026-10-29-developer-HX-BL-023-E1.json",
+    "developer_result_ref": "agent-work/results/2026-10-29-developer-HX-BL-023-E1-F1.json",
     "review_result_ref": "agent-work/results/2026-10-29-reviewer-HX-BL-023-E1-24fa342.json"
   },
   "rules_research": {
@@ -2276,20 +2250,42 @@
     }
   },
   "full_editor_ready": false,
-  "current_task_score_assessment_status": "completed_insufficient_evidence_no_award",
+  "current_task_score_assessment_status": "pending_new_SHA_independent_review",
   "published": false,
   "main_changed": false,
   "ui_actual": {
     "shown_in_existing_conversation": true,
     "shown_at": "2026-10-29T00:42:26.745Z",
     "before_desktop": "agent-work/evidence/HX-BL-023-E1-24fa342/before-desktop.png",
-    "after_desktop": "agent-work/evidence/HX-BL-023-E1-24fa342/after-desktop.png",
+    "after_desktop": "agent-work/evidence/HX-BL-023-E1-F1-d92ecdd/fixed-desktop.png",
     "after_panel": "agent-work/evidence/HX-BL-023-E1-24fa342/after-panel.png",
     "before_narrow": "agent-work/evidence/HX-BL-023-E1-24fa342/before-390.png",
-    "after_narrow": "agent-work/evidence/HX-BL-023-E1-24fa342/after-390.png",
+    "after_narrow": "agent-work/evidence/HX-BL-023-E1-F1-d92ecdd/fixed-390.png",
     "english_narrow": "agent-work/evidence/HX-BL-023-E1-24fa342/narrow-en.png",
     "saved_narrow": "agent-work/evidence/HX-BL-023-E1-24fa342/saved-390.png",
-    "proposal": false
+    "proposal": false,
+    "manifest": "agent-work/evidence/HX-BL-023-E1-F1-d92ecdd/manifest.json",
+    "head_sha": "d92ecdd7ca8c5b7293a4f3e2e6efde93f944c57c"
   },
-  "review_result_ref": "agent-work/results/2026-10-29-reviewer-HX-BL-023-E1-24fa342.json"
+  "review_result_ref": null,
+  "previous_review_score_assessment_ref": "agent-work/evidence/review-HX-BL-023-E1-24fa342/score_assessment.json",
+  "previous_independent_reviewer_automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "is_enabled": true,
+      "checked_at_utc": null,
+      "checked_before_utc": "2026-10-29T03:08:46Z",
+      "timestamp_limitation": "Exact start call clock was not separately captured; upper bound is first persisted source snapshot. Raw actual peek retained.",
+      "evidence": "automation-start-raw.json"
+    },
+    "end": {
+      "checked_at_utc": "2026-10-29 03:19:39 UTC",
+      "is_enabled": true,
+      "evidence": "automation-end-raw.json"
+    },
+    "restoration_performed": false,
+    "schedule_changed": false,
+    "errors": [],
+    "limitation": "Observed status at two calls only; not guarantee of subsequent service state."
+  }
 }
