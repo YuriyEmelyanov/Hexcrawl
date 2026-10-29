@@ -1,0 +1,88 @@
+<div id="hc-e2-preview" class="viz-dotted-background">
+  <style>
+    #hc-e2-preview{--hc-bg:light-dark(#f5f7fb,#101a2b);--hc-text:light-dark(#18263a,#e5eaf2);--hc-edge:light-dark(#c5d1e0,#304562);--hc-control:light-dark(#e8eef7,#17263c);--hc-hint:light-dark(#42536b,#b5c4d8);--hc-error:light-dark(#a21b29,#ffb5b9);font-family:system-ui,sans-serif;color:var(--hc-text);padding:12px;box-sizing:border-box}
+    #hc-e2-preview *{box-sizing:border-box}
+    #hc-e2-preview .hc-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,390px);gap:20px;align-items:start}
+    #hc-e2-preview .hc-caption{color:var(--hc-hint);margin:0 0 10px;font-size:14px}
+    #hc-e2-preview .hc-panel{background:var(--hc-bg);border:1px solid var(--hc-edge);border-radius:16px;padding:20px;min-width:0;font-size:16px;line-height:1.5}
+    #hc-e2-preview h3{font-size:20px;font-weight:600;margin:0 0 10px}
+    #hc-e2-preview p{margin:8px 0}
+    #hc-e2-preview .hc-meta{color:var(--hc-hint);font-size:14px}
+    #hc-e2-preview .hc-open{margin:8px 0 16px}
+    #hc-e2-preview button,#hc-e2-preview select{font:inherit;color:var(--hc-text);background:var(--hc-control);border:1px solid var(--hc-edge);border-radius:9px;padding:10px 12px;min-height:44px;max-width:100%}
+    #hc-e2-preview button:disabled{opacity:.55}
+    #hc-e2-preview select{width:100%;margin:6px 0 8px}
+    #hc-e2-preview .hc-form{border-top:1px solid var(--hc-edge);padding-top:16px}
+    #hc-e2-preview label{display:block;margin:9px 0}
+    #hc-e2-preview input{accent-color:#81a9e6;width:18px;height:18px;vertical-align:middle;margin:0 8px 0 0}
+    #hc-e2-preview fieldset{border:0;padding:0;margin:10px 0;min-width:0}
+    #hc-e2-preview legend{font-weight:600;padding:0;margin-bottom:4px}
+    #hc-e2-preview .hc-radio{display:flex;align-items:center;min-height:44px;margin:0}
+    #hc-e2-preview .hc-options{display:flex;gap:18px;flex-wrap:wrap}
+    #hc-e2-preview .hc-summary{border-left:3px solid var(--hc-edge);padding-left:12px;margin:16px 0}
+    #hc-e2-preview .hc-actions{display:flex;gap:10px;flex-wrap:wrap}
+    #hc-e2-preview .hc-save{font-weight:600}
+    #hc-e2-preview .hc-status{min-height:24px;color:var(--hc-hint)}
+    #hc-e2-preview .hc-error{color:var(--hc-error)}
+    #hc-e2-preview details{margin-top:16px;font-size:14px}
+    #hc-e2-preview summary{min-height:44px;display:flex;align-items:center}
+    #hc-e2-preview [hidden]{display:none!important}
+    @media(max-width:760px){#hc-e2-preview .hc-grid{grid-template-columns:minmax(0,1fr)}#hc-e2-preview .hc-panel{padding:16px}#hc-e2-preview .hc-narrow{max-width:390px}}
+  </style>
+  <div class="hc-grid">
+    <section>
+      <p class="hc-caption">Предложение E2 · широкая панель · пример 8 гексов</p>
+      <div class="hc-panel" data-hc-editor>
+        <h3>Местность Хогланд</h3>
+        <p>Гекс 1/−1 · 🌱 Открытые равнины</p>
+        <p class="hc-meta">Освоенный регион · высота 1, равнина</p>
+        <button type="button" class="hc-open cursor-interaction">Изменить местность</button>
+        <form class="hc-form">
+          <fieldset><legend>Где изменить</legend><div class="hc-options"><label class="hc-radio"><input type="radio" name="hc-wide-target" value="hex">Только гекс 1/−1</label><label class="hc-radio"><input type="radio" name="hc-wide-target" value="region" checked>Регион Хогланд</label></div></fieldset>
+          <label>Новый биом<select class="hc-biome" aria-label="Новый биом — широкая панель"></select></label>
+          <p class="hc-meta hc-height">Высота региона не изменится. Доступны биомы равнины.</p>
+          <fieldset class="hc-locals"><legend>Локальные изменения — 3 гекса</legend><label class="hc-radio"><input type="radio" name="hc-wide-policy" value="keep" checked>Сохранить</label><label class="hc-radio"><input type="radio" name="hc-wide-policy" value="clear">Снять и использовать биом региона</label></fieldset>
+          <div class="hc-summary"><strong>После применения</strong><p class="hc-impact">5 гексов изменят местность. 3 локальные правки сохранятся.</p><p class="hc-meta">Имена, заметки, дороги и вода сохранятся.</p></div>
+          <div class="hc-actions"><button type="submit" class="hc-save cursor-interaction">Применить</button><button type="button" class="hc-cancel cursor-interaction">Отмена</button></div>
+        </form>
+        <p class="hc-status" aria-live="polite"></p>
+        <details><summary>Ограничения и ошибки</summary><p>Для региона биомы другой высоты недоступны. Несовместимое соседство покажет причину до применения.</p><p class="hc-error">Карта изменилась. Откройте форму заново.</p><p class="hc-meta">При такой ошибке карта и история остаются без изменений.</p></details>
+      </div>
+    </section>
+    <section class="hc-narrow">
+      <p class="hc-caption">Предложение E2 · узкая панель, 390 px</p>
+      <div class="hc-panel" data-hc-editor>
+        <h3>Местность Хогланд</h3>
+        <p>Гекс 1/−1 · 🌱 Открытые равнины</p>
+        <p class="hc-meta">Освоенный регион · высота 1, равнина</p>
+        <button type="button" class="hc-open cursor-interaction">Изменить местность</button>
+        <form class="hc-form">
+          <fieldset><legend>Где изменить</legend><div class="hc-options"><label class="hc-radio"><input type="radio" name="hc-small-target" value="hex">Только гекс 1/−1</label><label class="hc-radio"><input type="radio" name="hc-small-target" value="region" checked>Регион Хогланд</label></div></fieldset>
+          <label>Новый биом<select class="hc-biome" aria-label="Новый биом — узкая панель"></select></label>
+          <p class="hc-meta hc-height">Высота региона не изменится. Доступны биомы равнины.</p>
+          <fieldset class="hc-locals"><legend>Локальные изменения — 3 гекса</legend><label class="hc-radio"><input type="radio" name="hc-small-policy" value="keep" checked>Сохранить</label><label class="hc-radio"><input type="radio" name="hc-small-policy" value="clear">Снять и использовать биом региона</label></fieldset>
+          <div class="hc-summary"><strong>После применения</strong><p class="hc-impact">5 гексов изменят местность. 3 локальные правки сохранятся.</p><p class="hc-meta">Имена, заметки, дороги и вода сохранятся.</p></div>
+          <div class="hc-actions"><button type="submit" class="hc-save cursor-interaction">Применить</button><button type="button" class="hc-cancel cursor-interaction">Отмена</button></div>
+        </form>
+        <p class="hc-status" aria-live="polite"></p>
+        <details><summary>Ограничения и ошибки</summary><p>Для региона биомы другой высоты недоступны. Несовместимое соседство покажет причину до применения.</p><p class="hc-error">Карта изменилась. Откройте форму заново.</p><p class="hc-meta">При такой ошибке карта и история остаются без изменений.</p></details>
+      </div>
+    </section>
+  </div>
+  <script>
+    (()=>{
+      const root=document.getElementById('hc-e2-preview');
+      const biomes=[['plain_deciduous_forest','Равнинный лиственный лес',1],['plain_mixed_forest','Равнинный смешанный лес',1],['plain_coniferous_forest','Равнинный хвойный лес',1],['deciduous_forested_hills','Лиственные лесистые холмы',2],['mixed_forested_hills','Смешанные лесистые холмы',2],['coniferous_forested_hills','Хвойные лесистые холмы',2],['open_hills','Открытые холмы',2],['coniferous_mountain_forest','Хвойный горный лес',3],['mixed_mountain_forest','Смешанный горный лес',3],['deciduous_mountain_forest','Лиственный горный лес',3],['mountains','Горы',3],['open_plains','Открытые равнины',1],['swamp_forest','Заболоченный лес',1],['swamp','Болото',1],['hilly_woodland','Холмистое редколесье',2],['mountain_woodland','Горное редколесье',3],['deciduous_woodland','Лиственное редколесье',1],['mixed_woodland','Смешанное редколесье',1],['coniferous_woodland','Хвойное редколесье',1],['semi_desert','Полупустыня',1],['dead_forest','Мёртвый лес',1],['dead_woodland','Мёртвое редколесье',1],['dead_forested_hills','Мёртвый лес на холмах',2],['dead_mountain_forest','Мёртвый горный лес',3]];
+      root.querySelectorAll('[data-hc-editor]').forEach(panel=>{
+        const form=panel.querySelector('form'),select=panel.querySelector('select'),status=panel.querySelector('.hc-status');
+        biomes.forEach(([id,label,height])=>{const o=document.createElement('option');o.value=id;o.textContent=label;o.dataset.height=height;select.append(o)});
+        select.value='plain_mixed_forest';
+        const update=()=>{const regional=form.querySelector('input[value="region"]').checked;panel.querySelector('.hc-locals').hidden=!regional;for(const o of select.options){o.disabled=regional&&o.dataset.height!=='1'}if(select.selectedOptions[0].disabled)select.value='plain_mixed_forest';panel.querySelector('.hc-height').textContent=regional?'Высота региона не изменится. Доступны биомы равнины.':'Локальная правка одного гекса. Высота региона не изменится.';const clear=form.querySelector('input[value="clear"]').checked;const noop=regional&&!clear&&select.value==='open_plains';panel.querySelector('.hc-save').disabled=noop;panel.querySelector('.hc-impact').textContent=noop?'Биом и локальные правки не изменятся.':!regional?'Изменится только гекс 1/−1. Остальной регион сохранится.':clear?'8 гексов получат биом региона. 3 локальные правки будут сняты.':'5 гексов изменят местность. 3 локальные правки сохранятся.';status.textContent=''};
+        form.addEventListener('change',update);update();
+        panel.querySelector('.hc-open').addEventListener('click',()=>{form.hidden=!form.hidden;if(!form.hidden)select.focus()});
+        panel.querySelector('.hc-cancel').addEventListener('click',()=>{form.hidden=true;status.textContent='Изменения не применены';panel.querySelector('.hc-open').focus()});
+        form.addEventListener('submit',event=>{event.preventDefault();status.textContent='Применение…';const button=panel.querySelector('.hc-save');button.disabled=true;setTimeout(()=>{status.textContent='Сохранено в примере · можно отменить';button.disabled=false},450)});
+      });
+    })();
+  </script>
+</div>
