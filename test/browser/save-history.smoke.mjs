@@ -24,7 +24,7 @@ try {
    URL.createObjectURL=function(blob){const url=make.call(this,blob);if(blob.type.startsWith('application/json'))blobs.set(url,blob.text());return url;};
    HTMLAnchorElement.prototype.click=function(){if(this.download.endsWith('.json')&&blobs.has(this.href)){blobs.get(this.href).then(text=>window.__exported=JSON.parse(text));return;}return click.call(this);};
    const clone=window.structuredClone;
-   window.structuredClone=function(value){if(window.__failPreparation&&value?.schema==='hexcrawl-map'){window.__failPreparation=false;throw Error('injected before import commit');}return clone(value);};
+   window.structuredClone=function(value){if(window.__failNamePreparation&&value?.regions&&value?.toponyms){window.__failNamePreparation=false;throw Error('injected rename preparation');}if(window.__failPreparation&&value?.schema==='hexcrawl-map'){window.__failPreparation=false;throw Error('injected before import commit');}return clone(value);};
    const read=FileReader.prototype.readAsText;
    FileReader.prototype.readAsText=function(file){
      if(window.__delayRead){window.__delayRead=false;window.__releaseRead=()=>read.call(this,file);return;}
@@ -60,6 +60,72 @@ try {
    assert.fail('No candidate could generate a region');
  }
  async function transaction(action){const before=await snapshot();await action();const after=await snapshot();assert.notDeepEqual(after,before);await button('Отменить').click();assert.deepEqual(await snapshot(),before);await button('Повторить').click();assert.deepEqual(await snapshot(),after);return after;}
+ { // HX-BL-023 E1: new UI/state boundary, reusing the same imports/snapshots/history runner.
+ await fs.mkdir(new URL('reports/HX-BL-023-E1/',root),{recursive:true});
+ const namesSection=page.getByRole('region',{name:'Названия карты',exact:true});
+ const nameForm=()=>page.getByRole('form',{name:'Изменение названия',exact:true});
+ const namesFixture=JSON.parse(await fs.readFile(new URL('../fixtures/import-v2/baseline-mythic.json',import.meta.url)));
+ await load(namesFixture);await button('Названия карты').click();
+ const openNamed=async type=>{await namesSection.getByRole('combobox',{name:'Тип объекта',exact:true}).selectOption(type);await namesSection.locator('.map-names__list button').first().click();await nameForm().waitFor();};
+ for(const [i,type] of ['region','settlement','river','lake','kingdom'].entries()) {
+   await openNamed(type);const before=await snapshot();
+   const ru=i===0?'<b>Эринин</b> 🗝':'Автор '+type,en='Author '+type;
+   await nameForm().getByRole('textbox',{name:'Русское название',exact:true}).fill(ru);
+   await nameForm().getByRole('textbox',{name:'Английское название',exact:true}).fill(en);
+   assert.deepEqual(await snapshot(),before,'draft is not exported');
+   assert.equal(await button('Сбросить').isDisabled(),true);
+   await page.locator('polygon.hex.candidate').first().dispatchEvent('click');
+   assert.deepEqual(await snapshot(),before,'candidate cannot generate with dirty rename');
+   const after=await transaction(()=>nameForm().getByRole('button',{name:'Сохранить название',exact:true}).click());
+   const expected=structuredClone(before);
+   if(type==='kingdom') {
+     const changes=after.map.kingdoms.filter((k,index)=>JSON.stringify(k.name)!==JSON.stringify(before.map.kingdoms[index].name));assert.equal(changes.length,1);
+     expected.map.kingdoms.find(k=>k.id===changes[0].id).name={ru,en};
+   } else {
+     const changes=Object.keys(after.map.toponyms.names).filter(k=>JSON.stringify(after.map.toponyms.names[k])!==JSON.stringify(before.map.toponyms.names[k]));assert.equal(changes.length,1);assert.ok(changes[0].startsWith(type+':'));
+     Object.assign(expected.map.toponyms.names[changes[0]],{ru,en});
+   }
+   assert.deepEqual(after,expected,'only name pair changes');
+ }
+ // UI validation is separate from the already covered renameToponym helper.
+ await openNamed('region');let beforeName=await snapshot();
+ const ruInput=nameForm().getByRole('textbox',{name:'Русское название',exact:true}),enInput=nameForm().getByRole('textbox',{name:'Английское название',exact:true});
+ const currentRu=await ruInput.inputValue(),currentEn=await enInput.inputValue();
+ for(const text of ['', 'x'.repeat(81)]) {
+   await ruInput.fill(text);await nameForm().getByRole('button',{name:'Сохранить название',exact:true}).click();assert.equal(await ruInput.getAttribute('aria-invalid'),'true');assert.match(await nameForm().getByRole('alert').innerText(),/80/);assert.deepEqual(await snapshot(),beforeName);
+ }
+ const other=Object.values(beforeName.map.toponyms.names).find(n=>n.ru!==currentRu);
+ await ruInput.fill(other.ru);await nameForm().getByRole('button',{name:'Сохранить название',exact:true}).click();assert.match(await nameForm().getByRole('alert').innerText(),/уже есть/);
+ await ruInput.fill('x'.repeat(80));await enInput.fill('Boundary name');await nameForm().getByRole('button',{name:'Сохранить название',exact:true}).click();
+ await button('Отменить').click();assert.deepEqual(await snapshot(),beforeName);
+ await openNamed('region');await ruInput.fill('  '+currentRu+'  ');await enInput.fill('  '+currentEn+'  ');await nameForm().getByRole('button',{name:'Сохранить название',exact:true}).click();assert.equal(await button('Повторить').isDisabled(),false,'trim no-op preserves redo');assert.deepEqual(await snapshot(),beforeName);
+ await openNamed('region');await ruInput.fill('Cancelled');await ruInput.press('Escape');assert.deepEqual(await snapshot(),beforeName);assert.equal(await button('Повторить').isDisabled(),false);
+ await openNamed('region');await ruInput.fill('Pending draft');
+ await namesSection.locator('.map-names__list button').nth(1).click();await page.getByRole('dialog').getByRole('button',{name:'Остаться',exact:true}).click();assert.equal(await ruInput.inputValue(),'Pending draft');
+ await namesSection.locator('.map-names__list button').nth(1).click();await page.getByRole('dialog').getByRole('button',{name:'Отбросить и перейти',exact:true}).click();assert.deepEqual(await snapshot(),beforeName);assert.notEqual(await ruInput.inputValue(),'Pending draft');
+ await ruInput.fill('Saved before transition');await namesSection.locator('.map-names__list button').first().click();await page.getByRole('dialog').getByRole('button',{name:'Сохранить и перейти',exact:true}).click();await nameForm().waitFor();assert.notEqual(await ruInput.inputValue(),'Saved before transition');
+ await nameForm().getByRole('button',{name:'Отменить',exact:true}).click();
+ // Preparation failure must preserve document and both history branches.
+ await openNamed('region');beforeName=await snapshot();await ruInput.fill('Fault attempt');await page.evaluate(()=>window.__failNamePreparation=true);await nameForm().getByRole('button',{name:'Сохранить название',exact:true}).click();assert.match(await nameForm().getByRole('alert').innerText(),/Карта не изменена/);assert.deepEqual(await snapshot(),beforeName);
+ await page.locator('details.export-menu').evaluate(el=>el.open=false);
+ await page.setViewportSize({width:390,height:1000});await page.screenshot({path:fileURLToPath(new URL('reports/HX-BL-023-E1/narrow-ru-error.png',root)),fullPage:true});
+ await ruInput.fill('Эринин');await enInput.fill('Erinin');await page.screenshot({path:fileURLToPath(new URL('reports/HX-BL-023-E1/narrow-ru.png',root)),fullPage:true});
+ assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true,'390px no overflow');
+ await button('Switch to English').click();assert.equal(await page.getByRole('textbox',{name:'Russian name',exact:true}).inputValue(),'Эринин');
+ await page.screenshot({path:fileURLToPath(new URL('reports/HX-BL-023-E1/narrow-en.png',root)),fullPage:true});
+ await page.setViewportSize({width:1500,height:1100});await nameForm().scrollIntoViewIfNeeded();await page.screenshot({path:fileURLToPath(new URL('reports/HX-BL-023-E1/desktop-en.png',root)),fullPage:true});
+ await page.getByRole('button',{name:'Переключить на русский',exact:true}).click();
+ await page.screenshot({path:fileURLToPath(new URL('reports/HX-BL-023-E1/desktop-ru.png',root)),fullPage:true});
+ await nameForm().getByRole('button',{name:'Сохранить название',exact:true}).click();
+ const savedNames=await snapshot();await load(savedNames);assert.deepEqual(await snapshot(),savedNames,'v4 names exact roundtrip');
+ await load(fixture);await openNamed('region');await ruInput.fill('Продолжение');await enInput.fill('Continuation');await nameForm().getByRole('button',{name:'Сохранить название',exact:true}).click();
+ const namedClassic=await snapshot();const extendedNames=await addRegion();
+ for(const [key,name] of Object.entries(namedClassic.map.toponyms.names))assert.deepEqual(extendedNames.map.toponyms.names[key],name,'continuation preserves accepted names');
+ await button('Удалить последний регион').click();assert.deepEqual((await snapshot()).map,namedClassic.map,'delete last preserves renamed old objects');
+ if(await namesSection.getByRole('button',{name:'Названия карты',exact:true}).getAttribute('aria-expanded')==='true')await button('Названия карты').click();
+ console.log('HX023 E1 real React: five entity types, shared transactions, dirty transition, fault, no-op/redo, literals, RU/EN390 and v4 roundtrip passed.');
+
+ }
  // HX-BL-024: one bounded real-React editor lifecycle, reusing import/select/export helpers.
  await fs.mkdir(new URL('reports/HX-BL-024/',root),{recursive:true});
  // UI-05 regression: a valid water-only document has no region, but must expose notes.
