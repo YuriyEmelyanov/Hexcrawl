@@ -1208,7 +1208,7 @@
       "criterion_id": "S03-C01",
       "status": "ready_for_development",
       "potential_delta": null,
-      "approval_ref": "owner-decision-2026-10-28-editor-and-MB-content-before-outreach",
+      "approval_ref": "owner-decision-2026-10-29-HX-FB-005-direct-edit-mode",
       "source": {
         "document": "previous-backlog",
         "tab": "t.2fjhoui3gxo7"
@@ -1223,14 +1223,14 @@
       "execution_allowed": true,
       "spec_status": "ready_for_development",
       "next_role": "developer",
-      "next_step": "Реализовать E2 по готовой spec E2-1.0: hex/region biome draft, keep/clear local edits, atomic history/save/focus; отдельно показать actualUI и передать exactSHA reviewer.",
+      "next_step": "Реализовать общий direct-edit mode E2-2.0: подсветка и ввод/выбор по нажатию, без форм Save/Cancel/гекс-регион; только язык UI; затем независимый exactSHA review.",
       "related_task_ids": [
         "HX-BL-013",
         "HX-BL-018",
         "HX-BL-019",
         "HX-BL-028"
       ],
-      "handoff_ref": "agent-work/handoffs/2026-10-29-HX-BL-023-E2-development.json",
+      "handoff_ref": "agent-work/handoffs/2026-10-29-HX-BL-023-direct-edit-development.json",
       "owner_priority_decision": {
         "id": "owner-decision-2026-10-28-editor-and-MB-content-before-outreach",
         "date": "2026-10-28",
@@ -1263,14 +1263,12 @@
       },
       "release_approved": false,
       "spec_ref": "agent-work/specs/HX-BL-023-E2.md",
-      "spec_version": "E2-1.0",
-      "active_slice": "E2_biomes",
+      "spec_version": "E2-2.0",
+      "active_slice": "E2_direct_edit",
       "ui_preview": {
-        "version": "E2-UI1",
-        "status": "proposal_included_in_run_final_response",
-        "ref": "agent-work/evidence/HX-BL-023-E2-spec-v1/preview.html",
-        "format": "interactive HTML; wide/narrow states",
-        "owner_view_not_assumed": true,
+        "version": "DE-UI2",
+        "ref": "agent-work/evidence/HX-BL-023-direct-edit-v2/preview.html",
+        "status": "proposal_included_in_current_final_response",
         "not_live_implementation": true
       },
       "scope_remaining": [
@@ -1440,7 +1438,7 @@
           "score_update_result_ref": "agent-work/results/2026-10-29-strategist-score-HX-BL-023-E1-8f7d172.json"
         },
         "E2_biomes": {
-          "status": "specification_completed",
+          "status": "specification_superseded_by_owner_UI_correction",
           "spec_ref": "agent-work/specs/HX-BL-023-E2.md",
           "spec_version": "E2-1.0",
           "spec_commit_sha": "cbd7d3b50c5c2373b906c4eaa9a7a8ee2ebd8982",
@@ -1448,7 +1446,17 @@
           "preview_ref": "agent-work/evidence/HX-BL-023-E2-spec-v1/preview.html",
           "preview_version": "E2-UI1",
           "product_implementation_started": false,
-          "spec_blob_sha": "1f21900da578b5d64bbf160abd44386d1d51aa39"
+          "spec_blob_sha": "1f21900da578b5d64bbf160abd44386d1d51aa39",
+          "superseded_by": "E2_direct_edit"
+        },
+        "E2_direct_edit": {
+          "status": "ready_for_development",
+          "spec_ref": "agent-work/specs/HX-BL-023-E2.md",
+          "spec_version": "E2-2.0",
+          "spec_blob_sha": "4701679e4b92e65f0fc7bd1690ffbf2c1addaf80",
+          "handoff_ref": "agent-work/handoffs/2026-10-29-HX-BL-023-direct-edit-development.json",
+          "preview_ref": "agent-work/evidence/HX-BL-023-direct-edit-v2/preview.html",
+          "owner_decision_ref": "owner-decision-2026-10-29-HX-FB-005-direct-edit-mode"
         }
       },
       "current_owner_correction_ref": "owner-decision-2026-10-28-editor-functional-scope",
@@ -1458,6 +1466,29 @@
       "score_update_status": "completed",
       "score_update_responsible": "strategist",
       "pending_ui_amendment": {
+        "feedback_id": "HX-FB-005",
+        "status": "approved_and_specified",
+        "approval_ref": "owner-decision-2026-10-29-HX-FB-005-direct-edit-mode",
+        "execution_allowed": true,
+        "included_in_stage": "E2_direct_edit",
+        "spec_ref": "agent-work/specs/HX-BL-023-E2.md",
+        "spec_version": "E2-2.0",
+        "handoff_ref": "agent-work/handoffs/2026-10-29-HX-BL-023-direct-edit-development.json",
+        "release_approved": false
+      },
+      "score_update_result_ref": "agent-work/results/2026-10-29-strategist-score-HX-BL-023-E1-8f7d172.json",
+      "last_completed_slice": "E1_release_score",
+      "product_layer": "L1",
+      "parent_spec_ref": "agent-work/specs/HX-BL-023.md",
+      "parent_spec_version": "2.3",
+      "baseline_sha": "8f7d17266c53e31428da7c0da6dbbf1afe01d035",
+      "previous_slice_review": {
+        "stage_id": "E1_UI3",
+        "head_sha": "a265a78a1f287442ec502bac9875d04d8d273060",
+        "review_ref": "agent-work/results/2026-10-29-reviewer-HX-BL-023-E1-ui3-a265a78.json",
+        "release_sha": "8f7d17266c53e31428da7c0da6dbbf1afe01d035"
+      },
+      "previous_pending_ui_amendment": {
         "feedback_id": "HX-FB-005",
         "status": "proposed",
         "title": "Единый режим редактирования вместо множества карандашей; правка только текущего языка",
@@ -1492,18 +1523,7 @@
         "required_owner_decision": "Approve bounded unified edit mode and current-language-only rename contract; no development started",
         "current_authorized_queue_preserved": true
       },
-      "score_update_result_ref": "agent-work/results/2026-10-29-strategist-score-HX-BL-023-E1-8f7d172.json",
-      "last_completed_slice": "E1_release_score",
-      "product_layer": "L1",
-      "parent_spec_ref": "agent-work/specs/HX-BL-023.md",
-      "parent_spec_version": "2.2",
-      "baseline_sha": "8f7d17266c53e31428da7c0da6dbbf1afe01d035",
-      "previous_slice_review": {
-        "stage_id": "E1_UI3",
-        "head_sha": "a265a78a1f287442ec502bac9875d04d8d273060",
-        "review_ref": "agent-work/results/2026-10-29-reviewer-HX-BL-023-E1-ui3-a265a78.json",
-        "release_sha": "8f7d17266c53e31428da7c0da6dbbf1afe01d035"
-      }
+      "spec_blob_sha": "4701679e4b92e65f0fc7bd1690ffbf2c1addaf80"
     },
     {
       "task_id": "HX-BL-024",
@@ -2668,12 +2688,12 @@
   "model_activation_ref": "owner-decision-2026-10-26-activate-score-1.2",
   "next_product_recommendation": {
     "task_id": "HX-BL-023",
-    "stage_id": "E2_biomes",
+    "stage_id": "E2_direct_edit",
     "status": "ready_for_development",
     "next_role": "developer",
     "execution_allowed": true,
-    "handoff_ref": "agent-work/handoffs/2026-10-29-HX-BL-023-E2-development.json",
-    "reason": "Approved E2 now has usable specification and shown proposal; no intermediate design gate; HX-FB-005 amendment remains separate"
+    "handoff_ref": "agent-work/handoffs/2026-10-29-HX-BL-023-direct-edit-development.json",
+    "reason": "Explicit owner rejected previous form and approved direct interaction; corrected usable spec replaces old handoff"
   },
   "previous_product_recommendation": {
     "task_id": "HX-BL-027",
