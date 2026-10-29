@@ -1,0 +1,31 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> hexcrawl-mvp@0.1.0 test:browser
+> node test/browser/generation.smoke.mjs && node test/browser/poi-display.smoke.mjs && node test/browser/terrain-color.smoke.mjs && node test/browser/forest-display.smoke.mjs && node test/browser/navigation.smoke.mjs && node test/browser/large-navigation.smoke.mjs && node test/browser/save-history.smoke.mjs
+
+{"clicks":19,"completed":[{"mode":"coast","regions":6},{"mode":"auto","regions":6},{"mode":"mainland","regions":6}],"regeneration":true,"undo":true,"jsonReload":true,"errorRecovery":true,"pageErrors":[]}
+POI display passed: 39 SVGs, six mode combinations, old save, upright rotation, PNG pixels, JSON preservation, RU/EN, 320/390px controls.
+Terrain v2: all 20 assets, stable variants, old/Mythic saves, water colours, lake/island pixels, rotation, map expansion, PNG exports passed.
+Forest display: Color only, 3/4 islands and clearings, stable growth, rotation, top grid and real PNG export passed.
+NAVIGATION_REPORT {"environment":{"browser":"153.0.8010.0","viewport":"1500x1000","headless":true,"cpuThrottling":false},"map":{"hexes":400,"mode":"color","description":"Dense forest with woodland clearings"},"optimized":{"optimized":true,"geometryUnchanged":true,"dimensionsUnchanged":true,"focalError":0,"panDistance":90,"frames":92,"frameMedianMs":16.699999999999818,"frameP95Ms":33.30000000000018,"framesOver50ms":4,"handlerMedianMs":0.10000000009313226,"handlerP95Ms":0.30000000004656613}}
+Navigation: batched wheel zoom, unchanged SVG artwork, focal point, drag, rotation, live JSON scale and PNG export passed.
+MOTION_BUFFER_PIXELS {"hexes":1200,"meanChannelDifference":0.036014,"changedPixelFraction":0.000033}
+LARGE_MAP_SAMPLE {"version":"optimized","kingdoms":3,"hexes":1200,"ablation":"normal","zoom":{"medianMs":16.69999999999891,"p95Ms":33.399999999999636,"over50":1,"n":24},"pan":{"medianMs":16.69999999999891,"p95Ms":49.943999999999505,"over50":1,"n":24},"selection":{"medianMs":30.800000000046566,"p95Ms":34.300000000046566,"over50":0,"n":4},"bufferFrames":48,"artworkUnchanged":true,"svgNodes":15217,"svgWidth":2497.6171875,"svgHeight":1778,"jsHeapMB":34.833133697509766,"taskSeconds":2.3531470000000003,"layoutCount":38}
+ROTATED_BUFFER_PIXELS {"hexes":1200,"meanChannelDifference":0.7667456666666667,"changedPixelFraction":0.000448}
+LARGE_MAP_REPORT {"browser":"153.0.8010.0","rows":[{"version":"optimized","kingdoms":3,"hexes":1200,"ablation":"normal","zoom":{"medianMs":16.69999999999891,"p95Ms":33.399999999999636,"over50":1,"n":24},"pan":{"medianMs":16.69999999999891,"p95Ms":49.943999999999505,"over50":1,"n":24},"selection":{"medianMs":30.800000000046566,"p95Ms":34.300000000046566,"over50":0,"n":4},"bufferFrames":48,"artworkUnchanged":true,"svgNodes":15217,"svgWidth":2497.6171875,"svgHeight":1778,"jsHeapMB":34.833133697509766,"taskSeconds":2.3531470000000003,"layoutCount":38}]}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+locator.scrollIntoViewIfNeeded: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for getByRole('form', { name: 'Изменение названия', exact: true })[22m
+
+    at /workspace/scratch/ff393a3eb37f/repo/test/browser/save-history.smoke.mjs:116:72 {
+  log: [
+    "  - waiting for getByRole('form', { name: 'Изменение названия', exact: true })"
+  ],
+  name: 'TimeoutError'
+}
+
+Node.js v24.22.1

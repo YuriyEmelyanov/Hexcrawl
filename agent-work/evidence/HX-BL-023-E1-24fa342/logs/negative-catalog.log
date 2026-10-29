@@ -1,0 +1,33 @@
+✖ import is one exact transaction; invalid and preparation failure preserve both stacks (363.48579ms)
+✔ all existing manual families, import, reset, and 100 exact undo/redo snapshots (5810.70845ms)
+✔ manual edits do not replace generation checkpoints, regenerate rollback retains undo and redo (374.856371ms)
+✔ pending file read serializes imports and blocks edits, generation and reset (188.188983ms)
+✔ all manifest saves round-trip unchanged entities, names and can continue then undo (3981.911806ms)
+✔ no-op and failed imports preserve redo; fresh edit clears it; reset on empty is a no-op (194.960874ms)
+✔ notes autosave coalesces a series, preserves redo on no-op, and commits before other operations (338.700288ms)
+✔ import replaces notes exactly and legacy imports clear them; malformed notes preserve full history (236.670788ms)
+✔ delete retains latest surviving notes, confirms loss, undo restores; generation conflict is rejected before commit (22314.314646ms)
+✔ name editor uses one shared transaction for registry and kingdom names; dirty and stale handlers cannot overwrite a world (2840.595125ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 9
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 37756.016941
+
+✖ failing tests:
+
+test at test/mapTransactions.test.mjs:19:1
+✖ import is one exact transaction; invalid and preparation failure preserve both stacks (363.48579ms)
+  Error: injected preparation failure
+      at file:///workspace/scratch/ff393a3eb37f/repo/test/mapTransactions.test.mjs:27:66
+      at evalmachine.<anonymous>:12240:30
+      at useMemo (file:///workspace/scratch/ff393a3eb37f/repo/test/helpers/generation-harness.mjs:52:20)
+      at Object.App (evalmachine.<anonymous>:12237:45)
+      at Object.render (file:///workspace/scratch/ff393a3eb37f/repo/test/helpers/generation-harness.mjs:77:50)
+      at load (file:///workspace/scratch/ff393a3eb37f/repo/test/mapTransactions.test.mjs:13:24)
+      at TestContext.<anonymous> (file:///workspace/scratch/ff393a3eb37f/repo/test/mapTransactions.test.mjs:28:9)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
