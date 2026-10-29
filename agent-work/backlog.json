@@ -1206,7 +1206,7 @@
       "task_id": "HX-BL-023",
       "title": "Общий режим редактирования",
       "criterion_id": "S03-C01",
-      "status": "approved",
+      "status": "ready_for_development",
       "potential_delta": null,
       "approval_ref": "owner-decision-2026-10-28-editor-and-MB-content-before-outreach",
       "source": {
@@ -1217,20 +1217,20 @@
         "Пригодная спецификация среза; не реализовывать весь перечень без определения поведения/инвариантов."
       ],
       "baseline_finding": "Панель ручных правок существует; общий безопасный режим не завершён.",
-      "evidence_ref": "agent-work/evidence/HX-BL-023-E1-ui3-a265a78/report.md",
+      "evidence_ref": "agent-work/evidence/HX-BL-023-E2-spec-v1/source-audit.md",
       "previous_status": "ready_for_development",
       "recommended_priority": 1,
       "execution_allowed": true,
-      "spec_status": "E1_published_E2_ready_for_specification",
-      "next_role": "business_analyst",
-      "next_step": "Подготовить E2 spec биома гекса/региона, overrides и совместимости; показать desktop/390. HX-FB-005 остаётся proposed, не блокирует разрешённый анализ E2.",
+      "spec_status": "ready_for_development",
+      "next_role": "developer",
+      "next_step": "Реализовать E2 по готовой spec E2-1.0: hex/region biome draft, keep/clear local edits, atomic history/save/focus; отдельно показать actualUI и передать exactSHA reviewer.",
       "related_task_ids": [
         "HX-BL-013",
         "HX-BL-018",
         "HX-BL-019",
         "HX-BL-028"
       ],
-      "handoff_ref": "agent-work/handoffs/2026-10-29-HX-BL-023-E2-analysis.json",
+      "handoff_ref": "agent-work/handoffs/2026-10-29-HX-BL-023-E2-development.json",
       "owner_priority_decision": {
         "id": "owner-decision-2026-10-28-editor-and-MB-content-before-outreach",
         "date": "2026-10-28",
@@ -1262,18 +1262,15 @@
         "underlay027_still_deferred": true
       },
       "release_approved": false,
-      "spec_ref": "agent-work/specs/HX-BL-023.md",
-      "spec_version": "2.1",
+      "spec_ref": "agent-work/specs/HX-BL-023-E2.md",
+      "spec_version": "E2-1.0",
       "active_slice": "E2_biomes",
       "ui_preview": {
-        "version": "2.0",
-        "status": "shown_proposal_not_implementation",
-        "shown_at": "2026-10-28T21:13:54.509Z",
-        "channel": "existing task conversation",
-        "desktop": "agent-work/evidence/HX-BL-023-editor-v2/desktop.png",
-        "narrow": "agent-work/evidence/HX-BL-023-editor-v2/narrow.png",
-        "states": "agent-work/evidence/HX-BL-023-editor-v2/states.png",
-        "source_format": "SVG with embedded prior exact-main screenshot; vector control proposal",
+        "version": "E2-UI1",
+        "status": "proposal_included_in_run_final_response",
+        "ref": "agent-work/evidence/HX-BL-023-E2-spec-v1/preview.html",
+        "format": "interactive HTML; wide/narrow states",
+        "owner_view_not_assumed": true,
         "not_live_implementation": true
       },
       "scope_remaining": [
@@ -1287,17 +1284,21 @@
       ],
       "marketing_gate_status": "not_passed_full023_remains",
       "score_forecast": {
-        "model_version": "1.2",
+        "path": "agent-work/score/current-score.json",
+        "blob_sha": "656aadf7ae1acdd84fe36c6271c427751376bbf1",
         "criterion_ids": [
-          "S02-C02",
+          "S01-C05",
+          "S03-C01",
           "S03-C05",
           "S04-C04",
           "S09-C04"
         ],
-        "before_grade": null,
-        "after_grade": null,
+        "grade": null,
+        "points": null,
+        "expected_after_grade": null,
         "delta": null,
-        "status": "unknown_no_award"
+        "status": "unknown",
+        "evidence_plan": "Per-criterion AC mapping in spec section7; exact-SHA independent assessment mandatory, no automatic awards"
       },
       "owner_scope_decision_ref": "owner-decision-2026-10-28-editor-functional-scope",
       "owner_requested_capabilities": [
@@ -1366,11 +1367,11 @@
       "capability_matrix_ref": "agent-work/evidence/HX-BL-023-editor-v2/capability-matrix.json",
       "analyst_result_ref": "agent-work/results/2026-10-29-analyst-HX-BL-023-editor-v2.json",
       "analyst_handoff_ref": "agent-work/handoffs/2026-10-29-HX-BL-023-E1-names.json",
-      "owner_role": "reviewer",
-      "branch": "agent/hx023-e1-names",
-      "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/478",
+      "owner_role": "developer",
+      "branch": null,
+      "pr": null,
       "base_sha": "a7a8cc58987e97c4495c405374c6a4145f3bc9ff",
-      "head_sha": "a265a78a1f287442ec502bac9875d04d8d273060",
+      "head_sha": null,
       "checks_status": "passed_exact_final_CI",
       "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40858783650",
       "review_verdict": "accepted",
@@ -1437,10 +1438,20 @@
           "result_ref": "agent-work/results/2026-10-29-developer-release-HX-BL-023-E1-a265a78.json",
           "score_update_status": "completed",
           "score_update_result_ref": "agent-work/results/2026-10-29-strategist-score-HX-BL-023-E1-8f7d172.json"
+        },
+        "E2_biomes": {
+          "status": "specification_completed",
+          "spec_ref": "agent-work/specs/HX-BL-023-E2.md",
+          "spec_version": "E2-1.0",
+          "spec_commit_sha": "4ef715221f7e9da51dbb3703bfbf654b841d8fbb",
+          "handoff_ref": "agent-work/handoffs/2026-10-29-HX-BL-023-E2-development.json",
+          "preview_ref": "agent-work/evidence/HX-BL-023-E2-spec-v1/preview.html",
+          "preview_version": "E2-UI1",
+          "product_implementation_started": false
         }
       },
-      "current_owner_correction_ref": "owner-decision-2026-10-29-HX-BL-023-find-object-placement",
-      "feedback_id": "HX-FB-004",
+      "current_owner_correction_ref": "owner-decision-2026-10-28-editor-functional-scope",
+      "feedback_id": "HX-FB-005",
       "release_sha": "8f7d17266c53e31428da7c0da6dbbf1afe01d035",
       "release_result_ref": "agent-work/results/2026-10-29-developer-release-HX-BL-023-E1-a265a78.json",
       "score_update_status": "completed",
@@ -1482,7 +1493,10 @@
       },
       "score_update_result_ref": "agent-work/results/2026-10-29-strategist-score-HX-BL-023-E1-8f7d172.json",
       "last_completed_slice": "E1_release_score",
-      "product_layer": "L1"
+      "product_layer": "L1",
+      "parent_spec_ref": "agent-work/specs/HX-BL-023.md",
+      "parent_spec_version": "2.2",
+      "baseline_sha": "8f7d17266c53e31428da7c0da6dbbf1afe01d035"
     },
     {
       "task_id": "HX-BL-024",
@@ -2648,13 +2662,11 @@
   "next_product_recommendation": {
     "task_id": "HX-BL-023",
     "stage_id": "E2_biomes",
-    "status": "ready_for_specification",
-    "next_role": "business_analyst",
+    "status": "ready_for_development",
+    "next_role": "developer",
     "execution_allowed": true,
-    "handoff_ref": "agent-work/handoffs/2026-10-29-HX-BL-023-E2-analysis.json",
-    "reason": "Next approved L1 editor slice: deliberate biome changes at hex/region scale, preserving map data; before MB041 and future L2/L3. No duplicate feature task needed.",
-    "score_effect": "unknown",
-    "required_owner_approval": "No new task-start approval for E2; HX-FB-005 separate proposal remains pending"
+    "handoff_ref": "agent-work/handoffs/2026-10-29-HX-BL-023-E2-development.json",
+    "reason": "Approved E2 now has usable specification and shown proposal; no intermediate design gate; HX-FB-005 amendment remains separate"
   },
   "previous_product_recommendation": {
     "task_id": "HX-BL-027",
