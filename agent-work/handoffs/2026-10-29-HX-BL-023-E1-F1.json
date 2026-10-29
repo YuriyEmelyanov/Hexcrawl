@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-29",
+  "task_id": "HX-BL-023",
+  "stage_id": "E1_names",
+  "finding_id": "HX023-E1-F1",
+  "role": "developer",
+  "status": "ready_for_correction",
+  "execution_allowed": true,
+  "authorization": "Existing approved HX-BL-023 E1 scope; no new task or owner gate needed for this correction",
+  "head_sha": "24fa342cfacefdf604281ac0dc414912d6726433",
+  "base_sha": "a7a8cc58987e97c4495c405374c6a4145f3bc9ff",
+  "branch": "agent/hx023-e1-names",
+  "pr": 478,
+  "spec_ref": "agent-work/specs/HX-BL-023.md",
+  "spec_version": "2.0",
+  "evidence_ref": "agent-work/evidence/review-HX-BL-023-E1-24fa342/report.md",
+  "confirmed_defect": {
+    "severity": "P2",
+    "requirement": "E1 form behavior5: navigation and browsing available while dirty draft blocks document mutations",
+    "source": "src/App.tsx mapHexClickRef lines13987–13995 and mutationBlocked lines12815–12819",
+    "reproduction": [
+      "Import baseline-mythic v2 fixture; select existing hex3,6",
+      "Open names catalog, choose object, change RU without saving",
+      "Click existing hex2,6: info remains3/6",
+      "Escape cancel then same click: info changes2/6"
+    ],
+    "not_proven": "No data loss or history corruption observed in this scenario"
+  },
+  "scope": [
+    "Allow nonmutating existing-hex selection and inspection while keeping pending paired-name draft",
+    "Keep candidate generation, import/reset/seed/mode/POI/notes/Undo/Redo and other document mutations guarded",
+    "Preserve stale-revision protection, Save/Discard/Stay, focus and one-save shared transaction",
+    "Reuse/extend existing boundary/browser regression near dirty candidate-click check; no new general suite"
+  ],
+  "completion_criteria": [
+    "Real production UI selects another existing hex with dirty draft and can inspect it without losing draft",
+    "Candidate clicks and document-changing callbacks remain refused while draft dirty",
+    "Save/Discard/Stay and Cancel still correct; no document/history/RNG changes caused by browsing",
+    "Node24 npm run check and required browser suite pass on final exact SHA, with negative repro retained",
+    "Updated PR exact SHA, test_change_summary, UI/evidence handed to fresh independent reviewer"
+  ],
+  "next_role_after_fix": "reviewer",
+  "release_approved": false,
+  "publish_allowed": false,
+  "full_editor_ready": false
+}
