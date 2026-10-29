@@ -21,3 +21,7 @@ Base исправления: `24fa342cfacefdf604281ac0dc414912d6726433`; PR base
 Score1.2: S02-C02 — прежние ID/данные остаются; S03-C05 — просмотр не добавляет историю, mutations заблокированы; S04-C04 — экспорт меняет только документированный выбор; S09-C04 — busy/dirty guards разделены по операции. Это evidence программиста точного runtime; unknown before/after, deltaunknown,0award. Reviewer обязан заново записать independent score_assessment наd92ecdd; предыдущее заключение24fa342 не переносится. Продуктовую оценку/current-score не меняли.
 
 Фактический UI показан владельцу в существующем чате desktop/390, источник после финальной сборки сохранён; внешний вид контролов не перестраивался. Полный023, остальные15функций и marketing gate остаются незавершёнными. Публикации/mainизменений не было. Следующий этап — свежий независимый reviewer exactd92ecdd, не продолжение других редакторов в этой передаче.
+
+
+## Итог exact-SHA CI
+CI40827716186 наd92ecdd: check/browser/world-random — success. ci-check.log подтверждает248/248,0fail/0skipped; ci-provenance.json содержит rawrun/jobs и syntheticmerge e9ddf788, tree2e74b1a совпадает с кандидатом. Это полная конечная provenance, отдельно от ограничения локального прогона.
