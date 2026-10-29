@@ -1,0 +1,90 @@
+{
+  "head_sha": "d92ecdd7ca8c5b7293a4f3e2e6efde93f944c57c",
+  "count_method": "git diff exact bases; count top-level test() declarations by test source; browser lifecycle blocks reviewed manually, not asserted case totals",
+  "comparisons": [
+    {
+      "base_sha": "24fa342cfacefdf604281ac0dc414912d6726433",
+      "head_sha": "d92ecdd7ca8c5b7293a4f3e2e6efde93f944c57c",
+      "node": {
+        "added": 0,
+        "removed": 0,
+        "modified": 0
+      },
+      "browser": {
+        "new_scripts": 0,
+        "removed_scripts": 0,
+        "E1_lifecycle_blocks_added": 0,
+        "E1_lifecycle_blocks_modified": 1,
+        "assertion_cases": null
+      },
+      "files": [
+        "M\ttest/browser/save-history.smoke.mjs"
+      ],
+      "scenario_risk": "F1 existing-hex view while dirty, draft retention, selectedHex-only export, candidate/history blocked",
+      "reuse_or_new_reason": "Extend existing E1 lifecycle with opposite branch to candidate guard; reuse setup/import/export/history helpers; no new runner."
+    },
+    {
+      "base_sha": "a7a8cc58987e97c4495c405374c6a4145f3bc9ff",
+      "head_sha": "d92ecdd7ca8c5b7293a4f3e2e6efde93f944c57c",
+      "node": {
+        "added": 1,
+        "removed": 0,
+        "modified": 0
+      },
+      "browser": {
+        "new_scripts": 0,
+        "removed_scripts": 0,
+        "E1_lifecycle_blocks_added": 1,
+        "E1_lifecycle_blocks_modified": 0,
+        "assertion_cases": null
+      },
+      "files": [
+        "M\ttest/browser/save-history.smoke.mjs",
+        "M\ttest/helpers/generation-harness.mjs",
+        "M\ttest/mapTransactions.test.mjs"
+      ],
+      "scenario_risk": "Actual App name-edit integration: registry+kingdom storage, paired RU/EN shared history, dirty/stale/fault atomicity, real React errors/focus/export/language, plus F1 opposite-click regression.",
+      "reuse_or_new_reason": "Extend existing E1 lifecycle with opposite branch to candidate guard; reuse setup/import/export/history helpers; no new runner."
+    }
+  ],
+  "temporary_diagnostics": {
+    "permanent_growth": 0,
+    "scripts": [
+      "ui-probe.mjs",
+      "guard-probe.mjs",
+      "coverage-probe.mjs",
+      "validation-probe.mjs",
+      "save-history-header-diagnostic.mjs"
+    ],
+    "scope": "isolated review evidence; logical assertion total not advertised"
+  },
+  "execution": {
+    "node": {
+      "runner": "npm test / node --test test/*.test.mjs",
+      "executed": 248,
+      "passed": 248,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0
+    },
+    "browser": {
+      "runner": "npm run test:browser / test/browser/*.smoke.mjs listed in package.json",
+      "scripts": 7,
+      "passed_scripts": 6,
+      "logical_cases": null,
+      "status": "six_unchanged_passed_save_history_official_failed_confirmed_header_precondition",
+      "official_failed_script": "test/browser/save-history.smoke.mjs",
+      "official_failed_attempts": 2,
+      "generation_failed_first_attempt": true,
+      "generation_unchanged_repeat_passed": true,
+      "diagnostic_save_history_passed": true,
+      "diagnostic_is_official_unchanged_pass": false
+    },
+    "temporary_diagnostics": {
+      "runner": "node isolated *.mjs / production Playwright or copied App harness",
+      "scripts": 5,
+      "passed_scripts": 5,
+      "logical_assertions": null
+    }
+  }
+}

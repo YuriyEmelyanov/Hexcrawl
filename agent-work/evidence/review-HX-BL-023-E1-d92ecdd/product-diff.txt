@@ -1,0 +1,395 @@
+diff --git a/docs/editor-names.md b/docs/editor-names.md
+new file mode 100644
+index 0000000..32f1553
+--- /dev/null
++++ b/docs/editor-names.md
+@@ -0,0 +1,15 @@
++# Редактор названий карты — HX-BL-023 E1
++
++Реализация первого этапа утверждённого редактора по [операционной спецификации2.0](https://github.com/YuriyEmelyanov/Hexcrawl/blob/agent-operations/agent-work/specs/HX-BL-023.md). Это не полный редактор географии. Массовая смена биомов не входит вE1.
++
++«Названия карты» открывает каталог всех живых регионов, именованных поселений, рек, озёр и королевств. Поиск учитывает обе языковые формы; тип и координаты различают объекты. Кнопка рядом с именем в информационной панели открывает тот же редактор. На пустой карте показано отсутствие именованных объектов; произвольные/устаревшие ключи импортированного реестра не образуют фиктивные сущности.
++
++В форме одновременно редактируются русское и английское имя. «Сохранить название» применяет пару одной операцией общей истории; «Отменить» или Escape отменяет только черновик. При переходе с изменёнными полями можно сохранить, отбросить или остаться. Переключение языка интерфейса не стирает введённое. После закрытия фокус возвращается к инициатору.
++
++Оба поля — обычный текст, без интерпретацииHTML. Внешние пробелы снимаются, допускается1–80 UTF-16единиц послеtrim, безC0/DEL. Топонимы сохраняют существующую уникальность каждого языкового имени (без учёта регистра/внешних пробелов). Королевства имеют отдельные пары имён и не получают нового требования глобальной уникальности. Поля kind/model/revision, ключи, идентификаторы и геометрия не изменяются.
++
++Неприменённое имя не записывается в карту, историю,JSON илиPNG. Экспорт и навигация, включая выбор другого существующего гекса для просмотра без потери черновика, остаются доступны; прочие изменения документа при изменённом черновике блокируются реальными обработчиками. Устаревшая форма после замены документа отказывается писать в новый мир; повторное быстрое сохранение не создаёт второй транзакции. No-op послеtrim и отмена сохраняют redo. Ошибка подготовки сообщается явно и не меняет документ/историю. Вход завершает текущую группу заметок без потери последнего символа; контракт автосохранения заметок не меняется.
++
++Формат не меняется: чтениеv2/v3/v4, экспортv4 в прежние поля map.toponyms.names и kingdoms[].name. Сохранённое имя живой сущности сохраняется при загрузке и расширении; перегенерация самой сущности не становится автоматически защищённой операцией. Имена по-прежнему видны в информации/каталоге, без новых подписей на карте иPNG. Названия пока неименованных POI/дорог/морей/маркеров и перенос сущностей относятся к следующим этапам023.
++
++Проверки: существующие helper-unit cases в test/toponyms.test.mjs переиспользованы. Один новый logical Nodecase в mapTransactions.test.mjs защищает реальную границу App: registry/kingdom storage, общую историю, dirty/stale/fault. Один ограниченный блок в browser/save-history.smoke.mjs проверяет реальныйReactUI, пять типов, ошибки поля, dirty-переходы, экспорт черновика, no-op/redo, RU/EN390 и roundtrip. Второй корпус mixed100/runner не создаётся. Результаты конкретногоSHA и ограничение независимости — в операционной передаче; код программиста ещё требует независимогоreview.
+diff --git a/src/App.tsx b/src/App.tsx
+index 01b4f7d..c25478a 100644
+--- a/src/App.tsx
++++ b/src/App.tsx
+@@ -25,7 +25,7 @@ import { chooseRiverCrossingKind, type RiverCrossingKind } from './riverCrossing
+ import { hasRiverRapids } from './riverRapids';
+ import { hasRiverWaterfall } from './riverWaterfalls';
+ import { getOnlyOutgoingRiversPreferredHeight } from './biomeHeight';
+-import { DEFAULT_TOPONYM_MODEL, isToponymRegistry, synchronizeToponyms, type ToponymEntity, type ToponymRegistry, type ToponymModelId, type ToponymKind } from './toponyms';
++import { DEFAULT_TOPONYM_MODEL, isToponymRegistry, renameToponym, synchronizeToponyms, type ToponymEntity, type ToponymRegistry, type ToponymModelId, type ToponymKind } from './toponyms';
+ 
+ const generationLog = createGenerationLogger(typeof window !== 'undefined' ? window.location?.search : '');
+ 
+@@ -11333,6 +11333,32 @@ export function App() {
+   const [genLandType, setGenLandType] = useState<'auto' | BiomeLandType>('auto');
+   const [genBiome, setGenBiome] = useState<'auto' | BiomeId>('auto');
+   const [genCoastal, setGenCoastal] = useState<'auto' | CoastalPreference>('mainland');
++  // Rename drafts are UI-only: the shared document/history changes on Save.
++  type NameTarget = { key: string; type: 'region' | 'settlement' | 'river' | 'lake' | 'kingdom'; ru: string; en: string; location: string };
++  type NameDraft = { target: NameTarget; revision: number; ru: string; en: string };
++  const [nameDraft, setNameDraft] = useState<NameDraft | null>(null);
++  const nameDraftRef = useRef(nameDraft); nameDraftRef.current = nameDraft;
++  const [namesOpen, setNamesOpen] = useState(false);
++  const [nameQuery, setNameQuery] = useState('');
++  const [nameType, setNameType] = useState('all');
++  const [nameErrors, setNameErrors] = useState<{ru?: string; en?: string; general?: string}>({});
++  const [nameStatus, setNameStatus] = useState<'saved' | 'stale' | null>(null);
++  const [nameDialog, setNameDialog] = useState<{key: string | null; origin?: HTMLElement} | null>(null);
++  const [nameTransition, setNameTransition] = useState<{key: string | null; origin?: HTMLElement} | null>(null);
++  const nameFocusRef = useRef<HTMLInputElement | null>(null);
++  const nameReturnFocusRef = useRef<HTMLElement | null>(null);
++  const dirtyNameDraft = () => {
++    const draft = nameDraftRef.current;
++    return !!draft && (draft.ru !== draft.target.ru || draft.en !== draft.target.en);
++  };
++  const nameDirty = dirtyNameDraft();
++  useEffect(() => { nameFocusRef.current?.focus(); }, [nameDraft?.target.key]);
++  useEffect(() => {
++    if (nameDraftRef.current && nameDraftRef.current.revision !== documentRevision.current) {
++      nameDraftRef.current = null; setNameDraft(null); setNameDialog(null); setNameErrors({}); setNameStatus('stale');
++    }
++  }, [renderedDocumentRevision]);
++
+   // Уведомление пользователю (например, почему не создалось побережье).
+   const [generationError, setGenerationError] = useState<GenerationDiagnostic | null>(null);
+   const captureGenerationInputs = () => ({ sizeCategory: genSizeCategory, landType: genLandType, biome: genBiome, coastal: genCoastal, mode: generationMode });
+@@ -12755,8 +12781,8 @@ export function App() {
+     setEditingHexBiomeKey(null); setEditingPoiHexKey(null); setEditingCentralPoiRegionId(null);
+   };
+   const recordTransaction = (before: DocumentSnapshot, after: DocumentSnapshot) => {
+-    documentRevision.current++;
+     const transaction = { before: copyDocument(before), after: copyDocument(after) };
++    documentRevision.current++;
+     setUndoHistory(current => [...current, transaction].slice(-100));
+     setRedoHistory([]);
+   };
+@@ -12787,14 +12813,14 @@ export function App() {
+   const documentBusy = () => documentRevision.current !== renderedDocumentRevision
+     || importInFlight.current || kingdomInFlight.current || !!kingdomJob || !!pendingRegen;
+   const mutationBlocked = (finishGroup = true) => {
+-    if (documentBusy()) return true;
++    if (documentBusy() || dirtyNameDraft()) return true;
+     if (finishGroup) finishNotesGroup();
+     return false;
+   };
+   // Every input is already part of the document. Only history entries coalesce;
+   // no timer may later write a pending value into another hex or imported world.
+   const changeNotesText = (key: string, text: string) => {
+-    if (documentBusy() || notesSelectionRef.current !== key
++    if (documentBusy() || dirtyNameDraft() || notesSelectionRef.current !== key
+       || (!hexTerrainByKey.has(key) && !regions.some(r => r.hexes.some(h => hexKey(h) === key)))) return;
+     if (text === (notesMapRef.current[key] ?? '')) return;
+     if (notesGroupRef.current?.key !== key) finishNotesGroup();
+@@ -13773,7 +13799,8 @@ export function App() {
+   });
+ 
+   const handleExportPng = async () => {
+-    if (mutationBlocked() || !renderDetails) return;
++    if (documentBusy() || !renderDetails) return;
++    finishNotesGroup();
+     if (!mapSvgRef.current) return;
+     try {
+       await exportSvgToPng(mapSvgRef.current, `${EXPORT_FILE_PREFIX}-${getTimestampForFilename()}.png`);
+@@ -13785,7 +13812,8 @@ export function App() {
+   };
+ 
+   const handleExportJson = () => {
+-    if(mutationBlocked())return;
++    if(documentBusy())return;
++    finishNotesGroup();
+     const saveData = createSaveData();
+     const blob = new Blob([JSON.stringify(saveData, null, 2)], { type: 'application/json;charset=utf-8' });
+     downloadBlob(blob, `${EXPORT_FILE_PREFIX}-${getTimestampForFilename()}.json`);
+@@ -13841,9 +13869,106 @@ export function App() {
+     } finally { importInFlight.current=false; setIsImporting(false); }
+   };
+ 
++  const nameTypeLabels = language === 'ru'
++    ? {region:'Регион', settlement:'Поселение', river:'Река', lake:'Озеро', kingdom:'Королевство'}
++    : {region:'Region', settlement:'Settlement', river:'River', lake:'Lake', kingdom:'Kingdom'};
++  const nameCatalog = useMemo((): {targets: NameTarget[]; unavailable: boolean} => {
++    const coord = (h?: AxialHex) => h ? `${h.q}/${h.r}` : '';
++    const targets: NameTarget[] = [];
++    let entities: ToponymEntity[];
++    try { entities = getToponymEntities(regions, rivers, hexTerrainByKey); }
++    catch { return {targets:[], unavailable:true}; }
++    for (const entity of entities) {
++      const name = toponyms[entity.key]; if (!name) continue;
++      const [type, id, hex] = entity.key.split(':');
++      const region = regions.find(r => r.id === Number(id));
++      const location = type === 'settlement' ? hex.replace(',', '/')
++        : type === 'region' ? coord(region?.centerHex)
++        : type === 'river' ? coord(regions.find(r => r.id === rivers.find(river => river.id === Number(id))?.regionId)?.centerHex)
++        : Array.from(hexTerrainByKey).find(([, t]) => t.terrainOverride === 'lake' && t.lakeId === Number(id))?.[0].replace(',', '/') ?? '';
++      targets.push({key:entity.key, type:type as NameTarget['type'], ru:name.ru, en:name.en, location});
++    }
++    for (const kingdom of kingdoms) targets.push({key:`kingdom:${kingdom.id}`,type:'kingdom',...kingdom.name,location:coord(kingdom.anchor)});
++    return {targets, unavailable:false};
++  }, [regions, rivers, hexTerrainByKey, toponyms, kingdoms]);
++  const nameTargets = nameCatalog.targets;
++  const setLiveNameDraft = (draft: NameDraft | null) => { nameDraftRef.current = draft; setNameDraft(draft); };
++  const restoreNameFocus = () => {
++    const origin = nameReturnFocusRef.current;
++    setTimeout(() => { if (origin?.isConnected) origin.focus(); }, 0);
++  };
++  const showNameTarget = (key: string | null, origin?: HTMLElement) => {
++    setNameDialog(null); setNameErrors({}); setNameStatus(null);
++    if (key === null) { setLiveNameDraft(null); setNamesOpen(false); restoreNameFocus(); return; }
++    if (documentBusy()) return;
++    const target = nameTargets.find(t => t.key === key);
++    if (!target) { setNameStatus('stale'); return; }
++    finishNotesGroup(); clearNotesDraft(); closeEditors();
++    nameReturnFocusRef.current = origin ?? null;
++    setNamesOpen(true);
++    setLiveNameDraft({target:{...target}, revision:documentRevision.current, ru:target.ru, en:target.en});
++  };
++  const requestNameTarget = (key: string | null, origin?: HTMLElement) => {
++    if (documentBusy()) return;
++    if (key === nameDraftRef.current?.target.key) return;
++    if (dirtyNameDraft()) { setNameDialog({key, origin}); return; }
++    showNameTarget(key, origin);
++  };
++  const changeNameDraft = (field: 'ru' | 'en', value: string, expected: NameDraft) => {
++    if (nameDraftRef.current !== expected || expected.revision !== documentRevision.current || documentBusy()) return;
++    setLiveNameDraft({...expected, [field]:value}); setNameErrors({}); setNameStatus(null);
++  };
++  const cancelNameDraft = () => {
++    setLiveNameDraft(null); setNameDialog(null); setNameErrors({}); restoreNameFocus();
++  };
++  const saveNameDraft = (expected = nameDraft): boolean => {
++    if (!expected || nameDraftRef.current !== expected) return false;
++    if (documentBusy() || expected.revision !== documentRevision.current) {
++      if (expected.revision !== documentRevision.current) { cancelNameDraft(); setNameStatus('stale'); }
++      return false;
++    }
++    const current = nameTargets.find(t => t.key === expected.target.key);
++    if (!current || current.ru !== expected.target.ru || current.en !== expected.target.en) {
++      cancelNameDraft(); setNameStatus('stale'); return false;
++    }
++    const pair = {ru:expected.ru.trim(), en:expected.en.trim()};
++    if (pair.ru === current.ru && pair.en === current.en) { cancelNameDraft(); return true; }
++    const errors: {ru?: string; en?: string; general?: string} = {};
++    for (const field of ['ru','en'] as const) {
++      if (!pair[field] || pair[field].length > 80 || /[\u0000-\u001f\u007f]/.test(pair[field]))
++        errors[field] = language === 'ru' ? 'От 1 до 80 символов, одна строка без управляющих знаков.' : 'Use 1–80 characters on one line, without control characters.';
++      else if (current.type !== 'kingdom' && Object.entries(toponyms).some(([key, n]) => key !== current.key && n[field].trim().toLocaleLowerCase() === pair[field].toLocaleLowerCase()))
++        errors[field] = language === 'ru' ? 'Такое название уже есть. Выберите другое.' : 'This name is already used. Choose another.';
++    }
++    if (Object.keys(errors).length) { setNameErrors(errors); return false; }
++    try {
++      // All potentially throwing preparation precedes revision/history/state writes.
++      const map = structuredClone(captureMap());
++      if (current.type === 'kingdom') map.kingdoms = (map.kingdoms ?? []).map(k => `kingdom:${k.id}` === current.key ? {...k,name:pair} : k);
++      else {
++        const names = renameToponym(map.toponyms, current.key, pair.en, pair.ru);
++        if (!names) throw new Error('Invalid name');
++        map.toponyms = names;
++      }
++      const before = captureDocument(), after = {...before, map};
++      recordTransaction(before, after); applyExactMap(map);
++      cancelNameDraft(); setNameStatus('saved');
++      return true;
++    } catch {
++      setNameErrors({general:language === 'ru' ? 'Не удалось сохранить название. Карта не изменена.' : 'Could not save the name. Your map is unchanged.'});
++      return false;
++    }
++  };
++  useEffect(() => {
++    if (nameTransition && !documentBusy()) {
++      setNameTransition(null); showNameTarget(nameTransition.key, nameTransition.origin);
++    }
++  }, [nameTransition, renderedDocumentRevision]);
+   const renderToponym = (key: string) => {
+     const name = toponyms[key];
+-    return name ? <strong>{name[language]}</strong> : null;
++    return name ? <span className="map-name"><strong>{name[language]}</strong><button type="button" className="secondary map-name__edit" disabled={ isImporting || !!pendingRegen || !!kingdomJob}
++      aria-label={`${language === 'ru' ? 'Изменить название' : 'Edit name'}: ${name[language]}`}
++      onClick={e => requestNameTarget(key, e.currentTarget)}>✎</button></span> : null;
+   };
+ 
+   if (debugRivers && selectedRegion && selectedCandidateBoundaryDebug) {
+@@ -13860,13 +13985,17 @@ export function App() {
+   // Artwork is independent of panel selection; candidate actions always use current options.
+   const mapHexClickRef = useRef<(hex: typeof positionedHexes.hexes[number]) => void>(() => {});
+   mapHexClickRef.current = hex => {
+-    if (mutationBlocked()) return;
++    if (documentBusy()) return;
+     if (hex.kind === 'candidate') {
++      if (mutationBlocked()) return;
+       trackGoal('region_add');
+       if (!kingdomJob) {
+         generateAt({ q: hex.q, r: hex.r });
+       }
+-    } else setSelectedHex({ q: hex.q, r: hex.r });
++    } else {
++      finishNotesGroup();
++      setSelectedHex({ q: hex.q, r: hex.r });
++    }
+   };
+   const mapMotionCanvasRef = useRef<HTMLCanvasElement>(null);
+   const mapArtwork = useMemo(() => (<>
+@@ -14329,7 +14458,7 @@ export function App() {
+               <div className="info-block info-block--prompt map-toolbar__prompt" role="status">{t.candidatePrompt}</div>
+             ) : null}
+             <div className="control-block mode-selector"><label>{language === 'ru' ? 'Режим' : 'Mode'}
+-              <select aria-label={language === 'ru' ? 'Режим' : 'Mode'} value={generationMode} disabled={isImporting || !!pendingRegen || !!kingdomJob} onChange={e=>{ if(!mutationBlocked()) setGenerationMode(e.target.value as GenerationMode); }}>
++              <select aria-label={language === 'ru' ? 'Режим' : 'Mode'} value={generationMode} disabled={nameDirty || isImporting || !!pendingRegen || !!kingdomJob} onChange={e=>{ if(!mutationBlocked()) setGenerationMode(e.target.value as GenerationMode); }}>
+                 <option value="classic">{language === 'ru' ? 'Классический режим' : 'Classic mode'}</option>
+                 <option value="mythic">Mythic Bastionland</option>
+               </select></label></div>
+@@ -14377,11 +14506,11 @@ export function App() {
+             : null}
+             {regions.length > 0 ? (
+               <div className="control-block controls controls--region-management">
+-                  <button disabled={isImporting || !!pendingRegen || !!kingdomJob} onClick={resetMap} className="secondary">{t.reset}</button>
+-                  <button type="button" disabled={isImporting || !!pendingRegen || !!kingdomJob || !history.length} onClick={regenerateLastRegion} className="secondary">
++                  <button disabled={nameDirty || isImporting || !!pendingRegen || !!kingdomJob} onClick={resetMap} className="secondary">{t.reset}</button>
++                  <button type="button" disabled={nameDirty || isImporting || !!pendingRegen || !!kingdomJob || !history.length} onClick={regenerateLastRegion} className="secondary">
+                     {t.regenerateRegion}
+                   </button>
+-                  <button type="button" disabled={isImporting || !!pendingRegen || !!kingdomJob || !history.length} onClick={deleteLastRegion} className="secondary">
++                  <button type="button" disabled={nameDirty || isImporting || !!pendingRegen || !!kingdomJob || !history.length} onClick={deleteLastRegion} className="secondary">
+                     {t.deleteLastRegion}
+                   </button>
+               </div>
+@@ -14437,9 +14566,39 @@ export function App() {
+               </button>
+             </div>
+             <div className="control-block controls controls--history">
+-              <button type="button" className="secondary" disabled={isImporting || !!pendingRegen || !!kingdomJob || !undoHistory.length} onClick={undoMap}>{language==='ru'?'Отменить':'Undo'}</button>
+-              <button type="button" className="secondary" disabled={isImporting || !!pendingRegen || !!kingdomJob || !redoHistory.length} onClick={redoMap}>{language==='ru'?'Повторить':'Redo'}</button>
++              <button type="button" className="secondary" disabled={nameDirty || isImporting || !!pendingRegen || !!kingdomJob || !undoHistory.length} onClick={undoMap}>{language==='ru'?'Отменить':'Undo'}</button>
++              <button type="button" className="secondary" disabled={nameDirty || isImporting || !!pendingRegen || !!kingdomJob || !redoHistory.length} onClick={redoMap}>{language==='ru'?'Повторить':'Redo'}</button>
+             </div>
++            <section className="control-block map-names" aria-label={language === 'ru' ? 'Названия карты' : 'Map names'}>
++              <button type="button" className="secondary map-names__toggle" aria-expanded={namesOpen} onClick={() => namesOpen ? requestNameTarget(null) : setNamesOpen(true)}>{language === 'ru' ? 'Названия карты' : 'Map names'}</button>
++              <p role="status" aria-live="polite">{nameStatus === 'saved' ? (language === 'ru' ? 'Название сохранено' : 'Name saved') : nameStatus === 'stale' ? (language === 'ru' ? 'Карта изменилась. Выберите объект заново.' : 'The map changed. Select the object again.') : ''}</p>
++              {namesOpen && <>
++                <label>{language === 'ru' ? 'Поиск по имени' : 'Search names'}<input type="search" value={nameQuery} onChange={e => setNameQuery(e.target.value)} /></label>
++                <label>{language === 'ru' ? 'Тип объекта' : 'Object type'}<select value={nameType} onChange={e => setNameType(e.target.value)}><option value="all">{language === 'ru' ? 'Все типы' : 'All types'}</option>{Object.entries(nameTypeLabels).map(([type,label]) => <option key={type} value={type}>{label}</option>)}</select></label>
++                <ul className="map-names__list">{nameTargets.filter(target => (nameType === 'all' || target.type === nameType) && `${target.ru} ${target.en}`.toLocaleLowerCase().includes(nameQuery.toLocaleLowerCase())).map(target => <li key={target.key}><button type="button" className="secondary" disabled={isImporting || !!pendingRegen || !!kingdomJob} onClick={e => requestNameTarget(target.key,e.currentTarget)} aria-pressed={nameDraft?.target.key === target.key}>
++                  <span>{nameTypeLabels[target.type]} · {target[language]}</span><small>{target.location}</small>
++                </button></li>)}</ul>
++                {nameCatalog.unavailable ? <p role="alert">{language === 'ru' ? 'Список названий временно недоступен. Карта не изменена.' : 'The name list is temporarily unavailable. Your map is unchanged.'}</p> : !nameTargets.length && <p>{language === 'ru' ? 'На карте пока нет именованных объектов.' : 'There are no named objects on this map yet.'}</p>}
++                {!!nameTargets.length && !nameTargets.some(target => (nameType === 'all' || target.type === nameType) && `${target.ru} ${target.en}`.toLocaleLowerCase().includes(nameQuery.toLocaleLowerCase())) && <p>{language === 'ru' ? 'Объекты не найдены.' : 'No matching objects.'}</p>}
++                {nameDraft && <form className="map-names__form" aria-label={language === 'ru' ? 'Изменение названия' : 'Edit map name'} onSubmit={e => {e.preventDefault();saveNameDraft(nameDraft);}} onKeyDown={e => {if(e.key === 'Escape'){e.preventDefault();e.stopPropagation();cancelNameDraft();}}}>
++                  <h3>{nameTypeLabels[nameDraft.target.type]} · {nameDraft.target[language]}</h3>
++                  {(['ru','en'] as const).map(field => <label key={field}>{field === 'ru' ? (language === 'ru' ? 'Русское название' : 'Russian name') : (language === 'ru' ? 'Английское название' : 'English name')}
++                    <input aria-label={field === 'ru' ? (language === 'ru' ? 'Русское название' : 'Russian name') : (language === 'ru' ? 'Английское название' : 'English name')} ref={field === 'ru' ? nameFocusRef : undefined} value={nameDraft[field]} aria-invalid={!!nameErrors[field]} aria-describedby={nameErrors[field] ? `map-name-error-${field}` : 'map-name-help'} onChange={e => changeNameDraft(field,e.target.value,nameDraft)} />
++                    {nameErrors[field] && <span id={`map-name-error-${field}`} className="map-names__error" role="alert">{nameErrors[field]}</span>}
++                  </label>)}
++                  <p id="map-name-help">{language === 'ru' ? 'От 1 до 80 символов. Изменяются только названия.' : 'Use 1–80 characters. Only names will change.'}</p>
++                  {nameErrors.general && <p role="alert" className="map-names__error">{nameErrors.general}</p>}
++                  <button type="submit" disabled={isImporting || !!pendingRegen || !!kingdomJob}>{language === 'ru' ? 'Сохранить название' : 'Save name'}</button>
++                  <button type="button" className="secondary" onClick={cancelNameDraft}>{language === 'ru' ? 'Отменить' : 'Cancel'}</button>
++                </form>}
++                {nameDialog && <div role="dialog" aria-modal="false" aria-labelledby="name-dialog-title" className="map-names__dialog"><p id="name-dialog-title">{language === 'ru' ? 'Сохранить изменение названия перед переходом?' : 'Save the name change before leaving?'}</p>
++                  <button type="button" autoFocus onClick={() => {const next=nameDialog;if(saveNameDraft(nameDraft)){setNameDialog(null);setNameTransition(next);}}}>{language === 'ru' ? 'Сохранить и перейти' : 'Save and continue'}</button>
++                  <button type="button" className="secondary" onClick={() => {const next=nameDialog;cancelNameDraft();showNameTarget(next.key,next.origin);}}>{language === 'ru' ? 'Отбросить и перейти' : 'Discard and continue'}</button>
++                  <button type="button" className="secondary" onClick={() => {setNameDialog(null);nameFocusRef.current?.focus();}}>{language === 'ru' ? 'Остаться' : 'Stay'}</button>
++                </div>}
++              </>}
++              {nameDirty && <p>{language === 'ru' ? 'Сохраните название или отмените правку, чтобы изменять карту другими способами. Неприменённое название не входит в выгрузку.' : 'Save or cancel the name edit before changing the map in other ways. Unsaved names are not included in exports.'}</p>}
++            </section>
+             <div className="control-block controls controls--transfer">
+               <details className="export-menu">
+                   <summary className="secondary">{t.export}</summary>
+@@ -14448,7 +14607,7 @@ export function App() {
+                     <button type="button" onClick={handleExportJson} className="secondary">JSON</button>
+                   </div>
+                 </details>
+-              <button type="button" disabled={isImporting || !!pendingRegen || !!kingdomJob} onClick={handleImportJsonClick} className="secondary">{t.importJson}</button>
++              <button type="button" disabled={nameDirty || isImporting || !!pendingRegen || !!kingdomJob} onClick={handleImportJsonClick} className="secondary">{t.importJson}</button>
+               <input ref={jsonImportInputRef} className="visually-hidden" type="file" accept="application/json,.json" onChange={(event) => void handleImportJson(event)} />
+             </div>
+             <div className="control-block world-seed-control">
+@@ -14457,7 +14616,7 @@ export function App() {
+                 <input aria-label={language === 'ru' ? 'Seed мира' : 'World seed'} inputMode="numeric" value={seedInput}
+                   aria-invalid={seedError || undefined} aria-describedby={seedError ? 'world-seed-error' : undefined}
+                   readOnly={!!regions.length || !!hexTerrainByKey.size || !!kingdoms.length}
+-                  disabled={mutationBlocked(false)} onChange={e=>{setSeedInput(e.target.value);setSeedError(false);}} onBlur={applyWorldSeed} />
++                  disabled={mutationBlocked(false)} onChange={e=>{if(!mutationBlocked(false)){setSeedInput(e.target.value);setSeedError(false);}}} onBlur={applyWorldSeed} />
+               </label>
+               {seedError ? <p id="world-seed-error" className="world-seed-control__error" role="alert">{language === 'ru' ? 'Seed: целое число от 0 до 4294967295.' : 'Seed: integer from 0 to 4294967295.'}</p> : null}
+               {legacyNotice ? <p className="world-seed-control__notice" role="status">{language === 'ru' ? 'Старая карта: seed задан для дальнейшего продолжения' : 'Legacy map: seed assigned for future continuation'}</p> : null}
+@@ -14514,7 +14673,7 @@ export function App() {
+           <aside id="side-panel-info" className="roll-card">
+             <div className="info-body">
+               <section className="info-block info-block--hex" aria-label={t.selectedHexInfo}>
+-                {selectedKingdom ? <p><strong>{language === 'ru' ? 'Королевство' : 'Kingdom'}: {selectedKingdom.name[language]}</strong></p> : null}
++                {selectedKingdom ? <p className="map-name"><strong>{language === 'ru' ? 'Королевство' : 'Kingdom'}: {selectedKingdom.name[language]}</strong><button type="button" className="secondary map-name__edit" aria-label={`${language === 'ru' ? 'Изменить название' : 'Edit name'}: ${selectedKingdom.name[language]}`} onClick={e => requestNameTarget(`kingdom:${selectedKingdom.id}`, e.currentTarget)}>✎</button></p> : null}
+                 {selectedRegion ? (
+                   <p><strong>{SIZE_LABELS[language][selectedRegion.sizeCategory]}</strong> {renderToponym(`region:${selectedRegion.id}`)}</p>
+                 ) : isSelectedLake ? (
+@@ -14684,12 +14843,12 @@ export function App() {
+                 ) : null}
+                 {canEditNotes && selectedHexKey ? <div className="gm-notes">
+                   {!notesOpen && !notesValue ? <button type="button" className="hex-coordinate-toggle hex-poi-editor__add"
+-                    disabled={isImporting || !!pendingRegen || !!kingdomJob} onClick={() => openNotesEditor(selectedHexKey)}>
++                    disabled={nameDirty || isImporting || !!pendingRegen || !!kingdomJob} onClick={() => openNotesEditor(selectedHexKey)}>
+                     {language === 'ru' ? '+ Добавить заметку' : '+ Add note'}
+                   </button> : <>
+                     <div className="gm-notes__heading">
+                       <button id="gm-notes-label" type="button" className="gm-notes__toggle" aria-expanded={notesOpen}
+-                        aria-controls="gm-notes-content" disabled={isImporting || !!pendingRegen || !!kingdomJob}
++                        aria-controls="gm-notes-content" disabled={nameDirty || isImporting || !!pendingRegen || !!kingdomJob}
+                         onClick={() => toggleNotesEditor(selectedHexKey)}>
+                         {language === 'ru' ? 'Заметки мастера' : 'GM notes'} <span aria-hidden="true">{notesOpen ? '▴' : '▾'}</span>
+                       </button>
+@@ -14697,13 +14856,13 @@ export function App() {
+                     </div>
+                     <div id="gm-notes-content">
+                       {notesOpen ? <textarea ref={notesTextRef} id="gm-notes-text" aria-labelledby="gm-notes-label" rows={6} value={notesValue}
+-                        disabled={isImporting || !!pendingRegen || !!kingdomJob}
++                        disabled={nameDirty || isImporting || !!pendingRegen || !!kingdomJob}
+                         onKeyDown={event => event.stopPropagation()}
+                         onCompositionStart={() => { notesComposingRef.current = true; if (notesTimerRef.current !== null) clearTimeout(notesTimerRef.current); }}
+                         onCompositionEnd={event => { notesComposingRef.current = false; changeNotesText(selectedHexKey, event.currentTarget.value); notesTimerRef.current = setTimeout(finishNotesGroup, 500); }}
+                         onBlur={() => { notesComposingRef.current = false; finishNotesGroup(); }}
+                         onChange={event => changeNotesText(selectedHexKey, event.target.value)} />
+-                        : <button type="button" className="gm-notes__text" disabled={isImporting || !!pendingRegen || !!kingdomJob}
++                        : <button type="button" className="gm-notes__text" disabled={nameDirty || isImporting || !!pendingRegen || !!kingdomJob}
+                           onClick={() => openNotesEditor(selectedHexKey)}>{notesValue}</button>}
+                     </div>
+                     {notesError ? <p role="alert">{language === 'ru' ? 'Не удалось изменить заметку' : 'The note could not be changed'}</p> : null}
+diff --git a/src/styles.css b/src/styles.css
+index 1935f8a..ae5adf4 100644
+--- a/src/styles.css
++++ b/src/styles.css
+@@ -197,3 +197,24 @@ button:disabled,select:disabled { opacity:.55; cursor:wait; }
+ .gm-notes__status { font-size: .85em; color: var(--muted); }
+ .gm-notes textarea { display: block; box-sizing: border-box; width: 100%; min-width: 0; resize: vertical; font: inherit; color: inherit; background: rgba(20,31,50,.92); border: 1px solid rgba(42,59,92,.9); border-radius: 10px; padding: .6rem; }
+ .gm-notes textarea:focus-visible, .gm-notes__toggle:focus-visible, .gm-notes__text:focus-visible { outline: 2px solid #617187; outline-offset: 2px; }
++
++/* Named map entities: existing panel colours, independent of map artwork. */
++.map-name { display:inline-flex; align-items:center; flex-wrap:wrap; gap:.35rem; max-width:100%; overflow-wrap:anywhere; }
++.map-name__edit { min-width:44px; min-height:44px; padding:.3rem; }
++.map-names { min-width:0; }
++.map-names__toggle { width:100%; text-align:left; }
++.map-names label { display:flex; flex-direction:column; gap:.35rem; margin:.65rem 0; color:#aebbd4; font-size:.85rem; }
++.map-names input,.map-names select { width:100%; min-width:0; min-height:44px; background:#0c1423; color:#eef4ff; border:1px solid #375386; border-radius:8px; padding:.5rem; font:inherit; }
++.map-names input:focus-visible,.map-names select:focus-visible,.map-names button:focus-visible { outline:2px solid #8fb4ef; outline-offset:2px; }
++.map-names__list { list-style:none; padding:0; margin:.6rem 0; max-height:12rem; overflow:auto; }
++.map-names__list button { width:100%; min-height:44px; display:flex; justify-content:space-between; align-items:center; gap:.5rem; margin-bottom:.35rem; text-align:left; overflow-wrap:anywhere; }
++.map-names__list span { min-width:0; }
++.map-names__list small { flex-shrink:0; color:#aebbd4; }
++.map-names__list [aria-pressed=true] { border-color:#8fb4ef; }
++.map-names__form,.map-names__dialog { border-top:1px solid #375386; margin-top:.75rem; padding-top:.5rem; min-width:0; }
++.map-names h3 { font-size:1rem; overflow-wrap:anywhere; }
++.map-names p { font-size:.85rem; color:#aebbd4; overflow-wrap:anywhere; }
++.map-names__form button,.map-names__dialog button { width:100%; min-height:44px; margin-top:.4rem; }
++.map-names .map-names__error { color:#fca5a5; }
++.map-names [aria-invalid=true] { border-color:#fca5a5; }
++.map-names [role=status]:empty { display:none; }

@@ -1,0 +1,15 @@
+Baseline a7a8cc58987e97c4495c405374c6a4145f3bc9ff and candidate header timer block identical: True
+  useEffect(() => {
+    headerLinksAutoCollapseTimerRef.current = window.setTimeout(() => {
+      setIsHeaderLinksCollapsed(true);
+      headerLinksAutoCollapseTimerRef.current = null;
+    }, 120_000);
+
+    return () => {
+      if (headerLinksAutoCollapseTimerRef.current !== null) {
+        window.clearTimeout(headerLinksAutoCollapseTimerRef.current);
+        headerLinksAutoCollapseTimerRef.current = null;
+      }
+    };
+  }, []);
+
