@@ -1,0 +1,208 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-30",
+  "run_id": "2026-10-30-developer-HX-BL-023-direct-edit",
+  "role": "developer",
+  "task_id": "HX-BL-023",
+  "stage_id": "E2_direct_edit",
+  "status": "review_ready",
+  "role_selection_reason": "Approved direct-edit correction has usable E2-2.0 spec; no unfinished active claim at start; owned claim safely completed",
+  "authorization": {
+    "task_start": "owner-decision-2026-10-29-HX-FB-005-direct-edit-mode",
+    "execution_allowed": true,
+    "release_approved": false
+  },
+  "base_sha": "8f7d17266c53e31428da7c0da6dbbf1afe01d035",
+  "head_sha": "063c1548a5165fde8656ff016c65816c791ea387",
+  "tree_sha": "fec12f86311347c4e01212c8f6d5050f59581330",
+  "branch": "agent/hx023-direct-edit",
+  "pr": 479,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/479",
+  "spec_ref": "agent-work/specs/HX-BL-023-E2.md",
+  "spec_version": "E2-2.0",
+  "spec_blob_sha": "4701679e4b92e65f0fc7bd1690ffbf2c1addaf80",
+  "result": "Global direct mode replaces per-field pencils and paired form; current-locale names, notes and existing POI, direct local/region terrain with exact history and preservation guards",
+  "evidence_ref": "agent-work/evidence/HX-BL-023-direct-063c154/report.md",
+  "evidence_commit_sha": "56e991b19f23c482b337061dc914b7b776edf0af",
+  "handoff_ref": "agent-work/handoffs/2026-10-30-HX-BL-023-direct-edit-review.json",
+  "checks_status": "passed_exact_final_CI",
+  "checks": {
+    "head_sha": "063c1548a5165fde8656ff016c65816c791ea387",
+    "tree_sha": "fec12f86311347c4e01212c8f6d5050f59581330",
+    "checked_at": "2026-10-29T21:38:27.519Z",
+    "ci": {
+      "id": 40958042988,
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40958042988",
+      "head_sha": "063c1548a5165fde8656ff016c65816c791ea387",
+      "status": "completed",
+      "conclusion": "success",
+      "jobs": [
+        {
+          "name": "check",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40958042988/job/123743607503"
+        },
+        {
+          "name": "browser",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40958042988/job/123743607920"
+        },
+        {
+          "name": "world-random",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40958042988/job/123743607971"
+        }
+      ]
+    },
+    "local": {
+      "node_version": "24.22.1",
+      "npm_run_check": {
+        "status": "passed",
+        "executed": 249,
+        "passed": 249,
+        "failed": 0,
+        "skipped": 0,
+        "build": "passed; existing chunk-size warning"
+      },
+      "targeted_region_handler": {
+        "status": "passed",
+        "executed": 1,
+        "passed": 1,
+        "skipped": 0,
+        "includes": "legacy metadata preservation and identical edited-copy continuation"
+      },
+      "save_history_production": {
+        "status": "passed",
+        "browser": "153.0.8010.0",
+        "scenario": "actual full fixture corpus, direct names/notes/POI/biomes, mixed100 Undo/Redo"
+      },
+      "full_browser_command": {
+        "status": "environment_error_at_navigation_launcher",
+        "first_four_scripts": "passed",
+        "reason": "navigation runner uses Playwright default headless-shell path, unlike runners honoring CHROMIUM_EXECUTABLE_PATH; binary absent",
+        "remedy": "Same installed Chromium153 exposed at default cache path, no source/assertion change; remaining navigation checked separately",
+        "CI_unmodified_command": "all7 passed"
+      },
+      "navigation": {
+        "status": "passed",
+        "browser": "153.0.8010.0"
+      },
+      "large_navigation": {
+        "status": "passed",
+        "browser": "153.0.8010.0",
+        "scope": "Existing1200hex navigation/buffer scenario; not an HX-BL-003 acceptance rerun"
+      }
+    },
+    "main_unchanged": true,
+    "pr_head_matches": true,
+    "merged": false,
+    "published": false
+  },
+  "test_change_summary": {
+    "base_sha": "8f7d17266c53e31428da7c0da6dbbf1afe01d035",
+    "head_sha": "063c1548a5165fde8656ff016c65816c791ea387",
+    "source": "git diff base..head and comparable test() declarations; logical cases, not changed lines or repetitions",
+    "suites": [
+      {
+        "suite": "Node --test test/*.test.mjs",
+        "added": 1,
+        "removed": 0,
+        "modified": 1,
+        "base_count": 248,
+        "head_count": 249,
+        "scenario_risk": "Single-locale five-type name writes and unchanged legacy locale; new canonical region terrain invariants, neighbor/height guards, exact history, metadata preservation, preparation fault and edited-copy continuation",
+        "reuse_or_new_reason": "Updated existing name transaction case; one distinct region-operation case extends existing actual-handler harness. Existing mixed100 and import corpus reused, not duplicated",
+        "executed": 249,
+        "passed": 249,
+        "skipped": 0
+      },
+      {
+        "suite": "Production browser scripts",
+        "added": 0,
+        "removed": 0,
+        "modified": 1,
+        "unit": "save-history acceptance script; no test() case runner",
+        "scenario_sections_modified": 3,
+        "scenario_risk": "Replace superseded paired Save/Cancel UX, integrate notes/global mode, retain existing manual operations and mixed100 through direct selectors",
+        "reuse_or_new_reason": "Same import/export/history lifecycle and seven-script runner; changed interaction assertions rather than parallel new suite",
+        "executed": 7,
+        "passed": 7,
+        "skipped": 0,
+        "execution_source": "exact final CI original seven-script command; local save/history separately passed"
+      },
+      {
+        "suite": "World RNG production script",
+        "added": 0,
+        "removed": 0,
+        "modified": 0,
+        "scenario_risk": "Fresh/continued/undo-repeat world stream integrity",
+        "reuse_or_new_reason": "Existing independent runner reused; no permanent new cases",
+        "executed": 1,
+        "passed": 1,
+        "skipped": 0,
+        "execution_source": "exact final CI"
+      }
+    ],
+    "temporary_diagnostics": "UI capture script only; no permanent tests or test-count growth; raw diagnostics are not summed into suites"
+  },
+  "ui_actual": {
+    "head_sha": "063c1548a5165fde8656ff016c65816c791ea387",
+    "manifest_ref": "agent-work/evidence/HX-BL-023-direct-063c154/manifest.json",
+    "presentation": "Actual desktop/390 images included in this run final response; owner view not assumed",
+    "proposal": false
+  },
+  "score_model_version": "1.2",
+  "programmer_score_evidence_ref": "agent-work/evidence/HX-BL-023-direct-063c154/score_evidence.json",
+  "score_assessment_status": "pending_independent_reviewer",
+  "score_changed": false,
+  "confirmed_points": null,
+  "unverified_weight": 1000,
+  "published": false,
+  "main_changed": false,
+  "full_editor_ready": false,
+  "blockers": [],
+  "limitations": [
+    "Independent exact-SHA acceptance and score_assessment still required",
+    "E3-E8 outside this package; no full-editor readiness claim",
+    "Bounded fixture/source evidence; reviewer to probe remaining IME/height2-3/water-hidden edges",
+    "Serverless screenshots lack some emoji glyphs; no user-device font-rendering claim"
+  ],
+  "next_task_id": "HX-BL-023",
+  "next_role": "reviewer",
+  "next_step": "Independently review063c154 against DE-AC01–10, record score_assessment1.2; findings go to developer, acceptance prepares separate owner publication gate",
+  "claim": {
+    "run_id": "2026-10-30-developer-HX-BL-023-direct-edit",
+    "task_id": "HX-BL-023",
+    "stage_id": "E2_direct_edit",
+    "role": "developer",
+    "status": "completed",
+    "started_at": "2026-10-29T21:06:09.667Z",
+    "lease_expires_at": "2026-10-29T23:06:09.667Z",
+    "base_sha": "8f7d17266c53e31428da7c0da6dbbf1afe01d035",
+    "spec_blob_sha": "4701679e4b92e65f0fc7bd1690ffbf2c1addaf80",
+    "completed_at": "2026-10-29T21:42:13.263Z"
+  },
+  "automation_health": {
+    "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-10-29T21:05:44.636Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "end": {
+      "checked_at": "2026-10-29T21:41:26.463Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restored_during_this_run": false,
+    "errors": [],
+    "limitation": "Observed start/end moments only; no guarantee of later service state"
+  },
+  "operational_errors_resolved": [
+    "Direct git push authentication unavailable; connector Git-data upload used, exact local/remote tree verified",
+    "Local chained browser command stopped before navigation assertions because default headless-shell was absent; same installed binary exposed at expected cache path, unchanged navigation/large-navigation passed separately; exact CI original seven-script command passed"
+  ]
+}
