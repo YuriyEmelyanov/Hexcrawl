@@ -86,7 +86,12 @@ try {
      assert.notEqual(await page.locator('#side-panel-info').innerText(),firstInfo,'existing-hex inspection remains available with dirty rename');
      assert.equal(await nameForm().getByRole('textbox',{name:'Русское название',exact:true}).inputValue(),ru,'browsing preserves RU draft');
      assert.equal(await nameForm().getByRole('textbox',{name:'Английское название',exact:true}).inputValue(),en,'browsing preserves EN draft');
-     assert.deepEqual(await snapshot(),before,'browsing does not change document/RNG');
+     const inspected=await snapshot();
+     const [q,r]=keys[1].split(',').map(Number);
+     const expectedView=structuredClone(before);expectedView.ui.selectedHex={q,r};
+     assert.deepEqual(inspected,expectedView,'browsing changes only exported selection, not map/RNG');
+     await select(`${before.ui.selectedHex.q},${before.ui.selectedHex.r}`);
+     assert.deepEqual(await snapshot(),before,'returning selection restores exact exported document');
      assert.equal(await page.locator('.controls--history button').first().isDisabled(),true,'browsing keeps history mutations blocked');
    }
    const after=await transaction(()=>nameForm().getByRole('button',{name:'Сохранить название',exact:true}).click());
