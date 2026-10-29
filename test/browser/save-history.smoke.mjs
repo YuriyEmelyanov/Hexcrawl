@@ -24,7 +24,7 @@ try {
    URL.createObjectURL=function(blob){const url=make.call(this,blob);if(blob.type.startsWith('application/json'))blobs.set(url,blob.text());return url;};
    HTMLAnchorElement.prototype.click=function(){if(this.download.endsWith('.json')&&blobs.has(this.href)){blobs.get(this.href).then(text=>window.__exported=JSON.parse(text));return;}return click.call(this);};
    const clone=window.structuredClone;
-   window.structuredClone=function(value){if(window.__failPreparation&&value?.schema==='hexcrawl-map'){window.__failPreparation=false;throw Error('injected before import commit');}return clone(value);};
+   window.structuredClone=function(value){if(window.__failNamePreparation&&value?.regions&&value?.toponyms){window.__failNamePreparation=false;throw Error('injected rename preparation');}if(window.__failPreparation&&value?.schema==='hexcrawl-map'){window.__failPreparation=false;throw Error('injected before import commit');}return clone(value);};
    const read=FileReader.prototype.readAsText;
    FileReader.prototype.readAsText=function(file){
      if(window.__delayRead){window.__delayRead=false;window.__releaseRead=()=>read.call(this,file);return;}
@@ -60,6 +60,104 @@ try {
    assert.fail('No candidate could generate a region');
  }
  async function transaction(action){const before=await snapshot();await action();const after=await snapshot();assert.notDeepEqual(after,before);await button('Отменить').click();assert.deepEqual(await snapshot(),before);await button('Повторить').click();assert.deepEqual(await snapshot(),after);return after;}
+ { // HX-BL-023 E1: new UI/state boundary, reusing the same imports/snapshots/history runner.
+ await fs.mkdir(new URL('reports/HX-BL-023-E1/',root),{recursive:true});
+ const namesSection=page.getByRole('region',{name:'Названия карты',exact:true});
+ const nameForm=()=>page.getByRole('form',{name:'Изменение названия',exact:true});
+ const namesFixture=JSON.parse(await fs.readFile(new URL('../fixtures/import-v2/baseline-mythic.json',import.meta.url)));
+ namesFixture.map.gmNotesByHexKey={'3,6':'Авторская заметка перед поиском'};
+ await load(namesFixture);
+ assert.equal(await button('Найти объект').getAttribute('aria-expanded'),'false');
+ assert.ok((await button('Найти объект').boundingBox()).height>=44,'find-object touch target is at least44px');
+ assert.equal(await namesSection.locator('.map-names__list').count(),0,'catalog hidden by default');
+ assert.equal(await namesSection.evaluate(el=>el.parentElement.lastElementChild===el),true,'find-object block is after all info');
+ assert.equal(await page.locator('.gm-notes').evaluate(el=>!!(el.compareDocumentPosition(document.querySelector('.map-names'))&Node.DOCUMENT_POSITION_FOLLOWING)),true,'find object follows author notes');
+ const beforeInline=await snapshot();
+ await page.locator('#side-panel-info .map-name__edit').first().click();
+ await nameForm().waitFor();
+ assert.equal(await namesSection.locator('.map-names__list').count(),0,'inline pencil does not expand catalog');
+ await nameForm().getByRole('button',{name:'Отменить',exact:true}).click();
+ assert.deepEqual(await snapshot(),beforeInline,'inline cancel preserves notes and document');
+ await button('Найти объект').click();
+ const openNamed=async type=>{await namesSection.getByRole('combobox',{name:'Тип объекта',exact:true}).selectOption(type);await namesSection.locator('.map-names__list button').first().click();await nameForm().waitFor();};
+ for(const [i,type] of ['region','settlement','river','lake','kingdom'].entries()) {
+   await openNamed(type);const before=await snapshot();
+   const ru=i===0?'<b>Эринин</b> 🗝':'Автор '+type,en='Author '+type;
+   await nameForm().getByRole('textbox',{name:'Русское название',exact:true}).fill(ru);
+   await nameForm().getByRole('textbox',{name:'Английское название',exact:true}).fill(en);
+   assert.deepEqual(await snapshot(),before,'draft is not exported');
+   assert.equal(await button('Сбросить').isDisabled(),true);
+   await page.locator('polygon.hex.candidate').first().dispatchEvent('click');
+   assert.deepEqual(await snapshot(),before,'candidate cannot generate with dirty rename');
+   if(i===0) {
+     const existing=page.locator('polygon.hex[data-hex-key]:not(.candidate)');
+     const keys=await existing.evaluateAll(es=>es.map(el=>el.dataset.hexKey));
+     assert.ok(keys.length>1);
+     await select(keys[0]);
+     const firstInfo=await page.locator('#side-panel-info').innerText();
+     await select(keys[1]);
+     assert.notEqual(await page.locator('#side-panel-info').innerText(),firstInfo,'existing-hex inspection remains available with dirty rename');
+     assert.equal(await nameForm().getByRole('textbox',{name:'Русское название',exact:true}).inputValue(),ru,'browsing preserves RU draft');
+     assert.equal(await nameForm().getByRole('textbox',{name:'Английское название',exact:true}).inputValue(),en,'browsing preserves EN draft');
+     const inspected=await snapshot();
+     const [q,r]=keys[1].split(',').map(Number);
+     const expectedView=structuredClone(before);expectedView.ui.selectedHex={q,r};
+     assert.deepEqual(inspected,expectedView,'browsing changes only exported selection, not map/RNG');
+     await select(`${before.ui.selectedHex.q},${before.ui.selectedHex.r}`);
+     assert.deepEqual(await snapshot(),before,'returning selection restores exact exported document');
+     assert.equal(await page.locator('.controls--history button').first().isDisabled(),true,'browsing keeps history mutations blocked');
+   }
+   const after=await transaction(()=>nameForm().getByRole('button',{name:'Сохранить название',exact:true}).click());
+   const expected=structuredClone(before);
+   if(type==='kingdom') {
+     const changes=after.map.kingdoms.filter((k,index)=>JSON.stringify(k.name)!==JSON.stringify(before.map.kingdoms[index].name));assert.equal(changes.length,1);
+     expected.map.kingdoms.find(k=>k.id===changes[0].id).name={ru,en};
+   } else {
+     const changes=Object.keys(after.map.toponyms.names).filter(k=>JSON.stringify(after.map.toponyms.names[k])!==JSON.stringify(before.map.toponyms.names[k]));assert.equal(changes.length,1);assert.ok(changes[0].startsWith(type+':'));
+     Object.assign(expected.map.toponyms.names[changes[0]],{ru,en});
+   }
+   assert.deepEqual(after,expected,'only name pair changes');
+ }
+ // UI validation is separate from the already covered renameToponym helper.
+ await openNamed('region');let beforeName=await snapshot();
+ const ruInput=nameForm().getByRole('textbox',{name:'Русское название',exact:true}),enInput=nameForm().getByRole('textbox',{name:'Английское название',exact:true});
+ const currentRu=await ruInput.inputValue(),currentEn=await enInput.inputValue();
+ for(const text of ['', 'x'.repeat(81)]) {
+   await ruInput.fill(text);await nameForm().getByRole('button',{name:'Сохранить название',exact:true}).click();assert.equal(await ruInput.getAttribute('aria-invalid'),'true');assert.match(await nameForm().getByRole('alert').innerText(),/80/);assert.deepEqual(await snapshot(),beforeName);
+ }
+ const other=Object.values(beforeName.map.toponyms.names).find(n=>n.ru!==currentRu);
+ await ruInput.fill(other.ru);await nameForm().getByRole('button',{name:'Сохранить название',exact:true}).click();assert.match(await nameForm().getByRole('alert').innerText(),/уже есть/);
+ await ruInput.fill('x'.repeat(80));await enInput.fill('Boundary name');await nameForm().getByRole('button',{name:'Сохранить название',exact:true}).click();
+ await button('Отменить').click();assert.deepEqual(await snapshot(),beforeName);
+ await openNamed('region');await ruInput.fill('  '+currentRu+'  ');await enInput.fill('  '+currentEn+'  ');await nameForm().getByRole('button',{name:'Сохранить название',exact:true}).click();assert.equal(await button('Повторить').isDisabled(),false,'trim no-op preserves redo');assert.deepEqual(await snapshot(),beforeName);
+ await openNamed('region');await ruInput.fill('Cancelled');await ruInput.press('Escape');assert.deepEqual(await snapshot(),beforeName);assert.equal(await button('Повторить').isDisabled(),false);
+ await openNamed('region');await ruInput.fill('Pending draft');
+ await namesSection.locator('.map-names__list button').nth(1).click();assert.equal(await page.getByRole('dialog').getByRole('button',{name:'Сохранить и перейти',exact:true}).evaluate(el=>el===document.activeElement),true,'dirty dialog receives keyboard focus');await page.getByRole('dialog').getByRole('button',{name:'Остаться',exact:true}).click();assert.equal(await ruInput.inputValue(),'Pending draft');
+ await namesSection.locator('.map-names__list button').nth(1).click();await page.getByRole('dialog').getByRole('button',{name:'Отбросить и перейти',exact:true}).click();assert.deepEqual(await snapshot(),beforeName);assert.notEqual(await ruInput.inputValue(),'Pending draft');
+ await ruInput.fill('Saved before transition');await namesSection.locator('.map-names__list button').first().click();await page.getByRole('dialog').getByRole('button',{name:'Сохранить и перейти',exact:true}).click();await nameForm().waitFor();assert.notEqual(await ruInput.inputValue(),'Saved before transition');
+ await nameForm().getByRole('button',{name:'Отменить',exact:true}).click();
+ // Preparation failure must preserve document and both history branches.
+ await openNamed('region');beforeName=await snapshot();await ruInput.fill('Fault attempt');await page.evaluate(()=>window.__failNamePreparation=true);await nameForm().getByRole('button',{name:'Сохранить название',exact:true}).click();assert.match(await nameForm().getByRole('alert').innerText(),/Карта не изменена/);assert.deepEqual(await snapshot(),beforeName);
+ await page.locator('details.export-menu').evaluate(el=>el.open=false);
+ await page.setViewportSize({width:390,height:1000});await page.screenshot({path:fileURLToPath(new URL('reports/HX-BL-023-E1/narrow-ru-error.png',root)),fullPage:true});
+ await ruInput.fill('Эринин');await enInput.fill('Erinin');await page.screenshot({path:fileURLToPath(new URL('reports/HX-BL-023-E1/narrow-ru.png',root)),fullPage:true});
+ assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true,'390px no overflow');
+ if(await page.locator('.header-links').evaluate(el=>el.classList.contains('is-collapsed')))await page.locator('.header-links-toggle').click();
+ await button('Switch to English').click();assert.equal(await page.getByRole('textbox',{name:'Russian name',exact:true}).inputValue(),'Эринин');
+ await page.screenshot({path:fileURLToPath(new URL('reports/HX-BL-023-E1/narrow-en.png',root)),fullPage:true});
+ await page.setViewportSize({width:1500,height:1100});await page.getByRole('form',{name:'Edit map name',exact:true}).scrollIntoViewIfNeeded();await page.screenshot({path:fileURLToPath(new URL('reports/HX-BL-023-E1/desktop-en.png',root)),fullPage:true});
+ await page.getByRole('button',{name:'Переключить на русский',exact:true}).click();
+ await page.screenshot({path:fileURLToPath(new URL('reports/HX-BL-023-E1/desktop-ru.png',root)),fullPage:true});
+ await nameForm().getByRole('button',{name:'Сохранить название',exact:true}).click();
+ const savedNames=await snapshot();await load(savedNames);assert.deepEqual(await snapshot(),savedNames,'v4 names exact roundtrip');
+ await load(fixture);await openNamed('region');await ruInput.fill('Продолжение');await enInput.fill('Continuation');await nameForm().getByRole('button',{name:'Сохранить название',exact:true}).click();
+ const namedClassic=await snapshot();const extendedNames=await addRegion();
+ for(const [key,name] of Object.entries(namedClassic.map.toponyms.names))assert.deepEqual(extendedNames.map.toponyms.names[key],name,'continuation preserves accepted names');
+ await button('Удалить последний регион').click();assert.deepEqual((await snapshot()).map,namedClassic.map,'delete last preserves renamed old objects');
+ if(await namesSection.getByRole('button',{name:'Найти объект',exact:true}).getAttribute('aria-expanded')==='true')await button('Найти объект').click();
+ console.log('HX023 E1 real React: five entity types, shared transactions, dirty transition, fault, no-op/redo, literals, RU/EN390 and v4 roundtrip passed.');
+
+ }
  // HX-BL-024: one bounded real-React editor lifecycle, reusing import/select/export helpers.
  await fs.mkdir(new URL('reports/HX-BL-024/',root),{recursive:true});
  // UI-05 regression: a valid water-only document has no region, but must expose notes.
@@ -139,6 +237,7 @@ try {
  assert.match(conflictText,/\(19\)/);assert.match(conflictText,/-?\d+,-?\d+/);assert(!conflictText.includes('Можно повторить попытку'));
  assert.deepEqual(await snapshot(),conflictBefore,'notes-loss refusal preserves whole map and RNG');
  await conflictAlert.scrollIntoViewIfNeeded();await page.screenshot({path:fileURLToPath(new URL('reports/HX-BL-024/conflict-ru.png',root))});
+ if(await page.locator('.header-links').evaluate(el=>el.classList.contains('is-collapsed')))await page.locator('.header-links-toggle').click();
  await button('Switch to English').click();
  const conflictEnglish=page.getByRole('alert').filter({hasText:'Move or clear the notes first'});
  await conflictEnglish.waitFor();assert.match(await conflictEnglish.textContent(),/\(19\)/);
@@ -232,6 +331,7 @@ try {
  await select(`${center.q},${center.r}`);await biome('open_hills');
  await transaction(()=>button('Удалить последний регион').click());await button('Отменить').click();
  await transaction(async()=>{await button('Перегенерировать регион').click();await page.waitForFunction(()=>!document.querySelector('.kingdom-progress')&&!document.querySelector('.controls--transfer > button').disabled,null,{timeout:120000});});
+ if(await page.locator('.header-links').evaluate(el=>el.classList.contains('is-collapsed')))await page.locator('.header-links-toggle').click();
  await button('Switch to English').click();assert.equal(await button('Undo').count(),1);assert.equal(await button('Redo').count(),1);
  assert.deepEqual(errors,[]);assert.equal(alerts.length,5,'only intentional invalid imports');
  console.log(`Save/history acceptance passed in ${browser.version()}: full corpus, manual families, 100 mixed UI undo/redo, failures, serialization, classic/Mythic checkpoints, RU/EN.`);

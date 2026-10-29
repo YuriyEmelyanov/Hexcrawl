@@ -170,3 +170,53 @@ test('delete retains latest surviving notes, confirms loss, undo restores; gener
   restores.forEach(restore=>restore());assert.equal(result.success,false);assert.match(result.diagnostic.message,/999,999/);
   assert.deepEqual(serial(h.render().captureDocument()),exact);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),timeline);
 });
+
+test('name editor uses one shared transaction for registry and kingdom names; dirty and stale handlers cannot overwrite a world',async()=>{
+  // N01/N03/N04: helper-unit rename cases already exist; this protects the actual
+  // App boundary, its distinct kingdom storage and delayed document handlers.
+  const {h}=setup();
+  const source=JSON.parse(fs.readFileSync(new URL('./fixtures/import-v2/baseline-mythic.json',import.meta.url)));
+  source.map.kingdoms[0].name.ru='x'.repeat(81); // previously valid legacy kingdom name
+  await load(h,source);
+  const legacyStacks=serial([h.render().undoHistory,h.render().redoHistory]);
+  h.render().showNameTarget('kingdom:'+source.map.kingdoms[0].id);
+  assert.equal(h.render().saveNameDraft(),true,'unchanged legacy name is a no-op');
+  assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),legacyStacks);
+  const targets=h.render().nameTargets;
+  for(const type of ['region','settlement','river','lake','kingdom']) {
+    const target=targets.find(t=>t.type===type);assert.ok(target,type+' target');
+    const before=stable(h.render()), length=h.render().undoHistory.length;
+    h.render().showNameTarget(target.key);
+    let draft=h.render().nameDraft;
+    h.render().changeNameDraft('ru','Автор '+type,draft);draft=h.render().nameDraft;
+    h.render().changeNameDraft('en','Author '+type,draft);
+    const dirty=h.render();dirty.resetMap();await load(h,fixture);dirty.undoMap();
+    assert.deepEqual(stable(h.render()),before,'dirty mutation guards');
+    assert.equal(h.render().saveNameDraft(),true);
+    const after=stable(h.render());assert.equal(h.render().undoHistory.length,length+1);
+    const expected=structuredClone(before);
+    if(type==='kingdom')expected.map.kingdoms.find(k=>`kingdom:${k.id}`===target.key).name={ru:'Автор '+type,en:'Author '+type};
+    else Object.assign(expected.map.toponyms.names[target.key],{ru:'Автор '+type,en:'Author '+type});
+    assert.deepEqual(after,expected,'only selected name pair changed');assertUndoRedo(h,before,after);
+  }
+  h.render().undoMap();
+  const exact=stable(h.render()), stacks=serial([h.render().undoHistory,h.render().redoHistory]);
+  h.render().showNameTarget(h.render().nameTargets[0].key);
+  h.render().changeNameDraft('ru','invalid\u0000name',h.render().nameDraft);
+  assert.equal(h.render().saveNameDraft(),false);assert.ok(h.render().nameErrors.ru);h.render().cancelNameDraft();
+  h.render().showNameTarget(h.render().nameTargets[0].key);
+  h.render().changeNameDraft('ru','Prepared failure',h.render().nameDraft);
+  const restoreClone=h.injectFunction('structuredClone',()=>{throw Error('name preparation fault');});
+  assert.equal(h.render().saveNameDraft(),false);restoreClone();h.render().cancelNameDraft();
+  assert.deepEqual(stable(h.render()),exact);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks);
+  const key=h.render().nameTargets[0].key;
+  h.render().showNameTarget(key);h.render().saveNameDraft();
+  assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks,'no-op keeps redo');
+  h.render().showNameTarget(key);let draft=h.render().nameDraft;
+  h.render().changeNameDraft('ru','must never apply',draft);
+  const staleSave=h.render().saveNameDraft, staleDraft=h.render().nameDraft;
+  const replacement=h.render().captureDocument();h.render().applyDocument(replacement);
+  assert.equal(staleSave(staleDraft),false);
+  assert.deepEqual(stable(h.render()),exact,'stale handler preserves replacement');
+  assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks);
+});
