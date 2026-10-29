@@ -216,6 +216,53 @@
       "next_step": "Исправление выпущено; новые замечания учитывать в этом реестре.",
       "release_sha": "8f7d17266c53e31428da7c0da6dbbf1afe01d035",
       "result_ref": "agent-work/results/2026-10-29-developer-release-HX-BL-023-E1-a265a78.json"
+    },
+    {
+      "id": "HX-FB-005",
+      "type": "ui_and_interaction_proposal",
+      "status": "triaged",
+      "reported_on": "2026-10-29",
+      "reported_by": "owner",
+      "related_task_id": "HX-BL-023",
+      "title": "Единый режим редактирования вместо множества карандашей; правка только текущего языка",
+      "description": "Владелец: несколько карандашей у объекта и множество карандашей в панели неприемлемы. Предлагает одну кнопку справа сверху, включая заметки мастера; правку кликом по выделенным доступным объектам; менять только язык интерфейса.",
+      "evidence": {
+        "source": "Attached owner screenshot 1000018429.jpg, current conversation",
+        "observed": "On screenshot settlement row has two adjacent pencil buttons; region/biome/river/lakes have additional pencils",
+        "verification_status": "Screenshot inspected; live independent reproduction not performed in this feedback turn"
+      },
+      "approval": {
+        "status": "proposal_not_task_start_approval",
+        "release_approved": false
+      },
+      "proposal": {
+        "placement": "One Edit/Done control at upper right of region/hex information card",
+        "view_mode": "Clean information without per-field pencils; author notes readable",
+        "edit_mode": "Editable names/properties/notes have subtle dashed underline or outline, tap/click/focus opens inline editing; immutable fields not styled as editable",
+        "object_click_scope": "Proposed: information panel; map gestures/selection remain unchanged unless separately specified",
+        "language": "Rename edits only current interface language; other localized name preserved, no automatic translation. Existing notes are single free text; do not invent translation/copies.",
+        "preserve": [
+          "Existing Undo/Redo, notes autosave, import/export, validation and dirty/focus guards",
+          "Existing POI/biome editing consolidated through same mode; no duplicate entry icons"
+        ],
+        "before_after": "Before: village name followed by two visually similar pencil controls. After: plain village row in view mode; one Edit control enables marked clickable village name/properties and notes.",
+        "scope_exclusions": [
+          "New map editing gestures",
+          "Automatic translation",
+          "New localized notes schema",
+          "Other E2-E8 entity operations beyond separately specified scope"
+        ],
+        "score_impact": "unknown; usability feedback does not establish criterion grade increase",
+        "estimate": "Small-to-medium cross-cutting UI amendment: analyst preview/spec, developer, independent reviewer; exact effort after inventory",
+        "priority_reason": "Addresses observed clutter before adding more E2 controls; prevents multiplying the same interaction problem",
+        "dependencies": [
+          "Owner approval of proposed interaction and single-language contract",
+          "Inventory existing POI/biome/name/notes edit flows",
+          "Versioned desktop/narrow preview and acceptance before developer handoff; showing preview is not a third approval gate"
+        ]
+      },
+      "next_role": "strategist/business_analyst_after_scope_approval",
+      "next_step": "Owner may approve this bounded UI amendment; until then retain as proposal and continue already authorized score event/E2 preparation."
     }
   ]
 }
