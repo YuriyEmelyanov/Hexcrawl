@@ -1,0 +1,87 @@
+{
+  "task_id": "HX-BL-023",
+  "stage_id": "E2_direct_edit",
+  "role": "developer",
+  "status": "ready_for_development",
+  "execution_allowed": true,
+  "approval_ref": "owner-decision-2026-10-29-HX-FB-005-direct-edit-mode",
+  "base_sha": "8f7d17266c53e31428da7c0da6dbbf1afe01d035",
+  "spec_ref": "agent-work/specs/HX-BL-023-E2.md",
+  "spec_version": "E2-2.0",
+  "spec_blob_sha": "4701679e4b92e65f0fc7bd1690ffbf2c1addaf80",
+  "spec_commit_sha": "cff2430bbf9ff790aaa0440fbd3de0e7c6587557",
+  "parent_spec_version": "2.3",
+  "scope": [
+    "One global Edit/Done, no per-object pencils",
+    "Editable information values directly open inline input/select/notes; no target/tool chooser or Save/Cancel/Apply dialogs",
+    "Current-interface-language-only name write, literal preservation of other language including legacy values",
+    "Existing POI/notes actions consolidated; region/hex biome scope follows clicked field",
+    "Regional biome preserves all local entries; per-hex inherit resets only that entry",
+    "Atomic immediate select / name Enter-blur completion / existing note input grouping, shared exact history, stale/busy/fault and locale-captured callbacks"
+  ],
+  "out_of_scope": [
+    "E3-E8 new geometry/water/height/VTT functions",
+    "Bulk clear overrides",
+    "Paid services, publication without exact accepted-package approval"
+  ],
+  "acceptance_ids": [
+    "DE-AC01",
+    "DE-AC02",
+    "DE-AC03",
+    "DE-AC04",
+    "DE-AC05",
+    "DE-AC06",
+    "DE-AC07",
+    "DE-AC08",
+    "DE-AC09",
+    "DE-AC10"
+  ],
+  "replaces_handoff": "agent-work/handoffs/2026-10-29-HX-BL-023-E2-development.json",
+  "preview": {
+    "version": "DE-UI2",
+    "ref": "agent-work/evidence/HX-BL-023-direct-edit-v2/preview.html",
+    "inline_path": "/workspace/direct-edit-preview.html",
+    "kind": "proposal_not_implementation",
+    "presentation": "Included in this run final response",
+    "owner_view_not_assumed": true,
+    "blocks_work_waiting_for_view": false,
+    "qa": "JS syntax and HTML structure checked; one mode control; no pencil/save/cancel/apply/target-radio controls; no local browser render claimed"
+  },
+  "source_risk": {
+    "ref": "src/App.tsx at base8f7d172",
+    "blob_sha": "a5865fb04e4fdca51e61eba88eb1772d8afc660e",
+    "locations": [
+      "11338 NameDraft pair and dirty modal state",
+      "13923-13958 saveNameDraft trims/validates both languages",
+      "13966-13970 renderToponym adds pencil",
+      "13344 local biome setter; existing shared history/notes"
+    ],
+    "required": "Do not reuse old paired rename operation unchanged: it trims and validates non-selected language. Implement narrow single-language contract and update superseded UX tests."
+  },
+  "score_model_version": "1.2",
+  "score_forecast": {
+    "criterion_ids": [
+      "S01-C05",
+      "S02-C02",
+      "S03-C01",
+      "S03-C05",
+      "S04-C04",
+      "S09-C04"
+    ],
+    "before_grade": null,
+    "before_points": null,
+    "after_grade": null,
+    "after_points": null,
+    "delta": null,
+    "status": "unknown; per-criterion evidence plan in spec"
+  },
+  "test_governance": "Update superseded paired/save/dialog assertions rather than retain opposite contracts; reuse actual-handler mixed100/corpus and bounded UI lifecycle; record logical Node/browser counts separately from probes.",
+  "checks": [
+    "npm run check Node24",
+    "Production existing browser suite on exact candidate",
+    "Actual wide/390 UI shown, independent exact-SHA review and score1.2 assessment"
+  ],
+  "next_role": "reviewer",
+  "release_approved": false,
+  "full_editor_ready": false
+}
