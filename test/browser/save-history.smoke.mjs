@@ -179,7 +179,7 @@ try {
  await page.evaluate(()=>window.__delayRead=true);
  await page.locator('input[type=file]').setInputFiles({name:'notes.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(savedNotes))});
  await page.waitForFunction(()=>window.__releaseRead!==undefined);
- assert.equal(await notes.count()===0 || await notes.isDisabled(),true,'busy import closes or disables previous field');
+ assert.equal(await page.evaluate(()=>{const field=document.querySelector('#gm-notes-text');return !field||field.disabled;}),true,'busy import closes or disables previous field');
  await page.locator('.gm-notes').scrollIntoViewIfNeeded();await page.screenshot({path:fileURLToPath(new URL('reports/HX-BL-024/desktop-busy.png',root))});
  await page.evaluate(()=>{window.__releaseRead();delete window.__releaseRead;});
  await page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);
