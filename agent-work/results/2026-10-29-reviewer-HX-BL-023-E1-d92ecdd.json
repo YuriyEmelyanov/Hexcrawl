@@ -1,0 +1,274 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-29",
+  "run_id": "2026-10-29-reviewer-HX-BL-023-E1-d92ecdd",
+  "role": "reviewer",
+  "task_id": "HX-BL-023",
+  "stage_id": "E1_names_F1",
+  "status": "accepted",
+  "review_scope": "E1_only_with_explicit_local_runner_limitations",
+  "role_selection_reason": "Priority4 exact d92ecdd review_ready; coordinator authored candidate, separate fresh-context agent performed substantive independent review",
+  "head_sha": "d92ecdd7ca8c5b7293a4f3e2e6efde93f944c57c",
+  "tree_sha": "2e74b1aa11b571cc2a566aec67f8c805f79f4730",
+  "base_sha": "a7a8cc58987e97c4495c405374c6a4145f3bc9ff",
+  "correction_base_sha": "24fa342cfacefdf604281ac0dc414912d6726433",
+  "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/478",
+  "spec_ref": "agent-work/specs/HX-BL-023.md",
+  "spec_version": "2.0",
+  "independent_reviewer": {
+    "agent": "/root/review_hx023_d92ecdd",
+    "fresh_context": true,
+    "separate_exact_worktree": true,
+    "authored_candidate": false,
+    "coordinator_authored_candidate_previous_run": true,
+    "github_review_type": "COMMENT through same connected account; substantive verdict from independent fresh agent, not external human approval"
+  },
+  "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/478#pullrequestreview-5695710397",
+  "evidence_ref": "agent-work/evidence/review-HX-BL-023-E1-d92ecdd/report.md",
+  "evidence_commit_sha": "5bd5b172994f86749fe56b525be4b933f5107979",
+  "score_assessment_ref": "agent-work/evidence/review-HX-BL-023-E1-d92ecdd/score_assessment.json",
+  "score_model_version": "1.2",
+  "score_assessment_status": "completed_unknown_insufficient_broader_evidence_no_award",
+  "awarded_points": 0,
+  "delta": null,
+  "product_score_changed": false,
+  "findings": {
+    "resolved": [
+      "HX023-E1-F1"
+    ],
+    "blocking_E1_product_defects_found": [],
+    "nonblocking_harness_recommendation": "Existing save-history runner should explicitly reveal collapsed header before final language step; not a new general audit or product defect"
+  },
+  "checks": {
+    "isolated_exact_check": {
+      "status": "passed",
+      "node": "24.22.1",
+      "executed": 248,
+      "passed": 248,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "duration_ms": 692945.157028,
+      "typescript": "passed",
+      "production_build": "passed"
+    },
+    "browser": {
+      "browser": "153.0.8010.0",
+      "unchanged_unique_scripts_passed": 6,
+      "official_save_history": "failed_two_attempts",
+      "negative_attempts": [
+        "Initial generation PROFILE assertion failed; unchanged rerun passed, cause unknown",
+        "Save-history COMP addRegion timeout, cause unknown",
+        "Save-history repeat final language toggle inaccessible; existing120s header-collapse precondition confirmed"
+      ],
+      "diagnostic_copy": "passed all assertions after ordinary header reveal; not counted as official unchanged pass"
+    },
+    "ci": {
+      "run_id": 40827716186,
+      "head_sha": "d92ecdd7ca8c5b7293a4f3e2e6efde93f944c57c",
+      "check": "success",
+      "browser": "success",
+      "world_random": "success",
+      "synthetic_merge_tree_matches": true
+    },
+    "targeted_probes": "F1/N01-N07 independent UI/handler/catalog/version/PNG/keyboard probes passed; finite limits in report"
+  },
+  "test_change_summary": {
+    "head_sha": "d92ecdd7ca8c5b7293a4f3e2e6efde93f944c57c",
+    "count_method": "git diff exact bases; count top-level test() declarations by test source; browser lifecycle blocks reviewed manually, not asserted case totals",
+    "comparisons": [
+      {
+        "base_sha": "24fa342cfacefdf604281ac0dc414912d6726433",
+        "head_sha": "d92ecdd7ca8c5b7293a4f3e2e6efde93f944c57c",
+        "node": {
+          "added": 0,
+          "removed": 0,
+          "modified": 0
+        },
+        "browser": {
+          "new_scripts": 0,
+          "removed_scripts": 0,
+          "E1_lifecycle_blocks_added": 0,
+          "E1_lifecycle_blocks_modified": 1,
+          "assertion_cases": null
+        },
+        "files": [
+          "M\ttest/browser/save-history.smoke.mjs"
+        ],
+        "scenario_risk": "F1 existing-hex view while dirty, draft retention, selectedHex-only export, candidate/history blocked",
+        "reuse_or_new_reason": "Extend existing E1 lifecycle with opposite branch to candidate guard; reuse setup/import/export/history helpers; no new runner."
+      },
+      {
+        "base_sha": "a7a8cc58987e97c4495c405374c6a4145f3bc9ff",
+        "head_sha": "d92ecdd7ca8c5b7293a4f3e2e6efde93f944c57c",
+        "node": {
+          "added": 1,
+          "removed": 0,
+          "modified": 0
+        },
+        "browser": {
+          "new_scripts": 0,
+          "removed_scripts": 0,
+          "E1_lifecycle_blocks_added": 1,
+          "E1_lifecycle_blocks_modified": 0,
+          "assertion_cases": null
+        },
+        "files": [
+          "M\ttest/browser/save-history.smoke.mjs",
+          "M\ttest/helpers/generation-harness.mjs",
+          "M\ttest/mapTransactions.test.mjs"
+        ],
+        "scenario_risk": "Actual App name-edit integration: registry+kingdom storage, paired RU/EN shared history, dirty/stale/fault atomicity, real React errors/focus/export/language, plus F1 opposite-click regression.",
+        "reuse_or_new_reason": "Extend existing E1 lifecycle with opposite branch to candidate guard; reuse setup/import/export/history helpers; no new runner."
+      }
+    ],
+    "temporary_diagnostics": {
+      "permanent_growth": 0,
+      "scripts": [
+        "ui-probe.mjs",
+        "guard-probe.mjs",
+        "coverage-probe.mjs",
+        "validation-probe.mjs",
+        "save-history-header-diagnostic.mjs"
+      ],
+      "scope": "isolated review evidence; logical assertion total not advertised"
+    },
+    "execution": {
+      "node": {
+        "runner": "npm test / node --test test/*.test.mjs",
+        "executed": 248,
+        "passed": 248,
+        "failed": 0,
+        "skipped": 0,
+        "cancelled": 0
+      },
+      "browser": {
+        "runner": "npm run test:browser / test/browser/*.smoke.mjs listed in package.json",
+        "scripts": 7,
+        "passed_scripts": 6,
+        "logical_cases": null,
+        "status": "six_unchanged_passed_save_history_official_failed_confirmed_header_precondition",
+        "official_failed_script": "test/browser/save-history.smoke.mjs",
+        "official_failed_attempts": 2,
+        "generation_failed_first_attempt": true,
+        "generation_unchanged_repeat_passed": true,
+        "diagnostic_save_history_passed": true,
+        "diagnostic_is_official_unchanged_pass": false
+      },
+      "temporary_diagnostics": {
+        "runner": "node isolated *.mjs / production Playwright or copied App harness",
+        "scripts": 5,
+        "passed_scripts": 5,
+        "logical_assertions": null
+      }
+    }
+  },
+  "accepted_release_pending": {
+    "task_id": "HX-BL-023",
+    "stage_id": "E1_names",
+    "pr": 478,
+    "branch": "agent/hx023-e1-names",
+    "head_sha": "d92ecdd7ca8c5b7293a4f3e2e6efde93f944c57c",
+    "tree_sha": "2e74b1aa11b571cc2a566aec67f8c805f79f4730",
+    "base_sha": "a7a8cc58987e97c4495c405374c6a4145f3bc9ff",
+    "status": "accepted_awaiting_owner_publication_permission",
+    "release_approved": false,
+    "published": false,
+    "review_ref": "agent-work/evidence/review-HX-BL-023-E1-d92ecdd/report.md",
+    "score_assessment_ref": "agent-work/evidence/review-HX-BL-023-E1-d92ecdd/score_assessment.json",
+    "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/478#pullrequestreview-5695710397",
+    "ci_run_id": 40827716186,
+    "scope": "Rename current canonical regions/settlements/rivers/lakes/kingdoms with shared Undo/Redo, including F1 navigation fix; not entire editor",
+    "ui_ref": "agent-work/evidence/HX-BL-023-E1-F1-d92ecdd/manifest.json",
+    "known_limitations": [
+      "Local official save-history failed twice; six unchanged scripts passed and temporary full diagnostic passed after normal header reveal. CI exact run all success.",
+      "First PROFILE and COMP timeout causes not established; raw negatives preserved.",
+      "Whole editor and complete game/score criteria remain unverified."
+    ],
+    "publication_requirements": [
+      "Explicit owner permission for this exact package",
+      "Recheck exact current PR/head/base against acceptance; changed SHA requires fresh review",
+      "No additional product changes or unreviewed commits in package",
+      "After publication record merge/deployment/live evidence and score_update_pending; no score increase before publication"
+    ],
+    "next_parallel_authorized_activity": "agent-work/handoffs/2026-10-29-HX-BL-023-E2-analysis.json",
+    "release_package_ref": "agent-work/handoffs/2026-10-29-HX-BL-023-E1-release-package-d92ecdd.json"
+  },
+  "release_approved": false,
+  "published": false,
+  "main_changed": false,
+  "full_editor_ready": false,
+  "marketing_gate_status": "not_passed_full023_remains",
+  "next_task_id": "HX-BL-023",
+  "next_stage_id": "E2_biomes",
+  "next_role": "business_analyst",
+  "execution_allowed": true,
+  "next_step": "Prepare usable E2 hex/region biome specification, explicit override handling/compatibility and desktop390 proposed UI under already approved023 scope.",
+  "handoff_ref": "agent-work/handoffs/2026-10-29-HX-BL-023-E2-analysis.json",
+  "owner_decisions_needed": [
+    {
+      "type": "publication_permission",
+      "task_id": "HX-BL-023",
+      "stage_id": "E1_names",
+      "pr": 478,
+      "head_sha": "d92ecdd7ca8c5b7293a4f3e2e6efde93f944c57c",
+      "package_ref": "agent-work/handoffs/2026-10-29-HX-BL-023-E1-release-package-d92ecdd.json",
+      "limitations_disclosed": true
+    }
+  ],
+  "automation_health": {
+    "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-10-29T08:56:35.273Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "end": {
+      "checked_at": "2026-10-29T09:49:51.509Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restored_during_this_run": true,
+    "errors": [],
+    "limitation": "Actual observations at start/end; not a guarantee after completion",
+    "end_initial_disabled": {
+      "checked_at": "2026-10-29T09:49:08.725Z",
+      "status": "checked",
+      "is_enabled": false
+    },
+    "restoration": {
+      "updated_at": "2026-10-29T09:49:50.760Z",
+      "requested_is_enabled": true,
+      "response_success": true,
+      "message": "Automation updated.",
+      "returned_is_enabled": true,
+      "authorization": "owner-decision-2026-10-25 automation health restoration; no current stop decision or full blocker recorded",
+      "schedule_or_prompt_changed": false
+    },
+    "disable_reason": "unknown"
+  },
+  "independent_agent_automation_health": {
+    "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-10-29T08:57:47.802Z",
+      "is_enabled": true,
+      "source": "actual automations.peek"
+    },
+    "end": {
+      "checked_at": "2026-10-29T09:17:30.858Z",
+      "clock": "2026-10-29 09:17:30 UTC",
+      "is_enabled": true,
+      "source": "actual automations.peek"
+    },
+    "restoration_performed": false,
+    "errors": [],
+    "schedule_changed": false,
+    "scope": "Observed moments only; no guarantee after completion"
+  },
+  "operational_errors_recovered": [
+    "Initial binary transport reads failed SHA integrity; retried before tree references, all final image references verified",
+    "Initial directory fetch returned empty content for trailing slash; normalized directory request readback succeeded"
+  ],
+  "claim_released": true,
+  "completed_at": "2026-10-29T09:50:57.960Z"
+}
