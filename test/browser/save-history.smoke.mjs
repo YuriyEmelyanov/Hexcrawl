@@ -68,6 +68,7 @@ try {
  namesFixture.map.gmNotesByHexKey={'3,6':'Авторская заметка перед поиском'};
  await load(namesFixture);
  assert.equal(await button('Найти объект').getAttribute('aria-expanded'),'false');
+ assert.ok((await button('Найти объект').boundingBox()).height>=44,'find-object touch target is at least44px');
  assert.equal(await namesSection.locator('.map-names__list').count(),0,'catalog hidden by default');
  assert.equal(await namesSection.evaluate(el=>el.parentElement.lastElementChild===el),true,'find-object block is after all info');
  assert.equal(await page.locator('.gm-notes').evaluate(el=>!!(el.compareDocumentPosition(document.querySelector('.map-names'))&Node.DOCUMENT_POSITION_FOLLOWING)),true,'find object follows author notes');
