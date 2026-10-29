@@ -2,7 +2,7 @@
   "schema_version": 1,
   "date": "2026-10-29",
   "branch": "agent-operations",
-  "plan_json": "agent-work/handoffs/2026-10-29-HX-BL-023-E2-development.json",
+  "plan_json": "agent-work/handoffs/2026-10-29-HX-BL-023-direct-edit-development.json",
   "plan_md": null,
   "strategy_branch": "main",
   "strategy_status": "approved",
@@ -26,10 +26,10 @@
   },
   "lessons_path": "agent-work/lessons.md",
   "plan_id": "2026-10-29-developer-HX-BL-023-E1",
-  "run_id": "2026-10-29-analyst-HX-BL-023-E2",
+  "run_id": "2026-10-29-analyst-HX-BL-023-direct-edit",
   "plan_revision": 1,
   "baseline_sha": "8f7d17266c53e31428da7c0da6dbbf1afe01d035",
-  "status": "specification_correction_in_progress",
+  "status": "ready_for_development",
   "planning_for": "2026-10-29",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-10-25",
@@ -46,23 +46,14 @@
   "schedule_frequency": "every_three_hours",
   "process_path": "agent-work/process.md",
   "current_role": "business_analyst",
-  "next_role": "business_analyst",
+  "next_role": "developer",
   "current_task_id": "HX-BL-023",
   "spec_path": "agent-work/specs/HX-BL-023-E2.md",
-  "spec_version": "E2-1.0",
-  "result_path": "agent-work/results/2026-10-29-analyst-HX-BL-023-E2.json",
+  "spec_version": "E2-2.0",
+  "result_path": "agent-work/results/2026-10-29-analyst-HX-BL-023-direct-edit.json",
   "handoff_commit_sha": "438de4af964574b36a79d33319f20ba8a976f5b7",
-  "active_claim": {
-    "run_id": "2026-10-29-analyst-HX-BL-023-direct-edit",
-    "role": "business_analyst",
-    "task_id": "HX-BL-023",
-    "stage_id": "E2_direct_edit_correction",
-    "started_at": "2026-10-29T18:26:13.981Z",
-    "lease_expires_at": "2026-10-29T20:26:13.981Z",
-    "status": "in_progress",
-    "base_sha": "8f7d17266c53e31428da7c0da6dbbf1afe01d035"
-  },
-  "next_step": "Owner rejected E2 form; analyst updates spec to global direct edit, no Save/Cancel/target chooser.",
+  "active_claim": null,
+  "next_step": "Implement corrected direct-edit E2-2.0 and show actual UI; independent exact-SHA review then separate publication permission.",
   "owner_decisions_needed": [
     {
       "task_id": "HX-BL-003",
@@ -204,7 +195,7 @@
   "score_update_release_sha": "8f7d17266c53e31428da7c0da6dbbf1afe01d035",
   "score_process_decision_ref": "owner-decision-2026-10-24-score-responsibilities",
   "score_assessment_ref": null,
-  "role_selection_reason": "Current approved E2 had no usable detailed specification; E1 release/score completed and no active claim",
+  "role_selection_reason": "Explicit owner rejected E2 form and mandated global direct edit; update specification before implementation",
   "score_update_result_ref": "agent-work/results/2026-10-29-strategist-score-HX-BL-023-E1-8f7d172.json",
   "score_update_completed_at": "2026-10-29T15:04:04.407Z",
   "score_update_delta": null,
@@ -229,18 +220,18 @@
   "automation_health": {
     "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-10-29T17:57:47.579Z",
+      "checked_at": "2026-10-29T18:24:35.414Z",
       "status": "checked",
       "is_enabled": true
     },
     "end": {
-      "checked_at": "2026-10-29T18:14:12.854Z",
+      "checked_at": "2026-10-29T18:36:47.811Z",
       "status": "checked",
       "is_enabled": true
     },
     "restored_during_this_run": false,
     "errors": [],
-    "limitation": "Actual available observations only; not guarantee of subsequent service state"
+    "limitation": "Observed available moments only; later service state not guaranteed"
   },
   "open_findings": [
     {
@@ -927,7 +918,7 @@
     "next_step": "Решить отдельно узкий cleanup AUD-02/03/04; готовую спецификацию024 не задерживать."
   },
   "owner_decisions_note": "Подтвердить предложенную адресную замену большого незавершённого historygate для003. HX-BL-024 уже утверждён, повторного согласования задачи не нужно; выпуск474 отдельно.",
-  "updated_at": "2026-10-29T18:14:57.161Z",
+  "updated_at": "2026-10-29T18:37:28.596Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
     "stage_id": "V3",
@@ -1580,7 +1571,7 @@
   "historical_unverified_weight": 70,
   "historical_score_model_version": "1.1",
   "score_update_awarded_points": 0,
-  "handoff_ref": "agent-work/handoffs/2026-10-29-HX-BL-023-E2-development.json",
+  "handoff_ref": "agent-work/handoffs/2026-10-29-HX-BL-023-direct-edit-development.json",
   "previous_feedback_handoff": {
     "task_id": "HX-FB-001",
     "register": "agent-work/feedback.json",
@@ -2126,31 +2117,28 @@
     "assessment_ref": "agent-work/evidence/review-HX-BL-023-E1-ui3-a265a78/score_assessment.json"
   },
   "previous_claim": {
-    "run_id": "2026-10-29-analyst-HX-BL-023-E2",
-    "task_id": "HX-BL-023",
-    "stage_id": "E2_biomes",
+    "run_id": "2026-10-29-analyst-HX-BL-023-direct-edit",
     "role": "business_analyst",
-    "started_at": "2026-10-29T17:58:45.439Z",
-    "lease_expires_at": "2026-10-29T19:58:45.439Z",
-    "base_sha": "8f7d17266c53e31428da7c0da6dbbf1afe01d035",
+    "task_id": "HX-BL-023",
+    "stage_id": "E2_direct_edit_correction",
+    "started_at": "2026-10-29T18:26:13.981Z",
+    "lease_expires_at": "2026-10-29T20:26:13.981Z",
     "status": "completed",
-    "last_checkpoint": "Approved E2 specification/preview; source read through GitHub because local exec transport disconnected; no product changes.",
-    "completed_at": "2026-10-29T18:14:38.917Z",
-    "result_ref": "agent-work/results/2026-10-29-analyst-HX-BL-023-E2.json"
+    "base_sha": "8f7d17266c53e31428da7c0da6dbbf1afe01d035",
+    "completed_at": "2026-10-29T18:36:47.812Z",
+    "result_ref": "agent-work/results/2026-10-29-analyst-HX-BL-023-direct-edit.json"
   },
-  "active_slice": "E2_biomes",
+  "active_slice": "E2_direct_edit",
   "last_completed_stage_task_id": "HX-BL-023",
   "ui_preview": {
-    "version": "E2-UI1",
-    "ref": "agent-work/evidence/HX-BL-023-E2-spec-v1/preview.html",
-    "local_inline_path": "/workspace/e2-biomes-preview.html",
-    "format": "interactive proposed UI; wide and390 views with keep/clear/hex/busy/error states",
-    "presentation": "Included as inline prototype in this run final response, existing task conversation",
-    "not_implementation": true,
+    "version": "DE-UI2",
+    "ref": "agent-work/evidence/HX-BL-023-direct-edit-v2/preview.html",
+    "inline_path": "/workspace/direct-edit-preview.html",
+    "presentation": "Inline proposal included in this run final response; edit mode shown enabled for demonstration",
+    "kind": "proposal_not_actual_implementation",
     "owner_view_not_assumed": true,
-    "blocks_development_until_owner_view": false,
-    "qa_ref": "agent-work/evidence/HX-BL-023-E2-spec-v1/preview-qa.json",
-    "runtime_render_status": "not_run_browser_download_failed; JS syntax and HTML structure passed"
+    "no_intermediate_design_gate": true,
+    "QA": "JS syntax and HTML structure pass; one mode control, no rejected form controls; browser render not executed"
   },
   "ui_preview_pending": false,
   "marketing_gate_status": "not_passed_full023_remains",
@@ -2163,13 +2151,12 @@
   },
   "next_product_recommendation": {
     "task_id": "HX-BL-023",
-    "stage_id": "E2_biomes",
+    "stage_id": "E2_direct_edit",
     "status": "ready_for_development",
     "next_role": "developer",
     "execution_allowed": true,
-    "handoff_ref": "agent-work/handoffs/2026-10-29-HX-BL-023-E2-development.json",
-    "reason": "Usable detailed specification and proposed UI prepared under existing task approval; no intermediate view/approval gate",
-    "score_effect": "unknown"
+    "handoff_ref": "agent-work/handoffs/2026-10-29-HX-BL-023-direct-edit-development.json",
+    "reason": "Explicit owner direct-edit correction approved; rejected form replaced by E2-2.0; no extra design/start gate"
   },
   "owner_editor_scope": {
     "decision_ref": "owner-decision-2026-10-28-editor-functional-scope",
@@ -2191,10 +2178,10 @@
       "Расположение POI: Проверить перенос существующей точки; смена типа/имени не равна переносу"
     ],
     "existing_POI_editing_note": "Точки интереса уже можно менять; инвентаризировать и сохранить, не выдавать за новую возможность.",
-    "status": "E2_ready_for_development_full_scope_remains",
+    "status": "E2_direct_edit_ready_for_development",
     "result_ref": "agent-work/results/2026-10-28-HX-BL-023-owner-scope.json",
     "next_role": "developer",
-    "next_step": "Implement approved E2 in separate branch/PR against pinned spec; show actual UI and exact-SHA evidence; independent reviewer follows, release separately.",
+    "next_step": "Implement corrected direct-edit E2-2.0 and show actual UI; independent exact-SHA review then separate publication permission.",
     "obstacles_decision_ref": "owner-decision-2026-10-28-editor-obstacles",
     "omission_candidates": [
       {
@@ -2237,8 +2224,8 @@
     "last_result_ref": "agent-work/results/2026-10-28-HX-BL-023-additional-functions-approved.json",
     "additional_functions_approval_ref": "owner-decision-2026-10-28-editor-additional-functions-approved",
     "additional_functions_status": "all_six_approved_in_scope",
-    "spec_version": "E2-1.0",
-    "analysis_result_ref": "agent-work/results/2026-10-29-analyst-HX-BL-023-E2.json",
+    "spec_version": "E2-2.0",
+    "analysis_result_ref": "agent-work/results/2026-10-29-analyst-HX-BL-023-direct-edit.json",
     "capability_matrix_ref": "agent-work/evidence/HX-BL-023-editor-v2/capability-matrix.json",
     "developer_result_ref": "agent-work/results/2026-10-29-developer-HX-BL-023-E1-ui3.json",
     "review_result_ref": "agent-work/results/2026-10-29-reviewer-HX-BL-023-E1-ui3-a265a78.json",
@@ -2313,7 +2300,7 @@
     "errors": [],
     "limitation": "Observed status at two calls only; not guarantee of subsequent service state."
   },
-  "next_active_slice": "E2_biomes",
+  "next_active_slice": "E2_direct_edit",
   "review_scope": "E1 UI3 spec2.1 and relevant E1 regressions; fresh score1.2",
   "previous_accepted_release_pending": {
     "task_id": "HX-BL-023",
@@ -2352,26 +2339,12 @@
   "latest_feedback_event": {
     "feedback_id": "HX-FB-005",
     "task_id": "HX-BL-023",
-    "status": "proposed",
-    "proposal_ref": "agent-work/feedback.json#HX-FB-005",
-    "result_ref": "agent-work/results/2026-10-29-strategist-HX-FB-005-proposal.json",
-    "required_decision": "Bounded unified Edit mode + current-language-only rename; implementation not yet approved",
-    "automation_health": {
-      "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
-      "start": {
-        "checked_at": "2026-10-29T13:23:31.613Z",
-        "status": "checked",
-        "is_enabled": true
-      },
-      "end": {
-        "checked_at": "2026-10-29T13:24:39.760Z",
-        "status": "checked",
-        "is_enabled": true
-      },
-      "restored_during_this_run": false,
-      "errors": []
-    },
-    "current_authorized_E2_analysis_blocked": false
+    "status": "approved_and_specified",
+    "owner_decision_ref": "owner-decision-2026-10-29-HX-FB-005-direct-edit-mode",
+    "result_ref": "agent-work/results/2026-10-29-analyst-HX-BL-023-direct-edit.json",
+    "required_decision": null,
+    "execution_allowed": true,
+    "release_approved": false
   },
   "product_boundaries": {
     "decision_ref": "owner-decision-2026-10-29-map-hexcrawl-exploration-layers",
@@ -2427,7 +2400,7 @@
     "release_sha": "8f7d17266c53e31428da7c0da6dbbf1afe01d035"
   },
   "spec_ref": "agent-work/specs/HX-BL-023-E2.md",
-  "spec_blob_sha": "1f21900da578b5d64bbf160abd44386d1d51aa39",
+  "spec_blob_sha": "4701679e4b92e65f0fc7bd1690ffbf2c1addaf80",
   "parent_spec_ref": "agent-work/specs/HX-BL-023.md",
-  "parent_spec_version": "2.2"
+  "parent_spec_version": "2.3"
 }
