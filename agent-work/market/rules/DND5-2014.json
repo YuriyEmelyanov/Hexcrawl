@@ -1,0 +1,1132 @@
+{
+  "schema_version": 2,
+  "game_id": "DND5",
+  "date": "2026-10-29",
+  "status": "source_verified_bounded_static_product_audit",
+  "scope": "Тематический проход DMG 2014 по подготовке/ведению региональной карты и связанному исследованию. Не вся D&D 5e: PHB, MM, приключения и 2024 не объявлены проверенными этим файлом.",
+  "source": {
+    "id": "DMG14-RU-upload",
+    "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+    "filename": "5e Dungeon Masters Guide - Руководство Мастера RUS.pdf",
+    "sha256": "95b828ad64eaa192c67a19bcc0149d82204fcb3c992c5407a9091607a23baba8",
+    "pdf_pages": 322,
+    "page_numbering": "Номера печатных страниц, а не позиция в PDF.",
+    "reviewed_sections": [
+      "13–14",
+      "86–87",
+      "106–112",
+      "242–244"
+    ],
+    "limitations": [
+      "Текст извлечён из приложенного PDF; чтение тематических разделов, не аудит каждого правила всей книги.",
+      "Обзор водных/воздушных путешествий 116–119, ловушек и подземелий не включён; применимость к региональной карте требует отдельного прохода.",
+      "Правило изложено пересказом с точным локатором. Интерпретация функции — требование продукта, не заявление о требованиях издателя к программам.",
+      "Прежние источники 2024 сохранены отдельно и не подмешиваются в 2014."
+    ]
+  },
+  "status_dictionary": {
+    "yes": "Реализовано в проверенном контуре, указан способ (включая ручной).",
+    "partial": "Частично; finding перечисляет границы/неподтверждённое.",
+    "no": "Не обнаружено в проверенном коде/схеме; ограниченное отрицательное свидетельство.",
+    "unverified": "Не проверено; не считать ни реализацией, ни отсутствием.",
+    "not_applicable": "Отдельное требование из правила не следует; не включать в знаменатель."
+  },
+  "evaluation_policy": {
+    "group_by": "rule",
+    "required_layers": [
+      "L1",
+      "L2",
+      "L3"
+    ],
+    "no_silent_inference": true,
+    "manual_vs_automatic": "Ручная заметка не равна генератору содержимого, движку правила или специальному полю.",
+    "stages": [
+      "L1",
+      "L2",
+      "L3"
+    ],
+    "no_score_delta": true,
+    "full_game_support": "Не назначать полную поддержку игры по этому ограниченному проходу.",
+    "reuse_for_ranked_games": true
+  },
+  "evidence": {
+    "CODE-2026-10-29": {
+      "code_sha": "8f7d17266c53e31428da7c0da6dbbf1afe01d035",
+      "method": "bounded_static_inspection",
+      "files": [
+        {
+          "path": "src/App.tsx",
+          "blob": "a5865fb04e4fdca51e61eba88eb1772d8afc660e",
+          "anchors": [
+            "RoadKind/RoadSegment/RiverCrossing (269–280)",
+            "MapSnapshot (1257–1274)",
+            "setSelectedHexBiomeOverride (13344)",
+            "gmNotesByHexKey export/import (13777,13847)"
+          ]
+        },
+        {
+          "path": "src/saveValidation.ts",
+          "blob": "5d6e024b0e064daec44eb8ab02180805abded6ef"
+        }
+      ],
+      "limitations": "Чтение исходного кода и схемы сохранения, без нового запуска приложения. Отсутствие означает отсутствие в проверенном контуре; наличие данных не доказывает качество генерации. main проверен, тождество live-сайта этому SHA в этом проходе не проверялось."
+    }
+  },
+  "rules": [
+    {
+      "id": "DND5-2014-001",
+      "rule": {
+        "source_id": "DMG14-RU-upload",
+        "printed_page": 13,
+        "section": "Создание карты для вашей кампании",
+        "paraphrase": "Методы сверху вниз и снизу вверх",
+        "normative_kind": "recommendation",
+        "quotation": null
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": "Создать территорию и расширять существующую, сохраняя созданное",
+          "status": "partial",
+          "implemented": null,
+          "evidence_id": "CODE-2026-10-29",
+          "finding": "Добавление регионов и сохранение есть; детализация вложенной карты с согласованием масштабов не подтверждена.",
+          "delivery": "current_map_stage"
+        },
+        {
+          "layer": "L2",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Из данного положения отдельное требование к этому уровню не выводится."
+        },
+        {
+          "layer": "L3",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Из данного положения отдельное требование к этому уровню не выводится."
+        }
+      ]
+    },
+    {
+      "id": "DND5-2014-002",
+      "rule": {
+        "source_id": "DMG14-RU-upload",
+        "printed_page": 14,
+        "section": "Создание карты / масштабы",
+        "paraphrase": "Гекс-сетка и масштаб 1, 6 или 60 миль по нужной детализации",
+        "normative_kind": "recommendation",
+        "quotation": null
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": "Гекс-сетка и явно заданная физическая длина гекса в выбранном масштабе",
+          "status": "partial",
+          "implemented": null,
+          "evidence_id": "CODE-2026-10-29",
+          "finding": "Сетка есть; mapScale — экранный зум. Физическая длина гекса и пресеты 1/6/60 миль не обнаружены.",
+          "delivery": "current_map_stage"
+        },
+        {
+          "layer": "L2",
+          "requirement": "Измерять дистанцию маршрута по физическому масштабу",
+          "status": "no",
+          "implemented": false,
+          "evidence_id": "CODE-2026-10-29",
+          "finding": "hexDistance считает гексы геометрии генерации; пользовательский маршрут и физическая дистанция не обнаружены.",
+          "delivery": "future_hexcrawl_VTT"
+        },
+        {
+          "layer": "L3",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Из данного положения отдельное требование к этому уровню не выводится."
+        }
+      ]
+    },
+    {
+      "id": "DND5-2014-003",
+      "rule": {
+        "source_id": "DMG14-RU-upload",
+        "printed_page": 14,
+        "section": "Масштаб области",
+        "paraphrase": "Преобладающая местность с небольшими участками другого типа",
+        "normative_kind": "recommendation",
+        "quotation": null
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": "Крупные зоны биома и локальные отличия отдельных гексов",
+          "status": "yes",
+          "implemented": true,
+          "evidence_id": "CODE-2026-10-29",
+          "finding": "Региональные биомы и biomeOverrideByHexKey; изменение биома отдельного гекса. Соответствие художественного результата отдельно не оценено.",
+          "delivery": "current_map_stage"
+        },
+        {
+          "layer": "L2",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Из данного положения отдельное требование к этому уровню не выводится."
+        },
+        {
+          "layer": "L3",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Из данного положения отдельное требование к этому уровню не выводится."
+        }
+      ]
+    },
+    {
+      "id": "DND5-2014-004",
+      "rule": {
+        "source_id": "DMG14-RU-upload",
+        "printed_page": 14,
+        "section": "Масштаб области",
+        "paraphrase": "Поселения, фермы и различие населённой и дикой области",
+        "normative_kind": "recommendation",
+        "quotation": null
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": "Поселения и сельхозземли с плотностью, подходящей масштабу и освоенности",
+          "status": "partial",
+          "implemented": null,
+          "evidence_id": "CODE-2026-10-29",
+          "finding": "Освоенные/дикие регионы и POI есть; масштабные ориентиры 1 городок и 8–12 деревень и пояс сельхозземель не проверены.",
+          "delivery": "current_map_stage"
+        },
+        {
+          "layer": "L2",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Из данного положения отдельное требование к этому уровню не выводится."
+        },
+        {
+          "layer": "L3",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Из данного положения отдельное требование к этому уровню не выводится."
+        }
+      ]
+    },
+    {
+      "id": "DND5-2014-005",
+      "rule": {
+        "source_id": "DMG14-RU-upload",
+        "printed_page": 14,
+        "section": "Масштаб королевства",
+        "paraphrase": "Берега, острова, внутренние моря, озёра и полуострова",
+        "normative_kind": "recommendation",
+        "quotation": null
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": "География суши и воды с перечисленными формами",
+          "status": "partial",
+          "implemented": null,
+          "evidence_id": "CODE-2026-10-29",
+          "finding": "Море, побережье и озёра есть; полнота всех форм и их свободная правка не доказаны.",
+          "delivery": "current_map_stage"
+        },
+        {
+          "layer": "L2",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Из данного положения отдельное требование к этому уровню не выводится."
+        },
+        {
+          "layer": "L3",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Из данного положения отдельное требование к этому уровню не выводится."
+        }
+      ]
+    },
+    {
+      "id": "DND5-2014-006",
+      "rule": {
+        "source_id": "DMG14-RU-upload",
+        "printed_page": 14,
+        "section": "Масштаб королевства",
+        "paraphrase": "Горные хребты, предгорья и равнинные участки",
+        "normative_kind": "recommendation",
+        "quotation": null
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": "Горы, холмы и равнины с осмысленными переходами",
+          "status": "partial",
+          "implemented": null,
+          "evidence_id": "CODE-2026-10-29",
+          "finding": "Биомы и высоты есть; соответствие расположения хребтов и переходов рекомендации DMG не оценено.",
+          "delivery": "current_map_stage"
+        },
+        {
+          "layer": "L2",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Из данного положения отдельное требование к этому уровню не выводится."
+        },
+        {
+          "layer": "L3",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Из данного положения отдельное требование к этому уровню не выводится."
+        }
+      ]
+    },
+    {
+      "id": "DND5-2014-007",
+      "rule": {
+        "source_id": "DMG14-RU-upload",
+        "printed_page": 14,
+        "section": "Масштаб королевства",
+        "paraphrase": "Истоки рек, притоки и сток в крупный водоём",
+        "normative_kind": "recommendation",
+        "quotation": null
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": "Связная речная сеть с истоками, притоками и устьями",
+          "status": "partial",
+          "implemented": null,
+          "evidence_id": "CODE-2026-10-29",
+          "finding": "Сеть рек, слияния, озёра и море есть; соответствие всего алгоритма этой рекомендации не доказано этим чтением.",
+          "delivery": "current_map_stage"
+        },
+        {
+          "layer": "L2",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Из данного положения отдельное требование к этому уровню не выводится."
+        },
+        {
+          "layer": "L3",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Из данного положения отдельное требование к этому уровню не выводится."
+        }
+      ]
+    },
+    {
+      "id": "DND5-2014-008",
+      "rule": {
+        "source_id": "DMG14-RU-upload",
+        "printed_page": 14,
+        "section": "Масштаб королевства / континента",
+        "paraphrase": "Отбор объектов по масштабу: крупные города, реки и политические границы",
+        "normative_kind": "recommendation",
+        "quotation": null
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": "Управлять детализацией и отображением объектов для области/королевства/континента",
+          "status": "partial",
+          "implemented": null,
+          "evidence_id": "CODE-2026-10-29",
+          "finding": "Регионы/королевства и POI есть; три физических масштаба, фильтрация детализации и ориентиры 8–12 городов не подтверждены.",
+          "delivery": "current_map_stage"
+        },
+        {
+          "layer": "L2",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Из данного положения отдельное требование к этому уровню не выводится."
+        },
+        {
+          "layer": "L3",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Из данного положения отдельное требование к этому уровню не выводится."
+        }
+      ]
+    },
+    {
+      "id": "DND5-2014-009",
+      "rule": {
+        "source_id": "DMG14-RU-upload",
+        "printed_page": 14,
+        "section": "Комбинирование масштабов",
+        "paraphrase": "Согласование карт 60/6/1 миля с сохранением опорных городов",
+        "normative_kind": "recommendation",
+        "quotation": null
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": "Вложенные карты разных масштабов, согласованные координаты и опорные объекты",
+          "status": "no",
+          "implemented": false,
+          "evidence_id": "CODE-2026-10-29",
+          "finding": "Экранный зум есть, но вложенная физическая детализация 10:1 и 6:1 не обнаружена.",
+          "delivery": "current_map_stage"
+        },
+        {
+          "layer": "L2",
+          "requirement": "Сохранять положение партии и дистанции при смене масштаба",
+          "status": "no",
+          "implemented": false,
+          "evidence_id": "CODE-2026-10-29",
+          "finding": "Состояние партии и переходы между физическими масштабами не обнаружены.",
+          "delivery": "future_hexcrawl_VTT"
+        },
+        {
+          "layer": "L3",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Из данного положения отдельное требование к этому уровню не выводится."
+        }
+      ]
+    },
+    {
+      "id": "DND5-2014-010",
+      "rule": {
+        "source_id": "DMG14-RU-upload",
+        "printed_page": 106,
+        "section": "Подход с перемоткой / описание каждого часа",
+        "paraphrase": "Путешествие можно пропустить описанием или вести подробно",
+        "normative_kind": "optional_procedure",
+        "quotation": null
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": "Хранить приметные черты и описания мест, нужные для рассказа о пути",
+          "status": "partial",
+          "implemented": null,
+          "evidence_id": "CODE-2026-10-29",
+          "finding": "POI и ручные заметки есть; готовые связные описания пути не подтверждены.",
+          "delivery": "current_map_stage"
+        },
+        {
+          "layer": "L2",
+          "requirement": "Режимы краткого перехода и почасового продвижения по маршруту",
+          "status": "no",
+          "implemented": false,
+          "evidence_id": "CODE-2026-10-29",
+          "finding": "Процедура продвижения партии и игрового времени не обнаружена.",
+          "delivery": "future_hexcrawl_VTT"
+        },
+        {
+          "layer": "L3",
+          "requirement": "Походный строй, действия участников и подготовленные/случайные сцены",
+          "status": "no",
+          "implemented": false,
+          "evidence_id": "CODE-2026-10-29",
+          "finding": "Механики D&D не обнаружены; целевая реализация через интеграции.",
+          "delivery": "integration_preferred"
+        }
+      ]
+    },
+    {
+      "id": "DND5-2014-011",
+      "rule": {
+        "source_id": "DMG14-RU-upload",
+        "printed_page": 108,
+        "section": "Составление карты дикой местности",
+        "paraphrase": "Рельеф направляет пути: долины, хребты, проходы и перевалы",
+        "normative_kind": "recommendation",
+        "quotation": null
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": "Показывать дороги/тропы, барьеры и доступные проходы в рельефе",
+          "status": "partial",
+          "implemented": null,
+          "evidence_id": "CODE-2026-10-29",
+          "finding": "Дороги/тропы, рельеф и препятствия есть; явные долины/перевалы и полная согласованность проходимости не доказаны.",
+          "delivery": "current_map_stage"
+        },
+        {
+          "layer": "L2",
+          "requirement": "Выбор маршрута с учётом доступных проходов и барьеров",
+          "status": "no",
+          "implemented": false,
+          "evidence_id": "CODE-2026-10-29",
+          "finding": "Интерактивное ведение маршрута партии не обнаружено.",
+          "delivery": "future_hexcrawl_VTT"
+        },
+        {
+          "layer": "L3",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Из данного положения отдельное требование к этому уровню не выводится."
+        }
+      ]
+    },
+    {
+      "id": "DND5-2014-012",
+      "rule": {
+        "source_id": "DMG14-RU-upload",
+        "printed_page": 108,
+        "section": "Составление карты дикой местности",
+        "paraphrase": "Подготовленную сцену можно перенести, если партия сошла с пути",
+        "normative_kind": "optional_procedure",
+        "quotation": null
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": "Переносить подготовленное содержимое с места на место",
+          "status": "partial",
+          "implemented": null,
+          "evidence_id": "CODE-2026-10-29",
+          "finding": "Текст можно вручную перенести между заметками; отдельная операция переноса существующего POI/сцены не подтверждена.",
+          "delivery": "current_map_stage"
+        },
+        {
+          "layer": "L2",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Из данного положения отдельное требование к этому уровню не выводится."
+        },
+        {
+          "layer": "L3",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Из данного положения отдельное требование к этому уровню не выводится."
+        }
+      ]
+    },
+    {
+      "id": "DND5-2014-013",
+      "rule": {
+        "source_id": "DMG14-RU-upload",
+        "printed_page": 108,
+        "section": "Перемещение по карте",
+        "paraphrase": "В новом гексе видны признаки примечательного места, если оно не скрыто",
+        "normative_kind": "optional_procedure",
+        "quotation": null
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": "Содержимое гекса, признаки места и различие открытого/скрытого",
+          "status": "partial",
+          "implemented": null,
+          "evidence_id": "CODE-2026-10-29",
+          "finding": "POI и заметки есть; структурированная скрытость/признаки и раздельный доступ игроков не обнаружены.",
+          "delivery": "current_map_stage"
+        },
+        {
+          "layer": "L2",
+          "requirement": "Отмечать посещение и раскрывать сведения при входе в гекс по масштабу",
+          "status": "no",
+          "implemented": false,
+          "evidence_id": "CODE-2026-10-29",
+          "finding": "Положение партии, состояние посещения и автоматическое раскрытие не обнаружены.",
+          "delivery": "future_hexcrawl_VTT"
+        },
+        {
+          "layer": "L3",
+          "requirement": "Разрешать обнаружение скрытого места по применимым правилам",
+          "status": "no",
+          "implemented": false,
+          "evidence_id": "CODE-2026-10-29",
+          "finding": "Процедуры обнаружения D&D не обнаружены.",
+          "delivery": "integration_preferred"
+        }
+      ]
+    },
+    {
+      "id": "DND5-2014-014",
+      "rule": {
+        "source_id": "DMG14-RU-upload",
+        "printed_page": 108,
+        "section": "Особенности дикой местности",
+        "paraphrase": "В районе около 50 миль достаточно примерно дюжины достойных исследования мест",
+        "normative_kind": "recommendation",
+        "quotation": null
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": "Размещать поселения, крепости, руины и другие места с управляемой плотностью",
+          "status": "partial",
+          "implemented": null,
+          "evidence_id": "CODE-2026-10-29",
+          "finding": "POI есть; физический район 50 миль и соответствующая плотность не проверены.",
+          "delivery": "current_map_stage"
+        },
+        {
+          "layer": "L2",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Из данного положения отдельное требование к этому уровню не выводится."
+        },
+        {
+          "layer": "L3",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Из данного положения отдельное требование к этому уровню не выводится."
+        }
+      ]
+    },
+    {
+      "id": "DND5-2014-015",
+      "rule": {
+        "source_id": "DMG14-RU-upload",
+        "printed_page": 108,
+        "section": "Логова чудовищ",
+        "paraphrase": "Ориентир: около шести логовищ и не более одного верховного хищника",
+        "normative_kind": "recommendation",
+        "quotation": null
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": "Размещать фиксированные логова, их описания и связи с локальной картой",
+          "status": "partial",
+          "implemented": null,
+          "evidence_id": "CODE-2026-10-29",
+          "finding": "Общее содержимое можно записать в POI/заметку; профиль плотности, ограничения хищников и связь с картой логова не подтверждены.",
+          "delivery": "current_map_stage"
+        },
+        {
+          "layer": "L2",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Из данного положения отдельное требование к этому уровню не выводится."
+        },
+        {
+          "layer": "L3",
+          "requirement": "Характеристики обитателей и разрешение встречи в логове",
+          "status": "no",
+          "implemented": false,
+          "evidence_id": "CODE-2026-10-29",
+          "finding": "Игровая процедура D&D не обнаружена. Само фиксированное логово относится к L1.",
+          "delivery": "integration_preferred"
+        }
+      ]
+    },
+    {
+      "id": "DND5-2014-016",
+      "rule": {
+        "source_id": "DMG14-RU-upload",
+        "printed_page": 108,
+        "section": "Поселения",
+        "paraphrase": "Размещение поселений опирается на воду, пищу, угодья и стройматериалы",
+        "normative_kind": "recommendation",
+        "quotation": null
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": "Связывать поселения с ресурсами, различать населённую провинцию и глушь",
+          "status": "partial",
+          "implemented": null,
+          "evidence_id": "CODE-2026-10-29",
+          "finding": "Освоенность, вода и POI есть; все ресурсные зависимости и плотности DMG не проверены.",
+          "delivery": "current_map_stage"
+        },
+        {
+          "layer": "L2",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Из данного положения отдельное требование к этому уровню не выводится."
+        },
+        {
+          "layer": "L3",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Из данного положения отдельное требование к этому уровню не выводится."
+        }
+      ]
+    },
+    {
+      "id": "DND5-2014-017",
+      "rule": {
+        "source_id": "DMG14-RU-upload",
+        "printed_page": 109,
+        "section": "Руины / странные места",
+        "paraphrase": "Руины и необычные места делают местность содержательной",
+        "normative_kind": "recommendation",
+        "quotation": null
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": "Размещать и описывать руины, монументы, странные места и их признаки",
+          "status": "partial",
+          "implemented": null,
+          "evidence_id": "CODE-2026-10-29",
+          "finding": "POI и произвольные заметки позволяют ручную подготовку; покрытие всех категорий и готовое игровое содержимое не доказаны.",
+          "delivery": "current_map_stage"
+        },
+        {
+          "layer": "L2",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Из данного положения отдельное требование к этому уровню не выводится."
+        },
+        {
+          "layer": "L3",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Из данного положения отдельное требование к этому уровню не выводится."
+        }
+      ]
+    },
+    {
+      "id": "DND5-2014-018",
+      "rule": {
+        "source_id": "DMG14-RU-upload",
+        "printed_page": 109,
+        "section": "Погода",
+        "paraphrase": "Погоду выбирают или определяют с поправкой на местность и сезон",
+        "normative_kind": "optional_procedure",
+        "quotation": null
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Из данного положения отдельное требование к этому уровню не выводится."
+        },
+        {
+          "layer": "L2",
+          "requirement": "Учитывать уже заданную погоду при ведении времени и доступности маршрута",
+          "status": "no",
+          "implemented": false,
+          "evidence_id": "CODE-2026-10-29",
+          "finding": "Состояние погоды и путешествия не обнаружено.",
+          "delivery": "future_hexcrawl_VTT"
+        },
+        {
+          "layer": "L3",
+          "requirement": "Выбор/генерация погоды с учётом сезона и местности",
+          "status": "no",
+          "implemented": false,
+          "evidence_id": "CODE-2026-10-29",
+          "finding": "Процедура D&D не обнаружена; интеграция предпочтительна.",
+          "delivery": "integration_preferred"
+        }
+      ]
+    },
+    {
+      "id": "DND5-2014-019",
+      "rule": {
+        "source_id": "DMG14-RU-upload",
+        "printed_page": 110,
+        "section": "Большая высота",
+        "paraphrase": "Путешествие на высоте от 3 км учитывается иначе; есть акклиматизация",
+        "normative_kind": "conditional_procedure",
+        "quotation": null
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": "Хранить физическую высоту, достаточную для определения зон большой высоты",
+          "status": "partial",
+          "implemented": null,
+          "evidence_id": "CODE-2026-10-29",
+          "finding": "Высота региона есть; единицы, пороги и пригодность значения для DMG не подтверждены.",
+          "delivery": "current_map_stage"
+        },
+        {
+          "layer": "L2",
+          "requirement": "Учитывать длительность пути на высоте в счётчике путешествия",
+          "status": "no",
+          "implemented": false,
+          "evidence_id": "CODE-2026-10-29",
+          "finding": "Путевой счётчик отсутствует в проверенном контуре.",
+          "delivery": "future_hexcrawl_VTT"
+        },
+        {
+          "layer": "L3",
+          "requirement": "Акклиматизация и состояния/особенности дышащих существ",
+          "status": "no",
+          "implemented": false,
+          "evidence_id": "CODE-2026-10-29",
+          "finding": "Механики персонажей D&D не обнаружены.",
+          "delivery": "integration_preferred"
+        }
+      ]
+    },
+    {
+      "id": "DND5-2014-020",
+      "rule": {
+        "source_id": "DMG14-RU-upload",
+        "printed_page": 110,
+        "section": "Опасности в дикой местности",
+        "paraphrase": "Лоза, зыбучий песок, осквернённая земля, скользкий/тонкий лёд, холодная вода",
+        "normative_kind": "conditional_procedure",
+        "quotation": null
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": "Размещать неподвижные опасные участки и хранить их свойства/описания",
+          "status": "partial",
+          "implemented": null,
+          "evidence_id": "CODE-2026-10-29",
+          "finding": "Произвольные описания в заметках есть; общий Obstacle не доказывает все типы опасностей D&D.",
+          "delivery": "current_map_stage"
+        },
+        {
+          "layer": "L2",
+          "requirement": "Учитывать участок при маршруте и времени движения, где это применимо",
+          "status": "no",
+          "implemented": false,
+          "evidence_id": "CODE-2026-10-29",
+          "finding": "Системный маршрут/учёт времени не обнаружены.",
+          "delivery": "future_hexcrawl_VTT"
+        },
+        {
+          "layer": "L3",
+          "requirement": "Обнаружение опасностей, спасброски, урон, состояния и взаимодействие",
+          "status": "no",
+          "implemented": false,
+          "evidence_id": "CODE-2026-10-29",
+          "finding": "Процедуры D&D не обнаружены.",
+          "delivery": "integration_preferred"
+        }
+      ]
+    },
+    {
+      "id": "DND5-2014-021",
+      "rule": {
+        "source_id": "DMG14-RU-upload",
+        "printed_page": 110,
+        "section": "Чрезвычайный холод / жара, ветер и осадки",
+        "paraphrase": "Условия среды влияют на персонажей и действия",
+        "normative_kind": "conditional_procedure",
+        "quotation": null
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Из данного положения отдельное требование к этому уровню не выводится."
+        },
+        {
+          "layer": "L2",
+          "requirement": "Применять влияние среды на возможность и условия путешествия",
+          "status": "no",
+          "implemented": false,
+          "evidence_id": "CODE-2026-10-29",
+          "finding": "Процедура путешествия не обнаружена.",
+          "delivery": "future_hexcrawl_VTT"
+        },
+        {
+          "layer": "L3",
+          "requirement": "Спасброски, истощение, помехи, сопротивления и защитное снаряжение",
+          "status": "no",
+          "implemented": false,
+          "evidence_id": "CODE-2026-10-29",
+          "finding": "Механики D&D не обнаружены.",
+          "delivery": "integration_preferred"
+        }
+      ]
+    },
+    {
+      "id": "DND5-2014-022",
+      "rule": {
+        "source_id": "DMG14-RU-upload",
+        "printed_page": 111,
+        "section": "Сбор еды / еда и вода",
+        "paraphrase": "Доступность припасов определяет сложность, потребление зависит от существ и жары",
+        "normative_kind": "conditional_procedure",
+        "quotation": null
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": "Хранить характеристику доступности пищи/воды в местности",
+          "status": "partial",
+          "implemented": null,
+          "evidence_id": "CODE-2026-10-29",
+          "finding": "Водоёмы и заметки есть; структурированная категория доступности и связь с D&D не обнаружены.",
+          "delivery": "current_map_stage"
+        },
+        {
+          "layer": "L2",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Из данного положения отдельное требование к этому уровню не выводится."
+        },
+        {
+          "layer": "L3",
+          "requirement": "Сбор припасов, проверки, добытые количества, потребление и последствия",
+          "status": "no",
+          "implemented": false,
+          "evidence_id": "CODE-2026-10-29",
+          "finding": "Учёт и механики D&D не обнаружены.",
+          "delivery": "integration_preferred"
+        }
+      ]
+    },
+    {
+      "id": "DND5-2014-023",
+      "rule": {
+        "source_id": "DMG14-RU-upload",
+        "printed_page": 111,
+        "section": "Блуждания; таблица навигации на с.112",
+        "paraphrase": "Тропы и точная карта помогают ориентированию; провал меняет направление и тратит время",
+        "normative_kind": "conditional_procedure",
+        "quotation": null
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": "Различимые тропы, местность и карта с ориентирами",
+          "status": "yes",
+          "implemented": true,
+          "evidence_id": "CODE-2026-10-29",
+          "finding": "RoadKind различает road/trail; биомы, POI и гекс-координаты есть. Это наличие элементов, не гарантия географической точности каждой генерации.",
+          "delivery": "current_map_stage"
+        },
+        {
+          "layer": "L2",
+          "requirement": "Хранить фактический/намеренный путь и потерянные часы при блуждании",
+          "status": "no",
+          "implemented": false,
+          "evidence_id": "CODE-2026-10-29",
+          "finding": "Путь партии и время не обнаружены.",
+          "delivery": "future_hexcrawl_VTT"
+        },
+        {
+          "layer": "L3",
+          "requirement": "Проверки Выживания, сложности, бонусы темпа и преимущество от карты",
+          "status": "no",
+          "implemented": false,
+          "evidence_id": "CODE-2026-10-29",
+          "finding": "Процедуры D&D не обнаружены.",
+          "delivery": "integration_preferred"
+        }
+      ]
+    },
+    {
+      "id": "DND5-2014-024",
+      "rule": {
+        "source_id": "DMG14-RU-upload",
+        "printed_page": 242,
+        "section": "Использование карты / темп перемещения по карте",
+        "paraphrase": "Положение партии, выбор пути и темп соотносятся с масштабом карты",
+        "normative_kind": "procedure",
+        "quotation": null
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": "Дороги, реки, рельеф, ориентиры и определённый физический масштаб",
+          "status": "partial",
+          "implemented": null,
+          "evidence_id": "CODE-2026-10-29",
+          "finding": "Слои есть; физический масштаб и пользовательская измерительная функция не обнаружены.",
+          "delivery": "current_map_stage"
+        },
+        {
+          "layer": "L2",
+          "requirement": "Маркер партии, выбор маршрута, движение по таблице темпа и учёт времени",
+          "status": "no",
+          "implemented": false,
+          "evidence_id": "CODE-2026-10-29",
+          "finding": "В проверенном контуре нет состояния партии и движка темпа D&D.",
+          "delivery": "future_hexcrawl_VTT"
+        },
+        {
+          "layer": "L3",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Из данного положения отдельное требование к этому уровню не выводится."
+        }
+      ]
+    },
+    {
+      "id": "DND5-2014-025",
+      "rule": {
+        "source_id": "DMG14-RU-upload",
+        "printed_page": 242,
+        "section": "Особый темп путешествия (продолжение с.243)",
+        "paraphrase": "Особая скорость и способ перемещения меняют преодолеваемое расстояние",
+        "normative_kind": "conditional_procedure",
+        "quotation": null
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Из данного положения отдельное требование к этому уровню не выводится."
+        },
+        {
+          "layer": "L2",
+          "requirement": "Рассчитывать расстояние/время по переданной скорости и темпу",
+          "status": "no",
+          "implemented": false,
+          "evidence_id": "CODE-2026-10-29",
+          "finding": "Движок расчёта путешествия не обнаружен.",
+          "delivery": "future_hexcrawl_VTT"
+        },
+        {
+          "layer": "L3",
+          "requirement": "Определять скорость из заклинаний, способностей и ограничений персонажа",
+          "status": "no",
+          "implemented": false,
+          "evidence_id": "CODE-2026-10-29",
+          "finding": "Целевая ответственность интеграции; механика не обнаружена.",
+          "delivery": "integration_preferred"
+        }
+      ]
+    },
+    {
+      "id": "DND5-2014-026",
+      "rule": {
+        "source_id": "DMG14-RU-upload",
+        "printed_page": 243,
+        "section": "Видимость на открытом пространстве",
+        "paraphrase": "Дальность видимости зависит от рельефа, погоды и высоты наблюдателя",
+        "normative_kind": "conditional_procedure",
+        "quotation": null
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": "Данные рельефа и объекты, влияющие на обзор",
+          "status": "partial",
+          "implemented": null,
+          "evidence_id": "CODE-2026-10-29",
+          "finding": "Биомы/высоты/POI есть; свойства заслонения и проверенная модель обзора не обнаружены.",
+          "delivery": "current_map_stage"
+        },
+        {
+          "layer": "L2",
+          "requirement": "Раскрывать карту по дальности обзора и текущей позиции",
+          "status": "no",
+          "implemented": false,
+          "evidence_id": "CODE-2026-10-29",
+          "finding": "Позиция партии и динамическая видимость не обнаружены.",
+          "delivery": "future_hexcrawl_VTT"
+        },
+        {
+          "layer": "L3",
+          "requirement": "Обнаружение существ: Скрытность, пассивная Внимательность и слышимость",
+          "status": "no",
+          "implemented": false,
+          "evidence_id": "CODE-2026-10-29",
+          "finding": "Механики D&D не обнаружены.",
+          "delivery": "integration_preferred"
+        }
+      ]
+    },
+    {
+      "id": "DND5-2014-027",
+      "rule": {
+        "source_id": "DMG14-RU-upload",
+        "printed_page": 243,
+        "section": "Выслеживание (продолжение с.244)",
+        "paraphrase": "Следы проверяют с учётом грунта, времени, погоды; потеря следа требует поиска",
+        "normative_kind": "conditional_procedure",
+        "quotation": null
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": "Сохранять размещённые следы и описания грунта как материал места",
+          "status": "partial",
+          "implemented": null,
+          "evidence_id": "CODE-2026-10-29",
+          "finding": "Ручная заметка позволяет запись; отдельные структурированные следы и их старение не обнаружены.",
+          "delivery": "current_map_stage"
+        },
+        {
+          "layer": "L2",
+          "requirement": "Отражать путь следования и затраченное на поиск время",
+          "status": "no",
+          "implemented": false,
+          "evidence_id": "CODE-2026-10-29",
+          "finding": "Путевой журнал/таймер не обнаружены.",
+          "delivery": "future_hexcrawl_VTT"
+        },
+        {
+          "layer": "L3",
+          "requirement": "Проверки выслеживания, модификаторы и поиск потерянного следа",
+          "status": "no",
+          "implemented": false,
+          "evidence_id": "CODE-2026-10-29",
+          "finding": "Механики D&D не обнаружены.",
+          "delivery": "integration_preferred"
+        }
+      ]
+    },
+    {
+      "id": "DND5-2014-028",
+      "rule": {
+        "source_id": "DMG14-RU-upload",
+        "printed_page": 86,
+        "section": "Проверка на случайные встречи",
+        "paraphrase": "Мастер выбирает периодичность проверок и таблицы встреч под окружение",
+        "normative_kind": "optional_procedure",
+        "quotation": null
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Из данного положения отдельное требование к этому уровню не выводится."
+        },
+        {
+          "layer": "L2",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Из данного положения отдельное требование к этому уровню не выводится."
+        },
+        {
+          "layer": "L3",
+          "requirement": "Таблицы, периодичность, выбор и разрешение встреч с монстрами в пути",
+          "status": "no",
+          "implemented": false,
+          "evidence_id": "CODE-2026-10-29",
+          "finding": "Случайная встреча в пути относится к L3; движок D&D не обнаружен.",
+          "delivery": "integration_preferred"
+        }
+      ]
+    }
+  ],
+  "previous_pass": "../DND5-rules-source-pass-2026-10-28.json"
+}
