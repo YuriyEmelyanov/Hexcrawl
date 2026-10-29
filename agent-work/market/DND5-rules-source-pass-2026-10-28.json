@@ -69,9 +69,9 @@
       "D&D navigation/foraging/search/tracking procedures",
       "D&D encounter preparation and weather engine"
     ],
-    "interpretation": "Map foundation does not establish full D&D hexcrawl procedure support. Product implications are analyst proposals, not requirements that Wizards mandates every generator implement."
+    "interpretation": "Наличие картографической основы оценивать отдельно от ведения гекскроула и дополнительных процедур D&D. Отсутствие счётчика движения/встреч не является само по себе дефектом подготовки карты."
   },
-  "next_step": "Complete source corpus and edition boundaries before declaring exhaustive coverage; keep current editor023 implementation priority unchanged.",
+  "next_step": "При следующем источниковом проходе DND5 сначала оценить требования подготовки карты отдельно. Остальные правила хранить вL2/L3 с будущим этапом/интеграцией; не объявлять общий недостаток D&D-поддержки дефектом L1. Текущий редактор023 остаётся приоритетом.",
   "score_changed": false,
   "product_changed": false,
   "automation_health": {
@@ -95,5 +95,134 @@
     "errors": [
       "Start check delayed during manual source research"
     ]
+  },
+  "product_boundary_revision": {
+    "date": "2026-10-29",
+    "decision_ref": "owner-decision-2026-10-29-map-hexcrawl-exploration-layers",
+    "current_stage": "L1_map_preparation",
+    "development_order": [
+      "L1",
+      "L2",
+      "L3"
+    ],
+    "method": "Reclassification of previous bounded source/code findings. No new code verification or claim of source completeness.",
+    "previous_interpretation": "Map foundation does not establish full D&D hexcrawl procedure support. Product implications are analyst proposals, not requirements that Wizards mandates every generator implement.",
+    "interpretation": "Наличие картографической основы оценивать отдельно от ведения гекскроула и дополнительных процедур D&D. Отсутствие счётчика движения/встреч не является само по себе дефектом подготовки карты.",
+    "requirements": [
+      {
+        "id": "DND5-MAP-01",
+        "layer": "L1",
+        "source_ids": [
+          "BR14",
+          "DMG24"
+        ],
+        "source_sections": [
+          "Adventuring / introduction",
+          "Journeys without Destinations"
+        ],
+        "function": "Подготовленная гекс-карта и содержимое мест: POI, описания, заметки",
+        "status": "foundation_present_bounded_check",
+        "evidence_sha": "a7a8cc58987e97c4495c405374c6a4145f3bc9ff"
+      },
+      {
+        "id": "DND5-MAP-02",
+        "layer": "L1",
+        "source_ids": [
+          "TOOL24"
+        ],
+        "source_sections": [
+          "Good Roads / Travel Terrain"
+        ],
+        "function": "Дороги и категории местности как данные карты",
+        "status": "geography_present_DND_mapping_unverified",
+        "evidence_sha": "a7a8cc58987e97c4495c405374c6a4145f3bc9ff"
+      },
+      {
+        "id": "DND5-HEX-01",
+        "layer": "L2",
+        "source_ids": [
+          "PHB24",
+          "TOOL24"
+        ],
+        "source_sections": [
+          "Travel",
+          "Travel Pace / Good Roads"
+        ],
+        "function": "Маршрут, масштаб/расстояние, темп/время и влияние дорог/местности на фактическое движение",
+        "status": "not_found_in_prior_bounded_inspection",
+        "priority": "future_hexcrawl_VTT_stage_not_current_map_defect"
+      },
+      {
+        "id": "DND5-HEX-02",
+        "layer": "L2",
+        "source_ids": [
+          "DMG24"
+        ],
+        "source_sections": [
+          "Journey Stages / Running the Stages"
+        ],
+        "function": "Положение партии, этапы и журнал продвижения",
+        "status": "not_found_in_prior_bounded_inspection",
+        "priority": "future_hexcrawl_VTT_stage_not_current_map_defect"
+      },
+      {
+        "id": "DND5-OTHER-01",
+        "layer": "L3",
+        "source_ids": [
+          "DMG24"
+        ],
+        "source_sections": [
+          "Journey Stage Challenges / Encounters with Other Creatures"
+        ],
+        "function": "Выбор/разрешение встреч с монстрами в пути",
+        "status": "not_found_in_prior_bounded_inspection",
+        "preferred_delivery": "integration",
+        "priority": "later_system_mechanics"
+      },
+      {
+        "id": "DND5-OTHER-02",
+        "layer": "L3",
+        "source_ids": [
+          "BR14",
+          "DMG24"
+        ],
+        "source_sections": [
+          "Activity While Traveling",
+          "Journey Stage Challenges"
+        ],
+        "function": "Добыча припасов, поиск, следопытство и системные проверки",
+        "status": "not_found_in_prior_bounded_inspection",
+        "preferred_delivery": "integration",
+        "boundary_note": "Навигацию разделить: движение/сбившийся маршрут относится кL2, конкретная проверка и правила D&D — L3; не считать всю главу одним уровнем."
+      },
+      {
+        "id": "DND5-OTHER-03",
+        "layer": "L3",
+        "source_ids": [
+          "BR14",
+          "DMG24"
+        ],
+        "source_sections": [
+          "Food and Water",
+          "Running the Stages"
+        ],
+        "function": "Расход ресурсов, состояния персонажей и последствия нехватки",
+        "status": "not_found_in_prior_bounded_inspection",
+        "preferred_delivery": "integration"
+      },
+      {
+        "id": "DND5-SPLIT-01",
+        "layer": "split",
+        "source_ids": [
+          "DMG24"
+        ],
+        "source_sections": [
+          "Weather / Obstacles"
+        ],
+        "function": "Рельеф/статическое препятствие — L1; воздействие на маршрут/время — L2; системные испытания/состояния — L3",
+        "status": "requires_separate_functional_records_before_implementation"
+      }
+    ],
+    "rating_or_score_changed": false
   }
 }
