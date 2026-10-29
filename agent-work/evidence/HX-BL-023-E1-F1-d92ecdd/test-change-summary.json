@@ -1,0 +1,53 @@
+{
+  "base_sha": "24fa342cfacefdf604281ac0dc414912d6726433",
+  "head_sha": "d92ecdd7ca8c5b7293a4f3e2e6efde93f944c57c",
+  "pull_request_base_sha": "a7a8cc58987e97c4495c405374c6a4145f3bc9ff",
+  "added": 0,
+  "removed": 0,
+  "modified": 1,
+  "suite": "Browser save-history smoke; count unit existing E1 lifecycle block",
+  "scenario_risk": "HX023-E1-F1: dirty-name draft must allow existing hex inspection while candidate generation/document mutations remain blocked; exported selection is intentional UI data",
+  "reuse_or_new_reason": "Extend the existing dirty candidate-click check in the E1 lifecycle; no new runner or Node case. Existing typed-name and transaction assertions reused.",
+  "source": "git diff24fa342..d92ecdd test/browser/save-history.smoke.mjs:18 added lines within existing loop/block; no additional test declaration",
+  "node": {
+    "added": 0,
+    "removed": 0,
+    "modified": 0,
+    "suite": "node --test test/*.test.mjs",
+    "logical_cases": 248,
+    "executed": 248,
+    "passed": 248,
+    "skipped": 0,
+    "failed": 0,
+    "local_check_duration_ms": 365407.990104,
+    "provenance_limitation": "Local check began on ceba2b6; browser assertion-only file changed during run, runtime/Node inputs identical. Do not present as pristine final-SHA local execution; exact d92ecdd CI required."
+  },
+  "browser": {
+    "added": 0,
+    "removed": 0,
+    "modified": 1,
+    "count_unit": "existing E1 lifecycle block",
+    "logical_case_total": null,
+    "scripts": 7,
+    "first_full_attempt": "six earlier scripts passed, save-history failed test assertion because selection is serialized",
+    "recovery": "corrected expected UI selection; full save-history rerun exit0",
+    "executed_new_case_paths": [
+      "existing hex selection preserves RU/EN draft",
+      "only ui.selectedHex changes in export",
+      "return selection restores exact export",
+      "dirty history mutations remain blocked"
+    ],
+    "full_exact_SHA_CI": "pending"
+  },
+  "temporary_diagnostic": {
+    "permanent_growth": 0,
+    "purpose": "Actual F1 before/after plus desktop390 capture"
+  },
+  "full_PR_growth": {
+    "node_added": 1,
+    "node_removed": 0,
+    "node_modified": 0,
+    "browser_added_lifecycle_blocks": 1,
+    "source": "Original E1 24fa342 implementation diff; F1 adds no additional block"
+  }
+}
