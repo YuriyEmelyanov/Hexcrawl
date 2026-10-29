@@ -13905,7 +13905,6 @@ export function App() {
     if (!target) { setNameStatus('stale'); return; }
     finishNotesGroup(); clearNotesDraft(); closeEditors();
     nameReturnFocusRef.current = origin ?? null;
-    setNamesOpen(true);
     setLiveNameDraft({target:{...target}, revision:documentRevision.current, ru:target.ru, en:target.en});
   };
   const requestNameTarget = (key: string | null, origin?: HTMLElement) => {
@@ -14569,36 +14568,6 @@ export function App() {
               <button type="button" className="secondary" disabled={nameDirty || isImporting || !!pendingRegen || !!kingdomJob || !undoHistory.length} onClick={undoMap}>{language==='ru'?'Отменить':'Undo'}</button>
               <button type="button" className="secondary" disabled={nameDirty || isImporting || !!pendingRegen || !!kingdomJob || !redoHistory.length} onClick={redoMap}>{language==='ru'?'Повторить':'Redo'}</button>
             </div>
-            <section className="control-block map-names" aria-label={language === 'ru' ? 'Названия карты' : 'Map names'}>
-              <button type="button" className="secondary map-names__toggle" aria-expanded={namesOpen} onClick={() => namesOpen ? requestNameTarget(null) : setNamesOpen(true)}>{language === 'ru' ? 'Названия карты' : 'Map names'}</button>
-              <p role="status" aria-live="polite">{nameStatus === 'saved' ? (language === 'ru' ? 'Название сохранено' : 'Name saved') : nameStatus === 'stale' ? (language === 'ru' ? 'Карта изменилась. Выберите объект заново.' : 'The map changed. Select the object again.') : ''}</p>
-              {namesOpen && <>
-                <label>{language === 'ru' ? 'Поиск по имени' : 'Search names'}<input type="search" value={nameQuery} onChange={e => setNameQuery(e.target.value)} /></label>
-                <label>{language === 'ru' ? 'Тип объекта' : 'Object type'}<select value={nameType} onChange={e => setNameType(e.target.value)}><option value="all">{language === 'ru' ? 'Все типы' : 'All types'}</option>{Object.entries(nameTypeLabels).map(([type,label]) => <option key={type} value={type}>{label}</option>)}</select></label>
-                <ul className="map-names__list">{nameTargets.filter(target => (nameType === 'all' || target.type === nameType) && `${target.ru} ${target.en}`.toLocaleLowerCase().includes(nameQuery.toLocaleLowerCase())).map(target => <li key={target.key}><button type="button" className="secondary" disabled={isImporting || !!pendingRegen || !!kingdomJob} onClick={e => requestNameTarget(target.key,e.currentTarget)} aria-pressed={nameDraft?.target.key === target.key}>
-                  <span>{nameTypeLabels[target.type]} · {target[language]}</span><small>{target.location}</small>
-                </button></li>)}</ul>
-                {nameCatalog.unavailable ? <p role="alert">{language === 'ru' ? 'Список названий временно недоступен. Карта не изменена.' : 'The name list is temporarily unavailable. Your map is unchanged.'}</p> : !nameTargets.length && <p>{language === 'ru' ? 'На карте пока нет именованных объектов.' : 'There are no named objects on this map yet.'}</p>}
-                {!!nameTargets.length && !nameTargets.some(target => (nameType === 'all' || target.type === nameType) && `${target.ru} ${target.en}`.toLocaleLowerCase().includes(nameQuery.toLocaleLowerCase())) && <p>{language === 'ru' ? 'Объекты не найдены.' : 'No matching objects.'}</p>}
-                {nameDraft && <form className="map-names__form" aria-label={language === 'ru' ? 'Изменение названия' : 'Edit map name'} onSubmit={e => {e.preventDefault();saveNameDraft(nameDraft);}} onKeyDown={e => {if(e.key === 'Escape'){e.preventDefault();e.stopPropagation();cancelNameDraft();}}}>
-                  <h3>{nameTypeLabels[nameDraft.target.type]} · {nameDraft.target[language]}</h3>
-                  {(['ru','en'] as const).map(field => <label key={field}>{field === 'ru' ? (language === 'ru' ? 'Русское название' : 'Russian name') : (language === 'ru' ? 'Английское название' : 'English name')}
-                    <input aria-label={field === 'ru' ? (language === 'ru' ? 'Русское название' : 'Russian name') : (language === 'ru' ? 'Английское название' : 'English name')} ref={field === 'ru' ? nameFocusRef : undefined} value={nameDraft[field]} aria-invalid={!!nameErrors[field]} aria-describedby={nameErrors[field] ? `map-name-error-${field}` : 'map-name-help'} onChange={e => changeNameDraft(field,e.target.value,nameDraft)} />
-                    {nameErrors[field] && <span id={`map-name-error-${field}`} className="map-names__error" role="alert">{nameErrors[field]}</span>}
-                  </label>)}
-                  <p id="map-name-help">{language === 'ru' ? 'От 1 до 80 символов. Изменяются только названия.' : 'Use 1–80 characters. Only names will change.'}</p>
-                  {nameErrors.general && <p role="alert" className="map-names__error">{nameErrors.general}</p>}
-                  <button type="submit" disabled={isImporting || !!pendingRegen || !!kingdomJob}>{language === 'ru' ? 'Сохранить название' : 'Save name'}</button>
-                  <button type="button" className="secondary" onClick={cancelNameDraft}>{language === 'ru' ? 'Отменить' : 'Cancel'}</button>
-                </form>}
-                {nameDialog && <div role="dialog" aria-modal="false" aria-labelledby="name-dialog-title" className="map-names__dialog"><p id="name-dialog-title">{language === 'ru' ? 'Сохранить изменение названия перед переходом?' : 'Save the name change before leaving?'}</p>
-                  <button type="button" autoFocus onClick={() => {const next=nameDialog;if(saveNameDraft(nameDraft)){setNameDialog(null);setNameTransition(next);}}}>{language === 'ru' ? 'Сохранить и перейти' : 'Save and continue'}</button>
-                  <button type="button" className="secondary" onClick={() => {const next=nameDialog;cancelNameDraft();showNameTarget(next.key,next.origin);}}>{language === 'ru' ? 'Отбросить и перейти' : 'Discard and continue'}</button>
-                  <button type="button" className="secondary" onClick={() => {setNameDialog(null);nameFocusRef.current?.focus();}}>{language === 'ru' ? 'Остаться' : 'Stay'}</button>
-                </div>}
-              </>}
-              {nameDirty && <p>{language === 'ru' ? 'Сохраните название или отмените правку, чтобы изменять карту другими способами. Неприменённое название не входит в выгрузку.' : 'Save or cancel the name edit before changing the map in other ways. Unsaved names are not included in exports.'}</p>}
-            </section>
             <div className="control-block controls controls--transfer">
               <details className="export-menu">
                   <summary className="secondary">{t.export}</summary>
@@ -14669,9 +14638,9 @@ export function App() {
             </div>
           </div>
 
-          {regions.length > 0 || hexTerrainByKey.size > 0 ? (
           <aside id="side-panel-info" className="roll-card">
             <div className="info-body">
+              {regions.length > 0 || hexTerrainByKey.size > 0 ? <>
               <section className="info-block info-block--hex" aria-label={t.selectedHexInfo}>
                 {selectedKingdom ? <p className="map-name"><strong>{language === 'ru' ? 'Королевство' : 'Kingdom'}: {selectedKingdom.name[language]}</strong><button type="button" className="secondary map-name__edit" aria-label={`${language === 'ru' ? 'Изменить название' : 'Edit name'}: ${selectedKingdom.name[language]}`} onClick={e => requestNameTarget(`kingdom:${selectedKingdom.id}`, e.currentTarget)}>✎</button></p> : null}
                 {selectedRegion ? (
@@ -15029,9 +14998,39 @@ export function App() {
                   ) : null}
                 </div>
               </details>
+              </> : null}
+            <section className="info-block map-names" aria-label={language === 'ru' ? 'Названия карты' : 'Map names'}>
+              <button type="button" className="secondary map-names__toggle" aria-expanded={namesOpen} aria-controls="map-names-catalog" onClick={() => namesOpen ? requestNameTarget(null) : setNamesOpen(true)}>{language === 'ru' ? 'Найти объект' : 'Find object'}</button>
+              <p role="status" aria-live="polite">{nameStatus === 'saved' ? (language === 'ru' ? 'Название сохранено' : 'Name saved') : nameStatus === 'stale' ? (language === 'ru' ? 'Карта изменилась. Выберите объект заново.' : 'The map changed. Select the object again.') : ''}</p>
+              {namesOpen && <div id="map-names-catalog">
+                <label>{language === 'ru' ? 'Поиск по имени' : 'Search names'}<input type="search" value={nameQuery} onChange={e => setNameQuery(e.target.value)} /></label>
+                <label>{language === 'ru' ? 'Тип объекта' : 'Object type'}<select value={nameType} onChange={e => setNameType(e.target.value)}><option value="all">{language === 'ru' ? 'Все типы' : 'All types'}</option>{Object.entries(nameTypeLabels).map(([type,label]) => <option key={type} value={type}>{label}</option>)}</select></label>
+                <ul className="map-names__list">{nameTargets.filter(target => (nameType === 'all' || target.type === nameType) && `${target.ru} ${target.en}`.toLocaleLowerCase().includes(nameQuery.toLocaleLowerCase())).map(target => <li key={target.key}><button type="button" className="secondary" disabled={isImporting || !!pendingRegen || !!kingdomJob} onClick={e => requestNameTarget(target.key,e.currentTarget)} aria-pressed={nameDraft?.target.key === target.key}>
+                  <span>{nameTypeLabels[target.type]} · {target[language]}</span><small>{target.location}</small>
+                </button></li>)}</ul>
+                {nameCatalog.unavailable ? <p role="alert">{language === 'ru' ? 'Список названий временно недоступен. Карта не изменена.' : 'The name list is temporarily unavailable. Your map is unchanged.'}</p> : !nameTargets.length && <p>{language === 'ru' ? 'На карте пока нет именованных объектов.' : 'There are no named objects on this map yet.'}</p>}
+                {!!nameTargets.length && !nameTargets.some(target => (nameType === 'all' || target.type === nameType) && `${target.ru} ${target.en}`.toLocaleLowerCase().includes(nameQuery.toLocaleLowerCase())) && <p>{language === 'ru' ? 'Объекты не найдены.' : 'No matching objects.'}</p>}
+              </div>}
+                {nameDraft && <form className="map-names__form" aria-label={language === 'ru' ? 'Изменение названия' : 'Edit map name'} onSubmit={e => {e.preventDefault();saveNameDraft(nameDraft);}} onKeyDown={e => {if(e.key === 'Escape'){e.preventDefault();e.stopPropagation();cancelNameDraft();}}}>
+                  <h3>{nameTypeLabels[nameDraft.target.type]} · {nameDraft.target[language]}</h3>
+                  {(['ru','en'] as const).map(field => <label key={field}>{field === 'ru' ? (language === 'ru' ? 'Русское название' : 'Russian name') : (language === 'ru' ? 'Английское название' : 'English name')}
+                    <input aria-label={field === 'ru' ? (language === 'ru' ? 'Русское название' : 'Russian name') : (language === 'ru' ? 'Английское название' : 'English name')} ref={field === 'ru' ? nameFocusRef : undefined} value={nameDraft[field]} aria-invalid={!!nameErrors[field]} aria-describedby={nameErrors[field] ? `map-name-error-${field}` : 'map-name-help'} onChange={e => changeNameDraft(field,e.target.value,nameDraft)} />
+                    {nameErrors[field] && <span id={`map-name-error-${field}`} className="map-names__error" role="alert">{nameErrors[field]}</span>}
+                  </label>)}
+                  <p id="map-name-help">{language === 'ru' ? 'От 1 до 80 символов. Изменяются только названия.' : 'Use 1–80 characters. Only names will change.'}</p>
+                  {nameErrors.general && <p role="alert" className="map-names__error">{nameErrors.general}</p>}
+                  <button type="submit" disabled={isImporting || !!pendingRegen || !!kingdomJob}>{language === 'ru' ? 'Сохранить название' : 'Save name'}</button>
+                  <button type="button" className="secondary" onClick={cancelNameDraft}>{language === 'ru' ? 'Отменить' : 'Cancel'}</button>
+                </form>}
+                {nameDialog && <div role="dialog" aria-modal="false" aria-labelledby="name-dialog-title" className="map-names__dialog"><p id="name-dialog-title">{language === 'ru' ? 'Сохранить изменение названия перед переходом?' : 'Save the name change before leaving?'}</p>
+                  <button type="button" autoFocus onClick={() => {const next=nameDialog;if(saveNameDraft(nameDraft)){setNameDialog(null);setNameTransition(next);}}}>{language === 'ru' ? 'Сохранить и перейти' : 'Save and continue'}</button>
+                  <button type="button" className="secondary" onClick={() => {const next=nameDialog;cancelNameDraft();showNameTarget(next.key,next.origin);}}>{language === 'ru' ? 'Отбросить и перейти' : 'Discard and continue'}</button>
+                  <button type="button" className="secondary" onClick={() => {setNameDialog(null);nameFocusRef.current?.focus();}}>{language === 'ru' ? 'Остаться' : 'Stay'}</button>
+                </div>}
+              {nameDirty && <p>{language === 'ru' ? 'Сохраните название или отмените правку, чтобы изменять карту другими способами. Неприменённое название не входит в выгрузку.' : 'Save or cancel the name edit before changing the map in other ways. Unsaved names are not included in exports.'}</p>}
+            </section>
             </div>
           </aside>
-          ) : null}
         </div>
       </section>
 

@@ -65,7 +65,19 @@ try {
  const namesSection=page.getByRole('region',{name:'Названия карты',exact:true});
  const nameForm=()=>page.getByRole('form',{name:'Изменение названия',exact:true});
  const namesFixture=JSON.parse(await fs.readFile(new URL('../fixtures/import-v2/baseline-mythic.json',import.meta.url)));
- await load(namesFixture);await button('Названия карты').click();
+ namesFixture.map.gmNotesByHexKey={'3,6':'Авторская заметка перед поиском'};
+ await load(namesFixture);
+ assert.equal(await button('Найти объект').getAttribute('aria-expanded'),'false');
+ assert.equal(await namesSection.locator('.map-names__list').count(),0,'catalog hidden by default');
+ assert.equal(await namesSection.evaluate(el=>el.parentElement.lastElementChild===el),true,'find-object block is after all info');
+ assert.equal(await page.locator('.gm-notes').evaluate(el=>!!(el.compareDocumentPosition(document.querySelector('.map-names'))&Node.DOCUMENT_POSITION_FOLLOWING)),true,'find object follows author notes');
+ const beforeInline=await snapshot();
+ await page.locator('#side-panel-info .map-name__edit').first().click();
+ await nameForm().waitFor();
+ assert.equal(await namesSection.locator('.map-names__list').count(),0,'inline pencil does not expand catalog');
+ await nameForm().getByRole('button',{name:'Отменить',exact:true}).click();
+ assert.deepEqual(await snapshot(),beforeInline,'inline cancel preserves notes and document');
+ await button('Найти объект').click();
  const openNamed=async type=>{await namesSection.getByRole('combobox',{name:'Тип объекта',exact:true}).selectOption(type);await namesSection.locator('.map-names__list button').first().click();await nameForm().waitFor();};
  for(const [i,type] of ['region','settlement','river','lake','kingdom'].entries()) {
    await openNamed(type);const before=await snapshot();
@@ -129,6 +141,7 @@ try {
  await page.setViewportSize({width:390,height:1000});await page.screenshot({path:fileURLToPath(new URL('reports/HX-BL-023-E1/narrow-ru-error.png',root)),fullPage:true});
  await ruInput.fill('Эринин');await enInput.fill('Erinin');await page.screenshot({path:fileURLToPath(new URL('reports/HX-BL-023-E1/narrow-ru.png',root)),fullPage:true});
  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true,'390px no overflow');
+ if(await page.locator('.header-links').evaluate(el=>el.classList.contains('is-collapsed')))await page.locator('.header-links-toggle').click();
  await button('Switch to English').click();assert.equal(await page.getByRole('textbox',{name:'Russian name',exact:true}).inputValue(),'Эринин');
  await page.screenshot({path:fileURLToPath(new URL('reports/HX-BL-023-E1/narrow-en.png',root)),fullPage:true});
  await page.setViewportSize({width:1500,height:1100});await page.getByRole('form',{name:'Edit map name',exact:true}).scrollIntoViewIfNeeded();await page.screenshot({path:fileURLToPath(new URL('reports/HX-BL-023-E1/desktop-en.png',root)),fullPage:true});
@@ -140,7 +153,7 @@ try {
  const namedClassic=await snapshot();const extendedNames=await addRegion();
  for(const [key,name] of Object.entries(namedClassic.map.toponyms.names))assert.deepEqual(extendedNames.map.toponyms.names[key],name,'continuation preserves accepted names');
  await button('Удалить последний регион').click();assert.deepEqual((await snapshot()).map,namedClassic.map,'delete last preserves renamed old objects');
- if(await namesSection.getByRole('button',{name:'Названия карты',exact:true}).getAttribute('aria-expanded')==='true')await button('Названия карты').click();
+ if(await namesSection.getByRole('button',{name:'Найти объект',exact:true}).getAttribute('aria-expanded')==='true')await button('Найти объект').click();
  console.log('HX023 E1 real React: five entity types, shared transactions, dirty transition, fault, no-op/redo, literals, RU/EN390 and v4 roundtrip passed.');
 
  }
@@ -223,6 +236,7 @@ try {
  assert.match(conflictText,/\(19\)/);assert.match(conflictText,/-?\d+,-?\d+/);assert(!conflictText.includes('Можно повторить попытку'));
  assert.deepEqual(await snapshot(),conflictBefore,'notes-loss refusal preserves whole map and RNG');
  await conflictAlert.scrollIntoViewIfNeeded();await page.screenshot({path:fileURLToPath(new URL('reports/HX-BL-024/conflict-ru.png',root))});
+ if(await page.locator('.header-links').evaluate(el=>el.classList.contains('is-collapsed')))await page.locator('.header-links-toggle').click();
  await button('Switch to English').click();
  const conflictEnglish=page.getByRole('alert').filter({hasText:'Move or clear the notes first'});
  await conflictEnglish.waitFor();assert.match(await conflictEnglish.textContent(),/\(19\)/);
@@ -316,6 +330,7 @@ try {
  await select(`${center.q},${center.r}`);await biome('open_hills');
  await transaction(()=>button('Удалить последний регион').click());await button('Отменить').click();
  await transaction(async()=>{await button('Перегенерировать регион').click();await page.waitForFunction(()=>!document.querySelector('.kingdom-progress')&&!document.querySelector('.controls--transfer > button').disabled,null,{timeout:120000});});
+ if(await page.locator('.header-links').evaluate(el=>el.classList.contains('is-collapsed')))await page.locator('.header-links-toggle').click();
  await button('Switch to English').click();assert.equal(await button('Undo').count(),1);assert.equal(await button('Redo').count(),1);
  assert.deepEqual(errors,[]);assert.equal(alerts.length,5,'only intentional invalid imports');
  console.log(`Save/history acceptance passed in ${browser.version()}: full corpus, manual families, 100 mixed UI undo/redo, failures, serialization, classic/Mythic checkpoints, RU/EN.`);
