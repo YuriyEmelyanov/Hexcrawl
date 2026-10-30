@@ -1,0 +1,1 @@
+HX023-DE-R1 reproduced before fix: wheel completes valid name before zoom assertion failed (1 !== 0). After c4a37ee the full existing save/history browser lifecycle passed, including valid/invalid wheel, exact Undo/Redo, pinch, single-finger cancellation. Native touch is synthetic; actual wheel is browser mouse input.
