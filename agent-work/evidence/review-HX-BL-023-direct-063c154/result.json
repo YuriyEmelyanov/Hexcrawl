@@ -1,0 +1,46 @@
+{
+  "task_id": "HX-BL-023",
+  "stage_id": "E2_direct_edit",
+  "sha": "063c1548a5165fde8656ff016c65816c791ea387",
+  "base_sha": "8f7d17266c53e31428da7c0da6dbbf1afe01d035",
+  "tree_sha": "fec12f86311347c4e01212c8f6d5050f59581330",
+  "verdict": "request_changes",
+  "findings": [
+    {
+      "id": "R1",
+      "severity": "medium",
+      "status": "reproduced",
+      "acceptance": [
+        "DE-AC04",
+        "DE-07",
+        "DE-03"
+      ],
+      "title": "Wheel zoom bypasses active-name completion and invalid-input departure validation",
+      "source": [
+        "src/App.tsx:13676",
+        "src/App.tsx:14025"
+      ],
+      "evidence": [
+        "wheel-observation.json",
+        "wheel-active-input.png",
+        "wheel-invalid-input.png"
+      ],
+      "data_loss_observed": false
+    }
+  ],
+  "local_checks": {
+    "production_build": "pass",
+    "targeted_actual_handler_tests": {
+      "executed": 5,
+      "passed": 5,
+      "skipped": 0
+    },
+    "temporary_edge_probe": "pass",
+    "temporary_browser_probe": "positive adjacent behaviors pass; wheel R1 reproduced",
+    "permanent_tests_added": 0
+  },
+  "release_approved": false,
+  "new_sha_requires_new_review": true,
+  "next_role": "developer",
+  "score_assessment_ref": "score_assessment.json"
+}

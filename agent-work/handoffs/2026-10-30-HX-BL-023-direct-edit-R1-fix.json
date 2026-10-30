@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-30",
+  "task_id": "HX-BL-023",
+  "stage_id": "E2_direct_edit_R1",
+  "role": "developer",
+  "status": "ready_for_development",
+  "authorization_status": "Correction within approved E2-2.0/owner direct-edit scope; no new task-start permission required",
+  "approval_ref": "owner-decision-2026-10-29-HX-FB-005-direct-edit-mode",
+  "source_sha": "063c1548a5165fde8656ff016c65816c791ea387",
+  "base_sha": "8f7d17266c53e31428da7c0da6dbbf1afe01d035",
+  "branch": "agent/hx023-direct-edit",
+  "pr": 479,
+  "finding_id": "HX023-DE-R1",
+  "reviewer_local_id": "R1",
+  "severity": "medium",
+  "spec_ref": "agent-work/specs/HX-BL-023-E2.md",
+  "spec_version": "E2-2.0",
+  "acceptance": [
+    "DE-AC04",
+    "DE-03",
+    "DE-07"
+  ],
+  "scope": [
+    "Wheel navigation must pass through the same valid-name completion/invalid-name departure boundary as other interactions",
+    "Valid captured-locale input commits exactly once before wheel zoom; preserve other locale/metadata/Undo-Redo/no-op semantics",
+    "Invalid input keeps inline error/focus and rejects wheel navigation, without Save/Cancel/dialog controls",
+    "Inspect adjacent scroll/pinch navigation entries in this same boundary; do not expand to unrelated navigation/performance projects",
+    "Extend existing direct-edit browser lifecycle with bounded valid/invalid wheel assertions; do not add a duplicate runner/mixed100/corpus"
+  ],
+  "reproduction": {
+    "fixture": "baseline-mythic",
+    "steps": [
+      "Enable edit and open region name; enter a new valid name",
+      "Move pointer over map and use actual wheel without pointer-down: current063c154 changes zoom1→1.30996 while keeping name draft; Escape restores old committed name",
+      "Reopen name, empty input and wheel again: zoom1.30996→1.56831 with no aria-invalid/local error"
+    ],
+    "data_loss_observed": false
+  },
+  "input_evidence": "agent-work/evidence/review-HX-BL-023-direct-063c154/report.md",
+  "observation_ref": "agent-work/evidence/review-HX-BL-023-direct-063c154/wheel-observation.json",
+  "score_assessment_ref": "agent-work/evidence/review-HX-BL-023-direct-063c154/score_assessment.json",
+  "preserve": [
+    "Global direct mode and no per-object pencils/paired form",
+    "Current-interface-language-only write and literal other locale",
+    "Already passing height/neighbor/hidden-override/atomic history/notes/POI behavior"
+  ],
+  "out_of_scope": [
+    "E3–E8 implementation",
+    "New HX-BL-003 measurement or acceptance rerun",
+    "Paid services, main merge or publication"
+  ],
+  "done_when": "Reproduce old failure with bounded assertion, fix required completion/invalid guard without regression; necessary exact-SHA checks and actual UI evidence recorded; fresh independent review of new SHA",
+  "next_role": "reviewer",
+  "release_approved": false,
+  "new_sha_requires_new_review": true
+}
