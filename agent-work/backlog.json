@@ -1206,7 +1206,7 @@
       "task_id": "HX-BL-023",
       "title": "Общий режим редактирования",
       "criterion_id": "S03-C01",
-      "status": "review_ready",
+      "status": "changes_requested",
       "potential_delta": null,
       "approval_ref": "owner-decision-2026-10-29-HX-FB-005-direct-edit-mode",
       "source": {
@@ -1222,15 +1222,15 @@
       "recommended_priority": 1,
       "execution_allowed": true,
       "spec_status": "ready_for_development",
-      "next_role": "reviewer",
-      "next_step": "Независимо проверить точный SHA063c154 по E2-2.0/DE-AC01–10 и записать score_assessment1.2; затем отдельно разрешение публикации.",
+      "next_role": "developer",
+      "next_step": "Исправить HX023-DE-R1: завершение валидного имени/inline ошибка при wheel navigation; затем передать новый SHA независимому проверяющему.",
       "related_task_ids": [
         "HX-BL-013",
         "HX-BL-018",
         "HX-BL-019",
         "HX-BL-028"
       ],
-      "handoff_ref": "agent-work/handoffs/2026-10-30-HX-BL-023-direct-edit-review.json",
+      "handoff_ref": "agent-work/handoffs/2026-10-30-HX-BL-023-direct-edit-R1-fix.json",
       "owner_priority_decision": {
         "id": "owner-decision-2026-10-28-editor-and-MB-content-before-outreach",
         "date": "2026-10-28",
@@ -1370,12 +1370,12 @@
       "pr": 479,
       "base_sha": "8f7d17266c53e31428da7c0da6dbbf1afe01d035",
       "head_sha": "063c1548a5165fde8656ff016c65816c791ea387",
-      "checks_status": "passed_exact_final_CI",
+      "checks_status": "CI_passed_independent_review_changes_requested",
       "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40958042988",
-      "review_verdict": null,
-      "test_change_summary_ref": "agent-work/evidence/HX-BL-023-direct-063c154/test_change_summary.json",
+      "review_verdict": "changes_requested",
+      "test_change_summary_ref": "agent-work/evidence/review-HX-BL-023-direct-063c154/test_change_summary.json",
       "developer_result_ref": "agent-work/results/2026-10-30-developer-HX-BL-023-direct-edit.json",
-      "score_assessment_status": "pending_independent_review",
+      "score_assessment_status": "completed_insufficient_evidence_for_rejected_sha; update_required_after_fix",
       "ui_actual": {
         "head_sha": "063c1548a5165fde8656ff016c65816c791ea387",
         "manifest_ref": "agent-work/evidence/HX-BL-023-direct-063c154/manifest.json",
@@ -1384,11 +1384,13 @@
         "proposal": false,
         "presentation": "Included in this run final response; owner view not assumed"
       },
-      "review_result_ref": null,
-      "review_evidence_ref": null,
-      "review_url": null,
-      "score_assessment_ref": null,
-      "finding_ids": [],
+      "review_result_ref": "agent-work/results/2026-10-30-reviewer-HX-BL-023-direct-063c154.json",
+      "review_evidence_ref": "agent-work/evidence/review-HX-BL-023-direct-063c154/report.md",
+      "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/479#pullrequestreview-5706602187",
+      "score_assessment_ref": "agent-work/evidence/review-HX-BL-023-direct-063c154/score_assessment.json",
+      "finding_ids": [
+        "HX023-DE-R1"
+      ],
       "previous_review_result_ref": "agent-work/results/2026-10-29-reviewer-HX-BL-023-E1-24fa342.json",
       "addressed_findings_pending_review": [],
       "previous_score_assessment_ref": "agent-work/evidence/review-HX-BL-023-E1-24fa342/score_assessment.json",
@@ -1450,11 +1452,11 @@
           "superseded_by": "E2_direct_edit"
         },
         "E2_direct_edit": {
-          "status": "review_ready",
+          "status": "changes_requested",
           "spec_ref": "agent-work/specs/HX-BL-023-E2.md",
           "spec_version": "E2-2.0",
           "spec_blob_sha": "4701679e4b92e65f0fc7bd1690ffbf2c1addaf80",
-          "handoff_ref": "agent-work/handoffs/2026-10-30-HX-BL-023-direct-edit-review.json",
+          "handoff_ref": "agent-work/handoffs/2026-10-30-HX-BL-023-direct-edit-R1-fix.json",
           "preview_ref": "agent-work/evidence/HX-BL-023-direct-edit-v2/preview.html",
           "owner_decision_ref": "owner-decision-2026-10-29-HX-FB-005-direct-edit-mode",
           "head_sha": "063c1548a5165fde8656ff016c65816c791ea387",
@@ -1465,7 +1467,13 @@
           "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40958042988",
           "result_ref": "agent-work/results/2026-10-30-developer-HX-BL-023-direct-edit.json",
           "release_approved": false,
-          "published": false
+          "published": false,
+          "review_result_ref": "agent-work/results/2026-10-30-reviewer-HX-BL-023-direct-063c154.json",
+          "review_ref": "agent-work/evidence/review-HX-BL-023-direct-063c154/report.md",
+          "score_assessment_ref": "agent-work/evidence/review-HX-BL-023-direct-063c154/score_assessment.json",
+          "finding_ids": [
+            "HX023-DE-R1"
+          ]
         }
       },
       "current_owner_correction_ref": "owner-decision-2026-10-28-editor-functional-scope",
@@ -1476,15 +1484,16 @@
       "score_update_responsible": "strategist",
       "pending_ui_amendment": {
         "feedback_id": "HX-FB-005",
-        "status": "implemented_review_pending",
+        "status": "changes_requested",
         "approval_ref": "owner-decision-2026-10-29-HX-FB-005-direct-edit-mode",
         "execution_allowed": true,
         "included_in_stage": "E2_direct_edit",
         "spec_ref": "agent-work/specs/HX-BL-023-E2.md",
         "spec_version": "E2-2.0",
-        "handoff_ref": "agent-work/handoffs/2026-10-30-HX-BL-023-direct-edit-review.json",
+        "handoff_ref": "agent-work/handoffs/2026-10-30-HX-BL-023-direct-edit-R1-fix.json",
         "release_approved": false,
-        "candidate_sha": "063c1548a5165fde8656ff016c65816c791ea387"
+        "candidate_sha": "063c1548a5165fde8656ff016c65816c791ea387",
+        "review_result_ref": "agent-work/results/2026-10-30-reviewer-HX-BL-023-direct-063c154.json"
       },
       "score_update_result_ref": "agent-work/results/2026-10-29-strategist-score-HX-BL-023-E1-8f7d172.json",
       "last_completed_slice": "E1_release_score",
