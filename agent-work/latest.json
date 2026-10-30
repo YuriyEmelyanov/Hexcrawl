@@ -2,7 +2,7 @@
   "schema_version": 1,
   "date": "2026-10-30",
   "branch": "agent-operations",
-  "plan_json": "agent-work/handoffs/2026-10-30-HX-BL-023-R1-c4a37ee-review.json",
+  "plan_json": "agent-work/handoffs/2026-10-30-HX-BL-023-R2-touch-target-fix.json",
   "plan_md": null,
   "strategy_branch": "main",
   "strategy_status": "approved",
@@ -26,10 +26,10 @@
   },
   "lessons_path": "agent-work/lessons.md",
   "plan_id": "2026-10-29-developer-HX-BL-023-E1",
-  "run_id": "2026-10-30-developer-HX-BL-023-R1-wheel",
+  "run_id": "2026-10-30-reviewer-HX-BL-023-c4a37ee",
   "plan_revision": 1,
   "baseline_sha": "8f7d17266c53e31428da7c0da6dbbf1afe01d035",
-  "status": "review_ready",
+  "status": "changes_requested",
   "planning_for": "2026-10-29",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-10-25",
@@ -45,22 +45,15 @@
   "schedule_start_at": "2026-10-24T01:00:00+03:00",
   "schedule_frequency": "every_three_hours",
   "process_path": "agent-work/process.md",
-  "current_role": "developer",
-  "next_role": "reviewer",
+  "current_role": "reviewer",
+  "next_role": "developer",
   "current_task_id": "HX-BL-023",
   "spec_path": "agent-work/specs/HX-BL-023-E2.md",
   "spec_version": "E2-2.0",
-  "result_path": "agent-work/results/2026-10-30-developer-HX-BL-023-R1-wheel.json",
-  "handoff_commit_sha": "c9e352f6f64a148464e7f8dca2536e46f9652d29",
-  "active_claim": {
-    "run_id": "2026-10-30-reviewer-HX-BL-023-c4a37ee",
-    "role": "reviewer",
-    "task_id": "HX-BL-023",
-    "stage_id": "E2_direct_edit_R1_review",
-    "head_sha": "c4a37ee9b16b0d0641f1f01f1b6093b863f56d15",
-    "started_at": "2026-10-30T06:05:32.231Z"
-  },
-  "next_step": "Fresh independent review exact c4a37ee against E2-2.0 + compact owner correction; refresh exact CI, reassess score1.2, no release without owner permission",
+  "result_path": "agent-work/results/2026-10-30-reviewer-HX-BL-023-c4a37ee.json",
+  "handoff_commit_sha": "14c926ee6b69aa73ac875972f67f486894c73497",
+  "active_claim": null,
+  "next_step": "Fix HX023-DE-R2 minimum44×44px effective touch area for short direct labels while retaining compact blue underline; extend existing bounded browser lifecycle, then independent review of new SHA",
   "owner_decisions_needed": [
     {
       "task_id": "HX-BL-003",
@@ -81,13 +74,13 @@
     "published": true
   },
   "historical_plan_status": "План23.10 сохранён как история; его блокировки и предложенный процесс заменены decisions24.10 в approvals/process/budget и текущим handoff.",
-  "evidence_path": "agent-work/evidence/HX-BL-023-R1-c4a37ee/report.md",
+  "evidence_path": "agent-work/evidence/review-HX-BL-023-c4a37ee/report.md",
   "branch_name": "agent/hx023-direct-edit",
   "pr": 479,
   "head_sha": "c4a37ee9b16b0d0641f1f01f1b6093b863f56d15",
-  "checks_status": "local_and_exact_CI_passed",
+  "checks_status": "CI_passed_independent_review_changes_requested",
   "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40995005765",
-  "review_verdict": "pending_independent_review_new_SHA",
+  "review_verdict": "changes_requested",
   "role_selection_mode": "ready_work_priority",
   "role_selection_source": "agent-work/process.md",
   "process_decision_ref": "owner-decision-2026-10-24-dynamic-roles",
@@ -201,8 +194,8 @@
   "score_update_task_id": "HX-BL-023",
   "score_update_release_sha": "8f7d17266c53e31428da7c0da6dbbf1afe01d035",
   "score_process_decision_ref": "owner-decision-2026-10-24-score-responsibilities",
-  "score_assessment_ref": null,
-  "role_selection_reason": "Approved HX023-DE-R1 reviewer finding; no active foreign claim. Owner compact-highlight correction retained.",
+  "score_assessment_ref": "agent-work/evidence/review-HX-BL-023-c4a37ee/score_assessment.json",
+  "role_selection_reason": "Approved review_ready exact c4a37ee package, necessary checks passed and no active foreign claim",
   "score_update_result_ref": "agent-work/results/2026-10-29-strategist-score-HX-BL-023-E1-8f7d172.json",
   "score_update_completed_at": "2026-10-29T15:04:04.407Z",
   "score_update_delta": null,
@@ -227,18 +220,18 @@
   "automation_health": {
     "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-10-30T02:57:05.755Z",
-      "is_enabled": true,
-      "status": "checked"
+      "checked_at": "2026-10-30T06:05:22.648Z",
+      "status": "checked",
+      "is_enabled": true
     },
     "end": {
-      "checked_at": "2026-10-30T03:12:35.378Z",
+      "checked_at": "2026-10-30T06:18:50.680Z",
       "status": "checked",
       "is_enabled": true
     },
     "restored": false,
     "errors": [],
-    "limitation": "Observed checks only; later service state not guaranteed"
+    "limitation": "Only sampled times, not future service guarantee"
   },
   "open_findings": [
     {
@@ -260,17 +253,21 @@
       "evidence_ref": "agent-work/evidence/review-HX-BL-003-V3-58adcce/result.json"
     },
     {
-      "id": "HX023-DE-R1",
-      "reviewer_local_id": "R1",
-      "task_id": "HX-BL-023",
+      "id": "HX023-DE-R2",
       "severity": "medium",
-      "status": "addressed_pending_independent_review",
-      "head_sha": "063c1548a5165fde8656ff016c65816c791ea387",
-      "finding": "Wheel zoom bypasses active-name completion and invalid-input departure validation; no data loss observed",
-      "required": "Bounded wheel/navigation boundary correction and existing-lifecycle valid/invalid assertions; fresh exact-SHA review",
-      "evidence_ref": "agent-work/evidence/HX-BL-023-R1-c4a37ee/report.md",
-      "handoff_ref": "agent-work/handoffs/2026-10-30-HX-BL-023-direct-edit-R1-fix.json",
-      "candidate_sha": "c4a37ee9b16b0d0641f1f01f1b6093b863f56d15"
+      "requirements": [
+        "DE-01",
+        "DE-AC01",
+        "30Oct compact amendment retains44px"
+      ],
+      "source": [
+        "src/styles.css:227",
+        "src/styles.css:228",
+        "src/App.tsx:14015"
+      ],
+      "observed": "Valid region name Я at390px: target12.328125×44px; actual click30px from left misses, textcentre opens",
+      "status": "open",
+      "evidence_ref": "agent-work/evidence/review-HX-BL-023-c4a37ee/short-target.json"
     }
   ],
   "current_review_score_assessment_status": "completed_insufficient_evidence_for_rejected_sha",
@@ -586,9 +583,7 @@
     "placements_scope": "Legacy preparation-slice DW2/FL9 retained; new campaign placements in campaign_vtt_revision.placements_among_calculated"
   },
   "previous_score_assessment_ref": "agent-work/results/2026-10-25-reviewer-HX-BL-030-855cfd5.json",
-  "addressed_findings_pending_review": [
-    "HX023-DE-R1"
-  ],
+  "addressed_findings_pending_review": [],
   "verified_fixed_findings": [
     "R1",
     "R2",
@@ -1268,7 +1263,7 @@
       "src/styles.css"
     ]
   },
-  "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/479#pullrequestreview-5706602187",
+  "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/479#pullrequestreview-5708735954",
   "coordination_handoff": {
     "status": "completed_actionable_outcome",
     "current_package_task_id": "HX-BL-003",
@@ -2167,18 +2162,18 @@
   "current_task_release_approval": {
     "task_id": "HX-BL-023",
     "stage_id": "E2_direct_edit",
-    "status": "independent_review_required_then_owner_publication_permission",
+    "status": "blocked_by_review_HX023-DE-R2",
     "release_approved": false,
     "approved_sha": null
   },
   "next_product_recommendation": {
     "task_id": "HX-BL-023",
-    "stage_id": "E2_direct_edit_R1_review",
-    "status": "review_ready",
-    "next_role": "reviewer",
+    "stage_id": "E2_direct_edit_R2",
+    "status": "changes_requested",
+    "next_role": "developer",
     "execution_allowed": true,
-    "handoff_ref": "agent-work/handoffs/2026-10-30-HX-BL-023-R1-c4a37ee-review.json",
-    "reason": "Bounded R1 correction passed local and exact CI checks; new SHA requires independent acceptance"
+    "handoff_ref": "agent-work/handoffs/2026-10-30-HX-BL-023-R2-touch-target-fix.json",
+    "reason": "R1 independently resolved; short-label effective target width violates retained44px contract, bounded authorized correction ready"
   },
   "owner_editor_scope": {
     "decision_ref": "owner-decision-2026-10-28-editor-functional-scope",
@@ -2200,10 +2195,10 @@
       "Расположение POI: Проверить перенос существующей точки; смена типа/имени не равна переносу"
     ],
     "existing_POI_editing_note": "Точки интереса уже можно менять; инвентаризировать и сохранить, не выдавать за новую возможность.",
-    "status": "E2_direct_edit_review_ready",
+    "status": "E2_direct_edit_changes_requested",
     "result_ref": "agent-work/results/2026-10-28-HX-BL-023-owner-scope.json",
-    "next_role": "reviewer",
-    "next_step": "Fresh independent review exact c4a37ee against E2-2.0 + compact owner correction; refresh exact CI, reassess score1.2, no release without owner permission",
+    "next_role": "developer",
+    "next_step": "Fix HX023-DE-R2 minimum44×44px effective touch area for short direct labels while retaining compact blue underline; extend existing bounded browser lifecycle, then independent review of new SHA",
     "obstacles_decision_ref": "owner-decision-2026-10-28-editor-obstacles",
     "omission_candidates": [
       {
@@ -2250,7 +2245,7 @@
     "analysis_result_ref": "agent-work/results/2026-10-29-analyst-HX-BL-023-direct-edit.json",
     "capability_matrix_ref": "agent-work/evidence/HX-BL-023-editor-v2/capability-matrix.json",
     "developer_result_ref": "agent-work/results/2026-10-30-developer-HX-BL-023-R1-wheel.json",
-    "review_result_ref": "agent-work/results/2026-10-30-reviewer-HX-BL-023-direct-063c154.json",
+    "review_result_ref": "agent-work/results/2026-10-30-reviewer-HX-BL-023-c4a37ee.json",
     "release_result_ref": "agent-work/results/2026-10-29-developer-release-HX-BL-023-E1-a265a78.json",
     "spec_ref": "agent-work/specs/HX-BL-023-E2.md"
   },
@@ -2288,7 +2283,7 @@
     }
   },
   "full_editor_ready": false,
-  "current_task_score_assessment_status": "required_independent_model1.2_new_SHA",
+  "current_task_score_assessment_status": "completed_insufficient_evidence_no_award; new_SHA_requires_update",
   "published": false,
   "main_changed": false,
   "ui_actual": {
@@ -2298,7 +2293,7 @@
     "shown": "narrow image emitted directly in chat after owner reported Markdown image loading failure; desktop shown in final",
     "limitations": "Some emoji render as squares in evidence browser"
   },
-  "review_result_ref": "agent-work/results/2026-10-30-reviewer-HX-BL-023-direct-063c154.json",
+  "review_result_ref": "agent-work/results/2026-10-30-reviewer-HX-BL-023-c4a37ee.json",
   "previous_review_score_assessment_ref": "agent-work/evidence/review-HX-BL-023-E1-24fa342/score_assessment.json",
   "previous_independent_reviewer_automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
@@ -2319,7 +2314,7 @@
     "errors": [],
     "limitation": "Observed status at two calls only; not guarantee of subsequent service state."
   },
-  "next_active_slice": "E2_direct_edit_R1_review",
+  "next_active_slice": "E2_direct_edit_R2",
   "review_scope": "E2-2.0 DE-AC01–10 on exact063c154; fresh independent review and score1.2 required",
   "previous_accepted_release_pending": {
     "task_id": "HX-BL-023",
@@ -2358,14 +2353,14 @@
   "latest_feedback_event": {
     "feedback_id": "HX-FB-005",
     "task_id": "HX-BL-023",
-    "status": "review_ready",
+    "status": "changes_requested",
     "owner_decision_ref": "owner-decision-2026-10-29-HX-FB-005-direct-edit-mode",
-    "result_ref": "agent-work/results/2026-10-30-developer-HX-BL-023-R1-wheel.json",
+    "result_ref": "agent-work/results/2026-10-30-reviewer-HX-BL-023-c4a37ee.json",
     "required_decision": null,
     "execution_allowed": true,
     "release_approved": false,
     "candidate_sha": "c4a37ee9b16b0d0641f1f01f1b6093b863f56d15",
-    "handoff_ref": "agent-work/handoffs/2026-10-30-HX-BL-023-R1-c4a37ee-review.json"
+    "handoff_ref": "agent-work/handoffs/2026-10-30-HX-BL-023-R2-touch-target-fix.json"
   },
   "product_boundaries": {
     "decision_ref": "owner-decision-2026-10-29-map-hexcrawl-exploration-layers",
@@ -2424,17 +2419,20 @@
   "spec_blob_sha": "b6ee87caf193faad2a394ecf610fd04a8a02d420",
   "parent_spec_ref": "agent-work/specs/HX-BL-023.md",
   "parent_spec_version": "2.3",
-  "test_change_summary_ref": "agent-work/evidence/HX-BL-023-R1-c4a37ee/test_change_summary.json",
+  "test_change_summary_ref": "agent-work/evidence/review-HX-BL-023-c4a37ee/test_change_summary.json",
   "programmer_score_evidence_ref": "agent-work/evidence/HX-BL-023-R1-c4a37ee/score_evidence.json",
-  "completed_claim_result_ref": "agent-work/results/2026-10-30-developer-HX-BL-023-R1-wheel.json",
-  "review_evidence_ref": "agent-work/evidence/review-HX-BL-023-direct-063c154/report.md",
+  "completed_claim_result_ref": "agent-work/results/2026-10-30-reviewer-HX-BL-023-c4a37ee.json",
+  "review_evidence_ref": "agent-work/evidence/review-HX-BL-023-c4a37ee/report.md",
   "github_review_state": "COMMENTED",
-  "independent_reviewer_automation_health_ref": "agent-work/evidence/review-HX-BL-023-direct-063c154/automation-health.json",
+  "independent_reviewer_automation_health_ref": "agent-work/evidence/review-HX-BL-023-c4a37ee/automation-health.json",
   "owner_visual_correction": {
     "date": "2026-10-30",
     "request": "Приблизить подчёркивание к элементу и выделить редактируемые значения цветом",
     "status": "implemented",
     "sha": "4ab741539c414993425c29279afc04ea08af780c",
     "result_ref": "agent-work/results/2026-10-30-developer-HX-BL-023-compact-highlight.json"
-  }
+  },
+  "resolved_findings": [
+    "HX023-DE-R1"
+  ]
 }
