@@ -104,6 +104,41 @@ try {
  await openNamed('region');await input().fill('  '+current+'  ');await input().press('Enter');assert.deepEqual(await snapshot(),before);
  await openNamed('region');await input().fill('Ошибка подготовки');await page.evaluate(()=>window.__failNamePreparation=true);await input().press('Enter');
  assert.match(await page.getByRole('alert').innerText(),/Карта не изменена/);await input().press('Escape');assert.deepEqual(await snapshot(),before);
+ // HX023-DE-R1: wheel has no pointer-down; finish once before zoom, reject invalid departure.
+ const documentWithoutZoom=async()=>{const d=await snapshot();d.ui.mapScale=before.ui.mapScale;return d;};
+ await openNamed('region');await input().fill('Колесо навигации');
+ const viewport=page.locator('.map-viewport');await viewport.scrollIntoViewIfNeeded();
+ const rect=await viewport.boundingBox(),scale=()=>viewport.locator('svg').getAttribute('style');
+ await page.mouse.move(rect.x+rect.width/2,rect.y+Math.min(150,rect.height/2));
+ const scaleBefore=await scale();await page.mouse.wheel(0,-120);
+ await page.waitForFunction(old=>document.querySelector('.map-viewport svg').getAttribute('style')!==old,scaleBefore);
+ assert.equal(await input().count(),0,'wheel completes valid name before zoom');
+ const wheelSaved=await documentWithoutZoom();await button('Отменить').click();assert.deepEqual(await documentWithoutZoom(),before,'wheel name is exactly one transaction');
+ await button('Повторить').click();assert.deepEqual(await documentWithoutZoom(),wheelSaved);
+ await openNamed('region');await input().fill('');
+ await viewport.scrollIntoViewIfNeeded();const invalidRect=await viewport.boundingBox();
+ await page.mouse.move(invalidRect.x+invalidRect.width/2,invalidRect.y+Math.min(150,invalidRect.height/2));
+ const invalidScale=await scale();await page.mouse.wheel(0,-120);await page.waitForTimeout(150);
+ assert.equal(await scale(),invalidScale,'invalid input rejects wheel zoom');
+ assert.equal(await input().getAttribute('aria-invalid'),'true');
+ assert.equal(await input().evaluate(e=>e===document.activeElement),true);
+ await input().press('Escape');assert.deepEqual(await documentWithoutZoom(),wheelSaved);
+ await button('Отменить').click();assert.deepEqual(await documentWithoutZoom(),before);
+ // Same native boundary for pinch and single-finger scroll (synthetic touch diagnostic).
+ const touch=async (type,count,distance=100)=>viewport.evaluate((el,{type,count,distance})=>{
+   const r=el.getBoundingClientRect();const touches=Array.from({length:count},(_,i)=>new Touch({identifier:i,target:el,clientX:r.left+50+i*distance,clientY:r.top+50}));
+   return el.dispatchEvent(new TouchEvent(type,{touches,bubbles:true,cancelable:true}));
+ },{type,count,distance});
+ await openNamed('region');await input().fill('Pinch navigation');
+ const pinchBefore=await scale();await touch('touchstart',2);await touch('touchmove',2,150);
+ await page.waitForFunction(old=>document.querySelector('.map-viewport svg').getAttribute('style')!==old,pinchBefore);
+ assert.equal(await input().count(),0,'pinch completes valid name');await touch('touchend',0);
+ await button('Отменить').click();assert.deepEqual(await documentWithoutZoom(),before);
+ await openNamed('region');await input().fill('');const blockedPinch=await scale();
+ await touch('touchstart',2);assert.equal(await touch('touchmove',2,150),false,'invalid pinch cancelled');
+ await page.waitForTimeout(150);assert.equal(await scale(),blockedPinch);assert.equal(await input().getAttribute('aria-invalid'),'true');
+ await touch('touchend',0);assert.equal(await touch('touchmove',1),false,'invalid native touch scroll cancelled');
+ await input().press('Escape');assert.deepEqual(await documentWithoutZoom(),before);
  // Language changes complete the OLD captured locale, not the new one.
  await openNamed('region');await input().fill('Смена языка');await button('Switch to English').click();
  const switched=await snapshot(),changed=Object.keys(switched.map.toponyms.names).find(k=>switched.map.toponyms.names[k].ru!==before.map.toponyms.names[k].ru);

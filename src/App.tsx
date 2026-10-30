@@ -11259,6 +11259,8 @@ export function App() {
 
   const mapSvgRef = useRef<SVGSVGElement | null>(null);
   const mapViewportRef = useRef<HTMLDivElement | null>(null);
+  // Native wheel/touch listeners are installed once; consult the latest editor closure.
+  const finishMapNameRef = useRef<() => boolean>(() => true);
   const mapScaleRef = useRef(1);
   const mapStageRef = useRef<HTMLDivElement | null>(null);
   const mapZoomFrameRef = useRef<number | null>(null);
@@ -13676,6 +13678,7 @@ export function App() {
 
   const handleMapWheel = (event: Pick<WheelEvent<HTMLDivElement>, 'preventDefault' | 'deltaY' | 'deltaMode' | 'clientX' | 'clientY'>) => {
     event.preventDefault();
+    if (!finishMapNameRef.current()) return;
     const delta = event.deltaY * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? (mapViewportRef.current?.clientHeight ?? 800) : 1);
     const zoomFactor = Math.exp(-delta * WHEEL_ZOOM_SENSITIVITY);
     zoomMapAtPoint((pendingMapZoomRef.current?.scale ?? mapScaleRef.current) * zoomFactor, event.clientX, event.clientY);
@@ -13684,6 +13687,7 @@ export function App() {
 
   const handleMapMouseDown = (event: MouseEvent<HTMLDivElement>) => {
     if (event.button !== 0 && event.button !== 2) return;
+    if (!finishMapNameRef.current()) { event.preventDefault(); return; }
 
     const viewport = mapViewportRef.current;
     if (!viewport) return;
@@ -13725,6 +13729,9 @@ export function App() {
   const handleMapKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     const viewport = mapViewportRef.current;
     if (!viewport) return;
+    if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key) && !finishMapNameRef.current()) {
+      event.preventDefault(); return;
+    }
 
     const step = event.shiftKey ? 120 : 40;
     switch (event.key) {
@@ -13760,6 +13767,7 @@ export function App() {
   };
 
   const handleMapTouchMove = (event: Pick<TouchEvent, 'touches' | 'preventDefault'>) => {
+    if (!finishMapNameRef.current()) { event.preventDefault(); return; }
     if (event.touches.length !== 2 || !pinchZoomRef.current) return;
     event.preventDefault();
 
@@ -13974,6 +13982,7 @@ export function App() {
     }
   };
   const finishInlineName = () => !nameDraftRef.current || saveNameDraft(nameDraftRef.current);
+  finishMapNameRef.current = finishInlineName;
   const showNameTarget = (key: string | null, origin?: HTMLElement, surface = 'info') => {
     if (documentBusy() || !finishInlineName()) return;
     setNameErrors({}); setNameStatus(null);
