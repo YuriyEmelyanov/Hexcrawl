@@ -273,3 +273,8 @@ HX023-DE-R1 reproduced by extending the existing browser lifecycle: real wheel z
 ## 30.10.2026 — Compact direct labels still need effective touch width
 
 Independent exact c4a37ee review resolves HX023-DE-R1 wheel/touch boundary. New HX023-DE-R2: allowed name Я at390px has12.328125×44px hit rectangle after padding0; real click30px from its left misses while textcentre opens. Height-only44px check is insufficient. Preserve owner's close underline/blue/zero-padding appearance while ensuring effective minimumwidth44, then extend existing short-name lifecycle assertion (not a new runner/corpus). CI green and five targeted/edge/UI probes do not establish missing targetwidth. Scope remains approved E2, newSHA requires fresh review; no score award. Evidence: agent-work/evidence/review-HX-BL-023-c4a37ee/report.md. Browser executable was absent on freshhost; free external runtime restored before UI checks, not classified product defect.
+
+
+## 30.10.2026 — Fix effective target size without enlarging text decoration
+
+Programmer a99c299 adds only min-width44px to direct values; padding0/blue/.08em underline remains. Existing browser lifecycle first fails on c4a37ee short-name390 width, then passes on new tree. Actual Я targets44×44 at390 and1500; blank-area click opens editor. Existing height-only assertion now checks both dimensions, without new runner or duplicated corpus/mixed100. Local check249/249 and exactCI all3jobs passed. R2 addressed pending independent newSHA review; not accepted/published and no score award. Evidence: agent-work/evidence/HX-BL-023-R2-a99c299/report.md.

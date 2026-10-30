@@ -1,0 +1,145 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-30",
+  "run_id": "2026-10-30-developer-HX-BL-023-R2-target",
+  "role": "developer",
+  "task_id": "HX-BL-023",
+  "stage_id": "E2_direct_edit_R2",
+  "status": "review_ready",
+  "role_selection_reason": "Approved HX023-DE-R2 reviewer finding with bounded handoff; no active foreign claim",
+  "base_sha": "c4a37ee9b16b0d0641f1f01f1b6093b863f56d15",
+  "head_sha": "a99c299f0648c2e5c1d65173bdeca50061dcc901",
+  "tree_sha": "4fcecf131cd6287e804dfe040b0fc0ed0dd2b669",
+  "branch": "agent/hx023-direct-edit",
+  "pr": 479,
+  "spec_ref": "agent-work/specs/HX-BL-023-E2.md",
+  "spec_blob_sha": "b6ee87caf193faad2a394ecf610fd04a8a02d420",
+  "finding_id": "HX023-DE-R2",
+  "finding_status": "addressed_pending_independent_review",
+  "changes": "Only CSS minimumwidth44px and existing browser lifecycle; compact0padding/.08em/color retained",
+  "reproduction_before": "Extended existing browser lifecycle fails short name target at390 on c4a37ee production build",
+  "actual_after": {
+    "short_name": "Я",
+    "viewport_widths": [
+      1500,
+      390
+    ],
+    "target_width": 44,
+    "target_height": 44,
+    "blank_area_click_opens": true,
+    "padding": "0px",
+    "color": "#7dd3fc",
+    "underline_offset": ".08em"
+  },
+  "checks": {
+    "npm_check": {
+      "status": "passed",
+      "node": "24.22.1",
+      "executed": 249,
+      "passed": 249,
+      "skipped": 0,
+      "exit_code": 0
+    },
+    "browser_save_history": {
+      "status": "passed",
+      "scripts": 1,
+      "exit_code": 0,
+      "chromium": "153.0.8010.0"
+    },
+    "ci": {
+      "jobs": [
+        {
+          "name": "browser",
+          "head_sha": "a99c299f0648c2e5c1d65173bdeca50061dcc901",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "world-random",
+          "head_sha": "a99c299f0648c2e5c1d65173bdeca50061dcc901",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "check",
+          "head_sha": "a99c299f0648c2e5c1d65173bdeca50061dcc901",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ],
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41030179704"
+    }
+  },
+  "test_change_summary": {
+    "base_sha": "c4a37ee9b16b0d0641f1f01f1b6093b863f56d15",
+    "head_sha": "a99c299f0648c2e5c1d65173bdeca50061dcc901",
+    "node": {
+      "added": 0,
+      "removed": 0,
+      "modified": 0
+    },
+    "browser": {
+      "added": 0,
+      "removed": 0,
+      "modified": 1,
+      "suite": "existing save-history browser lifecycle"
+    },
+    "scenario_risk": "HX023-DE-R2: shortest valid label must have effective44×44px hit area at390 and1500; real blank-area click opens input; fixture restored by Undo",
+    "reuse_or_new_reason": "Extend existing height-only target check and same direct-edit lifecycle; no new runner/full corpus/mixed100",
+    "source": "git diff c4a37ee..a99c299: only src/styles.css and existing test/browser/save-history.smoke.mjs; logical script count unchanged",
+    "executed": {
+      "browser_scripts": 1,
+      "passed": 1,
+      "skipped": 0,
+      "node": {
+        "executed": 249,
+        "passed": 249,
+        "skipped": 0
+      }
+    },
+    "counts_not_combined": true
+  },
+  "test_change_summary_ref": "agent-work/evidence/HX-BL-023-R2-a99c299/test_change_summary.json",
+  "evidence_ref": "agent-work/evidence/HX-BL-023-R2-a99c299/report.md",
+  "score_evidence_ref": "agent-work/evidence/HX-BL-023-R2-a99c299/score_evidence.json",
+  "score_assessment_status": "required_independent_model1.2_new_SHA",
+  "score_changed": false,
+  "confirmed_points": null,
+  "unverified_weight": 1000,
+  "actual_ui": {
+    "head_sha": "a99c299f0648c2e5c1d65173bdeca50061dcc901",
+    "desktop": "agent-work/evidence/HX-BL-023-R2-a99c299/desktop.png",
+    "narrow": "agent-work/evidence/HX-BL-023-R2-a99c299/narrow.png",
+    "presentation": "Both actual desktop and390 images emitted directly in chat",
+    "limitations": "Some emoji unavailable in evidence browser"
+  },
+  "published": false,
+  "main_changed": false,
+  "full_editor_ready": false,
+  "next_task_id": "HX-BL-023",
+  "next_role": "reviewer",
+  "next_step": "Fresh independent review exact a99c299: verify effective44×44 short-label hit area and compact style, relevant E2/R1 regression checks and score_assessment1.2; release separately by owner",
+  "authorization_status": "Correction within approved E2; no publication permission",
+  "handoff_ref": "agent-work/handoffs/2026-10-30-HX-BL-023-R2-a99c299-review.json",
+  "automation_health": {
+    "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-10-30T08:56:26.223Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "end": {
+      "checked_at": "2026-10-30T09:09:52.195Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restored": false,
+    "errors": [],
+    "limitation": "Observed moments only, no guarantee of later service state"
+  },
+  "operational_errors": [
+    "Previous product checkout/browser absent; fresh isolated clone and free external Chromium153 runtime restored",
+    "First preview invoked before build completed: missingdist; rerun after build produced intended failing product assertion"
+  ],
+  "claim_released": true
+}
