@@ -1206,7 +1206,7 @@
       "task_id": "HX-BL-023",
       "title": "Общий режим редактирования",
       "criterion_id": "S03-C01",
-      "status": "approved_awaiting_E3_specification",
+      "status": "approved_spec_ready",
       "potential_delta": null,
       "approval_ref": "owner-decision-2026-10-29-HX-FB-005-direct-edit-mode",
       "source": {
@@ -1221,16 +1221,16 @@
       "previous_status": "ready_for_development",
       "recommended_priority": 1,
       "execution_allowed": true,
-      "spec_status": "E3_detailed_specification_required",
-      "next_role": "business_analyst",
-      "next_step": "Бизнес-аналитик: подготовить подробную E3-спецификацию дорог, троп и переправ, показать desktop/узкий макет и передать разработчику в утверждённых границах HX-BL-023v2.3.",
+      "spec_status": "ready",
+      "next_role": "developer",
+      "next_step": "Реализовать утверждённый E3 по E3-1.0 в отдельной ветке; показать фактический UI, выполнить нужные проверки и передать точный SHA независимому проверяющему.",
       "related_task_ids": [
         "HX-BL-013",
         "HX-BL-018",
         "HX-BL-019",
         "HX-BL-028"
       ],
-      "handoff_ref": "agent-work/handoffs/2026-10-31-HX-BL-023-E3-specification.json",
+      "handoff_ref": "agent-work/handoffs/2026-10-31-HX-BL-023-E3-development.json",
       "owner_priority_decision": {
         "id": "owner-decision-2026-10-28-editor-and-MB-content-before-outreach",
         "date": "2026-10-28",
@@ -1262,14 +1262,17 @@
         "underlay027_still_deferred": true
       },
       "release_approved": false,
-      "spec_ref": "agent-work/specs/HX-BL-023-E2.md",
-      "spec_version": "E2-2.0",
+      "spec_ref": "agent-work/specs/HX-BL-023-E3.md",
+      "spec_version": "E3-1.0",
       "active_slice": "E3_roads_trails_crossings",
       "ui_preview": {
-        "version": "DE-UI2",
-        "ref": "agent-work/evidence/HX-BL-023-direct-edit-v2/preview.html",
-        "status": "proposal_included_in_current_final_response",
-        "not_live_implementation": true
+        "version": "E3-UI1",
+        "desktop": "agent-work/evidence/HX-BL-023-E3-spec/desktop.png",
+        "narrow": "agent-work/evidence/HX-BL-023-E3-spec/narrow.png",
+        "type": "proposal_not_implementation",
+        "shown_in_current_chat": true,
+        "ui_preview_pending": false,
+        "owner_response_required_to_start": false
       },
       "scope_remaining": [
         "E2 hex/region biomes",
@@ -1282,21 +1285,22 @@
       ],
       "marketing_gate_status": "not_passed_full023_remains",
       "score_forecast": {
-        "path": "agent-work/score/current-score.json",
-        "blob_sha": "656aadf7ae1acdd84fe36c6271c427751376bbf1",
-        "criterion_ids": [
-          "S01-C05",
-          "S03-C01",
+        "model_version": "1.2",
+        "criteria": [
+          "S01-C04",
+          "S02-C02",
           "S03-C05",
           "S04-C04",
           "S09-C04"
         ],
-        "grade": null,
-        "points": null,
-        "expected_after_grade": null,
+        "regression_criteria": [
+          "S03-C01"
+        ],
+        "before_grade": null,
+        "before_points": null,
+        "expected_after": "unknown",
         "delta": null,
-        "status": "unknown",
-        "evidence_plan": "Per-criterion AC mapping in spec section7; exact-SHA independent assessment mandatory, no automatic awards"
+        "baseline_ref": "agent-work/score/current-score.json"
       },
       "owner_scope_decision_ref": "owner-decision-2026-10-28-editor-functional-scope",
       "owner_requested_capabilities": [
@@ -1363,13 +1367,13 @@
       },
       "additional_functions_approval_ref": "owner-decision-2026-10-28-editor-additional-functions-approved",
       "capability_matrix_ref": "agent-work/evidence/HX-BL-023-editor-v2/capability-matrix.json",
-      "analyst_result_ref": "agent-work/results/2026-10-29-analyst-HX-BL-023-editor-v2.json",
+      "analyst_result_ref": "agent-work/results/2026-10-31-analyst-HX-BL-023-E3.json",
       "analyst_handoff_ref": "agent-work/handoffs/2026-10-29-HX-BL-023-E1-names.json",
       "owner_role": "developer",
-      "branch": "agent/hx023-direct-edit",
-      "pr": 479,
-      "base_sha": "8f7d17266c53e31428da7c0da6dbbf1afe01d035",
-      "head_sha": "a99c299f0648c2e5c1d65173bdeca50061dcc901",
+      "branch": null,
+      "pr": null,
+      "base_sha": "defaa5c24d546e4283430573c2d4e4f3b6194dc0",
+      "head_sha": null,
       "checks_status": "local_and_exact_CI_passed",
       "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41030179704",
       "review_verdict": "accepted",
@@ -1484,12 +1488,23 @@
           "score_update_completed_at": "2026-10-30T22:31:49.807Z"
         },
         "E3_roads_trails_crossings": {
-          "status": "approved_specification_ready_to_start",
+          "status": "specification_ready",
           "parent_spec_ref": "agent-work/specs/HX-BL-023.md",
           "parent_spec_version": "2.3",
-          "handoff_ref": "agent-work/handoffs/2026-10-31-HX-BL-023-E3-specification.json",
+          "handoff_ref": "agent-work/handoffs/2026-10-31-HX-BL-023-E3-development.json",
           "release_approved": false,
-          "implementation_started": false
+          "implementation_started": false,
+          "spec_ref": "agent-work/specs/HX-BL-023-E3.md",
+          "spec_version": "E3-1.0",
+          "preview": {
+            "version": "E3-UI1",
+            "desktop": "agent-work/evidence/HX-BL-023-E3-spec/desktop.png",
+            "narrow": "agent-work/evidence/HX-BL-023-E3-spec/narrow.png",
+            "type": "proposal_not_implementation",
+            "shown_in_current_chat": true,
+            "ui_preview_pending": false,
+            "owner_response_required_to_start": false
+          }
         }
       },
       "current_owner_correction_ref": "owner-decision-2026-10-28-editor-functional-scope",
@@ -1558,14 +1573,15 @@
         "required_owner_decision": "Approve bounded unified edit mode and current-language-only rename contract; no development started",
         "current_authorized_queue_preserved": true
       },
-      "spec_blob_sha": "4701679e4b92e65f0fc7bd1690ffbf2c1addaf80",
+      "spec_blob_sha": "82d57dfde2e24abf1662c31fe77bef6763cd5fb3",
       "resolved_findings": [
         "HX023-DE-R1",
         "HX023-DE-R2"
       ],
       "release_approval_ref": "owner-release-2026-10-31-HX-BL-023-E2-a99c299",
       "score_update_handoff_ref": "agent-work/handoffs/2026-10-31-HX-BL-023-E2-release-score.json",
-      "score_update_completed_at": "2026-10-30T22:31:49.807Z"
+      "score_update_completed_at": "2026-10-30T22:31:49.807Z",
+      "previous_head_sha": "a99c299f0648c2e5c1d65173bdeca50061dcc901"
     },
     {
       "task_id": "HX-BL-024",

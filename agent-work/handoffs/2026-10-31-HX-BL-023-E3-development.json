@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-023",
+  "stage_id": "E3",
+  "status": "ready",
+  "role": "developer",
+  "base_sha": "defaa5c24d546e4283430573c2d4e4f3b6194dc0",
+  "spec_ref": "agent-work/specs/HX-BL-023-E3.md",
+  "spec_version": "E3-1.0",
+  "spec_blob_sha": "82d57dfde2e24abf1662c31fe77bef6763cd5fb3",
+  "authorization": "approved parent2.3; owner-decision-2026-10-28-editor-additional-functions-approved",
+  "scope": "Road/trail geometry and segment type; dependent bridge/ferry/ford, atomic history and current direct-edit UI; exact limits in E3-1.0",
+  "preview": {
+    "version": "E3-UI1",
+    "desktop": "agent-work/evidence/HX-BL-023-E3-spec/desktop.png",
+    "narrow": "agent-work/evidence/HX-BL-023-E3-spec/narrow.png",
+    "type": "proposal_not_implementation",
+    "shown_in_current_chat": true,
+    "ui_preview_pending": false,
+    "owner_response_required_to_start": false
+  },
+  "input_refs": [
+    "docs/road-model.md",
+    "docs/road-model-audit.md",
+    "docs/mythic-bastionland.md",
+    "src/riverCrossings.ts",
+    "src/saveValidation.ts",
+    "agent-work/feedback.json",
+    "agent-work/strategy/score-model.md"
+  ],
+  "acceptance": "E3 AC01–10; implementation actual screenshots and exactSHA evidence, existing test reuse and independent reviewer score_assessment1.2",
+  "next_role": "reviewer",
+  "release_approved": false,
+  "product_layer": "L1",
+  "implementation_not_started": true,
+  "risks": [
+    "Crossings are reconciled from geometry; removing marker alone cannot persist",
+    "Preserve true graph connectivity and existing ID ownership across regions; Road record is not whole network",
+    "Import validation stays structural; manual draft and failures cannot mutate RNG/history/other entities",
+    "Tract numerical road minimum remains unresolved in ROAD; no invented quota"
+  ],
+  "score": {
+    "model_version": "1.2",
+    "criteria": [
+      "S01-C04",
+      "S02-C02",
+      "S03-C05",
+      "S04-C04",
+      "S09-C04"
+    ],
+    "regression_criteria": [
+      "S03-C01"
+    ],
+    "before_grade": null,
+    "before_points": null,
+    "expected_after": "unknown",
+    "delta": null,
+    "baseline_ref": "agent-work/score/current-score.json"
+  },
+  "test_governance": "Reuse mapTransactions, riverCrossings, roadContinuation/Entry and existing save-history lifecycle; no duplicate mixed100/corpus or count targets"
+}
