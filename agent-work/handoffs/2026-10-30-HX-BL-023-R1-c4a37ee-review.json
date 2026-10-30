@@ -1,0 +1,145 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-10-30-developer-HX-BL-023-R1-wheel",
+  "date": "2026-10-30",
+  "role": "reviewer",
+  "task_id": "HX-BL-023",
+  "stage_id": "E2_direct_edit_R1",
+  "status": "ready_for_independent_review",
+  "role_selection_reason": "Approved HX023-DE-R1 reviewer finding; no active foreign claim. Owner compact-highlight correction retained.",
+  "base_sha": "4ab741539c414993425c29279afc04ea08af780c",
+  "head_sha": "c4a37ee9b16b0d0641f1f01f1b6093b863f56d15",
+  "tree_sha": "6b51af3e49f294964888228ff27ac26e7adf453b",
+  "branch": "agent/hx023-direct-edit",
+  "pr": 479,
+  "spec_ref": "agent-work/specs/HX-BL-023-E2.md",
+  "spec_blob_sha": "b6ee87caf193faad2a394ecf610fd04a8a02d420",
+  "finding_id": "HX023-DE-R1",
+  "finding_status": "addressed_pending_independent_review",
+  "changes": [
+    "Native listeners consult current finishInlineName via ref, avoiding mount-time closure",
+    "Wheel, touch movement, drag and arrow navigation complete valid input first; invalid/composing blocks navigation",
+    "Compact colored direct-value UI retained; no extra forms or approval gate"
+  ],
+  "reproduction": {
+    "before": "Existing lifecycle with new wheel assertion fails on063c154-derived old build: input count1 expected0 after actual wheel",
+    "after": "Same lifecycle passes on new production build; wheel/pinch valid completion and invalid cancellation; literal locale/exact name UndoRedo preserved",
+    "data_loss_claim": false
+  },
+  "checks": {
+    "npm_check": {
+      "status": "passed",
+      "node": "24.22.1",
+      "executed": 249,
+      "passed": 249,
+      "skipped": 0,
+      "exit_code": 0
+    },
+    "typecheck_final": {
+      "status": "passed",
+      "exit_code": 0
+    },
+    "build_final": {
+      "status": "passed",
+      "exit_code": 0
+    },
+    "browser_save_history": {
+      "status": "passed",
+      "scripts": 1,
+      "exit_code": 0,
+      "chromium": "153.0.8010.0",
+      "coverage": "existing lifecycle, corpus/mixed100, valid/invalid actual wheel, native synthetic pinch/single-finger cancellation"
+    },
+    "ci": {
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40995005765",
+      "jobs": [
+        {
+          "name": "check",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "world-random",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "browser",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ],
+      "note": "Exact SHA all three CI jobs completed success"
+    }
+  },
+  "test_change_summary": {
+    "base_sha": "4ab741539c414993425c29279afc04ea08af780c",
+    "head_sha": "c4a37ee9b16b0d0641f1f01f1b6093b863f56d15",
+    "added": 0,
+    "removed": 0,
+    "modified": 1,
+    "suite": "browser save-history lifecycle script",
+    "scenario_risk": "HX023-DE-R1: valid/invalid wheel before zoom, exact name Undo/Redo, native pinch and single-finger cancellation",
+    "reuse_or_new_reason": "Existing lifecycle extended; no runner or mixed100 duplication",
+    "source": "git diff 4ab7415: only existing test/browser/save-history.smoke.mjs changed; Node logical cases unchanged (0/0/0)",
+    "executed": {
+      "browser_scripts": 1,
+      "passed": 1,
+      "skipped": 0,
+      "node": {
+        "executed": 249,
+        "passed": 249,
+        "skipped": 0
+      }
+    },
+    "limitations": [
+      "Touch events synthetic; physical mobile device testing not performed"
+    ]
+  },
+  "score_evidence_ref": "agent-work/evidence/HX-BL-023-R1-c4a37ee/score_evidence.json",
+  "score_assessment_status": "required_independent_model1.2_for_new_SHA",
+  "score_changed": false,
+  "full_editor_ready": false,
+  "actual_ui": {
+    "head_sha": "c4a37ee9b16b0d0641f1f01f1b6093b863f56d15",
+    "desktop": "agent-work/evidence/HX-BL-023-R1-c4a37ee/desktop.png",
+    "narrow": "agent-work/evidence/HX-BL-023-R1-c4a37ee/narrow.png",
+    "shown": "narrow image emitted directly in chat after owner reported Markdown image loading failure; desktop shown in final",
+    "limitations": "Some emoji render as squares in evidence browser"
+  },
+  "evidence_ref": "agent-work/evidence/HX-BL-023-R1-c4a37ee/report.md",
+  "handoff_ref": "agent-work/handoffs/2026-10-30-HX-BL-023-R1-c4a37ee-review.json",
+  "next_role": "reviewer",
+  "next_task_id": "HX-BL-023",
+  "next_step": "Fresh independent review exact c4a37ee against E2-2.0 + compact owner correction; refresh exact CI, reassess score1.2, no release without owner permission",
+  "authorization": "Within approved correction scope; separate publication permission absent",
+  "published": false,
+  "main_changed": false,
+  "automation_health": {
+    "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-10-30T02:57:05.755Z",
+      "is_enabled": true,
+      "status": "checked"
+    },
+    "end": {
+      "checked_at": "2026-10-30T03:10:17.289Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restored": false,
+    "errors": []
+  },
+  "operational_errors": [
+    "Previous compact run pending /tmp check log not retained; no retrospective success claimed; current complete check supersedes validation gap",
+    "One evidence blob batch failed without captured response; safe summarized evidence and screenshots then persisted, raw batch not asserted saved"
+  ],
+  "claim_released": true,
+  "review_requirements": [
+    "Fresh separate context/checkout exact c4a37ee tree6b51af3; do not transfer previous acceptance",
+    "Independently reproduce wheel valid/invalid, inspect current ref and touch/navigation lifecycle, verify tests necessary and not duplicate",
+    "Preserve current-locale-only writes, notes/history/POI/biome invariants and compact UI; no additional product work",
+    "Refresh CI40995005765 exact SHA; record independent score_assessment1.2 all six criteria and limitations",
+    "Return findings to developer; if accepted prepare exact release package for owner, do not merge/publish"
+  ]
+}
