@@ -6,8 +6,8 @@
   "plan_md": null,
   "strategy_branch": "main",
   "strategy_status": "approved",
-  "execution_allowed": false,
-  "schedule_status": "paused_by_owner",
+  "execution_allowed": true,
+  "schedule_status": "enabled",
   "schedule_timezone": "Europe/Moscow",
   "schedule_time": null,
   "schedule_start_date": "2026-10-24",
@@ -17,7 +17,7 @@
   "score_model_path": "agent-work/strategy/score-model.md",
   "backlog_path": "agent-work/backlog.json",
   "approvals_path": "agent-work/approvals.json",
-  "execution_blocker": "Explicit owner instruction: Пока приостанови работу.",
+  "execution_blocker": null,
   "cleanup_status": "merged_pr470",
   "project_attachments_cleanup": {
     "status": "detached_by_owner",
@@ -29,7 +29,7 @@
   "run_id": "2026-10-30-developer-HX-BL-023-R2-target",
   "plan_revision": 1,
   "baseline_sha": "8f7d17266c53e31428da7c0da6dbbf1afe01d035",
-  "status": "paused_by_owner",
+  "status": "review_ready",
   "planning_for": "2026-10-29",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-10-25",
@@ -43,7 +43,7 @@
   "plan_file_shas": null,
   "process_change_status": "dynamic_roles_approved_and_recorded",
   "schedule_start_at": "2026-10-24T01:00:00+03:00",
-  "schedule_frequency": "every_three_hours",
+  "schedule_frequency": "hourly",
   "process_path": "agent-work/process.md",
   "current_role": "developer",
   "next_role": "reviewer",
@@ -53,7 +53,7 @@
   "result_path": "agent-work/results/2026-10-30-developer-HX-BL-023-R2-target.json",
   "handoff_commit_sha": "b59e538fde090f5ceb7cd427a5536c81081e2384",
   "active_claim": null,
-  "next_step": "Ожидается явное поручение владельца возобновить работу; затем независимая проверка a99c299.",
+  "next_step": "Fresh independent review exact a99c299: verify effective44×44 short-label hit area and compact style, relevant E2/R1 regression checks and score_assessment1.2; release separately by owner",
   "owner_decisions_needed": [
     {
       "task_id": "HX-BL-003",
@@ -220,18 +220,19 @@
   "automation_health": {
     "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-10-30T10:37:02.006Z",
-      "status": "checked",
-      "is_enabled": true
-    },
-    "end": {
-      "checked_at": "2026-10-30T10:37:29.679Z",
+      "checked_at": "2026-10-30T21:10:22.849Z",
       "status": "checked",
       "is_enabled": false
     },
-    "restored": false,
-    "pause_performed": true,
-    "pause_authorized_by": "Current explicit owner instruction, recorded in approvals.json before disabling",
+    "end": {
+      "checked_at": "2026-10-30T21:10:48.735Z",
+      "status": "checked",
+      "is_enabled": true,
+      "schedule": "BEGIN:VEVENT\nDTSTART:20261030T211044Z\nRRULE:FREQ=HOURLY;BYMINUTE=0;BYSECOND=0\nEND:VEVENT"
+    },
+    "resumed": true,
+    "schedule_updated": true,
+    "prompt_changed": false,
     "errors": []
   },
   "open_findings": [
@@ -939,7 +940,7 @@
     "next_step": "Решить отдельно узкий cleanup AUD-02/03/04; готовую спецификацию024 не задерживать."
   },
   "owner_decisions_note": "Подтвердить предложенную адресную замену большого незавершённого historygate для003. HX-BL-024 уже утверждён, повторного согласования задачи не нужно; выпуск474 отдельно.",
-  "updated_at": "2026-10-30T10:37:57.050Z",
+  "updated_at": "2026-10-30T21:11:36.758Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
     "stage_id": "V3",
@@ -1430,7 +1431,7 @@
       "errors": []
     }
   },
-  "last_secondary_result_ref": "agent-work/results/2026-10-30-owner-pause.json",
+  "last_secondary_result_ref": "agent-work/results/2026-10-31-owner-resume-hourly.json",
   "execution_note": "E1 принят только на d92ecdd; локальный official save-history не зелёный, подтверждённое предусловие header отмечено как неблокирующая рекомендация. E2 аналитика разрешена; публикация и полный023 не завершены.",
   "completed_validation_handoffs": {
     "HX-BL-003": {
@@ -1739,18 +1740,19 @@
   "previous_automation_health": {
     "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-10-30T08:56:26.223Z",
+      "checked_at": "2026-10-30T10:37:02.006Z",
       "status": "checked",
       "is_enabled": true
     },
     "end": {
-      "checked_at": "2026-10-30T09:11:17.721Z",
+      "checked_at": "2026-10-30T10:37:29.679Z",
       "status": "checked",
-      "is_enabled": true
+      "is_enabled": false
     },
     "restored": false,
-    "errors": [],
-    "limitation": "Observed moments only, no guarantee of later service state"
+    "pause_performed": true,
+    "pause_authorized_by": "Current explicit owner instruction, recorded in approvals.json before disabling",
+    "errors": []
   },
   "previous_completed_claim": {
     "run_id": "2026-10-28-strategist-score-HX-BL-024-a7a8cc5",
@@ -2031,15 +2033,31 @@
   },
   "schedule_hours": [
     0,
+    1,
+    2,
     3,
+    4,
+    5,
     6,
+    7,
+    8,
     9,
+    10,
+    11,
     12,
+    13,
+    14,
     15,
+    16,
+    17,
     18,
-    21
+    19,
+    20,
+    21,
+    22,
+    23
   ],
-  "schedule_decision_ref": "owner-decision-2026-10-28-three-hour-schedule",
+  "schedule_decision_ref": "owner-decision-2026-10-31-team-resume-hourly",
   "tree_sha": "4fcecf131cd6287e804dfe040b0fc0ed0dd2b669",
   "accepted_release_pending": null,
   "next_product_proposal": {
@@ -2452,9 +2470,17 @@
   },
   "owner_pause": {
     "decision_ref": "owner-decision-2026-10-30-team-pause",
-    "active": true,
+    "active": false,
     "resume_requires_owner_instruction": true,
-    "do_not_auto_restore": true,
-    "result_ref": "agent-work/results/2026-10-30-owner-pause.json"
+    "do_not_auto_restore": false,
+    "result_ref": "agent-work/results/2026-10-30-owner-pause.json",
+    "resumed_by": "owner-decision-2026-10-31-team-resume-hourly",
+    "resumed_at": "2026-10-30T21:11:36.758Z"
+  },
+  "schedule_actual": "BEGIN:VEVENT\nDTSTART:20261030T211044Z\nRRULE:FREQ=HOURLY;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+  "owner_resume": {
+    "decision_ref": "owner-decision-2026-10-31-team-resume-hourly",
+    "result_ref": "agent-work/results/2026-10-31-owner-resume-hourly.json",
+    "frequency": "hourly"
   }
 }
