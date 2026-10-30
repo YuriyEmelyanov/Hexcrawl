@@ -171,7 +171,7 @@ test('delete retains latest surviving notes, confirms loss, undo restores; gener
   assert.deepEqual(serial(h.render().captureDocument()),exact);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),timeline);
 });
 
-test('name editor uses one shared transaction for registry and kingdom names; dirty and stale handlers cannot overwrite a world',async()=>{
+test('direct names change only the captured locale; exact history, validation, legacy other locale and stale fault guards',async()=>{
   // N01/N03/N04: helper-unit rename cases already exist; this protects the actual
   // App boundary, its distinct kingdom storage and delayed document handlers.
   const {h}=setup();
@@ -185,27 +185,29 @@ test('name editor uses one shared transaction for registry and kingdom names; di
   const targets=h.render().nameTargets;
   for(const type of ['region','settlement','river','lake','kingdom']) {
     const target=targets.find(t=>t.type===type);assert.ok(target,type+' target');
+    for (const locale of ['en','ru']) {
+    h.render().setLanguage(locale);
     const before=stable(h.render()), length=h.render().undoHistory.length;
     h.render().showNameTarget(target.key);
     let draft=h.render().nameDraft;
-    h.render().changeNameDraft('ru','Автор '+type,draft);draft=h.render().nameDraft;
-    h.render().changeNameDraft('en','Author '+type,draft);
+    h.render().changeNameDraft(locale==='ru'?'Автор '+type:'Author '+type,draft);
     const dirty=h.render();dirty.resetMap();await load(h,fixture);dirty.undoMap();
     assert.deepEqual(stable(h.render()),before,'dirty mutation guards');
     assert.equal(h.render().saveNameDraft(),true);
     const after=stable(h.render());assert.equal(h.render().undoHistory.length,length+1);
     const expected=structuredClone(before);
-    if(type==='kingdom')expected.map.kingdoms.find(k=>`kingdom:${k.id}`===target.key).name={ru:'Автор '+type,en:'Author '+type};
-    else Object.assign(expected.map.toponyms.names[target.key],{ru:'Автор '+type,en:'Author '+type});
-    assert.deepEqual(after,expected,'only selected name pair changed');assertUndoRedo(h,before,after);
+    if(type==='kingdom')expected.map.kingdoms.find(k=>`kingdom:${k.id}`===target.key).name[locale]=locale==='ru'?'Автор '+type:'Author '+type;
+    else expected.map.toponyms.names[target.key][locale]=locale==='ru'?'Автор '+type:'Author '+type;
+    assert.deepEqual(after,expected,'only captured locale changed, other locale literal');assertUndoRedo(h,before,after);
+    }
   }
   h.render().undoMap();
   const exact=stable(h.render()), stacks=serial([h.render().undoHistory,h.render().redoHistory]);
   h.render().showNameTarget(h.render().nameTargets[0].key);
-  h.render().changeNameDraft('ru','invalid\u0000name',h.render().nameDraft);
-  assert.equal(h.render().saveNameDraft(),false);assert.ok(h.render().nameErrors.ru);h.render().cancelNameDraft();
+  h.render().changeNameDraft('invalid\u0000name',h.render().nameDraft);
+  assert.equal(h.render().saveNameDraft(),false);assert.ok(h.render().nameErrors.general);h.render().cancelNameDraft();
   h.render().showNameTarget(h.render().nameTargets[0].key);
-  h.render().changeNameDraft('ru','Prepared failure',h.render().nameDraft);
+  h.render().changeNameDraft('Prepared failure',h.render().nameDraft);
   const restoreClone=h.injectFunction('structuredClone',()=>{throw Error('name preparation fault');});
   assert.equal(h.render().saveNameDraft(),false);restoreClone();h.render().cancelNameDraft();
   assert.deepEqual(stable(h.render()),exact);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks);
@@ -213,10 +215,57 @@ test('name editor uses one shared transaction for registry and kingdom names; di
   h.render().showNameTarget(key);h.render().saveNameDraft();
   assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks,'no-op keeps redo');
   h.render().showNameTarget(key);let draft=h.render().nameDraft;
-  h.render().changeNameDraft('ru','must never apply',draft);
+  h.render().changeNameDraft('must never apply',draft);
   const staleSave=h.render().saveNameDraft, staleDraft=h.render().nameDraft;
   const replacement=h.render().captureDocument();h.render().applyDocument(replacement);
   assert.equal(staleSave(staleDraft),false);
   assert.deepEqual(stable(h.render()),exact,'stale handler preserves replacement');
   assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks);
+});
+
+// E2 adds canonical region changes, distinct from already covered local override writes.
+// Reuse the actual-handler harness rather than a second transaction implementation.
+test('region biome respects stored height and canonical neighbors, keeps all overrides and exact metadata/history',async()=>{
+  const {h}=setup();await load(h,fixture);
+  const legacy=stable(h.render());const legacyKey=Object.keys(legacy.map.toponyms.names).find(k=>k.startsWith('region:'));
+  legacy.map.toponyms.names[legacyKey].kind='river'; // accepted old metadata, unrelated to terrain
+  h.geometry.assertHexcrawlSaveData(legacy);await load(h,legacy);
+  const r=h.render().regions[0];h.render().setSelectedHex(r.centerHex);
+  h.render().setSelectedHexBiomeOverride('semi_desert');
+  assert.deepEqual(stable(h.render()).map.toponyms,legacy.map.toponyms,'local terrain preserves literal legacy name metadata');
+  const before=stable(h.render()), stacks=serial([h.render().undoHistory,h.render().redoHistory]);
+  const choices=Object.values(h.geometry.BIOMES).filter(b=>b.heightLevel===r.heightLevel);
+  assert.equal(choices.length,({1:12,2:6,3:6})[r.heightLevel]);
+  for(const b of Object.values(h.geometry.BIOMES)) {
+    const allowed=!h.render().regionBiomeReason(r,b.id);
+    const previous=stable(h.render());
+    h.render().setSelectedRegionBiome(b.id);
+    const next=stable(h.render());
+    if(!allowed||b.id===r.biomeId) assert.deepEqual(next,previous,'unavailable/no-op '+b.id);
+    else {
+      const expected=structuredClone(previous), region=expected.map.regions.find(x=>x.id===r.id);
+      Object.assign(region,{biomeId:b.id,biomeLabel:b.label,biomePrimaryEmoji:b.primaryEmoji,biomeSecondaryEmojis:[...b.secondaryEmojis],biomeEmojiLabel:b.primaryEmoji+b.secondaryEmojis.join('')});
+      assert.deepEqual(next,expected,'only five canonical fields '+b.id);
+      assertUndoRedo(h,previous,next);h.render().undoMap();
+    }
+  }
+  const valid=choices.find(b=>b.id!==r.biomeId&&!h.render().regionBiomeReason(r,b.id));assert.ok(valid);
+  const exact=stable(h.render()), timeline=serial([h.render().undoHistory,h.render().redoHistory]);
+  const restore=h.injectFunction('structuredClone',()=>{throw Error('biome preparation fault');});
+  h.render().setSelectedRegionBiome(valid.id);restore();
+  assert.deepEqual(stable(h.render()),exact);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),timeline);
+  h.render().setSelectedRegionBiome(valid.id);const edited=stable(h.render());
+  const {h:other}=setup();await load(other,edited);
+  const anchor=h.render().candidateHexes[0];
+  const first=h.render().safelyAddRegionToMap(anchor,{targetSize:8,coastalPreference:'mainland'});
+  const second=other.render().safelyAddRegionToMap(anchor,{targetSize:8,coastalPreference:'mainland'});
+  assert.equal(first.success,true);assert.equal(second.success,true);
+  assert.deepEqual(stable(h.render()),stable(other.render()),'two edited copies continue identically');
+  h.render().undoMap();assert.deepEqual(stable(h.render()),edited);
+  const stale=h.render().setSelectedRegionBiome;
+  await load(h,fixture);const replacement=stable(h.render());stale(valid.id);assert.deepEqual(stable(h.render()),replacement,'old callback cannot change imported world');
+  // Canonical neighbors (not visual overrides) constrain a new manual choice.
+  const neighbor=h.render().regions.find(n=>n.id!==r.id&&n.hexes.some(x=>r.hexes.some(y=>h.geometry.getHexNeighbors(y).some(z=>z.q===x.q&&z.r===x.r))));
+  if(neighbor)for(const b of choices) if(b.id!==neighbor.biomeId&&!h.geometry.isBiomesCompatible(b.id,neighbor.biomeId,h.geometry.BIOME_COMPATIBILITY_MATRIX)) assert.ok(h.render().regionBiomeReason(r,b.id));
+  assert.ok(before.map.biomeOverrideByHexKey[`${r.centerHex.q},${r.centerHex.r}`]);
 });

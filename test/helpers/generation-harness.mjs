@@ -25,7 +25,7 @@ const instrumented = prefix + `return {
   handleImportJson, resetMap, undoMap, redoMap, undoHistory, redoHistory, captureDocument, selectedHex, setSelectedHex,
   setSelectedHexBiomeOverride, resetSelectedHexBiomeOverride, setSelectedPoiKind, setSelectedCentralPoiKind,
   setSelectedWaterPoiKind, deleteSelectedWaterPoi, deleteSelectedPoi, isImporting,
-  nameTargets, nameDraft, nameErrors, showNameTarget, requestNameTarget, changeNameDraft, saveNameDraft, cancelNameDraft, nameDialog, applyDocument
+  nameTargets, nameDraft, nameErrors, showNameTarget, requestNameTarget, changeNameDraft, saveNameDraft, cancelNameDraft, applyDocument, setLanguage, language, setSelectedRegionBiome, regionBiomeReason, editMode, setEditMode
 };` + source.slice(lastReturn.end) + `
 export const testGeometry = { generateConnectedRegionFromAnchorImpl, generateFallbackTractFromAnchor, findFillableEnclosedEmptyAreas, getNewRiverLakeReentryViolation, getHexCornerPoints, getHexNeighbors, hexKey, buildRiverGraphForRegion,
   findRiverEndpointsTouchingRegion, getCandidateHexes, generateRiverForRegion, assertHexcrawlSaveData,

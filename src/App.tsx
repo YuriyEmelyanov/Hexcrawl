@@ -25,7 +25,7 @@ import { chooseRiverCrossingKind, type RiverCrossingKind } from './riverCrossing
 import { hasRiverRapids } from './riverRapids';
 import { hasRiverWaterfall } from './riverWaterfalls';
 import { getOnlyOutgoingRiversPreferredHeight } from './biomeHeight';
-import { DEFAULT_TOPONYM_MODEL, isToponymRegistry, renameToponym, synchronizeToponyms, type ToponymEntity, type ToponymRegistry, type ToponymModelId, type ToponymKind } from './toponyms';
+import { DEFAULT_TOPONYM_MODEL, isToponymRegistry, synchronizeToponyms, type ToponymEntity, type ToponymRegistry, type ToponymModelId, type ToponymKind } from './toponyms';
 
 const generationLog = createGenerationLogger(typeof window !== 'undefined' ? window.location?.search : '');
 
@@ -11259,6 +11259,8 @@ export function App() {
 
   const mapSvgRef = useRef<SVGSVGElement | null>(null);
   const mapViewportRef = useRef<HTMLDivElement | null>(null);
+  // Native wheel/touch listeners are installed once; consult the latest editor closure.
+  const finishMapNameRef = useRef<() => boolean>(() => true);
   const mapScaleRef = useRef(1);
   const mapStageRef = useRef<HTMLDivElement | null>(null);
   const mapZoomFrameRef = useRef<number | null>(null);
@@ -11333,29 +11335,31 @@ export function App() {
   const [genLandType, setGenLandType] = useState<'auto' | BiomeLandType>('auto');
   const [genBiome, setGenBiome] = useState<'auto' | BiomeId>('auto');
   const [genCoastal, setGenCoastal] = useState<'auto' | CoastalPreference>('mainland');
-  // Rename drafts are UI-only: the shared document/history changes on Save.
+  // Inline drafts are UI-only; only their captured locale is committed.
   type NameTarget = { key: string; type: 'region' | 'settlement' | 'river' | 'lake' | 'kingdom'; ru: string; en: string; location: string };
-  type NameDraft = { target: NameTarget; revision: number; ru: string; en: string };
+  type NameDraft = { target: NameTarget; revision: number; language: Language; value: string; surface: string };
+  const [editMode, setEditMode] = useState(false);
+  const [editError, setEditError] = useState<string | null>(null);
+  const [editingRegionBiomeId, setEditingRegionBiomeId] = useState<number | null>(null);
   const [nameDraft, setNameDraft] = useState<NameDraft | null>(null);
   const nameDraftRef = useRef(nameDraft); nameDraftRef.current = nameDraft;
   const [namesOpen, setNamesOpen] = useState(false);
   const [nameQuery, setNameQuery] = useState('');
   const [nameType, setNameType] = useState('all');
-  const [nameErrors, setNameErrors] = useState<{ru?: string; en?: string; general?: string}>({});
+  const [nameErrors, setNameErrors] = useState<{general?: string}>({});
   const [nameStatus, setNameStatus] = useState<'saved' | 'stale' | null>(null);
-  const [nameDialog, setNameDialog] = useState<{key: string | null; origin?: HTMLElement} | null>(null);
-  const [nameTransition, setNameTransition] = useState<{key: string | null; origin?: HTMLElement} | null>(null);
   const nameFocusRef = useRef<HTMLInputElement | null>(null);
+  const nameComposingRef = useRef(false);
+  const infoFocusRef = useRef<HTMLElement | null>(null);
   const nameReturnFocusRef = useRef<HTMLElement | null>(null);
   const dirtyNameDraft = () => {
     const draft = nameDraftRef.current;
-    return !!draft && (draft.ru !== draft.target.ru || draft.en !== draft.target.en);
+    return !!draft && draft.value !== draft.target[draft.language];
   };
-  const nameDirty = dirtyNameDraft();
-  useEffect(() => { nameFocusRef.current?.focus(); }, [nameDraft?.target.key]);
+  useEffect(() => { nameFocusRef.current?.focus(); }, [nameDraft?.target.key, nameDraft?.surface]);
   useEffect(() => {
     if (nameDraftRef.current && nameDraftRef.current.revision !== documentRevision.current) {
-      nameDraftRef.current = null; setNameDraft(null); setNameDialog(null); setNameErrors({}); setNameStatus('stale');
+      nameDraftRef.current = null; setNameDraft(null); setNameErrors({}); setNameStatus('stale');
     }
   }, [renderedDocumentRevision]);
 
@@ -12778,7 +12782,7 @@ export function App() {
   const captureDocument = (): DocumentSnapshot => ({ map: captureMap(), generationHistory: history, selectedHex,
     generationMode, isMapRotated, mapScale: pendingMapZoomRef.current?.scale ?? mapScaleRef.current });
   const closeEditors = () => {
-    setEditingHexBiomeKey(null); setEditingPoiHexKey(null); setEditingCentralPoiRegionId(null);
+    setEditingHexBiomeKey(null); setEditingPoiHexKey(null); setEditingCentralPoiRegionId(null); setEditingRegionBiomeId(null); setEditError(null);
   };
   const recordTransaction = (before: DocumentSnapshot, after: DocumentSnapshot) => {
     const transaction = { before: copyDocument(before), after: copyDocument(after) };
@@ -12808,6 +12812,7 @@ export function App() {
     applyExactMap(doc.map); setHistory(doc.generationHistory); setSelectedHex(doc.selectedHex);
     setGenerationMode(doc.generationMode); setIsMapRotated(doc.isMapRotated);
     updateMapScale(doc.mapScale); setPendingRegen(null); closeEditors();
+    nameDraftRef.current = null; setNameDraft(null); setNameErrors({});
   };
   const applyDocument = (value: DocumentSnapshot) => applyPreparedDocument(copyDocument(value));
   const documentBusy = () => documentRevision.current !== renderedDocumentRevision
@@ -12870,12 +12875,18 @@ export function App() {
     applyDocument(transaction.after);
     setRedoHistory(currentRedo.slice(0,-1)); setUndoHistory(current => [...current, transaction].slice(-100));
   };
-  const commitManualMap = (map: MapSnapshot) => {
-    // Prepare names before any state write; undo/redo then restore exact values.
-    const prepared = { ...map, toponyms: synchronizeToponyms(map.toponyms,
-      getToponymEntities(map.regions, map.rivers, map.hexTerrainByKey), map.toponymSeed) };
-    const before = captureDocument(), after = { ...before, map: prepared };
-    recordTransaction(before, after); applyExactMap(structuredClone(prepared)); closeEditors();
+  const commitManualMap = (map: MapSnapshot, reconcileNames = true) => {
+    try {
+      // Prepare every clone before the first history/revision/state write.
+      const prepared = structuredClone({ ...map, toponyms: reconcileNames ? synchronizeToponyms(map.toponyms,
+        getToponymEntities(map.regions, map.rivers, map.hexTerrainByKey), map.toponymSeed) : map.toponyms });
+      const before = captureDocument(), after = { ...before, map: prepared };
+      recordTransaction(before, after); applyExactMap(prepared); closeEditors();
+      return true;
+    } catch {
+      setEditError(language === 'ru' ? 'Не удалось изменить значение. Карта не изменена.' : 'Could not change the value. Your map is unchanged.');
+      return false;
+    }
   };
   const recordGenerated = (checkpoint: MapSnapshot, map: MapSnapshot, selection: AxialHex,
     backup?: GenerationBackup, checkpoints = history) => {
@@ -13135,7 +13146,7 @@ export function App() {
       rivers: [], roads: [], crossings: [], hexTerrainByKey: new Map(), waterPoiByKey: new Map(), biomeOverrideByHexKey: new Map(),
       toponyms: {}, toponymSeed: toponymSeedFor(newGeneration.masterSeed), nextLakeId: 1, nextRoadId: 1 },
       generationHistory: [], selectedHex: START_HEX, isMapRotated: false };
-    recordTransaction(before,after); applyDocument(after); setGenerationError(null);
+    recordTransaction(before,after); applyDocument(after); setEditMode(false); setGenerationError(null);
   };
 
   const applyWorldSeed = () => {
@@ -13342,19 +13353,19 @@ export function App() {
   const canEditSelectedPoi = Boolean(selectedRegion && selectedHex && !isSelectedLake && !isSelectedSea);
   const waterPoiKindOrder = generationMode === 'mythic' ? [] : getWaterPoiKindPool(isSelectedSea ? 'sea' : selectedRegion?.biomeLandType ?? 'wild');
   const setSelectedHexBiomeOverride = (biomeId: BiomeId) => {
-    if(mutationBlocked() || !selectedHexKey || !selectedRegion) return;
+    if(mutationBlocked() || !selectedHexKey || notesSelectionRef.current !== selectedHexKey || !selectedRegion || isSelectedLake || isSelectedSea || !(biomeId in BIOMES)) return;
     if(biomeOverrideByHexKey.get(selectedHexKey)===biomeId) { closeEditors(); return; }
     const layer=new Map(biomeOverrideByHexKey); layer.set(selectedHexKey,biomeId);
-    commitManualMap({...captureMap(), biomeOverrideByHexKey:layer});
+    commitManualMap({...captureMap(), biomeOverrideByHexKey:layer}, false);
   };
   const resetSelectedHexBiomeOverride = () => {
-    if(mutationBlocked() || !selectedHexKey) return;
+    if(mutationBlocked() || !selectedHexKey || notesSelectionRef.current !== selectedHexKey) return;
     if(!biomeOverrideByHexKey.has(selectedHexKey)) { closeEditors(); return; }
     const layer=new Map(biomeOverrideByHexKey); layer.delete(selectedHexKey);
-    commitManualMap({...captureMap(), biomeOverrideByHexKey:layer});
+    commitManualMap({...captureMap(), biomeOverrideByHexKey:layer}, false);
   };
   const setSelectedPoiKind = (poiKind: PoiKind) => {
-    if(mutationBlocked() || !canEditSelectedPoi || selectedMeta?.isCenter || !selectedRegion || !selectedHex || !selectedHexKey) return;
+    if(mutationBlocked() || notesSelectionRef.current !== selectedHexKey || !editablePoiKinds.includes(poiKind) || !canEditSelectedPoi || selectedMeta?.isCenter || !selectedRegion || !selectedHex || !selectedHexKey) return;
     const hasPoi=selectedRegion.pointsOfInterest.some(h=>hexKey(h)===selectedHexKey);
     if(hasPoi && selectedRegion.pointOfInterestKinds?.[selectedHexKey]===poiKind) { closeEditors(); return; }
     commitManualMap({...captureMap(), regions:regions.map(r=>r.id!==selectedRegion.id?r:{...r,
@@ -13362,29 +13373,49 @@ export function App() {
       pointOfInterestKinds:{...r.pointOfInterestKinds,[selectedHexKey]:poiKind}})});
   };
   const setSelectedCentralPoiKind = (poiKind: CentralPoiKind) => {
-    if(mutationBlocked() || !selectedRegion || !selectedMeta?.isCenter) return;
+    if(mutationBlocked() || notesSelectionRef.current !== selectedHexKey || !editableCentralKinds.includes(poiKind as MythicPoi) || !selectedRegion || !selectedMeta?.isCenter) return;
     if(selectedRegion.centralPoiKind===poiKind) { closeEditors(); return; }
     commitManualMap({...captureMap(),regions:regions.map(r=>r.id===selectedRegion.id?{...r,centralPoiKind:poiKind}:r)});
   };
   const setSelectedWaterPoiKind = (poiKind: WaterPoiKind) => {
-    if(mutationBlocked() || !selectedHexKey || (!isSelectedLake && !isSelectedSea)) return;
+    if(mutationBlocked() || notesSelectionRef.current !== selectedHexKey || !(poiKind in WATER_POI_DETAILS) || !selectedHexKey || (!isSelectedLake && !isSelectedSea)) return;
     if(waterPoiByKey.get(selectedHexKey)===poiKind) { closeEditors(); return; }
     const layer=new Map(waterPoiByKey); layer.set(selectedHexKey,poiKind);
     commitManualMap({...captureMap(),waterPoiByKey:layer});
   };
   const deleteSelectedWaterPoi = () => {
-    if(mutationBlocked() || !selectedHexKey) return;
+    if(mutationBlocked() || !selectedHexKey || notesSelectionRef.current !== selectedHexKey) return;
     if(!waterPoiByKey.has(selectedHexKey)) { closeEditors(); return; }
     const layer=new Map(waterPoiByKey); layer.delete(selectedHexKey);
     commitManualMap({...captureMap(),waterPoiByKey:layer});
   };
   const deleteSelectedPoi = () => {
-    if(mutationBlocked() || !selectedRegion || !selectedHexKey) return;
+    if(mutationBlocked() || notesSelectionRef.current !== selectedHexKey || !selectedRegion || !selectedHexKey) return;
     if(!selectedRegion.pointsOfInterest.some(h=>hexKey(h)===selectedHexKey)) { closeEditors(); return; }
     const kinds={...selectedRegion.pointOfInterestKinds}; delete kinds[selectedHexKey];
     commitManualMap({...captureMap(),regions:regions.map(r=>r.id!==selectedRegion.id?r:{...r,
       pointsOfInterest:r.pointsOfInterest.filter(h=>hexKey(h)!==selectedHexKey),
       pointOfInterestKinds:Object.keys(kinds).length?kinds:undefined})});
+  };
+  const regionBiomeReason = (region: Region, biomeId: BiomeId): string | null => {
+    const biome = BIOMES[biomeId];
+    if (!biome || biome.heightLevel !== region.heightLevel)
+      return language === 'ru' ? 'Другая высота' : 'Different height';
+    const neighbors = new Set(region.hexes.flatMap(h => getHexNeighbors(h).map(hexKey)));
+    if (regions.some(r => r.id !== region.id && r.hexes.some(h => neighbors.has(hexKey(h))) && biomeId !== r.biomeId && !isBiomesCompatible(biomeId, r.biomeId, BIOME_COMPATIBILITY_MATRIX)))
+      return language === 'ru' ? 'Несовместимо с соседним регионом' : 'Incompatible with a neighboring region';
+    return null;
+  };
+  const setSelectedRegionBiome = (biomeId: BiomeId) => {
+    if (mutationBlocked() || !selectedRegion || notesSelectionRef.current !== selectedHexKey) return;
+    // An unchanged legacy value remains a no-op even if its neighbors are incompatible.
+    if (selectedRegion.biomeId === biomeId) { closeEditors(); return; }
+    const reason = regionBiomeReason(selectedRegion, biomeId);
+    if (reason) { setEditError(reason); return; }
+    const biome = BIOMES[biomeId];
+    commitManualMap({...captureMap(), regions: regions.map(r => r.id !== selectedRegion.id ? r : {...r,
+      biomeId, biomeLabel: biome.label, biomePrimaryEmoji: biome.primaryEmoji,
+      biomeSecondaryEmojis: [...biome.secondaryEmojis], biomeEmojiLabel: biome.primaryEmoji + biome.secondaryEmojis.join('')})}, false);
   };
   const selectedRegionRivers = selectedRegion ? getRiversForRegion(selectedRegion, rivers) : [];
   const selectedRegionRiverSectors = selectedRegion ? getRiverSectorsForRegion(selectedRegion, rivers) : [];
@@ -13647,6 +13678,7 @@ export function App() {
 
   const handleMapWheel = (event: Pick<WheelEvent<HTMLDivElement>, 'preventDefault' | 'deltaY' | 'deltaMode' | 'clientX' | 'clientY'>) => {
     event.preventDefault();
+    if (!finishMapNameRef.current()) return;
     const delta = event.deltaY * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? (mapViewportRef.current?.clientHeight ?? 800) : 1);
     const zoomFactor = Math.exp(-delta * WHEEL_ZOOM_SENSITIVITY);
     zoomMapAtPoint((pendingMapZoomRef.current?.scale ?? mapScaleRef.current) * zoomFactor, event.clientX, event.clientY);
@@ -13655,6 +13687,7 @@ export function App() {
 
   const handleMapMouseDown = (event: MouseEvent<HTMLDivElement>) => {
     if (event.button !== 0 && event.button !== 2) return;
+    if (!finishMapNameRef.current()) { event.preventDefault(); return; }
 
     const viewport = mapViewportRef.current;
     if (!viewport) return;
@@ -13696,6 +13729,9 @@ export function App() {
   const handleMapKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     const viewport = mapViewportRef.current;
     if (!viewport) return;
+    if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key) && !finishMapNameRef.current()) {
+      event.preventDefault(); return;
+    }
 
     const step = event.shiftKey ? 120 : 40;
     switch (event.key) {
@@ -13731,6 +13767,7 @@ export function App() {
   };
 
   const handleMapTouchMove = (event: Pick<TouchEvent, 'touches' | 'preventDefault'>) => {
+    if (!finishMapNameRef.current()) { event.preventDefault(); return; }
     if (event.touches.length !== 2 || !pinchZoomRef.current) return;
     event.preventDefault();
 
@@ -13811,7 +13848,13 @@ export function App() {
     }
   };
 
+  const pendingNameExport = useRef(false);
   const handleExportJson = () => {
+    if (nameDraftRef.current) {
+      const revision = documentRevision.current;
+      if (!finishInlineName()) return;
+      if (revision !== documentRevision.current) { pendingNameExport.current = true; return; }
+    }
     if(documentBusy())return;
     finishNotesGroup();
     const saveData = createSaveData();
@@ -13819,6 +13862,8 @@ export function App() {
     downloadBlob(blob, `${EXPORT_FILE_PREFIX}-${getTimestampForFilename()}.json`);
     trackGoal('export_json');
   };
+
+  useEffect(() => { if (pendingNameExport.current && !documentBusy()) { pendingNameExport.current = false; handleExportJson(); } }, [renderedDocumentRevision]);
 
   const handleImportJsonClick = () => {
     if(mutationBlocked()) return;
@@ -13857,7 +13902,7 @@ export function App() {
       // Everything that can fail (including deep copies) is prepared before the first setter.
       const prepared=copyDocument(after), transaction={before:copyDocument(before),after:copyDocument(after)};
       setUndoHistory(current=>[...current,transaction].slice(-100)); setRedoHistory([]);
-      applyPreparedDocument(prepared); setLegacyNotice(!imported.generation); setGenerationError(null); trackGoal('import_json');
+      applyPreparedDocument(prepared); setEditMode(false); setLegacyNotice(!imported.generation); setGenerationError(null); trackGoal('import_json');
     } catch(error) {
       console.error('JSON import failed', {stage, path: error instanceof SaveValidationError ? error.path : '$'});
       const path=error instanceof SaveValidationError?error.path:'$';
@@ -13895,79 +13940,100 @@ export function App() {
   const setLiveNameDraft = (draft: NameDraft | null) => { nameDraftRef.current = draft; setNameDraft(draft); };
   const restoreNameFocus = () => {
     const origin = nameReturnFocusRef.current;
-    setTimeout(() => { if (origin?.isConnected) origin.focus(); }, 0);
-  };
-  const showNameTarget = (key: string | null, origin?: HTMLElement) => {
-    setNameDialog(null); setNameErrors({}); setNameStatus(null);
-    if (key === null) { setLiveNameDraft(null); setNamesOpen(false); restoreNameFocus(); return; }
-    if (documentBusy()) return;
-    const target = nameTargets.find(t => t.key === key);
-    if (!target) { setNameStatus('stale'); return; }
-    finishNotesGroup(); clearNotesDraft(); closeEditors();
-    nameReturnFocusRef.current = origin ?? null;
-    setLiveNameDraft({target:{...target}, revision:documentRevision.current, ru:target.ru, en:target.en});
-  };
-  const requestNameTarget = (key: string | null, origin?: HTMLElement) => {
-    if (documentBusy()) return;
-    if (key === nameDraftRef.current?.target.key) return;
-    if (dirtyNameDraft()) { setNameDialog({key, origin}); return; }
-    showNameTarget(key, origin);
-  };
-  const changeNameDraft = (field: 'ru' | 'en', value: string, expected: NameDraft) => {
-    if (nameDraftRef.current !== expected || expected.revision !== documentRevision.current || documentBusy()) return;
-    setLiveNameDraft({...expected, [field]:value}); setNameErrors({}); setNameStatus(null);
+    setTimeout(() => {
+      if (typeof document !== 'undefined' && document.activeElement?.matches('input,textarea,select')) return;
+      (origin?.isConnected ? origin : infoFocusRef.current)?.focus();
+    }, 0);
   };
   const cancelNameDraft = () => {
-    setLiveNameDraft(null); setNameDialog(null); setNameErrors({}); restoreNameFocus();
+    setLiveNameDraft(null); setNameErrors({}); nameComposingRef.current = false; restoreNameFocus();
   };
-  const saveNameDraft = (expected = nameDraft): boolean => {
-    if (!expected || nameDraftRef.current !== expected) return false;
+  const saveNameDraft = (expected = nameDraftRef.current): boolean => {
+    if (!expected || nameDraftRef.current !== expected || nameComposingRef.current) return false;
     if (documentBusy() || expected.revision !== documentRevision.current) {
-      if (expected.revision !== documentRevision.current) { cancelNameDraft(); setNameStatus('stale'); }
+      setNameErrors({general:language === 'ru' ? 'Карта изменилась или занята. Откройте поле заново.' : 'The map changed or is busy. Reopen the field.'});
       return false;
     }
     const current = nameTargets.find(t => t.key === expected.target.key);
     if (!current || current.ru !== expected.target.ru || current.en !== expected.target.en) {
-      cancelNameDraft(); setNameStatus('stale'); return false;
+      setNameErrors({general:language === 'ru' ? 'Объект изменился. Откройте поле заново.' : 'The object changed. Reopen the field.'}); return false;
     }
-    const pair = {ru:expected.ru.trim(), en:expected.en.trim()};
-    if (pair.ru === current.ru && pair.en === current.en) { cancelNameDraft(); return true; }
-    const errors: {ru?: string; en?: string; general?: string} = {};
-    for (const field of ['ru','en'] as const) {
-      if (!pair[field] || pair[field].length > 80 || /[\u0000-\u001f\u007f]/.test(pair[field]))
-        errors[field] = language === 'ru' ? 'От 1 до 80 символов, одна строка без управляющих знаков.' : 'Use 1–80 characters on one line, without control characters.';
-      else if (current.type !== 'kingdom' && Object.entries(toponyms).some(([key, n]) => key !== current.key && n[field].trim().toLocaleLowerCase() === pair[field].toLocaleLowerCase()))
-        errors[field] = language === 'ru' ? 'Такое название уже есть. Выберите другое.' : 'This name is already used. Choose another.';
-    }
-    if (Object.keys(errors).length) { setNameErrors(errors); return false; }
+    const field = expected.language;
+    // Exact legacy no-op is allowed before validating new text.
+    if (expected.value === current[field]) { cancelNameDraft(); return true; }
+    const value = expected.value.trim();
+    let error: string | undefined;
+    if (!value || value.length > 80 || /[\u0000-\u001f\u007f]/.test(expected.value))
+      error = language === 'ru' ? 'От 1 до 80 символов, одна строка без управляющих знаков.' : 'Use 1–80 characters on one line, without control characters.';
+    else if (current.type !== 'kingdom' && Object.entries(toponyms).some(([key, n]) => key !== current.key && n[field].trim().toLocaleLowerCase() === value.toLocaleLowerCase()))
+      error = language === 'ru' ? 'Такое название уже есть. Выберите другое.' : 'This name is already used. Choose another.';
+    if (error) { setNameErrors({general:error}); nameFocusRef.current?.focus(); return false; }
+    if (value === current[field]) { cancelNameDraft(); return true; }
     try {
-      // All potentially throwing preparation precedes revision/history/state writes.
       const map = structuredClone(captureMap());
-      if (current.type === 'kingdom') map.kingdoms = (map.kingdoms ?? []).map(k => `kingdom:${k.id}` === current.key ? {...k,name:pair} : k);
-      else {
-        const names = renameToponym(map.toponyms, current.key, pair.en, pair.ru);
-        if (!names) throw new Error('Invalid name');
-        map.toponyms = names;
-      }
+      if (current.type === 'kingdom') map.kingdoms = (map.kingdoms ?? []).map(k => `kingdom:${k.id}` === current.key ? {...k,name:{...k.name,[field]:value}} : k);
+      else map.toponyms = {...map.toponyms, [current.key]:{...map.toponyms[current.key], [field]:value}};
       const before = captureDocument(), after = {...before, map};
       recordTransaction(before, after); applyExactMap(map);
-      cancelNameDraft(); setNameStatus('saved');
-      return true;
+      cancelNameDraft(); setNameStatus('saved'); return true;
     } catch {
-      setNameErrors({general:language === 'ru' ? 'Не удалось сохранить название. Карта не изменена.' : 'Could not save the name. Your map is unchanged.'});
-      return false;
+      setNameErrors({general:language === 'ru' ? 'Не удалось изменить название. Карта не изменена.' : 'Could not change the name. Your map is unchanged.'});
+      nameFocusRef.current?.focus(); return false;
     }
   };
-  useEffect(() => {
-    if (nameTransition && !documentBusy()) {
-      setNameTransition(null); showNameTarget(nameTransition.key, nameTransition.origin);
-    }
-  }, [nameTransition, renderedDocumentRevision]);
-  const renderToponym = (key: string) => {
-    const name = toponyms[key];
-    return name ? <span className="map-name"><strong>{name[language]}</strong><button type="button" className="secondary map-name__edit" disabled={ isImporting || !!pendingRegen || !!kingdomJob}
-      aria-label={`${language === 'ru' ? 'Изменить название' : 'Edit name'}: ${name[language]}`}
-      onClick={e => requestNameTarget(key, e.currentTarget)}>✎</button></span> : null;
+  const finishInlineName = () => !nameDraftRef.current || saveNameDraft(nameDraftRef.current);
+  finishMapNameRef.current = finishInlineName;
+  const showNameTarget = (key: string | null, origin?: HTMLElement, surface = 'info') => {
+    if (documentBusy() || !finishInlineName()) return;
+    setNameErrors({}); setNameStatus(null);
+    if (key === null) { setNamesOpen(false); return; }
+    const target = nameTargets.find(t => t.key === key);
+    if (!target) { setNameStatus('stale'); return; }
+    finishNotesGroup(); clearNotesDraft(); closeEditors();
+    nameReturnFocusRef.current = origin ?? null;
+    setLiveNameDraft({target:{...target}, revision:documentRevision.current, language, value:target[language], surface});
+  };
+  const requestNameTarget = showNameTarget;
+  const changeNameDraft = (value: string, expected: NameDraft) => {
+    if (nameDraftRef.current !== expected || expected.revision !== documentRevision.current || documentBusy()) return;
+    setLiveNameDraft({...expected, value}); setNameErrors({}); setNameStatus(null);
+  };
+  const renderName = (key: string, surface = 'info') => {
+    const target = nameTargets.find(t => t.key === key);
+    if (!target) return null;
+    const active = nameDraft?.target.key === key && nameDraft.surface === surface;
+    return active ? <span className="direct-name-field" data-inline-name>
+      <input ref={nameFocusRef} aria-label={language === 'ru' ? 'Название' : 'Name'} value={nameDraft.value}
+        aria-invalid={!!nameErrors.general} aria-describedby={nameErrors.general ? 'direct-name-error' : undefined}
+        onChange={e => changeNameDraft(e.target.value, nameDraft)}
+        onCompositionStart={() => { nameComposingRef.current = true; }} onCompositionEnd={() => { nameComposingRef.current = false; }}
+        onKeyDown={e => { e.stopPropagation(); if (e.key === 'Escape') { e.preventDefault(); cancelNameDraft(); }
+          else if (e.key === 'Tab') { if (!saveNameDraft(nameDraftRef.current)) e.preventDefault(); }
+          else if (e.key === 'Enter' && !e.nativeEvent.isComposing && !nameComposingRef.current) { e.preventDefault(); saveNameDraft(nameDraftRef.current); } }}
+        onBlur={() => { if (nameDraftRef.current === nameDraft) saveNameDraft(nameDraft); }} />
+      {nameErrors.general && <span id="direct-name-error" role="alert" className="direct-error">{nameErrors.general}</span>}
+    </span> : editMode ? <button type="button" className="direct-value" data-name-key={key}
+      aria-label={`${language === 'ru' ? 'Название' : 'Name'}: ${target[language]}`}
+      onClick={e => showNameTarget(key, e.currentTarget, surface)}><strong>{target[language]}</strong></button>
+      : <strong>{target[language]}</strong>;
+  };
+  const renderToponym = (key: string, surface = 'info') => renderName(key, surface);
+  const editableValue = (label: string, value: string, open: () => void) => editMode
+    ? <button type="button" className="direct-value" aria-label={label} onClick={() => {if (!mutationBlocked()) { clearNotesDraft(); closeEditors(); open(); }}}>{value}</button>
+    : <span>{value}</span>;
+  const renderWaterPoi = () => isEditingSelectedPoi && editMode ? <select autoFocus aria-label={t.choosePoi}
+    value={selectedWaterPoiKind ?? ''} onBlur={() => setEditingPoiHexKey(null)}
+    onChange={e => e.target.value ? setSelectedWaterPoiKind(e.target.value as WaterPoiKind) : deleteSelectedWaterPoi()}>
+    <option value="">{language === 'ru' ? 'Нет точки' : 'No point'}</option>
+    {waterPoiKindOrder.map(kind => <option key={kind} value={kind}>{WATER_POI_DETAILS[kind].emoji} {WATER_POI_DETAILS[kind].label[language]}</option>)}
+  </select> : selectedWaterPoiKind || (editMode && waterPoiKindOrder.length) ? editableValue(t.editPoi,
+    selectedWaterPoiKind ? `${getWaterPoiEmoji(selectedWaterPoiKind)} ${getWaterPoiLabel(selectedWaterPoiKind, language)}` : t.addPoi,
+    () => setEditingPoiHexKey(selectedHexKey)) : null;
+  // Pointer-down ends a valid field before the ensuing click reads the new render.
+  // Invalid input keeps focus and prevents the action; no modal or Save workflow.
+  const finishBeforePointer = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (!nameDraftRef.current || (event.target as Element).closest('[data-inline-name]')) return;
+    if (!finishInlineName()) { event.preventDefault(); event.stopPropagation(); nameFocusRef.current?.focus(); }
   };
 
   if (debugRivers && selectedRegion && selectedCandidateBoundaryDebug) {
@@ -13992,7 +14058,8 @@ export function App() {
         generateAt({ q: hex.q, r: hex.r });
       }
     } else {
-      finishNotesGroup();
+      if (!finishInlineName()) return;
+      finishNotesGroup(); closeEditors(); clearNotesDraft();
       setSelectedHex({ q: hex.q, r: hex.r });
     }
   };
@@ -14380,7 +14447,7 @@ export function App() {
   }, [mapArtwork, renderBiomeColor, renderDetails, positionedHexes, isMapRotated]);
 
   return (
-    <div className="app">
+    <div className="app" onPointerDownCapture={finishBeforePointer}>
       <section className="content">
         <div className={`map-card${isSidePanelCollapsed ? ' is-panel-collapsed' : ''}`} style={mapCardStyle}>
           <button
@@ -14415,6 +14482,8 @@ export function App() {
                 type="button"
                 className="language-toggle"
                 onClick={() => {
+                  if (!finishInlineName()) return;
+                  finishNotesGroup(); clearNotesDraft(); closeEditors();
                   trackGoal('lang_switch');
                   setLanguage((value) => (value === 'ru' ? 'en' : 'ru'));
                 }}
@@ -14457,7 +14526,7 @@ export function App() {
               <div className="info-block info-block--prompt map-toolbar__prompt" role="status">{t.candidatePrompt}</div>
             ) : null}
             <div className="control-block mode-selector"><label>{language === 'ru' ? 'Режим' : 'Mode'}
-              <select aria-label={language === 'ru' ? 'Режим' : 'Mode'} value={generationMode} disabled={nameDirty || isImporting || !!pendingRegen || !!kingdomJob} onChange={e=>{ if(!mutationBlocked()) setGenerationMode(e.target.value as GenerationMode); }}>
+              <select aria-label={language === 'ru' ? 'Режим' : 'Mode'} value={generationMode} disabled={isImporting || !!pendingRegen || !!kingdomJob} onChange={e=>{ if(!mutationBlocked()) setGenerationMode(e.target.value as GenerationMode); }}>
                 <option value="classic">{language === 'ru' ? 'Классический режим' : 'Classic mode'}</option>
                 <option value="mythic">Mythic Bastionland</option>
               </select></label></div>
@@ -14505,11 +14574,11 @@ export function App() {
             : null}
             {regions.length > 0 ? (
               <div className="control-block controls controls--region-management">
-                  <button disabled={nameDirty || isImporting || !!pendingRegen || !!kingdomJob} onClick={resetMap} className="secondary">{t.reset}</button>
-                  <button type="button" disabled={nameDirty || isImporting || !!pendingRegen || !!kingdomJob || !history.length} onClick={regenerateLastRegion} className="secondary">
+                  <button disabled={isImporting || !!pendingRegen || !!kingdomJob} onClick={resetMap} className="secondary">{t.reset}</button>
+                  <button type="button" disabled={isImporting || !!pendingRegen || !!kingdomJob || !history.length} onClick={regenerateLastRegion} className="secondary">
                     {t.regenerateRegion}
                   </button>
-                  <button type="button" disabled={nameDirty || isImporting || !!pendingRegen || !!kingdomJob || !history.length} onClick={deleteLastRegion} className="secondary">
+                  <button type="button" disabled={isImporting || !!pendingRegen || !!kingdomJob || !history.length} onClick={deleteLastRegion} className="secondary">
                     {t.deleteLastRegion}
                   </button>
               </div>
@@ -14565,8 +14634,8 @@ export function App() {
               </button>
             </div>
             <div className="control-block controls controls--history">
-              <button type="button" className="secondary" disabled={nameDirty || isImporting || !!pendingRegen || !!kingdomJob || !undoHistory.length} onClick={undoMap}>{language==='ru'?'Отменить':'Undo'}</button>
-              <button type="button" className="secondary" disabled={nameDirty || isImporting || !!pendingRegen || !!kingdomJob || !redoHistory.length} onClick={redoMap}>{language==='ru'?'Повторить':'Redo'}</button>
+              <button type="button" className="secondary" disabled={isImporting || !!pendingRegen || !!kingdomJob || !undoHistory.length} onClick={undoMap}>{language==='ru'?'Отменить':'Undo'}</button>
+              <button type="button" className="secondary" disabled={isImporting || !!pendingRegen || !!kingdomJob || !redoHistory.length} onClick={redoMap}>{language==='ru'?'Повторить':'Redo'}</button>
             </div>
             <div className="control-block controls controls--transfer">
               <details className="export-menu">
@@ -14576,7 +14645,7 @@ export function App() {
                     <button type="button" onClick={handleExportJson} className="secondary">JSON</button>
                   </div>
                 </details>
-              <button type="button" disabled={nameDirty || isImporting || !!pendingRegen || !!kingdomJob} onClick={handleImportJsonClick} className="secondary">{t.importJson}</button>
+              <button type="button" disabled={isImporting || !!pendingRegen || !!kingdomJob} onClick={handleImportJsonClick} className="secondary">{t.importJson}</button>
               <input ref={jsonImportInputRef} className="visually-hidden" type="file" accept="application/json,.json" onChange={(event) => void handleImportJson(event)} />
             </div>
             <div className="control-block world-seed-control">
@@ -14641,152 +14710,57 @@ export function App() {
           <aside id="side-panel-info" className="roll-card">
             <div className="info-body">
               {regions.length > 0 || hexTerrainByKey.size > 0 ? <>
-              <section className="info-block info-block--hex" aria-label={t.selectedHexInfo}>
-                {selectedKingdom ? <p className="map-name"><strong>{language === 'ru' ? 'Королевство' : 'Kingdom'}: {selectedKingdom.name[language]}</strong><button type="button" className="secondary map-name__edit" aria-label={`${language === 'ru' ? 'Изменить название' : 'Edit name'}: ${selectedKingdom.name[language]}`} onClick={e => requestNameTarget(`kingdom:${selectedKingdom.id}`, e.currentTarget)}>✎</button></p> : null}
-                {selectedRegion ? (
+              <section ref={infoFocusRef} tabIndex={-1} className={`info-block info-block--hex${editMode ? ' is-editing' : ''}`} aria-label={t.selectedHexInfo}>
+                <div className="direct-mode-row"><button type="button" className="secondary direct-mode" aria-pressed={editMode}
+                  disabled={isImporting || !!pendingRegen || !!kingdomJob}
+                  onClick={() => { if (!finishInlineName()) return; finishNotesGroup(); clearNotesDraft(); closeEditors(); setEditMode(v => !v); }}>
+                  {editMode ? (language === 'ru' ? 'Готово' : 'Done') : (language === 'ru' ? 'Редактировать' : 'Edit')}
+                </button></div>
+                {selectedKingdom ? <p>{language === 'ru' ? 'Королевство' : 'Kingdom'}: {renderName(`kingdom:${selectedKingdom.id}`)}</p> : null}
+                {selectedRegion ? <>
                   <p><strong>{SIZE_LABELS[language][selectedRegion.sizeCategory]}</strong> {renderToponym(`region:${selectedRegion.id}`)}</p>
-                ) : isSelectedLake ? (
-                  <p><strong>💧 {t.lake}</strong> {renderToponym(`lake:${selectedTerrain?.lakeId}`)}</p>
-                ) : isSelectedSea ? (
-                  <>
-                    <p><strong>{SEA_EMOJI} {t.sea}</strong></p>
-                    {selectedWaterPoiKind ? (
-                      <div className="hex-poi-editor">
-                        <span>{getWaterPoiEmoji(selectedWaterPoiKind)} {getWaterPoiLabel(selectedWaterPoiKind, language)}</span>
-                        {isEditingSelectedPoi ? (
-                          <select aria-label={t.choosePoi} autoFocus value={selectedWaterPoiKind} onChange={(event) => setSelectedWaterPoiKind(event.target.value as WaterPoiKind)} onBlur={() => setEditingPoiHexKey(null)}>
-                            {waterPoiKindOrder.map((poiKind) => <option key={poiKind} value={poiKind}>{WATER_POI_DETAILS[poiKind].emoji} {WATER_POI_DETAILS[poiKind].label[language]}</option>)}
-                          </select>
-                        ) : <span className="hex-poi-editor__actions"><button type="button" className="hex-biome-editor__button" aria-label={t.editPoi} title={t.editPoi} onClick={() => { if (!mutationBlocked()) setEditingPoiHexKey(selectedHexKey); }}>✏️</button><button type="button" className="hex-biome-editor__button" aria-label={t.deletePoi} title={t.deletePoi} onClick={deleteSelectedWaterPoi}>🗑️</button></span>}
-                      </div>
-                    ) : isEditingSelectedPoi ? (
-                      <div className="hex-poi-editor"><select aria-label={t.choosePoi} autoFocus defaultValue="" onChange={(event) => { if (event.target.value) setSelectedWaterPoiKind(event.target.value as WaterPoiKind); }} onBlur={() => setEditingPoiHexKey(null)}><option value="" disabled>{t.choosePoi}</option>{waterPoiKindOrder.map((poiKind) => <option key={poiKind} value={poiKind}>{WATER_POI_DETAILS[poiKind].emoji} {WATER_POI_DETAILS[poiKind].label[language]}</option>)}</select></div>
-                    ) : generationMode !== 'mythic' ? <button type="button" className="hex-coordinate-toggle hex-poi-editor__add" onClick={() => { if (!mutationBlocked()) setEditingPoiHexKey(selectedHexKey); }}>{t.addPoi}</button> : null}
-                  </>
-                ) : (
-                  <p><strong>{isSelectedCandidate ? t.candidateForRegion : t.noHexSelected}</strong></p>
-                )}
+                  <div className="direct-line">{editMode && editingRegionBiomeId === selectedRegion.id ? <select autoFocus aria-label={language === 'ru' ? 'Местность региона' : 'Region terrain'}
+                    value={selectedRegion.biomeId} onChange={e => setSelectedRegionBiome(e.target.value as BiomeId)} onBlur={() => setEditingRegionBiomeId(null)}>
+                    {Object.values(BIOMES).filter(b => b.heightLevel === selectedRegion.heightLevel).map(b => {
+                      const reason = b.id === selectedRegion.biomeId ? null : regionBiomeReason(selectedRegion, b.id);
+                      return <option key={b.id} value={b.id} disabled={!!reason}>{getBiomeLabel(b.id, language)}{reason ? ` — ${reason}` : ''}</option>;
+                    })}</select> : editableValue(language === 'ru' ? 'Местность региона' : 'Region terrain',
+                      `${BIOMES[selectedRegion.biomeId].primaryEmoji}${BIOMES[selectedRegion.biomeId].secondaryEmojis.join('')} ${getBiomeLabel(selectedRegion.biomeId, language)}`,
+                      () => setEditingRegionBiomeId(selectedRegion.id))}</div>
+                </> : isSelectedLake ? <p><strong>💧 {t.lake}</strong> {renderToponym(`lake:${selectedTerrain?.lakeId}`)}</p>
+                  : isSelectedSea ? <><p><strong>{SEA_EMOJI} {t.sea}</strong></p><div className="direct-line">{renderWaterPoi()}</div></>
+                  : <p><strong>{isSelectedCandidate ? t.candidateForRegion : t.noHexSelected}</strong></p>}
                 {selectedHex ? <p><strong>{t.selectedHex}:</strong> {selectedHex.q}/{selectedHex.r}</p> : null}
                 {!isSelectedCandidate && selectedRegion ? (
                   <>
-                    {isSelectedLake ? <p>💧 {t.lake} {renderToponym(`lake:${selectedTerrain?.lakeId}`)}</p> : selectedEffectiveBiomeId ? (
-                      <div className="hex-biome-editor">
-                        <span>{BIOMES[selectedEffectiveBiomeId].primaryEmoji}{BIOMES[selectedEffectiveBiomeId].secondaryEmojis.join('')} {getBiomeLabel(selectedEffectiveBiomeId, language)}</span>
-                        {isEditingSelectedHexBiome ? (
-                          <select
-                            aria-label={t.editHexBiome}
-                            autoFocus
-                            value={selectedHexBiomeOverride ?? selectedRegion.biomeId}
-                            onChange={(event) => setSelectedHexBiomeOverride(event.target.value as BiomeId)}
-                            onBlur={() => setEditingHexBiomeKey(null)}
-                          >
-                            {Object.values(BIOMES).map((biome) => (
-                              <option key={biome.id} value={biome.id}>{getBiomeLabel(biome.id, language)}</option>
-                            ))}
-                          </select>
-                        ) : (
-                          <button
-                            type="button"
-                            className="hex-biome-editor__button"
-                            aria-label={t.editHexBiome}
-                            title={t.editHexBiome}
-                            onClick={() => { if (!mutationBlocked() && selectedHexKey) setEditingHexBiomeKey(selectedHexKey); }}
-                          >
-                            ✏️
-                          </button>
-                        )}
-                        {selectedHexBiomeOverride ? (
-                          <button
-                            type="button"
-                            className="hex-biome-editor__button"
-                            aria-label={t.resetHexBiome}
-                            title={t.resetHexBiome}
-                            onClick={resetSelectedHexBiomeOverride}
-                          >
-                            ↺
-                          </button>
-                        ) : null}
-                      </div>
-                    ) : null}
+                    {isSelectedLake ? <p>💧 {t.lake} {renderToponym(`lake:${selectedTerrain?.lakeId}`)}</p> : selectedEffectiveBiomeId ? <div className="direct-line">
+                      {language === 'ru' ? 'Местность: ' : 'Terrain: '}
+                      {isEditingSelectedHexBiome && editMode ? <select autoFocus aria-label={t.editHexBiome}
+                        value={selectedHexBiomeOverride ?? ''} onChange={e => e.target.value ? setSelectedHexBiomeOverride(e.target.value as BiomeId) : resetSelectedHexBiomeOverride()}
+                        onBlur={() => setEditingHexBiomeKey(null)}>
+                        <option value="">{language === 'ru' ? 'Как в регионе' : 'Inherit region'}</option>
+                        {Object.values(BIOMES).map(b => <option key={b.id} value={b.id}>{getBiomeLabel(b.id, language)}</option>)}
+                      </select> : editableValue(t.editHexBiome, selectedHexBiomeOverride
+                        ? `${getBiomeLabel(selectedHexBiomeOverride, language)}${selectedHexBiomeOverride === selectedRegion.biomeId ? (language === 'ru' ? ' · локально' : ' · local') : ''}`
+                        : (language === 'ru' ? 'как в регионе' : 'inherit region'), () => setEditingHexBiomeKey(selectedHexKey))}
+                    </div> : null}
                     <p>{selectedRegion.biomeLandType === 'settled' ? t.settledRegion : t.wildArea}</p>
-                    {selectedMeta?.isCenter ? (
-                      <div className="hex-poi-editor">
-                        <span>⭐ {getCentralPoiEmoji(selectedRegion)} {getCentralPoiLabel(selectedRegion, language)} {renderToponym(`settlement:${selectedRegion.id}:${hexKey(selectedRegion.centerHex)}`)}</span>
-                        {isEditingSelectedCentralPoi ? (
-                          <select
-                            aria-label={t.choosePoi}
-                            autoFocus
-                            value={selectedRegion.centralPoiKind ?? ''}
-                            onChange={(event) => setSelectedCentralPoiKind(event.target.value as CentralPoiKind)}
-                            onBlur={() => setEditingCentralPoiRegionId(null)}
-                          >
-                            {Object.entries(CENTRAL_POI_DETAILS).filter(([kind])=>editableCentralKinds.includes(kind as MythicPoi)).map(([poiKind, details]) => (
-                              <option key={poiKind} value={poiKind}>{details.emoji} {details.label[language]}</option>
-                            ))}
-                          </select>
-                        ) : (
-                          <button type="button" className="hex-biome-editor__button" aria-label={t.editPoi} title={t.editPoi} onClick={() => { if (!mutationBlocked()) setEditingCentralPoiRegionId(selectedRegion.id); }}>✏️</button>
-                        )}
-                      </div>
-                    ) : null}
-                    {isSelectedLake ? (
-                      selectedWaterPoiKind ? (
-                        <div className="hex-poi-editor">
-                          <span>{getWaterPoiEmoji(selectedWaterPoiKind)} {getWaterPoiLabel(selectedWaterPoiKind, language)}</span>
-                          {isEditingSelectedPoi ? (
-                            <select aria-label={t.choosePoi} autoFocus value={selectedWaterPoiKind} onChange={(event) => setSelectedWaterPoiKind(event.target.value as WaterPoiKind)} onBlur={() => setEditingPoiHexKey(null)}>
-                              {waterPoiKindOrder.map((poiKind) => <option key={poiKind} value={poiKind}>{WATER_POI_DETAILS[poiKind].emoji} {WATER_POI_DETAILS[poiKind].label[language]}</option>)}
-                            </select>
-                          ) : <span className="hex-poi-editor__actions"><button type="button" className="hex-biome-editor__button" aria-label={t.editPoi} title={t.editPoi} onClick={() => { if (!mutationBlocked()) setEditingPoiHexKey(selectedHexKey); }}>✏️</button><button type="button" className="hex-biome-editor__button" aria-label={t.deletePoi} title={t.deletePoi} onClick={deleteSelectedWaterPoi}>🗑️</button></span>}
-                        </div>
-                      ) : isEditingSelectedPoi ? (
-                        <div className="hex-poi-editor"><select aria-label={t.choosePoi} autoFocus defaultValue="" onChange={(event) => { if (event.target.value) setSelectedWaterPoiKind(event.target.value as WaterPoiKind); }} onBlur={() => setEditingPoiHexKey(null)}><option value="" disabled>{t.choosePoi}</option>{waterPoiKindOrder.map((poiKind) => <option key={poiKind} value={poiKind}>{WATER_POI_DETAILS[poiKind].emoji} {WATER_POI_DETAILS[poiKind].label[language]}</option>)}</select></div>
-                      ) : generationMode !== 'mythic' ? <button type="button" className="hex-coordinate-toggle hex-poi-editor__add" onClick={() => { if (!mutationBlocked()) setEditingPoiHexKey(selectedHexKey); }}>{t.addPoi}</button> : null
-                    ) : null}
-                    {canEditSelectedPoi && selectedHex ? (
-                      selectedPoiKind ? (
-                        <div className="hex-poi-editor">
-                          <span>{getPoiEmojiForHex(selectedRegion, selectedHex)} {getPoiLabelForHex(selectedRegion, selectedHex, language)} {renderToponym(`settlement:${selectedRegion.id}:${selectedHexKey}`)}</span>
-                          {isEditingSelectedPoi ? (
-                            <select
-                              aria-label={t.choosePoi}
-                              autoFocus
-                              value={selectedPoiKind}
-                              onChange={(event) => setSelectedPoiKind(event.target.value as PoiKind)}
-                              onBlur={() => setEditingPoiHexKey(null)}
-                            >
-                              {editablePoiKinds.map((poiKind) => (
-                                <option key={poiKind} value={poiKind}>{POI_DETAILS[poiKind].emoji} {POI_DETAILS[poiKind].label[language]}</option>
-                              ))}
-                            </select>
-                          ) : (
-                            <span className="hex-poi-editor__actions">
-                              <button type="button" className="hex-biome-editor__button" aria-label={t.editPoi} title={t.editPoi} onClick={() => { if (!mutationBlocked()) setEditingPoiHexKey(selectedHexKey); }}>✏️</button>
-                              {!selectedMeta?.isCenter ? <button type="button" className="hex-biome-editor__button" aria-label={t.deletePoi} title={t.deletePoi} onClick={deleteSelectedPoi}>🗑️</button> : null}
-                            </span>
-                          )}
-                        </div>
-                      ) : isEditingSelectedPoi ? (
-                        <div className="hex-poi-editor">
-                          <select
-                            aria-label={t.choosePoi}
-                            autoFocus
-                            defaultValue=""
-                            onChange={(event) => {
-                              if (event.target.value) setSelectedPoiKind(event.target.value as PoiKind);
-                            }}
-                            onBlur={() => setEditingPoiHexKey(null)}
-                          >
-                            <option value="" disabled>{t.choosePoi}</option>
-                            {editablePoiKinds.map((poiKind) => (
-                              <option key={poiKind} value={poiKind}>{POI_DETAILS[poiKind].emoji} {POI_DETAILS[poiKind].label[language]}</option>
-                            ))}
-                          </select>
-                        </div>
-                      ) : !selectedMeta?.isCenter ? (
-                        <button type="button" className="hex-coordinate-toggle hex-poi-editor__add" onClick={() => { if (!mutationBlocked()) setEditingPoiHexKey(selectedHexKey); }}>{t.addPoi}</button>
-                      ) : null
-                    ) : null}
+                    {selectedMeta?.isCenter ? <div className="direct-line">⭐ {isEditingSelectedCentralPoi && editMode ? <select autoFocus aria-label={t.choosePoi}
+                      value={selectedRegion.centralPoiKind ?? ''} onChange={e => setSelectedCentralPoiKind(e.target.value as CentralPoiKind)} onBlur={() => setEditingCentralPoiRegionId(null)}>
+                      {Object.entries(CENTRAL_POI_DETAILS).filter(([kind]) => editableCentralKinds.includes(kind as MythicPoi)).map(([kind,details]) => <option key={kind} value={kind}>{details.emoji} {details.label[language]}</option>)}
+                    </select> : editableValue(t.editPoi, `${getCentralPoiEmoji(selectedRegion)} ${getCentralPoiLabel(selectedRegion, language)}`, () => setEditingCentralPoiRegionId(selectedRegion.id))}
+                      {' '}{renderToponym(`settlement:${selectedRegion.id}:${hexKey(selectedRegion.centerHex)}`)}</div> : null}
+                    {isSelectedLake ? <div className="direct-line">{renderWaterPoi()}</div> : null}
+                    {canEditSelectedPoi && selectedHex && !selectedMeta?.isCenter ? <div className="direct-line">
+                      {isEditingSelectedPoi && editMode ? <select autoFocus aria-label={t.choosePoi} value={selectedPoiKind ?? ''}
+                        onChange={e => e.target.value ? setSelectedPoiKind(e.target.value as PoiKind) : deleteSelectedPoi()} onBlur={() => setEditingPoiHexKey(null)}>
+                        <option value="">{language === 'ru' ? 'Нет точки' : 'No point'}</option>
+                        {editablePoiKinds.map(kind => <option key={kind} value={kind}>{POI_DETAILS[kind].emoji} {POI_DETAILS[kind].label[language]}</option>)}
+                      </select> : selectedPoiKind || editMode ? editableValue(t.editPoi, selectedPoiKind
+                        ? `${getPoiEmojiForHex(selectedRegion, selectedHex)} ${getPoiLabelForHex(selectedRegion, selectedHex, language)}` : t.addPoi,
+                        () => setEditingPoiHexKey(selectedHexKey)) : null}
+                      {' '}{selectedPoiKind ? renderToponym(`settlement:${selectedRegion.id}:${selectedHexKey}`) : null}
+                    </div> : null}
                     {selectedHexRoadIds.map((roadId) => <p key={`selected-road-${roadId}`}>▬ {t.road} {roadId}</p>)}
                     {selectedHexTrailIds.map((trailId) => <p key={`selected-trail-${trailId}`}>⋯ {t.trail} {trailId}</p>)}
                     {selectedObstacles.length > 0 || nearbyRivers.length > 0 || selectedHexCrossings.length > 0 || nearbyLakeIds.length > 0 || hasNearbySea ? (
@@ -14804,38 +14778,26 @@ export function App() {
                         })}
                         {selectedObstacles.map(o=><p key={o.edgeKey} style={{color:'#bd6a64'}}>━ {language==='ru'?'Препятствие':'Barrier'} ({hexKey(o.hex)===selectedHexKey?hexKey(o.neighborHex):hexKey(o.hex)})</p>)}
                         {selectedHexCrossings.map((crossing) => <p key={`selected-crossing-${crossing.key}`}>{crossing.kind === 'bridge' ? '🌉' : crossing.kind === 'ferry' ? '⛴️' : '🌊'} {t[crossing.kind]}</p>)}
-                        {nearbyLakeIds.map((lakeId) => <p key={`nearby-lake-${lakeId}`}>💧 {t.lake} {renderToponym(`lake:${lakeId}`)}</p>)}
+                        {nearbyLakeIds.map((lakeId) => <p key={`nearby-lake-${lakeId}`}>💧 {t.lake} {renderToponym(`lake:${lakeId}`, 'nearby')}</p>)}
                         {hasNearbySea ? <p>{t.sea}</p> : null}
                       </div>
                     ) : null}
                   </>
                 ) : null}
-                {canEditNotes && selectedHexKey ? <div className="gm-notes">
-                  {!notesOpen && !notesValue ? <button type="button" className="hex-coordinate-toggle hex-poi-editor__add"
-                    disabled={nameDirty || isImporting || !!pendingRegen || !!kingdomJob} onClick={() => openNotesEditor(selectedHexKey)}>
-                    {language === 'ru' ? '+ Добавить заметку' : '+ Add note'}
-                  </button> : <>
-                    <div className="gm-notes__heading">
-                      <button id="gm-notes-label" type="button" className="gm-notes__toggle" aria-expanded={notesOpen}
-                        aria-controls="gm-notes-content" disabled={nameDirty || isImporting || !!pendingRegen || !!kingdomJob}
-                        onClick={() => toggleNotesEditor(selectedHexKey)}>
-                        {language === 'ru' ? 'Заметки мастера' : 'GM notes'} <span aria-hidden="true">{notesOpen ? '▴' : '▾'}</span>
-                      </button>
-                      <span className="gm-notes__status" role="status" aria-live="polite">{notesOpen && notesValue ? (language === 'ru' ? '✓ Сохранено' : '✓ Saved') : ''}</span>
-                    </div>
-                    <div id="gm-notes-content">
-                      {notesOpen ? <textarea ref={notesTextRef} id="gm-notes-text" aria-labelledby="gm-notes-label" rows={6} value={notesValue}
-                        disabled={nameDirty || isImporting || !!pendingRegen || !!kingdomJob}
-                        onKeyDown={event => event.stopPropagation()}
-                        onCompositionStart={() => { notesComposingRef.current = true; if (notesTimerRef.current !== null) clearTimeout(notesTimerRef.current); }}
-                        onCompositionEnd={event => { notesComposingRef.current = false; changeNotesText(selectedHexKey, event.currentTarget.value); notesTimerRef.current = setTimeout(finishNotesGroup, 500); }}
-                        onBlur={() => { notesComposingRef.current = false; finishNotesGroup(); }}
-                        onChange={event => changeNotesText(selectedHexKey, event.target.value)} />
-                        : <button type="button" className="gm-notes__text" disabled={nameDirty || isImporting || !!pendingRegen || !!kingdomJob}
-                          onClick={() => openNotesEditor(selectedHexKey)}>{notesValue}</button>}
-                    </div>
-                    {notesError ? <p role="alert">{language === 'ru' ? 'Не удалось изменить заметку' : 'The note could not be changed'}</p> : null}
-                  </>}
+                {editError && <p className="direct-error" role="alert">{editError}</p>}
+                {canEditNotes && selectedHexKey && (notesValue || editMode) ? <div className="gm-notes">
+                  <strong id="gm-notes-label">{language === 'ru' ? 'Заметки мастера' : 'GM notes'}</strong>
+                  {notesOpen && editMode ? <textarea ref={notesTextRef} id="gm-notes-text" aria-labelledby="gm-notes-label" rows={4} value={notesValue}
+                    disabled={isImporting || !!pendingRegen || !!kingdomJob}
+                    onKeyDown={event => { event.stopPropagation(); if (event.key === 'Escape') { finishNotesGroup(); setNotesEditorKey(null); } }}
+                    onCompositionStart={() => { notesComposingRef.current = true; if (notesTimerRef.current !== null) clearTimeout(notesTimerRef.current); }}
+                    onCompositionEnd={event => { notesComposingRef.current = false; changeNotesText(selectedHexKey, event.currentTarget.value); notesTimerRef.current = setTimeout(finishNotesGroup, 500); }}
+                    onBlur={() => { notesComposingRef.current = false; finishNotesGroup(); setNotesEditorKey(null); }}
+                    onChange={event => changeNotesText(selectedHexKey, event.target.value)} />
+                    : editMode ? <button type="button" className="direct-value gm-notes__text" onClick={() => openNotesEditor(selectedHexKey)}>
+                      {notesValue || (language === 'ru' ? 'Добавить заметку' : 'Add note')}</button>
+                      : <p className="gm-notes__text">{notesValue}</p>}
+                  {notesError && <p role="alert">{language === 'ru' ? 'Не удалось изменить заметку' : 'The note could not be changed'}</p>}
                 </div> : null}
               </section>
 
@@ -15005,29 +14967,16 @@ export function App() {
               {namesOpen && <div id="map-names-catalog">
                 <label>{language === 'ru' ? 'Поиск по имени' : 'Search names'}<input type="search" value={nameQuery} onChange={e => setNameQuery(e.target.value)} /></label>
                 <label>{language === 'ru' ? 'Тип объекта' : 'Object type'}<select value={nameType} onChange={e => setNameType(e.target.value)}><option value="all">{language === 'ru' ? 'Все типы' : 'All types'}</option>{Object.entries(nameTypeLabels).map(([type,label]) => <option key={type} value={type}>{label}</option>)}</select></label>
-                <ul className="map-names__list">{nameTargets.filter(target => (nameType === 'all' || target.type === nameType) && `${target.ru} ${target.en}`.toLocaleLowerCase().includes(nameQuery.toLocaleLowerCase())).map(target => <li key={target.key}><button type="button" className="secondary" disabled={isImporting || !!pendingRegen || !!kingdomJob} onClick={e => requestNameTarget(target.key,e.currentTarget)} aria-pressed={nameDraft?.target.key === target.key}>
-                  <span>{nameTypeLabels[target.type]} · {target[language]}</span><small>{target.location}</small>
-                </button></li>)}</ul>
+                <ul className="map-names__list">{nameTargets.filter(target => (nameType === 'all' || target.type === nameType) && `${target.ru} ${target.en}`.toLocaleLowerCase().includes(nameQuery.toLocaleLowerCase())).map(target => <li key={target.key}>
+                  <span>{nameTypeLabels[target.type]} · {editMode ? renderName(target.key, 'catalog') : <button type="button" className="direct-find" onClick={() => {
+                    if (!finishInlineName()) return;
+                    const [q,r] = target.location.split('/').map(Number); if (Number.isFinite(q) && Number.isFinite(r)) { finishNotesGroup(); setSelectedHex({q,r}); }
+                  }}>{target[language]}</button>}</span><small>{target.location}</small>
+                </li>)}</ul>
                 {nameCatalog.unavailable ? <p role="alert">{language === 'ru' ? 'Список названий временно недоступен. Карта не изменена.' : 'The name list is temporarily unavailable. Your map is unchanged.'}</p> : !nameTargets.length && <p>{language === 'ru' ? 'На карте пока нет именованных объектов.' : 'There are no named objects on this map yet.'}</p>}
                 {!!nameTargets.length && !nameTargets.some(target => (nameType === 'all' || target.type === nameType) && `${target.ru} ${target.en}`.toLocaleLowerCase().includes(nameQuery.toLocaleLowerCase())) && <p>{language === 'ru' ? 'Объекты не найдены.' : 'No matching objects.'}</p>}
               </div>}
-                {nameDraft && <form className="map-names__form" aria-label={language === 'ru' ? 'Изменение названия' : 'Edit map name'} onSubmit={e => {e.preventDefault();saveNameDraft(nameDraft);}} onKeyDown={e => {if(e.key === 'Escape'){e.preventDefault();e.stopPropagation();cancelNameDraft();}}}>
-                  <h3>{nameTypeLabels[nameDraft.target.type]} · {nameDraft.target[language]}</h3>
-                  {(['ru','en'] as const).map(field => <label key={field}>{field === 'ru' ? (language === 'ru' ? 'Русское название' : 'Russian name') : (language === 'ru' ? 'Английское название' : 'English name')}
-                    <input aria-label={field === 'ru' ? (language === 'ru' ? 'Русское название' : 'Russian name') : (language === 'ru' ? 'Английское название' : 'English name')} ref={field === 'ru' ? nameFocusRef : undefined} value={nameDraft[field]} aria-invalid={!!nameErrors[field]} aria-describedby={nameErrors[field] ? `map-name-error-${field}` : 'map-name-help'} onChange={e => changeNameDraft(field,e.target.value,nameDraft)} />
-                    {nameErrors[field] && <span id={`map-name-error-${field}`} className="map-names__error" role="alert">{nameErrors[field]}</span>}
-                  </label>)}
-                  <p id="map-name-help">{language === 'ru' ? 'От 1 до 80 символов. Изменяются только названия.' : 'Use 1–80 characters. Only names will change.'}</p>
-                  {nameErrors.general && <p role="alert" className="map-names__error">{nameErrors.general}</p>}
-                  <button type="submit" disabled={isImporting || !!pendingRegen || !!kingdomJob}>{language === 'ru' ? 'Сохранить название' : 'Save name'}</button>
-                  <button type="button" className="secondary" onClick={cancelNameDraft}>{language === 'ru' ? 'Отменить' : 'Cancel'}</button>
-                </form>}
-                {nameDialog && <div role="dialog" aria-modal="false" aria-labelledby="name-dialog-title" className="map-names__dialog"><p id="name-dialog-title">{language === 'ru' ? 'Сохранить изменение названия перед переходом?' : 'Save the name change before leaving?'}</p>
-                  <button type="button" autoFocus onClick={() => {const next=nameDialog;if(saveNameDraft(nameDraft)){setNameDialog(null);setNameTransition(next);}}}>{language === 'ru' ? 'Сохранить и перейти' : 'Save and continue'}</button>
-                  <button type="button" className="secondary" onClick={() => {const next=nameDialog;cancelNameDraft();showNameTarget(next.key,next.origin);}}>{language === 'ru' ? 'Отбросить и перейти' : 'Discard and continue'}</button>
-                  <button type="button" className="secondary" onClick={() => {setNameDialog(null);nameFocusRef.current?.focus();}}>{language === 'ru' ? 'Остаться' : 'Stay'}</button>
-                </div>}
-              {nameDirty && <p>{language === 'ru' ? 'Сохраните название или отмените правку, чтобы изменять карту другими способами. Неприменённое название не входит в выгрузку.' : 'Save or cancel the name edit before changing the map in other ways. Unsaved names are not included in exports.'}</p>}
+
             </section>
             </div>
           </aside>

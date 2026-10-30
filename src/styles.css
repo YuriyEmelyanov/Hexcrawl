@@ -220,3 +220,19 @@ button:disabled,select:disabled { opacity:.55; cursor:wait; }
 .map-names [role=status]:empty { display:none; }
 
 .info-body .map-names__list { margin:.6rem 0; }
+
+/* A single editing mode; the information remains the interface. */
+.direct-mode-row { display:flex; justify-content:flex-end; margin-bottom:.25rem; }
+.direct-mode { min-height:44px; padding:.45rem .8rem; }
+.direct-value, .direct-find { appearance:none; display:inline; min-height:44px; max-width:100%; padding:.25rem .15rem; border:0; border-radius:3px; box-shadow:none; background:none; color:inherit; font:inherit; text-align:left; overflow-wrap:anywhere; vertical-align:baseline; }
+.direct-value { min-width:44px; padding:0; color:#7dd3fc; text-decoration:underline dashed currentColor; text-decoration-thickness:1px; text-underline-offset:.08em; cursor:text; }
+.direct-value:hover, .direct-value:focus-visible { color:#bae6fd; background:rgba(125,211,252,.08); outline:2px solid #7dd3fc; outline-offset:2px; }
+.direct-line { min-width:0; overflow-wrap:anywhere; }
+.direct-line:empty { display:none; }
+.direct-line select, .direct-name-field input { box-sizing:border-box; max-width:100%; min-width:0; min-height:44px; padding:.35rem; font:inherit; color:inherit; background:#0c1423; border:1px solid #617187; border-radius:5px; }
+.direct-name-field { display:inline-block; max-width:100%; vertical-align:middle; }
+.direct-name-field input { width:100%; }
+.direct-error { display:block; color:#fca5a5; font-size:.85rem; }
+.map-names__list li { display:flex; align-items:baseline; gap:.5rem; justify-content:space-between; margin:.25rem 0; min-width:0; }
+.map-names__list .direct-value, .map-names__list .direct-find { width:auto; margin:0; }
+.gm-notes .direct-value { display:block; width:100%; }
