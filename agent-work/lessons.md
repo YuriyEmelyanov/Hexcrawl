@@ -268,3 +268,8 @@ DW/FL: наличие готовой карты и подробного соде
 ## 30.10.2026 — Native navigation consults current inline validation
 
 HX023-DE-R1 reproduced by extending the existing browser lifecycle: real wheel zoom has no pointer-down. c4a37ee native wheel/touch listeners use a current-ref closure; valid name commits before movement, invalid/composing rejects it. Synthetic pinch and single-finger cancellation use the same boundary. Browser lifecycle and Node249/249 passed. Undo/Redo document assertions normalize only explicit mapScale UI, since zoom happens after the name transaction; no new mixed100/corpus/runner was added. Some emoji unavailable in evidence browser; owner unable to load Markdown screenshot received direct image emission. Independent new-SHA review remains required; score not awarded. Evidence: agent-work/evidence/HX-BL-023-R1-c4a37ee/report.md.
+
+
+## 30.10.2026 — Compact direct labels still need effective touch width
+
+Independent exact c4a37ee review resolves HX023-DE-R1 wheel/touch boundary. New HX023-DE-R2: allowed name Я at390px has12.328125×44px hit rectangle after padding0; real click30px from its left misses while textcentre opens. Height-only44px check is insufficient. Preserve owner's close underline/blue/zero-padding appearance while ensuring effective minimumwidth44, then extend existing short-name lifecycle assertion (not a new runner/corpus). CI green and five targeted/edge/UI probes do not establish missing targetwidth. Scope remains approved E2, newSHA requires fresh review; no score award. Evidence: agent-work/evidence/review-HX-BL-023-c4a37ee/report.md. Browser executable was absent on freshhost; free external runtime restored before UI checks, not classified product defect.

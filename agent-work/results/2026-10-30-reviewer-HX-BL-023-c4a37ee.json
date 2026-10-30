@@ -1,0 +1,143 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-30",
+  "run_id": "2026-10-30-reviewer-HX-BL-023-c4a37ee",
+  "role": "reviewer",
+  "task_id": "HX-BL-023",
+  "stage_id": "E2_direct_edit_R1_review",
+  "status": "changes_requested",
+  "role_selection_reason": "Approved review_ready exact c4a37ee package, necessary checks passed and no active foreign claim",
+  "head_sha": "c4a37ee9b16b0d0641f1f01f1b6093b863f56d15",
+  "tree_sha": "6b51af3e49f294964888228ff27ac26e7adf453b",
+  "base_sha": "8f7d17266c53e31428da7c0da6dbbf1afe01d035",
+  "pr": 479,
+  "branch": "agent/hx023-direct-edit",
+  "spec_ref": "agent-work/specs/HX-BL-023-E2.md",
+  "spec_blob_sha": "b6ee87caf193faad2a394ecf610fd04a8a02d420",
+  "independence": {
+    "fresh_agent": "review_c4a37ee",
+    "fresh_checkout": true,
+    "product_writes": false,
+    "limitations": "Physical mobile/OSIME not tested; synthetic touch; complete corpus not duplicated locally, exact CI independently verified"
+  },
+  "resolved_findings": [
+    "HX023-DE-R1"
+  ],
+  "findings": [
+    {
+      "id": "HX023-DE-R2",
+      "severity": "medium",
+      "requirements": [
+        "DE-01",
+        "DE-AC01",
+        "30Oct compact amendment retains44px"
+      ],
+      "source": [
+        "src/styles.css:227",
+        "src/styles.css:228",
+        "src/App.tsx:14015"
+      ],
+      "observed": "Valid region name Я at390px: target12.328125×44px; actual click30px from left misses, textcentre opens",
+      "status": "open",
+      "evidence_ref": "agent-work/evidence/review-HX-BL-023-c4a37ee/short-target.json"
+    }
+  ],
+  "checks": {
+    "ci": [
+      {
+        "name": "check",
+        "head_sha": "c4a37ee9b16b0d0641f1f01f1b6093b863f56d15",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "world-random",
+        "head_sha": "c4a37ee9b16b0d0641f1f01f1b6093b863f56d15",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "browser",
+        "head_sha": "c4a37ee9b16b0d0641f1f01f1b6093b863f56d15",
+        "status": "completed",
+        "conclusion": "success"
+      }
+    ],
+    "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40995005765",
+    "synthetic_merge_tree_matches": true,
+    "local_build": "passed",
+    "targeted_existing_node_cases": {
+      "executed": 5,
+      "passed": 5,
+      "skipped": 0
+    },
+    "temporary_probes": "Production and canonical edge probes pass except short-width finding; separate from permanent test case totals"
+  },
+  "test_change_summary": {
+    "base_sha": "8f7d17266c53e31428da7c0da6dbbf1afe01d035",
+    "head_sha": "c4a37ee9b16b0d0641f1f01f1b6093b863f56d15",
+    "node": {
+      "added": 1,
+      "removed": 0,
+      "modified": 1,
+      "suite": "Node logical cases",
+      "source": "git diff base..head test/mapTransactions.test.mjs; one paired-name case replaced by single-locale contract; one region-biome case added"
+    },
+    "browser": {
+      "added": 0,
+      "removed": 0,
+      "modified": 1,
+      "suite": "existing save-history browser script",
+      "source": "git diff base..head test/browser/save-history.smoke.mjs; new wheel/touch sections extend existing lifecycle"
+    },
+    "rng": {
+      "added": 0,
+      "removed": 0,
+      "modified": 0
+    },
+    "scenario_risk": "Direct mode, literal current locale, exact history, canonical region biome; wheel/touch validation boundary",
+    "reuse_or_new_reason": "Existing actual-handler harness and browser lifecycle extended; no duplicate runner/mixed100/corpus. Region change separate from existing local override contract.",
+    "counts_not_combined": true
+  },
+  "test_change_summary_ref": "agent-work/evidence/review-HX-BL-023-c4a37ee/test_change_summary.json",
+  "score_assessment_ref": "agent-work/evidence/review-HX-BL-023-c4a37ee/score_assessment.json",
+  "score_assessment_status": "completed_insufficient_evidence_no_award; new_SHA_requires_update",
+  "confirmed_points": null,
+  "unverified_weight": 1000,
+  "score_changed": false,
+  "published": false,
+  "main_changed": false,
+  "full_editor_ready": false,
+  "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/479#pullrequestreview-5708735954",
+  "github_review_state": "COMMENTED",
+  "github_review_limitation": "Connected account is PR author; API disallows formal self REQUEST_CHANGES, so COMMENT preserves independent verdict; no formal blocking review claimed",
+  "evidence_ref": "agent-work/evidence/review-HX-BL-023-c4a37ee/report.md",
+  "evidence_commit_sha": "6a2effab0f8869bd1f6df0088cbda94ac6927499",
+  "next_task_id": "HX-BL-023",
+  "next_role": "developer",
+  "next_step": "Fix HX023-DE-R2 minimum44×44px effective touch area for short direct labels while retaining compact blue underline; extend existing bounded browser lifecycle, then independent review of new SHA",
+  "authorization_status": "Correction within approved E2; release permission absent",
+  "handoff_ref": "agent-work/handoffs/2026-10-30-HX-BL-023-R2-touch-target-fix.json",
+  "automation_health": {
+    "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-10-30T06:05:22.648Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "end": {
+      "checked_at": "2026-10-30T06:17:12.076Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restored": false,
+    "errors": [],
+    "limitation": "Only sampled times, not future service guarantee"
+  },
+  "independent_reviewer_automation_health_ref": "agent-work/evidence/review-HX-BL-023-c4a37ee/automation-health.json",
+  "operational_errors": [
+    "Browser artifact absent in current host; restored free external runtime Chromium153, then completed UI probe. No paid expense/product change",
+    "Child initial two automation argument-binding errors preserved in child health; root actual start/end confirmed enabled"
+  ],
+  "claim_released": true
+}
