@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "date": "2026-10-30",
+  "date": "2026-10-31",
   "branch": "agent-operations",
   "plan_json": "agent-work/handoffs/2026-10-30-HX-BL-023-R2-a99c299-review.json",
   "plan_md": null,
@@ -26,10 +26,10 @@
   },
   "lessons_path": "agent-work/lessons.md",
   "plan_id": "2026-10-29-developer-HX-BL-023-E1",
-  "run_id": "2026-10-30-developer-HX-BL-023-R2-target",
+  "run_id": "2026-10-31-developer-release-HX-BL-023-E2-a99c299",
   "plan_revision": 1,
   "baseline_sha": "8f7d17266c53e31428da7c0da6dbbf1afe01d035",
-  "status": "review_ready",
+  "status": "releasing",
   "planning_for": "2026-10-29",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-10-25",
@@ -46,20 +46,21 @@
   "schedule_frequency": "hourly",
   "process_path": "agent-work/process.md",
   "current_role": "developer",
-  "next_role": "reviewer",
+  "next_role": "developer",
   "current_task_id": "HX-BL-023",
   "spec_path": "agent-work/specs/HX-BL-023-E2.md",
   "spec_version": "E2-2.0",
   "result_path": "agent-work/results/2026-10-30-developer-HX-BL-023-R2-target.json",
   "handoff_commit_sha": "b59e538fde090f5ceb7cd427a5536c81081e2384",
   "active_claim": {
-    "run_id": "2026-10-31-reviewer-HX-BL-023-a99c299",
-    "role": "reviewer",
+    "run_id": "2026-10-31-developer-release-HX-BL-023-E2-a99c299",
+    "role": "developer",
     "task_id": "HX-BL-023",
+    "stage_id": "E2_direct_edit",
     "head_sha": "a99c299f0648c2e5c1d65173bdeca50061dcc901",
-    "started_at": "2026-10-30T21:57:34.883Z"
+    "started_at": "2026-10-30T22:10:29.233Z"
   },
-  "next_step": "Fresh independent review exact a99c299: verify effective44×44 short-label hit area and compact style, relevant E2/R1 regression checks and score_assessment1.2; release separately by owner",
+  "next_step": "Publish only accepted exact a99c299 under owner permission; verify merge tree, deployment/live assets; hand off mandatory score update",
   "owner_decisions_needed": [
     {
       "task_id": "HX-BL-003",
@@ -70,14 +71,13 @@
   ],
   "release_approval": {
     "task_id": "HX-BL-023",
-    "stage_id": "E1_UI3",
-    "status": "approved_and_executed",
-    "approved_sha": "a265a78a1f287442ec502bac9875d04d8d273060",
-    "approval_ref": "owner-release-2026-10-29-HX-BL-023-E1-a265a78",
-    "merge_sha": "8f7d17266c53e31428da7c0da6dbbf1afe01d035",
-    "release_sha": "8f7d17266c53e31428da7c0da6dbbf1afe01d035",
-    "deployment_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40874465786",
-    "published": true
+    "stage_id": "E2_direct_edit",
+    "status": "approved",
+    "approved_sha": "a99c299f0648c2e5c1d65173bdeca50061dcc901",
+    "approved_tree_sha": "4fcecf131cd6287e804dfe040b0fc0ed0dd2b669",
+    "approval_ref": "owner-release-2026-10-31-HX-BL-023-E2-a99c299",
+    "pr": 479,
+    "published": false
   },
   "historical_plan_status": "План23.10 сохранён как история; его блокировки и предложенный процесс заменены decisions24.10 в approvals/process/budget и текущим handoff.",
   "evidence_path": "agent-work/evidence/HX-BL-023-R2-a99c299/report.md",
@@ -86,7 +86,7 @@
   "head_sha": "a99c299f0648c2e5c1d65173bdeca50061dcc901",
   "checks_status": "local_and_exact_CI_passed",
   "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41030179704",
-  "review_verdict": "pending_independent_review_new_SHA",
+  "review_verdict": "accepted",
   "role_selection_mode": "ready_work_priority",
   "role_selection_source": "agent-work/process.md",
   "process_decision_ref": "owner-decision-2026-10-24-dynamic-roles",
@@ -200,8 +200,8 @@
   "score_update_task_id": "HX-BL-023",
   "score_update_release_sha": "8f7d17266c53e31428da7c0da6dbbf1afe01d035",
   "score_process_decision_ref": "owner-decision-2026-10-24-score-responsibilities",
-  "score_assessment_ref": null,
-  "role_selection_reason": "Approved HX023-DE-R2 reviewer finding with bounded handoff; no active foreign claim",
+  "score_assessment_ref": "agent-work/evidence/review-HX-BL-023-a99c299/score_assessment.json",
+  "role_selection_reason": "Explicit owner publication permission for independently accepted exact a99c299 package",
   "score_update_result_ref": "agent-work/results/2026-10-29-strategist-score-HX-BL-023-E1-8f7d172.json",
   "score_update_completed_at": "2026-10-29T15:04:04.407Z",
   "score_update_delta": null,
@@ -209,36 +209,32 @@
   "next_task_proposal_ref": null,
   "next_task_id": "HX-BL-023",
   "approval_ref": "owner-decision-2026-10-28-editor-additional-functions-approved",
-  "last_completed_stage": "E2_independent_review_changes_requested",
+  "last_completed_stage": "E2_independent_review_accepted",
   "previous_release_approval": {
-    "task_id": "HX-BL-024",
+    "task_id": "HX-BL-023",
+    "stage_id": "E1_UI3",
     "status": "approved_and_executed",
-    "approved_sha": "f2ee456d42d0b4fb49c533d6bed89f5a2ea23d49",
-    "product_merge_sha": "e915c6db2daa4a7afb75510b69719da7cdfab478",
-    "merge_sha": "a7a8cc58987e97c4495c405374c6a4145f3bc9ff",
-    "release_sha": "a7a8cc58987e97c4495c405374c6a4145f3bc9ff",
-    "approval_ref": "owner-release-2026-10-28-HX-BL-024-f2ee456",
-    "workflow_approval_ref": "owner-release-2026-10-28-PR477-timeout",
-    "published": true,
-    "evidence_ref": "agent-work/evidence/release-HX-BL-024-a7a8cc5/publication.json"
+    "approved_sha": "a265a78a1f287442ec502bac9875d04d8d273060",
+    "approval_ref": "owner-release-2026-10-29-HX-BL-023-E1-a265a78",
+    "merge_sha": "8f7d17266c53e31428da7c0da6dbbf1afe01d035",
+    "release_sha": "8f7d17266c53e31428da7c0da6dbbf1afe01d035",
+    "deployment_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40874465786",
+    "published": true
   },
   "base_sha": "8f7d17266c53e31428da7c0da6dbbf1afe01d035",
   "automation_health": {
     "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-10-30T21:10:22.849Z",
+      "checked_at": "2026-10-30T21:57:18.834Z",
       "status": "checked",
-      "is_enabled": false
+      "is_enabled": true
     },
     "end": {
-      "checked_at": "2026-10-30T21:10:48.735Z",
+      "checked_at": "2026-10-30T22:08:54.568Z",
       "status": "checked",
-      "is_enabled": true,
-      "schedule": "BEGIN:VEVENT\nDTSTART:20261030T211044Z\nRRULE:FREQ=HOURLY;BYMINUTE=0;BYSECOND=0\nEND:VEVENT"
+      "is_enabled": true
     },
-    "resumed": true,
-    "schedule_updated": true,
-    "prompt_changed": false,
+    "restored_during_this_run": false,
     "errors": []
   },
   "open_findings": [
@@ -259,27 +255,9 @@
       "finding": "3/4 complete,45snapshots/12selections verified; fourth I1/undo-redo/4selections/finalJSON missing at43min cap",
       "required": "Report incompleteness; no full safety/release acceptance; no automatic extra execution",
       "evidence_ref": "agent-work/evidence/review-HX-BL-003-V3-58adcce/result.json"
-    },
-    {
-      "id": "HX023-DE-R2",
-      "severity": "medium",
-      "requirements": [
-        "DE-01",
-        "DE-AC01",
-        "30Oct compact amendment retains44px"
-      ],
-      "source": [
-        "src/styles.css:227",
-        "src/styles.css:228",
-        "src/App.tsx:14015"
-      ],
-      "observed": "Valid region name Я at390px: target12.328125×44px; actual click30px from left misses, textcentre opens",
-      "status": "addressed_pending_independent_review",
-      "evidence_ref": "agent-work/evidence/HX-BL-023-R2-a99c299/report.md",
-      "candidate_sha": "a99c299f0648c2e5c1d65173bdeca50061dcc901"
     }
   ],
-  "current_review_score_assessment_status": "completed_insufficient_evidence_for_rejected_sha",
+  "current_review_score_assessment_status": "completed_insufficient_evidence",
   "target_audience_research": {
     "model_version": "1.1",
     "model_max_points": 25,
@@ -1274,7 +1252,7 @@
       "src/styles.css"
     ]
   },
-  "review_url": null,
+  "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/479#pullrequestreview-5719206251",
   "coordination_handoff": {
     "status": "completed_actionable_outcome",
     "current_package_task_id": "HX-BL-003",
@@ -2065,7 +2043,14 @@
   ],
   "schedule_decision_ref": "owner-decision-2026-10-31-team-resume-hourly",
   "tree_sha": "4fcecf131cd6287e804dfe040b0fc0ed0dd2b669",
-  "accepted_release_pending": null,
+  "accepted_release_pending": {
+    "task_id": "HX-BL-023",
+    "stage_id": "E2_direct_edit",
+    "head_sha": "a99c299f0648c2e5c1d65173bdeca50061dcc901",
+    "tree_sha": "4fcecf131cd6287e804dfe040b0fc0ed0dd2b669",
+    "review_ref": "agent-work/results/2026-10-31-reviewer-HX-BL-023-a99c299.json",
+    "approval_ref": "owner-release-2026-10-31-HX-BL-023-E2-a99c299"
+  },
   "next_product_proposal": {
     "task_id": "HX-BL-027",
     "status": "deferred_by_owner",
@@ -2322,7 +2307,7 @@
     "presentation": "Both actual desktop and390 images emitted directly in chat",
     "limitations": "Some emoji unavailable in evidence browser"
   },
-  "review_result_ref": null,
+  "review_result_ref": "agent-work/results/2026-10-31-reviewer-HX-BL-023-a99c299.json",
   "previous_review_score_assessment_ref": "agent-work/evidence/review-HX-BL-023-E1-24fa342/score_assessment.json",
   "previous_independent_reviewer_automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
