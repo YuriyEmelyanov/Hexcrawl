@@ -4,7 +4,7 @@
   "role": "developer",
   "task_id": "HX-BL-023",
   "stage_id": "E2_direct_edit",
-  "status": "merged_deployment_pending",
+  "status": "published",
   "approved_head_sha": "a99c299f0648c2e5c1d65173bdeca50061dcc901",
   "merge_sha": "defaa5c24d546e4283430573c2d4e4f3b6194dc0",
   "tree_sha": "4fcecf131cd6287e804dfe040b0fc0ed0dd2b669",
@@ -14,7 +14,7 @@
   "score_assessment_ref": "agent-work/evidence/review-HX-BL-023-a99c299/score_assessment.json",
   "deployment_run_id": 41136382320,
   "deployment_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41136382320",
-  "published": false,
+  "published": true,
   "main_changed": true,
   "score_changed": false,
   "full_editor_ready": false,
@@ -26,12 +26,110 @@
       "is_enabled": true
     },
     "end": {
-      "status": "pending",
-      "is_enabled": null
+      "checked_at": "2026-10-30T22:24:09.832Z",
+      "status": "checked",
+      "is_enabled": true
     },
     "restored_during_this_run": false,
     "errors": []
   },
-  "next_step": "Await exact merge deployment, verify live assets; on success save release evidence and mandatory score_update_pending",
-  "checkpoint_at": "2026-10-30T22:11:31.361Z"
+  "next_step": "Complete exact E2 release score1.2 event with independent assessment; then approved E3 roads/trails/crossings specification under parent2.3",
+  "checkpoint_at": "2026-10-30T22:11:31.361Z",
+  "release_sha": "defaa5c24d546e4283430573c2d4e4f3b6194dc0",
+  "site": "https://app.hexcrawl.ru/",
+  "publication_ref": "agent-work/evidence/release-HX-BL-023-E2-defaa5c/publication.json",
+  "publication": {
+    "schema_version": 1,
+    "task_id": "HX-BL-023",
+    "stage_id": "E2_direct_edit",
+    "head_sha": "a99c299f0648c2e5c1d65173bdeca50061dcc901",
+    "merge_sha": "defaa5c24d546e4283430573c2d4e4f3b6194dc0",
+    "tree_sha": "4fcecf131cd6287e804dfe040b0fc0ed0dd2b669",
+    "merge_tree_matches_review": true,
+    "approval_ref": "owner-release-2026-10-31-HX-BL-023-E2-a99c299",
+    "review_ref": "agent-work/results/2026-10-31-reviewer-HX-BL-023-a99c299.json",
+    "review_evidence_ref": "agent-work/evidence/review-HX-BL-023-a99c299/report.md",
+    "score_assessment_ref": "agent-work/evidence/review-HX-BL-023-a99c299/score_assessment.json",
+    "deployment": {
+      "id": 41136382320,
+      "head_sha": "defaa5c24d546e4283430573c2d4e4f3b6194dc0",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41136382320",
+      "updated_at": "2026-10-30T22:23:25Z"
+    },
+    "jobs": [
+      {
+        "id": 124339758720,
+        "name": "build",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 124344359868,
+        "name": "deploy",
+        "status": "completed",
+        "conclusion": "success"
+      }
+    ],
+    "site_check": {
+      "site": "https://app.hexcrawl.ru/",
+      "checked_at": "2026-10-30T22:24:09.202047+00:00",
+      "status": 200,
+      "live_assets": [
+        "/assets/index-yDv5yNC1.js",
+        "/assets/index-4Tq-G2o7.css"
+      ],
+      "assets": [
+        {
+          "path": "/assets/index-yDv5yNC1.js",
+          "status": 200,
+          "bytes": 964565,
+          "sha256": "fb2922ec3b689990c44eb2dddfca0467586f72ae0ca1ac69f1c1ff2a51680a77",
+          "matches_review_build": true
+        },
+        {
+          "path": "/assets/index-4Tq-G2o7.css",
+          "status": 200,
+          "bytes": 19990,
+          "sha256": "1dfd787c39628a8c0fc78cf568dc899e80871a8a312072c756ca3ef044bda11a",
+          "matches_review_build": true
+        }
+      ],
+      "new_package_served": true
+    },
+    "ci_check_counts": {
+      "executed": 249,
+      "passed": 249,
+      "failed": 0
+    },
+    "published": true
+  },
+  "score_update_status": "pending",
+  "score_update_responsible": "strategist",
+  "score_update_handoff_ref": "agent-work/handoffs/2026-10-31-HX-BL-023-E2-release-score.json",
+  "confirmed_points": null,
+  "unverified_weight": 1000,
+  "next_task_id": "HX-BL-023",
+  "next_role": "strategist_manager",
+  "authorization_status": {
+    "release": "approved_and_executed",
+    "approval_ref": "owner-release-2026-10-31-HX-BL-023-E2-a99c299",
+    "E3_specification": "approved_parent_2.3",
+    "process_proposals": "recommendations_only"
+  },
+  "claim_released": true,
+  "completed_at": "2026-10-30T22:24:53.798Z",
+  "test_change_summary": {
+    "base_sha": "a99c299f0648c2e5c1d65173bdeca50061dcc901",
+    "head_sha": "defaa5c24d546e4283430573c2d4e4f3b6194dc0",
+    "added": 0,
+    "removed": 0,
+    "modified": 0,
+    "suite": "release-only exact accepted tree",
+    "scenario_risk": "No source change during merge; accepted candidate and merge tree identical",
+    "reuse_or_new_reason": "Accepted head CI and merge deployment249/249 plus browser verified; no new test execution beyond deployment",
+    "source": "Exact merge tree4fcecf1 equals independent accepted candidate"
+  },
+  "process_analysis_ref": "agent-work/proposals/2026-10-31-development-process-review.md"
 }
