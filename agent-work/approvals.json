@@ -730,13 +730,13 @@
       "date": "2026-10-30",
       "recorded_at": "2026-10-30T10:37:16.570Z",
       "type": "owner_requested_pause",
-      "status": "active",
+      "status": "superseded_by_owner_resume",
       "source": "Current task conversation: owner direct instruction «Пока приостанови работу.»",
       "scope": "Pause HexCrawl team work and existing Команда HexCrawl automation until explicit owner resume instruction",
       "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
       "disable_authorized": true,
-      "resume_requires_owner_instruction": true,
-      "do_not_auto_restore_while_active": true,
+      "resume_requires_owner_instruction": false,
+      "do_not_auto_restore_while_active": false,
       "preserved_checkpoint": {
         "task_id": "HX-BL-023",
         "status": "review_ready",
@@ -744,7 +744,22 @@
         "pr": 479,
         "next_role": "reviewer"
       },
-      "schedule_or_prompt_change_authorized": false
+      "schedule_or_prompt_change_authorized": false,
+      "superseded_by": "owner-decision-2026-10-31-team-resume-hourly"
+    },
+    {
+      "id": "owner-decision-2026-10-31-team-resume-hourly",
+      "date": "2026-10-31",
+      "recorded_at": "2026-10-30T21:10:35.395Z",
+      "type": "owner_resume_and_hourly_schedule",
+      "status": "active",
+      "source": "Current task conversation: «Возрбновляй работу. Запуск каждый час.»",
+      "supersedes": "owner-decision-2026-10-30-team-pause",
+      "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "is_enabled": true,
+      "frequency": "hourly",
+      "scope": "Resume same permanent team automation; role chosen from actual approved queue; preserve task boundaries, claims, independent review and separate publication permission",
+      "prompt_change": false
     }
   ],
   "merge_approval": {
