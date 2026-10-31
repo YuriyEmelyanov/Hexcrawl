@@ -344,6 +344,73 @@ try {
  await select(`${center.q},${center.r}`);await biome('open_hills');
  await transaction(()=>button('Удалить последний регион').click());await button('Отменить').click();
  await transaction(async()=>{await button('Перегенерировать регион').click();await page.waitForFunction(()=>!document.querySelector('.kingdom-progress')&&!document.querySelector('.controls--transfer > button').disabled,null,{timeout:120000});});
+ // E3 draft lifecycle: reuse existing production runner; no second corpus.
+ const draftInput=JSON.parse(await fs.readFile(new URL('../fixtures/road-entry-zigzags.json',import.meta.url)));
+ const draftSegment=draftInput.map.roads[0].segments[0];draftInput.map.roads=[];draftInput.map.crossings=[];
+ for(const p of [draftSegment.from,draftSegment.to]){const r=draftInput.map.regions.find(r=>r.hexes.some(x=>x.q===p.q&&x.r===p.r));if(!r.pointsOfInterest.some(x=>x.q===p.q&&x.r===p.r))r.pointsOfInterest.push({...p});}
+ await load(draftInput);await select(`${draftSegment.from.q},${draftSegment.from.r}`);
+ if(await button('Редактировать').count())await button('Редактировать').click();
+ const draftBefore=await snapshot();
+ await button('Начать путь отсюда').click();await button('Готово').click();
+ assert.equal(await page.locator('[data-road-draft] select').count(),1,'invalid single node stays draft');
+ await select(`${draftSegment.to.q},${draftSegment.to.r}`);assert.equal(await page.locator('[data-editor-only="draft"] line').count(),1);
+ await page.locator('.map-viewport').press('Escape');assert.deepEqual(await snapshot(),draftBefore);
+ await button('Начать путь отсюда').click();await select(`${draftSegment.to.q},${draftSegment.to.r}`);
+ await button('Готово').click();const draftAfter=await snapshot();assert.equal(draftAfter.map.roads.length,1);assert.deepEqual(draftAfter.generation,draftBefore.generation);
+ await button('Отменить').click();assert.deepEqual(await snapshot(),draftBefore);await button('Повторить').click();assert.deepEqual(await snapshot(),draftAfter);
+ // R2/R3: extend this runner with overlapping legacy identity and real keyboard activation.
+ const overlap=JSON.parse(await fs.readFile(new URL('../fixtures/road-entry-zigzags.json',import.meta.url)));
+ const original=overlap.map.roads[0],shared=original.segments[0],copyId=Math.max(...overlap.map.roads.map(r=>r.id))+1;
+ overlap.map.roads.push({...structuredClone(original),id:copyId,segments:[structuredClone(shared)]});overlap.counters.nextRoadId=copyId+1;
+ await load(overlap);await select(`${shared.from.q},${shared.from.r}`);
+ if(await button('Редактировать').count())await button('Редактировать').click();
+ const pair=[`${shared.from.q},${shared.from.r}`,`${shared.to.q},${shared.to.r}`].sort().join('|');
+ for(const id of [original.id,copyId]){
+  const actual=page.getByRole('button',{name:`Участок ${id}: ${pair}`,exact:true});
+  await actual.focus();await actual.press('Enter');
+  assert.equal(await page.locator('.road-editor__item > button[aria-pressed="true"]').count(),1);
+  assert.equal(await page.locator('[data-editor-only="roads"] line[stroke="#7dd3fc"]').count(),1);
+  assert.ok(await actual.evaluate(el=>parseFloat(getComputedStyle(el).strokeWidth)*el.getScreenCTM().a>=43.9),'map target44px at normal rotation');
+ }
+ // E3 existing-path controls: exact crossing identity, confirmation preview and history.
+ // Reuse this lifecycle runner: no second corpus or mixed-history sequence.
+ await load(JSON.parse(await fs.readFile(new URL('../fixtures/road-entry-zigzags.json',import.meta.url))));
+ const roadMap=await snapshot(),crossing=roadMap.map.crossings[0];
+ const road=roadMap.map.roads.find(r=>r.id===crossing.roadId),seg=road.segments.find(s=>[`${s.from.q},${s.from.r}`,`${s.to.q},${s.to.r}`].sort().join('|')===crossing.roadSegmentKey);
+ await select(`${seg.from.q},${seg.from.r}`);
+ if(await button('Редактировать').count())await button('Редактировать').click();
+ const roadLabel=`Участок ${road.id}: ${seg.from.q},${seg.from.r} → ${seg.to.q},${seg.to.r}`;
+ const crossingTarget=page.getByRole('button',{name:`Переправа ${crossing.key}`,exact:true});
+ await crossingTarget.focus();await crossingTarget.press(' ');
+ assert.equal(await crossingTarget.getAttribute('aria-pressed'),'true');
+ assert.equal(await page.locator('[data-editor-only="roads"] circle[stroke="#7dd3fc"]').count(),1);
+ await button(roadLabel).click();
+ const oldRoad=await snapshot();
+ const crossingSelect=page.getByRole('combobox',{name:`Переправа ${road.id}:${crossing.riverId}`,exact:true});
+ await crossingSelect.selectOption(crossing.kind==='bridge'?'ferry':'bridge');
+ const changedRoad=await snapshot();assert.notDeepEqual(changedRoad.map.crossings,oldRoad.map.crossings);
+ assert.deepEqual(changedRoad.map.roads,oldRoad.map.roads);assert.deepEqual(changedRoad.generation,oldRoad.generation);
+ await button('Отменить').click();assert.deepEqual(await snapshot(),oldRoad);
+ await button('Повторить').click();assert.deepEqual(await snapshot(),changedRoad);
+ await button(roadLabel).click();await button('Удалить весь выделенный путь').click();
+ assert.equal(await page.locator('[data-editor-only] line[stroke="#7dd3fc"]').count(),road.segments.length);
+ for(const width of [1500,390]) {
+   await page.setViewportSize({width,height:1100});
+   const confirmation=page.getByRole('group',{name:'Подтверждение удаления',exact:true});
+   for(const name of ['Удалить','Отмена']) {
+     const target=confirmation.getByRole('button',{name,exact:true});
+     const rect=await target.boundingBox();
+     assert.ok(rect.width>=44&&rect.height>=44,`E3 confirmation ${name} target at ${width}: ${JSON.stringify(rect)}`);
+   }
+   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Confirmation has no horizontal overflow');
+ }
+ await button('Отмена').click();assert.deepEqual(await snapshot(),changedRoad);
+ for(const width of [1500,390]) {
+   await page.setViewportSize({width,height:1100});
+   const rect=await crossingSelect.boundingBox();assert.ok(rect.width>=44&&rect.height>=44,'E3 native control target');
+   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'E3 no horizontal page overflow');
+ }
+ await page.setViewportSize({width:1500,height:1100});
  if(await page.locator('.header-links').evaluate(el=>el.classList.contains('is-collapsed')))await page.locator('.header-links-toggle').click();
  await button('Switch to English').click();assert.equal(await button('Undo').count(),1);assert.equal(await button('Redo').count(),1);
  assert.deepEqual(errors,[]);assert.equal(alerts.length,5,'only intentional invalid imports');
