@@ -17,12 +17,7 @@
   "score_model_path": "agent-work/strategy/score-model.md",
   "backlog_path": "agent-work/backlog.json",
   "approvals_path": "agent-work/approvals.json",
-  "execution_blocker": {
-    "scope": "E4 persistence integration only",
-    "finding_id": "HX023-E4-SPEC-01",
-    "responsible": "business_analyst",
-    "handoff_ref": "agent-work/handoffs/2026-10-31-HX-BL-023-E4-migration-contract.json"
-  },
+  "execution_blocker": null,
   "cleanup_status": "merged_pr470",
   "project_attachments_cleanup": {
     "status": "detached_by_owner",
@@ -31,10 +26,10 @@
   },
   "lessons_path": "agent-work/lessons.md",
   "plan_id": "2026-10-31-HX-BL-023-E4-analyst",
-  "run_id": "2026-10-31-developer-HX-BL-023-E4-persistence",
+  "run_id": "2026-10-31-owner-panel-layout",
   "plan_revision": 1,
   "baseline_sha": "8f7d17266c53e31428da7c0da6dbbf1afe01d035",
-  "status": "owner_UI_correction_in_progress",
+  "status": "implementation_and_independent_UI_review_passed_CI_pending",
   "planning_for": "2026-10-31",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-10-25",
@@ -51,21 +46,14 @@
   "schedule_frequency": "hourly",
   "process_path": "agent-work/process.md",
   "current_role": "developer",
-  "next_role": "business_analyst",
+  "next_role": "reviewer",
   "current_task_id": "HX-BL-023",
   "spec_path": "agent-work/specs/HX-BL-023-E4.md",
   "spec_version": "E4-1.0",
-  "result_path": "agent-work/results/2026-10-31-developer-HX-BL-023-E4-persistence.json",
+  "result_path": "agent-work/results/2026-10-31-developer-HX-BL-023-panel-layout.json",
   "handoff_commit_sha": "9b5946df36c99f49363830cab478d46d10cacd04",
-  "active_claim": {
-    "run_id": "2026-10-31-owner-panel-layout",
-    "role": "developer",
-    "task_id": "HX-BL-023",
-    "stage_id": "panel_layout_correction",
-    "status": "in_progress",
-    "started_at": "2026-10-31T10:42:52.528Z"
-  },
-  "next_step": "Исправить общую прокрутку боковой панели, карандаш с подсказкой и начало заголовка сверху слева по прямому поручению владельца.",
+  "active_claim": null,
+  "next_step": "Проверяющий сверяет завершение обязательного CI PR482 на 4a46f90; затем пакет исправления панели готов к отдельному разрешению публикации. Пока CI идёт, доступно утверждённое уточнение миграции E4 аналитиком.",
   "owner_decisions_needed": [
     {
       "task_id": "HX-BL-003",
@@ -96,12 +84,12 @@
   },
   "historical_plan_status": "План23.10 сохранён как история; его блокировки и предложенный процесс заменены decisions24.10 в approvals/process/budget и текущим handoff.",
   "evidence_path": "agent-work/evidence/HX-BL-023-E4-legacy-adjacency-1bd3d97",
-  "branch_name": "agent/hx023-e4-barriers",
-  "pr": 481,
-  "head_sha": "1bd3d973e11001d18f91718ee9c8b98bbfbf3758",
-  "checks_status": "local_check_passed_checkpoint_not_integrated",
-  "checks_url": null,
-  "review_verdict": null,
+  "branch_name": "agent/hx023-panel-layout",
+  "pr": 482,
+  "head_sha": "4a46f90be9a0eec795107227d4f3f7af8a417305",
+  "checks_status": "local_check_and_save_history_passed_CI_pending",
+  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41194227126",
+  "review_verdict": "independent_UI_review_passed_CI_pending",
   "role_selection_mode": "ready_work_priority",
   "role_selection_source": "agent-work/process.md",
   "process_decision_ref": "owner-decision-2026-10-24-dynamic-roles",
@@ -130,7 +118,7 @@
   "score_update_release_sha": "defaa5c24d546e4283430573c2d4e4f3b6194dc0",
   "score_process_decision_ref": "owner-decision-2026-10-24-score-responsibilities",
   "score_assessment_ref": null,
-  "role_selection_reason": "Approved E4 specification ready; no open reviewer findings or other active claim. Continue one developer task.",
+  "role_selection_reason": "Explicit immediate owner UI correction supersedes E4 task for this run; no active prior claim.",
   "score_update_result_ref": "agent-work/results/2026-10-31-strategist-score-HX-BL-023-E2-defaa5c.json",
   "score_update_completed_at": "2026-10-30T22:31:49.807Z",
   "score_update_delta": null,
@@ -150,21 +138,19 @@
     "deployment_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40874465786",
     "published": true
   },
-  "base_sha": "d7bb38fbcee367621e5f5ce9fbaf369fbc775e0a",
+  "base_sha": "defaa5c24d546e4283430573c2d4e4f3b6194dc0",
   "automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-10-31 09:58:37 UTC",
+      "checked_at": "2026-10-31T10:42:52.528Z",
       "is_enabled": true
     },
     "end": {
-      "checked_at": "2026-10-31 10:02:08 UTC",
-      "is_enabled": true,
-      "status": "checked"
+      "checked_at": "2026-10-31T10:52:12.623Z",
+      "is_enabled": true
     },
     "restoration_performed": false,
-    "errors": [],
-    "limitation": "Статус подтверждён только в моменты peek, последующее состояние сервиса не гарантируется."
+    "errors": []
   },
   "open_findings": [],
   "current_review_score_assessment_status": "not_applicable_specification_forecast_unknown",
@@ -835,7 +821,7 @@
     "next_step": "Решить отдельно узкий cleanup AUD-02/03/04; готовую спецификацию024 не задерживать."
   },
   "owner_decisions_note": "Подтвердить предложенную адресную замену большого незавершённого historygate для003. HX-BL-024 уже утверждён, повторного согласования задачи не нужно; выпуск474 отдельно.",
-  "updated_at": "2026-10-31 10:02:08 UTC",
+  "updated_at": "2026-10-31T10:52:12.623Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
     "stage_id": "V3",
@@ -1096,23 +1082,35 @@
     "handoff_ref": "agent-work/handoffs/2026-10-27-HX-FB-002-audit.json"
   },
   "test_change_summary": {
-    "base_sha": "1bd3d973e11001d18f91718ee9c8b98bbfbf3758",
-    "head_sha": "1bd3d973e11001d18f91718ee9c8b98bbfbf3758",
+    "base_sha": "defaa5c24d546e4283430573c2d4e4f3b6194dc0",
+    "head_sha": "4a46f90be9a0eec795107227d4f3f7af8a417305",
     "added": 0,
     "removed": 0,
-    "modified": 0,
-    "suite": "permanent suites",
-    "scenario_or_risk": "Миграция исторически принимаемой вырожденной геометрии",
-    "reuse_or_new_reason": "Временная диагностика использует настоящий generation harness/import и существующий baseline-mythic fixture; постоянный тест до решения контракта не добавлялся.",
-    "count_source": "git status --short: only untracked probe-legacy-obstacle.mjs; tracked base=head",
-    "temporary_diagnostics": {
-      "suite": "developer diagnostic, not permanent Node suite growth",
-      "executed": 1,
-      "passed": 1,
-      "failed": 0,
-      "skipped": 0
-    },
-    "full_suite_execution": "not_run_this_run; no tracked product changes"
+    "modified": 1,
+    "suite": "save-history browser lifecycle",
+    "source": "git diff base..head:23 added lines extending existing lifecycle, no new runner/test lifecycle",
+    "scenario_risk": "Shared sidebar scrolling, compact localized accessible edit control, heading position and390 fit",
+    "reuse_or_new_reason": "Justified modification: checks changed layout behavior within already-loaded real React fixture; no duplicate harness or separate permanent suite. Temporary reviewer matrix is separate, not suite growth.",
+    "executions": {
+      "Node": {
+        "executed": 249,
+        "passed": 249,
+        "failed": 0,
+        "skipped": 0
+      },
+      "browser_save_history": {
+        "executed": 1,
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "unit": "existing lifecycle, includes100mixedUIoperations"
+      },
+      "temporary_reviewer": {
+        "executed": 4,
+        "passed": 4,
+        "unit": "1500/390 x RU/EN; not permanent suite growth"
+      }
+    }
   },
   "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/480#pullrequestreview-5721774794",
   "coordination_handoff": {
@@ -1174,7 +1172,7 @@
     "nav_status_success": 24,
     "png_captured": 4
   },
-  "evidence_ref": "agent-work/evidence/HX-BL-023-E4-legacy-adjacency-1bd3d97",
+  "evidence_ref": "agent-work/evidence/HX-BL-023-panel-layout",
   "static_diagnosis_handoff": {
     "status": "coordinated_nextstage_proposed",
     "result_ref": "agent-work/results/2026-10-27-developer-HX-BL-003-static-diagnosis.json",
@@ -1439,7 +1437,7 @@
   "historical_unverified_weight": 70,
   "historical_score_model_version": "1.1",
   "score_update_awarded_points": 0,
-  "handoff_ref": "agent-work/handoffs/2026-10-31-HX-BL-023-E4-migration-contract.json",
+  "handoff_ref": "agent-work/handoffs/2026-10-31-HX-BL-023-panel-layout.json",
   "previous_feedback_handoff": {
     "task_id": "HX-FB-001",
     "register": "agent-work/feedback.json",
@@ -1542,10 +1540,9 @@
   "future_head_sha": null,
   "future_tree_sha": null,
   "current_package_release_approval": {
-    "task_id": "HX-BL-003",
-    "status": "not_approved",
-    "future_sha": null,
-    "acceptance_decision_pending": true
+    "status": "not_requested_pending_CI",
+    "head_sha": "4a46f90be9a0eec795107227d4f3f7af8a417305",
+    "pr": 482
   },
   "current_risk_findings": {
     "confirmed_defects": [],
@@ -1773,7 +1770,7 @@
     }
   },
   "previous_result_path": "agent-work/results/2026-10-31-developer-HX-BL-023-E3-R1-R3.json",
-  "handoff_path": "agent-work/handoffs/2026-10-31-HX-BL-023-E4-migration-contract.json",
+  "handoff_path": "agent-work/handoffs/2026-10-31-HX-BL-023-panel-layout.json",
   "ui_actual_preview": {
     "task_id": "HX-BL-024",
     "spec_version": "1.1",
@@ -1904,7 +1901,7 @@
     23
   ],
   "schedule_decision_ref": "owner-decision-2026-10-31-team-resume-hourly",
-  "tree_sha": "4fcecf131cd6287e804dfe040b0fc0ed0dd2b669",
+  "tree_sha": "3cdad0ef6793096807b12ed8c31c7152f23f1210",
   "accepted_release_pending": null,
   "next_product_proposal": {
     "task_id": "HX-BL-027",
@@ -2155,9 +2152,14 @@
   "published": false,
   "main_changed": false,
   "ui_actual": {
-    "head_sha": "d7bb38fbcee367621e5f5ce9fbaf369fbc775e0a",
-    "narrow": "agent-work/evidence/HX-BL-023-E3-R4-R5-d7bb38f/whole-path-ru-390.png",
-    "shown_in_chat": true
+    "head_sha": "4a46f90be9a0eec795107227d4f3f7af8a417305",
+    "desktop": "agent-work/evidence/HX-BL-023-panel-layout/1500-ru-read.png",
+    "narrow": "agent-work/evidence/HX-BL-023-panel-layout/390-ru-read.png",
+    "shown_in_chat": true,
+    "limitations": [
+      "Chromium headless; physical devices and other browsers not tested",
+      "Некоторые emoji отсутствуют в шрифтах среды"
+    ]
   },
   "review_result_ref": null,
   "previous_review_score_assessment_ref": "agent-work/evidence/review-HX-BL-023-E1-24fa342/score_assessment.json",
@@ -2285,7 +2287,7 @@
   "spec_blob_sha": null,
   "parent_spec_ref": "agent-work/specs/HX-BL-023.md",
   "parent_spec_version": "2.3",
-  "test_change_summary_ref": "agent-work/evidence/HX-BL-023-E4-legacy-adjacency-1bd3d97/test_change_summary.json",
+  "test_change_summary_ref": "agent-work/evidence/HX-BL-023-panel-layout/test_change_summary.json",
   "programmer_score_evidence_ref": "agent-work/evidence/HX-BL-023-E4-foundation-1bd3d97/score_evidence.json",
   "completed_claim_result_ref": "agent-work/results/2026-10-31-reviewer-HX-BL-023-E3-d7bb38f.json",
   "review_evidence_ref": null,
@@ -2366,26 +2368,26 @@
     "E4": "approved_task_specification_correction_allowed",
     "E4_release": "separate_owner_permission_required"
   },
-  "completed_at": "2026-10-31 10:02:08 UTC",
+  "completed_at": "2026-10-31T10:52:12.623Z",
   "score_changed": false,
   "next_stage_id": "E4",
   "score_evidence_updated": true,
-  "current_stage_id": "E4",
+  "current_stage_id": "panel_layout_correction",
   "implementation_started": true,
   "current_stage_release_approved": false,
-  "review_ready": false,
+  "review_ready": true,
   "current_stage_ui_status": "proposal_shown_actual_pending_integration",
   "completed_claim": {
-    "run_id": "2026-10-31-developer-HX-BL-023-E4-persistence",
+    "run_id": "2026-10-31-owner-panel-layout",
     "role": "developer",
     "task_id": "HX-BL-023",
-    "stage_id": "E4",
-    "status": "completed_with_specification_handoff",
-    "started_at": "2026-10-31 09:58:37 UTC",
-    "completed_at": "2026-10-31 10:02:08 UTC",
-    "result_ref": "agent-work/results/2026-10-31-developer-HX-BL-023-E4-persistence.json"
+    "stage_id": "panel_layout_correction",
+    "status": "completed",
+    "started_at": "2026-10-31T10:42:52.528Z",
+    "result_ref": "agent-work/results/2026-10-31-developer-HX-BL-023-panel-layout.json",
+    "completed_at": "2026-10-31T10:52:12.623Z"
   },
-  "evidence_commit_sha": "69a09e98a1985411e96e267e019f5417b11658ae",
+  "evidence_commit_sha": "67483b216ac46729638e01413c59659d03d8c081",
   "finding_ids": [],
   "current_release_package_ref": "agent-work/handoffs/2026-10-31-HX-BL-023-E3-release-package-d7bb38f.json",
   "current_stage_ui_preview": {
@@ -2412,5 +2414,12 @@
   },
   "specification_findings": [
     "HX023-E4-SPEC-01"
-  ]
+  ],
+  "panel_layout_correction": {
+    "feedback_id": "HX-FB-006",
+    "head_sha": "4a46f90be9a0eec795107227d4f3f7af8a417305",
+    "pr": 482,
+    "result_ref": "agent-work/results/2026-10-31-developer-HX-BL-023-panel-layout.json",
+    "release_approved": false
+  }
 }
