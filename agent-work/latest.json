@@ -2,7 +2,7 @@
   "schema_version": 1,
   "date": "2026-10-31",
   "branch": "agent-operations",
-  "plan_json": "agent-work/handoffs/2026-10-31-HX-BL-023-E3-6e59e7f-review.json",
+  "plan_json": "agent-work/handoffs/2026-10-31-HX-BL-023-E3-R1-R3-fix.json",
   "plan_md": null,
   "strategy_branch": "main",
   "strategy_status": "approved",
@@ -26,10 +26,10 @@
   },
   "lessons_path": "agent-work/lessons.md",
   "plan_id": "2026-10-31-analyst-HX-BL-023-E3",
-  "run_id": "2026-10-31-developer-HX-BL-023-E3-draft",
+  "run_id": "2026-10-31-reviewer-HX-BL-023-E3-6e59e7f",
   "plan_revision": 1,
   "baseline_sha": "8f7d17266c53e31428da7c0da6dbbf1afe01d035",
-  "status": "E3_review_ready",
+  "status": "E3_changes_requested",
   "planning_for": "2026-10-31",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-10-25",
@@ -45,22 +45,15 @@
   "schedule_start_at": "2026-10-24T01:00:00+03:00",
   "schedule_frequency": "hourly",
   "process_path": "agent-work/process.md",
-  "current_role": "developer",
-  "next_role": "reviewer",
+  "current_role": "reviewer",
+  "next_role": "developer",
   "current_task_id": "HX-BL-023",
   "spec_path": "agent-work/specs/HX-BL-023-E3.md",
   "spec_version": "E3-1.0",
-  "result_path": "agent-work/results/2026-10-31-developer-HX-BL-023-E3-draft.json",
-  "handoff_commit_sha": "95ce769c4d691e6bda67ced3cd1118aa2a6a644a",
-  "active_claim": {
-    "run_id": "2026-10-31-reviewer-HX-BL-023-E3-6e59e7f",
-    "role": "reviewer",
-    "task_id": "HX-BL-023",
-    "stage_id": "E3",
-    "head_sha": "6e59e7fde9545b7508804560ecd0fe0a50d1611a",
-    "started_at": "2026-10-31T02:56:15.309Z"
-  },
-  "next_step": "Проверяющий независимо проверяет весь E3 на 6e59e7f (PR480), AC01–10 и регрессии, фиксирует замечания/приёмку и score_assessment1.2; публикация отдельно.",
+  "result_path": "agent-work/results/2026-10-31-reviewer-HX-BL-023-E3-6e59e7f.json",
+  "handoff_commit_sha": "1d033b56111d573afb23da58d2d9c18d96a22e16",
+  "active_claim": null,
+  "next_step": "Программист исправляет HX023-E3-R1–R3 в PR480: допустимые концы пути, точный выбор наложенных объектов, клавиатура и hit-area карты; затем новый SHA на независимую проверку оставшихся AC.",
   "owner_decisions_needed": [
     {
       "task_id": "HX-BL-003",
@@ -83,13 +76,13 @@
     "deployment_run_id": 41136382320
   },
   "historical_plan_status": "План23.10 сохранён как история; его блокировки и предложенный процесс заменены decisions24.10 в approvals/process/budget и текущим handoff.",
-  "evidence_path": "agent-work/evidence/HX-BL-023-E3-6e59e7f",
+  "evidence_path": "agent-work/evidence/review-HX-BL-023-E3-6e59e7f",
   "branch_name": "agent/hx023-e3-roads",
   "pr": 480,
   "head_sha": "6e59e7fde9545b7508804560ecd0fe0a50d1611a",
-  "checks_status": "local_check_and_production_browser_passed_CI_running",
+  "checks_status": "CI_success_independent_review_changes_requested",
   "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41158804637",
-  "review_verdict": null,
+  "review_verdict": "changes_requested",
   "role_selection_mode": "ready_work_priority",
   "role_selection_source": "agent-work/process.md",
   "process_decision_ref": "owner-decision-2026-10-24-dynamic-roles",
@@ -117,8 +110,8 @@
   "score_update_task_id": "HX-BL-023",
   "score_update_release_sha": "defaa5c24d546e4283430573c2d4e4f3b6194dc0",
   "score_process_decision_ref": "owner-decision-2026-10-24-score-responsibilities",
-  "score_assessment_ref": null,
-  "role_selection_reason": "Approved E3 unfinished and preceding checkpoint explicitly released claim; own new claim safely acquired, no foreign active claim",
+  "score_assessment_ref": "agent-work/evidence/review-HX-BL-023-E3-6e59e7f/score_assessment.json",
+  "role_selection_reason": "Approved E3 review_ready exact SHA, completed developer claim released; no foreign claim or newer correction",
   "score_update_result_ref": "agent-work/results/2026-10-31-strategist-score-HX-BL-023-E2-defaa5c.json",
   "score_update_completed_at": "2026-10-30T22:31:49.807Z",
   "score_update_delta": null,
@@ -142,18 +135,17 @@
   "automation_health": {
     "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-10-31T02:01:50.749Z",
-      "status": "checked",
-      "is_enabled": true
+      "checked_at": "2026-10-31T02:55:47.793Z",
+      "is_enabled": true,
+      "status": "checked"
     },
     "end": {
-      "checked_at": "2026-10-31T02:14:31.028Z",
+      "checked_at": "2026-10-31T03:03:46.446Z",
       "status": "checked",
       "is_enabled": true
     },
     "restored_during_this_run": false,
-    "errors": [],
-    "limitation": "Observed at two checks; no guarantee of subsequent service state"
+    "errors": []
   },
   "open_findings": [
     {
@@ -173,9 +165,69 @@
       "finding": "3/4 complete,45snapshots/12selections verified; fourth I1/undo-redo/4selections/finalJSON missing at43min cap",
       "required": "Report incompleteness; no full safety/release acceptance; no automatic extra execution",
       "evidence_ref": "agent-work/evidence/review-HX-BL-003-V3-58adcce/result.json"
+    },
+    {
+      "id": "HX023-E3-R1",
+      "priority": "P2",
+      "title": "Exclude suppressed and tract centers from destination eligibility",
+      "path": "src/App.tsx",
+      "line": 12870,
+      "acceptance": [
+        "AC02",
+        "AC04"
+      ],
+      "status": "reproduced_actual_handler_and_production_browser",
+      "evidence": [
+        "probe.mjs",
+        "probe-results.json",
+        "suppressed-endpoint-input.json",
+        "suppressed-endpoint-after.json",
+        "browser-results.json"
+      ],
+      "expected": "Empty internal center without actual POI/network/open exit is rejected atomically",
+      "actual": "Trail(4,6)->(3,6) commits; suppressed internal center has no actual POI and six known neighbors",
+      "limitation": "Controlled fixture derived from baseline-mythic; original baseline not claimed to contain this same dry suppressed center. Deletion effect is code inference, not separate reproduced counterexample."
+    },
+    {
+      "id": "HX023-E3-R2",
+      "priority": "P2",
+      "title": "Retain exact Road.id and crossing identity in selection",
+      "path": "src/App.tsx",
+      "line": 14182,
+      "acceptance": [
+        "AC01",
+        "AC09"
+      ],
+      "status": "reproduced_production_browser",
+      "evidence": [
+        "browser-results.json",
+        "overlap-ru-390.png",
+        "overlap-ru-1500.png",
+        "overlap-en-390.png"
+      ],
+      "expected": "Choose/highlight each overlapping legacy object separately",
+      "actual": "Click Road1 sharing pair withRoad8 => both aria-pressed and two highlighted lines",
+      "limitation": "Row mutations still pass explicit Road.id; no claim of wrong-object mutation."
+    },
+    {
+      "id": "HX023-E3-R3",
+      "priority": "P2",
+      "title": "Make map path/crossing selection keyboard accessible with required hit area",
+      "path": "src/App.tsx",
+      "line": 14862,
+      "acceptance": [
+        "AC01"
+      ],
+      "status": "confirmed_source_and_browser_dom",
+      "evidence": [
+        "browser-results.json"
+      ],
+      "expected": "Visible focus, keyboard activation and44px targets for direct map selection",
+      "actual": "SVG line onClick only, strokeWidth12, no role/name/tabindex/keyboard handler; focusable path targets0",
+      "limitation": "Panel controls independently pass44px; map-hit issue is separate. No screen-reader device run."
     }
   ],
-  "current_review_score_assessment_status": "pending_independent_E3_review",
+  "current_review_score_assessment_status": "completed_insufficient_evidence",
   "target_audience_research": {
     "model_version": "1.1",
     "model_max_points": 25,
@@ -2207,7 +2259,7 @@
     }
   },
   "full_editor_ready": false,
-  "current_task_score_assessment_status": "pending_independent_E3_review",
+  "current_task_score_assessment_status": "completed_insufficient_evidence",
   "published": false,
   "main_changed": false,
   "ui_actual": {
@@ -2217,7 +2269,7 @@
     "shown_in_chat": true,
     "limitations": "Some emoji unavailable in evidence browser; captures show draft path, not all E3 states"
   },
-  "review_result_ref": null,
+  "review_result_ref": "agent-work/results/2026-10-31-reviewer-HX-BL-023-E3-6e59e7f.json",
   "previous_review_score_assessment_ref": "agent-work/evidence/review-HX-BL-023-E1-24fa342/score_assessment.json",
   "previous_independent_reviewer_automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
@@ -2343,12 +2395,12 @@
   "spec_blob_sha": "82d57dfde2e24abf1662c31fe77bef6763cd5fb3",
   "parent_spec_ref": "agent-work/specs/HX-BL-023.md",
   "parent_spec_version": "2.3",
-  "test_change_summary_ref": "agent-work/evidence/HX-BL-023-E3-6e59e7f/test_change_summary.json",
+  "test_change_summary_ref": "agent-work/evidence/review-HX-BL-023-E3-6e59e7f/test_change_summary.json",
   "programmer_score_evidence_ref": "agent-work/evidence/HX-BL-023-E3-6e59e7f/score_evidence.json",
-  "completed_claim_result_ref": "agent-work/results/2026-10-31-developer-HX-BL-023-E3-draft.json",
-  "review_evidence_ref": null,
-  "github_review_state": "ready_for_independent_E3_review",
-  "independent_reviewer_automation_health_ref": "agent-work/evidence/review-HX-BL-023-c4a37ee/automation-health.json",
+  "completed_claim_result_ref": "agent-work/results/2026-10-31-reviewer-HX-BL-023-E3-6e59e7f.json",
+  "review_evidence_ref": "agent-work/evidence/review-HX-BL-023-E3-6e59e7f/review.md",
+  "github_review_state": "independent_review_changes_requested_recorded_in_operations",
+  "independent_reviewer_automation_health_ref": "agent-work/evidence/review-HX-BL-023-E3-6e59e7f/automation_health.json",
   "owner_visual_correction": {
     "date": "2026-10-30",
     "request": "Приблизить подчёркивание к элементу и выделить редактируемые значения цветом",
@@ -2409,7 +2461,7 @@
   "process_analysis_status": "recommendations_only_not_implemented",
   "previous_score_update_result_ref": "agent-work/results/2026-10-29-strategist-score-HX-BL-023-E1-8f7d172.json",
   "next_approved_stage": "E3",
-  "next_approved_stage_handoff_ref": "agent-work/handoffs/2026-10-31-HX-BL-023-E3-6e59e7f-review.json",
+  "next_approved_stage_handoff_ref": "agent-work/handoffs/2026-10-31-HX-BL-023-E3-R1-R3-fix.json",
   "authorization_status": {
     "E3": "development_approved_parent_2.3",
     "E3_release": "separate_owner_permission_required",
@@ -2417,14 +2469,14 @@
     "Cairn2": "proposal_only",
     "design_response": "nonblocking"
   },
-  "completed_at": "2026-10-31T02:14:31.028Z",
+  "completed_at": "2026-10-31T03:03:46.446Z",
   "score_changed": false,
   "next_stage_id": "E3",
   "score_evidence_updated": true,
   "current_stage_id": "E3",
   "implementation_started": true,
   "current_stage_release_approved": false,
-  "review_ready": true,
+  "review_ready": false,
   "current_stage_ui_actual": {
     "head_sha": "6e59e7fde9545b7508804560ecd0fe0a50d1611a",
     "desktop": "agent-work/evidence/HX-BL-023-E3-6e59e7f/1500.png",
