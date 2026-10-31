@@ -1,0 +1,151 @@
+{
+  "run_id": "2026-10-31-owner-panel-layout",
+  "role": "developer",
+  "task_id": "HX-BL-023",
+  "stage_id": "panel_layout_correction",
+  "feedback_id": "HX-FB-006",
+  "role_selection_reason": "Explicit immediate owner UI correction supersedes E4 task for this run; no active prior claim.",
+  "status": "implementation_and_independent_UI_review_passed_CI_pending",
+  "base_sha": "defaa5c24d546e4283430573c2d4e4f3b6194dc0",
+  "head_sha": "4a46f90be9a0eec795107227d4f3f7af8a417305",
+  "tree_sha": "3cdad0ef6793096807b12ed8c31c7152f23f1210",
+  "branch": "agent/hx023-panel-layout",
+  "pr": 482,
+  "owner_decision": {
+    "id": "owner-decision-2026-10-31-panel-layout",
+    "date": "2026-10-31",
+    "type": "immediate_UI_correction",
+    "status": "approved_implementation",
+    "task_id": "HX-BL-023",
+    "feedback_id": "HX-FB-006",
+    "source": "Current chat + screenshot: «Убери добавленную прокрутку ... Весь блок должен прокручиваться вместе ... Вместо слова редактировать карандаш ... надпись должна начинаться слева сверху. Делать прямо сейчас.»",
+    "scope": [
+      "Одна прокрутка всей боковой панели",
+      "Карандаш вместо текста с tooltip Редактировать",
+      "Информация сверху слева без отдельной строки для кнопки"
+    ],
+    "release_approved": false
+  },
+  "acceptance": [
+    "Общая прокрутка управления и информации desktop; единая прокрутка страницы narrow",
+    "Тёмная общая полоса вместо отдельной белой",
+    "SVG карандаш44x44, локализованные title/aria-label",
+    "Заголовок начинается сверху слева рядом с кнопкой",
+    "Edit/Done/keyboard/collapse сохранены"
+  ],
+  "checks": {
+    "check": {
+      "status": "passed",
+      "exit_code": 0,
+      "node": "24.22.1",
+      "log": "agent-work/evidence/HX-BL-023-panel-layout/check.log"
+    },
+    "save_history": {
+      "status": "passed",
+      "log": "agent-work/evidence/HX-BL-023-panel-layout/save-history.log"
+    },
+    "ci": [
+      {
+        "name": "seed-ui",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41194227227/job/124517032464"
+      },
+      {
+        "name": "world-random",
+        "status": "in_progress",
+        "conclusion": null,
+        "html_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41194227126/job/124517031603"
+      },
+      {
+        "name": "check",
+        "status": "in_progress",
+        "conclusion": null,
+        "html_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41194227126/job/124517031584"
+      },
+      {
+        "name": "browser",
+        "status": "in_progress",
+        "conclusion": null,
+        "html_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41194227126/job/124517031409"
+      }
+    ]
+  },
+  "independent_review_ref": "agent-work/evidence/HX-BL-023-panel-layout/review-report.json",
+  "independent_review_verdict": "accepted_with_scope_limitations",
+  "score_assessment_ref": "agent-work/evidence/HX-BL-023-panel-layout/score_assessment.json",
+  "score_model_version": "1.2",
+  "score_changed": false,
+  "test_change_summary": {
+    "base_sha": "defaa5c24d546e4283430573c2d4e4f3b6194dc0",
+    "head_sha": "4a46f90be9a0eec795107227d4f3f7af8a417305",
+    "added": 0,
+    "removed": 0,
+    "modified": 1,
+    "suite": "save-history browser lifecycle",
+    "source": "git diff base..head:23 added lines extending existing lifecycle, no new runner/test lifecycle",
+    "scenario_risk": "Shared sidebar scrolling, compact localized accessible edit control, heading position and390 fit",
+    "reuse_or_new_reason": "Justified modification: checks changed layout behavior within already-loaded real React fixture; no duplicate harness or separate permanent suite. Temporary reviewer matrix is separate, not suite growth.",
+    "executions": {
+      "Node": {
+        "executed": 249,
+        "passed": 249,
+        "failed": 0,
+        "skipped": 0
+      },
+      "browser_save_history": {
+        "executed": 1,
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "unit": "existing lifecycle, includes100mixedUIoperations"
+      },
+      "temporary_reviewer": {
+        "executed": 4,
+        "passed": 4,
+        "unit": "1500/390 x RU/EN; not permanent suite growth"
+      }
+    }
+  },
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-10-31T10:42:52.528Z",
+      "is_enabled": true
+    },
+    "end": {
+      "checked_at": "2026-10-31T10:52:12.623Z",
+      "is_enabled": true
+    },
+    "restoration_performed": false,
+    "errors": []
+  },
+  "main_changed": false,
+  "published": false,
+  "release_approved": false,
+  "next_role": "reviewer",
+  "next_step": "Проверяющий сверяет завершение обязательного CI PR482 на 4a46f90; затем пакет исправления панели готов к отдельному разрешению публикации. Пока CI идёт, доступно утверждённое уточнение миграции E4 аналитиком.",
+  "handoff_ref": "agent-work/handoffs/2026-10-31-HX-BL-023-panel-layout.json",
+  "ui_actual": {
+    "head_sha": "4a46f90be9a0eec795107227d4f3f7af8a417305",
+    "desktop": "agent-work/evidence/HX-BL-023-panel-layout/1500-ru-read.png",
+    "narrow": "agent-work/evidence/HX-BL-023-panel-layout/390-ru-read.png",
+    "shown_in_chat": true,
+    "limitations": [
+      "Chromium headless; physical devices and other browsers not tested",
+      "Некоторые emoji отсутствуют в шрифтах среды"
+    ]
+  },
+  "additional_owner_show_request": {
+    "pr": 480,
+    "sha": "d7bb38fbcee367621e5f5ce9fbaf369fbc775e0a",
+    "desktop": "agent-work/evidence/HX-BL-023-panel-layout/PR480-actual-desktop.png",
+    "narrow": "agent-work/evidence/HX-BL-023-panel-layout/PR480-actual-panel-390.png",
+    "note": "Фактический отдельный принятый E3, без нового исправления панели; не интеграционный пакет."
+  },
+  "transport": {
+    "git_push": "No HTTPS credentials; no remote mutation by failed push",
+    "connector": "Created identical tree; final remote SHA independently fetched and verified"
+  },
+  "completed_at": "2026-10-31T10:52:12.623Z"
+}

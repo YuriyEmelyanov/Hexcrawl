@@ -1,0 +1,10 @@
+import {chromium} from 'playwright';import {spawn} from 'node:child_process';import fs from 'node:fs/promises';
+const server=spawn(process.execPath,['node_modules/vite/bin/vite.js','preview','--host','127.0.0.1','--port','4186','--strictPort'],{stdio:['ignore','pipe','inherit']});await new Promise(r=>server.stdout.on('data',d=>{if(d.toString().includes('Local:'))r()}));
+const b=await chromium.launch({headless:true,args:['--no-sandbox']});const p=await b.newPage({viewport:{width:1500,height:1100}});await p.route(/mc\.yandex/,r=>r.abort());await p.goto('http://127.0.0.1:4186');
+const fixture=JSON.parse(await fs.readFile('test/fixtures/import-v2/baseline-mythic.json'));
+await p.locator('input[type=file]').setInputFiles('test/fixtures/import-v2/baseline-mythic.json');await p.waitForTimeout(500);
+const h=fixture.map.roads[0].segments[0].from;await p.locator(`polygon.hex[data-hex-key="${h.q},${h.r}"]`).dispatchEvent('click');
+await p.getByRole('button',{name:'Редактировать',exact:true}).click();await p.locator('.road-editor__item > button').first().click();
+await p.locator('.road-editor[aria-label]').scrollIntoViewIfNeeded();await p.screenshot({path:'/workspace/panel-evidence/PR480-actual-desktop.png'});
+await p.setViewportSize({width:390,height:1100});await p.locator('.road-editor[aria-label]').scrollIntoViewIfNeeded();await p.locator('.info-block--hex').screenshot({path:'/workspace/panel-evidence/PR480-actual-panel-390.png'});
+await b.close();server.kill();console.log('PR480 exact d7bb38f actual UI captured');
