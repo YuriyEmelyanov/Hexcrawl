@@ -1,0 +1,153 @@
+{
+  "run_id": "2026-10-31-developer-panel-walkthrough",
+  "role": "developer",
+  "task_id": "HX-BL-023",
+  "stage_id": "panel_layout_walkthrough",
+  "role_selection_reason": "Explicit latest owner requires clear actual user walkthrough before publication; exact PR482 CI now complete.",
+  "status": "completed_accepted_awaiting_owner_release_permission",
+  "base_sha": "defaa5c24d546e4283430573c2d4e4f3b6194dc0",
+  "head_sha": "4a46f90be9a0eec795107227d4f3f7af8a417305",
+  "pr": 482,
+  "branch": "agent/hx023-panel-layout",
+  "product_changed": false,
+  "checks": {
+    "ci": [
+      {
+        "name": "seed-ui",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41194227227/job/124517032464"
+      },
+      {
+        "name": "world-random",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41194227126/job/124517031603"
+      },
+      {
+        "name": "check",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41194227126/job/124517031584"
+      },
+      {
+        "name": "browser",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41194227126/job/124517031409"
+      }
+    ],
+    "previous_local_ref": "agent-work/results/2026-10-31-developer-HX-BL-023-panel-layout.json"
+  },
+  "user_walkthrough": {
+    "status": "shown_and_independently_verified",
+    "package_sha": "4a46f90be9a0eec795107227d4f3f7af8a417305",
+    "before_release_sha": "defaa5c24d546e4283430573c2d4e4f3b6194dc0",
+    "pr": 482,
+    "guide": "agent-work/evidence/HX-BL-023-panel-walkthrough/guide.html",
+    "video": "agent-work/evidence/HX-BL-023-panel-walkthrough/demo.webm",
+    "screenshots": "Embedded lossless PNG in guide.html: before/after, desktop/narrow, read/edit/typing/done/undo and context",
+    "scenarios": [
+      "Shared sidebar scrolling",
+      "Pencil opens edit mode",
+      "Escape cancels name draft",
+      "Enter commits name",
+      "Done returns to view",
+      "Undo restores original name"
+    ],
+    "shown_in_chat": true,
+    "shown_details": "Actual video and before/after images plus guide link presented in this run commentary",
+    "reviewer_verification": "agent-work/evidence/HX-BL-023-panel-walkthrough/reviewer.json",
+    "known_limitations": [
+      "Headless Chromium only; no physical phone, touch, Safari or Firefox claim",
+      "Video is desktop only;390px states and scroll measured separately",
+      "Native title verified as attribute; actual browser-chrome tooltip not captured",
+      "Some emoji render as missing-glyph squares, disclosed in walkthrough",
+      "Only6 sampled video frames inspected, with full action source and independent runtime assertions",
+      "Full npm check/browser/world-random not rerun by this reviewer; prior review and root own those checks",
+      "Temporary missing default browser cache prevented initial runtime attempt; retained Chromium fallback succeeded",
+      "User-visible delivery in current chat and publication permission remain root/owner responsibilities; reviewer does not set shown_in_chat",
+      "PR480/481 excluded; no product files, operational branch, shared claim, automation settings, merge or deployment changed"
+    ]
+  },
+  "independent_review_verdict": "accepted_with_scope_limitations",
+  "score_assessment_ref": "agent-work/evidence/HX-BL-023-panel-walkthrough/reviewer.json#score_assessment",
+  "score_model_version": "1.2",
+  "score_changed": false,
+  "test_change_summary": {
+    "base_sha": "4a46f90be9a0eec795107227d4f3f7af8a417305",
+    "head_sha": "4a46f90be9a0eec795107227d4f3f7af8a417305",
+    "added": 0,
+    "removed": 0,
+    "modified": 0,
+    "suite": "permanent product suites",
+    "scenario_risk": "No product changes; temporary actual walkthrough diagnostics separate",
+    "reuse_or_new_reason": "Reuse existing actual UI and accepted exactSHA evidence; no new permanent tests.",
+    "count_source": "HEAD unchanged; only evidence artifacts written",
+    "temporary_developer": {
+      "executed": 2,
+      "passed": 2,
+      "unit": "1500/390 walkthrough"
+    },
+    "temporary_reviewer": {
+      "executed": 2,
+      "passed": 2,
+      "unit": "1500/390 runtime replay"
+    }
+  },
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-10-31T10:59:41.846Z",
+      "is_enabled": true
+    },
+    "end_initial": {
+      "checked_at": "2026-10-31T11:20:29.824Z",
+      "is_enabled": false
+    },
+    "end": {
+      "checked_at": "2026-10-31T11:20:49.232Z",
+      "is_enabled": true
+    },
+    "restoration_performed": true,
+    "restoration": {
+      "action": "update(is_enabled=true), schedule/prompt untouched",
+      "authorization": "owner-decision mandatory automation health restoration",
+      "owner_decision_check": {
+        "sha": "0d22e228f9f86dbfd2f32242bf871496093bde91",
+        "checked_at": "2026-10-31T11:20:38.765Z",
+        "no_new_shutdown_decision": true
+      },
+      "confirmed": true
+    },
+    "disable_reason": "unknown",
+    "errors": [],
+    "limitation": "Only observed status at peek times; future service behavior not guaranteed."
+  },
+  "main_changed": false,
+  "published": false,
+  "release_approved": false,
+  "next_role": "business_analyst",
+  "next_task_id": "HX-BL-023",
+  "next_stage_id": "E4",
+  "next_step": "Аналитик устраняет противоречие миграции E4 по существующему handoff. PR482 готов к отдельному разрешению публикации; для совместного выпуска с PR480 потребуется объединённый проверенный пакет и актуальный показ.",
+  "handoff_ref": "agent-work/handoffs/2026-10-31-HX-BL-023-E4-migration-contract.json",
+  "owner_decisions_needed": [
+    {
+      "type": "release",
+      "pr": 482,
+      "head_sha": "4a46f90be9a0eec795107227d4f3f7af8a417305",
+      "scope": "Only panel correction, E3/E4 not included",
+      "walkthrough_ref": "agent-work/evidence/HX-BL-023-panel-walkthrough/guide.html"
+    }
+  ],
+  "limits": [
+    "PR480/PR481 are not part of shown package",
+    "PR480 full walkthrough remains pending; previous static screenshots do not satisfy new rule"
+  ],
+  "environment_events": [
+    "Playwright ffmpeg download first mirror failed, alternate succeeded; browser cache removed during install, browser CDN download failed; retained Chromium153 fallback succeeded.",
+    "One exec transport disconnect during artifact transfer; retry succeeded. No technical team block."
+  ],
+  "completed_at": "2026-10-31T11:20:49.232Z"
+}

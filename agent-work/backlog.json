@@ -1698,16 +1698,48 @@
         "HX023-E4-SPEC-01"
       ],
       "panel_layout_correction": {
-        "status": "implementation_and_independent_UI_review_passed_CI_pending",
+        "status": "accepted_awaiting_owner_release_permission",
         "feedback_id": "HX-FB-006",
         "approval_ref": "owner-decision-2026-10-31-panel-layout",
         "head_sha": "4a46f90be9a0eec795107227d4f3f7af8a417305",
         "pr": 482,
-        "result_ref": "agent-work/results/2026-10-31-developer-HX-BL-023-panel-layout.json",
+        "result_ref": "agent-work/results/2026-10-31-developer-panel-walkthrough.json",
         "handoff_ref": "agent-work/handoffs/2026-10-31-HX-BL-023-panel-layout.json",
         "release_approved": false,
         "next_role": "reviewer",
-        "next_step": "Проверяющий сверяет завершение обязательного CI PR482 на 4a46f90; затем пакет исправления панели готов к отдельному разрешению публикации. Пока CI идёт, доступно утверждённое уточнение миграции E4 аналитиком."
+        "next_step": "Проверяющий сверяет завершение обязательного CI PR482 на 4a46f90; затем пакет исправления панели готов к отдельному разрешению публикации. Пока CI идёт, доступно утверждённое уточнение миграции E4 аналитиком.",
+        "user_walkthrough": {
+          "status": "shown_and_independently_verified",
+          "package_sha": "4a46f90be9a0eec795107227d4f3f7af8a417305",
+          "before_release_sha": "defaa5c24d546e4283430573c2d4e4f3b6194dc0",
+          "pr": 482,
+          "guide": "agent-work/evidence/HX-BL-023-panel-walkthrough/guide.html",
+          "video": "agent-work/evidence/HX-BL-023-panel-walkthrough/demo.webm",
+          "screenshots": "Embedded lossless PNG in guide.html: before/after, desktop/narrow, read/edit/typing/done/undo and context",
+          "scenarios": [
+            "Shared sidebar scrolling",
+            "Pencil opens edit mode",
+            "Escape cancels name draft",
+            "Enter commits name",
+            "Done returns to view",
+            "Undo restores original name"
+          ],
+          "shown_in_chat": true,
+          "shown_details": "Actual video and before/after images plus guide link presented in this run commentary",
+          "reviewer_verification": "agent-work/evidence/HX-BL-023-panel-walkthrough/reviewer.json",
+          "known_limitations": [
+            "Headless Chromium only; no physical phone, touch, Safari or Firefox claim",
+            "Video is desktop only;390px states and scroll measured separately",
+            "Native title verified as attribute; actual browser-chrome tooltip not captured",
+            "Some emoji render as missing-glyph squares, disclosed in walkthrough",
+            "Only6 sampled video frames inspected, with full action source and independent runtime assertions",
+            "Full npm check/browser/world-random not rerun by this reviewer; prior review and root own those checks",
+            "Temporary missing default browser cache prevented initial runtime attempt; retained Chromium fallback succeeded",
+            "User-visible delivery in current chat and publication permission remain root/owner responsibilities; reviewer does not set shown_in_chat",
+            "PR480/481 excluded; no product files, operational branch, shared claim, automation settings, merge or deployment changed"
+          ]
+        },
+        "checks_status": "all_required_CI_passed"
       }
     },
     {

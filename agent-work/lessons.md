@@ -330,3 +330,7 @@ Pure migration keeps legacy array order while assigning IDs by sorted edge key. 
 
 ### 2026-10-31 — E4 legacy acceptance boundary
 Прежний validator может принимать геометрически некорректный объект: hex=neighborHex проходит обе проверки принадлежности одному ребру. При миграции «сохранить всё ранее принятое» и новые структурные инварианты нужно сверять на таких входах, а не только обычном fixture-корпусе. Настоящий импорт подтвердил противоречие E4-1.0; политика передана аналитику без молчаливой починки данных. Evidence: agent-work/evidence/HX-BL-023-E4-legacy-adjacency-1bd3d97/report.md.
+
+
+### 2026-10-31 — User walkthrough provenance
+Показ интерфейса должен разделять Enter (сохранение поля), Done (выход из режима), Escape (отмена ввода) и Undo (история). При показе legacy-импорта предварительно введённый seed может быть заменён миграцией: фиксировать фактический seed интерфейса после импорта, а не вход до него. Independent walkthrough исправил метаданные42→1792059816 при неизменных одинаковых кадрах. Evidence: agent-work/evidence/HX-BL-023-panel-walkthrough/reviewer.json. Успешный CI не заменяет понятную последовательность действий.

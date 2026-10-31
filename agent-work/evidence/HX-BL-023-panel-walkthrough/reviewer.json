@@ -1,0 +1,163 @@
+{
+  "role": "independent_walkthrough_reviewer",
+  "task_id": "HX-BL-023",
+  "pr": 482,
+  "verdict": "accepted_with_scope_limitations",
+  "reviewed_sha": "4a46f90be9a0eec795107227d4f3f7af8a417305",
+  "reviewed_tree": "3cdad0ef6793096807b12ed8c31c7152f23f1210",
+  "base_sha": "defaa5c24d546e4283430573c2d4e4f3b6194dc0",
+  "scope": "Limited independent review of user walkthrough, not full product retest or release authorization",
+  "sources": [
+    "AGENTS.md",
+    "docs/index.md",
+    "docs/strategy/vision.md",
+    "docs/strategy/score-model.md",
+    "docs/development-workflow.md",
+    "agent-operations@021618083159539129880f528302d4b21e6199b3:agent-work/process.md#owner-decision-2026-10-31-release-user-walkthrough",
+    "/workspace/panel-review-evidence/review-report.json"
+  ],
+  "provenance": {
+    "head": "Detached HEAD and tree verified; no tracked modifications",
+    "build": "Node24.22.1 independent Vite builds of HEAD and git-archived base; both JS/CSS asset directories byte-identical to shown after/before builds",
+    "fixture": "test/fixtures/import-v2/baseline-mythic.json",
+    "fixture_sha256": "c29b12343ce309e856cd07126bbeac3b207912fe8ba70a3c95d6499a7fcea4d2",
+    "same_map": true,
+    "selected_hex": "3/6",
+    "continuation_seed": 1792059816,
+    "pre_import_seed": 42,
+    "seed_note": "Initial metadata incorrectly called this seed42. Import replaces it with1792059816; corrected capture-results and walkthrough match actual screenshots. No claim of a generated seed42 world."
+  },
+  "coverage": {
+    "visual": "Reviewed all read/edit/typing/done/undo cropped screenshots at1500/390, before/after context, HTML text, and6 sampled frames of11.12s real video",
+    "runtime": "Independent reviewer-interaction.mjs against independently rebuilt HEAD passed at1500/390 using Chromium /tmp/f7-chrome",
+    "interaction": [
+      "Pencil localized title Edit, edit values and Done checkmark",
+      "Escape cancels unsaved name draft",
+      "Enter saves name",
+      "Done exits edit mode after Enter",
+      "Undo restores original name",
+      "Both toolbar and information move together by140px",
+      "No horizontal document overflow at1500/390"
+    ],
+    "presentation": "Readable before/after, actual context, numbered instructions, mobile field wrapping, visible seed and explicit package SHA. Video shows common scroll and changing/restored names. No old-version substitution detected."
+  },
+  "findings": [
+    {
+      "id": "WALKTHROUGH-SEED",
+      "status": "resolved",
+      "description": "seed42 metadata contradicted actual imported continuation seed1792059816; corrected without recapture because same actual imported fixture used throughout."
+    },
+    {
+      "id": "WALKTHROUGH-CONTEXT",
+      "status": "resolved",
+      "description": "HTML now includes context images and explicit390px field-wrap explanation."
+    }
+  ],
+  "blocking_findings": [],
+  "score_assessment": {
+    "model_version": "1.2",
+    "sha": "4a46f90be9a0eec795107227d4f3f7af8a417305",
+    "method": "Independent source diff and bounded real Chromium UI diagnostic in separate worktree; inspect resulting screenshots and geometry",
+    "criteria": [
+      {
+        "criterion_id": "S03-C01",
+        "weight": 25,
+        "before": {
+          "grade": "unverified",
+          "points": null
+        },
+        "after": {
+          "grade": "unverified",
+          "points": null
+        },
+        "delta": null,
+        "confirmed_points_delta": 0,
+        "status": "insufficient_evidence",
+        "quality": "Panel edit access improved; full biome/POI/water/region-membership validity and persistence not independently audited here",
+        "breadth": "Game applicability and top5/10/20 coverage unverified",
+        "evidence": [
+          "browser-results.json",
+          "review.mjs"
+        ],
+        "limitations": "Cosmetic/access improvement and narrow UI checks do not establish criterion grade; no double counting"
+      },
+      {
+        "criterion_id": "S09-C04",
+        "weight": 10,
+        "before": {
+          "grade": "unverified",
+          "points": null
+        },
+        "after": {
+          "grade": "unverified",
+          "points": null
+        },
+        "delta": null,
+        "confirmed_points_delta": 0,
+        "status": "insufficient_evidence",
+        "quality": "No data mutation added by layout diff; comprehensive import atomicity, reversibility and lossless roundtrip not independently audited here",
+        "breadth": "Technical criterion, no artificial20-game requirement",
+        "evidence": [
+          "git diff base..reviewed_sha",
+          "browser-results.json"
+        ],
+        "limitations": "No safety points from cosmetic changes; main lifecycle execution remains separately owned by root"
+      }
+    ],
+    "inheritance": "Inherited unchanged from accepted independent panel review at same exact SHA; this walkthrough supplies no new grade evidence."
+  },
+  "limitations": [
+    "Headless Chromium only; no physical phone, touch, Safari or Firefox claim",
+    "Video is desktop only;390px states and scroll measured separately",
+    "Native title verified as attribute; actual browser-chrome tooltip not captured",
+    "Some emoji render as missing-glyph squares, disclosed in walkthrough",
+    "Only6 sampled video frames inspected, with full action source and independent runtime assertions",
+    "Full npm check/browser/world-random not rerun by this reviewer; prior review and root own those checks",
+    "Temporary missing default browser cache prevented initial runtime attempt; retained Chromium fallback succeeded",
+    "User-visible delivery in current chat and publication permission remain root/owner responsibilities; reviewer does not set shown_in_chat",
+    "PR480/481 excluded; no product files, operational branch, shared claim, automation settings, merge or deployment changed"
+  ],
+  "automation_health": {
+    "start": {
+      "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "is_enabled": true,
+      "checked_after_repository_reads": true,
+      "checked_before": "2026-10-31T11:02:52Z",
+      "limitation": "Exact call time not recorded; upper bound is first saved clock read."
+    },
+    "end": {
+      "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "is_enabled": true,
+      "checked_at": "2026-10-31T11:05:52.881Z"
+    },
+    "restoration_performed": false,
+    "schedule_changed": false,
+    "errors": [],
+    "limitation": "Status observed at start/end only; no guarantee of subsequent service state."
+  },
+  "evidence_sha256": {
+    "capture.mjs": "041df8d1a1609c1783d086efdaba651a5aa7717d8e6be73c2260010cc4b1b4f9",
+    "capture-results.json": "ad058bf3a6337d792ebecc17d3aa4fbf39e214e11503d7e35a4c932a71f2ff30",
+    "walkthrough.html": "1078ed14776291d0dec25e7315c1ed3710898ec8105d76bd1901889909f48caf",
+    "video.mjs": "ae4601d0cca7c87929dd99325a70253e4ce568b6c79078c3ba1b220750595dcd",
+    "PR482-scroll-edit-undo.webm": "315e25050f1f395d7c06f02846cddebde3d2e34992962f15987a378b85b96b4d",
+    "reviewer-interaction.mjs": "24f1039e5bdcca5cd462140d86a9f0c851633f03523234524db003c230b41e8b",
+    "reviewer-interaction.json": "77ada09e42c9cd6deed867a362a62272ed74e5ffb7e808f80d996fb574ea99be",
+    "before-1500-read.png": "da8acc0e6f0ee419f13c2521e6d504195883710c5cd70ff6581cc47866bd5947",
+    "before-1500-context.png": "743d0fabf7350188642e45311558464bf031c11f2564e4124c82c976afa307bd",
+    "after-1500-read.png": "ecfc0bafc1f29f5fad39c3d7cd2ec4af61d5d4e7f4b96e5867a2caada2efb5a6",
+    "after-1500-context.png": "6ec07f2092e27808b28228f5ddbc431d68d1fba8d3ca63aac4cfb5ac6a542474",
+    "after-1500-edit.png": "d39e5a64bd637c120a765d99a9d6b3c294fabd3d2f7b41150404ccb77327a69d",
+    "after-1500-typing.png": "05aec48de3f4459fa2ff81df6c33a9d00be015a3289488aeb3d9e41cf046f818",
+    "after-1500-done.png": "075fbcc38585111ea1c3499424afa8644cb6a5b3942c5b2abd8e08ee07811dd9",
+    "after-1500-undo.png": "9354115394638caa2ffce4469380e16cdf222dbcf4685b47687f82a7fb4e69a6",
+    "before-390-read.png": "1b88cdfe00ee46bd701154a9585441380117c48f2affe342385d96f0e0734a31",
+    "before-390-context.png": "c557f768e84bb08350d1e92b1ba25f666ea9117577f9d7faf8de789e4b9f7f69",
+    "after-390-read.png": "13e39cb52903e2cc81b100ac7dbfa14071247005a9f925afc2fb5ba35881d785",
+    "after-390-context.png": "3c0c7ef0915c9f3d2995ce68418ca4332f161db17e2f815c05fd9e5408eb13f1",
+    "after-390-edit.png": "55171746dddaf9102488bfa9940af6fd9ccc8c3bf5da33d6a57ac26ca79f656a",
+    "after-390-typing.png": "c94bbe5ad8b425935bed5607b14f2cc3733495c5c28fd21972c0c4ef6438d731",
+    "after-390-done.png": "6c58721ea124d0708a5744b5717d5ac97f8981041c13e89d7d8e609c38f4ef80",
+    "after-390-undo.png": "13e39cb52903e2cc81b100ac7dbfa14071247005a9f925afc2fb5ba35881d785"
+  }
+}

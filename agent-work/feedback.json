@@ -304,11 +304,11 @@
     {
       "feedback_id": "HX-FB-006",
       "title": "Единая прокрутка панели; карандаш без сдвига информации",
-      "status": "implementation_and_independent_UI_review_passed_CI_pending",
+      "status": "accepted_awaiting_owner_release_permission",
       "task_id": "HX-BL-023",
       "source": "Current chat + screenshot: «Убери добавленную прокрутку ... Весь блок должен прокручиваться вместе ... Вместо слова редактировать карандаш ... надпись должна начинаться слева сверху. Делать прямо сейчас.»",
       "approval_ref": "owner-decision-2026-10-31-panel-layout",
-      "result_ref": "agent-work/results/2026-10-31-developer-HX-BL-023-panel-layout.json",
+      "result_ref": "agent-work/results/2026-10-31-developer-panel-walkthrough.json",
       "pr": 482,
       "head_sha": "4a46f90be9a0eec795107227d4f3f7af8a417305",
       "release_approved": false,
@@ -318,8 +318,40 @@
         "problem": "Repeated UI rework; previous presentation did not make actual user experience sufficiently clear.",
         "required_outcome": "Actual exact-package before/after and step-by-step interaction shown before release request.",
         "process_status": "recorded",
-        "release_walkthrough_status": "pending",
-        "responsible": "developer_then_reviewer"
+        "release_walkthrough_status": "shown_and_verified_for_PR482_only",
+        "responsible": "developer_then_reviewer",
+        "PR480": "pending"
+      },
+      "user_walkthrough": {
+        "status": "shown_and_independently_verified",
+        "package_sha": "4a46f90be9a0eec795107227d4f3f7af8a417305",
+        "before_release_sha": "defaa5c24d546e4283430573c2d4e4f3b6194dc0",
+        "pr": 482,
+        "guide": "agent-work/evidence/HX-BL-023-panel-walkthrough/guide.html",
+        "video": "agent-work/evidence/HX-BL-023-panel-walkthrough/demo.webm",
+        "screenshots": "Embedded lossless PNG in guide.html: before/after, desktop/narrow, read/edit/typing/done/undo and context",
+        "scenarios": [
+          "Shared sidebar scrolling",
+          "Pencil opens edit mode",
+          "Escape cancels name draft",
+          "Enter commits name",
+          "Done returns to view",
+          "Undo restores original name"
+        ],
+        "shown_in_chat": true,
+        "shown_details": "Actual video and before/after images plus guide link presented in this run commentary",
+        "reviewer_verification": "agent-work/evidence/HX-BL-023-panel-walkthrough/reviewer.json",
+        "known_limitations": [
+          "Headless Chromium only; no physical phone, touch, Safari or Firefox claim",
+          "Video is desktop only;390px states and scroll measured separately",
+          "Native title verified as attribute; actual browser-chrome tooltip not captured",
+          "Some emoji render as missing-glyph squares, disclosed in walkthrough",
+          "Only6 sampled video frames inspected, with full action source and independent runtime assertions",
+          "Full npm check/browser/world-random not rerun by this reviewer; prior review and root own those checks",
+          "Temporary missing default browser cache prevented initial runtime attempt; retained Chromium fallback succeeded",
+          "User-visible delivery in current chat and publication permission remain root/owner responsibilities; reviewer does not set shown_in_chat",
+          "PR480/481 excluded; no product files, operational branch, shared claim, automation settings, merge or deployment changed"
+        ]
       }
     }
   ]
