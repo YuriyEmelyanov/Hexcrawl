@@ -14205,7 +14205,7 @@ export function App() {
         <button type="button" className="direct-value road-editor__danger" onClick={()=>requestRoadRemoval(road.id)}>{language==='ru'?'Удалить весь выделенный путь':'Delete entire selected path'}</button>
       </>}
     </div>)}
-    {confirmRoadRemoval && <div role="group" aria-label={language==='ru'?'Подтверждение удаления':'Confirm deletion'}>
+    {confirmRoadRemoval && <div className="road-editor__confirmation" role="group" aria-label={language==='ru'?'Подтверждение удаления':'Confirm deletion'}>
       <p>{language==='ru'?'Удалить подсвеченные участки и связанные переправы?':'Delete highlighted segments and dependent crossings?'} ({crossings.filter(c=>c.roadId===confirmRoadRemoval.roadId&&(!confirmRoadRemoval.segmentKey||c.roadSegmentKey===confirmRoadRemoval.segmentKey)).length})</p>
       <button type="button" onClick={()=>{
         if(confirmRoadRemoval.revision!==documentRevision.current||documentBusy()){setConfirmRoadRemoval(null);return;}

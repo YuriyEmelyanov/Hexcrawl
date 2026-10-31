@@ -394,6 +394,16 @@ try {
  await button('Повторить').click();assert.deepEqual(await snapshot(),changedRoad);
  await button(roadLabel).click();await button('Удалить весь выделенный путь').click();
  assert.equal(await page.locator('[data-editor-only] line[stroke="#7dd3fc"]').count(),road.segments.length);
+ for(const width of [1500,390]) {
+   await page.setViewportSize({width,height:1100});
+   const confirmation=page.getByRole('group',{name:'Подтверждение удаления',exact:true});
+   for(const name of ['Удалить','Отмена']) {
+     const target=confirmation.getByRole('button',{name,exact:true});
+     const rect=await target.boundingBox();
+     assert.ok(rect.width>=44&&rect.height>=44,`E3 confirmation ${name} target at ${width}: ${JSON.stringify(rect)}`);
+   }
+   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Confirmation has no horizontal overflow');
+ }
  await button('Отмена').click();assert.deepEqual(await snapshot(),changedRoad);
  for(const width of [1500,390]) {
    await page.setViewportSize({width,height:1100});
