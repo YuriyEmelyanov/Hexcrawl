@@ -44,7 +44,7 @@ export function obstacleTarget(hex:Hex,neighborHex:Hex,ctx:ObstacleContext):Omit
   if(!validHex(hex)||!validHex(neighborHex)||distance(hex,neighborHex)!==1)fail('non_adjacent_obstacle_hexes');
   if(!ctx.exists(hex)||!ctx.exists(neighborHex))fail('unknown_obstacle_hex');
   const edgeKey=ctx.edgeKey(hex,neighborHex);
-  if(!edgeKey||ctx.edgeKey(neighborHex,hex)!==edgeKey)fail('invalid_obstacle_edge');
+  if(!edgeKey||ctx.edgeKey(neighborHex,hex)!==edgeKey)throw new Error('invalid_obstacle_edge');
   if(ctx.water(hex)||ctx.water(neighborHex))fail('water_obstacle_edge');
   if(ctx.riverEdges.has(edgeKey))fail('river_obstacle_edge');
   if(ctx.roadPairs.has(pairKey(hex,neighborHex)))fail('road_obstacle_edge');
