@@ -326,3 +326,7 @@ Navigation batching assertion now distinguishes transform transitions from CSS h
 
 ### 2026-10-31 — E4 foundation checkpoint
 Pure migration keeps legacy array order while assigning IDs by sorted edge key. Source-edge move must return the original document before applying new placement restrictions, so legacy obstacles can cancel safely. Runtime unit success did not imply tsc success: explicit throw was needed to narrow optional edgeKey. Initial failure and final261/261 check retained at agent-work/evidence/HX-BL-023-E4-foundation-1bd3d97/. No App/v5/history/UI acceptance is claimed until integration.
+
+
+### 2026-10-31 — E4 legacy acceptance boundary
+Прежний validator может принимать геометрически некорректный объект: hex=neighborHex проходит обе проверки принадлежности одному ребру. При миграции «сохранить всё ранее принятое» и новые структурные инварианты нужно сверять на таких входах, а не только обычном fixture-корпусе. Настоящий импорт подтвердил противоречие E4-1.0; политика передана аналитику без молчаливой починки данных. Evidence: agent-work/evidence/HX-BL-023-E4-legacy-adjacency-1bd3d97/report.md.

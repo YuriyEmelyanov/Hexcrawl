@@ -1221,16 +1221,16 @@
       "previous_status": "ready_for_development",
       "recommended_priority": 1,
       "execution_allowed": true,
-      "spec_status": "ready",
-      "next_role": "developer",
-      "next_step": "Программист продолжает этот же E4: сначала подключает модель и v5 к снимкам/импорту/экспорту, затем UI и сквозные проверки; после полного выполнения — независимый review.",
+      "spec_status": "needs_correction",
+      "next_role": "business_analyst",
+      "next_step": "Бизнес-аналитик уточняет контракт миграции E4 для ранее принимаемого препятствия с hex=neighborHex; задаёт однозначный исход старого импорта и последующего v5 round-trip, затем возвращает E4 программисту для интеграции PR481.",
       "related_task_ids": [
         "HX-BL-013",
         "HX-BL-018",
         "HX-BL-019",
         "HX-BL-028"
       ],
-      "handoff_ref": "agent-work/handoffs/2026-10-31-HX-BL-023-E4-continue.json",
+      "handoff_ref": "agent-work/handoffs/2026-10-31-HX-BL-023-E4-migration-contract.json",
       "owner_priority_decision": {
         "id": "owner-decision-2026-10-28-editor-and-MB-content-before-outreach",
         "date": "2026-10-28",
@@ -1379,7 +1379,7 @@
       "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41175211725",
       "review_verdict": null,
       "test_change_summary_ref": "agent-work/evidence/HX-BL-023-E4-foundation-1bd3d97/test_change_summary.json",
-      "developer_result_ref": "agent-work/results/2026-10-31-developer-HX-BL-023-E4.json",
+      "developer_result_ref": "agent-work/results/2026-10-31-developer-HX-BL-023-E4-persistence.json",
       "score_assessment_status": "insufficient_evidence",
       "ui_actual": {
         "head_sha": "7267843da85afa92e6a31b2b6960cf6e7312db18",
@@ -1583,10 +1583,10 @@
           "release_package_ref": "agent-work/handoffs/2026-10-31-HX-BL-023-E3-release-package-d7bb38f.json"
         },
         "E4_obstacles": {
-          "status": "in_progress",
+          "status": "specification_correction_required",
           "spec_ref": "agent-work/specs/HX-BL-023-E4.md",
           "spec_version": "E4-1.0",
-          "handoff_ref": "agent-work/handoffs/2026-10-31-HX-BL-023-E4-continue.json",
+          "handoff_ref": "agent-work/handoffs/2026-10-31-HX-BL-023-E4-migration-contract.json",
           "implementation_started": true,
           "release_approved": false,
           "ui_preview": {
@@ -1603,11 +1603,15 @@
           "head_sha": "1bd3d973e11001d18f91718ee9c8b98bbfbf3758",
           "branch": "agent/hx023-e4-barriers",
           "pr": 481,
-          "result_ref": "agent-work/results/2026-10-31-developer-HX-BL-023-E4.json",
+          "result_ref": "agent-work/results/2026-10-31-developer-HX-BL-023-E4-persistence.json",
           "completed_substep": "pure_commands_and_ID_migration",
           "review_ready": false,
-          "next_role": "developer",
-          "next_step": "Программист продолжает этот же E4: сначала подключает модель и v5 к снимкам/импорту/экспорту, затем UI и сквозные проверки; после полного выполнения — независимый review."
+          "next_role": "business_analyst",
+          "next_step": "Бизнес-аналитик уточняет контракт миграции E4 для ранее принимаемого препятствия с hex=neighborHex; задаёт однозначный исход старого импорта и последующего v5 round-trip, затем возвращает E4 программисту для интеграции PR481.",
+          "specification_findings": [
+            "HX023-E4-SPEC-01"
+          ],
+          "blocker_ref": "agent-work/evidence/HX-BL-023-E4-legacy-adjacency-1bd3d97/finding.json"
         }
       },
       "current_owner_correction_ref": "owner-decision-2026-10-28-editor-functional-scope",
@@ -1689,7 +1693,10 @@
       "score_update_completed_at": "2026-10-30T22:31:49.807Z",
       "previous_head_sha": "a99c299f0648c2e5c1d65173bdeca50061dcc901",
       "review_ready": false,
-      "next_stage_id": "E4"
+      "next_stage_id": "E4",
+      "specification_findings": [
+        "HX023-E4-SPEC-01"
+      ]
     },
     {
       "task_id": "HX-BL-024",

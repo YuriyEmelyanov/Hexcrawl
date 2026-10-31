@@ -1,0 +1,29 @@
+{
+  "id": "HX023-E4-SPEC-01",
+  "type": "specification_contradiction",
+  "status": "open",
+  "task_id": "HX-BL-023",
+  "stage_id": "E4",
+  "head_sha": "1bd3d973e11001d18f91718ee9c8b98bbfbf3758",
+  "spec_ref": "agent-work/specs/HX-BL-023-E4.md",
+  "spec_version": "E4-1.0",
+  "confirmed": [
+    "Прежний validator и настоящий импорт принимают obstacle с hex=neighborHex; экспорт v4 сохраняет его.",
+    "Foundation migrateLegacyObstacles сохраняет вырожденную геометрию, как требует E4-1.0."
+  ],
+  "conflicting_requirements": [
+    "Старые v2/v3/v4 принимать прежним validator, не менять геометрию/kingdomId; сохранять v5 round-trip.",
+    "v5 требует соседние гексы и общее ребро; экспорт всегда v5."
+  ],
+  "classification": "Подтверждённая историческая слабость геометрической валидации и противоречие миграционного контракта. Не регрессия foundation; не недостаток CI evidence.",
+  "impact": "Одновременное выполнение требований невозможно для воспроизведённого входа; политика отклонения/нормализации/совместимости пока не определена.",
+  "not_claimed": [
+    "Масштаб распространённости таких пользовательских файлов",
+    "Потеря данных в ещё не реализованном v5",
+    "Полная техническая блокировка команды"
+  ],
+  "evidence": [
+    "agent-work/evidence/HX-BL-023-E4-legacy-adjacency-1bd3d97/reproduction.json",
+    "agent-work/evidence/HX-BL-023-E4-legacy-adjacency-1bd3d97/probe-legacy-obstacle.mjs"
+  ]
+}
