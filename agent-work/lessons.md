@@ -313,3 +313,8 @@ Programmer a99c299 adds only min-width44px to direct values; padding0/blue/.08em
 
 ### 2026-10-31 — E3 R4/R5 correction
 Navigation batching assertion now distinguishes transform transitions from CSS hit-size variables, retaining intermediate old values. Confirmation targets require their own44px coverage at1500/390, not inference from map controls. Reused two existing browser runners; full local browser passes on d7bb38f. Independent review pending. Evidence: agent-work/evidence/HX-BL-023-E3-R4-R5-d7bb38f/report.md.
+
+
+### 2026-10-31 — HX-BL-023 E3, d7bb38f: проверка исправленного измерителя
+
+Наблюдатель style должен считать изменения transform, сохраняя промежуточные oldValue, а не все записи style или только итоговое значение. Независимая инъекция двух transform в одной доставке MutationObserver показала, что обновлённая проверка отвергает нарушение ограничения в одно изменение. Дополнительные CSS-переменные больше не дают ложный отказ. Подтверждение удаления проверять отдельным состоянием: обе кнопки44px, языки/узкий экран, Cancel no-op и точные Undo/Redo. Ошибку самого временного harness сохранять отдельно от дефекта продукта. Evidence: agent-work/evidence/review-HX-BL-023-E3-d7bb38f/report.md. Приёмка E3 не завершает весь редактор и не даёт широких score-баллов; следующий утверждённый этап — спецификация E4.

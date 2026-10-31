@@ -1,0 +1,72 @@
+diff --git a/src/App.tsx b/src/App.tsx
+index f62e460..1c91e4b 100644
+--- a/src/App.tsx
++++ b/src/App.tsx
+@@ -14205,7 +14205,7 @@ export function App() {
+         <button type="button" className="direct-value road-editor__danger" onClick={()=>requestRoadRemoval(road.id)}>{language==='ru'?'Удалить весь выделенный путь':'Delete entire selected path'}</button>
+       </>}
+     </div>)}
+-    {confirmRoadRemoval && <div role="group" aria-label={language==='ru'?'Подтверждение удаления':'Confirm deletion'}>
++    {confirmRoadRemoval && <div className="road-editor__confirmation" role="group" aria-label={language==='ru'?'Подтверждение удаления':'Confirm deletion'}>
+       <p>{language==='ru'?'Удалить подсвеченные участки и связанные переправы?':'Delete highlighted segments and dependent crossings?'} ({crossings.filter(c=>c.roadId===confirmRoadRemoval.roadId&&(!confirmRoadRemoval.segmentKey||c.roadSegmentKey===confirmRoadRemoval.segmentKey)).length})</p>
+       <button type="button" onClick={()=>{
+         if(confirmRoadRemoval.revision!==documentRevision.current||documentBusy()){setConfirmRoadRemoval(null);return;}
+diff --git a/src/styles.css b/src/styles.css
+index 96e4831..83c31d3 100644
+--- a/src/styles.css
++++ b/src/styles.css
+@@ -241,6 +241,9 @@ button:disabled,select:disabled { opacity:.55; cursor:wait; }
+ .road-editor__item { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; padding-block: 8px; }
+ .road-editor__item label { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+ .road-editor__item .direct-value { min-height: 44px; max-width: 100%; white-space: normal; overflow-wrap: anywhere; }
++.road-editor__confirmation { display: flex; flex-wrap: wrap; gap: 8px; }
++.road-editor__confirmation p { flex-basis: 100%; }
++.road-editor__confirmation button { min-width: 44px; min-height: 44px; }
+ .road-editor__danger { color: #fca5a5; }
+ .road-map-target:focus-visible { stroke: #7dd3fc; stroke-opacity: .35; outline: none; }
+ .crossing-map-target:focus-visible { fill: #7dd3fc; fill-opacity: .35; stroke: #fff; stroke-width: 2; outline: none; }
+diff --git a/test/browser/navigation.smoke.mjs b/test/browser/navigation.smoke.mjs
+index fdc6809..9b75013 100644
+--- a/test/browser/navigation.smoke.mjs
++++ b/test/browser/navigation.smoke.mjs
+@@ -67,10 +67,16 @@ try{
+  assert.ok(result.geometryUnchanged,'Navigation must not mutate map artwork');assert.ok(result.dimensionsUnchanged,'Zoom must not resize/reconcile the SVG artwork');assert.ok(result.focalError<6,JSON.stringify(result));assert.ok(Math.abs(result.panDistance-90)<2,JSON.stringify(result));
+  // A burst accumulates zoom but applies it once on the next frame.
+  const burst=await page.evaluate(async()=>{
+-  const v=document.querySelector('.map-viewport'),s=v.querySelector('svg'),r=v.getBoundingClientRect();let changes=0;
+-  const observer=new MutationObserver(rs=>changes+=rs.filter(x=>x.target===s&&x.attributeName==='style').length);observer.observe(s,{attributes:true});
++  const v=document.querySelector('.map-viewport'),s=v.querySelector('svg'),r=v.getBoundingClientRect();const styles=[];
++  // Style records also include hit-area CSS variables; retain intermediate values
++  // so multiple transform writes in the same observer delivery still fail.
++  const observer=new MutationObserver(rs=>styles.push(...rs.filter(x=>x.target===s&&x.attributeName==='style').map(x=>x.oldValue)));observer.observe(s,{attributes:true,attributeOldValue:true});
+   for(let i=0;i<20;i++)v.dispatchEvent(new WheelEvent('wheel',{bubbles:true,cancelable:true,deltaY:-1,clientX:r.left+200,clientY:r.top+200}));
+-  await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));observer.disconnect();return {changes,scale:Number(s.style.transform.match(/scale\(([^)]+)\)/)[1])};
++  await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));observer.disconnect();styles.push(s.getAttribute('style'));
++  const parser=document.createElement('div');
++  const transforms=styles.map(style=>{parser.setAttribute('style',style??'');return parser.style.transform;});
++  const changes=transforms.slice(1).filter((value,index)=>value!==transforms[index]).length;
++  return {changes,scale:Number(s.style.transform.match(/scale\(([^)]+)\)/)[1])};
+  });assert.equal(burst.changes,1,'One SVG transform update per frame');assert.ok(burst.scale>1.5);
+  await page.locator('.rotate-map-button').click();assert.ok(await page.locator('.map-stage > svg').evaluate(s=>parseFloat(s.style.width)===s.viewBox.baseVal.width));
+  const menu=page.locator('details.export-menu');await menu.locator('summary').click();
+diff --git a/test/browser/save-history.smoke.mjs b/test/browser/save-history.smoke.mjs
+index 3c41fb1..f7e2a11 100644
+--- a/test/browser/save-history.smoke.mjs
++++ b/test/browser/save-history.smoke.mjs
+@@ -394,6 +394,16 @@ try {
+  await button('Повторить').click();assert.deepEqual(await snapshot(),changedRoad);
+  await button(roadLabel).click();await button('Удалить весь выделенный путь').click();
+  assert.equal(await page.locator('[data-editor-only] line[stroke="#7dd3fc"]').count(),road.segments.length);
++ for(const width of [1500,390]) {
++   await page.setViewportSize({width,height:1100});
++   const confirmation=page.getByRole('group',{name:'Подтверждение удаления',exact:true});
++   for(const name of ['Удалить','Отмена']) {
++     const target=confirmation.getByRole('button',{name,exact:true});
++     const rect=await target.boundingBox();
++     assert.ok(rect.width>=44&&rect.height>=44,`E3 confirmation ${name} target at ${width}: ${JSON.stringify(rect)}`);
++   }
++   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Confirmation has no horizontal overflow');
++ }
+  await button('Отмена').click();assert.deepEqual(await snapshot(),changedRoad);
+  for(const width of [1500,390]) {
+    await page.setViewportSize({width,height:1100});

@@ -1,0 +1,809 @@
+diff --git a/docs/road-model.md b/docs/road-model.md
+index 41d76a7..0e9f154 100644
+--- a/docs/road-model.md
++++ b/docs/road-model.md
+@@ -113,3 +113,29 @@ ROAD-02 применяется к карте, существовавшей до
+ окончательной последовательной прокладки дорог. Старые участки неизменны.
+ Подавленный из-за квоты центр не считается POI/назначением тропы.
+ Препятствия выбираются после дорог и исключают пересекаемые ими рёбра.
++
++## Ручное редактирование E3 (разработка, не опубликовано)
++
++ROAD-02 запрещает генератору перекладывать старую сеть; явная ручная правка
++в режиме «Редактировать» — отдельная операция. Подготовка команды сохраняет
++незатронутые ID, участки и переправы, проверяет связность/выходы и существующий
++минимум обычного освоенного региона, затем записывает одну операцию Undo/Redo.
++Числовая норма урочища этим не уточняется.
++
++На текущем промежуточном этапе подключены выбор существующего участка,
++смена road/trail, типа переправы и подтверждаемое удаление участка или
++контейнера Road.id. Подсветка удаления охватывает все его участки, а не всю
++связанную сеть. Переправы удаляются вместе с зависимыми участками; генератор
++случайных типов не вызывается. Ручной мост/переправа допустимы при F1–5,
++брод только при F1–2. Выделение редактора исключено из PNG.
++
++Новый путь рисуется соседними гексами в отдельном черновике. Enter, повтор конца
++или общая «Готово» записывает одну операцию; Escape/«Сбросить черновик» не
++меняет документ и историю. Импорт/генерация/другие мутации блокируются,
++панорамирование/масштаб/поворот сохраняют черновик. Экспорт сначала завершает
++валидный путь, а ошибочный оставляет черновиком. Полная приёмка E3 и отдельное
++разрешение публикации остаются обязательными; наличие этой секции не
++означает прохождения всех AC. Спецификация: agent-operations,
++agent-work/specs/HX-BL-023-E3.md (E3-1.0).
++
++В E3 ручное назначение конца исключает скрытый центральный POI и центр урочища; явный POI остаётся допустимым. Выбор хранит Road.id и сегмент, для переправы — точный key; совпадающая геометрия не объединяет выделение. Map targets поддерживают Tab/Enter/Space и focus, размер области нажатия44px сохраняется при zoom; список в информации позволяет различить наложенные объекты.
+diff --git a/src/App.tsx b/src/App.tsx
+index bccaebf..1c91e4b 100644
+--- a/src/App.tsx
++++ b/src/App.tsx
+@@ -1,3 +1,4 @@
++import {prepareRoadEdit, type RoadEdit} from './manualRoads';
+ import { type RandomStreams, type GenerationState, fallbackRandomStreams, poiRandomStreams, createGenerationState, cloneGenerationState, draw, toponymSeedFor, newWorldSeed, isUint32 } from './worldRandom';
+ import { validateSaveStructure, SaveValidationError, assertGeneratedIds } from './saveValidation';
+ import { installViewportRasterCache } from './rendering/viewportRasterCache';
+@@ -971,6 +972,7 @@ function getTimestampForFilename(date = new Date()): string {
+ 
+ async function createExportSvgClone(svg: SVGSVGElement): Promise<SVGSVGElement> {
+   const clone = svg.cloneNode(true) as SVGSVGElement;
++  clone.querySelectorAll('[data-editor-only]').forEach(node => node.remove());
+   const viewBox = clone.viewBox.baseVal;
+   clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+   clone.setAttribute('width', String(viewBox.width));
+@@ -11339,6 +11341,14 @@ export function App() {
+   type NameTarget = { key: string; type: 'region' | 'settlement' | 'river' | 'lake' | 'kingdom'; ru: string; en: string; location: string };
+   type NameDraft = { target: NameTarget; revision: number; language: Language; value: string; surface: string };
+   const [editMode, setEditMode] = useState(false);
++  type RoadDraft = {path:AxialHex[];kind:RoadKind;crossingKinds:Record<string,RiverCrossingKind>;revision:number};
++  const [roadDraft,setRoadDraft] = useState<RoadDraft|null>(null);
++  const roadDraftRef = useRef<RoadDraft|null>(null);
++  const updateRoadDraft = (draft:RoadDraft|null) => {roadDraftRef.current=draft;setRoadDraft(draft);};
++  const pendingRoadExport = useRef<'png'|'json'|null>(null);
++  const [selectedRoadTarget, setSelectedRoadTarget] = useState<{roadId:number; crossingKey?:string} | null>(null);
++  const [selectedRoadPair, setSelectedRoadPair] = useState<string | null>(null);
++  const [confirmRoadRemoval, setConfirmRoadRemoval] = useState<{roadId:number;segmentKey?:string;revision:number} | null>(null);
+   const [editError, setEditError] = useState<string | null>(null);
+   const [editingRegionBiomeId, setEditingRegionBiomeId] = useState<number | null>(null);
+   const [nameDraft, setNameDraft] = useState<NameDraft | null>(null);
+@@ -12809,6 +12819,7 @@ export function App() {
+   });
+   const applyPreparedDocument = (doc: DocumentSnapshot) => {
+     documentRevision.current++;
++    updateRoadDraft(null); setSelectedRoadPair(null); setSelectedRoadTarget(null); setConfirmRoadRemoval(null);
+     applyExactMap(doc.map); setHistory(doc.generationHistory); setSelectedHex(doc.selectedHex);
+     setGenerationMode(doc.generationMode); setIsMapRotated(doc.isMapRotated);
+     updateMapScale(doc.mapScale); setPendingRegen(null); closeEditors();
+@@ -12818,14 +12829,14 @@ export function App() {
+   const documentBusy = () => documentRevision.current !== renderedDocumentRevision
+     || importInFlight.current || kingdomInFlight.current || !!kingdomJob || !!pendingRegen;
+   const mutationBlocked = (finishGroup = true) => {
+-    if (documentBusy() || dirtyNameDraft()) return true;
++    if (roadDraftRef.current || documentBusy() || dirtyNameDraft()) return true;
+     if (finishGroup) finishNotesGroup();
+     return false;
+   };
+   // Every input is already part of the document. Only history entries coalesce;
+   // no timer may later write a pending value into another hex or imported world.
+   const changeNotesText = (key: string, text: string) => {
+-    if (documentBusy() || dirtyNameDraft() || notesSelectionRef.current !== key
++    if (roadDraftRef.current || documentBusy() || dirtyNameDraft() || notesSelectionRef.current !== key
+       || (!hexTerrainByKey.has(key) && !regions.some(r => r.hexes.some(h => hexKey(h) === key)))) return;
+     if (text === (notesMapRef.current[key] ?? '')) return;
+     if (notesGroupRef.current?.key !== key) finishNotesGroup();
+@@ -12849,6 +12860,41 @@ export function App() {
+     if (mutationBlocked()) return;
+     setNotesEditorKey(current => current === key ? null : key);
+   };
++  const editRoadDocument = (edit: RoadEdit, expectedDraft?:RoadDraft): boolean => {
++    if (expectedDraft ? roadDraftRef.current!==expectedDraft || expectedDraft.revision!==documentRevision.current || documentBusy() || dirtyNameDraft() : mutationBlocked()) return false;
++    try {
++      const landRegion = (hex: AxialHex) => isLakeHex(hex, hexTerrainByKey) || isSeaHex(hex, hexTerrainByKey)
++        ? undefined : regions.find(r => r.hexes.some(h => isSameHex(h, hex)))?.id;
++      const fullness = getRiverCrossingFullnessByEdge(rivers);
++      const result = prepareRoadEdit({roads, crossings, nextRoadId}, edit, {
++        landRegion,
++        destination: hex => regions.some(r => (!r.isTract && !r.suppressCentralPoi && isSameHex(r.centerHex, hex)) || r.pointsOfInterest.some(h => isSameHex(h, hex))),
++        openExit: hex => landRegion(hex) !== undefined && getHexNeighbors(hex).some(h =>
++          !hexTerrainByKey.has(hexKey(h)) && !regions.some(r => r.hexes.some(v => isSameHex(v, h)))),
++        blocked: (a, b) => obstacles.some(o => pairKey(o.hex, o.neighborHex) === pairKey(a, b)),
++        intersections: (a, b) => {
++          const edge = getSharedHexEdgeVertexKeys(a, b);
++          if (!edge) throw new Error('invalid_shared_edge');
++          const riverEdgeKey = [...edge].sort().join('|');
++          return rivers.filter(r => r.vertexPath.slice(1).some((v, i) => getRiverEdgeKey(r.vertexPath[i], v) === riverEdgeKey))
++            .map(r => ({riverId: r.id, riverEdgeKey, fullness: fullness.get(riverEdgeKey) ?? getRiverFallbackFullness(r)}));
++        },
++        minima: regions.filter(r => r.biomeLandType === 'settled' && r.sizeCategory !== 'tract')
++          .map(r => ({regionId: r.id, minimum: getSettledMainRoadLimit(r)}))
++      });
++      if (result.roads === roads && result.crossings === crossings && result.nextRoadId === nextRoadId) return true;
++      const before = copyDocument(captureDocument());
++      const after = copyDocument({...captureDocument(), map: {...captureMap(), ...result}});
++      // Both copies are complete before any state write. Never reconcile crossings here.
++      setUndoHistory(current => [...current, {before, after}].slice(-100)); setRedoHistory([]);
++      applyPreparedDocument(after);
++      return true;
++    } catch (error) {
++      setEditError(language === 'ru' ? `Путь не изменён: ${roadErrorText(error instanceof Error ? error.message : '')}`
++        : `Path unchanged: ${error instanceof Error ? error.message : 'preparation error'}`);
++      return false;
++    }
++  };
+   const actualHexKeys = (map: Pick<MapSnapshot, 'regions' | 'hexTerrainByKey'>) =>
+     new Set([...map.regions.flatMap(r => r.hexes.map(hexKey)), ...map.hexTerrainByKey.keys()]);
+   const notesForSurvivingHexes = (map: Pick<MapSnapshot, 'regions' | 'hexTerrainByKey'>) => {
+@@ -13609,6 +13655,8 @@ export function App() {
+       stage.style.width = `${svg.viewBox.baseVal.width * nextScale}px`;
+       stage.style.height = `${svg.viewBox.baseVal.height * nextScale}px`;
+       svg.style.transform = `translateZ(0) scale(${nextScale})`;
++      svg.style.setProperty("--road-hit-width", `${44 / nextScale}px`);
++      svg.style.setProperty("--crossing-hit-radius", `${22 / nextScale}px`);
+     }
+     return nextScale;
+   };
+@@ -13836,6 +13884,7 @@ export function App() {
+   });
+ 
+   const handleExportPng = async () => {
++    if(roadDraftRef.current) {if(finishRoadDraft())pendingRoadExport.current='png';return;}
+     if (documentBusy() || !renderDetails) return;
+     finishNotesGroup();
+     if (!mapSvgRef.current) return;
+@@ -13850,6 +13899,7 @@ export function App() {
+ 
+   const pendingNameExport = useRef(false);
+   const handleExportJson = () => {
++    if(roadDraftRef.current) {if(finishRoadDraft())pendingRoadExport.current='json';return;}
+     if (nameDraftRef.current) {
+       const revision = documentRevision.current;
+       if (!finishInlineName()) return;
+@@ -13865,6 +13915,7 @@ export function App() {
+ 
+   useEffect(() => { if (pendingNameExport.current && !documentBusy()) { pendingNameExport.current = false; handleExportJson(); } }, [renderedDocumentRevision]);
+ 
++  useEffect(()=>{const kind=pendingRoadExport.current;if(kind&&!documentBusy()){pendingRoadExport.current=null;if(kind==='png')void handleExportPng();else handleExportJson();}},[renderedDocumentRevision]);
+   const handleImportJsonClick = () => {
+     if(mutationBlocked()) return;
+     jsonImportInputRef.current?.click();
+@@ -13984,7 +14035,7 @@ export function App() {
+   const finishInlineName = () => !nameDraftRef.current || saveNameDraft(nameDraftRef.current);
+   finishMapNameRef.current = finishInlineName;
+   const showNameTarget = (key: string | null, origin?: HTMLElement, surface = 'info') => {
+-    if (documentBusy() || !finishInlineName()) return;
++    if (documentBusy() || !finishRoadDraft() || !finishInlineName()) return;
+     setNameErrors({}); setNameStatus(null);
+     if (key === null) { setNamesOpen(false); return; }
+     const target = nameTargets.find(t => t.key === key);
+@@ -14051,6 +14102,7 @@ export function App() {
+   const mapHexClickRef = useRef<(hex: typeof positionedHexes.hexes[number]) => void>(() => {});
+   mapHexClickRef.current = hex => {
+     if (documentBusy()) return;
++    if(roadDraftRef.current){appendRoadDraft({q:hex.q,r:hex.r});return;}
+     if (hex.kind === 'candidate') {
+       if (mutationBlocked()) return;
+       trackGoal('region_add');
+@@ -14060,9 +14112,108 @@ export function App() {
+     } else {
+       if (!finishInlineName()) return;
+       finishNotesGroup(); closeEditors(); clearNotesDraft();
++      setSelectedRoadPair(null); setSelectedRoadTarget(null); setConfirmRoadRemoval(null);
+       setSelectedHex({ q: hex.q, r: hex.r });
+     }
+   };
++  const draftError = (ru:string,en:string) => {setEditError(language==='ru'?ru:en);return false;};
++  const roadLandRegion = (h:AxialHex) => !isLakeHex(h,hexTerrainByKey)&&!isSeaHex(h,hexTerrainByKey)
++    ? regions.find(r=>r.hexes.some(v=>isSameHex(v,h))) : undefined;
++  const roadDraftHits = (path:AxialHex[]) => path.slice(1).flatMap((to,i)=>{
++    const from=path[i],edge=getSharedHexEdgeVertexKeys(from,to),edgeId=edge?[...edge].sort().join('|'):null;
++    return rivers.filter(r=>r.vertexPath.slice(1).some((v,j)=>getRiverEdgeKey(r.vertexPath[j],v)===edgeId))
++      .map(r=>({key:getRiverCrossingKey(nextRoadId,normalizeRoadSegmentKey(from,to),r.id),riverId:r.id}));
++  });
++  const startRoadDraft = () => {
++    if(!editMode||roadDraftRef.current||!finishInlineName()||mutationBlocked()||!selectedHex||!roadLandRegion(selectedHex))return false;
++    clearNotesDraft();closeEditors();setSelectedRoadPair(null); setSelectedRoadTarget(null);setConfirmRoadRemoval(null);
++    updateRoadDraft({path:[{...selectedHex}],kind:'trail',crossingKinds:{},revision:documentRevision.current});return true;
++  };
++  const finishRoadDraft = () => {
++    const draft=roadDraftRef.current;if(!draft)return true;
++    if(draft.revision!==documentRevision.current||documentBusy())return draftError('Карта изменилась или занята. Сбросьте черновик.','Map changed or busy. Reset the draft.');
++    return editRoadDocument({type:'create',path:draft.path,kind:draft.kind,crossingKinds:draft.crossingKinds},draft);
++  };
++  const appendRoadDraft = (h:AxialHex) => {
++    const draft=roadDraftRef.current;if(!draft||draft.revision!==documentRevision.current||documentBusy())return false;
++    const path=draft.path,last=path[path.length-1];
++    if(isSameHex(h,last))return finishRoadDraft();
++    if(path.length>1&&isSameHex(h,path[path.length-2])){updateRoadDraft({...draft,path:path.slice(0,-1)});setEditError(null);return true;}
++    if(!roadLandRegion(h)||!areHexesAdjacent(last,h)||path.some(v=>isSameHex(v,h)))return draftError('Нужен соседний сухопутный гекс без повтора.','Choose an adjacent land hex without repeating a node.');
++    const pair=normalizeRoadSegmentKey(last,h);
++    if(getRoadSegmentKeys(roads).has(pair)||obstacles.some(o=>pairKey(o.hex,o.neighborHex)===pair))return draftError('Здесь уже есть путь или препятствие.','A path or barrier already occupies this edge.');
++    if(path.length>1&&getRoadHexKeys(roads).has(hexKey(last)))return draftError('Завершите путь на узле сети.','Finish the path at the network node.');
++    updateRoadDraft({...draft,path:[...path,{...h}]});setEditError(null);return true;
++  };
++  const resetRoadDraft = () => {updateRoadDraft(null);setEditError(null);};
++  const roadDraftPanel = editMode && (roadDraft || selectedHex && roadLandRegion(selectedHex)) ? <div className="road-editor" data-road-draft>
++    {roadDraft ? <>
++      <label>{language==='ru'?'Черновик пути':'Path draft'} <select className="direct-value" aria-label={language==='ru'?'Тип нового пути':'New path type'} value={roadDraft.kind}
++        onChange={e=>{if(roadDraftRef.current===roadDraft&&!documentBusy())updateRoadDraft({...roadDraft,kind:e.target.value as RoadKind});}}><option value="trail">{t.trail}</option><option value="road">{t.road}</option></select></label>
++      <p>{language==='ru'?'Участков':'Segments'}: {Math.max(0,roadDraft.path.length-1)}. {language==='ru'?'Нажимайте соседние гексы. Завершить: Enter, повтор конца или Готово.':'Click adjacent hexes. Finish: Enter, click end again or Done.'}</p>
++      {roadDraftHits(roadDraft.path).map(hit=><label key={hit.key}>{language==='ru'?'Переправа':'Crossing'} {hit.riverId} <select className="direct-value" aria-label={`${language==='ru'?'Новая переправа':'New crossing'} ${hit.key}`}
++        value={roadDraft.crossingKinds[hit.key]??'bridge'} onChange={e=>{if(roadDraftRef.current===roadDraft&&!documentBusy())updateRoadDraft({...roadDraft,crossingKinds:{...roadDraft.crossingKinds,[hit.key]:e.target.value as RiverCrossingKind}});}}>
++        {(['bridge','ferry','ford'] as const).map(kind=><option key={kind} value={kind}>{t[kind]}</option>)}</select></label>)}
++      <button type="button" className="direct-value" onClick={resetRoadDraft}>{language==='ru'?'Сбросить черновик':'Reset draft'}</button>
++    </> : <button type="button" className="direct-value" onClick={startRoadDraft}>{language==='ru'?'Начать путь отсюда':'Start path here'}</button>}
++  </div>:null;
++  const chooseRoadPair = (pair:string, roadId:number, crossingKey?:string) => {
++    if (documentBusy() || !finishRoadDraft() || !finishInlineName()) return;
++    finishNotesGroup(); clearNotesDraft(); closeEditors(); setConfirmRoadRemoval(null);
++    setSelectedRoadPair(pair); setSelectedRoadTarget({roadId,crossingKey});
++    const match = roads.find(r=>r.id===roadId)?.segments.find(s => normalizeRoadSegmentKey(s.from,s.to) === pair);
++    if(match) setSelectedHex({...match.from});
++  };
++  const roadChoices = roads.flatMap(road => road.segments.filter(segment =>
++    selectedRoadPair ? normalizeRoadSegmentKey(segment.from,segment.to) === selectedRoadPair
++      : selectedHex && (isSameHex(segment.from,selectedHex) || isSameHex(segment.to,selectedHex)))
++    .map(segment => ({road,segment,pair:normalizeRoadSegmentKey(segment.from,segment.to)})));
++  const requestRoadRemoval = (roadId:number, segmentKey?:string) => {
++    if (mutationBlocked()) return;
++    setConfirmRoadRemoval({roadId,segmentKey,revision:documentRevision.current});
++  };
++  const roadErrorText = (code:string) => ({
++    short_path:'Нужно хотя бы два гекса.', invalid_path_end:'Начало и конец должны быть точкой интереса, узлом сети или открытым выходом.', non_adjacent:'Гексы должны быть соседними.', unknown_or_water_hex:'Путь должен проходить по существующей суше.', duplicate_segment:'Участок уже занят путём.', obstacle:'На ребре есть препятствие.', repeated_hex:'Повтор гекса недопустим.', network_must_end_path:'На узле сети нужно завершить путь.', invalid_next_road_id:'Невозможно выделить ID пути.',
++    new_internal_dead_end:'Получится тупик без точки интереса.', removed_open_exit:'Нельзя закрыть существующий выход с карты.',
++    disconnected_destinations:'Путь связывает точки интереса или узлы сети.', settled_road_minimum:'Нельзя уменьшить число дорог ниже минимума региона.',
++    missing_or_ambiguous_intersection:'Пересечение не найдено или неоднозначно.', invalid_crossing_kind:'На такой реке брод недопустим.',
++    missing_or_ambiguous_road:'Путь не найден или неоднозначен.', missing_or_ambiguous_segment:'Участок не найден или неоднозначен.',
++    stale_crossing:'Данные переправы изменились.', unknown_fullness:'Не удалось определить полноводность.'
++  } as Record<string,string>)[code] ?? 'Не удалось подготовить изменение пути.';
++  const roadPanel = editMode && !roadDraft && roadChoices.length ? <div className="road-editor" aria-label={language==='ru'?'Редактирование путей':'Edit paths'}>
++    {roadChoices.map(({road,segment,pair},index) => <div className="road-editor__item" key={`${road.id}:${pair}:${index}`}>
++      <button type="button" className="direct-value" aria-pressed={selectedRoadPair===pair && selectedRoadTarget?.roadId===road.id && !selectedRoadTarget.crossingKey} onClick={()=>chooseRoadPair(pair,road.id)}>
++        {language==='ru'?'Участок':'Segment'} {road.id}: {hexKey(segment.from)} → {hexKey(segment.to)}
++      </button>
++      {selectedRoadPair===pair && selectedRoadTarget?.roadId===road.id && <>
++        <label>{language==='ru'?'Тип участка':'Segment type'} <select className="direct-value" aria-label={`${language==='ru'?'Тип участка':'Segment type'} ${road.id}`}
++          value={segment.kind} onChange={e=>editRoadDocument({type:'kind',roadId:road.id,segmentKey:pair,kind:e.target.value as RoadKind})}>
++          <option value="road">{t.road}</option><option value="trail">{t.trail}</option>
++        </select></label>
++        {(() => {
++          const edge=getSharedHexEdgeVertexKeys(segment.from,segment.to); const edgeId=edge?[...edge].sort().join('|'):null;
++          return rivers.filter(r=>r.vertexPath.slice(1).some((v,i)=>getRiverEdgeKey(r.vertexPath[i],v)===edgeId)).map(r=>{
++            const crossing=crossings.find(c=>c.key===getRiverCrossingKey(road.id,pair,r.id));
++            return <label key={r.id}><button type="button" className="direct-value" aria-pressed={selectedRoadTarget?.crossingKey===getRiverCrossingKey(road.id,pair,r.id)} onClick={()=>chooseRoadPair(pair,road.id,getRiverCrossingKey(road.id,pair,r.id))}>{language==='ru'?'Переправа':'Crossing'} {r.id}</button> <select className="direct-value" aria-label={`${language==='ru'?'Переправа':'Crossing'} ${road.id}:${r.id}`}
++              value={crossing?.kind??''} onChange={e=>editRoadDocument({type:'crossing',roadId:road.id,segmentKey:pair,riverId:r.id,kind:e.target.value as RiverCrossingKind})}>
++              {!crossing&&<option value="" disabled>{language==='ru'?'Не задана':'Not set'}</option>}
++              {(['bridge','ferry','ford'] as const).map(kind=><option key={kind} value={kind}>{t[kind]}</option>)}
++            </select></label>;
++          });
++        })()}
++        <button type="button" className="direct-value road-editor__danger" onClick={()=>requestRoadRemoval(road.id,pair)}>{language==='ru'?'Удалить участок':'Delete segment'}</button>
++        <button type="button" className="direct-value road-editor__danger" onClick={()=>requestRoadRemoval(road.id)}>{language==='ru'?'Удалить весь выделенный путь':'Delete entire selected path'}</button>
++      </>}
++    </div>)}
++    {confirmRoadRemoval && <div className="road-editor__confirmation" role="group" aria-label={language==='ru'?'Подтверждение удаления':'Confirm deletion'}>
++      <p>{language==='ru'?'Удалить подсвеченные участки и связанные переправы?':'Delete highlighted segments and dependent crossings?'} ({crossings.filter(c=>c.roadId===confirmRoadRemoval.roadId&&(!confirmRoadRemoval.segmentKey||c.roadSegmentKey===confirmRoadRemoval.segmentKey)).length})</p>
++      <button type="button" onClick={()=>{
++        if(confirmRoadRemoval.revision!==documentRevision.current||documentBusy()){setConfirmRoadRemoval(null);return;}
++        if(editRoadDocument({type:'remove',roadId:confirmRoadRemoval.roadId,segmentKey:confirmRoadRemoval.segmentKey}))setConfirmRoadRemoval(null);
++      }}>{language==='ru'?'Удалить':'Delete'}</button>
++      <button type="button" onClick={()=>setConfirmRoadRemoval(null)}>{language==='ru'?'Отмена':'Cancel'}</button>
++    </div>}
++  </div>:null;
+   const mapMotionCanvasRef = useRef<HTMLCanvasElement>(null);
+   const mapArtwork = useMemo(() => (<>
+             <defs>
+@@ -14447,13 +14598,17 @@ export function App() {
+   }, [mapArtwork, renderBiomeColor, renderDetails, positionedHexes, isMapRotated]);
+ 
+   return (
+-    <div className="app" onPointerDownCapture={finishBeforePointer}>
++    <div className="app" onPointerDownCapture={finishBeforePointer} onKeyDownCapture={e=>{
++      if(!roadDraftRef.current||e.nativeEvent.isComposing)return;
++      if(e.key==='Escape'){e.preventDefault();e.stopPropagation();resetRoadDraft();}
++      else if(e.key==='Enter'&&!(e.target as Element).matches('select,button,input,textarea')){e.preventDefault();e.stopPropagation();finishRoadDraft();}
++    }}>
+       <section className="content">
+         <div className={`map-card${isSidePanelCollapsed ? ' is-panel-collapsed' : ''}`} style={mapCardStyle}>
+           <button
+             type="button"
+             className="side-panel-toggle"
+-            onClick={() => setIsSidePanelCollapsed((value) => !value)}
++            onClick={() => {if(finishRoadDraft())setIsSidePanelCollapsed((value) => !value);}}
+             aria-expanded={!isSidePanelCollapsed}
+             aria-controls="side-panel-controls side-panel-info"
+             aria-label={sidePanelToggleLabel}
+@@ -14482,7 +14637,7 @@ export function App() {
+                 type="button"
+                 className="language-toggle"
+                 onClick={() => {
+-                  if (!finishInlineName()) return;
++                  if (!finishRoadDraft() || !finishInlineName()) return;
+                   finishNotesGroup(); clearNotesDraft(); closeEditors();
+                   trackGoal('lang_switch');
+                   setLanguage((value) => (value === 'ru' ? 'en' : 'ru'));
+@@ -14526,7 +14681,7 @@ export function App() {
+               <div className="info-block info-block--prompt map-toolbar__prompt" role="status">{t.candidatePrompt}</div>
+             ) : null}
+             <div className="control-block mode-selector"><label>{language === 'ru' ? 'Режим' : 'Mode'}
+-              <select aria-label={language === 'ru' ? 'Режим' : 'Mode'} value={generationMode} disabled={isImporting || !!pendingRegen || !!kingdomJob} onChange={e=>{ if(!mutationBlocked()) setGenerationMode(e.target.value as GenerationMode); }}>
++              <select aria-label={language === 'ru' ? 'Режим' : 'Mode'} value={generationMode} disabled={!!roadDraft || isImporting || !!pendingRegen || !!kingdomJob} onChange={e=>{ if(!mutationBlocked()) setGenerationMode(e.target.value as GenerationMode); }}>
+                 <option value="classic">{language === 'ru' ? 'Классический режим' : 'Classic mode'}</option>
+                 <option value="mythic">Mythic Bastionland</option>
+               </select></label></div>
+@@ -14574,11 +14729,11 @@ export function App() {
+             : null}
+             {regions.length > 0 ? (
+               <div className="control-block controls controls--region-management">
+-                  <button disabled={isImporting || !!pendingRegen || !!kingdomJob} onClick={resetMap} className="secondary">{t.reset}</button>
+-                  <button type="button" disabled={isImporting || !!pendingRegen || !!kingdomJob || !history.length} onClick={regenerateLastRegion} className="secondary">
++                  <button disabled={!!roadDraft || isImporting || !!pendingRegen || !!kingdomJob} onClick={resetMap} className="secondary">{t.reset}</button>
++                  <button type="button" disabled={!!roadDraft || isImporting || !!pendingRegen || !!kingdomJob || !history.length} onClick={regenerateLastRegion} className="secondary">
+                     {t.regenerateRegion}
+                   </button>
+-                  <button type="button" disabled={isImporting || !!pendingRegen || !!kingdomJob || !history.length} onClick={deleteLastRegion} className="secondary">
++                  <button type="button" disabled={!!roadDraft || isImporting || !!pendingRegen || !!kingdomJob || !history.length} onClick={deleteLastRegion} className="secondary">
+                     {t.deleteLastRegion}
+                   </button>
+               </div>
+@@ -14634,8 +14789,8 @@ export function App() {
+               </button>
+             </div>
+             <div className="control-block controls controls--history">
+-              <button type="button" className="secondary" disabled={isImporting || !!pendingRegen || !!kingdomJob || !undoHistory.length} onClick={undoMap}>{language==='ru'?'Отменить':'Undo'}</button>
+-              <button type="button" className="secondary" disabled={isImporting || !!pendingRegen || !!kingdomJob || !redoHistory.length} onClick={redoMap}>{language==='ru'?'Повторить':'Redo'}</button>
++              <button type="button" className="secondary" disabled={!!roadDraft || isImporting || !!pendingRegen || !!kingdomJob || !undoHistory.length} onClick={undoMap}>{language==='ru'?'Отменить':'Undo'}</button>
++              <button type="button" className="secondary" disabled={!!roadDraft || isImporting || !!pendingRegen || !!kingdomJob || !redoHistory.length} onClick={redoMap}>{language==='ru'?'Повторить':'Redo'}</button>
+             </div>
+             <div className="control-block controls controls--transfer">
+               <details className="export-menu">
+@@ -14645,7 +14800,7 @@ export function App() {
+                     <button type="button" onClick={handleExportJson} className="secondary">JSON</button>
+                   </div>
+                 </details>
+-              <button type="button" disabled={isImporting || !!pendingRegen || !!kingdomJob} onClick={handleImportJsonClick} className="secondary">{t.importJson}</button>
++              <button type="button" disabled={!!roadDraft || isImporting || !!pendingRegen || !!kingdomJob} onClick={handleImportJsonClick} className="secondary">{t.importJson}</button>
+               <input ref={jsonImportInputRef} className="visually-hidden" type="file" accept="application/json,.json" onChange={(event) => void handleImportJson(event)} />
+             </div>
+             <div className="control-block world-seed-control">
+@@ -14699,9 +14854,28 @@ export function App() {
+               data-render-phase={kingdomJob ? 'generation' : renderDetails ? 'ready' : 'render-pending'}
+               viewBox={`0 0 ${displayMapWidth} ${displayMapHeight}`}
+               preserveAspectRatio="xMinYMin meet"
+-              style={{ width: `${displayMapWidth}px`, height: `${displayMapHeight}px`, transform: `translateZ(0) scale(${mapScaleRef.current})`, '--water-color': WATER_PALETTE.river, '--water-marks': WATER_PALETTE.marks } as CSSProperties}
++              style={{ width: `${displayMapWidth}px`, height: `${displayMapHeight}px`, transform: `translateZ(0) scale(${mapScaleRef.current})`, '--road-hit-width': `${44/mapScaleRef.current}px`, '--crossing-hit-radius': `${22/mapScaleRef.current}px`, '--water-color': WATER_PALETTE.river, '--water-marks': WATER_PALETTE.marks } as CSSProperties}
+             >
+             {mapArtwork}
++            {roadDraft && <g data-editor-only="draft" transform={mapRotationTransform} pointerEvents="none">
++              {roadDraft.path.map((h,i)=>{const p=toPixel(h.q,h.r);return <circle key={i} cx={p.x+riverOffset.x} cy={p.y+riverOffset.y} r={i===roadDraft.path.length-1?6:3} fill="#7dd3fc" />;})}
++              {roadDraft.path.slice(1).map((h,i)=>{const a=toPixel(roadDraft.path[i].q,roadDraft.path[i].r),b=toPixel(h.q,h.r);return <line key={i} x1={a.x+riverOffset.x} y1={a.y+riverOffset.y} x2={b.x+riverOffset.x} y2={b.y+riverOffset.y} stroke="#7dd3fc" strokeWidth={4} strokeDasharray="6 3" />;})}
++            </g>}
++            {editMode && !roadDraft && renderDetails && <g data-editor-only="roads" transform={mapRotationTransform}>
++              {roadSegments.map(s=><line key={s.key} className="road-map-target" role="button" tabIndex={0}
++                aria-label={`${language==='ru'?'Участок':'Segment'} ${s.roadId}: ${s.segmentKey}`} aria-pressed={selectedRoadPair===s.segmentKey&&selectedRoadTarget?.roadId===s.roadId&&!selectedRoadTarget.crossingKey}
++                x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2} stroke="transparent" style={{strokeWidth:'var(--road-hit-width)'}} pointerEvents="stroke"
++                onClick={e=>{e.stopPropagation();chooseRoadPair(s.segmentKey,s.roadId);}}
++                onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();e.stopPropagation();chooseRoadPair(s.segmentKey,s.roadId);}}} />)}
++              {renderedCrossings.map(c=><circle key={c.key} className="crossing-map-target" role="button" tabIndex={0}
++                aria-label={`${language==='ru'?'Переправа':'Crossing'} ${c.key}`} aria-pressed={selectedRoadTarget?.crossingKey===c.key}
++                cx={c.x} cy={c.y} style={{r:'var(--crossing-hit-radius)'}} fill="transparent" pointerEvents="all"
++                onClick={e=>{e.stopPropagation();chooseRoadPair(c.roadSegmentKey,c.roadId,c.key);}}
++                onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();e.stopPropagation();chooseRoadPair(c.roadSegmentKey,c.roadId,c.key);}}} />)}
++              {renderedCrossings.filter(c=>c.key===selectedRoadTarget?.crossingKey).map(c=><circle key={`selected-${c.key}`} cx={c.x} cy={c.y} r={9} fill="none" stroke="#7dd3fc" strokeWidth={3} pointerEvents="none" />)}
++              {roadSegments.filter(s=>confirmRoadRemoval ? s.roadId===confirmRoadRemoval.roadId&&(!confirmRoadRemoval.segmentKey||s.segmentKey===confirmRoadRemoval.segmentKey):s.segmentKey===selectedRoadPair&&s.roadId===selectedRoadTarget?.roadId&&!selectedRoadTarget.crossingKey).map(s=><line key={s.key}
++                x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2} stroke="#7dd3fc" strokeWidth={4} strokeDasharray="6 3" pointerEvents="none" />)}
++            </g>}
+             </svg>
+             <canvas ref={mapMotionCanvasRef} className="map-motion-buffer" aria-hidden="true" />
+             </div>
+@@ -14713,7 +14887,7 @@ export function App() {
+               <section ref={infoFocusRef} tabIndex={-1} className={`info-block info-block--hex${editMode ? ' is-editing' : ''}`} aria-label={t.selectedHexInfo}>
+                 <div className="direct-mode-row"><button type="button" className="secondary direct-mode" aria-pressed={editMode}
+                   disabled={isImporting || !!pendingRegen || !!kingdomJob}
+-                  onClick={() => { if (!finishInlineName()) return; finishNotesGroup(); clearNotesDraft(); closeEditors(); setEditMode(v => !v); }}>
++                  onClick={() => { if (!finishRoadDraft() || !finishInlineName()) return; finishNotesGroup(); clearNotesDraft(); closeEditors(); setSelectedRoadPair(null); setSelectedRoadTarget(null); setConfirmRoadRemoval(null); setEditMode(v => !v); }}>
+                   {editMode ? (language === 'ru' ? 'Готово' : 'Done') : (language === 'ru' ? 'Редактировать' : 'Edit')}
+                 </button></div>
+                 {selectedKingdom ? <p>{language === 'ru' ? 'Королевство' : 'Kingdom'}: {renderName(`kingdom:${selectedKingdom.id}`)}</p> : null}
+@@ -14784,11 +14958,13 @@ export function App() {
+                     ) : null}
+                   </>
+                 ) : null}
++                {roadDraftPanel}
++                {roadPanel}
+                 {editError && <p className="direct-error" role="alert">{editError}</p>}
+                 {canEditNotes && selectedHexKey && (notesValue || editMode) ? <div className="gm-notes">
+                   <strong id="gm-notes-label">{language === 'ru' ? 'Заметки мастера' : 'GM notes'}</strong>
+                   {notesOpen && editMode ? <textarea ref={notesTextRef} id="gm-notes-text" aria-labelledby="gm-notes-label" rows={4} value={notesValue}
+-                    disabled={isImporting || !!pendingRegen || !!kingdomJob}
++                    disabled={!!roadDraft || isImporting || !!pendingRegen || !!kingdomJob}
+                     onKeyDown={event => { event.stopPropagation(); if (event.key === 'Escape') { finishNotesGroup(); setNotesEditorKey(null); } }}
+                     onCompositionStart={() => { notesComposingRef.current = true; if (notesTimerRef.current !== null) clearTimeout(notesTimerRef.current); }}
+                     onCompositionEnd={event => { notesComposingRef.current = false; changeNotesText(selectedHexKey, event.currentTarget.value); notesTimerRef.current = setTimeout(finishNotesGroup, 500); }}
+@@ -14969,7 +15145,7 @@ export function App() {
+                 <label>{language === 'ru' ? 'Тип объекта' : 'Object type'}<select value={nameType} onChange={e => setNameType(e.target.value)}><option value="all">{language === 'ru' ? 'Все типы' : 'All types'}</option>{Object.entries(nameTypeLabels).map(([type,label]) => <option key={type} value={type}>{label}</option>)}</select></label>
+                 <ul className="map-names__list">{nameTargets.filter(target => (nameType === 'all' || target.type === nameType) && `${target.ru} ${target.en}`.toLocaleLowerCase().includes(nameQuery.toLocaleLowerCase())).map(target => <li key={target.key}>
+                   <span>{nameTypeLabels[target.type]} · {editMode ? renderName(target.key, 'catalog') : <button type="button" className="direct-find" onClick={() => {
+-                    if (!finishInlineName()) return;
++                    if (!finishRoadDraft() || !finishInlineName()) return;
+                     const [q,r] = target.location.split('/').map(Number); if (Number.isFinite(q) && Number.isFinite(r)) { finishNotesGroup(); setSelectedHex({q,r}); }
+                   }}>{target[language]}</button>}</span><small>{target.location}</small>
+                 </li>)}</ul>
+diff --git a/src/manualRoads.ts b/src/manualRoads.ts
+new file mode 100644
+index 0000000..f9e405a
+--- /dev/null
++++ b/src/manualRoads.ts
+@@ -0,0 +1,121 @@
++import type {RiverCrossingKind} from './riverCrossings';
++
++export type RoadHex = {q:number; r:number};
++export type EditableRoad = {id:number; regionId:number; segments:{from:RoadHex;to:RoadHex;kind:'road'|'trail'}[]};
++export type EditableCrossing = {key:string;roadId:number;roadSegmentKey:string;riverId:number;riverEdgeKey:string;kind:RiverCrossingKind};
++export type RoadDocument = {roads:EditableRoad[];crossings:EditableCrossing[];nextRoadId:number};
++export type RoadEdit =
++  | {type:'create';path:RoadHex[];kind:'road'|'trail';crossingKinds?:Record<string,RiverCrossingKind>}
++  | {type:'kind';roadId:number;segmentKey:string;kind:'road'|'trail'}
++  | {type:'remove';roadId:number;segmentKey?:string}
++  | {type:'crossing';roadId:number;segmentKey:string;riverId:number;kind:RiverCrossingKind};
++/** Geometry and region policy come from the current document, never cached UI. */
++export type RoadEditContext = {
++  landRegion:(hex:RoadHex)=>number|undefined;
++  destination:(hex:RoadHex)=>boolean;
++  openExit:(hex:RoadHex)=>boolean;
++  blocked:(a:RoadHex,b:RoadHex)=>boolean;
++  intersections:(a:RoadHex,b:RoadHex)=>{riverId:number;riverEdgeKey:string;fullness:number}[];
++  minima:{regionId:number;minimum:number}[];
++};
++const key=(h:RoadHex)=>`${h.q},${h.r}`;
++export const roadPair=(a:RoadHex,b:RoadHex)=>[key(a),key(b)].sort().join('|');
++const adjacent=(a:RoadHex,b:RoadHex)=>Math.max(Math.abs(a.q-b.q),Math.abs(a.r-b.r),Math.abs(a.q+a.r-b.q-b.r))===1;
++const fail=(reason:string):never=>{throw new Error(reason);};
++const assertKind=(kind:string)=>{if(kind!=='road'&&kind!=='trail') fail('invalid_road_kind');};
++function graph(roads:EditableRoad[]) {
++  const result=new Map<string,Set<string>>();
++  for(const road of roads) for(const {from,to} of road.segments) {
++    const a=key(from),b=key(to);
++    if(!result.has(a))result.set(a,new Set());if(!result.has(b))result.set(b,new Set());
++    result.get(a)!.add(b);result.get(b)!.add(a);
++  }
++  return result;
++}
++function component(g:Map<string,Set<string>>,start:string) {
++  const seen=new Set<string>(),queue=[start];
++  while(queue.length){const k=queue.pop()!;if(seen.has(k))continue;seen.add(k);for(const n of g.get(k)??[])queue.push(n);}
++  return seen;
++}
++const fromKey=(k:string):RoadHex=>{const [q,r]=k.split(',').map(Number);return {q,r};};
++function validateNetwork(before:EditableRoad[],after:EditableRoad[],ctx:RoadEditContext,changed:Set<string>) {
++  const a=graph(before),b=graph(after),affected=new Set<string>();
++  for(const k of changed)for(const n of component(a,k))affected.add(n);
++  for(const k of affected) {
++    const hex=fromKey(k),oldDegree=a.get(k)?.size??0,newDegree=b.get(k)?.size??0;
++    if(newDegree===1&&oldDegree!==1&&!ctx.destination(hex)&&!ctx.openExit(hex))fail('new_internal_dead_end');
++    if(oldDegree>0&&newDegree===0&&ctx.openExit(hex))fail('removed_open_exit');
++  }
++  // Preserve existing connected destinations/junctions in each affected component.
++  const visited=new Set<string>();
++  for(const k of affected) {
++    if(visited.has(k))continue;
++    const old=component(a,k);for(const n of old)visited.add(n);
++    const required=[...old].filter(n=>ctx.destination(fromKey(n))||ctx.openExit(fromKey(n))||(a.get(n)?.size??0)>2);
++    if(required.length<2)continue;
++    const reachable=component(b,required[0]);
++    if(required.some(n=>!reachable.has(n)))fail('disconnected_destinations');
++  }
++  for(const {regionId,minimum} of ctx.minima) {
++    const count=(roads:EditableRoad[])=>roads.filter(r=>r.regionId===regionId&&r.segments.some(s=>s.kind==='road')).length;
++    if(count(after)<Math.min(count(before),minimum))fail('settled_road_minimum');
++  }
++}
++/** Prepare a copy only. Caller must recheck revision and prepare history before setters. */
++export function prepareRoadEdit(doc:RoadDocument,edit:RoadEdit,ctx:RoadEditContext):RoadDocument {
++  let roads=doc.roads,crossings=doc.crossings,nextRoadId=doc.nextRoadId;
++  const touched=new Set<string>();
++  const crossingFor=(roadId:number,a:RoadHex,b:RoadHex,riverId:number,kind:RiverCrossingKind):EditableCrossing=>{
++    const hits=ctx.intersections(a,b).filter(x=>x.riverId===riverId);
++    if(hits.length!==1)fail('missing_or_ambiguous_intersection');
++    const hit=hits[0];
++    if(!Number.isInteger(hit.fullness)||hit.fullness<1||hit.fullness>5)fail('unknown_fullness');
++    if(!['bridge','ferry','ford'].includes(kind)||kind==='ford'&&hit.fullness>=3)fail('invalid_crossing_kind');
++    const roadSegmentKey=roadPair(a,b),crossingKey=`${roadId}:${roadSegmentKey}:${riverId}`;
++    const old=doc.crossings.filter(c=>c.key===crossingKey);
++    if(old.length>1)fail('ambiguous_crossing');
++    if(old[0]&&(old[0].roadId!==roadId||old[0].roadSegmentKey!==roadSegmentKey||old[0].riverId!==riverId||old[0].riverEdgeKey!==hit.riverEdgeKey))fail('stale_crossing');
++    return old[0]?{...old[0],kind}:{key:crossingKey,roadId,roadSegmentKey,riverId,riverEdgeKey:hit.riverEdgeKey,kind};
++  };
++  if(edit.type==='create') {
++    assertKind(edit.kind);
++    if(edit.path.length<2)fail('short_path');
++    if(!Number.isSafeInteger(nextRoadId)||nextRoadId<1||nextRoadId>=Number.MAX_SAFE_INTEGER||roads.some(r=>r.id===nextRoadId))fail('invalid_next_road_id');
++    const pairs=new Set(roads.flatMap(r=>r.segments.map(s=>roadPair(s.from,s.to)))),network=graph(roads),seen=new Set<string>();
++    for(const h of edit.path) {
++      if(!Number.isSafeInteger(h.q)||!Number.isSafeInteger(h.r)||ctx.landRegion(h)===undefined)fail('unknown_or_water_hex');
++      if(seen.has(key(h)))fail('repeated_hex');seen.add(key(h));
++    }
++    const validEnd=(h:RoadHex)=>ctx.destination(h)||ctx.openExit(h)||network.has(key(h));
++    if(!validEnd(edit.path[0])||!validEnd(edit.path[edit.path.length-1]))fail('invalid_path_end');
++    if(edit.path.slice(1,-1).some(h=>network.has(key(h))))fail('network_must_end_path');
++    const segments:EditableRoad['segments']=[],added:EditableCrossing[]=[];
++    for(let i=1;i<edit.path.length;i++) {
++      const from=edit.path[i-1],to=edit.path[i],pair=roadPair(from,to);
++      if(!adjacent(from,to))fail('non_adjacent');if(pairs.has(pair))fail('duplicate_segment');if(ctx.blocked(from,to))fail('obstacle');
++      segments.push({from:{...from},to:{...to},kind:edit.kind});
++      const hits=ctx.intersections(from,to);
++      for(const hit of hits)added.push(crossingFor(nextRoadId,from,to,hit.riverId,edit.crossingKinds?.[`${nextRoadId}:${pair}:${hit.riverId}`]??'bridge'));
++    }
++    roads=[...roads,{id:nextRoadId,regionId:ctx.landRegion(edit.path[0])!,segments}];crossings=[...crossings,...added];nextRoadId++;
++  } else {
++    const matches=roads.filter(r=>r.id===edit.roadId);if(matches.length!==1)fail('missing_or_ambiguous_road');
++    const road=matches[0];
++    const segments='segmentKey' in edit&&edit.segmentKey!==undefined?road.segments.filter(s=>roadPair(s.from,s.to)===edit.segmentKey):road.segments;
++    if(!segments.length||('segmentKey' in edit&&edit.segmentKey!==undefined&&segments.length!==1))fail('missing_or_ambiguous_segment');
++    if(edit.type==='crossing') {
++      const segment=segments[0],replacement=crossingFor(road.id,segment.from,segment.to,edit.riverId,edit.kind);
++      const old=crossings.find(c=>c.key===replacement.key);if(old?.kind===edit.kind)return doc;
++      crossings=old?crossings.map(c=>c.key===replacement.key?replacement:c):[...crossings,replacement];
++    } else {
++      if(edit.type==='kind') {assertKind(edit.kind);if(segments[0].kind===edit.kind)return doc;}
++      const selected=new Set(segments),pairs=new Set(segments.map(s=>roadPair(s.from,s.to)));
++      for(const s of segments){touched.add(key(s.from));touched.add(key(s.to));}
++      const replacement={...road,segments:edit.type==='remove'?road.segments.filter(s=>!selected.has(s)):road.segments.map(s=>selected.has(s)?{...s,kind:edit.kind}:s)};
++      roads=roads.flatMap(r=>r!==road?[r]:replacement.segments.length?[replacement]:[]);
++      if(edit.type==='remove')crossings=crossings.filter(c=>c.roadId!==road.id||!pairs.has(c.roadSegmentKey));
++      validateNetwork(doc.roads,roads,ctx,touched);
++    }
++  }
++  return {roads,crossings,nextRoadId};
++}
+diff --git a/src/styles.css b/src/styles.css
+index 423f857..83c31d3 100644
+--- a/src/styles.css
++++ b/src/styles.css
+@@ -236,3 +236,14 @@ button:disabled,select:disabled { opacity:.55; cursor:wait; }
+ .map-names__list li { display:flex; align-items:baseline; gap:.5rem; justify-content:space-between; margin:.25rem 0; min-width:0; }
+ .map-names__list .direct-value, .map-names__list .direct-find { width:auto; margin:0; }
+ .gm-notes .direct-value { display:block; width:100%; }
++
++.road-editor { margin-block: 12px; }
++.road-editor__item { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; padding-block: 8px; }
++.road-editor__item label { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
++.road-editor__item .direct-value { min-height: 44px; max-width: 100%; white-space: normal; overflow-wrap: anywhere; }
++.road-editor__confirmation { display: flex; flex-wrap: wrap; gap: 8px; }
++.road-editor__confirmation p { flex-basis: 100%; }
++.road-editor__confirmation button { min-width: 44px; min-height: 44px; }
++.road-editor__danger { color: #fca5a5; }
++.road-map-target:focus-visible { stroke: #7dd3fc; stroke-opacity: .35; outline: none; }
++.crossing-map-target:focus-visible { fill: #7dd3fc; fill-opacity: .35; stroke: #fff; stroke-width: 2; outline: none; }
+diff --git a/test/browser/navigation.smoke.mjs b/test/browser/navigation.smoke.mjs
+index fdc6809..9b75013 100644
+--- a/test/browser/navigation.smoke.mjs
++++ b/test/browser/navigation.smoke.mjs
+@@ -67,10 +67,16 @@ try{
+  assert.ok(result.geometryUnchanged,'Navigation must not mutate map artwork');assert.ok(result.dimensionsUnchanged,'Zoom must not resize/reconcile the SVG artwork');assert.ok(result.focalError<6,JSON.stringify(result));assert.ok(Math.abs(result.panDistance-90)<2,JSON.stringify(result));
+  // A burst accumulates zoom but applies it once on the next frame.
+  const burst=await page.evaluate(async()=>{
+-  const v=document.querySelector('.map-viewport'),s=v.querySelector('svg'),r=v.getBoundingClientRect();let changes=0;
+-  const observer=new MutationObserver(rs=>changes+=rs.filter(x=>x.target===s&&x.attributeName==='style').length);observer.observe(s,{attributes:true});
++  const v=document.querySelector('.map-viewport'),s=v.querySelector('svg'),r=v.getBoundingClientRect();const styles=[];
++  // Style records also include hit-area CSS variables; retain intermediate values
++  // so multiple transform writes in the same observer delivery still fail.
++  const observer=new MutationObserver(rs=>styles.push(...rs.filter(x=>x.target===s&&x.attributeName==='style').map(x=>x.oldValue)));observer.observe(s,{attributes:true,attributeOldValue:true});
+   for(let i=0;i<20;i++)v.dispatchEvent(new WheelEvent('wheel',{bubbles:true,cancelable:true,deltaY:-1,clientX:r.left+200,clientY:r.top+200}));
+-  await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));observer.disconnect();return {changes,scale:Number(s.style.transform.match(/scale\(([^)]+)\)/)[1])};
++  await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));observer.disconnect();styles.push(s.getAttribute('style'));
++  const parser=document.createElement('div');
++  const transforms=styles.map(style=>{parser.setAttribute('style',style??'');return parser.style.transform;});
++  const changes=transforms.slice(1).filter((value,index)=>value!==transforms[index]).length;
++  return {changes,scale:Number(s.style.transform.match(/scale\(([^)]+)\)/)[1])};
+  });assert.equal(burst.changes,1,'One SVG transform update per frame');assert.ok(burst.scale>1.5);
+  await page.locator('.rotate-map-button').click();assert.ok(await page.locator('.map-stage > svg').evaluate(s=>parseFloat(s.style.width)===s.viewBox.baseVal.width));
+  const menu=page.locator('details.export-menu');await menu.locator('summary').click();
+diff --git a/test/browser/save-history.smoke.mjs b/test/browser/save-history.smoke.mjs
+index 808104a..f7e2a11 100644
+--- a/test/browser/save-history.smoke.mjs
++++ b/test/browser/save-history.smoke.mjs
+@@ -344,6 +344,73 @@ try {
+  await select(`${center.q},${center.r}`);await biome('open_hills');
+  await transaction(()=>button('Удалить последний регион').click());await button('Отменить').click();
+  await transaction(async()=>{await button('Перегенерировать регион').click();await page.waitForFunction(()=>!document.querySelector('.kingdom-progress')&&!document.querySelector('.controls--transfer > button').disabled,null,{timeout:120000});});
++ // E3 draft lifecycle: reuse existing production runner; no second corpus.
++ const draftInput=JSON.parse(await fs.readFile(new URL('../fixtures/road-entry-zigzags.json',import.meta.url)));
++ const draftSegment=draftInput.map.roads[0].segments[0];draftInput.map.roads=[];draftInput.map.crossings=[];
++ for(const p of [draftSegment.from,draftSegment.to]){const r=draftInput.map.regions.find(r=>r.hexes.some(x=>x.q===p.q&&x.r===p.r));if(!r.pointsOfInterest.some(x=>x.q===p.q&&x.r===p.r))r.pointsOfInterest.push({...p});}
++ await load(draftInput);await select(`${draftSegment.from.q},${draftSegment.from.r}`);
++ if(await button('Редактировать').count())await button('Редактировать').click();
++ const draftBefore=await snapshot();
++ await button('Начать путь отсюда').click();await button('Готово').click();
++ assert.equal(await page.locator('[data-road-draft] select').count(),1,'invalid single node stays draft');
++ await select(`${draftSegment.to.q},${draftSegment.to.r}`);assert.equal(await page.locator('[data-editor-only="draft"] line').count(),1);
++ await page.locator('.map-viewport').press('Escape');assert.deepEqual(await snapshot(),draftBefore);
++ await button('Начать путь отсюда').click();await select(`${draftSegment.to.q},${draftSegment.to.r}`);
++ await button('Готово').click();const draftAfter=await snapshot();assert.equal(draftAfter.map.roads.length,1);assert.deepEqual(draftAfter.generation,draftBefore.generation);
++ await button('Отменить').click();assert.deepEqual(await snapshot(),draftBefore);await button('Повторить').click();assert.deepEqual(await snapshot(),draftAfter);
++ // R2/R3: extend this runner with overlapping legacy identity and real keyboard activation.
++ const overlap=JSON.parse(await fs.readFile(new URL('../fixtures/road-entry-zigzags.json',import.meta.url)));
++ const original=overlap.map.roads[0],shared=original.segments[0],copyId=Math.max(...overlap.map.roads.map(r=>r.id))+1;
++ overlap.map.roads.push({...structuredClone(original),id:copyId,segments:[structuredClone(shared)]});overlap.counters.nextRoadId=copyId+1;
++ await load(overlap);await select(`${shared.from.q},${shared.from.r}`);
++ if(await button('Редактировать').count())await button('Редактировать').click();
++ const pair=[`${shared.from.q},${shared.from.r}`,`${shared.to.q},${shared.to.r}`].sort().join('|');
++ for(const id of [original.id,copyId]){
++  const actual=page.getByRole('button',{name:`Участок ${id}: ${pair}`,exact:true});
++  await actual.focus();await actual.press('Enter');
++  assert.equal(await page.locator('.road-editor__item > button[aria-pressed="true"]').count(),1);
++  assert.equal(await page.locator('[data-editor-only="roads"] line[stroke="#7dd3fc"]').count(),1);
++  assert.ok(await actual.evaluate(el=>parseFloat(getComputedStyle(el).strokeWidth)*el.getScreenCTM().a>=43.9),'map target44px at normal rotation');
++ }
++ // E3 existing-path controls: exact crossing identity, confirmation preview and history.
++ // Reuse this lifecycle runner: no second corpus or mixed-history sequence.
++ await load(JSON.parse(await fs.readFile(new URL('../fixtures/road-entry-zigzags.json',import.meta.url))));
++ const roadMap=await snapshot(),crossing=roadMap.map.crossings[0];
++ const road=roadMap.map.roads.find(r=>r.id===crossing.roadId),seg=road.segments.find(s=>[`${s.from.q},${s.from.r}`,`${s.to.q},${s.to.r}`].sort().join('|')===crossing.roadSegmentKey);
++ await select(`${seg.from.q},${seg.from.r}`);
++ if(await button('Редактировать').count())await button('Редактировать').click();
++ const roadLabel=`Участок ${road.id}: ${seg.from.q},${seg.from.r} → ${seg.to.q},${seg.to.r}`;
++ const crossingTarget=page.getByRole('button',{name:`Переправа ${crossing.key}`,exact:true});
++ await crossingTarget.focus();await crossingTarget.press(' ');
++ assert.equal(await crossingTarget.getAttribute('aria-pressed'),'true');
++ assert.equal(await page.locator('[data-editor-only="roads"] circle[stroke="#7dd3fc"]').count(),1);
++ await button(roadLabel).click();
++ const oldRoad=await snapshot();
++ const crossingSelect=page.getByRole('combobox',{name:`Переправа ${road.id}:${crossing.riverId}`,exact:true});
++ await crossingSelect.selectOption(crossing.kind==='bridge'?'ferry':'bridge');
++ const changedRoad=await snapshot();assert.notDeepEqual(changedRoad.map.crossings,oldRoad.map.crossings);
++ assert.deepEqual(changedRoad.map.roads,oldRoad.map.roads);assert.deepEqual(changedRoad.generation,oldRoad.generation);
++ await button('Отменить').click();assert.deepEqual(await snapshot(),oldRoad);
++ await button('Повторить').click();assert.deepEqual(await snapshot(),changedRoad);
++ await button(roadLabel).click();await button('Удалить весь выделенный путь').click();
++ assert.equal(await page.locator('[data-editor-only] line[stroke="#7dd3fc"]').count(),road.segments.length);
++ for(const width of [1500,390]) {
++   await page.setViewportSize({width,height:1100});
++   const confirmation=page.getByRole('group',{name:'Подтверждение удаления',exact:true});
++   for(const name of ['Удалить','Отмена']) {
++     const target=confirmation.getByRole('button',{name,exact:true});
++     const rect=await target.boundingBox();
++     assert.ok(rect.width>=44&&rect.height>=44,`E3 confirmation ${name} target at ${width}: ${JSON.stringify(rect)}`);
++   }
++   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Confirmation has no horizontal overflow');
++ }
++ await button('Отмена').click();assert.deepEqual(await snapshot(),changedRoad);
++ for(const width of [1500,390]) {
++   await page.setViewportSize({width,height:1100});
++   const rect=await crossingSelect.boundingBox();assert.ok(rect.width>=44&&rect.height>=44,'E3 native control target');
++   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'E3 no horizontal page overflow');
++ }
++ await page.setViewportSize({width:1500,height:1100});
+  if(await page.locator('.header-links').evaluate(el=>el.classList.contains('is-collapsed')))await page.locator('.header-links-toggle').click();
+  await button('Switch to English').click();assert.equal(await button('Undo').count(),1);assert.equal(await button('Redo').count(),1);
+  assert.deepEqual(errors,[]);assert.equal(alerts.length,5,'only intentional invalid imports');
+diff --git a/test/fixtures/suppressed-road-endpoint.json b/test/fixtures/suppressed-road-endpoint.json
+new file mode 100644
+index 0000000..280f543
+--- /dev/null
++++ b/test/fixtures/suppressed-road-endpoint.json
+@@ -0,0 +1 @@
++{"schema":"hexcrawl-map","version":2,"savedAt":"2026-10-23T22:10:23.393Z","map":{"kingdoms":[{"id":1,"origin":{"q":0,"r":0},"anchor":{"q":0,"r":0},"regionIds":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27],"name":{"en":"Bergvang","ru":"Бергванг","kind":"region","model":"germanic","revision":0},"color":"hsl(138 65% 68%)"}],"obstacles":[],"regions":[{"generationMode":"mythic","kingdomId":1,"id":1,"hexes":[{"q":3,"r":6},{"q":2,"r":6},{"q":3,"r":5},{"q":2,"r":7},{"q":4,"r":6},{"q":1,"r":6},{"q":4,"r":5},{"q":0,"r":6},{"q":-1,"r":7},{"q":-1,"r":6},{"q":5,"r":5}],"centerHex":{"q":3,"r":6},"anchorHex":{"q":3,"r":6},"targetSize":11,"finalSize":11,"sizeCategory":"small_region","sizeLabel":"Малый регион","biomeLandType":"settled","heightLevel":1,"biomeId":"open_plains","biomeLabel":"Открытые равнины","biomePrimaryEmoji":"🌱","biomeSecondaryEmojis":[],"biomeEmojiLabel":"🌱","riverSlope":{"radius":10,"edgeCount":0,"totalContribution":1,"vector":{"x":0.5,"y":0.8660254037844387},"strength":1,"confidence":1,"direction":"SE","directionScores":{"E":0,"NE":0,"NW":0,"W":0,"SW":0,"SE":1}},"isCoastal":false,"pointsOfInterest":[{"q":4,"r":6}],"pointOfInterestKinds":{},"suppressCentralPoi":true},{"generationMode":"mythic","kingdomId":1,"id":2,"hexes":[{"q":3,"r":7}],"centerHex":{"q":3,"r":7},"anchorHex":{"q":3,"r":7},"targetSize":1,"finalSize":1,"sizeCategory":"tract","sizeLabel":"Урочище","biomeLandType":"wild","heightLevel":1,"biomeId":"swamp","biomeLabel":"Болото","biomePrimaryEmoji":"💧","biomeSecondaryEmojis":["🌱"],"biomeEmojiLabel":"💧🌱","pointsOfInterest":[{"q":3,"r":7}],"isCoastal":false,"isTract":true,"pointOfInterestKinds":{"3,7":"monument"},"suppressCentralPoi":false},{"generationMode":"mythic","kingdomId":1,"id":3,"hexes":[{"q":3,"r":4},{"q":2,"r":4},{"q":2,"r":5},{"q":1,"r":5},{"q":1,"r":4},{"q":4,"r":3},{"q":4,"r":4},{"q":2,"r":3},{"q":3,"r":3},{"q":0,"r":4},{"q":5,"r":2}],"centerHex":{"q":2,"r":4},"anchorHex":{"q":3,"r":4},"targetSize":11,"finalSize":11,"sizeCategory":"small_region","sizeLabel":"Малый регион","biomeLandType":"wild","heightLevel":1,"biomeId":"mixed_woodland","biomeLabel":"Смешанное редколесье","biomePrimaryEmoji":"🌱","biomeSecondaryEmojis":["🌳","🌲"],"biomeEmojiLabel":"🌱🌳🌲","centralPoiKind":"dwelling","riverSlope":{"radius":10,"edgeCount":14,"totalContribution":11.583333333333332,"vector":{"x":6.791666666666666,"y":-1.8042195912175807},"strength":7.027228788394784,"confidence":0.606667233530485,"direction":"E","directionScores":{"E":4,"NE":4.833333333333333,"NW":0,"W":0,"SW":1,"SE":1.7499999999999998}},"isCoastal":false,"pointsOfInterest":[{"q":0,"r":4},{"q":2,"r":5}],"pointOfInterestKinds":{"0,4":"curse","2,5":"curse"},"woodlandStyle":"islands","suppressCentralPoi":false},{"generationMode":"mythic","kingdomId":1,"id":4,"hexes":[{"q":5,"r":4},{"q":5,"r":3},{"q":6,"r":4},{"q":6,"r":2},{"q":6,"r":5},{"q":6,"r":3},{"q":7,"r":3},{"q":7,"r":1},{"q":7,"r":4},{"q":8,"r":2}],"centerHex":{"q":6,"r":3},"anchorHex":{"q":5,"r":4},"targetSize":10,"finalSize":10,"sizeCategory":"locality","sizeLabel":"Местность","biomeLandType":"wild","heightLevel":1,"biomeId":"swamp","biomeLabel":"Болото","biomePrimaryEmoji":"💧","biomeSecondaryEmojis":["🌱"],"biomeEmojiLabel":"💧🌱","centralPoiKind":"sanctuary","riverSlope":{"radius":10,"edgeCount":24,"totalContribution":16.76666666666667,"vector":{"x":8.25,"y":-0.8948929172439204},"strength":8.298393418809049,"confidence":0.49493400112181196,"direction":"E","directionScores":{"E":4.4,"NE":4.7,"NW":2,"W":0,"SW":0.3333333333333333,"SE":5.333333333333333}},"isCoastal":false,"pointsOfInterest":[{"q":7,"r":1}],"pointOfInterestKinds":{"7,1":"monument"},"suppressCentralPoi":false},{"generationMode":"mythic","kingdomId":1,"id":5,"hexes":[{"q":5,"r":6},{"q":4,"r":7},{"q":6,"r":6},{"q":7,"r":5},{"q":7,"r":6},{"q":5,"r":7},{"q":3,"r":8},{"q":5,"r":8}],"centerHex":{"q":5,"r":7},"anchorHex":{"q":5,"r":6},"targetSize":8,"finalSize":8,"sizeCategory":"locality","sizeLabel":"Местность","biomeLandType":"wild","heightLevel":1,"biomeId":"coniferous_woodland","biomeLabel":"Хвойное редколесье","biomePrimaryEmoji":"🌱","biomeSecondaryEmojis":["🌲"],"biomeEmojiLabel":"🌱🌲","centralPoiKind":"myth","riverSlope":{"radius":10,"edgeCount":32,"totalContribution":17.057142857142857,"vector":{"x":8.220238095238095,"y":-2.7156082304383458},"strength":8.657184438582101,"confidence":0.5075401262150311,"direction":"E","directionScores":{"E":3.9833333333333334,"NE":6.471428571428571,"NW":1.4666666666666666,"W":0.3333333333333333,"SW":0.3333333333333333,"SE":4.469047619047619}},"isCoastal":false,"pointsOfInterest":[],"pointOfInterestKinds":{},"woodlandStyle":"islands","suppressCentralPoi":false},{"generationMode":"mythic","kingdomId":1,"id":6,"hexes":[{"q":1,"r":7},{"q":0,"r":7},{"q":0,"r":8},{"q":-1,"r":9},{"q":-2,"r":9},{"q":-1,"r":8},{"q":-2,"r":8},{"q":-2,"r":10},{"q":1,"r":8},{"q":0,"r":9},{"q":1,"r":9},{"q":-2,"r":11}],"centerHex":{"q":0,"r":8},"anchorHex":{"q":1,"r":7},"targetSize":12,"finalSize":12,"sizeCategory":"small_region","sizeLabel":"Малый регион","biomeLandType":"wild","heightLevel":1,"biomeId":"swamp","biomeLabel":"Болото","biomePrimaryEmoji":"💧","biomeSecondaryEmojis":["🌱"],"biomeEmojiLabel":"💧🌱","centralPoiKind":"myth","riverSlope":{"radius":10,"edgeCount":36,"totalContribution":21.599999999999998,"vector":{"x":10.483333333333334,"y":0.2020725942163688},"strength":10.485280688236779,"confidence":0.48542966149244354,"direction":"E","directionScores":{"E":6.199999999999999,"NE":6.283333333333333,"NW":1.2166666666666666,"W":0.16666666666666666,"SW":1.95,"SE":5.783333333333333}},"isCoastal":false,"pointsOfInterest":[{"q":1,"r":8},{"q":-2,"r":8}],"pointOfInterestKinds":{"1,8":"hazard","-2,8":"curse"},"suppressCentralPoi":false},{"generationMode":"mythic","kingdomId":1,"id":7,"hexes":[{"q":2,"r":8},{"q":2,"r":9},{"q":1,"r":10},{"q":2,"r":10},{"q":1,"r":11},{"q":0,"r":11},{"q":0,"r":10},{"q":-1,"r":11},{"q":-1,"r":10}],"centerHex":{"q":1,"r":10},"anchorHex":{"q":2,"r":8},"targetSize":9,"finalSize":9,"sizeCategory":"locality","sizeLabel":"Местность","biomeLandType":"settled","heightLevel":1,"biomeId":"mixed_woodland","biomeLabel":"Смешанное редколесье","biomePrimaryEmoji":"🌱","biomeSecondaryEmojis":["🌳","🌲"],"biomeEmojiLabel":"🌱🌳🌲","centralPoiKind":"holding_stronghold","riverSlope":{"radius":10,"edgeCount":46,"totalContribution":25.847619047619048,"vector":{"x":12.223809523809527,"y":-0.21032045520479148},"strength":12.225618756048876,"confidence":0.4729881980048386,"direction":"E","directionScores":{"E":6.257142857142858,"NE":8.904761904761905,"NW":0.9285714285714285,"W":0.16666666666666666,"SW":2.65,"SE":6.940476190476191}},"isCoastal":false,"pointsOfInterest":[],"pointOfInterestKinds":{},"woodlandStyle":"islands","suppressCentralPoi":false},{"generationMode":"mythic","kingdomId":1,"id":8,"hexes":[{"q":4,"r":8},{"q":3,"r":9},{"q":3,"r":10},{"q":2,"r":11}],"centerHex":{"q":4,"r":8},"anchorHex":{"q":4,"r":8},"targetSize":4,"finalSize":4,"sizeCategory":"tract","sizeLabel":"Урочище","biomeLandType":"wild","heightLevel":1,"biomeId":"open_plains","biomeLabel":"Открытые равнины","biomePrimaryEmoji":"🌱","biomeSecondaryEmojis":[],"biomeEmojiLabel":"🌱","pointsOfInterest":[{"q":4,"r":8}],"isCoastal":false,"isTract":true,"pointOfInterestKinds":{"4,8":"curse"},"suppressCentralPoi":false},{"generationMode":"mythic","kingdomId":1,"id":9,"hexes":[{"q":3,"r":2},{"q":3,"r":1},{"q":2,"r":1},{"q":3,"r":0},{"q":4,"r":1},{"q":4,"r":0},{"q":4,"r":2}],"centerHex":{"q":3,"r":1},"anchorHex":{"q":3,"r":2},"targetSize":7,"finalSize":7,"sizeCategory":"locality","sizeLabel":"Местность","biomeLandType":"wild","heightLevel":1,"biomeId":"deciduous_woodland","biomeLabel":"Лиственное редколесье","biomePrimaryEmoji":"🌱","biomeSecondaryEmojis":["🌳"],"biomeEmojiLabel":"🌱🌳","centralPoiKind":"sanctuary","riverSlope":{"radius":10,"edgeCount":61,"totalContribution":27.565079365079363,"vector":{"x":12.767857142857144,"y":-0.5938459911664733},"strength":12.781659871927147,"confidence":0.4636902982445067,"direction":"E","directionScores":{"E":7.234920634920634,"NE":8.207936507936509,"NW":2.2,"W":0.2,"SW":2.132142857142857,"SE":7.590079365079364}},"isCoastal":false,"pointsOfInterest":[],"pointOfInterestKinds":{},"woodlandStyle":"islands","suppressCentralPoi":false},{"generationMode":"mythic","kingdomId":1,"id":10,"hexes":[{"q":7,"r":2},{"q":8,"r":1},{"q":9,"r":1},{"q":10,"r":0},{"q":9,"r":0},{"q":11,"r":-1},{"q":11,"r":0},{"q":12,"r":-1},{"q":10,"r":-1},{"q":12,"r":0},{"q":8,"r":0}],"centerHex":{"q":9,"r":0},"anchorHex":{"q":7,"r":2},"targetSize":11,"finalSize":11,"sizeCategory":"small_region","sizeLabel":"Малый регион","biomeLandType":"wild","heightLevel":1,"biomeId":"open_plains","biomeLabel":"Открытые равнины","biomePrimaryEmoji":"🌱","biomeSecondaryEmojis":[],"biomeEmojiLabel":"🌱","centralPoiKind":"sanctuary","riverSlope":{"radius":10,"edgeCount":68,"totalContribution":23.71865079365079,"vector":{"x":10.62738095238095,"y":0.7374962367148443},"strength":10.65293981050292,"confidence":0.4491376808563912,"direction":"E","directionScores":{"E":6.337698412698411,"NE":6.631349206349205,"NW":1.4666666666666666,"W":0.3333333333333333,"SW":2.4341269841269844,"SE":6.51547619047619}},"isCoastal":false,"pointsOfInterest":[{"q":8,"r":0}],"pointOfInterestKinds":{"8,0":"hazard"},"suppressCentralPoi":false},{"generationMode":"mythic","kingdomId":1,"id":11,"hexes":[{"q":0,"r":5},{"q":-1,"r":5},{"q":-1,"r":4},{"q":-2,"r":5},{"q":-2,"r":6},{"q":-3,"r":5},{"q":-2,"r":4},{"q":-2,"r":7}],"centerHex":{"q":-1,"r":5},"anchorHex":{"q":0,"r":5},"targetSize":8,"finalSize":8,"sizeCategory":"locality","sizeLabel":"Местность","biomeLandType":"wild","heightLevel":2,"biomeId":"hilly_woodland","biomeLabel":"Холмистое редколесье","biomePrimaryEmoji":"〰️","biomeSecondaryEmojis":["🌱","🌳"],"biomeEmojiLabel":"〰️🌱🌳","riverSlope":{"radius":10,"edgeCount":77,"totalContribution":37.93015873015873,"vector":{"x":17.40039682539683,"y":-1.6983720418661479},"strength":17.483085462065116,"confidence":0.4609283495606387,"direction":"E","directionScores":{"E":10.283333333333333,"NE":13.261904761904761,"NW":1.4206349206349207,"W":0.24285714285714285,"SW":4.921428571428571,"SE":7.800000000000001}},"isCoastal":false,"pointsOfInterest":[{"q":-2,"r":6},{"q":-3,"r":5}],"pointOfInterestKinds":{"-2,6":"monument","-3,5":"hazard"},"woodlandStyle":"islands","suppressCentralPoi":true},{"generationMode":"mythic","kingdomId":1,"id":12,"hexes":[{"q":6,"r":7},{"q":6,"r":8},{"q":7,"r":7},{"q":7,"r":8}],"centerHex":{"q":6,"r":7},"anchorHex":{"q":6,"r":7},"targetSize":4,"finalSize":4,"sizeCategory":"tract","sizeLabel":"Урочище","biomeLandType":"wild","heightLevel":1,"biomeId":"plain_coniferous_forest","biomeLabel":"Равнинный хвойный лес","biomePrimaryEmoji":"🌲","biomeSecondaryEmojis":[],"biomeEmojiLabel":"🌲","pointsOfInterest":[],"isCoastal":false,"isTract":true,"pointOfInterestKinds":{},"suppressCentralPoi":false},{"generationMode":"mythic","kingdomId":1,"id":13,"hexes":[{"q":4,"r":9},{"q":5,"r":9},{"q":5,"r":10},{"q":6,"r":9},{"q":7,"r":9},{"q":5,"r":11},{"q":6,"r":10},{"q":8,"r":8},{"q":4,"r":10}],"centerHex":{"q":5,"r":10},"anchorHex":{"q":4,"r":9},"targetSize":9,"finalSize":9,"sizeCategory":"locality","sizeLabel":"Местность","biomeLandType":"settled","heightLevel":1,"biomeId":"mixed_woodland","biomeLabel":"Смешанное редколесье","biomePrimaryEmoji":"🌱","biomeSecondaryEmojis":["🌳","🌲"],"biomeEmojiLabel":"🌱🌳🌲","centralPoiKind":"holding_city","riverSlope":{"radius":10,"edgeCount":80,"totalContribution":30.970634920634918,"vector":{"x":11.547420634920634,"y":-1.1021204245780556},"strength":11.599896238762785,"confidence":0.37454499297442817,"direction":"E","directionScores":{"E":5.224206349206349,"NE":12.276190476190477,"NW":1.0444444444444443,"W":0.37777777777777777,"SW":4.938888888888888,"SE":7.109126984126984}},"isCoastal":false,"pointsOfInterest":[],"pointOfInterestKinds":{},"woodlandStyle":"islands","suppressCentralPoi":false},{"generationMode":"mythic","kingdomId":1,"id":14,"hexes":[{"q":5,"r":1},{"q":5,"r":0},{"q":6,"r":1},{"q":6,"r":0},{"q":6,"r":-1},{"q":5,"r":-1},{"q":7,"r":0},{"q":8,"r":-1},{"q":4,"r":-1}],"centerHex":{"q":6,"r":0},"anchorHex":{"q":5,"r":1},"targetSize":9,"finalSize":9,"sizeCategory":"locality","sizeLabel":"Местность","biomeLandType":"wild","heightLevel":1,"biomeId":"dead_woodland","biomeLabel":"Мёртвое редколесье","biomePrimaryEmoji":"🌾","biomeSecondaryEmojis":["🪾"],"biomeEmojiLabel":"🌾🪾","centralPoiKind":"dwelling","riverSlope":{"radius":10,"edgeCount":96,"totalContribution":47.50277777777777,"vector":{"x":21.317658730158726,"y":-4.568971326711956},"strength":21.801790585175077,"confidence":0.4589582252887567,"direction":"E","directionScores":{"E":12.961111111111109,"NE":16.864285714285717,"NW":2.611111111111111,"W":0.8666666666666667,"SW":5.003174603174602,"SE":9.196428571428571}},"isCoastal":false,"pointsOfInterest":[{"q":6,"r":1},{"q":7,"r":0}],"pointOfInterestKinds":{"6,1":"hazard","7,0":"ruins"},"woodlandStyle":"islands","suppressCentralPoi":false},{"generationMode":"mythic","kingdomId":1,"id":15,"hexes":[{"q":2,"r":2},{"q":1,"r":3},{"q":0,"r":3}],"centerHex":{"q":2,"r":2},"anchorHex":{"q":2,"r":2},"targetSize":3,"finalSize":3,"sizeCategory":"tract","sizeLabel":"Урочище","biomeLandType":"wild","heightLevel":1,"biomeId":"open_plains","biomeLabel":"Открытые равнины","biomePrimaryEmoji":"🌱","biomeSecondaryEmojis":[],"biomeEmojiLabel":"🌱","pointsOfInterest":[],"isCoastal":false,"isTract":true,"pointOfInterestKinds":{},"suppressCentralPoi":false},{"generationMode":"mythic","kingdomId":1,"id":16,"hexes":[{"q":8,"r":3},{"q":8,"r":4},{"q":9,"r":4},{"q":8,"r":5},{"q":9,"r":2},{"q":9,"r":5}],"centerHex":{"q":8,"r":5},"anchorHex":{"q":8,"r":3},"targetSize":6,"finalSize":6,"sizeCategory":"locality","sizeLabel":"Местность","biomeLandType":"wild","heightLevel":1,"biomeId":"dead_woodland","biomeLabel":"Мёртвое редколесье","biomePrimaryEmoji":"🌾","biomeSecondaryEmojis":["🪾"],"biomeEmojiLabel":"🌾🪾","centralPoiKind":"myth","riverSlope":{"radius":10,"edgeCount":101,"totalContribution":41.849999999999994,"vector":{"x":14.772420634920632,"y":0.012715452357154433},"strength":14.772426107371718,"confidence":0.35298509217136725,"direction":"E","directionScores":{"E":8.24563492063492,"NE":14.024603174603172,"NW":2.3785714285714286,"W":0.7833333333333333,"SW":6.7218253968253965,"SE":9.696031746031744}},"isCoastal":false,"pointsOfInterest":[{"q":9,"r":4}],"pointOfInterestKinds":{"9,4":"ruins"},"woodlandStyle":"islands","suppressCentralPoi":false},{"generationMode":"mythic","kingdomId":1,"id":17,"hexes":[{"q":8,"r":6},{"q":8,"r":7},{"q":9,"r":6},{"q":9,"r":7},{"q":9,"r":8},{"q":10,"r":5}],"centerHex":{"q":8,"r":7},"anchorHex":{"q":8,"r":6},"targetSize":6,"finalSize":6,"sizeCategory":"locality","sizeLabel":"Местность","biomeLandType":"wild","heightLevel":1,"biomeId":"plain_mixed_forest","biomeLabel":"Равнинный смешанный лес","biomePrimaryEmoji":"🌳","biomeSecondaryEmojis":["🌲"],"biomeEmojiLabel":"🌳🌲","centralPoiKind":"sanctuary","riverSlope":{"radius":10,"edgeCount":101,"totalContribution":45.00119047619048,"vector":{"x":13.62063492063492,"y":4.814688851992058},"strength":14.44655406602959,"confidence":0.3210260420482224,"direction":"E","directionScores":{"E":8.408333333333331,"NE":12.502380952380953,"NW":2.7595238095238095,"W":0.5095238095238095,"SW":9.56031746031746,"SE":11.261111111111113}},"isCoastal":false,"pointsOfInterest":[{"q":9,"r":8},{"q":10,"r":5}],"pointOfInterestKinds":{"9,8":"ruins","10,5":"ruins"},"suppressCentralPoi":false},{"generationMode":"mythic","kingdomId":1,"id":18,"hexes":[{"q":3,"r":11},{"q":4,"r":11},{"q":4,"r":12},{"q":3,"r":12},{"q":2,"r":13},{"q":1,"r":14},{"q":3,"r":13},{"q":5,"r":12}],"centerHex":{"q":3,"r":11},"anchorHex":{"q":3,"r":11},"targetSize":8,"finalSize":8,"sizeCategory":"locality","sizeLabel":"Местность","biomeLandType":"wild","heightLevel":1,"biomeId":"swamp","biomeLabel":"Болото","biomePrimaryEmoji":"💧","biomeSecondaryEmojis":["🌱"],"biomeEmojiLabel":"💧🌱","centralPoiKind":"myth","riverSlope":{"radius":10,"edgeCount":109,"totalContribution":57.06825396825396,"vector":{"x":17.128968253968253,"y":6.432644249221081},"strength":18.297007008865936,"confidence":0.3206162049226919,"direction":"E","directionScores":{"E":13.099206349206348,"NE":15.337301587301587,"NW":2.0785714285714283,"W":1.7095238095238094,"SW":13.31190476190476,"SE":11.531746031746032}},"isCoastal":false,"pointsOfInterest":[{"q":5,"r":12},{"q":3,"r":13}],"pointOfInterestKinds":{"5,12":"monument","3,13":"ruins"},"suppressCentralPoi":false},{"generationMode":"mythic","kingdomId":1,"id":19,"hexes":[{"q":1,"r":2},{"q":1,"r":1},{"q":2,"r":0},{"q":2,"r":-1}],"centerHex":{"q":1,"r":2},"anchorHex":{"q":1,"r":2},"targetSize":4,"finalSize":4,"sizeCategory":"tract","sizeLabel":"Урочище","biomeLandType":"wild","heightLevel":2,"biomeId":"open_hills","biomeLabel":"Открытые холмы","biomePrimaryEmoji":"〰️","biomeSecondaryEmojis":[],"biomeEmojiLabel":"〰️","pointsOfInterest":[{"q":2,"r":-1}],"isCoastal":false,"isTract":true,"pointOfInterestKinds":{"2,-1":"hazard"},"suppressCentralPoi":false},{"generationMode":"mythic","kingdomId":1,"id":20,"hexes":[{"q":9,"r":3},{"q":10,"r":2},{"q":10,"r":1},{"q":11,"r":1},{"q":12,"r":1},{"q":13,"r":0},{"q":11,"r":2},{"q":10,"r":3},{"q":14,"r":0},{"q":15,"r":0},{"q":11,"r":3}],"centerHex":{"q":10,"r":2},"anchorHex":{"q":9,"r":3},"targetSize":11,"finalSize":11,"sizeCategory":"small_region","sizeLabel":"Малый регион","biomeLandType":"wild","heightLevel":1,"biomeId":"semi_desert","biomeLabel":"Полупустыня","biomePrimaryEmoji":"🪨","biomeSecondaryEmojis":["🌱"],"biomeEmojiLabel":"🪨🌱","centralPoiKind":"dwelling","riverSlope":{"radius":10,"edgeCount":118,"totalContribution":57.896428571428565,"vector":{"x":10.456150793650794,"y":3.166834958679999},"strength":10.925197164128521,"confidence":0.18870243698451583,"direction":"E","directionScores":{"E":10.215873015873013,"NE":14.188492063492063,"NW":5.726190476190476,"W":4.194444444444444,"SW":11.582142857142857,"SE":11.989285714285712}},"isCoastal":false,"pointsOfInterest":[{"q":14,"r":0}],"pointOfInterestKinds":{"14,0":"curse"},"suppressCentralPoi":false},{"generationMode":"mythic","kingdomId":1,"id":21,"hexes":[{"q":-3,"r":6},{"q":-4,"r":6},{"q":-4,"r":7},{"q":-3,"r":7},{"q":-3,"r":8},{"q":-4,"r":5},{"q":-3,"r":4},{"q":-4,"r":8},{"q":-5,"r":5}],"centerHex":{"q":-3,"r":7},"anchorHex":{"q":-3,"r":6},"targetSize":9,"finalSize":9,"sizeCategory":"locality","sizeLabel":"Местность","biomeLandType":"settled","heightLevel":2,"biomeId":"open_hills","biomeLabel":"Открытые холмы","biomePrimaryEmoji":"〰️","biomeSecondaryEmojis":[],"biomeEmojiLabel":"〰️","centralPoiKind":"holding_city","riverSlope":{"radius":10,"edgeCount":98,"totalContribution":44.915079365079364,"vector":{"x":19.82103174603175,"y":-1.9217516103026133},"strength":19.91397571377697,"confidence":0.44336948738110693,"direction":"E","directionScores":{"E":13.290476190476191,"NE":15.334920634920637,"NW":1.3313492063492063,"W":0.5111111111111111,"SW":7.183730158730158,"SE":7.263492063492064}},"isCoastal":false,"pointsOfInterest":[],"pointOfInterestKinds":{},"suppressCentralPoi":false},{"generationMode":"mythic","kingdomId":1,"id":22,"hexes":[{"q":-3,"r":9},{"q":-4,"r":9},{"q":-5,"r":9},{"q":-5,"r":10},{"q":-4,"r":10},{"q":-3,"r":10}],"centerHex":{"q":-4,"r":10},"anchorHex":{"q":-3,"r":9},"targetSize":6,"finalSize":6,"sizeCategory":"locality","sizeLabel":"Местность","biomeLandType":"wild","heightLevel":2,"biomeId":"deciduous_forested_hills","biomeLabel":"Лиственные лесистые холмы","biomePrimaryEmoji":"〰️","biomeSecondaryEmojis":["🌳"],"biomeEmojiLabel":"〰️🌳","centralPoiKind":"myth","riverSlope":{"radius":10,"edgeCount":104,"totalContribution":38.68809523809524,"vector":{"x":15.930753968253965,"y":-1.2966324795550328},"strength":15.983434480238484,"confidence":0.4131357303034134,"direction":"E","directionScores":{"E":11.021825396825395,"NE":11.999206349206347,"NW":2.226984126984127,"W":0.711111111111111,"SW":5.6305555555555555,"SE":7.098412698412698}},"isCoastal":false,"pointsOfInterest":[{"q":-4,"r":9},{"q":-5,"r":9}],"pointOfInterestKinds":{"-4,9":"ruins","-5,9":"curse"},"suppressCentralPoi":false},{"generationMode":"mythic","kingdomId":1,"id":23,"hexes":[{"q":-3,"r":11},{"q":-3,"r":12},{"q":-4,"r":11},{"q":-5,"r":11}],"centerHex":{"q":-3,"r":11},"anchorHex":{"q":-3,"r":11},"targetSize":4,"finalSize":4,"sizeCategory":"tract","sizeLabel":"Урочище","biomeLandType":"wild","heightLevel":3,"biomeId":"mountains","biomeLabel":"Горы","biomePrimaryEmoji":"⛰","biomeSecondaryEmojis":[],"biomeEmojiLabel":"⛰","pointsOfInterest":[],"isCoastal":false,"isTract":true,"pointOfInterestKinds":{},"suppressCentralPoi":false},{"generationMode":"mythic","kingdomId":1,"id":24,"hexes":[{"q":0,"r":2},{"q":-1,"r":3},{"q":-2,"r":3},{"q":-3,"r":3},{"q":0,"r":1}],"centerHex":{"q":0,"r":2},"anchorHex":{"q":0,"r":2},"targetSize":5,"finalSize":5,"sizeCategory":"tract","sizeLabel":"Урочище","biomeLandType":"wild","heightLevel":1,"biomeId":"semi_desert","biomeLabel":"Полупустыня","biomePrimaryEmoji":"🪨","biomeSecondaryEmojis":["🌱"],"biomeEmojiLabel":"🪨🌱","pointsOfInterest":[{"q":-2,"r":3}],"isCoastal":false,"isTract":true,"pointOfInterestKinds":{"-2,3":"curse"},"suppressCentralPoi":false},{"generationMode":"mythic","kingdomId":1,"id":25,"hexes":[{"q":1,"r":0},{"q":1,"r":-1},{"q":0,"r":-1},{"q":0,"r":0},{"q":-1,"r":0},{"q":-2,"r":0},{"q":0,"r":-2},{"q":-3,"r":0}],"centerHex":{"q":0,"r":0},"anchorHex":{"q":1,"r":0},"targetSize":8,"finalSize":8,"sizeCategory":"locality","sizeLabel":"Местность","biomeLandType":"wild","heightLevel":1,"biomeId":"deciduous_woodland","biomeLabel":"Лиственное редколесье","biomePrimaryEmoji":"🌱","biomeSecondaryEmojis":["🌳"],"biomeEmojiLabel":"🌱🌳","centralPoiKind":"dwelling","riverSlope":{"radius":10,"edgeCount":95,"totalContribution":29.78730158730158,"vector":{"x":12.88710317460317,"y":-3.2039503331279033},"strength":13.279409850216142,"confidence":0.4458077483553326,"direction":"E","directionScores":{"E":9.802777777777775,"NE":9.167460317460316,"NW":2.5634920634920637,"W":0.2222222222222222,"SW":4.011111111111111,"SE":4.020238095238096}},"isCoastal":false,"pointsOfInterest":[{"q":-2,"r":0},{"q":1,"r":-1}],"pointOfInterestKinds":{"-2,0":"ruins","1,-1":"hazard"},"woodlandStyle":"islands","suppressCentralPoi":false},{"generationMode":"mythic","kingdomId":1,"id":26,"hexes":[{"q":-1,"r":2},{"q":-2,"r":2},{"q":-2,"r":1},{"q":-1,"r":1},{"q":-3,"r":2},{"q":-3,"r":1},{"q":-4,"r":3},{"q":-4,"r":1},{"q":-5,"r":4},{"q":-4,"r":4}],"centerHex":{"q":-1,"r":2},"anchorHex":{"q":-1,"r":2},"targetSize":9,"finalSize":10,"sizeCategory":"locality","sizeLabel":"Местность","biomeLandType":"wild","heightLevel":2,"biomeId":"hilly_woodland","biomeLabel":"Холмистое редколесье","biomePrimaryEmoji":"〰️","biomeSecondaryEmojis":["🌱","🌳"],"biomeEmojiLabel":"〰️🌱🌳","centralPoiKind":"monument","riverSlope":{"radius":10,"edgeCount":118,"totalContribution":45.74682539682539,"vector":{"x":21.106150793650794,"y":-8.221399101085375},"strength":22.650849973094903,"confidence":0.4951349033864711,"direction":"E","directionScores":{"E":15.111111111111107,"NE":16.302380952380958,"NW":3.249603174603175,"W":1.025,"SW":4.535714285714285,"SE":5.523015873015873}},"isCoastal":false,"pointsOfInterest":[{"q":-4,"r":1},{"q":-3,"r":2}],"pointOfInterestKinds":{"-4,1":"ruins","-3,2":"hazard"},"woodlandStyle":"islands","suppressCentralPoi":false},{"generationMode":"mythic","kingdomId":1,"id":27,"hexes":[{"q":6,"r":11},{"q":7,"r":10},{"q":7,"r":11},{"q":8,"r":9},{"q":6,"r":12},{"q":9,"r":9},{"q":7,"r":12}],"centerHex":{"q":6,"r":11},"anchorHex":{"q":6,"r":11},"targetSize":7,"finalSize":7,"sizeCategory":"locality","sizeLabel":"Местность","biomeLandType":"wild","heightLevel":1,"biomeId":"swamp_forest","biomeLabel":"Заболоченный лес","biomePrimaryEmoji":"💧","biomeSecondaryEmojis":["🌳"],"biomeEmojiLabel":"💧🌳","centralPoiKind":"myth","riverSlope":{"radius":10,"edgeCount":104,"totalContribution":46.77420634920635,"vector":{"x":4.142063492063494,"y":6.9934987964338635},"strength":8.128081900916547,"confidence":0.1737727379110188,"direction":"SE","directionScores":{"E":8.036904761904763,"NE":10.391666666666666,"NW":2.0428571428571427,"W":5.792857142857143,"SW":12.531349206349207,"SE":7.9785714285714295}},"isCoastal":false,"pointsOfInterest":[],"pointOfInterestKinds":{},"suppressCentralPoi":false}],"candidateHexes":[{"q":-2,"r":12},{"q":0,"r":12},{"q":1,"r":12},{"q":-1,"r":12},{"q":2,"r":12},{"q":3,"r":-1},{"q":9,"r":-1},{"q":12,"r":-2},{"q":11,"r":-2},{"q":13,"r":-1},{"q":13,"r":-2},{"q":10,"r":-2},{"q":7,"r":-1},{"q":7,"r":-2},{"q":6,"r":-2},{"q":5,"r":-2},{"q":9,"r":-2},{"q":8,"r":-2},{"q":4,"r":-2},{"q":10,"r":4},{"q":10,"r":6},{"q":10,"r":7},{"q":10,"r":8},{"q":11,"r":5},{"q":11,"r":4},{"q":4,"r":13},{"q":1,"r":13},{"q":2,"r":14},{"q":0,"r":14},{"q":0,"r":15},{"q":1,"r":15},{"q":3,"r":14},{"q":5,"r":13},{"q":3,"r":-2},{"q":2,"r":-2},{"q":13,"r":1},{"q":12,"r":2},{"q":14,"r":-1},{"q":15,"r":-1},{"q":14,"r":1},{"q":16,"r":0},{"q":16,"r":-1},{"q":15,"r":1},{"q":12,"r":3},{"q":-5,"r":6},{"q":-5,"r":7},{"q":-5,"r":8},{"q":-6,"r":5},{"q":-6,"r":6},{"q":-6,"r":9},{"q":-6,"r":10},{"q":-6,"r":11},{"q":-4,"r":12},{"q":-4,"r":13},{"q":-3,"r":13},{"q":-5,"r":12},{"q":-6,"r":12},{"q":1,"r":-2},{"q":-1,"r":-1},{"q":-2,"r":-1},{"q":1,"r":-3},{"q":0,"r":-3},{"q":-1,"r":-2},{"q":-3,"r":-1},{"q":-4,"r":0},{"q":-4,"r":2},{"q":-5,"r":3},{"q":-5,"r":1},{"q":-5,"r":2},{"q":-6,"r":4},{"q":8,"r":10},{"q":8,"r":11},{"q":6,"r":13},{"q":10,"r":9},{"q":9,"r":10},{"q":8,"r":12},{"q":7,"r":13}],"rivers":[{"id":1,"regionId":1,"vertexPath":[{"key":"-48.497,280","x":-48.49742261192856,"y":280},{"key":"-24.249,266","x":-24.248711305964285,"y":266},{"key":"0,280","x":1.7145055188062944e-15,"y":280},{"key":"24.249,266","x":24.248711305964285,"y":266},{"key":"24.249,238","x":24.24871130596428,"y":238},{"key":"48.497,224","x":48.49742261192856,"y":224},{"key":"72.746,238","x":72.74613391789285,"y":238},{"key":"96.995,224","x":96.99484522385711,"y":224},{"key":"121.244,238","x":121.24355652982142,"y":238},{"key":"121.244,266","x":121.2435565298214,"y":266},{"key":"145.492,280","x":145.4922678357857,"y":280},{"key":"169.741,266","x":169.74097914174996,"y":266},{"key":"193.99,280","x":193.98969044771425,"y":280},{"key":"218.238,266","x":218.23840175367852,"y":266},{"key":"242.487,280","x":242.4871130596428,"y":280},{"key":"266.736,266","x":266.73582436560713,"y":266},{"key":"290.985,280","x":290.9845356715714,"y":280},{"key":"315.233,266","x":315.23324697753566,"y":266},{"key":"315.233,238","x":315.23324697753566,"y":238},{"key":"339.482,224","x":339.4819582834999,"y":224},{"key":"363.731,238","x":363.7306695894642,"y":238},{"key":"363.731,266","x":363.73066958946424,"y":266},{"key":"387.979,280","x":387.9793808954285,"y":280},{"key":"387.979,308","x":387.9793808954285,"y":308},{"key":"412.228,322","x":412.22809220139277,"y":322},{"key":"412.228,350","x":412.22809220139277,"y":350},{"key":"436.477,364","x":436.47680350735703,"y":364},{"key":"436.477,392","x":436.47680350735703,"y":392},{"key":"460.726,406","x":460.72551481332135,"y":406},{"key":"460.726,434","x":460.72551481332135,"y":434},{"key":"436.477,448","x":436.47680350735703,"y":448},{"key":"436.477,476","x":436.47680350735703,"y":476},{"key":"412.228,490","x":412.22809220139277,"y":490}],"sectors":[{"id":"1:sector:1","riverId":1,"sectorIndex":1,"vertexPath":[{"key":"-48.497,280","x":-48.49742261192856,"y":280},{"key":"-24.249,266","x":-24.248711305964285,"y":266},{"key":"0,280","x":1.7145055188062944e-15,"y":280}],"edgeKeys":["-24.249,266|-48.497,280","-24.249,266|0,280"],"startVertexKey":"-48.497,280","endVertexKey":"0,280","startReason":"river_start","endReason":"river_confluence","fullness":2,"assignedRegionId":21},{"id":"1:sector:2","riverId":1,"sectorIndex":2,"vertexPath":[{"key":"0,280","x":1.7145055188062944e-15,"y":280},{"key":"24.249,266","x":24.248711305964285,"y":266},{"key":"24.249,238","x":24.24871130596428,"y":238}],"edgeKeys":["0,280|24.249,266","24.249,238|24.249,266"],"startVertexKey":"0,280","endVertexKey":"24.249,238","startReason":"river_confluence","endReason":"region_boundary","fullness":2,"assignedRegionId":21},{"id":"1:sector:3","riverId":1,"sectorIndex":3,"vertexPath":[{"key":"24.249,238","x":24.24871130596428,"y":238},{"key":"48.497,224","x":48.49742261192856,"y":224}],"edgeKeys":["24.249,238|48.497,224"],"startVertexKey":"24.249,238","endVertexKey":"48.497,224","startReason":"region_boundary","endReason":"lake","fullness":2,"assignedRegionId":11},{"id":"1:sector:4","riverId":1,"sectorIndex":4,"vertexPath":[{"key":"48.497,224","x":48.49742261192856,"y":224},{"key":"72.746,238","x":72.74613391789285,"y":238}],"edgeKeys":["48.497,224|72.746,238"],"startVertexKey":"48.497,224","endVertexKey":"72.746,238","startReason":"lake","endReason":"lake","fullness":2,"assignedRegionId":11},{"id":"1:sector:5","riverId":1,"sectorIndex":5,"vertexPath":[{"key":"72.746,238","x":72.74613391789285,"y":238},{"key":"96.995,224","x":96.99484522385711,"y":224}],"edgeKeys":["72.746,238|96.995,224"],"startVertexKey":"72.746,238","endVertexKey":"96.995,224","startReason":"lake","endReason":"lake","fullness":2,"assignedRegionId":11},{"id":"1:sector:6","riverId":1,"sectorIndex":6,"vertexPath":[{"key":"96.995,224","x":96.99484522385711,"y":224},{"key":"121.244,238","x":121.24355652982142,"y":238}],"edgeKeys":["121.244,238|96.995,224"],"startVertexKey":"96.995,224","endVertexKey":"121.244,238","startReason":"lake","endReason":"lake","fullness":2,"assignedRegionId":11},{"id":"1:sector:7","riverId":1,"sectorIndex":7,"vertexPath":[{"key":"121.244,238","x":121.24355652982142,"y":238},{"key":"121.244,266","x":121.2435565298214,"y":266},{"key":"145.492,280","x":145.4922678357857,"y":280},{"key":"169.741,266","x":169.74097914174996,"y":266},{"key":"193.99,280","x":193.98969044771425,"y":280},{"key":"218.238,266","x":218.23840175367852,"y":266},{"key":"242.487,280","x":242.4871130596428,"y":280},{"key":"266.736,266","x":266.73582436560713,"y":266},{"key":"290.985,280","x":290.9845356715714,"y":280},{"key":"315.233,266","x":315.23324697753566,"y":266},{"key":"315.233,238","x":315.23324697753566,"y":238}],"edgeKeys":["121.244,238|121.244,266","121.244,266|145.492,280","145.492,280|169.741,266","169.741,266|193.99,280","193.99,280|218.238,266","218.238,266|242.487,280","242.487,280|266.736,266","266.736,266|290.985,280","290.985,280|315.233,266","315.233,238|315.233,266"],"startVertexKey":"121.244,238","endVertexKey":"315.233,238","startReason":"lake","endReason":"region_boundary","fullness":2,"assignedRegionId":1},{"id":"1:sector:8","riverId":1,"sectorIndex":8,"vertexPath":[{"key":"315.233,238","x":315.23324697753566,"y":238},{"key":"339.482,224","x":339.4819582834999,"y":224},{"key":"363.731,238","x":363.7306695894642,"y":238}],"edgeKeys":["315.233,238|339.482,224","339.482,224|363.731,238"],"startVertexKey":"315.233,238","endVertexKey":"363.731,238","startReason":"region_boundary","endReason":"region_boundary","fullness":3,"assignedRegionId":1},{"id":"1:sector:9","riverId":1,"sectorIndex":9,"vertexPath":[{"key":"363.731,238","x":363.7306695894642,"y":238},{"key":"363.731,266","x":363.73066958946424,"y":266},{"key":"387.979,280","x":387.9793808954285,"y":280},{"key":"387.979,308","x":387.9793808954285,"y":308}],"edgeKeys":["363.731,238|363.731,266","363.731,266|387.979,280","387.979,280|387.979,308"],"startVertexKey":"363.731,238","endVertexKey":"387.979,308","startReason":"region_boundary","endReason":"region_boundary","fullness":3,"assignedRegionId":5},{"id":"1:sector:10","riverId":1,"sectorIndex":10,"vertexPath":[{"key":"387.979,308","x":387.9793808954285,"y":308},{"key":"412.228,322","x":412.22809220139277,"y":322},{"key":"412.228,350","x":412.22809220139277,"y":350}],"edgeKeys":["387.979,308|412.228,322","412.228,322|412.228,350"],"startVertexKey":"387.979,308","endVertexKey":"412.228,350","startReason":"region_boundary","endReason":"region_boundary","fullness":4,"assignedRegionId":8},{"id":"1:sector:11","riverId":1,"sectorIndex":11,"vertexPath":[{"key":"412.228,350","x":412.22809220139277,"y":350},{"key":"436.477,364","x":436.47680350735703,"y":364},{"key":"436.477,392","x":436.47680350735703,"y":392},{"key":"460.726,406","x":460.72551481332135,"y":406},{"key":"460.726,434","x":460.72551481332135,"y":434}],"edgeKeys":["412.228,350|436.477,364","436.477,364|436.477,392","436.477,392|460.726,406","460.726,406|460.726,434"],"startVertexKey":"412.228,350","endVertexKey":"460.726,434","startReason":"region_boundary","endReason":"region_boundary","fullness":4,"assignedRegionId":13},{"id":"1:sector:12","riverId":1,"sectorIndex":12,"vertexPath":[{"key":"460.726,434","x":460.72551481332135,"y":434},{"key":"436.477,448","x":436.47680350735703,"y":448},{"key":"436.477,476","x":436.47680350735703,"y":476},{"key":"412.228,490","x":412.22809220139277,"y":490}],"edgeKeys":["436.477,448|460.726,434","436.477,448|436.477,476","412.228,490|436.477,476"],"startVertexKey":"460.726,434","endVertexKey":"412.228,490","startReason":"region_boundary","endReason":"river_end","fullness":4,"assignedRegionId":18}],"controlPoints":{"startVertex":{"x":121.2435565298214,"y":238,"key":"121.244,238"},"middlePurpleVertex":{"x":315.23324697753566,"y":238,"key":"315.233,238"},"endVertex":{"x":363.73066958946424,"y":238,"key":"363.731,238"},"startMode":"red vertex"}},{"id":2,"regionId":1,"vertexPath":[{"key":"266.736,238","x":266.73582436560713,"y":238},{"key":"290.985,224","x":290.9845356715714,"y":224},{"key":"315.233,238","x":315.23324697753566,"y":238}],"sectors":[{"id":"2:sector:1","riverId":2,"sectorIndex":1,"vertexPath":[{"key":"266.736,238","x":266.73582436560713,"y":238},{"key":"290.985,224","x":290.9845356715714,"y":224},{"key":"315.233,238","x":315.23324697753566,"y":238}],"edgeKeys":["266.736,238|290.985,224","290.985,224|315.233,238"],"startVertexKey":"266.736,238","endVertexKey":"315.233,238","startReason":"river_start","endReason":"river_confluence","fullness":1,"assignedRegionId":1}]},{"id":3,"regionId":3,"vertexPath":[{"key":"96.995,224","x":96.99484522385711,"y":224},{"key":"96.995,196","x":96.99484522385713,"y":196},{"key":"121.244,182","x":121.2435565298214,"y":182},{"key":"121.244,154","x":121.24355652982142,"y":154},{"key":"145.492,140","x":145.4922678357857,"y":140},{"key":"169.741,154","x":169.74097914174996,"y":154},{"key":"193.99,140","x":193.98969044771425,"y":140},{"key":"218.238,154","x":218.23840175367852,"y":154},{"key":"242.487,140","x":242.4871130596428,"y":140},{"key":"242.487,112","x":242.48711305964278,"y":112},{"key":"266.736,98","x":266.7358243656071,"y":98},{"key":"290.985,112","x":290.98453567157134,"y":112},{"key":"315.233,98","x":315.23324697753566,"y":98},{"key":"339.482,112","x":339.4819582834999,"y":112},{"key":"363.731,98","x":363.7306695894642,"y":98},{"key":"363.731,70","x":363.73066958946424,"y":70},{"key":"387.979,56","x":387.9793808954285,"y":56},{"key":"387.979,28","x":387.9793808954285,"y":27.999999999999996},{"key":"412.228,14","x":412.22809220139277,"y":14},{"key":"412.228,-14","x":412.2280922013928,"y":-14.000000000000004}],"sectors":[{"id":"3:sector:1","riverId":3,"sectorIndex":1,"vertexPath":[{"key":"96.995,224","x":96.99484522385711,"y":224},{"key":"96.995,196","x":96.99484522385713,"y":196}],"edgeKeys":["96.995,196|96.995,224"],"startVertexKey":"96.995,224","endVertexKey":"96.995,196","startReason":"lake","endReason":"lake","fullness":2,"assignedRegionId":11},{"id":"3:sector:2","riverId":3,"sectorIndex":2,"vertexPath":[{"key":"96.995,196","x":96.99484522385713,"y":196},{"key":"121.244,182","x":121.2435565298214,"y":182}],"edgeKeys":["121.244,182|96.995,196"],"startVertexKey":"96.995,196","endVertexKey":"121.244,182","startReason":"lake","endReason":"lake","fullness":2,"assignedRegionId":11},{"id":"3:sector:3","riverId":3,"sectorIndex":3,"vertexPath":[{"key":"121.244,182","x":121.2435565298214,"y":182},{"key":"121.244,154","x":121.24355652982142,"y":154},{"key":"145.492,140","x":145.4922678357857,"y":140},{"key":"169.741,154","x":169.74097914174996,"y":154},{"key":"193.99,140","x":193.98969044771425,"y":140},{"key":"218.238,154","x":218.23840175367852,"y":154},{"key":"242.487,140","x":242.4871130596428,"y":140}],"edgeKeys":["121.244,154|121.244,182","121.244,154|145.492,140","145.492,140|169.741,154","169.741,154|193.99,140","193.99,140|218.238,154","218.238,154|242.487,140"],"startVertexKey":"121.244,182","endVertexKey":"242.487,140","startReason":"lake","endReason":"region_boundary","fullness":2,"assignedRegionId":3},{"id":"3:sector:4","riverId":3,"sectorIndex":4,"vertexPath":[{"key":"242.487,140","x":242.4871130596428,"y":140},{"key":"242.487,112","x":242.48711305964278,"y":112},{"key":"266.736,98","x":266.7358243656071,"y":98},{"key":"290.985,112","x":290.98453567157134,"y":112}],"edgeKeys":["242.487,112|242.487,140","242.487,112|266.736,98","266.736,98|290.985,112"],"startVertexKey":"242.487,140","endVertexKey":"290.985,112","startReason":"region_boundary","endReason":"region_boundary","fullness":3,"assignedRegionId":3},{"id":"3:sector:5","riverId":3,"sectorIndex":5,"vertexPath":[{"key":"290.985,112","x":290.98453567157134,"y":112},{"key":"315.233,98","x":315.23324697753566,"y":98},{"key":"339.482,112","x":339.4819582834999,"y":112},{"key":"363.731,98","x":363.7306695894642,"y":98}],"edgeKeys":["290.985,112|315.233,98","315.233,98|339.482,112","339.482,112|363.731,98"],"startVertexKey":"290.985,112","endVertexKey":"363.731,98","startReason":"region_boundary","endReason":"region_boundary","fullness":3,"assignedRegionId":4},{"id":"3:sector:6","riverId":3,"sectorIndex":6,"vertexPath":[{"key":"363.731,98","x":363.7306695894642,"y":98},{"key":"363.731,70","x":363.73066958946424,"y":70},{"key":"387.979,56","x":387.9793808954285,"y":56},{"key":"387.979,28","x":387.9793808954285,"y":27.999999999999996},{"key":"412.228,14","x":412.22809220139277,"y":14},{"key":"412.228,-14","x":412.2280922013928,"y":-14.000000000000004}],"edgeKeys":["363.731,70|363.731,98","363.731,70|387.979,56","387.979,28|387.979,56","387.979,28|412.228,14","412.228,-14|412.228,14"],"startVertexKey":"363.731,98","endVertexKey":"412.228,-14","startReason":"region_boundary","endReason":"river_end","fullness":3,"assignedRegionId":10}],"controlPoints":{"startVertex":{"x":121.2435565298214,"y":182,"key":"121.244,182"},"middlePurpleVertex":{"x":218.23840175367854,"y":154,"key":"218.238,154"},"endVertex":{"x":290.9845356715714,"y":112,"key":"290.985,112"},"startMode":"red vertex"}},{"id":4,"regionId":3,"vertexPath":[{"key":"266.736,154","x":266.7358243656071,"y":154},{"key":"242.487,140","x":242.4871130596428,"y":140}],"sectors":[{"id":"4:sector:1","riverId":4,"sectorIndex":1,"vertexPath":[{"key":"266.736,154","x":266.7358243656071,"y":154},{"key":"242.487,140","x":242.4871130596428,"y":140}],"edgeKeys":["242.487,140|266.736,154"],"startVertexKey":"266.736,154","endVertexKey":"242.487,140","startReason":"river_start","endReason":"river_confluence","fullness":1,"assignedRegionId":3}]},{"id":5,"regionId":4,"vertexPath":[{"key":"412.228,182","x":412.22809220139277,"y":182},{"key":"412.228,154","x":412.22809220139277,"y":154},{"key":"387.979,140","x":387.9793808954285,"y":140},{"key":"363.731,154","x":363.7306695894642,"y":154},{"key":"339.482,140","x":339.4819582834999,"y":140},{"key":"339.482,112","x":339.4819582834999,"y":112}],"sectors":[{"id":"5:sector:1","riverId":5,"sectorIndex":1,"vertexPath":[{"key":"412.228,182","x":412.22809220139277,"y":182},{"key":"412.228,154","x":412.22809220139277,"y":154},{"key":"387.979,140","x":387.9793808954285,"y":140},{"key":"363.731,154","x":363.7306695894642,"y":154},{"key":"339.482,140","x":339.4819582834999,"y":140},{"key":"339.482,112","x":339.4819582834999,"y":112}],"edgeKeys":["412.228,154|412.228,182","387.979,140|412.228,154","363.731,154|387.979,140","339.482,140|363.731,154","339.482,112|339.482,140"],"startVertexKey":"412.228,182","endVertexKey":"339.482,112","startReason":"river_start","endReason":"river_confluence","fullness":1,"assignedRegionId":4}]},{"id":6,"regionId":5,"vertexPath":[{"key":"412.228,266","x":412.22809220139277,"y":266},{"key":"387.979,280","x":387.9793808954285,"y":280}],"sectors":[{"id":"6:sector:1","riverId":6,"sectorIndex":1,"vertexPath":[{"key":"412.228,266","x":412.22809220139277,"y":266},{"key":"387.979,280","x":387.9793808954285,"y":280}],"edgeKeys":["387.979,280|412.228,266"],"startVertexKey":"412.228,266","endVertexKey":"387.979,280","startReason":"river_start","endReason":"river_confluence","fullness":1,"assignedRegionId":5}]},{"id":7,"regionId":6,"vertexPath":[{"key":"96.995,476","x":96.99484522385711,"y":476},{"key":"96.995,448","x":96.99484522385713,"y":448},{"key":"72.746,434","x":72.74613391789285,"y":434},{"key":"72.746,406","x":72.74613391789285,"y":406},{"key":"96.995,392","x":96.99484522385714,"y":392},{"key":"96.995,364","x":96.99484522385713,"y":364},{"key":"121.244,350","x":121.2435565298214,"y":350},{"key":"145.492,364","x":145.49226783578567,"y":364},{"key":"169.741,350","x":169.74097914174996,"y":350},{"key":"169.741,322","x":169.74097914174996,"y":322},{"key":"193.99,308","x":193.98969044771425,"y":308},{"key":"218.238,322","x":218.23840175367854,"y":322},{"key":"218.238,350","x":218.23840175367854,"y":350},{"key":"242.487,364","x":242.4871130596428,"y":364},{"key":"266.736,350","x":266.7358243656071,"y":350},{"key":"290.985,364","x":290.9845356715714,"y":364},{"key":"290.985,392","x":290.9845356715714,"y":392},{"key":"315.233,406","x":315.23324697753566,"y":406},{"key":"339.482,392","x":339.4819582834999,"y":392},{"key":"339.482,364","x":339.4819582835,"y":364},{"key":"363.731,350","x":363.73066958946424,"y":350},{"key":"363.731,322","x":363.73066958946424,"y":322},{"key":"387.979,308","x":387.9793808954285,"y":308}],"sectors":[{"id":"7:sector:1","riverId":7,"sectorIndex":1,"vertexPath":[{"key":"96.995,476","x":96.99484522385711,"y":476},{"key":"96.995,448","x":96.99484522385713,"y":448},{"key":"72.746,434","x":72.74613391789285,"y":434}],"edgeKeys":["96.995,448|96.995,476","72.746,434|96.995,448"],"startVertexKey":"96.995,476","endVertexKey":"72.746,434","startReason":"river_start","endReason":"region_boundary","fullness":2,"assignedRegionId":23},{"id":"7:sector:2","riverId":7,"sectorIndex":2,"vertexPath":[{"key":"72.746,434","x":72.74613391789285,"y":434},{"key":"72.746,406","x":72.74613391789285,"y":406},{"key":"96.995,392","x":96.99484522385714,"y":392},{"key":"96.995,364","x":96.99484522385713,"y":364}],"edgeKeys":["72.746,406|72.746,434","72.746,406|96.995,392","96.995,364|96.995,392"],"startVertexKey":"72.746,434","endVertexKey":"96.995,364","startReason":"region_boundary","endReason":"region_boundary","fullness":2,"assignedRegionId":22},{"id":"7:sector:3","riverId":7,"sectorIndex":3,"vertexPath":[{"key":"96.995,364","x":96.99484522385713,"y":364},{"key":"121.244,350","x":121.2435565298214,"y":350},{"key":"145.492,364","x":145.49226783578567,"y":364},{"key":"169.741,350","x":169.74097914174996,"y":350},{"key":"169.741,322","x":169.74097914174996,"y":322},{"key":"193.99,308","x":193.98969044771425,"y":308},{"key":"218.238,322","x":218.23840175367854,"y":322},{"key":"218.238,350","x":218.23840175367854,"y":350}],"edgeKeys":["121.244,350|96.995,364","121.244,350|145.492,364","145.492,364|169.741,350","169.741,322|169.741,350","169.741,322|193.99,308","193.99,308|218.238,322","218.238,322|218.238,350"],"startVertexKey":"96.995,364","endVertexKey":"218.238,350","startReason":"region_boundary","endReason":"region_boundary","fullness":2,"assignedRegionId":6},{"id":"7:sector:4","riverId":7,"sectorIndex":4,"vertexPath":[{"key":"218.238,350","x":218.23840175367854,"y":350},{"key":"242.487,364","x":242.4871130596428,"y":364},{"key":"266.736,350","x":266.7358243656071,"y":350}],"edgeKeys":["218.238,350|242.487,364","242.487,364|266.736,350"],"startVertexKey":"218.238,350","endVertexKey":"266.736,350","startReason":"region_boundary","endReason":"region_boundary","fullness":3,"assignedRegionId":6},{"id":"7:sector:5","riverId":7,"sectorIndex":5,"vertexPath":[{"key":"266.736,350","x":266.7358243656071,"y":350},{"key":"290.985,364","x":290.9845356715714,"y":364},{"key":"290.985,392","x":290.9845356715714,"y":392},{"key":"315.233,406","x":315.23324697753566,"y":406},{"key":"339.482,392","x":339.4819582834999,"y":392}],"edgeKeys":["266.736,350|290.985,364","290.985,364|290.985,392","290.985,392|315.233,406","315.233,406|339.482,392"],"startVertexKey":"266.736,350","endVertexKey":"339.482,392","startReason":"region_boundary","endReason":"region_boundary","fullness":3,"assignedRegionId":7},{"id":"7:sector:6","riverId":7,"sectorIndex":6,"vertexPath":[{"key":"339.482,392","x":339.4819582834999,"y":392},{"key":"339.482,364","x":339.4819582835,"y":364},{"key":"363.731,350","x":363.73066958946424,"y":350},{"key":"363.731,322","x":363.73066958946424,"y":322},{"key":"387.979,308","x":387.9793808954285,"y":308}],"edgeKeys":["339.482,364|339.482,392","339.482,364|363.731,350","363.731,322|363.731,350","363.731,322|387.979,308"],"startVertexKey":"339.482,392","endVertexKey":"387.979,308","startReason":"region_boundary","endReason":"river_end","fullness":3,"assignedRegionId":8}],"controlPoints":{"startVertex":{"x":96.99484522385713,"y":364,"key":"96.995,364"},"middlePurpleVertex":{"x":193.98969044771425,"y":308,"key":"193.99,308"},"endVertex":{"x":266.7358243656071,"y":350,"key":"266.736,350"},"startMode":"red vertex"}},{"id":8,"regionId":6,"vertexPath":[{"key":"193.99,364","x":193.98969044771425,"y":364},{"key":"218.238,350","x":218.23840175367854,"y":350}],"sectors":[{"id":"8:sector:1","riverId":8,"sectorIndex":1,"vertexPath":[{"key":"193.99,364","x":193.98969044771425,"y":364},{"key":"218.238,350","x":218.23840175367854,"y":350}],"edgeKeys":["193.99,364|218.238,350"],"startVertexKey":"193.99,364","endVertexKey":"218.238,350","startReason":"river_start","endReason":"river_confluence","fullness":1,"assignedRegionId":6}]},{"id":9,"regionId":7,"vertexPath":[{"key":"218.238,434","x":218.23840175367852,"y":434},{"key":"242.487,448","x":242.48711305964278,"y":448},{"key":"266.736,434","x":266.73582436560713,"y":434},{"key":"290.985,448","x":290.9845356715714,"y":448},{"key":"315.233,434","x":315.23324697753566,"y":434},{"key":"315.233,406","x":315.23324697753566,"y":406}],"sectors":[{"id":"9:sector:1","riverId":9,"sectorIndex":1,"vertexPath":[{"key":"218.238,434","x":218.23840175367852,"y":434},{"key":"242.487,448","x":242.48711305964278,"y":448},{"key":"266.736,434","x":266.73582436560713,"y":434},{"key":"290.985,448","x":290.9845356715714,"y":448},{"key":"315.233,434","x":315.23324697753566,"y":434},{"key":"315.233,406","x":315.23324697753566,"y":406}],"edgeKeys":["218.238,434|242.487,448","242.487,448|266.736,434","266.736,434|290.985,448","290.985,448|315.233,434","315.233,406|315.233,434"],"startVertexKey":"218.238,434","endVertexKey":"315.233,406","startReason":"river_start","endReason":"river_confluence","fullness":1,"assignedRegionId":7}]},{"id":10,"regionId":9,"vertexPath":[{"key":"121.244,-14","x":121.2435565298214,"y":-13.999999999999998},{"key":"121.244,14","x":121.2435565298214,"y":14},{"key":"145.492,28","x":145.49226783578567,"y":27.999999999999996},{"key":"145.492,56","x":145.49226783578567,"y":56},{"key":"169.741,70","x":169.74097914174996,"y":70},{"key":"193.99,56","x":193.98969044771425,"y":56},{"key":"218.238,70","x":218.23840175367854,"y":70},{"key":"242.487,56","x":242.48711305964284,"y":56},{"key":"242.487,28","x":242.48711305964278,"y":27.999999999999996},{"key":"266.736,14","x":266.7358243656071,"y":14},{"key":"266.736,-14","x":266.7358243656071,"y":-13.999999999999998},{"key":"290.985,-28","x":290.9845356715714,"y":-28}],"sectors":[{"id":"10:sector:1","riverId":10,"sectorIndex":1,"vertexPath":[{"key":"121.244,-14","x":121.2435565298214,"y":-13.999999999999998},{"key":"121.244,14","x":121.2435565298214,"y":14}],"edgeKeys":["121.244,-14|121.244,14"],"startVertexKey":"121.244,-14","endVertexKey":"121.244,14","startReason":"river_start","endReason":"region_boundary","fullness":2,"assignedRegionId":19},{"id":"10:sector:2","riverId":10,"sectorIndex":2,"vertexPath":[{"key":"121.244,14","x":121.2435565298214,"y":14},{"key":"145.492,28","x":145.49226783578567,"y":27.999999999999996},{"key":"145.492,56","x":145.49226783578567,"y":56},{"key":"169.741,70","x":169.74097914174996,"y":70},{"key":"193.99,56","x":193.98969044771425,"y":56}],"edgeKeys":["121.244,14|145.492,28","145.492,28|145.492,56","145.492,56|169.741,70","169.741,70|193.99,56"],"startVertexKey":"121.244,14","endVertexKey":"193.99,56","startReason":"region_boundary","endReason":"region_boundary","fullness":2,"assignedRegionId":9},{"id":"10:sector:3","riverId":10,"sectorIndex":3,"vertexPath":[{"key":"193.99,56","x":193.98969044771425,"y":56},{"key":"218.238,70","x":218.23840175367854,"y":70},{"key":"242.487,56","x":242.48711305964284,"y":56}],"edgeKeys":["193.99,56|218.238,70","218.238,70|242.487,56"],"startVertexKey":"193.99,56","endVertexKey":"242.487,56","startReason":"region_boundary","endReason":"region_boundary","fullness":3,"assignedRegionId":9},{"id":"10:sector:4","riverId":10,"sectorIndex":4,"vertexPath":[{"key":"242.487,56","x":242.48711305964284,"y":56},{"key":"242.487,28","x":242.48711305964278,"y":27.999999999999996},{"key":"266.736,14","x":266.7358243656071,"y":14},{"key":"266.736,-14","x":266.7358243656071,"y":-13.999999999999998},{"key":"290.985,-28","x":290.9845356715714,"y":-28}],"edgeKeys":["242.487,28|242.487,56","242.487,28|266.736,14","266.736,-14|266.736,14","266.736,-14|290.985,-28"],"startVertexKey":"242.487,56","endVertexKey":"290.985,-28","startReason":"region_boundary","endReason":"river_end","fullness":3,"assignedRegionId":14}],"controlPoints":{"startVertex":{"x":121.2435565298214,"y":13.999999999999998,"key":"121.244,14"},"middlePurpleVertex":{"x":169.74097914174996,"y":70,"key":"169.741,70"},"endVertex":{"x":242.4871130596428,"y":56,"key":"242.487,56"},"startMode":"red vertex"}},{"id":11,"regionId":9,"vertexPath":[{"key":"169.741,14","x":169.74097914174996,"y":14},{"key":"193.99,28","x":193.98969044771425,"y":28},{"key":"193.99,56","x":193.98969044771425,"y":56}],"sectors":[{"id":"11:sector:1","riverId":11,"sectorIndex":1,"vertexPath":[{"key":"169.741,14","x":169.74097914174996,"y":14},{"key":"193.99,28","x":193.98969044771425,"y":28},{"key":"193.99,56","x":193.98969044771425,"y":56}],"edgeKeys":["169.741,14|193.99,28","193.99,28|193.99,56"],"startVertexKey":"169.741,14","endVertexKey":"193.99,56","startReason":"river_start","endReason":"river_confluence","fullness":1,"assignedRegionId":9}]},{"id":12,"regionId":10,"vertexPath":[{"key":"533.472,-28","x":533.4716487312143,"y":-28},{"key":"509.223,-14","x":509.2229374252499,"y":-13.999999999999998},{"key":"484.974,-28","x":484.9742261192856,"y":-28},{"key":"460.726,-14","x":460.72551481332135,"y":-14.000000000000004},{"key":"460.726,14","x":460.72551481332135,"y":14},{"key":"436.477,28","x":436.47680350735703,"y":28},{"key":"412.228,14","x":412.22809220139277,"y":14}],"sectors":[{"id":"12:sector:1","riverId":12,"sectorIndex":1,"vertexPath":[{"key":"533.472,-28","x":533.4716487312143,"y":-28},{"key":"509.223,-14","x":509.2229374252499,"y":-13.999999999999998},{"key":"484.974,-28","x":484.9742261192856,"y":-28},{"key":"460.726,-14","x":460.72551481332135,"y":-14.000000000000004},{"key":"460.726,14","x":460.72551481332135,"y":14},{"key":"436.477,28","x":436.47680350735703,"y":28},{"key":"412.228,14","x":412.22809220139277,"y":14}],"edgeKeys":["509.223,-14|533.472,-28","484.974,-28|509.223,-14","460.726,-14|484.974,-28","460.726,-14|460.726,14","436.477,28|460.726,14","412.228,14|436.477,28"],"startVertexKey":"533.472,-28","endVertexKey":"412.228,14","startReason":"river_start","endReason":"river_confluence","fullness":1,"assignedRegionId":10}]},{"id":13,"regionId":11,"vertexPath":[{"key":"0,196","x":0,"y":196},{"key":"24.249,182","x":24.248711305964278,"y":182},{"key":"48.497,196","x":48.49742261192857,"y":196},{"key":"48.497,224","x":48.49742261192856,"y":224}],"sectors":[{"id":"13:sector:1","riverId":13,"sectorIndex":1,"vertexPath":[{"key":"0,196","x":0,"y":196},{"key":"24.249,182","x":24.248711305964278,"y":182},{"key":"48.497,196","x":48.49742261192857,"y":196}],"edgeKeys":["0,196|24.249,182","24.249,182|48.497,196"],"startVertexKey":"0,196","endVertexKey":"48.497,196","startReason":"river_start","endReason":"lake","fullness":1,"assignedRegionId":11},{"id":"13:sector:2","riverId":13,"sectorIndex":2,"vertexPath":[{"key":"48.497,196","x":48.49742261192857,"y":196},{"key":"48.497,224","x":48.49742261192856,"y":224}],"edgeKeys":["48.497,196|48.497,224"],"startVertexKey":"48.497,196","endVertexKey":"48.497,224","startReason":"lake","endReason":"lake","fullness":2,"assignedRegionId":11}]},{"id":14,"regionId":13,"vertexPath":[{"key":"509.223,434","x":509.2229374252499,"y":434},{"key":"509.223,406","x":509.2229374252499,"y":406},{"key":"484.974,392","x":484.9742261192856,"y":392},{"key":"460.726,406","x":460.72551481332135,"y":406}],"sectors":[{"id":"14:sector:1","riverId":14,"sectorIndex":1,"vertexPath":[{"key":"509.223,434","x":509.2229374252499,"y":434},{"key":"509.223,406","x":509.2229374252499,"y":406},{"key":"484.974,392","x":484.9742261192856,"y":392},{"key":"460.726,406","x":460.72551481332135,"y":406}],"edgeKeys":["509.223,406|509.223,434","484.974,392|509.223,406","460.726,406|484.974,392"],"startVertexKey":"509.223,434","endVertexKey":"460.726,406","startReason":"river_start","endReason":"river_confluence","fullness":1,"assignedRegionId":13}]},{"id":15,"regionId":14,"vertexPath":[{"key":"242.487,-28","x":242.4871130596428,"y":-28},{"key":"266.736,-14","x":266.7358243656071,"y":-13.999999999999998}],"sectors":[{"id":"15:sector:1","riverId":15,"sectorIndex":1,"vertexPath":[{"key":"242.487,-28","x":242.4871130596428,"y":-28},{"key":"266.736,-14","x":266.7358243656071,"y":-13.999999999999998}],"edgeKeys":["242.487,-28|266.736,-14"],"startVertexKey":"242.487,-28","endVertexKey":"266.736,-14","startReason":"river_start","endReason":"river_confluence","fullness":1,"assignedRegionId":14}]},{"id":16,"regionId":16,"vertexPath":[{"key":"606.218,98","x":606.2177826491071,"y":98},{"key":"581.969,112","x":581.9690713431428,"y":112},{"key":"557.72,98","x":557.7203600371785,"y":98},{"key":"533.472,112","x":533.4716487312143,"y":112},{"key":"509.223,98","x":509.22293742524994,"y":98},{"key":"484.974,112","x":484.9742261192856,"y":112},{"key":"460.726,98","x":460.72551481332135,"y":98},{"key":"436.477,112","x":436.4768035073571,"y":112},{"key":"436.477,140","x":436.4768035073571,"y":140},{"key":"460.726,154","x":460.72551481332135,"y":154},{"key":"484.974,140","x":484.9742261192856,"y":140},{"key":"509.223,154","x":509.2229374252499,"y":154},{"key":"509.223,182","x":509.2229374252499,"y":182},{"key":"533.472,196","x":533.4716487312141,"y":196},{"key":"557.72,182","x":557.7203600371785,"y":182}],"sectors":[{"id":"16:sector:1","riverId":16,"sectorIndex":1,"vertexPath":[{"key":"606.218,98","x":606.2177826491071,"y":98},{"key":"581.969,112","x":581.9690713431428,"y":112},{"key":"557.72,98","x":557.7203600371785,"y":98}],"edgeKeys":["581.969,112|606.218,98","557.72,98|581.969,112"],"startVertexKey":"606.218,98","endVertexKey":"557.72,98","startReason":"river_start","endReason":"river_confluence","fullness":2,"assignedRegionId":20},{"id":"16:sector:2","riverId":16,"sectorIndex":2,"vertexPath":[{"key":"557.72,98","x":557.7203600371785,"y":98},{"key":"533.472,112","x":533.4716487312143,"y":112},{"key":"509.223,98","x":509.22293742524994,"y":98},{"key":"484.974,112","x":484.9742261192856,"y":112}],"edgeKeys":["533.472,112|557.72,98","509.223,98|533.472,112","484.974,112|509.223,98"],"startVertexKey":"557.72,98","endVertexKey":"484.974,112","startReason":"river_confluence","endReason":"region_boundary","fullness":3,"assignedRegionId":20},{"id":"16:sector:3","riverId":16,"sectorIndex":3,"vertexPath":[{"key":"484.974,112","x":484.9742261192856,"y":112},{"key":"460.726,98","x":460.72551481332135,"y":98},{"key":"436.477,112","x":436.4768035073571,"y":112},{"key":"436.477,140","x":436.4768035073571,"y":140},{"key":"460.726,154","x":460.72551481332135,"y":154},{"key":"484.974,140","x":484.9742261192856,"y":140},{"key":"509.223,154","x":509.2229374252499,"y":154},{"key":"509.223,182","x":509.2229374252499,"y":182},{"key":"533.472,196","x":533.4716487312141,"y":196},{"key":"557.72,182","x":557.7203600371785,"y":182}],"edgeKeys":["460.726,98|484.974,112","436.477,112|460.726,98","436.477,112|436.477,140","436.477,140|460.726,154","460.726,154|484.974,140","484.974,140|509.223,154","509.223,154|509.223,182","509.223,182|533.472,196","533.472,196|557.72,182"],"startVertexKey":"484.974,112","endVertexKey":"557.72,182","startReason":"region_boundary","endReason":"river_end","fullness":3,"assignedRegionId":16}],"controlPoints":{"startVertex":{"x":484.9742261192856,"y":112,"key":"484.974,112"},"middlePurpleVertex":{"x":533.4716487312143,"y":196,"key":"533.472,196"},"endVertex":{"x":557.7203600371785,"y":182,"key":"557.72,182"},"startMode":"red vertex"}},{"id":17,"regionId":17,"vertexPath":[{"key":"606.218,238","x":606.2177826491071,"y":238},{"key":"581.969,224","x":581.9690713431428,"y":224},{"key":"557.72,238","x":557.7203600371785,"y":238},{"key":"557.72,266","x":557.7203600371785,"y":266},{"key":"533.472,280","x":533.4716487312141,"y":280},{"key":"533.472,308","x":533.4716487312141,"y":308},{"key":"557.72,322","x":557.7203600371785,"y":322},{"key":"581.969,308","x":581.9690713431428,"y":308},{"key":"606.218,322","x":606.217782649107,"y":322},{"key":"630.466,308","x":630.4664939550713,"y":308}],"sectors":[{"id":"17:sector:1","riverId":17,"sectorIndex":1,"vertexPath":[{"key":"606.218,238","x":606.2177826491071,"y":238},{"key":"581.969,224","x":581.9690713431428,"y":224},{"key":"557.72,238","x":557.7203600371785,"y":238},{"key":"557.72,266","x":557.7203600371785,"y":266}],"edgeKeys":["581.969,224|606.218,238","557.72,238|581.969,224","557.72,238|557.72,266"],"startVertexKey":"606.218,238","endVertexKey":"557.72,266","startReason":"river_start","endReason":"river_confluence","fullness":2,"assignedRegionId":17},{"id":"17:sector:2","riverId":17,"sectorIndex":2,"vertexPath":[{"key":"557.72,266","x":557.7203600371785,"y":266},{"key":"533.472,280","x":533.4716487312141,"y":280},{"key":"533.472,308","x":533.4716487312141,"y":308},{"key":"557.72,322","x":557.7203600371785,"y":322},{"key":"581.969,308","x":581.9690713431428,"y":308},{"key":"606.218,322","x":606.217782649107,"y":322},{"key":"630.466,308","x":630.4664939550713,"y":308}],"edgeKeys":["533.472,280|557.72,266","533.472,280|533.472,308","533.472,308|557.72,322","557.72,322|581.969,308","581.969,308|606.218,322","606.218,322|630.466,308"],"startVertexKey":"557.72,266","endVertexKey":"630.466,308","startReason":"river_confluence","endReason":"river_end","fullness":3,"assignedRegionId":17}],"controlPoints":{"startVertex":{"x":606.217782649107,"y":238,"key":"606.218,238"},"middlePurpleVertex":{"x":533.4716487312141,"y":308,"key":"533.472,308"},"endVertex":{"x":630.4664939550713,"y":308,"key":"630.466,308"},"startMode":"red vertex"}},{"id":18,"regionId":17,"vertexPath":[{"key":"581.969,280","x":581.9690713431428,"y":280},{"key":"557.72,266","x":557.7203600371785,"y":266}],"sectors":[{"id":"18:sector:1","riverId":18,"sectorIndex":1,"vertexPath":[{"key":"581.969,280","x":581.9690713431428,"y":280},{"key":"557.72,266","x":557.7203600371785,"y":266}],"edgeKeys":["557.72,266|581.969,280"],"startVertexKey":"581.969,280","endVertexKey":"557.72,266","startReason":"river_start","endReason":"river_confluence","fullness":1,"assignedRegionId":17}]},{"id":19,"regionId":18,"vertexPath":[{"key":"436.477,532","x":436.4768035073571,"y":532},{"key":"460.726,518","x":460.72551481332135,"y":518},{"key":"460.726,490","x":460.72551481332135,"y":490},{"key":"436.477,476","x":436.47680350735703,"y":476}],"sectors":[{"id":"19:sector:1","riverId":19,"sectorIndex":1,"vertexPath":[{"key":"436.477,532","x":436.4768035073571,"y":532},{"key":"460.726,518","x":460.72551481332135,"y":518},{"key":"460.726,490","x":460.72551481332135,"y":490},{"key":"436.477,476","x":436.47680350735703,"y":476}],"edgeKeys":["436.477,532|460.726,518","460.726,490|460.726,518","436.477,476|460.726,490"],"startVertexKey":"436.477,532","endVertexKey":"436.477,476","startReason":"river_start","endReason":"river_confluence","fullness":1,"assignedRegionId":18}]},{"id":20,"regionId":20,"vertexPath":[{"key":"533.472,56","x":533.4716487312141,"y":56},{"key":"557.72,70","x":557.7203600371785,"y":70},{"key":"557.72,98","x":557.7203600371785,"y":98}],"sectors":[{"id":"20:sector:1","riverId":20,"sectorIndex":1,"vertexPath":[{"key":"533.472,56","x":533.4716487312141,"y":56},{"key":"557.72,70","x":557.7203600371785,"y":70},{"key":"557.72,98","x":557.7203600371785,"y":98}],"edgeKeys":["533.472,56|557.72,70","557.72,70|557.72,98"],"startVertexKey":"533.472,56","endVertexKey":"557.72,98","startReason":"river_start","endReason":"river_confluence","fullness":1,"assignedRegionId":20}]},{"id":21,"regionId":21,"vertexPath":[{"key":"24.249,322","x":24.24871130596428,"y":322},{"key":"0,308","x":3.552713678800501e-15,"y":308},{"key":"0,280","x":1.7145055188062944e-15,"y":280}],"sectors":[{"id":"21:sector:1","riverId":21,"sectorIndex":1,"vertexPath":[{"key":"24.249,322","x":24.24871130596428,"y":322},{"key":"0,308","x":3.552713678800501e-15,"y":308},{"key":"0,280","x":1.7145055188062944e-15,"y":280}],"edgeKeys":["0,308|24.249,322","0,280|0,308"],"startVertexKey":"24.249,322","endVertexKey":"0,280","startReason":"river_start","endReason":"river_confluence","fullness":1,"assignedRegionId":21}]},{"id":22,"regionId":22,"vertexPath":[{"key":"0,392","x":-3.552713678800501e-15,"y":392},{"key":"24.249,406","x":24.24871130596428,"y":406},{"key":"48.497,392","x":48.49742261192856,"y":392},{"key":"72.746,406","x":72.74613391789285,"y":406}],"sectors":[{"id":"22:sector:1","riverId":22,"sectorIndex":1,"vertexPath":[{"key":"0,392","x":-3.552713678800501e-15,"y":392},{"key":"24.249,406","x":24.24871130596428,"y":406},{"key":"48.497,392","x":48.49742261192856,"y":392},{"key":"72.746,406","x":72.74613391789285,"y":406}],"edgeKeys":["0,392|24.249,406","24.249,406|48.497,392","48.497,392|72.746,406"],"startVertexKey":"0,392","endVertexKey":"72.746,406","startReason":"river_start","endReason":"river_confluence","fullness":1,"assignedRegionId":22}]},{"id":23,"regionId":25,"vertexPath":[{"key":"-121.244,98","x":-121.2435565298214,"y":98},{"key":"-96.995,112","x":-96.99484522385713,"y":112},{"key":"-72.746,98","x":-72.74613391789285,"y":98},{"key":"-48.497,112","x":-48.49742261192856,"y":112},{"key":"-24.249,98","x":-24.248711305964285,"y":98},{"key":"-24.249,70","x":-24.24871130596428,"y":70},{"key":"-48.497,56","x":-48.49742261192857,"y":56},{"key":"-72.746,70","x":-72.74613391789285,"y":70},{"key":"-96.995,56","x":-96.99484522385714,"y":56},{"key":"-96.995,28","x":-96.99484522385713,"y":27.999999999999996},{"key":"-121.244,14","x":-121.2435565298214,"y":13.999999999999998},{"key":"-121.244,-14","x":-121.2435565298214,"y":-14.000000000000004},{"key":"-96.995,-28","x":-96.99484522385713,"y":-28},{"key":"-72.746,-14","x":-72.74613391789285,"y":-14.000000000000004},{"key":"-48.497,-28","x":-48.49742261192857,"y":-28},{"key":"-24.249,-14","x":-24.24871130596428,"y":-14},{"key":"0,-28","x":-3.552713678800501e-15,"y":-28},{"key":"0,-56","x":0,"y":-56}],"sectors":[{"id":"23:sector:1","riverId":23,"sectorIndex":1,"vertexPath":[{"key":"-121.244,98","x":-121.2435565298214,"y":98},{"key":"-96.995,112","x":-96.99484522385713,"y":112},{"key":"-72.746,98","x":-72.74613391789285,"y":98},{"key":"-48.497,112","x":-48.49742261192856,"y":112},{"key":"-24.249,98","x":-24.248711305964285,"y":98},{"key":"-24.249,70","x":-24.24871130596428,"y":70},{"key":"-48.497,56","x":-48.49742261192857,"y":56},{"key":"-72.746,70","x":-72.74613391789285,"y":70},{"key":"-96.995,56","x":-96.99484522385714,"y":56},{"key":"-96.995,28","x":-96.99484522385713,"y":27.999999999999996},{"key":"-121.244,14","x":-121.2435565298214,"y":13.999999999999998}],"edgeKeys":["-121.244,98|-96.995,112","-72.746,98|-96.995,112","-48.497,112|-72.746,98","-24.249,98|-48.497,112","-24.249,70|-24.249,98","-24.249,70|-48.497,56","-48.497,56|-72.746,70","-72.746,70|-96.995,56","-96.995,28|-96.995,56","-121.244,14|-96.995,28"],"startVertexKey":"-121.244,98","endVertexKey":"-121.244,14","startReason":"river_start","endReason":"region_boundary","fullness":2,"assignedRegionId":26},{"id":"23:sector:2","riverId":23,"sectorIndex":2,"vertexPath":[{"key":"-121.244,14","x":-121.2435565298214,"y":13.999999999999998},{"key":"-121.244,-14","x":-121.2435565298214,"y":-14.000000000000004},{"key":"-96.995,-28","x":-96.99484522385713,"y":-28},{"key":"-72.746,-14","x":-72.74613391789285,"y":-14.000000000000004},{"key":"-48.497,-28","x":-48.49742261192857,"y":-28},{"key":"-24.249,-14","x":-24.24871130596428,"y":-14},{"key":"0,-28","x":-3.552713678800501e-15,"y":-28}],"edgeKeys":["-121.244,-14|-121.244,14","-121.244,-14|-96.995,-28","-72.746,-14|-96.995,-28","-48.497,-28|-72.746,-14","-24.249,-14|-48.497,-28","-24.249,-14|0,-28"],"startVertexKey":"-121.244,14","endVertexKey":"0,-28","startReason":"region_boundary","endReason":"region_boundary","fullness":2,"assignedRegionId":25},{"id":"23:sector:3","riverId":23,"sectorIndex":3,"vertexPath":[{"key":"0,-28","x":-3.552713678800501e-15,"y":-28},{"key":"0,-56","x":0,"y":-56}],"edgeKeys":["0,-28|0,-56"],"startVertexKey":"0,-28","endVertexKey":"0,-56","startReason":"region_boundary","endReason":"river_end","fullness":3,"assignedRegionId":25}],"controlPoints":{"startVertex":{"x":-121.2435565298214,"y":13.999999999999998,"key":"-121.244,14"},"middlePurpleVertex":{"x":-24.24871130596428,"y":-14.000000000000004,"key":"-24.249,-14"},"endVertex":{"x":3.552713678800501e-15,"y":-56,"key":"0,-56"},"startMode":"red vertex"}},{"id":24,"regionId":25,"vertexPath":[{"key":"24.249,-14","x":24.24871130596428,"y":-14.000000000000004},{"key":"0,-28","x":-3.552713678800501e-15,"y":-28}],"sectors":[{"id":"24:sector:1","riverId":24,"sectorIndex":1,"vertexPath":[{"key":"24.249,-14","x":24.24871130596428,"y":-14.000000000000004},{"key":"0,-28","x":-3.552713678800501e-15,"y":-28}],"edgeKeys":["0,-28|24.249,-14"],"startVertexKey":"24.249,-14","endVertexKey":"0,-28","startReason":"river_start","endReason":"river_confluence","fullness":1,"assignedRegionId":25}]},{"id":25,"regionId":27,"vertexPath":[{"key":"606.218,406","x":606.2177826491071,"y":406},{"key":"581.969,392","x":581.9690713431428,"y":392},{"key":"557.72,406","x":557.7203600371785,"y":406},{"key":"557.72,434","x":557.7203600371785,"y":434},{"key":"533.472,448","x":533.4716487312141,"y":448},{"key":"533.472,476","x":533.4716487312141,"y":476},{"key":"557.72,490","x":557.7203600371785,"y":490},{"key":"581.969,476","x":581.9690713431428,"y":476},{"key":"606.218,490","x":606.217782649107,"y":490},{"key":"606.218,518","x":606.2177826491071,"y":518}],"sectors":[{"id":"25:sector:1","riverId":25,"sectorIndex":1,"vertexPath":[{"key":"606.218,406","x":606.2177826491071,"y":406},{"key":"581.969,392","x":581.9690713431428,"y":392},{"key":"557.72,406","x":557.7203600371785,"y":406},{"key":"557.72,434","x":557.7203600371785,"y":434},{"key":"533.472,448","x":533.4716487312141,"y":448},{"key":"533.472,476","x":533.4716487312141,"y":476},{"key":"557.72,490","x":557.7203600371785,"y":490},{"key":"581.969,476","x":581.9690713431428,"y":476}],"edgeKeys":["581.969,392|606.218,406","557.72,406|581.969,392","557.72,406|557.72,434","533.472,448|557.72,434","533.472,448|533.472,476","533.472,476|557.72,490","557.72,490|581.969,476"],"startVertexKey":"606.218,406","endVertexKey":"581.969,476","startReason":"river_start","endReason":"river_confluence","fullness":2,"assignedRegionId":27},{"id":"25:sector:2","riverId":25,"sectorIndex":2,"vertexPath":[{"key":"581.969,476","x":581.9690713431428,"y":476},{"key":"606.218,490","x":606.217782649107,"y":490},{"key":"606.218,518","x":606.2177826491071,"y":518}],"edgeKeys":["581.969,476|606.218,490","606.218,490|606.218,518"],"startVertexKey":"581.969,476","endVertexKey":"606.218,518","startReason":"river_confluence","endReason":"river_end","fullness":3,"assignedRegionId":27}],"controlPoints":{"startVertex":{"x":606.217782649107,"y":406,"key":"606.218,406"},"middlePurpleVertex":{"x":557.7203600371785,"y":490,"key":"557.72,490"},"endVertex":{"x":606.217782649107,"y":518,"key":"606.218,518"},"startMode":"red vertex"}},{"id":26,"regionId":27,"vertexPath":[{"key":"581.969,448","x":581.9690713431428,"y":448},{"key":"581.969,476","x":581.9690713431428,"y":476}],"sectors":[{"id":"26:sector:1","riverId":26,"sectorIndex":1,"vertexPath":[{"key":"581.969,448","x":581.9690713431428,"y":448},{"key":"581.969,476","x":581.9690713431428,"y":476}],"edgeKeys":["581.969,448|581.969,476"],"startVertexKey":"581.969,448","endVertexKey":"581.969,476","startReason":"river_start","endReason":"river_confluence","fullness":1,"assignedRegionId":27}]}],"roads":[],"crossings":[],"terrainByHexKey":{"0,5":{"terrainOverride":"lake","lakeId":1},"-1,5":{"terrainOverride":"lake","lakeId":1}},"waterPoiByHexKey":{},"biomeOverrideByHexKey":{},"toponyms":{"seed":1792059816,"model":"germanic","names":{"lake:1":{"en":"Jarnvatn","ru":"Ярнватн","kind":"lake","model":"germanic","revision":0},"region:1":{"en":"Hrafnland","ru":"Храфнланд","kind":"region","model":"germanic","revision":0},"region:10":{"en":"Goudmark","ru":"Гаудмарк","kind":"region","model":"germanic","revision":0},"region:11":{"en":"Adlerforst","ru":"Адлерфорст","kind":"forest","model":"germanic","revision":0},"region:12":{"en":"Zinnwald","ru":"Циннвальд","kind":"forest","model":"germanic","revision":0},"region:13":{"en":"Goudlo","ru":"Гаудло","kind":"forest","model":"germanic","revision":0},"region:14":{"en":"Tannenforst","ru":"Танненфорст","kind":"forest","model":"germanic","revision":0},"region:15":{"en":"Adlermark","ru":"Адлермарк","kind":"region","model":"germanic","revision":0},"region:16":{"en":"Briarswood","ru":"Брайарсвуд","kind":"forest","model":"germanic","revision":0},"region:17":{"en":"Eichenhain","ru":"Айхенхайн","kind":"forest","model":"germanic","revision":0},"region:18":{"en":"Kaltenbruch","ru":"Кальтенбрух","kind":"swamp","model":"germanic","revision":0},"region:19":{"en":"Fenreach","ru":"Фенрич","kind":"region","model":"germanic","revision":0},"region:2":{"en":"Huldsump","ru":"Хульдсумп","kind":"swamp","model":"germanic","revision":0},"region:20":{"en":"Morrowshire","ru":"Морроушир","kind":"region","model":"germanic","revision":0},"region:21":{"en":"Felsenmark","ru":"Фельзенмарк","kind":"region","model":"germanic","revision":0},"region:22":{"en":"Cranwood","ru":"Кранвуд","kind":"forest","model":"germanic","revision":0},"region:23":{"en":"Vardskar","ru":"Вардскар","kind":"mountain","model":"germanic","revision":0},"region:24":{"en":"Tannental","ru":"Танненталь","kind":"region","model":"germanic","revision":0},"region:25":{"en":"Falkved","ru":"Фальквед","kind":"forest","model":"germanic","revision":0},"region:26":{"en":"Eikenbos","ru":"Эйкенбос","kind":"forest","model":"germanic","revision":0},"region:27":{"en":"Schattenbruch","ru":"Шаттенбрух","kind":"swamp","model":"germanic","revision":0},"region:3":{"en":"Lindenhain","ru":"Линденхайн","kind":"forest","model":"germanic","revision":0},"region:4":{"en":"Bjorfen","ru":"Бьорфен","kind":"swamp","model":"germanic","revision":0},"region:5":{"en":"Glenwood","ru":"Гленвуд","kind":"forest","model":"germanic","revision":0},"region:6":{"en":"Ismos","ru":"Исмос","kind":"swamp","model":"germanic","revision":0},"region:7":{"en":"Torlund","ru":"Торлунд","kind":"forest","model":"germanic","revision":0},"region:8":{"en":"Glenreach","ru":"Гленрич","kind":"region","model":"germanic","revision":0},"region:9":{"en":"Rabenwald","ru":"Рабенвальд","kind":"forest","model":"germanic","revision":0},"river:1":{"en":"Aldelv","ru":"Альдэльв","kind":"river","model":"germanic","revision":0},"river:10":{"en":"Whiteburn","ru":"Уайтберн","kind":"river","model":"germanic","revision":0},"river:11":{"en":"Wendle","ru":"Уэндл","kind":"river","model":"germanic","revision":0},"river:12":{"en":"Dunkelbach","ru":"Дункельбах","kind":"river","model":"germanic","revision":0},"river:13":{"en":"Blauwbeek","ru":"Блаубек","kind":"river","model":"germanic","revision":0},"river:14":{"en":"Hoogdiep","ru":"Хогдип","kind":"river","model":"germanic","revision":0},"river:15":{"en":"Falkenwasser","ru":"Фалькенвассер","kind":"river","model":"germanic","revision":0},"river:16":{"en":"Fernbeck","ru":"Фернбек","kind":"river","model":"germanic","revision":0},"river:17":{"en":"Tiefbach","ru":"Тифбах","kind":"river","model":"germanic","revision":0},"river:18":{"en":"Rookbeck","ru":"Рукбек","kind":"river","model":"germanic","revision":0},"river:19":{"en":"Felsenbach","ru":"Фельзенбах","kind":"river","model":"germanic","revision":0},"river:2":{"en":"Cranbrook","ru":"Кранбрук","kind":"river","model":"germanic","revision":0},"river:20":{"en":"Hrafnbekk","ru":"Храфнбекк","kind":"river","model":"germanic","revision":0},"river:21":{"en":"Eichenbach","ru":"Айхенбах","kind":"river","model":"germanic","revision":0},"river:22":{"en":"Thornburn","ru":"Торнберн","kind":"river","model":"germanic","revision":0},"river:23":{"en":"Valkdiep","ru":"Валькдип","kind":"river","model":"germanic","revision":0},"river:24":{"en":"Bramburn","ru":"Брамберн","kind":"river","model":"germanic","revision":0},"river:25":{"en":"Brindlebrook","ru":"Бриндлбрук","kind":"river","model":"germanic","revision":0},"river:26":{"en":"Lyså","ru":"Люсо","kind":"river","model":"germanic","revision":0},"river:3":{"en":"Felsenach","ru":"Фельзенах","kind":"river","model":"germanic","revision":0},"river:4":{"en":"Grünbach","ru":"Грюнбах","kind":"river","model":"germanic","revision":0},"river:5":{"en":"Wolfsfluss","ru":"Вольфсфлусс","kind":"river","model":"germanic","revision":0},"river:6":{"en":"Svanå","ru":"Свано","kind":"river","model":"germanic","revision":0},"river:7":{"en":"Kaltenach","ru":"Кальтенах","kind":"river","model":"germanic","revision":0},"river:8":{"en":"Westerstroom","ru":"Вестерстром","kind":"river","model":"germanic","revision":0},"river:9":{"en":"Felsenwasser","ru":"Фельзенвассер","kind":"river","model":"germanic","revision":0},"settlement:13:5,10":{"en":"Zilverhuizen","ru":"Зилверхаузен","kind":"settlement","model":"germanic","revision":0},"settlement:14:6,0":{"en":"Birkendorf","ru":"Биркендорф","kind":"settlement","model":"germanic","revision":0},"settlement:1:3,6":{"en":"Ravntun","ru":"Равнтун","kind":"settlement","model":"germanic","revision":0},"settlement:20:10,2":{"en":"Cenredstead","ru":"Кенредстед","kind":"settlement","model":"germanic","revision":0},"settlement:21:-3,7":{"en":"Rabendorf","ru":"Рабендорф","kind":"settlement","model":"germanic","revision":0},"settlement:25:0,0":{"en":"Ravnset","ru":"Равнсет","kind":"settlement","model":"germanic","revision":0},"settlement:3:2,4":{"en":"Sonnenhausen","ru":"Зонненхаузен","kind":"settlement","model":"germanic","revision":0},"settlement:7:1,10":{"en":"Bergstad","ru":"Бергстад","kind":"settlement","model":"germanic","revision":0}}}},"counters":{"nextLakeId":2,"nextRoadId":18},"ui":{"generationMode":"classic","selectedHex":{"q":3,"r":6},"isMapRotated":false,"mapScale":1}}
+diff --git a/test/helpers/generation-harness.mjs b/test/helpers/generation-harness.mjs
+index a35576f..d98396d 100644
+--- a/test/helpers/generation-harness.mjs
++++ b/test/helpers/generation-harness.mjs
+@@ -16,7 +16,7 @@ const artwork = app.body.statements.flatMap(node => ts.isVariableStatement(node)
+ let prefix = source.slice(0, lastReturn.getStart(ast));
+ if (artwork?.initializer) prefix = prefix.slice(0, artwork.initializer.getStart(ast)) + 'undefined' + prefix.slice(artwork.initializer.end);
+ const instrumented = prefix + `return {
+-  gmNotesByHexKey, changeNotesText, finishNotesGroup, openNotesEditor, toggleNotesEditor, recordGenerated, captureGenerationBackup,
++  roadDraft, startRoadDraft, appendRoadDraft, finishRoadDraft, resetRoadDraft, editRoadDocument, gmNotesByHexKey, changeNotesText, finishNotesGroup, openNotesEditor, toggleNotesEditor, recordGenerated, captureGenerationBackup,
+   generationRef, seedInput, setSeedInput, setGenSizeCategory, applyWorldSeed, buildGenerationOptions, generateAt,
+   regions, rivers, roads, candidateHexes, hexTerrainByKey, history, toponyms, toponymSeed, setToponyms,
+   addFallbackTractToMap, safelyAddRegionToMap, createSaveData, restoreSnapshot: snapshot => restoreSnapshot({...snapshot, generation: snapshot.generation ?? cloneGenerationState(generationRef.current)}), deleteLastRegion,
+diff --git a/test/manualRoads.test.mjs b/test/manualRoads.test.mjs
+new file mode 100644
+index 0000000..68866a0
+--- /dev/null
++++ b/test/manualRoads.test.mjs
+@@ -0,0 +1,49 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import {prepareRoadEdit,roadPair} from '../src/manualRoads.ts';
++const h=q=>({q,r:0});
++const segment=(a,b,kind='trail')=>({from:h(a),to:h(b),kind});
++const road=(id,a,b,kind='trail')=>({id,regionId:1,segments:[segment(a,b,kind)]});
++const base=()=>({roads:[],crossings:[],nextRoadId:1});
++const context=()=>({landRegion:()=>1,destination:()=>true,openExit:()=>false,blocked:()=>false,intersections:()=>[],minima:[]});
++// Separate contracts: creation, rejected geometry, graph preservation and crossing dependencies.
++test('manual path allocates one ID and deterministic crossings without mutating input',()=>{
++ const doc=base(),ctx=context();ctx.intersections=()=>[{riverId:7,riverEdgeKey:'edge',fullness:2},{riverId:8,riverEdgeKey:'edge',fullness:4}];
++ const before=structuredClone(doc),edit={type:'create',path:[h(0),h(1)],kind:'trail'};
++ const next=prepareRoadEdit(doc,edit,ctx);assert.deepEqual(doc,before);assert.equal(next.nextRoadId,2);assert.equal(next.roads.length,1);assert.equal(next.crossings.length,2);
++ assert.deepEqual(next,prepareRoadEdit(doc,edit,ctx));assert.ok(next.crossings.every(c=>c.kind==='bridge'));
++ assert.throws(()=>prepareRoadEdit(doc,{...edit,crossingKinds:{'1:0,0|1,0:8':'ford'}},ctx),/invalid_crossing_kind/);
++ assert.deepEqual(doc,before);
++});
++test('creation refuses invalid geometry, endpoints, obstacles, duplicate and overflow',()=>{
++ const ctx=context(),doc=base();
++ for(const path of [[h(0)],[h(0),h(2)],[h(0),h(1),h(0)]])assert.throws(()=>prepareRoadEdit(doc,{type:'create',path,kind:'road'},ctx));
++ const edit={type:'create',path:[h(0),h(1)],kind:'road'};
++ for(const override of [{landRegion:()=>undefined},{destination:()=>false},{blocked:()=>true}])assert.throws(()=>prepareRoadEdit(doc,edit,{...ctx,...override}));
++ assert.throws(()=>prepareRoadEdit({...doc,roads:[road(3,0,1)]},edit,ctx),/duplicate_segment/);
++ assert.throws(()=>prepareRoadEdit({...doc,nextRoadId:Number.MAX_SAFE_INTEGER},edit,ctx),/invalid_next_road_id/);
++});
++test('kind no-op returns document and region minimum rejects loss without changes',()=>{
++ const doc={...base(),roads:[road(3,0,1,'road')]},edit={type:'kind',roadId:3,segmentKey:roadPair(h(0),h(1)),kind:'road'};
++ assert.equal(prepareRoadEdit(doc,edit,context()),doc);
++ assert.throws(()=>prepareRoadEdit(doc,{...edit,kind:'trail'},{...context(),minima:[{regionId:1,minimum:2}]}),/settled_road_minimum/);
++ const next=prepareRoadEdit(doc,{...edit,kind:'trail'},context());assert.equal(next.roads[0].segments[0].kind,'trail');assert.equal(doc.roads[0].segments[0].kind,'road');
++});
++test('deletion preserves destinations and open exits; removable redundant edge keeps other IDs',()=>{
++ const doc={...base(),roads:[road(1,0,1),road(2,1,2)],nextRoadId:3};
++ assert.throws(()=>prepareRoadEdit(doc,{type:'remove',roadId:1},context()),/disconnected_destinations/);
++ const ctx={...context(),destination:()=>false,openExit:x=>x.q===0};
++ assert.throws(()=>prepareRoadEdit(doc,{type:'remove',roadId:1},ctx),/removed_open_exit/);
++ const triangle={...base(),roads:[road(1,0,1),{id:2,regionId:1,segments:[{from:h(0),to:{q:0,r:1},kind:'trail'},{from:{q:0,r:1},to:h(1),kind:'trail'}]}],nextRoadId:3};
++ const next=prepareRoadEdit(triangle,{type:'remove',roadId:1},context());assert.deepEqual(next.roads,[triangle.roads[1]]);assert.equal(next.nextRoadId,3);
++});
++test('crossing edit requires live intersection, rejects deep ford and preserves unrelated records',()=>{
++ const old={key:'1:0,0|1,0:7',roadId:1,roadSegmentKey:'0,0|1,0',riverId:7,riverEdgeKey:'edge',kind:'bridge'};
++ const foreign={...old,key:'legacy',roadId:99};const doc={...base(),roads:[road(1,0,1)],crossings:[old,foreign]};
++ const ctx={...context(),intersections:()=>[{riverId:7,riverEdgeKey:'edge',fullness:4}]};
++ const edit={type:'crossing',roadId:1,segmentKey:'0,0|1,0',riverId:7,kind:'ferry'};
++ const next=prepareRoadEdit(doc,edit,ctx);assert.equal(next.crossings[0].kind,'ferry');assert.equal(next.crossings[1],foreign);
++ assert.throws(()=>prepareRoadEdit(doc,{...edit,kind:'ford'},ctx),/invalid_crossing_kind/);
++ assert.throws(()=>prepareRoadEdit(doc,edit,context()),/missing_or_ambiguous_intersection/);
++ assert.throws(()=>prepareRoadEdit({...doc,roads:[...doc.roads,...doc.roads]},edit,ctx),/ambiguous_road/);
++});
+diff --git a/test/mapTransactions.test.mjs b/test/mapTransactions.test.mjs
+index 24003ec..3a3b908 100644
+--- a/test/mapTransactions.test.mjs
++++ b/test/mapTransactions.test.mjs
+@@ -269,3 +269,53 @@ test('region biome respects stored height and canonical neighbors, keeps all ove
+   if(neighbor)for(const b of choices) if(b.id!==neighbor.biomeId&&!h.geometry.isBiomesCompatible(b.id,neighbor.biomeId,h.geometry.BIOME_COMPATIBILITY_MATRIX)) assert.ok(h.render().regionBiomeReason(r,b.id));
+   assert.ok(before.map.biomeOverrideByHexKey[`${r.centerHex.q},${r.centerHex.r}`]);
+ });
++
++// E3 preparation has no UI yet. Exercise the actual commit, not a copied history model.
++test('manual road command commits exactly once and stale callback cannot write after import',async()=>{
++  const {h,alerts}=setup();await load(h,fixture);assert.deepEqual(alerts,[]);
++  const app=h.render(),r=app.roads[0],s=r.segments[0];
++  const segmentKey=[`${s.from.q},${s.from.r}`,`${s.to.q},${s.to.r}`].sort().join('|');
++  const same={type:'kind',roadId:r.id,segmentKey,kind:s.kind};
++  const before=stable(app),stack=app.undoHistory.length;
++  assert.equal(app.editRoadDocument(same),true);assert.equal(h.render().undoHistory.length,stack);
++  // Use a new path between neighbouring named/destination hexes via the imported fixture.
++  // The real crossing handler provides a mutation whenever the fixture has a crossing.
++  const crossing=before.map.crossings[0];assert.ok(crossing,'fixture crossing required');
++  const command={type:'crossing',roadId:crossing.roadId,segmentKey:crossing.roadSegmentKey,riverId:crossing.riverId,kind:crossing.kind==='bridge'?'ferry':'bridge'};
++  assert.equal(h.render().editRoadDocument(command),true);
++  const after=stable(h.render());assert.notDeepEqual(after,before);assert.equal(h.render().undoHistory.length,stack+1);assertUndoRedo(h,before,after);
++  const stale=h.render().editRoadDocument;await load(h,fixture);const imported=stable(h.render());
++  assert.equal(stale(command),false);assert.deepEqual(stable(h.render()),imported);
++});
++
++test('road draft is ephemeral, blocks other writes, commits once and stale finish is inert',async()=>{
++ const {h}=setup(),data=structuredClone(fixture),segment=data.map.roads[0].segments[0];
++ const suppressed=JSON.parse(fs.readFileSync(new URL('./fixtures/suppressed-road-endpoint.json',import.meta.url)));
++ for(const isTract of [false,true]){
++  const input=structuredClone(suppressed),region=input.map.regions.find(r=>r.id===1);
++  region.isTract=isTract;region.suppressCentralPoi=!isTract;
++  await load(h,input);h.render().setSelectedHex({q:4,r:6});h.render().setEditMode(true);
++  const before=stable(h.render()),history=serial([h.render().undoHistory,h.render().redoHistory]);
++  h.render().startRoadDraft();h.render().appendRoadDraft({q:3,r:6});
++  assert.equal(h.render().finishRoadDraft(),false,'empty suppressed/tract center is not a destination');
++  assert.deepEqual(stable(h.render()),before);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),history);
++  h.render().resetRoadDraft();region.pointsOfInterest.push({q:3,r:6});await load(h,input);
++  assert.equal(h.render().editRoadDocument({type:'create',path:[{q:4,r:6},{q:3,r:6}],kind:'trail'}),true,'explicit POI remains eligible');
++ }
++
++ data.map.roads=[];data.map.crossings=[];
++ for(const p of [segment.from,segment.to]){const r=data.map.regions.find(r=>r.hexes.some(x=>x.q===p.q&&x.r===p.r));assert.ok(r);if(!r.pointsOfInterest.some(x=>x.q===p.q&&x.r===p.r))r.pointsOfInterest.push({...p});}
++ await load(h,data);h.render().setSelectedHex(segment.from);h.render().setEditMode(true);
++ const before=stable(h.render()),stacks=serial([h.render().undoHistory,h.render().redoHistory]);
++ assert.equal(h.render().startRoadDraft(),true);
++ assert.equal(h.render().finishRoadDraft(),false);assert.deepEqual(stable(h.render()),before);
++ h.render().resetMap();h.render().undoMap();h.render().setSelectedPoiKind('ruins');await load(h,fixture);
++ assert.deepEqual(stable(h.render()),before);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks);
++ assert.equal(h.render().appendRoadDraft({q:999,r:999}),false);
++ assert.equal(h.render().appendRoadDraft(segment.to),true);
++ h.render().resetRoadDraft();assert.deepEqual(stable(h.render()),before);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks);
++ h.render().startRoadDraft();h.render().appendRoadDraft(segment.to);
++ const stale=h.render().finishRoadDraft;assert.equal(stale(),true);const after=stable(h.render());
++ assert.equal(after.map.roads.length,1);assert.equal(h.render().undoHistory.length,stacks[0].length+1);assert.equal(h.render().roadDraft,null);assert.deepEqual(after.generation,before.generation);
++ assertUndoRedo(h,before,after);await load(h,fixture);const imported=stable(h.render());stale();assert.deepEqual(stable(h.render()),imported);
++});

@@ -1,0 +1,99 @@
+import {spawn} from 'node:child_process';
+import {chromium} from '/workspace/hx-review-d7bb38f/node_modules/playwright/index.mjs';
+import fs from 'node:fs/promises';
+import assert from 'node:assert/strict';
+const root='/workspace/hx-review-d7bb38f/',out='/workspace/hx-review-evidence-d7bb38f/';const reports=[];
+const server=spawn(process.execPath,[root+'node_modules/vite/bin/vite.js','preview','--host','127.0.0.1','--port','4193','--strictPort'],{cwd:root,stdio:['ignore','pipe','inherit']});
+await new Promise((resolve,reject)=>{server.stdout.on('data',d=>{if(d.toString().includes('Local:'))resolve()});server.on('exit',c=>reject(Error('server '+c)))});
+const browser=await chromium.launch({executablePath:'/tmp/hx-chromium',headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
+const page=await browser.newPage({viewport:{width:1500,height:1100}}),errors=[],alerts=[];
+page.on('pageerror',e=>errors.push(e.message));page.on('dialog',async d=>{alerts.push(d.message());await d.dismiss()});await page.route(/mc\.yandex/,r=>r.abort());
+await page.addInitScript(()=>{const make=URL.createObjectURL,click=HTMLAnchorElement.prototype.click,blobs=new Map();URL.createObjectURL=function(b){let u=make.call(this,b);if(b.type.startsWith('application/json'))blobs.set(u,b.text());return u};HTMLAnchorElement.prototype.click=function(){if(this.download.endsWith('.json')&&blobs.has(this.href)){blobs.get(this.href).then(t=>window.__exported=JSON.parse(t));return}return click.call(this)};const serialize=XMLSerializer.prototype.serializeToString;XMLSerializer.prototype.serializeToString=function(x){const s=serialize.call(this,x);if(x.tagName==='svg')window.__exportSvg=s;return s};});
+await page.goto('http://127.0.0.1:4193/');
+const button=n=>page.getByRole('button',{name:n,exact:true});
+async function snapshot(){await page.evaluate(()=>window.__exported=null);const m=page.locator('details.export-menu');if(await m.getAttribute('open')===null)await m.locator('summary').click();await button('JSON').click();await page.waitForFunction(()=>window.__exported);return page.evaluate(()=>{let x=window.__exported;delete x.savedAt;return x})}
+async function load(d){await page.locator('input[type=file]').setInputFiles({name:'review.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(d))});await page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);await page.waitForTimeout(100)}
+async function edit(){if(await button('Редактировать').count())await button('Редактировать').click()}
+async function select(k){await page.locator(`polygon.hex[data-hex-key="${k}"]`).dispatchEvent('click')}
+async function check(name,fn){try{reports.push({name,status:'pass',detail:await fn()})}catch(e){reports.push({name,status:'fail',error:e.stack});await page.screenshot({path:out+'failure-'+reports.length+'.png',fullPage:true})}await fs.writeFile(out+'browser-results.json',JSON.stringify({reports,errors,alerts},null,2))}
+const fixture=JSON.parse(await fs.readFile(root+'test/fixtures/road-entry-zigzags.json'));
+await check('R2 overlap exact selection and row mutation',async()=>{const d=structuredClone(fixture),road=d.map.roads[0],s=road.segments[0],id=d.counters.nextRoadId++;d.map.roads.push({id,regionId:road.regionId,segments:[structuredClone(s)]});await load(d);await select(`${s.from.q},${s.from.r}`);await edit();const panel=page.getByLabel('Редактирование путей',{exact:true});for(const rid of [road.id,id]){await panel.getByRole('button',{name:new RegExp('^Участок '+rid+':')}).click();assert.equal(await panel.locator('button[aria-pressed=true]').count(),1);assert.equal(await page.locator('.road-map-target[aria-pressed=true]').count(),1);assert.ok((await page.locator('.road-map-target[aria-pressed=true]').getAttribute('aria-label')).startsWith(`Участок ${rid}:`));}const before=await snapshot();await page.getByRole('combobox',{name:'Тип участка '+id,exact:true}).selectOption(s.kind==='road'?'trail':'road');const after=await snapshot(),expected=structuredClone(before);expected.map.roads.find(x=>x.id===id).segments[0].kind=s.kind==='road'?'trail':'road';assert.deepEqual(after,expected);await button('Отменить').click();assert.deepEqual(await snapshot(),before);await panel.getByRole('button',{name:new RegExp('^Участок '+road.id+':')}).click();await page.locator('#side-panel-info').screenshot({path:out+'overlap-desktop.png'});return {roadIds:[road.id,id],exactMutation:true}});
+await check('R3 real Tab Enter Space and visible focus',async()=>{await load(fixture);await select('0,1');await edit();await page.evaluate(()=>document.activeElement.blur());await page.keyboard.press('Control+Home');let found=false,tabs=0;for(;tabs<450;tabs++){await page.keyboard.press('Tab');if(await page.evaluate(()=>document.activeElement?.classList.contains('road-map-target'))){found=true;break}}assert.ok(found,'Tab reaches road');const roadLabel=await page.evaluate(()=>document.activeElement.getAttribute('aria-label'));let style=await page.evaluate(()=>{const e=document.activeElement,s=getComputedStyle(e);return{focus:e.matches(':focus-visible'),stroke:s.stroke,opacity:s.strokeOpacity,width:s.strokeWidth}});assert.equal(style.focus,true);assert.notEqual(style.stroke,'transparent');await page.keyboard.press('Enter');assert.equal(await page.locator('.road-map-target[aria-pressed=true]').count(),1);let crossing=false;for(let i=0;i<450;i++){await page.keyboard.press('Tab');if(await page.evaluate(()=>document.activeElement?.classList.contains('crossing-map-target'))){crossing=true;break}}assert.ok(crossing,'Tab reaches crossing');const crossingLabel=await page.evaluate(()=>document.activeElement.getAttribute('aria-label'));await page.keyboard.press('Space');assert.equal(await page.locator('.crossing-map-target[aria-pressed=true]').count(),1);const exact=await page.locator('.crossing-map-target[aria-pressed=true]').getAttribute('aria-label');assert.equal(exact,crossingLabel);const cstyle=await page.evaluate(()=>{let e=document.activeElement,s=getComputedStyle(e);return {focus:e.matches(':focus-visible'),fill:s.fill,opacity:s.fillOpacity}});assert.ok(cstyle.focus);await page.screenshot({path:out+'keyboard-focus.png'});return {tabs,roadLabel,style,crossingLabel,cstyle}});
+await check('44px targets at zoom / no artwork mutation / real hex and pan',async()=>{const viewport=page.locator('.map-viewport');await viewport.scrollIntoViewIfNeeded();let measured=[];for(const delta of [-600,600]){const b=await viewport.boundingBox();await page.mouse.move(b.x+b.width/2,b.y+b.height/2);await page.mouse.wheel(0,delta);await page.waitForTimeout(150);measured.push(await page.locator('.road-map-target').first().evaluate(e=>{const svg=e.ownerSVGElement,scale=Number(svg.style.transform.match(/scale\(([^)]+)\)/)[1]),c=svg.querySelector('.crossing-map-target');return {scale,roadWidth:parseFloat(getComputedStyle(e).strokeWidth)*scale,crossingDiameter:parseFloat(getComputedStyle(c).r)*2*scale}}));}for(const m of measured){assert.ok(Math.abs(m.roadWidth-44)<.01);assert.ok(Math.abs(m.crossingDiameter-44)<.01)}await button('Готово').click();assert.equal(await page.locator('.road-map-target').count(),0);const hex=page.locator('polygon.hex.region').first();await hex.scrollIntoViewIfNeeded();await hex.click({force:true});await edit();const before=await snapshot();const v=await viewport.boundingBox();await page.mouse.move(v.x+v.width*.6,v.y+v.height*.6);await page.mouse.down();await page.mouse.move(v.x+v.width*.6-80,v.y+v.height*.6,{steps:10});await page.mouse.up();assert.deepEqual((await snapshot()).map,before.map);return measured});
+await check('whole path preview multi-region / narrow RU EN',async()=>{await load(fixture);let chosen=fixture.map.roads.find(r=>new Set(r.segments.flatMap(s=>[s.from,s.to]).map(h=>fixture.map.regions.find(v=>v.hexes.some(x=>x.q===h.q&&x.r===h.r))?.id)).size>1);assert.ok(chosen);const s=chosen.segments[0];await select(`${s.from.q},${s.from.r}`);await edit();const panel=page.getByLabel('Редактирование путей',{exact:true});await panel.getByRole('button',{name:new RegExp('^Участок '+chosen.id+':')}).first().click();const before=await snapshot();await button('Удалить весь выделенный путь').click();assert.equal(await page.locator('[data-editor-only=roads] line[stroke="#7dd3fc"]').count(),chosen.segments.length);await page.setViewportSize({width:390,height:1100});await page.locator('#side-panel-info').scrollIntoViewIfNeeded();assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));await page.screenshot({path:out+'whole-path-ru-390.png'});await button('Отмена').click();assert.deepEqual(await snapshot(),before);if(await page.locator('.header-links').evaluate(e=>e.classList.contains('is-collapsed')))await page.locator('.header-links-toggle').click();await button('Switch to English').click();await page.locator('#side-panel-info').scrollIntoViewIfNeeded();await page.screenshot({path:out+'overlap-en-390.png'});assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));await button('Переключить на русский').click();await page.setViewportSize({width:1500,height:1100});return {roadId:chosen.id,highlightedSegments:chosen.segments.length}});
+await check('R1 production draft refusal and Escape preserves redo',async()=>{const d=JSON.parse(await fs.readFile(root+'test/fixtures/suppressed-road-endpoint.json'));await load(d);await select('4,6');await edit();const before=await snapshot();await button('Начать путь отсюда').click();await select('3,6');await page.locator('.map-viewport').focus();await page.keyboard.press('Enter');assert.equal(await page.locator('[data-road-draft]').count(),1);assert.ok((await page.locator('.direct-error').allTextContents()).join('').includes('Начало и конец'));await page.keyboard.press('Escape');assert.deepEqual(await snapshot(),before);return {refused:true,resetExact:true}});
+await check('PNG exports committed drawing without editor overlays',async()=>{await load(fixture);await select('0,1');await edit();await page.getByLabel('Редактирование путей',{exact:true}).getByRole('button',{name:/^Участок /}).first().click();assert.ok(await page.locator('[data-editor-only]').count());const menu=page.locator('details.export-menu');if(await menu.getAttribute('open')===null)await menu.locator('summary').click();const [download]=await Promise.all([page.waitForEvent('download'),button('PNG').click()]);await download.saveAs(out+'edited-map.png');const data=await fs.readFile(out+'edited-map.png');assert.equal(data.subarray(1,4).toString(),'PNG');const svg=await page.evaluate(()=>window.__exportSvg);assert.ok(svg);assert.ok(!svg.includes('data-editor-only'));await fs.writeFile(out+'exported.svg',svg);return {pngBytes:data.length,editorOverlaysAbsent:true}});
+await check('R4 exact observer sensitivity to same-delivery transform writes',async()=>{
+ const source=await fs.readFile(root+'test/browser/navigation.smoke.mjs','utf8');
+ const start=source.indexOf('  const v=document.querySelector',source.indexOf('const burst=')),end=source.indexOf('  });assert.equal(burst.changes',start);
+ let body=source.slice(start,end),loop=body.indexOf('  for(let i=0;i<20;i++)'),wait=body.indexOf('  await new Promise',loop);
+ body=body.slice(0,loop)+`  const original=s.style.transform;s.style.transform='translate(1px, 2px) scale(1.5)';s.style.setProperty('--review-only','1');s.style.transform=original;\n`+body.slice(wait);
+ const result=await page.evaluate(new Function('return (async()=>{'+body+'})()'));
+ assert.equal(result.changes,2,'two real transform writes must be counted despite one observer delivery');
+ let rejected=false;try{assert.equal(result.changes,1,'One SVG transform update per frame')}catch{rejected=true}assert.ok(rejected);
+ return {...result,originalOracleRejectsInjectedViolation:rejected};
+});
+await check('R5 desktop/narrow RU/EN confirmation 44px, Tab focus, Cancel/Delete UndoRedo',async()=>{
+ const measurements=[];
+ for(const width of [1500,390])for(const lang of ['ru','en']) {
+  await page.setViewportSize({width,height:1100});
+  const d=structuredClone(fixture),original=d.map.roads.find(r=>d.map.crossings.some(c=>c.roadId===r.id)),id=d.counters.nextRoadId++;
+  const duplicate={...structuredClone(original),id,segments:original.segments.map(s=>({...structuredClone(s),kind:'trail'}))};d.map.roads.push(duplicate);
+  const dependent=d.map.crossings.filter(c=>c.roadId===original.id).map(c=>({...c,roadId:id,key:`${id}:${c.roadSegmentKey}:${c.riverId}`}));d.map.crossings.push(...dependent);
+  await load(d);await select(`${duplicate.segments[0].from.q},${duplicate.segments[0].from.r}`);await edit();
+  const before=await snapshot();
+  if(lang==='en'){if(await page.locator('.header-links').evaluate(e=>e.classList.contains('is-collapsed')))await page.locator('.header-links-toggle').click();await button('Switch to English').click()}
+  const panel=page.getByLabel(lang==='ru'?'Редактирование путей':'Edit paths',{exact:true});
+  await panel.getByRole('button',{name:new RegExp('^'+(lang==='ru'?'Участок ':'Segment ')+id+':')}).first().click();
+  const remove=button(lang==='ru'?'Удалить весь выделенный путь':'Delete entire selected path');await remove.click();
+  const group=page.getByRole('group',{name:lang==='ru'?'Подтверждение удаления':'Confirm deletion',exact:true});
+  const row={width,lang,buttons:[]};
+  for(const label of lang==='ru'?['Удалить','Отмена']:['Delete','Cancel']){
+   const target=group.getByRole('button',{name:label,exact:true});await target.scrollIntoViewIfNeeded();
+   const box=await target.boundingBox();assert.ok(box.width>=44&&box.height>=44);
+   await target.focus();await page.keyboard.press('Shift+Tab');await page.keyboard.press('Tab');
+   assert.equal(await target.evaluate(e=>e===document.activeElement),true);
+   const style=await target.evaluate(e=>{const s=getComputedStyle(e);return {focus:e.matches(':focus-visible'),outline:s.outline,boxShadow:s.boxShadow}});assert.ok(style.focus);assert.ok(!style.outline.includes('none')||style.boxShadow!=='none');
+   row.buttons.push({label,...box,...style});
+  }
+  assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
+  await page.locator('#side-panel-info').screenshot({path:out+`confirmation-${lang}-${width}.png`});
+  await group.getByRole('button',{name:lang==='ru'?'Отмена':'Cancel',exact:true}).press('Enter');
+  if(lang==='en'){if(await page.locator('.header-links').evaluate(e=>e.classList.contains('is-collapsed')))await page.locator('.header-links-toggle').click();await button('Переключить на русский').click()}
+  assert.deepEqual(await snapshot(),before);
+  await button('Удалить весь выделенный путь').click();await page.getByRole('group',{name:'Подтверждение удаления',exact:true}).getByRole('button',{name:'Удалить',exact:true}).press('Space');
+  const after=await snapshot(),expected=structuredClone(before);expected.map.roads=expected.map.roads.filter(r=>r.id!==id);expected.map.crossings=expected.map.crossings.filter(c=>c.roadId!==id);assert.deepEqual(after,expected);
+  await button('Отменить').click();assert.deepEqual(await snapshot(),before);await button('Повторить').click();assert.deepEqual(await snapshot(),after);
+  measurements.push({...row,dependentCrossingsRemoved:dependent.length,cancelNoop:true,deleteExact:true,undoRedoExact:true});
+ }
+ return measurements;
+});
+await check('AC07 active draft pan zoom rotate export, valid/invalid transition and single commit',async()=>{
+ await page.setViewportSize({width:1500,height:1100});
+ const d=structuredClone(fixture),s=d.map.roads[0].segments[0];d.map.roads=[];d.map.crossings=[];
+ for(const p of [s.from,s.to]){const r=d.map.regions.find(r=>r.hexes.some(h=>h.q===p.q&&h.r===p.r));if(!r.pointsOfInterest.some(h=>h.q===p.q&&h.r===p.r))r.pointsOfInterest.push({...p})}
+ await load(d);await select(`${s.from.q},${s.from.r}`);await edit();const before=await snapshot();await button('Начать путь отсюда').click();
+ await page.evaluate(()=>window.__exported=null);await button('JSON').click();assert.equal(await page.evaluate(()=>window.__exported),null);assert.equal(await page.locator('[data-road-draft]').count(),1);
+ await select(`${s.to.q},${s.to.r}`);const draft=await page.locator('[data-editor-only=draft]').innerHTML();
+ const v=page.locator('.map-viewport');await v.scrollIntoViewIfNeeded();const b=await v.boundingBox();await page.mouse.move(b.x+b.width*.5,b.y+b.height*.5);await page.mouse.wheel(0,-250);await page.waitForTimeout(100);await page.mouse.down();await page.mouse.move(b.x+b.width*.5-70,b.y+b.height*.5,{steps:8});await page.mouse.up();await page.locator('.rotate-map-button').click();
+ assert.equal(await page.locator('[data-editor-only=draft]').innerHTML(),draft);assert.equal(await page.locator('[data-editor-only=draft] line').count(),1);
+ const after=await snapshot();assert.equal(await page.locator('[data-road-draft] select').count(),0);assert.equal(after.map.roads.length,1);assert.equal(after.map.roads[0].segments.length,1);assert.equal(after.counters.nextRoadId,before.counters.nextRoadId+1);assert.deepEqual(after.generation,before.generation);
+ await button('Отменить').click();const undone=await snapshot();assert.deepEqual(undone.map,before.map);assert.deepEqual(undone.counters,before.counters);await button('Повторить').click();assert.deepEqual((await snapshot()).map,after.map);
+ return {invalidExportBlocked:true,draftUnchangedByPanZoomRotate:true,validExportCommitsOnce:true,undoRedoMapExact:true};
+});
+
+await check('AC07 Enter / repeat endpoint / touch Reset preserve exact history contract',async()=>{
+ const d=structuredClone(fixture),s=d.map.roads[0].segments[0];d.map.roads=[];d.map.crossings=[];
+ for(const p of [s.from,s.to]){const r=d.map.regions.find(r=>r.hexes.some(h=>h.q===p.q&&h.r===p.r));if(!r.pointsOfInterest.some(h=>h.q===p.q&&h.r===p.r))r.pointsOfInterest.push({...p})}
+ const results=[];
+ for(const action of ['enter','end','reset']){
+  await load(d);await select(`${s.from.q},${s.from.r}`);await edit();const before=await snapshot();await button('Начать путь отсюда').click();await select(`${s.to.q},${s.to.r}`);
+  if(action==='enter')await page.locator('.map-viewport').press('Enter');else if(action==='end')await select(`${s.to.q},${s.to.r}`);else await button('Сбросить черновик').click();
+  assert.equal(await page.locator('[data-road-draft] select').count(),0);
+  const after=await snapshot();if(action==='reset')assert.deepEqual(after,before);else{assert.equal(after.map.roads.length,1);assert.equal(after.counters.nextRoadId,before.counters.nextRoadId+1);await button('Отменить').click();assert.deepEqual(await snapshot(),before);await button('Повторить').click();assert.deepEqual(await snapshot(),after)}results.push({action,exact:true});
+ }
+ return results;
+});
+
+await fs.writeFile(out+'browser-version.json',JSON.stringify({version:browser.version()}));
+await browser.close();server.kill();console.log(JSON.stringify({reports,errors,alerts},null,2));

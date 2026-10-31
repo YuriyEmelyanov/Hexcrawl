@@ -1,0 +1,68 @@
+{
+  "head_sha": "d7bb38fbcee367621e5f5ce9fbaf369fbc775e0a",
+  "verdict": "accepted",
+  "open_blocking_findings": [],
+  "resolved": [
+    {
+      "id": "HX023-E3-R4",
+      "status": "resolved",
+      "evidence": [
+        "navigation.log",
+        "navigation-sensitivity-results.json"
+      ],
+      "observation": "Unmodified required gate passes; extracted exact observer counts2same-delivery transform changes and originalassertion rejects violation."
+    },
+    {
+      "id": "HX023-E3-R5",
+      "status": "resolved",
+      "evidence": [
+        "browser-results.json",
+        "confirmation-ru-390.png",
+        "confirmation-en-1500.png"
+      ],
+      "observation": "Bothconfirmationactions44px high RU/EN1500/390 with8pxgap, keyboardvisiblefocus, Cancelno-op/Delete/UndoRedoexact."
+    }
+  ],
+  "prior_findings": [
+    {
+      "id": "HX023-E3-R1",
+      "status": "remains_resolved_bounded",
+      "evidence": [
+        "browser-results.json",
+        "check.log"
+      ]
+    },
+    {
+      "id": "HX023-E3-R2",
+      "status": "remains_resolved_bounded",
+      "evidence": [
+        "browser-results.json",
+        "check.log"
+      ]
+    },
+    {
+      "id": "HX023-E3-R3",
+      "status": "remains_resolved_bounded",
+      "evidence": [
+        "browser-results.json",
+        "check.log"
+      ]
+    }
+  ],
+  "diagnostic_failures": [
+    {
+      "status": "reviewer_harness_error_not_product",
+      "evidence": [
+        "browser-probe.log",
+        "browser-results.json",
+        "browser-probe.mjs"
+      ],
+      "description": "R4firstextractor used mismatched closingindentation; endindex-1 includedunrelatedcode causingSyntaxError beforeinjection. Corrected standaloneonly, no repetitionofsuccessfulscenarios.",
+      "corrected_evidence": [
+        "navigation-sensitivity.mjs",
+        "navigation-sensitivity-results.json"
+      ]
+    }
+  ],
+  "publication_authorized": false
+}
