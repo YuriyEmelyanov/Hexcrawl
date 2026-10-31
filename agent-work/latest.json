@@ -6,8 +6,8 @@
   "plan_md": null,
   "strategy_branch": "main",
   "strategy_status": "approved",
-  "execution_allowed": true,
-  "schedule_status": "enabled",
+  "execution_allowed": false,
+  "schedule_status": "paused_by_owner_confirmed",
   "schedule_timezone": "Europe/Moscow",
   "schedule_time": null,
   "schedule_start_date": "2026-10-24",
@@ -34,7 +34,7 @@
   "run_id": "2026-10-31-strategist-score-PR482-8b1bb56",
   "plan_revision": 1,
   "baseline_sha": "8f7d17266c53e31428da7c0da6dbbf1afe01d035",
-  "status": "PR482_score_update_completed_E4_specification_correction_ready",
+  "status": "paused_by_owner",
   "planning_for": "2026-10-31",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-10-25",
@@ -58,7 +58,7 @@
   "result_path": "agent-work/results/2026-10-31-strategist-score-PR482-8b1bb56.json",
   "handoff_commit_sha": "9b5946df36c99f49363830cab478d46d10cacd04",
   "active_claim": null,
-  "next_step": "Уточнить совместимость E4 по HX023-E4-SPEC-01: определить однозначный исход старого импорта с hex=neighborHex и последующего v5 round-trip; обновить миграционные требования/AC05, затем вернуть программисту PR481.",
+  "next_step": "Ожидать явного поручения владельца возобновить работу; затем повторно прочитать GitHub/claims/очередь.",
   "owner_decisions_needed": [
     {
       "task_id": "HX-BL-003",
@@ -249,14 +249,16 @@
   "automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-10-31T11:56:00.414Z",
+      "checked_at": "2026-10-31T12:19:09.582Z",
       "is_enabled": true
     },
     "end": {
-      "checked_at": "2026-10-31T11:57:06.096Z",
-      "is_enabled": true
+      "checked_at": "2026-10-31T12:19:20.071Z",
+      "is_enabled": false
     },
     "restoration_performed": false,
+    "disabled_by_explicit_owner_request": true,
+    "decision_ref": "owner-decision-2026-10-31-team-pause",
     "errors": []
   },
   "open_findings": [],
@@ -928,7 +930,7 @@
     "next_step": "Решить отдельно узкий cleanup AUD-02/03/04; готовую спецификацию024 не задерживать."
   },
   "owner_decisions_note": "Подтвердить предложенную адресную замену большого незавершённого historygate для003. HX-BL-024 уже утверждён, повторного согласования задачи не нужно; выпуск474 отдельно.",
-  "updated_at": "2026-10-31T11:57:06.096Z",
+  "updated_at": "2026-10-31T12:19:20.071Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
     "stage_id": "V3",
@@ -1367,7 +1369,7 @@
       "errors": []
     }
   },
-  "last_secondary_result_ref": "agent-work/results/2026-10-31-owner-release-walkthrough.json",
+  "last_secondary_result_ref": "agent-work/results/2026-10-31-owner-team-pause.json",
   "execution_note": "E1 принят только на d92ecdd; локальный official save-history не зелёный, подтверждённое предусловие header отмечено как неблокирующая рекомендация. E2 аналитика разрешена; публикация и полный023 не завершены.",
   "completed_validation_handoffs": {
     "HX-BL-003": {
@@ -1627,7 +1629,7 @@
     "next_handoff_ref": "agent-work/handoffs/2026-10-27-HX-BL-003-minimal-release-package.json",
     "new_execution_authorized_by_review": false
   },
-  "previous_queue_next_step": "Бизнес-аналитик уточняет контракт миграции E4 для ранее принимаемого препятствия с hex=neighborHex; задаёт однозначный исход старого импорта и последующего v5 round-trip, затем возвращает E4 программисту для интеграции PR481.",
+  "previous_queue_next_step": "Уточнить совместимость E4 по HX023-E4-SPEC-01: определить однозначный исход старого импорта с hex=neighborHex и последующего v5 round-trip; обновить миграционные требования/AC05, затем вернуть программисту PR481.",
   "actual_main_sha": "8b1bb56ab45762e739f2048bccd237af05810c40",
   "future_head_sha": null,
   "future_tree_sha": null,
@@ -1652,11 +1654,11 @@
   "previous_automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-10-31T10:42:52.528Z",
+      "checked_at": "2026-10-31T11:56:00.414Z",
       "is_enabled": true
     },
     "end": {
-      "checked_at": "2026-10-31T10:52:12.623Z",
+      "checked_at": "2026-10-31T11:57:06.096Z",
       "is_enabled": true
     },
     "restoration_performed": false,
@@ -2385,13 +2387,17 @@
     "active_claim": null
   },
   "owner_pause": {
-    "decision_ref": "owner-decision-2026-10-30-team-pause",
-    "active": false,
-    "resume_requires_owner_instruction": true,
-    "do_not_auto_restore": false,
-    "result_ref": "agent-work/results/2026-10-30-owner-pause.json",
-    "resumed_by": "owner-decision-2026-10-31-team-resume-hourly",
-    "resumed_at": "2026-10-30T21:11:36.758Z"
+    "id": "owner-decision-2026-10-31-team-pause",
+    "date": "2026-10-31",
+    "recorded_at": "2026-10-31T12:19:09.980Z",
+    "type": "owner_pause",
+    "status": "active",
+    "source": "Current owner message: «пока останови работу»",
+    "scope": "Pause HexCrawl team work and the existing automation until explicit owner resume.",
+    "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "resume_requires": "Explicit owner instruction",
+    "preserve": "Existing results, queue and any claim/checkpoint; do not mark unfinished work completed.",
+    "is_enabled": false
   },
   "schedule_actual": "BEGIN:VEVENT\nDTSTART:20261030T211044Z\nRRULE:FREQ=HOURLY;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
   "owner_resume": {
@@ -2513,5 +2519,14 @@
     "PR480_status": "pending",
     "PR480_responsible": "developer"
   },
-  "score_update_stage_id": "panel_layout_correction"
+  "score_update_stage_id": "panel_layout_correction",
+  "previous_owner_pause": {
+    "decision_ref": "owner-decision-2026-10-30-team-pause",
+    "active": false,
+    "resume_requires_owner_instruction": true,
+    "do_not_auto_restore": false,
+    "result_ref": "agent-work/results/2026-10-30-owner-pause.json",
+    "resumed_by": "owner-decision-2026-10-31-team-resume-hourly",
+    "resumed_at": "2026-10-30T21:11:36.758Z"
+  }
 }
