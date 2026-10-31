@@ -26,10 +26,10 @@
   },
   "lessons_path": "agent-work/lessons.md",
   "plan_id": "2026-10-31-HX-BL-023-E4-analyst",
-  "run_id": "2026-10-31-developer-panel-walkthrough",
+  "run_id": "2026-10-31-developer-release-PR482",
   "plan_revision": 1,
   "baseline_sha": "8f7d17266c53e31428da7c0da6dbbf1afe01d035",
-  "status": "completed_accepted_awaiting_owner_release_permission",
+  "status": "PR482_published_score_update_pending",
   "planning_for": "2026-10-31",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-10-25",
@@ -46,21 +46,14 @@
   "schedule_frequency": "hourly",
   "process_path": "agent-work/process.md",
   "current_role": "developer",
-  "next_role": "business_analyst",
+  "next_role": "strategist",
   "current_task_id": "HX-BL-023",
   "spec_path": "agent-work/specs/HX-BL-023-E4.md",
   "spec_version": "E4-1.0",
-  "result_path": "agent-work/results/2026-10-31-developer-panel-walkthrough.json",
+  "result_path": "agent-work/results/2026-10-31-developer-release-PR482.json",
   "handoff_commit_sha": "9b5946df36c99f49363830cab478d46d10cacd04",
-  "active_claim": {
-    "run_id": "2026-10-31-developer-release-PR482",
-    "role": "developer",
-    "task_id": "HX-BL-023",
-    "stage_id": "panel_layout_release",
-    "started_at": "2026-10-31T11:32:53.076Z",
-    "status": "in_progress"
-  },
-  "next_step": "Аналитик устраняет противоречие миграции E4 по существующему handoff. PR482 готов к отдельному разрешению публикации; для совместного выпуска с PR480 потребуется объединённый проверенный пакет и актуальный показ.",
+  "active_claim": null,
+  "next_step": "Сверить опубликованный PR482 с score_assessment1.2, идемпотентно записать событие в текущую оценку/историю; затем вернуть очередь к утверждённому уточнению E4.",
   "owner_decisions_needed": [
     {
       "task_id": "HX-BL-003",
@@ -74,13 +67,6 @@
       "stage_id": "E3",
       "head_sha": "d7bb38fbcee367621e5f5ce9fbaf369fbc775e0a",
       "package_ref": "agent-work/handoffs/2026-10-31-HX-BL-023-E3-release-package-d7bb38f.json"
-    },
-    {
-      "type": "release",
-      "pr": 482,
-      "head_sha": "4a46f90be9a0eec795107227d4f3f7af8a417305",
-      "scope": "Only panel correction, E3/E4 not included",
-      "walkthrough_ref": "agent-work/evidence/HX-BL-023-panel-walkthrough/guide.html"
     }
   ],
   "release_approval": {
@@ -101,8 +87,8 @@
   "branch_name": "agent/hx023-panel-layout",
   "pr": 482,
   "head_sha": "4a46f90be9a0eec795107227d4f3f7af8a417305",
-  "checks_status": "all_required_CI_passed",
-  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41194227126",
+  "checks_status": "deployment_and_live_verification_passed",
+  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41197365941",
   "review_verdict": "accepted_with_scope_limitations",
   "role_selection_mode": "ready_work_priority",
   "role_selection_source": "agent-work/process.md",
@@ -116,22 +102,123 @@
     "url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/474#pullrequestreview-5647353819"
   },
   "release_result": {
-    "status": "published",
+    "run_id": "2026-10-31-developer-release-PR482",
+    "role": "developer",
     "task_id": "HX-BL-023",
-    "stage_id": "E2_direct_edit",
-    "accepted_head_sha": "a99c299f0648c2e5c1d65173bdeca50061dcc901",
-    "merge_sha": "defaa5c24d546e4283430573c2d4e4f3b6194dc0",
-    "release_sha": "defaa5c24d546e4283430573c2d4e4f3b6194dc0",
+    "stage_id": "panel_layout_release",
+    "status": "published",
+    "pr": 482,
+    "approved_sha": "4a46f90be9a0eec795107227d4f3f7af8a417305",
+    "merge_sha": "8b1bb56ab45762e739f2048bccd237af05810c40",
+    "tree_sha": "3cdad0ef6793096807b12ed8c31c7152f23f1210",
+    "deployment_run_id": 41197365941,
+    "deployment_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41197365941",
+    "approval_ref": "owner-release-2026-10-31-PR482-4a46f90",
+    "started_at": "2026-10-31T11:32:53.076Z",
     "published": true,
-    "result_ref": "agent-work/results/2026-10-31-developer-release-HX-BL-023-E2-a99c299.json",
-    "score_update_status": "completed",
-    "score_update_result_ref": "agent-work/results/2026-10-31-strategist-score-HX-BL-023-E2-defaa5c.json"
+    "score_update_status": "pending",
+    "next_step": "Сверить опубликованный PR482 с score_assessment1.2, идемпотентно записать событие в текущую оценку/историю; затем вернуть очередь к утверждённому уточнению E4.",
+    "automation_health": {
+      "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "start": {
+        "checked_at": "2026-10-31T11:32:53.076Z",
+        "is_enabled": true
+      },
+      "end": {
+        "checked_at": "2026-10-31T11:47:25.358Z",
+        "is_enabled": true
+      },
+      "restoration_performed": false,
+      "errors": [],
+      "limitation": "Observed at peek times only."
+    },
+    "publication_ref": "agent-work/evidence/release-PR482-8b1bb56/publication.json",
+    "deployment_status": "success",
+    "deployment_run": {
+      "id": 41197365941,
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "8b1bb56ab45762e739f2048bccd237af05810c40",
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41197365941",
+      "updated_at": "2026-10-31T11:46:07Z"
+    },
+    "release_sha": "8b1bb56ab45762e739f2048bccd237af05810c40",
+    "merge_tree_equals_reviewed_tree": true,
+    "site_url": "https://app.hexcrawl.ru/",
+    "live_verification": {
+      "release_sha": "8b1bb56ab45762e739f2048bccd237af05810c40",
+      "reviewed_sha": "4a46f90be9a0eec795107227d4f3f7af8a417305",
+      "url": "https://app.hexcrawl.ru",
+      "verified_at": "2026-10-31T11:46:45.413Z",
+      "status": 200,
+      "assets": [
+        "/assets/index-DWSR-dWp.js",
+        "/assets/index-I6Yxl8Ci.css"
+      ],
+      "asset_verification": [
+        {
+          "path": "/assets/index-DWSR-dWp.js",
+          "status": 200,
+          "bytes": 965061,
+          "sha256": "1f9d8853de76295a7ce711525af6d20f0750320024f66a201321f8fea381bf09"
+        },
+        {
+          "path": "/assets/index-I6Yxl8Ci.css",
+          "status": 200,
+          "bytes": 20707,
+          "sha256": "3b723b45681e606d5b5c51857abbb24b619dda0cfdbe7dbfe41e303aaf9b83f3"
+        }
+      ],
+      "ui": "live production: edit/done, shared scrolling100px, narrow fit",
+      "scroll": {
+        "amount": 100,
+        "delta": [
+          -100,
+          -100
+        ]
+      },
+      "errors": [],
+      "limits": [
+        "Synthetic local fixture imported in isolated browser; no external user data mutated",
+        "Chromium only; physical devices not checked"
+      ]
+    },
+    "completed_at": "2026-10-31T11:47:25.358Z",
+    "score_update_responsible": "strategist",
+    "score_update_handoff_ref": "agent-work/handoffs/2026-10-31-PR482-release-score.json",
+    "score_assessment_ref": "agent-work/evidence/HX-BL-023-panel-walkthrough/reviewer.json#score_assessment",
+    "score_model_version": "1.2",
+    "score_changed": false,
+    "next_role": "strategist",
+    "test_change_summary": {
+      "base_sha": "4a46f90be9a0eec795107227d4f3f7af8a417305",
+      "head_sha": "8b1bb56ab45762e739f2048bccd237af05810c40",
+      "added": 0,
+      "removed": 0,
+      "modified": 0,
+      "suite": "release merge tree",
+      "scenario_risk": "Exact reviewed tree published",
+      "reuse_or_new_reason": "No source changes on release; same tree equality proved",
+      "count_source": "Git commit tree equals3cdad0e on reviewed and merge SHA",
+      "package_test_change_summary_ref": "agent-work/evidence/HX-BL-023-panel-layout/test_change_summary.json",
+      "executed": {
+        "deployment": "check and fullbrowser workflow passed",
+        "live_ui": "edit/done, sharedscroll,1500/390fit passed"
+      }
+    },
+    "limitations": [
+      "Synthetic local fixture imported in isolated browser; no external user data mutated",
+      "Chromium only; physical devices not checked"
+    ],
+    "nonblocking_errors": [
+      "Job logs were unavailable while job was running (404); final completed jobs/build/deploy success verified."
+    ]
   },
-  "score_update_status": "completed",
+  "score_update_status": "pending",
   "score_update_task_id": "HX-BL-023",
-  "score_update_release_sha": "defaa5c24d546e4283430573c2d4e4f3b6194dc0",
+  "score_update_release_sha": "8b1bb56ab45762e739f2048bccd237af05810c40",
   "score_process_decision_ref": "owner-decision-2026-10-24-score-responsibilities",
-  "score_assessment_ref": null,
+  "score_assessment_ref": "agent-work/evidence/HX-BL-023-panel-walkthrough/reviewer.json#score_assessment",
   "role_selection_reason": "Direct owner request for clear actual pre-publication walkthrough; PR482 exactSHA CI now passed, no competing claim.",
   "score_update_result_ref": "agent-work/results/2026-10-31-strategist-score-HX-BL-023-E2-defaa5c.json",
   "score_update_completed_at": "2026-10-30T22:31:49.807Z",
@@ -156,31 +243,16 @@
   "automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-10-31T10:59:41.846Z",
+      "checked_at": "2026-10-31T11:32:53.076Z",
       "is_enabled": true
-    },
-    "end_initial": {
-      "checked_at": "2026-10-31T11:20:29.824Z",
-      "is_enabled": false
     },
     "end": {
-      "checked_at": "2026-10-31T11:20:49.232Z",
+      "checked_at": "2026-10-31T11:47:25.358Z",
       "is_enabled": true
     },
-    "restoration_performed": true,
-    "restoration": {
-      "action": "update(is_enabled=true), schedule/prompt untouched",
-      "authorization": "owner-decision mandatory automation health restoration",
-      "owner_decision_check": {
-        "sha": "0d22e228f9f86dbfd2f32242bf871496093bde91",
-        "checked_at": "2026-10-31T11:20:38.765Z",
-        "no_new_shutdown_decision": true
-      },
-      "confirmed": true
-    },
-    "disable_reason": "unknown",
+    "restoration_performed": false,
     "errors": [],
-    "limitation": "Only observed status at peek times; future service behavior not guaranteed."
+    "limitation": "Observed at peek times only."
   },
   "open_findings": [],
   "current_review_score_assessment_status": "not_applicable_specification_forecast_unknown",
@@ -676,7 +748,7 @@
     "delta": 7.5
   },
   "score_update_responsible": "strategist",
-  "merge_sha": "defaa5c24d546e4283430573c2d4e4f3b6194dc0",
+  "merge_sha": "8b1bb56ab45762e739f2048bccd237af05810c40",
   "deployment_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40699991274",
   "next_task_execution_allowed": true,
   "last_release_pr": 476,
@@ -851,7 +923,7 @@
     "next_step": "Решить отдельно узкий cleanup AUD-02/03/04; готовую спецификацию024 не задерживать."
   },
   "owner_decisions_note": "Подтвердить предложенную адресную замену большого незавершённого historygate для003. HX-BL-024 уже утверждён, повторного согласования задачи не нужно; выпуск474 отдельно.",
-  "updated_at": "2026-10-31T11:20:49.232Z",
+  "updated_at": "2026-10-31T11:47:25.358Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
     "stage_id": "V3",
@@ -1113,23 +1185,18 @@
   },
   "test_change_summary": {
     "base_sha": "4a46f90be9a0eec795107227d4f3f7af8a417305",
-    "head_sha": "4a46f90be9a0eec795107227d4f3f7af8a417305",
+    "head_sha": "8b1bb56ab45762e739f2048bccd237af05810c40",
     "added": 0,
     "removed": 0,
     "modified": 0,
-    "suite": "permanent product suites",
-    "scenario_risk": "No product changes; temporary actual walkthrough diagnostics separate",
-    "reuse_or_new_reason": "Reuse existing actual UI and accepted exactSHA evidence; no new permanent tests.",
-    "count_source": "HEAD unchanged; only evidence artifacts written",
-    "temporary_developer": {
-      "executed": 2,
-      "passed": 2,
-      "unit": "1500/390 walkthrough"
-    },
-    "temporary_reviewer": {
-      "executed": 2,
-      "passed": 2,
-      "unit": "1500/390 runtime replay"
+    "suite": "release merge tree",
+    "scenario_risk": "Exact reviewed tree published",
+    "reuse_or_new_reason": "No source changes on release; same tree equality proved",
+    "count_source": "Git commit tree equals3cdad0e on reviewed and merge SHA",
+    "package_test_change_summary_ref": "agent-work/evidence/HX-BL-023-panel-layout/test_change_summary.json",
+    "executed": {
+      "deployment": "check and fullbrowser workflow passed",
+      "live_ui": "edit/done, sharedscroll,1500/390fit passed"
     }
   },
   "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/480#pullrequestreview-5721774794",
@@ -1192,7 +1259,7 @@
     "nav_status_success": 24,
     "png_captured": 4
   },
-  "evidence_ref": "agent-work/evidence/HX-BL-023-panel-walkthrough",
+  "evidence_ref": "agent-work/evidence/release-PR482-8b1bb56",
   "static_diagnosis_handoff": {
     "status": "coordinated_nextstage_proposed",
     "result_ref": "agent-work/results/2026-10-27-developer-HX-BL-003-static-diagnosis.json",
@@ -1457,7 +1524,7 @@
   "historical_unverified_weight": 70,
   "historical_score_model_version": "1.1",
   "score_update_awarded_points": 0,
-  "handoff_ref": "agent-work/handoffs/2026-10-31-HX-BL-023-E4-migration-contract.json",
+  "handoff_ref": "agent-work/handoffs/2026-10-31-PR482-release-score.json",
   "previous_feedback_handoff": {
     "task_id": "HX-FB-001",
     "register": "agent-work/feedback.json",
@@ -1556,14 +1623,15 @@
     "new_execution_authorized_by_review": false
   },
   "previous_queue_next_step": "Бизнес-аналитик уточняет контракт миграции E4 для ранее принимаемого препятствия с hex=neighborHex; задаёт однозначный исход старого импорта и последующего v5 round-trip, затем возвращает E4 программисту для интеграции PR481.",
-  "actual_main_sha": "a7a8cc58987e97c4495c405374c6a4145f3bc9ff",
+  "actual_main_sha": "8b1bb56ab45762e739f2048bccd237af05810c40",
   "future_head_sha": null,
   "future_tree_sha": null,
   "current_package_release_approval": {
-    "status": "awaiting_owner_permission",
-    "head_sha": "4a46f90be9a0eec795107227d4f3f7af8a417305",
+    "status": "approved_and_executed",
     "pr": 482,
-    "walkthrough_ref": "agent-work/evidence/HX-BL-023-panel-walkthrough/guide.html"
+    "approved_sha": "4a46f90be9a0eec795107227d4f3f7af8a417305",
+    "merge_sha": "8b1bb56ab45762e739f2048bccd237af05810c40",
+    "approval_ref": "owner-release-2026-10-31-PR482-4a46f90"
   },
   "current_risk_findings": {
     "confirmed_defects": [],
@@ -2141,8 +2209,8 @@
   },
   "full_editor_ready": false,
   "current_task_score_assessment_status": "pending_new_SHA_independent_review",
-  "published": false,
-  "main_changed": false,
+  "published": true,
+  "main_changed": true,
   "ui_actual": {
     "head_sha": "4a46f90be9a0eec795107227d4f3f7af8a417305",
     "desktop": "agent-work/evidence/HX-BL-023-panel-layout/1500-ru-read.png",
@@ -2208,8 +2276,8 @@
     "release_package_ref": "agent-work/handoffs/2026-10-29-HX-BL-023-E1-release-package-d92ecdd.json",
     "publication_request_active": false
   },
-  "release_sha": "defaa5c24d546e4283430573c2d4e4f3b6194dc0",
-  "score_update_handoff_ref": "agent-work/handoffs/2026-10-31-HX-BL-023-E2-release-score.json",
+  "release_sha": "8b1bb56ab45762e739f2048bccd237af05810c40",
+  "score_update_handoff_ref": "agent-work/handoffs/2026-10-31-PR482-release-score.json",
   "latest_feedback_event": {
     "feedback_id": "HX-FB-005",
     "task_id": "HX-BL-023",
@@ -2345,7 +2413,7 @@
       }
     }
   },
-  "release_result_ref": "agent-work/results/2026-10-31-developer-release-HX-BL-023-E2-a99c299.json",
+  "release_result_ref": "agent-work/results/2026-10-31-developer-release-PR482.json",
   "process_analysis_ref": "agent-work/proposals/2026-10-31-development-process-review.md",
   "process_analysis_status": "recommendations_only_not_implemented",
   "previous_score_update_result_ref": "agent-work/results/2026-10-29-strategist-score-HX-BL-023-E1-8f7d172.json",
@@ -2360,25 +2428,26 @@
     "E4": "approved_task_specification_correction_allowed",
     "E4_release": "separate_owner_permission_required"
   },
-  "completed_at": "2026-10-31T11:20:49.232Z",
+  "completed_at": "2026-10-31T11:47:25.358Z",
   "score_changed": false,
   "next_stage_id": "E4",
   "score_evidence_updated": true,
-  "current_stage_id": "panel_layout_walkthrough",
+  "current_stage_id": "panel_layout_release",
   "implementation_started": true,
   "current_stage_release_approved": false,
   "review_ready": false,
   "current_stage_ui_status": "proposal_shown_actual_pending_integration",
   "completed_claim": {
-    "run_id": "2026-10-31-developer-panel-walkthrough",
+    "run_id": "2026-10-31-developer-release-PR482",
     "role": "developer",
     "task_id": "HX-BL-023",
-    "stage_id": "panel_layout_walkthrough",
-    "started_at": "2026-10-31T10:59:41.846Z",
+    "stage_id": "panel_layout_release",
+    "started_at": "2026-10-31T11:32:53.076Z",
     "status": "completed",
-    "completed_at": "2026-10-31T11:20:49.232Z"
+    "completed_at": "2026-10-31T11:47:25.358Z",
+    "result_ref": "agent-work/results/2026-10-31-developer-release-PR482.json"
   },
-  "evidence_commit_sha": "19e580c64586d35f4c736999182222231c5d2758",
+  "evidence_commit_sha": "69131988372e6b153f422bb8375c40c685c9edb3",
   "finding_ids": [],
   "current_release_package_ref": "agent-work/handoffs/2026-10-31-HX-BL-023-E3-release-package-d7bb38f.json",
   "current_stage_ui_preview": {
@@ -2445,5 +2514,6 @@
     ],
     "PR480_status": "pending",
     "PR480_responsible": "developer"
-  }
+  },
+  "score_update_stage_id": "panel_layout_correction"
 }
