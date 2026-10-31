@@ -1,0 +1,3 @@
+import {chromium} from '/workspace/e4/node_modules/playwright/index.mjs';
+const b=await chromium.launch({executablePath:'/tmp/hx-chromium',headless:true,args:['--no-sandbox']});
+for(const [name,width] of [['desktop',1440],['narrow',390]]){const p=await b.newPage({viewport:{width,height:1000}});await p.goto('file:///workspace/e4-artifacts/preview.html');await p.locator('details').evaluate(e=>e.open=true);await p.screenshot({path:`/workspace/e4-artifacts/${name}.png`,fullPage:true}); console.log(name,await p.evaluate(()=>({overflow:document.documentElement.scrollWidth>innerWidth})));}await b.close();
