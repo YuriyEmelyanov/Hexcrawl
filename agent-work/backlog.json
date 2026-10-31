@@ -1206,7 +1206,7 @@
       "task_id": "HX-BL-023",
       "title": "Общий режим редактирования",
       "criterion_id": "S03-C01",
-      "status": "changes_requested",
+      "status": "review_ready",
       "potential_delta": null,
       "approval_ref": "owner-decision-2026-10-29-HX-FB-005-direct-edit-mode",
       "source": {
@@ -1217,20 +1217,20 @@
         "Пригодная спецификация среза; не реализовывать весь перечень без определения поведения/инвариантов."
       ],
       "baseline_finding": "Панель ручных правок существует; общий безопасный режим не завершён.",
-      "evidence_ref": "agent-work/evidence/HX-BL-023-E3-fix-7267843",
+      "evidence_ref": "agent-work/evidence/HX-BL-023-E3-R4-R5-d7bb38f",
       "previous_status": "ready_for_development",
       "recommended_priority": 1,
       "execution_allowed": true,
       "spec_status": "ready",
-      "next_role": "developer",
-      "next_step": "Программист исправляет HX023-E3-R4 (точная проверка batching/зелёный browser CI) и HX023-E3-R5 (44px кнопки удаления/отмены) в PR480; затем независимая проверка нового SHA.",
+      "next_role": "reviewer",
+      "next_step": "Независимый проверяющий проверяет d7bb38f PR480: R4/R5, сохранность R1–R3, AC01–10 и score_assessment1.2; публикация отдельно.",
       "related_task_ids": [
         "HX-BL-013",
         "HX-BL-018",
         "HX-BL-019",
         "HX-BL-028"
       ],
-      "handoff_ref": "agent-work/handoffs/2026-10-31-HX-BL-023-E3-R4-R5-fix.json",
+      "handoff_ref": "agent-work/handoffs/2026-10-31-HX-BL-023-E3-d7bb38f-review.json",
       "owner_priority_decision": {
         "id": "owner-decision-2026-10-28-editor-and-MB-content-before-outreach",
         "date": "2026-10-28",
@@ -1369,17 +1369,17 @@
       "capability_matrix_ref": "agent-work/evidence/HX-BL-023-editor-v2/capability-matrix.json",
       "analyst_result_ref": "agent-work/results/2026-10-31-analyst-HX-BL-023-E3.json",
       "analyst_handoff_ref": "agent-work/handoffs/2026-10-29-HX-BL-023-E1-names.json",
-      "owner_role": "developer",
+      "owner_role": "reviewer",
       "branch": "agent/hx023-e3-roads",
       "pr": 480,
       "base_sha": "defaa5c24d546e4283430573c2d4e4f3b6194dc0",
-      "head_sha": "7267843da85afa92e6a31b2b6960cf6e7312db18",
-      "checks_status": "node_build_pass_browser_CI_failed_navigation",
+      "head_sha": "d7bb38fbcee367621e5f5ce9fbaf369fbc775e0a",
+      "checks_status": "local_node_build_fullbrowser_pass_CI_browser_pass_check_rng_pending",
       "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41167054315",
-      "review_verdict": "changes_requested",
-      "test_change_summary_ref": "agent-work/evidence/review-HX-BL-023-E3-7267843/test_change_summary.json",
-      "developer_result_ref": "agent-work/results/2026-10-31-developer-HX-BL-023-E3-R1-R3.json",
-      "score_assessment_status": "insufficient_evidence",
+      "review_verdict": null,
+      "test_change_summary_ref": "agent-work/evidence/HX-BL-023-E3-R4-R5-d7bb38f/test_change_summary.json",
+      "developer_result_ref": "agent-work/results/2026-10-31-developer-HX-BL-023-E3-R4-R5.json",
+      "score_assessment_status": "pending_new_SHA_independent_review",
       "ui_actual": {
         "head_sha": "7267843da85afa92e6a31b2b6960cf6e7312db18",
         "desktop": "agent-work/evidence/HX-BL-023-E3-fix-7267843/overlap-ru-1500.png",
@@ -1396,7 +1396,10 @@
         "HX023-E3-R5"
       ],
       "previous_review_result_ref": "agent-work/results/2026-10-31-reviewer-HX-BL-023-E3-6e59e7f.json",
-      "addressed_findings_pending_review": [],
+      "addressed_findings_pending_review": [
+        "HX023-E3-R4",
+        "HX023-E3-R5"
+      ],
       "previous_score_assessment_ref": "agent-work/evidence/review-HX-BL-023-c4a37ee/score_assessment.json",
       "previous_review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/478#pullrequestreview-5692465528",
       "accepted_release_pending": null,
@@ -1491,10 +1494,10 @@
           "score_update_completed_at": "2026-10-30T22:31:49.807Z"
         },
         "E3_roads_trails_crossings": {
-          "status": "changes_requested",
+          "status": "review_ready",
           "parent_spec_ref": "agent-work/specs/HX-BL-023.md",
           "parent_spec_version": "2.3",
-          "handoff_ref": "agent-work/handoffs/2026-10-31-HX-BL-023-E3-R4-R5-fix.json",
+          "handoff_ref": "agent-work/handoffs/2026-10-31-HX-BL-023-E3-d7bb38f-review.json",
           "release_approved": false,
           "implementation_started": true,
           "spec_ref": "agent-work/specs/HX-BL-023-E3.md",
@@ -1508,13 +1511,13 @@
             "ui_preview_pending": false,
             "owner_response_required_to_start": false
           },
-          "head_sha": "7267843da85afa92e6a31b2b6960cf6e7312db18",
+          "head_sha": "d7bb38fbcee367621e5f5ce9fbaf369fbc775e0a",
           "branch": "agent/hx023-e3-roads",
           "pr": 480,
-          "result_ref": "agent-work/results/2026-10-31-developer-HX-BL-023-E3-R1-R3.json",
+          "result_ref": "agent-work/results/2026-10-31-developer-HX-BL-023-E3-R4-R5.json",
           "completed_substep": "domain_existing_path_UI_and_path_draft",
-          "review_ready": false,
-          "next_role": "developer",
+          "review_ready": true,
+          "next_role": "reviewer",
           "ui_actual": {
             "head_sha": "7267843da85afa92e6a31b2b6960cf6e7312db18",
             "desktop": "agent-work/evidence/HX-BL-023-E3-fix-7267843/overlap-ru-1500.png",
@@ -1528,8 +1531,11 @@
             "HX023-E3-R4",
             "HX023-E3-R5"
           ],
-          "addressed_findings_pending_review": [],
-          "next_step": "Программист исправляет HX023-E3-R4 (точная проверка batching/зелёный browser CI) и HX023-E3-R5 (44px кнопки удаления/отмены) в PR480; затем независимая проверка нового SHA.",
+          "addressed_findings_pending_review": [
+            "HX023-E3-R4",
+            "HX023-E3-R5"
+          ],
+          "next_step": "Независимый проверяющий проверяет d7bb38f PR480: R4/R5, сохранность R1–R3, AC01–10 и score_assessment1.2; публикация отдельно.",
           "resolved_findings": [
             "HX023-E3-R1",
             "HX023-E3-R2",
@@ -1615,7 +1621,7 @@
       "score_update_handoff_ref": "agent-work/handoffs/2026-10-31-HX-BL-023-E2-release-score.json",
       "score_update_completed_at": "2026-10-30T22:31:49.807Z",
       "previous_head_sha": "a99c299f0648c2e5c1d65173bdeca50061dcc901",
-      "review_ready": false
+      "review_ready": true
     },
     {
       "task_id": "HX-BL-024",

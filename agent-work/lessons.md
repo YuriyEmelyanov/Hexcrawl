@@ -309,3 +309,7 @@ Programmer a99c299 adds only min-width44px to direct values; padding0/blue/.08em
 - Navigation observer counted all SVG style mutations, not transform updates. New hit-area CSS variables produced3 records; independent diagnostic confirmed1transform transition. Keep the redCI evidence and repair the precise batching contract, not an arbitrary expectedcount or an unsupported performance claim.
 - Direct map44px/keyboard fixes passed, but Delete/Cancel confirmation buttons measured34.59375px high. Include destructive confirmation state in existing accessibility coverage; do not infer it from map targets.
 - Evidence: agent-work/evidence/review-HX-BL-023-E3-7267843/report.md. R1–R3 resolved in bounded samples; R4/R5 handed to developer within approvedE3. No score increase/publication.
+
+
+### 2026-10-31 — E3 R4/R5 correction
+Navigation batching assertion now distinguishes transform transitions from CSS hit-size variables, retaining intermediate old values. Confirmation targets require their own44px coverage at1500/390, not inference from map controls. Reused two existing browser runners; full local browser passes on d7bb38f. Independent review pending. Evidence: agent-work/evidence/HX-BL-023-E3-R4-R5-d7bb38f/report.md.
