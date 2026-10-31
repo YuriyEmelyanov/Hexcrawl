@@ -298,3 +298,8 @@ Programmer a99c299 adds only min-width44px to direct values; padding0/blue/.08em
 - Passing command tests with destination:()=>true do not verify the App destination predicate. Independent controlled fixture reproduced accepting suppressed empty center as endpoint; add this distinction to existing handler coverage.
 - For legacy overlapping geometry, normalized segment key does not identify Road.id. Verify individual selection/highlight separately from explicit-ID mutations.
 - Evidence: agent-work/evidence/review-HX-BL-023-E3-6e59e7f/review.md; confirmed R1–R3 handed to developer, no acceptance or score award.
+
+
+### 2026-10-31 — E3 reviewer fixes7267843
+- Reused reviewer controlled suppressed-center fixture in existing draft lifecycle: empty suppressed/tract destinations rejected while explicit POI remains allowed. Node case count unchanged; browser case extended for exact overlapping IDs and keyboard access.
+- CSS-only map zoom needs hit-area variables updated with scale; selection identity stores Road.id/segment/crossing key, not geometry alone. Evidence agent-work/evidence/HX-BL-023-E3-fix-7267843; independent closure pending.
