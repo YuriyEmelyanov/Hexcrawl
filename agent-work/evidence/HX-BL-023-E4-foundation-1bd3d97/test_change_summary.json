@@ -1,0 +1,42 @@
+{
+  "base_sha": "d7bb38fbcee367621e5f5ce9fbaf369fbc775e0a",
+  "head_sha": "1bd3d973e11001d18f91718ee9c8b98bbfbf3758",
+  "added": 5,
+  "removed": 0,
+  "modified": 0,
+  "suite": "Node test/manualObstacles.test.mjs",
+  "scenario_risk": [
+    "deterministic legacy ID migration without reorder/data loss",
+    "counter normalization, duplicate IDs/edges, overflow",
+    "Classic add/remove without fake kingdom; input immutability",
+    "move stable ID, actual kingdom reassignment and unrelated preservation",
+    "invalid geometry/water/river/road/occupied target, stale selection and no-op"
+  ],
+  "reuse_or_new_reason": "Existing mythicKingdom tests cover generated24 obstacles; manualRoads covers road rejection by obstacles. Neither exercises the new pure manual barrier command/migration boundary. Five logical test() cases cover distinct contracts; no new browser runner or repeated legacy corpus.",
+  "count_source": "Two added files relative to d7bb38f; five top-level test() cases, no nested test cases; assertions/loops are not extra cases",
+  "execution": {
+    "targeted": {
+      "executed": 5,
+      "passed": 5,
+      "failed": 0,
+      "skipped": 0
+    },
+    "full_check": {
+      "executed": 261,
+      "passed": 261,
+      "failed": 0,
+      "skipped": 0,
+      "typecheck": "passed",
+      "build": "passed",
+      "exit_code": 0
+    }
+  },
+  "browser": {
+    "added": 0,
+    "removed": 0,
+    "modified": 0,
+    "executed": 0,
+    "reason": "No App/UI/generator hookup in this checkpoint; full browser mandatory after integration"
+  },
+  "initial_failure": "First tsc run failed to narrow optional edge key; fixed by explicit throw. Original log preserved."
+}

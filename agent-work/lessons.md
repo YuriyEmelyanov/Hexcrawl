@@ -322,3 +322,7 @@ Navigation batching assertion now distinguishes transform transitions from CSS h
 
 ### 2026-10-31 — E4 model before UI
 На d7bb38f edgeKey идентифицирует место, не переносимый объект; обязательный kingdomId исключает Classic. E4 специфицирует устойчивый ID, реальную необязательную принадлежность и v5 миграцию без RNG. Новые команды не должны ужесточать приём старого допустимого корпуса. Evidence/spec: agent-work/specs/HX-BL-023-E4.md. Это решение спецификации, не проверенная реализация.
+
+
+### 2026-10-31 — E4 foundation checkpoint
+Pure migration keeps legacy array order while assigning IDs by sorted edge key. Source-edge move must return the original document before applying new placement restrictions, so legacy obstacles can cancel safely. Runtime unit success did not imply tsc success: explicit throw was needed to narrow optional edgeKey. Initial failure and final261/261 check retained at agent-work/evidence/HX-BL-023-E4-foundation-1bd3d97/. No App/v5/history/UI acceptance is claimed until integration.

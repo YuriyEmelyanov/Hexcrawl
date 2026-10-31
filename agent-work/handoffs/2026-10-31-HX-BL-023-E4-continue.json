@@ -1,0 +1,33 @@
+{
+  "task_id": "HX-BL-023",
+  "stage_id": "E4",
+  "role": "developer",
+  "status": "implementation_in_progress",
+  "spec_ref": "agent-work/specs/HX-BL-023-E4.md",
+  "spec_version": "E4-1.0",
+  "base_sha": "d7bb38fbcee367621e5f5ce9fbaf369fbc775e0a",
+  "head_sha": "1bd3d973e11001d18f91718ee9c8b98bbfbf3758",
+  "branch": "agent/hx023-e4-barriers",
+  "completed": [
+    "Pure prepareObstacleEdit add/remove/move with optional actual kingdom membership",
+    "Deterministic migrateLegacyObstacles and normalizeObstacleCounter",
+    "Five boundary tests; not App acceptance"
+  ],
+  "remaining": [
+    "Wire EditableObstacle/nextObstacleId through MapSnapshot, capture/apply/restore/reset and all generated proposal paths; assign new kingdom obstacle IDs atomically without changing RNG selection",
+    "Add v5 validator/legacy migration after old validation, export v5 and visible compatibility note; extend existing saveSafety/mapTransactions cases",
+    "Connect revision-guarded transaction handler and direct UI edge selection/preview/error/focus/Escape lifecycle; show actual desktop/390",
+    "Run all AC01–09, full production browser and world-random; exact SHA independent reviewer afterwards"
+  ],
+  "integration_points": [
+    "src/App.tsx:452,1263 types;11303 counter;12790 captureMap;12806 restore;12961 apply;13098 generated obstacles;13193 reset;13236 snapshot restore;13863 export;13943 import",
+    "src/modes/persistence.ts and src/saveValidation.ts",
+    "src/App.tsx:14437 obstacle drawing and14953 Nearby rows"
+  ],
+  "next_step": "Программист продолжает этот же E4: сначала подключает модель и v5 к снимкам/импорту/экспорту, затем UI и сквозные проверки; после полного выполнения — независимый review.",
+  "review_ready": false,
+  "release_approved": false,
+  "pr": 481,
+  "test_change_summary_ref": "agent-work/evidence/HX-BL-023-E4-foundation-1bd3d97/test_change_summary.json",
+  "checks": "Node24 check exit0, 261/261"
+}
