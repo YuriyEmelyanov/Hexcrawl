@@ -358,6 +358,20 @@ try {
  await button('Начать путь отсюда').click();await select(`${draftSegment.to.q},${draftSegment.to.r}`);
  await button('Готово').click();const draftAfter=await snapshot();assert.equal(draftAfter.map.roads.length,1);assert.deepEqual(draftAfter.generation,draftBefore.generation);
  await button('Отменить').click();assert.deepEqual(await snapshot(),draftBefore);await button('Повторить').click();assert.deepEqual(await snapshot(),draftAfter);
+ // R2/R3: extend this runner with overlapping legacy identity and real keyboard activation.
+ const overlap=JSON.parse(await fs.readFile(new URL('../fixtures/road-entry-zigzags.json',import.meta.url)));
+ const original=overlap.map.roads[0],shared=original.segments[0],copyId=Math.max(...overlap.map.roads.map(r=>r.id))+1;
+ overlap.map.roads.push({...structuredClone(original),id:copyId,segments:[structuredClone(shared)]});overlap.counters.nextRoadId=copyId+1;
+ await load(overlap);await select(`${shared.from.q},${shared.from.r}`);
+ if(await button('Редактировать').count())await button('Редактировать').click();
+ const pair=[`${shared.from.q},${shared.from.r}`,`${shared.to.q},${shared.to.r}`].sort().join('|');
+ for(const id of [original.id,copyId]){
+  const actual=page.getByRole('button',{name:`Участок ${id}: ${pair}`,exact:true});
+  await actual.focus();await actual.press('Enter');
+  assert.equal(await page.locator('.road-editor__item > button[aria-pressed="true"]').count(),1);
+  assert.equal(await page.locator('[data-editor-only="roads"] line[stroke="#7dd3fc"]').count(),1);
+  assert.ok(await actual.evaluate(el=>parseFloat(getComputedStyle(el).strokeWidth)*el.getScreenCTM().a>=43.9),'map target44px at normal rotation');
+ }
  // E3 existing-path controls: exact crossing identity, confirmation preview and history.
  // Reuse this lifecycle runner: no second corpus or mixed-history sequence.
  await load(JSON.parse(await fs.readFile(new URL('../fixtures/road-entry-zigzags.json',import.meta.url))));
@@ -366,6 +380,10 @@ try {
  await select(`${seg.from.q},${seg.from.r}`);
  if(await button('Редактировать').count())await button('Редактировать').click();
  const roadLabel=`Участок ${road.id}: ${seg.from.q},${seg.from.r} → ${seg.to.q},${seg.to.r}`;
+ const crossingTarget=page.getByRole('button',{name:`Переправа ${crossing.key}`,exact:true});
+ await crossingTarget.focus();await crossingTarget.press(' ');
+ assert.equal(await crossingTarget.getAttribute('aria-pressed'),'true');
+ assert.equal(await page.locator('[data-editor-only="roads"] circle[stroke="#7dd3fc"]').count(),1);
  await button(roadLabel).click();
  const oldRoad=await snapshot();
  const crossingSelect=page.getByRole('combobox',{name:`Переправа ${road.id}:${crossing.riverId}`,exact:true});

@@ -11346,6 +11346,7 @@ export function App() {
   const roadDraftRef = useRef<RoadDraft|null>(null);
   const updateRoadDraft = (draft:RoadDraft|null) => {roadDraftRef.current=draft;setRoadDraft(draft);};
   const pendingRoadExport = useRef<'png'|'json'|null>(null);
+  const [selectedRoadTarget, setSelectedRoadTarget] = useState<{roadId:number; crossingKey?:string} | null>(null);
   const [selectedRoadPair, setSelectedRoadPair] = useState<string | null>(null);
   const [confirmRoadRemoval, setConfirmRoadRemoval] = useState<{roadId:number;segmentKey?:string;revision:number} | null>(null);
   const [editError, setEditError] = useState<string | null>(null);
@@ -12818,7 +12819,7 @@ export function App() {
   });
   const applyPreparedDocument = (doc: DocumentSnapshot) => {
     documentRevision.current++;
-    updateRoadDraft(null); setSelectedRoadPair(null); setConfirmRoadRemoval(null);
+    updateRoadDraft(null); setSelectedRoadPair(null); setSelectedRoadTarget(null); setConfirmRoadRemoval(null);
     applyExactMap(doc.map); setHistory(doc.generationHistory); setSelectedHex(doc.selectedHex);
     setGenerationMode(doc.generationMode); setIsMapRotated(doc.isMapRotated);
     updateMapScale(doc.mapScale); setPendingRegen(null); closeEditors();
@@ -12867,7 +12868,7 @@ export function App() {
       const fullness = getRiverCrossingFullnessByEdge(rivers);
       const result = prepareRoadEdit({roads, crossings, nextRoadId}, edit, {
         landRegion,
-        destination: hex => regions.some(r => isSameHex(r.centerHex, hex) || r.pointsOfInterest.some(h => isSameHex(h, hex))),
+        destination: hex => regions.some(r => (!r.isTract && !r.suppressCentralPoi && isSameHex(r.centerHex, hex)) || r.pointsOfInterest.some(h => isSameHex(h, hex))),
         openExit: hex => landRegion(hex) !== undefined && getHexNeighbors(hex).some(h =>
           !hexTerrainByKey.has(hexKey(h)) && !regions.some(r => r.hexes.some(v => isSameHex(v, h)))),
         blocked: (a, b) => obstacles.some(o => pairKey(o.hex, o.neighborHex) === pairKey(a, b)),
@@ -13654,6 +13655,8 @@ export function App() {
       stage.style.width = `${svg.viewBox.baseVal.width * nextScale}px`;
       stage.style.height = `${svg.viewBox.baseVal.height * nextScale}px`;
       svg.style.transform = `translateZ(0) scale(${nextScale})`;
+      svg.style.setProperty("--road-hit-width", `${44 / nextScale}px`);
+      svg.style.setProperty("--crossing-hit-radius", `${22 / nextScale}px`);
     }
     return nextScale;
   };
@@ -14109,7 +14112,7 @@ export function App() {
     } else {
       if (!finishInlineName()) return;
       finishNotesGroup(); closeEditors(); clearNotesDraft();
-      setSelectedRoadPair(null); setConfirmRoadRemoval(null);
+      setSelectedRoadPair(null); setSelectedRoadTarget(null); setConfirmRoadRemoval(null);
       setSelectedHex({ q: hex.q, r: hex.r });
     }
   };
@@ -14123,7 +14126,7 @@ export function App() {
   });
   const startRoadDraft = () => {
     if(!editMode||roadDraftRef.current||!finishInlineName()||mutationBlocked()||!selectedHex||!roadLandRegion(selectedHex))return false;
-    clearNotesDraft();closeEditors();setSelectedRoadPair(null);setConfirmRoadRemoval(null);
+    clearNotesDraft();closeEditors();setSelectedRoadPair(null); setSelectedRoadTarget(null);setConfirmRoadRemoval(null);
     updateRoadDraft({path:[{...selectedHex}],kind:'trail',crossingKinds:{},revision:documentRevision.current});return true;
   };
   const finishRoadDraft = () => {
@@ -14154,11 +14157,11 @@ export function App() {
       <button type="button" className="direct-value" onClick={resetRoadDraft}>{language==='ru'?'Сбросить черновик':'Reset draft'}</button>
     </> : <button type="button" className="direct-value" onClick={startRoadDraft}>{language==='ru'?'Начать путь отсюда':'Start path here'}</button>}
   </div>:null;
-  const chooseRoadPair = (pair:string) => {
+  const chooseRoadPair = (pair:string, roadId:number, crossingKey?:string) => {
     if (documentBusy() || !finishRoadDraft() || !finishInlineName()) return;
     finishNotesGroup(); clearNotesDraft(); closeEditors(); setConfirmRoadRemoval(null);
-    setSelectedRoadPair(pair);
-    const match = roads.flatMap(r => r.segments).find(s => normalizeRoadSegmentKey(s.from,s.to) === pair);
+    setSelectedRoadPair(pair); setSelectedRoadTarget({roadId,crossingKey});
+    const match = roads.find(r=>r.id===roadId)?.segments.find(s => normalizeRoadSegmentKey(s.from,s.to) === pair);
     if(match) setSelectedHex({...match.from});
   };
   const roadChoices = roads.flatMap(road => road.segments.filter(segment =>
@@ -14179,10 +14182,10 @@ export function App() {
   } as Record<string,string>)[code] ?? 'Не удалось подготовить изменение пути.';
   const roadPanel = editMode && !roadDraft && roadChoices.length ? <div className="road-editor" aria-label={language==='ru'?'Редактирование путей':'Edit paths'}>
     {roadChoices.map(({road,segment,pair},index) => <div className="road-editor__item" key={`${road.id}:${pair}:${index}`}>
-      <button type="button" className="direct-value" aria-pressed={selectedRoadPair===pair} onClick={()=>chooseRoadPair(pair)}>
+      <button type="button" className="direct-value" aria-pressed={selectedRoadPair===pair && selectedRoadTarget?.roadId===road.id && !selectedRoadTarget.crossingKey} onClick={()=>chooseRoadPair(pair,road.id)}>
         {language==='ru'?'Участок':'Segment'} {road.id}: {hexKey(segment.from)} → {hexKey(segment.to)}
       </button>
-      {selectedRoadPair===pair && <>
+      {selectedRoadPair===pair && selectedRoadTarget?.roadId===road.id && <>
         <label>{language==='ru'?'Тип участка':'Segment type'} <select className="direct-value" aria-label={`${language==='ru'?'Тип участка':'Segment type'} ${road.id}`}
           value={segment.kind} onChange={e=>editRoadDocument({type:'kind',roadId:road.id,segmentKey:pair,kind:e.target.value as RoadKind})}>
           <option value="road">{t.road}</option><option value="trail">{t.trail}</option>
@@ -14191,7 +14194,7 @@ export function App() {
           const edge=getSharedHexEdgeVertexKeys(segment.from,segment.to); const edgeId=edge?[...edge].sort().join('|'):null;
           return rivers.filter(r=>r.vertexPath.slice(1).some((v,i)=>getRiverEdgeKey(r.vertexPath[i],v)===edgeId)).map(r=>{
             const crossing=crossings.find(c=>c.key===getRiverCrossingKey(road.id,pair,r.id));
-            return <label key={r.id}>{language==='ru'?'Переправа':'Crossing'} {r.id} <select className="direct-value" aria-label={`${language==='ru'?'Переправа':'Crossing'} ${road.id}:${r.id}`}
+            return <label key={r.id}><button type="button" className="direct-value" aria-pressed={selectedRoadTarget?.crossingKey===getRiverCrossingKey(road.id,pair,r.id)} onClick={()=>chooseRoadPair(pair,road.id,getRiverCrossingKey(road.id,pair,r.id))}>{language==='ru'?'Переправа':'Crossing'} {r.id}</button> <select className="direct-value" aria-label={`${language==='ru'?'Переправа':'Crossing'} ${road.id}:${r.id}`}
               value={crossing?.kind??''} onChange={e=>editRoadDocument({type:'crossing',roadId:road.id,segmentKey:pair,riverId:r.id,kind:e.target.value as RiverCrossingKind})}>
               {!crossing&&<option value="" disabled>{language==='ru'?'Не задана':'Not set'}</option>}
               {(['bridge','ferry','ford'] as const).map(kind=><option key={kind} value={kind}>{t[kind]}</option>)}
@@ -14851,7 +14854,7 @@ export function App() {
               data-render-phase={kingdomJob ? 'generation' : renderDetails ? 'ready' : 'render-pending'}
               viewBox={`0 0 ${displayMapWidth} ${displayMapHeight}`}
               preserveAspectRatio="xMinYMin meet"
-              style={{ width: `${displayMapWidth}px`, height: `${displayMapHeight}px`, transform: `translateZ(0) scale(${mapScaleRef.current})`, '--water-color': WATER_PALETTE.river, '--water-marks': WATER_PALETTE.marks } as CSSProperties}
+              style={{ width: `${displayMapWidth}px`, height: `${displayMapHeight}px`, transform: `translateZ(0) scale(${mapScaleRef.current})`, '--road-hit-width': `${44/mapScaleRef.current}px`, '--crossing-hit-radius': `${22/mapScaleRef.current}px`, '--water-color': WATER_PALETTE.river, '--water-marks': WATER_PALETTE.marks } as CSSProperties}
             >
             {mapArtwork}
             {roadDraft && <g data-editor-only="draft" transform={mapRotationTransform} pointerEvents="none">
@@ -14859,10 +14862,18 @@ export function App() {
               {roadDraft.path.slice(1).map((h,i)=>{const a=toPixel(roadDraft.path[i].q,roadDraft.path[i].r),b=toPixel(h.q,h.r);return <line key={i} x1={a.x+riverOffset.x} y1={a.y+riverOffset.y} x2={b.x+riverOffset.x} y2={b.y+riverOffset.y} stroke="#7dd3fc" strokeWidth={4} strokeDasharray="6 3" />;})}
             </g>}
             {editMode && !roadDraft && renderDetails && <g data-editor-only="roads" transform={mapRotationTransform}>
-              {Array.from(new Map(roadSegments.map(s=>[s.segmentKey,s])).values()).map(s=><line key={s.segmentKey}
-                x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2} stroke="transparent" strokeWidth={12} pointerEvents="stroke"
-                onClick={e=>{e.stopPropagation();chooseRoadPair(s.segmentKey);}} />)}
-              {roadSegments.filter(s=>confirmRoadRemoval ? s.roadId===confirmRoadRemoval.roadId&&(!confirmRoadRemoval.segmentKey||s.segmentKey===confirmRoadRemoval.segmentKey):s.segmentKey===selectedRoadPair).map(s=><line key={s.key}
+              {roadSegments.map(s=><line key={s.key} className="road-map-target" role="button" tabIndex={0}
+                aria-label={`${language==='ru'?'Участок':'Segment'} ${s.roadId}: ${s.segmentKey}`} aria-pressed={selectedRoadPair===s.segmentKey&&selectedRoadTarget?.roadId===s.roadId&&!selectedRoadTarget.crossingKey}
+                x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2} stroke="transparent" style={{strokeWidth:'var(--road-hit-width)'}} pointerEvents="stroke"
+                onClick={e=>{e.stopPropagation();chooseRoadPair(s.segmentKey,s.roadId);}}
+                onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();e.stopPropagation();chooseRoadPair(s.segmentKey,s.roadId);}}} />)}
+              {renderedCrossings.map(c=><circle key={c.key} className="crossing-map-target" role="button" tabIndex={0}
+                aria-label={`${language==='ru'?'Переправа':'Crossing'} ${c.key}`} aria-pressed={selectedRoadTarget?.crossingKey===c.key}
+                cx={c.x} cy={c.y} style={{r:'var(--crossing-hit-radius)'}} fill="transparent" pointerEvents="all"
+                onClick={e=>{e.stopPropagation();chooseRoadPair(c.roadSegmentKey,c.roadId,c.key);}}
+                onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();e.stopPropagation();chooseRoadPair(c.roadSegmentKey,c.roadId,c.key);}}} />)}
+              {renderedCrossings.filter(c=>c.key===selectedRoadTarget?.crossingKey).map(c=><circle key={`selected-${c.key}`} cx={c.x} cy={c.y} r={9} fill="none" stroke="#7dd3fc" strokeWidth={3} pointerEvents="none" />)}
+              {roadSegments.filter(s=>confirmRoadRemoval ? s.roadId===confirmRoadRemoval.roadId&&(!confirmRoadRemoval.segmentKey||s.segmentKey===confirmRoadRemoval.segmentKey):s.segmentKey===selectedRoadPair&&s.roadId===selectedRoadTarget?.roadId&&!selectedRoadTarget.crossingKey).map(s=><line key={s.key}
                 x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2} stroke="#7dd3fc" strokeWidth={4} strokeDasharray="6 3" pointerEvents="none" />)}
             </g>}
             </svg>
@@ -14876,7 +14887,7 @@ export function App() {
               <section ref={infoFocusRef} tabIndex={-1} className={`info-block info-block--hex${editMode ? ' is-editing' : ''}`} aria-label={t.selectedHexInfo}>
                 <div className="direct-mode-row"><button type="button" className="secondary direct-mode" aria-pressed={editMode}
                   disabled={isImporting || !!pendingRegen || !!kingdomJob}
-                  onClick={() => { if (!finishRoadDraft() || !finishInlineName()) return; finishNotesGroup(); clearNotesDraft(); closeEditors(); setSelectedRoadPair(null); setConfirmRoadRemoval(null); setEditMode(v => !v); }}>
+                  onClick={() => { if (!finishRoadDraft() || !finishInlineName()) return; finishNotesGroup(); clearNotesDraft(); closeEditors(); setSelectedRoadPair(null); setSelectedRoadTarget(null); setConfirmRoadRemoval(null); setEditMode(v => !v); }}>
                   {editMode ? (language === 'ru' ? 'Готово' : 'Done') : (language === 'ru' ? 'Редактировать' : 'Edit')}
                 </button></div>
                 {selectedKingdom ? <p>{language === 'ru' ? 'Королевство' : 'Kingdom'}: {renderName(`kingdom:${selectedKingdom.id}`)}</p> : null}

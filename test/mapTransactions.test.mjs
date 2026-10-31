@@ -290,6 +290,19 @@ test('manual road command commits exactly once and stale callback cannot write a
 
 test('road draft is ephemeral, blocks other writes, commits once and stale finish is inert',async()=>{
  const {h}=setup(),data=structuredClone(fixture),segment=data.map.roads[0].segments[0];
+ const suppressed=JSON.parse(fs.readFileSync(new URL('./fixtures/suppressed-road-endpoint.json',import.meta.url)));
+ for(const isTract of [false,true]){
+  const input=structuredClone(suppressed),region=input.map.regions.find(r=>r.id===1);
+  region.isTract=isTract;region.suppressCentralPoi=!isTract;
+  await load(h,input);h.render().setSelectedHex({q:4,r:6});h.render().setEditMode(true);
+  const before=stable(h.render()),history=serial([h.render().undoHistory,h.render().redoHistory]);
+  h.render().startRoadDraft();h.render().appendRoadDraft({q:3,r:6});
+  assert.equal(h.render().finishRoadDraft(),false,'empty suppressed/tract center is not a destination');
+  assert.deepEqual(stable(h.render()),before);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),history);
+  h.render().resetRoadDraft();region.pointsOfInterest.push({q:3,r:6});await load(h,input);
+  assert.equal(h.render().editRoadDocument({type:'create',path:[{q:4,r:6},{q:3,r:6}],kind:'trail'}),true,'explicit POI remains eligible');
+ }
+
  data.map.roads=[];data.map.crossings=[];
  for(const p of [segment.from,segment.to]){const r=data.map.regions.find(r=>r.hexes.some(x=>x.q===p.q&&x.r===p.r));assert.ok(r);if(!r.pointsOfInterest.some(x=>x.q===p.q&&x.r===p.r))r.pointsOfInterest.push({...p});}
  await load(h,data);h.render().setSelectedHex(segment.from);h.render().setEditMode(true);
