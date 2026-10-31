@@ -269,3 +269,21 @@ test('region biome respects stored height and canonical neighbors, keeps all ove
   if(neighbor)for(const b of choices) if(b.id!==neighbor.biomeId&&!h.geometry.isBiomesCompatible(b.id,neighbor.biomeId,h.geometry.BIOME_COMPATIBILITY_MATRIX)) assert.ok(h.render().regionBiomeReason(r,b.id));
   assert.ok(before.map.biomeOverrideByHexKey[`${r.centerHex.q},${r.centerHex.r}`]);
 });
+
+// E3 preparation has no UI yet. Exercise the actual commit, not a copied history model.
+test('manual road command commits exactly once and stale callback cannot write after import',async()=>{
+  const {h,alerts}=setup();await load(h,fixture);assert.deepEqual(alerts,[]);
+  const app=h.render(),r=app.roads[0],s=r.segments[0];
+  const segmentKey=[`${s.from.q},${s.from.r}`,`${s.to.q},${s.to.r}`].sort().join('|');
+  const same={type:'kind',roadId:r.id,segmentKey,kind:s.kind};
+  const before=stable(app),stack=app.undoHistory.length;
+  assert.equal(app.editRoadDocument(same),true);assert.equal(h.render().undoHistory.length,stack);
+  // Use a new path between neighbouring named/destination hexes via the imported fixture.
+  // The real crossing handler provides a mutation whenever the fixture has a crossing.
+  const crossing=before.map.crossings[0];assert.ok(crossing,'fixture crossing required');
+  const command={type:'crossing',roadId:crossing.roadId,segmentKey:crossing.roadSegmentKey,riverId:crossing.riverId,kind:crossing.kind==='bridge'?'ferry':'bridge'};
+  assert.equal(h.render().editRoadDocument(command),true);
+  const after=stable(h.render());assert.notDeepEqual(after,before);assert.equal(h.render().undoHistory.length,stack+1);assertUndoRedo(h,before,after);
+  const stale=h.render().editRoadDocument;await load(h,fixture);const imported=stable(h.render());
+  assert.equal(stale(command),false);assert.deepEqual(stable(h.render()),imported);
+});

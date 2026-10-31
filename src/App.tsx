@@ -1,3 +1,4 @@
+import {prepareRoadEdit, type RoadEdit} from './manualRoads';
 import { type RandomStreams, type GenerationState, fallbackRandomStreams, poiRandomStreams, createGenerationState, cloneGenerationState, draw, toponymSeedFor, newWorldSeed, isUint32 } from './worldRandom';
 import { validateSaveStructure, SaveValidationError, assertGeneratedIds } from './saveValidation';
 import { installViewportRasterCache } from './rendering/viewportRasterCache';
@@ -12848,6 +12849,41 @@ export function App() {
   const toggleNotesEditor = (key: string) => {
     if (mutationBlocked()) return;
     setNotesEditorKey(current => current === key ? null : key);
+  };
+  const editRoadDocument = (edit: RoadEdit): boolean => {
+    if (mutationBlocked()) return false;
+    try {
+      const landRegion = (hex: AxialHex) => isLakeHex(hex, hexTerrainByKey) || isSeaHex(hex, hexTerrainByKey)
+        ? undefined : regions.find(r => r.hexes.some(h => isSameHex(h, hex)))?.id;
+      const fullness = getRiverCrossingFullnessByEdge(rivers);
+      const result = prepareRoadEdit({roads, crossings, nextRoadId}, edit, {
+        landRegion,
+        destination: hex => regions.some(r => isSameHex(r.centerHex, hex) || r.pointsOfInterest.some(h => isSameHex(h, hex))),
+        openExit: hex => landRegion(hex) !== undefined && getHexNeighbors(hex).some(h =>
+          !hexTerrainByKey.has(hexKey(h)) && !regions.some(r => r.hexes.some(v => isSameHex(v, h)))),
+        blocked: (a, b) => obstacles.some(o => pairKey(o.hex, o.neighborHex) === pairKey(a, b)),
+        intersections: (a, b) => {
+          const edge = getSharedHexEdgeVertexKeys(a, b);
+          if (!edge) throw new Error('invalid_shared_edge');
+          const riverEdgeKey = [...edge].sort().join('|');
+          return rivers.filter(r => r.vertexPath.slice(1).some((v, i) => getRiverEdgeKey(r.vertexPath[i], v) === riverEdgeKey))
+            .map(r => ({riverId: r.id, riverEdgeKey, fullness: fullness.get(riverEdgeKey) ?? getRiverFallbackFullness(r)}));
+        },
+        minima: regions.filter(r => r.biomeLandType === 'settled' && r.sizeCategory !== 'tract')
+          .map(r => ({regionId: r.id, minimum: getSettledMainRoadLimit(r)}))
+      });
+      if (result.roads === roads && result.crossings === crossings && result.nextRoadId === nextRoadId) return true;
+      const before = copyDocument(captureDocument());
+      const after = copyDocument({...captureDocument(), map: {...captureMap(), ...result}});
+      // Both copies are complete before any state write. Never reconcile crossings here.
+      setUndoHistory(current => [...current, {before, after}].slice(-100)); setRedoHistory([]);
+      applyPreparedDocument(after);
+      return true;
+    } catch (error) {
+      setEditError(language === 'ru' ? `Путь не изменён: ${error instanceof Error ? error.message : 'ошибка подготовки'}`
+        : `Path unchanged: ${error instanceof Error ? error.message : 'preparation error'}`);
+      return false;
+    }
   };
   const actualHexKeys = (map: Pick<MapSnapshot, 'regions' | 'hexTerrainByKey'>) =>
     new Set([...map.regions.flatMap(r => r.hexes.map(hexKey)), ...map.hexTerrainByKey.keys()]);
