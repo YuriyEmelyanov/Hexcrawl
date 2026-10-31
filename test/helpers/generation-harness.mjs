@@ -16,7 +16,7 @@ const artwork = app.body.statements.flatMap(node => ts.isVariableStatement(node)
 let prefix = source.slice(0, lastReturn.getStart(ast));
 if (artwork?.initializer) prefix = prefix.slice(0, artwork.initializer.getStart(ast)) + 'undefined' + prefix.slice(artwork.initializer.end);
 const instrumented = prefix + `return {
-  gmNotesByHexKey, changeNotesText, finishNotesGroup, openNotesEditor, toggleNotesEditor, recordGenerated, captureGenerationBackup,
+  roadDraft, startRoadDraft, appendRoadDraft, finishRoadDraft, resetRoadDraft, editRoadDocument, gmNotesByHexKey, changeNotesText, finishNotesGroup, openNotesEditor, toggleNotesEditor, recordGenerated, captureGenerationBackup,
   generationRef, seedInput, setSeedInput, setGenSizeCategory, applyWorldSeed, buildGenerationOptions, generateAt,
   regions, rivers, roads, candidateHexes, hexTerrainByKey, history, toponyms, toponymSeed, setToponyms,
   addFallbackTractToMap, safelyAddRegionToMap, createSaveData, restoreSnapshot: snapshot => restoreSnapshot({...snapshot, generation: snapshot.generation ?? cloneGenerationState(generationRef.current)}), deleteLastRegion,

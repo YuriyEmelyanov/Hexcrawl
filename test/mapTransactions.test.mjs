@@ -269,3 +269,53 @@ test('region biome respects stored height and canonical neighbors, keeps all ove
   if(neighbor)for(const b of choices) if(b.id!==neighbor.biomeId&&!h.geometry.isBiomesCompatible(b.id,neighbor.biomeId,h.geometry.BIOME_COMPATIBILITY_MATRIX)) assert.ok(h.render().regionBiomeReason(r,b.id));
   assert.ok(before.map.biomeOverrideByHexKey[`${r.centerHex.q},${r.centerHex.r}`]);
 });
+
+// E3 preparation has no UI yet. Exercise the actual commit, not a copied history model.
+test('manual road command commits exactly once and stale callback cannot write after import',async()=>{
+  const {h,alerts}=setup();await load(h,fixture);assert.deepEqual(alerts,[]);
+  const app=h.render(),r=app.roads[0],s=r.segments[0];
+  const segmentKey=[`${s.from.q},${s.from.r}`,`${s.to.q},${s.to.r}`].sort().join('|');
+  const same={type:'kind',roadId:r.id,segmentKey,kind:s.kind};
+  const before=stable(app),stack=app.undoHistory.length;
+  assert.equal(app.editRoadDocument(same),true);assert.equal(h.render().undoHistory.length,stack);
+  // Use a new path between neighbouring named/destination hexes via the imported fixture.
+  // The real crossing handler provides a mutation whenever the fixture has a crossing.
+  const crossing=before.map.crossings[0];assert.ok(crossing,'fixture crossing required');
+  const command={type:'crossing',roadId:crossing.roadId,segmentKey:crossing.roadSegmentKey,riverId:crossing.riverId,kind:crossing.kind==='bridge'?'ferry':'bridge'};
+  assert.equal(h.render().editRoadDocument(command),true);
+  const after=stable(h.render());assert.notDeepEqual(after,before);assert.equal(h.render().undoHistory.length,stack+1);assertUndoRedo(h,before,after);
+  const stale=h.render().editRoadDocument;await load(h,fixture);const imported=stable(h.render());
+  assert.equal(stale(command),false);assert.deepEqual(stable(h.render()),imported);
+});
+
+test('road draft is ephemeral, blocks other writes, commits once and stale finish is inert',async()=>{
+ const {h}=setup(),data=structuredClone(fixture),segment=data.map.roads[0].segments[0];
+ const suppressed=JSON.parse(fs.readFileSync(new URL('./fixtures/suppressed-road-endpoint.json',import.meta.url)));
+ for(const isTract of [false,true]){
+  const input=structuredClone(suppressed),region=input.map.regions.find(r=>r.id===1);
+  region.isTract=isTract;region.suppressCentralPoi=!isTract;
+  await load(h,input);h.render().setSelectedHex({q:4,r:6});h.render().setEditMode(true);
+  const before=stable(h.render()),history=serial([h.render().undoHistory,h.render().redoHistory]);
+  h.render().startRoadDraft();h.render().appendRoadDraft({q:3,r:6});
+  assert.equal(h.render().finishRoadDraft(),false,'empty suppressed/tract center is not a destination');
+  assert.deepEqual(stable(h.render()),before);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),history);
+  h.render().resetRoadDraft();region.pointsOfInterest.push({q:3,r:6});await load(h,input);
+  assert.equal(h.render().editRoadDocument({type:'create',path:[{q:4,r:6},{q:3,r:6}],kind:'trail'}),true,'explicit POI remains eligible');
+ }
+
+ data.map.roads=[];data.map.crossings=[];
+ for(const p of [segment.from,segment.to]){const r=data.map.regions.find(r=>r.hexes.some(x=>x.q===p.q&&x.r===p.r));assert.ok(r);if(!r.pointsOfInterest.some(x=>x.q===p.q&&x.r===p.r))r.pointsOfInterest.push({...p});}
+ await load(h,data);h.render().setSelectedHex(segment.from);h.render().setEditMode(true);
+ const before=stable(h.render()),stacks=serial([h.render().undoHistory,h.render().redoHistory]);
+ assert.equal(h.render().startRoadDraft(),true);
+ assert.equal(h.render().finishRoadDraft(),false);assert.deepEqual(stable(h.render()),before);
+ h.render().resetMap();h.render().undoMap();h.render().setSelectedPoiKind('ruins');await load(h,fixture);
+ assert.deepEqual(stable(h.render()),before);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks);
+ assert.equal(h.render().appendRoadDraft({q:999,r:999}),false);
+ assert.equal(h.render().appendRoadDraft(segment.to),true);
+ h.render().resetRoadDraft();assert.deepEqual(stable(h.render()),before);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks);
+ h.render().startRoadDraft();h.render().appendRoadDraft(segment.to);
+ const stale=h.render().finishRoadDraft;assert.equal(stale(),true);const after=stable(h.render());
+ assert.equal(after.map.roads.length,1);assert.equal(h.render().undoHistory.length,stacks[0].length+1);assert.equal(h.render().roadDraft,null);assert.deepEqual(after.generation,before.generation);
+ assertUndoRedo(h,before,after);await load(h,fixture);const imported=stable(h.render());stale();assert.deepEqual(stable(h.render()),imported);
+});
