@@ -14519,6 +14519,7 @@ export function App() {
               </a>
             </div>
           </div>
+          <div className="side-panel">
           <div id="side-panel-controls" ref={mapToolbarRef} className="map-toolbar" aria-label={t.controlsLabel}>
             {regions.length === 0 ? (
               <div className="info-block info-block--prompt map-toolbar__prompt" role="status">{t.startPrompt}</div>
@@ -14680,41 +14681,18 @@ export function App() {
               </div>
             )}
           </div>
-          <div
-            ref={mapViewportRef}
-            className="map-viewport"
-            tabIndex={0}
-            aria-label={t.mapAria}
-            onMouseDown={handleMapMouseDown}
-            onMouseMove={handleMapMouseMove}
-            onMouseUp={handleMapMouseUp}
-            onMouseLeave={handleMapMouseUp}
-            onContextMenu={(event) => event.preventDefault()}
-            onKeyDown={handleMapKeyDown}
-          >
-            <div ref={mapStageRef} className="map-stage" style={{ width: `${displayMapWidth * mapScaleRef.current}px`, height: `${displayMapHeight * mapScaleRef.current}px` }}>
-            <svg
-              ref={mapSvgRef}
-              data-biome-display={biomeDisplayMode}
-              data-render-phase={kingdomJob ? 'generation' : renderDetails ? 'ready' : 'render-pending'}
-              viewBox={`0 0 ${displayMapWidth} ${displayMapHeight}`}
-              preserveAspectRatio="xMinYMin meet"
-              style={{ width: `${displayMapWidth}px`, height: `${displayMapHeight}px`, transform: `translateZ(0) scale(${mapScaleRef.current})`, '--water-color': WATER_PALETTE.river, '--water-marks': WATER_PALETTE.marks } as CSSProperties}
-            >
-            {mapArtwork}
-            </svg>
-            <canvas ref={mapMotionCanvasRef} className="map-motion-buffer" aria-hidden="true" />
-            </div>
-          </div>
-
           <aside id="side-panel-info" className="roll-card">
             <div className="info-body">
               {regions.length > 0 || hexTerrainByKey.size > 0 ? <>
               <section ref={infoFocusRef} tabIndex={-1} className={`info-block info-block--hex${editMode ? ' is-editing' : ''}`} aria-label={t.selectedHexInfo}>
                 <div className="direct-mode-row"><button type="button" className="secondary direct-mode" aria-pressed={editMode}
+                  aria-label={editMode ? (language === 'ru' ? 'Готово' : 'Done') : (language === 'ru' ? 'Редактировать' : 'Edit')}
+                  title={editMode ? (language === 'ru' ? 'Готово' : 'Done') : (language === 'ru' ? 'Редактировать' : 'Edit')}
                   disabled={isImporting || !!pendingRegen || !!kingdomJob}
                   onClick={() => { if (!finishInlineName()) return; finishNotesGroup(); clearNotesDraft(); closeEditors(); setEditMode(v => !v); }}>
-                  {editMode ? (language === 'ru' ? 'Готово' : 'Done') : (language === 'ru' ? 'Редактировать' : 'Edit')}
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
+                    {editMode ? <path d="m5 12 4 4L19 6" /> : <><path d="m16 3 5 5-12 12-6 1 1-6Z" /><path d="m14 5 5 5" /></>}
+                  </svg>
                 </button></div>
                 {selectedKingdom ? <p>{language === 'ru' ? 'Королевство' : 'Kingdom'}: {renderName(`kingdom:${selectedKingdom.id}`)}</p> : null}
                 {selectedRegion ? <>
@@ -14980,6 +14958,34 @@ export function App() {
             </section>
             </div>
           </aside>
+          </div>
+          <div
+            ref={mapViewportRef}
+            className="map-viewport"
+            tabIndex={0}
+            aria-label={t.mapAria}
+            onMouseDown={handleMapMouseDown}
+            onMouseMove={handleMapMouseMove}
+            onMouseUp={handleMapMouseUp}
+            onMouseLeave={handleMapMouseUp}
+            onContextMenu={(event) => event.preventDefault()}
+            onKeyDown={handleMapKeyDown}
+          >
+            <div ref={mapStageRef} className="map-stage" style={{ width: `${displayMapWidth * mapScaleRef.current}px`, height: `${displayMapHeight * mapScaleRef.current}px` }}>
+            <svg
+              ref={mapSvgRef}
+              data-biome-display={biomeDisplayMode}
+              data-render-phase={kingdomJob ? 'generation' : renderDetails ? 'ready' : 'render-pending'}
+              viewBox={`0 0 ${displayMapWidth} ${displayMapHeight}`}
+              preserveAspectRatio="xMinYMin meet"
+              style={{ width: `${displayMapWidth}px`, height: `${displayMapHeight}px`, transform: `translateZ(0) scale(${mapScaleRef.current})`, '--water-color': WATER_PALETTE.river, '--water-marks': WATER_PALETTE.marks } as CSSProperties}
+            >
+            {mapArtwork}
+            </svg>
+            <canvas ref={mapMotionCanvasRef} className="map-motion-buffer" aria-hidden="true" />
+            </div>
+          </div>
+
         </div>
       </section>
 

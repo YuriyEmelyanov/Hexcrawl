@@ -69,6 +69,29 @@ try {
  namesFixture.map.gmNotesByHexKey={'3,6':'Авторская заметка перед поиском'};
  await load(namesFixture);
  assert.equal(await info.locator('button').filter({hasText:/✎|✏|🗑/}).count(),0,'no scattered tools in read mode');
+ // Owner panel correction: one desktop scroll surface, compact accessible edit control.
+ for (const width of [1500,390]) {
+  await page.setViewportSize({width,height:1100});await info.scrollIntoViewIfNeeded();
+  const layout=await info.evaluate(el=>{
+   const button=el.querySelector('.direct-mode'), first=el.querySelector('p');
+   const b=button.getBoundingClientRect(), p=first.getBoundingClientRect();
+   return {label:button.getAttribute('aria-label'),title:button.title,text:button.textContent.trim(),
+    width:b.width,height:b.height,firstTop:p.top,buttonTop:b.top,
+    infoOverflow:getComputedStyle(document.querySelector('.roll-card')).overflowY,
+    controlsOverflow:getComputedStyle(document.querySelector('.map-toolbar')).overflowY,
+    fits:document.documentElement.scrollWidth<=innerWidth};
+  });
+  assert.equal(layout.label,'Редактировать');assert.equal(layout.title,'Редактировать');assert.equal(layout.text,'');
+  assert.ok(layout.width>=44&&layout.height>=44);assert.ok(layout.firstTop<layout.buttonTop+layout.height/2,'title starts beside edit control');
+  assert.equal(layout.infoOverflow,'visible');assert.equal(layout.controlsOverflow,'visible');assert.ok(layout.fits);
+ }
+ await page.setViewportSize({width:1500,height:1100});
+ const scroll=await page.locator('.side-panel').evaluate(el=>{
+  const controls=el.querySelector('.map-toolbar'),info=el.querySelector('.roll-card');el.scrollTop=0;
+  const before=[controls.getBoundingClientRect().top,info.getBoundingClientRect().top];el.scrollTop=150;
+  return {amount:el.scrollTop,controls:controls.getBoundingClientRect().top-before[0],info:info.getBoundingClientRect().top-before[1]};
+ });
+ assert.ok(scroll.amount>0);assert.equal(scroll.controls,scroll.info,'controls and information scroll together');
  assert.equal(await button('Найти объект').getAttribute('aria-expanded'),'false');
  assert.equal(await namesSection.evaluate(el=>el.parentElement.lastElementChild===el),true,'find object follows info and notes');
  await ensureEdit();assert.equal(await info.locator('.direct-mode').count(),1);
