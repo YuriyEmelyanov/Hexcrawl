@@ -344,6 +344,20 @@ try {
  await select(`${center.q},${center.r}`);await biome('open_hills');
  await transaction(()=>button('Удалить последний регион').click());await button('Отменить').click();
  await transaction(async()=>{await button('Перегенерировать регион').click();await page.waitForFunction(()=>!document.querySelector('.kingdom-progress')&&!document.querySelector('.controls--transfer > button').disabled,null,{timeout:120000});});
+ // E3 draft lifecycle: reuse existing production runner; no second corpus.
+ const draftInput=JSON.parse(await fs.readFile(new URL('../fixtures/road-entry-zigzags.json',import.meta.url)));
+ const draftSegment=draftInput.map.roads[0].segments[0];draftInput.map.roads=[];draftInput.map.crossings=[];
+ for(const p of [draftSegment.from,draftSegment.to]){const r=draftInput.map.regions.find(r=>r.hexes.some(x=>x.q===p.q&&x.r===p.r));if(!r.pointsOfInterest.some(x=>x.q===p.q&&x.r===p.r))r.pointsOfInterest.push({...p});}
+ await load(draftInput);await select(`${draftSegment.from.q},${draftSegment.from.r}`);
+ if(await button('Редактировать').count())await button('Редактировать').click();
+ const draftBefore=await snapshot();
+ await button('Начать путь отсюда').click();await button('Готово').click();
+ assert.equal(await page.locator('[data-road-draft] select').count(),1,'invalid single node stays draft');
+ await select(`${draftSegment.to.q},${draftSegment.to.r}`);assert.equal(await page.locator('[data-editor-only="draft"] line').count(),1);
+ await page.locator('.map-viewport').press('Escape');assert.deepEqual(await snapshot(),draftBefore);
+ await button('Начать путь отсюда').click();await select(`${draftSegment.to.q},${draftSegment.to.r}`);
+ await button('Готово').click();const draftAfter=await snapshot();assert.equal(draftAfter.map.roads.length,1);assert.deepEqual(draftAfter.generation,draftBefore.generation);
+ await button('Отменить').click();assert.deepEqual(await snapshot(),draftBefore);await button('Повторить').click();assert.deepEqual(await snapshot(),draftAfter);
  // E3 existing-path controls: exact crossing identity, confirmation preview and history.
  // Reuse this lifecycle runner: no second corpus or mixed-history sequence.
  await load(JSON.parse(await fs.readFile(new URL('../fixtures/road-entry-zigzags.json',import.meta.url))));

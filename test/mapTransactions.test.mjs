@@ -287,3 +287,22 @@ test('manual road command commits exactly once and stale callback cannot write a
   const stale=h.render().editRoadDocument;await load(h,fixture);const imported=stable(h.render());
   assert.equal(stale(command),false);assert.deepEqual(stable(h.render()),imported);
 });
+
+test('road draft is ephemeral, blocks other writes, commits once and stale finish is inert',async()=>{
+ const {h}=setup(),data=structuredClone(fixture),segment=data.map.roads[0].segments[0];
+ data.map.roads=[];data.map.crossings=[];
+ for(const p of [segment.from,segment.to]){const r=data.map.regions.find(r=>r.hexes.some(x=>x.q===p.q&&x.r===p.r));assert.ok(r);if(!r.pointsOfInterest.some(x=>x.q===p.q&&x.r===p.r))r.pointsOfInterest.push({...p});}
+ await load(h,data);h.render().setSelectedHex(segment.from);h.render().setEditMode(true);
+ const before=stable(h.render()),stacks=serial([h.render().undoHistory,h.render().redoHistory]);
+ assert.equal(h.render().startRoadDraft(),true);
+ assert.equal(h.render().finishRoadDraft(),false);assert.deepEqual(stable(h.render()),before);
+ h.render().resetMap();h.render().undoMap();h.render().setSelectedPoiKind('ruins');await load(h,fixture);
+ assert.deepEqual(stable(h.render()),before);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks);
+ assert.equal(h.render().appendRoadDraft({q:999,r:999}),false);
+ assert.equal(h.render().appendRoadDraft(segment.to),true);
+ h.render().resetRoadDraft();assert.deepEqual(stable(h.render()),before);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks);
+ h.render().startRoadDraft();h.render().appendRoadDraft(segment.to);
+ const stale=h.render().finishRoadDraft;assert.equal(stale(),true);const after=stable(h.render());
+ assert.equal(after.map.roads.length,1);assert.equal(h.render().undoHistory.length,stacks[0].length+1);assert.equal(h.render().roadDraft,null);assert.deepEqual(after.generation,before.generation);
+ assertUndoRedo(h,before,after);await load(h,fixture);const imported=stable(h.render());stale();assert.deepEqual(stable(h.render()),imported);
+});
