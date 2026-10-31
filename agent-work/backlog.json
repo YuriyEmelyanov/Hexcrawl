@@ -1206,7 +1206,7 @@
       "task_id": "HX-BL-023",
       "title": "Общий режим редактирования",
       "criterion_id": "S03-C01",
-      "status": "review_ready",
+      "status": "changes_requested",
       "potential_delta": null,
       "approval_ref": "owner-decision-2026-10-29-HX-FB-005-direct-edit-mode",
       "source": {
@@ -1217,20 +1217,20 @@
         "Пригодная спецификация среза; не реализовывать весь перечень без определения поведения/инвариантов."
       ],
       "baseline_finding": "Панель ручных правок существует; общий безопасный режим не завершён.",
-      "evidence_ref": "agent-work/evidence/HX-BL-023-E3-6e59e7f",
+      "evidence_ref": "agent-work/evidence/review-HX-BL-023-E3-6e59e7f",
       "previous_status": "ready_for_development",
       "recommended_priority": 1,
       "execution_allowed": true,
       "spec_status": "ready",
-      "next_role": "reviewer",
-      "next_step": "Проверяющий независимо проверяет весь E3 на 6e59e7f (PR480), AC01–10 и регрессии, фиксирует замечания/приёмку и score_assessment1.2; публикация отдельно.",
+      "next_role": "developer",
+      "next_step": "Программист исправляет HX023-E3-R1–R3 в PR480: допустимые концы пути, точный выбор наложенных объектов, клавиатура и hit-area карты; затем новый SHA на независимую проверку оставшихся AC.",
       "related_task_ids": [
         "HX-BL-013",
         "HX-BL-018",
         "HX-BL-019",
         "HX-BL-028"
       ],
-      "handoff_ref": "agent-work/handoffs/2026-10-31-HX-BL-023-E3-6e59e7f-review.json",
+      "handoff_ref": "agent-work/handoffs/2026-10-31-HX-BL-023-E3-R1-R3-fix.json",
       "owner_priority_decision": {
         "id": "owner-decision-2026-10-28-editor-and-MB-content-before-outreach",
         "date": "2026-10-28",
@@ -1369,17 +1369,17 @@
       "capability_matrix_ref": "agent-work/evidence/HX-BL-023-editor-v2/capability-matrix.json",
       "analyst_result_ref": "agent-work/results/2026-10-31-analyst-HX-BL-023-E3.json",
       "analyst_handoff_ref": "agent-work/handoffs/2026-10-29-HX-BL-023-E1-names.json",
-      "owner_role": "reviewer",
+      "owner_role": "developer",
       "branch": "agent/hx023-e3-roads",
       "pr": 480,
       "base_sha": "defaa5c24d546e4283430573c2d4e4f3b6194dc0",
       "head_sha": "6e59e7fde9545b7508804560ecd0fe0a50d1611a",
-      "checks_status": "local_check_and_production_browser_passed_CI_running",
+      "checks_status": "CI_passed_independent_review_changes_requested",
       "checks_url": null,
-      "review_verdict": null,
+      "review_verdict": "changes_requested",
       "test_change_summary_ref": "agent-work/evidence/HX-BL-023-E3-6e59e7f/test_change_summary.json",
       "developer_result_ref": "agent-work/results/2026-10-31-developer-HX-BL-023-E3-draft.json",
-      "score_assessment_status": "pending_independent_E3_review",
+      "score_assessment_status": "completed_insufficient_evidence",
       "ui_actual": {
         "head_sha": "6e59e7fde9545b7508804560ecd0fe0a50d1611a",
         "desktop": "agent-work/evidence/HX-BL-023-E3-6e59e7f/1500.png",
@@ -1387,11 +1387,15 @@
         "shown_in_chat": true,
         "limitations": "Some emoji unavailable in evidence browser; captures show draft path, not all E3 states"
       },
-      "review_result_ref": null,
-      "review_evidence_ref": null,
+      "review_result_ref": "agent-work/results/2026-10-31-reviewer-HX-BL-023-E3-6e59e7f.json",
+      "review_evidence_ref": "agent-work/evidence/review-HX-BL-023-E3-6e59e7f/review.md",
       "review_url": null,
-      "score_assessment_ref": null,
-      "finding_ids": [],
+      "score_assessment_ref": "agent-work/evidence/review-HX-BL-023-E3-6e59e7f/score_assessment.json",
+      "finding_ids": [
+        "HX023-E3-R1",
+        "HX023-E3-R2",
+        "HX023-E3-R3"
+      ],
       "previous_review_result_ref": "agent-work/results/2026-10-29-reviewer-HX-BL-023-E1-24fa342.json",
       "addressed_findings_pending_review": [],
       "previous_score_assessment_ref": "agent-work/evidence/review-HX-BL-023-c4a37ee/score_assessment.json",
@@ -1488,10 +1492,10 @@
           "score_update_completed_at": "2026-10-30T22:31:49.807Z"
         },
         "E3_roads_trails_crossings": {
-          "status": "review_ready",
+          "status": "changes_requested",
           "parent_spec_ref": "agent-work/specs/HX-BL-023.md",
           "parent_spec_version": "2.3",
-          "handoff_ref": "agent-work/handoffs/2026-10-31-HX-BL-023-E3-6e59e7f-review.json",
+          "handoff_ref": "agent-work/handoffs/2026-10-31-HX-BL-023-E3-R1-R3-fix.json",
           "release_approved": false,
           "implementation_started": true,
           "spec_ref": "agent-work/specs/HX-BL-023-E3.md",
@@ -1510,15 +1514,22 @@
           "pr": 480,
           "result_ref": "agent-work/results/2026-10-31-developer-HX-BL-023-E3-draft.json",
           "completed_substep": "domain_existing_path_UI_and_path_draft",
-          "review_ready": true,
-          "next_role": "reviewer",
+          "review_ready": false,
+          "next_role": "developer",
           "ui_actual": {
             "head_sha": "6e59e7fde9545b7508804560ecd0fe0a50d1611a",
             "desktop": "agent-work/evidence/HX-BL-023-E3-6e59e7f/1500.png",
             "narrow": "agent-work/evidence/HX-BL-023-E3-6e59e7f/390.png",
             "shown_in_chat": true,
             "limitations": "Some emoji unavailable in evidence browser; captures show draft path, not all E3 states"
-          }
+          },
+          "review_result_ref": "agent-work/results/2026-10-31-reviewer-HX-BL-023-E3-6e59e7f.json",
+          "score_assessment_ref": "agent-work/evidence/review-HX-BL-023-E3-6e59e7f/score_assessment.json",
+          "finding_ids": [
+            "HX023-E3-R1",
+            "HX023-E3-R2",
+            "HX023-E3-R3"
+          ]
         }
       },
       "current_owner_correction_ref": "owner-decision-2026-10-28-editor-functional-scope",
@@ -1596,7 +1607,7 @@
       "score_update_handoff_ref": "agent-work/handoffs/2026-10-31-HX-BL-023-E2-release-score.json",
       "score_update_completed_at": "2026-10-30T22:31:49.807Z",
       "previous_head_sha": "a99c299f0648c2e5c1d65173bdeca50061dcc901",
-      "review_ready": true
+      "review_ready": false
     },
     {
       "task_id": "HX-BL-024",

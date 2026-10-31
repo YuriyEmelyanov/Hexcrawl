@@ -1,0 +1,59 @@
+{
+  "base_sha": "defaa5c24d546e4283430573c2d4e4f3b6194dc0",
+  "head_sha": "6e59e7fde9545b7508804560ecd0fe0a50d1611a",
+  "count_source": "Exact git diff base..head; logical node:test declarations; existing browser script treated as one lifecycle runner, not assertion count",
+  "suites": [
+    {
+      "suite": "Node",
+      "added": 7,
+      "removed": 0,
+      "modified": 0,
+      "scenario_risk": [
+        "5 manualRoads domain contracts: creation, rejection,minimum/no-op,deletion,crossings",
+        "2 App contracts: commit/stale callback; ephemeral draft/mutation guards"
+      ],
+      "reuse_or_new_reason": "Distinct new domain operation contracts; expanded existing transaction file and shared harness rather than duplicated lifecycle suite; useful separation of pure preparation and real App commit paths",
+      "reviewer_necessity": "useful; no redundant case identified; add suppressed/tract endpoint assertions to existing endpoint/handler case"
+    },
+    {
+      "suite": "Browser save-history production lifecycle",
+      "added": 0,
+      "removed": 0,
+      "modified": 1,
+      "scenario_risk": "New E3 control wiring, draft creation/cancellation/history and direct crossing/path controls with layout",
+      "reuse_or_new_reason": "Existing production runner extended; no extra permanent runner",
+      "reviewer_necessity": "useful, but control-size check covers panel only; map keyboard/hit target omitted"
+    }
+  ],
+  "local_execution": [
+    {
+      "suite": "Node targeted manualRoads+mapTransactions",
+      "executed": 18,
+      "passed": 18,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "Temporary reviewer browser probe",
+      "executed": 1,
+      "completed": 1,
+      "permanent_test_delta": 0,
+      "findings_reproduced": [
+        "R1",
+        "R2"
+      ],
+      "source_dom_finding": [
+        "R3"
+      ]
+    }
+  ],
+  "ci": {
+    "run_id": 41158804637,
+    "check": "success",
+    "browser": "success",
+    "world_random": "success",
+    "special_ui_acceptance": "skipped",
+    "counts": "CI raw job status independently read; broad suite case counts not substituted for local count"
+  },
+  "permanent_test_changes_by_reviewer": false
+}

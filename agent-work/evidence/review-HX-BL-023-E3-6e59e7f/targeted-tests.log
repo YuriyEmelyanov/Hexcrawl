@@ -1,0 +1,26 @@
+✔ manual path allocates one ID and deterministic crossings without mutating input (2.759504ms)
+✔ creation refuses invalid geometry, endpoints, obstacles, duplicate and overflow (0.480846ms)
+✔ kind no-op returns document and region minimum rejects loss without changes (0.6826ms)
+✔ deletion preserves destinations and open exits; removable redundant edge keeps other IDs (0.536069ms)
+✔ crossing edit requires live intersection, rejects deep ford and preserves unrelated records (0.784304ms)
+✔ import is one exact transaction; invalid and preparation failure preserve both stacks (432.107632ms)
+✔ all existing manual families, import, reset, and 100 exact undo/redo snapshots (5909.823155ms)
+✔ manual edits do not replace generation checkpoints, regenerate rollback retains undo and redo (387.44685ms)
+✔ pending file read serializes imports and blocks edits, generation and reset (196.594339ms)
+✔ all manifest saves round-trip unchanged entities, names and can continue then undo (3801.430711ms)
+✔ no-op and failed imports preserve redo; fresh edit clears it; reset on empty is a no-op (175.765104ms)
+✔ notes autosave coalesces a series, preserves redo on no-op, and commits before other operations (257.29292ms)
+✔ import replaces notes exactly and legacy imports clear them; malformed notes preserve full history (196.891572ms)
+✔ delete retains latest surviving notes, confirms loss, undo restores; generation conflict is rejected before commit (20184.240416ms)
+✔ direct names change only the captured locale; exact history, validation, legacy other locale and stale fault guards (4823.91162ms)
+✔ region biome respects stored height and canonical neighbors, keeps all overrides and exact metadata/history (1087.103963ms)
+✔ manual road command commits exactly once and stale callback cannot write after import (159.102629ms)
+✔ road draft is ephemeral, blocks other writes, commits once and stale finish is inert (263.062826ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 39097.814843

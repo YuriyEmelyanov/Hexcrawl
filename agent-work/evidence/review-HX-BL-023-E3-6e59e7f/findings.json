@@ -1,0 +1,69 @@
+{
+  "task_id": "HX-BL-023",
+  "stage_id": "E3",
+  "head_sha": "6e59e7fde9545b7508804560ecd0fe0a50d1611a",
+  "base_sha": "defaa5c24d546e4283430573c2d4e4f3b6194dc0",
+  "verdict": "changes_requested",
+  "findings": [
+    {
+      "id": "HX023-E3-R1",
+      "priority": "P2",
+      "title": "Exclude suppressed and tract centers from destination eligibility",
+      "path": "src/App.tsx",
+      "line": 12870,
+      "acceptance": [
+        "AC02",
+        "AC04"
+      ],
+      "status": "reproduced_actual_handler_and_production_browser",
+      "evidence": [
+        "probe.mjs",
+        "probe-results.json",
+        "suppressed-endpoint-input.json",
+        "suppressed-endpoint-after.json",
+        "browser-results.json"
+      ],
+      "expected": "Empty internal center without actual POI/network/open exit is rejected atomically",
+      "actual": "Trail(4,6)->(3,6) commits; suppressed internal center has no actual POI and six known neighbors",
+      "limitation": "Controlled fixture derived from baseline-mythic; original baseline not claimed to contain this same dry suppressed center. Deletion effect is code inference, not separate reproduced counterexample."
+    },
+    {
+      "id": "HX023-E3-R2",
+      "priority": "P2",
+      "title": "Retain exact Road.id and crossing identity in selection",
+      "path": "src/App.tsx",
+      "line": 14182,
+      "acceptance": [
+        "AC01",
+        "AC09"
+      ],
+      "status": "reproduced_production_browser",
+      "evidence": [
+        "browser-results.json",
+        "overlap-ru-390.png",
+        "overlap-ru-1500.png",
+        "overlap-en-390.png"
+      ],
+      "expected": "Choose/highlight each overlapping legacy object separately",
+      "actual": "Click Road1 sharing pair withRoad8 => both aria-pressed and two highlighted lines",
+      "limitation": "Row mutations still pass explicit Road.id; no claim of wrong-object mutation."
+    },
+    {
+      "id": "HX023-E3-R3",
+      "priority": "P2",
+      "title": "Make map path/crossing selection keyboard accessible with required hit area",
+      "path": "src/App.tsx",
+      "line": 14862,
+      "acceptance": [
+        "AC01"
+      ],
+      "status": "confirmed_source_and_browser_dom",
+      "evidence": [
+        "browser-results.json"
+      ],
+      "expected": "Visible focus, keyboard activation and44px targets for direct map selection",
+      "actual": "SVG line onClick only, strokeWidth12, no role/name/tabindex/keyboard handler; focusable path targets0",
+      "limitation": "Panel controls independently pass44px; map-hit issue is separate. No screen-reader device run."
+    }
+  ]
+}
