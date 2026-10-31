@@ -3,7 +3,7 @@
   "role": "developer",
   "task_id": "HX-BL-023",
   "stage_id": "panel_layout_release",
-  "status": "merged_deployment_in_progress",
+  "status": "published",
   "pr": 482,
   "approved_sha": "4a46f90be9a0eec795107227d4f3f7af8a417305",
   "merge_sha": "8b1bb56ab45762e739f2048bccd237af05810c40",
@@ -12,15 +12,102 @@
   "deployment_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41197365941",
   "approval_ref": "owner-release-2026-10-31-PR482-4a46f90",
   "started_at": "2026-10-31T11:32:53.076Z",
-  "published": false,
-  "score_update_status": "not_due_before_deployment",
-  "next_step": "Дождаться успешного deploy, проверить live assets и панель, затем передать score_update_pending стратегу.",
+  "published": true,
+  "score_update_status": "pending",
+  "next_step": "Сверить опубликованный PR482 с score_assessment1.2, идемпотентно записать событие в текущую оценку/историю; затем вернуть очередь к утверждённому уточнению E4.",
   "automation_health": {
-    "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
       "checked_at": "2026-10-31T11:32:53.076Z",
       "is_enabled": true
     },
-    "end": null
-  }
+    "end": {
+      "checked_at": "2026-10-31T11:47:25.358Z",
+      "is_enabled": true
+    },
+    "restoration_performed": false,
+    "errors": [],
+    "limitation": "Observed at peek times only."
+  },
+  "publication_ref": "agent-work/evidence/release-PR482-8b1bb56/publication.json",
+  "deployment_status": "success",
+  "deployment_run": {
+    "id": 41197365941,
+    "status": "completed",
+    "conclusion": "success",
+    "head_sha": "8b1bb56ab45762e739f2048bccd237af05810c40",
+    "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41197365941",
+    "updated_at": "2026-10-31T11:46:07Z"
+  },
+  "release_sha": "8b1bb56ab45762e739f2048bccd237af05810c40",
+  "merge_tree_equals_reviewed_tree": true,
+  "site_url": "https://app.hexcrawl.ru/",
+  "live_verification": {
+    "release_sha": "8b1bb56ab45762e739f2048bccd237af05810c40",
+    "reviewed_sha": "4a46f90be9a0eec795107227d4f3f7af8a417305",
+    "url": "https://app.hexcrawl.ru",
+    "verified_at": "2026-10-31T11:46:45.413Z",
+    "status": 200,
+    "assets": [
+      "/assets/index-DWSR-dWp.js",
+      "/assets/index-I6Yxl8Ci.css"
+    ],
+    "asset_verification": [
+      {
+        "path": "/assets/index-DWSR-dWp.js",
+        "status": 200,
+        "bytes": 965061,
+        "sha256": "1f9d8853de76295a7ce711525af6d20f0750320024f66a201321f8fea381bf09"
+      },
+      {
+        "path": "/assets/index-I6Yxl8Ci.css",
+        "status": 200,
+        "bytes": 20707,
+        "sha256": "3b723b45681e606d5b5c51857abbb24b619dda0cfdbe7dbfe41e303aaf9b83f3"
+      }
+    ],
+    "ui": "live production: edit/done, shared scrolling100px, narrow fit",
+    "scroll": {
+      "amount": 100,
+      "delta": [
+        -100,
+        -100
+      ]
+    },
+    "errors": [],
+    "limits": [
+      "Synthetic local fixture imported in isolated browser; no external user data mutated",
+      "Chromium only; physical devices not checked"
+    ]
+  },
+  "completed_at": "2026-10-31T11:47:25.358Z",
+  "score_update_responsible": "strategist",
+  "score_update_handoff_ref": "agent-work/handoffs/2026-10-31-PR482-release-score.json",
+  "score_assessment_ref": "agent-work/evidence/HX-BL-023-panel-walkthrough/reviewer.json#score_assessment",
+  "score_model_version": "1.2",
+  "score_changed": false,
+  "next_role": "strategist",
+  "test_change_summary": {
+    "base_sha": "4a46f90be9a0eec795107227d4f3f7af8a417305",
+    "head_sha": "8b1bb56ab45762e739f2048bccd237af05810c40",
+    "added": 0,
+    "removed": 0,
+    "modified": 0,
+    "suite": "release merge tree",
+    "scenario_risk": "Exact reviewed tree published",
+    "reuse_or_new_reason": "No source changes on release; same tree equality proved",
+    "count_source": "Git commit tree equals3cdad0e on reviewed and merge SHA",
+    "package_test_change_summary_ref": "agent-work/evidence/HX-BL-023-panel-layout/test_change_summary.json",
+    "executed": {
+      "deployment": "check and fullbrowser workflow passed",
+      "live_ui": "edit/done, sharedscroll,1500/390fit passed"
+    }
+  },
+  "limitations": [
+    "Synthetic local fixture imported in isolated browser; no external user data mutated",
+    "Chromium only; physical devices not checked"
+  ],
+  "nonblocking_errors": [
+    "Job logs were unavailable while job was running (404); final completed jobs/build/deploy success verified."
+  ]
 }
