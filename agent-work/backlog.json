@@ -1217,20 +1217,20 @@
         "Пригодная спецификация среза; не реализовывать весь перечень без определения поведения/инвариантов."
       ],
       "baseline_finding": "Панель ручных правок существует; общий безопасный режим не завершён.",
-      "evidence_ref": "agent-work/evidence/HX-BL-023-E3-86d7120",
+      "evidence_ref": "agent-work/evidence/HX-BL-023-E3-ba406e1",
       "previous_status": "ready_for_development",
       "recommended_priority": 1,
       "execution_allowed": true,
       "spec_status": "ready",
       "next_role": "developer",
-      "next_step": "Программист продолжает E3 на agent/hx023-e3-roads: подключить выбор участка/переправы и черновик пути к editRoadDocument, завершить revision/busy/навигационные guards, показать фактический UI desktop/390px, выполнить browser-проверки и затем передать весь новый SHA независимому проверяющему.",
+      "next_step": "Программист продолжает PR480 на ba406e1: подключить рисование нового пути и ephemeral draft (Enter/повтор конца/Done, Escape/touch reset, crossing choices), revision/busy/navigation/export guards; проверить оставшиеся E3 AC, затем независимый review всего нового SHA.",
       "related_task_ids": [
         "HX-BL-013",
         "HX-BL-018",
         "HX-BL-019",
         "HX-BL-028"
       ],
-      "handoff_ref": "agent-work/handoffs/2026-10-31-HX-BL-023-E3-continue.json",
+      "handoff_ref": "agent-work/handoffs/2026-10-31-HX-BL-023-E3-path-draft.json",
       "owner_priority_decision": {
         "id": "owner-decision-2026-10-28-editor-and-MB-content-before-outreach",
         "date": "2026-10-28",
@@ -1373,19 +1373,19 @@
       "branch": "agent/hx023-e3-roads",
       "pr": 480,
       "base_sha": "defaa5c24d546e4283430573c2d4e4f3b6194dc0",
-      "head_sha": "86d7120c62c4b8577601725393312a0e9486ce7c",
-      "checks_status": "node_check_passed_UI_browser_pending",
+      "head_sha": "ba406e1835873f828023b25ebba35c083e421bf8",
+      "checks_status": "check_and_existing_path_browser_passed_full_E3_pending",
       "checks_url": null,
       "review_verdict": null,
-      "test_change_summary_ref": "agent-work/evidence/HX-BL-023-E3-86d7120/test_change_summary.json",
-      "developer_result_ref": "agent-work/results/2026-10-31-developer-HX-BL-023-E3.json",
+      "test_change_summary_ref": "agent-work/evidence/HX-BL-023-E3-ba406e1/test_change_summary.json",
+      "developer_result_ref": "agent-work/results/2026-10-31-developer-HX-BL-023-E3-ui.json",
       "score_assessment_status": "pending_independent_review_after_UI",
       "ui_actual": {
-        "head_sha": "a99c299f0648c2e5c1d65173bdeca50061dcc901",
-        "desktop": "agent-work/evidence/HX-BL-023-R2-a99c299/desktop.png",
-        "narrow": "agent-work/evidence/HX-BL-023-R2-a99c299/narrow.png",
-        "presentation": "Both actual desktop and390 images emitted directly in chat",
-        "limitations": "Some emoji unavailable in evidence browser"
+        "head_sha": "ba406e1835873f828023b25ebba35c083e421bf8",
+        "desktop": "agent-work/evidence/HX-BL-023-E3-ba406e1/1500.png",
+        "narrow": "agent-work/evidence/HX-BL-023-E3-ba406e1/390.png",
+        "shown_in_chat": true,
+        "limitations": "Some emoji unavailable in evidence browser; desktop panel scrolled to road controls"
       },
       "review_result_ref": "agent-work/results/2026-10-31-reviewer-HX-BL-023-a99c299.json",
       "review_evidence_ref": "agent-work/evidence/review-HX-BL-023-a99c299/report.md",
@@ -1505,13 +1505,20 @@
             "ui_preview_pending": false,
             "owner_response_required_to_start": false
           },
-          "head_sha": "86d7120c62c4b8577601725393312a0e9486ce7c",
+          "head_sha": "ba406e1835873f828023b25ebba35c083e421bf8",
           "branch": "agent/hx023-e3-roads",
           "pr": 480,
-          "result_ref": "agent-work/results/2026-10-31-developer-HX-BL-023-E3.json",
-          "completed_substep": "domain_commands_and_document_transaction_foundation",
+          "result_ref": "agent-work/results/2026-10-31-developer-HX-BL-023-E3-ui.json",
+          "completed_substep": "existing_road_crossing_UI",
           "review_ready": false,
-          "next_role": "developer"
+          "next_role": "developer",
+          "ui_actual": {
+            "head_sha": "ba406e1835873f828023b25ebba35c083e421bf8",
+            "desktop": "agent-work/evidence/HX-BL-023-E3-ba406e1/1500.png",
+            "narrow": "agent-work/evidence/HX-BL-023-E3-ba406e1/390.png",
+            "shown_in_chat": true,
+            "limitations": "Some emoji unavailable in evidence browser; desktop panel scrolled to road controls"
+          }
         }
       },
       "current_owner_correction_ref": "owner-decision-2026-10-28-editor-functional-scope",
@@ -1588,7 +1595,8 @@
       "release_approval_ref": "owner-release-2026-10-31-HX-BL-023-E2-a99c299",
       "score_update_handoff_ref": "agent-work/handoffs/2026-10-31-HX-BL-023-E2-release-score.json",
       "score_update_completed_at": "2026-10-30T22:31:49.807Z",
-      "previous_head_sha": "a99c299f0648c2e5c1d65173bdeca50061dcc901"
+      "previous_head_sha": "a99c299f0648c2e5c1d65173bdeca50061dcc901",
+      "review_ready": false
     },
     {
       "task_id": "HX-BL-024",
