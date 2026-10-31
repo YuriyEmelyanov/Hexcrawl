@@ -972,6 +972,7 @@ function getTimestampForFilename(date = new Date()): string {
 
 async function createExportSvgClone(svg: SVGSVGElement): Promise<SVGSVGElement> {
   const clone = svg.cloneNode(true) as SVGSVGElement;
+  clone.querySelectorAll('[data-editor-only]').forEach(node => node.remove());
   const viewBox = clone.viewBox.baseVal;
   clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
   clone.setAttribute('width', String(viewBox.width));
@@ -11340,6 +11341,8 @@ export function App() {
   type NameTarget = { key: string; type: 'region' | 'settlement' | 'river' | 'lake' | 'kingdom'; ru: string; en: string; location: string };
   type NameDraft = { target: NameTarget; revision: number; language: Language; value: string; surface: string };
   const [editMode, setEditMode] = useState(false);
+  const [selectedRoadPair, setSelectedRoadPair] = useState<string | null>(null);
+  const [confirmRoadRemoval, setConfirmRoadRemoval] = useState<{roadId:number;segmentKey?:string;revision:number} | null>(null);
   const [editError, setEditError] = useState<string | null>(null);
   const [editingRegionBiomeId, setEditingRegionBiomeId] = useState<number | null>(null);
   const [nameDraft, setNameDraft] = useState<NameDraft | null>(null);
@@ -12810,6 +12813,7 @@ export function App() {
   });
   const applyPreparedDocument = (doc: DocumentSnapshot) => {
     documentRevision.current++;
+    setSelectedRoadPair(null); setConfirmRoadRemoval(null);
     applyExactMap(doc.map); setHistory(doc.generationHistory); setSelectedHex(doc.selectedHex);
     setGenerationMode(doc.generationMode); setIsMapRotated(doc.isMapRotated);
     updateMapScale(doc.mapScale); setPendingRegen(null); closeEditors();
@@ -12880,7 +12884,7 @@ export function App() {
       applyPreparedDocument(after);
       return true;
     } catch (error) {
-      setEditError(language === 'ru' ? `Путь не изменён: ${error instanceof Error ? error.message : 'ошибка подготовки'}`
+      setEditError(language === 'ru' ? `Путь не изменён: ${roadErrorText(error instanceof Error ? error.message : '')}`
         : `Path unchanged: ${error instanceof Error ? error.message : 'preparation error'}`);
       return false;
     }
@@ -14096,9 +14100,66 @@ export function App() {
     } else {
       if (!finishInlineName()) return;
       finishNotesGroup(); closeEditors(); clearNotesDraft();
+      setSelectedRoadPair(null); setConfirmRoadRemoval(null);
       setSelectedHex({ q: hex.q, r: hex.r });
     }
   };
+  const chooseRoadPair = (pair:string) => {
+    if (documentBusy() || !finishInlineName()) return;
+    finishNotesGroup(); clearNotesDraft(); closeEditors(); setConfirmRoadRemoval(null);
+    setSelectedRoadPair(pair);
+    const match = roads.flatMap(r => r.segments).find(s => normalizeRoadSegmentKey(s.from,s.to) === pair);
+    if(match) setSelectedHex({...match.from});
+  };
+  const roadChoices = roads.flatMap(road => road.segments.filter(segment =>
+    selectedRoadPair ? normalizeRoadSegmentKey(segment.from,segment.to) === selectedRoadPair
+      : selectedHex && (isSameHex(segment.from,selectedHex) || isSameHex(segment.to,selectedHex)))
+    .map(segment => ({road,segment,pair:normalizeRoadSegmentKey(segment.from,segment.to)})));
+  const requestRoadRemoval = (roadId:number, segmentKey?:string) => {
+    if (mutationBlocked()) return;
+    setConfirmRoadRemoval({roadId,segmentKey,revision:documentRevision.current});
+  };
+  const roadErrorText = (code:string) => ({
+    new_internal_dead_end:'Получится тупик без точки интереса.', removed_open_exit:'Нельзя закрыть существующий выход с карты.',
+    disconnected_destinations:'Путь связывает точки интереса или узлы сети.', settled_road_minimum:'Нельзя уменьшить число дорог ниже минимума региона.',
+    missing_or_ambiguous_intersection:'Пересечение не найдено или неоднозначно.', invalid_crossing_kind:'На такой реке брод недопустим.',
+    missing_or_ambiguous_road:'Путь не найден или неоднозначен.', missing_or_ambiguous_segment:'Участок не найден или неоднозначен.',
+    stale_crossing:'Данные переправы изменились.', unknown_fullness:'Не удалось определить полноводность.'
+  } as Record<string,string>)[code] ?? 'Не удалось подготовить изменение пути.';
+  const roadPanel = editMode && roadChoices.length ? <div className="road-editor" aria-label={language==='ru'?'Редактирование путей':'Edit paths'}>
+    {roadChoices.map(({road,segment,pair},index) => <div className="road-editor__item" key={`${road.id}:${pair}:${index}`}>
+      <button type="button" className="direct-value" aria-pressed={selectedRoadPair===pair} onClick={()=>chooseRoadPair(pair)}>
+        {language==='ru'?'Участок':'Segment'} {road.id}: {hexKey(segment.from)} → {hexKey(segment.to)}
+      </button>
+      {selectedRoadPair===pair && <>
+        <label>{language==='ru'?'Тип участка':'Segment type'} <select className="direct-value" aria-label={`${language==='ru'?'Тип участка':'Segment type'} ${road.id}`}
+          value={segment.kind} onChange={e=>editRoadDocument({type:'kind',roadId:road.id,segmentKey:pair,kind:e.target.value as RoadKind})}>
+          <option value="road">{t.road}</option><option value="trail">{t.trail}</option>
+        </select></label>
+        {(() => {
+          const edge=getSharedHexEdgeVertexKeys(segment.from,segment.to); const edgeId=edge?[...edge].sort().join('|'):null;
+          return rivers.filter(r=>r.vertexPath.slice(1).some((v,i)=>getRiverEdgeKey(r.vertexPath[i],v)===edgeId)).map(r=>{
+            const crossing=crossings.find(c=>c.key===getRiverCrossingKey(road.id,pair,r.id));
+            return <label key={r.id}>{language==='ru'?'Переправа':'Crossing'} {r.id} <select className="direct-value" aria-label={`${language==='ru'?'Переправа':'Crossing'} ${road.id}:${r.id}`}
+              value={crossing?.kind??''} onChange={e=>editRoadDocument({type:'crossing',roadId:road.id,segmentKey:pair,riverId:r.id,kind:e.target.value as RiverCrossingKind})}>
+              {!crossing&&<option value="" disabled>{language==='ru'?'Не задана':'Not set'}</option>}
+              {(['bridge','ferry','ford'] as const).map(kind=><option key={kind} value={kind}>{t[kind]}</option>)}
+            </select></label>;
+          });
+        })()}
+        <button type="button" className="direct-value road-editor__danger" onClick={()=>requestRoadRemoval(road.id,pair)}>{language==='ru'?'Удалить участок':'Delete segment'}</button>
+        <button type="button" className="direct-value road-editor__danger" onClick={()=>requestRoadRemoval(road.id)}>{language==='ru'?'Удалить весь выделенный путь':'Delete entire selected path'}</button>
+      </>}
+    </div>)}
+    {confirmRoadRemoval && <div role="group" aria-label={language==='ru'?'Подтверждение удаления':'Confirm deletion'}>
+      <p>{language==='ru'?'Удалить подсвеченные участки и связанные переправы?':'Delete highlighted segments and dependent crossings?'} ({crossings.filter(c=>c.roadId===confirmRoadRemoval.roadId&&(!confirmRoadRemoval.segmentKey||c.roadSegmentKey===confirmRoadRemoval.segmentKey)).length})</p>
+      <button type="button" onClick={()=>{
+        if(confirmRoadRemoval.revision!==documentRevision.current||documentBusy()){setConfirmRoadRemoval(null);return;}
+        if(editRoadDocument({type:'remove',roadId:confirmRoadRemoval.roadId,segmentKey:confirmRoadRemoval.segmentKey}))setConfirmRoadRemoval(null);
+      }}>{language==='ru'?'Удалить':'Delete'}</button>
+      <button type="button" onClick={()=>setConfirmRoadRemoval(null)}>{language==='ru'?'Отмена':'Cancel'}</button>
+    </div>}
+  </div>:null;
   const mapMotionCanvasRef = useRef<HTMLCanvasElement>(null);
   const mapArtwork = useMemo(() => (<>
             <defs>
@@ -14738,6 +14799,13 @@ export function App() {
               style={{ width: `${displayMapWidth}px`, height: `${displayMapHeight}px`, transform: `translateZ(0) scale(${mapScaleRef.current})`, '--water-color': WATER_PALETTE.river, '--water-marks': WATER_PALETTE.marks } as CSSProperties}
             >
             {mapArtwork}
+            {editMode && renderDetails && <g data-editor-only="roads" transform={mapRotationTransform}>
+              {Array.from(new Map(roadSegments.map(s=>[s.segmentKey,s])).values()).map(s=><line key={s.segmentKey}
+                x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2} stroke="transparent" strokeWidth={12} pointerEvents="stroke"
+                onClick={e=>{e.stopPropagation();chooseRoadPair(s.segmentKey);}} />)}
+              {roadSegments.filter(s=>confirmRoadRemoval ? s.roadId===confirmRoadRemoval.roadId&&(!confirmRoadRemoval.segmentKey||s.segmentKey===confirmRoadRemoval.segmentKey):s.segmentKey===selectedRoadPair).map(s=><line key={s.key}
+                x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2} stroke="#7dd3fc" strokeWidth={4} strokeDasharray="6 3" pointerEvents="none" />)}
+            </g>}
             </svg>
             <canvas ref={mapMotionCanvasRef} className="map-motion-buffer" aria-hidden="true" />
             </div>
@@ -14749,7 +14817,7 @@ export function App() {
               <section ref={infoFocusRef} tabIndex={-1} className={`info-block info-block--hex${editMode ? ' is-editing' : ''}`} aria-label={t.selectedHexInfo}>
                 <div className="direct-mode-row"><button type="button" className="secondary direct-mode" aria-pressed={editMode}
                   disabled={isImporting || !!pendingRegen || !!kingdomJob}
-                  onClick={() => { if (!finishInlineName()) return; finishNotesGroup(); clearNotesDraft(); closeEditors(); setEditMode(v => !v); }}>
+                  onClick={() => { if (!finishInlineName()) return; finishNotesGroup(); clearNotesDraft(); closeEditors(); setSelectedRoadPair(null); setConfirmRoadRemoval(null); setEditMode(v => !v); }}>
                   {editMode ? (language === 'ru' ? 'Готово' : 'Done') : (language === 'ru' ? 'Редактировать' : 'Edit')}
                 </button></div>
                 {selectedKingdom ? <p>{language === 'ru' ? 'Королевство' : 'Kingdom'}: {renderName(`kingdom:${selectedKingdom.id}`)}</p> : null}
@@ -14820,6 +14888,7 @@ export function App() {
                     ) : null}
                   </>
                 ) : null}
+                {roadPanel}
                 {editError && <p className="direct-error" role="alert">{editError}</p>}
                 {canEditNotes && selectedHexKey && (notesValue || editMode) ? <div className="gm-notes">
                   <strong id="gm-notes-label">{language === 'ru' ? 'Заметки мастера' : 'GM notes'}</strong>

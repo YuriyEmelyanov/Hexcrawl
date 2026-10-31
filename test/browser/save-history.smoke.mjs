@@ -344,6 +344,31 @@ try {
  await select(`${center.q},${center.r}`);await biome('open_hills');
  await transaction(()=>button('Удалить последний регион').click());await button('Отменить').click();
  await transaction(async()=>{await button('Перегенерировать регион').click();await page.waitForFunction(()=>!document.querySelector('.kingdom-progress')&&!document.querySelector('.controls--transfer > button').disabled,null,{timeout:120000});});
+ // E3 existing-path controls: exact crossing identity, confirmation preview and history.
+ // Reuse this lifecycle runner: no second corpus or mixed-history sequence.
+ await load(JSON.parse(await fs.readFile(new URL('../fixtures/road-entry-zigzags.json',import.meta.url))));
+ const roadMap=await snapshot(),crossing=roadMap.map.crossings[0];
+ const road=roadMap.map.roads.find(r=>r.id===crossing.roadId),seg=road.segments.find(s=>[`${s.from.q},${s.from.r}`,`${s.to.q},${s.to.r}`].sort().join('|')===crossing.roadSegmentKey);
+ await select(`${seg.from.q},${seg.from.r}`);
+ if(await button('Редактировать').count())await button('Редактировать').click();
+ const roadLabel=`Участок ${road.id}: ${seg.from.q},${seg.from.r} → ${seg.to.q},${seg.to.r}`;
+ await button(roadLabel).click();
+ const oldRoad=await snapshot();
+ const crossingSelect=page.getByRole('combobox',{name:`Переправа ${road.id}:${crossing.riverId}`,exact:true});
+ await crossingSelect.selectOption(crossing.kind==='bridge'?'ferry':'bridge');
+ const changedRoad=await snapshot();assert.notDeepEqual(changedRoad.map.crossings,oldRoad.map.crossings);
+ assert.deepEqual(changedRoad.map.roads,oldRoad.map.roads);assert.deepEqual(changedRoad.generation,oldRoad.generation);
+ await button('Отменить').click();assert.deepEqual(await snapshot(),oldRoad);
+ await button('Повторить').click();assert.deepEqual(await snapshot(),changedRoad);
+ await button(roadLabel).click();await button('Удалить весь выделенный путь').click();
+ assert.equal(await page.locator('[data-editor-only] line[stroke="#7dd3fc"]').count(),road.segments.length);
+ await button('Отмена').click();assert.deepEqual(await snapshot(),changedRoad);
+ for(const width of [1500,390]) {
+   await page.setViewportSize({width,height:1100});
+   const rect=await crossingSelect.boundingBox();assert.ok(rect.width>=44&&rect.height>=44,'E3 native control target');
+   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'E3 no horizontal page overflow');
+ }
+ await page.setViewportSize({width:1500,height:1100});
  if(await page.locator('.header-links').evaluate(el=>el.classList.contains('is-collapsed')))await page.locator('.header-links-toggle').click();
  await button('Switch to English').click();assert.equal(await button('Undo').count(),1);assert.equal(await button('Redo').count(),1);
  assert.deepEqual(errors,[]);assert.equal(alerts.length,5,'only intentional invalid imports');
