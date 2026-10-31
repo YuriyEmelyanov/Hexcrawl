@@ -286,3 +286,9 @@ Programmer a99c299 adds only min-width44px to direct values; padding0/blue/.08em
 
 ## 31.10.2026 — E3: геометрия и производные переправы
 На defaa5c reconcileRiverCrossings сохраняет kind по ключу, но заново создаёт отсутствующее пересечение и использует geography RNG. Поэтому ручной редактор должен готовить целевые roads/crossings одной транзакцией, сохранять остальные записи буквально и не удалять только значок. ROAD-02 относится к генерации; явная ручная правка старой карты разрешена задачей. ROAD-аудит не превращается в поручение нового полного корпуса. E3-1.0 задаёт guards, ID, графовые проверки и отдельный предпросмотр UI; это spec, не доказательство готовой реализации. Evidence: agent-work/specs/HX-BL-023-E3.md; baseline src/App.tsx:8376–8429, src/riverCrossings.ts.
+
+
+### 2026-10-31 — HX-BL-023/E3: export after draft commit
+- Проверено на дереве941a084, SHA6e59e7f: экспортJSON после завершения ephemeral draft должен выполняться после применения новой revision/render; иначе замыкание обработчика может видеть прежний документ. Отложенная операция через revision effect проверена временным production probe (JSON содержит новый путь, черновик исчезает).
+- Сохранены отдельно Node256/256, browser lifecycle1/1 и временный probe; повторные прогоны не считаются ростом набора. Это developer evidence, независимая приёмка E3 ещё требуется.
+- Evidence: agent-work/evidence/HX-BL-023-E3-6e59e7f/temporary-probe.log; agent-work/results/2026-10-31-developer-HX-BL-023-E3-draft.json.

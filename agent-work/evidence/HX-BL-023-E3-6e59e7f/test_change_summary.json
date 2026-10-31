@@ -1,0 +1,41 @@
+{
+  "base_sha": "ba406e1835873f828023b25ebba35c083e421bf8",
+  "head_sha": "6e59e7fde9545b7508804560ecd0fe0a50d1611a",
+  "count_source": "git diff ba406e1..4581ad9 (tree identical to remote head); logical test() cases and existing browser lifecycle runner, not lines/files",
+  "suites": [
+    {
+      "suite": "Node test/mapTransactions.test.mjs",
+      "added": 1,
+      "removed": 0,
+      "modified": 0,
+      "scenario_risk": "Ephemeral draft must not consume document/history/RNG; invalid/stale drafts and concurrent mutations must be inert; successful draft commits once",
+      "reuse_or_new_reason": "Existing command test covers committed road commands, not multi-step ephemeral lifecycle; reused harness and fixture for distinct stateful contract"
+    },
+    {
+      "suite": "Browser save-history.smoke.mjs",
+      "added": 0,
+      "removed": 0,
+      "modified": 1,
+      "scenario_risk": "Actual production UI single-node rejection, Escape, Done, exact undo/redo and unchanged RNG",
+      "reuse_or_new_reason": "Extended existing lifecycle runner before existing-path block; no duplicate corpus or mixed100 loop"
+    }
+  ],
+  "cumulative_pr": {
+    "base_sha": "defaa5c24d546e4283430573c2d4e4f3b6194dc0",
+    "node": {
+      "added": 7,
+      "removed": 0,
+      "modified": 0
+    },
+    "browser": {
+      "added": 0,
+      "removed": 0,
+      "modified": 1
+    }
+  },
+  "temporary_diagnostics": {
+    "permanent_test": false,
+    "scope": "Desktop/390 screenshots, pan preserves draft, JSON auto-completion, Enter",
+    "counted_as_suite_growth": false
+  }
+}
