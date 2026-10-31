@@ -1,0 +1,51 @@
+{
+  "head_sha": "7267843da85afa92e6a31b2b6960cf6e7312db18",
+  "checked_at": "2026-10-31T05:05:39.161Z",
+  "run_id": 41167054315,
+  "checks": [
+    {
+      "name": "seed-ui",
+      "status": "completed",
+      "conclusion": "skipped",
+      "html_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41167054327/job/124436776835"
+    },
+    {
+      "name": "world-random",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41167054315/job/124436775906"
+    },
+    {
+      "name": "check",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41167054315/job/124436775815"
+    },
+    {
+      "name": "browser",
+      "status": "completed",
+      "conclusion": "failure",
+      "html_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41167054315/job/124436775764"
+    }
+  ],
+  "browser_failure": {
+    "job_id": 124436775764,
+    "file": "test/browser/navigation.smoke.mjs",
+    "line": 74,
+    "message": "One SVG transform update per frame",
+    "actual": 3,
+    "expected": 1,
+    "passed_before_failure": [
+      "generation",
+      "poi-display",
+      "terrain-color",
+      "forest-display"
+    ],
+    "not_reached": [
+      "large-navigation",
+      "save-history"
+    ],
+    "interpretation": "Observer counts all style attribute mutations; added hit-size CSS properties explain three mutations. This is confirmed check incompatibility/gate failure; it does not independently prove three transform updates or performance regression.",
+    "required_action": "Reconcile legitimate44px zoom hit targets with meaningful per-frame navigation assertion; preserve focal point/artwork/JSON/PNG checks; full browser CI on new SHA before independent acceptance."
+  }
+}

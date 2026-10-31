@@ -1,0 +1,14 @@
+error when starting preview server:
+Error: The directory "dist" does not exist. Did you build your project?
+    at preview (file:///workspace/hx-review-7267843/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:66233:11)
+    at async CAC.<anonymous> (file:///workspace/hx-review-7267843/node_modules/vite/dist/node/cli.js:883:22)
+file:///workspace/hx-review-7267843/test/browser/save-history.smoke.mjs:14
+ await new Promise((resolve,reject)=>{let output='';const timer=setTimeout(()=>reject(Error(output)),10000);server.stdout.on('data',data=>{output+=data;if(stripVTControlCharacters(output).includes('Local:')){clearTimeout(timer);resolve();}});server.on('error',reject);server.on('exit',c=>reject(Error('preview '+c)));});
+                                                                                                                                                                                                                                                                                                       ^
+
+Error: preview 1
+    at ChildProcess.<anonymous> (file:///workspace/hx-review-7267843/test/browser/save-history.smoke.mjs:14:296)
+    at ChildProcess.emit (node:events:514:28)
+    at ChildProcess._handle.onexit (node:internal/child_process:324:12)
+
+Node.js v24.22.1

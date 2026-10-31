@@ -1,0 +1,120 @@
+{
+  "head_sha": "7267843da85afa92e6a31b2b6960cf6e7312db18",
+  "spec": "E3-1.0",
+  "criteria": [
+    {
+      "ac": "AC01",
+      "status": "fail",
+      "evidence_summary": "Exact overlap selection, Tab/Enter/Space focus, RU/EN1500/390 and direct map44px pass; confirmation actions34.59375px failR5.",
+      "evidence": [
+        "browser-results.json",
+        "confirmation-targets.json"
+      ],
+      "limits": "No screen-reader device or every gesture/scale combination."
+    },
+    {
+      "ac": "AC02",
+      "status": "pass_bounded",
+      "evidence_summary": "Actual App cross-region creation1ID/1history; geometry single/jump/repeat/unknown/reverse duplicate atomic; R1 actual center eligibility corrected. Existing domain checks water/obstacle/overflow passed.",
+      "evidence": [
+        "handler-results-v2.json",
+        "geometry-results.json",
+        "browser-results.json",
+        "check.log"
+      ],
+      "limits": "Water/obstacle negative checks are domain-level, not separate production pointer fixtures."
+    },
+    {
+      "ac": "AC03",
+      "status": "pass_bounded",
+      "evidence_summary": "Literal segment-only kind change and crossing preservation; no-op preserves redo; settled minimum domain regression passes.",
+      "evidence": [
+        "geometry-results.json",
+        "browser-results.json",
+        "check.log"
+      ],
+      "limits": "Not every biome/road/region combination."
+    },
+    {
+      "ac": "AC04",
+      "status": "pass_bounded",
+      "evidence_summary": "Redundant path deletion removes emptyRoad and dependent crossing only; exactUndoRedo; isolatedPOI deletion refused; multiregion whole-path preview8segments.",
+      "evidence": [
+        "deletion-results.json",
+        "handler-results.json",
+        "browser-results.json",
+        "check.log"
+      ],
+      "limits": "Open-exit/dead-end cases additionally covered by domain checks; not exhaustive imported graph corpus."
+    },
+    {
+      "ac": "AC05",
+      "status": "pass_bounded",
+      "evidence_summary": "Actual-handler15cells: bridge/ferryF1–5,fordF1–2 only; shared-edge2riverIDs use maxF5; second crossing added; missing/ambiguous context unit checks.",
+      "evidence": [
+        "handler-results.json",
+        "check.log"
+      ],
+      "limits": "Explicit standalone delete-crossing control absent; no persisted absence on creation. Corrupt arbitrary river contexts not exhaustive."
+    },
+    {
+      "ac": "AC06",
+      "status": "pass_bounded",
+      "evidence_summary": "New crossing defaultsbridge; unchangedRNG andrivers; kind survivesJSON,exactUndoRedo andtwo-copy extension. Unrelated records preserved.",
+      "evidence": [
+        "geometry-results.json",
+        "crossing-created.json",
+        "check.log"
+      ],
+      "limits": "Finite fixtures, not universal preservation proof."
+    },
+    {
+      "ac": "AC07",
+      "status": "pass_bounded_with_limit",
+      "evidence_summary": "Actual fault rollback/history, noop redo, stale/pending unit/lifecycle; suppresseddraftEnter refusal/Escape reset; save-history production lifecycle passes.",
+      "evidence": [
+        "geometry-results.json",
+        "handler-results-v2.json",
+        "browser-results.json",
+        "save-history-after-build.log",
+        "check.log"
+      ],
+      "limits": "Independent navigation pointer probe used no active draft; all active-draft pan/rotation/export/interleavings not independently enumerated."
+    },
+    {
+      "ac": "AC08",
+      "status": "pass_bounded",
+      "evidence_summary": "Full existing legacyv2/v3/v4 compatibility/continuation suite and production save-history pass; edited crossing/cross-region v4 copies continue identically and oldroads/crossings retained.",
+      "evidence": [
+        "check.log",
+        "save-history-after-build.log",
+        "handler-results-v2.json",
+        "geometry-results.json"
+      ],
+      "limits": "Legacy normalization uses existing accepted contract, not byte-exact whole legacy file. Known constraint failures logged by suite are asserted atomic, not silent retries."
+    },
+    {
+      "ac": "AC09",
+      "status": "pass_bounded",
+      "evidence_summary": "Overlap IDs isolated; fullRoad1 preview8segments; narrowRU/EN no horizontal overflow; visible textual draft error and dashed preview.",
+      "evidence": [
+        "browser-results.json",
+        "whole-path-ru-390.png",
+        "overlap-en-390.png"
+      ],
+      "limits": "Sampled labels and existing long-name production suite; not arbitrary length/device coverage."
+    },
+    {
+      "ac": "AC10",
+      "status": "fail",
+      "evidence_summary": "Node24.22.1 check256/256 andbuild pass; production save-history E2 names/biome/notes/Find pass. Exacthead unmodified navigation locally andCI fails3!=1R4.",
+      "evidence": [
+        "check.log",
+        "save-history-after-build.log",
+        "navigation-with-browser.log",
+        "remote-browser-ci.log"
+      ],
+      "limits": "Modified temporary navigation diagnostic passes its precise-transform oracle and remainder but does not turn originalCI green. Large-navigation not rerun; CIseedUI skipped."
+    }
+  ]
+}

@@ -303,3 +303,9 @@ Programmer a99c299 adds only min-width44px to direct values; padding0/blue/.08em
 ### 2026-10-31 — E3 reviewer fixes7267843
 - Reused reviewer controlled suppressed-center fixture in existing draft lifecycle: empty suppressed/tract destinations rejected while explicit POI remains allowed. Node case count unchanged; browser case extended for exact overlapping IDs and keyboard access.
 - CSS-only map zoom needs hit-area variables updated with scale; selection identity stores Road.id/segment/crossing key, not geometry alone. Evidence agent-work/evidence/HX-BL-023-E3-fix-7267843; independent closure pending.
+
+
+### 2026-10-31 — E3 review7267843: mutation observer and confirmation targets
+- Navigation observer counted all SVG style mutations, not transform updates. New hit-area CSS variables produced3 records; independent diagnostic confirmed1transform transition. Keep the redCI evidence and repair the precise batching contract, not an arbitrary expectedcount or an unsupported performance claim.
+- Direct map44px/keyboard fixes passed, but Delete/Cancel confirmation buttons measured34.59375px high. Include destructive confirmation state in existing accessibility coverage; do not infer it from map targets.
+- Evidence: agent-work/evidence/review-HX-BL-023-E3-7267843/report.md. R1–R3 resolved in bounded samples; R4/R5 handed to developer within approvedE3. No score increase/publication.

@@ -1,0 +1,920 @@
+{
+  "schema_version": 2,
+  "model_version": "1.2",
+  "model_path": "agent-work/strategy/score-model.md",
+  "model_blob_sha": "a18ee60c9c3b60ab9d39a1a23f67c26ae328a002",
+  "latest_release_sha": "defaa5c24d546e4283430573c2d4e4f3b6194dc0",
+  "last_score_update_at": "2026-10-30T22:31:49.807Z",
+  "checked_on": "2026-10-31",
+  "scope": "Exact E1 UI3 release accounting only;4 independent insufficient_evidence outcomes, no full audit/new grades",
+  "summary": {
+    "confirmed_points": null,
+    "total_weight": 1000,
+    "assessed_criteria": 0,
+    "unverified_criteria": 50,
+    "unverified_weight": 1000,
+    "completion_status": "pending_model1.2_reassessment",
+    "full_score_status": "unknown_not_zero",
+    "historical_score_used": false
+  },
+  "criteria": [
+    {
+      "criterion_id": "S01-C01",
+      "title": "Связность и форма регионов",
+      "weight": 25,
+      "target": "10 000 генераций: 0 разорванных регионов, изолированных дыр и недоступных candidate-гексов",
+      "grade": null,
+      "points": null,
+      "status": "unverified",
+      "method": "No full model1.2 grade assessment; historical1.1 preserved separately"
+    },
+    {
+      "criterion_id": "S01-C02",
+      "title": "Гидрология и геометрия русел",
+      "weight": 40,
+      "target": "10 000 генераций: 0 циклов, дубликатов рёбер, истоков из моря, неправильных слияний и нарушений полноводности; корректное завершение и продолжение рек через регионы/урочища, озёра и море по действующим RIV-правилам. Геометрическая естественность проверена отдельно от числовой модели; река в долине между горами допустима.",
+      "grade": null,
+      "points": null,
+      "status": "unverified",
+      "method": "No full model1.2 grade assessment; historical1.1 preserved separately"
+    },
+    {
+      "criterion_id": "S01-C03",
+      "title": "Побережья, море и озёра",
+      "weight": 30,
+      "target": "0 изолированных морей, чёрных гексов, неверно классифицированных озёр и разрывов береговой линии",
+      "grade": null,
+      "points": null,
+      "status": "unverified",
+      "method": "No full model1.2 grade assessment; historical1.1 preserved separately"
+    },
+    {
+      "criterion_id": "S01-C04",
+      "title": "Дороги и тропы",
+      "weight": 25,
+      "target": "Нет разрывов и дубликатов; каждое пересечение воды создаёт мост, паром или брод",
+      "grade": null,
+      "points": null,
+      "status": "unverified",
+      "method": "No full model1.2 grade assessment; historical1.1 preserved separately"
+    },
+    {
+      "criterion_id": "S01-C05",
+      "title": "Биомная и рельефная правдоподобность",
+      "weight": 10,
+      "target": "0 нарушений жёстких правил совместимости биомов, высот и режима; не менее 90% из 500 карт признаны правдоподобными экспертами. Утверждённые распределения равнин/холмов/гор проверяются на серии генераций с заранее заданным допуском, а не как квота каждого региона.",
+      "grade": null,
+      "points": null,
+      "status": "unverified",
+      "method": "No full model1.2 grade assessment; historical1.1 preserved separately",
+      "last_release_assessment": {
+        "task_id": "HX-BL-023",
+        "stage_id": "E2_direct_edit",
+        "model_version": "1.2",
+        "model_blob_sha": "a18ee60c9c3b60ab9d39a1a23f67c26ae328a002",
+        "criterion_id": "S01-C05",
+        "weight": 10,
+        "release_sha": "defaa5c24d546e4283430573c2d4e4f3b6194dc0",
+        "reviewed_sha": "a99c299f0648c2e5c1d65173bdeca50061dcc901",
+        "release_tree_sha": "4fcecf131cd6287e804dfe040b0fc0ed0dd2b669",
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "after": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "delta": null,
+        "awarded_points": 0,
+        "status": "insufficient_evidence_no_award",
+        "application_status": "completed",
+        "idempotency_key": "HX-BL-023|defaa5c24d546e4283430573c2d4e4f3b6194dc0|1.2|S01-C05",
+        "assessment_ref": "agent-work/evidence/review-HX-BL-023-a99c299/score_assessment.json",
+        "release_ref": "agent-work/results/2026-10-31-developer-release-HX-BL-023-E2-a99c299.json",
+        "evidence_ref": "agent-work/evidence/review-HX-BL-023-a99c299/report.md",
+        "package_bridge": "Freshly fetched release and reviewed trees equal4fcecf1; exact release deployment41136382320 successful; publication evidence contains matching live assets",
+        "method": "Fresh independent reviewer: full package source/test diff, exact fetched CI/job logs and synthetic merge tree,5 targeted existing Node cases, bounded production Chromium lifecycle + temporary independent domain/IME/hit probes. No product/test source changes.",
+        "quality": "Stored height buckets12/6/6, zero settled weights, canonical neighbors and symmetric dead-forest rules; exact five-field update and all override entries preserved.",
+        "breadth": "Classic fixture + isolated height1/2/3 boundary contexts; L1 terrain preparation.",
+        "limitations": [
+          "No500 expert maps, distribution tolerance series, or top5/10/20 rules evidence."
+        ],
+        "assessment_evidence": [
+          "agent-work/evidence/review-HX-BL-023-a99c299/probes/node-targeted.log",
+          "agent-work/evidence/review-HX-BL-023-a99c299/probes/browser-bounded.log",
+          "agent-work/evidence/review-HX-BL-023-a99c299/probes/hit-targets.json",
+          "agent-work/evidence/review-HX-BL-023-a99c299/probes/domain-edge.json",
+          "agent-work/evidence/review-HX-BL-023-a99c299/probes/ci-summary.json"
+        ],
+        "applied_at": "2026-10-30T22:31:49.807Z",
+        "result_ref": "agent-work/results/2026-10-31-strategist-score-HX-BL-023-E2-defaa5c.json"
+      }
+    },
+    {
+      "criterion_id": "S02-C01",
+      "title": "Master seed, независимые потоки и продолжение",
+      "weight": 30,
+      "target": "Одинаковые версия генератора, seed, параметры и последовательность действий дают идентичный мир. Сохранение/загрузка и undo восстанавливают состояние случайности; следующее действие воспроизводимо. Локальный reroll не меняет защищённые и независимые объекты; случайность визуала и названий не сдвигает географию.",
+      "grade": null,
+      "points": null,
+      "status": "unverified",
+      "method": "No full model1.2 grade assessment; historical1.1 preserved separately",
+      "last_release_assessment": {
+        "task_id": "HX-BL-024",
+        "model_version": "1.2",
+        "criterion_id": "S02-C01",
+        "weight": 30,
+        "model_blob_sha": "87f0b2b72dbdb16406eaacde4ac53624f8ecac7a",
+        "release_sha": "a7a8cc58987e97c4495c405374c6a4145f3bc9ff",
+        "product_merge_sha": "e915c6db2daa4a7afb75510b69719da7cdfab478",
+        "reviewed_sha": "f2ee456d42d0b4fb49c533d6bed89f5a2ea23d49",
+        "release_tree_sha": "31765548aeda46c8ab0ab30a02bfe31604bc9256",
+        "product_tree_sha": "2053bb2917202879843984dc48ba1cbc290ed1d7",
+        "before": {
+          "grade": "unknown",
+          "points": null
+        },
+        "after": {
+          "grade": "unknown",
+          "points": null
+        },
+        "delta": null,
+        "awarded_points": 0,
+        "status": "insufficient_evidence_no_award",
+        "application_status": "completed",
+        "idempotency_key": "HX-BL-024|a7a8cc58987e97c4495c405374c6a4145f3bc9ff|1.2|S02-C01",
+        "assessment_ref": "agent-work/results/2026-10-28-reviewer-HX-BL-024-f2ee456.json",
+        "release_ref": "agent-work/results/2026-10-28-developer-HX-BL-024-release-477.json",
+        "evidence_ref": "agent-work/evidence/review-HX-BL-024-f2ee456/report.md",
+        "publication_ref": "agent-work/evidence/release-HX-BL-024-a7a8cc5/publication.json",
+        "package_bridge": "Reviewed f2ee tree equals product mergee915; releasea7a8 differs only owner-approved independently-reviewed deploy timeout10→20",
+        "method": "Fresh exact-tree source/diff inspection, real production React browser lifecycle and independent probes, production handler diagnostics and CI inspection",
+        "quality": "Notes-only whole-map invariance and rollback preserve generation state; exact-tree remote world-random successful.",
+        "breadth": "Technical criterion: no artificial5/10/20 quota.",
+        "limitations": [
+          "Full RNG browser suite not repeated locally; bounded regression scope does not establish criterion-wide protected-object/reroll independence or external superiority.",
+          "Unknown remains unknown, not zero. No productgrade transition; no1.1transfer. Workflow-only fix confers no additional points."
+        ],
+        "applied_at": "2026-10-28T15:06:29.819Z",
+        "deployment_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40699991274"
+      }
+    },
+    {
+      "criterion_id": "S02-C02",
+      "title": "Стабильные ID",
+      "weight": 20,
+      "target": "Все сущности сохраняют ID после переименования, редактирования, экспорта и импорта",
+      "grade": null,
+      "points": null,
+      "status": "unverified",
+      "method": "No full model1.2 grade assessment; historical1.1 preserved separately",
+      "last_release_assessment": {
+        "task_id": "HX-BL-023",
+        "stage_id": "E2_direct_edit",
+        "model_version": "1.2",
+        "model_blob_sha": "a18ee60c9c3b60ab9d39a1a23f67c26ae328a002",
+        "criterion_id": "S02-C02",
+        "weight": 20,
+        "release_sha": "defaa5c24d546e4283430573c2d4e4f3b6194dc0",
+        "reviewed_sha": "a99c299f0648c2e5c1d65173bdeca50061dcc901",
+        "release_tree_sha": "4fcecf131cd6287e804dfe040b0fc0ed0dd2b669",
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "after": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "delta": null,
+        "awarded_points": 0,
+        "status": "insufficient_evidence_no_award",
+        "application_status": "completed",
+        "idempotency_key": "HX-BL-023|defaa5c24d546e4283430573c2d4e4f3b6194dc0|1.2|S02-C02",
+        "assessment_ref": "agent-work/evidence/review-HX-BL-023-a99c299/score_assessment.json",
+        "release_ref": "agent-work/results/2026-10-31-developer-release-HX-BL-023-E2-a99c299.json",
+        "evidence_ref": "agent-work/evidence/review-HX-BL-023-a99c299/report.md",
+        "package_bridge": "Freshly fetched release and reviewed trees equal4fcecf1; exact release deployment41136382320 successful; publication evidence contains matching live assets",
+        "method": "Fresh independent reviewer: full package source/test diff, exact fetched CI/job logs and synthetic merge tree,5 targeted existing Node cases, bounded production Chromium lifecycle + temporary independent domain/IME/hit probes. No product/test source changes.",
+        "quality": "Five named types ×RU/EN change only the captured locale; opposite legacy locale, metadata, keys and other entities remain literal; exact Undo/Redo.",
+        "breadth": "Region, settlement, river, lake, kingdom in Mythic baseline; Classic handler fixture.",
+        "limitations": [
+          "Not all entities or move/merge paths; no full game applicability matrix."
+        ],
+        "assessment_evidence": [
+          "agent-work/evidence/review-HX-BL-023-a99c299/probes/node-targeted.log",
+          "agent-work/evidence/review-HX-BL-023-a99c299/probes/browser-bounded.log",
+          "agent-work/evidence/review-HX-BL-023-a99c299/probes/hit-targets.json",
+          "agent-work/evidence/review-HX-BL-023-a99c299/probes/domain-edge.json",
+          "agent-work/evidence/review-HX-BL-023-a99c299/probes/ci-summary.json"
+        ],
+        "applied_at": "2026-10-30T22:31:49.807Z",
+        "result_ref": "agent-work/results/2026-10-31-strategist-score-HX-BL-023-E2-defaa5c.json"
+      }
+    },
+    {
+      "criterion_id": "S02-C03",
+      "title": "Версии схемы, миграции и продолжение карты",
+      "weight": 20,
+      "target": "Все сохранения официально поддерживаемых прошлых версий из зафиксированного корпуса автоматически открываются без потери данных и допускают продолжение работы. Версия схемы и генератора различаются; старые принятые объекты не пересоздаются при загрузке. Миграции, отсутствие новых полей и несовместимые будущие версии имеют явное проверенное поведение.",
+      "grade": null,
+      "points": null,
+      "status": "unverified",
+      "method": "No full model1.2 grade assessment; historical1.1 preserved separately"
+    },
+    {
+      "criterion_id": "S02-C04",
+      "title": "Разделение ядра и UI",
+      "weight": 25,
+      "target": "Генераторы не импортируют React; UI не содержит правил генерации; границы проверяет CI",
+      "grade": null,
+      "points": null,
+      "status": "unverified",
+      "method": "No full model1.2 grade assessment; historical1.1 preserved separately"
+    },
+    {
+      "criterion_id": "S02-C05",
+      "title": "Общий валидатор мира",
+      "weight": 15,
+      "target": "Одна команда проверяет географию, ID, ссылки, состояние и видимость; 0 critical errors на 10 000 карт",
+      "grade": null,
+      "points": null,
+      "status": "unverified",
+      "method": "No full model1.2 grade assessment; historical1.1 preserved separately"
+    },
+    {
+      "criterion_id": "S03-C01",
+      "title": "Редактирование гекса",
+      "weight": 25,
+      "target": "Можно изменить биом, POI, воду и принадлежность региону; результат валиден и сохраняется",
+      "grade": null,
+      "points": null,
+      "status": "unverified",
+      "method": "No full model1.2 grade assessment; historical1.1 preserved separately",
+      "last_release_assessment": {
+        "task_id": "HX-BL-023",
+        "stage_id": "E2_direct_edit",
+        "model_version": "1.2",
+        "model_blob_sha": "a18ee60c9c3b60ab9d39a1a23f67c26ae328a002",
+        "criterion_id": "S03-C01",
+        "weight": 25,
+        "release_sha": "defaa5c24d546e4283430573c2d4e4f3b6194dc0",
+        "reviewed_sha": "a99c299f0648c2e5c1d65173bdeca50061dcc901",
+        "release_tree_sha": "4fcecf131cd6287e804dfe040b0fc0ed0dd2b669",
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "after": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "delta": null,
+        "awarded_points": 0,
+        "status": "insufficient_evidence_no_award",
+        "application_status": "completed",
+        "idempotency_key": "HX-BL-023|defaa5c24d546e4283430573c2d4e4f3b6194dc0|1.2|S03-C01",
+        "assessment_ref": "agent-work/evidence/review-HX-BL-023-a99c299/score_assessment.json",
+        "release_ref": "agent-work/results/2026-10-31-developer-release-HX-BL-023-E2-a99c299.json",
+        "evidence_ref": "agent-work/evidence/review-HX-BL-023-a99c299/report.md",
+        "package_bridge": "Freshly fetched release and reviewed trees equal4fcecf1; exact release deployment41136382320 successful; publication evidence contains matching live assets",
+        "method": "Fresh independent reviewer: full package source/test diff, exact fetched CI/job logs and synthetic merge tree,5 targeted existing Node cases, bounded production Chromium lifecycle + temporary independent domain/IME/hit probes. No product/test source changes.",
+        "quality": "Real single Edit/Done mode; inline names/biomes/POI/notes; effective44px targets; short-name blank hits and nonoverlap at390/1500; persistence.",
+        "breadth": "L1 develop-existing and create preparation; RU/EN; two layout widths.",
+        "limitations": [
+          "Water editing, region membership/boundaries and later E3–E8 remain absent; no mobile-device/user study."
+        ],
+        "assessment_evidence": [
+          "agent-work/evidence/review-HX-BL-023-a99c299/probes/node-targeted.log",
+          "agent-work/evidence/review-HX-BL-023-a99c299/probes/browser-bounded.log",
+          "agent-work/evidence/review-HX-BL-023-a99c299/probes/hit-targets.json",
+          "agent-work/evidence/review-HX-BL-023-a99c299/probes/domain-edge.json",
+          "agent-work/evidence/review-HX-BL-023-a99c299/probes/ci-summary.json"
+        ],
+        "applied_at": "2026-10-30T22:31:49.807Z",
+        "result_ref": "agent-work/results/2026-10-31-strategist-score-HX-BL-023-E2-defaa5c.json"
+      }
+    },
+    {
+      "criterion_id": "S03-C02",
+      "title": "Гранулярный reroll",
+      "weight": 25,
+      "target": "Отдельно reroll: поле, POI, гекс, регион, слой или весь мир",
+      "grade": null,
+      "points": null,
+      "status": "unverified",
+      "method": "No full model1.2 grade assessment; historical1.1 preserved separately"
+    },
+    {
+      "criterion_id": "S03-C03",
+      "title": "Lock / pin",
+      "weight": 20,
+      "target": "Любую сущность или слой можно защитить от перегенерации",
+      "grade": null,
+      "points": null,
+      "status": "unverified",
+      "method": "No full model1.2 grade assessment; historical1.1 preserved separately"
+    },
+    {
+      "criterion_id": "S03-C04",
+      "title": "Граф зависимостей и целостность изменений",
+      "weight": 30,
+      "target": "Перед разрушительным изменением показаны все затронутые слухи, дороги, NPC, задания, фракции, истории и межрегиональные связи. После утверждённой операции нет висячих ссылок и противоречащих ей данных; reroll/удаление сохраняют защищённые сущности и согласованно обновляют зависимости либо отклоняются без изменения карты.",
+      "grade": null,
+      "points": null,
+      "status": "unverified",
+      "method": "No full model1.2 grade assessment; historical1.1 preserved separately"
+    },
+    {
+      "criterion_id": "S03-C05",
+      "title": "Undo / redo и версии",
+      "weight": 20,
+      "target": "Все изменения обратимы; минимум 100 операций и именованные версии карты",
+      "grade": null,
+      "points": null,
+      "status": "unverified",
+      "method": "No full model1.2 grade assessment; historical1.1 preserved separately",
+      "last_release_assessment": {
+        "task_id": "HX-BL-023",
+        "stage_id": "E2_direct_edit",
+        "model_version": "1.2",
+        "model_blob_sha": "a18ee60c9c3b60ab9d39a1a23f67c26ae328a002",
+        "criterion_id": "S03-C05",
+        "weight": 20,
+        "release_sha": "defaa5c24d546e4283430573c2d4e4f3b6194dc0",
+        "reviewed_sha": "a99c299f0648c2e5c1d65173bdeca50061dcc901",
+        "release_tree_sha": "4fcecf131cd6287e804dfe040b0fc0ed0dd2b669",
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "after": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "delta": null,
+        "awarded_points": 0,
+        "status": "insufficient_evidence_no_award",
+        "application_status": "completed",
+        "idempotency_key": "HX-BL-023|defaa5c24d546e4283430573c2d4e4f3b6194dc0|1.2|S03-C05",
+        "assessment_ref": "agent-work/evidence/review-HX-BL-023-a99c299/score_assessment.json",
+        "release_ref": "agent-work/results/2026-10-31-developer-release-HX-BL-023-E2-a99c299.json",
+        "evidence_ref": "agent-work/evidence/review-HX-BL-023-a99c299/report.md",
+        "package_bridge": "Freshly fetched release and reviewed trees equal4fcecf1; exact release deployment41136382320 successful; publication evidence contains matching live assets",
+        "method": "Fresh independent reviewer: full package source/test diff, exact fetched CI/job logs and synthetic merge tree,5 targeted existing Node cases, bounded production Chromium lifecycle + temporary independent domain/IME/hit probes. No product/test source changes.",
+        "quality": "Exact single transaction per name/biome, no-op/Escape preserve history, notes500ms grouping, edited-copy continuation. Exact CI retains100 mixed existing lifecycle.",
+        "breadth": "Changed actions in targeted handlers and real React; full100 and corpus retained in refreshed CI rather than rerun locally.",
+        "limitations": [
+          "Named versions absent; no assertion that all possible modifications or game scenarios are reversible."
+        ],
+        "assessment_evidence": [
+          "agent-work/evidence/review-HX-BL-023-a99c299/probes/node-targeted.log",
+          "agent-work/evidence/review-HX-BL-023-a99c299/probes/browser-bounded.log",
+          "agent-work/evidence/review-HX-BL-023-a99c299/probes/hit-targets.json",
+          "agent-work/evidence/review-HX-BL-023-a99c299/probes/domain-edge.json",
+          "agent-work/evidence/review-HX-BL-023-a99c299/probes/ci-summary.json"
+        ],
+        "applied_at": "2026-10-30T22:31:49.807Z",
+        "result_ref": "agent-work/results/2026-10-31-strategist-score-HX-BL-023-E2-defaa5c.json"
+      }
+    },
+    {
+      "criterion_id": "S04-C01",
+      "title": "Запуск без обучения",
+      "weight": 20,
+      "target": "90% из 30 новых пользователей создают и экспортируют первую карту без инструкции за 2 минуты",
+      "grade": null,
+      "points": null,
+      "status": "unverified",
+      "method": "No full model1.2 grade assessment; historical1.1 preserved separately"
+    },
+    {
+      "criterion_id": "S04-C02",
+      "title": "Навигация",
+      "weight": 15,
+      "target": "Desktop и mobile: pan, zoom, rotate, select; 95% заданий выполняются без ошибочного действия",
+      "grade": null,
+      "points": null,
+      "status": "unverified",
+      "method": "No full model1.2 grade assessment; historical1.1 preserved separately"
+    },
+    {
+      "criterion_id": "S04-C03",
+      "title": "Игровые слои и визуальные представления",
+      "weight": 20,
+      "target": "Есть отдельные карта мастера, карта игроков, туман войны и настраиваемые игровые слои. Тайлы/Эмоджи/Цвет и SVG/эмоджи POI меняют представление, сохраняя данные, геометрию и смысл объектов; визуальный стиль не подменяет права видимости. Карта и экспорт игрока не раскрывают скрытые сведения.",
+      "grade": null,
+      "points": null,
+      "status": "unverified",
+      "method": "No full model1.2 grade assessment; historical1.1 preserved separately"
+    },
+    {
+      "criterion_id": "S04-C04",
+      "title": "Экспорт и импорт без потери данных",
+      "weight": 15,
+      "target": "PNG, SVG и JSON поддерживают заявленные слои/стили; изображение соответствует показанному виду и выбранной роли. 100% round-trip JSON на утверждённом корпусе сохраняет сущности, связи, имена, состояние и параметры продолжения. Механизм воспроизводимости оценивается в S02-C01; обмен ссылкой и seed — в S08-C05.",
+      "grade": null,
+      "points": null,
+      "status": "unverified",
+      "method": "No full model1.2 grade assessment; historical1.1 preserved separately",
+      "last_release_assessment": {
+        "task_id": "HX-BL-023",
+        "stage_id": "E2_direct_edit",
+        "model_version": "1.2",
+        "model_blob_sha": "a18ee60c9c3b60ab9d39a1a23f67c26ae328a002",
+        "criterion_id": "S04-C04",
+        "weight": 15,
+        "release_sha": "defaa5c24d546e4283430573c2d4e4f3b6194dc0",
+        "reviewed_sha": "a99c299f0648c2e5c1d65173bdeca50061dcc901",
+        "release_tree_sha": "4fcecf131cd6287e804dfe040b0fc0ed0dd2b669",
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "after": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "delta": null,
+        "awarded_points": 0,
+        "status": "insufficient_evidence_no_award",
+        "application_status": "completed",
+        "idempotency_key": "HX-BL-023|defaa5c24d546e4283430573c2d4e4f3b6194dc0|1.2|S04-C04",
+        "assessment_ref": "agent-work/evidence/review-HX-BL-023-a99c299/score_assessment.json",
+        "release_ref": "agent-work/results/2026-10-31-developer-release-HX-BL-023-E2-a99c299.json",
+        "evidence_ref": "agent-work/evidence/review-HX-BL-023-a99c299/report.md",
+        "package_bridge": "Freshly fetched release and reviewed trees equal4fcecf1; exact release deployment41136382320 successful; publication evidence contains matching live assets",
+        "method": "Fresh independent reviewer: full package source/test diff, exact fetched CI/job logs and synthetic merge tree,5 targeted existing Node cases, bounded production Chromium lifecycle + temporary independent domain/IME/hit probes. No product/test source changes.",
+        "quality": "Literal locale/notes JSON and exact Undo/Redo; notes immediate export; canonical biome metadata; edited copies continue equally.",
+        "breadth": "Bounded real exports/imports, targeted handlers; full Classic/Mythic legacy corpus refreshed CI.",
+        "limitations": [
+          "No complete PNG/SVG/role/layer corpus; isolated domain contexts are not importer coverage."
+        ],
+        "assessment_evidence": [
+          "agent-work/evidence/review-HX-BL-023-a99c299/probes/node-targeted.log",
+          "agent-work/evidence/review-HX-BL-023-a99c299/probes/browser-bounded.log",
+          "agent-work/evidence/review-HX-BL-023-a99c299/probes/hit-targets.json",
+          "agent-work/evidence/review-HX-BL-023-a99c299/probes/domain-edge.json",
+          "agent-work/evidence/review-HX-BL-023-a99c299/probes/ci-summary.json"
+        ],
+        "applied_at": "2026-10-30T22:31:49.807Z",
+        "result_ref": "agent-work/results/2026-10-31-strategist-score-HX-BL-023-E2-defaa5c.json"
+      }
+    },
+    {
+      "criterion_id": "S04-C05",
+      "title": "Локализация и доступность",
+      "weight": 10,
+      "target": "RU/EN без пропусков; основные сценарии соответствуют WCAG AA",
+      "grade": null,
+      "points": null,
+      "status": "unverified",
+      "method": "No full model1.2 grade assessment; historical1.1 preserved separately"
+    },
+    {
+      "criterion_id": "S05-C01",
+      "title": "Игровая карточка гекса в контексте региона",
+      "weight": 25,
+      "target": "На одном экране активного гекса доступны местность, ориентир, скрытое, ситуация, награда, связи и состояние. Явно различаются локальные сведения и влияние истории/особенности региона; видны относящиеся к гексу причины, признаки и доступные действия. Пустой гекс не получает искусственный самостоятельный сюжет ради заполнения полей.",
+      "grade": null,
+      "points": null,
+      "status": "unverified",
+      "method": "No full model1.2 grade assessment; historical1.1 preserved separately",
+      "last_release_assessment": {
+        "task_id": "HX-BL-024",
+        "model_version": "1.2",
+        "criterion_id": "S05-C01",
+        "weight": 25,
+        "model_blob_sha": "87f0b2b72dbdb16406eaacde4ac53624f8ecac7a",
+        "release_sha": "a7a8cc58987e97c4495c405374c6a4145f3bc9ff",
+        "product_merge_sha": "e915c6db2daa4a7afb75510b69719da7cdfab478",
+        "reviewed_sha": "f2ee456d42d0b4fb49c533d6bed89f5a2ea23d49",
+        "release_tree_sha": "31765548aeda46c8ab0ab30a02bfe31604bc9256",
+        "product_tree_sha": "2053bb2917202879843984dc48ba1cbc290ed1d7",
+        "before": {
+          "grade": "unknown",
+          "points": null
+        },
+        "after": {
+          "grade": "unknown",
+          "points": null
+        },
+        "delta": null,
+        "awarded_points": 0,
+        "status": "insufficient_evidence_no_award",
+        "application_status": "completed",
+        "idempotency_key": "HX-BL-024|a7a8cc58987e97c4495c405374c6a4145f3bc9ff|1.2|S05-C01",
+        "assessment_ref": "agent-work/results/2026-10-28-reviewer-HX-BL-024-f2ee456.json",
+        "release_ref": "agent-work/results/2026-10-28-developer-HX-BL-024-release-477.json",
+        "evidence_ref": "agent-work/evidence/review-HX-BL-024-f2ee456/report.md",
+        "publication_ref": "agent-work/evidence/release-HX-BL-024-a7a8cc5/publication.json",
+        "package_bridge": "Reviewed f2ee tree equals product mergee915; releasea7a8 differs only owner-approved independently-reviewed deploy timeout10→20",
+        "method": "Fresh exact-tree source/diff inspection, real production React browser lifecycle and independent probes, production handler diagnostics and CI inspection",
+        "quality": "Useful manual plain-text contribution attached to an actual hex, collapsed read view and immediate current-map persistence observed.",
+        "breadth": "Game-dependent; classic/Mythic input is not full contextual card or evidence of all applicable requirements for top5/10/20; module-combination scenario remains unverified.",
+        "limitations": [
+          "Full terrain/landmark/hidden/situation/reward/links/state target not established; no user/session confirmation or game matrix audit.",
+          "Unknown remains unknown, not zero. No productgrade transition; no1.1transfer. Workflow-only fix confers no additional points."
+        ],
+        "applied_at": "2026-10-28T15:06:29.819Z",
+        "deployment_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40699991274"
+      }
+    },
+    {
+      "criterion_id": "S05-C02",
+      "title": "Игровая ситуация и действующая причина",
+      "weight": 35,
+      "target": "100% значимых POI и активных природных особенностей имеют действующую причину, наблюдаемые признаки, выбор действий, препятствие/риск, ставку или награду и последствия. Участники и их цели заданы там, где они есть. Природной опасности не требуется выдуманный NPC; ситуация совместима с фактическими биомом, освоенностью и объектами карты.",
+      "grade": null,
+      "points": null,
+      "status": "unverified",
+      "method": "No full model1.2 grade assessment; historical1.1 preserved separately"
+    },
+    {
+      "criterion_id": "S05-C03",
+      "title": "Уровни обнаружения",
+      "weight": 20,
+      "target": "Объекты разделены на видимые на карте, заметные при входе и обнаруживаемые поиском",
+      "grade": null,
+      "points": null,
+      "status": "unverified",
+      "method": "No full model1.2 grade assessment; historical1.1 preserved separately"
+    },
+    {
+      "criterion_id": "S05-C04",
+      "title": "Связанные истории регионов и слухи",
+      "weight": 25,
+      "target": "Каждая активная история согласована с биомом, размером/освоенностью региона, водой, дорогами и POI; каждая пара соседних регионов имеет осмысленную связь. Для истории доступны правдивый, полуправдивый и ложный слухи с местами получения в текущем и соседних регионах. У слуха есть предмет утверждения, происхождение и связь с истиной; намеренный вымысел представлен явно. Нет случайных висячих ссылок и изолированных историй; формальные квоты входящих/исходящих рёбер не заменяют смысловую проверку.",
+      "grade": null,
+      "points": null,
+      "status": "unverified",
+      "method": "No full model1.2 grade assessment; historical1.1 preserved separately"
+    },
+    {
+      "criterion_id": "S05-C05",
+      "title": "Мотивированные встречи",
+      "weight": 25,
+      "target": "Встреча содержит существо, действие, мотивацию, реакцию и возможное последствие",
+      "grade": null,
+      "points": null,
+      "status": "unverified",
+      "method": "No full model1.2 grade assessment; historical1.1 preserved separately"
+    },
+    {
+      "criterion_id": "S06-C01",
+      "title": "Фракции",
+      "weight": 25,
+      "target": "В кампании 2-4 фракции с целью, ресурсами, территорией, отношениями и проектом",
+      "grade": null,
+      "points": null,
+      "status": "unverified",
+      "method": "No full model1.2 grade assessment; historical1.1 preserved separately"
+    },
+    {
+      "criterion_id": "S06-C02",
+      "title": "Мифы режима и развивающиеся угрозы",
+      "weight": 30,
+      "target": "Динамические угрозы имеют источник, область влияния, признаки/стадии, условия продвижения, разрешения и последствия вмешательства. Число угроз и стадий соответствует утверждённому сценарию/режиму, а не единой норме всех карт. Квоты и размещение мифов Mythic Bastionland выполняются по его спецификации; статический маркер мифа не засчитывается как работающая динамическая угроза.",
+      "grade": null,
+      "points": null,
+      "status": "unverified",
+      "method": "No full model1.2 grade assessment; historical1.1 preserved separately"
+    },
+    {
+      "criterion_id": "S06-C03",
+      "title": "Игровое время и воспроизводимые последствия",
+      "weight": 20,
+      "target": "Явное продвижение времени мастером воспроизводимо изменяет события, истории и связанные состояния по правилам кампании и режима. Сохранение/загрузка, отмена и повтор одинакового действия не создают дубликатов и расхождений. Открытие карты само по себе не продвигает время; дни/сезоны поддерживаются там, где предусмотрены согласованной процедурой.",
+      "grade": null,
+      "points": null,
+      "status": "unverified",
+      "method": "No full model1.2 grade assessment; historical1.1 preserved separately"
+    },
+    {
+      "criterion_id": "S06-C04",
+      "title": "Цикл экспедиции",
+      "weight": 25,
+      "target": "Поддерживается предусмотренный конкретной игрой цикл получения информации, подготовки, путешествия/исследования и продолжения кампании после сохранения. Возвращение на базу, добыча и развитие базы обязательны только там, где это требуется выбранным сценарием. Проверка проводится по применимым требованиям текущего набора игр и ступеням широты; заполненная схема без прохождения сценария не считается результатом.",
+      "grade": null,
+      "points": null,
+      "status": "unverified",
+      "method": "No full model1.2 grade assessment; historical1.1 preserved separately"
+    },
+    {
+      "criterion_id": "S06-C05",
+      "title": "Истина мира и знания игроков",
+      "weight": 20,
+      "target": "Истина мира хранится отдельно от сообщений и знаний игроков. Поддерживаются истинные, частично истинные и ложные сведения, их источник, время получения и состояние раскрытия. Знание и карта игроков обновляются по игровым действиям, сохраняются и не раскрывают скрытое; ложное утверждение не меняет истину. Состав и размещение слухов оцениваются в S05-C04, их получение/изменение знания — здесь.",
+      "grade": null,
+      "points": null,
+      "status": "unverified",
+      "method": "No full model1.2 grade assessment; historical1.1 preserved separately"
+    },
+    {
+      "criterion_id": "S07-C01",
+      "title": "Игровые различия биомов и дикой природы",
+      "weight": 20,
+      "target": "Поддерживаемые биомы и их особенности дают различимые последствия для путешествия, отдыха, ресурсов, встреч или рисков в рамках системы/режима. Особенности совместимы с географией и связаны с наблюдаемыми признаками, решениями и противодействием; косметическое переименование не считается новым игровым вариантом. Утверждённый до разработки набор контекстов пройден, различия подтверждены мастерами; минимальная квота 30 биомов заменена проверкой результата.",
+      "grade": null,
+      "points": null,
+      "status": "unverified",
+      "method": "No full model1.2 grade assessment; historical1.1 preserved separately"
+    },
+    {
+      "criterion_id": "S07-C02",
+      "title": "Совместимая библиотека ситуаций и историй",
+      "weight": 20,
+      "target": "Библиотека содержит переиспользуемые ситуации/истории, параметры, ограничения и правила размещения по биому, освоенности, размеру региона, воде, дорогам, POI и соседству. Утверждённый до разработки набор поддерживаемых контекстов покрыт без невозможных размещений и смысловых разрывов; проверено разнообразие по S07-C04. Число записей не заменяет покрытие и не требует квоты 300 архетипов.",
+      "grade": null,
+      "points": null,
+      "status": "unverified",
+      "method": "No full model1.2 grade assessment; historical1.1 preserved separately"
+    },
+    {
+      "criterion_id": "S07-C03",
+      "title": "Разнообразные и устойчивые географические имена",
+      "weight": 10,
+      "target": "Имена объектов культурно согласованы в рамках выбранной модели, устойчивы при загрузке/редактировании и не используются как ID; коллизии внутри согласованной области уникальности разрешаются. Одна германская группа даёт разнообразие по утверждённой выборке, а не несколько однотипных псевдостилей. Названия относятся к объектам и информационной панели; отдельный публичный генератор имён и подписи на карте не являются условием G4.",
+      "grade": null,
+      "points": null,
+      "status": "unverified",
+      "method": "No full model1.2 grade assessment; historical1.1 preserved separately"
+    },
+    {
+      "criterion_id": "S07-C04",
+      "title": "Проверяемая защита от повторов",
+      "weight": 25,
+      "target": "В 100 кампаниях точные повторы активных POI <1%, смысловые <5%; Для активных ситуаций/историй эти же пороги проверяются отдельно. До прогона зафиксированы корпус, размеры кампаний, настройки, определения активного объекта/повтора, знаменатели и рубрика смыслового сходства. Seed и косметические переименования не скрывают одинаковую ситуацию; отчёт содержит ограничения и примеры повторов.",
+      "grade": null,
+      "points": null,
+      "status": "unverified",
+      "method": "No full model1.2 grade assessment; historical1.1 preserved separately"
+    },
+    {
+      "criterion_id": "S07-C05",
+      "title": "Контент-паки",
+      "weight": 15,
+      "target": "Контент добавляется пакетами без изменения ядра; происхождение и лицензия известны",
+      "grade": null,
+      "points": null,
+      "status": "unverified",
+      "method": "No full model1.2 grade assessment; historical1.1 preserved separately"
+    },
+    {
+      "criterion_id": "S08-C01",
+      "title": "Документированный формат данных",
+      "weight": 20,
+      "target": "Опубликованы JSON Schema, примеры, migration guide и API",
+      "grade": null,
+      "points": null,
+      "status": "unverified",
+      "method": "No full model1.2 grade assessment; historical1.1 preserved separately"
+    },
+    {
+      "criterion_id": "S08-C02",
+      "title": "SDK контент-паков",
+      "weight": 15,
+      "target": "Сторонний автор создаёт биомы и POI без изменения репозитория приложения",
+      "grade": null,
+      "points": null,
+      "status": "unverified",
+      "method": "No full model1.2 grade assessment; historical1.1 preserved separately"
+    },
+    {
+      "criterion_id": "S08-C03",
+      "title": "VTT и внешние экспорты",
+      "weight": 15,
+      "target": "Прямой экспорт минимум в Foundry и ещё одну VTT плюс универсальный manifest",
+      "grade": null,
+      "points": null,
+      "status": "unverified",
+      "method": "No full model1.2 grade assessment; historical1.1 preserved separately"
+    },
+    {
+      "criterion_id": "S08-C04",
+      "title": "Совместимость правил и независимость режимов",
+      "weight": 10,
+      "target": "Географическое ядро не зависит от игровых правил; требования НРИ задаются общими возможностями, данными или адаптером, когда он необходим. Адаптер правил, режим построения мира и карта фиксированного сеттинга различаются. Совместимые переключения сохраняют созданные объекты и их смысл по спецификации; несовместимые имеют явное безопасное поведение. Проверены различающиеся требования игр текущего набора, затем применимых игр топ-5/10/20. Квоты трёх адаптеров нет; широта покрытия и качество географии/слухов не начисляются здесь повторно.",
+      "grade": null,
+      "points": null,
+      "status": "unverified",
+      "method": "No full model1.2 grade assessment; historical1.1 preserved separately"
+    },
+    {
+      "criterion_id": "S08-C05",
+      "title": "Обмен и встраивание",
+      "weight": 10,
+      "target": "Кампания открывается по ссылке или seed и встраивается в другой сайт",
+      "grade": null,
+      "points": null,
+      "status": "unverified",
+      "method": "No full model1.2 grade assessment; historical1.1 preserved separately"
+    },
+    {
+      "criterion_id": "S09-C01",
+      "title": "Скорость, масштабирование и отзывчивость",
+      "weight": 20,
+      "target": "P95 нового региона <1,5 с на эталонном ПК и <3 с на среднем Android. Сценарии масштабирования задаются числом гексов N на карте, а не количеством королевств или регионов. Для каждого N отдельно измерены последовательная генерация и расширение, отрисовка, навигация и исчерпание попыток; выполнены утверждённые пределы без зависания и снижения качества. В отчёте фиксируются N до/после действия, прирост числа гексов, режим и состав карты (биомы, вода, дороги, POI и игровые данные), устройство и настройки. Набор N и дополнительные пределы: TBD после baseline, утвердить до оптимизации; пока они не заданы, G4 по этой редакции недостижим.",
+      "grade": null,
+      "points": null,
+      "status": "unverified",
+      "method": "No full model1.2 grade assessment; historical1.1 preserved separately"
+    },
+    {
+      "criterion_id": "S09-C02",
+      "title": "Crash-free и fuzz",
+      "weight": 20,
+      "target": "100 000 случайных прогонов без падений и повреждённых сохранений; prod crash-free >=99,9%",
+      "grade": null,
+      "points": null,
+      "status": "unverified",
+      "method": "No full model1.2 grade assessment; historical1.1 preserved separately"
+    },
+    {
+      "criterion_id": "S09-C03",
+      "title": "Автотесты и CI",
+      "weight": 20,
+      "target": "Не менее 80% branch coverage ядра, property-based тесты и обязательный CI перед merge",
+      "grade": null,
+      "points": null,
+      "status": "unverified",
+      "method": "No full model1.2 grade assessment; historical1.1 preserved separately"
+    },
+    {
+      "criterion_id": "S09-C04",
+      "title": "Безопасность данных",
+      "weight": 10,
+      "target": "Ошибочный импорт не меняет карту; разрушительные действия обратимы; round-trip без потерь",
+      "grade": null,
+      "points": null,
+      "status": "unverified",
+      "method": "No full model1.2 grade assessment; historical1.1 preserved separately",
+      "last_release_assessment": {
+        "task_id": "HX-BL-023",
+        "stage_id": "E2_direct_edit",
+        "model_version": "1.2",
+        "model_blob_sha": "a18ee60c9c3b60ab9d39a1a23f67c26ae328a002",
+        "criterion_id": "S09-C04",
+        "weight": 10,
+        "release_sha": "defaa5c24d546e4283430573c2d4e4f3b6194dc0",
+        "reviewed_sha": "a99c299f0648c2e5c1d65173bdeca50061dcc901",
+        "release_tree_sha": "4fcecf131cd6287e804dfe040b0fc0ed0dd2b669",
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "after": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "delta": null,
+        "awarded_points": 0,
+        "status": "insufficient_evidence_no_award",
+        "application_status": "completed",
+        "idempotency_key": "HX-BL-023|defaa5c24d546e4283430573c2d4e4f3b6194dc0|1.2|S09-C04",
+        "assessment_ref": "agent-work/evidence/review-HX-BL-023-a99c299/score_assessment.json",
+        "release_ref": "agent-work/results/2026-10-31-developer-release-HX-BL-023-E2-a99c299.json",
+        "evidence_ref": "agent-work/evidence/review-HX-BL-023-a99c299/report.md",
+        "package_bridge": "Freshly fetched release and reviewed trees equal4fcecf1; exact release deployment41136382320 successful; publication evidence contains matching live assets",
+        "method": "Fresh independent reviewer: full package source/test diff, exact fetched CI/job logs and synthetic merge tree,5 targeted existing Node cases, bounded production Chromium lifecycle + temporary independent domain/IME/hit probes. No product/test source changes.",
+        "quality": "Invalid names retain focus; preparation faults and stale callbacks preserve document/stacks; import busy guard; no-op redo; composition blocks premature navigation.",
+        "breadth": "Actual handler fault/stale probes, browser invalid/fault/IME/wheel/touch and notes busy; exact CI invalid-import lifecycle.",
+        "limitations": [
+          "Finite cases; no universal losslessness proof, broad production telemetry or real touch-device coverage."
+        ],
+        "assessment_evidence": [
+          "agent-work/evidence/review-HX-BL-023-a99c299/probes/node-targeted.log",
+          "agent-work/evidence/review-HX-BL-023-a99c299/probes/browser-bounded.log",
+          "agent-work/evidence/review-HX-BL-023-a99c299/probes/hit-targets.json",
+          "agent-work/evidence/review-HX-BL-023-a99c299/probes/domain-edge.json",
+          "agent-work/evidence/review-HX-BL-023-a99c299/probes/ci-summary.json"
+        ],
+        "applied_at": "2026-10-30T22:31:49.807Z",
+        "result_ref": "agent-work/results/2026-10-31-strategist-score-HX-BL-023-E2-defaa5c.json"
+      }
+    },
+    {
+      "criterion_id": "S09-C05",
+      "title": "Наблюдаемость и воспроизведение отказов",
+      "weight": 10,
+      "target": "Есть dashboard скорости, ошибок, воронки и регрессий по версиям; отдельно учитываются штатный отказ, создание урочища, исчерпание попыток и программный сбой. Диагностика содержит версию, seed/состояние, параметры и контекст действия, достаточные для воспроизведения. Детальное логирование отключаемо, профили генерации и отрисовки разделены; персональные данные и содержимое закрытых кампаний не раскрываются.",
+      "grade": null,
+      "points": null,
+      "status": "unverified",
+      "method": "No full model1.2 grade assessment; historical1.1 preserved separately"
+    },
+    {
+      "criterion_id": "S10-C01",
+      "title": "Сравнительный benchmark",
+      "weight": 20,
+      "target": "Сравнение минимум с 5 ведущими аналогами; первое место по общей методике. Сравниваются одинаковые задачи подготовки для конкретных игр, с зафиксированными редакциями, сценариями и применимостью. Результаты и ограничения показаны по играм и ступеням охвата; успех в одной игре не подтверждает весь набор.",
+      "grade": null,
+      "points": null,
+      "status": "unverified",
+      "method": "No full model1.2 grade assessment; historical1.1 preserved separately"
+    },
+    {
+      "criterion_id": "S10-C02",
+      "title": "Слепое исследование мастеров",
+      "weight": 20,
+      "target": "Не менее 50 мастеров; продукт выбирают лучшим >=60%, отрыв >=15 п.п. В исследовании участвуют ведущие проверяемых игр; состав выборки, число участников и результаты по каждой игре/сценарию открыты. Общий итог не подменяет доказательства для непредставленных игр; размер выборки по сегментам фиксируется до исследования.",
+      "grade": null,
+      "points": null,
+      "status": "unverified",
+      "method": "No full model1.2 grade assessment; historical1.1 preserved separately"
+    },
+    {
+      "criterion_id": "S10-C03",
+      "title": "Реальное использование",
+      "weight": 15,
+      "target": "Activation >=70%, week-4 retention >=35%, минимум 30% создают вторую кампанию. Метрики разделены по игре/сценарию и версии продукта; публикуются знаменатели и ограничения малых выборок, чтобы общий результат не скрывал провал отдельного сценария.",
+      "grade": null,
+      "points": null,
+      "status": "unverified",
+      "method": "No full model1.2 grade assessment; historical1.1 preserved separately"
+    },
+    {
+      "criterion_id": "S10-C04",
+      "title": "Экосистема сообщества",
+      "weight": 10,
+      "target": "Минимум 20 сторонних контент-паков и 3 независимые интеграции",
+      "grade": null,
+      "points": null,
+      "status": "unverified",
+      "method": "No full model1.2 grade assessment; historical1.1 preserved separately"
+    },
+    {
+      "criterion_id": "S10-C05",
+      "title": "Публичный отчёт",
+      "weight": 5,
+      "target": "Опубликованы методика, результаты и обезличенные исходные данные",
+      "grade": null,
+      "points": null,
+      "status": "unverified",
+      "method": "No full model1.2 grade assessment; historical1.1 preserved separately"
+    }
+  ],
+  "historical_evaluation": {
+    "model_version": "1.1",
+    "confirmed_points": 193.75,
+    "unverified_weight": 70,
+    "archive_ref": "agent-work/score/archive/current-score-model1.1-before475.json",
+    "unchanged": true
+  },
+  "model_transition": {
+    "active_model_version": "1.2",
+    "evaluated_model_version": null,
+    "status": "pending_reassessment",
+    "prior_evidence_preserved": true
+  },
+  "release_event": {
+    "task_id": "HX-BL-023",
+    "stage_id": "E2_direct_edit",
+    "release_sha": "defaa5c24d546e4283430573c2d4e4f3b6194dc0",
+    "reviewed_sha": "a99c299f0648c2e5c1d65173bdeca50061dcc901",
+    "status": "completed",
+    "assessment_ref": "agent-work/evidence/review-HX-BL-023-a99c299/score_assessment.json",
+    "result_ref": "agent-work/results/2026-10-31-strategist-score-HX-BL-023-E2-defaa5c.json",
+    "awarded_points": 0,
+    "delta_points": null,
+    "reason": "Six bounded E2 assessments remain unverified; aggregate unknown, not zero.",
+    "applied_at": "2026-10-30T22:31:49.807Z"
+  },
+  "history_ref": "agent-work/score/history.json",
+  "market_cohort_update": {
+    "date": "2026-10-27",
+    "cohort_version": "2026-10-27-DW-FL-1",
+    "model_current_blob_sha": "b88a3ac87d941d0070edc2816a52e60fee204aa2",
+    "coverage_ref": "agent-work/score/game-coverage.json",
+    "score_reassessment_performed": false,
+    "score_changed": false,
+    "limitation": "model_blob_sha above preserves source of previous release assessment; current cohort changes require future game-dependent reassessment, no grades transferred"
+  },
+  "previous_release_event": {
+    "task_id": "HX-BL-023",
+    "stage_id": "E1_UI3",
+    "release_sha": "8f7d17266c53e31428da7c0da6dbbf1afe01d035",
+    "reviewed_sha": "a265a78a1f287442ec502bac9875d04d8d273060",
+    "status": "completed",
+    "assessment_ref": "agent-work/evidence/review-HX-BL-023-E1-ui3-a265a78/score_assessment.json",
+    "result_ref": "agent-work/results/2026-10-29-strategist-score-HX-BL-023-E1-8f7d172.json",
+    "awarded_points": 0,
+    "delta_points": null,
+    "reason": "All4 criteria remain unknown; bounded accepted E1 evidence does not meet full criterion targets",
+    "applied_at": "2026-10-29T15:00:25.616Z"
+  }
+}
+

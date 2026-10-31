@@ -1,0 +1,331 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> hexcrawl-mvp@0.1.0 check
+> tsc --noEmit && npm test && npm run build
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> hexcrawl-mvp@0.1.0 test
+> node --test test/*.test.mjs
+
+✔ prefers one level above the highest neighbour for only outgoing rivers (1.369533ms)
+✔ prefers height one when a full river flows into a height-one neighbour (0.13951ms)
+✔ does not apply the preference without rivers or with an incoming river (0.237137ms)
+✔ keeps the normal fallback when no neighbouring height is known (0.111268ms)
+✔ auto coast retries an incompatible shape before choosing a tract (1641.484248ms)
+✔ dead forest labels, weights, heights and symmetric neighbour rules (318.907337ms)
+✔ automatic settled generation never chooses a zero-weight dead forest, even at exact height (8031.251277ms)
+✔ the real region handler stores and restores each dead-forest biome (382.204042ms)
+✔ indexed joins retain the approved large-map geometry exactly (1027.529301ms)
+✔ four edge reflections preserve exact endpoints and are reversible (20.759577ms)
+✔ approved compositions retain exactly 3 or 4 closed contours and stay inside all rotated hexes (55.931159ms)
+✔ dense canopy removes shared edges and retains a field hole; woodland islands are separate (40.398887ms)
+✔ coordinate selection survives map growth, reordering and biome edits (3.8503ms)
+✔ a frozen clearing style covers the whole open region, including its outer cells (10.399824ms)
+✔ candidate-facing crown edges remain exactly straight (0.480634ms)
+✔ woodland lake hexes suppress shapes and retain the underlying canopy (17.534418ms)
+✔ bridges preserve the original size and placement of source woodland contours (19.321892ms)
+✔ diagnostics default off; detailed logging does not change generation or randomness (926.668656ms)
+✔ exhausted attempts produce one contextual summary and no debug stream (248.449673ms)
+✔ incompatible coastal endpoints exhaust retries before creating a tract (261.822248ms)
+✔ late tract failure only reports programming error; diagnostic survives later actions (122.353651ms)
+✔ last rejection records lake reentry rather than a stale earlier river failure (362.128273ms)
+✔ lake contours are stable after reload and input reordering; unrelated lakes cannot change them (191.592926ms)
+✔ single-cell lakes have distinct silhouettes with bounded visual spill (12.531293ms)
+✔ multi-cell lake shares one contour; island remains a separate hole; identities do not merge (64.538349ms)
+✔ river inlet and outlet anchors both receive a connected mouth, regardless of direction (1.312146ms)
+✔ bounded per-layer cache reuses unchanged lakes, including map-origin translations, and invalidates changed data (318.833896ms)
+✔ consecutive lake cells retain broad joins instead of hex-edge pinches (223.757244ms)
+✔ multi-cell shoreline can spill slightly but stays within the bounded neighbouring margin (293.230234ms)
+✔ unchanged saved lake reentry does not force a new inland region into a tract (1054.75449ms)
+✔ final endpoint completion rejects a newly introduced lake with reentry on an old river (279.917046ms)
+✔ legacy reentry allowance does not hide a new river, a changed path, or a resized lake (301.770417ms)
+✔ late lake introduction is rejected by real regular and tract callbacks, then work can continue (23351.487439ms)
+✔ manual path allocates one ID and deterministic crossings without mutating input (5.046992ms)
+✔ creation refuses invalid geometry, endpoints, obstacles, duplicate and overflow (0.591821ms)
+✔ kind no-op returns document and region minimum rejects loss without changes (0.726474ms)
+✔ deletion preserves destinations and open exits; removable redundant edge keeps other IDs (0.448145ms)
+✔ crossing edit requires live intersection, rejects deep ford and preserves unrelated records (0.413953ms)
+✔ import is one exact transaction; invalid and preparation failure preserve both stacks (714.088112ms)
+✔ all existing manual families, import, reset, and 100 exact undo/redo snapshots (7234.230085ms)
+✔ manual edits do not replace generation checkpoints, regenerate rollback retains undo and redo (420.750589ms)
+✔ pending file read serializes imports and blocks edits, generation and reset (186.450054ms)
+✔ all manifest saves round-trip unchanged entities, names and can continue then undo (5406.456801ms)
+✔ no-op and failed imports preserve redo; fresh edit clears it; reset on empty is a no-op (244.286758ms)
+✔ notes autosave coalesces a series, preserves redo on no-op, and commits before other operations (520.434269ms)
+✔ import replaces notes exactly and legacy imports clear them; malformed notes preserve full history (479.940543ms)
+✔ delete retains latest surviving notes, confirms loss, undo restores; generation conflict is rejected before commit (24968.441494ms)
+✔ direct names change only the captured locale; exact history, validation, legacy other locale and stale fault guards (4996.111676ms)
+✔ region biome respects stored height and canonical neighbors, keeps all overrides and exact metadata/history (1220.431519ms)
+✔ manual road command commits exactly once and stale callback cannot write after import (184.873419ms)
+✔ road draft is ephemeral, blocks other writes, commits once and stale finish is inert (1201.957166ms)
+✔ kingdom quotas, d12 sizes, save, classic extension and atomic undo (8822.26309ms)
+✔ classic to mythic, second kingdom and regeneration preserve earlier regions (12785.628177ms)
+✔ late exception rolls back entire kingdom (168.957165ms)
+✔ nearest free rectangle and disjoint territory (0.532803ms)
+✔ first settled region starts at the rectangle center, including its throne (1932.106996ms)
+✔ Mythic growth fills an enclosed pocket even when the target is already reached (114.424376ms)
+✔ real Mythic handler absorbs a pocket beyond the roll and undo restores it (251.084171ms)
+✔ fallback commits a tract with the clicked anchor and no independent river (338.835471ms)
+✔ coast click without touching river endpoints creates a region (241.849979ms)
+✔ candidate click: no rivers, sea=false, mode=auto (966.274834ms)
+✔ candidate click: no rivers, sea=false, mode=coast (819.039195ms)
+✔ candidate click: no rivers, sea=false, mode=mainland (680.856764ms)
+✔ candidate click: no rivers, sea=true, mode=auto (1017.951318ms)
+✔ candidate click: no rivers, sea=true, mode=coast (814.742361ms)
+✔ candidate click: no rivers, sea=true, mode=mainland (586.182758ms)
+✔ candidate click: incoming, sea=false, mode=auto (663.084685ms)
+✔ candidate click: incoming, sea=false, mode=coast (701.463282ms)
+✔ candidate click: incoming, sea=false, mode=mainland (591.442206ms)
+✔ candidate click: incoming, sea=true, mode=auto (572.611152ms)
+✔ candidate click: incoming, sea=true, mode=coast (583.608856ms)
+✔ candidate click: incoming, sea=true, mode=mainland (519.153295ms)
+✔ candidate click: outgoing, sea=false, mode=auto (530.700256ms)
+✔ candidate click: outgoing, sea=false, mode=coast (648.77444ms)
+✔ candidate click: outgoing, sea=false, mode=mainland (511.20719ms)
+✔ candidate click: outgoing, sea=true, mode=auto (784.525334ms)
+✔ candidate click: outgoing, sea=true, mode=coast (866.09008ms)
+✔ candidate click: outgoing, sea=true, mode=mainland (682.636645ms)
+✔ candidate click: incoming+incoming, sea=false, mode=auto (716.10082ms)
+✔ candidate click: incoming+incoming, sea=false, mode=coast (694.67407ms)
+✔ candidate click: incoming+incoming, sea=false, mode=mainland (675.390019ms)
+✔ candidate click: incoming+incoming, sea=true, mode=auto (708.321303ms)
+✔ candidate click: incoming+incoming, sea=true, mode=coast (828.940377ms)
+✔ candidate click: incoming+incoming, sea=true, mode=mainland (745.07931ms)
+✔ candidate click: outgoing+outgoing, sea=false, mode=auto (513.618137ms)
+✔ candidate click: outgoing+outgoing, sea=false, mode=coast (866.490611ms)
+✔ candidate click: outgoing+outgoing, sea=false, mode=mainland (640.588615ms)
+✔ candidate click: outgoing+outgoing, sea=true, mode=auto (815.610204ms)
+✔ candidate click: outgoing+outgoing, sea=true, mode=coast (737.139009ms)
+✔ candidate click: outgoing+outgoing, sea=true, mode=mainland (573.294109ms)
+✔ candidate click: incoming+outgoing, sea=false, mode=auto (567.816485ms)
+✔ candidate click: incoming+outgoing, sea=false, mode=coast (723.731801ms)
+✔ candidate click: incoming+outgoing, sea=false, mode=mainland (523.493782ms)
+✔ candidate click: incoming+outgoing, sea=true, mode=auto (625.949671ms)
+✔ candidate click: incoming+outgoing, sea=true, mode=coast (767.585258ms)
+✔ candidate click: incoming+outgoing, sea=true, mode=mainland (414.017043ms)
+✔ programming error at exports.generateConnectedRegionFromAnchor preserves map/history and permits recovery (91.128007ms)
+✔ programming error at getCoastalRiverEndpointHexes preserves map/history and permits recovery (100.884218ms)
+✔ programming error at assignWaterPoiLayer preserves map/history and permits recovery (87.802634ms)
+✔ programming error at reconcileRiverCrossings preserves map/history and permits recovery (72.341397ms)
+✔ expected small-region rejection retries then creates one tract (69.935644ms)
+✔ late failure at targetSize=1 preserves state; successful retry clears error (104.507965ms)
+✔ late failure at targetSize=8 preserves state; successful retry clears error (93.54316ms)
+✔ failed regeneration restores replaced region, selection and full undo history (363.845508ms)
+✔ calculates bridge chance from all applicable modifiers (1.186908ms)
+✔ splits non-bridge crossings between ferry and ford with modifiers (0.263957ms)
+✔ fullness three and above selects a ferry from the non-bridge remainder (0.249676ms)
+✔ unchanged old source is checked when new land closes its frontier (414.707081ms)
+✔ unchanged old mouth is checked when new land closes its frontier (180.376105ms)
+✔ RIV-017 closed mouth prefers reachable unexplored land to a new lake (211.893008ms)
+✔ RIV-017 real Mythic tract retains an open upper river instead of inventing an inland source (153.908097ms)
+✔ closed source F=1 has a valid real terminus and keeps old flow (174.561065ms)
+✔ closed source F=3 has a valid real terminus and keeps old flow (105.243524ms)
+✔ closed source F=5 has a valid real terminus and keeps old flow (142.675798ms)
+✔ closed mouth F=1 has a valid real terminus and keeps old flow (119.65359ms)
+✔ closed mouth F=3 has a valid real terminus and keeps old flow (118.220076ms)
+✔ closed mouth F=5 has a valid real terminus and keeps old flow (111.552032ms)
+✔ closed mouth is extended to reachable sea, without changing old edges (131.506951ms)
+✔ real tract handler closes a mouth; save/undo/recovery retain old map and history (138.403402ms)
+✔ insufficient source lake area is an atomic expected rejection, never a broken success (195.869532ms)
+✔ incoming river can finish in another river without changing either old channel (107.361365ms)
+✔ RIV-015/017 real Mythic tract joins compatible incoming and outgoing rivers before making a lake (143.919682ms)
+✔ closing several mouths handles every river, not just the lowest ID (70.171918ms)
+✔ outgoing connector keeps endpoint fullness (0.719353ms)
+✔ reduces a height-one main river upstream when a fullness-one tributary joins it (0.139801ms)
+✔ keeps the existing height-two upstream reduction for any tributary (0.102645ms)
+✔ AUD-01/02 RIV-EX-07/08/15/16 real upstream clicks preserve fixed flows and validate new sources (5006.771004ms)
+✔ AUD-03 RIV-EX-16 lake placement is atomic when actual connected area is insufficient (91.88261ms)
+✔ AUD-04 imported numeric fullness outside 1…5 is rejected without mutating the map (115.274324ms)
+✔ RIV-EX-01/12/13/15 real map expansion validates each extension in all coast modes (7257.204871ms)
+✔ RIV-EX-03/19 adapter solves real sector directions at a junction and preserves region ownership (94.333265ms)
+✔ RIV-EX-08 tract lake source uses actual area and retains exact old downstream flow (110.984125ms)
+✔ RIV-EX-21 lake shared by two regions counts unique hexes and all ports once (114.645646ms)
+✔ RIV-004/005/013 all 125 triples, symmetry and inverse share the accepted relation (14.90416ms)
+✔ RIV-EX-01 / AUD-01 no change at region or height boundary (0.626484ms)
+✔ RIV-EX-02 weak tributary cannot raise 3 (0.317038ms)
+✔ RIV-EX-03 / EX-22 region height two selects 2, lowland selects 3 (0.433683ms)
+✔ RIV-EX-04/05 known downstream values are hard constraints (1.324975ms)
+✔ RIV-EX-06 any tributary can join 5 (1.153708ms)
+✔ RIV-EX-07 / AUD-02 true source always 1, independent of height (0.89598ms)
+✔ RIV-EX-08/17 lake source minimum size, not equality (1.632058ms)
+✔ RIV-EX-09/10/18/23/24 flowing lakes: exhaustive values and sizes (3.122152ms)
+✔ RIV-EX-11 closed lake absorbs the sum once (2.605704ms)
+✔ RIV-EX-12 every fullness may enter sea, never emerge from it (0.456207ms)
+✔ RIV-EX-14 open upstream is not a source (0.218179ms)
+✔ RIV-EX-15 numerical scope: input immutable, fixed values survive JSON roundtrip (0.832634ms)
+✔ RIV-EX-16 numerical scope: actual area one cannot justify drop by two (0.210247ms)
+✔ RIV-EX-19/20 growth downstream, reduced new upstream (0.481997ms)
+✔ RIV-EX-21 multi-inlet/outlet lake uses aggregate budget (3.508765ms)
+✔ RIV-001 / AUD-04 reject invalid numeric values at runtime (7.758987ms)
+✔ RIV-006 / topology: unsupported degree, duplicate ids, dangling edges and cycles (0.463999ms)
+✔ RIV-EX-13 two confluences propagate constraints both ways; order invariant (8.465ms)
+✔ bounded search reports limit, never false impossibility or a partial optimum (0.240512ms)
+✔ calculates rapids chance from the height and fullness threshold table (5.792735ms)
+✔ selects rapids when the roll is below the calculated chance (0.239481ms)
+✔ permits waterfalls at every height away from river starts, lakes, and confluences (1.052575ms)
+✔ calculates waterfall chance from height and river fullness (0.498251ms)
+✔ selects a waterfall only when the roll is below its calculated chance (0.194273ms)
+✔ ROAD-AUD-01 closed exits: 103/settled/mainland (1698.727956ms)
+✔ ROAD-AUD-01 closed exits: 103/wild/mainland (1736.203069ms)
+✔ ROAD-AUD-01 closed exits: 42/settled/coast (936.522852ms)
+✔ ROAD-AUD-01 closed exits: 103/wild/coast (3817.669768ms)
+✔ ROAD-AUD-01 closed exits: 103/settled/coast (3245.651598ms)
+✔ ROAD-AUD-02 adjacent roads remain open until physically joined (109.610297ms)
+✔ ROAD-AUD-03 center can be an incoming road entry (113.672154ms)
+✔ route starts at old endpoint: user map region 3 (332.173253ms)
+✔ route starts at old endpoint: user map region 4 (142.602433ms)
+✔ settled incoming path searches from the old road hex through the new region (94.824676ms)
+✔ two old road endpoints cannot be joined by a segment wholly outside the new region (110.024191ms)
+✔ reject notes null container (3.417007ms)
+✔ reject notes array container (0.394574ms)
+✔ reject notes scalar container (0.351319ms)
+✔ reject notes non-string (0.339721ms)
+✔ reject notes noncanonical key (0.396487ms)
+✔ reject notes orphan (0.340453ms)
+✔ reject notes prototype key (0.377479ms)
+✔ reject road wrong structure (0.522297ms)
+✔ reject fractional axial (0.353933ms)
+✔ reject duplicate region id (0.407193ms)
+✔ reject invalid region enum (0.769118ms)
+✔ reject noncanonical terrain key (0.340043ms)
+✔ reject wrong rotation type (0.58387ms)
+✔ reject wrong scale type (0.540594ms)
+✔ reject unsafe next road counter (0.455005ms)
+✔ reject dangling water POI (0.387393ms)
+✔ supported corpus: lake-reentry-map (12.814858ms)
+✔ supported corpus: sea-pocket-map (7.358324ms)
+✔ supported corpus: terrain-display-map (11.159589ms)
+✔ supported corpus: road-entry-zigzags (1.859781ms)
+✔ generated proposals reject overflow in every allocated ID namespace and counter (0.771843ms)
+✔ imported boundary roadCounter: production continuation stays valid or rolls back whole document (240.325733ms)
+✔ imported boundary regionId: production continuation stays valid or rolls back whole document (420.345176ms)
+✔ imported boundary lakeCounter: production continuation stays valid or rolls back whole document (154.396567ms)
+✔ imported boundary riverId: production continuation stays valid or rolls back whole document (152.611649ms)
+✔ exhausted kingdom ID refuses production start and preserves document and both stacks (759.855783ms)
+✔ notes versions 2/3/4 accept exact text on actual land/water; v4 requires RNG and future versions reject (1.072586ms)
+✔ 3/-3 sea recovery preserves old map, river ends and undo: auto (13081.259956ms)
+✔ 3/-3 sea recovery preserves old map, river ends and undo: mainland (1943.445479ms)
+✔ 3/-3 sea recovery preserves old map, river ends and undo: coast (10912.924269ms)
+✔ exhausted sea recovery and programming errors leave map and history unchanged (4976.609199ms)
+✔ seeded terrain variation is stable and avoids all six neighbours, including negative coordinates (18.27027ms)
+✔ all twenty overlays exist as distinct transparent SVGs; forests use vector canopy without tree overlays (1.541271ms)
+✔ lake shoreline removes shared edges while preserving island edges (2.790403ms)
+✔ one Germanic model spans distinct formations while keeping each name internally consistent (14.923138ms)
+✔ many lakes stay unique in both languages and existing names survive growth and order changes (3.162484ms)
+✔ reroll preserves the model, renames accept paired values and reject duplicates (0.493112ms)
+✔ real map handlers save names, keep old names on growth, and restore them on undo (343.919586ms)
+✔ manual edits to old and regenerated regions survive the region history rollback (327.537895ms)
+✔ tract source stays away from existing sea: coast (1237.426716ms)
+✔ tract source stays away from existing sea: mainland (486.41091ms)
+✔ tract source stays away from existing sea: auto (469.989516ms)
+✔ only the starting contact chooses islands or clearings; persisted choice wins (0.951764ms)
+✔ real tract callback persists woodland style, save validates it and undo restores the original map (364.419678ms)
+✔ water cuts an exterior bank but does not divide the forest interior (0.653164ms)
+✔ lakes do not reshape neighbouring forest banks (0.973856ms)
+✔ R5 consumed regeneration A stays inert after B and undo/redo classic (450.134257ms)
+✔ R5 consumed regeneration A stays inert after B and undo/redo mythic (5578.667694ms)
+✔ R3 late Mythic regeneration failure retains original action and detached inputs (2885.375765ms)
+✔ AC10 recorded action replay classic/add/success (297.350516ms)
+✔ AC10 recorded action replay classic/add/failure (306.82453ms)
+✔ AC10 recorded action replay classic/regenerate/success (356.478948ms)
+✔ AC10 recorded action replay classic/regenerate/failure (329.999083ms)
+✔ AC10 recorded action replay mythic/add/success (14655.893793ms)
+✔ AC10 recorded action replay mythic/add/failure (2646.070766ms)
+✔ AC10 recorded action replay mythic/regenerate/success (11796.197703ms)
+✔ AC10 recorded action replay mythic/regenerate/failure (14573.783246ms)
+✔ AC04 mixed manual content and generation checkpoints classic (190.310614ms)
+✔ AC04 mixed manual content and generation checkpoints mythic (5732.850779ms)
+✔ AC05 classic/programming rollback with redo and next clean control (247.792093ms)
+✔ AC05 classic/constraint rollback with redo and next clean control (1526.784577ms)
+✔ AC05 mythic/programming rollback with redo and next clean control (15207.617589ms)
+✔ AC05 mythic/constraint rollback with redo and next clean control (26648.932286ms)
+✔ AC05 prepare-regenerate error and successful tract fallback preserve exact stream semantics (182.776912ms)
+✔ AC06 names restored before next full world classic (247.282051ms)
+✔ AC06 names restored before next full world mythic (13769.68559ms)
+✔ AC09 consumed Mythic tick remains stale after newer tick and after completion (2505.723111ms)
+fixture continuation test/fixtures/lake-reentry-map.json/classic: committed
+fixture continuation test/fixtures/lake-reentry-map.json/mythic: Error: Не удалось построить регион королевства.
+fixture continuation test/fixtures/sea-pocket-map.json/classic: committed
+fixture continuation test/fixtures/sea-pocket-map.json/mythic: Error: Не удалось соединить выбранный гекс с королевством.
+fixture continuation test/fixtures/terrain-display-map.json/classic: committed
+fixture continuation test/fixtures/terrain-display-map.json/mythic: committed
+fixture continuation test/fixtures/road-entry-zigzags.json/classic: committed
+fixture continuation test/fixtures/road-entry-zigzags.json/mythic: committed
+fixture continuation test/fixtures/import-v2/baseline-empty.json/classic: committed
+fixture continuation test/fixtures/import-v2/baseline-empty.json/mythic: committed
+fixture continuation test/fixtures/import-v2/baseline-classic.json/classic: committed
+fixture continuation test/fixtures/import-v2/baseline-classic.json/mythic: committed
+fixture continuation test/fixtures/import-v2/baseline-mythic.json/classic: committed
+fixture continuation test/fixtures/import-v2/baseline-mythic.json/mythic: committed
+fixture continuation test/fixtures/import-v2/legacy-optionals.json/classic: committed
+fixture continuation test/fixtures/import-v2/legacy-optionals.json/mythic: committed
+fixture continuation test/fixtures/lake-reentry-map.json/classic: committed
+fixture continuation test/fixtures/lake-reentry-map.json/mythic: Error: Не удалось построить регион королевства.
+fixture continuation test/fixtures/sea-pocket-map.json/classic: committed
+fixture continuation test/fixtures/sea-pocket-map.json/mythic: Error: Не удалось соединить выбранный гекс с королевством.
+fixture continuation test/fixtures/terrain-display-map.json/classic: committed
+fixture continuation test/fixtures/terrain-display-map.json/mythic: committed
+fixture continuation test/fixtures/road-entry-zigzags.json/classic: committed
+fixture continuation test/fixtures/road-entry-zigzags.json/mythic: committed
+fixture continuation test/fixtures/import-v2/baseline-empty.json/classic: committed
+fixture continuation test/fixtures/import-v2/baseline-empty.json/mythic: committed
+fixture continuation test/fixtures/import-v2/baseline-classic.json/classic: committed
+fixture continuation test/fixtures/import-v2/baseline-classic.json/mythic: committed
+fixture continuation test/fixtures/import-v2/baseline-mythic.json/classic: committed
+fixture continuation test/fixtures/import-v2/baseline-mythic.json/mythic: committed
+fixture continuation test/fixtures/import-v2/legacy-optionals.json/classic: committed
+fixture continuation test/fixtures/import-v2/legacy-optionals.json/mythic: committed
+fixture continuation test/fixtures/rng-v3/empty.json/classic: committed
+fixture continuation test/fixtures/rng-v3/empty.json/mythic: committed
+fixture continuation test/fixtures/rng-v3/classic.json/classic: committed
+fixture continuation test/fixtures/rng-v3/classic.json/mythic: committed
+fixture continuation test/fixtures/rng-v3/mythic.json/classic: committed
+fixture continuation test/fixtures/rng-v3/mythic.json/mythic: committed
+✔ production document exports RNG and undo restores continuation (329.537278ms)
+✔ production streams/continuation/undo classic/0 (393.257858ms)
+✔ production streams/continuation/undo mythic/0 (42713.29783ms)
+✔ production streams/continuation/undo classic/1 (284.69539ms)
+✔ production streams/continuation/undo mythic/1 (54864.682102ms)
+✔ production streams/continuation/undo classic/123456789 (292.348313ms)
+✔ production streams/continuation/undo mythic/123456789 (36602.007287ms)
+✔ production streams/continuation/undo classic/4294967295 (254.895869ms)
+✔ production streams/continuation/undo mythic/4294967295 (56024.166357ms)
+✔ classic and late Mythic failures restore RNG and both histories (5478.92053ms)
+✔ v2 migration and v3 validation are deterministic and atomic with redo (1822.9837ms)
+✔ regenerate uses current RNG and undo/repeat restores same variant (190.040935ms)
+✔ seed validation, repeated renders, pre-options exception and duplicate pending callback (114.846942ms)
+✔ Mythic regenerate and delete checkpoints restore exact RNG (3844.00037ms)
+✔ R1 stale classic callbacks cannot draw or append a transaction, before or after a render (198.476303ms)
+✔ R2 Mythic regenerate ignores hidden classic size controls and checkpoints pre-action RNG (5750.576486ms)
+✔ entire v2 and rng-v3 fixture manifests roundtrip and continue in both modes (123795.675099ms)
+✔ complete malformed RNG value classes reject atomically with redo (537.659549ms)
+✔ mulberry32 matches independent Python uint32 vectors, both independent streams (1.485677ms)
+✔ saved RNG validation never accepts incomplete/unsupported state (0.293903ms)
+ℹ tests 256
+ℹ suites 0
+ℹ pass 256
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 360210.099096
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> hexcrawl-mvp@0.1.0 build
+> vite build
+
+vite v5.4.21 building for production...
+transforming...
+✓ 61 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   1.35 kB │ gzip:   0.78 kB
+dist/assets/index-CfOvYzO6.css   20.52 kB │ gzip:   4.79 kB
+dist/assets/index-BZOx4CFR.js   973.51 kB │ gzip: 302.83 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 7.91s

@@ -1,0 +1,88 @@
+{
+  "task_id": "HX-BL-023",
+  "stage_id": "E3",
+  "head_sha": "7267843da85afa92e6a31b2b6960cf6e7312db18",
+  "base_sha": "defaa5c24d546e4283430573c2d4e4f3b6194dc0",
+  "verdict": "changes_requested",
+  "findings": [
+    {
+      "id": "HX023-E3-R4",
+      "priority": "P2",
+      "type": "required_check_failure",
+      "title": "Restore the navigation browser gate with an accurate batching assertion",
+      "path": "src/App.tsx",
+      "line": 13658,
+      "related_path": "test/browser/navigation.smoke.mjs:74",
+      "acceptance": [
+        "AC10"
+      ],
+      "status": "confirmed_exact_sha_local_and_ci",
+      "expected": "Required browser job passes while asserting actual single-frame transform batching and44px hit targets.",
+      "actual": "Unmodified navigation smoke reports3 SVG style mutations, expected1. The two new CSS custom-property writes contribute2 records. Independent temporary observer sees exactly1 transform value change, not3.",
+      "evidence": [
+        "navigation-with-browser.log",
+        "navigation-diagnostic.mjs",
+        "navigation-diagnostic.log",
+        "remote-browser-ci.log"
+      ],
+      "requested_change": "Consolidate updates or update the existing observer to measure transform changes precisely; retain batching and44px coverage, run required browser gate on the new SHA. Do not merely raise expected count to3 or claim a performance regression without evidence.",
+      "limitation": "Confirmed CI/test incompatibility blocks AC10. No demonstrated3 transforms per frame, artwork churn, focal regression, or measured performance regression."
+    },
+    {
+      "id": "HX023-E3-R5",
+      "priority": "P2",
+      "type": "acceptance_defect",
+      "title": "Make deletion confirmation controls meet the44px target requirement",
+      "path": "src/App.tsx",
+      "line": 14210,
+      "related_lines": [
+        14213,
+        14214
+      ],
+      "acceptance": [
+        "AC01"
+      ],
+      "status": "reproduced_production_browser",
+      "expected": "Both new destructive confirmation and cancel actions have effective touch targets at least44×44 CSSpx.",
+      "actual": "At1500×1100, Delete=86.1875×34.59375px and Cancel=82.1875×34.59375px. These plain buttons do not receive the min-height44 rule applied to direct-value controls.",
+      "evidence": [
+        "confirmation-probe.mjs",
+        "confirmation-targets.json",
+        "confirmation-browser-results.json",
+        "whole-path-ru-390.png"
+      ],
+      "requested_change": "Apply the44px effective target rule to both confirmation buttons, preserving visible focus, spacing and390px layout. Extend existing browser measurement to include the confirmation state.",
+      "limitation": "Exact measurement is desktop1500×1100. Narrow390 screenshot was inspected visually; no numerical390 measurement is claimed. This is separate from R3 map targets, which pass."
+    }
+  ],
+  "resolved_previous_findings": [
+    {
+      "id": "HX023-E3-R1",
+      "status": "fixed_in_sample",
+      "evidence": [
+        "browser-results.json",
+        "handler-results-v1.json",
+        "check.log"
+      ],
+      "detail": "Suppressed and tract center cases without explicit POI refused; explicit POI accepted; production suppressed-center draft refusal and reset exact. The v1 diagnostic shared alerts array also accumulated later invalid reviewer fixture errors; those are not attributed to R1."
+    },
+    {
+      "id": "HX023-E3-R2",
+      "status": "fixed_in_sample",
+      "evidence": [
+        "browser-results.json",
+        "overlap-desktop.png"
+      ],
+      "detail": "Road1/Road8 same-pair selection has exactly1 pressed map and row; editingRoad8 preservesRoad1. Real keyboard crossing selection retains its exact key."
+    },
+    {
+      "id": "HX023-E3-R3",
+      "status": "fixed_for_direct_map_targets_in_sample",
+      "evidence": [
+        "browser-results.json",
+        "keyboard-focus.png"
+      ],
+      "detail": "Real Tab/Enter/Space, visible focus; road/crossing44px at1.0 and2.4596. Other new panel buttons have separateR5."
+    }
+  ]
+}
