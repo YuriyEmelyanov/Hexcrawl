@@ -17,7 +17,12 @@
   "score_model_path": "agent-work/strategy/score-model.md",
   "backlog_path": "agent-work/backlog.json",
   "approvals_path": "agent-work/approvals.json",
-  "execution_blocker": null,
+  "execution_blocker": {
+    "scope": "E4 implementation only; analyst correction ready",
+    "finding_id": "HX023-E4-SPEC-01",
+    "responsible": "business_analyst",
+    "handoff_ref": "agent-work/handoffs/2026-10-31-HX-BL-023-E4-migration-contract.json"
+  },
   "cleanup_status": "merged_pr470",
   "project_attachments_cleanup": {
     "status": "detached_by_owner",
@@ -26,10 +31,10 @@
   },
   "lessons_path": "agent-work/lessons.md",
   "plan_id": "2026-10-31-HX-BL-023-E4-analyst",
-  "run_id": "2026-10-31-developer-release-PR482",
+  "run_id": "2026-10-31-strategist-score-PR482-8b1bb56",
   "plan_revision": 1,
   "baseline_sha": "8f7d17266c53e31428da7c0da6dbbf1afe01d035",
-  "status": "PR482_published_score_update_pending",
+  "status": "PR482_score_update_completed_E4_specification_correction_ready",
   "planning_for": "2026-10-31",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-10-25",
@@ -45,22 +50,15 @@
   "schedule_start_at": "2026-10-24T01:00:00+03:00",
   "schedule_frequency": "hourly",
   "process_path": "agent-work/process.md",
-  "current_role": "developer",
-  "next_role": "strategist",
+  "current_role": "strategist",
+  "next_role": "business_analyst",
   "current_task_id": "HX-BL-023",
   "spec_path": "agent-work/specs/HX-BL-023-E4.md",
   "spec_version": "E4-1.0",
-  "result_path": "agent-work/results/2026-10-31-developer-release-PR482.json",
+  "result_path": "agent-work/results/2026-10-31-strategist-score-PR482-8b1bb56.json",
   "handoff_commit_sha": "9b5946df36c99f49363830cab478d46d10cacd04",
-  "active_claim": {
-    "run_id": "2026-10-31-strategist-score-PR482-8b1bb56",
-    "role": "strategist",
-    "task_id": "HX-BL-023",
-    "stage_id": "PR482_score_update",
-    "status": "in_progress",
-    "started_at": "2026-10-31T11:56:00.414Z"
-  },
-  "next_step": "Сверить опубликованный PR482 с score_assessment1.2, идемпотентно записать событие в текущую оценку/историю; затем вернуть очередь к утверждённому уточнению E4.",
+  "active_claim": null,
+  "next_step": "Уточнить совместимость E4 по HX023-E4-SPEC-01: определить однозначный исход старого импорта с hex=neighborHex и последующего v5 round-trip; обновить миграционные требования/AC05, затем вернуть программисту PR481.",
   "owner_decisions_needed": [
     {
       "task_id": "HX-BL-003",
@@ -123,7 +121,7 @@
     "approval_ref": "owner-release-2026-10-31-PR482-4a46f90",
     "started_at": "2026-10-31T11:32:53.076Z",
     "published": true,
-    "score_update_status": "pending",
+    "score_update_status": "completed",
     "next_step": "Сверить опубликованный PR482 с score_assessment1.2, идемпотентно записать событие в текущую оценку/историю; затем вернуть очередь к утверждённому уточнению E4.",
     "automation_health": {
       "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
@@ -219,16 +217,17 @@
     ],
     "nonblocking_errors": [
       "Job logs were unavailable while job was running (404); final completed jobs/build/deploy success verified."
-    ]
+    ],
+    "score_update_result_ref": "agent-work/results/2026-10-31-strategist-score-PR482-8b1bb56.json"
   },
-  "score_update_status": "pending",
+  "score_update_status": "completed",
   "score_update_task_id": "HX-BL-023",
   "score_update_release_sha": "8b1bb56ab45762e739f2048bccd237af05810c40",
   "score_process_decision_ref": "owner-decision-2026-10-24-score-responsibilities",
   "score_assessment_ref": "agent-work/evidence/HX-BL-023-panel-walkthrough/reviewer.json#score_assessment",
-  "role_selection_reason": "Mandatory immediate post-publication score event PR482; release handoff requires completion before returning to E4 specification correction.",
-  "score_update_result_ref": "agent-work/results/2026-10-31-strategist-score-HX-BL-023-E2-defaa5c.json",
-  "score_update_completed_at": "2026-10-30T22:31:49.807Z",
+  "role_selection_reason": "Mandatory nearest-free post-release event reconciliation; claims free, PR482 publication pending score update.",
+  "score_update_result_ref": "agent-work/results/2026-10-31-strategist-score-PR482-8b1bb56.json",
+  "score_update_completed_at": "2026-10-31T11:57:06.096Z",
   "score_update_delta": null,
   "score_history_path": "agent-work/score/history.json",
   "next_task_proposal_ref": null,
@@ -250,16 +249,15 @@
   "automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-10-31T11:32:53.076Z",
+      "checked_at": "2026-10-31T11:56:00.414Z",
       "is_enabled": true
     },
     "end": {
-      "checked_at": "2026-10-31T11:47:25.358Z",
+      "checked_at": "2026-10-31T11:57:06.096Z",
       "is_enabled": true
     },
     "restoration_performed": false,
-    "errors": [],
-    "limitation": "Observed at peek times only."
+    "errors": []
   },
   "open_findings": [],
   "current_review_score_assessment_status": "not_applicable_specification_forecast_unknown",
@@ -930,7 +928,7 @@
     "next_step": "Решить отдельно узкий cleanup AUD-02/03/04; готовую спецификацию024 не задерживать."
   },
   "owner_decisions_note": "Подтвердить предложенную адресную замену большого незавершённого historygate для003. HX-BL-024 уже утверждён, повторного согласования задачи не нужно; выпуск474 отдельно.",
-  "updated_at": "2026-10-31T11:47:25.358Z",
+  "updated_at": "2026-10-31T11:57:06.096Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
     "stage_id": "V3",
@@ -1266,7 +1264,7 @@
     "nav_status_success": 24,
     "png_captured": 4
   },
-  "evidence_ref": "agent-work/evidence/release-PR482-8b1bb56",
+  "evidence_ref": "agent-work/evidence/score-PR482-8b1bb56",
   "static_diagnosis_handoff": {
     "status": "coordinated_nextstage_proposed",
     "result_ref": "agent-work/results/2026-10-27-developer-HX-BL-003-static-diagnosis.json",
@@ -1531,7 +1529,7 @@
   "historical_unverified_weight": 70,
   "historical_score_model_version": "1.1",
   "score_update_awarded_points": 0,
-  "handoff_ref": "agent-work/handoffs/2026-10-31-PR482-release-score.json",
+  "handoff_ref": "agent-work/handoffs/2026-10-31-HX-BL-023-E4-migration-contract.json",
   "previous_feedback_handoff": {
     "task_id": "HX-FB-001",
     "register": "agent-work/feedback.json",
@@ -2100,12 +2098,13 @@
   },
   "next_product_recommendation": {
     "task_id": "HX-BL-023",
-    "stage_id": "E3",
-    "status": "changes_requested",
-    "next_role": "developer",
+    "stage_id": "E4",
+    "status": "ready_for_specification_correction",
+    "next_role": "business_analyst",
     "execution_allowed": true,
-    "handoff_ref": "agent-work/handoffs/2026-10-31-HX-BL-023-E3-R4-R5-fix.json",
-    "reason": "Two bounded E3 corrections R4/R5 before independent review newSHA"
+    "handoff_ref": "agent-work/handoffs/2026-10-31-HX-BL-023-E4-migration-contract.json",
+    "reason": "Already-approved highest-priority editor continuation; existing reproduction identifies migration contradiction. No new product proposal/approval needed.",
+    "expected_result": "Однозначный контракт старого импорта и v5 round-trip без молчаливой потери данных, затем возобновление PR481."
   },
   "owner_editor_scope": {
     "decision_ref": "owner-decision-2026-10-28-editor-functional-scope",
@@ -2426,35 +2425,27 @@
   "previous_score_update_result_ref": "agent-work/results/2026-10-29-strategist-score-HX-BL-023-E1-8f7d172.json",
   "next_approved_stage": "E4",
   "next_approved_stage_handoff_ref": "agent-work/handoffs/2026-10-31-HX-BL-023-E4-continue.json",
-  "authorization_status": {
-    "E3": "accepted_independently",
-    "E3_release": "separate_owner_permission_required",
-    "process_improvements": "proposal_only",
-    "Cairn2": "proposal_only",
-    "design_response": "nonblocking",
-    "E4": "approved_task_specification_correction_allowed",
-    "E4_release": "separate_owner_permission_required"
-  },
-  "completed_at": "2026-10-31T11:47:25.358Z",
+  "authorization_status": "existing_E4_task_approved; bounded_specification_correction_allowed",
+  "completed_at": "2026-10-31T11:57:06.096Z",
   "score_changed": false,
   "next_stage_id": "E4",
   "score_evidence_updated": true,
-  "current_stage_id": "panel_layout_release",
+  "current_stage_id": "panel_layout_score_update",
   "implementation_started": true,
   "current_stage_release_approved": false,
   "review_ready": false,
   "current_stage_ui_status": "proposal_shown_actual_pending_integration",
   "completed_claim": {
-    "run_id": "2026-10-31-developer-release-PR482",
-    "role": "developer",
+    "run_id": "2026-10-31-strategist-score-PR482-8b1bb56",
+    "role": "strategist",
     "task_id": "HX-BL-023",
-    "stage_id": "panel_layout_release",
-    "started_at": "2026-10-31T11:32:53.076Z",
+    "stage_id": "PR482_score_update",
     "status": "completed",
-    "completed_at": "2026-10-31T11:47:25.358Z",
-    "result_ref": "agent-work/results/2026-10-31-developer-release-PR482.json"
+    "started_at": "2026-10-31T11:56:00.414Z",
+    "completed_at": "2026-10-31T11:57:06.096Z",
+    "result_ref": "agent-work/results/2026-10-31-strategist-score-PR482-8b1bb56.json"
   },
-  "evidence_commit_sha": "69131988372e6b153f422bb8375c40c685c9edb3",
+  "evidence_commit_sha": "75cf1e2394c1915f51eb07b8574318757f25c764",
   "finding_ids": [],
   "current_release_package_ref": "agent-work/handoffs/2026-10-31-HX-BL-023-E3-release-package-d7bb38f.json",
   "current_stage_ui_preview": {
