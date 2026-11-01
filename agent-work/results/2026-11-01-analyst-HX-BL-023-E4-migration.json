@@ -1,0 +1,115 @@
+{
+  "run_id": "2026-11-01-analyst-HX-BL-023-E4-migration",
+  "role": "business_analyst",
+  "task_id": "HX-BL-023",
+  "stage_id": "E4",
+  "status": "specification_corrected_ready_for_development",
+  "started_at": "2026-11-01T05:05:17.088Z",
+  "completed_at": "2026-11-01T05:10:46.980Z",
+  "role_selection_reason": "Actual approved queue: no active claim; PR480/PR483 accepted but lack owner release permission; E4 foundation has a concrete migration contradiction and bounded analyst handoff. Resume decision supersedes historical pause fields.",
+  "authorization_ref": "owner-decision-2026-10-28-editor-additional-functions-approved",
+  "resume_authority_ref": "agent-work/results/2026-11-01-owner-resume-four-hourly.json",
+  "spec_ref": "agent-work/specs/HX-BL-023-E4.md",
+  "spec_version": "E4-1.1",
+  "spec_blob_sha": "55010a47fedee34537e7d1d1198fa0f78f3f6e4b",
+  "spec_commit_sha": "671af1f559ca347395b97bff82eced65f8fd75ef",
+  "finding_id": "HX023-E4-SPEC-01",
+  "finding_status": "resolved_in_specification_implementation_pending",
+  "result": "Legacy same-hex obstacle is rejected atomically with indexed error; valid legacy keeps geometry/order/kingdom through deterministic ID migration and v5 round-trip independently of new placement rules. No silent data repair or loss.",
+  "branch": "agent/hx023-e4-barriers",
+  "pr": 481,
+  "head_sha": "1bd3d973e11001d18f91718ee9c8b98bbfbf3758",
+  "product_implementation_changed": false,
+  "published": false,
+  "release_allowed": false,
+  "checks": {
+    "reproduction": "Re-ran original single-case production-handler probe on1bd3d97: old import accepts same hex, exportv4 and foundation migration preserve it; exit0.",
+    "corpus": {
+      "ref": "agent-work/evidence/HX-BL-023-E4-migration-contract-1.1/analyst-corpus.json",
+      "fixtures": 8,
+      "obstacles": 48,
+      "structural_adjacency_failures": 0
+    },
+    "save_readback": "Spec E4-1.1 exact content and backlog expected state verified",
+    "limitations": [
+      "Finite v2 fixture corpus; no full historical save claim",
+      "E4 v5 import/rollback/UI still implementation work; no new implementation or independent acceptance claimed",
+      "Initial source search used two nonexistent suite names; actual suites located and used in handoff",
+      "An orchestration structuredClone reference failed before any write; corrected with JSON clone"
+    ]
+  },
+  "score": {
+    "model_version": "1.2",
+    "baseline_ref": "agent-work/score/current-score.json",
+    "baseline_blob": "3c807e6d514fcefb6726e82db4f6d28091a8a509",
+    "criterion_ids": [
+      "S02-C02",
+      "S03-C05",
+      "S04-C04",
+      "S09-C04",
+      "S01-C04",
+      "S03-C01"
+    ],
+    "before_grade": null,
+    "before_points": null,
+    "expected_after": null,
+    "delta": null,
+    "status": "unknown_spec_forecast_only",
+    "awarded_points": 0,
+    "confirmed_points": null,
+    "unverified_weight": 1000,
+    "criteria_and_evidence_ref": "agent-work/specs/HX-BL-023-E4.md#score12-и-evidence",
+    "model_unchanged": true
+  },
+  "test_change_summary": {
+    "base_sha": "1bd3d973e11001d18f91718ee9c8b98bbfbf3758",
+    "head_sha": "1bd3d973e11001d18f91718ee9c8b98bbfbf3758",
+    "added": 0,
+    "removed": 0,
+    "modified": 0,
+    "suite": "No product or permanent runner edits; temporary analyst diagnostics separate",
+    "scenario_risk": "Migration contract contradiction",
+    "reuse_or_new_reason": "Existing mapTransactions/saveSafety/manualObstacles/save-history cover required paths; bounded extensions handed to developer",
+    "count_source": "No product branch writes; identical base/head",
+    "executed": {
+      "temporary_original_reproduction": 1,
+      "temporary_manifest_diagnostic": 1,
+      "permanent_suites": 0
+    }
+  },
+  "next_role": "developer",
+  "next_step": "Программист продолжает PR481 по E4-1.1: подключает v5, транзакции и фактический UI; затем передаёт точный SHA независимому проверяющему.",
+  "handoff_ref": "agent-work/handoffs/2026-11-01-HX-BL-023-E4-development.json",
+  "owner_decisions_needed": [
+    {
+      "pr": 483,
+      "head_sha": "d0f9850a15954c32a17eaa101beffcd17fe60f83",
+      "decision": "publication_permission",
+      "status": "awaiting_owner"
+    },
+    {
+      "pr": 480,
+      "head_sha": "d7bb38fbcee367621e5f5ce9fbaf369fbc775e0a",
+      "decision": "publication_permission_after_integration_review",
+      "status": "not_granted"
+    }
+  ],
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-01T05:05:17.088Z",
+      "is_enabled": true,
+      "status": "checked"
+    },
+    "end": {
+      "checked_at": "2026-11-01T05:10:46.980Z",
+      "is_enabled": true,
+      "status": "checked"
+    },
+    "restoration_performed": false,
+    "errors": [],
+    "limitation": "Only status observed at peek times; later service changes not predicted."
+  },
+  "lessons_applied": "Existing legacy acceptance boundary lesson: separate structural validity from new placement policy, preserve negative evidence and avoid full test audit.",
+  "shared_state_safety": "Only E4 fields/recommendation in fresh backlog updated; all other tasks preserved. latest will receive additive pointer only; older result/claim/owner fields preserved."
+}
