@@ -3,9 +3,9 @@
   "model_version": "1.2",
   "model_path": "agent-work/strategy/score-model.md",
   "model_blob_sha": "a18ee60c9c3b60ab9d39a1a23f67c26ae328a002",
-  "latest_release_sha": "8b1bb56ab45762e739f2048bccd237af05810c40",
-  "last_score_update_at": "2026-10-31T11:57:06.096Z",
-  "checked_on": "2026-10-31",
+  "latest_release_sha": "cd4bd5402ffa92800710f5d4ded32cb1baea774b",
+  "last_score_update_at": "2026-11-01T08:57:30.581Z",
+  "checked_on": "2026-11-01",
   "scope": "Exact E1 UI3 release accounting only;4 independent insufficient_evidence outcomes, no full audit/new grades",
   "summary": {
     "confirmed_points": null,
@@ -258,14 +258,14 @@
       "method": "No full model1.2 grade assessment; historical1.1 preserved separately",
       "last_release_assessment": {
         "task_id": "HX-BL-023",
-        "stage_id": "panel_layout_correction",
+        "stage_id": "equal_row_spacing_release",
         "model_version": "1.2",
         "model_blob_sha": "a18ee60c9c3b60ab9d39a1a23f67c26ae328a002",
         "criterion_id": "S03-C01",
         "weight": 25,
-        "release_sha": "8b1bb56ab45762e739f2048bccd237af05810c40",
-        "reviewed_sha": "4a46f90be9a0eec795107227d4f3f7af8a417305",
-        "release_tree_sha": "3cdad0ef6793096807b12ed8c31c7152f23f1210",
+        "release_sha": "cd4bd5402ffa92800710f5d4ded32cb1baea774b",
+        "reviewed_sha": "d0f9850a15954c32a17eaa101beffcd17fe60f83",
+        "release_tree_sha": "cee555aed9a60cafb44fe0857db05257b8b801ac",
         "before": {
           "grade": null,
           "points": null,
@@ -280,29 +280,51 @@
         "awarded_points": 0,
         "status": "insufficient_evidence_no_award",
         "application_status": "completed",
-        "idempotency_key": "HX-BL-023|8b1bb56ab45762e739f2048bccd237af05810c40|1.2|S03-C01",
-        "assessment_ref": "agent-work/evidence/HX-BL-023-panel-walkthrough/reviewer.json#score_assessment",
-        "release_ref": "agent-work/results/2026-10-31-developer-release-PR482.json",
-        "evidence_ref": "agent-work/evidence/HX-BL-023-panel-walkthrough/",
-        "publication_ref": "agent-work/evidence/release-PR482-8b1bb56/publication.json",
-        "package_bridge": "Fresh API reads: merge and reviewed trees equal3cdad0e; deployment41197365941 success at releaseSHA; live evidence matched exact JS/CSS and actual panel behavior.",
-        "method": "Independent source diff and bounded real Chromium UI diagnostic in separate worktree; inspect resulting screenshots and geometry",
-        "quality": "Panel edit access improved; full biome/POI/water/region-membership validity and persistence not independently audited here",
-        "breadth": "Game applicability and top5/10/20 coverage unverified",
+        "idempotency_key": "HX-BL-023|cd4bd5402ffa92800710f5d4ded32cb1baea774b|1.2|S03-C01",
+        "assessment_ref": "agent-work/evidence/HX-BL-023-equal-spacing/reviewer.json#score_assessment",
+        "release_ref": "agent-work/results/2026-11-01-developer-release-PR483.json",
+        "publication_ref": "agent-work/evidence/release-PR483-cd4bd54/publication.json",
+        "package_bridge": "Fresh GitHub API: release and reviewed trees equal cee555a; successful deployment41282658601 on exact release SHA; retained live assets/row geometry verification.",
+        "method": {
+          "source_diff": "Only .direct-value min-height:0 and line-height:inherit; no positioned invisible hitboxes; standalone direct-mode retains44px.",
+          "independent_build": "npm run build passed at exact reviewed SHA",
+          "browser": "Independent Chromium production preview using /workspace/browser-tmp/chromium",
+          "matrix": [
+            "ru1500",
+            "ru390",
+            "en1500",
+            "en390"
+          ],
+          "geometry": "12 common rows:9 primary plus2 nearby rivers and1 crossing, identical text/top/height in view/edit in every case; primary height19px and row pitch27px.",
+          "targets": "9 inline targets per case; positive height, min-height0px, position:static; zero pairwise rectangle overlaps.",
+          "standalone": "44x44 in all4 cases",
+          "keyboard": "Enter enters mode and name editor; Escape cancels; Enter commits name; Space activates Done; editable controls removed after Done.",
+          "visual": "Inspected reviewer-en-390.png and reviewer-ru-1500.png; no overflow/overlap observed.",
+          "horizontalOverflow": false,
+          "evidence": [
+            "reviewer-measurements.json",
+            "reviewer-probe.mjs",
+            "reviewer-ru-1500.png",
+            "reviewer-ru-390.png",
+            "reviewer-en-1500.png",
+            "reviewer-en-390.png"
+          ]
+        },
+        "quality": "Narrow UI check on exact SHA: view/edit row geometry, nonoverlapping inline controls, standalone44px and keyboard edit/cancel/commit/Done passed; full criterion quality remains unverified.",
+        "breadth": {
+          "ui": "RU/EN at1500px and390px on production Chromium fixture",
+          "games": "unverified"
+        },
+        "evidence": "UI spacing and keyboard name editing remain usable; no new biome/POI/water/region-membership validity/persistence assessment.",
         "limitations": [
-          "Cosmetic/access improvement and narrow UI checks do not establish criterion grade; no double counting",
-          "Headless Chromium only; no physical phone, touch, Safari or Firefox claim",
-          "Video is desktop only;390px states and scroll measured separately",
-          "Native title verified as attribute; actual browser-chrome tooltip not captured",
-          "Some emoji render as missing-glyph squares, disclosed in walkthrough",
-          "Only6 sampled video frames inspected, with full action source and independent runtime assertions",
-          "Full npm check/browser/world-random not rerun by this reviewer; prior review and root own those checks",
-          "Temporary missing default browser cache prevented initial runtime attempt; retained Chromium fallback succeeded",
-          "User-visible delivery in current chat and publication permission remain root/owner responsibilities; reviewer does not set shown_in_chat",
-          "PR480/481 excluded; no product files, operational branch, shared claim, automation settings, merge or deployment changed"
+          "Bounded CSS/UI correction only; full npm run check and existing save-history lifecycle belong to coordinator validation and were not independently rerun here.",
+          "Production Chromium fixture test, not real touch-device or user study.",
+          "Empty GM notes appear only in edit mode by existing behavior, so new edit-only content is not treated as a common row; existing draft input expansion is outside unchanged view/edit row comparison.",
+          "Narrow CSS/UI verification only; games breadth and full model1.2 criterion conditions were not assessed.",
+          "Before/after grade and points remain null/unverified; arithmetic delta is unknown, confirmed points awarded are zero."
         ],
-        "applied_at": "2026-10-31T11:57:06.096Z",
-        "result_ref": "agent-work/results/2026-10-31-strategist-score-PR482-8b1bb56.json"
+        "applied_at": "2026-11-01T08:57:30.581Z",
+        "result_ref": "agent-work/results/2026-11-01-strategist-score-PR483-cd4bd54.json"
       }
     },
     {
@@ -765,14 +787,14 @@
       "method": "No full model1.2 grade assessment; historical1.1 preserved separately",
       "last_release_assessment": {
         "task_id": "HX-BL-023",
-        "stage_id": "panel_layout_correction",
+        "stage_id": "equal_row_spacing_release",
         "model_version": "1.2",
         "model_blob_sha": "a18ee60c9c3b60ab9d39a1a23f67c26ae328a002",
         "criterion_id": "S09-C04",
         "weight": 10,
-        "release_sha": "8b1bb56ab45762e739f2048bccd237af05810c40",
-        "reviewed_sha": "4a46f90be9a0eec795107227d4f3f7af8a417305",
-        "release_tree_sha": "3cdad0ef6793096807b12ed8c31c7152f23f1210",
+        "release_sha": "cd4bd5402ffa92800710f5d4ded32cb1baea774b",
+        "reviewed_sha": "d0f9850a15954c32a17eaa101beffcd17fe60f83",
+        "release_tree_sha": "cee555aed9a60cafb44fe0857db05257b8b801ac",
         "before": {
           "grade": null,
           "points": null,
@@ -787,29 +809,51 @@
         "awarded_points": 0,
         "status": "insufficient_evidence_no_award",
         "application_status": "completed",
-        "idempotency_key": "HX-BL-023|8b1bb56ab45762e739f2048bccd237af05810c40|1.2|S09-C04",
-        "assessment_ref": "agent-work/evidence/HX-BL-023-panel-walkthrough/reviewer.json#score_assessment",
-        "release_ref": "agent-work/results/2026-10-31-developer-release-PR482.json",
-        "evidence_ref": "agent-work/evidence/HX-BL-023-panel-walkthrough/",
-        "publication_ref": "agent-work/evidence/release-PR482-8b1bb56/publication.json",
-        "package_bridge": "Fresh API reads: merge and reviewed trees equal3cdad0e; deployment41197365941 success at releaseSHA; live evidence matched exact JS/CSS and actual panel behavior.",
-        "method": "Independent source diff and bounded real Chromium UI diagnostic in separate worktree; inspect resulting screenshots and geometry",
-        "quality": "No data mutation added by layout diff; comprehensive import atomicity, reversibility and lossless roundtrip not independently audited here",
-        "breadth": "Technical criterion, no artificial20-game requirement",
+        "idempotency_key": "HX-BL-023|cd4bd5402ffa92800710f5d4ded32cb1baea774b|1.2|S09-C04",
+        "assessment_ref": "agent-work/evidence/HX-BL-023-equal-spacing/reviewer.json#score_assessment",
+        "release_ref": "agent-work/results/2026-11-01-developer-release-PR483.json",
+        "publication_ref": "agent-work/evidence/release-PR483-cd4bd54/publication.json",
+        "package_bridge": "Fresh GitHub API: release and reviewed trees equal cee555a; successful deployment41282658601 on exact release SHA; retained live assets/row geometry verification.",
+        "method": {
+          "source_diff": "Only .direct-value min-height:0 and line-height:inherit; no positioned invisible hitboxes; standalone direct-mode retains44px.",
+          "independent_build": "npm run build passed at exact reviewed SHA",
+          "browser": "Independent Chromium production preview using /workspace/browser-tmp/chromium",
+          "matrix": [
+            "ru1500",
+            "ru390",
+            "en1500",
+            "en390"
+          ],
+          "geometry": "12 common rows:9 primary plus2 nearby rivers and1 crossing, identical text/top/height in view/edit in every case; primary height19px and row pitch27px.",
+          "targets": "9 inline targets per case; positive height, min-height0px, position:static; zero pairwise rectangle overlaps.",
+          "standalone": "44x44 in all4 cases",
+          "keyboard": "Enter enters mode and name editor; Escape cancels; Enter commits name; Space activates Done; editable controls removed after Done.",
+          "visual": "Inspected reviewer-en-390.png and reviewer-ru-1500.png; no overflow/overlap observed.",
+          "horizontalOverflow": false,
+          "evidence": [
+            "reviewer-measurements.json",
+            "reviewer-probe.mjs",
+            "reviewer-ru-1500.png",
+            "reviewer-ru-390.png",
+            "reviewer-en-1500.png",
+            "reviewer-en-390.png"
+          ]
+        },
+        "quality": "Narrow UI check on exact SHA: view/edit row geometry, nonoverlapping inline controls, standalone44px and keyboard edit/cancel/commit/Done passed; full criterion quality remains unverified.",
+        "breadth": {
+          "ui": "RU/EN at1500px and390px on production Chromium fixture",
+          "games": "unverified"
+        },
+        "evidence": "CSS-only production change; name cancel/commit checked, but no independent import atomicity, destructive-action reversal or round-trip corpus assessment.",
         "limitations": [
-          "No safety points from cosmetic changes; main lifecycle execution remains separately owned by root",
-          "Headless Chromium only; no physical phone, touch, Safari or Firefox claim",
-          "Video is desktop only;390px states and scroll measured separately",
-          "Native title verified as attribute; actual browser-chrome tooltip not captured",
-          "Some emoji render as missing-glyph squares, disclosed in walkthrough",
-          "Only6 sampled video frames inspected, with full action source and independent runtime assertions",
-          "Full npm check/browser/world-random not rerun by this reviewer; prior review and root own those checks",
-          "Temporary missing default browser cache prevented initial runtime attempt; retained Chromium fallback succeeded",
-          "User-visible delivery in current chat and publication permission remain root/owner responsibilities; reviewer does not set shown_in_chat",
-          "PR480/481 excluded; no product files, operational branch, shared claim, automation settings, merge or deployment changed"
+          "Bounded CSS/UI correction only; full npm run check and existing save-history lifecycle belong to coordinator validation and were not independently rerun here.",
+          "Production Chromium fixture test, not real touch-device or user study.",
+          "Empty GM notes appear only in edit mode by existing behavior, so new edit-only content is not treated as a common row; existing draft input expansion is outside unchanged view/edit row comparison.",
+          "Narrow CSS/UI verification only; games breadth and full model1.2 criterion conditions were not assessed.",
+          "Before/after grade and points remain null/unverified; arithmetic delta is unknown, confirmed points awarded are zero."
         ],
-        "applied_at": "2026-10-31T11:57:06.096Z",
-        "result_ref": "agent-work/results/2026-10-31-strategist-score-PR482-8b1bb56.json"
+        "applied_at": "2026-11-01T08:57:30.581Z",
+        "result_ref": "agent-work/results/2026-11-01-strategist-score-PR483-cd4bd54.json"
       }
     },
     {
@@ -888,18 +932,18 @@
   },
   "release_event": {
     "task_id": "HX-BL-023",
-    "stage_id": "panel_layout_correction",
-    "pr": 482,
-    "release_sha": "8b1bb56ab45762e739f2048bccd237af05810c40",
-    "reviewed_sha": "4a46f90be9a0eec795107227d4f3f7af8a417305",
+    "stage_id": "equal_row_spacing_release",
+    "pr": 483,
+    "release_sha": "cd4bd5402ffa92800710f5d4ded32cb1baea774b",
+    "reviewed_sha": "d0f9850a15954c32a17eaa101beffcd17fe60f83",
     "model_version": "1.2",
     "status": "completed",
-    "assessment_ref": "agent-work/evidence/HX-BL-023-panel-walkthrough/reviewer.json#score_assessment",
-    "result_ref": "agent-work/results/2026-10-31-strategist-score-PR482-8b1bb56.json",
+    "assessment_ref": "agent-work/evidence/HX-BL-023-equal-spacing/reviewer.json#score_assessment",
+    "result_ref": "agent-work/results/2026-11-01-strategist-score-PR483-cd4bd54.json",
     "awarded_points": 0,
     "delta_points": null,
-    "reason": "Both bounded assessments remain unverified. Cosmetic panel correction does not establish full hex-editing or data-safety grades; aggregate remains unknown, not zero.",
-    "applied_at": "2026-10-31T11:57:06.096Z"
+    "reason": "Independent bounded spacing/keyboard checks do not establish full criterion grades; all50 remain unverified. No numeric total invented.",
+    "applied_at": "2026-11-01T08:57:30.581Z"
   },
   "history_ref": "agent-work/score/history.json",
   "market_cohort_update": {
@@ -913,15 +957,17 @@
   },
   "previous_release_event": {
     "task_id": "HX-BL-023",
-    "stage_id": "E2_direct_edit",
-    "release_sha": "defaa5c24d546e4283430573c2d4e4f3b6194dc0",
-    "reviewed_sha": "a99c299f0648c2e5c1d65173bdeca50061dcc901",
+    "stage_id": "panel_layout_correction",
+    "pr": 482,
+    "release_sha": "8b1bb56ab45762e739f2048bccd237af05810c40",
+    "reviewed_sha": "4a46f90be9a0eec795107227d4f3f7af8a417305",
+    "model_version": "1.2",
     "status": "completed",
-    "assessment_ref": "agent-work/evidence/review-HX-BL-023-a99c299/score_assessment.json",
-    "result_ref": "agent-work/results/2026-10-31-strategist-score-HX-BL-023-E2-defaa5c.json",
+    "assessment_ref": "agent-work/evidence/HX-BL-023-panel-walkthrough/reviewer.json#score_assessment",
+    "result_ref": "agent-work/results/2026-10-31-strategist-score-PR482-8b1bb56.json",
     "awarded_points": 0,
     "delta_points": null,
-    "reason": "Six bounded E2 assessments remain unverified; aggregate unknown, not zero.",
-    "applied_at": "2026-10-30T22:31:49.807Z"
+    "reason": "Both bounded assessments remain unverified. Cosmetic panel correction does not establish full hex-editing or data-safety grades; aggregate remains unknown, not zero.",
+    "applied_at": "2026-10-31T11:57:06.096Z"
   }
 }
