@@ -14194,7 +14194,7 @@ export function App() {
         aria-label={`${language==='ru'?'Ребро':'Edge'} ${selectedHexKey} → ${hexKey(c.neighborHex)}`}
         onClick={()=>editObstacleDocument(c.edit,obstacleDraft)}>
         {hexKey(c.neighborHex)} · {c.reason??(c.kingdomId===undefined?(language==='ru'?'без королевства':'no kingdom'):`${language==='ru'?'королевство':'kingdom'} ${c.kingdomId}`)}</button>)}
-      <button type="button" className="secondary" onClick={()=>updateObstacleDraft(null)}>{language==='ru'?'Отменить выбор':'Cancel choice'}</button>
+      <button autoFocus type="button" className="secondary" onClick={()=>updateObstacleDraft(null)}>{language==='ru'?'Отменить выбор':'Cancel choice'}</button>
     </>}
   </div>:null;
   const draftError = (ru:string,en:string) => {setEditError(language==='ru'?ru:en);return false;};
