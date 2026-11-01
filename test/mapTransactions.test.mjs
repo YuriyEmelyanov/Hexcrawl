@@ -165,6 +165,29 @@ test('v5 obstacle IDs and counter survive migration, round-trip and history; inv
   h.render().redoMap();assert.deepEqual(stable(h.render()),normalized);
   const resetBefore=stable(h.render());h.render().resetMap();assert.equal(stable(h.render()).counters.nextObstacleId,1);
   h.render().undoMap();assert.deepEqual(stable(h.render()),resetBefore);
+  // Actual App commands reuse the prepared context and shared transaction history.
+  h.render().setEditMode(true);
+  let choice;
+  for(const region of h.render().regions)for(const hex of region.hexes){
+    if(choice)break;h.render().setSelectedHex(hex);h.render().startObstacleChoice(null);
+    choice=h.render().obstacleChoices.find(c=>!c.reason);
+  }
+  assert.ok(choice,'fixture has an available dry free edge');
+  const addBefore=stable(h.render()),allocated=addBefore.counters.nextObstacleId;
+  assert.equal(h.render().editObstacleDocument(choice.edit,h.render().obstacleDraft),true);
+  const added=stable(h.render());assert.equal(added.counters.nextObstacleId,allocated+1);
+  assert.equal(added.map.obstacles.at(-1).id,allocated);assertUndoRedo(h,addBefore,added);
+  h.render().startObstacleChoice(allocated);
+  const source=added.map.obstacles.at(-1);
+  const noOpBefore=serial(h.render().captureDocument()),noOpStacks=serial([h.render().undoHistory,h.render().redoHistory]);
+  assert.equal(h.render().editObstacleDocument({type:'move',id:allocated,hex:source.hex,neighborHex:source.neighborHex},h.render().obstacleDraft),true);
+  assert.deepEqual(serial(h.render().captureDocument()),noOpBefore);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),noOpStacks);
+  h.render().startObstacleChoice(allocated);
+  const move=h.render().obstacleChoices.find(c=>!c.reason&&JSON.stringify(c.edit.neighborHex)!==JSON.stringify(source.neighborHex));assert.ok(move);
+  assert.equal(h.render().editObstacleDocument(move.edit,h.render().obstacleDraft),true);
+  const moved=stable(h.render());assert.equal(moved.counters.nextObstacleId,allocated+1);assert.equal(moved.map.obstacles.at(-1).id,allocated);assertUndoRedo(h,added,moved);
+  assert.equal(h.render().editObstacleDocument({type:'remove',id:allocated}),true);
+  const removed=stable(h.render());assert.equal(removed.map.obstacles.some(o=>o.id===allocated),false);assertUndoRedo(h,moved,removed);
 });
 test('no-op and failed imports preserve redo; fresh edit clears it; reset on empty is a no-op',async()=>{
   const {h}=setup();h.render().resetMap();assert.equal(h.render().undoHistory.length,0);

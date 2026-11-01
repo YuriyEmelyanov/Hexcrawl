@@ -14,7 +14,7 @@ import { findKingdomOrigin, kingdomHexes, kingdomKeys, connectionPath, distance,
 import { modeRegionSize } from './modes/regionSize';
 import { MYTHIC_POI, mythicPoiChoices, initialMythicPoints, allocateKingdomPoi, type MythicPoi } from './modes/pointsOfInterest';
 import { createObstacles, pairKey, type Obstacle } from './modes/obstacles';
-import {migrateLegacyObstacles,normalizeObstacleCounter,type EditableObstacle} from './manualObstacles';
+import {prepareObstacleEdit,migrateLegacyObstacles,normalizeObstacleCounter,type ObstacleEdit,type EditableObstacle} from './manualObstacles';
 import { kingdomBoundary } from './modes/kingdomBoundaries';
 import { createGenerationLogger, MAX_REGION_ATTEMPTS, type GenerationEvent } from './generationDiagnostics';
 import { solveRiverNetwork, validateRiverNetwork, minimumLakeHexes, isFullness, type RiverNetwork as ModelNetwork, type RiverEdge as ModelEdge, type SolveResult as ModelSolveResult } from './riverModel/core';
@@ -11349,6 +11349,11 @@ export function App() {
   const [roadDraft,setRoadDraft] = useState<RoadDraft|null>(null);
   const roadDraftRef = useRef<RoadDraft|null>(null);
   const updateRoadDraft = (draft:RoadDraft|null) => {roadDraftRef.current=draft;setRoadDraft(draft);};
+  type ObstacleDraft = {id:number|null;revision:number};
+  const [obstacleDraft,setObstacleDraft] = useState<ObstacleDraft|null>(null);
+  const obstacleDraftRef = useRef<ObstacleDraft|null>(null);
+  const updateObstacleDraft = (draft:ObstacleDraft|null) => {obstacleDraftRef.current=draft;setObstacleDraft(draft);};
+  const [selectedObstacleId,setSelectedObstacleId] = useState<number|null>(null);
   const pendingRoadExport = useRef<'png'|'json'|null>(null);
   const [selectedRoadTarget, setSelectedRoadTarget] = useState<{roadId:number; crossingKey?:string} | null>(null);
   const [selectedRoadPair, setSelectedRoadPair] = useState<string | null>(null);
@@ -11379,6 +11384,7 @@ export function App() {
 
   // Уведомление пользователю (например, почему не создалось побережье).
   const [generationError, setGenerationError] = useState<GenerationDiagnostic | null>(null);
+  useEffect(()=>{if(obstacleDraftRef.current&&obstacleDraftRef.current.revision!==documentRevision.current)updateObstacleDraft(null);},[renderedDocumentRevision]);
   const captureGenerationInputs = () => ({ sizeCategory: genSizeCategory, landType: genLandType, biome: genBiome, coastal: genCoastal, mode: generationMode });
   const generationProgress = {
     attempt: 0, tractAttempt: 0, stage: 'region', lastRejection: null as string | null,
@@ -12796,6 +12802,7 @@ export function App() {
   const captureDocument = (): DocumentSnapshot => ({ map: captureMap(), generationHistory: history, selectedHex,
     generationMode, isMapRotated, mapScale: pendingMapZoomRef.current?.scale ?? mapScaleRef.current });
   const closeEditors = () => {
+    updateObstacleDraft(null); setSelectedObstacleId(null);
     setEditingHexBiomeKey(null); setEditingPoiHexKey(null); setEditingCentralPoiRegionId(null); setEditingRegionBiomeId(null); setEditError(null);
   };
   const recordTransaction = (before: DocumentSnapshot, after: DocumentSnapshot) => {
@@ -12912,6 +12919,7 @@ export function App() {
       : `Delete GM notes (${removed.length}) at ${removed.join('; ')}? Undo can restore them.`);
   };
   const undoMap = () => {
+    updateObstacleDraft(null); setSelectedObstacleId(null);
     if (mutationBlocked() || !undoHistoryRef.current.length) return;
     const currentUndo = undoHistoryRef.current;
     const transaction = currentUndo[currentUndo.length - 1];
@@ -12919,6 +12927,7 @@ export function App() {
     setUndoHistory(currentUndo.slice(0,-1)); setRedoHistory(current => [...current, transaction]);
   };
   const redoMap = () => {
+    updateObstacleDraft(null); setSelectedObstacleId(null);
     if (mutationBlocked() || !redoHistoryRef.current.length) return;
     const currentRedo = redoHistoryRef.current;
     const transaction = currentRedo[currentRedo.length - 1];
@@ -13187,6 +13196,7 @@ export function App() {
   }, [kingdomJob, detailedRenderReady]);
 
   const resetMap = () => {
+    updateObstacleDraft(null); setSelectedObstacleId(null);
     if (mutationBlocked()) return;
     if (!regions.length && !rivers.length && !roads.length && !kingdoms.length && !obstacles.length
       && !hexTerrainByKey.size && !waterPoiByKey.size && !biomeOverrideByHexKey.size && !candidateHexes.length
@@ -13891,6 +13901,7 @@ export function App() {
   });
 
   const handleExportPng = async () => {
+    updateObstacleDraft(null); setSelectedObstacleId(null);
     if(roadDraftRef.current) {if(finishRoadDraft())pendingRoadExport.current='png';return;}
     if (documentBusy() || !renderDetails) return;
     finishNotesGroup();
@@ -13906,6 +13917,7 @@ export function App() {
 
   const pendingNameExport = useRef(false);
   const handleExportJson = () => {
+    updateObstacleDraft(null); setSelectedObstacleId(null);
     if(roadDraftRef.current) {if(finishRoadDraft())pendingRoadExport.current='json';return;}
     if (nameDraftRef.current) {
       const revision = documentRevision.current;
@@ -13924,6 +13936,7 @@ export function App() {
 
   useEffect(()=>{const kind=pendingRoadExport.current;if(kind&&!documentBusy()){pendingRoadExport.current=null;if(kind==='png')void handleExportPng();else handleExportJson();}},[renderedDocumentRevision]);
   const handleImportJsonClick = () => {
+    updateObstacleDraft(null); setSelectedObstacleId(null);
     if(mutationBlocked()) return;
     jsonImportInputRef.current?.click();
   };
@@ -14117,6 +14130,7 @@ export function App() {
     if (documentBusy()) return;
     if(roadDraftRef.current){appendRoadDraft({q:hex.q,r:hex.r});return;}
     if (hex.kind === 'candidate') {
+      updateObstacleDraft(null);
       if (mutationBlocked()) return;
       trackGoal('region_add');
       if (!kingdomJob) {
@@ -14124,11 +14138,65 @@ export function App() {
       }
     } else {
       if (!finishInlineName()) return;
-      finishNotesGroup(); closeEditors(); clearNotesDraft();
+      const pendingObstacle=obstacleDraftRef.current;
+      finishNotesGroup(); closeEditors(); updateObstacleDraft(pendingObstacle); clearNotesDraft();
       setSelectedRoadPair(null); setSelectedRoadTarget(null); setConfirmRoadRemoval(null);
       setSelectedHex({ q: hex.q, r: hex.r });
     }
   };
+  const obstacleContext = () => ({
+    exists:(h:AxialHex)=>hexTerrainByKey.has(hexKey(h))||regions.some(r=>r.hexes.some(v=>isSameHex(v,h))),
+    water:(h:AxialHex)=>isLakeHex(h,hexTerrainByKey)||isSeaHex(h,hexTerrainByKey),
+    edgeKey:(a:AxialHex,b:AxialHex)=>{const e=getSharedHexEdgeVertexKeys(a,b);return e?[...e].sort().join('|'):undefined;},
+    riverEdges:new Set(rivers.flatMap(r=>r.vertexPath.slice(1).map((v,i)=>getRiverEdgeKey(r.vertexPath[i],v)))),
+    roadPairs:new Set(roads.flatMap(r=>r.segments.map(v=>pairKey(v.from,v.to)))),kingdoms
+  });
+  const obstacleMessage = (error:unknown) => {
+    const code=error instanceof Error?error.message:'';
+    const messages:Record<string,[string,string]>={
+      unknown_obstacle_hex:['Гекс ещё не создан','Hex does not exist'],water_obstacle_edge:['Вода','Water'],
+      river_obstacle_edge:['Река','River'],road_obstacle_edge:['Дорога или тропа','Road or trail'],
+      occupied_obstacle_edge:['Ребро занято','Edge occupied'],obstacle_id_overflow:['Исчерпан счётчик','ID counter exhausted'],
+      stale_obstacle_selection:['Препятствие уже изменено','Barrier has changed']};
+    return messages[code]?.[language==='ru'?0:1]??(language==='ru'?'Цель недоступна':'Target unavailable');
+  };
+  const editObstacleDocument = (edit:ObstacleEdit, expected?:ObstacleDraft):boolean => {
+    if(!editMode||mutationBlocked())return false;
+    if(expected&&(obstacleDraftRef.current!==expected||expected.revision!==documentRevision.current)){
+      updateObstacleDraft(null);setEditError(language==='ru'?'Карта изменилась. Выберите препятствие снова.':'Map changed. Select the barrier again.');return false;
+    }
+    try{
+      const doc={obstacles,nextObstacleId},prepared=prepareObstacleEdit(doc,edit,obstacleContext());
+      if(prepared===doc){updateObstacleDraft(null);return true;}
+      const before=captureDocument(),after=copyDocument({...before,map:{...before.map,...prepared}});
+      recordTransaction(before,after);applyExactMap(after.map);closeEditors();
+      setSelectedObstacleId(edit.type==='remove'?null:edit.type==='move'?edit.id:prepared.nextObstacleId-1);
+      return true;
+    }catch(error){setEditError(obstacleMessage(error));return false;}
+  };
+  const startObstacleChoice = (id:number|null) => {
+    if(!finishInlineName()||mutationBlocked())return;
+    finishNotesGroup();closeEditors();setSelectedRoadTarget(null);setConfirmRoadRemoval(null);
+    setSelectedObstacleId(id);updateObstacleDraft({id,revision:documentRevision.current});
+  };
+  const obstacleChoices = selectedHex&&obstacleDraft ? [[1,0],[0,1],[-1,1],[-1,0],[0,-1],[1,-1]].map(([q,r])=>{
+    const neighborHex={q:selectedHex.q+q,r:selectedHex.r+r};
+    const edit:ObstacleEdit=obstacleDraft.id===null?{type:'add',hex:selectedHex,neighborHex}:{type:'move',id:obstacleDraft.id,hex:selectedHex,neighborHex};
+    try{const prepared=prepareObstacleEdit({obstacles,nextObstacleId},edit,obstacleContext());
+      const o=prepared.obstacles.find(v=>v.id===(obstacleDraft.id??nextObstacleId));
+      return {neighborHex,edit,reason:null,kingdomId:o?.kingdomId};
+    }catch(error){return {neighborHex,edit,reason:obstacleMessage(error),kingdomId:undefined};}
+  }):[];
+  const obstaclePanel = editMode&&selectedHex&&!roadDraft ? <div className="obstacle-editor" data-obstacle-editor>
+    {!obstacleDraft?<button type="button" className="secondary" onClick={()=>startObstacleChoice(null)}>{language==='ru'?'Добавить препятствие':'Add barrier'}</button>:<>
+      <p>{obstacleDraft.id===null?(language==='ru'?'Выберите ребро':'Choose an edge'):(language==='ru'?'Выберите новое ребро':'Choose a new edge')}</p>
+      {obstacleChoices.map(c=><button type="button" className="secondary" key={hexKey(c.neighborHex)} disabled={!!c.reason}
+        aria-label={`${language==='ru'?'Ребро':'Edge'} ${selectedHexKey} → ${hexKey(c.neighborHex)}`}
+        onClick={()=>editObstacleDocument(c.edit,obstacleDraft)}>
+        {hexKey(c.neighborHex)} · {c.reason??(c.kingdomId===undefined?(language==='ru'?'без королевства':'no kingdom'):`${language==='ru'?'королевство':'kingdom'} ${c.kingdomId}`)}</button>)}
+      <button type="button" className="secondary" onClick={()=>updateObstacleDraft(null)}>{language==='ru'?'Отменить выбор':'Cancel choice'}</button>
+    </>}
+  </div>:null;
   const draftError = (ru:string,en:string) => {setEditError(language==='ru'?ru:en);return false;};
   const roadLandRegion = (h:AxialHex) => !isLakeHex(h,hexTerrainByKey)&&!isSeaHex(h,hexTerrainByKey)
     ? regions.find(r=>r.hexes.some(v=>isSameHex(v,h))) : undefined;
@@ -14612,6 +14680,7 @@ export function App() {
 
   return (
     <div className="app" onPointerDownCapture={finishBeforePointer} onKeyDownCapture={e=>{
+      if(e.key==='Escape'&&obstacleDraftRef.current){e.preventDefault();e.stopPropagation();updateObstacleDraft(null);return;}
       if(!roadDraftRef.current||e.nativeEvent.isComposing)return;
       if(e.key==='Escape'){e.preventDefault();e.stopPropagation();resetRoadDraft();}
       else if(e.key==='Enter'&&!(e.target as Element).matches('select,button,input,textarea')){e.preventDefault();e.stopPropagation();finishRoadDraft();}
@@ -14924,7 +14993,10 @@ export function App() {
                           const riverFeatures = [hasWaterfall ? waterfallLabel : null, hasRapids ? t.rapids : null].filter((feature): feature is string => feature !== null);
                           return <p key={`nearby-river-${river.id}`}><span className="nearby-river-marker" aria-hidden="true">→</span>{hasRapids ? <span className="nearby-river-marker" aria-hidden="true">|||</span> : null}{hasWaterfall ? <img className="nearby-waterfall-marker" src="/waterfall-color.svg" alt="" aria-hidden="true" /> : null} {t.river} {renderToponym(`river:${river.id}`)}{riverFeatures.length > 0 ? ` (${riverFeatures.join(', ')})` : ''}</p>;
                         })}
-                        {selectedObstacles.map(o=><p key={o.id} style={{color:'#bd6a64'}}>━ {language==='ru'?'Препятствие':'Barrier'} ({hexKey(o.hex)===selectedHexKey?hexKey(o.neighborHex):hexKey(o.hex)})</p>)}
+                        {selectedObstacles.map(o=><div key={o.id} className="obstacle-row" data-obstacle-id={o.id}>
+                          {editMode?<button type="button" className="direct-value" aria-pressed={selectedObstacleId===o.id} onClick={()=>{closeEditors();setSelectedObstacleId(o.id);}}>━ {language==='ru'?'Препятствие':'Barrier'} · {hexKey(o.hex)===selectedHexKey?hexKey(o.neighborHex):hexKey(o.hex)}</button>:<span>━ {language==='ru'?'Препятствие':'Barrier'} ({hexKey(o.hex)===selectedHexKey?hexKey(o.neighborHex):hexKey(o.hex)})</span>}
+                          {editMode&&selectedObstacleId===o.id&&!obstacleDraft&&<><button type="button" className="secondary" onClick={()=>startObstacleChoice(o.id)}>{language==='ru'?'Перенести':'Move'}</button><button type="button" className="secondary" onClick={()=>editObstacleDocument({type:'remove',id:o.id})}>{language==='ru'?'Удалить':'Delete'}</button></>}
+                        </div>)}
                         {selectedHexCrossings.map((crossing) => <p key={`selected-crossing-${crossing.key}`}>{crossing.kind === 'bridge' ? '🌉' : crossing.kind === 'ferry' ? '⛴️' : '🌊'} {t[crossing.kind]}</p>)}
                         {nearbyLakeIds.map((lakeId) => <p key={`nearby-lake-${lakeId}`}>💧 {t.lake} {renderToponym(`lake:${lakeId}`, 'nearby')}</p>)}
                         {hasNearbySea ? <p>{t.sea}</p> : null}
@@ -14932,6 +15004,7 @@ export function App() {
                     ) : null}
                   </>
                 ) : null}
+                {obstaclePanel}
                 {roadDraftPanel}
                 {roadPanel}
                 {editError && <p className="direct-error" role="alert">{editError}</p>}
