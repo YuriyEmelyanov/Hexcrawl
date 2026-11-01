@@ -1,0 +1,41 @@
+{
+  "base_sha": "0c0f4ca27da6af7c64b0883daa4a0c3ceb61d3f1",
+  "head_sha": "a39880477da4f835aa8dae6d21815570bda7bc5a",
+  "added": 0,
+  "removed": 0,
+  "modified": 1,
+  "suite": "Node mapTransactions existing v5 lifecycle",
+  "scenario_risk": "Actual App Add/Move/Remove use the shared document/history transaction, stable ID/counter and source no-op; Undo/Redo preserve exact saved state",
+  "reuse_or_new_reason": "Expanded existing actual-App v5 lifecycle and exposed handlers through existing harness; no new case or runner",
+  "count_source": "git diff base/head: one existing test() body extended; helper export list is not a test case",
+  "executed": {
+    "node_targeted": {
+      "executed": 19,
+      "passed": 19,
+      "failed": 0,
+      "skipped": 0,
+      "scope": "mapTransactions + manualObstacles"
+    },
+    "typescript": "passed",
+    "build": "passed",
+    "temporary_browser": {
+      "matrix": 4,
+      "passed": 4,
+      "widths": [
+        1500,
+        390
+      ],
+      "languages": [
+        "ru",
+        "en"
+      ],
+      "production_add_remove_undo_redo": "one RU desktop scenario passed",
+      "permanent_growth": 0
+    }
+  },
+  "limitations": [
+    "Full required CI recorded separately",
+    "Direct map edge hit-targets, selected/source/target overlay and focus restoration still pending",
+    "Actual browser Move not exercised yet; handler Move and source no-op covered by existing lifecycle extension"
+  ]
+}

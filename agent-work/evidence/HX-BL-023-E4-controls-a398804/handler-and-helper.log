@@ -1,0 +1,27 @@
+✔ legacy migration assigns deterministic IDs without changing array order or membership (2.879998ms)
+✔ v5 counter normalization rejects duplicate IDs, duplicate edges and unsafe allocation (0.837087ms)
+✔ Classic add and remove preserve input and unrelated state without a fake kingdom (0.402124ms)
+✔ move retains identity and unrelated records while recalculating real kingdom membership (3.806811ms)
+✔ invalid targets and reversed duplicates reject atomically; source move remains no-op (0.944297ms)
+✔ import is one exact transaction; invalid and preparation failure preserve both stacks (1734.296833ms)
+✔ all existing manual families, import, reset, and 100 exact undo/redo snapshots (9060.313734ms)
+✔ manual edits do not replace generation checkpoints, regenerate rollback retains undo and redo (610.921881ms)
+✔ pending file read serializes imports and blocks edits, generation and reset (262.168733ms)
+✔ all manifest saves round-trip unchanged entities, names and can continue then undo (6107.049966ms)
+✔ v5 obstacle IDs and counter survive migration, round-trip and history; invalid v5 is atomic (3440.217886ms)
+✔ no-op and failed imports preserve redo; fresh edit clears it; reset on empty is a no-op (228.276097ms)
+✔ notes autosave coalesces a series, preserves redo on no-op, and commits before other operations (407.042547ms)
+✔ import replaces notes exactly and legacy imports clear them; malformed notes preserve full history (305.247708ms)
+✔ delete retains latest surviving notes, confirms loss, undo restores; generation conflict is rejected before commit (29861.319843ms)
+✔ direct names change only the captured locale; exact history, validation, legacy other locale and stale fault guards (8095.526333ms)
+✔ region biome respects stored height and canonical neighbors, keeps all overrides and exact metadata/history (1715.183353ms)
+✔ manual road command commits exactly once and stale callback cannot write after import (260.508806ms)
+✔ road draft is ephemeral, blocks other writes, commits once and stale finish is inert (1605.280084ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 19
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 68952.153332
