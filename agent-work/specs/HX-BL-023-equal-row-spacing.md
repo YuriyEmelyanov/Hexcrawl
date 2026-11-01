@@ -1,0 +1,5 @@
+# HX-BL-023 — equal information row spacing
+
+Owner correction01.11.2026: existing text rows must retain identical spacing and positions in view/edit modes. This supersedes the old minimum44px height for inline text controls where it expanded rows. Standalone pencil/Done/buttons retain44px. No invisible overlapping hit areas. Text color/underline may change; common row top/height must not change at1500/390 inRU/EN. Newly opened field or edit-only content is a separate state, not a reason to expand every unopened line.
+
+Scope: CSS inline text sizing only; keep real click/keyboard editing, Escape/Enter/Done and Undo. Base8b1bb56, exacthead d0f9850a15954c32a17eaa101beffcd17fe60f83. Existing save-history lifecycle is modified to compare geometry; no separate permanent suite. A one-character name remains reachable through its44px horizontal target. Evidence: agent-work/evidence/HX-BL-023-equal-spacing/. Score1.2 S03-C01/S09-C04 remain unverified; no award. Publication separately authorized after actual comparison is shown.
