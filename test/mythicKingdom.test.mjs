@@ -40,7 +40,7 @@ test('kingdom quotas, d12 sizes, save, classic extension and atomic undo',()=>{
     h.render().startKingdom({q:0,r:0});let app=finish(h);validate(h,app.kingdoms[0]);
     const built=JSON.stringify(app.createSaveData().map);assert.equal(app.history.length,1);
     assert.equal(new Set(app.obstacles.map(o=>o.id)).size,24);
-    assert.deepEqual(app.obstacles.map(o=>o.id),Array.from({length:24},(_,i)=>i+1));
+    assert.deepEqual(Array.from(app.obstacles,o=>o.id),Array.from({length:24},(_,i)=>i+1));
     assert.equal(app.createSaveData().counters.nextObstacleId,25);
     h.render().undoMap();assert.equal(h.render().createSaveData().counters.nextObstacleId,1);
     h.render().redoMap();app=h.render();assert.equal(app.createSaveData().counters.nextObstacleId,25);
