@@ -9,7 +9,12 @@
   "scope": "Integrate v5/IDs/counter across persistence/history/generation per E4-1.1; UI remains following substep.",
   "test_plan": {
     "requirements": "AC05/06 stable migration, atomic rejected v5, counter Undo/Redo/generation rollback; exact RNG unchanged",
-    "reuse": "Extend existing saveSafety/migration/mapTransactions cases, update format expectations in existing browser lifecycle; no new runner."
+    "reuse": "Extend existing saveSafety/migration/mapTransactions cases, update format expectations in existing browser lifecycle; no new runner.",
+    "new_case_justification": {
+      "requirement": "AC05 new v5 format identity/counter/history contract",
+      "existing_coverage": "Existing manifest case checks preserved legacy entities and generic rollback; pure helper tests normalize counter without actual App import/history. Neither proves v5 imported IDs remain stable and counter survives Undo/Redo.",
+      "decision": "Add one focused logical Node case using existing harness/import helpers, no new runner. Extend existing version/manifest expectations instead of duplicate corpus or mixed100."
+    }
   },
   "approval_ref": "owner-decision-2026-10-28-editor-additional-functions-approved"
 }
