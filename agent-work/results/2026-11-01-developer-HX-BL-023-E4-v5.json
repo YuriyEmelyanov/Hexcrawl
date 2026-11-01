@@ -1,0 +1,255 @@
+{
+  "run_id": "2026-11-01-developer-HX-BL-023-E4-v5",
+  "role": "developer",
+  "task_id": "HX-BL-023",
+  "stage_id": "E4",
+  "role_selection_reason": "Latest approved E4 continuation ready; no unfinished foreign active claim at start. Owner HX-BL-010 approval queues it after current E4, not a task switch.",
+  "approval_ref": "owner-decision-2026-10-28-editor-additional-functions-approved",
+  "resume_authority_ref": "agent-work/results/2026-11-01-owner-resume-four-hourly.json",
+  "status": "implementation_checkpoint_not_review_ready",
+  "authorization_status": "approved_scope_continue_implementation_publication_separate",
+  "spec_ref": "agent-work/specs/HX-BL-023-E4.md",
+  "spec_version": "E4-1.1",
+  "base_sha": "9a3f074d88422cd78d1b5183eeab7863b5d66ece",
+  "head_sha": "0c0f4ca27da6af7c64b0883daa4a0c3ceb61d3f1",
+  "tree_sha": "7a8b25a91d4456db9a4489d174d7a0e7eb9ad3ec",
+  "branch": "agent/hx023-e4-barriers",
+  "pr": 481,
+  "published": false,
+  "release_approved": false,
+  "review_ready": false,
+  "full_editor_ready": false,
+  "source_tree_verification": "Local git write-tree equals GitHub tree7a8b25a91d4456db9a4489d174d7a0e7eb9ad3ec; product source identical to captured1eb26b7; only test assertion changed in last commit",
+  "outcomes": [
+    "v5 export with stable obstacle IDs and counters.nextObstacleId; v2/v3/v4 migration deterministic sorted edgeKey IDs and preserved array order/geometry/kingdom/RNG",
+    "v5 optional actual kingdom reference accepted, duplicate/missing/unsafe IDs and malformed structure rejected atomically; low safe counter normalized upwards",
+    "All App map/history/generation capture/restore/reset paths include obstacle counter",
+    "Mythic preserves obstacle choice/RNG, assigns IDs once during atomic finalization and rolls back whole action on exhausted counter",
+    "RU/EN compatibility notice shown in export menu; initial overlap corrected and measured at1500/390"
+  ],
+  "evidence_ref": "agent-work/evidence/HX-BL-023-E4-v5-0c0f4ca",
+  "previous_checkpoint_evidence_ref": "agent-work/evidence/HX-BL-023-E4-v5-1eb26b7",
+  "handoff_ref": "agent-work/handoffs/2026-11-01-HX-BL-023-E4-ui-continuation.json",
+  "next_role": "developer",
+  "next_step": "Программист продолжает E4: подключить Add/Remove/Move к общим транзакциям и информации выбранного гекса, затем фактический desktop/390 walkthrough и независимая проверка точного общего SHA E3+E4.",
+  "remaining": [
+    "Manual Add/Remove/Move transaction wiring and UI",
+    "AC01–09 full E4 acceptance, actual combined E3+E4 desktop/narrow walkthrough",
+    "Independent reviewer exact-SHA score_assessment1.2 and separate owner permission for publication"
+  ],
+  "test_change_summary_ref": "agent-work/evidence/HX-BL-023-E4-v5-0c0f4ca/test_change_summary.json",
+  "test_change_summary": {
+    "base_sha": "9a3f074d88422cd78d1b5183eeab7863b5d66ece",
+    "head_sha": "0c0f4ca27da6af7c64b0883daa4a0c3ceb61d3f1",
+    "added": 1,
+    "removed": 0,
+    "modified": 6,
+    "suite": "Node test/*.test.mjs; browser save-history lifecycle separately",
+    "count_source": "git diff base/head; logical test() cases, renamed case mapped as modification; browser standalone lifecycle counts as one scenario",
+    "per_suite": [
+      {
+        "suite": "Node",
+        "added": 1,
+        "removed": 0,
+        "modified": 5,
+        "modified_cases": [
+          "mapTransactions: all manifest saves round-trip",
+          "mythicKingdom: kingdom quotas/d12/save/classic/atomic undo",
+          "saveSafety: generated proposal ID/counter overflow",
+          "saveSafety: notes versions contract (renamed2/3/4→2/3/4/5)",
+          "worldContinuation: v2 migration and v3 validation"
+        ],
+        "new_case": "v5 obstacle IDs and counter survive migration, round-trip and history; invalid v5 is atomic"
+      },
+      {
+        "suite": "Browser save-history lifecycle",
+        "added": 0,
+        "removed": 0,
+        "modified": 1,
+        "scenario_risk": "Actual production notes export v5 and legacy corpus geometry/counter/round-trip"
+      }
+    ],
+    "scenario_risk": "Stable obstacle identity and allocator persist across migrations/import/export/Undo/Redo/reset; malformed v5 cannot damage either history stack; generated obstacles allocate once",
+    "reuse_or_new_reason": "Existing manifest, format, proposal and kingdom tests expanded. One focused actual-App v5 lifecycle case covers stable identity/counter, optional kingdom and atomic invalid import, not covered by generic legacy/rollback or pure helper cases. No new runner.",
+    "sensitivity": {
+      "baseline_sha": "9a3f074d88422cd78d1b5183eeab7863b5d66ece",
+      "new_case": "FAIL:4!==5",
+      "modified_sha": "0c0f4ca27da6af7c64b0883daa4a0c3ceb61d3f1",
+      "focused_case": "PASS",
+      "initial_full_run": {
+        "head_sha": "1eb26b7af48a13eb5c2d419924f478842a8801de",
+        "executed": 262,
+        "passed": 261,
+        "failed": 1,
+        "reason": "New strict array assertion compared VM-realm prototype; same ID values. Fixed by Array.from in caller realm; targeted kingdom case1/1 passes, full rerun required."
+      }
+    },
+    "temporary_diagnostics": {
+      "new_permanent_cases": 0,
+      "ui_matrix": 4,
+      "overflow_production": 1,
+      "generator_comparison": 1,
+      "counted_as_suite_growth": false
+    },
+    "executed": {
+      "node_full": {
+        "executed": 262,
+        "passed": 262,
+        "failed": 0,
+        "skipped": 0,
+        "node": "24.22.1",
+        "command": "npm run check",
+        "tsc": "passed",
+        "build": "passed",
+        "duration_ms": 787389.161137
+      },
+      "targeted_persistence": {
+        "executed": 41,
+        "passed": 41,
+        "failed": 0,
+        "skipped": 0,
+        "repeat_not_growth": true
+      },
+      "targeted_legacy": {
+        "executed": 1,
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "repeat_not_growth": true
+      },
+      "targeted_corrected_kingdom": {
+        "executed": 1,
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "seeds": 3,
+        "repeat_not_growth": true
+      },
+      "full_browser": {
+        "script_invocations": 7,
+        "passed_script_invocations": 7,
+        "failed_script_invocations": 0,
+        "status": "success",
+        "method": "exact-SHA GitHub Actions browser job after production build",
+        "logical_case_count": "not separately emitted here; not summed with Node"
+      },
+      "world_random": {
+        "gate_invocations": 1,
+        "passed_gate_invocations": 1,
+        "status": "success",
+        "method": "exact-SHA existing world-random job",
+        "logical_case_count": "not inferred from seed count or summed with Node"
+      }
+    }
+  },
+  "score_model_version": "1.2",
+  "developer_score_evidence_ref": "agent-work/evidence/HX-BL-023-E4-v5-0c0f4ca/developer_score_evidence.json",
+  "score_assessment_status": "pending_independent_review_of_complete_E4",
+  "confirmed_points": null,
+  "unverified_weight": 1000,
+  "awarded_points": 0,
+  "ui_actual": {
+    "head_sha": "0c0f4ca27da6af7c64b0883daa4a0c3ceb61d3f1",
+    "export_notice_desktop": "agent-work/evidence/HX-BL-023-E4-v5-0c0f4ca/export-ru-1500.png",
+    "export_notice_narrow": "agent-work/evidence/HX-BL-023-E4-v5-0c0f4ca/export-ru-390.png",
+    "export_notice_shown_in_chat": true,
+    "new_obstacle_editor_pending": true,
+    "full_E4_walkthrough_pending": true,
+    "responsible": "developer",
+    "owner_response_blocks_development": false,
+    "capture_head_sha": "1eb26b7af48a13eb5c2d419924f478842a8801de",
+    "provenance": "Only test assertion changed after captured1eb26b7; src/App.tsx/styles.css and all other product files have identical blobs on0c0f4ca. Screenshots remain actual same application build; not a fabricated new capture."
+  },
+  "limitations": [
+    "Intermediate storage/generation integration, not completed E4 UI",
+    "Headless Chromium only; physical phone/touch/Safari/Firefox not checked",
+    "Bounded migration/invalid matrices and seed42 comparison are not exhaustive",
+    "No independent acceptance/score increase/publication this run"
+  ],
+  "nonblocking_errors": [
+    {
+      "kind": "test_harness_comparison",
+      "head_sha": "1eb26b7af48a13eb5c2d419924f478842a8801de",
+      "full_run": {
+        "executed": 262,
+        "passed": 261,
+        "failed": 1
+      },
+      "reason": "Strict comparison of cross-VM arrays with equal IDs failed; fixed by Array.from into caller realm",
+      "resolution_sha": "0c0f4ca27da6af7c64b0883daa4a0c3ceb61d3f1",
+      "targeted_corrected": {
+        "executed": 1,
+        "passed": 1,
+        "failed": 0
+      },
+      "evidence": "check-initial-red.log;kingdom-green.log"
+    }
+  ],
+  "queue_preserved": {
+    "HX_BL_010": "approved_queued_after_E4",
+    "PR480": "accepted historical E3 SHA, not published; changed combined package needs new independent review",
+    "main": "cd4bd5402ffa92800710f5d4ded32cb1baea774b (not changed by this run)"
+  },
+  "checks": {
+    "node_local": {
+      "executed": 262,
+      "passed": 262,
+      "failed": 0,
+      "skipped": 0,
+      "node": "24.22.1",
+      "command": "npm run check",
+      "tsc": "passed",
+      "build": "passed",
+      "duration_ms": 787389.161137
+    },
+    "ci": [
+      {
+        "name": "check",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41330980850/job/124921172764",
+        "head_sha": "0c0f4ca27da6af7c64b0883daa4a0c3ceb61d3f1"
+      },
+      {
+        "name": "browser",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41330980850/job/124921172693",
+        "head_sha": "0c0f4ca27da6af7c64b0883daa4a0c3ceb61d3f1"
+      },
+      {
+        "name": "world-random",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41330980850/job/124921172675",
+        "head_sha": "0c0f4ca27da6af7c64b0883daa4a0c3ceb61d3f1"
+      },
+      {
+        "name": "seed-ui",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41330980869/job/124920826325",
+        "head_sha": "0c0f4ca27da6af7c64b0883daa4a0c3ceb61d3f1"
+      }
+    ],
+    "status": "all_required_passed"
+  },
+  "completed_at": "2026-11-01T17:35:02.107Z",
+  "started_at": "2026-11-01T17:00:19.400Z",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-01T17:00:19.400Z",
+      "is_enabled": true,
+      "status": "checked"
+    },
+    "end": {
+      "checked_at": "2026-11-01T17:35:02.107Z",
+      "is_enabled": true,
+      "status": "checked"
+    },
+    "restoration_performed": false,
+    "errors": [],
+    "limitation": "Observed at peek times only; continuing approved E4 work remains, recurring team task is not completed."
+  }
+}
