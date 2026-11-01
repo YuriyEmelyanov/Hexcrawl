@@ -93,7 +93,10 @@ export function validateSaveStructure(value: unknown, domain: {
     }
   }
   // Preserve all existing kingdom/obstacle checks. Errors stay field-scoped.
-  try { domain.kingdoms(map); } catch { fail('map.kingdoms/obstacles','invalid kingdom layers'); }
+  try { domain.kingdoms(map); } catch(error) {
+    if(error instanceof SaveValidationError)throw error;
+    fail('map.kingdoms/obstacles','invalid kingdom layers');
+  }
   const terrain=record(map.terrainByHexKey,'map.terrainByHexKey'); let maxLake=0;
   for(const [k,v] of Object.entries(terrain)) {
     const p='map.terrainByHexKey.'+k; hexKey(k,p); const t=record(v,p);

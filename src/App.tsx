@@ -13960,8 +13960,11 @@ export function App() {
       const category=language==='ru'
         ? ({read:'ошибка чтения файла',json:'ошибка синтаксиса JSON',validation:'некорректные данные',preparation:'ошибка подготовки карты'}[stage])
         : ({read:'file read error',json:'invalid JSON syntax',validation:'invalid map data',preparation:'map preparation error'}[stage]);
-      window.alert(language==='ru'?`Не удалось загрузить JSON: ${category} (${path}: ${error instanceof SaveValidationError ? error.reason : category}). Текущая карта сохранена.`
-        :`Failed to load JSON: ${category} (${path}: ${error instanceof SaveValidationError ? error.reason : category}). Your current map is intact.`);
+      const reason=error instanceof SaveValidationError
+        ? language==='ru'&&error.reason==='two distinct adjacent hexes'?'нужны два разных соседних гекса':error.reason
+        :category;
+      window.alert(language==='ru'?`Не удалось загрузить JSON: ${category} (${path}: ${reason}). Текущая карта сохранена.`
+        :`Failed to load JSON: ${category} (${path}: ${reason}). Your current map is intact.`);
     } finally { importInFlight.current=false; setIsImporting(false); }
   };
 
@@ -14674,6 +14677,7 @@ export function App() {
               </a>
             </div>
           </div>
+          <div className="side-panel">
           <div id="side-panel-controls" ref={mapToolbarRef} className="map-toolbar" aria-label={t.controlsLabel}>
             {regions.length === 0 ? (
               <div className="info-block info-block--prompt map-toolbar__prompt" role="status">{t.startPrompt}</div>
@@ -14835,60 +14839,19 @@ export function App() {
               </div>
             )}
           </div>
-          <div
-            ref={mapViewportRef}
-            className="map-viewport"
-            tabIndex={0}
-            aria-label={t.mapAria}
-            onMouseDown={handleMapMouseDown}
-            onMouseMove={handleMapMouseMove}
-            onMouseUp={handleMapMouseUp}
-            onMouseLeave={handleMapMouseUp}
-            onContextMenu={(event) => event.preventDefault()}
-            onKeyDown={handleMapKeyDown}
-          >
-            <div ref={mapStageRef} className="map-stage" style={{ width: `${displayMapWidth * mapScaleRef.current}px`, height: `${displayMapHeight * mapScaleRef.current}px` }}>
-            <svg
-              ref={mapSvgRef}
-              data-biome-display={biomeDisplayMode}
-              data-render-phase={kingdomJob ? 'generation' : renderDetails ? 'ready' : 'render-pending'}
-              viewBox={`0 0 ${displayMapWidth} ${displayMapHeight}`}
-              preserveAspectRatio="xMinYMin meet"
-              style={{ width: `${displayMapWidth}px`, height: `${displayMapHeight}px`, transform: `translateZ(0) scale(${mapScaleRef.current})`, '--road-hit-width': `${44/mapScaleRef.current}px`, '--crossing-hit-radius': `${22/mapScaleRef.current}px`, '--water-color': WATER_PALETTE.river, '--water-marks': WATER_PALETTE.marks } as CSSProperties}
-            >
-            {mapArtwork}
-            {roadDraft && <g data-editor-only="draft" transform={mapRotationTransform} pointerEvents="none">
-              {roadDraft.path.map((h,i)=>{const p=toPixel(h.q,h.r);return <circle key={i} cx={p.x+riverOffset.x} cy={p.y+riverOffset.y} r={i===roadDraft.path.length-1?6:3} fill="#7dd3fc" />;})}
-              {roadDraft.path.slice(1).map((h,i)=>{const a=toPixel(roadDraft.path[i].q,roadDraft.path[i].r),b=toPixel(h.q,h.r);return <line key={i} x1={a.x+riverOffset.x} y1={a.y+riverOffset.y} x2={b.x+riverOffset.x} y2={b.y+riverOffset.y} stroke="#7dd3fc" strokeWidth={4} strokeDasharray="6 3" />;})}
-            </g>}
-            {editMode && !roadDraft && renderDetails && <g data-editor-only="roads" transform={mapRotationTransform}>
-              {roadSegments.map(s=><line key={s.key} className="road-map-target" role="button" tabIndex={0}
-                aria-label={`${language==='ru'?'Участок':'Segment'} ${s.roadId}: ${s.segmentKey}`} aria-pressed={selectedRoadPair===s.segmentKey&&selectedRoadTarget?.roadId===s.roadId&&!selectedRoadTarget.crossingKey}
-                x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2} stroke="transparent" style={{strokeWidth:'var(--road-hit-width)'}} pointerEvents="stroke"
-                onClick={e=>{e.stopPropagation();chooseRoadPair(s.segmentKey,s.roadId);}}
-                onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();e.stopPropagation();chooseRoadPair(s.segmentKey,s.roadId);}}} />)}
-              {renderedCrossings.map(c=><circle key={c.key} className="crossing-map-target" role="button" tabIndex={0}
-                aria-label={`${language==='ru'?'Переправа':'Crossing'} ${c.key}`} aria-pressed={selectedRoadTarget?.crossingKey===c.key}
-                cx={c.x} cy={c.y} style={{r:'var(--crossing-hit-radius)'}} fill="transparent" pointerEvents="all"
-                onClick={e=>{e.stopPropagation();chooseRoadPair(c.roadSegmentKey,c.roadId,c.key);}}
-                onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();e.stopPropagation();chooseRoadPair(c.roadSegmentKey,c.roadId,c.key);}}} />)}
-              {renderedCrossings.filter(c=>c.key===selectedRoadTarget?.crossingKey).map(c=><circle key={`selected-${c.key}`} cx={c.x} cy={c.y} r={9} fill="none" stroke="#7dd3fc" strokeWidth={3} pointerEvents="none" />)}
-              {roadSegments.filter(s=>confirmRoadRemoval ? s.roadId===confirmRoadRemoval.roadId&&(!confirmRoadRemoval.segmentKey||s.segmentKey===confirmRoadRemoval.segmentKey):s.segmentKey===selectedRoadPair&&s.roadId===selectedRoadTarget?.roadId&&!selectedRoadTarget.crossingKey).map(s=><line key={s.key}
-                x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2} stroke="#7dd3fc" strokeWidth={4} strokeDasharray="6 3" pointerEvents="none" />)}
-            </g>}
-            </svg>
-            <canvas ref={mapMotionCanvasRef} className="map-motion-buffer" aria-hidden="true" />
-            </div>
-          </div>
 
           <aside id="side-panel-info" className="roll-card">
             <div className="info-body">
               {regions.length > 0 || hexTerrainByKey.size > 0 ? <>
               <section ref={infoFocusRef} tabIndex={-1} className={`info-block info-block--hex${editMode ? ' is-editing' : ''}`} aria-label={t.selectedHexInfo}>
                 <div className="direct-mode-row"><button type="button" className="secondary direct-mode" aria-pressed={editMode}
+                  aria-label={editMode ? (language === 'ru' ? 'Готово' : 'Done') : (language === 'ru' ? 'Редактировать' : 'Edit')}
+                  title={editMode ? (language === 'ru' ? 'Готово' : 'Done') : (language === 'ru' ? 'Редактировать' : 'Edit')}
                   disabled={isImporting || !!pendingRegen || !!kingdomJob}
                   onClick={() => { if (!finishRoadDraft() || !finishInlineName()) return; finishNotesGroup(); clearNotesDraft(); closeEditors(); setSelectedRoadPair(null); setSelectedRoadTarget(null); setConfirmRoadRemoval(null); setEditMode(v => !v); }}>
-                  {editMode ? (language === 'ru' ? 'Готово' : 'Done') : (language === 'ru' ? 'Редактировать' : 'Edit')}
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
+                    {editMode ? <path d="m5 12 4 4L19 6" /> : <><path d="m16 3 5 5-12 12-6 1 1-6Z" /><path d="m14 5 5 5" /></>}
+                  </svg>
                 </button></div>
                 {selectedKingdom ? <p>{language === 'ru' ? 'Королевство' : 'Kingdom'}: {renderName(`kingdom:${selectedKingdom.id}`)}</p> : null}
                 {selectedRegion ? <>
@@ -15156,6 +15119,53 @@ export function App() {
             </section>
             </div>
           </aside>
+          </div>
+          <div
+            ref={mapViewportRef}
+            className="map-viewport"
+            tabIndex={0}
+            aria-label={t.mapAria}
+            onMouseDown={handleMapMouseDown}
+            onMouseMove={handleMapMouseMove}
+            onMouseUp={handleMapMouseUp}
+            onMouseLeave={handleMapMouseUp}
+            onContextMenu={(event) => event.preventDefault()}
+            onKeyDown={handleMapKeyDown}
+          >
+            <div ref={mapStageRef} className="map-stage" style={{ width: `${displayMapWidth * mapScaleRef.current}px`, height: `${displayMapHeight * mapScaleRef.current}px` }}>
+            <svg
+              ref={mapSvgRef}
+              data-biome-display={biomeDisplayMode}
+              data-render-phase={kingdomJob ? 'generation' : renderDetails ? 'ready' : 'render-pending'}
+              viewBox={`0 0 ${displayMapWidth} ${displayMapHeight}`}
+              preserveAspectRatio="xMinYMin meet"
+              style={{ width: `${displayMapWidth}px`, height: `${displayMapHeight}px`, transform: `translateZ(0) scale(${mapScaleRef.current})`, '--road-hit-width': `${44/mapScaleRef.current}px`, '--crossing-hit-radius': `${22/mapScaleRef.current}px`, '--water-color': WATER_PALETTE.river, '--water-marks': WATER_PALETTE.marks } as CSSProperties}
+            >
+            {mapArtwork}
+            {roadDraft && <g data-editor-only="draft" transform={mapRotationTransform} pointerEvents="none">
+              {roadDraft.path.map((h,i)=>{const p=toPixel(h.q,h.r);return <circle key={i} cx={p.x+riverOffset.x} cy={p.y+riverOffset.y} r={i===roadDraft.path.length-1?6:3} fill="#7dd3fc" />;})}
+              {roadDraft.path.slice(1).map((h,i)=>{const a=toPixel(roadDraft.path[i].q,roadDraft.path[i].r),b=toPixel(h.q,h.r);return <line key={i} x1={a.x+riverOffset.x} y1={a.y+riverOffset.y} x2={b.x+riverOffset.x} y2={b.y+riverOffset.y} stroke="#7dd3fc" strokeWidth={4} strokeDasharray="6 3" />;})}
+            </g>}
+            {editMode && !roadDraft && renderDetails && <g data-editor-only="roads" transform={mapRotationTransform}>
+              {roadSegments.map(s=><line key={s.key} className="road-map-target" role="button" tabIndex={0}
+                aria-label={`${language==='ru'?'Участок':'Segment'} ${s.roadId}: ${s.segmentKey}`} aria-pressed={selectedRoadPair===s.segmentKey&&selectedRoadTarget?.roadId===s.roadId&&!selectedRoadTarget.crossingKey}
+                x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2} stroke="transparent" style={{strokeWidth:'var(--road-hit-width)'}} pointerEvents="stroke"
+                onClick={e=>{e.stopPropagation();chooseRoadPair(s.segmentKey,s.roadId);}}
+                onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();e.stopPropagation();chooseRoadPair(s.segmentKey,s.roadId);}}} />)}
+              {renderedCrossings.map(c=><circle key={c.key} className="crossing-map-target" role="button" tabIndex={0}
+                aria-label={`${language==='ru'?'Переправа':'Crossing'} ${c.key}`} aria-pressed={selectedRoadTarget?.crossingKey===c.key}
+                cx={c.x} cy={c.y} style={{r:'var(--crossing-hit-radius)'}} fill="transparent" pointerEvents="all"
+                onClick={e=>{e.stopPropagation();chooseRoadPair(c.roadSegmentKey,c.roadId,c.key);}}
+                onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();e.stopPropagation();chooseRoadPair(c.roadSegmentKey,c.roadId,c.key);}}} />)}
+              {renderedCrossings.filter(c=>c.key===selectedRoadTarget?.crossingKey).map(c=><circle key={`selected-${c.key}`} cx={c.x} cy={c.y} r={9} fill="none" stroke="#7dd3fc" strokeWidth={3} pointerEvents="none" />)}
+              {roadSegments.filter(s=>confirmRoadRemoval ? s.roadId===confirmRoadRemoval.roadId&&(!confirmRoadRemoval.segmentKey||s.segmentKey===confirmRoadRemoval.segmentKey):s.segmentKey===selectedRoadPair&&s.roadId===selectedRoadTarget?.roadId&&!selectedRoadTarget.crossingKey).map(s=><line key={s.key}
+                x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2} stroke="#7dd3fc" strokeWidth={4} strokeDasharray="6 3" pointerEvents="none" />)}
+            </g>}
+            </svg>
+            <canvas ref={mapMotionCanvasRef} className="map-motion-buffer" aria-hidden="true" />
+            </div>
+          </div>
+
         </div>
       </section>
 

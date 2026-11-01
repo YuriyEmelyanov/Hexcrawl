@@ -24,8 +24,26 @@ test('import is one exact transaction; invalid and preparation failure preserve 
   const before=stable(h.render()), stacks=serial([h.render().undoHistory,h.render().redoHistory]);
   const invalid=structuredClone(fixture); invalid.map.roads[0].segments='broken'; await load(h,invalid);
   assert.deepEqual(stable(h.render()),before);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks);
+  // E4-1.1 / HX023-E4-SPEC-01: actual legacy import must reject malformed
+  // obstacles before changing the document, RNG, undo or an existing redo branch.
+  const mythic=JSON.parse(fs.readFileSync(new URL('./fixtures/import-v2/baseline-mythic.json',import.meta.url)));
+  for(const language of ['ru','en'])for(const version of [2,3,4])for(const defect of ['same','distant','edge']) {
+    h.render().setLanguage(language);
+    const broken=structuredClone(mythic);broken.version=version;broken.generation=structuredClone(before.generation);
+    const o=broken.map.obstacles[0];
+    if(defect==='same')o.neighborHex={...o.hex};
+    if(defect==='distant')o.neighborHex={q:o.hex.q+3,r:o.hex.r};
+    if(defect==='edge')o.edgeKey='not-a-common-edge';
+    const document=serial(h.render().captureDocument());
+    await load(h,broken);
+    assert.match(alerts.at(-1),/map\.obstacles\[0\]/,language+' '+version+' '+defect);
+    if(defect!=='edge')assert.match(alerts.at(-1),language==='ru'?/два разных соседних гекса/:/two distinct adjacent hexes/);
+    assert.deepEqual(serial(h.render().captureDocument()),document,'invalid obstacles preserve full document and RNG');
+    assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks,'invalid obstacles preserve both stacks');
+    assert.equal(h.render().isImporting,false);
+  }
   const restore=h.injectFunction('getToponymEntities',()=>{throw Error('injected preparation failure');});
-  await load(h,fixture);restore(); assert.equal(alerts.length,2);assert.equal(h.render().isImporting,false);
+  await load(h,fixture);restore(); assert.equal(alerts.length,20);assert.equal(h.render().isImporting,false);
   assert.deepEqual(stable(h.render()),before);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks);
   await load(h,fixture);assert.equal(h.render().redoHistory.length,0);
 });

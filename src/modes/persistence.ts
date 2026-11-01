@@ -1,4 +1,5 @@
-import {kingdomKeys,key,type Kingdom} from './kingdoms.ts';
+import {SaveValidationError} from '../saveValidation.ts';
+import {kingdomKeys,key,distance,type Kingdom} from './kingdoms.ts';
 import type {Obstacle} from './obstacles.ts';
 const record=(x:unknown):x is Record<string,unknown>=>!!x&&typeof x==='object'&&!Array.isArray(x);
 const hex=(x:unknown):x is {q:number;r:number}=>record(x)&&Number.isSafeInteger(x.q)&&Number.isSafeInteger(x.r);
@@ -17,10 +18,12 @@ export function validateKingdomLayers(map:Record<string,unknown>, edgeKeys:(h:{q
   }
   for(const region of regions)if(region.kingdomId!==undefined&&!kingdoms.get(region.kingdomId)?.regionIds.includes(region.id))throw new Error('Регион ссылается на отсутствующее королевство.');
   const seen=new Set<string>();
-  for(const o of (map.obstacles??[]) as unknown[]) {
-    if(!record(o)||!hex(o.hex)||!hex(o.neighborHex)||typeof o.edgeKey!=='string'||!edgeKeys(o.hex).has(o.edgeKey)||!edgeKeys(o.neighborHex).has(o.edgeKey)||!kingdoms.has(o.kingdomId as number)||seen.has(o.edgeKey))throw new Error('Некорректное ребро препятствия.');
+  for(const [index,o] of ((map.obstacles??[]) as unknown[]).entries()) {
+    const path=`map.obstacles[${index}]`;
+    if(record(o)&&hex(o.hex)&&hex(o.neighborHex)&&distance(o.hex,o.neighborHex)!==1)throw new SaveValidationError(path+'.neighborHex','two distinct adjacent hexes');
+    if(!record(o)||!hex(o.hex)||!hex(o.neighborHex)||typeof o.edgeKey!=='string'||!edgeKeys(o.hex).has(o.edgeKey)||!edgeKeys(o.neighborHex).has(o.edgeKey)||!kingdoms.has(o.kingdomId as number)||seen.has(o.edgeKey))throw new SaveValidationError(path,'invalid obstacle geometry, duplicate edge or kingdom reference');
     const obstacle=o as Obstacle, area=kingdomKeys(kingdoms.get(obstacle.kingdomId)!.origin);
-    if(!area.has(key(obstacle.hex))||!area.has(key(obstacle.neighborHex)))throw new Error('Препятствие вне королевства.');
+    if(!area.has(key(obstacle.hex))||!area.has(key(obstacle.neighborHex)))throw new SaveValidationError(path+'.kingdomId','obstacle outside kingdom');
     seen.add(obstacle.edgeKey);
   }
 }
