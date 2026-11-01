@@ -1,0 +1,58 @@
+{
+  "task_id": "HX-BL-023",
+  "stage_id": "E4",
+  "from_role": "business_analyst",
+  "next_role": "developer",
+  "status": "ready_for_development",
+  "authorization_status": "already_approved_task_scope",
+  "approval_ref": "owner-decision-2026-10-28-editor-additional-functions-approved",
+  "resume_authority_ref": "agent-work/results/2026-11-01-owner-resume-four-hourly.json",
+  "spec_ref": "agent-work/specs/HX-BL-023-E4.md",
+  "spec_version": "E4-1.1",
+  "spec_blob_sha": "55010a47fedee34537e7d1d1198fa0f78f3f6e4b",
+  "resolved_finding": "HX023-E4-SPEC-01",
+  "resolution": "Reject geometrically malformed legacy atomically before ID migration; preserve structurally valid legacy independently from new placement restrictions.",
+  "branch": "agent/hx023-e4-barriers",
+  "pr": 481,
+  "checkpoint_sha": "1bd3d973e11001d18f91718ee9c8b98bbfbf3758",
+  "inputs": [
+    "agent-work/evidence/HX-BL-023-E4-legacy-adjacency-1bd3d97/reproduction.json",
+    "agent-work/evidence/HX-BL-023-E4-migration-contract-1.1/analyst-corpus.json"
+  ],
+  "scope": [
+    "Continue approved E4 persistence/App/history/UI integration from existing foundation; no second developer task.",
+    "Implement E4-1.1 structural gate before all mutations; do not use obstacleTarget placement checks for imported records.",
+    "Keep atomic rollback, no silent repair/loss, stable IDs, nextObstacleId snapshots and unchanged RNG/generator24.",
+    "Preserve published panel correction PR482 and owner spacing correction PR483 when integrating; do not silently claim either old E3 snapshot is current combined UI."
+  ],
+  "verification": {
+    "existing_suites": [
+      "test/mapTransactions.test.mjs",
+      "test/saveSafety.test.mjs",
+      "test/manualObstacles.test.mjs",
+      "test/browser/save-history.smoke.mjs"
+    ],
+    "requirements": [
+      "Actual malformed legacy import v2/v3/v4 and malformed v5 preserves document/history/redo/counters/RNG, path includes indexed record.",
+      "Valid legacy manifest and valid but new-placement-forbidden edge survive migration/v5 round-trip.",
+      "Reuse existing scenarios before adding permanent tests; report logical cases from base/head diff per suite.",
+      "All E4 AC01–AC09 and independent exact-SHA review with score_assessment1.2 before release handoff."
+    ]
+  },
+  "completion_criteria": "Full E4 exact SHA with all AC and CI, actual desktop/narrow user walkthrough, independent review; foundation alone is not review_ready.",
+  "publication": {
+    "allowed": false,
+    "PR480": "No owner permission; integration/review needed after base change",
+    "PR483": "Accepted d0f9850; awaits explicit owner release permission; do not mix authorization with E4"
+  },
+  "score_model_version": "1.2",
+  "score_forecast": "unknown; all affected baseline grades/points/delta null; no score awarded",
+  "ui_preview": {
+    "version": "E4-UI1",
+    "status": "previously_shown_proposal",
+    "new_design_gate": false,
+    "actual_ui_pending": true,
+    "owner_response_blocks_development": false
+  },
+  "next_step": "Программист продолжает PR481 по E4-1.1: подключает v5, транзакции и фактический UI; затем передаёт точный SHA независимому проверяющему."
+}
