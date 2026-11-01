@@ -1,0 +1,47 @@
+{
+  "base_sha": "9a3f074d88422cd78d1b5183eeab7863b5d66ece",
+  "head_sha": "1eb26b7af48a13eb5c2d419924f478842a8801de",
+  "added": 1,
+  "removed": 0,
+  "modified": 6,
+  "suite": "Node test/*.test.mjs; browser save-history lifecycle separately",
+  "count_source": "git diff base/head; logical test() cases, renamed case mapped as modification; browser standalone lifecycle counts as one scenario",
+  "per_suite": [
+    {
+      "suite": "Node",
+      "added": 1,
+      "removed": 0,
+      "modified": 5,
+      "modified_cases": [
+        "mapTransactions: all manifest saves round-trip",
+        "mythicKingdom: kingdom quotas/d12/save/classic/atomic undo",
+        "saveSafety: generated proposal ID/counter overflow",
+        "saveSafety: notes versions contract (renamed2/3/4→2/3/4/5)",
+        "worldContinuation: v2 migration and v3 validation"
+      ],
+      "new_case": "v5 obstacle IDs and counter survive migration, round-trip and history; invalid v5 is atomic"
+    },
+    {
+      "suite": "Browser save-history lifecycle",
+      "added": 0,
+      "removed": 0,
+      "modified": 1,
+      "scenario_risk": "Actual production notes export v5 and legacy corpus geometry/counter/round-trip"
+    }
+  ],
+  "scenario_risk": "Stable obstacle identity and allocator persist across migrations/import/export/Undo/Redo/reset; malformed v5 cannot damage either history stack; generated obstacles allocate once",
+  "reuse_or_new_reason": "Existing manifest, format, proposal and kingdom tests expanded. One focused actual-App v5 lifecycle case covers stable identity/counter, optional kingdom and atomic invalid import, not covered by generic legacy/rollback or pure helper cases. No new runner.",
+  "sensitivity": {
+    "baseline_sha": "9a3f074d88422cd78d1b5183eeab7863b5d66ece",
+    "new_case": "FAIL:4!==5",
+    "modified_sha": "1eb26b7af48a13eb5c2d419924f478842a8801de",
+    "focused_case": "PASS"
+  },
+  "temporary_diagnostics": {
+    "new_permanent_cases": 0,
+    "ui_matrix": 4,
+    "overflow_production": 1,
+    "generator_comparison": 1,
+    "counted_as_suite_growth": false
+  }
+}
