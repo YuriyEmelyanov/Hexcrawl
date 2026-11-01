@@ -1,0 +1,215 @@
+{
+  "run_id": "2026-11-01-developer-HX-BL-023-E4-legacy-guard",
+  "role": "developer",
+  "task_id": "HX-BL-023",
+  "stage_id": "E4",
+  "status": "implementation_checkpoint_not_review_ready",
+  "started_at": "2026-11-01T13:04:21.681Z",
+  "completed_at": "2026-11-01T13:23:56.461Z",
+  "role_selection_reason": "E4 is approved with corrected usable E4-1.1 specification; prior claims completed, no new owner release permission or review_ready work. PR483 score event completed. Implement confirmed legacy guard and integrate published UI as next safe substep.",
+  "approval_ref": "owner-decision-2026-10-28-editor-additional-functions-approved",
+  "spec_ref": "agent-work/specs/HX-BL-023-E4.md",
+  "spec_version": "E4-1.1",
+  "branch": "agent/hx023-e4-barriers",
+  "pr": 481,
+  "base_sha": "1bd3d973e11001d18f91718ee9c8b98bbfbf3758",
+  "integrated_main_sha": "cd4bd5402ffa92800710f5d4ded32cb1baea774b",
+  "head_sha": "9a3f074d88422cd78d1b5183eeab7863b5d66ece",
+  "tree_sha": "708d71eba64bb4802dfd837b24664e496700a2c6",
+  "changes": [
+    "Legacy v2–v4 obstacles require distinct adjacent hexes; invalid common geometry/kingdom/duplicate errors retain indexed path.",
+    "SaveValidationError from domain layer keeps field path; RU/EN adjacency reason displayed in existing import error flow.",
+    "Actual handler imports reject atomically before state/history changes, keeping RNG and redo.",
+    "Merged published PR482/483; resolved App conflict by placing E3 SVG targets at new map location and retaining road-draft guards with pencil control."
+  ],
+  "checks": {
+    "local_check": {
+      "status": "passed",
+      "exit_code": 0,
+      "node": "24.22.1",
+      "node_cases": {
+        "executed": 261,
+        "passed": 261,
+        "failed": 0,
+        "skipped": 0
+      },
+      "typecheck": "passed",
+      "production_build": "passed",
+      "evidence_ref": "agent-work/evidence/HX-BL-023-E4-legacy-guard-9a3f074/check.log"
+    },
+    "red_reproduction": {
+      "expected_failure": true,
+      "case": "Existing transaction test fails on accepted same-hex legacy",
+      "evidence_ref": "agent-work/evidence/HX-BL-023-E4-legacy-guard-9a3f074/red.log"
+    },
+    "targeted_green": {
+      "passed": 1,
+      "failed": 0,
+      "evidence_ref": "agent-work/evidence/HX-BL-023-E4-legacy-guard-9a3f074/green.log"
+    },
+    "actual_UI": {
+      "method": "Production build of exact tree via local Chromium; RU/EN×1500/390",
+      "executed": 4,
+      "passed": 4,
+      "document_rng_unchanged": true,
+      "redo_retained_and_executed": true,
+      "overflow": false,
+      "evidence_ref": "agent-work/evidence/HX-BL-023-E4-legacy-guard-9a3f074/ui.json"
+    },
+    "ci": [
+      {
+        "name": "seed-ui",
+        "status": "completed",
+        "conclusion": "skipped",
+        "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41310355429/job/124859244107"
+      },
+      {
+        "name": "check",
+        "status": "in_progress",
+        "conclusion": null,
+        "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41310355425/job/124859243140"
+      },
+      {
+        "name": "browser",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41310355425/job/124859243139"
+      },
+      {
+        "name": "world-random",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41310355425/job/124859242995"
+      }
+    ],
+    "tree_bridge": "GitHub tree equals local git write-tree708d71e; same source used in check/build/probe",
+    "readback_verified": true
+  },
+  "test_change_summary": {
+    "base_sha": "1bd3d973e11001d18f91718ee9c8b98bbfbf3758",
+    "head_sha": "9a3f074d88422cd78d1b5183eeab7863b5d66ece",
+    "scope": "This developer checkpoint versus preceding E4 checkpoint, including merge of already published PR482/483",
+    "added": 0,
+    "removed": 0,
+    "modified": 2,
+    "suites": [
+      {
+        "suite": "Node test/mapTransactions.test.mjs",
+        "added": 0,
+        "removed": 0,
+        "modified": 1,
+        "scenario_risk": "Reject malformed legacy obstacles through actual import handler and preserve document/RNG/history/redo; RU/EN×v2/v3/v4×same/distant/edge variants inside existing logical runner case",
+        "reuse_or_new_reason": "Extended existing invalid/preparation-import rollback case rather than duplicate runner"
+      },
+      {
+        "suite": "browser save-history lifecycle",
+        "added": 0,
+        "removed": 0,
+        "modified": 1,
+        "scenario_risk": "Shared scrolling, pencil layout and unchanged view/edit row geometry",
+        "reuse_or_new_reason": "Inherited already published PR482/483 assertions during required main integration, not new E4 test growth"
+      }
+    ],
+    "count_source": "Exact git diff1bd3d97→9a3f074 changes only one existing Node logical test and one existing browser lifecycle; no test()/runner registration added or removed. Variant assertions are not separately counted as new runner cases.",
+    "package_base_sha": "cd4bd5402ffa92800710f5d4ded32cb1baea774b",
+    "package_note": "Complete draft PR additionally contains accepted but unreleased E3 and previous E4 foundation tests. These inherited changes require full package review; this summary does not label them new tests in this run.",
+    "executions": {
+      "node": {
+        "executed": 261,
+        "passed": 261,
+        "failed": 0,
+        "skipped": 0
+      },
+      "red_reproduction": {
+        "executed": 1,
+        "passed": 0,
+        "failed": 1,
+        "expected_failure": true
+      },
+      "targeted_green": {
+        "executed": 1,
+        "passed": 1,
+        "failed": 0
+      },
+      "temporary_browser": {
+        "executed": 4,
+        "passed": 4,
+        "unit": "RU/EN×1500/390 production fixture import; separate from Node and permanent browser suites"
+      },
+      "browser_CI": {
+        "status": "success",
+        "executed": 7,
+        "passed": 7,
+        "skipped": 0,
+        "unit": "separate named runner invocations, not Node cases",
+        "runners": [
+          "generation",
+          "poi-display",
+          "terrain-color",
+          "forest-display",
+          "navigation",
+          "large-navigation",
+          "save-history"
+        ],
+        "evidence": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41310355425/job/124859243139"
+      },
+      "RNG_CI": {
+        "status": "success",
+        "executed": 1,
+        "passed": 1,
+        "unit": "world-random browser runner, not Node case",
+        "evidence": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41310355425/job/124859242995"
+      }
+    },
+    "ci_checks": "See CI exact-SHA status in result; no completed claim before final read."
+  },
+  "score_model_version": "1.2",
+  "score_evidence": {
+    "S09_C04": "Malformed legacy import rollback with actual document/RNG/stacks and production Redo verified; full criterion still unverified.",
+    "S04_C04": "Existing manifest legacy round-trip included in full Node pass. v5 and PNG E4 evidence remain pending.",
+    "S03_C05": "Existing transaction runner extended, both stacks preserved. Obstacle operation history not integrated yet.",
+    "S02_C02": "Foundation unchanged; App ID/counter integration remains pending.",
+    "S01_C04": "E3 overlays retained with full browser/RNG CI passed; no broad geography grade awarded.",
+    "S03_C01": "Existing edit/Undo/Redo UI retained in production probe; no full criterion assessment."
+  },
+  "score_changed": false,
+  "score_expected_delta": null,
+  "publication_allowed": false,
+  "published": false,
+  "main_changed": false,
+  "review_ready": false,
+  "remaining": [
+    "App v5/EditableObstacle/nextObstacleId import/export/snapshots/generation integration",
+    "Actual obstacle Add/Move/Remove UI and E4 interleavings/PNG",
+    "Full exact-package UI walkthrough and independent review with score_assessment1.2"
+  ],
+  "next_role": "developer",
+  "next_step": "Программист продолжает PR481 с checkpoint9a3f074: интеграция v5/EditableObstacle/nextObstacleId во все снимки истории, генерации и импорт/экспорт; затем UI и независимая проверка полного SHA.",
+  "handoff_ref": "agent-work/handoffs/2026-11-01-HX-BL-023-E4-v5-continuation.json",
+  "limitations": [
+    "Intermediate checkpoint, not full E4 completion or release candidate.",
+    "CI check may still be running; exact status recorded above. Local equivalent check261/261 passed.",
+    "Chromium only; no physical touch/Firefox/Safari verification. Screenshot environment lacks some emoji glyphs.",
+    "Actual full E4 editor walkthrough remains pending; this run does not claim it shown."
+  ],
+  "environment_notes": [
+    "Initial shallow history prevented merge; fetched real ancestors and resolved actual merge conflicts, no unrelated-history override.",
+    "Used retained Chromium binary for temporary production probe; no product environment adapter added to repository."
+  ],
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-01T13:04:21.681Z",
+      "is_enabled": true,
+      "status": "checked"
+    },
+    "end": {
+      "checked_at": "2026-11-01T13:23:56.461Z",
+      "is_enabled": true,
+      "status": "checked"
+    },
+    "restoration_performed": false,
+    "errors": [],
+    "limitation": "Observed at peek times only."
+  }
+}
