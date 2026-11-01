@@ -231,7 +231,7 @@ try {
  // No debounce wait: selection/export must retain the final character.
  await select(`${other.q},${other.r}`);assert.equal(await page.locator('#gm-notes-text').count(),0);
  await select(noteKey);assert.equal(await page.locator('.gm-notes__text').textContent(),noteText);
- const savedNotes=await snapshot();assert.equal(savedNotes.version,4);assert.equal(savedNotes.map.gmNotesByHexKey[noteKey],noteText);
+ const savedNotes=await snapshot();assert.equal(savedNotes.version,5);assert.equal(savedNotes.map.gmNotesByHexKey[noteKey],noteText);
  const stripNotes=d=>{d=structuredClone(d);delete d.map.gmNotesByHexKey;return d;};
  assert.deepEqual(stripNotes(savedNotes),stripNotes(cleanNotes));
  assert.equal(await page.locator('svg').first().textContent().then(s=>s.includes('Жрец пропал')),false);
@@ -291,7 +291,8 @@ try {
  for(const entry of manifest.entries){
    const data=JSON.parse(await fs.readFile(new URL(entry.path,root)));await load(data);const saved=await snapshot();
    for(const f of ['regions','rivers','roads','crossings','terrainByHexKey'])assert.deepEqual(saved.map[f],data.map[f],entry.path+' '+f);
-   for(const f of ['kingdoms','obstacles','waterPoiByHexKey','biomeOverrideByHexKey'])assert.deepEqual(saved.map[f],data.map[f]??(['kingdoms','obstacles'].includes(f)?[]:{}),entry.path+' '+f);
+   for(const f of ['kingdoms','waterPoiByHexKey','biomeOverrideByHexKey'])assert.deepEqual(saved.map[f],data.map[f]??(['kingdoms','obstacles'].includes(f)?[]:{}),entry.path+' '+f);
+   assert.deepEqual(saved.map.obstacles.map(({id,...o})=>o),data.map.obstacles??[],entry.path+' obstacle geometry preserved');assert.equal(saved.counters.nextObstacleId,(data.map.obstacles??[]).length+1);
    if(data.map.toponyms)for(const [key,value]of Object.entries(data.map.toponyms.names))assert.deepEqual(saved.map.toponyms.names[key],value);
    await load(saved);assert.deepEqual(await snapshot(),saved,entry.path+' roundtrip');
    await addRegion();await button('Отменить').click();assert.deepEqual(await snapshot(),saved,entry.path+' undo continuation');

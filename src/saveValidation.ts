@@ -35,8 +35,13 @@ function reference(v: unknown, ids: Set<number>, p: string) { if (!ids.has(integ
 export function assertGeneratedIds(map: {
   regions: {id: number}[]; rivers: {id: number}[]; roads: {id: number}[];
   kingdoms?: {id: number}[]; hexTerrainByKey: Map<string, {lakeId?: number}>;
-  nextLakeId: number; nextRoadId: number;
+  nextLakeId: number; nextRoadId: number; obstacles?: {id:number}[]; nextObstacleId?: number;
 }): void {
+  if(map.nextObstacleId!==undefined){
+    const ids=uniqueIds(map.obstacles ?? [],'map.obstacles');
+    const next=integer(map.nextObstacleId,'counters.nextObstacleId');
+    if([...ids].some(id=>id>=next))fail('counters.nextObstacleId','counter must exceed existing IDs');
+  }
   for (const field of ['regions','rivers','roads','kingdoms'] as const) uniqueIds(map[field] ?? [], 'map.'+field);
   for (const field of ['nextLakeId','nextRoadId'] as const) integer(map[field], 'counters.'+field);
   // Save import normalizes these two counters to max(existing)+1.
@@ -48,11 +53,11 @@ export function assertGeneratedIds(map: {
 }
 export function validateSaveStructure(value: unknown, domain: {
   biome: (v: unknown)=>boolean; poi: (v: unknown)=>boolean; centralPoi: (v: unknown)=>boolean; waterPoi: (v: unknown)=>boolean;
-  names: (v: unknown)=>boolean; toponymModel: string; kingdoms: (map: RecordValue)=>void;
+  names: (v: unknown)=>boolean; toponymModel: string; kingdoms: (map: RecordValue, version: number)=>void;
 }): void {
   const data=record(value,'$');
-  oneOf(data.schema,['hexcrawl-map'],'schema'); oneOf(data.version,[2,3,4],'version');
-  if (data.version === 3 || data.version === 4 || data.generation !== undefined) { const path = generationValidationPath(data.generation); if (path) fail(path,'unsupported or invalid RNG state'); }
+  oneOf(data.schema,['hexcrawl-map'],'schema'); oneOf(data.version,[2,3,4,5],'version');
+  if (data.version === 3 || data.version === 4 || data.version === 5 || data.generation !== undefined) { const path = generationValidationPath(data.generation); if (path) fail(path,'unsupported or invalid RNG state'); }
   const map=record(data.map,'map'), ui=record(data.ui,'ui'), counters=record(data.counters,'counters');
   const regions=array(map.regions,'map.regions'), rivers=array(map.rivers,'map.rivers'), roads=array(map.roads,'map.roads');
   const regionIds=uniqueIds(regions,'map.regions'), riverIds=uniqueIds(rivers,'map.rivers'), roadIds=uniqueIds(roads,'map.roads');
@@ -93,9 +98,14 @@ export function validateSaveStructure(value: unknown, domain: {
     }
   }
   // Preserve all existing kingdom/obstacle checks. Errors stay field-scoped.
-  try { domain.kingdoms(map); } catch(error) {
+  try { domain.kingdoms(map,data.version as number); } catch(error) {
     if(error instanceof SaveValidationError)throw error;
     fail('map.kingdoms/obstacles','invalid kingdom layers');
+  }
+  if(data.version===5){
+    const ids=uniqueIds(array(map.obstacles ?? [],'map.obstacles'),'map.obstacles');
+    integer(counters.nextObstacleId,'counters.nextObstacleId');
+    if([...ids].some(id=>id===Number.MAX_SAFE_INTEGER))fail('counters.nextObstacleId','counter overflow');
   }
   const terrain=record(map.terrainByHexKey,'map.terrainByHexKey'); let maxLake=0;
   for(const [k,v] of Object.entries(terrain)) {

@@ -14,6 +14,7 @@ import { findKingdomOrigin, kingdomHexes, kingdomKeys, connectionPath, distance,
 import { modeRegionSize } from './modes/regionSize';
 import { MYTHIC_POI, mythicPoiChoices, initialMythicPoints, allocateKingdomPoi, type MythicPoi } from './modes/pointsOfInterest';
 import { createObstacles, pairKey, type Obstacle } from './modes/obstacles';
+import {migrateLegacyObstacles,normalizeObstacleCounter,type EditableObstacle} from './manualObstacles';
 import { kingdomBoundary } from './modes/kingdomBoundaries';
 import { createGenerationLogger, MAX_REGION_ATTEMPTS, type GenerationEvent } from './generationDiagnostics';
 import { solveRiverNetwork, validateRiverNetwork, minimumLakeHexes, isFullness, type RiverNetwork as ModelNetwork, type RiverEdge as ModelEdge, type SolveResult as ModelSolveResult } from './riverModel/core';
@@ -449,12 +450,12 @@ type Biome = {
 
 type HexcrawlSaveData = {
   schema: 'hexcrawl-map';
-  version: 2 | 3 | 4;
+  version: 2 | 3 | 4 | 5;
   generation?: GenerationState;
   savedAt: string;
   map: {
     kingdoms?: Kingdom[];
-    obstacles?: Obstacle[];
+    obstacles?: (Obstacle | EditableObstacle)[];
     regions: Region[];
     candidateHexes: AxialHex[];
     rivers: River[];
@@ -469,6 +470,7 @@ type HexcrawlSaveData = {
   counters: {
     nextLakeId: number;
     nextRoadId: number;
+    nextObstacleId?: number;
   };
   ui: {
     generationMode?: GenerationMode;
@@ -487,7 +489,7 @@ type ValidatedHexcrawlSaveData = HexcrawlSaveData & {
 };
 
 const HEXCRAWL_SAVE_SCHEMA = 'hexcrawl-map';
-const HEXCRAWL_SAVE_VERSION = 4;
+const HEXCRAWL_SAVE_VERSION = 5;
 const PNG_EXPORT_SCALE = 2;
 const EXPORT_FILE_PREFIX = 'hexcrawl-map';
 const BIOME_TILE_HREFS: Partial<Record<BiomeId, string>> = {
@@ -951,7 +953,7 @@ function assertHexcrawlSaveData(value: unknown): asserts value is ValidatedHexcr
     centralPoi: v => typeof v === 'string' && Object.prototype.hasOwnProperty.call(CENTRAL_POI_DETAILS, v),
     waterPoi: v => typeof v === 'string' && Object.prototype.hasOwnProperty.call(WATER_POI_DETAILS, v),
     names: isToponymRegistry, toponymModel: DEFAULT_TOPONYM_MODEL,
-    kingdoms: map => validateKingdomLayers(map, getHexEdgeKeys)
+    kingdoms: (map, version) => validateKingdomLayers(map, getHexEdgeKeys, version === 5)
   });
 }
 
@@ -1260,7 +1262,7 @@ type MapSnapshot = {
   gmNotesByHexKey: Record<string, string>;
   generation: GenerationState;
   kingdoms?: Kingdom[];
-  obstacles?: Obstacle[];
+  obstacles?: EditableObstacle[];
   regions: Region[];
   candidateHexes: AxialHex[];
   rivers: River[];
@@ -1269,6 +1271,7 @@ type MapSnapshot = {
   hexTerrainByKey: Map<string, HexTerrainData>;
   nextLakeId: number;
   nextRoadId: number;
+  nextObstacleId: number;
   waterPoiByKey: Map<string, WaterPoiKind>;
   biomeOverrideByHexKey: Map<string, BiomeId>;
   toponyms: ToponymRegistry;
@@ -11278,7 +11281,7 @@ export function App() {
   const t = UI_TEXT[language];
   const [generationMode, setGenerationMode] = useState<GenerationMode>('classic');
   const [kingdoms, setKingdoms] = useState<Kingdom[]>([]);
-  const [obstacles, setObstacles] = useState<Obstacle[]>([]);
+  const [obstacles, setObstacles] = useState<EditableObstacle[]>([]);
   const kingdomInFlight = useRef(false);
   const advancedJobs = useRef(new WeakSet<KingdomJob>());
   const consumedRegenerations = useRef(new WeakSet<object>());
@@ -11301,6 +11304,7 @@ export function App() {
   const [editingCentralPoiRegionId, setEditingCentralPoiRegionId] = useState<number | null>(null);
   const [nextLakeId, setNextLakeId] = useState(1);
   const [nextRoadId, setNextRoadId] = useState(1);
+  const [nextObstacleId, setNextObstacleId] = useState(1);
   const importInFlight = useRef(false);
   const [isImporting, setIsImporting] = useState(false);
   const [gmNotesByHexKey, setGmNotesByHexKey] = useState<Record<string, string>>({});
@@ -11860,7 +11864,7 @@ export function App() {
     const snapshot: MapSnapshot = {
         gmNotesByHexKey: {...notesMapRef.current},
         generation: cloneGenerationState(activeGenerationBefore.current ?? generationRef.current),
-        kingdoms, obstacles,
+        kingdoms, obstacles, nextObstacleId,
       regions,
       candidateHexes: originalGenerationCandidates,
       rivers,
@@ -12728,7 +12732,7 @@ export function App() {
       const snapshot: MapSnapshot = {
         gmNotesByHexKey: {...notesMapRef.current},
         generation: cloneGenerationState(activeGenerationBefore.current ?? generationRef.current),
-        kingdoms, obstacles,
+        kingdoms, obstacles, nextObstacleId,
         regions,
         candidateHexes: originalGenerationCandidates,
         rivers,
@@ -12787,7 +12791,7 @@ export function App() {
   };
 
 
-  const captureMap = (): MapSnapshot => ({ gmNotesByHexKey: notesMapRef.current, generation: cloneGenerationState(generationRef.current), kingdoms, obstacles, regions, candidateHexes, rivers, roads, crossings,
+  const captureMap = (): MapSnapshot => ({ gmNotesByHexKey: notesMapRef.current, generation: cloneGenerationState(generationRef.current), kingdoms, obstacles, nextObstacleId, regions, candidateHexes, rivers, roads, crossings,
     hexTerrainByKey, waterPoiByKey, biomeOverrideByHexKey, toponyms, toponymSeed, nextLakeId, nextRoadId });
   const captureDocument = (): DocumentSnapshot => ({ map: captureMap(), generationHistory: history, selectedHex,
     generationMode, isMapRotated, mapScale: pendingMapZoomRef.current?.scale ?? mapScaleRef.current });
@@ -12808,7 +12812,7 @@ export function App() {
     setRoads(map.roads); setCrossings(map.crossings); setHexTerrainByKey(map.hexTerrainByKey);
     setWaterPoiByKey(map.waterPoiByKey); setBiomeOverrideByHexKey(map.biomeOverrideByHexKey);
     setToponyms(map.toponyms); setToponymSeed(map.toponymSeed);
-    setNextLakeId(map.nextLakeId); setNextRoadId(map.nextRoadId);
+    setNextLakeId(map.nextLakeId); setNextRoadId(map.nextRoadId); setNextObstacleId(map.nextObstacleId ?? 1);
   };
   // Checkpoints are detached once at generation commit and thereafter immutable.
   // Share those checkpoints between transactions instead of copying the whole
@@ -12970,7 +12974,7 @@ export function App() {
     setToponyms(map.toponyms);
     setToponymSeed(map.toponymSeed);
     setNextLakeId(map.nextLakeId);
-    setNextRoadId(map.nextRoadId);
+    setNextRoadId(map.nextRoadId); setNextObstacleId(map.nextObstacleId ?? 1);
     setHistory(backup.history);
     setSelectedHex(backup.selectedHex);
     if (backup.document) {
@@ -13096,6 +13100,9 @@ export function App() {
     const roadPairs=new Set(rebuiltRoads.flatMap(r=>r.segments.map(s=>pairKey(s.from,s.to))));
     if(obstacles.some(o=>roadPairs.has(pairKey(o.hex,o.neighborHex))))throw new Error('Дорога пересекла существующее препятствие.');
     const addedObstacles=createObstacles(job.id,kingdomHexes(job.origin),getHexEdgesAsVertexPairs,h=>heights.get(hexKey(h))??0,h=>!dry(h),riverEdges,roadPairs, rng.geography);
+    if(normalizeObstacleCounter(obstacles,nextObstacleId)!==nextObstacleId||nextObstacleId>Number.MAX_SAFE_INTEGER-addedObstacles.length)throw new SaveValidationError('counters.nextObstacleId','counter overflow');
+    const identifiedObstacles=addedObstacles.map((o,i)=>({...o,id:nextObstacleId+i}));
+    const finalNextObstacleId=nextObstacleId+identifiedObstacles.length;
     const names=synchronizeToponyms({},[{key:`kingdom:${job.id}`,kind:'region'}],toponymSeed);
     const kingdom:Kingdom={id:job.id,origin:job.origin,anchor:job.anchor,regionIds:assigned.map(r=>r.id),name:names[`kingdom:${job.id}`],color:`hsl(${Math.round((job.id*137.508)%360)} 65% 68%)`};
     const water=new Map(waterPoiByKey);
@@ -13104,14 +13111,14 @@ export function App() {
     recordGenerated(job.backup.map, { ...captureMap(), regions: finalRegions, roads: rebuiltRoads,
       nextRoadId: roadId, crossings: finalCrossings,
       waterPoiByKey: water, toponyms: synchronizeToponyms(toponyms,getToponymEntities(finalRegions,rivers,hexTerrainByKey),toponymSeed),
-      kingdoms: [...kingdoms,kingdom], obstacles: [...obstacles,...addedObstacles] },
+      kingdoms: [...kingdoms,kingdom], obstacles: [...obstacles,...identifiedObstacles], nextObstacleId: finalNextObstacleId },
       assigned.find(r=>r.centralPoiKind==='throne')!.centerHex, job.failureBackup ?? job.backup, job.backup.history);
     setRegions(finalRegions);
     setRoads(rebuiltRoads);setNextRoadId(roadId);
     setCrossings(finalCrossings);
     setWaterPoiByKey(water);
     setToponyms(synchronizeToponyms(toponyms,getToponymEntities(finalRegions,rivers,hexTerrainByKey),toponymSeed));
-    setKingdoms([...kingdoms,kingdom]);setObstacles([...obstacles,...addedObstacles]);
+    setKingdoms([...kingdoms,kingdom]);setObstacles([...obstacles,...identifiedObstacles]);setNextObstacleId(finalNextObstacleId);
     setHistory([...job.backup.history,structuredClone(job.backup.map)]);
     setSelectedHex(assigned.find(r=>r.centralPoiKind==='throne')!.centerHex);
     activeGenerationBefore.current = cloneGenerationState((job.failureBackup ?? job.backup).map.generation);
@@ -13183,14 +13190,14 @@ export function App() {
     if (mutationBlocked()) return;
     if (!regions.length && !rivers.length && !roads.length && !kingdoms.length && !obstacles.length
       && !hexTerrainByKey.size && !waterPoiByKey.size && !biomeOverrideByHexKey.size && !candidateHexes.length
-      && !Object.keys(toponyms).length && nextLakeId===1 && nextRoadId===1 && !isMapRotated
+      && !Object.keys(toponyms).length && nextLakeId===1 && nextRoadId===1 && nextObstacleId===1 && !isMapRotated
       && selectedHex?.q===START_HEX.q && selectedHex?.r===START_HEX.r) return;
     if (!confirmNotesRemoval({})) return;
     const before=captureDocument();
     const newGeneration = createGenerationState(newWorldSeed());
     const after: DocumentSnapshot = { ...before, map: { gmNotesByHexKey: {}, generation: newGeneration, kingdoms: [], obstacles: [], regions: [], candidateHexes: [],
       rivers: [], roads: [], crossings: [], hexTerrainByKey: new Map(), waterPoiByKey: new Map(), biomeOverrideByHexKey: new Map(),
-      toponyms: {}, toponymSeed: toponymSeedFor(newGeneration.masterSeed), nextLakeId: 1, nextRoadId: 1 },
+      toponyms: {}, toponymSeed: toponymSeedFor(newGeneration.masterSeed), nextLakeId: 1, nextRoadId: 1, nextObstacleId: 1 },
       generationHistory: [], selectedHex: START_HEX, isMapRotated: false };
     recordTransaction(before,after); applyDocument(after); setEditMode(false); setGenerationError(null);
   };
@@ -13250,7 +13257,7 @@ export function App() {
     setWaterPoiByKey(snapshot.waterPoiByKey);
     setBiomeOverrideByHexKey(snapshot.biomeOverrideByHexKey);
     setNextLakeId(snapshot.nextLakeId);
-    setNextRoadId(snapshot.nextRoadId);
+    setNextRoadId(snapshot.nextRoadId); setNextObstacleId(snapshot.nextObstacleId ?? 1);
   };
 
   const deleteLastRegion = () => {
@@ -13873,7 +13880,7 @@ export function App() {
     },
     counters: {
       nextLakeId,
-      nextRoadId
+      nextRoadId, nextObstacleId
     },
     ui: {
       generationMode,
@@ -13937,10 +13944,13 @@ export function App() {
       const retainedNames=imported.map.toponyms?.names ?? {};
       const names={...synchronizeToponyms(retainedNames,getToponymEntities(imported.map.regions,imported.map.rivers,terrain),seed),...retainedNames};
       const validSelection=new Set([...hexes.map(hexKey),...candidates.map(hexKey),...terrain.keys()]);
+      const obstacleData=imported.version===5
+        ? {obstacles:(imported.map.obstacles ?? []) as EditableObstacle[],nextObstacleId:normalizeObstacleCounter((imported.map.obstacles ?? []) as EditableObstacle[],imported.counters.nextObstacleId!)}
+        : migrateLegacyObstacles(imported.map.obstacles as Obstacle[] | undefined);
       const selection=imported.ui.selectedHex;
       const before=captureDocument();
       const after:DocumentSnapshot={
-        map:{gmNotesByHexKey: Object.fromEntries(Object.entries(imported.map.gmNotesByHexKey ?? {}).filter(([,text]) => text !== '')), generation: imported.generation ?? createGenerationState(seed >>> 0), kingdoms:imported.map.kingdoms ?? [],obstacles:imported.map.obstacles ?? [],regions:imported.map.regions,
+        map:{gmNotesByHexKey: Object.fromEntries(Object.entries(imported.map.gmNotesByHexKey ?? {}).filter(([,text]) => text !== '')), generation: imported.generation ?? createGenerationState(seed >>> 0), kingdoms:imported.map.kingdoms ?? [],...obstacleData,regions:imported.map.regions,
           candidateHexes:candidates,rivers:imported.map.rivers,roads:imported.map.roads,crossings:imported.map.crossings,
           hexTerrainByKey:terrain,waterPoiByKey:new Map(Object.entries(imported.map.waterPoiByHexKey ?? {})),
           biomeOverrideByHexKey:new Map(Object.entries(imported.map.biomeOverrideByHexKey ?? {})),toponyms:names,toponymSeed:seed,
@@ -14438,7 +14448,7 @@ export function App() {
               {renderDetails && kingdoms.flatMap(k=>kingdomBoundary(k,getHexEdgesAsVertexPairs).map(e=><line key={`${k.id}:${e.edgeKey}`} x1={e.from.x+riverOffset.x} y1={e.from.y+riverOffset.y} x2={e.to.x+riverOffset.x} y2={e.to.y+riverOffset.y} stroke={k.color} strokeWidth={3} strokeDasharray="6 4" />))}
             </g>
             <g className="obstacles-layer" transform={mapRotationTransform} pointerEvents="none">
-              {renderDetails && obstacles.map(o=>{const e=getHexEdgesAsVertexPairs(o.hex).find(e=>e.edgeKey===o.edgeKey);return e?<line key={o.edgeKey} x1={e.from.x+riverOffset.x} y1={e.from.y+riverOffset.y} x2={e.to.x+riverOffset.x} y2={e.to.y+riverOffset.y} stroke="#a95650" strokeWidth={3} />:null;})}
+              {renderDetails && obstacles.map(o=>{const e=getHexEdgesAsVertexPairs(o.hex).find(e=>e.edgeKey===o.edgeKey);return e?<line key={o.id} x1={e.from.x+riverOffset.x} y1={e.from.y+riverOffset.y} x2={e.to.x+riverOffset.x} y2={e.to.y+riverOffset.y} stroke="#a95650" strokeWidth={3} />:null;})}
             </g>
             <g className="river-waterfalls-layer" pointerEvents="none">
               {renderDetails && riverWaterfalls.map((waterfall) => {
@@ -14802,6 +14812,7 @@ export function App() {
                   <div className="export-menu__items">
                     <button type="button" disabled={!renderDetails} onClick={() => void handleExportPng()} className="secondary">PNG</button>
                     <button type="button" onClick={handleExportJson} className="secondary">JSON</button>
+                    <small>{language==='ru'?'JSON v5: старые версии приложения не откроют этот файл.':'JSON v5: older app versions cannot open this file.'}</small>
                   </div>
                 </details>
               <button type="button" disabled={!!roadDraft || isImporting || !!pendingRegen || !!kingdomJob} onClick={handleImportJsonClick} className="secondary">{t.importJson}</button>
@@ -14913,7 +14924,7 @@ export function App() {
                           const riverFeatures = [hasWaterfall ? waterfallLabel : null, hasRapids ? t.rapids : null].filter((feature): feature is string => feature !== null);
                           return <p key={`nearby-river-${river.id}`}><span className="nearby-river-marker" aria-hidden="true">→</span>{hasRapids ? <span className="nearby-river-marker" aria-hidden="true">|||</span> : null}{hasWaterfall ? <img className="nearby-waterfall-marker" src="/waterfall-color.svg" alt="" aria-hidden="true" /> : null} {t.river} {renderToponym(`river:${river.id}`)}{riverFeatures.length > 0 ? ` (${riverFeatures.join(', ')})` : ''}</p>;
                         })}
-                        {selectedObstacles.map(o=><p key={o.edgeKey} style={{color:'#bd6a64'}}>━ {language==='ru'?'Препятствие':'Barrier'} ({hexKey(o.hex)===selectedHexKey?hexKey(o.neighborHex):hexKey(o.hex)})</p>)}
+                        {selectedObstacles.map(o=><p key={o.id} style={{color:'#bd6a64'}}>━ {language==='ru'?'Препятствие':'Barrier'} ({hexKey(o.hex)===selectedHexKey?hexKey(o.neighborHex):hexKey(o.hex)})</p>)}
                         {selectedHexCrossings.map((crossing) => <p key={`selected-crossing-${crossing.key}`}>{crossing.kind === 'bridge' ? '🌉' : crossing.kind === 'ferry' ? '⛴️' : '🌊'} {t[crossing.kind]}</p>)}
                         {nearbyLakeIds.map((lakeId) => <p key={`nearby-lake-${lakeId}`}>💧 {t.lake} {renderToponym(`lake:${lakeId}`, 'nearby')}</p>)}
                         {hasNearbySea ? <p>{t.sea}</p> : null}

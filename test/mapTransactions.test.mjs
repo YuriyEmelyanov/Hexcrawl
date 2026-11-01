@@ -115,7 +115,9 @@ test('all manifest saves round-trip unchanged entities, names and can continue t
     assert.deepEqual(alerts,[],item.path);
     const saved=stable(h.render());
     for(const layer of ['regions','rivers','roads','crossings','terrainByHexKey']) assert.deepEqual(saved.map[layer],data.map[layer],item.path+' '+layer);
-    for(const layer of ['kingdoms','obstacles','waterPoiByHexKey','biomeOverrideByHexKey'])assert.deepEqual(saved.map[layer],data.map[layer]??(layer==='kingdoms'||layer==='obstacles'?[]:{}),item.path+' '+layer);
+    for(const layer of ['kingdoms','waterPoiByHexKey','biomeOverrideByHexKey'])assert.deepEqual(saved.map[layer],data.map[layer]??(layer==='kingdoms'||layer==='obstacles'?[]:{}),item.path+' '+layer);
+    assert.deepEqual(saved.map.obstacles.map(({id,...o})=>o),data.map.obstacles??[],item.path+' obstacle geometry');
+    assert.equal(saved.version,5);assert.equal(saved.counters.nextObstacleId,(data.map.obstacles??[]).length+1);
     if(data.map.toponyms)for(const [key,name] of Object.entries(data.map.toponyms.names))assert.deepEqual(saved.map.toponyms.names[key],name,item.path+' name '+key);
     h.geometry.assertHexcrawlSaveData(serial(h.render().createSaveData()));
     // Reload the normalized export: only savedAt may change.
@@ -125,6 +127,44 @@ test('all manifest saves round-trip unchanged entities, names and can continue t
     assert.equal(result.success,true,item.path+' continuation '+JSON.stringify(result));
     h.render().undoMap();assert.deepEqual(stable(h.render()),saved,item.path+' undo continuation');
   }
+});
+test('v5 obstacle IDs and counter survive migration, round-trip and history; invalid v5 is atomic',async()=>{
+  const legacy=JSON.parse(fs.readFileSync(new URL('./fixtures/import-v2/baseline-mythic.json',import.meta.url)));
+  // Structural compatibility is distinct from the restrictions on new commands.
+  const obstacle=legacy.map.obstacles[0];
+  legacy.map.terrainByHexKey[`${obstacle.hex.q},${obstacle.hex.r}`]={terrainOverride:'sea'};
+  const roadId=Math.max(0,...legacy.map.roads.map(r=>r.id))+1;
+  legacy.map.roads.push({id:roadId,regionId:legacy.map.regions[0].id,segments:[{from:obstacle.hex,to:obstacle.neighborHex,kind:'road'}]});
+  legacy.counters.nextRoadId=roadId+1;
+  const {h,alerts}=setup();
+  await load(h,legacy);assert.deepEqual(alerts,[]);
+  const migrated=stable(h.render());assert.equal(migrated.version,5);
+  const sorted=[...legacy.map.obstacles].map(o=>o.edgeKey).sort();
+  assert.deepEqual(migrated.map.obstacles,legacy.map.obstacles.map(o=>({...o,id:sorted.indexOf(o.edgeKey)+1})));
+  assert.equal(migrated.counters.nextObstacleId,sorted.length+1);
+  for(const version of [2,3,4]){
+    await load(h,{...legacy,version,generation:migrated.generation});
+    assert.deepEqual(stable(h.render()),migrated,'deterministic legacy migration '+version);
+  }
+  const edited=structuredClone(migrated);edited.map.obstacles.forEach(o=>o.id+=1000);
+  delete edited.map.obstacles[0].kingdomId;edited.counters.nextObstacleId=2000;
+  const before=stable(h.render());await load(h,edited);assert.deepEqual(stable(h.render()),edited,'persisted IDs not renumbered');
+  assertUndoRedo(h,before,edited);
+  // A low but safe counter is normalized upwards without touching IDs.
+  const low=structuredClone(edited);low.counters.nextObstacleId=1;await load(h,low);
+  const normalized=stable(h.render());assert.equal(normalized.counters.nextObstacleId,Math.max(...edited.map.obstacles.map(o=>o.id))+1);
+  assert.deepEqual(normalized.map.obstacles,edited.map.obstacles);
+  h.render().undoMap();const exact=serial(h.render().captureDocument()),stacks=serial([h.render().undoHistory,h.render().redoHistory]);
+  for(const mutate of [d=>delete d.counters.nextObstacleId,d=>d.counters.nextObstacleId=0,d=>d.counters.nextObstacleId=Number.MAX_SAFE_INTEGER+1,
+    d=>delete d.map.obstacles[0].id,d=>d.map.obstacles[1].id=d.map.obstacles[0].id,d=>d.map.obstacles[0].id=Number.MAX_SAFE_INTEGER,
+    d=>d.map.obstacles[0].neighborHex={...d.map.obstacles[0].hex}]){
+    const bad=structuredClone(edited);mutate(bad);const count=alerts.length;await load(h,bad);
+    assert.equal(alerts.length,count+1);assert.match(alerts.at(-1),/map\.obstacles|counters\.nextObstacleId/);
+    assert.deepEqual(serial(h.render().captureDocument()),exact);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks);
+  }
+  h.render().redoMap();assert.deepEqual(stable(h.render()),normalized);
+  const resetBefore=stable(h.render());h.render().resetMap();assert.equal(stable(h.render()).counters.nextObstacleId,1);
+  h.render().undoMap();assert.deepEqual(stable(h.render()),resetBefore);
 });
 test('no-op and failed imports preserve redo; fresh edit clears it; reset on empty is a no-op',async()=>{
   const {h}=setup();h.render().resetMap();assert.equal(h.render().undoHistory.length,0);

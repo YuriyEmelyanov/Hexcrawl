@@ -39,7 +39,11 @@ test('kingdom quotas, d12 sizes, save, classic extension and atomic undo',()=>{
     const h=createGenerationHarness(seed);const original=h.render().createSaveData().map;
     h.render().startKingdom({q:0,r:0});let app=finish(h);validate(h,app.kingdoms[0]);
     const built=JSON.stringify(app.createSaveData().map);assert.equal(app.history.length,1);
-    h.render().undoMap();h.render().redoMap();app=h.render();
+    assert.equal(new Set(app.obstacles.map(o=>o.id)).size,24);
+    assert.deepEqual(app.obstacles.map(o=>o.id),Array.from({length:24},(_,i)=>i+1));
+    assert.equal(app.createSaveData().counters.nextObstacleId,25);
+    h.render().undoMap();assert.equal(h.render().createSaveData().counters.nextObstacleId,1);
+    h.render().redoMap();app=h.render();assert.equal(app.createSaveData().counters.nextObstacleId,25);
     assert.equal(JSON.stringify(app.createSaveData().map),built,'kingdom redo restores the same crossings without a second random choice');
     const previous=JSON.stringify(app.regions);app.setGenerationMode('classic');assert.equal(JSON.stringify(h.render().regions),previous);
     app=h.render();assert.equal(app.safelyAddRegionToMap(app.candidateHexes[0],{targetSize:8,coastalPreference:'mainland'}).success,true);
