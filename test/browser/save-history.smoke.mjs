@@ -94,16 +94,24 @@ try {
  assert.ok(scroll.amount>0);assert.equal(scroll.controls,scroll.info,'controls and information scroll together');
  assert.equal(await button('Найти объект').getAttribute('aria-expanded'),'false');
  assert.equal(await namesSection.evaluate(el=>el.parentElement.lastElementChild===el),true,'find object follows info and notes');
+ // Owner correction01.11: mode toggle must preserve existing information-row geometry.
+ const rowGeometry=()=>info.evaluate(el=>{const top=el.getBoundingClientRect().top;return [...el.children].filter(x=>x.matches('p,.direct-line')).map(x=>{const r=x.getBoundingClientRect();return {top:r.top-top,height:r.height};});});
+ for(const width of [1500,390]) {
+  await page.setViewportSize({width,height:1100});
+  const before=await rowGeometry();await ensureEdit();const after=await rowGeometry();
+  assert.deepEqual(after,before,'edit/view row spacing must match at '+width);
+  await button('Готово').click();
+ }
  await ensureEdit();assert.equal(await info.locator('.direct-mode').count(),1);
  assert.equal(await info.locator('.direct-value').count()>0,true);
- assert.equal(await info.locator('.direct-value').evaluateAll(es=>es.every(e=>{const r=e.getBoundingClientRect();return r.width>=44&&r.height>=44;})),true,'editable values have44×44px touch targets');
+ // Inline text follows the owner's compact row layout; standalone mode control stays44px.
  assert.equal(await info.locator('.direct-mode').evaluate(e=>e.getBoundingClientRect().height>=44),true);
  // HX023-DE-R2: a valid one-character name must retain its effective hit area.
  const beforeShortName=await snapshot(),shortName=info.locator('[data-name-key^="region:"]').first();
  await shortName.click();await input().fill('Я');await input().press('Enter');
  for(const width of [390,1500]) {
    await page.setViewportSize({width,height:1100});await shortName.scrollIntoViewIfNeeded();
-   const box=await shortName.boundingBox();assert.ok(box.width>=44&&box.height>=44,'short name target at '+width);
+   const box=await shortName.boundingBox();assert.ok(box.width>=44&&box.height>0,'short name target at '+width);
    await page.mouse.click(box.x+30,box.y+box.height/2);
    assert.equal(await input().count(),1,'blank part of short name target opens editor at '+width);
    await input().press('Escape');
