@@ -974,24 +974,55 @@
       ],
       "strategist_followup": {
         "requested_on": "2026-11-01",
-        "status": "requested_by_owner",
+        "status": "proposal_ready_awaiting_task_start",
         "feedback_ref": "agent-work/feedback.json#HX-FB-008",
         "title": "Скрыть отладку из основной панели; поиск оставить только для выбора объекта",
-        "scope": {
-          "debug": "Убрать отладку из основной пользовательской панели; сохранить отдельно доступную служебную диагностику. Способ доступа определить при подготовке задачи.",
-          "search": "Сохранить поиск по названиям по всей карте как средство навигации: поиск → выбор результата → информация об объекте → редактирование в информационном блоке.",
-          "duplicates": "Убрать отдельное редактирование названий из каталога результатов. Выбор результата действует одинаково в просмотре и редактировании.",
-          "preserve": "Существующие имена RU/EN, выбор объектов, безопасное завершение черновиков, Undo/Redo и данные карты; прежнее решение HX-FB-004 о размещении поиска не отменяется без отдельного основания."
-        },
+        "scope": [
+          "Скрыть видимый блок отладки из обычной панели, сохранив доступ через явно включаемый служебный режим; деталь доступа определить в спецификации.",
+          "Результат поиска в обоих режимах выбирает объект и показывает его информацию; правка имени только в информационном блоке.",
+          "Сохранить поиск RU/EN/по типу, расположение ниже информации/заметок и guards незавершённого ввода."
+        ],
         "owner_request": "Current owner discussion: «А зачем нам кнопка отладки под информационным блоком? И нужен ли ещё поиск, если мы всё редактируем в информационном поле?» → proposal → «ОК, зафиксируй в задачах для стратега.»",
-        "next_role": "strategist_manager",
-        "next_step": "В существующей HX-BL-010 учесть HX-FB-008, определить приоритет относительно утверждённого E4, границы служебного доступа и пригодную передачу/предложение; до выпуска показать фактический пользовательский путь desktop/узкий экран.",
+        "next_role": "owner",
+        "next_step": "Ожидается утверждение владельцем ограниченной задачи HX-BL-010; пока программист выполняет утверждённый E4.",
         "before_after": "Сейчас под информацией видна «Отладка: OFF»; каталог поиска в режиме редактирования допускает правку имён. Предложено: отладки в основной панели нет; результат поиска выбирает объект, все правки выполняются в его информации.",
         "implementation_started": false,
         "execution_allowed": false,
         "release_approved": false,
         "score_impact": "unknown",
-        "current_approved_queue_preserved": true
+        "current_approved_queue_preserved": true,
+        "assessed_at": "2026-11-01T08:57:30.581Z",
+        "priority": "После текущего E4; не прерывать готовую утверждённую реализацию и не включать скрыто в PR481.",
+        "problem": "Техническая отладка занимает место в пользовательской панели; каталог поиска дублирует редактирование и предлагает разное действие в двух режимах.",
+        "benefit": "Мастер находит объект по имени и правит его в одном понятном месте; основная панель показывает рабочие сведения.",
+        "priority_reason": "Адресное замечание владельца важнее косметических альтернатив вроде новой темы; сейчас ниже готового E4, поскольку не блокирует его и отдельный старт не утверждён.",
+        "estimate": "Малый отдельный пакет: аналитик с desktop/узким предложением, программист, независимая проверка; фактическое время/стоимость неизвестны.",
+        "dependencies": [
+          "Утверждение начала ограниченной HX-BL-010",
+          "Завершение текущего E4 либо явное изменение приоритета владельцем",
+          "Сохранение действующих правил безопасного редактирования и поиска"
+        ],
+        "acceptance_checks": [
+          "В обычном интерфейсе нет блока Отладка; служебный доступ документирован и проверен.",
+          "Поиск находит имя; результат одинаково выбирает объект при просмотре и редактировании.",
+          "Все изменения имён выполняются в информации; несохранённый черновик не теряется при переходе.",
+          "До публикации показаны фактические до/после и путь пользователя на desktop/узком экране, RU/EN."
+        ],
+        "score": {
+          "model_version": "1.2",
+          "criterion_ids": [
+            "S04-C01",
+            "S04-C05",
+            "S09-C05"
+          ],
+          "before_grade": null,
+          "before_points": null,
+          "expected_after": null,
+          "delta": null,
+          "status": "unknown; no user study or full criterion assessment"
+        },
+        "required_owner_decision": "Утвердить старт этого ограниченного пакета HX-BL-010; текущее поручение разрешило учёт и работу стратега, не немедленную разработку.",
+        "result_ref": "agent-work/results/2026-11-01-strategist-score-PR483-cd4bd54.json"
       }
     },
     {
@@ -1247,14 +1278,14 @@
       "execution_allowed": true,
       "spec_status": "ready_for_development",
       "next_role": "developer",
-      "next_step": "Программист продолжает PR481 по E4-1.1: подключает v5, транзакции и фактический UI; затем передаёт точный SHA независимому проверяющему.",
+      "next_step": "Программист продолжает утверждённый HX-BL-023/E4 в PR481 по E4-1.1: интегрировать v5/Undo/Redo/UI, сохранив опубликованную панель PR482/483; предъявить фактический desktop/узкий экран и передать точный SHA независимому проверяющему.",
       "related_task_ids": [
         "HX-BL-013",
         "HX-BL-018",
         "HX-BL-019",
         "HX-BL-028"
       ],
-      "handoff_ref": "agent-work/handoffs/2026-11-01-HX-BL-023-E4-development.json",
+      "handoff_ref": "agent-work/handoffs/2026-11-01-HX-BL-023-E4-after-PR483.json",
       "owner_priority_decision": {
         "id": "owner-decision-2026-10-28-editor-and-MB-content-before-outreach",
         "date": "2026-10-28",
@@ -1613,7 +1644,7 @@
           "status": "ready_for_development",
           "spec_ref": "agent-work/specs/HX-BL-023-E4.md",
           "spec_version": "E4-1.1",
-          "handoff_ref": "agent-work/handoffs/2026-11-01-HX-BL-023-E4-development.json",
+          "handoff_ref": "agent-work/handoffs/2026-11-01-HX-BL-023-E4-after-PR483.json",
           "implementation_started": true,
           "release_approved": false,
           "ui_preview": {
@@ -1634,7 +1665,7 @@
           "completed_substep": "pure_commands_and_ID_migration",
           "review_ready": false,
           "next_role": "developer",
-          "next_step": "Программист продолжает PR481 по E4-1.1: подключает v5, транзакции и фактический UI; затем передаёт точный SHA независимому проверяющему.",
+          "next_step": "Программист продолжает утверждённый HX-BL-023/E4 в PR481 по E4-1.1: интегрировать v5/Undo/Redo/UI, сохранив опубликованную панель PR482/483; предъявить фактический desktop/узкий экран и передать точный SHA независимому проверяющему.",
           "specification_findings": [],
           "blocker_ref": "agent-work/evidence/HX-BL-023-E4-legacy-adjacency-1bd3d97/finding.json",
           "spec_blob_sha": "55010a47fedee34537e7d1d1198fa0f78f3f6e4b",
@@ -1642,7 +1673,8 @@
             "HX023-E4-SPEC-01"
           ],
           "blocker_status": "resolved_by_E4-1.1",
-          "analyst_result_ref": "agent-work/results/2026-11-01-analyst-HX-BL-023-E4-migration.json"
+          "analyst_result_ref": "agent-work/results/2026-11-01-analyst-HX-BL-023-E4-migration.json",
+          "published_main_to_preserve": "cd4bd5402ffa92800710f5d4ded32cb1baea774b"
         }
       },
       "current_owner_correction_ref": "owner-decision-2026-10-28-editor-functional-scope",
@@ -1806,9 +1838,12 @@
         "publication_ref": "agent-work/evidence/release-PR483-cd4bd54/publication.json",
         "result_ref": "agent-work/results/2026-11-01-developer-release-PR483.json",
         "deployment_run_id": 41282658601,
-        "score_update_status": "pending",
+        "score_update_status": "completed",
         "score_update_responsible": "strategist_manager",
-        "score_update_handoff_ref": "agent-work/handoffs/2026-11-01-PR483-release-score.json"
+        "score_update_handoff_ref": "agent-work/handoffs/2026-11-01-PR483-release-score.json",
+        "score_update_result_ref": "agent-work/results/2026-11-01-strategist-score-PR483-cd4bd54.json",
+        "score_update_completed_at": "2026-11-01T08:57:30.581Z",
+        "score_awarded_points": 0
       }
     },
     {
@@ -2986,9 +3021,12 @@
     "status": "ready_for_development",
     "next_role": "developer",
     "execution_allowed": true,
-    "handoff_ref": "agent-work/handoffs/2026-11-01-HX-BL-023-E4-development.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-01-HX-BL-023-E4-after-PR483.json",
     "reason": "Already-approved E4; bounded legacy geometry contract corrected in E4-1.1, no additional start/design approval.",
-    "expected_result": "PR481: редактор препятствий с v5/Undo/Redo и фактическим UI, затем независимая проверка точного SHA."
+    "expected_result": "PR481: редактор препятствий с v5/Undo/Redo и фактическим UI, затем независимая проверка точного SHA.",
+    "next_step": "Программист продолжает утверждённый HX-BL-023/E4 в PR481 по E4-1.1: интегрировать v5/Undo/Redo/UI, сохранив опубликованную панель PR482/483; предъявить фактический desktop/узкий экран и передать точный SHA независимому проверяющему.",
+    "priority_reason": "Already approved primary L1 editor task, no open specification findings. Complete E4 before unapproved UX cleanup/new content work.",
+    "score_impact": "unknown; no points forecast award"
   },
   "previous_product_recommendation": {
     "task_id": "HX-BL-027",
