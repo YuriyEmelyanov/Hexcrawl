@@ -1,13 +1,128 @@
 {
-  "id": "owner-decision-2026-11-01-equal-information-row-spacing",
-  "task_id": "HX-BL-023",
-  "type": "approved_immediate_UI_correction",
-  "source": "Current owner: «В режиме просмотра и редактирования должно быть одинаковое расстояние между строками. Расширение отступа необоснованно.»",
-  "scope": "Keep existing information row positions/spacing when toggling edit mode; no artificial44px minimum height on inline text. Standalone buttons retain44px. Explicit current owner requirement supersedes prior inline44px height requirement where incompatible.",
-  "status": "implementation_in_progress",
   "run_id": "2026-11-01-developer-equal-row-spacing",
-  "automation_health_start": {
-    "checked_at": "2026-11-01T02:20:50.504Z",
-    "is_enabled": true
-  }
+  "role": "developer",
+  "task_id": "HX-BL-023",
+  "stage_id": "equal_row_spacing",
+  "feedback_id": "HX-FB-007",
+  "status": "accepted_awaiting_owner_publication_permission",
+  "decision": {
+    "id": "owner-decision-2026-11-01-equal-information-row-spacing",
+    "task_id": "HX-BL-023",
+    "type": "approved_immediate_UI_correction",
+    "source": "Current owner: «В режиме просмотра и редактирования должно быть одинаковое расстояние между строками. Расширение отступа необоснованно.»",
+    "scope": "Keep existing information row positions/spacing when toggling edit mode; no artificial44px minimum height on inline text. Standalone buttons retain44px. Explicit current owner requirement supersedes prior inline44px height requirement where incompatible.",
+    "status": "implementation_in_progress",
+    "run_id": "2026-11-01-developer-equal-row-spacing",
+    "automation_health_start": {
+      "checked_at": "2026-11-01T02:20:50.504Z",
+      "is_enabled": true
+    }
+  },
+  "pr": 483,
+  "branch": "agent/hx023-equal-row-spacing",
+  "head_sha": "d0f9850a15954c32a17eaa101beffcd17fe60f83",
+  "tree_sha": "cee555aed9a60cafb44fe0857db05257b8b801ac",
+  "base_sha": "8b1bb56ab45762e739f2048bccd237af05810c40",
+  "checks": {
+    "local_check": "passed, exit0",
+    "save_history": "passed",
+    "ci": [
+      {
+        "name": "seed-ui",
+        "status": "completed",
+        "conclusion": "skipped",
+        "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41265159108/job/124726345277"
+      },
+      {
+        "name": "browser",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41265159097/job/124726344497"
+      },
+      {
+        "name": "world-random",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41265159097/job/124726344495"
+      },
+      {
+        "name": "check",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41265159097/job/124726344328"
+      }
+    ]
+  },
+  "independent_review_ref": "agent-work/evidence/HX-BL-023-equal-spacing/reviewer.json",
+  "score_model_version": "1.2",
+  "score_assessment_ref": "agent-work/evidence/HX-BL-023-equal-spacing/reviewer.json#score_assessment",
+  "score_changed": false,
+  "release_approved": false,
+  "published": false,
+  "main_changed": false,
+  "test_change_summary": {
+    "base_sha": "8b1bb56ab45762e739f2048bccd237af05810c40",
+    "head_sha": "d0f9850a15954c32a17eaa101beffcd17fe60f83",
+    "added": 0,
+    "removed": 0,
+    "modified": 1,
+    "suite": "existing save-history browser lifecycle",
+    "scenario_risk": "Mode toggle must preserve row geometry at1500/390; keyboard/short-name edit remains functional.",
+    "reuse_or_new_reason": "Expand already loaded mode-toggle scenario; replace obsolete inline44px height assertion per explicit owner requirement. No new permanent runner.",
+    "count_source": "Exact GitHub tree diff: only CSS1line + existing lifecycle modified; no logical runner added/removed.",
+    "executions": {
+      "node": {
+        "executed": 249,
+        "passed": 249,
+        "failed": 0,
+        "skipped": 0
+      },
+      "browser": {
+        "executed": 1,
+        "passed": 1,
+        "unit": "existing fullsave-history lifecycle with100mixedoperations"
+      },
+      "temporary_developer": {
+        "executed": 2,
+        "passed": 2,
+        "unit": "layout widths"
+      },
+      "temporary_reviewer": {
+        "executed": 4,
+        "passed": 4,
+        "unit": "RU/EN x1500/390"
+      }
+    }
+  },
+  "ui_actual": {
+    "shown_in_chat": true,
+    "states": [
+      "view",
+      "edit"
+    ],
+    "widths": [
+      1500,
+      390
+    ],
+    "common_row_geometry_delta": 0,
+    "evidence_ref": "agent-work/evidence/HX-BL-023-equal-spacing",
+    "note": "Edit-only empty notes and actively opened form are separate content states; common rows do not shift."
+  },
+  "next_role": "owner",
+  "next_step": "Ожидается отдельное разрешение публикации PR483 exactd0f9850; независимая проверка и всеCIуспешны. Другая утверждённая работаE4 сохраняется.",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-01T02:20:50.504Z",
+      "is_enabled": true
+    },
+    "end": {
+      "checked_at": "2026-11-01T02:35:13.581Z",
+      "is_enabled": true
+    },
+    "restoration_performed": false,
+    "errors": []
+  },
+  "operational_resume_ref": "agent-work/results/2026-11-01-owner-resume-four-hourly.json",
+  "completed_at": "2026-11-01T02:35:13.581Z"
 }
