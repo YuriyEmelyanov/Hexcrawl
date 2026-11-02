@@ -1033,8 +1033,17 @@
         "Сохранить RU/EN, фильтры, guards черновиков, Undo/Redo и данные карты."
       ],
       "next_role": "business_analyst",
-      "next_step": "После текущего E4 аналитик готовит ограниченную спецификацию HX-BL-010 и показывает desktop/узкий UI; затем разработка и независимая проверка без третьего дизайн-согласования.",
-      "release_approved": false
+      "next_step": "Аналитик готовит спецификацию HX-BL-010 на опубликованном e949d2e: скрыть отладку из основной панели, сохранить служебный доступ; поиск выбирает объект, редактирование выполняется в информационном блоке. Показать desktop/390 и передать разработчику без дополнительного дизайн-согласования.",
+      "release_approved": false,
+      "spec_status": "needed",
+      "handoff_ref": "agent-work/handoffs/2026-11-02-HX-BL-010-after-PR481-score.json",
+      "ready_after_E4": {
+        "status": "fulfilled",
+        "release_sha": "e949d2ebda75af3988467c4a8d64715dd3a2e048",
+        "score_update_status": "completed",
+        "result_ref": "agent-work/results/2026-11-02-strategist-score-PR481-e949d2e.json"
+      },
+      "publication_allowed": false
     },
     {
       "task_id": "HX-BL-011",
@@ -1288,8 +1297,8 @@
       "recommended_priority": 1,
       "execution_allowed": true,
       "spec_status": "ready_for_development",
-      "next_role": "strategist_manager",
-      "next_step": "Стратег в ближайший свободный запуск идемпотентно отражает выпуск PR481 в current-score/history/latest по независимому score_assessment1.2; после учёта указывает следующую уже утверждённую HX-BL-010 и этап аналитика.",
+      "next_role": "business_analyst",
+      "next_step": "Аналитик готовит спецификацию HX-BL-010 на опубликованном e949d2e: скрыть отладку из основной панели, сохранить служебный доступ; поиск выбирает объект, редактирование выполняется в информационном блоке. Показать desktop/390 и передать разработчику без дополнительного дизайн-согласования.",
       "related_task_ids": [
         "HX-BL-013",
         "HX-BL-018",
@@ -1663,7 +1672,7 @@
           "score_assessment_ref": "agent-work/evidence/review-HX-BL-023-E3-d7bb38f/score_assessment.json",
           "finding_ids": [],
           "addressed_findings_pending_review": [],
-          "next_step": "Аналитик готовит спецификацию и показывает предлагаемый UI E4; дополнительное согласование старта не требуется.",
+          "next_step": "Опубликовано совместным PR481; score-событие учтено. Следующая задача команды HX-BL-010, аналитик.",
           "resolved_findings": [
             "HX023-E3-R1",
             "HX023-E3-R2",
@@ -1677,7 +1686,9 @@
           "published_via_pr": 481,
           "release_sha": "e949d2ebda75af3988467c4a8d64715dd3a2e048",
           "publication_ref": "agent-work/evidence/release-PR481-e949d2e/publication.json",
-          "score_update_status": "pending"
+          "score_update_status": "completed",
+          "score_update_result_ref": "agent-work/results/2026-11-02-strategist-score-PR481-e949d2e.json",
+          "score_update_completed_at": "2026-11-02T15:11:08.293Z"
         },
         "E4_obstacles": {
           "status": "published",
@@ -1703,8 +1714,8 @@
           "result_ref": "agent-work/results/2026-11-02-developer-HX-BL-023-E4-R1.json",
           "completed_substep": "map_targets_exact_ID_highlight_focus_return_accessible_actions",
           "review_ready": false,
-          "next_role": "developer",
-          "next_step": "Ожидается отдельное разрешение владельца на публикацию PR481 SHA0459c64; до выпуска сверить пакет. Следующая готовая утверждённая работа команды — спецификация HX-BL-010 аналитиком.",
+          "next_role": "business_analyst",
+          "next_step": "Опубликовано совместным PR481; score-событие учтено. Следующая задача команды HX-BL-010, аналитик.",
           "specification_findings": [],
           "blocker_ref": "agent-work/evidence/HX-BL-023-E4-legacy-adjacency-1bd3d97/finding.json",
           "spec_blob_sha": "55010a47fedee34537e7d1d1198fa0f78f3f6e4b",
@@ -1721,14 +1732,12 @@
           "accepted": true,
           "review_verdict": "accepted_with_scope_limitations",
           "review_result_ref": "agent-work/results/2026-11-02-reviewer-HX-BL-023-E4-0459c64.json",
-          "review_ref": "agent-work/evidence/review-HX-BL-023-E4-7d7ae9d/review-report.md",
+          "review_ref": "agent-work/evidence/review-HX-BL-023-E4-0459c64/review-report.md",
           "score_assessment_ref": "agent-work/evidence/review-HX-BL-023-E4-0459c64/score-assessment.json",
           "finding_ids": [],
-          "addressed_findings_pending_review": [
-            "HX023-E4-R1"
-          ],
-          "finding_status": "addressed_pending_independent_review",
-          "CI_status": "queued_not_confirmed",
+          "addressed_findings_pending_review": [],
+          "finding_status": "closed_by_independent_review",
+          "CI_status": "all_required_success",
           "published": true,
           "resolved_findings": [
             "HX023-E4-R1"
@@ -1737,14 +1746,16 @@
           "published_via_pr": 481,
           "release_sha": "e949d2ebda75af3988467c4a8d64715dd3a2e048",
           "publication_ref": "agent-work/evidence/release-PR481-e949d2e/publication.json",
-          "score_update_status": "pending"
+          "score_update_status": "completed",
+          "score_update_result_ref": "agent-work/results/2026-11-02-strategist-score-PR481-e949d2e.json",
+          "score_update_completed_at": "2026-11-02T15:11:08.293Z"
         }
       },
       "current_owner_correction_ref": "owner-decision-2026-10-28-editor-functional-scope",
       "feedback_id": "HX-FB-005",
       "release_sha": "e949d2ebda75af3988467c4a8d64715dd3a2e048",
       "release_result_ref": "agent-work/results/2026-11-02-developer-release-PR481.json",
-      "score_update_status": "pending",
+      "score_update_status": "completed",
       "score_update_responsible": "strategist_manager",
       "pending_ui_amendment": {
         "feedback_id": "HX-FB-005",
@@ -1759,7 +1770,7 @@
         "candidate_sha": "063c1548a5165fde8656ff016c65816c791ea387",
         "review_result_ref": "agent-work/results/2026-10-30-reviewer-HX-BL-023-direct-063c154.json"
       },
-      "score_update_result_ref": "agent-work/results/2026-10-31-strategist-score-HX-BL-023-E2-defaa5c.json",
+      "score_update_result_ref": "agent-work/results/2026-11-02-strategist-score-PR481-e949d2e.json",
       "last_completed_slice": "E3_accepted_not_published",
       "product_layer": "L1",
       "parent_spec_ref": "agent-work/specs/HX-BL-023.md",
@@ -1818,7 +1829,7 @@
       ],
       "release_approval_ref": "owner-release-2026-10-31-HX-BL-023-E2-a99c299",
       "score_update_handoff_ref": "agent-work/handoffs/2026-11-02-PR481-release-score.json",
-      "score_update_completed_at": "2026-10-30T22:31:49.807Z",
+      "score_update_completed_at": "2026-11-02T15:11:08.293Z",
       "previous_head_sha": "a99c299f0648c2e5c1d65173bdeca50061dcc901",
       "review_ready": false,
       "next_stage_id": "E4",
@@ -1912,7 +1923,7 @@
       "review_ref": "agent-work/evidence/review-HX-BL-023-E4-7d7ae9d/review-report.md",
       "tree_sha": "a80b4ad917cbc2ac6db41b819bad3ef5bab2ee23",
       "current_review_status": "pending_new_exact_SHA",
-      "current_score_assessment_status": "pending_new_SHA_model1.2",
+      "current_score_assessment_status": "independent_insufficient_evidence_applied_no_award",
       "previous_accepted_release_pending": {
         "task_id": "HX-BL-023",
         "stage_id": "E3",
@@ -1965,7 +1976,10 @@
         "new_main_sha": "8b1bb56ab45762e739f2048bccd237af05810c40",
         "integration_review_required_before_release": true
       },
-      "publication_ref": "agent-work/evidence/release-PR481-e949d2e/publication.json"
+      "publication_ref": "agent-work/evidence/release-PR481-e949d2e/publication.json",
+      "score_update_release_sha": "e949d2ebda75af3988467c4a8d64715dd3a2e048",
+      "score_awarded_points": 0,
+      "next_task_id": "HX-BL-010"
     },
     {
       "task_id": "HX-BL-024",
