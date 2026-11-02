@@ -67,10 +67,16 @@ try{
  assert.ok(result.geometryUnchanged,'Navigation must not mutate map artwork');assert.ok(result.dimensionsUnchanged,'Zoom must not resize/reconcile the SVG artwork');assert.ok(result.focalError<6,JSON.stringify(result));assert.ok(Math.abs(result.panDistance-90)<2,JSON.stringify(result));
  // A burst accumulates zoom but applies it once on the next frame.
  const burst=await page.evaluate(async()=>{
-  const v=document.querySelector('.map-viewport'),s=v.querySelector('svg'),r=v.getBoundingClientRect();let changes=0;
-  const observer=new MutationObserver(rs=>changes+=rs.filter(x=>x.target===s&&x.attributeName==='style').length);observer.observe(s,{attributes:true});
+  const v=document.querySelector('.map-viewport'),s=v.querySelector('svg'),r=v.getBoundingClientRect();const styles=[];
+  // Style records also include hit-area CSS variables; retain intermediate values
+  // so multiple transform writes in the same observer delivery still fail.
+  const observer=new MutationObserver(rs=>styles.push(...rs.filter(x=>x.target===s&&x.attributeName==='style').map(x=>x.oldValue)));observer.observe(s,{attributes:true,attributeOldValue:true});
   for(let i=0;i<20;i++)v.dispatchEvent(new WheelEvent('wheel',{bubbles:true,cancelable:true,deltaY:-1,clientX:r.left+200,clientY:r.top+200}));
-  await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));observer.disconnect();return {changes,scale:Number(s.style.transform.match(/scale\(([^)]+)\)/)[1])};
+  await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));observer.disconnect();styles.push(s.getAttribute('style'));
+  const parser=document.createElement('div');
+  const transforms=styles.map(style=>{parser.setAttribute('style',style??'');return parser.style.transform;});
+  const changes=transforms.slice(1).filter((value,index)=>value!==transforms[index]).length;
+  return {changes,scale:Number(s.style.transform.match(/scale\(([^)]+)\)/)[1])};
  });assert.equal(burst.changes,1,'One SVG transform update per frame');assert.ok(burst.scale>1.5);
  await page.locator('.rotate-map-button').click();assert.ok(await page.locator('.map-stage > svg').evaluate(s=>parseFloat(s.style.width)===s.viewBox.baseVal.width));
  const menu=page.locator('details.export-menu');await menu.locator('summary').click();

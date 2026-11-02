@@ -24,8 +24,26 @@ test('import is one exact transaction; invalid and preparation failure preserve 
   const before=stable(h.render()), stacks=serial([h.render().undoHistory,h.render().redoHistory]);
   const invalid=structuredClone(fixture); invalid.map.roads[0].segments='broken'; await load(h,invalid);
   assert.deepEqual(stable(h.render()),before);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks);
+  // E4-1.1 / HX023-E4-SPEC-01: actual legacy import must reject malformed
+  // obstacles before changing the document, RNG, undo or an existing redo branch.
+  const mythic=JSON.parse(fs.readFileSync(new URL('./fixtures/import-v2/baseline-mythic.json',import.meta.url)));
+  for(const language of ['ru','en'])for(const version of [2,3,4])for(const defect of ['same','distant','edge']) {
+    h.render().setLanguage(language);
+    const broken=structuredClone(mythic);broken.version=version;broken.generation=structuredClone(before.generation);
+    const o=broken.map.obstacles[0];
+    if(defect==='same')o.neighborHex={...o.hex};
+    if(defect==='distant')o.neighborHex={q:o.hex.q+3,r:o.hex.r};
+    if(defect==='edge')o.edgeKey='not-a-common-edge';
+    const document=serial(h.render().captureDocument());
+    await load(h,broken);
+    assert.match(alerts.at(-1),/map\.obstacles\[0\]/,language+' '+version+' '+defect);
+    if(defect!=='edge')assert.match(alerts.at(-1),language==='ru'?/два разных соседних гекса/:/two distinct adjacent hexes/);
+    assert.deepEqual(serial(h.render().captureDocument()),document,'invalid obstacles preserve full document and RNG');
+    assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks,'invalid obstacles preserve both stacks');
+    assert.equal(h.render().isImporting,false);
+  }
   const restore=h.injectFunction('getToponymEntities',()=>{throw Error('injected preparation failure');});
-  await load(h,fixture);restore(); assert.equal(alerts.length,2);assert.equal(h.render().isImporting,false);
+  await load(h,fixture);restore(); assert.equal(alerts.length,20);assert.equal(h.render().isImporting,false);
   assert.deepEqual(stable(h.render()),before);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks);
   await load(h,fixture);assert.equal(h.render().redoHistory.length,0);
 });
@@ -97,7 +115,9 @@ test('all manifest saves round-trip unchanged entities, names and can continue t
     assert.deepEqual(alerts,[],item.path);
     const saved=stable(h.render());
     for(const layer of ['regions','rivers','roads','crossings','terrainByHexKey']) assert.deepEqual(saved.map[layer],data.map[layer],item.path+' '+layer);
-    for(const layer of ['kingdoms','obstacles','waterPoiByHexKey','biomeOverrideByHexKey'])assert.deepEqual(saved.map[layer],data.map[layer]??(layer==='kingdoms'||layer==='obstacles'?[]:{}),item.path+' '+layer);
+    for(const layer of ['kingdoms','waterPoiByHexKey','biomeOverrideByHexKey'])assert.deepEqual(saved.map[layer],data.map[layer]??(layer==='kingdoms'||layer==='obstacles'?[]:{}),item.path+' '+layer);
+    assert.deepEqual(saved.map.obstacles.map(({id,...o})=>o),data.map.obstacles??[],item.path+' obstacle geometry');
+    assert.equal(saved.version,5);assert.equal(saved.counters.nextObstacleId,(data.map.obstacles??[]).length+1);
     if(data.map.toponyms)for(const [key,name] of Object.entries(data.map.toponyms.names))assert.deepEqual(saved.map.toponyms.names[key],name,item.path+' name '+key);
     h.geometry.assertHexcrawlSaveData(serial(h.render().createSaveData()));
     // Reload the normalized export: only savedAt may change.
@@ -107,6 +127,67 @@ test('all manifest saves round-trip unchanged entities, names and can continue t
     assert.equal(result.success,true,item.path+' continuation '+JSON.stringify(result));
     h.render().undoMap();assert.deepEqual(stable(h.render()),saved,item.path+' undo continuation');
   }
+});
+test('v5 obstacle IDs and counter survive migration, round-trip and history; invalid v5 is atomic',async()=>{
+  const legacy=JSON.parse(fs.readFileSync(new URL('./fixtures/import-v2/baseline-mythic.json',import.meta.url)));
+  // Structural compatibility is distinct from the restrictions on new commands.
+  const obstacle=legacy.map.obstacles[0];
+  legacy.map.terrainByHexKey[`${obstacle.hex.q},${obstacle.hex.r}`]={terrainOverride:'sea'};
+  const roadId=Math.max(0,...legacy.map.roads.map(r=>r.id))+1;
+  legacy.map.roads.push({id:roadId,regionId:legacy.map.regions[0].id,segments:[{from:obstacle.hex,to:obstacle.neighborHex,kind:'road'}]});
+  legacy.counters.nextRoadId=roadId+1;
+  const {h,alerts}=setup();
+  await load(h,legacy);assert.deepEqual(alerts,[]);
+  const migrated=stable(h.render());assert.equal(migrated.version,5);
+  const sorted=[...legacy.map.obstacles].map(o=>o.edgeKey).sort();
+  assert.deepEqual(migrated.map.obstacles,legacy.map.obstacles.map(o=>({...o,id:sorted.indexOf(o.edgeKey)+1})));
+  assert.equal(migrated.counters.nextObstacleId,sorted.length+1);
+  for(const version of [2,3,4]){
+    await load(h,{...legacy,version,generation:migrated.generation});
+    assert.deepEqual(stable(h.render()),migrated,'deterministic legacy migration '+version);
+  }
+  const edited=structuredClone(migrated);edited.map.obstacles.forEach(o=>o.id+=1000);
+  delete edited.map.obstacles[0].kingdomId;edited.counters.nextObstacleId=2000;
+  const before=stable(h.render());await load(h,edited);assert.deepEqual(stable(h.render()),edited,'persisted IDs not renumbered');
+  assertUndoRedo(h,before,edited);
+  // A low but safe counter is normalized upwards without touching IDs.
+  const low=structuredClone(edited);low.counters.nextObstacleId=1;await load(h,low);
+  const normalized=stable(h.render());assert.equal(normalized.counters.nextObstacleId,Math.max(...edited.map.obstacles.map(o=>o.id))+1);
+  assert.deepEqual(normalized.map.obstacles,edited.map.obstacles);
+  h.render().undoMap();const exact=serial(h.render().captureDocument()),stacks=serial([h.render().undoHistory,h.render().redoHistory]);
+  for(const mutate of [d=>delete d.counters.nextObstacleId,d=>d.counters.nextObstacleId=0,d=>d.counters.nextObstacleId=Number.MAX_SAFE_INTEGER+1,
+    d=>delete d.map.obstacles[0].id,d=>d.map.obstacles[1].id=d.map.obstacles[0].id,d=>d.map.obstacles[0].id=Number.MAX_SAFE_INTEGER,
+    d=>d.map.obstacles[0].neighborHex={...d.map.obstacles[0].hex}]){
+    const bad=structuredClone(edited);mutate(bad);const count=alerts.length;await load(h,bad);
+    assert.equal(alerts.length,count+1);assert.match(alerts.at(-1),/map\.obstacles|counters\.nextObstacleId/);
+    assert.deepEqual(serial(h.render().captureDocument()),exact);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks);
+  }
+  h.render().redoMap();assert.deepEqual(stable(h.render()),normalized);
+  const resetBefore=stable(h.render());h.render().resetMap();assert.equal(stable(h.render()).counters.nextObstacleId,1);
+  h.render().undoMap();assert.deepEqual(stable(h.render()),resetBefore);
+  // Actual App commands reuse the prepared context and shared transaction history.
+  h.render().setEditMode(true);
+  let choice;
+  for(const region of h.render().regions)for(const hex of region.hexes){
+    if(choice)break;h.render().setSelectedHex(hex);h.render().startObstacleChoice(null);
+    choice=h.render().obstacleChoices.find(c=>!c.reason);
+  }
+  assert.ok(choice,'fixture has an available dry free edge');
+  const addBefore=stable(h.render()),allocated=addBefore.counters.nextObstacleId;
+  assert.equal(h.render().editObstacleDocument(choice.edit,h.render().obstacleDraft),true);
+  const added=stable(h.render());assert.equal(added.counters.nextObstacleId,allocated+1);
+  assert.equal(added.map.obstacles.at(-1).id,allocated);assertUndoRedo(h,addBefore,added);
+  h.render().startObstacleChoice(allocated);
+  const source=added.map.obstacles.at(-1);
+  const noOpBefore=serial(h.render().captureDocument()),noOpStacks=serial([h.render().undoHistory,h.render().redoHistory]);
+  assert.equal(h.render().editObstacleDocument({type:'move',id:allocated,hex:source.hex,neighborHex:source.neighborHex},h.render().obstacleDraft),true);
+  assert.deepEqual(serial(h.render().captureDocument()),noOpBefore);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),noOpStacks);
+  h.render().startObstacleChoice(allocated);
+  const move=h.render().obstacleChoices.find(c=>!c.reason&&JSON.stringify(c.edit.neighborHex)!==JSON.stringify(source.neighborHex));assert.ok(move);
+  assert.equal(h.render().editObstacleDocument(move.edit,h.render().obstacleDraft),true);
+  const moved=stable(h.render());assert.equal(moved.counters.nextObstacleId,allocated+1);assert.equal(moved.map.obstacles.at(-1).id,allocated);assertUndoRedo(h,added,moved);
+  assert.equal(h.render().editObstacleDocument({type:'remove',id:allocated}),true);
+  const removed=stable(h.render());assert.equal(removed.map.obstacles.some(o=>o.id===allocated),false);assertUndoRedo(h,moved,removed);
 });
 test('no-op and failed imports preserve redo; fresh edit clears it; reset on empty is a no-op',async()=>{
   const {h}=setup();h.render().resetMap();assert.equal(h.render().undoHistory.length,0);
@@ -268,4 +349,54 @@ test('region biome respects stored height and canonical neighbors, keeps all ove
   const neighbor=h.render().regions.find(n=>n.id!==r.id&&n.hexes.some(x=>r.hexes.some(y=>h.geometry.getHexNeighbors(y).some(z=>z.q===x.q&&z.r===x.r))));
   if(neighbor)for(const b of choices) if(b.id!==neighbor.biomeId&&!h.geometry.isBiomesCompatible(b.id,neighbor.biomeId,h.geometry.BIOME_COMPATIBILITY_MATRIX)) assert.ok(h.render().regionBiomeReason(r,b.id));
   assert.ok(before.map.biomeOverrideByHexKey[`${r.centerHex.q},${r.centerHex.r}`]);
+});
+
+// E3 preparation has no UI yet. Exercise the actual commit, not a copied history model.
+test('manual road command commits exactly once and stale callback cannot write after import',async()=>{
+  const {h,alerts}=setup();await load(h,fixture);assert.deepEqual(alerts,[]);
+  const app=h.render(),r=app.roads[0],s=r.segments[0];
+  const segmentKey=[`${s.from.q},${s.from.r}`,`${s.to.q},${s.to.r}`].sort().join('|');
+  const same={type:'kind',roadId:r.id,segmentKey,kind:s.kind};
+  const before=stable(app),stack=app.undoHistory.length;
+  assert.equal(app.editRoadDocument(same),true);assert.equal(h.render().undoHistory.length,stack);
+  // Use a new path between neighbouring named/destination hexes via the imported fixture.
+  // The real crossing handler provides a mutation whenever the fixture has a crossing.
+  const crossing=before.map.crossings[0];assert.ok(crossing,'fixture crossing required');
+  const command={type:'crossing',roadId:crossing.roadId,segmentKey:crossing.roadSegmentKey,riverId:crossing.riverId,kind:crossing.kind==='bridge'?'ferry':'bridge'};
+  assert.equal(h.render().editRoadDocument(command),true);
+  const after=stable(h.render());assert.notDeepEqual(after,before);assert.equal(h.render().undoHistory.length,stack+1);assertUndoRedo(h,before,after);
+  const stale=h.render().editRoadDocument;await load(h,fixture);const imported=stable(h.render());
+  assert.equal(stale(command),false);assert.deepEqual(stable(h.render()),imported);
+});
+
+test('road draft is ephemeral, blocks other writes, commits once and stale finish is inert',async()=>{
+ const {h}=setup(),data=structuredClone(fixture),segment=data.map.roads[0].segments[0];
+ const suppressed=JSON.parse(fs.readFileSync(new URL('./fixtures/suppressed-road-endpoint.json',import.meta.url)));
+ for(const isTract of [false,true]){
+  const input=structuredClone(suppressed),region=input.map.regions.find(r=>r.id===1);
+  region.isTract=isTract;region.suppressCentralPoi=!isTract;
+  await load(h,input);h.render().setSelectedHex({q:4,r:6});h.render().setEditMode(true);
+  const before=stable(h.render()),history=serial([h.render().undoHistory,h.render().redoHistory]);
+  h.render().startRoadDraft();h.render().appendRoadDraft({q:3,r:6});
+  assert.equal(h.render().finishRoadDraft(),false,'empty suppressed/tract center is not a destination');
+  assert.deepEqual(stable(h.render()),before);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),history);
+  h.render().resetRoadDraft();region.pointsOfInterest.push({q:3,r:6});await load(h,input);
+  assert.equal(h.render().editRoadDocument({type:'create',path:[{q:4,r:6},{q:3,r:6}],kind:'trail'}),true,'explicit POI remains eligible');
+ }
+
+ data.map.roads=[];data.map.crossings=[];
+ for(const p of [segment.from,segment.to]){const r=data.map.regions.find(r=>r.hexes.some(x=>x.q===p.q&&x.r===p.r));assert.ok(r);if(!r.pointsOfInterest.some(x=>x.q===p.q&&x.r===p.r))r.pointsOfInterest.push({...p});}
+ await load(h,data);h.render().setSelectedHex(segment.from);h.render().setEditMode(true);
+ const before=stable(h.render()),stacks=serial([h.render().undoHistory,h.render().redoHistory]);
+ assert.equal(h.render().startRoadDraft(),true);
+ assert.equal(h.render().finishRoadDraft(),false);assert.deepEqual(stable(h.render()),before);
+ h.render().resetMap();h.render().undoMap();h.render().setSelectedPoiKind('ruins');await load(h,fixture);
+ assert.deepEqual(stable(h.render()),before);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks);
+ assert.equal(h.render().appendRoadDraft({q:999,r:999}),false);
+ assert.equal(h.render().appendRoadDraft(segment.to),true);
+ h.render().resetRoadDraft();assert.deepEqual(stable(h.render()),before);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks);
+ h.render().startRoadDraft();h.render().appendRoadDraft(segment.to);
+ const stale=h.render().finishRoadDraft;assert.equal(stale(),true);const after=stable(h.render());
+ assert.equal(after.map.roads.length,1);assert.equal(h.render().undoHistory.length,stacks[0].length+1);assert.equal(h.render().roadDraft,null);assert.deepEqual(after.generation,before.generation);
+ assertUndoRedo(h,before,after);await load(h,fixture);const imported=stable(h.render());stale();assert.deepEqual(stable(h.render()),imported);
 });

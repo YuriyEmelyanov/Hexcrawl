@@ -29,10 +29,10 @@ button.secondary { background:rgba(12,20,35,.6); }
 .export-menu summary::-webkit-details-marker { display:none; }
 .export-menu summary::after { content:'▾'; font-size:.75rem; }
 .export-menu[open] summary::after { content:'▴'; }
-.export-menu__items { position:absolute; top:calc(100% + .35rem); left:0; z-index:1001; min-width:100%; display:flex; flex-direction:column; gap:.35rem; padding:.4rem; border:1px solid rgba(42,59,92,.9); background:#0f1726; border-radius:10px; box-shadow:0 10px 30px rgba(0,0,0,.35); }
+.export-menu__items { position:absolute; top:calc(100% + .35rem); left:0; z-index:1001; width:17rem; max-width:calc(100vw - 3.5rem); min-width:100%; display:flex; flex-direction:column; gap:.35rem; padding:.4rem; border:1px solid rgba(42,59,92,.9); background:#0f1726; border-radius:10px; box-shadow:0 10px 30px rgba(0,0,0,.35); }
 .export-menu__items button { width:100%; text-align:left; }
 
-.controls--transfer:has(.export-menu[open]) + .world-seed-control { margin-top:6rem; }
+.controls--transfer:has(.export-menu[open]) + .world-seed-control { margin-top:8rem; }
 .world-seed-control__row { display:grid; grid-template-columns:auto minmax(0, 1fr); align-items:center; gap:.5rem; color:#aebbd4; font-size:.85rem; font-weight:400; }
 .world-seed-control__row > span { white-space:nowrap; }
 .world-seed-control__row > input { width:100%; min-width:0; min-height:2.25rem; background:#0c1423; color:#eef4ff; border:1px solid #375386; border-radius:8px; padding:.4rem .5rem; font:inherit; }
@@ -247,3 +247,24 @@ button:disabled,select:disabled { opacity:.55; cursor:wait; }
 .map-names__list li { display:flex; align-items:baseline; gap:.5rem; justify-content:space-between; margin:.25rem 0; min-width:0; }
 .map-names__list .direct-value, .map-names__list .direct-find { width:auto; margin:0; }
 .gm-notes .direct-value { display:block; width:100%; }
+
+.road-editor { margin-block: 12px; }
+.road-editor__item { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; padding-block: 8px; }
+.road-editor__item label { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.road-editor__item .direct-value { min-height: 44px; max-width: 100%; white-space: normal; overflow-wrap: anywhere; }
+.road-editor__confirmation { display: flex; flex-wrap: wrap; gap: 8px; }
+.road-editor__confirmation p { flex-basis: 100%; }
+.road-editor__confirmation button { min-width: 44px; min-height: 44px; }
+.road-editor__danger { color: #fca5a5; }
+.road-map-target:focus-visible { stroke: #7dd3fc; stroke-opacity: .35; outline: none; }
+.crossing-map-target:focus-visible { fill: #7dd3fc; fill-opacity: .35; stroke: #fff; stroke-width: 2; outline: none; }
+
+.obstacle-editor { display:flex; flex-direction:column; gap:.35rem; margin-top:.5rem; }
+.obstacle-editor button, .obstacle-row .secondary { min-height:44px; overflow-wrap:anywhere; }
+.obstacle-row { display:flex; flex-wrap:wrap; align-items:center; gap:.35rem; }
+
+.obstacle-map-target { cursor:pointer; }
+.obstacle-map-target:focus-visible { outline:none; stroke:#7dd3fc; stroke-width:2px; }
+[data-obstacle-list]:focus-visible { outline:2px solid #7dd3fc; outline-offset:3px; }
+.obstacle-row { min-height:44px; }
+.obstacle-row .direct-value { min-height:44px; }

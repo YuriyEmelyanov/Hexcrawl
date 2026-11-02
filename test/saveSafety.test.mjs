@@ -38,14 +38,14 @@ for (const filename of ['lake-reentry-map','sea-pocket-map','terrain-display-map
 
 test('generated proposals reject overflow in every allocated ID namespace and counter', () => {
   const proposal = () => ({regions:[{id:1}], rivers:[{id:1}], roads:[{id:1}], kingdoms:[{id:1}],
-    hexTerrainByKey:new Map([['0,0',{lakeId:1}]]), nextLakeId:2, nextRoadId:2});
-  for (const field of ['regions','rivers','roads','kingdoms']) {
+    hexTerrainByKey:new Map([['0,0',{lakeId:1}]]), nextLakeId:2, nextRoadId:2, obstacles:[{id:1}], nextObstacleId:2});
+  for (const field of ['regions','rivers','roads','kingdoms','obstacles']) {
     const data=proposal(); data[field].push({id:Number.MAX_SAFE_INTEGER+1});
     assert.throws(()=>assertGeneratedIds(data), undefined, field+' unsafe ID');
     data[field]=[{id:Number.MAX_SAFE_INTEGER},{id:Number.MAX_SAFE_INTEGER}];
     assert.throws(()=>assertGeneratedIds(data), undefined, field+' rounded duplicate');
   }
-  for (const field of ['nextLakeId','nextRoadId']) {
+  for (const field of ['nextLakeId','nextRoadId','nextObstacleId']) {
     const data=proposal(); data[field]=Number.MAX_SAFE_INTEGER+1;
     assert.throws(()=>assertGeneratedIds(data), undefined, field);
     data[field]=Number.MAX_SAFE_INTEGER; assert.doesNotThrow(()=>assertGeneratedIds(data));
@@ -104,9 +104,9 @@ test('exhausted kingdom ID refuses production start and preserves document and b
 
 
 // DATA-03/04: distinct format contract, reusing the same structural validator.
-test('notes versions 2/3/4 accept exact text on actual land/water; v4 requires RNG and future versions reject', () => {
+test('notes versions 2/3/4/5 accept exact text on actual land/water; v4+ require RNG and future versions reject', () => {
   const land=valid.map.regions[0].hexes[0], k=`${land.q},${land.r}`;
-  for(const version of [2,3,4]) {
+  for(const version of [2,3,4,5]) {
     const data=structuredClone(valid); data.version=version;
     data.map.terrainByHexKey['-999,0']={terrainOverride:'sea'};
     data.map.gmNotesByHexKey={[k]:'  🗝 <script>not HTML</script>\r\n ', '-999,0':'sea'};
@@ -115,5 +115,5 @@ test('notes versions 2/3/4 accept exact text on actual land/water; v4 requires R
   }
   const bad=structuredClone(valid);bad.version=4;delete bad.generation;
   assert.throws(()=>h.geometry.assertHexcrawlSaveData(bad));
-  bad.version=5;assert.throws(()=>h.geometry.assertHexcrawlSaveData(bad));
+  bad.version=6;assert.throws(()=>h.geometry.assertHexcrawlSaveData(bad));
 });

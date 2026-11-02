@@ -1,3 +1,4 @@
+import {prepareRoadEdit, type RoadEdit} from './manualRoads';
 import { type RandomStreams, type GenerationState, fallbackRandomStreams, poiRandomStreams, createGenerationState, cloneGenerationState, draw, toponymSeedFor, newWorldSeed, isUint32 } from './worldRandom';
 import { validateSaveStructure, SaveValidationError, assertGeneratedIds } from './saveValidation';
 import { installViewportRasterCache } from './rendering/viewportRasterCache';
@@ -13,6 +14,7 @@ import { findKingdomOrigin, kingdomHexes, kingdomKeys, connectionPath, distance,
 import { modeRegionSize } from './modes/regionSize';
 import { MYTHIC_POI, mythicPoiChoices, initialMythicPoints, allocateKingdomPoi, type MythicPoi } from './modes/pointsOfInterest';
 import { createObstacles, pairKey, type Obstacle } from './modes/obstacles';
+import {prepareObstacleEdit,migrateLegacyObstacles,normalizeObstacleCounter,type ObstacleEdit,type EditableObstacle} from './manualObstacles';
 import { kingdomBoundary } from './modes/kingdomBoundaries';
 import { createGenerationLogger, MAX_REGION_ATTEMPTS, type GenerationEvent } from './generationDiagnostics';
 import { solveRiverNetwork, validateRiverNetwork, minimumLakeHexes, isFullness, type RiverNetwork as ModelNetwork, type RiverEdge as ModelEdge, type SolveResult as ModelSolveResult } from './riverModel/core';
@@ -448,12 +450,12 @@ type Biome = {
 
 type HexcrawlSaveData = {
   schema: 'hexcrawl-map';
-  version: 2 | 3 | 4;
+  version: 2 | 3 | 4 | 5;
   generation?: GenerationState;
   savedAt: string;
   map: {
     kingdoms?: Kingdom[];
-    obstacles?: Obstacle[];
+    obstacles?: (Obstacle | EditableObstacle)[];
     regions: Region[];
     candidateHexes: AxialHex[];
     rivers: River[];
@@ -468,6 +470,7 @@ type HexcrawlSaveData = {
   counters: {
     nextLakeId: number;
     nextRoadId: number;
+    nextObstacleId?: number;
   };
   ui: {
     generationMode?: GenerationMode;
@@ -486,7 +489,7 @@ type ValidatedHexcrawlSaveData = HexcrawlSaveData & {
 };
 
 const HEXCRAWL_SAVE_SCHEMA = 'hexcrawl-map';
-const HEXCRAWL_SAVE_VERSION = 4;
+const HEXCRAWL_SAVE_VERSION = 5;
 const PNG_EXPORT_SCALE = 2;
 const EXPORT_FILE_PREFIX = 'hexcrawl-map';
 const BIOME_TILE_HREFS: Partial<Record<BiomeId, string>> = {
@@ -950,7 +953,7 @@ function assertHexcrawlSaveData(value: unknown): asserts value is ValidatedHexcr
     centralPoi: v => typeof v === 'string' && Object.prototype.hasOwnProperty.call(CENTRAL_POI_DETAILS, v),
     waterPoi: v => typeof v === 'string' && Object.prototype.hasOwnProperty.call(WATER_POI_DETAILS, v),
     names: isToponymRegistry, toponymModel: DEFAULT_TOPONYM_MODEL,
-    kingdoms: map => validateKingdomLayers(map, getHexEdgeKeys)
+    kingdoms: (map, version) => validateKingdomLayers(map, getHexEdgeKeys, version === 5)
   });
 }
 
@@ -971,6 +974,7 @@ function getTimestampForFilename(date = new Date()): string {
 
 async function createExportSvgClone(svg: SVGSVGElement): Promise<SVGSVGElement> {
   const clone = svg.cloneNode(true) as SVGSVGElement;
+  clone.querySelectorAll('[data-editor-only]').forEach(node => node.remove());
   const viewBox = clone.viewBox.baseVal;
   clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
   clone.setAttribute('width', String(viewBox.width));
@@ -1258,7 +1262,7 @@ type MapSnapshot = {
   gmNotesByHexKey: Record<string, string>;
   generation: GenerationState;
   kingdoms?: Kingdom[];
-  obstacles?: Obstacle[];
+  obstacles?: EditableObstacle[];
   regions: Region[];
   candidateHexes: AxialHex[];
   rivers: River[];
@@ -1267,6 +1271,7 @@ type MapSnapshot = {
   hexTerrainByKey: Map<string, HexTerrainData>;
   nextLakeId: number;
   nextRoadId: number;
+  nextObstacleId: number;
   waterPoiByKey: Map<string, WaterPoiKind>;
   biomeOverrideByHexKey: Map<string, BiomeId>;
   toponyms: ToponymRegistry;
@@ -11276,7 +11281,7 @@ export function App() {
   const t = UI_TEXT[language];
   const [generationMode, setGenerationMode] = useState<GenerationMode>('classic');
   const [kingdoms, setKingdoms] = useState<Kingdom[]>([]);
-  const [obstacles, setObstacles] = useState<Obstacle[]>([]);
+  const [obstacles, setObstacles] = useState<EditableObstacle[]>([]);
   const kingdomInFlight = useRef(false);
   const advancedJobs = useRef(new WeakSet<KingdomJob>());
   const consumedRegenerations = useRef(new WeakSet<object>());
@@ -11299,6 +11304,7 @@ export function App() {
   const [editingCentralPoiRegionId, setEditingCentralPoiRegionId] = useState<number | null>(null);
   const [nextLakeId, setNextLakeId] = useState(1);
   const [nextRoadId, setNextRoadId] = useState(1);
+  const [nextObstacleId, setNextObstacleId] = useState(1);
   const importInFlight = useRef(false);
   const [isImporting, setIsImporting] = useState(false);
   const [gmNotesByHexKey, setGmNotesByHexKey] = useState<Record<string, string>>({});
@@ -11339,6 +11345,22 @@ export function App() {
   type NameTarget = { key: string; type: 'region' | 'settlement' | 'river' | 'lake' | 'kingdom'; ru: string; en: string; location: string };
   type NameDraft = { target: NameTarget; revision: number; language: Language; value: string; surface: string };
   const [editMode, setEditMode] = useState(false);
+  type RoadDraft = {path:AxialHex[];kind:RoadKind;crossingKinds:Record<string,RiverCrossingKind>;revision:number};
+  const [roadDraft,setRoadDraft] = useState<RoadDraft|null>(null);
+  const roadDraftRef = useRef<RoadDraft|null>(null);
+  const updateRoadDraft = (draft:RoadDraft|null) => {roadDraftRef.current=draft;setRoadDraft(draft);};
+  type ObstacleDraft = {id:number|null;revision:number};
+  const [obstacleDraft,setObstacleDraft] = useState<ObstacleDraft|null>(null);
+  const obstacleDraftRef = useRef<ObstacleDraft|null>(null);
+  const updateObstacleDraft = (draft:ObstacleDraft|null) => {obstacleDraftRef.current=draft;setObstacleDraft(draft);};
+  const obstacleReturnFocus = useRef<number|'nearby'|'add'|'edges'|'ambiguity'|null>(null);
+  const [ambiguousObstacleIds,setAmbiguousObstacleIds] = useState<number[]>([]);
+  const [hoverObstacleEdge,setHoverObstacleEdge] = useState<string|null>(null);
+  const [selectedObstacleId,setSelectedObstacleId] = useState<number|null>(null);
+  const pendingRoadExport = useRef<'png'|'json'|null>(null);
+  const [selectedRoadTarget, setSelectedRoadTarget] = useState<{roadId:number; crossingKey?:string} | null>(null);
+  const [selectedRoadPair, setSelectedRoadPair] = useState<string | null>(null);
+  const [confirmRoadRemoval, setConfirmRoadRemoval] = useState<{roadId:number;segmentKey?:string;revision:number} | null>(null);
   const [editError, setEditError] = useState<string | null>(null);
   const [editingRegionBiomeId, setEditingRegionBiomeId] = useState<number | null>(null);
   const [nameDraft, setNameDraft] = useState<NameDraft | null>(null);
@@ -11352,6 +11374,12 @@ export function App() {
   const nameComposingRef = useRef(false);
   const infoFocusRef = useRef<HTMLElement | null>(null);
   const nameReturnFocusRef = useRef<HTMLElement | null>(null);
+  useEffect(()=>{
+    const target=obstacleReturnFocus.current;if(target===null)return;
+    const selector=target==='edges'?'[data-obstacle-editor] button[aria-label]:not(:disabled)':target==='ambiguity'?'[data-obstacle-ambiguity] button':target==='nearby'?'[data-obstacle-list]':target==='add'?'[data-obstacle-add]':`[data-obstacle-id="${target}"] .direct-value`;
+    const node=infoFocusRef.current?.querySelector<HTMLElement>(selector)??infoFocusRef.current;
+    node?.focus();obstacleReturnFocus.current=null;
+  });
   const dirtyNameDraft = () => {
     const draft = nameDraftRef.current;
     return !!draft && draft.value !== draft.target[draft.language];
@@ -11365,6 +11393,7 @@ export function App() {
 
   // Уведомление пользователю (например, почему не создалось побережье).
   const [generationError, setGenerationError] = useState<GenerationDiagnostic | null>(null);
+  useEffect(()=>{if(obstacleDraftRef.current&&obstacleDraftRef.current.revision!==documentRevision.current)updateObstacleDraft(null);},[renderedDocumentRevision]);
   const captureGenerationInputs = () => ({ sizeCategory: genSizeCategory, landType: genLandType, biome: genBiome, coastal: genCoastal, mode: generationMode });
   const generationProgress = {
     attempt: 0, tractAttempt: 0, stage: 'region', lastRejection: null as string | null,
@@ -11850,7 +11879,7 @@ export function App() {
     const snapshot: MapSnapshot = {
         gmNotesByHexKey: {...notesMapRef.current},
         generation: cloneGenerationState(activeGenerationBefore.current ?? generationRef.current),
-        kingdoms, obstacles,
+        kingdoms, obstacles, nextObstacleId,
       regions,
       candidateHexes: originalGenerationCandidates,
       rivers,
@@ -12718,7 +12747,7 @@ export function App() {
       const snapshot: MapSnapshot = {
         gmNotesByHexKey: {...notesMapRef.current},
         generation: cloneGenerationState(activeGenerationBefore.current ?? generationRef.current),
-        kingdoms, obstacles,
+        kingdoms, obstacles, nextObstacleId,
         regions,
         candidateHexes: originalGenerationCandidates,
         rivers,
@@ -12777,11 +12806,13 @@ export function App() {
   };
 
 
-  const captureMap = (): MapSnapshot => ({ gmNotesByHexKey: notesMapRef.current, generation: cloneGenerationState(generationRef.current), kingdoms, obstacles, regions, candidateHexes, rivers, roads, crossings,
+  const captureMap = (): MapSnapshot => ({ gmNotesByHexKey: notesMapRef.current, generation: cloneGenerationState(generationRef.current), kingdoms, obstacles, nextObstacleId, regions, candidateHexes, rivers, roads, crossings,
     hexTerrainByKey, waterPoiByKey, biomeOverrideByHexKey, toponyms, toponymSeed, nextLakeId, nextRoadId });
   const captureDocument = (): DocumentSnapshot => ({ map: captureMap(), generationHistory: history, selectedHex,
     generationMode, isMapRotated, mapScale: pendingMapZoomRef.current?.scale ?? mapScaleRef.current });
   const closeEditors = () => {
+    setAmbiguousObstacleIds([]);
+    setHoverObstacleEdge(null); updateObstacleDraft(null); setSelectedObstacleId(null);
     setEditingHexBiomeKey(null); setEditingPoiHexKey(null); setEditingCentralPoiRegionId(null); setEditingRegionBiomeId(null); setEditError(null);
   };
   const recordTransaction = (before: DocumentSnapshot, after: DocumentSnapshot) => {
@@ -12798,7 +12829,7 @@ export function App() {
     setRoads(map.roads); setCrossings(map.crossings); setHexTerrainByKey(map.hexTerrainByKey);
     setWaterPoiByKey(map.waterPoiByKey); setBiomeOverrideByHexKey(map.biomeOverrideByHexKey);
     setToponyms(map.toponyms); setToponymSeed(map.toponymSeed);
-    setNextLakeId(map.nextLakeId); setNextRoadId(map.nextRoadId);
+    setNextLakeId(map.nextLakeId); setNextRoadId(map.nextRoadId); setNextObstacleId(map.nextObstacleId ?? 1);
   };
   // Checkpoints are detached once at generation commit and thereafter immutable.
   // Share those checkpoints between transactions instead of copying the whole
@@ -12809,6 +12840,7 @@ export function App() {
   });
   const applyPreparedDocument = (doc: DocumentSnapshot) => {
     documentRevision.current++;
+    updateRoadDraft(null); setSelectedRoadPair(null); setSelectedRoadTarget(null); setConfirmRoadRemoval(null);
     applyExactMap(doc.map); setHistory(doc.generationHistory); setSelectedHex(doc.selectedHex);
     setGenerationMode(doc.generationMode); setIsMapRotated(doc.isMapRotated);
     updateMapScale(doc.mapScale); setPendingRegen(null); closeEditors();
@@ -12818,14 +12850,14 @@ export function App() {
   const documentBusy = () => documentRevision.current !== renderedDocumentRevision
     || importInFlight.current || kingdomInFlight.current || !!kingdomJob || !!pendingRegen;
   const mutationBlocked = (finishGroup = true) => {
-    if (documentBusy() || dirtyNameDraft()) return true;
+    if (roadDraftRef.current || documentBusy() || dirtyNameDraft()) return true;
     if (finishGroup) finishNotesGroup();
     return false;
   };
   // Every input is already part of the document. Only history entries coalesce;
   // no timer may later write a pending value into another hex or imported world.
   const changeNotesText = (key: string, text: string) => {
-    if (documentBusy() || dirtyNameDraft() || notesSelectionRef.current !== key
+    if (roadDraftRef.current || documentBusy() || dirtyNameDraft() || notesSelectionRef.current !== key
       || (!hexTerrainByKey.has(key) && !regions.some(r => r.hexes.some(h => hexKey(h) === key)))) return;
     if (text === (notesMapRef.current[key] ?? '')) return;
     if (notesGroupRef.current?.key !== key) finishNotesGroup();
@@ -12849,6 +12881,41 @@ export function App() {
     if (mutationBlocked()) return;
     setNotesEditorKey(current => current === key ? null : key);
   };
+  const editRoadDocument = (edit: RoadEdit, expectedDraft?:RoadDraft): boolean => {
+    if (expectedDraft ? roadDraftRef.current!==expectedDraft || expectedDraft.revision!==documentRevision.current || documentBusy() || dirtyNameDraft() : mutationBlocked()) return false;
+    try {
+      const landRegion = (hex: AxialHex) => isLakeHex(hex, hexTerrainByKey) || isSeaHex(hex, hexTerrainByKey)
+        ? undefined : regions.find(r => r.hexes.some(h => isSameHex(h, hex)))?.id;
+      const fullness = getRiverCrossingFullnessByEdge(rivers);
+      const result = prepareRoadEdit({roads, crossings, nextRoadId}, edit, {
+        landRegion,
+        destination: hex => regions.some(r => (!r.isTract && !r.suppressCentralPoi && isSameHex(r.centerHex, hex)) || r.pointsOfInterest.some(h => isSameHex(h, hex))),
+        openExit: hex => landRegion(hex) !== undefined && getHexNeighbors(hex).some(h =>
+          !hexTerrainByKey.has(hexKey(h)) && !regions.some(r => r.hexes.some(v => isSameHex(v, h)))),
+        blocked: (a, b) => obstacles.some(o => pairKey(o.hex, o.neighborHex) === pairKey(a, b)),
+        intersections: (a, b) => {
+          const edge = getSharedHexEdgeVertexKeys(a, b);
+          if (!edge) throw new Error('invalid_shared_edge');
+          const riverEdgeKey = [...edge].sort().join('|');
+          return rivers.filter(r => r.vertexPath.slice(1).some((v, i) => getRiverEdgeKey(r.vertexPath[i], v) === riverEdgeKey))
+            .map(r => ({riverId: r.id, riverEdgeKey, fullness: fullness.get(riverEdgeKey) ?? getRiverFallbackFullness(r)}));
+        },
+        minima: regions.filter(r => r.biomeLandType === 'settled' && r.sizeCategory !== 'tract')
+          .map(r => ({regionId: r.id, minimum: getSettledMainRoadLimit(r)}))
+      });
+      if (result.roads === roads && result.crossings === crossings && result.nextRoadId === nextRoadId) return true;
+      const before = copyDocument(captureDocument());
+      const after = copyDocument({...captureDocument(), map: {...captureMap(), ...result}});
+      // Both copies are complete before any state write. Never reconcile crossings here.
+      setUndoHistory(current => [...current, {before, after}].slice(-100)); setRedoHistory([]);
+      applyPreparedDocument(after);
+      return true;
+    } catch (error) {
+      setEditError(language === 'ru' ? `Путь не изменён: ${roadErrorText(error instanceof Error ? error.message : '')}`
+        : `Path unchanged: ${error instanceof Error ? error.message : 'preparation error'}`);
+      return false;
+    }
+  };
   const actualHexKeys = (map: Pick<MapSnapshot, 'regions' | 'hexTerrainByKey'>) =>
     new Set([...map.regions.flatMap(r => r.hexes.map(hexKey)), ...map.hexTerrainByKey.keys()]);
   const notesForSurvivingHexes = (map: Pick<MapSnapshot, 'regions' | 'hexTerrainByKey'>) => {
@@ -12862,6 +12929,7 @@ export function App() {
       : `Delete GM notes (${removed.length}) at ${removed.join('; ')}? Undo can restore them.`);
   };
   const undoMap = () => {
+    updateObstacleDraft(null); setSelectedObstacleId(null);
     if (mutationBlocked() || !undoHistoryRef.current.length) return;
     const currentUndo = undoHistoryRef.current;
     const transaction = currentUndo[currentUndo.length - 1];
@@ -12869,6 +12937,7 @@ export function App() {
     setUndoHistory(currentUndo.slice(0,-1)); setRedoHistory(current => [...current, transaction]);
   };
   const redoMap = () => {
+    updateObstacleDraft(null); setSelectedObstacleId(null);
     if (mutationBlocked() || !redoHistoryRef.current.length) return;
     const currentRedo = redoHistoryRef.current;
     const transaction = currentRedo[currentRedo.length - 1];
@@ -12924,7 +12993,7 @@ export function App() {
     setToponyms(map.toponyms);
     setToponymSeed(map.toponymSeed);
     setNextLakeId(map.nextLakeId);
-    setNextRoadId(map.nextRoadId);
+    setNextRoadId(map.nextRoadId); setNextObstacleId(map.nextObstacleId ?? 1);
     setHistory(backup.history);
     setSelectedHex(backup.selectedHex);
     if (backup.document) {
@@ -13050,6 +13119,9 @@ export function App() {
     const roadPairs=new Set(rebuiltRoads.flatMap(r=>r.segments.map(s=>pairKey(s.from,s.to))));
     if(obstacles.some(o=>roadPairs.has(pairKey(o.hex,o.neighborHex))))throw new Error('Дорога пересекла существующее препятствие.');
     const addedObstacles=createObstacles(job.id,kingdomHexes(job.origin),getHexEdgesAsVertexPairs,h=>heights.get(hexKey(h))??0,h=>!dry(h),riverEdges,roadPairs, rng.geography);
+    if(normalizeObstacleCounter(obstacles,nextObstacleId)!==nextObstacleId||nextObstacleId>Number.MAX_SAFE_INTEGER-addedObstacles.length)throw new SaveValidationError('counters.nextObstacleId','counter overflow');
+    const identifiedObstacles=addedObstacles.map((o,i)=>({...o,id:nextObstacleId+i}));
+    const finalNextObstacleId=nextObstacleId+identifiedObstacles.length;
     const names=synchronizeToponyms({},[{key:`kingdom:${job.id}`,kind:'region'}],toponymSeed);
     const kingdom:Kingdom={id:job.id,origin:job.origin,anchor:job.anchor,regionIds:assigned.map(r=>r.id),name:names[`kingdom:${job.id}`],color:`hsl(${Math.round((job.id*137.508)%360)} 65% 68%)`};
     const water=new Map(waterPoiByKey);
@@ -13058,14 +13130,14 @@ export function App() {
     recordGenerated(job.backup.map, { ...captureMap(), regions: finalRegions, roads: rebuiltRoads,
       nextRoadId: roadId, crossings: finalCrossings,
       waterPoiByKey: water, toponyms: synchronizeToponyms(toponyms,getToponymEntities(finalRegions,rivers,hexTerrainByKey),toponymSeed),
-      kingdoms: [...kingdoms,kingdom], obstacles: [...obstacles,...addedObstacles] },
+      kingdoms: [...kingdoms,kingdom], obstacles: [...obstacles,...identifiedObstacles], nextObstacleId: finalNextObstacleId },
       assigned.find(r=>r.centralPoiKind==='throne')!.centerHex, job.failureBackup ?? job.backup, job.backup.history);
     setRegions(finalRegions);
     setRoads(rebuiltRoads);setNextRoadId(roadId);
     setCrossings(finalCrossings);
     setWaterPoiByKey(water);
     setToponyms(synchronizeToponyms(toponyms,getToponymEntities(finalRegions,rivers,hexTerrainByKey),toponymSeed));
-    setKingdoms([...kingdoms,kingdom]);setObstacles([...obstacles,...addedObstacles]);
+    setKingdoms([...kingdoms,kingdom]);setObstacles([...obstacles,...identifiedObstacles]);setNextObstacleId(finalNextObstacleId);
     setHistory([...job.backup.history,structuredClone(job.backup.map)]);
     setSelectedHex(assigned.find(r=>r.centralPoiKind==='throne')!.centerHex);
     activeGenerationBefore.current = cloneGenerationState((job.failureBackup ?? job.backup).map.generation);
@@ -13134,17 +13206,18 @@ export function App() {
   }, [kingdomJob, detailedRenderReady]);
 
   const resetMap = () => {
+    updateObstacleDraft(null); setSelectedObstacleId(null);
     if (mutationBlocked()) return;
     if (!regions.length && !rivers.length && !roads.length && !kingdoms.length && !obstacles.length
       && !hexTerrainByKey.size && !waterPoiByKey.size && !biomeOverrideByHexKey.size && !candidateHexes.length
-      && !Object.keys(toponyms).length && nextLakeId===1 && nextRoadId===1 && !isMapRotated
+      && !Object.keys(toponyms).length && nextLakeId===1 && nextRoadId===1 && nextObstacleId===1 && !isMapRotated
       && selectedHex?.q===START_HEX.q && selectedHex?.r===START_HEX.r) return;
     if (!confirmNotesRemoval({})) return;
     const before=captureDocument();
     const newGeneration = createGenerationState(newWorldSeed());
     const after: DocumentSnapshot = { ...before, map: { gmNotesByHexKey: {}, generation: newGeneration, kingdoms: [], obstacles: [], regions: [], candidateHexes: [],
       rivers: [], roads: [], crossings: [], hexTerrainByKey: new Map(), waterPoiByKey: new Map(), biomeOverrideByHexKey: new Map(),
-      toponyms: {}, toponymSeed: toponymSeedFor(newGeneration.masterSeed), nextLakeId: 1, nextRoadId: 1 },
+      toponyms: {}, toponymSeed: toponymSeedFor(newGeneration.masterSeed), nextLakeId: 1, nextRoadId: 1, nextObstacleId: 1 },
       generationHistory: [], selectedHex: START_HEX, isMapRotated: false };
     recordTransaction(before,after); applyDocument(after); setEditMode(false); setGenerationError(null);
   };
@@ -13204,7 +13277,7 @@ export function App() {
     setWaterPoiByKey(snapshot.waterPoiByKey);
     setBiomeOverrideByHexKey(snapshot.biomeOverrideByHexKey);
     setNextLakeId(snapshot.nextLakeId);
-    setNextRoadId(snapshot.nextRoadId);
+    setNextRoadId(snapshot.nextRoadId); setNextObstacleId(snapshot.nextObstacleId ?? 1);
   };
 
   const deleteLastRegion = () => {
@@ -13609,6 +13682,8 @@ export function App() {
       stage.style.width = `${svg.viewBox.baseVal.width * nextScale}px`;
       stage.style.height = `${svg.viewBox.baseVal.height * nextScale}px`;
       svg.style.transform = `translateZ(0) scale(${nextScale})`;
+      svg.style.setProperty("--road-hit-width", `${44 / nextScale}px`);
+      svg.style.setProperty("--crossing-hit-radius", `${22 / nextScale}px`);
     }
     return nextScale;
   };
@@ -13825,7 +13900,7 @@ export function App() {
     },
     counters: {
       nextLakeId,
-      nextRoadId
+      nextRoadId, nextObstacleId
     },
     ui: {
       generationMode,
@@ -13836,6 +13911,8 @@ export function App() {
   });
 
   const handleExportPng = async () => {
+    updateObstacleDraft(null); setSelectedObstacleId(null);
+    if(roadDraftRef.current) {if(finishRoadDraft())pendingRoadExport.current='png';return;}
     if (documentBusy() || !renderDetails) return;
     finishNotesGroup();
     if (!mapSvgRef.current) return;
@@ -13850,6 +13927,8 @@ export function App() {
 
   const pendingNameExport = useRef(false);
   const handleExportJson = () => {
+    updateObstacleDraft(null); setSelectedObstacleId(null);
+    if(roadDraftRef.current) {if(finishRoadDraft())pendingRoadExport.current='json';return;}
     if (nameDraftRef.current) {
       const revision = documentRevision.current;
       if (!finishInlineName()) return;
@@ -13865,7 +13944,9 @@ export function App() {
 
   useEffect(() => { if (pendingNameExport.current && !documentBusy()) { pendingNameExport.current = false; handleExportJson(); } }, [renderedDocumentRevision]);
 
+  useEffect(()=>{const kind=pendingRoadExport.current;if(kind&&!documentBusy()){pendingRoadExport.current=null;if(kind==='png')void handleExportPng();else handleExportJson();}},[renderedDocumentRevision]);
   const handleImportJsonClick = () => {
+    updateObstacleDraft(null); setSelectedObstacleId(null);
     if(mutationBlocked()) return;
     jsonImportInputRef.current?.click();
   };
@@ -13886,10 +13967,13 @@ export function App() {
       const retainedNames=imported.map.toponyms?.names ?? {};
       const names={...synchronizeToponyms(retainedNames,getToponymEntities(imported.map.regions,imported.map.rivers,terrain),seed),...retainedNames};
       const validSelection=new Set([...hexes.map(hexKey),...candidates.map(hexKey),...terrain.keys()]);
+      const obstacleData=imported.version===5
+        ? {obstacles:(imported.map.obstacles ?? []) as EditableObstacle[],nextObstacleId:normalizeObstacleCounter((imported.map.obstacles ?? []) as EditableObstacle[],imported.counters.nextObstacleId!)}
+        : migrateLegacyObstacles(imported.map.obstacles as Obstacle[] | undefined);
       const selection=imported.ui.selectedHex;
       const before=captureDocument();
       const after:DocumentSnapshot={
-        map:{gmNotesByHexKey: Object.fromEntries(Object.entries(imported.map.gmNotesByHexKey ?? {}).filter(([,text]) => text !== '')), generation: imported.generation ?? createGenerationState(seed >>> 0), kingdoms:imported.map.kingdoms ?? [],obstacles:imported.map.obstacles ?? [],regions:imported.map.regions,
+        map:{gmNotesByHexKey: Object.fromEntries(Object.entries(imported.map.gmNotesByHexKey ?? {}).filter(([,text]) => text !== '')), generation: imported.generation ?? createGenerationState(seed >>> 0), kingdoms:imported.map.kingdoms ?? [],...obstacleData,regions:imported.map.regions,
           candidateHexes:candidates,rivers:imported.map.rivers,roads:imported.map.roads,crossings:imported.map.crossings,
           hexTerrainByKey:terrain,waterPoiByKey:new Map(Object.entries(imported.map.waterPoiByHexKey ?? {})),
           biomeOverrideByHexKey:new Map(Object.entries(imported.map.biomeOverrideByHexKey ?? {})),toponyms:names,toponymSeed:seed,
@@ -13909,8 +13993,11 @@ export function App() {
       const category=language==='ru'
         ? ({read:'ошибка чтения файла',json:'ошибка синтаксиса JSON',validation:'некорректные данные',preparation:'ошибка подготовки карты'}[stage])
         : ({read:'file read error',json:'invalid JSON syntax',validation:'invalid map data',preparation:'map preparation error'}[stage]);
-      window.alert(language==='ru'?`Не удалось загрузить JSON: ${category} (${path}: ${error instanceof SaveValidationError ? error.reason : category}). Текущая карта сохранена.`
-        :`Failed to load JSON: ${category} (${path}: ${error instanceof SaveValidationError ? error.reason : category}). Your current map is intact.`);
+      const reason=error instanceof SaveValidationError
+        ? language==='ru'&&error.reason==='two distinct adjacent hexes'?'нужны два разных соседних гекса':error.reason
+        :category;
+      window.alert(language==='ru'?`Не удалось загрузить JSON: ${category} (${path}: ${reason}). Текущая карта сохранена.`
+        :`Failed to load JSON: ${category} (${path}: ${reason}). Your current map is intact.`);
     } finally { importInFlight.current=false; setIsImporting(false); }
   };
 
@@ -13984,7 +14071,7 @@ export function App() {
   const finishInlineName = () => !nameDraftRef.current || saveNameDraft(nameDraftRef.current);
   finishMapNameRef.current = finishInlineName;
   const showNameTarget = (key: string | null, origin?: HTMLElement, surface = 'info') => {
-    if (documentBusy() || !finishInlineName()) return;
+    if (documentBusy() || !finishRoadDraft() || !finishInlineName()) return;
     setNameErrors({}); setNameStatus(null);
     if (key === null) { setNamesOpen(false); return; }
     const target = nameTargets.find(t => t.key === key);
@@ -14051,7 +14138,9 @@ export function App() {
   const mapHexClickRef = useRef<(hex: typeof positionedHexes.hexes[number]) => void>(() => {});
   mapHexClickRef.current = hex => {
     if (documentBusy()) return;
+    if(roadDraftRef.current){appendRoadDraft({q:hex.q,r:hex.r});return;}
     if (hex.kind === 'candidate') {
+      updateObstacleDraft(null);
       if (mutationBlocked()) return;
       trackGoal('region_add');
       if (!kingdomJob) {
@@ -14059,10 +14148,190 @@ export function App() {
       }
     } else {
       if (!finishInlineName()) return;
-      finishNotesGroup(); closeEditors(); clearNotesDraft();
+      const pendingObstacle=obstacleDraftRef.current;
+      finishNotesGroup(); closeEditors(); updateObstacleDraft(pendingObstacle); clearNotesDraft();
+      setSelectedRoadPair(null); setSelectedRoadTarget(null); setConfirmRoadRemoval(null);
       setSelectedHex({ q: hex.q, r: hex.r });
     }
   };
+  const obstacleContext = () => ({
+    exists:(h:AxialHex)=>hexTerrainByKey.has(hexKey(h))||regions.some(r=>r.hexes.some(v=>isSameHex(v,h))),
+    water:(h:AxialHex)=>isLakeHex(h,hexTerrainByKey)||isSeaHex(h,hexTerrainByKey),
+    edgeKey:(a:AxialHex,b:AxialHex)=>{const e=getSharedHexEdgeVertexKeys(a,b);return e?[...e].sort().join('|'):undefined;},
+    riverEdges:new Set(rivers.flatMap(r=>r.vertexPath.slice(1).map((v,i)=>getRiverEdgeKey(r.vertexPath[i],v)))),
+    roadPairs:new Set(roads.flatMap(r=>r.segments.map(v=>pairKey(v.from,v.to)))),kingdoms
+  });
+  const obstacleMessage = (error:unknown) => {
+    const code=error instanceof Error?error.message:'';
+    const messages:Record<string,[string,string]>={
+      unknown_obstacle_hex:['Гекс ещё не создан','Hex does not exist'],water_obstacle_edge:['Вода','Water'],
+      river_obstacle_edge:['Река','River'],road_obstacle_edge:['Дорога или тропа','Road or trail'],
+      occupied_obstacle_edge:['Ребро занято','Edge occupied'],obstacle_id_overflow:['Исчерпан счётчик','ID counter exhausted'],
+      stale_obstacle_selection:['Препятствие уже изменено','Barrier has changed']};
+    return messages[code]?.[language==='ru'?0:1]??(language==='ru'?'Цель недоступна':'Target unavailable');
+  };
+  const editObstacleDocument = (edit:ObstacleEdit, expected?:ObstacleDraft):boolean => {
+    if(!editMode||mutationBlocked())return false;
+    if(expected&&(obstacleDraftRef.current!==expected||expected.revision!==documentRevision.current)){
+      updateObstacleDraft(null);setEditError(language==='ru'?'Карта изменилась. Выберите препятствие снова.':'Map changed. Select the barrier again.');return false;
+    }
+    try{
+      const doc={obstacles,nextObstacleId},prepared=prepareObstacleEdit(doc,edit,obstacleContext());
+      if(prepared===doc){setIsSidePanelCollapsed(false);if(edit.type==='move'){obstacleReturnFocus.current=edit.id;setSelectedObstacleId(edit.id);}updateObstacleDraft(null);return true;}
+      const before=captureDocument(),after=copyDocument({...before,map:{...before.map,...prepared}});
+      recordTransaction(before,after);applyExactMap(after.map);closeEditors();
+      setIsSidePanelCollapsed(false);
+      const focusId=edit.type==='remove'?'nearby':edit.type==='move'?edit.id:prepared.nextObstacleId-1;
+      setSelectedObstacleId(typeof focusId==='number'?focusId:null);obstacleReturnFocus.current=focusId;
+      return true;
+    }catch(error){setEditError(obstacleMessage(error));return false;}
+  };
+  const cancelObstacleChoice = () => {setIsSidePanelCollapsed(false);obstacleReturnFocus.current=obstacleDraftRef.current?.id??'add';updateObstacleDraft(null);};
+  const startObstacleChoice = (id:number|null) => {
+    if(!finishInlineName()||mutationBlocked())return;
+    finishNotesGroup();closeEditors();setSelectedRoadTarget(null);setConfirmRoadRemoval(null);
+    setSelectedObstacleId(id);updateObstacleDraft({id,revision:documentRevision.current});
+  };
+  const chooseObstacle = (id:number) => {
+    if(documentBusy()||!finishRoadDraft()||!finishInlineName())return;
+    const obstacle=obstacles.find(o=>o.id===id);if(!obstacle)return;
+    finishNotesGroup();clearNotesDraft();closeEditors();setSelectedRoadPair(null);setSelectedRoadTarget(null);setConfirmRoadRemoval(null);
+    setIsSidePanelCollapsed(false);obstacleReturnFocus.current=id;setSelectedHex({...obstacle.hex});setSelectedObstacleId(id);
+  };
+  // Resolve physical pointer geometry before trusting the browser's topmost target.
+  // Explicit keyboard/assistive activation already identifies one focused target.
+  const activateObstaclePointer = (event:React.MouseEvent<SVGCircleElement>,action:()=>void) => {
+    event.stopPropagation();
+    if(event.detail===0){action();return;}
+    const group=event.currentTarget.parentElement?.closest('[data-editor-only="obstacles"]');
+    const hits=Array.from(group?.querySelectorAll<SVGCircleElement>('.obstacle-map-target')??[]).filter(node=>{
+      const matrix=node.getScreenCTM();if(!matrix)return false;
+      const point=new DOMPoint(event.clientX,event.clientY).matrixTransform(matrix.inverse());
+      return node.isPointInFill(point);
+    });
+    if(hits.length<=1){action();return;}
+    setIsSidePanelCollapsed(false);setHoverObstacleEdge(null);
+    if(obstacleDraftRef.current){obstacleReturnFocus.current='edges';}
+    else{setAmbiguousObstacleIds(hits.map(node=>Number(node.dataset.obstacleMapId)));obstacleReturnFocus.current='ambiguity';}
+    setEditError(language==='ru'?'Здесь несколько рёбер. Выберите нужное в списке.':'Several edges overlap here. Choose the intended one in the list.');
+  };
+  const obstacleGeometry = (o:Pick<EditableObstacle,'hex'|'edgeKey'>) => getHexEdgesAsVertexPairs(o.hex).find(e=>e.edgeKey===o.edgeKey);
+  const obstacleChoices = selectedHex&&obstacleDraft ? [[1,0],[0,1],[-1,1],[-1,0],[0,-1],[1,-1]].map(([q,r])=>{
+    const neighborHex={q:selectedHex.q+q,r:selectedHex.r+r};
+    const edit:ObstacleEdit=obstacleDraft.id===null?{type:'add',hex:selectedHex,neighborHex}:{type:'move',id:obstacleDraft.id,hex:selectedHex,neighborHex};
+    try{const prepared=prepareObstacleEdit({obstacles,nextObstacleId},edit,obstacleContext());
+      const o=prepared.obstacles.find(v=>v.id===(obstacleDraft.id??nextObstacleId));
+      return {neighborHex,edit,reason:null,kingdomId:o?.kingdomId};
+    }catch(error){return {neighborHex,edit,reason:obstacleMessage(error),kingdomId:undefined};}
+  }):[];
+  const obstaclePanel = editMode&&(selectedHex||ambiguousObstacleIds.length>0)&&!roadDraft ? <div className="obstacle-editor" data-obstacle-editor>
+    {ambiguousObstacleIds.length>0?<div data-obstacle-ambiguity>{ambiguousObstacleIds.map(id=>{const o=obstacles.find(v=>v.id===id);return o?<button type="button" className="secondary" key={id} onClick={()=>chooseObstacle(id)}>{language==='ru'?'Препятствие':'Barrier'} {id}: {hexKey(o.hex)} → {hexKey(o.neighborHex)}</button>:null;})}</div>:!obstacleDraft?<button type="button" className="secondary" data-obstacle-add onClick={()=>startObstacleChoice(null)}>{language==='ru'?'Добавить препятствие':'Add barrier'}</button>:<>
+      <p>{obstacleDraft.id===null?(language==='ru'?'Выберите ребро':'Choose an edge'):(language==='ru'?'Выберите новое ребро':'Choose a new edge')}</p>
+      {obstacleChoices.map(c=><button type="button" className="secondary" key={hexKey(c.neighborHex)} disabled={!!c.reason}
+        aria-label={`${language==='ru'?'Ребро':'Edge'} · ${obstacleDraft.id===null?(language==='ru'?'Добавить препятствие':'Add barrier'):(language==='ru'?'Перенести препятствие':'Move barrier')} ${selectedHexKey} → ${hexKey(c.neighborHex)}`}
+        onClick={()=>editObstacleDocument(c.edit,obstacleDraft)}>
+        {hexKey(c.neighborHex)} · {c.reason??(c.kingdomId===undefined?(language==='ru'?'без королевства':'no kingdom'):`${language==='ru'?'королевство':'kingdom'} ${c.kingdomId}`)}</button>)}
+      <button autoFocus type="button" className="secondary" onClick={cancelObstacleChoice}>{language==='ru'?'Отменить выбор':'Cancel choice'}</button>
+    </>}
+  </div>:null;
+  const draftError = (ru:string,en:string) => {setEditError(language==='ru'?ru:en);return false;};
+  const roadLandRegion = (h:AxialHex) => !isLakeHex(h,hexTerrainByKey)&&!isSeaHex(h,hexTerrainByKey)
+    ? regions.find(r=>r.hexes.some(v=>isSameHex(v,h))) : undefined;
+  const roadDraftHits = (path:AxialHex[]) => path.slice(1).flatMap((to,i)=>{
+    const from=path[i],edge=getSharedHexEdgeVertexKeys(from,to),edgeId=edge?[...edge].sort().join('|'):null;
+    return rivers.filter(r=>r.vertexPath.slice(1).some((v,j)=>getRiverEdgeKey(r.vertexPath[j],v)===edgeId))
+      .map(r=>({key:getRiverCrossingKey(nextRoadId,normalizeRoadSegmentKey(from,to),r.id),riverId:r.id}));
+  });
+  const startRoadDraft = () => {
+    if(!editMode||roadDraftRef.current||!finishInlineName()||mutationBlocked()||!selectedHex||!roadLandRegion(selectedHex))return false;
+    clearNotesDraft();closeEditors();setSelectedRoadPair(null); setSelectedRoadTarget(null);setConfirmRoadRemoval(null);
+    updateRoadDraft({path:[{...selectedHex}],kind:'trail',crossingKinds:{},revision:documentRevision.current});return true;
+  };
+  const finishRoadDraft = () => {
+    const draft=roadDraftRef.current;if(!draft)return true;
+    if(draft.revision!==documentRevision.current||documentBusy())return draftError('Карта изменилась или занята. Сбросьте черновик.','Map changed or busy. Reset the draft.');
+    return editRoadDocument({type:'create',path:draft.path,kind:draft.kind,crossingKinds:draft.crossingKinds},draft);
+  };
+  const appendRoadDraft = (h:AxialHex) => {
+    const draft=roadDraftRef.current;if(!draft||draft.revision!==documentRevision.current||documentBusy())return false;
+    const path=draft.path,last=path[path.length-1];
+    if(isSameHex(h,last))return finishRoadDraft();
+    if(path.length>1&&isSameHex(h,path[path.length-2])){updateRoadDraft({...draft,path:path.slice(0,-1)});setEditError(null);return true;}
+    if(!roadLandRegion(h)||!areHexesAdjacent(last,h)||path.some(v=>isSameHex(v,h)))return draftError('Нужен соседний сухопутный гекс без повтора.','Choose an adjacent land hex without repeating a node.');
+    const pair=normalizeRoadSegmentKey(last,h);
+    if(getRoadSegmentKeys(roads).has(pair)||obstacles.some(o=>pairKey(o.hex,o.neighborHex)===pair))return draftError('Здесь уже есть путь или препятствие.','A path or barrier already occupies this edge.');
+    if(path.length>1&&getRoadHexKeys(roads).has(hexKey(last)))return draftError('Завершите путь на узле сети.','Finish the path at the network node.');
+    updateRoadDraft({...draft,path:[...path,{...h}]});setEditError(null);return true;
+  };
+  const resetRoadDraft = () => {updateRoadDraft(null);setEditError(null);};
+  const roadDraftPanel = editMode && (roadDraft || selectedHex && roadLandRegion(selectedHex)) ? <div className="road-editor" data-road-draft>
+    {roadDraft ? <>
+      <label>{language==='ru'?'Черновик пути':'Path draft'} <select className="direct-value" aria-label={language==='ru'?'Тип нового пути':'New path type'} value={roadDraft.kind}
+        onChange={e=>{if(roadDraftRef.current===roadDraft&&!documentBusy())updateRoadDraft({...roadDraft,kind:e.target.value as RoadKind});}}><option value="trail">{t.trail}</option><option value="road">{t.road}</option></select></label>
+      <p>{language==='ru'?'Участков':'Segments'}: {Math.max(0,roadDraft.path.length-1)}. {language==='ru'?'Нажимайте соседние гексы. Завершить: Enter, повтор конца или Готово.':'Click adjacent hexes. Finish: Enter, click end again or Done.'}</p>
+      {roadDraftHits(roadDraft.path).map(hit=><label key={hit.key}>{language==='ru'?'Переправа':'Crossing'} {hit.riverId} <select className="direct-value" aria-label={`${language==='ru'?'Новая переправа':'New crossing'} ${hit.key}`}
+        value={roadDraft.crossingKinds[hit.key]??'bridge'} onChange={e=>{if(roadDraftRef.current===roadDraft&&!documentBusy())updateRoadDraft({...roadDraft,crossingKinds:{...roadDraft.crossingKinds,[hit.key]:e.target.value as RiverCrossingKind}});}}>
+        {(['bridge','ferry','ford'] as const).map(kind=><option key={kind} value={kind}>{t[kind]}</option>)}</select></label>)}
+      <button type="button" className="direct-value" onClick={resetRoadDraft}>{language==='ru'?'Сбросить черновик':'Reset draft'}</button>
+    </> : <button type="button" className="direct-value" onClick={startRoadDraft}>{language==='ru'?'Начать путь отсюда':'Start path here'}</button>}
+  </div>:null;
+  const chooseRoadPair = (pair:string, roadId:number, crossingKey?:string) => {
+    if (documentBusy() || !finishRoadDraft() || !finishInlineName()) return;
+    finishNotesGroup(); clearNotesDraft(); closeEditors(); setConfirmRoadRemoval(null);
+    setSelectedRoadPair(pair); setSelectedRoadTarget({roadId,crossingKey});
+    const match = roads.find(r=>r.id===roadId)?.segments.find(s => normalizeRoadSegmentKey(s.from,s.to) === pair);
+    if(match) setSelectedHex({...match.from});
+  };
+  const roadChoices = roads.flatMap(road => road.segments.filter(segment =>
+    selectedRoadPair ? normalizeRoadSegmentKey(segment.from,segment.to) === selectedRoadPair
+      : selectedHex && (isSameHex(segment.from,selectedHex) || isSameHex(segment.to,selectedHex)))
+    .map(segment => ({road,segment,pair:normalizeRoadSegmentKey(segment.from,segment.to)})));
+  const requestRoadRemoval = (roadId:number, segmentKey?:string) => {
+    if (mutationBlocked()) return;
+    setConfirmRoadRemoval({roadId,segmentKey,revision:documentRevision.current});
+  };
+  const roadErrorText = (code:string) => ({
+    short_path:'Нужно хотя бы два гекса.', invalid_path_end:'Начало и конец должны быть точкой интереса, узлом сети или открытым выходом.', non_adjacent:'Гексы должны быть соседними.', unknown_or_water_hex:'Путь должен проходить по существующей суше.', duplicate_segment:'Участок уже занят путём.', obstacle:'На ребре есть препятствие.', repeated_hex:'Повтор гекса недопустим.', network_must_end_path:'На узле сети нужно завершить путь.', invalid_next_road_id:'Невозможно выделить ID пути.',
+    new_internal_dead_end:'Получится тупик без точки интереса.', removed_open_exit:'Нельзя закрыть существующий выход с карты.',
+    disconnected_destinations:'Путь связывает точки интереса или узлы сети.', settled_road_minimum:'Нельзя уменьшить число дорог ниже минимума региона.',
+    missing_or_ambiguous_intersection:'Пересечение не найдено или неоднозначно.', invalid_crossing_kind:'На такой реке брод недопустим.',
+    missing_or_ambiguous_road:'Путь не найден или неоднозначен.', missing_or_ambiguous_segment:'Участок не найден или неоднозначен.',
+    stale_crossing:'Данные переправы изменились.', unknown_fullness:'Не удалось определить полноводность.'
+  } as Record<string,string>)[code] ?? 'Не удалось подготовить изменение пути.';
+  const roadPanel = editMode && !roadDraft && roadChoices.length ? <div className="road-editor" aria-label={language==='ru'?'Редактирование путей':'Edit paths'}>
+    {roadChoices.map(({road,segment,pair},index) => <div className="road-editor__item" key={`${road.id}:${pair}:${index}`}>
+      <button type="button" className="direct-value" aria-pressed={selectedRoadPair===pair && selectedRoadTarget?.roadId===road.id && !selectedRoadTarget.crossingKey} onClick={()=>chooseRoadPair(pair,road.id)}>
+        {language==='ru'?'Участок':'Segment'} {road.id}: {hexKey(segment.from)} → {hexKey(segment.to)}
+      </button>
+      {selectedRoadPair===pair && selectedRoadTarget?.roadId===road.id && <>
+        <label>{language==='ru'?'Тип участка':'Segment type'} <select className="direct-value" aria-label={`${language==='ru'?'Тип участка':'Segment type'} ${road.id}`}
+          value={segment.kind} onChange={e=>editRoadDocument({type:'kind',roadId:road.id,segmentKey:pair,kind:e.target.value as RoadKind})}>
+          <option value="road">{t.road}</option><option value="trail">{t.trail}</option>
+        </select></label>
+        {(() => {
+          const edge=getSharedHexEdgeVertexKeys(segment.from,segment.to); const edgeId=edge?[...edge].sort().join('|'):null;
+          return rivers.filter(r=>r.vertexPath.slice(1).some((v,i)=>getRiverEdgeKey(r.vertexPath[i],v)===edgeId)).map(r=>{
+            const crossing=crossings.find(c=>c.key===getRiverCrossingKey(road.id,pair,r.id));
+            return <label key={r.id}><button type="button" className="direct-value" aria-pressed={selectedRoadTarget?.crossingKey===getRiverCrossingKey(road.id,pair,r.id)} onClick={()=>chooseRoadPair(pair,road.id,getRiverCrossingKey(road.id,pair,r.id))}>{language==='ru'?'Переправа':'Crossing'} {r.id}</button> <select className="direct-value" aria-label={`${language==='ru'?'Переправа':'Crossing'} ${road.id}:${r.id}`}
+              value={crossing?.kind??''} onChange={e=>editRoadDocument({type:'crossing',roadId:road.id,segmentKey:pair,riverId:r.id,kind:e.target.value as RiverCrossingKind})}>
+              {!crossing&&<option value="" disabled>{language==='ru'?'Не задана':'Not set'}</option>}
+              {(['bridge','ferry','ford'] as const).map(kind=><option key={kind} value={kind}>{t[kind]}</option>)}
+            </select></label>;
+          });
+        })()}
+        <button type="button" className="direct-value road-editor__danger" onClick={()=>requestRoadRemoval(road.id,pair)}>{language==='ru'?'Удалить участок':'Delete segment'}</button>
+        <button type="button" className="direct-value road-editor__danger" onClick={()=>requestRoadRemoval(road.id)}>{language==='ru'?'Удалить весь выделенный путь':'Delete entire selected path'}</button>
+      </>}
+    </div>)}
+    {confirmRoadRemoval && <div className="road-editor__confirmation" role="group" aria-label={language==='ru'?'Подтверждение удаления':'Confirm deletion'}>
+      <p>{language==='ru'?'Удалить подсвеченные участки и связанные переправы?':'Delete highlighted segments and dependent crossings?'} ({crossings.filter(c=>c.roadId===confirmRoadRemoval.roadId&&(!confirmRoadRemoval.segmentKey||c.roadSegmentKey===confirmRoadRemoval.segmentKey)).length})</p>
+      <button type="button" onClick={()=>{
+        if(confirmRoadRemoval.revision!==documentRevision.current||documentBusy()){setConfirmRoadRemoval(null);return;}
+        if(editRoadDocument({type:'remove',roadId:confirmRoadRemoval.roadId,segmentKey:confirmRoadRemoval.segmentKey}))setConfirmRoadRemoval(null);
+      }}>{language==='ru'?'Удалить':'Delete'}</button>
+      <button type="button" onClick={()=>setConfirmRoadRemoval(null)}>{language==='ru'?'Отмена':'Cancel'}</button>
+    </div>}
+  </div>:null;
   const mapMotionCanvasRef = useRef<HTMLCanvasElement>(null);
   const mapArtwork = useMemo(() => (<>
             <defs>
@@ -14284,7 +14553,7 @@ export function App() {
               {renderDetails && kingdoms.flatMap(k=>kingdomBoundary(k,getHexEdgesAsVertexPairs).map(e=><line key={`${k.id}:${e.edgeKey}`} x1={e.from.x+riverOffset.x} y1={e.from.y+riverOffset.y} x2={e.to.x+riverOffset.x} y2={e.to.y+riverOffset.y} stroke={k.color} strokeWidth={3} strokeDasharray="6 4" />))}
             </g>
             <g className="obstacles-layer" transform={mapRotationTransform} pointerEvents="none">
-              {renderDetails && obstacles.map(o=>{const e=getHexEdgesAsVertexPairs(o.hex).find(e=>e.edgeKey===o.edgeKey);return e?<line key={o.edgeKey} x1={e.from.x+riverOffset.x} y1={e.from.y+riverOffset.y} x2={e.to.x+riverOffset.x} y2={e.to.y+riverOffset.y} stroke="#a95650" strokeWidth={3} />:null;})}
+              {renderDetails && obstacles.map(o=>{const e=getHexEdgesAsVertexPairs(o.hex).find(e=>e.edgeKey===o.edgeKey);return e?<line key={o.id} x1={e.from.x+riverOffset.x} y1={e.from.y+riverOffset.y} x2={e.to.x+riverOffset.x} y2={e.to.y+riverOffset.y} stroke="#a95650" strokeWidth={3} />:null;})}
             </g>
             <g className="river-waterfalls-layer" pointerEvents="none">
               {renderDetails && riverWaterfalls.map((waterfall) => {
@@ -14447,13 +14716,18 @@ export function App() {
   }, [mapArtwork, renderBiomeColor, renderDetails, positionedHexes, isMapRotated]);
 
   return (
-    <div className="app" onPointerDownCapture={finishBeforePointer}>
+    <div className="app" onPointerDownCapture={finishBeforePointer} onKeyDownCapture={e=>{
+      if(e.key==='Escape'&&obstacleDraftRef.current){e.preventDefault();e.stopPropagation();cancelObstacleChoice();return;}
+      if(!roadDraftRef.current||e.nativeEvent.isComposing)return;
+      if(e.key==='Escape'){e.preventDefault();e.stopPropagation();resetRoadDraft();}
+      else if(e.key==='Enter'&&!(e.target as Element).matches('select,button,input,textarea')){e.preventDefault();e.stopPropagation();finishRoadDraft();}
+    }}>
       <section className="content">
         <div className={`map-card${isSidePanelCollapsed ? ' is-panel-collapsed' : ''}`} style={mapCardStyle}>
           <button
             type="button"
             className="side-panel-toggle"
-            onClick={() => setIsSidePanelCollapsed((value) => !value)}
+            onClick={() => {if(finishRoadDraft())setIsSidePanelCollapsed((value) => !value);}}
             aria-expanded={!isSidePanelCollapsed}
             aria-controls="side-panel-controls side-panel-info"
             aria-label={sidePanelToggleLabel}
@@ -14482,7 +14756,7 @@ export function App() {
                 type="button"
                 className="language-toggle"
                 onClick={() => {
-                  if (!finishInlineName()) return;
+                  if (!finishRoadDraft() || !finishInlineName()) return;
                   finishNotesGroup(); clearNotesDraft(); closeEditors();
                   trackGoal('lang_switch');
                   setLanguage((value) => (value === 'ru' ? 'en' : 'ru'));
@@ -14527,7 +14801,7 @@ export function App() {
               <div className="info-block info-block--prompt map-toolbar__prompt" role="status">{t.candidatePrompt}</div>
             ) : null}
             <div className="control-block mode-selector"><label>{language === 'ru' ? 'Режим' : 'Mode'}
-              <select aria-label={language === 'ru' ? 'Режим' : 'Mode'} value={generationMode} disabled={isImporting || !!pendingRegen || !!kingdomJob} onChange={e=>{ if(!mutationBlocked()) setGenerationMode(e.target.value as GenerationMode); }}>
+              <select aria-label={language === 'ru' ? 'Режим' : 'Mode'} value={generationMode} disabled={!!roadDraft || isImporting || !!pendingRegen || !!kingdomJob} onChange={e=>{ if(!mutationBlocked()) setGenerationMode(e.target.value as GenerationMode); }}>
                 <option value="classic">{language === 'ru' ? 'Классический режим' : 'Classic mode'}</option>
                 <option value="mythic">Mythic Bastionland</option>
               </select></label></div>
@@ -14575,11 +14849,11 @@ export function App() {
             : null}
             {regions.length > 0 ? (
               <div className="control-block controls controls--region-management">
-                  <button disabled={isImporting || !!pendingRegen || !!kingdomJob} onClick={resetMap} className="secondary">{t.reset}</button>
-                  <button type="button" disabled={isImporting || !!pendingRegen || !!kingdomJob || !history.length} onClick={regenerateLastRegion} className="secondary">
+                  <button disabled={!!roadDraft || isImporting || !!pendingRegen || !!kingdomJob} onClick={resetMap} className="secondary">{t.reset}</button>
+                  <button type="button" disabled={!!roadDraft || isImporting || !!pendingRegen || !!kingdomJob || !history.length} onClick={regenerateLastRegion} className="secondary">
                     {t.regenerateRegion}
                   </button>
-                  <button type="button" disabled={isImporting || !!pendingRegen || !!kingdomJob || !history.length} onClick={deleteLastRegion} className="secondary">
+                  <button type="button" disabled={!!roadDraft || isImporting || !!pendingRegen || !!kingdomJob || !history.length} onClick={deleteLastRegion} className="secondary">
                     {t.deleteLastRegion}
                   </button>
               </div>
@@ -14635,8 +14909,8 @@ export function App() {
               </button>
             </div>
             <div className="control-block controls controls--history">
-              <button type="button" className="secondary" disabled={isImporting || !!pendingRegen || !!kingdomJob || !undoHistory.length} onClick={undoMap}>{language==='ru'?'Отменить':'Undo'}</button>
-              <button type="button" className="secondary" disabled={isImporting || !!pendingRegen || !!kingdomJob || !redoHistory.length} onClick={redoMap}>{language==='ru'?'Повторить':'Redo'}</button>
+              <button type="button" className="secondary" disabled={!!roadDraft || isImporting || !!pendingRegen || !!kingdomJob || !undoHistory.length} onClick={undoMap}>{language==='ru'?'Отменить':'Undo'}</button>
+              <button type="button" className="secondary" disabled={!!roadDraft || isImporting || !!pendingRegen || !!kingdomJob || !redoHistory.length} onClick={redoMap}>{language==='ru'?'Повторить':'Redo'}</button>
             </div>
             <div className="control-block controls controls--transfer">
               <details className="export-menu">
@@ -14644,9 +14918,10 @@ export function App() {
                   <div className="export-menu__items">
                     <button type="button" disabled={!renderDetails} onClick={() => void handleExportPng()} className="secondary">PNG</button>
                     <button type="button" onClick={handleExportJson} className="secondary">JSON</button>
+                    <small>{language==='ru'?'JSON v5: старые версии приложения не откроют этот файл.':'JSON v5: older app versions cannot open this file.'}</small>
                   </div>
                 </details>
-              <button type="button" disabled={isImporting || !!pendingRegen || !!kingdomJob} onClick={handleImportJsonClick} className="secondary">{t.importJson}</button>
+              <button type="button" disabled={!!roadDraft || isImporting || !!pendingRegen || !!kingdomJob} onClick={handleImportJsonClick} className="secondary">{t.importJson}</button>
               <input ref={jsonImportInputRef} className="visually-hidden" type="file" accept="application/json,.json" onChange={(event) => void handleImportJson(event)} />
             </div>
             <div className="control-block world-seed-control">
@@ -14681,6 +14956,7 @@ export function App() {
               </div>
             )}
           </div>
+
           <aside id="side-panel-info" className="roll-card">
             <div className="info-body">
               {regions.length > 0 || hexTerrainByKey.size > 0 ? <>
@@ -14689,7 +14965,7 @@ export function App() {
                   aria-label={editMode ? (language === 'ru' ? 'Готово' : 'Done') : (language === 'ru' ? 'Редактировать' : 'Edit')}
                   title={editMode ? (language === 'ru' ? 'Готово' : 'Done') : (language === 'ru' ? 'Редактировать' : 'Edit')}
                   disabled={isImporting || !!pendingRegen || !!kingdomJob}
-                  onClick={() => { if (!finishInlineName()) return; finishNotesGroup(); clearNotesDraft(); closeEditors(); setEditMode(v => !v); }}>
+                  onClick={() => { if (!finishRoadDraft() || !finishInlineName()) return; finishNotesGroup(); clearNotesDraft(); closeEditors(); setSelectedRoadPair(null); setSelectedRoadTarget(null); setConfirmRoadRemoval(null); setEditMode(v => !v); }}>
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
                     {editMode ? <path d="m5 12 4 4L19 6" /> : <><path d="m16 3 5 5-12 12-6 1 1-6Z" /><path d="m14 5 5 5" /></>}
                   </svg>
@@ -14741,9 +15017,9 @@ export function App() {
                     </div> : null}
                     {selectedHexRoadIds.map((roadId) => <p key={`selected-road-${roadId}`}>▬ {t.road} {roadId}</p>)}
                     {selectedHexTrailIds.map((trailId) => <p key={`selected-trail-${trailId}`}>⋯ {t.trail} {trailId}</p>)}
-                    {selectedObstacles.length > 0 || nearbyRivers.length > 0 || selectedHexCrossings.length > 0 || nearbyLakeIds.length > 0 || hasNearbySea ? (
+                    {editMode || selectedObstacles.length > 0 || nearbyRivers.length > 0 || selectedHexCrossings.length > 0 || nearbyLakeIds.length > 0 || hasNearbySea ? (
                       <div>
-                        <strong>{t.nearby}</strong>
+                        <strong tabIndex={-1} data-obstacle-list>{t.nearby}</strong>
                         {nearbyRivers.map((river) => {
                           const hasRapids = river.vertexPath.some((vertex, index) => index > 0
                             && selectedHexEdgeKeys.has(edgeKey(river.vertexPath[index - 1], vertex))
@@ -14754,7 +15030,10 @@ export function App() {
                           const riverFeatures = [hasWaterfall ? waterfallLabel : null, hasRapids ? t.rapids : null].filter((feature): feature is string => feature !== null);
                           return <p key={`nearby-river-${river.id}`}><span className="nearby-river-marker" aria-hidden="true">→</span>{hasRapids ? <span className="nearby-river-marker" aria-hidden="true">|||</span> : null}{hasWaterfall ? <img className="nearby-waterfall-marker" src="/waterfall-color.svg" alt="" aria-hidden="true" /> : null} {t.river} {renderToponym(`river:${river.id}`)}{riverFeatures.length > 0 ? ` (${riverFeatures.join(', ')})` : ''}</p>;
                         })}
-                        {selectedObstacles.map(o=><p key={o.edgeKey} style={{color:'#bd6a64'}}>━ {language==='ru'?'Препятствие':'Barrier'} ({hexKey(o.hex)===selectedHexKey?hexKey(o.neighborHex):hexKey(o.hex)})</p>)}
+                        {selectedObstacles.map(o=><div key={o.id} className="obstacle-row" data-obstacle-id={o.id}>
+                          {editMode?<button type="button" className="direct-value" aria-label={`${language==='ru'?'Выбрать препятствие':'Select barrier'} ${o.id}: ${hexKey(o.hex)} → ${hexKey(o.neighborHex)}`} aria-pressed={selectedObstacleId===o.id} onClick={()=>chooseObstacle(o.id)}>━ {language==='ru'?'Препятствие':'Barrier'} · {hexKey(o.hex)===selectedHexKey?hexKey(o.neighborHex):hexKey(o.hex)}</button>:<span>━ {language==='ru'?'Препятствие':'Barrier'} ({hexKey(o.hex)===selectedHexKey?hexKey(o.neighborHex):hexKey(o.hex)})</span>}
+                          {editMode&&selectedObstacleId===o.id&&!obstacleDraft&&<><button type="button" className="secondary" onClick={()=>startObstacleChoice(o.id)}>{language==='ru'?'Перенести':'Move'}</button><button type="button" className="secondary" onClick={()=>editObstacleDocument({type:'remove',id:o.id})}>{language==='ru'?'Удалить':'Delete'}</button></>}
+                        </div>)}
                         {selectedHexCrossings.map((crossing) => <p key={`selected-crossing-${crossing.key}`}>{crossing.kind === 'bridge' ? '🌉' : crossing.kind === 'ferry' ? '⛴️' : '🌊'} {t[crossing.kind]}</p>)}
                         {nearbyLakeIds.map((lakeId) => <p key={`nearby-lake-${lakeId}`}>💧 {t.lake} {renderToponym(`lake:${lakeId}`, 'nearby')}</p>)}
                         {hasNearbySea ? <p>{t.sea}</p> : null}
@@ -14762,11 +15041,14 @@ export function App() {
                     ) : null}
                   </>
                 ) : null}
+                {obstaclePanel}
+                {roadDraftPanel}
+                {roadPanel}
                 {editError && <p className="direct-error" role="alert">{editError}</p>}
                 {canEditNotes && selectedHexKey && (notesValue || editMode) ? <div className="gm-notes">
                   <strong id="gm-notes-label">{language === 'ru' ? 'Заметки мастера' : 'GM notes'}</strong>
                   {notesOpen && editMode ? <textarea ref={notesTextRef} id="gm-notes-text" aria-labelledby="gm-notes-label" rows={4} value={notesValue}
-                    disabled={isImporting || !!pendingRegen || !!kingdomJob}
+                    disabled={!!roadDraft || isImporting || !!pendingRegen || !!kingdomJob}
                     onKeyDown={event => { event.stopPropagation(); if (event.key === 'Escape') { finishNotesGroup(); setNotesEditorKey(null); } }}
                     onCompositionStart={() => { notesComposingRef.current = true; if (notesTimerRef.current !== null) clearTimeout(notesTimerRef.current); }}
                     onCompositionEnd={event => { notesComposingRef.current = false; changeNotesText(selectedHexKey, event.currentTarget.value); notesTimerRef.current = setTimeout(finishNotesGroup, 500); }}
@@ -14947,7 +15229,7 @@ export function App() {
                 <label>{language === 'ru' ? 'Тип объекта' : 'Object type'}<select value={nameType} onChange={e => setNameType(e.target.value)}><option value="all">{language === 'ru' ? 'Все типы' : 'All types'}</option>{Object.entries(nameTypeLabels).map(([type,label]) => <option key={type} value={type}>{label}</option>)}</select></label>
                 <ul className="map-names__list">{nameTargets.filter(target => (nameType === 'all' || target.type === nameType) && `${target.ru} ${target.en}`.toLocaleLowerCase().includes(nameQuery.toLocaleLowerCase())).map(target => <li key={target.key}>
                   <span>{nameTypeLabels[target.type]} · {editMode ? renderName(target.key, 'catalog') : <button type="button" className="direct-find" onClick={() => {
-                    if (!finishInlineName()) return;
+                    if (!finishRoadDraft() || !finishInlineName()) return;
                     const [q,r] = target.location.split('/').map(Number); if (Number.isFinite(q) && Number.isFinite(r)) { finishNotesGroup(); setSelectedHex({q,r}); }
                   }}>{target[language]}</button>}</span><small>{target.location}</small>
                 </li>)}</ul>
@@ -14978,9 +15260,53 @@ export function App() {
               data-render-phase={kingdomJob ? 'generation' : renderDetails ? 'ready' : 'render-pending'}
               viewBox={`0 0 ${displayMapWidth} ${displayMapHeight}`}
               preserveAspectRatio="xMinYMin meet"
-              style={{ width: `${displayMapWidth}px`, height: `${displayMapHeight}px`, transform: `translateZ(0) scale(${mapScaleRef.current})`, '--water-color': WATER_PALETTE.river, '--water-marks': WATER_PALETTE.marks } as CSSProperties}
+              style={{ width: `${displayMapWidth}px`, height: `${displayMapHeight}px`, transform: `translateZ(0) scale(${mapScaleRef.current})`, '--road-hit-width': `${44/mapScaleRef.current}px`, '--crossing-hit-radius': `${22/mapScaleRef.current}px`, '--water-color': WATER_PALETTE.river, '--water-marks': WATER_PALETTE.marks } as CSSProperties}
             >
             {mapArtwork}
+            {roadDraft && <g data-editor-only="draft" transform={mapRotationTransform} pointerEvents="none">
+              {roadDraft.path.map((h,i)=>{const p=toPixel(h.q,h.r);return <circle key={i} cx={p.x+riverOffset.x} cy={p.y+riverOffset.y} r={i===roadDraft.path.length-1?6:3} fill="#7dd3fc" />;})}
+              {roadDraft.path.slice(1).map((h,i)=>{const a=toPixel(roadDraft.path[i].q,roadDraft.path[i].r),b=toPixel(h.q,h.r);return <line key={i} x1={a.x+riverOffset.x} y1={a.y+riverOffset.y} x2={b.x+riverOffset.x} y2={b.y+riverOffset.y} stroke="#7dd3fc" strokeWidth={4} strokeDasharray="6 3" />;})}
+            </g>}
+            {editMode && !roadDraft && renderDetails && <g data-editor-only="roads" transform={mapRotationTransform}>
+              {roadSegments.map(s=><line key={s.key} className="road-map-target" role="button" tabIndex={0}
+                aria-label={`${language==='ru'?'Участок':'Segment'} ${s.roadId}: ${s.segmentKey}`} aria-pressed={selectedRoadPair===s.segmentKey&&selectedRoadTarget?.roadId===s.roadId&&!selectedRoadTarget.crossingKey}
+                x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2} stroke="transparent" style={{strokeWidth:'var(--road-hit-width)'}} pointerEvents="stroke"
+                onClick={e=>{e.stopPropagation();chooseRoadPair(s.segmentKey,s.roadId);}}
+                onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();e.stopPropagation();chooseRoadPair(s.segmentKey,s.roadId);}}} />)}
+              {renderedCrossings.map(c=><circle key={c.key} className="crossing-map-target" role="button" tabIndex={0}
+                aria-label={`${language==='ru'?'Переправа':'Crossing'} ${c.key}`} aria-pressed={selectedRoadTarget?.crossingKey===c.key}
+                cx={c.x} cy={c.y} style={{r:'var(--crossing-hit-radius)'}} fill="transparent" pointerEvents="all"
+                onClick={e=>{e.stopPropagation();chooseRoadPair(c.roadSegmentKey,c.roadId,c.key);}}
+                onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();e.stopPropagation();chooseRoadPair(c.roadSegmentKey,c.roadId,c.key);}}} />)}
+              {renderedCrossings.filter(c=>c.key===selectedRoadTarget?.crossingKey).map(c=><circle key={`selected-${c.key}`} cx={c.x} cy={c.y} r={9} fill="none" stroke="#7dd3fc" strokeWidth={3} pointerEvents="none" />)}
+              {roadSegments.filter(s=>confirmRoadRemoval ? s.roadId===confirmRoadRemoval.roadId&&(!confirmRoadRemoval.segmentKey||s.segmentKey===confirmRoadRemoval.segmentKey):s.segmentKey===selectedRoadPair&&s.roadId===selectedRoadTarget?.roadId&&!selectedRoadTarget.crossingKey).map(s=><line key={s.key}
+                x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2} stroke="#7dd3fc" strokeWidth={4} strokeDasharray="6 3" pointerEvents="none" />)}
+            </g>}
+            {editMode && !roadDraft && renderDetails && <g data-editor-only="obstacles" transform={mapRotationTransform}>
+              {!obstacleDraft && obstacles.map(o=>{const e=obstacleGeometry(o);if(!e)return null;return <circle key={o.id}
+                data-obstacle-map-id={o.id} className="obstacle-map-target" role="button" tabIndex={0}
+                aria-label={`${language==='ru'?'Выбрать препятствие':'Select barrier'} ${o.id}: ${hexKey(o.hex)} → ${hexKey(o.neighborHex)}`}
+                aria-pressed={selectedObstacleId===o.id} cx={(e.from.x+e.to.x)/2+riverOffset.x} cy={(e.from.y+e.to.y)/2+riverOffset.y}
+                style={{r:'var(--crossing-hit-radius)'}} fill="transparent" pointerEvents="all"
+                onClick={event=>activateObstaclePointer(event,()=>chooseObstacle(o.id))}
+                onKeyDown={event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();chooseObstacle(o.id);}}} />;})}
+              {obstacles.filter(o=>o.id===(obstacleDraft?.id??selectedObstacleId)).map(o=>{const e=obstacleGeometry(o);return e?<g key={o.id}><line x1={e.from.x+riverOffset.x} y1={e.from.y+riverOffset.y} x2={e.to.x+riverOffset.x} y2={e.to.y+riverOffset.y} stroke="#0c1423" strokeWidth={10} pointerEvents="none" /><line
+                data-obstacle-highlight={o.id} x1={e.from.x+riverOffset.x} y1={e.from.y+riverOffset.y} x2={e.to.x+riverOffset.x} y2={e.to.y+riverOffset.y}
+                stroke="#f7dc6f" strokeWidth={6} pointerEvents="none" /></g>:null;})}
+              {obstacleDraft && obstacleChoices.filter(c=>!c.reason).map(c=>{
+                const e=obstacleGeometry({hex:c.edit.hex,edgeKey:obstacleContext().edgeKey(c.edit.hex,c.neighborHex)!});if(!e)return null;
+                return <g key={e.edgeKey}>
+                  <line data-obstacle-preview={e.edgeKey} x1={e.from.x+riverOffset.x} y1={e.from.y+riverOffset.y} x2={e.to.x+riverOffset.x} y2={e.to.y+riverOffset.y}
+                    stroke="#7dd3fc" strokeWidth={hoverObstacleEdge===e.edgeKey?5:2} strokeDasharray="5 3" pointerEvents="none" />
+                  <circle data-obstacle-edge={e.edgeKey} className="obstacle-map-target" role="button" tabIndex={0}
+                    aria-label={`${language==='ru'?'Ребро':'Edge'} · ${obstacleDraft.id===null?(language==='ru'?'Добавить препятствие':'Add barrier'):(language==='ru'?'Перенести препятствие':'Move barrier')} ${selectedHexKey} → ${hexKey(c.neighborHex)}`}
+                    cx={(e.from.x+e.to.x)/2+riverOffset.x} cy={(e.from.y+e.to.y)/2+riverOffset.y} style={{r:'var(--crossing-hit-radius)'}} fill="transparent" pointerEvents="all"
+                    onFocus={()=>setHoverObstacleEdge(e.edgeKey)} onMouseEnter={()=>setHoverObstacleEdge(e.edgeKey)} onMouseLeave={()=>setHoverObstacleEdge(null)}
+                    onClick={event=>activateObstaclePointer(event,()=>editObstacleDocument(c.edit,obstacleDraft))}
+                    onKeyDown={event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();editObstacleDocument(c.edit,obstacleDraft);}}} />
+                </g>;
+              })}
+            </g>}
             </svg>
             <canvas ref={mapMotionCanvasRef} className="map-motion-buffer" aria-hidden="true" />
             </div>
