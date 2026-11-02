@@ -1,0 +1,67 @@
+{
+  "base_sha": "a39880477da4f835aa8dae6d21815570bda7bc5a",
+  "head_sha": "673b39468a21fad89d44c05c9c6d32b6c1e83741",
+  "added": 0,
+  "removed": 0,
+  "modified": 1,
+  "suite": "Browser save-history standalone lifecycle",
+  "scenario_risk": "Direct obstacle map hit targets must identify one stable ID, remain44px under zoom/rotation, restore focus after map actions and cancellation, exclude UI from export; read/edit spacing remains equal",
+  "reuse_or_new_reason": "Extended existing production lifecycle with E4 block, reusing load/snapshot/selection helpers; no new test() case, file, runner or broad repeated mixed100",
+  "count_source": "git diff a398804..673b394: existing save-history.smoke.mjs driver extended once; Node cases unchanged. Browser assertions/viewport loops are not counted as new Node tests.",
+  "parameters": {
+    "permanent": {
+      "viewport_widths": [
+        1500,
+        390
+      ],
+      "zoom": "wheel",
+      "rotation": true,
+      "locale": "RU in E4 block; existing lifecycle includes RU/EN"
+    },
+    "temporary": {
+      "Mythic": {
+        "locales": [
+          "ru",
+          "en"
+        ],
+        "widths": [
+          1500,
+          390
+        ],
+        "full_command_flows": "RU1500 and RU390"
+      },
+      "Classic": {
+        "locale": "ru",
+        "width": 1500,
+        "full_command_flow": true
+      },
+      "PNG": {
+        "invocations": 1,
+        "barrier_lines": 24,
+        "editor_attrs_absent": true
+      }
+    }
+  },
+  "executed": {
+    "local_lifecycle": {
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    "typescript": "passed",
+    "build": "passed",
+    "temporary": {
+      "matrix": 5,
+      "passed": 5,
+      "counted_as_permanent_growth": false
+    },
+    "full_CI": "see checks.json after completion"
+  },
+  "negative_evidence": {
+    "scope_error": "e4-map-browser-initial-red.log.excerpt.txt",
+    "precision_error": "e4-map-browser-precision-red.log.excerpt.txt",
+    "resolution": "Test captures actual zoomed export before action, not rounded CSS; scope uses its own viewport handle. No production RNG/generation changes.",
+    "full_raw_log_status": "Complete originals retained locally; compressed blob upload returned no usable SHA and is unconfirmed. Readable excerpts retained; fixture data in repository."
+  }
+}
