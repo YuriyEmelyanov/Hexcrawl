@@ -461,7 +461,7 @@ try {
  assert.ok(await edgeTargets.count()>=2,'zoom retains choice');
  for(const target of await edgeTargets.all()){const box=await target.boundingBox();assert.ok(box.width>=43.9&&box.height>=43.9,'E4 zoomed edge44px');}
  await page.locator('.rotate-map-button').click();assert.ok(await edgeTargets.count()>=2,'rotation retains choice');
- const svgStyle=await obstacleScale();barrierBefore.ui.mapScale=Number(svgStyle.match(/scale\(([^)]+)\)/)[1]);barrierBefore.ui.isMapRotated=!barrierBefore.ui.isMapRotated;
+ barrierBefore=await snapshot();await button('Добавить препятствие').click();
  await edgeTargets.first().press('Enter');
  await page.waitForFunction(()=>document.activeElement?.closest('[data-obstacle-id]'));
  const addedBarrier=await snapshot(),barrierId=addedBarrier.counters.nextObstacleId-1;
