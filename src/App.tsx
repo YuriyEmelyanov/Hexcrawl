@@ -14209,7 +14209,7 @@ export function App() {
     {!obstacleDraft?<button type="button" className="secondary" data-obstacle-add onClick={()=>startObstacleChoice(null)}>{language==='ru'?'Добавить препятствие':'Add barrier'}</button>:<>
       <p>{obstacleDraft.id===null?(language==='ru'?'Выберите ребро':'Choose an edge'):(language==='ru'?'Выберите новое ребро':'Choose a new edge')}</p>
       {obstacleChoices.map(c=><button type="button" className="secondary" key={hexKey(c.neighborHex)} disabled={!!c.reason}
-        aria-label={`${language==='ru'?'Ребро':'Edge'} ${selectedHexKey} → ${hexKey(c.neighborHex)}`}
+        aria-label={`${language==='ru'?'Ребро':'Edge'} · ${obstacleDraft.id===null?(language==='ru'?'Добавить препятствие':'Add barrier'):(language==='ru'?'Перенести препятствие':'Move barrier')} ${selectedHexKey} → ${hexKey(c.neighborHex)}`}
         onClick={()=>editObstacleDocument(c.edit,obstacleDraft)}>
         {hexKey(c.neighborHex)} · {c.reason??(c.kingdomId===undefined?(language==='ru'?'без королевства':'no kingdom'):`${language==='ru'?'королевство':'kingdom'} ${c.kingdomId}`)}</button>)}
       <button autoFocus type="button" className="secondary" onClick={cancelObstacleChoice}>{language==='ru'?'Отменить выбор':'Cancel choice'}</button>
@@ -15012,7 +15012,7 @@ export function App() {
                           return <p key={`nearby-river-${river.id}`}><span className="nearby-river-marker" aria-hidden="true">→</span>{hasRapids ? <span className="nearby-river-marker" aria-hidden="true">|||</span> : null}{hasWaterfall ? <img className="nearby-waterfall-marker" src="/waterfall-color.svg" alt="" aria-hidden="true" /> : null} {t.river} {renderToponym(`river:${river.id}`)}{riverFeatures.length > 0 ? ` (${riverFeatures.join(', ')})` : ''}</p>;
                         })}
                         {selectedObstacles.map(o=><div key={o.id} className="obstacle-row" data-obstacle-id={o.id}>
-                          {editMode?<button type="button" className="direct-value" aria-pressed={selectedObstacleId===o.id} onClick={()=>chooseObstacle(o.id)}>━ {language==='ru'?'Препятствие':'Barrier'} · {hexKey(o.hex)===selectedHexKey?hexKey(o.neighborHex):hexKey(o.hex)}</button>:<span>━ {language==='ru'?'Препятствие':'Barrier'} ({hexKey(o.hex)===selectedHexKey?hexKey(o.neighborHex):hexKey(o.hex)})</span>}
+                          {editMode?<button type="button" className="direct-value" aria-label={`${language==='ru'?'Выбрать препятствие':'Select barrier'} ${o.id}: ${hexKey(o.hex)} → ${hexKey(o.neighborHex)}`} aria-pressed={selectedObstacleId===o.id} onClick={()=>chooseObstacle(o.id)}>━ {language==='ru'?'Препятствие':'Barrier'} · {hexKey(o.hex)===selectedHexKey?hexKey(o.neighborHex):hexKey(o.hex)}</button>:<span>━ {language==='ru'?'Препятствие':'Barrier'} ({hexKey(o.hex)===selectedHexKey?hexKey(o.neighborHex):hexKey(o.hex)})</span>}
                           {editMode&&selectedObstacleId===o.id&&!obstacleDraft&&<><button type="button" className="secondary" onClick={()=>startObstacleChoice(o.id)}>{language==='ru'?'Перенести':'Move'}</button><button type="button" className="secondary" onClick={()=>editObstacleDocument({type:'remove',id:o.id})}>{language==='ru'?'Удалить':'Delete'}</button></>}
                         </div>)}
                         {selectedHexCrossings.map((crossing) => <p key={`selected-crossing-${crossing.key}`}>{crossing.kind === 'bridge' ? '🌉' : crossing.kind === 'ferry' ? '⛴️' : '🌊'} {t[crossing.kind]}</p>)}
@@ -15266,7 +15266,7 @@ export function App() {
             {editMode && !roadDraft && renderDetails && <g data-editor-only="obstacles" transform={mapRotationTransform}>
               {!obstacleDraft && obstacles.map(o=>{const e=obstacleGeometry(o);if(!e)return null;return <circle key={o.id}
                 data-obstacle-map-id={o.id} className="obstacle-map-target" role="button" tabIndex={0}
-                aria-label={`${language==='ru'?'Препятствие':'Barrier'} ${o.id}: ${hexKey(o.hex)} → ${hexKey(o.neighborHex)}`}
+                aria-label={`${language==='ru'?'Выбрать препятствие':'Select barrier'} ${o.id}: ${hexKey(o.hex)} → ${hexKey(o.neighborHex)}`}
                 aria-pressed={selectedObstacleId===o.id} cx={(e.from.x+e.to.x)/2+riverOffset.x} cy={(e.from.y+e.to.y)/2+riverOffset.y}
                 style={{r:'var(--crossing-hit-radius)'}} fill="transparent" pointerEvents="all"
                 onClick={event=>{event.stopPropagation();chooseObstacle(o.id);}}
@@ -15280,7 +15280,7 @@ export function App() {
                   <line data-obstacle-preview={e.edgeKey} x1={e.from.x+riverOffset.x} y1={e.from.y+riverOffset.y} x2={e.to.x+riverOffset.x} y2={e.to.y+riverOffset.y}
                     stroke="#7dd3fc" strokeWidth={hoverObstacleEdge===e.edgeKey?5:2} strokeDasharray="5 3" pointerEvents="none" />
                   <circle data-obstacle-edge={e.edgeKey} className="obstacle-map-target" role="button" tabIndex={0}
-                    aria-label={`${language==='ru'?'Ребро':'Edge'} ${selectedHexKey} → ${hexKey(c.neighborHex)}`}
+                    aria-label={`${language==='ru'?'Ребро':'Edge'} · ${obstacleDraft.id===null?(language==='ru'?'Добавить препятствие':'Add barrier'):(language==='ru'?'Перенести препятствие':'Move barrier')} ${selectedHexKey} → ${hexKey(c.neighborHex)}`}
                     cx={(e.from.x+e.to.x)/2+riverOffset.x} cy={(e.from.y+e.to.y)/2+riverOffset.y} style={{r:'var(--crossing-hit-radius)'}} fill="transparent" pointerEvents="all"
                     onFocus={()=>setHoverObstacleEdge(e.edgeKey)} onMouseEnter={()=>setHoverObstacleEdge(e.edgeKey)} onMouseLeave={()=>setHoverObstacleEdge(null)}
                     onClick={event=>{event.stopPropagation();editObstacleDocument(c.edit,obstacleDraft);}}

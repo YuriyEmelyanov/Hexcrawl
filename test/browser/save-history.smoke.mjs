@@ -448,7 +448,7 @@ try {
  await load(barriers);await ensureEdit();await select('2,6');
  let barrierBefore=await snapshot();
  await button('Добавить препятствие').click();
- const edgeTargets=page.locator('[data-obstacle-edge]');assert.ok(await edgeTargets.count()>=2);
+ const edgeTargets=page.locator('[data-obstacle-edge]');assert.ok(await edgeTargets.count()>=2);assert.match(await edgeTargets.first().getAttribute('aria-label'),/Добавить препятствие 2,6 →/);
  for(const width of [1500,390]){
    await page.setViewportSize({width,height:1100});
    for(const target of await edgeTargets.all()){const box=await target.boundingBox();assert.ok(box.width>=43.9&&box.height>=43.9,'E4 edge44px');}
@@ -468,10 +468,11 @@ try {
  assert.equal(addedBarrier.map.obstacles.length,barrierBefore.map.obstacles.length+1);
  await button('Отменить').click();assert.deepEqual(await snapshot(),barrierBefore);
  await button('Повторить').click();assert.deepEqual(await snapshot(),addedBarrier);
+ const rowHeight=await page.locator(`[data-obstacle-id="${barrierId}"]`).evaluate(e=>e.getBoundingClientRect().height);await page.locator('.direct-mode').click();assert.equal(await page.locator(`[data-obstacle-id="${barrierId}"]`).evaluate(e=>e.getBoundingClientRect().height),rowHeight,'E4 read/edit row height');await page.locator('.direct-mode').click();
  const mapBarrier=page.locator(`[data-obstacle-map-id="${barrierId}"]`);await mapBarrier.press('Space');
  assert.equal(await page.locator(`[data-obstacle-highlight="${barrierId}"]`).count(),1);
  const barrierRow=page.locator(`[data-obstacle-id="${barrierId}"]`);await barrierRow.getByRole('button',{name:'Перенести',exact:true}).click();
- assert.equal(await page.locator(`[data-obstacle-highlight="${barrierId}"]`).count(),1,'source remains until commit');
+ assert.equal(await page.locator(`[data-obstacle-highlight="${barrierId}"]`).count(),1,'source remains until commit');assert.match(await edgeTargets.first().getAttribute('aria-label'),/Перенести препятствие/);
  await page.keyboard.press('Escape');await page.waitForFunction(()=>document.activeElement?.closest('[data-obstacle-id]'));
  await barrierRow.getByRole('button',{name:'Удалить',exact:true}).click();
  await page.waitForFunction(()=>document.activeElement?.hasAttribute('data-obstacle-list'));
