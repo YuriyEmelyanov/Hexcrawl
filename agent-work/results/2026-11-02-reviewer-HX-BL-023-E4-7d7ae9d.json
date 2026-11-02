@@ -1,0 +1,320 @@
+{
+  "run_id": "2026-11-02-reviewer-HX-BL-023-E4-7d7ae9d",
+  "role": "reviewer",
+  "task_id": "HX-BL-023",
+  "stage_id": "E4",
+  "role_selection_reason": "Exact review_ready E3+E4 SHA and required checks present; all previous claims completed, owner has not authorized publication",
+  "started_at": "2026-11-02T05:03:30.283Z",
+  "completed_at": "2026-11-02T05:15:39.355Z",
+  "status": "changes_requested",
+  "verdict": "changes_requested",
+  "head_sha": "7d7ae9d3f908be03263bd1268a8036ca3f12ded0",
+  "tree_sha": "58be535129830023fc6304d0350ff682f7177f7f",
+  "base_sha": "cd4bd5402ffa92800710f5d4ded32cb1baea774b",
+  "pr": 481,
+  "review_id": 5732351887,
+  "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/481#pullrequestreview-5732351887",
+  "spec_version": "E4-1.1",
+  "related_spec_version": "E3-1.0",
+  "independence": {
+    "fresh_context_agent": "/root/review_e4_7d7ae9d",
+    "role": "independent reviewer",
+    "source_worktree_exact_SHA": true,
+    "product_files_unchanged": true,
+    "root_role": "Coordinator checks remote SHA/gates, verifies reproduction artifact, records shared state; previously implemented portions so independent agent owns runtime verdict"
+  },
+  "finding_ids": [
+    "HX023-E4-R1"
+  ],
+  "findings": [
+    {
+      "id": "HX023-E4-R1",
+      "severity": "P2",
+      "title": "Overlapping map targets commit a different edge at low zoom",
+      "source": "src/App.tsx",
+      "lines": [
+        15282,
+        15287
+      ],
+      "contract": "E4-1.1 UI keyboard/touch overlapping-hit-target list disambiguation; AC07",
+      "steps": [
+        "Import three-area-fixture.json into exact SHA production build; Edit; select0,0; add barrier0,0→1,0.",
+        "Move ID1 via UI to70,0→71,0, then to30,0→31,0 (these move checks pass); select0,0 and Add barrier again.",
+        "Six valid directions appear. At1500×1100 rotate map and wheel900 over map, resulting mapScale0.2592402606458915.",
+        "Pointer-click the midpoint of first target labeled Add barrier0,0→1,0 (x1000.0036,y116.2486 in recorded run)."
+      ],
+      "expected": "Ambiguous overlapping map target resolves through the six-direction list before committing; requested first edge must not silently become another edge.",
+      "actual": "document.elementFromPoint returns last circle0,-28|24.249,-14, and mouse click immediately commits ID2 from0,0→1,-1. No prompt/list resolution or error; nextObstacleId advances2→3.",
+      "cause": "All44px circles remain pointerEvents=all at low zoom, rendered in array order, each direct onClick commits its own edge. Their centers are only about6.29px apart at recorded zoom; last painted circle intercepts the first midpoint.",
+      "evidence": [
+        "reproduction.json",
+        "kingdom-probe.mjs",
+        "kingdom-probe.log",
+        "three-area-fixture.json",
+        "three-area-result.json",
+        "overlap-before.png"
+      ],
+      "fix_boundary": "Resolve ambiguous pointer hits via existing direction list (or equivalent exact edge disambiguation) while retaining44px effective keyboard/touch targets and one atomic operation. Re-review new SHA required."
+    }
+  ],
+  "evidence_ref": "agent-work/evidence/review-HX-BL-023-E4-7d7ae9d",
+  "report_ref": "agent-work/evidence/review-HX-BL-023-E4-7d7ae9d/review-report.md",
+  "checks": [
+    {
+      "name": "seed-ui",
+      "status": "completed",
+      "conclusion": "skipped",
+      "head_sha": "7d7ae9d3f908be03263bd1268a8036ca3f12ded0",
+      "html_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41372555748/job/125045921769"
+    },
+    {
+      "name": "check",
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "7d7ae9d3f908be03263bd1268a8036ca3f12ded0",
+      "html_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41372555731/job/125045920611"
+    },
+    {
+      "name": "browser",
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "7d7ae9d3f908be03263bd1268a8036ca3f12ded0",
+      "html_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41372555731/job/125045920564"
+    },
+    {
+      "name": "world-random",
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "7d7ae9d3f908be03263bd1268a8036ca3f12ded0",
+      "html_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41372555731/job/125045920335"
+    }
+  ],
+  "independent_validation": {
+    "build": "npm run build passed Nodev24.22.1",
+    "targeted": {
+      "command": "node --test test/manualObstacles.test.mjs test/manualRoads.test.mjs test/mapTransactions.test.mjs test/saveSafety.test.mjs",
+      "executed": 51,
+      "passed": 51,
+      "failed": 0,
+      "skipped": 0,
+      "log": "targeted.log"
+    },
+    "production_ui": [
+      "Classic add, Escape exact cancellation, delete→Nearby focus, Undo data restoration",
+      "Actual native PNG export + visual inspection",
+      "Mythic ID1 kingdom1→unowned→kingdom2, membership previews, unchanged ID/counter/count, source→outside Undo/Redo map+RNG equality",
+      "Six44px circle bounds at1500/390 and after rotation+zoom; no horizontal overflow in sampled widths",
+      "Move focus returns exact object row",
+      "Confirmed unintended edge pointer commit under overlapping targets"
+    ],
+    "temporary_probe_failures": "Initial server connection refused and selector/state setup errors corrected; not product findings. JSON snapshot cancels selection intentionally, so reselect precedes Delete. An early Undo comparison included selectedHex from before target navigation; corrected to compare data/RNG at commit boundary.",
+    "remote_ci": "Parent independently verifies remote gates; child makes no independent remote CI claim"
+  },
+  "test_change_summary": {
+    "base_sha": "7d7ae9d3f908be03263bd1268a8036ca3f12ded0",
+    "head_sha": "7d7ae9d3f908be03263bd1268a8036ca3f12ded0",
+    "added": 0,
+    "removed": 0,
+    "modified": 0,
+    "suite": "reviewer permanent changes",
+    "scenario_risk": "Independent existing tests and temporary actual-pointer diagnostics",
+    "reuse_or_new_reason": "No permanent source edits; existing51-case runner plus temporary reviewer probes",
+    "count_source": "Exact checkout status only untracked node_modules",
+    "executed": {
+      "command": "node --test test/manualObstacles.test.mjs test/manualRoads.test.mjs test/mapTransactions.test.mjs test/saveSafety.test.mjs",
+      "executed": 51,
+      "passed": 51,
+      "failed": 0,
+      "skipped": 0,
+      "log": "targeted.log"
+    },
+    "package_test_audit_ref": "agent-work/evidence/review-HX-BL-023-E4-7d7ae9d/review-report.json#test_necessity_assessment"
+  },
+  "test_necessity_assessment": {
+    "base_sha": "cd4bd5402ffa92800710f5d4ded32cb1baea774b",
+    "head_sha": "7d7ae9d3f908be03263bd1268a8036ca3f12ded0",
+    "node_top_level_test_change_summary": {
+      "added": 13,
+      "removed": 0,
+      "modified": 6,
+      "counting": "Named top-level node:test cases in changed .test.mjs files; renamed notes test counted modified, not add/remove. Parameterized branches not added to runner count."
+    },
+    "browser_suites_modified": [
+      "navigation.smoke.mjs",
+      "save-history.smoke.mjs"
+    ],
+    "necessity": "New pure obstacle5 and road5 cases protect separate prepare/ID/geometry/network/crossing contracts. Three new handler cases cover actual transaction/import/lifecycle wiring beyond pure helpers. Reused import/manifest/history suites cover migration and rollback instead of duplicating mixed100 runner. Existing generator/counter assertions and format updates match changed contracts. No gratuitous duplicate or deletion candidate established in this bounded review.",
+    "sensitivity_gap": "Existing browser check only measures44px bounds and element-targeted keyboard events; it never pointer-clicks a center while circles overlap. Passing size/keyboard checks therefore miss HX023-E4-R1. Reuse this lifecycle for a targeted ambiguous-pointer regression rather than duplicate broad suites.",
+    "reviewer_permanent_test_edits": 0
+  },
+  "score_model_version": "1.2",
+  "score_assessment": {
+    "model_version": "1.2",
+    "head_sha": "7d7ae9d3f908be03263bd1268a8036ca3f12ded0",
+    "baseline_source": "agent-work/score/current-score.json at operations f0044d523645d78b3c8076e90f0b83498ee69e4e",
+    "baseline_confirmed_points": null,
+    "baseline_unverified_weight": 1000,
+    "award_points": 0,
+    "criteria": [
+      {
+        "criterion_id": "S02-C02",
+        "weight": 20,
+        "regression_only": false,
+        "before_grade": null,
+        "before_points": null,
+        "after_grade": null,
+        "after_points": null,
+        "delta": null,
+        "status": "insufficient_evidence",
+        "sha": "7d7ae9d3f908be03263bd1268a8036ca3f12ded0",
+        "method": "Independent source/diff review; Node24 targeted production-handler tests; Chromium production UI probes",
+        "evidence": "Actual UI moved stable barrier ID1 from kingdom1 to no membership and to kingdom2; unchanged nextObstacleId and count; migration/roundtrip targeted handler passed.",
+        "limits": "Only barriers and narrow road fixtures examined; all-entity identity not assessed."
+      },
+      {
+        "criterion_id": "S03-C05",
+        "weight": 20,
+        "regression_only": false,
+        "before_grade": null,
+        "before_points": null,
+        "after_grade": null,
+        "after_points": null,
+        "delta": null,
+        "status": "insufficient_evidence",
+        "sha": "7d7ae9d3f908be03263bd1268a8036ca3f12ded0",
+        "method": "Independent source/diff review; Node24 targeted production-handler tests; Chromium production UI probes",
+        "evidence": "Actual UI Add/Delete and source→outside Undo/Redo data; targeted handler transaction/no-op/100-operation existing contract suite passed.",
+        "limits": "No independent named-version or full breadth assessment. UI selectedHex legitimately reflects target selected before commit; data equality used accordingly."
+      },
+      {
+        "criterion_id": "S04-C04",
+        "weight": 15,
+        "regression_only": false,
+        "before_grade": null,
+        "before_points": null,
+        "after_grade": null,
+        "after_points": null,
+        "delta": null,
+        "status": "insufficient_evidence",
+        "sha": "7d7ae9d3f908be03263bd1268a8036ca3f12ded0",
+        "method": "Independent source/diff review; Node24 targeted production-handler tests; Chromium production UI probes",
+        "evidence": "Actual native PNG exported retained #a95650 manual barrier (336 exact RGB pixels), visually inspected; source selection overlays absent. Targeted legacy/v5 import roundtrip passed.",
+        "limits": "No full export role/style matrix or complete SVG raster comparison; standalone SVG export not claimed."
+      },
+      {
+        "criterion_id": "S09-C04",
+        "weight": 10,
+        "regression_only": false,
+        "before_grade": null,
+        "before_points": null,
+        "after_grade": null,
+        "after_points": null,
+        "delta": null,
+        "status": "insufficient_evidence",
+        "sha": "7d7ae9d3f908be03263bd1268a8036ca3f12ded0",
+        "method": "Independent source/diff review; Node24 targeted production-handler tests; Chromium production UI probes",
+        "evidence": "Targeted actual-handler malformed import/overflow/preparation failure and both stack preservation cases passed; actual UI Escape cancellation exact document passed.",
+        "limits": "All invalid-target causes/stale-revision/UI interleavings were not independently exercised; target-overlap defect can commit unintended edge."
+      },
+      {
+        "criterion_id": "S01-C04",
+        "weight": 25,
+        "regression_only": true,
+        "before_grade": null,
+        "before_points": null,
+        "after_grade": null,
+        "after_points": null,
+        "delta": null,
+        "status": "insufficient_evidence",
+        "sha": "7d7ae9d3f908be03263bd1268a8036ca3f12ded0",
+        "method": "Independent source/diff review; Node24 targeted production-handler tests; Chromium production UI probes",
+        "evidence": "manualRoads.test plus actual-handler E3 tests passed; road topology/crossing dependency source inspected.",
+        "limits": "Regression evidence only; no full generation corpus or top5/10/20 game requirements verified."
+      },
+      {
+        "criterion_id": "S03-C01",
+        "weight": 25,
+        "regression_only": true,
+        "before_grade": null,
+        "before_points": null,
+        "after_grade": null,
+        "after_points": null,
+        "delta": null,
+        "status": "insufficient_evidence",
+        "sha": "7d7ae9d3f908be03263bd1268a8036ca3f12ded0",
+        "method": "Independent source/diff review; Node24 targeted production-handler tests; Chromium production UI probes",
+        "evidence": "Existing mapTransactions handler suite including biome/POI/notes behavior passed; selected hex and object focus UI exercised.",
+        "limits": "Regression evidence only; water/region membership editing absent from E4 scope; no full criterion assessment."
+      }
+    ],
+    "quality_and_breadth_separate": true,
+    "breadth": {
+      "scenarios": [
+        "L1 create_from_scratch",
+        "L1 develop_existing"
+      ],
+      "fixtures": [
+        "Classic manual-edit-map",
+        "Synthetic Mythic three-area author map",
+        "existing bounded Node handler fixtures"
+      ],
+      "games": "No complete game-specific top5/10/20 requirements assessed; no support breadth awarded."
+    },
+    "double_counting": "Evidence scoped separately to ID, history, file export, safety, roads regression and hex-edit regression; no full criterion inferred from the same passing transaction."
+  },
+  "score_assessment_ref": "agent-work/evidence/review-HX-BL-023-E4-7d7ae9d/score-assessment.json",
+  "confirmed_points": null,
+  "unverified_weight": 1000,
+  "awarded_points": 0,
+  "published": false,
+  "accepted": false,
+  "release_approved": false,
+  "next_role": "developer",
+  "next_step": "Программист исправляет HX023-E4-R1 в PR481 по сохранённому воспроизведению; затем новый SHA и evidence передаются независимому проверяющему.",
+  "handoff_ref": "agent-work/handoffs/2026-11-02-HX-BL-023-E4-overlap-fix.json",
+  "authorization_status": "bounded_correction_in_already_approved_E4_no_new_owner_decision",
+  "limitations": [
+    "One confirmed acceptance defect is sufficient for changes_requested; exhaustive remaining matrix intentionally not broadened.",
+    "Chromium headless only; no physical touch, screenreader, Firefox/Safari.",
+    "No independent full browser/world-random/check rerun by child; root remote gate verification tracked separately.",
+    "Invalid command water/river/road/trail/external/occupied cause matrix and stale revision callback message not independently completed beyond targeted existing tests; not reported as defects.",
+    "RU production UI exercised; English labeling reviewed in source but no complete independent EN UI matrix.",
+    "No full E1–E3 visual/navigation/game corpus acceptance beyond narrow actual handler/UI regression samples."
+  ],
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-02T05:03:30.283Z",
+      "is_enabled": true
+    },
+    "end": {
+      "checked_at": "2026-11-02T05:15:39.355Z",
+      "is_enabled": true
+    },
+    "restoration_performed": false,
+    "errors": [],
+    "independent_agent": {
+      "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "start": {
+        "is_enabled": true,
+        "checked_at": null,
+        "timestamp_limit": "Start tool observation performed before detached worktree creation; exact timestamp was not recorded."
+      },
+      "end": {
+        "is_enabled": true,
+        "checked_at": "2026-11-02T05:11:36Z"
+      },
+      "restoration_performed": false,
+      "errors": [],
+      "schedule_or_prompt_changed": false,
+      "next_run_time": null,
+      "recorded_status": "in_progress",
+      "limits": "Observed enabled at start/end only. Null next_run_time and recorded in_progress do not prove current liveness or future enabled state."
+    },
+    "limitation": "Only observed at peek times; team work continues with approved developer correction"
+  },
+  "queue_preserved": {
+    "HX_BL_010": "approved_queued_after_E4",
+    "main": "unchanged"
+  }
+}
