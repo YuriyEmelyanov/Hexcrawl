@@ -11378,7 +11378,7 @@ export function App() {
     const selector=target==='nearby'?'[data-obstacle-list]':target==='add'?'[data-obstacle-add]':`[data-obstacle-id="${target}"] .direct-value`;
     const node=infoFocusRef.current?.querySelector<HTMLElement>(selector)??infoFocusRef.current;
     node?.focus();obstacleReturnFocus.current=null;
-  },[renderedDocumentRevision,obstacleDraft]);
+  });
   const dirtyNameDraft = () => {
     const draft = nameDraftRef.current;
     return !!draft && draft.value !== draft.target[draft.language];
@@ -14175,15 +14175,16 @@ export function App() {
     }
     try{
       const doc={obstacles,nextObstacleId},prepared=prepareObstacleEdit(doc,edit,obstacleContext());
-      if(prepared===doc){if(edit.type==='move'){obstacleReturnFocus.current=edit.id;setSelectedObstacleId(edit.id);}updateObstacleDraft(null);return true;}
+      if(prepared===doc){setIsSidePanelCollapsed(false);if(edit.type==='move'){obstacleReturnFocus.current=edit.id;setSelectedObstacleId(edit.id);}updateObstacleDraft(null);return true;}
       const before=captureDocument(),after=copyDocument({...before,map:{...before.map,...prepared}});
       recordTransaction(before,after);applyExactMap(after.map);closeEditors();
+      setIsSidePanelCollapsed(false);
       const focusId=edit.type==='remove'?'nearby':edit.type==='move'?edit.id:prepared.nextObstacleId-1;
       setSelectedObstacleId(typeof focusId==='number'?focusId:null);obstacleReturnFocus.current=focusId;
       return true;
     }catch(error){setEditError(obstacleMessage(error));return false;}
   };
-  const cancelObstacleChoice = () => {obstacleReturnFocus.current=obstacleDraftRef.current?.id??'add';updateObstacleDraft(null);};
+  const cancelObstacleChoice = () => {setIsSidePanelCollapsed(false);obstacleReturnFocus.current=obstacleDraftRef.current?.id??'add';updateObstacleDraft(null);};
   const startObstacleChoice = (id:number|null) => {
     if(!finishInlineName()||mutationBlocked())return;
     finishNotesGroup();closeEditors();setSelectedRoadTarget(null);setConfirmRoadRemoval(null);
@@ -14193,7 +14194,7 @@ export function App() {
     if(documentBusy()||!finishRoadDraft()||!finishInlineName())return;
     const obstacle=obstacles.find(o=>o.id===id);if(!obstacle)return;
     finishNotesGroup();clearNotesDraft();closeEditors();setSelectedRoadPair(null);setSelectedRoadTarget(null);setConfirmRoadRemoval(null);
-    setSelectedHex({...obstacle.hex});setSelectedObstacleId(id);
+    setIsSidePanelCollapsed(false);obstacleReturnFocus.current=id;setSelectedHex({...obstacle.hex});setSelectedObstacleId(id);
   };
   const obstacleGeometry = (o:Pick<EditableObstacle,'hex'|'edgeKey'>) => getHexEdgesAsVertexPairs(o.hex).find(e=>e.edgeKey===o.edgeKey);
   const obstacleChoices = selectedHex&&obstacleDraft ? [[1,0],[0,1],[-1,1],[-1,0],[0,-1],[1,-1]].map(([q,r])=>{

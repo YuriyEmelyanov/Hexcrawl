@@ -454,13 +454,14 @@ try {
    for(const target of await edgeTargets.all()){const box=await target.boundingBox();assert.ok(box.width>=43.9&&box.height>=43.9,'E4 edge44px');}
  }
  await page.setViewportSize({width:1500,height:1100});
- const vr=await viewport.boundingBox();await page.mouse.move(vr.x+vr.width/2,vr.y+100);
- const oldScale=await scale();await page.mouse.wheel(0,-120);
+ const obstacleViewport=page.locator('.map-viewport'),obstacleScale=()=>obstacleViewport.locator('svg').getAttribute('style');
+ const vr=await obstacleViewport.boundingBox();await page.mouse.move(vr.x+vr.width/2,vr.y+100);
+ const oldScale=await obstacleScale();await page.mouse.wheel(0,-120);
  await page.waitForFunction(old=>document.querySelector('.map-viewport svg').getAttribute('style')!==old,oldScale);
  assert.ok(await edgeTargets.count()>=2,'zoom retains choice');
  for(const target of await edgeTargets.all()){const box=await target.boundingBox();assert.ok(box.width>=43.9&&box.height>=43.9,'E4 zoomed edge44px');}
  await page.locator('.rotate-map-button').click();assert.ok(await edgeTargets.count()>=2,'rotation retains choice');
- const svgStyle=await scale();barrierBefore.ui.mapScale=Number(svgStyle.match(/scale\(([^)]+)\)/)[1]);barrierBefore.ui.isMapRotated=!barrierBefore.ui.isMapRotated;
+ const svgStyle=await obstacleScale();barrierBefore.ui.mapScale=Number(svgStyle.match(/scale\(([^)]+)\)/)[1]);barrierBefore.ui.isMapRotated=!barrierBefore.ui.isMapRotated;
  await edgeTargets.first().press('Enter');
  await page.waitForFunction(()=>document.activeElement?.closest('[data-obstacle-id]'));
  const addedBarrier=await snapshot(),barrierId=addedBarrier.counters.nextObstacleId-1;
