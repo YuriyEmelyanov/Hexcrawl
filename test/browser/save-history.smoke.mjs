@@ -443,6 +443,39 @@ try {
    assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'E3 no horizontal page overflow');
  }
  await page.setViewportSize({width:1500,height:1100});
+ // E4: direct map identity/keyboard targets, zoom sizing, focus and export cancellation.
+ const barriers=JSON.parse(await fs.readFile(new URL('../fixtures/import-v2/baseline-mythic.json',import.meta.url)));
+ await load(barriers);await ensureEdit();await select('2,6');
+ let barrierBefore=await snapshot();
+ await button('Добавить препятствие').click();
+ const edgeTargets=page.locator('[data-obstacle-edge]');assert.ok(await edgeTargets.count()>=2);
+ for(const width of [1500,390]){
+   await page.setViewportSize({width,height:1100});
+   for(const target of await edgeTargets.all()){const box=await target.boundingBox();assert.ok(box.width>=43.9&&box.height>=43.9,'E4 edge44px');}
+ }
+ await page.setViewportSize({width:1500,height:1100});
+ const vr=await viewport.boundingBox();await page.mouse.move(vr.x+vr.width/2,vr.y+100);
+ const oldScale=await scale();await page.mouse.wheel(0,-120);
+ await page.waitForFunction(old=>document.querySelector('.map-viewport svg').getAttribute('style')!==old,oldScale);
+ assert.ok(await edgeTargets.count()>=2,'zoom retains choice');
+ for(const target of await edgeTargets.all()){const box=await target.boundingBox();assert.ok(box.width>=43.9&&box.height>=43.9,'E4 zoomed edge44px');}
+ await page.locator('.rotate-map-button').click();assert.ok(await edgeTargets.count()>=2,'rotation retains choice');
+ const svgStyle=await scale();barrierBefore.ui.mapScale=Number(svgStyle.match(/scale\(([^)]+)\)/)[1]);barrierBefore.ui.isMapRotated=!barrierBefore.ui.isMapRotated;
+ await edgeTargets.first().press('Enter');
+ await page.waitForFunction(()=>document.activeElement?.closest('[data-obstacle-id]'));
+ const addedBarrier=await snapshot(),barrierId=addedBarrier.counters.nextObstacleId-1;
+ assert.equal(addedBarrier.map.obstacles.length,barrierBefore.map.obstacles.length+1);
+ await button('Отменить').click();assert.deepEqual(await snapshot(),barrierBefore);
+ await button('Повторить').click();assert.deepEqual(await snapshot(),addedBarrier);
+ const mapBarrier=page.locator(`[data-obstacle-map-id="${barrierId}"]`);await mapBarrier.press('Space');
+ assert.equal(await page.locator(`[data-obstacle-highlight="${barrierId}"]`).count(),1);
+ const barrierRow=page.locator(`[data-obstacle-id="${barrierId}"]`);await barrierRow.getByRole('button',{name:'Перенести',exact:true}).click();
+ assert.equal(await page.locator(`[data-obstacle-highlight="${barrierId}"]`).count(),1,'source remains until commit');
+ await page.keyboard.press('Escape');await page.waitForFunction(()=>document.activeElement?.closest('[data-obstacle-id]'));
+ await barrierRow.getByRole('button',{name:'Удалить',exact:true}).click();
+ await page.waitForFunction(()=>document.activeElement?.hasAttribute('data-obstacle-list'));
+ await button('Отменить').click();assert.deepEqual(await snapshot(),addedBarrier);
+ await button('Добавить препятствие').click();await snapshot();assert.equal(await edgeTargets.count(),0,'export cancels uncommitted target');
  if(await page.locator('.header-links').evaluate(el=>el.classList.contains('is-collapsed')))await page.locator('.header-links-toggle').click();
  await button('Switch to English').click();assert.equal(await button('Undo').count(),1);assert.equal(await button('Redo').count(),1);
  assert.deepEqual(errors,[]);assert.equal(alerts.length,5,'only intentional invalid imports');

@@ -11353,6 +11353,8 @@ export function App() {
   const [obstacleDraft,setObstacleDraft] = useState<ObstacleDraft|null>(null);
   const obstacleDraftRef = useRef<ObstacleDraft|null>(null);
   const updateObstacleDraft = (draft:ObstacleDraft|null) => {obstacleDraftRef.current=draft;setObstacleDraft(draft);};
+  const obstacleReturnFocus = useRef<number|'nearby'|'add'|null>(null);
+  const [hoverObstacleEdge,setHoverObstacleEdge] = useState<string|null>(null);
   const [selectedObstacleId,setSelectedObstacleId] = useState<number|null>(null);
   const pendingRoadExport = useRef<'png'|'json'|null>(null);
   const [selectedRoadTarget, setSelectedRoadTarget] = useState<{roadId:number; crossingKey?:string} | null>(null);
@@ -11371,6 +11373,12 @@ export function App() {
   const nameComposingRef = useRef(false);
   const infoFocusRef = useRef<HTMLElement | null>(null);
   const nameReturnFocusRef = useRef<HTMLElement | null>(null);
+  useEffect(()=>{
+    const target=obstacleReturnFocus.current;if(target===null)return;
+    const selector=target==='nearby'?'[data-obstacle-list]':target==='add'?'[data-obstacle-add]':`[data-obstacle-id="${target}"] .direct-value`;
+    const node=infoFocusRef.current?.querySelector<HTMLElement>(selector)??infoFocusRef.current;
+    node?.focus();obstacleReturnFocus.current=null;
+  },[renderedDocumentRevision,obstacleDraft]);
   const dirtyNameDraft = () => {
     const draft = nameDraftRef.current;
     return !!draft && draft.value !== draft.target[draft.language];
@@ -12802,7 +12810,7 @@ export function App() {
   const captureDocument = (): DocumentSnapshot => ({ map: captureMap(), generationHistory: history, selectedHex,
     generationMode, isMapRotated, mapScale: pendingMapZoomRef.current?.scale ?? mapScaleRef.current });
   const closeEditors = () => {
-    updateObstacleDraft(null); setSelectedObstacleId(null);
+    setHoverObstacleEdge(null); updateObstacleDraft(null); setSelectedObstacleId(null);
     setEditingHexBiomeKey(null); setEditingPoiHexKey(null); setEditingCentralPoiRegionId(null); setEditingRegionBiomeId(null); setEditError(null);
   };
   const recordTransaction = (before: DocumentSnapshot, after: DocumentSnapshot) => {
@@ -14167,18 +14175,27 @@ export function App() {
     }
     try{
       const doc={obstacles,nextObstacleId},prepared=prepareObstacleEdit(doc,edit,obstacleContext());
-      if(prepared===doc){updateObstacleDraft(null);return true;}
+      if(prepared===doc){if(edit.type==='move'){obstacleReturnFocus.current=edit.id;setSelectedObstacleId(edit.id);}updateObstacleDraft(null);return true;}
       const before=captureDocument(),after=copyDocument({...before,map:{...before.map,...prepared}});
       recordTransaction(before,after);applyExactMap(after.map);closeEditors();
-      setSelectedObstacleId(edit.type==='remove'?null:edit.type==='move'?edit.id:prepared.nextObstacleId-1);
+      const focusId=edit.type==='remove'?'nearby':edit.type==='move'?edit.id:prepared.nextObstacleId-1;
+      setSelectedObstacleId(typeof focusId==='number'?focusId:null);obstacleReturnFocus.current=focusId;
       return true;
     }catch(error){setEditError(obstacleMessage(error));return false;}
   };
+  const cancelObstacleChoice = () => {obstacleReturnFocus.current=obstacleDraftRef.current?.id??'add';updateObstacleDraft(null);};
   const startObstacleChoice = (id:number|null) => {
     if(!finishInlineName()||mutationBlocked())return;
     finishNotesGroup();closeEditors();setSelectedRoadTarget(null);setConfirmRoadRemoval(null);
     setSelectedObstacleId(id);updateObstacleDraft({id,revision:documentRevision.current});
   };
+  const chooseObstacle = (id:number) => {
+    if(documentBusy()||!finishRoadDraft()||!finishInlineName())return;
+    const obstacle=obstacles.find(o=>o.id===id);if(!obstacle)return;
+    finishNotesGroup();clearNotesDraft();closeEditors();setSelectedRoadPair(null);setSelectedRoadTarget(null);setConfirmRoadRemoval(null);
+    setSelectedHex({...obstacle.hex});setSelectedObstacleId(id);
+  };
+  const obstacleGeometry = (o:Pick<EditableObstacle,'hex'|'edgeKey'>) => getHexEdgesAsVertexPairs(o.hex).find(e=>e.edgeKey===o.edgeKey);
   const obstacleChoices = selectedHex&&obstacleDraft ? [[1,0],[0,1],[-1,1],[-1,0],[0,-1],[1,-1]].map(([q,r])=>{
     const neighborHex={q:selectedHex.q+q,r:selectedHex.r+r};
     const edit:ObstacleEdit=obstacleDraft.id===null?{type:'add',hex:selectedHex,neighborHex}:{type:'move',id:obstacleDraft.id,hex:selectedHex,neighborHex};
@@ -14188,13 +14205,13 @@ export function App() {
     }catch(error){return {neighborHex,edit,reason:obstacleMessage(error),kingdomId:undefined};}
   }):[];
   const obstaclePanel = editMode&&selectedHex&&!roadDraft ? <div className="obstacle-editor" data-obstacle-editor>
-    {!obstacleDraft?<button type="button" className="secondary" onClick={()=>startObstacleChoice(null)}>{language==='ru'?'Добавить препятствие':'Add barrier'}</button>:<>
+    {!obstacleDraft?<button type="button" className="secondary" data-obstacle-add onClick={()=>startObstacleChoice(null)}>{language==='ru'?'Добавить препятствие':'Add barrier'}</button>:<>
       <p>{obstacleDraft.id===null?(language==='ru'?'Выберите ребро':'Choose an edge'):(language==='ru'?'Выберите новое ребро':'Choose a new edge')}</p>
       {obstacleChoices.map(c=><button type="button" className="secondary" key={hexKey(c.neighborHex)} disabled={!!c.reason}
         aria-label={`${language==='ru'?'Ребро':'Edge'} ${selectedHexKey} → ${hexKey(c.neighborHex)}`}
         onClick={()=>editObstacleDocument(c.edit,obstacleDraft)}>
         {hexKey(c.neighborHex)} · {c.reason??(c.kingdomId===undefined?(language==='ru'?'без королевства':'no kingdom'):`${language==='ru'?'королевство':'kingdom'} ${c.kingdomId}`)}</button>)}
-      <button autoFocus type="button" className="secondary" onClick={()=>updateObstacleDraft(null)}>{language==='ru'?'Отменить выбор':'Cancel choice'}</button>
+      <button autoFocus type="button" className="secondary" onClick={cancelObstacleChoice}>{language==='ru'?'Отменить выбор':'Cancel choice'}</button>
     </>}
   </div>:null;
   const draftError = (ru:string,en:string) => {setEditError(language==='ru'?ru:en);return false;};
@@ -14680,7 +14697,7 @@ export function App() {
 
   return (
     <div className="app" onPointerDownCapture={finishBeforePointer} onKeyDownCapture={e=>{
-      if(e.key==='Escape'&&obstacleDraftRef.current){e.preventDefault();e.stopPropagation();updateObstacleDraft(null);return;}
+      if(e.key==='Escape'&&obstacleDraftRef.current){e.preventDefault();e.stopPropagation();cancelObstacleChoice();return;}
       if(!roadDraftRef.current||e.nativeEvent.isComposing)return;
       if(e.key==='Escape'){e.preventDefault();e.stopPropagation();resetRoadDraft();}
       else if(e.key==='Enter'&&!(e.target as Element).matches('select,button,input,textarea')){e.preventDefault();e.stopPropagation();finishRoadDraft();}
@@ -14980,9 +14997,9 @@ export function App() {
                     </div> : null}
                     {selectedHexRoadIds.map((roadId) => <p key={`selected-road-${roadId}`}>▬ {t.road} {roadId}</p>)}
                     {selectedHexTrailIds.map((trailId) => <p key={`selected-trail-${trailId}`}>⋯ {t.trail} {trailId}</p>)}
-                    {selectedObstacles.length > 0 || nearbyRivers.length > 0 || selectedHexCrossings.length > 0 || nearbyLakeIds.length > 0 || hasNearbySea ? (
+                    {editMode || selectedObstacles.length > 0 || nearbyRivers.length > 0 || selectedHexCrossings.length > 0 || nearbyLakeIds.length > 0 || hasNearbySea ? (
                       <div>
-                        <strong>{t.nearby}</strong>
+                        <strong tabIndex={-1} data-obstacle-list>{t.nearby}</strong>
                         {nearbyRivers.map((river) => {
                           const hasRapids = river.vertexPath.some((vertex, index) => index > 0
                             && selectedHexEdgeKeys.has(edgeKey(river.vertexPath[index - 1], vertex))
@@ -14994,7 +15011,7 @@ export function App() {
                           return <p key={`nearby-river-${river.id}`}><span className="nearby-river-marker" aria-hidden="true">→</span>{hasRapids ? <span className="nearby-river-marker" aria-hidden="true">|||</span> : null}{hasWaterfall ? <img className="nearby-waterfall-marker" src="/waterfall-color.svg" alt="" aria-hidden="true" /> : null} {t.river} {renderToponym(`river:${river.id}`)}{riverFeatures.length > 0 ? ` (${riverFeatures.join(', ')})` : ''}</p>;
                         })}
                         {selectedObstacles.map(o=><div key={o.id} className="obstacle-row" data-obstacle-id={o.id}>
-                          {editMode?<button type="button" className="direct-value" aria-pressed={selectedObstacleId===o.id} onClick={()=>{closeEditors();setSelectedObstacleId(o.id);}}>━ {language==='ru'?'Препятствие':'Barrier'} · {hexKey(o.hex)===selectedHexKey?hexKey(o.neighborHex):hexKey(o.hex)}</button>:<span>━ {language==='ru'?'Препятствие':'Barrier'} ({hexKey(o.hex)===selectedHexKey?hexKey(o.neighborHex):hexKey(o.hex)})</span>}
+                          {editMode?<button type="button" className="direct-value" aria-pressed={selectedObstacleId===o.id} onClick={()=>chooseObstacle(o.id)}>━ {language==='ru'?'Препятствие':'Barrier'} · {hexKey(o.hex)===selectedHexKey?hexKey(o.neighborHex):hexKey(o.hex)}</button>:<span>━ {language==='ru'?'Препятствие':'Barrier'} ({hexKey(o.hex)===selectedHexKey?hexKey(o.neighborHex):hexKey(o.hex)})</span>}
                           {editMode&&selectedObstacleId===o.id&&!obstacleDraft&&<><button type="button" className="secondary" onClick={()=>startObstacleChoice(o.id)}>{language==='ru'?'Перенести':'Move'}</button><button type="button" className="secondary" onClick={()=>editObstacleDocument({type:'remove',id:o.id})}>{language==='ru'?'Удалить':'Delete'}</button></>}
                         </div>)}
                         {selectedHexCrossings.map((crossing) => <p key={`selected-crossing-${crossing.key}`}>{crossing.kind === 'bridge' ? '🌉' : crossing.kind === 'ferry' ? '⛴️' : '🌊'} {t[crossing.kind]}</p>)}
@@ -15244,6 +15261,31 @@ export function App() {
               {renderedCrossings.filter(c=>c.key===selectedRoadTarget?.crossingKey).map(c=><circle key={`selected-${c.key}`} cx={c.x} cy={c.y} r={9} fill="none" stroke="#7dd3fc" strokeWidth={3} pointerEvents="none" />)}
               {roadSegments.filter(s=>confirmRoadRemoval ? s.roadId===confirmRoadRemoval.roadId&&(!confirmRoadRemoval.segmentKey||s.segmentKey===confirmRoadRemoval.segmentKey):s.segmentKey===selectedRoadPair&&s.roadId===selectedRoadTarget?.roadId&&!selectedRoadTarget.crossingKey).map(s=><line key={s.key}
                 x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2} stroke="#7dd3fc" strokeWidth={4} strokeDasharray="6 3" pointerEvents="none" />)}
+            </g>}
+            {editMode && !roadDraft && renderDetails && <g data-editor-only="obstacles" transform={mapRotationTransform}>
+              {!obstacleDraft && obstacles.map(o=>{const e=obstacleGeometry(o);if(!e)return null;return <circle key={o.id}
+                data-obstacle-map-id={o.id} className="obstacle-map-target" role="button" tabIndex={0}
+                aria-label={`${language==='ru'?'Препятствие':'Barrier'} ${o.id}: ${hexKey(o.hex)} → ${hexKey(o.neighborHex)}`}
+                aria-pressed={selectedObstacleId===o.id} cx={(e.from.x+e.to.x)/2+riverOffset.x} cy={(e.from.y+e.to.y)/2+riverOffset.y}
+                style={{r:'var(--crossing-hit-radius)'}} fill="transparent" pointerEvents="all"
+                onClick={event=>{event.stopPropagation();chooseObstacle(o.id);}}
+                onKeyDown={event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();chooseObstacle(o.id);}}} />;})}
+              {obstacles.filter(o=>o.id===(obstacleDraft?.id??selectedObstacleId)).map(o=>{const e=obstacleGeometry(o);return e?<line key={o.id}
+                data-obstacle-highlight={o.id} x1={e.from.x+riverOffset.x} y1={e.from.y+riverOffset.y} x2={e.to.x+riverOffset.x} y2={e.to.y+riverOffset.y}
+                stroke="#f7dc6f" strokeWidth={6} pointerEvents="none" />:null;})}
+              {obstacleDraft && obstacleChoices.filter(c=>!c.reason).map(c=>{
+                const e=obstacleGeometry({hex:c.edit.hex,edgeKey:obstacleContext().edgeKey(c.edit.hex,c.neighborHex)!});if(!e)return null;
+                return <g key={e.edgeKey}>
+                  <line data-obstacle-preview={e.edgeKey} x1={e.from.x+riverOffset.x} y1={e.from.y+riverOffset.y} x2={e.to.x+riverOffset.x} y2={e.to.y+riverOffset.y}
+                    stroke="#7dd3fc" strokeWidth={hoverObstacleEdge===e.edgeKey?5:2} strokeDasharray="5 3" pointerEvents="none" />
+                  <circle data-obstacle-edge={e.edgeKey} className="obstacle-map-target" role="button" tabIndex={0}
+                    aria-label={`${language==='ru'?'Ребро':'Edge'} ${selectedHexKey} → ${hexKey(c.neighborHex)}`}
+                    cx={(e.from.x+e.to.x)/2+riverOffset.x} cy={(e.from.y+e.to.y)/2+riverOffset.y} style={{r:'var(--crossing-hit-radius)'}} fill="transparent" pointerEvents="all"
+                    onFocus={()=>setHoverObstacleEdge(e.edgeKey)} onMouseEnter={()=>setHoverObstacleEdge(e.edgeKey)} onMouseLeave={()=>setHoverObstacleEdge(null)}
+                    onClick={event=>{event.stopPropagation();editObstacleDocument(c.edit,obstacleDraft);}}
+                    onKeyDown={event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();editObstacleDocument(c.edit,obstacleDraft);}}} />
+                </g>;
+              })}
             </g>}
             </svg>
             <canvas ref={mapMotionCanvasRef} className="map-motion-buffer" aria-hidden="true" />
