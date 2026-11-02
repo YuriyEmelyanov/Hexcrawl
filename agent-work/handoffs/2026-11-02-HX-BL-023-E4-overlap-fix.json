@@ -1,0 +1,44 @@
+{
+  "task_id": "HX-BL-023",
+  "stage_id": "E4",
+  "from_role": "reviewer",
+  "next_role": "developer",
+  "status": "changes_requested",
+  "head_sha": "7d7ae9d3f908be03263bd1268a8036ca3f12ded0",
+  "spec_ref": "agent-work/specs/HX-BL-023-E4.md",
+  "spec_version": "E4-1.1",
+  "finding_ids": [
+    "HX023-E4-R1"
+  ],
+  "finding_type": "confirmed_product_defect",
+  "priority": "P2",
+  "authorization_status": "bounded_correction_inside_approved_E4",
+  "approval_ref": "owner-decision-2026-10-28-editor-additional-functions-approved",
+  "scope": "Prevent ambiguous overlapping E4 map hit areas from silently choosing a different edge; resolve through existing information list. Audit same resolution path for selection/Add/Move, preserve stable IDs and existing keyboard explicit-target actions.",
+  "reproduction": {
+    "viewport": 1500,
+    "scale": 0.2592402606458915,
+    "rotated": true,
+    "fixture": "review evidence three-area-fixture.json",
+    "expected": "0,0 →1,0 /24.249,-14|24.249,14",
+    "actual": "0,0 →1,-1 /0,-28|24.249,-14",
+    "source": "src/App.tsx:15282–15287"
+  },
+  "acceptance": [
+    "An actual pointer click inside multiple E4 hit areas does not mutate map,RNG,counters,Undo or Redo and does not silently choose DOM topmost edge.",
+    "Existing list reopens/focuses for explicit unambiguous selection; selecting list edge commits exactly intended edge once.",
+    "Keyboard Enter/Space on explicit target and non-overlapping pointer actions still work; 44px target accessibility retained without wrong choice.",
+    "Reuse existing browser lifecycle and real page.mouse click at overlapping center, then verify unchanged export/history and explicit list choice; do not infer pointer correctness from DOM boxes or locator.press.",
+    "Required exact-SHA checks and independent re-review of changed combined E3+E4 package before release permission request."
+  ],
+  "non_goals": [
+    "No generator or RNG algorithm changes",
+    "No new tools mode, redesign, product scope or new benchmark study",
+    "Do not bundle approved HX-BL-010"
+  ],
+  "next_step": "Программист исправляет HX023-E4-R1 в PR481 по сохранённому воспроизведению; затем новый SHA и evidence передаются независимому проверяющему.",
+  "publication_allowed": false,
+  "score_model_version": "1.2",
+  "score_update": "no award, no release",
+  "external_decision_required": false
+}
