@@ -1,0 +1,26 @@
+{
+  "base_sha": "7d7ae9d3f908be03263bd1268a8036ca3f12ded0",
+  "head_sha": "0459c645706a51e518b323fd0588fba4923e5dd2",
+  "added": 0,
+  "removed": 0,
+  "modified": 1,
+  "suite": "Browser save-history lifecycle",
+  "scenario_risk": "HX023-E4-R1 actual physical pointer click on overlapping44px circles must leave whole export/RNG/counters and existing Redo unchanged",
+  "reuse_or_new_reason": "Extend existing lifecycle and reuse imported fixture, zoom/rotation, serialization and redo helpers. Existing keyboard/bounds assertions did not exercise browser hit testing; no new runner/case.",
+  "count_source": "git diff base/head: one existing standalone browser lifecycle extended; no Node cases changed",
+  "executed": {
+    "browser_lifecycle": {
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    "temporary_probe": {
+      "baseline": "expected failure on7d7ae9d, wrong edge persisted",
+      "fixed": "Add/Move/selection ambiguity no-op, explicit list correct edge, non-overlap physical click and keyboard selection passed",
+      "permanent_growth": 0
+    },
+    "typescript": "passed",
+    "build": "passed"
+  }
+}
