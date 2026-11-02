@@ -11353,7 +11353,8 @@ export function App() {
   const [obstacleDraft,setObstacleDraft] = useState<ObstacleDraft|null>(null);
   const obstacleDraftRef = useRef<ObstacleDraft|null>(null);
   const updateObstacleDraft = (draft:ObstacleDraft|null) => {obstacleDraftRef.current=draft;setObstacleDraft(draft);};
-  const obstacleReturnFocus = useRef<number|'nearby'|'add'|null>(null);
+  const obstacleReturnFocus = useRef<number|'nearby'|'add'|'edges'|'ambiguity'|null>(null);
+  const [ambiguousObstacleIds,setAmbiguousObstacleIds] = useState<number[]>([]);
   const [hoverObstacleEdge,setHoverObstacleEdge] = useState<string|null>(null);
   const [selectedObstacleId,setSelectedObstacleId] = useState<number|null>(null);
   const pendingRoadExport = useRef<'png'|'json'|null>(null);
@@ -11375,7 +11376,7 @@ export function App() {
   const nameReturnFocusRef = useRef<HTMLElement | null>(null);
   useEffect(()=>{
     const target=obstacleReturnFocus.current;if(target===null)return;
-    const selector=target==='nearby'?'[data-obstacle-list]':target==='add'?'[data-obstacle-add]':`[data-obstacle-id="${target}"] .direct-value`;
+    const selector=target==='edges'?'[data-obstacle-editor] button[aria-label]:not(:disabled)':target==='ambiguity'?'[data-obstacle-ambiguity] button':target==='nearby'?'[data-obstacle-list]':target==='add'?'[data-obstacle-add]':`[data-obstacle-id="${target}"] .direct-value`;
     const node=infoFocusRef.current?.querySelector<HTMLElement>(selector)??infoFocusRef.current;
     node?.focus();obstacleReturnFocus.current=null;
   });
@@ -12810,6 +12811,7 @@ export function App() {
   const captureDocument = (): DocumentSnapshot => ({ map: captureMap(), generationHistory: history, selectedHex,
     generationMode, isMapRotated, mapScale: pendingMapZoomRef.current?.scale ?? mapScaleRef.current });
   const closeEditors = () => {
+    setAmbiguousObstacleIds([]);
     setHoverObstacleEdge(null); updateObstacleDraft(null); setSelectedObstacleId(null);
     setEditingHexBiomeKey(null); setEditingPoiHexKey(null); setEditingCentralPoiRegionId(null); setEditingRegionBiomeId(null); setEditError(null);
   };
@@ -14196,6 +14198,23 @@ export function App() {
     finishNotesGroup();clearNotesDraft();closeEditors();setSelectedRoadPair(null);setSelectedRoadTarget(null);setConfirmRoadRemoval(null);
     setIsSidePanelCollapsed(false);obstacleReturnFocus.current=id;setSelectedHex({...obstacle.hex});setSelectedObstacleId(id);
   };
+  // Resolve physical pointer geometry before trusting the browser's topmost target.
+  // Explicit keyboard/assistive activation already identifies one focused target.
+  const activateObstaclePointer = (event:React.MouseEvent<SVGCircleElement>,action:()=>void) => {
+    event.stopPropagation();
+    if(event.detail===0){action();return;}
+    const group=event.currentTarget.parentElement?.closest('[data-editor-only="obstacles"]');
+    const hits=Array.from(group?.querySelectorAll<SVGCircleElement>('.obstacle-map-target')??[]).filter(node=>{
+      const matrix=node.getScreenCTM();if(!matrix)return false;
+      const point=new DOMPoint(event.clientX,event.clientY).matrixTransform(matrix.inverse());
+      return node.isPointInFill(point);
+    });
+    if(hits.length<=1){action();return;}
+    setIsSidePanelCollapsed(false);setHoverObstacleEdge(null);
+    if(obstacleDraftRef.current){obstacleReturnFocus.current='edges';}
+    else{setAmbiguousObstacleIds(hits.map(node=>Number(node.dataset.obstacleMapId)));obstacleReturnFocus.current='ambiguity';}
+    setEditError(language==='ru'?'Здесь несколько рёбер. Выберите нужное в списке.':'Several edges overlap here. Choose the intended one in the list.');
+  };
   const obstacleGeometry = (o:Pick<EditableObstacle,'hex'|'edgeKey'>) => getHexEdgesAsVertexPairs(o.hex).find(e=>e.edgeKey===o.edgeKey);
   const obstacleChoices = selectedHex&&obstacleDraft ? [[1,0],[0,1],[-1,1],[-1,0],[0,-1],[1,-1]].map(([q,r])=>{
     const neighborHex={q:selectedHex.q+q,r:selectedHex.r+r};
@@ -14205,8 +14224,8 @@ export function App() {
       return {neighborHex,edit,reason:null,kingdomId:o?.kingdomId};
     }catch(error){return {neighborHex,edit,reason:obstacleMessage(error),kingdomId:undefined};}
   }):[];
-  const obstaclePanel = editMode&&selectedHex&&!roadDraft ? <div className="obstacle-editor" data-obstacle-editor>
-    {!obstacleDraft?<button type="button" className="secondary" data-obstacle-add onClick={()=>startObstacleChoice(null)}>{language==='ru'?'Добавить препятствие':'Add barrier'}</button>:<>
+  const obstaclePanel = editMode&&(selectedHex||ambiguousObstacleIds.length>0)&&!roadDraft ? <div className="obstacle-editor" data-obstacle-editor>
+    {ambiguousObstacleIds.length>0?<div data-obstacle-ambiguity>{ambiguousObstacleIds.map(id=>{const o=obstacles.find(v=>v.id===id);return o?<button type="button" className="secondary" key={id} onClick={()=>chooseObstacle(id)}>{language==='ru'?'Препятствие':'Barrier'} {id}: {hexKey(o.hex)} → {hexKey(o.neighborHex)}</button>:null;})}</div>:!obstacleDraft?<button type="button" className="secondary" data-obstacle-add onClick={()=>startObstacleChoice(null)}>{language==='ru'?'Добавить препятствие':'Add barrier'}</button>:<>
       <p>{obstacleDraft.id===null?(language==='ru'?'Выберите ребро':'Choose an edge'):(language==='ru'?'Выберите новое ребро':'Choose a new edge')}</p>
       {obstacleChoices.map(c=><button type="button" className="secondary" key={hexKey(c.neighborHex)} disabled={!!c.reason}
         aria-label={`${language==='ru'?'Ребро':'Edge'} · ${obstacleDraft.id===null?(language==='ru'?'Добавить препятствие':'Add barrier'):(language==='ru'?'Перенести препятствие':'Move barrier')} ${selectedHexKey} → ${hexKey(c.neighborHex)}`}
@@ -15269,7 +15288,7 @@ export function App() {
                 aria-label={`${language==='ru'?'Выбрать препятствие':'Select barrier'} ${o.id}: ${hexKey(o.hex)} → ${hexKey(o.neighborHex)}`}
                 aria-pressed={selectedObstacleId===o.id} cx={(e.from.x+e.to.x)/2+riverOffset.x} cy={(e.from.y+e.to.y)/2+riverOffset.y}
                 style={{r:'var(--crossing-hit-radius)'}} fill="transparent" pointerEvents="all"
-                onClick={event=>{event.stopPropagation();chooseObstacle(o.id);}}
+                onClick={event=>activateObstaclePointer(event,()=>chooseObstacle(o.id))}
                 onKeyDown={event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();chooseObstacle(o.id);}}} />;})}
               {obstacles.filter(o=>o.id===(obstacleDraft?.id??selectedObstacleId)).map(o=>{const e=obstacleGeometry(o);return e?<g key={o.id}><line x1={e.from.x+riverOffset.x} y1={e.from.y+riverOffset.y} x2={e.to.x+riverOffset.x} y2={e.to.y+riverOffset.y} stroke="#0c1423" strokeWidth={10} pointerEvents="none" /><line
                 data-obstacle-highlight={o.id} x1={e.from.x+riverOffset.x} y1={e.from.y+riverOffset.y} x2={e.to.x+riverOffset.x} y2={e.to.y+riverOffset.y}
@@ -15283,7 +15302,7 @@ export function App() {
                     aria-label={`${language==='ru'?'Ребро':'Edge'} · ${obstacleDraft.id===null?(language==='ru'?'Добавить препятствие':'Add barrier'):(language==='ru'?'Перенести препятствие':'Move barrier')} ${selectedHexKey} → ${hexKey(c.neighborHex)}`}
                     cx={(e.from.x+e.to.x)/2+riverOffset.x} cy={(e.from.y+e.to.y)/2+riverOffset.y} style={{r:'var(--crossing-hit-radius)'}} fill="transparent" pointerEvents="all"
                     onFocus={()=>setHoverObstacleEdge(e.edgeKey)} onMouseEnter={()=>setHoverObstacleEdge(e.edgeKey)} onMouseLeave={()=>setHoverObstacleEdge(null)}
-                    onClick={event=>{event.stopPropagation();editObstacleDocument(c.edit,obstacleDraft);}}
+                    onClick={event=>activateObstaclePointer(event,()=>editObstacleDocument(c.edit,obstacleDraft))}
                     onKeyDown={event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();editObstacleDocument(c.edit,obstacleDraft);}}} />
                 </g>;
               })}
