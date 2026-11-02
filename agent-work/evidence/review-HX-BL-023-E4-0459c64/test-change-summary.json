@@ -1,0 +1,54 @@
+{
+  "base_sha": "cd4bd5402ffa92800710f5d4ded32cb1baea774b",
+  "head_sha": "0459c645706a51e518b323fd0588fba4923e5dd2",
+  "node": {
+    "added": 13,
+    "removed": 0,
+    "modified": 6,
+    "suite": "node:test named top-level cases",
+    "scenario_risk": "5obstacle migration/ID/command contracts,5road geometry/network/crossing contracts,3actual-handler transaction/lifecycle cases;6existing format/import/generator cases modified.",
+    "reuse_or_new_reason": "Pure preparation contracts cover independent requirements; actual handlers add wiring/rollback evidence. Existing migration/mixed100/continuation suites reused.",
+    "source": "git diff base..head, named top-level test declarations; renamed notes case treated modified; loops/parameter branches not inflated."
+  },
+  "browser": {
+    "added": 0,
+    "removed": 0,
+    "modified": 2,
+    "suite": "navigation.smoke.mjs,save-history.smoke.mjs",
+    "scenario_risk": "E3/E4 production UI workflows, map target/focus/navigation and ambiguity.",
+    "reuse_or_new_reason": "Reuse existing broad lifecycles. R1 appends physical overlap and exact export/Redo assertions to existing lifecycle.",
+    "source": "git diff base..head; standalone scripts each counted as one comparable lifecycle suite, not each assert as case."
+  },
+  "r1_only": {
+    "base_sha": "7d7ae9d3f908be03263bd1268a8036ca3f12ded0",
+    "head_sha": "0459c645706a51e518b323fd0588fba4923e5dd2",
+    "added": 0,
+    "removed": 0,
+    "modified": 1,
+    "suite": "browser save-history lifecycle",
+    "necessity": "Required by reproduced HX023-E4-R1; old bounds/keyboard checks bypass physical browser hit testing. New real mouse point click and exact exported document/Redo checks detect the old direct-onClick wrong-edge commit. Unique safety signal, stable geometry found dynamically rather than hardcoded pixels; bounded fixture required to expose overlap. No gratuitous duplicate established.",
+    "limits": "Permanent regression directly covers Add ambiguity; independent temporary probe additionally covers Move and selection. It does not prove whole physical-touch/narrow-screen matrix."
+  },
+  "executions": {
+    "independent_node": {
+      "executed": 51,
+      "passed": 51,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "log": "targeted.log"
+    },
+    "independent_temporary_ui": {
+      "scenario_groups": 6,
+      "passed": 6,
+      "errors": 0,
+      "permanent_cases_added": 0
+    },
+    "exploratory_broader_contracts": {
+      "status": "manually_stopped",
+      "exit_code": 130,
+      "reason": "Avoid duplicate long worldContinuation/mythicKingdom run after bounded suite and parent-verified full exact-SHA CI; partial passing output is not complete result.",
+      "log": "contracts.log"
+    }
+  }
+}
