@@ -1,11 +1,11 @@
 {
   "base_sha": "a39880477da4f835aa8dae6d21815570bda7bc5a",
-  "head_sha": "673b39468a21fad89d44c05c9c6d32b6c1e83741",
+  "head_sha": "7d7ae9d3f908be03263bd1268a8036ca3f12ded0",
   "added": 0,
   "removed": 0,
   "modified": 1,
   "suite": "Browser save-history standalone lifecycle",
-  "scenario_risk": "Direct obstacle map hit targets must identify one stable ID, remain44px under zoom/rotation, restore focus after map actions and cancellation, exclude UI from export; read/edit spacing remains equal",
+  "scenario_risk": "Direct obstacle map hit targets must identify one stable ID, remain44px under zoom/rotation, restore focus after map actions and cancellation, exclude UI from export; read/edit spacing remains equal; action and both-hex accessible labels, equal read/edit row height",
   "reuse_or_new_reason": "Extended existing production lifecycle with E4 block, reusing load/snapshot/selection helpers; no new test() case, file, runner or broad repeated mixed100",
   "count_source": "git diff a398804..673b394: existing save-history.smoke.mjs driver extended once; Node cases unchanged. Browser assertions/viewport loops are not counted as new Node tests.",
   "parameters": {
@@ -48,7 +48,8 @@
       "executed": 1,
       "passed": 1,
       "failed": 0,
-      "skipped": 0
+      "skipped": 0,
+      "head_sha": "7d7ae9d3f908be03263bd1268a8036ca3f12ded0"
     },
     "typescript": "passed",
     "build": "passed",
@@ -58,41 +59,16 @@
       "counted_as_permanent_growth": false
     },
     "full_CI": {
-      "head_sha": "673b39468a21fad89d44c05c9c6d32b6c1e83741",
-      "status": "check/browser/world-random passed",
-      "checks": [
-        {
-          "name": "browser",
-          "status": "completed",
-          "conclusion": "success",
-          "html_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41371270635/job/125042311425"
-        },
-        {
-          "name": "check",
-          "status": "completed",
-          "conclusion": "success",
-          "html_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41371270635/job/125042311168"
-        },
-        {
-          "name": "world-random",
-          "status": "completed",
-          "conclusion": "success",
-          "html_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41371270635/job/125042310890"
-        },
-        {
-          "name": "seed-ui",
-          "status": "completed",
-          "conclusion": "skipped",
-          "html_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41371270740/job/125042052366"
-        }
-      ]
+      "head_sha": "7d7ae9d3f908be03263bd1268a8036ca3f12ded0",
+      "status": "pending final SHA; prior673b394 required checks passed"
     }
   },
   "negative_evidence": {
     "scope_error": "e4-map-browser-initial-red.log.excerpt.txt",
     "precision_error": "e4-map-browser-precision-red.log.excerpt.txt",
     "resolution": "Test captures actual zoomed export before action, not rounded CSS; scope uses its own viewport handle. No production RNG/generation changes.",
-    "full_raw_log_status": "Complete originals retained locally; compressed blob upload returned no usable SHA and is unconfirmed. Readable excerpts retained; fixture data in repository."
+    "full_raw_log_status": "Complete originals retained locally; compressed blob upload returned no usable SHA and is unconfirmed. Readable excerpts retained; fixture data in repository.",
+    "aria_old_build": "e4-map-browser-aria-old-build-red.log; local runner opened previous build before rebuilding completed; fixed dependency order and rerun passed"
   },
   "per_suite": [
     {

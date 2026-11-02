@@ -1,4 +1,4 @@
-# E4 map/focus integration — 673b39468a21fad89d44c05c9c6d32b6c1e83741
+# E4 map/focus integration — 7d7ae9d3f908be03263bd1268a8036ca3f12ded0
 
 Base a398804; tree 22fb65e7b754af8dbf1126c49fd5748ba519e5b1; local git tree equals GitHub-created tree. Actual production source implements stable-ID map selection, available edge keyboard/touch circles44px, source solid gold with dark outline, target dashed cyan, and focus return. Collapsed panel reopens before focusing the object; removal returns to Nearby. Equal44px barrier row in read/edit. All editor overlays tagged data-editor-only and removed before PNG serialization.
 
@@ -17,3 +17,7 @@ Base a398804; tree 22fb65e7b754af8dbf1126c49fd5748ba519e5b1; local git tree equa
 Earlier Node/handler evidence: agent-work/evidence/HX-BL-023-E4-v5-0c0f4ca and HX-BL-023-E4-controls-a398804. New local browser full lifecycle passed. Negative diagnostic errors are test scope and rounded CSS comparison, fixed without modifying generation; excerpts preserved, full local raw files retained. Attempt to upload compressed raw logs had no usable returned SHA; do not claim those blobs saved.
 
 Before screenshots are actual a398804 production build in previous worktree, same controlled imported fixture; after screenshots current product source. Map source hash and tree verified. Some emoji unavailable in environment. Images shown in current chat; owner response is not a third gate. No main change/publication or score award. HX-BL-010 remains approved after E4.
+
+
+## Final accessible-label supplement
+Final SHA7d7ae9d also gives list/map controls the action and both hexes in RU/EN accessible names. Existing browser lifecycle now asserts those labels and equal read/edit barrier-row height. Final local production lifecycle passes after waiting for build completion; initial old-bundle aria assertion failed as expected and is preserved in e4-map-browser-aria-old-build-red.log. Final screenshots recaptured; source/Move/before images retain identical SHA, after-Add desktop refreshed. Current manual PNG25-line supplement remains valid.
