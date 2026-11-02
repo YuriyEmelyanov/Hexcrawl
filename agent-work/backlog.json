@@ -1272,7 +1272,7 @@
       "task_id": "HX-BL-023",
       "title": "Общий режим редактирования",
       "criterion_id": "S03-C01",
-      "status": "changes_requested",
+      "status": "review_ready",
       "potential_delta": null,
       "approval_ref": "owner-decision-2026-10-29-HX-FB-005-direct-edit-mode",
       "source": {
@@ -1288,15 +1288,15 @@
       "recommended_priority": 1,
       "execution_allowed": true,
       "spec_status": "ready_for_development",
-      "next_role": "developer",
-      "next_step": "Программист исправляет HX023-E4-R1 в PR481 по сохранённому воспроизведению; затем новый SHA и evidence передаются независимому проверяющему.",
+      "next_role": "reviewer",
+      "next_step": "Независимо перепроверить HX023-E4-R1 и общий E3+E4 SHA0459c64: физическое перекрытие Add/Move/выбора, точный выбор списка, сохранность RNG/счётчиков/Redo, явная клавиатура и обычный указатель; обновить вердикт и score_assessment1.2 на новом SHA.",
       "related_task_ids": [
         "HX-BL-013",
         "HX-BL-018",
         "HX-BL-019",
         "HX-BL-028"
       ],
-      "handoff_ref": "agent-work/handoffs/2026-11-02-HX-BL-023-E4-overlap-fix.json",
+      "handoff_ref": "agent-work/handoffs/2026-11-02-HX-BL-023-E4-R1-0459c64-review.json",
       "owner_priority_decision": {
         "id": "owner-decision-2026-10-28-editor-and-MB-content-before-outreach",
         "date": "2026-10-28",
@@ -1436,27 +1436,23 @@
       "capability_matrix_ref": "agent-work/evidence/HX-BL-023-editor-v2/capability-matrix.json",
       "analyst_result_ref": "agent-work/results/2026-11-01-analyst-HX-BL-023-E4-migration.json",
       "analyst_handoff_ref": "agent-work/handoffs/2026-11-01-HX-BL-023-E4-development.json",
-      "owner_role": "developer",
+      "owner_role": "reviewer",
       "branch": "agent/hx023-e4-barriers",
       "pr": 481,
       "base_sha": "d7bb38fbcee367621e5f5ce9fbaf369fbc775e0a",
-      "head_sha": "7d7ae9d3f908be03263bd1268a8036ca3f12ded0",
-      "checks_status": "required_CI_check_browser_RNG_passed",
-      "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41372555731",
-      "review_verdict": "changes_requested",
-      "test_change_summary_ref": "agent-work/evidence/HX-BL-023-E4-map-673b394/test_change_summary.json",
-      "developer_result_ref": "agent-work/results/2026-11-02-developer-HX-BL-023-E4-map.json",
+      "head_sha": "0459c645706a51e518b323fd0588fba4923e5dd2",
+      "checks_status": "local_required_full_gates_passed_CI_queued",
+      "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41419358454",
+      "review_verdict": null,
+      "test_change_summary_ref": "agent-work/evidence/HX-BL-023-E4-R1-0459c64/test_change_summary.json",
+      "developer_result_ref": "agent-work/results/2026-11-02-developer-HX-BL-023-E4-R1.json",
       "score_assessment_status": "insufficient_evidence_no_award",
       "ui_actual": {
-        "head_sha": "7d7ae9d3f908be03263bd1268a8036ca3f12ded0",
-        "before_sha": "a39880477da4f835aa8dae6d21815570bda7bc5a",
-        "before_desktop": "agent-work/evidence/HX-BL-023-E4-map-673b394/e4-map-before-1500.png",
-        "before_narrow": "agent-work/evidence/HX-BL-023-E4-map-673b394/e4-map-before-390.png",
-        "after_desktop": "agent-work/evidence/HX-BL-023-E4-map-673b394/e4-map-move-ru-1500.png",
-        "after_narrow": "agent-work/evidence/HX-BL-023-E4-map-673b394/e4-map-move-ru-390.png",
+        "head_sha": "0459c645706a51e518b323fd0588fba4923e5dd2",
+        "desktop": "agent-work/evidence/HX-BL-023-E4-R1-0459c64/ambiguity-desktop.png",
+        "narrow": "agent-work/evidence/HX-BL-023-E4-R1-0459c64/ambiguity-narrow.png",
         "shown_in_chat": true,
-        "source_detail": "agent-work/evidence/HX-BL-023-E4-map-673b394/e4-map-highlight-1500.png",
-        "capture_head_sha": "7d7ae9d3f908be03263bd1268a8036ca3f12ded0"
+        "limits": "Headless Chromium; physical touch/screen reader not tested"
       },
       "review_result_ref": "agent-work/results/2026-11-02-reviewer-HX-BL-023-E4-7d7ae9d.json",
       "review_evidence_ref": "agent-work/evidence/review-HX-BL-023-E4-7d7ae9d",
@@ -1466,7 +1462,9 @@
         "HX023-E4-R1"
       ],
       "previous_review_result_ref": "agent-work/results/2026-10-31-reviewer-HX-BL-023-E3-6e59e7f.json",
-      "addressed_findings_pending_review": [],
+      "addressed_findings_pending_review": [
+        "HX023-E4-R1"
+      ],
       "previous_score_assessment_ref": "agent-work/evidence/review-HX-BL-023-c4a37ee/score_assessment.json",
       "previous_review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/478#pullrequestreview-5692465528",
       "accepted_release_pending": {
@@ -1658,10 +1656,10 @@
           "release_package_ref": "agent-work/handoffs/2026-10-31-HX-BL-023-E3-release-package-d7bb38f.json"
         },
         "E4_obstacles": {
-          "status": "changes_requested",
+          "status": "review_ready",
           "spec_ref": "agent-work/specs/HX-BL-023-E4.md",
           "spec_version": "E4-1.1",
-          "handoff_ref": "agent-work/handoffs/2026-11-02-HX-BL-023-E4-overlap-fix.json",
+          "handoff_ref": "agent-work/handoffs/2026-11-02-HX-BL-023-E4-R1-0459c64-review.json",
           "implementation_started": true,
           "release_approved": false,
           "ui_preview": {
@@ -1675,14 +1673,14 @@
             "owner_response_required_to_start": false
           },
           "base_sha": "d7bb38fbcee367621e5f5ce9fbaf369fbc775e0a",
-          "head_sha": "7d7ae9d3f908be03263bd1268a8036ca3f12ded0",
+          "head_sha": "0459c645706a51e518b323fd0588fba4923e5dd2",
           "branch": "agent/hx023-e4-barriers",
           "pr": 481,
-          "result_ref": "agent-work/results/2026-11-02-developer-HX-BL-023-E4-map.json",
+          "result_ref": "agent-work/results/2026-11-02-developer-HX-BL-023-E4-R1.json",
           "completed_substep": "map_targets_exact_ID_highlight_focus_return_accessible_actions",
-          "review_ready": false,
-          "next_role": "developer",
-          "next_step": "Программист исправляет HX023-E4-R1 в PR481 по сохранённому воспроизведению; затем новый SHA и evidence передаются независимому проверяющему.",
+          "review_ready": true,
+          "next_role": "reviewer",
+          "next_step": "Независимо перепроверить HX023-E4-R1 и общий E3+E4 SHA0459c64: физическое перекрытие Add/Move/выбора, точный выбор списка, сохранность RNG/счётчиков/Redo, явная клавиатура и обычный указатель; обновить вердикт и score_assessment1.2 на новом SHA.",
           "specification_findings": [],
           "blocker_ref": "agent-work/evidence/HX-BL-023-E4-legacy-adjacency-1bd3d97/finding.json",
           "spec_blob_sha": "55010a47fedee34537e7d1d1198fa0f78f3f6e4b",
@@ -1692,9 +1690,9 @@
           "blocker_status": "resolved_by_E4-1.1",
           "analyst_result_ref": "agent-work/results/2026-11-01-analyst-HX-BL-023-E4-migration.json",
           "published_main_to_preserve": "cd4bd5402ffa92800710f5d4ded32cb1baea774b",
-          "tree_sha": "58be535129830023fc6304d0350ff682f7177f7f",
-          "checks_status": "required_CI_check_browser_RNG_passed",
-          "evidence_ref": "agent-work/evidence/HX-BL-023-E4-map-673b394",
+          "tree_sha": "a80b4ad917cbc2ac6db41b819bad3ef5bab2ee23",
+          "checks_status": "local_required_full_gates_passed_CI_queued",
+          "evidence_ref": "agent-work/evidence/HX-BL-023-E4-R1-0459c64",
           "full_E4_UI_pending": false,
           "accepted": false,
           "review_verdict": "changes_requested",
@@ -1703,7 +1701,12 @@
           "score_assessment_ref": "agent-work/evidence/review-HX-BL-023-E4-7d7ae9d/score-assessment.json",
           "finding_ids": [
             "HX023-E4-R1"
-          ]
+          ],
+          "addressed_findings_pending_review": [
+            "HX023-E4-R1"
+          ],
+          "finding_status": "addressed_pending_independent_review",
+          "CI_status": "queued_not_confirmed"
         }
       },
       "current_owner_correction_ref": "owner-decision-2026-10-28-editor-functional-scope",
@@ -1785,7 +1788,7 @@
       "score_update_handoff_ref": "agent-work/handoffs/2026-10-31-HX-BL-023-E2-release-score.json",
       "score_update_completed_at": "2026-10-30T22:31:49.807Z",
       "previous_head_sha": "a99c299f0648c2e5c1d65173bdeca50061dcc901",
-      "review_ready": false,
+      "review_ready": true,
       "next_stage_id": "E4",
       "specification_findings": [],
       "panel_layout_correction": {
@@ -1874,7 +1877,10 @@
         "score_update_completed_at": "2026-11-01T08:57:30.581Z",
         "score_awarded_points": 0
       },
-      "review_ref": "agent-work/evidence/review-HX-BL-023-E4-7d7ae9d/review-report.md"
+      "review_ref": "agent-work/evidence/review-HX-BL-023-E4-7d7ae9d/review-report.md",
+      "tree_sha": "a80b4ad917cbc2ac6db41b819bad3ef5bab2ee23",
+      "current_review_status": "pending_new_exact_SHA",
+      "current_score_assessment_status": "pending_new_SHA_model1.2"
     },
     {
       "task_id": "HX-BL-024",
