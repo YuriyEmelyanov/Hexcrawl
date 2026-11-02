@@ -15271,9 +15271,9 @@ export function App() {
                 style={{r:'var(--crossing-hit-radius)'}} fill="transparent" pointerEvents="all"
                 onClick={event=>{event.stopPropagation();chooseObstacle(o.id);}}
                 onKeyDown={event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();chooseObstacle(o.id);}}} />;})}
-              {obstacles.filter(o=>o.id===(obstacleDraft?.id??selectedObstacleId)).map(o=>{const e=obstacleGeometry(o);return e?<line key={o.id}
+              {obstacles.filter(o=>o.id===(obstacleDraft?.id??selectedObstacleId)).map(o=>{const e=obstacleGeometry(o);return e?<g key={o.id}><line x1={e.from.x+riverOffset.x} y1={e.from.y+riverOffset.y} x2={e.to.x+riverOffset.x} y2={e.to.y+riverOffset.y} stroke="#0c1423" strokeWidth={10} pointerEvents="none" /><line
                 data-obstacle-highlight={o.id} x1={e.from.x+riverOffset.x} y1={e.from.y+riverOffset.y} x2={e.to.x+riverOffset.x} y2={e.to.y+riverOffset.y}
-                stroke="#f7dc6f" strokeWidth={6} pointerEvents="none" />:null;})}
+                stroke="#f7dc6f" strokeWidth={6} pointerEvents="none" /></g>:null;})}
               {obstacleDraft && obstacleChoices.filter(c=>!c.reason).map(c=>{
                 const e=obstacleGeometry({hex:c.edit.hex,edgeKey:obstacleContext().edgeKey(c.edit.hex,c.neighborHex)!});if(!e)return null;
                 return <g key={e.edgeKey}>
