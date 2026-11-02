@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_on": "2026-10-31",
+  "updated_on": "2026-11-02",
   "purpose": "Единый реестр замечаний и багов после доработок; связан с backlog, не дублирует reviewer findings на конкретном SHA.",
   "records": [
     {
@@ -431,6 +431,91 @@
         "approval_ref": "owner-decision-2026-11-01-HX-BL-010-start"
       },
       "approval_ref": "owner-decision-2026-11-01-HX-BL-010-start"
+    },
+    {
+      "id": "HX-FB-009",
+      "type": "selected_hex_visibility",
+      "status": "approved_for_HX_BL_010_specification",
+      "reported_on": "2026-11-02",
+      "reported_by": "owner",
+      "related_task_id": "HX-BL-010",
+      "related_task_ids": [
+        "HX-BL-023"
+      ],
+      "feedback_id": "HX-FB-009",
+      "title": "Явное обозначение выбранного гекса на карте",
+      "source": "Current owner: «Нужна подсветка или иное обозначение выбранного гекса.»",
+      "approval_ref": "owner-decision-2026-11-02-selected-hex-indicator",
+      "scope": "Approved owner amendment to HX-BL-010 navigation/selection; no new product task",
+      "requirements": [
+        "Выбранный гекс явно виден на карте после клика и выбора через поиск; обозначение сохраняется после ухода указателя",
+        "Выделение следует ровно одному текущему selectedHex и одинаково работает в просмотре/редактировании",
+        "Обозначение отличается от candidate-гексов и hover/focus; сохраняет видимость тайла/POI и читается на суше/воде в существующих режимах",
+        "Pan/zoom/rotate не меняют выбор; обозначение не мешает выбору дорог/препятствий и не меняет данные/историю",
+        "Визуальный вариант и экспортное поведение уточнить в bounded spec; показать фактические desktop/390 состояния до публикации"
+      ],
+      "ui_preview_pending": true,
+      "ui_preview_responsible": "business_analyst",
+      "owner_response_blocks_development": false,
+      "publication_allowed": false,
+      "evidence": {
+        "release_sha": "e949d2ebda75af3988467c4a8d64715dd3a2e048",
+        "app_blob": "81b16acdb9850aceccdc330ad67cacd06c213ab9",
+        "css_blob": "2c2cf0f996dd7ef5d428e4260cf6865ec5394c7e",
+        "findings": [
+          {
+            "line": 13396,
+            "text": "        : isSelectedCandidate"
+          },
+          {
+            "line": 13426,
+            "text": "  const canEditSelectedPoi = Boolean(selectedRegion && selectedHex && !isSelectedLake && !isSelectedSea);"
+          },
+          {
+            "line": 13427,
+            "text": "  const waterPoiKindOrder = generationMode === 'mythic' ? [] : getWaterPoiKindPool(isSelectedSea ? 'sea' : selectedRegion?.biomeLandType ?? 'wild');"
+          },
+          {
+            "line": 13429,
+            "text": "    if(mutationBlocked() || !selectedHexKey || notesSelectionRef.current !== selectedHexKey || !selectedRegion || isSelectedLake || isSelectedSea || !(biomeId in BIOMES)) return;"
+          },
+          {
+            "line": 13454,
+            "text": "    if(mutationBlocked() || notesSelectionRef.current !== selectedHexKey || !(poiKind in WATER_POI_DETAILS) || !selectedHexKey || (!isSelectedLake && !isSelectedSea)) return;"
+          },
+          {
+            "line": 14984,
+            "text": "                </> : isSelectedLake ? <p><strong>💧 {t.lake}</strong> {renderToponym(`lake:${selectedTerrain?.lakeId}`)}</p>"
+          },
+          {
+            "line": 14985,
+            "text": "                  : isSelectedSea ? <><p><strong>{SEA_EMOJI} {t.sea}</strong></p><div className=\"direct-line\">{renderWaterPoi()}</div></>"
+          },
+          {
+            "line": 14986,
+            "text": "                  : <p><strong>{isSelectedCandidate ? t.candidateForRegion : t.noHexSelected}</strong></p>}"
+          },
+          {
+            "line": 14988,
+            "text": "                {!isSelectedCandidate && selectedRegion ? ("
+          },
+          {
+            "line": 14990,
+            "text": "                    {isSelectedLake ? <p>💧 {t.lake} {renderToponym(`lake:${selectedTerrain?.lakeId}`)}</p> : selectedEffectiveBiomeId ? <div className=\"direct-line\">"
+          },
+          {
+            "line": 15007,
+            "text": "                    {isSelectedLake ? <div className=\"direct-line\">{renderWaterPoi()}</div> : null}"
+          },
+          {
+            "line": 15106,
+            "text": "                      {!isSelectedCandidate && selectedRegion && !isSelectedLake ? ("
+          }
+        ],
+        "runtime_reproduction": "not yet performed; request records required behavior rather than claiming an independently reproduced bug"
+      },
+      "next_role": "business_analyst",
+      "next_step": "Включить обозначение выбранного гекса в спецификацию и визуальный показ HX-BL-010; затем реализация и независимая проверка."
     }
   ]
 }
