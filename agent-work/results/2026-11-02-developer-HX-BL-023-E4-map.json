@@ -1,0 +1,243 @@
+{
+  "run_id": "2026-11-02-developer-HX-BL-023-E4-map",
+  "role": "developer",
+  "task_id": "HX-BL-023",
+  "stage_id": "E4",
+  "role_selection_reason": "Latest approved E4 map/focus continuation, all previous claims completed at start; no accepted release authority for this package. HX-BL-010 remains approved after E4.",
+  "started_at": "2026-11-02T00:56:07.501Z",
+  "completed_at": "2026-11-02T01:38:42.782Z",
+  "status": "review_ready",
+  "authorization_status": "approved_implementation_independent_review_next_publication_separate",
+  "approval_ref": "owner-decision-2026-10-28-editor-additional-functions-approved",
+  "spec_ref": "agent-work/specs/HX-BL-023-E4.md",
+  "spec_version": "E4-1.1",
+  "base_sha": "a39880477da4f835aa8dae6d21815570bda7bc5a",
+  "head_sha": "7d7ae9d3f908be03263bd1268a8036ca3f12ded0",
+  "tree_sha": "58be535129830023fc6304d0350ff682f7177f7f",
+  "branch": "agent/hx023-e4-barriers",
+  "pr": 481,
+  "base_main_sha": "cd4bd5402ffa92800710f5d4ded32cb1baea774b",
+  "source_tree_verified": true,
+  "checks": [
+    {
+      "name": "seed-ui",
+      "status": "completed",
+      "conclusion": "skipped",
+      "html_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41372555748/job/125045921769"
+    },
+    {
+      "name": "check",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41372555731/job/125045920611"
+    },
+    {
+      "name": "browser",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41372555731/job/125045920564"
+    },
+    {
+      "name": "world-random",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41372555731/job/125045920335"
+    }
+  ],
+  "local_browser_lifecycle": {
+    "executed": 1,
+    "passed": 1,
+    "failed": 0,
+    "skipped": 0
+  },
+  "typescript": "passed",
+  "build": "passed",
+  "test_change_summary": {
+    "base_sha": "a39880477da4f835aa8dae6d21815570bda7bc5a",
+    "head_sha": "7d7ae9d3f908be03263bd1268a8036ca3f12ded0",
+    "added": 0,
+    "removed": 0,
+    "modified": 1,
+    "suite": "Browser save-history standalone lifecycle",
+    "scenario_risk": "Direct obstacle map hit targets must identify one stable ID, remain44px under zoom/rotation, restore focus after map actions and cancellation, exclude UI from export; read/edit spacing remains equal; action and both-hex accessible labels, equal read/edit row height",
+    "reuse_or_new_reason": "Extended existing production lifecycle with E4 block, reusing load/snapshot/selection helpers; no new test() case, file, runner or broad repeated mixed100",
+    "count_source": "git diff a398804..673b394: existing save-history.smoke.mjs driver extended once; Node cases unchanged. Browser assertions/viewport loops are not counted as new Node tests.",
+    "parameters": {
+      "permanent": {
+        "viewport_widths": [
+          1500,
+          390
+        ],
+        "zoom": "wheel",
+        "rotation": true,
+        "locale": "RU in E4 block; existing lifecycle includes RU/EN"
+      },
+      "temporary": {
+        "Mythic": {
+          "locales": [
+            "ru",
+            "en"
+          ],
+          "widths": [
+            1500,
+            390
+          ],
+          "full_command_flows": "RU1500 and RU390"
+        },
+        "Classic": {
+          "locale": "ru",
+          "width": 1500,
+          "full_command_flow": true
+        },
+        "PNG": {
+          "configurations": 2,
+          "baseline_barrier_lines": 24,
+          "manual_barrier_lines": 25,
+          "editor_attrs_absent": true
+        }
+      }
+    },
+    "executed": {
+      "local_lifecycle": {
+        "executed": 1,
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "head_sha": "7d7ae9d3f908be03263bd1268a8036ca3f12ded0"
+      },
+      "typescript": "passed",
+      "build": "passed",
+      "temporary": {
+        "matrix": 5,
+        "passed": 5,
+        "counted_as_permanent_growth": false
+      },
+      "full_CI": {
+        "head_sha": "7d7ae9d3f908be03263bd1268a8036ca3f12ded0",
+        "status": "check/browser/world-random passed",
+        "checks": [
+          {
+            "name": "seed-ui",
+            "status": "completed",
+            "conclusion": "skipped",
+            "html_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41372555748/job/125045921769"
+          },
+          {
+            "name": "check",
+            "status": "completed",
+            "conclusion": "success",
+            "html_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41372555731/job/125045920611"
+          },
+          {
+            "name": "browser",
+            "status": "completed",
+            "conclusion": "success",
+            "html_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41372555731/job/125045920564"
+          },
+          {
+            "name": "world-random",
+            "status": "completed",
+            "conclusion": "success",
+            "html_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41372555731/job/125045920335"
+          }
+        ]
+      }
+    },
+    "negative_evidence": {
+      "scope_error": "e4-map-browser-initial-red.log.excerpt.txt",
+      "precision_error": "e4-map-browser-precision-red.log.excerpt.txt",
+      "resolution": "Test captures actual zoomed export before action, not rounded CSS; scope uses its own viewport handle. No production RNG/generation changes.",
+      "full_raw_log_status": "Complete originals retained locally; compressed blob upload returned no usable SHA and is unconfirmed. Readable excerpts retained; fixture data in repository.",
+      "aria_old_build": "e4-map-browser-aria-old-build-red.log; local runner opened previous build before rebuilding completed; fixed dependency order and rerun passed"
+    },
+    "per_suite": [
+      {
+        "suite": "Node",
+        "added": 0,
+        "removed": 0,
+        "modified": 0
+      },
+      {
+        "suite": "Browser save-history lifecycle",
+        "added": 0,
+        "removed": 0,
+        "modified": 1
+      }
+    ]
+  },
+  "outcomes": [
+    "Stable-ID map selection and direct available edge targets with44px effective size under zoom; exact source/target overlay",
+    "Solid gold source with dark contrast stroke and dashed cyan targets; editor-only overlay group excluded from export",
+    "Map operations reopen collapsed information panel and restore focus to object/Nearby; Escape/source no-op safe",
+    "Equal44px obstacle row read/edit; accessible labels include action and both hexes in RU/EN",
+    "Actual Classic/Mythic command/history probes and RU/EN1500/390 matrix; final full browser lifecycle covers labels/spacing/zoom/rotation/focus/export",
+    "Actual PNG retains manual barrier25 and excludes uncommitted Move/editor overlays"
+  ],
+  "evidence_ref": "agent-work/evidence/HX-BL-023-E4-map-673b394",
+  "walkthrough_ref": "agent-work/evidence/HX-BL-023-E4-map-673b394/walkthrough.md",
+  "handoff_ref": "agent-work/handoffs/2026-11-02-HX-BL-023-E4-673b394-review.json",
+  "ui_actual": {
+    "head_sha": "7d7ae9d3f908be03263bd1268a8036ca3f12ded0",
+    "before_sha": "a39880477da4f835aa8dae6d21815570bda7bc5a",
+    "before_desktop": "agent-work/evidence/HX-BL-023-E4-map-673b394/e4-map-before-1500.png",
+    "before_narrow": "agent-work/evidence/HX-BL-023-E4-map-673b394/e4-map-before-390.png",
+    "after_desktop": "agent-work/evidence/HX-BL-023-E4-map-673b394/e4-map-move-ru-1500.png",
+    "after_narrow": "agent-work/evidence/HX-BL-023-E4-map-673b394/e4-map-move-ru-390.png",
+    "shown_in_chat": true,
+    "source_detail": "agent-work/evidence/HX-BL-023-E4-map-673b394/e4-map-highlight-1500.png",
+    "capture_head_sha": "7d7ae9d3f908be03263bd1268a8036ca3f12ded0"
+  },
+  "next_role": "reviewer",
+  "next_step": "Проверяющий со свежим контекстом независимо проверяет общий E3+E4 SHA7d7ae9d по E4-1.1, сохраняет вердикт и score_assessment1.2. При замечаниях — программист; после приёмки публикация отдельно по разрешению владельца.",
+  "review_ready": true,
+  "accepted": false,
+  "published": false,
+  "release_approved": false,
+  "full_editor_ready": false,
+  "E4_developer_implementation_complete": true,
+  "score_model_version": "1.2",
+  "score_assessment_status": "pending_independent_review_model1.2",
+  "developer_score_evidence_ref": "agent-work/evidence/HX-BL-023-E4-map-673b394/developer-score-evidence.json",
+  "confirmed_points": null,
+  "unverified_weight": 1000,
+  "awarded_points": 0,
+  "limitations": [
+    "Headless Chromium only; no physical touch/screen reader/Safari/Firefox",
+    "Bounded Classic/Mythic fixtures and interleavings; detailed weak evidence areas in acceptance matrix",
+    "Some emoji unavailable in screenshot environment",
+    "Full original negative logs local, readable excerpts persisted; compressed raw upload unconfirmed"
+  ],
+  "independent_review_priority_risks": [
+    "Verify cross-kingdom move membership in actual UI and unchanged stable ID/quota/counters",
+    "Independently exercise every invalid target type water/river/road/trail/external/occupied, both stack preservation, stale reference/revision, source no-op and cancellation interleavings",
+    "Direct map ID selection and44px effective targets under pan/zoom/rotation; focus return with collapsed panel, read/edit row spacing",
+    "Legacy v2–v4 deterministic structural gate vs new-command restrictions, v5 invalid/counter/overflow; whole-map rollback/RNG",
+    "Actual PNG keeps manual barrier and excludes editor overlays; E1–E3/notes/Find/nav regressions",
+    "Evaluate necessity/sensitivity and counts of changed browser lifecycle; do not infer completeness from262 Node cases or successful CI"
+  ],
+  "nonblocking_errors": [
+    "Early test viewport-scope ReferenceError fixed; readable excerpt persisted",
+    "Rounded CSS scale did not equal exact document state; test now captures actual export before action",
+    "Local aria run initially opened previous build due missing dependency wait; rerun after build passed",
+    "Compressed full negative-log upload returned no usable SHA; upload unconfirmed, readable excerpts persisted and complete originals retained locally"
+  ],
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-02T00:56:07.501Z",
+      "is_enabled": true
+    },
+    "end": {
+      "checked_at": "2026-11-02T01:38:42.782Z",
+      "is_enabled": true
+    },
+    "restoration_performed": false,
+    "errors": [],
+    "limitation": "Observed at peek times only. Team task remains ongoing: independent review and approved queue are not complete."
+  },
+  "queue_preserved": {
+    "HX_BL_010": "approved_queued_after_E4",
+    "main": "unchanged",
+    "PR481": "draft_pending_independent_verdict_and_release_permission"
+  }
+}
