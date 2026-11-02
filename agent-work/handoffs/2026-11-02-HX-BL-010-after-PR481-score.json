@@ -15,21 +15,43 @@
     "Hide debugging from main user panel; choose and document reversible service access, preserving diagnostics/reproduction data",
     "Search remains global named-object navigation with filters RU/EN; selecting a result goes to information card in both modes; editing stays in information card",
     "Preserve name/notes/road/obstacle draft completion/cancellation rules, Undo/Redo, imports and current navigation behavior",
-    "Do not add new search domains or automatic zoom/pan features outside approved scope"
+    "Do not add new search domains or automatic zoom/pan features outside approved scope",
+    "Owner02.11 explicitly requires a visible selected-hex indicator after pointer/search selection in view/edit; define visual distinction and overlay/export behavior, preserve document/RNG/Undo and map interactions."
   ],
   "acceptance_for_analyst": [
     "Usable spec: scope, states, interaction sequence, errors, compatibility, dependencies, measurable acceptance",
     "Proposed actual-interface-based desktop/390 preview in read/edit/search/dirty-draft states, shown in chat and linked/versioned; no awaiting_design_approval",
     "Criterion-linked model1.2 forecast with source and unknown/score-neutral unless grade transition has evidence; S04-C01 and safety/accessibility regressions evaluated against current model",
-    "Reuse current tests according to owner test-governance; no new permanent audit or manufactured case counts"
+    "Reuse current tests according to owner test-governance; no new permanent audit or manufactured case counts",
+    "Include HX-FB-009: selected/hover/candidate/none states in existing rendering modes, desktop/390, pointer/search/keyboard and pan/zoom/rotate; proposal shown without a third approval gate."
   ],
-  "next_step": "Аналитик готовит спецификацию HX-BL-010 на опубликованном e949d2e: скрыть отладку из основной панели, сохранить служебный доступ; поиск выбирает объект, редактирование выполняется в информационном блоке. Показать desktop/390 и передать разработчику без дополнительного дизайн-согласования.",
+  "next_step": "Аналитик готовит спецификацию HX-BL-010 на опубликованном e949d2e: скрыть отладку из основной панели, сохранить служебный доступ; поиск выбирает объект, редактирование выполняется в информационном блоке. Показать desktop/390 и передать разработчику без дополнительного дизайн-согласования. Включить явное обозначение выбранного гекса по HX-FB-009.",
   "start_authorized": true,
   "publication_allowed": false,
   "owner_decision_needed_for_start": false,
   "priority_reason": "Already-approved owner HX-FB-008 follow-up after completed E4; removes diagnostic clutter and duplicate editing before further user-facing editor breadth. No new product proposal needed while this approved task is ready.",
-  "expected_user_result": "Под информацией нет Отладка:OFF; поиск→выбор→информация→правка единообразно в обоих режимах.",
+  "expected_user_result": "Под информацией нет Отладка:OFF; поиск→выбор→информация→правка единообразно в обоих режимах. Выбранный гекс явно обозначен на карте до следующего выбора.",
   "score_forecast": "unknown; approval and cosmetic simplification do not establish full criterion grades",
   "volume": "Bounded analyst spec/desktop+narrow preview, then implementation/reviewer; no additional spend",
-  "release_gate": "Separate exact accepted package permission still required"
+  "release_gate": "Separate exact accepted package permission still required",
+  "owner_amendments": [
+    {
+      "feedback_id": "HX-FB-009",
+      "title": "Явное обозначение выбранного гекса на карте",
+      "source": "Current owner: «Нужна подсветка или иное обозначение выбранного гекса.»",
+      "approval_ref": "owner-decision-2026-11-02-selected-hex-indicator",
+      "scope": "Approved owner amendment to HX-BL-010 navigation/selection; no new product task",
+      "requirements": [
+        "Выбранный гекс явно виден на карте после клика и выбора через поиск; обозначение сохраняется после ухода указателя",
+        "Выделение следует ровно одному текущему selectedHex и одинаково работает в просмотре/редактировании",
+        "Обозначение отличается от candidate-гексов и hover/focus; сохраняет видимость тайла/POI и читается на суше/воде в существующих режимах",
+        "Pan/zoom/rotate не меняют выбор; обозначение не мешает выбору дорог/препятствий и не меняет данные/историю",
+        "Визуальный вариант и экспортное поведение уточнить в bounded spec; показать фактические desktop/390 состояния до публикации"
+      ],
+      "ui_preview_pending": true,
+      "ui_preview_responsible": "business_analyst",
+      "owner_response_blocks_development": false,
+      "publication_allowed": false
+    }
+  ]
 }
