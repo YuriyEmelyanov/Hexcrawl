@@ -1,0 +1,229 @@
+{
+  "run_id": "2026-11-03-reviewer-HX-BL-041-060e3b3",
+  "role": "reviewer",
+  "task_id": "HX-BL-041",
+  "stage": "TAGS1.1+MYTHS1.2",
+  "started_at": "2026-11-03T04:58:14.278Z",
+  "completed_at": "2026-11-03T05:08:31.689Z",
+  "role_selection_reason": "Completed combined developer claim and exact-SHA review-ready handoff supersede stale analyst-only latest pointer; no foreign active claims at intake.",
+  "status": "changes_requested",
+  "verdict": "changes_requested",
+  "head_sha": "060e3b3ae153d2ee5b8afaf5b94adf28cd36343f",
+  "tree_sha": "960323f6f42f4e02a6e2caa1f6fb75b2495f69fa",
+  "pr": 484,
+  "findings": [
+    {
+      "id": "HX041-SAVE-01",
+      "priority": "P2",
+      "file": "src/tags/engine.ts",
+      "lines": [
+        40,
+        46
+      ],
+      "summary": "Accepted tag mutations can exceed persisted tag/language limits and produce exports rejected on reimport",
+      "evidence": [
+        "core-probe.mjs",
+        "core-probe.json",
+        "boundary-ui.json"
+      ],
+      "original_agent_finding_id": "HX041-R1"
+    },
+    {
+      "id": "HX041-R1",
+      "priority": "P2",
+      "file": "src/tags/TagRow.tsx",
+      "line": 15,
+      "summary": "Independent dice lack distinct component purpose/result in accessible name",
+      "method": "static expression plus actual production DOM with a valid equal-value independent2d12",
+      "limitation": "No assistive-device user test",
+      "evidence": [
+        "aria-ui.mjs",
+        "aria.json"
+      ],
+      "original_agent_finding_id": "HX041-R2"
+    }
+  ],
+  "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/484#pullrequestreview-5747498032",
+  "formal_review_state": "COMMENT",
+  "independence": {
+    "fresh_context_agent": "/root/review_041_060e3b3",
+    "source_edits": false,
+    "root_verification": [
+      "fresh CI exact SHA check/browser/world-random success",
+      "four existing tag tests passed, production build passed",
+      "production390 validv6/64 → ordinary Земля+ → export65 rejected on own reimport",
+      "production DOM equal2/2 dice have identical accessible names",
+      "locale-switch suspicion disproved; RU edit committed before EN",
+      "all72/432/72 resolvers compared to approved catalogs"
+    ]
+  },
+  "evidence_ref": "agent-work/evidence/review-HX-BL-041-060e3b3",
+  "test_change_summary": {
+    "base_sha": "060e3b3ae153d2ee5b8afaf5b94adf28cd36343f",
+    "head_sha": "060e3b3ae153d2ee5b8afaf5b94adf28cd36343f",
+    "added": 0,
+    "removed": 0,
+    "modified": 0,
+    "suite": "reviewer no permanent source/test edits",
+    "scenario_risk": "Independent boundary, catalog, history/RNG and accessible name probes",
+    "reuse_or_new_reason": "Existing four tag tests rerun; temporary diagnostics kept separately from permanent suite growth",
+    "count_source": "No tracked source/test changes by reviewer; local temporary scripts not staged",
+    "package_change_summary": {
+      "base_sha": "e949d2ebda75af3988467c4a8d64715dd3a2e048",
+      "head_sha": "060e3b3ae153d2ee5b8afaf5b94adf28cd36343f",
+      "node": {
+        "added": 4,
+        "removed": 0,
+        "modified": 6
+      },
+      "browser": {
+        "added": 1,
+        "removed": 0,
+        "modified": 1
+      },
+      "count_source": "git diff named test cases; shared validate changes affect two existing kingdom cases, version asserts affect four other Node cases",
+      "necessity": "Four distinct new contracts justify cases; reused legacy and generation cases; no demonstrated duplication",
+      "gaps": "64tag/8language command boundaries and equal-value accessible names missing; extend current lifecycle/import/UI cases rather than add parallel broad runners"
+    },
+    "executed": {
+      "node": {
+        "executed": 4,
+        "passed": 4,
+        "failed": 0,
+        "skipped": 0
+      },
+      "browser_diagnostics": {
+        "runs": 3,
+        "boundary": "confirmed defect",
+        "aria": "confirmed defect",
+        "locale": "no defect; RU edit committed before EN switch"
+      },
+      "catalog": {
+        "myths": 72,
+        "landmarks": 432,
+        "seers": 72,
+        "matches": true,
+        "not_test_case_growth": true
+      },
+      "ci": {
+        "fresh_exact_sha": "check/browser/world-random success; not independently rerun whole suites"
+      }
+    }
+  },
+  "score_model_version": "1.2",
+  "score_assessment_ref": "agent-work/evidence/review-HX-BL-041-060e3b3/score-assessment.json",
+  "score_assessment": [
+    {
+      "criterion_id": "S08-C04",
+      "weight": 10,
+      "grade_before": null,
+      "points_before": null,
+      "grade_after": null,
+      "points_after": null,
+      "delta": null,
+      "status": "insufficient_evidence",
+      "sha": "060e3b3ae153d2ee5b8afaf5b94adf28cd36343f",
+      "method": "bounded independent source inspection and reviewer production callback probes",
+      "evidence": [
+        "contracts-probe.json",
+        "core-probe.json"
+      ],
+      "limitations": "Single MB package only; no complete current/top5/top10/top20 requirements or user confirmation"
+    },
+    {
+      "criterion_id": "S09-C04",
+      "weight": 10,
+      "grade_before": null,
+      "points_before": null,
+      "grade_after": null,
+      "points_after": null,
+      "delta": null,
+      "status": "insufficient_evidence",
+      "sha": "060e3b3ae153d2ee5b8afaf5b94adf28cd36343f",
+      "method": "bounded independent source inspection and reviewer production callback probes",
+      "evidence": [
+        "contracts-probe.json",
+        "core-probe.json"
+      ],
+      "limitations": "Boundary roundtrip defect confirmed; no complete data safety grade assessed"
+    },
+    {
+      "criterion_id": "S07-C05",
+      "weight": 15,
+      "grade_before": null,
+      "points_before": null,
+      "grade_after": null,
+      "points_after": null,
+      "delta": null,
+      "status": "insufficient_evidence",
+      "sha": "060e3b3ae153d2ee5b8afaf5b94adf28cd36343f",
+      "method": "bounded independent source inspection and reviewer production callback probes",
+      "evidence": [
+        "contracts-probe.json",
+        "core-probe.json"
+      ],
+      "limitations": "No SDK/content-pack installation/licensing audit"
+    }
+  ],
+  "confirmed_points": null,
+  "unverified_weight": 1000,
+  "awarded_points": 0,
+  "accepted": false,
+  "published": false,
+  "release_approved": false,
+  "authorization_status": "approved_scope_bounded_developer_fixes_no_new_owner_start_approval",
+  "next_role": "developer",
+  "next_step": "Программист исправляет HX041-SAVE-01 (лимиты формата) и HX041-R1 (доступные имена кубов) в PR484; новый SHA передаёт независимому проверяющему.",
+  "handoff_ref": "agent-work/handoffs/2026-11-03-HX-BL-041-review-fixes.json",
+  "owner_decisions_needed": [],
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-03T04:58:14.278Z",
+      "is_enabled": true
+    },
+    "end": {
+      "checked_at": "2026-11-03T05:08:31.689Z",
+      "is_enabled": true
+    },
+    "restoration_performed": false,
+    "errors": [],
+    "independent_agent": {
+      "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "start": {
+        "is_enabled": true,
+        "time": null,
+        "time_limitation": "Timestamp not recorded"
+      },
+      "end": {
+        "requested_at": "2026-11-03 05:04:26 UTC",
+        "completed_at": "2026-11-03 05:04:29 UTC",
+        "is_enabled": true
+      },
+      "recovery": false,
+      "errors": []
+    },
+    "limitation": "Point-in-time observations only; approved fixes/project work remain ongoing."
+  },
+  "limitations": [
+    "Bounded independent probes, not proof of all mutation interleavings or devices",
+    "No assistive-device user test; accessible names verified in actual DOM",
+    "Catalog matches are against approved JSON, not fresh PDF transcription",
+    "100-roll probe uses engine then applyDocument followed by actual geography, not100App/UI commands",
+    "No change to main, published product score, unrelated claims or approved010 scope"
+  ],
+  "result_type": "independent_review_boundary_supplement",
+  "related_existing_review": {
+    "path": "agent-work/results/2026-11-03-reviewer-HX-BL-041-060e3b3.json",
+    "run_id": "2026-11-03-HX-BL-041-reviewer-060e3b3",
+    "preserved": true,
+    "existing_accessibility_finding": "HX041-R1"
+  },
+  "nonblocking_errors": [
+    {
+      "action": "create scoped result at existing path",
+      "error": "422 existing file requires sha",
+      "resolution": "Preserved existing other-run result; stored this additional boundary finding and evidence under unique supplement result path"
+    }
+  ]
+}

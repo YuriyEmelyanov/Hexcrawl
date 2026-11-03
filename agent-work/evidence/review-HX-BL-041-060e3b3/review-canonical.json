@@ -1,0 +1,41 @@
+{
+  "findings": [
+    {
+      "id": "HX041-SAVE-01",
+      "priority": "P2",
+      "file": "src/tags/engine.ts",
+      "lines": [
+        40,
+        46
+      ],
+      "summary": "Accepted tag mutations can exceed persisted tag/language limits and produce exports rejected on reimport",
+      "evidence": [
+        "core-probe.mjs",
+        "core-probe.json",
+        "boundary-ui.json"
+      ],
+      "original_agent_finding_id": "HX041-R1"
+    },
+    {
+      "id": "HX041-R1",
+      "priority": "P2",
+      "file": "src/tags/TagRow.tsx",
+      "line": 15,
+      "summary": "Independent dice lack distinct component purpose/result in accessible name",
+      "method": "static expression plus actual production DOM with a valid equal-value independent2d12",
+      "limitation": "No assistive-device user test",
+      "evidence": [
+        "aria-ui.mjs",
+        "aria.json"
+      ],
+      "original_agent_finding_id": "HX041-R2"
+    }
+  ],
+  "mapping": "Earlier review5747498032 used temporary R1=save and R2=aria; canonical existing HX041-R1=aria retained, new HX041-SAVE-01=save; no other-run result overwritten.",
+  "preserved_existing_result": {
+    "path": "agent-work/results/2026-11-03-reviewer-HX-BL-041-060e3b3.json",
+    "run_id": "2026-11-03-HX-BL-041-reviewer-060e3b3",
+    "preserved": true,
+    "existing_accessibility_finding": "HX041-R1"
+  }
+}
