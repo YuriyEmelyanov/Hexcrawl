@@ -270,7 +270,7 @@ button:disabled,select:disabled { opacity:.55; cursor:wait; }
 .obstacle-row .direct-value { min-height:44px; }
 
 /* Tags are inline annotations: retain existing card density and typography. */
-.tag-inline { display:inline; margin-inline-start: .25em; }
+.tag-inline { position:relative; display:inline; margin-inline-start: .25em; }
 .tag-component { display:inline; }
 .tag-component + .tag-component { margin-inline-start:2px; }
 .tag-die { display:inline-flex; vertical-align:-.15em; align-items:center; justify-content:center; width:1.1em; height:1.1em; min-width:0; padding:0; margin:0 2px 0 0; border:0; border-radius:0; background:transparent; color:inherit; font:inherit; box-shadow:none; }
@@ -286,3 +286,6 @@ button:disabled,select:disabled { opacity:.55; cursor:wait; }
 .visually-hidden { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
 @keyframes tag-roll { from { transform:rotate(-180deg); } to { transform:rotate(0); } }
 @media(prefers-reduced-motion:reduce) { .tag-die--roll svg { animation:none; } }
+
+.tag-actions { position:absolute; z-index:20; inset-inline-start:0; bottom:100%; white-space:nowrap; }
+.tag-actions button { padding:2px 4px; font:inherit; background:#101a2b; }

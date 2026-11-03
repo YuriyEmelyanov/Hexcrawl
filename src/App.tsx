@@ -13011,7 +13011,7 @@ export function App() {
     const ids=generationMode==='mythic'?[...new Set([...available,...instances.filter(i=>!mythicDefinitions[i.definitionId]).map(i=>i.definitionId)])]:[...new Set(instances.map(i=>i.definitionId))];
     const rows=ids.filter(id=>generationMode==='mythic'||findTag(tags,owner,id)).map(id=>{
       const def=mythicDefinitions[id],instance=findTag(tags,owner,id);
-      return <TagRow key={id} owner={owner} definition={def} instance={instance} language={language} editMode={editMode}
+      return <TagRow key={`${tagKey(owner,id)}:${instance?.revision??0}`} owner={owner} definition={def} instance={instance} language={language} editMode={editMode}
         disabled={isImporting||!!kingdomJob||!!pendingRegen||!!roadDraft||!!obstacleDraft||dirtyNameDraft()}
         animation={tagAnimations[tagKey(owner,id)]}
         onRoll={slot=>mutateTag(owner,id,slot)} onEdit={(index,text)=>mutateTag(owner,id,undefined,{index,text})}/>;
