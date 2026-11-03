@@ -1,0 +1,13 @@
+# Independent review on69d185b
+
+Verdict: accepted for TAGS1.1 + MYTHS1.2. No merge/deployment permission.
+
+Source checkout: detached69d185b14e425c5de037cf7266c4d3bf2a37a5a7; treec273ef0f4678e44f06c1a2dd07ccc9e3fa6a2798. No product files changed.
+
+core.json and automatic.json are independent actual production callback probes. They compare full captureDocument, Undo/Redo, revision and saved counters/RNG before and after refusal. At least one Redo exists for rejection cases.64 valid imported tags and8 imported override languages remain preserved; existing-tag reroll and existing-locale edit succeed. Automatic manual type replacement uses a central throne owner and explicit mythic mode; generated commit uses the real recordGenerated with a prepared sanctuary replacement.
+
+To reproduce in a scratch checkout, copy recheck-independent.mjs and recheck-aria.mjs into test/. Copy test/helpers/generation-harness.mjs to test/helpers/recheck-harness.mjs and extend its returned instrumentation exports before tags with editError, documentRevision, commitManualMap. No algorithms are modified. On Node24 run core and auto separately: node --max-old-space-size=512 test/recheck-independent.mjs core; then HX_RECHECK_OUTPUT=/tmp/hx041-independent-auto.json node --max-old-space-size=512 test/recheck-independent.mjs auto; node test/recheck-aria.mjs. All final runs pass. Two initial auto-probe attempts used the fixture default classic mode; final explicit mythic-mode/central-owner reproduction supersedes those inconclusive attempts, not any product negative evidence.
+
+Existing local focused suite node --test test/tags.test.mjs passes5/5. Complete267/267 check+TS/build, browser and world-random were independently verified through current GitHub job logs, not rerun in full locally. ci.json records exact tested merge/tree and downloaded artifact digest. All three fresh1500/390/320 screenshots were visually inspected; only monument was pictured. Shared component SSR checks all21 definitions in RU/EN,84 labels, equal values, current overrides and visible-markup equality against060e3b3. No physical assistive device tested. Source review found unchanged density CSS and no new visible metadata, seer text or ruin/myth linkage.
+
+Fresh576-result catalog lookup comparison on this SHA matches approved structured catalogs72 myths/432 landmarks/72 seers. Original PDFs were not freshly transcribed. Score1.2 remains insufficient_evidence with no award; see score-assessment.json. Unrelated queue/latest/backlog/current score were not overwritten. Finite evidence is not proof of absence of all bugs.

@@ -1,0 +1,420 @@
+{
+  "run_id": "2026-11-03-reviewer-HX-BL-041-69d185b",
+  "role": "reviewer",
+  "agent": "mythic_tags_recheck",
+  "task_id": "HX-BL-041",
+  "stage": "TAGS1.1+MYTHS1.2",
+  "status": "accepted",
+  "verdict": "accepted",
+  "pr": 484,
+  "reviewed_sha": "69d185b14e425c5de037cf7266c4d3bf2a37a5a7",
+  "reviewed_tree_sha": "c273ef0f4678e44f06c1a2dd07ccc9e3fa6a2798",
+  "base_sha": "e949d2ebda75af3988467c4a8d64715dd3a2e048",
+  "fix_base_sha": "060e3b3ae153d2ee5b8afaf5b94adf28cd36343f",
+  "independence": {
+    "separate_agent": true,
+    "checkout": "/workspace/scratch/2ae0d17533b7/hx041-recheck",
+    "detached": true,
+    "source_changes": false,
+    "developer_checkout_changed": false,
+    "claim_commit": "d3c9069e8d3bc70a6e94fe582f72c1ee5c4362c9"
+  },
+  "specs": [
+    {
+      "path": "agent-work/specs/HX-BL-041-TAGS.md",
+      "version": "1.1"
+    },
+    {
+      "path": "agent-work/specs/HX-BL-041-MYTHS.md",
+      "version": "1.2"
+    }
+  ],
+  "sources": [
+    "AGENTS.md",
+    "docs/index.md",
+    "docs/development-workflow.md",
+    "docs/mythic-tags.md",
+    "agent-work/process.md",
+    "agent-work/strategy/vision.md",
+    "agent-work/strategy/score-model.md",
+    "agent-work/feedback.json",
+    "agent-work/score/current-score.json",
+    "agent-work/handoffs/2026-11-03-HX-BL-041-69d185b-review.json",
+    "agent-work/handoffs/2026-11-03-HX-BL-041-review-fixes.json"
+  ],
+  "findings": [
+    {
+      "id": "HX041-SAVE-01",
+      "status": "resolved",
+      "method": "Independent actual production App callback harness with valid imported64-tag owner and8-language overrides; preserve full document, populated Redo, Undo, revision/counters/RNG on rejected roll/edit/fill/type-auto/generated-commit. At63 tags fill prepares one addition but rejects whole result when next exceeds64. Existing tag reroll and eighth locale edit remain accepted; outgoing save validates and later imports.",
+      "evidence": [
+        "agent-work/evidence/review-HX-BL-041-69d185b/core.json",
+        "agent-work/evidence/review-HX-BL-041-69d185b/automatic.json"
+      ]
+    },
+    {
+      "id": "HX041-R1",
+      "status": "resolved",
+      "method": "Independently render actual TagRow through React SSR for all21 definitions in RU/EN with equal dice and current overrides.84 labels identify distinct slot purpose, current override, die and value. Visible rendered markup equals prior version after removing aria-label attributes.",
+      "evidence": [
+        "agent-work/evidence/review-HX-BL-041-69d185b/aria.json",
+        "agent-work/evidence/review-HX-BL-041-69d185b/ci.json"
+      ]
+    }
+  ],
+  "open_findings": [],
+  "new_verdict_basis": "Fresh exact-SHA source/diff and independent focused reproductions; previous changes_requested verdict was not transferred. Current full CI/jobs/logs/merge tree and fresh UI artifact independently verified.",
+  "checks": {
+    "node": "24.22.1",
+    "local_focused": "node --test test/tags.test.mjs:5/5 pass",
+    "independent_boundary_cases": 8,
+    "independent_aria_cases": 42,
+    "independent_aria_labels": 84,
+    "catalog": {
+      "myths": 72,
+      "landmarks": 432,
+      "seers": 72,
+      "result": "Production resolved() compared to approved catalogs on newSHA; all576 match"
+    },
+    "ci": {
+      "sha": "69d185b14e425c5de037cf7266c4d3bf2a37a5a7",
+      "tree": "c273ef0f4678e44f06c1a2dd07ccc9e3fa6a2798",
+      "tested_merge_sha": "a356566161b2e225bb7ec92416ef3be998134a05",
+      "merge_tree_equals_head": true,
+      "method": "Independent GitHub PR metadata/jobs/full job logs and local fetched git objects",
+      "run_id": 41583753276,
+      "jobs": [
+        {
+          "job_id": 125744307176,
+          "status": "success",
+          "excerpts": [
+            "2026-11-03T05:24:44.6211624Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +a356566161b2e225bb7ec92416ef3be998134a05:refs/remotes/pull/484/merge",
+            "2026-11-03T05:24:45.3362280Z  * [new ref]         a356566161b2e225bb7ec92416ef3be998134a05 -> pull/484/merge",
+            "2026-11-03T05:24:45.3892023Z HEAD is now at a356566 Merge 69d185b14e425c5de037cf7266c4d3bf2a37a5a7 into e949d2ebda75af3988467c4a8d64715dd3a2e048",
+            "2026-11-03T05:24:45.3965219Z a356566161b2e225bb7ec92416ef3be998134a05",
+            "2026-11-03T05:24:48.4431285Z ##[group]Run npm run check",
+            "2026-11-03T05:24:48.4431618Z \u001b[36;1mnpm run check\u001b[0m",
+            "2026-11-03T05:24:48.5655320Z > tsc --noEmit && npm test && npm run build",
+            "2026-11-03T05:33:07.0777341Z ℹ tests 267",
+            "2026-11-03T05:33:07.0778048Z ℹ pass 267",
+            "2026-11-03T05:33:07.0778362Z ℹ fail 0",
+            "2026-11-03T05:33:16.6354020Z \u001b[32m✓ built in 9.23s\u001b[39m"
+          ]
+        },
+        {
+          "job_id": 125744306939,
+          "status": "success",
+          "excerpts": [
+            "2026-11-03T05:24:44.8376014Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +a356566161b2e225bb7ec92416ef3be998134a05:refs/remotes/pull/484/merge",
+            "2026-11-03T05:24:45.6832052Z  * [new ref]         a356566161b2e225bb7ec92416ef3be998134a05 -> pull/484/merge",
+            "2026-11-03T05:24:45.7353083Z HEAD is now at a356566 Merge 69d185b14e425c5de037cf7266c4d3bf2a37a5a7 into e949d2ebda75af3988467c4a8d64715dd3a2e048",
+            "2026-11-03T05:24:45.7427647Z a356566161b2e225bb7ec92416ef3be998134a05",
+            "2026-11-03T05:24:59.4366108Z \u001b[32m✓ built in 9.36s\u001b[39m",
+            "2026-11-03T05:28:54.2065320Z HX-BL-041 browser: legacy, fill, tuple reroll, exact history, 1500/390/320 density, keyboard/reduced-motion, v6 roundtrip passed"
+          ]
+        },
+        {
+          "job_id": 125744307105,
+          "status": "success",
+          "excerpts": [
+            "2026-11-03T05:24:44.3849064Z Complete job name: world-random",
+            "2026-11-03T05:24:45.0017878Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +a356566161b2e225bb7ec92416ef3be998134a05:refs/remotes/pull/484/merge",
+            "2026-11-03T05:24:45.5836270Z  * [new ref]         a356566161b2e225bb7ec92416ef3be998134a05 -> pull/484/merge",
+            "2026-11-03T05:24:45.6354924Z HEAD is now at a356566 Merge 69d185b14e425c5de037cf7266c4d3bf2a37a5a7 into e949d2ebda75af3988467c4a8d64715dd3a2e048",
+            "2026-11-03T05:24:45.6432725Z a356566161b2e225bb7ec92416ef3be998134a05",
+            "2026-11-03T05:24:59.4137849Z \u001b[32m✓ built in 9.98s\u001b[39m",
+            "2026-11-03T05:25:22.5071637Z > node test/browser/world-random.smoke.mjs",
+            "2026-11-03T05:25:31.7296917Z world RNG production UI classic/0: fresh, continuation, undo-repeat, invalid import passed",
+            "2026-11-03T05:25:34.2284964Z world RNG production UI classic/1: fresh, continuation, undo-repeat, invalid import passed",
+            "2026-11-03T05:25:36.6780202Z world RNG production UI classic/123456789: fresh, continuation, undo-repeat, invalid import passed",
+            "2026-11-03T05:25:39.2291369Z world RNG production UI classic/4294967295: fresh, continuation, undo-repeat, invalid import passed",
+            "2026-11-03T05:26:23.8231181Z world RNG production UI mythic/0: fresh, continuation, undo-repeat, invalid import passed",
+            "2026-11-03T05:27:24.5039263Z world RNG production UI mythic/1: fresh, continuation, undo-repeat, invalid import passed",
+            "2026-11-03T05:28:02.3242168Z world RNG production UI mythic/123456789: fresh, continuation, undo-repeat, invalid import passed",
+            "2026-11-03T05:29:00.4542085Z world RNG production UI mythic/4294967295: fresh, continuation, undo-repeat, invalid import passed"
+          ]
+        }
+      ],
+      "ui_artifact": {
+        "id": 13207466108,
+        "sha": "69d185b14e425c5de037cf7266c4d3bf2a37a5a7",
+        "digest": "sha256:dd69c88002f33ddca475cb8359e9c47a5be4271755a4c141ff6c45911578d158",
+        "downloaded_sha256_matches": true,
+        "visual_inspection": [
+          "monument-1500.png",
+          "monument-390.png",
+          "monument-320.png"
+        ],
+        "cube_px": 17.59375,
+        "font_px": 16,
+        "overflow": false,
+        "local_browser_available": false
+      }
+    }
+  },
+  "test_management": {
+    "delta_from_fix_base": {
+      "node": {
+        "added": 1,
+        "removed": 0,
+        "modified": 2
+      },
+      "browser": {
+        "added": 0,
+        "removed": 0,
+        "modified": 0
+      }
+    },
+    "assessment": "Capacity cases extend existing validator and actual callback scenarios; new focused SSR addresses distinct equal-dice accessibility risk. No broad extra production suite added. Review-only probes are temporary evidence, not product test inflation."
+  },
+  "scope_constraints_verified": [
+    "Cube CSS unchanged:1.1em=17.59375px at16px font;2px margin/gap, no card typography/padding changes",
+    "No visible d6/d12/page/instruction labels or new panels in reviewed artifact and SSR markup",
+    "Seer remains only name/dice; no biography/stats added",
+    "Ruins remain text prompts without mechanical myth references; data and resolver unchanged"
+  ],
+  "score_assessment": {
+    "model_version": "1.2",
+    "sha": "69d185b14e425c5de037cf7266c4d3bf2a37a5a7",
+    "model_path": "agent-work/strategy/score-model.md",
+    "baseline_source": "agent-work/score/current-score.json at d3c9069: model1.2 criteria null/unverified; no historical1.1 transfer",
+    "criteria": [
+      {
+        "criterion_id": "S08-C04",
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "after": {
+          "grade": null,
+          "points": null,
+          "status": "insufficient_evidence"
+        },
+        "delta": null,
+        "awarded_points": 0,
+        "method": "Independent generic engine and MB adapter source, same-tree full CI/world-RNG; no cross-game compatibility corpus or complete top5/10/20 coverage.",
+        "evidence": [
+          "agent-work/evidence/review-HX-BL-041-69d185b/core.json",
+          "agent-work/evidence/review-HX-BL-041-69d185b/automatic.json",
+          "agent-work/evidence/review-HX-BL-041-69d185b/aria.json",
+          "agent-work/evidence/review-HX-BL-041-69d185b/ci.json"
+        ],
+        "limitations": "Bounded technical acceptance does not establish whole criterion or game breadth; no duplicate awards, no score increase before publication."
+      },
+      {
+        "criterion_id": "S09-C04",
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "after": {
+          "grade": null,
+          "points": null,
+          "status": "insufficient_evidence"
+        },
+        "delta": null,
+        "awarded_points": 0,
+        "method": "New exact-SHA valid 64-tag/8-language boundaries, whole fill/manual auto/generated-commit atomic rejection, redo retention, export validation and existing tag/language accepted paths. Finite corpus does not establish entire data-safety criterion.",
+        "evidence": [
+          "agent-work/evidence/review-HX-BL-041-69d185b/core.json",
+          "agent-work/evidence/review-HX-BL-041-69d185b/automatic.json",
+          "agent-work/evidence/review-HX-BL-041-69d185b/aria.json",
+          "agent-work/evidence/review-HX-BL-041-69d185b/ci.json"
+        ],
+        "limitations": "Bounded technical acceptance does not establish whole criterion or game breadth; no duplicate awards, no score increase before publication."
+      },
+      {
+        "criterion_id": "S07-C05",
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "after": {
+          "grade": null,
+          "points": null,
+          "status": "insufficient_evidence"
+        },
+        "delta": null,
+        "awarded_points": 0,
+        "method": "Definitions and catalog separated; no complete extension/licensing/content-pack criterion assessment.",
+        "evidence": [
+          "agent-work/evidence/review-HX-BL-041-69d185b/core.json",
+          "agent-work/evidence/review-HX-BL-041-69d185b/automatic.json",
+          "agent-work/evidence/review-HX-BL-041-69d185b/aria.json",
+          "agent-work/evidence/review-HX-BL-041-69d185b/ci.json"
+        ],
+        "limitations": "Bounded technical acceptance does not establish whole criterion or game breadth; no duplicate awards, no score increase before publication."
+      },
+      {
+        "criterion_id": "S06-C02",
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "after": {
+          "grade": null,
+          "points": null,
+          "status": "insufficient_evidence"
+        },
+        "delta": null,
+        "awarded_points": 0,
+        "method": "Saved names/descriptions remain static prompts; dynamic threat engine excluded from this authorized task and not evidenced.",
+        "evidence": [
+          "agent-work/evidence/review-HX-BL-041-69d185b/core.json",
+          "agent-work/evidence/review-HX-BL-041-69d185b/automatic.json",
+          "agent-work/evidence/review-HX-BL-041-69d185b/aria.json",
+          "agent-work/evidence/review-HX-BL-041-69d185b/ci.json"
+        ],
+        "limitations": "Bounded technical acceptance does not establish whole criterion or game breadth; no duplicate awards, no score increase before publication."
+      },
+      {
+        "criterion_id": "S04-C05",
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "after": {
+          "grade": null,
+          "points": null,
+          "status": "insufficient_evidence"
+        },
+        "delta": null,
+        "awarded_points": 0,
+        "method": "All21 definitions in both RU/EN have equal-dice disambiguation with actual override/type/value;84 rendered labels checked; no physical screen reader or full WCAG audit and known RU fallback remains.",
+        "evidence": [
+          "agent-work/evidence/review-HX-BL-041-69d185b/core.json",
+          "agent-work/evidence/review-HX-BL-041-69d185b/automatic.json",
+          "agent-work/evidence/review-HX-BL-041-69d185b/aria.json",
+          "agent-work/evidence/review-HX-BL-041-69d185b/ci.json"
+        ],
+        "limitations": "Bounded technical acceptance does not establish whole criterion or game breadth; no duplicate awards, no score increase before publication."
+      },
+      {
+        "criterion_id": "S04-C04",
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "after": {
+          "grade": null,
+          "points": null,
+          "status": "insufficient_evidence"
+        },
+        "delta": null,
+        "awarded_points": 0,
+        "method": "Boundary saves remain exportable/reimportable and full CI tag roundtrip passed; complete approved role/style/export corpus not assessed.",
+        "evidence": [
+          "agent-work/evidence/review-HX-BL-041-69d185b/core.json",
+          "agent-work/evidence/review-HX-BL-041-69d185b/automatic.json",
+          "agent-work/evidence/review-HX-BL-041-69d185b/aria.json",
+          "agent-work/evidence/review-HX-BL-041-69d185b/ci.json"
+        ],
+        "limitations": "Bounded technical acceptance does not establish whole criterion or game breadth; no duplicate awards, no score increase before publication."
+      },
+      {
+        "criterion_id": "S03-C05",
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "after": {
+          "grade": null,
+          "points": null,
+          "status": "insufficient_evidence"
+        },
+        "delta": null,
+        "awarded_points": 0,
+        "method": "Reject preserves populated Redo, undo stack and revision; existing tests exact history. No complete100-action/named versions criterion audit.",
+        "evidence": [
+          "agent-work/evidence/review-HX-BL-041-69d185b/core.json",
+          "agent-work/evidence/review-HX-BL-041-69d185b/automatic.json",
+          "agent-work/evidence/review-HX-BL-041-69d185b/aria.json",
+          "agent-work/evidence/review-HX-BL-041-69d185b/ci.json"
+        ],
+        "limitations": "Bounded technical acceptance does not establish whole criterion or game breadth; no duplicate awards, no score increase before publication."
+      },
+      {
+        "criterion_id": "S02-C01",
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "after": {
+          "grade": null,
+          "points": null,
+          "status": "insufficient_evidence"
+        },
+        "delta": null,
+        "awarded_points": 0,
+        "method": "Tag deterministic counters isolated and preserved on rejection; full world-random CI/source supports narrow regression safety. Whole-criterion baseline/corpus not established.",
+        "evidence": [
+          "agent-work/evidence/review-HX-BL-041-69d185b/core.json",
+          "agent-work/evidence/review-HX-BL-041-69d185b/automatic.json",
+          "agent-work/evidence/review-HX-BL-041-69d185b/aria.json",
+          "agent-work/evidence/review-HX-BL-041-69d185b/ci.json"
+        ],
+        "limitations": "Bounded technical acceptance does not establish whole criterion or game breadth; no duplicate awards, no score increase before publication."
+      }
+    ],
+    "quality": "Bounded acceptance met on this exact SHA; broader grades remain unknown",
+    "breadth": {
+      "technical_criteria": "No artificial RPG-count requirement applied",
+      "MB": "L1 static tag/catalog scenarios only",
+      "top5": "unverified",
+      "top10": "unverified",
+      "top20": "insufficient_evidence: cohort_incomplete"
+    },
+    "total_awarded_points": 0,
+    "delta": null,
+    "product_score_updated": false
+  },
+  "limitations": [
+    "No local browser executable; actual DOM/layout/keyboard/reduced-motion and roundtrip evidence comes from independently fetched current CI on identical tree.",
+    "No physical screen-reader, touch, Safari or Firefox claim; SSR verifies accessible attributes, not a physical assistive device.",
+    "Screenshots visually inspected only the monument information card at1500/390/320; all definitions share the independently rendered component and unchanged CSS.",
+    "Local complete267-test suite was not repeated by this reviewer; independently read current CI complete check/browser/world-RNG logs and ran local focused5-test suite.",
+    "English source covers12 catalog pairs; remaining supplied RU fallback is an existing disclosed task limit, not full RU/EN localization evidence.",
+    "Catalog comparison checks approved structured catalog, not fresh independent transcription of original PDFs.",
+    "Finite probes/source review do not prove absence of all errors; broader score grades remain unknown.",
+    "Initial reviewer auto-probe used legacy default classic mode and was corrected to explicit mythic mode/central owner; only final reproduced runs reported as passing."
+  ],
+  "excluded_scope_not_defects": [
+    "holding rulers",
+    "knight lower-page prompts",
+    "myth geography influence",
+    "player map",
+    "NPC knowledge",
+    "exploration/game procedures"
+  ],
+  "automation_health": {
+    "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-03T05:50:41.461Z",
+      "is_enabled": true,
+      "note": "First check followed process document read; not retroactively asserted at task start"
+    },
+    "end": {
+      "at": "2026-11-03T05:55:21.418Z",
+      "is_enabled": true
+    },
+    "restoration_performed": false,
+    "limits": "Point-in-time observations"
+  },
+  "publication_approved": false,
+  "published": false,
+  "main_changed": false,
+  "product_score_updated": false,
+  "next_role": "owner_for_release_decision",
+  "next_step": "Owner may separately approve exact PR484 head69d185b/treec273ef0. No merge/deployment is authorized; any source/head change requires a fresh review.",
+  "release_package_ref": "agent-work/handoffs/2026-11-03-HX-BL-041-release-package-69d185b.json",
+  "operational_safety": "Only this review claim/result/evidence/handoff; shared latest/backlog/other queue preserved",
+  "completed_at": "2026-11-03T05:57:24.093Z"
+}
