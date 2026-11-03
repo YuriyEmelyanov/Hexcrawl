@@ -1,0 +1,50 @@
+[
+  {
+    "id": "HX010-R1",
+    "severity": "P1",
+    "status": "open",
+    "head_sha": "39359d911403b480a833a41283d681bec72be58c",
+    "requirement": [
+      "AC05",
+      "SELECT02",
+      "SELECT03"
+    ],
+    "title": "Selected-hex outline does not follow imperative wheel zoom",
+    "source": "src/App.tsx:15339, applyMapScale13676–13688",
+    "steps": [
+      "Build exact39359d9; import test/fixtures/import-v2/baseline-mythic.json",
+      "Choose existing selectedHex3,6 atscale1; main/selection bounds match",
+      "Wheel zoom -400 over map; wait500ms without React UI state change"
+    ],
+    "actual": {
+      "main_scale": 1.82212,
+      "selection_scale": 1,
+      "main_bounds": {
+        "x": 1045.8584,
+        "y": 704.7562,
+        "width": 88.3674,
+        "height": 102.0379
+      },
+      "selection_bounds": {
+        "x": 627.2195,
+        "y": 394.0002,
+        "width": 48.4971,
+        "height": 55.9996
+      },
+      "later_UI_rerender": "Edit toggle resynchronizes selection scale and stroke"
+    },
+    "expected": "One outline remains on actual selected polygon through navigation, same transform and CSS-pixel thickness without artwork rebuild",
+    "cause": "applyMapScale mutates mapSvgRef/stage, sibling selected SVG reads mutable ref only during React render",
+    "scope": "Synchronize selection imperative scale/stroke with existing navigation path; do not move selection into cached artwork or trigger full React artwork rebuild",
+    "required_evidence": [
+      "Existing navigation test asserts physical main selected polygon vs outline bounds before/after wheel zoom without extra React render",
+      "zoom in/out, pan, rotate, raster mode, constant screen stroke and no artwork rebuild/export overlay",
+      "new exact SHA CI and independent recheck"
+    ],
+    "evidence": [
+      "agent-work/evidence/review-HX-BL-010-39359d9/runtime.json",
+      "agent-work/evidence/review-HX-BL-010-39359d9/runtime.mjs",
+      "agent-work/evidence/review-HX-BL-010-39359d9/zoom-misalignment.png"
+    ]
+  }
+]

@@ -1,0 +1,28 @@
+{
+  "task_id": "HX-BL-010",
+  "from_role": "reviewer",
+  "next_role": "developer",
+  "status": "changes_requested",
+  "authorization_status": "already_approved_scope_bounded_correction",
+  "spec_ref": "agent-work/specs/HX-BL-010.md",
+  "spec_version": "1.0",
+  "pr": 485,
+  "head_sha": "39359d911403b480a833a41283d681bec72be58c",
+  "tree_sha": "6b5dd9be4228f8ed8225cd16ba89b614ad83a2cf",
+  "finding_ids": [
+    "HX010-R1"
+  ],
+  "scope": "Synchronize selection imperative scale/stroke with existing navigation path; do not move selection into cached artwork or trigger full React artwork rebuild",
+  "input_evidence": "agent-work/evidence/review-HX-BL-010-39359d9",
+  "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/485#pullrequestreview-5749506311",
+  "required_output": "New exact SHA with corrected imperative overlay scale/stroke, existing navigation geometry assertion and required gates; then independent review of changed SHA",
+  "acceptance": [
+    "Existing navigation test asserts physical main selected polygon vs outline bounds before/after wheel zoom without extra React render",
+    "zoom in/out, pan, rotate, raster mode, constant screen stroke and no artwork rebuild/export overlay",
+    "new exact SHA CI and independent recheck"
+  ],
+  "publication_allowed": false,
+  "score_model_version": "1.2",
+  "score_assessment_ref": "agent-work/evidence/review-HX-BL-010-39359d9/score-assessment.json",
+  "next_step": "Программист исправляет HX010-R1 в PR485: синхронизация контура с wheel/imperative zoom без artwork rebuild и проверка физических границ; затем новый SHA независимому проверяющему."
+}
