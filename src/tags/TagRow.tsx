@@ -14,7 +14,7 @@ export function TagRow({owner,definition:def,instance,language,editMode,disabled
      data-tag-slot={slot} aria-label={`${language==='ru'?'Перебросить':'Reroll'} ${label}; d${sides}: ${values.join(', ')}`}
      title={readonly?(language==='ru'?'Неизвестная версия таблицы':'Unknown table version'):undefined}
      onClick={event=>{event.stopPropagation();onRoll(slot);}}>
-     <svg viewBox="0 0 18 18" aria-hidden="true"><path d={sides===6?'M2 2H16V16H2Z':'M9 1L17 7L14 16H4L1 7Z'} /><text x="9" y="12">{values.reduce((a,b)=>a+b,0)}</text></svg>
+     <svg key={active?instance!.revision:0} viewBox="0 0 18 18" aria-hidden="true"><path d={sides===6?'M2 2H16V16H2Z':'M9 1L17 7L14 16H4L1 7Z'} /><text x="9" y="12">{values.reduce((a,b)=>a+b,0)}</text></svg>
    </button>;
  };
  const result=(i:number)=>editing===i?<input key={`text-${i}`} className="tag-text-input" aria-label={label} maxLength={512} autoFocus value={draft} disabled={disabled}

@@ -11298,7 +11298,7 @@ export function App() {
   const tagsRef=useRef(tags);
   const updateTags=(value:TagState)=>{tagsRef.current=value;setTags(value);};
   const tagLocks=useRef(new Map<string,number>());
-  const [tagAnimation,setTagAnimation]=useState<{key:string;slot?:number;revision:number}|null>(null);
+  const [tagAnimations,setTagAnimations]=useState<Record<string,{key:string;slot?:number;revision:number}>>({});
   const [tagAnnouncement,setTagAnnouncement]=useState('');
   const [regions, setRegions] = useState<Region[]>([]);
   const [candidateHexes, setCandidateHexes] = useState<AxialHex[]>([]);
@@ -12855,7 +12855,7 @@ export function App() {
     generationHistory: [...doc.generationHistory]
   });
   const applyPreparedDocument = (doc: DocumentSnapshot) => {
-    tagLocks.current.clear();setTagAnimation(null);
+    tagLocks.current.clear();setTagAnimations({});
     documentRevision.current++;
     updateRoadDraft(null); setSelectedRoadPair(null); setSelectedRoadTarget(null); setConfirmRoadRemoval(null);
     applyExactMap(doc.map); setHistory(doc.generationHistory); setSelectedHex(doc.selectedHex);
@@ -13001,7 +13001,7 @@ export function App() {
       if(!commitManualMap({...captureMap(),tags:next},false))return false;
       const result=findTag(next,owner,id)!;
       setTagAnnouncement(result.texts.map((text,i)=>result.overrides?.[i]?.[language]??text[language]??text.ru??Object.values(text)[0]).join(' · '));
-      if(!edit){tagLocks.current.set(key,now+350);setTagAnimation({key,slot,revision:result.revision});}
+      if(!edit){tagLocks.current.set(key,now+350);setTagAnimations(current=>({...current,[key]:{key,slot,revision:result.revision}}));}
       return true;
     }catch{setEditError(language==='ru'?'Не удалось изменить тег.':'Could not change tag.');return false;}
   };
@@ -13013,7 +13013,7 @@ export function App() {
       const def=mythicDefinitions[id],instance=findTag(tags,owner,id);
       return <TagRow key={id} owner={owner} definition={def} instance={instance} language={language} editMode={editMode}
         disabled={isImporting||!!kingdomJob||!!pendingRegen||!!roadDraft||!!obstacleDraft||dirtyNameDraft()}
-        animation={tagAnimation?.key===tagKey(owner,id)?tagAnimation:undefined}
+        animation={tagAnimations[tagKey(owner,id)]}
         onRoll={slot=>mutateTag(owner,id,slot)} onEdit={(index,text)=>mutateTag(owner,id,undefined,{index,text})}/>;
     });
     return generationMode==='mythic'?<>{rows}</>:rows.length?<details className="tag-mode"><summary>Mythic Bastionland</summary>{rows}</details>:null;
