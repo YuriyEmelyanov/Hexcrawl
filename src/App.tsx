@@ -11263,6 +11263,7 @@ export function App() {
   const restoreGeneration = (state: GenerationState) => { generationRef.current = cloneGenerationState(state); setSeedInput(String(state.masterSeed)); setSeedError(false); };
 
   const mapSvgRef = useRef<SVGSVGElement | null>(null);
+  const selectedHexOverlayRef = useRef<SVGSVGElement | null>(null);
   const mapViewportRef = useRef<HTMLDivElement | null>(null);
   // Native wheel/touch listeners are installed once; consult the latest editor closure.
   const finishMapNameRef = useRef<() => boolean>(() => true);
@@ -13685,6 +13686,15 @@ export function App() {
       svg.style.setProperty("--road-hit-width", `${44 / nextScale}px`);
       svg.style.setProperty("--crossing-hit-radius", `${22 / nextScale}px`);
     }
+    const overlay = selectedHexOverlayRef.current;
+    if (overlay) {
+      overlay.style.transform = `translateZ(0) scale(${nextScale})`;
+      const outline = overlay.querySelector<SVGPolygonElement>('[data-selected-hex]');
+      if (outline) {
+        outline.setAttribute('stroke-width', `${2 / nextScale}`);
+        outline.style.filter = `drop-shadow(0 0 ${1 / nextScale}px #0c1423)`;
+      }
+    }
     return nextScale;
   };
 
@@ -15335,7 +15345,7 @@ export function App() {
             </svg>
             <canvas ref={mapMotionCanvasRef} className="map-motion-buffer" aria-hidden="true" />
             {selectedHex&&positionedHexes.hexes.some(h=>h.kind!=='candidate'&&h.key===hexKey(selectedHex))&&<svg
-              className="selected-hex-overlay" data-editor-only="selection" aria-hidden="true" viewBox={`0 0 ${displayMapWidth} ${displayMapHeight}`}
+              ref={selectedHexOverlayRef} className="selected-hex-overlay" data-editor-only="selection" aria-hidden="true" viewBox={`0 0 ${displayMapWidth} ${displayMapHeight}`}
               style={{width:`${displayMapWidth}px`,height:`${displayMapHeight}px`,transform:`translateZ(0) scale(${mapScaleRef.current})`}}>
               <g transform={mapRotationTransform}>{(()=>{const h=positionedHexes.hexes.find(h=>h.kind!=='candidate'&&h.key===hexKey(selectedHex))!;
                 return <polygon data-selected-hex={h.key} points={hexPoints(h.x,h.y,HEX_SIZE)} fill="none" stroke="#7dd3fc" strokeWidth={2/mapScaleRef.current} style={{filter:`drop-shadow(0 0 ${1/mapScaleRef.current}px #0c1423)`}}/>;})()}</g>
