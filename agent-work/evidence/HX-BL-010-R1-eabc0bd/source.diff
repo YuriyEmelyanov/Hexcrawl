@@ -1,0 +1,100 @@
+diff --git a/src/App.tsx b/src/App.tsx
+index 6c3a132..74036ad 100644
+--- a/src/App.tsx
++++ b/src/App.tsx
+@@ -11263,6 +11263,7 @@ export function App() {
+   const restoreGeneration = (state: GenerationState) => { generationRef.current = cloneGenerationState(state); setSeedInput(String(state.masterSeed)); setSeedError(false); };
+ 
+   const mapSvgRef = useRef<SVGSVGElement | null>(null);
++  const selectedHexOverlayRef = useRef<SVGSVGElement | null>(null);
+   const mapViewportRef = useRef<HTMLDivElement | null>(null);
+   // Native wheel/touch listeners are installed once; consult the latest editor closure.
+   const finishMapNameRef = useRef<() => boolean>(() => true);
+@@ -13685,6 +13686,15 @@ export function App() {
+       svg.style.setProperty("--road-hit-width", `${44 / nextScale}px`);
+       svg.style.setProperty("--crossing-hit-radius", `${22 / nextScale}px`);
+     }
++    const overlay = selectedHexOverlayRef.current;
++    if (overlay) {
++      overlay.style.transform = `translateZ(0) scale(${nextScale})`;
++      const outline = overlay.querySelector<SVGPolygonElement>('[data-selected-hex]');
++      if (outline) {
++        outline.setAttribute('stroke-width', `${2 / nextScale}`);
++        outline.style.filter = `drop-shadow(0 0 ${1 / nextScale}px #0c1423)`;
++      }
++    }
+     return nextScale;
+   };
+ 
+@@ -15335,7 +15345,7 @@ export function App() {
+             </svg>
+             <canvas ref={mapMotionCanvasRef} className="map-motion-buffer" aria-hidden="true" />
+             {selectedHex&&positionedHexes.hexes.some(h=>h.kind!=='candidate'&&h.key===hexKey(selectedHex))&&<svg
+-              className="selected-hex-overlay" data-editor-only="selection" aria-hidden="true" viewBox={`0 0 ${displayMapWidth} ${displayMapHeight}`}
++              ref={selectedHexOverlayRef} className="selected-hex-overlay" data-editor-only="selection" aria-hidden="true" viewBox={`0 0 ${displayMapWidth} ${displayMapHeight}`}
+               style={{width:`${displayMapWidth}px`,height:`${displayMapHeight}px`,transform:`translateZ(0) scale(${mapScaleRef.current})`}}>
+               <g transform={mapRotationTransform}>{(()=>{const h=positionedHexes.hexes.find(h=>h.kind!=='candidate'&&h.key===hexKey(selectedHex))!;
+                 return <polygon data-selected-hex={h.key} points={hexPoints(h.x,h.y,HEX_SIZE)} fill="none" stroke="#7dd3fc" strokeWidth={2/mapScaleRef.current} style={{filter:`drop-shadow(0 0 ${1/mapScaleRef.current}px #0c1423)`}}/>;})()}</g>
+diff --git a/test/browser/navigation.smoke.mjs b/test/browser/navigation.smoke.mjs
+index 36b0a71..a7bd819 100644
+--- a/test/browser/navigation.smoke.mjs
++++ b/test/browser/navigation.smoke.mjs
+@@ -21,10 +21,20 @@ try{
+  save.map.regions=[{...save.map.regions[0],id:1,hexes,centerHex:{q:10,r:10},anchorHex:{q:10,r:10},biomeId:'plain_deciduous_forest',generationMode:'classic',kingdomId:undefined,suppressCentralPoi:false,centralPoiKind:'capital',pointsOfInterest:[{q:8,r:8}],pointOfInterestKinds:{'8,8':'ruins'}}];
+  save.map.regions=Array.from({length:3},(_,i)=>({...save.map.regions[0],id:i+1,hexes:hexes.filter(h=>Math.min(2,Math.floor(h.q/7))===i),centerHex:{q:i*7+3,r:10},anchorHex:{q:i*7+3,r:10},pointsOfInterest:i===0?[{q:3,r:8}]:[],pointOfInterestKinds:i===0?{'3,8':'ruins'}:{}}));
+  for(const h of hexes)if(h.q%4===0)save.map.biomeOverrideByHexKey[`${h.q},${h.r}`]='deciduous_woodland';
+- save.ui={...save.ui,generationMode:'classic',mapScale:1.5,isMapRotated:false,selectedHex:null};
++ save.ui={...save.ui,generationMode:'classic',mapScale:1.5,isMapRotated:false,selectedHex:{q:3,r:10}};
+  const errors=[];
+  async function setup(port){
+   const page=await browser.newPage({viewport:{width:1500,height:1000}});page.on('pageerror',e=>errors.push(e.message));page.on('dialog',async d=>{errors.push(d.message());await d.dismiss();});await page.route(/mc\.yandex/,r=>r.abort());
++  await page.addInitScript(()=>{window.measureSelectionGeometry=()=>{
++    const overlay=document.querySelector('.selected-hex-overlay'),selected=overlay?.querySelector('[data-selected-hex]');
++    if(!selected)throw Error('Selected outline missing');
++    const main=document.querySelector('.map-stage>svg[data-render-phase]'),hex=main.querySelector(`[data-hex-key="${selected.dataset.selectedHex}"]`);
++    const a=hex.getBoundingClientRect(),b=selected.getBoundingClientRect(),matrix=selected.getScreenCTM();
++    const error=Math.max(...['x','y','width','height'].map(k=>Math.abs(a[k]-b[k])));
++    const stroke=Number(selected.getAttribute('stroke-width'))*Math.hypot(matrix.a,matrix.b);
++    if(error>0.5||Math.abs(stroke-2)>0.05)throw Error('Selection geometry mismatch '+JSON.stringify({error,stroke,hex:{x:a.x,y:a.y,width:a.width,height:a.height},outline:{x:b.x,y:b.y,width:b.width,height:b.height}}));
++    return {error,stroke};
++  };});
+   await page.goto(`http://127.0.0.1:${port}/`);
+   await page.getByRole('textbox',{name:'Seed мира',exact:true}).fill('42');
+   await page.getByRole('textbox',{name:'Seed мира',exact:true}).press('Tab');
+@@ -40,13 +50,14 @@ try{
+   return page.evaluate(async optimized=>{
+    const viewport=document.querySelector('.map-viewport'),svg=viewport.querySelector('svg');
+    const before=svg.innerHTML,width=svg.style.width,height=svg.style.height;
++   const selectionSamples=[window.measureSelectionGeometry()];
+    viewport.scrollLeft=400;viewport.scrollTop=300;
+    const rect=viewport.getBoundingClientRect(),x=rect.left+viewport.clientWidth*.6,y=rect.top+viewport.clientHeight*.6;
+    const initial=svg.getBoundingClientRect(),point={x:(x-initial.left)/initial.width,y:(y-initial.top)/initial.height};
+    const times=[],handlers=[];let last=performance.now();
+    const next=()=>new Promise(r=>requestAnimationFrame(t=>{times.push(t-last);last=t;r();}));
+    for(let i=0;i<60;i++){
+-    const t=performance.now();for(let j=0;j<4;j++)viewport.dispatchEvent(new WheelEvent('wheel',{bubbles:true,cancelable:true,deltaY:i<30?-2:2,clientX:x,clientY:y}));handlers.push(performance.now()-t);await next();
++    const t=performance.now();for(let j=0;j<4;j++)viewport.dispatchEvent(new WheelEvent('wheel',{bubbles:true,cancelable:true,deltaY:i<30?-2:2,clientX:x,clientY:y}));handlers.push(performance.now()-t);await next();selectionSamples.push(window.measureSelectionGeometry());
+    }
+    await next();
+    const final=svg.getBoundingClientRect();
+@@ -57,9 +68,9 @@ try{
+    viewport.dispatchEvent(new MouseEvent('mousedown',{bubbles:true,cancelable:true,button:0,buttons:1,clientX:x,clientY:y}));
+    for(let i=1;i<=30;i++){viewport.dispatchEvent(new MouseEvent('mousemove',{bubbles:true,cancelable:true,buttons:1,clientX:x-i*3,clientY:y}));await next();}
+    viewport.dispatchEvent(new MouseEvent('mouseup',{bubbles:true,button:0}));await next();
+-   const panDistance=viewport.scrollLeft-originalScroll;
++   const panDistance=viewport.scrollLeft-originalScroll;selectionSamples.push(window.measureSelectionGeometry());
+    times.sort((a,b)=>a-b);handlers.sort((a,b)=>a-b);
+-   return {optimized,geometryUnchanged,dimensionsUnchanged,focalError,panDistance,frames:times.length,frameMedianMs:times[Math.floor(times.length*.5)],frameP95Ms:times[Math.floor(times.length*.95)],framesOver50ms:times.filter(t=>t>50).length,handlerMedianMs:handlers[Math.floor(handlers.length*.5)],handlerP95Ms:handlers[Math.floor(handlers.length*.95)]};
++   return {selectionSamples,optimized,geometryUnchanged,dimensionsUnchanged,focalError,panDistance,frames:times.length,frameMedianMs:times[Math.floor(times.length*.5)],frameP95Ms:times[Math.floor(times.length*.95)],framesOver50ms:times.filter(t=>t>50).length,handlerMedianMs:handlers[Math.floor(handlers.length*.5)],handlerP95Ms:handlers[Math.floor(handlers.length*.95)]};
+   },optimized);
+  }
+  const page=await setup(4180);
+@@ -78,7 +89,7 @@ try{
+   const changes=transforms.slice(1).filter((value,index)=>value!==transforms[index]).length;
+   return {changes,scale:Number(s.style.transform.match(/scale\(([^)]+)\)/)[1])};
+  });assert.equal(burst.changes,1,'One SVG transform update per frame');assert.ok(burst.scale>1.5);
+- await page.locator('.rotate-map-button').click();assert.ok(await page.locator('.map-stage > svg[data-render-phase]').evaluate(s=>parseFloat(s.style.width)===s.viewBox.baseVal.width));
++ await page.locator('.rotate-map-button').click();await page.evaluate(()=>window.measureSelectionGeometry());assert.ok(await page.locator('.map-stage > svg[data-render-phase]').evaluate(s=>parseFloat(s.style.width)===s.viewBox.baseVal.width));
+  const menu=page.locator('details.export-menu');await menu.locator('summary').click();
+  const [jsonDownload]=await Promise.all([page.waitForEvent('download'),page.getByRole('button',{name:'JSON',exact:true}).click()]);const exported=JSON.parse(await fs.readFile(await jsonDownload.path(),'utf8'));assert.ok(Math.abs(exported.ui.mapScale-burst.scale)<.0001,'Export stores live navigation scale');
+  const [pngDownload]=await Promise.all([page.waitForEvent('download'),page.getByRole('button',{name:'PNG',exact:true}).click()]);const png=await fs.readFile(await pngDownload.path());assert.ok(png.length>10000,'PNG still exports after zoom and rotation');

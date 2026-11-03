@@ -1,0 +1,33 @@
+{
+  "base_sha": "39359d911403b480a833a41283d681bec72be58c",
+  "head_sha": "eabc0bd05ee53d4f249eb7ba3018943cbb88b1cd",
+  "added": 0,
+  "removed": 0,
+  "modified": 1,
+  "suite": "existing browser navigation lifecycle",
+  "scenario_risk": "HX010-R1: selected outline physical bounds after imperative wheel zoom without unrelated React render; constant screen stroke, pan/rotation and no artwork mutation",
+  "reuse_or_new_reason": "Existing navigation case checked only visibility/artwork identity. Extended same lifecycle at every zoom frame instead of adding a duplicate runner/case.",
+  "count_source": "git diff base/head: one existing browser lifecycle extended; no Node test changes",
+  "executed": {
+    "browser_navigation": {
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    "baseline_sensitivity": {
+      "executed": 1,
+      "failed": 1,
+      "expected_failure": "8.36px geometry mismatch on baseline39359d9"
+    },
+    "temporary_diagnostics": {
+      "desktop_narrow_before_after": 4,
+      "passed": 4,
+      "raster900": 1,
+      "passed_raster900": 1,
+      "permanent_growth": 0
+    },
+    "typescript": "passed",
+    "build": "passed"
+  }
+}
