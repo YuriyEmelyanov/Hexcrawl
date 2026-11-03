@@ -11298,7 +11298,7 @@ export function App() {
   const tagsRef=useRef(tags);
   const updateTags=(value:TagState)=>{tagsRef.current=value;setTags(value);};
   const tagLocks=useRef(new Map<string,number>());
-  const [tagAnimations,setTagAnimations]=useState<Record<string,{key:string;slot?:number;revision:number}>>({});
+  const [tagAnimations,setTagAnimations]=useState<Record<string,{key:string;slot?:number;revision:number;expiresAt:number}>>({});
   const [tagAnnouncement,setTagAnnouncement]=useState('');
   const [regions, setRegions] = useState<Region[]>([]);
   const [candidateHexes, setCandidateHexes] = useState<AxialHex[]>([]);
@@ -13001,7 +13001,7 @@ export function App() {
       if(!commitManualMap({...captureMap(),tags:next},false))return false;
       const result=findTag(next,owner,id)!;
       setTagAnnouncement(result.texts.map((text,i)=>result.overrides?.[i]?.[language]??text[language]??text.ru??Object.values(text)[0]).join(' · '));
-      if(!edit){tagLocks.current.set(key,now+350);setTagAnimations(current=>({...current,[key]:{key,slot,revision:result.revision}}));}
+      if(!edit){tagLocks.current.set(key,now+350);setTagAnimations(current=>({...current,[key]:{key,slot,revision:result.revision,expiresAt:now+350}}));}
       return true;
     }catch{setEditError(language==='ru'?'Не удалось изменить тег.':'Could not change tag.');return false;}
   };

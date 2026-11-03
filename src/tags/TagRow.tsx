@@ -1,6 +1,6 @@
 import {useState} from 'react';
 import {ownerKey,type TagDefinition,type TagInstance,type TagOwner} from './engine';
-type Props={owner:TagOwner;definition?:TagDefinition;instance?:TagInstance;language:string;editMode:boolean;disabled:boolean;animation?:{key:string;slot?:number;revision:number};onRoll:(slot?:number)=>boolean;onEdit:(index:number,text:string)=>boolean};
+type Props={owner:TagOwner;definition?:TagDefinition;instance?:TagInstance;language:string;editMode:boolean;disabled:boolean;animation?:{key:string;slot?:number;revision:number;expiresAt:number};onRoll:(slot?:number)=>boolean;onEdit:(index:number,text:string)=>boolean};
 export function TagRow({owner,definition:def,instance,language,editMode,disabled,animation,onRoll,onEdit}:Props){
  const [editing,setEditing]=useState<number|null>(null),[draft,setDraft]=useState('');
  const label=def?.label[language]??def?.label.ru??instance?.definitionId??'';
@@ -9,7 +9,7 @@ export function TagRow({owner,definition:def,instance,language,editMode,disabled
  const commit=()=>{if(editing!==null&&onEdit(editing,draft))setEditing(null);};
  const dice=(slot:number)=>{
    const values=instance!.values[slot],sides=instance!.sides[slot];
-   const active=animation?.revision===instance!.revision&&(animation.slot===undefined||animation.slot===slot);
+   const active=animation?.revision===instance!.revision&&animation.expiresAt>Date.now()&&(animation.slot===undefined||animation.slot===slot);
    return <button key={slot} type="button" className={`tag-die${active?' tag-die--roll':''}`} disabled={disabled||!!readonly}
      data-tag-slot={slot} aria-label={`${language==='ru'?'Перебросить':'Reroll'} ${label}; d${sides}: ${values.join(', ')}`}
      title={readonly?(language==='ru'?'Неизвестная версия таблицы':'Unknown table version'):undefined}
