@@ -56,8 +56,8 @@ export function validateSaveStructure(value: unknown, domain: {
   names: (v: unknown)=>boolean; toponymModel: string; kingdoms: (map: RecordValue, version: number)=>void;
 }): void {
   const data=record(value,'$');
-  oneOf(data.schema,['hexcrawl-map'],'schema'); oneOf(data.version,[2,3,4,5],'version');
-  if (data.version === 3 || data.version === 4 || data.version === 5 || data.generation !== undefined) { const path = generationValidationPath(data.generation); if (path) fail(path,'unsupported or invalid RNG state'); }
+  oneOf(data.schema,['hexcrawl-map'],'schema'); oneOf(data.version,[2,3,4,5,6],'version');
+  if (data.version === 3 || data.version === 4 || data.version === 5 || data.version === 6 || data.generation !== undefined) { const path = generationValidationPath(data.generation); if (path) fail(path,'unsupported or invalid RNG state'); }
   const map=record(data.map,'map'), ui=record(data.ui,'ui'), counters=record(data.counters,'counters');
   const regions=array(map.regions,'map.regions'), rivers=array(map.rivers,'map.rivers'), roads=array(map.roads,'map.roads');
   const regionIds=uniqueIds(regions,'map.regions'), riverIds=uniqueIds(rivers,'map.rivers'), roadIds=uniqueIds(roads,'map.roads');
@@ -102,7 +102,7 @@ export function validateSaveStructure(value: unknown, domain: {
     if(error instanceof SaveValidationError)throw error;
     fail('map.kingdoms/obstacles','invalid kingdom layers');
   }
-  if(data.version===5){
+  if((data.version as number)>=5){
     const ids=uniqueIds(array(map.obstacles ?? [],'map.obstacles'),'map.obstacles');
     integer(counters.nextObstacleId,'counters.nextObstacleId');
     if([...ids].some(id=>id===Number.MAX_SAFE_INTEGER))fail('counters.nextObstacleId','counter overflow');

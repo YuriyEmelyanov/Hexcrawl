@@ -115,5 +115,5 @@ test('notes versions 2/3/4/5 accept exact text on actual land/water; v4+ require
   }
   const bad=structuredClone(valid);bad.version=4;delete bad.generation;
   assert.throws(()=>h.geometry.assertHexcrawlSaveData(bad));
-  bad.version=6;assert.throws(()=>h.geometry.assertHexcrawlSaveData(bad));
+  bad.version=7;assert.throws(()=>h.geometry.assertHexcrawlSaveData(bad));
 });

@@ -231,7 +231,7 @@ try {
  // No debounce wait: selection/export must retain the final character.
  await select(`${other.q},${other.r}`);assert.equal(await page.locator('#gm-notes-text').count(),0);
  await select(noteKey);assert.equal(await page.locator('.gm-notes__text').textContent(),noteText);
- const savedNotes=await snapshot();assert.equal(savedNotes.version,5);assert.equal(savedNotes.map.gmNotesByHexKey[noteKey],noteText);
+ const savedNotes=await snapshot();assert.equal(savedNotes.version,6);assert.equal(savedNotes.map.gmNotesByHexKey[noteKey],noteText);
  const stripNotes=d=>{d=structuredClone(d);delete d.map.gmNotesByHexKey;return d;};
  assert.deepEqual(stripNotes(savedNotes),stripNotes(cleanNotes));
  assert.equal(await page.locator('svg').first().textContent().then(s=>s.includes('Жрец пропал')),false);
