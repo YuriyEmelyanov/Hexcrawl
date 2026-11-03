@@ -959,7 +959,7 @@
       "task_id": "HX-BL-010",
       "title": "Группировка интерфейса и скрытие неактивных кнопок",
       "criterion_id": "S04-C01",
-      "status": "changes_requested",
+      "status": "review_ready",
       "potential_delta": null,
       "approval_ref": "owner-decision-2026-11-01-HX-BL-010-start",
       "source": {
@@ -1032,11 +1032,11 @@
         "Редактирование названий только в информационном блоке; убрать дублирование в результатах поиска.",
         "Сохранить RU/EN, фильтры, guards черновиков, Undo/Redo и данные карты."
       ],
-      "next_role": "developer",
-      "next_step": "Программист исправляет HX010-R1 в PR485: синхронизация контура с wheel/imperative zoom без artwork rebuild и проверка физических границ; затем новый SHA независимому проверяющему.",
+      "next_role": "reviewer",
+      "next_step": "Независимый проверяющий перепроверяет HX010-R1 и пакет PR485 на7121a24, включая физические границы после zoom без React-исправления, и обновляет score_assessment1.2. Публикация отдельно.",
       "release_approved": false,
       "spec_status": "ready_for_development",
-      "handoff_ref": "agent-work/handoffs/2026-11-03-HX-BL-010-review-fixes.json",
+      "handoff_ref": "agent-work/handoffs/2026-11-03-HX-BL-010-R1-eabc0bd-review.json",
       "ready_after_E4": {
         "status": "fulfilled",
         "release_sha": "e949d2ebda75af3988467c4a8d64715dd3a2e048",
@@ -1067,7 +1067,7 @@
         "HX-FB-008",
         "HX-FB-009"
       ],
-      "previous_status": "approved",
+      "previous_status": "changes_requested",
       "spec_ref": "agent-work/specs/HX-BL-010.md",
       "spec_version": "1.0",
       "analyst_result_ref": "agent-work/results/2026-11-03-analyst-HX-BL-010.json",
@@ -1093,39 +1093,43 @@
       "baseline_sha": "e949d2ebda75af3988467c4a8d64715dd3a2e048",
       "implementation_started": false,
       "owner_role": "reviewer",
-      "head_sha": "39359d911403b480a833a41283d681bec72be58c",
-      "tree_sha": "6b5dd9be4228f8ed8225cd16ba89b614ad83a2cf",
+      "head_sha": "7121a24223d75fdc25a1f454eec905931fca9270",
+      "tree_sha": "648471a40b11b74ebaeefd6e9137f455c606014a",
       "base_sha": "e949d2ebda75af3988467c4a8d64715dd3a2e048",
       "branch": "agent/hx010-clean-panel",
       "pr": 485,
-      "review_ready": false,
-      "developer_result_ref": "agent-work/results/2026-11-03-developer-HX-BL-010-resume.json",
-      "evidence_ref": "agent-work/evidence/HX-BL-010-39359d9/verification.json",
-      "checks_status": "all_required_CI_passed",
-      "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41602720387",
+      "review_ready": true,
+      "developer_result_ref": "agent-work/results/2026-11-03-developer-HX-BL-010-R1.json",
+      "evidence_ref": "agent-work/evidence/HX-BL-010-R1-eabc0bd",
+      "checks_status": "all_required_CI_passed_Node262_browser_world_random",
+      "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41617507051",
       "ui_actual": {
-        "head_sha": "39359d911403b480a833a41283d681bec72be58c",
-        "guide": "agent-work/evidence/HX-BL-010-39359d9/walkthrough.html",
+        "capture_head": "eabc0bd05ee53d4f249eb7ba3018943cbb88b1cd",
+        "application_sources_identical_to_final_head": true,
+        "guide": "agent-work/evidence/HX-BL-010-R1-eabc0bd/walkthrough.html",
         "shown_in_chat": true,
-        "type": "actual production desktop/narrow before-after",
-        "limits": [
-          "Headless Chromium153 local; exact CI Chromium151 separate",
-          "Physical touch/Safari/Firefox not checked",
-          "Some emoji glyphs unavailable in screenshot font",
-          "No automatic centering/zoom on Find by approved scope",
-          "No user study30 or complete WCAG conformance claim"
-        ]
+        "widths": [
+          1500,
+          390
+        ],
+        "physical_devices_checked": false
       },
-      "review_verdict": "changes_requested",
+      "review_verdict": null,
       "review_result_ref": "agent-work/results/2026-11-03-reviewer-HX-BL-010-39359d9.json",
       "review_evidence_ref": "agent-work/evidence/review-HX-BL-010-39359d9",
       "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/485#pullrequestreview-5749506311",
       "score_assessment_ref": "agent-work/evidence/review-HX-BL-010-39359d9/score-assessment.json",
-      "score_assessment_status": "insufficient_evidence_no_award",
+      "score_assessment_status": "pending_independent_exact_SHA_recheck",
       "finding_ids": [
         "HX010-R1"
       ],
-      "accepted": false
+      "accepted": false,
+      "addressed_findings_pending_review": [
+        "HX010-R1"
+      ],
+      "finding_status": "developer_corrected_pending_independent_recheck",
+      "test_change_summary_ref": "agent-work/evidence/HX-BL-010-R1-eabc0bd/test_change_summary.json",
+      "previous_review_verdict": "changes_requested"
     },
     {
       "task_id": "HX-BL-011",
