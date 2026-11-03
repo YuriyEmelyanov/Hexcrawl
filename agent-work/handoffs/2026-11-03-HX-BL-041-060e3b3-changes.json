@@ -1,0 +1,59 @@
+{
+  "task_id": "HX-BL-041",
+  "from_role": "reviewer",
+  "to_role": "developer",
+  "status": "changes_requested",
+  "reviewed_sha": "060e3b3ae153d2ee5b8afaf5b94adf28cd36343f",
+  "pr": 484,
+  "result_ref": "agent-work/results/2026-11-03-reviewer-HX-BL-041-060e3b3.json",
+  "evidence_ref": "agent-work/evidence/review-HX-BL-041-060e3b3/accessibility.json",
+  "findings": [
+    {
+      "id": "HX041-R1",
+      "priority": "P2",
+      "file": "src/tags/TagRow.tsx",
+      "line": 15,
+      "requirement": [
+        "TAGS1.1 §4.10",
+        "TAG-12",
+        "UI-COMMON-03"
+      ],
+      "title": "Independent dice lack distinguishable accessible component names",
+      "reproduce": [
+        "Render a known independent tag mb.holding with values[[1],[1]] and resolved texts Темный / Турели.",
+        "Inspect the two button accessible names in Russian (keyboard focus or accessibility tree)."
+      ],
+      "actual": [
+        "Перебросить Удел; d12: 1",
+        "Перебросить Удел; d12: 1"
+      ],
+      "expected": "Each accessible name identifies its component purpose and current result, as required by TAGS§4.10; distinguish the first/style and second/form dice even when both roll the same value. Apply consistently to independent tags and both locales.",
+      "impact": "A screen-reader user cannot determine which component will be rerolled. Equal values are normal valid outcomes, so this affects ordinary supported states.",
+      "evidence": "Independently transpiled real TagRow.tsx and rendered with react-dom/server; both actual aria-label values were identical. SVG is aria-hidden. This is not an inference from developer tests.",
+      "fix_scope": "Change invisible accessible naming only; retain cube sizes, typography, spacing and existing rows. Include localized component purpose and displayed result/override; keep product pair behavior intact.",
+      "recheck": "Focused component/accessibility check for equal independent dice values in RU/EN, plus existing required checks on the new SHA. No requirement to add a broad new browser scenario."
+    }
+  ],
+  "checks": {
+    "local_node24": "266/266,TypeScript/build passed",
+    "ci_exact_tree": "41578931038 check/browser/world-random verified"
+  },
+  "score_assessment_ref": "agent-work/results/2026-11-03-reviewer-HX-BL-041-060e3b3.json#score_assessment",
+  "scope": "Fix invisible accessible dice purposes/results only; no visible UI expansion. Preserve approved product scope.",
+  "re_review": "New exact SHA required; acceptance does not transfer to any changed head.",
+  "publication_approved": false,
+  "main_changed": false,
+  "automation_health": {
+    "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": null,
+      "is_enabled": true,
+      "timestamp_limit": "Exact initial timestamp not captured"
+    },
+    "end": {
+      "checked_at": "2026-11-03T05:03:29.924Z",
+      "is_enabled": true
+    },
+    "restoration_performed": false
+  }
+}
