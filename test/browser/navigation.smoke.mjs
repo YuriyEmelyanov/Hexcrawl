@@ -78,13 +78,13 @@ try{
   const changes=transforms.slice(1).filter((value,index)=>value!==transforms[index]).length;
   return {changes,scale:Number(s.style.transform.match(/scale\(([^)]+)\)/)[1])};
  });assert.equal(burst.changes,1,'One SVG transform update per frame');assert.ok(burst.scale>1.5);
- await page.locator('.rotate-map-button').click();assert.ok(await page.locator('.map-stage > svg').evaluate(s=>parseFloat(s.style.width)===s.viewBox.baseVal.width));
+ await page.locator('.rotate-map-button').click();assert.ok(await page.locator('.map-stage > svg[data-render-phase]').evaluate(s=>parseFloat(s.style.width)===s.viewBox.baseVal.width));
  const menu=page.locator('details.export-menu');await menu.locator('summary').click();
  const [jsonDownload]=await Promise.all([page.waitForEvent('download'),page.getByRole('button',{name:'JSON',exact:true}).click()]);const exported=JSON.parse(await fs.readFile(await jsonDownload.path(),'utf8'));assert.ok(Math.abs(exported.ui.mapScale-burst.scale)<.0001,'Export stores live navigation scale');
  const [pngDownload]=await Promise.all([page.waitForEvent('download'),page.getByRole('button',{name:'PNG',exact:true}).click()]);const png=await fs.readFile(await pngDownload.path());assert.ok(png.length>10000,'PNG still exports after zoom and rotation');
  // Compositor caching ends after input, preserving sharp vectors at rest.
  await page.waitForFunction(()=>!document.querySelector('.map-viewport').classList.contains('is-navigating'));
- assert.equal(await page.locator('.map-stage > svg').evaluate(s=>getComputedStyle(s).willChange),'auto');
+ assert.equal(await page.locator('.map-stage > svg[data-render-phase]').evaluate(s=>getComputedStyle(s).willChange),'auto');
  let baseline;
  if(process.env.NAV_BASELINE){const old=await setup(4181);baseline=await exercise(old,false);await old.locator('.rotate-map-button').click();assert.equal(await old.locator('[data-biome-display]').evaluate(s=>s.innerHTML),await page.locator('[data-biome-display]').evaluate(s=>s.innerHTML),'Artwork matches the production baseline');console.log('NAV_TIMINGS '+JSON.stringify({optimized:result,baseline}));await old.locator('details.export-menu summary').click();const [oldDownload]=await Promise.all([old.waitForEvent('download'),old.getByRole('button',{name:'PNG',exact:true}).click()]);assert.ok(png.equals(await fs.readFile(await oldDownload.path())),'Navigation preserves byte-identical full PNG output');await old.close();}
  assert.deepEqual(errors,[]);
