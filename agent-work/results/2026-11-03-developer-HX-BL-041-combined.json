@@ -2,7 +2,7 @@
   "task_id": "HX-BL-041",
   "role": "developer",
   "stage": "TAGS1.1+MYTHS1.2",
-  "status": "validation_in_progress",
+  "status": "review_ready",
   "recorded_at": "2026-11-03T04:37:11.585Z",
   "authorization_ref": "agent-work/handoffs/2026-11-03-HX-BL-041-combined-development.md",
   "base_sha": "e949d2ebda75af3988467c4a8d64715dd3a2e048",
@@ -24,14 +24,50 @@
   },
   "ci": {
     "run_id": 41578931038,
-    "status": "in_progress",
-    "exact_head": true
+    "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41578931038",
+    "head_sha": "060e3b3ae153d2ee5b8afaf5b94adf28cd36343f",
+    "jobs": [
+      {
+        "id": 125729097274,
+        "name": "check",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 125729097623,
+        "name": "world-random",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 125729097787,
+        "name": "browser",
+        "status": "completed",
+        "conclusion": "success"
+      }
+    ],
+    "node_tests_passed": 266,
+    "node_tests_failed": 0,
+    "typescript": "passed",
+    "build": "passed",
+    "browser": "passed_full_suite_with_tags",
+    "world_random": "passed",
+    "tested_merge_tree_sha": "960323f6f42f4e02a6e2caa1f6fb75b2495f69fa",
+    "head_tree_sha": "960323f6f42f4e02a6e2caa1f6fb75b2495f69fa",
+    "merge_tree_matches_head": true
   },
   "ui": {
-    "final_exact_sha": "pending_ci",
-    "prior_browser_pass_sha": "dff93bd78c7190dd6ca1aa9d68cfe38b0e5dffe7",
-    "prior_artifact_id": 13204583350,
-    "prior_metrics": {
+    "exact_sha": "060e3b3ae153d2ee5b8afaf5b94adf28cd36343f",
+    "artifact_id": 13205107934,
+    "artifact_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41578931038/artifacts/13205107934",
+    "artifact_digest": "sha256:d4a52738c27e76f84f4e34520f125a6f86be774eb4db51876c1fd9e2938ef08c",
+    "local_folder": "/workspace/scratch/2ae0d17533b7/hexcrawl-tags/reports/HX-BL-041-060e3b3",
+    "screenshots": [
+      "monument-1500.png",
+      "monument-390.png",
+      "monument-320.png"
+    ],
+    "metrics": {
       "cube_px": 17.59375,
       "font_px": 16,
       "widths": [
@@ -41,7 +77,8 @@
       ],
       "overflow": false
     },
-    "note": "Prior actual UI viewed; no transfer of verdict to final SHA."
+    "visually_inspected": true,
+    "note": "Actual production-build Chromium screenshots on exact final SHA; no redesign of existing panel."
   },
   "test_change_summary": {
     "base_sha": "e949d2ebda75af3988467c4a8d64715dd3a2e048",
@@ -89,11 +126,31 @@
   },
   "published": false,
   "release_approved": false,
-  "independent_review": "pending; root to assign fresh reviewer after exact-SHA CI",
+  "independent_review": "pending; root assigns fresh reviewer for this SHA",
   "active_claim_ref": "agent-work/claims/2026-11-03-HX-BL-041-combined-developer.json",
   "limitations": [
     "Local Chromium install failed with truncated archive; real UI/browser evidence obtained in CI only.",
     "English Quickstart covers only 12 catalog pairs; remaining entries use supplied RU fallback.",
     "General latest/backlog files intentionally not replaced after previous automatic-review rejections; scoped artifacts only."
-  ]
+  ],
+  "completed_at": "2026-11-03T04:45:55.224Z",
+  "automation_health": {
+    "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-03T04:05:00Z",
+      "is_enabled": true,
+      "timestamp_limit": "Exact first peek time not captured; observed true at entry."
+    },
+    "end": {
+      "checked_at": "2026-11-03T04:45:07.557Z",
+      "is_enabled": true
+    },
+    "restoration_performed": false,
+    "limits": "Point-in-time observations only."
+  },
+  "active_claim": null,
+  "claim_released": true,
+  "handoff_ref": "agent-work/handoffs/2026-11-03-HX-BL-041-060e3b3-review.json",
+  "next_role": "reviewer",
+  "next_step": "Independently review both specs and final compact UI at060e3b3, validate exact history/RNG/import semantics and score1.2 evidence; no release until owner permission."
 }
