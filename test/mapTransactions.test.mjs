@@ -117,7 +117,7 @@ test('all manifest saves round-trip unchanged entities, names and can continue t
     for(const layer of ['regions','rivers','roads','crossings','terrainByHexKey']) assert.deepEqual(saved.map[layer],data.map[layer],item.path+' '+layer);
     for(const layer of ['kingdoms','waterPoiByHexKey','biomeOverrideByHexKey'])assert.deepEqual(saved.map[layer],data.map[layer]??(layer==='kingdoms'||layer==='obstacles'?[]:{}),item.path+' '+layer);
     assert.deepEqual(saved.map.obstacles.map(({id,...o})=>o),data.map.obstacles??[],item.path+' obstacle geometry');
-    assert.equal(saved.version,5);assert.equal(saved.counters.nextObstacleId,(data.map.obstacles??[]).length+1);
+    assert.equal(saved.version,6);assert.equal(saved.counters.nextObstacleId,(data.map.obstacles??[]).length+1);
     if(data.map.toponyms)for(const [key,name] of Object.entries(data.map.toponyms.names))assert.deepEqual(saved.map.toponyms.names[key],name,item.path+' name '+key);
     h.geometry.assertHexcrawlSaveData(serial(h.render().createSaveData()));
     // Reload the normalized export: only savedAt may change.
@@ -138,7 +138,7 @@ test('v5 obstacle IDs and counter survive migration, round-trip and history; inv
   legacy.counters.nextRoadId=roadId+1;
   const {h,alerts}=setup();
   await load(h,legacy);assert.deepEqual(alerts,[]);
-  const migrated=stable(h.render());assert.equal(migrated.version,5);
+  const migrated=stable(h.render());assert.equal(migrated.version,6);
   const sorted=[...legacy.map.obstacles].map(o=>o.edgeKey).sort();
   assert.deepEqual(migrated.map.obstacles,legacy.map.obstacles.map(o=>({...o,id:sorted.indexOf(o.edgeKey)+1})));
   assert.equal(migrated.counters.nextObstacleId,sorted.length+1);

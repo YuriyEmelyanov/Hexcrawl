@@ -2,6 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createGenerationHarness} from './helpers/generation-harness.mjs';
 import {kingdomKeys,kingdomHexes,key,findKingdomOrigin} from '../src/modes/kingdoms.ts';
+import {tagOwners,tagPolicy} from '../src/tags/mythic.ts';
+import {findTag} from '../src/tags/engine.ts';
 import {landmarks,holdings,mythicPoiChoices} from '../src/modes/pointsOfInterest.ts';
 import {validateRiverNetwork} from '../src/riverModel/core.ts';
 import {pairKey} from '../src/modes/obstacles.ts';
@@ -21,6 +23,7 @@ function validate(h,k) {
     const pois=[...(r.centralPoiKind?[[r.centerHex,r.centralPoiKind,true]]:[]),...r.pointsOfInterest.map(h=>[h,r.pointOfInterestKinds[key(h)],false])];
     for(const [h,kind,central] of pois){assert.ok(mythicPoiChoices(r.biomeLandType==='settled',central).includes(kind),`${kind} in ${r.id}`);assert.ok(!app.hexTerrainByKey.get(key(h))?.terrainOverride);if(kind==='myth'){assert.ok(area.has(key(h)));assert.ok(!mythIds.has(r.id));mythIds.add(r.id);}if(area.has(key(h)))counts.set(kind,(counts.get(kind)||0)+1);}
   }
+  for(const {owner,type} of tagOwners({regions:rs,rivers:app.rivers,hexTerrainByKey:app.hexTerrainByKey}).values())for(const name of tagPolicy(type).automatic)assert.ok(findTag(app.tags,owner,'mb.'+name),'automatic '+type+' '+name);
   assert.equal(counts.get('throne'),1);assert.equal(holdings.reduce((n,k)=>n+(counts.get(k)||0),0),3);assert.equal(counts.get('myth'),6);
   for(const kind of landmarks)assert.ok([3,4].includes(counts.get(kind)),`${kind}: ${counts.get(kind)}`);
   assert.equal(app.obstacles.filter(o=>o.kingdomId===k.id).length,24);

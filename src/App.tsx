@@ -1,3 +1,6 @@
+import {emptyTags,findTag,ownerKey,tagKey,rollTag,editTag,validateTags,TagCapacityError,type TagState,type TagOwner} from './tags/engine';
+import {mythicDefinitions,tagOwners,tagPolicy,reconcileTags,fillMythicTags} from './tags/mythic';
+import {TagRow} from './tags/TagRow';
 import {prepareRoadEdit, type RoadEdit} from './manualRoads';
 import { type RandomStreams, type GenerationState, fallbackRandomStreams, poiRandomStreams, createGenerationState, cloneGenerationState, draw, toponymSeedFor, newWorldSeed, isUint32 } from './worldRandom';
 import { validateSaveStructure, SaveValidationError, assertGeneratedIds } from './saveValidation';
@@ -450,10 +453,11 @@ type Biome = {
 
 type HexcrawlSaveData = {
   schema: 'hexcrawl-map';
-  version: 2 | 3 | 4 | 5;
+  version: 2 | 3 | 4 | 5 | 6;
   generation?: GenerationState;
   savedAt: string;
   map: {
+    tags?: TagState;
     kingdoms?: Kingdom[];
     obstacles?: (Obstacle | EditableObstacle)[];
     regions: Region[];
@@ -489,7 +493,7 @@ type ValidatedHexcrawlSaveData = HexcrawlSaveData & {
 };
 
 const HEXCRAWL_SAVE_SCHEMA = 'hexcrawl-map';
-const HEXCRAWL_SAVE_VERSION = 5;
+const HEXCRAWL_SAVE_VERSION = 6;
 const PNG_EXPORT_SCALE = 2;
 const EXPORT_FILE_PREFIX = 'hexcrawl-map';
 const BIOME_TILE_HREFS: Partial<Record<BiomeId, string>> = {
@@ -953,8 +957,10 @@ function assertHexcrawlSaveData(value: unknown): asserts value is ValidatedHexcr
     centralPoi: v => typeof v === 'string' && Object.prototype.hasOwnProperty.call(CENTRAL_POI_DETAILS, v),
     waterPoi: v => typeof v === 'string' && Object.prototype.hasOwnProperty.call(WATER_POI_DETAILS, v),
     names: isToponymRegistry, toponymModel: DEFAULT_TOPONYM_MODEL,
-    kingdoms: (map, version) => validateKingdomLayers(map, getHexEdgeKeys, version === 5)
+    kingdoms: (map, version) => validateKingdomLayers(map, getHexEdgeKeys, version >= 5)
   });
+  const data=value as HexcrawlSaveData;
+  if(data.map.tags!==undefined)try{validateTags(data.map.tags,new Set(tagOwners({regions:data.map.regions,rivers:data.map.rivers,hexTerrainByKey:new Map(Object.entries(data.map.terrainByHexKey))}).keys()),mythicDefinitions);}catch{throw new SaveValidationError('map.tags','invalid tag data');}
 }
 
 function downloadBlob(blob: Blob, filename: string): void {
@@ -1259,6 +1265,7 @@ const TRACT_GROWTH_WEIGHT_EXPONENT = 1.5;
 // чтобы пытаться "откатить" все побочные эффекты генерации рек и дорог
 // (которые могут менять соседние регионы), мы просто восстанавливаем снимок.
 type MapSnapshot = {
+  tags?: TagState;
   gmNotesByHexKey: Record<string, string>;
   generation: GenerationState;
   kingdoms?: Kingdom[];
@@ -11288,6 +11295,12 @@ export function App() {
   const consumedRegenerations = useRef(new WeakSet<object>());
   const [kingdomJob, setKingdomJob] = useState<KingdomJob | null>(null);
   const [detailedRenderReady, setDetailedRenderReady] = useState(true);
+  const [tags,setTags] = useState<TagState>(emptyTags);
+  const tagsRef=useRef(tags);
+  const updateTags=(value:TagState)=>{tagsRef.current=value;setTags(value);};
+  const tagLocks=useRef(new Map<string,number>());
+  const [tagAnimations,setTagAnimations]=useState<Record<string,{key:string;slot?:number;revision:number;expiresAt:number}>>({});
+  const [tagAnnouncement,setTagAnnouncement]=useState('');
   const [regions, setRegions] = useState<Region[]>([]);
   const [candidateHexes, setCandidateHexes] = useState<AxialHex[]>([]);
   const [rivers, setRivers] = useState<River[]>([]);
@@ -11878,7 +11891,8 @@ export function App() {
     })();
 
     const snapshot: MapSnapshot = {
-        gmNotesByHexKey: {...notesMapRef.current},
+        tags:structuredClone(tagsRef.current),
+      gmNotesByHexKey: {...notesMapRef.current},
         generation: cloneGenerationState(activeGenerationBefore.current ?? generationRef.current),
         kingdoms, obstacles, nextObstacleId,
       regions,
@@ -12746,7 +12760,8 @@ export function App() {
       })();
 
       const snapshot: MapSnapshot = {
-        gmNotesByHexKey: {...notesMapRef.current},
+        tags:structuredClone(tagsRef.current),
+      gmNotesByHexKey: {...notesMapRef.current},
         generation: cloneGenerationState(activeGenerationBefore.current ?? generationRef.current),
         kingdoms, obstacles, nextObstacleId,
         regions,
@@ -12807,7 +12822,7 @@ export function App() {
   };
 
 
-  const captureMap = (): MapSnapshot => ({ gmNotesByHexKey: notesMapRef.current, generation: cloneGenerationState(generationRef.current), kingdoms, obstacles, nextObstacleId, regions, candidateHexes, rivers, roads, crossings,
+  const captureMap = (): MapSnapshot => ({ tags:tagsRef.current, gmNotesByHexKey: notesMapRef.current, generation: cloneGenerationState(generationRef.current), kingdoms, obstacles, nextObstacleId, regions, candidateHexes, rivers, roads, crossings,
     hexTerrainByKey, waterPoiByKey, biomeOverrideByHexKey, toponyms, toponymSeed, nextLakeId, nextRoadId });
   const captureDocument = (): DocumentSnapshot => ({ map: captureMap(), generationHistory: history, selectedHex,
     generationMode, isMapRotated, mapScale: pendingMapZoomRef.current?.scale ?? mapScaleRef.current });
@@ -12823,6 +12838,7 @@ export function App() {
     setRedoHistory([]);
   };
   const applyExactMap = (map: MapSnapshot) => {
+    updateTags(map.tags??emptyTags());
     updateNotesMap({...map.gmNotesByHexKey}); clearNotesDraft();
     restoreGeneration(map.generation);
     setKingdoms(map.kingdoms ?? []); setObstacles(map.obstacles ?? []);
@@ -12840,6 +12856,7 @@ export function App() {
     generationHistory: [...doc.generationHistory]
   });
   const applyPreparedDocument = (doc: DocumentSnapshot) => {
+    tagLocks.current.clear();setTagAnimations({});
     documentRevision.current++;
     updateRoadDraft(null); setSelectedRoadPair(null); setSelectedRoadTarget(null); setConfirmRoadRemoval(null);
     applyExactMap(doc.map); setHistory(doc.generationHistory); setSelectedHex(doc.selectedHex);
@@ -12945,16 +12962,21 @@ export function App() {
     applyDocument(transaction.after);
     setRedoHistory(currentRedo.slice(0,-1)); setUndoHistory(current => [...current, transaction].slice(-100));
   };
+  const tagCommandError=(error:unknown)=>error instanceof TagCapacityError
+    ? language==='ru' ? (error.capacity==='owner'?'На объекте уже 64 тега. Карта не изменена.':'В этом тексте уже 8 языков. Карта не изменена.')
+      : (error.capacity==='owner'?'This object already has 64 tags. Your map is unchanged.':'This text already has 8 languages. Your map is unchanged.')
+    : language==='ru'?'Не удалось изменить тег. Карта не изменена.':'Could not change tag. Your map is unchanged.';
   const commitManualMap = (map: MapSnapshot, reconcileNames = true) => {
     try {
       // Prepare every clone before the first history/revision/state write.
+      map={...map,tags:reconcileTags(map.tags??emptyTags(),map,captureMap(),generationRef.current.masterSeed,generationMode==='mythic')};
       const prepared = structuredClone({ ...map, toponyms: reconcileNames ? synchronizeToponyms(map.toponyms,
         getToponymEntities(map.regions, map.rivers, map.hexTerrainByKey), map.toponymSeed) : map.toponyms });
       const before = captureDocument(), after = { ...before, map: prepared };
       recordTransaction(before, after); applyExactMap(prepared); closeEditors();
       return true;
-    } catch {
-      setEditError(language === 'ru' ? 'Не удалось изменить значение. Карта не изменена.' : 'Could not change the value. Your map is unchanged.');
+    } catch (error) {
+      setEditError(error instanceof TagCapacityError?tagCommandError(error):language === 'ru' ? 'Не удалось изменить значение. Карта не изменена.' : 'Could not change the value. Your map is unchanged.');
       return false;
     }
   };
@@ -12967,10 +12989,41 @@ export function App() {
     const notes = before.map.gmNotesByHexKey ?? gmNotesByHexKey;
     const keys = actualHexKeys(map), missing = Object.keys(notes).filter(key => !keys.has(key));
     if (missing.length) throw new NotesLossConflict(missing);
+    map.tags=reconcileTags(map.tags??emptyTags(),map,checkpoint,generationRef.current.masterSeed,generationMode==='mythic'||!!kingdomJob);updateTags(map.tags);
     map.gmNotesByHexKey = {...notes}; updateNotesMap(map.gmNotesByHexKey);
     recordTransaction(before, { ...captureDocument(), map, selectedHex: selection,
       generationHistory: [...checkpoints, structuredClone(checkpoint)] });
   };
+
+  const mutateTag=(owner:TagOwner,id:string,slot?:number,edit?:{index:number;text:string})=>{
+    if(mutationBlocked()||obstacleDraftRef.current)return false;
+    const key=tagKey(owner,id),now=Date.now();
+    if((tagLocks.current.get(key)??0)>now||!tagOwners(captureMap()).has(ownerKey(owner)))return false;
+    const def=mythicDefinitions[id],existing=findTag(tagsRef.current,owner,id);
+    if(!def||(existing&&existing.definitionVersion!==def.version))return false;
+    try{
+      const next=edit?editTag(tagsRef.current,owner,id,edit.index,language,edit.text):rollTag(tagsRef.current,owner,def,generationRef.current.masterSeed,slot);
+      if(!commitManualMap({...captureMap(),tags:next},false))return false;
+      const result=findTag(next,owner,id)!;
+      setTagAnnouncement(result.texts.map((text,i)=>result.overrides?.[i]?.[language]??text[language]??text.ru??Object.values(text)[0]).join(' · '));
+      if(!edit){tagLocks.current.set(key,now+350);setTagAnimations(current=>({...current,[key]:{key,slot,revision:result.revision,expiresAt:now+350}}));}
+      return true;
+    }catch(error){setEditError(tagCommandError(error));return false;}
+  };
+  const renderTags=(owner:TagOwner,type:string)=>{
+    const policy=tagPolicy(type),available=[...policy.automatic,...policy.optional].map(n=>'mb.'+n);
+    const instances=tags.instances.filter(i=>ownerKey(i.owner)===ownerKey(owner));
+    const ids=generationMode==='mythic'?[...new Set([...available,...instances.filter(i=>!mythicDefinitions[i.definitionId]).map(i=>i.definitionId)])]:[...new Set(instances.map(i=>i.definitionId))];
+    const rows=ids.filter(id=>generationMode==='mythic'||findTag(tags,owner,id)).map(id=>{
+      const def=mythicDefinitions[id],instance=findTag(tags,owner,id);
+      return <TagRow key={`${tagKey(owner,id)}:${instance?.revision??0}`} owner={owner} definition={def} instance={instance} language={language} editMode={editMode}
+        disabled={isImporting||!!kingdomJob||!!pendingRegen||!!roadDraft||!!obstacleDraft||dirtyNameDraft()}
+        animation={tagAnimations[tagKey(owner,id)]}
+        onRoll={slot=>mutateTag(owner,id,slot)} onEdit={(index,text)=>mutateTag(owner,id,undefined,{index,text})}/>;
+    });
+    return generationMode==='mythic'?<>{rows}</>:rows.length?<details className="tag-mode"><summary>Mythic Bastionland</summary>{rows}</details>:null;
+  };
+  const fillMissingTags=()=>{if(mutationBlocked()||obstacleDraftRef.current)return;try{const next=fillMythicTags(tagsRef.current,captureMap(),generationRef.current.masterSeed);if(next!==tagsRef.current)commitManualMap({...captureMap(),tags:next},false);}catch(error){setEditError(tagCommandError(error));}};
 
   const captureGenerationBackup = (): GenerationBackup => ({
     map: structuredClone(captureMap()), history: [...history], selectedHex: selectedHex ? {...selectedHex} : null,
@@ -12979,6 +13032,7 @@ export function App() {
 
   const restoreGenerationBackup = (backup: GenerationBackup) => {
     const map = backup.map;
+    updateTags(map.tags??emptyTags());
     updateNotesMap({...map.gmNotesByHexKey}); clearNotesDraft();
     restoreGeneration(map.generation);
     setKingdoms(map.kingdoms ?? []);
@@ -13216,7 +13270,7 @@ export function App() {
     if (!confirmNotesRemoval({})) return;
     const before=captureDocument();
     const newGeneration = createGenerationState(newWorldSeed());
-    const after: DocumentSnapshot = { ...before, map: { gmNotesByHexKey: {}, generation: newGeneration, kingdoms: [], obstacles: [], regions: [], candidateHexes: [],
+    const after: DocumentSnapshot = { ...before, map: { tags:emptyTags(), gmNotesByHexKey: {}, generation: newGeneration, kingdoms: [], obstacles: [], regions: [], candidateHexes: [],
       rivers: [], roads: [], crossings: [], hexTerrainByKey: new Map(), waterPoiByKey: new Map(), biomeOverrideByHexKey: new Map(),
       toponyms: {}, toponymSeed: toponymSeedFor(newGeneration.masterSeed), nextLakeId: 1, nextRoadId: 1, nextObstacleId: 1 },
       generationHistory: [], selectedHex: START_HEX, isMapRotated: false };
@@ -13259,6 +13313,7 @@ export function App() {
   // числе изменения, которые новый регион внёс в соседние регионы.
   const restoreSnapshot = (snapshot: MapSnapshot) => {
     snapshot = structuredClone(snapshot);
+    updateTags(reconcileTags(tagsRef.current,snapshot,captureMap(),generationRef.current.masterSeed,false));
     restoreGeneration(snapshot.generation);
     setKingdoms(snapshot.kingdoms ?? []);
     setObstacles(snapshot.obstacles ?? []);
@@ -13289,7 +13344,7 @@ export function App() {
     for (const {key} of entities) if(toponyms[key]) retainedNames[key]=toponyms[key];
     const retainedNotes = notesForSurvivingHexes(checkpoint);
     if (!confirmNotesRemoval(retainedNotes)) return;
-    const map = { ...checkpoint, gmNotesByHexKey: retainedNotes, toponymSeed: checkpoint.toponymSeed ?? toponymSeed,
+    const map = { ...checkpoint, tags:reconcileTags(tagsRef.current,checkpoint,captureMap(),generationRef.current.masterSeed,false), gmNotesByHexKey: retainedNotes, toponymSeed: checkpoint.toponymSeed ?? toponymSeed,
       toponyms: synchronizeToponyms(retainedNames,entities,checkpoint.toponymSeed ?? toponymSeed),
       roads: pruneRoadsToRegionHexes(cloneRoads(checkpoint.roads),checkpoint.regions) };
     const before = captureDocument();
@@ -13896,6 +13951,7 @@ export function App() {
     version: HEXCRAWL_SAVE_VERSION,
     savedAt: new Date().toISOString(),
     map: {
+      tags:structuredClone(tagsRef.current),
       gmNotesByHexKey: {...notesMapRef.current},
       kingdoms, obstacles,
       regions,
@@ -13977,13 +14033,13 @@ export function App() {
       const retainedNames=imported.map.toponyms?.names ?? {};
       const names={...synchronizeToponyms(retainedNames,getToponymEntities(imported.map.regions,imported.map.rivers,terrain),seed),...retainedNames};
       const validSelection=new Set([...hexes.map(hexKey),...candidates.map(hexKey),...terrain.keys()]);
-      const obstacleData=imported.version===5
+      const obstacleData=imported.version>=5
         ? {obstacles:(imported.map.obstacles ?? []) as EditableObstacle[],nextObstacleId:normalizeObstacleCounter((imported.map.obstacles ?? []) as EditableObstacle[],imported.counters.nextObstacleId!)}
         : migrateLegacyObstacles(imported.map.obstacles as Obstacle[] | undefined);
       const selection=imported.ui.selectedHex;
       const before=captureDocument();
       const after:DocumentSnapshot={
-        map:{gmNotesByHexKey: Object.fromEntries(Object.entries(imported.map.gmNotesByHexKey ?? {}).filter(([,text]) => text !== '')), generation: imported.generation ?? createGenerationState(seed >>> 0), kingdoms:imported.map.kingdoms ?? [],...obstacleData,regions:imported.map.regions,
+        map:{tags: imported.map.tags??emptyTags(),gmNotesByHexKey: Object.fromEntries(Object.entries(imported.map.gmNotesByHexKey ?? {}).filter(([,text]) => text !== '')), generation: imported.generation ?? createGenerationState(seed >>> 0), kingdoms:imported.map.kingdoms ?? [],...obstacleData,regions:imported.map.regions,
           candidateHexes:candidates,rivers:imported.map.rivers,roads:imported.map.roads,crossings:imported.map.crossings,
           hexTerrainByKey:terrain,waterPoiByKey:new Map(Object.entries(imported.map.waterPoiByHexKey ?? {})),
           biomeOverrideByHexKey:new Map(Object.entries(imported.map.biomeOverrideByHexKey ?? {})),toponyms:names,toponymSeed:seed,
@@ -15016,14 +15072,14 @@ export function App() {
                       return <option key={b.id} value={b.id} disabled={!!reason}>{getBiomeLabel(b.id, language)}{reason ? ` — ${reason}` : ''}</option>;
                     })}</select> : editableValue(language === 'ru' ? 'Местность региона' : 'Region terrain',
                       `${BIOMES[selectedRegion.biomeId].primaryEmoji}${BIOMES[selectedRegion.biomeId].secondaryEmojis.join('')} ${getBiomeLabel(selectedRegion.biomeId, language)}`,
-                      () => setEditingRegionBiomeId(selectedRegion.id))}</div>
-                </> : isSelectedLake ? <p><strong>💧 {t.lake}</strong> {renderToponym(`lake:${selectedTerrain?.lakeId}`)}</p>
+                      () => setEditingRegionBiomeId(selectedRegion.id))}{renderTags({kind:'region',id:selectedRegion.id},'region')}</div>
+                </> : isSelectedLake ? <p><strong>💧 {t.lake}</strong> {renderToponym(`lake:${selectedTerrain?.lakeId}`)}{selectedTerrain?.lakeId?renderTags({kind:'lake',id:selectedTerrain.lakeId},'lake'):null}</p>
                   : isSelectedSea ? <><p><strong>{SEA_EMOJI} {t.sea}</strong></p><div className="direct-line">{renderWaterPoi()}</div></>
                   : <p><strong>{isSelectedCandidate ? t.candidateForRegion : t.noHexSelected}</strong></p>}
                 {selectedHex ? <p><strong>{t.selectedHex}:</strong> {selectedHex.q}/{selectedHex.r}</p> : null}
                 {!isSelectedCandidate && selectedRegion ? (
                   <>
-                    {isSelectedLake ? <p>💧 {t.lake} {renderToponym(`lake:${selectedTerrain?.lakeId}`)}</p> : selectedEffectiveBiomeId ? <div className="direct-line">
+                    {isSelectedLake ? <p>💧 {t.lake} {renderToponym(`lake:${selectedTerrain?.lakeId}`)}{selectedTerrain?.lakeId?renderTags({kind:'lake',id:selectedTerrain.lakeId},'lake'):null}</p> : selectedEffectiveBiomeId ? <div className="direct-line">
                       {language === 'ru' ? 'Местность: ' : 'Terrain: '}
                       {isEditingSelectedHexBiome && editMode ? <select autoFocus aria-label={t.editHexBiome}
                         value={selectedHexBiomeOverride ?? ''} onChange={e => e.target.value ? setSelectedHexBiomeOverride(e.target.value as BiomeId) : resetSelectedHexBiomeOverride()}
@@ -15039,7 +15095,7 @@ export function App() {
                       value={selectedRegion.centralPoiKind ?? ''} onChange={e => setSelectedCentralPoiKind(e.target.value as CentralPoiKind)} onBlur={() => setEditingCentralPoiRegionId(null)}>
                       {Object.entries(CENTRAL_POI_DETAILS).filter(([kind]) => editableCentralKinds.includes(kind as MythicPoi)).map(([kind,details]) => <option key={kind} value={kind}>{details.emoji} {details.label[language]}</option>)}
                     </select> : editableValue(t.editPoi, `${getCentralPoiEmoji(selectedRegion)} ${getCentralPoiLabel(selectedRegion, language)}`, () => setEditingCentralPoiRegionId(selectedRegion.id))}
-                      {' '}{renderToponym(`settlement:${selectedRegion.id}:${hexKey(selectedRegion.centerHex)}`)}</div> : null}
+                      {' '}{renderToponym(`settlement:${selectedRegion.id}:${hexKey(selectedRegion.centerHex)}`)}{renderTags({kind:'poi',regionId:selectedRegion.id,hexKey:hexKey(selectedRegion.centerHex)},selectedRegion.centralPoiKind??'')}</div> : null}
                     {isSelectedLake ? <div className="direct-line">{renderWaterPoi()}</div> : null}
                     {canEditSelectedPoi && selectedHex && !selectedMeta?.isCenter ? <div className="direct-line">
                       {isEditingSelectedPoi && editMode ? <select autoFocus aria-label={t.choosePoi} value={selectedPoiKind ?? ''}
@@ -15049,7 +15105,7 @@ export function App() {
                       </select> : selectedPoiKind || editMode ? editableValue(t.editPoi, selectedPoiKind
                         ? `${getPoiEmojiForHex(selectedRegion, selectedHex)} ${getPoiLabelForHex(selectedRegion, selectedHex, language)}` : t.addPoi,
                         () => setEditingPoiHexKey(selectedHexKey)) : null}
-                      {' '}{selectedPoiKind ? renderToponym(`settlement:${selectedRegion.id}:${selectedHexKey}`) : null}
+                      {' '}{selectedPoiKind ? renderToponym(`settlement:${selectedRegion.id}:${selectedHexKey}`) : null}{selectedPoiKind?renderTags({kind:'poi',regionId:selectedRegion.id,hexKey:selectedHexKey!},selectedPoiKind):null}
                     </div> : null}
                     {selectedHexRoadIds.map((roadId) => <p key={`selected-road-${roadId}`}>▬ {t.road} {roadId}</p>)}
                     {selectedHexTrailIds.map((trailId) => <p key={`selected-trail-${trailId}`}>⋯ {t.trail} {trailId}</p>)}
@@ -15064,19 +15120,21 @@ export function App() {
                             selectedHexVertexKeys.has(vertex.key) && waterfallRiverVertexKeys.has(vertex.key)
                           ));
                           const riverFeatures = [hasWaterfall ? waterfallLabel : null, hasRapids ? t.rapids : null].filter((feature): feature is string => feature !== null);
-                          return <p key={`nearby-river-${river.id}`}><span className="nearby-river-marker" aria-hidden="true">→</span>{hasRapids ? <span className="nearby-river-marker" aria-hidden="true">|||</span> : null}{hasWaterfall ? <img className="nearby-waterfall-marker" src="/waterfall-color.svg" alt="" aria-hidden="true" /> : null} {t.river} {renderToponym(`river:${river.id}`)}{riverFeatures.length > 0 ? ` (${riverFeatures.join(', ')})` : ''}</p>;
+                          return <p key={`nearby-river-${river.id}`}><span className="nearby-river-marker" aria-hidden="true">→</span>{hasRapids ? <span className="nearby-river-marker" aria-hidden="true">|||</span> : null}{hasWaterfall ? <img className="nearby-waterfall-marker" src="/waterfall-color.svg" alt="" aria-hidden="true" /> : null} {t.river} {renderToponym(`river:${river.id}`)}{riverFeatures.length > 0 ? ` (${riverFeatures.join(', ')})` : ''}{renderTags({kind:'river',id:river.id},'river')}</p>;
                         })}
                         {selectedObstacles.map(o=><div key={o.id} className="obstacle-row" data-obstacle-id={o.id}>
                           {editMode?<button type="button" className="direct-value" aria-label={`${language==='ru'?'Выбрать препятствие':'Select barrier'} ${o.id}: ${hexKey(o.hex)} → ${hexKey(o.neighborHex)}`} aria-pressed={selectedObstacleId===o.id} onClick={()=>chooseObstacle(o.id)}>━ {language==='ru'?'Препятствие':'Barrier'} · {hexKey(o.hex)===selectedHexKey?hexKey(o.neighborHex):hexKey(o.hex)}</button>:<span>━ {language==='ru'?'Препятствие':'Barrier'} ({hexKey(o.hex)===selectedHexKey?hexKey(o.neighborHex):hexKey(o.hex)})</span>}
                           {editMode&&selectedObstacleId===o.id&&!obstacleDraft&&<><button type="button" className="secondary" onClick={()=>startObstacleChoice(o.id)}>{language==='ru'?'Перенести':'Move'}</button><button type="button" className="secondary" onClick={()=>editObstacleDocument({type:'remove',id:o.id})}>{language==='ru'?'Удалить':'Delete'}</button></>}
                         </div>)}
                         {selectedHexCrossings.map((crossing) => <p key={`selected-crossing-${crossing.key}`}>{crossing.kind === 'bridge' ? '🌉' : crossing.kind === 'ferry' ? '⛴️' : '🌊'} {t[crossing.kind]}</p>)}
-                        {nearbyLakeIds.map((lakeId) => <p key={`nearby-lake-${lakeId}`}>💧 {t.lake} {renderToponym(`lake:${lakeId}`, 'nearby')}</p>)}
+                        {nearbyLakeIds.map((lakeId) => <p key={`nearby-lake-${lakeId}`}>💧 {t.lake} {renderToponym(`lake:${lakeId}`, 'nearby')}{renderTags({kind:'lake',id:lakeId},'lake')}</p>)}
                         {hasNearbySea ? <p>{t.sea}</p> : null}
                       </div>
                     ) : null}
                   </>
                 ) : null}
+                <span className="visually-hidden" aria-live="polite">{tagAnnouncement}</span>
+                {editMode&&generationMode==='mythic'&&tagOwners(captureMap()).size>0?<button type="button" className="tag-add" onClick={fillMissingTags}>{language==='ru'?'Заполнить недостающие теги':'Fill missing tags'}</button>:null}
                 {obstaclePanel}
                 {roadDraftPanel}
                 {roadPanel}
