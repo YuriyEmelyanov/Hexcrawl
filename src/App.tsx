@@ -11270,6 +11270,7 @@ export function App() {
   const restoreGeneration = (state: GenerationState) => { generationRef.current = cloneGenerationState(state); setSeedInput(String(state.masterSeed)); setSeedError(false); };
 
   const mapSvgRef = useRef<SVGSVGElement | null>(null);
+  const selectedHexOverlayRef = useRef<SVGSVGElement | null>(null);
   const mapViewportRef = useRef<HTMLDivElement | null>(null);
   // Native wheel/touch listeners are installed once; consult the latest editor closure.
   const finishMapNameRef = useRef<() => boolean>(() => true);
@@ -13740,6 +13741,15 @@ export function App() {
       svg.style.setProperty("--road-hit-width", `${44 / nextScale}px`);
       svg.style.setProperty("--crossing-hit-radius", `${22 / nextScale}px`);
     }
+    const overlay = selectedHexOverlayRef.current;
+    if (overlay) {
+      overlay.style.transform = `translateZ(0) scale(${nextScale})`;
+      const outline = overlay.querySelector<SVGPolygonElement>('[data-selected-hex]');
+      if (outline) {
+        outline.setAttribute('stroke-width', `${2 / nextScale}`);
+        outline.style.filter = `drop-shadow(0 0 ${1 / nextScale}px #0c1423)`;
+      }
+    }
     return nextScale;
   };
 
@@ -14060,6 +14070,26 @@ export function App() {
   const nameTypeLabels = language === 'ru'
     ? {region:'Регион', settlement:'Поселение', river:'Река', lake:'Озеро', kingdom:'Королевство'}
     : {region:'Region', settlement:'Settlement', river:'River', lake:'Lake', kingdom:'Kingdom'};
+  const nameTargetHex = (key:string):AxialHex|null => {
+    const [type,id,coord]=key.split(':');
+    const existing=new Map<string,AxialHex>();
+    for(const r of regions)for(const h of r.hexes)existing.set(hexKey(h),h);
+    for(const k of hexTerrainByKey.keys()){const [q,r]=k.split(',').map(Number);existing.set(k,{q,r});}
+    const sorted=[...existing.values()].sort((a,b)=>a.q-b.q||a.r-b.r);
+    if(type==='region'){const r=regions.find(r=>r.id===Number(id));return r&&r.hexes.some(h=>isSameHex(h,r.centerHex))?r.centerHex:null;}
+    if(type==='settlement')return existing.get(coord)??null;
+    if(type==='lake')return sorted.find(h=>{const t=hexTerrainByKey.get(hexKey(h));return t?.terrainOverride==='lake'&&t.lakeId===Number(id);})??null;
+    if(type==='river'){
+      const river=rivers.find(r=>r.id===Number(id));if(!river)return null;
+      const edges=new Set(river.vertexPath.slice(1).map((v,i)=>getRiverEdgeKey(river.vertexPath[i],v)));
+      const touches=(h:AxialHex)=>getHexEdgeKeys(h).size>0&&[...getHexEdgeKeys(h)].some(e=>edges.has(e));
+      const preferred=regions.find(r=>r.id===river.regionId)?.centerHex;
+      return preferred&&existing.has(hexKey(preferred))&&touches(preferred)?preferred:sorted.find(touches)??null;
+    }
+    const kingdom=kingdoms.find(k=>`kingdom:${k.id}`===key);if(!kingdom)return null;
+    const area=kingdomKeys(kingdom.origin);if(existing.has(hexKey(kingdom.anchor))&&area.has(hexKey(kingdom.anchor)))return kingdom.anchor;
+    return [...regions].filter(r=>kingdom.regionIds.includes(r.id)).sort((a,b)=>a.id-b.id).map(r=>r.centerHex).find(h=>existing.has(hexKey(h))&&area.has(hexKey(h)))??null;
+  };
   const nameCatalog = useMemo((): {targets: NameTarget[]; unavailable: boolean} => {
     const coord = (h?: AxialHex) => h ? `${h.q}/${h.r}` : '';
     const targets: NameTarget[] = [];
@@ -14069,14 +14099,10 @@ export function App() {
     for (const entity of entities) {
       const name = toponyms[entity.key]; if (!name) continue;
       const [type, id, hex] = entity.key.split(':');
-      const region = regions.find(r => r.id === Number(id));
-      const location = type === 'settlement' ? hex.replace(',', '/')
-        : type === 'region' ? coord(region?.centerHex)
-        : type === 'river' ? coord(regions.find(r => r.id === rivers.find(river => river.id === Number(id))?.regionId)?.centerHex)
-        : Array.from(hexTerrainByKey).find(([, t]) => t.terrainOverride === 'lake' && t.lakeId === Number(id))?.[0].replace(',', '/') ?? '';
+      const location=coord(nameTargetHex(entity.key)??undefined);
       targets.push({key:entity.key, type:type as NameTarget['type'], ru:name.ru, en:name.en, location});
     }
-    for (const kingdom of kingdoms) targets.push({key:`kingdom:${kingdom.id}`,type:'kingdom',...kingdom.name,location:coord(kingdom.anchor)});
+    for (const kingdom of kingdoms) targets.push({key:`kingdom:${kingdom.id}`,type:'kingdom',...kingdom.name,location:coord(nameTargetHex(`kingdom:${kingdom.id}`)??undefined)});
     return {targets, unavailable:false};
   }, [regions, rivers, hexTerrainByKey, toponyms, kingdoms]);
   const nameTargets = nameCatalog.targets;
@@ -14135,6 +14161,16 @@ export function App() {
     finishNotesGroup(); clearNotesDraft(); closeEditors();
     nameReturnFocusRef.current = origin ?? null;
     setLiveNameDraft({target:{...target}, revision:documentRevision.current, language, value:target[language], surface});
+  };
+  const nameNavigationRef=useRef<(key:string)=>boolean>(()=>false);
+  const selectNameTarget=(key:string)=>nameNavigationRef.current(key);
+  nameNavigationRef.current=key=>{
+    const current=nameTargets.find(t=>t.key===key),hex=current?nameTargetHex(key):null;
+    if(!current||!hex){setNameStatus('stale');return false;}
+    if(documentBusy()||nameComposingRef.current||!finishRoadDraft()||!finishInlineName())return false;
+    finishNotesGroup();clearNotesDraft();closeEditors();
+    setSelectedHex({...hex});setNameStatus(null);
+    setTimeout(()=>infoFocusRef.current?.focus(),0);return true;
   };
   const requestNameTarget = showNameTarget;
   const changeNameDraft = (value: string, expected: NameDraft) => {
@@ -15119,7 +15155,7 @@ export function App() {
                 </div> : null}
               </section>
 
-              <details
+              {typeof window!=='undefined'&&new URLSearchParams(window.location.search).get('debug')==='1'&&<details
                 className="info-block info-block--debug"
                 aria-label={t.debugInfo}
                 open={debugRivers}
@@ -15277,7 +15313,7 @@ export function App() {
                     </>
                   ) : null}
                 </div>
-              </details>
+              </details>}
               </> : null}
             <section className="info-block map-names" aria-label={language === 'ru' ? 'Названия карты' : 'Map names'}>
               <button type="button" className="secondary map-names__toggle" aria-expanded={namesOpen} aria-controls="map-names-catalog" onClick={() => namesOpen ? requestNameTarget(null) : setNamesOpen(true)}>{language === 'ru' ? 'Найти объект' : 'Find object'}</button>
@@ -15286,10 +15322,9 @@ export function App() {
                 <label>{language === 'ru' ? 'Поиск по имени' : 'Search names'}<input type="search" value={nameQuery} onChange={e => setNameQuery(e.target.value)} /></label>
                 <label>{language === 'ru' ? 'Тип объекта' : 'Object type'}<select value={nameType} onChange={e => setNameType(e.target.value)}><option value="all">{language === 'ru' ? 'Все типы' : 'All types'}</option>{Object.entries(nameTypeLabels).map(([type,label]) => <option key={type} value={type}>{label}</option>)}</select></label>
                 <ul className="map-names__list">{nameTargets.filter(target => (nameType === 'all' || target.type === nameType) && `${target.ru} ${target.en}`.toLocaleLowerCase().includes(nameQuery.toLocaleLowerCase())).map(target => <li key={target.key}>
-                  <span>{nameTypeLabels[target.type]} · {editMode ? renderName(target.key, 'catalog') : <button type="button" className="direct-find" onClick={() => {
-                    if (!finishRoadDraft() || !finishInlineName()) return;
-                    const [q,r] = target.location.split('/').map(Number); if (Number.isFinite(q) && Number.isFinite(r)) { finishNotesGroup(); setSelectedHex({q,r}); }
-                  }}>{target[language]}</button>}</span><small>{target.location}</small>
+                  <span>{nameTypeLabels[target.type]} · <button type="button" className="direct-find" data-target-key={target.key} disabled={!target.location}
+                    aria-label={`${nameTypeLabels[target.type]}: ${target[language]} · ${target.location||'—'}`}
+                    onClick={()=>selectNameTarget(target.key)}>{target[language]}</button></span><small>{target.location||'—'}</small>
                 </li>)}</ul>
                 {nameCatalog.unavailable ? <p role="alert">{language === 'ru' ? 'Список названий временно недоступен. Карта не изменена.' : 'The name list is temporarily unavailable. Your map is unchanged.'}</p> : !nameTargets.length && <p>{language === 'ru' ? 'На карте пока нет именованных объектов.' : 'There are no named objects on this map yet.'}</p>}
                 {!!nameTargets.length && !nameTargets.some(target => (nameType === 'all' || target.type === nameType) && `${target.ru} ${target.en}`.toLocaleLowerCase().includes(nameQuery.toLocaleLowerCase())) && <p>{language === 'ru' ? 'Объекты не найдены.' : 'No matching objects.'}</p>}
@@ -15367,6 +15402,13 @@ export function App() {
             </g>}
             </svg>
             <canvas ref={mapMotionCanvasRef} className="map-motion-buffer" aria-hidden="true" />
+            {selectedHex&&positionedHexes.hexes.some(h=>h.kind!=='candidate'&&h.key===hexKey(selectedHex))&&<svg
+              ref={selectedHexOverlayRef} className="selected-hex-overlay" data-editor-only="selection" aria-hidden="true" viewBox={`0 0 ${displayMapWidth} ${displayMapHeight}`}
+              style={{width:`${displayMapWidth}px`,height:`${displayMapHeight}px`,transform:`translateZ(0) scale(${mapScaleRef.current})`}}>
+              <g transform={mapRotationTransform}>{(()=>{const h=positionedHexes.hexes.find(h=>h.kind!=='candidate'&&h.key===hexKey(selectedHex))!;
+                return <polygon data-selected-hex={h.key} points={hexPoints(h.x,h.y,HEX_SIZE)} fill="none" stroke="#7dd3fc" strokeWidth={2/mapScaleRef.current} style={{filter:`drop-shadow(0 0 ${1/mapScaleRef.current}px #0c1423)`}}/>;})()}</g>
+            </svg>}
+
             </div>
           </div>
 

@@ -120,11 +120,11 @@ try {
  await info.locator('[data-name-key]').first().click();await input().fill('Незавершено');await input().press('Escape');
  assert.equal(await input().count(),0);assert.equal(await namesSection.locator('.map-names__list').count(),0,'direct editing does not open catalog');
  await button('Найти объект').click();
- const openNamed=async type=>{await namesSection.getByRole('combobox',{name:/^(Тип объекта|Object type)$/}).selectOption(type);await namesSection.locator('[data-name-key]').first().click();await input().waitFor();};
+ const openNamed=async type=>{await namesSection.getByRole('combobox',{name:/^(Тип объекта|Object type)$/}).selectOption(type);const result=namesSection.locator('[data-target-key]:enabled').first(),key=await result.getAttribute('data-target-key');await result.click();await page.waitForFunction(()=>document.activeElement?.matches('.info-block--hex'));assert.equal(await namesSection.locator('input:not([type=search])').count(),0);const before=await snapshot();await info.locator(`[data-name-key="${key}"]`).first().click();await input().waitFor();return before;};
  for(const type of ['region','settlement','river','lake','kingdom']) {
    for(const locale of ['ru','en']) {
      if(locale==='en')await button('Switch to English').click();
-     const before=await snapshot();await openNamed(type);const value=(locale==='ru'?'Автор ':'Author ')+type;
+     const before=await openNamed(type);const value=(locale==='ru'?'Автор ':'Author ')+type;
      await input().fill(value);await input().press('Enter');
      const after=await snapshot(),expected=structuredClone(before);
      if(type==='kingdom')expected.map.kingdoms[0].name[locale]=value;
@@ -136,7 +136,7 @@ try {
    }
  }
  // Invalid input blocks departure, stays inline; Escape/no-op keep both stacks.
- const before=await snapshot();await openNamed('region');const current=await input().inputValue();
+ await openNamed('region');await input().press('Escape');const before=await snapshot();await openNamed('region');const current=await input().inputValue();
  for(const value of ['', 'x'.repeat(81), Object.values(before.map.toponyms.names).find(n=>n.ru!==current).ru]) {
    await input().fill(value);await input().press('Enter');assert.equal(await input().getAttribute('aria-invalid'),'true');
    await input().press('Tab');assert.equal(await input().evaluate(e=>e===document.activeElement),true,'invalid field retains keyboard focus');
@@ -150,7 +150,7 @@ try {
  const documentWithoutZoom=async()=>{const d=await snapshot();d.ui.mapScale=before.ui.mapScale;return d;};
  await openNamed('region');await input().fill('Колесо навигации');
  const viewport=page.locator('.map-viewport');await viewport.scrollIntoViewIfNeeded();
- const rect=await viewport.boundingBox(),scale=()=>viewport.locator('svg').getAttribute('style');
+ const rect=await viewport.boundingBox(),scale=()=>viewport.locator('svg').first().getAttribute('style');
  await page.mouse.move(rect.x+rect.width/2,rect.y+Math.min(150,rect.height/2));
  const scaleBefore=await scale();await page.mouse.wheel(0,-120);
  await page.waitForFunction(old=>document.querySelector('.map-viewport svg').getAttribute('style')!==old,scaleBefore);
@@ -454,7 +454,7 @@ try {
    for(const target of await edgeTargets.all()){const box=await target.boundingBox();assert.ok(box.width>=43.9&&box.height>=43.9,'E4 edge44px');}
  }
  await page.setViewportSize({width:1500,height:1100});
- const obstacleViewport=page.locator('.map-viewport'),obstacleScale=()=>obstacleViewport.locator('svg').getAttribute('style');
+ const obstacleViewport=page.locator('.map-viewport'),obstacleScale=()=>obstacleViewport.locator('svg').first().getAttribute('style');
  const vr=await obstacleViewport.boundingBox();await page.mouse.move(vr.x+vr.width/2,vr.y+100);
  const oldScale=await obstacleScale();await page.mouse.wheel(0,-120);
  await page.waitForFunction(old=>document.querySelector('.map-viewport svg').getAttribute('style')!==old,oldScale);
@@ -471,11 +471,12 @@ try {
  // Keep a redo branch, then compare the entire actual export after the ambiguous click.
  await button('Добавить препятствие').click();
  await page.mouse.move(vr.x+vr.width/2,vr.y+100);await page.mouse.wheel(0,1100);await page.waitForTimeout(450);
+ const beforePointer=await snapshot();await button('Добавить препятствие').click();
+ // Measure physical targets after export/reopening, which may shift the centered map.
  const ambiguousPoint=await edgeTargets.evaluateAll(nodes=>{
    const circles=nodes.map(n=>{const b=n.getBoundingClientRect();return {x:b.x+b.width/2,y:b.y+b.height/2,r:b.width/2};});
    return circles.find(p=>circles.filter(c=>Math.hypot(p.x-c.x,p.y-c.y)<=c.r).length>1);
  });assert.ok(ambiguousPoint,'fixture exposes overlapping44px circles at low zoom');
- const beforePointer=await snapshot();await button('Добавить препятствие').click();
  await page.mouse.click(ambiguousPoint.x,ambiguousPoint.y);
  await page.waitForFunction(()=>document.activeElement?.closest('[data-obstacle-editor]'));
  assert.ok(await edgeTargets.count()>0,'ambiguity preserves uncommitted choice');

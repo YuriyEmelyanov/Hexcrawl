@@ -259,6 +259,14 @@ test('direct names change only the captured locale; exact history, validation, l
   const source=JSON.parse(fs.readFileSync(new URL('./fixtures/import-v2/baseline-mythic.json',import.meta.url)));
   source.map.kingdoms[0].name.ru='x'.repeat(81); // previously valid legacy kingdom name
   await load(h,source);
+  const navigationBefore=stable(h.render()),navigationHistory=serial([h.render().undoHistory,h.render().redoHistory]);
+  for(const target of h.render().nameTargets){
+    const hex=h.render().nameTargetHex(target.key);if(!hex)continue;
+    assert.equal(h.render().selectNameTarget(target.key),true);assert.deepEqual(serial(h.render().selectedHex),serial(hex));
+    if(target.type==='river'){const river=h.render().rivers.find(r=>`river:${r.id}`===target.key);const edges=new Set(river.vertexPath.slice(1).map((v,i)=>[river.vertexPath[i].key,v.key].sort().join('|')));assert.ok([...h.geometry.getHexEdgeKeys(hex)].some(e=>edges.has(e)));}
+  }
+  const afterNavigation=stable(h.render());assert.deepEqual(afterNavigation.map,navigationBefore.map);assert.deepEqual(afterNavigation.generation,navigationBefore.generation);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),navigationHistory);
+  const staleNavigation=h.render().selectNameTarget;h.render().resetMap();assert.equal(staleNavigation('region:1'),false);await load(h,source);
   const legacyStacks=serial([h.render().undoHistory,h.render().redoHistory]);
   h.render().showNameTarget('kingdom:'+source.map.kingdoms[0].id);
   assert.equal(h.render().saveNameDraft(),true,'unchanged legacy name is a no-op');

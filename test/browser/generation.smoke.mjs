@@ -62,6 +62,7 @@ try {
   await page.getByRole('textbox',{name:'Seed мира',exact:true}).fill('42');
   await page.getByRole('textbox',{name:'Seed мира',exact:true}).press('Tab');
   assert.equal(await page.getByRole('region', { name: 'Генератор названий' }).count(), 0);
+  assert.equal(await page.locator('.info-block--debug').count(), 0, 'Ordinary import/generation must not depend on service diagnostics');
   const selectSize = () => page.locator('.gen-params select').nth(0).selectOption('locality');
   const selectCoast = mode => page.locator('.gen-params select').nth(3).selectOption(mode);
   // Chromium throttles rapid download bursts. Keep real exports below that
@@ -151,8 +152,8 @@ try {
   });
   // FileReader and React commit asynchronously after setInputFiles returns.
   // Wait for the imported map before clicking Export on a changing layout.
-  await page.waitForFunction(expected => Array.from(document.querySelectorAll('.debug-panel-body p'))
-    .some(element => element.textContent === `Регионов: ${expected}`), count);
+  await page.waitForFunction(() => document.querySelector('input[type=file]').value === ''
+    && !document.querySelector('.controls--transfer > button').disabled);
   assert.equal((await snapshot()).map.regions.length, count);
   assert.equal((await snapshot()).map.toponyms.names['region:1'].ru, regionName.ru);
   assert.equal((await addRegion()).map.regions.length, count + 1);
@@ -193,8 +194,8 @@ try {
     page.waitForEvent('filechooser'), page.getByRole('button', { name: 'Загрузить JSON', exact: true }).click()
   ]);
   await pocketChooser.setFiles({ name: 'sea-pocket.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(pocket)) });
-  await page.waitForFunction(expected => Array.from(document.querySelectorAll('.debug-panel-body p'))
-    .some(element => element.textContent === `Регионов: ${expected}`), pocket.map.regions.length);
+  await page.waitForFunction(() => document.querySelector('input[type=file]').value === ''
+    && !document.querySelector('.controls--transfer > button').disabled);
   await page.locator('.gen-params select').nth(0).selectOption('auto');
   await selectCoast('mainland');
   const pocketBefore = await snapshot();
