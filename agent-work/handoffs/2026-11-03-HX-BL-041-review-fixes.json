@@ -1,0 +1,37 @@
+{
+  "task_id": "HX-BL-041",
+  "stage": "TAGS1.1+MYTHS1.2",
+  "from_role": "reviewer",
+  "next_role": "developer",
+  "status": "changes_requested",
+  "head_sha": "060e3b3ae153d2ee5b8afaf5b94adf28cd36343f",
+  "pr": 484,
+  "authorization_status": "approved_scope_bounded_fixes_no_new_owner_start_approval",
+  "scope": [
+    {
+      "finding": "HX041-R1",
+      "priority": "P2",
+      "requirement": "TAGS import/export limits and TAG07/08; own accepted mutations must remain reimportable",
+      "fix": "Validate/prevent capacity overflow before document/history/RNG/counter commit for roll/edit/fill/automatic-tag paths. Valid64tag/8language imports remain supported; do not silently drop tags or raise approved limits.",
+      "acceptance": "Valid64tag owner + newtag and valid8language override + newlanguage either safely reject before all mutations with clear reason, or remain within approved contract. Full JSON export→import succeeds for accepted commands; both stacks/counters/RNG unchanged on rejection; existing-tag reroll remains allowed."
+    },
+    {
+      "finding": "HX041-R2",
+      "priority": "P2",
+      "requirement": "TAGS4.10/TAG12 and UI-COMMON03 invisible purpose/context",
+      "fix": "Give dice distinct accessible slot purpose and result text, retaining type/value and existing compact visual size.",
+      "acceptance": "Equal-valued independent dice have different meaningful accessible names; product d6/d12 distinguish purpose; keyboard remains functional. No typography/padding/card expansion."
+    }
+  ],
+  "inputs": [
+    "agent-work/evidence/review-HX-BL-041-060e3b3/core-probe.json",
+    "agent-work/evidence/review-HX-BL-041-060e3b3/boundary-ui.json",
+    "agent-work/evidence/review-HX-BL-041-060e3b3/aria.json"
+  ],
+  "test_guidance": "Extend existing limits/lifecycle/browser scenarios for distinct defects; don't add broad parallel runners or tests mirroring code.",
+  "completion": "New exact SHA + appropriate required checks + actual compact desktop/narrow UI, then fresh independent reviewer verdict/score1.2. Current package not accepted or publication-ready.",
+  "next_step": "Программист исправляет HX041-R1/R2 в PR484; передаёт новый SHA с воспроизведениями и проверками независимому проверяющему.",
+  "publication_allowed": false,
+  "score_assessment_ref": "agent-work/evidence/review-HX-BL-041-060e3b3/score-assessment.json",
+  "other_queue": "HX-BL-010 approval preserved; current bounded fixes take priority over unrelated new implementation"
+}

@@ -1,0 +1,106 @@
+{
+  "schema_version": 1,
+  "model_version": "1.2",
+  "sha": "060e3b3ae153d2ee5b8afaf5b94adf28cd36343f",
+  "verdict": "changes_requested",
+  "findings": [
+    {
+      "id": "HX041-R1",
+      "priority": "P2",
+      "file": "src/tags/engine.ts",
+      "lines": [
+        40,
+        46
+      ],
+      "summary": "Accepted tag mutations can exceed persisted tag/language limits and produce exports rejected on reimport",
+      "evidence": [
+        "core-probe.mjs",
+        "core-probe.json",
+        "boundary-ui.json"
+      ]
+    },
+    {
+      "id": "HX041-R2",
+      "priority": "P2",
+      "file": "src/tags/TagRow.tsx",
+      "line": 15,
+      "summary": "Independent dice lack distinct component purpose/result in accessible name",
+      "method": "direct expression inspection",
+      "limitation": "No assistive-device user test"
+    }
+  ],
+  "score_assessment": [
+    {
+      "criterion_id": "S08-C04",
+      "weight": 10,
+      "grade_before": null,
+      "points_before": null,
+      "grade_after": null,
+      "points_after": null,
+      "delta": null,
+      "status": "insufficient_evidence",
+      "sha": "060e3b3ae153d2ee5b8afaf5b94adf28cd36343f",
+      "method": "bounded independent source inspection and reviewer production callback probes",
+      "evidence": [
+        "contracts-probe.json",
+        "core-probe.json"
+      ],
+      "limitations": "Single MB package only; no complete current/top5/top10/top20 requirements or user confirmation"
+    },
+    {
+      "criterion_id": "S09-C04",
+      "weight": 10,
+      "grade_before": null,
+      "points_before": null,
+      "grade_after": null,
+      "points_after": null,
+      "delta": null,
+      "status": "insufficient_evidence",
+      "sha": "060e3b3ae153d2ee5b8afaf5b94adf28cd36343f",
+      "method": "bounded independent source inspection and reviewer production callback probes",
+      "evidence": [
+        "contracts-probe.json",
+        "core-probe.json"
+      ],
+      "limitations": "Boundary roundtrip defect confirmed; no complete data safety grade assessed"
+    },
+    {
+      "criterion_id": "S07-C05",
+      "weight": 15,
+      "grade_before": null,
+      "points_before": null,
+      "grade_after": null,
+      "points_after": null,
+      "delta": null,
+      "status": "insufficient_evidence",
+      "sha": "060e3b3ae153d2ee5b8afaf5b94adf28cd36343f",
+      "method": "bounded independent source inspection and reviewer production callback probes",
+      "evidence": [
+        "contracts-probe.json",
+        "core-probe.json"
+      ],
+      "limitations": "No SDK/content-pack installation/licensing audit"
+    }
+  ],
+  "automation_health": {
+    "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "is_enabled": true,
+      "time": null,
+      "time_limitation": "Timestamp not recorded"
+    },
+    "end": {
+      "requested_at": "2026-11-03 05:04:26 UTC",
+      "completed_at": "2026-11-03 05:04:29 UTC",
+      "is_enabled": true
+    },
+    "recovery": false,
+    "errors": []
+  },
+  "next_role": "programmer",
+  "next_step": "Fix bounded findings in approved041, deliver new exact SHA for fresh independent review",
+  "probe_limitations": [
+    "100 rerolls used pure tag engine plus applyDocument and following real production generation, not 100 real App/UI roll commands.",
+    "Risk belongs to unmerged PR484; not asserted as published regression."
+  ]
+}
