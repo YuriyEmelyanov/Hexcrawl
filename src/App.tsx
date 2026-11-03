@@ -12984,7 +12984,7 @@ export function App() {
     const notes = before.map.gmNotesByHexKey ?? gmNotesByHexKey;
     const keys = actualHexKeys(map), missing = Object.keys(notes).filter(key => !keys.has(key));
     if (missing.length) throw new NotesLossConflict(missing);
-    map.tags=reconcileTags(map.tags??emptyTags(),map,before.map,generationRef.current.masterSeed,generationMode==='mythic'||!!kingdomJob);updateTags(map.tags);
+    map.tags=reconcileTags(map.tags??emptyTags(),map,checkpoint,generationRef.current.masterSeed,generationMode==='mythic'||!!kingdomJob);updateTags(map.tags);
     map.gmNotesByHexKey = {...notes}; updateNotesMap(map.gmNotesByHexKey);
     recordTransaction(before, { ...captureDocument(), map, selectedHex: selection,
       generationHistory: [...checkpoints, structuredClone(checkpoint)] });

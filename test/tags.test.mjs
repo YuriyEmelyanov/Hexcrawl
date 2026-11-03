@@ -62,6 +62,20 @@ test('actual tag commands do not consume world RNG, double click is one command,
  // Rerolling another owner is allowed without spending or mutating geography.
  const river=h.render().rivers[0];if(river)assert.equal(h.render().mutateTag({kind:'river',id:river.id},'mb.water'),true);
  assert.deepEqual(structuredClone(h.render().captureDocument().map.generation),rng);
+ const poiRegion=h.render().regions.find(r=>r.pointsOfInterest.length),hex=poiRegion.pointsOfInterest[0],hexKey=`${hex.q},${hex.r}`;
+ h.render().setSelectedHex(hex);h.render();
+ const po={kind:'poi',regionId:poiRegion.id,hexKey};assert.equal(h.render().mutateTag(po,'mb.feature'),true);
+ const withPoi=stable(h);h.render().deleteSelectedPoi();assert.equal(h.render().tags.instances.some(i=>ownerKey(i.owner)===ownerKey(po)),false);
+ h.render().undoMap();assert.deepEqual(stable(h),withPoi);
+ // One hundred deterministic tag rolls cannot alter the following real generation.
+ const control=createGenerationHarness(42);await load(control,h.render().createSaveData());
+ let rolled=h.render().tags;for(let n=0;n<100;n++)rolled=rollTag(rolled,o,defs['mb.land'],h.render().generationRef.current.masterSeed,0);
+ const doc=stable(h);doc.map.tags=rolled;h.render().applyDocument(doc);
+ const anchor=h.render().candidateHexes[0];
+ h.render().safelyAddRegionToMap(anchor,{targetSize:6,coastalPreference:'mainland'});
+ control.render().safelyAddRegionToMap(anchor,{targetSize:6,coastalPreference:'mainland'});
+ const withoutTags=app=>{const d=structuredClone(app.createSaveData());delete d.savedAt;delete d.map.tags;return d;};
+ assert.deepEqual(withoutTags(h.render()),withoutTags(control.render()));
  const invalid=h.render().createSaveData();invalid.map.tags.instances[0].values[0][0]=13;
  const prior=stable(h);await assert.rejects(()=>load(h,invalid));assert.deepEqual(stable(h),prior);
 });

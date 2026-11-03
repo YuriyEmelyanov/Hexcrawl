@@ -1,7 +1,7 @@
 import {sparkData,mythicCatalog} from './mythicData.ts';
 import {emptyTags,findTag,ownerKey,pruneTags,rollTag,type TagOwner,type TagState,type TagDefinition,type Texts} from './engine.ts';
 const labels:Record<string,[string,string]>={holding:['Удел','Holding'],bailey:['Подворье','Bailey'],keep:['Замок','Keep'],food:['Еда','Food'],goods:['Товары','Goods'],luxuries:['Роскошь','Luxuries'],land:['Земля','Land'],water:['Вода','Water'],flora:['Флора','Flora'],fauna:['Фауна','Fauna'],feature:['Особенность','Feature'],wonder:['Чудо','Wonder'],otherworld:['Иномирье','Otherworld'],myth:['Миф','Myth'],dwelling:['Жилище','Dwelling'],sanctum:['Святилище','Sanctum'],monument:['Монумент','Monument'],hazard:['Опасность','Hazard'],curse:['Проклятие','Curse'],ruin:['Руины','Ruins'],seer:['Провидец','Seer']};
-export const mythicDefinitions:Record<string,TagDefinition>={};
+export const mythicDefinitions:Record<string,TagDefinition>=Object.create(null);
 for(const [name,columns] of Object.entries(sparkData)){
  mythicDefinitions[`mb.${name}`]={id:`mb.${name}`,version:1,label:{ru:labels[name][0],en:labels[name][1]},resolver:'independent',slots:[{id:'character',sides:12},{id:'form',sides:12}],tables:columns.ru.map((column,j)=>column.map((ru,i)=>({ru,en:columns.en[j][i]})))};
 }

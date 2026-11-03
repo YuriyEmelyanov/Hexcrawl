@@ -72,7 +72,7 @@ export function validateTags(value:unknown,owners:Set<string>,registry:Record<st
     const n=i.resolver==='product'?1:i.sides.length;
     if(!Array.isArray(i.texts)||i.texts.length!==n||!i.texts.every(texts)||!Array.isArray(i.entryIds)||i.entryIds.length!==n||i.entryIds.some((s:unknown)=>typeof s!=='string'||s.length>256))return bad();
     if(i.overrides!==undefined&&(!Array.isArray(i.overrides)||i.overrides.length!==n||!i.overrides.every(texts)))return bad();
-    const def=registry[i.definitionId];
+    const def=Object.prototype.hasOwnProperty.call(registry,i.definitionId)?registry[i.definitionId]:undefined;
     if(def&&def.version===i.definitionVersion){
       if(i.resolver!==def.resolver||i.values.length!==def.slots.length||def.slots.some((s,j)=>s.sides!==i.sides[j]||i.values[j].length!==(s.count??1)))return bad();
       for(const slot of def.slots)if(!int(value.rollCounters[`${key}|${slot.id}`],1))return bad();
