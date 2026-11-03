@@ -26,9 +26,9 @@ const instrumented = prefix + `return {
   handleImportJson, resetMap, undoMap, redoMap, undoHistory, redoHistory, captureDocument, selectedHex, setSelectedHex,
   setSelectedHexBiomeOverride, resetSelectedHexBiomeOverride, setSelectedPoiKind, setSelectedCentralPoiKind,
   setSelectedWaterPoiKind, deleteSelectedWaterPoi, deleteSelectedPoi, isImporting,
-  nameTargets, nameDraft, nameErrors, showNameTarget, requestNameTarget, changeNameDraft, saveNameDraft, cancelNameDraft, applyDocument, setLanguage, language, setSelectedRegionBiome, regionBiomeReason, editMode, setEditMode
+  selectNameTarget, nameTargetHex, nameTargets, nameDraft, nameErrors, showNameTarget, requestNameTarget, changeNameDraft, saveNameDraft, cancelNameDraft, applyDocument, setLanguage, language, setSelectedRegionBiome, regionBiomeReason, editMode, setEditMode
 };` + source.slice(lastReturn.end) + `
-export const testGeometry = { generateConnectedRegionFromAnchorImpl, generateFallbackTractFromAnchor, findFillableEnclosedEmptyAreas, getNewRiverLakeReentryViolation, getHexCornerPoints, getHexNeighbors, hexKey, buildRiverGraphForRegion,
+export const testGeometry = { generateConnectedRegionFromAnchorImpl, generateFallbackTractFromAnchor, findFillableEnclosedEmptyAreas, getNewRiverLakeReentryViolation, getHexCornerPoints, getHexEdgeKeys, getHexNeighbors, hexKey, buildRiverGraphForRegion,
   findRiverEndpointsTouchingRegion, getCandidateHexes, generateRiverForRegion, assertHexcrawlSaveData,
   buildRegionRiverNetwork, reconcileRegionRiverModel, completeRegionRiverEnds, addLakeAroundRiverSplitVertex, createInitialRiverSectors,
   countRoadPathRiverCrossings, findLowestRiverCrossingPathWithinWildRegion, getWildRoadCandidates, chooseBestWildRoadCandidate, collectSettledIncomingRoadPathsToTarget, generateRoadsForRegionImpl, findIncomingRoadEndpointsForRegion, getRoadEndpointHexKeysImpl,
