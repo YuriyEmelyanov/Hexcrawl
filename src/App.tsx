@@ -1,4 +1,4 @@
-import {emptyTags,findTag,ownerKey,tagKey,rollTag,editTag,validateTags,type TagState,type TagOwner} from './tags/engine';
+import {emptyTags,findTag,ownerKey,tagKey,rollTag,editTag,validateTags,TagCapacityError,type TagState,type TagOwner} from './tags/engine';
 import {mythicDefinitions,tagOwners,tagPolicy,reconcileTags,fillMythicTags} from './tags/mythic';
 import {TagRow} from './tags/TagRow';
 import {prepareRoadEdit, type RoadEdit} from './manualRoads';
@@ -12961,6 +12961,10 @@ export function App() {
     applyDocument(transaction.after);
     setRedoHistory(currentRedo.slice(0,-1)); setUndoHistory(current => [...current, transaction].slice(-100));
   };
+  const tagCommandError=(error:unknown)=>error instanceof TagCapacityError
+    ? language==='ru' ? (error.capacity==='owner'?'На объекте уже 64 тега. Карта не изменена.':'В этом тексте уже 8 языков. Карта не изменена.')
+      : (error.capacity==='owner'?'This object already has 64 tags. Your map is unchanged.':'This text already has 8 languages. Your map is unchanged.')
+    : language==='ru'?'Не удалось изменить тег. Карта не изменена.':'Could not change tag. Your map is unchanged.';
   const commitManualMap = (map: MapSnapshot, reconcileNames = true) => {
     try {
       // Prepare every clone before the first history/revision/state write.
@@ -12970,8 +12974,8 @@ export function App() {
       const before = captureDocument(), after = { ...before, map: prepared };
       recordTransaction(before, after); applyExactMap(prepared); closeEditors();
       return true;
-    } catch {
-      setEditError(language === 'ru' ? 'Не удалось изменить значение. Карта не изменена.' : 'Could not change the value. Your map is unchanged.');
+    } catch (error) {
+      setEditError(error instanceof TagCapacityError?tagCommandError(error):language === 'ru' ? 'Не удалось изменить значение. Карта не изменена.' : 'Could not change the value. Your map is unchanged.');
       return false;
     }
   };
@@ -13003,7 +13007,7 @@ export function App() {
       setTagAnnouncement(result.texts.map((text,i)=>result.overrides?.[i]?.[language]??text[language]??text.ru??Object.values(text)[0]).join(' · '));
       if(!edit){tagLocks.current.set(key,now+350);setTagAnimations(current=>({...current,[key]:{key,slot,revision:result.revision,expiresAt:now+350}}));}
       return true;
-    }catch{setEditError(language==='ru'?'Не удалось изменить тег.':'Could not change tag.');return false;}
+    }catch(error){setEditError(tagCommandError(error));return false;}
   };
   const renderTags=(owner:TagOwner,type:string)=>{
     const policy=tagPolicy(type),available=[...policy.automatic,...policy.optional].map(n=>'mb.'+n);
@@ -13018,7 +13022,7 @@ export function App() {
     });
     return generationMode==='mythic'?<>{rows}</>:rows.length?<details className="tag-mode"><summary>Mythic Bastionland</summary>{rows}</details>:null;
   };
-  const fillMissingTags=()=>{if(mutationBlocked()||obstacleDraftRef.current)return;const next=fillMythicTags(tagsRef.current,captureMap(),generationRef.current.masterSeed);if(next!==tagsRef.current)commitManualMap({...captureMap(),tags:next},false);};
+  const fillMissingTags=()=>{if(mutationBlocked()||obstacleDraftRef.current)return;try{const next=fillMythicTags(tagsRef.current,captureMap(),generationRef.current.masterSeed);if(next!==tagsRef.current)commitManualMap({...captureMap(),tags:next},false);}catch(error){setEditError(tagCommandError(error));}};
 
   const captureGenerationBackup = (): GenerationBackup => ({
     map: structuredClone(captureMap()), history: [...history], selectedHex: selectedHex ? {...selectedHex} : null,

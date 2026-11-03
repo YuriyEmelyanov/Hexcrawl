@@ -1,6 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import ts from 'typescript';
+import React from 'react';
+import {renderToStaticMarkup} from 'react-dom/server';
+import {createRequire} from 'node:module';
 import {emptyTags,rollTag,findTag,tagKey,ownerKey,editTag,validateTags,resolved} from '../src/tags/engine.ts';
 import {mythicDefinitions as defs,tagOwners,tagPolicy,fillMythicTags} from '../src/tags/mythic.ts';
 import {createGenerationHarness} from './helpers/generation-harness.mjs';
@@ -32,6 +36,41 @@ test('saved tags validate references, tuples, counts and known snapshots; future
  const future=structuredClone(state);future.instances[0].definitionVersion=2;future.instances[0].texts[0].ru='Future';
  assert.doesNotThrow(()=>validateTags(future,owners,defs));
  assert.throws(()=>rollTag(future,owner,defs['mb.land'],42,0));
+ const full=atCapacity(owner),copy=structuredClone(full);
+ assert.doesNotThrow(()=>validateTags(full,owners,defs));
+ assert.throws(()=>rollTag(full,owner,defs['mb.flora'],42),/capacity/);
+ assert.deepEqual(full,copy);
+ assert.doesNotThrow(()=>validateTags(rollTag(full,owner,defs['mb.land'],42,0),owners,defs));
+ const languages=rollTag(emptyTags(),owner,defs['mb.land'],42);
+ languages.instances[0].overrides=[Object.fromEntries(Array.from({length:8},(_,i)=>[`lang${i}`,'x'])),{}];
+ const languageCopy=structuredClone(languages);
+ assert.doesNotThrow(()=>validateTags(languages,owners,defs));
+ assert.throws(()=>editTag(languages,owner,'mb.land',0,'ru','новое'),/capacity/);
+ assert.deepEqual(languages,languageCopy);
+ assert.doesNotThrow(()=>validateTags(editTag(languages,owner,'mb.land',0,'lang0','changed'),owners,defs));
+});
+// Import boundaries are also mutation boundaries: valid snapshots stay exportable.
+function atCapacity(o,withKnown=true){
+ const s=rollTag(emptyTags(),o,defs['mb.land'],42),base=structuredClone(s.instances[0]);
+ s.instances=Array.from({length:64},(_,i)=>({...structuredClone(base),definitionId:i===0&&withKnown?'mb.land':`future.${i}`,definitionVersion:i===0&&withKnown?1:2}));
+ if(!withKnown)s.rollCounters={};
+ return s;
+}
+test('equal independent dice expose distinct localized purposes and current edited results without visible labels',()=>{
+ const source=fs.readFileSync(new URL('../src/tags/TagRow.tsx',import.meta.url),'utf8');
+ const code=ts.transpileModule(source,{compilerOptions:{module:ts.ModuleKind.CommonJS,jsx:ts.JsxEmit.ReactJSX}}).outputText;
+ const module={exports:{}},require=createRequire(import.meta.url);
+ new Function('require','module','exports',code)(name=>name==='./engine'?{ownerKey}:require(name),module,module.exports);
+ const def=defs['mb.land'],instance={...rollTag(emptyTags(),owner,def,42).instances[0],values:[[2],[2]],...resolved(def,[[2],[2]]),overrides:[{ru:'Моя земля',en:'My land'},{}]};
+ for(const language of ['ru','en']){
+  const html=renderToStaticMarkup(React.createElement(module.exports.TagRow,{owner,definition:def,instance,language,editMode:false,disabled:false,onRoll:()=>true,onEdit:()=>true}));
+  const names=[...html.matchAll(/aria-label="([^"]+)"/g)].map(m=>m[1]);
+  assert.equal(names.length,2);assert.notEqual(names[0],names[1]);
+  assert.ok(names[0].includes(language==='ru'?'Моя земля':'My land'));
+  assert.ok(names[0].includes(language==='ru'?'Состояние':'Character'));
+  assert.ok(names[1].includes(language==='ru'?'Ландшафт':'Landscape'));
+  assert.ok(names.every(n=>n.includes('d12: 2')));
+ }
 });
 const fixture=JSON.parse(fs.readFileSync(new URL('./fixtures/import-v2/baseline-mythic.json',import.meta.url)));
 const stable=h=>structuredClone(h.render().captureDocument());
@@ -51,6 +90,21 @@ test('production imported legacy map does not roll; explicit fill and separate r
  const save=h.render().createSaveData();assert.equal(save.version,6);h.geometry.assertHexcrawlSaveData(save);
  const next=createGenerationHarness(99);await load(next,save);assert.deepEqual(next.render().tags,rolled.map.tags);
  h.render().undoMap();h.render().undoMap();assert.deepEqual(stable(h),before);
+ const regionOwner={kind:'region',id:h.render().regions[0].id};
+ const fullSave=h.render().createSaveData();fullSave.map.tags=atCapacity(regionOwner);await load(h,fullSave);
+ assert.equal(h.render().mutateTag(regionOwner,'mb.land',0),true);h.render().undoMap();h.render();
+ const capacityDoc=stable(h),capacityUndo=structuredClone(h.render().undoHistory),capacityRedo=structuredClone(h.render().redoHistory);
+ assert.equal(h.render().mutateTag(regionOwner,'mb.flora'),false);
+ assert.deepEqual(stable(h),capacityDoc);assert.deepEqual(structuredClone(h.render().undoHistory),capacityUndo);assert.deepEqual(structuredClone(h.render().redoHistory),capacityRedo);
+ h.geometry.assertHexcrawlSaveData(h.render().createSaveData());
+ const languageSave=h.render().createSaveData(),land=findTag(languageSave.map.tags,regionOwner,'mb.land');
+ land.overrides=[Object.fromEntries(Array.from({length:8},(_,i)=>[`lang${i}`,'x'])),{}];await load(h,languageSave);
+ const languageDoc=stable(h);assert.equal(h.render().mutateTag(regionOwner,'mb.land',undefined,{index:0,text:'Новый'}),false);assert.deepEqual(stable(h),languageDoc);
+ const holding=[...tagOwners(h.render().captureDocument().map).values()].find(v=>tagPolicy(v.type).automatic.includes('holding')).owner;
+ const fillSave=h.render().createSaveData();fillSave.map.tags=atCapacity(holding,false);await load(h,fillSave);
+ const fillDoc=stable(h),fillUndo=structuredClone(h.render().undoHistory),fillRedo=structuredClone(h.render().redoHistory);
+ assert.doesNotThrow(()=>h.render().fillMissingTags());assert.deepEqual(stable(h),fillDoc);assert.deepEqual(structuredClone(h.render().undoHistory),fillUndo);assert.deepEqual(structuredClone(h.render().redoHistory),fillRedo);
+ h.geometry.assertHexcrawlSaveData(h.render().createSaveData());
 });
 test('actual tag commands do not consume world RNG, double click is one command, deletion prunes and undo restores',async()=>{
  const h=createGenerationHarness(42);await load(h);const state=h.render(),region=state.regions[0];

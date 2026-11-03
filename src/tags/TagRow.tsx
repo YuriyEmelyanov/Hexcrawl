@@ -10,9 +10,11 @@ export function TagRow({owner,definition:def,instance,language,editMode,disabled
  const commit=()=>{if(editing!==null&&onEdit(editing,draft))setEditing(null);};
  const dice=(slot:number)=>{
    const values=instance!.values[slot],sides=instance!.sides[slot];
+   const purpose=def?.slots[slot]?.label?.[language]??def?.slots[slot]?.label?.ru??`${language==='ru'?'Компонент':'Component'} ${slot+1}`;
+   const current=text(instance!.resolver==='product'?0:slot);
    const active=animation?.revision===instance!.revision&&animation.expiresAt>Date.now()&&(animation.slot===undefined||animation.slot===slot);
    return <button key={slot} type="button" className={`tag-die${active?' tag-die--roll':''}`} disabled={disabled||!!readonly}
-     data-tag-slot={slot} aria-label={`${language==='ru'?'Перебросить':'Reroll'} ${label}; d${sides}: ${values.join(', ')}`}
+     data-tag-slot={slot} aria-label={`${language==='ru'?'Перебросить':'Reroll'} ${label}; ${purpose}; ${current}; d${sides}: ${values.join(', ')}`}
      title={readonly?(language==='ru'?'Неизвестная версия таблицы':'Unknown table version'):disabled?(language==='ru'?'Дождитесь завершения текущей операции':'Wait for the current operation'):undefined}
      onContextMenu={event=>{if(!readonly&&!disabled){event.preventDefault();setMenu(true);}}}
      onKeyDown={event=>{if(!readonly&&!disabled&&(event.key==='ContextMenu'||(event.shiftKey&&event.key==='F10'))){event.preventDefault();setMenu(true);}}}

@@ -1,13 +1,19 @@
 import {sparkData,mythicCatalog} from './mythicData.ts';
 import {emptyTags,findTag,ownerKey,pruneTags,rollTag,type TagOwner,type TagState,type TagDefinition,type Texts} from './engine.ts';
 const labels:Record<string,[string,string]>={holding:['Удел','Holding'],bailey:['Подворье','Bailey'],keep:['Замок','Keep'],food:['Еда','Food'],goods:['Товары','Goods'],luxuries:['Роскошь','Luxuries'],land:['Земля','Land'],water:['Вода','Water'],flora:['Флора','Flora'],fauna:['Фауна','Fauna'],feature:['Особенность','Feature'],wonder:['Чудо','Wonder'],otherworld:['Иномирье','Otherworld'],myth:['Миф','Myth'],dwelling:['Жилище','Dwelling'],sanctum:['Святилище','Sanctum'],monument:['Монумент','Monument'],hazard:['Опасность','Hazard'],curse:['Проклятие','Curse'],ruin:['Руины','Ruins'],seer:['Провидец','Seer']};
+const slotLabels:Record<string,[[string,string],[string,string]]>={
+ holding:[['Стиль','Style'],['Элемент','Feature']],bailey:[['Стиль','Style'],['Элемент','Feature']],keep:[['Часть','Centrepiece'],['Украшение','Decoration']],
+ food:[['Свойство','Quality'],['Тип','Type']],goods:[['Тематика','Theme'],['Тип','Type']],luxuries:[['Редкость','Rarity'],['Тип','Type']],
+ land:[['Состояние','Character'],['Ландшафт','Landscape']],water:[['Тон','Tone'],['Текстура','Texture']],flora:[['Природа','Nature'],['Форма','Form']],fauna:[['Природа','Nature'],['Форма','Form']],
+ feature:[['Природа','Nature'],['Форма','Form']],wonder:[['Тема','Theme'],['Элемент','Element']],otherworld:[['Свойство','Character'],['Ландшафт','Landscape']]
+};
 export const mythicDefinitions:Record<string,TagDefinition>=Object.create(null);
 for(const [name,columns] of Object.entries(sparkData)){
- mythicDefinitions[`mb.${name}`]={id:`mb.${name}`,version:1,label:{ru:labels[name][0],en:labels[name][1]},resolver:'independent',slots:[{id:'character',sides:12},{id:'form',sides:12}],tables:columns.ru.map((column,j)=>column.map((ru,i)=>({ru,en:columns.en[j][i]})))};
+ mythicDefinitions[`mb.${name}`]={id:`mb.${name}`,version:1,label:{ru:labels[name][0],en:labels[name][1]},resolver:'independent',slots:[{id:'character',label:{ru:slotLabels[name][0][0],en:slotLabels[name][0][1]},sides:12},{id:'form',label:{ru:slotLabels[name][1][0],en:slotLabels[name][1][1]},sides:12}],tables:columns.ru.map((column,j)=>column.map((ru,i)=>({ru,en:columns.en[j][i]})))};
 }
 for(const name of ['myth','dwelling','sanctum','monument','hazard','curse','ruin','seer']){
  const texts:Texts[]=mythicCatalog.map(row=>name==='myth'?{ru:row.myth}:name==='seer'?{ru:row.seer,...(row.englishSeer?{en:row.englishSeer}:{})}:{ru:row.landmarks[name],...(row.englishLandmarks[name]?{en:row.englishLandmarks[name]}:{})});
- mythicDefinitions[`mb.${name}`]={id:`mb.${name}`,version:1,label:{ru:labels[name][0],en:labels[name][1]},resolver:'product',slots:[{id:'group',sides:6},{id:'entry',sides:12}],tables:[texts]};
+ mythicDefinitions[`mb.${name}`]={id:`mb.${name}`,version:1,label:{ru:labels[name][0],en:labels[name][1]},resolver:'product',slots:[{id:'group',label:{ru:'Группа',en:'Group'},sides:6},{id:'entry',label:{ru:'Запись',en:'Entry'},sides:12}],tables:[texts]};
 }
 export type TagMap={regions:{id:number;generationMode?:string;centerHex:{q:number;r:number};isTract?:boolean;suppressCentralPoi?:boolean;centralPoiKind?:string;pointsOfInterest:{q:number;r:number}[];pointOfInterestKinds?:Record<string,string>}[];rivers:{id:number}[];hexTerrainByKey:Map<string,{lakeId?:number}>};
 const hkey=(h:{q:number;r:number})=>`${h.q},${h.r}`;

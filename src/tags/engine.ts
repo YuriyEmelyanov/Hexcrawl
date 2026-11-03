@@ -1,9 +1,24 @@
 // Rule-independent tag commands. No geography imports or ambient randomness.
 export type TagOwner = {kind:'region'|'river'|'lake';id:number} | {kind:'poi';regionId:number;hexKey:string};
 export type Texts = Record<string,string>;
-export type TagDefinition = {id:string;version:number;label:Texts;resolver:'independent'|'product';slots:{id:string;sides:number;count?:number;selection?:'single'|'sum'}[]; tables:Texts[][]};
+export type TagDefinition = {id:string;version:number;label:Texts;resolver:'independent'|'product';slots:{id:string;label?:Texts;sides:number;count?:number;selection?:'single'|'sum'}[]; tables:Texts[][]};
 export type TagInstance = {definitionId:string;definitionVersion:number;owner:TagOwner;resolver:'independent'|'product';revision:number;sides:number[];values:number[][];entryIds:string[];texts:Texts[];overrides?:Texts[]};
 export type TagState = {schemaVersion:1;instances:TagInstance[];rollCounters:Record<string,number>};
+export const TAGS_PER_OWNER_LIMIT=64, TAG_LANGUAGE_LIMIT=8;
+export class TagCapacityError extends Error {
+  readonly capacity:'owner'|'languages';
+  constructor(capacity:'owner'|'languages'){super(`Tag ${capacity} capacity exceeded`);this.capacity=capacity;}
+}
+// Commands prepare clones; enforce the same limits as import before any caller can commit.
+export function assertTagCapacity(state:TagState):void {
+  const counts=new Map<string,number>();
+  for(const instance of state.instances){
+    const key=ownerKey(instance.owner),count=(counts.get(key)??0)+1;counts.set(key,count);
+    if(count>TAGS_PER_OWNER_LIMIT)throw new TagCapacityError('owner');
+    for(const text of [...instance.texts,...(instance.overrides??[])])
+      if(Object.keys(text).length>TAG_LANGUAGE_LIMIT)throw new TagCapacityError('languages');
+  }
+}
 export const emptyTags = ():TagState => ({schemaVersion:1,instances:[],rollCounters:{}});
 export const ownerKey = (o:TagOwner) => o.kind==='poi' ? `poi:${o.regionId}:${o.hexKey}` : `${o.kind}:${o.id}`;
 export const tagKey = (o:TagOwner,id:string) => `${ownerKey(o)}|${id}`;
@@ -37,14 +52,14 @@ export function rollTag(state:TagState,owner:TagOwner,def:TagDefinition,seed:num
   if(!Number.isSafeInteger(revision))throw Error('Tag revision exhausted');
   const overrides=previous?.overrides?.map((text,i)=>slot===undefined||def.resolver==='product'||i===slot?{}:{...text});
   const instance:TagInstance={definitionId:def.id,definitionVersion:def.version,owner:{...owner},resolver:def.resolver,revision,sides:def.slots.map(s=>s.sides),values,...resolution,...(overrides?{overrides}:{})};
-  next.instances=next.instances.filter(i=>tagKey(i.owner,i.definitionId)!==key);next.instances.push(instance);return next;
+  next.instances=next.instances.filter(i=>tagKey(i.owner,i.definitionId)!==key);next.instances.push(instance);assertTagCapacity(next);return next;
 }
 export function editTag(state:TagState,owner:TagOwner,id:string,index:number,language:string,text:string):TagState {
   if([...text].length>256)throw Error('Tag text too long');
   const next=structuredClone(state),instance=findTag(next,owner,id);
   if(!instance||!instance.texts[index])throw Error('Invalid tag result');
   instance.overrides??=instance.texts.map(()=>({}));instance.overrides[index][language]=text;instance.revision++;
-  if(!Number.isSafeInteger(instance.revision))throw Error('Tag revision exhausted');return next;
+  if(!Number.isSafeInteger(instance.revision))throw Error('Tag revision exhausted');assertTagCapacity(next);return next;
 }
 export function pruneTags(state:TagState,validOwners:Set<string>):TagState {
   const instances=state.instances.filter(i=>validOwners.has(ownerKey(i.owner)));
@@ -55,7 +70,7 @@ export function validateTags(value:unknown,owners:Set<string>,registry:Record<st
   const bad=()=>{throw Error('Invalid tag data');};
   const obj=(x:unknown):x is Record<string,any>=>!!x&&typeof x==='object'&&!Array.isArray(x);
   const int=(x:unknown,min=0)=>Number.isSafeInteger(x)&&(x as number)>=min;
-  const texts=(x:unknown)=>obj(x)&&Object.keys(x).length<=8&&Object.entries(x).every(([l,t])=>l.length>0&&l.length<=32&&typeof t==='string'&&[...t].length<=256);
+  const texts=(x:unknown)=>obj(x)&&Object.keys(x).length<=TAG_LANGUAGE_LIMIT&&Object.entries(x).every(([l,t])=>l.length>0&&l.length<=32&&typeof t==='string'&&[...t].length<=256);
   if(!obj(value)||value.schemaVersion!==1||!Array.isArray(value.instances)||!obj(value.rollCounters))return bad();
   const seen=new Set<string>(),counts=new Map<string,number>();
   for(const i of value.instances){
@@ -66,7 +81,7 @@ export function validateTags(value:unknown,owners:Set<string>,registry:Record<st
     else if(!int(o.id,1))return bad();
     const own=ownerKey(o as TagOwner),key=tagKey(o as TagOwner,i.definitionId);
     if(!owners.has(own)||seen.has(key))return bad();seen.add(key);
-    const count=(counts.get(own)??0)+1;counts.set(own,count);if(count>64)return bad();
+    const count=(counts.get(own)??0)+1;counts.set(own,count);if(count>TAGS_PER_OWNER_LIMIT)return bad();
     if(!['independent','product'].includes(i.resolver)||!Array.isArray(i.sides)||!i.sides.length||i.sides.length>8||!Array.isArray(i.values)||i.values.length!==i.sides.length)return bad();
     for(let j=0;j<i.sides.length;j++)if(!int(i.sides[j],2)||i.sides[j]>1000000||!Array.isArray(i.values[j])||!i.values[j].length||i.values[j].length>8||i.values[j].some((v:unknown)=>!int(v,1)||(v as number)>i.sides[j]))return bad();
     const n=i.resolver==='product'?1:i.sides.length;
