@@ -1,0 +1,341 @@
+{
+  "run_id": "2026-11-03-reviewer-HX-BL-010-39359d9",
+  "role": "reviewer",
+  "task_id": "HX-BL-010",
+  "status": "changes_requested",
+  "verdict": "changes_requested",
+  "role_selection_reason": "Exact-SHA review_ready010 package with required CI; completed prior claims, no active foreign claim;041 accepted per newer own result rather than stale backlog pointer",
+  "head_sha": "39359d911403b480a833a41283d681bec72be58c",
+  "base_sha": "e949d2ebda75af3988467c4a8d64715dd3a2e048",
+  "tree_sha": "6b5dd9be4228f8ed8225cd16ba89b614ad83a2cf",
+  "pr": 485,
+  "spec_version": "1.0",
+  "started_at": "2026-11-03T09:01:04.627Z",
+  "completed_at": "2026-11-03T09:11:02.634Z",
+  "independent_agent": "/root/review_hx010_39359d9 (fresh context and detached exact-SHA checkout)",
+  "finding_ids": [
+    "HX010-R1"
+  ],
+  "findings": [
+    {
+      "id": "HX010-R1",
+      "severity": "P1",
+      "status": "open",
+      "head_sha": "39359d911403b480a833a41283d681bec72be58c",
+      "requirement": [
+        "AC05",
+        "SELECT02",
+        "SELECT03"
+      ],
+      "title": "Selected-hex outline does not follow imperative wheel zoom",
+      "source": "src/App.tsx:15339, applyMapScale13676–13688",
+      "steps": [
+        "Build exact39359d9; import test/fixtures/import-v2/baseline-mythic.json",
+        "Choose existing selectedHex3,6 atscale1; main/selection bounds match",
+        "Wheel zoom -400 over map; wait500ms without React UI state change"
+      ],
+      "actual": {
+        "main_scale": 1.82212,
+        "selection_scale": 1,
+        "main_bounds": {
+          "x": 1045.8584,
+          "y": 704.7562,
+          "width": 88.3674,
+          "height": 102.0379
+        },
+        "selection_bounds": {
+          "x": 627.2195,
+          "y": 394.0002,
+          "width": 48.4971,
+          "height": 55.9996
+        },
+        "later_UI_rerender": "Edit toggle resynchronizes selection scale and stroke"
+      },
+      "expected": "One outline remains on actual selected polygon through navigation, same transform and CSS-pixel thickness without artwork rebuild",
+      "cause": "applyMapScale mutates mapSvgRef/stage, sibling selected SVG reads mutable ref only during React render",
+      "scope": "Synchronize selection imperative scale/stroke with existing navigation path; do not move selection into cached artwork or trigger full React artwork rebuild",
+      "required_evidence": [
+        "Existing navigation test asserts physical main selected polygon vs outline bounds before/after wheel zoom without extra React render",
+        "zoom in/out, pan, rotate, raster mode, constant screen stroke and no artwork rebuild/export overlay",
+        "new exact SHA CI and independent recheck"
+      ],
+      "evidence": [
+        "agent-work/evidence/review-HX-BL-010-39359d9/runtime.json",
+        "agent-work/evidence/review-HX-BL-010-39359d9/runtime.mjs",
+        "agent-work/evidence/review-HX-BL-010-39359d9/zoom-misalignment.png"
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "name": "browser",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41602720387/job/125805336302",
+      "head_sha": "39359d911403b480a833a41283d681bec72be58c"
+    },
+    {
+      "name": "check",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41602720387/job/125805336157",
+      "head_sha": "39359d911403b480a833a41283d681bec72be58c"
+    },
+    {
+      "name": "world-random",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41602720387/job/125805335916",
+      "head_sha": "39359d911403b480a833a41283d681bec72be58c"
+    },
+    {
+      "name": "seed-ui",
+      "status": "completed",
+      "conclusion": "skipped",
+      "html_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41602720405/job/125805104885",
+      "head_sha": "39359d911403b480a833a41283d681bec72be58c"
+    }
+  ],
+  "evidence_ref": "agent-work/evidence/review-HX-BL-010-39359d9",
+  "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/485#pullrequestreview-5749506311",
+  "github_review_type": "COMMENT",
+  "github_review_limitation": "REQUEST_CHANGES rejected422 because connected GitHub account authored PR; COMMENT contains required correction and changes_requested operational verdict. Independence is separate agent/context, not second GitHub identity.",
+  "test_change_summary": {
+    "added": 0,
+    "removed": 0,
+    "modified": 6,
+    "suites": [
+      {
+        "suite": "Node",
+        "modified": 1,
+        "scenario_risk": "Current stable-key representative navigation, river adjacency, stale callbacks and map/RNG/history invariants",
+        "reuse_or_new_reason": "Extends existing actual-App direct-name transaction case"
+      },
+      {
+        "suite": "browser",
+        "modified": 5,
+        "scenario_risk": "Generation/import ordinary-URL debug absence; artwork SVG selection; direct name navigation/history; obstacle pointer geometry",
+        "reuse_or_new_reason": "Preserves and adapts existing browser lifecycle assertions"
+      }
+    ],
+    "count_source": "git diff e949d2ebda75af3988467c4a8d64715dd3a2e048 39359d911403b480a833a41283d681bec72be58c; logical cases not files/lines/run totals",
+    "assessment": "keep; useful existing coverage; misses overlay geometry during imperative zoom",
+    "reviewer_runs": {
+      "node_targeted": {
+        "executed": 1,
+        "passed": 1,
+        "failed": 0
+      },
+      "reviewer_browser_diagnostics": {
+        "five_type_locale_mode_interactions": 20,
+        "permanent_cases_added": 0
+      },
+      "full_suites": "not independently repeated"
+    },
+    "base_sha": "e949d2ebda75af3988467c4a8d64715dd3a2e048",
+    "head_sha": "39359d911403b480a833a41283d681bec72be58c",
+    "reviewer_permanent_changes": {
+      "added": 0,
+      "removed": 0,
+      "modified": 0
+    },
+    "root_diagnostics": {
+      "green_targeted": {
+        "executed": 1,
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0
+      },
+      "mutant": {
+        "executed": 1,
+        "expected_failures": 1,
+        "passed": 0,
+        "source_restored": true,
+        "scenario": "Restore owner-center river representative without edge touch; existing adjacency assertion fails"
+      }
+    },
+    "ci_verified_by_root": [
+      {
+        "name": "browser",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41602720387/job/125805336302",
+        "head_sha": "39359d911403b480a833a41283d681bec72be58c"
+      },
+      {
+        "name": "check",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41602720387/job/125805336157",
+        "head_sha": "39359d911403b480a833a41283d681bec72be58c"
+      },
+      {
+        "name": "world-random",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41602720387/job/125805335916",
+        "head_sha": "39359d911403b480a833a41283d681bec72be58c"
+      },
+      {
+        "name": "seed-ui",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41602720405/job/125805104885",
+        "head_sha": "39359d911403b480a833a41283d681bec72be58c"
+      }
+    ]
+  },
+  "score_assessment_ref": "agent-work/evidence/review-HX-BL-010-39359d9/score-assessment.json",
+  "score_assessment": {
+    "model_version": "1.2",
+    "score_awarded": 0,
+    "head_sha": "39359d911403b480a833a41283d681bec72be58c",
+    "criteria": [
+      {
+        "criterion_id": "S04-C01",
+        "weight": 20,
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unknown"
+        },
+        "after": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "delta": null,
+        "quality": "insufficient_evidence_for_grade",
+        "breadth": "not established by general UI checks",
+        "method": "Exact source diff, production browser diagnostics and targeted actual App harness; see report.md",
+        "limitations": "Bounded navigation flow passes; AC05 selection correctness fails. No30-user study.",
+        "evidence": [
+          "agent-work/evidence/review-HX-BL-010-39359d9/runtime.json",
+          "agent-work/evidence/review-HX-BL-010-39359d9/guards.json"
+        ]
+      },
+      {
+        "criterion_id": "S04-C05",
+        "weight": 10,
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unknown"
+        },
+        "after": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "delta": null,
+        "quality": "insufficient_evidence_for_grade",
+        "breadth": "not established by general UI checks",
+        "method": "Exact source diff, production browser diagnostics and targeted actual App harness; see report.md",
+        "limitations": "RU/EN/focus/basic targets sampled; overlay correctness defect; no full WCAG or IME runtime audit.",
+        "evidence": [
+          "agent-work/evidence/review-HX-BL-010-39359d9/runtime.json",
+          "agent-work/evidence/review-HX-BL-010-39359d9/zoom-misalignment.png"
+        ]
+      },
+      {
+        "criterion_id": "S09-C05",
+        "weight": 10,
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unknown"
+        },
+        "after": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "delta": null,
+        "quality": "insufficient_evidence_for_grade",
+        "breadth": "not established by general UI checks",
+        "method": "Exact source diff, production browser diagnostics and targeted actual App harness; see report.md",
+        "limitations": "Strict debug mode and settled OFF/ON verified; full dashboard/version-funnel criterion unverified.",
+        "evidence": [
+          "agent-work/evidence/review-HX-BL-010-39359d9/runtime.json",
+          "agent-work/evidence/review-HX-BL-010-39359d9/runtime.mjs"
+        ]
+      },
+      {
+        "criterion_id": "S03-C05",
+        "weight": 20,
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unknown"
+        },
+        "after": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "delta": null,
+        "quality": "insufficient_evidence_for_grade",
+        "breadth": "not established by general UI checks",
+        "method": "Exact source diff, production browser diagnostics and targeted actual App harness; see report.md",
+        "limitations": "Regression scope: bounded exact histories/map/RNG guards pass; named versions/full100operations not independently revalidated.",
+        "evidence": [
+          "agent-work/evidence/review-HX-BL-010-39359d9/guards.json",
+          "agent-work/evidence/review-HX-BL-010-39359d9/root-green.log",
+          "agent-work/evidence/review-HX-BL-010-39359d9/root-sensitivity.log"
+        ]
+      }
+    ],
+    "baseline_ref": "agent-work/score/current-score.json",
+    "no_double_counting": true,
+    "published_score_changed": false
+  },
+  "next_role": "developer",
+  "next_step": "Программист исправляет HX010-R1 в PR485: синхронизация контура с wheel/imperative zoom без artwork rebuild и проверка физических границ; затем новый SHA независимому проверяющему.",
+  "handoff_ref": "agent-work/handoffs/2026-11-03-HX-BL-010-review-fixes.json",
+  "authorization_status": "approved_scope_bounded_fix_no_new_start_approval",
+  "accepted": false,
+  "published": false,
+  "release_approved": false,
+  "score_model_version": "1.2",
+  "confirmed_points": null,
+  "unverified_weight": 1000,
+  "awarded_points": 0,
+  "limitations": "Detailed in report.md; independent bounded review, not a full acceptance matrix",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-03T09:01:04.627Z",
+      "is_enabled": true
+    },
+    "end": {
+      "checked_at": "2026-11-03T09:11:02.634Z",
+      "is_enabled": true
+    },
+    "restoration_performed": false,
+    "errors": [],
+    "independent_agent": {
+      "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "start": {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "is_enabled": true,
+        "updated_at": "2026-11-03T08:37:23.870185+00:00",
+        "last_run_time": "2026-11-03T08:37:00.400556+00:00",
+        "next_run_time": null,
+        "last_run_started_at": "2026-11-03T09:00:21.545621Z"
+      },
+      "end": {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "is_enabled": true,
+        "updated_at": "2026-11-03T08:37:23.870185+00:00",
+        "last_run_time": "2026-11-03T08:37:00.400556+00:00",
+        "next_run_time": null,
+        "last_run_started_at": "2026-11-03T09:00:21.545621Z"
+      },
+      "end_checked_at": "2026-11-03T09:08:30Z",
+      "start_checked_at": null,
+      "restoration": false,
+      "errors": []
+    },
+    "limitation": "Point-in-time only; approved corrective and project work remain ongoing"
+  }
+}
