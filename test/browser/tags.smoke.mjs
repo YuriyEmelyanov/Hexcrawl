@@ -19,6 +19,7 @@ try{
  await page.locator('input[type=file]').setInputFiles({name:'tags-legacy.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(data))});
  await page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);
  assert.equal((await snapshot()).map.tags.instances.length,0,'legacy open must not roll');
+ await page.getByRole('combobox',{name:'Режим',exact:true}).selectOption('mythic');
  const region=data.map.regions.find(r=>r.centralPoiKind==='monument'||Object.values(r.pointOfInterestKinds??{}).includes('monument'));
  const hex=region.centralPoiKind==='monument'?region.centerHex:region.pointsOfInterest.find(h=>region.pointOfInterestKinds[`${h.q},${h.r}`]==='monument');
  await page.locator(`polygon.hex[data-hex-key="${hex.q},${hex.r}"]`).dispatchEvent('click');
