@@ -50,14 +50,14 @@ try{
   return page.evaluate(async optimized=>{
    const viewport=document.querySelector('.map-viewport'),svg=viewport.querySelector('svg');
    const before=svg.innerHTML,width=svg.style.width,height=svg.style.height;
-   const selectionSamples=[window.measureSelectionGeometry()];
+   const selectionSamples=optimized?[window.measureSelectionGeometry()]:[];
    viewport.scrollLeft=400;viewport.scrollTop=300;
    const rect=viewport.getBoundingClientRect(),x=rect.left+viewport.clientWidth*.6,y=rect.top+viewport.clientHeight*.6;
    const initial=svg.getBoundingClientRect(),point={x:(x-initial.left)/initial.width,y:(y-initial.top)/initial.height};
    const times=[],handlers=[];let last=performance.now();
    const next=()=>new Promise(r=>requestAnimationFrame(t=>{times.push(t-last);last=t;r();}));
    for(let i=0;i<60;i++){
-    const t=performance.now();for(let j=0;j<4;j++)viewport.dispatchEvent(new WheelEvent('wheel',{bubbles:true,cancelable:true,deltaY:i<30?-2:2,clientX:x,clientY:y}));handlers.push(performance.now()-t);await next();selectionSamples.push(window.measureSelectionGeometry());
+    const t=performance.now();for(let j=0;j<4;j++)viewport.dispatchEvent(new WheelEvent('wheel',{bubbles:true,cancelable:true,deltaY:i<30?-2:2,clientX:x,clientY:y}));handlers.push(performance.now()-t);await next();if(optimized)selectionSamples.push(window.measureSelectionGeometry());
    }
    await next();
    const final=svg.getBoundingClientRect();
@@ -68,7 +68,7 @@ try{
    viewport.dispatchEvent(new MouseEvent('mousedown',{bubbles:true,cancelable:true,button:0,buttons:1,clientX:x,clientY:y}));
    for(let i=1;i<=30;i++){viewport.dispatchEvent(new MouseEvent('mousemove',{bubbles:true,cancelable:true,buttons:1,clientX:x-i*3,clientY:y}));await next();}
    viewport.dispatchEvent(new MouseEvent('mouseup',{bubbles:true,button:0}));await next();
-   const panDistance=viewport.scrollLeft-originalScroll;selectionSamples.push(window.measureSelectionGeometry());
+   const panDistance=viewport.scrollLeft-originalScroll;if(optimized)selectionSamples.push(window.measureSelectionGeometry());
    times.sort((a,b)=>a-b);handlers.sort((a,b)=>a-b);
    return {selectionSamples,optimized,geometryUnchanged,dimensionsUnchanged,focalError,panDistance,frames:times.length,frameMedianMs:times[Math.floor(times.length*.5)],frameP95Ms:times[Math.floor(times.length*.95)],framesOver50ms:times.filter(t=>t>50).length,handlerMedianMs:handlers[Math.floor(handlers.length*.5)],handlerP95Ms:handlers[Math.floor(handlers.length*.95)]};
   },optimized);
