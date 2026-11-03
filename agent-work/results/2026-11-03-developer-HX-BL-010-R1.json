@@ -1,0 +1,269 @@
+{
+  "run_id": "2026-11-03-developer-HX-BL-010-R1",
+  "role": "developer",
+  "task_id": "HX-BL-010",
+  "role_selection_reason": "Confirmed reviewer finding HX010-R1 has highest ready-work priority; all prior claims completed, approved bounded correction and no owner release permission.",
+  "started_at": "2026-11-03T10:04:34.720Z",
+  "status": "review_ready",
+  "authorization_status": "approved_scope_bounded_correction_independent_recheck_next",
+  "approval_ref": "owner-decision-2026-11-01-HX-BL-010-start",
+  "spec_ref": "agent-work/specs/HX-BL-010.md",
+  "spec_version": "1.0",
+  "base_sha": "39359d911403b480a833a41283d681bec72be58c",
+  "head_sha": "7121a24223d75fdc25a1f454eec905931fca9270",
+  "tree_sha": "648471a40b11b74ebaeefd6e9137f455c606014a",
+  "branch": "agent/hx010-clean-panel",
+  "pr": 485,
+  "main_base": "e949d2ebda75af3988467c4a8d64715dd3a2e048",
+  "finding_ids": [
+    "HX010-R1"
+  ],
+  "addressed_findings_pending_review": [
+    "HX010-R1"
+  ],
+  "finding_status": "developer_corrected_pending_independent_recheck",
+  "review_verdict": null,
+  "accepted": false,
+  "published": false,
+  "release_approved": false,
+  "source_tree_verified": true,
+  "outcome": "Separate selected SVG overlay transform, inverse stroke and shadow now follow imperative applyMapScale through ref, without React state/artwork rebuild; existing navigation lifecycle checks physical geometry before unrelated render",
+  "evidence_ref": "agent-work/evidence/HX-BL-010-R1-eabc0bd",
+  "ui_actual": {
+    "capture_head": "eabc0bd05ee53d4f249eb7ba3018943cbb88b1cd",
+    "application_sources_identical_to_final_head": true,
+    "guide": "agent-work/evidence/HX-BL-010-R1-eabc0bd/walkthrough.html",
+    "shown_in_chat": true,
+    "widths": [
+      1500,
+      390
+    ],
+    "physical_devices_checked": false
+  },
+  "test_change_summary": {
+    "base_sha": "39359d911403b480a833a41283d681bec72be58c",
+    "head_sha": "7121a24223d75fdc25a1f454eec905931fca9270",
+    "added": 0,
+    "removed": 0,
+    "modified": 1,
+    "suite": "existing browser navigation lifecycle",
+    "scenario_risk": "HX010-R1: selected outline physical bounds after imperative wheel zoom without unrelated React render; constant screen stroke, pan/rotation and no artwork mutation",
+    "reuse_or_new_reason": "Existing navigation case checked only visibility/artwork identity. Extended same lifecycle at every zoom frame instead of adding a duplicate runner/case.",
+    "count_source": "git diff base/head: one existing browser lifecycle extended; no Node test changes",
+    "executed": {
+      "browser_navigation": {
+        "executed": 1,
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "final_head": "7121a24223d75fdc25a1f454eec905931fca9270"
+      },
+      "baseline_sensitivity": {
+        "executed": 1,
+        "failed": 1,
+        "expected_failure": "8.36px geometry mismatch on baseline39359d9"
+      },
+      "temporary_diagnostics": {
+        "desktop_narrow_before_after": 4,
+        "passed": 4,
+        "raster900": 1,
+        "passed_raster900": 1,
+        "permanent_growth": 0,
+        "mode_width_rotation_states": 12,
+        "passed_mode_states": 12
+      },
+      "typescript": "passed",
+      "build": "passed",
+      "optional_baseline": {
+        "executed": 1,
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "repeat_not_growth": true,
+        "proof": "artwork equal and PNG bytes equal vs39359d9 production build"
+      },
+      "node_full_attempt1": {
+        "executed": 262,
+        "passed": 262,
+        "failed": 0,
+        "skipped": 0,
+        "duration_ms": 586219.059652,
+        "build": "passed",
+        "typescript": "passed",
+        "job_wrapper": "cancelled after command output; retry pending",
+        "head_sha": "7121a24223d75fdc25a1f454eec905931fca9270"
+      },
+      "node_full_final": {
+        "executed": 262,
+        "passed": 262,
+        "failed": 0,
+        "skipped": 0,
+        "node": "24 (CI setup)",
+        "command": "npm run check",
+        "typescript": "passed",
+        "build": "passed",
+        "CI_job_id": 125860361308
+      },
+      "required_CI": [
+        {
+          "name": "browser",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41617507051/job/125860364860"
+        },
+        {
+          "name": "world-random",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41617507051/job/125860363302"
+        },
+        {
+          "name": "check",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41617507051/job/125860361308"
+        },
+        {
+          "name": "seed-ui",
+          "status": "completed",
+          "conclusion": "skipped",
+          "html_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41617507039/job/125854603036"
+        }
+      ]
+    }
+  },
+  "local_checks": {
+    "typescript": "passed",
+    "build": "passed",
+    "navigation": {
+      "passed": 1,
+      "failed": 0,
+      "samples": 62,
+      "max_error_css_px": 0.00836181640625,
+      "screen_stroke_css_px": 2,
+      "artwork_unchanged": true
+    },
+    "baseline_red": {
+      "expected_failure": true,
+      "error_css_px": 8.36
+    },
+    "raster900": {
+      "passed": 1,
+      "failed": 0,
+      "samples": 62,
+      "active_raster_samples": 61,
+      "max_error_css_px": 0.0032958984375,
+      "artwork_unchanged": true
+    },
+    "actual_before_after": {
+      "matrices": 4,
+      "passed": 4,
+      "before_shift_css_px": 418.638916015625,
+      "after_max_error_css_px": 0.0050048828125
+    },
+    "optional_baseline": {
+      "passed": 1,
+      "failed": 0,
+      "PNG_bytes_equal": true
+    },
+    "render_mode_matrix": {
+      "states": 12,
+      "passed": 12,
+      "failed": 0,
+      "modes": [
+        "tiles",
+        "emoji",
+        "color"
+      ],
+      "widths": [
+        1500,
+        390
+      ],
+      "rotated": [
+        false,
+        true
+      ]
+    }
+  },
+  "next_role": "reviewer",
+  "next_step": "Независимый проверяющий перепроверяет HX010-R1 и пакет PR485 на7121a24, включая физические границы после zoom без React-исправления, и обновляет score_assessment1.2. Публикация отдельно.",
+  "handoff_ref": "agent-work/handoffs/2026-11-03-HX-BL-010-R1-eabc0bd-review.json",
+  "score_model_version": "1.2",
+  "developer_score_evidence_ref": "agent-work/evidence/HX-BL-010-R1-eabc0bd/developer-score-evidence.json",
+  "score_assessment_status": "pending_independent_exact_SHA_recheck",
+  "confirmed_points": null,
+  "unverified_weight": 1000,
+  "awarded_points": 0,
+  "limitations": [
+    "Developer correction is not independent acceptance/finding closure",
+    "Full original HX010 behavioral matrix not independently repeated by this developer; exact-SHA required CI and focused R1 evidence supplied",
+    "Headless Chromium only; physical touch/Safari/Firefox not checked",
+    "UI captures on eabc0bd have identical product source to final7121a24; final delta is only optional baseline test guard",
+    "No broad criterion/WCAG/game-cohort grade increase from geometry probes"
+  ],
+  "other_tasks_preserved": true,
+  "nonblocking_errors": [
+    {
+      "type": "CI_job_cancelled_after_test_and_build_success",
+      "job_id": 125854868368,
+      "node": {
+        "executed": 262,
+        "passed": 262,
+        "failed": 0,
+        "skipped": 0
+      },
+      "build": "passed",
+      "reason": "Cancellation reason not explicitly returned; do not infer product failure",
+      "retry_job": 125860361308,
+      "successful_browser_and_world_random_preserved": true,
+      "evidence": "agent-work/evidence/HX-BL-010-R1-eabc0bd/CI-attempt1-command-passed.log",
+      "resolution": "Single-job retry passed; successful browser/world-random preserved",
+      "retry_conclusion": "success"
+    }
+  ],
+  "CI_checks": [
+    {
+      "name": "browser",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41617507051/job/125860364860"
+    },
+    {
+      "name": "world-random",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41617507051/job/125860363302"
+    },
+    {
+      "name": "check",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41617507051/job/125860361308"
+    },
+    {
+      "name": "seed-ui",
+      "status": "completed",
+      "conclusion": "skipped",
+      "html_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41617507039/job/125854603036"
+    }
+  ],
+  "checks_status": "all_required_CI_passed",
+  "completed_at": "2026-11-03T10:36:21.981Z",
+  "review_ready": true,
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-03T10:04:34.720Z",
+      "is_enabled": true,
+      "status": "checked"
+    },
+    "end": {
+      "checked_at": "2026-11-03T10:36:21.981Z",
+      "is_enabled": true,
+      "status": "checked"
+    },
+    "restoration_performed": false,
+    "errors": [],
+    "limitation": "Point-in-time observations only; independent review and ongoing team/project tasks remain."
+  }
+}
