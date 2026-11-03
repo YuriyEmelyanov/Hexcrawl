@@ -33,19 +33,31 @@ try{
   const p=await browser.newPage({viewport:{width:1500,height:1000}});await p.route(/mc\.yandex/,r=>r.abort());const errors=[];p.on('pageerror',e=>errors.push(e.message));p.on('dialog',async d=>{errors.push(d.message());await d.dismiss();});
   await p.goto(`http://127.0.0.1:${config.port}/`);await p.locator('input[type=file]').setInputFiles({name:'large-map.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(fixture(base,count)))});try{await p.waitForFunction(n=>document.querySelectorAll('polygon.hex.region[data-hex-key],polygon.hex.center[data-hex-key]').length===n,count*400);}catch(e){throw Error('Import failed: '+JSON.stringify(errors)+' '+await p.locator('.map-viewport').innerText());}
   const toggle=p.locator('.biome-display-toggle');while(await toggle.getAttribute('data-mode')!=='color')await toggle.click();await p.locator('.forest-canopy-layer').first().waitFor({state:'attached'});await p.waitForTimeout(500);
-  const artwork=await p.locator('.map-stage > svg').evaluate(s=>s.innerHTML);
+  const artwork=await p.locator('.map-stage > svg').first().evaluate(s=>s.innerHTML);
   if(config.label==='baseline')artworks.set(count,artwork);else if(artworks.has(count))assert.equal(artwork,artworks.get(count),'Vector artwork is identical');
   if(config.label==='optimized'&&count>1){
    await p.waitForFunction(()=>document.querySelector('.map-motion-buffer')?.dataset.cache==='ready',{},{timeout:30000});
    await p.evaluate(()=>{const v=document.querySelector('.map-viewport');v.scrollLeft+=20;});
    await p.waitForFunction(()=>document.querySelector('.map-viewport').classList.contains('has-motion-buffer'));
-   assert.equal(await p.locator('.map-stage > svg').evaluate(s=>getComputedStyle(s).opacity),'0','Native scrolling uses the buffer');
+   assert.equal(await p.locator('.map-stage > svg').first().evaluate(s=>getComputedStyle(s).opacity),'0','Native scrolling uses the buffer');
    await p.waitForFunction(()=>!document.querySelector('.map-viewport').classList.contains('is-navigating'));
-   assert.equal(await p.locator('.map-stage > svg').evaluate(s=>getComputedStyle(s).opacity),'1','Sharp SVG returns at rest');
+   assert.equal(await p.locator('.map-stage > svg').first().evaluate(s=>getComputedStyle(s).opacity),'1','Sharp SVG returns at rest');
    const vector=await p.locator('.map-viewport').screenshot();
    await p.evaluate(()=>document.querySelector('.map-viewport').classList.add('is-navigating'));
    await p.waitForFunction(()=>document.querySelector('.map-viewport').classList.contains('has-motion-buffer'));
    const buffered=await p.locator('.map-viewport').screenshot();const difference=pixelDifference(vector,buffered);console.log('MOTION_BUFFER_PIXELS '+JSON.stringify({hexes:count*400,...difference}));assert.ok(difference.meanChannelDifference<4&&difference.changedPixelFraction<.025,'Motion buffer must preserve artwork');
+   await p.evaluate(()=>document.querySelector('.map-viewport').classList.remove('is-navigating'));
+  }
+  if(process.env.LARGE_VALIDATE){
+   const main=p.locator('.map-stage > svg').first(),before=await main.evaluate(s=>s.innerHTML);
+   await p.locator('polygon.hex.region[data-hex-key]').first().dispatchEvent('click');
+   await p.locator('[data-selected-hex]').waitFor();
+   await p.evaluate(()=>document.querySelector('.map-viewport').classList.add('is-navigating'));
+   await p.waitForFunction(()=>document.querySelector('.map-viewport').classList.contains('has-motion-buffer'));
+   assert.equal(await p.locator('.selected-hex-overlay').evaluate(s=>getComputedStyle(s).opacity),'1','Selection remains visible over raster buffer');
+   assert.equal(await p.locator('.selected-hex-overlay').evaluate(s=>getComputedStyle(s).pointerEvents),'none');
+   assert.equal(await main.locator('[data-selected-hex]').count(),0,'Selection is outside export/raster SVG');
+   assert.equal(await main.evaluate(s=>s.innerHTML),before,'Selection does not rebuild retained artwork');
    await p.evaluate(()=>document.querySelector('.map-viewport').classList.remove('is-navigating'));
   }
   const cdp=await p.context().newCDPSession(p);await cdp.send('Performance.enable');

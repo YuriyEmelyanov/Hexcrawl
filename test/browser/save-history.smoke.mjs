@@ -471,11 +471,12 @@ try {
  // Keep a redo branch, then compare the entire actual export after the ambiguous click.
  await button('Добавить препятствие').click();
  await page.mouse.move(vr.x+vr.width/2,vr.y+100);await page.mouse.wheel(0,1100);await page.waitForTimeout(450);
+ const beforePointer=await snapshot();await button('Добавить препятствие').click();
+ // Measure physical targets after export/reopening, which may shift the centered map.
  const ambiguousPoint=await edgeTargets.evaluateAll(nodes=>{
    const circles=nodes.map(n=>{const b=n.getBoundingClientRect();return {x:b.x+b.width/2,y:b.y+b.height/2,r:b.width/2};});
    return circles.find(p=>circles.filter(c=>Math.hypot(p.x-c.x,p.y-c.y)<=c.r).length>1);
  });assert.ok(ambiguousPoint,'fixture exposes overlapping44px circles at low zoom');
- const beforePointer=await snapshot();await button('Добавить препятствие').click();
  await page.mouse.click(ambiguousPoint.x,ambiguousPoint.y);
  await page.waitForFunction(()=>document.activeElement?.closest('[data-obstacle-editor]'));
  assert.ok(await edgeTargets.count()>0,'ambiguity preserves uncommitted choice');
