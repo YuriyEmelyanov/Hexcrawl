@@ -1,0 +1,309 @@
+{
+  "run_id": "2026-11-03-HX-BL-041-reviewer-060e3b3",
+  "role": "reviewer",
+  "task_id": "HX-BL-041",
+  "status": "changes_requested",
+  "verdict": "changes_requested",
+  "pr": 484,
+  "reviewed_sha": "060e3b3ae153d2ee5b8afaf5b94adf28cd36343f",
+  "reviewed_tree_sha": "960323f6f42f4e02a6e2caa1f6fb75b2495f69fa",
+  "base_sha": "e949d2ebda75af3988467c4a8d64715dd3a2e048",
+  "specs": [
+    {
+      "path": "agent-work/specs/HX-BL-041-TAGS.md",
+      "version": "1.1"
+    },
+    {
+      "path": "agent-work/specs/HX-BL-041-MYTHS.md",
+      "version": "1.2"
+    }
+  ],
+  "independence": {
+    "separate_agent": true,
+    "checkout": "/workspace/scratch/2ae0d17533b7/hx041-review",
+    "head_detached": true,
+    "product_changes": false,
+    "developer_worktree_changes": false
+  },
+  "sources": [
+    "AGENTS.md",
+    "docs/index.md",
+    "docs/mythic-bastionland.md",
+    "docs/mythic-tags.md",
+    "agent-work/process.md",
+    "agent-work/strategy/vision.md",
+    "agent-work/strategy/score-model.md",
+    "agent-work/feedback.json",
+    "agent-work/ui/HX-BL-041-inline-v2.0.html",
+    "agent-work/ui/HX-BL-041-UI-STATUS.md",
+    "agent-work/handoffs/2026-11-03-HX-BL-041-060e3b3-review.json",
+    "agent-work/results/2026-11-03-developer-HX-BL-041-combined.json",
+    "agent-work/handoffs/2026-11-03-HX-BL-041-combined-development.md"
+  ],
+  "findings": [
+    {
+      "id": "HX041-R1",
+      "priority": "P2",
+      "file": "src/tags/TagRow.tsx",
+      "line": 15,
+      "requirement": [
+        "TAGS1.1 §4.10",
+        "TAG-12",
+        "UI-COMMON-03"
+      ],
+      "title": "Independent dice lack distinguishable accessible component names",
+      "reproduce": [
+        "Render a known independent tag mb.holding with values[[1],[1]] and resolved texts Темный / Турели.",
+        "Inspect the two button accessible names in Russian (keyboard focus or accessibility tree)."
+      ],
+      "actual": [
+        "Перебросить Удел; d12: 1",
+        "Перебросить Удел; d12: 1"
+      ],
+      "expected": "Each accessible name identifies its component purpose and current result, as required by TAGS§4.10; distinguish the first/style and second/form dice even when both roll the same value. Apply consistently to independent tags and both locales.",
+      "impact": "A screen-reader user cannot determine which component will be rerolled. Equal values are normal valid outcomes, so this affects ordinary supported states.",
+      "evidence": "Independently transpiled real TagRow.tsx and rendered with react-dom/server; both actual aria-label values were identical. SVG is aria-hidden. This is not an inference from developer tests.",
+      "fix_scope": "Change invisible accessible naming only; retain cube sizes, typography, spacing and existing rows. Include localized component purpose and displayed result/override; keep product pair behavior intact.",
+      "recheck": "Focused component/accessibility check for equal independent dice values in RU/EN, plus existing required checks on the new SHA. No requirement to add a broad new browser scenario."
+    }
+  ],
+  "evidence": {
+    "catalog": {
+      "method": "Compare every supplied catalog tuple through production resolved() definitions",
+      "matched": {
+        "myths": 72,
+        "landmarks": 432,
+        "seers": 72
+      },
+      "result": "pass; exact RU equality for all576 results"
+    },
+    "ci": {
+      "run_id": 41578931038,
+      "independently_fetched_jobs": true,
+      "independently_read_job_logs": true,
+      "tested_commit": "40b976107b9289d68cb56ce4c5731b31c0581985",
+      "merge_tree_matches_head": true,
+      "method": "git rev-parse HEAD^{tree} origin/pr484-merge^{tree}; both960323f6f42f4e02a6e2caa1f6fb75b2495f69fa; logs checkout40b9761",
+      "check": {
+        "job": 125729097274,
+        "node": 24,
+        "tests": 266,
+        "pass": 266,
+        "fail": 0,
+        "typescript": "pass",
+        "build": "pass",
+        "duration_ms": 516987.781732
+      },
+      "browser": {
+        "job": 125729097787,
+        "status": "success",
+        "logs": "Full suite including tags scenario; no page errors"
+      },
+      "world_random": {
+        "job": 125729097623,
+        "status": "success",
+        "logs": "Production UI classic/mythic, continuations, invalid imports, undo-repeat and busy operations passed"
+      }
+    },
+    "ui": {
+      "artifact_id": 13205107934,
+      "artifact_digest": "sha256:d4a52738c27e76f84f4e34520f125a6f86be774eb4db51876c1fd9e2938ef08c",
+      "artifact_metadata_verified": true,
+      "reviewed_images": [
+        "monument-1500.png",
+        "monument-390.png",
+        "monument-320.png"
+      ],
+      "visual_result": "Compact unchanged card structure; no visible dice type/page labels or large controls; no overflow in reviewed images",
+      "metrics": {
+        "cube_px": 17.59375,
+        "font_px": 16,
+        "widths": [
+          1500,
+          390,
+          320
+        ],
+        "card_scroll_width_matches_client_width": true
+      },
+      "limits": "Only monument card was independently visually inspected; shared TagRow/CSS and policy were source-reviewed for all object types. No physical screen-reader run."
+    },
+    "source_review": {
+      "covered": [
+        "independent2d12 sibling counters/override retention",
+        "d6×d12 ordered72-entry lookup",
+        "auto/on-demand matrices",
+        "new kingdom/manual-object atomic reconciliation",
+        "legacy no-roll import,save6 validation,unknown dictionaries read-only",
+        "snapshot/backups,UndoRedo,deletion and owner pruning",
+        "regeneration checkpoint reconciliation",
+        "RNG isolation",
+        "350ms owner/definition lock;documentBusy protects stale handlers",
+        "animation visual only/reduced-motion",
+        "seer names only;ruins no mechanical myth relation"
+      ],
+      "limits": "Finite cases and source review do not prove absence of all errors."
+    },
+    "local": {
+      "node": "24.22.1",
+      "npm_check": {
+        "status": "passed",
+        "exit_code": 0,
+        "typescript": "passed",
+        "tests": 266,
+        "pass": 266,
+        "fail": 0,
+        "skipped": 0,
+        "duration_ms": 383875.209822,
+        "build": "passed",
+        "build_seconds": 9.52,
+        "log": "Independent scratch checkout hx041-review; /workspace/scratch/2ae0d17533b7/hx041-check.log"
+      },
+      "browser": "not rerun locally: direct chromium.launch confirmed missing chromium_headless_shell-1234 executable",
+      "accessibility_reproduction": "pass: reproduced HX041-R1 against real TagRow using React SSR"
+    },
+    "accessibility_ref": "agent-work/evidence/review-HX-BL-041-060e3b3/accessibility.json"
+  },
+  "test_management": {
+    "node": {
+      "added": 4,
+      "removed": 0,
+      "modified": 6
+    },
+    "browser": {
+      "added": 1,
+      "modified": 1
+    },
+    "audit": [
+      "New Node1: useful unit coverage separating independent/product semantics and sibling isolation.",
+      "New Node2: useful validator negative cases and future dictionary read-only; overlaps integration import intentionally at a different layer.",
+      "New Node3: useful real App legacy/fill/history/save6 roundtrip.",
+      "New Node4: useful real mutation locking,deletion/undo,RNG continuation and atomic invalid import.",
+      "Modified mapTransactions2/saveSafety1/worldContinuation1: necessary current-format migration expectations, retained existing corpus.",
+      "Modified mythicKingdom2: existing scenarios gain auto-tag checks without new expensive kingdom scenarios.",
+      "Browser new1: useful real DOM/layout/keyboard/reduced-motion and browser export/import; partly overlaps Node for user-facing integration.",
+      "Browser existing1: necessary export-version expectation update.",
+      "Harness changes expose callbacks/load tag imports; infrastructure only,not test counts."
+    ],
+    "gap": "Existing browser keyboard case checks Space/reduced-motion but not accessible component purposes/equal-value disambiguation. A focused check suffices."
+  },
+  "score_assessment": {
+    "model_version": "1.2",
+    "sha": "060e3b3ae153d2ee5b8afaf5b94adf28cd36343f",
+    "baseline": "agent-work/score/current-score.json at6584840; relevant criteria remain null/unverified",
+    "criteria": [
+      {
+        "criterion_id": "S08-C04",
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "after": {
+          "grade": null,
+          "points": null,
+          "status": "insufficient_evidence"
+        },
+        "delta": null,
+        "awarded_points": 0,
+        "method": "MB mode policy and separated engine exist; no broad cross-game compatibility assessment.",
+        "evidence": [
+          "reviewed exact SHA/source",
+          "CI41578931038"
+        ],
+        "limitations": "No grade inferred from task completion; no points double-counted or awarded before release."
+      },
+      {
+        "criterion_id": "S09-C04",
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "after": {
+          "grade": null,
+          "points": null,
+          "status": "insufficient_evidence"
+        },
+        "delta": null,
+        "awarded_points": 0,
+        "method": "Exact-SHA CI and local source/fixture checks support narrow save/history safety; whole-criterion grade baseline and complete evidence not established.",
+        "evidence": [
+          "reviewed exact SHA/source",
+          "CI41578931038"
+        ],
+        "limitations": "No grade inferred from task completion; no points double-counted or awarded before release."
+      },
+      {
+        "criterion_id": "S07-C05",
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "after": {
+          "grade": null,
+          "points": null,
+          "status": "insufficient_evidence"
+        },
+        "delta": null,
+        "awarded_points": 0,
+        "method": "MB definitions/data separated from geography; content-pack extension/licensing/general criterion not fully established.",
+        "evidence": [
+          "reviewed exact SHA/source",
+          "CI41578931038"
+        ],
+        "limitations": "No grade inferred from task completion; no points double-counted or awarded before release."
+      },
+      {
+        "criterion_id": "S06-C02",
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "after": {
+          "grade": null,
+          "points": null,
+          "status": "insufficient_evidence"
+        },
+        "delta": null,
+        "awarded_points": 0,
+        "method": "Names and static descriptions do not establish a dynamic threat engine.",
+        "evidence": [
+          "reviewed exact SHA/source",
+          "CI41578931038"
+        ],
+        "limitations": "No grade inferred from task completion; no points double-counted or awarded before release."
+      }
+    ],
+    "total_awarded_points": 0,
+    "product_score_updated": false
+  },
+  "excluded_scope_not_defects": [
+    "holding rulers",
+    "knight lower-page prompts",
+    "myth geography influence",
+    "player map",
+    "NPC knowledge",
+    "exploration/game procedures"
+  ],
+  "publication_approved": false,
+  "main_changed": false,
+  "next_role": "developer",
+  "next_step": "Fix HX041-R1 without visible UI expansion, hand off new exact SHA and updated checks to reviewer. No release approval requested for this SHA.",
+  "automation_health": {
+    "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": null,
+      "is_enabled": true,
+      "timestamp_limit": "Exact initial timestamp not captured"
+    },
+    "end": {
+      "checked_at": "2026-11-03T05:03:29.924Z",
+      "is_enabled": true
+    },
+    "restoration_performed": false
+  },
+  "operational_safety": "Only separate scoped claim/result/handoff; latest/backlog/current score not replaced.",
+  "completed_at": "2026-11-03T05:03:47.453Z"
+}
