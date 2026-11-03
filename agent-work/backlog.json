@@ -959,7 +959,7 @@
       "task_id": "HX-BL-010",
       "title": "Группировка интерфейса и скрытие неактивных кнопок",
       "criterion_id": "S04-C01",
-      "status": "approved",
+      "status": "ready_for_development",
       "potential_delta": null,
       "approval_ref": "owner-decision-2026-11-01-HX-BL-010-start",
       "source": {
@@ -1032,11 +1032,11 @@
         "Редактирование названий только в информационном блоке; убрать дублирование в результатах поиска.",
         "Сохранить RU/EN, фильтры, guards черновиков, Undo/Redo и данные карты."
       ],
-      "next_role": "business_analyst",
-      "next_step": "Аналитик готовит спецификацию HX-BL-010 на опубликованном e949d2e: скрыть отладку из основной панели, сохранить служебный доступ; поиск выбирает объект, редактирование выполняется в информационном блоке. Показать desktop/390 и передать разработчику без дополнительного дизайн-согласования. Включить явное обозначение выбранного гекса по HX-FB-009.",
+      "next_role": "developer",
+      "next_step": "Программист берёт010 после проверки отсутствия другого активного developer claim, реализует отдельным PR поspec1.0; сохраняет текущий опубликованный main и не включает незавершённый PR484. Если main уже обновлён — сверить совместимость.",
       "release_approved": false,
-      "spec_status": "needed",
-      "handoff_ref": "agent-work/handoffs/2026-11-02-HX-BL-010-after-PR481-score.json",
+      "spec_status": "ready_for_development",
+      "handoff_ref": "agent-work/handoffs/2026-11-03-HX-BL-010-development.json",
       "ready_after_E4": {
         "status": "fulfilled",
         "release_sha": "e949d2ebda75af3988467c4a8d64715dd3a2e048",
@@ -1057,15 +1057,41 @@
           "Pan/zoom/rotate не меняют выбор; обозначение не мешает выбору дорог/препятствий и не меняет данные/историю",
           "Визуальный вариант и экспортное поведение уточнить в bounded spec; показать фактические desktop/390 состояния до публикации"
         ],
-        "ui_preview_pending": true,
+        "ui_preview_pending": false,
         "ui_preview_responsible": "business_analyst",
         "owner_response_blocks_development": false,
-        "publication_allowed": false
+        "publication_allowed": false,
+        "spec_ref": "agent-work/specs/HX-BL-010.md"
       },
       "related_feedback_ids": [
         "HX-FB-008",
         "HX-FB-009"
-      ]
+      ],
+      "previous_status": "approved",
+      "spec_ref": "agent-work/specs/HX-BL-010.md",
+      "spec_version": "1.0",
+      "analyst_result_ref": "agent-work/results/2026-11-03-analyst-HX-BL-010.json",
+      "ui_preview": {
+        "version": "UI1",
+        "source": "agent-work/ui/HX-BL-010-ui-v1/preview.html",
+        "desktop": "agent-work/ui/HX-BL-010-ui-v1/read-1200.png",
+        "narrow": "agent-work/ui/HX-BL-010-ui-v1/search-390.png",
+        "states": [
+          "read",
+          "edit",
+          "search",
+          "dirty"
+        ],
+        "shown_in_chat": true,
+        "type": "proposal_not_implementation",
+        "limits": [
+          "Illustrative map/icons, not real generator geometry",
+          "RU proposal; language toggle is illustrative, not full localization",
+          "No production validation or physical device claim"
+        ]
+      },
+      "baseline_sha": "e949d2ebda75af3988467c4a8d64715dd3a2e048",
+      "implementation_started": false
     },
     {
       "task_id": "HX-BL-011",
