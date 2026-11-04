@@ -1,4 +1,4 @@
-import {isFullness, validateRiverNetwork, type RiverNetwork} from './riverModel/core.ts';
+import {isFullness, validateRiverNetwork, type RiverNetwork, type Issue} from './riverModel/core.ts';
 import type {RiverFullness} from './riverFullness.ts';
 
 export type RiverVertexValue = {key:string;x:number;y:number};
@@ -104,6 +104,7 @@ export type RiverEditContext=FeatureEligibility&{
   edgeOwners:(edgeKey:string)=>readonly number[];
   blocked:(edgeKey:string)=>boolean;
   event:(key:string,rivers:readonly EditableRiver[])=>boolean;
+  reason?:(key:string,start:boolean,endpoint:boolean,river:EditableRiver)=>EditableRiverSector['startReason']|EditableRiverSector['endReason'];
   network:(rivers:EditableRiver[])=>{network:RiverNetwork;issues:string[]};
   additionalValidation:(before:EditableRiver[],after:EditableRiver[])=>void;
 };
@@ -114,41 +115,86 @@ function fullnessByEdge(r:EditableRiver):Map<string,RiverFullness>{
 }
 function rebuild(r:EditableRiver,path:RiverVertexValue[],values:ReadonlyMap<string,RiverFullness>,ctx:RiverEditContext):EditableRiver{
   const oldOwner=new Map(r.sectors.flatMap(s=>s.edgeKeys.map(e=>[e,s.assignedRegionId??r.regionId] as const)));
+  const subject={...r,vertexPath:path};
   const sectors:EditableRiverSector[]=path.slice(1).map((b,i)=>{
     const a=path[i],key=riverFeatureEdge(a,b),owners=ctx.edgeOwners(key);
     const prior=oldOwner.get(key);const owner=prior!==undefined&&owners.includes(prior)?prior:owners.includes(r.regionId)?r.regionId:[...owners].sort((a,b)=>a-b)[0];
     if(owner===undefined)fail('unknown_river_edge');
     const f=values.get(key);if(!isFullness(f))fail('unknown_river_fullness');
-    return {id:`manual-${r.id}:${key}`,riverId:r.id,sectorIndex:i+1,vertexPath:[{...a},{...b}],edgeKeys:[key],startVertexKey:a.key,endVertexKey:b.key,startReason:i===0?'river_start':'region_boundary',endReason:i===path.length-2?'river_end':'region_boundary',fullness:f!,assignedRegionId:owner};
+    return {id:`manual-${r.id}:${key}`,riverId:r.id,sectorIndex:i+1,vertexPath:[{...a},{...b}],edgeKeys:[key],startVertexKey:a.key,endVertexKey:b.key,startReason:(ctx.reason?.(a.key,true,i===0,subject)??(i===0?'river_start':'region_boundary')) as EditableRiverSector['startReason'],endReason:(ctx.reason?.(b.key,false,i===path.length-2,subject)??(i===path.length-2?'river_end':'region_boundary')) as EditableRiverSector['endReason'],fullness:f!,assignedRegionId:owner};
   });
   const merged:EditableRiverSector[]=[];
   for(let i=0;i<sectors.length;){
     const segment=sectors[i];
-    const prior=r.sectors.find(s=>s.startVertexKey===segment.startVertexKey&&s.vertexPath.length>1
+    const prior=r.sectors.find(s=>s.startVertexKey===segment.startVertexKey&&s.vertexPath.length>1&&s.startReason===segment.startReason
+      &&s.endReason===sectors[i+s.edgeKeys.length-1]?.endReason
       &&s.vertexPath.every((v,j)=>path[i+j]?.key===v.key)
       &&s.edgeKeys.every((k,j)=>sectors[i+j]?.edgeKeys[0]===k&&sectors[i+j]?.fullness===s.fullness
         &&sectors[i+j]?.assignedRegionId===(s.assignedRegionId??r.regionId)));
     if(prior){merged.push(prior);i+=prior.edgeKeys.length;}else{merged.push(segment);i++;}
   }
-  const next={...r,vertexPath:path.map(v=>({...v})),sectors:merged};delete next.controlPoints;
+  const next={...r,vertexPath:path.map(v=>({...v})),sectors:merged};
+  if(next.controlPoints){
+    const keys=new Set(path.map(v=>v.key)),points=next.controlPoints;
+    if(!keys.has(points.startVertex.key)||!keys.has(points.endVertex.key)||points.middlePurpleVertex&&!keys.has(points.middlePurpleVertex.key))delete next.controlPoints;
+    else if(r.vertexPath.length===path.length&&path.every((v,i)=>v.key===r.vertexPath[r.vertexPath.length-1-i].key))next.controlPoints={...points,startVertex:points.endVertex,endVertex:points.startVertex};
+  }
   if(!path.slice(1).some((v,i)=>ctx.edgeOwners(riverFeatureEdge(path[i],v)).includes(next.regionId)))next.regionId=sectors[0].assignedRegionId!;
   return next;
 }
-function components(n:RiverNetwork):RiverNetwork[]{
-  const remaining=new Set(n.nodes.map(n=>n.id)),out:RiverNetwork[]=[];
-  while(remaining.size){const ids=new Set<string>([remaining.values().next().value!]);for(const id of ids)for(const e of n.edges)if(e.from===id||e.to===id)ids.add(e.from===id?e.to:e.from);for(const id of ids)remaining.delete(id);out.push({nodes:n.nodes.filter(x=>ids.has(x.id)),edges:n.edges.filter(x=>ids.has(x.from))});}return out;
+const sortedEdges=(network:RiverNetwork,ids?:Set<string>)=>network.edges.filter(e=>!ids||ids.has(e.from)&&ids.has(e.to)).map(e=>[e.id,e.from,e.to,e.regionId,e.height,e.fullness??null]).sort((a,b)=>JSON.stringify(a).localeCompare(JSON.stringify(b)));
+/** Physical support makes a grandfathered violation precise: a changed F, port,
+ * direction or lake area cannot borrow an old code at the same transient node. */
+function numericViolations(network:RiverNetwork):Map<string,Issue>{
+  const found=new Map<string,Issue>();
+  const remember=(issue:Issue)=>{
+    if(issue.code==='CYCLE')return;
+    const node=network.nodes.find(n=>n.id===issue.nodeId),edge=network.edges.find(e=>e.id===issue.edgeId);
+    const support=node?network.edges.filter(e=>e.from===node.id||e.to===node.id):edge?network.edges.filter(e=>e.id===edge.id):network.edges;
+    const signature=JSON.stringify([issue.rule,issue.code,node??null,sortedEdges({nodes:[],edges:support})]);
+    found.set(signature,issue);
+  };
+  for(const issue of validateRiverNetwork(network).issues)remember(issue);
+  // A degree error elsewhere must not hide a new flow violation. Check each
+  // junction against its actual incident ports and open immutable exterior.
+  for(const node of network.nodes){
+    const local:RiverNetwork={nodes:[node],edges:[]};
+    for(const edge of network.edges.filter(e=>e.from===node.id||e.to===node.id)){
+      const from=edge.from===node.id?node.id:`fixed:start:${edge.id}`,to=edge.to===node.id?node.id:`fixed:end:${edge.id}`;
+      local.edges.push({...edge,from,to});
+      if(from!==node.id)local.nodes.push({id:from,kind:'open'});
+      if(to!==node.id)local.nodes.push({id:to,kind:'open'});
+    }
+    for(const issue of validateRiverNetwork(local).issues)if(!issue.nodeId||issue.nodeId===node.id)remember(issue);
+  }
+  // Iterative Kosaraju: compare the actual cyclic physical subgraphs, not one
+  // global CYCLE flag which could mask a second/new cycle on the same map.
+  const outgoing=new Map(network.nodes.map(n=>[n.id,[] as string[]])),incoming=new Map(network.nodes.map(n=>[n.id,[] as string[]]));
+  for(const e of network.edges){outgoing.get(e.from)?.push(e.to);incoming.get(e.to)?.push(e.from);}
+  const seen=new Set<string>(),order:string[]=[];
+  for(const node of network.nodes)if(!seen.has(node.id)){
+    const stack:[string,boolean][]=[[node.id,false]];
+    while(stack.length){const [id,done]=stack.pop()!;if(done){order.push(id);continue;}if(seen.has(id))continue;seen.add(id);stack.push([id,true]);for(const next of outgoing.get(id)??[])if(!seen.has(next))stack.push([next,false]);}
+  }
+  seen.clear();
+  for(const id of order.reverse())if(!seen.has(id)){
+    const ids=new Set<string>(),queue=[id];
+    while(queue.length){const key=queue.pop()!;if(seen.has(key))continue;seen.add(key);ids.add(key);queue.push(...(incoming.get(key)??[]).filter(k=>!seen.has(k)));}
+    if(ids.size>1||network.edges.some(e=>e.from===id&&e.to===id))found.set(JSON.stringify(['RIV-016','CYCLE',[...ids].sort(),sortedEdges(network,ids)]),{rule:'RIV-016',code:'CYCLE',message:'New or changed directed river cycle'});
+  }
+  return found;
 }
-/** Check changed components strictly, while leaving unrelated legacy components untouched. */
+/** Preserve exact unchanged legacy interactions, including within a connected
+ * component; strictly reject every new/changed physical or numeric violation. */
 export function validateEditedRiverNetwork(before:EditableRiver[],after:EditableRiver[],ctx:Pick<RiverEditContext,'network'>):void{
   const a=ctx.network(before),b=ctx.network(after);
   const oldIssues=new Set(a.issues);for(const issue of b.issues)if(!oldIssues.has(issue))fail(issue);
-  const signature=(n:RiverNetwork)=>JSON.stringify({nodes:[...n.nodes].sort((a,b)=>a.id.localeCompare(b.id)),edges:[...n.edges].sort((a,b)=>a.id.localeCompare(b.id))});
-  const oldComponents=new Set(components(a.network).map(signature));
-  for(const c of components(b.network))if(!oldComponents.has(signature(c))){const checked=validateRiverNetwork(c);if(!checked.valid)fail(checked.issues.map(i=>`${i.rule}:${i.code}:${i.nodeId??i.edgeId??''}`).join(';'));}
+  const existing=numericViolations(a.network);
+  for(const [signature,issue] of numericViolations(b.network))if(!existing.has(signature))fail(`${issue.rule}:${issue.code}:${issue.nodeId??issue.edgeId??''}`);
 }
 /** Pure preparation; no history, counter, RNG or input object is mutated on any failure. */
 export function prepareRiverEdit(doc:RiverEditDocument,edit:RiverEdit,ctx:RiverEditContext):RiverEditDocument{
-  validateRiverCounter(doc.rivers,doc.nextRiverId);validateDeltaReferences(doc.rivers);
+  validateRiverCounter(doc.rivers,doc.nextRiverId);validateDeltaReferences(doc.rivers);validateRiverFeatures(doc.riverFeatures,doc.rivers,ctx);
   const old=edit.type==='create'?undefined:doc.rivers.find(r=>r.id===edit.riverId);
   if(edit.type!=='create'&&!old)fail('stale_river');
   let rivers=doc.rivers,nextRiverId=doc.nextRiverId;
@@ -169,7 +215,7 @@ export function prepareRiverEdit(doc:RiverEditDocument,edit:RiverEdit,ctx:RiverE
   }else{
     let path=edit.type==='reverse'?[...old!.vertexPath].reverse():edit.path;
     if(path.length<2||new Set(path.map(v=>v.key)).size!==path.length)fail('invalid_river_path');
-    for(const v of path){const real=ctx.vertex(v.key);if(!real||real.x!==v.x||real.y!==v.y)fail('unknown_river_vertex');}
+    for(const v of path){const real=ctx.vertex(v.key);if(!real||!Number.isFinite(v.x)||!Number.isFinite(v.y)||Math.abs(real.x-v.x)>0.001||Math.abs(real.y-v.y)>0.001)fail('unknown_river_vertex');}
     if(edit.type==='replace'&&JSON.stringify(old!.vertexPath)===JSON.stringify(path))return doc;
     const used=new Set(doc.rivers.filter(r=>r!==old).flatMap(r=>r.vertexPath.slice(1).map((v,i)=>riverFeatureEdge(r.vertexPath[i],v))));
     const oldEdges=new Set(old?.vertexPath.slice(1).map((v,i)=>riverFeatureEdge(old.vertexPath[i],v))??[]);

@@ -46,8 +46,8 @@ test('E5 cleanup preserves shared physical waterfall while deleting only orphane
  const result=featuresForSurvivingRivers(features,[b]);assert.deepEqual(result,{rapids:[],waterfalls:[features.waterfalls[0]]});assert.equal(features.waterfalls.length,2);
 });
 test('E5 reach edit spans region boundaries; no-op/failed source change preserves document',()=>{
- const doc=base(),before=structuredClone(doc),edit={type:'fullness',riverId:5,edgeKey:riverFeatureEdge(v(1),v(2)),fullness:3};
- const result=prepareRiverEdit(doc,edit,context());assert.ok(result.rivers[0].sectors.every(s=>s.fullness===3));assert.deepEqual(result.rivers[0].sectors.map(s=>s.assignedRegionId),[1,2,2]);assert.deepEqual(doc,before);
+ const doc=base();doc.rivers[0].controlPoints={startVertex:v(0),endVertex:v(3),middlePurpleVertex:v(1),startMode:'existing river endpoint'};const before=structuredClone(doc),edit={type:'fullness',riverId:5,edgeKey:riverFeatureEdge(v(1),v(2)),fullness:3};
+ const result=prepareRiverEdit(doc,edit,context());assert.ok(result.rivers[0].sectors.every(s=>s.fullness===3));assert.deepEqual(result.rivers[0].sectors.map(s=>s.assignedRegionId),[1,2,2]);assert.deepEqual(doc,before);assert.deepEqual(result.rivers[0].controlPoints,doc.rivers[0].controlPoints);
  assert.equal(prepareRiverEdit(doc,{...edit,fullness:2},context()),doc);
  assert.throws(()=>prepareRiverEdit(doc,edit,context({'0,0':'source'})),/RIV-007/);assert.deepEqual(doc,before);
  const events={...context(),event:key=>key==='1,0'};const partial=prepareRiverEdit(doc,edit,{...events,network:r=>({network:{nodes:[],edges:[]},issues:[]})});assert.deepEqual(partial.rivers[0].sectors[0],doc.rivers[0].sectors[0],'unaffected upstream sector is preserved');
@@ -60,9 +60,22 @@ test('E5 reverse/create/delete validate physical path, counter and dependencies 
  assert.throws(()=>prepareRiverEdit(doc,create,{...context(),blocked:()=>true}),/obstacle/);
  const arm={...river(6,[2,4]),deltaParentRiverId:5};const group={...doc,rivers:[...doc.rivers,arm],nextRiverId:7};assert.throws(()=>prepareRiverEdit(group,{type:'remove',riverId:5,includeArms:false},context()),/confirmation/);
  const removed=prepareRiverEdit(group,{type:'remove',riverId:5,includeArms:true},context());assert.equal(removed.rivers.length,0);assert.equal(removed.nextRiverId,7);assert.deepEqual(doc,before);
+ // Cleanup must not make malformed accepted-state input appear valid.
+ const broken={...doc,riverFeatures:{rapids:[{riverId:5,edgeKey:'missing',state:'off'}],waterfalls:[]}};
+ assert.throws(()=>prepareRiverEdit(broken,{type:'remove',riverId:5,includeArms:true},context()),/missing_or_duplicate_rapid_edge/);
 });
 test('E5 network validation preserves independent unchanged legacy defects, rejects new ones',()=>{
  const ctx=context({'8,0':'source'}),old=[river(1,[0,1],1),river(2,[8,9],3)];const next=[river(1,[0,1],2),old[1]];
  assert.doesNotThrow(()=>validateEditedRiverNetwork(old,next,ctx));
  assert.throws(()=>validateEditedRiverNetwork(old,[old[0],river(2,[8,9],4)],ctx),/RIV-007/);
+ // An unchanged bad source may remain in the same connected component. Its
+ // immediate fixed edge is unchanged while a valid downstream confluence varies.
+ const connectedCtx=context({'0,0':'source','1,0':'confluence'}),up=river(1,[0,1],3),tributary=river(2,[4,1],2),down=river(3,[1,2],3);
+ assert.doesNotThrow(()=>validateEditedRiverNetwork([up,tributary,down],[up,tributary,river(3,[1,2],4)],connectedCtx));
+ assert.throws(()=>validateEditedRiverNetwork([up,tributary,down],[river(1,[0,1],4),tributary,down],connectedCtx),/RIV/);
+ // A global old CYCLE code cannot authorize a second cycle; cycles are compared
+ // by strongly connected physical subgraphs, not the first validator message.
+ const cycles=context(),loop=[river(1,[0,1,2,0],1)],extra=[...loop,river(2,[4,5,6,4],1)];
+ assert.doesNotThrow(()=>validateEditedRiverNetwork(loop,loop,cycles));
+ assert.throws(()=>validateEditedRiverNetwork(loop,extra,cycles),/RIV-016/);
 });

@@ -1,4 +1,5 @@
-import {emptyRiverFeatures, migrateRiverEditing, validateRiverCounter, validateRiverFeatures, reserveGeneratedRiverIds, type RiverFeatures, type FeatureEligibility} from './manualRivers';
+import {buildManualRiverNetwork, type RiverEditingGeometry} from './manualRiverGeometry';
+import {emptyRiverFeatures, migrateRiverEditing, validateRiverCounter, validateRiverFeatures, reserveGeneratedRiverIds, type RiverFeatures, type FeatureEligibility, type RiverEditContext, type EditableRiver} from './manualRivers';
 import {emptyTags,findTag,ownerKey,tagKey,rollTag,editTag,validateTags,TagCapacityError,type TagState,type TagOwner} from './tags/engine';
 import {mythicDefinitions,tagOwners,tagPolicy,reconcileTags,fillMythicTags} from './tags/mythic';
 import {TagRow} from './tags/TagRow';
@@ -979,6 +980,40 @@ function riverFeatureEligibility(rivers:River[],regions:Region[],terrain:Map<str
   const visibleVertices=new Set(rivers.flatMap(r=>r.vertexPath.slice(1).flatMap((v,i)=>hidden.has(edgeKey(r.vertexPath[i],v))?[]:[v.key,r.vertexPath[i].key])));
   return {rapid:(id,key)=>!!edges.get(id)?.has(key)&&!hidden.has(key)&&!crossingEdges.has(key),
     waterfall:key=>visibleVertices.has(key)&&!starts.has(key)&&!confluences.has(key)&&!lake.has(key)&&!sea.has(key)};
+}
+/** Detached E5 physical/numeric context. Crossings/delta/feature dependency
+ * preparation is deliberately supplied by the final edit transaction, not a no-op
+ * callback masquerading as complete acceptance. */
+function buildManualRiverGeometryContext(map:MapSnapshot):Pick<RiverEditContext,'vertex'|'edgeOwners'|'blocked'|'event'|'reason'|'network'>&{geometry:RiverEditingGeometry}{
+  const all=map.regions.flatMap(r=>r.hexes),graph=buildRiverGraphForRegion(all,all,getCandidateHexes(all,getSeaHexKeys(map.hexTerrainByKey)));
+  const edgeOwners=new Map<string,number[]>();
+  for(const region of map.regions)for(const hex of region.hexes)for(const key of getHexEdgeKeys(hex)){
+    const owners=edgeOwners.get(key)??[];if(!owners.includes(region.id))owners.push(region.id);edgeOwners.set(key,owners);
+  }
+  for(const owners of edgeOwners.values())owners.sort((a,b)=>a-b);
+  const lakeByVertex=new Map<string,string>(),lakeHexes=new Map<string,Set<string>>();
+  for(const lake of getLakesForRegions(map.regions,map.hexTerrainByKey)){
+    const id=`lake:${lake.lakeId}`,keys=lakeHexes.get(id)??new Set<string>();
+    for(const h of lake.hexes)keys.add(hexKey(h));lakeHexes.set(id,keys);
+    for(const v of lake.vertices)lakeByVertex.set(v.key,id);
+  }
+  const geometry:RiverEditingGeometry={vertices:graph.nodes,edgeOwners,heights:new Map(map.regions.map(r=>[r.id,r.heightLevel])),lakeByVertex,
+    lakeHexCount:new Map([...lakeHexes].map(([id,keys])=>[id,keys.size])),seaVertices:getSeaVertexKeysFromSeaKeys(getSeaHexKeys(map.hexTerrainByKey)),
+    openVertices:new Set([...graph.nodes.values()].filter(v=>v.isCandidateBoundaryVertex).map(v=>v.key))};
+  const network=(rivers:EditableRiver[])=>buildManualRiverNetwork(rivers,geometry);
+  const blocked=new Set([...getSeaEdgeKeys(map.hexTerrainByKey),...(map.obstacles??[]).map(o=>o.edgeKey)]);
+  const boundaries=getRegionBoundaryVertexKeys(map.regions);
+  const confluence=(key:string,rivers:readonly EditableRiver[])=>{
+    const main=rivers.filter(r=>r.deltaParentRiverId===undefined);
+    let incoming=0,outgoing=0;
+    for(const r of main)for(let i=1;i<r.vertexPath.length;i++){
+      if(r.vertexPath[i].key===key)incoming++;if(r.vertexPath[i-1].key===key)outgoing++;
+    }
+    return incoming===2&&outgoing===1;
+  };
+  return {geometry,vertex:key=>geometry.vertices.get(key),edgeOwners:key=>edgeOwners.get(key)??[],blocked:key=>blocked.has(key),network,
+    event:(key,rivers)=>lakeByVertex.has(key)||geometry.seaVertices.has(key)||confluence(key,rivers),
+    reason:(key,start,endpoint,river)=>lakeByVertex.has(key)?'lake':confluence(key,[...map.rivers.filter(r=>r.id!==river.id),river])?'river_confluence':endpoint?(start?'river_start':'river_end'):boundaries.has(key)?'region_boundary':'split'};
 }
 class RiverFeatureConflict extends Error {
   constructor(readonly featureCode:string){super('Ручная отметка реки конфликтует с изменением. Снимите отметку или измените действие.');this.name='RiverFeatureConflict';}
