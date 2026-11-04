@@ -100,7 +100,7 @@ test('manual edits do not replace generation checkpoints, regenerate rollback re
   h.render().regenerateLastRegion();h.render().finishPendingRegeneration();const after=stable(h.render());assertUndoRedo(h,before,after);
   // HX023-E5-R1 / E5-06: deletion is a manual edit too. Both checkpoint
   // consumers must ask before restoring a river absent from the current map.
-  for(const command of ['deleteLastRegion','regenerateLastRegion'])for(const language of ['ru','en']) {
+  for(const command of ['deleteLastRegion','regenerateLastRegion'])for(const language of ['ru','en'])for(const kind of ['deleted','moved','unchanged','new-last-region']) {
     const {h}=setup(42),g=h.geometry;h.render().setLanguage(language);
     h.render().addFallbackTractToMap({q:0,r:0});
     const base=h.render().captureDocument().map,a={q:0,r:0},b={q:1,r:0};
@@ -111,19 +111,56 @@ test('manual edits do not replace generation checkpoints, regenerate rollback re
     const id=h.render().rivers[0].id;
     h.render().addFallbackTractToMap(h.render().candidateHexes[0]);
     assert.equal(h.render().regions.length,2);assert.ok(h.render().history.at(-1).rivers.some(r=>r.id===id));
-    assert.equal(h.render().editRiverDocument({type:'remove',riverId:id,includeArms:true},{confirmed:true}),true);
+    if(kind==='deleted')assert.equal(h.render().editRiverDocument({type:'remove',riverId:id,includeArms:true},{confirmed:true}),true);
+    if(kind==='moved'||kind==='new-last-region') {
+      // R2: use the actual draft/preview UI; replacing may derive a new owner.
+      const last=h.render().regions[1];let accepted=null;
+      for(const hex of last.hexes) {
+        const corners=g.getHexCornerPoints(hex);
+        for(let i=0;i<corners.length;i++) {
+          const next=[corners[i],corners[(i+1)%corners.length]];
+          if(h.render().editRiverDocument({type:'replace',riverId:id,path:next,regionId:region.id,fullness:2},{confirmed:true})&&h.render().rivers.find(r=>r.id===id).regionId===last.id){accepted=next;break;}
+        }
+        if(accepted)break;
+      }
+      assert.ok(accepted,'valid path wholly in last region');h.render().undoMap();
+      if(kind==='new-last-region') {
+        let created=false;
+        for(const hex of last.hexes){const vertices=g.getHexCornerPoints(hex);for(let i=0;i<vertices.length;i++){
+          if(h.render().editRiverDocument({type:'create',path:[vertices[i],vertices[(i+1)%vertices.length]],regionId:last.id,fullness:1})){created=true;break;}
+        }if(created)break;}
+        assert.ok(created,'independent new river in last region');
+        assert.equal(h.render().rivers.length,2);
+      } else {
+        h.render().setEditMode(true);assert.equal(h.render().startRiverDraft(id),true);
+        for(const v of accepted)assert.equal(h.render().appendRiverDraft(v.key),true);
+        h.render().finishRiverDraft();assert.ok(h.render().riverCommandPreview);
+        assert.equal(h.render().confirmRiverCommand(h.render().riverCommandPreview),true);
+      }
+      if(kind==='moved')assert.equal(h.render().rivers.find(r=>r.id===id).regionId,last.id);
+    }
+    if(kind==='unchanged'||kind==='new-last-region') {
+      // Isolate the no-warning contract from automatic river continuation.
+      const current=h.render().captureDocument().map,checkpoint=h.render().history.at(-1);
+      h.render().restoreSnapshot({...current,rivers:[...checkpoint.rivers,...current.rivers.filter(r=>!checkpoint.rivers.some(old=>old.id===r.id))],riverFeatures:checkpoint.riverFeatures});
+      const dialogs=[];h.setWindow({alert(){},confirm:m=>{dialogs.push(m);return true;}});
+      h.render()[command]();assert.equal(dialogs.length,0,'no retained manual river change');continue;
+    }
+    h.render().setSelectedHex(region.centerHex);h.render().setSelectedHexBiomeOverride('open_hills');h.render().undoMap();assert.ok(h.render().redoHistory.length);
+    const fullBefore=structuredClone(h.render().captureDocument());
     const before=serial(h.render().captureDocument()),beforeSave=stable(h.render()),stacks=serial([h.render().undoHistory,h.render().redoHistory]);
     const dialogs=[];h.setWindow({alert(){},confirm:m=>{dialogs.push(m);return false;},matchMedia:()=>({matches:false})});
     h.render()[command]();
-    assert.equal(dialogs.length,1,command+' warns before restoring deletion');
-    assert.match(dialogs[0],new RegExp(`${language==='ru'?'Река':'River'} ${id}`));
+    assert.equal(dialogs.length,1,command+' warns before restoring '+kind);
+    assert.ok(dialogs[0].includes((kind==='deleted'?`${language==='ru'?'Река':'River'} ${id}`:h.render().toponyms[`river:${id}`][language])),'preview names the affected river');
+    assert.deepEqual(structuredClone(h.render().captureDocument()),fullBefore,'reject keeps complete Map/Set document');
     assert.deepEqual(serial(h.render().captureDocument()),before,'reject keeps document, RNG and checkpoints');
     assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks,'reject keeps both stacks');
     assert.equal(h.render().pendingRegen,null);
     h.setWindow({alert(){},confirm:()=>true,matchMedia:()=>({matches:false})});
     h.render()[command]();
-    if(command==='regenerateLastRegion')assert.ok(h.render().pendingRegen,'accept permits regeneration');
-    else {const restored=stable(h.render());assert.equal(restored.map.regions.length,1);assert.ok(restored.map.rivers.some(r=>r.id===id));assertUndoRedo(h,beforeSave,restored);}
+    if(command==='regenerateLastRegion'){assert.ok(h.render().pendingRegen,'accept permits regeneration');h.render().finishPendingRegeneration();assert.equal(h.render().pendingRegen,null);}
+    const restored=stable(h.render());assert.ok(restored.map.rivers.some(r=>r.id===id));assertUndoRedo(h,beforeSave,restored);
   }
 });
 test('pending file read serializes imports and blocks edits, generation and reset',async()=>{
