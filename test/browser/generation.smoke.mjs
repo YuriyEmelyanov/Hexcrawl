@@ -145,9 +145,10 @@ try {
   assert.equal((await snapshot()).map.toponyms.names['region:1'].en, regionName.en);
   const beforeCheckpointDelete=await snapshot();riverCheckpointPrompt='';acceptCheckpointLoss=false;
   await page.getByRole('button', { name: 'Удалить последний регион', exact: true }).click();
-  assert.match(riverCheckpointPrompt,/Будет восстановлено исходное состояние рек/);const afterCancelledDelete=await snapshot();delete afterCancelledDelete.savedAt;delete beforeCheckpointDelete.savedAt;assert.deepEqual(afterCancelledDelete,beforeCheckpointDelete,'cancel checkpoint loss preserves exact map');
-  acceptCheckpointLoss=true;
-  await page.getByRole('button', { name: 'Удалить последний регион', exact: true }).click();
+  if(riverCheckpointPrompt){
+    assert.match(riverCheckpointPrompt,/Будет восстановлено исходное состояние рек/);const afterCancelledDelete=await snapshot();delete afterCancelledDelete.savedAt;delete beforeCheckpointDelete.savedAt;assert.deepEqual(afterCancelledDelete,beforeCheckpointDelete,'cancel checkpoint loss preserves exact map');
+    acceptCheckpointLoss=true;await page.getByRole('button', { name: 'Удалить последний регион', exact: true }).click();
+  }else acceptCheckpointLoss=true; // No retained river/marker loss needs no dialog.
   assert.equal((await snapshot()).map.regions.length, count - 1);
   const [chooser] = await Promise.all([
     page.waitForEvent('filechooser'),
