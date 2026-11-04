@@ -1,0 +1,118 @@
+{
+  "run_id": "2026-11-04-reviewer-HX-BL-023-E5-4badf0d",
+  "role": "reviewer",
+  "task_id": "HX-BL-023",
+  "stage_id": "E5",
+  "status": "changes_requested",
+  "role_selection_reason": "Priority4: exact-SHA review_ready handoff after completed programmer R1 claim; independent fresh reviewer available. Stale global pointers reconciled read-only against closed claims, handoffs and live PR.",
+  "head_sha": "4badf0de7dbc11470be1e06b36531410c2fe3474",
+  "base_sha": "ab75ecb0a5b90888d4e367bfc9a40ecdff8ad429",
+  "tree_sha": "4a4e1e86856f1f3dd536c52f1a444167fffbd4aa",
+  "pr": 486,
+  "spec_ref": "agent-work/specs/HX-BL-023-E5.md",
+  "independent_worker": "/root/review_e5_4badf0d",
+  "report_ref": "agent-work/evidence/review-HX-BL-023-E5-4badf0d/report.json",
+  "resolved_findings": [
+    {
+      "id": "HX023-E5-R1",
+      "scope": "reported deleted-river branch"
+    }
+  ],
+  "findings": [
+    {
+      "id": "HX023-E5-R2",
+      "status": "confirmed_defect",
+      "requirement": "E5-06/AC08",
+      "effect": "Manual path relocated to last region silently replaced by old retained-region checkpoint; no warning in both delete/regenerate RU/EN."
+    }
+  ],
+  "checks": {
+    "CI_run": 41883936580,
+    "exact_head_and_checkout_tree_match": true,
+    "Node24": {
+      "executed": 286,
+      "passed": 286,
+      "failed": 0,
+      "skipped": 0
+    },
+    "browser_scripts": {
+      "executed": 8,
+      "passed": 8,
+      "skipped": null
+    },
+    "rng_scripts": {
+      "executed": 1,
+      "passed": 1,
+      "skipped": null
+    },
+    "limits": "Browser/RNG skip count not separately reported; no cross-suite total. Fresh bounded actual-App/UI diagnostics separate from permanent tests.",
+    "evidence_ref": "agent-work/evidence/review-HX-BL-023-E5-4badf0d/ci-verification.json"
+  },
+  "score_assessment_ref": "agent-work/evidence/review-HX-BL-023-E5-4badf0d/score_assessment1.2.json",
+  "score_model_version": "1.2",
+  "score_status": "insufficient_evidence",
+  "confirmed_points": null,
+  "unverified_weight": 1000,
+  "score_changed": false,
+  "test_change_summary_ref": "agent-work/evidence/review-HX-BL-023-E5-4badf0d/test_change_summary.json",
+  "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/486#pullrequestreview-5774249974",
+  "github_review_state": "COMMENT containing explicit changes_requested verdict and inline finding",
+  "accepted": false,
+  "published": false,
+  "main_changed": false,
+  "release_approved": false,
+  "user_walkthrough": {
+    "status": "release_preview_pending",
+    "fresh_bounded_capture_provenance_ref": "agent-work/evidence/review-HX-BL-023-E5-4badf0d/capture_provenance.json",
+    "complete_exact_package_shown_in_chat": false,
+    "next_step": "After correction, developer refreshes actual exact-SHA walkthrough; do not request release on current failing package."
+  },
+  "next_task_id": "HX-BL-023",
+  "next_role": "developer",
+  "next_step": "Исправить HX023-E5-R2 в существующей ветке PR486; затем передать новый точный SHA независимому проверяющему.",
+  "authorization": "Existing approved E5 correction; no new task-start approval required. No merge/publication or extra spending authorized.",
+  "handoff_ref": "agent-work/handoffs/2026-11-04-HX-BL-023-E5-R2-developer.json",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-04T18:57:41.368Z",
+      "is_enabled": true,
+      "status": "checked"
+    },
+    "end": {
+      "checked_at": "2026-11-04T19:12:44.340Z",
+      "is_enabled": true,
+      "status": "checked"
+    },
+    "restoration_performed": false,
+    "errors": [],
+    "independent_reviewer": {
+      "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "start": {
+        "checked_at": "2026-11-04T19:00:26Z",
+        "is_enabled": true,
+        "note": "Timed repeat actual peek after initial untimed opening peek also observed true"
+      },
+      "end": {
+        "checked_at": "2026-11-04 19:09:03 UTC",
+        "is_enabled": true,
+        "next_run_time": null
+      },
+      "restoration_performed": false,
+      "errors": [],
+      "limitation": "Observed enabled at actual peeks; cannot guarantee future status. next_run_time=null is not disabled."
+    },
+    "limitation": "Point-in-time actual peek observations; no guarantee of future service state."
+  },
+  "registry_update": {
+    "status": "not_retried_prior_auto_review_denial",
+    "paths": [
+      "agent-work/latest.json",
+      "agent-work/backlog.json",
+      "agent-work/approvals.json"
+    ],
+    "reason": "Automatic approval review previously rejected retransmitting entire internal owner/task history. Narrow own claim/result/handoff/evidence saved; no latest update success claimed.",
+    "incident_ref": "agent-work/evidence/HX-BL-023-E5-862d60c6/operations-write-incident.json"
+  },
+  "completed_at": "2026-11-04T19:13:12.089Z"
+}
