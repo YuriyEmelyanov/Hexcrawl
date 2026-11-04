@@ -1,0 +1,118 @@
+{
+  "task_id": "HX-BL-023",
+  "stage_id": "E5",
+  "pr": 486,
+  "role": "independent_reviewer",
+  "exact_sha": "e62da698ab7aa9c3c1209bd8f40a941c6fcc226a",
+  "tree_sha": "4dc7e9609362c77e1e69165967389ef2c64d0dd0",
+  "main_sha": "ab75ecb0a5b90888d4e367bfc9a40ecdff8ad429",
+  "verdict": "changes_requested",
+  "release_approved": false,
+  "independence": "Fresh child reviewer; no implementation/publication/GitHub writes. Parent suggested bounded adjacent ownership risk; independently reproduced through actual accepted App UI callbacks. No outcome dictated by parent.",
+  "source_review": {
+    "R2_changed_files": [
+      "src/App.tsx",
+      "test/mapTransactions.test.mjs",
+      "docs/river-model-integration.md"
+    ],
+    "R2_diff": "Fresh remote compare parent4bad→head exactly3files, same localdiff; only runtime change both-primary-owner predicate. UIlayout, other runtime modules and browser/RNG tests unchanged from prior reviewed package.",
+    "full_package": "Read full changed production modules manualRivers/manualRiverGeometry/manualRiverDependencies, App diff and affected checkpoint/draft/history paths, saveValidation/styles/docs. Existing finite E5 package evidence applicable to untouched paths after exact-delta comparison; not a blind grade/release transfer.",
+    "local_tree": "Committed localc0db1a9 tree4dc7e96 equals reviewed content; actual Appblob16be6a431d6159426b473be6323c87109710946d matches remote exacthead. node_modules is untracked symlink; no product edits."
+  },
+  "resolved_findings": [
+    {
+      "id": "HX023-E5-R1",
+      "status": "fixed_for_reported_branch",
+      "evidence": "checkpoint-review-probe.json",
+      "result": "Old8b deletion warning defect reproduced4/4; currenthead4/4 correct reject/accept-complete/Undo/Redo."
+    },
+    {
+      "id": "HX023-E5-R2",
+      "status": "fixed_for_reported_branch",
+      "evidence": "checkpoint-review-probe.json",
+      "result": "Old4bad owner-moved warning defect reproduced4/4; currenthead4/4 correct named RU/EN dialogs, reject exact doc/stacks, complete accept+Undo/Redo."
+    }
+  ],
+  "findings": [
+    {
+      "id": "HX023-E5-R3",
+      "severity": "high",
+      "priority": "P1",
+      "status": "open",
+      "title": "Checkpoint preview ignores a new cross-region river owned by the last region, silently deleting its retained-region sector",
+      "source": "src/App.tsx:13556",
+      "requirements": [
+        "E5-06",
+        "AC08"
+      ],
+      "expected": "Warn before deleting/regenerating last region if a committed manual river has a retained-region physical/assigned-sector footprint that checkpoint restoration will lose. Reject must preserve full document and both stacks. A river solely within removed region remains exempt.",
+      "actual": "In RU and EN, actual Add river→append8genuine vertices→Finish creates accepted v7 river owned byregion2 with1sector assigned to retainedregion1. Checkpoint has no river. Both destructive handlers call no dialog and remove whole river; rejecting callback never runs. Delete changes document/history and clears meaningful redo; regenerate changes document and enters pending (stacks initially unchanged).",
+      "reproduction": [
+        "Seed42: prepare two neighboring dry region1 hexes; add real last region2/checkpoint. Checkpoint has zero rivers.",
+        "Through actual Add/draft/Finish callbacks draw valid open path beginning on region2-only edge and including an actual sector assignedregion1. Writer derives primaryowner2 and accepts v7save.",
+        "Create and undo temporary biome edit so both history stacks nonempty.",
+        "Set confirm callback toreject; invoke deleteLastRegion or regenerateLastRegion in RU/EN.",
+        "Observe zero dialogs, accepted cross-region river removed, document changed despite rejection callback."
+      ],
+      "cause": "Predicate checks current.regionId and previous.regionId only. New river has current.regionId=removed2, previousundefined; it ignores sector.assignedRegionId=retained1/physical footprint. R2 fixes both primary-owner versions but not this independent accepted cross-region identity branch.",
+      "evidence": [
+        "cross-owner-new-river-probe.mjs",
+        "cross-owner-new-river-probe.json"
+      ],
+      "bounded_fix_contract": "Classify changed river identities using retained assigned-sector/physical footprint in both current and checkpoint versions. Preserve R1deleted and R2moved cases and no extra warning for wholly removed-only river. Extend existing checkpoint lifecycle with actual new cross-region UI path; cancel exact Maps/Sets and nonempty stacks; accept complete regenerate/Undo/Redo.",
+      "limits": "Actual App callback/hook harness, not physical DOM pointer. Fixture prepares dry geometry and removes generation-only noise before real UI creation. Regenerate sampled at first destructive pending stage, enough to prove failed cancel; no final-regeneration-loss claim."
+    }
+  ],
+  "checks": {
+    "mandatory_CI": "run41903848734 all3jobs success, independently fetched full decoded logs. Node24.22.1 check286/286/skip0; browser24.22.2 productionbuild+8scripts; RNG24.22.1 build+1script. CImerge has zero source difference from exacthead.",
+    "local": "Reviewer probes oldR1=4,oldR2=4,currentR1/R2=8passes,adjacentunchanged/new-last-only/features=12passes,R3=4reproductions; no redundant full gate rerun.",
+    "overall": "CIpass does not override independently failed AC08."
+  },
+  "acceptance_evidence": {
+    "AC01_AC07_AC09_AC10": "Finite exact-tree full CI and applicable prior package evidence remain valid on unchanged paths; no universal correctness/physical-phone/game-breadth claim.",
+    "AC08": "R1/R2 corrected; R3 fails required destructive preview/cancel branch.",
+    "AC11": "Mandatory exact-tree CIpassed; independent review changes_requested."
+  },
+  "score_assessment": "score_assessment1.2.json",
+  "test_change_summary": "test_change_summary.json",
+  "presentation": {
+    "status": "release_preview_pending",
+    "responsible": "developer",
+    "classification": "Missing exact final-package owner walkthrough is separate presentation evidence, not cause of R3 product defect. Do not ask ownerrelease on failingpackage. Currenthead layoutunchanged; no fresh full walkthrough claimed."
+  },
+  "next_role": "developer",
+  "next_step": "Bounded R3fix within approvedE5, extend existing lifecycle; return new exactSHA with required gates to fresh independent reviewer. No merge/main/deploy/release permission.",
+  "automation_health": {
+    "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-04 20:59:32 UTC",
+      "is_enabled": true,
+      "method": "clock immediately before actual automations.peek; subsequent start repeat also true"
+    },
+    "end": {
+      "checked_at": "2026-11-04 21:06:23 UTC",
+      "is_enabled": true,
+      "method": "clock plus actual automations.peek"
+    },
+    "restoration_performed": false,
+    "errors": [],
+    "limitation": "Observed status at these peeks; no guarantee about later service changes."
+  },
+  "limitations": [
+    "No full new audit/benchmark/game profile review; finite evidence only.",
+    "No named map JSON uploaded; scripts/results sanitized; CI full logs local only.",
+    "No remote writes, no main/merge/deploy, no claim that full owner presentation completed."
+  ],
+  "artifact_directory": "/workspace/scratch/cc30953c0fc1/review-e5-e62-evidence",
+  "upload_recommendation": [
+    "report.json",
+    "score_assessment1.2.json",
+    "test_change_summary.json",
+    "ci-verification.json",
+    "automation_health.json",
+    "checkpoint-review-probe.mjs",
+    "checkpoint-review-probe.json",
+    "cross-owner-new-river-probe.mjs",
+    "cross-owner-new-river-probe.json"
+  ]
+}
