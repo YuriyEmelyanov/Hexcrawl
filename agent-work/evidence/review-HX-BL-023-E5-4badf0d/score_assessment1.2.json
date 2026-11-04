@@ -1,0 +1,669 @@
+{
+  "model_version": "1.2",
+  "exact_sha": "4badf0de7dbc11470be1e06b36531410c2fe3474",
+  "baseline_source": "agent-work/score/current-score.json",
+  "baseline_release_sha": "ab75ecb0a5b90888d4e367bfc9a40ecdff8ad429",
+  "ranking_version": "three-scenario-ranks-1.3-DW-FL-nonzero",
+  "cohort_version": "2026-11-04-ranking1.3-process-sync",
+  "primary_scenario": "develop",
+  "secondary_scenario": "create",
+  "canonical_rule_registry_version": "shared-rules-1.3",
+  "rule_traceability": [
+    {
+      "rule_id": "map.river_network",
+      "binding_id": "DND5-2014-007-L1",
+      "game_id": "DND5",
+      "edition": "DMG2014",
+      "layer": "L1",
+      "criterion_id": "S01-C02",
+      "acceptance_checks": [
+        "AC01",
+        "AC02",
+        "AC03"
+      ],
+      "evidence_sha": "4badf0de7dbc11470be1e06b36531410c2fe3474",
+      "actual": "bounded E5 evidence; complete game profile compatibility unverified",
+      "profile_status": "unverified",
+      "limits": "DND and PF2 profiles differ and are unverified; no automatic inheritance or full game support."
+    },
+    {
+      "rule_id": "map.river_network",
+      "binding_id": "PF2-RM-125-L1",
+      "game_id": "PF2",
+      "edition": "Remaster:GM_Core+Player_Core",
+      "layer": "L1",
+      "criterion_id": "S01-C02",
+      "acceptance_checks": [
+        "AC01",
+        "AC02",
+        "AC03"
+      ],
+      "evidence_sha": "4badf0de7dbc11470be1e06b36531410c2fe3474",
+      "actual": "bounded E5 evidence; complete game profile compatibility unverified",
+      "profile_status": "unverified",
+      "limits": "DND and PF2 profiles differ and are unverified; no automatic inheritance or full game support."
+    }
+  ],
+  "method": "Fresh independent source/spec review; exact-tree CI API and full logs; actual App old/new and adjacent owner-transfer probes; fresh bounded production UI. Task acceptance and breadth separated from score.",
+  "criteria": [
+    {
+      "criterion_id": "S01-C02",
+      "weight": 40,
+      "before_grade": null,
+      "before_points": null,
+      "after_grade": null,
+      "after_points": null,
+      "delta": null,
+      "status": "insufficient_evidence",
+      "quality": "Physical river/network checks, migration and manual geometry suites passed exact-tree CI. Bounded real path edit accepted with correct derived owner; no 10000-generation/naturalness evidence.",
+      "breadth": {
+        "top5": {
+          "games": [
+            "DND5",
+            "PF2",
+            "KNAVE2",
+            "SD",
+            "MOTH"
+          ],
+          "coverage": "unverified",
+          "full": null,
+          "partial": null,
+          "unsupported": null,
+          "applicability_unknown": "not independently resolved by this bounded E5 review"
+        },
+        "top10": {
+          "games": [
+            "DND5",
+            "PF2",
+            "KNAVE2",
+            "SD",
+            "MOTH",
+            "ROOT",
+            "OSE",
+            "DW",
+            "MB",
+            "WWN"
+          ],
+          "coverage": "unverified"
+        },
+        "top20": {
+          "games": [
+            "DND5",
+            "PF2",
+            "KNAVE2",
+            "SD",
+            "MOTH",
+            "ROOT",
+            "OSE",
+            "DW",
+            "MB",
+            "WWN",
+            "PF1",
+            "PIRATE",
+            "AWN",
+            "STARF",
+            "VAARN",
+            "BSH",
+            "ODD",
+            "FL",
+            "SWC",
+            "TORCH"
+          ],
+          "coverage": "unverified"
+        },
+        "technical_invariants": "Remain mandatory regardless of game breadth; safety evidence evaluated independently.",
+        "layer": "L1 only; L2/L3 out of scope"
+      },
+      "evidence": [
+        "ci-verification.json",
+        "checkpoint-probe.json",
+        "owner-move-probe.json",
+        "ui-probe.json"
+      ],
+      "limitations": "No full hydrology or expert-naturalness assessment."
+    },
+    {
+      "criterion_id": "S02-C02",
+      "weight": 20,
+      "before_grade": null,
+      "before_points": null,
+      "after_grade": null,
+      "after_points": null,
+      "delta": null,
+      "status": "insufficient_evidence",
+      "quality": "River IDs survive replacement and undo/redo; deleted ID is restored from checkpoint by design, monotonic counter and migrations in CI.",
+      "breadth": {
+        "top5": {
+          "games": [
+            "DND5",
+            "PF2",
+            "KNAVE2",
+            "SD",
+            "MOTH"
+          ],
+          "coverage": "unverified",
+          "full": null,
+          "partial": null,
+          "unsupported": null,
+          "applicability_unknown": "not independently resolved by this bounded E5 review"
+        },
+        "top10": {
+          "games": [
+            "DND5",
+            "PF2",
+            "KNAVE2",
+            "SD",
+            "MOTH",
+            "ROOT",
+            "OSE",
+            "DW",
+            "MB",
+            "WWN"
+          ],
+          "coverage": "unverified"
+        },
+        "top20": {
+          "games": [
+            "DND5",
+            "PF2",
+            "KNAVE2",
+            "SD",
+            "MOTH",
+            "ROOT",
+            "OSE",
+            "DW",
+            "MB",
+            "WWN",
+            "PF1",
+            "PIRATE",
+            "AWN",
+            "STARF",
+            "VAARN",
+            "BSH",
+            "ODD",
+            "FL",
+            "SWC",
+            "TORCH"
+          ],
+          "coverage": "unverified"
+        },
+        "technical_invariants": "Remain mandatory regardless of game breadth; safety evidence evaluated independently.",
+        "layer": "L1 only; L2/L3 out of scope"
+      },
+      "evidence": [
+        "ci-verification.json",
+        "checkpoint-probe.json",
+        "owner-move-probe.json",
+        "ui-probe.json"
+      ],
+      "limitations": "All-entity identity matrix not assessed; R2 silently restores previous geometry for same ID."
+    },
+    {
+      "criterion_id": "S02-C03",
+      "weight": 20,
+      "before_grade": null,
+      "before_points": null,
+      "after_grade": null,
+      "after_points": null,
+      "delta": null,
+      "status": "insufficient_evidence",
+      "quality": "Exact-tree CI manifest v2-v7 migrations, schema/hostile inputs and continued generation passed; source/test scope unchanged beyond one checkpoint preview helper.",
+      "breadth": {
+        "top5": {
+          "games": [
+            "DND5",
+            "PF2",
+            "KNAVE2",
+            "SD",
+            "MOTH"
+          ],
+          "coverage": "unverified",
+          "full": null,
+          "partial": null,
+          "unsupported": null,
+          "applicability_unknown": "not independently resolved by this bounded E5 review"
+        },
+        "top10": {
+          "games": [
+            "DND5",
+            "PF2",
+            "KNAVE2",
+            "SD",
+            "MOTH",
+            "ROOT",
+            "OSE",
+            "DW",
+            "MB",
+            "WWN"
+          ],
+          "coverage": "unverified"
+        },
+        "top20": {
+          "games": [
+            "DND5",
+            "PF2",
+            "KNAVE2",
+            "SD",
+            "MOTH",
+            "ROOT",
+            "OSE",
+            "DW",
+            "MB",
+            "WWN",
+            "PF1",
+            "PIRATE",
+            "AWN",
+            "STARF",
+            "VAARN",
+            "BSH",
+            "ODD",
+            "FL",
+            "SWC",
+            "TORCH"
+          ],
+          "coverage": "unverified"
+        },
+        "technical_invariants": "Remain mandatory regardless of game breadth; safety evidence evaluated independently.",
+        "layer": "L1 only; L2/L3 out of scope"
+      },
+      "evidence": [
+        "ci-verification.json",
+        "checkpoint-probe.json",
+        "owner-move-probe.json",
+        "ui-probe.json"
+      ],
+      "limitations": "Fixed corpus and finite negative cases do not establish whole-criterion grade."
+    },
+    {
+      "criterion_id": "S03-C04",
+      "weight": 30,
+      "before_grade": null,
+      "before_points": null,
+      "after_grade": null,
+      "after_points": null,
+      "delta": null,
+      "status": "insufficient_evidence",
+      "quality": "Explicit ford/feature conflicts and bounded physical-pointer choice passed. R1 deleted-ID preview is fixed. R2 omits owner-transferred river from destructive preview.",
+      "breadth": {
+        "top5": {
+          "games": [
+            "DND5",
+            "PF2",
+            "KNAVE2",
+            "SD",
+            "MOTH"
+          ],
+          "coverage": "unverified",
+          "full": null,
+          "partial": null,
+          "unsupported": null,
+          "applicability_unknown": "not independently resolved by this bounded E5 review"
+        },
+        "top10": {
+          "games": [
+            "DND5",
+            "PF2",
+            "KNAVE2",
+            "SD",
+            "MOTH",
+            "ROOT",
+            "OSE",
+            "DW",
+            "MB",
+            "WWN"
+          ],
+          "coverage": "unverified"
+        },
+        "top20": {
+          "games": [
+            "DND5",
+            "PF2",
+            "KNAVE2",
+            "SD",
+            "MOTH",
+            "ROOT",
+            "OSE",
+            "DW",
+            "MB",
+            "WWN",
+            "PF1",
+            "PIRATE",
+            "AWN",
+            "STARF",
+            "VAARN",
+            "BSH",
+            "ODD",
+            "FL",
+            "SWC",
+            "TORCH"
+          ],
+          "coverage": "unverified"
+        },
+        "technical_invariants": "Remain mandatory regardless of game breadth; safety evidence evaluated independently.",
+        "layer": "L1 only; L2/L3 out of scope"
+      },
+      "evidence": [
+        "ci-verification.json",
+        "checkpoint-probe.json",
+        "owner-move-probe.json",
+        "ui-probe.json"
+      ],
+      "limitations": "Confirmed E5-06/AC08 defect; all NPC/faction/story dependencies are outside E5 evidence."
+    },
+    {
+      "criterion_id": "S03-C05",
+      "weight": 20,
+      "before_grade": null,
+      "before_points": null,
+      "after_grade": null,
+      "after_points": null,
+      "delta": null,
+      "status": "insufficient_evidence",
+      "quality": "Existing mixed100 UI/history suites pass; fresh R1 reject preserves full document including Maps/Sets and meaningful redo; both accepted delete and complete regeneration undo/redo exactly.",
+      "breadth": {
+        "top5": {
+          "games": [
+            "DND5",
+            "PF2",
+            "KNAVE2",
+            "SD",
+            "MOTH"
+          ],
+          "coverage": "unverified",
+          "full": null,
+          "partial": null,
+          "unsupported": null,
+          "applicability_unknown": "not independently resolved by this bounded E5 review"
+        },
+        "top10": {
+          "games": [
+            "DND5",
+            "PF2",
+            "KNAVE2",
+            "SD",
+            "MOTH",
+            "ROOT",
+            "OSE",
+            "DW",
+            "MB",
+            "WWN"
+          ],
+          "coverage": "unverified"
+        },
+        "top20": {
+          "games": [
+            "DND5",
+            "PF2",
+            "KNAVE2",
+            "SD",
+            "MOTH",
+            "ROOT",
+            "OSE",
+            "DW",
+            "MB",
+            "WWN",
+            "PF1",
+            "PIRATE",
+            "AWN",
+            "STARF",
+            "VAARN",
+            "BSH",
+            "ODD",
+            "FL",
+            "SWC",
+            "TORCH"
+          ],
+          "coverage": "unverified"
+        },
+        "technical_invariants": "Remain mandatory regardless of game breadth; safety evidence evaluated independently.",
+        "layer": "L1 only; L2/L3 out of scope"
+      },
+      "evidence": [
+        "ci-verification.json",
+        "checkpoint-probe.json",
+        "owner-move-probe.json",
+        "ui-probe.json"
+      ],
+      "limitations": "R2 modifies document despite rejecting dialog callback because dialog is never shown; named versions and every product edit not assessed."
+    },
+    {
+      "criterion_id": "S04-C04",
+      "weight": 15,
+      "before_grade": null,
+      "before_points": null,
+      "after_grade": null,
+      "after_points": null,
+      "delta": null,
+      "status": "insufficient_evidence",
+      "quality": "JSON v7 validation and PNG/export coverage independently verified in unchanged CI scripts; fresh Chromium fixture edit/export/Undo exact JSON passed.",
+      "breadth": {
+        "top5": {
+          "games": [
+            "DND5",
+            "PF2",
+            "KNAVE2",
+            "SD",
+            "MOTH"
+          ],
+          "coverage": "unverified",
+          "full": null,
+          "partial": null,
+          "unsupported": null,
+          "applicability_unknown": "not independently resolved by this bounded E5 review"
+        },
+        "top10": {
+          "games": [
+            "DND5",
+            "PF2",
+            "KNAVE2",
+            "SD",
+            "MOTH",
+            "ROOT",
+            "OSE",
+            "DW",
+            "MB",
+            "WWN"
+          ],
+          "coverage": "unverified"
+        },
+        "top20": {
+          "games": [
+            "DND5",
+            "PF2",
+            "KNAVE2",
+            "SD",
+            "MOTH",
+            "ROOT",
+            "OSE",
+            "DW",
+            "MB",
+            "WWN",
+            "PF1",
+            "PIRATE",
+            "AWN",
+            "STARF",
+            "VAARN",
+            "BSH",
+            "ODD",
+            "FL",
+            "SWC",
+            "TORCH"
+          ],
+          "coverage": "unverified"
+        },
+        "technical_invariants": "Remain mandatory regardless of game breadth; safety evidence evaluated independently.",
+        "layer": "L1 only; L2/L3 out of scope"
+      },
+      "evidence": [
+        "ci-verification.json",
+        "checkpoint-probe.json",
+        "owner-move-probe.json",
+        "ui-probe.json"
+      ],
+      "limitations": "Full role/style export matrix not assessed; screenshots are fixture evidence, not full walkthrough completion."
+    },
+    {
+      "criterion_id": "S04-C05",
+      "weight": 10,
+      "before_grade": null,
+      "before_points": null,
+      "after_grade": null,
+      "after_points": null,
+      "delta": null,
+      "status": "insufficient_evidence",
+      "quality": "Fresh RU1500/390 editor/after/Undo captures from exact-tree local build visually inspected; exact-tree CI RU/EN/keyboard/hit-target cases passed.",
+      "breadth": {
+        "top5": {
+          "games": [
+            "DND5",
+            "PF2",
+            "KNAVE2",
+            "SD",
+            "MOTH"
+          ],
+          "coverage": "unverified",
+          "full": null,
+          "partial": null,
+          "unsupported": null,
+          "applicability_unknown": "not independently resolved by this bounded E5 review"
+        },
+        "top10": {
+          "games": [
+            "DND5",
+            "PF2",
+            "KNAVE2",
+            "SD",
+            "MOTH",
+            "ROOT",
+            "OSE",
+            "DW",
+            "MB",
+            "WWN"
+          ],
+          "coverage": "unverified"
+        },
+        "top20": {
+          "games": [
+            "DND5",
+            "PF2",
+            "KNAVE2",
+            "SD",
+            "MOTH",
+            "ROOT",
+            "OSE",
+            "DW",
+            "MB",
+            "WWN",
+            "PF1",
+            "PIRATE",
+            "AWN",
+            "STARF",
+            "VAARN",
+            "BSH",
+            "ODD",
+            "FL",
+            "SWC",
+            "TORCH"
+          ],
+          "coverage": "unverified"
+        },
+        "technical_invariants": "Remain mandatory regardless of game breadth; safety evidence evaluated independently.",
+        "layer": "L1 only; L2/L3 out of scope"
+      },
+      "evidence": [
+        "ci-verification.json",
+        "checkpoint-probe.json",
+        "owner-move-probe.json",
+        "ui-probe.json"
+      ],
+      "limitations": "R1 RU/EN prompts verified by real App callbacks; R2 absent in both locales. No full WCAG AA or physical-phone audit."
+    },
+    {
+      "criterion_id": "S09-C04",
+      "weight": 10,
+      "before_grade": null,
+      "before_points": null,
+      "after_grade": null,
+      "after_points": null,
+      "delta": null,
+      "status": "insufficient_evidence",
+      "quality": "Hostile import/no-op/fault protections in CI; fresh R1 reject exact document+history and accepted Undo/Redo passed.",
+      "breadth": {
+        "top5": {
+          "games": [
+            "DND5",
+            "PF2",
+            "KNAVE2",
+            "SD",
+            "MOTH"
+          ],
+          "coverage": "unverified",
+          "full": null,
+          "partial": null,
+          "unsupported": null,
+          "applicability_unknown": "not independently resolved by this bounded E5 review"
+        },
+        "top10": {
+          "games": [
+            "DND5",
+            "PF2",
+            "KNAVE2",
+            "SD",
+            "MOTH",
+            "ROOT",
+            "OSE",
+            "DW",
+            "MB",
+            "WWN"
+          ],
+          "coverage": "unverified"
+        },
+        "top20": {
+          "games": [
+            "DND5",
+            "PF2",
+            "KNAVE2",
+            "SD",
+            "MOTH",
+            "ROOT",
+            "OSE",
+            "DW",
+            "MB",
+            "WWN",
+            "PF1",
+            "PIRATE",
+            "AWN",
+            "STARF",
+            "VAARN",
+            "BSH",
+            "ODD",
+            "FL",
+            "SWC",
+            "TORCH"
+          ],
+          "coverage": "unverified"
+        },
+        "technical_invariants": "Remain mandatory regardless of game breadth; safety evidence evaluated independently.",
+        "layer": "L1 only; L2/L3 out of scope"
+      },
+      "evidence": [
+        "ci-verification.json",
+        "checkpoint-probe.json",
+        "owner-move-probe.json",
+        "ui-probe.json"
+      ],
+      "limitations": "R2 silently replaces a committed path in both checkpoint consumers; finite passing cases do not justify grade."
+    }
+  ],
+  "confirmed_points": null,
+  "unverified_weight": 1000,
+  "confirmed_increment": 0,
+  "increment_semantics": "No grade or points awarded. Unknown baseline is not numerical zero. No release score updated.",
+  "package_verdict": "changes_requested",
+  "finding": "HX023-E5-R2",
+  "limitations": [
+    "This bounded review is not a new full game audit or universal proof.",
+    "No changed weights, thresholds, grades or duplicate accounting."
+  ]
+}
+
