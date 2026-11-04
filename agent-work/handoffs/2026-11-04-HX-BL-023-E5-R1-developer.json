@@ -1,0 +1,28 @@
+{
+  "task_id": "HX-BL-023",
+  "stage_id": "E5",
+  "status": "changes_requested",
+  "role": "developer",
+  "reviewed_sha": "8b98266ef5960535140feb05687bb2c9fac04156",
+  "pr": 486,
+  "finding_ids": [
+    "HX023-E5-R1"
+  ],
+  "scope": "Исправить HX023-E5-R1: учитывать удалённую реку при сравнении текущей карты и checkpoint, предупреждать о её восстановлении и сохранять документ/историю при отказе. Расширить существующий checkpoint lifecycle. Затем новый SHA и независимая повторная проверка.",
+  "input_evidence": [
+    "agent-work/evidence/review-HX-BL-023-E5-8b98266/report.json",
+    "agent-work/evidence/review-HX-BL-023-E5-8b98266/checkpoint-deletion-finding.json",
+    "agent-work/evidence/review-HX-BL-023-E5-8b98266/score_assessment1.2.json"
+  ],
+  "acceptance": [
+    "Manual river deletion followed by delete-last-region or regeneration requests a loss preview when checkpoint restores the river.",
+    "Rejecting confirmation retains exact current document and both history stacks.",
+    "Accepting explicitly restores expected checkpoint; ordinary changed/new river previews and existing E5 flows regressions pass.",
+    "Reuse existing checkpoint/history scenario; required exact-SHA checks pass before independent review."
+  ],
+  "new_product_scope": false,
+  "implementation_authorized": true,
+  "publication_authorized": false,
+  "next_after_fix": "Independent reviewer verifies new exact SHA, updates score_assessment1.2.",
+  "result_ref": "agent-work/results/2026-11-04-reviewer-HX-BL-023-E5-8b98266.json"
+}
