@@ -76,8 +76,12 @@ test('all existing manual families, import, reset, and 100 exact undo/redo snaps
     else if(i%10===9) h.render().resetMap();
     else if(i%10===3) h.render().setSelectedPoiKind('ruins');
     else if(i%10===6) h.render().deleteSelectedPoi();
-    else if(i%10===2 || i%10===5 || i%10===8) h.render().resetSelectedHexBiomeOverride();
-    else h.render().setSelectedHexBiomeOverride('open_hills');
+    else if(i%10===7) h.render().resetSelectedHexBiomeOverride();
+    else if([1,2,5,8].includes(i%10)) {
+      const river=h.render().rivers[0],edge=[river.vertexPath[0].key,river.vertexPath[1].key].sort().join('|');
+      const edit=i%10<3?{type:'rapid',riverId:river.id,edgeKey:edge,state:i%10===1?'off':'auto'}:{type:'waterfall',vertexKey:river.vertexPath[0].key,state:i%10===5?'off':'auto'};
+      assert.equal(h.render().editRiverFeatures([edit]),true);
+    } else h.render().setSelectedHexBiomeOverride('open_hills');
     const next=stable(h.render());assert.notDeepEqual(next,beforeSnapshots[i],`operation ${i}`);afterSnapshots.push(next);
   }
   for(let i=99;i>=0;i--) {h.render().undoMap();assert.deepEqual(stable(h.render()),beforeSnapshots[i],`undo ${i}`);}
@@ -443,7 +447,12 @@ function riverBackendFixture(withCrossing){
 test('E5 real river transaction resolves deep ford once and preserves no-op, failure and exact undo redo',()=>{
  const {h,g,edge,key}=riverBackendFixture(true),before=stable(h.render()),stacks=serial([h.render().undoHistory,h.render().redoHistory]),f={type:'fullness',riverId:1,edgeKey:edge,fullness:3};
  assert.equal(h.render().editRiverDocument(f),false);assert.deepEqual(stable(h.render()),before);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks);
- const stale=h.render().editRiverDocument;assert.equal(stale(f,{crossingKinds:{[key]:'bridge'}}),true);const after=stable(h.render());assert.equal(after.map.crossings[0].kind,'bridge');assert.ok(after.map.rivers[0].sectors.every(s=>s.fullness===3));assert.deepEqual(after.generation,before.generation);assert.equal(h.render().undoHistory.length,stacks[0].length+1);assert.equal(stale(f),false);assertUndoRedo(h,before,after);
+ h.render().setEditMode(true);
+ assert.equal(h.render().requestRiverCommand(f),false);assert.equal(h.render().riverPreviewPlan.plan.unresolvedCrossings.length,1);assert.equal(h.render().confirmRiverCommand(),false);
+ const cancelled=h.render().confirmRiverCommand;h.render().cancelRiverCommand();assert.equal(cancelled(),false);assert.deepEqual(stable(h.render()),before);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks);
+ h.render().requestRiverCommand(f);const firstPreview=h.render().riverCommandPreview;h.render().changeRiverPreview({crossingKinds:{[key]:'ferry'}});assert.equal(h.render().confirmRiverCommand(firstPreview),false,'old preview callback is inert');
+ assert.equal(h.render().riverPreviewPlan.plan.unresolvedCrossings.length,0);h.render().cancelRiverCommand();
+ const stale=h.render().editRiverDocument;assert.equal(stale(f,{crossingKinds:{[key]:'bridge'},confirmed:true}),true);const after=stable(h.render());assert.equal(after.map.crossings[0].kind,'bridge');assert.ok(after.map.rivers[0].sectors.every(s=>s.fullness===3));assert.deepEqual(after.generation,before.generation);assert.equal(h.render().undoHistory.length,stacks[0].length+1);assert.equal(stale(f),false);assertUndoRedo(h,before,after);
  const document=serial(h.render().captureDocument()),history=serial([h.render().undoHistory,h.render().redoHistory]);const restore=h.injectFunction('getToponymEntities',()=>{throw Error('river preparation clone/name fault');});assert.equal(h.render().editRiverDocument({...f,fullness:4}),false);restore();assert.deepEqual(serial(h.render().captureDocument()),document);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),history);
  assert.equal(h.render().editRiverDocument({type:'remove',riverId:1,includeArms:false}),false);assert.deepEqual(stable(h.render()),after);
  assert.equal(h.render().editRiverDocument({type:'remove',riverId:1,includeArms:false},{confirmed:true}),true);const removed=stable(h.render());assert.equal(removed.map.rivers.length,0);assert.equal(removed.map.crossings.length,0);assert.equal(removed.counters.nextRiverId,2);g.assertHexcrawlSaveData(removed);
@@ -455,6 +464,11 @@ test('E5 real feature and E3 crossing resolution share one accepted transaction 
  const road={type:'create',path:[a,b],kind:'road'},doc=serial(h.render().captureDocument()),stacks=serial([h.render().undoHistory,h.render().redoHistory]);
  assert.equal(h.render().editRoadDocument(road),false);assert.deepEqual(serial(h.render().captureDocument()),doc);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks);
  assert.equal(h.render().editRoadDocument(road,undefined,[{...rapid,state:'off'}]),true);const result=stable(h.render());assert.equal(result.map.roads.length,1);assert.equal(result.map.crossings[0].kind,'bridge');assert.equal(result.map.riverFeatures.rapids[0].state,'off');assert.deepEqual(result.generation,on.generation);assert.equal(h.render().undoHistory.length,stacks[0].length+1);g.assertHexcrawlSaveData(result);assertUndoRedo(h,on,result);await load(h,result);assert.deepEqual(stable(h.render()),result);
+ h.render().undoMap();h.render().undoMap();assert.deepEqual(stable(h.render()),on);h.render().setEditMode(true);
+ assert.equal(h.render().editRoadDocument(road),false);const resolution=h.render().roadFeatureResolution;assert.equal(resolution.conflicts.length,1);assert.deepEqual(stable(h.render()),on);
+ h.render().resetMap();assert.deepEqual(stable(h.render()),on,'pending marker choice blocks another writer');
+ assert.equal(h.render().editRoadDocument(road,undefined,[{...rapid,state:'auto'}],resolution),true);const automatic=stable(h.render());assert.equal(automatic.map.riverFeatures.rapids.length,0);assert.equal(automatic.map.crossings.length,1);g.assertHexcrawlSaveData(automatic);
+
 });
 
 // E5-02: a path draft has a different lifecycle from a prepared river edit.
@@ -482,4 +496,12 @@ test('E5 river draft guards writes, preserves invalid and cancelled work and com
  const finish=h.render().finishRiverDraft;assert.equal(finish(),true);const after=stable(h.render());assert.equal(after.map.rivers.length,before.map.rivers.length+1);assert.equal(after.counters.nextRiverId,before.counters.nextRiverId+1);assert.deepEqual(after.generation,before.generation);assert.equal(h.render().riverDraft,null);assert.equal(h.render().undoHistory.length,stacks[0].length+1);
  assert.equal(finish(),false,'double captured completion is inert');assert.deepEqual(stable(h.render()),after);
  assertUndoRedo(h,before,after);await load(h,after);assert.deepEqual(stable(h.render()),after);assert.equal(finish(),false);
+ h.render().setSelectedHex(a);h.render().setEditMode(true);
+ const id=after.map.rivers.at(-1).id,old=after.map.rivers.find(r=>r.id===id),prior=stable(h.render());
+ assert.equal(h.render().startRiverDraft(id),true);for(const v of old.vertexPath)assert.equal(h.render().appendRiverDraft(v.key),true,'replacement may reuse its own occupied edge');
+ assert.equal(h.render().finishRiverDraft(),true,'same path is a no-op');assert.deepEqual(stable(h.render()),prior);
+ assert.equal(h.render().startRiverDraft(id),true);for(const v of [...old.vertexPath].reverse())assert.equal(h.render().appendRiverDraft(v.key),true);
+ assert.equal(h.render().finishRiverDraft(),false);assert.ok(h.render().riverCommandPreview,'replacement is previewed before commit');assert.deepEqual(stable(h.render()),prior);
+ const replace=h.render().confirmRiverCommand;assert.equal(replace(),true);const replaced=stable(h.render());assert.equal(replaced.counters.nextRiverId,prior.counters.nextRiverId);assert.deepEqual(replaced.map.rivers.find(r=>r.id===id).vertexPath,[...old.vertexPath].reverse());assert.deepEqual(replaced.map.toponyms,prior.map.toponyms);assert.deepEqual(replaced.map.tags,prior.map.tags);assert.equal(replace(),false);g.assertHexcrawlSaveData(replaced);assertUndoRedo(h,prior,replaced);
+
 });

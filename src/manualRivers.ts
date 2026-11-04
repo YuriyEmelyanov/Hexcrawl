@@ -243,6 +243,10 @@ export function prepareRiverEdit(doc:RiverEditDocument,edit:RiverEdit,ctx:RiverE
     let path=edit.type==='reverse'?[...old!.vertexPath].reverse():edit.path;
     if(path.length<2||new Set(path.map(v=>v.key)).size!==path.length)fail('invalid_river_path');
     for(const v of path){const real=ctx.vertex(v.key);if(!real||!Number.isFinite(v.x)||!Number.isFinite(v.y)||Math.abs(real.x-v.x)>0.001||Math.abs(real.y-v.y)>0.001)fail('unknown_river_vertex');}
+    // Canonical keys identify the physical vertex. Adjacent hexes can produce
+    // sub-ulp coordinate differences; retain accepted coordinates on reused
+    // vertices so a no-op/unchanged fragment remains byte-for-byte unchanged.
+    path=path.map(v=>old?.vertexPath.find(prior=>prior.key===v.key)??ctx.vertex(v.key)!);
     if(edit.type==='replace'&&edit.fullness===undefined&&edit.fullnessByEdge===undefined&&JSON.stringify(old!.vertexPath)===JSON.stringify(path))return doc;
     const used=new Set(doc.rivers.filter(r=>r!==old).flatMap(r=>r.vertexPath.slice(1).map((v,i)=>riverFeatureEdge(r.vertexPath[i],v))));
     const oldEdges=new Set(old?.vertexPath.slice(1).map((v,i)=>riverFeatureEdge(old.vertexPath[i],v))??[]);

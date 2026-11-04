@@ -1034,7 +1034,7 @@ function checkedRiverMap<T extends MapSnapshot>(map:T):T{
 type RiverEditOptions={crossingKinds?:Record<string,RiverCrossingKind>;featureEdits?:FeatureEdit[];confirmed?:boolean};
 /** Complete detached map preparation; history/names/tags are prepared by the
  * existing document transaction only after the UI has confirmed any losses. */
-function prepareRiverMapEdit(map:MapSnapshot,edit:RiverEdit,options:RiverEditOptions={}){
+function prepareRiverMapEdit(map:MapSnapshot,edit:RiverEdit,options:RiverEditOptions={},preview=false){
   checkedRiverMap(map);
   const physical=buildManualRiverGeometryContext(map),input={rivers:map.rivers,riverFeatures:map.riverFeatures,nextRiverId:map.nextRiverId};
   const result=prepareRiverEdit(input,edit,{...physical,...riverFeatureEligibility(map.rivers,map.regions,map.hexTerrainByKey,map.crossings),
@@ -1043,12 +1043,22 @@ function prepareRiverMapEdit(map:MapSnapshot,edit:RiverEdit,options:RiverEditOpt
       const violation=getNewRiverLakeReentryViolation(after,map.regions,map.hexTerrainByKey,before,map.regions,map.hexTerrainByKey);
       if(violation)throw new Error('river_lake_reentry');
     }});
-  const crossings=prepareEditedRiverCrossings(map.rivers,result.rivers,map.roads,map.crossings,(a,b)=>getSharedHexEdgeVertexKeys(a,b)?.sort().join('|'),options.crossingKinds);
-  const riverFeatures=resolveRiverFeatureEdits(result.riverFeatures,options.featureEdits??[],result.rivers,riverFeatureEligibility(result.rivers,map.regions,map.hexTerrainByKey,crossings));
+  // A preview may stage a safe candidate, but never supplies an implicit answer
+  // to the user's ford/marker choices. The ordinary writer remains strict.
+  const deepFords=map.crossings.filter(c=>c.kind==='ford'&&result.rivers.some(r=>r.id===c.riverId&&r.vertexPath.slice(1).some((v,i)=>edgeKey(r.vertexPath[i],v)===c.riverEdgeKey)&&Number(knownRiverEdgeFullness(r,c.riverEdgeKey))>=3&&knownRiverEdgeFullness(r,c.riverEdgeKey)!==knownRiverEdgeFullness(map.rivers.find(old=>old.id===r.id)!,c.riverEdgeKey)));
+  const unresolvedCrossings=deepFords.filter(c=>!options.crossingKinds?.[c.key]);
+  const crossingKinds=preview?{...Object.fromEntries(unresolvedCrossings.map(c=>[c.key,'bridge' as const])),...options.crossingKinds}:options.crossingKinds;
+  const crossings=prepareEditedRiverCrossings(map.rivers,result.rivers,map.roads,map.crossings,(a,b)=>getSharedHexEdgeVertexKeys(a,b)?.sort().join('|'),crossingKinds);
+  const eligibility=riverFeatureEligibility(result.rivers,map.regions,map.hexTerrainByKey,crossings);
+  const invalidFeatures:FeatureEdit[]=[...result.riverFeatures.rapids.filter(e=>e.state==='on'&&!eligibility.rapid(e.riverId,e.edgeKey)).map(e=>({type:'rapid' as const,...e})),...result.riverFeatures.waterfalls.filter(e=>e.state==='on'&&!eligibility.waterfall(e.vertexKey)).map(e=>({type:'waterfall' as const,...e}))];
+  const sameFeature=(a:FeatureEdit,b:FeatureEdit)=>a.type===b.type&&(a.type==='rapid'&&b.type==='rapid'?a.riverId===b.riverId&&a.edgeKey===b.edgeKey:a.type==='waterfall'&&b.type==='waterfall'&&a.vertexKey===b.vertexKey);
+  const unresolvedFeatures=invalidFeatures.filter(e=>!options.featureEdits?.some(choice=>sameFeature(e,choice)&&choice.state!=='on'));
+  const featureEdits=preview?[...unresolvedFeatures.map(e=>({...e,state:'auto' as const})),...options.featureEdits??[]]:options.featureEdits??[];
+  const riverFeatures=resolveRiverFeatureEdits(result.riverFeatures,featureEdits,result.rivers,eligibility);
   const removedRiverIds=map.rivers.filter(r=>!result.rivers.some(n=>n.id===r.id)).map(r=>r.id);
   const losses={crossings:map.crossings.filter(c=>!crossings.some(n=>n.key===c.key)).length,rapids:map.riverFeatures.rapids.length-result.riverFeatures.rapids.length,waterfalls:map.riverFeatures.waterfalls.length-result.riverFeatures.waterfalls.length,removedRiverIds};
   const changed=result.rivers!==map.rivers||crossings!==map.crossings||riverFeatures!==map.riverFeatures||result.nextRiverId!==map.nextRiverId;
-  return {map:changed?checkedRiverMap({...map,...result,crossings,riverFeatures}):map,losses,confirmationRequired:changed&&(edit.type==='remove'||edit.type==='reverse'||losses.crossings>0||losses.rapids>0||losses.waterfalls>0)};
+  return {map:changed?checkedRiverMap({...map,...result,crossings,riverFeatures}):map,losses,unresolvedCrossings,unresolvedFeatures,confirmationRequired:changed&&(edit.type==='remove'||edit.type==='reverse'||edit.type==='replace'||crossings!==map.crossings||losses.rapids>0||losses.waterfalls>0||invalidFeatures.length>0)};
 }
 
 function downloadBlob(blob: Blob, filename: string): void {
@@ -11455,17 +11465,28 @@ export function App() {
   const [riverFeatureTarget,setRiverFeatureTarget]=useState<RiverFeatureTarget|null>(null);
   const riverFeatureTargetRef=useRef<RiverFeatureTarget|null>(null);
   riverFeatureTargetRef.current=riverFeatureTarget;
-  type RiverDraft = {path:RiverVertex[];revision:number;context:ReturnType<typeof buildManualRiverGeometryContext>;options:RiverEditOptions};
+  type RiverDraft = {path:RiverVertex[];riverId?:number;revision:number;context:ReturnType<typeof buildManualRiverGeometryContext>;options:RiverEditOptions};
   const [riverDraft,setRiverDraft]=useState<RiverDraft|null>(null);
   const riverDraftRef=useRef<RiverDraft|null>(null);
   const [riverDraftAmbiguity,setRiverDraftAmbiguity]=useState<string[]>([]);
   const [riverDraftHover,setRiverDraftHover]=useState<string|null>(null);
   const riverDraftGesture=useRef<{x:number;y:number;pointerId:number;active:boolean;moved:boolean}|null>(null);
   const updateRiverDraft=(value:RiverDraft|null)=>{riverDraftRef.current=value;setRiverDraft(value);setRiverDraftAmbiguity([]);setRiverDraftHover(null);};
+  type RiverCommandPreview={edit:RiverEdit;options:RiverEditOptions;revision:number;draft?:RiverDraft};
+  const [riverCommandPreview,setRiverCommandPreview]=useState<RiverCommandPreview|null>(null);
+  const riverCommandPreviewRef=useRef<RiverCommandPreview|null>(null);
+  const updateRiverPreview=(value:RiverCommandPreview|null)=>{riverCommandPreviewRef.current=value;setRiverCommandPreview(value);};
+  const [riverHitChoices,setRiverHitChoices]=useState<RiverFeatureTarget[]>([]);
+  const [riverRoadHitChoices,setRiverRoadHitChoices]=useState<{roadId:number;pair:string}[]>([]);
+  const [riverHitHover,setRiverHitHover]=useState<RiverFeatureTarget|null>(null);
   type RoadDraft = {path:AxialHex[];kind:RoadKind;crossingKinds:Record<string,RiverCrossingKind>;revision:number};
   const [roadDraft,setRoadDraft] = useState<RoadDraft|null>(null);
   const roadDraftRef = useRef<RoadDraft|null>(null);
   const updateRoadDraft = (draft:RoadDraft|null) => {roadDraftRef.current=draft;setRoadDraft(draft);};
+  type RoadFeatureResolution={edit:RoadEdit;draft?:RoadDraft;revision:number;conflicts:FeatureEdit[];edits:FeatureEdit[]};
+  const [roadFeatureResolution,setRoadFeatureResolution]=useState<RoadFeatureResolution|null>(null);
+  const roadFeatureResolutionRef=useRef<RoadFeatureResolution|null>(null);
+  const updateRoadResolution=(value:RoadFeatureResolution|null)=>{roadFeatureResolutionRef.current=value;setRoadFeatureResolution(value);};
   type ObstacleDraft = {id:number|null;revision:number};
   const [obstacleDraft,setObstacleDraft] = useState<ObstacleDraft|null>(null);
   const obstacleDraftRef = useRef<ObstacleDraft|null>(null);
@@ -12938,6 +12959,7 @@ export function App() {
     generationMode, isMapRotated, mapScale: pendingMapZoomRef.current?.scale ?? mapScaleRef.current });
   const closeEditors = () => {
     setRiverFeatureTarget(null);
+    updateRiverPreview(null);updateRoadResolution(null);setRiverHitChoices([]);setRiverRoadHitChoices([]);setRiverHitHover(null);
     setAmbiguousObstacleIds([]);
     setHoverObstacleEdge(null); updateObstacleDraft(null); setSelectedObstacleId(null);
     setEditingHexBiomeKey(null); setEditingPoiHexKey(null); setEditingCentralPoiRegionId(null); setEditingRegionBiomeId(null); setEditError(null);
@@ -12980,7 +13002,7 @@ export function App() {
   const documentBusy = () => documentRevision.current !== renderedDocumentRevision
     || importInFlight.current || kingdomInFlight.current || !!kingdomJob || !!pendingRegen;
   const mutationBlocked = (finishGroup = true) => {
-    if (riverDraftRef.current || roadDraftRef.current || documentBusy() || dirtyNameDraft()) return true;
+    if (roadFeatureResolutionRef.current || riverCommandPreviewRef.current || riverDraftRef.current || roadDraftRef.current || documentBusy() || dirtyNameDraft()) return true;
     if (finishGroup) finishNotesGroup();
     return false;
   };
@@ -13011,8 +13033,9 @@ export function App() {
     if (mutationBlocked()) return;
     setNotesEditorKey(current => current === key ? null : key);
   };
-  const editRoadDocument = (edit: RoadEdit, expectedDraft?:RoadDraft, featureEdits:FeatureEdit[]=[]): boolean => {
-    if (expectedDraft ? roadDraftRef.current!==expectedDraft || expectedDraft.revision!==documentRevision.current || documentBusy() || dirtyNameDraft() : mutationBlocked()) return false;
+  const editRoadDocument = (edit: RoadEdit, expectedDraft?:RoadDraft, featureEdits:FeatureEdit[]=[],expectedResolution?:RoadFeatureResolution): boolean => {
+    if(roadFeatureResolutionRef.current&&(expectedResolution!==roadFeatureResolutionRef.current||expectedResolution.revision!==documentRevision.current))return false;
+    if (expectedDraft ? roadDraftRef.current!==expectedDraft || expectedDraft.revision!==documentRevision.current || documentBusy() || dirtyNameDraft() : expectedResolution?riverDraftRef.current||documentBusy()||dirtyNameDraft():mutationBlocked()) return false;
     try {
       const landRegion = (hex: AxialHex) => isLakeHex(hex, hexTerrainByKey) || isSeaHex(hex, hexTerrainByKey)
         ? undefined : regions.find(r => r.hexes.some(h => isSameHex(h, hex)))?.id;
@@ -13033,7 +13056,12 @@ export function App() {
         minima: regions.filter(r => r.biomeLandType === 'settled' && r.sizeCategory !== 'tract')
           .map(r => ({regionId: r.id, minimum: getSettledMainRoadLimit(r)}))
       });
-      const riverFeatures=resolveRiverFeatureEdits(riverFeatureOverrides,featureEdits,rivers,riverFeatureEligibility(rivers,regions,hexTerrainByKey,result.crossings));
+      const eligibility=riverFeatureEligibility(rivers,regions,hexTerrainByKey,result.crossings);
+      const conflicts:FeatureEdit[]=riverFeatureOverrides.rapids.filter(e=>e.state==='on'&&!eligibility.rapid(e.riverId,e.edgeKey)).map(e=>({type:'rapid',...e}));
+      if(editMode&&conflicts.some(e=>!featureEdits.some(choice=>choice.type==='rapid'&&e.type==='rapid'&&choice.riverId===e.riverId&&choice.edgeKey===e.edgeKey&&choice.state!=='on'))){
+        updateRoadResolution({edit,draft:expectedDraft,revision:documentRevision.current,conflicts,edits:featureEdits});setEditError(null);return false;
+      }
+      const riverFeatures=resolveRiverFeatureEdits(riverFeatureOverrides,featureEdits,rivers,eligibility);
       if (result.roads === roads && result.crossings === crossings && result.nextRoadId === nextRoadId&&riverFeatures===riverFeatureOverrides) return true;
       const before = copyDocument(captureDocument());
       const after = copyDocument({...captureDocument(), map: {...captureMap(), ...result,riverFeatures}});
@@ -13096,18 +13124,53 @@ export function App() {
   };
   const riverCommandError=(error:unknown)=>{
     const reason=error instanceof Error?error.message:'';
+    const rules:[string,string,string][]=[['CYCLE','Русло создаёт замкнутый цикл.','The route creates a directed cycle.'],['RIV-007','Сухопутный исток должен иметь полноводность 1.','A dry source must have fullness 1.'],['RIV-005','Полноводность в месте слияния несовместима с притоками.','Fullness at the confluence conflicts with its tributaries.'],['RIV-008','Площадь озера недостаточна для этого истока.','The lake is too small for this source.'],['RIV-009','Площадь озера не выдерживает разницу входа и выхода.','The lake cannot support this inflow/outflow difference.'],['RIV-010','Площадь озера недостаточна для закрытого устья.','The lake is too small for this closed mouth.'],['RIV-006','Недопустимый исток, устье или разветвление; море не может быть истоком.','Invalid source, mouth or split; the sea cannot be a source.'],['owner','Регион владельца не прилегает к ребру.','The owner region does not adjoin the edge.'],['unknown_fixed_river_fullness','Неоднозначная полноводность старого участка.','The old reach has ambiguous fullness.']];
+    const rule=rules.find(r=>reason.includes(r[0]));if(rule)return rule[language==='ru'?1:2];
     return language==='ru'?(reason.includes('solver_limit')?'Проверка слишком сложна; упростите русло.':reason.includes('crossing_kind_required')?'Брод стал слишком глубоким. Выберите мост или переправу.':reason.includes('delta_')?'Рукав дельты несовместим с этим изменением.':reason.includes('ineligible_')?'Ручная отметка конфликтует с изменением. Выберите «Авто» или «Нет».':reason.includes('solver_unsatisfiable')?'Полноводность несовместима с соседними участками или размером озера.':'Реку не удалось изменить. Карта не изменена.')
       :(reason.includes('solver_limit')?'Validation is too complex; simplify the route.':reason.includes('crossing_kind_required')?'The ford is too deep. Choose a bridge or ferry.':reason.includes('delta_')?'A delta arm conflicts with this change.':reason.includes('ineligible_')?'A manual feature conflicts with this change. Choose Auto or Off.':reason.includes('solver_unsatisfiable')?'Fullness conflicts with neighbouring reaches or lake area.':'Could not change the river. Your map is unchanged.');
   };
-  const editRiverDocument=(edit:RiverEdit,options:RiverEditOptions={},expectedRevision=renderedDocumentRevision,expectedDraft?:RiverDraft):boolean=>{
+  const editRiverDocument=(edit:RiverEdit,options:RiverEditOptions={},expectedRevision=renderedDocumentRevision,expectedDraft?:RiverDraft,expectedPreview?:RiverCommandPreview):boolean=>{
     if(expectedRevision!==documentRevision.current||obstacleDraftRef.current||notesComposingRef.current
-      ||(expectedDraft?riverDraftRef.current!==expectedDraft||expectedDraft.revision!==documentRevision.current||roadDraftRef.current||documentBusy()||dirtyNameDraft():mutationBlocked(false)))return false;
+      ||(expectedPreview?riverCommandPreviewRef.current!==expectedPreview:!!riverCommandPreviewRef.current)
+      ||(expectedDraft||expectedPreview?(expectedDraft?riverDraftRef.current!==expectedDraft||expectedDraft.revision!==documentRevision.current:!!riverDraftRef.current)||roadDraftRef.current||documentBusy()||dirtyNameDraft():mutationBlocked(false)))return false;
     try{
       const original=captureMap(),plan=prepareRiverMapEdit(original,edit,options);
       if(plan.map===original)return true;
       if(plan.confirmationRequired&&!options.confirmed){setEditError(language==='ru'?'Подтвердите изменение реки и её зависимостей.':'Confirm the river change and its dependencies.');return false;}
       finishNotesGroup();return commitManualMap(plan.map);
     }catch(error){setEditError(riverCommandError(error));return false;}
+  };
+  const requestRiverCommand=(edit:RiverEdit,options:RiverEditOptions={},draft?:RiverDraft):boolean=>{
+    if(notesComposingRef.current||obstacleDraftRef.current||documentBusy()||(draft?riverDraftRef.current!==draft:mutationBlocked(false)))return false;
+    try{
+      const plan=prepareRiverMapEdit(captureMap(),edit,options,true);
+      if(plan.unresolvedCrossings.length||plan.unresolvedFeatures.length||plan.confirmationRequired){
+        updateRiverPreview({edit,options,revision:documentRevision.current,draft});setEditError(null);setIsSidePanelCollapsed(false);return false;
+      }
+      return editRiverDocument(edit,options,documentRevision.current,draft);
+    }catch(error){
+      const subject=edit.type==='create'?undefined:rivers.find(r=>r.id===edit.riverId),keys=new Set(subject?.vertexPath.map(v=>v.key));
+      const related=subject?rivers.filter(r=>r.id!==subject.id&&r.vertexPath.some(v=>keys.has(v.key))):[];
+      setEditError(riverCommandError(error)+(related.length?` ${language==='ru'?'Связанные реки':'Connected rivers'}: ${related.map(r=>`${riverLabel(r.id)} (${riverPlace(r)})`).join('; ')}`:''));return false;
+    }
+  };
+  const confirmRiverCommand=(expected:RiverCommandPreview|null=riverCommandPreview)=>{
+    const preview=riverCommandPreviewRef.current;
+    if(!preview||preview!==expected||preview.revision!==documentRevision.current||documentBusy())return false;
+    try{
+      const plan=prepareRiverMapEdit(captureMap(),preview.edit,preview.options,true);
+      if(plan.unresolvedCrossings.length||plan.unresolvedFeatures.length)return false;
+      if(!editRiverDocument(preview.edit,{...preview.options,confirmed:true},preview.revision,preview.draft,preview))return false;
+      if(preview.draft)updateRiverDraft(null);updateRiverPreview(null);
+      return true;
+    }catch(error){setEditError(riverCommandError(error));return false;}
+  };
+  const cancelRiverCommand=(expected:RiverCommandPreview|null=riverCommandPreview)=>{
+    if(riverCommandPreviewRef.current!==expected)return false;
+    updateRiverPreview(null);setEditError(null);
+    const id=expected?.edit.type==='create'?undefined:expected?.edit.riverId;
+    if(typeof document!=='undefined')setTimeout(()=>document.querySelector<HTMLButtonElement>(id?`[data-river-choice="${id}"]`:'[data-add-river]')?.focus(),0);
+    return true;
   };
   const editRiverFeatures=(edits:FeatureEdit[],expectedRevision=renderedDocumentRevision):boolean=>{
     if(expectedRevision!==documentRevision.current||mutationBlocked(false)||obstacleDraftRef.current)return false;
@@ -13478,9 +13541,17 @@ export function App() {
     setNextRoadId(snapshot.nextRoadId); setNextObstacleId(snapshot.nextObstacleId ?? 1);
   };
 
+  const confirmRiverCheckpointLoss=(checkpoint:MapSnapshot)=>{
+    const retained=new Set(checkpoint.regions.map(r=>r.id));
+    const changed=rivers.filter(r=>retained.has(r.regionId)&&JSON.stringify(r)!==JSON.stringify(checkpoint.rivers.find(old=>old.id===r.id)));
+    const featuresChanged=JSON.stringify(riverFeatureOverrides)!==JSON.stringify(checkpoint.riverFeatures??emptyRiverFeatures());
+    if(!changed.length&&!featuresChanged)return true;
+    return window.confirm(language==='ru'?`Будет восстановлено исходное состояние рек. Изменённые русла: ${changed.map(r=>riverLabel(r.id)).join(', ')||'нет'}. Ручные отметки: ${featuresChanged?'будут заменены':'сохранятся'}. Отмена вернёт карту точно. Продолжить?`:`Original river state will be restored. Changed routes: ${changed.map(r=>riverLabel(r.id)).join(', ')||'none'}. Manual markers: ${featuresChanged?'will be replaced':'retained'}. Undo restores this map exactly. Continue?`);
+  };
   const deleteLastRegion = () => {
     if (mutationBlocked() || history.length === 0) return;
     const checkpoint = history[history.length-1];
+    if(!confirmRiverCheckpointLoss(checkpoint))return;
     const entities = getToponymEntities(checkpoint.regions, checkpoint.rivers, checkpoint.hexTerrainByKey);
     const retainedNames: ToponymRegistry = { ...(checkpoint.toponyms ?? {}) };
     for (const {key} of entities) if(toponyms[key]) retainedNames[key]=toponyms[key];
@@ -13498,6 +13569,7 @@ export function App() {
   const regenerateLastRegion = () => {
     if (mutationBlocked()) return;
     if (regions.length === 0 || history.length === 0) return;
+    if(!confirmRiverCheckpointLoss(history[history.length-1]))return;
     documentRevision.current++;
     const backup = captureGenerationBackup();
     const lastKingdom = kingdoms.find(k=>k.regionIds.includes(regions[regions.length-1].id));
@@ -14121,7 +14193,7 @@ export function App() {
 
   const handleExportPng = async () => {
     updateObstacleDraft(null); setSelectedObstacleId(null);
-    if(roadDraftRef.current) {if(finishRoadDraft())pendingRoadExport.current='png';return;}
+    if(roadDraftRef.current&&!roadFeatureResolutionRef.current) {if(finishRoadDraft())pendingRoadExport.current='png';return;}
     if (documentBusy() || !renderDetails) return;
     finishNotesGroup();
     if (!mapSvgRef.current) return;
@@ -14137,7 +14209,7 @@ export function App() {
   const pendingNameExport = useRef(false);
   const handleExportJson = () => {
     updateObstacleDraft(null); setSelectedObstacleId(null);
-    if(roadDraftRef.current) {if(finishRoadDraft())pendingRoadExport.current='json';return;}
+    if(roadDraftRef.current&&!roadFeatureResolutionRef.current) {if(finishRoadDraft())pendingRoadExport.current='json';return;}
     if (nameDraftRef.current) {
       const revision = documentRevision.current;
       if (!finishInlineName()) return;
@@ -14316,6 +14388,7 @@ export function App() {
     if(documentBusy()||nameComposingRef.current||!finishPathDrafts()||!finishInlineName())return false;
     finishNotesGroup();clearNotesDraft();closeEditors();
     setSelectedHex({...hex});setNameStatus(null);
+    if(editMode&&current.type==='river'){const river=rivers.find(r=>`river:${r.id}`===key);if(river)setRiverFeatureTarget({riverId:river.id,hexKey:hexKey(hex)});}
     setTimeout(()=>infoFocusRef.current?.focus(),0);return true;
   };
   const requestNameTarget = showNameTarget;
@@ -14386,7 +14459,7 @@ export function App() {
         generateAt({ q: hex.q, r: hex.r });
       }
     } else {
-      if(riverDraftRef.current&&!finishRiverDraft())return;
+      if(roadFeatureResolutionRef.current||riverCommandPreviewRef.current||riverDraftRef.current&&!finishRiverDraft())return;
       if (!finishInlineName()) return;
       const pendingObstacle=obstacleDraftRef.current;
       finishNotesGroup(); closeEditors(); updateObstacleDraft(pendingObstacle); clearNotesDraft();
@@ -14400,6 +14473,40 @@ export function App() {
     if(!editMode||notesComposingRef.current||!finishInlineName()||mutationBlocked()||obstacleDraftRef.current||target.hexKey!==selectedHexKey)return;
     closeEditors();setRiverFeatureTarget(target);
   };
+  const riverLabel=(id:number)=>nameTargets.find(t=>t.key===`river:${id}`)?.[language]??`${language==='ru'?'Река':'River'} ${id}`;
+  const riverPlace=(river:River)=>{
+    const all=regions.flatMap(r=>r.hexes);
+    if(river.vertexPath.length===2){const edge=edgeKey(...river.vertexPath as [RiverVertex,RiverVertex]),adjacent=all.filter(h=>getHexEdgeKeys(h).has(edge));if(adjacent.length>1)return `${language==='ru'?'Между гексами':'Between hexes'} ${adjacent.map(hexKey).join(' ↔ ')}`;}
+    const ends=river.vertexPath.length?[river.vertexPath[0],river.vertexPath[river.vertexPath.length-1]].map(v=>all.find(h=>getHexCornerPoints(h).some(p=>p.key===v.key))).filter((h):h is AxialHex=>!!h):[];
+    const keys=[...new Set(ends.map(hexKey))];return keys.length>1?`${language==='ru'?'У гексов':'Beside hexes'} ${keys.join(' → ')}`:`${language==='ru'?'Участок у гекса':'Edge beside hex'} ${keys[0]??'—'}`;
+  };
+  const chooseMapRiver=(target:RiverFeatureTarget)=>{
+    if(!editMode||documentBusy()||riverDraftRef.current||riverCommandPreviewRef.current||roadDraftRef.current||obstacleDraftRef.current||notesComposingRef.current||!finishInlineName())return false;
+    const river=rivers.find(r=>r.id===target.riverId),hex=regions.flatMap(r=>r.hexes).find(h=>hexKey(h)===target.hexKey);
+    if(!river||!hex||target.edgeKey&&!getHexEdgeKeys(hex).has(target.edgeKey))return false;
+    finishNotesGroup();clearNotesDraft();closeEditors();setSelectedHex({...hex});setRiverFeatureTarget(target);setIsSidePanelCollapsed(false);return true;
+  };
+  const riverMapTargets=editMode?rivers.flatMap(r=>r.vertexPath.slice(1).flatMap((b,i)=>{const a=r.vertexPath[i],key=edgeKey(a,b),hex=regions.flatMap(r=>r.hexes).find(h=>getHexEdgeKeys(h).has(key));return hex?[{riverId:r.id,hexKey:hexKey(hex),edgeKey:key,a,b}]:[];})):[];
+  const activateMapRiver=(event:React.MouseEvent<SVGLineElement>,target:RiverFeatureTarget)=>{
+    event.stopPropagation();if(riverDraftGesture.current?.moved)return;
+    if(event.detail===0){chooseMapRiver(target);return;}
+    const nodes=event.currentTarget.parentElement?.querySelectorAll<SVGLineElement>('[data-river-map-edge]')??[];
+    const hits=Array.from(nodes).filter(node=>{const matrix=node.getScreenCTM();return matrix&&node.isPointInStroke(new DOMPoint(event.clientX,event.clientY).matrixTransform(matrix.inverse()));});
+    const choices=hits.flatMap(node=>{const hit=riverMapTargets.find(t=>`${t.riverId}:${t.edgeKey}`===node.dataset.riverMapEdge);return hit?[{riverId:hit.riverId,edgeKey:hit.edgeKey,hexKey:hit.hexKey}]:[];});
+    const matrix=event.currentTarget.getScreenCTM(),point=matrix?new DOMPoint(event.clientX,event.clientY).matrixTransform(matrix.inverse()):null;
+    const roadHits=point?roadSegments.filter(s=>{const dx=s.x2-s.x1,dy=s.y2-s.y1,t=Math.max(0,Math.min(1,((point.x-s.x1)*dx+(point.y-s.y1)*dy)/(dx*dx+dy*dy)));return Math.hypot(point.x-s.x1-t*dx,point.y-s.y1-t*dy)<=22/mapScaleRef.current;}).map(s=>({roadId:s.roadId,pair:s.segmentKey})):[];
+    if(choices.length>1||roadHits.length){setRiverHitChoices(choices);setRiverRoadHitChoices(roadHits);setIsSidePanelCollapsed(false);setEditError(language==='ru'?'Здесь несколько объектов. Выберите нужный участок.':'Several objects overlap. Choose the intended edge.');return;}
+    if(choices[0])chooseMapRiver(choices[0]);
+  };
+  const riverReachKeys=(()=>{
+    const target=riverFeatureTarget,river=rivers.find(r=>r.id===target?.riverId);
+    if(!target?.edgeKey||!river)return new Set<string>();
+    const context=buildManualRiverGeometryContext(captureMap()),index=river.vertexPath.slice(1).findIndex((v,i)=>edgeKey(river.vertexPath[i],v)===target.edgeKey);
+    if(index<0)return new Set<string>();let left=index,right=index+1;
+    while(left>0&&!context.event(river.vertexPath[left].key,rivers))left--;
+    while(right<river.vertexPath.length-1&&!context.event(river.vertexPath[right].key,rivers))right++;
+    return new Set(river.vertexPath.slice(left+1,right+1).map((v,i)=>edgeKey(river.vertexPath[left+i],v)));
+  })();
   const riverFeaturePanel=(river:River)=>{
     const target=riverFeatureTarget;
     if(!editMode||riverDraft||roadDraft||obstacleDraft||target?.riverId!==river.id||target.hexKey!==selectedHexKey)return null;
@@ -14420,15 +14527,26 @@ export function App() {
         onChange={event=>change(rapid?{type:'rapid',riverId:river.id,edgeKey:key,state:event.target.value as FeatureEdit['state']}:{type:'waterfall',vertexKey:key,state:event.target.value as FeatureEdit['state']})}>
         <option value="auto">{language==='ru'?'Авто':'Auto'}</option><option value="on" disabled={!onAllowed}>{language==='ru'?'Есть':'On'}</option><option value="off">{language==='ru'?'Нет':'Off'}</option>
       </select> <span>{language==='ru'?(effective?'Есть':'Нет'):(effective?'Present':'Absent')} ({state?(language==='ru'?'вручную':'manual'):(language==='ru'?'авто':'auto')})</span>
-      {!onAllowed&&<span className="river-feature-reason">{language==='ru'?'«Есть» недоступно: вода, переправа, исток или слияние.':'On unavailable: water, crossing, source or confluence.'}</span>}</label>;
+      {!onAllowed&&<span className="river-feature-reason">{rapid?(crossings.some(c=>c.riverId===river.id&&c.riverEdgeKey===key)?(language==='ru'?'На участке есть переправа.':'This edge has a crossing.'):(language==='ru'?'Участок скрыт водой.':'This edge is hidden by water.')):rivers.some(r=>r.vertexPath[0]?.key===key)?(language==='ru'?'Водопад недопустим в начале реки.':'A waterfall cannot start a river.'):(language==='ru'?'Вершина у воды или в месте слияния.':'The vertex touches water or a confluence.')}</span>}</label>;
     };
-    return <div className="river-feature-editor" data-river-feature-editor={river.id} onKeyDown={event=>{if(event.key==='Escape'){event.stopPropagation();setRiverFeatureTarget(null);document.querySelector<HTMLButtonElement>(`[data-river-choice="${river.id}"]`)?.focus();}}}>
-      <span>{language==='ru'?'Выберите участок или вершину рядом с гексом':'Choose an edge or vertex beside this hex'}</span>
+    const choice=target.edgeKey;
+    const currentF=choice?knownRiverEdgeFullness(river,choice):undefined;
+    const availableF=choice?[1,2,3,4,5].map(f=>{try{prepareRiverMapEdit(captureMap(),{type:'fullness',riverId:river.id,edgeKey:choice,fullness:f as RiverFullness},{},true);return {f,reason:null};}catch(error){return {f,reason:riverCommandError(error)};}}):[];
+    return <><div className="river-command-editor" data-river-command-editor={river.id}>
+      {choice?<><label>{language==='ru'?'Полноводность':'Fullness'} <select className="direct-value" aria-label={language==='ru'?'Полноводность':'Fullness'} value={currentF??''} onChange={event=>requestRiverCommand({type:'fullness',riverId:river.id,edgeKey:choice,fullness:Number(event.target.value) as RiverFullness})} onKeyDown={event=>{if(event.key==='Escape'){event.stopPropagation();event.currentTarget.blur();}}}>
+        {currentF===undefined&&<option value="">{language==='ru'?'Неизвестна':'Unknown'}</option>}{availableF.map(v=><option key={v.f} value={v.f} disabled={!!v.reason}>{v.f}{v.reason?` · ${v.reason}`:''}</option>)}
+      </select></label><span>{language==='ru'?'Весь подсвеченный участок':'Entire highlighted reach'}</span>
+</>:<span>{language==='ru'?'Выберите участок для изменения полноводности.':'Choose an edge to change fullness.'}</span>}
+      <div className="river-command-actions"><button type="button" className="direct-value" data-river-reverse onClick={()=>requestRiverCommand({type:'reverse',riverId:river.id})}>{language==='ru'?'Развернуть реку':'Reverse river'} →</button>
+      <button type="button" className="direct-value" data-river-replace onClick={()=>startRiverDraft(river.id)}>{language==='ru'?'Русло':'Route'}</button>
+      <button type="button" className="direct-value" data-river-remove onClick={()=>requestRiverCommand({type:'remove',riverId:river.id,includeArms:true})}>{language==='ru'?'Удалить реку':'Delete river'}</button></div>
+    </div><div className="river-feature-editor" data-river-feature-editor={river.id} onKeyDown={event=>{if(event.key==='Escape'){event.stopPropagation();setRiverFeatureTarget(null);document.querySelector<HTMLButtonElement>(`[data-river-choice="${river.id}"]`)?.focus();}}}>
+      {!target.edgeKey&&!target.vertexKey&&<span>{language==='ru'?'Выберите участок или вершину рядом с гексом':'Choose an edge or vertex beside this hex'}</span>}
       <div className="river-feature-places">{edges.map(e=><button type="button" className="direct-value" key={e.key} aria-pressed={target.edgeKey===e.key} data-river-edge-choice={e.key} onClick={()=>chooseRiverFeatureTarget({...target,edgeKey:e.key,vertexKey:undefined})}>{language==='ru'?'Участок':'Edge'} {e.index} →</button>)}
       {vertices.map(v=><button type="button" className="direct-value" key={v.key} aria-pressed={target.vertexKey===v.key} data-river-vertex-choice={v.key} onClick={()=>chooseRiverFeatureTarget({...target,vertexKey:v.key,edgeKey:undefined})}>{language==='ru'?'Вершина':'Vertex'} {v.index}</button>)}</div>
       {target.edgeKey&&edges.some(e=>e.key===target.edgeKey)&&control('rapid',target.edgeKey)}
       {target.vertexKey&&vertices.some(v=>v.key===target.vertexKey)&&control('waterfall',target.vertexKey)}
-    </div>;
+    </div></>;
   };
   const obstacleContext = () => ({
     exists:(h:AxialHex)=>hexTerrainByKey.has(hexKey(h))||regions.some(r=>r.hexes.some(v=>isSameHex(v,h))),
@@ -14511,12 +14629,13 @@ export function App() {
     </>}
   </div>:null;
   const draftError = (ru:string,en:string) => {setEditError(language==='ru'?ru:en);return false;};
-  const startRiverDraft=()=>{
+  const startRiverDraft=(riverId?:number)=>{
     if(!editMode||notesComposingRef.current||!finishInlineName()||mutationBlocked()||obstacleDraftRef.current||!regions.length)return false;
     try{
       const map=checkedRiverMap(captureMap()),context=buildManualRiverGeometryContext(map);
       finishNotesGroup();clearNotesDraft();closeEditors();setSelectedRoadTarget(null);setConfirmRoadRemoval(null);
-      updateRiverDraft({path:[],revision:documentRevision.current,context,options:{}});return true;
+      if(riverId!==undefined&&!map.rivers.some(r=>r.id===riverId))return false;
+      updateRiverDraft({path:[],riverId,revision:documentRevision.current,context,options:{}});return true;
     }catch(error){setEditError(riverCommandError(error));return false;}
   };
   const finishRiverDraft=(expected:RiverDraft|null=riverDraft)=>{
@@ -14526,19 +14645,23 @@ export function App() {
     if(draft.path.length<2)return draftError('Выберите начало и соседнюю вершину.','Choose a start and an adjacent vertex.');
     const owner=draft.context.edgeOwners(edgeKey(draft.path[0],draft.path[1]))[0];
     if(owner===undefined)return draftError('Участок вне созданной карты.','The edge is outside the created map.');
-    if(!editRiverDocument({type:'create',path:draft.path,regionId:owner},draft.options,draft.revision,draft))return false;
+    if(riverCommandPreviewRef.current)return false;
+    const original=draft.riverId===undefined?undefined:rivers.find(r=>r.id===draft.riverId);
+    const edit:RiverEdit=original?{type:'replace',riverId:original.id,path:draft.path,regionId:original.regionId}:{type:'create',path:draft.path,regionId:owner};
+    if(draft.riverId!==undefined&&!original)return false;
+    if(!requestRiverCommand(edit,draft.options,draft))return false;
     updateRiverDraft(null);return true;
   };
-  const finishPathDrafts=()=>finishRiverDraft()&&finishRoadDraft();
+  const finishPathDrafts=()=>!roadFeatureResolutionRef.current&&!riverCommandPreviewRef.current&&finishRiverDraft()&&finishRoadDraft();
   const resetRiverDraft=(expected:RiverDraft|null=riverDraft)=>{
     if(riverDraftRef.current!==expected)return false;
-    updateRiverDraft(null);setEditError(null);
-    if(typeof document!=='undefined')setTimeout(()=>document.querySelector<HTMLButtonElement>('[data-add-river]')?.focus(),0);
+    updateRiverPreview(null);updateRiverDraft(null);setEditError(null);
+    if(typeof document!=='undefined')setTimeout(()=>document.querySelector<HTMLButtonElement>(expected?.riverId?`[data-river-choice="${expected.riverId}"]`:'[data-add-river]')?.focus(),0);
     return true;
   };
   const appendRiverDraft=(key:string,expected:RiverDraft|null=riverDraft)=>{
     const draft=riverDraftRef.current;
-    if(!draft||draft!==expected||draft.revision!==documentRevision.current||documentBusy())return false;
+    if(!draft||draft!==expected||draft.revision!==documentRevision.current||riverCommandPreviewRef.current||documentBusy())return false;
     const vertex=draft.context.vertex(key),path=draft.path,last=path[path.length-1];
     if(!vertex||(!last&&draft.context.geometry.seaVertices.has(key)))return draftError('Выберите подлинную вершину; море не может быть истоком.','Choose a real vertex; the sea cannot be a source.');
     if(last?.key===key)return finishRiverDraft(draft);
@@ -14546,8 +14669,8 @@ export function App() {
     if(path.some(v=>v.key===key))return draftError('Нельзя повторять вершину.','A vertex cannot be repeated.');
     if(last){
       const edge=edgeKey(last,vertex);
-      if(!draft.context.edgeOwners(edge).length||draft.context.blocked(edge)||rivers.some(r=>r.vertexPath.slice(1).some((v,i)=>edgeKey(r.vertexPath[i],v)===edge)))return draftError('Выберите соседнюю вершину по свободному ребру.','Choose an adjacent vertex along a free edge.');
-      if(path.length>1&&rivers.some(r=>r.vertexPath.some(v=>v.key===last.key)))return draftError('Завершите реку в точке связи.','Finish the river at the connection.');
+      if(!draft.context.edgeOwners(edge).length||draft.context.blocked(edge)||rivers.some(r=>r.id!==draft.riverId&&r.vertexPath.slice(1).some((v,i)=>edgeKey(r.vertexPath[i],v)===edge)))return draftError('Выберите соседнюю вершину по свободному ребру.','Choose an adjacent vertex along a free edge.');
+      if(path.length>1&&rivers.some(r=>r.id!==draft.riverId&&r.vertexPath.some(v=>v.key===last.key)))return draftError('Завершите реку в точке связи.','Finish the river at the connection.');
     }
     updateRiverDraft({...draft,path:[...path,{...vertex}]});setEditError(null);return true;
   };
@@ -14555,8 +14678,8 @@ export function App() {
     const path=riverDraft.path,last=path[path.length-1];
     if(!last)return !riverDraft.context.geometry.seaVertices.has(v.key);
     if(v.key===last.key||path.length>1&&v.key===path[path.length-2].key)return true;
-    if(path.some(p=>p.key===v.key)||path.length>1&&rivers.some(r=>r.vertexPath.some(p=>p.key===last.key)))return false;
-    const edge=edgeKey(last,v);return riverDraft.context.edgeOwners(edge).length>0&&!riverDraft.context.blocked(edge)&&!rivers.some(r=>r.vertexPath.slice(1).some((p,i)=>edgeKey(r.vertexPath[i],p)===edge));
+    if(path.some(p=>p.key===v.key)||path.length>1&&rivers.some(r=>r.id!==riverDraft.riverId&&r.vertexPath.some(p=>p.key===last.key)))return false;
+    const edge=edgeKey(last,v);return riverDraft.context.edgeOwners(edge).length>0&&!riverDraft.context.blocked(edge)&&!rivers.some(r=>r.id!==riverDraft.riverId&&r.vertexPath.slice(1).some((p,i)=>edgeKey(r.vertexPath[i],p)===edge));
   }):[];
   const activateRiverDraftPointer=(event:React.MouseEvent<SVGCircleElement>,key:string,expected:RiverDraft)=>{
     event.stopPropagation();
@@ -14568,13 +14691,55 @@ export function App() {
     const hit=hits[0]?.dataset.riverDraftVertex;
     if(hit)appendRiverDraft(hit,expected);
   };
+  const riverPreviewPlan=(()=>{if(!riverCommandPreview)return null;try{return {plan:prepareRiverMapEdit(captureMap(),riverCommandPreview.edit,riverCommandPreview.options,true),error:null};}catch(error){return {plan:null,error:riverCommandError(error)};}})();
+  const changeRiverPreview=(options:RiverEditOptions,expected=riverCommandPreview)=>{
+    if(!expected||expected!==riverCommandPreviewRef.current||expected.revision!==documentRevision.current||documentBusy())return;
+    updateRiverPreview({...expected,options:{...expected.options,...options}});
+  };
+  const riverPreviewPanel=riverCommandPreview?<div className="river-command-preview" data-river-preview role="group" aria-label={language==='ru'?'Предпросмотр изменения реки':'River change preview'} onKeyDown={event=>{if(event.key==='Escape'){event.preventDefault();event.stopPropagation();cancelRiverCommand(riverCommandPreview);}}}>
+    <strong>{language==='ru'?'Предпросмотр':'Preview'} · {riverCommandPreview.edit.type==='create'?(language==='ru'?'Новая река':'New river'):riverLabel(riverCommandPreview.edit.riverId)}</strong>
+    {riverPreviewPlan?.error&&<p role="alert">{riverPreviewPlan.error}</p>}
+    {riverPreviewPlan?.plan&&(()=>{
+      const plan=riverPreviewPlan.plan,edit=riverCommandPreview.edit,removed=plan.losses.removedRiverIds;
+      const subject=edit.type==='create'?plan.map.rivers.find(r=>r.id===nextRiverId):plan.map.rivers.find(r=>r.id===edit.riverId);
+      const affectedCrossings=[...crossings.filter(c=>!plan.map.crossings.some(n=>JSON.stringify(n)===JSON.stringify(c))),...plan.map.crossings.filter(c=>!crossings.some(n=>JSON.stringify(n)===JSON.stringify(c)))];
+      const uniqueCrossings=[...new Map(affectedCrossings.map(c=>[c.key,c])).values()];
+      const choices=plan.map.crossings.filter(c=>!crossings.some(old=>old.key===c.key)||plan.unresolvedCrossings.some(old=>old.key===c.key)||riverCommandPreview.options.crossingKinds?.[c.key]);
+      const featureConflicts=[...plan.unresolvedFeatures,...(riverCommandPreview.options.featureEdits??[])];
+      const tagsLost=tags.instances.filter(t=>t.owner.kind==='river'&&removed.includes(t.owner.id)).length;
+      const arms=rivers.filter(r=>r.deltaParentRiverId!==undefined&&(removed.includes(r.id)||edit.type!=='create'&&(r.id===edit.riverId||r.deltaParentRiverId===edit.riverId)));
+      return <>
+        {subject&&<p>{riverPlace(subject)}{edit.type==='fullness'?` · ${language==='ru'?'Полноводность':'Fullness'} ${knownRiverEdgeFullness(rivers.find(r=>r.id===edit.riverId)!,edit.edgeKey)??'?'} → ${edit.fullness}`:edit.type==='reverse'?` · ${language==='ru'?'Направление меняется на обратное':'Direction reverses'}`:''}</p>}
+        {subject&&edit.type==='replace'&&<p>{language==='ru'?'Владелец русла':'Route owner'}: {nameTargets.find(t=>t.key===`region:${subject.regionId}`)?.[language]??subject.regionId}</p>}
+        {edit.type==='remove'&&<p>{removed.map(id=>`${riverLabel(id)} (${riverPlace(rivers.find(r=>r.id===id)!)})`).join('; ')}</p>}
+        {!!(plan.losses.rapids+plan.losses.waterfalls)&&<p>{language==='ru'?'Удаляются ручные отметки':'Manual markers removed'}: {plan.losses.rapids+plan.losses.waterfalls}</p>}
+        {!!removed.length&&<p>{language==='ru'?'Удаляются имена':'Names removed'}: {removed.length}{tagsLost?` · ${language==='ru'?'теги':'tags'}: ${tagsLost}`:''}</p>}
+        {arms.map(arm=><p key={arm.id}>{riverLabel(arm.id)} · {riverPlace(arm)}</p>)}
+        {uniqueCrossings.map(c=>{const proposed=plan.map.crossings.find(n=>n.key===c.key),old=crossings.find(n=>n.key===c.key),unresolved=plan.unresolvedCrossings.some(n=>n.key===c.key),choose=choices.some(n=>n.key===c.key);return <label className="river-feature-control" key={c.key}>{riverLabel(c.riverId)} · {c.roadSegmentKey.replace('|',' ↔ ')} · {old?t[old.kind]:(language==='ru'?'Нет переправы':'No crossing')} → {choose&&proposed?<select className="direct-value" data-river-crossing-choice={c.key} aria-label={`${language==='ru'?'Решение для переправы':'Crossing choice'} ${c.roadSegmentKey}`} value={unresolved?'':proposed.kind} onChange={event=>changeRiverPreview({crossingKinds:{...riverCommandPreview.options.crossingKinds,[c.key]:event.target.value as RiverCrossingKind}})}>
+          {unresolved&&<option value="">{language==='ru'?'Выберите':'Choose'}</option>}<option value="bridge">{t.bridge}</option><option value="ferry">{t.ferry}</option><option value="ford" disabled={Number(knownRiverEdgeFullness(plan.map.rivers.find(r=>r.id===c.riverId)!,c.riverEdgeKey))>=3}>{t.ford}</option>
+        </select>:proposed?t[proposed.kind]:(language==='ru'?'Удаляется':'Removed')}</label>;})}
+        {featureConflicts.map((feature,i)=>{const choice=riverCommandPreview.options.featureEdits?.find(e=>e.type===feature.type&&(e.type==='rapid'&&feature.type==='rapid'?e.riverId===feature.riverId&&e.edgeKey===feature.edgeKey:e.type==='waterfall'&&feature.type==='waterfall'&&e.vertexKey===feature.vertexKey));return <label className="river-feature-control" key={i}>{feature.type==='rapid'?`${t.rapids} · ${riverLabel(feature.riverId)}`:waterfallLabel} · {feature.type==='rapid'?riverPlace(plan.map.rivers.find(r=>r.id===feature.riverId)!):(language==='ru'?'вершина реки':'river vertex')} <select className="direct-value" data-river-marker-choice aria-label={`${language==='ru'?'Конфликт отметки':'Marker conflict'} ${i+1}`} value={choice?.state??''} onChange={event=>{const state=event.target.value as 'auto'|'off';changeRiverPreview({featureEdits:[...(riverCommandPreview.options.featureEdits??[]).filter(e=>e!==choice),{...feature,state}]});}}><option value="">{language==='ru'?'«Есть» недопустимо — выберите':'On is invalid — choose'}</option><option value="auto">{language==='ru'?'Авто':'Auto'}</option><option value="off">{language==='ru'?'Нет':'Off'}</option></select></label>;})}
+      </>;
+    })()}
+    <div className="river-command-actions"><button autoFocus type="button" className="direct-value" data-river-confirm disabled={!riverPreviewPlan?.plan||!!riverPreviewPlan.plan.unresolvedCrossings.length||!!riverPreviewPlan.plan.unresolvedFeatures.length} onClick={()=>confirmRiverCommand(riverCommandPreview)}>{riverCommandPreview.edit.type==='remove'?(language==='ru'?`Удалить реку${(riverPreviewPlan?.plan?.losses.removedRiverIds.length??0)>1?` с ${(riverPreviewPlan?.plan?.losses.removedRiverIds.length??1)-1} рукавами`:''}`:`Delete river${(riverPreviewPlan?.plan?.losses.removedRiverIds.length??0)>1?` with ${(riverPreviewPlan?.plan?.losses.removedRiverIds.length??1)-1} arms`:''}`):(language==='ru'?'Подтвердить':'Confirm')}</button>
+    <button type="button" className="direct-value" data-river-cancel onClick={()=>cancelRiverCommand(riverCommandPreview)}>{language==='ru'?'Остаться':'Stay'}</button></div>
+  </div>:null;
+  const roadResolutionPanel=roadFeatureResolution?<div className="river-command-preview" data-road-marker-resolution role="group" aria-label={language==='ru'?'Решение для порогов':'Rapids resolution'} onKeyDown={event=>{if(event.key==='Escape'){event.preventDefault();event.stopPropagation();updateRoadResolution(null);}}}>
+    <p>{language==='ru'?'Переправа конфликтует с ручными порогами. Выберите для каждой отметки «Нет» или «Авто» в этой же операции.':'The crossing conflicts with manual rapids. Choose Off or Auto for each marker in this operation.'}</p>
+    {roadFeatureResolution.conflicts.map((conflict,i)=>{const choice=roadFeatureResolution.edits.find(e=>e.type==='rapid'&&conflict.type==='rapid'&&e.riverId===conflict.riverId&&e.edgeKey===conflict.edgeKey);return <label key={i}>{conflict.type==='rapid'?riverLabel(conflict.riverId):waterfallLabel} <select className="direct-value" data-road-marker-choice aria-label={`${language==='ru'?'Пороги у переправы':'Rapids at crossing'} ${i+1}`} value={choice?.state??''} onChange={event=>{if(roadFeatureResolutionRef.current!==roadFeatureResolution)return;updateRoadResolution({...roadFeatureResolution,edits:[...roadFeatureResolution.edits.filter(e=>e!==choice),{...conflict,state:event.target.value as 'off'|'auto'}]});}}><option value="">{language==='ru'?'Выберите':'Choose'}</option><option value="auto">{language==='ru'?'Авто':'Auto'}</option><option value="off">{language==='ru'?'Нет':'Off'}</option></select></label>;})}
+    <button type="button" className="direct-value" data-road-marker-confirm disabled={roadFeatureResolution.edits.length<roadFeatureResolution.conflicts.length} onClick={()=>{if(editRoadDocument(roadFeatureResolution.edit,roadFeatureResolution.draft,roadFeatureResolution.edits,roadFeatureResolution))updateRoadResolution(null);}}>{language==='ru'?'Подтвердить переправу и отметки':'Confirm crossing and markers'}</button>
+    <button type="button" className="direct-value" onClick={()=>updateRoadResolution(null)}>{language==='ru'?'Отказаться':'Cancel change'}</button>
+  </div>:null;
+  const riverAmbiguityPanel=riverHitChoices.length||riverRoadHitChoices.length?<div data-river-hit-choices><p>{language==='ru'?'Выберите объект и участок':'Choose object and edge'}</p>{riverHitChoices.map((choice,i)=><button type="button" className="direct-value" key={`${choice.riverId}:${choice.edgeKey}`} data-river-hit-choice={`${choice.riverId}:${choice.edgeKey}`} onFocus={()=>setRiverHitHover(choice)} onBlur={()=>setRiverHitHover(null)} onMouseEnter={()=>setRiverHitHover(choice)} onMouseLeave={()=>setRiverHitHover(null)} onClick={()=>chooseMapRiver(choice)}>{riverLabel(choice.riverId)} · {choice.hexKey} · {language==='ru'?'участок':'edge'} {i+1}</button>)}{riverRoadHitChoices.map(choice=><button type="button" className="direct-value" key={`road:${choice.roadId}:${choice.pair}`} data-river-road-hit-choice={choice.roadId} onClick={()=>chooseRoadPair(choice.pair,choice.roadId)}>{language==='ru'?'Дорога / тропа':'Road / trail'} {choice.roadId} · {choice.pair.replace('|',' ↔ ')}</button>)}<button type="button" className="direct-value" onClick={()=>{setRiverHitChoices([]);setRiverRoadHitChoices([]);setRiverHitHover(null);setEditError(null);}}>{language==='ru'?'Закрыть выбор':'Close choices'}</button></div>:null;
   const riverDraftPanel=editMode&&regions.length>0?<div className="river-draft-editor" data-river-draft>
     {riverDraft?<>
+      <p>{riverDraft.riverId===undefined?(language==='ru'?'Новая река':'New river'):`${language==='ru'?'Заменить русло':'Replace route'} · ${riverLabel(riverDraft.riverId)}`}</p>
       <p>{language==='ru'?'Выберите начало и соседние вершины. Enter, повтор конца или Готово — завершить. Escape — сбросить.':'Choose a start and adjacent vertices. Enter, click the end again or Done to finish. Escape to reset.'}</p>
       <p>{language==='ru'?'Участков':'Edges'}: {Math.max(0,riverDraft.path.length-1)}. {language==='ru'?'Черновик не входит в выгрузку.':'The draft is excluded from exports.'}</p>
       {(riverDraftAmbiguity.length?riverDraftVertices.filter(v=>riverDraftAmbiguity.includes(v.key)):riverDraft.path.length?riverDraftVertices:riverDraftVertices.filter(v=>selectedHexVertexKeys.has(v.key))).map((v,i)=><button type="button" className="direct-value" key={v.key} data-river-draft-choice={v.key} onFocus={()=>setRiverDraftHover(v.key)} onBlur={()=>setRiverDraftHover(null)} onMouseEnter={()=>setRiverDraftHover(v.key)} onMouseLeave={()=>setRiverDraftHover(null)} onClick={()=>appendRiverDraft(v.key,riverDraft)}>{v.key===riverDraft.path[riverDraft.path.length-1]?.key?(language==='ru'?'Завершить здесь':'Finish here'):`${language==='ru'?'Вершина':'Vertex'} ${i+1}`}</button>)}
+      <button type="button" className="direct-value" data-river-finish disabled={!!riverCommandPreview} onClick={()=>finishRiverDraft(riverDraft)}>{language==='ru'?'Завершить русло':'Finish route'}</button>
       <button type="button" className="direct-value" onClick={()=>resetRiverDraft(riverDraft)}>{language==='ru'?'Сбросить черновик реки':'Reset river draft'}</button>
-    </>:<button type="button" className="direct-value" data-add-river onClick={startRiverDraft} disabled={!!roadDraft||!!obstacleDraft||documentBusy()}>{language==='ru'?'Добавить реку':'Add river'}</button>}
+    </>:<button type="button" className="direct-value" data-add-river onClick={()=>startRiverDraft()} disabled={!!roadDraft||!!obstacleDraft||documentBusy()}>{language==='ru'?'Добавить реку':'Add river'}</button>}
   </div>:null;
   const roadLandRegion = (h:AxialHex) => !isLakeHex(h,hexTerrainByKey)&&!isSeaHex(h,hexTerrainByKey)
     ? regions.find(r=>r.hexes.some(v=>isSameHex(v,h))) : undefined;
@@ -14604,7 +14769,7 @@ export function App() {
     if(path.length>1&&getRoadHexKeys(roads).has(hexKey(last)))return draftError('Завершите путь на узле сети.','Finish the path at the network node.');
     updateRoadDraft({...draft,path:[...path,{...h}]});setEditError(null);return true;
   };
-  const resetRoadDraft = () => {updateRoadDraft(null);setEditError(null);};
+  const resetRoadDraft = () => {updateRoadResolution(null);updateRoadDraft(null);setEditError(null);};
   const roadDraftPanel = editMode && !riverDraft && (roadDraft || selectedHex && roadLandRegion(selectedHex)) ? <div className="road-editor" data-road-draft>
     {roadDraft ? <>
       <label>{language==='ru'?'Черновик пути':'Path draft'} <select className="direct-value" aria-label={language==='ru'?'Тип нового пути':'New path type'} value={roadDraft.kind}
@@ -15058,6 +15223,7 @@ export function App() {
 
   return (
     <div className="app" onPointerDownCapture={finishBeforePointer} onKeyDownCapture={e=>{
+      if(riverCommandPreviewRef.current&&e.key==='Escape'&&!e.nativeEvent.isComposing){e.preventDefault();e.stopPropagation();cancelRiverCommand();return;}
       if(riverDraftRef.current&&!e.nativeEvent.isComposing){if(e.key==='Escape'){e.preventDefault();e.stopPropagation();resetRiverDraft();return;}if(e.key==='Enter'&&!(e.target as Element).matches('select,button,input,textarea,[data-river-draft-vertex]')){e.preventDefault();e.stopPropagation();finishRiverDraft();return;}}
       if(e.key==='Escape'&&obstacleDraftRef.current){e.preventDefault();e.stopPropagation();cancelObstacleChoice();return;}
       if(!roadDraftRef.current||e.nativeEvent.isComposing)return;
@@ -15143,7 +15309,7 @@ export function App() {
               <div className="info-block info-block--prompt map-toolbar__prompt" role="status">{t.candidatePrompt}</div>
             ) : null}
             <div className="control-block mode-selector"><label>{language === 'ru' ? 'Режим' : 'Mode'}
-              <select aria-label={language === 'ru' ? 'Режим' : 'Mode'} value={generationMode} disabled={!!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob} onChange={e=>{ if(!mutationBlocked()) setGenerationMode(e.target.value as GenerationMode); }}>
+              <select aria-label={language === 'ru' ? 'Режим' : 'Mode'} value={generationMode} disabled={!!roadFeatureResolution || !!riverCommandPreview || !!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob} onChange={e=>{ if(!mutationBlocked()) setGenerationMode(e.target.value as GenerationMode); }}>
                 <option value="classic">{language === 'ru' ? 'Классический режим' : 'Classic mode'}</option>
                 <option value="mythic">Mythic Bastionland</option>
               </select></label></div>
@@ -15191,11 +15357,11 @@ export function App() {
             : null}
             {regions.length > 0 ? (
               <div className="control-block controls controls--region-management">
-                  <button disabled={!!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob} onClick={resetMap} className="secondary">{t.reset}</button>
-                  <button type="button" disabled={!!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob || !history.length} onClick={regenerateLastRegion} className="secondary">
+                  <button disabled={!!roadFeatureResolution || !!riverCommandPreview || !!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob} onClick={resetMap} className="secondary">{t.reset}</button>
+                  <button type="button" disabled={!!roadFeatureResolution || !!riverCommandPreview || !!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob || !history.length} onClick={regenerateLastRegion} className="secondary">
                     {t.regenerateRegion}
                   </button>
-                  <button type="button" disabled={!!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob || !history.length} onClick={deleteLastRegion} className="secondary">
+                  <button type="button" disabled={!!roadFeatureResolution || !!riverCommandPreview || !!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob || !history.length} onClick={deleteLastRegion} className="secondary">
                     {t.deleteLastRegion}
                   </button>
               </div>
@@ -15251,8 +15417,8 @@ export function App() {
               </button>
             </div>
             <div className="control-block controls controls--history">
-              <button type="button" className="secondary" disabled={!!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob || !undoHistory.length} onClick={undoMap}>{language==='ru'?'Отменить':'Undo'}</button>
-              <button type="button" className="secondary" disabled={!!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob || !redoHistory.length} onClick={redoMap}>{language==='ru'?'Повторить':'Redo'}</button>
+              <button type="button" className="secondary" disabled={!!roadFeatureResolution || !!riverCommandPreview || !!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob || !undoHistory.length} onClick={undoMap}>{language==='ru'?'Отменить':'Undo'}</button>
+              <button type="button" className="secondary" disabled={!!roadFeatureResolution || !!riverCommandPreview || !!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob || !redoHistory.length} onClick={redoMap}>{language==='ru'?'Повторить':'Redo'}</button>
             </div>
             <div className="control-block controls controls--transfer">
               <details className="export-menu">
@@ -15260,10 +15426,10 @@ export function App() {
                   <div className="export-menu__items">
                     <button type="button" disabled={!renderDetails} onClick={() => void handleExportPng()} className="secondary">PNG</button>
                     <button type="button" onClick={handleExportJson} className="secondary">JSON</button>
-                    <small>{language==='ru'?'JSON v5: старые версии приложения не откроют этот файл.':'JSON v5: older app versions cannot open this file.'}</small>
+                    <small>{language==='ru'?'JSON v7: старые версии приложения не откроют этот файл.':'JSON v7: older app versions cannot open this file.'}</small>
                   </div>
                 </details>
-              <button type="button" disabled={!!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob} onClick={handleImportJsonClick} className="secondary">{t.importJson}</button>
+              <button type="button" disabled={!!roadFeatureResolution || !!riverCommandPreview || !!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob} onClick={handleImportJsonClick} className="secondary">{t.importJson}</button>
               <input ref={jsonImportInputRef} className="visually-hidden" type="file" accept="application/json,.json" onChange={(event) => void handleImportJson(event)} />
             </div>
             <div className="control-block world-seed-control">
@@ -15386,14 +15552,14 @@ export function App() {
                 <span className="visually-hidden" aria-live="polite">{tagAnnouncement}</span>
                 {editMode&&generationMode==='mythic'&&tagOwners(captureMap()).size>0?<button type="button" className="tag-add" onClick={fillMissingTags}>{language==='ru'?'Заполнить недостающие теги':'Fill missing tags'}</button>:null}
                 {obstaclePanel}
-                {riverDraftPanel}
+                {riverAmbiguityPanel}{riverPreviewPanel}{roadResolutionPanel}{riverDraftPanel}
                 {roadDraftPanel}
                 {roadPanel}
                 {editError && <p className="direct-error" role="alert">{editError}</p>}
                 {canEditNotes && selectedHexKey && (notesValue || editMode) ? <div className="gm-notes">
                   <strong id="gm-notes-label">{language === 'ru' ? 'Заметки мастера' : 'GM notes'}</strong>
                   {notesOpen && editMode ? <textarea ref={notesTextRef} id="gm-notes-text" aria-labelledby="gm-notes-label" rows={4} value={notesValue}
-                    disabled={!!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob}
+                    disabled={!!roadFeatureResolution || !!riverCommandPreview || !!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob}
                     onKeyDown={event => { event.stopPropagation(); if (event.key === 'Escape') { finishNotesGroup(); setNotesEditorKey(null); } }}
                     onCompositionStart={() => { notesComposingRef.current = true; if (notesTimerRef.current !== null) clearTimeout(notesTimerRef.current); }}
                     onCompositionEnd={event => { notesComposingRef.current = false; changeNotesText(selectedHexKey, event.currentTarget.value); notesTimerRef.current = setTimeout(finishNotesGroup, 500); }}
@@ -15611,9 +15777,18 @@ export function App() {
               style={{ width: `${displayMapWidth}px`, height: `${displayMapHeight}px`, transform: `translateZ(0) scale(${mapScaleRef.current})`, '--road-hit-width': `${44/mapScaleRef.current}px`, '--crossing-hit-radius': `${22/mapScaleRef.current}px`, '--water-color': WATER_PALETTE.river, '--water-marks': WATER_PALETTE.marks } as CSSProperties}
             >
             {mapArtwork}
+            {editMode&&riverFeatureTarget&&!riverDraft&&<g data-editor-only="river-selected" transform={mapRotationTransform} pointerEvents="none">
+              <defs><marker id="river-selected-arrow" viewBox="0 0 10 10" refX={9} refY={5} markerWidth={4} markerHeight={4} orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#7dd3fc" /></marker></defs>
+              {rivers.filter(r=>r.id===riverFeatureTarget.riverId).flatMap(r=>r.vertexPath.slice(1).map((v,i)=><line key={i} x1={r.vertexPath[i].x+riverOffset.x} y1={r.vertexPath[i].y+riverOffset.y} x2={v.x+riverOffset.x} y2={v.y+riverOffset.y} stroke="#7dd3fc" strokeWidth={5} markerEnd="url(#river-selected-arrow)" />))}
+            </g>}
             {editMode&&riverFeatureTarget&&riverFeatureTarget.hexKey===selectedHexKey&&!roadDraft&&!obstacleDraft&&<g data-editor-only="river-feature" transform={mapRotationTransform} pointerEvents="none">
-              {rivers.filter(r=>r.id===riverFeatureTarget.riverId).flatMap(r=>r.vertexPath.slice(1).map((v,i)=>({a:r.vertexPath[i],b:v}))).filter(e=>!riverFeatureTarget.edgeKey||edgeKey(e.a,e.b)===riverFeatureTarget.edgeKey).map(e=><line key={edgeKey(e.a,e.b)} x1={e.a.x+riverOffset.x} y1={e.a.y+riverOffset.y} x2={e.b.x+riverOffset.x} y2={e.b.y+riverOffset.y} stroke="#f7dc6f" strokeWidth={4} strokeDasharray="6 3" />)}
+              {rivers.filter(r=>r.id===riverFeatureTarget.riverId).flatMap(r=>r.vertexPath.slice(1).map((v,i)=>({a:r.vertexPath[i],b:v}))).filter(e=>riverFeatureTarget.edgeKey?riverReachKeys.has(edgeKey(e.a,e.b)):false).map(e=><line data-river-reach-edge={edgeKey(e.a,e.b)} key={edgeKey(e.a,e.b)} x1={e.a.x+riverOffset.x} y1={e.a.y+riverOffset.y} x2={e.b.x+riverOffset.x} y2={e.b.y+riverOffset.y} stroke="#f7dc6f" strokeWidth={4} strokeDasharray="6 3" />)}
               {riverFeatureTarget.vertexKey&&rivers.find(r=>r.id===riverFeatureTarget.riverId)?.vertexPath.filter(v=>v.key===riverFeatureTarget.vertexKey).map(v=><circle key={v.key} cx={v.x+riverOffset.x} cy={v.y+riverOffset.y} r={6} fill="#f7dc6f" />)}
+            </g>}
+            {(riverCommandPreview||riverDraft?.riverId!==undefined)&&<g data-editor-only="river-preview" transform={mapRotationTransform} pointerEvents="none">
+              <defs><marker id="river-preview-arrow" viewBox="0 0 10 10" refX={9} refY={5} markerWidth={4} markerHeight={4} orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#f7dc6f" /></marker></defs>
+              {rivers.filter(r=>r.id===(riverDraft?.riverId??(riverCommandPreview?.edit.type!=='create'?riverCommandPreview?.edit.riverId:undefined))).flatMap(r=>r.vertexPath.slice(1).map((v,i)=><line key={i} x1={r.vertexPath[i].x+riverOffset.x} y1={r.vertexPath[i].y+riverOffset.y} x2={v.x+riverOffset.x} y2={v.y+riverOffset.y} stroke="#64748b" strokeWidth={5} opacity={0.65} />))}
+              {riverCommandPreview&&riverPreviewPlan?.plan?.map.rivers.filter(r=>r.id===(riverCommandPreview.edit.type==='create'?nextRiverId:riverCommandPreview.edit.riverId)).flatMap(r=>r.vertexPath.slice(1).map((v,i)=><line key={i} x1={r.vertexPath[i].x+riverOffset.x} y1={r.vertexPath[i].y+riverOffset.y} x2={v.x+riverOffset.x} y2={v.y+riverOffset.y} stroke="#f7dc6f" strokeWidth={4} strokeDasharray="6 3" markerEnd="url(#river-preview-arrow)" />))}
             </g>}
             {riverDraft&&<g data-editor-only="river-draft" transform={mapRotationTransform}>
               <defs><marker id="river-draft-arrow" viewBox="0 0 10 10" refX={9} refY={5} markerWidth={4} markerHeight={4} orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#f7dc6f" /></marker></defs>
@@ -15664,6 +15839,10 @@ export function App() {
                     onKeyDown={event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();editObstacleDocument(c.edit,obstacleDraft);}}} />
                 </g>;
               })}
+            </g>}
+            {editMode&&!riverDraft&&!roadDraft&&!obstacleDraft&&!riverCommandPreview&&<g data-editor-only="river-targets" transform={mapRotationTransform}>
+              {riverMapTargets.map(target=><line key={`${target.riverId}:${target.edgeKey}`} data-river-map-edge={`${target.riverId}:${target.edgeKey}`} className="river-map-target" role="button" tabIndex={0} aria-label={`${language==='ru'?'Река':'River'} ${riverLabel(target.riverId)} · ${target.hexKey}`} x1={target.a.x+riverOffset.x} y1={target.a.y+riverOffset.y} x2={target.b.x+riverOffset.x} y2={target.b.y+riverOffset.y} stroke="transparent" style={{strokeWidth:'var(--road-hit-width)'}} pointerEvents="stroke" onClick={event=>activateMapRiver(event,target)} onKeyDown={event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();chooseMapRiver(target);}}} />)}
+              {riverHitHover&&riverMapTargets.filter(t=>t.riverId===riverHitHover.riverId&&t.edgeKey===riverHitHover.edgeKey).map(t=><line key={t.edgeKey} x1={t.a.x+riverOffset.x} y1={t.a.y+riverOffset.y} x2={t.b.x+riverOffset.x} y2={t.b.y+riverOffset.y} stroke="#f7dc6f" strokeWidth={7} pointerEvents="none" />)}
             </g>}
             </svg>
             <canvas ref={mapMotionCanvasRef} className="map-motion-buffer" aria-hidden="true" />

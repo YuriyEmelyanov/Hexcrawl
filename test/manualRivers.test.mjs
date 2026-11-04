@@ -67,6 +67,7 @@ test('E5 reverse/create/delete validate physical path, counter and dependencies 
  assert.throws(()=>prepareRiverEdit(doc,{...unknown,path:[v(4),v(5),v(6)],fullnessByEdge:{[conditionKey]:2}},{...context(),solvePath:()=>new Map([[conditionKey,3],[riverFeatureEdge(v(5),v(6)),3]])}),/changed_fixed/);
  const replaced=prepareRiverEdit(doc,{type:'replace',riverId:5,regionId:1,path:doc.rivers[0].vertexPath,fullness:3},context());assert.ok(replaced.rivers[0].sectors.every(s=>s.fullness===3));
  assert.equal(prepareRiverEdit(doc,{type:'replace',riverId:5,regionId:1,path:doc.rivers[0].vertexPath,fullness:2},context()),doc);
+ assert.equal(prepareRiverEdit(doc,{type:'replace',riverId:5,regionId:1,path:doc.rivers[0].vertexPath.map(p=>({x:p.x+1e-12,y:p.y,key:p.key}))},context()),doc,'same physical route from another hex retains exact document/redo');
  const arm={...river(6,[2,4]),deltaParentRiverId:5};const group={...doc,rivers:[...doc.rivers,arm],nextRiverId:7};assert.throws(()=>prepareRiverEdit(group,{type:'remove',riverId:5,includeArms:false},context()),/confirmation/);
  const removed=prepareRiverEdit(group,{type:'remove',riverId:5,includeArms:true},context());assert.equal(removed.rivers.length,0);assert.equal(removed.nextRiverId,7);assert.deepEqual(doc,before);
  // Cleanup must not make malformed accepted-state input appear valid.
