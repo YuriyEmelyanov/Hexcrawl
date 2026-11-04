@@ -66,9 +66,7 @@ export function validateRiverFeatures(value:unknown,rivers:readonly RiverGeometr
 }
 
 export type FeatureEdit={type:'rapid';riverId:number;edgeKey:string;state:FeatureState|'auto'}|{type:'waterfall';vertexKey:string;state:FeatureState|'auto'};
-/** Absence means Auto. Off is an intention even when the current automatic result is false. */
-export function prepareRiverFeatureEdit(features:RiverFeatures,edit:FeatureEdit,rivers:readonly RiverGeometry[],eligibility:FeatureEligibility):RiverFeatures{
-  validateRiverFeatures(features,rivers,eligibility);
+function applyRiverFeatureIntent(features:RiverFeatures,edit:FeatureEdit,rivers:readonly RiverGeometry[]):RiverFeatures{
   if(!['on','off','auto'].includes(edit.state))fail('invalid_feature_state');
   let next:RiverFeatures;
   if(edit.type==='rapid'){
@@ -85,6 +83,19 @@ export function prepareRiverFeatureEdit(features:RiverFeatures,edit:FeatureEdit,
     const rest=features.waterfalls.filter(e=>e!==old);
     next={...features,waterfalls:edit.state==='auto'?rest:[...rest,{vertexKey:edit.vertexKey,state:edit.state}]};
   }
+  return next;
+}
+/** Absence means Auto. Off remains an intention even when Auto is false. */
+export function prepareRiverFeatureEdit(features:RiverFeatures,edit:FeatureEdit,rivers:readonly RiverGeometry[],eligibility:FeatureEligibility):RiverFeatures{
+  validateRiverFeatures(features,rivers,eligibility);const next=applyRiverFeatureIntent(features,edit,rivers);
+  validateRiverFeatures(next,rivers,eligibility);return next;
+}
+/** Resolve a prospective document's conflicts together. The original accepted
+ * document must be checked before preparing this candidate; no intermediate
+ * partially resolved candidate is ever committed. */
+export function resolveRiverFeatureEdits(features:RiverFeatures,edits:readonly FeatureEdit[],rivers:readonly RiverGeometry[],eligibility:FeatureEligibility):RiverFeatures{
+  validateRiverFeatures(features,rivers);let next=features;
+  for(const edit of edits)next=applyRiverFeatureIntent(next,edit,rivers);
   validateRiverFeatures(next,rivers,eligibility);return next;
 }
 
@@ -97,7 +108,7 @@ export function featuresForSurvivingRivers(features:RiverFeatures,rivers:readonl
 
 export type EditableRiverSector={id:string;riverId:number|string;sectorIndex:number;vertexPath:RiverVertexValue[];edgeKeys:string[];startVertexKey:string;endVertexKey:string;startReason:'river_start'|'river_confluence'|'lake'|'region_boundary'|'split'|'unknown';endReason:'river_confluence'|'lake'|'region_boundary'|'split'|'unknown'|'river_end';fullness:RiverFullness;assignedRegionId?:number};
 export type EditableRiver=RiverGeometry&{regionId:number;sectors:EditableRiverSector[];controlPoints?:{startVertex:RiverVertexValue;endVertex:RiverVertexValue;middlePurpleVertex?:RiverVertexValue;startMode:'existing river endpoint'|'red vertex'|'mountain source'}};
-export type RiverEdit={type:'create';path:RiverVertexValue[];regionId:number;fullness:RiverFullness}|{type:'replace';riverId:number;path:RiverVertexValue[];regionId:number;fullness:RiverFullness}|{type:'reverse';riverId:number}|{type:'fullness';riverId:number;edgeKey:string;fullness:RiverFullness}|{type:'remove';riverId:number;includeArms:boolean};
+export type RiverEdit={type:'create';path:RiverVertexValue[];regionId:number;fullness?:RiverFullness;fullnessByEdge?:Record<string,RiverFullness>}|{type:'replace';riverId:number;path:RiverVertexValue[];regionId:number;fullness?:RiverFullness;fullnessByEdge?:Record<string,RiverFullness>}|{type:'reverse';riverId:number}|{type:'fullness';riverId:number;edgeKey:string;fullness:RiverFullness}|{type:'remove';riverId:number;includeArms:boolean};
 export type RiverEditDocument={rivers:EditableRiver[];riverFeatures:RiverFeatures;nextRiverId:number};
 export type RiverEditContext=FeatureEligibility&{
   vertex:(key:string)=>RiverVertexValue|undefined;
@@ -106,6 +117,7 @@ export type RiverEditContext=FeatureEligibility&{
   event:(key:string,rivers:readonly EditableRiver[])=>boolean;
   reason?:(key:string,start:boolean,endpoint:boolean,river:EditableRiver)=>EditableRiverSector['startReason']|EditableRiverSector['endReason'];
   network:(rivers:EditableRiver[])=>{network:RiverNetwork;issues:string[]};
+  solvePath?:(before:EditableRiver[],river:EditableRiver,path:RiverVertexValue[],fixed:ReadonlyMap<string,RiverFullness>)=>ReadonlyMap<string,RiverFullness>;
   additionalValidation:(before:EditableRiver[],after:EditableRiver[])=>void;
 };
 function fullnessByEdge(r:EditableRiver):Map<string,RiverFullness>{
@@ -113,13 +125,22 @@ function fullnessByEdge(r:EditableRiver):Map<string,RiverFullness>{
   for(const s of r.sectors)for(const e of s.edgeKeys){if(!isFullness(s.fullness)||values.has(e)&&values.get(e)!==s.fullness)fail('ambiguous_river_fullness');values.set(e,s.fullness);}
   return values;
 }
+/** Single owner policy shared by final sector rebuild and the unknown-F solver. */
+export function riverPathOwners(r:EditableRiver,path:RiverVertexValue[],ctx:Pick<RiverEditContext,'edgeOwners'>):Map<string,number>{
+  const oldOwner=new Map(r.sectors.flatMap(s=>s.edgeKeys.map(e=>[e,s.assignedRegionId??r.regionId] as const))),result=new Map<string,number>();
+  for(let i=1;i<path.length;i++){
+    const key=riverFeatureEdge(path[i-1],path[i]),owners=ctx.edgeOwners(key),prior=oldOwner.get(key);
+    if(prior!==undefined&&!owners.includes(prior))fail('invalid_existing_river_owner');
+    const owner=prior??(owners.includes(r.regionId)?r.regionId:[...owners].sort((a,b)=>a-b)[0]);
+    if(owner===undefined)fail('unknown_river_edge');result.set(key,owner);
+  }
+  return result;
+}
 function rebuild(r:EditableRiver,path:RiverVertexValue[],values:ReadonlyMap<string,RiverFullness>,ctx:RiverEditContext):EditableRiver{
-  const oldOwner=new Map(r.sectors.flatMap(s=>s.edgeKeys.map(e=>[e,s.assignedRegionId??r.regionId] as const)));
+  const ownersByEdge=riverPathOwners(r,path,ctx);
   const subject={...r,vertexPath:path};
   const sectors:EditableRiverSector[]=path.slice(1).map((b,i)=>{
-    const a=path[i],key=riverFeatureEdge(a,b),owners=ctx.edgeOwners(key);
-    const prior=oldOwner.get(key);const owner=prior!==undefined&&owners.includes(prior)?prior:owners.includes(r.regionId)?r.regionId:[...owners].sort((a,b)=>a-b)[0];
-    if(owner===undefined)fail('unknown_river_edge');
+    const a=path[i],key=riverFeatureEdge(a,b),owner=ownersByEdge.get(key)!;
     const f=values.get(key);if(!isFullness(f))fail('unknown_river_fullness');
     return {id:`manual-${r.id}:${key}`,riverId:r.id,sectorIndex:i+1,vertexPath:[{...a},{...b}],edgeKeys:[key],startVertexKey:a.key,endVertexKey:b.key,startReason:(ctx.reason?.(a.key,true,i===0,subject)??(i===0?'river_start':'region_boundary')) as EditableRiverSector['startReason'],endReason:(ctx.reason?.(b.key,false,i===path.length-2,subject)??(i===path.length-2?'river_end':'region_boundary')) as EditableRiverSector['endReason'],fullness:f!,assignedRegionId:owner};
   });
@@ -167,6 +188,12 @@ function numericViolations(network:RiverNetwork):Map<string,Issue>{
     }
     for(const issue of validateRiverNetwork(local).issues)if(!issue.nodeId||issue.nodeId===node.id)remember(issue);
   }
+  for(const signature of directedRiverCycles(network))found.set(signature,{rule:'RIV-016',code:'CYCLE',message:'New or changed directed river cycle'});
+  return found;
+}
+/** Canonical cycle evidence shared with the BR-009 dependency preflight. */
+export function directedRiverCycles(network:RiverNetwork):Set<string>{
+  const cycles=new Set<string>();
   // Iterative Kosaraju: compare the actual cyclic physical subgraphs, not one
   // global CYCLE flag which could mask a second/new cycle on the same map.
   const outgoing=new Map(network.nodes.map(n=>[n.id,[] as string[]])),incoming=new Map(network.nodes.map(n=>[n.id,[] as string[]]));
@@ -180,9 +207,9 @@ function numericViolations(network:RiverNetwork):Map<string,Issue>{
   for(const id of order.reverse())if(!seen.has(id)){
     const ids=new Set<string>(),queue=[id];
     while(queue.length){const key=queue.pop()!;if(seen.has(key))continue;seen.add(key);ids.add(key);queue.push(...(incoming.get(key)??[]).filter(k=>!seen.has(k)));}
-    if(ids.size>1||network.edges.some(e=>e.from===id&&e.to===id))found.set(JSON.stringify(['RIV-016','CYCLE',[...ids].sort(),sortedEdges(network,ids)]),{rule:'RIV-016',code:'CYCLE',message:'New or changed directed river cycle'});
+    if(ids.size>1||network.edges.some(e=>e.from===id&&e.to===id))cycles.add(JSON.stringify(['RIV-016','CYCLE',[...ids].sort(),sortedEdges(network,ids)]));
   }
-  return found;
+  return cycles;
 }
 /** Preserve exact unchanged legacy interactions, including within a connected
  * component; strictly reject every new/changed physical or numeric violation. */
@@ -216,13 +243,48 @@ export function prepareRiverEdit(doc:RiverEditDocument,edit:RiverEdit,ctx:RiverE
     let path=edit.type==='reverse'?[...old!.vertexPath].reverse():edit.path;
     if(path.length<2||new Set(path.map(v=>v.key)).size!==path.length)fail('invalid_river_path');
     for(const v of path){const real=ctx.vertex(v.key);if(!real||!Number.isFinite(v.x)||!Number.isFinite(v.y)||Math.abs(real.x-v.x)>0.001||Math.abs(real.y-v.y)>0.001)fail('unknown_river_vertex');}
-    if(edit.type==='replace'&&JSON.stringify(old!.vertexPath)===JSON.stringify(path))return doc;
+    if(edit.type==='replace'&&edit.fullness===undefined&&edit.fullnessByEdge===undefined&&JSON.stringify(old!.vertexPath)===JSON.stringify(path))return doc;
     const used=new Set(doc.rivers.filter(r=>r!==old).flatMap(r=>r.vertexPath.slice(1).map((v,i)=>riverFeatureEdge(r.vertexPath[i],v))));
     const oldEdges=new Set(old?.vertexPath.slice(1).map((v,i)=>riverFeatureEdge(old.vertexPath[i],v))??[]);
+    const contacts=new Set(doc.rivers.filter(r=>r!==old).flatMap(r=>r.vertexPath.map(v=>v.key)));
+    for(let i=1;i<path.length-1;i++)if(contacts.has(path[i].key)){
+      const j=old?.vertexPath.findIndex(v=>v.key===path[i].key)??-1;
+      if(j<1||old!.vertexPath[j-1]?.key!==path[i-1].key||old!.vertexPath[j+1]?.key!==path[i+1].key)fail('river_connection_must_end_path');
+    }
     for(let i=1;i<path.length;i++){const key=riverFeatureEdge(path[i-1],path[i]);if(!ctx.edgeOwners(key).length)fail('non_adjacent_river_vertices');if(used.has(key))fail('duplicate_river_edge');if(!oldEdges.has(key)&&ctx.blocked(key))fail('obstacle_river_edge');}
     let river=old;
     if(edit.type==='create'){const allocation=allocateRiverId(doc.rivers,doc.nextRiverId);nextRiverId=allocation.nextRiverId;river={id:allocation.id,regionId:edit.regionId,vertexPath:[],sectors:[]};}
-    const values=edit.type==='reverse'?fullnessByEdge(old!):new Map(path.slice(1).map((v,i)=>[riverFeatureEdge(path[i],v),edit.fullness] as const));
+    let values:Map<string,RiverFullness>;
+    if(edit.type==='reverse')values=fullnessByEdge(old!);
+    else{
+      if(edit.fullness!==undefined&&!isFullness(edit.fullness))fail('invalid_fullness');
+      if(edit.fullnessByEdge!==undefined&&!object(edit.fullnessByEdge))fail('invalid_fullness_conditions');
+      const oldValues=old?fullnessByEdge(old):new Map<string,RiverFullness>();
+      const keys=path.slice(1).map((v,i)=>riverFeatureEdge(path[i],v));values=new Map();
+      for(const [key,f] of Object.entries(edit.fullnessByEdge??{}))if(!keys.includes(key)||!isFullness(f))fail('invalid_fullness_conditions');
+      if(edit.fullness!==undefined&&Object.values(edit.fullnessByEdge??{}).some(f=>f!==edit.fullness))fail('conflicting_fullness_conditions');
+      const released=new Set<string>(),desired=new Map<string,RiverFullness>(),proposal=[...doc.rivers.filter(r=>r!==old),{...river!,vertexPath:path}];
+      for(const key of Object.keys(edit.fullnessByEdge??{})){
+        const index=keys.indexOf(key);let left=index,right=index+1;
+        while(left>0&&!ctx.event(path[left].key,proposal))left--;
+        while(right<path.length-1&&!ctx.event(path[right].key,proposal))right++;
+        for(let i=left;i<right;i++){const f=edit.fullnessByEdge![key];if(desired.has(keys[i])&&desired.get(keys[i])!==f)fail('conflicting_fullness_conditions');desired.set(keys[i],f);released.add(keys[i]);}
+      }
+      if(edit.type==='replace'&&JSON.stringify(old!.vertexPath)===JSON.stringify(path)&&[...desired].every(([key,f])=>oldValues.get(key)===f)&&(edit.fullness===undefined||keys.every(key=>oldValues.get(key)===edit.fullness)))return doc;
+      for(const key of keys){
+        if(oldEdges.has(key)&&!oldValues.has(key))fail('unknown_fixed_river_fullness');
+        const f=edit.fullnessByEdge?.[key]??edit.fullness??(released.has(key)?undefined:oldValues.get(key));
+        if(f!==undefined)values.set(key,f);
+      }
+      if(values.size!==keys.length){
+        if(!ctx.solvePath)fail('river_solver_unavailable');
+        const solved=ctx.solvePath!(doc.rivers,river!,path,values);
+        for(const key of keys)if(!isFullness(solved.get(key)))fail('incomplete_river_solution');
+        for(const [key,f] of values)if(solved.get(key)!==f)fail('river_solver_changed_fixed_value');
+        values=new Map(keys.map(key=>[key,solved.get(key)!]));
+      }
+    }
+    if(edit.type==='replace'&&JSON.stringify(old!.vertexPath)===JSON.stringify(path)&&[...values].every(([key,f])=>fullnessByEdge(old!).get(key)===f))return doc;
     river=rebuild(river!,path,values,ctx);rivers=old?rivers.map(r=>r===old?river!:r):[...rivers,river];
   }
   validateDeltaReferences(rivers);validateEditedRiverNetwork(doc.rivers,rivers,ctx);ctx.additionalValidation(doc.rivers,rivers);

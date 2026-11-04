@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createGenerationHarness } from './helpers/generation-harness.mjs';
+import {solveManualRiverPath} from '../src/manualRiverGeometry.ts';
 import {prepareRiverEdit,validateEditedRiverNetwork,emptyRiverFeatures} from '../src/manualRivers.ts';
 import { validateRiverNetwork } from '../src/riverModel/core.ts';
 
@@ -174,4 +175,47 @@ test('E5 manual geometry uses actual vertices, neighbours, owners and open front
  const coastal=structuredClone(map);coastal.hexTerrainByKey.set(g.hexKey(sea),{terrainOverride:'sea'});
  assert.throws(()=>prepareRiverEdit(doc,{type:'reverse',riverId:1},{...editCtx,...g.buildManualRiverGeometryContext(coastal)}),/RIV/,'sea must not turn into a source');
  assert.equal(JSON.stringify(h.render().captureDocument()),before,'geometry preparation never mutates the live App or histories');
+});
+
+// Existing core tests cover numeric tables, not unknown physical drafts with
+// fixed App neighbours/counters or the final full-network check beyond a cut.
+test('E5 real path solver keeps explicit reach conditions and reports bounded limit without a partial document',()=>{
+ const {h,g}=outgoingFixture(1),original=h.render().captureDocument().map;
+ const map={...original,rivers:[]},ctx=g.buildManualRiverGeometryContext(map),base={rivers:[],riverFeatures:emptyRiverFeatures(),nextRiverId:2};
+ const path=original.rivers[0].vertexPath,edit={type:'create',regionId:1,path},full={...ctx,rapid:()=>true,waterfall:()=>true,additionalValidation:()=>{}};
+ const auto=prepareRiverEdit(base,edit,full);assert.equal(auto.nextRiverId,3);assert.equal(auto.rivers[0].id,2);assert.equal(validateRiverNetwork(ctx.network(auto.rivers).network).valid,true);
+ const key=auto.rivers[0].sectors[0].edgeKeys[0],fixed=prepareRiverEdit(base,{...edit,fullnessByEdge:{[key]:4}},full);assert.ok(fixed.rivers[0].sectors.every(s=>s.fullness===4));
+ const existing={...base,rivers:fixed.rivers,nextRiverId:3},existingMap={...map,rivers:fixed.rivers},replaceCtx={...full,...g.buildManualRiverGeometryContext(existingMap)};
+ const replacement={type:'replace',riverId:2,regionId:1,path,fullnessByEdge:{[key]:2}};
+ const changed=prepareRiverEdit(existing,replacement,replaceCtx);assert.ok(changed.rivers[0].sectors.every(s=>s.fullness===2),'condition applies to the hydrological reach, not one visual stroke');
+ assert.equal(prepareRiverEdit(existing,{...replacement,fullnessByEdge:{[key]:4}},replaceCtx),existing);
+ const before=JSON.stringify(base),target={id:2,regionId:1,vertexPath:[],sectors:[]};
+ assert.throws(()=>solveManualRiverPath([],target,path,new Map(),ctx.geometry,{maxStates:1}),error=>error.status==='limit'&&/упростите русло/.test(error.message));
+ assert.equal(JSON.stringify(base),before);assert.equal(base.nextRiverId,2);assert.deepEqual(base.rivers,[]);
+ assert.throws(()=>prepareRiverEdit(base,{...edit,fullness:1,fullnessByEdge:{[key]:4}},full),/conflicting_fullness/);
+});
+test('E5 unknown tributary preserves fixed neighbouring legacy source and owner heights',()=>{
+ const {h,g}=outgoingFixture(1),base=h.render().captureDocument().map,center=base.regions[0].hexes[0],ring=g.getHexNeighbors(center);
+ const regions=[{...base.regions[0],hexes:[center],id:1,heightLevel:1},{...base.regions[0],hexes:ring,id:2,heightLevel:3}];
+ let map={...base,regions,rivers:[],hexTerrainByKey:new Map(),candidateHexes:g.getCandidateHexes([center,...ring],new Set())};
+ const empty=g.buildManualRiverGeometryContext(map),corners=g.getHexCornerPoints(center),join=corners[0],a=corners[5],b=corners[1];
+ const adjacent=k=>[...empty.geometry.edgeOwners.keys()].filter(e=>e.split('|').includes(k)).map(e=>e.split('|').find(x=>x!==k));
+ const c=adjacent(join.key).find(k=>k!==a.key&&k!==b.key),d=adjacent(b.key).find(k=>k!==join.key&&empty.geometry.openVertices.has(k));assert.ok(c&&d);assert.equal(empty.geometry.openVertices.has(a.key),false);assert.equal(empty.geometry.openVertices.has(c),true);
+ const path=[a,join,b,empty.vertex(d)],sectors=path.slice(1).flatMap((v,i)=>g.createInitialRiverSectors(1,[path[i],v],3,{},empty.edgeOwners([path[i].key,v.key].sort().join('|'))[0])).map((s,i)=>({...s,id:`fixed:${i}`,sectorIndex:i+1}));
+ const main={id:1,regionId:1,vertexPath:path,sectors};map={...map,rivers:[main]};const ctx=g.buildManualRiverGeometryContext(map),doc={rivers:[main],riverFeatures:emptyRiverFeatures(),nextRiverId:2},before=JSON.stringify(doc);
+ assert.equal(validateRiverNetwork(ctx.network(doc.rivers).network).valid,false,'legacy dry sourceF3 is deliberately unchanged');
+ const edit={type:'create',regionId:2,path:[ctx.vertex(c),join]},full={...ctx,rapid:()=>true,waterfall:()=>true,additionalValidation:()=>{}};
+ assert.equal(prepareRiverEdit(doc,{type:'replace',riverId:1,regionId:1,path,fullnessByEdge:{[main.sectors[0].edgeKeys[0]]:3}},full),doc,'same condition is a no-op even beside an accepted legacy source defect');
+ const result=prepareRiverEdit(doc,edit,full);assert.equal(result.rivers[0],main);assert.equal(result.nextRiverId,3);assert.deepEqual(result.rivers[0].sectors.map(s=>s.fullness),[3,3,3]);
+ assert.deepEqual(result.rivers[0].sectors.map(s=>s.assignedRegionId),[1,1,2]);assert.equal(JSON.stringify(doc),before);
+ const branchKey=[c,join.key].sort().join('|'),hard=prepareRiverEdit(doc,{...edit,fullnessByEdge:{[branchKey]:2}},full);assert.equal(hard.rivers[1].sectors[0].fullness,2);assert.equal(hard.rivers[0],main);
+ assert.throws(()=>prepareRiverEdit(doc,{...edit,fullness:4},full),/RIV-005/);assert.equal(JSON.stringify(doc),before);
+});
+test('E5 solved draft still rejects a new physical cycle beyond the fixed exterior cut',()=>{
+ const {h,g}=outgoingFixture(1),map=h.render().captureDocument().map,main=map.rivers[0],corners=g.getHexCornerPoints(map.regions[0].hexes[0]);
+ let index=corners.findIndex(v=>v.key===main.vertexPath.at(-1).key);const path=[corners[index]];
+ while(path.at(-1).key!==main.vertexPath[0].key){index=(index+1)%corners.length;path.push(corners[index]);assert.ok(path.length<=6);}
+ const ctx=g.buildManualRiverGeometryContext(map),doc={rivers:map.rivers,riverFeatures:emptyRiverFeatures(),nextRiverId:map.nextRiverId},before=JSON.stringify(doc);
+ assert.throws(()=>prepareRiverEdit(doc,{type:'create',regionId:1,path},{...ctx,rapid:()=>true,waterfall:()=>true,additionalValidation:()=>{}}),/RIV-016:CYCLE/);
+ assert.equal(JSON.stringify(doc),before);assert.equal(doc.nextRiverId,map.nextRiverId);
 });

@@ -1,6 +1,7 @@
 import test from 'node:test';
+import {validateEditedRiverDeltas} from '../src/manualRiverDependencies.ts';
 import assert from 'node:assert/strict';
-import {emptyRiverFeatures,migrateRiverEditing,validateDeltaReferences,allocateRiverId,validateRiverFeatures,prepareRiverFeatureEdit,featuresForSurvivingRivers,prepareRiverEdit,riverFeatureEdge,validateEditedRiverNetwork,reserveGeneratedRiverIds} from '../src/manualRivers.ts';
+import {emptyRiverFeatures,migrateRiverEditing,validateDeltaReferences,allocateRiverId,validateRiverFeatures,prepareRiverFeatureEdit,resolveRiverFeatureEdits,featuresForSurvivingRivers,prepareRiverEdit,riverFeatureEdge,validateEditedRiverNetwork,reserveGeneratedRiverIds} from '../src/manualRivers.ts';
 // E5-AC06/07: persistence intentions and identity allocation are new contracts.
 // Existing riverRapids/riverWaterfalls test probability tables; riverModel tests
 // numerical rules. Reuse that core, do not copy its exhaustive truth tables here.
@@ -40,6 +41,9 @@ test('E5 feature Auto/Off/On intentions, strict states, no-op and failure leave 
  assert.throws(()=>validateRiverFeatures({...off,rapids:[...off.rapids,...off.rapids]},doc.rivers),/duplicate/);
  assert.throws(()=>prepareRiverFeatureEdit(off,{...edit,riverId:99},doc.rivers,eligibility),/stale/);
  assert.deepEqual(doc.riverFeatures,emptyRiverFeatures());
+ const two={rapids:[{riverId:5,edgeKey:edge,state:'on'}],waterfalls:[{vertexKey:v(1).key,state:'on'}]};
+ const resolved=resolveRiverFeatureEdits(two,[{...edit,state:'off'},{...waterfall,state:'off'}],doc.rivers,{rapid:()=>false,waterfall:()=>false});
+ assert.deepEqual(resolved.rapids.map(e=>e.state),['off']);assert.deepEqual(resolved.waterfalls.map(e=>e.state),['off']);assert.equal(two.rapids[0].state,'on');
 });
 test('E5 cleanup preserves shared physical waterfall while deleting only orphaned targets',()=>{
  const a=river(5),b=river(6,[1,8]);const features={rapids:[{riverId:5,edgeKey:riverFeatureEdge(v(0),v(1)),state:'off'}],waterfalls:[{vertexKey:v(1).key,state:'on'},{vertexKey:v(3).key,state:'off'}]};
@@ -58,6 +62,11 @@ test('E5 reverse/create/delete validate physical path, counter and dependencies 
  const create={type:'create',regionId:1,path:[v(4),v(5)],fullness:1};const created=prepareRiverEdit(doc,create,context());assert.equal(created.rivers[1].id,6);assert.equal(created.nextRiverId,7);assert.deepEqual(created.rivers[0],doc.rivers[0]);
  for(const path of [[v(4)],[v(4),v(6)],[v(0),v(1)],[v(4),v(5),v(4)],[{...v(4),x:99},v(5)]])assert.throws(()=>prepareRiverEdit(doc,{...create,path},context()));
  assert.throws(()=>prepareRiverEdit(doc,create,{...context(),blocked:()=>true}),/obstacle/);
+ const unknown={...create,fullness:undefined};assert.throws(()=>prepareRiverEdit(doc,unknown,context()),/solver_unavailable/);assert.deepEqual(doc,before);
+ const conditionKey=riverFeatureEdge(v(4),v(5));
+ assert.throws(()=>prepareRiverEdit(doc,{...unknown,path:[v(4),v(5),v(6)],fullnessByEdge:{[conditionKey]:2}},{...context(),solvePath:()=>new Map([[conditionKey,3],[riverFeatureEdge(v(5),v(6)),3]])}),/changed_fixed/);
+ const replaced=prepareRiverEdit(doc,{type:'replace',riverId:5,regionId:1,path:doc.rivers[0].vertexPath,fullness:3},context());assert.ok(replaced.rivers[0].sectors.every(s=>s.fullness===3));
+ assert.equal(prepareRiverEdit(doc,{type:'replace',riverId:5,regionId:1,path:doc.rivers[0].vertexPath,fullness:2},context()),doc);
  const arm={...river(6,[2,4]),deltaParentRiverId:5};const group={...doc,rivers:[...doc.rivers,arm],nextRiverId:7};assert.throws(()=>prepareRiverEdit(group,{type:'remove',riverId:5,includeArms:false},context()),/confirmation/);
  const removed=prepareRiverEdit(group,{type:'remove',riverId:5,includeArms:true},context());assert.equal(removed.rivers.length,0);assert.equal(removed.nextRiverId,7);assert.deepEqual(doc,before);
  // Cleanup must not make malformed accepted-state input appear valid.
@@ -78,4 +87,19 @@ test('E5 network validation preserves independent unchanged legacy defects, reje
  const cycles=context(),loop=[river(1,[0,1,2,0],1)],extra=[...loop,river(2,[4,5,6,4],1)];
  assert.doesNotThrow(()=>validateEditedRiverNetwork(loop,loop,cycles));
  assert.throws(()=>validateEditedRiverNetwork(loop,extra,cycles),/RIV-016/);
+});
+
+// This is the BR-009 dependency contract; physical hex adjacency is covered by
+// the real App adapter case, numerical confluence tables by the existing core.
+test('E5 changed delta groups preserve identity and reject invalid parent, arm and overlap',()=>{
+ const parent=river(5,[0,1,2,3],4),arm={...river(6,[2,4],2),deltaParentRiverId:5};
+ const geometry={vertices:new Map([0,1,2,3,4,6].map(x=>[v(x).key,v(x)])),edgeOwners:new Map([parent,arm].flatMap(r=>r.sectors.flatMap(s=>s.edgeKeys.map(k=>[k,[1,2]])))),heights:new Map([[1,1],[2,1]]),lakeByVertex:new Map(),lakeHexCount:new Map(),seaVertices:new Set([v(3).key,v(4).key,v(6).key]),openVertices:new Set([v(0).key])};
+ const before=[parent,arm],snapshot=structuredClone(before);
+ assert.doesNotThrow(()=>validateEditedRiverDeltas(before,[river(5,[0,1,2,3],5),arm],geometry));
+ assert.throws(()=>validateEditedRiverDeltas(before,[river(5,[0,1,2,3],3),arm],geometry),/delta_parent/);
+ assert.throws(()=>validateEditedRiverDeltas(before,[parent,{...arm,sectors:arm.sectors.map(s=>({...s,fullness:4}))}],geometry),/delta_geometry/);
+ assert.throws(()=>validateEditedRiverDeltas(before,[parent,{...river(6,[4,2],2),deltaParentRiverId:5}],geometry),/delta_geometry/);
+ assert.throws(()=>validateEditedRiverDeltas(before,[parent,arm,{...river(7,[1,6],1),deltaParentRiverId:5}],geometry),/delta_parent/);
+ assert.throws(()=>validateEditedRiverDeltas(before,[river(5,[0,1,2,3],5),arm,river(8,[2,4],1)],geometry),/delta_overlap/);
+ assert.doesNotThrow(()=>validateEditedRiverDeltas(before,[river(5,[0,1,2,3],3)],geometry),'no arm is required or randomly recreated');assert.deepEqual(before,snapshot);
 });

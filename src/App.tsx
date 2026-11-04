@@ -1,5 +1,6 @@
-import {buildManualRiverNetwork, type RiverEditingGeometry} from './manualRiverGeometry';
-import {emptyRiverFeatures, migrateRiverEditing, validateRiverCounter, validateRiverFeatures, reserveGeneratedRiverIds, type RiverFeatures, type FeatureEligibility, type RiverEditContext, type EditableRiver} from './manualRivers';
+import {prepareEditedRiverCrossings,validateEditedRiverDeltas,knownRiverEdgeFullness} from './manualRiverDependencies';
+import {buildManualRiverNetwork,solveManualRiverPath, type RiverEditingGeometry} from './manualRiverGeometry';
+import {prepareRiverEdit,resolveRiverFeatureEdits,type RiverEdit,type FeatureEdit,emptyRiverFeatures, migrateRiverEditing, validateRiverCounter, validateRiverFeatures, reserveGeneratedRiverIds, type RiverFeatures, type FeatureEligibility, type RiverEditContext, type EditableRiver} from './manualRivers';
 import {emptyTags,findTag,ownerKey,tagKey,rollTag,editTag,validateTags,TagCapacityError,type TagState,type TagOwner} from './tags/engine';
 import {mythicDefinitions,tagOwners,tagPolicy,reconcileTags,fillMythicTags} from './tags/mythic';
 import {TagRow} from './tags/TagRow';
@@ -984,7 +985,7 @@ function riverFeatureEligibility(rivers:River[],regions:Region[],terrain:Map<str
 /** Detached E5 physical/numeric context. Crossings/delta/feature dependency
  * preparation is deliberately supplied by the final edit transaction, not a no-op
  * callback masquerading as complete acceptance. */
-function buildManualRiverGeometryContext(map:MapSnapshot):Pick<RiverEditContext,'vertex'|'edgeOwners'|'blocked'|'event'|'reason'|'network'>&{geometry:RiverEditingGeometry}{
+function buildManualRiverGeometryContext(map:MapSnapshot):Pick<RiverEditContext,'vertex'|'edgeOwners'|'blocked'|'event'|'reason'|'network'|'solvePath'>&{geometry:RiverEditingGeometry}{
   const all=map.regions.flatMap(r=>r.hexes),graph=buildRiverGraphForRegion(all,all,getCandidateHexes(all,getSeaHexKeys(map.hexTerrainByKey)));
   const edgeOwners=new Map<string,number[]>();
   for(const region of map.regions)for(const hex of region.hexes)for(const key of getHexEdgeKeys(hex)){
@@ -1011,7 +1012,7 @@ function buildManualRiverGeometryContext(map:MapSnapshot):Pick<RiverEditContext,
     }
     return incoming===2&&outgoing===1;
   };
-  return {geometry,vertex:key=>geometry.vertices.get(key),edgeOwners:key=>edgeOwners.get(key)??[],blocked:key=>blocked.has(key),network,
+  return {geometry,solvePath:(before,river,path,fixed)=>solveManualRiverPath(before,river,path,fixed,geometry),vertex:key=>geometry.vertices.get(key),edgeOwners:key=>edgeOwners.get(key)??[],blocked:key=>blocked.has(key),network,
     event:(key,rivers)=>lakeByVertex.has(key)||geometry.seaVertices.has(key)||confluence(key,rivers),
     reason:(key,start,endpoint,river)=>lakeByVertex.has(key)?'lake':confluence(key,[...map.rivers.filter(r=>r.id!==river.id),river])?'river_confluence':endpoint?(start?'river_start':'river_end'):boundaries.has(key)?'region_boundary':'split'};
 }
@@ -1028,6 +1029,26 @@ function checkedRiverMap<T extends MapSnapshot>(map:T):T{
   validateRiverCounter(map.rivers,map.nextRiverId);
   validateMapRiverFeatures(map.riverFeatures,map.rivers,map.regions,map.hexTerrainByKey,map.crossings);
   return map;
+}
+
+type RiverEditOptions={crossingKinds?:Record<string,RiverCrossingKind>;featureEdits?:FeatureEdit[];confirmed?:boolean};
+/** Complete detached map preparation; history/names/tags are prepared by the
+ * existing document transaction only after the UI has confirmed any losses. */
+function prepareRiverMapEdit(map:MapSnapshot,edit:RiverEdit,options:RiverEditOptions={}){
+  checkedRiverMap(map);
+  const physical=buildManualRiverGeometryContext(map),input={rivers:map.rivers,riverFeatures:map.riverFeatures,nextRiverId:map.nextRiverId};
+  const result=prepareRiverEdit(input,edit,{...physical,...riverFeatureEligibility(map.rivers,map.regions,map.hexTerrainByKey,map.crossings),
+    additionalValidation:(before,after)=>{
+      validateEditedRiverDeltas(before,after,physical.geometry);
+      const violation=getNewRiverLakeReentryViolation(after,map.regions,map.hexTerrainByKey,before,map.regions,map.hexTerrainByKey);
+      if(violation)throw new Error('river_lake_reentry');
+    }});
+  const crossings=prepareEditedRiverCrossings(map.rivers,result.rivers,map.roads,map.crossings,(a,b)=>getSharedHexEdgeVertexKeys(a,b)?.sort().join('|'),options.crossingKinds);
+  const riverFeatures=resolveRiverFeatureEdits(result.riverFeatures,options.featureEdits??[],result.rivers,riverFeatureEligibility(result.rivers,map.regions,map.hexTerrainByKey,crossings));
+  const removedRiverIds=map.rivers.filter(r=>!result.rivers.some(n=>n.id===r.id)).map(r=>r.id);
+  const losses={crossings:map.crossings.filter(c=>!crossings.some(n=>n.key===c.key)).length,rapids:map.riverFeatures.rapids.length-result.riverFeatures.rapids.length,waterfalls:map.riverFeatures.waterfalls.length-result.riverFeatures.waterfalls.length,removedRiverIds};
+  const changed=result.rivers!==map.rivers||crossings!==map.crossings||riverFeatures!==map.riverFeatures||result.nextRiverId!==map.nextRiverId;
+  return {map:changed?checkedRiverMap({...map,...result,crossings,riverFeatures}):map,losses,confirmationRequired:changed&&(edit.type==='remove'||edit.type==='reverse'||losses.crossings>0||losses.rapids>0||losses.waterfalls>0)};
 }
 
 function downloadBlob(blob: Blob, filename: string): void {
@@ -12978,12 +12999,12 @@ export function App() {
     if (mutationBlocked()) return;
     setNotesEditorKey(current => current === key ? null : key);
   };
-  const editRoadDocument = (edit: RoadEdit, expectedDraft?:RoadDraft): boolean => {
+  const editRoadDocument = (edit: RoadEdit, expectedDraft?:RoadDraft, featureEdits:FeatureEdit[]=[]): boolean => {
     if (expectedDraft ? roadDraftRef.current!==expectedDraft || expectedDraft.revision!==documentRevision.current || documentBusy() || dirtyNameDraft() : mutationBlocked()) return false;
     try {
       const landRegion = (hex: AxialHex) => isLakeHex(hex, hexTerrainByKey) || isSeaHex(hex, hexTerrainByKey)
         ? undefined : regions.find(r => r.hexes.some(h => isSameHex(h, hex)))?.id;
-      const fullness = getRiverCrossingFullnessByEdge(rivers);
+      checkedRiverMap(captureMap());
       const result = prepareRoadEdit({roads, crossings, nextRoadId}, edit, {
         landRegion,
         destination: hex => regions.some(r => (!r.isTract && !r.suppressCentralPoi && isSameHex(r.centerHex, hex)) || r.pointsOfInterest.some(h => isSameHex(h, hex))),
@@ -12995,14 +13016,15 @@ export function App() {
           if (!edge) throw new Error('invalid_shared_edge');
           const riverEdgeKey = [...edge].sort().join('|');
           return rivers.filter(r => r.vertexPath.slice(1).some((v, i) => getRiverEdgeKey(r.vertexPath[i], v) === riverEdgeKey))
-            .map(r => ({riverId: r.id, riverEdgeKey, fullness: fullness.get(riverEdgeKey) ?? getRiverFallbackFullness(r)}));
+            .map(r => ({riverId: r.id, riverEdgeKey, fullness:knownRiverEdgeFullness(r,riverEdgeKey)??Number.NaN}));
         },
         minima: regions.filter(r => r.biomeLandType === 'settled' && r.sizeCategory !== 'tract')
           .map(r => ({regionId: r.id, minimum: getSettledMainRoadLimit(r)}))
       });
-      if (result.roads === roads && result.crossings === crossings && result.nextRoadId === nextRoadId) return true;
+      const riverFeatures=resolveRiverFeatureEdits(riverFeatureOverrides,featureEdits,rivers,riverFeatureEligibility(rivers,regions,hexTerrainByKey,result.crossings));
+      if (result.roads === roads && result.crossings === crossings && result.nextRoadId === nextRoadId&&riverFeatures===riverFeatureOverrides) return true;
       const before = copyDocument(captureDocument());
-      const after = copyDocument({...captureDocument(), map: {...captureMap(), ...result}});
+      const after = copyDocument({...captureDocument(), map: {...captureMap(), ...result,riverFeatures}});
       // Both copies are complete before any state write. Never reconcile crossings here.
       setUndoHistory(current => [...current, {before, after}].slice(-100)); setRedoHistory([]);
       applyPreparedDocument(after);
@@ -13059,6 +13081,28 @@ export function App() {
       setEditError(error instanceof TagCapacityError?tagCommandError(error):language === 'ru' ? 'Не удалось изменить значение. Карта не изменена.' : 'Could not change the value. Your map is unchanged.');
       return false;
     }
+  };
+  const riverCommandError=(error:unknown)=>{
+    const reason=error instanceof Error?error.message:'';
+    return language==='ru'?(reason.includes('solver_limit')?'Проверка слишком сложна; упростите русло.':reason.includes('crossing_kind_required')?'Брод стал слишком глубоким. Выберите мост или переправу.':reason.includes('delta_')?'Рукав дельты несовместим с этим изменением.':reason.includes('ineligible_')?'Ручная отметка конфликтует с изменением. Выберите «Авто» или «Нет».':reason.includes('solver_unsatisfiable')?'Полноводность несовместима с соседними участками или размером озера.':'Реку не удалось изменить. Карта не изменена.')
+      :(reason.includes('solver_limit')?'Validation is too complex; simplify the route.':reason.includes('crossing_kind_required')?'The ford is too deep. Choose a bridge or ferry.':reason.includes('delta_')?'A delta arm conflicts with this change.':reason.includes('ineligible_')?'A manual feature conflicts with this change. Choose Auto or Off.':reason.includes('solver_unsatisfiable')?'Fullness conflicts with neighbouring reaches or lake area.':'Could not change the river. Your map is unchanged.');
+  };
+  const editRiverDocument=(edit:RiverEdit,options:RiverEditOptions={},expectedRevision=renderedDocumentRevision):boolean=>{
+    if(expectedRevision!==documentRevision.current||mutationBlocked(false)||obstacleDraftRef.current)return false;
+    try{
+      const original=captureMap(),plan=prepareRiverMapEdit(original,edit,options);
+      if(plan.map===original)return true;
+      if(plan.confirmationRequired&&!options.confirmed){setEditError(language==='ru'?'Подтвердите изменение реки и её зависимостей.':'Confirm the river change and its dependencies.');return false;}
+      finishNotesGroup();return commitManualMap(plan.map);
+    }catch(error){setEditError(riverCommandError(error));return false;}
+  };
+  const editRiverFeatures=(edits:FeatureEdit[],expectedRevision=renderedDocumentRevision):boolean=>{
+    if(expectedRevision!==documentRevision.current||mutationBlocked(false)||obstacleDraftRef.current)return false;
+    try{
+      const map=checkedRiverMap(captureMap()),features=resolveRiverFeatureEdits(map.riverFeatures,edits,map.rivers,riverFeatureEligibility(map.rivers,map.regions,map.hexTerrainByKey,map.crossings));
+      if(features===map.riverFeatures)return true;
+      finishNotesGroup();return commitManualMap({...map,riverFeatures:features},false);
+    }catch(error){setEditError(riverCommandError(error));return false;}
   };
   const recordGenerated = (checkpoint: MapSnapshot, map: MapSnapshot, selection: AxialHex,
     backup?: GenerationBackup, checkpoints = history) => {

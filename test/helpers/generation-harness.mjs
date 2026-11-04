@@ -16,7 +16,7 @@ const artwork = app.body.statements.flatMap(node => ts.isVariableStatement(node)
 let prefix = source.slice(0, lastReturn.getStart(ast));
 if (artwork?.initializer) prefix = prefix.slice(0, artwork.initializer.getStart(ast)) + 'undefined' + prefix.slice(artwork.initializer.end);
 const instrumented = prefix + `return {
-  rapidRiverEdgeKeys, riverWaterfalls, tags, mutateTag, fillMissingTags, obstacleDraft, obstacleChoices, startObstacleChoice, editObstacleDocument,
+  editRiverDocument, editRiverFeatures, rapidRiverEdgeKeys, riverWaterfalls, tags, mutateTag, fillMissingTags, obstacleDraft, obstacleChoices, startObstacleChoice, editObstacleDocument,
   roadDraft, startRoadDraft, appendRoadDraft, finishRoadDraft, resetRoadDraft, editRoadDocument, gmNotesByHexKey, changeNotesText, finishNotesGroup, openNotesEditor, toggleNotesEditor, recordGenerated, captureGenerationBackup,
   generationRef, seedInput, setSeedInput, setGenSizeCategory, applyWorldSeed, buildGenerationOptions, generateAt,
   regions, rivers, roads, candidateHexes, hexTerrainByKey, history, toponyms, toponymSeed, setToponyms,
@@ -30,7 +30,7 @@ const instrumented = prefix + `return {
 };` + source.slice(lastReturn.end) + `
 export const testGeometry = { generateConnectedRegionFromAnchorImpl, generateFallbackTractFromAnchor, findFillableEnclosedEmptyAreas, getNewRiverLakeReentryViolation, getHexCornerPoints, getHexEdgeKeys, getHexNeighbors, hexKey, buildRiverGraphForRegion,
   findRiverEndpointsTouchingRegion, getCandidateHexes, generateRiverForRegion, assertHexcrawlSaveData,
-  buildManualRiverGeometryContext, riverFeatureEligibility, buildRegionRiverNetwork, reconcileRegionRiverModel, completeRegionRiverEnds, addLakeAroundRiverSplitVertex, createInitialRiverSectors,
+  prepareRiverMapEdit, buildManualRiverGeometryContext, riverFeatureEligibility, buildRegionRiverNetwork, reconcileRegionRiverModel, completeRegionRiverEnds, addLakeAroundRiverSplitVertex, createInitialRiverSectors,
   countRoadPathRiverCrossings, findLowestRiverCrossingPathWithinWildRegion, getWildRoadCandidates, chooseBestWildRoadCandidate, collectSettledIncomingRoadPathsToTarget, generateRoadsForRegionImpl, findIncomingRoadEndpointsForRegion, getRoadEndpointHexKeysImpl,
   getSettledMainRoadLimit, getWildRegionTrailBuildCount, canBuildStandaloneWildRegionRoad,
   BIOMES, BIOME_COMPATIBILITY_MATRIX, isBiomesCompatible, chooseBiomeIdAtHeightLevel };
@@ -59,7 +59,7 @@ export function createGenerationHarness(seed = 1, search = '') {
   const diagnostics = { exports: {} };
   const context = vm.createContext({ module, exports: module.exports, Math: seededMath, Map, Set, crypto: {getRandomValues(a){ a[0]=seed >>> 0; return a; }},
     console: Object.fromEntries(['log', 'warn', 'error'].map(level => [level, (...args) => logs.push({ level, args })])),
-    require: name => name==='./tags/TagRow'?{TagRow:()=>null}: (name.startsWith('./modes/') || name.startsWith('./rendering/') || name.startsWith('./tags/') || name === './worldRandom' || name === './saveValidation' || name === './manualRivers' || name === './manualRiverGeometry') ? loadMode(new URL(`../../src/${name}.ts`, import.meta.url)) : name === './generationDiagnostics' ? diagnostics.exports : name === 'react' ? hooks : localRequire(name.startsWith('./') ? `${name}.ts` : name),
+    require: name => name==='./tags/TagRow'?{TagRow:()=>null}: (name.startsWith('./modes/') || name.startsWith('./rendering/') || name.startsWith('./tags/') || name === './worldRandom' || name === './saveValidation' || name === './manualRivers' || name === './manualRiverGeometry' || name === './manualRiverDependencies') ? loadMode(new URL(`../../src/${name}.ts`, import.meta.url)) : name === './generationDiagnostics' ? diagnostics.exports : name === 'react' ? hooks : localRequire(name.startsWith('./') ? `${name}.ts` : name),
     performance, URLSearchParams, structuredClone, setTimeout, clearTimeout, window: { location: { search } }
   });
   const modeCache = new Map();
