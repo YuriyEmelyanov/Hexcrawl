@@ -414,6 +414,43 @@ try {
  const road=roadMap.map.roads.find(r=>r.id===crossing.roadId),seg=road.segments.find(s=>[`${s.from.q},${s.from.r}`,`${s.to.q},${s.to.r}`].sort().join('|')===crossing.roadSegmentKey);
  await select(`${seg.from.q},${seg.from.r}`);
  if(await button('Редактировать').count())await button('Редактировать').click();
+ // E5 extends the existing real-browser document lifecycle: exact local
+ // selection, explicit Off even when Auto is absent, reload, history and export.
+ const riverChoice=page.locator('[data-river-choice]').first();
+ assert.ok(await riverChoice.count(),'crossing fixture supplies a nearby river');
+ const riverId=Number(await riverChoice.getAttribute('data-river-choice'));
+ await riverChoice.press('Enter');
+ const edgeChoice=page.locator('[data-river-edge-choice]').first();
+ const featureEdge=await edgeChoice.getAttribute('data-river-edge-choice');
+ await edgeChoice.press('Space');
+ assert.equal(await page.locator('[data-editor-only="river-feature"] line').count(),1);
+ const beforeFeature=await snapshot();
+ const rapidSelect=page.getByRole('combobox',{name:'пороги',exact:true});
+ await rapidSelect.selectOption('off');
+ const afterFeature=await snapshot();
+ assert.ok(afterFeature.map.riverFeatures.rapids.some(e=>e.riverId===riverId&&e.edgeKey===featureEdge&&e.state==='off'));
+ assert.deepEqual(afterFeature.generation,beforeFeature.generation);
+ assert.deepEqual(afterFeature.map.rivers,beforeFeature.map.rivers);
+ assert.ok(await rapidSelect.evaluate(e=>e.getBoundingClientRect().height>=44));
+ await button('Отменить').click();assert.deepEqual(await snapshot(),beforeFeature);
+ await button('Повторить').click();assert.deepEqual(await snapshot(),afterFeature);
+ await load(afterFeature);assert.deepEqual(await snapshot(),afterFeature);
+ await select(`${seg.from.q},${seg.from.r}`);await ensureEdit();
+ await page.locator(`[data-river-choice="${riverId}"]`).click();
+ await page.locator(`[data-river-edge-choice="${featureEdge}"]`).click();
+ await page.getByRole('combobox',{name:'пороги',exact:true}).selectOption('auto');
+ assert.deepEqual(await snapshot(),beforeFeature,'Auto removes only the explicit intention');
+ await page.getByRole('combobox',{name:'пороги',exact:true}).press('Escape');
+ assert.equal(await page.locator('[data-river-feature-editor]').count(),1,'Escape closes field and returns focus');
+ await page.locator('[data-river-vertex-choice]').first().click();
+ const vertexKey=await page.locator('[data-river-vertex-choice][aria-pressed="true"]').getAttribute('data-river-vertex-choice');
+ const waterfallSelect=page.locator('[data-river-feature-editor] select');
+ const selectedRiver=beforeFeature.map.rivers.find(r=>r.id===riverId);
+ if(vertexKey===selectedRiver.vertexPath[0].key)assert.ok(await waterfallSelect.locator('option[value="on"]').isDisabled(),'source waterfall forbidden');
+ await waterfallSelect.selectOption('off');
+ assert.ok((await snapshot()).map.riverFeatures.waterfalls.some(e=>e.vertexKey===vertexKey&&e.state==='off'));
+ // Restore the input fixture and selection for the existing E3 checks below.
+ await load(roadMap);await select(`${seg.from.q},${seg.from.r}`);await ensureEdit();
  const roadLabel=`Участок ${road.id}: ${seg.from.q},${seg.from.r} → ${seg.to.q},${seg.to.r}`;
  const crossingTarget=page.getByRole('button',{name:`Переправа ${crossing.key}`,exact:true});
  await crossingTarget.focus();await crossingTarget.press(' ');

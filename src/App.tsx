@@ -11451,6 +11451,10 @@ export function App() {
   type NameTarget = { key: string; type: 'region' | 'settlement' | 'river' | 'lake' | 'kingdom'; ru: string; en: string; location: string };
   type NameDraft = { target: NameTarget; revision: number; language: Language; value: string; surface: string };
   const [editMode, setEditMode] = useState(false);
+  type RiverFeatureTarget = {riverId:number;hexKey:string;edgeKey?:string;vertexKey?:string};
+  const [riverFeatureTarget,setRiverFeatureTarget]=useState<RiverFeatureTarget|null>(null);
+  const riverFeatureTargetRef=useRef<RiverFeatureTarget|null>(null);
+  riverFeatureTargetRef.current=riverFeatureTarget;
   type RoadDraft = {path:AxialHex[];kind:RoadKind;crossingKinds:Record<string,RiverCrossingKind>;revision:number};
   const [roadDraft,setRoadDraft] = useState<RoadDraft|null>(null);
   const roadDraftRef = useRef<RoadDraft|null>(null);
@@ -12926,6 +12930,7 @@ export function App() {
   const captureDocument = (): DocumentSnapshot => ({ map: captureMap(), generationHistory: history, selectedHex,
     generationMode, isMapRotated, mapScale: pendingMapZoomRef.current?.scale ?? mapScaleRef.current });
   const closeEditors = () => {
+    setRiverFeatureTarget(null);
     setAmbiguousObstacleIds([]);
     setHoverObstacleEdge(null); updateObstacleDraft(null); setSelectedObstacleId(null);
     setEditingHexBiomeKey(null); setEditingPoiHexKey(null); setEditingCentralPoiRegionId(null); setEditingRegionBiomeId(null); setEditError(null);
@@ -14379,6 +14384,42 @@ export function App() {
       setSelectedHex({ q: hex.q, r: hex.r });
     }
   };
+  // A feature target is explicit and local to the selected hex. It never falls
+  // back to a region centre, the first path edge, or an arbitrary junction.
+  const chooseRiverFeatureTarget=(target:RiverFeatureTarget)=>{
+    if(!editMode||notesComposingRef.current||!finishInlineName()||mutationBlocked()||obstacleDraftRef.current||target.hexKey!==selectedHexKey)return;
+    closeEditors();setRiverFeatureTarget(target);
+  };
+  const riverFeaturePanel=(river:River)=>{
+    const target=riverFeatureTarget;
+    if(!editMode||roadDraft||obstacleDraft||target?.riverId!==river.id||target.hexKey!==selectedHexKey)return null;
+    const edges=river.vertexPath.slice(1).map((v,i)=>({key:edgeKey(river.vertexPath[i],v),index:i+1})).filter(e=>selectedHexEdgeKeys.has(e.key));
+    const vertices=river.vertexPath.map((v,i)=>({key:v.key,index:i+1})).filter(v=>selectedHexVertexKeys.has(v.key));
+    const eligibility=riverFeatureEligibility(rivers,regions,hexTerrainByKey,crossings);
+    const change=(edit:FeatureEdit)=>{
+      if(target!==riverFeatureTargetRef.current||notesComposingRef.current||target.hexKey!==notesSelectionRef.current)return;
+      if(editRiverFeatures([edit],renderedDocumentRevision))setRiverFeatureTarget(target);
+    };
+    const control=(type:'rapid'|'waterfall',key:string)=>{
+      const rapid=type==='rapid',label=rapid?t.rapids:waterfallLabel;
+      const state=rapid?riverFeatureOverrides.rapids.find(e=>e.riverId===river.id&&e.edgeKey===key)?.state:riverFeatureOverrides.waterfalls.find(e=>e.vertexKey===key)?.state;
+      const onAllowed=rapid?eligibility.rapid(river.id,key):eligibility.waterfall(key);
+      const effective=rapid?rapidRiverEdgeKeys.has(key):waterfallRiverVertexKeys.has(key);
+      return <label className="river-feature-control">{label} <select className="direct-value" aria-label={label} value={state??'auto'}
+        onKeyDown={event=>{if(event.key==='Escape'){event.stopPropagation();event.currentTarget.blur();document.querySelector<HTMLButtonElement>(`[data-river-choice="${river.id}"]`)?.focus();}}}
+        onChange={event=>change(rapid?{type:'rapid',riverId:river.id,edgeKey:key,state:event.target.value as FeatureEdit['state']}:{type:'waterfall',vertexKey:key,state:event.target.value as FeatureEdit['state']})}>
+        <option value="auto">{language==='ru'?'Авто':'Auto'}</option><option value="on" disabled={!onAllowed}>{language==='ru'?'Есть':'On'}</option><option value="off">{language==='ru'?'Нет':'Off'}</option>
+      </select> <span>{language==='ru'?(effective?'Есть':'Нет'):(effective?'Present':'Absent')} ({state?(language==='ru'?'вручную':'manual'):(language==='ru'?'авто':'auto')})</span>
+      {!onAllowed&&<span className="river-feature-reason">{language==='ru'?'«Есть» недоступно: вода, переправа, исток или слияние.':'On unavailable: water, crossing, source or confluence.'}</span>}</label>;
+    };
+    return <div className="river-feature-editor" data-river-feature-editor={river.id} onKeyDown={event=>{if(event.key==='Escape'){event.stopPropagation();setRiverFeatureTarget(null);document.querySelector<HTMLButtonElement>(`[data-river-choice="${river.id}"]`)?.focus();}}}>
+      <span>{language==='ru'?'Выберите участок или вершину рядом с гексом':'Choose an edge or vertex beside this hex'}</span>
+      <div className="river-feature-places">{edges.map(e=><button type="button" className="direct-value" key={e.key} aria-pressed={target.edgeKey===e.key} data-river-edge-choice={e.key} onClick={()=>chooseRiverFeatureTarget({...target,edgeKey:e.key,vertexKey:undefined})}>{language==='ru'?'Участок':'Edge'} {e.index} →</button>)}
+      {vertices.map(v=><button type="button" className="direct-value" key={v.key} aria-pressed={target.vertexKey===v.key} data-river-vertex-choice={v.key} onClick={()=>chooseRiverFeatureTarget({...target,vertexKey:v.key,edgeKey:undefined})}>{language==='ru'?'Вершина':'Vertex'} {v.index}</button>)}</div>
+      {target.edgeKey&&edges.some(e=>e.key===target.edgeKey)&&control('rapid',target.edgeKey)}
+      {target.vertexKey&&vertices.some(v=>v.key===target.vertexKey)&&control('waterfall',target.vertexKey)}
+    </div>;
+  };
   const obstacleContext = () => ({
     exists:(h:AxialHex)=>hexTerrainByKey.has(hexKey(h))||regions.some(r=>r.hexes.some(v=>isSameHex(v,h))),
     water:(h:AxialHex)=>isLakeHex(h,hexTerrainByKey)||isSeaHex(h,hexTerrainByKey),
@@ -15253,7 +15294,7 @@ export function App() {
                             selectedHexVertexKeys.has(vertex.key) && waterfallRiverVertexKeys.has(vertex.key)
                           ));
                           const riverFeatures = [hasWaterfall ? waterfallLabel : null, hasRapids ? t.rapids : null].filter((feature): feature is string => feature !== null);
-                          return <p key={`nearby-river-${river.id}`}><span className="nearby-river-marker" aria-hidden="true">→</span>{hasRapids ? <span className="nearby-river-marker" aria-hidden="true">|||</span> : null}{hasWaterfall ? <img className="nearby-waterfall-marker" src="/waterfall-color.svg" alt="" aria-hidden="true" /> : null} {t.river} {renderToponym(`river:${river.id}`)}{riverFeatures.length > 0 ? ` (${riverFeatures.join(', ')})` : ''}{renderTags({kind:'river',id:river.id},'river')}</p>;
+                          return <div className="nearby-river-row" key={`nearby-river-${river.id}`}><p><span className="nearby-river-marker" aria-hidden="true">→</span>{hasRapids ? <span className="nearby-river-marker" aria-hidden="true">|||</span> : null}{hasWaterfall ? <img className="nearby-waterfall-marker" src="/waterfall-color.svg" alt="" aria-hidden="true" /> : null} {editMode?<button type="button" className="direct-value river-choice" data-river-choice={river.id} aria-label={`${language==='ru'?'Выбрать реку':'Select river'} ${nameTargets.find(target=>target.key===`river:${river.id}`)?.[language]??river.id}`} aria-pressed={riverFeatureTarget?.riverId===river.id&&riverFeatureTarget.hexKey===selectedHexKey} onClick={()=>chooseRiverFeatureTarget({riverId:river.id,hexKey:selectedHexKey!})}>{t.river}</button>:t.river} {renderToponym(`river:${river.id}`)}{riverFeatures.length > 0 ? ` (${riverFeatures.join(', ')})` : ''}{renderTags({kind:'river',id:river.id},'river')}</p>{riverFeaturePanel(river)}</div>;
                         })}
                         {selectedObstacles.map(o=><div key={o.id} className="obstacle-row" data-obstacle-id={o.id}>
                           {editMode?<button type="button" className="direct-value" aria-label={`${language==='ru'?'Выбрать препятствие':'Select barrier'} ${o.id}: ${hexKey(o.hex)} → ${hexKey(o.neighborHex)}`} aria-pressed={selectedObstacleId===o.id} onClick={()=>chooseObstacle(o.id)}>━ {language==='ru'?'Препятствие':'Barrier'} · {hexKey(o.hex)===selectedHexKey?hexKey(o.neighborHex):hexKey(o.hex)}</button>:<span>━ {language==='ru'?'Препятствие':'Barrier'} ({hexKey(o.hex)===selectedHexKey?hexKey(o.neighborHex):hexKey(o.hex)})</span>}
@@ -15489,6 +15530,10 @@ export function App() {
               style={{ width: `${displayMapWidth}px`, height: `${displayMapHeight}px`, transform: `translateZ(0) scale(${mapScaleRef.current})`, '--road-hit-width': `${44/mapScaleRef.current}px`, '--crossing-hit-radius': `${22/mapScaleRef.current}px`, '--water-color': WATER_PALETTE.river, '--water-marks': WATER_PALETTE.marks } as CSSProperties}
             >
             {mapArtwork}
+            {editMode&&riverFeatureTarget&&riverFeatureTarget.hexKey===selectedHexKey&&!roadDraft&&!obstacleDraft&&<g data-editor-only="river-feature" transform={mapRotationTransform} pointerEvents="none">
+              {rivers.filter(r=>r.id===riverFeatureTarget.riverId).flatMap(r=>r.vertexPath.slice(1).map((v,i)=>({a:r.vertexPath[i],b:v}))).filter(e=>!riverFeatureTarget.edgeKey||edgeKey(e.a,e.b)===riverFeatureTarget.edgeKey).map(e=><line key={edgeKey(e.a,e.b)} x1={e.a.x+riverOffset.x} y1={e.a.y+riverOffset.y} x2={e.b.x+riverOffset.x} y2={e.b.y+riverOffset.y} stroke="#f7dc6f" strokeWidth={4} strokeDasharray="6 3" />)}
+              {riverFeatureTarget.vertexKey&&rivers.find(r=>r.id===riverFeatureTarget.riverId)?.vertexPath.filter(v=>v.key===riverFeatureTarget.vertexKey).map(v=><circle key={v.key} cx={v.x+riverOffset.x} cy={v.y+riverOffset.y} r={6} fill="#f7dc6f" />)}
+            </g>}
             {roadDraft && <g data-editor-only="draft" transform={mapRotationTransform} pointerEvents="none">
               {roadDraft.path.map((h,i)=>{const p=toPixel(h.q,h.r);return <circle key={i} cx={p.x+riverOffset.x} cy={p.y+riverOffset.y} r={i===roadDraft.path.length-1?6:3} fill="#7dd3fc" />;})}
               {roadDraft.path.slice(1).map((h,i)=>{const a=toPixel(roadDraft.path[i].q,roadDraft.path[i].r),b=toPixel(h.q,h.r);return <line key={i} x1={a.x+riverOffset.x} y1={a.y+riverOffset.y} x2={b.x+riverOffset.x} y2={b.y+riverOffset.y} stroke="#7dd3fc" strokeWidth={4} strokeDasharray="6 3" />;})}
