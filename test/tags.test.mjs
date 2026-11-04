@@ -110,8 +110,12 @@ test('actual tag commands do not consume world RNG, double click is one command,
  const h=createGenerationHarness(42);await load(h);const state=h.render(),region=state.regions[0];
  state.setSelectedHex(region.centerHex);h.render();
  const rng=structuredClone(h.render().captureDocument().map.generation),o={kind:'region',id:region.id};
+ // This is a same-instant double click. CPU-heavy harness renders must not
+ // consume the350ms lock interval; advance the test clock explicitly instead.
+ let clock=1000;h.injectFunction('Date.now',()=>clock);
  assert.equal(h.render().mutateTag(o,'mb.land'),true);h.render();const after=stable(h);
  assert.equal(h.render().mutateTag(o,'mb.land',0),false);assert.deepEqual(stable(h),after);
+ clock+=350;assert.equal(h.render().mutateTag(o,'mb.land',0),true,'the lock expires at the real350ms contract boundary');
  assert.deepEqual(after.map.generation,rng);
  // Rerolling another owner is allowed without spending or mutating geography.
  const river=h.render().rivers[0];if(river)assert.equal(h.render().mutateTag({kind:'river',id:river.id},'mb.water'),true);
