@@ -1,0 +1,251 @@
+{
+  "model_version": "1.2",
+  "exact_sha": "1daf34df6b1c4f465e69523255ebcb0dee671baa",
+  "baseline_source": "agent-work/score/current-score.json",
+  "baseline_release_sha": "ab75ecb0a5b90888d4e367bfc9a40ecdff8ad429",
+  "shared_metadata": {
+    "ranking_version": "three-scenario-ranks-1.3-DW-FL-nonzero",
+    "cohort_version": "2026-11-04-ranking1.3-process-sync",
+    "primary_scenario": "develop",
+    "secondary_scenario": "create",
+    "layer": "L1",
+    "canonical_rule_registry_version": "shared-rules-1.3",
+    "canonical_registry_blob": "19c5154e95238882a035a79324b710879bdb206b",
+    "bindings_blob": "33358258030cd9d93d128b3df3c43dcb90640d26",
+    "cohorts": {
+      "top5": [
+        "DND5",
+        "PF2",
+        "KNAVE2",
+        "SD",
+        "MOTH"
+      ],
+      "top10": [
+        "DND5",
+        "PF2",
+        "KNAVE2",
+        "SD",
+        "MOTH",
+        "ROOT",
+        "OSE",
+        "DW",
+        "MB",
+        "WWN"
+      ],
+      "top20": [
+        "DND5",
+        "PF2",
+        "KNAVE2",
+        "SD",
+        "MOTH",
+        "ROOT",
+        "OSE",
+        "DW",
+        "MB",
+        "WWN",
+        "PF1",
+        "PIRATE",
+        "AWN",
+        "STARF",
+        "VAARN",
+        "BSH",
+        "ODD",
+        "FL",
+        "SWC",
+        "TORCH"
+      ]
+    },
+    "breadth": {
+      "denominators": [
+        5,
+        10,
+        20
+      ],
+      "applicable": null,
+      "full": null,
+      "partial": null,
+      "unsupported": null,
+      "coverage": "unverified",
+      "limits": "Membership is defined. Requirement applicability, editions/profiles/exceptions and support remain unverified, not zero or N/A. No automatic same-rule inheritance to PF2 or another game."
+    },
+    "traceability": [
+      {
+        "binding": "DND5-2014-007-L1",
+        "canonical_rule": "map.river_network",
+        "criterion": "S01-C02",
+        "acceptance": "AC01-03",
+        "actual": "Finite product river/network cases passed exact-tree CI; no DND profile support grade assigned."
+      },
+      {
+        "binding": "DND5-2014-001-L1",
+        "canonical_rule": "map.extend_preserving_content",
+        "criteria": [
+          "S03-C01",
+          "S03-C03"
+        ],
+        "acceptance": "AC07-08",
+        "actual": "Product preservation evidence only; these extra criteria not graded."
+      },
+      {
+        "bindings": [
+          "DND5-2014-011-L1",
+          "DND5-2014-023-L1"
+        ],
+        "canonical_rule": "map.routes_and_barriers",
+        "acceptance": "AC04-06",
+        "actual": "Existing roads/crossings remain covered; composite requirement coverage not inherited."
+      }
+    ],
+    "game_editions": "DND5 DMG2014 bounded source binding; PF2 Remaster and all other profiles unverified in this review. L2/L3 outside E5.",
+    "scale": "No scale mutation added; exact UI/camera serial roundtrip and CI navigation/PNG checks include saved scale. No new scale/distance or movement support claimed."
+  },
+  "criteria": [
+    {
+      "criterion_id": "S01-C02",
+      "weight": 40,
+      "before_grade": null,
+      "before_points": null,
+      "after_grade": null,
+      "after_points": null,
+      "delta": null,
+      "status": "insufficient_evidence",
+      "quality": "Fresh source review of geometry/solver/physical-cycle and fixed-boundary handling, exact-tree CI river suites; R3 does not change hydrology.",
+      "breadth_ref": "shared_metadata",
+      "evidence": [
+        "ci-verification.json"
+      ],
+      "limits": "No10000-generation or independent expert-naturalness corpus; whole-criterion quality unknown."
+    },
+    {
+      "criterion_id": "S02-C02",
+      "weight": 20,
+      "before_grade": null,
+      "before_points": null,
+      "after_grade": null,
+      "after_points": null,
+      "delta": null,
+      "status": "insufficient_evidence",
+      "quality": "Actual same-ID R2 replacement and R3 Add/draft/Finish accepted; primary/assigned ownership distinguished, deletion/checkpoint restoration and v7 ID/counter roundtrip checked.",
+      "breadth_ref": "shared_metadata",
+      "evidence": [
+        "checkpoint-review-probe.json",
+        "new-R3-probe.json"
+      ],
+      "limits": "All-entity identity/provenance not assessed; finite river evidence is not universal identity guarantee."
+    },
+    {
+      "criterion_id": "S02-C03",
+      "weight": 20,
+      "before_grade": null,
+      "before_points": null,
+      "after_grade": null,
+      "after_points": null,
+      "delta": null,
+      "status": "insufficient_evidence",
+      "quality": "Exact-tree CI legacy v2-v7/malformed references/counters/RNG manifest cases pass; fresh R3 actual serialized v7 reload matches exported JSON.",
+      "breadth_ref": "shared_metadata",
+      "evidence": [
+        "ci-verification.json",
+        "new-R3-probe.json"
+      ],
+      "limits": "Finite official fixture corpus, no comprehensive past-generator compatibility grade."
+    },
+    {
+      "criterion_id": "S03-C04",
+      "weight": 30,
+      "before_grade": null,
+      "before_points": null,
+      "after_grade": null,
+      "after_points": null,
+      "delta": null,
+      "status": "insufficient_evidence",
+      "quality": "Current/checkpoint identity and sector ownership produce named RU/EN destructive previews. R1/R2/R3 and marker preservation checked; CI covers crossings/ford/delta dependencies.",
+      "breadth_ref": "shared_metadata",
+      "evidence": [
+        "checkpoint-review-probe.json",
+        "new-R3-probe.json",
+        "ci-verification.json"
+      ],
+      "limits": "Whole NPC/faction/story dependency graph outside E5; no whole-criterion grade."
+    },
+    {
+      "criterion_id": "S03-C05",
+      "weight": 20,
+      "before_grade": null,
+      "before_points": null,
+      "after_grade": null,
+      "after_points": null,
+      "delta": null,
+      "status": "insufficient_evidence",
+      "quality": "Fresh rejecting dialogs preserve complete structured document including Map/Set contents and both nonempty stacks. Accepted delete/completed regenerate restores exact document via Undo/Redo; CI mixed100 real DOM passes.",
+      "breadth_ref": "shared_metadata",
+      "evidence": [
+        "checkpoint-review-probe.json",
+        "new-R3-probe.json",
+        "ci-verification.json"
+      ],
+      "limits": "Named map versions and all edit families not comprehensively assessed. Distinct evidence property is history exactness."
+    },
+    {
+      "criterion_id": "S04-C04",
+      "weight": 15,
+      "before_grade": null,
+      "before_points": null,
+      "after_grade": null,
+      "after_points": null,
+      "delta": null,
+      "status": "insufficient_evidence",
+      "quality": "Fresh actual serialized v7 reload preserves payload exactly; CI JSON/PNG/draft overlay exclusion and PNG pixel checks pass.",
+      "breadth_ref": "shared_metadata",
+      "evidence": [
+        "new-R3-probe.json",
+        "ci-verification.json"
+      ],
+      "limits": "Complete role/style export matrix unknown; export payload/image evidence differs from history evidence."
+    },
+    {
+      "criterion_id": "S04-C05",
+      "weight": 10,
+      "before_grade": null,
+      "before_points": null,
+      "after_grade": null,
+      "after_points": null,
+      "delta": null,
+      "status": "insufficient_evidence",
+      "quality": "Fresh RU/EN affected names and dialog cancellation correct; exact-tree real DOM1500/390 keyboard/targets/editor flows pass. Sample partial narrow image inspected; complete readable owner walkthrough absent.",
+      "breadth_ref": "shared_metadata",
+      "evidence": [
+        "checkpoint-review-probe.json",
+        "new-R3-probe.json",
+        "ci-verification.json"
+      ],
+      "limits": "No full WCAG AA/physical phone audit; narrow error clip is incomplete capture, not proved product clipping. Presentation pending."
+    },
+    {
+      "criterion_id": "S09-C04",
+      "weight": 10,
+      "before_grade": null,
+      "before_points": null,
+      "after_grade": null,
+      "after_points": null,
+      "delta": null,
+      "status": "insufficient_evidence",
+      "quality": "Old R3 data-loss branch reproduced; current rejects before mutation with exact document/nonempty histories, accepted operation reversible. CI hostile import/fault/busy/no-op/stale cases pass.",
+      "breadth_ref": "shared_metadata",
+      "evidence": [
+        "old-R3-probe.json",
+        "new-R3-probe.json",
+        "ci-verification.json"
+      ],
+      "limits": "Finite negative cases, no all-failure safety proof. Missing presentation is separate from fixed cancel guard."
+    }
+  ],
+  "confirmed_points": null,
+  "unverified_weight": 1000,
+  "confirmed_increment": 0,
+  "increment_semantics": "No numerical grade/points awarded; unknown baseline stays null, not0. Released score unchanged.",
+  "assessed_weight": 165,
+  "all_50_weights_thresholds_G0_G4_unchanged": true,
+  "package_verdict": "technical_implementation_accepted_release_presentation_pending",
+  "double_counting": "No scores awarded; distinct quality properties listed per row. Rule/profile sharing not automatically inherited."
+}
