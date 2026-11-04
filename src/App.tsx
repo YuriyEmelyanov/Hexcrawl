@@ -11455,6 +11455,13 @@ export function App() {
   const [riverFeatureTarget,setRiverFeatureTarget]=useState<RiverFeatureTarget|null>(null);
   const riverFeatureTargetRef=useRef<RiverFeatureTarget|null>(null);
   riverFeatureTargetRef.current=riverFeatureTarget;
+  type RiverDraft = {path:RiverVertex[];revision:number;context:ReturnType<typeof buildManualRiverGeometryContext>;options:RiverEditOptions};
+  const [riverDraft,setRiverDraft]=useState<RiverDraft|null>(null);
+  const riverDraftRef=useRef<RiverDraft|null>(null);
+  const [riverDraftAmbiguity,setRiverDraftAmbiguity]=useState<string[]>([]);
+  const [riverDraftHover,setRiverDraftHover]=useState<string|null>(null);
+  const riverDraftGesture=useRef<{x:number;y:number;pointerId:number;active:boolean;moved:boolean}|null>(null);
+  const updateRiverDraft=(value:RiverDraft|null)=>{riverDraftRef.current=value;setRiverDraft(value);setRiverDraftAmbiguity([]);setRiverDraftHover(null);};
   type RoadDraft = {path:AxialHex[];kind:RoadKind;crossingKinds:Record<string,RiverCrossingKind>;revision:number};
   const [roadDraft,setRoadDraft] = useState<RoadDraft|null>(null);
   const roadDraftRef = useRef<RoadDraft|null>(null);
@@ -12963,7 +12970,7 @@ export function App() {
   const applyPreparedDocument = (doc: DocumentSnapshot) => {
     tagLocks.current.clear();setTagAnimations({});
     documentRevision.current++;
-    updateRoadDraft(null); setSelectedRoadPair(null); setSelectedRoadTarget(null); setConfirmRoadRemoval(null);
+    updateRiverDraft(null); updateRoadDraft(null); setSelectedRoadPair(null); setSelectedRoadTarget(null); setConfirmRoadRemoval(null);
     applyExactMap(doc.map); setHistory(doc.generationHistory); setSelectedHex(doc.selectedHex);
     setGenerationMode(doc.generationMode); setIsMapRotated(doc.isMapRotated);
     updateMapScale(doc.mapScale); setPendingRegen(null); closeEditors();
@@ -12973,14 +12980,14 @@ export function App() {
   const documentBusy = () => documentRevision.current !== renderedDocumentRevision
     || importInFlight.current || kingdomInFlight.current || !!kingdomJob || !!pendingRegen;
   const mutationBlocked = (finishGroup = true) => {
-    if (roadDraftRef.current || documentBusy() || dirtyNameDraft()) return true;
+    if (riverDraftRef.current || roadDraftRef.current || documentBusy() || dirtyNameDraft()) return true;
     if (finishGroup) finishNotesGroup();
     return false;
   };
   // Every input is already part of the document. Only history entries coalesce;
   // no timer may later write a pending value into another hex or imported world.
   const changeNotesText = (key: string, text: string) => {
-    if (roadDraftRef.current || documentBusy() || dirtyNameDraft() || notesSelectionRef.current !== key
+    if (riverDraftRef.current || roadDraftRef.current || documentBusy() || dirtyNameDraft() || notesSelectionRef.current !== key
       || (!hexTerrainByKey.has(key) && !regions.some(r => r.hexes.some(h => hexKey(h) === key)))) return;
     if (text === (notesMapRef.current[key] ?? '')) return;
     if (notesGroupRef.current?.key !== key) finishNotesGroup();
@@ -13092,8 +13099,9 @@ export function App() {
     return language==='ru'?(reason.includes('solver_limit')?'Проверка слишком сложна; упростите русло.':reason.includes('crossing_kind_required')?'Брод стал слишком глубоким. Выберите мост или переправу.':reason.includes('delta_')?'Рукав дельты несовместим с этим изменением.':reason.includes('ineligible_')?'Ручная отметка конфликтует с изменением. Выберите «Авто» или «Нет».':reason.includes('solver_unsatisfiable')?'Полноводность несовместима с соседними участками или размером озера.':'Реку не удалось изменить. Карта не изменена.')
       :(reason.includes('solver_limit')?'Validation is too complex; simplify the route.':reason.includes('crossing_kind_required')?'The ford is too deep. Choose a bridge or ferry.':reason.includes('delta_')?'A delta arm conflicts with this change.':reason.includes('ineligible_')?'A manual feature conflicts with this change. Choose Auto or Off.':reason.includes('solver_unsatisfiable')?'Fullness conflicts with neighbouring reaches or lake area.':'Could not change the river. Your map is unchanged.');
   };
-  const editRiverDocument=(edit:RiverEdit,options:RiverEditOptions={},expectedRevision=renderedDocumentRevision):boolean=>{
-    if(expectedRevision!==documentRevision.current||mutationBlocked(false)||obstacleDraftRef.current)return false;
+  const editRiverDocument=(edit:RiverEdit,options:RiverEditOptions={},expectedRevision=renderedDocumentRevision,expectedDraft?:RiverDraft):boolean=>{
+    if(expectedRevision!==documentRevision.current||obstacleDraftRef.current||notesComposingRef.current
+      ||(expectedDraft?riverDraftRef.current!==expectedDraft||expectedDraft.revision!==documentRevision.current||roadDraftRef.current||documentBusy()||dirtyNameDraft():mutationBlocked(false)))return false;
     try{
       const original=captureMap(),plan=prepareRiverMapEdit(original,edit,options);
       if(plan.map===original)return true;
@@ -13147,7 +13155,7 @@ export function App() {
     const rows=ids.filter(id=>generationMode==='mythic'||findTag(tags,owner,id)).map(id=>{
       const def=mythicDefinitions[id],instance=findTag(tags,owner,id);
       return <TagRow key={`${tagKey(owner,id)}:${instance?.revision??0}`} owner={owner} definition={def} instance={instance} language={language} editMode={editMode}
-        disabled={isImporting||!!kingdomJob||!!pendingRegen||!!roadDraft||!!obstacleDraft||dirtyNameDraft()}
+        disabled={isImporting||!!kingdomJob||!!pendingRegen||!!riverDraft||!!roadDraft||!!obstacleDraft||dirtyNameDraft()}
         animation={tagAnimations[tagKey(owner,id)]}
         onRoll={slot=>mutateTag(owner,id,slot)} onEdit={(index,text)=>mutateTag(owner,id,undefined,{index,text})}/>;
     });
@@ -14291,7 +14299,7 @@ export function App() {
   const finishInlineName = () => !nameDraftRef.current || saveNameDraft(nameDraftRef.current);
   finishMapNameRef.current = finishInlineName;
   const showNameTarget = (key: string | null, origin?: HTMLElement, surface = 'info') => {
-    if (documentBusy() || !finishRoadDraft() || !finishInlineName()) return;
+    if (documentBusy() || !finishPathDrafts() || !finishInlineName()) return;
     setNameErrors({}); setNameStatus(null);
     if (key === null) { setNamesOpen(false); return; }
     const target = nameTargets.find(t => t.key === key);
@@ -14305,7 +14313,7 @@ export function App() {
   nameNavigationRef.current=key=>{
     const current=nameTargets.find(t=>t.key===key),hex=current?nameTargetHex(key):null;
     if(!current||!hex){setNameStatus('stale');return false;}
-    if(documentBusy()||nameComposingRef.current||!finishRoadDraft()||!finishInlineName())return false;
+    if(documentBusy()||nameComposingRef.current||!finishPathDrafts()||!finishInlineName())return false;
     finishNotesGroup();clearNotesDraft();closeEditors();
     setSelectedHex({...hex});setNameStatus(null);
     setTimeout(()=>infoFocusRef.current?.focus(),0);return true;
@@ -14368,6 +14376,7 @@ export function App() {
   const mapHexClickRef = useRef<(hex: typeof positionedHexes.hexes[number]) => void>(() => {});
   mapHexClickRef.current = hex => {
     if (documentBusy()) return;
+    if(riverDraftRef.current&&riverDraftGesture.current?.moved)return;
     if(roadDraftRef.current){appendRoadDraft({q:hex.q,r:hex.r});return;}
     if (hex.kind === 'candidate') {
       updateObstacleDraft(null);
@@ -14377,6 +14386,7 @@ export function App() {
         generateAt({ q: hex.q, r: hex.r });
       }
     } else {
+      if(riverDraftRef.current&&!finishRiverDraft())return;
       if (!finishInlineName()) return;
       const pendingObstacle=obstacleDraftRef.current;
       finishNotesGroup(); closeEditors(); updateObstacleDraft(pendingObstacle); clearNotesDraft();
@@ -14392,7 +14402,7 @@ export function App() {
   };
   const riverFeaturePanel=(river:River)=>{
     const target=riverFeatureTarget;
-    if(!editMode||roadDraft||obstacleDraft||target?.riverId!==river.id||target.hexKey!==selectedHexKey)return null;
+    if(!editMode||riverDraft||roadDraft||obstacleDraft||target?.riverId!==river.id||target.hexKey!==selectedHexKey)return null;
     const edges=river.vertexPath.slice(1).map((v,i)=>({key:edgeKey(river.vertexPath[i],v),index:i+1})).filter(e=>selectedHexEdgeKeys.has(e.key));
     const vertices=river.vertexPath.map((v,i)=>({key:v.key,index:i+1})).filter(v=>selectedHexVertexKeys.has(v.key));
     const eligibility=riverFeatureEligibility(rivers,regions,hexTerrainByKey,crossings);
@@ -14459,7 +14469,7 @@ export function App() {
     setSelectedObstacleId(id);updateObstacleDraft({id,revision:documentRevision.current});
   };
   const chooseObstacle = (id:number) => {
-    if(documentBusy()||!finishRoadDraft()||!finishInlineName())return;
+    if(documentBusy()||!finishPathDrafts()||!finishInlineName())return;
     const obstacle=obstacles.find(o=>o.id===id);if(!obstacle)return;
     finishNotesGroup();clearNotesDraft();closeEditors();setSelectedRoadPair(null);setSelectedRoadTarget(null);setConfirmRoadRemoval(null);
     setIsSidePanelCollapsed(false);obstacleReturnFocus.current=id;setSelectedHex({...obstacle.hex});setSelectedObstacleId(id);
@@ -14501,6 +14511,70 @@ export function App() {
     </>}
   </div>:null;
   const draftError = (ru:string,en:string) => {setEditError(language==='ru'?ru:en);return false;};
+  const startRiverDraft=()=>{
+    if(!editMode||notesComposingRef.current||!finishInlineName()||mutationBlocked()||obstacleDraftRef.current||!regions.length)return false;
+    try{
+      const map=checkedRiverMap(captureMap()),context=buildManualRiverGeometryContext(map);
+      finishNotesGroup();clearNotesDraft();closeEditors();setSelectedRoadTarget(null);setConfirmRoadRemoval(null);
+      updateRiverDraft({path:[],revision:documentRevision.current,context,options:{}});return true;
+    }catch(error){setEditError(riverCommandError(error));return false;}
+  };
+  const finishRiverDraft=(expected:RiverDraft|null=riverDraft)=>{
+    const draft=riverDraftRef.current;
+    if(!draft)return !expected;
+    if(draft!==expected||draft.revision!==documentRevision.current||documentBusy())return draftError('Карта изменилась или занята. Сбросьте черновик.','Map changed or busy. Reset the draft.');
+    if(draft.path.length<2)return draftError('Выберите начало и соседнюю вершину.','Choose a start and an adjacent vertex.');
+    const owner=draft.context.edgeOwners(edgeKey(draft.path[0],draft.path[1]))[0];
+    if(owner===undefined)return draftError('Участок вне созданной карты.','The edge is outside the created map.');
+    if(!editRiverDocument({type:'create',path:draft.path,regionId:owner},draft.options,draft.revision,draft))return false;
+    updateRiverDraft(null);return true;
+  };
+  const finishPathDrafts=()=>finishRiverDraft()&&finishRoadDraft();
+  const resetRiverDraft=(expected:RiverDraft|null=riverDraft)=>{
+    if(riverDraftRef.current!==expected)return false;
+    updateRiverDraft(null);setEditError(null);
+    if(typeof document!=='undefined')setTimeout(()=>document.querySelector<HTMLButtonElement>('[data-add-river]')?.focus(),0);
+    return true;
+  };
+  const appendRiverDraft=(key:string,expected:RiverDraft|null=riverDraft)=>{
+    const draft=riverDraftRef.current;
+    if(!draft||draft!==expected||draft.revision!==documentRevision.current||documentBusy())return false;
+    const vertex=draft.context.vertex(key),path=draft.path,last=path[path.length-1];
+    if(!vertex||(!last&&draft.context.geometry.seaVertices.has(key)))return draftError('Выберите подлинную вершину; море не может быть истоком.','Choose a real vertex; the sea cannot be a source.');
+    if(last?.key===key)return finishRiverDraft(draft);
+    if(path.length>1&&path[path.length-2].key===key){updateRiverDraft({...draft,path:path.slice(0,-1)});setEditError(null);return true;}
+    if(path.some(v=>v.key===key))return draftError('Нельзя повторять вершину.','A vertex cannot be repeated.');
+    if(last){
+      const edge=edgeKey(last,vertex);
+      if(!draft.context.edgeOwners(edge).length||draft.context.blocked(edge)||rivers.some(r=>r.vertexPath.slice(1).some((v,i)=>edgeKey(r.vertexPath[i],v)===edge)))return draftError('Выберите соседнюю вершину по свободному ребру.','Choose an adjacent vertex along a free edge.');
+      if(path.length>1&&rivers.some(r=>r.vertexPath.some(v=>v.key===last.key)))return draftError('Завершите реку в точке связи.','Finish the river at the connection.');
+    }
+    updateRiverDraft({...draft,path:[...path,{...vertex}]});setEditError(null);return true;
+  };
+  const riverDraftVertices=riverDraft?[...riverDraft.context.geometry.vertices.values()].filter(v=>{
+    const path=riverDraft.path,last=path[path.length-1];
+    if(!last)return !riverDraft.context.geometry.seaVertices.has(v.key);
+    if(v.key===last.key||path.length>1&&v.key===path[path.length-2].key)return true;
+    if(path.some(p=>p.key===v.key)||path.length>1&&rivers.some(r=>r.vertexPath.some(p=>p.key===last.key)))return false;
+    const edge=edgeKey(last,v);return riverDraft.context.edgeOwners(edge).length>0&&!riverDraft.context.blocked(edge)&&!rivers.some(r=>r.vertexPath.slice(1).some((p,i)=>edgeKey(r.vertexPath[i],p)===edge));
+  }):[];
+  const activateRiverDraftPointer=(event:React.MouseEvent<SVGCircleElement>,key:string,expected:RiverDraft)=>{
+    event.stopPropagation();
+    if(event.detail===0){appendRiverDraft(key,expected);return;}
+    if(riverDraftGesture.current?.moved)return;
+    const nodes=event.currentTarget.parentElement?.querySelectorAll<SVGCircleElement>('[data-river-draft-vertex]')??[];
+    const hits=Array.from(nodes).filter(node=>{const matrix=node.getScreenCTM();return matrix&&node.isPointInFill(new DOMPoint(event.clientX,event.clientY).matrixTransform(matrix.inverse()));});
+    if(hits.length>1){setRiverDraftAmbiguity(hits.map(n=>n.dataset.riverDraftVertex!));setIsSidePanelCollapsed(false);setEditError(language==='ru'?'Здесь несколько вершин. Выберите нужную в списке.':'Several vertices overlap. Choose the intended vertex in the list.');return;}
+    appendRiverDraft(key,expected);
+  };
+  const riverDraftPanel=editMode&&regions.length>0?<div className="river-draft-editor" data-river-draft>
+    {riverDraft?<>
+      <p>{language==='ru'?'Выберите начало и соседние вершины. Enter, повтор конца или Готово — завершить. Escape — сбросить.':'Choose a start and adjacent vertices. Enter, click the end again or Done to finish. Escape to reset.'}</p>
+      <p>{language==='ru'?'Участков':'Edges'}: {Math.max(0,riverDraft.path.length-1)}. {language==='ru'?'Черновик не входит в выгрузку.':'The draft is excluded from exports.'}</p>
+      {(riverDraftAmbiguity.length?riverDraftVertices.filter(v=>riverDraftAmbiguity.includes(v.key)):riverDraft.path.length?riverDraftVertices:riverDraftVertices.filter(v=>selectedHexVertexKeys.has(v.key))).map((v,i)=><button type="button" className="direct-value" key={v.key} data-river-draft-choice={v.key} onFocus={()=>setRiverDraftHover(v.key)} onBlur={()=>setRiverDraftHover(null)} onMouseEnter={()=>setRiverDraftHover(v.key)} onMouseLeave={()=>setRiverDraftHover(null)} onClick={()=>appendRiverDraft(v.key,riverDraft)}>{v.key===riverDraft.path[riverDraft.path.length-1]?.key?(language==='ru'?'Завершить здесь':'Finish here'):`${language==='ru'?'Вершина':'Vertex'} ${i+1}`}</button>)}
+      <button type="button" className="direct-value" onClick={()=>resetRiverDraft(riverDraft)}>{language==='ru'?'Сбросить черновик реки':'Reset river draft'}</button>
+    </>:<button type="button" className="direct-value" data-add-river onClick={startRiverDraft} disabled={!!roadDraft||!!obstacleDraft||documentBusy()}>{language==='ru'?'Добавить реку':'Add river'}</button>}
+  </div>:null;
   const roadLandRegion = (h:AxialHex) => !isLakeHex(h,hexTerrainByKey)&&!isSeaHex(h,hexTerrainByKey)
     ? regions.find(r=>r.hexes.some(v=>isSameHex(v,h))) : undefined;
   const roadDraftHits = (path:AxialHex[]) => path.slice(1).flatMap((to,i)=>{
@@ -14530,7 +14604,7 @@ export function App() {
     updateRoadDraft({...draft,path:[...path,{...h}]});setEditError(null);return true;
   };
   const resetRoadDraft = () => {updateRoadDraft(null);setEditError(null);};
-  const roadDraftPanel = editMode && (roadDraft || selectedHex && roadLandRegion(selectedHex)) ? <div className="road-editor" data-road-draft>
+  const roadDraftPanel = editMode && !riverDraft && (roadDraft || selectedHex && roadLandRegion(selectedHex)) ? <div className="road-editor" data-road-draft>
     {roadDraft ? <>
       <label>{language==='ru'?'Черновик пути':'Path draft'} <select className="direct-value" aria-label={language==='ru'?'Тип нового пути':'New path type'} value={roadDraft.kind}
         onChange={e=>{if(roadDraftRef.current===roadDraft&&!documentBusy())updateRoadDraft({...roadDraft,kind:e.target.value as RoadKind});}}><option value="trail">{t.trail}</option><option value="road">{t.road}</option></select></label>
@@ -14542,7 +14616,7 @@ export function App() {
     </> : <button type="button" className="direct-value" onClick={startRoadDraft}>{language==='ru'?'Начать путь отсюда':'Start path here'}</button>}
   </div>:null;
   const chooseRoadPair = (pair:string, roadId:number, crossingKey?:string) => {
-    if (documentBusy() || !finishRoadDraft() || !finishInlineName()) return;
+    if (documentBusy() || !finishPathDrafts() || !finishInlineName()) return;
     finishNotesGroup(); clearNotesDraft(); closeEditors(); setConfirmRoadRemoval(null);
     setSelectedRoadPair(pair); setSelectedRoadTarget({roadId,crossingKey});
     const match = roads.find(r=>r.id===roadId)?.segments.find(s => normalizeRoadSegmentKey(s.from,s.to) === pair);
@@ -14564,7 +14638,7 @@ export function App() {
     missing_or_ambiguous_road:'Путь не найден или неоднозначен.', missing_or_ambiguous_segment:'Участок не найден или неоднозначен.',
     stale_crossing:'Данные переправы изменились.', unknown_fullness:'Не удалось определить полноводность.'
   } as Record<string,string>)[code] ?? 'Не удалось подготовить изменение пути.';
-  const roadPanel = editMode && !roadDraft && roadChoices.length ? <div className="road-editor" aria-label={language==='ru'?'Редактирование путей':'Edit paths'}>
+  const roadPanel = editMode && !riverDraft && !roadDraft && roadChoices.length ? <div className="road-editor" aria-label={language==='ru'?'Редактирование путей':'Edit paths'}>
     {roadChoices.map(({road,segment,pair},index) => <div className="road-editor__item" key={`${road.id}:${pair}:${index}`}>
       <button type="button" className="direct-value" aria-pressed={selectedRoadPair===pair && selectedRoadTarget?.roadId===road.id && !selectedRoadTarget.crossingKey} onClick={()=>chooseRoadPair(pair,road.id)}>
         {language==='ru'?'Участок':'Segment'} {road.id}: {hexKey(segment.from)} → {hexKey(segment.to)}
@@ -14983,6 +15057,7 @@ export function App() {
 
   return (
     <div className="app" onPointerDownCapture={finishBeforePointer} onKeyDownCapture={e=>{
+      if(riverDraftRef.current&&!e.nativeEvent.isComposing){if(e.key==='Escape'){e.preventDefault();e.stopPropagation();resetRiverDraft();return;}if(e.key==='Enter'&&!(e.target as Element).matches('select,button,input,textarea,[data-river-draft-vertex]')){e.preventDefault();e.stopPropagation();finishRiverDraft();return;}}
       if(e.key==='Escape'&&obstacleDraftRef.current){e.preventDefault();e.stopPropagation();cancelObstacleChoice();return;}
       if(!roadDraftRef.current||e.nativeEvent.isComposing)return;
       if(e.key==='Escape'){e.preventDefault();e.stopPropagation();resetRoadDraft();}
@@ -14993,7 +15068,7 @@ export function App() {
           <button
             type="button"
             className="side-panel-toggle"
-            onClick={() => {if(finishRoadDraft())setIsSidePanelCollapsed((value) => !value);}}
+            onClick={() => {if(finishPathDrafts())setIsSidePanelCollapsed((value) => !value);}}
             aria-expanded={!isSidePanelCollapsed}
             aria-controls="side-panel-controls side-panel-info"
             aria-label={sidePanelToggleLabel}
@@ -15022,7 +15097,7 @@ export function App() {
                 type="button"
                 className="language-toggle"
                 onClick={() => {
-                  if (!finishRoadDraft() || !finishInlineName()) return;
+                  if (!finishPathDrafts() || !finishInlineName()) return;
                   finishNotesGroup(); clearNotesDraft(); closeEditors();
                   trackGoal('lang_switch');
                   setLanguage((value) => (value === 'ru' ? 'en' : 'ru'));
@@ -15067,7 +15142,7 @@ export function App() {
               <div className="info-block info-block--prompt map-toolbar__prompt" role="status">{t.candidatePrompt}</div>
             ) : null}
             <div className="control-block mode-selector"><label>{language === 'ru' ? 'Режим' : 'Mode'}
-              <select aria-label={language === 'ru' ? 'Режим' : 'Mode'} value={generationMode} disabled={!!roadDraft || isImporting || !!pendingRegen || !!kingdomJob} onChange={e=>{ if(!mutationBlocked()) setGenerationMode(e.target.value as GenerationMode); }}>
+              <select aria-label={language === 'ru' ? 'Режим' : 'Mode'} value={generationMode} disabled={!!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob} onChange={e=>{ if(!mutationBlocked()) setGenerationMode(e.target.value as GenerationMode); }}>
                 <option value="classic">{language === 'ru' ? 'Классический режим' : 'Classic mode'}</option>
                 <option value="mythic">Mythic Bastionland</option>
               </select></label></div>
@@ -15115,11 +15190,11 @@ export function App() {
             : null}
             {regions.length > 0 ? (
               <div className="control-block controls controls--region-management">
-                  <button disabled={!!roadDraft || isImporting || !!pendingRegen || !!kingdomJob} onClick={resetMap} className="secondary">{t.reset}</button>
-                  <button type="button" disabled={!!roadDraft || isImporting || !!pendingRegen || !!kingdomJob || !history.length} onClick={regenerateLastRegion} className="secondary">
+                  <button disabled={!!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob} onClick={resetMap} className="secondary">{t.reset}</button>
+                  <button type="button" disabled={!!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob || !history.length} onClick={regenerateLastRegion} className="secondary">
                     {t.regenerateRegion}
                   </button>
-                  <button type="button" disabled={!!roadDraft || isImporting || !!pendingRegen || !!kingdomJob || !history.length} onClick={deleteLastRegion} className="secondary">
+                  <button type="button" disabled={!!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob || !history.length} onClick={deleteLastRegion} className="secondary">
                     {t.deleteLastRegion}
                   </button>
               </div>
@@ -15175,8 +15250,8 @@ export function App() {
               </button>
             </div>
             <div className="control-block controls controls--history">
-              <button type="button" className="secondary" disabled={!!roadDraft || isImporting || !!pendingRegen || !!kingdomJob || !undoHistory.length} onClick={undoMap}>{language==='ru'?'Отменить':'Undo'}</button>
-              <button type="button" className="secondary" disabled={!!roadDraft || isImporting || !!pendingRegen || !!kingdomJob || !redoHistory.length} onClick={redoMap}>{language==='ru'?'Повторить':'Redo'}</button>
+              <button type="button" className="secondary" disabled={!!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob || !undoHistory.length} onClick={undoMap}>{language==='ru'?'Отменить':'Undo'}</button>
+              <button type="button" className="secondary" disabled={!!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob || !redoHistory.length} onClick={redoMap}>{language==='ru'?'Повторить':'Redo'}</button>
             </div>
             <div className="control-block controls controls--transfer">
               <details className="export-menu">
@@ -15187,7 +15262,7 @@ export function App() {
                     <small>{language==='ru'?'JSON v5: старые версии приложения не откроют этот файл.':'JSON v5: older app versions cannot open this file.'}</small>
                   </div>
                 </details>
-              <button type="button" disabled={!!roadDraft || isImporting || !!pendingRegen || !!kingdomJob} onClick={handleImportJsonClick} className="secondary">{t.importJson}</button>
+              <button type="button" disabled={!!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob} onClick={handleImportJsonClick} className="secondary">{t.importJson}</button>
               <input ref={jsonImportInputRef} className="visually-hidden" type="file" accept="application/json,.json" onChange={(event) => void handleImportJson(event)} />
             </div>
             <div className="control-block world-seed-control">
@@ -15231,7 +15306,7 @@ export function App() {
                   aria-label={editMode ? (language === 'ru' ? 'Готово' : 'Done') : (language === 'ru' ? 'Редактировать' : 'Edit')}
                   title={editMode ? (language === 'ru' ? 'Готово' : 'Done') : (language === 'ru' ? 'Редактировать' : 'Edit')}
                   disabled={isImporting || !!pendingRegen || !!kingdomJob}
-                  onClick={() => { if (!finishRoadDraft() || !finishInlineName()) return; finishNotesGroup(); clearNotesDraft(); closeEditors(); setSelectedRoadPair(null); setSelectedRoadTarget(null); setConfirmRoadRemoval(null); setEditMode(v => !v); }}>
+                  onClick={() => { if (!finishPathDrafts() || !finishInlineName()) return; finishNotesGroup(); clearNotesDraft(); closeEditors(); setSelectedRoadPair(null); setSelectedRoadTarget(null); setConfirmRoadRemoval(null); setEditMode(v => !v); }}>
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
                     {editMode ? <path d="m5 12 4 4L19 6" /> : <><path d="m16 3 5 5-12 12-6 1 1-6Z" /><path d="m14 5 5 5" /></>}
                   </svg>
@@ -15310,13 +15385,14 @@ export function App() {
                 <span className="visually-hidden" aria-live="polite">{tagAnnouncement}</span>
                 {editMode&&generationMode==='mythic'&&tagOwners(captureMap()).size>0?<button type="button" className="tag-add" onClick={fillMissingTags}>{language==='ru'?'Заполнить недостающие теги':'Fill missing tags'}</button>:null}
                 {obstaclePanel}
+                {riverDraftPanel}
                 {roadDraftPanel}
                 {roadPanel}
                 {editError && <p className="direct-error" role="alert">{editError}</p>}
                 {canEditNotes && selectedHexKey && (notesValue || editMode) ? <div className="gm-notes">
                   <strong id="gm-notes-label">{language === 'ru' ? 'Заметки мастера' : 'GM notes'}</strong>
                   {notesOpen && editMode ? <textarea ref={notesTextRef} id="gm-notes-text" aria-labelledby="gm-notes-label" rows={4} value={notesValue}
-                    disabled={!!roadDraft || isImporting || !!pendingRegen || !!kingdomJob}
+                    disabled={!!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob}
                     onKeyDown={event => { event.stopPropagation(); if (event.key === 'Escape') { finishNotesGroup(); setNotesEditorKey(null); } }}
                     onCompositionStart={() => { notesComposingRef.current = true; if (notesTimerRef.current !== null) clearTimeout(notesTimerRef.current); }}
                     onCompositionEnd={event => { notesComposingRef.current = false; changeNotesText(selectedHexKey, event.currentTarget.value); notesTimerRef.current = setTimeout(finishNotesGroup, 500); }}
@@ -15513,6 +15589,10 @@ export function App() {
             className="map-viewport"
             tabIndex={0}
             aria-label={t.mapAria}
+            onPointerDownCapture={event=>{const old=riverDraftGesture.current;if(old?.active&&old.pointerId!==event.pointerId)old.moved=true;else riverDraftGesture.current={x:event.clientX,y:event.clientY,pointerId:event.pointerId,active:true,moved:false};}}
+            onPointerMoveCapture={event=>{const g=riverDraftGesture.current;if(g?.active&&Math.hypot(event.clientX-g.x,event.clientY-g.y)>4)g.moved=true;}}
+            onPointerUpCapture={()=>{if(riverDraftGesture.current)riverDraftGesture.current.active=false;}}
+            onPointerCancelCapture={()=>{if(riverDraftGesture.current){riverDraftGesture.current.moved=true;riverDraftGesture.current.active=false;}}}
             onMouseDown={handleMapMouseDown}
             onMouseMove={handleMapMouseMove}
             onMouseUp={handleMapMouseUp}
@@ -15534,11 +15614,17 @@ export function App() {
               {rivers.filter(r=>r.id===riverFeatureTarget.riverId).flatMap(r=>r.vertexPath.slice(1).map((v,i)=>({a:r.vertexPath[i],b:v}))).filter(e=>!riverFeatureTarget.edgeKey||edgeKey(e.a,e.b)===riverFeatureTarget.edgeKey).map(e=><line key={edgeKey(e.a,e.b)} x1={e.a.x+riverOffset.x} y1={e.a.y+riverOffset.y} x2={e.b.x+riverOffset.x} y2={e.b.y+riverOffset.y} stroke="#f7dc6f" strokeWidth={4} strokeDasharray="6 3" />)}
               {riverFeatureTarget.vertexKey&&rivers.find(r=>r.id===riverFeatureTarget.riverId)?.vertexPath.filter(v=>v.key===riverFeatureTarget.vertexKey).map(v=><circle key={v.key} cx={v.x+riverOffset.x} cy={v.y+riverOffset.y} r={6} fill="#f7dc6f" />)}
             </g>}
+            {riverDraft&&<g data-editor-only="river-draft" transform={mapRotationTransform}>
+              <defs><marker id="river-draft-arrow" viewBox="0 0 10 10" refX={9} refY={5} markerWidth={4} markerHeight={4} orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#f7dc6f" /></marker></defs>
+              {riverDraft.path.slice(1).map((v,i)=>{const a=riverDraft.path[i];return <line key={i} x1={a.x+riverOffset.x} y1={a.y+riverOffset.y} x2={v.x+riverOffset.x} y2={v.y+riverOffset.y} stroke="#f7dc6f" strokeWidth={4} strokeDasharray="6 3" markerEnd="url(#river-draft-arrow)" pointerEvents="none" />;})}
+              {riverDraftVertices.map((v,i)=><circle key={v.key} data-river-draft-vertex={v.key} className="river-draft-map-target" role="button" tabIndex={0} aria-label={`${language==='ru'?'Вершина реки':'River vertex'} ${i+1}`} cx={v.x+riverOffset.x} cy={v.y+riverOffset.y} style={{r:'var(--crossing-hit-radius)'}} fill="transparent" pointerEvents="all" onClick={e=>activateRiverDraftPointer(e,v.key,riverDraft)} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();e.stopPropagation();appendRiverDraft(v.key,riverDraft);}}} />)}
+              {riverDraftVertices.map(v=><circle key={v.key} cx={v.x+riverOffset.x} cy={v.y+riverOffset.y} r={riverDraftHover===v.key?7:3} fill={riverDraftHover===v.key||v.key===riverDraft.path[riverDraft.path.length-1]?.key?'#f7dc6f':'#7dd3fc'} pointerEvents="none" />)}
+            </g>}
             {roadDraft && <g data-editor-only="draft" transform={mapRotationTransform} pointerEvents="none">
               {roadDraft.path.map((h,i)=>{const p=toPixel(h.q,h.r);return <circle key={i} cx={p.x+riverOffset.x} cy={p.y+riverOffset.y} r={i===roadDraft.path.length-1?6:3} fill="#7dd3fc" />;})}
               {roadDraft.path.slice(1).map((h,i)=>{const a=toPixel(roadDraft.path[i].q,roadDraft.path[i].r),b=toPixel(h.q,h.r);return <line key={i} x1={a.x+riverOffset.x} y1={a.y+riverOffset.y} x2={b.x+riverOffset.x} y2={b.y+riverOffset.y} stroke="#7dd3fc" strokeWidth={4} strokeDasharray="6 3" />;})}
             </g>}
-            {editMode && !roadDraft && renderDetails && <g data-editor-only="roads" transform={mapRotationTransform}>
+            {editMode && !riverDraft && !roadDraft && renderDetails && <g data-editor-only="roads" transform={mapRotationTransform}>
               {roadSegments.map(s=><line key={s.key} className="road-map-target" role="button" tabIndex={0}
                 aria-label={`${language==='ru'?'Участок':'Segment'} ${s.roadId}: ${s.segmentKey}`} aria-pressed={selectedRoadPair===s.segmentKey&&selectedRoadTarget?.roadId===s.roadId&&!selectedRoadTarget.crossingKey}
                 x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2} stroke="transparent" style={{strokeWidth:'var(--road-hit-width)'}} pointerEvents="stroke"
@@ -15553,7 +15639,7 @@ export function App() {
               {roadSegments.filter(s=>confirmRoadRemoval ? s.roadId===confirmRoadRemoval.roadId&&(!confirmRoadRemoval.segmentKey||s.segmentKey===confirmRoadRemoval.segmentKey):s.segmentKey===selectedRoadPair&&s.roadId===selectedRoadTarget?.roadId&&!selectedRoadTarget.crossingKey).map(s=><line key={s.key}
                 x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2} stroke="#7dd3fc" strokeWidth={4} strokeDasharray="6 3" pointerEvents="none" />)}
             </g>}
-            {editMode && !roadDraft && renderDetails && <g data-editor-only="obstacles" transform={mapRotationTransform}>
+            {editMode && !riverDraft && !roadDraft && renderDetails && <g data-editor-only="obstacles" transform={mapRotationTransform}>
               {!obstacleDraft && obstacles.map(o=>{const e=obstacleGeometry(o);if(!e)return null;return <circle key={o.id}
                 data-obstacle-map-id={o.id} className="obstacle-map-target" role="button" tabIndex={0}
                 aria-label={`${language==='ru'?'Выбрать препятствие':'Select barrier'} ${o.id}: ${hexKey(o.hex)} → ${hexKey(o.neighborHex)}`}

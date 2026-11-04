@@ -456,3 +456,30 @@ test('E5 real feature and E3 crossing resolution share one accepted transaction 
  assert.equal(h.render().editRoadDocument(road),false);assert.deepEqual(serial(h.render().captureDocument()),doc);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks);
  assert.equal(h.render().editRoadDocument(road,undefined,[{...rapid,state:'off'}]),true);const result=stable(h.render());assert.equal(result.map.roads.length,1);assert.equal(result.map.crossings[0].kind,'bridge');assert.equal(result.map.riverFeatures.rapids[0].state,'off');assert.deepEqual(result.generation,on.generation);assert.equal(h.render().undoHistory.length,stacks[0].length+1);g.assertHexcrawlSaveData(result);assertUndoRedo(h,on,result);await load(h,result);assert.deepEqual(stable(h.render()),result);
 });
+
+// E5-02: a path draft has a different lifecycle from a prepared river edit.
+// Reuse the physical fixture/harness; no duplicate numerical rule table.
+test('E5 river draft guards writes, preserves invalid and cancelled work and commits one exact document',async()=>{
+ const {h,g,a,path:occupied}=riverBackendFixture(false);h.render().setSelectedHex(a);h.render().setEditMode(true);
+ const before=stable(h.render()),stacks=serial([h.render().undoHistory,h.render().redoHistory]);
+ const corners=g.getHexCornerPoints(a),busy=new Set(occupied.map(v=>v.key));
+ const edge=corners.map((v,i)=>[v,corners[(i+1)%corners.length]]).find(vs=>vs.every(v=>!busy.has(v.key)));assert.ok(edge);
+ assert.equal(h.render().startRiverDraft(),true);assert.equal(h.render().riverDraft.path.length,0);
+ const oldAppend=h.render().appendRiverDraft;assert.equal(h.render().finishRiverDraft(),false);
+ // These are actual handlers, not merely disabled DOM controls.
+ h.render().resetMap();h.render().undoMap();h.render().redoMap();h.render().generateAt({q:8,r:8});h.render().setSelectedPoiKind('ruins');h.render().changeNotesText('0,0','blocked');h.render().applyWorldSeed();
+ assert.equal(h.render().editRiverFeatures([{type:'waterfall',vertexKey:occupied[0].key,state:'off'}]),false);
+ assert.equal(h.render().editRiverDocument({type:'reverse',riverId:1}),false);
+ await load(h,fixture);assert.deepEqual(stable(h.render()),before);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks);
+ assert.equal(h.render().appendRiverDraft('not-a-vertex'),false);assert.equal(h.render().appendRiverDraft(edge[0].key),true);
+ assert.equal(oldAppend(edge[1].key),false,'obsolete path callback cannot extend a new draft object');
+ assert.equal(h.render().finishRiverDraft(),false);assert.deepEqual(stable(h.render()),before);
+ assert.equal(h.render().appendRiverDraft(edge[1].key),true);
+ assert.equal(h.render().appendRiverDraft(edge[0].key),true,'previous vertex undoes one draft step');assert.equal(h.render().riverDraft.path.length,1);
+ const staleFinish=h.render().finishRiverDraft;h.render().resetRiverDraft();assert.deepEqual(stable(h.render()),before);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks);
+ assert.equal(h.render().startRiverDraft(),true);assert.equal(staleFinish(),false);
+ h.render().appendRiverDraft(edge[0].key);h.render().appendRiverDraft(edge[1].key);
+ const finish=h.render().finishRiverDraft;assert.equal(finish(),true);const after=stable(h.render());assert.equal(after.map.rivers.length,before.map.rivers.length+1);assert.equal(after.counters.nextRiverId,before.counters.nextRiverId+1);assert.deepEqual(after.generation,before.generation);assert.equal(h.render().riverDraft,null);assert.equal(h.render().undoHistory.length,stacks[0].length+1);
+ assert.equal(finish(),false,'double captured completion is inert');assert.deepEqual(stable(h.render()),after);
+ assertUndoRedo(h,before,after);await load(h,after);assert.deepEqual(stable(h.render()),after);assert.equal(finish(),false);
+});

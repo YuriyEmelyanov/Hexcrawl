@@ -60,6 +60,31 @@ try {
    assert.fail('No candidate could generate a region');
  }
  async function transaction(action){const before=await snapshot();await action();const after=await snapshot();assert.notDeepEqual(after,before);await button('Отменить').click();assert.deepEqual(await snapshot(),before);await button('Повторить').click();assert.deepEqual(await snapshot(),after);return after;}
+ { // E5-02: extend this same browser lifecycle; no second corpus/runner.
+ await load(fixture);await select('0,0');await ensureEdit();
+ const before=await snapshot();
+ const png=async()=>{const menu=page.locator('details.export-menu');if(await menu.getAttribute('open')===null)await menu.locator('summary').click();const got=page.waitForEvent('download');await button('PNG').click();return fs.readFile(await (await got).path());};
+ const confirmedPng=await png();
+ await button('Добавить реку').click();
+ assert.equal(await page.locator('[data-editor-only="river-draft"]').count(),1);
+ for(const name of ['Сбросить','Отменить','Повторить','Загрузить JSON'])assert.ok(await button(name).isDisabled(),name+' blocked by draft');
+ await button('Готово').click();assert.equal(await button('Готово').count(),1,'invalid draft blocks Done');
+ if(await page.locator('.header-links').evaluate(el=>el.classList.contains('is-collapsed')))await page.locator('.header-links-toggle').click();
+ await button('Switch to English').click();assert.equal(await button('Switch to English').count(),1,'invalid draft blocks language');
+ assert.deepEqual(await snapshot(),before,'JSON excludes draft and leaves it open');assert.equal(await page.locator('[data-editor-only="river-draft"]').count(),1);
+ assert.deepEqual(await png(),confirmedPng,'PNG excludes draft targets and path overlays');
+ const start='-24.249,14',end='-24.249,-14';
+ await page.locator(`[data-river-draft-choice="${start}"]`).press('Enter');
+ assert.equal(await page.locator('[data-editor-only="river-draft"] line').count(),0,'Enter on vertex chooses a start, not Done');
+ await page.locator(`[data-river-draft-choice="${end}"]`).press('Space');assert.equal(await page.locator('[data-editor-only="river-draft"] line').count(),1);
+ const hexBox=await page.locator('polygon.hex[data-hex-key="0,0"]').boundingBox();assert.ok(hexBox);
+ await page.mouse.move(hexBox.x+hexBox.width/2,hexBox.y+hexBox.height/2);await page.mouse.down();await page.mouse.move(hexBox.x+hexBox.width/2+10,hexBox.y+hexBox.height/2,{steps:4});await page.mouse.up();
+ assert.equal(await page.locator('[data-editor-only="river-draft"] line').count(),1,'drag gesture must not finish the path');assert.deepEqual(await snapshot(),before);
+ await page.locator('.map-viewport').press('Enter');
+ const after=await snapshot();assert.equal(after.map.rivers.length,before.map.rivers.length+1);assert.equal(after.counters.nextRiverId,before.counters.nextRiverId+1);assert.deepEqual(after.generation,before.generation);assert.equal(await page.locator('[data-editor-only="river-draft"]').count(),0);
+ await button('Отменить').click();assert.deepEqual(await snapshot(),before);await button('Повторить').click();assert.deepEqual(await snapshot(),after);
+ await button('Добавить реку').click();await page.locator('.map-viewport').press('Escape');await page.waitForFunction(()=>document.activeElement?.hasAttribute('data-add-river'));assert.deepEqual(await snapshot(),after,'reset leaves committed map unchanged');
+ }
  { // DE-AC01–04/06/10: replace superseded paired-form workflow in this existing lifecycle.
  const out=new URL('reports/HX-BL-023-direct/',root);await fs.mkdir(out,{recursive:true});
  const info=page.locator('.info-block--hex'), namesSection=page.locator('.map-names');

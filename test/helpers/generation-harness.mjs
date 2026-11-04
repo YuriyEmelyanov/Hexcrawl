@@ -17,6 +17,7 @@ let prefix = source.slice(0, lastReturn.getStart(ast));
 if (artwork?.initializer) prefix = prefix.slice(0, artwork.initializer.getStart(ast)) + 'undefined' + prefix.slice(artwork.initializer.end);
 const instrumented = prefix + `return {
   editRiverDocument, editRiverFeatures, rapidRiverEdgeKeys, riverWaterfalls, tags, mutateTag, fillMissingTags, obstacleDraft, obstacleChoices, startObstacleChoice, editObstacleDocument,
+  riverDraft, startRiverDraft, appendRiverDraft, finishRiverDraft, resetRiverDraft, finishPathDrafts, riverDraftVertices,
   roadDraft, startRoadDraft, appendRoadDraft, finishRoadDraft, resetRoadDraft, editRoadDocument, gmNotesByHexKey, changeNotesText, finishNotesGroup, openNotesEditor, toggleNotesEditor, recordGenerated, captureGenerationBackup,
   generationRef, seedInput, setSeedInput, setGenSizeCategory, applyWorldSeed, buildGenerationOptions, generateAt,
   regions, rivers, roads, candidateHexes, hexTerrainByKey, history, toponyms, toponymSeed, setToponyms,

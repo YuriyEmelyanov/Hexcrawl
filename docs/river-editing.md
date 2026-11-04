@@ -60,3 +60,6 @@ v2…v6 сначала проходят прежнюю структурную п
 
 
 Feature UI checkpoint: in Edit, select a nearby river, then an explicit local edge or vertex. Native Auto/On/Off selectors call the existing atomic feature command. Selected geometry is an editor-only overlay, excluded by the existing export filter. Off persists even when Auto has no mark; Auto removes the override. Forbidden On is disabled with a reason. This is not full E5: direct map hit picking, route/fullness/dependency preview and RiverDraft remain pending before independent review.
+
+
+Create-path draft checkpoint: Edit → Add river opens a UI-only draft. Choose real neighbouring vertices; the previous vertex removes a step. Enter, clicking the end again or Done validates through the existing physical/solver/dependency preparation and commits once. Escape/Reset discards the draft. Other writers are blocked by the ref guard, not only disabled controls. Selection/Find/language/panel transitions attempt completion and stay on an invalid draft. JSON/PNG continue exporting the confirmed map only, with an explicit draft-exclusion notice; camera gestures never finish a path. Replacement/fullness/named dependency preview and full E5 acceptance remain pending.
