@@ -1,0 +1,115 @@
+{
+  "task_id": "HX-BL-023",
+  "stage_id": "E5",
+  "pr": 486,
+  "role": "independent_reviewer",
+  "exact_sha": "4badf0de7dbc11470be1e06b36531410c2fe3474",
+  "tree_sha": "4a4e1e86856f1f3dd536c52f1a444167fffbd4aa",
+  "main_sha": "ab75ecb0a5b90888d4e367bfc9a40ecdff8ad429",
+  "verdict": "changes_requested",
+  "release_approved": false,
+  "independence": "Fresh child reviewer with no implementation/publication/GitHub writes. Read operational AGENTS/docs index/process/vision/score1.2/E5 spec, remote corrected handoff; verified source, CI and probes independently.",
+  "review_scope": {
+    "previous_review_sha": "8b98266ef5960535140feb05687bb2c9fac04156",
+    "changed_files": [
+      "src/App.tsx",
+      "test/mapTransactions.test.mjs",
+      "docs/river-model-integration.md"
+    ],
+    "verified_scope": "Remote commit API parent/diff and local git show/diff agree. Runtime production delta is checkpoint preview helper only; all other src/public/package production paths equal prior reviewed source. Existing browser/RNG source and runners unchanged from prior review. Previous finite evidence remains applicable to untouched paths; no blind grade or release transfer.",
+    "local_execution": "Committed local6a1027093b36fcbd29add94b5969a0d88a25bea6 tree equals remotehead and CI checkout tree. Actual src/App.tsx blob hash equals committed7107aacdb57953b50047d63e3c399a9fe4b28ebd. Generated reports/node_modules untracked or dirty are excluded from source proof."
+  },
+  "resolved_findings": [
+    {
+      "id": "HX023-E5-R1",
+      "status": "fixed_for_reported_deleted_river_branch",
+      "evidence": "checkpoint-probe.json",
+      "checks": "Old8b reproduces missing dialog in all4 delete/regenerate x RU/EN. Fixedhead warns in all4; reject preserves complete document with Map/Set contents, generationHistory/RNG and both nonempty history branches; accept delete and completed regeneration restore checkpoint river; exact full-document Undo/Redo; accepted saves validate v7. Adjacent unchanged/feature branches checked."
+    }
+  ],
+  "findings": [
+    {
+      "id": "HX023-E5-R2",
+      "severity": "high",
+      "priority": "P1",
+      "status": "open",
+      "title": "Checkpoint preview ignores an edited river whose owner moved from a retained region into the last region",
+      "source": "src/App.tsx:13550-13553",
+      "requirement": [
+        "E5-06",
+        "AC08"
+      ],
+      "expected": "Before delete/regenerate consumes a generation checkpoint, warn about restoring the prior path of a manually moved river when its checkpoint owner belongs to retained regions. Reject must leave document and both stacks intact.",
+      "actual": "Both deleteLastRegion and regenerateLastRegion show zero confirmations and replace the committed edited path with the old checkpoint path. A rejecting confirm callback is never called. Deletion alters document and undo/redo (discarding the nonempty redo branch); regeneration immediately changes document and enters pending regeneration while stacks remain initially unchanged.",
+      "reproduction": [
+        "Seed42: create valid river ID1 in region1 (two neighboring dry hexes).",
+        "Add region2, retaining generation checkpoint with ID1 in region1.",
+        "Use real UI callback chain startRiverDraft(1), append authentic neighboring vertices on region2, finishRiverDraft, inspect successful preview, confirmRiverCommand. Derived owner becomes region2 while same river ID remains.",
+        "Create and undo a temporary biome edit so redo is nonempty.",
+        "Set confirm callback to reject and invoke deleteLastRegion or regenerateLastRegion, in RU and EN.",
+        "Observe zero dialogs, old checkpoint river path restored in region1, document changed despite rejecting callback."
+      ],
+      "cause": "new Map([...checkpointById,...currentById]) keeps current value for the same ID. retained.has(r.regionId) then tests only the new owner in the region being removed; the previous retained owner is ignored. rebuild in manualRivers.ts legitimately derives the new owner, and actual Finish passes original regionId, so this is reachable through UI callbacks.",
+      "evidence": [
+        "owner-move-probe.mjs",
+        "owner-move-probe.json",
+        "owner-move-probe.log"
+      ],
+      "bounded_fix_contract": "Consider both current and checkpoint ownership/retained footprints per river identity when classifying changed routes. Preserve exclusion for rivers solely in the removed region with no restored retained counterpart. Extend the existing checkpoint lifecycle; no new broad runner required.",
+      "limits": "Actual UI callback chain executed via unchanged generation hook harness, not physical DOM pointer for this R2 scenario. Regeneration observed at its first destructive pending stage; sufficient to prove missing preview and failed cancel contract. No claim that final regeneration always preserves restored path."
+    }
+  ],
+  "checks": {
+    "CI": "Fresh independently verified run41883936580 and all3 full job logs, checkoutb91281d tree equals exacthead4a4. npm run check Node24.22.2:286/286/0; browser Node24.22.1 after production build:8 scripts; RNG after production build:1 script; all success. ci-verification.json.",
+    "local": "Fresh production build passed. Bounded physical-pointer Chromium153.0.8010.0 ford/ferry edit, JSON and exact Undo passed; 1500/390 captures. checkpoint old/new and R2 actualUI callback diagnostics completed. Full gates not redundantly rerun.",
+    "gate_result": "CI gates pass; independent acceptance fails AC08 on R2."
+  },
+  "acceptance_evidence": {
+    "AC01_AC07_AC09_AC10": "Unchanged finite source/CI evidence applicability verified from exact3file delta; fresh actual-pointer/edit/Undo and extra checkpoint paths examined. No universal proof beyond checked cases.",
+    "AC08": "failed HX023-E5-R2; HX023-E5-R1 deletion branch fixed",
+    "AC11": "exact-tree mandatory CI successful, independent review verdict changes_requested"
+  },
+  "score_assessment": "score_assessment1.2.json",
+  "test_change_summary": "test_change_summary.json",
+  "walkthrough": "capture_provenance.json; prior full editor sequence remains applicable only to unchanged UI states with explicit old captureSHA. Fresh captures do not complete exact package release presentation; release_preview_pending remains. No release request.",
+  "next_role": "developer",
+  "next_step": "Bounded fix HX023-E5-R2 in approved E5; extend existing checkpoint scenario for owner transfer and reject/accept/Undo/Redo. Return new exact SHA and mandatory gates to fresh independent review; no merge or publication.",
+  "limitations": [
+    "Finite review and CI do not prove arbitrary graph behavior, full WCAG, physical phones or game-profile breadth.",
+    "No new permanent tests or product edits; temporary reviewer diagnostics are separate from logical test registrations.",
+    "No main/merge/deploy, remote writes or complete map JSON uploads.",
+    "All8 criteria remain insufficient_evidence, before/after grade/points/delta null. No score increase; current cohort and canonical rules metadata recorded."
+  ],
+  "automation_health": {
+    "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-04T19:00:26Z",
+      "is_enabled": true,
+      "note": "Timed repeat actual peek after initial untimed opening peek also observed true"
+    },
+    "end": {
+      "checked_at": "2026-11-04 19:09:03 UTC",
+      "is_enabled": true,
+      "next_run_time": null
+    },
+    "restoration_performed": false,
+    "errors": [],
+    "limitation": "Observed enabled at actual peeks; cannot guarantee future status. next_run_time=null is not disabled."
+  },
+  "artifact_directory": "/workspace/scratch/cc30953c0fc1/review-e5-4bad-evidence",
+  "upload_recommendation": [
+    "report.json",
+    "score_assessment1.2.json",
+    "test_change_summary.json",
+    "automation_health.json",
+    "ci-verification.json",
+    "capture_provenance.json",
+    "checkpoint-probe.mjs",
+    "checkpoint-probe.json",
+    "owner-move-probe.mjs",
+    "owner-move-probe.json",
+    "ui-probe.mjs",
+    "ui-probe.json"
+  ]
+}
+
