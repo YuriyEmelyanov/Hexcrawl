@@ -1,0 +1,38 @@
+✖ E5 network validation preserves independent unchanged legacy defects, rejects new ones (12.048841ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 201.064659
+
+✖ failing tests:
+
+test at test/e5-baseline-probe.mjs:64:1
+✖ E5 network validation preserves independent unchanged legacy defects, rejects new ones (12.048841ms)
+  AssertionError [ERR_ASSERTION]: Got unwanted exception.
+  Actual message: "RIV-007:FLOW:0,0"
+      at TestContext.<anonymous> (file:///workspace/hexcrawl-e5-geometry/test/e5-baseline-probe.mjs:71:9)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: Error: RIV-007:FLOW:0,0
+        at fail (file:///workspace/hexcrawl-e5-geometry/src/e5-baseline-probe.ts:13:42)
+        at validateEditedRiverNetwork (file:///workspace/hexcrawl-e5-geometry/src/e5-baseline-probe.ts:147:133)
+        at file:///workspace/hexcrawl-e5-geometry/test/e5-baseline-probe.mjs:71:26
+        at getActual (node:assert:611:5)
+        at strict.doesNotThrow (node:assert:779:32)
+        at TestContext.<anonymous> (file:///workspace/hexcrawl-e5-geometry/test/e5-baseline-probe.mjs:71:9)
+        at Test.runInAsyncScope (node:async_hooks:227:14)
+        at Test.run (node:internal/test_runner/test:1402:25)
+        at Test.start (node:internal/test_runner/test:1262:17)
+        at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17),
+    expected: undefined,
+    operator: 'doesNotThrow',
+    diff: 'simple'
+  }

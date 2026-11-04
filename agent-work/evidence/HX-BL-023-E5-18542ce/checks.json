@@ -1,0 +1,344 @@
+{
+  "head_sha": "18542ce3ab79466a024764bfd7d20076206c3631",
+  "tree_sha": "88eed776dcc517179fe5db1d68cbd084f32fcabb",
+  "checks": [
+    {
+      "command": "npm run check",
+      "status": "passed",
+      "exit_code": 0,
+      "Node": {
+        "executed": 279,
+        "passed": 279,
+        "failed": 0,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "duration_ms": 757473.090806,
+      "typescript": "passed",
+      "build": "passed",
+      "log": "full-check-final.log"
+    },
+    {
+      "command": "npm run test:browser",
+      "status": "passed",
+      "exit_code": 0,
+      "suite_scripts": 8,
+      "executed": 8,
+      "passed": 8,
+      "skipped": 0,
+      "log": "browser.log",
+      "artifact_proof": "artifact-equivalence.json",
+      "note": "Final complete check build is byte-identical across all152 dist files to the browser-tested build; final pure port guard has no shipped UI difference."
+    },
+    {
+      "command": "node --test test/manualRivers.test.mjs",
+      "status": "passed",
+      "exit_code": 0,
+      "executed": 6,
+      "passed": 6,
+      "failed": 0,
+      "skipped": 0,
+      "log": "pure-final.log"
+    },
+    {
+      "command": "node --test --test-name-pattern='E5 manual geometry|RIV-EX-21' test/riverIntegration.test.mjs",
+      "status": "passed",
+      "exit_code": 0,
+      "executed": 2,
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "log": "physical-final.log"
+    }
+  ],
+  "CI": {
+    "workflow_runs": [
+      {
+        "id": 41775902296,
+        "name": "HX-FB-001 UI acceptance",
+        "status": "completed",
+        "conclusion": "skipped",
+        "run_number": 58,
+        "jobs_url": "https://api.github.com/repos/YuriyEmelyanov/Hexcrawl/actions/runs/41775902296/jobs",
+        "logs_url": "https://api.github.com/repos/YuriyEmelyanov/Hexcrawl/actions/runs/41775902296/logs",
+        "workflow_id": 396743524
+      },
+      {
+        "id": 41775901861,
+        "name": "Check",
+        "status": "completed",
+        "conclusion": "cancelled",
+        "run_number": 184,
+        "jobs_url": "https://api.github.com/repos/YuriyEmelyanov/Hexcrawl/actions/runs/41775901861/jobs",
+        "logs_url": "https://api.github.com/repos/YuriyEmelyanov/Hexcrawl/actions/runs/41775901861/logs",
+        "workflow_id": 363737317
+      }
+    ],
+    "observed_at": "2026-11-04 05:04:00 UTC",
+    "jobs": [
+      {
+        "id": 126396068407,
+        "name": "browser",
+        "status": "completed",
+        "conclusion": "success",
+        "run_id": 41775901861,
+        "logs_url": null,
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1
+          },
+          {
+            "name": "Run actions/checkout@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2
+          },
+          {
+            "name": "Run actions/setup-node@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3
+          },
+          {
+            "name": "Run npm ci",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4
+          },
+          {
+            "name": "Run npm run build",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 5
+          },
+          {
+            "name": "Run npx playwright install --with-deps chromium",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 6
+          },
+          {
+            "name": "Run npm run test:browser",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 7
+          },
+          {
+            "name": "Run actions/upload-artifact@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 8
+          },
+          {
+            "name": "Run actions/upload-artifact@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 9
+          },
+          {
+            "name": "Run actions/upload-artifact@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 10
+          },
+          {
+            "name": "Post Run actions/setup-node@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 19
+          },
+          {
+            "name": "Post Run actions/checkout@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 20
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 21
+          }
+        ]
+      },
+      {
+        "id": 126396068624,
+        "name": "check",
+        "status": "completed",
+        "conclusion": "cancelled",
+        "run_id": 41775901861,
+        "logs_url": null,
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1
+          },
+          {
+            "name": "Run actions/checkout@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2
+          },
+          {
+            "name": "Run actions/setup-node@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3
+          },
+          {
+            "name": "Run npm ci",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4
+          },
+          {
+            "name": "Run npm run check",
+            "status": "completed",
+            "conclusion": "cancelled",
+            "number": 5
+          },
+          {
+            "name": "Post Run actions/setup-node@v4",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 9
+          },
+          {
+            "name": "Post Run actions/checkout@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 10
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 11
+          }
+        ]
+      },
+      {
+        "id": 126396068642,
+        "name": "world-random",
+        "status": "completed",
+        "conclusion": "success",
+        "run_id": 41775901861,
+        "logs_url": null,
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1
+          },
+          {
+            "name": "Run actions/checkout@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2
+          },
+          {
+            "name": "Run actions/setup-node@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3
+          },
+          {
+            "name": "Run npm ci",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4
+          },
+          {
+            "name": "Run npm run build",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 5
+          },
+          {
+            "name": "Run npx playwright install --with-deps chromium",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 6
+          },
+          {
+            "name": "Run npm run test:browser:rng",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 7
+          },
+          {
+            "name": "Post Run actions/setup-node@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 13
+          },
+          {
+            "name": "Post Run actions/checkout@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 14
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 15
+          }
+        ]
+      }
+    ],
+    "check_cancellation": {
+      "job_id": 126396068624,
+      "conclusion": "cancelled",
+      "cause": "unknown; returned log only states The operation was canceled.",
+      "excerpt": "CI-check-excerpt.log",
+      "workflow_config": "check job timeout-minutes10; configuration is not proof of the observed cancellation cause",
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41775901861/job/126396068624"
+    },
+    "browser": "success",
+    "world_random": "success",
+    "overall_check_not_green": true
+  },
+  "superseded_local_runs": [
+    {
+      "log": "check-superseded-first.log",
+      "status": "interrupted_by_agent",
+      "exit_code": 130,
+      "reason": "Final source/preflight adjustments required a new complete check; no complete success claimed."
+    },
+    {
+      "log": "check-superseded-port-preflight.log",
+      "status": "interrupted_by_agent",
+      "exit_code": 130,
+      "reason": "Final physical port/sea preflight finalized; new full check279/279 supersedes this run."
+    }
+  ],
+  "baseline_probe": {
+    "source_sha": "35dc28a916909137c4daac8dc847e6c440c8bcca",
+    "selected_cases": 1,
+    "expected_red": true,
+    "actual_passed": 0,
+    "actual_failed": 1,
+    "permanent_cases_added": 0,
+    "log": "baseline-red.log",
+    "reason": "Old whole-component validator wrongly rejected legal change below unchanged legacy source."
+  },
+  "environment": {
+    "node": "24",
+    "Chromium": "153.0.8010.0",
+    "temporary_workaround": "Same temporary Chromium executable launch-loader as previous checkpoint; no workflow/dependency configuration changes, no paid API.",
+    "browser_RNG": "Exact-SHA CI world-random succeeded; no duplicate local RNG rerun needed."
+  },
+  "limits": [
+    "Intermediate geometry/preparation only: no unknown-F solver/dependency transaction/editor UI yet",
+    "Node/Browser/RNG/temporary baseline diagnostic are separate counts, never summed as test growth",
+    "Existing Vite large-chunk advisory; build succeeded",
+    "Cancelled CI check is not green and has no inferred cause; independent final acceptance still required"
+  ]
+}
