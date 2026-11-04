@@ -1,0 +1,173 @@
+{
+  "role": "independent_reviewer",
+  "exactSHA": "8b98266ef5960535140feb05687bb2c9fac04156",
+  "baseSHA": "ab75ecb0a5b90888d4e367bfc9a40ecdff8ad429",
+  "treeSHA": "47bf96c97aab6dcbb474eb3dbcfc3c043d639508",
+  "pr": 486,
+  "spec": "agent-work/specs/HX-BL-023-E5.md",
+  "verdict": "changes_requested",
+  "independence": "Fresh child reviewer, no implementation authored and no product changes. Root owns operational claim/results.",
+  "findings": [
+    {
+      "id": "HX023-E5-R1",
+      "priority": "P2",
+      "title": "Deleted river is silently restored by last-region checkpoint without destructive preview",
+      "file": "src/App.tsx",
+      "line": 13544,
+      "requirements": [
+        "E5-06",
+        "AC08",
+        "S03-C04",
+        "S09-C04"
+      ],
+      "steps": [
+        "Create a valid river in region1.",
+        "Generate a neighboring region, so its checkpoint contains this river.",
+        "Delete river with explicit confirmation; river list is empty.",
+        "Set confirmation handler to reject and invoke deleteLastRegion."
+      ],
+      "expected": "Preview states river deletion will be replaced/restored; rejecting confirmation leaves map/history untouched.",
+      "actual": {
+        "confirm_calls": 0,
+        "regions_before": 2,
+        "regions_after": 1,
+        "river_ids_before": [],
+        "river_ids_after": [
+          1
+        ]
+      },
+      "cause": "confirmRiverCheckpointLoss iterates current rivers only. The deleted river has no current row, hence its restoration is never counted.",
+      "evidence": [
+        "checkpoint-deletion-finding.json",
+        "checkpoint-probe.json"
+      ],
+      "scope": "Checkpoint restoration remains allowed after explicit preview; no permanent manual lock requested."
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "AC01",
+      "status": "bounded_evidence_verified",
+      "method": "Source/CI physical Classic-Mythic create, replace, fixed tributary and ID/owner tests."
+    },
+    {
+      "id": "AC02",
+      "status": "bounded_evidence_verified",
+      "method": "Source/CI reverse, duplicate, skip/owner/split and current numeric kernel guards."
+    },
+    {
+      "id": "AC03",
+      "status": "bounded_evidence_verified",
+      "method": "Source/CI shared-lake unique area, old/new cycles and explicit limit semantics."
+    },
+    {
+      "id": "AC04",
+      "status": "bounded_evidence_verified",
+      "method": "Independent production physical pointer -> named ford F2/F3 explicit ferry -> exact JSON Undo; CI alternatives."
+    },
+    {
+      "id": "AC05",
+      "status": "bounded_evidence_verified",
+      "method": "Source/CI BR-009 F4/F5 group/parent/arm validation and named preview; no fresh exhaustive branch gallery."
+    },
+    {
+      "id": "AC06",
+      "status": "bounded_evidence_verified",
+      "method": "Source/CI persistent features and symmetric E3 choices, PNG exclusion; finite fixtures."
+    },
+    {
+      "id": "AC07",
+      "status": "bounded_evidence_verified",
+      "method": "Source/CI manifest v2-v7, counters, malformed saves and rollback; no schema weakening found."
+    },
+    {
+      "id": "AC08",
+      "status": "failed",
+      "method": "Independent real-handler counterexample R1; existing changed-river checkpoint coverage insufficient."
+    },
+    {
+      "id": "AC09",
+      "status": "bounded_evidence_verified",
+      "method": "Source/CI transform and keyboard/raster checks; 3 verified runtime captures inspected; fresh pointer probe passed."
+    },
+    {
+      "id": "AC10",
+      "status": "bounded_evidence_verified",
+      "method": "Source/CI draft/editor PNG+JSON exclusion; E1-E4/seed/notes/Find/tags regressions successful in same-tree CI."
+    },
+    {
+      "id": "AC11",
+      "status": "bounded_evidence_verified",
+      "method": "Direct API completed/success for exact head CI; all required commands and Node286/286 logs verified; local check explicitly interrupted."
+    }
+  ],
+  "checks": {
+    "CI": {
+      "run": 41863803293,
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41863803293",
+      "status": "completed",
+      "conclusion": "success",
+      "jobs": {
+        "check": 126692600056,
+        "browser": 126692600639,
+        "world_random": 126692600637
+      },
+      "checkout": "e51b0bb46d870e2e2f2a5d282068c6c917aaff08",
+      "tree_equals_head": true,
+      "node": "24.22.1",
+      "tests": 286,
+      "pass": 286,
+      "fail": 0,
+      "browser_after_build": true,
+      "rng_after_build": true,
+      "method": "Fresh Github fetch run/jobs/full logs plus API git commit merge tree and local HEAD tree; developer statements not taken on trust."
+    },
+    "local": {
+      "npm_run_check": "interrupted after decisive blocker, no completion/PASS claim",
+      "production_build": "passed",
+      "bounded_real_App_probe": "passed finding reproduction",
+      "bounded_production_UI": "passed, Chromium153.0.8010.0",
+      "npm_run_check_exit_code": 130
+    }
+  },
+  "walkthrough_provenance": {
+    "capture_sha": "862d60c66f75c9069a9d75f3730c86745582f20a",
+    "production_source_equals_final": true,
+    "independent_diff": [
+      "test/browser/save-history.smoke.mjs only"
+    ],
+    "verified_captures": {
+      "edit-ru-1500.png": "98e7459888aa59c056563c534d3c3ae5898824e2",
+      "confirm-ru-390.png": "29786e86dd1aa52616d3d2c3c28a20f7bbf7b32c",
+      "edit-en-390.png": "de5f3e6d93a4fdaef302be90649a7ea79d221f67"
+    },
+    "method": "Local git hash-object equals fresh GitHub contents blob SHA, then actual visual inspection",
+    "shown_to_owner": "Developer says true; reviewer can verify images/provenance, not independently witness prior chat delivery."
+  },
+  "score_assessment1.2": "score_assessment1.2.json",
+  "test_change_summary": "test_change_summary.json",
+  "limitations": [
+    "Finite source/CI/runtime review is not complete graph proof, WCAG or phone validation.",
+    "Local full check intentionally interrupted once blocker confirmed; exact-tree independent CI success recorded separately.",
+    "No main/merge/publish/product fixes or permanent tests.",
+    "Full before/after map JSON fixtures remain local only; root should persist sanitized finding/script, not complete named-map saves."
+  ],
+  "next_role": "developer",
+  "next_step": "Fix missing deleted-river checkpoint preview within approved E5; extend existing checkpoint lifecycle and return new exact SHA to fresh reviewer.",
+  "automation_health": {
+    "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "is_enabled": true,
+      "checked_at": null,
+      "timestamp_limitation": "Initial actual peek performed immediately after tool discovery; separate exact clock timestamp was not captured."
+    },
+    "end": {
+      "is_enabled": true,
+      "checked_at": "2026-11-04T17:04:42Z"
+    },
+    "restoration_performed": false,
+    "errors": [],
+    "limitation": "Observed enabled at two actual peek calls only; next_run_time null does not establish disabled."
+  },
+  "persisted_evidence_note": "Sanitized finding and probe outcomes saved; full named map fixtures/local logs retained outside GitHub. Independent diagnostic scripts are temporary."
+}
