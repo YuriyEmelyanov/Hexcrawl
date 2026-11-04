@@ -162,6 +162,58 @@ test('manual edits do not replace generation checkpoints, regenerate rollback re
     if(command==='regenerateLastRegion'){assert.ok(h.render().pendingRegen,'accept permits regeneration');h.render().finishPendingRegeneration();assert.equal(h.render().pendingRegen,null);}
     const restored=stable(h.render());assert.ok(restored.map.rivers.some(r=>r.id===id));assertUndoRedo(h,beforeSave,restored);
   }
+  // HX023-E5-R3: new cross-region river, no checkpoint identity.
+for(const command of ['deleteLastRegion','regenerateLastRegion'])for(const language of ['ru','en']){
+ const {h}=setup(42),g=h.geometry;h.render().setLanguage(language);h.setWindow({alert(){}});
+ h.render().addFallbackTractToMap({q:0,r:0});
+ const base=h.render().captureDocument().map,a={q:0,r:0},b={q:1,r:0};
+ const region={...base.regions[0],hexes:[a,b],centerHex:a,anchorHex:a,finalSize:2,targetSize:2,pointsOfInterest:[],pointOfInterestKinds:{},heightLevel:1};
+ h.render().restoreSnapshot({...base,regions:[region],rivers:[],roads:[],crossings:[],riverFeatures:{rapids:[],waterfalls:[]},hexTerrainByKey:new Map(),waterPoiByKey:new Map(),biomeOverrideByHexKey:new Map(),candidateHexes:g.getCandidateHexes([a,b],new Set()),nextRiverId:1,nextRoadId:1});
+ h.render().addFallbackTractToMap(h.render().candidateHexes[0]);assert.equal(h.render().regions.length,2);
+ const current=h.render().captureDocument().map,last=current.regions[1];
+ assert.equal(h.render().history.at(-1).rivers.length,0);
+ // Fixture omits generation-only river noise before the one actual UI creation.
+ h.render().restoreSnapshot({...current,rivers:[],roads:[],crossings:[],riverFeatures:{rapids:[],waterfalls:[]}});
+ const ctx=g.buildManualRiverGeometryContext(h.render().captureDocument().map),adj=new Map();
+ for(const [edge,owners] of ctx.geometry.edgeOwners){const [u,v]=edge.split('|');for(const [x,y] of [[u,v],[v,u]]){if(!adj.has(x))adj.set(x,[]);adj.get(x).push({key:y,owners});}}
+ let accepted=null,trials=0;
+ outer:for(const [start,edges] of adj)for(const e of edges.filter(e=>e.owners.length===1&&e.owners[0]===last.id)){
+  const queue=[[start,e.key]];
+  while(queue.length){const keys=queue.shift(),end=keys.at(-1);if(keys.length>8)continue;
+   const hasRetained=keys.slice(1).some((k,i)=>ctx.edgeOwners([keys[i],k].sort().join('|')).includes(region.id));
+   if(hasRetained&&ctx.geometry.openVertices.has(end)){
+    trials++;assert.ok(trials<=500,'bounded search');
+    if(h.render().editRiverDocument({type:'create',path:keys.map(k=>ctx.vertex(k)),regionId:last.id,fullness:1})){accepted=keys;break outer;}
+   }
+   if(keys.length<8)for(const next of adj.get(end)??[])if(!keys.includes(next.key))queue.push([...keys,next.key]);
+  }
+ }
+ assert.ok(accepted,'valid actual path starts in last region and touches retained region');
+ h.render().undoMap();h.render().setEditMode(true);assert.equal(h.render().startRiverDraft(),true);
+ for(const key of accepted)assert.equal(h.render().appendRiverDraft(key),true);
+ assert.equal(h.render().finishRiverDraft(),true);
+ if(h.render().riverCommandPreview)assert.equal(h.render().confirmRiverCommand(h.render().riverCommandPreview),true);
+ const river=h.render().rivers.at(-1);assert.equal(river.regionId,last.id);
+ assert.ok(river.sectors.some(s=>s.assignedRegionId===region.id),'accepted river changes retained region');
+ h.geometry.assertHexcrawlSaveData(h.render().createSaveData());
+ h.render().setSelectedHex(region.centerHex);h.render().setSelectedHexBiomeOverride('open_hills');h.render().undoMap();
+ const before=structuredClone(h.render().captureDocument()),stacks=structuredClone([h.render().undoHistory,h.render().redoHistory]),dialogs=[];
+ assert.ok(stacks[0].length&&stacks[1].length);
+ h.setWindow({alert(){},confirm:m=>{dialogs.push(m);return false;}});h.render()[command]();
+ assert.equal(dialogs.length,1,'R3 warns before losing retained sector');
+ const label=h.render().toponyms[`river:${river.id}`]?.[language]??`${language==='ru'?'Река':'River'} ${river.id}`;
+ assert.ok(dialogs[0].includes(label),'warning identifies affected river');
+ assert.deepEqual(structuredClone(h.render().captureDocument()),before,'reject keeps full document');
+ assert.deepEqual(structuredClone([h.render().undoHistory,h.render().redoHistory]),stacks,'reject keeps full nonempty stacks');
+ assert.equal(h.render().pendingRegen,null);
+ h.setWindow({alert(){},confirm:()=>true});h.render()[command]();
+ if(command==='regenerateLastRegion'){assert.ok(h.render().pendingRegen);h.render().finishPendingRegeneration();assert.equal(h.render().pendingRegen,null);assert.equal(h.render().generationError,null);}
+ const after=structuredClone(h.render().captureDocument());assert.notDeepEqual(after,before);
+ h.geometry.assertHexcrawlSaveData(h.render().createSaveData());
+ h.render().undoMap();assert.deepEqual(structuredClone(h.render().captureDocument()),before);
+ h.render().redoMap();assert.deepEqual(structuredClone(h.render().captureDocument()),after);
+}
+
 });
 test('pending file read serializes imports and blocks edits, generation and reset',async()=>{
   const {h}=setup();await load(h,fixture);const before=stable(h.render());

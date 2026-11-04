@@ -13552,7 +13552,10 @@ export function App() {
       const current=currentById.get(r.id),previous=checkpointById.get(r.id);
       // Path replacement may move the owner into the removed region while
       // the checkpoint restores that same identity in a retained region.
-      const affectsRetained=(current&&retained.has(current.regionId))||(previous&&retained.has(previous.regionId));
+      // A new river may start in the removed region yet own retained sectors.
+      // Sector ownership describes that footprint; global owner alone does not.
+      const affectsRetained=[current,previous].some(river=>river&&(retained.has(river.regionId)
+        ||river.sectors.some(sector=>retained.has(sector.assignedRegionId??river.regionId))));
       return affectsRetained&&JSON.stringify(current)!==JSON.stringify(previous);
     });
     const featuresChanged=JSON.stringify(riverFeatureOverrides)!==JSON.stringify(checkpoint.riverFeatures??emptyRiverFeatures());
