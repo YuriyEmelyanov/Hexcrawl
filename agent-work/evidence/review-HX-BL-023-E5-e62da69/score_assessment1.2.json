@@ -1,0 +1,274 @@
+{
+  "model_version": "1.2",
+  "exact_sha": "e62da698ab7aa9c3c1209bd8f40a941c6fcc226a",
+  "baseline_source": "agent-work/score/current-score.json",
+  "baseline_release_sha": "ab75ecb0a5b90888d4e367bfc9a40ecdff8ad429",
+  "ranking_version": "three-scenario-ranks-1.3-DW-FL-nonzero",
+  "cohort_version": "2026-11-04-ranking1.3-process-sync",
+  "primary_scenario": "develop",
+  "secondary_scenario": "create",
+  "layer": "L1",
+  "canonical_rule_registry_version": "shared-rules-1.3",
+  "cohorts": {
+    "top5": {
+      "games": [
+        "DND5",
+        "PF2",
+        "KNAVE2",
+        "SD",
+        "MOTH"
+      ],
+      "denominator": 5,
+      "applicable": null,
+      "full": null,
+      "partial": null,
+      "unsupported": null,
+      "applicability_unknown": null,
+      "coverage": "unverified"
+    },
+    "top10": {
+      "games": [
+        "DND5",
+        "PF2",
+        "KNAVE2",
+        "SD",
+        "MOTH",
+        "ROOT",
+        "OSE",
+        "DW",
+        "MB",
+        "WWN"
+      ],
+      "denominator": 10,
+      "applicable": null,
+      "full": null,
+      "partial": null,
+      "unsupported": null,
+      "applicability_unknown": null,
+      "coverage": "unverified"
+    },
+    "top20": {
+      "games": [
+        "DND5",
+        "PF2",
+        "KNAVE2",
+        "SD",
+        "MOTH",
+        "ROOT",
+        "OSE",
+        "DW",
+        "MB",
+        "WWN",
+        "PF1",
+        "PIRATE",
+        "AWN",
+        "STARF",
+        "VAARN",
+        "BSH",
+        "ODD",
+        "FL",
+        "SWC",
+        "TORCH"
+      ],
+      "denominator": 20,
+      "applicable": null,
+      "full": null,
+      "partial": null,
+      "unsupported": null,
+      "applicability_unknown": null,
+      "coverage": "unverified"
+    }
+  },
+  "breadth_method": "Membership verified; requirements/profiles and support remain unverified. Unknown applicability is not N/A or unsupported. Technical safety obligations do not require20games. No automatic evidence inheritance across different profiles. No external games inferred from sharedrule_id.",
+  "rule_traceability": [
+    {
+      "rule_id": "map.river_network",
+      "binding_id": "DND5-2014-007-L1",
+      "game_id": "DND5",
+      "edition": "DMG2014",
+      "layer": "L1",
+      "criterion_id": "S01-C02",
+      "acceptance_checks": [
+        "AC01",
+        "AC02",
+        "AC03"
+      ],
+      "evidence_sha": "e62da698ab7aa9c3c1209bd8f40a941c6fcc226a",
+      "expected": "bounded E5 physical-network acceptance, not full game profile",
+      "actual": "exact-tree finite E5 evidence applicable; game-specific profile remains unverified",
+      "profile_status": "unverified",
+      "limits": "Distinct parameters/conditions/exceptions require independent verification before inherited evidence."
+    },
+    {
+      "rule_id": "map.river_network",
+      "binding_id": "PF2-RM-125-L1",
+      "game_id": "PF2",
+      "edition": "Remaster:GM_Core+Player_Core",
+      "layer": "L1",
+      "criterion_id": "S01-C02",
+      "acceptance_checks": [
+        "AC01",
+        "AC02",
+        "AC03"
+      ],
+      "evidence_sha": "e62da698ab7aa9c3c1209bd8f40a941c6fcc226a",
+      "expected": "bounded E5 physical-network acceptance, not full game profile",
+      "actual": "exact-tree finite E5 evidence applicable; game-specific profile remains unverified",
+      "profile_status": "unverified",
+      "limits": "Distinct parameters/conditions/exceptions require independent verification before inherited evidence."
+    }
+  ],
+  "method": "Fresh independent source/spec and evidence applicability review; exact CI3 full logs; actual App source callbacks, old regressions and bounded adjacent retained-sector case. Quality and breadth separate.",
+  "criteria": [
+    {
+      "criterion_id": "S01-C02",
+      "weight": 40,
+      "before_grade": null,
+      "before_points": null,
+      "after_grade": null,
+      "after_points": null,
+      "delta": null,
+      "status": "insufficient_evidence",
+      "quality": "Exact-tree CI physical geometry/solver/numeric suites and old/new river command probes pass; independent review of manualRivers/manualRiverGeometry and App adapter.",
+      "breadth_ref": "shared cohorts; unverified applicable requirements/profile support",
+      "evidence": [
+        "ci-verification.json",
+        "checkpoint-review-probe.json"
+      ],
+      "limits": "No10000-generation or expert naturalness corpus; R3 is checkpoint loss, not a demonstrated hydrological solver failure."
+    },
+    {
+      "criterion_id": "S02-C02",
+      "weight": 20,
+      "before_grade": null,
+      "before_points": null,
+      "after_grade": null,
+      "after_points": null,
+      "delta": null,
+      "status": "insufficient_evidence",
+      "quality": "Same-ID replacement moves derived owner through actual draft/preview/confirm, names/IDs remain; v7 counter/migration checks pass.",
+      "breadth_ref": "shared cohorts; unverified applicable requirements/profile support",
+      "evidence": [
+        "checkpoint-review-probe.json",
+        "cross-owner-new-river-probe.json"
+      ],
+      "limits": "All-entity identity/provenance matrix not assessed; R3 removes an accepted new cross-region identity without warning."
+    },
+    {
+      "criterion_id": "S02-C03",
+      "weight": 20,
+      "before_grade": null,
+      "before_points": null,
+      "after_grade": null,
+      "after_points": null,
+      "delta": null,
+      "status": "insufficient_evidence",
+      "quality": "v2-v7 manifest/malformed structure/counters/RNG validation tests pass exact-tree CI. Independently reviewed migration validation and exact head applicability.",
+      "breadth_ref": "shared cohorts; unverified applicable requirements/profile support",
+      "evidence": [
+        "ci-verification.json"
+      ],
+      "limits": "Finite migration corpus; whole-criterion quality grade unknown."
+    },
+    {
+      "criterion_id": "S03-C04",
+      "weight": 30,
+      "before_grade": null,
+      "before_points": null,
+      "after_grade": null,
+      "after_points": null,
+      "delta": null,
+      "status": "insufficient_evidence",
+      "quality": "Exact-tree CI deep ford/marker/delta dependencies pass; R1/R2 named localized checkpoint confirmation now correct.",
+      "breadth_ref": "shared cohorts; unverified applicable requirements/profile support",
+      "evidence": [
+        "ci-verification.json",
+        "checkpoint-review-probe.json",
+        "cross-owner-new-river-probe.json"
+      ],
+      "limits": "R3 omitted cross-region river from destructive preview; whole NPC/faction/story dependency scope outside E5."
+    },
+    {
+      "criterion_id": "S03-C05",
+      "weight": 20,
+      "before_grade": null,
+      "before_points": null,
+      "after_grade": null,
+      "after_points": null,
+      "delta": null,
+      "status": "insufficient_evidence",
+      "quality": "Fresh R1/R2 cancel preserves structured document with Maps/Sets and nonempty undo+redo. Accepted delete and completed regenerate give exact-document Undo/Redo. CI mixed100 passes.",
+      "breadth_ref": "shared cohorts; unverified applicable requirements/profile support",
+      "evidence": [
+        "checkpoint-review-probe.json",
+        "cross-owner-new-river-probe.json",
+        "ci-verification.json"
+      ],
+      "limits": "R3 destructive action executes despite rejecting callback because dialog absent. Named versions and all product edit families not assessed."
+    },
+    {
+      "criterion_id": "S04-C04",
+      "weight": 15,
+      "before_grade": null,
+      "before_points": null,
+      "after_grade": null,
+      "after_points": null,
+      "delta": null,
+      "status": "insufficient_evidence",
+      "quality": "Exact-tree CI JSON/PNG export, overlays/draft exclusion and migrated reload pass; fresh accepted checkpoint results validatev7.",
+      "breadth_ref": "shared cohorts; unverified applicable requirements/profile support",
+      "evidence": [
+        "ci-verification.json",
+        "checkpoint-review-probe.json"
+      ],
+      "limits": "Full role/style export matrix unknown; finite export evidence separate from history safety."
+    },
+    {
+      "criterion_id": "S04-C05",
+      "weight": 10,
+      "before_grade": null,
+      "before_points": null,
+      "after_grade": null,
+      "after_points": null,
+      "delta": null,
+      "status": "insufficient_evidence",
+      "quality": "Exact-tree real-DOM CI RU/EN1500/390 keyboard/hit-target/editor flows pass. Fresh RU/EN real-App R1/R2 dialog text and affected names pass.",
+      "breadth_ref": "shared cohorts; unverified applicable requirements/profile support",
+      "evidence": [
+        "ci-verification.json",
+        "checkpoint-review-probe.json",
+        "cross-owner-new-river-probe.json"
+      ],
+      "limits": "R3 dialog missing in both locales. No full WCAG/physical phone audit. Prior captures remain historical exact captureSHA; no fresh full owner walkthrough claimed."
+    },
+    {
+      "criterion_id": "S09-C04",
+      "weight": 10,
+      "before_grade": null,
+      "before_points": null,
+      "after_grade": null,
+      "after_points": null,
+      "delta": null,
+      "status": "insufficient_evidence",
+      "quality": "Exact-tree hostile import/fault/no-op gates pass; fresh R1/R2 reject exact Map/Set document/stacks plus completed acceptance Undo/Redo.",
+      "breadth_ref": "shared cohorts; unverified applicable requirements/profile support",
+      "evidence": [
+        "ci-verification.json",
+        "checkpoint-review-probe.json",
+        "cross-owner-new-river-probe.json"
+      ],
+      "limits": "R3 silently loses committed retained-sector data before confirmation; save safety acceptance fails this branch."
+    }
+  ],
+  "confirmed_points": null,
+  "unverified_weight": 1000,
+  "confirmed_increment": 0,
+  "increment_semantics": "No numerical grade or score awarded. Unknown baseline remains null, not0. Released product score untouched.",
+  "package_verdict": "changes_requested",
+  "finding": "HX023-E5-R3",
+  "limits": [
+    "All50criterion weights/thresholds/G0-G4 unchanged; assessed8weights sum165.",
+    "Separate evidence properties prevent double scoring the same roundtrip.",
+    "No full game audit, no L2/L3 support or current game grade inferred."
+  ]
+}
