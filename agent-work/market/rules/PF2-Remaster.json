@@ -1,0 +1,3461 @@
+{
+  "schema_version": 2,
+  "game_id": "PF2",
+  "date": "2026-11-04",
+  "status": "source_reviewed_bounded_analyst_mapping_product_unverified",
+  "scope": "Полный тематический проход Hexploration GM Core206–209 и14 выбранных связанных положений Player Core/GM Core39. Не все правила PF2 и не все дополнения.",
+  "source": {
+    "id": "PF2-GMC-RM",
+    "edition": "PF2 Remaster GM Core + Player Core",
+    "accessed_at": "2026-11-04T09:53:53.674Z",
+    "primary_URL": "https://2e.aonprd.com/Rules.aspx?ID=3103",
+    "reviewed_sections": [
+      "GM Core206–209 Hexploration",
+      "GM Core39 Exploration Activities",
+      "Player Core232 Subsist",
+      "Player Core246 Survival:Sense Direction/Track/Cover Tracks",
+      "Player Core438–439 Travel Speed,8 exploration activities,rest"
+    ],
+    "page_numbering": "Печатные страницы, по метаданным Archives of Nethys.",
+    "limitations": [
+      "43 — редакционные группы правил/рекомендаций, не официальный счёт издателя. Строки таблицы, степени успеха и примеры не считаются отдельными правилами.",
+      "DND-база ограничена28 группами DMG2014. PHB/MM,2024 и водно-воздушные путешествия DND не перепроверены: отсутствие аналога относится только к этой базе.",
+      "GM Core ссылается на Environments90–97,Hazards98–109,Building Creatures112,Chases192,Monster Core: их внутренние процедуры не извлечены в этом проходе.",
+      "Не включены Kingmaker/camping/kingdom,приключения,все skill feats,специальные скорости и заклинания,полные Climb/Swim и прочие действия навыков. Нужен отдельный тематический проход; это не полностью закрытая PF2.",
+      "AoN помещает Travel/Reconnoiter/Fortify Camp/Map the Area внутрь Remaster GM Core, но action pages помечены Gamemastery Guide172–173; сохранены обе привязки. Независимая сверка errata/издания не выполнена.",
+      "Обычная Travel Speed и её половинная скорость не переводятся автоматически в множитель дневных hex-actions: адаптация Existing Activities оставлена GM.",
+      "Встречи: текст Hexploration предусматривает critical success; взаимодействие с общими правилами flat checks отдельно не нормализовано, вероятность двух встреч не вычислялась.",
+      "Наличие строки/общего ID не доказывает ни реализацию, ни равенство игровых профилей."
+    ],
+    "catalog": {
+      "PF2-GMC-RM": {
+        "book": "GM Core",
+        "edition": "Remaster",
+        "pages": [
+          "39",
+          "206–209"
+        ]
+      },
+      "PF2-PC-RM": {
+        "book": "Player Core",
+        "edition": "Remaster",
+        "pages": [
+          "232",
+          "246",
+          "438–439"
+        ]
+      }
+    }
+  },
+  "status_dictionary": {
+    "yes": "Реализовано в проверенном контуре, указан способ (включая ручной).",
+    "partial": "Частично; finding перечисляет границы/неподтверждённое.",
+    "no": "Не обнаружено в проверенном коде/схеме; ограниченное отрицательное свидетельство.",
+    "unverified": "Не проверено; не считать ни реализацией, ни отсутствием.",
+    "not_applicable": "Отдельное требование из правила не следует; не включать в знаменатель."
+  },
+  "evaluation_policy": {
+    "group_by": "rule",
+    "required_layers": [
+      "L1",
+      "L2",
+      "L3"
+    ],
+    "no_silent_inference": true,
+    "manual_vs_automatic": "Ручная заметка не равна генератору содержимого, движку правила или специальному полю.",
+    "stages": [
+      "L1",
+      "L2",
+      "L3"
+    ],
+    "no_score_delta": true,
+    "full_game_support": "Не назначать полную поддержку игры по этому ограниченному проходу.",
+    "reuse_for_ranked_games": true,
+    "product_inspection_performed": false,
+    "parameter_profiles": "unverified_until_component_review",
+    "comparison_unit": "One independent procedure/recommendation/table; 3 layer positions per source group; no table-row inflation."
+  },
+  "comparison_summary": {
+    "source_rules": 43,
+    "core_rules": 29,
+    "related_rules": 14,
+    "baseline_source_rules": 28,
+    "matched_PF2_rules": 30,
+    "matched_core_rules": 21,
+    "unique_DND_rules_matched": 16,
+    "same_meaning_source_groups": 2,
+    "analogous_with_differences": 28,
+    "no_analogue_in_bounded_DND_baseline": 13,
+    "PF2_more_explicit_in_this_comparison": 20,
+    "applicable_requirements": 66,
+    "positions": 129,
+    "not_applicable": 63,
+    "applicable_by_layer": {
+      "L1": 17,
+      "L2": 26,
+      "L3": 23
+    },
+    "canonical_rules_used": 48,
+    "canonical_rules_reused_from_DND": 22,
+    "new_canonical_rules": 26,
+    "fully_verified_product_rules": 0
+  },
+  "shared_rules": {
+    "registry": "agent-work/rules/common-rules.json",
+    "bindings": "agent-work/rules/game-bindings.json",
+    "used": [
+      "travel.narration_modes",
+      "travel.elapsed_time",
+      "map.physical_hex_scale",
+      "travel.route_distance",
+      "map.terrain_zones",
+      "map.routes_and_barriers",
+      "content.place_description",
+      "map.reference_labels",
+      "map.audience_views",
+      "content.discovery_levels",
+      "travel.visit_and_reveal",
+      "content.adventure_hooks",
+      "content.site_links",
+      "mechanics.encounters",
+      "mechanics.encounter_balance",
+      "map.extend_preserving_content",
+      "map.generate_on_discovery",
+      "map.terrain_compatibility",
+      "map.terrain_distribution",
+      "content.feature_distribution",
+      "map.resource_availability",
+      "travel.daily_activity_budget",
+      "travel.time_from_speed",
+      "mechanics.forced_march",
+      "travel.group_activity_accounting",
+      "travel.activity_selection",
+      "travel.route_passability",
+      "travel.environment_effects",
+      "travel.reconnaissance_cost",
+      "mechanics.hidden_discovery",
+      "map.cartographic_accuracy",
+      "mechanics.navigation",
+      "mechanics.camp_defence",
+      "mechanics.forage_and_consumption",
+      "mechanics.travel_roles_and_scenes",
+      "mechanics.avoid_notice",
+      "mechanics.shield_travel",
+      "mechanics.magic_detection",
+      "mechanics.expert_assistance",
+      "mechanics.knowledge_investigation",
+      "mechanics.repeat_spell",
+      "mechanics.scouting",
+      "mechanics.search",
+      "content.landmarks",
+      "content.tracks_and_ground",
+      "mechanics.tracking",
+      "mechanics.cover_tracks",
+      "mechanics.rest"
+    ],
+    "reused_from_DND": [
+      "travel.narration_modes",
+      "travel.elapsed_time",
+      "map.physical_hex_scale",
+      "travel.route_distance",
+      "map.terrain_zones",
+      "map.routes_and_barriers",
+      "content.place_description",
+      "content.discovery_levels",
+      "travel.visit_and_reveal",
+      "mechanics.encounters",
+      "map.extend_preserving_content",
+      "map.resource_availability",
+      "travel.time_from_speed",
+      "travel.route_passability",
+      "travel.environment_effects",
+      "mechanics.hidden_discovery",
+      "mechanics.navigation",
+      "mechanics.forage_and_consumption",
+      "mechanics.travel_roles_and_scenes",
+      "content.landmarks",
+      "content.tracks_and_ground",
+      "mechanics.tracking"
+    ],
+    "propagation_status": "No implementation evidence imported; all profiles unverified."
+  },
+  "rules": [
+    {
+      "id": "PF2-RM-001",
+      "title": "Режим и календарь",
+      "corpus": "GM_Core_Hexploration",
+      "rule": {
+        "source_id": "PF2-GMC-RM",
+        "printed_page": 206,
+        "section": "Hexploration",
+        "url": "https://2e.aonprd.com/Rules.aspx?ID=3103",
+        "parent_url": "https://2e.aonprd.com/Rules.aspx?ID=3103",
+        "paraphrase": "Гекскроул — необязательная дневная процедура вместо обычного исследования.",
+        "normative_kind": "optional_procedure",
+        "quotation": null,
+        "source_metadata_note": null
+      },
+      "parameters": {
+        "time_unit": "day",
+        "optional": true
+      },
+      "comparison": {
+        "baseline": "DND5-2014:28 bounded DMG rules",
+        "dnd_rule_ids": [
+          "DND5-2014-010"
+        ],
+        "relation": "analogous",
+        "rationale": "Оба источника допускают выбор подробности; единицы времени различаются.",
+        "specificity": "different_not_orderable",
+        "parameter_equivalence": "unverified_not_inferred_from_analogy"
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        },
+        {
+          "layer": "L2",
+          "requirement": "Переключать режим путешествия и вести календарь дней",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "future_hex_exploration_stage",
+          "criterion_ids": [
+            "S06-C04",
+            "S06-C03"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-001-L2",
+          "acceptance_check": "Проверить требование «Переключать режим путешествия и вести календарь дней» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "travel.narration_modes",
+            "travel.elapsed_time"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-001-L2"
+        },
+        {
+          "layer": "L3",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        }
+      ]
+    },
+    {
+      "id": "PF2-RM-002",
+      "title": "Физический масштаб",
+      "corpus": "GM_Core_Hexploration",
+      "rule": {
+        "source_id": "PF2-GMC-RM",
+        "printed_page": 206,
+        "section": "Designing the Map",
+        "url": "https://2e.aonprd.com/Rules.aspx?ID=3104",
+        "parent_url": "https://2e.aonprd.com/Rules.aspx?ID=3103",
+        "paraphrase": "Базовый гекс: 12 миль между противоположными вершинами.",
+        "normative_kind": "recommendation",
+        "quotation": null,
+        "source_metadata_note": null
+      },
+      "parameters": {
+        "miles": 12,
+        "measurement": "opposite_vertices"
+      },
+      "comparison": {
+        "baseline": "DND5-2014:28 bounded DMG rules",
+        "dnd_rule_ids": [
+          "DND5-2014-002"
+        ],
+        "relation": "analogous",
+        "rationale": "Одинаковая функция масштаба; иной размер, конвенцию DND ещё надо уточнить.",
+        "specificity": "different_not_orderable",
+        "parameter_equivalence": "unverified_not_inferred_from_analogy"
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": "Хранить физический размер и конвенцию гекса",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "current_map_stage",
+          "criterion_ids": [
+            "S06-C04",
+            "S04-C04",
+            "S01-C02",
+            "S01-C04",
+            "S01-C05"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-002-L1",
+          "acceptance_check": "Проверить требование «Хранить физический размер и конвенцию гекса» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "map.physical_hex_scale"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-002-L1"
+        },
+        {
+          "layer": "L2",
+          "requirement": "Считать маршрут с выбранным физическим масштабом",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "future_hex_exploration_stage",
+          "criterion_ids": [
+            "S06-C04"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-002-L2",
+          "acceptance_check": "Проверить требование «Считать маршрут с выбранным физическим масштабом» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "travel.route_distance"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-002-L2"
+        },
+        {
+          "layer": "L3",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        }
+      ]
+    },
+    {
+      "id": "PF2-RM-003",
+      "title": "Местность и накладки",
+      "corpus": "GM_Core_Hexploration",
+      "rule": {
+        "source_id": "PF2-GMC-RM",
+        "printed_page": 206,
+        "section": "Designing the Map",
+        "url": "https://2e.aonprd.com/Rules.aspx?ID=3104",
+        "parent_url": "https://2e.aonprd.com/Rules.aspx?ID=3103",
+        "paraphrase": "У гекса одна преобладающая местность; река, дорога и места — дополнительные объекты.",
+        "normative_kind": "recommendation",
+        "quotation": null,
+        "source_metadata_note": null
+      },
+      "parameters": {},
+      "comparison": {
+        "baseline": "DND5-2014:28 bounded DMG rules",
+        "dnd_rule_ids": [
+          "DND5-2014-003",
+          "DND5-2014-024"
+        ],
+        "relation": "same_meaning",
+        "rationale": "Совпадает модель преобладающей местности с локальными объектами.",
+        "specificity": "comparable",
+        "parameter_equivalence": "unverified_not_inferred_from_analogy"
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": "Хранить местность, дороги, реки и места независимо",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "current_map_stage",
+          "criterion_ids": [
+            "S01-C05",
+            "S01-C04",
+            "S06-C04",
+            "S01-C02",
+            "S05-C01",
+            "S05-C02"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-003-L1",
+          "acceptance_check": "Проверить требование «Хранить местность, дороги, реки и места независимо» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "map.terrain_zones",
+            "map.routes_and_barriers",
+            "content.place_description"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-003-L1"
+        },
+        {
+          "layer": "L2",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        },
+        {
+          "layer": "L3",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        }
+      ]
+    },
+    {
+      "id": "PF2-RM-004",
+      "title": "Обозначения карты",
+      "corpus": "GM_Core_Hexploration",
+      "rule": {
+        "source_id": "PF2-GMC-RM",
+        "printed_page": 206,
+        "section": "Designing the Map",
+        "url": "https://2e.aonprd.com/Rules.aspx?ID=3104",
+        "parent_url": "https://2e.aonprd.com/Rules.aspx?ID=3103",
+        "paraphrase": "Цвет, условные знаки и буквенно-числовые ссылки упрощают карту.",
+        "normative_kind": "recommendation",
+        "quotation": null,
+        "source_metadata_note": null
+      },
+      "parameters": {
+        "recommendation": true
+      },
+      "comparison": {
+        "baseline": "DND5-2014:28 bounded DMG rules",
+        "dnd_rule_ids": [],
+        "relation": "no_analogue_in_baseline",
+        "rationale": "DND008 отбирает объекты по масштабу; это не правило обозначений.",
+        "specificity": "not_comparable",
+        "parameter_equivalence": "unverified_not_inferred_from_analogy"
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": "Поддерживать различимые условные знаки и ссылки",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "current_map_stage",
+          "criterion_ids": [
+            "S04-C03"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-004-L1",
+          "acceptance_check": "Проверить требование «Поддерживать различимые условные знаки и ссылки» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "map.reference_labels"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-004-L1"
+        },
+        {
+          "layer": "L2",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        },
+        {
+          "layer": "L3",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        }
+      ]
+    },
+    {
+      "id": "PF2-RM-005",
+      "title": "Карта ведущего и игроков",
+      "corpus": "GM_Core_Hexploration",
+      "rule": {
+        "source_id": "PF2-GMC-RM",
+        "printed_page": 206,
+        "section": "Designing the Map",
+        "url": "https://2e.aonprd.com/Rules.aspx?ID=3104",
+        "parent_url": "https://2e.aonprd.com/Rules.aspx?ID=3103",
+        "paraphrase": "Секретная полная карта ведущего отделена от заполняемой игроками.",
+        "normative_kind": "recommendation",
+        "quotation": null,
+        "source_metadata_note": null
+      },
+      "parameters": {},
+      "comparison": {
+        "baseline": "DND5-2014:28 bounded DMG rules",
+        "dnd_rule_ids": [
+          "DND5-2014-013"
+        ],
+        "relation": "analogous",
+        "rationale": "Есть общий смысл раскрытия; DND013 не требует двух отдельных представлений.",
+        "specificity": "PF2_more_explicit",
+        "parameter_equivalence": "unverified_not_inferred_from_analogy"
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": "Разделять сведения ведущего и игроков",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "current_map_stage",
+          "criterion_ids": [
+            "S06-C05",
+            "S05-C03",
+            "S04-C03"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-005-L1",
+          "acceptance_check": "Проверить требование «Разделять сведения ведущего и игроков» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "map.audience_views",
+            "content.discovery_levels"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-005-L1"
+        },
+        {
+          "layer": "L2",
+          "requirement": "Сохранять раскрытую игрокам часть карты",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "future_hex_exploration_stage",
+          "criterion_ids": [
+            "S06-C04",
+            "S06-C05"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-005-L2",
+          "acceptance_check": "Проверить требование «Сохранять раскрытую игрокам часть карты» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "travel.visit_and_reveal"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-005-L2"
+        },
+        {
+          "layer": "L3",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        }
+      ]
+    },
+    {
+      "id": "PF2-RM-006",
+      "title": "Нелинейные зацепки",
+      "corpus": "GM_Core_Hexploration",
+      "rule": {
+        "source_id": "PF2-GMC-RM",
+        "printed_page": 206,
+        "section": "Populating Hexes",
+        "url": "https://2e.aonprd.com/Rules.aspx?ID=3105",
+        "parent_url": "https://2e.aonprd.com/Rules.aspx?ID=3103",
+        "paraphrase": "Размещать зацепки в разных направлениях; задания NPC могут направлять исследование.",
+        "normative_kind": "recommendation",
+        "quotation": null,
+        "source_metadata_note": null
+      },
+      "parameters": {
+        "recommendation": true
+      },
+      "comparison": {
+        "baseline": "DND5-2014:28 bounded DMG rules",
+        "dnd_rule_ids": [],
+        "relation": "no_analogue_in_baseline",
+        "rationale": "В изученных28 нет самостоятельного требования системы зацепок.",
+        "specificity": "not_comparable",
+        "parameter_equivalence": "unverified_not_inferred_from_analogy"
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": "Связывать задания и направления с местами",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "current_map_stage",
+          "criterion_ids": [
+            "S05-C02"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-006-L1",
+          "acceptance_check": "Проверить требование «Связывать задания и направления с местами» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "content.adventure_hooks"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-006-L1"
+        },
+        {
+          "layer": "L2",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        },
+        {
+          "layer": "L3",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        }
+      ]
+    },
+    {
+      "id": "PF2-RM-007",
+      "title": "Связанные постоянные места",
+      "corpus": "GM_Core_Hexploration",
+      "rule": {
+        "source_id": "PF2-GMC-RM",
+        "printed_page": 206,
+        "section": "Set Encounters",
+        "url": "https://2e.aonprd.com/Rules.aspx?ID=3106",
+        "parent_url": "https://2e.aonprd.com/Rules.aspx?ID=3103",
+        "paraphrase": "Постоянные встречи и места могут вести к следующим сюжетным точкам.",
+        "normative_kind": "recommendation",
+        "quotation": null,
+        "source_metadata_note": null
+      },
+      "parameters": {
+        "recommendation": true
+      },
+      "comparison": {
+        "baseline": "DND5-2014:28 bounded DMG rules",
+        "dnd_rule_ids": [
+          "DND5-2014-017"
+        ],
+        "relation": "analogous",
+        "rationale": "Общее наполнение мест; связи сюжета добавляют отдельный компонент.",
+        "specificity": "PF2_more_explicit",
+        "parameter_equivalence": "unverified_not_inferred_from_analogy"
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": "Хранить постоянные места и связи между ними",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "current_map_stage",
+          "criterion_ids": [
+            "S05-C01",
+            "S05-C02"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-007-L1",
+          "acceptance_check": "Проверить требование «Хранить постоянные места и связи между ними» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "content.place_description",
+            "content.site_links"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-007-L1"
+        },
+        {
+          "layer": "L2",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        },
+        {
+          "layer": "L3",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        }
+      ]
+    },
+    {
+      "id": "PF2-RM-008",
+      "title": "Таблицы встреч по местности",
+      "corpus": "GM_Core_Hexploration",
+      "rule": {
+        "source_id": "PF2-GMC-RM",
+        "printed_page": 206,
+        "section": "Random Encounters: preparation",
+        "url": "https://2e.aonprd.com/Rules.aspx?ID=3107",
+        "parent_url": "https://2e.aonprd.com/Rules.aspx?ID=3103",
+        "paraphrase": "Готовить списки безвредных событий, опасностей и существ по типу местности.",
+        "normative_kind": "recommendation",
+        "quotation": null,
+        "source_metadata_note": null
+      },
+      "parameters": {
+        "categories": [
+          "harmless",
+          "hazard",
+          "creature"
+        ],
+        "selection": [
+          "GM_choice",
+          "table"
+        ]
+      },
+      "comparison": {
+        "baseline": "DND5-2014:28 bounded DMG rules",
+        "dnd_rule_ids": [
+          "DND5-2014-028"
+        ],
+        "relation": "same_meaning",
+        "rationale": "Одинаковая подготовка встреч под окружение; категории остаются профилем.",
+        "specificity": "PF2_more_explicit",
+        "parameter_equivalence": "unverified_not_inferred_from_analogy"
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        },
+        {
+          "layer": "L2",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        },
+        {
+          "layer": "L3",
+          "requirement": "Выбирать или случайно брать встречу из списка местности",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "future_game_mechanics_integration",
+          "criterion_ids": [
+            "S05-C05",
+            "S06-C04"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-008-L3",
+          "acceptance_check": "Проверить требование «Выбирать или случайно брать встречу из списка местности» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "mechanics.encounters"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-008-L3"
+        }
+      ]
+    },
+    {
+      "id": "PF2-RM-009",
+      "title": "Политика опасности",
+      "corpus": "GM_Core_Hexploration",
+      "rule": {
+        "source_id": "PF2-GMC-RM",
+        "printed_page": 207,
+        "section": "Random Encounters: balance",
+        "url": "https://2e.aonprd.com/Rules.aspx?ID=3107",
+        "parent_url": "https://2e.aonprd.com/Rules.aspx?ID=3103",
+        "paraphrase": "Подстраивать встречи под уровень либо сохранять опасный открытый мир с возможностью бегства.",
+        "normative_kind": "recommendation",
+        "quotation": null,
+        "source_metadata_note": null
+      },
+      "parameters": {
+        "alternatives": [
+          "scale_to_party",
+          "fixed_open_world"
+        ]
+      },
+      "comparison": {
+        "baseline": "DND5-2014:28 bounded DMG rules",
+        "dnd_rule_ids": [],
+        "relation": "no_analogue_in_baseline",
+        "rationale": "Наличие таблицы DND028 не доказывает совпадение политики баланса.",
+        "specificity": "not_comparable",
+        "parameter_equivalence": "unverified_not_inferred_from_analogy"
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        },
+        {
+          "layer": "L2",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        },
+        {
+          "layer": "L3",
+          "requirement": "Задавать политику сложности встреч и возможность отступления",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "future_game_mechanics_integration",
+          "criterion_ids": [
+            "S05-C05",
+            "S08-C04"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-009-L3",
+          "acceptance_check": "Проверить требование «Задавать политику сложности встреч и возможность отступления» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "mechanics.encounter_balance"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-009-L3"
+        }
+      ]
+    },
+    {
+      "id": "PF2-RM-010",
+      "title": "Генерация при открытии",
+      "corpus": "GM_Core_Hexploration",
+      "rule": {
+        "source_id": "PF2-GMC-RM",
+        "printed_page": 207,
+        "section": "Generating Random Hex Maps",
+        "url": "https://2e.aonprd.com/Rules.aspx?ID=3109",
+        "parent_url": "https://2e.aonprd.com/Rules.aspx?ID=3103",
+        "paraphrase": "Стартовый гекс выбирается или бросается; новый создаётся при входе в неизведанное.",
+        "normative_kind": "optional_procedure",
+        "quotation": null,
+        "source_metadata_note": null
+      },
+      "parameters": {},
+      "comparison": {
+        "baseline": "DND5-2014:28 bounded DMG rules",
+        "dnd_rule_ids": [
+          "DND5-2014-001"
+        ],
+        "relation": "analogous",
+        "rationale": "Развитие карты снизу вверх общее; событие генерации и броски PF2 конкретнее.",
+        "specificity": "PF2_more_explicit",
+        "parameter_equivalence": "unverified_not_inferred_from_analogy"
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": "Расширять карту при открытии, сохраняя готовое",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "current_map_stage",
+          "criterion_ids": [
+            "S03-C01",
+            "S03-C03"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-010-L1",
+          "acceptance_check": "Проверить требование «Расширять карту при открытии, сохраняя готовое» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "map.extend_preserving_content",
+            "map.generate_on_discovery"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-010-L1"
+        },
+        {
+          "layer": "L2",
+          "requirement": "Отмечать переход в ещё не созданный гекс",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "future_hex_exploration_stage",
+          "criterion_ids": [
+            "S06-C04",
+            "S06-C05"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-010-L2",
+          "acceptance_check": "Проверить требование «Отмечать переход в ещё не созданный гекс» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "travel.visit_and_reveal"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-010-L2"
+        },
+        {
+          "layer": "L3",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        }
+      ]
+    },
+    {
+      "id": "PF2-RM-011",
+      "title": "Совместимость соседних местностей",
+      "corpus": "GM_Core_Hexploration",
+      "rule": {
+        "source_id": "PF2-GMC-RM",
+        "printed_page": 207,
+        "section": "Generating Random Hex Maps",
+        "url": "https://2e.aonprd.com/Rules.aspx?ID=3109",
+        "parent_url": "https://2e.aonprd.com/Rules.aspx?ID=3103",
+        "paraphrase": "Случайный результат проверяется на географический смысл; магическое исключение объясняется.",
+        "normative_kind": "recommendation",
+        "quotation": null,
+        "source_metadata_note": null
+      },
+      "parameters": {
+        "magic_exception": true
+      },
+      "comparison": {
+        "baseline": "DND5-2014:28 bounded DMG rules",
+        "dnd_rule_ids": [
+          "DND5-2014-006"
+        ],
+        "relation": "analogous",
+        "rationale": "Общая связность рельефа; PF2 явно разрешает объяснённые исключения.",
+        "specificity": "different_not_orderable",
+        "parameter_equivalence": "unverified_not_inferred_from_analogy"
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": "Проверять географическую совместимость и помечать исключения",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "current_map_stage",
+          "criterion_ids": [
+            "S01-C05"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-011-L1",
+          "acceptance_check": "Проверить требование «Проверять географическую совместимость и помечать исключения» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "map.terrain_compatibility"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-011-L1"
+        },
+        {
+          "layer": "L2",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        },
+        {
+          "layer": "L3",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        }
+      ]
+    },
+    {
+      "id": "PF2-RM-012",
+      "title": "Распределение местности",
+      "corpus": "GM_Core_Hexploration",
+      "rule": {
+        "source_id": "PF2-GMC-RM",
+        "printed_page": 208,
+        "section": "Table 3–4",
+        "url": "https://2e.aonprd.com/Rules.aspx?ID=3110",
+        "parent_url": "https://2e.aonprd.com/Rules.aspx?ID=3103",
+        "paraphrase": "d20 задаёт местность, включая сохранение предыдущего типа.",
+        "normative_kind": "optional_procedure",
+        "quotation": null,
+        "source_metadata_note": null
+      },
+      "parameters": {
+        "die": 20,
+        "ranges": [
+          [
+            1,
+            3,
+            "plains"
+          ],
+          [
+            4,
+            5,
+            "desert"
+          ],
+          [
+            6,
+            7,
+            "aquatic"
+          ],
+          [
+            8,
+            9,
+            "mountain"
+          ],
+          [
+            10,
+            11,
+            "forest"
+          ],
+          [
+            12,
+            12,
+            "swamp"
+          ],
+          [
+            13,
+            13,
+            "arctic"
+          ],
+          [
+            14,
+            20,
+            "previous"
+          ]
+        ]
+      },
+      "comparison": {
+        "baseline": "DND5-2014:28 bounded DMG rules",
+        "dnd_rule_ids": [],
+        "relation": "no_analogue_in_baseline",
+        "rationale": "DND003 задаёт структуру, но не аналогичную случайную таблицу.",
+        "specificity": "not_comparable",
+        "parameter_equivalence": "unverified_not_inferred_from_analogy"
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": "Выбирать местность по настраиваемому распределению",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "current_map_stage",
+          "criterion_ids": [
+            "S01-C05",
+            "S01-C04",
+            "S06-C04",
+            "S01-C02"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-012-L1",
+          "acceptance_check": "Проверить требование «Выбирать местность по настраиваемому распределению» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "map.terrain_distribution",
+            "map.terrain_zones"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-012-L1"
+        },
+        {
+          "layer": "L2",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        },
+        {
+          "layer": "L3",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        }
+      ]
+    },
+    {
+      "id": "PF2-RM-013",
+      "title": "Распределение особенностей",
+      "corpus": "GM_Core_Hexploration",
+      "rule": {
+        "source_id": "PF2-GMC-RM",
+        "printed_page": 208,
+        "section": "Table 3–5",
+        "url": "https://2e.aonprd.com/Rules.aspx?ID=3110",
+        "parent_url": "https://2e.aonprd.com/Rules.aspx?ID=3103",
+        "paraphrase": "Отдельный d20 выбирает ориентир, секрет, ресурс или обычный гекс.",
+        "normative_kind": "optional_procedure",
+        "quotation": null,
+        "source_metadata_note": null
+      },
+      "parameters": {
+        "die": 20,
+        "ranges": [
+          [
+            1,
+            3,
+            "landmark"
+          ],
+          [
+            4,
+            6,
+            "secret"
+          ],
+          [
+            7,
+            9,
+            "resource"
+          ],
+          [
+            10,
+            20,
+            "standard"
+          ]
+        ]
+      },
+      "comparison": {
+        "baseline": "DND5-2014:28 bounded DMG rules",
+        "dnd_rule_ids": [],
+        "relation": "no_analogue_in_baseline",
+        "rationale": "DND014 задаёт плотность мест, а не эту процедуру распределения.",
+        "specificity": "not_comparable",
+        "parameter_equivalence": "unverified_not_inferred_from_analogy"
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": "Размещать особенности по распределению, различая скрытое",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "current_map_stage",
+          "criterion_ids": [
+            "S05-C01",
+            "S05-C03",
+            "S06-C05",
+            "S04-C03",
+            "S07-C01"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-013-L1",
+          "acceptance_check": "Проверить требование «Размещать особенности по распределению, различая скрытое» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "content.feature_distribution",
+            "content.discovery_levels",
+            "map.resource_availability"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-013-L1"
+        },
+        {
+          "layer": "L2",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        },
+        {
+          "layer": "L3",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        }
+      ]
+    },
+    {
+      "id": "PF2-RM-014",
+      "title": "Запас действий в день",
+      "corpus": "GM_Core_Hexploration",
+      "rule": {
+        "source_id": "PF2-GMC-RM",
+        "printed_page": 207,
+        "section": "Running Hexploration / Table 3–6",
+        "url": "https://2e.aonprd.com/Rules.aspx?ID=3110",
+        "parent_url": "https://2e.aonprd.com/Rules.aspx?ID=3103",
+        "paraphrase": "Дневной запас зависит от самого медленного; отделившиеся используют собственную скорость.",
+        "normative_kind": "conditional_procedure",
+        "quotation": null,
+        "source_metadata_note": null
+      },
+      "parameters": {
+        "speed_feet_to_actions": [
+          [
+            0,
+            10,
+            0.5
+          ],
+          [
+            15,
+            25,
+            1
+          ],
+          [
+            30,
+            40,
+            2
+          ],
+          [
+            45,
+            55,
+            3
+          ],
+          [
+            60,
+            null,
+            4
+          ]
+        ],
+        "slowest_member": true,
+        "split_party": true,
+        "nonstandard_speed_gaps": "GM adjudication; do not invent interpolation"
+      },
+      "comparison": {
+        "baseline": "DND5-2014:28 bounded DMG rules",
+        "dnd_rule_ids": [
+          "DND5-2014-024",
+          "DND5-2014-025"
+        ],
+        "relation": "analogous",
+        "rationale": "Одинаковая зависимость продвижения от скорости; дискретные действия — отдельный алгоритм.",
+        "specificity": "PF2_more_explicit",
+        "parameter_equivalence": "unverified_not_inferred_from_analogy"
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        },
+        {
+          "layer": "L2",
+          "requirement": "Определять дневной запас и учитывать состав группы",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "future_hex_exploration_stage",
+          "criterion_ids": [
+            "S06-C04",
+            "S06-C03"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-014-L2",
+          "acceptance_check": "Проверить требование «Определять дневной запас и учитывать состав группы» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "travel.daily_activity_budget",
+            "travel.time_from_speed"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-014-L2"
+        },
+        {
+          "layer": "L3",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        }
+      ]
+    },
+    {
+      "id": "PF2-RM-015",
+      "title": "Форсированный марш",
+      "corpus": "GM_Core_Hexploration",
+      "rule": {
+        "source_id": "PF2-GMC-RM",
+        "printed_page": 207,
+        "section": "Running Hexploration",
+        "url": "https://2e.aonprd.com/Rules.aspx?ID=3110",
+        "parent_url": "https://2e.aonprd.com/Rules.aspx?ID=3103",
+        "paraphrase": "Без усталых: дополнительное Travel, только движение; безопасный срок ограничен Constitution.",
+        "normative_kind": "conditional_procedure",
+        "quotation": null,
+        "source_metadata_note": null
+      },
+      "parameters": {
+        "start": "no_member_fatigued",
+        "extra_travel": 1,
+        "at_speed_le_10": "one_full_Travel_daily",
+        "only": "Travel",
+        "safe_days": "max(1,Con_modifier)",
+        "after_limit": "fatigued_until_entire_downtime_day_rest"
+      },
+      "comparison": {
+        "baseline": "DND5-2014:28 bounded DMG rules",
+        "dnd_rule_ids": [],
+        "relation": "no_analogue_in_baseline",
+        "rationale": "Сравниваемый DMG-набор не содержит отдельного форсированного марша; PHB не проверен.",
+        "specificity": "not_comparable",
+        "parameter_equivalence": "unverified_not_inferred_from_analogy"
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        },
+        {
+          "layer": "L2",
+          "requirement": "Начислять дополнительное движение с запретом других действий",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "future_hex_exploration_stage",
+          "criterion_ids": [
+            "S06-C04"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-015-L2",
+          "acceptance_check": "Проверить требование «Начислять дополнительное движение с запретом других действий» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "travel.daily_activity_budget"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-015-L2"
+        },
+        {
+          "layer": "L3",
+          "requirement": "Проверять допуск, срок и снятие усталости марша",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "future_game_mechanics_integration",
+          "criterion_ids": [
+            "S08-C04"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-015-L3",
+          "acceptance_check": "Проверить требование «Проверять допуск, срок и снятие усталости марша» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "mechanics.forced_march"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-015-L3"
+        }
+      ]
+    },
+    {
+      "id": "PF2-RM-016",
+      "title": "Общие и личные действия",
+      "corpus": "GM_Core_Hexploration",
+      "rule": {
+        "source_id": "PF2-GMC-RM",
+        "printed_page": 208,
+        "section": "Group / Individual Activities",
+        "url": "https://2e.aonprd.com/Rules.aspx?ID=3111",
+        "parent_url": "https://2e.aonprd.com/Rules.aspx?ID=3103",
+        "paraphrase": "Travel/Recon расходуют запас всей группы; участник может вместо этого заняться личным действием.",
+        "normative_kind": "conditional_procedure",
+        "quotation": null,
+        "source_metadata_note": null
+      },
+      "parameters": {
+        "group": [
+          "Travel",
+          "Reconnoiter"
+        ],
+        "individual": "instead_of_group_activity"
+      },
+      "comparison": {
+        "baseline": "DND5-2014:28 bounded DMG rules",
+        "dnd_rule_ids": [],
+        "relation": "no_analogue_in_baseline",
+        "rationale": "Роли DND010 не равны общему дискретному бюджету.",
+        "specificity": "not_comparable",
+        "parameter_equivalence": "unverified_not_inferred_from_analogy"
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        },
+        {
+          "layer": "L2",
+          "requirement": "Списывать групповой бюджет и учитывать личную альтернативу",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "future_hex_exploration_stage",
+          "criterion_ids": [
+            "S06-C04"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-016-L2",
+          "acceptance_check": "Проверить требование «Списывать групповой бюджет и учитывать личную альтернативу» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "travel.group_activity_accounting",
+            "travel.activity_selection"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-016-L2"
+        },
+        {
+          "layer": "L3",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        }
+      ]
+    },
+    {
+      "id": "PF2-RM-017",
+      "title": "Стоимость перехода",
+      "corpus": "GM_Core_Hexploration",
+      "rule": {
+        "source_id": "PF2-GMC-RM",
+        "printed_page": 208,
+        "section": "Travel",
+        "url": "https://2e.aonprd.com/Actions.aspx?ID=476",
+        "parent_url": "https://2e.aonprd.com/Rules.aspx?ID=3103",
+        "paraphrase": "Соседний гекс требует 1/2/3 Travel по трудности местности.",
+        "normative_kind": "conditional_procedure",
+        "quotation": null,
+        "source_metadata_note": "GM Core parent embeds this action with Gamemastery Guide172/173 source label; legacy metadata retained, not an independently checked errata comparison."
+      },
+      "parameters": {
+        "open": 1,
+        "difficult": 2,
+        "greater_difficult": 3
+      },
+      "comparison": {
+        "baseline": "DND5-2014:28 bounded DMG rules",
+        "dnd_rule_ids": [
+          "DND5-2014-024"
+        ],
+        "relation": "analogous",
+        "rationale": "Одинаковый результат продвижения; PF2 считает действия, DND темп.",
+        "specificity": "PF2_more_explicit",
+        "parameter_equivalence": "unverified_not_inferred_from_analogy"
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        },
+        {
+          "layer": "L2",
+          "requirement": "Считать стоимость перехода по трудности",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "future_hex_exploration_stage",
+          "criterion_ids": [
+            "S06-C04",
+            "S06-C03"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-017-L2",
+          "acceptance_check": "Проверить требование «Считать стоимость перехода по трудности» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "travel.route_passability",
+            "travel.time_from_speed"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-017-L2"
+        },
+        {
+          "layer": "L3",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        }
+      ]
+    },
+    {
+      "id": "PF2-RM-018",
+      "title": "Дорожная скидка",
+      "corpus": "GM_Core_Hexploration",
+      "rule": {
+        "source_id": "PF2-GMC-RM",
+        "printed_page": 208,
+        "section": "Travel",
+        "url": "https://2e.aonprd.com/Actions.aspx?ID=476",
+        "parent_url": "https://2e.aonprd.com/Rules.aspx?ID=3103",
+        "paraphrase": "Движение по дороге улучшает категорию местности на одну ступень.",
+        "normative_kind": "conditional_procedure",
+        "quotation": null,
+        "source_metadata_note": "GM Core parent embeds this action with Gamemastery Guide172/173 source label; legacy metadata retained, not an independently checked errata comparison."
+      },
+      "parameters": {
+        "terrain_steps_better": 1,
+        "minimum": "open"
+      },
+      "comparison": {
+        "baseline": "DND5-2014:28 bounded DMG rules",
+        "dnd_rule_ids": [
+          "DND5-2014-024"
+        ],
+        "relation": "analogous",
+        "rationale": "Общий расчёт маршрута с дорогой; PF2 задаёт точный модификатор.",
+        "specificity": "PF2_more_explicit",
+        "parameter_equivalence": "unverified_not_inferred_from_analogy"
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": "Различать дорогу и окружающую местность",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "current_map_stage",
+          "criterion_ids": [
+            "S01-C04",
+            "S01-C05",
+            "S06-C04",
+            "S01-C02"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-018-L1",
+          "acceptance_check": "Проверить требование «Различать дорогу и окружающую местность» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "map.routes_and_barriers",
+            "map.terrain_zones"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-018-L1"
+        },
+        {
+          "layer": "L2",
+          "requirement": "Применять дорожную скидку только при движении по дороге",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "future_hex_exploration_stage",
+          "criterion_ids": [
+            "S06-C04"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-018-L2",
+          "acceptance_check": "Проверить требование «Применять дорожную скидку только при движении по дороге» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "travel.route_passability"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-018-L2"
+        },
+        {
+          "layer": "L3",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        }
+      ]
+    },
+    {
+      "id": "PF2-RM-019",
+      "title": "Полёт и вода",
+      "corpus": "GM_Core_Hexploration",
+      "rule": {
+        "source_id": "PF2-GMC-RM",
+        "printed_page": 208,
+        "section": "Travel",
+        "url": "https://2e.aonprd.com/Actions.aspx?ID=476",
+        "parent_url": "https://2e.aonprd.com/Rules.aspx?ID=3103",
+        "paraphrase": "Полёт и вода обычно открытые; шторм, ветер и движение вверх по реке ухудшают проход.",
+        "normative_kind": "conditional_procedure",
+        "quotation": null,
+        "source_metadata_note": "GM Core parent embeds this action with Gamemastery Guide172/173 source label; legacy metadata retained, not an independently checked errata comparison."
+      },
+      "parameters": {
+        "default": "open",
+        "downstream": "open",
+        "upstream": [
+          "difficult",
+          "greater_difficult"
+        ],
+        "flying_storm_wind": [
+          "difficult",
+          "greater_difficult"
+        ]
+      },
+      "comparison": {
+        "baseline": "DND5-2014:28 bounded DMG rules",
+        "dnd_rule_ids": [
+          "DND5-2014-025",
+          "DND5-2014-021"
+        ],
+        "relation": "analogous",
+        "rationale": "Совпадают факторы способов движения и среды; категории и пределы различаются.",
+        "specificity": "different_not_orderable",
+        "parameter_equivalence": "unverified_not_inferred_from_analogy"
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        },
+        {
+          "layer": "L2",
+          "requirement": "Учитывать способ движения, течение и погодные исключения",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "future_hex_exploration_stage",
+          "criterion_ids": [
+            "S06-C04",
+            "S06-C03"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-019-L2",
+          "acceptance_check": "Проверить требование «Учитывать способ движения, течение и погодные исключения» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "travel.environment_effects",
+            "travel.route_passability"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-019-L2"
+        },
+        {
+          "layer": "L3",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        }
+      ]
+    },
+    {
+      "id": "PF2-RM-020",
+      "title": "Стоимость разведки",
+      "corpus": "GM_Core_Hexploration",
+      "rule": {
+        "source_id": "PF2-GMC-RM",
+        "printed_page": 208,
+        "section": "Reconnoiter",
+        "url": "https://2e.aonprd.com/Actions.aspx?ID=477",
+        "parent_url": "https://2e.aonprd.com/Rules.aspx?ID=3103",
+        "paraphrase": "Reconnoiter требует 1/2/3 действия; дорога её не удешевляет.",
+        "normative_kind": "conditional_procedure",
+        "quotation": null,
+        "source_metadata_note": "GM Core parent embeds this action with Gamemastery Guide172/173 source label; legacy metadata retained, not an independently checked errata comparison."
+      },
+      "parameters": {
+        "open": 1,
+        "difficult": 2,
+        "greater_difficult": 3,
+        "road_discount": false
+      },
+      "comparison": {
+        "baseline": "DND5-2014:28 bounded DMG rules",
+        "dnd_rule_ids": [
+          "DND5-2014-013"
+        ],
+        "relation": "analogous",
+        "rationale": "Связано исследование гекса, но в DND013 нет отдельной цены Recon.",
+        "specificity": "PF2_more_explicit",
+        "parameter_equivalence": "unverified_not_inferred_from_analogy"
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        },
+        {
+          "layer": "L2",
+          "requirement": "Отдельно учитывать стоимость разведки без дорожной скидки",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "future_hex_exploration_stage",
+          "criterion_ids": [
+            "S06-C04",
+            "S06-C05"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-020-L2",
+          "acceptance_check": "Проверить требование «Отдельно учитывать стоимость разведки без дорожной скидки» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "travel.reconnaissance_cost"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-020-L2"
+        },
+        {
+          "layer": "L3",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        }
+      ]
+    },
+    {
+      "id": "PF2-RM-021",
+      "title": "Результат разведки",
+      "corpus": "GM_Core_Hexploration",
+      "rule": {
+        "source_id": "PF2-GMC-RM",
+        "printed_page": 208,
+        "section": "Reconnoiter",
+        "url": "https://2e.aonprd.com/Actions.aspx?ID=477",
+        "parent_url": "https://2e.aonprd.com/Rules.aspx?ID=3103",
+        "paraphrase": "После разведки явное находится автоматически, скрытое — применимой проверкой.",
+        "normative_kind": "conditional_procedure",
+        "quotation": null,
+        "source_metadata_note": "GM Core parent embeds this action with Gamemastery Guide172/173 source label; legacy metadata retained, not an independently checked errata comparison."
+      },
+      "parameters": {
+        "trigger": "Reconnoiter_complete",
+        "obvious": "automatic",
+        "hidden": "appropriate_check"
+      },
+      "comparison": {
+        "baseline": "DND5-2014:28 bounded DMG rules",
+        "dnd_rule_ids": [
+          "DND5-2014-013"
+        ],
+        "relation": "analogous",
+        "rationale": "Суть открытого/скрытого общая; PF2 требует завершить Recon, DND говорит о входе.",
+        "specificity": "different_not_orderable",
+        "parameter_equivalence": "unverified_not_inferred_from_analogy"
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": "Различать явные и скрытые особенности",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "current_map_stage",
+          "criterion_ids": [
+            "S05-C03",
+            "S06-C05",
+            "S04-C03"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-021-L1",
+          "acceptance_check": "Проверить требование «Различать явные и скрытые особенности» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "content.discovery_levels"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-021-L1"
+        },
+        {
+          "layer": "L2",
+          "requirement": "Применять раскрытие после завершения разведки",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "future_hex_exploration_stage",
+          "criterion_ids": [
+            "S06-C04",
+            "S06-C05"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-021-L2",
+          "acceptance_check": "Проверить требование «Применять раскрытие после завершения разведки» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "travel.visit_and_reveal"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-021-L2"
+        },
+        {
+          "layer": "L3",
+          "requirement": "Разрешать проверку скрытого объекта",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "future_game_mechanics_integration",
+          "criterion_ids": [
+            "S08-C04",
+            "S06-C04"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-021-L3",
+          "acceptance_check": "Проверить требование «Разрешать проверку скрытого объекта» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "mechanics.hidden_discovery"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-021-L3"
+        }
+      ]
+    },
+    {
+      "id": "PF2-RM-022",
+      "title": "Картографирование",
+      "corpus": "GM_Core_Hexploration",
+      "rule": {
+        "source_id": "PF2-GMC-RM",
+        "printed_page": 208,
+        "section": "Map the Area",
+        "url": "https://2e.aonprd.com/Actions.aspx?ID=479",
+        "parent_url": "https://2e.aonprd.com/Rules.aspx?ID=3103",
+        "paraphrase": "После Recon успешный Survival создаёт точную карту; навигационный DC уменьшается на 2.",
+        "normative_kind": "conditional_procedure",
+        "quotation": null,
+        "source_metadata_note": "GM Core parent embeds this action with Gamemastery Guide172/173 source label; legacy metadata retained, not an independently checked errata comparison."
+      },
+      "parameters": {
+        "requires": "Reconnoiter_complete",
+        "skill": "Survival",
+        "typical_DC_rank": [
+          "trained",
+          "expert"
+        ],
+        "navigation_DC_delta": -2
+      },
+      "comparison": {
+        "baseline": "DND5-2014:28 bounded DMG rules",
+        "dnd_rule_ids": [
+          "DND5-2014-023"
+        ],
+        "relation": "analogous",
+        "rationale": "Общая помощь точной карты; -2DC отличается от преимущества DND.",
+        "specificity": "PF2_more_explicit",
+        "parameter_equivalence": "unverified_not_inferred_from_analogy"
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": "Хранить точность и происхождение карты гекса",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "current_map_stage",
+          "criterion_ids": [
+            "S06-C04"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-022-L1",
+          "acceptance_check": "Проверить требование «Хранить точность и происхождение карты гекса» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "map.cartographic_accuracy"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-022-L1"
+        },
+        {
+          "layer": "L2",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        },
+        {
+          "layer": "L3",
+          "requirement": "Разрешать изготовление карты и модификатор навигации",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "future_game_mechanics_integration",
+          "criterion_ids": [
+            "S08-C04",
+            "S06-C04"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-022-L3",
+          "acceptance_check": "Проверить требование «Разрешать изготовление карты и модификатор навигации» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "mechanics.navigation"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-022-L3"
+        }
+      ]
+    },
+    {
+      "id": "PF2-RM-023",
+      "title": "Укрепление лагеря",
+      "corpus": "GM_Core_Hexploration",
+      "rule": {
+        "source_id": "PF2-GMC-RM",
+        "printed_page": 208,
+        "section": "Fortify Camp",
+        "url": "https://2e.aonprd.com/Actions.aspx?ID=478",
+        "parent_url": "https://2e.aonprd.com/Rules.aspx?ID=3103",
+        "paraphrase": "Успешный Crafting даёт защитникам и дозорным +2 к инициативе и Seek против подкрадывания.",
+        "normative_kind": "conditional_procedure",
+        "quotation": null,
+        "source_metadata_note": "GM Core parent embeds this action with Gamemastery Guide172/173 source label; legacy metadata retained, not an independently checked errata comparison."
+      },
+      "parameters": {
+        "skill": "Crafting",
+        "typical_DC_rank": [
+          "trained",
+          "expert"
+        ],
+        "circumstance_bonus": 2,
+        "checks": [
+          "initiative",
+          "Perception_Seek_intruders"
+        ]
+      },
+      "comparison": {
+        "baseline": "DND5-2014:28 bounded DMG rules",
+        "dnd_rule_ids": [],
+        "relation": "no_analogue_in_baseline",
+        "rationale": "В28 исследованных положениях DND нет отдельного укрепления лагеря.",
+        "specificity": "not_comparable",
+        "parameter_equivalence": "unverified_not_inferred_from_analogy"
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        },
+        {
+          "layer": "L2",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        },
+        {
+          "layer": "L3",
+          "requirement": "Применять условный бонус укреплённого лагеря",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "future_game_mechanics_integration",
+          "criterion_ids": [
+            "S08-C04"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-023-L3",
+          "acceptance_check": "Проверить требование «Применять условный бонус укреплённого лагеря» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "mechanics.camp_defence"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-023-L3"
+        }
+      ]
+    },
+    {
+      "id": "PF2-RM-024",
+      "title": "Добыча пропитания",
+      "corpus": "GM_Core_Hexploration",
+      "rule": {
+        "source_id": "PF2-GMC-RM",
+        "printed_page": 208,
+        "section": "Existing Activities / Subsist",
+        "url": "https://2e.aonprd.com/Rules.aspx?ID=3113",
+        "parent_url": "https://2e.aonprd.com/Rules.aspx?ID=3103",
+        "paraphrase": "Subsist допустим после ≤8 часов исследования со штрафом −5; способности сохраняются.",
+        "normative_kind": "conditional_procedure",
+        "quotation": null,
+        "source_metadata_note": null
+      },
+      "parameters": {
+        "companion_url": "https://2e.aonprd.com/Actions.aspx?ID=2368",
+        "companion_book": "Player Core232",
+        "after_exploration_hours_max": 8,
+        "after_exploration_penalty": -5,
+        "success": "self_food_shelter",
+        "critical_success": "self_plus_one_or_self_comfort",
+        "failure": "fatigued_until_food_and_shelter",
+        "critical_failure": "no_food_and_minus2_circumstance_for_week",
+        "skill_feats": "apply"
+      },
+      "comparison": {
+        "baseline": "DND5-2014:28 bounded DMG rules",
+        "dnd_rule_ids": [
+          "DND5-2014-022"
+        ],
+        "relation": "analogous",
+        "rationale": "Общая добыча припасов; условия, степени результата и штрафы различны.",
+        "specificity": "different_not_orderable",
+        "parameter_equivalence": "unverified_not_inferred_from_analogy"
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": "Отмечать доступность местных ресурсов",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "current_map_stage",
+          "criterion_ids": [
+            "S07-C01",
+            "S05-C01"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-024-L1",
+          "acceptance_check": "Проверить требование «Отмечать доступность местных ресурсов» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "map.resource_availability"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-024-L1"
+        },
+        {
+          "layer": "L2",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        },
+        {
+          "layer": "L3",
+          "requirement": "Разрешать Subsist по месту и степени результата",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "future_game_mechanics_integration",
+          "criterion_ids": [
+            "S08-C04",
+            "S06-C04"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-024-L3",
+          "acceptance_check": "Проверить требование «Разрешать Subsist по месту и степени результата» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "mechanics.forage_and_consumption"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-024-L3"
+        }
+      ]
+    },
+    {
+      "id": "PF2-RM-025",
+      "title": "Перенос обычных активностей",
+      "corpus": "GM_Core_Hexploration",
+      "rule": {
+        "source_id": "PF2-GMC-RM",
+        "printed_page": 208,
+        "section": "Existing Activities",
+        "url": "https://2e.aonprd.com/Rules.aspx?ID=3113",
+        "parent_url": "https://2e.aonprd.com/Rules.aspx?ID=3103",
+        "paraphrase": "Активности Player Core можно использовать как личные при решении GM; Hustle исключён.",
+        "normative_kind": "conditional_procedure",
+        "quotation": null,
+        "source_metadata_note": null
+      },
+      "parameters": {
+        "excluded": [
+          "Hustle"
+        ],
+        "GM_discretion": true
+      },
+      "comparison": {
+        "baseline": "DND5-2014:28 bounded DMG rules",
+        "dnd_rule_ids": [
+          "DND5-2014-010"
+        ],
+        "relation": "analogous",
+        "rationale": "Общий выбор занятий в пути; PF2 задаёт явное исключение.",
+        "specificity": "PF2_more_explicit",
+        "parameter_equivalence": "unverified_not_inferred_from_analogy"
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        },
+        {
+          "layer": "L2",
+          "requirement": "Выбирать допустимые личные активности в режиме гекскроула",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "future_hex_exploration_stage",
+          "criterion_ids": [
+            "S06-C04"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-025-L2",
+          "acceptance_check": "Проверить требование «Выбирать допустимые личные активности в режиме гекскроула» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "travel.activity_selection"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-025-L2"
+        },
+        {
+          "layer": "L3",
+          "requirement": "Применять действия навыков по решению ведущего",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "future_game_mechanics_integration",
+          "criterion_ids": [
+            "S08-C04",
+            "S06-C04"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-025-L3",
+          "acceptance_check": "Проверить требование «Применять действия навыков по решению ведущего» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "mechanics.travel_roles_and_scenes"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-025-L3"
+        }
+      ]
+    },
+    {
+      "id": "PF2-RM-026",
+      "title": "Частота случайных встреч",
+      "corpus": "GM_Core_Hexploration",
+      "rule": {
+        "source_id": "PF2-GMC-RM",
+        "printed_page": 209,
+        "section": "Random Encounters / Table 3–7",
+        "url": "https://2e.aonprd.com/Rules.aspx?ID=3114",
+        "parent_url": "https://2e.aonprd.com/Rules.aspx?ID=3103",
+        "paraphrase": "Утром flat check по местности: успех — одна встреча, критический — две; дорога/река −2DC, полёт +3DC.",
+        "normative_kind": "conditional_procedure",
+        "quotation": null,
+        "source_metadata_note": null
+      },
+      "parameters": {
+        "when": "start_day",
+        "DC": {
+          "aquatic": 17,
+          "arctic": 17,
+          "desert": 17,
+          "forest": 14,
+          "mountain": 16,
+          "plains": 12,
+          "swamp": 14
+        },
+        "road_or_river_DC": -2,
+        "flying_DC": 3,
+        "success": 1,
+        "critical_success": 2,
+        "critical_resolution": "Source states critical_success => 2 encounters; general flat-check/degree interaction not independently normalized in this pass."
+      },
+      "comparison": {
+        "baseline": "DND5-2014:28 bounded DMG rules",
+        "dnd_rule_ids": [
+          "DND5-2014-028"
+        ],
+        "relation": "analogous",
+        "rationale": "Та же функция частоты; разные вероятности и календарь.",
+        "specificity": "PF2_more_explicit",
+        "parameter_equivalence": "unverified_not_inferred_from_analogy"
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        },
+        {
+          "layer": "L2",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        },
+        {
+          "layer": "L3",
+          "requirement": "Определять дневное число встреч с поправками",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "future_game_mechanics_integration",
+          "criterion_ids": [
+            "S05-C05",
+            "S06-C04"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-026-L3",
+          "acceptance_check": "Проверить требование «Определять дневное число встреч с поправками» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "mechanics.encounters"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-026-L3"
+        }
+      ]
+    },
+    {
+      "id": "PF2-RM-027",
+      "title": "Тип случайной встречи",
+      "corpus": "GM_Core_Hexploration",
+      "rule": {
+        "source_id": "PF2-GMC-RM",
+        "printed_page": 209,
+        "section": "Table 3–8",
+        "url": "https://2e.aonprd.com/Rules.aspx?ID=3114",
+        "parent_url": "https://2e.aonprd.com/Rules.aspx?ID=3103",
+        "paraphrase": "d10 распределяет безвредное событие, опасность и существо.",
+        "normative_kind": "conditional_procedure",
+        "quotation": null,
+        "source_metadata_note": null
+      },
+      "parameters": {
+        "die": 10,
+        "ranges": [
+          [
+            1,
+            5,
+            "harmless"
+          ],
+          [
+            6,
+            7,
+            "hazard"
+          ],
+          [
+            8,
+            10,
+            "creature"
+          ]
+        ]
+      },
+      "comparison": {
+        "baseline": "DND5-2014:28 bounded DMG rules",
+        "dnd_rule_ids": [
+          "DND5-2014-028"
+        ],
+        "relation": "analogous",
+        "rationale": "Общий выбор встречи из таблицы; отдельные веса PF2.",
+        "specificity": "PF2_more_explicit",
+        "parameter_equivalence": "unverified_not_inferred_from_analogy"
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        },
+        {
+          "layer": "L2",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        },
+        {
+          "layer": "L3",
+          "requirement": "Выбирать категорию встречи по весам",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "future_game_mechanics_integration",
+          "criterion_ids": [
+            "S05-C05",
+            "S06-C04"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-027-L3",
+          "acceptance_check": "Проверить требование «Выбирать категорию встречи по весам» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "mechanics.encounters"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-027-L3"
+        }
+      ]
+    },
+    {
+      "id": "PF2-RM-028",
+      "title": "Долгие сцены",
+      "corpus": "GM_Core_Hexploration",
+      "rule": {
+        "source_id": "PF2-GMC-RM",
+        "printed_page": 209,
+        "section": "Switching out of Hexploration",
+        "url": "https://2e.aonprd.com/Rules.aspx?ID=3115",
+        "parent_url": "https://2e.aonprd.com/Rules.aspx?ID=3103",
+        "paraphrase": "Короткая встреча обычно не стоит действия; часы или серия встреч сокращают дневной запас по решению GM.",
+        "normative_kind": "conditional_procedure",
+        "quotation": null,
+        "source_metadata_note": null
+      },
+      "parameters": {
+        "short": "usually_no_cost",
+        "long": "GM_deduction"
+      },
+      "comparison": {
+        "baseline": "DND5-2014:28 bounded DMG rules",
+        "dnd_rule_ids": [
+          "DND5-2014-010"
+        ],
+        "relation": "analogous",
+        "rationale": "Общий переход между масштабами сцены; PF2 связывает с бюджетом дня.",
+        "specificity": "PF2_more_explicit",
+        "parameter_equivalence": "unverified_not_inferred_from_analogy"
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        },
+        {
+          "layer": "L2",
+          "requirement": "Корректировать остаток дневных действий после долгих сцен",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "future_hex_exploration_stage",
+          "criterion_ids": [
+            "S06-C04",
+            "S06-C03"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-028-L2",
+          "acceptance_check": "Проверить требование «Корректировать остаток дневных действий после долгих сцен» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "travel.daily_activity_budget",
+            "travel.elapsed_time"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-028-L2"
+        },
+        {
+          "layer": "L3",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        }
+      ]
+    },
+    {
+      "id": "PF2-RM-029",
+      "title": "Профили местности",
+      "corpus": "GM_Core_Hexploration",
+      "rule": {
+        "source_id": "PF2-GMC-RM",
+        "printed_page": 209,
+        "section": "Types of Terrain",
+        "url": "https://2e.aonprd.com/Rules.aspx?ID=3115",
+        "parent_url": "https://2e.aonprd.com/Rules.aspx?ID=3103",
+        "paraphrase": "Семь примеров связывают проходимость, ресурсы и секреты с окружением.",
+        "normative_kind": "recommendation",
+        "quotation": null,
+        "source_metadata_note": null
+      },
+      "parameters": {
+        "types": [
+          "aquatic",
+          "arctic",
+          "desert",
+          "forest",
+          "mountain",
+          "plains",
+          "swamp"
+        ],
+        "examples_not_guarantees": true
+      },
+      "comparison": {
+        "baseline": "DND5-2014:28 bounded DMG rules",
+        "dnd_rule_ids": [
+          "DND5-2014-017",
+          "DND5-2014-020",
+          "DND5-2014-022"
+        ],
+        "relation": "analogous",
+        "rationale": "Общее содержимое среды; это ориентиры, а не гарантированный POI в каждом гексе.",
+        "specificity": "different_not_orderable",
+        "parameter_equivalence": "unverified_not_inferred_from_analogy"
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": "Связывать местность с возможными ресурсами и секретами",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "current_map_stage",
+          "criterion_ids": [
+            "S01-C05",
+            "S01-C04",
+            "S06-C04",
+            "S01-C02",
+            "S07-C01",
+            "S05-C01",
+            "S05-C03",
+            "S06-C05",
+            "S04-C03"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-029-L1",
+          "acceptance_check": "Проверить требование «Связывать местность с возможными ресурсами и секретами» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "map.terrain_zones",
+            "map.resource_availability",
+            "content.discovery_levels"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-029-L1"
+        },
+        {
+          "layer": "L2",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        },
+        {
+          "layer": "L3",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        }
+      ]
+    },
+    {
+      "id": "PF2-RM-030",
+      "title": "Обычная скорость путешествия",
+      "corpus": "related_exploration",
+      "rule": {
+        "source_id": "PF2-PC-RM",
+        "printed_page": 438,
+        "section": "Обычная скорость путешествия",
+        "url": "https://2e.aonprd.com/Rules.aspx?ID=2441",
+        "parent_url": null,
+        "paraphrase": "Скорость задаёт дистанцию за минуту/час/день; трудная местность делит её на 2, особо трудная — на 3.",
+        "normative_kind": "conditional_procedure",
+        "quotation": null,
+        "source_metadata_note": null
+      },
+      "parameters": {
+        "mode": "normal_exploration_not_hex_activity_budget",
+        "feet_minute": "Speed*10",
+        "miles_hour": "Speed/10",
+        "miles_day": "Speed*0.8",
+        "terrain_divisor": [
+          1,
+          2,
+          3
+        ],
+        "skill_movement": "GM may check hourly"
+      },
+      "comparison": {
+        "baseline": "DND5-2014:28 bounded DMG rules",
+        "dnd_rule_ids": [
+          "DND5-2014-024",
+          "DND5-2014-025"
+        ],
+        "relation": "analogous",
+        "rationale": "Общий перевод скорости во время/дистанцию; не смешивать с дискретной таблицей гекскроула.",
+        "specificity": "different_not_orderable",
+        "parameter_equivalence": "unverified_not_inferred_from_analogy"
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        },
+        {
+          "layer": "L2",
+          "requirement": "Рассчитывать обычное путешествие отдельно от дневных действий",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "future_hex_exploration_stage",
+          "criterion_ids": [
+            "S06-C04",
+            "S06-C03"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-030-L2",
+          "acceptance_check": "Проверить требование «Рассчитывать обычное путешествие отдельно от дневных действий» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "travel.time_from_speed",
+            "travel.elapsed_time"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-030-L2"
+        },
+        {
+          "layer": "L3",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        }
+      ]
+    },
+    {
+      "id": "PF2-RM-031",
+      "title": "Avoid Notice",
+      "corpus": "related_exploration",
+      "rule": {
+        "source_id": "PF2-PC-RM",
+        "printed_page": 438,
+        "section": "Avoid Notice",
+        "url": "https://2e.aonprd.com/Actions.aspx?ID=2622",
+        "parent_url": null,
+        "paraphrase": "Скрытное движение: половинная скорость; Stealth может определять инициативу и обнаружение.",
+        "normative_kind": "conditional_procedure",
+        "quotation": null,
+        "source_metadata_note": null
+      },
+      "parameters": {
+        "speed_multiplier": 0.5,
+        "initiative": "usually_Stealth",
+        "detection": "Stealth_vs_Perception_DC"
+      },
+      "comparison": {
+        "baseline": "DND5-2014:28 bounded DMG rules",
+        "dnd_rule_ids": [
+          "DND5-2014-010",
+          "DND5-2014-026"
+        ],
+        "relation": "analogous",
+        "rationale": "Общие действия в пути и обнаружение; это не тождество с DND-видимостью.",
+        "specificity": "PF2_more_explicit",
+        "parameter_equivalence": "unverified_not_inferred_from_analogy"
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        },
+        {
+          "layer": "L2",
+          "requirement": "Применять половинную скорость при скрытном движении",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "future_hex_exploration_stage",
+          "criterion_ids": [
+            "S06-C04",
+            "S06-C03"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-031-L2",
+          "acceptance_check": "Проверить требование «Применять половинную скорость при скрытном движении» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "travel.time_from_speed"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-031-L2"
+        },
+        {
+          "layer": "L3",
+          "requirement": "Разрешать скрытность, обнаружение и инициативу",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "future_game_mechanics_integration",
+          "criterion_ids": [
+            "S08-C04"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-031-L3",
+          "acceptance_check": "Проверить требование «Разрешать скрытность, обнаружение и инициативу» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "mechanics.avoid_notice"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-031-L3"
+        }
+      ]
+    },
+    {
+      "id": "PF2-RM-032",
+      "title": "Defend",
+      "corpus": "related_exploration",
+      "rule": {
+        "source_id": "PF2-PC-RM",
+        "printed_page": 438,
+        "section": "Defend",
+        "url": "https://2e.aonprd.com/Actions.aspx?ID=2623",
+        "parent_url": null,
+        "paraphrase": "Движение вполскорости с поднятым щитом даёт его эффект до первого хода боя.",
+        "normative_kind": "conditional_procedure",
+        "quotation": null,
+        "source_metadata_note": null
+      },
+      "parameters": {
+        "speed_multiplier": 0.5
+      },
+      "comparison": {
+        "baseline": "DND5-2014:28 bounded DMG rules",
+        "dnd_rule_ids": [],
+        "relation": "no_analogue_in_baseline",
+        "rationale": "Исследованный DMG-набор не содержит этой отдельной активности.",
+        "specificity": "not_comparable",
+        "parameter_equivalence": "unverified_not_inferred_from_analogy"
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        },
+        {
+          "layer": "L2",
+          "requirement": "Учитывать половинную скорость защитной активности",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "future_hex_exploration_stage",
+          "criterion_ids": [
+            "S06-C04",
+            "S06-C03"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-032-L2",
+          "acceptance_check": "Проверить требование «Учитывать половинную скорость защитной активности» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "travel.time_from_speed"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-032-L2"
+        },
+        {
+          "layer": "L3",
+          "requirement": "Передавать состояние поднятого щита в начало встречи",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "future_game_mechanics_integration",
+          "criterion_ids": [
+            "S08-C04"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-032-L3",
+          "acceptance_check": "Проверить требование «Передавать состояние поднятого щита в начало встречи» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "mechanics.shield_travel"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-032-L3"
+        }
+      ]
+    },
+    {
+      "id": "PF2-RM-033",
+      "title": "Detect Magic",
+      "corpus": "related_exploration",
+      "rule": {
+        "source_id": "PF2-PC-RM",
+        "printed_page": 438,
+        "section": "Detect Magic",
+        "url": "https://2e.aonprd.com/Actions.aspx?ID=2624",
+        "parent_url": null,
+        "paraphrase": "Регулярное обнаружение магии замедляет движение; пределы тщательности 300/150 футов в минуту.",
+        "normative_kind": "conditional_procedure",
+        "quotation": null,
+        "source_metadata_note": null
+      },
+      "parameters": {
+        "speed_multiplier_max": 0.5,
+        "not_overlook_feet_minute": 300,
+        "before_entering_feet_minute": 150
+      },
+      "comparison": {
+        "baseline": "DND5-2014:28 bounded DMG rules",
+        "dnd_rule_ids": [],
+        "relation": "no_analogue_in_baseline",
+        "rationale": "Не сравнивалась магия PHB; отсутствие в28 не означает отсутствие в DND.",
+        "specificity": "not_comparable",
+        "parameter_equivalence": "unverified_not_inferred_from_analogy"
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        },
+        {
+          "layer": "L2",
+          "requirement": "Учитывать скорость магического обследования",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "future_hex_exploration_stage",
+          "criterion_ids": [
+            "S06-C04",
+            "S06-C03"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-033-L2",
+          "acceptance_check": "Проверить требование «Учитывать скорость магического обследования» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "travel.time_from_speed"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-033-L2"
+        },
+        {
+          "layer": "L3",
+          "requirement": "Выявлять ауры с порогами скорости и своевременности",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "future_game_mechanics_integration",
+          "criterion_ids": [
+            "S08-C04"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-033-L3",
+          "acceptance_check": "Проверить требование «Выявлять ауры с порогами скорости и своевременности» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "mechanics.magic_detection"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-033-L3"
+        }
+      ]
+    },
+    {
+      "id": "PF2-RM-034",
+      "title": "Follow the Expert",
+      "corpus": "related_exploration",
+      "rule": {
+        "source_id": "PF2-PC-RM",
+        "printed_page": 438,
+        "section": "Follow the Expert",
+        "url": "https://2e.aonprd.com/Actions.aspx?ID=2625",
+        "parent_url": null,
+        "paraphrase": "Следование эксперту позволяет добавить уровень и бонус +2/+3/+4 по его мастерству.",
+        "normative_kind": "conditional_procedure",
+        "quotation": null,
+        "source_metadata_note": null
+      },
+      "parameters": {
+        "minimum_ally_rank": "expert",
+        "untrained_add_level": true,
+        "circumstance_bonus": {
+          "expert": 2,
+          "master": 3,
+          "legendary": 4
+        },
+        "requires_willing_ally": true
+      },
+      "comparison": {
+        "baseline": "DND5-2014:28 bounded DMG rules",
+        "dnd_rule_ids": [],
+        "relation": "no_analogue_in_baseline",
+        "rationale": "В28 нет подобной процедуры помощи повторным проверкам.",
+        "specificity": "not_comparable",
+        "parameter_equivalence": "unverified_not_inferred_from_analogy"
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        },
+        {
+          "layer": "L2",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        },
+        {
+          "layer": "L3",
+          "requirement": "Разрешать сопровождение экспертом и бонусы навыка",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "future_game_mechanics_integration",
+          "criterion_ids": [
+            "S08-C04"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-034-L3",
+          "acceptance_check": "Проверить требование «Разрешать сопровождение экспертом и бонусы навыка» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "mechanics.expert_assistance"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-034-L3"
+        }
+      ]
+    },
+    {
+      "id": "PF2-RM-035",
+      "title": "Investigate",
+      "corpus": "related_exploration",
+      "rule": {
+        "source_id": "PF2-PC-RM",
+        "printed_page": 439,
+        "section": "Investigate",
+        "url": "https://2e.aonprd.com/Actions.aspx?ID=2627",
+        "parent_url": null,
+        "paraphrase": "Исследование улик вполскорости использует скрытый Recall Knowledge подходящего навыка.",
+        "normative_kind": "conditional_procedure",
+        "quotation": null,
+        "source_metadata_note": null
+      },
+      "parameters": {
+        "speed_multiplier": 0.5,
+        "secret": true,
+        "skill": "relevant_Recall_Knowledge_GM"
+      },
+      "comparison": {
+        "baseline": "DND5-2014:28 bounded DMG rules",
+        "dnd_rule_ids": [
+          "DND5-2014-010"
+        ],
+        "relation": "analogous",
+        "rationale": "Общее занятие в пути; конкретная проверка знаний — отдельная механика.",
+        "specificity": "PF2_more_explicit",
+        "parameter_equivalence": "unverified_not_inferred_from_analogy"
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        },
+        {
+          "layer": "L2",
+          "requirement": "Учитывать половинную скорость расследования",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "future_hex_exploration_stage",
+          "criterion_ids": [
+            "S06-C04",
+            "S06-C03"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-035-L2",
+          "acceptance_check": "Проверить требование «Учитывать половинную скорость расследования» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "travel.time_from_speed"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-035-L2"
+        },
+        {
+          "layer": "L3",
+          "requirement": "Определять сведения скрытой проверкой знаний",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "future_game_mechanics_integration",
+          "criterion_ids": [
+            "S08-C04"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-035-L3",
+          "acceptance_check": "Проверить требование «Определять сведения скрытой проверкой знаний» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "mechanics.knowledge_investigation"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-035-L3"
+        }
+      ]
+    },
+    {
+      "id": "PF2-RM-036",
+      "title": "Repeat a Spell",
+      "corpus": "related_exploration",
+      "rule": {
+        "source_id": "PF2-PC-RM",
+        "printed_page": 439,
+        "section": "Repeat a Spell",
+        "url": "https://2e.aonprd.com/Actions.aspx?ID=2628",
+        "parent_url": null,
+        "paraphrase": "Повторение заклинания вполскорости требует возможности сотворить его за ≤2 действия; сложные решения могут утомлять.",
+        "normative_kind": "conditional_procedure",
+        "quotation": null,
+        "source_metadata_note": null
+      },
+      "parameters": {
+        "speed_multiplier": 0.5,
+        "max_cast_actions": 2,
+        "complex_decisions": "GM_fatigue"
+      },
+      "comparison": {
+        "baseline": "DND5-2014:28 bounded DMG rules",
+        "dnd_rule_ids": [],
+        "relation": "no_analogue_in_baseline",
+        "rationale": "В28 нет отдельного повторения заклинания в пути.",
+        "specificity": "not_comparable",
+        "parameter_equivalence": "unverified_not_inferred_from_analogy"
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        },
+        {
+          "layer": "L2",
+          "requirement": "Учитывать скорость при повторении заклинания",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "future_hex_exploration_stage",
+          "criterion_ids": [
+            "S06-C04",
+            "S06-C03"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-036-L2",
+          "acceptance_check": "Проверить требование «Учитывать скорость при повторении заклинания» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "travel.time_from_speed"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-036-L2"
+        },
+        {
+          "layer": "L3",
+          "requirement": "Проверять допустимость повторения и усталость по решению GM",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "future_game_mechanics_integration",
+          "criterion_ids": [
+            "S08-C04"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-036-L3",
+          "acceptance_check": "Проверить требование «Проверять допустимость повторения и усталость по решению GM» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "mechanics.repeat_spell"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-036-L3"
+        }
+      ]
+    },
+    {
+      "id": "PF2-RM-037",
+      "title": "Scout",
+      "corpus": "related_exploration",
+      "rule": {
+        "source_id": "PF2-PC-RM",
+        "printed_page": 439,
+        "section": "Scout",
+        "url": "https://2e.aonprd.com/Actions.aspx?ID=2629",
+        "parent_url": null,
+        "paraphrase": "Дозор вполскорости даёт всей партии +1 обстоятельства к инициативе следующей встречи.",
+        "normative_kind": "conditional_procedure",
+        "quotation": null,
+        "source_metadata_note": null
+      },
+      "parameters": {
+        "speed_multiplier": 0.5,
+        "party_initiative_circumstance": 1
+      },
+      "comparison": {
+        "baseline": "DND5-2014:28 bounded DMG rules",
+        "dnd_rule_ids": [
+          "DND5-2014-010"
+        ],
+        "relation": "analogous",
+        "rationale": "Общая походная роль; точного бонуса в DND010 нет.",
+        "specificity": "PF2_more_explicit",
+        "parameter_equivalence": "unverified_not_inferred_from_analogy"
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        },
+        {
+          "layer": "L2",
+          "requirement": "Учитывать скорость дозора",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "future_hex_exploration_stage",
+          "criterion_ids": [
+            "S06-C04",
+            "S06-C03"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-037-L2",
+          "acceptance_check": "Проверить требование «Учитывать скорость дозора» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "travel.time_from_speed"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-037-L2"
+        },
+        {
+          "layer": "L3",
+          "requirement": "Применять групповой бонус инициативы следующей встречи",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "future_game_mechanics_integration",
+          "criterion_ids": [
+            "S08-C04"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-037-L3",
+          "acceptance_check": "Проверить требование «Применять групповой бонус инициативы следующей встречи» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "mechanics.scouting"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-037-L3"
+        }
+      ]
+    },
+    {
+      "id": "PF2-RM-038",
+      "title": "Search",
+      "corpus": "related_exploration",
+      "rule": {
+        "source_id": "PF2-PC-RM",
+        "printed_page": 439,
+        "section": "Search",
+        "url": "https://2e.aonprd.com/Actions.aspx?ID=2630",
+        "parent_url": null,
+        "paraphrase": "Поиск скрытого замедляет движение; тщательность имеет пределы скорости и тайные проверки Seek.",
+        "normative_kind": "conditional_procedure",
+        "quotation": null,
+        "source_metadata_note": null
+      },
+      "parameters": {
+        "usual_speed_multiplier": 0.5,
+        "thorough_feet_minute": 300,
+        "before_entering_feet_minute": 150,
+        "feat_exceptions": "Expeditious Search",
+        "dense_objects": "stop_and_spend_more_time"
+      },
+      "comparison": {
+        "baseline": "DND5-2014:28 bounded DMG rules",
+        "dnd_rule_ids": [
+          "DND5-2014-013"
+        ],
+        "relation": "analogous",
+        "rationale": "Одинаковое обнаружение скрытого; здесь отдельные скорость и действие поиска.",
+        "specificity": "PF2_more_explicit",
+        "parameter_equivalence": "unverified_not_inferred_from_analogy"
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        },
+        {
+          "layer": "L2",
+          "requirement": "Учитывать скорость и глубину поиска",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "future_hex_exploration_stage",
+          "criterion_ids": [
+            "S06-C04",
+            "S06-C03"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-038-L2",
+          "acceptance_check": "Проверить требование «Учитывать скорость и глубину поиска» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "travel.time_from_speed"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-038-L2"
+        },
+        {
+          "layer": "L3",
+          "requirement": "Разрешать скрытый Seek при обнаружении объекта",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "future_game_mechanics_integration",
+          "criterion_ids": [
+            "S08-C04",
+            "S06-C04"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-038-L3",
+          "acceptance_check": "Проверить требование «Разрешать скрытый Seek при обнаружении объекта» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "mechanics.hidden_discovery",
+            "mechanics.search"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-038-L3"
+        }
+      ]
+    },
+    {
+      "id": "PF2-RM-039",
+      "title": "Sense Direction",
+      "corpus": "related_exploration",
+      "rule": {
+        "source_id": "PF2-PC-RM",
+        "printed_page": 246,
+        "section": "Sense Direction",
+        "url": "https://2e.aonprd.com/Actions.aspx?ID=2406",
+        "parent_url": null,
+        "paraphrase": "Survival обычно раз в день; без компаса −2 предметного штрафа, необычная среда может требовать мастерства.",
+        "normative_kind": "conditional_procedure",
+        "quotation": null,
+        "source_metadata_note": null
+      },
+      "parameters": {
+        "typical_frequency": "daily",
+        "typical_time": "about_1_minute",
+        "without_compass_item_penalty": -2,
+        "DC_and_frequency": "GM"
+      },
+      "comparison": {
+        "baseline": "DND5-2014:28 bounded DMG rules",
+        "dnd_rule_ids": [
+          "DND5-2014-023"
+        ],
+        "relation": "analogous",
+        "rationale": "Одинаковое ориентирование; разные эффекты успеха и модификаторы.",
+        "specificity": "different_not_orderable",
+        "parameter_equivalence": "unverified_not_inferred_from_analogy"
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": "Указывать ориентиры и характер местности",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "current_map_stage",
+          "criterion_ids": [
+            "S01-C04",
+            "S06-C04",
+            "S01-C02",
+            "S01-C05"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-039-L1",
+          "acceptance_check": "Проверить требование «Указывать ориентиры и характер местности» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "content.landmarks",
+            "map.terrain_zones"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-039-L1"
+        },
+        {
+          "layer": "L2",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        },
+        {
+          "layer": "L3",
+          "requirement": "Разрешать ориентирование с компасом и условиями среды",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "future_game_mechanics_integration",
+          "criterion_ids": [
+            "S08-C04",
+            "S06-C04"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-039-L3",
+          "acceptance_check": "Проверить требование «Разрешать ориентирование с компасом и условиями среды» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "mechanics.navigation"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-039-L3"
+        }
+      ]
+    },
+    {
+      "id": "PF2-RM-040",
+      "title": "Track",
+      "corpus": "related_exploration",
+      "rule": {
+        "source_id": "PF2-PC-RM",
+        "printed_page": 246,
+        "section": "Track",
+        "url": "https://2e.aonprd.com/Actions.aspx?ID=2408",
+        "parent_url": null,
+        "paraphrase": "Следование следам вполскорости: проверка в начале, каждый час и при изменении; провал задерживает повтор.",
+        "normative_kind": "conditional_procedure",
+        "quotation": null,
+        "source_metadata_note": null
+      },
+      "parameters": {
+        "speed_multiplier": 0.5,
+        "check": "start_each_hour_significant_change",
+        "failure_delay_hours": 1,
+        "critical_failure_delay_hours": 24,
+        "trained": true
+      },
+      "comparison": {
+        "baseline": "DND5-2014:28 bounded DMG rules",
+        "dnd_rule_ids": [
+          "DND5-2014-027"
+        ],
+        "relation": "analogous",
+        "rationale": "Общий алгоритм следопытства; периодичность и задержки PF2 конкретнее.",
+        "specificity": "PF2_more_explicit",
+        "parameter_equivalence": "unverified_not_inferred_from_analogy"
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": "Хранить следы, грунт и условия",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "current_map_stage",
+          "criterion_ids": [
+            "S05-C01",
+            "S06-C03"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-040-L1",
+          "acceptance_check": "Проверить требование «Хранить следы, грунт и условия» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "content.tracks_and_ground"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-040-L1"
+        },
+        {
+          "layer": "L2",
+          "requirement": "Учитывать скорость и задержку потери следа",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "future_hex_exploration_stage",
+          "criterion_ids": [
+            "S06-C04",
+            "S06-C03"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-040-L2",
+          "acceptance_check": "Проверить требование «Учитывать скорость и задержку потери следа» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "travel.time_from_speed",
+            "travel.elapsed_time"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-040-L2"
+        },
+        {
+          "layer": "L3",
+          "requirement": "Разрешать Track и повторные попытки",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "future_game_mechanics_integration",
+          "criterion_ids": [
+            "S08-C04",
+            "S06-C04"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-040-L3",
+          "acceptance_check": "Проверить требование «Разрешать Track и повторные попытки» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "mechanics.tracking"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-040-L3"
+        }
+      ]
+    },
+    {
+      "id": "PF2-RM-041",
+      "title": "Cover Tracks",
+      "corpus": "related_exploration",
+      "rule": {
+        "source_id": "PF2-PC-RM",
+        "printed_page": 246,
+        "section": "Cover Tracks",
+        "url": "https://2e.aonprd.com/Actions.aspx?ID=2407",
+        "parent_url": null,
+        "paraphrase": "Сокрытие следов вполскорости без броска; преследователь использует больший из обычного DC и Survival DC.",
+        "normative_kind": "conditional_procedure",
+        "quotation": null,
+        "source_metadata_note": null
+      },
+      "parameters": {
+        "speed_multiplier": 0.5,
+        "own_check": false,
+        "tracking_DC": "max(normal_DC,actor_Survival_DC)",
+        "trained": true
+      },
+      "comparison": {
+        "baseline": "DND5-2014:28 bounded DMG rules",
+        "dnd_rule_ids": [
+          "DND5-2014-027"
+        ],
+        "relation": "analogous",
+        "rationale": "Есть связь с отслеживанием, но создание помех — отдельное действие, не тождество Track.",
+        "specificity": "PF2_more_explicit",
+        "parameter_equivalence": "unverified_not_inferred_from_analogy"
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        },
+        {
+          "layer": "L2",
+          "requirement": "Учитывать половинную скорость сокрытия следов",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "future_hex_exploration_stage",
+          "criterion_ids": [
+            "S06-C04",
+            "S06-C03"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-041-L2",
+          "acceptance_check": "Проверить требование «Учитывать половинную скорость сокрытия следов» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "travel.time_from_speed"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-041-L2"
+        },
+        {
+          "layer": "L3",
+          "requirement": "Задавать сложность отслеживания скрываемого следа",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "future_game_mechanics_integration",
+          "criterion_ids": [
+            "S08-C04"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-041-L3",
+          "acceptance_check": "Проверить требование «Задавать сложность отслеживания скрываемого следа» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "mechanics.cover_tracks"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-041-L3"
+        }
+      ]
+    },
+    {
+      "id": "PF2-RM-042",
+      "title": "Отдых и подготовка",
+      "corpus": "related_exploration",
+      "rule": {
+        "source_id": "PF2-PC-RM",
+        "printed_page": 439,
+        "section": "Отдых и подготовка",
+        "url": "https://2e.aonprd.com/Rules.aspx?ID=2443",
+        "parent_url": null,
+        "paraphrase": "Обычно 8 часов отдыха раз в сутки, затем около часа подготовки; >16 часов без отдыха дают усталость.",
+        "normative_kind": "conditional_procedure",
+        "quotation": null,
+        "source_metadata_note": null
+      },
+      "parameters": {
+        "rest_once_hours": 24,
+        "typical_rest_hours": 8,
+        "preparation_hours": 1,
+        "no_rest_fatigue_after_hours": 16,
+        "recovery_continuous_rest_hours": 8,
+        "armor": "poor_rest_fatigued",
+        "healing": "max(1,Con_modifier)*level",
+        "preparation": "requires_rest_once_per_day",
+        "resource_refresh": "slots_focus_daily_abilities",
+        "invest_items_max": 10
+      },
+      "comparison": {
+        "baseline": "DND5-2014:28 bounded DMG rules",
+        "dnd_rule_ids": [],
+        "relation": "no_analogue_in_baseline",
+        "rationale": "В28 нет самостоятельного суточного восстановления; общую усталость нельзя считать этим правилом.",
+        "specificity": "not_comparable",
+        "parameter_equivalence": "unverified_not_inferred_from_analogy"
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        },
+        {
+          "layer": "L2",
+          "requirement": "Выделять время отдыха и подготовки в календаре",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "future_hex_exploration_stage",
+          "criterion_ids": [
+            "S06-C04",
+            "S06-C03"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-042-L2",
+          "acceptance_check": "Проверить требование «Выделять время отдыха и подготовки в календаре» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "travel.elapsed_time"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-042-L2"
+        },
+        {
+          "layer": "L3",
+          "requirement": "Применять восстановление и ограничения отдыха",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "future_game_mechanics_integration",
+          "criterion_ids": [
+            "S08-C04"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-042-L3",
+          "acceptance_check": "Проверить требование «Применять восстановление и ограничения отдыха» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "mechanics.rest"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-042-L3"
+        }
+      ]
+    },
+    {
+      "id": "PF2-RM-043",
+      "title": "Фокус исследования",
+      "corpus": "related_exploration",
+      "rule": {
+        "source_id": "PF2-GMC-RM",
+        "printed_page": 39,
+        "section": "Фокус исследования",
+        "url": "https://2e.aonprd.com/Rules.aspx?ID=2594",
+        "parent_url": null,
+        "paraphrase": "Одновременно выбирается основная непрерывная активность; можно переключаться и прерываться на отдельное действие.",
+        "normative_kind": "conditional_procedure",
+        "quotation": null,
+        "source_metadata_note": null
+      },
+      "parameters": {
+        "continuous_focus": "one_priority",
+        "switch": "anytime",
+        "discrete": "may_interrupt_even_when_fatigued"
+      },
+      "comparison": {
+        "baseline": "DND5-2014:28 bounded DMG rules",
+        "dnd_rule_ids": [
+          "DND5-2014-010"
+        ],
+        "relation": "analogous",
+        "rationale": "Одинаковая организация походных занятий; PF2 явно регулирует совмещение.",
+        "specificity": "PF2_more_explicit",
+        "parameter_equivalence": "unverified_not_inferred_from_analogy"
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Отдельное требование данного уровня из этого положения не выделено; связанные механики указаны в других уровнях/правилах."
+        },
+        {
+          "layer": "L2",
+          "requirement": "Хранить выбранную активность и её переключение",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "future_hex_exploration_stage",
+          "criterion_ids": [
+            "S06-C04"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-043-L2",
+          "acceptance_check": "Проверить требование «Хранить выбранную активность и её переключение» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "travel.activity_selection"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-043-L2"
+        },
+        {
+          "layer": "L3",
+          "requirement": "Применять ограничения совмещения непрерывных занятий",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Реализация продукта этим исследованием не проверялась.",
+          "delivery": "future_game_mechanics_integration",
+          "criterion_ids": [
+            "S08-C04",
+            "S06-C04"
+          ],
+          "acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-043-L3",
+          "acceptance_check": "Проверить требование «Применять ограничения совмещения непрерывных занятий» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+          "canonical_rule_ids": [
+            "mechanics.travel_roles_and_scenes"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-043-L3"
+        }
+      ]
+    }
+  ]
+}
