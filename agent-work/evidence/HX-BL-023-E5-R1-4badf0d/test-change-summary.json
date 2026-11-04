@@ -1,0 +1,54 @@
+{
+  "base_sha": "8b98266ef5960535140feb05687bb2c9fac04156",
+  "head_sha": "4badf0de7dbc11470be1e06b36531410c2fe3474",
+  "added": 0,
+  "removed": 0,
+  "modified": 1,
+  "suite": "Node / test/mapTransactions.test.mjs",
+  "scenario_risk": "E5-06/AC08 HX023-E5-R1: deletion is lost on checkpoint restore; reject must preserve full document, RNG, checkpoints and both undo/redo stacks.",
+  "reuse_or_new_reason": "Extended existing 'manual edits do not replace generation checkpoints, regenerate rollback retains undo and redo' logical case with RU/EN × delete/regenerate. No duplicate runner or permanent new case.",
+  "count_source": "Exact base/head GitHub compare: only existing test body expanded, same registration/title. Node suite remains 286 registered cases; browser8 and RNG1 registrations unchanged.",
+  "browser": {
+    "added": 0,
+    "removed": 0,
+    "modified": 0
+  },
+  "rng": {
+    "added": 0,
+    "removed": 0,
+    "modified": 0
+  },
+  "targeted": {
+    "executed": 1,
+    "passed": 1,
+    "failed": 0,
+    "skipped": 0,
+    "red": {
+      "base_sha": "8b98266ef5960535140feb05687bb2c9fac04156",
+      "actual": "confirm_calls0 instead of1 at Delete last region",
+      "exit_code": 1
+    },
+    "green": {
+      "tree_sha": "4a4e1e86856f1f3dd536c52f1a444167fffbd4aa",
+      "exit_code": 0
+    }
+  },
+  "required_checks": {
+    "ci_run": 41883936580,
+    "head_sha": "4badf0de7dbc11470be1e06b36531410c2fe3474",
+    "check": "success",
+    "browser": "success",
+    "rng": "success",
+    "build": "success as required CI steps plus separate local build"
+  },
+  "local_full_runs": {
+    "check": "interrupted130 after equivalent exact-tree CI completed successfully; no local PASS claim",
+    "browser_first": "exit1 empty log; cause unknown, no PASS claim",
+    "browser_retry": "interrupted130 after CI success; generation/POI/terrain/forest/navigation/large1200/fullE5/direct-edit partial outputs passed, complete8 script total not claimed locally",
+    "rng": "interrupted130 after CI success; partial8seed-profile progress only, not complete local PASS"
+  },
+  "limitations": [
+    "CI job logs endpoint unavailable to connector; job/command success verified through API, runner's final per-case summary not freshly extracted. Registered counts differ from asserted execution counts.",
+    "Browser-generated report/screenshot changes excluded from 3-file product commit."
+  ]
+}
