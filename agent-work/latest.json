@@ -2,7 +2,7 @@
   "schema_version": 1,
   "date": "2026-11-04",
   "branch": "agent-operations",
-  "plan_json": "agent-work/handoffs/2026-11-04-HX-BL-023-E5-checkpoint-18542ce.json",
+  "plan_json": "agent-work/handoffs/2026-11-04-HX-BL-023-E5-checkpoint-cded016.json",
   "plan_md": null,
   "strategy_branch": "main",
   "strategy_status": "approved",
@@ -26,7 +26,7 @@
   },
   "lessons_path": "agent-work/lessons.md",
   "plan_id": "2026-10-31-HX-BL-023-E4-analyst",
-  "run_id": "2026-11-04-developer-HX-BL-023-E5-geometry",
+  "run_id": "2026-11-04-developer-HX-BL-023-E5-solver",
   "plan_revision": 1,
   "baseline_sha": "8f7d17266c53e31428da7c0da6dbbf1afe01d035",
   "status": "implementation_checkpoint_continue_developer",
@@ -50,8 +50,8 @@
   "current_task_id": "HX-BL-023",
   "spec_path": "agent-work/specs/HX-BL-023-E5.md",
   "spec_version": "E5-1.0",
-  "result_path": "agent-work/results/2026-11-04-developer-HX-BL-023-E5-geometry.json",
-  "handoff_commit_sha": "9b5946df36c99f49363830cab478d46d10cacd04",
+  "result_path": "agent-work/results/2026-11-04-developer-HX-BL-023-E5-solver.json",
+  "handoff_commit_sha": "317189e45278245dfced11645c528b5bff8320a9",
   "active_claim": {
     "run_id": "2026-11-04-developer-HX-BL-023-E5",
     "task_id": "HX-BL-023",
@@ -65,28 +65,33 @@
     "scope": "E5 river editing implementation only; independent041 presentation claim is source-free and preserved, no duplicate walkthrough. One active product implementation.",
     "authorization_ref": "owner-decision-2026-10-28-editor-additional-functions-approved",
     "checkpoint_status": "committed_draft_implementation_incomplete",
-    "checkpoint_at": "2026-11-04T04:56:24.478862+00:00",
-    "head_sha": "18542ce3ab79466a024764bfd7d20076206c3631",
-    "tree_sha": "88eed776dcc517179fe5db1d68cbd084f32fcabb",
+    "checkpoint_at": "2026-11-04T05:57:20.238547+00:00",
+    "head_sha": "cded0164559f524c6d9ce49c8f2e06a6ea62474d",
+    "tree_sha": "bd7404716643f2fbecf2d38e5b565f7e508eb2bc",
     "pr": 486,
-    "result_ref": "agent-work/results/2026-11-04-developer-HX-BL-023-E5-geometry.json",
-    "handoff_ref": "agent-work/handoffs/2026-11-04-HX-BL-023-E5-checkpoint-18542ce.json",
+    "result_ref": "agent-work/results/2026-11-04-developer-HX-BL-023-E5-solver.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-04-HX-BL-023-E5-checkpoint-cded016.json",
     "next_role": "developer",
-    "next_step": "Продолжить собственный PR486/18542ce: решить неизвестные F с фиксированными соседями и лимитом5000/component; подготовить реальные crossings/delta/feature conflicts, затем атомарный edit handler и компактный UI. После полного AC01–AC11 — независимая проверка конечного SHA. Старт уже утверждён; публикация отдельно.",
+    "next_step": "Продолжить собственный PR486/cded016: подключить компактный UI к editRiverDocument/editRiverFeatures, RiverDraft с общими guards, preview зависимостей и реальные44px targets. Затем desktop/narrow RU/EN, Classic/Mythic AC01–AC11 и независимый review конечного SHA. Старт E5 уже утверждён; публикация отдельно.",
     "worker_liveness": "Not asserted between runs; resume only after exact remote/claim verification.",
     "resume": {
-      "run_id": "2026-11-04-developer-HX-BL-023-E5-geometry",
-      "started_at": "2026-11-04 04:36:40 UTC",
-      "verified_head_sha": "35dc28a916909137c4daac8dc847e6c440c8bcca",
-      "verified_tree_sha": "4ad317cbf55dfdd65a4d67cc4aa5d8668ebfec95",
+      "run_id": "2026-11-04-developer-HX-BL-023-E5-solver",
+      "started_at": "2026-11-04 05:11:08 UTC",
+      "verified_head_sha": "18542ce3ab79466a024764bfd7d20076206c3631",
+      "verified_tree_sha": "88eed776dcc517179fe5db1d68cbd084f32fcabb",
       "status": "checkpoint_saved_implementation_continues",
-      "scope": "Same own E5 claim: real geometry/numeric context, physical event/owner validation and changed-interaction legacy boundaries; no final UI or publication. Reuse existing tests; add only distinct missing adapter contracts.",
-      "CI_previous": {
-        "run_id": 41773128858,
-        "conclusion": "success"
+      "scope": "Same owned E5 claim: unknown per-path/reach F via existing bounded kernel, fixed neighbours, real geometry and explicit limit; then live dependency preparation if ready. No UI/release assumption.",
+      "working_head_sha": "cded0164559f524c6d9ce49c8f2e06a6ea62474d",
+      "ci_budget_adjustment": {
+        "from_minutes": 10,
+        "to_minutes": 20,
+        "scope": "check job only; existing required suite, no new benchmark/corpus",
+        "reason": "Local complete check exceeds10min; prior check jobs cancelled with no cause beyond cancellation in logs. Revalidate new workflow on this SHA.",
+        "validation_run_id": 41781379979,
+        "verification": "success",
+        "previous_cancel_cause": "unknown"
       },
-      "working_head_sha": "18542ce3ab79466a024764bfd7d20076206c3631",
-      "checkpoint_sha": "18542ce3ab79466a024764bfd7d20076206c3631"
+      "checkpoint_sha": "cded0164559f524c6d9ce49c8f2e06a6ea62474d"
     },
     "resume_history": [
       {
@@ -102,10 +107,24 @@
           "check": "cancelled_no_success_claim"
         },
         "checkpoint_sha": "35dc28a916909137c4daac8dc847e6c440c8bcca"
+      },
+      {
+        "run_id": "2026-11-04-developer-HX-BL-023-E5-geometry",
+        "started_at": "2026-11-04 04:36:40 UTC",
+        "verified_head_sha": "35dc28a916909137c4daac8dc847e6c440c8bcca",
+        "verified_tree_sha": "4ad317cbf55dfdd65a4d67cc4aa5d8668ebfec95",
+        "status": "checkpoint_saved_implementation_continues",
+        "scope": "Same own E5 claim: real geometry/numeric context, physical event/owner validation and changed-interaction legacy boundaries; no final UI or publication. Reuse existing tests; add only distinct missing adapter contracts.",
+        "CI_previous": {
+          "run_id": 41773128858,
+          "conclusion": "success"
+        },
+        "working_head_sha": "18542ce3ab79466a024764bfd7d20076206c3631",
+        "checkpoint_sha": "18542ce3ab79466a024764bfd7d20076206c3631"
       }
     ]
   },
-  "next_step": "Продолжить собственный PR486/18542ce: решить неизвестные F с фиксированными соседями и лимитом5000/component; подготовить реальные crossings/delta/feature conflicts, затем атомарный edit handler и компактный UI. После полного AC01–AC11 — независимая проверка конечного SHA. Старт уже утверждён; публикация отдельно.",
+  "next_step": "Продолжить собственный PR486/cded016: подключить компактный UI к editRiverDocument/editRiverFeatures, RiverDraft с общими guards, preview зависимостей и реальные44px targets. Затем desktop/narrow RU/EN, Classic/Mythic AC01–AC11 и независимый review конечного SHA. Старт E5 уже утверждён; публикация отдельно.",
   "owner_decisions_needed": [
     {
       "task_id": "HX-BL-003",
@@ -135,12 +154,12 @@
     "deployment_run_id": 41136382320
   },
   "historical_plan_status": "План23.10 сохранён как история; его блокировки и предложенный процесс заменены decisions24.10 в approvals/process/budget и текущим handoff.",
-  "evidence_path": "agent-work/evidence/HX-BL-023-E5-18542ce",
+  "evidence_path": "agent-work/evidence/HX-BL-023-E5-cded016",
   "branch_name": "agent/hx023-e5-rivers",
   "pr": 486,
-  "head_sha": "18542ce3ab79466a024764bfd7d20076206c3631",
-  "checks_status": "local check279/279 and browser8/8 passed; exact-SHA CI browser/world-random success, check cancelled cause unknown",
-  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41775901861",
+  "head_sha": "cded0164559f524c6d9ce49c8f2e06a6ea62474d",
+  "checks_status": "local_check285_pass;local_browser8_pass;exact_SHA_CI_check_browser_world_random_success",
+  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41781379979",
   "review_verdict": "not_ready_implementation_incomplete",
   "role_selection_mode": "ready_work_priority",
   "role_selection_source": "agent-work/process.md",
@@ -272,7 +291,7 @@
   "score_update_release_sha": "ab75ecb0a5b90888d4e367bfc9a40ecdff8ad429",
   "score_process_decision_ref": "owner-decision-2026-10-24-score-responsibilities",
   "score_assessment_ref": "agent-work/evidence/HX-BL-023-panel-walkthrough/reviewer.json#score_assessment",
-  "role_selection_reason": "Safely resumed own E5 checkpoint35dc28a after exact tree/PR/claims and successful prior CI verification; produced18542ce. No ready reviewer handoff.041 active source-free presentation claim preserved.",
+  "role_selection_reason": "Safely resumed same owned active E5 checkpoint18542ce after exact PR/head/tree and all active claims verification. Approved spec ready; next stage solver, then live dependency backend within same task. No reviewer-ready handoff or release approval.",
   "score_update_result_ref": "agent-work/results/2026-11-04-strategist-score-PR485-PR484.json",
   "score_update_completed_at": "2026-11-04T01:05:25Z",
   "score_update_delta": null,
@@ -296,18 +315,18 @@
   "automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-11-04 04:36:40 UTC",
+      "checked_at": "2026-11-04 05:11:08 UTC",
       "is_enabled": true,
       "status": "checked"
     },
     "end": {
-      "checked_at": "2026-11-04 05:08:51 UTC",
+      "checked_at": "2026-11-04 06:03:04 UTC",
       "is_enabled": true,
       "status": "checked"
     },
     "restoration_performed": false,
     "errors": [],
-    "limitation": "Actual point-in-time start/end observations; does not guarantee future service state."
+    "limitation": "Actual point-in-time start/end peek observations only; no guarantee against subsequent service changes."
   },
   "open_findings": [],
   "current_review_score_assessment_status": "not_applicable_specification_forecast_unknown",
@@ -2016,7 +2035,7 @@
     23
   ],
   "schedule_decision_ref": "owner-decision-2026-10-31-team-resume-hourly",
-  "tree_sha": "88eed776dcc517179fe5db1d68cbd084f32fcabb",
+  "tree_sha": "bd7404716643f2fbecf2d38e5b565f7e508eb2bc",
   "accepted_release_pending": null,
   "next_product_proposal": {
     "task_id": "HX-BL-027",
@@ -4194,7 +4213,7 @@
     },
     "materials_commit_sha": "ea69b2937198ed08670bae9ab3520b88aa4f1748"
   },
-  "checkpoint_at": "2026-11-04 05:08:51 UTC",
+  "checkpoint_at": "2026-11-04 06:03:04 UTC",
   "previous_execution_blocker": {
     "scope": "E4 implementation only; analyst correction ready",
     "finding_id": "HX023-E4-SPEC-01",
@@ -4273,5 +4292,115 @@
       "build": "passed"
     },
     "materials_commit_sha": "f991a3ddcc0fcedc9d62d8c9f51f4a2f33291e9c"
-  }
+  },
+  "latest_HX_BL_023_E5_solver_20261104": {
+    "run_id": "2026-11-04-developer-HX-BL-023-E5-solver",
+    "role": "developer",
+    "task_id": "HX-BL-023",
+    "stage_id": "E5",
+    "selection_reason": "Safely resumed same owned active E5 checkpoint18542ce after exact PR/head/tree and all active claims verification. Approved spec ready; next stage solver, then live dependency backend within same task. No reviewer-ready handoff or release approval.",
+    "status": "implementation_checkpoint_continue_developer",
+    "authorization_ref": "owner-decision-2026-10-28-editor-additional-functions-approved",
+    "head_sha": "cded0164559f524c6d9ce49c8f2e06a6ea62474d",
+    "tree_sha": "bd7404716643f2fbecf2d38e5b565f7e508eb2bc",
+    "base_sha": "18542ce3ab79466a024764bfd7d20076206c3631",
+    "branch": "agent/hx023-e5-rivers",
+    "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/486",
+    "spec_ref": "agent-work/specs/HX-BL-023-E5.md",
+    "spec_version": "E5-1.0",
+    "handoff_ref": "agent-work/handoffs/2026-11-04-HX-BL-023-E5-checkpoint-cded016.json",
+    "evidence_ref": "agent-work/evidence/HX-BL-023-E5-cded016",
+    "checks_ref": "agent-work/evidence/HX-BL-023-E5-cded016/checks.json",
+    "test_change_summary_ref": "agent-work/evidence/HX-BL-023-E5-cded016/test-change-summary.json",
+    "programmer_score_evidence_ref": "agent-work/evidence/HX-BL-023-E5-cded016/programmer-score-evidence.json",
+    "next_role": "developer",
+    "next_step": "Продолжить собственный PR486/cded016: подключить компактный UI к editRiverDocument/editRiverFeatures, RiverDraft с общими guards, preview зависимостей и реальные44px targets. Затем desktop/narrow RU/EN, Classic/Mythic AC01–AC11 и независимый review конечного SHA. Старт E5 уже утверждён; публикация отдельно.",
+    "review_ready": false,
+    "accepted": false,
+    "published": false,
+    "main_changed": false,
+    "foreign_claim_changed": false,
+    "foreign_claim_sha": "6d9cfe0ebaab93c5ff789cf32520dd542d2668e3",
+    "full_UI_pending": true,
+    "score_model_version": "1.2",
+    "confirmed_points": null,
+    "unverified_weight": 1000,
+    "score_changed": false,
+    "owner_decisions_needed": [],
+    "recorded_at": "2026-11-04 06:03:04 UTC",
+    "automation_health": {
+      "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "start": {
+        "checked_at": "2026-11-04 05:11:08 UTC",
+        "is_enabled": true,
+        "status": "checked"
+      },
+      "end": {
+        "checked_at": "2026-11-04 06:03:04 UTC",
+        "is_enabled": true,
+        "status": "checked"
+      },
+      "restoration_performed": false,
+      "errors": [],
+      "limitation": "Actual point-in-time start/end peek observations only; no guarantee against subsequent service changes."
+    },
+    "backend_sha": "bde64b34d6f0b18b5a77db0b8bcd9def604750a9",
+    "ci_budget_adjustment": {
+      "path": ".github/workflows/check.yml",
+      "check_minutes_before": 10,
+      "check_minutes_after": 20,
+      "reason": "Existing full local check285/285 took869886.71165ms; old CI cancelled without a documented cause. New workflow is being verified.",
+      "corpus_changed_for_budget": false,
+      "verification_run_id": 41781379979,
+      "verification": "success",
+      "previous_cancel_cause": "unknown"
+    },
+    "checks_status": "local_check285_pass;local_browser8_pass;exact_SHA_CI_check_browser_world_random_success",
+    "checks_summary": {
+      "Node": {
+        "executed": 285,
+        "passed": 285,
+        "failed": 0,
+        "skipped": 0
+      },
+      "browser_scripts": {
+        "executed": 8,
+        "passed": 8,
+        "skipped": 0
+      },
+      "CI_check": "success",
+      "CI_browser": "success",
+      "CI_world_random": "success",
+      "TypeScript": "passed",
+      "build": "passed"
+    },
+    "materials_commit_sha": "317189e45278245dfced11645c528b5bff8320a9",
+    "result_ref": "agent-work/results/2026-11-04-developer-HX-BL-023-E5-solver.json"
+  },
+  "stage_id": "E5",
+  "release_approved": false,
+  "ui_actual_shown": false,
+  "ui_actual_responsible": "developer",
+  "UI_proposal_already_shown": true,
+  "authorization_ref": "owner-decision-2026-10-28-editor-additional-functions-approved",
+  "checks_summary": {
+    "Node": {
+      "executed": 285,
+      "passed": 285,
+      "failed": 0,
+      "skipped": 0
+    },
+    "browser_scripts": {
+      "executed": 8,
+      "passed": 8,
+      "skipped": 0
+    },
+    "CI_check": "success",
+    "CI_browser": "success",
+    "CI_world_random": "success",
+    "TypeScript": "passed",
+    "build": "passed"
+  },
+  "full_E5_UI_pending": true,
+  "materials_commit_sha": "317189e45278245dfced11645c528b5bff8320a9"
 }
