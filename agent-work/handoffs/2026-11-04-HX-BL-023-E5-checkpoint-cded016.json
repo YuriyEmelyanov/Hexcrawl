@@ -1,0 +1,56 @@
+{
+  "run_id": "2026-11-04-developer-HX-BL-023-E5-solver",
+  "task_id": "HX-BL-023",
+  "stage_id": "E5",
+  "status": "implementation_checkpoint_continue_developer",
+  "head_sha": "cded0164559f524c6d9ce49c8f2e06a6ea62474d",
+  "tree_sha": "bd7404716643f2fbecf2d38e5b565f7e508eb2bc",
+  "previous_checkpoint_sha": "18542ce3ab79466a024764bfd7d20076206c3631",
+  "branch": "agent/hx023-e5-rivers",
+  "pr": 486,
+  "spec_ref": "agent-work/specs/HX-BL-023-E5.md",
+  "spec_version": "E5-1.0",
+  "completed_checkpoint": [
+    "Unknown physical path/reach F, fixed exterior and hard conditions, max5000/component with explicit limit; whole-network cycles checked after local solve",
+    "prepareRiverMapEdit live crossings/BR009/reentry/feature resolutions before map writes",
+    "Actual App editRiverDocument/editRiverFeatures and E3 third-argument feature resolutions; real history/RNG/revision/failure tests",
+    "Bulk candidate marker resolution final preflight; deterministic crossing preparation; unchanged legacy deep fords not globally repaired"
+  ],
+  "entrypoints": {
+    "src/App.tsx": [
+      "prepareRiverMapEdit(map,edit,options) returns candidate map/losses/confirmationRequired",
+      "editRiverDocument(edit,{crossingKinds,featureEdits,confirmed},expectedRevision)",
+      "editRiverFeatures(edits,expectedRevision)",
+      "editRoadDocument(edit,expectedDraft,featureEdits) supports atomic prospective resolution; UI still needs choices"
+    ],
+    "src/manualRivers.ts": [
+      "RiverEdit create/replace optional fullness and fullnessByEdge; explicit condition spans hydrological reach",
+      "prepareRiverEdit validates final whole graph, input features, counter and geometry; no-op preserves redo",
+      "resolveRiverFeatureEdits resolves a prospective candidate list and validates once"
+    ],
+    "src/manualRiverGeometry.ts": [
+      "solveManualRiverPath uses actual ownership/lakes and fixed exterior, never missing F1 fallback"
+    ],
+    "src/manualRiverDependencies.ts": [
+      "prepareEditedRiverCrossings; validateEditedRiverDeltas; canonical all-edge cycle evidence shared with core wrapper"
+    ]
+  },
+  "remaining_in_order": [
+    "Implement RiverDraft carrying document revision/riverId/path/conditions/crossing choices/feature resolutions and source focus; all generation/import/reset/undo/redo/other writers must guard active draft. Current backend mutationBlocked has no RiverDraft because no UI draft exists yet.",
+    "Hook compact selected river/edge/vertex controls to existing Edit/Done/Find/nearby list, no extra toolbar or Save/Apply; exact hit/overlap list and44CSSpx under pan/zoom/rotation",
+    "Use prepareRiverMapEdit candidate preview for explicit losses; show river names/tags and changed crossings/delta/features before confirmed delete/reverse/losses. Do not pass confirmed:true automatically; user inline action is required.",
+    "Finish notes/IME/name fields per E2 and enforce stale/selection/language/Find/panel transitions, no-op and export-without-draft contract. Bulk feature options need actual native UI.",
+    "Complete actual Classic/Mythic manual matrix: lakes/ports/reentry/BR physical arm paths, accepted command self-export, default/explicit F, feature PNG, regression guards and failure focus. Current small Classic/backend tests are partial evidence.",
+    "Actual desktop/narrow RU/EN before/after and states shown to owner; then independent fresh-context review and score_assessment1.2 of exact final SHA. Publication separately approved."
+  ],
+  "next_role": "developer",
+  "next_step": "Продолжить собственный PR486/cded016: подключить компактный UI к editRiverDocument/editRiverFeatures, RiverDraft с общими guards, preview зависимостей и реальные44px targets. Затем desktop/narrow RU/EN, Classic/Mythic AC01–AC11 и независимый review конечного SHA. Старт E5 уже утверждён; публикация отдельно.",
+  "safe_resume": "Only own canonical E5 claim after fresh head/tree/claims verification. Exactcded016/tree83bcd25. resume.in_progress is not resumable worker completion. Foreign041 presentation remains active/source-free; do not duplicate.",
+  "review_ready": false,
+  "accepted": false,
+  "published": false,
+  "release_approved": false,
+  "full_UI_pending": true,
+  "evidence_ref": "agent-work/evidence/HX-BL-023-E5-cded016",
+  "owner_decisions_needed": []
+}
