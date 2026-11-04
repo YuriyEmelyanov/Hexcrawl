@@ -1,0 +1,104 @@
+{
+  "head_sha": "8b98266ef5960535140feb05687bb2c9fac04156",
+  "tree_sha": "47bf96c97aab6dcbb474eb3dbcfc3c043d639508",
+  "checked_at": "2026-11-04T16:25:33.154408Z",
+  "all_required_passed": true,
+  "authoritative_basis": "Complete GitHub job logs and direct job steps completed/success, final-head PR merge tree equals source tree. Top-level run/job-index metadata lags.",
+  "executed": {
+    "Node": {
+      "logical_cases": 286,
+      "executed": 286,
+      "passed": 286,
+      "failed": 0,
+      "skipped": 0,
+      "source": "final-ci-node-check.log, Node runner summary; AST registration count independently agrees",
+      "duration_ms": 618231.292678
+    },
+    "browser": {
+      "unit": "existing scripts",
+      "executed": 8,
+      "passed": 8,
+      "failed": 0,
+      "skipped": 0,
+      "source": "package.json chain + final-ci-browser.log + direct job-step success"
+    },
+    "RNG": {
+      "unit": "existing runner",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "seed_profile_combinations": 8,
+      "additional_contracts": [
+        "R2",
+        "AC06",
+        "AC08",
+        "AC09"
+      ],
+      "source": "final-ci-rng.log + direct job-step success"
+    }
+  },
+  "commands": [
+    {
+      "command": "npm run check",
+      "status": "success",
+      "job_id": 126692600056,
+      "node": "24",
+      "includes": [
+        "tsc --noEmit",
+        "npm test",
+        "npm run build"
+      ],
+      "log": "final-ci-node-check.log"
+    },
+    {
+      "command": "npm run build",
+      "status": "success",
+      "duration_seconds": 9.37,
+      "log": "final-ci-node-check.log"
+    },
+    {
+      "command": "npm run test:browser",
+      "status": "success",
+      "job_id": 126692600639,
+      "chromium": "151.0.7922.34 official Playwright",
+      "log": "final-ci-browser.log"
+    },
+    {
+      "command": "npm run test:browser:rng",
+      "status": "success",
+      "job_id": 126692600637,
+      "chromium": "151.0.7922.34 official Playwright",
+      "log": "final-ci-rng.log"
+    }
+  ],
+  "ci": {
+    "status": "all_required_steps_success_metadata_lags",
+    "run_id": 41863803293,
+    "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41863803293",
+    "head_sha": "8b98266ef5960535140feb05687bb2c9fac04156",
+    "checkout_merge_sha": "e51b0bb46d870e2e2f2a5d282068c6c917aaff08",
+    "checkout_merge_tree": "47bf96c97aab6dcbb474eb3dbcfc3c043d639508",
+    "source_tree": "47bf96c97aab6dcbb474eb3dbcfc3c043d639508",
+    "trees_identical": true,
+    "verification": "git fetch origin refs/pull/486/merge; git rev-parse FETCH_HEAD^{tree} HEAD^{tree}; direct job-step reads each Complete job success; full logs confirm commands.",
+    "job_ids": [
+      126692600056,
+      126692600639,
+      126692600637
+    ],
+    "required_command_steps": "completed/success",
+    "overall_run_conclusion": "not_claimed_stale_metadata",
+    "checked_at": "2026-11-04T16:25:33.154408Z"
+  },
+  "local_diagnostics": {
+    "node": "24.22.1",
+    "chromium": "153.0.8010.0 Sparticuz",
+    "production_build": "success14.23s on checked-out final8b982; final-sha-local-build.log",
+    "browser": "all8scripts passed; final-local-browser.log",
+    "duplicate_full_node": "completed exit0 Node286/286 fail0 skip0; final-local-node-check.log",
+    "duplicate_rng": "completed exit1 local_timeout_unreproduced; final-local-rng-timeout.log, local-diagnostics.json",
+    "note": "Authoritative final-package gates use complete CI logs/direct successful steps, not duplicate incomplete local runs.",
+    "focused_seed_recheck": "PASS exit0; temporary diagnostic only"
+  }
+}

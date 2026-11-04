@@ -1,0 +1,13 @@
+# E5 implementation for independent review
+
+Final source: `8b98266ef5960535140feb05687bb2c9fac04156`, PR486 (draft). Main/release unchanged. Actual UI capture: `862d60c66f75c9069a9d75f3730c86745582f20a`; the final diff is one test teardown line, with production files identical. Final production build independently succeeds with the same JS/CSS asset names. This evidence does not accept or publish the package.
+
+The previous checkpoint exposed create RiverDraft and native feature selectors. The completed package selects an existing river from map/Find, highlights its full physical reach, and offers native F, reverse, route replacement, delete and exact edge/vertex Auto/On/Off. Safe native selection commits immediately. A destructive or conflicting edit opens a named local preview; a deep ford requires an explicit bridge/ferry choice, and a newly invalid manual On requires explicit Off/Auto. The E3 crossing writer has the symmetric marker guard. Confirmation prepares the full transaction again before its single accepted write.
+
+Replacement is transient and can reuse its own old edges. It retains ID, names, tags and the original owner while that owner touches the route; otherwise the actual first-edge owner is shown. The old confirmed river stays exportable. Editor/draft/selected layers are excluded from PNG/SVG clone and JSON exports. Physical hit testing uses current screen transforms and offers explicit choices at overlaps. Native44px targets preserve keyboard/focus behaviour without a permanent toolbar.
+
+The small geometry fix canonicalizes accepted physical vertex keys after validation, retaining old coordinates on reused vertices. Adjacent-hex floating point rounding no longer creates a false change for an unchanged route. No numerical RIV rule or solver limit was relaxed.
+
+The existing mixed100 Node lifecycle now includes E5 features. Existing browser lifecycle/raster/generation runners and the RNG runner are reused. Existing assertions are retained; recognized native checkpoint-loss dialogs get explicit cancel/accept coverage. The E5 teardown closes Find before the existing next block, preserving the original closed-Find assertion. Virtual Date.now and the exact350ms tag cooldown test remain intact.
+
+See acceptance_matrix.json for AC01–11, programmer_score_evidence.json for the eight score1.2 criteria, rule_traceability.json for scoped DND5/L1 bindings, test_change_summary.json for both release-base and current-run comparisons, and user_walkthrough.json for actual chat showing facts and limitations. Independent reviewer must inspect the complete package and record score_assessment1.2. No programmer grade/points are awarded.

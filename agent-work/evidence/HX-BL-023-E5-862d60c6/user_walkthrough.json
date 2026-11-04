@@ -1,0 +1,103 @@
+{
+  "package_sha": "8b98266ef5960535140feb05687bb2c9fac04156",
+  "capture_sha": "862d60c66f75c9069a9d75f3730c86745582f20a",
+  "before_release_sha": "ab75ecb0a5b90888d4e367bfc9a40ecdff8ad429",
+  "production_equivalence_ref": "production_equivalence.json",
+  "scenarios": [
+    {
+      "id": "published-before",
+      "actions": "Published main ab75, same geometry/camera, read selected0,0",
+      "expected_actual": "Existing released read mode",
+      "evidence": [
+        "published-before/before-ru-1500.png",
+        "published-before/before-ru-390.png",
+        "published-before/before-en-1500.png",
+        "published-before/before-en-390.png"
+      ]
+    },
+    {
+      "id": "select-and-native-controls",
+      "actions": "Edit → Find Eira or physical map edge → choose reach/vertex",
+      "expected_actual": "Exact river/reach highlight, native F/features, compact actions RU/EN1500/390",
+      "evidence": [
+        "edit-ru-1500.png",
+        "edit-ru-390.png",
+        "edit-en-1500.png",
+        "edit-en-390.png"
+      ]
+    },
+    {
+      "id": "explicit-crossing",
+      "actions": "F2→3 at ford → explicit Ferry → Confirm",
+      "expected_actual": "Named dependency row; no map write until choice and confirmation",
+      "evidence": [
+        "confirm-ru-1500.png",
+        "confirm-ru-390.png"
+      ]
+    },
+    {
+      "id": "replacement-error",
+      "actions": "Route starts replacement; separate empty replacement Finish",
+      "expected_actual": "Transient own-edge replacement; visible error preserves document",
+      "evidence": [
+        "path-ru-390.png",
+        "error-ru-390.png",
+        "error-detail-ru.png",
+        "error-bounds.json"
+      ]
+    },
+    {
+      "id": "delete-undo",
+      "actions": "Delete river with named dependency preview → Confirm → Undo",
+      "expected_actual": "River/crossing removed together, counter retained; exact restoration",
+      "evidence": [
+        "after-delete-ru-390.png",
+        "undo-ru-390.png"
+      ]
+    }
+  ],
+  "known_limitations": [
+    "Synthetic Chromium viewports, no physical touch devices/full WCAG audit",
+    "Finite fixtures and negative cases; no expert/10000-world naturalness evaluation",
+    "Error is separate native-fixture scene before F/ford change; explicitly not same post-F document"
+  ],
+  "shown_in_chat": true,
+  "shown_materials": [
+    {
+      "path": "edit-ru-1500.png",
+      "method": "inline",
+      "confirmed_by": "root actual chat display"
+    },
+    {
+      "path": "confirm-ru-390.png",
+      "method": "inline",
+      "confirmed_by": "root actual chat display"
+    },
+    {
+      "path": "published-before/before-ru-1500.png",
+      "method": "link",
+      "confirmed_by": "root actual chat display"
+    },
+    {
+      "path": "edit-en-390.png",
+      "method": "inline",
+      "confirmed_by": "root actual chat display"
+    },
+    {
+      "path": "edit-en-1500.png",
+      "method": "link",
+      "confirmed_by": "root actual chat display"
+    },
+    {
+      "path": "error-ru-390.png",
+      "method": "link",
+      "confirmed_by": "root actual chat display"
+    }
+  ],
+  "showing_is_independent_acceptance": false,
+  "release_preview_pending": false,
+  "reviewer_verification": {
+    "status": "pending",
+    "responsible": "independent reviewer"
+  }
+}
