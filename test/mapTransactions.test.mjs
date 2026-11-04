@@ -98,6 +98,33 @@ test('manual edits do not replace generation checkpoints, regenerate rollback re
   h.render().regenerateLastRegion();h.render().finishPendingRegeneration();restore();
   assert.deepEqual(stable(h.render()),before);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks);
   h.render().regenerateLastRegion();h.render().finishPendingRegeneration();const after=stable(h.render());assertUndoRedo(h,before,after);
+  // HX023-E5-R1 / E5-06: deletion is a manual edit too. Both checkpoint
+  // consumers must ask before restoring a river absent from the current map.
+  for(const command of ['deleteLastRegion','regenerateLastRegion'])for(const language of ['ru','en']) {
+    const {h}=setup(42),g=h.geometry;h.render().setLanguage(language);
+    h.render().addFallbackTractToMap({q:0,r:0});
+    const base=h.render().captureDocument().map,a={q:0,r:0},b={q:1,r:0};
+    const region={...base.regions[0],hexes:[a,b],centerHex:a,anchorHex:a,finalSize:2,targetSize:2,pointsOfInterest:[],pointOfInterestKinds:{},heightLevel:1};
+    const other=new Set(g.getHexCornerPoints(b).map(v=>v.key)),path=g.getHexCornerPoints(a).filter(v=>other.has(v.key));
+    h.render().restoreSnapshot({...base,regions:[region],rivers:[],roads:[],crossings:[],hexTerrainByKey:new Map(),waterPoiByKey:new Map(),biomeOverrideByHexKey:new Map(),candidateHexes:g.getCandidateHexes([a,b],new Set()),nextRiverId:1,nextRoadId:1});
+    assert.equal(h.render().editRiverDocument({type:'create',regionId:region.id,path,fullness:2}),true);
+    const id=h.render().rivers[0].id;
+    h.render().addFallbackTractToMap(h.render().candidateHexes[0]);
+    assert.equal(h.render().regions.length,2);assert.ok(h.render().history.at(-1).rivers.some(r=>r.id===id));
+    assert.equal(h.render().editRiverDocument({type:'remove',riverId:id,includeArms:true},{confirmed:true}),true);
+    const before=serial(h.render().captureDocument()),beforeSave=stable(h.render()),stacks=serial([h.render().undoHistory,h.render().redoHistory]);
+    const dialogs=[];h.setWindow({alert(){},confirm:m=>{dialogs.push(m);return false;},matchMedia:()=>({matches:false})});
+    h.render()[command]();
+    assert.equal(dialogs.length,1,command+' warns before restoring deletion');
+    assert.match(dialogs[0],new RegExp(`${language==='ru'?'Река':'River'} ${id}`));
+    assert.deepEqual(serial(h.render().captureDocument()),before,'reject keeps document, RNG and checkpoints');
+    assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks,'reject keeps both stacks');
+    assert.equal(h.render().pendingRegen,null);
+    h.setWindow({alert(){},confirm:()=>true,matchMedia:()=>({matches:false})});
+    h.render()[command]();
+    if(command==='regenerateLastRegion')assert.ok(h.render().pendingRegen,'accept permits regeneration');
+    else {const restored=stable(h.render());assert.equal(restored.map.regions.length,1);assert.ok(restored.map.rivers.some(r=>r.id===id));assertUndoRedo(h,beforeSave,restored);}
+  }
 });
 test('pending file read serializes imports and blocks edits, generation and reset',async()=>{
   const {h}=setup();await load(h,fixture);const before=stable(h.render());

@@ -13543,7 +13543,12 @@ export function App() {
 
   const confirmRiverCheckpointLoss=(checkpoint:MapSnapshot)=>{
     const retained=new Set(checkpoint.regions.map(r=>r.id));
-    const changed=rivers.filter(r=>retained.has(r.regionId)&&JSON.stringify(r)!==JSON.stringify(checkpoint.rivers.find(old=>old.id===r.id)));
+    const currentById=new Map(rivers.map(r=>[r.id,r]));
+    const checkpointById=new Map(checkpoint.rivers.map(r=>[r.id,r]));
+    // A manual deletion is lost too when the older generation checkpoint
+    // restores that river. Compare both identity sets, not only live rivers.
+    const candidates=new Map([...checkpointById,...currentById]);
+    const changed=[...candidates.values()].filter(r=>retained.has(r.regionId)&&JSON.stringify(currentById.get(r.id))!==JSON.stringify(checkpointById.get(r.id)));
     const featuresChanged=JSON.stringify(riverFeatureOverrides)!==JSON.stringify(checkpoint.riverFeatures??emptyRiverFeatures());
     if(!changed.length&&!featuresChanged)return true;
     return window.confirm(language==='ru'?`Будет восстановлено исходное состояние рек. Изменённые русла: ${changed.map(r=>riverLabel(r.id)).join(', ')||'нет'}. Ручные отметки: ${featuresChanged?'будут заменены':'сохранятся'}. Отмена вернёт карту точно. Продолжить?`:`Original river state will be restored. Changed routes: ${changed.map(r=>riverLabel(r.id)).join(', ')||'none'}. Manual markers: ${featuresChanged?'will be replaced':'retained'}. Undo restores this map exactly. Continue?`);
