@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {emptyRiverFeatures,migrateRiverEditing,validateDeltaReferences,allocateRiverId,validateRiverFeatures,prepareRiverFeatureEdit,featuresForSurvivingRivers,prepareRiverEdit,riverFeatureEdge,validateEditedRiverNetwork} from '../src/manualRivers.ts';
+import {emptyRiverFeatures,migrateRiverEditing,validateDeltaReferences,allocateRiverId,validateRiverFeatures,prepareRiverFeatureEdit,featuresForSurvivingRivers,prepareRiverEdit,riverFeatureEdge,validateEditedRiverNetwork,reserveGeneratedRiverIds} from '../src/manualRivers.ts';
 // E5-AC06/07: persistence intentions and identity allocation are new contracts.
 // Existing riverRapids/riverWaterfalls test probability tables; riverModel tests
 // numerical rules. Reuse that core, do not copy its exhaustive truth tables here.
@@ -16,6 +16,13 @@ function context(kinds={}){
 test('E5 migration preserves geometry; monotonic IDs and delta references fail closed',()=>{
  const doc=base(),before=structuredClone(doc);assert.deepEqual(migrateRiverEditing(doc.rivers),{riverFeatures:emptyRiverFeatures(),nextRiverId:6});assert.deepEqual(doc,before);
  assert.deepEqual(allocateRiverId([],6),{id:6,nextRiverId:7});
+ const proposal=[river(5),river(6,[4,5],4),{...river(7,[5,6],2),deltaParentRiverId:6}];
+ const frozen=structuredClone(proposal),allocated=reserveGeneratedRiverIds([proposal[0]],proposal,50);
+ assert.deepEqual(allocated.rivers.map(r=>r.id),[5,50,51]);assert.equal(allocated.rivers[2].deltaParentRiverId,50);assert.equal(allocated.nextRiverId,52);
+ assert.equal(allocated.rivers[0],proposal[0]);assert.ok(allocated.rivers[1].sectors.every(s=>s.riverId===50));assert.deepEqual(proposal,frozen);
+ assert.throws(()=>reserveGeneratedRiverIds([proposal[0]],proposal,Number.MAX_SAFE_INTEGER),/overflow/);assert.deepEqual(proposal,frozen);
+ assert.equal(reserveGeneratedRiverIds([proposal[0]],[proposal[0]],50).nextRiverId,50);
+
  for(const id of [0,-1,5,NaN,'6',6.1])assert.throws(()=>allocateRiverId(doc.rivers,id));
  assert.throws(()=>migrateRiverEditing([{...river(Number.MAX_SAFE_INTEGER)}]),/overflow/);
  for(const parent of [99,5,0,'5'])assert.throws(()=>validateDeltaReferences([{...river(5),deltaParentRiverId:parent}]),/invalid_delta_parent/);

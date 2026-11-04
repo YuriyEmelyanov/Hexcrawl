@@ -112,7 +112,10 @@ try {
  for(const width of [390,1500]) {
    await page.setViewportSize({width,height:1100});await shortName.scrollIntoViewIfNeeded();
    const box=await shortName.boundingBox();assert.ok(box.width>=44&&box.height>0,'short name target at '+width);
-   await page.mouse.click(box.x+30,box.y+box.height/2);
+   // Keep a physical click in the blank30px part; locator action waits for
+   // resize/scroll geometry to stabilize instead of reusing stale viewport coordinates.
+   await shortName.click({position:{x:30,y:box.height/2}});
+   await input().waitFor({state:'visible',timeout:5000});
    assert.equal(await input().count(),1,'blank part of short name target opens editor at '+width);
    await input().press('Escape');
  }
@@ -231,7 +234,7 @@ try {
  // No debounce wait: selection/export must retain the final character.
  await select(`${other.q},${other.r}`);assert.equal(await page.locator('#gm-notes-text').count(),0);
  await select(noteKey);assert.equal(await page.locator('.gm-notes__text').textContent(),noteText);
- const savedNotes=await snapshot();assert.equal(savedNotes.version,6);assert.equal(savedNotes.map.gmNotesByHexKey[noteKey],noteText);
+ const savedNotes=await snapshot();assert.equal(savedNotes.version,7);assert.equal(savedNotes.map.gmNotesByHexKey[noteKey],noteText);
  const stripNotes=d=>{d=structuredClone(d);delete d.map.gmNotesByHexKey;return d;};
  assert.deepEqual(stripNotes(savedNotes),stripNotes(cleanNotes));
  assert.equal(await page.locator('svg').first().textContent().then(s=>s.includes('Жрец пропал')),false);

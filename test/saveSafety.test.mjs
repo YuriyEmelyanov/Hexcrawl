@@ -8,6 +8,10 @@ const h = createGenerationHarness(42);
 h.render().addFallbackTractToMap({q:0,r:0});
 const valid = JSON.parse(JSON.stringify(h.render().createSaveData()));
 const cases = {
+  'v7 missing river features': d => delete d.map.riverFeatures,
+  'v7 array river features': d => d.map.riverFeatures=[],
+  'v7 missing river counter': d => delete d.counters.nextRiverId,
+  'v7 stale river counter': d => d.counters.nextRiverId=0,
   'notes null container': d => d.map.gmNotesByHexKey = null,
   'notes array container': d => d.map.gmNotesByHexKey = [],
   'notes scalar container': d => d.map.gmNotesByHexKey = 'secret',
@@ -38,14 +42,14 @@ for (const filename of ['lake-reentry-map','sea-pocket-map','terrain-display-map
 
 test('generated proposals reject overflow in every allocated ID namespace and counter', () => {
   const proposal = () => ({regions:[{id:1}], rivers:[{id:1}], roads:[{id:1}], kingdoms:[{id:1}],
-    hexTerrainByKey:new Map([['0,0',{lakeId:1}]]), nextLakeId:2, nextRoadId:2, obstacles:[{id:1}], nextObstacleId:2});
+    hexTerrainByKey:new Map([['0,0',{lakeId:1}]]), nextLakeId:2, nextRoadId:2, nextRiverId:2, obstacles:[{id:1}], nextObstacleId:2});
   for (const field of ['regions','rivers','roads','kingdoms','obstacles']) {
     const data=proposal(); data[field].push({id:Number.MAX_SAFE_INTEGER+1});
     assert.throws(()=>assertGeneratedIds(data), undefined, field+' unsafe ID');
     data[field]=[{id:Number.MAX_SAFE_INTEGER},{id:Number.MAX_SAFE_INTEGER}];
     assert.throws(()=>assertGeneratedIds(data), undefined, field+' rounded duplicate');
   }
-  for (const field of ['nextLakeId','nextRoadId','nextObstacleId']) {
+  for (const field of ['nextLakeId','nextRoadId','nextObstacleId','nextRiverId']) {
     const data=proposal(); data[field]=Number.MAX_SAFE_INTEGER+1;
     assert.throws(()=>assertGeneratedIds(data), undefined, field);
     data[field]=Number.MAX_SAFE_INTEGER; assert.doesNotThrow(()=>assertGeneratedIds(data));
@@ -72,6 +76,12 @@ for (const family of ['roadCounter','regionId','lakeCounter','riverId']) {
       for(const s of river.sectors)s.riverId=String(river.id);
       for(const r of data.map.rivers)if(r.deltaParentRiverId===old)r.deltaParentRiverId=river.id;
       for(const c of data.map.crossings)if(c.riverId===old)c.riverId=river.id;
+    }
+    if(family==='riverId'){
+      const alerts=[];t.setWindow({alert:m=>alerts.push(m),matchMedia:()=>({matches:false})});
+      const before=JSON.stringify(t.render().captureDocument()),stacks=JSON.stringify([t.render().undoHistory,t.render().redoHistory]);
+      await t.render().handleImportJson({target:{files:[{text:JSON.stringify(data)}],value:'x'}});
+      assert.equal(alerts.length,1);assert.match(alerts[0],/map.rivers/);assert.equal(JSON.stringify(t.render().captureDocument()),before);assert.equal(JSON.stringify([t.render().undoHistory,t.render().redoHistory]),stacks);return;
     }
     await t.render().handleImportJson({target:{files:[{text:JSON.stringify(data)}],value:'x'}});
     t.render().setSelectedHex(data.map.regions[0].centerHex);

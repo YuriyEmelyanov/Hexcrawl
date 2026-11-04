@@ -44,6 +44,7 @@ export type FeatureEligibility={rapid:(riverId:number,edgeKey:string)=>boolean;w
 export function validateRiverFeatures(value:unknown,rivers:readonly RiverGeometry[],eligibility?:FeatureEligibility):asserts value is RiverFeatures {
   if(!object(value)||!Array.isArray(value.rapids)||!Array.isArray(value.waterfalls))fail('invalid_river_features');
   const data=value as Record<string,unknown[]>;
+  if(data.rapids.length===0&&data.waterfalls.length===0)return;
   const edges=new Map(rivers.map(r=>[r.id,new Set(r.vertexPath.slice(1).map((v,i)=>riverFeatureEdge(r.vertexPath[i],v)))]));
   const vertices=new Set(rivers.flatMap(r=>r.vertexPath.map(v=>v.key)));
   const seen=new Set<string>();
@@ -184,4 +185,29 @@ export function prepareRiverEdit(doc:RiverEditDocument,edit:RiverEdit,ctx:RiverE
   // after it prepares the matching crossings. Never silently discard a forbidden On.
   validateRiverFeatures(riverFeatures,rivers);
   return {...doc,rivers,riverFeatures,nextRiverId};
+}
+
+/** Reserve IDs once a generation proposal is complete, before names/crossings are prepared.
+ * Provisional generator IDs may be below the persisted floor after a deletion.
+ * Existing identities never change; failed proposals never advance a live counter.
+ */
+export function reserveGeneratedRiverIds<R extends EditableRiver>(before:readonly R[],proposal:R[],nextRiverId:number):{rivers:R[];nextRiverId:number}{
+  validateRiverCounter(before,nextRiverId);
+  const existing=new Set(before.map(r=>r.id)),seen=new Set<number>(),remap=new Map<number,number>();
+  let counter=nextRiverId;
+  for(const r of proposal){
+    if(!safe(r.id)||seen.has(r.id))fail('invalid_or_duplicate_generated_river_id');
+    seen.add(r.id);
+    if(!existing.has(r.id)){
+      if(counter>=Number.MAX_SAFE_INTEGER)fail('river_id_overflow');
+      remap.set(r.id,counter++);
+    }
+  }
+  const rivers=proposal.map(r=>{
+    const id=remap.get(r.id)??r.id,parent=r.deltaParentRiverId===undefined?undefined:remap.get(r.deltaParentRiverId)??r.deltaParentRiverId;
+    if(id===r.id&&parent===r.deltaParentRiverId)return r;
+    return {...r,id,...(parent===undefined?{}:{deltaParentRiverId:parent}),sectors:r.sectors.map(s=>({...s,id:id===r.id?s.id:`river-${id}-sector-${s.sectorIndex}`,riverId:typeof s.riverId==='string'?String(id):id}))};
+  });
+  validateDeltaReferences(rivers);validateRiverCounter(rivers,counter);
+  return {rivers,nextRiverId:counter};
 }
