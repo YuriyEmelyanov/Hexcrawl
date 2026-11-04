@@ -1,0 +1,35 @@
+{
+  "id": "HX023-E5-R1",
+  "severity": "P2",
+  "task_id": "HX-BL-023",
+  "stage_id": "E5",
+  "head_sha": "8b98266ef5960535140feb05687bb2c9fac04156",
+  "status": "confirmed",
+  "requirement_refs": [
+    "E5-06",
+    "AC08"
+  ],
+  "area": "checkpoint_loss_preview",
+  "reproduction": [
+    "Create a river using actual App handlers.",
+    "Add an adjacent region, retaining a generation checkpoint containing that river.",
+    "Explicitly delete the river.",
+    "Configure loss confirmation to reject, then execute Delete last region."
+  ],
+  "expected": "Before replacing current document with checkpoint, warn that manual deletion will be lost; rejecting preserves current document/history.",
+  "actual": {
+    "dialogs": [],
+    "before_regions": 2,
+    "after_regions": 1,
+    "before_river_ids": [],
+    "after_river_ids": [
+      1
+    ],
+    "river_restored": true
+  },
+  "root_cause": "Checkpoint loss comparison iterates current rivers only, so a manually removed river is absent from comparison and its restoration is not announced.",
+  "source_location": "src/App.tsx:13544",
+  "required_fix": "Compare current and candidate river identities in both directions and cover relevant coupled dependencies; a user's deletion is a manual edit. Rejecting loss confirmation must keep exact current document/history. Extend existing checkpoint/history scenario instead of duplicate suite.",
+  "temporary_diagnostic": "Independent reviewer real-App-handler bounded probe; not a permanent new test.",
+  "scope_limits": "No general naturalness or all checkpoints claim; final SHA must be independently rechecked after fix."
+}
