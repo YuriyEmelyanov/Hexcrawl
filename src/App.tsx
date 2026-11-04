@@ -14565,7 +14565,8 @@ export function App() {
     const nodes=event.currentTarget.parentElement?.querySelectorAll<SVGCircleElement>('[data-river-draft-vertex]')??[];
     const hits=Array.from(nodes).filter(node=>{const matrix=node.getScreenCTM();return matrix&&node.isPointInFill(new DOMPoint(event.clientX,event.clientY).matrixTransform(matrix.inverse()));});
     if(hits.length>1){setRiverDraftAmbiguity(hits.map(n=>n.dataset.riverDraftVertex!));setIsSidePanelCollapsed(false);setEditError(language==='ru'?'Здесь несколько вершин. Выберите нужную в списке.':'Several vertices overlap. Choose the intended vertex in the list.');return;}
-    appendRiverDraft(key,expected);
+    const hit=hits[0]?.dataset.riverDraftVertex;
+    if(hit)appendRiverDraft(hit,expected);
   };
   const riverDraftPanel=editMode&&regions.length>0?<div className="river-draft-editor" data-river-draft>
     {riverDraft?<>
