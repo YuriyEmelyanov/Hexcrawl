@@ -74,12 +74,14 @@ export function createGenerationHarness(seed = 1, search = '') {
   }
   Object.assign(diagnostics.exports, loadMode(new URL('../../src/generationDiagnostics.ts', import.meta.url)));
   vm.runInContext(compiled, context);
-  delete context.window;
+  // Browser dialogs are accepted by default; individual lifecycle tests exercise cancellation.
+  const windowDefaults={location:{search},matchMedia:()=>({matches:false}),confirm:()=>true};
+  context.window=windowDefaults;
   return {
     render() { cursor = 0; return module.exports.App(); },
     geometry: module.exports.testGeometry, logs,
     guardRandom() { seededMath.random = () => { throw Error("Unexpected Math.random in world operation"); }; },
-    setWindow(value) { context.window=value; },
+    setWindow(value) { context.window={...windowDefaults,...value}; },
     injectFunction(name, replacement) {
       const original = vm.runInContext(name, context);
       context.__replacement = replacement;

@@ -14,7 +14,7 @@ try {
  await new Promise((resolve,reject)=>{let output='';const timer=setTimeout(()=>reject(Error(output)),10000);server.stdout.on('data',data=>{output+=data;if(stripVTControlCharacters(output).includes('Local:')){clearTimeout(timer);resolve();}});server.on('error',reject);server.on('exit',c=>reject(Error('preview '+c)));});
  browser=await chromium.launch({executablePath:process.env.CHROMIUM_EXECUTABLE_PATH||undefined,headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
  const page=await browser.newPage({viewport:{width:1500,height:1100}}), errors=[],alerts=[];
- page.on('pageerror',e=>errors.push(e.message));page.on('dialog',async d=>{alerts.push(d.message());await d.dismiss();});
+ page.on('pageerror',e=>errors.push(e.message));page.on('dialog',async d=>{if(/Будет восстановлено исходное состояние рек|Original river state will be restored/.test(d.message())){await d.accept();return;}alerts.push(d.message());await d.dismiss();});
  await page.route(/mc\.yandex/,route=>route.abort());
  await page.addInitScript(()=>{
    let seed=42;Math.random=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};
