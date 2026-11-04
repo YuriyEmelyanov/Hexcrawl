@@ -1,0 +1,18 @@
+{
+  "task_id": "HX-BL-023", "stage_id": "E5", "checkpoint": "pure_preparation_only",
+  "base_sha": "ab75ecb0a5b90888d4e367bfc9a40ecdff8ad429",
+  "head_sha": "dce7666a11bd19d9579370070bd95e07ce0299f3",
+  "existing_coverage_inspected": ["test/riverModel.test.mjs", "test/riverRapids.test.mjs", "test/riverWaterfalls.test.mjs", "test/manualRoads.test.mjs", "test/mapTransactions.test.mjs", "test/helpers/generation-harness.mjs"],
+  "new_runner_reason": "New independent pure preparation API has identity/migration/feature-intention contracts absent from existing probability/numeric/App tests. Existing RIV truth-table cases are reused through the numerical core rather than duplicated. App history/browser suites will be extended only after integration.",
+  "cases": [
+    {"name":"migration_and_identity", "requirements":["AC07","S02-C02","S02-C03"], "risk":"Deleted highest ID can be reused; dangling/self/chained delta parent and overflow must reject without renumbering."},
+    {"name":"feature_intentions_and_strict_state", "requirements":["AC06","AC07"], "risk":"Off can be lost when automatic result is already empty; coercing arrays to strings can accept invalid state; failed On must preserve input."},
+    {"name":"shared_physical_waterfall_cleanup", "requirements":["AC05","AC06"], "risk":"Deleting one river can wrongly delete a waterfall still referenced by another river at that vertex."},
+    {"name":"hydrological_reach_across_owners", "requirements":["AC01","AC02"], "risk":"A field edit changes only one drawn sector at a region boundary, or writes an illegal non-lake source F."},
+    {"name":"atomic_directed_edits", "requirements":["AC01","AC02","AC05"], "risk":"Reverse, create or delete can bypass geometry/counter/child-confirmation validation or mutate the old document."},
+    {"name":"changed_vs_legacy_component", "requirements":["AC03"], "risk":"A fresh edit either rewrites/rejects an independent old component or accepts a new invalid component."}
+  ],
+  "parameter_payloads_within_cases": {"counter_rejections":6,"invalid_delta_parents":4,"invalid_persisted_feature_states":6,"invalid_creation_paths":5},
+  "counting": "6 Node runner test cases. Payload matrices above are assertions inside those cases, not extra runner cases or additional suites.",
+  "not_evidence_of": ["Actual App history", "JSON v7 import/export", "Live geometry adapter", "Delta/crossing reconciliation", "UI/accessibility", "Whole E5 acceptance", "Any whole model1.2 criterion grade"]
+}
