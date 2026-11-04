@@ -1,0 +1,39 @@
+{
+  "task_id": "HX-BL-023",
+  "stage_id": "E5",
+  "finding_id": "HX023-E5-R3",
+  "status": "ready_for_developer",
+  "role": "developer",
+  "head_sha": "e62da698ab7aa9c3c1209bd8f40a941c6fcc226a",
+  "pr": 486,
+  "spec_ref": "agent-work/specs/HX-BL-023-E5.md",
+  "scope": "Correct E5-06/AC08 checkpoint-loss preview for a new river owned by the last region whose actual sector belongs to retained region. No new product work or numeric/owner-policy changes.",
+  "finding_status": "confirmed_defect_not_missing_presentation_evidence",
+  "inputs": [
+    "agent-work/evidence/review-HX-BL-023-E5-e62da69/report.json",
+    "agent-work/evidence/review-HX-BL-023-E5-e62da69/cross-owner-new-river-probe.mjs",
+    "agent-work/evidence/review-HX-BL-023-E5-e62da69/cross-owner-new-river-probe.json",
+    "agent-work/handoffs/2026-11-04-HX-BL-023-E5-R2-review-ready.json"
+  ],
+  "reproduction": "New river created via actual Add/draft/Finish starts in last region2; global owner2, one sector assigned retained region1,8 path vertices, accepted v7. No checkpoint version. Delete/regenerate in RU/EN with rejecting confirm shows0 dialogs and deletes river including retained sector.",
+  "expected_result": "Destructive preview names any affected manually edited river with a retained component under existing ownership/geometry contracts, even if its global owner belongs to removed region and no checkpoint version exists. Reject preserves exact full Map/Set document, RNG/checkpoints and both nonempty stacks.",
+  "acceptance": [
+    "Reproduce current e62da69 R3 using saved minimal real-App UI probe before correction.",
+    "Account for retained river sectors/actual footprint in both document versions; do not change the legitimate global owner policy, truncate silently, or alter RIV numeric rules to hide preview loss.",
+    "RU/EN deleteLastRegion/regenerateLastRegion: one named warning for cross-region new river, reject exact full document and both nonempty histories, accept completes then exact-document Undo/Redo and v7 validation.",
+    "Preserve independently fixed R1(deleted river) and R2(moved owner) plus existing changed/features warnings.",
+    "Keep no-warning contract for unchanged river and truly last-region-only new river; use explicit sector/geometry evidence rather than assuming global owner describes whole path.",
+    "Extend existing checkpoint lifecycle callback using this distinct missing risk; record base/head logical counts, separate permanent suite and temporary diagnostic.",
+    "New exact SHA and all required Node24 npm run check/build/browser/world-random checks, then fresh independent reviewer for whole E5 and score_assessment1.2."
+  ],
+  "authorization": {
+    "implementation": "Already approved E5 safety correction; no additional start approval required",
+    "release_approved": false,
+    "additional_spend_approved": false
+  },
+  "R1_status": "independently fixed",
+  "R2_status": "independently fixed",
+  "next_role": "developer",
+  "next_step": "Исправить HX023-E5-R3 в PR486: учитывать сохраняемую часть русла новой межрегиональной реки. Затем новый SHA и независимая проверка.",
+  "created_at": "2026-11-04T21:04:47.365Z"
+}
