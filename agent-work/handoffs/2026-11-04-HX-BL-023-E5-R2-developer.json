@@ -1,0 +1,37 @@
+{
+  "task_id": "HX-BL-023",
+  "stage_id": "E5",
+  "finding_id": "HX023-E5-R2",
+  "status": "ready_for_developer",
+  "role": "developer",
+  "head_sha": "4badf0de7dbc11470be1e06b36531410c2fe3474",
+  "pr": 486,
+  "scope": "Correct E5-06/AC08 loss preview when manual replacement relocates a river from checkpoint-retained region into the removed/regenerated last region. Preserve approved RIV/owner semantics and R1 deletion warning.",
+  "inputs": [
+    "agent-work/specs/HX-BL-023-E5.md",
+    "agent-work/evidence/review-HX-BL-023-E5-4badf0d/report.json",
+    "agent-work/evidence/review-HX-BL-023-E5-4badf0d/owner-move-probe.json",
+    "agent-work/evidence/review-HX-BL-023-E5-4badf0d/checkpoint-probe.json"
+  ],
+  "expected_result": "Both checkpoint consumers warn before replacing the manual river state even if its current region owner differs from checkpoint owner; rejecting leaves exact complete document/RNG/history and both Undo/Redo stacks unchanged.",
+  "acceptance": [
+    "Reproduce current4badf0d counterexample before fixing; retain bounded negative evidence.",
+    "Compare identity/content across both current/checkpoint and both owners; no last-map-only filter. Unchanged or exclusively removed-new-region rivers must not cause spurious loss prompts.",
+    "Real App deleteLastRegion/regenerateLastRegion RU/EN: named prompt once; reject preserves exact document incl Maps/Sets, RNG/checkpoints and nonempty redo; accept completes then exact Undo/Redo and v7 reload.",
+    "Retain R1 removed-river warning, existing changed-river/feature warnings and no-op behavior.",
+    "Reuse existing checkpoint logical test rather than duplicate suite; record source-of-counts test_change_summary.",
+    "New exact SHA plus required Node24 npm run check/build/browser/world-random; fresh independent reviewer and score_assessment1.2 before any release."
+  ],
+  "authorization": {
+    "implementation": "Existing approved E5 correction; no new task-start decision required",
+    "release_approved": false,
+    "additional_spend_approved": false
+  },
+  "next_role": "developer",
+  "next_step": "Исправить HX023-E5-R2 в существующей ветке PR486; затем передать новый точный SHA независимому проверяющему.",
+  "does_not_authorize": "New product work, domain-rule changes, added benchmark series, merge or publication.",
+  "finding_status": "confirmed_defect_not_missing_evidence",
+  "R1_status": "deleted-river case independently fixed; R2 adjacent owner move remains",
+  "confirmed_method": "Actual startRiverDraft→appendRiverDraft vertices→finishRiverDraft→preview→confirmRiverCommand; delete/regenerate with rejecting confirm still changes document without prompt.",
+  "created_at": "2026-11-04T19:06:42.228Z"
+}
