@@ -19,6 +19,8 @@
 | agent-operations/agent-work/backlog.json | Единый реестр кандидатов/статусов; не разрешение начать работу |
 | [Очистка](strategy/cleanup-status.md) | Переносы, замены и ограничения |
 
+Дополнительно: [актуальные когорты топ5/10/20](../agent-work/score/cohorts-2026-11-04.json), [связь DND5 DMG2014 с критериями](../agent-work/score/DND5-2014-traceability.md). Текущий процесс требует rule_id→criterion_id→приёмка→evidenceSHA; наличие строки не доказывает поддержку.
+
 ## Доменные правила
 
 | Область | Действующий документ |

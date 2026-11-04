@@ -1,3 +1,7 @@
+## Подключение актуального рейтинга и D&D — 4 ноября 2026
+
+Перед планированием/спецификацией/проверкой использовать agent-work/market/three-scenario-ranking-2026-11-04.json, agent-work/score/cohorts-2026-11-04.json и game-coverage.json. Полный контракт ролей — начало agent-work/process.md. DND5DMG2014: agent-work/score/DND5-2014-traceability.json (51применимое требование из28правил). В каждой передаче ranking_version/cohort_version/scenario/game-edition/rule_id/layer/criterion_id/acceptance/evidenceSHA. Топ20сформирован как набор оценки, покрытиеunverified. Копии прежних когорт ниже/вистории не действующие наборы. Это разрешённая владельцем синхронизация, не изменение весов/баллов/продукта. ТекущийclaimE5не прерывать; другие игры ещё не исследованы.
+
 # Работа над HexCrawl
 
 ## Действующие видение и score1.2
