@@ -1,0 +1,49 @@
+{
+  "base_sha": "dce7666a11bd19d9579370070bd95e07ce0299f3",
+  "head_sha": "35dc28a916909137c4daac8dc847e6c440c8bcca",
+  "source": "git diff of named test cases and existing parameter tables; compare same Node runner. Six existing manualRivers cases were already introduced at base dce7666. Loops inside a test are not additional runner cases. Browser scripts counted separately.",
+  "suites": [
+    {
+      "suite": "Node node:test",
+      "added": 5,
+      "removed": 0,
+      "modified": 7,
+      "scenario_risk": "4 malformed-v7 cases plus 1 native-v7 real-App lifecycle; extend 7 existing cases for allocator/delta remap, counter overflow, migration/history and version contract.",
+      "reuse_or_new_reason": "Extend existing migration/allocation/import/history cases. One native lifecycle is new because pure helpers cannot prove App setter/history/render wiring. No copied RIV numeric/probability matrices."
+    },
+    {
+      "suite": "Playwright browser scripts",
+      "added": 0,
+      "removed": 0,
+      "modified": 1,
+      "scenario_risk": "Existing save-history runner: v7 expectation and physical blank30px short-name click after viewport resize.",
+      "reuse_or_new_reason": "Existing physical-target assertion retained; locator waits element stability and input visibility. No synthetic click or relaxed target assertion."
+    }
+  ],
+  "infrastructure": [
+    "generation-harness exposes real feature eligibility and computed rapid/waterfall layers; no extra test case"
+  ],
+  "parameterized_cases": [
+    "saveSafety cases table:4 new named runner cases",
+    "Existing family=riverId boundary case now requires atomic refusal when legacy max ID leaves no representable next counter;3 other family cases unchanged",
+    "Native lifecycle hostile-input loop remains1 runner case"
+  ],
+  "pr_total": {
+    "base_sha": "ab75ecb0a5b90888d4e367bfc9a40ecdff8ad429",
+    "head_sha": "35dc28a916909137c4daac8dc847e6c440c8bcca",
+    "Node": {
+      "added": 11,
+      "removed": 0,
+      "modified": 6
+    },
+    "browser": {
+      "added": 0,
+      "removed": 0,
+      "modified": 1
+    }
+  },
+  "temporary_reviewer_or_diagnostic_tests": {
+    "permanent_cases": 0,
+    "method": "Instrumented copy of existing save-history script inspected elementFromPoint at390/1500; removed from source tree. Not included in growth counts."
+  }
+}

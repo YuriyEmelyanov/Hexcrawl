@@ -1,0 +1,107 @@
+✔ E5 migration preserves geometry; monotonic IDs and delta references fail closed (8.151939ms)
+✔ E5 feature Auto/Off/On intentions, strict states, no-op and failure leave input unchanged (1.956575ms)
+✔ E5 cleanup preserves shared physical waterfall while deleting only orphaned targets (0.327978ms)
+✔ E5 reach edit spans region boundaries; no-op/failed source change preserves document (15.330305ms)
+✔ E5 reverse/create/delete validate physical path, counter and dependencies without mutation (2.208779ms)
+✔ E5 network validation preserves independent unchanged legacy defects, rejects new ones (0.395629ms)
+✔ import is one exact transaction; invalid and preparation failure preserve both stacks (3555.307868ms)
+✔ all existing manual families, import, reset, and 100 exact undo/redo snapshots (12697.72603ms)
+✖ manual edits do not replace generation checkpoints, regenerate rollback retains undo and redo (287.839241ms)
+✔ pending file read serializes imports and blocks edits, generation and reset (347.749853ms)
+✔ all manifest saves round-trip unchanged entities, names and can continue then undo (6082.747187ms)
+✔ v5 obstacle IDs and counter survive migration, round-trip and history; invalid v5 is atomic (4273.574292ms)
+✔ no-op and failed imports preserve redo; fresh edit clears it; reset on empty is a no-op (325.403017ms)
+✔ notes autosave coalesces a series, preserves redo on no-op, and commits before other operations (516.87947ms)
+✔ import replaces notes exactly and legacy imports clear them; malformed notes preserve full history (415.887875ms)
+✔ delete retains latest surviving notes, confirms loss, undo restores; generation conflict is rejected before commit (58442.54737ms)
+✔ direct names change only the captured locale; exact history, validation, legacy other locale and stale fault guards (16403.348044ms)
+✔ region biome respects stored height and canonical neighbors, keeps all overrides and exact metadata/history (2101.4511ms)
+✔ manual road command commits exactly once and stale callback cannot write after import (347.865523ms)
+✔ road draft is ephemeral, blocks other writes, commits once and stale finish is inert (2322.530383ms)
+✔ reject v7 missing river features (3.931519ms)
+✔ reject v7 array river features (0.382335ms)
+✔ reject v7 missing river counter (0.370017ms)
+✔ reject v7 stale river counter (0.245307ms)
+✔ reject notes null container (0.245266ms)
+✔ reject notes array container (0.259131ms)
+✔ reject notes scalar container (0.212746ms)
+✔ reject notes non-string (0.728254ms)
+✔ reject notes noncanonical key (0.462658ms)
+✔ reject notes orphan (0.476569ms)
+✔ reject notes prototype key (0.369155ms)
+✔ reject road wrong structure (0.406772ms)
+✔ reject fractional axial (0.201441ms)
+✔ reject duplicate region id (0.169092ms)
+✔ reject invalid region enum (0.136588ms)
+✔ reject noncanonical terrain key (0.319892ms)
+✔ reject wrong rotation type (0.683403ms)
+✔ reject wrong scale type (0.49597ms)
+✔ reject unsafe next road counter (0.422479ms)
+✔ reject dangling water POI (0.339159ms)
+✔ supported corpus: lake-reentry-map (10.174771ms)
+✔ supported corpus: sea-pocket-map (5.518956ms)
+✔ supported corpus: terrain-display-map (16.769481ms)
+✔ supported corpus: road-entry-zigzags (1.331763ms)
+✔ generated proposals reject overflow in every allocated ID namespace and counter (1.209921ms)
+✔ imported boundary roadCounter: production continuation stays valid or rolls back whole document (425.747083ms)
+✔ imported boundary regionId: production continuation stays valid or rolls back whole document (999.508351ms)
+✔ imported boundary lakeCounter: production continuation stays valid or rolls back whole document (304.263036ms)
+✖ imported boundary riverId: production continuation stays valid or rolls back whole document (221.544428ms)
+✔ exhausted kingdom ID refuses production start and preserves document and both stacks (1476.34307ms)
+✔ notes versions 2/3/4/5 accept exact text on actual land/water; v4+ require RNG and future versions reject (2.517294ms)
+✔ independent columns preserve sibling overrides and counters; product tuple selects one of 72 complete records (7.474155ms)
+✔ saved tags validate references, tuples, counts and known snapshots; future dictionary is read-only data (19.279754ms)
+✔ equal independent dice expose distinct localized purposes and current edited results without visible labels (110.595978ms)
+✔ production imported legacy map does not roll; explicit fill and separate rerolls are exact reversible transactions and v6 roundtrip (4434.138417ms)
+✔ actual tag commands do not consume world RNG, double click is one command, deletion prunes and undo restores (6767.600376ms)
+ℹ tests 56
+ℹ suites 0
+ℹ pass 54
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 110386.694923
+
+✖ failing tests:
+
+test at test/mapTransactions.test.mjs:87:1
+✖ manual edits do not replace generation checkpoints, regenerate rollback retains undo and redo (287.839241ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+      counters: {
+        nextLakeId: 1,
+        nextObstacleId: 1,
+  +     nextRiverId: 1,
+  -     nextRiverId: 3,
+        nextRoadId: 3
+      },
+      generation: {
+        generatorVersion: 'regions-2026-10-24-rng.1',
+        masterSeed: 42,
+  
+      at TestContext.<anonymous> (file:///workspace/hexcrawl-e5-resume/test/mapTransactions.test.mjs:95:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { schema: 'hexcrawl-map', generation: { generatorVersion: 'regions-2026-10-24-rng.1', rngVersion: 'mulberry32-v1', masterSeed: 42, streams: [Object] }, version: 7, map: { riverFeatures: [Object], tags: [Object], gmNotesByHexKey: {}, kingdoms: [], obstacles: [], regions: [Array], candidateHexes: [Array], rivers: [Array], roads: [Array], crossings: [Array], terrainByHexKey: {}, waterPoiByHexKey: {}, biomeOverrideByHexKey: [Object], toponyms: [Object] }, counters: { nextLakeId: 1, nextRoadId: 3, nextObstacleId: 1, nextRiverId: 1 }, ui: { generationMode: 'classic', selectedHex: [Object], isMapRotated: false, mapScale: 1 } },
+    expected: { schema: 'hexcrawl-map', generation: { generatorVersion: 'regions-2026-10-24-rng.1', rngVersion: 'mulberry32-v1', masterSeed: 42, streams: [Object] }, version: 7, map: { riverFeatures: [Object], tags: [Object], gmNotesByHexKey: {}, kingdoms: [], obstacles: [], regions: [Array], candidateHexes: [Array], rivers: [Array], roads: [Array], crossings: [Array], terrainByHexKey: {}, waterPoiByHexKey: {}, biomeOverrideByHexKey: [Object], toponyms: [Object] }, counters: { nextLakeId: 1, nextRoadId: 3, nextObstacleId: 1, nextRiverId: 3 }, ui: { generationMode: 'classic', selectedHex: [Object], isMapRotated: false, mapScale: 1 } },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/saveSafety.test.mjs:66:3
+✖ imported boundary riverId: production continuation stays valid or rolls back whole document (221.544428ms)
+  Error: Не удалось загрузить JSON: некорректные данные (map.rivers: river migration overflow). Текущая карта сохранена.
+      at Object.alert (file:///workspace/hexcrawl-e5-resume/test/saveSafety.test.mjs:68:34)
+      at Object.handleImportJson (evalmachine.<anonymous>:12552:20)
+      at async TestContext.<anonymous> (file:///workspace/hexcrawl-e5-resume/test/saveSafety.test.mjs:80:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
