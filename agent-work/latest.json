@@ -4759,7 +4759,7 @@
     }
   },
   "shared_rules_system": {
-    "version": "shared-rules-1.0",
+    "version": "shared-rules-1.2",
     "status": "active_verified_registry_and_evaluator",
     "commit_sha": "e063e45631ebdfc851475bce5ae5722852b8c70a",
     "registry_ref": "agent-work/rules/common-rules.json",
@@ -4768,9 +4768,9 @@
     "evaluator_ref": "agent-work/rules/evaluate-coverage.py",
     "workflow_ref": "agent-work/rules/README.md",
     "result_ref": "agent-work/results/2026-11-04-shared-rules-system.json",
-    "canonical_count": 47,
+    "canonical_count": 76,
     "DND5_source_requirements": 51,
-    "PF2_status": "not_analysed_yet_reuse_existing_rules_in_next_source_pass",
+    "PF2_status": "62 source groups,104 applicable requirements; source profiles/product unverified; further dependencies pending",
     "coverage_status": "unverified",
     "scores_unchanged": true,
     "automation_health": {
@@ -4784,57 +4784,150 @@
         "is_enabled": true
       },
       "restored": false
-    }
+    },
+    "previous_version": "shared-rules-1.0",
+    "PF2_source_requirements": 104,
+    "source_update_commit": "a6b0c8cd1f439acb4bfffc44ca9da06fd5a5329c",
+    "source_update_result": "agent-work/results/2026-11-04-business-analyst-PF2-environment.json"
   },
   "PF2_rules_research": {
-    "run_id": "2026-11-04-business-analyst-PF2-rules",
+    "run_id": "2026-11-04-business-analyst-PF2-environment",
     "role": "business_analyst",
-    "status": "bounded_source_research_completed_product_unverified",
-    "result_ref": "agent-work/results/2026-11-04-business-analyst-PF2-rules.json",
+    "status": "bounded_source_stage_completed_further_dependencies_pending",
+    "result_ref": "agent-work/results/2026-11-04-business-analyst-PF2-environment.json",
     "report_ref": "agent-work/market/rules/PF2-Remaster.md",
     "matrix_ref": "agent-work/market/rules/PF2-Remaster.json",
-    "materials_commit": "904bdaf664845a2271d473d35bf1a4afbb7a4627",
+    "materials_commit": "a6b0c8cd1f439acb4bfffc44ca9da06fd5a5329c",
     "comparison": {
-      "source_rules": 43,
+      "source_rules": 62,
       "core_rules": 29,
       "related_rules": 14,
       "baseline_source_rules": 28,
-      "matched_PF2_rules": 30,
+      "matched_PF2_rules": 38,
       "matched_core_rules": 21,
       "unique_DND_rules_matched": 16,
       "same_meaning_source_groups": 2,
-      "analogous_with_differences": 28,
-      "no_analogue_in_bounded_DND_baseline": 13,
-      "PF2_more_explicit_in_this_comparison": 20,
-      "applicable_requirements": 66,
-      "positions": 129,
-      "not_applicable": 63,
+      "analogous_with_differences": 36,
+      "no_analogue_in_bounded_DND_baseline": 24,
+      "PF2_more_explicit_in_this_comparison": 21,
+      "applicable_requirements": 104,
+      "positions": 186,
+      "not_applicable": 82,
       "applicable_by_layer": {
-        "L1": 17,
-        "L2": 26,
-        "L3": 23
+        "L1": 23,
+        "L2": 39,
+        "L3": 42
       },
-      "canonical_rules_used": 48,
-      "canonical_rules_reused_from_DND": 22,
-      "new_canonical_rules": 26,
-      "fully_verified_product_rules": 0
+      "canonical_rules_used": 55,
+      "canonical_rules_reused_from_DND": 26,
+      "new_canonical_rules": 29,
+      "fully_verified_product_rules": 0,
+      "environment_climate_disaster_rules": 19
     },
     "automation_health": {
       "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
       "start": {
-        "checked_at": "2026-11-04T09:44:15.126Z",
+        "checked_at": "2026-11-04T11:07:07.154Z",
         "is_enabled": true
       },
       "end": {
-        "checked_at": "2026-11-04T11:01:12.129Z",
+        "checked_at": "2026-11-04T11:22:55.155Z",
         "is_enabled": true
       },
-      "restoration_performed": false,
+      "restoration_performed": true,
       "errors": [],
-      "limitation": "Observed at peek times only; no guarantee after completion."
+      "limitation": "Point-in-time peek observations only; no guarantee after run completion.",
+      "observations": [
+        {
+          "checked_at": "2026-11-04T11:07:07.154Z",
+          "is_enabled": true
+        },
+        {
+          "checked_at": "2026-11-04T11:16:48.912Z",
+          "is_enabled": true
+        },
+        {
+          "checked_at": "2026-11-04T11:22:13.124Z",
+          "is_enabled": false,
+          "event": "unexpected_disabled_observed_cause_unknown"
+        },
+        {
+          "checked_at": "2026-11-04T11:22:55.155Z",
+          "is_enabled": true,
+          "event": "restoration_confirmed"
+        }
+      ],
+      "restoration": {
+        "action": "update(is_enabled=true)_same_ID_only",
+        "confirmed_at": "2026-11-04T11:22:55.155Z",
+        "authority": "owner-decision-2026-10-25-automation-health plus later owner resume/hourly decision",
+        "decision_check": "31Oct pause is older than recorded Nov3 hourly enabled decision and visible owner Nov3 «Включай.Запуск каждый час». No newer stop instruction or confirmed total blocker found.",
+        "evidence_ref": "agent-work/results/2026-11-03-owner-team-hourly.json",
+        "schedule_or_prompt_changed": false,
+        "disable_cause": "unknown"
+      }
     },
     "next_role": "business_analyst",
-    "next_step": "Продолжить PF2 источники Environments90–97/применимые опасности и недостающие базовые действия отдельно; текущий E5 claim разработчика сохранён.",
-    "authorization": "Direct owner source-research instruction; no new product development or release."
+    "next_step": "PF2 environment_features:нормализовать особенности сред GM Core90–94 без повтора климата/бедствий; затем Hazard Rules и природные карточки98–108,Climb/Swim/Balance/утопление. E5 claim не изменён.",
+    "authorization": "Direct owner source-research instruction; no new product development or release.",
+    "previous_result_ref": "agent-work/results/2026-11-04-business-analyst-PF2-rules.json",
+    "previous_materials_commit": "904bdaf664845a2271d473d35bf1a4afbb7a4627",
+    "handoff_ref": "agent-work/handoffs/2026-11-04-PF2-environment-next.json"
+  },
+  "latest_PF2_environment_run": {
+    "run_id": "2026-11-04-business-analyst-PF2-environment",
+    "role": "business_analyst",
+    "task_id": "owner-request-PF2-rules",
+    "stage_id": "climate-natural-disasters",
+    "result_ref": "agent-work/results/2026-11-04-business-analyst-PF2-environment.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-04-PF2-environment-next.json",
+    "status": "bounded_source_stage_completed_further_dependencies_pending",
+    "recorded_at": "2026-11-04T11:22:55.155Z",
+    "next_role": "business_analyst",
+    "next_step": "PF2 environment_features:нормализовать особенности сред GM Core90–94 без повтора климата/бедствий; затем Hazard Rules и природные карточки98–108,Climb/Swim/Balance/утопление. E5 claim не изменён.",
+    "authorization": "Existing explicit source-research instruction; no product development/release permission inferred.",
+    "automation_health": {
+      "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "start": {
+        "checked_at": "2026-11-04T11:07:07.154Z",
+        "is_enabled": true
+      },
+      "end": {
+        "checked_at": "2026-11-04T11:22:55.155Z",
+        "is_enabled": true
+      },
+      "restoration_performed": true,
+      "errors": [],
+      "limitation": "Point-in-time peek observations only; no guarantee after run completion.",
+      "observations": [
+        {
+          "checked_at": "2026-11-04T11:07:07.154Z",
+          "is_enabled": true
+        },
+        {
+          "checked_at": "2026-11-04T11:16:48.912Z",
+          "is_enabled": true
+        },
+        {
+          "checked_at": "2026-11-04T11:22:13.124Z",
+          "is_enabled": false,
+          "event": "unexpected_disabled_observed_cause_unknown"
+        },
+        {
+          "checked_at": "2026-11-04T11:22:55.155Z",
+          "is_enabled": true,
+          "event": "restoration_confirmed"
+        }
+      ],
+      "restoration": {
+        "action": "update(is_enabled=true)_same_ID_only",
+        "confirmed_at": "2026-11-04T11:22:55.155Z",
+        "authority": "owner-decision-2026-10-25-automation-health plus later owner resume/hourly decision",
+        "decision_check": "31Oct pause is older than recorded Nov3 hourly enabled decision and visible owner Nov3 «Включай.Запуск каждый час». No newer stop instruction or confirmed total blocker found.",
+        "evidence_ref": "agent-work/results/2026-11-03-owner-team-hourly.json",
+        "schedule_or_prompt_changed": false,
+        "disable_cause": "unknown"
+      }
+    }
   }
 }
