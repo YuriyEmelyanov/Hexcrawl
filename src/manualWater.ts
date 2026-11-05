@@ -95,7 +95,7 @@ export function prepareWaterGeometry<T extends WaterRegion>(doc:{regions:T[];hex
     const selectedPart=edit.splitKeep?.[String(id)]??parts[0][0];if(!parts.some(c=>c[0]===selectedPart))fail('split_choice',String(id));keep.set(id,selectedPart);
     if(parts.length>1)choices.push({type:'split',key:String(id),lakeId:id,value:selectedPart,allowed:parts.map(c=>c[0])});
   }
-  const maxId=Math.max(0,...beforeLakes.keys());
+  const maxId=[...beforeLakes.keys()].reduce((maximum,id)=>Math.max(maximum,id),0);
   let nextLakeId=doc.nextLakeId;const newLakeIds:number[]=[];
   if(!Number.isSafeInteger(nextLakeId)||nextLakeId<=maxId)fail('lake_counter');
   for(const component of active){

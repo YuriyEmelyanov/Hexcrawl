@@ -1073,6 +1073,14 @@ function prepareWaterMapEdit(map:MapSnapshot,edit:WaterEdit,options:WaterEditOpt
   const beforeContext=buildManualRiverGeometryContext(map);
   let candidate:MapSnapshot={...map,regions:geometry.regions,hexTerrainByKey:geometry.hexTerrainByKey,nextLakeId:geometry.nextLakeId};
   const affectedKeys=new Set(geometry.changedHexKeys),losses:WaterLoss[]=[];
+  const formerOwner=new Map(map.regions.flatMap(r=>r.hexes.map(h=>[hexKey(h),r.id] as const)));
+  const nextOwner=new Map(candidate.regions.flatMap(r=>r.hexes.map(h=>[hexKey(h),r] as const)));
+  for(const region of candidate.regions)for(const h of region.hexes)if(!formerOwner.has(hexKey(h))){
+    for(const adjacent of getHexNeighbors(h)){const other=nextOwner.get(hexKey(adjacent));
+      if(other&&other.id!==region.id&&region.biomeId!==other.biomeId&&!isBiomesCompatible(region.biomeId,other.biomeId,BIOME_COMPATIBILITY_MATRIX))throw new WaterEditError('biome_boundary',String(region.id),String(other.id),hexKey(h));
+    }
+  }
+
   const wet=(m:MapSnapshot,h:AxialHex)=>waterKindAt(m.hexTerrainByKey,hexKey(h))!=='land';
   const owner=(m:MapSnapshot,key:string)=>m.regions.find(r=>r.hexes.some(h=>hexKey(h)===key));
   const known=(m:MapSnapshot,key:string)=>!!owner(m,key)||m.hexTerrainByKey.has(key);
@@ -1098,7 +1106,7 @@ function prepareWaterMapEdit(map:MapSnapshot,edit:WaterEdit,options:WaterEditOpt
     for(const h of[s.from,s.to])if(!wet(map,h)&&wet(candidate,h))throw new WaterEditError('road_water',String(road.id),hexKey(h));
     for(const h of[s.from,s.to])if(roadDegree.get(hexKey(h))===1){
       const wasValid=destination(map,hexKey(h))||open(map,h),isValid=destination(candidate,hexKey(h))||open(candidate,h);
-      if(wasValid&&!isValid)throw new WaterEditError('road_end',String(road.id),hexKey(h));
+      if(!isValid&&(wasValid||wet(map,h)!==wet(candidate,h)))throw new WaterEditError('road_end',String(road.id),hexKey(h));
     }
   }
   const obstacles=(map.obstacles??[]).filter(o=>{
@@ -1106,8 +1114,11 @@ function prepareWaterMapEdit(map:MapSnapshot,edit:WaterEdit,options:WaterEditOpt
   });
   candidate={...candidate,obstacles,candidateHexes:getCandidateHexes(candidate.regions.flatMap(r=>r.hexes),getSeaHexKeys(candidate.hexTerrainByKey))};
   const afterContext=buildManualRiverGeometryContext(candidate);
-  const support=(r:River,ctx:ReturnType<typeof buildManualRiverGeometryContext>)=>JSON.stringify(r.vertexPath.map((v,i)=>[v.key,ctx.geometry.lakeByVertex.get(v.key),ctx.geometry.seaVertices.has(v.key),ctx.geometry.openVertices.has(v.key),ctx.reason?.(v.key,i===0,i===0||i===r.vertexPath.length-1,r)]));
-  const rivers=map.rivers.map(r=>support(r,beforeContext)===support(r,afterContext)?r:rebuildRiverWaterSectors(r,afterContext) as River);
+  const support=(r:River,ctx:ReturnType<typeof buildManualRiverGeometryContext>)=>JSON.stringify(r.vertexPath.map((v,i)=>[v.key,ctx.geometry.lakeByVertex.get(v.key),ctx.geometry.lakeHexCount.get(ctx.geometry.lakeByVertex.get(v.key)??''),ctx.geometry.seaVertices.has(v.key),ctx.geometry.openVertices.has(v.key),ctx.reason?.(v.key,i===0,i===0||i===r.vertexPath.length-1,r)]));
+  const rivers=map.rivers.map(r=>{
+    if(support(r,beforeContext)===support(r,afterContext))return r;
+    try{return rebuildRiverWaterSectors(r,afterContext) as River;}catch{throw new WaterEditError('river_unverified',String(r.id));}
+  });
   try{
     validateEditedRiverNetwork(map.rivers,rivers,afterContext,beforeContext);
     validateEditedRiverDeltas(map.rivers,rivers,afterContext.geometry,beforeContext.geometry);
@@ -13307,6 +13318,8 @@ export function App() {
       road_water:ru?`Дорога / тропа ${first}, гекс ${second}, окажется под водой. Измените выделение или сначала измените путь.`:`Road / trail ${first} at ${second} would be underwater. Change the selection or edit the path first.`,
       road_end:ru?`Путь ${first} потеряет назначение или выход у ${second}. Сначала измените путь.`:`Path ${first} would lose its destination or exit at ${second}. Edit the path first.`,
       lake_overflow:ru?'Невозможно выделить новый ID озера.':'No new lake ID is available.',lake_counter:ru?'Некорректный счётчик озёр.':'Invalid lake counter.',
+      river_unverified:ru?`Не удалось подтвердить полноводность или геометрию реки «${waterName(`river:${first}`)}». Сначала исправьте реку.`:`Fullness or geometry of river “${waterName(`river:${first}`)}” could not be verified. Edit the river first.`,
+      biome_boundary:ru?`Регион «${waterName(`region:${first}`)}» несовместим с соседним «${waterName(`region:${second}`)}» по биому. Выберите другой регион или сначала измените биом.`:`Region “${waterName(`region:${first}`)}” conflicts with neighbour “${waterName(`region:${second}`)}” by biome. Choose another region or change its biome first.`,
       river_reentry:ru?`Река «${waterName(`river:${first}`)}» повторно войдёт в озеро «${waterName(`lake:${second}`)}». Измените берег или русло.`:`River “${waterName(`river:${first}`)}” would re-enter lake “${waterName(`lake:${second}`)}”. Change the shore or route.`,
       enclosed_sea:ru?'Замкнутый водоём должен быть озером.':'An enclosed body must be a lake.',
       crossing_kind:ru?'Выберите допустимый вид переправы; глубокий брод запрещён.':'Choose a valid crossing type; a deep ford is not allowed.',

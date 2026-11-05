@@ -154,6 +154,7 @@ test('RIV-EX-21 lake shared by two regions counts unique hexes and all ports onc
   let expanded;
   for(const h of ring){try{const plan=g.prepareWaterMapEdit(waterMap,{target:'lake',hexKeys:[g.hexKey(h)]});if(plan.geometry.unresolved.length===0&&!plan.losses.length){expanded=plan;break;}}catch{}}
   assert.ok(expanded,'at least one real free shore supports expansion with all three fixed ports');
+  const unverified={...waterMap,rivers:waterMap.rivers.map((r,i)=>i?r:{...r,sectors:[]})};assert.throws(()=>g.prepareWaterMapEdit(unverified,{target:'lake',hexKeys:expanded.geometry.changedHexKeys.filter(k=>waterMap.hexTerrainByKey.get(k)?.terrainOverride!=='lake')}),/river_unverified/,'changed lake area cannot borrow an unknown fixed-F legacy allowance');
   assert.deepEqual(values(expanded.map.rivers),values(actual));assert.deepEqual(expanded.map.rivers.map(r=>r.vertexPath),actual.map(r=>r.vertexPath));
   assert.equal(JSON.stringify({...waterMap,hexTerrainByKey:[...waterMap.hexTerrainByKey]}),exact,'physical water preflight is detached on success and failure');
 
