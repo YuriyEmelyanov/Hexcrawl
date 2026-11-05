@@ -13372,7 +13372,13 @@ export function App() {
       // Both full snapshots, validation and all allocation are ready before any setter.
       const before=copyDocument(captureDocument()),after=copyDocument({...captureDocument(),map:plan.map});
       recordTransaction(before,after);applyPreparedDocument(after);return true;
-    }catch(error){updateWaterDraft({...draft,preview:true});setEditError(waterCommandError(error));return false;}
+    }catch(error){
+      if(!(error instanceof WaterEditError)&&!(error instanceof TagCapacityError)){
+        // Retain the original cause/stack without attaching map or authored data.
+        try{console.error('Water edit preparation failed',error);}catch{/* Diagnostics must not interrupt the atomic refusal. */}
+      }
+      updateWaterDraft({...draft,preview:true});setEditError(waterCommandError(error));return false;
+    }
   };
   const recordGenerated = (checkpoint: MapSnapshot, map: MapSnapshot, selection: AxialHex,
     backup?: GenerationBackup, checkpoints = history) => {

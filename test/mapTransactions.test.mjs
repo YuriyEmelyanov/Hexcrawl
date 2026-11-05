@@ -656,7 +656,17 @@ test('E6 water cancel/no-op/stale callbacks and snapshot failure preserve map an
  h.render().startWaterDraft('lake');const old=h.render(),draft=old.waterDraft;old.toggleWaterHex('1,0',draft);assert.equal(old.finishWaterDraft(draft,true),false,'stale closure must not act on changed mask');
  h.render().changeNotesText('0,0','must be blocked');h.render().undoMap();assert.deepEqual(stable(h.render()),before);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks);
  h.render().resetWaterDraft();assert.deepEqual(stable(h.render()),before);
- h.render().startWaterDraft('lake');const fail=h.injectFunction('structuredClone',()=>{throw Error('injected water snapshot failure');});assert.equal(h.render().finishWaterDraft(),false);fail();assert.deepEqual(stable(h.render()),before);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks);
+ h.render().startWaterDraft('lake');
+ const failure=Error('injected water snapshot failure'),failureStack=failure.stack,logStart=h.logs.length;
+ const fail=h.injectFunction('structuredClone',()=>{throw failure;});assert.equal(h.render().finishWaterDraft(),false);fail();
+ const diagnostics=h.logs.slice(logStart);assert.equal(diagnostics.length,1,'unexpected failure is retained once');assert.equal(diagnostics[0].level,'error');assert.equal(diagnostics[0].args.length,2,'no map or notes are appended to diagnostics');assert.match(diagnostics[0].args[0],/water/i);assert.equal(diagnostics[0].args[1],failure,'keep the original Error');assert.equal(diagnostics[0].args[1].stack,failureStack,'keep its original stack');
+ assert.equal(h.render().waterDraft.preview,true,'failed preparation retains the draft for correction');assert.deepEqual(stable(h.render()),before);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks);
+ for(const expected of [new h.geometry.WaterEditError('sea_minimum'),new h.geometry.TagCapacityError('owner')]){
+  const start=h.logs.length,restore=h.injectFunction('structuredClone',()=>{throw expected;});assert.equal(h.render().finishWaterDraft(),false);restore();assert.equal(h.logs.length,start,'expected domain refusals do not emit unexpected-error diagnostics');
+  assert.ok(h.render().waterDraft);assert.deepEqual(stable(h.render()),before);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks);
+ }
+ const failAgain=h.injectFunction('structuredClone',()=>{throw failure;}),restoreLogger=h.injectFunction('console.error',()=>{throw Error('injected diagnostic sink failure');});
+ assert.equal(h.render().finishWaterDraft(),false,'diagnostic sink failure cannot escape the atomic refusal');failAgain();restoreLogger();assert.ok(h.render().waterDraft);assert.deepEqual(stable(h.render()),before);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks);
  h.render().resetWaterDraft();h.render().startWaterDraft('lake');const current=h.render(),captured=current.waterDraft;assert.equal(current.finishWaterDraft(captured),true);assert.equal(current.finishWaterDraft(captured),false,'double completion must not commit twice');assert.equal(h.render().undoHistory.length,stacks[0].length+1);
 });
 
