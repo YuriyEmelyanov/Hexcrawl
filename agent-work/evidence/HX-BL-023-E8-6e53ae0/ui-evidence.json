@@ -1,0 +1,469 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-023",
+  "stage_id": "E8.1",
+  "status": "developer_verified_pending_independent_review",
+  "base_sha": "8d578e75c4c645eb94b819ce761d6543a1245cf9",
+  "stage_base_sha": "9aa08bbe24bc8d83bf50ca2eea1b16cb70335d7f",
+  "release_base_sha": "2ef5cc35107f299c309b7c8065a1e81ca9881278",
+  "head_sha": "6e53ae0d5c3996fe8fca04fb194439e2a1c4391e",
+  "head_tree": "0b64baa1b8a1082a727890124c0b70d9ebfbfc5c",
+  "branch": "agent/hx023-e8-poi-move",
+  "local_path": "/workspace/scratch/60e61b33a6a0/e8-development",
+  "spec_ref": "agent-work/specs/HX-BL-023-E8.md",
+  "spec_blob": "24f20ae2cd72845d04680dc454697b540b0e4c8b",
+  "checks": {
+    "Node_check": {
+      "status": "passed",
+      "head_sha": "6e53ae0d5c3996fe8fca04fb194439e2a1c4391e",
+      "command": "npm run check",
+      "includes": [
+        "TypeScript",
+        "Node tests",
+        "production build"
+      ],
+      "node": "24.22.1",
+      "executed": 336,
+      "passed": 336,
+      "failed": 0,
+      "skipped": 0,
+      "duration_ms": 470839.623663,
+      "log": "reports/HX-BL-023-E8/ui-check-6e53ae0.log"
+    },
+    "browser": {
+      "status": "passed",
+      "head_sha": "6e53ae0d5c3996fe8fca04fb194439e2a1c4391e",
+      "command": "npm run test:browser",
+      "browser": "Chromium153.0.8010.0",
+      "scripts_executed": 8,
+      "scripts_passed": 8,
+      "scripts_failed": 0,
+      "scripts_skipped": 0,
+      "logical_test_case_count": null,
+      "log": "reports/HX-BL-023-E8/ui-browser-6e53ae0.log",
+      "note": "Eight monolithic smoke scripts;new POI workflow is within save-history,not a ninth script or Node cases"
+    },
+    "RNG": {
+      "status": "passed",
+      "head_sha": "6e53ae0d5c3996fe8fca04fb194439e2a1c4391e",
+      "command": "npm run test:browser:rng",
+      "scripts_executed": 1,
+      "scripts_passed": 1,
+      "scripts_failed": 0,
+      "scripts_skipped": 0,
+      "logical_test_case_count": null,
+      "log": "reports/HX-BL-023-E8/ui-rng-6e53ae0.log",
+      "note": "Separate production UI reproducibility/continuation/stale import/click checks;not summed with Node or browser"
+    }
+  },
+  "test_change_summary": {
+    "base_sha": "8d578e75c4c645eb94b819ce761d6543a1245cf9",
+    "head_sha": "6e53ae0d5c3996fe8fca04fb194439e2a1c4391e",
+    "node": {
+      "added": 8,
+      "removed": 0,
+      "modified": 0,
+      "suites": [
+        {
+          "file": "test/saveSafety.test.mjs",
+          "added": 4,
+          "removed": 0,
+          "modified": 0,
+          "cases": [
+            {
+              "name": "`E8 paired name form commits and clears one atomic ${context} POI`",
+              "count": 3
+            },
+            {
+              "name": "'E8 paired name form rejects half-pairs,duplicates and captured old secondary-field writes'",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "file": "test/regionEditing.test.mjs",
+          "added": 4,
+          "removed": 0,
+          "modified": 0,
+          "cases": [
+            {
+              "name": "`E8 real POI move is one exact transaction with full payload and literal hex notes ${mode}`",
+              "count": 2
+            },
+            {
+              "name": "'E8 real move cancels/no-ops without consuming Redo and captured handlers cannot act on a new document'",
+              "count": 1
+            },
+            {
+              "name": "'E8 actual path refusal and snapshot fault leave document and both histories exact'",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "source": "TypeScript AST test() name/body diff;literal for-of contexts expanded;328→336 runner cases;helpers excluded",
+      "scenario_risk": "Paired name three address contexts and invalid/stale/fault rejection;actual move Classic/Mythic history and full tag payload;no-op/new-document stale/doubleDone;path/fault atomic refusal",
+      "reuse_or_new_reason": "Existing saveSafety and regionEditing suites/fixtures reused;pure coordinate policy cases do not exercise real App transaction wiring;existing layout assertion reused to catch and fix regression"
+    },
+    "browser": {
+      "added_workflows": 1,
+      "removed_workflows": 0,
+      "modified_existing_workflows": 0,
+      "runner_test_case_count": null,
+      "suite": "test/browser/save-history.smoke.mjs imports test/browser/poi-lifecycle.mjs",
+      "scenario_risk": "Actual pair focus/Tab,physical map target and invalid hit,pan/rotation,accepted-only JSON,transition gates,UndoRedo,path refusal,water/Mythic,central protection,RU/EN1500/390/320",
+      "reuse_or_new_reason": "Extended existing production runner,not a new service/corpus;existing eight scripts retained"
+    },
+    "temporary_diagnostic": {
+      "added_permanent_cases": 0,
+      "workflows_executed": 1,
+      "workflows_passed": 1,
+      "workflows_failed": 0,
+      "workflows_skipped": 0,
+      "method": "Actual App VM-state harness,one finite Classic E2→E8 sequence with literal per-step UndoRedo and finalv8reload",
+      "source": ".e8-combined-driver.mjs",
+      "manifest": "reports/HX-BL-023-E8/ui-combined-diagnostic.json",
+      "note": "Development diagnosis,not independent reviewer evidence or permanent test growth"
+    }
+  },
+  "files": {
+    "ui-check-6e53ae0.log": {
+      "path": "reports/HX-BL-023-E8/ui-check-6e53ae0.log",
+      "sha256": "e7ae0a62eb91e14fe21ea79fcf4397288d40cac65bdb51cab3e6bcba4a3ac36e",
+      "bytes": 34596
+    },
+    "ui-browser-6e53ae0.log": {
+      "path": "reports/HX-BL-023-E8/ui-browser-6e53ae0.log",
+      "sha256": "19b6264dd07a4f86cf9e9c24693ddbfec301d58d2d972f6bc7ff8b2a69ae5d58",
+      "bytes": 7639
+    },
+    "ui-layout-save-history.log": {
+      "path": "reports/HX-BL-023-E8/ui-layout-save-history.log",
+      "sha256": "aa0755980a8e217abdaaa2f062570a835c6fae777f0dfa974ad67d4a8b204603",
+      "bytes": 1139
+    },
+    "ui-test-case-diff.json": {
+      "path": "reports/HX-BL-023-E8/ui-test-case-diff.json",
+      "sha256": "fb5a42d4f50713840ce2103e8896ff9a276a661425f7646bd6e5168ec6e3f40a",
+      "bytes": 1406
+    },
+    "ui-combined-diagnostic.json": {
+      "path": "reports/HX-BL-023-E8/ui-combined-diagnostic.json",
+      "sha256": "76039d8cd1497a432030d611c49eb8d7625f3046f2d7bd8a505ca6bede334675",
+      "bytes": 2366
+    },
+    "ui-combined-diagnostic.log": {
+      "path": "reports/HX-BL-023-E8/ui-combined-diagnostic.log",
+      "sha256": "376de7b8c277187c9ca53c602a426053fc601b62941209d41b1272f264663bd7",
+      "bytes": 96
+    },
+    "e8-6e53ae0.bundle": {
+      "path": "reports/HX-BL-023-E8/e8-6e53ae0.bundle",
+      "sha256": "1ef2faa6cac4890f4275c1875ae7caf0052a03eb2bc4f30623d31d92b7dd2ffe",
+      "bytes": 72698
+    },
+    "ui-before-1500.png": {
+      "path": "reports/HX-BL-023-E8/ui-before-1500.png",
+      "sha256": "8c81137ea09b17af95b9d0c546186eeb48a8a9bc969a23e64b3ccd9d80415af5",
+      "bytes": 118374
+    },
+    "ui-before-panel-1500.png": {
+      "path": "reports/HX-BL-023-E8/ui-before-panel-1500.png",
+      "sha256": "9de2cca5b1542b626f6424ee9416f669d896efebb946a61a53c19f93dcfdae9a",
+      "bytes": 30979
+    },
+    "ui-name-panel-390.png": {
+      "path": "reports/HX-BL-023-E8/ui-name-panel-390.png",
+      "sha256": "4140050ae67352d3759fa702327e2680ccd10e0e3901379a97bdf9c6cad8aef7",
+      "bytes": 46052
+    },
+    "ui-name-panel-320.png": {
+      "path": "reports/HX-BL-023-E8/ui-name-panel-320.png",
+      "sha256": "f50dc9d34851c33ede441302cff104a47112ec7b47c7891c7ebd61a21aac5708",
+      "bytes": 45418
+    },
+    "ui-move-preview-1500.png": {
+      "path": "reports/HX-BL-023-E8/ui-move-preview-1500.png",
+      "sha256": "1ee64841e340bcb1e4cce831a48f93e1b551fc0e79624d282c71cf026ee8dfdc",
+      "bytes": 129456
+    },
+    "ui-move-preview-panel-390.png": {
+      "path": "reports/HX-BL-023-E8/ui-move-preview-panel-390.png",
+      "sha256": "daab8e0eda4a9b9302bf35e17c89ea9226127c1e4a22fb484a1710005fc813e7",
+      "bytes": 45344
+    },
+    "ui-move-preview-panel-320.png": {
+      "path": "reports/HX-BL-023-E8/ui-move-preview-panel-320.png",
+      "sha256": "9b642586cdbedd8d1126dc15b2f9177765fc96680c0584726adc043dbbe58da1",
+      "bytes": 46055
+    },
+    "ui-moved-1500.png": {
+      "path": "reports/HX-BL-023-E8/ui-moved-1500.png",
+      "sha256": "e19b403e212386ea19b92d4e6f294297ce8a9b97d1d28645c122c26837951703",
+      "bytes": 113369
+    },
+    "ui-moved-panel-1500.png": {
+      "path": "reports/HX-BL-023-E8/ui-moved-panel-1500.png",
+      "sha256": "fc542b38c3e0c81d5d3ea6fa20d6e4388445872feb4ed75f2cb9fb98ad428294",
+      "bytes": 25742
+    },
+    "ui-blocked-panel-320.png": {
+      "path": "reports/HX-BL-023-E8/ui-blocked-panel-320.png",
+      "sha256": "1c23a990df14287b359f0497e94686fbf99a996fa1a1566f3de74077ce395795",
+      "bytes": 48952
+    },
+    "ui-english-panel-390.png": {
+      "path": "reports/HX-BL-023-E8/ui-english-panel-390.png",
+      "sha256": "7c220b0fcd81b3f144b93f1920eee4b65c9e29a8fe6e451fe80208f0eb296311",
+      "bytes": 32264
+    },
+    "diagnostic_source": {
+      "path": ".e8-combined-driver.mjs",
+      "sha256": "8ae5c8e44ae941821060dc9f3ed381abc11e39490eee34a063985767a48954a7",
+      "tracked": false
+    },
+    "RNG_log": {
+      "path": "reports/HX-BL-023-E8/ui-rng-6e53ae0.log",
+      "sha256": "9d9455e6a359101fb72bd11c44774b19966e014a6de79b3dbec04fbf9146e20c"
+    }
+  },
+  "combined_diagnostic": {
+    "head_sha": "6e53ae0d5c3996fe8fca04fb194439e2a1c4391e",
+    "kind": "temporary_actual_App_Classic_sequence_not_permanent_test",
+    "manifest": [
+      {
+        "id": "E2-local-terrain",
+        "before": "e39b43ded0e77a898f29249264dc8fa323a2ae2eb3393f518f017c991d7064fc",
+        "after": "2496b210a082c4d8de6b83fb4b51d7d3f1de7396eb4a6d36f813123c31b147bc",
+        "undo_redo": "literal match"
+      },
+      {
+        "id": "E3-create-trail",
+        "before": "fe38cf67f1bed451a36041d1533e0827f4bd02a5d12af1cbc25512390baeda34",
+        "after": "f6bd428c52f404dca3560f54d1c65675e2e49fc90794e31f810d748564137e5c",
+        "undo_redo": "literal match"
+      },
+      {
+        "id": "E3-refusal",
+        "status": "required connection retained literally"
+      },
+      {
+        "id": "E4-create-obstacle",
+        "before": "f6bd428c52f404dca3560f54d1c65675e2e49fc90794e31f810d748564137e5c",
+        "after": "04c6439c67cf5484ac8a2e615ced3147b318d1df8ed6968beef5de62190b7373",
+        "undo_redo": "literal match"
+      },
+      {
+        "id": "E4-remove-obstacle",
+        "before": "04c6439c67cf5484ac8a2e615ced3147b318d1df8ed6968beef5de62190b7373",
+        "after": "963f9009f5a1baf003ff193ca8b4fc65c44c04be0595d6af6e8c9f35b0ead3cb",
+        "undo_redo": "literal match"
+      },
+      {
+        "id": "E5-river-fullness",
+        "before": "963f9009f5a1baf003ff193ca8b4fc65c44c04be0595d6af6e8c9f35b0ead3cb",
+        "after": "cda8fcb8e6279003d36a3496c44d092d415e11fb0b9c156a5bcf94003d6dd4fa",
+        "undo_redo": "literal match"
+      },
+      {
+        "id": "E6-add-lake",
+        "before": "826550bfe80663a9f4aac30e4371da09e0e705e50f02b575bcd87d1f228c4ffa",
+        "after": "a60b24108e2ddc3db8affe80d9c45cc6ed8e9885491afc0f0f4629f473515f22",
+        "undo_redo": "literal match"
+      },
+      {
+        "id": "E7-region-height",
+        "before": "a468904056ce4523079eff199806a3c2f78910ffe65510f3d844668cec226895",
+        "after": "e63621e92d0b0972c098cc880a37c142eba2dd808b0fa2347f537332f1c4a9f1",
+        "undo_redo": "literal match"
+      },
+      {
+        "id": "E8-move-POI",
+        "before": "13fa881fe7bcdd4a74672b0b288c8da297548ec6614f6e66b41fd6999b9a3463",
+        "after": "5533a76bc056beaeacdc637a5e095f7e8ef4ac0a08ef2acf425c5a71dd8bb9af",
+        "undo_redo": "literal match"
+      }
+    ],
+    "roundtrip": "literal match",
+    "limitations": "Finite authored Classic fixture;real handlers in VM React-state harness,not browser or all games"
+  },
+  "user_walkthrough": {
+    "actual_sha": "6e53ae0d5c3996fe8fca04fb194439e2a1c4391e",
+    "actual_shown": true,
+    "presented_in": "Current task chat commentary:desktop1500,narrow390 paired form,and final6e53ae0 before/after panels;owner viewing/approval unknown",
+    "screenshots_are": "Synthetic fixture in this exact local package before/after its action,not screenshots of remote main",
+    "steps": [
+      "Select2/0 and enter shared Edit",
+      "Name field opens paired RU/EN;Tab does not commit half a pair",
+      "Location opens pinned-source draft;choose current map polygon or canonical q/r",
+      "Preview distinguishes source dashed and target solid;navigation remains;accepted export excludes draft",
+      "Done commits one move and selects3/0;name/type/tags move,hex notes/terrain stay",
+      "Undo/Redo restore literal snapshots;Esc discards;Finish/Discard/Stay gates external actions",
+      "Linked road refusal lists ID and offers View path;water Classic/Mythic/central policies shown"
+    ],
+    "proposal_ref": "agent-work/ui/HX-BL-023-E8-ui-v1/preview.html",
+    "awaiting_design_approval": false,
+    "owner_design_approval": null
+  },
+  "prior_attempts": [
+    {
+      "status": "excluded_from_final_exact_head_proof",
+      "description": "Earlier broad check began before final layout fix;336passed but source changed during interval,so final check repeated at stable6e53ae0"
+    },
+    {
+      "suite": "browser",
+      "head_sha": "24d7bfc2abc2beeda7ce3743eb98fa9944bba5ab",
+      "scripts_executed": 7,
+      "scripts_passed": 6,
+      "scripts_failed": 1,
+      "scripts_not_executed": 1,
+      "defect": "Existing edit/view information-row geometry assertion:54px shift from location row shown only in Edit",
+      "resolution": "6e53ae0 renders the same information row in both modes;existing full save-history and final8script run pass"
+    },
+    {
+      "suite": "RNG",
+      "status": "failed_earlier_attempt_not_final",
+      "scripts_executed": 1,
+      "scripts_passed": 0,
+      "scripts_failed": 1,
+      "error": "Timeout opening a fresh Seed field after earlier matrix passed,while production rebuild overlapped;causal link not established",
+      "resolution": "Final stable build,then full browser and RNG serially;all pass,no additional product mutation for timeout"
+    },
+    {
+      "suite": "temporary combined driver",
+      "note": "Fixture setup adjusted to real E3 required-link,protected E6 anchor and E7 uphill-flow rules;those refusals were not product defects;final legal one-map sequence passes"
+    }
+  ],
+  "score": {
+    "model_version": "1.2",
+    "model_blob": "ab660f02e26faf2233aecd5f2fd1090260fe74eb",
+    "baseline_ref": "agent-work/score/current-score.json",
+    "baseline_blob": "950e11bdfd5f59da09d424af14a820c5c8b580f5",
+    "confirmed_points": null,
+    "unverified_weight": 1000,
+    "award": 0,
+    "score_changed": false,
+    "score_update_status": "not_applicable_no_release",
+    "independent_score_assessment": false,
+    "criteria": [
+      {
+        "criterion_id": "S02-C02",
+        "before_grade": null,
+        "before_points": null,
+        "after_grade": null,
+        "after_points": null,
+        "delta": null,
+        "status": "unknown_pending_independent_review",
+        "sha": "6e53ae0d5c3996fe8fca04fb194439e2a1c4391e",
+        "method": "Developer exact-head source,actual App and production browser observations;not a grade",
+        "evidence": "AC01/05/09: exact tags.instances,owner addresses,all rollCounter prefixes,manual name and settlement fallback preservation in regionEditing E8 Classic/Mythic and manualRegions;storage/type-transition cases reused",
+        "limitation": "Storage locators are not global POI IDs;E8.2 and arbitrary external references remain unsupported"
+      },
+      {
+        "criterion_id": "S02-C03",
+        "before_grade": null,
+        "before_points": null,
+        "after_grade": null,
+        "after_points": null,
+        "delta": null,
+        "status": "unknown_pending_independent_review",
+        "sha": "6e53ae0d5c3996fe8fca04fb194439e2a1c4391e",
+        "method": "Developer exact-head source,actual App and production browser observations;not a grade",
+        "evidence": "AC07: saveSafety nativev8/invalid fields,v2-v7 migration,existing browser corpus and RNG continuation;format v8 uses sparse optional map.editorNames",
+        "limitation": "Bounded registered corpus only;older applications cannot read emittedv8"
+      },
+      {
+        "criterion_id": "S03-C01",
+        "before_grade": null,
+        "before_points": null,
+        "after_grade": null,
+        "after_points": null,
+        "delta": null,
+        "status": "unknown_pending_independent_review",
+        "sha": "6e53ae0d5c3996fe8fca04fb194439e2a1c4391e",
+        "method": "Developer exact-head source,actual App and production browser observations;not a grade",
+        "evidence": "AC01/02/03: actual App land moves Classic/Mythic,production water move;pure manualRegions destination/pool/kingdom policy matrix",
+        "limitation": "Central points and source paths refused by policy;not full game/cohort coverage"
+      },
+      {
+        "criterion_id": "S03-C04",
+        "before_grade": null,
+        "before_points": null,
+        "after_grade": null,
+        "after_points": null,
+        "delta": null,
+        "status": "unknown_pending_independent_review",
+        "sha": "6e53ae0d5c3996fe8fca04fb194439e2a1c4391e",
+        "method": "Developer exact-head source,actual App and production browser observations;not a grade",
+        "evidence": "AC04/05/11: source road/trail refusal with ID and View path;existing E6 authored loss/E7 ownership cases;one temporary combined Classic sequence",
+        "limitation": "No implicit reroute;NPC/rumor/quest structured references absent;E8.2 names not implemented"
+      },
+      {
+        "criterion_id": "S03-C05",
+        "before_grade": null,
+        "before_points": null,
+        "after_grade": null,
+        "after_points": null,
+        "delta": null,
+        "status": "unknown_pending_independent_review",
+        "sha": "6e53ae0d5c3996fe8fca04fb194439e2a1c4391e",
+        "method": "Developer exact-head source,actual App and production browser observations;not a grade",
+        "evidence": "AC06/11: actual handler one-transaction moves,exact UndoRedo/stale/doubleDone/no-op/fault,production transitions and existing100mixed history;temporary E2→E8 sequence",
+        "limitation": "No named versions;finite fixtures and VM harness limitations remain"
+      },
+      {
+        "criterion_id": "S04-C04",
+        "before_grade": null,
+        "before_points": null,
+        "after_grade": null,
+        "after_points": null,
+        "delta": null,
+        "status": "unknown_pending_independent_review",
+        "sha": "6e53ae0d5c3996fe8fca04fb194439e2a1c4391e",
+        "method": "Developer exact-head source,actual App and production browser observations;not a grade",
+        "evidence": "AC07/11: accepted-only JSON while preview,full snapshot roundtrip,existing production JSON/PNG export scripts;POI overlay data-editor-only outside accepted map SVG",
+        "limitation": "No dedicated new POI-draft PNG pixel comparison;export code separation and existing runner evidence only;not role-based export"
+      },
+      {
+        "criterion_id": "S04-C05",
+        "before_grade": null,
+        "before_points": null,
+        "after_grade": null,
+        "after_points": null,
+        "delta": null,
+        "status": "unknown_pending_independent_review",
+        "sha": "6e53ae0d5c3996fe8fca04fb194439e2a1c4391e",
+        "method": "Developer exact-head source,actual App and production browser observations;not a grade",
+        "evidence": "AC08: actual1500/390/320 RU/EN screenshots,Tab within name pair,focus-trapped transition dialog,current polygon hits,drag/rotation,clear invalid target and accessible status/alert",
+        "limitation": "Headless Chromium only;physical touch/AT/Safari/Firefox and forced E8-specific overlapping target branch not certified"
+      },
+      {
+        "criterion_id": "S09-C04",
+        "before_grade": null,
+        "before_points": null,
+        "after_grade": null,
+        "after_points": null,
+        "delta": null,
+        "status": "unknown_pending_independent_review",
+        "sha": "6e53ae0d5c3996fe8fca04fb194439e2a1c4391e",
+        "method": "Developer exact-head source,actual App and production browser observations;not a grade",
+        "evidence": "AC05/06: captured new-document token/draft identity/doubleDone and injected clone fault preserve complete accepted document and both stacks",
+        "limitation": "Targeted developer checks;independent score_assessment still required"
+      }
+    ]
+  },
+  "source_sync_status": "local_only_prior_automatic_review_rejection_preserved_no_source_or_screenshot_upload_retry",
+  "PR": null,
+  "published": false,
+  "limitations": [
+    "Independent exact-SHA review/score assessment pending",
+    "E8.2 road/obstacle/crossing/river-marker names not implemented;sea identity unresolved",
+    "Local source/bundle only;GitHub contains metadata,no source PR",
+    "Central position and source-linked paths deliberately refused;Mythic water position unavailable",
+    "Headless finite fixture checks are not full touch/accessibility or all-game certification"
+  ],
+  "experience_entry": {
+    "lesson": "Existing view/edit geometry assertion caught a real POI integration regression absent from pure move tests;reuse that assertion instead of adding another copy. Keep final production build stable during browser evidence collection;the earlier overlapped fresh-page timeout is not a confirmed product defect.",
+    "journal_status": "Scoped verified lesson in this evidence/result;shared large history not retransmitted"
+  }
+}
