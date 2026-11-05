@@ -1,0 +1,276 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-05-developer-HX-BL-023-E8-storage",
+  "parent_claim_run_id": "2026-11-05-developer-HX-BL-023-E8",
+  "role": "developer",
+  "task_id": "HX-BL-023",
+  "stage_id": "E8.1",
+  "status": "implementation_in_progress_storage_integrated",
+  "run_completed_at": "2026-11-05 18:25:07 UTC",
+  "task_completed": false,
+  "role_selection_reason": "Safely resumed same own unfinished claim from8702dee after exact local source and no other activeNov5claim check;not takeover by lease expiry. Approved E8 detailed spec and local source available.",
+  "authority_ref": "owner-decision-2026-10-28-editor-additional-functions-approved",
+  "spec_ref": "agent-work/specs/HX-BL-023-E8.md",
+  "spec_blob": "24f20ae2cd72845d04680dc454697b540b0e4c8b",
+  "base_sha": "8702dee2d7dbc536a979e905430ad424f0d8c360",
+  "head_sha": "8d578e75c4c645eb94b819ce761d6543a1245cf9",
+  "head_tree": "3fcb74d8734c9252a1d678644c40379c942e66d9",
+  "branch": "agent/hx023-e8-poi-move",
+  "source_location": "local only /workspace/scratch/60e61b33a6a0/e8-development",
+  "source_sync_status": "not_attempted_prior_automatic_review_rejection_preserved",
+  "PR": null,
+  "published": false,
+  "review_ready": false,
+  "release_approved": false,
+  "completed_scope": [
+    "v8optional editorNames plus strict live POI validation;v2-v7migration empty,no generator version change",
+    "capture/clone/restore/backups/import/export/UndoRedo layer integration",
+    "E7 POI-owner name migration,E6 authored-name acceptedLosses,type-change label promotion",
+    "safe refusal of unsupported authored-name losses before reset/checkpoint/other manual edits"
+  ],
+  "remaining": [
+    "PoiDraft map/q-r location selection,document-token/stale guards and common Done/Esc/transition wiring",
+    "Name input/display/catalog integration for every POI,including water/center",
+    "Final actual1500/390/320RUEN walkthrough,browser/RNG evidence of the new move flow",
+    "Independent exactSHA review and score_assessment;source sync/PR still restricted"
+  ],
+  "evidence_ref": "agent-work/evidence/HX-BL-023-E8-8d578e7/storage-evidence.json",
+  "checkpoint_ref": "agent-work/handoffs/2026-11-05-HX-BL-023-E8-checkpoint-8d578e7.json",
+  "previous_result_ref": "agent-work/results/2026-11-05-developer-HX-BL-023-E8.json",
+  "verification": {
+    "Node_check": {
+      "status": "passed",
+      "node": "24.22.1",
+      "command": "npm run check",
+      "includes": [
+        "TypeScript",
+        "Node tests",
+        "production build"
+      ],
+      "executed": 328,
+      "passed": 328,
+      "skipped": 0,
+      "failed": 0
+    },
+    "browser": {
+      "status": "passed",
+      "command": "npm run test:browser",
+      "scripts_executed": 8,
+      "scripts_passed": 8,
+      "scripts_skipped": 0,
+      "logical_test_case_count": null,
+      "note": "Monolithic smoke scripts;not added to Node count"
+    },
+    "RNG": {
+      "status": "passed",
+      "command": "npm run test:browser:rng",
+      "scripts_executed": 1,
+      "scripts_passed": 1,
+      "scripts_skipped": 0,
+      "logical_test_case_count": null,
+      "note": "Existing actualUI reproducibility Classic/Mythic,continued imports,Undo and stale effects;not new POImove UI evidence"
+    },
+    "specific_E8": {
+      "suite": "Node saveSafety --test-name-pattern=E8",
+      "executed": 3,
+      "passed": 3,
+      "skipped": 0
+    },
+    "specific_E6": {
+      "suite": "Node mapTransactions --test-name-pattern=E6",
+      "executed": 6,
+      "passed": 6,
+      "skipped": 0
+    }
+  },
+  "test_change_summary": {
+    "base_sha": "8702dee2d7dbc536a979e905430ad424f0d8c360",
+    "head_sha": "8d578e75c4c645eb94b819ce761d6543a1245cf9",
+    "node": {
+      "added": 3,
+      "removed": 0,
+      "modified": 8,
+      "source": "ASTtest()diff base/head,with E7mode loop expanded to2runner cases",
+      "scenario_risk": "v8authored names actual roundtrip/UndoRedo;malformed import atomic refusal;typechange label preservation;existing E6loss and E7owner checks extended;other modifications update schema-version expectations",
+      "reuse_or_new_reason": "Existing suites/fixtures reused,no new runner or duplicate audit"
+    },
+    "browser": {
+      "added": 0,
+      "removed": 0,
+      "modified_scenarios": 1,
+      "runner_test_case_count": null,
+      "source": "Existing notes export assertion7to8 in save-history smoke",
+      "note": "Not counted as new functional coverage or summed with Node"
+    }
+  },
+  "score": {
+    "model_version": "1.2",
+    "model_blob": "ab660f02e26faf2233aecd5f2fd1090260fe74eb",
+    "baseline_ref": "agent-work/score/current-score.json",
+    "baseline_blob": "950e11bdfd5f59da09d424af14a820c5c8b580f5",
+    "confirmed_points": null,
+    "unverified_weight": 1000,
+    "delta": null,
+    "award": 0,
+    "score_changed": false,
+    "score_update_status": "not_applicable_no_release",
+    "independent_score_assessment": false,
+    "criteria": [
+      {
+        "criterion_id": "S02-C02",
+        "before_grade": null,
+        "before_points": null,
+        "after_grade": null,
+        "after_points": null,
+        "delta": null,
+        "status": "unknown_unreviewed",
+        "method": "Developer exactSHA evidence in storage-evidence,partial package only;POI UI/coordinate move workflow not integrated;not full criterion or cohort coverage"
+      },
+      {
+        "criterion_id": "S02-C03",
+        "before_grade": null,
+        "before_points": null,
+        "after_grade": null,
+        "after_points": null,
+        "delta": null,
+        "status": "unknown_unreviewed",
+        "method": "Developer exactSHA evidence in storage-evidence,partial package only;POI UI/coordinate move workflow not integrated;not full criterion or cohort coverage"
+      },
+      {
+        "criterion_id": "S03-C01",
+        "before_grade": null,
+        "before_points": null,
+        "after_grade": null,
+        "after_points": null,
+        "delta": null,
+        "status": "unknown_unreviewed",
+        "method": "Developer exactSHA evidence in storage-evidence,partial package only;POI UI/coordinate move workflow not integrated;not full criterion or cohort coverage"
+      },
+      {
+        "criterion_id": "S03-C04",
+        "before_grade": null,
+        "before_points": null,
+        "after_grade": null,
+        "after_points": null,
+        "delta": null,
+        "status": "unknown_unreviewed",
+        "method": "Developer exactSHA evidence in storage-evidence,partial package only;POI UI/coordinate move workflow not integrated;not full criterion or cohort coverage"
+      },
+      {
+        "criterion_id": "S03-C05",
+        "before_grade": null,
+        "before_points": null,
+        "after_grade": null,
+        "after_points": null,
+        "delta": null,
+        "status": "unknown_unreviewed",
+        "method": "Developer exactSHA evidence in storage-evidence,partial package only;POI UI/coordinate move workflow not integrated;not full criterion or cohort coverage"
+      },
+      {
+        "criterion_id": "S04-C04",
+        "before_grade": null,
+        "before_points": null,
+        "after_grade": null,
+        "after_points": null,
+        "delta": null,
+        "status": "unknown_unreviewed",
+        "method": "Developer exactSHA evidence in storage-evidence,partial package only;POI UI/coordinate move workflow not integrated;not full criterion or cohort coverage"
+      },
+      {
+        "criterion_id": "S04-C05",
+        "before_grade": null,
+        "before_points": null,
+        "after_grade": null,
+        "after_points": null,
+        "delta": null,
+        "status": "unknown_unreviewed",
+        "method": "Developer exactSHA evidence in storage-evidence,partial package only;POI UI/coordinate move workflow not integrated;not full criterion or cohort coverage"
+      },
+      {
+        "criterion_id": "S09-C04",
+        "before_grade": null,
+        "before_points": null,
+        "after_grade": null,
+        "after_points": null,
+        "delta": null,
+        "status": "unknown_unreviewed",
+        "method": "Developer exactSHA evidence in storage-evidence,partial package only;POI UI/coordinate move workflow not integrated;not full criterion or cohort coverage"
+      }
+    ]
+  },
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-05 17:59:24 UTC",
+      "is_enabled": true,
+      "status": "checked"
+    },
+    "end": {
+      "checked_at": "2026-11-05 18:25:07 UTC",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restoration_performed": false,
+    "errors": [],
+    "limitation": "Actual observations at two instants only;later service changes not guaranteed."
+  },
+  "budget": {
+    "status": "owner_waived_usage_gate",
+    "actual_usage": "unknown",
+    "additional_spend": 0
+  },
+  "feedback_assessment": "HX-FB-002 cost/usefulness considered:3unique actual-handler cases;extend existing E6/E7 suites and update version expectations;no repeat audit or cleanup.",
+  "experience_entry": {
+    "lesson": "An absent optional field and explicitnull are different import states. Validate before normalization or null can silently discard authored data. Preserve POI labels before settlement-entity reconciliation;carry the authored layer through snapshots and named destructive-loss gates. Normalize VM test snapshots on both sides to avoid treating object-prototype mismatch as map corruption.",
+    "evidence_refs": [
+      "agent-work/evidence/HX-BL-023-E8-8d578e7/storage-evidence.json",
+      "docs/poi-editor-data.md"
+    ],
+    "central_journal_status": "Scoped verified lesson retained here;shared large lessons history retransmission not retried"
+  },
+  "next_task_id": "HX-BL-023",
+  "next_stage_id": "E8.1-UI",
+  "next_role": "developer",
+  "next_step": "Resume same unfinished claim at8d578e7 after exact HEAD/tree and no-live-worker check;connect POI authored-name display/input and PoiDraft to existing shared Edit/Done/history,then actual walkthrough and independent review.",
+  "claim_status": "checkpointed_in_progress",
+  "authority_status": "Approved E8 implementation continues;no extra design approval;publication separately exactpackage only. Earlier source sync rejection not overridden.",
+  "limitations": [
+    "POImove command is still not called by App",
+    "POI manual-name display/input/catalog and coordinate target UI remain unimplemented",
+    "No actual new move workflow video/screenshots or independent review",
+    "HeadlessChromium only,not real touch/AT/Safari/Firefox certification",
+    "Local source only;remote source sync/PR blocked by previous automatic review,not retried"
+  ],
+  "latest_update_status": "blocked_previous_automatic_review_full_history_not_retried",
+  "latest_observed_blob": "b54a88c0e43cc53333d31fd47879df35acd7182b",
+  "latest_not_written": true,
+  "latest_intended_delta": {
+    "current_task_id": "HX-BL-023",
+    "current_stage_id": "E8.1",
+    "current_role": "developer",
+    "status": "implementation_in_progress_storage_integrated",
+    "head_sha": "8d578e75c4c645eb94b819ce761d6543a1245cf9",
+    "next_role": "developer",
+    "next_step": "Resume same claim;implement author-name form/display and PoiDraft location target/commonDone/Esc/transition/atomic commit,then actual UIwalkthrough and independent review",
+    "result_ref": "agent-work/results/2026-11-05-developer-HX-BL-023-E8-storage.json",
+    "checkpoint_ref": "agent-work/handoffs/2026-11-05-HX-BL-023-E8-checkpoint-8d578e7.json",
+    "confirmed_points": null,
+    "unverified_weight": 1000,
+    "automation_health": {
+      "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "start": {
+        "checked_at": "2026-11-05 17:59:24 UTC",
+        "is_enabled": true,
+        "status": "checked"
+      },
+      "end": {
+        "checked_at": "2026-11-05 18:25:07 UTC",
+        "status": "checked",
+        "is_enabled": true
+      },
+      "restoration_performed": false,
+      "errors": [],
+      "limitation": "Actual observations at two instants only;later service changes not guaranteed."
+    }
+  }
+}
