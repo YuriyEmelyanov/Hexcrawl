@@ -5,7 +5,7 @@
   "task_id": "HX-BL-023",
   "stage_id": "E7",
   "role_reason": "Completed E7 analyst claim and E7-1.0 developer handoff were ready; no foreign active E7 developer claim existed. Approved owner scope already covers implementation.",
-  "status": "implementation_verified_locally_source_sync_blocked",
+  "status": "local_source_frozen_final_validation_and_review_running",
   "started_at": "2026-11-05T11:58:47.793Z",
   "completed_at": null,
   "spec": {
@@ -16,8 +16,8 @@
   "source": {
     "repository": "YuriyEmelyanov/Hexcrawl",
     "base_sha": "2ef5cc35107f299c309b7c8065a1e81ca9881278",
-    "local_sha": "9d233d818eb31da772a9ad8cd62e00752ce35102",
-    "local_tree": "6e1c5dfaf6f7c82ccb3a58d642a4a18ab4268651",
+    "local_sha": "9aa08bbe24bc8d83bf50ca2eea1b16cb70335d7f",
+    "local_tree": "458a78fbb594d7ada1ac925eda2748c1cc680474",
     "branch": "agent/hx023-e7-region-editing",
     "local_repository": "/workspace/scratch/60e61b33a6a0/e7-development",
     "remote_branch_sha": "2ef5cc35107f299c309b7c8065a1e81ca9881278",
@@ -26,10 +26,11 @@
     "main_changed": false,
     "published": false,
     "patch": {
-      "path": "/workspace/scratch/60e61b33a6a0/Hexcrawl-E7-9d233d8.patch",
-      "sha256": "3292bb35ed137ec9954fbceb101ccf9c048cf967ba9b61d05f676177be9269e9",
-      "bytes": 137814,
-      "local_apply_from_base_reproduced_tree": true
+      "path": "/workspace/scratch/60e61b33a6a0/Hexcrawl-E7-9aa08bb.patch",
+      "sha256": "9aa27af0828f4f645e8a088b41c60e32199272b521d958fc60c38fa4f1c719d9",
+      "bytes": 163457,
+      "local_only": true,
+      "verified_base_to_tree": "458a78fbb594d7ada1ac925eda2748c1cc680474"
     },
     "persistence_limitation": "Implementation and screenshots exist locally only. No full source or patch was accepted by GitHub tool review. Metadata is durable; source availability must be checked by the next worker."
   },
@@ -41,84 +42,47 @@
     "E3 minimum uses isTract after E7 ordinary six-to-five; road downgrade reproduction fails before fix and refuses after fix."
   ],
   "checks": {
-    "sha": "9d233d818eb31da772a9ad8cd62e00752ce35102",
+    "sha": "9aa08bbe24bc8d83bf50ca2eea1b16cb70335d7f",
     "source_paths_match_commit": true,
-    "node_version": "24.22.1",
-    "npm_run_check": {
-      "exit_code": 0,
-      "typescript": "passed",
-      "node": {
-        "executed": 316,
-        "passed": 316,
-        "failed": 0,
-        "skipped": 0,
-        "unit": "registered Node tests"
+    "focused": {
+      "actual_bug_before": "failed missing named river explanation",
+      "after": {
+        "passed": 1,
+        "executed": 1,
+        "log": "/tmp/hx-e7-r3-final-focused.log"
       },
-      "build": "passed",
-      "log_path": "/tmp/hx-e7-9d233d8-check.log",
-      "log_sha256": "ac85a99e2d6124a6d6a4b80afffa245eb1fe5f4a4eb76fae5edc265574523c54"
-    },
-    "browser": {
-      "command": "npm run test:browser",
-      "exit_code": 0,
-      "browser": "Chromium 153.0.8010.0",
-      "unit": "existing script runners",
-      "executed": 8,
-      "passed": 8,
-      "skipped": 0,
-      "new_E7_mode_lifecycles": {
-        "executed": 2,
-        "passed": 2,
-        "skipped": 0,
-        "modes": [
-          "classic",
-          "mythic"
-        ],
-        "viewports": [
-          1500,
-          390,
-          320
-        ]
+      "selected": {
+        "passed": 25,
+        "executed": 25,
+        "log": "/tmp/hx-e7-r3-selected.log"
       },
-      "log_path": "/tmp/hx-e7-9d233d8-browser.log",
-      "log_sha256": "656a9a797bb67cf77ee7ef385a0051c4b7868684bfdf1105d1f6fb1d8d2988d1"
+      "typescript": "passed"
     },
-    "rng": {
-      "command": "npm run test:browser:rng",
-      "exit_code": 0,
-      "unit": "existing script runner",
-      "executed": 1,
-      "passed": 1,
-      "skipped": 0,
-      "seed_mode_pairs": 8,
-      "reported_pass_groups": 15,
-      "additional_invalid_seed_group": "passed by runner exit; not included in reported_pass_groups",
-      "log_path": "/tmp/hx-e7-9d233d8-rng.log",
-      "log_sha256": "9d9455e6a359101fb72bd11c44774b19966e014a6de79b3dbec04fbf9146e20c"
+    "mandatory_final": {
+      "status": "running",
+      "check_log": "/tmp/hx-e7-9aa08bb-check.log",
+      "browser_log": "/tmp/hx-e7-9aa08bb-browser.log",
+      "rng_log": "/tmp/hx-e7-9aa08bb-rng.log"
     },
-    "critical_regressions": {
-      "executed": 53,
-      "passed": 53,
-      "skipped": 0,
-      "unit": "subset of the same Node suite, not additional test growth",
-      "log_path": "/tmp/hx-e7-critical.log"
+    "independent_review": {
+      "status": "pending_final_suites",
+      "worker": "/root/e7_r1_independent_review",
+      "preliminary": "R3-F01 fixed actual handler/DOM RU/EN1500/390/320; no new findings so far"
     },
     "limitations": [
-      "Finite authored fixtures and existing corpus, not proof for every generated map.",
-      "Physical touch devices, screen readers, Safari and Firefox were not exercised.",
-      "Some emoji glyphs are unavailable in the headless system font; retained Unicode values were checked.",
-      "No new product performance score or HX-BL-003 measurement series is claimed.",
-      "No independent review or score award performed by this developer."
+      "Remote source sync/PR blocked by automatic approval review; no source retry after latest rejection.",
+      "Finite fixtures and headless Chromium; physical touch/AT/Safari/Firefox unknown.",
+      "No main/deploy or product score increase."
     ]
   },
   "test_change_summary": {
     "base_sha": "2ef5cc35107f299c309b7c8065a1e81ca9881278",
-    "head_sha": "9d233d818eb31da772a9ad8cd62e00752ce35102",
-    "count_source": "git diff base..local SHA plus registered Node test declarations and two parameterized browser mode lifecycles; temporary diagnostic excluded",
+    "head_sha": "9aa08bbe24bc8d83bf50ca2eea1b16cb70335d7f",
+    "count_source": "git diff release base..9aa08bb;18 registered new Node cases (8+2+8),two parameterized mode lifecycles+one separate ambiguity group in existing browser runner;R3 extends existing new E7 case;temporary diagnostics and repeated runs excluded",
     "suites": [
       {
         "suite": "Node node:test",
-        "added": 17,
+        "added": 18,
         "removed": 0,
         "modified": 0,
         "parts": [
@@ -136,18 +100,18 @@
           },
           {
             "path": "test/regionEditing.test.mjs",
-            "added": 7,
-            "risk": "Real App transaction, continuation in both modes including a real kingdom, ROAD07/E3 interaction, Auto marks, no-op/stale/late fault/Redo",
+            "added": 8,
+            "risk": "Real App transaction, continuation in both modes including a real kingdom, ROAD07/E3 interaction, Auto marks, no-op/stale/late fault/Redo; exact v7 frontier and optional legacy normalization",
             "reuse_or_new_reason": "Existing generation harness and v7 fixture reused. Six clone failure points are subscenarios of one registered case, not counted as six new tests."
           }
         ]
       },
       {
         "suite": "Chromium existing save-history runner",
-        "added": 2,
+        "added": 3,
         "removed": 0,
         "modified": 0,
-        "scenario_risk": "Classic/Mythic E7 native selectors, map-only Enter versus details/select Enter, Done/Esc, guards, PNG exclusion, exact Undo/Redo/reload, geometry under rotation/wheel, RU/EN and narrow layout",
+        "scenario_risk": "Classic/Mythic E7 native selectors, map-only Enter versus details/select Enter, Done/Esc, guards, PNG exclusion, exact Undo/Redo/reload, geometry under rotation/wheel, RU/EN and narrow layout; same-name IDs, ambiguous44px hits and explicit resolution",
         "reuse_or_new_reason": "Two mode lifecycles added to the existing browser/corpus runner; no new parallel browser runner."
       },
       {
@@ -184,8 +148,8 @@
         "expected_after_grade": null,
         "expected_after_points": null,
         "delta": null,
-        "status": "unknown_pending_independent_assessment",
-        "evidence_sha": "9d233d818eb31da772a9ad8cd62e00752ce35102",
+        "status": "unknown_pending_final_independent_assessment",
+        "evidence_sha": "9aa08bbe24bc8d83bf50ca2eea1b16cb70335d7f",
         "evidence": [
           "checks",
           "test_change_summary",
@@ -204,8 +168,8 @@
         "expected_after_grade": null,
         "expected_after_points": null,
         "delta": null,
-        "status": "unknown_pending_independent_assessment",
-        "evidence_sha": "9d233d818eb31da772a9ad8cd62e00752ce35102",
+        "status": "unknown_pending_final_independent_assessment",
+        "evidence_sha": "9aa08bbe24bc8d83bf50ca2eea1b16cb70335d7f",
         "evidence": [
           "checks",
           "test_change_summary",
@@ -224,8 +188,8 @@
         "expected_after_grade": null,
         "expected_after_points": null,
         "delta": null,
-        "status": "unknown_pending_independent_assessment",
-        "evidence_sha": "9d233d818eb31da772a9ad8cd62e00752ce35102",
+        "status": "unknown_pending_final_independent_assessment",
+        "evidence_sha": "9aa08bbe24bc8d83bf50ca2eea1b16cb70335d7f",
         "evidence": [
           "checks",
           "test_change_summary",
@@ -244,8 +208,8 @@
         "expected_after_grade": null,
         "expected_after_points": null,
         "delta": null,
-        "status": "unknown_pending_independent_assessment",
-        "evidence_sha": "9d233d818eb31da772a9ad8cd62e00752ce35102",
+        "status": "unknown_pending_final_independent_assessment",
+        "evidence_sha": "9aa08bbe24bc8d83bf50ca2eea1b16cb70335d7f",
         "evidence": [
           "checks",
           "test_change_summary",
@@ -265,8 +229,8 @@
         "expected_after_grade": null,
         "expected_after_points": null,
         "delta": null,
-        "status": "unknown_pending_independent_assessment",
-        "evidence_sha": "9d233d818eb31da772a9ad8cd62e00752ce35102",
+        "status": "unknown_pending_final_independent_assessment",
+        "evidence_sha": "9aa08bbe24bc8d83bf50ca2eea1b16cb70335d7f",
         "evidence": [
           "checks",
           "test_change_summary",
@@ -285,8 +249,8 @@
         "expected_after_grade": null,
         "expected_after_points": null,
         "delta": null,
-        "status": "unknown_pending_independent_assessment",
-        "evidence_sha": "9d233d818eb31da772a9ad8cd62e00752ce35102",
+        "status": "unknown_pending_final_independent_assessment",
+        "evidence_sha": "9aa08bbe24bc8d83bf50ca2eea1b16cb70335d7f",
         "evidence": [
           "checks",
           "test_change_summary",
@@ -305,8 +269,8 @@
         "expected_after_grade": null,
         "expected_after_points": null,
         "delta": null,
-        "status": "unknown_pending_independent_assessment",
-        "evidence_sha": "9d233d818eb31da772a9ad8cd62e00752ce35102",
+        "status": "unknown_pending_final_independent_assessment",
+        "evidence_sha": "9aa08bbe24bc8d83bf50ca2eea1b16cb70335d7f",
         "evidence": [
           "checks",
           "test_change_summary",
@@ -324,8 +288,8 @@
         "expected_after_grade": null,
         "expected_after_points": null,
         "delta": null,
-        "status": "unknown_pending_independent_assessment",
-        "evidence_sha": "9d233d818eb31da772a9ad8cd62e00752ce35102",
+        "status": "unknown_pending_final_independent_assessment",
+        "evidence_sha": "9aa08bbe24bc8d83bf50ca2eea1b16cb70335d7f",
         "evidence": [
           "checks",
           "test_change_summary",
@@ -345,8 +309,8 @@
         "expected_after_grade": null,
         "expected_after_points": null,
         "delta": null,
-        "status": "unknown_pending_independent_assessment",
-        "evidence_sha": "9d233d818eb31da772a9ad8cd62e00752ce35102",
+        "status": "unknown_pending_final_independent_assessment",
+        "evidence_sha": "9aa08bbe24bc8d83bf50ca2eea1b16cb70335d7f",
         "evidence": [
           "checks",
           "test_change_summary",
@@ -367,8 +331,8 @@
         "expected_after_grade": null,
         "expected_after_points": null,
         "delta": null,
-        "status": "unknown_pending_independent_assessment",
-        "evidence_sha": "9d233d818eb31da772a9ad8cd62e00752ce35102",
+        "status": "unknown_pending_final_independent_assessment",
+        "evidence_sha": "9aa08bbe24bc8d83bf50ca2eea1b16cb70335d7f",
         "evidence": [
           "checks",
           "test_change_summary",
@@ -387,8 +351,8 @@
         "expected_after_grade": null,
         "expected_after_points": null,
         "delta": null,
-        "status": "unknown_pending_independent_assessment",
-        "evidence_sha": "9d233d818eb31da772a9ad8cd62e00752ce35102",
+        "status": "unknown_pending_final_independent_assessment",
+        "evidence_sha": "9aa08bbe24bc8d83bf50ca2eea1b16cb70335d7f",
         "evidence": [
           "checks",
           "test_change_summary",
@@ -408,8 +372,8 @@
         "expected_after_grade": null,
         "expected_after_points": null,
         "delta": null,
-        "status": "unknown_pending_independent_assessment",
-        "evidence_sha": "9d233d818eb31da772a9ad8cd62e00752ce35102",
+        "status": "unknown_pending_final_independent_assessment",
+        "evidence_sha": "9aa08bbe24bc8d83bf50ca2eea1b16cb70335d7f",
         "evidence": [
           "checks",
           "test_change_summary",
@@ -427,8 +391,8 @@
         "expected_after_grade": null,
         "expected_after_points": null,
         "delta": null,
-        "status": "unknown_pending_independent_assessment",
-        "evidence_sha": "9d233d818eb31da772a9ad8cd62e00752ce35102",
+        "status": "unknown_pending_final_independent_assessment",
+        "evidence_sha": "9aa08bbe24bc8d83bf50ca2eea1b16cb70335d7f",
         "evidence": [
           "checks",
           "test_change_summary",
@@ -448,8 +412,8 @@
         "expected_after_grade": null,
         "expected_after_points": null,
         "delta": null,
-        "status": "unknown_pending_independent_assessment",
-        "evidence_sha": "9d233d818eb31da772a9ad8cd62e00752ce35102",
+        "status": "unknown_pending_final_independent_assessment",
+        "evidence_sha": "9aa08bbe24bc8d83bf50ca2eea1b16cb70335d7f",
         "evidence": [
           "checks",
           "test_change_summary",
@@ -461,50 +425,9 @@
   },
   "ui": {
     "kind": "actual local implementation at exact local SHA; not a design proposal",
-    "sha": "9d233d818eb31da772a9ad8cd62e00752ce35102",
-    "screenshots": [
-      {
-        "path": "/workspace/scratch/60e61b33a6a0/e7-development/reports/HX-BL-023-E7/before-panel-1500.png",
-        "sha256": "39b32548d7164266dd1fdd907741d147d8f19780241c527def0181f3f75bd2eb",
-        "pixels": [
-          467,
-          327
-        ]
-      },
-      {
-        "path": "/workspace/scratch/60e61b33a6a0/e7-development/reports/HX-BL-023-E7/after-transfer-panel-1500.png",
-        "sha256": "09d59d6560e346843c830f006450f6e6bf66ed0e35a7a307a525a54e07346991",
-        "pixels": [
-          467,
-          327
-        ]
-      },
-      {
-        "path": "/workspace/scratch/60e61b33a6a0/e7-development/reports/HX-BL-023-E7/height-preview-panel-390.png",
-        "sha256": "97c29ab93ce08e20169cc07eaead6afa6c9e9e03ecfbf6059d022f977d559fa1",
-        "pixels": [
-          358,
-          640
-        ]
-      },
-      {
-        "path": "/workspace/scratch/60e61b33a6a0/e7-development/reports/HX-BL-023-E7/transfer-preview-panel-320.png",
-        "sha256": "d3a38539cd7d3ce263b3cd9d502762d276c01304938aba235cf9a2a475a9d038",
-        "pixels": [
-          288,
-          891
-        ]
-      },
-      {
-        "path": "/workspace/scratch/60e61b33a6a0/e7-development/reports/HX-BL-023-E7/english-panel-390.png",
-        "sha256": "b655ce68265feb67b79eafabf0ffc9f3b3a77671d9fbbe64cf1307c12c4598dd",
-        "pixels": [
-          358,
-          465
-        ]
-      }
-    ],
-    "shown_in_owner_response": "before/after and narrow view will be linked inline in final response",
+    "sha": "9aa08bbe24bc8d83bf50ca2eea1b16cb70335d7f",
+    "screenshots": [],
+    "shown_in_owner_response": "Final exact-SHA screenshots will be displayed after final browser suite.",
     "remote_screenshot_upload": false
   },
   "authority": {
@@ -553,34 +476,29 @@
     "usage_gate": "owner_waived_2026-10-24",
     "additional_paid_spend": 0
   },
-  "next_role": "reviewer",
-  "next_step": "Fresh independent agent reviews immutable local 9d233d8 without source uploads; root programmer will process concrete findings. GitHub source tree/PR sync remains blocked by latest automatic review.",
+  "next_role": "independent_reviewer",
+  "next_step": "Complete exact-SHA mandatory checks and independent local verdict; source synchronization/PR remains blocked_auto_review.",
   "handoff_ref": "agent-work/handoffs/2026-11-05-HX-BL-023-E7-local-review.json",
   "full_remote_review_ready": false,
   "local_review_ready": true,
   "experience_entries": [
     {
-      "finding": "Transfer preserves the occupied union but can change candidate ordering on reload.",
-      "application": "Recompute candidates using the same region traversal as import; actual next-generation pair checked."
+      "kind": "verified",
+      "lesson": "E7 contract preserves the accepted candidate frontier entries/order. Retain exact unique v7 geometric frontier order; keep legacy/optional/mismatch normalization. Existing manifest corpus caught missing optional candidateHexes.",
+      "evidence": "R1 review F02;R2 official manifest failure then317/317 pass at7c0;final9aa validation pending."
     },
     {
-      "finding": "A small ordinary region is not an emergency tract.",
-      "application": "Use preserved isTract for later E3 minima; downgrade road kind with unchanged physical graph isolates this risk."
+      "kind": "verified",
+      "lesson": "Count affected rivers separately from ownership changes; height-only edits can affect an existing river with zero owner transitions. Preserve rich contact evidence for refusal identity,levels and recovery.",
+      "evidence": "R2 F01,R3 F01 actual physical geometry/DOM counterexamples;focused9aa checks pass."
     },
     {
-      "finding": "Enter on a details summary is not map confirmation.",
-      "application": "Restrict Enter confirmation to the map viewport and test details/select/map separately."
-    },
-    {
-      "finding": "Full mandatory checks should follow focused review and source freeze.",
-      "application": "Superseded verification iterations are recorded as verification only, never test growth or independent evidence."
-    },
-    {
-      "finding": "Automatic review rejected full source and then a smaller source patch.",
-      "application": "No more source uploads, alternate routes or applications attempted. Save metadata and local recovery artifact; require owner authorization."
+      "kind": "verified",
+      "lesson": "Review all required user-visible states before repeated full-suite runs; freeze source then run mandatory suite once for final package.",
+      "evidence": "Superseded9d/e585/7c0 runs explicitly separated;current9aa final suites running."
     }
   ],
-  "central_journal_status": "Scoped experience entries preserved here; shared full-history journal not retransmitted.",
+  "central_journal_status": "Scoped verified lessons saved in this result;large shared lessons history not retransmitted.",
   "automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
@@ -594,16 +512,18 @@
     "restoration_performed": false,
     "errors": []
   },
-  "latest_update_status": "blocked_previous_auto_review_full_history_not_retried",
+  "latest_update_status": "blocked_previous_automatic_review_full_history_not_retried",
   "latest_intended_delta": {
     "task_id": "HX-BL-023",
-    "stage": "E7",
-    "next_role": "reviewer",
-    "next_step": "Independent local review at 9d233d8; source sync blocked by automatic review",
-    "release_status": "not_published",
+    "stage_id": "E7",
+    "head_sha": "9aa08bbe24bc8d83bf50ca2eea1b16cb70335d7f",
+    "status": "local_source_frozen_final_validation_and_review_running",
+    "next_role": "independent_reviewer",
+    "next_step": "Complete exact-SHA mandatory checks and independent local verdict; source synchronization/PR remains blocked_auto_review.",
+    "source_sync_status": "blocked_auto_review",
     "confirmed_points": null,
     "unverified_weight": 1000
   },
   "foreign_claims_or_results_overwritten": false,
-  "primary_run_status": "continuing_with_independent_local_review"
+  "primary_run_status": "in_progress"
 }
