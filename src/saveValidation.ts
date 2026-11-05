@@ -1,3 +1,4 @@
+import {validateDeltaReferences, validateRiverCounter, validateRiverFeatures, migrateRiverEditing, type RiverGeometry} from './manualRivers.ts';
 import { generationValidationPath } from './worldRandom.ts';
 // Structural validation only: accepting a save never reroutes its rivers or roads.
 // App supplies its current enums and kingdom contract to avoid a second domain model.
@@ -35,8 +36,9 @@ function reference(v: unknown, ids: Set<number>, p: string) { if (!ids.has(integ
 export function assertGeneratedIds(map: {
   regions: {id: number}[]; rivers: {id: number}[]; roads: {id: number}[];
   kingdoms?: {id: number}[]; hexTerrainByKey: Map<string, {lakeId?: number}>;
-  nextLakeId: number; nextRoadId: number; obstacles?: {id:number}[]; nextObstacleId?: number;
+  nextLakeId: number; nextRoadId: number; nextRiverId?: number; obstacles?: {id:number}[]; nextObstacleId?: number;
 }): void {
+  if(map.nextRiverId!==undefined){try{validateRiverCounter(map.rivers as RiverGeometry[],map.nextRiverId);}catch{fail('counters.nextRiverId','invalid river counter');}}
   if(map.nextObstacleId!==undefined){
     const ids=uniqueIds(map.obstacles ?? [],'map.obstacles');
     const next=integer(map.nextObstacleId,'counters.nextObstacleId');
@@ -56,8 +58,8 @@ export function validateSaveStructure(value: unknown, domain: {
   names: (v: unknown)=>boolean; toponymModel: string; kingdoms: (map: RecordValue, version: number)=>void;
 }): void {
   const data=record(value,'$');
-  oneOf(data.schema,['hexcrawl-map'],'schema'); oneOf(data.version,[2,3,4,5,6],'version');
-  if (data.version === 3 || data.version === 4 || data.version === 5 || data.version === 6 || data.generation !== undefined) { const path = generationValidationPath(data.generation); if (path) fail(path,'unsupported or invalid RNG state'); }
+  oneOf(data.schema,['hexcrawl-map'],'schema'); oneOf(data.version,[2,3,4,5,6,7],'version');
+  if (data.version === 3 || data.version === 4 || data.version === 5 || data.version === 6 || data.version === 7 || data.generation !== undefined) { const path = generationValidationPath(data.generation); if (path) fail(path,'unsupported or invalid RNG state'); }
   const map=record(data.map,'map'), ui=record(data.ui,'ui'), counters=record(data.counters,'counters');
   const regions=array(map.regions,'map.regions'), rivers=array(map.rivers,'map.rivers'), roads=array(map.roads,'map.roads');
   const regionIds=uniqueIds(regions,'map.regions'), riverIds=uniqueIds(rivers,'map.rivers'), roadIds=uniqueIds(roads,'map.roads');
@@ -161,6 +163,13 @@ export function validateSaveStructure(value: unknown, domain: {
       const c=record(r.controlPoints,p+'.controlPoints'); oneOf(c.startMode,['existing river endpoint','red vertex','mountain source'],p+'.controlPoints.startMode');
       for(const f of ['startVertex','endVertex','middlePurpleVertex']) if(c[f]!==undefined||f!=='middlePurpleVertex') if(!keys.has(vertex(c[f],p+'.controlPoints.'+f).key)) fail(p+'.controlPoints.'+f,'parent path');
     }
+  }
+  try {validateDeltaReferences(rivers as RiverGeometry[]);} catch {fail('map.rivers.deltaParentRiverId','invalid delta parent');}
+  if(data.version===7){
+    try {validateRiverCounter(rivers as RiverGeometry[],counters.nextRiverId);} catch {fail('counters.nextRiverId','invalid river counter');}
+    try {validateRiverFeatures(map.riverFeatures,rivers as RiverGeometry[]);} catch {fail('map.riverFeatures','invalid river features');}
+  }else{
+    try {migrateRiverEditing(rivers as RiverGeometry[]);} catch {fail('map.rivers','river migration overflow');}
   }
   const crossingKeys=new Set<string>();
   for(const [i,v] of array(map.crossings,'map.crossings').entries()) {

@@ -1,6 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createGenerationHarness } from './helpers/generation-harness.mjs';
+import {solveManualRiverPath} from '../src/manualRiverGeometry.ts';
+import {prepareRiverEdit,validateEditedRiverNetwork,emptyRiverFeatures} from '../src/manualRivers.ts';
 import { validateRiverNetwork } from '../src/riverModel/core.ts';
 
 function values(rivers) {
@@ -135,4 +137,105 @@ test('RIV-EX-21 lake shared by two regions counts unique hexes and all ports onc
   assert.equal(validateRiverNetwork(built.network).valid, true);
   const tooSmall = { ...built.network, nodes: built.network.nodes.map(n => n.kind === 'lake' ? { ...n, lakeHexCount: 1 } : n) };
   assert.equal(validateRiverNetwork(tooSmall).valid, false);
+  const ring=g.getCandidateHexes(hexes,new Set()),all=[...hexes,...ring];
+  const physicalMap={...h.render().captureDocument().map,regions:[...regions,{...regions[0],id:3,hexes:ring}],candidateHexes:g.getCandidateHexes(all,new Set()),hexTerrainByKey:terrain};
+  const physical=g.buildManualRiverGeometryContext(physicalMap);
+  assert.equal(physical.geometry.lakeHexCount.get('lake:1'),2,'same lakeId across owners counted once');
+  const ports=[...physical.geometry.edgeOwners.keys()].map(key=>key.split('|')).filter(([a,b])=>physical.geometry.lakeByVertex.has(a)!==physical.geometry.lakeByVertex.has(b)).map(([a,b])=>physical.geometry.lakeByVertex.has(a)?[b,a]:[a,b]).filter(([outside])=>physical.geometry.openVertices.has(outside));
+  const picked=[];for(const pair of ports)if(!picked.some(p=>p[0]===pair[0]))picked.push(pair);
+  assert.ok(picked.length>=3,'three actual independent lake ports');
+  const actual=[4,3,5].map((f,i)=>{const keys=i===2?picked[i].slice().reverse():picked[i];const path=keys.map(k=>physical.vertex(k));return {id:i+1,regionId:3,vertexPath:path,sectors:g.createInitialRiverSectors(i+1,path,f,{},3)};});
+  const real=physical.network(actual);assert.deepEqual(Array.from(real.issues),[]);assert.equal(real.network.nodes.filter(n=>n.kind==='lake').length,1);assert.equal(validateRiverNetwork(real.network).valid,true);
+  const small={...real.network,nodes:real.network.nodes.map(n=>n.kind==='lake'?{...n,lakeHexCount:1}:n)};assert.equal(validateRiverNetwork(small).valid,false);
+  const inside=g.getHexCornerPoints(hexes[0]).slice(0,2);const hidden={id:9,regionId:1,vertexPath:inside,sectors:g.createInitialRiverSectors(9,inside,1,{},1)};
+  assert.match(Array.from(physical.network([hidden]).issues).join(';'),/no_external_river_port/,'an entirely internal lake stroke is not a standalone valid river');
+});
+
+// E5 physical identity/ownership is separate from the old numerical adapter's
+// deliberately synthetic junction fixtures. One real-hex contract case reuses
+// the existing outgoingFixture and real App save validator.
+test('E5 manual geometry uses actual vertices, neighbours, owners and open frontier without touching the document',()=>{
+ const {h,g}=outgoingFixture(1),map=h.render().captureDocument().map,before=JSON.stringify(h.render().captureDocument());
+ const ctx=g.buildManualRiverGeometryContext(map),doc={rivers:map.rivers,riverFeatures:emptyRiverFeatures(),nextRiverId:map.nextRiverId};
+ assert.deepEqual(Array.from(ctx.network(doc.rivers).issues),[]);assert.equal(validateRiverNetwork(ctx.network(doc.rivers).network).valid,true);
+ const editCtx={...ctx,rapid:()=>true,waterfall:()=>true,additionalValidation:()=>{}}; // fixture has no road/delta/feature dependencies
+ const edge=doc.rivers[0].sectors[0].edgeKeys[0],changed=prepareRiverEdit(doc,{type:'fullness',riverId:1,edgeKey:edge,fullness:4},editCtx);
+ assert.ok(changed.rivers[0].sectors.every(s=>s.fullness===4));assert.deepEqual(changed.rivers[0].vertexPath,doc.rivers[0].vertexPath);
+ const reversed=prepareRiverEdit(doc,{type:'reverse',riverId:1},editCtx);assert.deepEqual(reversed.rivers[0].vertexPath,doc.rivers[0].vertexPath.slice().reverse());
+ const saved=JSON.parse(JSON.stringify(h.render().createSaveData()));saved.map.rivers=JSON.parse(JSON.stringify(changed.rivers));g.assertHexcrawlSaveData(saved);
+ const corrupt=mutate=>{const rivers=structuredClone(doc.rivers);mutate(rivers[0]);return Array.from(ctx.network(rivers).issues).join(';');};
+ assert.match(corrupt(r=>r.vertexPath[0].x+=2),/unknown_vertex/);assert.match(corrupt(r=>r.vertexPath[0].x=NaN),/unknown_vertex/);
+ assert.match(corrupt(r=>r.vertexPath.splice(1,1)),/nonphysical_edge/);
+ assert.match(corrupt(r=>r.sectors[0].assignedRegionId=999),/invalid_owner/);
+ assert.match(corrupt(r=>r.sectors.push({...r.sectors[0],fullness:1})),/ambiguous_fullness/);
+ const without=structuredClone(map);without.candidateHexes=[];
+ assert.equal(validateRiverNetwork(g.buildManualRiverGeometryContext(without).network(doc.rivers).network).valid,true,'frontier derived from physical uncreated land, not cached UI list');
+ const last=doc.rivers[0].vertexPath.at(-1).key,first=doc.rivers[0].vertexPath[0].key;
+ const sea=map.candidateHexes.find(x=>{const keys=g.getHexCornerPoints(x).map(v=>v.key);return keys.includes(last)&&!keys.includes(first);});assert.ok(sea);
+ const coastal=structuredClone(map);coastal.hexTerrainByKey.set(g.hexKey(sea),{terrainOverride:'sea'});
+ assert.throws(()=>prepareRiverEdit(doc,{type:'reverse',riverId:1},{...editCtx,...g.buildManualRiverGeometryContext(coastal)}),/RIV/,'sea must not turn into a source');
+ assert.equal(JSON.stringify(h.render().captureDocument()),before,'geometry preparation never mutates the live App or histories');
+});
+
+// Existing core tests cover numeric tables, not unknown physical drafts with
+// fixed App neighbours/counters or the final full-network check beyond a cut.
+test('E5 real path solver keeps explicit reach conditions and reports bounded limit without a partial document',()=>{
+ const {h,g}=outgoingFixture(1),original=h.render().captureDocument().map;
+ const map={...original,rivers:[]},ctx=g.buildManualRiverGeometryContext(map),base={rivers:[],riverFeatures:emptyRiverFeatures(),nextRiverId:2};
+ const path=original.rivers[0].vertexPath,edit={type:'create',regionId:1,path},full={...ctx,rapid:()=>true,waterfall:()=>true,additionalValidation:()=>{}};
+ const auto=prepareRiverEdit(base,edit,full);assert.equal(auto.nextRiverId,3);assert.equal(auto.rivers[0].id,2);assert.equal(validateRiverNetwork(ctx.network(auto.rivers).network).valid,true);
+ const key=auto.rivers[0].sectors[0].edgeKeys[0],fixed=prepareRiverEdit(base,{...edit,fullnessByEdge:{[key]:4}},full);assert.ok(fixed.rivers[0].sectors.every(s=>s.fullness===4));
+ const existing={...base,rivers:fixed.rivers,nextRiverId:3},existingMap={...map,rivers:fixed.rivers},replaceCtx={...full,...g.buildManualRiverGeometryContext(existingMap)};
+ const replacement={type:'replace',riverId:2,regionId:1,path,fullnessByEdge:{[key]:2}};
+ const changed=prepareRiverEdit(existing,replacement,replaceCtx);assert.ok(changed.rivers[0].sectors.every(s=>s.fullness===2),'condition applies to the hydrological reach, not one visual stroke');
+ assert.equal(prepareRiverEdit(existing,{...replacement,fullnessByEdge:{[key]:4}},replaceCtx),existing);
+ const before=JSON.stringify(base),target={id:2,regionId:1,vertexPath:[],sectors:[]};
+ assert.throws(()=>solveManualRiverPath([],target,path,new Map(),ctx.geometry,{maxStates:1}),error=>error.status==='limit'&&/упростите русло/.test(error.message));
+ assert.equal(JSON.stringify(base),before);assert.equal(base.nextRiverId,2);assert.deepEqual(base.rivers,[]);
+ assert.throws(()=>prepareRiverEdit(base,{...edit,fullness:1,fullnessByEdge:{[key]:4}},full),/conflicting_fullness/);
+ // AC01/03: exercise the complete App writer on actual dry-source/lake ports
+ // in both modes; reuse this physical fixture and the existing solver test.
+ const center={q:0,r:0},ring=g.getHexNeighbors(center),all=[center,...ring],template=original.regions[0];
+ const regions=[{...template,id:1,hexes:[center,...ring.slice(0,3)],centerHex:center,anchorHex:center,finalSize:4,targetSize:4,heightLevel:1},{...template,id:2,hexes:ring.slice(3),centerHex:ring[3],anchorHex:ring[3],finalSize:3,targetSize:3,heightLevel:3}];
+ const emptyMap={...original,regions,rivers:[],roads:[],crossings:[],riverFeatures:emptyRiverFeatures(),hexTerrainByKey:new Map(),candidateHexes:g.getCandidateHexes(all,new Set()),nextRiverId:1,nextLakeId:1};
+ const real=g.buildManualRiverGeometryContext(emptyMap),start=real.vertex('24.249,-14'),end=real.vertex('48.497,-28'),sea={q:2,r:-1};assert.ok(start&&end);
+ const stable=()=>{const d=JSON.parse(JSON.stringify(h.render().createSaveData()));delete d.savedAt;return d;};
+ for(const mode of ['classic','mythic'])for(const kind of ['open','sea','lake']){
+   const terrain=new Map(kind==='open'?[]:[['2,-1',{terrainOverride:'sea'}]]);if(kind==='lake')terrain.set('0,0',{terrainOverride:'lake',lakeId:1});
+   h.render().restoreSnapshot({...emptyMap,hexTerrainByKey:terrain,nextLakeId:kind==='lake'?2:1});h.render().setGenerationMode(mode);const before=stable();
+   const command={type:'create',regionId:1,path:[start,end],fullness:kind==='lake'?2:1};assert.equal(h.render().editRiverDocument(command),true,mode+' '+kind);
+   const after=stable();g.assertHexcrawlSaveData(after);assert.deepEqual(after.generation,before.generation);assert.equal(after.ui.generationMode,mode);assert.equal(after.counters.nextRiverId,2);assert.equal(validateRiverNetwork(g.buildManualRiverGeometryContext(h.render().captureDocument().map).network(h.render().rivers).network).valid,true);
+   if(kind==='open'){
+     const context=g.buildManualRiverGeometryContext(h.render().captureDocument().map),entry=[...context.geometry.edgeOwners].find(([key,owners])=>owners.length===1&&owners[0]===2&&key.split('|').every(k=>context.geometry.openVertices.has(k)));assert.ok(entry,'second owner has a genuine open edge');
+     const replacementPath=entry[0].split('|').map(key=>context.vertex(key));assert.equal(h.render().editRiverDocument({type:'replace',riverId:1,regionId:1,path:replacementPath},{confirmed:true}),true);const replaced=stable();assert.equal(replaced.map.rivers[0].id,1);assert.equal(replaced.map.rivers[0].regionId,2,'owner changes only when previous region is no longer adjacent');assert.deepEqual(replaced.map.toponyms,after.map.toponyms);assert.deepEqual(replaced.map.tags,after.map.tags);assert.equal(replaced.counters.nextRiverId,2);g.assertHexcrawlSaveData(replaced);h.render().undoMap();assert.deepEqual(stable(),after);
+   }
+   if(kind==='lake'){assert.equal(h.render().editRiverDocument({type:'fullness',riverId:1,edgeKey:after.map.rivers[0].sectors[0].edgeKeys[0],fullness:3}),false,'one hex cannot sourceF3');assert.deepEqual(stable(),after);}
+   h.render().undoMap();assert.deepEqual(stable(),before);h.render().redoMap();assert.deepEqual(stable(),after);
+ }
+
+});
+test('E5 unknown tributary preserves fixed neighbouring legacy source and owner heights',()=>{
+ const {h,g}=outgoingFixture(1),base=h.render().captureDocument().map,center=base.regions[0].hexes[0],ring=g.getHexNeighbors(center);
+ const regions=[{...base.regions[0],hexes:[center],id:1,heightLevel:1},{...base.regions[0],hexes:ring,id:2,heightLevel:3}];
+ let map={...base,regions,rivers:[],hexTerrainByKey:new Map(),candidateHexes:g.getCandidateHexes([center,...ring],new Set())};
+ const empty=g.buildManualRiverGeometryContext(map),corners=g.getHexCornerPoints(center),join=corners[0],a=corners[5],b=corners[1];
+ const adjacent=k=>[...empty.geometry.edgeOwners.keys()].filter(e=>e.split('|').includes(k)).map(e=>e.split('|').find(x=>x!==k));
+ const c=adjacent(join.key).find(k=>k!==a.key&&k!==b.key),d=adjacent(b.key).find(k=>k!==join.key&&empty.geometry.openVertices.has(k));assert.ok(c&&d);assert.equal(empty.geometry.openVertices.has(a.key),false);assert.equal(empty.geometry.openVertices.has(c),true);
+ const path=[a,join,b,empty.vertex(d)],sectors=path.slice(1).flatMap((v,i)=>g.createInitialRiverSectors(1,[path[i],v],3,{},empty.edgeOwners([path[i].key,v.key].sort().join('|'))[0])).map((s,i)=>({...s,id:`fixed:${i}`,sectorIndex:i+1}));
+ const main={id:1,regionId:1,vertexPath:path,sectors};map={...map,rivers:[main]};const ctx=g.buildManualRiverGeometryContext(map),doc={rivers:[main],riverFeatures:emptyRiverFeatures(),nextRiverId:2},before=JSON.stringify(doc);
+ assert.equal(validateRiverNetwork(ctx.network(doc.rivers).network).valid,false,'legacy dry sourceF3 is deliberately unchanged');
+ const edit={type:'create',regionId:2,path:[ctx.vertex(c),join]},full={...ctx,rapid:()=>true,waterfall:()=>true,additionalValidation:()=>{}};
+ assert.equal(prepareRiverEdit(doc,{type:'replace',riverId:1,regionId:1,path,fullnessByEdge:{[main.sectors[0].edgeKeys[0]]:3}},full),doc,'same condition is a no-op even beside an accepted legacy source defect');
+ const result=prepareRiverEdit(doc,edit,full);assert.equal(result.rivers[0],main);assert.equal(result.nextRiverId,3);assert.deepEqual(result.rivers[0].sectors.map(s=>s.fullness),[3,3,3]);
+ assert.deepEqual(result.rivers[0].sectors.map(s=>s.assignedRegionId),[1,1,2]);assert.equal(JSON.stringify(doc),before);
+ const branchKey=[c,join.key].sort().join('|'),hard=prepareRiverEdit(doc,{...edit,fullnessByEdge:{[branchKey]:2}},full);assert.equal(hard.rivers[1].sectors[0].fullness,2);assert.equal(hard.rivers[0],main);
+ assert.throws(()=>prepareRiverEdit(doc,{...edit,fullness:4},full),/RIV-005/);assert.equal(JSON.stringify(doc),before);
+});
+test('E5 solved draft still rejects a new physical cycle beyond the fixed exterior cut',()=>{
+ const {h,g}=outgoingFixture(1),map=h.render().captureDocument().map,main=map.rivers[0],corners=g.getHexCornerPoints(map.regions[0].hexes[0]);
+ let index=corners.findIndex(v=>v.key===main.vertexPath.at(-1).key);const path=[corners[index]];
+ while(path.at(-1).key!==main.vertexPath[0].key){index=(index+1)%corners.length;path.push(corners[index]);assert.ok(path.length<=6);}
+ const ctx=g.buildManualRiverGeometryContext(map),doc={rivers:map.rivers,riverFeatures:emptyRiverFeatures(),nextRiverId:map.nextRiverId},before=JSON.stringify(doc);
+ assert.throws(()=>prepareRiverEdit(doc,{type:'create',regionId:1,path},{...ctx,rapid:()=>true,waterfall:()=>true,additionalValidation:()=>{}}),/RIV-016:CYCLE/);
+ assert.equal(JSON.stringify(doc),before);assert.equal(doc.nextRiverId,map.nextRiverId);
 });

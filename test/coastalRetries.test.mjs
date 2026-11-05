@@ -33,7 +33,10 @@ test('auto coast retries an incompatible shape before choosing a tract', () => {
   assert.equal(built.issues.length, 0);
   assert.equal(validateRiverNetwork(built.network).valid, true);
   h.geometry.assertHexcrawlSaveData(JSON.parse(JSON.stringify(after.createSaveData())));
-  after.deleteLastRegion();
+  const document=structuredClone(after.captureDocument()),stacks=structuredClone([after.undoHistory,after.redoHistory]);let prompt='';
+  h.setWindow({confirm:message=>{prompt=message;return false;}});after.deleteLastRegion();
+  assert.match(prompt,/Будет восстановлено исходное состояние рек/);assert.deepEqual(structuredClone(h.render().captureDocument()),document);assert.deepEqual(structuredClone([h.render().undoHistory,h.render().redoHistory]),stacks);
+  h.setWindow({confirm:()=>true});h.render().deleteLastRegion();
   assert.equal(JSON.stringify(h.render().regions), oldRegions);
   assert.equal(JSON.stringify(h.render().rivers), oldRivers);
 });

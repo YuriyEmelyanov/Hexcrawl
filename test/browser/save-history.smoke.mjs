@@ -14,7 +14,7 @@ try {
  await new Promise((resolve,reject)=>{let output='';const timer=setTimeout(()=>reject(Error(output)),10000);server.stdout.on('data',data=>{output+=data;if(stripVTControlCharacters(output).includes('Local:')){clearTimeout(timer);resolve();}});server.on('error',reject);server.on('exit',c=>reject(Error('preview '+c)));});
  browser=await chromium.launch({executablePath:process.env.CHROMIUM_EXECUTABLE_PATH||undefined,headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
  const page=await browser.newPage({viewport:{width:1500,height:1100}}), errors=[],alerts=[];
- page.on('pageerror',e=>errors.push(e.message));page.on('dialog',async d=>{alerts.push(d.message());await d.dismiss();});
+ page.on('pageerror',e=>errors.push(e.message));page.on('dialog',async d=>{if(/Будет восстановлено исходное состояние рек|Original river state will be restored/.test(d.message())){await d.accept();return;}alerts.push(d.message());await d.dismiss();});
  await page.route(/mc\.yandex/,route=>route.abort());
  await page.addInitScript(()=>{
    let seed=42;Math.random=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};
@@ -60,6 +60,79 @@ try {
    assert.fail('No candidate could generate a region');
  }
  async function transaction(action){const before=await snapshot();await action();const after=await snapshot();assert.notDeepEqual(after,before);await button('Отменить').click();assert.deepEqual(await snapshot(),before);await button('Повторить').click();assert.deepEqual(await snapshot(),after);return after;}
+ { // E5-02: extend this same browser lifecycle; no second corpus/runner.
+ await load(fixture);await select('0,0');await ensureEdit();
+ const before=await snapshot();
+ const png=async()=>{const menu=page.locator('details.export-menu');if(await menu.getAttribute('open')===null)await menu.locator('summary').click();const got=page.waitForEvent('download');await button('PNG').click();return fs.readFile(await (await got).path());};
+ const confirmedPng=await png();
+ await button('Добавить реку').click();
+ assert.equal(await page.locator('[data-editor-only="river-draft"]').count(),1);
+ for(const name of ['Сбросить','Отменить','Повторить','Загрузить JSON'])assert.ok(await button(name).isDisabled(),name+' blocked by draft');
+ await button('Готово').click();assert.equal(await button('Готово').count(),1,'invalid draft blocks Done');
+ if(await page.locator('.header-links').evaluate(el=>el.classList.contains('is-collapsed')))await page.locator('.header-links-toggle').click();
+ await button('Switch to English').click();assert.equal(await button('Switch to English').count(),1,'invalid draft blocks language');
+ assert.deepEqual(await snapshot(),before,'JSON excludes draft and leaves it open');assert.equal(await page.locator('[data-editor-only="river-draft"]').count(),1);
+ assert.deepEqual(await png(),confirmedPng,'PNG excludes draft targets and path overlays');
+ const start='-24.249,14',end='-24.249,-14';
+ await page.locator(`[data-river-draft-choice="${start}"]`).press('Enter');
+ assert.equal(await page.locator('[data-editor-only="river-draft"] line').count(),0,'Enter on vertex chooses a start, not Done');
+ await page.locator(`[data-river-draft-choice="${end}"]`).press('Space');assert.equal(await page.locator('[data-editor-only="river-draft"] line').count(),1);
+ const hexBox=await page.locator('polygon.hex[data-hex-key="0,0"]').boundingBox();assert.ok(hexBox);
+ await page.mouse.move(hexBox.x+hexBox.width/2,hexBox.y+hexBox.height/2);await page.mouse.down();await page.mouse.move(hexBox.x+hexBox.width/2+10,hexBox.y+hexBox.height/2,{steps:4});await page.mouse.up();
+ assert.equal(await page.locator('[data-editor-only="river-draft"] line').count(),1,'drag gesture must not finish the path');assert.deepEqual(await snapshot(),before);
+ await page.locator('.map-viewport').press('Enter');
+ const after=await snapshot();assert.equal(after.map.rivers.length,before.map.rivers.length+1);assert.equal(after.counters.nextRiverId,before.counters.nextRiverId+1);assert.deepEqual(after.generation,before.generation);assert.equal(await page.locator('[data-editor-only="river-draft"]').count(),0);
+ await button('Отменить').click();assert.deepEqual(await snapshot(),before);await button('Повторить').click();assert.deepEqual(await snapshot(),after);
+ await button('Добавить реку').click();await page.locator('.map-viewport').press('Escape');await page.waitForFunction(()=>document.activeElement?.hasAttribute('data-add-river'));assert.deepEqual(await snapshot(),after,'reset leaves committed map unchanged');
+ }
+ { // E5-01…06/AC04…10: use the same real lifecycle runner, no duplicate corpus.
+ const editorFixture=JSON.parse(await fs.readFile(new URL('../fixtures/e5-river-editor.json',import.meta.url)));
+ const out=process.env.HX_E5_EVIDENCE_DIR||fileURLToPath(new URL('reports/HX-BL-023-E5/',root));await fs.mkdir(out,{recursive:true});
+ const screen=async name=>{const menu=page.locator('details.export-menu');if(await menu.getAttribute('open')!==null)await menu.locator('summary').click();await page.screenshot({path:`${out}/${name}.png`});};
+ const png=async()=>{const menu=page.locator('details.export-menu');if(await menu.getAttribute('open')===null)await menu.locator('summary').click();const got=page.waitForEvent('download');await button('PNG').click();return fs.readFile(await (await got).path());};
+ const findRiver=async()=>{await ensureEdit();if(await button('Найти объект').getAttribute('aria-expanded')==='false')await button('Найти объект').click();await page.locator('[data-target-key="river:1"]').click();assert.equal(await page.locator('[data-river-command-editor="1"]').count(),1,'Find selects the exact river');await page.locator('[data-river-edge-choice]').first().click();};
+ for(const mode of ['classic','mythic']){
+   const data=structuredClone(editorFixture);data.ui.generationMode=mode;
+   await load(data);await select('0,0');const original=await snapshot();
+   if(mode==='classic'){if(await button('Готово').count())await button('Готово').click();await page.setViewportSize({width:1500,height:1100});await page.locator('.info-block--hex').scrollIntoViewIfNeeded();await screen('before-ru-1500');}
+   await findRiver();
+   const line=page.locator('[data-river-map-edge]').first();await line.press('Enter');assert.equal(await page.locator('[data-river-command-editor="1"]').count(),1,'keyboard map selection');
+   // Physical pointer uses the current transform, including rotation and zoom.
+   await button('Повернуть карту на 90 градусов').click();
+   const point=await line.evaluate(node=>new DOMPoint((node.x1.baseVal.value+node.x2.baseVal.value)/2,(node.y1.baseVal.value+node.y2.baseVal.value)/2).matrixTransform(node.getScreenCTM()).toJSON());
+   await page.mouse.click(point.x,point.y);assert.ok(await page.locator('[data-river-road-hit-choice]').count(),'crossing does not hide the road target');await page.locator('[data-river-hit-choice]').first().press('Enter');assert.equal(await page.locator('[data-river-command-editor="1"]').count(),1);await button('Вернуть исходный поворот карты').click();
+   if(mode==='classic')for(const width of [1500,390]){await page.setViewportSize({width,height:1100});await page.locator('[data-river-command-editor]').scrollIntoViewIfNeeded();await screen(`edit-ru-${width}`);assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));}
+   const before=await snapshot();await page.getByRole('combobox',{name:'Полноводность',exact:true}).selectOption('3');assert.equal(await page.locator('[data-river-preview]').count(),1);assert.ok(await page.locator('[data-river-confirm]').isDisabled());assert.deepEqual(await snapshot(),before,'unresolved ford preview has no document write');
+   assert.match(await page.locator('[data-river-preview]').innerText(),/2 → 3/);
+   await page.locator('[data-river-crossing-choice]').selectOption('ferry');
+   if(mode==='classic'){await page.locator('[data-river-preview]').scrollIntoViewIfNeeded();await screen('confirm-ru-390');}
+   await page.locator('[data-river-confirm]').press('Enter');const full=await snapshot();assert.equal(full.map.crossings[0].kind,'ferry');assert.ok(full.map.rivers[0].sectors.every(s=>s.fullness===3));assert.deepEqual(full.generation,before.generation);
+   await button('Отменить').click();assert.deepEqual(await snapshot(),before);await button('Повторить').click();assert.deepEqual(await snapshot(),full);
+   await findRiver();const cleanPng=await png();await page.locator('[data-river-reverse]').click();assert.equal(await page.locator('[data-river-preview]').count(),1);assert.deepEqual(await png(),cleanPng,'preview arrows and muted source excluded from PNG');await page.locator('[data-river-cancel]').press('Escape');await page.waitForFunction(()=>document.activeElement?.hasAttribute('data-river-choice'));assert.deepEqual(await snapshot(),full);
+   await page.locator('[data-river-choice="1"]').click();await page.locator('[data-river-reverse]').click();await page.locator('[data-river-confirm]').click();const reversed=await snapshot();assert.deepEqual(reversed.map.rivers[0].vertexPath,[...full.map.rivers[0].vertexPath].reverse());await button('Отменить').click();assert.deepEqual(await snapshot(),full);await button('Повторить').click();
+   // A surviving endpoint waterfall becomes a forbidden source on reversal.
+   await findRiver();const end=reversed.map.rivers[0].vertexPath.at(-1).key;await page.locator(`[data-river-vertex-choice="${end}"]`).click();await page.getByRole('combobox',{name:'водопад',exact:true}).selectOption('on');const on=await snapshot();assert.ok(on.map.riverFeatures.waterfalls.some(e=>e.vertexKey===end&&e.state==='on'));
+   await findRiver();await page.locator('[data-river-reverse]').click();assert.equal(await page.locator('[data-river-marker-choice]').count(),1);assert.ok(await page.locator('[data-river-confirm]').isDisabled());await page.locator('[data-river-marker-choice]').selectOption('off');await page.locator('[data-river-confirm]').click();const resolved=await snapshot();assert.ok(resolved.map.riverFeatures.waterfalls.some(e=>e.vertexKey===end&&e.state==='off'));await button('Отменить').click();assert.deepEqual(await snapshot(),on);await button('Повторить').click();
+   // Replacement can reuse its own occupied edge. Enter completes a real no-op.
+   await findRiver();const resolvedPng=await png();await page.locator('[data-river-replace]').click();assert.deepEqual(await png(),resolvedPng,'replacement draft excludes editor layers');
+   const path=resolved.map.rivers[0].vertexPath;for(const v of path)await page.locator(`[data-river-draft-choice="${v.key}"]`).click();await page.locator('[data-river-finish]').click();assert.equal(await page.locator('[data-river-preview]').count(),0);assert.deepEqual(await snapshot(),resolved);
+   await findRiver();await page.locator('[data-river-replace]').click();await page.locator('[data-river-finish]').click();assert.equal(await page.locator('[data-river-draft]').count(),1,'invalid replacement remains open');assert.deepEqual(await snapshot(),resolved);if(mode==='classic'){await page.locator('.direct-error').last().scrollIntoViewIfNeeded();await screen('error-ru-390');}await button('Сбросить черновик реки').click();
+   await findRiver();await page.locator('[data-river-remove]').click();assert.match(await page.locator('[data-river-preview]').innerText(),/Эйра/);await page.locator('[data-river-confirm]').click();const deleted=await snapshot();assert.equal(deleted.map.rivers.length,0);assert.equal(deleted.map.crossings.length,0);assert.equal(deleted.counters.nextRiverId,resolved.counters.nextRiverId);
+   if(mode==='classic'){await page.locator('.info-block--hex').scrollIntoViewIfNeeded();await screen('after-delete-ru-390');}
+   await button('Отменить').click();assert.deepEqual(await snapshot(),resolved);if(mode==='classic'){await findRiver();await page.locator('[data-river-command-editor]').scrollIntoViewIfNeeded();await screen('undo-ru-390');}
+   await load(fixture);await load(resolved);assert.deepEqual(await snapshot(),resolved,'roundtrip after a different document restores complete river edit');
+   // Safe fullness has no separate Apply/Confirm.
+   const safe=structuredClone(editorFixture);safe.ui.generationMode=mode;safe.map.crossings=[];safe.map.roads=[];safe.counters.nextRoadId=1;await load(safe);await findRiver();const safeBefore=await snapshot();await page.getByRole('combobox',{name:'Полноводность',exact:true}).selectOption('4');assert.equal(await page.locator('[data-river-preview]').count(),0);const safeAfter=await snapshot();assert.ok(safeAfter.map.rivers[0].sectors.every(s=>s.fullness===4));await button('Отменить').click();assert.deepEqual(await snapshot(),safeBefore);
+   // The E3 direction offers the same explicit Off/Auto resolution.
+   const rapid=structuredClone(safe);rapid.map.riverFeatures.rapids=[{riverId:1,edgeKey:rapid.map.rivers[0].sectors[0].edgeKeys[0],state:'on'}];await load(rapid);await select('0,0');await ensureEdit();const rapidBefore=await snapshot();await button('Начать путь отсюда').click();await select('1,0');await page.locator('.map-viewport').press('Enter');assert.equal(await page.locator('[data-road-marker-resolution]').count(),1);assert.deepEqual(await snapshot(),rapidBefore,'unresolved road marker choice preserves document');await page.locator('[data-road-marker-choice]').selectOption('off');await page.locator('[data-road-marker-confirm]').click();const roadResolved=await snapshot();assert.equal(roadResolved.map.crossings[0].kind,'bridge');assert.equal(roadResolved.map.riverFeatures.rapids[0].state,'off');
+ }
+ // A physical junction has more than one 44px hit; an explicit list selects it.
+ const overlap=structuredClone(editorFixture),joined=structuredClone(overlap.map.rivers[0]);joined.id=2;joined.vertexPath=[joined.vertexPath[1],{x:0,y:28,key:'0,28'}];const joinedEdge=joined.vertexPath.map(v=>v.key).sort().join('|');joined.sectors=joined.sectors.map(s=>({...s,id:'overlap:2',riverId:2,vertexPath:joined.vertexPath,edgeKeys:[joinedEdge],startVertexKey:joined.vertexPath[0].key,endVertexKey:joined.vertexPath[1].key}));overlap.map.rivers.push(joined);overlap.counters.nextRiverId=3;overlap.ui.mapScale=1.5;await page.setViewportSize({width:1500,height:1100});await load(overlap);await ensureEdit();
+ const edgeTarget=page.locator('[data-river-map-edge]').first();await edgeTarget.scrollIntoViewIfNeeded();const joint=await edgeTarget.evaluate(n=>new DOMPoint(n.x2.baseVal.value,n.y2.baseVal.value).matrixTransform(n.getScreenCTM()).toJSON());await page.mouse.click(joint.x,joint.y);assert.ok(await page.locator('[data-river-hit-choice]').count()>=2,'overlap must present all physical river hits');await page.locator('[data-river-hit-choice]').last().press('Enter');assert.equal(await page.locator('[data-river-command-editor="2"]').count(),1,'explicit overlap choice identifies river2');
+ await page.setViewportSize({width:390,height:1100});await load(editorFixture);await select('0,0');await findRiver();if(await page.locator('.header-links').evaluate(el=>el.classList.contains('is-collapsed')))await page.locator('.header-links-toggle').click();await button('Switch to English').click();await page.locator('[data-river-choice="1"]').click();await page.locator('[data-river-edge-choice]').first().click();await page.locator('[data-river-command-editor]').scrollIntoViewIfNeeded();await screen('edit-en-390');assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));await button('Переключить на русский').click();await page.setViewportSize({width:1500,height:1100});
+ if(await button('Найти объект').getAttribute('aria-expanded')==='true')await button('Найти объект').click();
+ console.log('E5 full editor: Classic/Mythic, Find/map/rotation, native F, deep ford and marker choices both directions, reverse/replacement/delete, PNG/JSON exclusion, roundtrip/undo, RU/EN1500/390 passed.');
+ }
  { // DE-AC01–04/06/10: replace superseded paired-form workflow in this existing lifecycle.
  const out=new URL('reports/HX-BL-023-direct/',root);await fs.mkdir(out,{recursive:true});
  const info=page.locator('.info-block--hex'), namesSection=page.locator('.map-names');
@@ -112,7 +185,10 @@ try {
  for(const width of [390,1500]) {
    await page.setViewportSize({width,height:1100});await shortName.scrollIntoViewIfNeeded();
    const box=await shortName.boundingBox();assert.ok(box.width>=44&&box.height>0,'short name target at '+width);
-   await page.mouse.click(box.x+30,box.y+box.height/2);
+   // Keep a physical click in the blank30px part; locator action waits for
+   // resize/scroll geometry to stabilize instead of reusing stale viewport coordinates.
+   await shortName.click({position:{x:30,y:box.height/2}});
+   await input().waitFor({state:'visible',timeout:5000});
    assert.equal(await input().count(),1,'blank part of short name target opens editor at '+width);
    await input().press('Escape');
  }
@@ -231,7 +307,7 @@ try {
  // No debounce wait: selection/export must retain the final character.
  await select(`${other.q},${other.r}`);assert.equal(await page.locator('#gm-notes-text').count(),0);
  await select(noteKey);assert.equal(await page.locator('.gm-notes__text').textContent(),noteText);
- const savedNotes=await snapshot();assert.equal(savedNotes.version,6);assert.equal(savedNotes.map.gmNotesByHexKey[noteKey],noteText);
+ const savedNotes=await snapshot();assert.equal(savedNotes.version,7);assert.equal(savedNotes.map.gmNotesByHexKey[noteKey],noteText);
  const stripNotes=d=>{d=structuredClone(d);delete d.map.gmNotesByHexKey;return d;};
  assert.deepEqual(stripNotes(savedNotes),stripNotes(cleanNotes));
  assert.equal(await page.locator('svg').first().textContent().then(s=>s.includes('Жрец пропал')),false);
@@ -411,6 +487,43 @@ try {
  const road=roadMap.map.roads.find(r=>r.id===crossing.roadId),seg=road.segments.find(s=>[`${s.from.q},${s.from.r}`,`${s.to.q},${s.to.r}`].sort().join('|')===crossing.roadSegmentKey);
  await select(`${seg.from.q},${seg.from.r}`);
  if(await button('Редактировать').count())await button('Редактировать').click();
+ // E5 extends the existing real-browser document lifecycle: exact local
+ // selection, explicit Off even when Auto is absent, reload, history and export.
+ const riverChoice=page.locator('[data-river-choice]').first();
+ assert.ok(await riverChoice.count(),'crossing fixture supplies a nearby river');
+ const riverId=Number(await riverChoice.getAttribute('data-river-choice'));
+ await riverChoice.press('Enter');
+ const edgeChoice=page.locator('[data-river-edge-choice]').first();
+ const featureEdge=await edgeChoice.getAttribute('data-river-edge-choice');
+ await edgeChoice.press('Space');
+ assert.ok(await page.locator('[data-editor-only="river-feature"] line').count()>=1);assert.ok(await page.locator(`[data-river-reach-edge="${featureEdge}"]`).count());
+ const beforeFeature=await snapshot();
+ const rapidSelect=page.getByRole('combobox',{name:'пороги',exact:true});
+ await rapidSelect.selectOption('off');
+ const afterFeature=await snapshot();
+ assert.ok(afterFeature.map.riverFeatures.rapids.some(e=>e.riverId===riverId&&e.edgeKey===featureEdge&&e.state==='off'));
+ assert.deepEqual(afterFeature.generation,beforeFeature.generation);
+ assert.deepEqual(afterFeature.map.rivers,beforeFeature.map.rivers);
+ assert.ok(await rapidSelect.evaluate(e=>e.getBoundingClientRect().height>=44));
+ await button('Отменить').click();assert.deepEqual(await snapshot(),beforeFeature);
+ await button('Повторить').click();assert.deepEqual(await snapshot(),afterFeature);
+ await load(afterFeature);assert.deepEqual(await snapshot(),afterFeature);
+ await select(`${seg.from.q},${seg.from.r}`);await ensureEdit();
+ await page.locator(`[data-river-choice="${riverId}"]`).click();
+ await page.locator(`[data-river-edge-choice="${featureEdge}"]`).click();
+ await page.getByRole('combobox',{name:'пороги',exact:true}).selectOption('auto');
+ assert.deepEqual(await snapshot(),beforeFeature,'Auto removes only the explicit intention');
+ await page.getByRole('combobox',{name:'пороги',exact:true}).press('Escape');
+ assert.equal(await page.locator('[data-river-feature-editor]').count(),1,'Escape closes field and returns focus');
+ await page.locator('[data-river-vertex-choice]').first().click();
+ const vertexKey=await page.locator('[data-river-vertex-choice][aria-pressed="true"]').getAttribute('data-river-vertex-choice');
+ const waterfallSelect=page.locator('[data-river-feature-editor] select');
+ const selectedRiver=beforeFeature.map.rivers.find(r=>r.id===riverId);
+ if(vertexKey===selectedRiver.vertexPath[0].key)assert.ok(await waterfallSelect.locator('option[value="on"]').isDisabled(),'source waterfall forbidden');
+ await waterfallSelect.selectOption('off');
+ assert.ok((await snapshot()).map.riverFeatures.waterfalls.some(e=>e.vertexKey===vertexKey&&e.state==='off'));
+ // Restore the input fixture and selection for the existing E3 checks below.
+ await load(roadMap);await select(`${seg.from.q},${seg.from.r}`);await ensureEdit();
  const roadLabel=`Участок ${road.id}: ${seg.from.q},${seg.from.r} → ${seg.to.q},${seg.to.r}`;
  const crossingTarget=page.getByRole('button',{name:`Переправа ${crossing.key}`,exact:true});
  await crossingTarget.focus();await crossingTarget.press(' ');

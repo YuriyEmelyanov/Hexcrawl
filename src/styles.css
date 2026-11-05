@@ -293,3 +293,23 @@ button:disabled,select:disabled { opacity:.55; cursor:wait; }
 .map-viewport.has-motion-buffer.is-navigating .map-stage > svg.selected-hex-overlay { opacity:1; }
 
 .direct-find { min-width:44px; }
+/* E5 uses the existing information surface; controls wrap on narrow screens. */
+.river-feature-editor { display:flex; flex-direction:column; gap:4px; margin-block:4px 8px; }
+.river-feature-places, .river-feature-control { display:flex; flex-wrap:wrap; align-items:center; gap:4px 8px; }
+.river-feature-editor .direct-value, .river-choice { min-height:44px; min-width:44px; max-width:100%; }
+.river-feature-editor .direct-value[aria-pressed="true"] { outline:2px solid #f7dc6f; outline-offset:-2px; }
+.river-feature-reason { flex-basis:100%; }
+
+.river-draft-editor { display:flex; flex-wrap:wrap; gap:4px 8px; margin-block:8px; }
+.river-draft-editor p { flex-basis:100%; margin-block:4px; }
+.river-draft-editor .direct-value { min-height:44px; min-width:44px; max-width:100%; }
+.river-draft-map-target:focus-visible { stroke:#f7dc6f; stroke-width:2; outline:none; }
+
+.river-command-editor, .river-command-preview { display:flex; flex-direction:column; align-items:flex-start; gap:4px; margin-block:4px 8px; max-width:100%; overflow-wrap:anywhere; }
+.river-command-editor .direct-value, .river-command-preview .direct-value, [data-river-hit-choices] .direct-value { min-height:44px; min-width:44px; max-width:100%; }
+.river-command-editor select, .river-command-preview select { width:auto; max-width:100%; }
+.river-command-preview { padding:8px; border:1px solid #b69855; border-radius:6px; }
+.river-command-preview p { margin:2px 0; }
+.river-map-target:focus { outline:none; stroke:#7dd3fc; stroke-opacity:0.45; }
+
+.river-command-actions { display:flex; flex-wrap:wrap; align-items:center; gap:4px 12px; max-width:100%; }
