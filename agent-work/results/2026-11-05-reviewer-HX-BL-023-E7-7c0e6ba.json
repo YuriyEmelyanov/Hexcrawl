@@ -1,0 +1,261 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-05-reviewer-HX-BL-023-E7-7c0e6ba",
+  "task_id": "HX-BL-023",
+  "stage": "E7",
+  "review_pass": "R2",
+  "role": "independent_reviewer",
+  "worker": "/root/e7_r1_independent_review",
+  "status": "changes_requested",
+  "review_scope": "Separate read-only independent exact-SHA review;three previous findings and bounded E7 whole-package regression risks",
+  "source": {
+    "sha": "7c0e6badc5910817e2672e4c8de77be3d1b8c75e",
+    "tree": "94cd58197db0af3c6c003597774412eaef60b928",
+    "base_sha": "2ef5cc35107f299c309b7c8065a1e81ca9881278",
+    "previous_review_sha": "e585ee6d599479639e2502607c16c0abc9a2218d",
+    "local_path": "/workspace/scratch/60e61b33a6a0/e7-development",
+    "verified": "git rev-parse HEAD HEAD^{tree};four-file18+/5- delta reviewed;src/docs/tracked tests clean;preexisting untracked .e7-diagnostic.mjs unused",
+    "remote_branch_contains_implementation": false,
+    "remote_sync": "blocked_auto_review",
+    "pr": null
+  },
+  "authority": {
+    "spec": "agent-work/specs/HX-BL-023-E7.md",
+    "spec_version": "E7-1.0",
+    "spec_blob": "59f6a231eaa27fb2fb3f98d6d29838da9c50e9b5",
+    "process": "agent-work/process.md",
+    "score_model": "1.2",
+    "model_blob": "ab660f02e26faf2233aecd5f2fd1090260fe74eb",
+    "paid_spend": 0,
+    "budget_usage": "unknown;owner waived usage gate24Oct",
+    "merge_deploy_authorized": false
+  },
+  "previous_findings": [
+    {
+      "id": "E7-R2-F01",
+      "status": "verified_fixed_bounded",
+      "evidence": "Actual handler affectedRivers[5] with ownerChanges[];independent390px Chromium in both modes visibly names Silver River(#5) while owner count0. Transfer preview also names5 with count1."
+    },
+    {
+      "id": "E7-R2-F02",
+      "status": "verified_fixed_bounded",
+      "evidence": "Actual390px Chromium both-mode height/transfer drafts show region draft excluded fromJSON/PNG notice;existing native water caption retained in source."
+    },
+    {
+      "id": "E7-R2-F03",
+      "status": "verified_fixed_bounded",
+      "evidence": "Independent actual imports of all8 import-v2 and11 rng-v3 manifest entries preserve regions/rivers/roads/crossings/terrain;normalized v7 reimports exact. Official legacy-optionals missing candidateHexes is included and succeeds. Source optional fallback precedes normalization."
+    }
+  ],
+  "findings": [
+    {
+      "id": "E7-R3-F01",
+      "priority": "P2",
+      "acs": [
+        "AC06",
+        "AC12"
+      ],
+      "file": "src/App.tsx",
+      "lines": [
+        1166,
+        13452,
+        13459
+      ],
+      "title": "Uphill river refusal discards the required river identity and height transition",
+      "reproduction": "Use regionFixture('classic',{river:true}) with a valid directed two-edge river5 named Silver River/Серебряная река. Path keys96.995,-28→121.244,-14→145.492,-28;first edge owner1,second owner2,both heights1,F1. Select3,0 in region2,Edit,Height2/open_hills. Actual preview and Done refusal display only:Изменение направит реку вверх по рельефу.(Ульвдаль;Линденгрунд).",
+      "expected": "D01 directed-height row explicitly requires naming the river,the transition and levels in a river-height refusal. D01 also requires a comprehensible next action;X01 requires the error to explain the map is unchanged.",
+      "actual": "The wrapper keeps only region:1 and region:2 from the rich directed contact. UI omits River5/name and proposed1→2 levels,so a user cannot identify the affected river or inspect why this direction fails. This refusal also omits the required unchanged-map/recovery wording. The algorithm correctly rejects the edit;no map corruption is claimed.",
+      "verification": "Independent actual App handler and a separate1500px headless Chromium/Vite4199 scenario. Both reproduce the same message;Done leaves draft open and does not accept the edit.",
+      "scope": "A remaining concrete D01/X01 conflict-presentation requirement,not remote-sync or missing full-suite evidence."
+    }
+  ],
+  "checks": {
+    "independent_node": {
+      "existing_test_runner_count": 0,
+      "temporary_diagnostics": true,
+      "node_version": "v24.22.1",
+      "official_imports": {
+        "import_v2": 8,
+        "rng_v3": 11,
+        "all_passed": true,
+        "method": "Unchanged manifest data through actual handleImportJson,alert-free entity equality,normalized v7 reload equality"
+      },
+      "both_mode_v7": {
+        "passed": true,
+        "method": "Reverse exact frontier;actual transfer preserves array/order,RNG and counters;edited reload and next real action agree under Math.random guard;Undo generation then Undo E7 then Redo exact"
+      },
+      "preview_and_negative": {
+        "passed": "affectedRivers[5] with ownerChanges[];directed uphill refusal remains safe",
+        "finding": "R3-F01 message content"
+      }
+    },
+    "independent_browser": {
+      "scenario_groups": 2,
+      "modes": [
+        "classic",
+        "mythic"
+      ],
+      "viewports": [
+        390,
+        1500
+      ],
+      "environment": "Headless Chromium,separate child Vite4199 and browser/context",
+      "passed": [
+        "Both-mode390px affected-river name with zero-owner transitions",
+        "E7 export notice on height and transfer",
+        "No editor horizontal overflow at390",
+        "Summary Enter opens its control;preview Enter accepts once",
+        "Actual map target selects transfer2;affected river5/owner change1",
+        "Uphill Done safely refuses and retains draft"
+      ],
+      "negative": "R3-F01 reproduced physically in1500pxUI",
+      "pageerrors": 0,
+      "temporary_server_browser_closed": true
+    },
+    "mandatory_full_checks": {
+      "owner": "root",
+      "sha": "7c0e6badc5910817e2672e4c8de77be3d1b8c75e",
+      "check": {
+        "status": "running_full_fixture_continuation_at_closure",
+        "log": "/tmp/hx-e7-r2-check.log",
+        "final_total": null
+      },
+      "browser": {
+        "status": "passed",
+        "exit_code": 0,
+        "script_runners_passed": 8,
+        "total": 8,
+        "log": "/tmp/hx-e7-r2-browser.log"
+      },
+      "rng": {
+        "status": "passed",
+        "exit_code": 0,
+        "script_runners_passed": 1,
+        "total": 1,
+        "log": "/tmp/hx-e7-r2-rng.log"
+      },
+      "verification": "Root reports actual write_stdin completions;reviewer inspected available log tails and independently checks targeted actual App/UI. No duplicate full suites.",
+      "acceptance_not_granted": true
+    },
+    "unchanged_implementation_bridge": "Compared e585→7c0 delta:only optional-candidate fallback,affected-river preview,export caption and associated tests/plan changed. Previous independent25focused tests and physical44px ambiguity/stale/ROAD07/POI policy evidence apply only to unchanged portions;this is not reported as rerunning25tests on7c0.",
+    "test_change_summary": {
+      "base_sha": "7c0e6badc5910817e2672e4c8de77be3d1b8c75e",
+      "head_sha": "7c0e6badc5910817e2672e4c8de77be3d1b8c75e",
+      "added": 0,
+      "removed": 0,
+      "modified": 0,
+      "source": "Reviewer source and permanent tests unchanged;temporary diagnostics via stdin"
+    }
+  },
+  "acceptance": [
+    {
+      "ac": "AC01",
+      "status": "bounded_verified",
+      "evidence": "Height pair and required affected-river/exception preview now verified in real both-modeUI;unchanged transaction source bridge."
+    },
+    {
+      "ac": "AC02",
+      "status": "bounded_verified",
+      "evidence": "Unchanged height/base compatibility and explicit local/underwater policy;full24-biomeUI matrix not repeated."
+    },
+    {
+      "ac": "AC03",
+      "status": "bounded_verified",
+      "evidence": "Actual transfer/candidate literal order verified both modes;unchanged flood-fill,physical side,stable IDs and44px ambiguity implementation source bridged."
+    },
+    {
+      "ac": "AC04",
+      "status": "bounded_verified",
+      "evidence": "Unchanged protected center/anchor/kingdom/owned-water source and prior focused tests bridged;not all kingdom topologies."
+    },
+    {
+      "ac": "AC05",
+      "status": "bounded_verified",
+      "evidence": "Unchanged physical-side validation and override preservation;Color/Tiles/Emoji export matrix not repeated."
+    },
+    {
+      "ac": "AC06",
+      "status": "partial",
+      "evidence": "Directed refusal and river physical path/F/owner logic retained;required conflict identity/height explanation failsR3-F01."
+    },
+    {
+      "ac": "AC07",
+      "status": "bounded_verified",
+      "evidence": "Unchanged Auto calculation and authored marks/crossings policies;affected-river inventory now visible."
+    },
+    {
+      "ac": "AC08",
+      "status": "bounded_verified",
+      "evidence": "Unchanged full POI/name/tag/counter migration and collision policy source bridged;both-mode actual edit/reload/history checked."
+    },
+    {
+      "ac": "AC09",
+      "status": "bounded_verified",
+      "evidence": "Unchanged ROAD07 ordinary isTractfalse six-to-five and later E3 guard;prior focused actual test bridged."
+    },
+    {
+      "ac": "AC10",
+      "status": "bounded_verified",
+      "evidence": "Actual Undo generation/Undo E7/Redo exact;unchanged draft-identity/no-op/fault preparation guards source bridged."
+    },
+    {
+      "ac": "AC11",
+      "status": "bounded_verified_pending_full_checks",
+      "evidence": "Official8+11 imports/normalized roundtrips and both-mode real RNG continuation independently pass;root mandatory results pending."
+    },
+    {
+      "ac": "AC12",
+      "status": "failed",
+      "evidence": "Both-mode narrow corrections verified;required conflict message failsR3-F01. No release walkthrough acceptance."
+    }
+  ],
+  "test_usefulness": {
+    "assessment": "R2 extends existing assertions and existing frontier test;no redundant permanent runner or RIV numerical corpus added. Missing-field version2 subcase directly protects the observed optional-field regression;official manifest assertions remain unchanged. Zero-transition river assertion and export notice assertion check the reported behavior.",
+    "remaining_gap": "The existing directed-height test asserts only the error code;no actualUI assertion requires river identity,levels and recovery wording,so it missesR3-F01."
+  },
+  "score_assessment_ref": "agent-work/score/assessments/2026-11-05-reviewer-HX-BL-023-E7-7c0e6ba.json",
+  "score_summary": {
+    "model_version": "1.2",
+    "criteria_assessed": 14,
+    "grade": null,
+    "points": null,
+    "delta": null,
+    "awarded_points": 0,
+    "confirmed_points": null,
+    "unverified_weight": 1000,
+    "status": "insufficient_evidence_no_award"
+  },
+  "limitations": [
+    "Only local source reviewed;no source/diff/PNG/bundle/blob/tree/PR transmitted.",
+    "Remote source sync blocked_auto_review is separate from concrete local review findings;source availability is confirmed.",
+    "Headless Chromium only;physical touch,AT,Safari,Firefox/fullWCAG and complete game breadth remain unknown.",
+    "No full score audit or model/weight changes;no release/main/deploy."
+  ],
+  "latest_update_status": "blocked_previous_auto_review_full_history_not_retried",
+  "latest_intended_delta": {
+    "review_status": "changes_requested_local",
+    "source_sha": "7c0e6badc5910817e2672e4c8de77be3d1b8c75e",
+    "next_role": "developer",
+    "next_step": "Preserve rich directed river-height contact for a named river/levels/recovery explanation;freeze new SHA and independently review. Attach final checks to exact package;source sync/release remain separate.",
+    "release_status": "not_released_not_ready",
+    "confirmed_points": null,
+    "unverified_weight": 1000
+  },
+  "foreign_claims_or_results_overwritten": false,
+  "completed_at": "2026-11-05T14:24:27.425Z",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-05T14:18:09.062Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "end": {
+      "checked_at": "2026-11-05T14:24:08.045Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restoration_performed": false,
+    "errors": []
+  }
+}
