@@ -3,7 +3,7 @@
   "task_id": "HX-BL-023",
   "stage_id": "E6",
   "role": "reviewer",
-  "status": "in_progress",
+  "status": "completed",
   "started_at": "2026-11-05T05:06:28.995Z",
   "head_sha": "b2a461277299b34f3001baec21f40d3e407d590f",
   "tree_sha": "1c8af3b171416558772df42948d500cb79973925",
@@ -11,15 +11,56 @@
   "execution": {
     "worker_id": "root_E6_reviewer",
     "independent_agent": "/root/review_e6_b2a4612",
-    "status": "in_progress"
+    "status": "completed"
   },
   "role_selection_reason": "Priority4 exact-SHA review_ready; preceding programmer completed; no competing E6 reviewer claim. Stale latest E5 execution is not current liveness.",
   "scope": "Whole E6 independent acceptance W01-W08/AC01-AC10, score1.2 and test governance; no source edits, merge or publication.",
   "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "title": "Команда HexCrawl",
     "start": {
       "checked_at": "2026-11-05T05:05:41.435Z",
       "is_enabled": true,
       "status": "checked"
+    },
+    "end": {
+      "checked_at": "2026-11-05T05:19:37.732Z",
+      "status": "checked",
+      "is_enabled": true,
+      "error": null
+    },
+    "restoration": {
+      "performed": false,
+      "reason": "Both actual root peeks confirmed is_enabled=true"
+    },
+    "errors": [],
+    "scope": "Observed instants only; no later-service-state guarantee and no inferred disablement cause",
+    "independent_reviewer_checks": {
+      "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "start": {
+        "status": "checked",
+        "is_enabled": true,
+        "observed_at": null,
+        "limitation": "Actual initial peek succeeded; request timestamp was not separately retained."
+      },
+      "end": {
+        "status": "checked",
+        "is_enabled": true,
+        "observed_at": "2026-11-05 05:17:23 UTC",
+        "error": null
+      },
+      "restoration_performed": false,
+      "errors": [
+        "First peek call used an invalid argument name; corrected immediately to jawbone_id and successfully checked."
+      ],
+      "not_disabled": true
     }
-  }
+  },
+  "finished_at": "2026-11-05T05:19:52.128Z",
+  "outcome": "changes_requested_E6-R1",
+  "result": "agent-work/results/2026-11-05-reviewer-HX-BL-023-E6-b2a4612.json",
+  "handoff": "agent-work/handoffs/2026-11-05-HX-BL-023-E6-fix-b2a4612.json",
+  "next_role": "programmer",
+  "next_step": "Fix E6-R1 within approved E6, extend existing common Done lifecycle coverage, hand exact new complete SHA to independent reviewer.",
+  "latest_update_status": "blocked_previous_auto_review_full_history_export;not_retried"
 }
