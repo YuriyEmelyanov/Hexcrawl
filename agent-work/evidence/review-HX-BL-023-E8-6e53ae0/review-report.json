@@ -1,0 +1,716 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-023",
+  "stage_id": "E8.1",
+  "role": "fresh_independent_reviewer",
+  "review_date": "2026-11-05",
+  "verdict": "changes_requested",
+  "independently_accepted": false,
+  "release_ready": false,
+  "scope": {
+    "source_path": "/workspace/scratch/60e61b33a6a0/e8-development",
+    "head_sha": "6e53ae0d5c3996fe8fca04fb194439e2a1c4391e",
+    "tree_sha": "0b64baa1b8a1082a727890124c0b70d9ebfbfc5c",
+    "main_base": "2ef5cc35107f299c309b7c8065a1e81ca9881278",
+    "e8_stage_base": "9aa08bbe24bc8d83bf50ca2eea1b16cb70335d7f",
+    "ui_increment_base": "8d578e75c4c645eb94b819ce761d6543a1245cf9",
+    "spec_path": "agent-work/specs/HX-BL-023-E8.md",
+    "spec_blob": "24f20ae2cd72845d04680dc454697b540b0e4c8b",
+    "spec_version": "E8-1.0",
+    "combined_unreleased_package": "E7+E8 relative to main; assessed through exact source diff, focused real App tests and production DOM; not a new full E7 audit",
+    "source_modifications": "none; start/end HEAD and tree identical",
+    "remote_activity": "read-only spec/handoff/model/vision/process; no source/tree/patch/bundle/screenshot uploads and no shared operational rewrites",
+    "independence": "Fresh agent; developer conclusions/check logs treated as inputs. Independent source reads, 66-case execution, own temporary App diagnostic and own production build/DOM probe."
+  },
+  "findings": [
+    {
+      "id": "E8-R1",
+      "priority": "P2",
+      "blocking": true,
+      "title": "Accepted POI with absent explicit type cannot be relocated",
+      "location": {
+        "file": "src/manualPois.ts",
+        "line": 87,
+        "related": [
+          "src/manualPois.ts:86",
+          "src/manualPois.ts:126",
+          "src/App.tsx:14741"
+        ]
+      },
+      "requirements": [
+        "M02: if explicit type is absent, preserve absence without inventing a new random type",
+        "AC01",
+        "AC02"
+      ],
+      "reproduction": [
+        "Create regionFixture() accepted v7 map; remove map.regions[0].pointOfInterestKinds while leaving pointsOfInterest=[{q:2,r:0}]. This is valid under existing save schema and displays as a generic point.",
+        "Import with actual handleImportJson: accepted, no alert; enter Edit; startPoiDraft land region1 2,0 succeeds.",
+        "Choose existing empty land target 3,0. Actual App VM reports poi_kind_mismatch; real production DOM disables Done and displays 'Тип точки несовместим с назначением. (; 3,0)'."
+      ],
+      "actual": "The !kind guard treats supported absence as incompatible unknown type. Neither within-region nor cross-region relocation can proceed. Unknown explicit legacy type is a different case already intentionally refused.",
+      "expected": "Preserve a valid untyped point's missing pointOfInterestKinds entry through relocation and one reversible transaction, without generating a type. Retain explicit unknown/incompatible type refusal. If analyst intended missing type to be forbidden, resolve the M02 conflict explicitly rather than claiming full AC acceptance.",
+      "evidence": [
+        "e8-review-diagnostic.json probe untyped_accepted_POI_move",
+        "e8-review-browser.json probe DOM_untyped_move",
+        "e8-review-untyped.png"
+      ],
+      "suggested_verification": "Extend existing no-op/type compatibility and real move cases with accepted missing-kind input; verify absence at new address, no invented value and exact Undo/Redo."
+    },
+    {
+      "id": "E8-R2",
+      "priority": "P2",
+      "blocking": true,
+      "title": "v8 authored name accepts a locator shared by central and ordinary POI",
+      "location": {
+        "file": "src/manualPois.ts",
+        "line": 34,
+        "related": [
+          "src/manualPois.ts:35",
+          "src/manualPois.ts:43",
+          "src/App.tsx:973",
+          "src/App.tsx:14810"
+        ]
+      },
+      "requirements": [
+        "E8 naming: validator checks exactly one addressee",
+        "Format/compatibility: invalid/dangling/colliding address is atomic refusal",
+        "AC05",
+        "AC07",
+        "AC09"
+      ],
+      "reproduction": [
+        "Take regionFixture(); set version8; enable center0,0 centralPoiKind='lair', suppressCentralPoi=false; append ordinary point {q:0,r:0} with pointOfInterestKinds['0,0']='ruins'.",
+        "Set map.editorNames={'poi:1:0,0':{en:'Ambiguous',ru:'Неоднозначное'}}.",
+        "Import through real handleImportJson. It succeeds with no alert and exports the same ambiguous name."
+      ],
+      "actual": "poiNameLocators inserts both distinct live objects into a Set under the same address. assertPoiEditorNames checks only Set membership and cannot detect multiple addressees. The ambiguous name becomes accepted document state and catalog identity.",
+      "expected": "Refuse the authored-name address at map.editorNames before document/history/RNG changes, or prevent naming this ambiguous address while preserving ability to inspect legacy map data. Do not arbitrarily choose central/ordinary object or silently prune payload.",
+      "evidence": [
+        "e8-review-diagnostic.json probe ambiguous_name_locator_import",
+        "e8-review-diagnostic.mjs"
+      ],
+      "suggested_verification": "Extend existing malformed/orphan import case with central+ordinary shared locator and verify accepted document plus both histories unchanged; also verify authoring on ambiguous old maps cannot bypass the same check."
+    },
+    {
+      "id": "E8-R3",
+      "priority": "P2",
+      "blocking": true,
+      "title": "Renaming a kingdom bypasses collision checks against new authored POI names",
+      "location": {
+        "file": "src/App.tsx",
+        "line": 14864,
+        "related": [
+          "src/App.tsx:14851",
+          "src/App.tsx:14870"
+        ]
+      },
+      "requirements": [
+        "E8 common-name uniqueness across live names and kingdom names per language",
+        "AC09"
+      ],
+      "reproduction": [
+        "Import Mythic regionFixture with ordinary monument2,0.",
+        "Use real pair editor callbacks to author POI RU='Моё имя', EN='My Name'; save succeeds.",
+        "Open kingdom:1 and rename RU to 'Моё имя'. saveNameDraft returns true and exports both kingdom and POI with identical RU."
+      ],
+      "actual": "New POI rename checks kingdom names, but reverse kingdom rename deliberately skips all duplicate checks (current.type !== 'kingdom'). New editorNames interaction therefore has asymmetric uniqueness.",
+      "expected": "Apply the agreed per-language collision policy consistently for the new layer while excluding the same entity, retaining old duplicate compatibility/no-op semantics.",
+      "scope_caution": "The kingdom exemption predates E8; this finding concerns incomplete integration of new editorNames into the E8 uniqueness contract, not a claim that E8 introduced the pre-existing kingdom-only duplicate policy.",
+      "evidence": [
+        "e8-review-diagnostic.json probe kingdom_rename_collides_with_POI"
+      ],
+      "suggested_verification": "Extend existing cross-registry duplicate name case to test both edit directions and same-entity/fallback exclusions."
+    }
+  ],
+  "verification": [
+    {
+      "check": "Exact source identity",
+      "result": "pass",
+      "details": "HEAD/tree confirmed before and after review; no source edits."
+    },
+    {
+      "check": "Node24 targeted existing tests",
+      "command": "node --test test/manualRegions.test.mjs test/regionEditing.test.mjs test/saveSafety.test.mjs",
+      "result": "pass",
+      "tests": 66,
+      "passed": 66,
+      "failed": 0,
+      "skipped": 0,
+      "duration_ms": 13433.773088,
+      "log": "/tmp/e8-independent-node.log",
+      "limits": "Focused subset; test results do not override reproduced counterexamples."
+    },
+    {
+      "check": "TypeScript",
+      "command": "npx tsc --noEmit",
+      "result": "pass",
+      "log": "/tmp/e8-independent-types.log"
+    },
+    {
+      "check": "Independent isolated production build",
+      "command": "npm run build -- --outDir ../e8-review-dist",
+      "result": "pass",
+      "log": "/tmp/e8-independent-build.log",
+      "details": "Output asset name matches existing exact package; no shared dist rebuild. Existing chunk-size warning, no new dependency."
+    },
+    {
+      "check": "Independent production Chromium DOM",
+      "command": "node /workspace/scratch/60e61b33a6a0/e8-review-browser.mjs",
+      "result": "pass_with_reproduced_R1",
+      "details": [
+        "Actual physical map click selects3,0, draft excluded from JSON.",
+        "Done by native button Enter commits; generation/counters unchanged.",
+        "Undo/Redo compare complete accepted before/after JSON excluding savedAt.",
+        "1500/390/320: no document horizontal overflow; q/r and Done height44px.",
+        "No page errors or import alerts in valid workflows.",
+        "Screenshot320 visually inspected: target fields/summary readable; outer panel scroll retains normal layout."
+      ],
+      "evidence": "/workspace/scratch/60e61b33a6a0/e8-review-browser.json",
+      "limits": "Finite Chromium; no touch/AT/all locale states. Does not certify complete AC08."
+    },
+    {
+      "check": "Independent actual App negative probes",
+      "command": "node /workspace/scratch/60e61b33a6a0/e8-review-diagnostic.mjs",
+      "result": "three_confirmed_counterexamples",
+      "evidence": "/workspace/scratch/60e61b33a6a0/e8-review-diagnostic.json",
+      "details": "Uses unchanged real App state/callback harness, not a stand-in implementation; no permanent cases added."
+    },
+    {
+      "check": "Dependencies and publishing workflow diff",
+      "result": "pass",
+      "details": "No package.json/package-lock.json/.github/workflows changes relative to main."
+    }
+  ],
+  "acceptance_assessment": {
+    "AC01": "partial; normal typed identity/history passes, R1 blocks supported missing explicit type",
+    "AC02": "partial; pure land/water/occupancy/legacy policies pass, R1 missing-type case not covered; independent browser overlap branch not certified",
+    "AC03": "partial; focused Mythic policy and actual App typed relocation tests pass; no comprehensive new game certification",
+    "AC04": "partial; actual command/App source road refusal tests pass and geometry unchanged by code; full road/trail/section user preview not independently walked",
+    "AC05": "partial; existing targeted collision/stale/fault tests pass, R2 exposes unnamed-address multiplicity gap; not all E8 fault positions independently injected",
+    "AC06": "normal production physical target, accepted-only JSON and literal Undo/Redo pass; finite cancellation/no-op/stale harness coverage rerun",
+    "AC07": "not accepted; R2 counterexample, full approved historical corpus/continuation not independently rerun",
+    "AC08": "partial actual production1500/390/320 and keyboard Done; complete RU/EN paired focus/AT/touch/overlap flow not independently certified",
+    "AC09": "not accepted; R2 ambiguous identity and R3 reverse duplicate interaction",
+    "AC10": "E8.2 excluded and not implemented/accepted; sea identity unresolved",
+    "AC11": "not independently certified end-to-end on one map; existing E7 and E8 focused state tests rerun, developer combined diagnostic remains input only"
+  },
+  "regression_assessment": {
+    "whole_package": "E7+E8 remains changes_requested. No acceptance inferred from prior E7 review or developer full check336/eight browser/RNG logs.",
+    "areas_inspected": [
+      "E7 region-owner migration of editorNames and full POI/tag identity",
+      "E6 destructive water name loss accounting",
+      "E2 type change promotes settlement pair before synchronization",
+      "snapshot/capture/import/export/backup/checkpoint/reset/generation branches carry names or safe-refuse loss",
+      "draft token/revision/ref identity and accepted-only export",
+      "central/source-road deliberate refusals and Mythic kingdom policy",
+      "source diff relative main and unchanged dependencies/Pages workflow"
+    ],
+    "atomicity": "finishPoiDraft prepares both copied documents and validates save before recordTransaction; recordTransaction copies both snapshots before increment/setters. Targeted existing stale/no-op/clone-fault tests pass. No observed accepted-state corruption in ordinary move. Invalid name identity nevertheless crosses importer validation in R2.",
+    "limits": [
+      "No full npm run check336 rerun, no eight-script browser/RNG rerun; blockers made a broad rerun unnecessary.",
+      "No acceptance of previously developer-only AC11 combined diagnostic or source-upload workaround.",
+      "E8.2, sea identity and all-entity stable IDs intentionally remain incomplete."
+    ]
+  },
+  "test_governance": {
+    "method": "Independent TypeScript AST extraction of test() calls from git show baselines/current, compared title+body; expanded fixed mode/context loops manually; inspected changes against existing E1/E6/E7 cases.",
+    "whole_e8_stage": {
+      "base": "9aa08bbe24bc8d83bf50ca2eea1b16cb70335d7f",
+      "added_test_declarations": 16,
+      "added_executed_node_cases": 19,
+      "modified_test_declarations": 7,
+      "modified_executed_existing_cases": 8,
+      "removed": 0,
+      "breakdown": {
+        "manualRegions_added": 8,
+        "regionEditing_added": 4,
+        "saveSafety_added": 7
+      },
+      "existing_modifications": "4 mapTransactions cases (3 version expectations + E6name loss integration),2 E7Classic/Mythic identity cases,1tags version expectation,1worldContinuation version expectation"
+    },
+    "ui_increment": {
+      "base": "8d578e75c4c645eb94b819ce761d6543a1245cf9",
+      "added_test_declarations": 5,
+      "added_executed_node_cases": 8,
+      "modified_existing_node_case_bodies": 0,
+      "removed": 0,
+      "breakdown": "4 actual move/history cases +4 paired-name cases"
+    },
+    "browser": {
+      "added_workflows": 1,
+      "removed": 0,
+      "existing_runner": "test/browser/save-history.smoke.mjs imports poi-lifecycle.mjs; not an additional service or corpus",
+      "runner_test_case_count": null,
+      "limits": "One sequential workflow count must not be added to Node case counts. Assertions mostly distinct DOM focus/hit-testing/layout/gate/navigation risks. Its layout assertion is panel scrollWidth, not full WCAG proof."
+    },
+    "necessity_review": [
+      {
+        "case": "Coordinate relocation payload",
+        "decision": "keep",
+        "reason": "E7 changes owner at same hex; coordinate migration and payload prefix preservation are distinct."
+      },
+      {
+        "case": "No-op/legacy/central policy",
+        "decision": "keep and extend",
+        "reason": "Distinct policy/no-op risk; missing-kind scenario R1 omitted."
+      },
+      {
+        "case": "Hidden target identity matrix",
+        "decision": "keep",
+        "reason": "Protects stale toponym/editorName/tag/counter/kind data independently from rendered occupancy."
+      },
+      {
+        "case": "Road source geometry",
+        "decision": "keep",
+        "reason": "Source pass-through geometry refusal and allowed destination paths are different from E7 ownership."
+      },
+      {
+        "case": "Target occupancy/environment/ambiguity",
+        "decision": "keep",
+        "reason": "Distinct invalid target branches; map hit ambiguity needs DOM evidence separately."
+      },
+      {
+        "case": "Water pools",
+        "decision": "keep",
+        "reason": "Water POI identity has no land tag owner and sea/lake pools differ."
+      },
+      {
+        "case": "Mythic",
+        "decision": "keep",
+        "reason": "Kingdom/myth quota policy differs from Classic and does not belong to generic geography."
+      },
+      {
+        "case": "Sparse names",
+        "decision": "keep and extend existing malformed/name cases",
+        "reason": "New locator layer, clear/fallback behavior; R2 multiplicity and R3 reverse duplicate direction missing."
+      },
+      {
+        "case": "Actual move Classic/Mythic (2)",
+        "decision": "keep",
+        "reason": "Pure command cannot prove App snapshots/export/history wiring; mode-sensitive integration."
+      },
+      {
+        "case": "Actual no-op/redo/stale",
+        "decision": "keep",
+        "reason": "Distinct ref/document token/history path; no extra random corpus."
+      },
+      {
+        "case": "Actual path+fault",
+        "decision": "keep",
+        "reason": "App atomicity cannot be proved by pure command; possible split only if future maintenance warrants it."
+      },
+      {
+        "case": "v8 import/export/UndoRedo",
+        "decision": "keep",
+        "reason": "New schema field through actual importer and snapshots."
+      },
+      {
+        "case": "Malformed/orphan/old-version",
+        "decision": "keep and extend",
+        "reason": "Schema-specific atomic refusal; add R2 here instead of a new runner."
+      },
+      {
+        "case": "Type-transition name preservation",
+        "decision": "keep",
+        "reason": "Reconciliation removes old settlement entity, a distinct authored-name retention hazard."
+      },
+      {
+        "case": "Land/water/central paired names (3)",
+        "decision": "keep",
+        "reason": "Three different catalog/storage branches; shared parameterized lifecycle avoids duplication."
+      },
+      {
+        "case": "Pair negative/stale/fault",
+        "decision": "keep and extend",
+        "reason": "Pair-only validation, second field stale callback and preparatory exception; add cross-registry direction here."
+      }
+    ],
+    "sensitivity": "New assertions are tied to document payload, counters, histories and actual DOM rather than merely mirroring implementation; no mutation-testing claim. Passing cases failed to cover three counterexamples, so counts are not acceptance evidence by themselves.",
+    "cost": "66 selected current cases, including E7 and E8, finished13.43s locally; permanent browser remains one added workflow in existing runner. No additional permanent test files/cases created by reviewer.",
+    "scope": "No redundant full HX-FB-002 audit. Existing cases were reused/extended where adjacent behavior exists; no remove recommendation based only on count."
+  },
+  "score_assessment": {
+    "model_version": "1.2",
+    "status": "insufficient_evidence",
+    "exact_sha": "6e53ae0d5c3996fe8fca04fb194439e2a1c4391e",
+    "baseline_source": "agent-work/score/current-score.json blob950e11bdfd5f59da09d424af14a820c5c8b580f5; all50unknown",
+    "confirmed_points": null,
+    "unverified_weight": 1000,
+    "awarded_points": 0,
+    "release_score_updated": false,
+    "coefficients_unchanged": {
+      "G0": 0,
+      "G1": 0.25,
+      "G2": 0.5,
+      "G3": 0.75,
+      "G4": 1
+    },
+    "quality_and_breadth_separate": true,
+    "cohorts": "top5/top10/top20 unchanged, requirements/support remain unverified",
+    "rows": [
+      {
+        "criterion_id": "S02-C02",
+        "max_points": 20,
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "after": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "delta": null,
+        "assessment": "insufficient_evidence",
+        "exact_sha": "6e53ae0d5c3996fe8fca04fb194439e2a1c4391e",
+        "method": "Independent exact source/spec review; targeted Node24 real-App tests; own negative App diagnostic and production Chromium where applicable",
+        "evidence": "A typed POI's complete names, tag payload/counters and storage address migration pass focused command/App tests; normal production relocation preserves records.",
+        "quality": {
+          "observed": "A typed POI's complete names, tag payload/counters and storage address migration pass focused command/App tests; normal production relocation preserves records.",
+          "limitations": "R2 shows ambiguous manual-name identity is accepted. POI storage addresses are not global stable IDs; all-entity identity not established."
+        },
+        "breadth": {
+          "status": "unverified",
+          "top5": "unchanged/unverified",
+          "top10": "unchanged/unverified",
+          "top20": "unchanged/unverified"
+        },
+        "limitations": [
+          "R2 shows ambiguous manual-name identity is accepted. POI storage addresses are not global stable IDs; all-entity identity not established.",
+          "Finite local exact-SHA review, no product-wide grade certification or user confirmation.",
+          "No top-5/10/20 support assessment; cohorts and weights unchanged.",
+          "No release or score update authorized by this review."
+        ]
+      },
+      {
+        "criterion_id": "S02-C03",
+        "max_points": 20,
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "after": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "delta": null,
+        "assessment": "insufficient_evidence",
+        "exact_sha": "6e53ae0d5c3996fe8fca04fb194439e2a1c4391e",
+        "method": "Independent exact source/spec review; targeted Node24 real-App tests; own negative App diagnostic and production Chromium where applicable",
+        "evidence": "Focused real-import tests pass native v8 names, rejected malformed/dangling names, older-version refusal, migration and reload.",
+        "quality": {
+          "observed": "Focused real-import tests pass native v8 names, rejected malformed/dangling names, older-version refusal, migration and reload.",
+          "limitations": "R2 invalid colliding address passes. Full approved v2-v7 corpus/continuation was not independently rerun in this bounded review."
+        },
+        "breadth": {
+          "status": "unverified",
+          "top5": "unchanged/unverified",
+          "top10": "unchanged/unverified",
+          "top20": "unchanged/unverified"
+        },
+        "limitations": [
+          "R2 invalid colliding address passes. Full approved v2-v7 corpus/continuation was not independently rerun in this bounded review.",
+          "Finite local exact-SHA review, no product-wide grade certification or user confirmation.",
+          "No top-5/10/20 support assessment; cohorts and weights unchanged.",
+          "No release or score update authorized by this review."
+        ]
+      },
+      {
+        "criterion_id": "S03-C01",
+        "max_points": 25,
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "after": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "delta": null,
+        "assessment": "insufficient_evidence",
+        "exact_sha": "6e53ae0d5c3996fe8fca04fb194439e2a1c4391e",
+        "method": "Independent exact source/spec review; targeted Node24 real-App tests; own negative App diagnostic and production Chromium where applicable",
+        "evidence": "Typed Classic/Mythic moves, water policy, E7 transfer/height and saved normal DOM move are exercised.",
+        "quality": {
+          "observed": "Typed Classic/Mythic moves, water policy, E7 transfer/height and saved normal DOM move are exercised.",
+          "limitations": "R1 blocks legitimate untyped accepted POIs. Central/source-linked-path limitations deliberate; E8.2 absent."
+        },
+        "breadth": {
+          "status": "unverified",
+          "top5": "unchanged/unverified",
+          "top10": "unchanged/unverified",
+          "top20": "unchanged/unverified"
+        },
+        "limitations": [
+          "R1 blocks legitimate untyped accepted POIs. Central/source-linked-path limitations deliberate; E8.2 absent.",
+          "Finite local exact-SHA review, no product-wide grade certification or user confirmation.",
+          "No top-5/10/20 support assessment; cohorts and weights unchanged.",
+          "No release or score update authorized by this review."
+        ]
+      },
+      {
+        "criterion_id": "S03-C04",
+        "max_points": 30,
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "after": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "delta": null,
+        "assessment": "insufficient_evidence",
+        "exact_sha": "6e53ae0d5c3996fe8fca04fb194439e2a1c4391e",
+        "method": "Independent exact source/spec review; targeted Node24 real-App tests; own negative App diagnostic and production Chromium where applicable",
+        "evidence": "Existing targeted command/App tests exercise source road refusal, hidden target identity collision and water-name loss confirmation; code preserves roads and physical geography.",
+        "quality": {
+          "observed": "Existing targeted command/App tests exercise source road refusal, hidden target identity collision and water-name loss confirmation; code preserves roads and physical geography.",
+          "limitations": "R2 ambiguity weakens identity integrity. Whole named destructive-operation chain and NPC/rumor/quest/faction layer not certified."
+        },
+        "breadth": {
+          "status": "unverified",
+          "top5": "unchanged/unverified",
+          "top10": "unchanged/unverified",
+          "top20": "unchanged/unverified"
+        },
+        "limitations": [
+          "R2 ambiguity weakens identity integrity. Whole named destructive-operation chain and NPC/rumor/quest/faction layer not certified.",
+          "Finite local exact-SHA review, no product-wide grade certification or user confirmation.",
+          "No top-5/10/20 support assessment; cohorts and weights unchanged.",
+          "No release or score update authorized by this review."
+        ]
+      },
+      {
+        "criterion_id": "S03-C05",
+        "max_points": 20,
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "after": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "delta": null,
+        "assessment": "insufficient_evidence",
+        "exact_sha": "6e53ae0d5c3996fe8fca04fb194439e2a1c4391e",
+        "method": "Independent exact source/spec review; targeted Node24 real-App tests; own negative App diagnostic and production Chromium where applicable",
+        "evidence": "Actual production DOM move adds one change and exact Undo/Redo restores accepted JSON, generation and counters. Targeted real-App tests pass no-op/redo/stale and clone-fault paths.",
+        "quality": {
+          "observed": "Actual production DOM move adds one change and exact Undo/Redo restores accepted JSON, generation and counters. Targeted real-App tests pass no-op/redo/stale and clone-fault paths.",
+          "limitations": "100 mixed operations and named versions not independently checked here; named versions not added."
+        },
+        "breadth": {
+          "status": "unverified",
+          "top5": "unchanged/unverified",
+          "top10": "unchanged/unverified",
+          "top20": "unchanged/unverified"
+        },
+        "limitations": [
+          "100 mixed operations and named versions not independently checked here; named versions not added.",
+          "Finite local exact-SHA review, no product-wide grade certification or user confirmation.",
+          "No top-5/10/20 support assessment; cohorts and weights unchanged.",
+          "No release or score update authorized by this review."
+        ]
+      },
+      {
+        "criterion_id": "S04-C04",
+        "max_points": 15,
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "after": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "delta": null,
+        "assessment": "insufficient_evidence",
+        "exact_sha": "6e53ae0d5c3996fe8fca04fb194439e2a1c4391e",
+        "method": "Independent exact source/spec review; targeted Node24 real-App tests; own negative App diagnostic and production Chromium where applicable",
+        "evidence": "Independent production JSON observation excludes typed move draft and restores literal normal before/after snapshots through Undo/Redo. Native authored-name import/export targeted tests pass.",
+        "quality": {
+          "observed": "Independent production JSON observation excludes typed move draft and restores literal normal before/after snapshots through Undo/Redo. Native authored-name import/export targeted tests pass.",
+          "limitations": "No independent new E8 PNG/SVG pixel/role verification or full approved historical corpus round-trip; R2 malformed identity import accepted."
+        },
+        "breadth": {
+          "status": "unverified",
+          "top5": "unchanged/unverified",
+          "top10": "unchanged/unverified",
+          "top20": "unchanged/unverified"
+        },
+        "limitations": [
+          "No independent new E8 PNG/SVG pixel/role verification or full approved historical corpus round-trip; R2 malformed identity import accepted.",
+          "Finite local exact-SHA review, no product-wide grade certification or user confirmation.",
+          "No top-5/10/20 support assessment; cohorts and weights unchanged.",
+          "No release or score update authorized by this review."
+        ]
+      },
+      {
+        "criterion_id": "S04-C05",
+        "max_points": 10,
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "after": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "delta": null,
+        "assessment": "insufficient_evidence",
+        "exact_sha": "6e53ae0d5c3996fe8fca04fb194439e2a1c4391e",
+        "method": "Independent exact source/spec review; targeted Node24 real-App tests; own negative App diagnostic and production Chromium where applicable",
+        "evidence": "Independent production DOM/screenshot inspection at 1500/390/320: no document horizontal overflow; q/r and Done 44px; Done via Enter works. Actual error is visible.",
+        "quality": {
+          "observed": "Independent production DOM/screenshot inspection at 1500/390/320: no document horizontal overflow; q/r and Done 44px; Done via Enter works. Actual error is visible.",
+          "limitations": "R1 error contains empty kind '(; 3,0)'. RU/EN pair/focus and assistive technology/touch/WCAG were not comprehensively independently rechecked; R3 duplicate names weaken distinguishability."
+        },
+        "breadth": {
+          "status": "unverified",
+          "top5": "unchanged/unverified",
+          "top10": "unchanged/unverified",
+          "top20": "unchanged/unverified"
+        },
+        "limitations": [
+          "R1 error contains empty kind '(; 3,0)'. RU/EN pair/focus and assistive technology/touch/WCAG were not comprehensively independently rechecked; R3 duplicate names weaken distinguishability.",
+          "Finite local exact-SHA review, no product-wide grade certification or user confirmation.",
+          "No top-5/10/20 support assessment; cohorts and weights unchanged.",
+          "No release or score update authorized by this review."
+        ]
+      },
+      {
+        "criterion_id": "S09-C04",
+        "max_points": 10,
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "after": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "delta": null,
+        "assessment": "insufficient_evidence",
+        "exact_sha": "6e53ae0d5c3996fe8fca04fb194439e2a1c4391e",
+        "method": "Independent exact source/spec review; targeted Node24 real-App tests; own negative App diagnostic and production Chromium where applicable",
+        "evidence": "66 focused tests rerun, including actual importer atomic rejection, exact history, stale document/draft and snapshot clone faults; independent normal production Undo/Redo exact.",
+        "quality": {
+          "observed": "66 focused tests rerun, including actual importer atomic rejection, exact history, stale document/draft and snapshot clone faults; independent normal production Undo/Redo exact.",
+          "limitations": "R2 violates v8 invalid-identity refusal. Distinct late history-clone/validation faults for E8 were inspected structurally, not independently injected at every step."
+        },
+        "breadth": {
+          "status": "unverified",
+          "top5": "unchanged/unverified",
+          "top10": "unchanged/unverified",
+          "top20": "unchanged/unverified"
+        },
+        "limitations": [
+          "R2 violates v8 invalid-identity refusal. Distinct late history-clone/validation faults for E8 were inspected structurally, not independently injected at every step.",
+          "Finite local exact-SHA review, no product-wide grade certification or user confirmation.",
+          "No top-5/10/20 support assessment; cohorts and weights unchanged.",
+          "No release or score update authorized by this review."
+        ]
+      }
+    ]
+  },
+  "automation_health": {
+    "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-05T21:04:57.082Z",
+      "is_enabled": true,
+      "method": "actual automations.peek"
+    },
+    "end": {
+      "checked_at": "2026-11-05T21:11:06.710Z",
+      "is_enabled": true,
+      "method": "actual automations.peek"
+    },
+    "restoration_performed": false,
+    "errors": [],
+    "schedule_or_prompt_changed": false,
+    "limitation": "Confirmed at check times only."
+  },
+  "artifacts": {
+    "temporary_diagnostic": "/workspace/scratch/60e61b33a6a0/e8-review-diagnostic.mjs",
+    "temporary_diagnostic_sha256": "85448031e91473c2d1553afae9412bd2c6783ec07d663eb6a213c51e81dcc6f9",
+    "temporary_browser": "/workspace/scratch/60e61b33a6a0/e8-review-browser.mjs",
+    "temporary_browser_sha256": "ec5f6df12064c6ba4f57c9dbca77c336b428b669e6fd19d81c2d437add51b09a",
+    "node_log": "/tmp/e8-independent-node.log",
+    "node_log_sha256": "edf00b5ed9529025e19112682ecfa0fd4907d87de6ebf22d78c95a5337e6548a",
+    "screenshots": [
+      "/workspace/scratch/60e61b33a6a0/e8-review-untyped.png",
+      "/workspace/scratch/60e61b33a6a0/e8-review-preview-1500.png",
+      "/workspace/scratch/60e61b33a6a0/e8-review-preview-390.png",
+      "/workspace/scratch/60e61b33a6a0/e8-review-preview-320.png"
+    ],
+    "upload_status": "local only; none transferred"
+  },
+  "next_step": "Developer fixes bounded findings on a new SHA, reuses/extends existing cases, reruns required Node24 check and appropriate production/browser/RNG checks for changed package; fresh exact-SHA review updates verdict/score. E8.2 sequential work waits for E8.1 acceptance. Publication remains separately gated by source availability, whole-package acceptance, actual walkthrough and owner authorization.",
+  "test_change_summary": {
+    "base_sha": "9aa08bbe24bc8d83bf50ca2eea1b16cb70335d7f",
+    "head_sha": "6e53ae0d5c3996fe8fca04fb194439e2a1c4391e",
+    "node": {
+      "added": 19,
+      "removed": 0,
+      "modified": 8,
+      "suite": [
+        "manualRegions",
+        "regionEditing",
+        "saveSafety",
+        "mapTransactions",
+        "tags",
+        "worldContinuation"
+      ],
+      "scenario_risk": "Coordinate identity/payload,legacy compatibility,nativev8names,history/stale/fault,format assertions and E6/E7 retention",
+      "reuse_or_new_reason": "Independent governance review:distinct pure versus actual-App risks;existing cases extended,findings require extending adjacent cases",
+      "source": "Independent AST test()diff and fixed loop expansion;see test_governance"
+    },
+    "browser": {
+      "added_workflows": 1,
+      "removed": 0,
+      "runner_test_case_count": null,
+      "suite": "save-history",
+      "scenario_risk": "Real DOM target/focus/navigation and transition lifecycle",
+      "source": "Diff import+workflow call;not summed with Node"
+    },
+    "reviewer_permanent_changes": {
+      "added": 0,
+      "removed": 0,
+      "modified": 0
+    },
+    "reviewer_verification": {
+      "Node": {
+        "executed": 66,
+        "passed": 66,
+        "failed": 0,
+        "skipped": 0
+      },
+      "browser": {
+        "workflows_executed": 1,
+        "workflows_passed": 1,
+        "counterexample_R1_reproduced": true
+      },
+      "temporary_App_probes": {
+        "counterexamples": 3,
+        "permanent_growth": 0
+      }
+    }
+  }
+}
