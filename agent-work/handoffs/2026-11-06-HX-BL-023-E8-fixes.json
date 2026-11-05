@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-023",
+  "stage_id": "E8.1-R1",
+  "status": "ready_for_developer",
+  "next_role": "developer",
+  "authority_ref": "owner-decision-2026-10-28-editor-additional-functions-approved",
+  "authority_status": "Corrections within approved E8 scope;no new task/design approval;publication not authorized",
+  "input_sha": "6e53ae0d5c3996fe8fca04fb194439e2a1c4391e",
+  "input_tree": "0b64baa1b8a1082a727890124c0b70d9ebfbfc5c",
+  "spec_ref": "agent-work/specs/HX-BL-023-E8.md",
+  "spec_blob": "24f20ae2cd72845d04680dc454697b540b0e4c8b",
+  "review_ref": "agent-work/evidence/review-HX-BL-023-E8-6e53ae0/review-report.json",
+  "score_assessment_ref": "agent-work/evidence/review-HX-BL-023-E8-6e53ae0/score-assessment.json",
+  "finding_ids": [
+    "E8-R1",
+    "E8-R2",
+    "E8-R3"
+  ],
+  "bounded_work": [
+    {
+      "finding_id": "E8-R1",
+      "requirements": [
+        "M02: if explicit type is absent, preserve absence without inventing a new random type",
+        "AC01",
+        "AC02"
+      ],
+      "expected": "Preserve a valid untyped point's missing pointOfInterestKinds entry through relocation and one reversible transaction, without generating a type. Retain explicit unknown/incompatible type refusal. If analyst intended missing type to be forbidden, resolve the M02 conflict explicitly rather than claiming full AC acceptance.",
+      "reproduction": [
+        "Create regionFixture() accepted v7 map; remove map.regions[0].pointOfInterestKinds while leaving pointsOfInterest=[{q:2,r:0}]. This is valid under existing save schema and displays as a generic point.",
+        "Import with actual handleImportJson: accepted, no alert; enter Edit; startPoiDraft land region1 2,0 succeeds.",
+        "Choose existing empty land target 3,0. Actual App VM reports poi_kind_mismatch; real production DOM disables Done and displays 'Тип точки несовместим с назначением. (; 3,0)'."
+      ],
+      "verification": "Extend existing no-op/type compatibility and real move cases with accepted missing-kind input; verify absence at new address, no invented value and exact Undo/Redo."
+    },
+    {
+      "finding_id": "E8-R2",
+      "requirements": [
+        "E8 naming: validator checks exactly one addressee",
+        "Format/compatibility: invalid/dangling/colliding address is atomic refusal",
+        "AC05",
+        "AC07",
+        "AC09"
+      ],
+      "expected": "Refuse the authored-name address at map.editorNames before document/history/RNG changes, or prevent naming this ambiguous address while preserving ability to inspect legacy map data. Do not arbitrarily choose central/ordinary object or silently prune payload.",
+      "reproduction": [
+        "Take regionFixture(); set version8; enable center0,0 centralPoiKind='lair', suppressCentralPoi=false; append ordinary point {q:0,r:0} with pointOfInterestKinds['0,0']='ruins'.",
+        "Set map.editorNames={'poi:1:0,0':{en:'Ambiguous',ru:'Неоднозначное'}}.",
+        "Import through real handleImportJson. It succeeds with no alert and exports the same ambiguous name."
+      ],
+      "verification": "Extend existing malformed/orphan import case with central+ordinary shared locator and verify accepted document plus both histories unchanged; also verify authoring on ambiguous old maps cannot bypass the same check."
+    },
+    {
+      "finding_id": "E8-R3",
+      "requirements": [
+        "E8 common-name uniqueness across live names and kingdom names per language",
+        "AC09"
+      ],
+      "expected": "Apply the agreed per-language collision policy consistently for the new layer while excluding the same entity, retaining old duplicate compatibility/no-op semantics.",
+      "reproduction": [
+        "Import Mythic regionFixture with ordinary monument2,0.",
+        "Use real pair editor callbacks to author POI RU='Моё имя', EN='My Name'; save succeeds.",
+        "Open kingdom:1 and rename RU to 'Моё имя'. saveNameDraft returns true and exports both kingdom and POI with identical RU."
+      ],
+      "verification": "Extend existing cross-registry duplicate name case to test both edit directions and same-entity/fallback exclusions."
+    }
+  ],
+  "boundaries": [
+    "Fix existing relocation/identity/uniqueness contracts only;no random type generation,reroute or expanded E8.2",
+    "Do not remove ambiguous authored payload silently or globally rewrite legacy duplicates",
+    "Reuse/extend existing cases for each reproduced risk;no new broad audit or runner required",
+    "Previous source/code/tree/patch/bundle/screenshot upload rejection and full shared latest retransmission restriction preserved"
+  ],
+  "completion_criterion": "New exact SHA fixes E8-R1/R2/R3,with accepted absent-kind relocation preserving absence and full UndoRedo;ambiguous v8name rejected before state/history/RNG mutation;reverse namespace duplicate rejected with legacy no-op compatibility. Required exact-head checks and actual UI evidence;then fresh independent review updates verdict and score1.2.",
+  "next_step": "Программист исправляет E8-R1/E8-R2/E8-R3 в собственной ветке и передаёт новый SHA проверяющему;E8.2 до принятия E8.1 не начинать.",
+  "published": false
+}
