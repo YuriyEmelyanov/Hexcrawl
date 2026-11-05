@@ -8,3 +8,5 @@ A bounded per-layer LRU cache retains up to 64 shorelines and 100,000 points, re
 
 Validation: Node.js 24 `npm run check` covers type checking, 154 regression tests and the production build. Geometry checks cover deterministic curves, connected basins, island holes, river mouths, caching and bounded spill. Additional seeded checks covered 200 single lakes and 90 chain/bend/island cases. Browser smoke checks hex-shaped lakes in Tiles/Emoji, natural contours in Color, stable contours after switching modes, retained water colours, suppressed lake-cell tile images, PNG export, import/save, rotation, islands and deep single-cell water. Release browser results are recorded in CI.
 
+
+Manual water editing uses the same persisted cells/lake IDs and natural renderer; see [water-editing.md](water-editing.md). E6 prepares water edits before committing, invalidates contour/mouth inputs through the actual geometry, and preserves local land biomes beneath water. It does not change the seeded shoreline style or the existing Color/Tiles/Emoji distinction.

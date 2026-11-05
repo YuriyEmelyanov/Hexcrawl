@@ -49,7 +49,7 @@ try {
   page.on('console', msg => { if (msg.type() === 'error') diagnostic.push(msg.text()); });
   page.on('pageerror', error => errors.push(error.message));
   let acceptCheckpointLoss=true,riverCheckpointPrompt='';
-  page.on('dialog',async d=>{assert.match(d.message(),/Будет восстановлено исходное состояние рек|Original river state will be restored/);riverCheckpointPrompt=d.message();if(acceptCheckpointLoss)await d.accept();else await d.dismiss();});
+  page.on('dialog',async d=>{assert.match(d.message(),/Будет восстановлено исходное состояние рек|Original river state will be restored|Будет восстановлена вода и берег|The checkpoint water and shore/);riverCheckpointPrompt=d.message();if(acceptCheckpointLoss)await d.accept();else await d.dismiss();});
   await page.addInitScript(() => {
     window.__smokeEvents = [];
     for (const type of ['pointerdown', 'pointerup', 'click']) document.addEventListener(type, event => {
@@ -146,7 +146,7 @@ try {
   const beforeCheckpointDelete=await snapshot();riverCheckpointPrompt='';acceptCheckpointLoss=false;
   await page.getByRole('button', { name: 'Удалить последний регион', exact: true }).click();
   if(riverCheckpointPrompt){
-    assert.match(riverCheckpointPrompt,/Будет восстановлено исходное состояние рек/);const afterCancelledDelete=await snapshot();delete afterCancelledDelete.savedAt;delete beforeCheckpointDelete.savedAt;assert.deepEqual(afterCancelledDelete,beforeCheckpointDelete,'cancel checkpoint loss preserves exact map');
+    assert.match(riverCheckpointPrompt,/Будет восстановлено исходное состояние рек|Будет восстановлена вода и берег/);const afterCancelledDelete=await snapshot();delete afterCancelledDelete.savedAt;delete beforeCheckpointDelete.savedAt;assert.deepEqual(afterCancelledDelete,beforeCheckpointDelete,'cancel checkpoint loss preserves exact map');
     acceptCheckpointLoss=true;await page.getByRole('button', { name: 'Удалить последний регион', exact: true }).click();
   }else acceptCheckpointLoss=true; // No retained river/marker loss needs no dialog.
   assert.equal((await snapshot()).map.regions.length, count - 1);

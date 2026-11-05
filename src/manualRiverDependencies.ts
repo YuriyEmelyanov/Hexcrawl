@@ -38,10 +38,11 @@ export function prepareEditedRiverCrossings(before:EditableRiver[],after:Editabl
 }
 /** BR-009 stays separate from ordinary2→1 confluences. Missing arms are not
  * created, and no quota/RNG/global repair runs during a manual edit. */
-export function validateEditedRiverDeltas(before:EditableRiver[],after:EditableRiver[],geometry:RiverEditingGeometry):void{
+export function validateEditedRiverDeltas(before:EditableRiver[],after:EditableRiver[],geometry:RiverEditingGeometry,beforeGeometry:RiverEditingGeometry=geometry):void{
   const group=(rivers:EditableRiver[],parent:number)=>JSON.stringify(rivers.filter(r=>r.id===parent||r.deltaParentRiverId===parent).map(physical).sort());
   for(const parentId of new Set(after.flatMap(r=>r.deltaParentRiverId===undefined?[]:[r.deltaParentRiverId]))){
-    if(group(before,parentId)===group(after,parentId))continue;
+    const seaSupport=(rivers:EditableRiver[],g:RiverEditingGeometry)=>JSON.stringify(rivers.filter(r=>r.id===parentId||r.deltaParentRiverId===parentId).flatMap(r=>r.vertexPath.map(v=>[v.key,g.seaVertices.has(v.key)])).sort());
+    if(group(before,parentId)===group(after,parentId)&&seaSupport(before,beforeGeometry)===seaSupport(after,geometry))continue;
     const parent=after.find(r=>r.id===parentId),arms=after.filter(r=>r.deltaParentRiverId===parentId);
     if(!parent||parent.deltaParentRiverId!==undefined||parent.vertexPath.length<3)fail('delta_parent_conflict');
     const path=parent!.vertexPath,f=knownRiverEdgeFullness(parent!,riverFeatureEdge(path[path.length-2],path[path.length-1]));
@@ -55,7 +56,7 @@ export function validateEditedRiverDeltas(before:EditableRiver[],after:EditableR
   }
   // Include marked arms for cycle evidence only. Do not reinterpret their split
   // as an ordinary RIV degree/confluence or charge lake capacity a second time.
-  const cycleNetwork=(rivers:EditableRiver[])=>buildManualRiverNetwork(rivers.map(r=>({...r,deltaParentRiverId:undefined})),geometry).network;
-  const oldCycles=directedRiverCycles(cycleNetwork(before));
-  for(const cycle of directedRiverCycles(cycleNetwork(after)))if(!oldCycles.has(cycle))fail('RIV-016:CYCLE:delta');
+  const cycleNetwork=(rivers:EditableRiver[],g:RiverEditingGeometry)=>buildManualRiverNetwork(rivers.map(r=>({...r,deltaParentRiverId:undefined})),g).network;
+  const oldCycles=directedRiverCycles(cycleNetwork(before,beforeGeometry));
+  for(const cycle of directedRiverCycles(cycleNetwork(after,geometry)))if(!oldCycles.has(cycle))fail('RIV-016:CYCLE:delta');
 }
