@@ -1,0 +1,740 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-023/E7",
+  "spec_version": "E7-1.0",
+  "product_baseline_sha": "2ef5cc35107f299c309b7c8065a1e81ca9881278",
+  "score_model_version": "1.2",
+  "score_model_blob": "ab660f02e26faf2233aecd5f2fd1090260fe74eb",
+  "current_score_blob": "950e11bdfd5f59da09d424af14a820c5c8b580f5",
+  "confirmed_points": null,
+  "unverified_criteria": 50,
+  "unverified_weight": 1000,
+  "common_rules_version": "shared-rules-1.3",
+  "common_rules_blob": "19c5154e95238882a035a79324b710879bdb206b",
+  "game_bindings_blob": "33358258030cd9d93d128b3df3c43dcb90640d26",
+  "ranking_version": "three-scenario-ranks-1.3-DW-FL-nonzero",
+  "cohort_version": "2026-11-04-ranking1.3-process-sync",
+  "primary_scenario": "develop",
+  "secondary_scenario": "create",
+  "layer": "L1",
+  "policy": "No numeric forecast, award or game coverage upgrade from specification/UI alone. Shared rule reuse never implies parameter/profile equivalence. MB is current product mode, not a newly researched rule profile. Physical elevation is explicitly unfulfilled. No model IDs/weights/gates changed.",
+  "criteria": [
+    {
+      "criterion_id": "S01-C01",
+      "weight": 25,
+      "name": "Связность и форма регионов",
+      "scenarios": [
+        "develop",
+        "create"
+      ],
+      "applicability": "Формы регионов, связность, границы",
+      "expected_evidence": "AC03/04: flood-fill, union/candidates. E7 не заменяет серию 10k генераций",
+      "before_grade": null,
+      "before_points": null,
+      "expected_after_grade": null,
+      "expected_after_points": null,
+      "expected_delta": null,
+      "assessment": "unknown_pending_exact_implementation_SHA_and_independent_evidence",
+      "rule_ids": []
+    },
+    {
+      "criterion_id": "S01-C02",
+      "weight": 40,
+      "name": "Гидрология и геометрия русел",
+      "scenarios": [
+        "develop",
+        "create"
+      ],
+      "applicability": "Сохранение гидрологии при смене height/owner",
+      "expected_evidence": "AC06/07: physical network, F, ports, отдельный направленный height contact. Это не весь критерий и не географическая экспертиза",
+      "before_grade": null,
+      "before_points": null,
+      "expected_after_grade": null,
+      "expected_after_points": null,
+      "expected_delta": null,
+      "assessment": "unknown_pending_exact_implementation_SHA_and_independent_evidence",
+      "rule_ids": [
+        "map.river_network"
+      ]
+    },
+    {
+      "criterion_id": "S01-C03",
+      "weight": 30,
+      "name": "Побережья, море и озёра",
+      "scenarios": [
+        "develop",
+        "create"
+      ],
+      "applicability": "Регрессия воды и берега",
+      "expected_evidence": "AC04/05/06: точные water set, ID, contours. Новая водная функция и прирост не заявлены",
+      "before_grade": null,
+      "before_points": null,
+      "expected_after_grade": null,
+      "expected_after_points": null,
+      "expected_delta": null,
+      "assessment": "unknown_pending_exact_implementation_SHA_and_independent_evidence",
+      "rule_ids": [
+        "map.land_water_shapes"
+      ]
+    },
+    {
+      "criterion_id": "S01-C04",
+      "weight": 25,
+      "name": "Дороги и тропы",
+      "scenarios": [
+        "develop",
+        "create"
+      ],
+      "applicability": "Сохранность путей, минимума и переправ",
+      "expected_evidence": "AC07/09: road graph и crossing records. Генератор дорог не расширяется",
+      "before_grade": null,
+      "before_points": null,
+      "expected_after_grade": null,
+      "expected_after_points": null,
+      "expected_delta": null,
+      "assessment": "unknown_pending_exact_implementation_SHA_and_independent_evidence",
+      "rule_ids": []
+    },
+    {
+      "criterion_id": "S01-C05",
+      "weight": 10,
+      "name": "Биомная и рельефная правдоподобность",
+      "scenarios": [
+        "develop",
+        "create"
+      ],
+      "applicability": "Высота, base biome и новые стороны",
+      "expected_evidence": "AC01/02/05/06: действующие matrix/height правила. Нет 500 экспертных карт или подтверждённой полноты игровых требований",
+      "before_grade": null,
+      "before_points": null,
+      "expected_after_grade": null,
+      "expected_after_points": null,
+      "expected_delta": null,
+      "assessment": "unknown_pending_exact_implementation_SHA_and_independent_evidence",
+      "rule_ids": [
+        "map.terrain_zones",
+        "map.terrain_compatibility"
+      ]
+    },
+    {
+      "criterion_id": "S02-C01",
+      "weight": 30,
+      "name": "Master seed, независимые потоки и продолжение",
+      "scenarios": [
+        "develop",
+        "create"
+      ],
+      "applicability": "RNG и продолжение; кандидат добавлен к входному списку по реальной зависимости",
+      "expected_evidence": "AC10/11: точные streams и следующий настоящий action. Наличие UI не даёт отдельного award",
+      "before_grade": null,
+      "before_points": null,
+      "expected_after_grade": null,
+      "expected_after_points": null,
+      "expected_delta": null,
+      "assessment": "unknown_pending_exact_implementation_SHA_and_independent_evidence",
+      "rule_ids": []
+    },
+    {
+      "criterion_id": "S02-C02",
+      "weight": 20,
+      "name": "Стабильные ID",
+      "scenarios": [
+        "develop",
+        "create"
+      ],
+      "applicability": "Стабильные ID и миграция ключей",
+      "expected_evidence": "AC06/08/11: mapping ключей и сохранённые entity records. POI не удаляется и не создаётся заново",
+      "before_grade": null,
+      "before_points": null,
+      "expected_after_grade": null,
+      "expected_after_points": null,
+      "expected_delta": null,
+      "assessment": "unknown_pending_exact_implementation_SHA_and_independent_evidence",
+      "rule_ids": []
+    },
+    {
+      "criterion_id": "S02-C03",
+      "weight": 20,
+      "name": "Версии схемы, миграции и продолжение карты",
+      "scenarios": [
+        "develop",
+        "create"
+      ],
+      "applicability": "v7 и продолжение legacy",
+      "expected_evidence": "AC11: versioned manifests и миграции. Отсутствие нового поля само по себе не является evidence",
+      "before_grade": null,
+      "before_points": null,
+      "expected_after_grade": null,
+      "expected_after_points": null,
+      "expected_delta": null,
+      "assessment": "unknown_pending_exact_implementation_SHA_and_independent_evidence",
+      "rule_ids": []
+    },
+    {
+      "criterion_id": "S03-C01",
+      "weight": 25,
+      "name": "Редактирование гекса",
+      "scenarios": [
+        "develop",
+        "create"
+      ],
+      "applicability": "Редактор принадлежности гекса и высоты",
+      "expected_evidence": "AC01–05: настоящие UI/data. E8 — отдельное перемещение POI — ещё отсутствует",
+      "before_grade": null,
+      "before_points": null,
+      "expected_after_grade": null,
+      "expected_after_points": null,
+      "expected_delta": null,
+      "assessment": "unknown_pending_exact_implementation_SHA_and_independent_evidence",
+      "rule_ids": []
+    },
+    {
+      "criterion_id": "S03-C04",
+      "weight": 30,
+      "name": "Граф зависимостей и целостность изменений",
+      "scenarios": [
+        "develop",
+        "create"
+      ],
+      "applicability": "Ограниченный план зависимостей",
+      "expected_evidence": "AC06–09: точные существующие объекты в preview, нет висячих ссылок. Отсутствующие NPC/истории/фракции не покрыты",
+      "before_grade": null,
+      "before_points": null,
+      "expected_after_grade": null,
+      "expected_after_points": null,
+      "expected_delta": null,
+      "assessment": "unknown_pending_exact_implementation_SHA_and_independent_evidence",
+      "rule_ids": []
+    },
+    {
+      "criterion_id": "S03-C05",
+      "weight": 20,
+      "name": "Undo / redo и версии",
+      "scenarios": [
+        "develop",
+        "create"
+      ],
+      "applicability": "Атомарная общая история из 100 операций",
+      "expected_evidence": "AC10/11: точная транзакция и оба стека. Именованные версии не добавляются",
+      "before_grade": null,
+      "before_points": null,
+      "expected_after_grade": null,
+      "expected_after_points": null,
+      "expected_delta": null,
+      "assessment": "unknown_pending_exact_implementation_SHA_and_independent_evidence",
+      "rule_ids": []
+    },
+    {
+      "criterion_id": "S04-C04",
+      "weight": 15,
+      "name": "Экспорт и импорт без потери данных",
+      "scenarios": [
+        "develop",
+        "create"
+      ],
+      "applicability": "JSON/PNG принятого представления",
+      "expected_evidence": "AC05/11/12: round-trip и содержание PNG. Полнота SVG и других экспортов из этого не следует",
+      "before_grade": null,
+      "before_points": null,
+      "expected_after_grade": null,
+      "expected_after_points": null,
+      "expected_delta": null,
+      "assessment": "unknown_pending_exact_implementation_SHA_and_independent_evidence",
+      "rule_ids": []
+    },
+    {
+      "criterion_id": "S04-C05",
+      "weight": 10,
+      "name": "Локализация и доступность",
+      "scenarios": [
+        "develop",
+        "create"
+      ],
+      "applicability": "RU/EN и доступность прямого редактора",
+      "expected_evidence": "AC12: реальные keyboard/pointer, labels, geometry. Полная WCAG AA и физические AT остаются unknown",
+      "before_grade": null,
+      "before_points": null,
+      "expected_after_grade": null,
+      "expected_after_points": null,
+      "expected_delta": null,
+      "assessment": "unknown_pending_exact_implementation_SHA_and_independent_evidence",
+      "rule_ids": []
+    },
+    {
+      "criterion_id": "S09-C04",
+      "weight": 10,
+      "name": "Безопасность данных",
+      "scenarios": [
+        "develop",
+        "create"
+      ],
+      "applicability": "Отказ, stale, fault и импорт без потерь",
+      "expected_evidence": "AC08/10/11: отдельное отрицательное evidence. Один round-trip не начислять повторно",
+      "before_grade": null,
+      "before_points": null,
+      "expected_after_grade": null,
+      "expected_after_points": null,
+      "expected_delta": null,
+      "assessment": "unknown_pending_exact_implementation_SHA_and_independent_evidence",
+      "rule_ids": []
+    }
+  ],
+  "rules": [
+    {
+      "rule_id": "map.terrain_zones",
+      "e7_applicability": "bounded_component_only",
+      "criterion_ids": [
+        "S01-C05"
+      ],
+      "acceptance_ids": [
+        "AC02",
+        "AC05"
+      ],
+      "reverse_binding_ids": [
+        "DND5-2014-003-L1",
+        "DND5-2014-023-L1",
+        "DND5-2014-024-L1",
+        "PF2-RM-003-L1",
+        "PF2-RM-012-L1",
+        "PF2-RM-018-L1",
+        "PF2-RM-029-L1",
+        "PF2-RM-039-L1",
+        "PF2-RM-044-L1",
+        "PF2-RM-062-L1",
+        "PF2-RM-063-L1",
+        "PF2-RM-067-L1",
+        "PF2-RM-069-L1",
+        "PF2-RM-072-L1",
+        "PF2-RM-126-L1"
+      ],
+      "selected_profiles": [
+        {
+          "binding_id": "DND5-2014-003-L1",
+          "game_id": "DND5",
+          "edition": "DMG2014",
+          "source_rule_id": "DND5-2014-003",
+          "source_page": 14,
+          "layer": "L1",
+          "normative_kind": "recommendation",
+          "profiles": [
+            {
+              "rule_id": "map.terrain_zones",
+              "parameters": {},
+              "exceptions": [],
+              "conditions": [],
+              "profile_status": "unverified",
+              "verification_requirement": "Resolve this source clause's numeric parameters, variants, scope and exceptions before accepting inherited evidence.",
+              "source_clause": "Крупные зоны биома и локальные отличия отдельных гексов"
+            }
+          ],
+          "coverage_status": "unverified",
+          "evidence_status": "no_implementation_evidence",
+          "quality": null,
+          "breadth": null
+        },
+        {
+          "binding_id": "PF2-RM-003-L1",
+          "game_id": "PF2",
+          "edition": "Remaster:GM_Core+Player_Core",
+          "source_rule_id": "PF2-RM-003",
+          "source_page": 206,
+          "layer": "L1",
+          "normative_kind": "recommendation",
+          "profiles": [
+            {
+              "rule_id": "map.terrain_zones",
+              "parameters": {},
+              "exceptions": [
+                "Hexploration is optional; action metadata may cite legacy GMG"
+              ],
+              "conditions": [
+                "selected_hexploration_subsystem"
+              ],
+              "profile_status": "unverified",
+              "source_clause": "У гекса одна преобладающая местность; река, дорога и места — дополнительные объекты.",
+              "verification_requirement": "Source parameters extracted; component normalization and cross-game parameter equivalence require independent review before inherited implementation evidence."
+            }
+          ],
+          "coverage_status": "unverified",
+          "evidence_status": "no_implementation_evidence",
+          "quality": null,
+          "breadth": null
+        },
+        {
+          "binding_id": "PF2-RM-126-L1",
+          "game_id": "PF2",
+          "edition": "Remaster:GM_Core+Player_Core",
+          "source_rule_id": "PF2-RM-126",
+          "source_page": 135,
+          "layer": "L1",
+          "normative_kind": "recommendation",
+          "profiles": [
+            {
+              "rule_id": "map.terrain_zones",
+              "parameters": {
+                "usual_hill_height_feet_max": 1000,
+                "forest": "latitude_climate_elevation_tree_line",
+                "extreme": [
+                  "aerial",
+                  "glacier",
+                  "volcanic",
+                  "undersea",
+                  "underground"
+                ],
+                "normative": "worldbuilding_recommendation;not_replacement_of_approved_product_domain_rules"
+              },
+              "exceptions": [
+                "GM discretion and source-specific exceptions retained; no automatic combat engine/game supplement coverage."
+              ],
+              "conditions": [
+                "Use only in the indicated environment,action or hazard context;overland,hex-day and tactical scales remain distinct."
+              ],
+              "profile_status": "unverified",
+              "source_clause": "Различать типы среды по климату и высоте,включая лесные пояса и особые среды.",
+              "verification_requirement": "Independent component/profile normalization and exact-SHA implementation evidence required before inherited coverage."
+            }
+          ],
+          "coverage_status": "unverified",
+          "evidence_status": "no_implementation_evidence",
+          "quality": null,
+          "breadth": null
+        }
+      ],
+      "unselected_reverse_binding_policy": "Not automatically applicable or covered; own profile/scenario/exact-SHA evidence required."
+    },
+    {
+      "rule_id": "map.terrain_compatibility",
+      "e7_applicability": "matrix_and_authored_local_exception_only",
+      "criterion_ids": [
+        "S01-C05"
+      ],
+      "acceptance_ids": [
+        "AC02",
+        "AC05"
+      ],
+      "reverse_binding_ids": [
+        "PF2-RM-011-L1",
+        "PF2-RM-126-L1"
+      ],
+      "selected_profiles": [
+        {
+          "binding_id": "PF2-RM-011-L1",
+          "game_id": "PF2",
+          "edition": "Remaster:GM_Core+Player_Core",
+          "source_rule_id": "PF2-RM-011",
+          "source_page": 207,
+          "layer": "L1",
+          "normative_kind": "recommendation",
+          "profiles": [
+            {
+              "rule_id": "map.terrain_compatibility",
+              "parameters": {
+                "magic_exception": true
+              },
+              "exceptions": [
+                "Hexploration is optional; action metadata may cite legacy GMG"
+              ],
+              "conditions": [
+                "selected_hexploration_subsystem"
+              ],
+              "profile_status": "unverified",
+              "source_clause": "Случайный результат проверяется на географический смысл; магическое исключение объясняется.",
+              "verification_requirement": "Source parameters extracted; component normalization and cross-game parameter equivalence require independent review before inherited implementation evidence."
+            }
+          ],
+          "coverage_status": "unverified",
+          "evidence_status": "no_implementation_evidence",
+          "quality": null,
+          "breadth": null
+        },
+        {
+          "binding_id": "PF2-RM-126-L1",
+          "game_id": "PF2",
+          "edition": "Remaster:GM_Core+Player_Core",
+          "source_rule_id": "PF2-RM-126",
+          "source_page": 135,
+          "layer": "L1",
+          "normative_kind": "recommendation",
+          "profiles": [
+            {
+              "rule_id": "map.terrain_compatibility",
+              "parameters": {
+                "usual_hill_height_feet_max": 1000,
+                "forest": "latitude_climate_elevation_tree_line",
+                "extreme": [
+                  "aerial",
+                  "glacier",
+                  "volcanic",
+                  "undersea",
+                  "underground"
+                ],
+                "normative": "worldbuilding_recommendation;not_replacement_of_approved_product_domain_rules"
+              },
+              "exceptions": [
+                "GM discretion and source-specific exceptions retained; no automatic combat engine/game supplement coverage."
+              ],
+              "conditions": [
+                "Use only in the indicated environment,action or hazard context;overland,hex-day and tactical scales remain distinct."
+              ],
+              "profile_status": "unverified",
+              "source_clause": "Различать типы среды по климату и высоте,включая лесные пояса и особые среды.",
+              "verification_requirement": "Independent component/profile normalization and exact-SHA implementation evidence required before inherited coverage."
+            }
+          ],
+          "coverage_status": "unverified",
+          "evidence_status": "no_implementation_evidence",
+          "quality": null,
+          "breadth": null
+        }
+      ],
+      "unselected_reverse_binding_policy": "Not automatically applicable or covered; own profile/scenario/exact-SHA evidence required."
+    },
+    {
+      "rule_id": "map.river_network",
+      "e7_applicability": "preservation_dependency_only",
+      "criterion_ids": [
+        "S01-C02"
+      ],
+      "acceptance_ids": [
+        "AC06",
+        "AC07"
+      ],
+      "reverse_binding_ids": [
+        "DND5-2014-007-L1",
+        "DND5-2014-024-L1",
+        "PF2-RM-125-L1"
+      ],
+      "selected_profiles": [
+        {
+          "binding_id": "DND5-2014-007-L1",
+          "game_id": "DND5",
+          "edition": "DMG2014",
+          "source_rule_id": "DND5-2014-007",
+          "source_page": 14,
+          "layer": "L1",
+          "normative_kind": "recommendation",
+          "profiles": [
+            {
+              "rule_id": "map.river_network",
+              "parameters": {},
+              "exceptions": [],
+              "conditions": [],
+              "profile_status": "unverified",
+              "verification_requirement": "Resolve this source clause's numeric parameters, variants, scope and exceptions before accepting inherited evidence.",
+              "source_clause": "Связная речная сеть с истоками, притоками и устьями"
+            }
+          ],
+          "coverage_status": "unverified",
+          "evidence_status": "no_implementation_evidence",
+          "quality": null,
+          "breadth": null
+        },
+        {
+          "binding_id": "DND5-2014-024-L1",
+          "game_id": "DND5",
+          "edition": "DMG2014",
+          "source_rule_id": "DND5-2014-024",
+          "source_page": 242,
+          "layer": "L1",
+          "normative_kind": "procedure",
+          "profiles": [
+            {
+              "rule_id": "map.river_network",
+              "parameters": {},
+              "exceptions": [],
+              "conditions": [],
+              "profile_status": "unverified",
+              "verification_requirement": "Resolve this source clause's numeric parameters, variants, scope and exceptions before accepting inherited evidence.",
+              "source_clause": "Дороги, реки, рельеф, ориентиры и определённый физический масштаб"
+            }
+          ],
+          "coverage_status": "unverified",
+          "evidence_status": "no_implementation_evidence",
+          "quality": null,
+          "breadth": null
+        },
+        {
+          "binding_id": "PF2-RM-125-L1",
+          "game_id": "PF2",
+          "edition": "Remaster:GM_Core+Player_Core",
+          "source_rule_id": "PF2-RM-125",
+          "source_page": 135,
+          "layer": "L1",
+          "normative_kind": "recommendation",
+          "profiles": [
+            {
+              "rule_id": "map.river_network",
+              "parameters": {
+                "source_guidance": "downhill_to_sea;least_resistance;no_crossing_ranges;tributaries_join_not_branch",
+                "limitations": "Book guideline,not_general_scientific_law_or_authorized_RIV_change",
+                "normative": "worldbuilding_recommendation;not_replacement_of_approved_product_domain_rules"
+              },
+              "exceptions": [
+                "GM discretion and source-specific exceptions retained; no automatic combat engine/game supplement coverage."
+              ],
+              "conditions": [
+                "Use only in the indicated environment,action or hazard context;overland,hex-day and tactical scales remain distinct."
+              ],
+              "profile_status": "unverified",
+              "source_clause": "Реки идут от высот к морю,притоки соединяются вниз по течению; направление должно соответствовать рельефу.",
+              "verification_requirement": "Independent component/profile normalization and exact-SHA implementation evidence required before inherited coverage."
+            }
+          ],
+          "coverage_status": "unverified",
+          "evidence_status": "no_implementation_evidence",
+          "quality": null,
+          "breadth": null
+        }
+      ],
+      "unselected_reverse_binding_policy": "Not automatically applicable or covered; own profile/scenario/exact-SHA evidence required."
+    },
+    {
+      "rule_id": "map.land_water_shapes",
+      "e7_applicability": "regression_only",
+      "criterion_ids": [
+        "S01-C03"
+      ],
+      "acceptance_ids": [
+        "AC04",
+        "AC06"
+      ],
+      "reverse_binding_ids": [
+        "DND5-2014-005-L1",
+        "PF2-RM-123-L1"
+      ],
+      "selected_profiles": [
+        {
+          "binding_id": "DND5-2014-005-L1",
+          "game_id": "DND5",
+          "edition": "DMG2014",
+          "source_rule_id": "DND5-2014-005",
+          "source_page": 14,
+          "layer": "L1",
+          "normative_kind": "recommendation",
+          "profiles": [
+            {
+              "rule_id": "map.land_water_shapes",
+              "parameters": {},
+              "exceptions": [],
+              "conditions": [],
+              "profile_status": "unverified",
+              "verification_requirement": "Resolve this source clause's numeric parameters, variants, scope and exceptions before accepting inherited evidence.",
+              "source_clause": "География суши и воды с перечисленными формами"
+            }
+          ],
+          "coverage_status": "unverified",
+          "evidence_status": "no_implementation_evidence",
+          "quality": null,
+          "breadth": null
+        },
+        {
+          "binding_id": "PF2-RM-123-L1",
+          "game_id": "PF2",
+          "edition": "Remaster:GM_Core+Player_Core",
+          "source_rule_id": "PF2-RM-123",
+          "source_page": 135,
+          "layer": "L1",
+          "normative_kind": "recommendation",
+          "profiles": [
+            {
+              "rule_id": "map.land_water_shapes",
+              "parameters": {
+                "features": [
+                  "shore",
+                  "island",
+                  "archipelago",
+                  "atoll",
+                  "islet",
+                  "continent"
+                ],
+                "normative": "worldbuilding_recommendation;not_replacement_of_approved_product_domain_rules"
+              },
+              "exceptions": [
+                "GM discretion and source-specific exceptions retained; no automatic combat engine/game supplement coverage."
+              ],
+              "conditions": [
+                "Use only in the indicated environment,action or hazard context;overland,hex-day and tactical scales remain distinct."
+              ],
+              "profile_status": "unverified",
+              "source_clause": "Разделить сушу и воду; состав островов и материков выбирать по масштабу карты.",
+              "verification_requirement": "Independent component/profile normalization and exact-SHA implementation evidence required before inherited coverage."
+            }
+          ],
+          "coverage_status": "unverified",
+          "evidence_status": "no_implementation_evidence",
+          "quality": null,
+          "breadth": null
+        }
+      ],
+      "unselected_reverse_binding_policy": "Not automatically applicable or covered; own profile/scenario/exact-SHA evidence required."
+    },
+    {
+      "rule_id": "map.physical_elevation",
+      "e7_applicability": "not_fulfilled_heightLevel_is_not_physical_height_or_slope",
+      "criterion_ids": [],
+      "acceptance_ids": [],
+      "reverse_binding_ids": [
+        "DND5-2014-019-L1",
+        "PF2-RM-074-L1"
+      ],
+      "selected_profiles": [
+        {
+          "binding_id": "DND5-2014-019-L1",
+          "game_id": "DND5",
+          "edition": "DMG2014",
+          "source_rule_id": "DND5-2014-019",
+          "source_page": 110,
+          "layer": "L1",
+          "normative_kind": "conditional_procedure",
+          "profiles": [
+            {
+              "rule_id": "map.physical_elevation",
+              "parameters": {},
+              "exceptions": [],
+              "conditions": [],
+              "profile_status": "unverified",
+              "verification_requirement": "Resolve this source clause's numeric parameters, variants, scope and exceptions before accepting inherited evidence.",
+              "source_clause": "Хранить физическую высоту, достаточную для определения зон большой высоты"
+            }
+          ],
+          "coverage_status": "unverified",
+          "evidence_status": "no_implementation_evidence",
+          "quality": null,
+          "breadth": null
+        },
+        {
+          "binding_id": "PF2-RM-074-L1",
+          "game_id": "PF2",
+          "edition": "Remaster:GM_Core+Player_Core",
+          "source_rule_id": "PF2-RM-074",
+          "source_page": 91,
+          "layer": "L1",
+          "normative_kind": "conditional_procedure",
+          "profiles": [
+            {
+              "rule_id": "map.physical_elevation",
+              "parameters": {
+                "downhill": "typically_normal",
+                "steep_uphill": "Climb"
+              },
+              "exceptions": [
+                "GM discretion and source-specific exceptions retained; no automatic combat engine/game supplement coverage."
+              ],
+              "conditions": [
+                "Use only in the indicated environment,action or hazard context;overland,hex-day and tactical scales remain distinct."
+              ],
+              "profile_status": "unverified",
+              "source_clause": "Утёс требует Climb; уклон варьируется от обычного до трудного, особо крутой подъём требует лазания.",
+              "verification_requirement": "Independent component/profile normalization and exact-SHA implementation evidence required before inherited coverage."
+            }
+          ],
+          "coverage_status": "unverified",
+          "evidence_status": "no_implementation_evidence",
+          "quality": null,
+          "breadth": null
+        }
+      ],
+      "unselected_reverse_binding_policy": "Not automatically applicable or covered; own profile/scenario/exact-SHA evidence required."
+    }
+  ]
+}
