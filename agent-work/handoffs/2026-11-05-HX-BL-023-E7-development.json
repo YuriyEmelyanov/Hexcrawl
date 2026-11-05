@@ -1,0 +1,468 @@
+{
+  "schema_version": 1,
+  "handoff_id": "2026-11-05-HX-BL-023-E7-development",
+  "created_at": "2026-11-05T11:01:51.625Z",
+  "created_by_run": "2026-11-05-analyst-HX-BL-023-E7",
+  "task_id": "HX-BL-023",
+  "stage_id": "E7",
+  "status": "ready_for_programmer",
+  "next_role": "programmer",
+  "next_step": "Refresh main and active claims, create own E7 development claim, implement the bounded E7-1.0 specification on a separate branch, verify on exact new SHA, and hand off to an independent reviewer. Do not merge or deploy.",
+  "authority": {
+    "status": "already_approved_parent_scope",
+    "approval_ref": "owner-decision-2026-10-28-editor-additional-functions-approved",
+    "parent_spec_path": "agent-work/specs/HX-BL-023.md",
+    "parent_spec_version": "2.3",
+    "parent_spec_blob": "47c33c51745ebe9cc7338b81a5507f8b056c102c",
+    "analysis_completed": true,
+    "development_after_suitable_spec": true,
+    "new_start_approval_needed": false,
+    "design_response_blocks_work": false,
+    "release_approved": false,
+    "release_gate": "Separate owner permission for independently reviewed exact package."
+  },
+  "product_baseline": {
+    "main_sha": "2ef5cc35107f299c309b7c8065a1e81ca9881278",
+    "tree_sha": "3a1ff34de3ef0d6b363de66a62944fff2b27a909",
+    "local_source_sha": "c5b4f26c6d5a29aa0ba1d89ca11cc209ebe5272e",
+    "same_full_tree": true,
+    "fresh_main_check": "unchanged at handoff preparation",
+    "publication": "PR487 accepted and published; do not reopen E6",
+    "refresh_before_coding": true
+  },
+  "spec": {
+    "path": "agent-work/specs/HX-BL-023-E7.md",
+    "version": "E7-1.0",
+    "blob_sha": "59f6a231eaa27fb2fb3f98d6d29838da9c50e9b5",
+    "commit_sha": "2c7ca0786eca7d64ef700c4b059f3595a4d98f18",
+    "readback_exact": true,
+    "url": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/agent-operations/agent-work/specs/HX-BL-023-E7.md"
+  },
+  "scope": {
+    "one_main_task": true,
+    "commands": [
+      {
+        "contract": "H01",
+        "command": "region_height",
+        "fields": [
+          "regionId",
+          "heightLevel",
+          "biomeId"
+        ],
+        "permitted_height": [
+          1,
+          2,
+          3
+        ],
+        "effect": "Explicit matching base biome and region height committed together; all local overrides preserved; dependency-safe only."
+      },
+      {
+        "contract": "T01",
+        "command": "transfer_hex",
+        "fields": [
+          "hexKey",
+          "fromRegionId",
+          "toRegionId"
+        ],
+        "effect": "One registered side-adjacent cell changes container; both nonempty connected regions, protected center/anchor, unchanged kingdom membership, compatible new sides; keep coordinates and content."
+      }
+    ],
+    "atomic_contract": "X01/J01: exact prepared before/after, one accepted 100-history transaction, executable Undo/Redo; no-op/reject/cancel/stale/fault preserve document, both stacks, RNG and counters.",
+    "excluded": [
+      "E8 standalone POI coordinate movement",
+      "issue489 five new biomes",
+      "region split/merge/delete or new territory",
+      "center/anchor relocation",
+      "kingdom membership/area editing",
+      "L2/L3/new generator/paid APIs",
+      "broad repeated audit or new oversized measurement series",
+      "merge/deploy/release"
+    ]
+  },
+  "policy": {
+    "height_biome": "Separate UI height control preserves existing fixed-height biome rule; user explicitly chooses compatible base biome in the same atomic command. No random/default choice. Legacy no-op not normalized.",
+    "owner_optional_amendment": "A genuinely independent numeric height with incompatible unchanged base biome would change existing E2/domain policy and requires an explicit owner amendment. This alternative is not silently accepted and does not block the strict approved version.",
+    "transfer": "Same kingdom (including both undefined); center/anchor remain source. No silent relocation or allegiance change.",
+    "dependency_resolution": "Compatible operation preserves identity/content; incompatibility is atomic refusal with exact reason. Existing separate command can resolve conflict before retry; no delete/reroll/repair inside E7."
+  },
+  "implementation_risks": [
+    {
+      "risk": "River owner loses actual side support",
+      "contract": "D01",
+      "required": "Explicit deterministic per-edge source→target remap only where owner loses support, then shared old/new physical/F/delta validation; preserve remaining owners/F/path/IDs, enforce directed height transitions."
+    },
+    {
+      "risk": "Settlement/POI keys include regionId",
+      "contract": "T01/D01",
+      "required": "Reparent noncentral same-coordinate POI; migrate full retained name and tag-owner/all matching roll-counter prefixes collision-safely before commit. No reconcileTags/synchronizeToponyms prune/reroll."
+    },
+    {
+      "risk": "sizeCategory is not emergency isTract",
+      "contract": "T01/D01",
+      "required": "Recompute finalSize/category/label; retain targetSize/isTract/suppressCentralPoi. Size threshold must not evade ordinary settled road minimum or silently remove center."
+    },
+    {
+      "risk": "Water/override hidden layer",
+      "contract": "H01/T01/D01",
+      "required": "Owned lake/sea transfer preserves all terrain/lake IDs/ports/shore/hidden local overrides; external unowned water cannot gain a region through E7."
+    },
+    {
+      "risk": "Height-derived Auto marks vs manual intent",
+      "contract": "D01",
+      "required": "Manual On/Off/crossings/obstacles literal. Recalculate actual Auto using existing stable hashes, preview exact additions/removals; no RNG."
+    },
+    {
+      "risk": "Late preparation fault or stale callback",
+      "contract": "X01/J01",
+      "required": "Both detached full snapshots and all key/format validation before history mutation; same revision and draft identity at execution; no counter/Redo loss on every refusal."
+    }
+  ],
+  "acceptance": {
+    "spec_ids": [
+      "AC01",
+      "AC02",
+      "AC03",
+      "AC04",
+      "AC05",
+      "AC06",
+      "AC07",
+      "AC08",
+      "AC09",
+      "AC10",
+      "AC11",
+      "AC12"
+    ],
+    "location": "E7-1.0 table: positive, negative/boundary and required future exact-SHA evidence per AC",
+    "must_cover": [
+      "Classic and Mythic",
+      "all three heights and24 existing BiomeId",
+      "connected/empty/bridge-cut/center/anchor/kingdom cases",
+      "inherited/local/same-as-base/underwater biome",
+      "real river edge owners/F/source/lake ports/sea mouths/open frontier/three-region contact",
+      "road thresholds/crossings/obstacles",
+      "POI names/tags/counter collision and retained Unicode RU/EN content",
+      "stale/no-op/cancel/double callback/late fault with executable Redo",
+      "v2…v7 fixtures, edited v7 round-trip and actual generation continuation",
+      "1500/390/320 RU/EN actual UI, shared Done/scroll, target identity after wheel/pan/rotate and draft export"
+    ]
+  },
+  "useful_verification": {
+    "policy": "Inventory/reuse distinct existing requirements and risk coverage per HX-FB-002; programmer chooses useful permanent test extensions, no assertion quota or repeated audit.",
+    "reuse": [
+      "manualWater + water-lifecycle browser",
+      "manualRivers + riverModel/fullness/endpoints/integration",
+      "manualRoads + roadContinuation + manualObstacles",
+      "saveSafety + worldContinuation + worldAcceptance fixture manifests",
+      "browser save-history/tags/navigation/terrain-color/world-random"
+    ],
+    "required_checks": [
+      "Node24 npm run check",
+      "build then npm run test:browser"
+    ],
+    "rng_suite": "Only when affected snapshot/continuation wiring warrants it; no new series beyond approved limits.",
+    "prototype_check": "16 serialized proposal states (8×2 widths): row counts/font/width/no page errors; not product/domain acceptance."
+  },
+  "ui": {
+    "version": "UI-v1",
+    "source": "actual baseline React DOM/CSS, public legacy fixture, newly authored temporary DOM prototype",
+    "states": [
+      "read",
+      "edit",
+      "select-target",
+      "preview",
+      "height",
+      "conflict",
+      "error",
+      "after"
+    ],
+    "viewports": [
+      {
+        "width": 1500,
+        "height": 1100
+      },
+      {
+        "width": 390,
+        "height": 1000
+      }
+    ],
+    "shown": {
+      "status": "actually_shown_inline_as_proposal",
+      "desktop": "e7-ui-v1-preview-1500.png",
+      "narrow": "e7-ui-v1-select-target-390.png",
+      "channel": "analyst commentary",
+      "owner_response_blocks_work": false
+    },
+    "local_directory": "/workspace/scratch/cc30953c0fc1/e7-analysis/ui",
+    "requirements": "One existing Edit/Done, shared scroll, equal read/edit row spacing,16px information and16–18px dice; no per-field pencils, large editor panels or third design gate.",
+    "remote_files": {
+      "README.md": {
+        "path": "agent-work/ui/HX-BL-023-E7-ui-v1/README.md",
+        "blob_sha": "636566f4fcc1dddd97a1fe9377b1997d0da56a18",
+        "commit_sha": "b7f26db2c8718556b957dfe9318d2388ee376ca5",
+        "readback_exact": true
+      },
+      "prototype.js": {
+        "path": "agent-work/ui/HX-BL-023-E7-ui-v1/prototype.js",
+        "blob_sha": "6c83cc09eda47b973a4fc7940ceefce453150c38",
+        "commit_sha": "f3f2387aac1f11ea37602658ba5af64c3792fb8a",
+        "readback_exact": true
+      },
+      "prototype.css": {
+        "path": "agent-work/ui/HX-BL-023-E7-ui-v1/prototype.css",
+        "blob_sha": "0369410b84d3898586e2d0a49511e05493ddf96b",
+        "commit_sha": "bfc5545141e49f53dba2cf9e9abe0824f1cde844",
+        "readback_exact": true
+      },
+      "capture.mjs": {
+        "path": "agent-work/ui/HX-BL-023-E7-ui-v1/capture.mjs",
+        "blob_sha": "a73c616fc549f988fe024aeee15627b2194214df",
+        "commit_sha": "3ddd62d6618676984c67498cf035e827b782caae",
+        "readback_exact": true
+      },
+      "serve.mjs": {
+        "path": "agent-work/ui/HX-BL-023-E7-ui-v1/serve.mjs",
+        "blob_sha": "ef884523c852d0b2f58ba55c702b30200e2c31a9",
+        "commit_sha": "63793742b1346282ca0d3b712b7885f146b3f2aa",
+        "readback_exact": true
+      },
+      "traceability.json": {
+        "path": "agent-work/ui/HX-BL-023-E7-ui-v1/traceability.json",
+        "blob_sha": "b60afe8c6b02babb304f21ab53fe3228433f535c",
+        "commit_sha": "dbdc9dc45be4b121b3a80b7d7d45ed7d2233d999",
+        "readback_exact": true
+      },
+      "preview.html": {
+        "path": "agent-work/ui/HX-BL-023-E7-ui-v1/preview.html",
+        "blob_sha": "1251af3709737469ac609cd9ee3429abdc11784e",
+        "commit_sha": "91173c558e9db895b1048e4d600bf7da5cabfe90",
+        "readback_exact": true
+      },
+      "manifest.json": {
+        "path": "agent-work/ui/HX-BL-023-E7-ui-v1/manifest.json",
+        "blob_sha": "cf9e6de2c24f160262fcac4afb15d9e712b9b8b3",
+        "commit_sha": "720b2b71543c7a7cc20a06f306576631133efd02",
+        "readback_exact": true
+      }
+    },
+    "png_remote_upload": false,
+    "limits": [
+      "Proposal callbacks are not E7 implementation",
+      "error bridge-cut state is illustrative, not asserted of fixture3,5",
+      "physical touch/WCAG AA/Safari/Firefox unverified",
+      "actual runtime overlay after wheel/pan/rotate remains developer AC"
+    ]
+  },
+  "score": {
+    "model_version": "1.2",
+    "model_blob": "ab660f02e26faf2233aecd5f2fd1090260fe74eb",
+    "current_score_blob": "950e11bdfd5f59da09d424af14a820c5c8b580f5",
+    "latest_release_sha": "2ef5cc35107f299c309b7c8065a1e81ca9881278",
+    "confirmed_points": null,
+    "all_50_unverified": true,
+    "unverified_weight": 1000,
+    "before": null,
+    "after": null,
+    "expected_delta": null,
+    "assessment": "unknown; no score/coverage award or numeric forecast from spec/UI/feature presence",
+    "criterion_candidates": [
+      {
+        "criterion_id": "S01-C01",
+        "weight": 25,
+        "expected_evidence": "AC03/04: flood-fill, union/candidates. E7 не заменяет серию 10k генераций",
+        "before_grade": null,
+        "before_points": null,
+        "expected_after_grade": null,
+        "expected_after_points": null,
+        "expected_delta": null,
+        "rule_ids": []
+      },
+      {
+        "criterion_id": "S01-C02",
+        "weight": 40,
+        "expected_evidence": "AC06/07: physical network, F, ports, отдельный направленный height contact. Это не весь критерий и не географическая экспертиза",
+        "before_grade": null,
+        "before_points": null,
+        "expected_after_grade": null,
+        "expected_after_points": null,
+        "expected_delta": null,
+        "rule_ids": [
+          "map.river_network"
+        ]
+      },
+      {
+        "criterion_id": "S01-C03",
+        "weight": 30,
+        "expected_evidence": "AC04/05/06: точные water set, ID, contours. Новая водная функция и прирост не заявлены",
+        "before_grade": null,
+        "before_points": null,
+        "expected_after_grade": null,
+        "expected_after_points": null,
+        "expected_delta": null,
+        "rule_ids": [
+          "map.land_water_shapes"
+        ]
+      },
+      {
+        "criterion_id": "S01-C04",
+        "weight": 25,
+        "expected_evidence": "AC07/09: road graph и crossing records. Генератор дорог не расширяется",
+        "before_grade": null,
+        "before_points": null,
+        "expected_after_grade": null,
+        "expected_after_points": null,
+        "expected_delta": null,
+        "rule_ids": []
+      },
+      {
+        "criterion_id": "S01-C05",
+        "weight": 10,
+        "expected_evidence": "AC01/02/05/06: действующие matrix/height правила. Нет 500 экспертных карт или подтверждённой полноты игровых требований",
+        "before_grade": null,
+        "before_points": null,
+        "expected_after_grade": null,
+        "expected_after_points": null,
+        "expected_delta": null,
+        "rule_ids": [
+          "map.terrain_zones",
+          "map.terrain_compatibility"
+        ]
+      },
+      {
+        "criterion_id": "S02-C01",
+        "weight": 30,
+        "expected_evidence": "AC10/11: точные streams и следующий настоящий action. Наличие UI не даёт отдельного award",
+        "before_grade": null,
+        "before_points": null,
+        "expected_after_grade": null,
+        "expected_after_points": null,
+        "expected_delta": null,
+        "rule_ids": []
+      },
+      {
+        "criterion_id": "S02-C02",
+        "weight": 20,
+        "expected_evidence": "AC06/08/11: mapping ключей и сохранённые entity records. POI не удаляется и не создаётся заново",
+        "before_grade": null,
+        "before_points": null,
+        "expected_after_grade": null,
+        "expected_after_points": null,
+        "expected_delta": null,
+        "rule_ids": []
+      },
+      {
+        "criterion_id": "S02-C03",
+        "weight": 20,
+        "expected_evidence": "AC11: versioned manifests и миграции. Отсутствие нового поля само по себе не является evidence",
+        "before_grade": null,
+        "before_points": null,
+        "expected_after_grade": null,
+        "expected_after_points": null,
+        "expected_delta": null,
+        "rule_ids": []
+      },
+      {
+        "criterion_id": "S03-C01",
+        "weight": 25,
+        "expected_evidence": "AC01–05: настоящие UI/data. E8 — отдельное перемещение POI — ещё отсутствует",
+        "before_grade": null,
+        "before_points": null,
+        "expected_after_grade": null,
+        "expected_after_points": null,
+        "expected_delta": null,
+        "rule_ids": []
+      },
+      {
+        "criterion_id": "S03-C04",
+        "weight": 30,
+        "expected_evidence": "AC06–09: точные существующие объекты в preview, нет висячих ссылок. Отсутствующие NPC/истории/фракции не покрыты",
+        "before_grade": null,
+        "before_points": null,
+        "expected_after_grade": null,
+        "expected_after_points": null,
+        "expected_delta": null,
+        "rule_ids": []
+      },
+      {
+        "criterion_id": "S03-C05",
+        "weight": 20,
+        "expected_evidence": "AC10/11: точная транзакция и оба стека. Именованные версии не добавляются",
+        "before_grade": null,
+        "before_points": null,
+        "expected_after_grade": null,
+        "expected_after_points": null,
+        "expected_delta": null,
+        "rule_ids": []
+      },
+      {
+        "criterion_id": "S04-C04",
+        "weight": 15,
+        "expected_evidence": "AC05/11/12: round-trip и содержание PNG. Полнота SVG и других экспортов из этого не следует",
+        "before_grade": null,
+        "before_points": null,
+        "expected_after_grade": null,
+        "expected_after_points": null,
+        "expected_delta": null,
+        "rule_ids": []
+      },
+      {
+        "criterion_id": "S04-C05",
+        "weight": 10,
+        "expected_evidence": "AC12: реальные keyboard/pointer, labels, geometry. Полная WCAG AA и физические AT остаются unknown",
+        "before_grade": null,
+        "before_points": null,
+        "expected_after_grade": null,
+        "expected_after_points": null,
+        "expected_delta": null,
+        "rule_ids": []
+      },
+      {
+        "criterion_id": "S09-C04",
+        "weight": 10,
+        "expected_evidence": "AC08/10/11: отдельное отрицательное evidence. Один round-trip не начислять повторно",
+        "before_grade": null,
+        "before_points": null,
+        "expected_after_grade": null,
+        "expected_after_points": null,
+        "expected_delta": null,
+        "rule_ids": []
+      }
+    ],
+    "shared_rules_version": "shared-rules-1.3",
+    "common_rules_blob": "19c5154e95238882a035a79324b710879bdb206b",
+    "bindings_blob": "33358258030cd9d93d128b3df3c43dcb90640d26",
+    "ranking_version": "three-scenario-ranks-1.3-DW-FL-nonzero",
+    "cohort_version": "2026-11-04-ranking1.3-process-sync",
+    "scenarios": {
+      "primary": "develop",
+      "secondary": "create",
+      "layer": "L1"
+    },
+    "rule_profile_traceability": {
+      "path": "agent-work/ui/HX-BL-023-E7-ui-v1/traceability.json",
+      "blob_sha": "b60afe8c6b02babb304f21ab53fe3228433f535c",
+      "commit_sha": "dbdc9dc45be4b121b3a80b7d7d45ed7d2233d999",
+      "readback_exact": true
+    },
+    "physical_elevation": "Explicitly unfulfilled: heightLevel is not meters/feet/slope or certified DND/PF2 altitude. No new game research or inherited full coverage.",
+    "review_requirement": "Per criterion exact-SHA score_assessment with applicability/quality/breadth and rule/profile/scenario evidence, including insufficient evidence. Strategist accounts only after authorized release."
+  },
+  "storage_constraints": {
+    "branch": "agent-operations",
+    "own_scoped_claim_result_handoff_only": true,
+    "full_histories": [
+      "latest.json",
+      "backlog.json",
+      "approvals.json"
+    ],
+    "full_history_status": "blocked_previous_auto_review; untouched, no retry/bypass",
+    "old_diagnostics_images": "Previously denied full diagnostics and old UI-v1 PNG not retransmitted or transformed. Newly authored E7 text source saved; new PNG local only.",
+    "write_protocol": "Refresh own path/CAS on update, preserve foreign claims/results, read back exact saved content; if new auto-review rejects, do not route around it."
+  },
+  "budget": {
+    "status": "owner_waived_usage_gate",
+    "actual_usage": null,
+    "additional_paid_spend": false
+  },
+  "completion_gate": "New implementation SHA and concrete evidence → independent reviewer; release permission separately. E7 analyst did not implement product.",
+  "blockers": []
+}
