@@ -14,16 +14,16 @@
   "authority_ref": "owner-decision-2026-10-28-editor-additional-functions-approved",
   "role_reason": "All24 Nov5 claims completed;approved detailed E8 spec/handoff ready;local accepted E7 source/tree available. No duplicate implementation.",
   "source_transfer": "Previous E7 upload denial preserved;no source upload/PR retry in this run",
-  "last_checkpoint_at": "2026-11-05 19:44:45 UTC",
-  "head_sha": "24d7bfc2abc2beeda7ce3743eb98fa9944bba5ab",
-  "head_tree": "7f1650442ff59851b8e8e2c43ba4ab2403af9911",
+  "last_checkpoint_at": "2026-11-05 19:49:38 UTC",
+  "head_sha": "6e53ae0d5c3996fe8fca04fb194439e2a1c4391e",
+  "head_tree": "0b64baa1b8a1082a727890124c0b70d9ebfbfc5c",
   "last_checkpoint_ref": "agent-work/handoffs/2026-11-05-HX-BL-023-E8-checkpoint-8d578e7.json",
   "result_ref": "agent-work/results/2026-11-05-developer-HX-BL-023-E8-storage.json",
   "worker_state": "running_same_resumed_claim",
   "task_completed": false,
   "safe_resume": "Same unfinished claim may be recovered after exact localHEAD/tree and no-live-worker verification;do not start duplicate E8implementation.",
   "next_role": "developer",
-  "next_step": "Complete final exact-head Node/build/browser/RNG checks,then handoff E8.1 local source to independent reviewer;E8.2 remains separate.",
+  "next_step": "Finish exact6e53ae0 checks after reproduced row-layout correction;handoff only with explicit AC/evidence limits,no release.",
   "resumed_at": "2026-11-05 19:04:43 UTC",
   "resume_evidence": "Same chat/root,exact8d578e7/tree3fcb74d verified;only generated reports dirty;other Nov5claims completed,prior worker finished;not lease-based takeover",
   "lease_expires_at": "2026-11-05T20:00:00Z",
@@ -32,10 +32,21 @@
   "validation": {
     "focused_actual_App": {
       "passed": 11,
-      "failed": 0
+      "failed": 0,
+      "head": "24d7bfc2abc2beeda7ce3743eb98fa9944bba5ab"
     },
-    "focused_browser": "passed bilingual names,move,source guards,history and transition gates",
-    "final_head_checks": "running",
+    "full_browser_prior_head": {
+      "status": "failed",
+      "head": "24d7bfc2abc2beeda7ce3743eb98fa9944bba5ab",
+      "defect": "Existing save-history row geometry assertion revealed POI location panel absent in view mode,shifted lower rows54px in edit mode",
+      "fix_sha": "6e53ae0d5c3996fe8fca04fb194439e2a1c4391e"
+    },
+    "current_head": {
+      "typescript": "passed",
+      "production_build": "passed",
+      "save_history_browser": "running",
+      "full_Node_RNG": "prior head running;refresh after layout fix"
+    },
     "review_ready": false
   }
 }
