@@ -1,0 +1,376 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-023",
+  "stage_id": "E8.1-R1",
+  "status": "developer_addressed_pending_independent_review",
+  "base_sha": "6e53ae0d5c3996fe8fca04fb194439e2a1c4391e",
+  "head_sha": "0c2abc1a15822cb714f97ad6310ab0bdf7b17cd9",
+  "head_tree": "9af6ee5624267e0658d1803f61883e133756b0a8",
+  "branch": "agent/hx023-e8-review-fixes",
+  "local_path": "/workspace/scratch/60e61b33a6a0/e8-development",
+  "spec_ref": "agent-work/specs/HX-BL-023-E8.md",
+  "spec_blob": "24f20ae2cd72845d04680dc454697b540b0e4c8b",
+  "review_ref": "agent-work/evidence/review-HX-BL-023-E8-6e53ae0/review-report.json",
+  "corrections": [
+    {
+      "finding": "E8-R1",
+      "behavior": "Missing explicit kind is preserved through both within/cross-region relocation;only explicit incompatible/unknown kinds refused. No destination kind key synthesized;Mythic kingdom protections retained.",
+      "evidence": "Extended pure payload case,real Classic/Mythic transaction cases,real production generic move with Enter and literal UndoRedo"
+    },
+    {
+      "finding": "E8-R2",
+      "behavior": "Count physical name recipients before producing unique name addresses. v8names on multiple recipients refuse before setters/history;old unnamed ambiguous maps remain inspectable and such name targets excluded,including settlement fallback alias.",
+      "evidence": "Extended sparse/malformed importer cases and unchanged document/histories;legacy naming target absent"
+    },
+    {
+      "finding": "E8-R3",
+      "behavior": "New editorNames participate in reverse kingdom rename validation in each language. Legacy kingdom-only policy and exact no-op compatibility retained;no global duplicate cleanup.",
+      "evidence": "Extended existing pair-negative case for RU/EN reverse collision and exact unchanged document/history"
+    }
+  ],
+  "verification": {
+    "Node_check": {
+      "status": "passed",
+      "head_sha": "0c2abc1a15822cb714f97ad6310ab0bdf7b17cd9",
+      "command": "npm run check",
+      "includes": [
+        "TypeScript",
+        "Node",
+        "production build"
+      ],
+      "executed": 336,
+      "passed": 336,
+      "failed": 0,
+      "skipped": 0,
+      "duration_ms": 469113.513492
+    },
+    "targeted": {
+      "executed": 19,
+      "passed": 19,
+      "failed": 0,
+      "skipped": 0,
+      "suite": "E8 manualRegions/regionEditing/saveSafety"
+    },
+    "browser": {
+      "status": "passed",
+      "command": "npm run test:browser",
+      "scripts_executed": 8,
+      "scripts_passed": 8,
+      "scripts_failed": 0,
+      "scripts_skipped": 0,
+      "logical_test_case_count": null,
+      "note": "Includes modified POI workflow;not summed with Node"
+    },
+    "RNG": {
+      "status": "passed",
+      "command": "npm run test:browser:rng",
+      "scripts_executed": 1,
+      "scripts_passed": 1,
+      "scripts_failed": 0,
+      "scripts_skipped": 0,
+      "logical_test_case_count": null,
+      "note": "Separate stable-build production reproducibility/continuation/busy/stale checks;not summed with other suites"
+    }
+  },
+  "test_change_summary": {
+    "base_sha": "6e53ae0d5c3996fe8fca04fb194439e2a1c4391e",
+    "head_sha": "0c2abc1a15822cb714f97ad6310ab0bdf7b17cd9",
+    "node": {
+      "added": 0,
+      "removed": 0,
+      "modified": 6,
+      "suites": [
+        {
+          "file": "test/manualRegions.test.mjs",
+          "added": 0,
+          "removed": 0,
+          "modified": 2,
+          "modified_cases": [
+            {
+              "name": "'E8 coordinate relocation migrates complete bilingual names,tag payload/counters and keeps hex layers'",
+              "count": 1
+            },
+            {
+              "name": "'E8 sparse POI names cover nonsettlements/water and preserve fallback isolation'",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "file": "test/regionEditing.test.mjs",
+          "added": 0,
+          "removed": 0,
+          "modified": 2,
+          "modified_cases": [
+            {
+              "name": "`E8 real POI move is one exact transaction with full payload and literal hex notes ${mode}`",
+              "count": 2
+            }
+          ]
+        },
+        {
+          "file": "test/saveSafety.test.mjs",
+          "added": 0,
+          "removed": 0,
+          "modified": 2,
+          "modified_cases": [
+            {
+              "name": "'E8 malformed,orphan and older-version authored names refuse atomically in the real importer'",
+              "count": 1
+            },
+            {
+              "name": "'E8 paired name form rejects half-pairs,duplicates and captured old secondary-field writes'",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "source": "Developer TypeScript AST title/body comparison and fixed Classic/Mythic loop expansion;no line/file counting",
+      "scenario_risk": "R1 absent-kind coordinate and actual-history payload;R2 name recipient multiplicity/import atomicity/catalog;R3 reverse kingdom/editorNames collisions RU/EN and no-op",
+      "reuse_or_new_reason": "Extended adjacent existing cases identified by independent reviewer;no new runner or repeated pure matrix"
+    },
+    "browser": {
+      "added_workflows": 0,
+      "removed_workflows": 0,
+      "modified_workflows": 1,
+      "runner_test_case_count": null,
+      "suite": "save-history/poi-lifecycle",
+      "scenario_risk": "Real accepted missing-kind fixture;Done enabled/Enter,absence at destination,exactUndoRedo;1500/320 screenshots",
+      "reuse_or_new_reason": "Extend existing actual POI lifecycle instead of new corpus/service"
+    },
+    "temporary_diagnostic": {
+      "permanent_growth": 0,
+      "reproductions_executed": 3,
+      "expected_fixed_outcomes": 3,
+      "previous_review_negative_evidence_preserved": true
+    }
+  },
+  "reproductions": [
+    {
+      "probe": "untyped_accepted_POI_move",
+      "import_accepted": true,
+      "preview_code": null,
+      "error": null,
+      "commit": true,
+      "source": []
+    },
+    {
+      "probe": "kingdom_rename_collides_with_POI",
+      "commit": false,
+      "kingdom": {
+        "ru": "Северное королевство",
+        "en": "Northern Kingdom"
+      },
+      "poi": {
+        "en": "My Name",
+        "ru": "Моё имя"
+      }
+    },
+    {
+      "probe": "ambiguous_name_locator_import",
+      "accepted": false,
+      "alerts": [
+        "Не удалось загрузить JSON: некорректные данные (map.editorNames: invalid or dangling authored POI name). Текущая карта сохранена."
+      ],
+      "names": {}
+    }
+  ],
+  "artifacts": {
+    "fixes-check.log": {
+      "path": "reports/HX-BL-023-E8/fixes-check.log",
+      "sha256": "ac15e9621606b50435436d5d6303c0f72e8fea3d0c28dad4d86a2f43f43c3e77",
+      "bytes": 34588
+    },
+    "fixes-browser.log": {
+      "path": "reports/HX-BL-023-E8/fixes-browser.log",
+      "sha256": "ad29b25500a85fc6351aa5b05c3cc0656656e3e07b546ed237336fba71e5994f",
+      "bytes": 7689
+    },
+    "fixes-targeted.log": {
+      "path": "reports/HX-BL-023-E8/fixes-targeted.log",
+      "sha256": "b736c8e9edc03c235dba18963f32612f8fcdfd4c4c2a356a5cf2fcd7e18ccff9",
+      "bytes": 2025
+    },
+    "fixes-red.log": {
+      "path": "reports/HX-BL-023-E8/fixes-red.log",
+      "sha256": "165682b959e92bab2bbb1ddc3a752f2f113325aeaa53bdddabe5567b3df4f7ae",
+      "bytes": 6594
+    },
+    "fixes-reproduction.log": {
+      "path": "reports/HX-BL-023-E8/fixes-reproduction.log",
+      "sha256": "9eb4774f7052e1811342b315b84662ccbef71e77ea8f52f549755bb3fc3cf3fa",
+      "bytes": 736
+    },
+    "fixes-test-change-summary.json": {
+      "path": "reports/HX-BL-023-E8/fixes-test-change-summary.json",
+      "sha256": "db4f9cd8b6e6d99277c4ae73c8c4e4e992c986b24b41f0993560465332682cfc",
+      "bytes": 1480
+    },
+    "fixes-0c2abc1.bundle": {
+      "path": "reports/HX-BL-023-E8/fixes-0c2abc1.bundle",
+      "sha256": "0583a54e6208c644d0d45d01a69226587d71f96ee3da719ee39f84d9419a8565",
+      "bytes": 77879
+    },
+    "ui-untyped-preview-1500.png": {
+      "path": "reports/HX-BL-023-E8/ui-untyped-preview-1500.png",
+      "sha256": "67f24d0814a8458c695405c33a32e6c680b83788b2416f16dde917792055c7eb",
+      "bytes": 131718
+    },
+    "ui-untyped-preview-panel-320.png": {
+      "path": "reports/HX-BL-023-E8/ui-untyped-preview-panel-320.png",
+      "sha256": "9f87058ff8ea0503749d8a8e33354384cfd3ce313a6020d6ac0d9bc2a5b197d4",
+      "bytes": 48073
+    },
+    "RNG_log": {
+      "path": "reports/HX-BL-023-E8/fixes-rng.log",
+      "sha256": "9d9455e6a359101fb72bd11c44774b19966e014a6de79b3dbec04fbf9146e20c"
+    }
+  },
+  "user_walkthrough": {
+    "sha": "0c2abc1a15822cb714f97ad6310ab0bdf7b17cd9",
+    "actual_shown": true,
+    "presented_in": "Current task chat commentary:actual untyped relocation preview1500 and320,Done enabled;view_image inspected both",
+    "steps": [
+      "Import accepted v7point2/0 without pointOfInterestKinds",
+      "Edit→Location→target3/0",
+      "Done is enabled;Enter commits without creating explicit type",
+      "Undo/Redo compare full accepted JSON,generation and counters"
+    ],
+    "desktop": "reports/HX-BL-023-E8/ui-untyped-preview-1500.png",
+    "narrow": "reports/HX-BL-023-E8/ui-untyped-preview-panel-320.png",
+    "limits": "Local headlessChromium synthetic fixture;not publication/touch/AT certification"
+  },
+  "score": {
+    "model_version": "1.2",
+    "model_blob": "ab660f02e26faf2233aecd5f2fd1090260fe74eb",
+    "baseline_ref": "agent-work/score/current-score.json",
+    "baseline_blob": "950e11bdfd5f59da09d424af14a820c5c8b580f5",
+    "confirmed_points": null,
+    "unverified_weight": 1000,
+    "awarded_points": 0,
+    "score_changed": false,
+    "score_update_status": "not_applicable_no_release",
+    "assessment_status": "new_SHA_pending_independent_assessment",
+    "criteria": [
+      {
+        "criterion_id": "S02-C02",
+        "sha": "0c2abc1a15822cb714f97ad6310ab0bdf7b17cd9",
+        "before_grade": null,
+        "before_points": null,
+        "after_grade": null,
+        "after_points": null,
+        "delta": null,
+        "status": "unknown_unreviewed_new_SHA",
+        "evidence_ref": "agent-work/evidence/HX-BL-023-E8-R1-0c2abc1/developer-evidence.json",
+        "limitation": "Developer corrections evidence is not independent score assessment or full top5/10/20 certification"
+      },
+      {
+        "criterion_id": "S02-C03",
+        "sha": "0c2abc1a15822cb714f97ad6310ab0bdf7b17cd9",
+        "before_grade": null,
+        "before_points": null,
+        "after_grade": null,
+        "after_points": null,
+        "delta": null,
+        "status": "unknown_unreviewed_new_SHA",
+        "evidence_ref": "agent-work/evidence/HX-BL-023-E8-R1-0c2abc1/developer-evidence.json",
+        "limitation": "Developer corrections evidence is not independent score assessment or full top5/10/20 certification"
+      },
+      {
+        "criterion_id": "S03-C01",
+        "sha": "0c2abc1a15822cb714f97ad6310ab0bdf7b17cd9",
+        "before_grade": null,
+        "before_points": null,
+        "after_grade": null,
+        "after_points": null,
+        "delta": null,
+        "status": "unknown_unreviewed_new_SHA",
+        "evidence_ref": "agent-work/evidence/HX-BL-023-E8-R1-0c2abc1/developer-evidence.json",
+        "limitation": "Developer corrections evidence is not independent score assessment or full top5/10/20 certification"
+      },
+      {
+        "criterion_id": "S03-C04",
+        "sha": "0c2abc1a15822cb714f97ad6310ab0bdf7b17cd9",
+        "before_grade": null,
+        "before_points": null,
+        "after_grade": null,
+        "after_points": null,
+        "delta": null,
+        "status": "unknown_unreviewed_new_SHA",
+        "evidence_ref": "agent-work/evidence/HX-BL-023-E8-R1-0c2abc1/developer-evidence.json",
+        "limitation": "Developer corrections evidence is not independent score assessment or full top5/10/20 certification"
+      },
+      {
+        "criterion_id": "S03-C05",
+        "sha": "0c2abc1a15822cb714f97ad6310ab0bdf7b17cd9",
+        "before_grade": null,
+        "before_points": null,
+        "after_grade": null,
+        "after_points": null,
+        "delta": null,
+        "status": "unknown_unreviewed_new_SHA",
+        "evidence_ref": "agent-work/evidence/HX-BL-023-E8-R1-0c2abc1/developer-evidence.json",
+        "limitation": "Developer corrections evidence is not independent score assessment or full top5/10/20 certification"
+      },
+      {
+        "criterion_id": "S04-C04",
+        "sha": "0c2abc1a15822cb714f97ad6310ab0bdf7b17cd9",
+        "before_grade": null,
+        "before_points": null,
+        "after_grade": null,
+        "after_points": null,
+        "delta": null,
+        "status": "unknown_unreviewed_new_SHA",
+        "evidence_ref": "agent-work/evidence/HX-BL-023-E8-R1-0c2abc1/developer-evidence.json",
+        "limitation": "Developer corrections evidence is not independent score assessment or full top5/10/20 certification"
+      },
+      {
+        "criterion_id": "S04-C05",
+        "sha": "0c2abc1a15822cb714f97ad6310ab0bdf7b17cd9",
+        "before_grade": null,
+        "before_points": null,
+        "after_grade": null,
+        "after_points": null,
+        "delta": null,
+        "status": "unknown_unreviewed_new_SHA",
+        "evidence_ref": "agent-work/evidence/HX-BL-023-E8-R1-0c2abc1/developer-evidence.json",
+        "limitation": "Developer corrections evidence is not independent score assessment or full top5/10/20 certification"
+      },
+      {
+        "criterion_id": "S09-C04",
+        "sha": "0c2abc1a15822cb714f97ad6310ab0bdf7b17cd9",
+        "before_grade": null,
+        "before_points": null,
+        "after_grade": null,
+        "after_points": null,
+        "delta": null,
+        "status": "unknown_unreviewed_new_SHA",
+        "evidence_ref": "agent-work/evidence/HX-BL-023-E8-R1-0c2abc1/developer-evidence.json",
+        "limitation": "Developer corrections evidence is not independent score assessment or full top5/10/20 certification"
+      }
+    ]
+  },
+  "source_sync_status": "local_only_previous_source_upload_rejection_preserved_no_retry",
+  "PR": null,
+  "published": false,
+  "independently_accepted": false,
+  "limitations": [
+    "E8-R1/R2/R3 remain addressed pending new independent review,not closed",
+    "E8.2 and sea identity not implemented by these fixes",
+    "No fresh independent score1.2 for0c2abc1;old6e53ae0 verdict not transferred",
+    "Source/PR and full shared latest writes remain restricted by previous automatic review rejection",
+    "Existing legacy kingdom-to-toponym duplicate policy not expanded;only new editorNames integration fixed"
+  ],
+  "experience_entry": {
+    "lesson": "Accepted absence is a supported state distinct from an unknown explicit kind. Name uniqueness needs physical recipient cardinality before Set collapse,and both edit directions when joining a new registry. Reuse adjacent payload/import/negative cases.",
+    "journal_status": "Scoped verified entry retained;shared lessons history not retransmitted"
+  },
+  "prior_test_setup_error": "First extended reverse-name test left a dirty prior draft,so import was correctly blocked and fixture lookup failed. Test setup now explicitly cancels it;not a product defect. Prior independent R3 reproduction remains source evidence.",
+  "recovery_bundle": {
+    "path": "reports/HX-BL-023-E8/fixes-0c2abc1.bundle",
+    "sha256": "0583a54e6208c644d0d45d01a69226587d71f96ee3da719ee39f84d9419a8565",
+    "requires_sha": "2ef5cc35107f299c309b7c8065a1e81ca9881278",
+    "verified": true,
+    "uploaded": false
+  }
+}
