@@ -147,6 +147,16 @@ test('RIV-EX-21 lake shared by two regions counts unique hexes and all ports onc
   const actual=[4,3,5].map((f,i)=>{const keys=i===2?picked[i].slice().reverse():picked[i];const path=keys.map(k=>physical.vertex(k));return {id:i+1,regionId:3,vertexPath:path,sectors:g.createInitialRiverSectors(i+1,path,f,{},3)};});
   const real=physical.network(actual);assert.deepEqual(Array.from(real.issues),[]);assert.equal(real.network.nodes.filter(n=>n.kind==='lake').length,1);assert.equal(validateRiverNetwork(real.network).valid,true);
   const small={...real.network,nodes:real.network.nodes.map(n=>n.kind==='lake'?{...n,lakeHexCount:1}:n)};assert.equal(validateRiverNetwork(small).valid,false);
+  assert.throws(()=>validateEditedRiverNetwork(actual,actual,{network:()=>({issues:[],network:small})},{network:()=>real}),/RIV-009|RIV-018/,'E6 shrinking water rechecks actual fixed ports against its prior geometry');
+  const waterMap={...physicalMap,regions:physicalMap.regions.map(r=>({...r,centerHex:r.hexes[0],anchorHex:r.hexes[0],finalSize:r.hexes.length,pointsOfInterest:[],pointOfInterestKinds:{}})),rivers:actual,roads:[],crossings:[],riverFeatures:emptyRiverFeatures(),nextRiverId:4,nextRoadId:1,nextLakeId:2,waterPoiByKey:new Map(),biomeOverrideByHexKey:new Map(),toponyms:{},tags:{schemaVersion:1,instances:[],rollCounters:{}}};
+  const exact=JSON.stringify({...waterMap,hexTerrainByKey:[...waterMap.hexTerrainByKey]});
+  assert.throws(()=>g.prepareWaterMapEdit(waterMap,{target:'land',hexKeys:['1,0']}),/river_rule|river_reentry/,'E6 full physical transaction rejects an insufficient/removed lake port');
+  let expanded;
+  for(const h of ring){try{const plan=g.prepareWaterMapEdit(waterMap,{target:'lake',hexKeys:[g.hexKey(h)]});if(plan.geometry.unresolved.length===0&&!plan.losses.length){expanded=plan;break;}}catch{}}
+  assert.ok(expanded,'at least one real free shore supports expansion with all three fixed ports');
+  assert.deepEqual(values(expanded.map.rivers),values(actual));assert.deepEqual(expanded.map.rivers.map(r=>r.vertexPath),actual.map(r=>r.vertexPath));
+  assert.equal(JSON.stringify({...waterMap,hexTerrainByKey:[...waterMap.hexTerrainByKey]}),exact,'physical water preflight is detached on success and failure');
+
   const inside=g.getHexCornerPoints(hexes[0]).slice(0,2);const hidden={id:9,regionId:1,vertexPath:inside,sectors:g.createInitialRiverSectors(9,inside,1,{},1)};
   assert.match(Array.from(physical.network([hidden]).issues).join(';'),/no_external_river_port/,'an entirely internal lake stroke is not a standalone valid river');
 });

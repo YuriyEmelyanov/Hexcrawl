@@ -136,7 +136,7 @@ export function riverPathOwners(r:EditableRiver,path:RiverVertexValue[],ctx:Pick
   }
   return result;
 }
-function rebuild(r:EditableRiver,path:RiverVertexValue[],values:ReadonlyMap<string,RiverFullness>,ctx:RiverEditContext):EditableRiver{
+function rebuild(r:EditableRiver,path:RiverVertexValue[],values:ReadonlyMap<string,RiverFullness>,ctx:Pick<RiverEditContext,'edgeOwners'|'reason'>):EditableRiver{
   const ownersByEdge=riverPathOwners(r,path,ctx);
   const subject={...r,vertexPath:path};
   const sectors:EditableRiverSector[]=path.slice(1).map((b,i)=>{
@@ -213,11 +213,16 @@ export function directedRiverCycles(network:RiverNetwork):Set<string>{
 }
 /** Preserve exact unchanged legacy interactions, including within a connected
  * component; strictly reject every new/changed physical or numeric violation. */
-export function validateEditedRiverNetwork(before:EditableRiver[],after:EditableRiver[],ctx:Pick<RiverEditContext,'network'>):void{
-  const a=ctx.network(before),b=ctx.network(after);
+export function validateEditedRiverNetwork(before:EditableRiver[],after:EditableRiver[],ctx:Pick<RiverEditContext,'network'>,beforeContext:Pick<RiverEditContext,'network'>=ctx):void{
+  const a=beforeContext.network(before),b=ctx.network(after);
   const oldIssues=new Set(a.issues);for(const issue of b.issues)if(!oldIssues.has(issue))fail(issue);
   const existing=numericViolations(a.network);
   for(const [signature,issue] of numericViolations(b.network))if(!existing.has(signature))fail(`${issue.rule}:${issue.code}:${issue.nodeId??issue.edgeId??''}`);
+}
+/** Rebuild only derived sectors for a changed water context; F and physical path
+ * are immutable. Unaffected sectors/control points retain their accepted data. */
+export function rebuildRiverWaterSectors(r:EditableRiver,ctx:Pick<RiverEditContext,'edgeOwners'|'reason'>):EditableRiver{
+  return rebuild(r,r.vertexPath,fullnessByEdge(r),ctx);
 }
 /** Pure preparation; no history, counter, RNG or input object is mutated on any failure. */
 export function prepareRiverEdit(doc:RiverEditDocument,edit:RiverEdit,ctx:RiverEditContext):RiverEditDocument{

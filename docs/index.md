@@ -24,7 +24,7 @@
 | Режим Mythic Bastionland | [mythic-bastionland.md](mythic-bastionland.md) |
 | Подложки и накладки | [biome-color.md](biome-color.md) |
 | Лес и редколесье | [forest-rendering.md](forest-rendering.md) |
-| Озёра и вода | [natural-lakes.md](natural-lakes.md) |
+| Озёра и вода | [natural-lakes.md](natural-lakes.md), [ручная вода E6](water-editing.md) |
 | POI и экспорт | [poi-display.md](poi-display.md) |
 | Топонимы | [toponym-generation.md](toponym-generation.md) |
 | Навигация/отрисовка | [map-navigation.md](map-navigation.md), [rendering-performance.md](rendering-performance.md) |

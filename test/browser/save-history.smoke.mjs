@@ -1,3 +1,4 @@
+import {runWaterLifecycle} from './water-lifecycle.mjs';
 import {createGenerationState} from '../../src/worldRandom.ts';
 import {spawn} from 'node:child_process';
 import {chromium} from 'playwright';
@@ -14,7 +15,7 @@ try {
  await new Promise((resolve,reject)=>{let output='';const timer=setTimeout(()=>reject(Error(output)),10000);server.stdout.on('data',data=>{output+=data;if(stripVTControlCharacters(output).includes('Local:')){clearTimeout(timer);resolve();}});server.on('error',reject);server.on('exit',c=>reject(Error('preview '+c)));});
  browser=await chromium.launch({executablePath:process.env.CHROMIUM_EXECUTABLE_PATH||undefined,headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
  const page=await browser.newPage({viewport:{width:1500,height:1100}}), errors=[],alerts=[];
- page.on('pageerror',e=>errors.push(e.message));page.on('dialog',async d=>{if(/Будет восстановлено исходное состояние рек|Original river state will be restored/.test(d.message())){await d.accept();return;}alerts.push(d.message());await d.dismiss();});
+ page.on('pageerror',e=>errors.push(e.message));page.on('dialog',async d=>{if(/Будет восстановлено исходное состояние рек|Original river state will be restored|Будет восстановлена вода|The checkpoint water/.test(d.message())){await d.accept();return;}alerts.push(d.message());await d.dismiss();});
  await page.route(/mc\.yandex/,route=>route.abort());
  await page.addInitScript(()=>{
    let seed=42;Math.random=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};
@@ -606,6 +607,7 @@ try {
  await page.waitForFunction(()=>document.activeElement?.hasAttribute('data-obstacle-list'));
  await button('Отменить').click();assert.deepEqual(await snapshot(),addedBarrier);
  await button('Добавить препятствие').click();await snapshot();assert.equal(await edgeTargets.count(),0,'export cancels uncommitted target');
+ await runWaterLifecycle({page,load,snapshot,ensureEdit,button,select,root,browser});
  if(await page.locator('.header-links').evaluate(el=>el.classList.contains('is-collapsed')))await page.locator('.header-links-toggle').click();
  await button('Switch to English').click();assert.equal(await button('Undo').count(),1);assert.equal(await button('Redo').count(),1);
  assert.deepEqual(errors,[]);assert.equal(alerts.length,5,'only intentional invalid imports');

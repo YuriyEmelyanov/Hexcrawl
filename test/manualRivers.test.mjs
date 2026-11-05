@@ -88,6 +88,9 @@ test('E5 network validation preserves independent unchanged legacy defects, reje
  const cycles=context(),loop=[river(1,[0,1,2,0],1)],extra=[...loop,river(2,[4,5,6,4],1)];
  assert.doesNotThrow(()=>validateEditedRiverNetwork(loop,loop,cycles));
  assert.throws(()=>validateEditedRiverNetwork(loop,extra,cycles),/RIV-016/);
+ const fixed=[river(1,[0,1],3)],oldContext=context({'0,0':'open'}),dryContext=context({'0,0':'source'});
+ assert.throws(()=>validateEditedRiverNetwork(fixed,fixed,dryContext,oldContext),/RIV-007/,'water edits compare the accepted and candidate geometry separately');
+
 });
 
 // This is the BR-009 dependency contract; physical hex adjacency is covered by
@@ -103,4 +106,6 @@ test('E5 changed delta groups preserve identity and reject invalid parent, arm a
  assert.throws(()=>validateEditedRiverDeltas(before,[parent,arm,{...river(7,[1,6],1),deltaParentRiverId:5}],geometry),/delta_parent/);
  assert.throws(()=>validateEditedRiverDeltas(before,[river(5,[0,1,2,3],5),arm,river(8,[2,4],1)],geometry),/delta_overlap/);
  assert.doesNotThrow(()=>validateEditedRiverDeltas(before,[river(5,[0,1,2,3],3)],geometry),'no arm is required or randomly recreated');assert.deepEqual(before,snapshot);
+ const noMouth={...geometry,seaVertices:new Set([v(4).key,v(6).key])};
+ assert.throws(()=>validateEditedRiverDeltas(before,before,noMouth,geometry),/delta_parent/,'unchanged paths must recheck a changed sea mouth');
 });
