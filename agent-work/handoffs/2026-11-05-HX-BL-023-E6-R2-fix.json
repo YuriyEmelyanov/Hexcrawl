@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-05-reviewer-HX-BL-023-E6-a412bb8",
+  "task_id": "HX-BL-023",
+  "stage_id": "E6",
+  "finding_id": "E6-R2",
+  "status": "changes_requested",
+  "next_role": "programmer",
+  "priority": "P3",
+  "authorization": {
+    "task_start": "approved_existing_E6",
+    "scope": "W07 unexpected preparation/copy error retention only",
+    "publication": "not_authorized"
+  },
+  "input": {
+    "head_sha": "a412bb8f866fa459c1d5f2e8d8f1e7e6e72be57e",
+    "tree_sha": "a166e09163b3b0dc4bc19c220917adbb631e1a2c",
+    "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/487",
+    "spec": "agent-work/specs/HX-BL-023-E6.md",
+    "spec_version": "E6-1.0",
+    "evidence": "agent-work/evidence/review-HX-BL-023-E6-a412bb8/",
+    "previous_fix": "E6-R1 verified fixed at exact candidate"
+  },
+  "finding": {
+    "classification": "confirmed_spec_gap_technical_diagnostics",
+    "requirement": "W07: unexpected errors retained technically, user sees map unchanged",
+    "path": "src/App.tsx",
+    "line": 13375,
+    "actual": "finishWaterDraft catch passes unexpected Error to waterCommandError, which returns generic UI and discards original Error/stack; no diagnostic sink reached.",
+    "reproduction": [
+      "Exact production build a412bb8; existing public water-editor fixture, Edit and valid lake draft.",
+      "One-shot throw original sentinel Error only at copyDocument structuredClone during common Done (temporary diagnostic injection).",
+      "Observe draft retained, localized map-unchanged message, exact document and both stacks preserved.",
+      "Observe original Error/stack in neither console nor pageerrors nor inspected application diagnostic state/event/storage sink."
+    ],
+    "impact": "Loss of technical cause makes unexpected failure hard to diagnose; no map/history corruption demonstrated; common Done functionality and existing suites pass."
+  },
+  "scope": [
+    "Retain original unexpected preparation/copy Error and stack in an appropriate existing technical diagnostic path.",
+    "Keep expected WaterEditError/TagCapacity domain refusals localized and free of unexpected-error noise.",
+    "Diagnostic handling must preserve original atomic refusal and draft; don't dump full map/GM notes or add external telemetry/spend.",
+    "Extend suitable existing E6 fault-injection case to prove retention; avoid a new broad runner or unrelated error-handling refactor."
+  ],
+  "completion_criteria": [
+    "Unexpected sentinel Error cause/stack available in technical evidence while user receives safe localized message.",
+    "Document/RNG/counters/Undo/Redo unchanged on fault, draft retained; diagnostics do not throw through the handler.",
+    "Expected road/topology/loss refusals and E6-R1 common Done safe/error/Confirm behavior remain correct.",
+    "Record exact new SHA/tree and required checks/test delta; hand complete package to fresh independent reviewer with updated score_assessment1.2."
+  ],
+  "next_step": "Programmer fixes E6-R2 in approved E6; independent reviewer checks new SHA before any owner release request.",
+  "latest_update_status": "blocked_previous_full_history_auto_review;scoped_handoff_only"
+}
