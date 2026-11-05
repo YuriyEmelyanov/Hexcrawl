@@ -3,13 +3,13 @@
   "task_id": "HX-BL-023",
   "stage_id": "E7",
   "kind": "bounded_local_independent_review",
-  "status": "local_code_frozen_independent_review_pending_final_checks",
+  "status": "local_code_frozen_review_R2_pending_final_checks",
   "role": "reviewer",
   "source": {
     "repository": "YuriyEmelyanov/Hexcrawl",
     "base_sha": "2ef5cc35107f299c309b7c8065a1e81ca9881278",
-    "local_sha": "e585ee6d599479639e2502607c16c0abc9a2218d",
-    "local_tree": "ed9f80674b1f4e5cd7bfd5850d23ca96a253da5d",
+    "local_sha": "7c0e6badc5910817e2672e4c8de77be3d1b8c75e",
+    "local_tree": "94cd58197db0af3c6c003597774412eaef60b928",
     "branch": "agent/hx023-e7-region-editing",
     "local_repository": "/workspace/scratch/60e61b33a6a0/e7-development",
     "remote_branch_sha": "2ef5cc35107f299c309b7c8065a1e81ca9881278",
@@ -18,10 +18,13 @@
     "main_changed": false,
     "published": false,
     "patch": {
-      "status": "new_R1_recovery_artifact_pending; prior9d233d8 patch is superseded"
+      "path": "/workspace/scratch/60e61b33a6a0/Hexcrawl-E7-7c0e6ba.patch",
+      "sha256": "42f003393a5e133ce7070e63eeec289db1bc9fef63d7c83b12b38067b27c1e41",
+      "bytes": 160785,
+      "local_only": true
     },
     "persistence_limitation": "Local implementation only. Earlier App blob at 9d233d8 was accepted after owner follow-up, but the16-file tree was rejected; no feature commit/PR is on GitHub. No more source upload attempts.",
-    "prior_local_sha": "9d233d818eb31da772a9ad8cd62e00752ce35102"
+    "prior_local_sha": "e585ee6d599479639e2502607c16c0abc9a2218d"
   },
   "spec": {
     "path": "agent-work/specs/HX-BL-023-E7.md",
@@ -47,22 +50,24 @@
     "Independently evaluate added test necessity using test-plan, distinct risk, existing fixture reuse, sensitivity and cost; counts are not acceptance."
   ],
   "checks": {
-    "focused_node": {
-      "passed": 8,
-      "failed": 0
+    "sha": "7c0e6badc5910817e2672e4c8de77be3d1b8c75e",
+    "focused": {
+      "node": 3,
+      "legacy_official_manifest": 1,
+      "browser_mode_lifecycles": 2,
+      "browser_ambiguity": 1,
+      "all_passed": true
     },
-    "focused_browser": {
-      "passed_mode_lifecycles": 2,
-      "passed_ambiguity_group": 1,
-      "failed": 0
+    "mandatory": {
+      "check": "running",
+      "browser": "running",
+      "rng": "running"
     },
-    "mandatory_final_checks": {
-      "sha": "e585ee6d599479639e2502607c16c0abc9a2218d",
-      "npm_run_check": "running",
-      "browser": "build_then_run",
-      "rng": "build_then_run"
-    },
-    "source_frozen": true
+    "prior_e585_check": {
+      "passed": 314,
+      "failed": 3,
+      "status": "failed_legacy_import; not acceptance"
+    }
   },
   "score_criteria": [
     {
@@ -188,13 +193,16 @@
     "No product release or main modification. Changed source SHA requires new independent assessment."
   ],
   "expected_output": "Concrete findings or limited acceptance on exact local SHA, source availability limitation, evidence and score_assessment1.2. Publication readiness stays blocked until source sync and normal owner gate.",
-  "version": "R1",
-  "previous_review": "agent-work/results/2026-11-05-reviewer-HX-BL-023-E7-9d233d8.json",
+  "version": "R2",
+  "previous_review": "agent-work/results/2026-11-05-reviewer-HX-BL-023-E7-e585ee6.json",
   "review_findings_fixed": [
     "E7-R1-F01: map/list target equivalence, projected contour/hover,44CSSpx target hits, live geometric ambiguity resolution and keyboard/list alternative",
     "E7-R1-F02: unchanged accepted E7 candidates; retain v7 saved order only for exact unique geometric frontier, otherwise prior normalization including legacy/sea/empty",
     "E7-R1-F03: local/underwater exception counts, explicit moved-cell base/height, POI owner/name key mapping, actual per-edge river owner plan and Auto marks",
     "E7-R1-F04: stable IDs even with duplicate names; accessible names identify region/coordinate",
-    "E7-R1-F05: close only current outdated draft with message, reject old map-target/Done callbacks without touching a newer draft; no-op return closes draft"
+    "E7-R1-F05: close only current outdated draft with message, reject old map-target/Done callbacks without touching a newer draft; no-op return closes draft",
+    "R2-F01 affected river names are shown even when owner transitions remain0",
+    "R2-F02 region draft export notice uses the accepted-document wording",
+    "R2-F03 missing optional legacy candidateHexes defaults safely before normalization; official manifest regression assertions unchanged"
   ]
 }
