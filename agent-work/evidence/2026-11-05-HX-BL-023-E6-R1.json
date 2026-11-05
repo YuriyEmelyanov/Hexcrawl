@@ -1,0 +1,361 @@
+{
+  "head_sha": "a412bb8f866fa459c1d5f2e8d8f1e7e6e72be57e",
+  "tree_sha": "a166e09163b3b0dc4bc19c220917adbb631e1a2c",
+  "local_commit": "ef88ba620c2366543ee2b485dca6ee440d160197",
+  "files": [
+    {
+      "path": "src/App.tsx",
+      "git_blob": "3725c3b172521e4e18cb5591f2bb0db48fdc67cf"
+    },
+    {
+      "path": "test/browser/water-lifecycle.mjs",
+      "git_blob": "595a197980f5b31aecbf8eb641cef84fd62bc10f"
+    }
+  ],
+  "test_change_summary": {
+    "base_sha": "b2a461277299b34f3001baec21f40d3e407d590f",
+    "head_sha": "a412bb8f866fa459c1d5f2e8d8f1e7e6e72be57e",
+    "suite": "Browser save-history existing runWaterLifecycle logical scenario",
+    "added": 0,
+    "removed": 0,
+    "modified": 1,
+    "scenario_risk": "W01/AC01/AC10 common Done safe commit, invalid road and explicit-loss preview cannot bypass confirmations",
+    "reuse_or_new_reason": "Existing water lifecycle already owns these transitions; extend actual common entry point, no new suite/test case",
+    "source": "git diff b2a4612..local ef88ba6 with identical remote a166e09 tree; unchanged runWaterLifecycle definition, only its assertions/actions changed; Classic/Mythic loops not additional cases",
+    "executed": 8,
+    "passed": 8,
+    "skipped": 0,
+    "execution_unit": "existing browser smoke scripts, separate from1changed logical scenario"
+  },
+  "node_test_delta": {
+    "added": 0,
+    "removed": 0,
+    "modified": 0
+  },
+  "rng_test_delta": {
+    "added": 0,
+    "removed": 0,
+    "modified": 0
+  },
+  "red": {
+    "exit_code": 1,
+    "message": "AssertionError: common Done completes an active water draft; false !== true",
+    "production_base": "b2a461277299b34f3001baec21f40d3e407d590f",
+    "script": "extended existing water-lifecycle at line42 via save-history.smoke"
+  },
+  "logs": [
+    {
+      "name": "fix-e6-r1-red.log",
+      "sha256": "44e270a4d0726288ed04f3146ba1c16834e1600bc98c0e6af36ce35b9b51f527",
+      "bytes": 870,
+      "snapshot": "complete"
+    },
+    {
+      "name": "fix-e6-r1-check.log",
+      "sha256": "bf3edeac2cfd97be916e85ad01f7da16dc6788fcc9eca2818b2e05013800cafa",
+      "bytes": 30747,
+      "snapshot": "complete"
+    },
+    {
+      "name": "fix-e6-r1-browser.log",
+      "sha256": "e53b5a82a4990b075ffe56c3ecfce948a11212baa8cb73a9c9f722f9155d4a9f",
+      "bytes": 7143,
+      "snapshot": "complete"
+    },
+    {
+      "name": "fix-e6-r1-rng.log",
+      "sha256": "9d9455e6a359101fb72bd11c44774b19966e014a6de79b3dbec04fbf9146e20c",
+      "bytes": 8337,
+      "snapshot": "complete"
+    },
+    {
+      "name": "fix-e6-r1-ui.log",
+      "sha256": "9c426d934134c74e329d933638a4993f422443874353067f7b45439ec3e77aab",
+      "bytes": 119,
+      "snapshot": "complete"
+    }
+  ],
+  "task_id": "HX-BL-023",
+  "stage_id": "E6",
+  "run_id": "2026-11-05-developer-HX-BL-023-E6-R1",
+  "role": "developer",
+  "spec": {
+    "path": "agent-work/specs/HX-BL-023-E6.md",
+    "version": "E6-1.0",
+    "blob": "1e04ca6999c3a1a154c86f44b3bcf672dee19b04"
+  },
+  "status": "review_ready",
+  "fix": {
+    "finding": "E6-R1",
+    "requirements": [
+      "W01",
+      "AC01",
+      "AC10"
+    ],
+    "change": "Remove waterDraft from common Done disabled condition; keep busy guards and existing finishPathDrafts→finishWaterDraft completion/validation.",
+    "scope": "Only App button gate and existing runWaterLifecycle body. No geometry/generation/save rules changed.",
+    "observed": "Common Done available; safe mask commits and exits Edit; full extended browser confirms road errors and unchecked/checked loss previews cannot bypass explicit Confirm; exact Undo/Redo and unchanged RNG."
+  },
+  "checks": {
+    "browser": {
+      "status": "pass",
+      "exit_code": 0,
+      "executed": 8,
+      "passed": 8,
+      "skipped": 0,
+      "unit": "existing smoke scripts; not logical Node cases"
+    },
+    "rng": {
+      "status": "pass",
+      "exit_code": 0,
+      "executed": 1,
+      "passed": 1,
+      "skipped": 0,
+      "profile_seed_combinations": 8,
+      "unit": "existing runner"
+    },
+    "check": {
+      "status": "pass",
+      "exit_code": 0,
+      "node": "24.22.1",
+      "executed": 299,
+      "passed": 299,
+      "failed": 0,
+      "skipped": 0,
+      "typescript": "pass",
+      "build": "pass"
+    },
+    "ci": {
+      "run_id": 41977599200,
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41977599200",
+      "jobs": [
+        {
+          "id": 127079982223,
+          "name": "browser",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 127079982593,
+          "name": "check",
+          "status": "in_progress",
+          "conclusion": null
+        },
+        {
+          "id": 127079982658,
+          "name": "world-random",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ],
+      "checkout": {
+        "sha": "d11fc0926d9324d5aaf06003adb52430052b3adb",
+        "tree_sha": "a166e09163b3b0dc4bc19c220917adbb631e1a2c",
+        "same_full_tree_as_local_and_head": true,
+        "parents": [
+          "27b230fc5fc5ac2f998141626fa091e1085d7a47",
+          "a412bb8f866fa459c1d5f2e8d8f1e7e6e72be57e"
+        ]
+      }
+    }
+  },
+  "ui": {
+    "head_sha": "a412bb8f866fa459c1d5f2e8d8f1e7e6e72be57e",
+    "before": "b2a4612 common Done disabled, screenshot locally retained",
+    "after": "a412bb8 common Done enabled; temporary production probe confirms commit exitsEdit",
+    "shown_in_owner_chat": true,
+    "local_png": "/workspace/scratch/cc30953c0fc1/fix-e6-r1-done-enabled.png",
+    "external_images_uploaded": false,
+    "physical_touch_AT": "unverified"
+  },
+  "score_evidence": {
+    "model_version": "1.2",
+    "source_model_blob": "ab660f02e26faf2233aecd5f2fd1090260fe74eb",
+    "status": "programmer_evidence_only; independent new-SHA assessment required",
+    "criteria": [
+      {
+        "criterion_id": "S01-C03",
+        "head_sha": "a412bb8f866fa459c1d5f2e8d8f1e7e6e72be57e",
+        "before_grade": null,
+        "before_points": null,
+        "expected_transition": "unknown",
+        "confirmed_after_grade": null,
+        "confirmed_after_points": null,
+        "delta": null,
+        "method": "Full existing Node/browser/RNG regression and unchanged relevant E6 implementation; reviewer must assess whole package on new SHA",
+        "evidence": [
+          "test/browser/water-lifecycle.mjs",
+          "CI41977599200",
+          "existing E6 programmer evidence as inventory only"
+        ],
+        "limitations": "Scoped UI fix does not establish complete criterion quality or game breadth; old b2a4612 review is not new-SHA approval."
+      },
+      {
+        "criterion_id": "S03-C01",
+        "head_sha": "a412bb8f866fa459c1d5f2e8d8f1e7e6e72be57e",
+        "before_grade": null,
+        "before_points": null,
+        "expected_transition": "unknown",
+        "confirmed_after_grade": null,
+        "confirmed_after_points": null,
+        "delta": null,
+        "method": "Actual common Done source/production browser safe/error/loss preview entry points; existing lifecycle extended",
+        "evidence": [
+          "test/browser/water-lifecycle.mjs",
+          "CI41977599200",
+          "existing E6 programmer evidence as inventory only"
+        ],
+        "limitations": "Scoped UI fix does not establish complete criterion quality or game breadth; old b2a4612 review is not new-SHA approval."
+      },
+      {
+        "criterion_id": "S02-C02",
+        "head_sha": "a412bb8f866fa459c1d5f2e8d8f1e7e6e72be57e",
+        "before_grade": null,
+        "before_points": null,
+        "expected_transition": "unknown",
+        "confirmed_after_grade": null,
+        "confirmed_after_points": null,
+        "delta": null,
+        "method": "Full existing Node/browser/RNG regression and unchanged relevant E6 implementation; reviewer must assess whole package on new SHA",
+        "evidence": [
+          "test/browser/water-lifecycle.mjs",
+          "CI41977599200",
+          "existing E6 programmer evidence as inventory only"
+        ],
+        "limitations": "Scoped UI fix does not establish complete criterion quality or game breadth; old b2a4612 review is not new-SHA approval."
+      },
+      {
+        "criterion_id": "S02-C03",
+        "head_sha": "a412bb8f866fa459c1d5f2e8d8f1e7e6e72be57e",
+        "before_grade": null,
+        "before_points": null,
+        "expected_transition": "unknown",
+        "confirmed_after_grade": null,
+        "confirmed_after_points": null,
+        "delta": null,
+        "method": "Full existing Node/browser/RNG regression and unchanged relevant E6 implementation; reviewer must assess whole package on new SHA",
+        "evidence": [
+          "test/browser/water-lifecycle.mjs",
+          "CI41977599200",
+          "existing E6 programmer evidence as inventory only"
+        ],
+        "limitations": "Scoped UI fix does not establish complete criterion quality or game breadth; old b2a4612 review is not new-SHA approval."
+      },
+      {
+        "criterion_id": "S03-C04",
+        "head_sha": "a412bb8f866fa459c1d5f2e8d8f1e7e6e72be57e",
+        "before_grade": null,
+        "before_points": null,
+        "expected_transition": "unknown",
+        "confirmed_after_grade": null,
+        "confirmed_after_points": null,
+        "delta": null,
+        "method": "Full existing Node/browser/RNG regression and unchanged relevant E6 implementation; reviewer must assess whole package on new SHA",
+        "evidence": [
+          "test/browser/water-lifecycle.mjs",
+          "CI41977599200",
+          "existing E6 programmer evidence as inventory only"
+        ],
+        "limitations": "Scoped UI fix does not establish complete criterion quality or game breadth; old b2a4612 review is not new-SHA approval."
+      },
+      {
+        "criterion_id": "S03-C05",
+        "head_sha": "a412bb8f866fa459c1d5f2e8d8f1e7e6e72be57e",
+        "before_grade": null,
+        "before_points": null,
+        "expected_transition": "unknown",
+        "confirmed_after_grade": null,
+        "confirmed_after_points": null,
+        "delta": null,
+        "method": "Full existing Node/browser/RNG regression and unchanged relevant E6 implementation; reviewer must assess whole package on new SHA",
+        "evidence": [
+          "test/browser/water-lifecycle.mjs",
+          "CI41977599200",
+          "existing E6 programmer evidence as inventory only"
+        ],
+        "limitations": "Scoped UI fix does not establish complete criterion quality or game breadth; old b2a4612 review is not new-SHA approval."
+      },
+      {
+        "criterion_id": "S04-C04",
+        "head_sha": "a412bb8f866fa459c1d5f2e8d8f1e7e6e72be57e",
+        "before_grade": null,
+        "before_points": null,
+        "expected_transition": "unknown",
+        "confirmed_after_grade": null,
+        "confirmed_after_points": null,
+        "delta": null,
+        "method": "Full existing Node/browser/RNG regression and unchanged relevant E6 implementation; reviewer must assess whole package on new SHA",
+        "evidence": [
+          "test/browser/water-lifecycle.mjs",
+          "CI41977599200",
+          "existing E6 programmer evidence as inventory only"
+        ],
+        "limitations": "Scoped UI fix does not establish complete criterion quality or game breadth; old b2a4612 review is not new-SHA approval."
+      },
+      {
+        "criterion_id": "S04-C05",
+        "head_sha": "a412bb8f866fa459c1d5f2e8d8f1e7e6e72be57e",
+        "before_grade": null,
+        "before_points": null,
+        "expected_transition": "unknown",
+        "confirmed_after_grade": null,
+        "confirmed_after_points": null,
+        "delta": null,
+        "method": "Actual common Done source/production browser safe/error/loss preview entry points; existing lifecycle extended",
+        "evidence": [
+          "test/browser/water-lifecycle.mjs",
+          "CI41977599200",
+          "existing E6 programmer evidence as inventory only"
+        ],
+        "limitations": "Scoped UI fix does not establish complete criterion quality or game breadth; old b2a4612 review is not new-SHA approval."
+      },
+      {
+        "criterion_id": "S09-C04",
+        "head_sha": "a412bb8f866fa459c1d5f2e8d8f1e7e6e72be57e",
+        "before_grade": null,
+        "before_points": null,
+        "expected_transition": "unknown",
+        "confirmed_after_grade": null,
+        "confirmed_after_points": null,
+        "delta": null,
+        "method": "Full existing Node/browser/RNG regression and unchanged relevant E6 implementation; reviewer must assess whole package on new SHA",
+        "evidence": [
+          "test/browser/water-lifecycle.mjs",
+          "CI41977599200",
+          "existing E6 programmer evidence as inventory only"
+        ],
+        "limitations": "Scoped UI fix does not establish complete criterion quality or game breadth; old b2a4612 review is not new-SHA approval."
+      }
+    ],
+    "points_awarded": 0,
+    "baseline": {
+      "path": "agent-work/score/current-score.json",
+      "blob": "da0178d286f6aa73edc01d6c0cd9ebc0d94a0ec2",
+      "release_sha": "27b230fc5fc5ac2f998141626fa091e1085d7a47",
+      "criteria_count": 50,
+      "weight_sum": 1000
+    }
+  },
+  "next_role": "reviewer",
+  "next_step": "Fresh independent review of complete a412bb8 package, E6-R1 regression and model1.2 score_assessment before owner release request.",
+  "authorization": {
+    "task_start": "approved_E6_existing_scope",
+    "publication": "not_authorized",
+    "main_merge": "not_performed"
+  },
+  "operational_limits": {
+    "latest": "Previous automatic approval review rejected full-history latest/backlog/approvals exports; not retried or circumvented. Scoped own run records only.",
+    "images": "Prior PNG export rejection preserved; no external image payload."
+  },
+  "lessons": [
+    {
+      "observation": "Local origin points at a local repository mirror; a successful git push there does not establish GitHub publication.",
+      "application": "Uploaded source via GitHub Git data API, updated branch with expected old SHA, and fetched PR/commit to confirm exact new tree."
+    },
+    {
+      "observation": "Common completion affordance must be exercised through its actual UI entry point.",
+      "application": "Extended existing water lifecycle; pre-fix failure captured and post-fix safe/error/loss paths covered without a duplicate suite."
+    }
+  ],
+  "completed_at": "2026-11-05T06:10:06.378Z"
+}
