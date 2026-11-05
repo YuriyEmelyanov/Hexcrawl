@@ -1,0 +1,310 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-05-reviewer-HX-BL-023-E7-9d233d8",
+  "task_id": "HX-BL-023",
+  "stage": "E7",
+  "role": "independent_reviewer",
+  "worker": "/root/e7_independent_local_review",
+  "status": "changes_requested",
+  "review_scope": "Local immutable source only; independent fresh agent. No implementation or source transmission.",
+  "source": {
+    "sha": "9d233d818eb31da772a9ad8cd62e00752ce35102",
+    "tree": "6e1c5dfaf6f7c82ccb3a58d642a4a18ab4268651",
+    "base_sha": "2ef5cc35107f299c309b7c8065a1e81ca9881278",
+    "path": "/workspace/scratch/60e61b33a6a0/e7-development",
+    "verified_by": "git rev-parse HEAD HEAD^{tree}; tracked src/test/docs clean during review",
+    "remote_feature_branch_contains_e7": false,
+    "remote_sync": "blocked_auto_review",
+    "pr": null
+  },
+  "authority": {
+    "spec": "agent-work/specs/HX-BL-023-E7.md",
+    "spec_version": "E7-1.0",
+    "process": "agent-work/process.md",
+    "model_version": "1.2",
+    "model_blob_sha": "ab660f02e26faf2233aecd5f2fd1090260fe74eb",
+    "main_merge_or_deploy": false,
+    "paid_spend": 0,
+    "budget_usage": "unknown; usage gate owner-waived 2026-10-24"
+  },
+  "findings": [
+    {
+      "id": "E7-R1-F01",
+      "priority": "P2",
+      "acs": [
+        "AC03",
+        "AC12"
+      ],
+      "file": "src/App.tsx",
+      "lines": [
+        14946,
+        14947,
+        16354
+      ],
+      "title": "Map target selection and target contour are absent",
+      "reproduction": "Import regionFixture(), select 2,0, Edit, start Transfer hex, physically click target hex 3,0. Native selector remains 1. E7 overlay contains only source cell 2,0 and zero map targets.",
+      "expected": "T01 requires equivalent map/list selection; UI-v1 requires distinct source and target contour/hover and current screen geometry hit resolution.",
+      "actual": "All map clicks return immediately while any region draft exists; only the list can choose a target.",
+      "verification": "Independent headless Chromium at width390 plus exact-source inspection."
+    },
+    {
+      "id": "E7-R1-F02",
+      "priority": "P2",
+      "acs": [
+        "AC03",
+        "AC11"
+      ],
+      "file": "src/App.tsx",
+      "lines": [
+        1132,
+        1133
+      ],
+      "related_file": "docs/region-editing.md",
+      "related_lines": [
+        33,
+        34
+      ],
+      "title": "Transfer silently changes accepted candidate ordering",
+      "reproduction": "Import regionFixture(), capture candidateHexes, prepare actual App transfer2,0 from1 to2. Before subsequence is 3,-1;2,1;4,0;4,-1. After is 4,0;4,-1;3,-1;2,1. Sets match, arrays differ.",
+      "expected": "T01 explicitly preserves accepted entries/order when the geometric frontier is unchanged.",
+      "actual": "Preparation rebuilds the array by changed region traversal. New domain documentation replaces the approved preservation contract with recomputation.",
+      "verification": "Independent actual prepareRegionMapEdit diagnostic; candidate set equality and array inequality both checked.",
+      "fix_risk": "Preserve accepted E7 array and reconcile v7 import order deliberately. If persisted order is retained only for an exact valid frontier, check uniqueness separately from Set equality; current save validation only validates candidate coordinates. Retain prior normalization for malformed/mismatching/legacy data and verify empty world and sea exclusion."
+    },
+    {
+      "id": "E7-R1-F03",
+      "priority": "P2",
+      "acs": [
+        "AC01",
+        "AC06",
+        "AC07",
+        "AC12"
+      ],
+      "file": "src/App.tsx",
+      "lines": [
+        14869,
+        14873,
+        14879,
+        14882,
+        14885
+      ],
+      "title": "Preview omits required consequences",
+      "reproduction": "regionFixture has local mountains override at2,0. Height1 to2/open_hills preview gives generic preserved wording, without exception count. Source inspection shows preview lists regional sizes/biomes, POI count and Auto marks only; it never reports affected rivers or owner transitions. A separate real physical-edge diagnostic confirms edge121.244,-14|121.244,14 can change owner1 to2 while path/F1 remain fixed.",
+      "expected": "H01 requires local-exception count. D01/X01 requires affected rivers, owner transition counts and real POI-key consequences; T01 requires explicit inherited height change for the moved cell.",
+      "actual": "No river-owner plan, explicit POI key mapping, local-exception count, or explicit moved-cell inherited height before/after is displayed.",
+      "verification": "Independent Chromium preview text and source inspection; independent real geometry owner-remap diagnostic."
+    },
+    {
+      "id": "E7-R1-F04",
+      "priority": "P2",
+      "acs": [
+        "AC03",
+        "AC12"
+      ],
+      "file": "src/App.tsx",
+      "lines": [
+        14844,
+        14860,
+        14865
+      ],
+      "title": "Named target options omit stable IDs",
+      "reproduction": "Import an otherwise valid fixture with both region RU names set to the same retained name. Open transfer list. Options are identical names, with only current marker on source; named destinations never show ID. With multiple same-name destinations the list cannot distinguish them.",
+      "expected": "T01/UI-v1 requires exact name/ID and unambiguous duplicate-name selection; accessible names also identify region or coordinate.",
+      "actual": "ID is used only as fallback when a name is missing; height and transfer accessible names omit region identity/hex coordinate.",
+      "verification": "Independent Chromium imported retained duplicate names and inspected native option labels."
+    },
+    {
+      "id": "E7-R1-F05",
+      "priority": "P2",
+      "acs": [
+        "AC10",
+        "AC12"
+      ],
+      "file": "src/App.tsx",
+      "lines": [
+        13479,
+        13481
+      ],
+      "title": "An active draft with stale revision remains open without recovery message",
+      "reproduction": "Temporary diagnostic only: create valid transfer draft, decrease that active draft's captured revision by1, call actual finishRegionDraft with the same draft object. It returns false, draftStillOpen=true, previewError=null; accepted document remains equal.",
+      "expected": "X01 closes an active outdated draft and reports that the map changed and the value must be selected again. An old callback must still leave any newer draft alone.",
+      "actual": "Revision mismatch shares a silent return with busy/identity/IME guards, leaving an apparently valid preview that Done cannot accept.",
+      "verification": "Exact-source inspection plus temporary revision-stamp fault injection through existing App harness; not claimed as a natural external event."
+    }
+  ],
+  "additional_contract_gaps": [
+    {
+      "file": "src/App.tsx",
+      "lines": [
+        15723,
+        14869
+      ],
+      "observation": "Enter confirmation is implemented only inside map viewport. Preview itself has no focus/confirmation path; Enter on its details summary correctly expands details. X01 explicitly says map/preview. Preserve native select/button/summary behavior when completing preview keyboard support."
+    },
+    {
+      "file": "src/App.tsx",
+      "lines": [
+        15932
+      ],
+      "observation": "Export notice is conditional only on waterDraft; E7 draft has no short accepted-document JSON/PNG notice required by X01. Existing developer browser evidence checks actual PNG exclusion, so this is a communication gap, not observed draft leakage."
+    }
+  ],
+  "acceptance": [
+    {
+      "ac": "AC01",
+      "status": "partial",
+      "evidence": "Actual height/biome transaction, retained fields and one history passed; required preview information missing. Not an exhaustive all-height/all-ID UI matrix."
+    },
+    {
+      "ac": "AC02",
+      "status": "partial_verified",
+      "evidence": "Focused invalid pair/height/no-op tests, actual underwater/local preservation and symmetric physical-side code reviewed. Complete24-biome UI combinations not independently rerun."
+    },
+    {
+      "ac": "AC03",
+      "status": "failed",
+      "evidence": "Connected geometry, union, order of region cells and derived size checks passed; candidate order and map/list target interaction fail F01/F02/F04."
+    },
+    {
+      "ac": "AC04",
+      "status": "partial_verified",
+      "evidence": "Focused protected cells, kingdom membership/final area and owned-water geometry tests passed; all kingdom/obstacle configurations not exhaustively reproduced."
+    },
+    {
+      "ac": "AC05",
+      "status": "partial_verified",
+      "evidence": "New incompatible physical-side test and literal overrides reviewed/passed. Full Color/Tiles/Emoji export comparison not independently repeated."
+    },
+    {
+      "ac": "AC06",
+      "status": "partial",
+      "evidence": "Actual dry F1 owner-height fixture, valley/direct-contact tests and extra real owner1 to2 edge test passed. Required owner consequence preview missing F03. Full lake/delta/network corpus not independently repeated."
+    },
+    {
+      "ac": "AC07",
+      "status": "partial",
+      "evidence": "Actual Auto marks versus derived sets passed; physical path/F and authored marker/crossing retention reviewed. Missing owner/dependency preview. No broad new naturalistic hydrology claim."
+    },
+    {
+      "ac": "AC08",
+      "status": "partial_verified",
+      "evidence": "Full POI/name/tag/counter migration and destination collision tests passed; actual Undo/Redo/reload checked in both modes."
+    },
+    {
+      "ac": "AC09",
+      "status": "partial_verified",
+      "evidence": "Actual ROAD07 category growth30 to31, source6 to5, following E3 minimum and emergency tract test passed. Physical routes unchanged by implementation."
+    },
+    {
+      "ac": "AC10",
+      "status": "failed",
+      "evidence": "Detached copies, fault atomicity, no-op/cancel/ref identity, exact Undo/Redo passed; active stale revision recovery fails F05."
+    },
+    {
+      "ac": "AC11",
+      "status": "partial",
+      "evidence": "Both-mode real edited reload continuation passed. Extra both-mode Undo generation then Undo/repeat E7 then continuation matched. Extra late generation fault preserved edited world, remapped POI and stacks. Candidate contract F02 unresolved; official complete v2-v7 browser corpus relied on developer report rather than rerun."
+    },
+    {
+      "ac": "AC12",
+      "status": "failed",
+      "evidence": "Independent narrow Chromium UI has no horizontal overflow and preserves document on target click. Required map targets/contour, duplicate identities and preview completeness missing. No actual release walkthrough accepted."
+    }
+  ],
+  "checks": {
+    "node": {
+      "command": "node --test test/manualRegions.test.mjs test/regionEditing.test.mjs test/manualRivers.test.mjs",
+      "node_version": "v24.22.1",
+      "executed": 24,
+      "passed": 24,
+      "failed": 0,
+      "skipped": 0,
+      "meaning": "Selected existing tests, not additional test growth or proof for every map."
+    },
+    "browser": {
+      "existing_script_runners_executed": 0,
+      "temporary_independent_chromium_scenario": 1,
+      "observations": "Actual native controls/pointer, duplicate retained names, preview contents,390px overflow. Temporary Vite session terminated."
+    },
+    "rng": {
+      "existing_script_runners_executed": 0,
+      "temporary_handler_diagnostics": "Both-mode actual continuation/Undo-repeat and rollback; no Math.random allowed by harness guard."
+    },
+    "developer_report_not_independently_repeated": {
+      "node": 316,
+      "browser_script_runners": 8,
+      "rng_script_runners": 1
+    },
+    "temporary_diagnostics": [
+      "Candidate order/set comparison",
+      "Both-mode actual continuation following Undo generation/Undo E7/repeat",
+      "Late generation preparation failure after E7 retaining remapped identity/stacks",
+      "Stale active revision stamp",
+      "Actual physical river owner remap preserving directed path/F"
+    ],
+    "test_change_summary": {
+      "added": 0,
+      "removed": 0,
+      "modified": 0,
+      "scope": "Reviewer persistent test edits relative to reviewed SHA: none. Source SHA remains immutable."
+    }
+  },
+  "test_usefulness": {
+    "assessment": "Useful coverage of transaction atomicity, POI identity, new-side versus legacy compatibility, directed river owners, ROAD07 ordinary-versus-emergency meaning, actual save/reload continuation, and native select Enter. Assertions mostly compare full saved documents and executable history, which is material.",
+    "gaps": [
+      "Browser lifecycle treats ignored map click as sufficient safety but never requires target selection by map or target contour.",
+      "No candidate-array preservation assertion; deterministic reload equality alone accepts an unauthorized normalization.",
+      "No duplicate destination-name case, active stale-revision recovery expectation, or complete consequence-preview assertions.",
+      "Unit policy fixtures are synthetic; integration tests partly compensate with real App geometry, but finite fixtures do not prove all hydrological networks."
+    ]
+  },
+  "score_assessment_ref": "agent-work/score/assessments/2026-11-05-reviewer-HX-BL-023-E7-9d233d8.json",
+  "score_summary": {
+    "model_version": "1.2",
+    "criteria_assessed": 14,
+    "all_grades_and_points": null,
+    "delta": null,
+    "status": "insufficient_evidence",
+    "points_awarded": 0,
+    "confirmed_points": null,
+    "unverified_weight": 1000
+  },
+  "limitations": [
+    "No source/diff/PNG/bundle/blob/tree/PR uploaded by reviewer; source sync remains blocked by automatic review.",
+    "Generated report PNG side effects already present were excluded from source identity; no repository reset or source edit.",
+    "Headless Chromium only; no physical touch device, AT, Safari, Firefox or WCAG AA audit.",
+    "No full score or game coverage assessment; scoped checks cannot establish all model thresholds.",
+    "No main change, merge, deploy, release approval or external messages/comments."
+  ],
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "status": "checked",
+      "is_enabled": true,
+      "checked_at": null,
+      "checked_before": "2026-11-05T13:17:46.605Z",
+      "time_limitation": "Initial actual peek preceded scoped claim; exact initial wall-clock timestamp was not captured."
+    },
+    "end": {
+      "status": "checked",
+      "checked_at": "2026-11-05T13:24:08.023Z",
+      "is_enabled": true
+    },
+    "restoration_performed": false,
+    "errors": []
+  },
+  "latest_update_status": "blocked_previous_auto_review_full_history_not_retried",
+  "latest_intended_delta": {
+    "task_id": "HX-BL-023",
+    "stage": "E7",
+    "review_status": "changes_requested_local",
+    "source_sha": "9d233d818eb31da772a9ad8cd62e00752ce35102",
+    "next_role": "developer",
+    "next_step": "Correct five scoped acceptance findings in local source, then freeze new SHA and request fresh independent review. Source sync separately blocked_auto_review.",
+    "release_status": "not_released_not_ready",
+    "confirmed_points": null,
+    "unverified_weight": 1000
+  },
+  "foreign_claims_or_results_overwritten": false,
+  "completed_at": "2026-11-05T13:25:42.524Z"
+}
