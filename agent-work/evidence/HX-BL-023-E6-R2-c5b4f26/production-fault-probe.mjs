@@ -28,14 +28,14 @@ try{
  const changed=await snapshot();await button('Отменить').click();const before=await snapshot();assert.notDeepEqual(changed,before);assert.equal(await button('Повторить').isEnabled(),true);
  await ensureEdit();await page.getByRole('combobox',{name:'Вода',exact:true}).selectOption('lake');
  await page.evaluate(()=>{
-  const clone=window.structuredClone;window.__fault=Error('E6-R2-production-copy-sentinel');
-  window.structuredClone=function(value){if(value?.regions&&value?.hexTerrainByKey instanceof Map){window.structuredClone=clone;throw window.__fault;}return clone(value);};
+  const clone=window.structuredClone;window.__fault=null;
+  window.structuredClone=function(value){if(value?.regions&&value?.hexTerrainByKey instanceof Map){window.structuredClone=clone;window.__fault=Error('E6-R2-production-copy-sentinel');throw window.__fault;}return clone(value);};
  });
  const logStart=diagnostics.length;await button('Готово').click();
  assert.equal(await page.locator('[data-water-draft]').count(),1);assert.equal(await button('Готово').count(),1);const ui=await page.locator('[data-water-error]').innerText();assert.match(ui,/Карта не изменена/);assert.deepEqual(await snapshot(),before);
  const emitted=diagnostics.slice(logStart);assert.equal(emitted.length,1);assert.equal(emitted[0].args().length,2);
  const error=await emitted[0].args()[1].evaluate(value=>({same_original:value===window.__fault,name:value.name,message:value.message,stack:value.stack,same_stack:value.stack===window.__fault.stack}));
- assert.equal(error.same_original,true);assert.equal(error.same_stack,true);assert.match(error.stack,/E6-R2-production-copy-sentinel/);assert.match(error.stack,/at /);
+ assert.equal(error.same_original,true);assert.equal(error.same_stack,true);assert.match(error.stack,/E6-R2-production-copy-sentinel/);assert.match(error.stack,/assets\/index-.+\.js/,'original stack retains the built App caller');
  await page.locator('[data-water-reset]').click();assert.equal(await button('Отменить').isEnabled(),true);assert.equal(await button('Повторить').isEnabled(),true);await button('Повторить').click();assert.deepEqual(await snapshot(),changed);await button('Отменить').click();assert.deepEqual(await snapshot(),before);
  await page.locator('polygon.hex[data-hex-key="3,0"]').dispatchEvent('click');const topologyBefore=await snapshot();await ensureEdit();await page.getByRole('combobox',{name:'Вода',exact:true}).selectOption('sea');const expectedStart=diagnostics.length;await button('Готово').click();assert.match(await page.locator('[data-water-error]').innerText(),/две соседние клетки/);assert.equal(diagnostics.length,expectedStart,'expected topology refusal is quiet');assert.deepEqual(await snapshot(),topologyBefore);await page.locator('[data-water-reset]').click();await page.locator('polygon.hex[data-hex-key="0,0"]').dispatchEvent('click');
  await page.getByRole('combobox',{name:'Вода',exact:true}).selectOption('lake');

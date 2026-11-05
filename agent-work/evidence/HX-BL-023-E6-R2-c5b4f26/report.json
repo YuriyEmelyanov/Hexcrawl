@@ -1,0 +1,260 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-05-developer-HX-BL-023-E6-R2",
+  "role": "developer",
+  "task_id": "HX-BL-023",
+  "stage_id": "E6",
+  "finding_id": "E6-R2",
+  "spec_version": "E6-1.0",
+  "requirement": "W07 / AC08",
+  "baseline_sha": "a412bb8f866fa459c1d5f2e8d8f1e7e6e72be57e",
+  "head_sha": "c5b4f26c6d5a29aa0ba1d89ca11cc209ebe5272e",
+  "tree_sha": "3a1ff34de3ef0d6b363de66a62944fff2b27a909",
+  "base_release_sha": "27b230fc5fc5ac2f998141626fa091e1085d7a47",
+  "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/487",
+  "authorization": {
+    "task_start": "approved_existing_E6_direct_owner_dispatch",
+    "scope": "Unexpected preparation/copy error retention only",
+    "publication": false
+  },
+  "implementation": {
+    "path": "src/App.tsx",
+    "line": 13375,
+    "behavior": "finishWaterDraft logs unexpected exceptions through the existing console.error technical channel with static context and the original exception object. WaterEditError and TagCapacityError are excluded. Diagnostic failure is caught before restoring the preview and safe localized UI.",
+    "payload": "Static context + original exception only; no document, map, notes or telemetry payload added.",
+    "files": [
+      "src/App.tsx",
+      "test/mapTransactions.test.mjs",
+      "test/helpers/generation-harness.mjs"
+    ],
+    "ui": "No layout, spacing or control changes"
+  },
+  "evidence": {
+    "baseline": {
+      "file": "baseline-red.log",
+      "method": "Extended existing snapshot fault case against unchanged a412 production source; test/harness overlay only",
+      "executed": 1,
+      "passed": 0,
+      "failed": 1,
+      "actual": "No technical diagnostic: expected1, actual0; negative evidence retained"
+    },
+    "focused": {
+      "file": "targeted-green.log",
+      "executed": 6,
+      "passed": 6,
+      "failed": 0,
+      "skipped": 0
+    },
+    "fault_case": "Existing E6 water cancel/no-op/stale callbacks and snapshot failure preserve map and both history branches",
+    "permanent_assertions": [
+      "Original Error identity and unchanged stack retained exactly once",
+      "No map/notes arguments appended",
+      "Preview draft retained; exact saved document/RNG/counters and both nonempty history branches unchanged",
+      "Same-VM WaterEditError and TagCapacityError refusals quiet",
+      "Throwing console.error cannot escape the guarded handler or mutate the accepted document/history",
+      "Existing no-op/stale/cancel/double-completion assertions retained"
+    ],
+    "production_probe": {
+      "script": "production-fault-probe.mjs",
+      "log": "production-fault-probe.log",
+      "build_js": "dist/assets/index-DXYr3erP.js",
+      "method": "One-shot sentinel thrown only when structuredClone copies a map inside common Done; Chromium console arguments inspected directly",
+      "result": "pass; original Error identity and stack; safe map-unchanged UI; draft/Edit retained; exact JSON/RNG/counters; both history branches verified through Redo/Undo; real topology refusal quiet; broken logger isolated; no pageerrors; original stack includes the built App call chain",
+      "scope": "RU sentinel fault; existing full browser suite separately covers RU/EN common-Done/Confirm behavior",
+      "initial_probe_limitation": "An initial temporary check assumed sea_minimum on an enclosed interior cell; that cell correctly requires body choice. Probe moved to known frontier3,0. Initial timeout preserved in production-probe-initial-selector-assumption.log; no production change for that observation."
+    }
+  },
+  "checks": {
+    "check": {
+      "status": "pass",
+      "exit_code": 0,
+      "node": "24.22.1",
+      "typescript": "pass",
+      "build": "pass",
+      "executed": 299,
+      "passed": 299,
+      "failed": 0,
+      "skipped": 0,
+      "declared_suites": 0
+    },
+    "browser": {
+      "status": "pass",
+      "exit_code": 0,
+      "suites": 8,
+      "executed": 8,
+      "passed": 8,
+      "failed": 0,
+      "skipped": 0,
+      "browser": "Chromium153.0.8010.0",
+      "after_build": true
+    },
+    "rng": {
+      "status": "pass",
+      "exit_code": 0,
+      "suites": 1,
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "profile_seed_combinations": 8,
+      "additional_cases": "Existing AC06/AC08/AC09 display/import/busy/history checks"
+    },
+    "ci": {
+      "run_id": 41991194108,
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41991194108",
+      "head_sha": "c5b4f26c6d5a29aa0ba1d89ca11cc209ebe5272e",
+      "checkout": {
+        "sha": "94d5c88ebf97424d4ade3c496eb448d23501b91d",
+        "tree_sha": "3a1ff34de3ef0d6b363de66a62944fff2b27a909",
+        "parents": [
+          "27b230fc5fc5ac2f998141626fa091e1085d7a47",
+          "c5b4f26c6d5a29aa0ba1d89ca11cc209ebe5272e"
+        ],
+        "same_full_tree_as_head": true
+      },
+      "jobs": [
+        {
+          "id": 127123582499,
+          "name": "world-random",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41991194108/job/127123582499"
+        },
+        {
+          "id": 127123582608,
+          "name": "check",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41991194108/job/127123582608"
+        },
+        {
+          "id": 127123583499,
+          "name": "browser",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41991194108/job/127123583499"
+        }
+      ],
+      "status": "completed",
+      "conclusion": "success",
+      "observed_at": "2026-11-05T08:12:49.774Z"
+    }
+  },
+  "test_change_summary": {
+    "base_sha": "a412bb8f866fa459c1d5f2e8d8f1e7e6e72be57e",
+    "head_sha": "c5b4f26c6d5a29aa0ba1d89ca11cc209ebe5272e",
+    "method": "TypeScript AST extracts named test callbacks; compare callback AST without comments. Iterations/assertions/helpers are not separate cases.",
+    "node": {
+      "static_named_callbacks_before": 182,
+      "static_named_callbacks_after": 182,
+      "callback_count_limitation": "Static literal names only; dynamic parameterized runtime cases are reported separately under executed checks",
+      "added": 0,
+      "removed": 0,
+      "modified": 1,
+      "changed_cases": [
+        {
+          "file": "test/mapTransactions.test.mjs",
+          "before": 24,
+          "after": 24,
+          "added": [],
+          "removed": [],
+          "modified": [
+            "E6 water cancel/no-op/stale callbacks and snapshot failure preserve map and both history branches"
+          ]
+        }
+      ]
+    },
+    "browser": {
+      "scripts_before": 8,
+      "scripts_after": 8,
+      "added": 0,
+      "removed": 0,
+      "modified": 0,
+      "reason": "No permanent browser cases changed"
+    },
+    "rng": {
+      "scripts_before": 1,
+      "scripts_after": 1,
+      "added": 0,
+      "removed": 0,
+      "modified": 0
+    },
+    "helper_change": "Expose existing WaterEditError/TagCapacityError constructors in the same VM to inject correctly classified expected refusals; no new runner or case",
+    "report_line": "Тесты: +0 / −0 / изменено 1 — существующий E6 fault-case проверяет оригинальные Error/stack, тихие ожидаемые отказы и атомарность при сбое диагностики."
+  },
+  "score": {
+    "model_version": "1.2",
+    "developer_confirmed_transitions": false,
+    "before_grade": null,
+    "after_grade": null,
+    "before_points": null,
+    "after_points": null,
+    "delta": null,
+    "status": "unknown_pending_independent_assessment",
+    "direct_risk_criteria": [
+      "S09-C04",
+      "S03-C05"
+    ],
+    "full_E6_criteria": [
+      "S01-C03",
+      "S03-C01",
+      "S02-C02",
+      "S02-C03",
+      "S03-C04",
+      "S03-C05",
+      "S04-C04",
+      "S04-C05",
+      "S09-C04"
+    ],
+    "reviewer_action": "Update whole-candidate independent score_assessment1.2 for exact new SHA. Prior a412 assessment is historical evidence, not acceptance of c5b4f26. Do not change50criteria/1000/G0-G4/5-10-20."
+  },
+  "limitations": [
+    "Finite regression corpus, not a proof of all possible exceptions or water configurations",
+    "Local console diagnostics; no external telemetry or new persistence service",
+    "Physical touch hardware, AT and full top5/10/20 game support remain unverified as previously recorded",
+    "Existing bundle-size/npm environment warnings do not change result",
+    "No source change after c5b4f26; generated reports stay local and are excluded from PR"
+  ],
+  "next_role": "reviewer",
+  "next_step": "Fresh independent reviewer checks complete c5b4f26 E6 candidate, E6-R2/R1, checks and score_assessment1.2 before any owner release request",
+  "release": {
+    "authorized": false,
+    "merged": false,
+    "published": false,
+    "points_awarded": false
+  },
+  "blocked_previous_auto_review": {
+    "files": [
+      "agent-work/latest.json",
+      "agent-work/approvals.json",
+      "agent-work/backlog.json"
+    ],
+    "reason": "Prior full-history export rejection; not retried or bypassed. latest remains stale E5 blob b54a88c0e43cc53333d31fd47879df35acd7182b. Current state is in scoped claim/result/handoff.",
+    "image_payload": "Previously rejected UI-v1 current-1500 payload not uploaded or transformed; no new image payload uploaded"
+  },
+  "automation_health": {
+    "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-05T07:49:52.846Z",
+      "is_enabled": true,
+      "restoration": false,
+      "errors": [],
+      "status": "checked",
+      "source": "actual automations.peek"
+    },
+    "end": {
+      "checked_at": "2026-11-05T08:12:01.677Z",
+      "status": "checked",
+      "is_enabled": true,
+      "source": "actual automations.peek"
+    },
+    "restoration": {
+      "performed": false,
+      "reason": "Both actual peeks confirmed is_enabled=true"
+    },
+    "errors": [],
+    "scope": "Observed instants only; no later service status or disablement cause inferred"
+  },
+  "status": "developer_complete_review_ready",
+  "completed_at": "2026-11-05T08:12:49.774Z"
+}
