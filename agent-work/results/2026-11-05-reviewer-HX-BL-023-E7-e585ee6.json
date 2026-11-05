@@ -1,0 +1,288 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-05-reviewer-HX-BL-023-E7-e585ee6",
+  "task_id": "HX-BL-023",
+  "stage": "E7",
+  "role": "independent_reviewer",
+  "worker": "/root/e7_r1_independent_review",
+  "status": "changes_requested",
+  "review_scope": "Fresh independent read-only local R1 review of E7-1.0;five fixes and bounded whole-E7 regression risks",
+  "source": {
+    "sha": "e585ee6d599479639e2502607c16c0abc9a2218d",
+    "tree": "ed9f80674b1f4e5cd7bfd5850d23ca96a253da5d",
+    "base_sha": "2ef5cc35107f299c309b7c8065a1e81ca9881278",
+    "previous_rejected_sha": "9d233d818eb31da772a9ad8cd62e00752ce35102",
+    "path": "/workspace/scratch/60e61b33a6a0/e7-development",
+    "verified": "git rev-parse HEAD HEAD^{tree};src/docs/tracked test clean;preexisting temporary test/browser/.e7-diagnostic.mjs not authored or run by this reviewer",
+    "remote_feature_branch_contains_e7": false,
+    "remote_sync": "blocked_auto_review",
+    "pr": null
+  },
+  "authority": {
+    "spec": "agent-work/specs/HX-BL-023-E7.md",
+    "spec_version": "E7-1.0",
+    "spec_blob": "59f6a231eaa27fb2fb3f98d6d29838da9c50e9b5",
+    "process": "agent-work/process.md",
+    "model_version": "1.2",
+    "model_blob": "ab660f02e26faf2233aecd5f2fd1090260fe74eb",
+    "main_merge_or_deploy": false,
+    "paid_spend": 0,
+    "budget_usage": "unknown;owner waived usage gate24Oct"
+  },
+  "findings": [
+    {
+      "id": "E7-R2-F01",
+      "priority": "P2",
+      "prior_finding": "E7-R1-F03",
+      "acs": [
+        "AC01",
+        "AC06",
+        "AC07",
+        "AC12"
+      ],
+      "file": "src/App.tsx",
+      "lines": [
+        14878,
+        14927,
+        14928
+      ],
+      "title": "Height preview still omits affected rivers when ownership does not change",
+      "reproduction": "At e585 import regionFixture('classic',{river:true});select2,0,Edit,Height region;choose2 and open_hills. Preview shows owner changes0,rapids+0/-0,waterfalls+0/-0 and never names Silver River/Серебряная река or ID5. Independent second handler diagnostic accepts that same height edit and confirms river5 keeps owner1 while region1 height changes1 to2;path and F remain literal.",
+      "expected": "D01 fixed river dependency row explicitly requires naming affected rivers and count of owner transitions. A height-dependent physical support change is affected even with zero owner transitions or Auto changes.",
+      "actual": "Preview computes/renders only changed-owner edges and Auto-mark keys;there is no affected-river inventory. Consequently this required part of the earlier F03 correction remains incomplete.",
+      "verification": "Independent headless Chromium physical UI on separate Vite4199 and separate browser;actual App generation harness for support change;source inspection."
+    },
+    {
+      "id": "E7-R2-F02",
+      "priority": "P3",
+      "acs": [
+        "AC12"
+      ],
+      "file": "src/App.tsx",
+      "lines": [
+        15990
+      ],
+      "title": "E7 draft has no required accepted-document export notice",
+      "reproduction": "Open either E7 height or transfer draft in the same imported fixture and inspect export controls. There are zero .water-export-notice elements and no E7 accepted-document JSON/PNG caption. The only conditional notice is waterDraft.",
+      "expected": "X01 explicitly requires a short export caption as in E5/E6 explaining JSON/PNG contains the last accepted document and excludes the draft.",
+      "actual": "The E7 export behavior remains available without that caption. This is a communication gap;no observed draft leakage is alleged.",
+      "verification": "Independent Chromium notice count0 plus exact-source condition;this was an additional contract gap in the previous review."
+    },
+    {
+      "id": "E7-R2-F03",
+      "priority": "P1",
+      "acs": [
+        "AC11"
+      ],
+      "file": "src/App.tsx",
+      "lines": [
+        14632,
+        14635
+      ],
+      "title": "Valid official legacy save without optional candidateHexes can no longer be imported",
+      "reproduction": "Import the unchanged official test/fixtures/import-v2/legacy-optionals.json(version2,one saved region,no map.candidateHexes). Independent actual handleImportJson diagnostic first passes assertHexcrawlSaveData,then emits preparation-error alert and leaves the initial zero-region document. Root full check independently fails the existing all-manifest roundtrip test and two worldContinuation tests.",
+      "expected": "J01/AC11 preserve all official v2-v7 corpus imports and existing optional-field migrations. Versions before7 must use recomputed frontier without assuming a persisted candidate array.",
+      "actual": "New R1 code dereferences savedCandidates.map before checking imported.version===7,so an optional missing array throws during detached preparation. Existing world/Redo remain safe,but the valid saved world is unavailable.",
+      "verification": "Independent actual App handler diagnostic on exact e585;official fixture/source inspection;root /tmp/hx-e7-r1-check.log reviewed."
+    }
+  ],
+  "r1_resolution": [
+    {
+      "id": "E7-R1-F01",
+      "status": "verified_bounded",
+      "evidence": "Actual physical map click selects target2,list agrees,target contour exists;44CSSpx circles measured after wheel+rotation;overlap produces explicit ambiguity and Done cannot commit;rolebutton Enter selects target only."
+    },
+    {
+      "id": "E7-R1-F02",
+      "status": "verified_bounded",
+      "evidence": "Literal accepted candidate array/order is retained;both-mode reversed exact v7 frontier survives transfer/reload and next real generation agrees under RNG guard. Exact unique set guard checked independently with oversized duplicates,missing and same-length mismatch;existing focused test also covers legacy2-6,sea,empty."
+    },
+    {
+      "id": "E7-R1-F03",
+      "status": "partially_fixed",
+      "evidence": "Independent DOM verifies local exceptions2/underwater1,transfer base/height,POI key details and owner edge plan1;remaining affected river omission is R2-F01."
+    },
+    {
+      "id": "E7-R1-F04",
+      "status": "verified_bounded",
+      "evidence": "Duplicate retained region names expose distinct #1/#2/#3 options;height label includes region identity,transfer label includes coordinate,map target accessible label identifies coordinate and region."
+    },
+    {
+      "id": "E7-R1-F05",
+      "status": "verified_bounded",
+      "evidence": "Old target/Done callback cannot alter newer draft at same coordinate;active stale revision closes and reports map changed;document/history and executable Redo retained;original-value return closes no-op."
+    }
+  ],
+  "acceptance": [
+    {
+      "ac": "AC01",
+      "status": "partial",
+      "evidence": "Actual height pair,underwater/local preservation,one history pass;required river preview incomplete R2-F01."
+    },
+    {
+      "ac": "AC02",
+      "status": "bounded_verified",
+      "evidence": "Invalid inputs/no-op/symmetric physical side policy and local override tests pass;not independently exhaustive24-biome UI matrix."
+    },
+    {
+      "ac": "AC03",
+      "status": "bounded_verified",
+      "evidence": "Geometry/union/order/connectedness/candidate preservation;map and list target,distinct IDs/contour verified;complete11-to10 sizes not separately reproduced in reviewer DOM."
+    },
+    {
+      "ac": "AC04",
+      "status": "bounded_verified",
+      "evidence": "Protected centers/anchors,kingdom membership/final-area and owned-water existing focused tests pass;not exhaustive all kingdom topologies."
+    },
+    {
+      "ac": "AC05",
+      "status": "bounded_verified",
+      "evidence": "Physical new-side versus unrelated legacy tests pass;local/underwater preserved;all Color/Tiles/Emoji cases not independently compared."
+    },
+    {
+      "ac": "AC06",
+      "status": "partial",
+      "evidence": "Actual owner remap1 to2,path/F retention and directed height tests pass;remaining dependency-preview issue."
+    },
+    {
+      "ac": "AC07",
+      "status": "partial",
+      "evidence": "Auto preview versus derived set test passes;literal authored markers/crossings source reviewed;remaining affected-river preview issue."
+    },
+    {
+      "ac": "AC08",
+      "status": "bounded_verified",
+      "evidence": "Full POI/name/tag/counter-prefix migration and collision tests;both-mode exact history/reload."
+    },
+    {
+      "ac": "AC09",
+      "status": "bounded_verified",
+      "evidence": "ROAD07 thirty-to-thirty-one growth and ordinary six-to-five preserving isTractfalse with later E3 downgrade rejected;emergency policy test passes."
+    },
+    {
+      "ac": "AC10",
+      "status": "bounded_verified",
+      "evidence": "Existing six late clone points/format faults pass;independent stale current-versus-old/new identity and executable Redo pass;finite fault coverage."
+    },
+    {
+      "ac": "AC11",
+      "status": "failed",
+      "evidence": "R2-F03 independently reproduces valid official legacy optional import failure. Both-mode reversed-v7 edited reload/continuation/Undo remain verified."
+    },
+    {
+      "ac": "AC12",
+      "status": "failed",
+      "evidence": "R2-F01/F02 remain;other tested map/preview/summary/rolebutton keyboard,live hit geometry and duplicate IDs pass. No new release walkthrough acceptance."
+    }
+  ],
+  "checks": {
+    "node": {
+      "command": "node --test test/manualRegions.test.mjs test/regionEditing.test.mjs test/manualRivers.test.mjs",
+      "node_version": "v24.22.1",
+      "executed": 25,
+      "passed": 25,
+      "failed": 0,
+      "skipped": 0
+    },
+    "browser": {
+      "independent_scenario_groups": 1,
+      "environment": "Headless Chromium;separate child Vite4199,separate browser/context",
+      "passed": "Actual map/list,contour,complete owner/POI/local-underwater fields,preview Enter,summary Enter,rolebutton Enter,duplicate-ID options,44CSSpx live zoom/rotation,ambiguous hit blocks Done",
+      "negative": "R2-F01/F02 reproduced",
+      "pageerrors": 0,
+      "temporary_server_and_browser_closed": true
+    },
+    "temporary_handler_diagnostics": {
+      "modes": [
+        "classic",
+        "mythic"
+      ],
+      "passed": "Reverse exact v7 frontier/order;malformed normalization;guarded RNG continuation from edited reload;Undo generation/Undo E7/Redo;old/new draft identity;active stale recovery;real owner-height change preserving river physical path/F"
+    },
+    "mandatory_full_checks": {
+      "owner": "root",
+      "sha": "e585ee6d599479639e2502607c16c0abc9a2218d",
+      "npm_run_check": {
+        "exit_code": 1,
+        "node_passed": 314,
+        "node_total": 317,
+        "node_failed": 3,
+        "log": "/tmp/hx-e7-r1-check.log",
+        "failing_tests": [
+          "mapTransactions.test.mjs:228 official manifest roundtrip",
+          "worldContinuation.test.mjs:40 v2 migration and v3 validation",
+          "worldContinuation.test.mjs:110 entire manifests roundtrip/continuation"
+        ]
+      },
+      "browser": "running_or_superseded_by_changes_requested;no final outcome available at closure",
+      "rng": "running_or_superseded_by_changes_requested;no final outcome available at closure",
+      "independently_repeated": false,
+      "acceptance_not_granted": true
+    },
+    "test_change_summary": {
+      "added": 0,
+      "removed": 0,
+      "modified": 0,
+      "scope": "No reviewer persistent test/source edits;temporary diagnostics via shell stdin only."
+    }
+  },
+  "test_usefulness": {
+    "assessment": "Useful distinct tests reuse established fixtures and existing save-history runner. Candidate exact-unique/order test is necessary persistence coverage;stale identity and ambiguity assertions exercise separate risks. Existing ROAD07/E3 downgrade test checks actual later behavior rather than only flags;full-document comparisons and executable history/continuation are material.",
+    "permanent_duplication": "No unnecessary separate permanent runner or repeated RIV numeric table observed. Node detached-policy versus actual App versus browser layers have distinct purpose.",
+    "gaps": [
+      "Preview assertions check owner transition count1 but never require names for a height-affected river with count0.",
+      "The required E7 export caption has no assertion.",
+      "Finite synthetic/physical fixtures cannot establish all hydrological maps,all24 biomes or full device accessibility.",
+      "The new legacy loop relabels a v7-shaped fixture2-6 with candidateHexes still present;it misses optional missing arrays. Existing official manifest tests catch this without a new duplicate permanent corpus."
+    ]
+  },
+  "score_assessment_ref": "agent-work/score/assessments/2026-11-05-reviewer-HX-BL-023-E7-e585ee6.json",
+  "score_summary": {
+    "model_version": "1.2",
+    "criteria_assessed": 14,
+    "grade": null,
+    "points": null,
+    "delta": null,
+    "awarded_points": 0,
+    "confirmed_points": null,
+    "unverified_weight": 1000,
+    "status": "insufficient_evidence"
+  },
+  "limitations": [
+    "Read-only local review;no source/diff/PNG/bundle/blob/tree/PR transmitted;remote sync remains blocked_auto_review.",
+    "No main change,merge,deploy,release approval,external comments or messages.",
+    "Headless Chromium only;physical touch,AT,Safari,Firefox,fullWCAG and full score/game breadth unknown.",
+    "Preexisting report PNG/test diagnostic side effects excluded from immutable src/docs/tracked-test identity.",
+    "Root full check fails314/317;browser/RNG final outcomes not available at reviewer closure. No acceptance or release readiness claimed."
+  ],
+  "latest_update_status": "blocked_previous_auto_review_full_history_not_retried",
+  "latest_intended_delta": {
+    "task_id": "HX-BL-023",
+    "stage": "E7",
+    "review_status": "changes_requested_local",
+    "source_sha": "e585ee6d599479639e2502607c16c0abc9a2218d",
+    "next_role": "developer",
+    "next_step": "Fix optional legacy candidate import regression,affected-river preview inventory and E7 export caption;freeze new SHA and independently review. Source sync remains separately blocked.",
+    "release_status": "not_released_not_ready",
+    "confirmed_points": null,
+    "unverified_weight": 1000
+  },
+  "foreign_claims_or_results_overwritten": false,
+  "completed_at": "2026-11-05T14:06:34.210Z",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "is_enabled": true,
+      "checked_at": null,
+      "checked_before": "2026-11-05T13:59:17.702Z",
+      "time_limitation": "Initial actual peek succeeded before claim; exact initial timestamp was not captured."
+    },
+    "end": {
+      "status": "checked",
+      "checked_at": "2026-11-05T14:06:23.078Z",
+      "is_enabled": true
+    },
+    "restoration_performed": false,
+    "errors": []
+  }
+}
