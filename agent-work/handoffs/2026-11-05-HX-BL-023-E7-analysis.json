@@ -1,0 +1,219 @@
+{
+  "schema_version": 1,
+  "handoff_id": "2026-11-05-HX-BL-023-E7-analysis",
+  "created_at": "2026-11-05T10:27:52.562Z",
+  "created_by_run": "2026-11-05-strategist-score-PR487",
+  "task_id": "HX-BL-023",
+  "stage_id": "E7",
+  "status": "ready_for_business_analyst",
+  "next_role": "business_analyst",
+  "next_step": "Проверить свежие claims и точный main, затем подготовить пригодную разработчику E7-спецификацию высоты региона и переноса гекса/границ с сохранением воды, рек, дорог, данных и обратимости; показать отдельное предложение UI1500/390. Код и выпуск не входят в этот аналитический запуск.",
+  "scope": {
+    "included": [
+      "Правка высоты региона отдельно от биома; определить допустимые значения и последствия по действующим доменным правилам.",
+      "Изменение границ через перенос гекса между регионами с явной принадлежностью и пересчётом отображаемых границ.",
+      "Определить безопасные контракты связности/неопустошения, центров и anchor, kingdom membership, наследования биома и сохранения локальных overrides.",
+      "Рассмотреть реальные зависимости высоты/принадлежности: речные направления и F/истоки/устья, вода и владение, дороги/переправы/препятствия; показать последствия либо понятный атомарный отказ.",
+      "Идентичность, имена, авторские заметки и связанные POI не теряются; Undo/Redo, JSON/reload/продолжение, seed/RNG и счётчики сохраняются по существующим контрактам."
+    ],
+    "excluded": [
+      "Перенос POI как самостоятельная операция и остальные E8-функции.",
+      "Пять новых биомов из самостоятельного issue489; автоматическое распределение новых биомов.",
+      "L2-движение партии, время/скорость; L3-механики/интеграции.",
+      "Новый полный аудит, повторные E5/E6 smoke, новые замеры сверх утверждённых лимитов, paid APIs/credits.",
+      "Скрытый reroll всей карты, изменение domain rules или score-модели ради упрощения; main/публикация."
+    ]
+  },
+  "authority": {
+    "status": "already_approved_parent_scope",
+    "task_start_approved": true,
+    "analysis_allowed": true,
+    "development_after_suitable_spec": true,
+    "release_approved": false,
+    "approval_ref": "owner-decision-2026-10-28-editor-additional-functions-approved",
+    "parent_spec_ref": "agent-work/specs/HX-BL-023.md",
+    "parent_spec_version": "2.3",
+    "parent_spec_blob": "47c33c51745ebe9cc7338b81a5507f8b056c102c",
+    "parent_stage": "E7 / L",
+    "new_start_approval_needed": false,
+    "design_response_blocks_work": false,
+    "publication_gate": "Separate owner permission for independently reviewed exact package; no implied release authority."
+  },
+  "inputs": {
+    "published_baseline_sha": "2ef5cc35107f299c309b7c8065a1e81ca9881278",
+    "reviewed_source_sha": "c5b4f26c6d5a29aa0ba1d89ca11cc209ebe5272e",
+    "full_tree_sha": "3a1ff34de3ef0d6b363de66a62944fff2b27a909",
+    "fresh_main_check_required": true,
+    "operational_docs": [
+      "AGENTS.md",
+      "docs/index.md",
+      "agent-work/process.md",
+      "agent-work/strategy/vision.md",
+      "agent-work/strategy/score-model.md",
+      "agent-work/feedback.json",
+      "agent-work/lessons.md"
+    ],
+    "domain_docs_in_current_main": [
+      "docs/region-generation.md",
+      "docs/river-model.md",
+      "docs/road-model.md",
+      "docs/road-model-audit.md",
+      "docs/natural-lakes.md",
+      "docs/biome-color.md"
+    ],
+    "prior_specs": [
+      "agent-work/specs/HX-BL-023-E2.md",
+      "agent-work/specs/HX-BL-023-E3.md",
+      "agent-work/specs/HX-BL-023-E4.md",
+      "agent-work/specs/HX-BL-023-E5.md",
+      "agent-work/specs/HX-BL-023-E6.md"
+    ],
+    "accepted_release_summaries": [
+      "agent-work/evidence/review-HX-BL-023-E6-c5b4f26/summary.json",
+      "agent-work/evidence/review-HX-BL-023-E6-c5b4f26/score-assessment-summary.json",
+      "agent-work/evidence/release-PR487-2ef5cc3/verification-summary.json"
+    ],
+    "current_score_ref": "agent-work/score/current-score.json",
+    "current_score_verified_blob": "950e11bdfd5f59da09d424af14a820c5c8b580f5"
+  },
+  "expected_output": {
+    "spec_path": "agent-work/specs/HX-BL-023-E7.md",
+    "spec_content": "Developer-ready goal/scope, source inventory, exact commands and before/after behavior, permissible values, entity identity/dependency and conflict decisions, errors/no-op/stale/cancel, compatibility/migration/continuation, history/export, concrete acceptance and useful verification plan; unresolved material policy choices explicitly owned.",
+    "ui": "Versioned proposed interface based on current UI at1500px and390px with read/edit/select-target/preview/conflict/error/after states as applicable. Present to owner as proposal and link version in spec/handoff; record shown/pending truthfully. No third design-approval gate.",
+    "developer_handoff": "Bounded E7 development handoff with exact spec version, current baseline, acceptance/evidence/risk and independent-review gate. No implementation in analyst role."
+  },
+  "acceptance_of_analyst_output": [
+    {
+      "id": "E7-A01",
+      "expected": "Published baseline and existing fields/callbacks/domain invariants inventoried; height change and transfer/region-boundary operations have exact safe contracts, including disconnected/empty source or target and center/kingdom cases."
+    },
+    {
+      "id": "E7-A02",
+      "expected": "Dependency matrix explicitly covers RIV/F/road-crossings/water/biomes/IDs/names/notes/POI; compatible action preserves them, incompatible action has shown resolution or atomic refusal. HeightLevel is not silently claimed to be physical meters or certified game altitude."
+    },
+    {
+      "id": "E7-A03",
+      "expected": "Executable acceptance scenarios define ordinary/conflict/stale/no-op/cancel/fault, one accepted history transaction, exact Undo/Redo, JSON/reload/continuation and data/RNG/counter preservation in Classic/Mythic; expected evidence on exact future SHA is separate per criterion."
+    },
+    {
+      "id": "E7-A04",
+      "expected": "UI proposal1500/390 presented as proposal; preserve one common Edit/Done, shared panel scroll, equal view/edit row spacing, current-language naming and selection/find behavior. Absence of design reply does not halt approved work."
+    },
+    {
+      "id": "E7-A05",
+      "expected": "Score1.2 baseline and expected transitions/delta remain null/unknown unless evidence supports whole criteria; applicable shared rules/bindings mapped honestly, no game breadth or leadership inferred."
+    },
+    {
+      "id": "E7-A06",
+      "expected": "Self-contained spec and developer handoff remote saved/readback; new claims checked; no duplicate task/proposal or E8/issue489 work. Useful existing tests reused; any new case tied to a distinct requirement/risk without repeated broad audit."
+    }
+  ],
+  "product_alignment": {
+    "layer": "L1",
+    "primary_scenario": "develop",
+    "secondary_scenario": "create",
+    "play_now_effect": "not assessed",
+    "ranking_version": "three-scenario-ranks-1.3-DW-FL-nonzero",
+    "ranking_ref": "agent-work/market/three-scenario-ranking-2026-11-04.json",
+    "ranking_observed_blob": "4c5f2a79d5ab6952d33014cb4919eb4a0838a96d",
+    "cohort_version": "2026-11-04-ranking1.3-process-sync",
+    "cohort_ref": "agent-work/score/cohorts-2026-11-04.json",
+    "priority_reason": "Continue already approved L1 editor sequence after E5/E6 dependencies were published; L1 precedes L2/L3. No reprioritization or new duplicate proposal.",
+    "candidate_profile_context": [
+      {
+        "game": "DND5",
+        "edition": "DMG2014 bounded corpus; not2024",
+        "reference_overall_rank": 1,
+        "reference_develop_rank": 1
+      },
+      {
+        "game": "PF2",
+        "edition": "Remaster GM Core baseline; no Kingmaker/supplements",
+        "reference_overall_rank": 2,
+        "reference_develop_rank": 2
+      },
+      {
+        "game": "MB",
+        "edition": "Mythic Bastionland Core product mode",
+        "reference_overall_rank": 9,
+        "reference_develop_rank": 14
+      }
+    ],
+    "market_limit": "Expert ranking is not measured demand or product compatibility.",
+    "shared_rule_inputs": [
+      "map.terrain_zones",
+      "map.land_water_shapes",
+      "map.river_network",
+      "map.physical_elevation",
+      "map.terrain_compatibility"
+    ],
+    "rules_ref": "agent-work/rules/common-rules.json",
+    "bindings_ref": "agent-work/rules/game-bindings.json",
+    "required_trace": "ranking_version/cohort_version/scenario/game-edition/rule_id/layer/criterion_id/acceptance/evidenceSHA; analyst checks actual applicability and reverse binding_ids before mapping. Product editor behavior is not automatically a book requirement.",
+    "applicability_quality_breadth": "unknown; no verified game profile/evidence transferred or new support claimed"
+  },
+  "score": {
+    "model_version": "1.2",
+    "model_blob": "ab660f02e26faf2233aecd5f2fd1090260fe74eb",
+    "candidate_criterion_ids": [
+      "S01-C01",
+      "S01-C02",
+      "S01-C03",
+      "S01-C04",
+      "S01-C05",
+      "S02-C02",
+      "S02-C03",
+      "S03-C01",
+      "S03-C04",
+      "S03-C05",
+      "S04-C04",
+      "S04-C05",
+      "S09-C04"
+    ],
+    "before_grade": null,
+    "before_points": null,
+    "expected_after_grade": null,
+    "expected_after_points": null,
+    "expected_delta": null,
+    "status": "unknown; analyst narrows criterion mapping without forecast award",
+    "post_PR487_score_update_status": "completed",
+    "confirmed_points": null,
+    "unverified_weight": 1000
+  },
+  "feedback": {
+    "HX_FB_002": "audit_completed: apply usefulness/reuse guidance, do not repeat audit or cleanup without scope.",
+    "issue489": {
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/issues/489",
+      "observed_at": "2026-11-05T10:27:52.562Z",
+      "state": "open",
+      "owner": "YuriyEmelyanov",
+      "scope": "Manual tundra/glacier/desert/jungle/volcanic wasteland; all modes and colour/tile/emoji views; no automatic generation.",
+      "decision": "defer_from_E7; preserve independent issue identity and owner instruction. Existing request is authority for its own stated task, not to bundle it into E7 or change current order. No duplicate proposal; later own dispatch after fresh queue/claims."
+    }
+  },
+  "storage_constraints": {
+    "latest_update_status": "blocked_previous_auto_review; not retried",
+    "do_not_rewrite": [
+      "agent-work/latest.json",
+      "agent-work/backlog.json",
+      "agent-work/approvals.json"
+    ],
+    "do_not_upload": "Previously rejected full reviewer report/diagnostics or UI-v1 current-1500 PNG, re-encoding or alternative payload; exact denied images need separate owner authorization.",
+    "allowed_progress": "Own scoped claim/result/spec/handoff and new UI proposal within authorization; record concrete saving failures without bypass. Missing design response or denied historical screenshot does not block scope/code/checks.",
+    "registry_effect": "This is a single E7 handoff after one PR487 event, not a replacement registry."
+  },
+  "budget": {
+    "status": "owner_waived_usage_gate",
+    "usage_known": false,
+    "actual_usage": null,
+    "additional_spend_approved": false
+  },
+  "dispatch": {
+    "foreign_E7_claim_observed": false,
+    "existing_E7_spec_observed": false,
+    "observed_at": "2026-11-05T10:27:52.562Z",
+    "claim_required_before_execution": true,
+    "execution_status": "not_started_by_strategist"
+  },
+  "completion_gate": "Analyst spec, visible versioned UI proposal and developer handoff with remote readback; actual E7 implementation/review/release remain later roles."
+}
