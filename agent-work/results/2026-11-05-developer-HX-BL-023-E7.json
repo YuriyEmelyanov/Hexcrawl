@@ -5,9 +5,9 @@
   "task_id": "HX-BL-023",
   "stage_id": "E7",
   "role_reason": "Completed E7 analyst claim and E7-1.0 developer handoff were ready; no foreign active E7 developer claim existed. Approved owner scope already covers implementation.",
-  "status": "local_source_frozen_final_validation_and_review_running",
+  "status": "accepted_locally_source_sync_and_PR_blocked",
   "started_at": "2026-11-05T11:58:47.793Z",
-  "completed_at": null,
+  "completed_at": "2026-11-05T14:49:36.009Z",
   "spec": {
     "path": "agent-work/specs/HX-BL-023-E7.md",
     "version": "E7-1.0",
@@ -32,14 +32,19 @@
       "local_only": true,
       "verified_base_to_tree": "458a78fbb594d7ada1ac925eda2748c1cc680474"
     },
-    "persistence_limitation": "Implementation and screenshots exist locally only. No full source or patch was accepted by GitHub tool review. Metadata is durable; source availability must be checked by the next worker."
+    "persistence_limitation": "Final implementation and screenshots remain local. One earlier9d App blob was accepted but is unreferenced;the16-file tree upload was rejected and no feature commit/PR contains E7. Metadata is durable;source availability must be checked by the next worker. No further source transmission after latest rejection.",
+    "main_sha_last_observed": "2ef5cc35107f299c309b7c8065a1e81ca9881278",
+    "sha": "9aa08bbe24bc8d83bf50ca2eea1b16cb70335d7f",
+    "tree": "458a78fbb594d7ada1ac925eda2748c1cc680474"
   },
   "implementation": [
-    "Explicit region height plus compatible base biome as one command; local overrides unchanged.",
-    "Single-hex transfer with physical side compatibility, connectivity, protected centers/anchors, fixed kingdom area and recomputed size/coast/candidates.",
-    "Literal POI/name/tag/counter migration; river owner remap and directed height/dependency guards; no RNG or dependency deletion.",
-    "Shared Edit/Done with UI-only identity/revision draft, map-only Enter, Esc, navigation/mutation guards and accepted-only exports.",
-    "E3 minimum uses isTract after E7 ordinary six-to-five; road downgrade reproduction fails before fix and refuses after fix."
+    "Explicit region height plus compatible base biome as one command;local and underwater overrides retained.",
+    "Single-hex transfer with side compatibility,connected nonempty regions,protected centers/anchors,fixed kingdom policy;recompute size/coast while accepted candidate frontier/order remain literal.",
+    "POI/name/tag/counter-prefix migration;explicit sector owner remap;directed height,depedency,ROAD07 and E3 minima refuse invalid transactions without RNG or deletion.",
+    "Shared Edit/Done,identity+revision guarded UI draft;map/list equivalent targets,future target contour,live44CSSpx ambiguous-hit resolution;Enter/Space selecting controls never commit,preview/mapEnter accept,Esc cancels.",
+    "Preview reports local exceptions,affected river names even zero owner changes,owner transitions,POI keys,inherited biome/height and deterministic Auto marks.",
+    "Directed height refusal names involved rivers/regions/IDs and height transition,states unchanged-map and next action inRU/EN.",
+    "Exact v7 retained frontier ordering with existing legacy/optional/mismatch normalization;detached final validation before history/setters."
   ],
   "checks": {
     "sha": "9aa08bbe24bc8d83bf50ca2eea1b16cb70335d7f",
@@ -54,25 +59,93 @@
       "selected": {
         "passed": 25,
         "executed": 25,
-        "log": "/tmp/hx-e7-r3-selected.log"
+        "log": "/tmp/hx-e7-r3-selected.log",
+        "not_final_SHA_evidence": true,
+        "scope": "Pre-freeze focus run,superseded by final317/317 at9aa;not counted again."
       },
       "typescript": "passed"
     },
     "mandatory_final": {
-      "status": "running",
-      "check_log": "/tmp/hx-e7-9aa08bb-check.log",
-      "browser_log": "/tmp/hx-e7-9aa08bb-browser.log",
-      "rng_log": "/tmp/hx-e7-9aa08bb-rng.log"
+      "status": "passed",
+      "sha": "9aa08bbe24bc8d83bf50ca2eea1b16cb70335d7f",
+      "node_version": "24.22.1",
+      "check": {
+        "command": "npm run check",
+        "exit_code": 0,
+        "typescript": "passed",
+        "node": {
+          "executed": 317,
+          "passed": 317,
+          "failed": 0,
+          "skipped": 0,
+          "unit": "registered Node cases"
+        },
+        "build": "passed",
+        "log": "/tmp/hx-e7-9aa08bb-check.log",
+        "sha256": "3fdf6f46fb4e31b7059635dde7305f92147370b778508c6c44f72ac0bb57e80b"
+      },
+      "browser": {
+        "command": "npm run test:browser",
+        "exit_code": 0,
+        "executed": 8,
+        "passed": 8,
+        "failed": 0,
+        "skipped": 0,
+        "unit": "existing sequential script runners, not assertion totals",
+        "E7_new_lifecycles": {
+          "executed": 3,
+          "passed": 3,
+          "modes": [
+            "classic",
+            "mythic"
+          ],
+          "separate_ambiguity_case": true,
+          "viewports": [
+            1500,
+            390,
+            320
+          ]
+        },
+        "browser": "Chromium153.0.8010.0",
+        "log": "/tmp/hx-e7-9aa08bb-browser.log",
+        "sha256": "89f910427bdbdbda6a6d162442131d73621d75c63a42d136c6e87c1c0a530530"
+      },
+      "rng": {
+        "command": "npm run test:browser:rng",
+        "exit_code": 0,
+        "executed": 1,
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "unit": "existing production UI RNG script runner",
+        "log": "/tmp/hx-e7-9aa08bb-rng.log",
+        "sha256": "9d9455e6a359101fb72bd11c44774b19966e014a6de79b3dbec04fbf9146e20c"
+      },
+      "source_paths_still_match_commit_after_checks": true,
+      "repeated_runs_not_summed": true
     },
     "independent_review": {
-      "status": "pending_final_suites",
-      "worker": "/root/e7_r1_independent_review",
-      "preliminary": "R3-F01 fixed actual handler/DOM RU/EN1500/390/320; no new findings so far"
+      "verdict": "accepted_local_limited",
+      "source_sha": "9aa08bbe24bc8d83bf50ca2eea1b16cb70335d7f",
+      "source_tree": "458a78fbb594d7ada1ac925eda2748c1cc680474",
+      "open_findings": 0,
+      "result_ref": "agent-work/results/2026-11-05-reviewer-HX-BL-023-E7-9aa08bb.json",
+      "score_assessment_ref": "agent-work/score/assessments/2026-11-05-reviewer-HX-BL-023-E7-9aa08bb.json",
+      "independent_worker": "/root/e7_r1_independent_review",
+      "limitations": [
+        "Only local immutable source reviewed;no source/diff/PNG/bundle/blob/tree/PR transmitted.",
+        "Remote source sync blocked_auto_review is separate from local acceptance;source availability confirmed.",
+        "Headless Chromium only;physical touch,AT,Safari,Firefox/fullWCAG and complete game breadth unknown.",
+        "No full score audit/model change;no release/main/deploy approval."
+      ],
+      "mandatory_checks_included": true
     },
     "limitations": [
       "Remote source sync/PR blocked by automatic approval review; no source retry after latest rejection.",
       "Finite fixtures and headless Chromium; physical touch/AT/Safari/Firefox unknown.",
-      "No main/deploy or product score increase."
+      "No main/deploy or product score increase.",
+      "Build retains a >500kB bundle warning; no bundle-performance or new score claim.",
+      "Some headless system emoji glyphs are unavailable; retained Unicode values are checked."
     ]
   },
   "test_change_summary": {
@@ -104,7 +177,10 @@
             "risk": "Real App transaction, continuation in both modes including a real kingdom, ROAD07/E3 interaction, Auto marks, no-op/stale/late fault/Redo; exact v7 frontier and optional legacy normalization",
             "reuse_or_new_reason": "Existing generation harness and v7 fixture reused. Six clone failure points are subscenarios of one registered case, not counted as six new tests."
           }
-        ]
+        ],
+        "executed": 317,
+        "passed": 317,
+        "skipped": 0
       },
       {
         "suite": "Chromium existing save-history runner",
@@ -112,7 +188,10 @@
         "removed": 0,
         "modified": 0,
         "scenario_risk": "Classic/Mythic E7 native selectors, map-only Enter versus details/select Enter, Done/Esc, guards, PNG exclusion, exact Undo/Redo/reload, geometry under rotation/wheel, RU/EN and narrow layout; same-name IDs, ambiguous44px hits and explicit resolution",
-        "reuse_or_new_reason": "Two mode lifecycles added to the existing browser/corpus runner; no new parallel browser runner."
+        "reuse_or_new_reason": "Two mode lifecycles added to the existing browser/corpus runner; no new parallel browser runner.",
+        "executed": 3,
+        "passed": 3,
+        "skipped": 0
       },
       {
         "suite": "RNG browser",
@@ -120,7 +199,10 @@
         "removed": 0,
         "modified": 0,
         "scenario_risk": "Existing production RNG checks rerun because snapshot/export wiring changed",
-        "reuse_or_new_reason": "No new RNG series or permanent cases."
+        "reuse_or_new_reason": "No new RNG series or permanent cases.",
+        "executed": 1,
+        "passed": 1,
+        "skipped": 0
       }
     ],
     "not_counted_as_permanent_tests": [
@@ -148,7 +230,7 @@
         "expected_after_grade": null,
         "expected_after_points": null,
         "delta": null,
-        "status": "unknown_pending_final_independent_assessment",
+        "status": "independently_assessed_unknown_no_award",
         "evidence_sha": "9aa08bbe24bc8d83bf50ca2eea1b16cb70335d7f",
         "evidence": [
           "checks",
@@ -168,7 +250,7 @@
         "expected_after_grade": null,
         "expected_after_points": null,
         "delta": null,
-        "status": "unknown_pending_final_independent_assessment",
+        "status": "independently_assessed_unknown_no_award",
         "evidence_sha": "9aa08bbe24bc8d83bf50ca2eea1b16cb70335d7f",
         "evidence": [
           "checks",
@@ -188,7 +270,7 @@
         "expected_after_grade": null,
         "expected_after_points": null,
         "delta": null,
-        "status": "unknown_pending_final_independent_assessment",
+        "status": "independently_assessed_unknown_no_award",
         "evidence_sha": "9aa08bbe24bc8d83bf50ca2eea1b16cb70335d7f",
         "evidence": [
           "checks",
@@ -208,7 +290,7 @@
         "expected_after_grade": null,
         "expected_after_points": null,
         "delta": null,
-        "status": "unknown_pending_final_independent_assessment",
+        "status": "independently_assessed_unknown_no_award",
         "evidence_sha": "9aa08bbe24bc8d83bf50ca2eea1b16cb70335d7f",
         "evidence": [
           "checks",
@@ -229,7 +311,7 @@
         "expected_after_grade": null,
         "expected_after_points": null,
         "delta": null,
-        "status": "unknown_pending_final_independent_assessment",
+        "status": "independently_assessed_unknown_no_award",
         "evidence_sha": "9aa08bbe24bc8d83bf50ca2eea1b16cb70335d7f",
         "evidence": [
           "checks",
@@ -249,7 +331,7 @@
         "expected_after_grade": null,
         "expected_after_points": null,
         "delta": null,
-        "status": "unknown_pending_final_independent_assessment",
+        "status": "independently_assessed_unknown_no_award",
         "evidence_sha": "9aa08bbe24bc8d83bf50ca2eea1b16cb70335d7f",
         "evidence": [
           "checks",
@@ -269,7 +351,7 @@
         "expected_after_grade": null,
         "expected_after_points": null,
         "delta": null,
-        "status": "unknown_pending_final_independent_assessment",
+        "status": "independently_assessed_unknown_no_award",
         "evidence_sha": "9aa08bbe24bc8d83bf50ca2eea1b16cb70335d7f",
         "evidence": [
           "checks",
@@ -288,7 +370,7 @@
         "expected_after_grade": null,
         "expected_after_points": null,
         "delta": null,
-        "status": "unknown_pending_final_independent_assessment",
+        "status": "independently_assessed_unknown_no_award",
         "evidence_sha": "9aa08bbe24bc8d83bf50ca2eea1b16cb70335d7f",
         "evidence": [
           "checks",
@@ -309,7 +391,7 @@
         "expected_after_grade": null,
         "expected_after_points": null,
         "delta": null,
-        "status": "unknown_pending_final_independent_assessment",
+        "status": "independently_assessed_unknown_no_award",
         "evidence_sha": "9aa08bbe24bc8d83bf50ca2eea1b16cb70335d7f",
         "evidence": [
           "checks",
@@ -331,7 +413,7 @@
         "expected_after_grade": null,
         "expected_after_points": null,
         "delta": null,
-        "status": "unknown_pending_final_independent_assessment",
+        "status": "independently_assessed_unknown_no_award",
         "evidence_sha": "9aa08bbe24bc8d83bf50ca2eea1b16cb70335d7f",
         "evidence": [
           "checks",
@@ -351,7 +433,7 @@
         "expected_after_grade": null,
         "expected_after_points": null,
         "delta": null,
-        "status": "unknown_pending_final_independent_assessment",
+        "status": "independently_assessed_unknown_no_award",
         "evidence_sha": "9aa08bbe24bc8d83bf50ca2eea1b16cb70335d7f",
         "evidence": [
           "checks",
@@ -372,7 +454,7 @@
         "expected_after_grade": null,
         "expected_after_points": null,
         "delta": null,
-        "status": "unknown_pending_final_independent_assessment",
+        "status": "independently_assessed_unknown_no_award",
         "evidence_sha": "9aa08bbe24bc8d83bf50ca2eea1b16cb70335d7f",
         "evidence": [
           "checks",
@@ -391,7 +473,7 @@
         "expected_after_grade": null,
         "expected_after_points": null,
         "delta": null,
-        "status": "unknown_pending_final_independent_assessment",
+        "status": "independently_assessed_unknown_no_award",
         "evidence_sha": "9aa08bbe24bc8d83bf50ca2eea1b16cb70335d7f",
         "evidence": [
           "checks",
@@ -412,7 +494,7 @@
         "expected_after_grade": null,
         "expected_after_points": null,
         "delta": null,
-        "status": "unknown_pending_final_independent_assessment",
+        "status": "independently_assessed_unknown_no_award",
         "evidence_sha": "9aa08bbe24bc8d83bf50ca2eea1b16cb70335d7f",
         "evidence": [
           "checks",
@@ -421,14 +503,60 @@
         ],
         "scope": "Atomic identity collision and clone/format faults; finite evidence."
       }
-    ]
+    ],
+    "independent_assessment_ref": "agent-work/score/assessments/2026-11-05-reviewer-HX-BL-023-E7-9aa08bb.json",
+    "independent_status": "insufficient_evidence_no_award"
   },
   "ui": {
-    "kind": "actual local implementation at exact local SHA; not a design proposal",
+    "kind": "Actual local implementation at exact final SHA; verified screenshots generated by final mandatory browser suite.",
     "sha": "9aa08bbe24bc8d83bf50ca2eea1b16cb70335d7f",
-    "screenshots": [],
-    "shown_in_owner_response": "Final exact-SHA screenshots will be displayed after final browser suite.",
-    "remote_screenshot_upload": false
+    "screenshots": [
+      {
+        "path": "/workspace/scratch/60e61b33a6a0/e7-development/reports/HX-BL-023-E7/before-panel-1500.png",
+        "sha256": "bf05e80857b98926be55dd10fa4a57c926bdbc31f66c95b56699b43113403c12",
+        "pixels": [
+          467,
+          374
+        ]
+      },
+      {
+        "path": "/workspace/scratch/60e61b33a6a0/e7-development/reports/HX-BL-023-E7/after-transfer-panel-1500.png",
+        "sha256": "fdcd04598233938fe2ec405c39bf307e9ab2c4e942ec14a737958e530e915b15",
+        "pixels": [
+          467,
+          374
+        ]
+      },
+      {
+        "path": "/workspace/scratch/60e61b33a6a0/e7-development/reports/HX-BL-023-E7/height-preview-panel-390.png",
+        "sha256": "dacf4060f628374b4008a92c10cedaf37ab6789eb78e0ae7729f8f308d82697e",
+        "pixels": [
+          358,
+          761
+        ]
+      },
+      {
+        "path": "/workspace/scratch/60e61b33a6a0/e7-development/reports/HX-BL-023-E7/transfer-preview-panel-320.png",
+        "sha256": "69fd2832ba0f47e898da399d16e3e58dc01de39992dd81c5f08c01ad5448f557",
+        "pixels": [
+          288,
+          1191
+        ]
+      },
+      {
+        "path": "/workspace/scratch/60e61b33a6a0/e7-development/reports/HX-BL-023-E7/english-panel-390.png",
+        "sha256": "cc78b2f264a9c9bc4ebf72a54022030fd2aa9716c622d6cc4fed0f2487f186ff",
+        "pixels": [
+          358,
+          517
+        ]
+      }
+    ],
+    "shown_in_owner_response": "Actual before/after1500 screenshots and a390 preview link will be presented in final response;no publication.",
+    "remote_screenshot_upload": false,
+    "user_effect": "Height/base terrain edited explicitly for whole region;one hex can move to adjacent eligible region,with its village/name/tags/note/local terrain and atomic Undo/Redo retained.",
+    "actual_preview_pending": false,
+    "actual_preview_evidence": "Root inspected final actual screenshots;reviewer independently exercised physicalDOM RU/EN1500/390/320."
   },
   "authority": {
     "start_approved": true,
@@ -476,8 +604,8 @@
     "usage_gate": "owner_waived_2026-10-24",
     "additional_paid_spend": 0
   },
-  "next_role": "independent_reviewer",
-  "next_step": "Complete exact-SHA mandatory checks and independent local verdict; source synchronization/PR remains blocked_auto_review.",
+  "next_role": "developer",
+  "next_step": "HX-BL-023 E7:after explicit authorization to repeat blocked source transmission,synchronize the exact reviewed tree458a78f on feature branch,open PR and independently verify the resulting remote SHA;main/deploy require separate owner release permission.",
   "handoff_ref": "agent-work/handoffs/2026-11-05-HX-BL-023-E7-local-review.json",
   "full_remote_review_ready": false,
   "local_review_ready": true,
@@ -485,17 +613,17 @@
     {
       "kind": "verified",
       "lesson": "E7 contract preserves the accepted candidate frontier entries/order. Retain exact unique v7 geometric frontier order; keep legacy/optional/mismatch normalization. Existing manifest corpus caught missing optional candidateHexes.",
-      "evidence": "R1 review F02;R2 official manifest failure then317/317 pass at7c0;final9aa validation pending."
+      "evidence": "R1F02/R2F03 review;final9aa317/317 existing+feature Node pass;browser corpus/RNG pass."
     },
     {
       "kind": "verified",
       "lesson": "Count affected rivers separately from ownership changes; height-only edits can affect an existing river with zero owner transitions. Preserve rich contact evidence for refusal identity,levels and recovery.",
-      "evidence": "R2 F01,R3 F01 actual physical geometry/DOM counterexamples;focused9aa checks pass."
+      "evidence": "R2F01/R3F01 independently reproduced and verified fixed at9aa in actual handler/DOM including two-river5→6 contact."
     },
     {
       "kind": "verified",
       "lesson": "Review all required user-visible states before repeated full-suite runs; freeze source then run mandatory suite once for final package.",
-      "evidence": "Superseded9d/e585/7c0 runs explicitly separated;current9aa final suites running."
+      "evidence": "Current immutable9aa final check317/317,browser8/8script,RNG1/1;superseded runs not summed."
     }
   ],
   "central_journal_status": "Scoped verified lessons saved in this result;large shared lessons history not retransmitted.",
@@ -507,23 +635,85 @@
       "is_enabled": true
     },
     "end": {
-      "status": "pending_final_peek"
+      "checked_at": "2026-11-05T14:49:04.561Z",
+      "status": "checked",
+      "is_enabled": true
     },
     "restoration_performed": false,
     "errors": []
   },
-  "latest_update_status": "blocked_previous_automatic_review_full_history_not_retried",
+  "latest_update_status": "error_blocked_previous_auto_review_full_history_not_retried",
   "latest_intended_delta": {
     "task_id": "HX-BL-023",
     "stage_id": "E7",
     "head_sha": "9aa08bbe24bc8d83bf50ca2eea1b16cb70335d7f",
-    "status": "local_source_frozen_final_validation_and_review_running",
-    "next_role": "independent_reviewer",
-    "next_step": "Complete exact-SHA mandatory checks and independent local verdict; source synchronization/PR remains blocked_auto_review.",
+    "tree_sha": "458a78fbb594d7ada1ac925eda2748c1cc680474",
+    "status": "accepted_locally_source_sync_and_PR_blocked",
+    "next_role": "developer",
+    "next_step": "HX-BL-023 E7:after explicit authorization to repeat blocked source transmission,synchronize the exact reviewed tree458a78f on feature branch,open PR and independently verify the resulting remote SHA;main/deploy require separate owner release permission.",
+    "local_review_verdict": "accepted_local_limited",
+    "review_result_ref": "agent-work/results/2026-11-05-reviewer-HX-BL-023-E7-9aa08bb.json",
+    "score_assessment_ref": "agent-work/score/assessments/2026-11-05-reviewer-HX-BL-023-E7-9aa08bb.json",
     "source_sync_status": "blocked_auto_review",
+    "pr": null,
+    "release_approved": false,
+    "published": false,
+    "main_changed": false,
     "confirmed_points": null,
-    "unverified_weight": 1000
+    "unverified_weight": 1000,
+    "active_claim": null,
+    "automation_health": {
+      "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "start": {
+        "checked_at": "2026-11-05T11:57:38.195Z",
+        "status": "checked",
+        "is_enabled": true
+      },
+      "end": {
+        "checked_at": "2026-11-05T14:49:04.561Z",
+        "status": "checked",
+        "is_enabled": true
+      },
+      "restoration_performed": false,
+      "errors": []
+    }
   },
   "foreign_claims_or_results_overwritten": false,
-  "primary_run_status": "in_progress"
+  "primary_run_status": "completed",
+  "review_corrections": {
+    "R1": [
+      "map targets/target contour",
+      "literal candidate frontier order",
+      "complete preview",
+      "stable distinct target IDs",
+      "stale draft closure"
+    ],
+    "R2": [
+      "optional legacy candidate fallback",
+      "affected river inventory independent from owner transitions",
+      "draft export notice"
+    ],
+    "R3": [
+      "rich river identity/height/unchanged-map/recovery refusal RU/EN"
+    ]
+  },
+  "local_review": {
+    "verdict": "accepted_local_limited",
+    "source_sha": "9aa08bbe24bc8d83bf50ca2eea1b16cb70335d7f",
+    "source_tree": "458a78fbb594d7ada1ac925eda2748c1cc680474",
+    "open_findings": 0,
+    "result_ref": "agent-work/results/2026-11-05-reviewer-HX-BL-023-E7-9aa08bb.json",
+    "score_assessment_ref": "agent-work/score/assessments/2026-11-05-reviewer-HX-BL-023-E7-9aa08bb.json",
+    "independent_worker": "/root/e7_r1_independent_review",
+    "limitations": [
+      "Only local immutable source reviewed;no source/diff/PNG/bundle/blob/tree/PR transmitted.",
+      "Remote source sync blocked_auto_review is separate from local acceptance;source availability confirmed.",
+      "Headless Chromium only;physical touch,AT,Safari,Firefox/fullWCAG and complete game breadth unknown.",
+      "No full score audit/model change;no release/main/deploy approval."
+    ]
+  },
+  "owner_decision_needed": {
+    "action": "Explicit authorization to repeat E7 source transmission and targeted operational latest.json update after automatic review rejections.",
+    "scope": "Only feature branch+PR and current operational pointers,no main merge/deploy."
+  }
 }
