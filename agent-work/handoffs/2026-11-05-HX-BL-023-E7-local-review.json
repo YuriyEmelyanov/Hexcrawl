@@ -3,7 +3,7 @@
   "task_id": "HX-BL-023",
   "stage_id": "E7",
   "kind": "bounded_local_independent_review",
-  "status": "local_code_frozen_review_R2_pending_final_checks",
+  "status": "local_review_ready_mandatory_final_pending",
   "role": "reviewer",
   "source": {
     "repository": "YuriyEmelyanov/Hexcrawl",
@@ -24,7 +24,9 @@
       "local_only": true
     },
     "persistence_limitation": "Local implementation only. Earlier App blob at 9d233d8 was accepted after owner follow-up, but the16-file tree was rejected; no feature commit/PR is on GitHub. No more source upload attempts.",
-    "prior_local_sha": "e585ee6d599479639e2502607c16c0abc9a2218d"
+    "prior_local_sha": "e585ee6d599479639e2502607c16c0abc9a2218d",
+    "sha": "9aa08bbe24bc8d83bf50ca2eea1b16cb70335d7f",
+    "tree": "458a78fbb594d7ada1ac925eda2748c1cc680474"
   },
   "spec": {
     "path": "agent-work/specs/HX-BL-023-E7.md",
@@ -33,13 +35,28 @@
   },
   "result_ref": "agent-work/results/2026-11-05-developer-HX-BL-023-E7.json",
   "scope": "Independently verify E7-1.0 AC01-12 and regressions on the local immutable SHA; produce findings and score_assessment1.2. This is a local-only review, not approval to upload code, merge or deploy.",
-  "entry_checks": [
-    "Peek the existing HexCrawl automation at start/end under current owner instruction.",
-    "Check active claims before creating a separate own reviewer claim.",
-    "Use a fresh independent agent when available; do not accept the developer assertions as proof.",
-    "Verify local git SHA/tree and source cleanliness. The remote feature branch still points to the baseline and DOES NOT contain E7. Never reset the local implementation to that remote branch.",
-    "If local files are absent, stop this bounded review with an explicit source availability block; do not reconstruct or retransmit source by alternate outbound routes."
-  ],
+  "entry_checks": {
+    "source_frozen": true,
+    "focused_actual_reproduction": {
+      "before": "failed missing named river",
+      "after": "passed1/1 RU/EN plus map/history identity",
+      "log": "/tmp/hx-e7-r3-final-focused.log"
+    },
+    "typescript": "passed",
+    "selected_Node": {
+      "passed": 25,
+      "executed": 25,
+      "log": "/tmp/hx-e7-r3-selected.log"
+    },
+    "final_mandatory": "pending reviewer preliminary pass",
+    "local_patch": {
+      "path": "/workspace/scratch/60e61b33a6a0/Hexcrawl-E7-9aa08bb.patch",
+      "bytes": 163457,
+      "sha256": "9aa27af0828f4f645e8a088b41c60e32199272b521d958fc60c38fa4f1c719d9",
+      "reconstructed_tree": "458a78fbb594d7ada1ac925eda2748c1cc680474",
+      "remote_upload": false
+    }
+  },
   "focus": [
     "Protected centers/anchors, owned wet cells, physical boundary comparison, connectivity and fixed kingdom area.",
     "Retained explicit river owner, lost-support remap only to receiver, delta arms and directed height contacts, unchanged legacy support, literal manual marks/crossings.",
@@ -50,24 +67,15 @@
     "Independently evaluate added test necessity using test-plan, distinct risk, existing fixture reuse, sensitivity and cost; counts are not acceptance."
   ],
   "checks": {
-    "sha": "7c0e6badc5910817e2672e4c8de77be3d1b8c75e",
-    "focused": {
-      "node": 3,
-      "legacy_official_manifest": 1,
-      "browser_mode_lifecycles": 2,
-      "browser_ambiguity": 1,
-      "all_passed": true
+    "sha": "9aa08bbe24bc8d83bf50ca2eea1b16cb70335d7f",
+    "mandatory_final_status": "pending",
+    "previous_sha": "7c0e6badc5910817e2672e4c8de77be3d1b8c75e",
+    "previous_checks": {
+      "check": "317/317+TypeScript+build pass",
+      "browser": "8/8 script runners pass",
+      "rng": "1/1 runner pass"
     },
-    "mandatory": {
-      "check": "running",
-      "browser": "running",
-      "rng": "running"
-    },
-    "prior_e585_check": {
-      "passed": 314,
-      "failed": 3,
-      "status": "failed_legacy_import; not acceptance"
-    }
+    "previous_results_are_not_final_SHA_results": true
   },
   "score_criteria": [
     {
@@ -193,16 +201,9 @@
     "No product release or main modification. Changed source SHA requires new independent assessment."
   ],
   "expected_output": "Concrete findings or limited acceptance on exact local SHA, source availability limitation, evidence and score_assessment1.2. Publication readiness stays blocked until source sync and normal owner gate.",
-  "version": "R2",
-  "previous_review": "agent-work/results/2026-11-05-reviewer-HX-BL-023-E7-e585ee6.json",
+  "version": "R3",
+  "previous_review": "agent-work/results/2026-11-05-reviewer-HX-BL-023-E7-7c0e6ba.json",
   "review_findings_fixed": [
-    "E7-R1-F01: map/list target equivalence, projected contour/hover,44CSSpx target hits, live geometric ambiguity resolution and keyboard/list alternative",
-    "E7-R1-F02: unchanged accepted E7 candidates; retain v7 saved order only for exact unique geometric frontier, otherwise prior normalization including legacy/sea/empty",
-    "E7-R1-F03: local/underwater exception counts, explicit moved-cell base/height, POI owner/name key mapping, actual per-edge river owner plan and Auto marks",
-    "E7-R1-F04: stable IDs even with duplicate names; accessible names identify region/coordinate",
-    "E7-R1-F05: close only current outdated draft with message, reject old map-target/Done callbacks without touching a newer draft; no-op return closes draft",
-    "R2-F01 affected river names are shown even when owner transitions remain0",
-    "R2-F02 region draft export notice uses the accepted-document wording",
-    "R2-F03 missing optional legacy candidateHexes defaults safely before normalization; official manifest regression assertions unchanged"
+    "E7-R3-F01: rich directed river contact retained; named river ID, region IDs, height transition, unchanged-map and recovery wording in RU/EN."
   ]
 }
