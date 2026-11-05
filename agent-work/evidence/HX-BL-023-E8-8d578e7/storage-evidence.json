@@ -1,0 +1,108 @@
+{
+  "task_id": "HX-BL-023",
+  "stage_id": "E8.1-storage",
+  "base_sha": "8702dee2d7dbc536a979e905430ad424f0d8c360",
+  "head_sha": "8d578e75c4c645eb94b819ce761d6543a1245cf9",
+  "head_tree": "3fcb74d8734c9252a1d678644c40379c942e66d9",
+  "status": "developer_evidence_partial_package_not_review_ready",
+  "checks": {
+    "Node_check": {
+      "status": "passed",
+      "node": "24.22.1",
+      "command": "npm run check",
+      "includes": [
+        "TypeScript",
+        "Node tests",
+        "production build"
+      ],
+      "executed": 328,
+      "passed": 328,
+      "skipped": 0,
+      "failed": 0
+    },
+    "browser": {
+      "status": "passed",
+      "command": "npm run test:browser",
+      "scripts_executed": 8,
+      "scripts_passed": 8,
+      "scripts_skipped": 0,
+      "logical_test_case_count": null,
+      "note": "Monolithic smoke scripts;not added to Node count"
+    },
+    "RNG": {
+      "status": "passed",
+      "command": "npm run test:browser:rng",
+      "scripts_executed": 1,
+      "scripts_passed": 1,
+      "scripts_skipped": 0,
+      "logical_test_case_count": null,
+      "note": "Existing actualUI reproducibility Classic/Mythic,continued imports,Undo and stale effects;not new POImove UI evidence"
+    },
+    "specific_E8": {
+      "suite": "Node saveSafety --test-name-pattern=E8",
+      "executed": 3,
+      "passed": 3,
+      "skipped": 0
+    },
+    "specific_E6": {
+      "suite": "Node mapTransactions --test-name-pattern=E6",
+      "executed": 6,
+      "passed": 6,
+      "skipped": 0
+    }
+  },
+  "log_sha256": {
+    "storage-check.log": "2d617ce6098de0922600ee58686d70f3b3d5e02d64052b0bd85a90a279a30082",
+    "storage-browser.log": "86b3242ac8e389c81295f1c7a2f56ac015637edc64e12d3e82f11eddadaa0eae",
+    "storage-rng.log": "9d9455e6a359101fb72bd11c44774b19966e014a6de79b3dbec04fbf9146e20c",
+    "storage-fast.log": "e0e3b4e2ceb5e88ab5e5c86bc86ed105ae1b421c68458b09e6e71ed4dd944bd1",
+    "storage-water.log": "d95fc08d05c1d22839206451bd782c1928a22d33a2ccd4193ec310f34347653f"
+  },
+  "test_change_summary": {
+    "node": {
+      "added": 3,
+      "removed": 0,
+      "modified": 8,
+      "source": "ASTtest()diff base/head,with E7mode loop expanded to2runner cases",
+      "scenario_risk": "v8authored names actual roundtrip/UndoRedo;malformed import atomic refusal;typechange label preservation;existing E6loss and E7owner checks extended;other modifications update schema-version expectations",
+      "reuse_or_new_reason": "Existing suites/fixtures reused,no new runner or duplicate audit"
+    },
+    "browser": {
+      "added": 0,
+      "removed": 0,
+      "modified_scenarios": 1,
+      "runner_test_case_count": null,
+      "source": "Existing notes export assertion7to8 in save-history smoke",
+      "note": "Not counted as new functional coverage or summed with Node"
+    }
+  },
+  "covered_scope": [
+    "v8editorNames validation/migration and real App import/export/history",
+    "E6explicit authored-name loss and exactUndoRedo",
+    "E7named POI owner transfer and continued reloaded maps",
+    "Typechange preserves bilingual name before settlement reconciliation"
+  ],
+  "limitations": [
+    "POImove command is still not called by App",
+    "POI manual-name display/input/catalog and coordinate target UI remain unimplemented",
+    "No actual new move workflow video/screenshots or independent review",
+    "HeadlessChromium only,not real touch/AT/Safari/Firefox certification",
+    "Local source only;remote source sync/PR blocked by previous automatic review,not retried"
+  ],
+  "development_diagnostics": [
+    {
+      "finding": "null author-name container initially became empty due nullish coalescing",
+      "resolution": "Reject explicitnull while allowing absent optional field;real importer atomicity case and final fullsuite passed"
+    },
+    {
+      "finding": "New VM harness assertions compared raw VM objects to host-cloned snapshots",
+      "resolution": "Normalize both snapshots with structuredClone;do not interpret prototype-only assertion mismatch as map corruption"
+    }
+  ],
+  "score_model_version": "1.2",
+  "independent_score_assessment": false,
+  "confirmed_points": null,
+  "unverified_weight": 1000,
+  "score_delta": null,
+  "award": 0
+}
