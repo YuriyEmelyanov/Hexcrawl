@@ -1,0 +1,150 @@
+{
+  "task_id": "HX-BL-023",
+  "stage_id": "E5",
+  "head_sha": "1daf34df6b1c4f465e69523255ebcb0dee671baa",
+  "tree_sha": "0d77e0d0bcd8659be751e2faf05ba71c7fec9104",
+  "before_release_sha": "ab75ecb0a5b90888d4e367bfc9a40ecdff8ad429",
+  "pr": 486,
+  "status": "presentation_review_ready",
+  "spec_ref": "agent-work/specs/HX-BL-023-E5.md",
+  "presentation_version": "E5-actual-1daf34d-complete-v1",
+  "guide_ref": "agent-work/evidence/HX-BL-023-E5-presentation-1daf34d/walkthrough.html",
+  "capture_manifest_ref": "agent-work/evidence/HX-BL-023-E5-presentation-1daf34d/capture-manifest.json",
+  "native_dialogs_ref": "agent-work/evidence/HX-BL-023-E5-presentation-1daf34d/native-dialogs.json",
+  "reproduction": "Copy capture-scripts/*.mjs back to test/browser of exact reviewed tree; use installed Playwright/Chromium and built dist; adjust presentOut path. Temporary presentation procedures, not permanent suite additions.",
+  "scenarios": [
+    {
+      "scenario": "read/edit; published before/actual after",
+      "evidence": "01-start-create.html",
+      "desktop": 1500,
+      "narrow": 390,
+      "baseline_geometry_and_camera_equal": true
+    },
+    {
+      "scenario": "create real path, finish, Escape next draft",
+      "evidence": "01-start-create.html",
+      "document_changes_asserted": true
+    },
+    {
+      "scenario": "F 2→3; deep ford explicit ferry choice; preview atomic",
+      "evidence": "02-route-crossings.html"
+    },
+    {
+      "scenario": "whole-river reversal; actual replacement in reverse vertex order; Undo exact",
+      "evidence": "02-route-crossings.html"
+    },
+    {
+      "scenario": "waterfall On/Off/Auto; reversal marker conflict",
+      "evidence": "03-features-delete.html"
+    },
+    {
+      "scenario": "rapids On/Off/Auto; actual JSON overrides asserted",
+      "evidence": "05-rapids-english.html"
+    },
+    {
+      "scenario": "readable full error; named delete losses; final result and Undo",
+      "evidence": "03-features-delete.html"
+    },
+    {
+      "scenario": "English editor/confirmation/delete/error, 1500 and 390",
+      "evidence": "03-features-delete.html;05-rapids-english.html"
+    },
+    {
+      "scenario": "R1 deleted retained river; R2 primary owner moved; R3 new last-owner river with retained sector; delete/regenerate rejected",
+      "evidence": "native-dialogs.json;04-region-warnings.html",
+      "actual_native_confirm_observations": 6,
+      "all_rejected_export_equal": true
+    }
+  ],
+  "shown_in_chat": {
+    "status": "presented_in_current_conversation",
+    "shown_at": "2026-11-05T00:30:55.058Z",
+    "delivery": "Direct inline Markdown image sequences in commentary: RU desktop/narrow, creation finish/cancel, F/crossing, reversal/replacement, waterfall/rapids states, readable error, named delete/result/Undo, English controls/confirm/error; historical before ab75ecb and actual native transcript labelled. Guide links in final.",
+    "owner_view_or_approval": "not_observed; no design/release approval inferred"
+  },
+  "verification": {
+    "temporary_procedures": "All five final capture procedures exited 0; full E5 lifecycle passed Classic/Mythic; source-free capture extensions only.",
+    "guide_embedded_frames": 49,
+    "all_embedded_images_loaded_in_chromium": true,
+    "source_diff_to_local_exact_tree": "git diff --quiet HEAD exit 0",
+    "local_head": "395bead65fb89fa7c2c670d7adb1c4ff4a554197",
+    "local_tree": "0d77e0d0bcd8659be751e2faf05ba71c7fec9104",
+    "remote_pr_head_reconfirmed": "1daf34df6b1c4f465e69523255ebcb0dee671baa",
+    "remote_main_reconfirmed": "ab75ecb0a5b90888d4e367bfc9a40ecdff8ad429",
+    "remote_pr_merged": false
+  },
+  "technical_acceptance": {
+    "status": "reuse unchanged exact SHA",
+    "review_ref": "agent-work/evidence/review-HX-BL-023-E5-1daf34d/report.json",
+    "ci_run": 41921554054,
+    "mandatory_gates": "Previously passed npm run check, build, 8 browser scripts, RNG; no redundant full rerun"
+  },
+  "score": {
+    "model_version": "1.2",
+    "effect_of_presentation": "score-neutral; no points changed",
+    "assessment_ref": "agent-work/evidence/review-HX-BL-023-E5-1daf34d/score_assessment1.2.json",
+    "criterion_ids": [
+      "S01-C02",
+      "S02-C02",
+      "S02-C03",
+      "S03-C04",
+      "S03-C05",
+      "S04-C04",
+      "S04-C05",
+      "S09-C04"
+    ],
+    "grades_points_delta": "Unchanged null/insufficient_evidence from independent accepted assessment; current UI presentation supports bounded AC09 evidence only, no game support/ranking claims"
+  },
+  "test_change_summary": {
+    "base_sha": "1daf34df6b1c4f465e69523255ebcb0dee671baa",
+    "head_sha": "1daf34df6b1c4f465e69523255ebcb0dee671baa",
+    "added": 0,
+    "removed": 0,
+    "modified": 0,
+    "suite": "Permanent Node/browser/RNG suites",
+    "scenario_risk": "Actual UI presentation on unchanged source; preserve already independently accepted verification.",
+    "reuse_or_new_reason": "Reuse exact-SHA CI/review; temporary capture diagnostics retained separately, not permanent logical test growth.",
+    "count_source": "git diff --quiet HEAD plus unchanged accepted tree; source-free run base=head",
+    "executed_this_run": {
+      "permanent_suites": 0,
+      "temporary_presentation_procedures": 5,
+      "guide_render_check": "49/49 embedded PNG images loaded"
+    },
+    "reused_ci": {
+      "node24": {
+        "executed": 286,
+        "passed": 286,
+        "skipped": 0
+      },
+      "browser_scripts": {
+        "executed": 8,
+        "passed": 8
+      },
+      "rng_suite": {
+        "executed": 1,
+        "passed": 1
+      },
+      "counts_not_summed": true
+    }
+  },
+  "limits": [
+    "Controlled fixtures; no complete game-profile or WCAG/physical-phone audit.",
+    "Native dialog text observed from browser event; no native popup screenshot or new accept-path test in this presentation. Existing independent technical evidence covers accept/Undo/Map/Set/RNG.",
+    "Prior full local large-navigation failure (opacity 1 instead of 0); isolated retry and exact-tree CI passed, cause unknown, previously accepted as nonblocking; not silently erased.",
+    "Early exploratory capture fixtures had a dependent tributary: remove was blocked under AC05; final isolated fixture used. Final R2/R3 choices use actual SVG DOM activation; physical pointer/rotate checks remain in reused full browser lifecycle.",
+    "Remaining local images listed by digest are not all uploaded; 49 embedded frames are persistent reviewable evidence."
+  ],
+  "authorization": {
+    "approved_task": true,
+    "new_scope": false,
+    "release_approved": false,
+    "paid_spend": false
+  },
+  "next_role": "reviewer",
+  "next_step": "Independently verify complete presentation evidence and current unchanged SHA, then prepare owner concrete release decision if presentation accepted.",
+  "canonical_registry": {
+    "latest_json": "unchanged; prior automatic approval rejection of full-history retransmission; no retry/bypass",
+    "incident_ref": "agent-work/evidence/HX-BL-023-E5-862d60c6/operations-write-incident.json",
+    "queue_transition_not_claimed_applied": true
+  }
+}
