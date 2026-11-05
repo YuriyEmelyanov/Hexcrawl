@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-023",
+  "stage_id": "E6",
+  "run_id": "2026-11-05-reviewer-HX-BL-023-E6-b2a4612",
+  "status": "changes_requested",
+  "next_role": "programmer",
+  "priority": "P2",
+  "authorization": {
+    "task_start": "approved_existing_E6",
+    "scope": "W01-W08/AC01-AC10 unchanged; fix reviewer finding E6-R1",
+    "new_product_scope": false,
+    "publication": "not_authorized"
+  },
+  "input": {
+    "pr": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/487",
+    "head_sha": "b2a461277299b34f3001baec21f40d3e407d590f",
+    "tree_sha": "1c8af3b171416558772df42948d500cb79973925",
+    "base_sha": "27b230fc5fc5ac2f998141626fa091e1085d7a47",
+    "spec": "agent-work/specs/HX-BL-023-E6.md",
+    "spec_blob": "1e04ca6999c3a1a154c86f44b3bcf672dee19b04",
+    "evidence": "agent-work/evidence/review-HX-BL-023-E6-b2a4612/",
+    "review_result": "agent-work/results/2026-11-05-reviewer-HX-BL-023-E6-b2a4612.json"
+  },
+  "finding": {
+    "id": "E6-R1",
+    "severity": "P2",
+    "classification": "confirmed_product_defect",
+    "requirements": [
+      "W01",
+      "AC01",
+      "AC10"
+    ],
+    "path": "src/App.tsx",
+    "line": 15761,
+    "title": "Common Done is disabled throughout an active water draft",
+    "reproduction": [
+      "Use production build at exact reviewed SHA and existing synthetic waterEditorFixture in Classic.",
+      "Select registered editable land0,0; enter common Edit; choose Water=Lake.",
+      "Observe active one-cell water draft and common Done button disabled.",
+      "Clicking disabled common Done cannot invoke finishPathDrafts; draft remains and document does not commit."
+    ],
+    "expected": "Common Done finishes a safe mask or opens/retains required preview/error without bypassing unresolved confirmations.",
+    "actual": "disabled={!!waterDraft || ...} makes the required common Done path unreachable while water draft exists.",
+    "evidence": [
+      "Independent Chromium153 doneDisabled=true; forcedDoneClickLeavesDraft=true",
+      "Source15761 disabled gate,15762 handler;14939 finishPathDrafts already invokes finishWaterDraft",
+      "ci-independent.json confirms existing passing suites miss this required entry point"
+    ],
+    "impact": "Required common editor completion action unavailable; local Finish selection/Enter are workarounds. No map corruption demonstrated."
+  },
+  "scope": [
+    "Restore reachability of common Done for active water drafts through existing guarded finish path.",
+    "Keep invalid and unresolved drafts open; require every explicit answer/loss confirmation; do not toggle Edit or silently commit when finish returnsfalse.",
+    "Keep one atomic transaction, exact Undo/Redo, no-op and stale/double completion protection.",
+    "Extend suitable existing E6 lifecycle coverage for the common user entry point; avoid duplicating broad suites; preserve test-governance reasoning."
+  ],
+  "completion_criteria": [
+    "Common Done can finish valid no-loss draft and commit once using existing Edit completion semantics.",
+    "Done on dependency/loss/choice preview cannot bypass required answers; invalid draft shows error and stays editable with document/RNG/history unchanged.",
+    "Existing Enter/local Finish/Escape/reset/export-draft exclusion remain valid.",
+    "Record exact new SHA/tree, required checks and logical test change delta; hand to independent reviewer before any release request."
+  ],
+  "excluded": [
+    "main merge",
+    "publication",
+    "extra product scope",
+    "external PNG upload",
+    "retry of rejected full-history registry writes"
+  ],
+  "next_step": "Programmer fixes E6-R1 within approved E6, then independent reviewer checks new complete SHA; no new owner start approval required.",
+  "lessons": [
+    {
+      "observation": "The passing lifecycle suite exercised local Finish/Enter but missed the common Done entry point required by W01.",
+      "application": "Extend the existing user lifecycle at its common completion entry point; do not add a duplicate whole suite just to raise test count."
+    }
+  ]
+}
