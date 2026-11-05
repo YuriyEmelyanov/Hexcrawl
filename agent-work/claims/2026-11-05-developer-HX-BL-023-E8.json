@@ -4,7 +4,7 @@
   "task_id": "HX-BL-023",
   "stage_id": "E8.1",
   "role": "developer",
-  "status": "active",
+  "status": "completed",
   "started_at": "2026-11-05 17:02:30 UTC",
   "base_sha": "9aa08bbe24bc8d83bf50ca2eea1b16cb70335d7f",
   "branch": "agent/hx023-e8-poi-move",
@@ -14,33 +14,68 @@
   "authority_ref": "owner-decision-2026-10-28-editor-additional-functions-approved",
   "role_reason": "All24 Nov5 claims completed;approved detailed E8 spec/handoff ready;local accepted E7 source/tree available. No duplicate implementation.",
   "source_transfer": "Previous E7 upload denial preserved;no source upload/PR retry in this run",
-  "last_checkpoint_at": "2026-11-05 19:54:58 UTC",
+  "last_checkpoint_at": "2026-11-05 20:13:40 UTC",
   "head_sha": "6e53ae0d5c3996fe8fca04fb194439e2a1c4391e",
   "head_tree": "0b64baa1b8a1082a727890124c0b70d9ebfbfc5c",
-  "last_checkpoint_ref": "agent-work/handoffs/2026-11-05-HX-BL-023-E8-checkpoint-8d578e7.json",
-  "result_ref": "agent-work/results/2026-11-05-developer-HX-BL-023-E8-storage.json",
-  "worker_state": "running_same_resumed_claim",
+  "last_checkpoint_ref": "agent-work/handoffs/2026-11-05-HX-BL-023-E8-local-review.json",
+  "result_ref": "agent-work/results/2026-11-05-developer-HX-BL-023-E8-UI.json",
+  "worker_state": "finished_developer_handoff",
   "task_completed": false,
   "safe_resume": "Same unfinished claim may be recovered after exact localHEAD/tree and no-live-worker verification;do not start duplicate E8implementation.",
-  "next_role": "developer",
-  "next_step": "Finish exact6e53ae0 checks after reproduced row-layout correction;handoff only with explicit AC/evidence limits,no release.",
+  "next_role": "reviewer",
+  "next_step": "Проверяющий независимо проверяет6e53ae0 по E8-1.0 и всему локальному пакету E7+E8,сохраняет замечания/заключение и score_assessment1.2;при замечаниях следующий программист.",
   "resumed_at": "2026-11-05 19:04:43 UTC",
   "resume_evidence": "Same chat/root,exact8d578e7/tree3fcb74d verified;only generated reports dirty;other Nov5claims completed,prior worker finished;not lease-based takeover",
-  "lease_expires_at": "2026-11-05T21:00:00Z",
+  "lease_expires_at": null,
   "current_increment": "POI_UI",
   "previous_result_ref": "agent-work/results/2026-11-05-developer-HX-BL-023-E8.json",
   "validation": {
-    "current_head": "6e53ae0d5c3996fe8fca04fb194439e2a1c4391e",
-    "typescript": "passed",
-    "build": "passed",
-    "save_history_browser": "passed entire existing runner plus new E8 lifecycle",
-    "temporary_AC11": "passed one Classic actual-App E2→E3→E4→E5→E6→E7→E8 sequence with per-step literal Undo/Redo and finalv8reload;not permanent Node growth",
-    "final_Node_check": {
-      "status": "running",
+    "head_sha": "6e53ae0d5c3996fe8fca04fb194439e2a1c4391e",
+    "Node_check": {
+      "status": "passed",
+      "head_sha": "6e53ae0d5c3996fe8fca04fb194439e2a1c4391e",
+      "command": "npm run check",
+      "includes": [
+        "TypeScript",
+        "Node tests",
+        "production build"
+      ],
+      "node": "24.22.1",
+      "executed": 336,
+      "passed": 336,
+      "failed": 0,
+      "skipped": 0,
+      "duration_ms": 470839.623663,
       "log": "reports/HX-BL-023-E8/ui-check-6e53ae0.log"
     },
-    "remaining": "After finalcheck finishes production build,run complete8browser scripts and separateRNG serially;prior parallel RNG ended page-open timeout,not accepted",
-    "review_ready": false
+    "browser": {
+      "status": "passed",
+      "head_sha": "6e53ae0d5c3996fe8fca04fb194439e2a1c4391e",
+      "command": "npm run test:browser",
+      "browser": "Chromium153.0.8010.0",
+      "scripts_executed": 8,
+      "scripts_passed": 8,
+      "scripts_failed": 0,
+      "scripts_skipped": 0,
+      "logical_test_case_count": null,
+      "log": "reports/HX-BL-023-E8/ui-browser-6e53ae0.log",
+      "note": "Eight monolithic smoke scripts;new POI workflow is within save-history,not a ninth script or Node cases"
+    },
+    "RNG": {
+      "status": "passed",
+      "head_sha": "6e53ae0d5c3996fe8fca04fb194439e2a1c4391e",
+      "command": "npm run test:browser:rng",
+      "scripts_executed": 1,
+      "scripts_passed": 1,
+      "scripts_failed": 0,
+      "scripts_skipped": 0,
+      "logical_test_case_count": null,
+      "log": "reports/HX-BL-023-E8/ui-rng-6e53ae0.log",
+      "note": "Separate production UI reproducibility/continuation/stale import/click checks;not summed with Node or browser"
+    },
+    "review_ready": true,
+    "review_source": "local_only",
+    "independent_review": "pending"
   },
   "local_recovery_bundle": {
     "path": "reports/HX-BL-023-E8/e8-6e53ae0.bundle",
@@ -48,5 +83,35 @@
     "sha256": "1ef2faa6cac4890f4275c1875ae7caf0052a03eb2bc4f30623d31d92b7dd2ffe",
     "verified": true,
     "uploaded": false
-  }
+  },
+  "completed_at": "2026-11-05 20:14:02 UTC",
+  "run_completed": true,
+  "stage_implementation_completed": true,
+  "independently_accepted": false,
+  "evidence_ref": "agent-work/evidence/HX-BL-023-E8-6e53ae0/ui-evidence.json",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-05 19:04:29 UTC",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "continued_wake_checks": [
+      {
+        "checked_at": "2026-11-05 19:36:56 UTC",
+        "status": "checked",
+        "is_enabled": true
+      }
+    ],
+    "end": {
+      "checked_at": "2026-11-05 20:12:59 UTC",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restoration_performed": false,
+    "errors": [],
+    "limitation": "Actual observations at recorded instants only;no guarantee of later service state."
+  },
+  "latest_update_status": "blocked_previous_automatic_review_full_history_not_retried",
+  "latest_intended_delta_ref": "agent-work/results/2026-11-05-developer-HX-BL-023-E8-UI.json#latest_intended_delta"
 }
