@@ -1,0 +1,92 @@
+{
+  "task_id": "HX-BL-023",
+  "stage_id": "E6",
+  "kind": "analyst_requirement_and_test_plan_not_runtime_acceptance",
+  "basis_sha": "27b230fc5fc5ac2f998141626fa091e1085d7a47",
+  "spec_version": "E6-1.0",
+  "product_source_modified": false,
+  "test_change_summary": {
+    "base_sha": "27b230fc5fc5ac2f998141626fa091e1085d7a47",
+    "head_sha": "27b230fc5fc5ac2f998141626fa091e1085d7a47",
+    "added": 0,
+    "removed": 0,
+    "modified": 0,
+    "suite": "existing product suites",
+    "scenario_risk": "Analysis-only operational docs and temporary UI proposal rendering",
+    "reuse_or_new_reason": "No product code/test changes; future permanent tests require each requirement/risk and reuse decision from spec test inventory.",
+    "count_source": "No source branch change; git status source has only pre-existing untracked node_modules symlink. Logical product test cases unchanged."
+  },
+  "runs": {
+    "product_node": {
+      "executed": 0,
+      "passed": 0,
+      "skipped": 0,
+      "status": "not_run_analysis_only"
+    },
+    "product_browser": {
+      "executed": 0,
+      "passed": 0,
+      "skipped": 0,
+      "status": "not_run_analysis_only"
+    },
+    "product_rng": {
+      "executed": 0,
+      "passed": 0,
+      "skipped": 0,
+      "status": "not_run_analysis_only"
+    },
+    "temporary_mockup_render": {
+      "kind": "not_permanent_test_growth",
+      "states": 6,
+      "viewport_widths": [
+        1500,
+        390,
+        320
+      ],
+      "renders": 18,
+      "status": "pass",
+      "overflow": false,
+      "page_errors": []
+    }
+  },
+  "source_inventory": [
+    "src/App.tsx:Region/HexTerrainData/SaveData/getLakesForRegions/convertLandlockedSeaComponentsToLakes/import counter floor/direct edit/captureDocument",
+    "src/saveValidation.ts",
+    "src/toponyms.ts",
+    "src/tags/engine.ts",
+    "src/styles.css",
+    "docs/natural-lakes.md",
+    "docs/river-model.md",
+    "docs/road-model.md"
+  ],
+  "existing_coverage": {
+    "lakeGeometry.test.mjs": "contours,connected basins,island holes,cache",
+    "lakeReentry.test.mjs": "final geography and changed/unchanged legacy interactions",
+    "riverEndpoints.test.mjs": "physical river ends and sufficient source/absorbing lake area",
+    "seaRecovery.test.mjs": "real sea-reclamation generation and rollback",
+    "manualRivers.test.mjs": "E5 commands/numeric/invariance; extend only relevant handlers",
+    "saveSafety.test.mjs": "safe import/IDs/notes/water POI",
+    "browser/save-history.smoke.mjs": "real edit/import/history lifecycle",
+    "browser/navigation.smoke.mjs": "wheel and overlay geometry",
+    "browser/terrain-color.smoke.mjs": "styles/lake display",
+    "browser/tags.smoke.mjs": "tag owners/overrides and exact history"
+  },
+  "feedback_disposition": {
+    "HX-FB-002": "keep useful-test policy; one-off audit completed, no repeat or quota",
+    "HX-FB-006": "preserve unified panel scrolling",
+    "HX-FB-007": "preserve read/edit row spacing",
+    "HX-FB-008/HX-FB-009": "released in PR485; do not duplicate navigation implementation"
+  },
+  "lessons_applied": [
+    "Full final physical geometry validates water changes; pure numeric checks insufficient.",
+    "Unchanged legacy must not waive changed lake reentry/incident conditions.",
+    "Draft identity and ref guards protect stale closures and generation streams.",
+    "Wheel selection overlays must track imperative transforms; visibility alone insufficient.",
+    "Save all authored losses explicitly before commit; no global reroll or synthetic identity."
+  ],
+  "limitations": [
+    "Mockups illustrate behaviour only; no E6 runtime implementation or acceptance claim.",
+    "English content coverage/current game cohorts not inferred.",
+    "Central full-history registries previously denied by automatic approval review; no retry/bypass."
+  ]
+}
