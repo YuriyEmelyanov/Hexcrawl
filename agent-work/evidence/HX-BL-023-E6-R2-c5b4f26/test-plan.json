@@ -1,0 +1,11 @@
+{
+  "run_id": "2026-11-05-developer-HX-BL-023-E6-R2",
+  "base_sha": "a412bb8f866fa459c1d5f2e8d8f1e7e6e72be57e",
+  "requirement": "E6-1.0 W07 / AC08: retain unexpected Error and stack technically without changing atomic refusal",
+  "risk": "Unexpected clone/preparation failure loses the original diagnostic; logging could itself throw or misclassify expected WaterEditError/TagCapacity refusals",
+  "existing_case": "test/mapTransactions.test.mjs: E6 water cancel/no-op/stale callbacks and snapshot failure preserve map and both history branches",
+  "decision": "Extend the existing snapshot fault case, using the same real App callbacks and both nonempty history branches; add Error identity/stack, quiet expected errors, retained draft and throwing diagnostic sink assertions",
+  "reuse_reason": "The existing real-App fault case already owns the snapshot atomicity contract. No new test case or runner is needed.",
+  "expected_test_delta": {"added": 0, "removed": 0, "modified": 1},
+  "temporary_production_probe": "Actual built UI common Done with one-shot structuredClone sentinel; inspect original Error and stack, safe localized UI and state preservation separately from permanent test counts"
+}
