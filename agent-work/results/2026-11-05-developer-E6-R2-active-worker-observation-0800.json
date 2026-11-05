@@ -1,0 +1,104 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-05-developer-E6-R2-active-worker-observation-0800",
+  "task_id": "HX-BL-023",
+  "stage_id": "E6",
+  "finding_id": "E6-R2",
+  "role": "developer",
+  "status": "waiting_existing_worker",
+  "recorded_at": "2026-11-05T08:06:55.358Z",
+  "role_selection_reason": "Priority2: explicit owner-launched programmer has current unfinished claim and fresh validation checkpoint. Do not duplicate or self-resume a foreign worker.",
+  "execution": {
+    "worker_id": "/root/programmer_e6_r2",
+    "worker_run_id": "2026-11-05-developer-HX-BL-023-E6-R2",
+    "status_observed": "in_progress",
+    "phase": "source_pushed_validation_in_progress",
+    "claim_ref": "agent-work/claims/2026-11-05-developer-HX-BL-023-E6-R2.json",
+    "claim_blob": "bc9cf3743d8628e8d9767ccca98519fe0e9d6134",
+    "checkpoint": {
+      "at": "2026-11-05T08:03:09.540Z",
+      "source": "PR487",
+      "head_sha": "c5b4f26c6d5a29aa0ba1d89ca11cc209ebe5272e",
+      "focused_node": "6/6 pass",
+      "production_probe": "pass",
+      "required_check": "in_progress",
+      "required_browser": "in_progress",
+      "rng": "in_progress",
+      "ci_run_id": 41991194108
+    }
+  },
+  "source": {
+    "pr": 487,
+    "head_sha": "c5b4f26c6d5a29aa0ba1d89ca11cc209ebe5272e",
+    "merged": false
+  },
+  "verification": {
+    "method": "Fresh GitHub PR/claim/listings and CI jobs; no independent acceptance claimed",
+    "ci_run_id": 41991194108,
+    "ci_jobs": [
+      {
+        "id": 127123582499,
+        "name": "world-random",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 127123582608,
+        "name": "check",
+        "status": "in_progress",
+        "conclusion": null
+      },
+      {
+        "id": 127123583499,
+        "name": "browser",
+        "status": "completed",
+        "conclusion": "success"
+      }
+    ],
+    "developer_checks": "In progress per owner worker checkpoint; focused probe successes remain developer assertions, not acceptance",
+    "review_handoff": "No E6-R2 review handoff/result in observed directory listings; do not start independent review before worker handoff."
+  },
+  "next_role": "developer",
+  "after_handoff_role": "reviewer",
+  "next_step": "Current programmer_e6_r2 completes required checks on c5b4f26, saves exact-SHA evidence and review handoff, closes own claim; next ready role independently reviews complete handed-off SHA with score_assessment1.2.",
+  "authorization": {
+    "current_fix": "approved_E6_R2",
+    "publication": "not_authorized",
+    "other_product_work": "not_started"
+  },
+  "actions": {
+    "duplicate_worker_started": false,
+    "foreign_claim_or_result_changed": false,
+    "main_changed": false,
+    "publication_performed": false,
+    "score_awarded": false
+  },
+  "lessons_applied": [
+    "Fresh worker claim and PR/CI observations take precedence over stale latest pointer.",
+    "Pending check is not green; no acceptance or score from an incomplete run."
+  ],
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-05T08:04:32.341Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "end": {
+      "at": "2026-11-05T08:06:55.358Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restoration": {
+      "performed": false,
+      "reason": "Both actual peeks confirmed enabled"
+    },
+    "errors": [],
+    "scope": "Observed instants only; no guarantee against later disablement; cause not inferred."
+  },
+  "latest_update_status": "not_retried_previous_automatic_review_full_history_export_rejection",
+  "operational_limit": {
+    "incident": "agent-work/evidence/HX-BL-023-E5-862d60c6/operations-write-incident.json",
+    "reason": "Prior automatic approval review rejected full internal owner/task/operations history payload for latest/backlog/approvals; no retry or indirect workaround. Scoped observation only."
+  }
+}
