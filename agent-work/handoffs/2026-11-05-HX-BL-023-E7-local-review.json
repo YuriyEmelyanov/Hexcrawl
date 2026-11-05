@@ -3,7 +3,7 @@
   "task_id": "HX-BL-023",
   "stage_id": "E7",
   "kind": "bounded_local_independent_review",
-  "status": "independent_review_and_final_checks_running",
+  "status": "accepted_local_limited_source_sync_blocked",
   "role": "reviewer",
   "source": {
     "repository": "YuriyEmelyanov/Hexcrawl",
@@ -19,13 +19,13 @@
     "published": false,
     "patch": {
       "path": "/workspace/scratch/60e61b33a6a0/Hexcrawl-E7-9aa08bb.patch",
-      "bytes": 163457,
       "sha256": "9aa27af0828f4f645e8a088b41c60e32199272b521d958fc60c38fa4f1c719d9",
-      "reconstructed_tree": "458a78fbb594d7ada1ac925eda2748c1cc680474",
-      "remote_upload": false
+      "bytes": 163457,
+      "local_only": true,
+      "verified_base_to_tree": "458a78fbb594d7ada1ac925eda2748c1cc680474"
     },
-    "persistence_limitation": "Local implementation only. Earlier App blob at 9d233d8 was accepted after owner follow-up, but the16-file tree was rejected; no feature commit/PR is on GitHub. No more source upload attempts.",
-    "prior_local_sha": "7c0e6badc5910817e2672e4c8de77be3d1b8c75e",
+    "persistence_limitation": "Final implementation and screenshots remain local. One earlier9d App blob was accepted but is unreferenced;the16-file tree upload was rejected and no feature commit/PR contains E7. Metadata is durable;source availability must be checked by the next worker. No further source transmission after latest rejection.",
+    "main_sha_last_observed": "2ef5cc35107f299c309b7c8065a1e81ca9881278",
     "sha": "9aa08bbe24bc8d83bf50ca2eea1b16cb70335d7f",
     "tree": "458a78fbb594d7ada1ac925eda2748c1cc680474"
   },
@@ -37,25 +37,74 @@
   "result_ref": "agent-work/results/2026-11-05-developer-HX-BL-023-E7.json",
   "scope": "Independently verify E7-1.0 AC01-12 and regressions on the local immutable SHA; produce findings and score_assessment1.2. This is a local-only review, not approval to upload code, merge or deploy.",
   "entry_checks": {
+    "status": "passed",
+    "sha": "9aa08bbe24bc8d83bf50ca2eea1b16cb70335d7f",
+    "mandatory": {
+      "status": "passed",
+      "sha": "9aa08bbe24bc8d83bf50ca2eea1b16cb70335d7f",
+      "node_version": "24.22.1",
+      "check": {
+        "command": "npm run check",
+        "exit_code": 0,
+        "typescript": "passed",
+        "node": {
+          "executed": 317,
+          "passed": 317,
+          "failed": 0,
+          "skipped": 0,
+          "unit": "registered Node cases"
+        },
+        "build": "passed",
+        "log": "/tmp/hx-e7-9aa08bb-check.log",
+        "sha256": "3fdf6f46fb4e31b7059635dde7305f92147370b778508c6c44f72ac0bb57e80b"
+      },
+      "browser": {
+        "command": "npm run test:browser",
+        "exit_code": 0,
+        "executed": 8,
+        "passed": 8,
+        "failed": 0,
+        "skipped": 0,
+        "unit": "existing sequential script runners, not assertion totals",
+        "E7_new_lifecycles": {
+          "executed": 3,
+          "passed": 3,
+          "modes": [
+            "classic",
+            "mythic"
+          ],
+          "separate_ambiguity_case": true,
+          "viewports": [
+            1500,
+            390,
+            320
+          ]
+        },
+        "browser": "Chromium153.0.8010.0",
+        "log": "/tmp/hx-e7-9aa08bb-browser.log",
+        "sha256": "89f910427bdbdbda6a6d162442131d73621d75c63a42d136c6e87c1c0a530530"
+      },
+      "rng": {
+        "command": "npm run test:browser:rng",
+        "exit_code": 0,
+        "executed": 1,
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "unit": "existing production UI RNG script runner",
+        "log": "/tmp/hx-e7-9aa08bb-rng.log",
+        "sha256": "9d9455e6a359101fb72bd11c44774b19966e014a6de79b3dbec04fbf9146e20c"
+      },
+      "source_paths_still_match_commit_after_checks": true,
+      "repeated_runs_not_summed": true
+    },
     "source_frozen": true,
-    "focused_actual_reproduction": {
-      "before": "failed missing named river",
-      "after": "passed1/1 RU/EN plus map/history identity",
-      "log": "/tmp/hx-e7-r3-final-focused.log"
-    },
-    "typescript": "passed",
-    "selected_Node": {
-      "passed": 25,
-      "executed": 25,
-      "log": "/tmp/hx-e7-r3-selected.log"
-    },
-    "final_mandatory": "running after preliminary independent pass",
     "local_patch": {
       "path": "/workspace/scratch/60e61b33a6a0/Hexcrawl-E7-9aa08bb.patch",
-      "bytes": 163457,
       "sha256": "9aa27af0828f4f645e8a088b41c60e32199272b521d958fc60c38fa4f1c719d9",
-      "reconstructed_tree": "458a78fbb594d7ada1ac925eda2748c1cc680474",
-      "remote_upload": false
+      "bytes": 163457,
+      "local_only": true,
+      "verified_base_to_tree": "458a78fbb594d7ada1ac925eda2748c1cc680474"
     }
   },
   "focus": [
@@ -64,19 +113,110 @@
     "POI identity and complete names/tag snapshots/counter keys; size/coast/order and next-generation continuation.",
     "ROAD07 30→31 and ordinary 6→5 followed by E3 kind downgrade; emergency isTract stays separate.",
     "Atomic detached before/after format and history preparation, stale/no-op/cancel/late faults and existing executable Redo.",
-    "Map-only Enter versus summary/select; exact exported accepted world, rotation/wheel overlay geometry and narrow RU/EN UI.",
+    "Preview/mapEnter accept;native controls/summary/map-target Enter or Space only operate their control;literal accepted JSON/PNG,live44px hits,narrow RU/EN.",
     "Independently evaluate added test necessity using test-plan, distinct risk, existing fixture reuse, sensitivity and cost; counts are not acceptance."
   ],
   "checks": {
     "sha": "9aa08bbe24bc8d83bf50ca2eea1b16cb70335d7f",
-    "mandatory_final_status": "running",
-    "previous_sha": "7c0e6badc5910817e2672e4c8de77be3d1b8c75e",
-    "previous_checks": {
-      "check": "317/317+TypeScript+build pass",
-      "browser": "8/8 script runners pass",
-      "rng": "1/1 runner pass"
+    "source_paths_match_commit": true,
+    "focused": {
+      "actual_bug_before": "failed missing named river explanation",
+      "after": {
+        "passed": 1,
+        "executed": 1,
+        "log": "/tmp/hx-e7-r3-final-focused.log"
+      },
+      "selected": {
+        "passed": 25,
+        "executed": 25,
+        "log": "/tmp/hx-e7-r3-selected.log",
+        "not_final_SHA_evidence": true,
+        "scope": "Pre-freeze focus run,superseded by final317/317 at9aa;not counted again."
+      },
+      "typescript": "passed"
     },
-    "previous_results_are_not_final_SHA_results": true
+    "mandatory_final": {
+      "status": "passed",
+      "sha": "9aa08bbe24bc8d83bf50ca2eea1b16cb70335d7f",
+      "node_version": "24.22.1",
+      "check": {
+        "command": "npm run check",
+        "exit_code": 0,
+        "typescript": "passed",
+        "node": {
+          "executed": 317,
+          "passed": 317,
+          "failed": 0,
+          "skipped": 0,
+          "unit": "registered Node cases"
+        },
+        "build": "passed",
+        "log": "/tmp/hx-e7-9aa08bb-check.log",
+        "sha256": "3fdf6f46fb4e31b7059635dde7305f92147370b778508c6c44f72ac0bb57e80b"
+      },
+      "browser": {
+        "command": "npm run test:browser",
+        "exit_code": 0,
+        "executed": 8,
+        "passed": 8,
+        "failed": 0,
+        "skipped": 0,
+        "unit": "existing sequential script runners, not assertion totals",
+        "E7_new_lifecycles": {
+          "executed": 3,
+          "passed": 3,
+          "modes": [
+            "classic",
+            "mythic"
+          ],
+          "separate_ambiguity_case": true,
+          "viewports": [
+            1500,
+            390,
+            320
+          ]
+        },
+        "browser": "Chromium153.0.8010.0",
+        "log": "/tmp/hx-e7-9aa08bb-browser.log",
+        "sha256": "89f910427bdbdbda6a6d162442131d73621d75c63a42d136c6e87c1c0a530530"
+      },
+      "rng": {
+        "command": "npm run test:browser:rng",
+        "exit_code": 0,
+        "executed": 1,
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "unit": "existing production UI RNG script runner",
+        "log": "/tmp/hx-e7-9aa08bb-rng.log",
+        "sha256": "9d9455e6a359101fb72bd11c44774b19966e014a6de79b3dbec04fbf9146e20c"
+      },
+      "source_paths_still_match_commit_after_checks": true,
+      "repeated_runs_not_summed": true
+    },
+    "independent_review": {
+      "verdict": "accepted_local_limited",
+      "source_sha": "9aa08bbe24bc8d83bf50ca2eea1b16cb70335d7f",
+      "source_tree": "458a78fbb594d7ada1ac925eda2748c1cc680474",
+      "open_findings": 0,
+      "result_ref": "agent-work/results/2026-11-05-reviewer-HX-BL-023-E7-9aa08bb.json",
+      "score_assessment_ref": "agent-work/score/assessments/2026-11-05-reviewer-HX-BL-023-E7-9aa08bb.json",
+      "independent_worker": "/root/e7_r1_independent_review",
+      "limitations": [
+        "Only local immutable source reviewed;no source/diff/PNG/bundle/blob/tree/PR transmitted.",
+        "Remote source sync blocked_auto_review is separate from local acceptance;source availability confirmed.",
+        "Headless Chromium only;physical touch,AT,Safari,Firefox/fullWCAG and complete game breadth unknown.",
+        "No full score audit/model change;no release/main/deploy approval."
+      ],
+      "mandatory_checks_included": true
+    },
+    "limitations": [
+      "Remote source sync/PR blocked by automatic approval review; no source retry after latest rejection.",
+      "Finite fixtures and headless Chromium; physical touch/AT/Safari/Firefox unknown.",
+      "No main/deploy or product score increase.",
+      "Build retains a >500kB bundle warning; no bundle-performance or new score claim.",
+      "Some headless system emoji glyphs are unavailable; retained Unicode values are checked."
+    ]
   },
   "score_criteria": [
     {
@@ -206,5 +346,49 @@
   "previous_review": "agent-work/results/2026-11-05-reviewer-HX-BL-023-E7-7c0e6ba.json",
   "review_findings_fixed": [
     "E7-R3-F01: rich directed river contact retained; named river ID, region IDs, height transition, unchanged-map and recovery wording in RU/EN."
-  ]
+  ],
+  "completed_at": "2026-11-05T14:49:36.009Z",
+  "review": {
+    "verdict": "accepted_local_limited",
+    "source_sha": "9aa08bbe24bc8d83bf50ca2eea1b16cb70335d7f",
+    "source_tree": "458a78fbb594d7ada1ac925eda2748c1cc680474",
+    "open_findings": 0,
+    "result_ref": "agent-work/results/2026-11-05-reviewer-HX-BL-023-E7-9aa08bb.json",
+    "score_assessment_ref": "agent-work/score/assessments/2026-11-05-reviewer-HX-BL-023-E7-9aa08bb.json",
+    "independent_worker": "/root/e7_r1_independent_review",
+    "limitations": [
+      "Only local immutable source reviewed;no source/diff/PNG/bundle/blob/tree/PR transmitted.",
+      "Remote source sync blocked_auto_review is separate from local acceptance;source availability confirmed.",
+      "Headless Chromium only;physical touch,AT,Safari,Firefox/fullWCAG and complete game breadth unknown.",
+      "No full score audit/model change;no release/main/deploy approval."
+    ]
+  },
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-05T11:57:38.195Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "end": {
+      "checked_at": "2026-11-05T14:49:04.561Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restoration_performed": false,
+    "errors": []
+  },
+  "next_role": "developer",
+  "next_step": "HX-BL-023 E7:after explicit authorization to repeat blocked source transmission,synchronize the exact reviewed tree458a78f on feature branch,open PR and independently verify the resulting remote SHA;main/deploy require separate owner release permission.",
+  "authority": {
+    "start_approved": true,
+    "owner_decision_ref": "owner-decision-2026-10-28-editor-additional-functions-approved",
+    "merge_or_deploy_approved": false,
+    "publication": false,
+    "business_approval_gates_unchanged": true
+  },
+  "owner_decision_needed": {
+    "action": "Explicit authorization to repeat E7 source transmission and targeted operational latest.json update after automatic review rejections.",
+    "scope": "Only feature branch+PR and current operational pointers,no main merge/deploy."
+  }
 }
