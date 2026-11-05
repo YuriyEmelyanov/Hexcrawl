@@ -1,0 +1,212 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-023",
+  "stage_id": "E8.1",
+  "status": "review_ready_local_source_sync_blocked",
+  "from_role": "developer",
+  "next_role": "reviewer",
+  "authority_ref": "owner-decision-2026-10-28-editor-additional-functions-approved",
+  "authority_status": "E8 implementation/review approved;no E8 publication authorization;no third design gate",
+  "head_sha": "6e53ae0d5c3996fe8fca04fb194439e2a1c4391e",
+  "head_tree": "0b64baa1b8a1082a727890124c0b70d9ebfbfc5c",
+  "branch": "agent/hx023-e8-poi-move",
+  "local_path": "/workspace/scratch/60e61b33a6a0/e8-development",
+  "review_base_sha": "2ef5cc35107f299c309b7c8065a1e81ca9881278",
+  "stage_base_sha": "9aa08bbe24bc8d83bf50ca2eea1b16cb70335d7f",
+  "increment_base_sha": "8d578e75c4c645eb94b819ce761d6543a1245cf9",
+  "source_availability": "Exact local git tree and verified recovery bundle available;source sync/PR is still restricted by prior automatic review rejection. Do not retry source/patch/tree/bundle/screenshots through another route.",
+  "recovery_bundle": {
+    "path": "/workspace/scratch/60e61b33a6a0/e8-development/reports/HX-BL-023-E8/e8-6e53ae0.bundle",
+    "sha256": "1ef2faa6cac4890f4275c1875ae7caf0052a03eb2bc4f30623d31d92b7dd2ffe",
+    "requires_sha": "2ef5cc35107f299c309b7c8065a1e81ca9881278",
+    "verified": true,
+    "uploaded": false
+  },
+  "PR": null,
+  "published": false,
+  "spec_ref": "agent-work/specs/HX-BL-023-E8.md",
+  "spec_blob": "24f20ae2cd72845d04680dc454697b540b0e4c8b",
+  "evidence_ref": "agent-work/evidence/HX-BL-023-E8-6e53ae0/ui-evidence.json",
+  "previous_storage_result": "agent-work/results/2026-11-05-developer-HX-BL-023-E8-storage.json",
+  "developer_result_ref": "agent-work/results/2026-11-05-developer-HX-BL-023-E8-UI.json",
+  "required_checks": {
+    "Node_check": {
+      "status": "passed",
+      "head_sha": "6e53ae0d5c3996fe8fca04fb194439e2a1c4391e",
+      "command": "npm run check",
+      "includes": [
+        "TypeScript",
+        "Node tests",
+        "production build"
+      ],
+      "node": "24.22.1",
+      "executed": 336,
+      "passed": 336,
+      "failed": 0,
+      "skipped": 0,
+      "duration_ms": 470839.623663,
+      "log": "reports/HX-BL-023-E8/ui-check-6e53ae0.log"
+    },
+    "browser": {
+      "status": "passed",
+      "head_sha": "6e53ae0d5c3996fe8fca04fb194439e2a1c4391e",
+      "command": "npm run test:browser",
+      "browser": "Chromium153.0.8010.0",
+      "scripts_executed": 8,
+      "scripts_passed": 8,
+      "scripts_failed": 0,
+      "scripts_skipped": 0,
+      "logical_test_case_count": null,
+      "log": "reports/HX-BL-023-E8/ui-browser-6e53ae0.log",
+      "note": "Eight monolithic smoke scripts;new POI workflow is within save-history,not a ninth script or Node cases"
+    },
+    "RNG": {
+      "status": "passed",
+      "head_sha": "6e53ae0d5c3996fe8fca04fb194439e2a1c4391e",
+      "command": "npm run test:browser:rng",
+      "scripts_executed": 1,
+      "scripts_passed": 1,
+      "scripts_failed": 0,
+      "scripts_skipped": 0,
+      "logical_test_case_count": null,
+      "log": "reports/HX-BL-023-E8/ui-rng-6e53ae0.log",
+      "note": "Separate production UI reproducibility/continuation/stale import/click checks;not summed with Node or browser"
+    }
+  },
+  "test_change_summary": {
+    "base_sha": "8d578e75c4c645eb94b819ce761d6543a1245cf9",
+    "head_sha": "6e53ae0d5c3996fe8fca04fb194439e2a1c4391e",
+    "node": {
+      "added": 8,
+      "removed": 0,
+      "modified": 0,
+      "suites": [
+        {
+          "file": "test/saveSafety.test.mjs",
+          "added": 4,
+          "removed": 0,
+          "modified": 0,
+          "cases": [
+            {
+              "name": "`E8 paired name form commits and clears one atomic ${context} POI`",
+              "count": 3
+            },
+            {
+              "name": "'E8 paired name form rejects half-pairs,duplicates and captured old secondary-field writes'",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "file": "test/regionEditing.test.mjs",
+          "added": 4,
+          "removed": 0,
+          "modified": 0,
+          "cases": [
+            {
+              "name": "`E8 real POI move is one exact transaction with full payload and literal hex notes ${mode}`",
+              "count": 2
+            },
+            {
+              "name": "'E8 real move cancels/no-ops without consuming Redo and captured handlers cannot act on a new document'",
+              "count": 1
+            },
+            {
+              "name": "'E8 actual path refusal and snapshot fault leave document and both histories exact'",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "source": "TypeScript AST test() name/body diff;literal for-of contexts expanded;328→336 runner cases;helpers excluded",
+      "scenario_risk": "Paired name three address contexts and invalid/stale/fault rejection;actual move Classic/Mythic history and full tag payload;no-op/new-document stale/doubleDone;path/fault atomic refusal",
+      "reuse_or_new_reason": "Existing saveSafety and regionEditing suites/fixtures reused;pure coordinate policy cases do not exercise real App transaction wiring;existing layout assertion reused to catch and fix regression"
+    },
+    "browser": {
+      "added_workflows": 1,
+      "removed_workflows": 0,
+      "modified_existing_workflows": 0,
+      "runner_test_case_count": null,
+      "suite": "test/browser/save-history.smoke.mjs imports test/browser/poi-lifecycle.mjs",
+      "scenario_risk": "Actual pair focus/Tab,physical map target and invalid hit,pan/rotation,accepted-only JSON,transition gates,UndoRedo,path refusal,water/Mythic,central protection,RU/EN1500/390/320",
+      "reuse_or_new_reason": "Extended existing production runner,not a new service/corpus;existing eight scripts retained"
+    },
+    "temporary_diagnostic": {
+      "added_permanent_cases": 0,
+      "workflows_executed": 1,
+      "workflows_passed": 1,
+      "workflows_failed": 0,
+      "workflows_skipped": 0,
+      "method": "Actual App VM-state harness,one finite Classic E2→E8 sequence with literal per-step UndoRedo and finalv8reload",
+      "source": ".e8-combined-driver.mjs",
+      "manifest": "reports/HX-BL-023-E8/ui-combined-diagnostic.json",
+      "note": "Development diagnosis,not independent reviewer evidence or permanent test growth"
+    }
+  },
+  "user_walkthrough": {
+    "actual_sha": "6e53ae0d5c3996fe8fca04fb194439e2a1c4391e",
+    "actual_shown": true,
+    "presented_in": "Current task chat commentary:desktop1500,narrow390 paired form,and final6e53ae0 before/after panels;owner viewing/approval unknown",
+    "screenshots_are": "Synthetic fixture in this exact local package before/after its action,not screenshots of remote main",
+    "steps": [
+      "Select2/0 and enter shared Edit",
+      "Name field opens paired RU/EN;Tab does not commit half a pair",
+      "Location opens pinned-source draft;choose current map polygon or canonical q/r",
+      "Preview distinguishes source dashed and target solid;navigation remains;accepted export excludes draft",
+      "Done commits one move and selects3/0;name/type/tags move,hex notes/terrain stay",
+      "Undo/Redo restore literal snapshots;Esc discards;Finish/Discard/Stay gates external actions",
+      "Linked road refusal lists ID and offers View path;water Classic/Mythic/central policies shown"
+    ],
+    "proposal_ref": "agent-work/ui/HX-BL-023-E8-ui-v1/preview.html",
+    "awaiting_design_approval": false,
+    "owner_design_approval": null
+  },
+  "scope": "Independent exact-SHA E8.1 code/spec/AC and regression review,including combined unreleased E7+E8 package relative to remote main2ef5cc3. Reuse accepted E7 evidence as input,not acceptance of this changed SHA. E8.2 is excluded and must not be marked complete.",
+  "review_execution": "Use a fresh separate agent if available,with only source/spec/GitHub evidence,not developer conclusions. Reviewer independently checks necessity/distinctness/sensitivity/cost of eight added Node cases and one browser workflow. No new permanent test or full research audit by default.",
+  "required_review_output": {
+    "verdict": "Concrete findings or independent acceptance of this exactSHA,with independently reproduced evidence and regressions/limits",
+    "score_assessment": {
+      "version": "1.2",
+      "criterion_ids": [
+        "S02-C02",
+        "S02-C03",
+        "S03-C01",
+        "S03-C04",
+        "S03-C05",
+        "S04-C04",
+        "S04-C05",
+        "S09-C04"
+      ],
+      "required_fields": [
+        "before/after grade and points",
+        "delta",
+        "exact SHA",
+        "method",
+        "evidence",
+        "quality/breadth",
+        "limitations"
+      ],
+      "baseline": "All50 unverified in current-score950e11b;do not transfer193.75/model1.1 or infer grades from test count",
+      "no_release_points": true
+    },
+    "test_governance": "Validate each newly added case versus existing coverage and requirement;browser/RNG/temporary diagnostic counts remain separate",
+    "automation": "Own actual automations.peek at reviewer start/end for6ad9c2426c7481919bb9f3d2b289e9b9;keep persistent team enabled unless current explicit stop/full technical block,record exact health"
+  },
+  "acceptance_risks": [
+    "Independent exact-SHA review/score assessment pending",
+    "E8.2 road/obstacle/crossing/river-marker names not implemented;sea identity unresolved",
+    "Local source/bundle only;GitHub contains metadata,no source PR",
+    "Central position and source-linked paths deliberately refused;Mythic water position unavailable",
+    "Headless finite fixture checks are not full touch/accessibility or all-game certification"
+  ],
+  "known_evidence_limits": [
+    "E8-specific forced overlapping target branch not certified by current DOM workflow;explicit ambiguity branch exists and must be reviewed",
+    "No dedicated new E8 draft PNG pixel assertion;accepted-only JSON and overlay/export code separation plus existing PNG runners are developer evidence",
+    "Temporary one-map E2→E8 sequence is finite Classic actual-handler diagnosis,not browser coverage or permanent suite growth"
+  ],
+  "completion_criterion": "Reviewer writes exact-SHA verdict AND score_assessment1.2. Findings→developer;accepted E8.1→approved sequential E8.2. Publication still needs whole-package independent acceptance,source availability and owner's separate exact-package authorization.",
+  "next_step": "Проверяющий независимо проверяет6e53ae0 по E8-1.0 и всему локальному пакету E7+E8,сохраняет замечания/заключение и score_assessment1.2;при замечаниях следующий программист.",
+  "parent_task_completed": false,
+  "stage_implementation_completed": true,
+  "independently_accepted": false
+}
