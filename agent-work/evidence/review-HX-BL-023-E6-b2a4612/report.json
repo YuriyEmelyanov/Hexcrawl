@@ -1,0 +1,443 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-023",
+  "stage_id": "E6",
+  "role": "independent_reviewer",
+  "reviewer": "/root/review_e6_b2a4612",
+  "head_sha": "b2a461277299b34f3001baec21f40d3e407d590f",
+  "tree_sha": "1c8af3b171416558772df42948d500cb79973925",
+  "base_sha": "27b230fc5fc5ac2f998141626fa091e1085d7a47",
+  "spec_version": "E6-1.0",
+  "spec_blob": "1e04ca6999c3a1a154c86f44b3bcf672dee19b04",
+  "pr": 487,
+  "status": "changes_requested",
+  "summary": "One reproducible W01 lifecycle defect. Domain/atomic/save/generation checks passed in the bounded corpus; no data-corruption finding.",
+  "independence": {
+    "fresh_context": true,
+    "worktree": "/workspace/scratch/cc30953c0fc1/review-e6-b2a4612",
+    "checkout": "detached exact SHA",
+    "developer_worktree_changed": false,
+    "source_or_permanent_tests_changed": false,
+    "claims_written": false,
+    "github_writes": false,
+    "merge_or_publication": false,
+    "developer_evidence_usage": "Used as an inventory of claims, then inspected source, reran suites and added temporary independent probes. Parent separately verified CI job logs/tree; this reviewer independently fetched exact-SHA workflow runs."
+  },
+  "sources": [
+    "AGENTS.md",
+    "docs/index.md",
+    "docs/river-model.md",
+    "docs/road-model.md",
+    "docs/natural-lakes.md",
+    "docs/water-editing.md",
+    "agent-work/handoffs/2026-11-05-HX-BL-023-E6-review.json",
+    "agent-work/specs/HX-BL-023-E6.md",
+    "agent-work/results/2026-11-05-developer-HX-BL-023-E6.json",
+    "agent-work/evidence/2026-11-05-HX-BL-023-E6-development.json",
+    "agent-work/process.md",
+    "agent-work/strategy/vision.md",
+    "agent-work/strategy/score-model.md",
+    "agent-work/score/current-score.json"
+  ],
+  "findings": [
+    {
+      "id": "E6-R1",
+      "priority": "P2",
+      "severity": "medium",
+      "title": "Общая «Готово» недоступна во время WaterDraft",
+      "requirements": [
+        "E6-W01",
+        "AC01",
+        "AC10"
+      ],
+      "file": "src/App.tsx",
+      "line": 15761,
+      "cause": "disabled={!!waterDraft || ...} blocks the existing onClick before finishPathDrafts -> finishWaterDraft can run.",
+      "reproduction": [
+        "Build exact SHA; import test/fixtures/e6-water-editor.json (the included river-fixture.json also reproduces).",
+        "Select 0,0; enter Edit; choose lake in Water.",
+        "The common Done button becomes disabled. A real Playwright forced click leaves the one-cell WaterDraft open and commits no water. Local Finish selection remains usable."
+      ],
+      "expected": "Common Done must attempt the same water completion as Enter/local Finish selection, commit an uncomplicated valid edit once, and retain unresolved/error previews without exiting Edit or bypassing confirmations.",
+      "observed": "Common Done cannot be activated while any water draft/preview exists.",
+      "evidence": [
+        "ui-probe-final.mjs",
+        "ui-probe-final.log",
+        "actual-done-disabled.png",
+        "src/App.tsx:14939",
+        "src/App.tsx:15761"
+      ],
+      "risk": "Required common Edit/Done workflow is unavailable. No data corruption observed.",
+      "recommendation": "Remove only the water-draft DOM gate while retaining busy gates and live completion/validation. Extend the existing focused lifecycle to use actual common Done on safe, conflicting and loss-preview drafts; verify one transaction and no bypass."
+    }
+  ],
+  "checks": {
+    "node_version": "24.22.1",
+    "npm_run_check": {
+      "status": "pass",
+      "exit_code": 0,
+      "node": "24.22.1",
+      "tests": 299,
+      "passed": 299,
+      "failed": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "duration_ms": 515603.209505,
+      "typescript": "pass",
+      "build": "pass",
+      "build_seconds": 9.59,
+      "log": "check.log"
+    },
+    "npm_run_build": {
+      "status": "pass",
+      "exit_code": 0,
+      "log": "build.log",
+      "limitation": "Existing >500kB Vite warning; no optimization conclusion."
+    },
+    "npm_run_test_browser": {
+      "status": "pass",
+      "exit_code": 0,
+      "log": "browser.log",
+      "runner_scripts": 8,
+      "browser": "153.0.8010.0"
+    },
+    "npm_run_test_browser_rng": {
+      "status": "pass",
+      "exit_code": 0,
+      "log": "rng.log",
+      "profile_seed_combinations": 8,
+      "extra_existing_cases": [
+        "R2 hidden Classic locality in Mythic regeneration",
+        "AC06 display/language/navigation/rotation/PNG/JSON and next full world",
+        "AC08 invalid import/seed/no-op and exact history",
+        "AC09 busy/double/delayed-import one transaction"
+      ]
+    },
+    "temporary_domain_probe": {
+      "status": "pass",
+      "exit_code": 0,
+      "script": "domain-probe.mjs",
+      "log": "domain-probe.log",
+      "coverage": [
+        "actual App split for both heirs with literal authored name/tag/roll-counter inheritance and exact map/history Undo/Redo",
+        "actual App merge for both survivors: missing identity/loss answers refuse, explicit confirmations commit and Undo/Redo are exact",
+        "four actual physical lake port configurations: source F3, closed inlet F2, Fin4/Fout2, Fin4+3/Fout5; N2 valid and shrinking to N1 retains every port but refuses correct numerical capacity condition",
+        "input preflight remains detached"
+      ]
+    },
+    "temporary_ui_probe": {
+      "status": "pass_as_negative_reproduction",
+      "script": "ui-probe-final.mjs",
+      "log": "ui-probe-final.log",
+      "observation": "Done disabled; force click leaves draft; no river map targets exist during WaterDraft."
+    },
+    "git_diff_check": {
+      "status": "pass",
+      "scope": "27b230f..b2a4612"
+    },
+    "ci": {
+      "independent_tool": "github.fetch_commit_workflow_runs(exact head SHA)",
+      "run_id": 41968368849,
+      "status": "completed",
+      "conclusion": "success",
+      "separate_ui_workflow": {
+        "id": 41968368854,
+        "conclusion": "skipped",
+        "counted_as_pass": false
+      },
+      "parent_verified_evidence": "agent-work/evidence/review-HX-BL-023-E6-b2a4612/ci-independent.json",
+      "parent_verified_details": {
+        "checkout": "56cd37f4941a55dc0f956e2e932f54d578bc64b9",
+        "checkout_tree_equals_head": true,
+        "jobs": [
+          "check",
+          "browser",
+          "world-random"
+        ],
+        "node_tests": 299,
+        "passed": 299,
+        "failed": 0,
+        "skipped": 0
+      }
+    },
+    "ui_metrics": {
+      "status": "pass",
+      "source": "../review-e6-b2a4612/reports/HX-BL-023-E6/metrics.json",
+      "read_edit_row_height_px": 19,
+      "modes": [
+        "classic",
+        "mythic"
+      ],
+      "widths": [
+        1500,
+        390,
+        320
+      ],
+      "horizontal_overflow": false
+    }
+  },
+  "requirements": [
+    {
+      "id": "W01",
+      "status": "fail",
+      "evidence": [
+        "E6-R1",
+        "browser.log",
+        "test/mapTransactions.test.mjs"
+      ],
+      "detail": "Finite mask, side-connected whole registered body, draft/cancel/export exclusion, imperative wheel/pan/rotation tested. Common Done disabled."
+    },
+    {
+      "id": "W02",
+      "status": "pass_bounded",
+      "evidence": [
+        "browser.log",
+        "check.log",
+        "src/manualWater.ts",
+        "src/App.tsx:1075"
+      ],
+      "detail": "Retained regional membership/hidden biome/notes; explicit external-sea owner assignment; protected centers/anchors; finalSize/coastal/candidates. New biome contact preflight checks canonical compatibility."
+    },
+    {
+      "id": "W03",
+      "status": "pass_bounded",
+      "evidence": [
+        "domain-probe.log",
+        "check.log",
+        "src/manualWater.ts"
+      ],
+      "detail": "New/expand/shrink/split/merge/delete, monotonic floor/overflow, explicit mixed/enclosed kinds, vertex-only contacts, disconnected legacy refusal. Actual split and merge history/identity independently probed."
+    },
+    {
+      "id": "W04",
+      "status": "pass_bounded",
+      "evidence": [
+        "domain-probe.log",
+        "check.log",
+        "src/App.tsx:1117",
+        "src/manualRivers.ts",
+        "src/manualRiverDependencies.ts"
+      ],
+      "detail": "Separate accepted/candidate physical contexts, fixed F/path, full-network numeric checks/cycles/reentry and BR009 sea support. Four N2/N1 actual port configurations independently reproduced."
+    },
+    {
+      "id": "W05",
+      "status": "pass_bounded",
+      "evidence": [
+        "check.log",
+        "browser.log",
+        "src/App.tsx:1103"
+      ],
+      "detail": "Road water/frontier refusals; explicit obstacle/waterPOI losses; invalid On needs Off/Auto; crossing choice and feature validation source inspected jointly. Finite existing road/river suites reused."
+    },
+    {
+      "id": "W06",
+      "status": "pass_bounded",
+      "evidence": [
+        "check.log",
+        "domain-probe.log",
+        "browser.log",
+        "src/App.tsx:1159"
+      ],
+      "detail": "Named POI/name/tag losses start unchecked; retained authored data and literal notes; unaffected tags/names/RNG preserved; no MB automatic water reroll."
+    },
+    {
+      "id": "W07",
+      "status": "pass_bounded",
+      "evidence": [
+        "check.log",
+        "browser.log",
+        "src/App.tsx:13361",
+        "src/App.tsx:13739"
+      ],
+      "detail": "Detached preparation, all snapshots allocated before history/setters, stale/double/no-op/cancel/fault and writer guards; exact single water transaction; checkpoint water+authored layers restored jointly after warning."
+    },
+    {
+      "id": "W08",
+      "status": "pass_bounded",
+      "evidence": [
+        "check.log",
+        "browser.log",
+        "rng.log"
+      ],
+      "detail": "Existing v2-v7 import/roundtrip corpus, floor after deletion/reload, renderer styles/owned sea and PNG excludes mask, finite continuation/checkpoint cases."
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "AC01",
+      "status": "fail",
+      "reason": "E6-R1; other finite mask/whole body/no-op/cancel transitions passed."
+    },
+    {
+      "id": "AC02",
+      "status": "pass_bounded",
+      "reason": "Ownership/hidden biome/notes, explicit sea reclamation, protected anchors, finalSize/candidates covered by source + App + browser."
+    },
+    {
+      "id": "AC03",
+      "status": "pass_bounded",
+      "reason": "Seven geometry cases plus independent actual App selected split/merge identity and history probes. Exhaustive visual composition/name preview variants were not independently enumerated."
+    },
+    {
+      "id": "AC04",
+      "status": "pass_bounded",
+      "reason": "Water kind geometry plus existing lake/island and actual Color/Tiles/Emoji/PNG coverage."
+    },
+    {
+      "id": "AC05",
+      "status": "pass_bounded",
+      "reason": "Independent four physical capacity configurations with all ports retained at N1, plus existing full numerical and legacy/delta suites."
+    },
+    {
+      "id": "AC06",
+      "status": "pass_bounded",
+      "reason": "Road/frontier refusal and explicit obstacle/waterPOI/feature losses; crossing/feature source validation and existing road/river suite."
+    },
+    {
+      "id": "AC07",
+      "status": "pass_bounded",
+      "reason": "Authored POI/name/tag and literal Unicode notes preserved or explicitly removed with exact history; protected central hex."
+    },
+    {
+      "id": "AC08",
+      "status": "pass_bounded",
+      "reason": "Real callbacks for stale mask identity, blocked writers/no-op/cancel/fault/double completion and exact maps/counters/RNG/history."
+    },
+    {
+      "id": "AC09",
+      "status": "pass_bounded",
+      "reason": "Full v2-v7 corpus, retirement floor/reload, generation checkpoint warning/cancel/restore and deterministic continuation corpus. Some Mythic continuation fixtures safely refuse as documented."
+    },
+    {
+      "id": "AC10",
+      "status": "partial_fail",
+      "reason": "E6-R1 common Done unavailable. RU/EN1500/390/320 and browser pointer/keyboard/PNG/overlay tests passed; physical touch/AT and full WCAG unverified."
+    }
+  ],
+  "test_assessment": {
+    "scope": "Only changed permanent tests assessed; no renewed full-suite audit.",
+    "comparison": {
+      "base_sha": "27b230fc5fc5ac2f998141626fa091e1085d7a47",
+      "head_sha": "b2a461277299b34f3001baec21f40d3e407d590f",
+      "method": "Independent TypeScript AST extraction by node:test title and call source; loops/assertions/files not counted as cases.",
+      "artifact": "logical-test-counts.json",
+      "node": {
+        "added": 13,
+        "removed": 0,
+        "modified": 3
+      },
+      "browser": {
+        "added_logical_lifecycle": 1,
+        "modified_checkpoint_case": 1,
+        "new_runner_scripts": 0
+      },
+      "rng": {
+        "added": 0,
+        "removed": 0,
+        "modified": 0
+      },
+      "temporary_diagnostics": "Separate reviewer scripts, not permanent test counts."
+    },
+    "usefulness": "Useful separate contracts: geometry split/merge/ownership is distinct from rendering; App cases catch setters/history/RNG and explicit authored losses; existing river tests exercise different accepted/candidate physical contexts and BR009 sea changes. Browser reuses the old runner and fixture corpus. No proven duplicate warranting deletion.",
+    "sensitivity_gap": "Lifecycle uses [data-water-finish] exclusively, so it passes while the required common Done is disabled. Add an assertion using the actual common Done to the existing lifecycle; do not add another broad runner.",
+    "stability": "Deterministic fixtures and exact equality provide strong bounded assertions. Temporary runtime Chromium and screenshot outputs are environment-specific. No claim of universal safety from finite runs."
+  },
+  "rejected_hypotheses": [
+    {
+      "observation": "Direct harness chooseMapRiver can change selectedHex while a water draft remains.",
+      "disposition": "Not a user-facing defect: source16130 hides all river targets during WaterDraft; production browser confirms target count0. Kept as a possible defensive hardening observation, not a requested change.",
+      "evidence": [
+        "reviewer-probe.mjs",
+        "reviewer-probe.log",
+        "ui-probe-final.log"
+      ]
+    },
+    {
+      "observation": "Initial ui-probe attempts timed out looking for river targets.",
+      "disposition": "Negative diagnostic of an unreachable hypothesis, superseded by final successful UI probe; not product failure."
+    }
+  ],
+  "limitations": [
+    "Finite deterministic geometry/save/browser corpus; not proof all RIV/ROAD configurations are safe.",
+    "No physical touchscreen or assistive-technology device, full WCAG audit, exhaustive split UI composition/name permutations or top5/10/20 rule-profile support assessment.",
+    "Existing large-map timings were generated as checks but do not establish performance grades or new thresholds.",
+    "Local runtime reports alter tracked HX-BL-024 PNG outputs and generate untracked reports; source/test tree stayed exact. No source edits, commits, merge, publication or external image upload.",
+    "Parent owns persistence/operational handoff; this reviewer did not rewrite historical latest/backlog/approvals."
+  ],
+  "next_step": "Programmer fixes E6-R1 and extends the existing lifecycle. New SHA requires fresh review of the complete package, including exact CI/tree and updated score assessment.",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "status": "checked",
+      "is_enabled": true,
+      "observed_at": null,
+      "limitation": "Actual initial peek succeeded; request timestamp was not separately retained."
+    },
+    "end": {
+      "status": "checked",
+      "is_enabled": true,
+      "observed_at": "2026-11-05 05:17:23 UTC",
+      "error": null
+    },
+    "restoration_performed": false,
+    "errors": [
+      "First peek call used an invalid argument name; corrected immediately to jawbone_id and successfully checked."
+    ],
+    "not_disabled": true
+  },
+  "completed_at": "2026-11-05 05:17:23 UTC",
+  "persistence": {
+    "evidence_root": "agent-work/evidence/review-HX-BL-023-E6-b2a4612/",
+    "selected_diagnostic_logs": "diagnostics.json",
+    "full_local_logs_and_scripts": "Not uploaded; local hash manifest retained, complete independent observations/methods in this report and exact-tree CI durable links.",
+    "images": "Local only; no external image payload."
+  },
+  "test_change_summary": {
+    "base_sha": "27b230fc5fc5ac2f998141626fa091e1085d7a47",
+    "head_sha": "b2a461277299b34f3001baec21f40d3e407d590f",
+    "source": "Independent TypeScript AST matched node:test logical call titles/body changes; inspected browser runner diff; logical-test-counts.json; not line/file/assertion/iteration counts",
+    "suites": [
+      {
+        "suite": "Node node:test",
+        "added": 13,
+        "removed": 0,
+        "modified": 3,
+        "executed": 299,
+        "passed": 299,
+        "skipped": 0,
+        "failed": 0,
+        "scenario_risk": "7geometry identity/topology/reclamation +6 actualApp atomic/history/loss cases;3existing physical geometry/legacy cases extended",
+        "reuse_or_new_reason": "Geometry and actualApp transaction contracts differ from rendering; reused actualApp/RIV harnesses instead of copying broad suites."
+      },
+      {
+        "suite": "Browser production",
+        "added": 1,
+        "removed": 0,
+        "modified": 1,
+        "unit": "logical scenarios",
+        "executed": 8,
+        "passed": 8,
+        "skipped": 0,
+        "failed": 0,
+        "execution_unit": "existing smoke scripts; Classic/Mythic iterations not additional logical cases",
+        "scenario_risk": "Water lifecycle and updated existing generation checkpoint warning",
+        "reuse_or_new_reason": "Existing save-history runner reused; common Done gap should extend this lifecycle rather than add duplicate runner."
+      },
+      {
+        "suite": "Browser RNG",
+        "added": 0,
+        "removed": 0,
+        "modified": 0,
+        "executed": 1,
+        "passed": 1,
+        "skipped": 0,
+        "failed": 0,
+        "unit": "runner with8profile/seed combinations",
+        "scenario_risk": "Required deterministic world/history regression",
+        "reuse_or_new_reason": "Existing unchanged required runner."
+      }
+    ],
+    "temporary_diagnostics": "Independent domain/UI probes excluded from permanent test delta"
+  }
+}
