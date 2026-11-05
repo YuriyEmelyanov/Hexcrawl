@@ -1,0 +1,121 @@
+{
+  "task_id": "HX-BL-023",
+  "stage_id": "E6",
+  "status": "ready_for_business_analysis",
+  "next_role": "business_analyst",
+  "role": "business_analyst",
+  "scope": "Prepare developer-ready approved E6 lakes/sea specification only; current run is strategist accounting/dispatch, not implementation.",
+  "basis_release_sha": "27b230fc5fc5ac2f998141626fa091e1085d7a47",
+  "parent_spec_ref": "agent-work/specs/HX-BL-023.md",
+  "authorization": {
+    "task_start": "already_approved",
+    "approval_refs": [
+      "owner-decision-2026-10-28-editor-functional-scope",
+      "owner-decision-2026-10-28-editor-additional-functions-approved"
+    ],
+    "analysis_allowed": true,
+    "development_after_suitable_spec": true,
+    "release_approved": false,
+    "additional_spend_approved": false,
+    "owner_decision_required_now": false
+  },
+  "role_selection_reason": "E5 published and release score event accounted. Existing parent explicitly orders E6 water after roads/rivers and before height/region/POI relocation. No detailed E6 spec exists; ready approved BA stage. No new task/proposal duplicate.",
+  "problem_benefit": "Ведущий уже меняет дороги и русла, но для приключения ещё не может безопасно превратить выбранную сушу в озеро/море или вернуть воду в сушу.",
+  "before_after_example": {
+    "before": "На готовой карте есть река и озеро; нужное для приключения расширение/удаление водоёма требует пересоздать географию.",
+    "after": "Мастер задаёт изменение воды в Edit, видит затронутые устья, дороги и объекты; применяет допустимую правку одной отменяемой операцией либо получает точную причину отказа без потери карты.",
+    "status": "Product scenario for upcoming spec, not current implementation or UI mockup."
+  },
+  "boundaries": [
+    "Add/remove water cells or connected lake/sea body within already created map; return land with explicitly defined region/biome ownership.",
+    "Define valid coastal/closed-lake topology, lake IDs/names/area/ports, rivers and F compatibility using current domain rules. No silent RIV/ROAD relaxation or auto-reroll.",
+    "Explicit preview for affected paths/crossings, sources/mouths, land/water POI, names/tags/notes; no silent loss of authored notes/POI or dangling IDs.",
+    "One accepted mutation with exact JSON/import/export, Undo/Redo/counters/RNG preservation and defined generation/checkpoint interaction.",
+    "Specify error/cancel/busy/stale/no-op cases and migration/legacy behavior before implementation."
+  ],
+  "exclusions": [
+    "E7 arbitrary height/region-boundary redesign",
+    "E8 general POI relocation or comprehensive new entity-naming outside affected water dependencies",
+    "New generator, campaign travel/VTT mechanics L2/L3, new game research, paid services",
+    "Third blocking design approval or any publication without explicit owner permission"
+  ],
+  "inputs": [
+    "AGENTS.md",
+    "docs/index.md",
+    "agent-work/process.md",
+    "agent-work/strategy/score-model.md",
+    "agent-work/strategy/vision.md",
+    "agent-work/feedback.json",
+    "agent-work/specs/HX-BL-023.md",
+    "agent-work/evidence/HX-BL-023-editor-v2/capability-matrix.json",
+    "agent-work/specs/HX-BL-023-E3.md",
+    "agent-work/specs/HX-BL-023-E5.md",
+    "docs/natural-lakes.md",
+    "docs/river-model.md",
+    "docs/road-model.md",
+    "agent-work/rules/common-rules.json",
+    "agent-work/rules/game-bindings.json"
+  ],
+  "expected_output": {
+    "spec_ref": "agent-work/specs/HX-BL-023-E6.md",
+    "spec": "Goal, model/inventory, precise allowed operations and dependencies, scenarios/errors/legacy/JSON/history, requirement→criterion→check matrix and acceptance risks.",
+    "ui": "Actual current interface-based proposal desktop and390px covering read/edit/water path/preview/error/after; show inline to owner and persist version/link. Proposal does not require waiting for reply.",
+    "handoff": "Ready bounded development handoff only after spec/invariants usable; substantial new scope/product ambiguity separately to owner."
+  },
+  "completion_criteria": [
+    "Specification resolves water geometry/identity and land-return ownership against real current source and domain rules without replacing them.",
+    "All authored data losses and incompatible dependency cases handled explicitly; accepted saves reload and Undo exactness specified.",
+    "UI proposal visibly delivered, not a repo-only shown flag; no awaiting_design_approval.",
+    "Each requirement/acceptance criterion has criterion_id, before grade/points source, forecast and separate expected evidence; unknown is valid.",
+    "Existing coverage inventoried before any proposed permanent test; no new tests/benchmarks solely for counts.",
+    "Verify no active foreign E6 claim before taking work; actual automations.peek at start/end."
+  ],
+  "priority_over_alternatives": "Continue owner's priority full L1 editor. Water affects later height/ownership and POI placement. Underlay027 remains deferred; no repeat HX-FB-002 audit or already released010/041 implementation.",
+  "feedback_disposition": {
+    "HX_FB_002": "audit_completed; keep useful-test governance, no repeat audit",
+    "HX_FB_008_and_009": "feedback status stale; belong to published HX-BL-010/PR485 as confirmed by backlog and prior release accounting, not new ready implementation tasks. Do not duplicate.",
+    "joint_fixes": "BA assess include/defer/needs_approval for new applicable feedback; no unrelated scope silently."
+  },
+  "score": {
+    "model_version": "1.2",
+    "criterion_ids": [
+      "S01-C03",
+      "S02-C02",
+      "S02-C03",
+      "S03-C04",
+      "S03-C05",
+      "S04-C04",
+      "S04-C05",
+      "S09-C04"
+    ],
+    "before_grade": null,
+    "before_points": null,
+    "expected_after": null,
+    "expected_delta": null,
+    "status": "unknown; feature completion alone earns no grade",
+    "baseline_ref": "agent-work/score/current-score.json"
+  },
+  "traceability": {
+    "ranking_version": "three-scenario-ranks-1.3-DW-FL-nonzero",
+    "cohort_version": "2026-11-04-ranking1.3-process-sync",
+    "primary_scenario": "develop",
+    "secondary_scenario": "create",
+    "layer": "L1",
+    "game_editions": [
+      "Generic Classic product map",
+      "Mythic Bastionland Core; existing confirmed domain profile"
+    ],
+    "rule_id": "Resolve applicable shared water/river rules from existing registry; no unverified profile coverage inferred.",
+    "requirement_refs": [
+      "approved owner water scope",
+      "HX-BL-023 E6 row",
+      "current natural-lakes/RIV/ROAD"
+    ],
+    "acceptance": "above E6 specification completion criteria",
+    "evidenceSHA": "27b230fc5fc5ac2f998141626fa091e1085d7a47"
+  },
+  "rough_size": "E6 L from approved roadmap; one bounded analytical spec first, implementation estimate refined from source inventory. No usage/budget guess.",
+  "marketing_gate": "Full023 still incomplete (E6-E8); no invitations sent or authorized by this run.",
+  "created_at": "2026-11-05T02:04:59.057Z",
+  "source_run": "2026-11-05-strategist-score-PR486"
+}
