@@ -1,0 +1,322 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-06-reviewer-HX-BL-023-E8-0c2abc1",
+  "role": "reviewer",
+  "task_id": "HX-BL-023",
+  "stage_id": "E8.1-R1",
+  "status": "accepted_scoped_E8.1_local_package",
+  "completed_at": "2026-11-05 23:10:46 UTC",
+  "head_sha": "0c2abc1a15822cb714f97ad6310ab0bdf7b17cd9",
+  "head_tree": "9af6ee5624267e0658d1803f61883e133756b0a8",
+  "role_reason": "27prior claims completed;new exactSHA review_ready after corrections;priority4 and explicit after-fix independent review rule",
+  "independent_agent": "/root/e8_r1_fresh_review",
+  "independence": "Fresh agent,not source author;parent source author only coordinated/persisted independent conclusions",
+  "review_ref": "agent-work/evidence/review-HX-BL-023-E8-0c2abc1/review-report.json",
+  "score_assessment_ref": "agent-work/evidence/review-HX-BL-023-E8-0c2abc1/score-assessment.json",
+  "closed_findings": [
+    {
+      "id": "E8-R1",
+      "status": "fixed_verified",
+      "method": "Own real App probes intra/cross-region in Classic/Mythic; production DOM Enter/Undo/Redo plus missing-kind destination assertion",
+      "result": "Kind absence is retained; authored name/tag migration, checkpoints/counters/notes and exact history remain valid."
+    },
+    {
+      "id": "E8-R2",
+      "status": "fixed_verified",
+      "method": "Own real importer with central+ordinary same locator, including settlement fallback and nonsettlement; actual DOM import and catalog",
+      "result": "Invalid authored-name import atomically refuses at map.editorNames; old unnamed maps remain inspectable and expose no ambiguous name editor; redo retained."
+    },
+    {
+      "id": "E8-R3",
+      "status": "fixed_verified",
+      "method": "Own real App and production DOM RU/EN normalized reverse collision; legacy duplicate exact no-op via App",
+      "result": "Kingdom edits reject new authored-name collisions in both languages; exact old duplicate no-op remains accepted without history."
+    }
+  ],
+  "blocking_findings": [],
+  "findings": [],
+  "verification": {
+    "environment": {
+      "node": "24.22.1",
+      "browser": "Chromium153.0.8010.0",
+      "build": "Vite5.4.21 isolated production output e8-r1-fresh-dist",
+      "ports": [
+        4199,
+        4200,
+        4201
+      ]
+    },
+    "Node": {
+      "command": "node --test test/*.test.mjs",
+      "executed": 336,
+      "passed": 336,
+      "failed": 0,
+      "skipped": 0
+    },
+    "typecheck_build": {
+      "commands": [
+        "npx tsc --noEmit",
+        "npx vite build --outDir /workspace/scratch/60e61b33a6a0/e8-r1-fresh-dist"
+      ],
+      "passed": true,
+      "note": "Same components as npm check with isolated build output; defaultdist not overwritten."
+    },
+    "browser": {
+      "scripts_executed": 2,
+      "scripts_passed": 2,
+      "scripts_failed": 0,
+      "scripts": [
+        "adapted existing full save-history production runner",
+        "own fresh production assertions"
+      ],
+      "embedded_lifecycles": [
+        "water",
+        "region",
+        "POI"
+      ],
+      "own_observations": 9,
+      "note": "Only relevant full save-history and independent probes rerun; not claiming all8 npm browser scripts rerun; no sum with Node."
+    },
+    "RNG": {
+      "scripts_executed": 1,
+      "scripts_passed": 1,
+      "scripts_failed": 0,
+      "seed_mode_combinations": 8,
+      "additional_checks": [
+        "AC06 two modes",
+        "AC08 invalid RNG/seed",
+        "AC09 two modes double/busy/stale imports"
+      ],
+      "note": "Separate production runner, no sum with other suites."
+    },
+    "temporary_App_probes": {
+      "own_scenarios_passed": 15,
+      "adapted_combined_AC11_drivers_passed": 1,
+      "permanent_growth": 0
+    },
+    "reused_evidence_applicability": "Existing runner assertions inspected and rerun against the exact new isolated build/source. Prior developer green336/browser8/RNG claims were context, not substituted for independent execution. Original AC11 driver assertion logic inspected; only import/output paths and old hardcoded SHA changed in adapted copy.",
+    "harness_corrections": [
+      "First own App script compared a history baseline across intervening successful imports; corrected harness uses fresh setup per invalid input.",
+      "Own DOM script initially exported after opening a name editor (blur cancels no-op) and while invalid name draft active (export blocked). Moved baseline export before opening, cancelled invalid draft before post-state export. Logs retained as harness failures, not product findings."
+    ]
+  },
+  "test_change_summary": {
+    "base_sha": "6e53ae0d5c3996fe8fca04fb194439e2a1c4391e",
+    "head_sha": "0c2abc1a15822cb714f97ad6310ab0bdf7b17cd9",
+    "Node": {
+      "added": 0,
+      "removed": 0,
+      "modified": 6,
+      "suites": {
+        "manualRegions": 2,
+        "regionEditing": 2,
+        "saveSafety": 2
+      },
+      "independent_necessity_assessment": "Necessary adjacent extensions: missing-kind payload at pure and actual App boundaries differ; R2 address counting and real atomic importer/catalog differ; reverse R3 validation/no-op is actual UI-state integration. Reused cases cover distinct risks, not mirrored implementations. Two mode expansions count as two Node cases."
+    },
+    "browser": {
+      "added_workflows": 0,
+      "removed": 0,
+      "modified_workflows": 1,
+      "suite": "poi-lifecycle in save-history",
+      "necessity": "Necessary actual DOM/Enter/export/history regression for accepted untyped input; reuses existing browser service and map fixture."
+    },
+    "reviewer_permanent_changes": {
+      "added": 0,
+      "removed": 0,
+      "modified": 0
+    },
+    "method": "Read exact base/head diff and enclosing test() declarations, expand fixed Classic/Mythic loop; count runner cases separately from assertions."
+  },
+  "acceptance": [
+    {
+      "id": "AC01",
+      "status": "pass_scoped",
+      "evidence": "Node complete payload tests, own4 untyped mode/target App probes, typed production lifecycle"
+    },
+    {
+      "id": "AC02",
+      "status": "pass_scoped",
+      "evidence": "Node exact water pools/unknown/central/environment/occupancy/ambiguity/no-op, production water and central workflows"
+    },
+    {
+      "id": "AC03",
+      "status": "pass_scoped",
+      "evidence": "Node Mythic kingdom/myth limits plus actual Mythic production move; no quota rebalance"
+    },
+    {
+      "id": "AC04",
+      "status": "pass_scoped",
+      "evidence": "Node source trail/road geometry and target unchanged; production actionable #89 refusal"
+    },
+    {
+      "id": "AC05",
+      "status": "pass_scoped",
+      "evidence": "Node stale/collision tests; own6 clone positions and validator failure with both histories; R2 real importer + DOM refusal"
+    },
+    {
+      "id": "AC06",
+      "status": "pass_scoped",
+      "evidence": "Production actual move/one Undo/Redo, transition gate/keyboard/Esc/pan/rotation; own exact PNG/JSON draft exclusion; actual App late callbacks"
+    },
+    {
+      "id": "AC07",
+      "status": "pass_scoped",
+      "evidence": "Full eight-entry approved manifest production roundtrip/continue/undo, Node intermediate versions, own v8 names/reload and E7→E8 continuation"
+    },
+    {
+      "id": "AC08",
+      "status": "pass_scoped",
+      "evidence": "Independent current production E8 lifecycle RU/EN1500/390/320 and own DOM dimensions/Enter; current images visually inspected",
+      "limits": "No comprehensive WCAG or physical-device certification; user release walkthrough still must be actually presented."
+    },
+    {
+      "id": "AC09",
+      "status": "pass_scoped",
+      "evidence": "Node paired-name land/water/center trim/limit/clear/duplicate/self/fallback/type lifecycle; own R2/R3 and legacy no-op; production paired Tab/Enter"
+    },
+    {
+      "id": "AC10/E8.2",
+      "status": "not_in_current_slice",
+      "evidence": "Explicit sequential E8.2 and E8-N-SEA excluded; no completion claim"
+    },
+    {
+      "id": "AC11",
+      "status": "pass_scoped",
+      "evidence": "Inspected and independently executed adapted current-SHA temporary E2→E8 actual-App sequence with literal per-step Undo/Redo and v8 reload; production save-history integrates E6/E7/E8 together",
+      "limits": "One authored Classic combined fixture; individual Mythic workflows separately tested, not every game/operation permutation."
+    }
+  ],
+  "scope_decision": "Accept the implemented E8.1 first slice on exact local SHA with E7 included. Prior E8-R1/R2/R3 are closed by fresh reproduction and production verification. This is a local implementation acceptance; E8.2 can proceed sequentially. It is not approval to publish or a statement that all editor naming is complete.",
+  "score_model_version": "1.2",
+  "score_status": "insufficient_evidence_for_whole_criterion_grades",
+  "confirmed_points": null,
+  "unverified_weight": 1000,
+  "awarded_points": 0,
+  "score_update_status": "not_applicable_no_release",
+  "stage_independently_accepted": true,
+  "parent_task_completed": false,
+  "publication_ready": false,
+  "release_approved": false,
+  "published": false,
+  "PR": null,
+  "source_sync_status": "local_only_prior_automatic_review_rejection_preserved",
+  "release_boundary": {
+    "merge_or_deploy_performed": false,
+    "source_remote_feature_branch_available": false,
+    "source_transfer_rejection_preserved": true,
+    "release_approval": false,
+    "user_walkthrough": {
+      "exact_package_observed_by_reviewer": true,
+      "actual_images_inspected": true,
+      "shown_in_current_user_chat_by_this_reviewer": false,
+      "next_action": "Before release request, present actual reviewed combined-package interaction sequence to owner through an authorized route; local captures are not proof of owner presentation."
+    }
+  },
+  "next_task_id": "HX-BL-023",
+  "next_stage_id": "E8.2",
+  "next_role": "developer",
+  "next_step": "Программист реализует E8.2 для объектов со стабильной идентичностью по готовой спецификации,показывает примеры и фактический UI,передаёт новый SHA проверяющему. Имена морей остаются отдельной явной аналитической зависимостью.",
+  "handoff_ref": "agent-work/handoffs/2026-11-06-HX-BL-023-E8.2-development.json",
+  "authority_status": "Already approved sequential E8 scope;E8.1 now independently accepted. No new task/design approval needed;no publication authorization.",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-05 22:57:03 UTC",
+      "is_enabled": true,
+      "status": "checked"
+    },
+    "end": {
+      "checked_at": "2026-11-05 23:10:18 UTC",
+      "is_enabled": true,
+      "status": "checked"
+    },
+    "independent_reviewer": {
+      "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "start": {
+        "checked_at": "2026-11-05T22:57:46Z",
+        "is_enabled": true,
+        "method": "actual automations.peek"
+      },
+      "end": {
+        "checked_at": "2026-11-05 23:07:45 UTC",
+        "is_enabled": true,
+        "method": "actual automations.peek"
+      },
+      "restoration_performed": false,
+      "errors": [],
+      "schedule_or_prompt_changed": false,
+      "limitation": "Confirmed only at the check times."
+    },
+    "restoration_performed": false,
+    "errors": [],
+    "limitation": "Actual checks at recorded moments only;no guarantee against later changes."
+  },
+  "budget": {
+    "status": "owner_waived_usage_gate",
+    "actual_usage": "unknown",
+    "additional_spend": 0
+  },
+  "experience_entry": {
+    "lesson": "Separate verified correction closure,scoped first-slice acceptance and whole-product score. Fresh full registered corpus/history and own fault/negative probes justified acceptance;this does not complete later naming/sea identity or publication. Marker multiplicity must count physical recipients,not raw references to shared waterfall.",
+    "journal_status": "Scoped conclusion retained;shared large lessons history not retransmitted"
+  },
+  "latest_update_status": "blocked_previous_automatic_review_full_history_not_retried",
+  "latest_not_written": true,
+  "latest_observed_blob": "b54a88c0e43cc53333d31fd47879df35acd7182b",
+  "latest_intended_delta": {
+    "current_task_id": "HX-BL-023",
+    "current_stage_id": "E8.1",
+    "status": "accepted_scoped_E8.1_local_package",
+    "head_sha": "0c2abc1a15822cb714f97ad6310ab0bdf7b17cd9",
+    "closed_findings": [
+      "E8-R1",
+      "E8-R2",
+      "E8-R3"
+    ],
+    "review_ref": "agent-work/evidence/review-HX-BL-023-E8-0c2abc1/review-report.json",
+    "score_assessment_ref": "agent-work/evidence/review-HX-BL-023-E8-0c2abc1/score-assessment.json",
+    "result_ref": "agent-work/results/2026-11-06-reviewer-HX-BL-023-E8-0c2abc1.json",
+    "next_task_id": "HX-BL-023",
+    "next_stage_id": "E8.2",
+    "next_role": "developer",
+    "next_step": "Программист реализует E8.2 для объектов со стабильной идентичностью по готовой спецификации,показывает примеры и фактический UI,передаёт новый SHA проверяющему. Имена морей остаются отдельной явной аналитической зависимостью.",
+    "handoff_ref": "agent-work/handoffs/2026-11-06-HX-BL-023-E8.2-development.json",
+    "authority_status": "Already approved sequential E8 scope;E8.1 now independently accepted. No new task/design approval needed;no publication authorization.",
+    "confirmed_points": null,
+    "unverified_weight": 1000,
+    "automation_health": {
+      "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "start": {
+        "checked_at": "2026-11-05 22:57:03 UTC",
+        "is_enabled": true,
+        "status": "checked"
+      },
+      "end": {
+        "checked_at": "2026-11-05 23:10:18 UTC",
+        "is_enabled": true,
+        "status": "checked"
+      },
+      "independent_reviewer": {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "start": {
+          "checked_at": "2026-11-05T22:57:46Z",
+          "is_enabled": true,
+          "method": "actual automations.peek"
+        },
+        "end": {
+          "checked_at": "2026-11-05 23:07:45 UTC",
+          "is_enabled": true,
+          "method": "actual automations.peek"
+        },
+        "restoration_performed": false,
+        "errors": [],
+        "schedule_or_prompt_changed": false,
+        "limitation": "Confirmed only at the check times."
+      },
+      "restoration_performed": false,
+      "errors": [],
+      "limitation": "Actual checks at recorded moments only;no guarantee against later changes."
+    }
+  }
+}
