@@ -26,10 +26,10 @@
   },
   "lessons_path": "agent-work/lessons.md",
   "plan_id": "2026-11-04-developer-HX-BL-023-E5-draft",
-  "run_id": "2026-11-06-developer-PR490-F01",
+  "run_id": "2026-11-06-reviewer-PR490-7ddcc21",
   "plan_revision": 1,
   "baseline_sha": "ab75ecb0a5b90888d4e367bfc9a40ecdff8ad429",
-  "status": "review_ready",
+  "status": "completed",
   "planning_for": "2026-10-31",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-10-25",
@@ -45,36 +45,31 @@
   "schedule_start_at": "2026-10-24T01:00:00+03:00",
   "schedule_frequency": "hourly",
   "process_path": "agent-work/process.md",
-  "current_role": "developer",
-  "next_role": "reviewer",
+  "current_role": "reviewer",
+  "next_role": "owner_then_developer",
   "current_task_id": "HX-BL-023",
   "spec_path": "agent-work/specs/HX-BL-023-E8.md",
   "spec_version": "E8-1.0",
-  "result_path": "agent-work/results/2026-11-06-developer-PR490-F01.json",
+  "result_path": "agent-work/results/2026-11-06-reviewer-PR490-7ddcc21.json",
   "handoff_commit_sha": "d66fc1882d982bf71de1977869077ec56c117d06",
   "active_claim": null,
-  "next_step": "Fresh independent review of7ddcc218 including F01,whole E7+E8 package,CI evidence,test necessity andscore_assessment1.2. Complete durable whole-package UI presentation before release request.",
+  "next_step": "Ожидается отдельное решение владельца о публикации точного пакета PR490 SHA 7ddcc218ec6871179bde8153ec589d6517f46c74. При разрешении программист повторно сверяет head/base/tree и обязательные checks и выпускает только этот пакет; изменение SHA требует новой независимой проверки.",
   "owner_decisions_needed": [
     {
-      "task_id": "HX-BL-003",
-      "type": "acceptance_amendment",
-      "proposal_ref": "agent-work/handoffs/2026-10-27-HX-BL-003-minimal-release-package.json",
-      "release_permission_separate": true
+      "task_id": "HX-BL-023",
+      "decision": "Approve or decline publication of exact PR490 SHA 7ddcc218ec6871179bde8153ec589d6517f46c74 after viewing the actual combined E7+E8 walkthrough.",
+      "package_ref": "agent-work/evidence/review-PR490-7ddcc21/review-report.json"
     }
   ],
-  "release_approval": {
-    "status": "not_authorized",
-    "pr": 490,
-    "head_sha": "50f81251cf000d17f7f91eb96608d35ad900cfe4"
-  },
+  "release_approval": false,
   "historical_plan_status": "План23.10 сохранён как история; его блокировки и предложенный процесс заменены decisions24.10 в approvals/process/budget и текущим handoff.",
-  "evidence_path": "agent-work/evidence/HX-BL-023-E5-65e5d1d",
+  "evidence_path": "agent-work/evidence/review-PR490-7ddcc21/review-report.json",
   "branch_name": "agent/hx023-e7-e8-package",
   "pr": 490,
   "head_sha": "7ddcc218ec6871179bde8153ec589d6517f46c74",
-  "checks_status": "local_Node345_browser8_RNG_tsc_build_pass;CI_pending_observation",
+  "checks_status": "independent_Node345_browser8_RNG_pass; exact_SHA_CI_check_browser_world_random_success; seed_ui_conditional_skip",
   "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41799212970",
-  "review_verdict": "pending_new_SHA",
+  "review_verdict": "accepted_exact_SHA_for_E7_E8_code_review",
   "role_selection_mode": "ready_work_priority",
   "role_selection_source": "agent-work/process.md",
   "process_decision_ref": "owner-decision-2026-10-24-dynamic-roles",
@@ -204,8 +199,8 @@
   "score_update_task_id": "HX-BL-023",
   "score_update_release_sha": "ab75ecb0a5b90888d4e367bfc9a40ecdff8ad429",
   "score_process_decision_ref": "owner-decision-2026-10-24-score-responsibilities",
-  "score_assessment_ref": "agent-work/evidence/review-PR490-50f8125/score-assessment.json",
-  "role_selection_reason": "Safely resumed same owned E5 claim after exact PR486/1c4a653/tree82f4 verification and saved previous checkpoint. No review_ready package; foreign041 source-free presentation claim preserved. One active product implementation.",
+  "score_assessment_ref": "agent-work/evidence/review-PR490-7ddcc21/score-assessment.json",
+  "role_selection_reason": "Priority4: exact review_ready SHA after PR490-F01 correction; fresh independent review required and no conflicting product claim.",
   "score_update_result_ref": "agent-work/results/2026-11-04-strategist-score-PR485-PR484.json",
   "score_update_completed_at": "2026-11-04T01:05:25Z",
   "score_update_delta": null,
@@ -227,38 +222,22 @@
   },
   "base_sha": "2ef5cc35107f299c309b7c8065a1e81ca9881278",
   "automation_health": {
-    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-11-06 01:58:19 UTC",
-      "is_enabled": true,
-      "status": "checked"
-    },
-    "end": {
-      "checked_at": "2026-11-06 02:26:41 UTC",
+      "checked_at": "2026-11-06T03:55:46Z",
       "status": "checked",
       "is_enabled": true
     },
-    "observations": [
-      {
-        "checked_at": "2026-11-06 02:26:04 UTC",
-        "is_enabled": false,
-        "status": "checked"
-      }
-    ],
-    "recovery_performed": true,
-    "reason": "No current owner disable instruction or confirmed full technical block; historic owner pause explicitly superseded in approvals. Cause of service disable unknown.",
-    "errors": [
-      {
-        "type": "catalog_changed",
-        "action": "create_blob",
-        "recovered": true
-      }
-    ],
-    "limitation": "Point-in-time checks only."
+    "end": {
+      "checked_at": "2026-11-06T04:22:29Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "recovery_performed": false,
+    "errors": [],
+    "limitation": "Point-in-time observations only; no guarantee that the service remains enabled after the run."
   },
-  "open_findings": [
-    "PR490-F01"
-  ],
+  "open_findings": [],
   "current_review_score_assessment_status": "completed_model1.2_unknown_no_award",
   "target_audience_research": {
     "model_version": "1.1",
@@ -825,8 +804,8 @@
     "head_sha": "a265a78a1f287442ec502bac9875d04d8d273060",
     "result_ref": "agent-work/results/2026-10-29-reviewer-HX-BL-023-E1-ui3-a265a78.json"
   },
-  "reviewed_sha": null,
-  "current_review_score_assessment_ref": "agent-work/evidence/review-PR490-50f8125/score-assessment.json",
+  "reviewed_sha": "7ddcc218ec6871179bde8153ec589d6517f46c74",
+  "current_review_score_assessment_ref": "agent-work/evidence/review-PR490-7ddcc21/score-assessment.json",
   "automatic_measurement_rerun_allowed": false,
   "repeat_review_requires": "Fresh-context independent exact d92ecdd review, including F1 and score_assessment1.2",
   "blocked_task_handoffs": {
@@ -926,7 +905,7 @@
     "next_step": "Решить отдельно узкий cleanup AUD-02/03/04; готовую спецификацию024 не задерживать."
   },
   "owner_decisions_note": "Подтвердить предложенную адресную замену большого незавершённого historygate для003. HX-BL-024 уже утверждён, повторного согласования задачи не нужно; выпуск474 отдельно.",
-  "updated_at": "2026-11-06 01:55:26 UTC",
+  "updated_at": "2026-11-06T04:22:29Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
     "stage_id": "V3",
@@ -1187,47 +1166,44 @@
     "handoff_ref": "agent-work/handoffs/2026-10-27-HX-FB-002-audit.json"
   },
   "test_change_summary": {
-    "base_sha": "50f81251cf000d17f7f91eb96608d35ad900cfe4",
-    "head_sha": "7ddcc218ec6871179bde8153ec589d6517f46c74",
-    "source": "git diff base..head;existing two parameterized E8 real-App cases and one POI browser workflow extended;no new registrations",
-    "suites": [
-      {
-        "suite": "Node",
-        "added": 0,
+    "ref": "agent-work/evidence/review-PR490-7ddcc21/test-change-summary.json",
+    "whole_package": {
+      "node": {
+        "added": 46,
         "removed": 0,
-        "modified": 2,
+        "modified": 8,
         "executed": 345,
         "passed": 345,
-        "skipped": 0,
-        "scenario_risk": "PR490-F01 ordinary POI identity at an empty geometric center;type/delete/move/name/history/reload/continuation",
-        "reuse_or_new_reason": "Extended existing classic/Mythic full-payload relocation cases;red before fix,green after fix."
+        "skipped": 0
       },
-      {
-        "suite": "Browser",
-        "added": 0,
-        "removed": 0,
-        "modified": 1,
+      "browser": {
+        "added_workflows": 3,
+        "removed_workflows": 0,
+        "modified_existing_runners": 1,
         "executed": 8,
         "passed": 8,
-        "skipped": 0,
-        "scenario_risk": "Real controls ordinary versus central editor,paired names,explicit clear before deletion,exact history/reload,320/390/1500",
-        "reuse_or_new_reason": "Extended existing POI lifecycle in save-history suite;no extra permanent runner."
+        "skipped": 0
       },
-      {
-        "suite": "world-random",
+      "rng": {
+        "executed_suites": 1,
+        "passed": 1,
+        "skipped": 0
+      }
+    },
+    "f01_increment": {
+      "node": {
         "added": 0,
         "removed": 0,
-        "modified": 0,
-        "executed": 1,
-        "passed": 1,
-        "skipped": 0,
-        "scenario_risk": "RNG replay and busy/import guards",
-        "reuse_or_new_reason": "Existing required suite."
+        "modified": 2
+      },
+      "browser": {
+        "added": 0,
+        "removed": 0,
+        "modified": 1
       }
-    ],
-    "temporary_diagnostics": "Focused Node2/browser1 repeats and12-step walkthrough are diagnostics,not permanent suite growth."
+    }
   },
-  "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/480#pullrequestreview-5721774794",
+  "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/490#pullrequestreview-5795695459",
   "coordination_handoff": {
     "status": "completed_actionable_outcome",
     "current_package_task_id": "HX-BL-003",
@@ -1684,15 +1660,10 @@
     "errors": []
   },
   "previous_completed_claim": {
-    "run_id": "2026-10-28-strategist-score-HX-BL-024-a7a8cc5",
-    "role": "strategist_manager",
-    "task_id": "HX-BL-024",
-    "stage": "release_score_event",
+    "run_id": "2026-11-06-reviewer-PR490-7ddcc21",
+    "claim_ref": "agent-work/claims/2026-11-06-reviewer-PR490-7ddcc21.json",
     "status": "completed",
-    "started_at": "2026-10-28T15:05:09.136Z",
-    "scope": "Apply only independent confirmed score transitions on published package, then approved023handoff",
-    "completed_at": "2026-10-28T15:08:45.525Z",
-    "result_ref": "agent-work/results/2026-10-28-strategist-score-HX-BL-024-a7a8cc5.json"
+    "result_ref": "agent-work/results/2026-11-06-reviewer-PR490-7ddcc21.json"
   },
   "test_audit": {
     "task_id": "HX-FB-002",
@@ -1704,10 +1675,9 @@
     "new_executions": 0
   },
   "previous_completed_work": {
-    "task_id": "HX-BL-027",
-    "status": "awaiting_owner_task_start_approval",
-    "result_path": "agent-work/results/2026-10-28-strategist-next-HX-BL-027.json",
-    "next_step": "Ожидается утверждение владельцем задачи HX-BL-027 в указанном срезе. Затем аналитик готовит пригодную spec/визуал, далее programmer и independentreview; выпуск отдельно."
+    "run_id": "2026-11-06-developer-PR490-F01",
+    "role": "developer",
+    "preserved": true
   },
   "score_cohort_version": "2026-11-04-ranking1.3-process-sync",
   "vision_module_combination": {
@@ -1996,7 +1966,18 @@
   ],
   "schedule_decision_ref": "owner-decision-2026-10-31-team-resume-hourly",
   "tree_sha": "0bb858e6d149aae4c7aceb17da9ff5025bcc3817",
-  "accepted_release_pending": null,
+  "accepted_release_pending": {
+    "task_id": "HX-BL-023",
+    "stage_id": "E7+E8",
+    "status": "accepted_awaiting_owner_release_approval",
+    "pr": 490,
+    "head_sha": "7ddcc218ec6871179bde8153ec589d6517f46c74",
+    "tree_sha": "0bb858e6d149aae4c7aceb17da9ff5025bcc3817",
+    "review_ref": "agent-work/evidence/review-PR490-7ddcc21/review-report.json",
+    "ui_ref": "agent-work/evidence/review-PR490-7ddcc21/ui/README.md",
+    "release_approved": false,
+    "published": false
+  },
   "next_product_proposal": {
     "task_id": "HX-BL-027",
     "status": "deferred_by_owner",
@@ -2118,13 +2099,7 @@
   },
   "ui_preview_pending": false,
   "marketing_gate_status": "not_passed_full023_remains",
-  "current_task_release_approval": {
-    "task_id": "HX-BL-023",
-    "stage_id": "E3",
-    "status": "not_approved_changes_requested",
-    "release_approved": false,
-    "approved_sha": null
-  },
+  "current_task_release_approval": false,
   "next_product_recommendation": {
     "task_id": "HX-BL-023",
     "stage_id": "E5",
@@ -2258,18 +2233,21 @@
   "full_editor_ready": false,
   "current_task_score_assessment_status": "unknown_developer_partial_evidence_no_award",
   "published": false,
-  "main_changed": true,
+  "main_changed": false,
   "ui_actual": {
-    "head_sha": "4a46f90be9a0eec795107227d4f3f7af8a417305",
-    "desktop": "agent-work/evidence/HX-BL-023-panel-layout/1500-ru-read.png",
-    "narrow": "agent-work/evidence/HX-BL-023-panel-layout/390-ru-read.png",
+    "head_sha": "7ddcc218ec6871179bde8153ec589d6517f46c74",
+    "kind": "actual_combined_E7_E8",
+    "walkthrough_ref": "agent-work/evidence/review-PR490-7ddcc21/ui/README.md",
+    "manifest_ref": "agent-work/evidence/review-PR490-7ddcc21/ui/manifest.json",
+    "desktop_width": 1500,
+    "narrow_width": 390,
     "shown_in_chat": true,
     "limitations": [
-      "Chromium headless; physical devices and other browsers not tested",
-      "Некоторые emoji отсутствуют в шрифтах среды"
+      "Sea names excluded pending stable identity",
+      "Physical touch/screen reader/full WCAG AA not verified"
     ]
   },
-  "review_result_ref": "agent-work/results/2026-11-06-reviewer-PR490-50f8125.json",
+  "review_result_ref": "agent-work/results/2026-11-06-reviewer-PR490-7ddcc21.json",
   "previous_review_score_assessment_ref": "agent-work/evidence/review-HX-BL-023-E1-24fa342/score_assessment.json",
   "previous_independent_reviewer_automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
@@ -2398,7 +2376,7 @@
   "test_change_summary_ref": "agent-work/evidence/HX-BL-023-E5-18542ce/test-change-summary.json",
   "programmer_score_evidence_ref": "agent-work/evidence/HX-BL-023-E5-18542ce/programmer-score-evidence.json",
   "completed_claim_result_ref": "agent-work/results/2026-10-31-reviewer-HX-BL-023-E3-d7bb38f.json",
-  "review_evidence_ref": "agent-work/evidence/review-PR490-50f8125/review-report.json",
+  "review_evidence_ref": "agent-work/evidence/review-PR490-7ddcc21/review-report.json",
   "github_review_state": "independent_acceptance_recorded_COMMENT",
   "independent_reviewer_automation_health_ref": "agent-work/evidence/review-HX-BL-023-E3-d7bb38f/automation_health.json",
   "owner_visual_correction": {
@@ -2409,12 +2387,7 @@
     "result_ref": "agent-work/results/2026-10-30-developer-HX-BL-023-compact-highlight.json"
   },
   "resolved_findings": [
-    "HX023-DE-R1",
-    "HX023-E3-R1",
-    "HX023-E3-R2",
-    "HX023-E3-R3",
-    "HX023-E3-R4",
-    "HX023-E3-R5"
+    "PR490-F01"
   ],
   "previous_review_result_ref": "agent-work/results/2026-10-31-reviewer-HX-BL-023-E3-6e59e7f.json",
   "previous_review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/479#pullrequestreview-5708735954",
@@ -2474,20 +2447,18 @@
   "next_approved_stage": "E4",
   "next_approved_stage_handoff_ref": "agent-work/handoffs/2026-10-31-HX-BL-023-E4-continue.json",
   "authorization_status": "Approved HX-BL-023/E5 continuation within parent2.3/E5-1.0; publication separately",
-  "completed_at": "2026-10-31T11:57:06.096Z",
+  "completed_at": "2026-11-06T04:22:29Z",
   "score_changed": false,
   "next_stage_id": "E5",
   "score_evidence_updated": true,
   "current_stage_id": "E8.2",
   "implementation_started": true,
   "current_stage_release_approved": false,
-  "review_ready": true,
+  "review_ready": false,
   "current_stage_ui_status": "release_preview_pending_whole_package_walkthrough",
   "completed_claim": "agent-work/claims/2026-11-06-developer-PR490-F01.json",
   "evidence_commit_sha": "f991a3ddcc0fcedc9d62d8c9f51f4a2f33291e9c",
-  "finding_ids": [
-    "PR490-F01"
-  ],
+  "finding_ids": [],
   "current_release_package_ref": "agent-work/handoffs/2026-10-31-HX-BL-023-E3-release-package-d7bb38f.json",
   "current_stage_ui_preview": {
     "version": "E4-UI1",
@@ -2522,37 +2493,11 @@
     "release_approved": false
   },
   "release_user_walkthrough": {
-    "status": "shown_and_independently_verified",
-    "package_sha": "4a46f90be9a0eec795107227d4f3f7af8a417305",
-    "before_release_sha": "defaa5c24d546e4283430573c2d4e4f3b6194dc0",
-    "pr": 482,
-    "guide": "agent-work/evidence/HX-BL-023-panel-walkthrough/guide.html",
-    "video": "agent-work/evidence/HX-BL-023-panel-walkthrough/demo.webm",
-    "screenshots": "Embedded lossless PNG in guide.html: before/after, desktop/narrow, read/edit/typing/done/undo and context",
-    "scenarios": [
-      "Shared sidebar scrolling",
-      "Pencil opens edit mode",
-      "Escape cancels name draft",
-      "Enter commits name",
-      "Done returns to view",
-      "Undo restores original name"
-    ],
-    "shown_in_chat": true,
-    "shown_details": "Actual video and before/after images plus guide link presented in this run commentary",
-    "reviewer_verification": "agent-work/evidence/HX-BL-023-panel-walkthrough/reviewer.json",
-    "known_limitations": [
-      "Headless Chromium only; no physical phone, touch, Safari or Firefox claim",
-      "Video is desktop only;390px states and scroll measured separately",
-      "Native title verified as attribute; actual browser-chrome tooltip not captured",
-      "Some emoji render as missing-glyph squares, disclosed in walkthrough",
-      "Only6 sampled video frames inspected, with full action source and independent runtime assertions",
-      "Full npm check/browser/world-random not rerun by this reviewer; prior review and root own those checks",
-      "Temporary missing default browser cache prevented initial runtime attempt; retained Chromium fallback succeeded",
-      "User-visible delivery in current chat and publication permission remain root/owner responsibilities; reviewer does not set shown_in_chat",
-      "PR480/481 excluded; no product files, operational branch, shared claim, automation settings, merge or deployment changed"
-    ],
-    "PR480_status": "pending",
-    "PR480_responsible": "developer"
+    "status": "presented",
+    "kind": "actual_implementation",
+    "ref": "agent-work/evidence/review-PR490-7ddcc21/ui/README.md",
+    "manifest_ref": "agent-work/evidence/review-PR490-7ddcc21/ui/manifest.json",
+    "head_sha": "7ddcc218ec6871179bde8153ec589d6517f46c74"
   },
   "score_update_stage_id": "panel_layout_correction",
   "previous_owner_pause": {
@@ -4106,9 +4051,9 @@
     "workspace_recovery": "Pruning removed old shared git metadata; fresh clone from GitHub succeeded, no request to user needed.",
     "materials_commit_sha": "64fa823e19f701817ff59d962d7b211e83aaa406"
   },
-  "current_stage_status": "review_ready",
-  "current_stage_review_status": "changes_requested",
-  "accepted": false,
+  "current_stage_status": "accepted_awaiting_owner_release_approval",
+  "current_stage_review_status": "accepted_exact_SHA",
+  "accepted": true,
   "full_UI_pending": true,
   "latest_HX_BL_023_E5_persistence_20261104": {
     "run_id": "2026-11-04-developer-HX-BL-023-E5-persistence",
@@ -5337,7 +5282,7 @@
     },
     "last_completed_run": "2026-11-06T0330-PF2-L1-hex-scale",
     "rating_proposal_id": "HX-RSR-001-RANK-20261106-v1.4",
-    "rating_proposal_status": "awaiting_owner_approval",
+    "rating_proposal_status": "approved_pending_activation",
     "rating_proposal_ref": "agent-work/research/proposals/HX-RSR-001-RANK-20261106-v1.4.json",
     "rating_candidate_blob_sha": "39e1fbdb459c4b8519cace29f4ea6bc366db9286",
     "workbook": {
@@ -5345,7 +5290,7 @@
       "version": 4
     },
     "next_role": "research_analyst",
-    "next_step": "Open existing project file ‘Knave 2e Spreads Rus’ when file reference is exposed, verify edition/translation/spread-to-page mapping, then full map/hexcrawl rules in DND/PF2 format and shared canonical profiles. Exact title known; do not ask for it again.",
+    "next_step": "Activate exact approved rating proposal HX-RSR-001-RANK-20261106-v1.4 and associated proposed cohorts without recalculation, record activation evidence, then resume the current Knave 2e source/matrix work without duplicating an active foreign claim.",
     "authority_status": "Complete Knave map/hexcrawl research explicitly directed, same DND/PF2 format and shared rules/profiles. Await readable final text. No product code/release/rating activation authority.",
     "last_owner_update_ref": "agent-work/research/runs/2026-11-06T0400-KNAVE2-owner-scope.json",
     "owner_scope_ref": "owner-decision-2026-11-06-knave-complete-rules-audit",
@@ -5355,6 +5300,9 @@
     "knave_matrix_ref": "agent-work/market/rules/Knave-2e.json",
     "knave_matrix_status": "incomplete_no_source_rules_extracted",
     "source_access_correction_ref": "agent-work/research/runs/2026-11-06-KNAVE2-named-source.json",
-    "source_title": "Knave 2e Spreads Rus"
+    "source_title": "Knave 2e Spreads Rus",
+    "rating_approval_ref": "agent-work/decisions/owner-decision-2026-11-06-rating-v1.4-approved.json",
+    "rating_approval_record_ref": "agent-work/approvals.json#owner-decision-2026-11-06-rating-v1.4-approved",
+    "rating_activation_authorized": true
   }
 }
