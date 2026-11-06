@@ -1,0 +1,632 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-023",
+  "stage_id": "E7+E8.1+stableE8.2",
+  "review_role": "fresh_independent_reviewer",
+  "reviewer_agent": "/root/pr490_fresh_independent_review",
+  "status": "changes_requested",
+  "reviewed_sha": "50f81251cf000d17f7f91eb96608d35ad900cfe4",
+  "reviewed_tree": "9fdabe30a210f4fdb78b17c1841cbe8d70a4ecc0",
+  "base_sha": "2ef5cc35107f299c309b7c8065a1e81ca9881278",
+  "whole_package_files": 32,
+  "scope": "Entire32-file package reviewed, not only latest E8.2 delta. Prior developer/CI acceptance claims challenged by independent source and runtime checks.",
+  "findings": [
+    {
+      "id": "PR490-F01",
+      "priority": "P2",
+      "blocking_acceptance": true,
+      "title": "A permitted move to an empty unsuppressed region center is edited as a central POI and can create duplicate physical POIs",
+      "requirement": "E8 M01 explicitly permits a region center without a real central object; AC01/06/09/11 require a usable ordinary moved POI and consistent subsequent editing.",
+      "locations": [
+        {
+          "path": "src/manualPois.ts",
+          "lines": [
+            77,
+            91
+          ],
+          "note": "Target accepts center with no actual central object, as specified."
+        },
+        {
+          "path": "src/App.tsx",
+          "lines": [
+            11922,
+            14190,
+            16290
+          ],
+          "note": "Metadata marks center without requiring centralPoiKind; ordinary type edit is blocked and central editor is rendered."
+        }
+      ],
+      "supported_input": {
+        "version": 7,
+        "target_region_id": 2,
+        "target_hex": "3,0",
+        "isTract": false,
+        "suppressCentralPoi": false,
+        "centralPoiKind": "absent",
+        "description": "Structurally valid accepted legacy/import state. No existing central POI before move; this is explicitly a permitted destination, not an unsupported overlapping-input map."
+      },
+      "steps": [
+        "Import F01-import.json; no alert/error occurs.",
+        "Select2,0, enter Edit, click Location, set q=3 r=0, click Done.",
+        "Move succeeds: region2.pointsOfInterest=[{q:3,r:0}], pointOfInterestKinds[3,0]=village, centralPoiKind absent, selectedHex3,0.",
+        "Enter Edit and click Edit point. Control offers central choices including capital and lacks No point.",
+        "Choose ruins. Export shows centralPoiKind=ruins while ordinary pointOfInterestKinds[3,0] remains village; the ordinary move control disappears.",
+        "Undo restores the moved map exactly; Redo restores the duplicate-object map exactly."
+      ],
+      "expected": "The moved ordinary POI remains the selected/editable ordinary POI at an otherwise empty center. Type/removal/move/name operations preserve one physical identity; center/anchor remain protected for E7 geometry.",
+      "observed": {
+        "move_accepted": true,
+        "ordinary_kind_before": "village",
+        "ordinary_kind_after": "village",
+        "central_kind_after": "ruins",
+        "ordinary_move_control_after": 0,
+        "page_errors": [],
+        "import_alerts": [],
+        "undo_redo_map_exact": true
+      },
+      "impact": "Ordinary type editing silently creates another object rather than changing the moved POI; the resulting central+ordinary collision cannot be moved or named unambiguously. Ordinary editor controls are hidden even immediately after the allowed move.",
+      "evidence": [
+        "F01-import.json",
+        "F01-moved.json",
+        "F01-after-type-edit.json",
+        "F01-after-type-edit.png",
+        "F01-browser-probe.mjs",
+        "F01-browser-result.json",
+        "F01-App-probe.mjs",
+        "F01-App-result.json"
+      ],
+      "bounded_fix": "Unify actual-central-object detection for the permitted empty-center destination across selection/type/name/position paths. Preserve unconditional E7 center/anchor protection. Reuse existing regionEditing and POI browser lifecycles for center-without-central-object relocation, ordinary type edit/delete/move and exact Undo/Redo/reload regression."
+    }
+  ],
+  "checks": {
+    "identity": {
+      "status": "passed",
+      "method": "git rev-parse HEAD HEAD^{tree}; git diff --stat exact base/head; source files not edited"
+    },
+    "node24_check": {
+      "command": "npm run check",
+      "node": "v24.22.1",
+      "status": "passed",
+      "log": "independent-check.log",
+      "exit_code": 0,
+      "executed": 345,
+      "passed": 345,
+      "failed": 0,
+      "skipped": 0,
+      "duration_ms": 508003.00942
+    },
+    "production_build": {
+      "command": "npm run build",
+      "status": "passed",
+      "log": "independent-build.log"
+    },
+    "production_browser": {
+      "command": "CHROMIUM_EXECUTABLE_PATH=... npm run test:browser",
+      "status": "passed",
+      "exit_code": 0,
+      "scripts_executed": 8,
+      "scripts_passed": 8,
+      "skipped": 0,
+      "browser": "Chromium153.0.8010.0 headless Linux",
+      "log": "independent-browser.log"
+    },
+    "rng": {
+      "command": "npm run test:browser:rng",
+      "status": "passed",
+      "log": "independent-rng.log",
+      "exit_code": 0,
+      "skipped": 0,
+      "separate_from_browser8": true
+    },
+    "independent_adversarial_App": {
+      "status": "passed_reproduction_of_F01",
+      "source": "temporary diagnostic script; no permanent test/source changes"
+    },
+    "independent_adversarial_production_UI": {
+      "status": "passed_reproduction_of_F01",
+      "source": "freshly built production preview; actual native control; JSON before/after; exact map Undo/Redo",
+      "setup_retries": {
+        "count": 2,
+        "reason": "Initial temporary preview-server lifecycle caused connection refused; corrected by owning preview subprocess inside diagnostic script. Final reproduction passed.",
+        "product_failure": false
+      }
+    },
+    "independent_test_registration_comparison": {
+      "status": "passed",
+      "method": "Temporary ESM loader intercepts node:test registration only; callbacks are not executed. Compare file+registered name and callback body across git archive base/increment/head."
+    },
+    "skipped": [
+      "No paid services,release,merge,deploy,external write or new permanent tests.",
+      "No universal geometry/fuzz corpus or full WCAG/AT/browser matrix."
+    ]
+  },
+  "test_change_summary": {
+    "source": "Independent dynamic logical registration and callback-body comparison, plus source diff/browser module integration inspection. Execution counts remain separate.",
+    "package": {
+      "baseline": "base",
+      "base_cases": 299,
+      "head_cases": 345,
+      "added": 46,
+      "removed": 0,
+      "modified": 8,
+      "added_by_file": {
+        "entityNames.test.mjs": 9,
+        "manualRegions.test.mjs": 16,
+        "manualRivers.test.mjs": 2,
+        "regionEditing.test.mjs": 12,
+        "saveSafety.test.mjs": 7
+      },
+      "modified_cases": [
+        [
+          "mapTransactions.test.mjs",
+          "all manifest saves round-trip unchanged entities, names and can continue then undo"
+        ],
+        [
+          "mapTransactions.test.mjs",
+          "v5 obstacle IDs and counter survive migration, round-trip and history; invalid v5 is atomic"
+        ],
+        [
+          "mapTransactions.test.mjs",
+          "E5 native v7 feature intentions and counter survive real import, edits, history and rejected files"
+        ],
+        [
+          "mapTransactions.test.mjs",
+          "E6 real POI/name/tag losses require every explicit answer and Undo restores authored content"
+        ],
+        [
+          "mapTransactions.test.mjs",
+          "E6 real water dependencies block roads and require explicit barrier/water-POI loss without deleting notes"
+        ],
+        [
+          "mapTransactions.test.mjs",
+          "E6 real water feature conflict requires Off/Auto together with the accepted geography"
+        ],
+        [
+          "tags.test.mjs",
+          "production imported legacy map does not roll; explicit fill and separate rerolls are exact reversible transactions and v6 roundtrip"
+        ],
+        [
+          "worldContinuation.test.mjs",
+          "v2 migration and v3 validation are deterministic and atomic with redo"
+        ]
+      ]
+    },
+    "E82_increment": {
+      "baseline": "increment",
+      "base_cases": 336,
+      "head_cases": 345,
+      "added": 9,
+      "removed": 0,
+      "modified": 2,
+      "added_by_file": {
+        "entityNames.test.mjs": 9
+      },
+      "modified_cases": [
+        [
+          "mapTransactions.test.mjs",
+          "E6 real water dependencies block roads and require explicit barrier/water-POI loss without deleting notes"
+        ],
+        [
+          "mapTransactions.test.mjs",
+          "E6 real water feature conflict requires Off/Auto together with the accepted geography"
+        ]
+      ]
+    },
+    "browser_package": {
+      "added_workflows": 3,
+      "removed_workflows": 0,
+      "modified_existing_runners": 1,
+      "new_modules": [
+        "region-lifecycle.mjs",
+        "poi-lifecycle.mjs",
+        "entity-name-lifecycle.mjs"
+      ],
+      "integration": "All called by existing save-history.smoke.mjs; eight top-level npm browser scripts unchanged."
+    },
+    "browser_E82_increment": {
+      "added_workflows": 1,
+      "removed_workflows": 0,
+      "modified_workflows": 0
+    },
+    "necessity_assessment": [
+      {
+        "coverage": "manualRegions16 and manualRivers2",
+        "risk": "Distinct administrative owner/physical directed-height remap and coordinate-vs-owner identity migration.",
+        "reuse_reason": "Pure geometry/identity belongs beside existing numerical RIV/ROAD suites; tests reuse components and do not copy numerical tables. Necessary."
+      },
+      {
+        "coverage": "regionEditing12 and saveSafety7",
+        "risk": "Actual App transactions, stale/new-document callbacks,faults,paired names,format8 and continuation.",
+        "reuse_reason": "Existing generation harness reused; pure helper success cannot establish real history/import wiring. Necessary."
+      },
+      {
+        "coverage": "entityNames9",
+        "risk": "Five distinct address/visibility families,shared waterfall,opaque crossing key,named deletion and live-marker refusal.",
+        "reuse_reason": "Parameterized cases share fixture/harness; family-specific identity risks justify9 registrations rather than count inflation. Necessary but misses allowed empty-center interaction."
+      },
+      {
+        "coverage": "8 modified existing Node cases",
+        "risk": "Version7→8 expectations and E6 loss propagation.",
+        "reuse_reason": "Updating existing assertions is preferable to duplicate runners/cases; reviewed assertions preserve legacy intent."
+      },
+      {
+        "coverage": "3 new browser lifecycle modules within1 existing runner",
+        "risk": "Native focus/events,actual map targets,narrow layout,common Done/Esc and removal confirmation cannot be established by callback harness.",
+        "reuse_reason": "Existing page,corpus,load/snapshot and Undo runner reused. Necessary; counted workflows,not loops/assertions."
+      }
+    ],
+    "reviewer_permanent_test_changes": {
+      "added": 0,
+      "removed": 0,
+      "modified": 0
+    },
+    "temporary_diagnostics": "F01 App/UI scripts and registration loader excluded from permanent test counts."
+  },
+  "release_walkthrough": {
+    "status": "release_preview_pending",
+    "finding_type": "evidence_gap_separate_from_product_defect",
+    "reviewer_verification": "Independent exact-SHA production suite repeats E7/E8.1/E8.2 workflows and produces desktop/narrow artifacts. Developer scoped evidence fetched from GitHub contains E8.2 name/refusal/deletion panels but no complete structured whole-package user_walkthrough object. No full combined before_release_sha→package_sha read/edit/selection/preview/Done/Undo/error sequence shown_in_chat proof can be verified from the scoped evidence. Root reports earlier E7/E8.1 presentations were separate.",
+    "required_next_step": "After correcting F01 and reviewing new exactSHA,assemble/present one coherent actual combined walkthrough with desktop+narrow,sequence,limitations,shown_in_chat and reviewer_verification before asking owner to release. This is not a new design approval gate.",
+    "release_authorized": false
+  },
+  "score_assessment1.2": {
+    "model_version": "1.2",
+    "model_path": "agent-work/strategy/score-model.md",
+    "model_blob_sha": "ab660f02e26faf2233aecd5f2fd1090260fe74eb",
+    "baseline_blob_sha": "950e11bdfd5f59da09d424af14a820c5c8b580f5",
+    "baseline_release_sha": "2ef5cc35107f299c309b7c8065a1e81ca9881278",
+    "baseline_summary": {
+      "confirmed_points": null,
+      "unverified_criteria": 50,
+      "unverified_weight": 1000
+    },
+    "candidate_sha": "50f81251cf000d17f7f91eb96608d35ad900cfe4",
+    "criteria": [
+      {
+        "criterion_id": "S02-C02",
+        "weight": 20,
+        "before_grade": null,
+        "before_points": null,
+        "before_status": "unverified",
+        "after_grade": null,
+        "after_points": null,
+        "delta_points": null,
+        "awarded_points": 0,
+        "assessment_status": "insufficient_evidence_for_whole_criterion_grade",
+        "quality": "E7 reparent and E8 relocation preserve complete bilingual registry entries, tag instances/counter prefixes, generic Road/Obstacle/Crossing/rapid/waterfall storage identities in bounded real handlers. F01 produces two POIs at one allowed destination after type editing.",
+        "breadth": {
+          "assessment_kind": "technical",
+          "product_profiles": [
+            "Classic",
+            "Mythic Bastionland"
+          ],
+          "layer": "L1",
+          "primary_scenario": "develop",
+          "secondary_scenario": "create",
+          "top5_top10_top20": "requirements_and_support_unverified; no full game coverage inferred",
+          "technical_breadth_rule": "No artificial20-game requirement applied to technical criteria"
+        },
+        "limitations": [
+          "All entity identity lifecycle coverage is not established; POI uses a changing storage locator, Sea identity unresolved."
+        ],
+        "evidence": [
+          "independent-check.log",
+          "independent-browser.log",
+          "independent-rng.log",
+          "F01-browser-result.json",
+          "F01-App-result.json"
+        ],
+        "reason_no_grade": "Whole-criterion quality/support evidence is incomplete; unknown is retained independently of unreleased status. Candidate grading is allowed, but this report does not manufacture a grade from partial package evidence."
+      },
+      {
+        "criterion_id": "S02-C03",
+        "weight": 20,
+        "before_grade": null,
+        "before_points": null,
+        "before_status": "unverified",
+        "after_grade": null,
+        "after_points": null,
+        "delta_points": null,
+        "awarded_points": 0,
+        "assessment_status": "insufficient_evidence_for_whole_criterion_grade",
+        "quality": "Version8 accepts sparse optional editorNames and validates live addresses before applying; existing v2-v7 corpus, normalized exports, malformed/future version refusal and continuation are exercised by existing real App/browser runners.",
+        "breadth": {
+          "assessment_kind": "technical",
+          "product_profiles": [
+            "Classic",
+            "Mythic Bastionland"
+          ],
+          "layer": "L1",
+          "primary_scenario": "develop",
+          "secondary_scenario": "create",
+          "top5_top10_top20": "requirements_and_support_unverified; no full game coverage inferred",
+          "technical_breadth_rule": "No artificial20-game requirement applied to technical criteria"
+        },
+        "limitations": [
+          "Finite approved manifests establish those inputs, not unspecified historical saves or every newly permitted edit sequence. F01 is a supported legacy-input continuation regression."
+        ],
+        "evidence": [
+          "independent-check.log",
+          "independent-browser.log",
+          "independent-rng.log",
+          "F01-browser-result.json",
+          "F01-App-result.json"
+        ],
+        "reason_no_grade": "Whole-criterion quality/support evidence is incomplete; unknown is retained independently of unreleased status. Candidate grading is allowed, but this report does not manufacture a grade from partial package evidence."
+      },
+      {
+        "criterion_id": "S03-C01",
+        "weight": 25,
+        "before_grade": null,
+        "before_points": null,
+        "before_status": "unverified",
+        "after_grade": null,
+        "after_points": null,
+        "delta_points": null,
+        "awarded_points": 0,
+        "assessment_status": "insufficient_evidence_for_whole_criterion_grade",
+        "quality": "Actual E7 height+explicit biome/transfer UI and E8 Classic/water/Mythic coordinate move paths work in bounded cases. Independent F01 exposes an accepted move whose subsequent ordinary type edit is routed to the central-object editor.",
+        "breadth": {
+          "assessment_kind": "game_dependent",
+          "product_profiles": [
+            "Classic",
+            "Mythic Bastionland"
+          ],
+          "layer": "L1",
+          "primary_scenario": "develop",
+          "secondary_scenario": "create",
+          "top5_top10_top20": "requirements_and_support_unverified; no full game coverage inferred",
+          "technical_breadth_rule": "No artificial20-game requirement applied to technical criteria"
+        },
+        "limitations": [
+          "F01 blocks acceptance. Full game-dependent applicable top5 requirements and module-combination scenarios have not been evaluated."
+        ],
+        "evidence": [
+          "independent-check.log",
+          "independent-browser.log",
+          "independent-rng.log",
+          "F01-browser-result.json",
+          "F01-App-result.json"
+        ],
+        "reason_no_grade": "Whole-criterion quality/support evidence is incomplete; unknown is retained independently of unreleased status. Candidate grading is allowed, but this report does not manufacture a grade from partial package evidence."
+      },
+      {
+        "criterion_id": "S03-C04",
+        "weight": 30,
+        "before_grade": null,
+        "before_points": null,
+        "before_status": "unverified",
+        "after_grade": null,
+        "after_points": null,
+        "delta_points": null,
+        "awarded_points": 0,
+        "assessment_status": "insufficient_evidence_for_whole_criterion_grade",
+        "quality": "Source and runtime cover source-touching road refusal, E7 physical river-owner/height constraints, named-loss refusal/confirmed road and obstacle deletion, E6 dependencies. F01 creates a central+ordinary collision through an ordinary edit.",
+        "breadth": {
+          "assessment_kind": "game_dependent",
+          "product_profiles": [
+            "Classic",
+            "Mythic Bastionland"
+          ],
+          "layer": "L1",
+          "primary_scenario": "develop",
+          "secondary_scenario": "create",
+          "top5_top10_top20": "requirements_and_support_unverified; no full game coverage inferred",
+          "technical_breadth_rule": "No artificial20-game requirement applied to technical criteria"
+        },
+        "limitations": [
+          "F01 blocks complete integrity acceptance. NPC/rumor/quest/faction/history reference graphs are absent or unverified; no full cross-game dependency coverage."
+        ],
+        "evidence": [
+          "independent-check.log",
+          "independent-browser.log",
+          "independent-rng.log",
+          "F01-browser-result.json",
+          "F01-App-result.json"
+        ],
+        "reason_no_grade": "Whole-criterion quality/support evidence is incomplete; unknown is retained independently of unreleased status. Candidate grading is allowed, but this report does not manufacture a grade from partial package evidence."
+      },
+      {
+        "criterion_id": "S03-C05",
+        "weight": 20,
+        "before_grade": null,
+        "before_points": null,
+        "before_status": "unverified",
+        "after_grade": null,
+        "after_points": null,
+        "delta_points": null,
+        "awarded_points": 0,
+        "assessment_status": "insufficient_evidence_for_whole_criterion_grade",
+        "quality": "Existing production save-history runner exercises100 mixed operations; E7/E8 exact document Undo/Redo and independent F01 type-edit Undo/Redo restore map payloads exactly.",
+        "breadth": {
+          "assessment_kind": "technical",
+          "product_profiles": [
+            "Classic",
+            "Mythic Bastionland"
+          ],
+          "layer": "L1",
+          "primary_scenario": "develop",
+          "secondary_scenario": "create",
+          "top5_top10_top20": "requirements_and_support_unverified; no full game coverage inferred",
+          "technical_breadth_rule": "No artificial20-game requirement applied to technical criteria"
+        },
+        "limitations": [
+          "Named map versions are not implemented; full product edit families and all failure interleavings are not established by finite cases."
+        ],
+        "evidence": [
+          "independent-check.log",
+          "independent-browser.log",
+          "independent-rng.log",
+          "F01-browser-result.json",
+          "F01-App-result.json"
+        ],
+        "reason_no_grade": "Whole-criterion quality/support evidence is incomplete; unknown is retained independently of unreleased status. Candidate grading is allowed, but this report does not manufacture a grade from partial package evidence."
+      },
+      {
+        "criterion_id": "S04-C04",
+        "weight": 15,
+        "before_grade": null,
+        "before_points": null,
+        "before_status": "unverified",
+        "after_grade": null,
+        "after_points": null,
+        "delta_points": null,
+        "awarded_points": 0,
+        "assessment_status": "insufficient_evidence_for_whole_criterion_grade",
+        "quality": "Production suite tests JSON corpus round-trip and accepted-only draft export, PNG matching/overlays/styles, with generic names retained in JSON. Independent F01 before/after snapshots preserve the reproducible defect.",
+        "breadth": {
+          "assessment_kind": "technical",
+          "product_profiles": [
+            "Classic",
+            "Mythic Bastionland"
+          ],
+          "layer": "L1",
+          "primary_scenario": "develop",
+          "secondary_scenario": "create",
+          "top5_top10_top20": "requirements_and_support_unverified; no full game coverage inferred",
+          "technical_breadth_rule": "No artificial20-game requirement applied to technical criteria"
+        },
+        "limitations": [
+          "SVG and full role-specific export are not established; a successful round-trip retains F01 duplicate state rather than proving semantic validity."
+        ],
+        "evidence": [
+          "independent-check.log",
+          "independent-browser.log",
+          "independent-rng.log",
+          "F01-browser-result.json",
+          "F01-App-result.json"
+        ],
+        "reason_no_grade": "Whole-criterion quality/support evidence is incomplete; unknown is retained independently of unreleased status. Candidate grading is allowed, but this report does not manufacture a grade from partial package evidence."
+      },
+      {
+        "criterion_id": "S04-C05",
+        "weight": 10,
+        "before_grade": null,
+        "before_points": null,
+        "before_status": "unverified",
+        "after_grade": null,
+        "after_points": null,
+        "delta_points": null,
+        "awarded_points": 0,
+        "assessment_status": "insufficient_evidence_for_whole_criterion_grade",
+        "quality": "Production Chromium tests RU/EN,1500/390/320 layouts, keyboard/Tab, common Done/Esc, physical map targets, Find, and separate narrow/desktop workflows. Independent F01 shows a misleading point-type control at a supported center destination.",
+        "breadth": {
+          "assessment_kind": "technical",
+          "product_profiles": [
+            "Classic",
+            "Mythic Bastionland"
+          ],
+          "layer": "L1",
+          "primary_scenario": "develop",
+          "secondary_scenario": "create",
+          "top5_top10_top20": "requirements_and_support_unverified; no full game coverage inferred",
+          "technical_breadth_rule": "No artificial20-game requirement applied to technical criteria"
+        },
+        "limitations": [
+          "No full WCAG AA, screen-reader/AT, physical touch, Safari/Firefox corpus. Complete release walkthrough presentation remains pending verification."
+        ],
+        "evidence": [
+          "independent-check.log",
+          "independent-browser.log",
+          "independent-rng.log",
+          "F01-browser-result.json",
+          "F01-App-result.json"
+        ],
+        "reason_no_grade": "Whole-criterion quality/support evidence is incomplete; unknown is retained independently of unreleased status. Candidate grading is allowed, but this report does not manufacture a grade from partial package evidence."
+      },
+      {
+        "criterion_id": "S09-C04",
+        "weight": 10,
+        "before_grade": null,
+        "before_points": null,
+        "before_status": "unverified",
+        "after_grade": null,
+        "after_points": null,
+        "delta_points": null,
+        "awarded_points": 0,
+        "assessment_status": "insufficient_evidence_for_whole_criterion_grade",
+        "quality": "Source checks detached candidate preparation, token/revision/ref guards, invalid-import atomicity and named loss gates; existing runtime fault cases run. Independent F01 Undo/Redo is exact, but ordinary UI can introduce duplicate physical POIs.",
+        "breadth": {
+          "assessment_kind": "technical",
+          "product_profiles": [
+            "Classic",
+            "Mythic Bastionland"
+          ],
+          "layer": "L1",
+          "primary_scenario": "develop",
+          "secondary_scenario": "create",
+          "top5_top10_top20": "requirements_and_support_unverified; no full game coverage inferred",
+          "technical_breadth_rule": "No artificial20-game requirement applied to technical criteria"
+        },
+        "limitations": [
+          "Confirmed semantic-integrity defect prevents complete safety acceptance; finite injected faults and corpus cannot prove universal safety."
+        ],
+        "evidence": [
+          "independent-check.log",
+          "independent-browser.log",
+          "independent-rng.log",
+          "F01-browser-result.json",
+          "F01-App-result.json"
+        ],
+        "reason_no_grade": "Whole-criterion quality/support evidence is incomplete; unknown is retained independently of unreleased status. Candidate grading is allowed, but this report does not manufacture a grade from partial package evidence."
+      }
+    ],
+    "current_released_score_changed": false,
+    "awarded_points": 0,
+    "delta_points": null,
+    "no_double_count": "Identity/persistence/transaction/refusal evidence describes different criterion implications but no duplicated awards. Game breadth is not inferred from shared helpers or Classic/Mythic presets."
+  },
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-06 01:04:29 UTC",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "end": {
+      "checked_at": "2026-11-06 01:14:35 UTC",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "recovery_performed": false,
+    "errors": [],
+    "limitation": "Actual momentary observations only; no future enabled guarantee."
+  },
+  "limitations": [
+    "One confirmed defect is sufficient for changes_requested; passing finite suites does not erase it.",
+    "Sea names excluded pending stable identity/split-merge contract; expected scope limitation, not this package defect.",
+    "Complex unsupported authored-loss operations may safely refuse with the affected name; assessed under that permitted policy.",
+    "No full applicable game/cohort support or independent expert-naturalness/WCAG acceptance.",
+    "Source and permanent tests unchanged; existing browser runners write report/screenshot artifacts as expected.",
+    "Root owns GitHub claim/result persistence; this agent made read-only GitHub calls and local evidence/report writes."
+  ],
+  "next_role": "developer",
+  "next_step": "Fix PR490-F01 within approved package,extend existing targeted lifecycle coverage,rerun relevant and required checks on new exactSHA;fresh independent review required before release proposal.",
+  "source_clean_end_check": {
+    "head": "50f81251cf000d17f7f91eb96608d35ad900cfe4",
+    "tree": "9fdabe30a210f4fdb78b17c1841cbe8d70a4ecc0",
+    "git_diff_src_test_docs": ""
+  },
+  "completed_at": "2026-11-06 01:14:35 UTC",
+  "sources": {
+    "AGENTS_index": "local exactSHA",
+    "process": {
+      "ref": "agent-operations",
+      "path": "agent-work/process.md",
+      "blob": "707a776cf7fc24fa895b6967aaa4b02ec213393c"
+    },
+    "vision": {
+      "ref": "agent-operations",
+      "path": "agent-work/strategy/vision.md",
+      "blob": "e048ce9e95cf1ebe406ce487ccbf97577473c3fe"
+    },
+    "score_model": {
+      "ref": "agent-operations",
+      "path": "agent-work/strategy/score-model.md",
+      "blob": "ab660f02e26faf2233aecd5f2fd1090260fe74eb"
+    },
+    "E8_spec_blob": "24f20ae2cd72845d04680dc454697b540b0e4c8b",
+    "handoff_blob": "9e4289d9a712b465bcc0d4b38c834224b3c4ec16",
+    "developer_evidence_blob": "6fe6350a6daff75fddf0419da6aa099ed6ca2687"
+  }
+}
