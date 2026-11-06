@@ -1,0 +1,137 @@
+{
+  "run_id": "2026-11-06T1330-L1-lifecycle-evidence",
+  "selected_task": {
+    "game_id": "KNAVE2",
+    "layer": "L1",
+    "action": "Audit applicability of existing UI lifecycle evidence to current release and isolate missing tagged-POI case"
+  },
+  "selection_reason": "Rank3 L1 reuse checkpoint remains useful; inspect existing CI evidence before repeating browser work. Actual test tree can be checked against release tree without a new full scan.",
+  "alternatives": [
+    {
+      "task": "Run complete browser suite afresh",
+      "decision": "Current exact-tree CI and test assertions already exist; narrow applicability review has lower cost and locates the missing compound case."
+    },
+    {
+      "task": "Shadowdark terrain or new popularity metric",
+      "decision": "Current high-rank L1 lifecycle uncertainty is concrete; no new stronger challenger or popularity signal in this bounded run."
+    }
+  ],
+  "inputs_and_versions": {
+    "operations_baseline": "65bab08cfb4e25762d37f8041b74ffa167dca268",
+    "comparison": {
+      "pr_head": "de0299168e5a74d4e3594db71d657ca8055614e0",
+      "pr_tree": "79b69059c70eed7430bcda93db5d72a6097695d3",
+      "release_sha": "7547a67bbcfb621f1e7c7189518583842ccb055a",
+      "release_tree": "79b69059c70eed7430bcda93db5d72a6097695d3",
+      "tested_sha": "2a9936e723ff3349e07437d0b99e5ac6b249750f",
+      "tested_tree": "79b69059c70eed7430bcda93db5d72a6097695d3",
+      "all_trees_equal": true
+    },
+    "ranking_version": "three-scenario-ranks-1.4-create-evidence",
+    "cohort_version": "2026-11-06-ranking1.4-create-evidence",
+    "score_model": "1.2",
+    "contract_sha": "dc902391d0234bfb17ffb8f7b146403c00e33172",
+    "budget": "owner_waived_usage_gate; no spend"
+  },
+  "findings": [
+    {
+      "id": "HX-RSR-LIFECYCLE-01",
+      "fact": "Browser job passed both existing tag and POI lifecycle suites; checked test-merge, PR head and release trees are identical.",
+      "source": {
+        "url_or_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42171271911/job/127739421730",
+        "locator": "checkout commit and completion lines; tags.smoke.mjs assertions",
+        "published_at": "2026-11-06"
+      },
+      "author_project_key": "yuriyemelyanov/hexcrawl/ci/42171271911",
+      "access_level": "full_text",
+      "interpretation": "Existing MB tag reroll, exact undo/redo and JSON roundtrip have current-tree execution evidence. No local rerun claimed."
+    },
+    {
+      "id": "HX-RSR-LIFECYCLE-02",
+      "fact": "poi-lifecycle.mjs checks Mythic kind/movement and exact snapshots, but contains no map.tags state assertions.",
+      "source": {
+        "url_or_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/7547a67bbcfb621f1e7c7189518583842ccb055a/test/browser/poi-lifecycle.mjs",
+        "locator": "lines29,37,51",
+        "published_at": null
+      },
+      "author_project_key": "yuriyemelyanov/hexcrawl/poi-lifecycle",
+      "access_level": "full_text",
+      "interpretation": "Combined nonempty-tag movement remains unknown; absence of an assertion is not a runtime defect."
+    }
+  ],
+  "changed_refs": [
+    "agent-work/research/runs/2026-11-06T1330-L1-lifecycle-evidence.json",
+    "agent-work/research/requirements/L1-tagged-poi-lifecycle-v1.json",
+    "agent-work/research/checkpoints/KNAVE2-table-reuse.json",
+    "agent-work/research/README.md",
+    "agent-work/research/state.json",
+    "agent-work/backlog.json",
+    "agent-work/claims/2026-11-06T1330-L1-lifecycle-evidence.json"
+  ],
+  "rating_proposal_refs": [],
+  "product_task_refs": [
+    "agent-work/backlog.json#HX-BL-043"
+  ],
+  "verification": {
+    "tree_identity_verified": true,
+    "fresh_local_browser_execution": false,
+    "existing_browser_job": "completed_success",
+    "assertion_source_read": true,
+    "game_support_or_score_awarded": false,
+    "main_changed_by_this_run": false,
+    "permanent_tests_changed": false,
+    "limits": "CI log + exact-tree applicability review only; no new run or full-browser certification."
+  },
+  "automation_health": {
+    "restoration_performed": true,
+    "restoration_scope": "main_team is_enabled only; standing owner authorization; no active pause; cause unknown",
+    "research_agent": {
+      "start": {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "is_enabled": true,
+        "checked_at": "2026-11-06T13:33:05.676Z"
+      },
+      "end": {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "is_enabled": true,
+        "status": "checked",
+        "checked_at": "2026-11-06T13:36:03.575Z"
+      }
+    },
+    "main_team": {
+      "start": {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "is_enabled": false,
+        "checked_at": "2026-11-06T13:33:06.721Z"
+      },
+      "end": {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "is_enabled": true,
+        "status": "checked",
+        "checked_at": "2026-11-06T13:36:04.251Z"
+      }
+    }
+  },
+  "checkpoint": {
+    "ref": "agent-work/research/checkpoints/KNAVE2-table-reuse.json",
+    "status": "existing_tag_lifecycle_evidenced_compound_move_pending",
+    "handoff_ref": "agent-work/research/requirements/L1-tagged-poi-lifecycle-v1.json",
+    "next_candidate": {
+      "game_id": "KNAVE2",
+      "layer": "L1",
+      "action": "Проверить один составной сценарий: POI с непустым MB-тегом и RU/EN override → перенос между регионами → точные Undo/Redo → экспорт/импорт. Использовать существующий browser fixture и опубликованный SHA; не повторять общий набор.",
+      "task_ref": "agent-work/backlog.json#HX-BL-043",
+      "status": "candidate_not_fixed_rotation",
+      "why_now": "Отдельные tag lifecycle и POI movement подтверждены на одинаковом release tree, но сохранность непустого тега при переносе не проверяется найденными assertions."
+    }
+  },
+  "next_candidate": {
+    "game_id": "KNAVE2",
+    "layer": "L1",
+    "action": "Проверить один составной сценарий: POI с непустым MB-тегом и RU/EN override → перенос между регионами → точные Undo/Redo → экспорт/импорт. Использовать существующий browser fixture и опубликованный SHA; не повторять общий набор.",
+    "task_ref": "agent-work/backlog.json#HX-BL-043",
+    "status": "candidate_not_fixed_rotation",
+    "why_now": "Отдельные tag lifecycle и POI movement подтверждены на одинаковом release tree, но сохранность непустого тега при переносе не проверяется найденными assertions."
+  },
+  "completed_at": "2026-11-06T13:37:15.858Z"
+}

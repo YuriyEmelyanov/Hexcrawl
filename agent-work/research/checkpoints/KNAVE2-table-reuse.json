@@ -1,16 +1,24 @@
 {
   "schema_version": 1,
-  "status": "bounded_component_audit_complete_full_document_runtime_pending",
   "ref": "agent-work/research/checkpoints/KNAVE2-table-reuse.json",
-  "handoff_ref": "agent-work/research/requirements/KNAVE2-table-reuse-v1.json",
+  "status": "existing_tag_lifecycle_evidenced_compound_move_pending",
+  "handoff_ref": "agent-work/research/requirements/L1-tagged-poi-lifecycle-v1.json",
   "next_candidate": {
     "game_id": "KNAVE2",
     "layer": "L1",
-    "action": "Проверить в браузере полный цикл существующего MB-тега на POI: изменение → экспорт/импорт → Undo/Redo, включая перенос POI. Использовать точный опубликованный SHA и существующий стенд, не создавать новую реализацию.",
-    "status": "candidate_not_fixed_rotation",
+    "action": "Проверить один составной сценарий: POI с непустым MB-тегом и RU/EN override → перенос между регионами → точные Undo/Redo → экспорт/импорт. Использовать существующий browser fixture и опубликованный SHA; не повторять общий набор.",
     "task_ref": "agent-work/backlog.json#HX-BL-043",
-    "why_now": "Компонент движка проверен; полная транзакция документа ещё подтверждена только чтением кода."
+    "status": "candidate_not_fixed_rotation",
+    "why_now": "Отдельные tag lifecycle и POI movement подтверждены на одинаковом release tree, но сохранность непустого тега при переносе не проверяется найденными assertions."
   },
-  "inspected_sha": "7547a67bbcfb621f1e7c7189518583842ccb055a",
-  "completed_run": "2026-11-06T1230-KNAVE2-table-reuse"
+  "comparison": {
+    "pr_head": "de0299168e5a74d4e3594db71d657ca8055614e0",
+    "pr_tree": "79b69059c70eed7430bcda93db5d72a6097695d3",
+    "release_sha": "7547a67bbcfb621f1e7c7189518583842ccb055a",
+    "release_tree": "79b69059c70eed7430bcda93db5d72a6097695d3",
+    "tested_sha": "2a9936e723ff3349e07437d0b99e5ac6b249750f",
+    "tested_tree": "79b69059c70eed7430bcda93db5d72a6097695d3",
+    "all_trees_equal": true
+  },
+  "completed_run": "2026-11-06T1330-L1-lifecycle-evidence"
 }

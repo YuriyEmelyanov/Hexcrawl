@@ -1,0 +1,186 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-043",
+  "version": "tagged-poi-lifecycle-1",
+  "status": "proposed",
+  "layer": "L1",
+  "primary_scenario": "create",
+  "ranking_version": "three-scenario-ranks-1.4-create-evidence",
+  "cohort_version": "2026-11-06-ranking1.4-create-evidence",
+  "game_priority": {
+    "KNAVE2": 3,
+    "SD": 4
+  },
+  "requirement_refs": [
+    "agent-work/market/rules/Knave-2e.json#KNAVE2-070-L1",
+    "agent-work/market/rules/Knave-2e.json#KNAVE2-071-L1"
+  ],
+  "binding_refs": [
+    "agent-work/rules/game-bindings.json#KNAVE2-070-L1",
+    "agent-work/rules/game-bindings.json#KNAVE2-071-L1"
+  ],
+  "canonical_rule_ids": [
+    "content.place_description",
+    "content.roll_table_resolution"
+  ],
+  "criterion_ids": [
+    "S05-C01",
+    "S05-C02"
+  ],
+  "operational_requirement": {
+    "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-070",
+    "normative_kind": "product_acceptance_derived_from_source_result_provenance",
+    "applicability": "L1 common storage/reuse prerequisite; MB fixture verifies the shared lifecycle, not Knave-specific resolver or source table correctness.",
+    "layer": "L1",
+    "trigger_or_user_action": "Ведущий переносит нецентральный POI с уже сохранённым результатом таблицы и ручной интерпретацией, затем отменяет/повторяет перенос и сохраняет/загружает карту.",
+    "inputs_and_units": {
+      "source_owner": "poi:1:2,0",
+      "target_owner": "poi:2:3,0; free valid land hex in another region",
+      "tag": "valid mb.monument definition v1; values [[1],[1]]; entryIds ['mb.monument:0']; base text from exact production catalog",
+      "overrides": {
+        "ru": "Мастер-X",
+        "en": "GM-X"
+      },
+      "revision": 3,
+      "roll_counters": {
+        "group": 2,
+        "entry": 4
+      },
+      "world_rng": "snapshot C0",
+      "map_before": "full snapshot M0 with valid production tag text and no conflicting target identity"
+    },
+    "product_operation": "Через существующий UI подтвердить перенос. Перенести owner и ключи counters; сохранить definition/version, values, entryIds, texts, overrides, revision без переброса. Применить существующую историю документа. Экспортировать и импортировать принятый результат.",
+    "expected_output": "Меняется принадлежность/адрес POI и связанного тега. Контент, происхождение, ручная интерпретация и случайные состояния сохраняются; история восстанавливает точные снимки.",
+    "constraints_and_exceptions": [
+      "Не переносить центральный POI; использовать свободный разрешённый гекс.",
+      "При конфликте личности/дороги/занятого адреса отказ должен быть атомарным.",
+      "Валидный base text берётся из текущего MB-каталога; этот случай не проверяет содержание Knave.",
+      "Импорт может начинать новую историю: Undo/Redo проверять до импорта; roundtrip проверять отдельным этапом.",
+      "Это предложенная приёмка; этот составной сценарий в данном запуске не выполнен."
+    ],
+    "acceptance_cases": [
+      {
+        "given": "M0: source owner poi:1:2,0; tag values [[1],[1]], entryId mb.monument:0, overrides ru=Мастер-X/en=GM-X, revision3, counters group2/entry4, worldRNG C0.",
+        "when": "Перенести POI через UI в poi:2:3,0.",
+        "expected": "Один тег с новым owner; старого owner/counter-prefix нет. Values/entryId/text/overrides/revision=3 неизменны, counters2/4 перенесены на новый prefix; worldRNG C0 неизменён."
+      },
+      {
+        "given": "Зафиксированы полные снимки M0 и M1 после предыдущего действия.",
+        "when": "Нажать Undo и затем Redo до импорта.",
+        "expected": "Экспорт после Undo равен M0, после Redo равен M1 без savedAt; значения тегов, overrides и counters совпадают точно."
+      },
+      {
+        "given": "Принятый снимок M1 с непустым тегом.",
+        "when": "Экспортировать JSON, импортировать его и экспортировать повторно.",
+        "expected": "Нормализованный документ равен M1 без savedAt; новый owner, обе интерпретации, values, entryIds, revision и counters сохранены; добавочных бросков нет."
+      },
+      {
+        "given": "Исходный M0 и target уже имеет конфликтующую identity.",
+        "when": "Попытаться подтвердить перенос.",
+        "expected": "Документ, source tag и обе истории не изменены; частично перенесённых counters/override нет."
+      }
+    ],
+    "source_vs_product_interpretation": "Knave070/071 требует сохранения результата и компонентов в аналитической интерпретации продукта. Move/history/roundtrip здесь — производная целостность общего редактора, не дословная механика книги и не доказанная поддержка Knave.",
+    "canonical_rule_refs": [
+      "content.place_description",
+      "content.roll_table_resolution"
+    ],
+    "unresolved_parameters": [
+      "Полный составной UI-сценарий непустого тега при переносе остаётся unverified.",
+      "Формат Knave provenance и occurrence IDs остаётся в reuse-handoff-v1; данный MB lifecycle не подтверждает его."
+    ]
+  },
+  "existing_evidence": {
+    "kind": "existing_ci_same_tree_verified",
+    "comparison": {
+      "pr_head": "de0299168e5a74d4e3594db71d657ca8055614e0",
+      "pr_tree": "79b69059c70eed7430bcda93db5d72a6097695d3",
+      "release_sha": "7547a67bbcfb621f1e7c7189518583842ccb055a",
+      "release_tree": "79b69059c70eed7430bcda93db5d72a6097695d3",
+      "tested_sha": "2a9936e723ff3349e07437d0b99e5ac6b249750f",
+      "tested_tree": "79b69059c70eed7430bcda93db5d72a6097695d3",
+      "all_trees_equal": true
+    },
+    "run_id": 42171271911,
+    "job_id": 127739421730,
+    "job_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42171271911/job/127739421730",
+    "tag_test_blob": "f5bb8c24690a5346244dab8ab44ea37735a5eff6",
+    "poi_test_blob": "aa1132f7fb2a0f934e4dedcf021a4ff8d4512332",
+    "tag_assertions": [
+      {
+        "line": 19,
+        "text": " async function snapshot(){await page.evaluate(()=>window.__exported=null);const menu=page.locator('details.export-menu');if(await menu.getAttribute('open')===null)await menu.locator('summary').click();await page.getByRole('button',{name:'JSON',exact:true}).click();await page.waitForFunction(()=>window.__exported);return page.evaluate(()=>{const d=window.__exported;delete d.savedAt;return d;});}"
+      },
+      {
+        "line": 20,
+        "text": " await page.locator('input[type=file]').setInputFiles({name:'tags-legacy.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(data))});"
+      },
+      {
+        "line": 22,
+        "text": " assert.equal((await snapshot()).map.tags.instances.length,0,'legacy open must not roll');"
+      },
+      {
+        "line": 30,
+        "text": " const filled=await snapshot();assert.ok(filled.map.tags.instances.length>30);"
+      },
+      {
+        "line": 33,
+        "text": " await die.click();const after=await snapshot();"
+      },
+      {
+        "line": 36,
+        "text": " assert.deepEqual(afterTag.values[1],beforeTag.values[1]);assert.equal(afterTag.revision,beforeTag.revision+1);"
+      },
+      {
+        "line": 37,
+        "text": " await page.getByRole('button',{name:'Отменить',exact:true}).click();assert.deepEqual(await snapshot(),filled);"
+      },
+      {
+        "line": 38,
+        "text": " await page.getByRole('button',{name:'Повторить',exact:true}).click();assert.deepEqual(await snapshot(),after);"
+      },
+      {
+        "line": 43,
+        "text": "  assert.ok(size.w<=size.font*1.15+.1&&size.h<=size.font*1.15+.1,JSON.stringify(size));assert.ok(size.scrollWidth<=size.cardWidth+1,'no card overflow');metrics.push({width,...size});"
+      },
+      {
+        "line": 47,
+        "text": " assert.equal(await die.locator('svg').evaluate(el=>getComputedStyle(el).animationName),'none');"
+      },
+      {
+        "line": 48,
+        "text": " const saved=await snapshot();await page.locator('input[type=file]').setInputFiles({name:'tags-v6.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(saved))});"
+      },
+      {
+        "line": 49,
+        "text": " await page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);assert.deepEqual(await snapshot(),saved);"
+      },
+      {
+        "line": 50,
+        "text": " assert.deepEqual(errors,[]);await fs.writeFile(new URL('metrics.json',out),JSON.stringify(metrics,null,2));"
+      }
+    ],
+    "log_excerpts": [
+      "2026-11-06T05:55:39.0451550Z Commit: 54898b74c23fde5556c9b3c3a2290865feef0dfe",
+      "2026-11-06T05:55:40.6571517Z HEAD is now at 2a9936e Merge de0299168e5a74d4e3594db71d657ca8055614e0 into e99cb1236e152e8e6a5987af95e19d601dbc3a78",
+      "2026-11-06T05:55:40.6640493Z 2a9936e723ff3349e07437d0b99e5ac6b249750f",
+      "2026-11-06T05:56:14.0929293Z ##[group]Run npm run test:browser",
+      "2026-11-06T05:56:14.2032324Z > node test/browser/generation.smoke.mjs && node test/browser/poi-display.smoke.mjs && node test/browser/terrain-color.smoke.mjs && node test/browser/forest-display.smoke.mjs && node test/browser/navigation.smoke.mjs && node test/browser/large-navigation.smoke.mjs && node test/browser/save-history.smoke.mjs && node test/browser/tags.smoke.mjs",
+      "2026-11-06T06:01:05.5213584Z E8 POI UI passed: bilingual form/Tab,actual map target,accepted-only export,1500/390/320,Finish/Discard/Stay,exactUndoRedo,road refusal,water/Mythic move,central protection andEnglish.",
+      "2026-11-06T06:01:16.3152501Z HX-BL-041 browser: legacy, fill, tuple reroll, exact history, 1500/390/320 density, keyboard/reduced-motion, v6 roundtrip passed",
+      "2026-11-06T06:01:17.1672651Z SHA256 digest of uploaded artifact zip is 2002d55314b574a625bf1abccd67a330fe077fe158e4916314c0c01866540316",
+      "2026-11-06T06:01:23.4513862Z SHA256 digest of uploaded artifact zip is 2eab3b79a3c3e572e85216738b26149ae44786955cbe4b89ea2b34b3ce337763",
+      "2026-11-06T06:01:24.3919870Z SHA256 digest of uploaded artifact zip is 031dd35c56daa9e24fd21cdc84f3642543217beae18593afdcef2665e9c5c65e"
+    ]
+  },
+  "coverage": {
+    "MB_tag_reroll_history_json": "confirmed_existing_CI_at_identical_tree",
+    "POI_move_history": "confirmed_existing_CI_at_identical_tree",
+    "tagged_POI_move": "unverified_no_tag_state_assertions_found",
+    "Knave070_071": "unverified_adapter_not_implemented"
+  },
+  "implementation_authorized": false,
+  "release_authorized": false,
+  "score_delta": null,
+  "registry_policy": "Existing common-rules/game-bindings remain authoritative and unchanged; this is acceptance/evidence handoff only."
+}
