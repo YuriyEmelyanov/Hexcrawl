@@ -1375,7 +1375,7 @@
       "task_id": "HX-BL-023",
       "title": "Общий режим редактирования",
       "criterion_id": "S03-C01",
-      "status": "partially_published_ready_for_development",
+      "status": "partially_published_accepted_release_pending",
       "potential_delta": null,
       "approval_ref": "owner-decision-2026-10-29-HX-FB-005-direct-edit-mode",
       "source": {
@@ -1391,15 +1391,15 @@
       "recommended_priority": 1,
       "execution_allowed": true,
       "spec_status": "ready",
-      "next_role": "developer",
-      "next_step": "Разработчик реализует E8-N-SEA по SEA-1.0: устойчивый ID и имена морей, безопасные split/merge, v9/миграции и точный Undo/Redo; покажет фактический UI на конечном SHA и передаст пакет независимому проверяющему. Старт утверждён, выпуск отдельно.",
+      "next_role": "programmer",
+      "next_step": "PR492/856fe09 принят; ожидается отдельное разрешение владельца выпуска. Утверждённая аналитическая работа041 готова независимо.",
       "related_task_ids": [
         "HX-BL-013",
         "HX-BL-018",
         "HX-BL-019",
         "HX-BL-028"
       ],
-      "handoff_ref": "agent-work/handoffs/2026-11-06-HX-BL-023-E8-N-SEA-development.json",
+      "handoff_ref": "agent-work/handoffs/2026-11-06-HX-BL-023-E8-N-SEA-review.json",
       "owner_priority_decision": {
         "id": "owner-decision-2026-10-28-editor-and-MB-content-before-outreach",
         "date": "2026-10-28",
@@ -1559,12 +1559,12 @@
       "analyst_handoff_ref": "agent-work/handoffs/2026-11-06-HX-BL-023-E8-N-SEA-development.json",
       "owner_role": "reviewer",
       "branch": "agent/hx023-e7-e8-package",
-      "pr": 490,
-      "base_sha": "2ef5cc35107f299c309b7c8065a1e81ca9881278",
-      "head_sha": "7ddcc218ec6871179bde8153ec589d6517f46c74",
-      "checks_status": "independent_Node345_browser8_RNG_pass; exact_SHA_CI_check_browser_world_random_success; seed_ui_conditional_skip",
-      "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41799212970",
-      "review_verdict": "accepted_exact_SHA_for_E7_E8_code_review",
+      "pr": 492,
+      "base_sha": "7547a67bbcfb621f1e7c7189518583842ccb055a",
+      "head_sha": "856fe0946d6050808fadfa040277db8c3ffc5aea",
+      "checks_status": "all_required_exact_SHA_CI_success",
+      "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42246627033",
+      "review_verdict": "accepted_exact_sha_with_finite_limits",
       "test_change_summary_ref": "agent-work/evidence/HX-BL-023-E5-65e5d1d/test-change-summary.json",
       "developer_result_ref": "agent-work/results/2026-11-06-developer-PR490-F01.json",
       "score_assessment_status": "completed_model1.2_unknown_no_award",
@@ -1581,10 +1581,13 @@
           "Physical touch/screen reader/full WCAG AA not verified"
         ]
       },
-      "review_result_ref": "agent-work/results/2026-11-06-reviewer-PR490-7ddcc21.json",
+      "review_result_ref": "agent-work/results/2026-11-06-reviewer-PR492-856fe09.json",
       "review_evidence_ref": "agent-work/evidence/review-PR490-7ddcc21/review-report.json",
       "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/481#pullrequestreview-5737061469",
-      "score_assessment_ref": "agent-work/evidence/review-PR490-7ddcc21/score-assessment.json",
+      "score_assessment_ref": {
+        "path": "agent-work/results/2026-11-06-reviewer-PR492-856fe09.json",
+        "property": "score_assessment"
+      },
       "finding_ids": [],
       "previous_review_result_ref": "agent-work/results/2026-10-31-reviewer-HX-BL-023-E3-6e59e7f.json",
       "addressed_findings_pending_review": [
@@ -2014,7 +2017,7 @@
       "review_ref": "agent-work/evidence/review-HX-BL-023-E4-7d7ae9d/review-report.md",
       "tree_sha": "0bb858e6d149aae4c7aceb17da9ff5025bcc3817",
       "current_review_status": "not_ready_implementation_incomplete",
-      "current_score_assessment_status": "completed_model1.2_unknown_no_award",
+      "current_score_assessment_status": "completed_insufficient_evidence_no_award",
       "previous_accepted_release_pending": {
         "task_id": "HX-BL-023",
         "stage_id": "E3",
@@ -2180,12 +2183,12 @@
           "score_awarded_points": 0
         },
         "E8_N_SEA": {
-          "status": "ready_for_development",
-          "next_role": "developer",
-          "handoff_ref": "agent-work/handoffs/2026-11-06-HX-BL-023-E8-N-SEA-development.json",
-          "implementation_started": false,
+          "status": "accepted_awaiting_owner_release_approval",
+          "next_role": "programmer",
+          "handoff_ref": "agent-work/handoffs/2026-11-06-HX-BL-023-E8-N-SEA-review.json",
+          "implementation_started": true,
           "release_approved": false,
-          "next_step": "Разработчик реализует E8-N-SEA по SEA-1.0: устойчивый ID и имена морей, безопасные split/merge, v9/миграции и точный Undo/Redo; покажет фактический UI на конечном SHA и передаст пакет независимому проверяющему. Старт утверждён, выпуск отдельно.",
+          "next_step": "После отдельного разрешения владельца опубликовать только проверенный пакет PR492; до него main не менять.",
           "score_prerequisite": "completed",
           "stage_id": "E8-N-SEA",
           "spec_ref": "agent-work/specs/HX-BL-023-E8-N-SEA.md",
@@ -2305,7 +2308,16 @@
             "current_score_changed": false
           },
           "source_analysis_complete": true,
-          "substantial_expansion_required": false
+          "substantial_expansion_required": false,
+          "review_ready": false,
+          "accepted": true,
+          "head_sha": "856fe0946d6050808fadfa040277db8c3ffc5aea",
+          "pr": 492,
+          "review_result_ref": "agent-work/results/2026-11-06-reviewer-PR492-856fe09.json",
+          "score_assessment_ref": {
+            "path": "agent-work/results/2026-11-06-reviewer-PR492-856fe09.json",
+            "property": "score_assessment"
+          }
         },
         "HX_FB_010_correction": {
           "task_id": "HX-BL-023",
@@ -2346,9 +2358,9 @@
           "score_awarded_points": 0
         }
       },
-      "accepted": false,
-      "current_stage_status": "ready_for_development",
-      "current_stage_review_status": "not_started",
+      "accepted": true,
+      "current_stage_status": "accepted_awaiting_owner_release_approval",
+      "current_stage_review_status": "accepted",
       "current_stage_release_approved": false,
       "published": false,
       "routing_snapshot_history": [
@@ -2459,13 +2471,21 @@
             },
             "full_editor_ready": false
           }
+        },
+        {
+          "at": "2026-11-06T17:00:00Z",
+          "status": "partially_published_ready_for_development",
+          "next_role": "developer",
+          "next_step": "Разработчик реализует E8-N-SEA по SEA-1.0: устойчивый ID и имена морей, безопасные split/merge, v9/миграции и точный Undo/Redo; покажет фактический UI на конечном SHA и передаст пакет независимому проверяющему. Старт утверждён, выпуск отдельно.",
+          "current_stage_status": "ready_for_development",
+          "source": "Stale routing superseded by completed developer/reviewer scoped records"
         }
       ],
       "current_stage_id": "E8-N-SEA",
-      "next_approved_stage": "E8-N-SEA",
-      "next_approved_stage_handoff_ref": "agent-work/handoffs/2026-11-06-HX-BL-023-E8-N-SEA-development.json",
+      "next_approved_stage": null,
+      "next_approved_stage_handoff_ref": null,
       "published_scope": "PR490 E7+E8 package only; full HX-BL-023 incomplete",
-      "current_package_published": true,
+      "current_package_published": false,
       "latest_release_event": {
         "task_id": "HX-BL-023",
         "feedback_id": "HX-FB-010",
@@ -3612,7 +3632,7 @@
       "task_id": "HX-BL-041",
       "title": "Генераторы игрового материала Mythic Bastionland: мифы, теги и полный перечень категорий",
       "criterion_id": "S08-C04",
-      "status": "current_slice_published",
+      "status": "current_slice_published_remaining_inventory_ready",
       "recommended_priority": 2,
       "approval_ref": "owner-decision-2026-10-28-editor-and-MB-content-before-outreach",
       "execution_allowed": true,
@@ -3642,8 +3662,8 @@
       ],
       "spec_status": "combined_slice_implemented_and_independently_accepted",
       "next_role": "business_analyst",
-      "next_step": "Бизнес-аналитик готовит E5 по утверждённому HX-BL-023; новый старт с владельцем не требуется.",
-      "handoff_ref": "agent-work/handoffs/2026-11-04-strategist-score-PR485-PR484-E5.json",
+      "next_step": "Ограниченная delta-инвентаризация оставшихся категорий MB по готовой передаче; не повторять72/432/72, не затрагивать чужой показ.",
+      "handoff_ref": "agent-work/handoffs/2026-11-06-HX-BL-041-remaining-inventory-analysis.json",
       "potential_delta": null,
       "score_forecast": {
         "model_version": "1.2",
@@ -3722,7 +3742,13 @@
       "score_update_completed_at": "2026-11-04T01:03:06.681367+00:00",
       "score_awarded_points": 0,
       "next_task_id": "HX-BL-023",
-      "full_task_complete": false
+      "full_task_complete": false,
+      "previous_queue_routing": {
+        "next_role": "business_analyst",
+        "next_step": "Бизнес-аналитик готовит E5 по утверждённому HX-BL-023; новый старт с владельцем не требуется.",
+        "handoff_ref": "agent-work/handoffs/2026-11-04-strategist-score-PR485-PR484-E5.json"
+      },
+      "remaining_inventory_handoff_ref": "agent-work/handoffs/2026-11-06-HX-BL-041-remaining-inventory-analysis.json"
     },
     {
       "task_id": "HX-RSR-001",
@@ -11198,6 +11224,18 @@
   "model_path": "agent-work/strategy/score-model.md",
   "model_activation_ref": "owner-decision-2026-10-26-activate-score-1.2",
   "next_product_recommendation": {
+    "task_id": "HX-BL-041",
+    "stage_id": "remaining-category-inventory",
+    "status": "ready_for_analysis",
+    "next_role": "business_analyst",
+    "execution_allowed": true,
+    "implementation_allowed": false,
+    "handoff_ref": "agent-work/handoffs/2026-11-06-HX-BL-041-remaining-inventory-analysis.json",
+    "authorization_ref": "owner-decision-2026-10-28-editor-and-MB-content-before-outreach",
+    "next_step": "Ограниченная delta-инвентаризация оставшихся категорий MB по готовой передаче; не повторять72/432/72, не затрагивать чужой показ.",
+    "score_impact": "score-neutral analysis; future product impact unknown"
+  },
+  "previous_product_recommendation": {
     "task_id": "HX-BL-023",
     "stage_id": "E8-N-SEA",
     "status": "ready_for_analysis",
@@ -11207,13 +11245,6 @@
     "authorization_ref": "owner-decision-2026-10-28-editor-functional-scope",
     "next_step": "Подготовить E8-N-SEA: устойчивый ID моря, сохранение и конфликт имён при split/merge, миграция/Undo/Redo, компактный desktop/narrow UI и проверяемая спецификация; показать предложение без ожидания третьего согласования.",
     "score_impact": "unknown"
-  },
-  "previous_product_recommendation": {
-    "task_id": "HX-BL-027",
-    "proposal_ref": "agent-work/proposals/2026-10-28-HX-BL-027-map-underlay.md",
-    "status": "proposed",
-    "next_role_after_approval": "business_analyst",
-    "reason": "Первый конкретный мост от готового материала к имеющимся редакторам/заметкам; соответствует этапуC контроль мастера и сценарию develop. Не обещает готовность полного региона/всех правил. Не требуется новый движок контента."
   },
   "recommendation_history": [
     {
@@ -11264,9 +11295,10 @@
     }
   ],
   "last_operational_reconciliation": {
-    "decision_ref": "owner-decision-2026-11-06-operational-writes-unblocked",
-    "task_id": "HX-BL-023",
-    "review_ref": "agent-work/evidence/review-PR490-50f8125/review-report.json",
-    "other_tasks_changed": false
+    "at": "2026-11-06T17:00:00Z",
+    "run_id": "2026-11-06T1700-strategist-accepted-sea-next-MB",
+    "scope": "023 exact accepted Sea stage and041 approved next analytical stage only",
+    "authority": "owner-decision-2026-11-06-operational-writes-unblocked",
+    "claims_preserved": true
   }
 }
