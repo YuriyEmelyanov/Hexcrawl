@@ -3,10 +3,10 @@
   "model_version": "1.2",
   "model_path": "agent-work/strategy/score-model.md",
   "model_blob_sha": "51c2ca9701a6669aced78a82a4bdf00accbbf075",
-  "latest_release_sha": "e99cb1236e152e8e6a5987af95e19d601dbc3a78",
-  "last_score_update_at": "2026-11-06T06:15:57Z",
+  "latest_release_sha": "7547a67bbcfb621f1e7c7189518583842ccb055a",
+  "last_score_update_at": "2026-11-06T07:21:35Z",
   "checked_on": "2026-11-06",
-  "scope": "PR490 exact released-package accounting; eight independent insufficient-evidence outcomes applied once; no full reassessment",
+  "scope": "PR491 exact released-package accounting; one insufficient-evidence outcome applied once, no grade change or full reassessment",
   "summary": {
     "confirmed_points": null,
     "total_weight": 1000,
@@ -773,15 +773,16 @@
       "method": "No full model1.2 grade assessment; historical1.1 preserved separately",
       "last_release_assessment": {
         "task_id": "HX-BL-023",
-        "stage_id": "E7+E8",
-        "pr": 490,
+        "feedback_id": "HX-FB-010",
+        "stage_id": "central-POI-copy-and-startup-English",
+        "pr": 491,
         "model_version": "1.2",
         "model_blob_sha": "51c2ca9701a6669aced78a82a4bdf00accbbf075",
         "criterion_id": "S04-C05",
         "weight": 10,
-        "release_sha": "e99cb1236e152e8e6a5987af95e19d601dbc3a78",
-        "reviewed_sha": "7ddcc218ec6871179bde8153ec589d6517f46c74",
-        "release_tree_sha": "0bb858e6d149aae4c7aceb17da9ff5025bcc3817",
+        "release_sha": "7547a67bbcfb621f1e7c7189518583842ccb055a",
+        "reviewed_sha": "de0299168e5a74d4e3594db71d657ca8055614e0",
+        "release_tree_sha": "79b69059c70eed7430bcda93db5d72a6097695d3",
         "before": {
           "grade": null,
           "points": null,
@@ -796,23 +797,28 @@
         "awarded_points": 0,
         "status": "insufficient_evidence_no_award",
         "application_status": "completed",
-        "idempotency_key": "HX-BL-023|e99cb1236e152e8e6a5987af95e19d601dbc3a78|1.2|S04-C05",
-        "assessment_ref": "agent-work/evidence/review-PR490-7ddcc21/score-assessment.json",
-        "release_ref": "agent-work/evidence/release-PR490-e99cb12/publication.json",
-        "method": "Exact-SHA source review plus applicable Node/browser/RNG/CI evidence.",
-        "quality": "RU/EN, 320/390/1500 and keyboard/headless checks confirmed; no physical touch, screen reader or full WCAG AA audit.",
+        "idempotency_key": "HX-BL-023|7547a67bbcfb621f1e7c7189518583842ccb055a|1.2|S04-C05",
+        "assessment_ref": "agent-work/evidence/HX-FB-010-PR491-de02991/score-assessment.json",
+        "release_ref": "agent-work/evidence/release-PR491-7547a67/publication.json",
+        "method": "Independent diff review and real Chromium before/after runtime smoke on unchanged App blob; exact remote Git tree verified after fixture-only updates",
+        "quality": "Fresh English startup, RU toggle and compact central POI panel verified within bounded scope; this does not establish full RU/EN/WCAG AA criterion.",
         "limitations": [
-          "Any SHA change requires reassessment.",
-          "No whole-criterion grade inferred from the bounded E7/E8 package."
+          "Narrow copy/default-language change does not establish quality and breadth of the entire criterion",
+          "No grade or points increase inferred from a specification forecast or count of passing tests",
+          "One headless Chromium; width emulation only, no physical touch/screen reader claims",
+          "Full criteria set and NRI breadth not reassessed",
+          "Public UI check used provided proxy and ignoreHTTPSErrors in temporary contexts after actual Chromium trust failure. Chromium certificate trust unverified; normal certificate-validated HTTPS and exact public JS/CSS verified independently."
         ],
-        "package_bridge": "git independently confirms reviewed head and release merge both tree0bb858e6d149aae4c7aceb17da9ff5025bcc3817",
-        "assessed_at": "2026-11-06T04:22:29Z",
-        "applied_at": "2026-11-06T06:15:57Z",
-        "result_ref": "agent-work/results/2026-11-06-strategist-score-PR490.json",
         "evidence": [
-          "agent-work/evidence/review-PR490-7ddcc21/review-report.json",
-          "agent-work/evidence/release-PR490-e99cb12/publication.json"
-        ]
+          "agent-work/evidence/HX-FB-010-PR491-de02991/review-report.json",
+          "agent-work/evidence/HX-FB-010-PR491-de02991/original-browser-diagnostic.json",
+          "agent-work/evidence/HX-FB-010-PR491-de02991/ui/after-en-390-central.png",
+          "agent-work/evidence/release-PR491-7547a67/publication.json",
+          "agent-work/evidence/release-PR491-7547a67/live-ui/verification-report.json"
+        ],
+        "package_bridge": "Fresh public GitHub Git commit API independently confirms reviewed and merge SHA have identical complete tree79b69059c70eed7430bcda93db5d72a6097695d3; deployment success freshly rechecked, actual published asset hashes read from release evidence.",
+        "applied_at": "2026-11-06T07:21:35Z",
+        "result_ref": "agent-work/results/2026-11-06-strategist-score-PR491.json"
       }
     },
     {
@@ -1420,6 +1426,38 @@
   },
   "release_event": {
     "task_id": "HX-BL-023",
+    "feedback_id": "HX-FB-010",
+    "stage_id": "central-POI-copy-and-startup-English",
+    "pr": 491,
+    "release_sha": "7547a67bbcfb621f1e7c7189518583842ccb055a",
+    "reviewed_sha": "de0299168e5a74d4e3594db71d657ca8055614e0",
+    "release_tree_sha": "79b69059c70eed7430bcda93db5d72a6097695d3",
+    "model_version": "1.2",
+    "status": "completed",
+    "assessment_ref": "agent-work/evidence/HX-FB-010-PR491-de02991/score-assessment.json",
+    "result_ref": "agent-work/results/2026-11-06-strategist-score-PR491.json",
+    "criterion_ids": [
+      "S04-C05"
+    ],
+    "awarded_points": 0,
+    "delta_points": null,
+    "applied_at": "2026-11-06T07:21:35Z"
+  },
+  "history_ref": "agent-work/score/history.json",
+  "market_cohort_update": {
+    "date": "2026-11-04",
+    "cohort_version": "2026-11-04-ranking1.3-process-sync",
+    "ranking_path": "agent-work/market/three-scenario-ranking-2026-11-04.json",
+    "coverage_ref": "agent-work/score/game-coverage.json",
+    "traceability_ref": "agent-work/score/DND5-2014-traceability.json",
+    "owner_decision": "Синхронизируй всё. Потом Дальше будем прорабатывать остальные игры.",
+    "status": "membership_and_DND5_mapping_synced_support_unverified",
+    "score_reassessment_performed": false,
+    "score_changed": false,
+    "limitation": "All summary/grades/release evidence remain historical exact-SHA observations. No source reread/runtime audit or new grades. Previous cohort stored separately; future game-dependent assessment must name new cohort."
+  },
+  "previous_release_event": {
+    "task_id": "HX-BL-023",
     "stage_id": "E7+E8",
     "pr": 490,
     "release_sha": "e99cb1236e152e8e6a5987af95e19d601dbc3a78",
@@ -1442,45 +1480,6 @@
     "awarded_points": 0,
     "delta_points": null,
     "applied_at": "2026-11-06T06:15:57Z"
-  },
-  "history_ref": "agent-work/score/history.json",
-  "market_cohort_update": {
-    "date": "2026-11-04",
-    "cohort_version": "2026-11-04-ranking1.3-process-sync",
-    "ranking_path": "agent-work/market/three-scenario-ranking-2026-11-04.json",
-    "coverage_ref": "agent-work/score/game-coverage.json",
-    "traceability_ref": "agent-work/score/DND5-2014-traceability.json",
-    "owner_decision": "Синхронизируй всё. Потом Дальше будем прорабатывать остальные игры.",
-    "status": "membership_and_DND5_mapping_synced_support_unverified",
-    "score_reassessment_performed": false,
-    "score_changed": false,
-    "limitation": "All summary/grades/release evidence remain historical exact-SHA observations. No source reread/runtime audit or new grades. Previous cohort stored separately; future game-dependent assessment must name new cohort."
-  },
-  "previous_release_event": {
-    "task_id": "HX-BL-023",
-    "stage_id": "E6",
-    "pr": 487,
-    "release_sha": "2ef5cc35107f299c309b7c8065a1e81ca9881278",
-    "reviewed_sha": "c5b4f26c6d5a29aa0ba1d89ca11cc209ebe5272e",
-    "release_tree_sha": "3a1ff34de3ef0d6b363de66a62944fff2b27a909",
-    "model_version": "1.2",
-    "status": "completed",
-    "assessment_ref": "agent-work/evidence/review-HX-BL-023-E6-c5b4f26/score-assessment-summary.json",
-    "result_ref": "agent-work/results/2026-11-05-strategist-score-PR487.json",
-    "criterion_ids": [
-      "S01-C03",
-      "S03-C01",
-      "S02-C02",
-      "S02-C03",
-      "S03-C04",
-      "S03-C05",
-      "S04-C04",
-      "S04-C05",
-      "S09-C04"
-    ],
-    "awarded_points": 0,
-    "delta_points": null,
-    "applied_at": "2026-11-05T10:24:56.464Z"
   },
   "latest_release_events": [
     {
@@ -1599,6 +1598,25 @@
       "awarded_points": 0,
       "delta_points": null,
       "applied_at": "2026-11-06T06:15:57Z"
+    },
+    {
+      "task_id": "HX-BL-023",
+      "feedback_id": "HX-FB-010",
+      "stage_id": "central-POI-copy-and-startup-English",
+      "pr": 491,
+      "release_sha": "7547a67bbcfb621f1e7c7189518583842ccb055a",
+      "reviewed_sha": "de0299168e5a74d4e3594db71d657ca8055614e0",
+      "release_tree_sha": "79b69059c70eed7430bcda93db5d72a6097695d3",
+      "model_version": "1.2",
+      "status": "completed",
+      "assessment_ref": "agent-work/evidence/HX-FB-010-PR491-de02991/score-assessment.json",
+      "result_ref": "agent-work/results/2026-11-06-strategist-score-PR491.json",
+      "criterion_ids": [
+        "S04-C05"
+      ],
+      "awarded_points": 0,
+      "delta_points": null,
+      "applied_at": "2026-11-06T07:21:35Z"
     }
   ],
   "previous_market_cohort_update": {
