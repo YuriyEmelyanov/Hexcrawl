@@ -1,0 +1,299 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-06-reviewer-PR490-50f8125",
+  "task_id": "HX-BL-023",
+  "stage_id": "E7-E8-package",
+  "role": "reviewer",
+  "role_reason": "PR490 exactSHA review_ready,no conflicting claim;unrelated HX-BL-041 claim preserved",
+  "status": "changes_requested",
+  "head_sha": "50f81251cf000d17f7f91eb96608d35ad900cfe4",
+  "tree_sha": "9fdabe30a210f4fdb78b17c1841cbe8d70a4ecc0",
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/490",
+  "independence": {
+    "agent": "/root/pr490_fresh_independent_review",
+    "fork_context": "none",
+    "parent_authored_package": true,
+    "review_performed_by_fresh_agent": true
+  },
+  "report_ref": "agent-work/evidence/review-PR490-50f8125/review-report.json",
+  "score_assessment_ref": "agent-work/evidence/review-PR490-50f8125/score-assessment.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-06-PR490-50f8125-fixes.json",
+  "findings": [
+    "PR490-F01"
+  ],
+  "checks": {
+    "identity": {
+      "status": "passed",
+      "method": "git rev-parse HEAD HEAD^{tree}; git diff --stat exact base/head; source files not edited"
+    },
+    "node24_check": {
+      "command": "npm run check",
+      "node": "v24.22.1",
+      "status": "passed",
+      "log": "independent-check.log",
+      "exit_code": 0,
+      "executed": 345,
+      "passed": 345,
+      "failed": 0,
+      "skipped": 0,
+      "duration_ms": 508003.00942
+    },
+    "production_build": {
+      "command": "npm run build",
+      "status": "passed",
+      "log": "independent-build.log"
+    },
+    "production_browser": {
+      "command": "CHROMIUM_EXECUTABLE_PATH=... npm run test:browser",
+      "status": "passed",
+      "exit_code": 0,
+      "scripts_executed": 8,
+      "scripts_passed": 8,
+      "skipped": 0,
+      "browser": "Chromium153.0.8010.0 headless Linux",
+      "log": "independent-browser.log"
+    },
+    "rng": {
+      "command": "npm run test:browser:rng",
+      "status": "passed",
+      "log": "independent-rng.log",
+      "exit_code": 0,
+      "skipped": 0,
+      "separate_from_browser8": true
+    },
+    "independent_adversarial_App": {
+      "status": "passed_reproduction_of_F01",
+      "source": "temporary diagnostic script; no permanent test/source changes"
+    },
+    "independent_adversarial_production_UI": {
+      "status": "passed_reproduction_of_F01",
+      "source": "freshly built production preview; actual native control; JSON before/after; exact map Undo/Redo",
+      "setup_retries": {
+        "count": 2,
+        "reason": "Initial temporary preview-server lifecycle caused connection refused; corrected by owning preview subprocess inside diagnostic script. Final reproduction passed.",
+        "product_failure": false
+      }
+    },
+    "independent_test_registration_comparison": {
+      "status": "passed",
+      "method": "Temporary ESM loader intercepts node:test registration only; callbacks are not executed. Compare file+registered name and callback body across git archive base/increment/head."
+    },
+    "skipped": [
+      "No paid services,release,merge,deploy,external write or new permanent tests.",
+      "No universal geometry/fuzz corpus or full WCAG/AT/browser matrix."
+    ]
+  },
+  "test_change_summary": {
+    "source": "Independent dynamic logical registration and callback-body comparison, plus source diff/browser module integration inspection. Execution counts remain separate.",
+    "package": {
+      "baseline": "base",
+      "base_cases": 299,
+      "head_cases": 345,
+      "added": 46,
+      "removed": 0,
+      "modified": 8,
+      "added_by_file": {
+        "entityNames.test.mjs": 9,
+        "manualRegions.test.mjs": 16,
+        "manualRivers.test.mjs": 2,
+        "regionEditing.test.mjs": 12,
+        "saveSafety.test.mjs": 7
+      },
+      "modified_cases": [
+        [
+          "mapTransactions.test.mjs",
+          "all manifest saves round-trip unchanged entities, names and can continue then undo"
+        ],
+        [
+          "mapTransactions.test.mjs",
+          "v5 obstacle IDs and counter survive migration, round-trip and history; invalid v5 is atomic"
+        ],
+        [
+          "mapTransactions.test.mjs",
+          "E5 native v7 feature intentions and counter survive real import, edits, history and rejected files"
+        ],
+        [
+          "mapTransactions.test.mjs",
+          "E6 real POI/name/tag losses require every explicit answer and Undo restores authored content"
+        ],
+        [
+          "mapTransactions.test.mjs",
+          "E6 real water dependencies block roads and require explicit barrier/water-POI loss without deleting notes"
+        ],
+        [
+          "mapTransactions.test.mjs",
+          "E6 real water feature conflict requires Off/Auto together with the accepted geography"
+        ],
+        [
+          "tags.test.mjs",
+          "production imported legacy map does not roll; explicit fill and separate rerolls are exact reversible transactions and v6 roundtrip"
+        ],
+        [
+          "worldContinuation.test.mjs",
+          "v2 migration and v3 validation are deterministic and atomic with redo"
+        ]
+      ]
+    },
+    "E82_increment": {
+      "baseline": "increment",
+      "base_cases": 336,
+      "head_cases": 345,
+      "added": 9,
+      "removed": 0,
+      "modified": 2,
+      "added_by_file": {
+        "entityNames.test.mjs": 9
+      },
+      "modified_cases": [
+        [
+          "mapTransactions.test.mjs",
+          "E6 real water dependencies block roads and require explicit barrier/water-POI loss without deleting notes"
+        ],
+        [
+          "mapTransactions.test.mjs",
+          "E6 real water feature conflict requires Off/Auto together with the accepted geography"
+        ]
+      ]
+    },
+    "browser_package": {
+      "added_workflows": 3,
+      "removed_workflows": 0,
+      "modified_existing_runners": 1,
+      "new_modules": [
+        "region-lifecycle.mjs",
+        "poi-lifecycle.mjs",
+        "entity-name-lifecycle.mjs"
+      ],
+      "integration": "All called by existing save-history.smoke.mjs; eight top-level npm browser scripts unchanged."
+    },
+    "browser_E82_increment": {
+      "added_workflows": 1,
+      "removed_workflows": 0,
+      "modified_workflows": 0
+    },
+    "necessity_assessment": [
+      {
+        "coverage": "manualRegions16 and manualRivers2",
+        "risk": "Distinct administrative owner/physical directed-height remap and coordinate-vs-owner identity migration.",
+        "reuse_reason": "Pure geometry/identity belongs beside existing numerical RIV/ROAD suites; tests reuse components and do not copy numerical tables. Necessary."
+      },
+      {
+        "coverage": "regionEditing12 and saveSafety7",
+        "risk": "Actual App transactions, stale/new-document callbacks,faults,paired names,format8 and continuation.",
+        "reuse_reason": "Existing generation harness reused; pure helper success cannot establish real history/import wiring. Necessary."
+      },
+      {
+        "coverage": "entityNames9",
+        "risk": "Five distinct address/visibility families,shared waterfall,opaque crossing key,named deletion and live-marker refusal.",
+        "reuse_reason": "Parameterized cases share fixture/harness; family-specific identity risks justify9 registrations rather than count inflation. Necessary but misses allowed empty-center interaction."
+      },
+      {
+        "coverage": "8 modified existing Node cases",
+        "risk": "Version7→8 expectations and E6 loss propagation.",
+        "reuse_reason": "Updating existing assertions is preferable to duplicate runners/cases; reviewed assertions preserve legacy intent."
+      },
+      {
+        "coverage": "3 new browser lifecycle modules within1 existing runner",
+        "risk": "Native focus/events,actual map targets,narrow layout,common Done/Esc and removal confirmation cannot be established by callback harness.",
+        "reuse_reason": "Existing page,corpus,load/snapshot and Undo runner reused. Necessary; counted workflows,not loops/assertions."
+      }
+    ],
+    "reviewer_permanent_test_changes": {
+      "added": 0,
+      "removed": 0,
+      "modified": 0
+    },
+    "temporary_diagnostics": "F01 App/UI scripts and registration loader excluded from permanent test counts."
+  },
+  "release_preview_status": "release_preview_pending_evidence_gap",
+  "next_role": "developer",
+  "next_step": "Fix PR490-F01 within approved scope;prepare coherent whole-package actual walkthrough;handoff new exactSHA for independentreview+score1.2",
+  "authority_status": "fix and review authorized;publication not authorized",
+  "score": {
+    "model_version": "1.2",
+    "confirmed_points": null,
+    "unverified_weight": 1000,
+    "award": 0,
+    "current_score_changed": false,
+    "assessment": "eight separate criteria unknown/insufficient_evidence with quality andbreadth limitations"
+  },
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-06 01:03:31 UTC",
+      "is_enabled": true,
+      "status": "checked"
+    },
+    "end": {
+      "checked_at": "2026-11-06 01:16:14 UTC",
+      "is_enabled": true,
+      "status": "checked"
+    },
+    "recovery_performed": false,
+    "errors": [],
+    "independent_agent": {
+      "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "start": {
+        "checked_at": "2026-11-06 01:04:29 UTC",
+        "status": "checked",
+        "is_enabled": true
+      },
+      "end": {
+        "checked_at": "2026-11-06 01:14:35 UTC",
+        "status": "checked",
+        "is_enabled": true
+      },
+      "recovery_performed": false,
+      "errors": [],
+      "limitation": "Actual momentary observations only; no future enabled guarantee."
+    },
+    "limitation": "Point-in-time actual checks;no future enabled guarantee"
+  },
+  "experience": "A region center coordinate is not proof of an actual central POI. Test valid legacy/empty-center destination through subsequent actual editing,not only successful move/export.",
+  "latest_write_status": "not_written_prior_auto_review_rejected_full_shared_history_retransmission;no new retry",
+  "latest_intended_delta": {
+    "run_id": "2026-11-06-reviewer-PR490-50f8125",
+    "task_id": "HX-BL-023",
+    "stage_id": "E8.2",
+    "status": "changes_requested",
+    "head_sha": "50f81251cf000d17f7f91eb96608d35ad900cfe4",
+    "next_role": "developer",
+    "next_step": "Fix PR490-F01 within approved scope;prepare coherent whole-package actual walkthrough;handoff new exactSHA for independentreview+score1.2",
+    "handoff_ref": "agent-work/handoffs/2026-11-06-PR490-50f8125-fixes.json",
+    "result_ref": "agent-work/results/2026-11-06-reviewer-PR490-50f8125.json",
+    "confirmed_points": null,
+    "unverified_weight": 1000,
+    "automation_health": {
+      "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "start": {
+        "checked_at": "2026-11-06 01:03:31 UTC",
+        "is_enabled": true,
+        "status": "checked"
+      },
+      "end": {
+        "checked_at": "2026-11-06 01:16:14 UTC",
+        "is_enabled": true,
+        "status": "checked"
+      },
+      "recovery_performed": false,
+      "errors": [],
+      "independent_agent": {
+        "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "start": {
+          "checked_at": "2026-11-06 01:04:29 UTC",
+          "status": "checked",
+          "is_enabled": true
+        },
+        "end": {
+          "checked_at": "2026-11-06 01:14:35 UTC",
+          "status": "checked",
+          "is_enabled": true
+        },
+        "recovery_performed": false,
+        "errors": [],
+        "limitation": "Actual momentary observations only; no future enabled guarantee."
+      },
+      "limitation": "Point-in-time actual checks;no future enabled guarantee"
+    }
+  }
+}
