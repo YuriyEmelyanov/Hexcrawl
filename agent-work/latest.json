@@ -5307,7 +5307,7 @@
   },
   "research_agent": {
     "task_id": "HX-RSR-001",
-    "status": "enabled",
+    "status": "enabled_research_complete_proposal_pending",
     "automation_id": "Automation_7690c42b2a7881919aaca4103dcd338f",
     "schedule_frequency": "hourly",
     "schedule_minute": 30,
@@ -5316,43 +5316,69 @@
     "state_ref": "agent-work/research/state.json",
     "method_ref": "agent-work/research/method.json",
     "proposals_ref": "agent-work/research/proposals.json",
-    "result_ref": "agent-work/research/runs/2026-11-06-setup.json",
+    "result_ref": "agent-work/research/runs/2026-11-06-map-creation-ranking.json",
     "setup_commit_sha": "88448b734a8e9a1a35fba9352c2a6845eff98ae5",
     "verification_commit_sha": "829e8aae587c720ef85b8186edf929eaf3b4e646",
     "rating_changes_require_owner_approval": true,
     "priority": "high active rank; L1 map creation/development → L2 hexcrawl → L3 other exploration",
     "next_candidate": "KNAVE2 source inventory and concrete L1 requirements; adapt to most relevant task at run start",
-    "first_research_run": "not_yet_observed",
+    "first_research_run": "manual_bounded_scope_completed_not_scheduled_execution_proof",
     "automation_health": {
       "main_team": {
         "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
         "start": {
+          "checked_at": "2026-11-06 02:26:41 UTC",
           "status": "checked",
-          "is_enabled": true,
-          "observed_during": "initial setup peek",
-          "exact_timestamp_not_recorded": true
-        },
-        "end": {
-          "status": "checked",
-          "is_enabled": true,
-          "checked_at": "2026-11-06T02:58:20Z"
-        }
-      },
-      "research_agent": {
-        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
-        "creation": {
-          "status": "created_enabled",
           "is_enabled": true
         },
         "end": {
           "status": "checked",
           "is_enabled": true,
-          "checked_at": "2026-11-06T02:58:20Z"
-        }
+          "observation_interval_utc": [
+            "2026-11-06T03:13:33Z",
+            "2026-11-06T03:13:40Z"
+          ]
+        },
+        "restoration_performed_in_this_research": false,
+        "preceding_developer_restoration_ref": "agent-work/results/2026-11-06-developer-PR490-F01.json#automation_health"
       },
-      "restoration_performed": false,
+      "research_agent": {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "start": {
+          "status": "unchecked",
+          "is_enabled": null,
+          "reason": "Automation created by separate authorized setup after this manual research scope had started; cannot retroactively perform start peek."
+        },
+        "first_observation": {
+          "status": "checked",
+          "is_enabled": true,
+          "exact_timestamp_not_recorded": true,
+          "after_creation_updated_at": "2026-11-06T02:58:21.629553+00:00"
+        },
+        "end": {
+          "status": "checked",
+          "is_enabled": true,
+          "observation_interval_utc": [
+            "2026-11-06T03:13:33Z",
+            "2026-11-06T03:13:40Z"
+          ]
+        },
+        "restoration_performed": false
+      },
       "errors": [],
-      "limitation": "Point-in-time observations; inherited future execution environments are not confirmed by the schedule receipt."
-    }
+      "limitation": "Point-in-time actual peeks only. No claim about subsequent service state; no cause of any earlier disabling inferred."
+    },
+    "last_completed_run": "2026-11-06-map-creation-ranking",
+    "rating_proposal_id": "HX-RSR-001-RANK-20261106-v1.4",
+    "rating_proposal_status": "awaiting_owner_approval",
+    "rating_proposal_ref": "agent-work/research/proposals/HX-RSR-001-RANK-20261106-v1.4.json",
+    "rating_candidate_blob_sha": "39e1fbdb459c4b8519cace29f4ea6bc366db9286",
+    "workbook": {
+      "library_file_id": "libfile_bd16d7f7c0548191ba139aaaa18a1693",
+      "version": 4
+    },
+    "next_role": "research_analyst",
+    "next_step": "Bounded KNAVE2 L1 exact-source corpus and concrete map operations/acceptance cases; no need to wait for rating approval.",
+    "authority_status": "Research approved; exact v1.4 rating activation awaiting owner decision; no product implementation/release authority added."
   }
 }
