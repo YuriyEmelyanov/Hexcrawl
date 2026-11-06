@@ -2,7 +2,7 @@
   "schema_version": 1,
   "date": "2026-11-06",
   "branch": "agent-operations",
-  "plan_json": "agent-work/handoffs/2026-11-06-HX-BL-023-E8-SEA-analysis.json",
+  "plan_json": "agent-work/handoffs/2026-11-06-HX-BL-023-E8-N-SEA-development.json",
   "plan_md": null,
   "strategy_branch": "main",
   "strategy_status": "approved",
@@ -25,11 +25,11 @@
     "source": "owner_confirmation"
   },
   "lessons_path": "agent-work/lessons.md",
-  "plan_id": "2026-11-06-HX-BL-023-E8-SEA-analysis",
-  "run_id": "2026-11-06-strategist-score-PR491",
+  "plan_id": "2026-11-06-HX-BL-023-E8-N-SEA-development",
+  "run_id": "2026-11-06-analyst-HX-BL-023-E8-N-SEA",
   "plan_revision": 1,
   "baseline_sha": "ab75ecb0a5b90888d4e367bfc9a40ecdff8ad429",
-  "status": "score_accounting_completed_next_analysis_ready",
+  "status": "specification_completed_ready_for_development",
   "planning_for": "2026-10-31",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-10-25",
@@ -45,19 +45,19 @@
   "schedule_start_at": "2026-10-24T01:00:00+03:00",
   "schedule_frequency": "hourly",
   "process_path": "agent-work/process.md",
-  "current_role": "strategist_manager",
-  "next_role": "business_analyst",
+  "current_role": "business_analyst",
+  "next_role": "developer",
   "current_task_id": "HX-BL-023",
-  "spec_path": "agent-work/specs/HX-BL-023-E8.md",
-  "spec_version": "E8-1.0",
-  "result_path": "agent-work/results/2026-11-06-strategist-score-PR491.json",
-  "handoff_commit_sha": "d66fc1882d982bf71de1977869077ec56c117d06",
+  "spec_path": "agent-work/specs/HX-BL-023-E8-N-SEA.md",
+  "spec_version": "SEA-1.0",
+  "result_path": "agent-work/results/2026-11-06-analyst-HX-BL-023-E8-N-SEA.json",
+  "handoff_commit_sha": "e21ce6ab8df56e580f444b249ef06f77c93f2255",
   "active_claim": null,
-  "next_step": "Подготовить E8-N-SEA: устойчивый ID моря, сохранение и конфликт имён при split/merge, миграция/Undo/Redo, компактный desktop/narrow UI и проверяемая спецификация; показать предложение без ожидания третьего согласования.",
+  "next_step": "Разработчик реализует E8-N-SEA по SEA-1.0: устойчивый ID и имена морей, безопасные split/merge, v9/миграции и точный Undo/Redo; покажет фактический UI на конечном SHA и передаст пакет независимому проверяющему. Старт утверждён, выпуск отдельно.",
   "owner_decisions_needed": [],
   "release_approval": "owner-release-2026-11-06-PR491-de02991",
   "historical_plan_status": "План23.10 сохранён как история; его блокировки и предложенный процесс заменены decisions24.10 в approvals/process/budget и текущим handoff.",
-  "evidence_path": "agent-work/evidence/score-PR491-7547a67/accounting.json",
+  "evidence_path": "agent-work/ui/HX-BL-023-E8-N-SEA-ui-v1/manifest.json",
   "branch_name": "agent/hx023-remove-central-note",
   "pr": 491,
   "head_sha": "de0299168e5a74d4e3594db71d657ca8055614e0",
@@ -101,7 +101,7 @@
   "score_update_release_sha": "7547a67bbcfb621f1e7c7189518583842ccb055a",
   "score_process_decision_ref": "owner-decision-2026-10-24-score-responsibilities",
   "score_assessment_ref": "agent-work/evidence/HX-FB-010-PR491-de02991/score-assessment.json",
-  "role_selection_reason": "Mandatory pending PR491 release score event with existing exact-SHA independent assessment; no overlapping unfinished claim in current queue/claim path inventory.",
+  "role_selection_reason": "Latest queue explicitly routes published editor continuation to Sea specification; no overlapping Sea claim found; PR491 score event completed.",
   "score_update_result_ref": "agent-work/results/2026-11-06-strategist-score-PR491.json",
   "score_update_completed_at": "2026-11-06T07:21:35Z",
   "score_update_delta": null,
@@ -109,7 +109,7 @@
   "next_task_proposal_ref": null,
   "next_task_id": "HX-BL-023",
   "approval_ref": "owner-decision-2026-10-28-editor-additional-functions-approved",
-  "last_completed_stage": "E4_specification",
+  "last_completed_stage": "E8-N-SEA_specification",
   "previous_release_approval": {
     "task_id": "HX-BL-023",
     "stage_id": "E1_UI3",
@@ -125,18 +125,18 @@
   "automation_health": {
     "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-11-06T07:18:18Z",
+      "checked_at": "2026-11-06T08:02:38Z",
       "status": "checked",
       "is_enabled": true
     },
     "recovery_performed": false,
     "errors": [],
     "end": {
-      "checked_at": "2026-11-06T07:21:35Z",
+      "checked_at": "2026-11-06T08:19:49Z",
       "status": "checked",
       "is_enabled": true
     },
-    "limitation": "Actual point-in-time start/end observations; future service state is not guaranteed."
+    "limitation": "Actual start/end point-in-time observations; future service state is not guaranteed."
   },
   "open_findings": [],
   "current_review_score_assessment_status": "completed_model1.2_unknown_no_award",
@@ -1998,13 +1998,32 @@
   "active_slice": "E8-N-SEA",
   "last_completed_stage_task_id": "HX-BL-023",
   "ui_preview": {
-    "version": "E3-UI1",
-    "desktop": "agent-work/evidence/HX-BL-023-E3-spec/desktop.png",
-    "narrow": "agent-work/evidence/HX-BL-023-E3-spec/narrow.png",
+    "version": "SEA-UI1",
     "type": "proposal_not_implementation",
-    "shown_in_current_chat": true,
-    "ui_preview_pending": false,
-    "owner_response_required_to_start": false
+    "source": "agent-work/ui/HX-BL-023-E8-N-SEA-ui-v1/README.md",
+    "desktop": "agent-work/ui/HX-BL-023-E8-N-SEA-ui-v1/merge-1500.png",
+    "narrow": "agent-work/ui/HX-BL-023-E8-N-SEA-ui-v1/split-390.png",
+    "states": [
+      "read",
+      "name",
+      "first",
+      "split",
+      "merge",
+      "error"
+    ],
+    "shown_in_chat": true,
+    "shown_on": "2026-11-06",
+    "shown_states": [
+      "merge desktop1500",
+      "split narrow390"
+    ],
+    "owner_response_blocks_development": false,
+    "check_ref": "agent-work/ui/HX-BL-023-E8-N-SEA-ui-v1/manifest.json",
+    "limitations": [
+      "DOM proposal on published CSS, not implemented Sea runtime",
+      "12 layouts passed; source/transaction behavior not executed by mock",
+      "RU proposal; implementation must verify EN/RU,320px,regional Sea,keyboard/IME and document touch/AT limits"
+    ]
   },
   "ui_preview_pending": false,
   "marketing_gate_status": "not_passed_full023_remains",
@@ -2349,7 +2368,7 @@
   "score_changed": false,
   "next_stage_id": "E8-N-SEA",
   "score_evidence_updated": true,
-  "current_stage_id": "PR491-release-score-accounting",
+  "current_stage_id": "E8-N-SEA",
   "implementation_started": true,
   "current_stage_release_approved": true,
   "review_ready": false,
@@ -5461,5 +5480,9 @@
     "awarded_points": 0,
     "delta_points": null,
     "applied_at": "2026-11-06T07:21:35Z"
-  }
+  },
+  "authority_status": "start_and_development_approved; publication_separate",
+  "analysis_baseline_sha": "7547a67bbcfb621f1e7c7189518583842ccb055a",
+  "analysis_baseline_tree": "79b69059c70eed7430bcda93db5d72a6097695d3",
+  "previous_evidence_path": "agent-work/evidence/score-PR491-7547a67/accounting.json"
 }
