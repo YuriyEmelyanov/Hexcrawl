@@ -1375,7 +1375,7 @@
       "task_id": "HX-BL-023",
       "title": "Общий режим редактирования",
       "criterion_id": "S03-C01",
-      "status": "partially_published_ready_for_analysis",
+      "status": "partially_published_ready_for_development",
       "potential_delta": null,
       "approval_ref": "owner-decision-2026-10-29-HX-FB-005-direct-edit-mode",
       "source": {
@@ -1390,16 +1390,16 @@
       "previous_status": "ready_for_development",
       "recommended_priority": 1,
       "execution_allowed": true,
-      "spec_status": "ready_for_development",
-      "next_role": "business_analyst",
-      "next_step": "Подготовить E8-N-SEA: устойчивый ID моря, сохранение и конфликт имён при split/merge, миграция/Undo/Redo, компактный desktop/narrow UI и проверяемая спецификация; показать предложение без ожидания третьего согласования.",
+      "spec_status": "ready",
+      "next_role": "developer",
+      "next_step": "Разработчик реализует E8-N-SEA по SEA-1.0: устойчивый ID и имена морей, безопасные split/merge, v9/миграции и точный Undo/Redo; покажет фактический UI на конечном SHA и передаст пакет независимому проверяющему. Старт утверждён, выпуск отдельно.",
       "related_task_ids": [
         "HX-BL-013",
         "HX-BL-018",
         "HX-BL-019",
         "HX-BL-028"
       ],
-      "handoff_ref": "agent-work/handoffs/2026-11-06-HX-BL-023-E8-SEA-analysis.json",
+      "handoff_ref": "agent-work/handoffs/2026-11-06-HX-BL-023-E8-N-SEA-development.json",
       "owner_priority_decision": {
         "id": "owner-decision-2026-10-28-editor-and-MB-content-before-outreach",
         "date": "2026-10-28",
@@ -1431,18 +1431,36 @@
         "underlay027_still_deferred": true
       },
       "release_approved": false,
-      "spec_ref": "agent-work/specs/HX-BL-023-E8.md",
-      "spec_version": "E8-1.0",
+      "spec_ref": "agent-work/specs/HX-BL-023-E8-N-SEA.md",
+      "spec_version": "SEA-1.0",
       "active_slice": "E8-N-SEA",
       "ui_preview": {
-        "version": "E4-UI1",
+        "version": "SEA-UI1",
         "type": "proposal_not_implementation",
-        "desktop": "agent-work/evidence/HX-BL-023-E4-spec/desktop.png",
-        "narrow": "agent-work/evidence/HX-BL-023-E4-spec/narrow.png",
-        "source": "agent-work/evidence/HX-BL-023-E4-spec/preview.html",
-        "shown_in_current_chat": true,
-        "ui_preview_pending": false,
-        "owner_response_required_to_start": false
+        "source": "agent-work/ui/HX-BL-023-E8-N-SEA-ui-v1/README.md",
+        "desktop": "agent-work/ui/HX-BL-023-E8-N-SEA-ui-v1/merge-1500.png",
+        "narrow": "agent-work/ui/HX-BL-023-E8-N-SEA-ui-v1/split-390.png",
+        "states": [
+          "read",
+          "name",
+          "first",
+          "split",
+          "merge",
+          "error"
+        ],
+        "shown_in_chat": true,
+        "shown_on": "2026-11-06",
+        "shown_states": [
+          "merge desktop1500",
+          "split narrow390"
+        ],
+        "owner_response_blocks_development": false,
+        "check_ref": "agent-work/ui/HX-BL-023-E8-N-SEA-ui-v1/manifest.json",
+        "limitations": [
+          "DOM proposal on published CSS, not implemented Sea runtime",
+          "12 layouts passed; source/transaction behavior not executed by mock",
+          "RU proposal; implementation must verify EN/RU,320px,regional Sea,keyboard/IME and document touch/AT limits"
+        ]
       },
       "scope_remaining": [
         "E2 hex/region biomes",
@@ -1537,8 +1555,8 @@
       },
       "additional_functions_approval_ref": "owner-decision-2026-10-28-editor-additional-functions-approved",
       "capability_matrix_ref": "agent-work/evidence/HX-BL-023-editor-v2/capability-matrix.json",
-      "analyst_result_ref": "agent-work/results/2026-11-01-analyst-HX-BL-023-E4-migration.json",
-      "analyst_handoff_ref": "agent-work/handoffs/2026-11-01-HX-BL-023-E4-development.json",
+      "analyst_result_ref": "agent-work/results/2026-11-06-analyst-HX-BL-023-E8-N-SEA.json",
+      "analyst_handoff_ref": "agent-work/handoffs/2026-11-06-HX-BL-023-E8-N-SEA-development.json",
       "owner_role": "reviewer",
       "branch": "agent/hx023-e7-e8-package",
       "pr": 490,
@@ -2053,7 +2071,7 @@
       "score_update_release_sha": "7547a67bbcfb621f1e7c7189518583842ccb055a",
       "score_awarded_points": 0,
       "next_task_id": "HX-BL-023",
-      "previous_queue_handoff_ref": "agent-work/handoffs/2026-11-02-HX-BL-023-E4-release-package-0459c64.json",
+      "previous_queue_handoff_ref": "agent-work/handoffs/2026-11-06-HX-BL-023-E8-SEA-analysis.json",
       "next_spec_parent_ref": "agent-work/specs/HX-BL-023.md",
       "next_spec_parent_version": "2.3",
       "stages": {
@@ -2162,13 +2180,132 @@
           "score_awarded_points": 0
         },
         "E8_N_SEA": {
-          "status": "ready_for_analysis",
-          "next_role": "business_analyst",
-          "handoff_ref": "agent-work/handoffs/2026-11-06-HX-BL-023-E8-SEA-analysis.json",
+          "status": "ready_for_development",
+          "next_role": "developer",
+          "handoff_ref": "agent-work/handoffs/2026-11-06-HX-BL-023-E8-N-SEA-development.json",
           "implementation_started": false,
           "release_approved": false,
-          "next_step": "Подготовить E8-N-SEA: устойчивый ID моря, сохранение и конфликт имён при split/merge, миграция/Undo/Redo, компактный desktop/narrow UI и проверяемая спецификация; показать предложение без ожидания третьего согласования.",
-          "score_prerequisite": "completed"
+          "next_step": "Разработчик реализует E8-N-SEA по SEA-1.0: устойчивый ID и имена морей, безопасные split/merge, v9/миграции и точный Undo/Redo; покажет фактический UI на конечном SHA и передаст пакет независимому проверяющему. Старт утверждён, выпуск отдельно.",
+          "score_prerequisite": "completed",
+          "stage_id": "E8-N-SEA",
+          "spec_ref": "agent-work/specs/HX-BL-023-E8-N-SEA.md",
+          "spec_version": "SEA-1.0",
+          "analyst_result_ref": "agent-work/results/2026-11-06-analyst-HX-BL-023-E8-N-SEA.json",
+          "implementation_allowed": true,
+          "approval_ref": "owner-decision-2026-10-28-editor-functional-scope",
+          "baseline_sha": "7547a67bbcfb621f1e7c7189518583842ccb055a",
+          "baseline_tree": "79b69059c70eed7430bcda93db5d72a6097695d3",
+          "ui_preview": {
+            "version": "SEA-UI1",
+            "type": "proposal_not_implementation",
+            "source": "agent-work/ui/HX-BL-023-E8-N-SEA-ui-v1/README.md",
+            "desktop": "agent-work/ui/HX-BL-023-E8-N-SEA-ui-v1/merge-1500.png",
+            "narrow": "agent-work/ui/HX-BL-023-E8-N-SEA-ui-v1/split-390.png",
+            "states": [
+              "read",
+              "name",
+              "first",
+              "split",
+              "merge",
+              "error"
+            ],
+            "shown_in_chat": true,
+            "shown_on": "2026-11-06",
+            "shown_states": [
+              "merge desktop1500",
+              "split narrow390"
+            ],
+            "owner_response_blocks_development": false,
+            "check_ref": "agent-work/ui/HX-BL-023-E8-N-SEA-ui-v1/manifest.json",
+            "limitations": [
+              "DOM proposal on published CSS, not implemented Sea runtime",
+              "12 layouts passed; source/transaction behavior not executed by mock",
+              "RU proposal; implementation must verify EN/RU,320px,regional Sea,keyboard/IME and document touch/AT limits"
+            ]
+          },
+          "score_forecast": {
+            "model_version": "1.2",
+            "baseline_ref": "agent-work/score/current-score.json",
+            "baseline_blob_sha": "32609334f986bfaaca44b898fcc8776813179170",
+            "status": "unknown_unverified_no_award",
+            "criteria": [
+              {
+                "criterion_id": "S02-C02",
+                "before_grade": null,
+                "before_points": null,
+                "expected_after_grade": null,
+                "expected_after_points": null,
+                "expected_delta": null,
+                "evidence_required": "agent-work/specs/HX-BL-023-E8-N-SEA.md#score12-и-требования-нри"
+              },
+              {
+                "criterion_id": "S02-C03",
+                "before_grade": null,
+                "before_points": null,
+                "expected_after_grade": null,
+                "expected_after_points": null,
+                "expected_delta": null,
+                "evidence_required": "agent-work/specs/HX-BL-023-E8-N-SEA.md#score12-и-требования-нри"
+              },
+              {
+                "criterion_id": "S03-C01",
+                "before_grade": null,
+                "before_points": null,
+                "expected_after_grade": null,
+                "expected_after_points": null,
+                "expected_delta": null,
+                "evidence_required": "agent-work/specs/HX-BL-023-E8-N-SEA.md#score12-и-требования-нри"
+              },
+              {
+                "criterion_id": "S03-C04",
+                "before_grade": null,
+                "before_points": null,
+                "expected_after_grade": null,
+                "expected_after_points": null,
+                "expected_delta": null,
+                "evidence_required": "agent-work/specs/HX-BL-023-E8-N-SEA.md#score12-и-требования-нри"
+              },
+              {
+                "criterion_id": "S03-C05",
+                "before_grade": null,
+                "before_points": null,
+                "expected_after_grade": null,
+                "expected_after_points": null,
+                "expected_delta": null,
+                "evidence_required": "agent-work/specs/HX-BL-023-E8-N-SEA.md#score12-и-требования-нри"
+              },
+              {
+                "criterion_id": "S04-C04",
+                "before_grade": null,
+                "before_points": null,
+                "expected_after_grade": null,
+                "expected_after_points": null,
+                "expected_delta": null,
+                "evidence_required": "agent-work/specs/HX-BL-023-E8-N-SEA.md#score12-и-требования-нри"
+              },
+              {
+                "criterion_id": "S04-C05",
+                "before_grade": null,
+                "before_points": null,
+                "expected_after_grade": null,
+                "expected_after_points": null,
+                "expected_delta": null,
+                "evidence_required": "agent-work/specs/HX-BL-023-E8-N-SEA.md#score12-и-требования-нри"
+              },
+              {
+                "criterion_id": "S09-C04",
+                "before_grade": null,
+                "before_points": null,
+                "expected_after_grade": null,
+                "expected_after_points": null,
+                "expected_delta": null,
+                "evidence_required": "agent-work/specs/HX-BL-023-E8-N-SEA.md#score12-и-требования-нри"
+              }
+            ],
+            "current_score_changed": false
+          },
+          "source_analysis_complete": true,
+          "substantial_expansion_required": false
         },
         "HX_FB_010_correction": {
           "task_id": "HX-BL-023",
@@ -2210,8 +2347,8 @@
         }
       },
       "accepted": false,
-      "current_stage_status": "ready_for_analysis",
-      "current_stage_review_status": "specification_pending",
+      "current_stage_status": "ready_for_development",
+      "current_stage_review_status": "not_started",
       "current_stage_release_approved": false,
       "published": false,
       "routing_snapshot_history": [
@@ -2326,7 +2463,7 @@
       ],
       "current_stage_id": "E8-N-SEA",
       "next_approved_stage": "E8-N-SEA",
-      "next_approved_stage_handoff_ref": "agent-work/handoffs/2026-11-06-HX-BL-023-E8-SEA-analysis.json",
+      "next_approved_stage_handoff_ref": "agent-work/handoffs/2026-11-06-HX-BL-023-E8-N-SEA-development.json",
       "published_scope": "PR490 E7+E8 package only; full HX-BL-023 incomplete",
       "current_package_published": true,
       "latest_release_event": {

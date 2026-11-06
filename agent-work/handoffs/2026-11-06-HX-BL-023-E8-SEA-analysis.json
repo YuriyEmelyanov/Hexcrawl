@@ -3,7 +3,7 @@
   "task_id": "HX-BL-023",
   "stage_id": "E8-N-SEA",
   "owner_role": "business_analyst",
-  "status": "ready_for_analysis",
+  "status": "completed_specification_prepared",
   "approval_ref": "owner-decision-2026-10-28-editor-functional-scope",
   "scope_source": "agent-work/specs/HX-BL-023-E8.md#E8-N-SEA",
   "baseline_sha": "7547a67bbcfb621f1e7c7189518583842ccb055a",
@@ -81,11 +81,43 @@
     "release_sha": "7547a67bbcfb621f1e7c7189518583842ccb055a",
     "result_ref": "agent-work/results/2026-11-06-strategist-score-PR491.json"
   },
-  "next_role": "business_analyst",
-  "next_step": "Подготовить E8-N-SEA: устойчивый ID моря, сохранение и конфликт имён при split/merge, миграция/Undo/Redo, компактный desktop/narrow UI и проверяемая спецификация; показать предложение без ожидания третьего согласования.",
+  "next_role": "developer",
+  "next_step": "Разработчик реализует E8-N-SEA по SEA-1.0: устойчивый ID и имена морей, безопасные split/merge, v9/миграции и точный Undo/Redo; покажет фактический UI на конечном SHA и передаст пакет независимому проверяющему. Старт утверждён, выпуск отдельно.",
   "user_effect": {
     "before": "У моря нет утверждённого контракта стабильной идентичности и имени при изменении воды.",
     "after": "Мастер сможет назвать море и сохранить имя после расширения, загрузки и отмены; разделение и слияние имеют явный безопасный исход.",
     "example": "«Северное море» после добавления соседних водных гексов остаётся тем же именованным объектом; при объединении с «Заливом Туманов» авторские имена не теряются молча."
-  }
+  },
+  "completion_result_ref": "agent-work/results/2026-11-06-analyst-HX-BL-023-E8-N-SEA.json",
+  "spec_ref": "agent-work/specs/HX-BL-023-E8-N-SEA.md",
+  "spec_version": "SEA-1.0",
+  "ui_preview": {
+    "version": "SEA-UI1",
+    "type": "proposal_not_implementation",
+    "source": "agent-work/ui/HX-BL-023-E8-N-SEA-ui-v1/README.md",
+    "desktop": "agent-work/ui/HX-BL-023-E8-N-SEA-ui-v1/merge-1500.png",
+    "narrow": "agent-work/ui/HX-BL-023-E8-N-SEA-ui-v1/split-390.png",
+    "states": [
+      "read",
+      "name",
+      "first",
+      "split",
+      "merge",
+      "error"
+    ],
+    "shown_in_chat": true,
+    "shown_on": "2026-11-06",
+    "shown_states": [
+      "merge desktop1500",
+      "split narrow390"
+    ],
+    "owner_response_blocks_development": false,
+    "check_ref": "agent-work/ui/HX-BL-023-E8-N-SEA-ui-v1/manifest.json",
+    "limitations": [
+      "DOM proposal on published CSS, not implemented Sea runtime",
+      "12 layouts passed; source/transaction behavior not executed by mock",
+      "RU proposal; implementation must verify EN/RU,320px,regional Sea,keyboard/IME and document touch/AT limits"
+    ]
+  },
+  "next_handoff_ref": "agent-work/handoffs/2026-11-06-HX-BL-023-E8-N-SEA-development.json"
 }
