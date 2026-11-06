@@ -1,0 +1,566 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-RSR-001",
+  "review_id": "SD-INDEPENDENT-BOUNDED-20261106",
+  "status": "bounded_review_complete",
+  "reviewer": "sd_map_gm with narrow catalog cross-check by gm_review",
+  "scope": {
+    "inputs": [
+      "shadowdark-audit/core-extraction.json",
+      "shadowdark-audit/encounters-extraction.json"
+    ],
+    "spotcheck_groups": 15,
+    "priority": "L1 source content/state first, then numerical boundary and bounded integration examples",
+    "full_rescan": false,
+    "runtime_product_audit": false,
+    "agent_files_modified": false,
+    "review_output_only": true
+  },
+  "source": {
+    "id": "SD-CORE-SUPPLIED-20261106",
+    "filename": "pdfcoffee.com_shadowdark-rpg-v4-6-pdf-free(1).pdf",
+    "page_numbering": "PDF=printed+4",
+    "access": "local supplied full text; spot-check pages only"
+  },
+  "summary": {
+    "high_findings": 0,
+    "medium_findings": 2,
+    "low_findings": 1,
+    "numeric_errors_found_in_spotchecks": 0,
+    "scope_questions_are_not_source_errors": true,
+    "canonical_identifier_layer_and_criterion_structure_issues": []
+  },
+  "checks": [
+    {
+      "id": "QA-SD-01",
+      "rule_ids": [
+        "SD-CORE-001"
+      ],
+      "source_locators": [
+        {
+          "printed_page": 90,
+          "pdf_page": 94,
+          "text_path": "shadowdark-audit/pdf-094.txt"
+        }
+      ],
+      "acceptance_case_ids": [
+        "SD-CORE-001-L1-AC01"
+      ],
+      "parameters_checked": "6 miles across; across-geometry unspecified.",
+      "result": "pass",
+      "assessment": "Восстановление значения6mile сохраняет source number и не назначает face/vertex convention."
+    },
+    {
+      "id": "QA-SD-02",
+      "rule_ids": [
+        "SD-CORE-002"
+      ],
+      "source_locators": [
+        {
+          "printed_page": 90,
+          "pdf_page": 94,
+          "text_path": "shadowdark-audit/pdf-094.txt"
+        }
+      ],
+      "acceptance_case_ids": [
+        "SD-CORE-002-L1-AC01",
+        "SD-CORE-002-L2-AC01",
+        "SD-CORE-002-L2-AC02",
+        "SD-CORE-002-L2-AC03"
+      ],
+      "parameters_checked": "Walking4h, mounted2h, sailing1h, difficult×2, arduous8h.",
+      "result": "pass",
+      "assessment": "2normal walking=8h; difficult mounted=4h. Arduous+method interaction честно оставлено unresolved; biome не принуждает difficulty."
+    },
+    {
+      "id": "QA-SD-03",
+      "rule_ids": [
+        "SD-CORE-003"
+      ],
+      "source_locators": [
+        {
+          "printed_page": 90,
+          "pdf_page": 94,
+          "text_path": "shadowdark-audit/pdf-094.txt"
+        }
+      ],
+      "acceptance_case_ids": [
+        "SD-CORE-003-L2-AC01",
+        "SD-CORE-003-L3-AC01"
+      ],
+      "parameters_checked": "Travel up to8h/day; increasing CON checks to continue; progression unspecified.",
+      "result": "pass_with_binding_finding",
+      "assessment": "7h+2h корректно выделяет1h beyond ordinary limit как proposed workflow. Числа верны; canonical daily_activity_budget семантически уже исходного положения."
+    },
+    {
+      "id": "QA-SD-04",
+      "rule_ids": [
+        "SD-CORE-005"
+      ],
+      "source_locators": [
+        {
+          "printed_page": 90,
+          "pdf_page": 94,
+          "text_path": "shadowdark-audit/pdf-094.txt"
+        }
+      ],
+      "acceptance_case_ids": [
+        "SD-CORE-005-L2-AC01",
+        "SD-CORE-005-L3-AC01",
+        "SD-CORE-005-L3-AC02"
+      ],
+      "parameters_checked": "Unfamiliar territory: navigator INT upon exiting hex; failure random adjacent hex.",
+      "result": "pass",
+      "assessment": "Trigger именно exit, не entry. Тестовые DC12 и индексD явно GM/profile inputs; не представлены исходной константой."
+    },
+    {
+      "id": "QA-SD-05",
+      "rule_ids": [
+        "SD-CORE-012",
+        "SD-CORE-015"
+      ],
+      "source_locators": [
+        {
+          "printed_page": 84,
+          "pdf_page": 88,
+          "text_path": "shadowdark-audit/pdf-088.txt"
+        },
+        {
+          "printed_page": 86,
+          "pdf_page": 90,
+          "text_path": "shadowdark-audit/pdf-090.txt"
+        }
+      ],
+      "acceptance_case_ids": [
+        "SD-CORE-012-L1-AC01",
+        "SD-CORE-012-L2-AC01",
+        "SD-CORE-015-L1-AC01",
+        "SD-CORE-015-L3-AC01",
+        "SD-CORE-015-L3-AC02"
+      ],
+      "parameters_checked": "Outside illumination total darkness; three torches create immovable campfire, near light, up to8h while someone remains near.",
+      "result": "pass",
+      "assessment": "L1 хранение источника/фиксированного костра подтверждено. Сохранение known map — proposed state. При уходе всех судьба огня не выдумана. Near30ft в тесте — fixture, не точный радиус, выведенный изp84."
+    },
+    {
+      "id": "QA-SD-06",
+      "rule_ids": [
+        "SD-CORE-022"
+      ],
+      "source_locators": [
+        {
+          "printed_page": 89,
+          "pdf_page": 93,
+          "text_path": "shadowdark-audit/pdf-093.txt"
+        }
+      ],
+      "acceptance_case_ids": [
+        "SD-CORE-022-L1-AC01",
+        "SD-CORE-022-L2-AC01",
+        "SD-CORE-022-L3-AC01",
+        "SD-CORE-022-L3-AC02"
+      ],
+      "parameters_checked": "Hampering terrain halves local distance; half body cover disadvantages attack/spell; total terrain occlusion prevents targeting.",
+      "result": "pass_with_scope_question",
+      "assessment": "Множитель0.5 и half-body threshold верны. Требование локальной spatial/movement engine в L1/L2 может выходить за regional-only scope."
+    },
+    {
+      "id": "QA-SD-07",
+      "rule_ids": [
+        "SD-CORE-024"
+      ],
+      "source_locators": [
+        {
+          "printed_page": 34,
+          "pdf_page": 38,
+          "text_path": "shadowdark-audit/pdf-038.txt"
+        }
+      ],
+      "acceptance_case_ids": [
+        "SD-CORE-024-L1-AC01",
+        "SD-CORE-024-L3-AC03"
+      ],
+      "parameters_checked": "Caltrops1damage,half speed10rounds; oilclose,4rounds,1d4damage each round.",
+      "result": "pass",
+      "assessment": "Oil close не присвоено caltrops; размеры/распространение не выдуманы. Armor/mithral подпунктыp36 в этой bounded QA отдельно не перепроверялись."
+    },
+    {
+      "id": "QA-SD-08",
+      "rule_ids": [
+        "SD-CORE-028"
+      ],
+      "source_locators": [
+        {
+          "printed_page": 46,
+          "pdf_page": 50,
+          "text_path": "shadowdark-audit/pdf-050.txt"
+        },
+        {
+          "printed_page": 47,
+          "pdf_page": 51,
+          "text_path": "shadowdark-audit/pdf-051.txt"
+        },
+        {
+          "printed_page": 48,
+          "pdf_page": 52,
+          "text_path": "shadowdark-audit/pdf-052.txt"
+        }
+      ],
+      "acceptance_case_ids": [
+        "SD-CORE-028-L1-AC01",
+        "SD-CORE-028-L1-AC02",
+        "SD-CORE-028-L3-AC01",
+        "SD-CORE-028-L3-AC02",
+        "SD-CORE-028-L3-AC03"
+      ],
+      "parameters_checked": "Tier1–2/9: all light near10rounds; Tier3–4/7:30ft depth,DC15DEX; Tier5/6:arrivald4rounds,closeDC18INT on ownturn.",
+      "result": "pass",
+      "assessment": "Near creatures не превращены в радиус воронки; destination portal unknown сохранён. Числа и включение sunlight/magic верны."
+    },
+    {
+      "id": "QA-SD-09",
+      "rule_ids": [
+        "SD-CORE-060"
+      ],
+      "source_locators": [
+        {
+          "printed_page": 166,
+          "pdf_page": 170,
+          "text_path": "shadowdark-audit/pdf-170.txt"
+        },
+        {
+          "printed_page": 169,
+          "pdf_page": 173,
+          "text_path": "shadowdark-audit/pdf-173.txt"
+        },
+        {
+          "printed_page": 170,
+          "pdf_page": 174,
+          "text_path": "shadowdark-audit/pdf-174.txt"
+        }
+      ],
+      "acceptance_case_ids": [
+        "SD-CORE-060-L1-AC01",
+        "SD-CORE-060-L1-AC02",
+        "SD-CORE-060-L3-AC01"
+      ],
+      "parameters_checked": "Mountain01 bars traveld4days;Ocean00 seagull/random magic item;River30–31=2d6goblin gem divers/hut.",
+      "result": "pass",
+      "assessment": "Профиль не смешан сArctic;00→100 корректно. Profiles metadata содержит22профиля. Все22таблицы в этой bounded review не перечитывались."
+    },
+    {
+      "id": "QA-SD-10",
+      "rule_ids": [
+        "SD-CORE-061"
+      ],
+      "source_locators": [
+        {
+          "printed_page": 143,
+          "pdf_page": 147,
+          "text_path": "shadowdark-audit/pdf-147.txt"
+        },
+        {
+          "printed_page": 154,
+          "pdf_page": 158,
+          "text_path": "shadowdark-audit/pdf-158.txt"
+        },
+        {
+          "printed_page": 155,
+          "pdf_page": 159,
+          "text_path": "shadowdark-audit/pdf-159.txt"
+        }
+      ],
+      "acceptance_case_ids": [
+        "SD-CORE-061-L1-AC01"
+      ],
+      "parameters_checked": "98–99 roll2 and combine, reroll98–99;forest12–13fallingtree,66–67stonehead.",
+      "result": "pass",
+      "assessment": "Stream99,12,67 даёт ровно2принятых child результата12–13 и66–67. Рекурсивное размножение98–99 не введено; в sampled tables правило совпало."
+    },
+    {
+      "id": "QA-SD-11",
+      "rule_ids": [
+        "SD-CORE-063"
+      ],
+      "source_locators": [
+        {
+          "printed_page": 153,
+          "pdf_page": 157,
+          "text_path": "shadowdark-audit/pdf-157.txt"
+        },
+        {
+          "printed_page": 155,
+          "pdf_page": 159,
+          "text_path": "shadowdark-audit/pdf-159.txt"
+        },
+        {
+          "printed_page": 171,
+          "pdf_page": 175,
+          "text_path": "shadowdark-audit/pdf-175.txt"
+        }
+      ],
+      "acceptance_case_ids": [
+        "SD-CORE-063-L1-AC01",
+        "SD-CORE-063-L2-AC01"
+      ],
+      "parameters_checked": "Forest92–93 abandoned chapel offers safe shelter;desert92–93ship over freshwaterwell;river76–77unlitlighthouse.",
+      "result": "pass",
+      "assessment": "Закрепление часовни вhex только по решениюGM; присутствие сцены не генерирует соседнюю географию. Safe shelter не расширено до universal immunity."
+    },
+    {
+      "id": "QA-SD-12",
+      "rule_ids": [
+        "SD-CORE-064"
+      ],
+      "source_locators": [
+        {
+          "printed_page": 142,
+          "pdf_page": 146,
+          "text_path": "shadowdark-audit/pdf-146.txt"
+        },
+        {
+          "printed_page": 166,
+          "pdf_page": 170,
+          "text_path": "shadowdark-audit/pdf-170.txt"
+        },
+        {
+          "printed_page": 170,
+          "pdf_page": 174,
+          "text_path": "shadowdark-audit/pdf-174.txt"
+        }
+      ],
+      "acceptance_case_ids": [
+        "SD-CORE-064-L1-AC01",
+        "SD-CORE-064-L2-AC01",
+        "SD-CORE-064-L3-AC01",
+        "SD-CORE-064-L3-AC02"
+      ],
+      "parameters_checked": "Arctic18–19d4/round unsheltered,36–37d6/round;Mountain01d4days;River12–13widthd4×10ft;River01+10ftfor2d4rounds.",
+      "result": "pass",
+      "assessment": "d4=3→30ft width, depthunknown;Mountain d4=3→3days;unsheltered damage2+3=5, shelter stops that specific conditional payload."
+    },
+    {
+      "id": "QA-SD-13",
+      "rule_ids": [
+        "SD-CORE-065"
+      ],
+      "source_locators": [
+        {
+          "printed_page": 143,
+          "pdf_page": 147,
+          "text_path": "shadowdark-audit/pdf-147.txt"
+        },
+        {
+          "printed_page": 150,
+          "pdf_page": 154,
+          "text_path": "shadowdark-audit/pdf-154.txt"
+        }
+      ],
+      "acceptance_case_ids": [
+        "SD-CORE-065-L1-AC01",
+        "SD-CORE-065-L2-AC01"
+      ],
+      "parameters_checked": "Arctic86–87dwarf corpses rise atnight;DeepTunnels30–31purpleworm arrivesd4rounds.",
+      "result": "pass",
+      "assessment": "Ночное условие остаётсяGM-only, delayd4=3 и2+1rounds дают один ready event. Other trigger examples в этой QA отдельно не проверялись."
+    },
+    {
+      "id": "QA-SD-14",
+      "rule_ids": [
+        "SD-CORE-071"
+      ],
+      "source_locators": [
+        {
+          "printed_page": 191,
+          "pdf_page": 195,
+          "text_path": "shadowdark-audit/pdf-195.txt"
+        }
+      ],
+      "acceptance_case_ids": [
+        "SD-CORE-071-L1-AC01",
+        "SD-CORE-071-L1-AC02",
+        "SD-CORE-071-L3-AC01",
+        "SD-CORE-071-L3-AC02"
+      ],
+      "parameters_checked": "Up to3mutations;Mutation1row12Wings;mutated monster counts+2LV for rollingtreasure.",
+      "result": "pass",
+      "assessment": "LV7+3mutations→treasureLV9, не13; отсутствие мутации→безпоправки. Источниковая +2levels mutation отдельно от treasure+2."
+    },
+    {
+      "id": "QA-SD-15",
+      "rule_ids": [
+        "SD-CORE-075",
+        "SD-CORE-076"
+      ],
+      "source_locators": [
+        {
+          "printed_page": 197,
+          "pdf_page": 201,
+          "text_path": "shadowdark-audit/pdf-201.txt"
+        },
+        {
+          "printed_page": 210,
+          "pdf_page": 214,
+          "text_path": "shadowdark-audit/pdf-214.txt"
+        },
+        {
+          "printed_page": 211,
+          "pdf_page": 215,
+          "text_path": "shadowdark-audit/pdf-215.txt"
+        },
+        {
+          "printed_page": 234,
+          "pdf_page": 238,
+          "text_path": "shadowdark-audit/pdf-238.txt"
+        },
+        {
+          "printed_page": 253,
+          "pdf_page": 257,
+          "text_path": "shadowdark-audit/pdf-257.txt"
+        }
+      ],
+      "acceptance_case_ids": [
+        "SD-CORE-075-L1-AC01",
+        "SD-CORE-075-L3-AC01",
+        "SD-CORE-076-L1-AC01",
+        "SD-CORE-076-L2-AC01",
+        "SD-CORE-076-L3-AC01",
+        "SD-CORE-076-L3-AC02"
+      ],
+      "parameters_checked": "Dragon lairLV×100gp,d4items80–100;VoidStepINTDC15,self+4willing,100mi;PhaseINTDC13,self,1mi;GateWISDC14,nearorigin,d6rounds or dismissed.",
+      "result": "pass_with_completeness_note",
+      "assessment": "LV13→1300gp иd4=3→3items верны; портал не получает произвольное destination. Spell parameters не содержат явно casting ability, хотя она есть в источнике."
+    }
+  ],
+  "findings": [
+    {
+      "id": "QA-SD-F01",
+      "severity": "medium",
+      "kind": "canonical_semantic_binding",
+      "rule_ids": [
+        "SD-CORE-003"
+      ],
+      "requirement_refs": [
+        "SD-CORE-003-L2"
+      ],
+      "source_locator": {
+        "printed_page": 90,
+        "pdf_page": 94,
+        "section": "Travel per Day"
+      },
+      "observed": "L2 привязан к travel.daily_activity_budget. В baseline registry этот ID означает дискретный дневной запас действий, полученный из скорости и модификаторов; источник Shadowdark здесь даёт только8часов в день и CON checks сверх лимита.",
+      "consequence": "ЧислаAC верны, но reuse ID может ошибочно наследовать discrete-action semantics и завысить функциональную эквивалентность.",
+      "specific_correction": "В консолидированной матрице убрать travel.daily_activity_budget из canonical_rule_ids и operational canonical_rule_refs SD-CORE-003-L2; оставить travel.elapsed_time. Не вводить новый canonical ID без отдельной необходимости. Criterion IDs пересчитать из оставшихся refs.",
+      "source_numbers_correct": true,
+      "agent_file_changed": false
+    },
+    {
+      "id": "QA-SD-F02",
+      "severity": "medium",
+      "kind": "scope_review_question_not_source_error",
+      "rule_ids": [
+        "SD-CORE-022"
+      ],
+      "requirement_refs": [
+        "SD-CORE-022-L1",
+        "SD-CORE-022-L2"
+      ],
+      "source_locator": {
+        "printed_page": 89,
+        "pdf_page": 93,
+        "section": "Terrain"
+      },
+      "observed": "L1 требует сохранять геометрию local hampering/occlusion, а L2 рассчитывать local movement30ft→15ft. Источник действительно содержит эти числа, но текущая граница исследования — региональная карта; внутренняя геометрия поселений/данжей уже исключена.",
+      "consequence": "Без уточнения bounded integration scope локальный spatial/movement resolver может стать неавторизованным обязательным развитием регионального продукта.",
+      "specific_correction": "Root должен выбрать единое толкование scope: сохранить L1 как linked-site description/внешнюю ссылку с признаками, а local×0.5 передавать внешнему L3 адаптеру; либо явно пометить локальные spatial операции как N/A текущему regional profile. Числа источника не менять. Это review question, а не доказанная ошибка факта.",
+      "source_numbers_correct": true,
+      "agent_file_changed": false
+    },
+    {
+      "id": "QA-SD-F03",
+      "severity": "low",
+      "kind": "parameter_payload_completeness",
+      "rule_ids": [
+        "SD-CORE-076"
+      ],
+      "requirement_refs": [
+        "SD-CORE-076-L3"
+      ],
+      "source_locator": {
+        "printed_pages": [
+          197,
+          234,
+          253
+        ],
+        "pdf_pages": [
+          201,
+          238,
+          257
+        ],
+        "sections": [
+          "Void Step",
+          "Phase",
+          "Gate"
+        ]
+      },
+      "observed": "Examples parameters сохраняютDC,targets,distance/duration, но не casting ability: INT дляVoid Step, INT дляPhase, WIS дляGate.",
+      "consequence": "Если exact payload предназначен для самостоятельного запроса spell check, потребитель не узнает нужный stat без повторного обращения кsource. Внешний полный spell adapter может уже знать эти данные; численныеAC от этого не неверны.",
+      "specific_correction": "Добавить casting_ability INT/INT/WIS в соответствующие examples либо явно указать, что ability берётся по spell_id из внешнего адаптера.",
+      "source_numbers_correct": true,
+      "agent_file_changed": false
+    }
+  ],
+  "known_consolidation_actions": [
+    {
+      "rule_ids": [
+        "SD-CORE-004",
+        "SD-CORE-035"
+      ],
+      "assessment": "p90 cadence duplicates p112 overland-hour cadence; root already plans merge004→035 with also p90. Confirmed intervals3/2/1 hours; no new independent requirement should be counted.",
+      "severity": "informational",
+      "required_action": "Keep one source group/binding and preserve p90 locator; do not apply duplicate scheduled checks."
+    }
+  ],
+  "limitations": [
+    "This is a bounded independent semantic review, not certification of every rule, source page or acceptance case.",
+    "No complete encounter tables or creature catalog were rescanned. Twenty-two profile metadata entries were counted, but the source content of all twenty-two tables was not re-reviewed.",
+    "Core022 finding concerns consistency of regional scope, not incorrect source numbers.",
+    "Criterion IDs were checked structurally against bound registry IDs; this does not prove semantic equivalence of a binding.",
+    "All product implementation/evidence remains unverified; no source fact implies implemented or absent product behavior."
+  ],
+  "accepted_fixes": [
+    {
+      "finding_id": "QA-SD-F01",
+      "status": "accepted_root_reported_not_code_verified",
+      "reported_change": "Root сообщил, что удаляет travel.daily_activity_budget из SD-CORE-003.",
+      "verification_limit": "Reviewer не проверял root build code или итоговую консолидированную матрицу после изменения."
+    },
+    {
+      "finding_id": "QA-SD-F02",
+      "status": "accepted_root_reported_not_code_verified",
+      "reported_change": "Root сообщил: 022-L1 ограничен linked descriptors через content.static_hazard/content.place_description; 022-L2=N/A; локальное half-distance передано внешнему022-L3 payload; battlemap spatial engine excluded.",
+      "verification_limit": "Принятое решение scope зафиксировано со слов root; итоговый код и generated artifact не проверены этим review."
+    },
+    {
+      "finding_id": null,
+      "rule_ids": [
+        "SD-CORE-004",
+        "SD-CORE-035"
+      ],
+      "status": "accepted_root_reported_not_code_verified",
+      "reported_change": "Root сообщил, что004→035слито с also locator p90.",
+      "verification_limit": "Отсутствие дублей в итоговом output после merge reviewer не проверял."
+    }
+  ],
+  "final_artifact_resolution": {
+    "verified_by": "root",
+    "method": "Consolidated JSON assertions and bounded contract validator; not runtime product test",
+    "findings": {
+      "QA-SD-F01": "corrected: elapsed_time only for8-hour budget",
+      "QA-SD-F02": "corrected: linked metadata L1,localL2 N/A,externalL3 payload",
+      "QA-SD-F03": "corrected: casting ability INT/INT/WIS retained in profiles"
+    },
+    "cadence_duplicate": "004 merged into035 with printed90 source preserved",
+    "magic_scope": "L1/L2 receipt/linked-state operations after scope correction; local spatial logic delegated to external adapter"
+  }
+}
