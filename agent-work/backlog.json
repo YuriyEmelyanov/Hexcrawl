@@ -3417,22 +3417,135 @@
         "Изменения активного рейтинга применяются только после явного согласования владельцем точной версии предложения.",
         "Одинаковые правила игр не дублируются; задачи с источниками и приёмкой добавляются как proposed в общий backlog.",
         "Читаемый обзор связан с JSON; чужие claims, очередь и продуктовые согласования сохраняются.",
-        "Требования описывают действие/входы/операцию/ожидаемый результат/исключения и конкретную приёмку; общая фраза о поддержке правила не считается готовой задачей."
+        "Требования описывают действие/входы/операцию/ожидаемый результат/исключения и конкретную приёмку; общая фраза о поддержке правила не считается готовой задачей.",
+        "Knave 2e: полная тематическая выборка карты и гекскроула в формате DND5/PF2 с ledger, конкретными операциями/приёмкой и аналогами в общем реестре; мнение об объёме доработки и чекбоксы не заменяют разбор."
       ],
       "product_implementation_authorized": false,
       "rating_changes_require_owner_approval": true,
       "score_delta": null,
       "latest_completed_bounded_stage": {
-        "run_id": "2026-11-06-map-creation-ranking",
-        "result_ref": "agent-work/research/runs/2026-11-06-map-creation-ranking.json",
-        "rating_proposal_id": "HX-RSR-001-RANK-20261106-v1.4",
-        "status": "research_complete_candidate_awaiting_owner_approval",
+        "run_id": "2026-11-06T0330-PF2-L1-hex-scale",
+        "result_ref": "agent-work/research/runs/2026-11-06T0330-PF2-L1-hex-scale.json",
+        "status": "one_existing_requirement_operationalized_no_product_implementation",
+        "proposed_task_id": "HX-BL-042",
         "active_ranking_changed": false
       },
-      "next_step": "Continue independent bounded KNAVE2 L1 source inventory and operational requirements; active rating v1.4 requires separate exact-version owner confirmation.",
+      "next_step": "Выполнить обязательную полную тематическую выборку правил финальной Knave 2e: сначала доступ к первичному тексту и ledger всей книги, затем правила карты, связанные таблицы и ведение гекскроула. Матрица как DND5/PF2, operational_requirement, поиск аналогов в общем реестре. Не ограничивать двумя предполагаемыми доработками.",
       "pending_rating_proposal_refs": [
         "agent-work/research/proposals/HX-RSR-001-RANK-20261106-v1.4.json"
-      ]
+      ],
+      "current_owner_scope_ref": "owner-decision-2026-11-06-knave-complete-rules-audit",
+      "checkpoint_ref": "agent-work/research/checkpoints/KNAVE2-full-map-hexcrawl.json"
+    },
+    {
+      "task_id": "HX-BL-042",
+      "title": "Физический размер гекса: длина, единица и конвенция измерения",
+      "status": "proposed",
+      "problem": "В проверенном опубликованном контракте карты есть pixel HEX_SIZE и ui.mapScale для zoom, но не найден отдельный физический масштаб с единицей/измерением. Это не позволяет подтвердить профиль PF2 12 миль угол–угол; простое поле «12» допускает 15.47% ошибку интерпретации диаметра.",
+      "benefit": "Одна общая настройка создаёт однозначный масштаб подготовленной карты и основу для будущих маршрутов разных систем, сохраняя документ и старые карты.",
+      "game_editions": [
+        {
+          "game_id": "PF2",
+          "edition": "Remaster GM Core p.206, optional Hexploration"
+        }
+      ],
+      "primary_scenario": "create",
+      "secondary_scenarios": [
+        "develop"
+      ],
+      "layer": "L1",
+      "requirement_refs": [
+        "agent-work/market/rules/PF2-Remaster.json#PF2-RM-002-L1"
+      ],
+      "canonical_rule_ids": [
+        "map.physical_hex_scale"
+      ],
+      "binding_refs": [
+        "agent-work/rules/game-bindings.json#PF2-RM-002-L1"
+      ],
+      "criterion_id": "S06-C04",
+      "criterion_ids": [
+        "S06-C04",
+        "S04-C04"
+      ],
+      "scope": "Предложение L1: физический параметр длины/единицы/конвенции, ясное представление отдельно от zoom, проверка ввода, JSON round-trip и undo/redo. Сначала проверить повторное использование существующей модели документа/редактора; новый профиль PF2 реализовать через общее правило. Расчёт маршрута и времени L2 сюда не включён.",
+      "dependencies": [
+        "task_scope_approval",
+        "reuse_current_document_history_contract",
+        "explicit_old_save_migration_policy"
+      ],
+      "acceptance_checks": [
+        "SCALE-01: Регулярная гекс-сетка; профиль length=12, unit=mile, measurement=opposite_vertices. Создать/назначить профиль и прочитать сохранённые параметры. Точное значение 12, единица mile и конвенция opposite_vertices хранятся отдельно от ui.mapScale; нет неявного значения «12 миль» без типа измерения.",
+        "SCALE-02: Тот же физический гекс 12 миль между противоположными вершинами. Выразить длину в километрах. 19.312128 км между вершинами; обратный перевод возвращает 12 миль с абсолютной ошибкой не более 1e-9 мили. Карта и число гексов не меняются.",
+        "SCALE-03: Тот же регулярный гекс. Преобразовать конвенцию на расстояние между противоположными сторонами, сохраняя физическую площадь. 6√3 ≈10.392304845413264 мили (≈16.724793449136765 км) сторона–сторона; обратное преобразование даёт 12 миль угол–угол. Просто переписать подпись и оставить 12 — непрохождение.",
+        "SCALE-04: Карта с физическим профилем 12 миль угол–угол и zoom=1. Изменить zoom на 2, повернуть карту, вернуться к zoom=1. Физический профиль неизменен; перерисовка не меняет его ни на 24, ни на 6 миль; гексы/POI и RNG не изменены.",
+        "SCALE-05: Карта с профилем, объектами и контрольным состоянием RNG. Изменить 12→6 миль, выполнить undo, redo, затем JSON export/import. Профиль меняется 12→6→12→6; после round-trip остаются 6 миль и та же конвенция. Идентичность/координаты объектов и RNG сохранены.",
+        "SCALE-06: Проверка настройки и импорта масштаба. Передать 0, отрицательную длину, строку вместо числа, неизвестную единицу или конвенцию; отдельно внутренние NaN/Infinity. Понятный отказ до изменения документа; нет частичной записи. Любая конечная положительная дробная длина допустима, если иной явно утверждённый диапазон не задан.",
+        "SCALE-07: Поддерживаемое старое сохранение без физического масштаба. Импортировать, изменить zoom, сохранить повторно. Старая карта загружается по действующим правилам; физический масштаб обозначен unknown/unset и не превращается в PF2 12 миль автоматически."
+      ],
+      "expected_evidence": {
+        "requirement_profile": "PF2-RM-002-L1",
+        "release_sha": "required_on_implementation",
+        "cases": [
+          "SCALE-01",
+          "SCALE-02",
+          "SCALE-03",
+          "SCALE-04",
+          "SCALE-05",
+          "SCALE-06",
+          "SCALE-07"
+        ],
+        "method": "Проверка реальных изменения/сохранения/импорта документа и геометрической конверсии на точном SHA; сравнение ID/координат/POI/RNG до и после, без новой тяжёлой серии генераций.",
+        "limitations": "Текущий пакет — исследование и статическая адресная проверка; не runtime acceptance и не подтверждение поддержки PF2."
+      },
+      "source_limitations": [
+        "Прочитан один пункт GM Core 206 через Archives of Nethys; основной PF2 корпус не переразбирался.",
+        "Статически проверены App.tsx, createSaveData и saveValidation на main 2ef5cc3. Не утверждается отсутствие всякой внешней/ручной возможности измерять карту.",
+        "Не объявлять параметры DND эквивалентными без проверки.",
+        "Веса/баллы и когорты не меняются; S06-C04 — связь части подготовки, не закрытие полного цикла экспедиции."
+      ],
+      "source_refs": [
+        "https://2e.aonprd.com/Rules.aspx?ID=3104",
+        "agent-work/research/requirements/PF2-RM-002-L1.md"
+      ],
+      "baseline_source_inspection": {
+        "sha": "2ef5cc35107f299c309b7c8065a1e81ca9881278",
+        "paths": [
+          {
+            "path": "src/App.tsx",
+            "blob_sha": "ab70df9068594ee1c51dae4c5cd2220597e9ff38",
+            "lines": [
+              "458–490 save contract",
+              "846–850 pixel geometry",
+              "14387–14417 createSaveData",
+              "16063–16070 viewport transform"
+            ]
+          },
+          {
+            "path": "src/saveValidation.ts",
+            "blob_sha": "143085b3708b6424dbf8328d059ffa22bb0387b0",
+            "lines": [
+              "183 ui.mapScale positive numeric zoom"
+            ]
+          }
+        ],
+        "status": "physical_profile_not_found_in_inspected_contract_runtime_unverified"
+      },
+      "score_delta": null,
+      "potential_delta": null,
+      "approval_ref": null,
+      "product_implementation_authorized": false,
+      "created_by": "HX-RSR-001",
+      "research_run_ref": "agent-work/research/runs/2026-11-06T0330-PF2-L1-hex-scale.json",
+      "duplicate_check": {
+        "backlog_reviewed": true,
+        "matching_scale_task_found": false,
+        "related_not_same": [
+          "HX-BL-008 region-size count, not physical length",
+          "HX-BL-031 safe extension, not physical units",
+          "HX-BL-023 document editing/history reused, active scope unchanged"
+        ]
+      }
     }
   ],
   "last_review": {

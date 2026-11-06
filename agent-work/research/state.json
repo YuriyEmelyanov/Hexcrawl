@@ -55,17 +55,20 @@
   },
   "next_candidate": {
     "game_id": "KNAVE2",
-    "layer": "L1",
-    "action": "Locate exact 2e sources, build bounded corpus ledger, extract highest-value map preparation rules and connect to common rules/backlog",
-    "status": "candidate_not_fixed_instruction",
-    "source_access": "unknown_until_checked"
+    "layer": "L1_then_L2",
+    "action": "Выполнить обязательную полную тематическую выборку правил финальной Knave 2e: сначала доступ к первичному тексту и ledger всей книги, затем правила карты, связанные таблицы и ведение гекскроула. Матрица как DND5/PF2, operational_requirement, поиск аналогов в общем реестре. Не ограничивать двумя предполагаемыми доработками.",
+    "status": "owner_directed_pending_primary_source",
+    "checkpoint_ref": "agent-work/research/checkpoints/KNAVE2-full-map-hexcrawl.json",
+    "reason_against_alternatives": "Прямое актуальное поручение владельца и действующий высокий ранг Knave имеют приоритет перед новым PF2 L1-срезом и новым обзором кандидатов. Если источник недоступен, сохранять зависимость, не заявлять закрытие поручения; независимая полезная работа допустима."
   },
   "active_task": null,
   "claim": null,
-  "last_completed_run": "2026-11-06-map-creation-ranking",
+  "last_completed_run": "2026-11-06T0330-PF2-L1-hex-scale",
   "run_history_refs": [
     "agent-work/research/runs/2026-11-06-setup.json",
-    "agent-work/research/runs/2026-11-06-map-creation-ranking.json"
+    "agent-work/research/runs/2026-11-06-map-creation-ranking.json",
+    "agent-work/research/runs/2026-11-06T0330-PF2-L1-hex-scale.json",
+    "agent-work/research/runs/2026-11-06T0400-KNAVE2-owner-scope.json"
   ],
   "awaiting_owner_approval": [
     {
@@ -85,53 +88,66 @@
       "completed_result_ref": "agent-work/research/runs/2026-11-06-map-creation-ranking.json"
     }
   ],
-  "latest_sources_checked": "2026-11-06",
+  "latest_sources_checked": "2026-11-06T04:02:52.772Z",
   "setup_commit": "88448b734a8e9a1a35fba9352c2a6845eff98ae5",
   "last_setup_result_ref": "agent-work/research/runs/2026-11-06-setup.json",
   "automation_health": {
     "main_team": {
       "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
       "start": {
-        "checked_at": "2026-11-06 02:26:41 UTC",
-        "status": "checked",
-        "is_enabled": true
+        "checked_at": "2026-11-06T03:33:18Z",
+        "is_enabled": true,
+        "status": "checked"
       },
       "end": {
-        "status": "checked",
+        "checked_at": "2026-11-06T04:02:09Z",
         "is_enabled": true,
-        "observation_interval_utc": [
-          "2026-11-06T03:13:33Z",
-          "2026-11-06T03:13:40Z"
-        ]
-      },
-      "restoration_performed_in_this_research": false,
-      "preceding_developer_restoration_ref": "agent-work/results/2026-11-06-developer-PR490-F01.json#automation_health"
+        "status": "checked"
+      }
     },
     "research_agent": {
       "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
       "start": {
-        "status": "unchecked",
-        "is_enabled": null,
-        "reason": "Automation created by separate authorized setup after this manual research scope had started; cannot retroactively perform start peek."
-      },
-      "first_observation": {
-        "status": "checked",
+        "checked_at": "2026-11-06T03:33:18Z",
         "is_enabled": true,
-        "exact_timestamp_not_recorded": true,
-        "after_creation_updated_at": "2026-11-06T02:58:21.629553+00:00"
+        "status": "checked"
       },
       "end": {
-        "status": "checked",
+        "checked_at": "2026-11-06T04:02:09Z",
         "is_enabled": true,
-        "observation_interval_utc": [
-          "2026-11-06T03:13:33Z",
-          "2026-11-06T03:13:40Z"
-        ]
+        "status": "checked_after_restoration"
       },
-      "restoration_performed": false
+      "intermediate": {
+        "checked_at": "2026-11-06T03:57:00Z",
+        "is_enabled": false,
+        "reason": "unknown; no owner stop instruction in current decisions"
+      }
     },
+    "restoration_performed": true,
     "errors": [],
-    "limitation": "Point-in-time actual peeks only. No claim about subsequent service state; no cause of any earlier disabling inferred."
+    "limitation": "Point-in-time actual observations, no guarantee about later state.",
+    "restoration": {
+      "automation_id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+      "action": "is_enabled=true only; existing hourly schedule and prompt retained",
+      "observed_disabled_updated_at": "2026-11-06T03:47:24.837426+00:00",
+      "restored_at": "2026-11-06T03:58:45.589846Z",
+      "authorization": "Owner's standing hourly research instruction; no stop decision or full technical block found",
+      "cause": "unknown"
+    }
   },
-  "last_result_ref": "agent-work/research/runs/2026-11-06-map-creation-ranking.json"
+  "last_result_ref": "agent-work/research/runs/2026-11-06T0400-KNAVE2-owner-scope.json",
+  "blocked_source_work": [
+    {
+      "game_id": "KNAVE2",
+      "scope": "ALL final-edition map-creation and hexcrawl rules, linked tables and dependencies",
+      "status": "needs_readable_final_edition_primary_text",
+      "checkpoint_ref": "agent-work/research/checkpoints/KNAVE2-full-map-hexcrawl.json",
+      "owner_decision_ref": "owner-decision-2026-11-06-knave-complete-rules-audit",
+      "do_not_infer_full_generation_procedure": true,
+      "do_not_infer_only_POI_and_difficult_terrain": true
+    }
+  ],
+  "owner_scope_ref": "owner-decision-2026-11-06-knave-complete-rules-audit",
+  "checkpoint_ref": "agent-work/research/checkpoints/KNAVE2-full-map-hexcrawl.json",
+  "last_owner_update_ref": "agent-work/research/runs/2026-11-06T0400-KNAVE2-owner-scope.json"
 }
