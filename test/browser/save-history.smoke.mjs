@@ -1,4 +1,7 @@
+import {runEntityNameLifecycle} from './entity-name-lifecycle.mjs';
+import {runPoiLifecycle} from './poi-lifecycle.mjs';
 import {runWaterLifecycle} from './water-lifecycle.mjs';
+import {runRegionLifecycle} from './region-lifecycle.mjs';
 import {createGenerationState} from '../../src/worldRandom.ts';
 import {spawn} from 'node:child_process';
 import {chromium} from 'playwright';
@@ -308,7 +311,7 @@ try {
  // No debounce wait: selection/export must retain the final character.
  await select(`${other.q},${other.r}`);assert.equal(await page.locator('#gm-notes-text').count(),0);
  await select(noteKey);assert.equal(await page.locator('.gm-notes__text').textContent(),noteText);
- const savedNotes=await snapshot();assert.equal(savedNotes.version,7);assert.equal(savedNotes.map.gmNotesByHexKey[noteKey],noteText);
+ const savedNotes=await snapshot();assert.equal(savedNotes.version,8);assert.equal(savedNotes.map.gmNotesByHexKey[noteKey],noteText);
  const stripNotes=d=>{d=structuredClone(d);delete d.map.gmNotesByHexKey;return d;};
  assert.deepEqual(stripNotes(savedNotes),stripNotes(cleanNotes));
  assert.equal(await page.locator('svg').first().textContent().then(s=>s.includes('Жрец пропал')),false);
@@ -608,6 +611,9 @@ try {
  await button('Отменить').click();assert.deepEqual(await snapshot(),addedBarrier);
  await button('Добавить препятствие').click();await snapshot();assert.equal(await edgeTargets.count(),0,'export cancels uncommitted target');
  await runWaterLifecycle({page,load,snapshot,ensureEdit,button,select,root,browser});
+ await runRegionLifecycle({page,load,snapshot,ensureEdit,button,select,root});
+ await runPoiLifecycle({page,load,snapshot,ensureEdit,button,select,root});
+ await runEntityNameLifecycle({page,load,snapshot,ensureEdit,button,select,root});
  if(await page.locator('.header-links').evaluate(el=>el.classList.contains('is-collapsed')))await page.locator('.header-links-toggle').click();
  await button('Switch to English').click();assert.equal(await button('Undo').count(),1);assert.equal(await button('Redo').count(),1);
  assert.deepEqual(errors,[]);assert.equal(alerts.length,5,'only intentional invalid imports');

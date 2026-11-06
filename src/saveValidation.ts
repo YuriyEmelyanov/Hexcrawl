@@ -58,9 +58,10 @@ export function validateSaveStructure(value: unknown, domain: {
   names: (v: unknown)=>boolean; toponymModel: string; kingdoms: (map: RecordValue, version: number)=>void;
 }): void {
   const data=record(value,'$');
-  oneOf(data.schema,['hexcrawl-map'],'schema'); oneOf(data.version,[2,3,4,5,6,7],'version');
-  if (data.version === 3 || data.version === 4 || data.version === 5 || data.version === 6 || data.version === 7 || data.generation !== undefined) { const path = generationValidationPath(data.generation); if (path) fail(path,'unsupported or invalid RNG state'); }
+  oneOf(data.schema,['hexcrawl-map'],'schema'); oneOf(data.version,[2,3,4,5,6,7,8],'version');
+  if (data.version === 3 || data.version === 4 || data.version === 5 || data.version === 6 || data.version === 7 || data.version === 8 || data.generation !== undefined) { const path = generationValidationPath(data.generation); if (path) fail(path,'unsupported or invalid RNG state'); }
   const map=record(data.map,'map'), ui=record(data.ui,'ui'), counters=record(data.counters,'counters');
+  if((data.version as number)<8&&map.editorNames!==undefined&&Object.keys(record(map.editorNames,'map.editorNames')).length)fail('map.editorNames','authored names require version8');
   const regions=array(map.regions,'map.regions'), rivers=array(map.rivers,'map.rivers'), roads=array(map.roads,'map.roads');
   const regionIds=uniqueIds(regions,'map.regions'), riverIds=uniqueIds(rivers,'map.rivers'), roadIds=uniqueIds(roads,'map.roads');
   const land=new Set<string>();
@@ -165,7 +166,7 @@ export function validateSaveStructure(value: unknown, domain: {
     }
   }
   try {validateDeltaReferences(rivers as RiverGeometry[]);} catch {fail('map.rivers.deltaParentRiverId','invalid delta parent');}
-  if(data.version===7){
+  if((data.version as number)>=7){
     try {validateRiverCounter(rivers as RiverGeometry[],counters.nextRiverId);} catch {fail('counters.nextRiverId','invalid river counter');}
     try {validateRiverFeatures(map.riverFeatures,rivers as RiverGeometry[]);} catch {fail('map.riverFeatures','invalid river features');}
   }else{

@@ -1,3 +1,4 @@
+import {regionFixture} from './helpers/region-fixture.mjs';
 import {createGenerationState} from '../src/worldRandom.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -126,4 +127,73 @@ test('notes versions 2/3/4/5 accept exact text on actual land/water; v4+ require
   const bad=structuredClone(valid);bad.version=4;delete bad.generation;
   assert.throws(()=>h.geometry.assertHexcrawlSaveData(bad));
   bad.version=7;assert.throws(()=>h.geometry.assertHexcrawlSaveData(bad));
+});
+
+const loadAuthoredMap=async()=>{
+  const g=createGenerationHarness(42);g.render();const alerts=[];
+  g.setWindow({alert:m=>alerts.push(m),matchMedia:()=>({matches:false}),confirm:()=>false});g.injectFunction('readTextFile',async f=>f.text);
+  const old=JSON.parse(fs.readFileSync(new URL('./fixtures/import-v2/manual-edit-map.json',import.meta.url)));
+  await g.render().handleImportJson({target:{files:[{text:JSON.stringify(old)}],value:'x'}});assert.deepEqual(alerts,[]);
+  const data=g.render().createSaveData(),r=data.map.regions[0];
+  const point=r.pointsOfInterest.find(h=>h.q!==r.centerHex.q||h.r!==r.centerHex.r)??r.hexes.find(h=>h.q!==r.centerHex.q||h.r!==r.centerHex.r);
+  if(!r.pointsOfInterest.some(h=>h.q===point.q&&h.r===point.r))r.pointsOfInterest.push(point);
+  r.pointOfInterestKinds={...r.pointOfInterestKinds,[`${point.q},${point.r}`]:'village'};
+  const key=`poi:${r.id}:${point.q},${point.r}`;data.map.editorNames={[key]:{ru:'Авторское имя',en:'Authored name'}};
+  return {g,alerts,data,key,point};
+};
+test('E8 v8 authored POI names use real import,exact export and UndoRedo without touching hex notes',async()=>{
+ const {g,alerts,data,key}=await loadAuthoredMap();const before=structuredClone(g.render().captureDocument());
+ await g.render().handleImportJson({target:{files:[{text:JSON.stringify(data)}],value:'x'}});assert.deepEqual(alerts,[]);
+ const after=structuredClone(g.render().captureDocument());assert.deepEqual(after.map.editorNames,data.map.editorNames);
+ assert.deepEqual(g.render().createSaveData().map.editorNames,data.map.editorNames);assert.equal(g.render().createSaveData().version,8);
+ g.render().undoMap();assert.deepEqual(g.render().captureDocument().map.editorNames,before.map.editorNames);
+ g.render().redoMap();assert.deepEqual(structuredClone(g.render().captureDocument()),after);assert.equal(after.map.editorNames[key].ru,'Авторское имя');
+ assert.deepEqual(after.map.gmNotesByHexKey,before.map.gmNotesByHexKey);
+});
+test('E8 malformed,orphan and older-version authored names refuse atomically in the real importer',async()=>{
+ const {g,alerts,data,key}=await loadAuthoredMap();
+ for(const mutate of [d=>d.map.editorNames=null,d=>d.map.editorNames=[],d=>d.map.editorNames[key].ru='',d=>d.map.editorNames['poi:999:999,0']={en:'X',ru:'Х'},d=>d.version=7,d=>{const r=d.map.regions[0];r.isTract=false;r.suppressCentralPoi=false;r.centralPoiKind='lair';r.pointsOfInterest.push({...r.centerHex});r.pointOfInterestKinds[`${r.centerHex.q},${r.centerHex.r}`]='ruins';d.map.editorNames[`poi:${r.id}:${r.centerHex.q},${r.centerHex.r}`]={en:'Ambiguous',ru:'Неоднозначное'};}]){
+  const bad=structuredClone(data);mutate(bad);const before=structuredClone(g.render().captureDocument()),stacks=structuredClone([g.render().undoHistory,g.render().redoHistory]);
+  await g.render().handleImportJson({target:{files:[{text:JSON.stringify(bad)}],value:'x'}});
+  assert.match(alerts.pop(),/map.editorNames/);assert.deepEqual(structuredClone(g.render().captureDocument()),before);assert.deepEqual(structuredClone([g.render().undoHistory,g.render().redoHistory]),stacks);
+ }
+ const legacy=regionFixture();legacy.map.regions[0].suppressCentralPoi=false;legacy.map.regions[0].centralPoiKind='lair';legacy.map.regions[0].pointsOfInterest.push({q:0,r:0});legacy.map.regions[0].pointOfInterestKinds['0,0']='village';await g.render().handleImportJson({target:{files:[{text:JSON.stringify(legacy)}],value:'x'}});assert.deepEqual(alerts,[]);g.render().setEditMode(true);assert.equal(g.render().nameTargets.some(t=>t.poiLocator==='poi:1:0,0'),false);const unchanged=structuredClone(g.render().captureDocument());g.render().showNameTarget('poi:1:0,0');assert.equal(g.render().nameDraft,null);assert.deepEqual(structuredClone(g.render().captureDocument()),unchanged);
+});
+test('E8 type change preserves paired settlement name before entity reconciliation',async()=>{
+ const {g,alerts,data,point}=await loadAuthoredMap();delete data.map.editorNames;
+ const r=data.map.regions[0],key=`settlement:${r.id}:${point.q},${point.r}`;
+ data.map.toponyms.names[key]={en:'Kept settlement',ru:'Сохранённое поселение',kind:'settlement',model:'germanic',revision:9};
+ await g.render().handleImportJson({target:{files:[{text:JSON.stringify(data)}],value:'x'}});assert.deepEqual(alerts,[]);
+ g.render().setSelectedHex(point);g.render().setSelectedPoiKind('ruins');
+ const saved=g.render().createSaveData();assert.deepEqual(saved.map.editorNames[`poi:${r.id}:${point.q},${point.r}`],{en:'Kept settlement',ru:'Сохранённое поселение'});
+ g.render().undoMap();assert.deepEqual(g.render().createSaveData().map.editorNames,{});
+ g.render().redoMap();assert.deepEqual(g.render().createSaveData().map.editorNames,saved.map.editorNames);
+});
+
+for(const context of ['land','water','center'])test(`E8 paired name form commits and clears one atomic ${context} POI`,async()=>{
+ const {g,alerts,data,point}=await loadAuthoredMap(),r=data.map.regions[0],k=`${point.q},${point.r}`;
+ let key=`poi:${r.id}:${k}`;data.map.editorNames={};r.pointOfInterestKinds[k]='ruins';
+ if(context==='water'){
+  r.pointsOfInterest=r.pointsOfInterest.filter(h=>`${h.q},${h.r}`!==k);delete r.pointOfInterestKinds[k];data.map.terrainByHexKey[k]={terrainOverride:'lake',lakeId:99};data.map.waterPoiByHexKey[k]='rocks';key=`waterPoi:${k}`;
+ }else if(context==='center'){
+  r.isTract=false;r.suppressCentralPoi=false;r.centralPoiKind='lair';key=`poi:${r.id}:${r.centerHex.q},${r.centerHex.r}`;
+ }
+ await g.render().handleImportJson({target:{files:[{text:JSON.stringify(data)}],value:'x'}});assert.deepEqual(alerts,[]);
+ g.render().setEditMode(true);const before=g.render().undoHistory.length;assert.ok(g.render().nameTargets.some(t=>t.key===key));
+ g.render().showNameTarget(key);g.render().changeNameDraft('  Первое имя  ',g.render().nameDraft);g.render().changeOtherNameDraft('  First name  ',g.render().nameDraft);
+ assert.equal(g.render().saveNameDraft(),true);assert.deepEqual(g.render().createSaveData().map.editorNames[key],{ru:'Первое имя',en:'First name'});assert.equal(g.render().undoHistory.length,before+1);
+ const named=structuredClone(g.render().captureDocument());g.render().undoMap();assert.deepEqual(g.render().createSaveData().map.editorNames,{});g.render().redoMap();assert.deepEqual(structuredClone(g.render().captureDocument()),named);
+ g.render().showNameTarget(key);g.render().changeNameDraft('',g.render().nameDraft);g.render().changeOtherNameDraft('',g.render().nameDraft);assert.equal(g.render().saveNameDraft(),true);assert.deepEqual(g.render().createSaveData().map.editorNames,{});
+});
+test('E8 paired name form rejects half-pairs,duplicates and captured old secondary-field writes',async()=>{
+ const {g,alerts,data,key}=await loadAuthoredMap();data.map.editorNames={};data.map.regions[0].pointOfInterestKinds[key.split(':')[2]]='ruins';
+ await g.render().handleImportJson({target:{files:[{text:JSON.stringify(data)}],value:'x'}});assert.deepEqual(alerts,[]);
+ g.render().setEditMode(true);g.render().showNameTarget(key);const old=g.render().nameDraft;
+ g.render().changeNameDraft('Только одно имя',old);const before=JSON.stringify(g.render().captureDocument()),count=g.render().undoHistory.length;
+ assert.equal(g.render().saveNameDraft(),false);assert.equal(JSON.stringify(g.render().captureDocument()),before);assert.equal(g.render().undoHistory.length,count);
+ g.render().cancelNameDraft();g.render().showNameTarget(key);const active=g.render().nameDraft;g.render().changeOtherNameDraft('stale',old);assert.equal(g.render().nameDraft,active);
+ const other=g.render().nameTargets.find(t=>!t.poiLocator&&t.ru&&t.en);assert.ok(other);g.render().changeNameDraft(other.ru,g.render().nameDraft);g.render().changeOtherNameDraft('Unique other',g.render().nameDraft);assert.equal(g.render().saveNameDraft(),false);assert.equal(JSON.stringify(g.render().captureDocument()),before);
+ g.render().cancelNameDraft();g.render().showNameTarget(key);g.render().changeNameDraft('Новая точка',g.render().nameDraft);g.render().changeOtherNameDraft('New point',g.render().nameDraft);
+ const restore=g.injectFunction('structuredClone',value=>{if(value?.regions&&value?.toponyms)throw Error('injected pair preparation');return structuredClone(value);});assert.equal(g.render().saveNameDraft(),false);restore();assert.match(g.render().nameErrors.general,/Не удалось изменить название/);assert.equal(JSON.stringify(g.render().captureDocument()),before);
+ g.render().cancelNameDraft();const mythic=regionFixture('mythic');mythic.map.regions[0].pointOfInterestKinds['2,0']='monument';await g.render().handleImportJson({target:{files:[{text:JSON.stringify(mythic)}],value:'x'}});assert.deepEqual(alerts,[]);g.render().setEditMode(true);g.render().showNameTarget('poi:1:2,0');g.render().changeNameDraft('Моё имя',g.render().nameDraft);g.render().changeOtherNameDraft('My Name',g.render().nameDraft);assert.equal(g.render().saveNameDraft(),true);g.render().showNameTarget('kingdom:1');const exact=JSON.stringify(g.render().captureDocument()),stack=g.render().undoHistory.length;g.render().changeNameDraft('Моё имя',g.render().nameDraft);assert.equal(g.render().saveNameDraft(),false);assert.equal(JSON.stringify(g.render().captureDocument()),exact);assert.equal(g.render().undoHistory.length,stack);g.render().cancelNameDraft();g.render().showNameTarget('kingdom:1');assert.equal(g.render().saveNameDraft(),true);assert.equal(g.render().undoHistory.length,stack);g.render().setLanguage('en');g.render().showNameTarget('kingdom:1');const enBefore=JSON.stringify(g.render().captureDocument());g.render().changeNameDraft('My Name',g.render().nameDraft);assert.equal(g.render().saveNameDraft(),false);assert.equal(JSON.stringify(g.render().captureDocument()),enBefore);g.render().cancelNameDraft();
 });

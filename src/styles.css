@@ -240,6 +240,11 @@ button:disabled,select:disabled { opacity:.55; cursor:wait; }
 .direct-value:hover, .direct-value:focus-visible { color:#bae6fd; background:rgba(125,211,252,.08); outline:2px solid #7dd3fc; outline-offset:2px; }
 .direct-line { min-width:0; overflow-wrap:anywhere; }
 .direct-line:empty { display:none; }
+[data-region-editor] .direct-line select { min-height:0; height:auto; padding:0; border:0; border-radius:0; line-height:inherit; background:transparent; }
+.region-edit-preview { min-width:0; overflow-wrap:anywhere; margin-block:.5rem; padding-left:.6rem; border-left:2px solid #f7dc6f; }
+.region-edit-preview p { margin-block:.4rem; }
+.region-edit-preview:focus-visible { outline:2px solid #7dd3fc; outline-offset:2px; }
+[data-region-map-target]:focus-visible { outline:none; stroke:#34d399; }
 .direct-line select, .direct-name-field input { box-sizing:border-box; max-width:100%; min-width:0; min-height:44px; padding:.35rem; font:inherit; color:inherit; background:#0c1423; border:1px solid #617187; border-radius:5px; }
 .direct-name-field { display:inline-block; max-width:100%; vertical-align:middle; }
 .direct-name-field input { width:100%; }
@@ -330,3 +335,22 @@ button:disabled,select:disabled { opacity:.55; cursor:wait; }
 .controls--transfer > .water-export-notice { flex-basis:100%; }
 /* The persistent water value is an inline row, like names and biome values. */
 .direct-line select.water-kind-value { min-height:0; height:auto; padding:0; border:0; border-radius:0; line-height:inherit; background:transparent; }
+
+/* Both POI language fields remain inside the existing information panel. */
+.direct-name-field:has(.poi-name-other) { display:inline-flex; flex-direction:column; max-width:100%; gap:6px; vertical-align:top; }
+.poi-name-other { display:flex; flex-direction:column; gap:4px; font-size:.85em; max-width:100%; }
+.poi-name-other input { min-width:0; max-width:100%; min-height:44px; }
+.poi-move-panel { border-top:1px solid #334155; margin-top:12px; padding-top:10px; overflow-wrap:anywhere; }
+.poi-target-coords { display:flex; gap:10px; }
+.poi-target-coords label { display:flex; flex-direction:column; gap:4px; max-width:45%; }
+.poi-target-coords input { width:100%; min-width:0; min-height:44px; }
+.poi-exit-backdrop { position:fixed; inset:0; z-index:10000; background:#0009; display:flex; align-items:center; justify-content:center; padding:16px; }
+.poi-exit-backdrop section { width:min(460px,100%); background:#0f172a; border:1px solid #475569; padding:20px; border-radius:10px; }
+.poi-exit-backdrop button { margin:4px; min-height:44px; }
+/* POI drafts use the same dark native fields as the existing inline editor. */
+.poi-target-coords input { box-sizing:border-box; padding:.5rem; font:inherit; color:inherit; background:#0c1423; border:1px solid #617187; border-radius:5px; }
+.poi-target-coords input:focus-visible,.poi-name-other input:focus-visible { outline:2px solid #8fb4ef; outline-offset:2px; }
+.direct-name-field:has(.poi-name-other) { display:flex; width:min(100%,320px); margin-top:6px; }
+.app:has(.poi-target-coords) .click-prompt-label { visibility:hidden; }
+
+.road-crossing-control { display:flex; align-items:center; flex-wrap:wrap; gap:8px; max-width:100%; }
