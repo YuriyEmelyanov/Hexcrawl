@@ -61,6 +61,8 @@ try {
     Math.random = () => { seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0; return seed / 4294967296; };
   });
   await page.goto('http://127.0.0.1:4173/');
+  assert.equal(await page.getByRole('button', { name: 'Undo', exact: true }).count(), 1, 'A fresh page starts in English');
+  await page.getByRole('button', { name: 'Переключить на русский', exact: true }).click();
   await page.getByRole('textbox',{name:'Seed мира',exact:true}).fill('42');
   await page.getByRole('textbox',{name:'Seed мира',exact:true}).press('Tab');
   assert.equal(await page.getByRole('region', { name: 'Генератор названий' }).count(), 0);
@@ -236,6 +238,7 @@ try {
     await probe.close();
   }
   await page.goto('http://127.0.0.1:4173/');
+  await page.getByRole('button', { name: 'Переключить на русский', exact: true }).click();
   await page.getByRole('textbox',{name:'Seed мира',exact:true}).fill('42');
   await page.getByRole('textbox',{name:'Seed мира',exact:true}).press('Tab');
   await page.getByRole('combobox',{name:'Режим',exact:true}).selectOption('mythic');

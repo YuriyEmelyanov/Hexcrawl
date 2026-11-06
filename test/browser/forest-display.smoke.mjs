@@ -12,6 +12,7 @@ try{
  const page=await browser.newPage({viewport:{width:1440,height:1000}}),errors=[];
  page.on('pageerror',e=>errors.push(e.message));await page.route(/mc\.yandex/,r=>r.abort());
  await page.goto('http://127.0.0.1:4176/');
+ await page.getByRole('button',{name:'Переключить на русский',exact:true}).click();
   await page.getByRole('textbox',{name:'Seed мира',exact:true}).fill('42');
   await page.getByRole('textbox',{name:'Seed мира',exact:true}).press('Tab');
  const save=JSON.parse(await fs.readFile(new URL('../fixtures/terrain-display-map.json',import.meta.url),'utf8'));

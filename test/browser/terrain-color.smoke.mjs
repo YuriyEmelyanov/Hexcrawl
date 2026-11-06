@@ -29,6 +29,7 @@ try {
   page.on('request', request => { if (request.resourceType() === 'fetch') imageFetches.push(request.url()); });
   await page.route(/mc\.yandex/, route => route.abort());
   await page.goto('http://127.0.0.1:4175/');
+  await page.getByRole('button', { name: 'Переключить на русский', exact: true }).click();
   await page.getByRole('textbox',{name:'Seed мира',exact:true}).fill('42');
   await page.getByRole('textbox',{name:'Seed мира',exact:true}).press('Tab');
   const fixture=JSON.parse(await fs.readFile(new URL('../fixtures/terrain-display-map.json',import.meta.url),'utf8'));

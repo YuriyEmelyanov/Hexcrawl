@@ -17,6 +17,7 @@ try{
    const read=FileReader.prototype.readAsText;FileReader.prototype.readAsText=function(file){if(window.__delayRead){window.__delayRead=false;window.__releaseRead=()=>read.call(this,file);}else read.call(this,file);};
   });
   await page.goto('http://127.0.0.1:4182/?generationDebug=1');
+  await page.getByRole('button',{name:'Переключить на русский',exact:true}).click();
   const seedField=page.getByRole('textbox',{name:'Seed мира',exact:true});await seedField.fill(String(seed));await seedField.press('Tab');
   await page.getByRole('combobox',{name:'Режим',exact:true}).selectOption(mode);
   if(mode==='classic'){await page.locator('.gen-params select').nth(0).selectOption('locality');await page.locator('.gen-params select').nth(3).selectOption('mainland');}

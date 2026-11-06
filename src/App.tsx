@@ -11715,7 +11715,7 @@ export function App() {
   const mapDragRef = useRef<{ pointerId: number; startX: number; startY: number; scrollLeft: number; scrollTop: number } | null>(null);
   const mapToolbarRef = useRef<HTMLDivElement | null>(null);
   const jsonImportInputRef = useRef<HTMLInputElement | null>(null);
-  const [language, setLanguage] = useState<Language>('ru');
+  const [language, setLanguage] = useState<Language>('en');
   const t = UI_TEXT[language];
   const [generationMode, setGenerationMode] = useState<GenerationMode>('classic');
   const [kingdoms, setKingdoms] = useState<Kingdom[]>([]);
@@ -14999,7 +14999,7 @@ export function App() {
     selectedWaterPoiKind ? `${getWaterPoiEmoji(selectedWaterPoiKind)} ${getWaterPoiLabel(selectedWaterPoiKind, language)}` : t.addPoi,
     () => setEditingPoiHexKey(selectedHexKey)) : null}{selectedWaterPoiKind?renderName(`waterPoi:${selectedHexKey}`):null}</>;
   const selectedPoiSource:PoiLocator|null=selectedHexKey?(selectedWaterPoiKind?{kind:'water',hexKey:selectedHexKey}:selectedRegion&&poiNameLocators({regions,waterPoiByKey}).has(`poi:${selectedRegion.id}:${selectedHexKey}`)?{kind:'land',regionId:selectedRegion.id,hexKey:selectedHexKey}:null):null;
-  const poiPanel=selectedPoiSource?<div data-poi-panel className="poi-move-panel">
+  const poiPanel=selectedPoiSource&&(poiDraft||!(selectedPoiSource.kind==='land'&&selectedHasCentralPoi))?<div data-poi-panel className="poi-move-panel">
     {poiDraft?<>
       <p><strong>{language==='ru'?'Перенос точки':'Move point'}: {nameTargets.find(t=>t.poiLocator===poiLocatorKey(poiDraft.source))?.[language]||t.poi}</strong></p>
       <p>{language==='ru'?'Источник':'Source'}: {poiDraft.source.hexKey.replace(',','/')} → {poiDraft.q!==''&&poiDraft.r!==''?`${poiDraft.q}/${poiDraft.r}`:'…'}</p>
@@ -15009,7 +15009,7 @@ export function App() {
       {poiPreview?.plan&&<p role="status">{language==='ru'?'С точкой сохранятся имя, тип и теги. Заметки и местность обоих гексов останутся на своих местах.':'Name, type and tags move with the point. Both hexes keep their notes and terrain.'}</p>}
       {(editError||poiDraft.q!==''&&poiDraft.r!==''&&poiPreview?.error)&&<p role="alert" className="direct-error">{editError||poiPreview?.error}</p>}
       {poiPreview?.code==='poi_path_dependency'&&roads.filter(r=>r.segments.some(s=>hexKey(s.from)===poiDraft.source.hexKey||hexKey(s.to)===poiDraft.source.hexKey)).map(road=><button type="button" className="direct-value" key={road.id} onClick={()=>requestPoiExit(()=>{const segment=road.segments.find(s=>hexKey(s.from)===poiDraft.source.hexKey||hexKey(s.to)===poiDraft.source.hexKey)!;chooseRoadPair(normalizeRoadSegmentKey(segment.from,segment.to),road.id);})}>{language==='ru'?'Посмотреть путь':'View path'} #{road.id}</button>)}
-    </>:<>{selectedPoiSource.kind==='land'&&selectedHasCentralPoi?<p>{language==='ru'?'Центральная точка связана с центром региона;можно изменить тип или имя.':'This point is bound to the region center; edit its type or name in place.'}</p>:<p>{language==='ru'?'Расположение':'Location'}: {editMode?<button type="button" className="direct-value" data-poi-move onClick={()=>startPoiDraft(selectedPoiSource)}>{selectedPoiSource.hexKey.replace(',','/')} ↗</button>:selectedPoiSource.hexKey.replace(',','/')}</p>}</>}
+    </>:<p>{language==='ru'?'Расположение':'Location'}: {editMode?<button type="button" className="direct-value" data-poi-move onClick={()=>startPoiDraft(selectedPoiSource)}>{selectedPoiSource.hexKey.replace(',','/')} ↗</button>:selectedPoiSource.hexKey.replace(',','/')}</p>}
   </div>:null;
   const waterLossText=(loss:WaterLoss):string=>{
     const ru=language==='ru';

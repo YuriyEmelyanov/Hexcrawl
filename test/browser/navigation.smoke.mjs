@@ -36,6 +36,7 @@ try{
     return {error,stroke};
   };});
   await page.goto(`http://127.0.0.1:${port}/`);
+  await page.getByRole('button',{name:'Переключить на русский',exact:true}).click();
   await page.getByRole('textbox',{name:'Seed мира',exact:true}).fill('42');
   await page.getByRole('textbox',{name:'Seed мира',exact:true}).press('Tab');
   await page.locator('input[type=file]').setInputFiles({name:'navigation.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(save))});
