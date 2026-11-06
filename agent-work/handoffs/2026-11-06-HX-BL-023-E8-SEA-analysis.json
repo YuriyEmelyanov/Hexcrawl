@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-023",
+  "stage_id": "E8-N-SEA",
+  "owner_role": "business_analyst",
+  "status": "ready_for_analysis_in_approved_scope",
+  "approval_ref": "owner-decision-2026-10-28-editor-functional-scope",
+  "scope_source": "agent-work/specs/HX-BL-023-E8.md#E8-N-SEA",
+  "baseline_sha": "7ddcc218ec6871179bde8153ec589d6517f46c74",
+  "baseline_tree": "0bb858e6d149aae4c7aceb17da9ff5025bcc3817",
+  "reason": "Accepted E7/E8 package excludes Sea naming because identity and split/merge contract are unresolved. Owner requested names of all nameable map elements; analyst work is explicitly required by the current E8 spec. Waiting for PR490 release does not block this bounded analysis.",
+  "scope": [
+    "Inventory actual Sea connected-component/identity/name behavior at accepted SHA and current water E6 contract.",
+    "Specify stable Sea identity and deterministic name preservation on unchanged/expanded/split/merged seas; clearly expose authored-name conflicts and safe refusal.",
+    "Specify old v2-v8 migration, persisted names/IDs, import validation, undo/redo, continuation and dependencies with water operations.",
+    "Reuse bilingual name editor and existing water/transaction validation; propose compact desktop/narrow states based on current interface and show them without waiting for a third approval.",
+    "Trace criterion_id and before/expected/delta as unknown where not supported; no score award."
+  ],
+  "out_of_scope": [
+    "New ocean generation/hydrology algorithms",
+    "L2 travel or campaign simulation",
+    "Unapproved new game features",
+    "Change or release of accepted PR490 package"
+  ],
+  "inputs": [
+    "agent-work/specs/HX-BL-023-E8.md",
+    "agent-work/specs/HX-BL-023-E6.md",
+    "agent-work/evidence/review-PR490-7ddcc21/review-report.json",
+    "agent-work/market/three-scenario-ranking-2026-11-06.json",
+    "agent-work/score/cohorts-2026-11-06.json",
+    "agent-work/feedback.json"
+  ],
+  "primary_scenario": "develop",
+  "layer": "L1",
+  "criterion_ids": [
+    "S02-C02",
+    "S02-C03",
+    "S03-C01",
+    "S03-C04",
+    "S03-C05",
+    "S04-C04",
+    "S04-C05",
+    "S09-C04"
+  ],
+  "expected_output": "Bounded developer-ready E8-N-SEA spec + deterministic split/merge examples and AC + UI preview desktop/narrow + handoff identifying whether any substantial scope expansion remains.",
+  "completion_gate": [
+    "No name bound to an arbitrary hex as sea identity.",
+    "Every split/merge/name conflict has one explicit deterministic outcome or atomic refusal.",
+    "Exact accepted-SHA inspection and migration/error/history acceptance cases recorded.",
+    "Show actual proposed UI and preserve unresolved choices; substantial expansion referred to owner."
+  ],
+  "budget": "owner_waived_usage_gate; no extra paid API/spend",
+  "stop_conditions": [
+    "Conflicting foreign claim on this stage",
+    "Substantial expansion outside the existing all-map-names task",
+    "Concrete service limit"
+  ],
+  "release_authorized": false,
+  "product_implementation_started": false,
+  "expected_score_delta": null,
+  "foreign_claims_preserved": [
+    "agent-work/claims/2026-11-03-developer-HX-BL-041-presentation.json",
+    "agent-work/claims/2026-11-06-KNAVE2-named-source.json"
+  ],
+  "feedback_disposition": [
+    {
+      "id": "HX-FB-002",
+      "action": "defer_to_existing_test_audit_proposal",
+      "reason": "Technical cost/usefulness concern remains valid; it does not require repeating a full test audit or delaying this bounded name-identity specification."
+    }
+  ]
+}
