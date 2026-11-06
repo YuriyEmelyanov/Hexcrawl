@@ -1,13 +1,17 @@
 {
   "schema_version": 1,
   "program_id": "HX-RSR-001",
-  "status": "configured_pending_schedule",
+  "status": "enabled",
   "automation": {
-    "id": null,
+    "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
     "title": "Исследователь HexCrawl",
     "frequency": "HOURLY",
     "minute": 30,
-    "enabled": null
+    "enabled": true,
+    "schedule": "BEGIN:VEVENT\nDTSTART:20261106T025759Z\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+    "default_timezone": "Asia/Shanghai",
+    "environment_selection": "inherited",
+    "environments_observed": null
   },
   "owner_decision_ref": "owner-decision-2026-11-06-research-agent",
   "contract_ref": "agent-work/research/contract.md",
@@ -56,8 +60,10 @@
   },
   "active_task": null,
   "claim": null,
-  "last_completed_run": null,
-  "run_history_refs": [],
+  "last_completed_run": "2026-11-06-setup",
+  "run_history_refs": [
+    "agent-work/research/runs/2026-11-06-setup.json"
+  ],
   "awaiting_owner_approval": [],
   "conflicts_observed": [
     {
@@ -66,5 +72,38 @@
       "policy": "Do not take over market files while active; choose independent rules/source task; re-read claim before judging liveness"
     }
   ],
-  "latest_sources_checked": "2026-11-06T02:43:13Z"
+  "latest_sources_checked": "2026-11-06T02:43:13Z",
+  "setup_commit": "88448b734a8e9a1a35fba9352c2a6845eff98ae5",
+  "last_setup_result_ref": "agent-work/research/runs/2026-11-06-setup.json",
+  "automation_health": {
+    "main_team": {
+      "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "start": {
+        "status": "checked",
+        "is_enabled": true,
+        "observed_during": "initial setup peek",
+        "exact_timestamp_not_recorded": true
+      },
+      "end": {
+        "status": "checked",
+        "is_enabled": true,
+        "checked_at": "2026-11-06T02:58:20Z"
+      }
+    },
+    "research_agent": {
+      "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+      "creation": {
+        "status": "created_enabled",
+        "is_enabled": true
+      },
+      "end": {
+        "status": "checked",
+        "is_enabled": true,
+        "checked_at": "2026-11-06T02:58:20Z"
+      }
+    },
+    "restoration_performed": false,
+    "errors": [],
+    "limitation": "Point-in-time observations; inherited future execution environments are not confirmed by the schedule receipt."
+  }
 }
