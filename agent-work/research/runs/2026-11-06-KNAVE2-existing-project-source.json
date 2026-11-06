@@ -1,0 +1,118 @@
+{
+  "run_id": "2026-11-06-KNAVE2-existing-project-source",
+  "program_id": "HX-RSR-001",
+  "completed_at": "2026-11-06T04:10:07.816Z",
+  "status": "source_identity_checkpoint",
+  "selected_task": {
+    "game_id": "KNAVE2",
+    "action": "Correct source-access dependency using owner's report that Russian rules are already in project sources"
+  },
+  "selection_reason": "Current owner correction has priority; avoid asking for another upload based on incomplete file visibility.",
+  "alternatives": [
+    {
+      "action": "Repeat new-PDF request",
+      "decision": "Rejected; existing source must be resolved first."
+    },
+    {
+      "action": "Use publisher previews as full rules",
+      "decision": "Rejected; no substitute for uploaded primary text."
+    }
+  ],
+  "inputs_and_versions": {
+    "base_sha": "be26c42edcb2fd2a193048f18f52efbc5077860c",
+    "checkpoint_blob_before": "2f108d524ee0a9ec6073f6e21f4d706e4432b56e",
+    "owner_quote": "Правмла на русском загружены в источниках проекта же"
+  },
+  "findings": [
+    {
+      "kind": "owner_report",
+      "text": "Russian rules are already uploaded to project sources; exact filename/reference not present in current message."
+    },
+    {
+      "kind": "access_observation",
+      "text": "Library title searches Knave/Кнав/Кнейв/Плут returned no resolved target. Exposed folder /HexCrawl.ru metadata list read to next_cursor=null; no identifiable Knave rulebook returned. This is not an exhaustive assertion about ChatGPT Project source visibility.",
+      "read_book": false,
+      "source_absence_in_project": null
+    }
+  ],
+  "changed_refs": [
+    "agent-work/research/checkpoints/KNAVE2-full-map-hexcrawl.json",
+    "agent-work/research/README.md",
+    "agent-work/research/runs/2026-11-06-KNAVE2-existing-project-source.json",
+    "agent-work/claims/2026-11-06-KNAVE2-existing-project-source.json"
+  ],
+  "rating_proposal_refs": [],
+  "product_task_refs": [],
+  "verification": {
+    "json_parsed": true,
+    "full_rules_inventory_completed": false,
+    "source_identifiers_invented": false,
+    "ratings_scores_product_code_unchanged": true,
+    "scope": "source-access correction only; game matrix/common registry not changed"
+  },
+  "automation_health": {
+    "research_agent": {
+      "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+      "is_enabled": true,
+      "checked_at": "2026-11-06T04:10:07.816Z"
+    },
+    "main_team": {
+      "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "is_enabled": true,
+      "checked_at": "2026-11-06T04:10:07.816Z"
+    },
+    "restoration_performed": false
+  },
+  "checkpoint": {
+    "schema_version": 1,
+    "checkpoint_id": "KNAVE2-full-map-hexcrawl-v1",
+    "program_id": "HX-RSR-001",
+    "owner_scope_ref": "owner-decision-2026-11-06-knave-complete-rules-audit",
+    "status": "resolve_existing_uploaded_Russian_project_source",
+    "priority": "current_direct_owner_instruction",
+    "selected_game": "KNAVE2",
+    "layers_in_order": [
+      "L1",
+      "L2",
+      "L3_relevant_dependencies"
+    ],
+    "rules_ref": "agent-work/market/rules/Knave-2e.json",
+    "corpus_ledger_ref": "agent-work/market/rules/Knave-2e-coverage-ledger.json",
+    "scope": "ALL thematic rules of final Knave 2e for map creation and hexcrawl, including relevant tables and dependencies; whole-book relevance screen, not extraction of unrelated combat engine.",
+    "source_access_dependency": {
+      "required": "Resolve and read the existing Russian Knave 2e rules source that owner reports is already uploaded to project sources; confirm exact edition/printing after opening.",
+      "owner_reports_uploaded": true,
+      "owner_quote": "Правмла на русском загружены в источниках проекта же",
+      "reported_on": "2026-11-06",
+      "file_identity": null,
+      "book_available_to_agent": false,
+      "source_absence_in_project": null,
+      "purchase_authorized": false,
+      "new_upload_required": false,
+      "blocking_detail": "Known exposed Library inventory/search did not resolve the file. Project-source existence and tool-visible file access are different; cannot conclude the project lacks the book.",
+      "needed_locator": "Exact existing source filename, file reference, or existing-file attachment from project"
+    },
+    "resume_steps": [
+      "Resolve the already uploaded Russian project source by its exact filename/reference, read and identify edition/printing and page mapping; do not repeatedly ask owner to upload a new copy or search storefronts in place of the project source.",
+      "Screen complete book for map/hexcrawl relevance; ledger every page/section; follow relevant cross-references and explain exclusions.",
+      "Extract L1 first in existing game matrix shape; split compound rules, preserve advice vs mandatory/optional procedures and unknown parameters.",
+      "For each applicable operation search common-rules and DND5/PF2 matrices; reuse semantic rule IDs, record parameter differences in game-bindings, never clone implementation per game.",
+      "Add operational_requirement with trigger, inputs/units, operation, output, constraints/exceptions and Given/When/Expected cases with known outputs.",
+      "Audit corresponding product behavior on exact SHA or retain unknown; link gaps to existing tasks or proposed tasks in unified backlog.",
+      "Continue L2 and relevant L3 dependencies to the same completeness gate; only then assess whether Classic + POI + terrain suffices."
+    ],
+    "not_substitutes_for_completion": [
+      "Owner hypothesis about small development scope",
+      "Checkbox UX proposal",
+      "Publisher marketing, reviews, excerpts or a draft",
+      "Finding an analogous rule without checking parameter differences",
+      "Counting a source rule as implemented coverage"
+    ],
+    "owner_product_hypothesis": "Classic + POI tables + difficult terrain is the owner's product hypothesis, NOT an audited exhaustive rule inventory or a permission to omit other rules. Checkboxes under Classic are a UX proposal, NOT a replacement for extraction or a development authorization.",
+    "last_source_access_correction_ref": "agent-work/research/runs/2026-11-06-KNAVE2-existing-project-source.json"
+  },
+  "next_candidate": {
+    "action": "Resolve exact existing Russian source filename/reference and begin full L1/L2 audit in existing DND/PF2 matrix format, reusing canonical rules.",
+    "blocked_on": "source identity/access; not book purchase/new upload"
+  }
+}
