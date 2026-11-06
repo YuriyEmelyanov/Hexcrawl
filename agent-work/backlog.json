@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "model_version": "1.2",
-  "updated_on": "2026-11-04",
+  "updated_on": "2026-11-06",
   "strategy_version": "1.0",
   "note": "Перенесённые идеи, не разрешение на реализацию. implemented_unverified означает наличие функции/отметки о выполнении, а не G3/G4. criterion_id — предлагаемое отнесение, не начисленный эффект. Полные уникальные детали сохранены в снимке исходного документа.",
   "source_snapshot": {
@@ -1375,7 +1375,7 @@
       "task_id": "HX-BL-023",
       "title": "Общий режим редактирования",
       "criterion_id": "S03-C01",
-      "status": "in_progress",
+      "status": "changes_requested",
       "potential_delta": null,
       "approval_ref": "owner-decision-2026-10-29-HX-FB-005-direct-edit-mode",
       "source": {
@@ -1392,14 +1392,14 @@
       "execution_allowed": true,
       "spec_status": "ready_for_development",
       "next_role": "developer",
-      "next_step": "Продолжить собственный PR486/65e5d1d: замена русла через RiverDraft, команды F/разворота/удаления с именованным preview crossings/BR009/features/тегов и явными решениями конфликтов. Связать выбор существующей реки с map/Find, завершить полный Classic/Mythic AC01–AC11 и показ всего пакета, затем независимый review конечного SHA. E5 утверждён; публикация отдельно.",
+      "next_step": "Исправить PR490-F01: обычная точка после разрешённого переноса в пустой центр региона должна редактироваться как обычная, без создания второго центрального POI. Сохранить защиту геометрического центра/anchor; проверить новый SHA и передать свежему независимому проверяющему. Подготовить цельный actual walkthrough пакета до запроса выпуска.",
       "related_task_ids": [
         "HX-BL-013",
         "HX-BL-018",
         "HX-BL-019",
         "HX-BL-028"
       ],
-      "handoff_ref": "agent-work/handoffs/2026-11-04-HX-BL-023-E5-checkpoint-65e5d1d.json",
+      "handoff_ref": "agent-work/handoffs/2026-11-06-PR490-50f8125-fixes.json",
       "owner_priority_decision": {
         "id": "owner-decision-2026-10-28-editor-and-MB-content-before-outreach",
         "date": "2026-10-28",
@@ -1431,9 +1431,9 @@
         "underlay027_still_deferred": true
       },
       "release_approved": false,
-      "spec_ref": "agent-work/specs/HX-BL-023-E5.md",
-      "spec_version": "E5-1.0",
-      "active_slice": "E5_rivers",
+      "spec_ref": "agent-work/specs/HX-BL-023-E8.md",
+      "spec_version": "E8-1.0",
+      "active_slice": "E8.2",
       "ui_preview": {
         "version": "E4-UI1",
         "type": "proposal_not_implementation",
@@ -1540,16 +1540,16 @@
       "analyst_result_ref": "agent-work/results/2026-11-01-analyst-HX-BL-023-E4-migration.json",
       "analyst_handoff_ref": "agent-work/handoffs/2026-11-01-HX-BL-023-E4-development.json",
       "owner_role": "reviewer",
-      "branch": "agent/hx023-e5-rivers",
-      "pr": 486,
-      "base_sha": "d7bb38fbcee367621e5f5ce9fbaf369fbc775e0a",
-      "head_sha": "65e5d1df242aaa6e8c29ead9f677ac93f8e77660",
-      "checks_status": "exact_SHA_CI_check286_browser8_world_random_success",
+      "branch": "agent/hx023-e7-e8-package",
+      "pr": 490,
+      "base_sha": "2ef5cc35107f299c309b7c8065a1e81ca9881278",
+      "head_sha": "50f81251cf000d17f7f91eb96608d35ad900cfe4",
+      "checks_status": "independent_Node345_browser8_RNG_passed;confirmed_product_defect_PR490-F01",
       "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41799212970",
-      "review_verdict": "not_ready",
+      "review_verdict": "changes_requested",
       "test_change_summary_ref": "agent-work/evidence/HX-BL-023-E5-65e5d1d/test-change-summary.json",
       "developer_result_ref": "agent-work/results/2026-11-04-developer-HX-BL-023-E5-draft.json",
-      "score_assessment_status": "insufficient_evidence_no_award",
+      "score_assessment_status": "completed_model1.2_unknown_no_award",
       "ui_actual": {
         "head_sha": "0459c645706a51e518b323fd0588fba4923e5dd2",
         "desktop": "agent-work/evidence/HX-BL-023-E4-R1-0459c64/ambiguity-desktop.png",
@@ -1557,90 +1557,20 @@
         "shown_in_chat": true,
         "limits": "Headless Chromium; physical touch/screen reader not tested"
       },
-      "review_result_ref": "agent-work/results/2026-11-02-reviewer-HX-BL-023-E4-0459c64.json",
-      "review_evidence_ref": "agent-work/evidence/review-HX-BL-023-E4-0459c64",
+      "review_result_ref": "agent-work/results/2026-11-06-reviewer-PR490-50f8125.json",
+      "review_evidence_ref": "agent-work/evidence/review-PR490-50f8125/review-report.json",
       "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/481#pullrequestreview-5737061469",
-      "score_assessment_ref": "agent-work/evidence/review-HX-BL-023-E4-0459c64/score-assessment.json",
-      "finding_ids": [],
+      "score_assessment_ref": "agent-work/evidence/review-PR490-50f8125/score-assessment.json",
+      "finding_ids": [
+        "PR490-F01"
+      ],
       "previous_review_result_ref": "agent-work/results/2026-10-31-reviewer-HX-BL-023-E3-6e59e7f.json",
       "addressed_findings_pending_review": [
         "HX023-E4-R1"
       ],
       "previous_score_assessment_ref": "agent-work/evidence/review-HX-BL-023-c4a37ee/score_assessment.json",
       "previous_review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/478#pullrequestreview-5692465528",
-      "accepted_release_pending": {
-        "task_id": "HX-BL-023",
-        "stage_id": "E3_plus_E4",
-        "status": "published",
-        "head_sha": "0459c645706a51e518b323fd0588fba4923e5dd2",
-        "tree_sha": "a80b4ad917cbc2ac6db41b819bad3ef5bab2ee23",
-        "base_sha": "cd4bd5402ffa92800710f5d4ded32cb1baea774b",
-        "branch": "agent/hx023-e4-barriers",
-        "pr": 481,
-        "scope": "Combined accepted E3 roads/trails/crossings plus E4 manual obstacles/v5; published panel PR482/483 integrated",
-        "specs": [
-          "agent-work/specs/HX-BL-023-E3.md",
-          "agent-work/specs/HX-BL-023-E4.md"
-        ],
-        "review_ref": "agent-work/evidence/review-HX-BL-023-E4-0459c64/review-report.md",
-        "review_result_ref": "agent-work/results/2026-11-02-reviewer-HX-BL-023-E4-0459c64.json",
-        "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/481#pullrequestreview-5737061469",
-        "review_verdict": "accepted_with_scope_limitations",
-        "formal_github_approval": false,
-        "formal_github_approval_limit": "API422 self-APPROVE forbidden; substantive independent verdict recorded by COMMENT",
-        "resolved_findings": [
-          "HX023-E4-R1"
-        ],
-        "score_assessment_ref": "agent-work/evidence/review-HX-BL-023-E4-0459c64/score-assessment.json",
-        "checks": [
-          {
-            "name": "seed-ui",
-            "status": "completed",
-            "conclusion": "skipped",
-            "html_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41419358569/job/125190950907"
-          },
-          {
-            "name": "world-random",
-            "status": "completed",
-            "conclusion": "success",
-            "html_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41419358454/job/125190909414"
-          },
-          {
-            "name": "browser",
-            "status": "completed",
-            "conclusion": "success",
-            "html_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41419358454/job/125190909336"
-          },
-          {
-            "name": "check",
-            "status": "completed",
-            "conclusion": "success",
-            "html_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41419358454/job/125190909022"
-          }
-        ],
-        "publication_allowed": true,
-        "release_approved": true,
-        "published": true,
-        "full_editor_ready": false,
-        "requirements": [
-          "Separate explicit owner permission for exact package",
-          "Recheck current head/base/tree and required checks immediately before release; changed SHA requires independent review",
-          "Do not append HX-BL-010 or later editor slices to this permission",
-          "Preserve merge SHA/deployment proof and score_update_pending after any authorized release"
-        ],
-        "ui_actual": {
-          "before_after_walkthrough": "agent-work/evidence/HX-BL-023-E4-map-673b394/walkthrough.md",
-          "correction": "agent-work/evidence/HX-BL-023-E4-R1-0459c64/ambiguity-narrow.png",
-          "shown_by_developer_in_chat": true,
-          "review_sample": "agent-work/evidence/review-HX-BL-023-E4-0459c64/ambiguous-selection-narrow.png",
-          "limits": "Headless Chromium; physical touch/screen reader and entire EN/narrow physical matrix not completed"
-        },
-        "score_model_version": "1.2",
-        "awarded_points": 0,
-        "limits": "See review report for bounded evidence and diagnostic limitations",
-        "release_sha": "e949d2ebda75af3988467c4a8d64715dd3a2e048",
-        "publication_ref": "agent-work/evidence/release-PR481-e949d2e/publication.json"
-      },
+      "accepted_release_pending": null,
       "full_editor_ready": false,
       "stage_results": {
         "E1_names": {
@@ -2015,9 +1945,9 @@
         "score_awarded_points": 0
       },
       "review_ref": "agent-work/evidence/review-HX-BL-023-E4-7d7ae9d/review-report.md",
-      "tree_sha": "cbaebbbb90b16b2fa446ad66efe42e975b3a0df7",
+      "tree_sha": "9fdabe30a210f4fdb78b17c1841cbe8d70a4ecc0",
       "current_review_status": "not_ready_implementation_incomplete",
-      "current_score_assessment_status": "developer_partial_evidence_unknown",
+      "current_score_assessment_status": "completed_model1.2_unknown_no_award",
       "previous_accepted_release_pending": {
         "task_id": "HX-BL-023",
         "stage_id": "E3",
@@ -2160,13 +2090,136 @@
           "current_review_status": "not_ready_implementation_incomplete",
           "current_score_assessment_status": "developer_partial_evidence_unknown",
           "review_verdict": "not_ready"
+        },
+        "E8_2_stable_names": {
+          "stage_id": "E8.2",
+          "status": "changes_requested",
+          "head_sha": "50f81251cf000d17f7f91eb96608d35ad900cfe4",
+          "pr": 490,
+          "handoff_ref": "agent-work/handoffs/2026-11-06-PR490-50f8125-fixes.json",
+          "review_evidence_ref": "agent-work/evidence/review-PR490-50f8125/review-report.json",
+          "finding_ids": [
+            "PR490-F01"
+          ],
+          "release_approved": false
         }
       },
       "accepted": false,
-      "current_stage_status": "implementation_checkpoint",
-      "current_stage_review_status": "not_ready",
+      "current_stage_status": "fixes_ready",
+      "current_stage_review_status": "changes_requested",
       "current_stage_release_approved": false,
-      "published": false
+      "published": false,
+      "routing_snapshot_history": [
+        {
+          "decision_ref": "owner-decision-2026-11-06-operational-writes-unblocked",
+          "reason": "Reconcile stale E5 routing against later completed claims/results and independent PR490 review",
+          "previous": {
+            "status": "in_progress",
+            "active_slice": "E5_rivers",
+            "current_stage_status": "implementation_checkpoint",
+            "current_stage_review_status": "not_ready",
+            "next_role": "developer",
+            "next_step": "Продолжить собственный PR486/65e5d1d: замена русла через RiverDraft, команды F/разворота/удаления с именованным preview crossings/BR009/features/тегов и явными решениями конфликтов. Связать выбор существующей реки с map/Find, завершить полный Classic/Mythic AC01–AC11 и показ всего пакета, затем независимый review конечного SHA. E5 утверждён; публикация отдельно.",
+            "handoff_ref": "agent-work/handoffs/2026-11-04-HX-BL-023-E5-checkpoint-65e5d1d.json",
+            "execution_allowed": true,
+            "branch": "agent/hx023-e5-rivers",
+            "pr": 486,
+            "head_sha": "65e5d1df242aaa6e8c29ead9f677ac93f8e77660",
+            "tree_sha": "cbaebbbb90b16b2fa446ad66efe42e975b3a0df7",
+            "base_sha": "d7bb38fbcee367621e5f5ce9fbaf369fbc775e0a",
+            "checks_status": "exact_SHA_CI_check286_browser8_world_random_success",
+            "review_verdict": "not_ready",
+            "review_ready": false,
+            "accepted": false,
+            "published": false,
+            "release_approved": false,
+            "current_stage_release_approved": false,
+            "review_result_ref": "agent-work/results/2026-11-02-reviewer-HX-BL-023-E4-0459c64.json",
+            "review_evidence_ref": "agent-work/evidence/review-HX-BL-023-E4-0459c64",
+            "score_assessment_ref": "agent-work/evidence/review-HX-BL-023-E4-0459c64/score-assessment.json",
+            "current_score_assessment_status": "developer_partial_evidence_unknown",
+            "score_assessment_status": "insufficient_evidence_no_award",
+            "finding_ids": [],
+            "spec_ref": "agent-work/specs/HX-BL-023-E5.md",
+            "spec_version": "E5-1.0",
+            "accepted_release_pending": {
+              "task_id": "HX-BL-023",
+              "stage_id": "E3_plus_E4",
+              "status": "published",
+              "head_sha": "0459c645706a51e518b323fd0588fba4923e5dd2",
+              "tree_sha": "a80b4ad917cbc2ac6db41b819bad3ef5bab2ee23",
+              "base_sha": "cd4bd5402ffa92800710f5d4ded32cb1baea774b",
+              "branch": "agent/hx023-e4-barriers",
+              "pr": 481,
+              "scope": "Combined accepted E3 roads/trails/crossings plus E4 manual obstacles/v5; published panel PR482/483 integrated",
+              "specs": [
+                "agent-work/specs/HX-BL-023-E3.md",
+                "agent-work/specs/HX-BL-023-E4.md"
+              ],
+              "review_ref": "agent-work/evidence/review-HX-BL-023-E4-0459c64/review-report.md",
+              "review_result_ref": "agent-work/results/2026-11-02-reviewer-HX-BL-023-E4-0459c64.json",
+              "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/481#pullrequestreview-5737061469",
+              "review_verdict": "accepted_with_scope_limitations",
+              "formal_github_approval": false,
+              "formal_github_approval_limit": "API422 self-APPROVE forbidden; substantive independent verdict recorded by COMMENT",
+              "resolved_findings": [
+                "HX023-E4-R1"
+              ],
+              "score_assessment_ref": "agent-work/evidence/review-HX-BL-023-E4-0459c64/score-assessment.json",
+              "checks": [
+                {
+                  "name": "seed-ui",
+                  "status": "completed",
+                  "conclusion": "skipped",
+                  "html_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41419358569/job/125190950907"
+                },
+                {
+                  "name": "world-random",
+                  "status": "completed",
+                  "conclusion": "success",
+                  "html_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41419358454/job/125190909414"
+                },
+                {
+                  "name": "browser",
+                  "status": "completed",
+                  "conclusion": "success",
+                  "html_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41419358454/job/125190909336"
+                },
+                {
+                  "name": "check",
+                  "status": "completed",
+                  "conclusion": "success",
+                  "html_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41419358454/job/125190909022"
+                }
+              ],
+              "publication_allowed": true,
+              "release_approved": true,
+              "published": true,
+              "full_editor_ready": false,
+              "requirements": [
+                "Separate explicit owner permission for exact package",
+                "Recheck current head/base/tree and required checks immediately before release; changed SHA requires independent review",
+                "Do not append HX-BL-010 or later editor slices to this permission",
+                "Preserve merge SHA/deployment proof and score_update_pending after any authorized release"
+              ],
+              "ui_actual": {
+                "before_after_walkthrough": "agent-work/evidence/HX-BL-023-E4-map-673b394/walkthrough.md",
+                "correction": "agent-work/evidence/HX-BL-023-E4-R1-0459c64/ambiguity-narrow.png",
+                "shown_by_developer_in_chat": true,
+                "review_sample": "agent-work/evidence/review-HX-BL-023-E4-0459c64/ambiguous-selection-narrow.png",
+                "limits": "Headless Chromium; physical touch/screen reader and entire EN/narrow physical matrix not completed"
+              },
+              "score_model_version": "1.2",
+              "awarded_points": 0,
+              "limits": "See review report for bounded evidence and diagnostic limitations",
+              "release_sha": "e949d2ebda75af3988467c4a8d64715dd3a2e048",
+              "publication_ref": "agent-work/evidence/release-PR481-e949d2e/publication.json"
+            },
+            "full_editor_ready": false
+          }
+        }
+      ],
+      "current_stage_id": "E8.2"
     },
     {
       "task_id": "HX-BL-024",
@@ -3454,5 +3507,11 @@
       "replacement_stage": "E5",
       "reason": "E4 published;preserve owned E5"
     }
-  ]
+  ],
+  "last_operational_reconciliation": {
+    "decision_ref": "owner-decision-2026-11-06-operational-writes-unblocked",
+    "task_id": "HX-BL-023",
+    "review_ref": "agent-work/evidence/review-PR490-50f8125/review-report.json",
+    "other_tasks_changed": false
+  }
 }
