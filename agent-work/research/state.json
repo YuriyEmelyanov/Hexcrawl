@@ -81,7 +81,8 @@
     "agent-work/research/runs/2026-11-06T0330-PF2-L1-hex-scale.json",
     "agent-work/research/runs/2026-11-06T0400-KNAVE2-owner-scope.json",
     "agent-work/research/runs/2026-11-06-KNAVE2-full-thematic-audit.json",
-    "agent-work/research/runs/2026-11-06T0530-SD-core-access.json"
+    "agent-work/research/runs/2026-11-06T0530-SD-core-access.json",
+    "agent-work/research/runs/2026-11-06-SD-free-PDF-only.json"
   ],
   "awaiting_owner_approval": [],
   "conflicts_observed": [
@@ -110,7 +111,7 @@
       },
       "end": {
         "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
-        "checked_at": "2026-11-06T05:34:25.710Z",
+        "checked_at": "2026-11-06T05:41:39.685Z",
         "is_enabled": true,
         "status": "checked"
       }
@@ -125,26 +126,26 @@
       },
       "end": {
         "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
-        "checked_at": "2026-11-06T05:34:27.045Z",
+        "checked_at": "2026-11-06T05:41:41.165Z",
         "is_enabled": true,
         "status": "checked"
       }
     }
   },
-  "last_result_ref": "agent-work/research/runs/2026-11-06T0530-SD-core-access.json",
+  "last_result_ref": "agent-work/research/runs/2026-11-06-SD-free-PDF-only.json",
   "blocked_source_work": [
     {
       "game_id": "SD",
       "scope": "Full core map/hexcrawl corpus",
-      "status": "needs_authorized_full_core_copy",
+      "status": "needs_no_payment_authorized_full_core_source",
       "checkpoint_ref": "agent-work/research/checkpoints/SD-core-access.json",
       "do_not_treat_quickstart_as_full_core": true,
-      "retry_condition": "new authorized source/access event, not repeated hourly storefront search"
+      "retry_condition": "new source/access event; do not repeat payment request"
     }
   ],
   "owner_scope_ref": "owner-decision-2026-11-06-knave-complete-rules-audit",
   "checkpoint_ref": "agent-work/research/checkpoints/KNAVE2-full-map-hexcrawl.json",
-  "last_owner_update_ref": "agent-work/research/runs/2026-11-06T0400-KNAVE2-owner-scope.json",
+  "last_owner_update_ref": "agent-work/research/runs/2026-11-06-SD-free-PDF-only.json",
   "source_access_resolved": {
     "KNAVE2": {
       "resolved": true,
@@ -182,11 +183,18 @@
   },
   "pending_source_requests": {
     "SD": {
-      "owner_quote": "Добудь мне core rulebook",
-      "status": "core_not_obtained",
+      "owner_quote": "Платить не хочу. Хочу pdf",
+      "status": "full_core_not_obtained_free_only",
       "checkpoint_ref": "agent-work/research/checkpoints/SD-core-access.json",
-      "price_usd_at_check": 29,
-      "purchase_authorized": false
+      "purchase_authorized": false,
+      "payment_requested": false
     }
+  },
+  "source_acquisition_policy": {
+    "cost_default": "no_paid_rulebook_purchases",
+    "owner_ref": "agent-work/research/runs/2026-11-06-SD-free-PDF-only.json",
+    "community_sources": "Include author-authorized shared PDFs, translations/open licensed corpora, creator releases and community copies; record actual access. Community listing alone does not establish full source coverage.",
+    "prioritization": "Source cost does not lower active rank or remove high-rank game; preserve unknown profile while pursuing independently useful L1 work.",
+    "reuse": "One canonical implementation with source-verified game profiles; do not claim full support solely from analogy."
   }
 }
