@@ -445,3 +445,8 @@ The existing tag double-click case relied on350ms of wall time across expensive 
 ### 2026-11-06 — Sea identity specification / HX-BL-023 E8-N-SEA
 
 На tree79b69059 Sea display components имеют временные IDs, а connectedWaterBody включает lake+sea для геометрии. Для постоянного имени требуется отдельная sea-only identity и сверка пересечений после E6 candidate, не ID выбранного гекса. Региональный Sea требует отдельного name target рядом с Вода: проверка только внешней морской ветки пропускает его. SEA-1.0 задаёт split-наследников до merge-выбора и защищает каждую потерю авторского имени. Это source-audit/design evidence, не подтверждение реализации или score. UI SEA-UI1 предъявлен как предложение; дальнейшая утверждённая разработка не ждёт ответа.
+
+
+### 2026-11-07 — MYTH-CONTENT-SCHEMA: source blocks versus executable procedure
+
+Three sampled myth pages29/101/171 each contain six ordered Omens, three role blocks and a six-row two-column table, but this does not establish a uniform72myth schema. A role block may represent a group, not one NPC; a shared preamble belongs to the role collection. Displayed stats/effects are source reference, not executed mechanics. A numbered two-column table is insufficient evidence for independent dice or Knave's d100/reference profile. Page171's opposite-page reference was not resolved by170; preserve unknown rather than silently retarget. Reuse existing catalog IDs and canonical description/hook/table operations by semantics; three inspected profiles remain unverified. Evidence: agent-work/catalogs/mythic-bastionland/myth-content-schema-sample-v1.json. No score awarded.
