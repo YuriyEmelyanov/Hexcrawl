@@ -4,56 +4,65 @@
   "role": "developer",
   "task_id": "HX-BL-023",
   "stage_id": "E8-N-SEA",
-  "status": "implementation_saved_final_checks_in_progress",
-  "spec_ref": "agent-work/specs/HX-BL-023-E8-N-SEA.md",
-  "spec_version": "SEA-1.0",
-  "approval_ref": "owner-decision-2026-10-28-editor-functional-scope",
-  "base_sha": "7547a67bbcfb621f1e7c7189518583842ccb055a",
+  "status": "review_ready_registry_sync_blocked",
   "head_sha": "856fe0946d6050808fadfa040277db8c3ffc5aea",
   "tree_sha": "9c8585ad4c5aafdec38d242a67ffc54fe7f4402c",
-  "branch": "agent/hx023-sea-names",
+  "base_sha": "7547a67bbcfb621f1e7c7189518583842ccb055a",
   "pr": 492,
   "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/492",
-  "review_ready": false,
-  "release_approved": false,
-  "main_changed": false,
-  "implementation": [
-    "Persistent Sea registry and nextSeaId; sea:<id> authored paired names",
-    "Split heirs precede merge choices; each authored-name loss has explicit consent",
-    "Metadata-only v2-v8 migration to strict JSONv9",
-    "Sea participates in snapshots, import/export, exact Undo/Redo, generation rollback and checkpoint water warning",
-    "Existing compact name/Find/water UI; no new ocean generation or map labels"
-  ],
+  "spec_ref": "agent-work/specs/HX-BL-023-E8-N-SEA.md",
+  "spec_version": "SEA-1.0",
   "checks": {
-    "browser": {
-      "status": "passed",
+    "source": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42246627033",
+    "check": "success",
+    "browser": "success",
+    "world_random": "success",
+    "local_Node": {
+      "executed": 353,
+      "passed": 353,
+      "skipped": 0
+    },
+    "local_browser": {
       "executed": 8,
       "passed": 8,
-      "skipped": 0,
-      "log": "browser.log",
-      "source_tree": "9c8585ad4c5aafdec38d242a67ffc54fe7f4402c"
+      "skipped": 0
     },
-    "node": {
-      "status": "in_progress",
-      "command": "npm run check",
-      "log": "check-final.log"
-    },
-    "rng": {
-      "status": "pending_runtime_recovery_or_CI",
-      "initial_error": "Retained executable no longer existed; Playwright archive download was truncated; temporary free npm Chromium runtime is being restored"
-    }
+    "local_RNG": "success"
   },
-  "score_evidence_status": "pending_final_checks; no confirmed points",
-  "criterion_ids": [
-    "S02-C02",
-    "S02-C03",
-    "S03-C01",
-    "S03-C04",
-    "S03-C05",
-    "S04-C04",
-    "S04-C05",
-    "S09-C04"
-  ],
+  "test_change_summary": {
+    "base_sha": "7547a67bbcfb621f1e7c7189518583842ccb055a",
+    "head_sha": "856fe0946d6050808fadfa040277db8c3ffc5aea",
+    "suite": "Node",
+    "added": 8,
+    "removed": 0,
+    "modified": 9,
+    "scenario_risk": "Persisted Sea components/identity, split heirs before merge, explicit named losses, v9 compatibility and exact history",
+    "reuse_or_new_reason": "Extended existing water,App transaction,import and name suites; no new runner;9 old cases updated for v9 version/fixture coherence",
+    "count_source": "Exact PR492 base/head AST test-call comparison plus parameter expansion; Node runner345→353",
+    "browser": {
+      "suite": "test:browser",
+      "added": 0,
+      "removed": 0,
+      "modified": 1,
+      "unit": "existing save-history smoke workflow",
+      "scenarios": "Sea name family and Classic/Mythic split+merge",
+      "executed": 8,
+      "passed": 8,
+      "skipped": 0
+    },
+    "RNG": {
+      "added": 0,
+      "removed": 0,
+      "modified": 0
+    },
+    "temporary_diagnostics_counted_as_permanent": false
+  },
+  "ui_shown_in_chat": true,
+  "independent_review": "pending",
+  "score_assessment": "pending independent model1.2 assessment; no award",
+  "release_approved": false,
+  "published": false,
+  "main_changed": false,
   "automation_health": {
     "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
@@ -76,10 +85,21 @@
       "status": "unchecked",
       "is_enabled": null,
       "reason": "Previous attempt interrupted before end check/result persistence; exact expired-approval action/reason was not exposed."
-    }
+    },
+    "end": {
+      "checked_at": "2026-11-06T16:12:51Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "limitation": "Point-in-time observations only; no guarantee against later service state changes."
   },
-  "claim_ref": "agent-work/claims/2026-11-06-developer-HX-BL-023-E8-N-SEA.json",
-  "next_role": "developer",
-  "next_step": "Завершить npm run check и RNG smoke точного856fe09, сохранить actual UI/evidence и передать независимому проверяющему; не публиковать.",
-  "updated_at": "2026-11-06T15:52:41Z"
+  "operational_persistence": {
+    "full_backlog": "blocked_auto_review",
+    "full_evidence_package": "blocked_auto_review",
+    "latest": "final_update_not_written_after_block",
+    "reason": "Automatic approval review rejected full public backlog and large logs/fixtures/evidence payloads; no further full-payload retry or indirect rewrite.",
+    "next_step": "Reviewer may use already public PR/CI/spec; full registry/evidence synchronization needs explicit owner authorization accepted by approval review."
+  },
+  "next_role": "reviewer",
+  "next_step": "Независимая проверка856fe09 по SEA-1.0/AC01–AC10 и score_assessment1.2; публикация только после отдельного разрешения."
 }
