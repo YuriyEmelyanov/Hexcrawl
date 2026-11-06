@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "date": "2026-11-04",
+  "date": "2026-11-06",
   "branch": "agent-operations",
   "plan_json": "agent-work/handoffs/2026-11-04-HX-BL-023-E5-checkpoint-65e5d1d.json",
   "plan_md": null,
@@ -26,10 +26,10 @@
   },
   "lessons_path": "agent-work/lessons.md",
   "plan_id": "2026-11-04-developer-HX-BL-023-E5-draft",
-  "run_id": "2026-11-06-developer-release-PR490",
+  "run_id": "2026-11-06-developer-central-note-removal",
   "plan_revision": 1,
   "baseline_sha": "ab75ecb0a5b90888d4e367bfc9a40ecdff8ad429",
-  "status": "published_score_update_pending",
+  "status": "accepted_awaiting_owner_release_approval",
   "planning_for": "2026-10-31",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-10-25",
@@ -50,20 +50,30 @@
   "current_task_id": "HX-BL-023",
   "spec_path": "agent-work/specs/HX-BL-023-E8.md",
   "spec_version": "E8-1.0",
-  "result_path": "agent-work/results/2026-11-06-developer-release-PR490.json",
+  "result_path": "agent-work/results/2026-11-06-developer-HX-FB-010-PR491.json",
   "handoff_commit_sha": "d66fc1882d982bf71de1977869077ec56c117d06",
   "active_claim": null,
-  "next_step": "Apply reviewed insufficient-evidence score outcomes for exact published SHA once; retain unknown points and complete release event accounting; then continue approved E8-N-SEA analyst handoff.",
-  "owner_decisions_needed": [],
-  "release_approval": "owner-release-2026-11-06-PR490-7ddcc21",
+  "next_step": "Complete mandatory PR490/e99cb123 model1.2 release score accounting from its independent assessment without awarding unknown points; then continue approved E8-N-SEA analysis. PR491/de0299168e5a74d4e3594db71d657ca8055614e0 is independently accepted and waits separately for owner publication permission.",
+  "owner_decisions_needed": [
+    {
+      "type": "publication_permission",
+      "task_id": "HX-BL-023",
+      "feedback_id": "HX-FB-010",
+      "pr": 491,
+      "head_sha": "de0299168e5a74d4e3594db71d657ca8055614e0",
+      "handoff_ref": "agent-work/handoffs/2026-11-06-HX-FB-010-PR491-release.json",
+      "decision": "Разрешение публикации проверенного PR491; два запрошенных изменения реализованы и проверены"
+    }
+  ],
+  "release_approval": null,
   "historical_plan_status": "План23.10 сохранён как история; его блокировки и предложенный процесс заменены decisions24.10 в approvals/process/budget и текущим handoff.",
-  "evidence_path": "agent-work/evidence/review-PR490-7ddcc21/review-report.json",
-  "branch_name": "agent/hx023-e7-e8-package",
-  "pr": 490,
-  "head_sha": "7ddcc218ec6871179bde8153ec589d6517f46c74",
-  "checks_status": "independent_Node345_browser8_RNG_pass; exact_SHA_CI_check_browser_world_random_success; seed_ui_conditional_skip",
-  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41799212970",
-  "review_verdict": "accepted_exact_SHA_for_E7_E8_code_review",
+  "evidence_path": "agent-work/evidence/HX-FB-010-PR491-de02991/review-report.json",
+  "branch_name": "agent/hx023-remove-central-note",
+  "pr": 491,
+  "head_sha": "de0299168e5a74d4e3594db71d657ca8055614e0",
+  "checks_status": "all_required_CI_passed",
+  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42171271911",
+  "review_verdict": "accepted_exact_SHA_with_scope_limitations",
   "role_selection_mode": "ready_work_priority",
   "role_selection_source": "agent-work/process.md",
   "process_decision_ref": "owner-decision-2026-10-24-dynamic-roles",
@@ -98,7 +108,7 @@
   "score_update_release_sha": "e99cb1236e152e8e6a5987af95e19d601dbc3a78",
   "score_process_decision_ref": "owner-decision-2026-10-24-score-responsibilities",
   "score_assessment_ref": "agent-work/evidence/review-PR490-7ddcc21/score-assessment.json",
-  "role_selection_reason": "Explicit owner instruction «Публикуй» for accepted PR490, safely continued through scheduled readiness message while own release claim remained active.",
+  "role_selection_reason": "Explicit current owner UI correction and subsequent English startup instruction; bounded independent of pending PR490 score accounting, no duplicate developer claim",
   "score_update_result_ref": "agent-work/results/2026-11-04-strategist-score-PR485-PR484.json",
   "score_update_completed_at": "2026-11-04T01:05:25Z",
   "score_update_delta": null,
@@ -118,29 +128,33 @@
     "deployment_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40874465786",
     "published": true
   },
-  "base_sha": "2ef5cc35107f299c309b7c8065a1e81ca9881278",
+  "base_sha": "e99cb1236e152e8e6a5987af95e19d601dbc3a78",
   "automation_health": {
     "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-11-06T04:52:07Z",
+      "checked_at": "2026-11-06T05:36:51Z",
       "status": "checked",
       "is_enabled": true
     },
     "recovery_performed": false,
     "errors": [],
-    "continuation_checks": [
-      {
-        "checked_at": "2026-11-06T05:05:22Z",
-        "status": "checked",
-        "is_enabled": true
-      }
-    ],
     "end": {
-      "checked_at": "2026-11-06T05:14:37Z",
+      "checked_at": "2026-11-06T06:06:10Z",
       "status": "checked",
       "is_enabled": true
     },
-    "limitation": "Actual start/continuation/end observations only; no guarantee of later service state."
+    "limitation": "Actual point-in-time start/end observations; no guarantee of later service state.",
+    "service_last_run_observation": {
+      "observed_at": "2026-11-06T06:06:10Z",
+      "id": "f2a07b22-46bc-8324-887a-5705081d1bc2",
+      "recorded_status": "failed",
+      "scheduled_for": "2026-11-06T06:00:00Z",
+      "started_at": "2026-11-06T06:03:44.107902Z",
+      "completed_at": "2026-11-06T06:03:48.153643Z",
+      "chat_ref": null,
+      "reason": "unknown; peek returned no failure cause",
+      "relation_to_current_run": "Separate scheduled attempt; not attributed to this manual development/check result"
+    }
   },
   "open_findings": [],
   "current_review_score_assessment_status": "completed_model1.2_unknown_no_award",
@@ -709,8 +723,8 @@
     "head_sha": "a265a78a1f287442ec502bac9875d04d8d273060",
     "result_ref": "agent-work/results/2026-10-29-reviewer-HX-BL-023-E1-ui3-a265a78.json"
   },
-  "reviewed_sha": "7ddcc218ec6871179bde8153ec589d6517f46c74",
-  "current_review_score_assessment_ref": "agent-work/evidence/review-PR490-7ddcc21/score-assessment.json",
+  "reviewed_sha": "de0299168e5a74d4e3594db71d657ca8055614e0",
+  "current_review_score_assessment_ref": "agent-work/evidence/HX-FB-010-PR491-de02991/score-assessment.json",
   "automatic_measurement_rerun_allowed": false,
   "repeat_review_requires": "Fresh-context independent exact d92ecdd review, including F1 and score_assessment1.2",
   "blocked_task_handoffs": {
@@ -810,7 +824,7 @@
     "next_step": "Решить отдельно узкий cleanup AUD-02/03/04; готовую спецификацию024 не задерживать."
   },
   "owner_decisions_note": "PR490 exact package authorized and published. No further publication decision needed for this released package; future package publication remains separate.",
-  "updated_at": "2026-11-06T05:14:37Z",
+  "updated_at": "2026-11-06T06:06:10Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
     "stage_id": "V3",
@@ -1071,44 +1085,120 @@
     "handoff_ref": "agent-work/handoffs/2026-10-27-HX-FB-002-audit.json"
   },
   "test_change_summary": {
-    "ref": "agent-work/evidence/review-PR490-7ddcc21/test-change-summary.json",
-    "whole_package": {
-      "node": {
-        "added": 46,
-        "removed": 0,
-        "modified": 8,
-        "executed": 345,
-        "passed": 345,
-        "skipped": 0
-      },
-      "browser": {
-        "added_workflows": 3,
-        "removed_workflows": 0,
-        "modified_existing_runners": 1,
-        "executed": 8,
-        "passed": 8,
-        "skipped": 0
-      },
-      "rng": {
-        "executed_suites": 1,
-        "passed": 1,
-        "skipped": 0
-      }
+    "base_sha": "e99cb1236e152e8e6a5987af95e19d601dbc3a78",
+    "head_sha": "de0299168e5a74d4e3594db71d657ca8055614e0",
+    "count_method": "Logical cases/contracts compared in exact base/head diff; runner/suite boundaries retained; no line or file count treated as case growth",
+    "source": "git diff e99cb1236e152e8e6a5987af95e19d601dbc3a78..4053f3045c9b3a82b1edb7c29cb67c1147cd0519; final local tree matches remote 79b69059c70eed7430bcda93db5d72a6097695d3",
+    "permanent_cases": {
+      "added": 0,
+      "removed": 0,
+      "modified": 2,
+      "modified_scenarios": [
+        {
+          "suite": "browser/generation",
+          "scenario": "Existing startup/locale workflow now asserts fresh production page has English Undo button",
+          "risk": "Default language silently remains Russian",
+          "reuse_or_new_reason": "Extend existing startup workflow; no new runner or registration"
+        },
+        {
+          "suite": "browser/save-history/poi-lifecycle",
+          "scenario": "Existing central POI lifecycle now checks absence of empty panel plus retained name/type controls",
+          "risk": "Copy removal leaves blank UI or hides central editing",
+          "reuse_or_new_reason": "Replace obsolete paragraph expectation in existing lifecycle scenario"
+        }
+      ]
     },
-    "f01_increment": {
-      "node": {
+    "suites": [
+      {
+        "suite": "Node",
         "added": 0,
         "removed": 0,
-        "modified": 2
+        "modified": 0,
+        "setup_files_modified": [
+          "test/helpers/generation-harness.mjs"
+        ],
+        "setup_reason": "Initialize RU once for existing locale-bound generator/error/name fixtures, allow later test toggles; production default verified independently in browser",
+        "execution": {
+          "executed": 345,
+          "passed": 345,
+          "failed": 0,
+          "skipped": 0
+        },
+        "evidence": "agent-work/evidence/HX-FB-010-PR491-de02991/npm-check.log"
       },
-      "browser": {
+      {
+        "suite": "browser",
         "added": 0,
         "removed": 0,
-        "modified": 1
+        "modified": 2,
+        "top_level_workflows_with_setup_changes": 8,
+        "setup_reason": "Explicit RU preserves previous localized contracts, not new feature coverage",
+        "execution": {
+          "executed_workflows": 8,
+          "passed_workflows": 8,
+          "failed": 0,
+          "skipped": 0
+        },
+        "evidence": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42171271911"
+      },
+      {
+        "suite": "browser/RNG",
+        "added": 0,
+        "removed": 0,
+        "modified": 0,
+        "setup_files_modified": [
+          "test/browser/world-random.smoke.mjs"
+        ],
+        "execution": {
+          "executed_workflows": 1,
+          "passed_workflows": 1,
+          "failed": 0,
+          "skipped": 0
+        },
+        "reuse_or_new_reason": "Explicit RU only; same RNG checks"
+      },
+      {
+        "suite": "manual historical UI acceptance",
+        "added": 0,
+        "removed": 0,
+        "modified": 0,
+        "setup_files_modified": [
+          "scripts/hx-fb-001-ui.mjs"
+        ],
+        "execution": "conditional workflow skipped on PR; syntax/diff reviewed",
+        "reuse_or_new_reason": "Support new EN candidate and earlier RU baseline through common RU setup"
       }
-    }
+    ],
+    "temporary_diagnostics": {
+      "permanent_growth": false,
+      "suite": "Independent Chromium smoke",
+      "executed": 8,
+      "passed": 8,
+      "failed": 0,
+      "skipped": 0,
+      "profiles": "before/after × RU/EN × 1500/390",
+      "evidence": "agent-work/evidence/HX-FB-010-PR491-de02991/original-browser-diagnostic.json"
+    },
+    "initial_failed_attempts": [
+      {
+        "suite": "local npm check",
+        "status": "interrupted_after_fixture_locale_failures",
+        "reason": "Existing coastal/name expectations implicitly assumed RU; explicit locale setup fixed them",
+        "node_result": "Do not report interrupted attempt as full suite pass"
+      },
+      {
+        "suite": "CI browser c695334",
+        "run_id": 42170631129,
+        "status": "failed",
+        "reason": "Large-map profile script sought Russian Edit button on EN startup; shared script now selects RU explicitly",
+        "fix_sha": "de0299168e5a74d4e3594db71d657ca8055614e0"
+      }
+    ],
+    "ci_head_sha": "de0299168e5a74d4e3594db71d657ca8055614e0",
+    "ci_run_id": 42171271911,
+    "local_check_inputs_note": "Local npm check began at ffac05ad before final fixture-only edits; App/Node/tsc/build input content was unchanged. Final complete package passed exact-SHA CI."
   },
-  "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/490#pullrequestreview-5795695459",
+  "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/491",
   "coordination_handoff": {
     "status": "completed_actionable_outcome",
     "current_package_task_id": "HX-BL-003",
@@ -1168,7 +1258,7 @@
     "nav_status_success": 24,
     "png_captured": 4
   },
-  "evidence_ref": "agent-work/evidence/score-PR482-8b1bb56",
+  "evidence_ref": "agent-work/evidence/HX-FB-010-PR491-de02991",
   "static_diagnosis_handoff": {
     "status": "coordinated_nextstage_proposed",
     "result_ref": "agent-work/results/2026-10-27-developer-HX-BL-003-static-diagnosis.json",
@@ -1535,11 +1625,7 @@
   "actual_main_sha": "e99cb1236e152e8e6a5987af95e19d601dbc3a78",
   "future_head_sha": null,
   "future_tree_sha": null,
-  "current_package_release_approval": {
-    "status": "not_authorized",
-    "pr": 490,
-    "head_sha": "50f81251cf000d17f7f91eb96608d35ad900cfe4"
-  },
+  "current_package_release_approval": null,
   "current_risk_findings": {
     "confirmed_defects": [],
     "coverage_gap": "realReact debug toggle/nonzerocounts/currentSource refresh",
@@ -1871,8 +1957,34 @@
     23
   ],
   "schedule_decision_ref": "owner-decision-2026-10-31-team-resume-hourly",
-  "tree_sha": "0bb858e6d149aae4c7aceb17da9ff5025bcc3817",
-  "accepted_release_pending": null,
+  "tree_sha": "79b69059c70eed7430bcda93db5d72a6097695d3",
+  "accepted_release_pending": {
+    "task_id": "HX-BL-023",
+    "feedback_id": "HX-FB-010",
+    "stage_id": "central-POI-copy-and-startup-English",
+    "status": "accepted_awaiting_owner_release_approval",
+    "pr": 491,
+    "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/491",
+    "branch": "agent/hx023-remove-central-note",
+    "base_sha": "e99cb1236e152e8e6a5987af95e19d601dbc3a78",
+    "head_sha": "de0299168e5a74d4e3594db71d657ca8055614e0",
+    "tree_sha": "79b69059c70eed7430bcda93db5d72a6097695d3",
+    "release_approved": false,
+    "published": false,
+    "review_ref": "agent-work/evidence/HX-FB-010-PR491-de02991/review-report.json",
+    "score_assessment_ref": "agent-work/evidence/HX-FB-010-PR491-de02991/score-assessment.json",
+    "test_change_summary_ref": "agent-work/evidence/HX-FB-010-PR491-de02991/test-change-summary.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-06-HX-FB-010-PR491-release.json",
+    "result_ref": "agent-work/results/2026-11-06-developer-HX-FB-010-PR491.json",
+    "ui_ref": "agent-work/evidence/HX-FB-010-PR491-de02991/ui/README.md",
+    "ui_shown_in_chat": true,
+    "checks_status": "all_required_CI_passed",
+    "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42171271911",
+    "next_role": "owner",
+    "next_step": "Отдельное разрешение публикации PR491 на точном SHA de0299168e5a74d4e3594db71d657ca8055614e0",
+    "authorization_ref": "owner-decision-2026-11-06-HX-FB-010",
+    "score_status": "insufficient_evidence_no_award"
+  },
   "next_product_proposal": {
     "task_id": "HX-BL-027",
     "status": "deferred_by_owner",
@@ -1955,7 +2067,33 @@
     "condition": "Не приглашать ведущих к использованию до подтверждённой пригодности редактора; наличие кнопок само по себе не прохождение. Подготовка материалов продвижения допустима без отправки.",
     "MB_content_requirement": "Связанный второй приоритет; минимально достаточный MB-набор и критерий готовности к демонстрации зафиксировать в спецификации, не считать «и т.д.» готовым закрытым перечнем."
   },
-  "pending_publication": null,
+  "pending_publication": {
+    "task_id": "HX-BL-023",
+    "feedback_id": "HX-FB-010",
+    "stage_id": "central-POI-copy-and-startup-English",
+    "status": "accepted_awaiting_owner_release_approval",
+    "pr": 491,
+    "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/491",
+    "branch": "agent/hx023-remove-central-note",
+    "base_sha": "e99cb1236e152e8e6a5987af95e19d601dbc3a78",
+    "head_sha": "de0299168e5a74d4e3594db71d657ca8055614e0",
+    "tree_sha": "79b69059c70eed7430bcda93db5d72a6097695d3",
+    "release_approved": false,
+    "published": false,
+    "review_ref": "agent-work/evidence/HX-FB-010-PR491-de02991/review-report.json",
+    "score_assessment_ref": "agent-work/evidence/HX-FB-010-PR491-de02991/score-assessment.json",
+    "test_change_summary_ref": "agent-work/evidence/HX-FB-010-PR491-de02991/test-change-summary.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-06-HX-FB-010-PR491-release.json",
+    "result_ref": "agent-work/results/2026-11-06-developer-HX-FB-010-PR491.json",
+    "ui_ref": "agent-work/evidence/HX-FB-010-PR491-de02991/ui/README.md",
+    "ui_shown_in_chat": true,
+    "checks_status": "all_required_CI_passed",
+    "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42171271911",
+    "next_role": "owner",
+    "next_step": "Отдельное разрешение публикации PR491 на точном SHA de0299168e5a74d4e3594db71d657ca8055614e0",
+    "authorization_ref": "owner-decision-2026-11-06-HX-FB-010",
+    "score_status": "insufficient_evidence_no_award"
+  },
   "previous_pending_publication_ref": "agent-work/results/2026-10-28-developer-HX-BL-024-release.json",
   "release_score_event": {
     "task_id": "HX-BL-023",
@@ -1987,7 +2125,7 @@
     "completed_at": "2026-10-29T18:36:47.812Z",
     "result_ref": "agent-work/results/2026-10-29-analyst-HX-BL-023-direct-edit.json"
   },
-  "active_slice": "E8.2",
+  "active_slice": "HX-FB-010",
   "last_completed_stage_task_id": "HX-BL-023",
   "ui_preview": {
     "version": "E3-UI1",
@@ -2000,7 +2138,7 @@
   },
   "ui_preview_pending": false,
   "marketing_gate_status": "not_passed_full023_remains",
-  "current_task_release_approval": false,
+  "current_task_release_approval": null,
   "next_product_recommendation": {
     "task_id": "HX-BL-023",
     "stage_id": "E5",
@@ -2133,22 +2271,22 @@
   },
   "full_editor_ready": false,
   "current_task_score_assessment_status": "unknown_developer_partial_evidence_no_award",
-  "published": true,
-  "main_changed": true,
+  "published": false,
+  "main_changed": false,
   "ui_actual": {
-    "head_sha": "7ddcc218ec6871179bde8153ec589d6517f46c74",
-    "kind": "actual_combined_E7_E8",
-    "walkthrough_ref": "agent-work/evidence/review-PR490-7ddcc21/ui/README.md",
-    "manifest_ref": "agent-work/evidence/review-PR490-7ddcc21/ui/manifest.json",
-    "desktop_width": 1500,
-    "narrow_width": 390,
+    "head_sha": "de0299168e5a74d4e3594db71d657ca8055614e0",
+    "actual": true,
     "shown_in_chat": true,
+    "before_after": "agent-work/evidence/HX-FB-010-PR491-de02991/ui/README.md",
+    "desktop": "agent-work/evidence/HX-FB-010-PR491-de02991/ui/after-en-1500-central.png",
+    "narrow": "agent-work/evidence/HX-FB-010-PR491-de02991/ui/after-en-390-central.png",
     "limitations": [
-      "Sea names excluded pending stable identity",
-      "Physical touch/screen reader/full WCAG AA not verified"
+      "One headless Chromium; emulated widths, not physical device/touch/screen reader test",
+      "Some emoji render as missing glyphs in screenshot environment; existing issue, no icon changes",
+      "No publication permission for PR491"
     ]
   },
-  "review_result_ref": "agent-work/results/2026-11-06-reviewer-PR490-7ddcc21.json",
+  "review_result_ref": "agent-work/evidence/HX-FB-010-PR491-de02991/review-report.json",
   "previous_review_score_assessment_ref": "agent-work/evidence/review-HX-BL-023-E1-24fa342/score_assessment.json",
   "previous_independent_reviewer_automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
@@ -2263,10 +2401,10 @@
   "spec_blob_sha": null,
   "parent_spec_ref": "agent-work/specs/HX-BL-023.md",
   "parent_spec_version": "2.3",
-  "test_change_summary_ref": "agent-work/evidence/HX-BL-023-E5-18542ce/test-change-summary.json",
-  "programmer_score_evidence_ref": "agent-work/evidence/HX-BL-023-E5-18542ce/programmer-score-evidence.json",
-  "completed_claim_result_ref": "agent-work/results/2026-10-31-reviewer-HX-BL-023-E3-d7bb38f.json",
-  "review_evidence_ref": "agent-work/evidence/review-PR490-7ddcc21/review-report.json",
+  "test_change_summary_ref": "agent-work/evidence/HX-FB-010-PR491-de02991/test-change-summary.json",
+  "programmer_score_evidence_ref": "agent-work/evidence/HX-FB-010-PR491-de02991/review-report.json",
+  "completed_claim_result_ref": "agent-work/results/2026-11-06-developer-HX-FB-010-PR491.json",
+  "review_evidence_ref": "agent-work/evidence/HX-FB-010-PR491-de02991/review-report.json",
   "github_review_state": "independent_acceptance_recorded_COMMENT",
   "independent_reviewer_automation_health_ref": "agent-work/evidence/review-HX-BL-023-E3-d7bb38f/automation_health.json",
   "owner_visual_correction": {
@@ -2336,18 +2474,18 @@
   "previous_score_update_result_ref": "agent-work/results/2026-10-29-strategist-score-HX-BL-023-E1-8f7d172.json",
   "next_approved_stage": "E4",
   "next_approved_stage_handoff_ref": "agent-work/handoffs/2026-11-06-HX-BL-023-E8-SEA-analysis.json",
-  "authorization_status": "E8-N-SEA analysis authorized within existing all-map-names scope; release PR490 not authorized.",
-  "completed_at": "2026-11-06T05:14:37Z",
+  "authorization_status": "implementation_approved_publication_awaiting_owner",
+  "completed_at": "2026-11-06T06:06:10Z",
   "score_changed": false,
   "next_stage_id": "E8-N-SEA",
   "score_evidence_updated": true,
-  "current_stage_id": "E7+E8",
+  "current_stage_id": "central-POI-copy-and-startup-English",
   "implementation_started": true,
-  "current_stage_release_approved": true,
-  "review_ready": false,
+  "current_stage_release_approved": false,
+  "review_ready": true,
   "current_stage_ui_status": "release_preview_pending_whole_package_walkthrough",
-  "completed_claim": "agent-work/claims/2026-11-06-developer-PR490-F01.json",
-  "evidence_commit_sha": "f991a3ddcc0fcedc9d62d8c9f51f4a2f33291e9c",
+  "completed_claim": "agent-work/claims/2026-11-06-developer-central-note-removal.json",
+  "evidence_commit_sha": "45e19bda05605c960b9ba9e2dc8dce46af0a737a",
   "finding_ids": [],
   "current_release_package_ref": "agent-work/handoffs/2026-10-31-HX-BL-023-E3-release-package-d7bb38f.json",
   "current_stage_ui_preview": {
@@ -3940,7 +4078,7 @@
     "workspace_recovery": "Pruning removed old shared git metadata; fresh clone from GitHub succeeded, no request to user needed.",
     "materials_commit_sha": "64fa823e19f701817ff59d962d7b211e83aaa406"
   },
-  "current_stage_status": "published",
+  "current_stage_status": "accepted_awaiting_owner_release_approval",
   "current_stage_review_status": "accepted_exact_SHA",
   "accepted": true,
   "full_UI_pending": true,
@@ -4179,30 +4317,69 @@
     "materials_commit_sha": "317189e45278245dfced11645c528b5bff8320a9",
     "result_ref": "agent-work/results/2026-11-04-developer-HX-BL-023-E5-solver.json"
   },
-  "stage_id": "E8.2-F01",
-  "release_approved": true,
+  "stage_id": "central-POI-copy-and-startup-English",
+  "release_approved": false,
   "ui_actual_shown": true,
   "ui_actual_responsible": "developer",
   "UI_proposal_already_shown": true,
   "authorization_ref": "owner-decision-2026-10-28-editor-additional-functions-approved",
   "checks_summary": {
-    "Node": {
-      "executed": 286,
-      "passed": 286,
-      "failed": 0,
-      "skipped": 0
-    },
-    "CI_browser_scripts": {
-      "status": "success",
+    "temporary_Chromium": {
       "executed": 8,
       "passed": 8,
       "failed": 0,
       "skipped": 0
     },
-    "CI_check": "success",
-    "CI_world_random": "success",
-    "TypeScript": "passed",
-    "build": "passed"
+    "Node": {
+      "executed": 345,
+      "passed": 345,
+      "failed": 0,
+      "skipped": 0
+    },
+    "CI": {
+      "run_id": 42171271911,
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42171271911",
+      "status": "passed",
+      "head_sha": "de0299168e5a74d4e3594db71d657ca8055614e0",
+      "merge_sha": "2a9936e723ff3349e07437d0b99e5ac6b249750f",
+      "merge_tree_sha": "79b69059c70eed7430bcda93db5d72a6097695d3",
+      "jobs": [
+        {
+          "id": 127739421270,
+          "name": "check",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 127739421602,
+          "name": "world-random",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 127739421730,
+          "name": "browser",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    },
+    "browser": {
+      "executed_workflows": 8,
+      "passed_workflows": 8,
+      "failed": 0,
+      "skipped": 0
+    },
+    "RNG": {
+      "executed_workflows": 1,
+      "passed_workflows": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    "conditional_seed_UI": {
+      "status": "skipped",
+      "reason": "Workflow condition on PR; no fixture behavior claimed executed"
+    }
   },
   "full_E5_UI_pending": true,
   "materials_commit_sha": "d66fc1882d982bf71de1977869077ec56c117d06",
@@ -4821,10 +4998,10 @@
   },
   "owner_resume_dispatch_ref": "agent-work/handoffs/2026-11-04-HX-BL-023-E5-programmer-resume.json",
   "execution": {
-    "status": "ready_for_developer_claim",
+    "status": "ready_for_strategist_score_event",
     "task_id": "HX-BL-023",
-    "handoff_ref": "agent-work/handoffs/2026-11-06-PR490-50f8125-fixes.json",
-    "note": "Check claims before starting;one product implementation at a time;unrelated presentation claim is preserved"
+    "handoff_ref": "agent-work/handoffs/2026-11-06-PR490-release-score.json",
+    "note": "No active developer implementation claim. PR491 is accepted, publication awaits separate owner permission. Approved E8-N-SEA analyst work follows mandatory release accounting."
   },
   "latest_concurrent_worker_observation": {
     "run_id": "2026-11-04-developer-E5-active-worker-observation-1800",
@@ -5113,8 +5290,8 @@
       }
     }
   ],
-  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/490",
-  "active_claim_scope": "HX-BL-023",
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/491",
+  "active_claim_scope": null,
   "other_active_claims": [
     {
       "claim_ref": "agent-work/claims/2026-11-03-developer-HX-BL-041-presentation.json",
@@ -5269,5 +5446,60 @@
     "approval_ref": "owner-decision-2026-11-06-rating-v1.4-approved",
     "vision_pointer_status": "blocked_auto_review; historical pointer remains"
   },
-  "publication_ref": "agent-work/evidence/release-PR490-e99cb12/publication.json"
+  "publication_ref": "agent-work/evidence/release-PR490-e99cb12/publication.json",
+  "spec_amendment_ref": "agent-work/approvals/2026-11-06-HX-FB-010.json",
+  "latest_HX_FB_010": {
+    "task_id": "HX-BL-023",
+    "feedback_id": "HX-FB-010",
+    "stage_id": "central-POI-copy-and-startup-English",
+    "status": "accepted_awaiting_owner_release_approval",
+    "pr": 491,
+    "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/491",
+    "branch": "agent/hx023-remove-central-note",
+    "base_sha": "e99cb1236e152e8e6a5987af95e19d601dbc3a78",
+    "head_sha": "de0299168e5a74d4e3594db71d657ca8055614e0",
+    "tree_sha": "79b69059c70eed7430bcda93db5d72a6097695d3",
+    "release_approved": false,
+    "published": false,
+    "review_ref": "agent-work/evidence/HX-FB-010-PR491-de02991/review-report.json",
+    "score_assessment_ref": "agent-work/evidence/HX-FB-010-PR491-de02991/score-assessment.json",
+    "test_change_summary_ref": "agent-work/evidence/HX-FB-010-PR491-de02991/test-change-summary.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-06-HX-FB-010-PR491-release.json",
+    "result_ref": "agent-work/results/2026-11-06-developer-HX-FB-010-PR491.json",
+    "ui_ref": "agent-work/evidence/HX-FB-010-PR491-de02991/ui/README.md",
+    "ui_shown_in_chat": true,
+    "checks_status": "all_required_CI_passed",
+    "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42171271911",
+    "next_role": "owner",
+    "next_step": "Отдельное разрешение публикации PR491 на точном SHA de0299168e5a74d4e3594db71d657ca8055614e0",
+    "authorization_ref": "owner-decision-2026-11-06-HX-FB-010",
+    "score_status": "insufficient_evidence_no_award",
+    "completed_at": "2026-11-06T06:06:10Z",
+    "automation_health_ref": "agent-work/evidence/HX-FB-010-PR491-de02991/automation-health.json"
+  },
+  "prior_latest_before_HX_FB_010": {
+    "run_id": "2026-11-06-developer-release-PR490",
+    "status": "published_score_update_pending",
+    "result_path": "agent-work/results/2026-11-06-developer-release-PR490.json",
+    "pr": 490,
+    "head_sha": "7ddcc218ec6871179bde8153ec589d6517f46c74",
+    "release_result": {
+      "task_id": "HX-BL-023",
+      "stage_id": "E7+E8",
+      "pr": 490,
+      "status": "published",
+      "head_sha": "7ddcc218ec6871179bde8153ec589d6517f46c74",
+      "merge_sha": "e99cb1236e152e8e6a5987af95e19d601dbc3a78",
+      "release_sha": "e99cb1236e152e8e6a5987af95e19d601dbc3a78",
+      "tree_sha": "0bb858e6d149aae4c7aceb17da9ff5025bcc3817",
+      "release_approved": true,
+      "approval_ref": "owner-release-2026-11-06-PR490-7ddcc21",
+      "publication_ref": "agent-work/evidence/release-PR490-e99cb12/publication.json",
+      "deployment_run_id": 42165282234,
+      "score_update_status": "pending",
+      "score_update_responsible": "strategist_manager",
+      "score_update_handoff_ref": "agent-work/handoffs/2026-11-06-PR490-release-score.json",
+      "full_editor_ready": false
+    }
+  }
 }
