@@ -1,0 +1,109 @@
+{
+  "schema_version": 1,
+  "version": "research-method-1.0",
+  "status": "active_qualitative_collection_contract_no_numeric_rating_change",
+  "active_numeric_method": "Resolve through agent-work/latest.json and agent-work/process.md on every run",
+  "baseline_formula": {
+    "D": "M*p_s*T_s",
+    "U": "D*R_s*C_s",
+    "scenarios": [
+      "create",
+      "develop",
+      "play_now"
+    ],
+    "overlap": "Do not sum people across games, editions or scenarios",
+    "uncalibrated_priors": "Existing K/G/p and acquisition coefficients remain expert hypotheses, not measured conversions"
+  },
+  "rating_change_gate": {
+    "required": true,
+    "approval_scope": "Exact proposal ID and version; any active numeric/rank/membership/method change",
+    "pending_does_not_block_research": true
+  },
+  "signal_types": [
+    {
+      "id": "platform_sales",
+      "measures": "Copies sold/downloaded, paid/free/PWYW, base/supplement/edition, period",
+      "valid_use": "Audience scale evidence with purchaser-to-GM uncertainty",
+      "do_not": "Invent hidden itch/DriveThruRPG sales or turn reviews/badges into exact active GMs"
+    },
+    {
+      "id": "crowdfunding",
+      "measures": "Historical backers or orders of exact campaign",
+      "valid_use": "Historical interest anchor",
+      "do_not": "Add overlapping campaigns or treat backers as current GMs"
+    },
+    {
+      "id": "gm_materials",
+      "measures": "Independent author/project own-map preparation or played campaign",
+      "valid_use": "Validate actual use case and unresolved map need",
+      "do_not": "Treat modules/translations/chapters as independent people or derive p without denominator"
+    },
+    {
+      "id": "search_interest",
+      "measures": "Query series with date/region/language/normalization anchor",
+      "valid_use": "Interest change/comparison within compatible measurement",
+      "do_not": "Use search result counts or incomparable normalized series as volume"
+    },
+    {
+      "id": "video",
+      "measures": "Dated content/metadata/transcript, author/channel and actual map task",
+      "valid_use": "Use-case and attention evidence",
+      "do_not": "Equate views with GMs or reviews with map creation"
+    },
+    {
+      "id": "club_campaigns",
+      "measures": "Deduplicated public GM identifiers, system/edition, location/language, campaign/one-shot, frequency, announced/ran/cancelled",
+      "valid_use": "Observable organised-play system use and formats in bounded sample",
+      "do_not": "Multiply slots into unique GMs, conflate names or extrapolate club census to whole market"
+    },
+    {
+      "id": "events",
+      "measures": "Deduplicated event-system slots/GMs/formats/date and scheduled/ran status",
+      "valid_use": "Bounded popularity/attention evidence",
+      "do_not": "Infer map/hexcrawl prevalence from convention one-shots"
+    },
+    {
+      "id": "awards",
+      "measures": "Official category/year/nomination/win and exact core/supplement/edition",
+      "valid_use": "Visibility, candidate discovery, dated attention hypothesis",
+      "do_not": "Apply audience bonus or claim causal acquisition without validated data"
+    },
+    {
+      "id": "reddit",
+      "measures": "Public dated permalinks, author/project, subreddit, post type, edition/format; crosspost keys",
+      "valid_use": "Find actual play/maps/LFG/unmet needs and new candidates",
+      "do_not": "Equate votes/subscribers/comments/promotions to active GMs or completed campaigns"
+    },
+    {
+      "id": "vtt_and_community",
+      "measures": "Platform-specific dated accounts/campaigns/usage under published definitions",
+      "valid_use": "Qualified proxy with platform and role bias",
+      "do_not": "Use all players/platform users as suitable regional-map GMs"
+    }
+  ],
+  "new_signal_type_required_fields": [
+    "id",
+    "definition",
+    "unit",
+    "period",
+    "geography_language",
+    "population_or_sampling_frame",
+    "availability_and_access",
+    "deduplication",
+    "biases",
+    "target_variable",
+    "calibration_or_qualitative_only",
+    "uncertainty",
+    "validation_or_falsification",
+    "numeric_effect_proposal_ref"
+  ],
+  "extensions": [],
+  "experiments": [],
+  "change_log": [
+    {
+      "date": "2026-11-06",
+      "reason": "Owner requested hourly adaptive research, high-ranked games, L1 then L2 then L3, owner approval of rating changes; added sales/club/event/award/Reddit signals",
+      "numeric_rating_changed": false
+    }
+  ]
+}

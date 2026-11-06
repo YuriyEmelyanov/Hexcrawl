@@ -1,0 +1,448 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "HexCrawl research records",
+  "description": "Required structure for future research facts, decisions and handoffs; existing rule matrices use their established schema.",
+  "$defs": {
+    "observation": {
+      "type": "object",
+      "required": [
+        "id",
+        "game_ids",
+        "source",
+        "observed_fact",
+        "interpretation",
+        "signal_type",
+        "quantity",
+        "unit",
+        "period",
+        "geography_language",
+        "author_project_key",
+        "duplicate_of",
+        "access_level",
+        "scenario_relevance",
+        "limitations",
+        "observed_at"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "game_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "source": {
+          "type": "object",
+          "required": [
+            "url_or_ref",
+            "locator",
+            "published_at"
+          ],
+          "properties": {
+            "url_or_ref": {
+              "type": "string"
+            },
+            "locator": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "published_at": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        },
+        "observed_fact": {
+          "type": "string"
+        },
+        "interpretation": {
+          "type": "string"
+        },
+        "signal_type": {
+          "type": "string"
+        },
+        "quantity": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "unit": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "period": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "geography_language": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "author_project_key": {
+          "type": "string"
+        },
+        "duplicate_of": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "access_level": {
+          "enum": [
+            "full_text",
+            "metadata",
+            "search_snippet",
+            "unavailable"
+          ]
+        },
+        "scenario_relevance": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "create",
+              "develop",
+              "play_now",
+              "popularity_only",
+              "unknown"
+            ]
+          }
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "observed_at": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": true
+    },
+    "rating_proposal": {
+      "type": "object",
+      "required": [
+        "proposal_id",
+        "version",
+        "status",
+        "base_ranking_ref",
+        "base_ranking_sha",
+        "method_version_before",
+        "method_version_candidate",
+        "affected_games",
+        "before_after",
+        "evidence_refs",
+        "reason",
+        "uncertainty_and_sensitivity",
+        "cohort_impact",
+        "owner_approval_ref"
+      ],
+      "properties": {
+        "proposal_id": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "draft",
+            "awaiting_owner_approval",
+            "approved",
+            "rejected",
+            "superseded",
+            "applied"
+          ]
+        },
+        "base_ranking_ref": {
+          "type": "string"
+        },
+        "base_ranking_sha": {
+          "type": "string"
+        },
+        "method_version_before": {
+          "type": "string"
+        },
+        "method_version_candidate": {
+          "type": "string"
+        },
+        "affected_games": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "before_after": {
+          "type": "array"
+        },
+        "evidence_refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "reason": {
+          "type": "string"
+        },
+        "uncertainty_and_sensitivity": {
+          "type": "string"
+        },
+        "cohort_impact": {
+          "type": "string"
+        },
+        "owner_approval_ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": true
+    },
+    "product_task_handoff": {
+      "type": "object",
+      "required": [
+        "task_id",
+        "title",
+        "status",
+        "problem",
+        "benefit",
+        "game_editions",
+        "primary_scenario",
+        "layer",
+        "requirement_refs",
+        "canonical_rule_ids",
+        "binding_refs",
+        "criterion_ids",
+        "scope",
+        "dependencies",
+        "acceptance_checks",
+        "expected_evidence",
+        "score_delta",
+        "source_limitations"
+      ],
+      "properties": {
+        "task_id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "status": {
+          "const": "proposed"
+        },
+        "primary_scenario": {
+          "enum": [
+            "create",
+            "develop",
+            "play_now"
+          ]
+        },
+        "layer": {
+          "enum": [
+            "L1",
+            "L2",
+            "L3"
+          ]
+        },
+        "requirement_refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "canonical_rule_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "binding_refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "criterion_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "score_delta": {
+          "type": [
+            "number",
+            "null",
+            "string"
+          ]
+        }
+      },
+      "additionalProperties": true
+    },
+    "run_result": {
+      "type": "object",
+      "required": [
+        "run_id",
+        "selected_task",
+        "selection_reason",
+        "alternatives",
+        "inputs_and_versions",
+        "findings",
+        "changed_refs",
+        "rating_proposal_refs",
+        "product_task_refs",
+        "verification",
+        "automation_health",
+        "checkpoint",
+        "next_candidate"
+      ],
+      "properties": {
+        "run_id": {
+          "type": "string"
+        },
+        "selected_task": {
+          "type": "object"
+        },
+        "selection_reason": {
+          "type": "string"
+        },
+        "alternatives": {
+          "type": "array"
+        },
+        "inputs_and_versions": {
+          "type": "object"
+        },
+        "findings": {
+          "type": "array"
+        },
+        "changed_refs": {
+          "type": "array"
+        },
+        "rating_proposal_refs": {
+          "type": "array"
+        },
+        "product_task_refs": {
+          "type": "array"
+        },
+        "verification": {
+          "type": "object"
+        },
+        "automation_health": {
+          "type": "object"
+        },
+        "checkpoint": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "next_candidate": {
+          "type": [
+            "object",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": true
+    },
+    "operational_requirement": {
+      "type": "object",
+      "required": [
+        "source_rule_ref",
+        "normative_kind",
+        "applicability",
+        "layer",
+        "trigger_or_user_action",
+        "inputs_and_units",
+        "product_operation",
+        "expected_output",
+        "constraints_and_exceptions",
+        "acceptance_cases",
+        "source_vs_product_interpretation",
+        "canonical_rule_refs",
+        "unresolved_parameters"
+      ],
+      "properties": {
+        "source_rule_ref": {
+          "type": "string"
+        },
+        "normative_kind": {
+          "type": "string"
+        },
+        "applicability": {
+          "type": "string"
+        },
+        "layer": {
+          "enum": [
+            "L1",
+            "L2",
+            "L3"
+          ]
+        },
+        "trigger_or_user_action": {
+          "type": "string"
+        },
+        "inputs_and_units": {
+          "type": "object"
+        },
+        "product_operation": {
+          "type": "string"
+        },
+        "expected_output": {
+          "type": "string"
+        },
+        "constraints_and_exceptions": {
+          "type": "array"
+        },
+        "acceptance_cases": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "given",
+              "when",
+              "expected"
+            ],
+            "properties": {
+              "given": {
+                "type": "string"
+              },
+              "when": {
+                "type": "string"
+              },
+              "expected": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "source_vs_product_interpretation": {
+          "type": "string"
+        },
+        "canonical_rule_refs": {
+          "type": "array"
+        },
+        "unresolved_parameters": {
+          "type": "array"
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "type": "object"
+}
