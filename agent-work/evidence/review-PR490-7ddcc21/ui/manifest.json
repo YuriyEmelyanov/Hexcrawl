@@ -1,0 +1,137 @@
+{
+  "before_release_sha": "2ef5cc35107f299c309b7c8065a1e81ca9881278",
+  "package_sha": "7ddcc218ec6871179bde8153ec589d6517f46c74",
+  "source_tree": "0bb858e6d149aae4c7aceb17da9ff5025bcc3817",
+  "version": "PR490-7ddcc21-combined-v1",
+  "kind": "actual_implementation",
+  "steps": [
+    {
+      "id": "01-release-read",
+      "title": "До: опубликованная версия E6",
+      "note": "Тот же пример карты на выпущенном SHA 2ef5cc3.",
+      "files": [
+        "01-release-read-1500.png",
+        "01-release-read-390.png"
+      ]
+    },
+    {
+      "id": "02-release-edit",
+      "title": "До: редактирование E6",
+      "note": "Перенос точки и команды изменения региона ещё отсутствуют.",
+      "files": [
+        "02-release-edit-1500.png",
+        "02-release-edit-390.png"
+      ]
+    },
+    {
+      "id": "03-package-read",
+      "title": "После: просмотр карты",
+      "note": "Выбран гекс 2/0; просмотр карты не открывает редактор.",
+      "files": [
+        "03-package-read-1500.png",
+        "03-package-read-390.png"
+      ]
+    },
+    {
+      "id": "04-package-edit",
+      "title": "Редактирование выбранного региона",
+      "note": "Команды высоты и передачи гекса доступны в существующей панели.",
+      "files": [
+        "04-package-edit-1500.png",
+        "04-package-edit-390.png"
+      ]
+    },
+    {
+      "id": "05-region-preview",
+      "title": "Предпросмотр изменения региона",
+      "note": "Высота и совместимый биом заданы вместе. JSON содержит только принятую карту.",
+      "files": [
+        "05-region-preview-1500.png",
+        "05-region-preview-390.png"
+      ]
+    },
+    {
+      "id": "06-region-done",
+      "title": "Готово: изменение принято",
+      "note": "Высота и биом применены одной операцией.",
+      "files": [
+        "06-region-done-1500.png",
+        "06-region-done-390.png"
+      ]
+    },
+    {
+      "id": "07-region-undo",
+      "title": "Отмена восстанавливает карту",
+      "note": "Полный экспорт совпадает с состоянием до изменения.",
+      "files": [
+        "07-region-undo-1500.png",
+        "07-region-undo-390.png"
+      ]
+    },
+    {
+      "id": "08-poi-preview",
+      "title": "Перенос точки: 2/0 → 3/0",
+      "note": "Цель — пустой геометрический центр другого региона; центрального объекта там нет.",
+      "files": [
+        "08-poi-preview-1500.png",
+        "08-poi-preview-390.png"
+      ]
+    },
+    {
+      "id": "09-poi-ordinary",
+      "title": "Исправлено: обычная точка остаётся обычной",
+      "note": "Доступны обычные типы и «Нет точки»; редактор центрального объекта не появляется.",
+      "files": [
+        "09-poi-ordinary-1500.png",
+        "09-poi-ordinary-390.png"
+      ]
+    },
+    {
+      "id": "10-poi-name",
+      "title": "Имя той же точки на двух языках",
+      "note": "Авторская пара сохраняется вместе; точка доступна для дальнейшего переноса.",
+      "files": [
+        "10-poi-name-1500.png",
+        "10-poi-name-390.png"
+      ]
+    },
+    {
+      "id": "11-poi-refusal",
+      "title": "Понятный отказ: точка связана с путём #89",
+      "note": "Карта сохранена. Предлагается посмотреть зависимый путь; случайного обхода нет.",
+      "files": [
+        "11-poi-refusal-1500.png",
+        "11-poi-refusal-390.png"
+      ]
+    },
+    {
+      "id": "12-stable-path-name",
+      "title": "Имена путей и связанных объектов",
+      "note": "Единая форма имени применяется к устойчивым объектам: пути, препятствия, переправы, пороги и водопады. Моря исключены.",
+      "files": [
+        "12-stable-path-name-1500.png",
+        "12-stable-path-name-390.png"
+      ]
+    }
+  ],
+  "limitations": [
+    "Пакет принят независимой проверкой только на точном SHA 7ddcc218; любое изменение требует новой проверки.",
+    "Слияние и публикация не разрешены без отдельного решения владельца.",
+    "Имена морей исключены: нет устойчивого ID и контракта split/merge.",
+    "Удаление авторски именованной POI требует явной очистки имени.",
+    "Реальные центральные POI не переносятся; геометрические центр и якорь защищены E7."
+  ],
+  "assertions": {
+    "preview_export_unchanged": true,
+    "region_done_and_exact_undo": true,
+    "ordinary_type_no_central_duplicate": true,
+    "bilingual_name_and_exact_history": true,
+    "path_refusal_unchanged": true
+  },
+  "errors": [],
+  "alerts": [],
+  "shown_in_chat": false,
+  "reviewer_verification": "accepted_exact_SHA_for_E7_E8_code_review",
+  "owner_presentation_status": "prepared_for_current_result_message",
+  "review_report": "agent-work/evidence/review-PR490-7ddcc21/review-report.json"
+}
