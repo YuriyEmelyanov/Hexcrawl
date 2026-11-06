@@ -3457,13 +3457,14 @@
       "rating_changes_require_owner_approval": true,
       "score_delta": null,
       "latest_completed_bounded_stage": {
-        "run_id": "2026-11-06T0330-PF2-L1-hex-scale",
-        "result_ref": "agent-work/research/runs/2026-11-06T0330-PF2-L1-hex-scale.json",
-        "status": "one_existing_requirement_operationalized_no_product_implementation",
-        "proposed_task_id": "HX-BL-042",
-        "active_ranking_changed": false
+        "run_id": "2026-11-06-KNAVE2-full-thematic-audit",
+        "result_ref": "agent-work/research/runs/2026-11-06-KNAVE2-full-thematic-audit.json",
+        "status": "full_supplied_book_thematic_inventory_complete_parameter_questions_open",
+        "source_rules": 60,
+        "applicable_requirements": 78,
+        "product_coverage": "unverified"
       },
-      "next_step": "Выполнить обязательную полную тематическую выборку правил финальной Knave 2e: сначала доступ к первичному тексту и ledger всей книги, затем правила карты, связанные таблицы и ведение гекскроула. Матрица как DND5/PF2, operational_requirement, поиск аналогов в общем реестре. Не ограничивать двумя предполагаемыми доработками.",
+      "next_step": "Select next high-value L1 gap: verify common table engine/editor reuse on exact published SHA and resolve only the Knave profile decisions needed for an actionable implementation slice.",
       "pending_rating_proposal_refs": [
         "agent-work/research/proposals/HX-RSR-001-RANK-20261106-v1.4.json"
       ],
@@ -3578,7 +3579,1541 @@
           "HX-BL-031 safe extension, not physical units",
           "HX-BL-023 document editing/history reused, active scope unchanged"
         ]
-      }
+      },
+      "additional_requirement_refs": [
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-005-L1"
+      ],
+      "additional_binding_refs": [
+        "agent-work/rules/game-bindings.json#KNAVE2-005-L1"
+      ],
+      "source_profile_notes": "Knave source6miles; geometric measurement convention unknown. Do not silently reuse PF2 twelve-mile corner convention or activate inferred geometry."
+    },
+    {
+      "task_id": "HX-BL-043",
+      "title": "Выбирать и сохранять POI по связанным таблицам",
+      "status": "proposed",
+      "problem": "Source-backed operations are now specified; exact product coverage remains unknown and must be audited before implementation scope is finalized.",
+      "benefit": "Проверяемый результат для мастера и переиспользуемая операция вместо отдельной копии функции на игру.",
+      "game_editions": [
+        "Knave2e RU Torbin1.0 2024; existing DND/PF2 only where matching component profiles are verified"
+      ],
+      "primary_scenario": "create",
+      "layer": "L1",
+      "requirement_refs": [
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-013-L1",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-017-L1",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-020-L1",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-034-L1",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-035-L1",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-037-L1",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-038-L1",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-039-L1",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-040-L1",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-044-L1",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-045-L1",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-050-L1",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-051-L1",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-052-L1",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-053-L1",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-054-L1",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-056-L1",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-058-L1",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-062-L1",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-070-L1",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-071-L1"
+      ],
+      "canonical_rule_ids": [
+        "content.adventure_hooks",
+        "content.discovery_levels",
+        "content.place_description",
+        "content.roll_table_resolution",
+        "content.site_density",
+        "content.site_links",
+        "content.static_hazard",
+        "content.tracks_and_ground",
+        "map.resource_availability",
+        "map.routes_and_barriers",
+        "map.settlement_resources"
+      ],
+      "binding_refs": [
+        "agent-work/rules/game-bindings.json#KNAVE2-013-L1",
+        "agent-work/rules/game-bindings.json#KNAVE2-017-L1",
+        "agent-work/rules/game-bindings.json#KNAVE2-020-L1",
+        "agent-work/rules/game-bindings.json#KNAVE2-034-L1",
+        "agent-work/rules/game-bindings.json#KNAVE2-035-L1",
+        "agent-work/rules/game-bindings.json#KNAVE2-037-L1",
+        "agent-work/rules/game-bindings.json#KNAVE2-038-L1",
+        "agent-work/rules/game-bindings.json#KNAVE2-039-L1",
+        "agent-work/rules/game-bindings.json#KNAVE2-040-L1",
+        "agent-work/rules/game-bindings.json#KNAVE2-044-L1",
+        "agent-work/rules/game-bindings.json#KNAVE2-045-L1",
+        "agent-work/rules/game-bindings.json#KNAVE2-050-L1",
+        "agent-work/rules/game-bindings.json#KNAVE2-051-L1",
+        "agent-work/rules/game-bindings.json#KNAVE2-052-L1",
+        "agent-work/rules/game-bindings.json#KNAVE2-053-L1",
+        "agent-work/rules/game-bindings.json#KNAVE2-054-L1",
+        "agent-work/rules/game-bindings.json#KNAVE2-056-L1",
+        "agent-work/rules/game-bindings.json#KNAVE2-058-L1",
+        "agent-work/rules/game-bindings.json#KNAVE2-062-L1",
+        "agent-work/rules/game-bindings.json#KNAVE2-070-L1",
+        "agent-work/rules/game-bindings.json#KNAVE2-071-L1"
+      ],
+      "criterion_ids": [
+        "S01-C02",
+        "S01-C04",
+        "S01-C05",
+        "S04-C03",
+        "S05-C01",
+        "S05-C02",
+        "S05-C03",
+        "S06-C03",
+        "S06-C04",
+        "S06-C05",
+        "S07-C01",
+        "S07-C02"
+      ],
+      "scope": "Общий выбор/бросок таблиц, связанные результаты, явная интерпретация мастера и свойства выбранных мест; сначала проверить существующий генератор MB и редактор. Привязка игрового профиля к классическому режиму — отдельная UX-конкретизация, не новая генерация географии.",
+      "dependencies": [
+        "HX-BL-013",
+        "HX-BL-023",
+        "HX-BL-041"
+      ],
+      "acceptance_checks": [
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-013-L1",
+          "given": "Регион R и таблица T",
+          "when": "Привязать T к R, сохранить и загрузить",
+          "expected": "У R table_ref=T; конкретное логово на карте не создано.",
+          "id": "KNAVE2-013-L1-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-017-L1",
+          "given": "H, таблица «Знаки» p10, фиксированный бросок 1",
+          "when": "Разместить знак",
+          "expected": "Создан знак «Спор», source=p10,row1; монстр автоматически не создан.",
+          "id": "KNAVE2-017-L1-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-020-L1",
+          "given": "H, таблица «Локации» p10, фиксированный бросок 1",
+          "when": "Добавить POI",
+          "expected": "Создан один POI типа «Пепелище», source=p10,row1.",
+          "id": "KNAVE2-020-L1-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-020-L1",
+          "given": "H, таблица «Постройки» p11 с броском 1; таблица «Свойства мест» p11 с броском 1",
+          "when": "Добавить POI со свойством",
+          "expected": "Создано одно «Аббатство» со свойством «Пепельный»; оба источника и броска сохранены.",
+          "id": "KNAVE2-020-L1-AC02"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-020-L1",
+          "given": "H, таблица «Подземелья» p16 с броском 1",
+          "when": "Добавить POI",
+          "expected": "Создан один POI «Лаборатория алхимии»; сетка комнат не генерируется автоматически.",
+          "id": "KNAVE2-020-L1-AC03"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-020-L1",
+          "given": "Существующая карта содержит POI A",
+          "when": "Добавить POI B в H, сохранить и загрузить",
+          "expected": "POI A сохранён; POI B находится в H с тем же ID; другие гексы и рельеф не перегенерированы.",
+          "id": "KNAVE2-020-L1-AC04"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-034-L1",
+          "given": "В H есть лес и POI A; выбран №27 уровень2, материал лёд, принята линия80ft",
+          "when": "Разместить эффект и сохранить/загрузить карту",
+          "expected": "Есть отдельная ледяная стена80×5×10ft с причиной spell27; лес, A и соседние гексы прежние.",
+          "id": "KNAVE2-034-L1-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-035-L1",
+          "given": "До эффекта у группы0пайков,0запасного снаряжения; выбран уровень3",
+          "when": "Применить №45",
+          "expected": "Создан дом с3комнатами на1день; safe_haven=false; пайки и снаряжение по-прежнему0.",
+          "id": "KNAVE2-035-L1-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-037-L1",
+          "given": "Создан P с2доменами; SпосвящёнP; RсвязанP",
+          "when": "ПереименоватьS и сохранить/загрузить",
+          "expected": "S по устойчивомуID по-прежнему ведёткP; R связансP; доменовPдва.",
+          "id": "KNAVE2-037-L1-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-038-L1",
+          "given": "Пустойtown, фиксированныйd6=1, затем в отдельном fixture d6=4 и6",
+          "when": "Применить профиль",
+          "expected": "Созданы соответственно1,4,6святилищ; недопустимые0/7отвергнуты до изменения карты.",
+          "id": "KNAVE2-038-L1-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-038-L1",
+          "given": "Village, обычные условия; затем мастер задаёт исключение2",
+          "when": "Сначала применить обычное предложение, затем ручное исключение",
+          "expected": "Предложено1, ручное2 сохранено как исключение; система не принуждает возвратк1.",
+          "id": "KNAVE2-038-L1-AC02"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-038-L1",
+          "given": "City, явный каталог P1/P2/P3",
+          "when": "Сформировать предложение святилищ",
+          "expected": "Представлены все3из переданного каталога; при неизвестной полноте каталога результат не помечен как полный пантеон.",
+          "id": "KNAVE2-038-L1-AC03"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-039-L1",
+          "given": "PчерезS далQ, цельQ находитсяX, реликвияR связанаP",
+          "when": "СохранитьQ и открытьсвязи",
+          "expected": "Q имеетsource/return S и цельX; X не заменяетS; благословение не выдано автоматически.",
+          "id": "KNAVE2-039-L1-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-040-L1",
+          "given": "P—затерянные руины, выбран ресурсI, объёмдобычи неизвестен",
+          "when": "Добавить ресурс и сохранить/загрузить",
+          "expected": "I привязанP; yield=null, respawn=null; таблица карты не заполняет все соседние гексы тем же растением.",
+          "id": "KNAVE2-040-L1-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-044-L1",
+          "given": "Небольшаядеревня, предметrare=секстант; stockunknown",
+          "when": "Показатьснабжение",
+          "expected": "Редкаякатегориянепредлагаетсякакдоступнаяпообычномупрофилю; stockостаётсяunknown.",
+          "id": "KNAVE2-044-L1-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-044-L1",
+          "given": "Крупныйгород, rareпредмет",
+          "when": "Показатьснабжение",
+          "expected": "Категориядопустима; ориентир100+монет, нефиксированные100; наличиенеутверждено.",
+          "id": "KNAVE2-044-L1-AC02"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-044-L1",
+          "given": "Любоепоселение, commonпредмет",
+          "when": "Показатькатегорию",
+          "expected": "Обычнаякатегориядопустима; конкретныйостатокневымышлен.",
+          "id": "KNAVE2-044-L1-AC03"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-045-L1",
+          "given": "Признак места ссылается на таблицу «Цвет» p37; задан следующий бросок1.",
+          "when": "Разрешить ссылку по общему правилу.",
+          "expected": "Сохранён «Ядовито-зеленый» и provenance p37/row1; биом и соседние места не изменены.",
+          "id": "KNAVE2-045-L1-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-045-L1",
+          "given": "Первый переход привёл в «Качества» p28,row69, которая снова является ссылкой; выбрана рекомендованная политика следующей строки.",
+          "when": "Применить общий resolver.",
+          "expected": "Выбрана строка70 той же таблицы, «Планарный»; исходная строка69 и сдвиг сохранены; третий бросок не выполняется.",
+          "id": "KNAVE2-045-L1-AC02"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-050-L1",
+          "given": "S has no prompts; city_theme=1, building=1",
+          "when": "Generate those two requested fields",
+          "expected": "S.theme=Алхимия and S.building_prompt=Академия; S coordinates unchanged.",
+          "id": "KNAVE2-050-L1-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-050-L1",
+          "given": "S already has a GM-edited theme",
+          "when": "Select street_detail=100",
+          "expected": "Add Пролившееся вино only to requested street detail; preserve edited theme.",
+          "id": "KNAVE2-050-L1-AC02"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-051-L1",
+          "given": "P selected; tavern1=2, tavern2=3, food_detail=1, food=1",
+          "when": "Generate requested values",
+          "expected": "Store name components Орущий + Топор and menu components Вяленый + Желудь; no ration inventory increment.",
+          "id": "KNAVE2-051-L1-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-051-L1",
+          "given": "P.name has a manual edit",
+          "when": "Reroll menu only to food_detail=100 and food=100",
+          "expected": "Menu becomes Завернутый + Ямс; manual name preserved.",
+          "id": "KNAVE2-051-L1-AC02"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-052-L1",
+          "given": "P selected; faction=1, trait=1",
+          "when": "Generate faction context",
+          "expected": "Attach Гильдия актеров with Активисты; create no territorial polygons.",
+          "id": "KNAVE2-052-L1-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-052-L1",
+          "given": "P and Q explicitly selected; faction=100, trait=100",
+          "when": "Attach one shared faction context",
+          "expected": "Description is Орда зомби + Молодые and references P/Q; no duplicate independent faction created for each place.",
+          "id": "KNAVE2-052-L1-AC02"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-053-L1",
+          "given": "A and B exist; mission=11, reward=69",
+          "when": "Generate hook and choose B",
+          "expected": "Hook asks to map place B; reward prompt is Карта местности; no free reveal or completion.",
+          "id": "KNAVE2-053-L1-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-053-L1",
+          "given": "mission=58 and no target chosen",
+          "when": "Generate mission prompt",
+          "expected": "Save Найти подземелье with target=null and needs_target status; do not invent a dungeon position.",
+          "id": "KNAVE2-053-L1-AC02"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-054-L1",
+          "given": "S category=деревня",
+          "when": "Apply profile",
+          "expected": "Worker dice=1d10 and mercenary dice=1d6.",
+          "id": "KNAVE2-054-L1-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-054-L1",
+          "given": "S category=большой город",
+          "when": "Apply profile",
+          "expected": "Worker dice=10d10 and mercenary dice=10d6; do not infer population from category.",
+          "id": "KNAVE2-054-L1-AC02"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-056-L1",
+          "given": "S explicitly classified as village only; ordinary expert requested",
+          "when": "Open expert services",
+          "expected": "Ordinary service allowed at600 coins/month; count remains unknown.",
+          "id": "KNAVE2-056-L1-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-056-L1",
+          "given": "S explicitly classified as город; rare expert requested",
+          "when": "Open expert services",
+          "expected": "Rare category allowed at2400 coins/month; do not roll1d10 experts.",
+          "id": "KNAVE2-056-L1-AC02"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-058-L1",
+          "given": "P has contact N with manual name; profession=1, goal=67",
+          "when": "Generate profession and goal only",
+          "expected": "Keep name; store profession Аббат and goal Составить карту местности.",
+          "id": "KNAVE2-058-L1-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-058-L1",
+          "given": "Requested surname1=1,surname2=1",
+          "when": "Generate surname components",
+          "expected": "Store Аддер- + -болд as separate source values; combined display spelling is an editable product interpretation.",
+          "id": "KNAVE2-058-L1-AC02"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-062-L1",
+          "given": "Hidden place P with visible clue C; smell=1,sound=100",
+          "when": "Generate sensory clues for C",
+          "expected": "C stores Кислота and Визг; P remains hidden and no numeric radius appears.",
+          "id": "KNAVE2-062-L1-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-062-L1",
+          "given": "smell=34 references Element p29",
+          "when": "Resolve smell row only",
+          "expected": "Record pending reference to Element p29 because the follow-up index was not supplied; status=pending_reference_input, no final sensory result yet and no hazard damage.",
+          "id": "KNAVE2-062-L1-AC02"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-070-L1",
+          "given": "Синтетическая таблица A: строка37 содержит payload37; местоP без содержимого.",
+          "when": "Вручную выбрать строку37.",
+          "expected": "P получает payload37, provenance A/37; RNG не вызывается.",
+          "id": "KNAVE2-070-L1-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-070-L1",
+          "given": "Синтетическая A[1] ссылается наB; B[7] содержит payloadB7.",
+          "when": "Задать броски1 и7.",
+          "expected": "Сохранены A/1→B/7 и payloadB7; не выполняется третий бросок.",
+          "id": "KNAVE2-070-L1-AC02"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-070-L1",
+          "given": "Синтетическая A[1]→B, B[8]→C, B[9] содержит payloadB9.",
+          "when": "Задать броски1 и8 и включить рекомендованную политику следующей записи.",
+          "expected": "Выбран B/9, сохранены исходный8 и причина сдвига; таблицаC не бросается.",
+          "id": "KNAVE2-070-L1-AC03"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-070-L1",
+          "given": "Индекс0,101 или дробь2.5 для таблицы100строк.",
+          "when": "Попытаться применить результат.",
+          "expected": "Нет записи результата/измененияP; вход отвергнут как недопустимый.",
+          "id": "KNAVE2-070-L1-AC04"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-070-L1",
+          "id": "KNAVE2-070-L1-AC05",
+          "given": "A[1]→B; B[100] is another reference and no following row exists.",
+          "when": "Apply recommended second-reference policy.",
+          "expected": "Show unresolved edge and preserve A/1→B/100; require an explicit manual choice. Do not silently wrap to B/1 or roll a third table."
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-070-L1",
+          "id": "KNAVE2-070-L1-AC06",
+          "given": "A[1]→B; B[8]→C and next B[9] is also a reference.",
+          "when": "Apply recommended second-reference policy.",
+          "expected": "Show unresolved edge and preserve provenance; no unbounded cascade or silent fabricated terminal value."
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-071-L1",
+          "given": "Синтетическая таблицаA; два вызоваA с индексами1и2, интерпретацияGM=X.",
+          "when": "Сохранить сочетание уP.",
+          "expected": "УP два компонента A/1 иA/2 и описаниеX; второй не затирает первый.",
+          "id": "KNAVE2-071-L1-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-071-L1",
+          "given": "Три синтетические таблицыA,B,C с индексами1,50,100.",
+          "when": "Применить рецепт кP.",
+          "expected": "Сохранены ровно3 компонента в выбранном порядке; индекс100 не теряется и дополнительные броски не появляются.",
+          "id": "KNAVE2-071-L1-AC02"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-071-L1",
+          "given": "Ведущий явно задаёт пользовательский рецепт A,A,B,C с четырьмя фиксированными индексами1,2,3,4.",
+          "when": "Применить пользовательский рецепт кP.",
+          "expected": "Сохранены четыре компонента A/1,A/2,B/3,C/4; рекомендация2–3 таблицы не превращается в ошибку или усечение рецепта.",
+          "id": "KNAVE2-071-L1-AC03"
+        }
+      ],
+      "expected_evidence": {
+        "code_sha": "required_at_future_review",
+        "runtime": "Given/When/Expected cases and compatibility checks for affected exact profiles",
+        "persistence": "Changed map state round-trips through save/load and undo/redo without changing unrelated hexes/POIs/RNG",
+        "source_text_vs_runtime": "Source reading is not implementation evidence"
+      },
+      "score_delta": null,
+      "source_limitations": [
+        "Full thematic source inventory, not all game mechanics or runtime support. Unrelated combat/dungeon/economy details excluded with reasons.",
+        "Russian translation reviewed, not an independent collation against English edition/errata. Source ambiguities and product decisions remain explicit.",
+        "Counts are editorial rule groups and derived requirements; not publisher counts or numerical complexity/popularity weights.",
+        "The source notice distinguishes freely reusable mechanics from text/art; this result paraphrases rules and records table locators without republishing full tables. Product content-pack provenance/permission must be defined before embedding source text.",
+        "Open questions are in game matrix/ledger; automatic enforcement of unresolved parameters is not ready."
+      ],
+      "implementation_authorized": false,
+      "release_authorized": false,
+      "priority": "first_L1_candidate",
+      "readiness": "proposed_requires_product_coverage_audit_and_bounded_analyst_spec",
+      "research_result_ref": "agent-work/research/runs/2026-11-06-KNAVE2-full-thematic-audit.json",
+      "feedback_assessment": "Open UI/diagnostic feedback is outside this source-only run; future analyst must evaluate current feedback and show any UI proposal.",
+      "ui_preview_pending": true,
+      "ui_preview_responsible": "future_analyst_before_implementation",
+      "duplication_review": "Existing013/023/024editor and041MBtables are dependencies/reuse candidates. This task is the missing documented generic/profile behavior, not authority to rebuild them."
+    },
+    {
+      "task_id": "HX-BL-044",
+      "title": "Отмечать труднопроходимость, доступность ресурсов и способы обнаружения объектов",
+      "status": "proposed",
+      "problem": "Source-backed operations are now specified; exact product coverage remains unknown and must be audited before implementation scope is finalized.",
+      "benefit": "Проверяемый результат для мастера и переиспользуемая операция вместо отдельной копии функции на игру.",
+      "game_editions": [
+        "Knave2e RU Torbin1.0 2024; existing DND/PF2 only where matching component profiles are verified"
+      ],
+      "primary_scenario": "develop",
+      "layer": "L1",
+      "requirement_refs": [
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-006-L1",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-010-L1",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-024-L1",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-025-L1",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-073-L1"
+      ],
+      "canonical_rule_ids": [
+        "content.discovery_levels",
+        "content.site_links",
+        "content.static_hazard",
+        "map.audience_views",
+        "map.resource_availability",
+        "map.terrain_zones"
+      ],
+      "binding_refs": [
+        "agent-work/rules/game-bindings.json#KNAVE2-006-L1",
+        "agent-work/rules/game-bindings.json#KNAVE2-010-L1",
+        "agent-work/rules/game-bindings.json#KNAVE2-024-L1",
+        "agent-work/rules/game-bindings.json#KNAVE2-025-L1",
+        "agent-work/rules/game-bindings.json#KNAVE2-073-L1"
+      ],
+      "criterion_ids": [
+        "S01-C02",
+        "S01-C04",
+        "S01-C05",
+        "S04-C03",
+        "S05-C01",
+        "S05-C02",
+        "S05-C03",
+        "S06-C04",
+        "S06-C05",
+        "S07-C01"
+      ],
+      "scope": "Редактировать свойства конкретного гекса/POI, хранить обычные/скрытые/секретные уровни и связи с уликами, отделять публичные подсказки от тайн. Без расчёта движения или автоматической выдачи секрета.",
+      "dependencies": [
+        "HX-BL-013",
+        "HX-BL-023",
+        "HX-BL-024"
+      ],
+      "acceptance_checks": [
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-006-L1",
+          "given": "H — лес, содержит POI A, difficult=false",
+          "when": "Включить труднопроходимость H, сохранить и загрузить",
+          "expected": "H остаётся лесом с POI A, difficult=true.",
+          "id": "KNAVE2-006-L1-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-006-L1",
+          "given": "То же состояние с difficult=true",
+          "when": "Снять флаг, затем отменить действие",
+          "expected": "После снятия difficult=false, после undo=true; POI и рельеф прежние.",
+          "id": "KNAVE2-006-L1-AC02"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-010-L1",
+          "given": "C связана с S; C открыта, S закрыт",
+          "when": "Сформировать представление игрока",
+          "expected": "C видна; S и его секретные поля не переданы игроку.",
+          "id": "KNAVE2-010-L1-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-024-L1",
+          "given": "H, тип опасности freezing",
+          "when": "Добавить опасный участок",
+          "expected": "Сохранена опасность с source=p21; ОЗ персонажей не изменены.",
+          "id": "KNAVE2-024-L1-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-025-L1",
+          "given": "H, very_arid=true, источник воды не указан",
+          "when": "Сохранить профиль местности",
+          "expected": "Вода в H не считается автоматически доступной.",
+          "id": "KNAVE2-025-L1-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-073-L1",
+          "given": "ОпасностьH с GM-механикойM, признакC помечен открытым.",
+          "when": "Открыть представление игроков.",
+          "expected": "C присутствует, M отсутствует; в GM-виде доступны оба.",
+          "id": "KNAVE2-073-L1-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-073-L1",
+          "given": "ОпасностьH и открытый признакC, GM вручную редактируетC→C2.",
+          "when": "Сохранить и загрузить карту.",
+          "expected": "Связь C2→H сохранена, механизмM не изменён.",
+          "id": "KNAVE2-073-L1-AC02"
+        }
+      ],
+      "expected_evidence": {
+        "code_sha": "required_at_future_review",
+        "runtime": "Given/When/Expected cases and compatibility checks for affected exact profiles",
+        "persistence": "Changed map state round-trips through save/load and undo/redo without changing unrelated hexes/POIs/RNG",
+        "source_text_vs_runtime": "Source reading is not implementation evidence"
+      },
+      "score_delta": null,
+      "source_limitations": [
+        "Full thematic source inventory, not all game mechanics or runtime support. Unrelated combat/dungeon/economy details excluded with reasons.",
+        "Russian translation reviewed, not an independent collation against English edition/errata. Source ambiguities and product decisions remain explicit.",
+        "Counts are editorial rule groups and derived requirements; not publisher counts or numerical complexity/popularity weights.",
+        "The source notice distinguishes freely reusable mechanics from text/art; this result paraphrases rules and records table locators without republishing full tables. Product content-pack provenance/permission must be defined before embedding source text.",
+        "Open questions are in game matrix/ledger; automatic enforcement of unresolved parameters is not ready."
+      ],
+      "implementation_authorized": false,
+      "release_authorized": false,
+      "priority": "parallel_or_next_L1_candidate",
+      "readiness": "proposed_requires_product_coverage_audit_and_bounded_analyst_spec",
+      "research_result_ref": "agent-work/research/runs/2026-11-06-KNAVE2-full-thematic-audit.json",
+      "feedback_assessment": "Open UI/diagnostic feedback is outside this source-only run; future analyst must evaluate current feedback and show any UI proposal.",
+      "ui_preview_pending": true,
+      "ui_preview_responsible": "future_analyst_before_implementation",
+      "duplication_review": "Existing013/023/024editor and041MBtables are dependencies/reuse candidates. This task is the missing documented generic/profile behavior, not authority to rebuild them."
+    },
+    {
+      "task_id": "HX-BL-045",
+      "title": "Учитывать вахты, маршрут, исследование и дорожные события",
+      "status": "proposed",
+      "problem": "Source-backed operations are now specified; exact product coverage remains unknown and must be audited before implementation scope is finalized.",
+      "benefit": "Проверяемый результат для мастера и переиспользуемая операция вместо отдельной копии функции на игру.",
+      "game_editions": [
+        "Knave2e RU Torbin1.0 2024; existing DND/PF2 only where matching component profiles are verified"
+      ],
+      "primary_scenario": "play_now",
+      "layer": "L2",
+      "requirement_refs": [
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-004-L2",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-005-L2",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-006-L2",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-007-L2",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-008-L2",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-009-L2",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-011-L2",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-012-L2",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-014-L2",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-016-L2",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-017-L2",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-019-L2",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-031-L2",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-032-L2",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-041-L2",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-042-L2",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-043-L2",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-050-L2",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-054-L2",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-074-L2"
+      ],
+      "canonical_rule_ids": [
+        "travel.activity_selection",
+        "travel.actual_vs_intended_route",
+        "travel.daily_activity_budget",
+        "travel.elapsed_time",
+        "travel.environment_effects",
+        "travel.line_of_sight_reveal",
+        "travel.party_position",
+        "travel.reconnaissance_cost",
+        "travel.time_from_speed",
+        "travel.visit_and_reveal"
+      ],
+      "binding_refs": [
+        "agent-work/rules/game-bindings.json#KNAVE2-004-L2",
+        "agent-work/rules/game-bindings.json#KNAVE2-005-L2",
+        "agent-work/rules/game-bindings.json#KNAVE2-006-L2",
+        "agent-work/rules/game-bindings.json#KNAVE2-007-L2",
+        "agent-work/rules/game-bindings.json#KNAVE2-008-L2",
+        "agent-work/rules/game-bindings.json#KNAVE2-009-L2",
+        "agent-work/rules/game-bindings.json#KNAVE2-011-L2",
+        "agent-work/rules/game-bindings.json#KNAVE2-012-L2",
+        "agent-work/rules/game-bindings.json#KNAVE2-014-L2",
+        "agent-work/rules/game-bindings.json#KNAVE2-016-L2",
+        "agent-work/rules/game-bindings.json#KNAVE2-017-L2",
+        "agent-work/rules/game-bindings.json#KNAVE2-019-L2",
+        "agent-work/rules/game-bindings.json#KNAVE2-031-L2",
+        "agent-work/rules/game-bindings.json#KNAVE2-032-L2",
+        "agent-work/rules/game-bindings.json#KNAVE2-041-L2",
+        "agent-work/rules/game-bindings.json#KNAVE2-042-L2",
+        "agent-work/rules/game-bindings.json#KNAVE2-043-L2",
+        "agent-work/rules/game-bindings.json#KNAVE2-050-L2",
+        "agent-work/rules/game-bindings.json#KNAVE2-054-L2",
+        "agent-work/rules/game-bindings.json#KNAVE2-074-L2"
+      ],
+      "criterion_ids": [
+        "S06-C03",
+        "S06-C04",
+        "S06-C05"
+      ],
+      "scope": "Следующий этап после L1: вести время, ход путешествия и результаты hazard die; входы внешних проверок получать как результаты, а не строить боевой движок. Не применять неразрешённые формулы сочетания замедлений.",
+      "dependencies": [
+        "HX-BL-043",
+        "HX-BL-044",
+        "HX-BL-042"
+      ],
+      "acceptance_checks": [
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-004-L2",
+          "given": "День 1, вахта 0",
+          "when": "Завершить исследование стоимостью одну вахту",
+          "expected": "День 1, вахта 1; затрачено четыре часа.",
+          "id": "KNAVE2-004-L2-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-004-L2",
+          "given": "День 1, вахта 5",
+          "when": "Завершить действие стоимостью одну вахту",
+          "expected": "День 2, вахта 0.",
+          "id": "KNAVE2-004-L2-AC02"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-004-L2",
+          "given": "Три дневные вахты с индексами 0–2",
+          "when": "Перейти с вахты 2 на вахту 3",
+          "expected": "Следующая вахта помечена ночной.",
+          "id": "KNAVE2-004-L2-AC03"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-005-L2",
+          "given": "Центр H и шесть соседей A–F; ведущий подтвердил A и B",
+          "when": "Применить обзор",
+          "expected": "A и B открыты; C–F и скрытые POI остаются скрытыми.",
+          "id": "KNAVE2-005-L2-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-006-L2",
+          "given": "Одна вахта, без ограничений, пешком",
+          "when": "Вычислить путь",
+          "expected": "Один гекс, то есть 6 миль.",
+          "id": "KNAVE2-006-L2-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-006-L2",
+          "given": "Одна вахта, только difficult=true, пешком",
+          "when": "Вычислить путь",
+          "expected": "Половина гекса, то есть 3 мили.",
+          "id": "KNAVE2-006-L2-AC02"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-006-L2",
+          "given": "Одна вахта, только езда",
+          "when": "Вычислить путь",
+          "expected": "Два гекса, то есть 12 миль.",
+          "id": "KNAVE2-006-L2-AC03"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-007-L2",
+          "given": "За день три travel-вахты и одна forage-вахта",
+          "when": "Завершить ещё одну travel-вахту",
+          "expected": "Счётчик travel=4; запрошен эффект марша.",
+          "id": "KNAVE2-007-L2-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-007-L2",
+          "given": "За день две travel-вахты и две rest-вахты",
+          "when": "Завершить ещё одну travel-вахту",
+          "expected": "Счётчик travel=3; эффект марша не запрошен.",
+          "id": "KNAVE2-007-L2-AC02"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-008-L2",
+          "given": "Текущий гекс H; план I; интеграция вернула A, отличный от I, как соседа H",
+          "when": "Применить потерю направления",
+          "expected": "actual_position=A, intended=I; тайное положение A не раскрыто игроку.",
+          "id": "KNAVE2-008-L2-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-009-L2",
+          "given": "H содержит явную башню A, скрытый пруд B, секретный клад C и доступную улику D к нему",
+          "when": "Исследовать H одну вахту",
+          "expected": "A остаётся видимой; B и D раскрыты; C не раскрыт; прошло четыре часа; число бросков 0.",
+          "id": "KNAVE2-009-L2-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-011-L2",
+          "given": "Положение H, travelWatchCount=2",
+          "when": "Выполнить forage одну вахту",
+          "expected": "Группа остаётся в H; travelWatchCount=2; время увеличилось на четыре часа.",
+          "id": "KNAVE2-011-L2-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-012-L2",
+          "given": "Новая вахта W, d6=6",
+          "when": "Подтвердить закрытие W дважды",
+          "expected": "Записано одно hazard(W)=free; ресурсы и POI не изменены.",
+          "id": "KNAVE2-012-L2-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-012-L2",
+          "given": "Новая вахта W, d6=1",
+          "when": "Закрыть W",
+          "expected": "Создан encounter-запрос; fatigue и depletion не запущены.",
+          "id": "KNAVE2-012-L2-AC02"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-014-L2",
+          "given": "Hazard 2 в W; выбран отдых в W+1",
+          "when": "Завершить W+1 с действием rest",
+          "expected": "Урон данного fatigue=0; время увеличилось на четыре часа.",
+          "id": "KNAVE2-014-L2-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-014-L2",
+          "given": "Hazard 2 выпал во время rest",
+          "when": "Применить результат",
+          "expected": "Новый долг отдыха и урон не созданы.",
+          "id": "KNAVE2-014-L2-AC02"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-016-L2",
+          "given": "Вахта W, погода сухая; выбрана событийная ветвь «паломники»",
+          "when": "Применить hazard 4",
+          "expected": "Событие записано; погода осталась сухой.",
+          "id": "KNAVE2-016-L2-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-016-L2",
+          "given": "Выбрана погодная ветвь «сильный дождь»",
+          "when": "Применить hazard 4",
+          "expected": "Текущая погода — сильный дождь; её условия могут передаваться расчёту дальнейшего темпа.",
+          "id": "KNAVE2-016-L2-AC02"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-017-L2",
+          "given": "Знак существа C размещён в H; группа перешла в J",
+          "when": "Разрешить встречу в J",
+          "expected": "Ожидаемая встреча C в H сохранена.",
+          "id": "KNAVE2-017-L2-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-017-L2",
+          "given": "Группа вернулась в H; там есть pending C",
+          "when": "Разрешить следующую встречу в H",
+          "expected": "Встречено C; связь использована один раз.",
+          "id": "KNAVE2-017-L2-AC02"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-019-L2",
+          "given": "Погода — обычный туман",
+          "when": "Применить качественный профиль",
+          "expected": "visibility_reduced=true, disorienting=true; slow не включается из одного названия «туман».",
+          "id": "KNAVE2-019-L2-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-019-L2",
+          "given": "Погода — сильный снег",
+          "when": "Применить профиль",
+          "expected": "visibility_reduced=true, slow=true, disorienting=true.",
+          "id": "KNAVE2-019-L2-AC02"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-031-L2",
+          "given": "Группа в H, ИНТ3, выбран уровень2, начало 08:00, принята ясная погода; сосед J дождливый",
+          "when": "Применить №19 и продвинуть время до 09:59, затем 10:00",
+          "expected": "До10:00 override H активен, после10:00 неактивен; J не менялся; последующая обычная погода определяется отдельной процедурой.",
+          "id": "KNAVE2-031-L2-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-032-L2",
+          "given": "Пассажиры A/B снаружи H, выбран уровень2; J сосед H, K не сосед; план H→L",
+          "when": "Передать принятый результат H→J",
+          "expected": "A/B оказываются J, обычный план H→L не помечен пройденным; длительность не присвоена по обычной скорости.",
+          "id": "KNAVE2-032-L2-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-032-L2",
+          "given": "Те же данные; внешняя система передала K как назначение",
+          "when": "Подтвердить событие",
+          "expected": "Переход отвергнут как не соответствующий соседнему гексу; позиции не изменены.",
+          "id": "KNAVE2-032-L2-AC02"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-041-L2",
+          "given": "Часы08:00, уMподходящий орган, инструменты подтверждены",
+          "when": "Завершитьодинсбор",
+          "expected": "Часы08:10 и одна записьсбора; не08:00/12:00.",
+          "id": "KNAVE2-041-L2-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-041-L2",
+          "given": "Инструменты не подтверждены",
+          "when": "Запросить автоматическое завершение",
+          "expected": "Действие остаётся неподтверждённым, время и ресурсы не меняются молча.",
+          "id": "KNAVE2-041-L2-AC02"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-042-L2",
+          "given": "Старт08:00, все условияподтверждены, extra=false",
+          "when": "Завершитьварку",
+          "expected": "Конец12:00, bonus0.",
+          "id": "KNAVE2-042-L2-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-042-L2",
+          "given": "Тотжеfixture, extra=true",
+          "when": "Завершитьварку",
+          "expected": "Конец16:00, bonus+5; не+10и не12:00.",
+          "id": "KNAVE2-042-L2-AC02"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-043-L2",
+          "given": "Начало08:00, обычныйпродолжающийсяэффект, нет override",
+          "when": "Записатьвыпитое зелье",
+          "expected": "Окончание08:10, а не12:00/следующийдень.",
+          "id": "KNAVE2-043-L2-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-043-L2",
+          "given": "Начало08:00, мастер одобрил слабыйэффект на1час",
+          "when": "Записатьсрок",
+          "expected": "Окончание09:00 и причинаисключениясохранена.",
+          "id": "KNAVE2-043-L2-AC02"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-050-L2",
+          "given": "Current timestamp T, city_event=100",
+          "when": "Invoke once",
+          "expected": "Create event Свадьба at T; no automatic next event is scheduled.",
+          "id": "KNAVE2-050-L2-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-050-L2",
+          "given": "city_event=95",
+          "when": "Invoke event lookup",
+          "expected": "Record reference to travel-shift table p9; do not change weather or travel until that dependency is resolved. If the referenced-table index has not been supplied, status=pending_reference_input; source resolution is not declared complete.",
+          "id": "KNAVE2-050-L2-AC02"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-054-L2",
+          "given": "Village S in month M; worker roll7; mercenary roll4",
+          "when": "Generate pool, then reopen in M",
+          "expected": "Available workers=7, mercenaries=4; reopening does not reroll.",
+          "id": "KNAVE2-054-L2-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-054-L2",
+          "given": "City S uses3 dice, old month M, new month M+1; worker=[2,4,6], mercenary=[1,2,3]",
+          "when": "Refresh for new month",
+          "expected": "Save workers12 and mercenaries6 for M+1; retain old M snapshot as history.",
+          "id": "KNAVE2-054-L2-AC02"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-074-L2",
+          "given": "Часы00:00; путешествие длительностью4часа уже завершено, часы04:00; местоP.",
+          "when": "Добавить событиеE дляP без дополнительной длительности.",
+          "expected": "E связано сP и04:00; часы остаются04:00, не08:00.",
+          "id": "KNAVE2-074-L2-AC01"
+        }
+      ],
+      "expected_evidence": {
+        "code_sha": "required_at_future_review",
+        "runtime": "Given/When/Expected cases and compatibility checks for affected exact profiles",
+        "persistence": "Changed map state round-trips through save/load and undo/redo without changing unrelated hexes/POIs/RNG",
+        "source_text_vs_runtime": "Source reading is not implementation evidence"
+      },
+      "score_delta": null,
+      "source_limitations": [
+        "Full thematic source inventory, not all game mechanics or runtime support. Unrelated combat/dungeon/economy details excluded with reasons.",
+        "Russian translation reviewed, not an independent collation against English edition/errata. Source ambiguities and product decisions remain explicit.",
+        "Counts are editorial rule groups and derived requirements; not publisher counts or numerical complexity/popularity weights.",
+        "The source notice distinguishes freely reusable mechanics from text/art; this result paraphrases rules and records table locators without republishing full tables. Product content-pack provenance/permission must be defined before embedding source text.",
+        "Open questions are in game matrix/ledger; automatic enforcement of unresolved parameters is not ready."
+      ],
+      "implementation_authorized": false,
+      "release_authorized": false,
+      "priority": "defer_until_L1_ready",
+      "readiness": "proposed_requires_product_coverage_audit_and_bounded_analyst_spec",
+      "research_result_ref": "agent-work/research/runs/2026-11-06-KNAVE2-full-thematic-audit.json",
+      "feedback_assessment": "Open UI/diagnostic feedback is outside this source-only run; future analyst must evaluate current feedback and show any UI proposal.",
+      "ui_preview_pending": true,
+      "ui_preview_responsible": "future_analyst_before_implementation",
+      "duplication_review": "Existing013/023/024editor and041MBtables are dependencies/reuse candidates. This task is the missing documented generic/profile behavior, not authority to rebuild them."
+    },
+    {
+      "task_id": "HX-BL-046",
+      "title": "Передавать последствия путешествия и запросы проверок во внешние механики",
+      "status": "proposed",
+      "problem": "Source-backed operations are now specified; exact product coverage remains unknown and must be audited before implementation scope is finalized.",
+      "benefit": "Проверяемый результат для мастера и переиспользуемая операция вместо отдельной копии функции на игру.",
+      "game_editions": [
+        "Knave2e RU Torbin1.0 2024; existing DND/PF2 only where matching component profiles are verified"
+      ],
+      "primary_scenario": "play_now",
+      "layer": "L3",
+      "requirement_refs": [
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-001-L3",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-002-L3",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-003-L3",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-007-L3",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-008-L3",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-010-L3",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-011-L3",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-013-L3",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-014-L3",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-015-L3",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-018-L3",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-019-L3",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-021-L3",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-022-L3",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-023-L3",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-024-L3",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-025-L3",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-026-L3",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-033-L3",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-035-L3",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-036-L3",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-041-L3",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-042-L3",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-055-L3",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-056-L3",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-057-L3",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-059-L3",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-060-L3",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-061-L3",
+        "agent-work/market/rules/Knave-2e.json#KNAVE2-075-L3"
+      ],
+      "canonical_rule_ids": [
+        "content.roll_table_resolution",
+        "mechanics.character_speed",
+        "mechanics.check_resolution",
+        "mechanics.climb",
+        "mechanics.creature_detection",
+        "mechanics.drowning",
+        "mechanics.encounters",
+        "mechanics.environment_conditions",
+        "mechanics.falling",
+        "mechanics.forage_and_consumption",
+        "mechanics.forced_march",
+        "mechanics.hazard_resolution",
+        "mechanics.hidden_discovery",
+        "mechanics.jump",
+        "mechanics.magic_detection",
+        "mechanics.navigation",
+        "mechanics.rest",
+        "mechanics.travel_roles_and_scenes",
+        "mechanics.weather"
+      ],
+      "binding_refs": [
+        "agent-work/rules/game-bindings.json#KNAVE2-001-L3",
+        "agent-work/rules/game-bindings.json#KNAVE2-002-L3",
+        "agent-work/rules/game-bindings.json#KNAVE2-003-L3",
+        "agent-work/rules/game-bindings.json#KNAVE2-007-L3",
+        "agent-work/rules/game-bindings.json#KNAVE2-008-L3",
+        "agent-work/rules/game-bindings.json#KNAVE2-010-L3",
+        "agent-work/rules/game-bindings.json#KNAVE2-011-L3",
+        "agent-work/rules/game-bindings.json#KNAVE2-013-L3",
+        "agent-work/rules/game-bindings.json#KNAVE2-014-L3",
+        "agent-work/rules/game-bindings.json#KNAVE2-015-L3",
+        "agent-work/rules/game-bindings.json#KNAVE2-018-L3",
+        "agent-work/rules/game-bindings.json#KNAVE2-019-L3",
+        "agent-work/rules/game-bindings.json#KNAVE2-021-L3",
+        "agent-work/rules/game-bindings.json#KNAVE2-022-L3",
+        "agent-work/rules/game-bindings.json#KNAVE2-023-L3",
+        "agent-work/rules/game-bindings.json#KNAVE2-024-L3",
+        "agent-work/rules/game-bindings.json#KNAVE2-025-L3",
+        "agent-work/rules/game-bindings.json#KNAVE2-026-L3",
+        "agent-work/rules/game-bindings.json#KNAVE2-033-L3",
+        "agent-work/rules/game-bindings.json#KNAVE2-035-L3",
+        "agent-work/rules/game-bindings.json#KNAVE2-036-L3",
+        "agent-work/rules/game-bindings.json#KNAVE2-041-L3",
+        "agent-work/rules/game-bindings.json#KNAVE2-042-L3",
+        "agent-work/rules/game-bindings.json#KNAVE2-055-L3",
+        "agent-work/rules/game-bindings.json#KNAVE2-056-L3",
+        "agent-work/rules/game-bindings.json#KNAVE2-057-L3",
+        "agent-work/rules/game-bindings.json#KNAVE2-059-L3",
+        "agent-work/rules/game-bindings.json#KNAVE2-060-L3",
+        "agent-work/rules/game-bindings.json#KNAVE2-061-L3",
+        "agent-work/rules/game-bindings.json#KNAVE2-075-L3"
+      ],
+      "criterion_ids": [
+        "S05-C05",
+        "S06-C04",
+        "S08-C04"
+      ],
+      "scope": "Интеграционный контракт: сформировать запрос известной проверки/последствия, принять результат и связать с походным состоянием/местом. Не реализовывать полный движок боя, заклинаний, инвентаря или экономику.",
+      "dependencies": [
+        "HX-BL-045"
+      ],
+      "acceptance_checks": [
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-001-L3",
+          "given": "Синтетический PC: ТЕЛ 2, ОЗ 2, двенадцать слотов; верхний слот занят предметом A",
+          "when": "Применить обычный урон 3",
+          "expected": "ОЗ 0; одна рана верхнего слота; A выпал; одиннадцать слотов не заполнены ранами.",
+          "id": "KNAVE2-001-L3-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-001-L3",
+          "given": "Тот же исходный PC с ОЗ 2",
+          "when": "Применить прямой урон 1",
+          "expected": "ОЗ остаются 2; верхний слот ранен; A выпал.",
+          "id": "KNAVE2-001-L3-AC02"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-001-L3",
+          "given": "Существо без слотов, ОЗ 10",
+          "when": "Применить прямой урон 2",
+          "expected": "ОЗ 4.",
+          "id": "KNAVE2-001-L3-AC03"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-001-L3",
+          "given": "PC с двенадцатью слотами и одиннадцатью ранами",
+          "when": "Применить ещё 1 прямой урон",
+          "expected": "Все двенадцать слотов ранены; адаптер возвращает death=true.",
+          "id": "KNAVE2-001-L3-AC04"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-002-L3",
+          "given": "ОЗ 2/6, три раны, две вахты сна, ужин=true, убежище=false",
+          "when": "Обработать утро",
+          "expected": "ОЗ 6/6, три раны.",
+          "id": "KNAVE2-002-L3-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-002-L3",
+          "given": "То же исходное состояние, убежище=true",
+          "when": "Обработать утро",
+          "expected": "ОЗ 6/6, две раны.",
+          "id": "KNAVE2-002-L3-AC02"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-002-L3",
+          "given": "ОЗ 2/6; ужин=false либо сон только одну вахту",
+          "when": "Обработать утро",
+          "expected": "ОЗ остаются 2/6; автоматическое восстановление не срабатывает.",
+          "id": "KNAVE2-002-L3-AC03"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-003-L3",
+          "given": "d20=14, МУД 2, сложность 5, модификатор 0",
+          "when": "Разрешить проверку",
+          "expected": "Итог 16, цель 16, успех=true.",
+          "id": "KNAVE2-003-L3-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-003-L3",
+          "given": "d20=13, МУД 2, сложность 5, модификатор 0",
+          "when": "Разрешить проверку",
+          "expected": "Итог 15, цель 16, успех=false.",
+          "id": "KNAVE2-003-L3-AC02"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-003-L3",
+          "given": "d20=9, МУД 2, одно преимущество +5",
+          "when": "Разрешить проверку против цели 16",
+          "expected": "Итог 16, успех=true.",
+          "id": "KNAVE2-003-L3-AC03"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-003-L3",
+          "given": "Обследование гекса по p8 с уже списанной вахтой",
+          "when": "Применить поиск",
+          "expected": "Открыты положенные скрытые места и улики без броска МУД.",
+          "id": "KNAVE2-003-L3-AC04"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-007-L3",
+          "given": "Четвёртая travel-вахта; A успешно прошёл ТЕЛ, B провалил ТЕЛ",
+          "when": "Применить марш",
+          "expected": "A получает 0, B — 1 прямой урон.",
+          "id": "KNAVE2-007-L3-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-008-L3",
+          "given": "Мастер не требует проверки, хотя difficult=true",
+          "when": "Выполнить перемещение",
+          "expected": "Навигационный бросок не создаётся.",
+          "id": "KNAVE2-008-L3-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-008-L3",
+          "given": "Мастер требует тайную проверку; получен провал; фиксированный выбор соседа A",
+          "when": "Разрешить навигацию",
+          "expected": "Возвращён A с secret=true.",
+          "id": "KNAVE2-008-L3-AC02"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-010-L3",
+          "given": "Исследование открыло C; S ещё скрыт",
+          "when": "Завершить ещё один обычный поиск",
+          "expected": "S остаётся скрытым.",
+          "id": "KNAVE2-010-L3-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-010-L3",
+          "given": "S закрыт; мастер подтвердил действие «открыли скрытую дверь»",
+          "when": "Применить подтверждение",
+          "expected": "S раскрыт; C сохранена.",
+          "id": "KNAVE2-010-L3-AC02"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-011-L3",
+          "given": "Успех МУД, d6=4, в запасах два пайка",
+          "when": "Применить добычу",
+          "expected": "В запасах шесть пайков.",
+          "id": "KNAVE2-011-L3-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-011-L3",
+          "given": "Провал МУД, в запасах два пайка",
+          "when": "Завершить forage",
+          "expected": "Осталось два пайка.",
+          "id": "KNAVE2-011-L3-AC02"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-013-L3",
+          "given": "H находится в R; выбрана таблица T; фиксирован результат creature C",
+          "when": "Применить hazard 1",
+          "expected": "Возвращена encounter(C,T,H); сцена ожидает деятельность, реакцию и дистанцию; бой не обязателен.",
+          "id": "KNAVE2-013-L3-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-014-L3",
+          "given": "PC с ОЗ 3; следующая вахта отдыха не выполнена; override отсутствует",
+          "when": "Применить fatigue",
+          "expected": "ОЗ 2; применён ordinary damage=1.",
+          "id": "KNAVE2-014-L3-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-015-L3",
+          "given": "Скоропортящиеся пайки A и B, обычная верёвка C; броски A=1, B=6",
+          "when": "Применить hazard 3",
+          "expected": "A испорчен; B сохранён; C не проверяется.",
+          "id": "KNAVE2-015-L3-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-018-L3",
+          "given": "Весна, кости 6 и 6",
+          "when": "Определить погоду",
+          "expected": "Град.",
+          "id": "KNAVE2-018-L3-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-018-L3",
+          "given": "Лето, кости 6 и 6",
+          "when": "Определить погоду",
+          "expected": "Влажность.",
+          "id": "KNAVE2-018-L3-AC02"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-018-L3",
+          "given": "Осень, кости 6 и 6",
+          "when": "Определить погоду",
+          "expected": "Туман.",
+          "id": "KNAVE2-018-L3-AC03"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-018-L3",
+          "given": "Зима, кости 6 и 6",
+          "when": "Определить погоду",
+          "expected": "Заморозки.",
+          "id": "KNAVE2-018-L3-AC04"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-018-L3",
+          "given": "Любой сезон, кости 3 и 4",
+          "when": "Определить погоду",
+          "expected": "Комфортно для сезона.",
+          "id": "KNAVE2-018-L3-AC05"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-019-L3",
+          "given": "Экстремальная жара; размер урона не задан",
+          "when": "Закрыть вахту",
+          "expected": "Отмечен needs_GM_effect; ОЗ автоматически не вычтены.",
+          "id": "KNAVE2-019-L3-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-021-L3",
+          "given": "Открытая местность; кости 1, 2, 3 и 4",
+          "when": "Вычислить дистанцию",
+          "expected": "300 футов.",
+          "id": "KNAVE2-021-L3-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-021-L3",
+          "given": "Закрытое пространство; кости 1 и 6",
+          "when": "Вычислить дистанцию",
+          "expected": "70 футов.",
+          "id": "KNAVE2-021-L3-AC02"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-021-L3",
+          "given": "Дистанция уже известна и равна 50 футам",
+          "when": "Создать встречу",
+          "expected": "Сохранено 50 футов; новый бросок дистанции не требуется.",
+          "id": "KNAVE2-021-L3-AC03"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-022-L3",
+          "given": "Дистанция 79 футов; перевес PC равен 5",
+          "when": "Разрешить внезапность",
+          "expected": "PC застали другую сторону врасплох; передан бонус +5 первого раунда.",
+          "id": "KNAVE2-022-L3-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-022-L3",
+          "given": "Дистанция 79 футов; перевес PC равен 4",
+          "when": "Разрешить внезапность",
+          "expected": "Внезапность=false.",
+          "id": "KNAVE2-022-L3-AC02"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-022-L3",
+          "given": "Дистанция 80 футов",
+          "when": "Применить порог основного текста",
+          "expected": "Автопроверка по условию distance < 80 не срабатывает; расхождение с quickref отмечено.",
+          "id": "KNAVE2-022-L3-AC03"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-023-L3",
+          "given": "d100 деятельности=1; существо в данном контексте может устроить засаду",
+          "when": "Применить выбор",
+          "expected": "activity=Засада, source=p19,row1.",
+          "id": "KNAVE2-023-L3-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-023-L3",
+          "given": "Реакция неочевидна; 2d6=7",
+          "when": "Определить реакцию",
+          "expected": "Исходная реакция — «Игнорировать ПИ».",
+          "id": "KNAVE2-023-L3-AC02"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-023-L3",
+          "given": "Враждебность уже установлена ведущим",
+          "when": "Создать встречу",
+          "expected": "Необязательный случайный бросок реакции не отменяет установленный исход.",
+          "id": "KNAVE2-023-L3-AC03"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-023-L3",
+          "given": "После действий ПИ ведущий изменил реакцию со строки 7 на строку 10",
+          "when": "Сохранить сцену",
+          "expected": "Реакция обновлена; ID встречи прежний.",
+          "id": "KNAVE2-023-L3-AC04"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-024-L3",
+          "given": "Замерзание; прошло десять минут; получен провал ТЕЛ",
+          "when": "Разрешить интервал",
+          "expected": "Применён 1 прямой урон.",
+          "id": "KNAVE2-024-L3-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-024-L3",
+          "given": "ТЕЛ 2; существо под водой 89 секунд",
+          "when": "Проверить запас дыхания",
+          "expected": "Запас составляет 90 секунд; порог ещё не достигнут.",
+          "id": "KNAVE2-024-L3-AC02"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-024-L3",
+          "given": "Падение с 30 футов; кости 6, 6 и 6",
+          "when": "Разрешить падение",
+          "expected": "Мгновенная смерть независимо от суммы ОЗ.",
+          "id": "KNAVE2-024-L3-AC03"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-024-L3",
+          "given": "Молния; кости 1, 2 и 3",
+          "when": "Применить урон",
+          "expected": "Применено 6 прямого урона по профилю p21.",
+          "id": "KNAVE2-024-L3-AC04"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-025-L3",
+          "given": "Два полных дня без воды",
+          "when": "Получить штраф",
+          "expected": "Штраф -10 ко всем проверкам.",
+          "id": "KNAVE2-025-L3-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-025-L3",
+          "given": "Три полных дня без воды прошли; завершён четвёртый день без воды; провал ТЕЛ",
+          "when": "Применить последствия",
+          "expected": "Адаптер возвращает смерть.",
+          "id": "KNAVE2-025-L3-AC02"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-025-L3",
+          "given": "Обычное путешествие, без очень засушливой местности",
+          "when": "Обработать день",
+          "expected": "Система не требует по умолчанию отдельного учёта бутылок и не создаёт штраф жажды.",
+          "id": "KNAVE2-025-L3-AC03"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-026-L3",
+          "given": "Два дня без сна",
+          "when": "Вычислить штраф",
+          "expected": "Штраф -10.",
+          "id": "KNAVE2-026-L3-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-026-L3",
+          "given": "После двух полных дней без сна наступила следующая вахта; провал МУД",
+          "when": "Разрешить недосып",
+          "expected": "Потеря сознания на три вахты, то есть двенадцать часов.",
+          "id": "KNAVE2-026-L3-AC02"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-033-L3",
+          "given": "№20, выбран уровень2; магические A/B в поле зрения, скрытый C не виден; внешняя система раскрыла свойство A",
+          "when": "Принять один запрос свойства",
+          "expected": "A получает переданное свойство для наблюдателя; осталось1запрос; C и его секреты не раскрыты.",
+          "id": "KNAVE2-033-L3-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-033-L3",
+          "given": "№99, метка M создана персонажем A, сообщение содержит observer=A",
+          "when": "Открыть представление B без разрешённого наблюдения",
+          "expected": "Метку не выдавать B как автоматически видимую.",
+          "id": "KNAVE2-033-L3-AC02"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-035-L3",
+          "given": "Место отдыха — дом45 со safe_haven=false",
+          "when": "Сформировать интеграционный запрос отдыха",
+          "expected": "В запросе safe_haven=false; дополнительное исцеление ран по безопасному убежищу не применяется самим генератором карты.",
+          "id": "KNAVE2-035-L3-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-036-L3",
+          "given": "Внешняя базовая скорость A=6единиц/период; выбран №32уровень2, A/Bцели",
+          "when": "Внешняя система возвращает принятый множитель3",
+          "expected": "Итог A=18в тех же единицах/период; другие персонажи и геометрия карты не меняются.",
+          "id": "KNAVE2-036-L3-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-041-L3",
+          "given": "Iдобыт, внешнее решение storage_slots=1 и свободный1слот",
+          "when": "Принятьрезультат",
+          "expected": "ДобавленIс1слотом и sourceM.",
+          "id": "KNAVE2-041-L3-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-041-L3",
+          "given": "ДляI передано storage_slots=0",
+          "when": "Проверитьинтеграционныйpayload",
+          "expected": "Данные отвергнуты/отправлены на разрешение мастеру; бесплатный слот не принят.",
+          "id": "KNAVE2-041-L3-AC02"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-042-L3",
+          "given": "ИнгредиентыA/B по1порции, success=false",
+          "when": "Принятьисход",
+          "expected": "A/Bсписаны, зелье не добавлено, рецепт не создан.",
+          "id": "KNAVE2-042-L3-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-042-L3",
+          "given": "Тотжеfixture success=true, margin10",
+          "when": "Принятьисход",
+          "expected": "A/Bсписаны, создано согласованноезелье и рецепт(E,A/B); повтор сдругимиингредиентамиC не получает автоматическое освобождение от проверки.",
+          "id": "KNAVE2-042-L3-AC02"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-055-L3",
+          "given": "One worker hired for one month; dangerous combat assignment",
+          "when": "Prepare contract/assignment",
+          "expected": "Fee300 coins and10 slots; flag source restriction avoids danger.",
+          "id": "KNAVE2-055-L3-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-055-L3",
+          "given": "One mercenary hired for one month; destination=dungeon",
+          "when": "Prepare assignment",
+          "expected": "Fee600 coins and10 slots; flag no dungeon entry despite combat capability.",
+          "id": "KNAVE2-055-L3-AC02"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-056-L3",
+          "given": "Ordinary carpenter expert; destination=dungeon; task=inspect wooden support without danger",
+          "when": "Create assignment",
+          "expected": "Fee600/month; dungeon destination does not itself reject; specialty retained.",
+          "id": "KNAVE2-056-L3-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-056-L3",
+          "given": "Rare alchemist; task=front-line combat",
+          "when": "Create assignment",
+          "expected": "Fee2400/month profile retained; assignment flagged noncombat/nonrisk.",
+          "id": "KNAVE2-056-L3-AC02"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-057-L3",
+          "given": "Employer level3; companion level2; one full share100 coins and200XP",
+          "when": "Prepare profile",
+          "expected": "Companion profile share50 coins/100XP and morale_check=false; limit policy stays unresolved.",
+          "id": "KNAVE2-057-L3-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-057-L3",
+          "given": "Employer level2; companion level2",
+          "when": "Check source level condition",
+          "expected": "Flag ineligible under strictly higher employer-level condition; do not treat equal level as higher.",
+          "id": "KNAVE2-057-L3-AC02"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-059-L3",
+          "given": "Custom creature level5, AC14, HP_method=fixed4_per_level, movement40ft/round",
+          "when": "Prepare creature payload",
+          "expected": "HP20; armour_points3; default_check_bonus5; movement remains40ft/combat_round, no hexes/watch assigned.",
+          "id": "KNAVE2-059-L3-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-059-L3",
+          "given": "Level2, HP_method=rolled_d8_per_level, fixed rolls[3,7]",
+          "when": "Prepare creature payload",
+          "expected": "HP10, trace[3,7]; do not replace with default fixed8 or infer combat AI.",
+          "id": "KNAVE2-059-L3-AC02"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-060-L3",
+          "given": "Bandit record d8(3d10), context=wilderness, no override, rolls[2,5,9]",
+          "when": "Resolve count",
+          "expected": "Count16 from3d10; do not roll dungeon d8.",
+          "id": "KNAVE2-060-L3-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-060-L3",
+          "given": "Living armour d6(0), context=wilderness, no override",
+          "when": "Resolve count",
+          "expected": "Count0 from source wilderness entry; flag unsuitable zero-population random result for GM without silently replacing by dungeon count.",
+          "id": "KNAVE2-060-L3-AC02"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-060-L3",
+          "given": "Goblin record2d4(6d10), explicit count3 supplied by adventure",
+          "when": "Resolve count",
+          "expected": "Count3; do not invoke either random count.",
+          "id": "KNAVE2-060-L3-AC03"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-061-L3",
+          "given": "Creature record C; animal=1, body_part=1, monster_trait=1, tactic=1, weakness=1",
+          "when": "Generate chosen components",
+          "expected": "Attach Муравей, Усики, Кислотная кровь, Засада, Кислота as prompts; no automatic damage/immunity values assigned.",
+          "id": "KNAVE2-061-L3-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-061-L3",
+          "given": "power=97",
+          "when": "Resolve one row only",
+          "expected": "Record reference to travel-shift p9 with unresolved effect; do not mutate current weather/calendar. If the referenced-table index has not been supplied, status=pending_reference_input; source resolution is not declared complete.",
+          "id": "KNAVE2-061-L3-AC02"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-075-L3",
+          "given": "Импортированный яд помечен телесным эффектом; ТЕЛ2; цель16; d20=14.",
+          "when": "Передать запрос внешнему Knave-резолверу.",
+          "expected": "Выбрана ТЕЛ, сумма16, успех; импортированный исходный DC не подставляется молча.",
+          "id": "KNAVE2-075-L3-AC01"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-075-L3",
+          "given": "Та же опасность/ТЕЛ2/цель16; d20=13.",
+          "when": "Получить результат проверки.",
+          "expected": "Сумма15, неуспех; карта и elapsed travel time не меняются этой одной проверкой.",
+          "id": "KNAVE2-075-L3-AC02"
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-075-L3",
+          "given": "GM явно заменил типичную цель16 на18 для импортированного эффекта.",
+          "when": "Передать запрос.",
+          "expected": "Передана и сохранена18; значение не возвращается автоматически к16.",
+          "id": "KNAVE2-075-L3-AC03"
+        }
+      ],
+      "expected_evidence": {
+        "code_sha": "required_at_future_review",
+        "runtime": "Given/When/Expected cases and compatibility checks for affected exact profiles",
+        "persistence": "Changed map state round-trips through save/load and undo/redo without changing unrelated hexes/POIs/RNG",
+        "source_text_vs_runtime": "Source reading is not implementation evidence"
+      },
+      "score_delta": null,
+      "source_limitations": [
+        "Full thematic source inventory, not all game mechanics or runtime support. Unrelated combat/dungeon/economy details excluded with reasons.",
+        "Russian translation reviewed, not an independent collation against English edition/errata. Source ambiguities and product decisions remain explicit.",
+        "Counts are editorial rule groups and derived requirements; not publisher counts or numerical complexity/popularity weights.",
+        "The source notice distinguishes freely reusable mechanics from text/art; this result paraphrases rules and records table locators without republishing full tables. Product content-pack provenance/permission must be defined before embedding source text.",
+        "Open questions are in game matrix/ledger; automatic enforcement of unresolved parameters is not ready."
+      ],
+      "implementation_authorized": false,
+      "release_authorized": false,
+      "priority": "defer_L3_integration",
+      "readiness": "proposed_requires_product_coverage_audit_and_bounded_analyst_spec",
+      "research_result_ref": "agent-work/research/runs/2026-11-06-KNAVE2-full-thematic-audit.json",
+      "feedback_assessment": "Open UI/diagnostic feedback is outside this source-only run; future analyst must evaluate current feedback and show any UI proposal.",
+      "ui_preview_pending": true,
+      "ui_preview_responsible": "future_analyst_before_implementation",
+      "duplication_review": "Existing013/023/024editor and041MBtables are dependencies/reuse candidates. This task is the missing documented generic/profile behavior, not authority to rebuild them."
     }
   ],
   "last_review": {
