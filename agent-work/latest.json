@@ -7,7 +7,7 @@
   "strategy_branch": "main",
   "strategy_status": "approved",
   "execution_allowed": true,
-  "schedule_status": "enabled",
+  "schedule_status": "enabled_confirmed_point_in_time",
   "schedule_timezone": "Europe/Moscow",
   "schedule_time": null,
   "schedule_start_date": "2026-10-24",
@@ -26,10 +26,10 @@
   },
   "lessons_path": "agent-work/lessons.md",
   "plan_id": "2026-11-04-developer-HX-BL-023-E5-draft",
-  "run_id": "2026-11-06-owner-operational-unblock",
+  "run_id": "2026-11-06-developer-PR490-F01",
   "plan_revision": 1,
   "baseline_sha": "ab75ecb0a5b90888d4e367bfc9a40ecdff8ad429",
-  "status": "changes_requested",
+  "status": "review_ready",
   "planning_for": "2026-10-31",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-10-25",
@@ -45,15 +45,15 @@
   "schedule_start_at": "2026-10-24T01:00:00+03:00",
   "schedule_frequency": "hourly",
   "process_path": "agent-work/process.md",
-  "current_role": "strategist-manager",
-  "next_role": "developer",
+  "current_role": "developer",
+  "next_role": "reviewer",
   "current_task_id": "HX-BL-023",
   "spec_path": "agent-work/specs/HX-BL-023-E8.md",
   "spec_version": "E8-1.0",
-  "result_path": "agent-work/results/2026-11-06-owner-operational-unblock.json",
+  "result_path": "agent-work/results/2026-11-06-developer-PR490-F01.json",
   "handoff_commit_sha": "d66fc1882d982bf71de1977869077ec56c117d06",
   "active_claim": null,
-  "next_step": "Исправить PR490-F01: обычная точка после разрешённого переноса в пустой центр региона должна редактироваться как обычная, без создания второго центрального POI. Сохранить защиту геометрического центра/anchor; проверить новый SHA и передать свежему независимому проверяющему. Подготовить цельный actual walkthrough пакета до запроса выпуска.",
+  "next_step": "Fresh independent review of7ddcc218 including F01,whole E7+E8 package,CI evidence,test necessity andscore_assessment1.2. Complete durable whole-package UI presentation before release request.",
   "owner_decisions_needed": [
     {
       "task_id": "HX-BL-003",
@@ -71,10 +71,10 @@
   "evidence_path": "agent-work/evidence/HX-BL-023-E5-65e5d1d",
   "branch_name": "agent/hx023-e7-e8-package",
   "pr": 490,
-  "head_sha": "50f81251cf000d17f7f91eb96608d35ad900cfe4",
-  "checks_status": "independent_Node345_browser8_RNG_passed;confirmed_product_defect_PR490-F01",
+  "head_sha": "7ddcc218ec6871179bde8153ec589d6517f46c74",
+  "checks_status": "local_Node345_browser8_RNG_tsc_build_pass;CI_pending_observation",
   "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41799212970",
-  "review_verdict": "changes_requested",
+  "review_verdict": "pending_new_SHA",
   "role_selection_mode": "ready_work_priority",
   "role_selection_source": "agent-work/process.md",
   "process_decision_ref": "owner-decision-2026-10-24-dynamic-roles",
@@ -229,20 +229,32 @@
   "automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-11-06 01:52:26 UTC",
+      "checked_at": "2026-11-06 01:58:19 UTC",
       "is_enabled": true,
-      "status": "checked",
-      "time_source": "date -u"
+      "status": "checked"
     },
     "end": {
-      "checked_at": "2026-11-06 01:55:26 UTC",
-      "is_enabled": true,
+      "checked_at": "2026-11-06 02:26:41 UTC",
       "status": "checked",
-      "time_source": "date -u"
+      "is_enabled": true
     },
-    "restoration_performed": false,
-    "errors": [],
-    "limitation": "Actual point-in-time checks;no guarantee of later status"
+    "observations": [
+      {
+        "checked_at": "2026-11-06 02:26:04 UTC",
+        "is_enabled": false,
+        "status": "checked"
+      }
+    ],
+    "recovery_performed": true,
+    "reason": "No current owner disable instruction or confirmed full technical block; historic owner pause explicitly superseded in approvals. Cause of service disable unknown.",
+    "errors": [
+      {
+        "type": "catalog_changed",
+        "action": "create_blob",
+        "recovered": true
+      }
+    ],
+    "limitation": "Point-in-time checks only."
   },
   "open_findings": [
     "PR490-F01"
@@ -561,8 +573,7 @@
   },
   "previous_score_assessment_ref": "agent-work/evidence/review-HX-BL-023-c4a37ee/score_assessment.json",
   "addressed_findings_pending_review": [
-    "HX023-E3-R4",
-    "HX023-E3-R5"
+    "PR490-F01"
   ],
   "verified_fixed_findings": [
     "R1",
@@ -1145,7 +1156,7 @@
     "schedule_changed": false,
     "scope": "Observed moments only; no guarantee after completion"
   },
-  "previous_reviewed_sha": "24fa342cfacefdf604281ac0dc414912d6726433",
+  "previous_reviewed_sha": "50f81251cf000d17f7f91eb96608d35ad900cfe4",
   "test_governance": {
     "decision_ref": "owner-decision-2026-10-26-test-governance",
     "feedback_id": "HX-FB-002",
@@ -1176,20 +1187,45 @@
     "handoff_ref": "agent-work/handoffs/2026-10-27-HX-FB-002-audit.json"
   },
   "test_change_summary": {
-    "base_sha": "4a46f90be9a0eec795107227d4f3f7af8a417305",
-    "head_sha": "8b1bb56ab45762e739f2048bccd237af05810c40",
-    "added": 0,
-    "removed": 0,
-    "modified": 0,
-    "suite": "release merge tree",
-    "scenario_risk": "Exact reviewed tree published",
-    "reuse_or_new_reason": "No source changes on release; same tree equality proved",
-    "count_source": "Git commit tree equals3cdad0e on reviewed and merge SHA",
-    "package_test_change_summary_ref": "agent-work/evidence/HX-BL-023-panel-layout/test_change_summary.json",
-    "executed": {
-      "deployment": "check and fullbrowser workflow passed",
-      "live_ui": "edit/done, sharedscroll,1500/390fit passed"
-    }
+    "base_sha": "50f81251cf000d17f7f91eb96608d35ad900cfe4",
+    "head_sha": "7ddcc218ec6871179bde8153ec589d6517f46c74",
+    "source": "git diff base..head;existing two parameterized E8 real-App cases and one POI browser workflow extended;no new registrations",
+    "suites": [
+      {
+        "suite": "Node",
+        "added": 0,
+        "removed": 0,
+        "modified": 2,
+        "executed": 345,
+        "passed": 345,
+        "skipped": 0,
+        "scenario_risk": "PR490-F01 ordinary POI identity at an empty geometric center;type/delete/move/name/history/reload/continuation",
+        "reuse_or_new_reason": "Extended existing classic/Mythic full-payload relocation cases;red before fix,green after fix."
+      },
+      {
+        "suite": "Browser",
+        "added": 0,
+        "removed": 0,
+        "modified": 1,
+        "executed": 8,
+        "passed": 8,
+        "skipped": 0,
+        "scenario_risk": "Real controls ordinary versus central editor,paired names,explicit clear before deletion,exact history/reload,320/390/1500",
+        "reuse_or_new_reason": "Extended existing POI lifecycle in save-history suite;no extra permanent runner."
+      },
+      {
+        "suite": "world-random",
+        "added": 0,
+        "removed": 0,
+        "modified": 0,
+        "executed": 1,
+        "passed": 1,
+        "skipped": 0,
+        "scenario_risk": "RNG replay and busy/import guards",
+        "reuse_or_new_reason": "Existing required suite."
+      }
+    ],
+    "temporary_diagnostics": "Focused Node2/browser1 repeats and12-step walkthrough are diagnostics,not permanent suite growth."
   },
   "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/480#pullrequestreview-5721774794",
   "coordination_handoff": {
@@ -1516,7 +1552,7 @@
   "historical_unverified_weight": 70,
   "historical_score_model_version": "1.1",
   "score_update_awarded_points": 0,
-  "handoff_ref": "agent-work/handoffs/2026-11-06-PR490-50f8125-fixes.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-06-PR490-7ddcc21-review.json",
   "previous_feedback_handoff": {
     "task_id": "HX-FB-001",
     "register": "agent-work/feedback.json",
@@ -1959,7 +1995,7 @@
     23
   ],
   "schedule_decision_ref": "owner-decision-2026-10-31-team-resume-hourly",
-  "tree_sha": "9fdabe30a210f4fdb78b17c1841cbe8d70a4ecc0",
+  "tree_sha": "0bb858e6d149aae4c7aceb17da9ff5025bcc3817",
   "accepted_release_pending": null,
   "next_product_proposal": {
     "task_id": "HX-BL-027",
@@ -2395,13 +2431,15 @@
     "date": "2026-10-31",
     "recorded_at": "2026-10-31T12:19:09.980Z",
     "type": "owner_pause",
-    "status": "active",
+    "status": "superseded_by_owner_resume",
     "source": "Current owner message: «пока останови работу»",
     "scope": "Pause HexCrawl team work and the existing automation until explicit owner resume.",
     "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "resume_requires": "Explicit owner instruction",
     "preserve": "Existing results, queue and any claim/checkpoint; do not mark unfinished work completed.",
-    "is_enabled": false
+    "is_enabled": false,
+    "superseded_by": "owner-decision-2026-10-31-team-resume-hourly",
+    "historical_is_enabled": false
   },
   "schedule_actual": "BEGIN:VEVENT\nDTSTART:20261030T211044Z\nRRULE:FREQ=HOURLY;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
   "owner_resume": {
@@ -2443,18 +2481,9 @@
   "current_stage_id": "E8.2",
   "implementation_started": true,
   "current_stage_release_approved": false,
-  "review_ready": false,
+  "review_ready": true,
   "current_stage_ui_status": "release_preview_pending_whole_package_walkthrough",
-  "completed_claim": {
-    "run_id": "2026-10-31-strategist-score-PR482-8b1bb56",
-    "role": "strategist",
-    "task_id": "HX-BL-023",
-    "stage_id": "PR482_score_update",
-    "status": "completed",
-    "started_at": "2026-10-31T11:56:00.414Z",
-    "completed_at": "2026-10-31T11:57:06.096Z",
-    "result_ref": "agent-work/results/2026-10-31-strategist-score-PR482-8b1bb56.json"
-  },
+  "completed_claim": "agent-work/claims/2026-11-06-developer-PR490-F01.json",
   "evidence_commit_sha": "f991a3ddcc0fcedc9d62d8c9f51f4a2f33291e9c",
   "finding_ids": [
     "PR490-F01"
@@ -4077,7 +4106,7 @@
     "workspace_recovery": "Pruning removed old shared git metadata; fresh clone from GitHub succeeded, no request to user needed.",
     "materials_commit_sha": "64fa823e19f701817ff59d962d7b211e83aaa406"
   },
-  "current_stage_status": "fixes_ready",
+  "current_stage_status": "review_ready",
   "current_stage_review_status": "changes_requested",
   "accepted": false,
   "full_UI_pending": true,
@@ -4316,7 +4345,7 @@
     "materials_commit_sha": "317189e45278245dfced11645c528b5bff8320a9",
     "result_ref": "agent-work/results/2026-11-04-developer-HX-BL-023-E5-solver.json"
   },
-  "stage_id": "E8.2",
+  "stage_id": "E8.2-F01",
   "release_approved": false,
   "ui_actual_shown": true,
   "ui_actual_responsible": "developer",
