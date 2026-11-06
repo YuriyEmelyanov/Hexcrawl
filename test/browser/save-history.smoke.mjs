@@ -37,6 +37,7 @@ try {
    };
  });
  await page.goto('http://127.0.0.1:4181/');
+ await page.getByRole('button',{name:'Переключить на русский',exact:true}).click();
   await page.getByRole('textbox',{name:'Seed мира',exact:true}).fill('42');
   await page.getByRole('textbox',{name:'Seed мира',exact:true}).press('Tab');
  const button=name=>page.getByRole('button',{name,exact:true});

@@ -45,7 +45,7 @@ const compiled = ts.transpileModule(instrumented, { compilerOptions: {
 }}).outputText;
 const localRequire = createRequire(sourceUrl);
 
-export function createGenerationHarness(seed = 1, search = '') {
+export function createGenerationHarness(seed = 1, search = '', language = 'ru') {
   const state = [];
   let cursor = 0;
   const hooks = {
@@ -81,8 +81,21 @@ export function createGenerationHarness(seed = 1, search = '') {
   // Browser dialogs are accepted by default; individual lifecycle tests exercise cancellation.
   const windowDefaults={location:{search},matchMedia:()=>({matches:false}),confirm:()=>true};
   context.window=windowDefaults;
+  let localeInitialized = false;
   return {
-    render() { cursor = 0; return module.exports.App(); },
+    // Existing generator/error/name fixtures select their locale explicitly;
+    // the production page's startup language is checked by browser acceptance.
+    render() {
+      cursor = 0;
+      let app = module.exports.App();
+      if (!localeInitialized) {
+        localeInitialized = true;
+        app.setLanguage(language);
+        cursor = 0;
+        app = module.exports.App();
+      }
+      return app;
+    },
     geometry: module.exports.testGeometry, logs,
     guardRandom() { seededMath.random = () => { throw Error("Unexpected Math.random in world operation"); }; },
     setWindow(value) { context.window={...windowDefaults,...value}; },

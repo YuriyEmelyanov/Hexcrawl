@@ -55,6 +55,7 @@ try {
   page.on('request', request => { if (request.resourceType() === 'fetch') imageFetches.push(request.url()); });
   await page.route(/mc\.yandex/, route => route.abort());
   await page.goto('http://127.0.0.1:4174/');
+  await page.getByRole('button', { name: 'Переключить на русский', exact: true }).click();
   await page.getByRole('textbox',{name:'Seed мира',exact:true}).fill('42');
   await page.getByRole('textbox',{name:'Seed мира',exact:true}).press('Tab');
   await page.locator('input[type=file]').setInputFiles({ name: 'poi-display.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(savedMap)) });
