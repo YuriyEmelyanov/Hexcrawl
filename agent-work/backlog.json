@@ -1375,7 +1375,7 @@
       "task_id": "HX-BL-023",
       "title": "Общий режим редактирования",
       "criterion_id": "S03-C01",
-      "status": "changes_requested",
+      "status": "review_ready",
       "potential_delta": null,
       "approval_ref": "owner-decision-2026-10-29-HX-FB-005-direct-edit-mode",
       "source": {
@@ -1391,15 +1391,15 @@
       "recommended_priority": 1,
       "execution_allowed": true,
       "spec_status": "ready_for_development",
-      "next_role": "developer",
-      "next_step": "Исправить PR490-F01: обычная точка после разрешённого переноса в пустой центр региона должна редактироваться как обычная, без создания второго центрального POI. Сохранить защиту геометрического центра/anchor; проверить новый SHA и передать свежему независимому проверяющему. Подготовить цельный actual walkthrough пакета до запроса выпуска.",
+      "next_role": "reviewer",
+      "next_step": "Fresh independent review of7ddcc218 including F01,whole E7+E8 package,CI evidence,test necessity andscore_assessment1.2. Complete durable whole-package UI presentation before release request.",
       "related_task_ids": [
         "HX-BL-013",
         "HX-BL-018",
         "HX-BL-019",
         "HX-BL-028"
       ],
-      "handoff_ref": "agent-work/handoffs/2026-11-06-PR490-50f8125-fixes.json",
+      "handoff_ref": "agent-work/handoffs/2026-11-06-PR490-7ddcc21-review.json",
       "owner_priority_decision": {
         "id": "owner-decision-2026-10-28-editor-and-MB-content-before-outreach",
         "date": "2026-10-28",
@@ -1543,12 +1543,12 @@
       "branch": "agent/hx023-e7-e8-package",
       "pr": 490,
       "base_sha": "2ef5cc35107f299c309b7c8065a1e81ca9881278",
-      "head_sha": "50f81251cf000d17f7f91eb96608d35ad900cfe4",
-      "checks_status": "independent_Node345_browser8_RNG_passed;confirmed_product_defect_PR490-F01",
+      "head_sha": "7ddcc218ec6871179bde8153ec589d6517f46c74",
+      "checks_status": "local_Node345_browser8_RNG_tsc_build_pass;CI_pending_observation",
       "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41799212970",
-      "review_verdict": "changes_requested",
+      "review_verdict": "pending_new_SHA",
       "test_change_summary_ref": "agent-work/evidence/HX-BL-023-E5-65e5d1d/test-change-summary.json",
-      "developer_result_ref": "agent-work/results/2026-11-04-developer-HX-BL-023-E5-draft.json",
+      "developer_result_ref": "agent-work/results/2026-11-06-developer-PR490-F01.json",
       "score_assessment_status": "completed_model1.2_unknown_no_award",
       "ui_actual": {
         "head_sha": "0459c645706a51e518b323fd0588fba4923e5dd2",
@@ -1566,7 +1566,7 @@
       ],
       "previous_review_result_ref": "agent-work/results/2026-10-31-reviewer-HX-BL-023-E3-6e59e7f.json",
       "addressed_findings_pending_review": [
-        "HX023-E4-R1"
+        "PR490-F01"
       ],
       "previous_score_assessment_ref": "agent-work/evidence/review-HX-BL-023-c4a37ee/score_assessment.json",
       "previous_review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/478#pullrequestreview-5692465528",
@@ -1855,7 +1855,7 @@
       "score_update_handoff_ref": "agent-work/handoffs/2026-11-02-PR481-release-score.json",
       "score_update_completed_at": "2026-11-02T15:11:08.293Z",
       "previous_head_sha": "a99c299f0648c2e5c1d65173bdeca50061dcc901",
-      "review_ready": false,
+      "review_ready": true,
       "next_stage_id": "E5",
       "specification_findings": [],
       "panel_layout_correction": {
@@ -1945,7 +1945,7 @@
         "score_awarded_points": 0
       },
       "review_ref": "agent-work/evidence/review-HX-BL-023-E4-7d7ae9d/review-report.md",
-      "tree_sha": "9fdabe30a210f4fdb78b17c1841cbe8d70a4ecc0",
+      "tree_sha": "0bb858e6d149aae4c7aceb17da9ff5025bcc3817",
       "current_review_status": "not_ready_implementation_incomplete",
       "current_score_assessment_status": "completed_model1.2_unknown_no_award",
       "previous_accepted_release_pending": {
@@ -2093,20 +2093,21 @@
         },
         "E8_2_stable_names": {
           "stage_id": "E8.2",
-          "status": "changes_requested",
-          "head_sha": "50f81251cf000d17f7f91eb96608d35ad900cfe4",
+          "status": "review_ready",
+          "head_sha": "7ddcc218ec6871179bde8153ec589d6517f46c74",
           "pr": 490,
-          "handoff_ref": "agent-work/handoffs/2026-11-06-PR490-50f8125-fixes.json",
+          "handoff_ref": "agent-work/handoffs/2026-11-06-PR490-7ddcc21-review.json",
           "review_evidence_ref": "agent-work/evidence/review-PR490-50f8125/review-report.json",
           "finding_ids": [
             "PR490-F01"
           ],
-          "release_approved": false
+          "release_approved": false,
+          "finding_status": "addressed_pending_independent_review"
         }
       },
       "accepted": false,
-      "current_stage_status": "fixes_ready",
-      "current_stage_review_status": "changes_requested",
+      "current_stage_status": "review_ready",
+      "current_stage_review_status": "pending_new_SHA",
       "current_stage_release_approved": false,
       "published": false,
       "routing_snapshot_history": [
