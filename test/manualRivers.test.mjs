@@ -1,7 +1,7 @@
 import test from 'node:test';
 import {validateEditedRiverDeltas} from '../src/manualRiverDependencies.ts';
 import assert from 'node:assert/strict';
-import {emptyRiverFeatures,migrateRiverEditing,validateDeltaReferences,allocateRiverId,validateRiverFeatures,prepareRiverFeatureEdit,resolveRiverFeatureEdits,featuresForSurvivingRivers,prepareRiverEdit,riverFeatureEdge,validateEditedRiverNetwork,reserveGeneratedRiverIds} from '../src/manualRivers.ts';
+import {emptyRiverFeatures,migrateRiverEditing,validateDeltaReferences,allocateRiverId,validateRiverFeatures,prepareRiverFeatureEdit,resolveRiverFeatureEdits,featuresForSurvivingRivers,prepareRiverEdit,riverFeatureEdge,validateEditedRiverNetwork,reserveGeneratedRiverIds,rebuildRiverRegionSectors,validateRegionRiverHeights} from '../src/manualRivers.ts';
 // E5-AC06/07: persistence intentions and identity allocation are new contracts.
 // Existing riverRapids/riverWaterfalls test probability tables; riverModel tests
 // numerical rules. Reuse that core, do not copy its exhaustive truth tables here.
@@ -9,6 +9,37 @@ const v=x=>({key:`${x},0`,x,y:0});
 const river=(id,path=[0,1,2,3],fullness=2)=>({id,regionId:1,vertexPath:path.map(v),sectors:path.slice(1).map((b,i)=>({id:`s${id}-${i}`,riverId:id,sectorIndex:i+1,vertexPath:[v(path[i]),v(b)],edgeKeys:[riverFeatureEdge(v(path[i]),v(b))],startVertexKey:v(path[i]).key,endVertexKey:v(b).key,startReason:i?'region_boundary':'river_start',endReason:i===path.length-2?'river_end':'region_boundary',fullness,assignedRegionId:i<1?1:2}))});
 const base=()=>({rivers:[river(5)],riverFeatures:emptyRiverFeatures(),nextRiverId:6});
 const eligibility={rapid:()=>true,waterfall:()=>true};
+// E7 AC06: extend the existing river fixture instead of copying numerical rule
+// tables. New risks are explicit owner loss and directed height contacts.
+test('E7 river owner loss remaps only to the receiving region and preserves supported sector identities',()=>{
+ const r=river(5),before=structuredClone(r),ctx=context();
+ const first=riverFeatureEdge(v(0),v(1));
+ const after={...ctx,edgeOwners:key=>key===first?[9,3]:ctx.edgeOwners(key)};
+ const next=rebuildRiverRegionSectors(r,ctx,after,{fromRegionId:1,toRegionId:9});
+ assert.equal(next.sectors[0].assignedRegionId,9);assert.equal(next.regionId,9);
+ assert.equal(next.sectors[1],r.sectors[1]);assert.equal(next.sectors[2],r.sectors[2]);
+ assert.deepEqual(next.vertexPath,r.vertexPath);assert.deepEqual(next.sectors.map(s=>s.fullness),r.sectors.map(s=>s.fullness));assert.deepEqual(r,before);
+ assert.throws(()=>rebuildRiverRegionSectors(r,ctx,after),/owner_conflict/);
+ assert.throws(()=>rebuildRiverRegionSectors(r,ctx,after,{fromRegionId:1,toRegionId:2}),/owner_conflict/);
+ assert.equal(rebuildRiverRegionSectors(r,ctx,ctx),r);
+ const ambiguous={...r,sectors:[...r.sectors,{...r.sectors[0],assignedRegionId:7}]};
+ assert.throws(()=>rebuildRiverRegionSectors(ambiguous,ctx,after,{fromRegionId:1,toRegionId:9}),/ambiguous_river_owner/);
+ const colliding=structuredClone(r);colliding.sectors[1].id=`manual-${r.id}:${first}`;
+ assert.throws(()=>rebuildRiverRegionSectors(colliding,ctx,after,{fromRegionId:1,toRegionId:9}),/river_sector_identity_conflict/);
+});
+test('E7 directed heights reject new uphill owner contacts without using surrounding maxima',()=>{
+ const edge=(id,from,to,regionId,height)=>({id,from,to,regionId,height,fullness:1});
+ const net=edges=>({nodes:[],edges});
+ const valley=net([edge('a','s','j',1,1),edge('b','j','end',2,1)]);
+ assert.doesNotThrow(()=>validateRegionRiverHeights(valley,valley));
+ const uphill=net([valley.edges[0],{...valley.edges[1],height:2}]);
+ assert.throws(()=>validateRegionRiverHeights(valley,uphill),/region_river_uphill/);
+ assert.doesNotThrow(()=>validateRegionRiverHeights(uphill,structuredClone(uphill)));
+ assert.throws(()=>validateRegionRiverHeights(uphill,net([valley.edges[0],{...valley.edges[1],height:3}])),/region_river_uphill/);
+ assert.doesNotThrow(()=>validateRegionRiverHeights(net([]),net([edge('source','s','end',3,3)])));
+ const junction=net([edge('a','s','j',1,3),edge('c','s2','j',3,1),edge('b','j','end',2,2)]);
+ assert.throws(()=>validateRegionRiverHeights(net([]),junction),/region_river_uphill/);
+});
 function context(kinds={}){
  return {...eligibility,vertex:k=>{const n=Number(k.split(',')[0]);return k===`${n},0`?v(n):undefined;},edgeOwners:k=>{const [a,b]=k.split('|').map(k=>Number(k.split(',')[0]));return Math.abs(a-b)===1?[a===0||b===0?1:2]:[];},blocked:()=>false,event:()=>false,
  network:rivers=>{const edges=rivers.flatMap(r=>r.vertexPath.slice(1).map((b,i)=>({id:riverFeatureEdge(r.vertexPath[i],b),from:r.vertexPath[i].key,to:b.key,regionId:r.sectors.find(s=>s.edgeKeys.includes(riverFeatureEdge(r.vertexPath[i],b)))?.assignedRegionId??1,height:1,fullness:r.sectors.find(s=>s.edgeKeys.includes(riverFeatureEdge(r.vertexPath[i],b)))?.fullness})));const keys=new Set(edges.flatMap(e=>[e.from,e.to]));return {issues:[],network:{edges,nodes:[...keys].map(id=>({id,kind:kinds[id]??(edges.filter(e=>e.to===id).length&&edges.filter(e=>e.from===id).length?'continuation':'open')}))}};},additionalValidation:()=>{}};

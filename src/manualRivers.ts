@@ -136,8 +136,7 @@ export function riverPathOwners(r:EditableRiver,path:RiverVertexValue[],ctx:Pick
   }
   return result;
 }
-function rebuild(r:EditableRiver,path:RiverVertexValue[],values:ReadonlyMap<string,RiverFullness>,ctx:Pick<RiverEditContext,'edgeOwners'|'reason'>):EditableRiver{
-  const ownersByEdge=riverPathOwners(r,path,ctx);
+function rebuild(r:EditableRiver,path:RiverVertexValue[],values:ReadonlyMap<string,RiverFullness>,ctx:Pick<RiverEditContext,'edgeOwners'|'reason'>,ownersByEdge=riverPathOwners(r,path,ctx)):EditableRiver{
   const subject={...r,vertexPath:path};
   const sectors:EditableRiverSector[]=path.slice(1).map((b,i)=>{
     const a=path[i],key=riverFeatureEdge(a,b),owner=ownersByEdge.get(key)!;
@@ -223,6 +222,44 @@ export function validateEditedRiverNetwork(before:EditableRiver[],after:Editable
  * are immutable. Unaffected sectors/control points retain their accepted data. */
 export function rebuildRiverWaterSectors(r:EditableRiver,ctx:Pick<RiverEditContext,'edgeOwners'|'reason'>):EditableRiver{
   return rebuild(r,r.vertexPath,fullnessByEdge(r),ctx);
+}
+/** Region edits never choose an arbitrary adjacent owner. Only an explicit
+ * single-hex transfer may replace its former owner, and only with the receiving
+ * region where the very same physical edge is supported after the transfer. */
+export function rebuildRiverRegionSectors(r:EditableRiver,before:Pick<RiverEditContext,'edgeOwners'>,after:Pick<RiverEditContext,'edgeOwners'|'reason'>,transfer?:{fromRegionId:number;toRegionId:number}):EditableRiver{
+  const accepted=new Map<string,Set<number>>();
+  for(const s of r.sectors)for(const key of s.edgeKeys){
+    const values=accepted.get(key)??new Set<number>();values.add(s.assignedRegionId??r.regionId);accepted.set(key,values);
+  }
+  const owners=new Map<string,number>();
+  for(let i=1;i<r.vertexPath.length;i++){
+    const key=riverFeatureEdge(r.vertexPath[i-1],r.vertexPath[i]),values=accepted.get(key);
+    if(values?.size!==1)fail('ambiguous_river_owner');
+    const prior=[...values!][0];
+    if(!before.edgeOwners(key).includes(prior))fail('invalid_existing_river_owner');
+    if(after.edgeOwners(key).includes(prior))owners.set(key,prior);
+    else if(transfer&&prior===transfer.fromRegionId&&after.edgeOwners(key).includes(transfer.toRegionId))owners.set(key,transfer.toRegionId);
+    else fail('region_river_owner_conflict');
+  }
+  const next=rebuild(r,r.vertexPath,fullnessByEdge(r),after,owners);
+  if(new Set(next.sectors.map(s=>s.id)).size!==next.sectors.length)fail('river_sector_identity_conflict');
+  return JSON.stringify(next)===JSON.stringify(r)?r:next;
+}
+/** Compare the actual directed owner contacts, including each confluence input.
+ * An unrelated high neighboring region is not the height of a valley river.
+ * Legacy uphill support is grandfathered only when the exact contact is intact. */
+export function validateRegionRiverHeights(before:RiverNetwork,after:RiverNetwork):void{
+  const uphill=(network:RiverNetwork)=>{
+    const result=new Set<string>();
+    const outgoingByNode=new Map<string,RiverNetwork['edges']>();
+    for(const edge of network.edges){const edges=outgoingByNode.get(edge.from)??[];edges.push(edge);outgoingByNode.set(edge.from,edges);}
+    for(const incoming of network.edges)for(const outgoing of outgoingByNode.get(incoming.to)??[]){
+      if(incoming.regionId===outgoing.regionId||incoming.height>=outgoing.height)continue;
+      result.add(JSON.stringify([incoming.to,incoming.id,incoming.regionId,incoming.height,incoming.fullness,outgoing.id,outgoing.regionId,outgoing.height,outgoing.fullness]));
+    }
+    return result;
+  };
+  const old=uphill(before);for(const contact of uphill(after))if(!old.has(contact))fail(`region_river_uphill:${contact}`);
 }
 /** Pure preparation; no history, counter, RNG or input object is mutated on any failure. */
 export function prepareRiverEdit(doc:RiverEditDocument,edit:RiverEdit,ctx:RiverEditContext):RiverEditDocument{

@@ -1,0 +1,13 @@
+# E8.1 risk-first implementation plan
+E8-1.0 AC01-05: E7 tests only change region ownership at the same coordinate. Add distinct coordinate-relocation cases to the existing manualRegions suite, reusing its region/tag/name fixtures. Protect bilingual names/revisions and all tag-counter prefixes, exact no-op, failure without input mutation, road-source dependency and land/water/Mythic policy. These are new command branches, not extra copies of E7 transfer tests. Existing topoynm trim/limit tests remain reused; new editorNames tests cover sparse non-settlement/water names and locator validation, not generated-name algorithms.
+
+AC06-09 and AC11 require actual App, v8 snapshots/import/export, loss gates and real UI. Pure-command evidence cannot pass those criteria. No review_ready or release until these integrations and mandatory Node24/browser/RNG checks are complete. E7 source upload restriction is preserved.
+
+## Storage integration increment
+AC07: extend existing saveSafety harness, not another runner, with authored POI names v8import/export/realUndoRedo, malformed field atomic refusal, and v7migration. Existing output-version expectations in six logical cases change7→8; these are updated assertions,not six new functional checks. AC09: actual type transition must promote existing settlement label before synchronization removes its old locator. AC11: checkpoint/generation/loss paths must either carry exact authored names or refuse before losing them; E6 uses its existing acceptedLosses preview. No pure tests substitute real handler evidence.
+
+## POI paired-name UI
+AC08/09: reuse saveSafety actual App harness and its authored fixture. Three contexts (land/water/center) exercise different storage addresses/catalog branches; pair commit/clear/Undo share one lifecycle case per context. One negative case covers invalid half-pair,stale secondary-field callback and duplicate-name rejection. Existing E1 single-locale region/river/kingdom behavior remains;settlement input now exposes its second language without reallocating names. Browser focus/Tab between the pair,320/390 layout and visible name fields require actual DOM verification,not callback assertions alone.
+
+## Actual POI move lifecycle
+AC01/04/05/06: pure coordinate cases already cover kind/occupancy/payload matrices. Add only actual App history wiring,stale/new-document/doubleDone/fault preparation and no-op/redo/draft-export to the existing regionEditing suite. Use same authored region fixture;do not duplicate all pure policy tables. Root movement draft requires token+revision+ref identity,accepted-document-only export and pending transition Finish/Discard/Stay. Actual DOM target hit testing,drag/rotation,pair focus/Tab and narrow layout still need browser coverage.

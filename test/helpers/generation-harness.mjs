@@ -16,9 +16,12 @@ const artwork = app.body.statements.flatMap(node => ts.isVariableStatement(node)
 let prefix = source.slice(0, lastReturn.getStart(ast));
 if (artwork?.initializer) prefix = prefix.slice(0, artwork.initializer.getStart(ast)) + 'undefined' + prefix.slice(artwork.initializer.end);
 const instrumented = prefix + `return {
+  poiDraft, startPoiDraft, changePoiTarget, finishPoiDraft, resetPoiDraft, poiPreview, requestPoiExit, resolvePoiExit, poiExitRequest,
+  regionDraft, startRegionDraft, changeRegionDraft, finishRegionDraft, resetRegionDraft, selectRegionTarget, regionPreview, editError,
   waterDraft, startWaterDraft, changeWaterDraft, toggleWaterHex, selectWholeWaterBody, finishWaterDraft, resetWaterDraft, waterPreview,
   requestRiverCommand, confirmRiverCommand, cancelRiverCommand, riverCommandPreview, changeRiverPreview, riverPreviewPlan, chooseMapRiver, riverFeatureTarget, roadFeatureResolution, updateRoadResolution, editRiverDocument, editRiverFeatures, rapidRiverEdgeKeys, riverWaterfalls, tags, mutateTag, fillMissingTags, obstacleDraft, obstacleChoices, startObstacleChoice, editObstacleDocument,
   riverDraft, startRiverDraft, appendRiverDraft, finishRiverDraft, resetRiverDraft, finishPathDrafts, riverDraftVertices,
+  requestRoadRemoval, confirmNamedRoadRemoval:()=>confirmRoadRemoval?editRoadDocument({type:"remove",roadId:confirmRoadRemoval.roadId,segmentKey:confirmRoadRemoval.segmentKey},undefined,[],undefined,roadRemovalNames(confirmRoadRemoval.roadId,confirmRoadRemoval.segmentKey).map(([key])=>key)):false,
   roadDraft, startRoadDraft, appendRoadDraft, finishRoadDraft, resetRoadDraft, editRoadDocument, gmNotesByHexKey, changeNotesText, finishNotesGroup, openNotesEditor, toggleNotesEditor, recordGenerated, captureGenerationBackup,
   generationRef, seedInput, setSeedInput, setGenSizeCategory, applyWorldSeed, buildGenerationOptions, generateAt,
   regions, rivers, roads, candidateHexes, hexTerrainByKey, history, toponyms, toponymSeed, setToponyms,
@@ -28,9 +31,9 @@ const instrumented = prefix + `return {
   handleImportJson, resetMap, undoMap, redoMap, undoHistory, redoHistory, captureDocument, selectedHex, setSelectedHex,
   setSelectedHexBiomeOverride, resetSelectedHexBiomeOverride, setSelectedPoiKind, setSelectedCentralPoiKind,
   setSelectedWaterPoiKind, deleteSelectedWaterPoi, deleteSelectedPoi, isImporting,
-  selectNameTarget, nameTargetHex, nameTargets, nameDraft, nameErrors, showNameTarget, requestNameTarget, changeNameDraft, saveNameDraft, cancelNameDraft, applyDocument, setLanguage, language, setSelectedRegionBiome, regionBiomeReason, editMode, setEditMode
+  selectNameTarget, nameTargetHex, nameTargets, nameDraft, nameErrors, showNameTarget, requestNameTarget, changeNameDraft, changeOtherNameDraft, saveNameDraft, cancelNameDraft, applyDocument, setLanguage, language, setSelectedRegionBiome, regionBiomeReason, editMode, setEditMode
 };` + source.slice(lastReturn.end) + `
-export const testGeometry = { WaterEditError, TagCapacityError, generateConnectedRegionFromAnchorImpl, generateFallbackTractFromAnchor, findFillableEnclosedEmptyAreas, getNewRiverLakeReentryViolation, getHexCornerPoints, getHexEdgeKeys, getHexNeighbors, hexKey, buildRiverGraphForRegion,
+export const testGeometry = { WaterEditError, TagCapacityError, prepareRegionMapEdit, generateConnectedRegionFromAnchorImpl, generateFallbackTractFromAnchor, findFillableEnclosedEmptyAreas, getNewRiverLakeReentryViolation, getHexCornerPoints, getHexEdgeKeys, getHexNeighbors, hexKey, buildRiverGraphForRegion,
   findRiverEndpointsTouchingRegion, getCandidateHexes, generateRiverForRegion, assertHexcrawlSaveData,
   prepareWaterMapEdit, prepareRiverMapEdit, buildManualRiverGeometryContext, riverFeatureEligibility, buildRegionRiverNetwork, reconcileRegionRiverModel, completeRegionRiverEnds, addLakeAroundRiverSplitVertex, createInitialRiverSectors,
   countRoadPathRiverCrossings, findLowestRiverCrossingPathWithinWildRegion, getWildRoadCandidates, chooseBestWildRoadCandidate, collectSettledIncomingRoadPathsToTarget, generateRoadsForRegionImpl, findIncomingRoadEndpointsForRegion, getRoadEndpointHexKeysImpl,

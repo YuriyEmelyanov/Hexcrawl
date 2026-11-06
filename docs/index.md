@@ -18,6 +18,7 @@
 | Область | Действующий документ |
 |---|---|
 | Регионы, сохранения, диагностика | [region-generation.md](region-generation.md) |
+| Ручная высота и принадлежность гекса E7 | [region-editing.md](region-editing.md) |
 | Правила рек RIV | [river-model.md](river-model.md) |
 | API ядра и подключение рек | [river-model-core.md](river-model-core.md), [river-model-integration.md](river-model-integration.md) |
 | Дороги ROAD | [road-model.md](road-model.md) |
@@ -26,6 +27,7 @@
 | Лес и редколесье | [forest-rendering.md](forest-rendering.md) |
 | Озёра и вода | [natural-lakes.md](natural-lakes.md), [ручная вода E6](water-editing.md) |
 | POI и экспорт | [poi-display.md](poi-display.md) |
+| Имена и перенос POI, JSON v8 | [poi-editor-data.md](poi-editor-data.md) |
 | Топонимы | [toponym-generation.md](toponym-generation.md) |
 | Навигация/отрисовка | [map-navigation.md](map-navigation.md), [rendering-performance.md](rendering-performance.md) |
 

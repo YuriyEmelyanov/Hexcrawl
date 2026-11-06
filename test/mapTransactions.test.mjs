@@ -237,7 +237,7 @@ test('all manifest saves round-trip unchanged entities, names and can continue t
     for(const layer of ['regions','rivers','roads','crossings','terrainByHexKey']) assert.deepEqual(saved.map[layer],data.map[layer],item.path+' '+layer);
     for(const layer of ['kingdoms','waterPoiByHexKey','biomeOverrideByHexKey'])assert.deepEqual(saved.map[layer],data.map[layer]??(layer==='kingdoms'||layer==='obstacles'?[]:{}),item.path+' '+layer);
     assert.deepEqual(saved.map.obstacles.map(({id,...o})=>o),data.map.obstacles??[],item.path+' obstacle geometry');
-    assert.equal(saved.version,7);assert.equal(saved.counters.nextObstacleId,(data.map.obstacles??[]).length+1);
+    assert.equal(saved.version,8);assert.equal(saved.counters.nextObstacleId,(data.map.obstacles??[]).length+1);
     if(data.map.toponyms)for(const [key,name] of Object.entries(data.map.toponyms.names))assert.deepEqual(saved.map.toponyms.names[key],name,item.path+' name '+key);
     h.geometry.assertHexcrawlSaveData(serial(h.render().createSaveData()));
     // Reload the normalized export: only savedAt may change.
@@ -258,7 +258,7 @@ test('v5 obstacle IDs and counter survive migration, round-trip and history; inv
   legacy.counters.nextRoadId=roadId+1;
   const {h,alerts}=setup();
   await load(h,legacy);assert.deepEqual(alerts,[]);
-  const migrated=stable(h.render());assert.equal(migrated.version,7);
+  const migrated=stable(h.render());assert.equal(migrated.version,8);
   const sorted=[...legacy.map.obstacles].map(o=>o.edgeKey).sort();
   assert.deepEqual(migrated.map.obstacles,legacy.map.obstacles.map(o=>({...o,id:sorted.indexOf(o.edgeKey)+1})));
   assert.equal(migrated.counters.nextObstacleId,sorted.length+1);
@@ -531,7 +531,7 @@ test('road draft is ephemeral, blocks other writes, commits once and stale finis
 
 test('E5 native v7 feature intentions and counter survive real import, edits, history and rejected files',async()=>{
   const {h,alerts}=setup();await load(h,fixture);const legacy=stable(h.render());
-  assert.equal(legacy.version,7);assert.deepEqual(legacy.map.riverFeatures,{rapids:[],waterfalls:[]});
+  assert.equal(legacy.version,8);assert.deepEqual(legacy.map.riverFeatures,{rapids:[],waterfalls:[]});
   const native=structuredClone(legacy), eligibility=h.geometry.riverFeatureEligibility(native.map.rivers,native.map.regions,new Map(Object.entries(native.map.terrainByHexKey)),native.map.crossings);
   const targets=native.map.rivers.flatMap(r=>r.vertexPath.slice(1).map((v,i)=>({riverId:r.id,edgeKey:[r.vertexPath[i].key,v.key].sort().join('|')})));
   const rapid=targets.find(e=>eligibility.rapid(e.riverId,e.edgeKey));assert.ok(rapid,'fixture has a real eligible rapid edge');
@@ -643,12 +643,13 @@ test('E6 real POI/name/tag losses require every explicit answer and Undo restore
  const {rollTag,editTag,emptyTags}=await import('../src/tags/engine.ts'),{mythicDefinitions}=await import('../src/tags/mythic.ts');
  const owner={kind:'poi',regionId:1,hexKey:'0,0'};let tags=rollTag(emptyTags(),owner,mythicDefinitions['mb.feature'],42);tags=editTag(tags,owner,'mb.feature',0,'ru','Авторский текст');f.map.tags=tags;
  f.map.toponyms.names['settlement:1:0,0']={ru:'Авторская деревня',en:'Authored Village',kind:'settlement',model:'germanic',revision:4};
- const h=await waterSetup(f),before=stable(h.render());h.render().startWaterDraft('lake');assert.equal(h.render().finishWaterDraft(),false);
- let a=h.render(),losses=a.waterPreview.plan.losses;assert.deepEqual(serial(losses.map(l=>l.type).sort()),['name','poi','tag']);
+ const initial=await waterSetup(f),named=stable(initial.render());named.map.editorNames={'poi:1:0,0':{en:'Explicit authored',ru:'Явное авторское'}};
+ const h=await waterSetup(named),before=stable(h.render());h.render().startWaterDraft('lake');assert.equal(h.render().finishWaterDraft(),false);
+ let a=h.render(),losses=a.waterPreview.plan.losses;assert.deepEqual(serial(losses.map(l=>l.type).sort()),['name','name','poi','tag']);
  assert.equal(a.finishWaterDraft(a.waterDraft,true),false);assert.deepEqual(stable(h.render()),before);
  a=h.render();a.changeWaterDraft(a.waterDraft,{options:{acceptedLosses:[losses[0].id]},preview:true});assert.equal(h.render().finishWaterDraft(h.render().waterDraft,true),false);assert.deepEqual(stable(h.render()),before);
  a=h.render();a.changeWaterDraft(a.waterDraft,{options:{acceptedLosses:losses.map(l=>l.id)},preview:true});assert.equal(h.render().finishWaterDraft(h.render().waterDraft,true),true);
- const after=stable(h.render());assert.equal(after.map.regions[0].pointsOfInterest.length,0);assert.equal(after.map.tags.instances.length,0);assert.deepEqual(after.generation,before.generation);assert.equal(after.map.gmNotesByHexKey['0,0'],before.map.gmNotesByHexKey['0,0']);assertUndoRedo(h,before,after);
+ const after=stable(h.render());assert.equal(after.map.regions[0].pointsOfInterest.length,0);assert.deepEqual(after.map.editorNames,{});assert.equal(after.map.tags.instances.length,0);assert.deepEqual(after.generation,before.generation);assert.equal(after.map.gmNotesByHexKey['0,0'],before.map.gmNotesByHexKey['0,0']);assertUndoRedo(h,before,after);
 });
 test('E6 water cancel/no-op/stale callbacks and snapshot failure preserve map and both history branches',async()=>{
  const h=await waterSetup();h.render().setSelectedPoiKind('lair');h.render().undoMap();const before=stable(h.render()),stacks=serial([h.render().undoHistory,h.render().redoHistory]);
@@ -674,8 +675,8 @@ test('E6 real water dependencies block roads and require explicit barrier/water-
  const road=structuredClone(waterFixture);road.map.roads=[{id:1,regionId:1,segments:[{from:{q:0,r:0},to:{q:1,r:0},kind:'trail'}]}];road.counters.nextRoadId=2;
  const h=await waterSetup(road),before=stable(h.render()),stacks=serial([h.render().undoHistory,h.render().redoHistory]);h.render().startWaterDraft('lake');assert.equal(h.render().finishWaterDraft(),false);assert.match(h.render().waterPreview.error,/Дорога|Road/);assert.deepEqual(stable(h.render()),before);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks);
  const legacyWet=structuredClone(road);legacyWet.map.terrainByHexKey={'0,0':{terrainOverride:'lake',lakeId:3}};const lh=await waterSetup(legacyWet);assert.throws(()=>lh.geometry.prepareWaterMapEdit(lh.render().captureDocument().map,{target:'land',hexKeys:['0,0']}),/road_end/,'a changed wet endpoint cannot borrow an unrelated old dead-end allowance');
- const barrier=structuredClone(waterFixture),g=h.geometry,a={q:0,r:0},b={q:1,r:0},edges=g.getHexEdgeKeys(a),edge=[...g.getHexEdgeKeys(b)].find(k=>edges.has(k));barrier.map.obstacles=[{id:1,hex:a,neighborHex:b,edgeKey:edge}];barrier.counters.nextObstacleId=2;
- const bh=await waterSetup(barrier),old=stable(bh.render());bh.render().startWaterDraft('lake');assert.equal(bh.render().finishWaterDraft(),false);let app=bh.render();assert.ok(app.waterPreview.plan.losses.some(l=>l.type==='obstacle'));app.changeWaterDraft(app.waterDraft,{options:{acceptedLosses:app.waterPreview.plan.losses.map(l=>l.id)},preview:true});assert.equal(bh.render().finishWaterDraft(bh.render().waterDraft,true),true);assert.equal(bh.render().obstacles.length,0);assertUndoRedo(bh,old,stable(bh.render()));
+ const barrier=structuredClone(waterFixture),g=h.geometry,a={q:0,r:0},b={q:1,r:0},edges=g.getHexEdgeKeys(a),edge=[...g.getHexEdgeKeys(b)].find(k=>edges.has(k));barrier.map.obstacles=[{id:1,hex:a,neighborHex:b,edgeKey:edge}];barrier.counters.nextObstacleId=2;barrier.version=8;barrier.map.editorNames={'obstacle:1':{ru:'Именной вал',en:'Named barrier'}};
+ const bh=await waterSetup(barrier),old=stable(bh.render());bh.render().startWaterDraft('lake');assert.equal(bh.render().finishWaterDraft(),false);let app=bh.render();assert.ok(app.waterPreview.plan.losses.some(l=>l.type==='obstacle'));assert.ok(app.waterPreview.plan.losses.some(l=>l.id==='editorName:obstacle:1'&&l.value.en==='Named barrier'));app.changeWaterDraft(app.waterDraft,{options:{acceptedLosses:app.waterPreview.plan.losses.map(l=>l.id)},preview:true});assert.equal(bh.render().finishWaterDraft(bh.render().waterDraft,true),true);assert.equal(bh.render().obstacles.length,0);assert.deepEqual(stable(bh.render()).map.editorNames,{});assertUndoRedo(bh,old,stable(bh.render()));
  const water=structuredClone(waterFixture);water.map.terrainByHexKey={'0,0':{terrainOverride:'lake',lakeId:3}};water.map.waterPoiByHexKey={'0,0':'underwater_ruins'};
  const wh=await waterSetup(water),original=stable(wh.render());wh.render().startWaterDraft('land');assert.equal(wh.render().finishWaterDraft(),false);app=wh.render();assert.ok(app.waterPreview.plan.losses.some(l=>l.type==='waterPoi'));app.changeWaterDraft(app.waterDraft,{options:{acceptedLosses:app.waterPreview.plan.losses.map(l=>l.id)},preview:true});assert.equal(wh.render().finishWaterDraft(wh.render().waterDraft,true),true);assert.equal(wh.render().captureDocument().map.waterPoiByKey.size,0);assert.equal(wh.render().captureDocument().map.gmNotesByHexKey['0,0'],original.map.gmNotesByHexKey['0,0']);assertUndoRedo(wh,original,stable(wh.render()));
  const biomes=Object.values(g.BIOMES),first=biomes.find(a=>biomes.some(b=>a.id!==b.id&&!g.isBiomesCompatible(a.id,b.id,g.BIOME_COMPATIBILITY_MATRIX))),second=biomes.find(b=>first.id!==b.id&&!g.isBiomesCompatible(first.id,b.id,g.BIOME_COMPATIBILITY_MATRIX));assert.ok(first&&second);
@@ -689,9 +690,10 @@ test('E6 real water feature conflict requires Off/Auto together with the accepte
  const keys=['-24.249,-98','-24.249,-70','0,-56','0,-28','24.249,-14','24.249,14','0,28','0,56','-24.249,70','-24.249,98'];
  const path=keys.map(k=>ctx.vertex(k));assert.ok(path.every(Boolean));assert.equal(h.render().editRiverDocument({type:'create',regionId:1,path,fullness:1}),true);
  const river=h.render().rivers[0],edge=['24.249,-14','24.249,14'].sort().join('|');assert.equal(h.render().editRiverFeatures([{type:'rapid',riverId:river.id,edgeKey:edge,state:'on'}]),true);
+ const nameKey=`rapid:${river.id}:${edge}`;h.render().showNameTarget(nameKey);h.render().changeNameDraft('Именной порог',h.render().nameDraft);h.render().changeOtherNameDraft('Named rapid',h.render().nameDraft);assert.equal(h.render().saveNameDraft(),true);
  const before=stable(h.render());h.render().startWaterDraft('lake');assert.equal(h.render().finishWaterDraft(),false);let a=h.render();assert.equal(a.waterPreview.plan.unresolvedFeatures.length,1);assert.deepEqual(stable(a),before);
- a.changeWaterDraft(a.waterDraft,{options:{featureEdits:[{type:'rapid',riverId:river.id,edgeKey:edge,state:'off'}]},preview:true});assert.equal(h.render().finishWaterDraft(h.render().waterDraft,true),true);
- const after=stable(h.render());assert.equal(after.map.riverFeatures.rapids[0].state,'off');assert.ok(after.map.terrainByHexKey['0,0']);assert.deepEqual(after.generation,before.generation);assert.deepEqual(after.map.rivers.map(r=>r.vertexPath),before.map.rivers.map(r=>r.vertexPath));assertUndoRedo(h,before,after);
+ a.changeWaterDraft(a.waterDraft,{options:{featureEdits:[{type:'rapid',riverId:river.id,edgeKey:edge,state:'off'}]},preview:true});assert.equal(h.render().finishWaterDraft(h.render().waterDraft,true),false);assert.deepEqual(stable(h.render()),before);a=h.render();assert.ok(a.waterPreview.plan.losses.some(l=>l.id===`editorName:${nameKey}`&&l.value.en==='Named rapid'));a.changeWaterDraft(a.waterDraft,{options:{...a.waterDraft.options,acceptedLosses:a.waterPreview.plan.losses.map(l=>l.id)},preview:true});assert.equal(h.render().finishWaterDraft(h.render().waterDraft,true),true);
+ const after=stable(h.render());assert.deepEqual(after.map.editorNames,{});assert.equal(after.map.riverFeatures.rapids[0].state,'off');assert.ok(after.map.terrainByHexKey['0,0']);assert.deepEqual(after.generation,before.generation);assert.deepEqual(after.map.rivers.map(r=>r.vertexPath),before.map.rivers.map(r=>r.vertexPath));assertUndoRedo(h,before,after);
 });
 
 test('E6 generation checkpoint warns before restoring changed water and restores authored lake data together',async()=>{
