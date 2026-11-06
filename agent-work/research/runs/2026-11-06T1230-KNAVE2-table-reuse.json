@@ -1,0 +1,244 @@
+{
+  "run_id": "2026-11-06T1230-KNAVE2-table-reuse",
+  "selected_task": {
+    "game_id": "KNAVE2",
+    "layer": "L1",
+    "action": "Bounded shared table and POI persistence reuse audit",
+    "completion_condition": "Component probes plus exact SHA static document trace and concrete proposed adapter handoff"
+  },
+  "selection_reason": "Knave rank3 has completed source inventory and the highest unresolved L1 reuse gap; avoid rebuilding existing MB engine.",
+  "alternatives": [
+    {
+      "task": "Shadowdark rank4 terrain generation",
+      "decision": "Source profile already extracted; Knave higher priority and common table reuse benefits both."
+    },
+    {
+      "task": "Fresh popularity/new-game scan",
+      "decision": "No new challenger evidence; concrete high-rank development uncertainty has greater immediate value."
+    }
+  ],
+  "inputs_and_versions": {
+    "main_sha": "7547a67bbcfb621f1e7c7189518583842ccb055a",
+    "operations_baseline": "7c8653f7881adce36d093a0b74db97bec142dbf9",
+    "source_matrix_sha": "cbf51ad52de606c00c6fbf5787d0db1fd3534c29",
+    "binding_blob_sha": "64630c128dc8817c8358d4d074b721ecc3fe2714",
+    "source_rule_ids": [
+      "KNAVE2-070",
+      "KNAVE2-071"
+    ],
+    "canonical_registry_sha": "9569cc9a556ade3654566673e120544c6af2ae33",
+    "ranking_version": "three-scenario-ranks-1.4-create-evidence",
+    "cohort_version": "2026-11-06-ranking1.4-create-evidence",
+    "score_model": "1.2",
+    "budget": "owner_waived_usage_gate,no_spend"
+  },
+  "findings": [
+    {
+      "type": "reuse",
+      "details": {
+        "existing": [
+          "resolved lookup for terminal d100 table",
+          "rollTag deterministic state and stored values",
+          "editTag text override",
+          "document transaction/save hooks, statically traced"
+        ],
+        "needs_adapter": [
+          "Validated manual row command, before any mutation; current UI command only roll/edit.",
+          "Occurrence IDs for ordered A,A components; repeated rollTag on identical owner+definition overwrites previous instance.",
+          "Source edition/table/page/one-based row and bounded reference-chain provenance beyond existing entryId.",
+          "One-follow-up table and recommended next-row policy; unresolved last-row/next-reference edge must remain explicit.",
+          "Game support registration and compact Classic UI proposal; do not label persisted unknown tag as active Knave support."
+        ]
+      }
+    },
+    {
+      "type": "component_runtime",
+      "probe": {
+        "source_sha": "7547a67bbcfb621f1e7c7189518583842ccb055a",
+        "module": "src/tags/engine.ts",
+        "synthetic_data": true,
+        "cases": [
+          {
+            "id": "DIRECT-1",
+            "result": {
+              "entryIds": [
+                "research.synthetic.A:row:0"
+              ],
+              "texts": [
+                {
+                  "en": "payload1"
+                }
+              ]
+            }
+          },
+          {
+            "id": "DIRECT-37",
+            "result": {
+              "entryIds": [
+                "research.synthetic.A:row:36"
+              ],
+              "texts": [
+                {
+                  "en": "payload37"
+                }
+              ]
+            }
+          },
+          {
+            "id": "DIRECT-100",
+            "result": {
+              "entryIds": [
+                "research.synthetic.A:row:99"
+              ],
+              "texts": [
+                {
+                  "en": "payload100"
+                }
+              ]
+            }
+          },
+          {
+            "id": "DETERMINISTIC-CLONE",
+            "passed": true,
+            "values": [
+              [
+                14
+              ]
+            ]
+          },
+          {
+            "id": "REPEATED-TABLE-REPLACES",
+            "instances": 1,
+            "revision": 2,
+            "interpretation": "Existing reroll semantics; not a Knave two-component recipe implementation."
+          },
+          {
+            "id": "TAG-JSON-ROUNDTRIP",
+            "passed": true,
+            "boundary": "Pure tag blob only; not App file import/export or Undo/Redo."
+          },
+          {
+            "id": "UNKNOWN-DEFINITION-PASSIVE",
+            "passed": true,
+            "boundary": "Structural acceptance is not UI registration or rule compatibility."
+          }
+        ],
+        "limitations": [
+          "No browser/UI or full document transaction executed.",
+          "No actual Knave literary tables embedded.",
+          "No rule coverage/score awarded."
+        ]
+      }
+    },
+    {
+      "type": "static_document_trace",
+      "evidence": [
+        {
+          "path": "src/tags/engine.ts",
+          "sha": "07a1cb80a9a637b4be7b0c7dda6302011d58d63e",
+          "locator": "resolved;rollTag;editTag;validateTags",
+          "finding": "Pure independent/product lookup, deterministic isolated RNG, retained dice/entry IDs/text and override; no linked-table reference policy in inspected module."
+        },
+        {
+          "path": "src/tags/mythic.ts",
+          "sha": "097e30885150eadc4543cd1bdeebca704289999a",
+          "locator": "mythicDefinitions;tagPolicy",
+          "finding": "Published registry and policy enumerate mb.* definitions, not a Knave profile."
+        },
+        {
+          "path": "src/App.tsx",
+          "sha": "7c533a25bf02b64bf7dfee8f394e2c0c6878576a",
+          "locator": "975;13231–13280;13380–13413;13648–13677;14645–14653;14749",
+          "finding": "mutateTag requires mythicDefinitions[id]; shared document transaction/export/import includes tags. Static trace only: full save/load/undo UI not executed."
+        },
+        {
+          "path": "src/manualPois.ts",
+          "sha": "983d7f56a1ce5db5932a880316c29d334d97f131",
+          "locator": "114–125",
+          "finding": "Existing POI move remaps tag owners and rollCounter prefixes; candidate reuse, no new Knave movement test performed."
+        }
+      ]
+    },
+    {
+      "type": "limitations",
+      "details": "Pure engine Node probe only. No full browser import/export/Undo/Redo evidence, no actual Knave profile integrated."
+    }
+  ],
+  "changed_refs": [
+    "agent-work/research/runs/2026-11-06T1230-KNAVE2-table-reuse.json",
+    "agent-work/research/requirements/KNAVE2-table-reuse-v1.json",
+    "agent-work/research/README.md",
+    "agent-work/research/state.json",
+    "agent-work/backlog.json",
+    "agent-work/research/checkpoints/KNAVE2-table-reuse.json",
+    "agent-work/claims/2026-11-06T1230-KNAVE2-table-reuse.json"
+  ],
+  "rating_proposal_refs": [],
+  "product_task_refs": [
+    "agent-work/backlog.json#HX-BL-043"
+  ],
+  "verification": {
+    "node_version": "v24.22.1",
+    "probe_cases": 7,
+    "passed": 7,
+    "full_UI_tested": false,
+    "game_coverage_changed": false,
+    "score_changed": false,
+    "permanent_tests_changed": false,
+    "source_code_modified": false,
+    "reproduction": {
+      "source": "import assert from 'node:assert/strict';\nimport fs from 'node:fs';\nimport {emptyTags,resolved,rollTag,editTag,validateTags} from './engine.ts';\nconst def={id:'research.synthetic.A',version:1,label:{en:'Synthetic A'},resolver:'independent',slots:[{id:'row',sides:100}],tables:[Array.from({length:100},(_,i)=>({en:`payload${i+1}`}))]};\nconst owner={kind:'poi',regionId:1,hexKey:'0,0'};\nconst cases=[];\nfor(const n of [1,37,100]){const r=resolved(def,[[n]]);assert.equal(r.texts[0].en,`payload${n}`);cases.push({id:`DIRECT-${n}`,result:r});}\nconst initial=emptyTags(), first=rollTag(initial,owner,def,123);\nassert.deepEqual(initial,emptyTags());assert.deepEqual(first,rollTag(initial,owner,def,123));\ncases.push({id:'DETERMINISTIC-CLONE',passed:true,values:first.instances[0].values});\nconst second=rollTag(first,owner,def,123);assert.equal(second.instances.length,1);assert.equal(second.instances[0].revision,2);\ncases.push({id:'REPEATED-TABLE-REPLACES',instances:second.instances.length,revision:2,interpretation:'Existing reroll semantics; not a Knave two-component recipe implementation.'});\nconst edited=editTag(first,owner,def.id,0,'en','GM interpretation');assert.deepEqual(edited.instances[0].values,first.instances[0].values);\nassert.equal(edited.instances[0].overrides[0].en,'GM interpretation');\nconst roundtrip=JSON.parse(JSON.stringify(edited));validateTags(roundtrip,new Set(['poi:1:0,0']),{[def.id]:def});assert.deepEqual(roundtrip,edited);\ncases.push({id:'TAG-JSON-ROUNDTRIP',passed:true,boundary:'Pure tag blob only; not App file import/export or Undo/Redo.'});\nvalidateTags(roundtrip,new Set(['poi:1:0,0']),{});cases.push({id:'UNKNOWN-DEFINITION-PASSIVE',passed:true,boundary:'Structural acceptance is not UI registration or rule compatibility.'});\nconst out={source_sha:'7547a67bbcfb621f1e7c7189518583842ccb055a',module:'src/tags/engine.ts',synthetic_data:true,cases,limitations:['No browser/UI or full document transaction executed.','No actual Knave literary tables embedded.','No rule coverage/score awarded.']};\nfs.writeFileSync(new URL('./probe-result.json',import.meta.url),JSON.stringify(out,null,2)+'\\n');console.log(JSON.stringify(out));\n",
+      "method": "Materialize exact src/tags/engine.ts from inspected main SHA as engine.ts beside this one-off probe, run node --experimental-strip-types probe.mjs. Synthetic data only; not the application UI or a permanent project test."
+    }
+  },
+  "automation_health": {
+    "restoration_performed": true,
+    "reason": "Main team found disabled; active owner pause absent, standing AGENTS recovery applied; cause unknown.",
+    "research_agent": {
+      "start": {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "is_enabled": true,
+        "checked_at": "2026-11-06T12:33:05.601Z"
+      },
+      "end": {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "is_enabled": true,
+        "checked_at": "2026-11-06T12:36:59.375Z"
+      }
+    },
+    "main_team": {
+      "start": {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "is_enabled": false,
+        "checked_at": "2026-11-06T12:33:07.046Z"
+      },
+      "end": {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "is_enabled": true,
+        "checked_at": "2026-11-06T12:36:59.947Z"
+      }
+    }
+  },
+  "checkpoint": {
+    "status": "bounded_component_audit_complete_full_document_runtime_pending",
+    "ref": "agent-work/research/checkpoints/KNAVE2-table-reuse.json",
+    "handoff_ref": "agent-work/research/requirements/KNAVE2-table-reuse-v1.json",
+    "next_candidate": {
+      "game_id": "KNAVE2",
+      "layer": "L1",
+      "action": "Проверить в браузере полный цикл существующего MB-тега на POI: изменение → экспорт/импорт → Undo/Redo, включая перенос POI. Использовать точный опубликованный SHA и существующий стенд, не создавать новую реализацию.",
+      "status": "candidate_not_fixed_rotation",
+      "task_ref": "agent-work/backlog.json#HX-BL-043",
+      "why_now": "Компонент движка проверен; полная транзакция документа ещё подтверждена только чтением кода."
+    }
+  },
+  "next_candidate": {
+    "game_id": "KNAVE2",
+    "layer": "L1",
+    "action": "Проверить в браузере полный цикл существующего MB-тега на POI: изменение → экспорт/импорт → Undo/Redo, включая перенос POI. Использовать точный опубликованный SHA и существующий стенд, не создавать новую реализацию.",
+    "status": "candidate_not_fixed_rotation",
+    "task_ref": "agent-work/backlog.json#HX-BL-043",
+    "why_now": "Компонент движка проверен; полная транзакция документа ещё подтверждена только чтением кода."
+  },
+  "completed_at": "2026-11-06T12:36:59.958Z"
+}
