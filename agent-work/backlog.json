@@ -1391,8 +1391,8 @@
       "recommended_priority": 1,
       "execution_allowed": true,
       "spec_status": "ready_for_development",
-      "next_role": "owner_then_developer",
-      "next_step": "Owner decision requested for publication of exact PR490 SHA 7ddcc218ec6871179bde8153ec589d6517f46c74. If approved, developer rechecks exact head/base/tree and required checks, then releases only this package; any SHA change requires new review.",
+      "next_role": "business_analyst",
+      "next_step": "Prepare bounded stable Sea identity/split/merge naming specification within existing all-map-names task; preserve accepted PR490 SHA pending separate publication permission.",
       "related_task_ids": [
         "HX-BL-013",
         "HX-BL-018",
@@ -2127,6 +2127,13 @@
           "resolved_findings": [
             "PR490-F01"
           ]
+        },
+        "E8_N_SEA": {
+          "status": "ready_for_analysis",
+          "next_role": "business_analyst",
+          "handoff_ref": "agent-work/handoffs/2026-11-06-HX-BL-023-E8-SEA-analysis.json",
+          "implementation_started": false,
+          "release_approved": false
         }
       },
       "accepted": true,
@@ -2244,7 +2251,9 @@
           }
         }
       ],
-      "current_stage_id": "E8.2"
+      "current_stage_id": "E8.2",
+      "next_approved_stage": "E8-N-SEA",
+      "next_approved_stage_handoff_ref": "agent-work/handoffs/2026-11-06-HX-BL-023-E8-SEA-analysis.json"
     },
     {
       "task_id": "HX-BL-024",
@@ -3631,26 +3640,14 @@
   "model_activation_ref": "owner-decision-2026-10-26-activate-score-1.2",
   "next_product_recommendation": {
     "task_id": "HX-BL-023",
-    "stage_id": "E5",
-    "status": "in_progress_owned_checkpoint",
-    "next_role": "developer",
+    "stage_id": "E8-N-SEA",
+    "status": "ready_for_analysis_in_approved_scope",
+    "next_role": "business_analyst",
     "execution_allowed": true,
-    "authorization_ref": "owner-decision-2026-10-28-editor-additional-functions-approved",
-    "spec_ref": "agent-work/specs/HX-BL-023-E5.md",
-    "spec_version": "E5-1.0",
-    "handoff_ref": "agent-work/handoffs/2026-11-04-HX-BL-023-E5-checkpoint-65e5d1d.json",
-    "reason": "E4 is published; current approved editor stage is E5. PR486 is draft and existing canonical developer claim remains active. Do not dispatch duplicate implementation.",
-    "expected_result": "Завершённое редактирование существующей реки: замена русла,F,разворот,удаление с именованным preview зависимостей и явным разрешением конфликтов;полный фактический показ и независимый review конечного SHA.",
-    "next_step": "Продолжить собственный PR486/65e5d1d: замена русла через RiverDraft, команды F/разворота/удаления с именованным preview crossings/BR009/features/тегов и явными решениями конфликтов. Связать выбор существующей реки с map/Find, завершить полный Classic/Mythic AC01–AC11 и показ всего пакета, затем независимый review конечного SHA. E5 утверждён; публикация отдельно.",
-    "priority_reason": "Already-approved priority L1 editor; finish current owned E5 before new unapproved product work. Completed PF2 source corpus does not authorize game-specific features.",
-    "score_impact": "unknown;no award before independent assessment and publication",
-    "execution_dispatch": {
-      "new_claim_allowed": false,
-      "continue_only": "existing canonical developer after safe exact PR/head/claim recovery",
-      "owned_claim_ref": "agent-work/claims/2026-11-04-developer-HX-BL-023-E5.json",
-      "observed_head_sha": "65e5d1df242aaa6e8c29ead9f677ac93f8e77660"
-    },
-    "completion_gate": "No review_ready until full E5 AC01–AC11,exact SHA evidence,complete user walkthrough and all required checks;then fresh independent reviewer score_assessment1.2;publication separately by owner."
+    "handoff_ref": "agent-work/handoffs/2026-11-06-HX-BL-023-E8-SEA-analysis.json",
+    "authorization_ref": "owner-decision-2026-10-28-editor-functional-scope",
+    "next_step": "Prepare bounded stable Sea identity/split/merge naming specification within existing all-map-names task; preserve accepted PR490 SHA pending separate publication permission.",
+    "score_impact": "unknown"
   },
   "previous_product_recommendation": {
     "task_id": "HX-BL-027",
@@ -3678,6 +3675,33 @@
       },
       "replacement_stage": "E5",
       "reason": "E4 published;preserve owned E5"
+    },
+    {
+      "previous": {
+        "task_id": "HX-BL-023",
+        "stage_id": "E5",
+        "status": "in_progress_owned_checkpoint",
+        "next_role": "developer",
+        "execution_allowed": true,
+        "authorization_ref": "owner-decision-2026-10-28-editor-additional-functions-approved",
+        "spec_ref": "agent-work/specs/HX-BL-023-E5.md",
+        "spec_version": "E5-1.0",
+        "handoff_ref": "agent-work/handoffs/2026-11-04-HX-BL-023-E5-checkpoint-65e5d1d.json",
+        "reason": "E4 is published; current approved editor stage is E5. PR486 is draft and existing canonical developer claim remains active. Do not dispatch duplicate implementation.",
+        "expected_result": "Завершённое редактирование существующей реки: замена русла,F,разворот,удаление с именованным preview зависимостей и явным разрешением конфликтов;полный фактический показ и независимый review конечного SHA.",
+        "next_step": "Продолжить собственный PR486/65e5d1d: замена русла через RiverDraft, команды F/разворота/удаления с именованным preview crossings/BR009/features/тегов и явными решениями конфликтов. Связать выбор существующей реки с map/Find, завершить полный Classic/Mythic AC01–AC11 и показ всего пакета, затем независимый review конечного SHA. E5 утверждён; публикация отдельно.",
+        "priority_reason": "Already-approved priority L1 editor; finish current owned E5 before new unapproved product work. Completed PF2 source corpus does not authorize game-specific features.",
+        "score_impact": "unknown;no award before independent assessment and publication",
+        "execution_dispatch": {
+          "new_claim_allowed": false,
+          "continue_only": "existing canonical developer after safe exact PR/head/claim recovery",
+          "owned_claim_ref": "agent-work/claims/2026-11-04-developer-HX-BL-023-E5.json",
+          "observed_head_sha": "65e5d1df242aaa6e8c29ead9f677ac93f8e77660"
+        },
+        "completion_gate": "No review_ready until full E5 AC01–AC11,exact SHA evidence,complete user walkthrough and all required checks;then fresh independent reviewer score_assessment1.2;publication separately by owner."
+      },
+      "superseded_by": "2026-11-06-HX-BL-023-E8-SEA-analysis",
+      "reason": "Previous top-level recommendation still pointed to published E5 despite accepted E7/E8 results."
     }
   ],
   "last_operational_reconciliation": {
