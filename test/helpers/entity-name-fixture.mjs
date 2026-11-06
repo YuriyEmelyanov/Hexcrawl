@@ -1,6 +1,8 @@
 import fs from 'node:fs';
+import {seaFixture} from './sea-fixture.mjs';
 // Finite authored examples for E8.2 identity and real UI checks. No RNG search.
 export function entityNameFixture(type='road'){
+ if(type==='sea'){const data=seaFixture();return {data,key:'sea:7'};}
  const d=JSON.parse(fs.readFileSync(new URL('../fixtures/e5-river-editor.json',import.meta.url)));
  d.version=8;d.map.editorNames={};
  const c=d.map.crossings[0],river=d.map.rivers[0],edge=c.riverEdgeKey;

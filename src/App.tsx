@@ -1,4 +1,5 @@
 import {hasCentralPoi,preparePoiMove,poiLocatorKey,type PoiLocator,assertPoiEditorNames,poiNameLocators,renamePoiEditorName,PoiMoveError,type EditorNames} from './manualPois';
+import {migrateSeas,prepareSeaIdentity,withLegacySeas,type SeaRecord,type SeaChoices} from './seaIdentity';
 import {prepareWaterGeometry,connectedWaterBody,waterKindAt,WaterEditError,compareWaterHexes,type WaterEdit,type WaterKind} from './manualWater';
 import {prepareRegionGeometry,prepareRegionPoiIdentity,RegionEditError,type RegionEdit} from './manualRegions';
 import {prepareEditedRiverCrossings,validateEditedRiverDeltas,knownRiverEdgeFullness} from './manualRiverDependencies';
@@ -459,7 +460,7 @@ type Biome = {
 
 type HexcrawlSaveData = {
   schema: 'hexcrawl-map';
-  version: 2 | 3 | 4 | 5 | 6 | 7 | 8;
+  version: 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
   generation?: GenerationState;
   savedAt: string;
   map: {
@@ -472,6 +473,8 @@ type HexcrawlSaveData = {
     rivers: River[];
     roads: Road[];
     crossings: RiverCrossing[];
+    seas?: SeaRecord[];
+    nextSeaId?: number;
     editorNames?: EditorNames;
     gmNotesByHexKey?: Record<string, string>;
     terrainByHexKey: Record<string, HexTerrainData>;
@@ -495,6 +498,8 @@ type HexcrawlSaveData = {
 
 type ValidatedHexcrawlSaveData = HexcrawlSaveData & {
   map: HexcrawlSaveData['map'] & {
+    seas?: SeaRecord[];
+    nextSeaId?: number;
     editorNames?: EditorNames;
     gmNotesByHexKey?: Record<string, string>;
     terrainByHexKey: Record<string, HexTerrainData>;
@@ -503,7 +508,7 @@ type ValidatedHexcrawlSaveData = HexcrawlSaveData & {
 };
 
 const HEXCRAWL_SAVE_SCHEMA = 'hexcrawl-map';
-const HEXCRAWL_SAVE_VERSION = 8;
+const HEXCRAWL_SAVE_VERSION = 9;
 const PNG_EXPORT_SCALE = 2;
 const EXPORT_FILE_PREFIX = 'hexcrawl-map';
 const BIOME_TILE_HREFS: Partial<Record<BiomeId, string>> = {
@@ -970,7 +975,7 @@ function assertHexcrawlSaveData(value: unknown): asserts value is ValidatedHexcr
     kingdoms: (map, version) => validateKingdomLayers(map, getHexEdgeKeys, version >= 5)
   });
   const data=value as HexcrawlSaveData;
-  if(data.version===8)try{assertEditorNames({...data.map,obstacles:(data.map.obstacles??[]) as EditableObstacle[],hexTerrainByKey:new Map(Object.entries(data.map.terrainByHexKey)),waterPoiByKey:new Map(Object.entries(data.map.waterPoiByHexKey??{})),riverFeatures:data.map.riverFeatures??emptyRiverFeatures(),editorNames:data.map.editorNames===undefined?{}:data.map.editorNames});}catch{throw new SaveValidationError('map.editorNames','invalid or dangling authored object name');}
+  if(data.version>=8)try{assertEditorNames({...data.map,seas:data.version>=9?data.map.seas:[],obstacles:(data.map.obstacles??[]) as EditableObstacle[],hexTerrainByKey:new Map(Object.entries(data.map.terrainByHexKey)),waterPoiByKey:new Map(Object.entries(data.map.waterPoiByHexKey??{})),riverFeatures:data.map.riverFeatures??emptyRiverFeatures(),editorNames:data.map.editorNames===undefined?{}:data.map.editorNames});}catch{throw new SaveValidationError('map.editorNames','invalid or dangling authored object name');}
   if(data.version>=7)try{validateMapRiverFeatures(data.map.riverFeatures,data.map.rivers,data.map.regions,new Map(Object.entries(data.map.terrainByHexKey)),data.map.crossings);}catch{throw new SaveValidationError('map.riverFeatures','invalid or ineligible river feature');}
   if(data.map.tags!==undefined)try{validateTags(data.map.tags,new Set(tagOwners({regions:data.map.regions,rivers:data.map.rivers,hexTerrainByKey:new Map(Object.entries(data.map.terrainByHexKey))}).keys()),mythicDefinitions);}catch{throw new SaveValidationError('map.tags','invalid tag data');}
 }
@@ -1032,9 +1037,11 @@ function validateMapRiverFeatures(features:unknown,rivers:River[],regions:Region
   catch(error){if(error instanceof Error&&['ineligible_rapid','ineligible_waterfall'].includes(error.message))throw new RiverFeatureConflict(error.message);throw error;}
 }
 function retainPoiNames(map:EditorObjectMap & {editorNames:EditorNames},current:EditorNames):EditorNames{
-  const names={...(map.editorNames??{}),...current};assertEditorNames({...map,editorNames:names});return names;
+  const retained=Object.fromEntries(Object.entries(current).filter(([key])=>!key.startsWith('sea:')));
+  const names={...(map.editorNames??{}),...retained};assertEditorNames({...map,editorNames:names});return names;
 }
 function checkedRiverMap<T extends MapSnapshot>(map:T):T{
+  map=withLegacySeas(map);
   assertEditorNames(map);
   validateRiverCounter(map.rivers,map.nextRiverId);
   validateMapRiverFeatures(map.riverFeatures,map.rivers,map.regions,map.hexTerrainByKey,map.crossings);
@@ -1123,14 +1130,15 @@ function regionMarkKeys(map:MapSnapshot){
 }
 /** Authored labels use the same physical identities and visibility as the map.
  * Composite suffixes are opaque: in particular Crossing.key is never split. */
-type EditorObjectMap=Pick<MapSnapshot,'regions'|'rivers'|'roads'|'crossings'|'obstacles'|'hexTerrainByKey'|'waterPoiByKey'|'riverFeatures'>;
-type EditorObject={key:string;type:'road'|'obstacle'|'crossing'|'rapid'|'waterfall';hex?:AxialHex;riverId?:number;edgeKey?:string;vertexKey?:string;roadId?:number;segmentKey?:string};
+type EditorObjectMap=Pick<MapSnapshot,'regions'|'rivers'|'roads'|'crossings'|'obstacles'|'hexTerrainByKey'|'waterPoiByKey'|'riverFeatures'>&{seas?:SeaRecord[]};
+type EditorObject={key:string;type:'sea'|'road'|'obstacle'|'crossing'|'rapid'|'waterfall';hex?:AxialHex;riverId?:number;edgeKey?:string;vertexKey?:string;roadId?:number;segmentKey?:string};
 function editorObjects(map:EditorObjectMap):EditorObject[]{
   const objects:EditorObject[]=[],hexes=map.regions.flatMap(r=>r.hexes);
   const hexByEdge=new Map<string,AxialHex>(),hexByVertex=new Map<string,AxialHex>();
   for(const h of hexes){for(const edge of getHexEdgeKeys(h))if(!hexByEdge.has(edge))hexByEdge.set(edge,h);for(const vertex of getHexCornerPoints(h))if(!hexByVertex.has(vertex.key))hexByVertex.set(vertex.key,h);}
   const edgeHex=(key:string)=>hexByEdge.get(key);
   const unique=<T,>(items:T[],key:(item:T)=>string)=>{const counts=new Map<string,number>();for(const item of items)counts.set(key(item),(counts.get(key(item))??0)+1);return items.filter(item=>counts.get(key(item))===1);};
+  for(const sea of map.seas??[])objects.push({key:`sea:${sea.id}`,type:'sea',hex:parseHexKey([...sea.hexKeys].sort(compareWaterHexes)[0])});
   for(const road of unique(map.roads,r=>String(r.id)))if(road.segments.length)objects.push({key:`road:${road.id}`,type:'road',hex:road.segments[0].from,roadId:road.id,segmentKey:normalizeRoadSegmentKey(road.segments[0].from,road.segments[0].to)});
   for(const o of unique(map.obstacles??[],o=>String(o.id)))objects.push({key:`obstacle:${o.id}`,type:'obstacle',hex:o.hex});
   for(const c of unique(map.crossings,c=>c.key))objects.push({key:`crossing:${c.key}`,type:'crossing',hex:edgeHex(c.riverEdgeKey),roadId:c.roadId,segmentKey:c.roadSegmentKey});
@@ -1271,14 +1279,14 @@ function prepareRiverMapEdit(map:MapSnapshot,edit:RiverEdit,options:RiverEditOpt
   return {map:changed?checkedRiverMap({...map,...result,crossings,riverFeatures}):map,losses,unresolvedCrossings,unresolvedFeatures,confirmationRequired:changed&&(edit.type==='remove'||edit.type==='reverse'||edit.type==='replace'||crossings!==map.crossings||losses.rapids>0||losses.waterfalls>0||invalidFeatures.length>0)};
 }
 
-type WaterEditOptions={acceptedLosses?:string[];featureEdits?:FeatureEdit[];crossingKinds?:Record<string,RiverCrossingKind>};
+type WaterEditOptions=SeaChoices&{acceptedLosses?:string[];featureEdits?:FeatureEdit[];crossingKinds?:Record<string,RiverCrossingKind>};
 type WaterLoss={id:string;type:'lake'|'poi'|'name'|'tag'|'waterPoi'|'crossing'|'obstacle';key:string;value:unknown};
 /** Full E6 detached preparation. Staged preview answers never reach a setter. */
 function prepareWaterMapEdit(map:MapSnapshot,edit:WaterEdit,options:WaterEditOptions={}){
   const geometry=prepareWaterGeometry(map,edit);
-  const empty={map,geometry,losses:[] as WaterLoss[],unresolvedLosses:[] as WaterLoss[],unresolvedFeatures:[] as FeatureEdit[],unresolvedCrossings:[] as RiverCrossing[],newCrossings:[] as RiverCrossing[],invalidFeatures:[] as FeatureEdit[],confirmationRequired:false};
+  const empty={map,geometry,sea:{choices:[],unresolved:[]} as Pick<ReturnType<typeof prepareSeaIdentity>,'choices'|'unresolved'>,losses:[] as WaterLoss[],unresolvedLosses:[] as WaterLoss[],unresolvedFeatures:[] as FeatureEdit[],unresolvedCrossings:[] as RiverCrossing[],newCrossings:[] as RiverCrossing[],invalidFeatures:[] as FeatureEdit[],confirmationRequired:false};
   if(geometry.hexTerrainByKey===map.hexTerrainByKey)return empty;
-  checkedRiverMap(map);
+  map=checkedRiverMap(map);
   const beforeContext=buildManualRiverGeometryContext(map);
   let candidate:MapSnapshot={...map,regions:geometry.regions,hexTerrainByKey:geometry.hexTerrainByKey,nextLakeId:geometry.nextLakeId};
   const affectedKeys=new Set(geometry.changedHexKeys),losses:WaterLoss[]=[];
@@ -1382,11 +1390,13 @@ function prepareWaterMapEdit(map:MapSnapshot,edit:WaterEdit,options:WaterEditOpt
   const prefixes=removedTags.map(i=>tagKey(i.owner,i.definitionId)+'|');
   const tags=removedTags.length?{...oldTags,instances,rollCounters:Object.fromEntries(Object.entries(oldTags.rollCounters).filter(([key])=>!prefixes.some(p=>key.startsWith(p))))}:oldTags;
   validateTags(tags,new Set(tagOwners(candidate).keys()),mythicDefinitions);
+  const sea=prepareSeaIdentity(map,candidate.hexTerrainByKey,options);
+  candidate={...candidate,seas:sea.seas,nextSeaId:sea.nextSeaId};
   const livePoi=editorNameLocators(candidate),authored:EditorNames={};
-  for(const [key,name]of Object.entries(map.editorNames??{})){if(livePoi.has(key))authored[key]=name;else losses.push({id:`editorName:${key}`,type:'name',key,value:name});}
+  for(const [key,name]of Object.entries(map.editorNames??{})){if(livePoi.has(key))authored[key]=name;else {const seaId=key.startsWith('sea:')?Number(key.slice(4)):undefined;const old=seaId===undefined?undefined:map.seas.find(s=>s.id===seaId);const into=old?sea.seas.filter(s=>s.hexKeys.some(k=>old.hexKeys.includes(k))).map(s=>s.id):undefined;losses.push({id:`editorName:${key}`,type:'name',key,value:into?{...name,seaInto:into}:name});}}
   candidate=checkedRiverMap({...candidate,editorNames:authored,toponyms:names,tags});assertGeneratedIds(candidate);
   const unresolvedLosses=losses.filter(loss=>!options.acceptedLosses?.includes(loss.id));
-  return {map:candidate,geometry,losses,unresolvedLosses,unresolvedFeatures,unresolvedCrossings,newCrossings,invalidFeatures:invalid,confirmationRequired:losses.length>0||geometry.choices.length>0||invalid.length>0||newCrossings.length>0};
+  return {map:candidate,geometry,sea,losses,unresolvedLosses,unresolvedFeatures,unresolvedCrossings,newCrossings,invalidFeatures:invalid,confirmationRequired:losses.length>0||sea.choices.length>0||geometry.choices.length>0||invalid.length>0||newCrossings.length>0};
 }
 
 function downloadBlob(blob: Blob, filename: string): void {
@@ -1691,6 +1701,8 @@ const TRACT_GROWTH_WEIGHT_EXPONENT = 1.5;
 // чтобы пытаться "откатить" все побочные эффекты генерации рек и дорог
 // (которые могут менять соседние регионы), мы просто восстанавливаем снимок.
 type MapSnapshot = {
+  seas:SeaRecord[];
+  nextSeaId:number;
   riverFeatures:RiverFeatures;
   nextRiverId:number;
   tags?: TagState;
@@ -11750,6 +11762,9 @@ export function App() {
   const [editingPoiHexKey, setEditingPoiHexKey] = useState<string | null>(null);
   const [editingCentralPoiRegionId, setEditingCentralPoiRegionId] = useState<number | null>(null);
   const [nextLakeId, setNextLakeId] = useState(1);
+  const [seaIdentity,setSeaIdentity]=useState(()=>({seas:[] as SeaRecord[],nextSeaId:1}));
+  const seaIdentityRef=useRef(seaIdentity);
+  const updateSeaIdentity=(value:{seas:SeaRecord[];nextSeaId:number})=>{const next={seas:value.seas,nextSeaId:value.nextSeaId};seaIdentityRef.current=next;setSeaIdentity(next);};
   const [nextRoadId, setNextRoadId] = useState(1);
   const [nextObstacleId, setNextObstacleId] = useState(1);
   const [nextRiverId, setNextRiverId] = useState(1);
@@ -11906,9 +11921,8 @@ export function App() {
   const [coastNotice, setCoastNotice] = useState<string | null>(null);
   const [clickPromptCandidateKey, setClickPromptCandidateKey] = useState<string | null>(null);
 
-  useEffect(() => {
-    setHexTerrainByKey((current) => removeSeaOverridesForCandidateHexes(current, candidateHexes));
-  }, [candidateHexes, hexTerrainByKey]);
+  // Accepted frontier is derived without sea cells at generation/import.
+  // Never mutate accepted terrain in an effect outside its document transaction.
 
   const allRegionHexes = useMemo(() => regions.flatMap((region) => region.hexes), [regions]);
 
@@ -12292,6 +12306,7 @@ export function App() {
     })();
 
     const snapshot: MapSnapshot = {
+      ...seaIdentityRef.current,
         editorNames:structuredClone(editorNamesRef.current),tags:structuredClone(tagsRef.current),
       gmNotesByHexKey: {...notesMapRef.current},
         generation: cloneGenerationState(activeGenerationBefore.current ?? generationRef.current),
@@ -13165,6 +13180,7 @@ export function App() {
       })();
 
       const snapshot: MapSnapshot = {
+      ...seaIdentityRef.current,
         editorNames:structuredClone(editorNamesRef.current),tags:structuredClone(tagsRef.current),
       gmNotesByHexKey: {...notesMapRef.current},
         generation: cloneGenerationState(activeGenerationBefore.current ?? generationRef.current),
@@ -13228,7 +13244,7 @@ export function App() {
   };
 
 
-  const captureMap = (): MapSnapshot => ({ editorNames:editorNamesRef.current,riverFeatures:riverFeatureOverrides,nextRiverId,tags:tagsRef.current, gmNotesByHexKey: notesMapRef.current, generation: cloneGenerationState(generationRef.current), kingdoms, obstacles, nextObstacleId, regions, candidateHexes, rivers, roads, crossings,
+  const captureMap = (): MapSnapshot => ({ ...seaIdentityRef.current,editorNames:editorNamesRef.current,riverFeatures:riverFeatureOverrides,nextRiverId,tags:tagsRef.current, gmNotesByHexKey: notesMapRef.current, generation: cloneGenerationState(generationRef.current), kingdoms, obstacles, nextObstacleId, regions, candidateHexes, rivers, roads, crossings,
     hexTerrainByKey, waterPoiByKey, biomeOverrideByHexKey, toponyms, toponymSeed, nextLakeId, nextRoadId });
   const captureDocument = (): DocumentSnapshot => ({ map: captureMap(), generationHistory: history, selectedHex,
     generationMode, isMapRotated, mapScale: pendingMapZoomRef.current?.scale ?? mapScaleRef.current });
@@ -13248,6 +13264,7 @@ export function App() {
     setRedoHistory([]);
   };
   const applyExactMap = (map: MapSnapshot) => {
+    map=withLegacySeas(map);updateSeaIdentity(map);
     updateEditorNames(map.editorNames??{});
     setRiverFeatureOverrides(map.riverFeatures);setNextRiverId(map.nextRiverId);
     updateTags(map.tags??emptyTags());
@@ -13475,12 +13492,13 @@ export function App() {
     }catch(error){setEditError(riverCommandError(error));return false;}
   };
   const waterKindLabel=(kind:WaterKind)=>language==='ru'?({land:'Суша',lake:'Озеро',sea:'Море'}[kind]):({land:'Land',lake:'Lake',sea:'Sea'}[kind]);
-  const waterName=(key:string)=>toponyms[key]?.[language]??(language==='ru'?'Без названия':'Unnamed');
+  const waterName=(key:string)=>editorNames[key]?.[language]??toponyms[key]?.[language]??(language==='ru'?'Без названия':'Unnamed');
   const waterCommandError=(error:unknown)=>{
     const authored=authoredNameError(error,language);if(authored)return authored;
     const ru=language==='ru',end=ru?' Карта не изменена.':' Your map is unchanged.';
     if(!(error instanceof WaterEditError))return (error instanceof TagCapacityError?tagCommandError(error):ru?'Не удалось подготовить изменение воды.':'Could not prepare the water edit.')+end;
     const [first,second]=error.details;
+    if(error.code.startsWith('sea_'))return (error.code==='sea_name_choice'?(ru?'Именованное море изменяет состав. Сначала разрешите разделение/слияние вручную.':'A named sea changes identity. Resolve its split or merge with the water editor first.'):(ru?'Не удалось проверить идентичность моря. Обновите выбор клеток или проверьте сохранение.':'Sea identity could not be validated. Update the cell choices or check the save.'))+end;
     const message:Record<string,string>={
       coordinate:ru?'Некорректные координаты клетки.':'Invalid cell coordinates.',unregistered:ru?'Эта клетка ещё не создана.':'This cell has not been created.',kind:ru?'Выберите сушу, озеро или море.':'Choose land, lake or sea.',
       protected_region_hex:ru?`Здесь центр или опорный гекс региона «${waterName(`region:${first}`)}» (${second}). Измените выделение.`:`This is the centre or anchor of region “${waterName(`region:${first}`)}” (${second}). Change the selection.`,
@@ -13616,7 +13634,7 @@ export function App() {
     try{
       const original=captureMap(),plan=prepareWaterMapEdit(original,draft.edit,draft.options);
       if(plan.map===original){updateWaterDraft(null);setEditError(null);return true;}
-      if(plan.geometry.unresolved.length||plan.unresolvedLosses.length||plan.unresolvedFeatures.length||plan.unresolvedCrossings.length||plan.confirmationRequired&&!confirmed){
+      if(plan.sea.unresolved.length||plan.geometry.unresolved.length||plan.unresolvedLosses.length||plan.unresolvedFeatures.length||plan.unresolvedCrossings.length||plan.confirmationRequired&&!confirmed){
         updateWaterDraft({...draft,preview:true});setEditError(null);setIsSidePanelCollapsed(false);return false;
       }
       // Both full snapshots, validation and all allocation are ready before any setter.
@@ -13632,18 +13650,23 @@ export function App() {
   };
   const recordGenerated = (checkpoint: MapSnapshot, map: MapSnapshot, selection: AxialHex,
     backup?: GenerationBackup, checkpoints = history) => {
+    const sea=prepareSeaIdentity(captureMap(),map.hexTerrainByKey);
+    if(sea.unresolved.length)throw new WaterEditError('sea_name_choice',...sea.unresolved.map(c=>c.key));
+    for(const id of sea.removedSeaIds){const pair=map.editorNames[`sea:${id}`];if(pair)throw new AuthoredNameConflict(`sea:${id}`,pair);}
+    map.seas=sea.seas;map.nextSeaId=sea.nextSeaId;
     checkedRiverMap(map);
     assertGeneratedIds(map);
     if (!kingdomJob) backup ??= activeGenerationBackup.current ?? undefined;
-    if (kingdomJob && !backup) return; // internal kingdom steps form one transaction at finish
+    if (kingdomJob && !backup) {updateSeaIdentity(map);return;} // internal kingdom steps form one transaction at finish
     const before = backup?.document ?? { ...captureDocument(), map: { ...captureMap(), generation: cloneGenerationState(checkpoint.generation) } };
     const notes = before.map.gmNotesByHexKey ?? gmNotesByHexKey;
     const keys = actualHexKeys(map), missing = Object.keys(notes).filter(key => !keys.has(key));
     if (missing.length) throw new NotesLossConflict(missing);
-    map.tags=reconcileTags(map.tags??emptyTags(),map,checkpoint,generationRef.current.masterSeed,generationMode==='mythic'||!!kingdomJob);updateTags(map.tags);
-    map.gmNotesByHexKey = {...notes}; updateNotesMap(map.gmNotesByHexKey);
+    map.tags=reconcileTags(map.tags??emptyTags(),map,checkpoint,generationRef.current.masterSeed,generationMode==='mythic'||!!kingdomJob);
+    map.gmNotesByHexKey = {...notes};
     recordTransaction(before, { ...captureDocument(), map, selectedHex: selection,
-      generationHistory: [...checkpoints, structuredClone(checkpoint)] });
+      generationHistory: [...checkpoints, structuredClone(withLegacySeas(checkpoint))] });
+    updateSeaIdentity(map);updateTags(map.tags);updateNotesMap(map.gmNotesByHexKey);
   };
 
   const mutateTag=(owner:TagOwner,id:string,slot?:number,edit?:{index:number;text:string})=>{
@@ -13682,7 +13705,8 @@ export function App() {
   });
 
   const restoreGenerationBackup = (backup: GenerationBackup) => {
-    const map = backup.map;
+    const map = withLegacySeas(backup.map);
+    updateSeaIdentity(map);
     updateEditorNames(map.editorNames??{});
     setRiverFeatureOverrides(map.riverFeatures);setNextRiverId(map.nextRiverId);
     updateTags(map.tags??emptyTags());
@@ -13714,12 +13738,13 @@ export function App() {
 
   const reportGenerationFailure = (error: unknown, anchorHex: AxialHex, options: GenerationOptions, backup: GenerationBackup, context?: GenerationActionContext) => {
     restoreGenerationBackup(backup);
-    const authored=authoredNameError(error,language);if(authored)setEditError(authored);
+    const seaConflict=error instanceof WaterEditError&&error.code.startsWith('sea_');
+    const authored=authoredNameError(error,language);if(authored)setEditError(authored);else if(seaConflict)setEditError(waterCommandError(error));
     activeGenerationBefore.current = cloneGenerationState(backup.map.generation);
     const notesLossHexKeys = error instanceof NotesLossConflict ? [...error.hexKeys] : undefined;
     const diagnostic = generationLog.finish({
-      ...generationEvent(anchorHex, options, notesLossHexKeys||authored||error instanceof RiverFeatureConflict ? 'constraint-rejection' : 'programming-error',
-        notesLossHexKeys ? 'notes_loss_conflict' : authored ? 'authored_name_loss' : error instanceof RiverFeatureConflict ? 'river_feature_conflict' : String(error), 'rolled-back', context),
+      ...generationEvent(anchorHex, options, notesLossHexKeys||authored||seaConflict||error instanceof RiverFeatureConflict ? 'constraint-rejection' : 'programming-error',
+        notesLossHexKeys ? 'notes_loss_conflict' : seaConflict ? 'sea_identity_conflict' : authored ? 'authored_name_loss' : error instanceof RiverFeatureConflict ? 'river_feature_conflict' : String(error), 'rolled-back', context),
       ...(notesLossHexKeys ? { notesLossHexKeys } : {}),
       message: String(error),
       stack: error && typeof error === 'object' && 'stack' in error ? String(error.stack) : undefined
@@ -13920,13 +13945,14 @@ export function App() {
     if (!regions.length && !rivers.length && !roads.length && !kingdoms.length && !obstacles.length
       && !hexTerrainByKey.size && !waterPoiByKey.size && !biomeOverrideByHexKey.size && !candidateHexes.length
       && !Object.keys(toponyms).length && nextLakeId===1 && nextRoadId===1 && nextObstacleId===1 && !isMapRotated
+      && seaIdentityRef.current.nextSeaId===1 && !seaIdentityRef.current.seas.length
       && nextRiverId===1 && !riverFeatureOverrides.rapids.length && !riverFeatureOverrides.waterfalls.length
       && selectedHex?.q===START_HEX.q && selectedHex?.r===START_HEX.r) return;
     if(Object.keys(editorNamesRef.current).length){setEditError(language==='ru'?`Сброс удалит авторское имя «${Object.values(editorNamesRef.current)[0]?.ru}». Сначала очистите его явно.`:`Reset would remove the authored name “${Object.values(editorNamesRef.current)[0]?.en}”. Clear it explicitly first.`);return;}
     if (!confirmNotesRemoval({})) return;
     const before=captureDocument();
     const newGeneration = createGenerationState(newWorldSeed());
-    const after: DocumentSnapshot = { ...before, map: { editorNames:{},riverFeatures:emptyRiverFeatures(),nextRiverId:1,tags:emptyTags(), gmNotesByHexKey: {}, generation: newGeneration, kingdoms: [], obstacles: [], regions: [], candidateHexes: [],
+    const after: DocumentSnapshot = { ...before, map: { seas:[],nextSeaId:1,editorNames:{},riverFeatures:emptyRiverFeatures(),nextRiverId:1,tags:emptyTags(), gmNotesByHexKey: {}, generation: newGeneration, kingdoms: [], obstacles: [], regions: [], candidateHexes: [],
       rivers: [], roads: [], crossings: [], hexTerrainByKey: new Map(), waterPoiByKey: new Map(), biomeOverrideByHexKey: new Map(),
       toponyms: {}, toponymSeed: toponymSeedFor(newGeneration.masterSeed), nextLakeId: 1, nextRoadId: 1, nextObstacleId: 1 },
       generationHistory: [], selectedHex: START_HEX, isMapRotated: false };
@@ -13968,9 +13994,10 @@ export function App() {
   // перед его добавлением. Это надёжно откатывает и реки, и дороги, в том
   // числе изменения, которые новый регион внёс в соседние регионы.
   const restoreSnapshot = (snapshot: MapSnapshot, exactWater=false) => {
-    snapshot = structuredClone({...snapshot,riverFeatures:snapshot.riverFeatures??emptyRiverFeatures(),nextRiverId:snapshot.nextRiverId??migrateRiverEditing(snapshot.rivers).nextRiverId});
+    snapshot = withLegacySeas(structuredClone({...snapshot,riverFeatures:snapshot.riverFeatures??emptyRiverFeatures(),nextRiverId:snapshot.nextRiverId??migrateRiverEditing(snapshot.rivers).nextRiverId}));
     checkedRiverMap(snapshot);
     if(exactWater){applyExactMap(snapshot);return;}
+    updateSeaIdentity(snapshot);
     const retainedPoiNames=retainPoiNames(snapshot,editorNamesRef.current);
     updateTags(reconcileTags(tagsRef.current,snapshot,captureMap(),generationRef.current.masterSeed,false));
     restoreGeneration(snapshot.generation);
@@ -14000,7 +14027,11 @@ export function App() {
   const checkpointWaterChanged=(checkpoint:MapSnapshot)=>{
     const retainedIds=new Set(checkpoint.regions.map(r=>r.id));
     const keys=new Set([...checkpoint.regions.flatMap(r=>r.hexes.map(hexKey)),...checkpoint.hexTerrainByKey.keys(),...regions.filter(r=>retainedIds.has(r.id)).flatMap(r=>r.hexes.map(hexKey))]);
-    return [...keys].some(key=>JSON.stringify(hexTerrainByKey.get(key))!==JSON.stringify(checkpoint.hexTerrainByKey.get(key)));
+    const previous=withLegacySeas(checkpoint),current=seaIdentityRef.current;
+    const seaNames=(names:EditorNames)=>Object.fromEntries(Object.entries(names).filter(([key])=>key.startsWith('sea:')));
+    return JSON.stringify(current)!==JSON.stringify({seas:previous.seas,nextSeaId:previous.nextSeaId})
+      ||JSON.stringify(seaNames(editorNamesRef.current))!==JSON.stringify(seaNames(checkpoint.editorNames??{}))
+      ||[...keys].some(key=>JSON.stringify(hexTerrainByKey.get(key))!==JSON.stringify(checkpoint.hexTerrainByKey.get(key)));
   };
   const confirmRiverCheckpointLoss=(checkpoint:MapSnapshot)=>{
     const retained=new Set(checkpoint.regions.map(r=>r.id));
@@ -14648,6 +14679,8 @@ export function App() {
     version: HEXCRAWL_SAVE_VERSION,
     savedAt: new Date().toISOString(),
     map: {
+      seas:structuredClone(doc.map.seas).sort((a,b)=>a.id-b.id).map(sea=>({...sea,hexKeys:sea.hexKeys.sort(compareWaterHexes)})),
+      nextSeaId:doc.map.nextSeaId,
       editorNames:structuredClone(doc.map.editorNames??{}),
       riverFeatures:structuredClone(doc.map.riverFeatures),
       tags:structuredClone(doc.map.tags??emptyTags()),
@@ -14743,10 +14776,11 @@ export function App() {
       const riverData=imported.version>=7
         ? {riverFeatures:structuredClone(imported.map.riverFeatures!),nextRiverId:imported.counters.nextRiverId!}
         : migrateRiverEditing(imported.map.rivers);
+      const seaData=imported.version>=9?{seas:imported.map.seas!,nextSeaId:imported.map.nextSeaId!}:migrateSeas(terrain);
       const selection=imported.ui.selectedHex;
       const before=captureDocument();
       const after:DocumentSnapshot={
-        map:{...riverData,editorNames:imported.version===8?structuredClone(imported.map.editorNames??{}):{},tags: imported.map.tags??emptyTags(),gmNotesByHexKey: Object.fromEntries(Object.entries(imported.map.gmNotesByHexKey ?? {}).filter(([,text]) => text !== '')), generation: imported.generation ?? createGenerationState(seed >>> 0), kingdoms:imported.map.kingdoms ?? [],...obstacleData,regions:imported.map.regions,
+        map:{...riverData,...seaData,editorNames:imported.version>=8?structuredClone(imported.map.editorNames??{}):{},tags: imported.map.tags??emptyTags(),gmNotesByHexKey: Object.fromEntries(Object.entries(imported.map.gmNotesByHexKey ?? {}).filter(([,text]) => text !== '')), generation: imported.generation ?? createGenerationState(seed >>> 0), kingdoms:imported.map.kingdoms ?? [],...obstacleData,regions:imported.map.regions,
           candidateHexes:candidates,rivers:imported.map.rivers,roads:imported.map.roads,crossings:imported.map.crossings,
           hexTerrainByKey:terrain,waterPoiByKey:new Map(Object.entries(imported.map.waterPoiByHexKey ?? {})),
           biomeOverrideByHexKey:new Map(Object.entries(imported.map.biomeOverrideByHexKey ?? {})),toponyms:names,toponymSeed:seed,
@@ -14822,9 +14856,9 @@ export function App() {
     const target=event.target,value=target.value;event.preventDefault();event.stopPropagation();requestPoiExit(()=>{if(!target.isConnected)return;target.value=value;target.dispatchEvent(new Event('change',{bubbles:true}));});
   };
   const nameTypeLabels = language === 'ru'
-    ? {region:'Регион', settlement:'Поселение', river:'Река', lake:'Озеро', kingdom:'Королевство',poi:'Точка интереса',waterPoi:'Водная точка',road:'Путь',obstacle:'Препятствие',crossing:'Переправа',rapid:'Порог',waterfall:'Водопад'}
-    : {region:'Region', settlement:'Settlement', river:'River', lake:'Lake', kingdom:'Kingdom',poi:'Point of interest',waterPoi:'Water point',road:'Path',obstacle:'Barrier',crossing:'Crossing',rapid:'Rapids',waterfall:'Waterfall'};
-  const stableNameObjects=useMemo(()=>editorObjects({regions,rivers,roads,crossings,obstacles,hexTerrainByKey,waterPoiByKey,riverFeatures:riverFeatureOverrides}),[regions,rivers,roads,crossings,obstacles,hexTerrainByKey,waterPoiByKey,riverFeatureOverrides]);
+    ? {region:'Регион', settlement:'Поселение', river:'Река', lake:'Озеро', kingdom:'Королевство',poi:'Точка интереса',waterPoi:'Водная точка',sea:'Море',road:'Путь',obstacle:'Препятствие',crossing:'Переправа',rapid:'Порог',waterfall:'Водопад'}
+    : {region:'Region', settlement:'Settlement', river:'River', lake:'Lake', kingdom:'Kingdom',poi:'Point of interest',waterPoi:'Water point',sea:'Sea',road:'Path',obstacle:'Barrier',crossing:'Crossing',rapid:'Rapids',waterfall:'Waterfall'};
+  const stableNameObjects=useMemo(()=>editorObjects({seas:seaIdentity.seas,regions,rivers,roads,crossings,obstacles,hexTerrainByKey,waterPoiByKey,riverFeatures:riverFeatureOverrides}),[seaIdentity,regions,rivers,roads,crossings,obstacles,hexTerrainByKey,waterPoiByKey,riverFeatureOverrides]);
   const nameTargetHex = (key:string):AxialHex|null => {
     const object=stableNameObjects.find(o=>o.key===key);if(object)return object.hex??null;
     const [type,id,coord]=key.split(':');
@@ -14869,7 +14903,7 @@ export function App() {
       const fallback=water?WATER_POI_DETAILS[kind as WaterPoiKind]?.label:(POI_DETAILS[kind as PoiKind]?.label??CENTRAL_POI_DETAILS[kind as CentralPoiKind]?.label);
       targets.push({key,type:water?'waterPoi':'poi',poiLocator:key,editorLocator:key,...editorNames[key]??{ru:'',en:''},fallback:fallback??{ru:'Точка интереса',en:'Point of interest'},location:coordKey.replace(',','/')});
     }
-    for(const object of stableNameObjects)targets.push({key:object.key,type:object.type,editorLocator:object.key,...editorNames[object.key]??{ru:'',en:''},fallback:{ru:({road:'Путь',obstacle:'Препятствие',crossing:'Переправа',rapid:'Порог',waterfall:'Водопад'})[object.type],en:({road:'Path',obstacle:'Barrier',crossing:'Crossing',rapid:'Rapids',waterfall:'Waterfall'})[object.type]},location:coord(object.hex)});
+    for(const object of stableNameObjects)targets.push({key:object.key,type:object.type,editorLocator:object.key,...editorNames[object.key]??{ru:'',en:''},fallback:{ru:({sea:'Море',road:'Путь',obstacle:'Препятствие',crossing:'Переправа',rapid:'Порог',waterfall:'Водопад'})[object.type],en:({sea:'Sea',road:'Path',obstacle:'Barrier',crossing:'Crossing',rapid:'Rapids',waterfall:'Waterfall'})[object.type]},location:coord(object.hex)});
     for (const kingdom of kingdoms) targets.push({key:`kingdom:${kingdom.id}`,type:'kingdom',...kingdom.name,location:coord(nameTargetHex(`kingdom:${kingdom.id}`)??undefined)});
     return {targets, unavailable:false};
   }, [regions, rivers, hexTerrainByKey, toponyms, kingdoms,editorNames,waterPoiByKey,stableNameObjects]);
@@ -15014,7 +15048,7 @@ export function App() {
   const waterLossText=(loss:WaterLoss):string=>{
     const ru=language==='ru';
     if(loss.type==='lake')return `${ru?'Озеро исчезнет':'Lake will be removed'}: ${waterName(loss.key)}`;
-    if(loss.type==='name'){const v=loss.value as {ru:string;en:string};return `${ru?'Удалить название':'Delete name'}: ${v.ru} / ${v.en}`;}
+    if(loss.type==='name'){const v=loss.value as {ru:string;en:string;seaInto?:number[]};return `${ru?'Удалить название':'Delete name'}${loss.key.startsWith('sea:')?` · ${ru?'море':'sea'} #${loss.key.slice(4)}`:''}: ${v.ru} / ${v.en}${v.seaInto?(v.seaInto.length?` · ${ru?'слияние в':'merged into'} ${v.seaInto.map(id=>`${waterName(`sea:${id}`)} (#${id})`).join(', ')}`:` · ${ru?'морской объект исчезнет':'no sea remains'}`):''}`;}
     if(loss.type==='tag'){const v=loss.value as TagState['instances'][number],def=mythicDefinitions[v.definitionId];const text=v.texts.map((t,i)=>Object.entries({...t,...v.overrides?.[i]}).map(([l,s])=>`${l}: ${s}`).join(' / ')).join(' · ');return `${ru?'Удалить тег':'Delete tag'} ${def?.label[language]??v.definitionId}: ${text} (${v.values.map(v=>v.join('+')).join(' / ')})`;}
     if(loss.type==='waterPoi')return `${ru?'Удалить водную точку':'Delete water point'}: ${getWaterPoiLabel(loss.value as WaterPoiKind,language)} · ${loss.key}`;
     if(loss.type==='poi'){const v=loss.value as {regionId:number;kind?:PoiKind};return `${ru?'Удалить точку':'Delete point'}: ${v.kind?POI_DETAILS[v.kind]?.label[language]??v.kind:(ru?'Точка интереса':'Point of interest')} · ${loss.key}`;}
@@ -15031,6 +15065,12 @@ export function App() {
     if(!value)return;
     const old=draft.edit[type]??{},v=type==='regionAssignments'||type==='mergeKeep'?Number(value):value;
     changeWaterDraft(draft,{edit:{...draft.edit,[type]:{...old,[key]:v}},options:{},preview:true});
+  };
+  const changeSeaChoice=(draft:WaterDraft,type:'seaSplitKeep'|'seaMergeKeep',key:string,value:string)=>{
+    const choices={seaSplitKeep:draft.options.seaSplitKeep,seaMergeKeep:draft.options.seaMergeKeep};
+    const values:Record<string,string|number>={...choices[type]};if(value)values[key]=type==='seaMergeKeep'?Number(value):value;else delete values[key];
+    // A new split assignment changes the merge graph, so discard stale merge answers.
+    changeWaterDraft(draft,{options:type==='seaSplitKeep'?{seaSplitKeep:values as Record<string,string>}:{...choices,seaMergeKeep:values as Record<string,number>},preview:true});
   };
   const waterFeatureText=(feature:FeatureEdit)=>feature.type==='rapid'
     ? `${language==='ru'?'Пороги':'Rapids'} · ${waterName(`river:${feature.riverId}`)} · ${language==='ru'?'участок':'edge'} ${(rivers.find(r=>r.id===feature.riverId)?.vertexPath.slice(1).findIndex((v,i)=>edgeKey(rivers.find(r=>r.id===feature.riverId)!.vertexPath[i],v)===feature.edgeKey)??0)+1}`
@@ -15139,6 +15179,7 @@ export function App() {
       value={waterKindAt(hexTerrainByKey,selectedHexKey)} onChange={e=>startWaterDraft(e.target.value as WaterKind)}>
       {(['land','lake','sea'] as const).map(kind=><option value={kind} key={kind}>{waterKindLabel(kind)}</option>)}
     </select>:<span>{waterKindLabel(waterKindAt(hexTerrainByKey,selectedHexKey))}</span>}
+    {isSelectedSea&&selectedHexKey?<>{' '}{renderName(`sea:${seaIdentity.seas.find(sea=>sea.hexKeys.includes(selectedHexKey))?.id}`)}</>:null}
     {isSelectedLake&&selectedTerrain?.lakeId?<>{' '}{renderToponym(`lake:${selectedTerrain.lakeId}`)}{renderTags({kind:'lake',id:selectedTerrain.lakeId},'lake')}</>:null}
     {editMode&&!poiDraft&&!regionDraft&&!waterDraft&&(isSelectedLake||isSelectedSea)&&<>{' '}<button type="button" className="direct-value" data-water-shore onClick={()=>startWaterDraft(waterKindAt(hexTerrainByKey,selectedHexKey))}>{language==='ru'?'Изменить берег':'Change shore'}</button></>}
     </div>
@@ -15160,13 +15201,20 @@ export function App() {
         :choice.type==='merge'?<label>{language==='ru'?'Сохранить озеро при объединении':'Keep lake when joining'} <select aria-label={`${language==='ru'?'Сохраняемое озеро':'Retained lake'} ${choice.key}`} value={waterDraft.edit.mergeKeep?.[choice.key]??''} onChange={e=>changeWaterChoice(waterDraft,'mergeKeep',choice.key,e.target.value)}><option value="">{language==='ru'?'Выберите озеро':'Choose lake'}</option>{choice.allowed.map(id=><option value={id} key={id}>{waterName(`lake:${id}`)}</option>)}</select></label>
         :<label>{language==='ru'?'Сохранить имя и теги':'Keep name and tags'} «{waterName(`lake:${choice.lakeId}`)}» <select aria-label={`${language==='ru'?'Часть сохраняемого озера':'Part retaining lake identity'} ${choice.lakeId}`} value={choice.value} onChange={e=>changeWaterChoice(waterDraft,'splitKeep',choice.key,e.target.value)}>{choice.allowed.map(key=><option value={key} key={key}>{language==='ru'?'Часть у гекса':'Part at hex'} {key}</option>)}</select></label>}
       </div>)}
+      {waterPreview?.plan?.sea.choices.map(choice=><div className="direct-line" key={`sea:${choice.type}:${choice.key}`}>
+        {choice.type==='split'?<label>{language==='ru'?'Где сохранить имя моря':'Part retaining sea name'} · {waterName(`sea:${choice.seaId}`)} (#{choice.seaId}) <select data-sea-split={choice.seaId} aria-label={`${language==='ru'?'Часть сохраняемого моря':'Part retaining sea identity'} ${choice.seaId}`} value={waterDraft.options.seaSplitKeep?.[choice.key]??(choice.required?'':choice.value)} onChange={e=>changeSeaChoice(waterDraft,'seaSplitKeep',choice.key,e.target.value)}>
+          {choice.required&&<option value="">{language==='ru'?'Выберите часть':'Choose part'}</option>}{choice.allowed.map(key=><option value={key} key={key}>{language==='ru'?'Часть у гекса':'Part at hex'} {key} · {waterPreview.plan!.map.seas.find(s=>s.hexKeys.includes(key))?.hexKeys.length} {language==='ru'?'гекса':'cells'}</option>)}
+        </select></label>:<label>{language==='ru'?'Сохранить море при слиянии':'Keep sea when joining'} <select data-sea-merge={choice.key} aria-label={`${language==='ru'?'Сохраняемое море':'Retained sea'} ${choice.key}`} value={waterDraft.options.seaMergeKeep?.[choice.key]??(choice.required?'':choice.value)} onChange={e=>changeSeaChoice(waterDraft,'seaMergeKeep',choice.key,e.target.value)}>
+          {choice.required&&<option value="">{language==='ru'?'Выберите море':'Choose sea'}</option>}{choice.allowed.map(id=><option value={id} key={id}>{waterName(`sea:${id}`)} (#{id})</option>)}
+        </select></label>}
+      </div>)}
       {waterPreview?.plan?.losses.map(loss=><label className="water-loss" key={loss.id}><input type="checkbox" data-water-loss={loss.id} checked={waterDraft.options.acceptedLosses?.includes(loss.id)??false} onChange={e=>changeWaterDraft(waterDraft,{options:{...waterDraft.options,acceptedLosses:e.target.checked?[...waterDraft.options.acceptedLosses??[],loss.id]:(waterDraft.options.acceptedLosses??[]).filter(id=>id!==loss.id)},preview:true})}/>{' '}{waterLossText(loss)}</label>)}
       {waterPreview?.plan?.newCrossings.map(c=><label className="direct-line" key={c.key}>{language==='ru'?'Новая переправа':'New crossing'} · {waterName(`river:${c.riverId}`)} · {language==='ru'?'путь':'path'} {c.roadId} <select data-water-crossing={c.key} aria-label={`${language==='ru'?'Вид новой переправы':'New crossing type'} ${c.key}`} value={waterDraft.options.crossingKinds?.[c.key]??''} onChange={e=>e.target.value&&changeWaterDraft(waterDraft,{options:{...waterDraft.options,crossingKinds:{...waterDraft.options.crossingKinds,[c.key]:e.target.value as RiverCrossingKind}},preview:true})}><option value="">{language==='ru'?'Выберите':'Choose'}</option>{(['bridge','ferry','ford'] as const).map(kind=><option key={kind} value={kind} disabled={kind==='ford'&&Number(knownRiverEdgeFullness(rivers.find(r=>r.id===c.riverId)!,c.riverEdgeKey))>=3}>{t[kind]}</option>)}</select></label>)}
       {waterPreview?.plan?.invalidFeatures.map((feature,i)=><label className="direct-line" key={i}>{waterFeatureText(feature)} <select data-water-feature={i} aria-label={waterFeatureText(feature)} value={waterDraft.options.featureEdits?.find(e=>e.type===feature.type&&(e.type==='rapid'&&feature.type==='rapid'?e.riverId===feature.riverId&&e.edgeKey===feature.edgeKey:e.type==='waterfall'&&feature.type==='waterfall'&&e.vertexKey===feature.vertexKey))?.state??''} onChange={e=>e.target.value&&waterFeatureChoice(waterDraft,feature,e.target.value as 'auto'|'off')}><option value="">{language==='ru'?'Снять ручное включение':'Resolve manual On'}</option><option value="off">{language==='ru'?'Нет':'Off'}</option><option value="auto">{language==='ru'?'Авто':'Auto'}</option></select></label>)}
       {waterDraft.preview&&<p>{language==='ru'?'Заметки гексов сохранятся. Названия и теги, не перечисленные выше, останутся прежними.':'Hex notes will be retained. Names and tags not listed above will stay unchanged.'}</p>}
       {(waterPreview?.error||editError)&&<p role="alert" id="water-edit-error" className="direct-error" data-water-error>{waterPreview?.error||editError}</p>}
       <div className="water-actions"><button type="button" className="secondary" data-water-finish onClick={()=>finishWaterDraft(waterDraft)}>{language==='ru'?'Завершить выделение':'Finish selection'}</button>
-      {waterDraft.preview&&<button type="button" data-water-confirm disabled={!waterPreview?.plan||!!waterPreview.plan.geometry.unresolved.length||!!waterPreview.plan.unresolvedLosses.length||!!waterPreview.plan.unresolvedFeatures.length||!!waterPreview.plan.unresolvedCrossings.length} onClick={()=>finishWaterDraft(waterDraft,true)}>{language==='ru'?'Подтвердить изменение':'Confirm change'}</button>}
+      {waterDraft.preview&&<button type="button" data-water-confirm disabled={!waterPreview?.plan||!!waterPreview.plan.sea.unresolved.length||!!waterPreview.plan.geometry.unresolved.length||!!waterPreview.plan.unresolvedLosses.length||!!waterPreview.plan.unresolvedFeatures.length||!!waterPreview.plan.unresolvedCrossings.length} onClick={()=>finishWaterDraft(waterDraft,true)}>{language==='ru'?'Подтвердить изменение':'Confirm change'}</button>}
       <button type="button" className="secondary" data-water-reset onClick={()=>resetWaterDraft(waterDraft)}>{language==='ru'?'Сбросить':'Reset draft'}</button></div>
     </div>}
   </div>:null;

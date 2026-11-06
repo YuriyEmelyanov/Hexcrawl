@@ -1,3 +1,4 @@
+import {seaFixture} from './helpers/sea-fixture.mjs';
 import {regionFixture} from './helpers/region-fixture.mjs';
 import {createGenerationState} from '../src/worldRandom.ts';
 import test from 'node:test';
@@ -145,7 +146,7 @@ test('E8 v8 authored POI names use real import,exact export and UndoRedo without
  const {g,alerts,data,key}=await loadAuthoredMap();const before=structuredClone(g.render().captureDocument());
  await g.render().handleImportJson({target:{files:[{text:JSON.stringify(data)}],value:'x'}});assert.deepEqual(alerts,[]);
  const after=structuredClone(g.render().captureDocument());assert.deepEqual(after.map.editorNames,data.map.editorNames);
- assert.deepEqual(g.render().createSaveData().map.editorNames,data.map.editorNames);assert.equal(g.render().createSaveData().version,8);
+ assert.deepEqual(g.render().createSaveData().map.editorNames,data.map.editorNames);assert.equal(g.render().createSaveData().version,9);
  g.render().undoMap();assert.deepEqual(g.render().captureDocument().map.editorNames,before.map.editorNames);
  g.render().redoMap();assert.deepEqual(structuredClone(g.render().captureDocument()),after);assert.equal(after.map.editorNames[key].ru,'Авторское имя');
  assert.deepEqual(after.map.gmNotesByHexKey,before.map.gmNotesByHexKey);
@@ -196,4 +197,18 @@ test('E8 paired name form rejects half-pairs,duplicates and captured old seconda
  g.render().cancelNameDraft();g.render().showNameTarget(key);g.render().changeNameDraft('Новая точка',g.render().nameDraft);g.render().changeOtherNameDraft('New point',g.render().nameDraft);
  const restore=g.injectFunction('structuredClone',value=>{if(value?.regions&&value?.toponyms)throw Error('injected pair preparation');return structuredClone(value);});assert.equal(g.render().saveNameDraft(),false);restore();assert.match(g.render().nameErrors.general,/Не удалось изменить название/);assert.equal(JSON.stringify(g.render().captureDocument()),before);
  g.render().cancelNameDraft();const mythic=regionFixture('mythic');mythic.map.regions[0].pointOfInterestKinds['2,0']='monument';await g.render().handleImportJson({target:{files:[{text:JSON.stringify(mythic)}],value:'x'}});assert.deepEqual(alerts,[]);g.render().setEditMode(true);g.render().showNameTarget('poi:1:2,0');g.render().changeNameDraft('Моё имя',g.render().nameDraft);g.render().changeOtherNameDraft('My Name',g.render().nameDraft);assert.equal(g.render().saveNameDraft(),true);g.render().showNameTarget('kingdom:1');const exact=JSON.stringify(g.render().captureDocument()),stack=g.render().undoHistory.length;g.render().changeNameDraft('Моё имя',g.render().nameDraft);assert.equal(g.render().saveNameDraft(),false);assert.equal(JSON.stringify(g.render().captureDocument()),exact);assert.equal(g.render().undoHistory.length,stack);g.render().cancelNameDraft();g.render().showNameTarget('kingdom:1');assert.equal(g.render().saveNameDraft(),true);assert.equal(g.render().undoHistory.length,stack);g.render().setLanguage('en');g.render().showNameTarget('kingdom:1');const enBefore=JSON.stringify(g.render().captureDocument());g.render().changeNameDraft('My Name',g.render().nameDraft);assert.equal(g.render().saveNameDraft(),false);assert.equal(JSON.stringify(g.render().captureDocument()),enBefore);g.render().cancelNameDraft();
+});
+
+test('SEA v2-v8 metadata migration and strict v9 refusal use the real atomic importer',async()=>{
+ const {g,alerts}=await loadAuthoredMap();const raw=seaFixture();raw.map.editorNames={};
+ for(const version of [2,3,4,5,6,7,8]){
+  const data=structuredClone(raw);data.version=version;delete data.map.seas;delete data.map.nextSeaId;
+  if(version<8)delete data.map.editorNames;
+  await g.render().handleImportJson({target:{files:[{text:JSON.stringify(data)}],value:''}});assert.deepEqual(alerts,[]);
+  const saved=structuredClone(g.render().createSaveData());assert.equal(saved.version,9);assert.deepEqual(saved.map.seas,[{id:1,hexKeys:['-1,2','0,2','1,2','2,2','3,2','3,3']}]);assert.equal(saved.map.nextSeaId,2);assert.deepEqual(saved.generation,data.generation);assert.deepEqual(saved.map.terrainByHexKey,data.map.terrainByHexKey);
+ }
+ const valid=structuredClone(g.render().createSaveData()),before=structuredClone(g.render().captureDocument()),stacks=structuredClone([g.render().undoHistory,g.render().redoHistory]);
+ for(const mutate of [d=>delete d.map.seas,d=>delete d.map.nextSeaId,d=>d.map.seas[0].hexKeys.pop(),d=>d.map.seas.push({...d.map.seas[0]}),d=>d.map.nextSeaId=1,d=>d.map.editorNames={'sea:999':{en:'X',ru:'Х'}},d=>d.version=10,d=>{d.version=8;d.map.editorNames={'sea:1':{en:'X',ru:'Х'}};}]){
+  const bad=structuredClone(valid);mutate(bad);await g.render().handleImportJson({target:{files:[{text:JSON.stringify(bad)}],value:''}});assert.equal(alerts.length,1);alerts.pop();assert.deepEqual(structuredClone(g.render().captureDocument()),before);assert.deepEqual(structuredClone([g.render().undoHistory,g.render().redoHistory]),stacks);
+ }
 });

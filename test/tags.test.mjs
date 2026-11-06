@@ -87,7 +87,7 @@ test('production imported legacy map does not roll; explicit fill and separate r
  assert.deepEqual(findTag(rolled.map.tags,sanctuary,'mb.sanctum'),description);
  h.render().undoMap();assert.deepEqual(stable(h),filled);
  h.render().redoMap();assert.deepEqual(stable(h),rolled);
- const save=h.render().createSaveData();assert.equal(save.version,8);h.geometry.assertHexcrawlSaveData(save);
+ const save=h.render().createSaveData();assert.equal(save.version,9);h.geometry.assertHexcrawlSaveData(save);
  const next=createGenerationHarness(99);await load(next,save);assert.deepEqual(next.render().tags,rolled.map.tags);
  h.render().undoMap();h.render().undoMap();assert.deepEqual(stable(h),before);
  const regionOwner={kind:'region',id:h.render().regions[0].id};

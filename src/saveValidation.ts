@@ -1,3 +1,4 @@
+import {validateSeaIdentity} from './seaIdentity.ts';
 import {validateDeltaReferences, validateRiverCounter, validateRiverFeatures, migrateRiverEditing, type RiverGeometry} from './manualRivers.ts';
 import { generationValidationPath } from './worldRandom.ts';
 // Structural validation only: accepting a save never reroutes its rivers or roads.
@@ -58,8 +59,8 @@ export function validateSaveStructure(value: unknown, domain: {
   names: (v: unknown)=>boolean; toponymModel: string; kingdoms: (map: RecordValue, version: number)=>void;
 }): void {
   const data=record(value,'$');
-  oneOf(data.schema,['hexcrawl-map'],'schema'); oneOf(data.version,[2,3,4,5,6,7,8],'version');
-  if (data.version === 3 || data.version === 4 || data.version === 5 || data.version === 6 || data.version === 7 || data.version === 8 || data.generation !== undefined) { const path = generationValidationPath(data.generation); if (path) fail(path,'unsupported or invalid RNG state'); }
+  oneOf(data.schema,['hexcrawl-map'],'schema'); oneOf(data.version,[2,3,4,5,6,7,8,9],'version');
+  if (data.version === 3 || data.version === 4 || data.version === 5 || data.version === 6 || data.version === 7 || data.version === 8 || data.version === 9 || data.generation !== undefined) { const path = generationValidationPath(data.generation); if (path) fail(path,'unsupported or invalid RNG state'); }
   const map=record(data.map,'map'), ui=record(data.ui,'ui'), counters=record(data.counters,'counters');
   if((data.version as number)<8&&map.editorNames!==undefined&&Object.keys(record(map.editorNames,'map.editorNames')).length)fail('map.editorNames','authored names require version8');
   const regions=array(map.regions,'map.regions'), rivers=array(map.rivers,'map.rivers'), roads=array(map.roads,'map.roads');
@@ -116,6 +117,7 @@ export function validateSaveStructure(value: unknown, domain: {
     if(t.terrainOverride!==undefined) oneOf(t.terrainOverride,['lake','sea'],p+'.terrainOverride');
     if(t.lakeId!==undefined) maxLake=Math.max(maxLake,integer(t.lakeId,p+'.lakeId'));
   }
+  if((data.version as number)>=9)try{validateSeaIdentity(new Map(Object.entries(terrain)) as Map<string,{terrainOverride?:'sea'|'lake'}>,map.seas,map.nextSeaId);}catch(error){fail('map.seas/nextSeaId',error instanceof Error?error.message:'invalid sea identity');}
   if (map.gmNotesByHexKey !== undefined) {
     for (const [k,v] of Object.entries(record(map.gmNotesByHexKey, 'map.gmNotesByHexKey'))) {
       const p = 'map.gmNotesByHexKey[' + JSON.stringify(k) + ']';
