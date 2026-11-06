@@ -435,3 +435,8 @@ The existing tag double-click case relied on350ms of wall time across expensive 
 ### 6 ноября 2026 — пустой список PR-workflows не доказывает отсутствие деплоя
 
 При публикации PR490 wrapper fetch_commit_workflow_runs для merge SHA e99cb123 вернул пустой массив: его объявленный контракт фильтрует pull-request events. Чтение публичного GitHub Actions API по тому же head_sha обнаружило push-run42165282234 Deploy to GitHub Pages; штатный wrapper run_jobs затем показал выполняющийся build. Вывод: при выпуске искать именно push/deploy run, а не трактовать пустой PR-only ответ как сбой или запускать лишнюю сборку. Уверенность высокая по контракту инструмента и наблюдению run; источник: evidence/release-PR490-e99cb12/merge-checkpoint.json и GitHub Actions42165282234. Это маршрут проверки, не изменение полномочий или workflow.
+
+
+### 2026-11-06 — явный язык проверочных сценариев (HX-FB-010 / PR491)
+
+После смены стартового языка на EN прежние RU-локаторы и генераторные fixtures нужно инициализировать на RU явно. Это настройка существующих проверок, а не новая функциональность или рост числа случаев. Реальный EN-старт проверен существующим браузерным сценарием и независимым Chromium smoke; исторические RU-базы поддержаны условным переключением. После исправления: Node345/345, browser8/8 и отдельный RNG workflow pass на de0299168e5a74d4e3594db71d657ca8055614e0. Новых постоянных случаев не добавлено; изменены два существующих поведенческих сценария. Evidence: agent-work/evidence/HX-FB-010-PR491-de02991/test-change-summary.json.

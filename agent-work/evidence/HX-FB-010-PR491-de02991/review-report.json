@@ -5,7 +5,7 @@
   "base_sha": "e99cb1236e152e8e6a5987af95e19d601dbc3a78",
   "head_sha": "de0299168e5a74d4e3594db71d657ca8055614e0",
   "tree_sha": "79b69059c70eed7430bcda93db5d72a6097695d3",
-  "verdict": "bounded_independent_review_passed_CI_pending",
+  "verdict": "accepted_exact_SHA_with_scope_limitations",
   "reviewer": "/root/central_note_review",
   "independence": "Fresh agent independently verified source diff, actual Chromium smoke and GitHub exact SHA/tree",
   "source": {
@@ -30,12 +30,47 @@
     },
     "CI": {
       "run_id": 42171271911,
-      "status": "pending",
-      "required": [
-        "check",
-        "browser",
-        "world-random"
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42171271911",
+      "status": "passed",
+      "head_sha": "de0299168e5a74d4e3594db71d657ca8055614e0",
+      "merge_sha": "2a9936e723ff3349e07437d0b99e5ac6b249750f",
+      "merge_tree_sha": "79b69059c70eed7430bcda93db5d72a6097695d3",
+      "jobs": [
+        {
+          "id": 127739421270,
+          "name": "check",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 127739421602,
+          "name": "world-random",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 127739421730,
+          "name": "browser",
+          "status": "completed",
+          "conclusion": "success"
+        }
       ]
+    },
+    "browser": {
+      "executed_workflows": 8,
+      "passed_workflows": 8,
+      "failed": 0,
+      "skipped": 0
+    },
+    "RNG": {
+      "executed_workflows": 1,
+      "passed_workflows": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    "conditional_seed_UI": {
+      "status": "skipped",
+      "reason": "Workflow condition on PR; no fixture behavior claimed executed"
     }
   },
   "confirmed": [
@@ -70,7 +105,6 @@
   },
   "limitations": [
     "One headless Chromium; emulated widths, not physical device/touch/screen reader test",
-    "Full mandatory CI must pass before acceptance; source review does not substitute execution",
     "Some emoji render as missing glyphs in screenshot environment; existing issue, no icon changes",
     "No publication permission for PR491"
   ],
@@ -79,5 +113,12 @@
     "before": "agent-work/evidence/HX-FB-010-PR491-de02991/ui/before-ru-1500-central.png",
     "after": "agent-work/evidence/HX-FB-010-PR491-de02991/ui/after-ru-1500-central.png",
     "narrow": "agent-work/evidence/HX-FB-010-PR491-de02991/ui/after-en-390-central.png"
+  },
+  "github_review": {
+    "id": "PRR_kwDOSYJvf88AAAABWX24zA",
+    "state": "COMMENTED",
+    "submitted_at": "2026-11-06T06:03:58Z",
+    "formal_approval": false,
+    "independent_agent_verdict": true
   }
 }

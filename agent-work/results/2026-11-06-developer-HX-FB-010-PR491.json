@@ -1,0 +1,288 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-06-developer-central-note-removal",
+  "role": "developer",
+  "task_id": "HX-BL-023",
+  "feedback_id": "HX-FB-010",
+  "stage_id": "central-POI-copy-and-startup-English",
+  "started_at": "2026-11-06T05:36:51Z",
+  "completed_at": "2026-11-06T06:06:10Z",
+  "status": "accepted_awaiting_owner_release_approval",
+  "role_selection_reason": "Explicit current owner UI correction and subsequent English startup instruction; bounded independent of pending PR490 score accounting, no duplicate developer claim",
+  "authorization_ref": "owner-decision-2026-11-06-HX-FB-010",
+  "scope_ref": "agent-work/approvals/2026-11-06-HX-FB-010.json",
+  "result": [
+    "Fresh App starts English; RU/EN toggle retained",
+    "Central POI explanatory paragraph and empty location panel removed in RU/EN",
+    "Central name/type editing and ordinary/water POI location controls retained"
+  ],
+  "package": {
+    "task_id": "HX-BL-023",
+    "feedback_id": "HX-FB-010",
+    "stage_id": "central-POI-copy-and-startup-English",
+    "status": "accepted_awaiting_owner_release_approval",
+    "pr": 491,
+    "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/491",
+    "branch": "agent/hx023-remove-central-note",
+    "base_sha": "e99cb1236e152e8e6a5987af95e19d601dbc3a78",
+    "head_sha": "de0299168e5a74d4e3594db71d657ca8055614e0",
+    "tree_sha": "79b69059c70eed7430bcda93db5d72a6097695d3",
+    "release_approved": false,
+    "published": false,
+    "review_ref": "agent-work/evidence/HX-FB-010-PR491-de02991/review-report.json",
+    "score_assessment_ref": "agent-work/evidence/HX-FB-010-PR491-de02991/score-assessment.json",
+    "test_change_summary_ref": "agent-work/evidence/HX-FB-010-PR491-de02991/test-change-summary.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-06-HX-FB-010-PR491-release.json",
+    "result_ref": "agent-work/results/2026-11-06-developer-HX-FB-010-PR491.json",
+    "ui_ref": "agent-work/evidence/HX-FB-010-PR491-de02991/ui/README.md",
+    "ui_shown_in_chat": true,
+    "checks_status": "all_required_CI_passed",
+    "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42171271911",
+    "next_role": "owner",
+    "next_step": "Отдельное разрешение публикации PR491 на точном SHA de0299168e5a74d4e3594db71d657ca8055614e0",
+    "authorization_ref": "owner-decision-2026-11-06-HX-FB-010",
+    "score_status": "insufficient_evidence_no_award"
+  },
+  "checks": {
+    "temporary_Chromium": {
+      "executed": 8,
+      "passed": 8,
+      "failed": 0,
+      "skipped": 0
+    },
+    "Node": {
+      "executed": 345,
+      "passed": 345,
+      "failed": 0,
+      "skipped": 0
+    },
+    "CI": {
+      "run_id": 42171271911,
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42171271911",
+      "status": "passed",
+      "head_sha": "de0299168e5a74d4e3594db71d657ca8055614e0",
+      "merge_sha": "2a9936e723ff3349e07437d0b99e5ac6b249750f",
+      "merge_tree_sha": "79b69059c70eed7430bcda93db5d72a6097695d3",
+      "jobs": [
+        {
+          "id": 127739421270,
+          "name": "check",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 127739421602,
+          "name": "world-random",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 127739421730,
+          "name": "browser",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    },
+    "browser": {
+      "executed_workflows": 8,
+      "passed_workflows": 8,
+      "failed": 0,
+      "skipped": 0
+    },
+    "RNG": {
+      "executed_workflows": 1,
+      "passed_workflows": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    "conditional_seed_UI": {
+      "status": "skipped",
+      "reason": "Workflow condition on PR; no fixture behavior claimed executed"
+    }
+  },
+  "reviewer": "/root/central_note_review",
+  "review_ref": "agent-work/evidence/HX-FB-010-PR491-de02991/review-report.json",
+  "score_assessment_ref": "agent-work/evidence/HX-FB-010-PR491-de02991/score-assessment.json",
+  "score_status": "model1.2_unverified_no_award",
+  "test_change_summary": {
+    "base_sha": "e99cb1236e152e8e6a5987af95e19d601dbc3a78",
+    "head_sha": "de0299168e5a74d4e3594db71d657ca8055614e0",
+    "count_method": "Logical cases/contracts compared in exact base/head diff; runner/suite boundaries retained; no line or file count treated as case growth",
+    "source": "git diff e99cb1236e152e8e6a5987af95e19d601dbc3a78..4053f3045c9b3a82b1edb7c29cb67c1147cd0519; final local tree matches remote 79b69059c70eed7430bcda93db5d72a6097695d3",
+    "permanent_cases": {
+      "added": 0,
+      "removed": 0,
+      "modified": 2,
+      "modified_scenarios": [
+        {
+          "suite": "browser/generation",
+          "scenario": "Existing startup/locale workflow now asserts fresh production page has English Undo button",
+          "risk": "Default language silently remains Russian",
+          "reuse_or_new_reason": "Extend existing startup workflow; no new runner or registration"
+        },
+        {
+          "suite": "browser/save-history/poi-lifecycle",
+          "scenario": "Existing central POI lifecycle now checks absence of empty panel plus retained name/type controls",
+          "risk": "Copy removal leaves blank UI or hides central editing",
+          "reuse_or_new_reason": "Replace obsolete paragraph expectation in existing lifecycle scenario"
+        }
+      ]
+    },
+    "suites": [
+      {
+        "suite": "Node",
+        "added": 0,
+        "removed": 0,
+        "modified": 0,
+        "setup_files_modified": [
+          "test/helpers/generation-harness.mjs"
+        ],
+        "setup_reason": "Initialize RU once for existing locale-bound generator/error/name fixtures, allow later test toggles; production default verified independently in browser",
+        "execution": {
+          "executed": 345,
+          "passed": 345,
+          "failed": 0,
+          "skipped": 0
+        },
+        "evidence": "agent-work/evidence/HX-FB-010-PR491-de02991/npm-check.log"
+      },
+      {
+        "suite": "browser",
+        "added": 0,
+        "removed": 0,
+        "modified": 2,
+        "top_level_workflows_with_setup_changes": 8,
+        "setup_reason": "Explicit RU preserves previous localized contracts, not new feature coverage",
+        "execution": {
+          "executed_workflows": 8,
+          "passed_workflows": 8,
+          "failed": 0,
+          "skipped": 0
+        },
+        "evidence": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42171271911"
+      },
+      {
+        "suite": "browser/RNG",
+        "added": 0,
+        "removed": 0,
+        "modified": 0,
+        "setup_files_modified": [
+          "test/browser/world-random.smoke.mjs"
+        ],
+        "execution": {
+          "executed_workflows": 1,
+          "passed_workflows": 1,
+          "failed": 0,
+          "skipped": 0
+        },
+        "reuse_or_new_reason": "Explicit RU only; same RNG checks"
+      },
+      {
+        "suite": "manual historical UI acceptance",
+        "added": 0,
+        "removed": 0,
+        "modified": 0,
+        "setup_files_modified": [
+          "scripts/hx-fb-001-ui.mjs"
+        ],
+        "execution": "conditional workflow skipped on PR; syntax/diff reviewed",
+        "reuse_or_new_reason": "Support new EN candidate and earlier RU baseline through common RU setup"
+      }
+    ],
+    "temporary_diagnostics": {
+      "permanent_growth": false,
+      "suite": "Independent Chromium smoke",
+      "executed": 8,
+      "passed": 8,
+      "failed": 0,
+      "skipped": 0,
+      "profiles": "before/after × RU/EN × 1500/390",
+      "evidence": "agent-work/evidence/HX-FB-010-PR491-de02991/original-browser-diagnostic.json"
+    },
+    "initial_failed_attempts": [
+      {
+        "suite": "local npm check",
+        "status": "interrupted_after_fixture_locale_failures",
+        "reason": "Existing coastal/name expectations implicitly assumed RU; explicit locale setup fixed them",
+        "node_result": "Do not report interrupted attempt as full suite pass"
+      },
+      {
+        "suite": "CI browser c695334",
+        "run_id": 42170631129,
+        "status": "failed",
+        "reason": "Large-map profile script sought Russian Edit button on EN startup; shared script now selects RU explicitly",
+        "fix_sha": "de0299168e5a74d4e3594db71d657ca8055614e0"
+      }
+    ],
+    "ci_head_sha": "de0299168e5a74d4e3594db71d657ca8055614e0",
+    "ci_run_id": 42171271911,
+    "local_check_inputs_note": "Local npm check began at ffac05ad before final fixture-only edits; App/Node/tsc/build input content was unchanged. Final complete package passed exact-SHA CI."
+  },
+  "ui": {
+    "actual": true,
+    "shown_in_chat": true,
+    "before_after": "agent-work/evidence/HX-FB-010-PR491-de02991/ui/README.md",
+    "screenshots": "1500/390 RU/EN; actual desktop before/after presented in chat"
+  },
+  "main_changed": false,
+  "published": false,
+  "release_approved": false,
+  "automation_health": {
+    "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-06T05:36:51Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "recovery_performed": false,
+    "errors": [],
+    "end": {
+      "checked_at": "2026-11-06T06:06:10Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "limitation": "Actual point-in-time start/end observations; no guarantee of later service state.",
+    "service_last_run_observation": {
+      "observed_at": "2026-11-06T06:06:10Z",
+      "id": "f2a07b22-46bc-8324-887a-5705081d1bc2",
+      "recorded_status": "failed",
+      "scheduled_for": "2026-11-06T06:00:00Z",
+      "started_at": "2026-11-06T06:03:44.107902Z",
+      "completed_at": "2026-11-06T06:03:48.153643Z",
+      "chat_ref": null,
+      "reason": "unknown; peek returned no failure cause",
+      "relation_to_current_run": "Separate scheduled attempt; not attributed to this manual development/check result"
+    }
+  },
+  "blockers": [
+    {
+      "type": "owner_release_gate",
+      "scope": "PR491 exact de0299168e5a74d4e3594db71d657ca8055614e0",
+      "reason": "Standing owner two-approval rule; prior release instruction applied to PR490 only"
+    }
+  ],
+  "next_role": "owner",
+  "next_step": "Отдельное разрешение публикации PR491 на точном SHA de0299168e5a74d4e3594db71d657ca8055614e0",
+  "team_next_authorized_work": {
+    "task_id": "HX-BL-023",
+    "next_role": "strategist_manager",
+    "next_step": "Complete mandatory PR490/e99cb123 model1.2 release score accounting; then continue already-approved E8-N-SEA analyst handoff",
+    "score_event_ref": "agent-work/handoffs/2026-11-06-PR490-release-score.json",
+    "analyst_handoff_ref": "agent-work/handoffs/2026-11-06-HX-BL-023-E8-SEA-analysis.json",
+    "requires_new_task_approval": false
+  },
+  "other_state_preserved": [
+    "PR490/e99cb123 release event score_update_pending",
+    "Approved E8-N-SEA analyst handoff",
+    "Foreign claims/results and current independent rules research"
+  ],
+  "budget_status": "owner_waived_usage_gate",
+  "paid_spend": false,
+  "known_limits": [
+    "One headless Chromium; emulated widths, not physical device/touch/screen reader test",
+    "Some emoji render as missing glyphs in screenshot environment; existing issue, no icon changes",
+    "No publication permission for PR491"
+  ],
+  "experience": "Production startup locale is part of browser behavior; locale-bound fixtures must select their locale explicitly. Preserve baseline compatibility without weakening assertions or adding duplicate test cases."
+}
