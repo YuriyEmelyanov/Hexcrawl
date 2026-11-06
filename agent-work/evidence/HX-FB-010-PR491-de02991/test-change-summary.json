@@ -1,0 +1,101 @@
+{
+  "base_sha": "e99cb1236e152e8e6a5987af95e19d601dbc3a78",
+  "head_sha": "de0299168e5a74d4e3594db71d657ca8055614e0",
+  "count_method": "Logical cases/contracts compared in exact base/head diff; runner/suite boundaries retained; no line or file count treated as case growth",
+  "source": "git diff e99cb1236e152e8e6a5987af95e19d601dbc3a78..4053f3045c9b3a82b1edb7c29cb67c1147cd0519; final local tree matches remote 79b69059c70eed7430bcda93db5d72a6097695d3",
+  "permanent_cases": {
+    "added": 0,
+    "removed": 0,
+    "modified": 2,
+    "modified_scenarios": [
+      {
+        "suite": "browser/generation",
+        "scenario": "Existing startup/locale workflow now asserts fresh production page has English Undo button",
+        "risk": "Default language silently remains Russian",
+        "reuse_or_new_reason": "Extend existing startup workflow; no new runner or registration"
+      },
+      {
+        "suite": "browser/save-history/poi-lifecycle",
+        "scenario": "Existing central POI lifecycle now checks absence of empty panel plus retained name/type controls",
+        "risk": "Copy removal leaves blank UI or hides central editing",
+        "reuse_or_new_reason": "Replace obsolete paragraph expectation in existing lifecycle scenario"
+      }
+    ]
+  },
+  "suites": [
+    {
+      "suite": "Node",
+      "added": 0,
+      "removed": 0,
+      "modified": 0,
+      "setup_files_modified": [
+        "test/helpers/generation-harness.mjs"
+      ],
+      "setup_reason": "Initialize RU once for existing locale-bound generator/error/name fixtures, allow later test toggles; production default verified independently in browser",
+      "execution": {
+        "executed": 345,
+        "passed": 345,
+        "failed": 0,
+        "skipped": 0
+      },
+      "evidence": "agent-work/evidence/HX-FB-010-PR491-de02991/npm-check.log"
+    },
+    {
+      "suite": "browser",
+      "added": 0,
+      "removed": 0,
+      "modified": 2,
+      "top_level_workflows_with_setup_changes": 8,
+      "setup_reason": "Explicit RU preserves previous localized contracts, not new feature coverage",
+      "execution": "pending_exact_SHA_CI",
+      "evidence": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42171271911"
+    },
+    {
+      "suite": "browser/RNG",
+      "added": 0,
+      "removed": 0,
+      "modified": 0,
+      "setup_files_modified": [
+        "test/browser/world-random.smoke.mjs"
+      ],
+      "execution": "pending_exact_SHA_CI",
+      "reuse_or_new_reason": "Explicit RU only; same RNG checks"
+    },
+    {
+      "suite": "manual historical UI acceptance",
+      "added": 0,
+      "removed": 0,
+      "modified": 0,
+      "setup_files_modified": [
+        "scripts/hx-fb-001-ui.mjs"
+      ],
+      "execution": "conditional workflow skipped on PR; syntax/diff reviewed",
+      "reuse_or_new_reason": "Support new EN candidate and earlier RU baseline through common RU setup"
+    }
+  ],
+  "temporary_diagnostics": {
+    "permanent_growth": false,
+    "suite": "Independent Chromium smoke",
+    "executed": 8,
+    "passed": 8,
+    "failed": 0,
+    "skipped": 0,
+    "profiles": "before/after × RU/EN × 1500/390",
+    "evidence": "agent-work/evidence/HX-FB-010-PR491-de02991/original-browser-diagnostic.json"
+  },
+  "initial_failed_attempts": [
+    {
+      "suite": "local npm check",
+      "status": "interrupted_after_fixture_locale_failures",
+      "reason": "Existing coastal/name expectations implicitly assumed RU; explicit locale setup fixed them",
+      "node_result": "Do not report interrupted attempt as full suite pass"
+    },
+    {
+      "suite": "CI browser c695334",
+      "run_id": 42170631129,
+      "status": "failed",
+      "reason": "Large-map profile script sought Russian Edit button on EN startup; shared script now selects RU explicitly",
+      "fix_sha": "de0299168e5a74d4e3594db71d657ca8055614e0"
+    }
+  ]
+}

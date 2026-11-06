@@ -1,0 +1,36 @@
+{
+  "id": "owner-decision-2026-11-06-HX-FB-010",
+  "task_id": "HX-BL-023",
+  "feedback_id": "HX-FB-010",
+  "source": "Direct owner instructions in the existing task chat",
+  "quotes": [
+    "Центральная точка связана с центром региона;можно изменить тип или имя. Убери эту надпись",
+    "И ещё. Стартовым языком сделай английский"
+  ],
+  "authorization": {
+    "implementation": true,
+    "independent_review": true,
+    "publication": false,
+    "paid_spend": false
+  },
+  "scope": [
+    "Remove explanatory central POI copy in both locales and omit the resulting empty location panel",
+    "Keep central type/name editing and ordinary/water POI location commands",
+    "Initialize fresh App instances in English; keep existing RU/EN toggle",
+    "Set locale explicitly in pre-existing localized test/diagnostic fixtures; preserve historical RU baseline support"
+  ],
+  "acceptance": [
+    "Fresh page starts in English",
+    "RU toggle continues to work",
+    "Central POI has no explanatory paragraph or empty location panel in RU and EN",
+    "Central name/type operations, save/export and Undo remain functional",
+    "Ordinary POI location/move command remains",
+    "Required check/browser/world-random pass on exact final package"
+  ],
+  "scope_amendment": {
+    "parent_spec": "agent-work/specs/HX-BL-023-E8.md",
+    "superseded": "Displayed explanatory text for fixed central POI is no longer required by direct owner correction; central identity/move restriction remains unchanged"
+  },
+  "language_persistence": "No new storage preference introduced; existing implementation only holds locale in App state",
+  "release_gate": "Prior «Публикуй» authorized PR490 only. Separate exact-package publication permission required for PR491."
+}
