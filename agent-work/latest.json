@@ -5307,7 +5307,7 @@
   },
   "research_agent": {
     "task_id": "HX-RSR-001",
-    "status": "enabled_research_complete_proposal_pending",
+    "status": "enabled_KNAVE2_full_inventory_pending_primary_text",
     "automation_id": "Automation_7690c42b2a7881919aaca4103dcd338f",
     "schedule_frequency": "hourly",
     "schedule_minute": 30,
@@ -5316,59 +5316,58 @@
     "state_ref": "agent-work/research/state.json",
     "method_ref": "agent-work/research/method.json",
     "proposals_ref": "agent-work/research/proposals.json",
-    "result_ref": "agent-work/research/runs/2026-11-06-map-creation-ranking.json",
+    "result_ref": "agent-work/research/runs/2026-11-06T0400-KNAVE2-owner-scope.json",
     "setup_commit_sha": "88448b734a8e9a1a35fba9352c2a6845eff98ae5",
-    "verification_commit_sha": "829e8aae587c720ef85b8186edf929eaf3b4e646",
+    "verification_commit_sha": "27276de1f7e00a5092cbe584d6a70ba675c5de6e",
     "rating_changes_require_owner_approval": true,
     "priority": "high active rank; L1 map creation/development → L2 hexcrawl → L3 other exploration",
-    "next_candidate": "KNAVE2 source inventory and concrete L1 requirements; adapt to most relevant task at run start",
+    "next_candidate": "Выполнить обязательную полную тематическую выборку правил финальной Knave 2e: сначала доступ к первичному тексту и ledger всей книги, затем правила карты, связанные таблицы и ведение гекскроула. Матрица как DND5/PF2, operational_requirement, поиск аналогов в общем реестре. Не ограничивать двумя предполагаемыми доработками.",
     "first_research_run": "manual_bounded_scope_completed_not_scheduled_execution_proof",
     "automation_health": {
       "main_team": {
         "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
         "start": {
-          "checked_at": "2026-11-06 02:26:41 UTC",
-          "status": "checked",
-          "is_enabled": true
+          "checked_at": "2026-11-06T03:33:18Z",
+          "is_enabled": true,
+          "status": "checked"
         },
         "end": {
-          "status": "checked",
+          "checked_at": "2026-11-06T04:02:09Z",
           "is_enabled": true,
-          "observation_interval_utc": [
-            "2026-11-06T03:13:33Z",
-            "2026-11-06T03:13:40Z"
-          ]
-        },
-        "restoration_performed_in_this_research": false,
-        "preceding_developer_restoration_ref": "agent-work/results/2026-11-06-developer-PR490-F01.json#automation_health"
+          "status": "checked"
+        }
       },
       "research_agent": {
         "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
         "start": {
-          "status": "unchecked",
-          "is_enabled": null,
-          "reason": "Automation created by separate authorized setup after this manual research scope had started; cannot retroactively perform start peek."
-        },
-        "first_observation": {
-          "status": "checked",
+          "checked_at": "2026-11-06T03:33:18Z",
           "is_enabled": true,
-          "exact_timestamp_not_recorded": true,
-          "after_creation_updated_at": "2026-11-06T02:58:21.629553+00:00"
+          "status": "checked"
         },
         "end": {
-          "status": "checked",
+          "checked_at": "2026-11-06T04:02:09Z",
           "is_enabled": true,
-          "observation_interval_utc": [
-            "2026-11-06T03:13:33Z",
-            "2026-11-06T03:13:40Z"
-          ]
+          "status": "checked_after_restoration"
         },
-        "restoration_performed": false
+        "intermediate": {
+          "checked_at": "2026-11-06T03:57:00Z",
+          "is_enabled": false,
+          "reason": "unknown; no owner stop instruction in current decisions"
+        }
       },
+      "restoration_performed": true,
       "errors": [],
-      "limitation": "Point-in-time actual peeks only. No claim about subsequent service state; no cause of any earlier disabling inferred."
+      "limitation": "Point-in-time actual observations, no guarantee about later state.",
+      "restoration": {
+        "automation_id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "action": "is_enabled=true only; existing hourly schedule and prompt retained",
+        "observed_disabled_updated_at": "2026-11-06T03:47:24.837426+00:00",
+        "restored_at": "2026-11-06T03:58:45.589846Z",
+        "authorization": "Owner's standing hourly research instruction; no stop decision or full technical block found",
+        "cause": "unknown"
+      }
     },
-    "last_completed_run": "2026-11-06-map-creation-ranking",
+    "last_completed_run": "2026-11-06T0330-PF2-L1-hex-scale",
     "rating_proposal_id": "HX-RSR-001-RANK-20261106-v1.4",
     "rating_proposal_status": "awaiting_owner_approval",
     "rating_proposal_ref": "agent-work/research/proposals/HX-RSR-001-RANK-20261106-v1.4.json",
@@ -5378,7 +5377,14 @@
       "version": 4
     },
     "next_role": "research_analyst",
-    "next_step": "Bounded KNAVE2 L1 exact-source corpus and concrete map operations/acceptance cases; no need to wait for rating approval.",
-    "authority_status": "Research approved; exact v1.4 rating activation awaiting owner decision; no product implementation/release authority added."
+    "next_step": "Выполнить обязательную полную тематическую выборку правил финальной Knave 2e: сначала доступ к первичному тексту и ledger всей книги, затем правила карты, связанные таблицы и ведение гекскроула. Матрица как DND5/PF2, operational_requirement, поиск аналогов в общем реестре. Не ограничивать двумя предполагаемыми доработками.",
+    "authority_status": "Complete Knave map/hexcrawl research explicitly directed, same DND/PF2 format and shared rules/profiles. Await readable final text. No product code/release/rating activation authority.",
+    "last_owner_update_ref": "agent-work/research/runs/2026-11-06T0400-KNAVE2-owner-scope.json",
+    "owner_scope_ref": "owner-decision-2026-11-06-knave-complete-rules-audit",
+    "checkpoint_ref": "agent-work/research/checkpoints/KNAVE2-full-map-hexcrawl.json",
+    "completed_requirement_ref": "agent-work/research/requirements/PF2-RM-002-L1.md",
+    "proposed_task_id": "HX-BL-042",
+    "knave_matrix_ref": "agent-work/market/rules/Knave-2e.json",
+    "knave_matrix_status": "incomplete_no_source_rules_extracted"
   }
 }
