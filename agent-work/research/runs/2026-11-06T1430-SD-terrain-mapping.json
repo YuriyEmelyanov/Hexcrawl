@@ -1,0 +1,134 @@
+{
+  "run_id": "2026-11-06T1430-SD-terrain-mapping",
+  "selected_task": {
+    "game_id": "SD",
+    "layer": "L1",
+    "action": "Bounded source terrain vocabulary to current map-model compatibility audit",
+    "completion_condition": "All7source rows accounted with candidate/unknown mappings, exact code SHA and concrete proposed operations/acceptance."
+  },
+  "selection_reason": "Direct creation algorithm at high-rank4 has unresolved model mapping. Closing this L1 source-to-development gap is more immediately useful than extending MB proxy lifecycle checks for Knave again.",
+  "alternatives": [
+    {
+      "task": "Knave rank3 tagged POI compound browser case",
+      "decision": "Retained open checkpoint. It verifies common infrastructure indirectly; this run prioritizes direct game-map semantics after two infrastructure evidence slices."
+    },
+    {
+      "task": "New lower-ranked game or metric scan",
+      "decision": "No fresh strong challenger evidence available here; bounded source/model uncertainty for an existing leader has stronger immediate traceability benefit."
+    }
+  ],
+  "inputs_and_versions": {
+    "operations_baseline": "a42ec40827e7aaf905d8cdc04c5ed147f06b50ab",
+    "main_sha": "7547a67bbcfb621f1e7c7189518583842ccb055a",
+    "source_matrix_sha": "140c0683463307440f08d64aca90ab2ff952677a",
+    "common_registry_sha": "9569cc9a556ade3654566673e120544c6af2ae33",
+    "ranking_version": "three-scenario-ranks-1.4-create-evidence",
+    "cohort_version": "2026-11-06-ranking1.4-create-evidence",
+    "score_model": "1.2",
+    "budget": "owner_waived_usage_gate; no additional spend"
+  },
+  "findings": [
+    {
+      "id": "HX-RSR-SD-MAP-01",
+      "observed_fact": "Inspected model has24land biome IDs; source has7semantic categories including multi-choice and cross-layer categories.",
+      "interpretation": "No lossless one-field category→BiomeId identity can be assumed; preserve source category separately.",
+      "source": {
+        "url_or_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/7547a67bbcfb621f1e7c7189518583842ccb055a/src/App.tsx",
+        "locator": "166–190,438–447,604–629",
+        "published_at": null
+      },
+      "author_project_key": "yuriyemelyanov/hexcrawl/map-model",
+      "access_level": "full_text"
+    },
+    {
+      "id": "HX-RSR-SD-MAP-02",
+      "observed_fact": "Existing TagOwner does not declare arbitrary POI-less hex owner; explicit save writer serializes known structures.",
+      "interpretation": "Attaching source metadata ad hoc or requiring a fabricated POI is not a proven storage solution; propose explicit per-hex contract and roundtrip acceptance.",
+      "source": {
+        "url_or_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/7547a67bbcfb621f1e7c7189518583842ccb055a/src/tags/engine.ts",
+        "locator": "line2;App.tsx createSaveData14645",
+        "published_at": null
+      },
+      "author_project_key": "yuriyemelyanov/hexcrawl/map-model",
+      "access_level": "full_text"
+    }
+  ],
+  "changed_refs": [
+    "agent-work/research/runs/2026-11-06T1430-SD-terrain-mapping.json",
+    "agent-work/research/requirements/SD-terrain-mapping-v1.json",
+    "agent-work/research/checkpoints/SD-terrain-mapping.json",
+    "agent-work/research/README.md",
+    "agent-work/research/state.json",
+    "agent-work/backlog.json",
+    "agent-work/claims/2026-11-06T1430-SD-terrain-mapping.json"
+  ],
+  "rating_proposal_refs": [],
+  "product_task_refs": [
+    "agent-work/backlog.json#HX-BL-047"
+  ],
+  "verification": {
+    "all7categories_mapped_or_explicit_unknown": true,
+    "known_biome_ids_extracted": 24,
+    "static_only": true,
+    "new_runtime_test": false,
+    "product_coverage_unverified": true,
+    "no_registry_implementation_or_score_change": true,
+    "authoritative_registry_preserved": true,
+    "required_fields_checked": true,
+    "source_category_order_and_known_vectors_checked": true,
+    "full_JSON_schema_validation": false
+  },
+  "automation_health": {
+    "restoration_performed": true,
+    "restoration_scope": "main team is_enabled only; standing owner recovery, no active pause; cause unknown",
+    "research_agent": {
+      "start": {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "is_enabled": true,
+        "checked_at": "2026-11-06T14:34:15.426Z"
+      },
+      "end": {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "is_enabled": true,
+        "status": "checked",
+        "checked_at": "2026-11-06T14:39:49.434Z"
+      }
+    },
+    "main_team": {
+      "start": {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "is_enabled": false,
+        "checked_at": "2026-11-06T14:34:16.927Z"
+      },
+      "end": {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "is_enabled": true,
+        "status": "checked",
+        "checked_at": "2026-11-06T14:39:51.480Z"
+      }
+    }
+  },
+  "checkpoint": {
+    "ref": "agent-work/research/checkpoints/SD-terrain-mapping.json",
+    "status": "source_model_mapping_bounded_audit_complete_schema_and_runtime_unknown",
+    "handoff_ref": "agent-work/research/requirements/SD-terrain-mapping-v1.json",
+    "next_candidate": {
+      "game_id": "SD",
+      "layer": "L1",
+      "action": "Сопоставить предложенное per-hex хранение source category с текущим save/history контрактом и определить минимальный общий адаптер без привязки к POI. Использовать этот handoff и сохранить неизвестные отображения; не менять численный рейтинг.",
+      "task_ref": "agent-work/backlog.json#HX-BL-047",
+      "status": "candidate_not_fixed_rotation",
+      "why_now": "Источник имеет7семантических строк, текущие land/water/tag структуры не образуют взаимно-однозначный профиль; перед реализацией надо уточнить место хранения и миграцию."
+    },
+    "preserved_other_checkpoint": "agent-work/research/checkpoints/KNAVE2-table-reuse.json"
+  },
+  "next_candidate": {
+    "game_id": "SD",
+    "layer": "L1",
+    "action": "Сопоставить предложенное per-hex хранение source category с текущим save/history контрактом и определить минимальный общий адаптер без привязки к POI. Использовать этот handoff и сохранить неизвестные отображения; не менять численный рейтинг.",
+    "task_ref": "agent-work/backlog.json#HX-BL-047",
+    "status": "candidate_not_fixed_rotation",
+    "why_now": "Источник имеет7семантических строк, текущие land/water/tag структуры не образуют взаимно-однозначный профиль; перед реализацией надо уточнить место хранения и миграцию."
+  },
+  "completed_at": "2026-11-06T14:38:52.214Z"
+}

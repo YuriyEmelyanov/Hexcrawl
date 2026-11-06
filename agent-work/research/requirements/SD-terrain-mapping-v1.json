@@ -1,0 +1,411 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-047",
+  "version": "SD-terrain-mapping-1",
+  "status": "proposed",
+  "layer": "L1",
+  "primary_scenario": "create",
+  "ranking_version": "three-scenario-ranks-1.4-create-evidence",
+  "cohort_version": "2026-11-06-ranking1.4-create-evidence",
+  "reference_rank": {
+    "overall": 4,
+    "create": 4
+  },
+  "source": {
+    "matrix_ref": "agent-work/market/rules/Shadowdark-Core.json",
+    "matrix_blob_sha": "140c0683463307440f08d64aca90ab2ff952677a",
+    "source_rule_ids": [
+      "SD-CORE-047",
+      "SD-CORE-048"
+    ],
+    "printed_page": 132,
+    "pdf_page": 136,
+    "access_level": "full_text_existing_audited_matrix",
+    "scope": "Two existing extracted source clauses; book not freshly re-read or rescanned"
+  },
+  "requirement_refs": [
+    "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-047-L1",
+    "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-048-L1"
+  ],
+  "binding_refs": [
+    "agent-work/rules/game-bindings.json#SD-CORE-047-L1",
+    "agent-work/rules/game-bindings.json#SD-CORE-048-L1"
+  ],
+  "canonical_rule_ids": [
+    "map.terrain_zones",
+    "map.terrain_distribution",
+    "map.generate_on_discovery",
+    "map.extend_preserving_content"
+  ],
+  "criterion_ids": [
+    "S01-C02",
+    "S01-C04",
+    "S01-C05",
+    "S03-C01",
+    "S03-C03",
+    "S06-C04"
+  ],
+  "product_inspection": {
+    "sha": "7547a67bbcfb621f1e7c7189518583842ccb055a",
+    "scope": "Static vocabulary/model/save-writer inspection only",
+    "evidence": [
+      {
+        "path": "src/App.tsx",
+        "blob_sha": "7c533a25bf02b64bf7dfee8f394e2c0c6878576a",
+        "locators": [
+          "166–190 BiomeId",
+          "Region.biomeId,heightLevel,isCoastal",
+          "438–447 terrain override and per-hex biome override",
+          "604–629 BIOMES",
+          "12166–12194 biomeChoice constraints/fallback",
+          "14645–14668 explicit save fields"
+        ],
+        "finding": "24 land biome IDs, sea/lake layer and river structures; source seven-row identity is not an equivalent enum in inspected contract."
+      },
+      {
+        "path": "src/tags/engine.ts",
+        "blob_sha": "07a1cb80a9a637b4be7b0c7dda6302011d58d63e",
+        "locator": "TagOwner line2",
+        "finding": "Owners region/river/lake/poi; generic POI-less hex owner not declared."
+      },
+      {
+        "path": "docs/region-generation.md",
+        "blob_sha": "7bccbbe6bb9e2f69afdc56aba0582dd19e2133df",
+        "locator": "Anchor,size,growth;automatic biome height",
+        "finding": "Classic creates connected regions with size/river constraints, not source's prescribed per-empty-hex chronological traversal."
+      }
+    ],
+    "biomes": [
+      {
+        "id": "plain_deciduous_forest",
+        "label": "Равнинный лиственный лес",
+        "heightLevel": 1
+      },
+      {
+        "id": "plain_mixed_forest",
+        "label": "Равнинный смешанный лес",
+        "heightLevel": 1
+      },
+      {
+        "id": "plain_coniferous_forest",
+        "label": "Равнинный хвойный лес",
+        "heightLevel": 1
+      },
+      {
+        "id": "deciduous_forested_hills",
+        "label": "Лиственные лесистые холмы",
+        "heightLevel": 2
+      },
+      {
+        "id": "mixed_forested_hills",
+        "label": "Смешанные лесистые холмы",
+        "heightLevel": 2
+      },
+      {
+        "id": "coniferous_forested_hills",
+        "label": "Хвойные лесистые холмы",
+        "heightLevel": 2
+      },
+      {
+        "id": "open_hills",
+        "label": "Открытые холмы",
+        "heightLevel": 2
+      },
+      {
+        "id": "coniferous_mountain_forest",
+        "label": "Хвойный горный лес",
+        "heightLevel": 3
+      },
+      {
+        "id": "mixed_mountain_forest",
+        "label": "Смешанный горный лес",
+        "heightLevel": 3
+      },
+      {
+        "id": "deciduous_mountain_forest",
+        "label": "Лиственный горный лес",
+        "heightLevel": 3
+      },
+      {
+        "id": "mountains",
+        "label": "Горы",
+        "heightLevel": 3
+      },
+      {
+        "id": "open_plains",
+        "label": "Открытые равнины",
+        "heightLevel": 1
+      },
+      {
+        "id": "swamp_forest",
+        "label": "Заболоченный лес",
+        "heightLevel": 1
+      },
+      {
+        "id": "swamp",
+        "label": "Болото",
+        "heightLevel": 1
+      },
+      {
+        "id": "hilly_woodland",
+        "label": "Холмистое редколесье",
+        "heightLevel": 2
+      },
+      {
+        "id": "mountain_woodland",
+        "label": "Горное редколесье",
+        "heightLevel": 3
+      },
+      {
+        "id": "deciduous_woodland",
+        "label": "Лиственное редколесье",
+        "heightLevel": 1
+      },
+      {
+        "id": "mixed_woodland",
+        "label": "Смешанное редколесье",
+        "heightLevel": 1
+      },
+      {
+        "id": "coniferous_woodland",
+        "label": "Хвойное редколесье",
+        "heightLevel": 1
+      },
+      {
+        "id": "semi_desert",
+        "label": "Полупустыня",
+        "heightLevel": 1
+      },
+      {
+        "id": "dead_forest",
+        "label": "Мёртвый лес",
+        "heightLevel": 1
+      },
+      {
+        "id": "dead_woodland",
+        "label": "Мёртвое редколесье",
+        "heightLevel": 1
+      },
+      {
+        "id": "dead_forested_hills",
+        "label": "Мёртвый лес на холмах",
+        "heightLevel": 2
+      },
+      {
+        "id": "dead_mountain_forest",
+        "label": "Мёртвый горный лес",
+        "heightLevel": 3
+      }
+    ]
+  },
+  "mapping_candidates": [
+    {
+      "category": "desert_or_arctic",
+      "product_candidates": [],
+      "status": "no_exact_biome_id_in_inspected_vocabulary",
+      "unresolved": "Choose desert/arctic explicitly; semi_desert only an explicitly accepted approximation, never automatic equivalence."
+    },
+    {
+      "category": "swamp",
+      "product_candidates": [
+        "swamp",
+        "swamp_forest"
+      ],
+      "status": "candidate_mapping_requires_GM_or_profile_choice",
+      "unresolved": "Forested versus open swamp not selected by source row."
+    },
+    {
+      "category": "grassland",
+      "product_candidates": [
+        "open_plains"
+      ],
+      "status": "presentation_candidate_not_source_identity",
+      "unresolved": "Source grass cover is not guaranteed merely by open_plains name; retain source row."
+    },
+    {
+      "category": "forest_or_jungle",
+      "product_candidates": [
+        "plain_deciduous_forest",
+        "plain_mixed_forest",
+        "plain_coniferous_forest"
+      ],
+      "status": "forest_candidates_jungle_no_exact_id",
+      "unresolved": "Source does not choose forest versus jungle or forest subtype/relief."
+    },
+    {
+      "category": "river_or_coast",
+      "product_candidates": [],
+      "status": "cross_layer_feature_not_biome_enum",
+      "unresolved": "Choose river/coast explicitly; requires authored geometry or pending feature reference. Neither source row nor a visual biome defines river direction, mouth, sea area or topology."
+    },
+    {
+      "category": "ocean",
+      "product_candidates": [
+        {
+          "layer": "terrainByHexKey",
+          "terrainOverride": "sea"
+        }
+      ],
+      "status": "water_layer_candidate_not_land_biome",
+      "unresolved": "Source ocean is not a scientific depth constraint; sea cell is a presentation candidate. Validate existing land/water ownership and preserve existing content."
+    },
+    {
+      "category": "mountain",
+      "product_candidates": [
+        "mountains"
+      ],
+      "status": "presentation_candidate_not_physical_elevation",
+      "unresolved": "heightLevel3 is product relief class, not source-specified metres. Source category may be retained independently of forested/mountain display choice."
+    }
+  ],
+  "operational_requirement": {
+    "source_rule_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-047",
+    "normative_kind": "product_adapter_requirement_derived_from_source_procedure",
+    "applicability": "Opt-in Shadowdark L1 profile; supplied2023Core p132/PDF136, internalv4.6 revision unverified. Current Classic behavior unchanged until approved development.",
+    "layer": "L1",
+    "trigger_or_user_action": "Мастер выбирает/бросает исходную местность или создаёт следующий пустой гекс по процедуре Shadowdark.",
+    "inputs_and_units": {
+      "source_category": "one of seven ordered source rows",
+      "source_dice": "two integer d6, or explicit manual selection",
+      "subtype": "desert|arctic; forest|jungle; river|coast when explicitly selected; null otherwise",
+      "presentation": "explicit existing biome ID, water override or pending feature reference",
+      "destination": "hex key and empty/populated state",
+      "origin": "explicit current hex with saved source category"
+    },
+    "product_operation": "Сохранить исходную категорию, выбранный подтип и trace отдельно от визуального биома/воды/реки. До выбора неоднозначного подтипа оставить unresolved binding. Для New Hex брать индекс сохранённой исходной строки, не выводить его обратно из картинки или24biome IDs. Геометрию реки/берега не создавать из имени категории. При подтверждении применить только явно выбранное представление через существующие редактор/историю; сохранить происхождение в явном per-hex контракте.",
+    "expected_output": "Независимо сохранённая исходная семантика и явное/неразрешённое отображение; повторный шаг и JSON roundtrip используют ту же source category.",
+    "constraints_and_exceptions": [
+      "Все имена будущих полей здесь аналитические, не утверждённый save-schema/контракт кода.",
+      "В текущем TagOwner нет владельца для произвольного гекса без POI; нельзя создавать фиктивный POI только ради хранения категории.",
+      "Пустота в процедуре источника — отсутствие назначенного source terrain, а не автоматически unvisited или отсутствие biome override.",
+      "При несовместимости с существующей гидрологией/занятым гексом — явный конфликт до изменения документа, без скрытого fallback.",
+      "Книга не задаёт порядок batch-генерации, origin/next и выбор внутри парных категорий; не подменять это алгоритмом Classic."
+    ],
+    "acceptance_cases": [
+      {
+        "given": "Двеd6=1+1; source category desert_or_arctic; subtype не выбран.",
+        "when": "Подготовить source record и отображение.",
+        "expected": "category=desert_or_arctic, subtype=null, presentation_status=unresolved; не назначены автоматически semi_desert, desert или arctic."
+      },
+      {
+        "given": "GM выбрал desert и явно разрешил approximation semi_desert.",
+        "when": "Подтвердить отображение.",
+        "expected": "source_category=desert_or_arctic и subtype=desert сохранены; display biome=semi_desert, mapping_kind=explicit_approximation. Это не заявлено точной поддержкой desert."
+      },
+      {
+        "given": "Source category river_or_coast без уточнения и геометрии.",
+        "when": "Подготовить отображение.",
+        "expected": "Категория сохранена; river/coast binding pending; land biome, rivers и sea cells не переписаны."
+      },
+      {
+        "given": "Source category ocean; выбран допустимый свободный water target; существующий редактор подтвердил sea override.",
+        "when": "Принять и сохранить карту.",
+        "expected": "source_category=ocean сохранена отдельно от terrainOverride=sea; biomeId='ocean' не добавляется в существующий land enum."
+      },
+      {
+        "given": "Source current row mountain; NewHex dice1+1 => +1; display biome может бытьmountains или явно выбранным иным вариантом.",
+        "when": "Разрешить следующий source row.",
+        "expected": "Следующая категория desert_or_arctic, независимо отdisplaybiome, wildWeight илиheightLevel."
+      },
+      {
+        "given": "Source forest_or_jungle и явный forest display; сохранённый current row имеет индекс3. NewHex dice4+5 => +2.",
+        "when": "Разрешить следующий source row.",
+        "expected": "Индекс5, категория ocean; в24biome IDs шаги не считаются."
+      },
+      {
+        "given": "Сохранены category=river_or_coast, subtype=coast, explicit feature_ref=F7, trace=manual; карта и RNG C0.",
+        "when": "Экспорт/импорт, затем изменить только отображение через отдельную транзакцию и выполнить Undo/Redo.",
+        "expected": "Source category/subtype/trace/F7 остаются прежними во всех состояниях; меняется/отменяется лишь display-транзакция; RNG C0 неизменён."
+      },
+      {
+        "given": "Старая карта имеет biome mountains, но source profile/category отсутствуют.",
+        "when": "Открыть её и запросить Shadowdark next-row без origin category.",
+        "expected": "source_category остаётсяunknown; требуется явное назначение GM, молчаливой миграции mountains→source mountain нет."
+      }
+    ],
+    "source_vs_product_interpretation": "Семь строк и кольцевой порядок — источник p132. Раздельное per-hex хранение исходной категории/отображения, pending state, транзакции и запрет silent fallback — предлагаемые продуктовые критерии сохранности и переиспользования. Названия похожих биомов не подтверждают семантическую эквивалентность или поддержку игры.",
+    "canonical_rule_refs": [
+      "map.terrain_zones",
+      "map.terrain_distribution",
+      "map.generate_on_discovery",
+      "map.extend_preserving_content"
+    ],
+    "unresolved_parameters": [
+      "Exact source desert/arctic/jungle display support is not supplied by current inspected enum.",
+      "Per-hex source profile storage/migration schema requires bounded analyst design after owner approval; source records must not depend on a POI existing.",
+      "River/coast geometry and batch-generation ordering remain GM/product decisions outside source procedure."
+    ]
+  },
+  "source_vs_product": "Mapping table is a proposed adapter, not an additional source-rule registry. Common-rules/game-bindings remain sole authoritative registries.",
+  "implementation_status": "unverified",
+  "runtime_evidence_sha": null,
+  "score_delta": null,
+  "implementation_authorized": false,
+  "release_authorized": false,
+  "title": "Сохранять категорию местности Shadowdark отдельно от отображения",
+  "problem": "Source's seven rows are not equivalent to current24land-biome IDs or water/river layers; reverse inference would change later generation semantics.",
+  "benefit": "Сохранение исходного результата и воспроизводимого продолжения карты независимо от визуального оформления.",
+  "scope": "Bounded common source-profile mapping/storage proposal within HX-BL-047; no product implementation or hydrology algorithm.",
+  "dependencies": [
+    "HX-BL-031 safe extension/document history",
+    "HX-BL-042 physical scale context",
+    "owner approval before product development"
+  ],
+  "acceptance_checks": [
+    {
+      "given": "Двеd6=1+1; source category desert_or_arctic; subtype не выбран.",
+      "when": "Подготовить source record и отображение.",
+      "expected": "category=desert_or_arctic, subtype=null, presentation_status=unresolved; не назначены автоматически semi_desert, desert или arctic."
+    },
+    {
+      "given": "GM выбрал desert и явно разрешил approximation semi_desert.",
+      "when": "Подтвердить отображение.",
+      "expected": "source_category=desert_or_arctic и subtype=desert сохранены; display biome=semi_desert, mapping_kind=explicit_approximation. Это не заявлено точной поддержкой desert."
+    },
+    {
+      "given": "Source category river_or_coast без уточнения и геометрии.",
+      "when": "Подготовить отображение.",
+      "expected": "Категория сохранена; river/coast binding pending; land biome, rivers и sea cells не переписаны."
+    },
+    {
+      "given": "Source category ocean; выбран допустимый свободный water target; существующий редактор подтвердил sea override.",
+      "when": "Принять и сохранить карту.",
+      "expected": "source_category=ocean сохранена отдельно от terrainOverride=sea; biomeId='ocean' не добавляется в существующий land enum."
+    },
+    {
+      "given": "Source current row mountain; NewHex dice1+1 => +1; display biome может бытьmountains или явно выбранным иным вариантом.",
+      "when": "Разрешить следующий source row.",
+      "expected": "Следующая категория desert_or_arctic, независимо отdisplaybiome, wildWeight илиheightLevel."
+    },
+    {
+      "given": "Source forest_or_jungle и явный forest display; сохранённый current row имеет индекс3. NewHex dice4+5 => +2.",
+      "when": "Разрешить следующий source row.",
+      "expected": "Индекс5, категория ocean; в24biome IDs шаги не считаются."
+    },
+    {
+      "given": "Сохранены category=river_or_coast, subtype=coast, explicit feature_ref=F7, trace=manual; карта и RNG C0.",
+      "when": "Экспорт/импорт, затем изменить только отображение через отдельную транзакцию и выполнить Undo/Redo.",
+      "expected": "Source category/subtype/trace/F7 остаются прежними во всех состояниях; меняется/отменяется лишь display-транзакция; RNG C0 неизменён."
+    },
+    {
+      "given": "Старая карта имеет biome mountains, но source profile/category отсутствуют.",
+      "when": "Открыть её и запросить Shadowdark next-row без origin category.",
+      "expected": "source_category остаётсяunknown; требуется явное назначение GM, молчаливой миграции mountains→source mountain нет."
+    }
+  ],
+  "expected_evidence": {
+    "code_sha": "required_at_future_review",
+    "runtime": "Known source/display vectors, real save/load and Undo/Redo, old-save migration and occupied-target rejection",
+    "preservation": "Unrelated hexes/POIs/RNG/river topology unchanged unless explicitly included in an approved geometry transaction"
+  },
+  "source_limitations": [
+    "Existing source-audited2023Core matrix p132 only; no new full-book scan.",
+    "v4.6 label remains filename-only, internal revision unverified.",
+    "Candidate presentation mappings are non-exhaustive proposals, not source-defined aliases.",
+    "No product runtime checked; absent exact biome IDs do not imply all manual/external render possibilities absent."
+  ],
+  "candidate_mapping_set_exhaustive": false,
+  "game_editions": [
+    "Shadowdark Core2023; supplied v4.6 filename, internal revision unverified"
+  ]
+}
