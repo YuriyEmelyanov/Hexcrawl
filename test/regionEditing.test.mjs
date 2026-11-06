@@ -130,7 +130,7 @@ test('E7 late clone and v7 format faults keep both stacks, counters and selected
 });
 
 for(const mode of ['classic','mythic'])test(`E8 real POI move is one exact transaction with full payload and literal hex notes ${mode}`,async()=>{
- const fixture=regionFixture(mode);if(mode==='mythic')fixture.map.regions[0].pointOfInterestKinds['2,0']='monument';
+ const fixture=regionFixture(mode);fixture.map.regions[1].suppressCentralPoi=false;delete fixture.map.regions[1].centralPoiKind;if(mode==='mythic')fixture.map.regions[0].pointOfInterestKinds['2,0']='monument';
  const h=await setup(mode,fixture),named=save(h);named.map.editorNames={'poi:1:2,0':{en:'Kept authored',ru:'Сохранённое имя'}};const g=await setup(mode,named);
  assert.equal(g.render().mutateTag({kind:'poi',regionId:1,hexKey:'2,0'},'mb.feature'),true);
  g.render().setEditMode(true);assert.equal(g.render().startPoiDraft({kind:'land',regionId:1,hexKey:'2,0'}),true);
@@ -141,6 +141,15 @@ for(const mode of ['classic','mythic'])test(`E8 real POI move is one exact trans
  assert.deepEqual(after.map.gmNotesByHexKey,before.map.gmNotesByHexKey);assert.deepEqual(after.generation,before.generation);assert.deepEqual(after.counters,before.counters);assert.deepEqual(after.ui.selectedHex,{q:3,r:0});
  assert.equal(g.render().finishPoiDraft(draft),false,'captured doubleDone cannot create another operation');g.render().undoMap();assert.deepEqual(save(g),before);g.render().redoMap();assert.deepEqual(save(g),after);
  const reloaded=await setup(mode,after);assert.deepEqual(save(reloaded),after);
+ // PR490-F01: an accepted empty geometric center is still an ordinary POI.
+ reloaded.render().setEditMode(true);reloaded.render().setSelectedCentralPoiKind('ruins');assert.deepEqual(save(reloaded),after,'ordinary point must not manufacture a central object');
+ reloaded.render().setSelectedPoiKind('ruins');const typed=save(reloaded);assert.equal(typed.map.regions[1].pointOfInterestKinds['3,0'],'ruins');assert.equal(typed.map.regions[1].centralPoiKind,undefined);assert.deepEqual(typed.map.editorNames,after.map.editorNames);for(const tag of after.map.tags.instances)assert.ok(typed.map.tags.instances.some(next=>JSON.stringify(next)===JSON.stringify(tag)),'existing point tags keep their identity');
+ reloaded.render().undoMap();assert.deepEqual(save(reloaded),after);reloaded.render().redoMap();assert.deepEqual(save(reloaded),typed);
+ const continued=await setup(mode,typed);continued.render().setEditMode(true);continued.render().deleteSelectedPoi();assert.deepEqual(save(continued),typed,'authored name is not silently deleted');continued.render().showNameTarget('poi:2:3,0');continued.render().changeNameDraft('',continued.render().nameDraft);continued.render().changeOtherNameDraft('',continued.render().nameDraft);assert.equal(continued.render().saveNameDraft(),true);const cleared=save(continued);continued.render().deleteSelectedPoi();const deleted=save(continued);assert.deepEqual(deleted.map.regions[1].pointsOfInterest,[]);assert.equal(deleted.map.regions[1].centralPoiKind,undefined);assert.equal(deleted.map.editorNames['poi:2:3,0'],undefined);
+ continued.render().undoMap();assert.deepEqual(save(continued),cleared);continued.render().redoMap();assert.deepEqual(save(continued),deleted);continued.render().applyDocument(reloaded.render().captureDocument());continued.render().setEditMode(true);
+ assert.equal(continued.render().startPoiDraft({kind:'land',regionId:2,hexKey:'3,0'}),true);continued.render().changePoiTarget('2','0');assert.equal(continued.render().finishPoiDraft(),true);const returned=save(continued);assert.deepEqual(returned.map.regions[0].pointsOfInterest,[{q:2,r:0}]);assert.equal(returned.map.regions[0].pointOfInterestKinds['2,0'],'ruins');assert.deepEqual(returned.map.editorNames,{'poi:1:2,0':named.map.editorNames['poi:1:2,0']});
+ const loadedReturn=await setup(mode,returned);continuation(continued);continuation(loadedReturn);assert.deepEqual(save(loadedReturn),save(continued));
+
  const untyped=regionFixture(mode);delete untyped.map.regions[0].pointOfInterestKinds;const u=await setup(mode,untyped);u.render().setEditMode(true);const ub=save(u);assert.equal(u.render().startPoiDraft({kind:'land',regionId:1,hexKey:'2,0'}),true);u.render().changePoiTarget('3','0');assert.equal(u.render().finishPoiDraft(),true);const ua=save(u);assert.ok(ua.map.regions.every(r=>!Object.hasOwn(r.pointOfInterestKinds??{},'3,0')));assert.deepEqual(ua.map.regions[1].pointsOfInterest,[{q:3,r:0}]);assert.deepEqual(ua.generation,ub.generation);u.render().undoMap();assert.deepEqual(save(u),ub);u.render().redoMap();assert.deepEqual(save(u),ua);
 });
 test('E8 real move cancels/no-ops without consuming Redo and captured handlers cannot act on a new document',async()=>{

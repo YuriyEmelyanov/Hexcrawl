@@ -16,7 +16,7 @@ export class PoiMoveError extends Error {
 const fail=(code:string,...details:string[]):never=>{throw new PoiMoveError(code,...details);};
 const owns=(o:object,k:string)=>Object.prototype.hasOwnProperty.call(o,k);
 export const poiLocatorKey=(l:PoiLocator)=>l.kind==='water'?`waterPoi:${l.hexKey}`:`poi:${l.regionId}:${l.hexKey}`;
-const central=(r:PoiRegion)=>!!r.centralPoiKind&&!r.suppressCentralPoi&&!r.isTract;
+export const hasCentralPoi=(r:PoiRegion)=>!!r.centralPoiKind&&!r.suppressCentralPoi&&!r.isTract;
 function owners(regions:readonly PoiRegion[]){
   const result=new Map<string,PoiRegion>(),ids=new Set<number>();
   for(const r of regions){
@@ -25,7 +25,7 @@ function owners(regions:readonly PoiRegion[]){
   }return result;
 }
 function occurrences(doc:PoiDocument,k:string){
-  return doc.regions.reduce((n,r)=>n+r.pointsOfInterest.filter(h=>waterHexKey(h)===k).length+(central(r)&&waterHexKey(r.centerHex)===k?1:0),0)+(doc.waterPoiByKey.has(k)?1:0);
+  return doc.regions.reduce((n,r)=>n+r.pointsOfInterest.filter(h=>waterHexKey(h)===k).length+(hasCentralPoi(r)&&waterHexKey(r.centerHex)===k?1:0),0)+(doc.waterPoiByKey.has(k)?1:0);
 }
 /** Enumerate live POI name addresses, without manufacturing settlement entities. */
 export function poiNameLocators(doc:Pick<PoiDocument,'regions'|'waterPoiByKey'>):Set<string>{
@@ -34,7 +34,7 @@ export function poiNameLocators(doc:Pick<PoiDocument,'regions'|'waterPoiByKey'>)
   const counts=new Map<string,number>(),add=(key:string)=>counts.set(key,(counts.get(key)??0)+1);
   for(const r of doc.regions){
     for(const h of r.pointsOfInterest)add(`poi:${r.id}:${waterHexKey(h)}`);
-    if(central(r))add(`poi:${r.id}:${waterHexKey(r.centerHex)}`);
+    if(hasCentralPoi(r))add(`poi:${r.id}:${waterHexKey(r.centerHex)}`);
   }
   for(const k of doc.waterPoiByKey.keys())add(`waterPoi:${k}`);
   return new Set([...counts].filter(([,count])=>count===1).map(([key])=>key));
@@ -74,7 +74,7 @@ export function preparePoiMove<D extends PoiDocument>(doc:D,edit:PoiMove,policy:
   const sourceWater=waterKindAt(doc.hexTerrainByKey,from),targetWater=waterKindAt(doc.hexTerrainByKey,to);
   const count=occurrences(doc,from);
   if(count>1)fail('ambiguous_poi',from);
-  if(source.kind==='land'&&sourceRegion&&central(sourceRegion)&&waterHexKey(sourceRegion.centerHex)===from)fail('central_poi',from);
+  if(source.kind==='land'&&sourceRegion&&hasCentralPoi(sourceRegion)&&waterHexKey(sourceRegion.centerHex)===from)fail('central_poi',from);
   const found=source.kind==='water'?doc.waterPoiByKey.has(from):!!sourceRegion&&byHex.get(from)===sourceRegion&&sourceRegion.pointsOfInterest.some(h=>waterHexKey(h)===from);
   if(!found||count!==1)fail('stale_poi_move',from);
   // Same source is a no-op even for an accepted legacy incompatibility/type.
@@ -92,7 +92,7 @@ export function preparePoiMove<D extends PoiDocument>(doc:D,edit:PoiMove,policy:
       if(id===undefined||id!==targetRegion!.kingdomId)fail('poi_kingdom_mismatch',from,to);
       if(kind==='myth'){
         if(targetRegion!.biomeLandType!=='wild'||!policy.inKingdomArea(id!,target)||!policy.inKingdomArea(id!,origin))fail('poi_myth_area',to);
-        if((central(targetRegion!)&&targetRegion!.centralPoiKind==='myth')||targetRegion!.pointsOfInterest.some(h=>targetRegion!.pointOfInterestKinds?.[waterHexKey(h)]==='myth'&&waterHexKey(h)!==from))fail('poi_myth_duplicate',to);
+        if((hasCentralPoi(targetRegion!)&&targetRegion!.centralPoiKind==='myth')||targetRegion!.pointsOfInterest.some(h=>targetRegion!.pointOfInterestKinds?.[waterHexKey(h)]==='myth'&&waterHexKey(h)!==from))fail('poi_myth_duplicate',to);
       }
     }
   }else{

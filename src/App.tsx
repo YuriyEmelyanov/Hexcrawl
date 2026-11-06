@@ -1,4 +1,4 @@
-import {preparePoiMove,poiLocatorKey,type PoiLocator,assertPoiEditorNames,poiNameLocators,renamePoiEditorName,PoiMoveError,type EditorNames} from './manualPois';
+import {hasCentralPoi,preparePoiMove,poiLocatorKey,type PoiLocator,assertPoiEditorNames,poiNameLocators,renamePoiEditorName,PoiMoveError,type EditorNames} from './manualPois';
 import {prepareWaterGeometry,connectedWaterBody,waterKindAt,WaterEditError,compareWaterHexes,type WaterEdit,type WaterKind} from './manualWater';
 import {prepareRegionGeometry,prepareRegionPoiIdentity,RegionEditError,type RegionEdit} from './manualRegions';
 import {prepareEditedRiverCrossings,validateEditedRiverDeltas,knownRiverEdgeFullness} from './manualRiverDependencies';
@@ -14171,7 +14171,9 @@ export function App() {
   const isEditingSelectedHexBiome = selectedHexKey !== null && editingHexBiomeKey === selectedHexKey;
   const selectedPoiKind = selectedRegion && selectedHex ? getPoiKindForHex(selectedRegion, selectedHex) : undefined;
   const isEditingSelectedPoi = selectedHexKey !== null && editingPoiHexKey === selectedHexKey;
-  const isEditingSelectedCentralPoi = selectedMeta?.isCenter === true && editingCentralPoiRegionId === selectedRegion?.id;
+  // Geometry remains protected by E7 even when a legacy region has no central POI.
+  const selectedHasCentralPoi = Boolean(selectedMeta?.isCenter && selectedRegion && hasCentralPoi(selectedRegion));
+  const isEditingSelectedCentralPoi = selectedHasCentralPoi && editingCentralPoiRegionId === selectedRegion?.id;
   const canEditSelectedPoi = Boolean(selectedRegion && selectedHex && !isSelectedLake && !isSelectedSea);
   const waterPoiKindOrder = generationMode === 'mythic' ? [] : getWaterPoiKindPool(isSelectedSea ? 'sea' : selectedRegion?.biomeLandType ?? 'wild');
   const setSelectedHexBiomeOverride = (biomeId: BiomeId) => {
@@ -14187,7 +14189,7 @@ export function App() {
     commitManualMap({...captureMap(), biomeOverrideByHexKey:layer}, false);
   };
   const setSelectedPoiKind = (poiKind: PoiKind) => {
-    if(mutationBlocked() || notesSelectionRef.current !== selectedHexKey || !editablePoiKinds.includes(poiKind) || !canEditSelectedPoi || selectedMeta?.isCenter || !selectedRegion || !selectedHex || !selectedHexKey) return;
+    if(mutationBlocked() || notesSelectionRef.current !== selectedHexKey || !editablePoiKinds.includes(poiKind) || !canEditSelectedPoi || selectedHasCentralPoi || !selectedRegion || !selectedHex || !selectedHexKey) return;
     const hasPoi=selectedRegion.pointsOfInterest.some(h=>hexKey(h)===selectedHexKey);
     if(hasPoi && selectedRegion.pointOfInterestKinds?.[selectedHexKey]===poiKind) { closeEditors(); return; }
     commitManualMap({...captureMap(), regions:regions.map(r=>r.id!==selectedRegion.id?r:{...r,
@@ -14195,7 +14197,7 @@ export function App() {
       pointOfInterestKinds:{...r.pointOfInterestKinds,[selectedHexKey]:poiKind}})});
   };
   const setSelectedCentralPoiKind = (poiKind: CentralPoiKind) => {
-    if(mutationBlocked() || notesSelectionRef.current !== selectedHexKey || !editableCentralKinds.includes(poiKind as MythicPoi) || !selectedRegion || !selectedMeta?.isCenter) return;
+    if(mutationBlocked() || notesSelectionRef.current !== selectedHexKey || !editableCentralKinds.includes(poiKind as MythicPoi) || !selectedRegion || !selectedHasCentralPoi) return;
     if(selectedRegion.centralPoiKind===poiKind) { closeEditors(); return; }
     commitManualMap({...captureMap(),regions:regions.map(r=>r.id===selectedRegion.id?{...r,centralPoiKind:poiKind}:r)});
   };
@@ -14863,7 +14865,7 @@ export function App() {
     for(const key of livePoiNames){
       if(targets.some(t=>t.poiLocator===key))continue;
       const water=key.startsWith('waterPoi:'),parts=key.split(':'),region=water?undefined:regions.find(r=>r.id===Number(parts[1]));
-      const coordKey=water?parts[1]:parts[2],kind=water?waterPoiByKey.get(coordKey):region?(hexKey(region.centerHex)===coordKey?region.centralPoiKind:region.pointOfInterestKinds?.[coordKey]):undefined;
+      const coordKey=water?parts[1]:parts[2],kind=water?waterPoiByKey.get(coordKey):region?(hasCentralPoi(region)&&hexKey(region.centerHex)===coordKey?region.centralPoiKind:region.pointOfInterestKinds?.[coordKey]):undefined;
       const fallback=water?WATER_POI_DETAILS[kind as WaterPoiKind]?.label:(POI_DETAILS[kind as PoiKind]?.label??CENTRAL_POI_DETAILS[kind as CentralPoiKind]?.label);
       targets.push({key,type:water?'waterPoi':'poi',poiLocator:key,editorLocator:key,...editorNames[key]??{ru:'',en:''},fallback:fallback??{ru:'Точка интереса',en:'Point of interest'},location:coordKey.replace(',','/')});
     }
@@ -15007,7 +15009,7 @@ export function App() {
       {poiPreview?.plan&&<p role="status">{language==='ru'?'С точкой сохранятся имя, тип и теги. Заметки и местность обоих гексов останутся на своих местах.':'Name, type and tags move with the point. Both hexes keep their notes and terrain.'}</p>}
       {(editError||poiDraft.q!==''&&poiDraft.r!==''&&poiPreview?.error)&&<p role="alert" className="direct-error">{editError||poiPreview?.error}</p>}
       {poiPreview?.code==='poi_path_dependency'&&roads.filter(r=>r.segments.some(s=>hexKey(s.from)===poiDraft.source.hexKey||hexKey(s.to)===poiDraft.source.hexKey)).map(road=><button type="button" className="direct-value" key={road.id} onClick={()=>requestPoiExit(()=>{const segment=road.segments.find(s=>hexKey(s.from)===poiDraft.source.hexKey||hexKey(s.to)===poiDraft.source.hexKey)!;chooseRoadPair(normalizeRoadSegmentKey(segment.from,segment.to),road.id);})}>{language==='ru'?'Посмотреть путь':'View path'} #{road.id}</button>)}
-    </>:<>{selectedPoiSource.kind==='land'&&selectedRegion&&selectedRegion.centralPoiKind&&!selectedRegion.suppressCentralPoi&&!selectedRegion.isTract&&hexKey(selectedRegion.centerHex)===selectedPoiSource.hexKey?<p>{language==='ru'?'Центральная точка связана с центром региона;можно изменить тип или имя.':'This point is bound to the region center; edit its type or name in place.'}</p>:<p>{language==='ru'?'Расположение':'Location'}: {editMode?<button type="button" className="direct-value" data-poi-move onClick={()=>startPoiDraft(selectedPoiSource)}>{selectedPoiSource.hexKey.replace(',','/')} ↗</button>:selectedPoiSource.hexKey.replace(',','/')}</p>}</>}
+    </>:<>{selectedPoiSource.kind==='land'&&selectedHasCentralPoi?<p>{language==='ru'?'Центральная точка связана с центром региона;можно изменить тип или имя.':'This point is bound to the region center; edit its type or name in place.'}</p>:<p>{language==='ru'?'Расположение':'Location'}: {editMode?<button type="button" className="direct-value" data-poi-move onClick={()=>startPoiDraft(selectedPoiSource)}>{selectedPoiSource.hexKey.replace(',','/')} ↗</button>:selectedPoiSource.hexKey.replace(',','/')}</p>}</>}
   </div>:null;
   const waterLossText=(loss:WaterLoss):string=>{
     const ru=language==='ru';
@@ -15914,7 +15916,7 @@ export function App() {
                 }
                 if (!SHOW_BIOME_EMOJI || hex.kind !== 'region' || !hex.regionId || !region || isLakeHex) return null;
                 const hexMarkers: Array<{ emoji: string; svgHref?: string; label?: string }> = [];
-                if (meta?.isCenter) {
+                if (meta?.isCenter && hasCentralPoi(region)) {
                   hexMarkers.push({ emoji: getCentralPoiEmoji(region), svgHref: getPoiSvgHref(region.centralPoiKind), label: getCentralPoiLabel(region, language) });
                 }
                 if (isPointOfInterest) {
@@ -16287,13 +16289,13 @@ export function App() {
                         : (language === 'ru' ? 'как в регионе' : 'inherit region'), () => setEditingHexBiomeKey(selectedHexKey))}
                     </div> : null}
                     <p>{selectedRegion.biomeLandType === 'settled' ? t.settledRegion : t.wildArea}</p>
-                    {selectedMeta?.isCenter ? <div className="direct-line">⭐ {isEditingSelectedCentralPoi && editMode ? <select autoFocus aria-label={t.choosePoi}
+                    {selectedHasCentralPoi ? <div className="direct-line">⭐ {isEditingSelectedCentralPoi && editMode ? <select autoFocus aria-label={t.choosePoi}
                       value={selectedRegion.centralPoiKind ?? ''} onChange={e => setSelectedCentralPoiKind(e.target.value as CentralPoiKind)} onBlur={() => setEditingCentralPoiRegionId(null)}>
                       {Object.entries(CENTRAL_POI_DETAILS).filter(([kind]) => editableCentralKinds.includes(kind as MythicPoi)).map(([kind,details]) => <option key={kind} value={kind}>{details.emoji} {details.label[language]}</option>)}
                     </select> : editableValue(t.editPoi, `${getCentralPoiEmoji(selectedRegion)} ${getCentralPoiLabel(selectedRegion, language)}`, () => setEditingCentralPoiRegionId(selectedRegion.id))}
                       {' '}{renderToponym(`settlement:${selectedRegion.id}:${hexKey(selectedRegion.centerHex)}`)}{renderTags({kind:'poi',regionId:selectedRegion.id,hexKey:hexKey(selectedRegion.centerHex)},selectedRegion.centralPoiKind??'')}</div> : null}
                     {isSelectedLake ? <div className="direct-line">{renderWaterPoi()}</div> : null}
-                    {canEditSelectedPoi && selectedHex && !selectedMeta?.isCenter ? <div className="direct-line">
+                    {canEditSelectedPoi && selectedHex && !selectedHasCentralPoi ? <div className="direct-line">
                       {isEditingSelectedPoi && editMode ? <select autoFocus aria-label={t.choosePoi} value={selectedPoiKind ?? ''}
                         onChange={e => e.target.value ? setSelectedPoiKind(e.target.value as PoiKind) : deleteSelectedPoi()} onBlur={() => setEditingPoiHexKey(null)}>
                         <option value="">{language === 'ru' ? 'Нет точки' : 'No point'}</option>
