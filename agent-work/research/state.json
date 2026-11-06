@@ -74,13 +74,14 @@
   },
   "active_task": null,
   "claim": null,
-  "last_completed_run": "2026-11-06-KNAVE2-full-thematic-audit",
+  "last_completed_run": "2026-11-06T0530-SD-core-access",
   "run_history_refs": [
     "agent-work/research/runs/2026-11-06-setup.json",
     "agent-work/research/runs/2026-11-06-map-creation-ranking.json",
     "agent-work/research/runs/2026-11-06T0330-PF2-L1-hex-scale.json",
     "agent-work/research/runs/2026-11-06T0400-KNAVE2-owner-scope.json",
-    "agent-work/research/runs/2026-11-06-KNAVE2-full-thematic-audit.json"
+    "agent-work/research/runs/2026-11-06-KNAVE2-full-thematic-audit.json",
+    "agent-work/research/runs/2026-11-06T0530-SD-core-access.json"
   ],
   "awaiting_owner_approval": [],
   "conflicts_observed": [
@@ -92,46 +93,55 @@
       "completed_result_ref": "agent-work/research/runs/2026-11-06-map-creation-ranking.json"
     }
   ],
-  "latest_sources_checked": "2026-11-06T04:43:21.295937+00:00",
+  "latest_sources_checked": "2026-11-06T05:35:35.650Z",
   "setup_commit": "88448b734a8e9a1a35fba9352c2a6845eff98ae5",
   "last_setup_result_ref": "agent-work/research/runs/2026-11-06-setup.json",
   "automation_health": {
+    "restoration_performed": false,
+    "errors": [],
+    "limitation": "Actual point-in-time peeks only.",
     "research_agent": {
       "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
       "start": {
-        "status": "checked",
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
         "is_enabled": true,
-        "exact_timestamp_not_recorded": true,
-        "observed_before": "2026-11-06T04:27:49.290Z"
+        "status": "checked",
+        "checked_at": "2026-11-06T05:31:49.446Z"
       },
       "end": {
         "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
-        "checked_at": "2026-11-06T04:42:51.132Z",
-        "status": "checked",
-        "is_enabled": true
+        "checked_at": "2026-11-06T05:34:25.710Z",
+        "is_enabled": true,
+        "status": "checked"
       }
     },
     "main_team": {
       "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
       "start": {
-        "status": "checked",
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
         "is_enabled": true,
-        "exact_timestamp_not_recorded": true,
-        "observed_before": "2026-11-06T04:27:49.290Z"
+        "status": "checked",
+        "checked_at": "2026-11-06T05:31:49.144Z"
       },
       "end": {
         "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
-        "checked_at": "2026-11-06T04:42:48.965Z",
-        "status": "checked",
-        "is_enabled": true
+        "checked_at": "2026-11-06T05:34:27.045Z",
+        "is_enabled": true,
+        "status": "checked"
       }
-    },
-    "restoration_performed": false,
-    "errors": [],
-    "limitation": "Point-in-time peeks only; not a guarantee of future service state."
+    }
   },
-  "last_result_ref": "agent-work/research/runs/2026-11-06-KNAVE2-full-thematic-audit.json",
-  "blocked_source_work": [],
+  "last_result_ref": "agent-work/research/runs/2026-11-06T0530-SD-core-access.json",
+  "blocked_source_work": [
+    {
+      "game_id": "SD",
+      "scope": "Full core map/hexcrawl corpus",
+      "status": "needs_authorized_full_core_copy",
+      "checkpoint_ref": "agent-work/research/checkpoints/SD-core-access.json",
+      "do_not_treat_quickstart_as_full_core": true,
+      "retry_condition": "new authorized source/access event, not repeated hourly storefront search"
+    }
+  ],
   "owner_scope_ref": "owner-decision-2026-11-06-knave-complete-rules-audit",
   "checkpoint_ref": "agent-work/research/checkpoints/KNAVE2-full-map-hexcrawl.json",
   "last_owner_update_ref": "agent-work/research/runs/2026-11-06T0400-KNAVE2-owner-scope.json",
@@ -166,5 +176,17 @@
       "HX-BL-046"
     ],
     "result_ref": "agent-work/research/runs/2026-11-06-KNAVE2-full-thematic-audit.json"
+  },
+  "source_access_checkpoints": {
+    "SD": "agent-work/research/checkpoints/SD-core-access.json"
+  },
+  "pending_source_requests": {
+    "SD": {
+      "owner_quote": "Добудь мне core rulebook",
+      "status": "core_not_obtained",
+      "checkpoint_ref": "agent-work/research/checkpoints/SD-core-access.json",
+      "price_usd_at_check": 29,
+      "purchase_authorized": false
+    }
   }
 }
