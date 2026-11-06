@@ -18,7 +18,7 @@ function name(h,key,ru='Старое имя',en='Old name'){
 }
 // Each parameter has a distinct address/geometry/visibility risk. Existing POI
 // pair-validation tests own duplicate,half-pair,locale and stale-draft behaviour.
-for(const type of ['road','obstacle','crossing','rapid','waterfall'])test(`E8.2 ${type} uses one stable paired name with exact history,reload and real continuation`,async()=>{
+for(const type of ['road','obstacle','crossing','rapid','waterfall','sea'])test(`E8.2 ${type} uses one stable paired name with exact history,reload and real continuation`,async()=>{
  const {data,key}=entityNameFixture(type),h=await setup(data),before=save(h),history=stacks(h);
  name(h,key);const after=save(h);assert.deepEqual(after.map.editorNames,{[key]:{ru:'Старое имя',en:'Old name'}});
  assert.equal(h.render().undoHistory.length,history[0].length+1);assert.deepEqual(after.generation,before.generation);assert.deepEqual(after.counters,before.counters);

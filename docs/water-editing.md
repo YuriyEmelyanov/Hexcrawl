@@ -27,3 +27,8 @@
 ## Evidence
 
 Проверки ядра воды — `test/manualWater.test.mjs`; реальные атомарные handlers/данные — расширение `mapTransactions.test.mjs`; разные water geometry contexts и физические lake ports — расширения существующих river-тестов. Browser E6 — один focused lifecycle внутри прежнего `save-history.smoke.mjs`, с Classic/Mythic, RU/EN, 1500/390/320, styles, draft/preview/error, внешним sea reclamation, JSON/PNG, Undo/Redo и синхронизацией маски. Это конечный набор, не доказательство отсутствия всех ошибок или полной поддержки всех НРИ.
+
+
+## E8-N-SEA — JSON v9
+
+Имена морей используют устойчивый Sea ID и общий парный редактор. Split/merge, явные потери, миграция v2…v8 и checkpoint описаны в [sea-names.md](sea-names.md), SEA01–SEA06. Это расширяет редактор воды, сохраняя прежние геометрические ограничения.

@@ -208,12 +208,12 @@ test('E5 real path solver keeps explicit reach conditions and reports bounded li
  // in both modes; reuse this physical fixture and the existing solver test.
  const center={q:0,r:0},ring=g.getHexNeighbors(center),all=[center,...ring],template=original.regions[0];
  const regions=[{...template,id:1,hexes:[center,...ring.slice(0,3)],centerHex:center,anchorHex:center,finalSize:4,targetSize:4,heightLevel:1},{...template,id:2,hexes:ring.slice(3),centerHex:ring[3],anchorHex:ring[3],finalSize:3,targetSize:3,heightLevel:3}];
- const emptyMap={...original,regions,rivers:[],roads:[],crossings:[],riverFeatures:emptyRiverFeatures(),hexTerrainByKey:new Map(),candidateHexes:g.getCandidateHexes(all,new Set()),nextRiverId:1,nextLakeId:1};
+ const emptyMap={...original,seas:[],nextSeaId:1,regions,rivers:[],roads:[],crossings:[],riverFeatures:emptyRiverFeatures(),hexTerrainByKey:new Map(),candidateHexes:g.getCandidateHexes(all,new Set()),nextRiverId:1,nextLakeId:1};
  const real=g.buildManualRiverGeometryContext(emptyMap),start=real.vertex('24.249,-14'),end=real.vertex('48.497,-28'),sea={q:2,r:-1};assert.ok(start&&end);
  const stable=()=>{const d=JSON.parse(JSON.stringify(h.render().createSaveData()));delete d.savedAt;return d;};
  for(const mode of ['classic','mythic'])for(const kind of ['open','sea','lake']){
    const terrain=new Map(kind==='open'?[]:[['2,-1',{terrainOverride:'sea'}]]);if(kind==='lake')terrain.set('0,0',{terrainOverride:'lake',lakeId:1});
-   h.render().restoreSnapshot({...emptyMap,hexTerrainByKey:terrain,nextLakeId:kind==='lake'?2:1});h.render().setGenerationMode(mode);const before=stable();
+   h.render().restoreSnapshot({...emptyMap,seas:kind==='open'?[]:[{id:1,hexKeys:['2,-1']}],nextSeaId:kind==='open'?1:2,hexTerrainByKey:terrain,nextLakeId:kind==='lake'?2:1});h.render().setGenerationMode(mode);const before=stable();
    const command={type:'create',regionId:1,path:[start,end],fullness:kind==='lake'?2:1};assert.equal(h.render().editRiverDocument(command),true,mode+' '+kind);
    const after=stable();g.assertHexcrawlSaveData(after);assert.deepEqual(after.generation,before.generation);assert.equal(after.ui.generationMode,mode);assert.equal(after.counters.nextRiverId,2);assert.equal(validateRiverNetwork(g.buildManualRiverGeometryContext(h.render().captureDocument().map).network(h.render().rivers).network).valid,true);
    if(kind==='open'){

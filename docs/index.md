@@ -28,6 +28,7 @@
 | Озёра и вода | [natural-lakes.md](natural-lakes.md), [ручная вода E6](water-editing.md) |
 | POI и экспорт | [poi-display.md](poi-display.md) |
 | Имена и перенос POI, JSON v8 | [poi-editor-data.md](poi-editor-data.md) |
+| Устойчивые имена морей, JSON v9 | [sea-names.md](sea-names.md) |
 | Топонимы | [toponym-generation.md](toponym-generation.md) |
 | Навигация/отрисовка | [map-navigation.md](map-navigation.md), [rendering-performance.md](rendering-performance.md) |
 

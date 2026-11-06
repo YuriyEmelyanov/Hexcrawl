@@ -1,3 +1,4 @@
+import {seaFixture} from './helpers/sea-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -237,7 +238,7 @@ test('all manifest saves round-trip unchanged entities, names and can continue t
     for(const layer of ['regions','rivers','roads','crossings','terrainByHexKey']) assert.deepEqual(saved.map[layer],data.map[layer],item.path+' '+layer);
     for(const layer of ['kingdoms','waterPoiByHexKey','biomeOverrideByHexKey'])assert.deepEqual(saved.map[layer],data.map[layer]??(layer==='kingdoms'||layer==='obstacles'?[]:{}),item.path+' '+layer);
     assert.deepEqual(saved.map.obstacles.map(({id,...o})=>o),data.map.obstacles??[],item.path+' obstacle geometry');
-    assert.equal(saved.version,8);assert.equal(saved.counters.nextObstacleId,(data.map.obstacles??[]).length+1);
+    assert.equal(saved.version,9);assert.equal(saved.counters.nextObstacleId,(data.map.obstacles??[]).length+1);
     if(data.map.toponyms)for(const [key,name] of Object.entries(data.map.toponyms.names))assert.deepEqual(saved.map.toponyms.names[key],name,item.path+' name '+key);
     h.geometry.assertHexcrawlSaveData(serial(h.render().createSaveData()));
     // Reload the normalized export: only savedAt may change.
@@ -258,7 +259,7 @@ test('v5 obstacle IDs and counter survive migration, round-trip and history; inv
   legacy.counters.nextRoadId=roadId+1;
   const {h,alerts}=setup();
   await load(h,legacy);assert.deepEqual(alerts,[]);
-  const migrated=stable(h.render());assert.equal(migrated.version,8);
+  const migrated=stable(h.render());assert.equal(migrated.version,9);
   const sorted=[...legacy.map.obstacles].map(o=>o.edgeKey).sort();
   assert.deepEqual(migrated.map.obstacles,legacy.map.obstacles.map(o=>({...o,id:sorted.indexOf(o.edgeKey)+1})));
   assert.equal(migrated.counters.nextObstacleId,sorted.length+1);
@@ -361,7 +362,7 @@ test('delete retains latest surviving notes, confirms loss, undo restores; gener
   assert.throws(()=>h.render().recordGenerated(doc.map,map,a,h.render().captureGenerationBackup()),/notes|заметк/);
   assert.deepEqual(serial(h.render().captureDocument()),serial(doc));assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks);
   // Force the actual generation finalizer to propose losing a noted water hex.
-  const source=stable(h.render());source.map.terrainByHexKey['999,999']={terrainOverride:'sea'};source.map.gmNotesByHexKey['999,999']='keep sea';
+  const source=stable(h.render());source.map.terrainByHexKey['999,999']={terrainOverride:'sea'};source.map.seas.push({id:source.map.nextSeaId++,hexKeys:['999,999']});source.map.gmNotesByHexKey['999,999']='keep sea';
   await load(h,source);const exact=serial(h.render().captureDocument()),timeline=serial([h.render().undoHistory,h.render().redoHistory]);
   const restores=[];
   for(const name of ['completeRegionRiverEnds','reconcileRegionRiverModel']) {
@@ -531,7 +532,7 @@ test('road draft is ephemeral, blocks other writes, commits once and stale finis
 
 test('E5 native v7 feature intentions and counter survive real import, edits, history and rejected files',async()=>{
   const {h,alerts}=setup();await load(h,fixture);const legacy=stable(h.render());
-  assert.equal(legacy.version,8);assert.deepEqual(legacy.map.riverFeatures,{rapids:[],waterfalls:[]});
+  assert.equal(legacy.version,9);assert.deepEqual(legacy.map.riverFeatures,{rapids:[],waterfalls:[]});
   const native=structuredClone(legacy), eligibility=h.geometry.riverFeatureEligibility(native.map.rivers,native.map.regions,new Map(Object.entries(native.map.terrainByHexKey)),native.map.crossings);
   const targets=native.map.rivers.flatMap(r=>r.vertexPath.slice(1).map((v,i)=>({riverId:r.id,edgeKey:[r.vertexPath[i].key,v.key].sort().join('|')})));
   const rapid=targets.find(e=>eligibility.rapid(e.riverId,e.edgeKey));assert.ok(rapid,'fixture has a real eligible rapid edge');
@@ -705,4 +706,35 @@ test('E6 generation checkpoint warns before restoring changed water and restores
  h.setWindow({confirm:m=>{questions.push(m);return false;}});h.render().deleteLastRegion();assert.match(questions.at(-1),/вода и берег/);assert.deepEqual(stable(h.render()),before);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks);
  h.setWindow({confirm:()=>true});h.render().deleteLastRegion();const after=stable(h.render());
  assert.deepEqual(after.map.terrainByHexKey,Object.fromEntries(checkpoint.hexTerrainByKey));assert.deepEqual(after.map.tags,serial(checkpoint.tags));assert.deepEqual(after.map.toponyms.names,serial(checkpoint.toponyms));assert.deepEqual(after.generation,serial(checkpoint.generation));assert.deepEqual(after.map.gmNotesByHexKey,serial(checkpoint.gmNotesByHexKey));assert.equal(after.map.tags.instances[0].overrides[0].ru,'Авторская вода');assertUndoRedo(h,before,after);
+});
+
+for(const mode of ['classic','mythic'])test(`SEA App named split/merge is one explicit atomic water transaction ${mode}`,async()=>{
+ const f=seaFixture(mode);f.map.editorNames={'sea:7':{ru:'Северное море',en:'Northern Sea'}};
+ const h=await waterSetup(f);h.render().setSelectedHex({q:1,r:2});
+ const before=stable(h.render()),history=serial([h.render().undoHistory,h.render().redoHistory]);
+ h.render().startWaterDraft('land');assert.equal(h.render().finishWaterDraft(),false);let a=h.render();
+ assert.equal(a.waterPreview.plan.sea.unresolved[0].type,'split');assert.deepEqual(stable(h.render()),before);
+ a.changeWaterDraft(a.waterDraft,{options:{seaSplitKeep:{7:'2,2'}},preview:true});a=h.render();assert.equal(a.waterPreview.plan.sea.unresolved.length,0);
+ const stale=a.waterDraft;a.changeWaterDraft(stale,{options:{seaSplitKeep:{7:'-1,2'}},preview:true});assert.equal(a.finishWaterDraft(stale,true),false);
+ a=h.render();assert.equal(a.finishWaterDraft(a.waterDraft,true),true);const after=stable(h.render());
+ assert.deepEqual(after.map.seas,[{id:7,hexKeys:['-1,2','0,2']},{id:20,hexKeys:['2,2','3,2','3,3']}]);assert.equal(after.map.nextSeaId,21);
+ assert.deepEqual(after.map.editorNames,before.map.editorNames);assert.deepEqual(after.generation,before.generation);assert.deepEqual(after.map.gmNotesByHexKey,before.map.gmNotesByHexKey);assert.equal(h.render().undoHistory.length,history[0].length+1);
+ assertUndoRedo(h,before,after);await load(h,after);assert.deepEqual(stable(h.render()),after);
+ const merge=seaFixture(mode,true);merge.map.editorNames={'sea:7':{ru:'Северное море',en:'Northern Sea'},'sea:12':{ru:'Залив Туманов',en:'Misty Bay'}};await load(h,merge);h.render().setEditMode(true);h.render().setSelectedHex({q:-2,r:2});
+ const named=stable(h.render()),count=h.render().undoHistory.length;h.render().startWaterDraft('sea');assert.equal(h.render().finishWaterDraft(),false);a=h.render();assert.equal(a.waterPreview.plan.sea.unresolved[0].type,'merge');
+ a.changeWaterDraft(a.waterDraft,{options:{seaMergeKeep:{'-3,2':12}},preview:true});a=h.render();assert.equal(a.finishWaterDraft(a.waterDraft,true),false,'choosing an heir is not consent to name loss');assert.deepEqual(stable(h.render()),named);
+ a=h.render();const losses=a.waterPreview.plan.losses;assert.ok(losses.some(l=>l.id==='editorName:sea:7'));a.changeWaterDraft(a.waterDraft,{options:{seaMergeKeep:{'-3,2':12},acceptedLosses:losses.map(l=>l.id)},preview:true});
+ assert.equal(h.render().finishWaterDraft(h.render().waterDraft,true),true);const joined=stable(h.render());assert.deepEqual(joined.map.editorNames,{'sea:12':merge.map.editorNames['sea:12']});assert.equal(joined.map.seas.length,1);assert.equal(joined.map.seas[0].id,12);assert.equal(joined.map.nextSeaId,20);assert.equal(h.render().undoHistory.length,count+1);assert.deepEqual(joined.generation,named.generation);assertUndoRedo(h,named,joined);
+});
+
+test('SEA real continuation and checkpoint restore retain identity and require explicit named-water warning',async()=>{
+ const f=seaFixture();f.map.editorNames={'sea:7':{ru:'Северное море',en:'Northern Sea'}};
+ const h=await waterSetup(f),before=stable(h.render());
+ const doc=h.render().captureDocument(),timeline=serial([h.render().undoHistory,h.render().redoHistory]);
+ const losing={...doc.map,hexTerrainByKey:new Map([...doc.map.hexTerrainByKey].filter(([,t])=>t.terrainOverride!=='sea'))};
+ assert.throws(()=>h.render().recordGenerated(doc.map,losing,{q:0,r:0},h.render().captureGenerationBackup()),/authored_name_loss:sea:7/);assert.deepEqual(stable(h.render()),before);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),timeline);
+ h.render().safelyAddRegionToMap(h.render().candidateHexes.find(h=>h.q===-4)??h.render().candidateHexes[0],{targetSize:1,coastalPreference:'mainland'});assert.equal(h.render().generationError,null);let after=stable(h.render());assert.deepEqual(after.map.editorNames,before.map.editorNames);assert.equal(after.map.seas.find(s=>s.id===7).hexKeys.includes('3,3'),true);
+ h.render().setEditMode(true);h.render().showNameTarget('sea:7');h.render().changeNameDraft('Изменённое море',h.render().nameDraft);assert.equal(h.render().saveNameDraft(),true);after=stable(h.render());
+ let warning='';h.setWindow({confirm:m=>{warning=m;return false;}});h.render().deleteLastRegion();assert.match(warning,/вода|water/);assert.deepEqual(stable(h.render()),after);
+ h.setWindow({confirm:()=>true});h.render().deleteLastRegion();const restored=stable(h.render());assert.deepEqual(restored.map.seas,before.map.seas);assert.equal(restored.map.nextSeaId,before.map.nextSeaId);assert.deepEqual(restored.map.editorNames,before.map.editorNames);assertUndoRedo(h,after,restored);
 });

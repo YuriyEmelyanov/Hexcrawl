@@ -112,7 +112,7 @@ test('E7 v7 import retains only an exact unique frontier order; legacy/mismatch/
   const bad=structuredClone(retained);mutation(bad.map.candidateHexes);const g=await setup('classic',bad);assert.deepEqual(save(g).map.candidateHexes,frontier);
  }
  for(const version of [2,3,4,5,6]){const old=structuredClone(retained);old.version=version;if(version===2)delete old.map.candidateHexes;const g=await setup('classic',old);assert.deepEqual(save(g).map.candidateHexes,frontier);}
- const sea=structuredClone(retained),wet=frontier[0],key=`${wet.q},${wet.r}`;sea.map.terrainByHexKey[key]={terrainOverride:'sea'};
+ const sea=structuredClone(retained),wet=frontier[0],key=`${wet.q},${wet.r}`;sea.map.terrainByHexKey[key]={terrainOverride:'sea'};sea.map.seas.push({id:sea.map.nextSeaId++,hexKeys:[key]});
  const g=await setup('classic',sea);assert.ok(!save(g).map.candidateHexes.some(h=>`${h.q},${h.r}`===key));
  const empty=regionFixture();empty.map.regions=[];empty.map.biomeOverrideByHexKey={};empty.map.gmNotesByHexKey={};empty.map.candidateHexes=[{q:0,r:0}];empty.map.terrainByHexKey={'9,9':{terrainOverride:'sea'}};
  const e=await setup('classic',empty);assert.deepEqual(save(e).map.candidateHexes,[]);
