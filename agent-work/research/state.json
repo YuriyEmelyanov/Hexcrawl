@@ -27,9 +27,11 @@
     "last_observed_version": "three-scenario-ranks-1.3-DW-FL-nonzero",
     "research_workbook": {
       "library_file_id": "libfile_bd16d7f7c0548191ba139aaaa18a1693",
-      "version_last_observed": 2,
+      "version_last_observed": 4,
+      "source_version": 2,
       "checked_in_setup": false,
-      "note": "Existing 06 Nov creation-only research, not automatically approved replacement of active three-scenario ranking; resolve latest version before importing"
+      "checked_in_result": "agent-work/research/runs/2026-11-06-map-creation-ranking.json",
+      "note": "Merged source v2 and verified v4 deliverable; v1.4 is proposed, not active."
     }
   },
   "selection_policy": {
@@ -60,50 +62,76 @@
   },
   "active_task": null,
   "claim": null,
-  "last_completed_run": "2026-11-06-setup",
+  "last_completed_run": "2026-11-06-map-creation-ranking",
   "run_history_refs": [
-    "agent-work/research/runs/2026-11-06-setup.json"
+    "agent-work/research/runs/2026-11-06-setup.json",
+    "agent-work/research/runs/2026-11-06-map-creation-ranking.json"
   ],
-  "awaiting_owner_approval": [],
+  "awaiting_owner_approval": [
+    {
+      "proposal_id": "HX-RSR-001-RANK-20261106-v1.4",
+      "version": "1.4",
+      "candidate_ref": "agent-work/research/proposals/HX-RSR-001-RANK-20261106-v1.4.json",
+      "status": "awaiting_owner_approval",
+      "required_decision": "Confirm exact v1.4 ranking with rationale; active v1.3 retained."
+    }
+  ],
   "conflicts_observed": [
     {
       "claim_ref": "agent-work/claims/2026-11-06-strategist-map-creation-ranking.json",
       "status_at_setup": "active",
-      "policy": "Do not take over market files while active; choose independent rules/source task; re-read claim before judging liveness"
+      "policy": "Do not take over market files while active; choose independent rules/source task; re-read claim before judging liveness",
+      "status_now": "completed",
+      "completed_result_ref": "agent-work/research/runs/2026-11-06-map-creation-ranking.json"
     }
   ],
-  "latest_sources_checked": "2026-11-06T02:43:13Z",
+  "latest_sources_checked": "2026-11-06",
   "setup_commit": "88448b734a8e9a1a35fba9352c2a6845eff98ae5",
   "last_setup_result_ref": "agent-work/research/runs/2026-11-06-setup.json",
   "automation_health": {
     "main_team": {
       "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
       "start": {
+        "checked_at": "2026-11-06 02:26:41 UTC",
         "status": "checked",
-        "is_enabled": true,
-        "observed_during": "initial setup peek",
-        "exact_timestamp_not_recorded": true
-      },
-      "end": {
-        "status": "checked",
-        "is_enabled": true,
-        "checked_at": "2026-11-06T02:58:20Z"
-      }
-    },
-    "research_agent": {
-      "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
-      "creation": {
-        "status": "created_enabled",
         "is_enabled": true
       },
       "end": {
         "status": "checked",
         "is_enabled": true,
-        "checked_at": "2026-11-06T02:58:20Z"
-      }
+        "observation_interval_utc": [
+          "2026-11-06T03:13:33Z",
+          "2026-11-06T03:13:40Z"
+        ]
+      },
+      "restoration_performed_in_this_research": false,
+      "preceding_developer_restoration_ref": "agent-work/results/2026-11-06-developer-PR490-F01.json#automation_health"
     },
-    "restoration_performed": false,
+    "research_agent": {
+      "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+      "start": {
+        "status": "unchecked",
+        "is_enabled": null,
+        "reason": "Automation created by separate authorized setup after this manual research scope had started; cannot retroactively perform start peek."
+      },
+      "first_observation": {
+        "status": "checked",
+        "is_enabled": true,
+        "exact_timestamp_not_recorded": true,
+        "after_creation_updated_at": "2026-11-06T02:58:21.629553+00:00"
+      },
+      "end": {
+        "status": "checked",
+        "is_enabled": true,
+        "observation_interval_utc": [
+          "2026-11-06T03:13:33Z",
+          "2026-11-06T03:13:40Z"
+        ]
+      },
+      "restoration_performed": false
+    },
     "errors": [],
-    "limitation": "Point-in-time observations; inherited future execution environments are not confirmed by the schedule receipt."
-  }
+    "limitation": "Point-in-time actual peeks only. No claim about subsequent service state; no cause of any earlier disabling inferred."
+  },
+  "last_result_ref": "agent-work/research/runs/2026-11-06-map-creation-ranking.json"
 }
