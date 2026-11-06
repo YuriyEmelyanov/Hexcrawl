@@ -1,0 +1,138 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-023",
+  "stage_id": "E8.2",
+  "from_role": "reviewer",
+  "to_role": "developer",
+  "status": "changes_requested",
+  "head_sha": "50f81251cf000d17f7f91eb96608d35ad900cfe4",
+  "pr": 490,
+  "authority": "Existing approved HX-BL-023 task;bounded repair andwalkthrough preparation allowed;no release permission",
+  "finding_ids": [
+    "PR490-F01"
+  ],
+  "product_defect": {
+    "id": "PR490-F01",
+    "priority": "P2",
+    "blocking_acceptance": true,
+    "title": "A permitted move to an empty unsuppressed region center is edited as a central POI and can create duplicate physical POIs",
+    "requirement": "E8 M01 explicitly permits a region center without a real central object; AC01/06/09/11 require a usable ordinary moved POI and consistent subsequent editing.",
+    "locations": [
+      {
+        "path": "src/manualPois.ts",
+        "lines": [
+          77,
+          91
+        ],
+        "note": "Target accepts center with no actual central object, as specified."
+      },
+      {
+        "path": "src/App.tsx",
+        "lines": [
+          11922,
+          14190,
+          16290
+        ],
+        "note": "Metadata marks center without requiring centralPoiKind; ordinary type edit is blocked and central editor is rendered."
+      }
+    ],
+    "supported_input": {
+      "version": 7,
+      "target_region_id": 2,
+      "target_hex": "3,0",
+      "isTract": false,
+      "suppressCentralPoi": false,
+      "centralPoiKind": "absent",
+      "description": "Structurally valid accepted legacy/import state. No existing central POI before move; this is explicitly a permitted destination, not an unsupported overlapping-input map."
+    },
+    "steps": [
+      "Import F01-import.json; no alert/error occurs.",
+      "Select2,0, enter Edit, click Location, set q=3 r=0, click Done.",
+      "Move succeeds: region2.pointsOfInterest=[{q:3,r:0}], pointOfInterestKinds[3,0]=village, centralPoiKind absent, selectedHex3,0.",
+      "Enter Edit and click Edit point. Control offers central choices including capital and lacks No point.",
+      "Choose ruins. Export shows centralPoiKind=ruins while ordinary pointOfInterestKinds[3,0] remains village; the ordinary move control disappears.",
+      "Undo restores the moved map exactly; Redo restores the duplicate-object map exactly."
+    ],
+    "expected": "The moved ordinary POI remains the selected/editable ordinary POI at an otherwise empty center. Type/removal/move/name operations preserve one physical identity; center/anchor remain protected for E7 geometry.",
+    "observed": {
+      "move_accepted": true,
+      "ordinary_kind_before": "village",
+      "ordinary_kind_after": "village",
+      "central_kind_after": "ruins",
+      "ordinary_move_control_after": 0,
+      "page_errors": [],
+      "import_alerts": [],
+      "undo_redo_map_exact": true
+    },
+    "impact": "Ordinary type editing silently creates another object rather than changing the moved POI; the resulting central+ordinary collision cannot be moved or named unambiguously. Ordinary editor controls are hidden even immediately after the allowed move.",
+    "evidence": [
+      "F01-import.json",
+      "F01-moved.json",
+      "F01-after-type-edit.json",
+      "F01-after-type-edit.png",
+      "F01-browser-probe.mjs",
+      "F01-browser-result.json",
+      "F01-App-probe.mjs",
+      "F01-App-result.json"
+    ],
+    "bounded_fix": "Unify actual-central-object detection for the permitted empty-center destination across selection/type/name/position paths. Preserve unconditional E7 center/anchor protection. Reuse existing regionEditing and POI browser lifecycles for center-without-central-object relocation, ordinary type edit/delete/move and exact Undo/Redo/reload regression."
+  },
+  "input_evidence": {
+    "report": "agent-work/evidence/review-PR490-50f8125/review-report.json",
+    "import": "agent-work/evidence/review-PR490-50f8125/F01-import.json",
+    "moved": "agent-work/evidence/review-PR490-50f8125/F01-moved.json",
+    "duplicate": "agent-work/evidence/review-PR490-50f8125/F01-after-type-edit.json",
+    "browser_result": "agent-work/evidence/review-PR490-50f8125/F01-browser-result.json"
+  },
+  "scope": "Unify actual-central-object detection for the permitted empty-center destination across selection/type/name/position paths. Preserve unconditional E7 center/anchor protection. Reuse existing regionEditing and POI browser lifecycles for center-without-central-object relocation, ordinary type edit/delete/move and exact Undo/Redo/reload regression.",
+  "acceptance": [
+    "Allowed ordinary move to an empty unsuppressed center remains usable asone ordinaryPOI",
+    "Type edit/delete/move/name do not create a central POI or silently hide/duplicate the ordinary object",
+    "Actual central POIs retain existing restrictions;E7 center/anchor geometry protection unchanged",
+    "Reuse relevant real-App/browser lifecycle regression;exactUndoRedo,reload andcontinuation verified;test rationale/counts fromdiff",
+    "Required checks andactual UI on new exactSHA,thenfresh independentreview"
+  ],
+  "separate_evidence_gap": {
+    "status": "release_preview_pending",
+    "finding_type": "evidence_gap_separate_from_product_defect",
+    "reviewer_verification": "Independent exact-SHA production suite repeats E7/E8.1/E8.2 workflows and produces desktop/narrow artifacts. Developer scoped evidence fetched from GitHub contains E8.2 name/refusal/deletion panels but no complete structured whole-package user_walkthrough object. No full combined before_release_sha→package_sha read/edit/selection/preview/Done/Undo/error sequence shown_in_chat proof can be verified from the scoped evidence. Root reports earlier E7/E8.1 presentations were separate.",
+    "required_next_step": "After correcting F01 and reviewing new exactSHA,assemble/present one coherent actual combined walkthrough with desktop+narrow,sequence,limitations,shown_in_chat and reviewer_verification before asking owner to release. This is not a new design approval gate.",
+    "release_authorized": false
+  },
+  "next_role": "developer",
+  "next_step": "Fix PR490-F01 within approved scope;prepare coherent whole-package actual walkthrough;handoff new exactSHA for independentreview+score1.2",
+  "owner_approval_needed_for_fix": false,
+  "release_authorized": false,
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-06 01:03:31 UTC",
+      "is_enabled": true,
+      "status": "checked"
+    },
+    "end": {
+      "checked_at": "2026-11-06 01:16:14 UTC",
+      "is_enabled": true,
+      "status": "checked"
+    },
+    "recovery_performed": false,
+    "errors": [],
+    "independent_agent": {
+      "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "start": {
+        "checked_at": "2026-11-06 01:04:29 UTC",
+        "status": "checked",
+        "is_enabled": true
+      },
+      "end": {
+        "checked_at": "2026-11-06 01:14:35 UTC",
+        "status": "checked",
+        "is_enabled": true
+      },
+      "recovery_performed": false,
+      "errors": [],
+      "limitation": "Actual momentary observations only; no future enabled guarantee."
+    },
+    "limitation": "Point-in-time actual checks;no future enabled guarantee"
+  }
+}
