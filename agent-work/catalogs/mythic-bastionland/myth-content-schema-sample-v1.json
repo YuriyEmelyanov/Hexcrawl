@@ -1,0 +1,294 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-041",
+  "stage_id": "MYTH-CONTENT-SCHEMA",
+  "version": "MYTH-SAMPLE-1.0",
+  "status": "bounded_analysis_completed",
+  "source": {
+    "file": "Mythic_Bastionland_RUS.pdf",
+    "library_file_id": "libfile_0793b958b148819190f3c12dfd70b711",
+    "edition": "supplied Russian translation",
+    "method": "Direct Library text read of exact pages29/101/171; one direct dependency170; source corpus not reproduced",
+    "sample_pages": [
+      29,
+      101,
+      171
+    ],
+    "dependency_pages": [
+      170
+    ],
+    "additional_page_limit": 2,
+    "additional_pages_used": 1,
+    "selection": "First/index1, middle/index37, last/index72 from existing72index; purposive finite sample, not representative/full-book audit",
+    "visual_limit": "Image read returned asset pointers for29/101 and no readable image171; no visual/pixel verification claimed; structural facts below based on text",
+    "encoding_limit": "Some headings mojibake; normalized section names only. Do not silently rewrite source payload."
+  },
+  "samples": [
+    {
+      "source_page": 29,
+      "myth_index": 1,
+      "dice_pair": [
+        1,
+        1
+      ],
+      "title": "Чума",
+      "fields": {
+        "omens": {
+          "count": 6,
+          "ordered": true,
+          "text_kind": "Scenes with participants, signs, requests, risks and possible consequences"
+        },
+        "roles": {
+          "block_count": 3,
+          "kind": "mixed collective/individual roles; group not one actor",
+          "fields_observed": [
+            "identity",
+            "attributes/protection",
+            "equipment",
+            "free-form ability/effect",
+            "relationship note"
+          ]
+        },
+        "special_table": {
+          "rows": 6,
+          "columns": 2,
+          "column_semantics": [
+            "hazard manifestation",
+            "transmission"
+          ],
+          "resolution_policy": "unknown from sampled text; row numbering is not proof of independent rolls"
+        },
+        "existing_landmarks": {
+          "count": 6,
+          "action": "reuse existing catalog, not reextract"
+        }
+      },
+      "layers": {
+        "L1": "Stored scene and role reference",
+        "L2": "Any day-based ticking requires separate campaign-time scope",
+        "L3": "Disease/save/damage resolution excluded"
+      },
+      "dependencies": [
+        "Disease handling embedded in role block; text display is not execution"
+      ]
+    },
+    {
+      "source_page": 101,
+      "myth_index": 37,
+      "dice_pair": [
+        4,
+        1
+      ],
+      "title": "Ковен",
+      "fields": {
+        "omens": {
+          "count": 6,
+          "ordered": true,
+          "text_kind": "Scenes include temporary object effects and change to day/night"
+        },
+        "roles": {
+          "block_count": 3,
+          "kind": "individual roles with shared preamble",
+          "fields_observed": [
+            "shared role preamble",
+            "identity",
+            "attributes/protection",
+            "equipment/abilities",
+            "motivation"
+          ]
+        },
+        "special_table": {
+          "rows": 6,
+          "columns": 2,
+          "column_semantics": [
+            "conflict trigger",
+            "aggravating circumstance"
+          ],
+          "resolution_policy": "unknown; shared index or independent rolls not established"
+        },
+        "existing_landmarks": {
+          "count": 6,
+          "action": "reuse existing catalog"
+        }
+      },
+      "layers": {
+        "L1": "Store/read source scene and shared role context",
+        "L2": "Automated day/night or phase change excluded",
+        "L3": "Combat, item effect and willpower resolution excluded"
+      },
+      "dependencies": [
+        "Roles reference local conflict table; preserve reference and shared preamble, do not flatten into three independent actor templates"
+      ]
+    },
+    {
+      "source_page": 171,
+      "myth_index": 72,
+      "dice_pair": [
+        6,
+        12
+      ],
+      "title": "Скала",
+      "fields": {
+        "omens": {
+          "count": 6,
+          "ordered": true,
+          "text_kind": "Sensory signs, groups, location and conditional object effect"
+        },
+        "roles": {
+          "block_count": 3,
+          "kind": "one individual plus collective roles",
+          "fields_observed": [
+            "identity/leader",
+            "attributes/protection",
+            "equipment",
+            "free-form trait",
+            "motivation",
+            "named ability reference"
+          ]
+        },
+        "special_table": {
+          "rows": 6,
+          "columns": 2,
+          "column_semantics": [
+            "object type",
+            "consequence"
+          ],
+          "resolution_policy": "unknown; do not apply consequences automatically"
+        },
+        "existing_landmarks": {
+          "count": 6,
+          "action": "reuse existing catalog"
+        }
+      },
+      "layers": {
+        "L1": "Source reference, place and prepared role blocks",
+        "L2": "No automatic revelation/party advancement",
+        "L3": "Named ability/item consequences excluded"
+      },
+      "dependencies": [
+        {
+          "reference": "Opposite-page reference in omen3",
+          "checked_page": 170,
+          "result": "Page170 is knight material and does not explain the referenced fruit; local table171 is a candidate but correspondence not independently resolved; retain unresolved reference, do not silently retarget",
+          "status": "unresolved"
+        },
+        {
+          "reference": "Named ability in role block",
+          "status": "unresolved_not_followed",
+          "reason": "No further source expansion needed for read-only reference recommendation; execution excluded"
+        }
+      ]
+    }
+  ],
+  "proposed_data_contract": {
+    "status": "schema_candidate_not_runtime_spec",
+    "identity": "Reuse existing myth EntryId and ordered d6/d12 tuple",
+    "fields": [
+      "sourceEdition/sourcePage/version",
+      "ordered omens[] with source ordinal and full source text",
+      "rolePreamble?",
+      "roles[] preserving source blocks and group identity",
+      "references[] with resolved/unresolved state"
+    ],
+    "optional_future": "specialTables[] preserve columns/row order and explicit resolution profile only after source verification; excluded from first slice",
+    "rules": [
+      "Do not constrain all72 to six omens or three roles based on this sample",
+      "Do not create NPC entities or infer combat automation from displayed reference stats",
+      "Source text/version and author notes separate",
+      "Unknown/unconnected entry must show unavailable; no invented default material",
+      "No omen completion/reveal/time state; expand/collapse is UI-only",
+      "Rerolling current myth identity must not display stale material from previous EntryId"
+    ]
+  },
+  "reuse_review": [
+    {
+      "rule_id": "content.place_description",
+      "binding_read": "DND5-2014-010-L1",
+      "decision": "Reuse canonical storage/display meaning for source-backed prepared material; MB provenance/block structure is a profile candidate, not verified compatible implementation"
+    },
+    {
+      "rule_id": "content.adventure_hooks",
+      "binding_read": "PF2-RM-006-L1",
+      "decision": "Only sampled scenes containing actual direction/request have partial overlap. Not every Omen is an adventure hook; no automatic conversion or full coverage"
+    },
+    {
+      "rule_id": "content.roll_table_resolution",
+      "binding_read": "KNAVE2-070-L1",
+      "decision": "Reuse generic operation if special tables later implemented, but Knave100row/1d100/reference policy not transferable to MB six-row/two-column tables. First slice omits rolls; no duplicate canonical rule needed now"
+    }
+  ],
+  "bindings_source": {
+    "path": "agent-work/rules/game-bindings.json",
+    "blob_sha": "64630c128dc8817c8358d4d074b721ecc3fe2714",
+    "method": "fetch_file returned empty body; immutable Git blob fetch returned full parseable JSON; three relevant bindings read in full",
+    "support_status": "all three read profiles unverified; no cross-game evidence propagated"
+  },
+  "recommendation": {
+    "stage_id": "MYTH-CARD1",
+    "title": "Справочный материал выбранного мифа: знамения и роли",
+    "status": "recommended_within_approved041_not_implementation_ready",
+    "next_role": "business_analyst",
+    "scope": "Prepare full source-free developer specification of read-only on-demand myth material in existing information panel. Preserve source role blocks including reference stats as text; no executable actor or Seer expansion. Special tables omitted for this first slice.",
+    "user_before": "Placed myth has name/dice and landmark prompts; full situation material is not connected",
+    "user_after": "Master opens Material of myth, expands one numbered scene or role and reads prepared source reference at the selected place; map/history/notes unchanged by reading",
+    "priority": "Direct requested041 myth meaning and useful L1 prep; lower semantic/state risk than automatic Omen advancement, NPC generation or domain procedures",
+    "estimate": "M for card/lookup/spec lifecycle plus separately bounded source-data validation; not subscription usage estimate",
+    "dependencies": [
+      "Full developer spec with identity/version/missing-source/locale/history contracts",
+      "Authorised source availability and validated coverage of any shipped entries; three sampled pages are not complete72corpus",
+      "Existing public-source-transfer gate: no bulk payload publication without concrete accepted permission",
+      "Fresh exact base; do not integrate accepted Sea or NATURE2 silently"
+    ],
+    "acceptance_outline": [
+      "Card material matches current stable myth EntryId, version and source; opening/closing is read-only and never rolls",
+      "Source order/group preamble maintained; no arbitrary six/three assumption for unexamined entries",
+      "Reroll/Undo/Redo/import/reload/mode/locale behavior specified and exact EntryId/material consistency verified",
+      "Source missing/future version/parse errors preserve map and author notes; unavailable shown honestly",
+      "No automatic Omen/time/stat/combat effects, actor creation or ruin-myth link",
+      "Desktop/narrow native keyboard/scrolling and all missing/error states checked on final SHA; separate owner release gate"
+    ],
+    "authority": "Next specification within already approved041; no third design gate; no new implementation handoff until suitable spec and data-readiness limits are explicit"
+  },
+  "score": {
+    "model_version": "1.2",
+    "analysis": "score-neutral",
+    "baseline_ref": "agent-work/score/current-score.json",
+    "baseline_blob_sha": "32609334f986bfaaca44b898fcc8776813179170",
+    "criteria": [
+      {
+        "criterion_id": "S05-C02",
+        "weight": 35,
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "expected_grade": null,
+        "expected_points": null,
+        "expected_delta": null,
+        "evidence_required": "Exact-SHA meaningful source situation card/use and limits; source sample alone not full criterion quality"
+      },
+      {
+        "criterion_id": "S08-C04",
+        "weight": 10,
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "expected_grade": null,
+        "expected_points": null,
+        "expected_delta": null,
+        "evidence_required": "Exact-SHA source adapter/mode/unknown-version safety and profile compatibility; do not double count S05 narrative quality"
+      }
+    ],
+    "awarded_points": 0
+  },
+  "limits": [
+    "Three pages only; no all72 schema or source completeness claim",
+    "No product code/permanent test changes/runtime acceptance",
+    "No full English source verified",
+    "No raw source corpus or page images written to public GitHub",
+    "One direct source dependency remains unresolved; no execution of that procedure proposed"
+  ]
+}
