@@ -1375,7 +1375,7 @@
       "task_id": "HX-BL-023",
       "title": "Общий режим редактирования",
       "criterion_id": "S03-C01",
-      "status": "review_ready",
+      "status": "accepted_awaiting_owner_release_approval",
       "potential_delta": null,
       "approval_ref": "owner-decision-2026-10-29-HX-FB-005-direct-edit-mode",
       "source": {
@@ -1391,8 +1391,8 @@
       "recommended_priority": 1,
       "execution_allowed": true,
       "spec_status": "ready_for_development",
-      "next_role": "reviewer",
-      "next_step": "Fresh independent review of7ddcc218 including F01,whole E7+E8 package,CI evidence,test necessity andscore_assessment1.2. Complete durable whole-package UI presentation before release request.",
+      "next_role": "owner_then_developer",
+      "next_step": "Owner decision requested for publication of exact PR490 SHA 7ddcc218ec6871179bde8153ec589d6517f46c74. If approved, developer rechecks exact head/base/tree and required checks, then releases only this package; any SHA change requires new review.",
       "related_task_ids": [
         "HX-BL-013",
         "HX-BL-018",
@@ -1544,33 +1544,60 @@
       "pr": 490,
       "base_sha": "2ef5cc35107f299c309b7c8065a1e81ca9881278",
       "head_sha": "7ddcc218ec6871179bde8153ec589d6517f46c74",
-      "checks_status": "local_Node345_browser8_RNG_tsc_build_pass;CI_pending_observation",
+      "checks_status": "independent_Node345_browser8_RNG_pass; exact_SHA_CI_check_browser_world_random_success; seed_ui_conditional_skip",
       "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/41799212970",
-      "review_verdict": "pending_new_SHA",
+      "review_verdict": "accepted_exact_SHA_for_E7_E8_code_review",
       "test_change_summary_ref": "agent-work/evidence/HX-BL-023-E5-65e5d1d/test-change-summary.json",
       "developer_result_ref": "agent-work/results/2026-11-06-developer-PR490-F01.json",
       "score_assessment_status": "completed_model1.2_unknown_no_award",
       "ui_actual": {
-        "head_sha": "0459c645706a51e518b323fd0588fba4923e5dd2",
-        "desktop": "agent-work/evidence/HX-BL-023-E4-R1-0459c64/ambiguity-desktop.png",
-        "narrow": "agent-work/evidence/HX-BL-023-E4-R1-0459c64/ambiguity-narrow.png",
+        "head_sha": "7ddcc218ec6871179bde8153ec589d6517f46c74",
+        "kind": "actual_combined_E7_E8",
+        "desktop_width": 1500,
+        "narrow_width": 390,
+        "walkthrough_ref": "agent-work/evidence/review-PR490-7ddcc21/ui/README.md",
+        "manifest_ref": "agent-work/evidence/review-PR490-7ddcc21/ui/manifest.json",
         "shown_in_chat": true,
-        "limits": "Headless Chromium; physical touch/screen reader not tested"
+        "limitations": [
+          "Sea names excluded pending stable identity",
+          "Physical touch/screen reader/full WCAG AA not verified"
+        ]
       },
-      "review_result_ref": "agent-work/results/2026-11-06-reviewer-PR490-50f8125.json",
-      "review_evidence_ref": "agent-work/evidence/review-PR490-50f8125/review-report.json",
+      "review_result_ref": "agent-work/results/2026-11-06-reviewer-PR490-7ddcc21.json",
+      "review_evidence_ref": "agent-work/evidence/review-PR490-7ddcc21/review-report.json",
       "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/481#pullrequestreview-5737061469",
-      "score_assessment_ref": "agent-work/evidence/review-PR490-50f8125/score-assessment.json",
-      "finding_ids": [
-        "PR490-F01"
-      ],
+      "score_assessment_ref": "agent-work/evidence/review-PR490-7ddcc21/score-assessment.json",
+      "finding_ids": [],
       "previous_review_result_ref": "agent-work/results/2026-10-31-reviewer-HX-BL-023-E3-6e59e7f.json",
       "addressed_findings_pending_review": [
         "PR490-F01"
       ],
       "previous_score_assessment_ref": "agent-work/evidence/review-HX-BL-023-c4a37ee/score_assessment.json",
       "previous_review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/478#pullrequestreview-5692465528",
-      "accepted_release_pending": null,
+      "accepted_release_pending": {
+        "task_id": "HX-BL-023",
+        "stage_id": "E7+E8",
+        "status": "accepted_awaiting_owner_release_approval",
+        "head_sha": "7ddcc218ec6871179bde8153ec589d6517f46c74",
+        "tree_sha": "0bb858e6d149aae4c7aceb17da9ff5025bcc3817",
+        "base_sha": "2ef5cc35107f299c309b7c8065a1e81ca9881278",
+        "pr": 490,
+        "branch": "agent/hx023-e7-e8-package",
+        "review_ref": "agent-work/evidence/review-PR490-7ddcc21/review-report.json",
+        "review_result_ref": "agent-work/results/2026-11-06-reviewer-PR490-7ddcc21.json",
+        "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/490#pullrequestreview-5795695459",
+        "score_assessment_ref": "agent-work/evidence/review-PR490-7ddcc21/score-assessment.json",
+        "ui_walkthrough_ref": "agent-work/evidence/review-PR490-7ddcc21/ui/README.md",
+        "release_approved": false,
+        "published": false,
+        "full_editor_ready": false,
+        "requirements": [
+          "Explicit owner permission for this exact SHA/package",
+          "Recheck exact head/base/tree and required checks immediately before release",
+          "Any SHA change requires fresh independent review",
+          "After release record merge SHA/publication and score_update_pending"
+        ]
+      },
       "full_editor_ready": false,
       "stage_results": {
         "E1_names": {
@@ -1843,19 +1870,13 @@
       },
       "spec_blob_sha": "55010a47fedee34537e7d1d1198fa0f78f3f6e4b",
       "resolved_findings": [
-        "HX023-E3-R1",
-        "HX023-E3-R2",
-        "HX023-E3-R3",
-        "HX023-E3-R4",
-        "HX023-E3-R5",
-        "HX023-E4-SPEC-01",
-        "HX023-E4-R1"
+        "PR490-F01"
       ],
       "release_approval_ref": "owner-release-2026-10-31-HX-BL-023-E2-a99c299",
       "score_update_handoff_ref": "agent-work/handoffs/2026-11-02-PR481-release-score.json",
       "score_update_completed_at": "2026-11-02T15:11:08.293Z",
       "previous_head_sha": "a99c299f0648c2e5c1d65173bdeca50061dcc901",
-      "review_ready": true,
+      "review_ready": false,
       "next_stage_id": "E5",
       "specification_findings": [],
       "panel_layout_correction": {
@@ -2093,21 +2114,24 @@
         },
         "E8_2_stable_names": {
           "stage_id": "E8.2",
-          "status": "review_ready",
+          "status": "accepted_awaiting_owner_release_approval",
           "head_sha": "7ddcc218ec6871179bde8153ec589d6517f46c74",
           "pr": 490,
           "handoff_ref": "agent-work/handoffs/2026-11-06-PR490-7ddcc21-review.json",
-          "review_evidence_ref": "agent-work/evidence/review-PR490-50f8125/review-report.json",
-          "finding_ids": [
-            "PR490-F01"
-          ],
+          "review_evidence_ref": "agent-work/evidence/review-PR490-7ddcc21/review-report.json",
+          "finding_ids": [],
           "release_approved": false,
-          "finding_status": "addressed_pending_independent_review"
+          "finding_status": "resolved",
+          "review_result_ref": "agent-work/results/2026-11-06-reviewer-PR490-7ddcc21.json",
+          "score_assessment_ref": "agent-work/evidence/review-PR490-7ddcc21/score-assessment.json",
+          "resolved_findings": [
+            "PR490-F01"
+          ]
         }
       },
-      "accepted": false,
-      "current_stage_status": "review_ready",
-      "current_stage_review_status": "pending_new_SHA",
+      "accepted": true,
+      "current_stage_status": "accepted_awaiting_owner_release_approval",
+      "current_stage_review_status": "accepted_exact_SHA",
       "current_stage_release_approved": false,
       "published": false,
       "routing_snapshot_history": [
