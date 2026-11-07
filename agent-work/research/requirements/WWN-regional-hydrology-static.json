@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "id": "WWN-REG-HYDRO-STATIC-7547a67",
+  "inspected_sha": "7547a67bbcfb621f1e7c7189518583842ccb055a",
+  "method": "bounded_static_contract_and_code_inspection; independent source-level review",
+  "runtime_status": "unverified",
+  "scope": "Existing RIV directed network/lake degrees; not a runtime compatibility test for WWN",
+  "files": [
+    {
+      "path": "docs/river-model.md",
+      "blob_sha": "b4f2e09dd5f8cee0150a102c37822028916da2c6",
+      "locators": [
+        "RIV-001..018,lines28–215",
+        "F is discrete class,line17"
+      ]
+    },
+    {
+      "path": "src/riverModel/core.ts",
+      "blob_sha": "4af284af35e539030cc5f7b61e918c2697cabdbe",
+      "locators": [
+        "confluenceOutputs/Inputs22–30",
+        "lakeAllows34–42",
+        "node degrees83–93",
+        "cycle94–102",
+        "source/lake104–110"
+      ]
+    },
+    {
+      "path": "src/App.tsx",
+      "blob_sha": "7c533a25bf02b64bf7dfee8f394e2c0c6878576a",
+      "locators": [
+        "buildRegionRiverNetwork2690–2773",
+        "reconcile2795–2864",
+        "buildDeltaArmsForRivers10450–10520",
+        "delta call13097–13115"
+      ]
+    },
+    {
+      "path": "docs/river-model-core.md",
+      "blob_sha": "e17d2ba51986b8d37cda2efc8ff17acd2cadf8a1",
+      "locators": [
+        "API30 onwards"
+      ]
+    },
+    {
+      "path": "docs/river-model-integration.md",
+      "blob_sha": "9538e3dcda1a64b871565245da1becdcacea4d02",
+      "locators": [
+        "delta separate fromRIV-005",
+        "existing maps not auto-recalculated"
+      ]
+    }
+  ],
+  "facts": [
+    "Current core ordinary source0→1,continuation1→1,confluence2→1; no general ordinary1→2 node.",
+    "Current lake with inflow may have multiple outgoing rivers if area/F constraints pass; a no-inflow lake with multiple outlets is unsupported.",
+    "Sea delta arms are separate and excluded from numerical core;F4up to1extra,F5up to2extra; geometry may prevent creation.",
+    "Directed-cycle rejection is not sibling-branch rejoin detection: diamond DAG remains acyclic.",
+    "Current F is neither physical flow volume nor source river count."
+  ],
+  "interpretation": [
+    "Reuse existing directed nodes/links/lake identities and validation infrastructure where profiles match.",
+    "Do not change current RIV globally to match a single RU WWN clause; selected-body profile needs separate analyst contract.",
+    "Source counts, qualitative length/sinuosity and endpoint classes require profile mapping, not an inferred full implementation."
+  ],
+  "unknowns": [
+    "Exact WWN runtime acceptance at this or futureSHA",
+    "Full current UI/gen/save support beyond inspected hydrology",
+    "RU↔English equivalence and ordinary split integration",
+    "Stable external port/river identity normalization"
+  ],
+  "limitations": [
+    "No tests/generator/browser execution in this bounded research run.",
+    "Documentation test reports not rerun; static code presence is not runtime verification.",
+    "Outdated top comment in core about missing adapter contradicted by actual App imports/calls and integration doc; not treated as absence."
+  ]
+}

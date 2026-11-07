@@ -1,0 +1,262 @@
+{
+  "task_id": "HX-BL-005",
+  "title": "Наметить крупные реки и проверить их связи с крупными озёрами",
+  "status": "proposed",
+  "problem": "Existing hydrology has no verified WWN regional-step3 profile. Static RIV permits lake multiple outflows with inflow and does not expose ordinary channel1→2, so shared names do not prove profile equivalence.",
+  "benefit": "An opt-in non-destructive regional hydrology plan/diagnostic can reuse directed networks and waterbody identities while exposing source-specific constraints and unknowns.",
+  "game_editions": [
+    {
+      "game_id": "WWN",
+      "edition": "Worlds Without Number Deluxe, copyright2021; supplied Russian translation Lock-key; translation revision and English collation unverified"
+    }
+  ],
+  "primary_scenario": "create",
+  "layer": "L1",
+  "requirement_refs": [
+    "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-REG-001-L1",
+    "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-REG-002-L1",
+    "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-REG-003-L1",
+    "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-REG-004-L1",
+    "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-REG-005-L1",
+    "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-REG-006-L1",
+    "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-REG-007-L1"
+  ],
+  "canonical_rule_ids": [
+    "map.river_network",
+    "map.land_water_shapes"
+  ],
+  "binding_refs": [],
+  "criterion_ids": [
+    "S01-C02",
+    "S01-C03"
+  ],
+  "scope": {
+    "included": [
+      "Opt-in regional-step3 draft, counts and typed connections",
+      "7source clauses with known acceptance fixtures",
+      "Existing RIV profile compatibility audit before implementation",
+      "Save/load and Undo/Redo of any future accepted plan/exception; existing map unchanged on invalid input"
+    ],
+    "excluded": [
+      "Change existing generator globally",
+      "Override RIV rules or broaden active HX-BL-023 scope",
+      "Full WWN support, kingdom/local profiles, L2/L3",
+      "Enforce guessed length/sinuosity metrics",
+      "New implementation or publication in this run"
+    ]
+  },
+  "dependencies": [
+    "Owner approval of bounded product implementation scope",
+    "Analyst resolves draft river-identity/port mapping and translation/length unknowns",
+    "Reuse existing hydrology and editor; do not create game-specific engine clone"
+  ],
+  "acceptance_checks": [
+    {
+      "requirement_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-REG-001-L1",
+      "given": "Пустой regional plan; fixed d4=1.",
+      "when": "Наметить крупные реки.",
+      "expected": "Ровно3 planned large-river records; карта ещё не изменена.",
+      "id": "WWN-RU-REG-001-L1-AC01"
+    },
+    {
+      "requirement_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-REG-001-L1",
+      "given": "Пустой regional plan; fixed d4=4.",
+      "when": "Наметить крупные реки.",
+      "expected": "Ровно6 planned records; дополнительные delta arms не увеличивают source count.",
+      "id": "WWN-RU-REG-001-L1-AC02"
+    },
+    {
+      "requirement_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-REG-001-L1",
+      "given": "Передан d4=0,5или1.5.",
+      "when": "Проверить вход.",
+      "expected": "Вход отклонён; план и карта неизменны.",
+      "id": "WWN-RU-REG-001-L1-AC03"
+    },
+    {
+      "requirement_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-REG-001-L1",
+      "given": "Сохранён принятый план из4рек; после открытия существует10route segments.",
+      "when": "Восстановить план.",
+      "expected": "Остаётся4river identities;10segments не превращаются в10source rivers; RNG не вызывается заново.",
+      "id": "WWN-RU-REG-001-L1-AC04"
+    },
+    {
+      "requirement_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-REG-002-L1",
+      "given": "origin=mountain; sink=sea; magic_override=false; mapping задано.",
+      "when": "Проверить endpoints.",
+      "expected": "Диагностикаpass для этой source clause; это не полная приёмка геометрии.",
+      "id": "WWN-RU-REG-002-L1-AC01"
+    },
+    {
+      "requirement_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-REG-002-L1",
+      "given": "origin=plain; sink=dry_land; magic_override=false.",
+      "when": "Проверить endpoints.",
+      "expected": "needs_GM_decision; маршрут не переписан автоматически.",
+      "id": "WWN-RU-REG-002-L1-AC02"
+    },
+    {
+      "requirement_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-REG-002-L1",
+      "given": "origin=plain; sink=sea; magic_override=true; explanation=\"колдовской источник\".",
+      "when": "Подтвердить исключение.",
+      "expected": "accepted_exception; объяснение хранится и восстанавливается; обычное правило не объявлено выполненным.",
+      "id": "WWN-RU-REG-002-L1-AC03"
+    },
+    {
+      "requirement_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-REG-002-L1",
+      "given": "Неизвестен source-terrain mapping.",
+      "when": "Проверить endpoints.",
+      "expected": "unknown_mapping; нельзя вывестиpass только из current biome name.",
+      "id": "WWN-RU-REG-002-L1-AC04"
+    },
+    {
+      "requirement_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-REG-003-L1",
+      "given": "A→F,F→B,F→C; B→Sea1,C→Sea2; иных связей нет.",
+      "when": "Проверить RU topology fixture.",
+      "expected": "no_sibling_rejoin; source fork допустим в этом ограниченном RU reading; runtime support остаётсяunverified.",
+      "id": "WWN-RU-REG-003-L1-AC01"
+    },
+    {
+      "requirement_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-REG-003-L1",
+      "given": "A→F,F→B,F→C,B→J,C→J,J→Sea.",
+      "when": "Проверить graph.",
+      "expected": "sibling_rejoin_at_J;diagnostic с ID F/J; граф не исправлен молча.",
+      "id": "WWN-RU-REG-003-L1-AC02"
+    },
+    {
+      "requirement_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-REG-003-L1",
+      "given": "Независимые mountain origins H1→J,H2→J,J→Sea; upstream fork отсутствует.",
+      "when": "Проверить graph.",
+      "expected": "independent_confluence_allowed; источник не трактуется как общий запрет2→1.",
+      "id": "WWN-RU-REG-003-L1-AC03"
+    },
+    {
+      "requirement_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-REG-004-L1",
+      "given": "reach_context=lowland;route зафиксирован.",
+      "when": "Открыть подсказку формы.",
+      "expected": "suggestion=meandering;route unchanged.",
+      "id": "WWN-RU-REG-004-L1-AC01"
+    },
+    {
+      "requirement_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-REG-004-L1",
+      "given": "reach_context=descending_from_height;route зафиксирован.",
+      "when": "Открыть подсказку формы.",
+      "expected": "suggestion=usually_straighter;no numeric pass/fail;route unchanged.",
+      "id": "WWN-RU-REG-004-L1-AC02"
+    },
+    {
+      "requirement_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-REG-005-L1",
+      "given": "map240×160mi;river measure=null.",
+      "when": "Показать ориентир.",
+      "expected": "reference60mi;metric_unresolved;no pass/fail or truncation.",
+      "id": "WWN-RU-REG-005-L1-AC01"
+    },
+    {
+      "requirement_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-REG-005-L1",
+      "given": "map240×160mi;GM явно выбрал fixture_measure=channel_arclength;length70mi.",
+      "when": "Сравнить в advisory режиме.",
+      "expected": "reference60mi;soft_advisory_exceeds_reference; маршрут сохранён; это выборfixture,не установленная source metric.",
+      "id": "WWN-RU-REG-005-L1-AC02"
+    },
+    {
+      "requirement_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-REG-005-L1",
+      "given": "width240mi;height160km;конверсия не задана.",
+      "when": "Показать ориентир.",
+      "expected": "units_unresolved;численное сравнение не выполнено;данные сохранены.",
+      "id": "WWN-RU-REG-005-L1-AC03"
+    },
+    {
+      "requirement_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-REG-006-L1",
+      "given": "enabled=false;existing map неизменна.",
+      "when": "Пропустить шаг.",
+      "expected": "0planned new large bodies;validation does not require at least1.",
+      "id": "WWN-RU-REG-006-L1-AC01"
+    },
+    {
+      "requirement_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-REG-006-L1",
+      "given": "enabled=true;count=3.",
+      "when": "Принять число.",
+      "expected": "3planned body identities;число occupied water hexes не фиксируется.",
+      "id": "WWN-RU-REG-006-L1-AC02"
+    },
+    {
+      "requirement_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-REG-006-L1",
+      "given": "enabled=true;count=4.",
+      "when": "Проверить число.",
+      "expected": "Отклонить как вне profile range;plan unchanged.",
+      "id": "WWN-RU-REG-006-L1-AC03"
+    },
+    {
+      "requirement_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-REG-007-L1",
+      "given": "Selected body L;two distinct external incoming rivers;0outgoing.",
+      "when": "Проверить connections.",
+      "expected": "pass;0outgoing допустимо.",
+      "id": "WWN-RU-REG-007-L1-AC01"
+    },
+    {
+      "requirement_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-REG-007-L1",
+      "given": "Selected body L;1incoming;1outgoing.",
+      "when": "Проверить connections.",
+      "expected": "pass для WWN basin-degree clause;не утверждает выполнения RIV capacity.",
+      "id": "WWN-RU-REG-007-L1-AC02"
+    },
+    {
+      "requirement_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-REG-007-L1",
+      "given": "Selected body L;0incoming;1outgoing.",
+      "when": "Проверить connections.",
+      "expected": "missing_inflow;план не исправлен автоматически.",
+      "id": "WWN-RU-REG-007-L1-AC03"
+    },
+    {
+      "requirement_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-REG-007-L1",
+      "given": "Selected body L;2incoming;2outgoing.",
+      "when": "Проверить connections.",
+      "expected": "too_many_outflows;обаoutgoing ID перечислены;current RIV validity не подменяет WWN profile.",
+      "id": "WWN-RU-REG-007-L1-AC04"
+    },
+    {
+      "requirement_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-REG-007-L1",
+      "given": "Существующиймалый lake X вне optional regional step;имеет2outgoing.",
+      "when": "Проверить только selected regional bodies.",
+      "expected": "X не изменён и не объявлен WWN defect;scope exclusion явно записан.",
+      "id": "WWN-RU-REG-007-L1-AC05"
+    },
+    {
+      "id": "WWN-RU-REG-LIFECYCLE-AC01",
+      "requirement_ref": "proposed_product_lifecycle_guard",
+      "given": "Принятый план:4large-river IDs;selected lake L;GM sorcery explanation;baseline map B.",
+      "when": "Export→import и Undo→Redo после подтвержденияредактирования.",
+      "expected": "IDs,profile,selected-body membership,GM explanation and planned counts сохранены;Undo возвращает B;Redo восстанавливает точное принятое состояние;invalid input does not add history entry."
+    }
+  ],
+  "expected_evidence": {
+    "code_sha": "required_at_future_review",
+    "runtime": "Known Given/When/Expected at exact profile, includes current RIV compatibility, no mutation on invalid input",
+    "persistence": "Save/load and Undo/Redo roundtrip at exact SHA, schema migration if new stored fields are introduced"
+  },
+  "score_delta": null,
+  "source_limitations": [
+    "Full book is available but only stated bounded corpus read; no complete WWN thematic audit.",
+    "Source applicability is not usage prevalence or audience size.",
+    "No full book, art, or complete content table is published in derived records.",
+    "Language slice RU; English terminology not collated.",
+    "Length and sinuosity are qualitative/advisory; strict measures unknown."
+  ],
+  "implementation_authorized": false,
+  "release_authorized": false,
+  "readiness": "proposed_registry_integration_pending",
+  "duplication_review": "Augment existing proposed HX-BL-005; do not create HX-BL-048. HX-BL-019/028 editor tasks and032 refactor are related implementation dependencies, not duplicate research queues.",
+  "source_profile_handoff_ref": "agent-work/research/requirements/WWN-regional-hydrology-v1.json",
+  "ranking_version": "three-scenario-ranks-1.4-create-evidence",
+  "cohort_version": "2026-11-06-ranking1.4-create-evidence",
+  "scenario_rank_reference": 6,
+  "overall_rank_reference": 11,
+  "planned_binding_refs": [
+    "agent-work/rules/game-bindings.json#WWN-RU-REG-001-L1",
+    "agent-work/rules/game-bindings.json#WWN-RU-REG-002-L1",
+    "agent-work/rules/game-bindings.json#WWN-RU-REG-003-L1",
+    "agent-work/rules/game-bindings.json#WWN-RU-REG-004-L1",
+    "agent-work/rules/game-bindings.json#WWN-RU-REG-005-L1",
+    "agent-work/rules/game-bindings.json#WWN-RU-REG-006-L1",
+    "agent-work/rules/game-bindings.json#WWN-RU-REG-007-L1"
+  ],
+  "binding_registration_status": "pending_shared_registry_write"
+}
