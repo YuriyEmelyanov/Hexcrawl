@@ -2,7 +2,7 @@
   "schema_version": 1,
   "task_id": "HX-BL-041",
   "stage_id": "MYTH-CARD1",
-  "status": "ready_for_independent_local_core_review",
+  "status": "accepted_local_source_free_core_remote_candidate_pending",
   "role": "reviewer",
   "approval_ref": "owner-decision-2026-10-28-editor-and-MB-content-before-outreach",
   "spec_ref": "agent-work/specs/HX-BL-041-MYTH-CARD1.md",
@@ -127,8 +127,8 @@
   },
   "release_approved": false,
   "full_task_complete": false,
-  "authority_status": "Bounded existing task start; no corpus public-transfer permission and no release permission",
-  "next_step": "Independently review local exact SHA febd762 (MC1-01..09) with fresh agent, record findings or core-only verdict and score_assessment1.2. Do not retry aborted public write via alternate route or treat core as complete72material feature.",
+  "authority_status": "Source-free public PR is allowed by existing handoff. Book corpus and release remain unapproved.",
+  "next_step": "Create a remote source-free candidate branch and PR whose tree exactly matches d721eb9/febd762, without book corpus or other changes; run public CI and transfer the resulting exact SHA for fresh independent verification. Do not merge or publish without owner approval.",
   "automation_health": {
     "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
@@ -156,5 +156,97 @@
       "is_enabled": true
     },
     "limitation": "Actual observations only; no guarantee of later service state. Reason for disable unknown."
-  }
+  },
+  "owner_role": "programmer",
+  "next_role": "programmer",
+  "review_verdict": "accepted_core_only_exact_local_sha_with_finite_limits",
+  "review_result_ref": "agent-work/results/2026-11-07T0700-reviewer-HX-BL-041-MYTH-CARD1-febd762.json",
+  "score_assessment_ref": {
+    "path": "agent-work/results/2026-11-07T0700-reviewer-HX-BL-041-MYTH-CARD1-febd762.json",
+    "property": "score_assessment"
+  },
+  "findings": [],
+  "accepted": true,
+  "accepted_scope": "MC1-01..09 source-free core exact tree d721eb9 only",
+  "real_material_corpus_ready": false,
+  "independence": {
+    "fresh_agent_available": false,
+    "limitation": "No callable separate-agent capability in this run. Review used a clean detached worktree and independent temporary probes, but the reviewer context is not fresh from the programmer conversation."
+  },
+  "test_change_summary": {
+    "base_sha": "00190bb749a4fa5af57aac4bbffff808e8fe733f",
+    "head_sha": "febd762d4a8fae6f8acd2df26de0c1ec5cce860d",
+    "source": "git exact base/head comparison; comparable node:test logical declarations and package test:browser workflow command; developer logs hash-verified; reviewer temporary diagnostics counted separately",
+    "permanent_changes": [
+      {
+        "suite": "Node node:test",
+        "added": 1,
+        "removed": 0,
+        "modified": 0,
+        "before": 353,
+        "after": 354,
+        "scenario_risk": "Exact myth owner/version/d6×d12/entry identity, malformed registry, variable source blocks and mutation-free selection",
+        "reuse_or_new_reason": "Distinct pure material contract was absent; existing tags suite extended rather than creating a new runner."
+      },
+      {
+        "suite": "Browser workflow",
+        "added": 0,
+        "removed": 0,
+        "modified": 1,
+        "before": 8,
+        "after": 8,
+        "scenario_risk": "Actual App disclosure, draft focus, immutable JSON/history, locale/mode/future/error and stale A→B→A",
+        "reuse_or_new_reason": "Existing tags workflow extended; no duplicate executable suite."
+      }
+    ],
+    "helper_changes": [
+      "generation harness renderer stub adjusted; no logical case added",
+      "one invented test-only material fixture added; no production fallback"
+    ],
+    "executions": [
+      {
+        "suite": "Developer full Node/check",
+        "executed": 354,
+        "passed": 354,
+        "failed": 0,
+        "skipped": 0,
+        "includes": "Node24 tsc + node:test + build",
+        "log_sha256": "c35a08766a56cf97cfed702dc7d6be40458abe5977d1b0df6c916929be7fd3b0"
+      },
+      {
+        "suite": "Developer full browser workflows",
+        "executed": 8,
+        "passed": 8,
+        "failed": 0,
+        "skipped": 0,
+        "log_sha256": "100347fb5b017705172133828e72811623f09415347720b3826ac1ffcf5a96ff"
+      },
+      {
+        "suite": "Reviewer temporary pure diagnostic",
+        "executed": 72,
+        "passed": 72,
+        "failed": 0,
+        "skipped": 0,
+        "meaning": "72 identity pairs plus independent invalid-record assertions; temporary, not a permanent case count"
+      },
+      {
+        "suite": "Reviewer temporary Chromium scenarios",
+        "executed": 2,
+        "passed": 2,
+        "failed": 0,
+        "skipped": 0,
+        "meaning": "390px production-unavailable and fictional escaped/draft/override/undo paths; temporary, not a permanent workflow"
+      }
+    ],
+    "necessity_assessment": "Accepted. One new logical Node case protects a distinct pure contract; the existing browser workflow was reused for the real App lifecycle. No count-driven duplicate suite was added.",
+    "stability_cost": "Browser extension increases an already long full workflow and includes controlled delayed-response timing; final full run passed. Reviewer did not repeat the whole eight-workflow run because dependencies were no longer available, and instead performed targeted diagnostics against hash-identified retained build assets.",
+    "rng_suite": "No new separate full RNG workflow in this task; relevant map/history regression covered by required browser/save-history run. Do not sum RNG, browser and Node counts."
+  },
+  "known_limits": [
+    "No remote branch/PR/public CI for candidate SHA",
+    "Full dependencies unavailable after shared node_modules target was removed; reviewer could not rebuild or repeat the whole suite",
+    "Retained build assets are tied by developer manifest/hashes, not an independent rebuild",
+    "No real book corpus or public-transfer permission for it",
+    "Review independence is clean-worktree/independent-probe, not fresh-agent context"
+  ]
 }
