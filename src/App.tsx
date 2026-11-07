@@ -13684,6 +13684,13 @@ export function App() {
       return true;
     }catch(error){setEditError(tagCommandError(error));return false;}
   };
+  const materialReadBlocked=()=>!!nameDraftRef.current||notesEditorKey!==null||mutationBlocked(false)||!!obstacleDraftRef.current;
+  const guardMaterialRead=(event:React.SyntheticEvent<HTMLDivElement>)=>{
+    if((event.target as Element).closest('[data-myth-material]')&&materialReadBlocked()){
+      event.preventDefault();event.stopPropagation();return true;
+    }
+    return false;
+  };
   const renderTags=(owner:TagOwner,type:string)=>{
     const policy=tagPolicy(type),available=[...policy.automatic,...policy.optional].map(n=>'mb.'+n);
     const instances=tags.instances.filter(i=>ownerKey(i.owner)===ownerKey(owner));
@@ -13691,6 +13698,7 @@ export function App() {
     const rows=ids.filter(id=>generationMode==='mythic'||findTag(tags,owner,id)).map(id=>{
       const def=mythicDefinitions[id],instance=findTag(tags,owner,id);
       return <TagRow key={`${tagKey(owner,id)}:${instance?.revision??0}`} owner={owner} definition={def} instance={instance} language={language} editMode={editMode}
+        materialContext={type==='myth'?{poiType:type,documentRevision:renderedDocumentRevision,disabled:materialReadBlocked()}:undefined}
         disabled={!!poiDraft||!!regionDraft||isImporting||!!kingdomJob||!!pendingRegen||!!waterDraft||!!riverDraft||!!roadDraft||!!obstacleDraft||dirtyNameDraft()}
         animation={tagAnimations[tagKey(owner,id)]}
         onRoll={slot=>mutateTag(owner,id,slot)} onEdit={(index,text)=>mutateTag(owner,id,undefined,{index,text})}/>;
@@ -14847,6 +14855,7 @@ export function App() {
     setPoiExitRequest(null);setTimeout(()=>request.action(),0);return true;
   };
   const poiClickGate=(event:React.MouseEvent<HTMLDivElement>)=>{
+    if((event.target as Element).closest('[data-myth-material]')){guardMaterialRead(event);return;}
     if(!poiDraftRef.current||(event.target as Element).closest('[data-poi-panel],[data-poi-done],[data-poi-exit-dialog],[data-poi-export],[data-poi-navigation],.map-viewport,.side-panel-toggle'))return;
     const target=(event.target as Element).closest<HTMLElement>('button,a,input,select');if(!target)return;
     event.preventDefault();event.stopPropagation();requestPoiExit(()=>{if(target.isConnected)target.click();});
@@ -15221,6 +15230,7 @@ export function App() {
   // Pointer-down ends a valid field before the ensuing click reads the new render.
   // Invalid input keeps focus and prevents the action; no modal or Save workflow.
   const finishBeforePointer = (event: React.PointerEvent<HTMLDivElement>) => {
+    if((event.target as Element).closest('[data-myth-material]')){guardMaterialRead(event);return;}
     if (!nameDraftRef.current || (event.target as Element).closest('[data-inline-name]')) return;
     if (!finishInlineName()) { event.preventDefault(); event.stopPropagation(); nameFocusRef.current?.focus(); }
   };
@@ -16045,6 +16055,7 @@ export function App() {
 
   return (
     <div className="app" onClickCapture={poiClickGate} onChangeCapture={poiSelectGate} onPointerDownCapture={finishBeforePointer} onKeyDownCapture={e=>{
+      if(e.key!=='Tab'&&guardMaterialRead(e))return;
       if(poiExitRequest&&e.key==='Tab'){const buttons=[...(e.currentTarget.querySelector('[data-poi-exit-dialog]')?.querySelectorAll<HTMLButtonElement>('button:not(:disabled)')??[])];const first=buttons[0],last=buttons[buttons.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last?.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus();}return;}
       if(poiDraftRef.current&&e.key==='Escape'&&!e.nativeEvent.isComposing){e.preventDefault();e.stopPropagation();if(poiExitRequest)setPoiExitRequest(null);else resetPoiDraft();return;}
       if(regionDraftRef.current&&!e.nativeEvent.isComposing){if(e.key==='Escape'){e.preventDefault();e.stopPropagation();resetRegionDraft();return;}if(e.key==='Enter'&&(e.target as Element).closest('.map-viewport,[data-region-preview]')&&!(e.target as Element).closest('select,button,input,textarea,summary,[role="button"]')){e.preventDefault();e.stopPropagation();if(finishRegionDraft())setEditMode(false);return;}}

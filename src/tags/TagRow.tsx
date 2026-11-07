@@ -1,7 +1,8 @@
 import {useState} from 'react';
 import {ownerKey,type TagDefinition,type TagInstance,type TagOwner} from './engine';
-type Props={owner:TagOwner;definition?:TagDefinition;instance?:TagInstance;language:string;editMode:boolean;disabled:boolean;animation?:{key:string;slot?:number;revision:number;expiresAt:number};onRoll:(slot?:number)=>boolean;onEdit:(index:number,text:string)=>boolean};
-export function TagRow({owner,definition:def,instance,language,editMode,disabled,animation,onRoll,onEdit}:Props){
+import {MythMaterialView} from './MythMaterialView';
+type Props={owner:TagOwner;definition?:TagDefinition;instance?:TagInstance;language:string;editMode:boolean;disabled:boolean;materialContext?:{poiType:string;documentRevision:number;disabled:boolean};animation?:{key:string;slot?:number;revision:number;expiresAt:number};onRoll:(slot?:number)=>boolean;onEdit:(index:number,text:string)=>boolean};
+export function TagRow({owner,definition:def,instance,language,editMode,disabled,materialContext,animation,onRoll,onEdit}:Props){
  const [menu,setMenu]=useState(false);
  const [editing,setEditing]=useState<number|null>(null),[draft,setDraft]=useState('');
  const label=def?.label[language]??def?.label.ru??instance?.definitionId??'';
@@ -26,9 +27,11 @@ export function TagRow({owner,definition:def,instance,language,editMode,disabled
     onChange={event=>setDraft(event.target.value)} onBlur={commit} onKeyDown={event=>{event.stopPropagation();if(event.key==='Enter')commit();if(event.key==='Escape')setEditing(null);}}/>
    :editMode&&!readonly?<button key={`text-${i}`} type="button" className="tag-text" disabled={disabled} onClick={()=>{setDraft(text(i));setEditing(i);}} aria-label={`${language==='ru'?'Изменить':'Edit'} ${label}: ${text(i)}`}>{text(i)}{instance?.overrides?.[i]?.[language]!==undefined?<sup aria-label={language==='ru'?'изменено':'edited'}>*</sup>:null}</button>:<span key={`text-${i}`}>{text(i)}</span>;
  if(!instance)return def?<span className="tag-inline"><button type="button" className="tag-add" disabled={disabled} onClick={()=>onRoll()}>{label} +</button></span>:null;
- return <span className="tag-inline" data-tag={instance.definitionId} data-tag-owner={ownerKey(owner)}>
+ return <><span className="tag-inline" data-tag={instance.definitionId} data-tag-owner={ownerKey(owner)}>
    {menu?<span className="tag-actions" role="menu" onKeyDown={e=>{if(e.key==='Escape')setMenu(false);}}><button type="button" role="menuitem" autoFocus disabled={disabled||!!readonly} onBlur={()=>setMenu(false)} onClick={()=>{onRoll();setMenu(false);}}>{language==='ru'?'Перебросить оба':'Reroll both'}</button></span>:null}
    {instance.definitionId==='mb.seer'?<span>{language==='ru'?'Провидец: ':'Seer: '}</span>:null}
    {instance.resolver==='product'?<span className="tag-component">{instance.values.map((_,i)=>dice(i))}{result(0)}</span>:instance.values.map((_,i)=><span className="tag-component" key={i}>{dice(i)}{result(i)}</span>)}
- </span>;
+ </span>{materialContext?.poiType==='myth'&&owner.kind==='poi'&&instance.definitionId==='mb.myth'&&<MythMaterialView
+  key={`${ownerKey(owner)}:${instance.definitionVersion}:${instance.revision}:${instance.entryIds.join('|')}:${language}:${materialContext.documentRevision}`}
+  owner={owner} instance={instance} poiType={materialContext.poiType} language={language} disabled={disabled||materialContext.disabled||editing!==null}/>}</>;
 }

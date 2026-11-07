@@ -7,6 +7,8 @@ import {renderToStaticMarkup} from 'react-dom/server';
 import {createRequire} from 'node:module';
 import {emptyTags,rollTag,findTag,tagKey,ownerKey,editTag,validateTags,resolved} from '../src/tags/engine.ts';
 import {mythicDefinitions as defs,tagOwners,tagPolicy,fillMythicTags} from '../src/tags/mythic.ts';
+import {selectMythMaterial,materialIdentity,MYTH_MATERIAL_EDITION,mythMaterialManifest} from '../src/tags/mythMaterial.ts';
+import mythMaterialRecords from '../src/tags/mythMaterialData.ts';
 import {createGenerationHarness} from './helpers/generation-harness.mjs';
 const owner={kind:'region',id:1};
 test('independent columns preserve sibling overrides and counters; product tuple selects one of 72 complete records',()=>{
@@ -49,6 +51,61 @@ test('saved tags validate references, tuples, counts and known snapshots; future
  assert.deepEqual(languages,languageCopy);
  assert.doesNotThrow(()=>validateTags(editTag(languages,owner,'mb.land',0,'lang0','changed'),owners,defs));
 });
+// MC1-01/03/07/10: independently check tuple identity, isolated malformed data,
+// defensive limits and language fallback. These invented records are test-only;
+// they contain no book material and the production registry remains empty.
+test('myth material selects only the exact compatible snapshot without mutating or repairing it',()=>{
+ const poi={kind:'poi',regionId:7,hexKey:'2,-3'};
+ const snapshot=index=>({definitionId:'mb.myth',definitionVersion:1,owner:{...poi},resolver:'product',revision:3,sides:[6,12],values:[[Math.floor(index/12)+1],[index%12+1]],entryIds:[`mb.myth:${index}`],texts:[{ru:`ВЫМЫШЛЕННЫЙ TEST ONLY ${index}`}],overrides:[{ru:'Авторское имя'}]});
+ const content=index=>({
+  omens:Array.from({length:index%3+1},(_,n)=>({id:`omen-${n}`,ordinal:n+1,text:`ВЫМЫШЛЕННАЯ TEST ONLY сцена ${index}/${n} ${n===0?'<script>never execute</script>':''}`})),
+  roles:Array.from({length:index%4+1},(_,n)=>({id:`role-${n}`,title:n===0?'ВЫМЫШЛЕННАЯ TEST ONLY группа из двух':'TEST ONLY роль',text:`ВЫМЫШЛЕННЫЙ TEST ONLY блок ${index}/${n}`})),
+  ...(index%2===0?{rolePreamble:'ВЫМЫШЛЕННОЕ TEST ONLY общее вступление'}:{})
+ });
+ const records=Array.from({length:72},(_,index)=>({definitionId:'mb.myth',definitionVersion:1,entryId:`mb.myth:${index}`,materialVersion:1,sourceEdition:MYTH_MATERIAL_EDITION,sourcePage:index+1,locales:{ru:content(index)},references:[{type:'unresolved',description:'TEST ONLY: вымышленная ссылка, без перехода'}]}));
+ records[12].locales.en=structuredClone(content(12));records[12].locales.en.roles[0].title='TEST ONLY translated group';
+ const deepFreeze=value=>{if(value&&typeof value==='object'){for(const child of Object.values(value))deepFreeze(child);Object.freeze(value);}return value;};
+ const frozen=deepFreeze(records),frozenPoi=deepFreeze(poi),before=structuredClone(frozen);
+ assert.deepEqual(mythMaterialRecords,[],'source-free production cannot silently ship fictional cards');
+ assert.deepEqual(mythMaterialManifest,[{definitionId:'mb.myth',definitionVersion:1,sourceEdition:MYTH_MATERIAL_EDITION,materialVersion:1}]);
+ const identities=new Set();
+ for(let group=1;group<=6;group++)for(let entry=1;entry<=12;entry++){
+  const index=(group-1)*12+entry-1,s=deepFreeze(snapshot(index)),saved=structuredClone(s);
+  const selected=selectMythMaterial(s,frozenPoi,'myth',frozen,'ru');
+  assert.equal(selected.status,'ready');assert.equal(selected.record.entryId,`mb.myth:${index}`);
+  assert.deepEqual(selected.content,records[index].locales.ru);assert.equal(selected.language,'ru');assert.equal(selected.fallback,false);
+  assert.deepEqual(s,saved);identities.add(materialIdentity(s,frozenPoi,'myth'));
+  assert.equal(selectMythMaterial(s,frozenPoi,'myth',mythMaterialRecords,'ru').status,'unavailable');
+ }
+ assert.equal(identities.size,72);assert.ok(!identities.has(undefined));
+ assert.notEqual(materialIdentity(snapshot(11),poi,'myth'),materialIdentity(snapshot(12),poi,'myth'));
+ const a=snapshot(0),clone=structuredClone(a),otherOwner={...poi,hexKey:'3,-3'};
+ assert.equal(selectMythMaterial(undefined,poi,'myth',records,'ru').status,'absent');
+ for(const type of ['ruins','sanctuary','seer'])assert.equal(selectMythMaterial(a,poi,type,records,'ru').status,'absent');
+ assert.equal(selectMythMaterial(a,{kind:'region',id:7},'myth',records,'ru').status,'absent');
+ for(const mutate of [s=>s.definitionId='mb.seer',s=>s.definitionVersion=2,s=>s.owner=otherOwner,s=>s.resolver='independent',s=>s.sides=[12,6],s=>s.values=[[1,1],[1]],s=>s.values=Array(2),s=>s.values=[[0],[1]],s=>s.values=[[7],[1]],s=>s.values=[[1],[13]],s=>s.values=[[1.5],[1]],s=>s.entryIds=['mb.myth:1'],s=>s.entryIds.push('mb.myth:0')]){
+  const broken=structuredClone(a);mutate(broken);assert.equal(selectMythMaterial(broken,poi,'myth',records,'ru').status,'unavailable');assert.equal(materialIdentity(broken,poi,'myth'),undefined);
+ }
+ assert.notEqual(materialIdentity(a,poi,'myth'),materialIdentity({...a,revision:a.revision+1},poi,'myth'));
+ assert.deepEqual(a,clone,'selection must preserve authored overrides and original snapshots');
+ const fallback=selectMythMaterial(a,poi,'myth',records,'en');assert.equal(fallback.status,'ready');assert.equal(fallback.fallback,true);assert.equal(fallback.language,'ru');assert.deepEqual(fallback.content,records[0].locales.ru);
+ const translated=selectMythMaterial(snapshot(12),poi,'myth',records,'en');assert.equal(translated.status,'ready');assert.equal(translated.language,'en');assert.equal(translated.fallback,false);assert.equal(translated.content.roles[0].title,'TEST ONLY translated group');
+ const selectRegistry=registry=>selectMythMaterial(a,poi,'myth',registry,'ru');
+ assert.equal(selectRegistry(null).status,'error');assert.equal(selectRegistry({}).status,'error');assert.equal(selectRegistry([]).status,'unavailable');
+ const changed=mutate=>{const registry=structuredClone(records);mutate(registry[0],registry);return registry;};
+ for(const mutate of [r=>r.definitionVersion=2,r=>r.materialVersion=2,r=>r.sourceEdition='unpublished-other-edition'])assert.equal(selectRegistry(changed(mutate)).status,'unavailable');
+ for(const mutate of [r=>r.definitionVersion='1',r=>r.materialVersion='1',r=>r.sourceEdition=7,r=>r.sourcePage=0,r=>r.sourcePage=1.5,r=>r.sourcePage=Number.MAX_SAFE_INTEGER+1,r=>r.locales.ru.omens[0].text='',r=>r.locales.ru.roles[0].title='  ',r=>r.locales.ru.omens[0].ordinal=0,r=>r.locales.ru.omens.push({...r.locales.ru.omens[0],id:'different'}),r=>r.locales.ru.roles.push({...r.locales.ru.roles[0]}),r=>r.locales.ru.roles[0].id=r.locales.ru.omens[0].id,r=>r.locales.ru.roles[0].text=8,r=>r.references[0].type='execute',r=>r.locales.en={omens:[],roles:'wrong'},r=>r.locales.ru.omens[0].text='🧭'.repeat(16385),r=>r.locales.ru.omens=Array.from({length:129},(_,n)=>({id:`test-${n}`,ordinal:n+1,text:'TEST ONLY'}))]){
+  assert.equal(selectRegistry(changed(mutate)).status,'error');
+ }
+ const maximum=changed(r=>{r.locales.ru.omens[0].text='🧭'.repeat(16384);});
+ const maxSelected=selectRegistry(maximum);assert.equal(maxSelected.status,'ready');assert.equal([...maxSelected.content.omens[0].text].length,16384,'Unicode code points are preserved, never truncated');
+ const aggregate=changed(r=>{r.locales.ru.omens=Array.from({length:17},(_,n)=>({id:`large-${n}`,ordinal:n+1,text:'x'.repeat(16384)}));});
+ assert.equal(selectRegistry(aggregate).status,'error','the aggregate limit is per complete record');
+ const duplicate=changed((r,registry)=>registry.push(structuredClone(r)));assert.equal(selectRegistry(duplicate).status,'error');assert.equal(selectMythMaterial(snapshot(1),poi,'myth',duplicate,'ru').status,'ready');
+ const malformedNeighbour=changed((_r,registry)=>{registry[1].locales.ru.omens='broken';registry.push(null);});assert.equal(selectRegistry(malformedNeighbour).status,'ready');assert.equal(selectMythMaterial(snapshot(1),poi,'myth',malformedNeighbour,'ru').status,'error');
+ const missingSection=changed(r=>r.locales.ru.roles=[]);assert.equal(selectRegistry(missingSection).status,'unavailable');missingSection[0].locales.ru.verifiedEmptySections=['roles'];assert.equal(selectRegistry(missingSection).status,'ready');
+ assert.deepEqual(records,before,'including failed validation, selection is read-only');
+});
 // Import boundaries are also mutation boundaries: valid snapshots stay exportable.
 function atCapacity(o,withKnown=true){
  const s=rollTag(emptyTags(),o,defs['mb.land'],42),base=structuredClone(s.instances[0]);
@@ -60,7 +117,7 @@ test('equal independent dice expose distinct localized purposes and current edit
  const source=fs.readFileSync(new URL('../src/tags/TagRow.tsx',import.meta.url),'utf8');
  const code=ts.transpileModule(source,{compilerOptions:{module:ts.ModuleKind.CommonJS,jsx:ts.JsxEmit.ReactJSX}}).outputText;
  const module={exports:{}},require=createRequire(import.meta.url);
- new Function('require','module','exports',code)(name=>name==='./engine'?{ownerKey}:require(name),module,module.exports);
+ new Function('require','module','exports',code)(name=>name==='./engine'?{ownerKey}:name==='./MythMaterialView'?{MythMaterialView:()=>null}:require(name),module,module.exports);
  const def=defs['mb.land'],instance={...rollTag(emptyTags(),owner,def,42).instances[0],values:[[2],[2]],...resolved(def,[[2],[2]]),overrides:[{ru:'Моя земля',en:'My land'},{}]};
  for(const language of ['ru','en']){
   const html=renderToStaticMarkup(React.createElement(module.exports.TagRow,{owner,definition:def,instance,language,editMode:false,disabled:false,onRoll:()=>true,onEdit:()=>true}));
