@@ -1,0 +1,39 @@
+name: HX-BL-003 fixed corpus
+on:
+  push:
+    branches: [agent/hx-bl-003-performance]
+    paths: [.github/workflows/hx-bl-003-profile.yml, scripts/hx-bl-003-corpus.mjs]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: hx-bl-003-corpus-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  corpus:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Build exact released product without harness source changes
+        run: |
+          git worktree add /tmp/hx003-product 103d31b9f6f5c76b1f6b45d9d6664fe3f75dd63b
+          ln -s "$GITHUB_WORKSPACE/node_modules" /tmp/hx003-product/node_modules
+          cd /tmp/hx003-product
+          npm run build
+          cp -R dist "$GITHUB_WORKSPACE/dist"
+      - name: Prepare real growth corpus (no performance series)
+        run: node scripts/hx-bl-003-corpus.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: HX-BL-003-fixed-corpus
+          path: reports/HX-BL-003/corpus/
+          if-no-files-found: error

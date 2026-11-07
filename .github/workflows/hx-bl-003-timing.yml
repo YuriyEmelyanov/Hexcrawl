@@ -1,0 +1,85 @@
+name: HX-BL-003 P1 timing
+on:
+  push:
+    branches: [agent/hx-bl-003-performance]
+    paths: [.github/workflows/hx-bl-003-timing.yml, scripts/hx-bl-003-timing.mjs, scripts/hx-bl-003-instrument.mjs, scripts/hx-bl-003-environment.mjs]
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: hx-bl-003-timing-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  baseline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/hx-bl-003-performance
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - uses: actions/download-artifact@v4
+        with:
+          name: HX-BL-003-baseline-outputs
+          run-id: 40200788539
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: reports/HX-BL-003/baseline-outputs
+      - name: Verify frozen inputs and all baseline output hashes
+        run: |
+          python - <<'PY'
+          import hashlib,json,pathlib,zipfile
+          p=pathlib.Path('reports/HX-BL-003/corpus/fixed-corpus.zip')
+          assert hashlib.sha256(p.read_bytes()).hexdigest()=='55dddd3df58d45ad33578678ec239e61d966c6972dbaa7e8cd2fd8c510ff5913'
+          with zipfile.ZipFile(p) as z:
+              assert all(not i.filename.startswith('/') and '..' not in pathlib.PurePosixPath(i.filename).parts for i in z.infolist())
+              z.extractall(p.parent)
+          p=pathlib.Path('reports/HX-BL-003/baseline-outputs')
+          m=json.loads((p/'manifest.json').read_text())
+          assert len(m['files'])==42
+          for f in m['files']:
+              data=(p/f['path']).read_bytes()
+              assert len(data)==f['bytes'] and hashlib.sha256(data).hexdigest()==f['sha256']
+          PY
+      - name: Build exact baseline with minimal identical timing probes
+        run: |
+          git worktree add /tmp/hx003-timing-product 103d31b9f6f5c76b1f6b45d9d6664fe3f75dd63b
+          ln -s "$GITHUB_WORKSPACE/node_modules" /tmp/hx003-timing-product/node_modules
+          node scripts/hx-bl-003-instrument.mjs /tmp/hx003-timing-product
+          cd /tmp/hx003-timing-product
+          npx tsc --noEmit
+          npx vite build --sourcemap
+          cp -R dist "$GITHUB_WORKSPACE/dist"
+      - name: Commit actual environment before any latency collection
+        run: |
+          test "$GITHUB_REF_NAME" = 'agent/hx-bl-003-performance'
+          node scripts/hx-bl-003-environment.mjs
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add reports/HX-BL-003/timing-environment.json
+          git commit -m "test(performance): freeze actual P1 runner manifest before timing"
+          git push origin HEAD:refs/heads/agent/hx-bl-003-performance
+      - name: Collect cold, warmup and all five warm actions on seven checkpoints
+        run: node scripts/hx-bl-003-timing.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: HX-BL-003-P1-timings
+          path: |
+            reports/HX-BL-003/timing/
+            reports/HX-BL-003/timing-environment.json
+          if-no-files-found: error
+      - name: Separate profiling series for fixed small and large primary checkpoints
+        if: success()
+        run: P1_TRACE=1 node scripts/hx-bl-003-timing.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: HX-BL-003-P1-profiled-traces
+          path: reports/HX-BL-003/timing/profiled/
+          if-no-files-found: warn
