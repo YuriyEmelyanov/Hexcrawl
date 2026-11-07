@@ -5341,64 +5341,62 @@
   },
   "research_agent": {
     "task_id": "HX-RSR-001",
-    "status": "enabled_WWN_bindings_registered_product_unverified",
+    "status": "enabled_tagged_POI_compound_runtime_observed_Knave_profile_unverified",
     "automation_id": "Automation_7690c42b2a7881919aaca4103dcd338f",
     "contract_ref": "agent-work/research/contract.md",
     "overview_ref": "agent-work/research/README.md",
     "state_ref": "agent-work/research/state.json",
     "method_ref": "agent-work/research/method.json",
     "proposals_ref": "agent-work/research/proposals.json",
-    "result_ref": "agent-work/research/runs/2026-11-07T1435-WWN-binding-finalization.json",
-    "last_completed_run": "2026-11-07T1435-WWN-binding-finalization",
-    "previous_result_ref": "agent-work/research/runs/2026-11-06T1430-SD-terrain-mapping.json",
-    "checkpoint_ref": "agent-work/research/checkpoints/WWN-regional-hydrology.json",
-    "source_matrix_ref": "agent-work/market/rules/WWN-Deluxe-RU.json",
-    "readable_requirements_ref": "agent-work/research/requirements/WWN-regional-hydrology-v1.json",
-    "source_inventory_ref": "agent-work/research/runs/2026-11-06T1530-WWN-regional-hydrology.json",
+    "result_ref": "agent-work/research/runs/2026-11-07T2327-tagged-POI-lifecycle.json",
+    "last_completed_run": "2026-11-07T2327-tagged-POI-lifecycle",
+    "previous_result_ref": "agent-work/research/runs/2026-11-07T1435-WWN-binding-finalization.json",
+    "checkpoint_ref": "agent-work/research/checkpoints/KNAVE2-table-reuse.json",
+    "source_matrix_ref": "agent-work/market/rules/Knave-2e.json",
+    "readable_requirements_ref": "agent-work/research/requirements/L1-tagged-poi-lifecycle-v1.json",
+    "source_inventory_ref": "agent-work/research/runs/2026-11-06-KNAVE2-full-thematic-audit.json",
     "inventory_summary": {
-      "source_rules": 7,
-      "applicable_requirements": 7,
-      "layer": "L1",
-      "source_acceptance_cases": 24,
-      "handoff_acceptance_cases": 25,
-      "prepared_bindings": 7,
-      "registered_bindings": 7,
-      "status": "partial_source_corpus_profiles_registered_product_unverified"
+      "observed_runtime_checks": 11,
+      "passed": 11,
+      "fixture_profile": "existing_MB_monument",
+      "Knave_support": "unverified"
     },
-    "next_candidate": "Адресно проверить перенос заполненного POI: сохранность бросков, RU/EN текста, счётчиков и Undo/Redo на точном SHA; использовать существующий checkpoint и evidence, не объявлять полную поддержку Knave.",
-    "next_step": "Адресно проверить перенос заполненного POI: сохранность бросков, RU/EN текста, счётчиков и Undo/Redo на точном SHA; использовать существующий checkpoint и evidence, не объявлять полную поддержку Knave.",
+    "next_candidate": "Уточнить минимальный адаптер таблиц: ручной выбор строки, независимые экземпляры одинакового результата и provenance. Для двух одинаковых результатов A/B задать разные occurrence IDs; при перебросе A результат B и его источник должны сохраниться. Использовать уже извлечённые KNAVE2-070/071 и reuse-handoff, не пересканировать книгу.",
+    "next_step": "Уточнить минимальный адаптер таблиц: ручной выбор строки, независимые экземпляры одинакового результата и provenance. Для двух одинаковых результатов A/B задать разные occurrence IDs; при перебросе A результат B и его источник должны сохраниться. Использовать уже извлечённые KNAVE2-070/071 и reuse-handoff, не пересканировать книгу.",
     "next_role": "research_analyst",
     "rating_changes_require_owner_approval": true,
     "active_ranking_ref": "agent-work/market/three-scenario-ranking-2026-11-06.json",
     "rating_approval_ref": "agent-work/decisions/owner-decision-2026-11-06-rating-v1.4-approved.json",
-    "authority_status": "Research integration only; task005 remains proposed; no rating/score/product/main/foreign queue changes.",
+    "authority_status": "Bounded existing product observation; no product development, score, rating or foreign queue changes.",
     "automation_health": {
-      "restoration_performed": true,
-      "restoration_scope": "research is_enabled only; existing owner hourly authorization; no owner pause found; cause unknown",
       "research_agent": {
         "start": {
           "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
           "is_enabled": false,
-          "checked_at": "2026-11-07T14:35:47.893Z"
+          "checked_at": null,
+          "note": "Initial exact timestamp not captured; enabled restored under standing owner request."
         },
         "end": {
           "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
           "is_enabled": true,
-          "checked_at": "2026-11-07T14:37:09.489Z"
+          "checked_at": "2026-11-07T23:32:10.366Z"
         }
       },
       "main_team": {
         "start": {
           "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
           "is_enabled": true,
-          "checked_at": "2026-11-07T14:35:47.893Z"
+          "checked_at": null,
+          "note": "Specific result lookup errored; broad private lookup confirmed enabled before claim."
         },
         "end": {
           "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
           "is_enabled": true,
-          "checked_at": "2026-11-07T14:37:09.489Z"
+          "checked_at": "2026-11-07T23:32:10.366Z"
         }
-      }
+      },
+      "restoration_performed": true,
+      "restoration_scope": "Research is_enabled restored at start and after end observation found it disabled again. No owner pause found; cause unknown; schedule/model unchanged."
     },
     "owner_decisions_needed": [],
     "model_preference": {
@@ -5407,11 +5405,21 @@
       "technical_setting": "unknown; prompt preference is not runtime configuration evidence"
     },
     "latest_research_storage_verification": {
-      "commit": "e781bc84d81dcdd53b0c97fde0736d006f0dabf5",
-      "files_verified": 11,
-      "method": "Exact UTF8 readback at commit, including Git blob API for large registry"
+      "commit": "6093a6743f15722fe28dcb59f2e3c5ca8dacb6b8",
+      "files_verified": 9,
+      "method": "Exact UTF8 readback at committed SHA"
     },
-    "finalized_at": "2026-11-07T14:39:01.659Z"
+    "finalized_at": "2026-11-07T23:34:20.556Z",
+    "previous_inventory_summary": {
+      "source_rules": 7,
+      "applicable_requirements": 7,
+      "layer": "L1",
+      "source_acceptance_cases": 24,
+      "handoff_acceptance_cases": 25,
+      "prepared_bindings": 7,
+      "registered_bindings": 7,
+      "status": "partial_source_corpus_profiles_registered_product_unverified"
+    }
   },
   "latest_ranking_activation": {
     "run_id": "2026-11-06-strategist-rating14-activation",
