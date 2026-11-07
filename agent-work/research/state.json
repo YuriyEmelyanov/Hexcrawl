@@ -59,19 +59,14 @@
     "layer": "L1",
     "status": "candidate_not_fixed_rotation",
     "task_ref": "agent-work/backlog.json#HX-BL-043",
-    "checkpoint_ref": "agent-work/research/checkpoints/KNAVE2-table-reuse.json",
-    "action": "Адресно проверить перенос заполненного POI: сохранность бросков, RU/EN текста, счётчиков и Undo/Redo на точном SHA; использовать существующий checkpoint и evidence, не объявлять полную поддержку Knave.",
-    "why_now": "Выше действующий create-ранг и общий жизненный цикл таблиц для Knave/Shadowdark; WWN source-to-registry перенос теперь завершён."
+    "action": "Уточнить минимальный адаптер таблиц: ручной выбор строки, независимые экземпляры одинакового результата и provenance. Для двух одинаковых результатов A/B задать разные occurrence IDs; при перебросе A результат B и его источник должны сохраниться. Использовать уже извлечённые KNAVE2-070/071 и reuse-handoff, не пересканировать книгу.",
+    "why_now": "Общий перенос/история проверен; оставшийся пробел относится к специфичному Knave профилю выбора и происхождения результата, а не новому движку хранения."
   },
-  "active_task": {
-    "game_id": "KNAVE2",
-    "layer": "L1",
-    "action": "One temporary runtime tagged POI move/history/JSON audit on main00190bb; research evidence only, no product changes"
-  },
+  "active_task": null,
   "claim": {
     "claim_id": "2026-11-07T2327-tagged-POI-lifecycle",
     "task_id": "HX-RSR-001",
-    "status": "active",
+    "status": "completed",
     "scope": "One temporary runtime tagged POI move/history/JSON audit on main00190bb; research evidence only, no product changes",
     "claimed_at": "2026-11-07T23:27:21.639Z",
     "lease_expires_at": "2026-11-08T00:27:21.640Z",
@@ -84,9 +79,11 @@
     "shared_merge_only": [
       "agent-work/backlog.json"
     ],
-    "latest_scope": "research_agent only,last"
+    "latest_scope": "research_agent only,last",
+    "completed_at": "2026-11-07T23:33:38.336Z",
+    "result_ref": "agent-work/research/runs/2026-11-07T2327-tagged-POI-lifecycle.json"
   },
-  "last_completed_run": "2026-11-07T1435-WWN-binding-finalization",
+  "last_completed_run": "2026-11-07T2327-tagged-POI-lifecycle",
   "run_history_refs": [
     "agent-work/research/runs/2026-11-06-setup.json",
     "agent-work/research/runs/2026-11-06-map-creation-ranking.json",
@@ -100,7 +97,8 @@
     "agent-work/research/runs/2026-11-06T1330-L1-lifecycle-evidence.json",
     "agent-work/research/runs/2026-11-06T1430-SD-terrain-mapping.json",
     "agent-work/research/runs/2026-11-07T1230-WWN-registry-integration.json",
-    "agent-work/research/runs/2026-11-07T1435-WWN-binding-finalization.json"
+    "agent-work/research/runs/2026-11-07T1435-WWN-binding-finalization.json",
+    "agent-work/research/runs/2026-11-07T2327-tagged-POI-lifecycle.json"
   ],
   "awaiting_owner_approval": [],
   "conflicts_observed": [
@@ -116,19 +114,17 @@
   "setup_commit": "88448b734a8e9a1a35fba9352c2a6845eff98ae5",
   "last_setup_result_ref": "agent-work/research/runs/2026-11-06-setup.json",
   "automation_health": {
-    "restoration_performed": true,
-    "restoration_scope": "research is_enabled only; existing owner hourly authorization; no owner pause found; cause unknown",
     "research_agent": {
       "start": {
         "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
         "is_enabled": false,
         "checked_at": null,
-        "note": "Initial tool batch observed status before claim; exact start check timestamp not retained."
+        "note": "Initial exact timestamp not captured; enabled restored under standing owner request."
       },
       "end": {
         "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
         "is_enabled": true,
-        "checked_at": "2026-11-07T14:37:09.489Z"
+        "checked_at": "2026-11-07T23:32:10.366Z"
       }
     },
     "main_team": {
@@ -136,19 +132,21 @@
         "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
         "is_enabled": true,
         "checked_at": null,
-        "note": "Initial tool batch observed status before claim; exact start check timestamp not retained."
+        "note": "Specific result lookup errored; broad private lookup confirmed enabled before claim."
       },
       "end": {
         "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
         "is_enabled": true,
-        "checked_at": "2026-11-07T14:37:09.489Z"
+        "checked_at": "2026-11-07T23:32:10.366Z"
       }
-    }
+    },
+    "restoration_performed": true,
+    "restoration_scope": "Research is_enabled restored at start and after end observation found it disabled again. No owner pause found; cause unknown; schedule/model unchanged."
   },
-  "last_result_ref": "agent-work/research/runs/2026-11-07T1435-WWN-binding-finalization.json",
+  "last_result_ref": "agent-work/research/runs/2026-11-07T2327-tagged-POI-lifecycle.json",
   "blocked_source_work": [],
   "owner_scope_ref": "owner-decision-2026-11-06-knave-complete-rules-audit",
-  "checkpoint_ref": "agent-work/research/checkpoints/WWN-regional-hydrology.json",
+  "checkpoint_ref": "agent-work/research/checkpoints/KNAVE2-table-reuse.json",
   "last_owner_update_ref": "agent-work/research/runs/2026-11-06-SD-core-thematic-audit.json",
   "source_access_resolved": {
     "KNAVE2": {

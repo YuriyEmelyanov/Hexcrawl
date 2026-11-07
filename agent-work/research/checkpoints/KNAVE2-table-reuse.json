@@ -1,15 +1,15 @@
 {
   "schema_version": 1,
   "ref": "agent-work/research/checkpoints/KNAVE2-table-reuse.json",
-  "status": "existing_tag_lifecycle_evidenced_compound_move_pending",
+  "status": "tagged_poi_compound_desktop_observed_knave_adapter_unverified",
   "handoff_ref": "agent-work/research/requirements/L1-tagged-poi-lifecycle-v1.json",
   "next_candidate": {
     "game_id": "KNAVE2",
     "layer": "L1",
-    "action": "Проверить один составной сценарий: POI с непустым MB-тегом и RU/EN override → перенос между регионами → точные Undo/Redo → экспорт/импорт. Использовать существующий browser fixture и опубликованный SHA; не повторять общий набор.",
-    "task_ref": "agent-work/backlog.json#HX-BL-043",
     "status": "candidate_not_fixed_rotation",
-    "why_now": "Отдельные tag lifecycle и POI movement подтверждены на одинаковом release tree, но сохранность непустого тега при переносе не проверяется найденными assertions."
+    "task_ref": "agent-work/backlog.json#HX-BL-043",
+    "action": "Уточнить минимальный адаптер таблиц: ручной выбор строки, независимые экземпляры одинакового результата и provenance. Для двух одинаковых результатов A/B задать разные occurrence IDs; при перебросе A результат B и его источник должны сохраниться. Использовать уже извлечённые KNAVE2-070/071 и reuse-handoff, не пересканировать книгу.",
+    "why_now": "Общий перенос/история проверен; оставшийся пробел относится к специфичному Knave профилю выбора и происхождения результата, а не новому движку хранения."
   },
   "comparison": {
     "pr_head": "de0299168e5a74d4e3594db71d657ca8055614e0",
@@ -20,5 +20,7 @@
     "tested_tree": "79b69059c70eed7430bcda93db5d72a6097695d3",
     "all_trees_equal": true
   },
-  "completed_run": "2026-11-06T1330-L1-lifecycle-evidence"
+  "completed_run": "2026-11-07T2327-tagged-POI-lifecycle",
+  "runtime_evidence_ref": "agent-work/research/evidence/2026-11-07T2327-tagged-POI-lifecycle/result.json",
+  "runtime_code_sha": "00190bb749a4fa5af57aac4bbffff808e8fe733f"
 }

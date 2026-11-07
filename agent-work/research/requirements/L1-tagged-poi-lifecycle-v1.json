@@ -56,7 +56,7 @@
       "При конфликте личности/дороги/занятого адреса отказ должен быть атомарным.",
       "Валидный base text берётся из текущего MB-каталога; этот случай не проверяет содержание Knave.",
       "Импорт может начинать новую историю: Undo/Redo проверять до импорта; roundtrip проверять отдельным этапом.",
-      "Это предложенная приёмка; этот составной сценарий в данном запуске не выполнен."
+      "Составной положительный desktop-сценарий и отказ для занятой цели выполнены на00190bb; другие отрицательные варианты остаются за границами этой проверки."
     ],
     "acceptance_cases": [
       {
@@ -86,7 +86,6 @@
       "content.roll_table_resolution"
     ],
     "unresolved_parameters": [
-      "Полный составной UI-сценарий непустого тега при переносе остаётся unverified.",
       "Формат Knave provenance и occurrence IDs остаётся в reuse-handoff-v1; данный MB lifecycle не подтверждает его."
     ]
   },
@@ -176,11 +175,22 @@
   "coverage": {
     "MB_tag_reroll_history_json": "confirmed_existing_CI_at_identical_tree",
     "POI_move_history": "confirmed_existing_CI_at_identical_tree",
-    "tagged_POI_move": "unverified_no_tag_state_assertions_found",
+    "tagged_POI_move": "bounded_browser_observed_on_00190bb_not_full_profile_support",
     "Knave070_071": "unverified_adapter_not_implemented"
   },
   "implementation_authorized": false,
   "release_authorized": false,
   "score_delta": null,
-  "registry_policy": "Existing common-rules/game-bindings remain authoritative and unchanged; this is acceptance/evidence handoff only."
+  "registry_policy": "Existing common-rules/game-bindings remain authoritative and unchanged; this is acceptance/evidence handoff only.",
+  "current_runtime_evidence_ref": "agent-work/research/evidence/2026-11-07T2327-tagged-POI-lifecycle/result.json",
+  "current_runtime_code_sha": "00190bb749a4fa5af57aac4bbffff808e8fe733f",
+  "current_runtime_verification": {
+    "checks": 11,
+    "passed": 11,
+    "scope": [
+      "Only desktop1500x1100; imported one valid existing MB tag; bilingual overrides are fixture inputs, not tested UI text entry.",
+      "Occupied destination refusal was checked; other hidden-identity and road conflicts were not repeated.",
+      "No Knave-specific row selection, occurrence/provenance adapter, full table correctness or complete game support established."
+    ]
+  }
 }

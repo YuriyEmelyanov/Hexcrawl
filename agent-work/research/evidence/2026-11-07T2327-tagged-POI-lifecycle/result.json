@@ -1,0 +1,93 @@
+{
+  "status": "passed",
+  "code_sha": "00190bb749a4fa5af57aac4bbffff808e8fe733f",
+  "browser": "153.0.8010.0",
+  "node": "v24.22.1",
+  "fixture": "regionFixture(mythic) with one valid mb.monument product tag; synthetic bilingual overrides; source owner1:2,0 target2:3,0",
+  "checks": [
+    {
+      "name": "valid nonempty imported tag",
+      "passed": true
+    },
+    {
+      "name": "move preview has not changed accepted document",
+      "passed": true
+    },
+    {
+      "name": "tag identity and bilingual override survive move",
+      "passed": true
+    },
+    {
+      "name": "counter prefixes moved with exact values",
+      "passed": true
+    },
+    {
+      "name": "world RNG and document counters unchanged",
+      "passed": true
+    },
+    {
+      "name": "region membership transferred",
+      "passed": true
+    },
+    {
+      "name": "exact Undo document",
+      "passed": true
+    },
+    {
+      "name": "exact Redo document",
+      "passed": true
+    },
+    {
+      "name": "exact JSON roundtrip",
+      "passed": true
+    },
+    {
+      "name": "occupied target refused atomically",
+      "passed": true
+    },
+    {
+      "name": "no browser errors or import alerts",
+      "passed": true
+    }
+  ],
+  "document_hashes": {
+    "before": "21437fa7465494843e0f41102919263edba0dcd72ab965da050781b9b0f24f46",
+    "moved": "d8f7bb1e2ee2d3921e8aa795e245f64f0201ef349527a245ed0e8dcc447712c6",
+    "undo": "21437fa7465494843e0f41102919263edba0dcd72ab965da050781b9b0f24f46",
+    "redo": "d8f7bb1e2ee2d3921e8aa795e245f64f0201ef349527a245ed0e8dcc447712c6",
+    "roundtrip": "d8f7bb1e2ee2d3921e8aa795e245f64f0201ef349527a245ed0e8dcc447712c6",
+    "blocked_before": "44e7b9d3b615b087ceec7bda7fe87474828588dfa1e74da5c775410f296a87c8",
+    "blocked_after": "44e7b9d3b615b087ceec7bda7fe87474828588dfa1e74da5c775410f296a87c8"
+  },
+  "scope": "One targeted temporary browser scenario; existing MB shared lifecycle, not Knave resolver implementation or full game support",
+  "finished_at": "2026-11-07T23:30:36.029Z",
+  "probe_ref": "agent-work/research/evidence/2026-11-07T2327-tagged-POI-lifecycle/probe.mjs",
+  "build": {
+    "command": "npm ci --ignore-scripts --no-audit --no-fund; npm run build",
+    "result": "passed",
+    "source_changes": false
+  },
+  "code_blobs": {
+    "manualPois": "983d7f56a1ce5db5932a880316c29d334d97f131",
+    "tags_engine": "07a1cb80a9a637b4be7b0c7dda6302011d58d63e",
+    "region_fixture": "ea0adae74213f1f8308a7b9d36d4cd81f1e59d14"
+  },
+  "evidence_class": "researcher_observed_bounded_runtime; not independent product review or coverage award",
+  "limitations": [
+    "Only desktop1500x1100; imported one valid existing MB tag; bilingual overrides are fixture inputs, not tested UI text entry.",
+    "Occupied destination refusal was checked; other hidden-identity and road conflicts were not repeated.",
+    "No Knave-specific row selection, occurrence/provenance adapter, full table correctness or complete game support established."
+  ],
+  "environment_notes": [
+    "Default Playwright browser was absent; CDN download returned incomplete archive.",
+    "@sparticuz/chromium installed temporarily without package-lock edits; unpacked binary launched through CHROMIUM_EXECUTABLE_PATH=/tmp/chromium after fonts extraction ownership issue.",
+    "Browser setup failures occurred before product assertions; successful final run executed all11 checks."
+  ],
+  "reproduction": [
+    "Check out exact code SHA00190bb749a4fa5af57aac4bbffff808e8fe733f.",
+    "Copy probe.mjs into repository root as research-tagged-poi.mjs; it is a temporary diagnostic, not a CI test addition.",
+    "npm ci --ignore-scripts; npm run build; npm install --no-save --package-lock=false --ignore-scripts @sparticuz/chromium.",
+    "Run node research-tagged-poi.mjs with a compatible Chromium executable; the successful environment used CHROMIUM_EXECUTABLE_PATH=/tmp/chromium.",
+    "Compare reported document hashes, not savedAt timestamps."
+  ]
+}
