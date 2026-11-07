@@ -450,3 +450,8 @@ The existing tag double-click case relied on350ms of wall time across expensive 
 ### 2026-11-07 — MYTH-CONTENT-SCHEMA: source blocks versus executable procedure
 
 Three sampled myth pages29/101/171 each contain six ordered Omens, three role blocks and a six-row two-column table, but this does not establish a uniform72myth schema. A role block may represent a group, not one NPC; a shared preamble belongs to the role collection. Displayed stats/effects are source reference, not executed mechanics. A numbered two-column table is insufficient evidence for independent dice or Knave's d100/reference profile. Page171's opposite-page reference was not resolved by170; preserve unknown rather than silently retarget. Reuse existing catalog IDs and canonical description/hook/table operations by semantics; three inspected profiles remain unverified. Evidence: agent-work/catalogs/mythic-bastionland/myth-content-schema-sample-v1.json. No score awarded.
+
+
+### 2026-11-07 — PR492 accounting: canonical weight check before applying review
+
+Fresh reviewed/release Git trees match9c8585ad and Pages42312939730 succeeds at00190bb. Eight bounded reviewer entries remain null/insufficient_evidence, so award0 and full product score unknown; never coerce unknown to zero. Canonical50criterion/1000weight validation caught reviewer metadata S03-C04=25 instead of30 and S04-C04=20 instead of15 before score writes. Accounting retains original reported weights and applies canonical30/15 without changing model or grades; original independent review remains intact. Per task+release+model+criterion idempotency keys protect repeat runs. Evidence: agent-work/results/2026-11-07T0300-strategist-score-PR492.json.
