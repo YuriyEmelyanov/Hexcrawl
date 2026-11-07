@@ -17,7 +17,7 @@
   "score_model_path": "agent-work/strategy/score-model.md",
   "backlog_path": "agent-work/backlog.json",
   "approvals_path": "agent-work/approvals.json",
-  "execution_blocker": null,
+  "execution_blocker": "Accepted exact source unavailable in this workspace and in probed remote Git objects; active08 remote-PR claimant unresolved. No task-start approval blocker.",
   "cleanup_status": "merged_pr470",
   "project_attachments_cleanup": {
     "status": "detached_by_owner",
@@ -29,7 +29,7 @@
   "run_id": "2026-11-07T0700-reviewer-HX-BL-041-MYTH-CARD1-febd762",
   "plan_revision": 1,
   "baseline_sha": "00190bb749a4fa5af57aac4bbffff808e8fe733f",
-  "status": "accepted_local_source_free_core_remote_candidate_pending",
+  "status": "checkpoint_recovery_required",
   "planning_for": "2026-10-31",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-10-25",
@@ -45,15 +45,30 @@
   "schedule_start_at": "2026-10-24T01:00:00+03:00",
   "schedule_frequency": "hourly",
   "process_path": "agent-work/process.md",
-  "current_role": "reviewer",
-  "next_role": "programmer",
+  "current_role": "strategist_manager",
+  "next_role": "strategist_manager",
   "current_task_id": "HX-BL-041",
   "spec_path": "agent-work/specs/HX-BL-041-MYTH-CARD1.md",
   "spec_version": "MC1-1.0",
-  "result_path": "agent-work/results/2026-11-07T0700-reviewer-HX-BL-041-MYTH-CARD1-febd762.json",
+  "result_path": "agent-work/results/2026-11-08-strategist-permission-and-checkpoint-recovery.json",
   "handoff_commit_sha": "d8540be256914aa9d262d6c0687620d9c3f7e237",
-  "active_claim": null,
-  "next_step": "Create a remote source-free candidate branch and PR whose tree exactly matches d721eb9/febd762, without book corpus or other changes; run public CI and transfer the resulting exact SHA for fresh independent verification. Do not merge or publish without owner approval.",
+  "active_claim": {
+    "schema_version": 1,
+    "run_id": "2026-11-07T0800-developer-HX-BL-041-MYTH-CARD1-PR",
+    "task_id": "HX-BL-041",
+    "stage_id": "MYTH-CARD1-REMOTE-PR",
+    "role": "developer",
+    "status": "active",
+    "started_at": "2026-11-07T08:06:00.735Z",
+    "lease_until": "2026-11-07T10:30:00Z",
+    "base_sha": "00190bb749a4fa5af57aac4bbffff808e8fe733f",
+    "reviewed_local_sha": "febd762d4a8fae6f8acd2df26de0c1ec5cce860d",
+    "exact_tree_sha": "d721eb92b53d4491cb8d9c7403b8f239784f9ed4",
+    "scope": "Create only a remote source-free candidate branch and PR with the exact accepted tree; run public CI and hand the resulting SHA to fresh independent review. No book corpus, source changes, main merge, release, or publication.",
+    "preserved_nonoverlapping_claim": "agent-work/claims/2026-11-03-developer-HX-BL-041-presentation.json",
+    "role_selection_reason": "latest.json explicitly routes the accepted exact local source-free tree to programmer for remote branch/PR; the old active presentation claim is limited to a walkthrough and does not cover source transfer."
+  },
+  "next_step": "Resolve interrupted claimant disposition and recover original exact candidate checkpoint from its environment/durable artifact. Verify hash/tree before remote PR transfer. If exact source is unavailable, record that and plan reconstruction within approved scope as a new SHA requiring checks and fresh independent review; never present reconstruction as febd762.",
   "owner_decisions_needed": [],
   "release_approval": null,
   "historical_plan_status": "План23.10 сохранён как история; его блокировки и предложенный процесс заменены decisions24.10 в approvals/process/budget и текущим handoff.",
@@ -181,19 +196,31 @@
   "base_sha": "00190bb749a4fa5af57aac4bbffff808e8fe733f",
   "automation_health": {
     "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "disabled_start": {
+      "status": "observed_false_during_initial_peek_exact_clock_not_captured",
+      "is_enabled": false
+    },
     "start": {
-      "checked_at": "2026-11-07 07:02:26 UTC",
+      "checked_at": "2026-11-07T23:26:10.917Z",
       "status": "checked",
-      "is_enabled": true
+      "is_enabled": true,
+      "recovery_performed": true
     },
-    "recovery_performed": false,
-    "errors": [],
     "end": {
-      "checked_at": "2026-11-07 07:09:21 UTC",
+      "checked_at": "2026-11-07T23:30:05.348Z",
       "status": "checked",
       "is_enabled": true
     },
-    "limitation": "Point-in-time observations only; they do not guarantee the service remains enabled after the run."
+    "recovery_performed": true,
+    "errors": [],
+    "reason_for_previous_disable": "unknown",
+    "latest_recorded_run": {
+      "id": "61a5e811-bef0-832b-8916-8c23d7b76ed3",
+      "status": "completed",
+      "requires_user_action": true,
+      "content_text": "",
+      "limitation": "Tool does not expose the action/approval text; neither last_run status nor a later enable proves worker liveness."
+    }
   },
   "open_findings": [],
   "current_review_score_assessment_status": "completed_candidate_G1_S08_no_award_S05_insufficient",
@@ -2494,7 +2521,7 @@
   "score_changed": false,
   "next_stage_id": "MYTH-CARD1",
   "score_evidence_updated": true,
-  "current_stage_id": "MYTH-CARD1",
+  "current_stage_id": "MYTH-CARD1-RECOVERY",
   "implementation_started": false,
   "current_stage_release_approved": false,
   "review_ready": false,
@@ -6007,5 +6034,15 @@
       },
       "limitation": "Point-in-time observations only; they do not guarantee the service remains enabled after the run."
     }
+  },
+  "latest_permission_and_checkpoint_recovery": {
+    "result_ref": "agent-work/results/2026-11-08-strategist-permission-and-checkpoint-recovery.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-08-HX-BL-041-MYTH-CARD1-recovery.json",
+    "checked_at": "2026-11-07T23:30:05.348Z",
+    "github_permission": "Allow all actions",
+    "read_write_verified": true,
+    "automation_enabled": true,
+    "canonical_claim_preserved": true,
+    "exact_source_recovery_required": true
   }
 }
