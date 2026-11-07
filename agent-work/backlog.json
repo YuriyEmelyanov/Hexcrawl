@@ -4314,31 +4314,31 @@
         },
         {
           "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-020-L1",
-          "given": "H, таблица «Локации» p10, фиксированный бросок 1",
-          "when": "Добавить POI",
-          "expected": "Создан один POI типа «Пепелище», source=p10,row1.",
-          "id": "KNAVE2-020-L1-AC01"
+          "id": "KNAVE2-020-L1-AC01",
+          "given": "Выбран гекс H; строка 1 таблицы «Локации», печатная с. 10, — «Пепелище».",
+          "when": "Ведущий выбирает эту строку вручную для нового места.",
+          "expected": "В H отмечено место с подсказкой «Пепелище» и её локатором; случайный бросок не требуется."
         },
         {
           "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-020-L1",
-          "given": "H, таблица «Постройки» p11 с броском 1; таблица «Свойства мест» p11 с броском 1",
-          "when": "Добавить POI со свойством",
-          "expected": "Создано одно «Аббатство» со свойством «Пепельный»; оба источника и броска сохранены.",
-          "id": "KNAVE2-020-L1-AC02"
+          "id": "KNAVE2-020-L1-AC02",
+          "given": "Для одного места получены 1 по «Постройкам» и 1 по «Свойствам мест», обе на с. 11.",
+          "when": "Ведущий использует их для описания места.",
+          "expected": "У одного места есть подсказки «Аббатство» и «Пепельный» с обоими локаторами; текст ведущего может объяснить их сочетание. Причина появления пепла не выдумана как правило книги."
         },
         {
           "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-020-L1",
-          "given": "H, таблица «Подземелья» p16 с броском 1",
-          "when": "Добавить POI",
-          "expected": "Создан один POI «Лаборатория алхимии»; сетка комнат не генерируется автоматически.",
-          "id": "KNAVE2-020-L1-AC03"
+          "id": "KNAVE2-020-L1-AC03",
+          "given": "В прежнем разборе с. 16 / PDF12 зафиксировано: строка 1 «Подземелий» — «Лаборатория алхимии»; в текущем проходе эта страница не перечитана.",
+          "when": "Ведущий выбирает подсказку для места.",
+          "expected": "У выбранного места есть подсказка «Лаборатория алхимии»; из одного названия не выводится готовый план комнат."
         },
         {
           "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-020-L1",
-          "given": "Существующая карта содержит POI A",
-          "when": "Добавить POI B в H, сохранить и загрузить",
-          "expected": "POI A сохранён; POI B находится в H с тем же ID; другие гексы и рельеф не перегенерированы.",
-          "id": "KNAVE2-020-L1-AC04"
+          "id": "KNAVE2-020-L1-AC04",
+          "given": "На карте уже есть место A; для нового места B ведущий получил «Аббатство» и записал «Заброшенное аббатство у брода» как собственное толкование.",
+          "when": "Ведущий сохраняет карту и открывает её снова.",
+          "expected": "У B остаются подсказка «Аббатство», её источник и текст ведущего; место A также остаётся на карте. Текст про брод — пример ведущего, не строка книги."
         },
         {
           "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-034-L1",
@@ -5130,6 +5130,20 @@
           "given": "Mirror result содержит duplicate с mundane copy magic sword",
           "when": "Сохранить descriptor",
           "expected": "Внешняя duplicate reference связана сR, gear описано какmundane; native combat inventory не создаётся."
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-020-L1",
+          "id": "KNAVE2-020-L1-AC05",
+          "given": "Уже выбранное место; «Локации», с. 10, строка 76 — «Река». Длина, исток и русло не заданы.",
+          "when": "Ведущий использует результат как подсказку к описанию выбранного места.",
+          "expected": "У места сохранена подсказка «Река» с локатором; неизвестные длина, исток и русло не представлены как заданные таблицей."
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-020-L1",
+          "id": "KNAVE2-020-L1-AC06",
+          "given": "В «Локациях» на с. 10 последняя печатная строка отмечена 00 и содержит «Водоворот».",
+          "when": "Ведущий вручную выбирает эту печатную строку.",
+          "expected": "Для выбранного места получена подсказка «Водоворот». Печатная метка 00 сохранена в ссылке на источник; число, под которым её обрабатывает приложение, определяет аналитик."
         }
       ],
       "expected_evidence": {
@@ -5158,7 +5172,8 @@
       "research_handoff_refs": [
         "agent-work/research/runs/2026-11-06-SD-core-thematic-audit.json",
         "agent-work/research/runs/2026-11-06T1230-KNAVE2-table-reuse.json",
-        "agent-work/research/runs/2026-11-06T1330-L1-lifecycle-evidence.json"
+        "agent-work/research/runs/2026-11-06T1330-L1-lifecycle-evidence.json",
+        "agent-work/research/requirements/KNAVE2-020-L1.md"
       ],
       "source_profile_handoffs": [
         {
@@ -5784,6 +5799,19 @@
         ],
         "role_boundary_ref": "agent-work/research/contract.md#граница-роли-исследователя--уточнение-владельца-07112026",
         "next_responsibility": "Стратег — приоритет; аналитик — спецификация.",
+        "implementation_authorized": false
+      },
+      "place_filling_research_translation": {
+        "version": "KNAVE2-020-generator-language-1",
+        "ref": "agent-work/research/requirements/KNAVE2-020-L1.md",
+        "run_ref": "agent-work/research/runs/20261107T2354-KNAVE2-POI-language.json",
+        "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-020-L1",
+        "source_rule_ids": [
+          "KNAVE2-020"
+        ],
+        "scope": "Три таблицы с. 10–11 / PDF9: правило → возможность генератора → ограничения → примеры результата",
+        "status": "research_handoff_for_strategy_and_analysis",
+        "product_support": "unverified",
         "implementation_authorized": false
       }
     },

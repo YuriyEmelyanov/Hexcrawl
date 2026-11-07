@@ -1,0 +1,257 @@
+{
+  "schema_version": 1,
+  "run_id": "20261107T2354-KNAVE2-POI-language",
+  "program_id": "HX-RSR-001",
+  "status": "completed_bounded_L1_rule_translation",
+  "started_at": "2026-11-07T23:54:33.385Z",
+  "completed_at": "2026-11-07T23:58:50.517Z",
+  "selected_task": {
+    "game_id": "KNAVE2",
+    "source_rule_id": "KNAVE2-020",
+    "layer": "L1",
+    "scenario": "create",
+    "active_scenario_rank": 3,
+    "title": "Наполнять выбранное место по трём таблицам и сохранять толкование ведущего"
+  },
+  "selection_reason": "Свежий checkpoint и прямое продолжение владельца: после KNAVE2-070/071 нужен конкретный L1-пример наполнения места. Высокий create rank3 и доступный точный источник позволяют закончить ограниченный результат без спецификации.",
+  "alternatives": [
+    {
+      "game_id": "ROOT",
+      "scenario_rank": 7,
+      "decision": "next_due_to_new_owner_instruction",
+      "reason": "Новая книга и прямое поручение поступили в ходе прохода; подготовленный Knave-срез завершён, Root становится следующим немедленным разбором."
+    },
+    {
+      "game_id": "WWN",
+      "scenario_rank": 6,
+      "decision": "deferred",
+      "reason": "Семь уже подготовленных гидрологических профилей зарегистрированы; новая полная перепроверка без конкретного вопроса сейчас менее полезна."
+    }
+  ],
+  "inputs_and_versions": {
+    "branch": "agent-operations",
+    "baseline_sha": "7551a05898768c11c37a97aa0697531a090ef73b",
+    "claim_commit": "ffc35a885692c18438975c491c48693a0e262650",
+    "ranking_version": "three-scenario-ranks-1.4-create-evidence",
+    "cohort_version": "2026-11-06-ranking1.4-create-evidence",
+    "files": [
+      {
+        "path": "AGENTS.md",
+        "sha": "c3b325241b7b5dc9cc89398e678939b54503effd"
+      },
+      {
+        "path": "README.md",
+        "sha": "b753a6ac0222bc5e7efc7f5a26f32f81f9433916"
+      },
+      {
+        "path": "agent-work/research/contract.md",
+        "sha": "3f60db494410e7e1970925b0ddc144019b5ac3c7"
+      },
+      {
+        "path": "agent-work/research/README.md",
+        "sha": "00f192f988a0f934929dcc15fa294baba84c1951"
+      },
+      {
+        "path": "agent-work/research/state.json",
+        "sha": "fada76a56c9e222f14851d5c9277bff6604ced48"
+      },
+      {
+        "path": "agent-work/research/method.json",
+        "sha": "a496dc0113448f76fa174d769e5f9e4a4d6f93c0"
+      },
+      {
+        "path": "agent-work/research/proposals.json",
+        "sha": "414a4c90da7bcf70fa6ed516b7da43b7a1efe34d"
+      },
+      {
+        "path": "agent-work/process.md",
+        "sha": "e0938ebc205804b2d85b0aca6e7d14a10cf171d3"
+      },
+      {
+        "path": "agent-work/latest.json",
+        "sha": "c6f61cfc7b19589d6a9f57fad19302c743dff26c"
+      },
+      {
+        "path": "agent-work/backlog.json",
+        "sha": "5a1d5ec12f206293c5cb595b67fa3a04d4688fdc"
+      },
+      {
+        "path": "agent-work/approvals.json",
+        "sha": "03291658c5fcdb55904acb3986c40d78e354799c"
+      },
+      {
+        "path": "agent-work/feedback.json",
+        "sha": "161ab464406e152e421dc318239a9151e2401866"
+      },
+      {
+        "path": "agent-work/budget.json",
+        "sha": "96a4d74dcd8ad38aaed6158e8126ba4b09c73736"
+      },
+      {
+        "path": "agent-work/research/data-contract.json",
+        "sha": "a0169c3728db91d9d34b4e1e8a19e4e9ade9aa50"
+      },
+      {
+        "path": "agent-work/market/rules/Knave-2e.json",
+        "sha": "71c594620e5efc0c1f72741f04092a9c38b1d6cf"
+      },
+      {
+        "path": "agent-work/rules/common-rules.json",
+        "sha": "4f7759d2bfa1a7e7990d7455afe15136564b7bda"
+      }
+    ],
+    "game_bindings_blob": "229535b7546fa24f74a65ac058fcd9962bfe35f4",
+    "model_preference": {
+      "model": "gpt-6.1-sol",
+      "reasoning_effort": "ultra",
+      "technical_setting": "unknown; prompt preference is not runtime configuration evidence"
+    },
+    "prewrite_head": "ffc35a885692c18438975c491c48693a0e262650"
+  },
+  "findings": {
+    "source": {
+      "source_id": "KNAVE2-RU-1.0",
+      "access_level": "full_text",
+      "author_project_dedup_key": "ben-milton/questing-beast/knave2/core2024",
+      "source_sha256_previously_verified": "30cf89b9547fd0f76a56f4bcd0ab2dd0303b6be02c00500b37050ad4c71b8795",
+      "hash_recomputed_this_run": false,
+      "fresh_read_pdf_pages": [
+        9
+      ],
+      "printed_pages": [
+        10,
+        11
+      ],
+      "mode": "parsed backing PDF text; rendered-image pointer returned but not visually inspected",
+      "source_rules": [
+        "KNAVE2-020",
+        "KNAVE2-070/071 as previous source context"
+      ]
+    },
+    "facts": [
+      "Three tables offer100 outcomes; first rows confirm location Пепелище / structure Аббатство / trait Пепельный.",
+      "Локации row76 is Река; final printed label00 is Водоворот.",
+      "No density, region-size or path/river geometry specified in this table slice."
+    ],
+    "generator_translation": "Выбрать место; получить и сочетать подсказки; сохранить их и толкование ведущего.",
+    "unknowns": [
+      "Таблицы не задают плотность, частоту и географические размеры; не подставлять числа по умолчанию как правило Knave.",
+      "Соответствие подсказок реальным рекам, путям и областям требует продуктового решения; готовой геометрии в таблице нет.",
+      "Ссылки после последней строки и следующая строка, снова содержащая ссылку, остаются вопросами KNAVE2-070."
+    ],
+    "product_coverage": "unverified; no new product evidence",
+    "scope_limit": "PDF12 and destinations of reference rows not reread; prior dungeon example retained as older evidence.",
+    "new_owner_input": {
+      "game_id": "ROOT",
+      "layer": "L1",
+      "status": "owner_requested_source_review",
+      "action": "Разобрать ограниченный L1-раздел Making Your Own Clearing дополнения Root: Travelers & Outsiders, печатные с. 219–220 / PDF220–221; сверить фактические границы по книге. Перевести правила на язык генератора для стратега и аналитика; не объявлять дополнение прочитанным core.",
+      "why_now": "Владелец прямо предоставил новую книгу и поручил разбор в ходе текущего прохода.",
+      "source": {
+        "filename": "pdfcoffee.com_root-rpg-travelers-amp-outsiders-pdf-free.pdf",
+        "library_file_id": "libfile_fde3_f-f9d2d1db5c7c81918588195824670ea0_3c7ce53bef508191bc31de4d3dfa12cc",
+        "source_sha256": "8db45103be842ec5d0f127df549963e531a26daf67f0f436dbd0621956b31454",
+        "edition": "Travelers & Outsiders, supplement, first printing2021",
+        "pdf_pages": 258,
+        "access_level": "owner_attached_full_text",
+        "core_dependency": "Core book required by printed3; attachment is a supplement."
+      }
+    }
+  },
+  "changed_refs": [
+    "agent-work/market/rules/Knave-2e.json",
+    "agent-work/backlog.json",
+    "agent-work/research/state.json",
+    "agent-work/research/README.md",
+    "agent-work/research/checkpoints/KNAVE2-table-reuse.json",
+    "agent-work/research/requirements/KNAVE2-020-L1.md",
+    "agent-work/research/runs/20261107T2354-KNAVE2-POI-language.json"
+  ],
+  "rating_proposal_refs": [],
+  "product_task_refs": [
+    "agent-work/backlog.json#HX-BL-043"
+  ],
+  "verification": {
+    "operational_requirement_schema": "required keys checked",
+    "source_rule_groups_preserved": 60,
+    "source_parameters_preserved": true,
+    "canonical_registry": "unchanged, existing KNAVE2-020-L1 references reused",
+    "acceptance_examples_for_rule": 6,
+    "total_Knave_examples_before": 161,
+    "total_Knave_examples_after": 163,
+    "independent_read_only_review": "/root/knave020_review, gpt-6.1-sol/ultra; no material boundary concern, parent primary read reported separately",
+    "product_tests_run": 0,
+    "product_changes": 0,
+    "rating_changes": 0,
+    "score_changes": 0,
+    "implementation_authorized": false,
+    "foreign_claims_preserved": [
+      "2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery"
+    ],
+    "budget": "owner_waived_usage_gate; no purchases or paid APIs"
+  },
+  "automation_health": {
+    "research_agent": {
+      "start": {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "is_enabled": true,
+        "checked_at": "2026-11-07T23:52:44.876Z"
+      },
+      "end": {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "is_enabled": true,
+        "checked_at": "2026-11-07T23:57:30.710Z"
+      }
+    },
+    "main_team": {
+      "start": {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "is_enabled": true,
+        "checked_at": "2026-11-07T23:52:44.876Z"
+      },
+      "end": {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "is_enabled": true,
+        "checked_at": "2026-11-07T23:57:30.710Z"
+      }
+    },
+    "restoration_performed": false
+  },
+  "checkpoint": {
+    "ref": "agent-work/research/checkpoints/KNAVE2-table-reuse.json",
+    "remaining_Knave_slice": {
+      "source_rule_id": "KNAVE2-020",
+      "tables": [
+        "Подземелья",
+        "Опасности",
+        "Механизмы"
+      ],
+      "printed_pages": [
+        16,
+        17
+      ],
+      "pdf_pages": [
+        12
+      ],
+      "status": "previous_inventory_exists_not_rechecked_this_run",
+      "priority": "reassess_after_owner_requested_Root"
+    }
+  },
+  "next_candidate": {
+    "game_id": "ROOT",
+    "layer": "L1",
+    "status": "owner_requested_source_review",
+    "action": "Разобрать ограниченный L1-раздел Making Your Own Clearing дополнения Root: Travelers & Outsiders, печатные с. 219–220 / PDF220–221; сверить фактические границы по книге. Перевести правила на язык генератора для стратега и аналитика; не объявлять дополнение прочитанным core.",
+    "why_now": "Владелец прямо предоставил новую книгу и поручил разбор в ходе текущего прохода.",
+    "source": {
+      "filename": "pdfcoffee.com_root-rpg-travelers-amp-outsiders-pdf-free.pdf",
+      "library_file_id": "libfile_fde3_f-f9d2d1db5c7c81918588195824670ea0_3c7ce53bef508191bc31de4d3dfa12cc",
+      "source_sha256": "8db45103be842ec5d0f127df549963e531a26daf67f0f436dbd0621956b31454",
+      "edition": "Travelers & Outsiders, supplement, first printing2021",
+      "pdf_pages": 258,
+      "access_level": "owner_attached_full_text",
+      "core_dependency": "Core book required by printed3; attachment is a supplement."
+    }
+  },
+  "owner_decisions_needed": []
+}
