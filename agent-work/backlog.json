@@ -4130,7 +4130,7 @@
       "task_id": "HX-BL-043",
       "title": "Выбирать и сохранять POI по связанным таблицам",
       "status": "proposed",
-      "problem": "Source-backed operations are now specified; exact product coverage remains unknown and must be audited before implementation scope is finalized.",
+      "problem": "Подтверждённые правила наполнения мест переведены на язык генератора. Полная поддержка Knave не подтверждена; стратегу и аналитику предстоит выбрать продуктовый объём и подготовить спецификацию.",
       "benefit": "Проверяемый результат для мастера и переиспользуемая операция вместо отдельной копии функции на игру.",
       "game_editions": [
         "Knave2e RU Torbin1.0 2024; existing DND/PF2 only where matching component profiles are verified",
@@ -4545,66 +4545,66 @@
         },
         {
           "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-070-L1",
-          "given": "Синтетическая таблица A: строка37 содержит payload37; местоP без содержимого.",
-          "when": "Вручную выбрать строку37.",
-          "expected": "P получает payload37, provenance A/37; RNG не вызывается.",
-          "id": "KNAVE2-070-L1-AC01"
+          "id": "KNAVE2-070-L1-AC01",
+          "given": "Придуманная таблица «Места»: строка 37 — «Колодец».",
+          "when": "Ведущий вручную выбирает строку 37 для места P.",
+          "expected": "У P есть подсказка «Колодец» из строки 37; бросок не нужен."
         },
         {
           "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-070-L1",
-          "given": "Синтетическая A[1] ссылается наB; B[7] содержит payloadB7.",
-          "when": "Задать броски1 и7.",
-          "expected": "Сохранены A/1→B/7 и payloadB7; не выполняется третий бросок.",
-          "id": "KNAVE2-070-L1-AC02"
+          "id": "KNAVE2-070-L1-AC02",
+          "given": "Придуманная таблица A: строка 1 — «Колодец; уточните странность по B». В B строка 7 — «Светится изнутри».",
+          "when": "Получены броски 1 и 7; ведущий сохраняет описание «Колодец с холодным светом в глубине».",
+          "expected": "У места сохранены обе подсказки A/1 и B/7 и описание ведущего; третьего броска нет."
         },
         {
           "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-070-L1",
-          "given": "Синтетическая A[1]→B, B[8]→C, B[9] содержит payloadB9.",
-          "when": "Задать броски1 и8 и включить рекомендованную политику следующей записи.",
-          "expected": "Выбран B/9, сохранены исходный8 и причина сдвига; таблицаC не бросается.",
-          "id": "KNAVE2-070-L1-AC03"
+          "id": "KNAVE2-070-L1-AC03",
+          "given": "Придуманная A/1 отсылает к B; B/8 отсылает к C; следующая B/9 — «Треснувший».",
+          "when": "Получены 1 и 8; ведущий использует рекомендацию следующей записи.",
+          "expected": "Для толкования используется «Треснувший» из B/9; видны выпавшая B/8 и причина перехода; бросок по C не делается."
         },
         {
           "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-070-L1",
-          "given": "Индекс0,101 или дробь2.5 для таблицы100строк.",
-          "when": "Попытаться применить результат.",
-          "expected": "Нет записи результата/измененияP; вход отвергнут как недопустимый.",
-          "id": "KNAVE2-070-L1-AC04"
+          "id": "KNAVE2-070-L1-AC04",
+          "given": "Таблица содержит 100 строк.",
+          "when": "Указана строка 0, 101 или 2,5.",
+          "expected": "Результат строки не назначен месту: такого номера строки в таблице нет."
         },
         {
           "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-070-L1",
           "id": "KNAVE2-070-L1-AC05",
-          "given": "A[1]→B; B[100] is another reference and no following row exists.",
-          "when": "Apply recommended second-reference policy.",
-          "expected": "Show unresolved edge and preserve A/1→B/100; require an explicit manual choice. Do not silently wrap to B/1 or roll a third table."
+          "given": "A/1 отсылает к B; B/100 снова отсылает к таблице; следующей строки нет.",
+          "when": "Ведущий хочет использовать рекомендацию следующей записи.",
+          "expected": "Вопрос остаётся открытым до решения ведущего; первая строка B не выдаётся за предусмотренное книгой продолжение."
         },
         {
           "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-070-L1",
           "id": "KNAVE2-070-L1-AC06",
-          "given": "A[1]→B; B[8]→C and next B[9] is also a reference.",
-          "when": "Apply recommended second-reference policy.",
-          "expected": "Show unresolved edge and preserve provenance; no unbounded cascade or silent fabricated terminal value."
+          "given": "A/1 отсылает к B; B/8 и следующая B/9 обе отсылают к таблицам.",
+          "when": "Ведущий хочет использовать рекомендацию следующей записи.",
+          "expected": "Сохраняются полученные подсказки и открытый вопрос; готовый конечный результат не выдуман."
         },
         {
           "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-071-L1",
-          "given": "Синтетическая таблицаA; два вызоваA с индексами1и2, интерпретацияGM=X.",
-          "when": "Сохранить сочетание уP.",
-          "expected": "УP два компонента A/1 иA/2 и описаниеX; второй не затирает первый.",
-          "id": "KNAVE2-071-L1-AC01"
+          "id": "KNAVE2-071-L1-AC01",
+          "given": "В придуманной таблице «Животные» дважды выбран «Ворон». Из таблицы «Места» получена «Колокольня».",
+          "when": "Ведущий сохраняет описание «В пустой колокольне живут два ворона».",
+          "expected": "У места остаются обе подсказки «Ворон», подсказка «Колокольня» и описание ведущего."
         },
         {
           "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-071-L1",
-          "given": "Три синтетические таблицыA,B,C с индексами1,50,100.",
-          "when": "Применить рецепт кP.",
-          "expected": "Сохранены ровно3 компонента в выбранном порядке; индекс100 не теряется и дополнительные броски не появляются.",
-          "id": "KNAVE2-071-L1-AC02"
+          "id": "KNAVE2-071-L1-AC02",
+          "given": "Из трёх придуманных таблиц получены «Мельница», «Заброшенная», «Синий огонь».",
+          "when": "Ведущий сохраняет «Заброшенная мельница с синим огнём в окнах».",
+          "expected": "У места остаются все три подсказки и сохранённое описание; лишние результаты не добавлены."
         },
         {
           "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-071-L1",
-          "given": "Ведущий явно задаёт пользовательский рецепт A,A,B,C с четырьмя фиксированными индексами1,2,3,4.",
-          "when": "Применить пользовательский рецепт кP.",
-          "expected": "Сохранены четыре компонента A/1,A/2,B/3,C/4; рекомендация2–3 таблицы не превращается в ошибку или усечение рецепта.",
-          "id": "KNAVE2-071-L1-AC03"
+          "id": "KNAVE2-071-L1-AC03",
+          "given": "Ведущий выбрал четыре придуманные таблицы и получил «Мост», «Разбитый», «Зимородки», «Пошлина».",
+          "when": "Он использует все четыре подсказки в описании места.",
+          "expected": "Рекомендация двух-трёх таблиц не выдаётся за запрет книги; все четыре выбранные подсказки остаются у места."
         },
         {
           "requirement_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-002-L1",
@@ -5744,14 +5744,14 @@
         }
       ],
       "reuse_audit": {
-        "version": "reuse-handoff-1",
+        "version": "generator-language-2",
         "source_sha": "7547a67bbcfb621f1e7c7189518583842ccb055a",
         "ref": "agent-work/research/requirements/KNAVE2-table-reuse-v1.json",
         "component_runtime": "bounded_pass",
         "document_lifecycle": "statically_traced_full_UI_unknown",
         "existing_engine_rebuild_required": false,
         "implementation_authorized": false,
-        "scope_note": "Add adapter for manual selection, occurrence identity, provenance and bounded reference resolution; preserve published MB behavior. This is not full game support."
+        "scope_note": "Исследователь передаёт возможность выбрать подсказки, сочетать результаты и сохранять описание ведущего. Команды, схемы данных, архитектура и интерфейс остаются работой аналитика. Предыдущее evidence общего механизма не подтверждает полную поддержку Knave."
       },
       "lifecycle_evidence_audit": {
         "version": "tagged-poi-lifecycle-1",
@@ -5773,6 +5773,18 @@
         "current_runtime_ref": "agent-work/research/evidence/2026-11-07T2327-tagged-POI-lifecycle/result.json",
         "current_runtime_code_sha": "00190bb749a4fa5af57aac4bbffff808e8fe733f",
         "checks_observed": 11
+      },
+      "research_rule_translation": {
+        "version": "generator-language-2",
+        "ref": "agent-work/research/requirements/KNAVE2-table-reuse-v1.json",
+        "run_ref": "agent-work/research/runs/2026-11-07T2338-KNAVE2-adapter-contract.json",
+        "source_rules": [
+          "KNAVE2-070",
+          "KNAVE2-071"
+        ],
+        "role_boundary_ref": "agent-work/research/contract.md#граница-роли-исследователя--уточнение-владельца-07112026",
+        "next_responsibility": "Стратег — приоритет; аналитик — спецификация.",
+        "implementation_authorized": false
       }
     },
     {

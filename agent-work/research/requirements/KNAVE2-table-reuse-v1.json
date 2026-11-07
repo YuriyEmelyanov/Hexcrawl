@@ -2,16 +2,39 @@
   "schema_version": 1,
   "task_id": "HX-BL-043",
   "status": "proposed",
-  "version": "reuse-handoff-1",
+  "version": "generator-language-2",
+  "purpose": "Передача подтверждённых правил на языке генератора стратегу и аналитику; не спецификация разработки",
+  "supersedes_version": "reuse-handoff-1",
   "game_editions": [
     "KNAVE2 RU Torbin1.0 2024"
   ],
   "primary_scenario": "create",
   "layer": "L1",
   "ranking_version": "three-scenario-ranks-1.4-create-evidence",
-  "cohort_version": "2026-11-06-ranking1.4-create-evidence",
   "scenario_rank": 3,
-  "common_registry_ref": "agent-work/rules/common-rules.json#content.roll_table_resolution",
+  "source": {
+    "id": "KNAVE2-RU-1.0",
+    "edition": "Knave Second Edition 2024, declared first printing; Russian translation Torbin v1.0 11.06.2024",
+    "filename": "Knave 2e Spreads Rus.pdf",
+    "library_file_id": "libfile_8b6719d4aab88191973e2d4bb59681e8",
+    "file_id": "file_0000000075c882118b3f795cbd180840",
+    "sha256": "30cf89b9547fd0f76a56f4bcd0ab2dd0303b6be02c00500b37050ad4c71b8795",
+    "pdf_pages": 45,
+    "size_bytes": 43179967,
+    "access_level": "full_text",
+    "author_project_key": "ben-milton/questing-beast/knave2/core2024",
+    "page_numbering": "Printed pages1–79; PDF4 contains unnumbered contents on left and printed1 on right. PDF4–43 right printed2*(pdf-4)+1; PDF44 is unnumbered inside-cover quickref; PDF45 technical82 is not a rules page.",
+    "reviewed_sections": [
+      "Every PDF page1–45 screened, relevant prose/tables/crossreferences extracted; images checked as recorded in ledger."
+    ],
+    "limitations": [
+      "Full thematic source inventory, not all game mechanics or runtime support. Unrelated combat/dungeon/economy details excluded with reasons.",
+      "Russian translation reviewed, not an independent collation against English edition/errata. Source ambiguities and product decisions remain explicit.",
+      "Counts are editorial rule groups and derived requirements; not publisher counts or numerical complexity/popularity weights.",
+      "The source notice distinguishes freely reusable mechanics from text/art; this result paraphrases rules and records table locators without republishing full tables. Product content-pack provenance/permission must be defined before embedding source text."
+    ],
+    "read_scope_this_run": "Новый текст книги не читался: переформулированы два уже извлечённых положения печатной с. 1 / PDF с. 4, «Таблицы». Полный прежний корпус и хеш сохранены в игровой матрице."
+  },
   "requirement_refs": [
     "agent-work/market/rules/Knave-2e.json#KNAVE2-070-L1",
     "agent-work/market/rules/Knave-2e.json#KNAVE2-071-L1"
@@ -24,313 +47,60 @@
     "S05-C01",
     "S05-C02"
   ],
-  "operations": [
+  "translations": [
     {
-      "source_rule": {
-        "source_id": "KNAVE2-RU-1.0",
-        "printed_page": 1,
-        "pdf_page": 4,
-        "section": "Таблицы",
-        "paraphrase": "Таблицы преимущественно для подготовки и допускают использование на ходу; результат выбирается d100 либо вручную. Строка-ссылка ведёт к другой таблице с новым броском и интерпретацией в контексте первой. Если второй результат снова ссылка на таблицу, автор рекомендует взять следующую запись вместо дальнейшего каскада.",
-        "normative_kind": "recommendation",
-        "quotation": null
-      },
+      "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-070",
       "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-070-L1",
       "binding_ref": "agent-work/rules/game-bindings.json#KNAVE2-070-L1",
-      "operational_requirement": {
-        "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-070",
-        "normative_kind": "recommendation",
-        "applicability": "Опциональная помощь ведущему; не обязательный интерфейс и не автоматическая генерация всего мира.",
-        "layer": "L1",
-        "trigger_or_user_action": "Ведущий выбирает таблицу и место карты, затем ручную строку или бросок.",
-        "inputs_and_units": {
-          "table_id": "stable ID",
-          "mode": "manual|roll",
-          "row_or_roll": "integer1..100",
-          "referenced_table_roll": "integer1..100 when required",
-          "target_site_id": "existing map object",
-          "fixtures": "Synthetic acceptance tables, not copied game tables"
-        },
-        "product_operation": "Получить указанную строку; для ссылки предложить/выполнить один бросок второй таблицы. При второй ссылке применить рекомендованный выбор следующей строки с явным показом преобразования. Сохранить table_id, выбранные индексы, ссылочную цепочку и итог как содержимое места.",
-        "expected_output": "У места сохранён результат с воспроизводимой цепочкой; редактирование интерпретации ведущим не теряет исходные индексы.",
-        "constraints_and_exceptions": [
-          "Это общий движок таблиц, не отдельная реализация для Knave.",
-          "Строка таблицы не определяет плотность, геометрию или число POI в гексе.",
-          "Следующая запись после последней строки и повторная ссылка в выбранной следующей строке не урегулированы автором; не вводить wrap/cascade молча.",
-          "Рекомендация ограничить каскад не является обязательным запретом иных решений ведущего."
-        ],
-        "acceptance_cases": [
-          {
-            "given": "Синтетическая таблица A: строка37 содержит payload37; местоP без содержимого.",
-            "when": "Вручную выбрать строку37.",
-            "expected": "P получает payload37, provenance A/37; RNG не вызывается.",
-            "id": "KNAVE2-070-L1-AC01"
-          },
-          {
-            "given": "Синтетическая A[1] ссылается наB; B[7] содержит payloadB7.",
-            "when": "Задать броски1 и7.",
-            "expected": "Сохранены A/1→B/7 и payloadB7; не выполняется третий бросок.",
-            "id": "KNAVE2-070-L1-AC02"
-          },
-          {
-            "given": "Синтетическая A[1]→B, B[8]→C, B[9] содержит payloadB9.",
-            "when": "Задать броски1 и8 и включить рекомендованную политику следующей записи.",
-            "expected": "Выбран B/9, сохранены исходный8 и причина сдвига; таблицаC не бросается.",
-            "id": "KNAVE2-070-L1-AC03"
-          },
-          {
-            "given": "Индекс0,101 или дробь2.5 для таблицы100строк.",
-            "when": "Попытаться применить результат.",
-            "expected": "Нет записи результата/измененияP; вход отвергнут как недопустимый.",
-            "id": "KNAVE2-070-L1-AC04"
-          },
-          {
-            "id": "KNAVE2-070-L1-AC05",
-            "given": "A[1]→B; B[100] is another reference and no following row exists.",
-            "when": "Apply recommended second-reference policy.",
-            "expected": "Show unresolved edge and preserve A/1→B/100; require an explicit manual choice. Do not silently wrap to B/1 or roll a third table."
-          },
-          {
-            "id": "KNAVE2-070-L1-AC06",
-            "given": "A[1]→B; B[8]→C and next B[9] is also a reference.",
-            "when": "Apply recommended second-reference policy.",
-            "expected": "Show unresolved edge and preserve provenance; no unbounded cascade or silent fabricated terminal value."
-          }
-        ],
-        "source_vs_product_interpretation": "Источник задаёт способы использования таблиц; выбор элемента UI, хранение provenance и привязка к объекту — продуктовая интерпретация. Значения synthetic fixtures не являются строками Knave.",
-        "canonical_rule_refs": [
-          "content.place_description",
-          "content.roll_table_resolution"
-        ],
-        "unresolved_parameters": [
-          "Поведение на ссылке во второй таблице в строке100: следующей строки нет.",
-          "Поведение, если рекомендованная следующая строка также ссылка."
-        ]
+      "generator_capability": "Наполнить выбранное место подсказкой вручную или броском; уточнить её по связанной таблице; сохранить подсказки и описание ведущего.",
+      "limits": [
+        "Рекомендация не задаёт число мест, плотность наполнения или географию карты.",
+        "Ручной выбор не требует броска.",
+        "Переход после последней строки и следующая запись, которая тоже является ссылкой, источником не разрешены; отдельное решение ведущего остаётся явным.",
+        "Автоматическое составление связного описания не требуется правилом."
+      ],
+      "example": {
+        "id": "KNAVE2-070-L1-AC02",
+        "given": "Придуманная таблица A: строка 1 — «Колодец; уточните странность по B». В B строка 7 — «Светится изнутри».",
+        "when": "Получены броски 1 и 7; ведущий сохраняет описание «Колодец с холодным светом в глубине».",
+        "expected": "У места сохранены обе подсказки A/1 и B/7 и описание ведущего; третьего броска нет."
       },
-      "runtime_coverage": "unverified"
+      "operational_requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-070-L1 / operational_requirement"
     },
     {
-      "source_rule": {
-        "source_id": "KNAVE2-RU-1.0",
-        "printed_page": 1,
-        "pdf_page": 4,
-        "section": "Таблицы",
-        "paraphrase": "Для получения игрового содержимого автор предлагает комбинировать результаты и советует ограничиваться двумя-тремя таблицами, чтобы снизить риск бессмысленного сочетания. Пример с животными показывает также повторное использование одной таблицы.",
-        "normative_kind": "recommendation",
-        "quotation": null
-      },
+      "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-071",
       "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-071-L1",
       "binding_ref": "agent-work/rules/game-bindings.json#KNAVE2-071-L1",
-      "operational_requirement": {
-        "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-071",
-        "normative_kind": "recommendation",
-        "applicability": "Опциональная помощь ведущему; не обязательный интерфейс и не автоматическая генерация всего мира.",
-        "layer": "L1",
-        "trigger_or_user_action": "Ведущий выбирает рецепт сочетания таблиц и применяет его к объекту.",
-        "inputs_and_units": {
-          "table_sequence": "Ordered table ID list; proposed default recipe has2or3 calls; custom counts and repeats are permitted.",
-          "row_indices": "one manual/roll index per table",
-          "interpretation": "GM text",
-          "target_object_id": "existing map object"
-        },
-        "product_operation": "Получить каждый компонент независимо общим механизмом таблиц, показать все исходные результаты и дать ведущему сохранить их интерпретацию как описание объекта.",
-        "expected_output": "Сохранены все запрошенные компоненты с отдельными локаторами и итоговая интерпретация ведущего.",
-        "constraints_and_exceptions": [
-          "Рекомендация2–3 не делает все рецепты длиннее3 ошибкой игры.",
-          "Не считать автоматическое AI-смешение обязательным правилом.",
-          "Повтор одной таблицы не должен молча превращаться в один результат.",
-          "Набор таблиц и связь с видом объекта задаёт ведущий, если источник не даёт специального рецепта."
-        ],
-        "acceptance_cases": [
-          {
-            "given": "Синтетическая таблицаA; два вызоваA с индексами1и2, интерпретацияGM=X.",
-            "when": "Сохранить сочетание уP.",
-            "expected": "УP два компонента A/1 иA/2 и описаниеX; второй не затирает первый.",
-            "id": "KNAVE2-071-L1-AC01"
-          },
-          {
-            "given": "Три синтетические таблицыA,B,C с индексами1,50,100.",
-            "when": "Применить рецепт кP.",
-            "expected": "Сохранены ровно3 компонента в выбранном порядке; индекс100 не теряется и дополнительные броски не появляются.",
-            "id": "KNAVE2-071-L1-AC02"
-          },
-          {
-            "given": "Ведущий явно задаёт пользовательский рецепт A,A,B,C с четырьмя фиксированными индексами1,2,3,4.",
-            "when": "Применить пользовательский рецепт кP.",
-            "expected": "Сохранены четыре компонента A/1,A/2,B/3,C/4; рекомендация2–3 таблицы не превращается в ошибку или усечение рецепта.",
-            "id": "KNAVE2-071-L1-AC03"
-          }
-        ],
-        "source_vs_product_interpretation": "В источнике творческая рекомендация сочетания. Структурированное хранение компонентов и редактор итогового описания — предлагаемая помощь продукта, а не требование Knave иметь автоматическое смысловое смешение. Стартовый рецепт из2–3 вызовов — продуктовое предложение, не буквальное ограничение числа результатов: источник рекомендует2–3 таблицы и допускает повторные броски одной таблицы.",
-        "canonical_rule_refs": [
-          "content.place_description",
-          "content.roll_table_resolution"
-        ],
-        "unresolved_parameters": []
+      "generator_capability": "Собрать несколько подсказок для одного места, в том числе повторно из одной таблицы, и сохранить их толкование ведущим.",
+      "limits": [
+        "Две-три таблицы — рекомендация, не обязательный предел числа таблиц, результатов или бросков.",
+        "Повторное использование одной таблицы допустимо; совпадение подсказок не делает одно из обращений лишним.",
+        "Генератор не обязан сам придумывать смысловое объединение; его может задать ведущий.",
+        "Правило не задаёт перечень таблиц для каждого вида места."
+      ],
+      "example": {
+        "id": "KNAVE2-071-L1-AC01",
+        "given": "В придуманной таблице «Животные» дважды выбран «Ворон». Из таблицы «Места» получена «Колокольня».",
+        "when": "Ведущий сохраняет описание «В пустой колокольне живут два ворона».",
+        "expected": "У места остаются обе подсказки «Ворон», подсказка «Колокольня» и описание ведущего."
       },
-      "runtime_coverage": "unverified"
+      "operational_requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-071-L1 / operational_requirement"
     }
   ],
-  "source_of_truth_policy": "References to canonical registry/bindings only. This is a bounded development handoff, not a second game-rule registry.",
-  "reuse": {
-    "existing": [
-      "resolved lookup for terminal d100 table",
-      "rollTag deterministic state and stored values",
-      "editTag text override",
-      "document transaction/save hooks, statically traced"
-    ],
-    "needs_adapter": [
-      "Validated manual row command, before any mutation; current UI command only roll/edit.",
-      "Occurrence IDs for ordered A,A components; repeated rollTag on identical owner+definition overwrites previous instance.",
-      "Source edition/table/page/one-based row and bounded reference-chain provenance beyond existing entryId.",
-      "One-follow-up table and recommended next-row policy; unresolved last-row/next-reference edge must remain explicit.",
-      "Game support registration and compact Classic UI proposal; do not label persisted unknown tag as active Knave support."
-    ]
+  "source_of_truth_policy": "Правила и operational_requirement находятся в существующей игровой матрице; common-rules/game-bindings остаются единственными реестрами. Этот документ — компактная передача, не новый реестр.",
+  "evidence": {
+    "code_sha": "00190bb749a4fa5af57aac4bbffff808e8fe733f",
+    "observed_shared_lifecycle_ref": "agent-work/research/runs/2026-11-07T2327-tagged-POI-lifecycle.json",
+    "boundary": "Проверка общего механизма на MB не подтверждает реализацию выбора и сочетания таблиц Knave.",
+    "Knave_coverage": "unverified"
   },
-  "proposed_first_slice": {
-    "action": "В существующем POI выбрать/бросить одну terminal строку, затем сохранить два независимых вхождения одной таблицы с интерпретацией ведущего через общий механизм.",
-    "scope": "Общий адаптер данных/транзакции, без отдельного движка на Knave; существующий MB behavior сохраняется. Полный reference resolver — отдельная часть того же043, пока не закрыта.",
-    "inputs": "Existing POI owner, source/definition version, table ID, mode, 1-based index, occurrence ID, interpretation.",
-    "expected": "Ordered independent components and source coordinates survive save/load and undo, no geometry or world RNG changes.",
-    "acceptance_cases": [
-      {
-        "given": "Синтетическая таблица A: строка37 содержит payload37; местоP без содержимого.",
-        "when": "Вручную выбрать строку37.",
-        "expected": "P получает payload37, provenance A/37; RNG не вызывается.",
-        "id": "KNAVE2-070-L1-AC01"
-      },
-      {
-        "given": "Синтетическая таблицаA; два вызоваA с индексами1и2, интерпретацияGM=X.",
-        "when": "Сохранить сочетание уP.",
-        "expected": "УP два компонента A/1 иA/2 и описаниеX; второй не затирает первый.",
-        "id": "KNAVE2-071-L1-AC01"
-      },
-      {
-        "given": "POI P, tableA rows1/2, two distinct occurrence IDs; map/RNG snapshot M0.",
-        "when": "Commit both components, export/import, undo then redo.",
-        "expected": "P has ordered A/1,A/2 plus interpretation; undo restores M0, redo both components; unrelated map/POIs and world RNG unchanged."
-      }
-    ],
-    "exceptions": [
-      "Indices0,101,2.5 rejected before commit.",
-      "Reference row never treated as resolved terminal text; use explicit pending or reviewed follow-up policy.",
-      "No silent flattening of two occurrences into one reroll."
-    ]
-  },
-  "evidence_sha": "7547a67bbcfb621f1e7c7189518583842ccb055a",
-  "code_inspection": [
-    {
-      "path": "src/tags/engine.ts",
-      "sha": "07a1cb80a9a637b4be7b0c7dda6302011d58d63e",
-      "locator": "resolved;rollTag;editTag;validateTags",
-      "finding": "Pure independent/product lookup, deterministic isolated RNG, retained dice/entry IDs/text and override; no linked-table reference policy in inspected module."
-    },
-    {
-      "path": "src/tags/mythic.ts",
-      "sha": "097e30885150eadc4543cd1bdeebca704289999a",
-      "locator": "mythicDefinitions;tagPolicy",
-      "finding": "Published registry and policy enumerate mb.* definitions, not a Knave profile."
-    },
-    {
-      "path": "src/App.tsx",
-      "sha": "7c533a25bf02b64bf7dfee8f394e2c0c6878576a",
-      "locator": "975;13231–13280;13380–13413;13648–13677;14645–14653;14749",
-      "finding": "mutateTag requires mythicDefinitions[id]; shared document transaction/export/import includes tags. Static trace only: full save/load/undo UI not executed."
-    },
-    {
-      "path": "src/manualPois.ts",
-      "sha": "983d7f56a1ce5db5932a880316c29d334d97f131",
-      "locator": "114–125",
-      "finding": "Existing POI move remaps tag owners and rollCounter prefixes; candidate reuse, no new Knave movement test performed."
-    }
+  "unknowns": [
+    "После строки 100 нет следующей записи.",
+    "Рекомендованная следующая запись может сама быть ссылкой."
   ],
-  "component_probe": {
-    "source_sha": "7547a67bbcfb621f1e7c7189518583842ccb055a",
-    "module": "src/tags/engine.ts",
-    "synthetic_data": true,
-    "cases": [
-      {
-        "id": "DIRECT-1",
-        "result": {
-          "entryIds": [
-            "research.synthetic.A:row:0"
-          ],
-          "texts": [
-            {
-              "en": "payload1"
-            }
-          ]
-        }
-      },
-      {
-        "id": "DIRECT-37",
-        "result": {
-          "entryIds": [
-            "research.synthetic.A:row:36"
-          ],
-          "texts": [
-            {
-              "en": "payload37"
-            }
-          ]
-        }
-      },
-      {
-        "id": "DIRECT-100",
-        "result": {
-          "entryIds": [
-            "research.synthetic.A:row:99"
-          ],
-          "texts": [
-            {
-              "en": "payload100"
-            }
-          ]
-        }
-      },
-      {
-        "id": "DETERMINISTIC-CLONE",
-        "passed": true,
-        "values": [
-          [
-            14
-          ]
-        ]
-      },
-      {
-        "id": "REPEATED-TABLE-REPLACES",
-        "instances": 1,
-        "revision": 2,
-        "interpretation": "Existing reroll semantics; not a Knave two-component recipe implementation."
-      },
-      {
-        "id": "TAG-JSON-ROUNDTRIP",
-        "passed": true,
-        "boundary": "Pure tag blob only; not App file import/export or Undo/Redo."
-      },
-      {
-        "id": "UNKNOWN-DEFINITION-PASSIVE",
-        "passed": true,
-        "boundary": "Structural acceptance is not UI registration or rule compatibility."
-      }
-    ],
-    "limitations": [
-      "No browser/UI or full document transaction executed.",
-      "No actual Knave literary tables embedded.",
-      "No rule coverage/score awarded."
-    ]
-  },
-  "runtime_boundary": "Pure engine Node probe only. No full browser import/export/Undo/Redo evidence, no actual Knave profile integrated.",
+  "strategist_handoff": "Решить приоритет proposed задачи HX-BL-043 в контексте L1 и действующего рейтинга.",
+  "analyst_handoff": "Определить продуктовую спецификацию выбранного поведения; открытые вопросы источника не маскировать техническим решением.",
   "score_delta": null,
   "implementation_authorized": false,
-  "publication_authorized": false,
-  "feedback_assessment": "HX-FB-002: temporary narrow component probe only, no permanent test suite added. HX-FB-010 closed in published SHA; selected-hex feedback not expanded into this research scope.",
-  "next_candidate": {
-    "game_id": "KNAVE2",
-    "layer": "L1",
-    "action": "Проверить в браузере полный цикл существующего MB-тега на POI: изменение → экспорт/импорт → Undo/Redo, включая перенос POI. Использовать точный опубликованный SHA и существующий стенд, не создавать новую реализацию.",
-    "status": "candidate_not_fixed_rotation",
-    "task_ref": "agent-work/backlog.json#HX-BL-043",
-    "why_now": "Компонент движка проверен; полная транзакция документа ещё подтверждена только чтением кода."
-  }
+  "publication_authorized": false
 }

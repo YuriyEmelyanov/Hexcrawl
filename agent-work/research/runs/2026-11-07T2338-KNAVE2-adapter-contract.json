@@ -1,0 +1,210 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-07T2338-KNAVE2-adapter-contract",
+  "program_id": "HX-RSR-001",
+  "status": "completed_bounded_research_translation",
+  "started_at": "2026-11-07T23:38:16.779Z",
+  "completed_at": "2026-11-07T23:48:59.946Z",
+  "selected_task": {
+    "game_id": "KNAVE2",
+    "layer": "L1",
+    "source_rules": [
+      "KNAVE2-070",
+      "KNAVE2-071"
+    ],
+    "title": "Перевести правила выбора и сочетания таблиц на язык возможностей генератора",
+    "task_ref": "agent-work/backlog.json#HX-BL-043"
+  },
+  "selection_reason": "Прямое уточнение владельца границы роли имеет приоритет. У Knave create rank 3 и уже доступен подтверждённый разбор: ограниченный результат — исправить передачу двух правил, сохранив конкретность без проектирования реализации.",
+  "alternatives": [
+    {
+      "candidate": "Root RPG Pellenicky Glade Quickstart 2020: primary-source L1 filling",
+      "decision": "deferred",
+      "reason": "Полезный первичный источник доступен; сначала завершена прямо затребованная коррекция текущей передачи Knave. Не смешивать новый разбор с этой задачей."
+    },
+    {
+      "candidate": "Further technical adapter/data-command contract for Knave",
+      "decision": "cancelled_after_owner_correction",
+      "reason": "Спецификация принадлежит аналитику. Новый технический контракт не сохранён и не объявлен завершённым."
+    }
+  ],
+  "scope_history": {
+    "initial_run_id_retained": true,
+    "initial_scope": "Proposed source-linked data/command contract for manual terminal rows, repeated occurrences and provenance; no product implementation",
+    "corrected_scope": "KNAVE2-070/071: reformulate source rules in generator language for strategist and analyst; record owner role boundary; no specification",
+    "reason": "Ты не должен делать спецификации. Ты должен переформулировать правила на язык генератора, чтобы стратег и аналитик их могли взять в работу.",
+    "claim_correction_commit": "ec7feda5bf06494d8d5d483998631c8c61c8d222"
+  },
+  "inputs_and_versions": {
+    "branch": "agent-operations",
+    "claim_baseline_sha": "0db76d9549dc36ba8ebabb98d451ab039dffa211",
+    "prewrite_head_sha": "da8694c496c872309339365f7b7ae1d134a80957",
+    "files": [
+      {
+        "path": "AGENTS.md",
+        "sha": "c3b325241b7b5dc9cc89398e678939b54503effd"
+      },
+      {
+        "path": "agent-work/research/contract.md",
+        "sha": "dc902391d0234bfb17ffb8f7b146403c00e33172"
+      },
+      {
+        "path": "agent-work/research/method.json",
+        "sha": "a496dc0113448f76fa174d769e5f9e4a4d6f93c0"
+      },
+      {
+        "path": "agent-work/research/proposals.json",
+        "sha": "414a4c90da7bcf70fa6ed516b7da43b7a1efe34d"
+      },
+      {
+        "path": "agent-work/research/data-contract.json",
+        "sha": "a0169c3728db91d9d34b4e1e8a19e4e9ade9aa50"
+      },
+      {
+        "path": "agent-work/process.md",
+        "sha": "e0938ebc205804b2d85b0aca6e7d14a10cf171d3"
+      },
+      {
+        "path": "agent-work/approvals.json",
+        "sha": "03291658c5fcdb55904acb3986c40d78e354799c"
+      },
+      {
+        "path": "agent-work/feedback.json",
+        "sha": "161ab464406e152e421dc318239a9151e2401866"
+      },
+      {
+        "path": "agent-work/budget.json",
+        "sha": "96a4d74dcd8ad38aaed6158e8126ba4b09c73736"
+      },
+      {
+        "path": "agent-work/market/rules/Knave-2e.json",
+        "sha": "cbf51ad52de606c00c6fbf5787d0db1fd3534c29"
+      },
+      {
+        "path": "agent-work/backlog.json",
+        "sha": "7a2afad27408639a32d5b6f71221bd6c9b9ef92b"
+      },
+      {
+        "path": "agent-work/latest.json",
+        "sha": "d5e85b06433c204d67fa080d76890c176906c7ad"
+      }
+    ],
+    "active_ranking": "three-scenario-ranks-1.4-create-evidence",
+    "model_preference": {
+      "model": "gpt-6.1-sol",
+      "reasoning_effort": "ultra",
+      "technical_setting": "unknown; prompt preference is not runtime configuration evidence"
+    },
+    "source": {
+      "source_id": "KNAVE2-RU-1.0",
+      "sha256": "30cf89b9547fd0f76a56f4bcd0ab2dd0303b6be02c00500b37050ad4c71b8795",
+      "author_project_dedup_key": "ben-milton/questing-beast/knave2/core2024",
+      "access_level": "full_text_previously_read",
+      "locator": "printed1 / PDF4; «Таблицы»",
+      "new_source_pages_read": 0
+    }
+  },
+  "findings": {
+    "source_facts": [
+      "KNAVE2-070: d100 or manual choice; one follow-up table; second reference recommends next entry.",
+      "KNAVE2-071: combine table results; same table may recur; two-three tables is advice, not a strict number of results."
+    ],
+    "generator_language": [
+      "Выбрать подсказку и уточнение для выбранного места; сохранить исходные подсказки и описание ведущего.",
+      "Сочетать несколько подсказок, включая повторы из одной таблицы; сохранять самостоятельные результаты и толкование ведущего."
+    ],
+    "editorial_error_fixed": "«Получить 2–3 независимых результата» заменено рекомендацией двух-трёх таблиц с допустимыми повторными обращениями.",
+    "unknowns": [
+      "После строки 100 нет следующей записи.",
+      "Рекомендованная следующая запись может сама быть ссылкой."
+    ],
+    "product_coverage": "Knave unverified; prior MB lifecycle observation retains its own exact-SHA limits.",
+    "owner_role_boundary": {
+      "decision_id": "owner-decision-2026-11-07-researcher-generator-language",
+      "quote": "Ты не должен делать спецификации. Ты должен переформулировать правила на язык генератора, чтобы стратег и аналитик их могли взять в работу.",
+      "contract_ref": "agent-work/research/contract.md",
+      "recorded_at": "2026-11-07T23:48:59.946Z"
+    },
+    "interpretation": "Сохранение подсказок у места — предлагаемая возможность генератора. Способ хранения, команды, архитектура и интерфейс не определены исследователем."
+  },
+  "changed_refs": [
+    "agent-work/research/contract.md",
+    "agent-work/research/state.json",
+    "agent-work/research/README.md",
+    "agent-work/research/checkpoints/KNAVE2-table-reuse.json",
+    "agent-work/research/requirements/KNAVE2-table-reuse-v1.json",
+    "agent-work/market/rules/Knave-2e.json",
+    "agent-work/backlog.json",
+    "agent-work/research/runs/2026-11-07T2338-KNAVE2-adapter-contract.json"
+  ],
+  "rating_proposal_refs": [],
+  "product_task_refs": [
+    "agent-work/backlog.json#HX-BL-043"
+  ],
+  "verification": {
+    "operational_requirement_required_fields": "all present",
+    "source_rules_and_parameters": "60 existing source groups preserved; only two L1 reformulations changed",
+    "acceptance_examples": 9,
+    "unrelated_backlog_tasks": "preserved",
+    "canonical_rule_ids": "unchanged; content.place_description/content.roll_table_resolution",
+    "bindings": "Existing KNAVE2-070-L1 and KNAVE2-071-L1 reused; no new registry or copied implementation.",
+    "product_tests_run": 0,
+    "product_changes": 0,
+    "score_changes": 0,
+    "rating_changes": 0,
+    "foreign_claim_preserved": "2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery",
+    "budget": "owner_waived_usage_gate; no purchases",
+    "concurrent_branch_advance": {
+      "previous_head": "ec7feda5bf06494d8d5d483998631c8c61c8d222",
+      "merged_head": "da8694c496c872309339365f7b7ae1d134a80957",
+      "foreign_change": "Record remote reconstructed source and current validation phase",
+      "all_changed_research_inputs_preserved": true
+    }
+  },
+  "automation_health": {
+    "research_agent": {
+      "start": {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "is_enabled": true,
+        "checked_at": null,
+        "note": "Successful start lookup before scoped claim; exact call timestamp not retained."
+      },
+      "end": {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "is_enabled": true,
+        "checked_at": "2026-11-07T23:47:20.169Z"
+      }
+    },
+    "main_team": {
+      "start": {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "is_enabled": true,
+        "checked_at": null,
+        "note": "Successful start lookup before scoped claim; exact call timestamp not retained."
+      },
+      "end": {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "is_enabled": true,
+        "checked_at": "2026-11-07T23:47:20.169Z"
+      }
+    },
+    "restoration_performed": false,
+    "limitation": "Point-in-time observations, not proof of uninterrupted worker execution."
+  },
+  "checkpoint": {
+    "ref": "agent-work/research/checkpoints/KNAVE2-table-reuse.json",
+    "status": "generator_language_handoff_completed_knave_product_coverage_unverified",
+    "exact_continuation": "KNAVE2-020: переформулировать уже извлечённые таблицы «Локации», «Постройки» и «Свойства мест» на язык наполнения выбранного места карты: возможность, условия, пример результата. Спецификацию оставить аналитику."
+  },
+  "next_candidate": {
+    "game_id": "KNAVE2",
+    "layer": "L1",
+    "status": "candidate_not_fixed_rotation",
+    "task_ref": "agent-work/backlog.json#HX-BL-043",
+    "action": "KNAVE2-020: переформулировать уже извлечённые таблицы «Локации», «Постройки» и «Свойства мест» на язык наполнения выбранного места карты: возможность, условия, пример результата. Спецификацию оставить аналитику.",
+    "source_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-020",
+    "why_now": "L1, create rank 3; после общего способа выбора и сочетания подсказок нужен конкретный пример наполнения POI. Новый полный пересмотр книги не требуется; кандидат перепроверяется по свежим приоритетам."
+  },
+  "owner_decisions_needed": [],
+  "latest_update_policy": "Only research_agent, written last after saved result/readback; main team fields preserved."
+}

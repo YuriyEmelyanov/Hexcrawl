@@ -59,19 +59,15 @@
     "layer": "L1",
     "status": "candidate_not_fixed_rotation",
     "task_ref": "agent-work/backlog.json#HX-BL-043",
-    "action": "Уточнить минимальный адаптер таблиц: ручной выбор строки, независимые экземпляры одинакового результата и provenance. Для двух одинаковых результатов A/B задать разные occurrence IDs; при перебросе A результат B и его источник должны сохраниться. Использовать уже извлечённые KNAVE2-070/071 и reuse-handoff, не пересканировать книгу.",
-    "why_now": "Общий перенос/история проверен; оставшийся пробел относится к специфичному Knave профилю выбора и происхождения результата, а не новому движку хранения."
+    "action": "KNAVE2-020: переформулировать уже извлечённые таблицы «Локации», «Постройки» и «Свойства мест» на язык наполнения выбранного места карты: возможность, условия, пример результата. Спецификацию оставить аналитику.",
+    "source_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-020",
+    "why_now": "L1, create rank 3; после общего способа выбора и сочетания подсказок нужен конкретный пример наполнения POI. Новый полный пересмотр книги не требуется; кандидат перепроверяется по свежим приоритетам."
   },
-  "active_task": {
-    "task_id": "HX-RSR-001",
-    "game_id": "KNAVE2",
-    "layer": "L1",
-    "scope": "KNAVE2-070/071: reformulate source rules in generator language for strategist and analyst; record owner role boundary; no specification"
-  },
+  "active_task": null,
   "claim": {
     "claim_id": "2026-11-07T2338-KNAVE2-adapter-contract",
     "task_id": "HX-RSR-001",
-    "status": "active",
+    "status": "completed",
     "scope": "KNAVE2-070/071: reformulate source rules in generator language for strategist and analyst; record owner role boundary; no specification",
     "claimed_at": "2026-11-07T23:38:16.779Z",
     "lease_expires_at": "2026-11-08T00:38:16.779Z",
@@ -90,9 +86,11 @@
     "latest_scope": "research_agent only,last",
     "previous_scope": "Proposed source-linked data/command contract for manual terminal rows, repeated occurrences and provenance; no product implementation",
     "scope_updated_at": "2026-11-07T23:44:55.461Z",
-    "scope_change_reason": "Direct owner correction: researcher translates rules to generator capabilities; strategist/analyst own specification."
+    "scope_change_reason": "Direct owner correction: researcher translates rules to generator capabilities; strategist/analyst own specification.",
+    "completed_at": "2026-11-07T23:48:59.946Z",
+    "result_ref": "agent-work/research/runs/2026-11-07T2338-KNAVE2-adapter-contract.json"
   },
-  "last_completed_run": "2026-11-07T2327-tagged-POI-lifecycle",
+  "last_completed_run": "2026-11-07T2338-KNAVE2-adapter-contract",
   "run_history_refs": [
     "agent-work/research/runs/2026-11-06-setup.json",
     "agent-work/research/runs/2026-11-06-map-creation-ranking.json",
@@ -107,7 +105,8 @@
     "agent-work/research/runs/2026-11-06T1430-SD-terrain-mapping.json",
     "agent-work/research/runs/2026-11-07T1230-WWN-registry-integration.json",
     "agent-work/research/runs/2026-11-07T1435-WWN-binding-finalization.json",
-    "agent-work/research/runs/2026-11-07T2327-tagged-POI-lifecycle.json"
+    "agent-work/research/runs/2026-11-07T2327-tagged-POI-lifecycle.json",
+    "agent-work/research/runs/2026-11-07T2338-KNAVE2-adapter-contract.json"
   ],
   "awaiting_owner_approval": [],
   "conflicts_observed": [
@@ -126,14 +125,14 @@
     "research_agent": {
       "start": {
         "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
-        "is_enabled": false,
+        "is_enabled": true,
         "checked_at": null,
-        "note": "Initial exact timestamp not captured; enabled restored under standing owner request."
+        "note": "Successful start lookup before scoped claim; exact call timestamp not retained."
       },
       "end": {
         "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
         "is_enabled": true,
-        "checked_at": "2026-11-07T23:32:10.366Z"
+        "checked_at": "2026-11-07T23:47:20.169Z"
       }
     },
     "main_team": {
@@ -141,18 +140,18 @@
         "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
         "is_enabled": true,
         "checked_at": null,
-        "note": "Specific result lookup errored; broad private lookup confirmed enabled before claim."
+        "note": "Successful start lookup before scoped claim; exact call timestamp not retained."
       },
       "end": {
         "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
         "is_enabled": true,
-        "checked_at": "2026-11-07T23:32:10.366Z"
+        "checked_at": "2026-11-07T23:47:20.169Z"
       }
     },
-    "restoration_performed": true,
-    "restoration_scope": "Research is_enabled restored at start and after end observation found it disabled again. No owner pause found; cause unknown; schedule/model unchanged."
+    "restoration_performed": false,
+    "limitation": "Point-in-time observations, not proof of uninterrupted worker execution."
   },
-  "last_result_ref": "agent-work/research/runs/2026-11-07T2327-tagged-POI-lifecycle.json",
+  "last_result_ref": "agent-work/research/runs/2026-11-07T2338-KNAVE2-adapter-contract.json",
   "blocked_source_work": [],
   "owner_scope_ref": "owner-decision-2026-11-06-knave-complete-rules-audit",
   "checkpoint_ref": "agent-work/research/checkpoints/KNAVE2-table-reuse.json",
@@ -281,5 +280,11 @@
     "quote": "Опять запрашиваешь разрешение github. Разрешаю.",
     "scope": "Existing HX-RSR-001 research results, seven WWN profiles and links in YuriyEmelyanov/Hexcrawl branch agent-operations; no product release or ranking changes.",
     "run_ref": "agent-work/research/runs/2026-11-07T1435-WWN-binding-finalization.json"
+  },
+  "owner_role_boundary": {
+    "decision_id": "owner-decision-2026-11-07-researcher-generator-language",
+    "quote": "Ты не должен делать спецификации. Ты должен переформулировать правила на язык генератора, чтобы стратег и аналитик их могли взять в работу.",
+    "contract_ref": "agent-work/research/contract.md",
+    "recorded_at": "2026-11-07T23:48:59.946Z"
   }
 }
