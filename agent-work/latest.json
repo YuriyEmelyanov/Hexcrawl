@@ -2,7 +2,7 @@
   "schema_version": 1,
   "date": "2026-11-07",
   "branch": "agent-operations",
-  "plan_json": "agent-work/handoffs/2026-11-07-HX-BL-041-MYTH-CARD1-specification.json",
+  "plan_json": "agent-work/handoffs/2026-11-07-HX-BL-041-MYTH-CARD1-development.json",
   "plan_md": null,
   "strategy_branch": "main",
   "strategy_status": "approved",
@@ -26,10 +26,10 @@
   },
   "lessons_path": "agent-work/lessons.md",
   "plan_id": "2026-11-06-HX-BL-023-E8-N-SEA-development",
-  "run_id": "2026-11-07T0300-strategist-score-PR492",
+  "run_id": "2026-11-07T0400-analyst-HX-BL-041-MYTH-CARD1",
   "plan_revision": 1,
   "baseline_sha": "00190bb749a4fa5af57aac4bbffff808e8fe733f",
-  "status": "approved_specification_ready",
+  "status": "ready_for_source_free_core_implementation",
   "planning_for": "2026-10-31",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-10-25",
@@ -45,23 +45,23 @@
   "schedule_start_at": "2026-10-24T01:00:00+03:00",
   "schedule_frequency": "hourly",
   "process_path": "agent-work/process.md",
-  "current_role": "strategist_manager",
-  "next_role": "business_analyst",
+  "current_role": "business_analyst",
+  "next_role": "programmer",
   "current_task_id": "HX-BL-041",
-  "spec_path": "agent-work/specs/HX-BL-023-E8-N-SEA.md",
-  "spec_version": "SEA-1.0",
-  "result_path": "agent-work/results/2026-11-07T0300-strategist-score-PR492.json",
+  "spec_path": "agent-work/specs/HX-BL-041-MYTH-CARD1.md",
+  "spec_version": "MC1-1.0",
+  "result_path": "agent-work/results/2026-11-07T0400-analyst-HX-BL-041-MYTH-CARD1.json",
   "handoff_commit_sha": "e21ce6ab8df56e580f444b249ef06f77c93f2255",
   "active_claim": null,
-  "next_step": "Подготовить полную пригодную разработчику MYTH-CARD1 спецификацию карточки знамений и ролей по готовому разбору, без повторной выборки и автоматического применения эффектов.",
+  "next_step": "Programmer implements the source-free MYTH-CARD1 core on a separate branch from current published main, verifies MC1-01…09 and prepares explicit core-only PR/review handoff. Do not publish an unavailable-data shell as completed72myth content.",
   "owner_decisions_needed": [],
   "release_approval": "owner-release-2026-11-07-PR492-856fe09",
   "historical_plan_status": "План23.10 сохранён как история; его блокировки и предложенный процесс заменены decisions24.10 в approvals/process/budget и текущим handoff.",
   "evidence_path": "agent-work/ui/HX-BL-023-E8-N-SEA-ui-v1/manifest.json",
-  "branch_name": "agent/hx023-sea-names",
-  "pr": 492,
-  "head_sha": "856fe0946d6050808fadfa040277db8c3ffc5aea",
-  "checks_status": "accepted_exact_tree_CI_passed; Pages_build_deploy_success; live_asset_hashes_match; live_Sea_UI_passed",
+  "branch_name": null,
+  "pr": null,
+  "head_sha": null,
+  "checks_status": "specification_and_standalone_proposal_verified_not_product_acceptance",
   "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42312939730",
   "review_verdict": "accepted_exact_sha_with_stated_finite_evidence_limits",
   "role_selection_mode": "ready_work_priority",
@@ -158,7 +158,7 @@
     "path": "agent-work/results/2026-11-06-reviewer-PR492-856fe09.json",
     "property": "score_assessment"
   },
-  "role_selection_reason": "New published PR492 has pending mandatory accounting; fresh Git confirms reviewed/release tree equality, successful deployment and no competing score claim",
+  "role_selection_reason": "Existing approved041 handoff ready; no unfinished competing specification claim; PR492 published/accounted",
   "score_update_result_ref": "agent-work/results/2026-11-07T0300-strategist-score-PR492.json",
   "score_update_completed_at": "2026-11-07 00:01:33 UTC",
   "score_update_delta": null,
@@ -166,7 +166,7 @@
   "next_task_proposal_ref": null,
   "next_task_id": "HX-BL-041",
   "approval_ref": "owner-decision-2026-10-28-editor-and-MB-content-before-outreach",
-  "last_completed_stage": "E8-N-SEA-score",
+  "last_completed_stage": "MYTH-CARD1-SPEC",
   "previous_release_approval": {
     "task_id": "HX-BL-023",
     "stage_id": "E1_UI3",
@@ -178,18 +178,18 @@
     "deployment_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40874465786",
     "published": true
   },
-  "base_sha": "7547a67bbcfb621f1e7c7189518583842ccb055a",
+  "base_sha": "00190bb749a4fa5af57aac4bbffff808e8fe733f",
   "automation_health": {
     "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-11-06 23:56:52 UTC",
+      "checked_at": "2026-11-07 01:02:42 UTC",
       "status": "checked",
       "is_enabled": true
     },
     "recovery_performed": false,
     "errors": [],
     "end": {
-      "checked_at": "2026-11-07 00:01:33 UTC",
+      "checked_at": "2026-11-07 01:12:03 UTC",
       "status": "checked",
       "is_enabled": true
     }
@@ -599,9 +599,9 @@
   "deployment_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42312939730",
   "next_task_execution_allowed": true,
   "last_release_pr": 491,
-  "last_material_result_path": "agent-work/results/2026-11-07T0300-strategist-score-PR492.json",
+  "last_material_result_path": "agent-work/results/2026-11-07T0400-analyst-HX-BL-041-MYTH-CARD1.json",
   "last_wait_check_at": "2026-10-26T19:04:14.491Z",
-  "spec_status": "needs_correction",
+  "spec_status": "ready_for_bounded_core",
   "previous_task_release_approval": {
     "status": "approved_and_executed",
     "task_id": "HX-BL-030",
@@ -770,7 +770,7 @@
     "next_step": "Решить отдельно узкий cleanup AUD-02/03/04; готовую спецификацию024 не задерживать."
   },
   "owner_decisions_note": "PR490 exact package authorized and published. No further publication decision needed for this released package; future package publication remains separate.",
-  "updated_at": "2026-11-07 00:01:33 UTC",
+  "updated_at": "2026-11-07 01:12:03 UTC",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
     "stage_id": "V3",
@@ -1469,7 +1469,7 @@
   "historical_unverified_weight": 70,
   "historical_score_model_version": "1.1",
   "score_update_awarded_points": 0,
-  "handoff_ref": "agent-work/handoffs/2026-11-07-HX-BL-041-MYTH-CARD1-specification.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-07-HX-BL-041-MYTH-CARD1-development.json",
   "previous_feedback_handoff": {
     "task_id": "HX-FB-001",
     "register": "agent-work/feedback.json",
@@ -1837,7 +1837,7 @@
     "approval_ref": "owner-decision-2026-11-06-rating-v1.4-approved"
   },
   "previous_result_path": "agent-work/results/2026-11-06-developer-release-PR491.json",
-  "handoff_path": "agent-work/handoffs/2026-11-07-HX-BL-041-MYTH-CARD1-specification.json",
+  "handoff_path": "agent-work/handoffs/2026-11-07-HX-BL-041-MYTH-CARD1-development.json",
   "ui_actual_preview": {
     "task_id": "HX-BL-024",
     "spec_version": "1.1",
@@ -2123,35 +2123,44 @@
     "completed_at": "2026-10-29T18:36:47.812Z",
     "result_ref": "agent-work/results/2026-10-29-analyst-HX-BL-023-direct-edit.json"
   },
-  "active_slice": "MYTH-CARD1-SPEC",
+  "active_slice": "MYTH-CARD1",
   "last_completed_stage_task_id": "HX-BL-023",
   "ui_preview": {
-    "version": "SEA-UI1",
+    "version": "MYTH-CARD-UI2",
     "type": "proposal_not_implementation",
-    "source": "agent-work/ui/HX-BL-023-E8-N-SEA-ui-v1/README.md",
-    "desktop": "agent-work/ui/HX-BL-023-E8-N-SEA-ui-v1/merge-1500.png",
-    "narrow": "agent-work/ui/HX-BL-023-E8-N-SEA-ui-v1/split-390.png",
-    "states": [
-      "read",
-      "name",
-      "first",
-      "split",
-      "merge",
-      "error"
-    ],
+    "ref": "agent-work/ui/HX-BL-041-MYTH-CARD-UI2/preview.html",
+    "supersedes": "MYTH-CARD-UI1",
+    "source_analysis_ref": "agent-work/catalogs/mythic-bastionland/myth-content-schema-sample-v1.json",
+    "spec_ref": "agent-work/specs/HX-BL-041-MYTH-CARD1.md",
     "shown_in_chat": true,
-    "shown_on": "2026-11-06",
     "shown_states": [
-      "merge desktop1500",
-      "split narrow390"
+      "ready1500",
+      "ready390"
     ],
-    "owner_response_blocks_development": false,
-    "check_ref": "agent-work/ui/HX-BL-023-E8-N-SEA-ui-v1/manifest.json",
-    "limitations": [
-      "DOM proposal on published CSS, not implemented Sea runtime",
-      "12 layouts passed; source/transaction behavior not executed by mock",
-      "RU proposal; implementation must verify EN/RU,320px,regional Sea,keyboard/IME and document touch/AT limits"
-    ]
+    "widths": [
+      1500,
+      390,
+      320
+    ],
+    "states": [
+      "ready",
+      "missing",
+      "error",
+      "override",
+      "draft"
+    ],
+    "layouts": 15,
+    "layout_checks": "passed; panel scrollWidth and viewport bounds, two ready screenshots visually inspected; corrected inherited body padding before final render",
+    "keyboard_probe": "Standalone prototype Enter/Space expand-collapse and native disabled draft controls passed",
+    "source": "Previous panel CSS based on published application; exact released CSS asset index-CqHsWKQ-.css inspected; proposal card overrides. Schematic map, invented text, no book payload.",
+    "production_acceptance": false,
+    "known_limits": [
+      "No exact-SHA App runtime binding/history validation in prototype",
+      "RU proposal; implementation must verify RU/EN",
+      "Physical touch/AT/full WCAG unverified"
+    ],
+    "design_reply_blocks_work": false,
+    "html_sha256": "7becac0df7825bda717d6cdcc321b646337ca67e6e3fb3de514725501caaab1b"
   },
   "ui_preview_pending": false,
   "marketing_gate_status": "not_passed_full023_remains",
@@ -2159,18 +2168,13 @@
   "next_product_recommendation": {
     "task_id": "HX-BL-041",
     "stage_id": "MYTH-CARD1",
-    "title": "Карточка знамений и ролей выбранного мифа",
-    "state": "already_approved_specification_ready",
-    "user_effect": "До — имя/кубы и ориентиры; после предлагаемого среза — читаемый материал сцен и ролей у выбранного места без исполнения эффектов.",
-    "priority_reason": "Requested041 map-preparation content; reuse existing sample/proposal and stable IDs rather than start unapproved game features. FB002 audit completed, not repeated.",
-    "score_impact": "unknown; spec preparation score-neutral",
-    "estimate": "M specification/card scope; source-data coverage separate explicit dependency",
-    "dependencies": [
-      "Current published Sea/v9 baseline00190bb",
-      "Ready behavior/error/history/locale contract",
-      "Validated coverage/permission for any shipped source corpus"
-    ],
-    "acceptance": "Exact selected myth identity/material consistency; ordered source scenes/role blocks; unknown/error safe; UI-only reading; independent exact-SHA and desktop/narrow review before release"
+    "status": "ready_for_source_free_core_implementation",
+    "authorization_ref": "owner-decision-2026-10-28-editor-and-MB-content-before-outreach",
+    "handoff_ref": "agent-work/handoffs/2026-11-07-HX-BL-041-MYTH-CARD1-development.json",
+    "next_role": "programmer",
+    "next_step": "Programmer implements the source-free MYTH-CARD1 core on a separate branch from current published main, verifies MC1-01…09 and prepares explicit core-only PR/review handoff. Do not publish an unavailable-data shell as completed72myth content.",
+    "score_impact": "unknown; no award",
+    "full_corpus_ready": false
   },
   "owner_editor_scope": {
     "decision_ref": "owner-decision-2026-10-28-editor-functional-scope",
@@ -2281,7 +2285,7 @@
   },
   "full_editor_ready": false,
   "current_task_score_assessment_status": "unknown_developer_partial_evidence_no_award",
-  "published": true,
+  "published": false,
   "main_changed": false,
   "ui_actual": {
     "head_sha": "de0299168e5a74d4e3594db71d657ca8055614e0",
@@ -2407,13 +2411,13 @@
     "score_assessment_ref": "agent-work/evidence/review-HX-BL-023-E1-ui3-a265a78/score_assessment.json",
     "release_sha": "8f7d17266c53e31428da7c0da6dbbf1afe01d035"
   },
-  "spec_ref": "agent-work/specs/HX-BL-023-E8.md",
-  "spec_blob_sha": null,
+  "spec_ref": "agent-work/specs/HX-BL-041-MYTH-CARD1.md",
+  "spec_blob_sha": "902a47dd0e5173c824b46b7c35a119cde48e25b9",
   "parent_spec_ref": "agent-work/specs/HX-BL-023.md",
   "parent_spec_version": "2.3",
   "test_change_summary_ref": "agent-work/evidence/HX-FB-010-PR491-de02991/test-change-summary.json",
   "programmer_score_evidence_ref": "agent-work/evidence/HX-FB-010-PR491-de02991/review-report.json",
-  "completed_claim_result_ref": "agent-work/results/2026-11-07T0300-strategist-score-PR492.json",
+  "completed_claim_result_ref": "agent-work/results/2026-11-07T0400-analyst-HX-BL-041-MYTH-CARD1.json",
   "review_evidence_ref": "agent-work/evidence/HX-FB-010-PR491-de02991/review-report.json",
   "github_review_state": "independent_acceptance_recorded_COMMENT",
   "independent_reviewer_automation_health_ref": "agent-work/evidence/review-HX-BL-023-E3-d7bb38f/automation_health.json",
@@ -2482,19 +2486,19 @@
   "process_analysis_ref": "agent-work/proposals/2026-10-31-development-process-review.md",
   "process_analysis_status": "recommendations_only_not_implemented",
   "previous_score_update_result_ref": "agent-work/results/2026-10-29-strategist-score-HX-BL-023-E1-8f7d172.json",
-  "next_approved_stage": "MYTH-CARD1-SPEC",
-  "next_approved_stage_handoff_ref": "agent-work/handoffs/2026-11-07-HX-BL-041-MYTH-CARD1-specification.json",
-  "authorization_status": "already_approved_E8_N_SEA_analysis; future_package_publication_requires_separate_permission",
+  "next_approved_stage": "MYTH-CARD1",
+  "next_approved_stage_handoff_ref": "agent-work/handoffs/2026-11-07-HX-BL-041-MYTH-CARD1-development.json",
+  "authorization_status": "Existing041 task start covers this bounded core after suitable spec. No new design approval required; book-corpus transfer and release remain unapproved.",
   "completed_at": "2026-11-06T07:21:35Z",
   "score_changed": false,
-  "next_stage_id": "MYTH-CARD1-SPEC",
+  "next_stage_id": "MYTH-CARD1",
   "score_evidence_updated": true,
-  "current_stage_id": "MYTH-CARD1-SPEC",
+  "current_stage_id": "MYTH-CARD1",
   "implementation_started": false,
   "current_stage_release_approved": false,
   "review_ready": false,
   "current_stage_ui_status": "release_preview_pending_whole_package_walkthrough",
-  "completed_claim": "agent-work/claims/2026-11-07T0300-strategist-score-PR492.json",
+  "completed_claim": "agent-work/claims/2026-11-07T0400-analyst-HX-BL-041-MYTH-CARD1.json",
   "evidence_commit_sha": "5a9c6c97bd0ff170751d78babcc9d3578066e0bb",
   "finding_ids": [],
   "current_release_package_ref": "agent-work/handoffs/2026-10-31-HX-BL-023-E3-release-package-d7bb38f.json",
@@ -4085,7 +4089,7 @@
   },
   "current_stage_status": "published",
   "current_stage_review_status": "accepted",
-  "accepted": true,
+  "accepted": false,
   "full_UI_pending": true,
   "latest_HX_BL_023_E5_persistence_20261104": {
     "run_id": "2026-11-04-developer-HX-BL-023-E5-persistence",
@@ -4322,10 +4326,10 @@
     "materials_commit_sha": "317189e45278245dfced11645c528b5bff8320a9",
     "result_ref": "agent-work/results/2026-11-04-developer-HX-BL-023-E5-solver.json"
   },
-  "stage_id": "MYTH-CARD1-SPEC",
+  "stage_id": "MYTH-CARD1",
   "release_approved": false,
-  "ui_actual_shown": true,
-  "ui_actual_responsible": "developer",
+  "ui_actual_shown": false,
+  "ui_actual_responsible": "programmer",
   "UI_proposal_already_shown": true,
   "authorization_ref": "owner-decision-2026-10-28-editor-additional-functions-approved",
   "checks_summary": {
@@ -5276,7 +5280,7 @@
       }
     }
   ],
-  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/492",
+  "pr_url": null,
   "active_claim_scope": null,
   "other_active_claims": [
     {
@@ -5691,7 +5695,7 @@
     "score_update_result_ref": "agent-work/results/2026-11-06-strategist-score-PR491.json",
     "score_update_awarded_points": 0
   },
-  "current_package_published": true,
+  "current_package_published": false,
   "latest_PR491_score": {
     "task_id": "HX-BL-023",
     "feedback_id": "HX-FB-010",
@@ -5711,12 +5715,12 @@
     "delta_points": null,
     "applied_at": "2026-11-06T07:21:35Z"
   },
-  "authority_status": "Already approved041 analysis/specification; no new task-start or design gate. Implementation requires suitable contract/data readiness; later package publication separately approved.",
+  "authority_status": "Existing041 task start covers this bounded core after suitable spec. No new design approval required; book-corpus transfer and release remain unapproved.",
   "analysis_baseline_sha": "00190bb749a4fa5af57aac4bbffff808e8fe733f",
   "analysis_baseline_tree": "9c8585ad4c5aafdec38d242a67ffc54fe7f4402c",
   "previous_evidence_path": "agent-work/evidence/score-PR491-7547a67/accounting.json",
   "last_published_release_approval": "owner-release-2026-11-06-PR491-de02991",
-  "ui_actual_pending": false,
+  "ui_actual_pending": true,
   "latest_PR492_release": {
     "schema_version": 1,
     "run_id": "2026-11-07-developer-release-PR492",
@@ -5880,6 +5884,27 @@
       }
     ]
   },
-  "implementation_allowed": false,
-  "full_task_complete": false
+  "implementation_allowed": true,
+  "full_task_complete": false,
+  "previous_analyst_result_ref": "agent-work/results/2026-11-07T0300-strategist-score-PR492.json",
+  "public_source_free_core_pr_allowed": true,
+  "public_book_corpus_allowed": false,
+  "core_contract_ready": true,
+  "real_material_corpus_ready": false,
+  "latest_HX_BL_041_MYTH_CARD1_specification": {
+    "result_ref": "agent-work/results/2026-11-07T0400-analyst-HX-BL-041-MYTH-CARD1.json",
+    "spec_ref": "agent-work/specs/HX-BL-041-MYTH-CARD1.md",
+    "spec_version": "MC1-1.0",
+    "spec_blob_sha": "902a47dd0e5173c824b46b7c35a119cde48e25b9",
+    "handoff_ref": "agent-work/handoffs/2026-11-07-HX-BL-041-MYTH-CARD1-development.json",
+    "ui_preview_version": "MYTH-CARD-UI2",
+    "ui_shown_in_chat": true,
+    "core_implementation_ready": true,
+    "corpus_ready": false,
+    "permanent_test_changes": 0,
+    "score_changed": false,
+    "next_role": "programmer",
+    "next_step": "Programmer implements the source-free MYTH-CARD1 core on a separate branch from current published main, verifies MC1-01…09 and prepares explicit core-only PR/review handoff. Do not publish an unavailable-data shell as completed72myth content.",
+    "completed_at": "2026-11-07 01:12:03 UTC"
+  }
 }
