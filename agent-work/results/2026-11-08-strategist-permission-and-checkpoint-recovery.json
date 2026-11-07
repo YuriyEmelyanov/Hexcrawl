@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-08-strategist-permission-and-checkpoint-recovery",
+  "task_id": "HX-BL-041",
+  "stage_id": "MYTH-CARD1-RECOVERY",
+  "role": "strategist_manager",
+  "status": "recovery_required_exact_source_and_claimant_unresolved",
+  "role_selection_reason": "Owner reports repeated prompts after explicit GitHub full_access selection; audit found stale latest routing, unresolved active remote-PR claim and inaccessible exact candidate artifacts. Recover coordination rather than duplicate source work.",
+  "github_access": {
+    "app_permission": "Allow all actions",
+    "verified": true,
+    "read_probe": "AGENTS.md and operational records fetched successfully in this run",
+    "write_probe": "This result is the bounded authorized operational write; readback required before claiming success",
+    "new_permission_prompt_reason": "not_exposed_by_service; no causal claim",
+    "account_reconnection_needed": false
+  },
+  "automation_health": {
+    "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "disabled_start": {
+      "status": "observed_false_during_initial_peek_exact_clock_not_captured",
+      "is_enabled": false
+    },
+    "start": {
+      "checked_at": "2026-11-07T23:26:10.917Z",
+      "status": "checked",
+      "is_enabled": true,
+      "recovery_performed": true
+    },
+    "end": {
+      "checked_at": "2026-11-07T23:28:28.500Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "recovery_performed": true,
+    "errors": [],
+    "reason_for_previous_disable": "unknown",
+    "latest_recorded_run": {
+      "id": "61a5e811-bef0-832b-8916-8c23d7b76ed3",
+      "status": "completed",
+      "requires_user_action": true,
+      "content_text": "",
+      "limitation": "Tool does not expose the action/approval text; neither last_run status nor a later enable proves worker liveness."
+    }
+  },
+  "checkpoint": {
+    "accepted_head_sha": "febd762d4a8fae6f8acd2df26de0c1ec5cce860d",
+    "accepted_tree_sha": "d721eb92b53d4491cb8d9c7403b8f239784f9ed4",
+    "remote_commit_probe": "GitHub API404",
+    "remote_tree_probe": "GitHub API404",
+    "local_worktree": "/workspace/scratch/fb5036e89339/myth-card1-development",
+    "local_bundle": "/workspace/scratch/fb5036e89339/myth-card1-spec/myth-card1-local.bundle",
+    "local_probe": "Original workspace empty; bounded scratch search found no bundle/material source; not a claim of permanent loss or absence in every other environment."
+  },
+  "ownership": {
+    "canonical_claim_ref": "agent-work/claims/2026-11-07T0800-developer-HX-BL-041-MYTH-CARD1-PR.json",
+    "status": "active",
+    "claim_modified": false,
+    "lease_alone_used_as_completion": false,
+    "corresponding_result": "not found in current result listing"
+  },
+  "no_source_or_release_changes": true,
+  "score_changed": false,
+  "public_book_corpus_authorized": false,
+  "permissions_changed_in_this_run": false,
+  "review_ref": "agent-work/results/2026-11-07T0700-reviewer-HX-BL-041-MYTH-CARD1-febd762.json",
+  "next_role": "strategist_manager",
+  "handoff_ref": "agent-work/handoffs/2026-11-08-HX-BL-041-MYTH-CARD1-recovery.json",
+  "next_step": "Resolve interrupted claimant disposition and recover original exact candidate checkpoint from its environment/durable artifact. Verify hash/tree before remote PR transfer. If exact source is unavailable, record that and plan reconstruction within approved scope as a new SHA requiring checks and fresh independent review; never present reconstruction as febd762.",
+  "owner_decisions_needed": [],
+  "lesson": "Do not equate GitHub app permissions, account connection, runtime approvals and product release approval. Enabling an automation or changing permission mode is not proof that an interrupted development run resumed.",
+  "created_at": "2026-11-07T23:29:37.967Z"
+}
