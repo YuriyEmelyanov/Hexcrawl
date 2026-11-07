@@ -55,22 +55,19 @@
     "record_alternatives": true
   },
   "next_candidate": {
-    "game_id": "WWN",
+    "game_id": "KNAVE2",
     "layer": "L1",
     "status": "candidate_not_fixed_rotation",
-    "action": "Append seven WWN-RU-REG-001..007-L1 profiles derived from saved matrix operational requirements to game-bindings, add reverse indices to existing common rules, resolve canonical_binding_ref and handoff binding_refs; preserve519 existing bindings and91 common meanings. No book re-scan. Existing005already links handoff; do not create a task duplicate.",
-    "task_ref": "agent-work/backlog.json#HX-BL-005",
-    "why_now": "Source matrix and acceptance handoff are saved; large registry upload remains a transport limitation, not a source or permission request."
+    "task_ref": "agent-work/backlog.json#HX-BL-043",
+    "checkpoint_ref": "agent-work/research/checkpoints/KNAVE2-table-reuse.json",
+    "action": "Адресно проверить перенос заполненного POI: сохранность бросков, RU/EN текста, счётчиков и Undo/Redo на точном SHA; использовать существующий checkpoint и evidence, не объявлять полную поддержку Knave.",
+    "why_now": "Выше действующий create-ранг и общий жизненный цикл таблиц для Knave/Shadowdark; WWN source-to-registry перенос теперь завершён."
   },
-  "active_task": {
-    "game_id": "WWN",
-    "layer": "L1",
-    "action": "Register seven saved WWN L1 profiles and reverse links; existing HX-BL-005 references only; preserve foreign data"
-  },
+  "active_task": null,
   "claim": {
     "claim_id": "2026-11-07T1435-WWN-binding-finalization",
     "task_id": "HX-RSR-001",
-    "status": "active",
+    "status": "completed",
     "scope": "Register seven saved WWN L1 profiles and reverse links; existing HX-BL-005 references only; preserve foreign data",
     "baseline_sha": "2c38f3124f117779879f388e9aaabc2aedeb7f96",
     "claimed_at": "2026-11-07T14:35:47.893Z",
@@ -90,9 +87,11 @@
       "reason": "Same researcher resumed explicitly by owner; last recorded automation run completed; prior claim has no immutable result in state. Lease expiry alone is not used as proof.",
       "previous_run_status": "completed",
       "owner_permission": "Опять запрашиваешь разрешение github. Разрешаю."
-    }
+    },
+    "completed_at": "2026-11-07T14:38:15.336Z",
+    "result_ref": "agent-work/research/runs/2026-11-07T1435-WWN-binding-finalization.json"
   },
-  "last_completed_run": "2026-11-07T1230-WWN-registry-integration",
+  "last_completed_run": "2026-11-07T1435-WWN-binding-finalization",
   "run_history_refs": [
     "agent-work/research/runs/2026-11-06-setup.json",
     "agent-work/research/runs/2026-11-06-map-creation-ranking.json",
@@ -105,7 +104,8 @@
     "agent-work/research/runs/2026-11-06T1230-KNAVE2-table-reuse.json",
     "agent-work/research/runs/2026-11-06T1330-L1-lifecycle-evidence.json",
     "agent-work/research/runs/2026-11-06T1430-SD-terrain-mapping.json",
-    "agent-work/research/runs/2026-11-07T1230-WWN-registry-integration.json"
+    "agent-work/research/runs/2026-11-07T1230-WWN-registry-integration.json",
+    "agent-work/research/runs/2026-11-07T1435-WWN-binding-finalization.json"
   ],
   "awaiting_owner_approval": [],
   "conflicts_observed": [
@@ -121,32 +121,36 @@
   "setup_commit": "88448b734a8e9a1a35fba9352c2a6845eff98ae5",
   "last_setup_result_ref": "agent-work/research/runs/2026-11-06-setup.json",
   "automation_health": {
+    "restoration_performed": true,
+    "restoration_scope": "research is_enabled only; existing owner hourly authorization; no owner pause found; cause unknown",
     "research_agent": {
       "start": {
         "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
-        "is_enabled": true,
-        "checked_at": "2026-11-07T12:26:59Z"
+        "is_enabled": false,
+        "checked_at": null,
+        "note": "Initial tool batch observed status before claim; exact start check timestamp not retained."
       },
       "end": {
         "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
-        "is_enabled": false,
-        "checked_at": "2026-11-07T12:33:10.511Z"
+        "is_enabled": true,
+        "checked_at": "2026-11-07T14:37:09.489Z"
       }
     },
     "main_team": {
       "start": {
         "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
         "is_enabled": true,
-        "checked_at": "2026-11-07T12:26:59Z"
+        "checked_at": null,
+        "note": "Initial tool batch observed status before claim; exact start check timestamp not retained."
       },
       "end": {
         "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
         "is_enabled": true,
-        "checked_at": "2026-11-07T12:33:10.004Z"
+        "checked_at": "2026-11-07T14:37:09.489Z"
       }
     }
   },
-  "last_result_ref": "agent-work/research/runs/2026-11-07T1230-WWN-registry-integration.json",
+  "last_result_ref": "agent-work/research/runs/2026-11-07T1435-WWN-binding-finalization.json",
   "blocked_source_work": [],
   "owner_scope_ref": "owner-decision-2026-11-06-knave-complete-rules-audit",
   "checkpoint_ref": "agent-work/research/checkpoints/WWN-regional-hydrology.json",
@@ -268,5 +272,11 @@
     "model": "gpt-6.1-sol",
     "reasoning_effort": "ultra",
     "technical_setting": "unknown; prompt preference is not runtime configuration evidence"
+  },
+  "owner_github_authorization": {
+    "date": "2026-11-07",
+    "quote": "Опять запрашиваешь разрешение github. Разрешаю.",
+    "scope": "Existing HX-RSR-001 research results, seven WWN profiles and links in YuriyEmelyanov/Hexcrawl branch agent-operations; no product release or ranking changes.",
+    "run_ref": "agent-work/research/runs/2026-11-07T1435-WWN-binding-finalization.json"
   }
 }
