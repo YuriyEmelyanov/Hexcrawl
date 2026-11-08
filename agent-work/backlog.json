@@ -5437,7 +5437,8 @@
         "agent-work/research/requirements/ROOT-TO-woodland-setup-L1.md",
         "agent-work/research/requirements/CAIRN2-pointcrawl-conversion.json",
         "agent-work/research/requirements/ROOT-core-map-L1.json",
-        "agent-work/research/requirements/ROOT-core-clearing-content-L1.json"
+        "agent-work/research/requirements/ROOT-core-clearing-content-L1.json",
+        "agent-work/research/requirements/WWN-regional-features-L1.json"
       ],
       "source_profile_handoffs": [
         {
@@ -6340,6 +6341,86 @@
             "Полная визуальная PDF-сверка таблиц и назначение кубиков осям не проведены.",
             "Политика совпадений, имена/мотивы/конкретизация результатов не заданы этим абзацем.",
             "Поддержка профиля генератором требует фактического evidence наSHA."
+          ],
+          "score_delta": null,
+          "implementation_authorized": false,
+          "release_authorized": false
+        },
+        {
+          "component_id": "WWN-regional-features-L1",
+          "status": "research_handoff_product_unverified",
+          "research_handoff_ref": "agent-work/research/requirements/WWN-regional-features-L1.json",
+          "research_result_ref": "agent-work/research/runs/2026-11-08T0735-WWN-regional-features.json",
+          "source_id": "WWN-RU-DELUXE-SUPPLIED-20261106",
+          "source_scope": "RUregionalstep2 printed120–121/PDF123–124 only",
+          "requirement_refs": [
+            "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-REG-008-L1"
+          ],
+          "binding_refs": [
+            "agent-work/rules/game-bindings.json#WWN-RU-REG-008-L1"
+          ],
+          "canonical_rule_ids": [
+            "content.roll_table_resolution",
+            "map.terrain_zones",
+            "map.terrain_compatibility",
+            "content.place_description"
+          ],
+          "acceptance_checks": [
+            {
+              "id": "WWN-RU-REG-008-L1-AC01",
+              "given": "Регион без подготовленных значимых объектов; шестьd20=1,5,8,14,18,20; ведущий подтвердил допустимость климата и размещения.",
+              "when": "Выбрать объекты второго шага.",
+              "expected": "Шесть выбранных типов: пашни, густой лес, горы, скалистые холмы, болото, старые горы. Это шесть значимых объектов региона, не шесть гексов или обязательных POI.",
+              "requirement_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-REG-008-L1"
+            },
+            {
+              "id": "WWN-RU-REG-008-L1-AC02",
+              "given": "Холодный регион, выбран результат джунглей; ведущий решает заменить его местным климатическим эквивалентом — хвойным лесом.",
+              "when": "Применить указанную замену.",
+              "expected": "В этой позиции хвойный лес, исходный результат и решение ведущего понятны; остаётся шесть объектов, остальные пять не переброшены. Конкретная замена выбрана ведущим, не предписана таблицей.",
+              "requirement_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-REG-008-L1"
+            },
+            {
+              "id": "WWN-RU-REG-008-L1-AC03",
+              "given": "В холодном регионе выбран тропический лес; ведущий оставляет его, объясняя работающей машиной Пришельцев.",
+              "when": "Сохранить исключение.",
+              "expected": "Тропический лес и явное объяснение исключения сохранены; климат не изменён молча. Исключение не названо обычной климатической совместимостью.",
+              "requirement_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-REG-008-L1"
+            },
+            {
+              "id": "WWN-RU-REG-008-L1-AC04",
+              "given": "Небольшой регион, результат горного хребта; ведущий задаёт участок холмов с несколькими вершинами подходящего ему размера.",
+              "when": "Подготовить размещение.",
+              "expected": "Сохранено выбранное соразмерное отображение; автоматический хребет длиной100миль не навязан. Универсальная численная формула размера не придумана.",
+              "requirement_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-REG-008-L1"
+            },
+            {
+              "id": "WWN-RU-REG-008-L1-AC05",
+              "given": "Шесть объектов размещены; ведущий меняет только расположение леса и дополняет его описанием.",
+              "when": "Изменить выбранный объект.",
+              "expected": "Изменены положение/описание леса; остальные пять типов и объяснение исключения не утрачены; реки прежнего шага не перегенерированы.",
+              "requirement_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-REG-008-L1"
+            },
+            {
+              "id": "WWN-RU-REG-008-L1-AC06",
+              "given": "Сохранены шесть объектов, их положения и одно климатическое исключение.",
+              "when": "Повторно открыть карту.",
+              "expected": "Те же шесть объектов, положения и объяснение восстановлены; броски и автоматическое исправление климата не повторены.",
+              "requirement_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-REG-008-L1"
+            }
+          ],
+          "expected_evidence": {
+            "current_runtime": "unknown",
+            "future_product": "Exact-SHA selected regional-profile checks"
+          },
+          "source_limitations": [
+            "Full book is available but only stated bounded corpus read; no complete WWN thematic audit.",
+            "Source applicability is not usage prevalence or audience size.",
+            "No full book, art, or complete content table is published in derived records.",
+            "Полная английская сверка перевода и примечаний таблицы не проведена.",
+            "Нет универсальных численных порогов соседства, климатической совместимости или соразмерности.",
+            "Политика дубликатов и способ автоматического размещения остаются вопросами ведущего/аналитика.",
+            "Реализация выбранного профиля наSHAне проверена."
           ],
           "score_delta": null,
           "implementation_authorized": false,
