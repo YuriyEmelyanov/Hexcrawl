@@ -1,0 +1,243 @@
+{
+  "schema_version": 1,
+  "proposal_id": "HX-BL-042-SCALE1",
+  "version": 1,
+  "task_id": "HX-BL-042",
+  "stage_id": "SCALE1",
+  "title": "Сохраняемый физический размер гекса",
+  "status": "proposed",
+  "recommended_priority": 1,
+  "created_at": "2026-11-08T20:02:00.411Z",
+  "role": "strategist_manager",
+  "problem": "Опубликованный main a246fdf хранит экранный zoom, но в проверенном App-контракте нет общего физического масштаба. Принятый, ещё не выпущенный Knave af50286 уже хранит fixed6mile/conventionunknown; это частный профиль, не общий редактор. Без единицы и конвенции мастер не может однозначно передать физический размер карты.",
+  "benefit": "Мастер задаёт физическую длину гекса один раз, сохраняет её вместе с картой и продолжает подготовку без потери масштаба. Один общий компонент вместо отдельной настройки на каждую игру.",
+  "primary_scenario": "create",
+  "secondary_scenario": "develop",
+  "layer": "L1",
+  "canonical_rule_id": "map.physical_hex_scale",
+  "ranking_version": "three-scenario-ranks-1.4-create-evidence",
+  "cohort_version": "2026-11-06-ranking1.4-create-evidence",
+  "in_scope": [
+    "Общий сохраняемый параметр положительной длины, mile/km и конвенции unknown/opposite_vertices/opposite_sides; явное unset для старых карт.",
+    "Компактный просмотр/редактирование в действующем интерфейсе, RU/EN, безопасные черновики, Undo/Redo и JSON round-trip; zoom и география прежние.",
+    "Точные переводы единиц; при известной геометрии перевод между двумя диаметрами с сохранением физического гекса. При unknown не вычислять выдуманную геометрию.",
+    "Переиспользовать существующий Knave physicalHex без второго противоречащего значения. Принятый профиль Knave сохраняет6mile/conventionnull и прежнюю блокировку; свободное переопределение Knave-профиля не входит.",
+    "PF2 optional12mile opposite_vertices — проверочный пример общего параметра, а не реализация всего профиля PF2. Для других игр сохранять параметры/unknown только после адресной сверки."
+  ],
+  "out_of_scope": [
+    "Измеритель маршрута/расстояний по карте, вахты/время/скорость движения L2",
+    "Новые игровые checkbox-профили, содержимое книг, новые биомы/генератор географии",
+    "Вложенные карты24→6, автоматический перенос WOT/подложки, VTT",
+    "Автоматическая конвенция для Knave/SD/WWN/OSE, перерасчёт старых карт или молчаливый дефолт12миль"
+  ],
+  "user_visible_effect": {
+    "before": "Zoom100%/200% меняет размер изображения; обычная карта не несёт общего поля физической длины. У принятого Knave есть только фиксированные6миль/гекс.",
+    "after": "Предложение, не реализация: «Размер гекса:12миль · между противоположными вершинами»; послеzoom200%, save/load остаётся12миль. Для старой карты — «не задан»; дляKnave —6миль, конвенциянеизвестна.",
+    "example": {
+      "selected_setting": {
+        "length": 12,
+        "unit": "mile",
+        "convention": "opposite_vertices"
+      },
+      "unit_conversion": "19.312128km opposite_vertices",
+      "known_convention_conversion": "6√3mi ≈10.392304845413264mi opposite_sides, same physical hex",
+      "unknown_case": "6mile / conventionunknown stays unknown; no computed side/center distance"
+    },
+    "preview_requirement_after_approval": "Аналитик показывает desktop/narrow на основе текущего интерфейса; затем разработка без третьего дизайн-gate. Полная спецификация/макет в этом запуске не создавались."
+  },
+  "priority_vs_alternatives": [
+    {
+      "task": "HX-BL-041/MC1-EN",
+      "decision": "Вернуть в исполнение сразу после поступления английского файла; сейчас внешняя зависимость, новый повтор извлечения не разрешён/не нужен."
+    },
+    {
+      "task": "HX-BL-043/KNAVE2-CLASSIC1",
+      "decision": "Принят; публикация сохраняет отдельный приоритет по разрешению владельца. Следующая разработка не должна незаметно менять принятый пакет."
+    },
+    {
+      "task": "HX-BL-043/KNAVE2-PLACE1",
+      "decision": "Самостоятельные подсказки отложены владельцем; не возвращать их под видом новой задачи."
+    },
+    {
+      "task": "HX-BL-022/HX-FB-008/009",
+      "decision": "Утверждённые изменения010 уже опубликованы485; устранить устаревшие статусы, не повторять разработку."
+    },
+    {
+      "task": "HX-BL-003",
+      "decision": "Ожидает решения о замене приёмки; новые замеры автоматически не разрешены."
+    },
+    {
+      "task": "HX-BL-051/047 and HX-BL-040",
+      "decision": "Вложение карт, новый географический алгоритм и связанные истории заметно шире; общий масштаб — ограниченная основаL1."
+    },
+    {
+      "task": "HX-FB-002 cleanup",
+      "decision": "Разовый аудит выполнен; отдельных очисток без нужного решения не начинать и не повторять полный аудит вместо продукта."
+    }
+  ],
+  "estimated_scope": "Один ограниченный пакет M: ориентировочно1аналитический,1–2разработческих и1независимый проверочный этап; это оценка объёма, не обещание времени/стоимости.",
+  "dependencies": [
+    "Явное утверждение владельцем HX-BL-042/SCALE1 и границ.",
+    "После утверждения аналитик уточняет текущую основу: опубликованный main или отдельная интеграция послеKnave; без примешивания042в принятый043пакет.",
+    "Переиспользование модели документа/импорта/истории и правила Knave fixed6/unknown; без молчаливой миграции."
+  ],
+  "acceptance": [
+    "12mile opposite_vertices сохраняется отдельно от zoom; zoom/rotate не меняет длину, POI, координаты и RNG.",
+    "12mile↔19.312128km; known diameter conversion12→6√3mile с сохранением физического гекса и обратимостью; unknown не получает выдуманной конвенции.",
+    "Редактирование→Undo→Redo→JSON export/import сохраняют масштаб и прежний полный документ; ошибочные0/negative/NaN/Infinity/unknownenum отклоняются атомарно.",
+    "Поддерживаемые старые карты без физического масштаба открываются unset; fixedKnave6mile/null не сбрасывается и не дублируется.",
+    "Desktop/390/320: компактность, читаемость,44px цели без перекрытий, клавиатура/ошибки/отмена; показан фактический результат наexactSHA.",
+    "Независимый exactSHAreview с реальнымиsave/load/Undoсценариями иscore_assessment1.2, без новой тяжёлой серии генерации ради этой настройки."
+  ],
+  "profiles": [
+    {
+      "binding_id": "DND5-2014-002-L1",
+      "game_id": "DND5",
+      "edition": "DMG2014",
+      "layer": "L1",
+      "profile_status": "unverified",
+      "parameters": [
+        {}
+      ],
+      "limitations": "Numeric parameters unresolved; no source-derived DND preset authorized."
+    },
+    {
+      "binding_id": "DND5-2014-024-L1",
+      "game_id": "DND5",
+      "edition": "DMG2014",
+      "layer": "L1",
+      "profile_status": "unverified",
+      "parameters": [
+        {}
+      ],
+      "limitations": "Numeric parameters unresolved; no source-derived DND preset authorized."
+    },
+    {
+      "binding_id": "PF2-RM-002-L1",
+      "game_id": "PF2",
+      "edition": "Remaster:GM_Core+Player_Core",
+      "layer": "L1",
+      "profile_status": "unverified",
+      "parameters": [
+        {
+          "miles": 12,
+          "measurement": "opposite_vertices"
+        }
+      ],
+      "limitations": "Component/profile only; whole-game support not claimed."
+    },
+    {
+      "binding_id": "KNAVE2-005-L1",
+      "game_id": "KNAVE2",
+      "edition": "Knave2e-RU-Torbin1.0-2024",
+      "layer": "L1",
+      "profile_status": "unverified",
+      "parameters": [
+        {
+          "hex_size": 6,
+          "unit": "mile",
+          "measurement_convention": null,
+          "elevated_observer": "usually sees adjacent hexes",
+          "search_watch_hours": 4
+        }
+      ],
+      "limitations": "Component/profile only; whole-game support not claimed."
+    },
+    {
+      "binding_id": "SD-CORE-001-L1",
+      "game_id": "SD",
+      "edition": "Shadowdark RPG Core, copyright2023; supplied filename v4.6, internal revision unverified",
+      "layer": "L1",
+      "profile_status": "unverified",
+      "parameters": [
+        {
+          "hex_across_miles": 6,
+          "mile_kind": "unspecified",
+          "across_geometry": "unspecified"
+        }
+      ],
+      "limitations": "Component/profile only; whole-game support not claimed."
+    },
+    {
+      "binding_id": "WWN-RU-KNG-002-L1",
+      "game_id": "WWN",
+      "edition": "Worlds Without Number Deluxe, copyright2021; supplied Russian translation Lock-key; translation revision and English collation unverified",
+      "layer": "L1",
+      "profile_status": "unverified",
+      "parameters": [
+        {
+          "precision": "as_needed; schematic_map_sufficient_for_some_campaigns",
+          "recommended_hex_length": 6,
+          "unit": "miles",
+          "normative_force": "popular_choice_not_mandate",
+          "geometric_measurement_convention": "unknown",
+          "dominant_terrain_per_hex": 1,
+          "multiple_POI_per_hex": true,
+          "exact_POI_count_or_cap": "not_specified",
+          "physical_scale_vs_zoom": "distinct_product_interpretation"
+        }
+      ],
+      "limitations": "Component/profile only; whole-game support not claimed."
+    },
+    {
+      "binding_id": "OSE-ORR-2026-001-L1",
+      "game_id": "OSE",
+      "edition": "Official2026 re-edited online basic/BX-derived rules reference; snapshot2026-11-08, not full Referee's Book or legacy Classic/Advanced PDF",
+      "layer": "L1",
+      "profile_status": "unverified",
+      "parameters": [
+        {
+          "recommended_overview_hex_miles": 24,
+          "recommended_detail_hex_miles": 6,
+          "normative_force": "typically_not_mandatory",
+          "geometric_measurement_convention": "unknown",
+          "child_hex_tessellation": "unknown",
+          "scope": "selected_areas_finer_detail_not_all_maps"
+        }
+      ],
+      "limitations": "Component/profile only; whole-game support not claimed."
+    }
+  ],
+  "score": {
+    "model_version": "1.2",
+    "baseline_ref": "agent-work/score/current-score.json",
+    "baseline_blob_sha": "ff88f6418f5eacd654d5efa5a6a8e394706022af",
+    "criteria": [
+      {
+        "criterion_id": "S04-C04",
+        "before_grade": null,
+        "before_points": null,
+        "expected_grade": null,
+        "expected_delta": null,
+        "evidence_needed": "Exact known-output JSON round-trip/migrations/Undo with physical-scale fields"
+      },
+      {
+        "criterion_id": "S06-C04",
+        "before_grade": null,
+        "before_points": null,
+        "expected_grade": null,
+        "expected_delta": null,
+        "evidence_needed": "Only map-preparation scale component; full expedition cycle still absent/unverified"
+      }
+    ],
+    "status": "unknown; no score increase promised, no award before release; source mapping does not establish whole-criterion grade"
+  },
+  "feedback_assessment": {
+    "HX_FB_002": "Reuse existing import/history/browser cases; add only separate demonstrably useful checks; no full recurring audit."
+  },
+  "source_refs": [
+    "agent-work/backlog.json#HX-BL-042",
+    "agent-work/rules/common-rules.json#map.physical_hex_scale",
+    "agent-work/rules/game-bindings.json",
+    "agent-work/research/requirements/PF2-RM-002-L1.md",
+    "agent-work/evidence/KNAVE2-CLASSIC1-review-af50286/review-report.json",
+    "agent-work/strategy/vision.md"
+  ],
+  "implementation_allowed": false,
+  "full_specification_allowed": false,
+  "release_approved": false,
+  "additional_spend_approved": false,
+  "required_owner_decision": "Утвердить старт HX-BL-042/SCALE1 в этих границах; публикация будущего точного пакета согласуется отдельно.",
+  "next_role": "owner",
+  "next_role_after_approval": "business_analyst"
+}
