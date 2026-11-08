@@ -1,0 +1,209 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-053",
+  "title": "Отмечать заданный набор мест мифов и сохранять их номера",
+  "status": "proposed",
+  "problem": "Общее размещение POI не подтверждает шесть мест с однозначными метками и устойчивой связью с мифами; фактическая реализация unknown.",
+  "benefit": "Ведущий получает подготовленные места мифов и различимые номера без потери связи при перенумерации/открытии карты.",
+  "game_editions": [
+    "Official free Realm Sheets snapshot downloaded2026-11-08; internal version not stated; referenced Creating a Realm(p14) not collated to final book"
+  ],
+  "primary_scenario": "create",
+  "layer": "L1",
+  "requirement_refs": [
+    "agent-work/market/rules/MB-Realm-Sheets.json#MB-REALM-004-L1"
+  ],
+  "canonical_rule_ids": [
+    "content.site_density",
+    "map.reference_labels"
+  ],
+  "binding_refs": [
+    "agent-work/rules/game-bindings.json#MB-REALM-004-L1"
+  ],
+  "criterion_ids": [
+    "S05-C01",
+    "S07-C02",
+    "S04-C03"
+  ],
+  "scope": "Только выбранный набор6, метки1–6, связи и сохранение. Авторазмещение и сюжетный корпус не специфицированы.",
+  "dependencies": [
+    "Перед выбором разработки проверить переиспользование размещения/редактора, меток и существующих MB мифов HX-BL-041; не менять его утверждённый объём.",
+    "Стратег выбирает объём proposed053, аналитик определяет Realm и пограничные случаи."
+  ],
+  "acceptance_checks": [
+    {
+      "id": "MB-REALM-004-L1-AC01",
+      "given": "Ведущий выбрал шесть мест A–F в одном подготавливаемом крае и сопоставил им записи мифов М1–М6.",
+      "when": "Отметить выбранный набор мест мифов и назначить A–F номера 1–6.",
+      "expected": "На карте шесть отметок; A=1, B=2, C=3, D=4, E=5, F=6; каждая указывает на выбранную для неё запись. Номер 1 — метка карты, не автоматически миф №1 полного каталога."
+    },
+    {
+      "id": "MB-REALM-004-L1-AC02",
+      "given": "У A номер1 и запись М1, у F номер6 и запись М6; ведущий хочет поменять номера A/F местами.",
+      "when": "Назначить A номер6, F номер1 как одну согласованную перестановку.",
+      "expected": "В наборе снова ровно метки 1–6 по одному разу; A по-прежнему связано с М1, F с М6, положения всех шести мест сохранены."
+    },
+    {
+      "id": "MB-REALM-004-L1-AC03",
+      "given": "Есть готовые метки 1–6; ведущий пытается дать месту C занятый номер1, 0, 7 или 2,5 без согласованной перестановки.",
+      "when": "Подготовить изменение номера.",
+      "expected": "Ни один такой вариант не объявлен корректным завершённым набором 1–6; существующее соответствие мест и записей не потеряно. Конкретное сообщение/способ исправления определяет аналитик."
+    },
+    {
+      "id": "MB-REALM-004-L1-AC04",
+      "given": "Ведущий поместил шесть отметок в выбранных удалённых местах; источник не определяет удалённость числом.",
+      "when": "Сохранить размещение.",
+      "expected": "Шесть положений сохранены с качественным ориентиром удалённости; минимум гексов/километров и критерий автоматического прохождения проверки остаются unknown."
+    },
+    {
+      "id": "MB-REALM-004-L1-AC05",
+      "given": "Выбрано только пять мест и записей для цели шесть; остальные участки уже подготовлены.",
+      "when": "Подготовить набор мифов края.",
+      "expected": "Результат не объявлен полным набором шести; шестое место/миф не выдумано, подготовленное содержимое не перезаписано. Политика дополнения остаётся продуктовым решением."
+    },
+    {
+      "id": "MB-REALM-004-L1-AC06",
+      "given": "У шести отметок есть выбранные записи; подготовка карты ещё не означает встречу партии с ними.",
+      "when": "Сохранить отметки.",
+      "expected": "Тексты предзнаменований, события и движение партии автоматически не активированы; размещение и номера сохранены отдельно от выполнения мифа."
+    },
+    {
+      "id": "MB-REALM-004-L1-AC07",
+      "given": "Шесть отметок A–F с номерами 1–6 и выбранными записями сохранены; карта содержит владения и другую географию.",
+      "when": "Сохранить и снова открыть карту.",
+      "expected": "Восстановлены те же шесть положений, номера и связи с записями; записи не переброшены, владения и география сохранены."
+    }
+  ],
+  "expected_evidence": {
+    "current_runtime": "unknown",
+    "evidence_sha": null,
+    "future_product": "Known-output placement/renumber/save cases on exact SHA; source reading is not runtime evidence."
+  },
+  "score_delta": null,
+  "source_limitations": [
+    "Extracted only d12 sentence, barrier paragraph, HOLDINGS and MYTH HEXES paragraph across bounded runs; remaining PDF1 context, PDF2 not read.",
+    "Pinned official PDF rehashed unchanged; MYTH HEXES reread visually and official page rechecked; no new binary version claimed.",
+    "Internal sheet version and equivalence to final book unknown; p27 is an unread cross-reference, not the read PDF page.",
+    "Remote places is qualitative; no distance threshold, six-unique-myth selection algorithm or automatic Omens activation extracted.",
+    "Runtime unknown; no raw PDF/artwork/full myth prose republished."
+  ],
+  "operational_requirement": {
+    "source_rule_ref": "agent-work/market/rules/MB-Realm-Sheets.json#MB-REALM-004",
+    "normative_kind": "realm_sheet_creation_procedure",
+    "applicability": "Official free MB Realm Sheets pinned snapshot, PDF1 MYTH HEXES paragraph only, one prepared Realm",
+    "layer": "L1",
+    "trigger_or_user_action": "Ведущий готовит один край: выбирает шесть мест мифов и соответствующие им записи, отмечает их и нумерует от1 до6.",
+    "inputs_and_units": {
+      "target": "6 мест мифов на один Realm; не6на каждый биом/регион интерфейса без проверки соответствия",
+      "positions": "шесть выбранных мест карты",
+      "myth_records": "записи, явно выбранные ведущим; процедура выбора из полного каталога здесь не задана",
+      "labels": "целые1–6, по одному номеру на каждое место полного набора",
+      "remoteness": "качественно удалённые места; численный порог unknown"
+    },
+    "product_operation": "Отметить шесть выбранных мест мифов и связать каждое с его номером 1–6 и выбранной записью. Позволить согласованно менять номера, сохраняя положения и смысловую связь с мифом, и восстановить набор при открытии карты.",
+    "expected_output": "Шесть отмеченных мест одного края с различимыми номерами1–6 и выбранными записями; номер карты не подменяет номер мифа в общем каталоге.",
+    "constraints_and_exceptions": [
+      "Размещение шести и номера1–6 заданы источником; уникальность полного набора — продуктовая операционализация нумерации.",
+      "Источник не определяет численную удалённость, генератор позиции, способ выбора мифов и запрет повторного выбора одного мифа.",
+      "p27 — ссылка на другой раздел книги, в этом проходе не прочитанный. Порядок/каталог/развитие мифов не извлекаются из этой ссылки.",
+      "Метка карты и номер мифа в полном каталоге — разные значения; равенство источник не задаёт.",
+      "Один Realm не приравнивается молча к каждому региону текущего генератора.",
+      "Перенумерация/сохранение — продуктовый перевод, не детальная спецификация UI/API/хранения; скрытость/раскрытие имеют отдельные профили и здесь не переопределяются.",
+      "Наличие размещения не означает запуск предзнаменований/встреч/движения и не доказывает фактическую поддержку HexCrawl."
+    ],
+    "acceptance_cases": [
+      {
+        "id": "MB-REALM-004-L1-AC01",
+        "given": "Ведущий выбрал шесть мест A–F в одном подготавливаемом крае и сопоставил им записи мифов М1–М6.",
+        "when": "Отметить выбранный набор мест мифов и назначить A–F номера 1–6.",
+        "expected": "На карте шесть отметок; A=1, B=2, C=3, D=4, E=5, F=6; каждая указывает на выбранную для неё запись. Номер 1 — метка карты, не автоматически миф №1 полного каталога."
+      },
+      {
+        "id": "MB-REALM-004-L1-AC02",
+        "given": "У A номер1 и запись М1, у F номер6 и запись М6; ведущий хочет поменять номера A/F местами.",
+        "when": "Назначить A номер6, F номер1 как одну согласованную перестановку.",
+        "expected": "В наборе снова ровно метки 1–6 по одному разу; A по-прежнему связано с М1, F с М6, положения всех шести мест сохранены."
+      },
+      {
+        "id": "MB-REALM-004-L1-AC03",
+        "given": "Есть готовые метки 1–6; ведущий пытается дать месту C занятый номер1, 0, 7 или 2,5 без согласованной перестановки.",
+        "when": "Подготовить изменение номера.",
+        "expected": "Ни один такой вариант не объявлен корректным завершённым набором 1–6; существующее соответствие мест и записей не потеряно. Конкретное сообщение/способ исправления определяет аналитик."
+      },
+      {
+        "id": "MB-REALM-004-L1-AC04",
+        "given": "Ведущий поместил шесть отметок в выбранных удалённых местах; источник не определяет удалённость числом.",
+        "when": "Сохранить размещение.",
+        "expected": "Шесть положений сохранены с качественным ориентиром удалённости; минимум гексов/километров и критерий автоматического прохождения проверки остаются unknown."
+      },
+      {
+        "id": "MB-REALM-004-L1-AC05",
+        "given": "Выбрано только пять мест и записей для цели шесть; остальные участки уже подготовлены.",
+        "when": "Подготовить набор мифов края.",
+        "expected": "Результат не объявлен полным набором шести; шестое место/миф не выдумано, подготовленное содержимое не перезаписано. Политика дополнения остаётся продуктовым решением."
+      },
+      {
+        "id": "MB-REALM-004-L1-AC06",
+        "given": "У шести отметок есть выбранные записи; подготовка карты ещё не означает встречу партии с ними.",
+        "when": "Сохранить отметки.",
+        "expected": "Тексты предзнаменований, события и движение партии автоматически не активированы; размещение и номера сохранены отдельно от выполнения мифа."
+      },
+      {
+        "id": "MB-REALM-004-L1-AC07",
+        "given": "Шесть отметок A–F с номерами 1–6 и выбранными записями сохранены; карта содержит владения и другую географию.",
+        "when": "Сохранить и снова открыть карту.",
+        "expected": "Восстановлены те же шесть положений, номера и связи с записями; записи не переброшены, владения и география сохранены."
+      }
+    ],
+    "source_vs_product_interpretation": "Источник задаёт шесть мифов в удалённых местах и номера1–6 на карте. Наш перевод — выбранные ведущим позиции/записи, однозначность меток, перестановка без потери связи, сохранение и явная неполнота набора. A–F/М1–М6 — наши примеры, не игровые тексты. Удалённость и алгоритм выбора не придуманы.",
+    "canonical_rule_refs": [
+      "content.site_density",
+      "map.reference_labels"
+    ],
+    "unresolved_parameters": [
+      "Численная мера удалённости и автоматическое размещение.",
+      "Соответствие Realm единице генератора и дополнение существующего края.",
+      "Выбор шести мифов, допустимость повторов и материал p27 не проверены.",
+      "Фактическое поведение текущего продукта и точное SHA evidence неизвестны."
+    ]
+  },
+  "source": {
+    "id": "MB-OFFICIAL-REALM-SHEETS-SNAPSHOT-20261108",
+    "title": "Mythic Bastionland Realm Sheets.pdf",
+    "edition": "Official free Realm Sheets snapshot downloaded2026-11-08; internal version not stated; referenced Creating a Realm(p14) not collated to final book",
+    "author": "Chris McDowall / Bastionland Press; sheet artwork attribution not verified",
+    "publisher": "Bastionland Press",
+    "language": "en",
+    "url": "https://chrismcdee.itch.io/mythic-bastionland",
+    "upload_id": "13049889",
+    "accessed_at": "2026-11-08T20:33:57.502Z",
+    "access_level": "full_text_visual_primary_pdf",
+    "download_route": "Publisher itch.io Download demo file; public free download, no purchase/authenticated account",
+    "size_bytes": 6878626,
+    "pdf_pages": 2,
+    "sha256": "6082a760c7db9b81baf0180cae585feb35826b24e5feb839434c4ff33deb924d",
+    "pdf_metadata_date": "2024-11-07; not asserted publication date",
+    "locator": "PDF1: prior Wilderness/HOLDINGS slices and MYTH HEXES paragraph",
+    "author_project_key": "chris-mcdowall:bastionland:mythic-bastionland:realm-sheets",
+    "parent_project_dedup_key": "chris-mcdowall:bastionland:mythic-bastionland",
+    "limitations": [
+      "Extracted only d12 sentence, barrier paragraph, HOLDINGS and MYTH HEXES paragraph across bounded runs; remaining PDF1 context, PDF2 not read.",
+      "Pinned official PDF rehashed unchanged; MYTH HEXES reread visually and official page rechecked; no new binary version claimed.",
+      "Internal sheet version and equivalence to final book unknown; p27 is an unread cross-reference, not the read PDF page.",
+      "Remote places is qualitative; no distance threshold, six-unique-myth selection algorithm or automatic Omens activation extracted.",
+      "Runtime unknown; no raw PDF/artwork/full myth prose republished."
+    ]
+  },
+  "implementation_authorized": false,
+  "release_authorized": false,
+  "dedup_review": {
+    "decision": "Extend existing proposed053 as an additional research component of fixed-set placement; no new implementation task or canonical rule.",
+    "related_tasks": [
+      "HX-BL-013",
+      "HX-BL-041",
+      "HX-BL-043",
+      "HX-BL-053"
+    ],
+    "reason": "053 already concerns placing a prescribed set and assigning meaning to its members. Preserve holdings component; add myth-map labels. Active041 covers myth content, not evidence for this profile; no active scope expanded."
+  }
+}
