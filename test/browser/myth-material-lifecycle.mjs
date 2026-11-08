@@ -46,7 +46,7 @@ export async function runMythMaterialLifecycle({page,snapshot,saved,root}){
  // The actual lazy production module must expose the source-validated record
  // for the accepted tuple without any route replacement or map/history writes.
  await load(data);await select(a);const production=await snapshot(),productionHistory={undo:await button('Отменить').isDisabled(),redo:await button('Повторить').isDisabled()};await closeMenu();
- assert.equal(production.version,9);await ready(a);
+ assert.equal(production.version,10);await ready(a);
  const actual=mythMaterialRecords.find(record=>record.entryId===a.entryId);assert.ok(actual);
  const actualOmens=material(a).getByRole('region',{name:'Знамения',exact:true}),actualRoles=material(a).getByRole('region',{name:'Роли',exact:true});
  assert.equal(await actualOmens.locator('details').count(),actual.locales.ru.omens.length);

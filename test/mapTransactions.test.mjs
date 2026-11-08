@@ -238,7 +238,7 @@ test('all manifest saves round-trip unchanged entities, names and can continue t
     for(const layer of ['regions','rivers','roads','crossings','terrainByHexKey']) assert.deepEqual(saved.map[layer],data.map[layer],item.path+' '+layer);
     for(const layer of ['kingdoms','waterPoiByHexKey','biomeOverrideByHexKey'])assert.deepEqual(saved.map[layer],data.map[layer]??(layer==='kingdoms'||layer==='obstacles'?[]:{}),item.path+' '+layer);
     assert.deepEqual(saved.map.obstacles.map(({id,...o})=>o),data.map.obstacles??[],item.path+' obstacle geometry');
-    assert.equal(saved.version,9);assert.equal(saved.counters.nextObstacleId,(data.map.obstacles??[]).length+1);
+    assert.equal(saved.version,10);assert.equal(saved.counters.nextObstacleId,(data.map.obstacles??[]).length+1);
     if(data.map.toponyms)for(const [key,name] of Object.entries(data.map.toponyms.names))assert.deepEqual(saved.map.toponyms.names[key],name,item.path+' name '+key);
     h.geometry.assertHexcrawlSaveData(serial(h.render().createSaveData()));
     // Reload the normalized export: only savedAt may change.
@@ -259,7 +259,7 @@ test('v5 obstacle IDs and counter survive migration, round-trip and history; inv
   legacy.counters.nextRoadId=roadId+1;
   const {h,alerts}=setup();
   await load(h,legacy);assert.deepEqual(alerts,[]);
-  const migrated=stable(h.render());assert.equal(migrated.version,9);
+  const migrated=stable(h.render());assert.equal(migrated.version,10);
   const sorted=[...legacy.map.obstacles].map(o=>o.edgeKey).sort();
   assert.deepEqual(migrated.map.obstacles,legacy.map.obstacles.map(o=>({...o,id:sorted.indexOf(o.edgeKey)+1})));
   assert.equal(migrated.counters.nextObstacleId,sorted.length+1);
@@ -532,7 +532,7 @@ test('road draft is ephemeral, blocks other writes, commits once and stale finis
 
 test('E5 native v7 feature intentions and counter survive real import, edits, history and rejected files',async()=>{
   const {h,alerts}=setup();await load(h,fixture);const legacy=stable(h.render());
-  assert.equal(legacy.version,9);assert.deepEqual(legacy.map.riverFeatures,{rapids:[],waterfalls:[]});
+  assert.equal(legacy.version,10);assert.deepEqual(legacy.map.riverFeatures,{rapids:[],waterfalls:[]});
   const native=structuredClone(legacy), eligibility=h.geometry.riverFeatureEligibility(native.map.rivers,native.map.regions,new Map(Object.entries(native.map.terrainByHexKey)),native.map.crossings);
   const targets=native.map.rivers.flatMap(r=>r.vertexPath.slice(1).map((v,i)=>({riverId:r.id,edgeKey:[r.vertexPath[i].key,v.key].sort().join('|')})));
   const rapid=targets.find(e=>eligibility.rapid(e.riverId,e.edgeKey));assert.ok(rapid,'fixture has a real eligible rapid edge');
@@ -645,12 +645,13 @@ test('E6 real POI/name/tag losses require every explicit answer and Undo restore
  const owner={kind:'poi',regionId:1,hexKey:'0,0'};let tags=rollTag(emptyTags(),owner,mythicDefinitions['mb.feature'],42);tags=editTag(tags,owner,'mb.feature',0,'ru','Авторский текст');f.map.tags=tags;
  f.map.toponyms.names['settlement:1:0,0']={ru:'Авторская деревня',en:'Authored Village',kind:'settlement',model:'germanic',revision:4};
  const initial=await waterSetup(f),named=stable(initial.render());named.map.editorNames={'poi:1:0,0':{en:'Explicit authored',ru:'Явное авторское'}};
+ named.map.knave={profile:{id:'classic.knave2',version:1,physicalHex:{length:6,unit:'mile',measurementConvention:null}},difficultyByHex:{'0,0':'difficult'},discoveryByPoi:{'poi:1:0,0':{mode:'interaction',clueText:'Authored test clue'}}};
  const h=await waterSetup(named),before=stable(h.render());h.render().startWaterDraft('lake');assert.equal(h.render().finishWaterDraft(),false);
- let a=h.render(),losses=a.waterPreview.plan.losses;assert.deepEqual(serial(losses.map(l=>l.type).sort()),['name','name','poi','tag']);
+ let a=h.render(),losses=a.waterPreview.plan.losses;assert.deepEqual(serial(losses.map(l=>l.type).sort()),['knave','name','name','poi','tag']);
  assert.equal(a.finishWaterDraft(a.waterDraft,true),false);assert.deepEqual(stable(h.render()),before);
  a=h.render();a.changeWaterDraft(a.waterDraft,{options:{acceptedLosses:[losses[0].id]},preview:true});assert.equal(h.render().finishWaterDraft(h.render().waterDraft,true),false);assert.deepEqual(stable(h.render()),before);
  a=h.render();a.changeWaterDraft(a.waterDraft,{options:{acceptedLosses:losses.map(l=>l.id)},preview:true});assert.equal(h.render().finishWaterDraft(h.render().waterDraft,true),true);
- const after=stable(h.render());assert.equal(after.map.regions[0].pointsOfInterest.length,0);assert.deepEqual(after.map.editorNames,{});assert.equal(after.map.tags.instances.length,0);assert.deepEqual(after.generation,before.generation);assert.equal(after.map.gmNotesByHexKey['0,0'],before.map.gmNotesByHexKey['0,0']);assertUndoRedo(h,before,after);
+ const after=stable(h.render());assert.equal(after.map.regions[0].pointsOfInterest.length,0);assert.deepEqual(after.map.editorNames,{});assert.equal(after.map.tags.instances.length,0);assert.deepEqual(after.map.knave.discoveryByPoi,{});assert.equal(after.map.knave.difficultyByHex['0,0'],'difficult');assert.deepEqual(after.generation,before.generation);assert.equal(after.map.gmNotesByHexKey['0,0'],before.map.gmNotesByHexKey['0,0']);assertUndoRedo(h,before,after);
 });
 test('E6 water cancel/no-op/stale callbacks and snapshot failure preserve map and both history branches',async()=>{
  const h=await waterSetup();h.render().setSelectedPoiKind('lair');h.render().undoMap();const before=stable(h.render()),stacks=serial([h.render().undoHistory,h.render().redoHistory]);

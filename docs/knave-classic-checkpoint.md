@@ -1,26 +1,29 @@
-# Knave classic: detached data checkpoint
+# Knave classic: implementation checkpoint
 
 Approved contract: agent-operations/agent-work/specs/HX-BL-043-KNAVE2-CLASSIC1.md KNC-1.0.
 
-This checkpoint implements only detached profile/annotation contracts in
-`src/knaveClassic.ts`. It does not change the running app or export version.
-App v10 persistence/history, generation/content mapping, existing editor gates,
-UI and source package integration remain required before review_ready.
+The first checkpoint provided detached profile/annotation contracts. This checkpoint
+connects the layer to the actual App: import/export v10, capture/restore/Undo/Redo,
+generation failure backups, E7/E8 POI remapping and E6 explicit loss confirmation.
+A submerged dry difficulty flag survives water edits. Reset removes the profile,
+including on an otherwise empty map; Undo restores it. Ordinary generation
+checkpoints retain annotations on surviving objects and confirm removed ones.
 
-Before adding tests, existing `test/tags.test.mjs`, save/editor harnesses and
-`src/tags/engine.ts` were inspected. Existing MB tests validate tag tuples and
-MB payloads; they cannot catch an unknown physical profile, missing Knave
-secret clue or a coordinate flag following a relocated POI. Four independent
-cases are added to the existing suite, with no duplicate RNG/UI tests:
+JSON v10 adds optional `map.knave` with `profile`, `difficultyByHex` and
+`discoveryByPoi`. Missing layers in v2..9 remain missing; supplied layers require
+v10 and Classic. Unknown versions/scales and dangling or ambiguous owners refuse
+before any setter. Physical scale remains6mile with convention null, never zoom.
+The old v9 application cannot read v10 exports.
 
-1. KNC-A02/A09: known six-mile profile, no legacy/MB auto-upgrade, malformed
-   profile/owner rejection. Protects import without changing accepted data.
-2. KNC-A06: sparse tri-state difficulty, submerged flag preservation, no-op
-   identity and detached changes. Protects geography-independent annotation.
-3. KNC-A07: mandatory separate clue, text limit, preserved clue after mode
-   change and rejection without mutation. Protects authored secret material.
-4. KNC-A08: remapping only POI metadata, collisions/dangling refusal and explicit
-   candidate loss list. Protects existing E7/E8/water integration boundaries.
+The source content catalog/generation, profile checkbox, compact property editor
+and actual desktop/narrow feature walkthrough remain required before review_ready.
+No new source text, full-book research, score award or publication is included.
 
-No source book is reread or embedded at this checkpoint. No score increase,
-generation/visual acceptance or complete v10 compatibility is claimed.
+Test governance: the four existing Knave contract cases remain useful. Existing
+real import/history, E7/E8 transfer and E6 loss cases are extended for the actual
+integration risks; existing expected export versions are updated to10, while
+unknown-version refusal advances to11. No new test registration or duplicate
+RNG/browser suite is needed. Actual generation fault injection checks the separate
+backup restoration path, not only successful import. Counts in structured evidence
+are logical runner cases; fixture loops, helper edits and browser workflows stay
+separate.

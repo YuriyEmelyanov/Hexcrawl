@@ -22,7 +22,7 @@ const fail = (code: string): never => {throw new KnaveDataError(code);};
 const own = (value: object, key: string) => Object.prototype.hasOwnProperty.call(value, key);
 const record = (value: unknown): value is Record<string, unknown> =>
   !!value && typeof value === 'object' && !Array.isArray(value) &&
-  (Object.getPrototypeOf(value) === Object.prototype || Object.getPrototypeOf(value) === null);
+  Object.prototype.toString.call(value) === '[object Object]';
 const exactKeys = (value: Record<string, unknown>, keys: readonly string[]) =>
   Object.keys(value).length === keys.length && keys.every(key => own(value, key));
 const hexKey = (key: string) => /^-?\d+,-?\d+$/.test(key) && key.split(',').every(n => Number.isSafeInteger(Number(n)) && String(Number(n)) === n);
