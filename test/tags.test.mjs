@@ -10,6 +10,58 @@ import {mythicDefinitions as defs,tagOwners,tagPolicy,fillMythicTags} from '../s
 import {selectMythMaterial,materialIdentity,MYTH_MATERIAL_EDITION,mythMaterialManifest} from '../src/tags/mythMaterial.ts';
 import mythMaterialRecords from '../src/tags/mythMaterialData.ts';
 import {createGenerationHarness} from './helpers/generation-harness.mjs';
+import {newKnaveLayer,validateKnaveLayer,setKnaveDifficulty,setKnaveDiscovery,remapKnavePois,knaveLosses} from '../src/knaveClassic.ts';
+
+const knaveContext=()=>({hexes:new Set(['0,0','1,0']),dryHexes:new Set(['0,0','1,0']),pois:new Set(['poi:1:0,0','poi:2:1,0'])});
+test('Knave profile refuses unknown scales, legacy injection, MB and dangling annotations without mutation',()=>{
+ const layer=newKnaveLayer(),context=knaveContext(),before=structuredClone(layer);
+ assert.doesNotThrow(()=>validateKnaveLayer(JSON.parse(JSON.stringify(layer)),context,10,'classic'));
+ for(const version of [2,9])assert.doesNotThrow(()=>validateKnaveLayer(undefined,context,version,'classic'));
+ assert.throws(()=>validateKnaveLayer(layer,context,9,'classic'));
+ assert.throws(()=>validateKnaveLayer(layer,context,10,'mythic'));
+ for(const mutate of [s=>s.profile.version=2,s=>s.profile.physicalHex.unit='km',s=>s.profile.physicalHex.length=NaN,s=>s.profile.physicalHex.measurementConvention='vertices',s=>s.difficultyByHex={'9,9':'difficult'},s=>s.difficultyByHex={'-0,0':'normal'},s=>s.discoveryByPoi={'poi:9:9,9':{mode:'passage',clueText:''}},s=>s.difficultyByHex=null]){
+  const bad=structuredClone(layer);mutate(bad);assert.throws(()=>validateKnaveLayer(bad,context,10,'classic'));
+ }
+ for(const bad of [null,[],{}])assert.throws(()=>validateKnaveLayer(bad,context,10,'classic'));
+ assert.deepEqual(layer,before);
+});
+test('Knave difficulty is sparse and detached; accepted submerged flags survive without enabling water edits',()=>{
+ const context=knaveContext(),initial=newKnaveLayer();
+ assert.equal(setKnaveDifficulty(initial,context,'0,0','unspecified'),initial);
+ const difficult=setKnaveDifficulty(initial,context,'0,0','difficult');
+ assert.deepEqual(initial.difficultyByHex,{});assert.equal(difficult.difficultyByHex['0,0'],'difficult');
+ const water={...context,dryHexes:new Set(['1,0'])};
+ assert.doesNotThrow(()=>validateKnaveLayer(difficult,water,10,'classic'));
+ assert.throws(()=>setKnaveDifficulty(difficult,water,'0,0','normal'));
+ assert.equal(setKnaveDifficulty(difficult,context,'0,0','difficult'),difficult);
+ assert.deepEqual(setKnaveDifficulty(difficult,context,'0,0','unspecified').difficultyByHex,{});
+ assert.deepEqual(difficult.discoveryByPoi,{});
+});
+test('Knave interaction requires a bounded separate clue and mode changes preserve authored text',()=>{
+ const context=knaveContext(),initial=newKnaveLayer(),key='poi:1:0,0';
+ assert.throws(()=>setKnaveDiscovery(initial,context,key,'interaction','  '));
+ assert.throws(()=>setKnaveDiscovery(initial,context,key,'interaction','x'.repeat(513)));
+ const secret=setKnaveDiscovery(initial,context,key,'interaction','  Authored test clue <not HTML>  ');
+ assert.deepEqual(initial.discoveryByPoi,{});assert.equal(secret.discoveryByPoi[key].clueText,'Authored test clue <not HTML>');
+ const visible=setKnaveDiscovery(secret,context,key,'passage');
+ assert.equal(visible.discoveryByPoi[key].clueText,secret.discoveryByPoi[key].clueText);
+ assert.equal(setKnaveDiscovery(visible,context,key,'passage'),visible);
+ assert.throws(()=>setKnaveDiscovery(secret,context,'poi:4:0,0','passage'));
+ assert.deepEqual(secret.discoveryByPoi[key],{mode:'interaction',clueText:'Authored test clue <not HTML>'});
+});
+test('Knave POI remapping preserves coordinate flags, refuses collisions and previews losses before pruning',()=>{
+ const source=knaveContext(),from='poi:1:0,0',to='poi:3:1,0';
+ const layer=setKnaveDiscovery(setKnaveDifficulty(newKnaveLayer(),source,'0,0','difficult'),source,from,'interaction','Test clue');
+ const before=structuredClone(layer),target={...source,pois:new Set([to,'poi:2:1,0'])};
+ const moved=remapKnavePois(layer,source,target,new Map([[from,to]]));
+ assert.deepEqual(moved.discoveryByPoi[to],layer.discoveryByPoi[from]);assert.equal(moved.discoveryByPoi[from],undefined);
+ assert.deepEqual(moved.difficultyByHex,{'0,0':'difficult'});assert.deepEqual(layer,before);
+ assert.throws(()=>remapKnavePois(layer,source,source,new Map([[from,'poi:2:1,0']])));
+ assert.throws(()=>remapKnavePois(layer,source,{...target,pois:new Set()},new Map([[from,to]])));
+ const removed={hexes:new Set(['1,0']),dryHexes:new Set(['1,0']),pois:new Set()};
+ assert.deepEqual(knaveLosses(layer,removed),[{kind:'difficulty',key:'0,0'},{kind:'discovery',key:from}]);
+ assert.throws(()=>remapKnavePois(layer,source,removed,new Map()));assert.deepEqual(layer,before);
+});
 const owner={kind:'region',id:1};
 test('independent columns preserve sibling overrides and counters; product tuple selects one of 72 complete records',()=>{
  let s=rollTag(emptyTags(),owner,defs['mb.land'],42);
