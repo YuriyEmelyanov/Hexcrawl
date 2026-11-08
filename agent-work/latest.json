@@ -26,10 +26,10 @@
   },
   "lessons_path": "agent-work/lessons.md",
   "plan_id": "2026-11-08-PR493-release-score",
-  "run_id": "2026-11-08T1630-programmer-HX-BL-043-private-UI",
+  "run_id": "2026-11-08T1705-reviewer-HX-BL-043-KNAVE2-CLASSIC1",
   "plan_revision": 1,
   "baseline_sha": "00190bb749a4fa5af57aac4bbffff808e8fe733f",
-  "status": "review_ready",
+  "status": "changes_requested",
   "planning_for": "2026-10-31",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-10-25",
@@ -45,27 +45,15 @@
   "schedule_start_at": "2026-10-24T01:00:00+03:00",
   "schedule_frequency": "hourly",
   "process_path": "agent-work/process.md",
-  "current_role": "programmer",
-  "next_role": "reviewer",
+  "current_role": "reviewer",
+  "next_role": "programmer",
   "current_task_id": "HX-BL-043",
   "spec_path": "agent-work/specs/HX-BL-043-KNAVE2-CLASSIC1.md",
   "spec_version": "KNC-1.0",
-  "result_path": "agent-work/results/2026-11-08T1630-programmer-HX-BL-043-private-UI.json",
+  "result_path": "agent-work/results/2026-11-08T1705-reviewer-HX-BL-043-KNAVE2-CLASSIC1.json",
   "handoff_commit_sha": "d8540be256914aa9d262d6c0687620d9c3f7e237",
-  "active_claim": {
-    "run_id": "2026-11-08T1705-reviewer-HX-BL-043-KNAVE2-CLASSIC1",
-    "role": "reviewer",
-    "task_id": "HX-BL-043",
-    "stage_id": "KNAVE2-CLASSIC1",
-    "status": "active",
-    "started_at": "2026-11-08T17:06:38.305Z",
-    "lease_expires_at": "2026-11-08T19:06:38.305Z",
-    "scope": "Fresh-context independent review of exact public818476e/privatec5b3c38 KNC1 package and score_assessment1.2; no implementation, main or publication.",
-    "public_sha": "818476e5ec653384ab216efd75db9467d698cfc4",
-    "private_sha": "c5b3c384792ce3349e40b0cc3ccc52e3d7685d1e",
-    "claim_ref": "agent-work/claims/2026-11-08T1705-reviewer-HX-BL-043-KNAVE2-CLASSIC1.json"
-  },
-  "next_step": "Проверяющий: независимо проверить private c5b3c38 / public818476e по KNC-1.0,400строкам/ledger300 и точным evidence; записать score_assessment1.2. Замечания вернуть программисту, после принятия предъявить владельцу точный пакет публикации.",
+  "active_claim": null,
+  "next_step": "Программист: исправить KNC-REV-001 — эффективные неперекрывающиеся44×44px области нажатия source disclosures и «Отмена» только в Knave; сохранить компактность, перепроверить1500/390/320 и передать новые public/private SHA независимому проверяющему.",
   "owner_decisions_needed": [],
   "release_approval": {
     "id": "owner-release-2026-11-08-PR493-3e00851",
@@ -115,13 +103,13 @@
     "score_update_handoff_ref": "agent-work/handoffs/2026-11-08-PR493-release-score.json"
   },
   "historical_plan_status": "План23.10 сохранён как история; его блокировки и предложенный процесс заменены decisions24.10 в approvals/process/budget и текущим handoff.",
-  "evidence_path": "agent-work/evidence/KNAVE2-CLASSIC1-818476e/",
+  "evidence_path": "agent-work/evidence/KNAVE2-CLASSIC1-review-c5b3c38/",
   "branch_name": "agent/knave2-classic1",
   "pr": 494,
   "head_sha": "818476e5ec653384ab216efd75db9467d698cfc4",
-  "checks_status": "exact public/private Node361/browser8 pass; public RNG pass; actual private UI complete",
+  "checks_status": "independent private Node361/build/browser_chain/RNG passed with recorded browser stdout limitation; KNC-A10 touch targets fail",
   "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42500822912",
-  "review_verdict": "pending_independent_review",
+  "review_verdict": "changes_requested",
   "role_selection_mode": "ready_work_priority",
   "role_selection_source": "agent-work/process.md",
   "process_decision_ref": "owner-decision-2026-10-24-dynamic-roles",
@@ -289,11 +277,8 @@
   "score_update_task_id": "HX-BL-041",
   "score_update_release_sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
   "score_process_decision_ref": "owner-decision-2026-10-24-score-responsibilities",
-  "score_assessment_ref": {
-    "path": "agent-work/results/2026-11-08-reviewer-PR493-fb3f9b8.json",
-    "property": "score_assessment"
-  },
-  "role_selection_reason": "Previous completed programmer checkpoint explicitly handed approved private UI validation; no unfinished claim for this task. Continued approved KNC-1.0, preserving foreign041 claim and unrelated backlog changes.",
+  "score_assessment_ref": "agent-work/evidence/KNAVE2-CLASSIC1-review-c5b3c38/score-assessment.json",
+  "role_selection_reason": "Current approved stage was review_ready on exact public/private SHA with no active claim; owner priority selects reviewer irrespective of hour. Fresh-context agent used because root had programmer history.",
   "score_update_result_ref": "agent-work/results/2026-11-08T0400-strategist-score-PR493.json",
   "score_update_completed_at": "2026-11-08T03:59:22.384Z",
   "score_update_delta": null,
@@ -317,21 +302,80 @@
   "automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-11-08T16:30:40.316Z",
+      "checked_at": "2026-11-08T17:05:49.384Z",
       "is_enabled": true,
       "status": "checked"
     },
     "end": {
-      "checked_at": "2026-11-08T16:54:00.728Z",
-      "status": "checked",
-      "is_enabled": true
+      "checked_at": "2026-11-08T17:30:02.029Z",
+      "is_enabled": true,
+      "status": "checked"
     },
     "restoration_performed": false,
     "errors": [],
-    "limitation": "Point-in-time observations only; no guarantee after completion."
+    "independent_agent_health_ref": "agent-work/evidence/KNAVE2-CLASSIC1-review-c5b3c38/automation-health.json",
+    "independent_agent_recording_limitation": "Agent actually checked enabled before review but did not record that first check time; exact supplemental/end confirmations and explicit timing error retained.",
+    "limitation": "Point-in-time only, no guarantee after completion."
   },
-  "open_findings": [],
-  "current_review_score_assessment_status": "pending_independent_review",
+  "open_findings": [
+    {
+      "id": "KNC-REV-001",
+      "priority": "P2",
+      "severity": "medium",
+      "type": "confirmed_specification_UI_accessibility_deviation",
+      "criterion": "KNC-A10 / KNC UI44CSSpx hit area",
+      "title": "New Knave source disclosures and draft Cancel have undersized touch targets",
+      "locations": [
+        {
+          "path": "src/styles.css",
+          "lines": [
+            238,
+            252,
+            253
+          ]
+        },
+        {
+          "path": "src/App.tsx",
+          "lines": [
+            15216,
+            15229
+          ]
+        }
+      ],
+      "observed": {
+        "summary": {
+          "height_css_px": 16,
+          "details_height_css_px": 16,
+          "min_height": "0px",
+          "before_content": "none",
+          "after_content": "none",
+          "hit_at_summary_top_plus24_is_summary": false,
+          "widths_tested": [
+            1500,
+            390,
+            320
+          ]
+        },
+        "cancel": {
+          "width_css_px": 64.09375,
+          "height_css_px": 19,
+          "min_height": "0px",
+          "viewport_width": 320
+        }
+      },
+      "expected": "Every newly introduced Knave interactive target has an effective nonoverlapping44×44CSSpx pointer/touch area according to approved specification; keep existing visible typography/dice density and compact panel.",
+      "reproduction": [
+        "Run the exact private production build in Chromium153.0.8010.0.",
+        "Start new Classic; worldseed137; enable Knave2e; choose locality/wild/mainland; click first candidate.",
+        "Select generated POI0,0; inspect both short source-result summaries at1500,390,320 widths. Each summary and parentdetails is16px tall; no pseudo-element expands it; point24px below its top does not hit that summary.",
+        "Enter Edit and change Difficulty to Normal/Difficult to create a draft; inspect Knave Cancel (64.09×19px at320)."
+      ],
+      "impact": "Adjacent narrow disclosure targets and the short Cancel target miss the approved touch minimum even while visual layout has no horizontal overflow. Current browser workflow checks panel overflow but does not detect this.",
+      "bounded_next_step": "Programmer fixes only new Knave target hit areas, reuses or extends existing Knave browser lifecycle as needed, preserves source/RNG/save behavior, reruns relevant required checks and hands new public/private exactSHAs to fresh independent review. No design approval or broad global direct-value refactor needed.",
+      "evidence": "ui-results.json; independent-ui.mjs; source CSS; private screenshots excluded from public reports"
+    }
+  ],
+  "current_review_score_assessment_status": "completed_insufficient_evidence_no_award",
   "target_audience_research": {
     "model_version": "1.1",
     "model_max_points": 25,
@@ -886,8 +930,8 @@
     "checks_ref": "agent-work/evidence/KNAVE2-CLASSIC1-818476e/checks.json",
     "test_change_summary_ref": "agent-work/evidence/KNAVE2-CLASSIC1-818476e/test-change-summary.json"
   },
-  "reviewed_sha": null,
-  "current_review_score_assessment_ref": "agent-work/evidence/HX-FB-010-PR491-de02991/score-assessment.json",
+  "reviewed_sha": "818476e5ec653384ab216efd75db9467d698cfc4",
+  "current_review_score_assessment_ref": "agent-work/evidence/KNAVE2-CLASSIC1-review-c5b3c38/score-assessment.json",
   "automatic_measurement_rerun_allowed": false,
   "repeat_review_requires": "Fresh-context independent exact d92ecdd review, including F1 and score_assessment1.2",
   "blocked_task_handoffs": {
@@ -987,7 +1031,7 @@
     "next_step": "Решить отдельно узкий cleanup AUD-02/03/04; готовую спецификацию024 не задерживать."
   },
   "owner_decisions_note": "PR490 exact package authorized and published. No further publication decision needed for this released package; future package publication remains separate.",
-  "updated_at": "2026-11-08T16:55:48.707Z",
+  "updated_at": "2026-11-08T17:31:56.706Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
     "stage_id": "V3",
@@ -1200,22 +1244,28 @@
     }
   },
   "independent_reviewer_automation_health": {
-    "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-10-29T08:57:47.802Z",
+      "actual_peek_performed": true,
       "is_enabled": true,
-      "source": "actual automations.peek"
+      "checked_at": null,
+      "error": "timestamp_not_captured; initial real enabled response preceded review. Earlier17:13estimate withdrawn; no inferred exact timestamp."
+    },
+    "supplemental": {
+      "checked_at_utc": "2026-11-08 17:18:19 UTC",
+      "is_enabled": true,
+      "error": null,
+      "clock_method": "available tools.clock__curr_time immediately before real automations.peek"
     },
     "end": {
-      "checked_at": "2026-10-29T09:17:30.858Z",
-      "clock": "2026-10-29 09:17:30 UTC",
+      "checked_at_utc": "2026-11-08 17:27:25 UTC",
       "is_enabled": true,
-      "source": "actual automations.peek"
+      "error": null,
+      "clock_method": "available tools.clock__curr_time immediately after real automations.peek"
     },
     "restoration_performed": false,
-    "errors": [],
     "schedule_changed": false,
-    "scope": "Observed moments only; no guarantee after completion"
+    "limitations": "Initial enabled observation has no exact independently recorded timestamp; accurate supplemental/end timestamps do not repair that missing first timestamp. A peek confirms only its observed moment."
   },
   "previous_reviewed_sha": "50f81251cf000d17f7f91eb96608d35ad900cfe4",
   "test_governance": {
@@ -1248,50 +1298,62 @@
     "handoff_ref": "agent-work/handoffs/2026-10-27-HX-FB-002-audit.json"
   },
   "test_change_summary": {
-    "base_sha": "16468783470c6585a6aedd82a72cfa419fe642a4",
+    "base_sha": "818476e5ec653384ab216efd75db9467d698cfc4",
     "head_sha": "818476e5ec653384ab216efd75db9467d698cfc4",
-    "private_base_sha": "99d0bae783674389518ea6c9cff16b2e3c6a1511",
-    "private_head_sha": "c5b3c384792ce3349e40b0cc3ccc52e3d7685d1e",
-    "source_of_count": "Git diff changes only one RU/EN export-notice line in App; permanent Node/browser registrations and helpers byte-identical. Comparable Node24 runner remains361. Temporary diagnostic scripts and private screenshots are not permanent cases.",
+    "private_sha": "c5b3c384792ce3349e40b0cc3ccc52e3d7685d1e",
+    "reviewer_permanent_edit_delta": {
+      "added": 0,
+      "removed": 0,
+      "modified": 0
+    },
     "suites": [
       {
-        "suite": "Node24",
+        "suite": "Node24 independent exact private candidate",
         "added": 0,
         "removed": 0,
         "modified": 0,
         "executed": 361,
         "passed": 361,
+        "failed": 0,
         "skipped": 0,
-        "scenario_risk": "Full existing regression suite on exact private candidate",
-        "reuse_or_new_reason": "Low-risk notice correction plus approved UI validation; reuse existing suite."
+        "scenario_risk": "Full pinned regression suite, source-free independent handler/source/UI checks supplement it",
+        "reuse_or_new_reason": "Reviewer reused existing permanent tests and temporary diagnostics; no permanent code edits."
       },
       {
-        "suite": "Browser",
+        "suite": "Browser independent",
         "added": 0,
         "removed": 0,
         "modified": 0,
-        "execution_unit": "existing workflows",
+        "execution_unit": "existing scripts",
         "executed": 8,
-        "passed": 8,
+        "passed_by_command_exit": 8,
         "skipped": 0,
-        "scenario_risk": "Existing full private browser regressions",
-        "reuse_or_new_reason": "Runtime cache repaired; no test-source edits."
-      },
-      {
-        "suite": "World RNG publicCI",
-        "added": 0,
-        "removed": 0,
-        "modified": 0,
-        "status": "pass",
-        "scenario_risk": "Existing production RNG workflow",
-        "reuse_or_new_reason": "Reused mandatory CI, not counted with Node or browser."
+        "scenario_risk": "Actual private production build regressions",
+        "reuse_or_new_reason": "Exact sequential&&command advanced to separate RNG and returned0; stdout capture missing and not reconstructed."
       }
     ],
-    "temporary_diagnostics": {
-      "private_UI_scenarios": 1,
-      "private_source_scenarios": 2,
-      "permanent_count_delta": 0
-    }
+    "candidate_audit": {
+      "base_sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
+      "head_sha": "818476e5ec653384ab216efd75db9467d698cfc4",
+      "node_added": 7,
+      "node_removed": 0,
+      "node_modified_direct_definitions": 10,
+      "node_modified_logical_registrations": 12,
+      "source": "agent-work/evidence/KNAVE2-CLASSIC1-review-c5b3c38/test-diff-counts.json",
+      "method": "Independent AST test subtree comparison; classic/Mythic loops expanded; helper-only affected cases excluded;12 touched registrations are not12 new scenarios",
+      "necessity": "Seven new registrations cover distinct profile/annotation contracts, source adapter/schema and real-handler commit/rollback behavior. Existing importer/history/E6loss/E7E8transfer tests extended rather than copied; expected export versions advanced and unknown version refusal moved10→11. No redundant test removal required.",
+      "browser_new_subscenario": 1,
+      "browser_workflows": 8,
+      "browser_source": {
+        "npm_workflows": 8,
+        "new_subscenario": 1,
+        "removed": 0,
+        "method": "Knave lifecycle added inside existing tags workflow; save-history and myth lifecycle version expectations updated. Not added to Node count.",
+        "necessity": "Native controls, draft exits/focus, widths and actualDOM behavior are separate from mocked-hook handler contracts.",
+        "coverage_gap": "Current new lifecycle checks overflow and interactions but misses undersized pointer targets; extend it meaningfully if needed for KNC-REV-001."
+      }
+    },
+    "temporary_diagnostics": "400 source rows,3 handler seeds and1 UI scenario remain separate from permanent runner count; no HX003 measurements"
   },
   "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/491",
   "coordination_handoff": {
@@ -1353,7 +1415,7 @@
     "nav_status_success": 24,
     "png_captured": 4
   },
-  "evidence_ref": "agent-work/evidence/KNAVE2-CLASSIC1-818476e/checks.json",
+  "evidence_ref": "agent-work/evidence/KNAVE2-CLASSIC1-review-c5b3c38/review-report.json",
   "static_diagnosis_handoff": {
     "status": "coordinated_nextstage_proposed",
     "result_ref": "agent-work/results/2026-10-27-developer-HX-BL-003-static-diagnosis.json",
@@ -1723,8 +1785,8 @@
   "current_package_release_approval": {
     "task_id": "HX-BL-043",
     "stage_id": "KNAVE2-CLASSIC1",
-    "status": "not_requested_before_independent_acceptance",
     "approved": false,
+    "status": "changes_requested_no_release",
     "public_sha": "818476e5ec653384ab216efd75db9467d698cfc4",
     "private_sha": "c5b3c384792ce3349e40b0cc3ccc52e3d7685d1e"
   },
@@ -2059,17 +2121,17 @@
   "next_product_proposal": {
     "task_id": "HX-BL-043",
     "stage_id": "KNAVE2-CLASSIC1",
-    "status": "review_ready",
+    "status": "changes_requested",
     "spec_ref": "agent-work/specs/HX-BL-043-KNAVE2-CLASSIC1.md",
     "handoff_ref": "agent-work/handoffs/2026-11-08-HX-BL-043-KNAVE2-CLASSIC1.json",
     "approval_ref": "owner-approval-2026-11-08-HX-BL-043-KNAVE2-CLASSIC1",
     "implementation_allowed": true,
     "release_approved": false,
-    "next_role": "reviewer",
-    "next_step": "Проверяющий: независимо проверить private c5b3c38 / public818476e по KNC-1.0,400строкам/ledger300 и точным evidence; записать score_assessment1.2. Замечания вернуть программисту, после принятия предъявить владельцу точный пакет публикации.",
+    "next_role": "programmer",
+    "next_step": "Программист: исправить KNC-REV-001 — эффективные неперекрывающиеся44×44px области нажатия source disclosures и «Отмена» только в Knave; сохранить компактность, перепроверить1500/390/320 и передать новые public/private SHA независимому проверяющему.",
     "score_impact": "unknown; no award",
     "head_sha": "818476e5ec653384ab216efd75db9467d698cfc4",
-    "result_ref": "agent-work/results/2026-11-08T1630-programmer-HX-BL-043-private-UI.json"
+    "result_ref": "agent-work/results/2026-11-08T1705-reviewer-HX-BL-043-KNAVE2-CLASSIC1.json"
   },
   "ui_amendment": {
     "schema_version": 1,
@@ -2211,17 +2273,17 @@
   "next_product_recommendation": {
     "task_id": "HX-BL-043",
     "stage_id": "KNAVE2-CLASSIC1",
-    "status": "review_ready",
+    "status": "changes_requested",
     "spec_ref": "agent-work/specs/HX-BL-043-KNAVE2-CLASSIC1.md",
     "handoff_ref": "agent-work/handoffs/2026-11-08-HX-BL-043-KNAVE2-CLASSIC1.json",
     "approval_ref": "owner-approval-2026-11-08-HX-BL-043-KNAVE2-CLASSIC1",
     "implementation_allowed": true,
     "release_approved": false,
-    "next_role": "reviewer",
-    "next_step": "Проверяющий: независимо проверить private c5b3c38 / public818476e по KNC-1.0,400строкам/ledger300 и точным evidence; записать score_assessment1.2. Замечания вернуть программисту, после принятия предъявить владельцу точный пакет публикации.",
+    "next_role": "programmer",
+    "next_step": "Программист: исправить KNC-REV-001 — эффективные неперекрывающиеся44×44px области нажатия source disclosures и «Отмена» только в Knave; сохранить компактность, перепроверить1500/390/320 и передать новые public/private SHA независимому проверяющему.",
     "score_impact": "unknown; no award",
     "head_sha": "818476e5ec653384ab216efd75db9467d698cfc4",
-    "result_ref": "agent-work/results/2026-11-08T1630-programmer-HX-BL-043-private-UI.json"
+    "result_ref": "agent-work/results/2026-11-08T1705-reviewer-HX-BL-043-KNAVE2-CLASSIC1.json"
   },
   "owner_editor_scope": {
     "decision_ref": "owner-decision-2026-10-28-editor-functional-scope",
@@ -2331,7 +2393,7 @@
     }
   },
   "full_editor_ready": false,
-  "current_task_score_assessment_status": "independent_score_assessment1.2_pending",
+  "current_task_score_assessment_status": "completed_insufficient_evidence_no_award",
   "published": false,
   "main_changed": false,
   "ui_actual": {
@@ -2401,7 +2463,7 @@
     "no_horizontal_overflow": true,
     "font_limitation": "Some emoji glyphs absent in this runtime; SVG/Cyrillic work."
   },
-  "review_result_ref": "agent-work/results/2026-11-08-reviewer-PR493-fb3f9b8.json",
+  "review_result_ref": "agent-work/results/2026-11-08T1705-reviewer-HX-BL-043-KNAVE2-CLASSIC1.json",
   "previous_review_score_assessment_ref": "agent-work/evidence/review-HX-BL-023-E1-24fa342/score_assessment.json",
   "previous_independent_reviewer_automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
@@ -2423,7 +2485,7 @@
     "limitation": "Observed status at two calls only; not guarantee of subsequent service state."
   },
   "next_active_slice": "E5",
-  "review_scope": "Exact public818476e/privatec5b3c38 full KNC-1.0 package, private400rows/300rowledger, regressions/test necessity and score_assessment1.2",
+  "review_scope": "Exact KNC1 public818476e/privatec5b3c38 with source400/policy300 and independent real handler/UI/regressions",
   "previous_accepted_release_pending": {
     "task_id": "HX-BL-023",
     "stage_id": "E7+E8",
@@ -2516,12 +2578,12 @@
   "spec_blob_sha": "584707ebe78516b39148315ffc7b0214f52cb6b6",
   "parent_spec_ref": "agent-work/specs/HX-BL-023.md",
   "parent_spec_version": "2.3",
-  "test_change_summary_ref": "agent-work/evidence/KNAVE2-CLASSIC1-818476e/test-change-summary.json",
+  "test_change_summary_ref": "agent-work/evidence/KNAVE2-CLASSIC1-review-c5b3c38/test-change-summary.json",
   "programmer_score_evidence_ref": "agent-work/evidence/KNAVE2-CLASSIC1-818476e/programmer-score-evidence.json",
-  "completed_claim_result_ref": "agent-work/results/2026-11-08T1630-programmer-HX-BL-043-private-UI.json",
+  "completed_claim_result_ref": "agent-work/results/2026-11-08T1705-reviewer-HX-BL-043-KNAVE2-CLASSIC1.json",
   "review_evidence_ref": "agent-work/evidence/HX-FB-010-PR491-de02991/review-report.json",
-  "github_review_state": "independent_acceptance_recorded_COMMENT",
-  "independent_reviewer_automation_health_ref": "agent-work/evidence/review-HX-BL-023-E3-d7bb38f/automation_health.json",
+  "github_review_state": "draft_for_bounded_KNC-REV-001_fix; independent_AI_report_in_operations",
+  "independent_reviewer_automation_health_ref": "agent-work/evidence/KNAVE2-CLASSIC1-review-c5b3c38/automation-health.json",
   "owner_visual_correction": {
     "date": "2026-10-30",
     "request": "Приблизить подчёркивание к элементу и выделить редактируемые значения цветом",
@@ -2589,50 +2651,51 @@
   "previous_score_update_result_ref": "agent-work/results/2026-10-29-strategist-score-HX-BL-023-E1-8f7d172.json",
   "next_approved_stage": "KNAVE2-CLASSIC1",
   "next_approved_stage_handoff_ref": "agent-work/handoffs/2026-11-08-HX-BL-043-KNAVE2-CLASSIC1.json",
-  "authorization_status": "Approved KNC1 implementation/validation; no new start/design approval; owner publication and public book transfer absent",
-  "completed_at": "2026-11-08T16:54:00.728Z",
+  "authorization_status": "Bounded fix inside approved KNC1; no new start/design gate; no release/public book permission",
+  "completed_at": "2026-11-08T17:30:02.029Z",
   "score_changed": false,
   "next_stage_id": "KNAVE2-CLASSIC1",
   "score_evidence_updated": true,
   "current_stage_id": "KNAVE2-CLASSIC1",
   "implementation_started": true,
   "current_stage_release_approved": false,
-  "review_ready": true,
-  "current_stage_ui_status": "full_private_UI_completed_shown_pending_independent_review",
+  "review_ready": false,
+  "current_stage_ui_status": "bounded44px_touch_correction_required; prior full actual UI retained",
   "completed_claim": {
-    "run_id": "2026-11-08T1630-programmer-HX-BL-043-private-UI",
-    "role": "programmer",
+    "run_id": "2026-11-08T1705-reviewer-HX-BL-043-KNAVE2-CLASSIC1",
+    "role": "reviewer",
     "task_id": "HX-BL-043",
     "stage_id": "KNAVE2-CLASSIC1",
     "status": "completed",
-    "started_at": "2026-11-08T16:32:08.626Z",
-    "lease_expires_at": "2026-11-08T18:32:08.626Z",
-    "scope": "Full private99d0bae actual UI walkthrough using temporary browser runtime; no public book data, main changes or release.",
-    "public_sha": "16468783470c6585a6aedd82a72cfa419fe642a4",
-    "private_sha": "99d0bae783674389518ea6c9cff16b2e3c6a1511",
-    "claim_ref": "agent-work/claims/2026-11-08T1630-programmer-HX-BL-043-private-UI.json",
-    "approval_ref": "owner-approval-2026-11-08-HX-BL-043-KNAVE2-CLASSIC1",
-    "completed_at": "2026-11-08T16:54:00.728Z",
-    "head_sha": "818476e5ec653384ab216efd75db9467d698cfc4",
-    "private_head_sha": "c5b3c384792ce3349e40b0cc3ccc52e3d7685d1e",
-    "result_ref": "agent-work/results/2026-11-08T1630-programmer-HX-BL-043-private-UI.json",
-    "next_role": "reviewer",
+    "started_at": "2026-11-08T17:06:38.305Z",
+    "lease_expires_at": "2026-11-08T19:06:38.305Z",
+    "scope": "Fresh-context independent review of exact public818476e/privatec5b3c38 KNC1 package and score_assessment1.2; no implementation, main or publication.",
+    "public_sha": "818476e5ec653384ab216efd75db9467d698cfc4",
+    "private_sha": "c5b3c384792ce3349e40b0cc3ccc52e3d7685d1e",
+    "claim_ref": "agent-work/claims/2026-11-08T1705-reviewer-HX-BL-043-KNAVE2-CLASSIC1.json",
+    "completed_at": "2026-11-08T17:30:02.029Z",
+    "result_ref": "agent-work/results/2026-11-08T1705-reviewer-HX-BL-043-KNAVE2-CLASSIC1.json",
+    "verdict": "changes_requested",
+    "next_role": "programmer",
     "automation_health": {
       "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
       "start": {
-        "checked_at": "2026-11-08T16:30:40.316Z",
+        "checked_at": "2026-11-08T17:05:49.384Z",
         "is_enabled": true,
         "status": "checked"
       },
       "end": {
-        "checked_at": "2026-11-08T16:54:00.728Z",
-        "status": "checked",
-        "is_enabled": true
+        "checked_at": "2026-11-08T17:30:02.029Z",
+        "is_enabled": true,
+        "status": "checked"
       },
       "restoration_performed": false,
       "errors": [],
-      "limitation": "Point-in-time observations only; no guarantee after completion."
-    }
+      "independent_agent_health_ref": "agent-work/evidence/KNAVE2-CLASSIC1-review-c5b3c38/automation-health.json",
+      "independent_agent_recording_limitation": "Agent actually checked enabled before review but did not record that first check time; exact supplemental/end confirmations and explicit timing error retained.",
+      "limitation": "Point-in-time only, no guarantee after completion."
+    },
+    "independent_reviewer_automation_health_ref": "agent-work/evidence/KNAVE2-CLASSIC1-review-c5b3c38/automation-health.json"
   },
   "evidence_commit_sha": "5a9c6c97bd0ff170751d78babcc9d3578066e0bb",
   "finding_ids": [],
@@ -4222,9 +4285,9 @@
     "workspace_recovery": "Pruning removed old shared git metadata; fresh clone from GitHub succeeded, no request to user needed.",
     "materials_commit_sha": "64fa823e19f701817ff59d962d7b211e83aaa406"
   },
-  "current_stage_status": "review_ready",
-  "current_stage_review_status": "pending_independent_review",
-  "accepted": true,
+  "current_stage_status": "changes_requested",
+  "current_stage_review_status": "changes_requested",
+  "accepted": false,
   "full_UI_pending": false,
   "latest_HX_BL_023_E5_persistence_20261104": {
     "run_id": "2026-11-04-developer-HX-BL-023-E5-persistence",
@@ -4463,92 +4526,58 @@
   "UI_proposal_already_shown": true,
   "authorization_ref": "owner-approval-2026-11-08-HX-BL-043-KNAVE2-CLASSIC1",
   "checks_summary": {
-    "public_sha": "818476e5ec653384ab216efd75db9467d698cfc4",
     "private_sha": "c5b3c384792ce3349e40b0cc3ccc52e3d7685d1e",
-    "public_CI": {
-      "run_id": 42500822912,
-      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42500822912",
-      "status": "completed",
-      "conclusion": "success",
-      "jobs": [
-        {
-          "name": "check",
-          "id": 128792963295,
-          "status": "completed",
-          "conclusion": "success"
-        },
-        {
-          "name": "world-random",
-          "id": 128792963551,
-          "status": "completed",
-          "conclusion": "success"
-        },
-        {
-          "name": "browser",
-          "id": 128792963584,
-          "status": "completed",
-          "conclusion": "success"
-        }
-      ],
+    "node_version": "24.22.1",
+    "npm_check": {
+      "exit_code": 0,
+      "tsc": "passed",
       "node": {
-        "executed": 361,
-        "passed": 361,
-        "failed": 0,
-        "skipped": 0
+        "tests": 361,
+        "pass": 361,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
       },
-      "browser": {
-        "workflows": 8,
-        "passed": 8
-      },
-      "rng": "pass"
+      "build": "passed",
+      "duration_ms": 916045.662455,
+      "log": "check.log"
     },
-    "private": {
-      "node24_check": "pass",
-      "typescript": "pass",
-      "build": "pass",
-      "node": {
-        "executed": 361,
-        "passed": 361,
-        "failed": 0,
-        "skipped": 0
+    "npm_browser": {
+      "exit_code": 0,
+      "workflow_scripts": 8,
+      "proof": "Exact sequential&&command advanced to RNG; pinned package script lists all8scripts; final tags andKnave metrics exist. Tool session31331 eventually completed0.",
+      "stdout_capture": "browser-rerun.log0bytes; no individual result lines reconstructed",
+      "command_ref": "checks-command.json"
+    },
+    "npm_browser_rng": {
+      "exit_code": 0,
+      "log": "rng.log",
+      "final_lines": [
+        "AC08 invalid seed values and no-op retain RNG/redo",
+        "AC09 classic: double click, busy export, delayed import, exact one-transaction undo/redo passed",
+        "AC09 mythic: double click, busy export, delayed import, exact one-transaction undo/redo passed"
+      ]
+    },
+    "independent_source": "source-check.json",
+    "independent_handler": "handler-results.json",
+    "independent_ui": "ui-results.json",
+    "resolved_diagnostic_errors": [
+      {
+        "kind": "setup",
+        "details": "First browser command ran before dist existed in clean worktree; failed preview setup. Independent build then complete browser&&RNGchain exit0."
       },
-      "browser": {
-        "workflows": 8,
-        "passed": 8,
-        "failed_product_checks": 0,
-        "execution": "First4 scripts passed under npm run test:browser; navigation stopped for missing default cached executable (env override ignored). Same installed binary linked at observed cache path; remaining4 scripts passed. No source/assertion changes.",
-        "browser_version": "153.0.8010.0",
-        "raw_logs": [
-          "private-browser-first-attempt.log",
-          "private-browser-rest.log"
-        ]
+      {
+        "kind": "reviewer_extraction_method",
+        "details": "get_textbox crop included next-row index because glyph bounding boxes overlap. Replaced by unique raw-line bbox match;400row character/reference comparison0mismatches."
       },
-      "actual_UI": {
-        "status": "pass",
-        "temporary_scenarios": 1,
-        "steps": 6,
-        "widths": [
-          1500,
-          390,
-          320
-        ],
-        "report": "private-ui-report.json",
-        "shown_in_chat": true
-      },
-      "source_functional": {
-        "status": "pass",
-        "temporary_fixed_scenarios": 2,
-        "report": "source-functional.json"
+      {
+        "kind": "reviewer_UI_expectation",
+        "details": "First temporary UI diagnostic expected generation-selection UI after Undo although an explicit POI selection preceded editing. Corrected expected accepted pre-edit snapshot; exact UndoRedo passed."
       }
-    },
-    "limits": [
-      "One fixed generated map/extension; not exhaustive",
-      "Automated Chromium, not physical touch/assistive technology",
-      "RU source only; GM export may reveal secrets; v9 cannot read v10",
-      "Independent review and score assessment remain separate"
     ],
-    "independent_review": false,
-    "score_awarded": false
+    "source_changes": "none; tracked generated reports restored after tests; exactprivatehead/tree retained",
+    "not_proof_of_exhaustiveness": true
   },
   "full_E5_UI_pending": true,
   "materials_commit_sha": "d66fc1882d982bf71de1977869077ec56c117d06",
@@ -5796,12 +5825,12 @@
     "delta_points": null,
     "applied_at": "2026-11-06T07:21:35Z"
   },
-  "authority_status": "Approved KNC1 implementation/validation; no new start/design approval; owner publication and public book transfer absent",
+  "authority_status": "Bounded fix inside approved KNC1; no new start/design gate; no release/public book permission",
   "analysis_baseline_sha": "00190bb749a4fa5af57aac4bbffff808e8fe733f",
   "analysis_baseline_tree": "9c8585ad4c5aafdec38d242a67ffc54fe7f4402c",
   "previous_evidence_path": "agent-work/evidence/score-PR491-7547a67/accounting.json",
   "last_published_release_approval": "owner-release-2026-11-06-PR491-de02991",
-  "ui_actual_pending": false,
+  "ui_actual_pending": true,
   "latest_PR492_release": {
     "schema_version": 1,
     "run_id": "2026-11-07-developer-release-PR492",
@@ -6254,7 +6283,7 @@
     "canonical_interrupted_claim_preserved": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json"
   },
   "recovery_resolution_ref": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json",
-  "result_ref": "agent-work/results/2026-11-08T1630-programmer-HX-BL-043-private-UI.json",
+  "result_ref": "agent-work/results/2026-11-08T1705-reviewer-HX-BL-043-KNAVE2-CLASSIC1.json",
   "latest_PR493_recovery": {
     "status": "accepted_source_free_core_unpublished",
     "head_sha": "2f11a4b608a7ed66f5786b3a0e151362f82d0ad8",
@@ -6674,7 +6703,7 @@
   },
   "published_scope": "MYTH-CARD1 full72RU reference slice; overall041 has remaining categories",
   "public_book_corpus_approval_scope": "Only exact72MC1 corpus/tree98970e; NATURE2/other corpora excluded",
-  "previous_run_id": "2026-11-08T1534-programmer-HX-BL-043-KNAVE2-CLASSIC1",
+  "previous_run_id": "2026-11-08T1630-programmer-HX-BL-043-private-UI",
   "next_role_after_approval": "business_analyst",
   "latest_MC1_EN_intake": {
     "schema_version": 1,
@@ -6972,14 +7001,17 @@
   "previous_next_task_proposal_ref": "agent-work/proposals/2026-11-08-HX-BL-043-KNAVE2-PLACE1.json",
   "next_task_handoff_ref": "agent-work/handoffs/2026-11-08-HX-BL-043-KNAVE2-CLASSIC1.json",
   "latest_HX_BL_043_KNAVE2_CLASSIC1": {
-    "run_id": "2026-11-08T1630-programmer-HX-BL-043-private-UI",
-    "status": "review_ready",
-    "result_ref": "agent-work/results/2026-11-08T1630-programmer-HX-BL-043-private-UI.json",
-    "head_sha": "818476e5ec653384ab216efd75db9467d698cfc4",
+    "run_id": "2026-11-08T1705-reviewer-HX-BL-043-KNAVE2-CLASSIC1",
+    "status": "changes_requested",
+    "result_ref": "agent-work/results/2026-11-08T1705-reviewer-HX-BL-043-KNAVE2-CLASSIC1.json",
+    "public_sha": "818476e5ec653384ab216efd75db9467d698cfc4",
     "private_sha": "c5b3c384792ce3349e40b0cc3ccc52e3d7685d1e",
-    "next_role": "reviewer",
-    "next_step": "Проверяющий: независимо проверить private c5b3c38 / public818476e по KNC-1.0,400строкам/ledger300 и точным evidence; записать score_assessment1.2. Замечания вернуть программисту, после принятия предъявить владельцу точный пакет публикации.",
-    "review_request_ref": "agent-work/evidence/KNAVE2-CLASSIC1-818476e/review-request.json",
+    "next_role": "programmer",
+    "next_step": "Программист: исправить KNC-REV-001 — эффективные неперекрывающиеся44×44px области нажатия source disclosures и «Отмена» только в Knave; сохранить компактность, перепроверить1500/390/320 и передать новые public/private SHA независимому проверяющему.",
+    "finding_ids": [
+      "KNC-REV-001"
+    ],
+    "score_assessment_ref": "agent-work/evidence/KNAVE2-CLASSIC1-review-c5b3c38/score-assessment.json",
     "release_approved": false
   },
   "superseded_owner_decisions": [
@@ -7006,6 +7038,15 @@
   },
   "next_programmer_step_ref": "agent-work/evidence/KNAVE2-CLASSIC1-1646878/next-programmer-step.json",
   "review_request_ref": "agent-work/evidence/KNAVE2-CLASSIC1-818476e/review-request.json",
-  "programmer_complete": true,
-  "current_programmer_result_ref": "agent-work/results/2026-11-08T1630-programmer-HX-BL-043-private-UI.json"
+  "programmer_complete": false,
+  "current_programmer_result_ref": "agent-work/results/2026-11-08T1630-programmer-HX-BL-043-private-UI.json",
+  "reviewed_private_sha": "c5b3c384792ce3349e40b0cc3ccc52e3d7685d1e",
+  "ui_review_result": {
+    "finding_id": "KNC-REV-001",
+    "source_disclosure_height": 16,
+    "cancel_height": 19,
+    "expected_effective_target": "nonoverlapping44x44CSSpx",
+    "metrics_ref": "agent-work/evidence/KNAVE2-CLASSIC1-review-c5b3c38/ui-results.json"
+  },
+  "fix_handoff_ref": "agent-work/evidence/KNAVE2-CLASSIC1-review-c5b3c38/programmer-fix-handoff.json"
 }
