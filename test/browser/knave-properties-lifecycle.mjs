@@ -41,8 +41,29 @@ export async function runKnavePropertiesLifecycle({page,snapshot,root}) {
  for(const width of [1500,390,320]){
    await page.setViewportSize({width,height:1100});await panel.scrollIntoViewIfNeeded();
    const size=await info.evaluate(el=>({client:el.clientWidth,scroll:el.scrollWidth}));assert.ok(size.scroll<=size.client+1,JSON.stringify({width,...size}));
-   metrics.push({width,...size});await info.screenshot({path:fileURLToPath(new URL(`draft-${width}.png`,out))});
+   // KNC-REV-001: actual, nonoverlapping hit targets, not just legible text.
+   const targets=panel.locator('.knave-result summary, .knave-cancel');
+   const hitAreas=[];
+   for(const target of await targets.all()){
+     await target.scrollIntoViewIfNeeded();
+     const hit=await target.evaluate(el=>{const b=el.getBoundingClientRect();return {width:b.width,height:b.height,points:[[b.left+2,b.top+2],[b.right-2,b.bottom-2]].every(([x,y])=>{const hit=document.elementFromPoint(x,y);return hit===el||el.contains(hit);})};});
+     assert.ok(hit.width>=44&&hit.height>=44&&hit.points,JSON.stringify({width,...hit}));hitAreas.push(hit);
+   }
+   const summaries=panel.locator('.knave-result summary');
+   const summary=summaries.first();
+   const isOpen=()=>summary.evaluate(el=>el.parentElement.open);
+   const open=await isOpen();await summary.click({position:{x:4,y:40}});assert.equal(await isOpen(),!open,'lower target activates disclosure');
+   await summary.focus();await page.keyboard.press('Enter');assert.equal(await isOpen(),open);
+   await page.keyboard.press('Space');assert.equal(await isOpen(),!open);
+   await page.keyboard.press('Space');assert.equal(await isOpen(),open);
+   const boxes=await summaries.evaluateAll(els=>els.map(e=>{const b=e.getBoundingClientRect();return {top:b.top,bottom:b.bottom};}));
+   for(let i=1;i<boxes.length;i++)assert.ok(boxes[i].top>=boxes[i-1].bottom,'source targets do not overlap');
+   metrics.push({width,...size,hitAreas});await info.screenshot({path:fileURLToPath(new URL(`draft-${width}.png`,out))});
  }
+ const cancel=panel.getByRole('button',{name:'Отмена',exact:true});await cancel.click({position:{x:4,y:40}});
+ assert.deepEqual(await snapshot(),before,'Cancel lower hit target discards draft without document changes');
+ await discovery.selectOption('interaction');await panel.getByRole('textbox',{name:'Улика',exact:true}).fill('<Следы обрываются у скалы>');
+ await panel.getByRole('combobox',{name:'Проходимость',exact:true}).selectOption('difficult');
  await page.getByRole('button',{name:'Готово',exact:true}).click();const accepted=await snapshot();
  assert.deepEqual(accepted.map.knave.discoveryByPoi['poi:1:2,0'],{mode:'interaction',clueText:'<Следы обрываются у скалы>'});
  assert.equal(accepted.map.knave.difficultyByHex['2,0'],'difficult');assert.deepEqual(accepted.generation,before.generation);
