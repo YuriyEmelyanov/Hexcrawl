@@ -1,0 +1,180 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-08T1957-strategist-next-product",
+  "role": "strategist_manager",
+  "task_id": "HX-BL-042",
+  "stage_id": "SCALE1-proposal",
+  "status": "proposal_ready_owner_task_start_required",
+  "started_at": "2026-11-08T19:59:30.038Z",
+  "completed_at": "2026-11-08T20:04:25.961Z",
+  "role_selection_reason": "043accepted and not publication-authorized;041ENsource missing;003acceptance change pending. Old008/009ready records correspond to published010. No ready executor task or actionable next-product recommendation after accepted043; choose strategist to coordinate and recommend existing042.",
+  "full_daily_summary": false,
+  "scope": "Event-driven bounded queue reconciliation and concrete next-task proposal; no repeated research/full daily audit",
+  "proposal_id": "HX-BL-042-SCALE1",
+  "proposal_ref": "agent-work/proposals/2026-11-08-HX-BL-042-SCALE1.json",
+  "proposal_summary": {
+    "problem": "Опубликованный main a246fdf хранит экранный zoom, но в проверенном App-контракте нет общего физического масштаба. Принятый, ещё не выпущенный Knave af50286 уже хранит fixed6mile/conventionunknown; это частный профиль, не общий редактор. Без единицы и конвенции мастер не может однозначно передать физический размер карты.",
+    "benefit": "Мастер задаёт физическую длину гекса один раз, сохраняет её вместе с картой и продолжает подготовку без потери масштаба. Один общий компонент вместо отдельной настройки на каждую игру.",
+    "user_visible_effect": {
+      "before": "Zoom100%/200% меняет размер изображения; обычная карта не несёт общего поля физической длины. У принятого Knave есть только фиксированные6миль/гекс.",
+      "after": "Предложение, не реализация: «Размер гекса:12миль · между противоположными вершинами»; послеzoom200%, save/load остаётся12миль. Для старой карты — «не задан»; дляKnave —6миль, конвенциянеизвестна.",
+      "example": {
+        "selected_setting": {
+          "length": 12,
+          "unit": "mile",
+          "convention": "opposite_vertices"
+        },
+        "unit_conversion": "19.312128km opposite_vertices",
+        "known_convention_conversion": "6√3mi ≈10.392304845413264mi opposite_sides, same physical hex",
+        "unknown_case": "6mile / conventionunknown stays unknown; no computed side/center distance"
+      },
+      "preview_requirement_after_approval": "Аналитик показывает desktop/narrow на основе текущего интерфейса; затем разработка без третьего дизайн-gate. Полная спецификация/макет в этом запуске не создавались."
+    },
+    "priority": 1,
+    "estimate": "Один ограниченный пакет M: ориентировочно1аналитический,1–2разработческих и1независимый проверочный этап; это оценка объёма, не обещание времени/стоимости.",
+    "score": {
+      "model_version": "1.2",
+      "baseline_ref": "agent-work/score/current-score.json",
+      "baseline_blob_sha": "ff88f6418f5eacd654d5efa5a6a8e394706022af",
+      "criteria": [
+        {
+          "criterion_id": "S04-C04",
+          "before_grade": null,
+          "before_points": null,
+          "expected_grade": null,
+          "expected_delta": null,
+          "evidence_needed": "Exact known-output JSON round-trip/migrations/Undo with physical-scale fields"
+        },
+        {
+          "criterion_id": "S06-C04",
+          "before_grade": null,
+          "before_points": null,
+          "expected_grade": null,
+          "expected_delta": null,
+          "evidence_needed": "Only map-preparation scale component; full expedition cycle still absent/unverified"
+        }
+      ],
+      "status": "unknown; no score increase promised, no award before release; source mapping does not establish whole-criterion grade"
+    }
+  },
+  "handoff_ref": "agent-work/handoffs/2026-11-08-strategist-next-product.json",
+  "queue_evidence": {
+    "published_feedback_reconciliation": {
+      "ids": [
+        "HX-FB-008",
+        "HX-FB-009"
+      ],
+      "pr": 485,
+      "release_sha": "d3e7c49b8a26475f3c74ea388268db60619188b1",
+      "merged": true,
+      "ancestry": {
+        "status": "ahead",
+        "ahead_by": 47,
+        "behind_by": 0
+      },
+      "current_main_App_blob": "f28189bc1e5b1af47cf099102007b9432c71fdbb",
+      "prior_independent_review_ref": "agent-work/results/2026-11-03-reviewer-HX-BL-010-7121a24.json",
+      "prior_release_score_ref": "agent-work/results/2026-11-04-strategist-score-PR485-PR484.json",
+      "method": "Current source crosscheck; no fresh runtime acceptance claim"
+    },
+    "ready_executor_queue": [],
+    "waiting": [
+      {
+        "task_id": "HX-BL-043",
+        "stage_id": "KNAVE2-CLASSIC1",
+        "dependency": "Owner exact-package publication permission including private400RU corpus",
+        "accepted": true,
+        "head": "d7e7a5bd4103c0ec866f9e9a4a83fbe3222c2ef1",
+        "merged": false
+      },
+      {
+        "task_id": "HX-BL-041",
+        "stage_id": "MC1-EN",
+        "dependency": "Owner-supplied English source file as existing handoff; start already approved"
+      },
+      {
+        "task_id": "HX-BL-003",
+        "dependency": "Owner acceptance-change decision; no new automatic measurement allowed"
+      }
+    ],
+    "proposed_next": {
+      "task_id": "HX-BL-042",
+      "proposal_ref": "agent-work/proposals/2026-11-08-HX-BL-042-SCALE1.json",
+      "approval_required": "Task start and scope",
+      "next_role_after_approval": "business_analyst"
+    },
+    "score_status": "PR493 release accounting already completed; approval row pending is stale historical bookkeeping, not a new release event; no score reassessment/re-award",
+    "source_read_limitation": "Contents API returned empty content for >1MB game-bindings; same known blob fetched successfully with fetch_blob. No rule registry changes."
+  },
+  "changes": [
+    "Existing042promoted to one recommended proposed task; no duplicate task created",
+    "008/009closed using independently accepted published485 and current source/ancestry; stale010followup corrected",
+    "Stale493approval scorepending synchronized to completedexistingevent; no re-award",
+    "Old043fix routing replaced by acceptedpublicationpending + separate042proposal"
+  ],
+  "score": {
+    "model_version": "1.2",
+    "current_score_blob": "ff88f6418f5eacd654d5efa5a6a8e394706022af",
+    "confirmed_points": null,
+    "unverified_weight": 1000,
+    "changed": false,
+    "new_release_event": false
+  },
+  "test_change_summary": {
+    "base_sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
+    "head_sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
+    "added": 0,
+    "removed": 0,
+    "modified": 0,
+    "suite": "none; operations/proposal changes only",
+    "scenario_risk": "Queue/approval/source traceability, no runtime change",
+    "reuse_or_new_reason": "No product implementation authorized or performed; future042should extend existing import/history/browser coverage",
+    "count_source": "Only agent-operations JSON/MD mutated; no product commit",
+    "executions": {
+      "executed": 0,
+      "passed": 0,
+      "skipped": 0
+    }
+  },
+  "authority_status": "042proposal only; awaits task-start approval.043exactpublication still awaits owner;041startalreadyapproved butsourceinput absent. No new paid cost or unapproved implementation.",
+  "next_role": "owner",
+  "next_step": "Ожидается утверждение владельцем задачи HX-BL-042/SCALE1; после него аналитик готовит пригодную спецификацию общего масштаба и показывает desktop/narrow UI. Отсутствие ответа на UI затем не блокирует утверждённую работу.",
+  "next_role_after_approval": "business_analyst",
+  "owner_decisions_needed": [
+    {
+      "task_id": "HX-BL-042",
+      "decision": "Approve SCALE1task start/scope",
+      "ref": "agent-work/proposals/2026-11-08-HX-BL-042-SCALE1.json"
+    },
+    {
+      "task_id": "HX-BL-043",
+      "decision": "Authorize exact accepted package publication including private RUcatalog",
+      "ref": "agent-work/handoffs/2026-11-08-HX-BL-043-KNAVE2-CLASSIC1.json"
+    }
+  ],
+  "main_changed": false,
+  "published": false,
+  "new_specification_prepared": false,
+  "whole_team_blocked": false,
+  "budget": {
+    "usage_known": false,
+    "waived_usage_gate": true,
+    "additional_spend_authorized": false
+  },
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-08T19:57:53.928Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "end": {
+      "checked_at": "2026-11-08T20:04:25.961Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restoration_performed": false,
+    "errors": [],
+    "limitation": "Point-in-time observations only; no guarantee after completion"
+  }
+}
