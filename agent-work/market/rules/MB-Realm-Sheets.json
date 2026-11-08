@@ -1,0 +1,212 @@
+{
+  "schema_version": 2,
+  "game_id": "MB",
+  "source_id": "MB-OFFICIAL-REALM-SHEETS-SNAPSHOT-20261108",
+  "date": "2026-11-08",
+  "status": "partial_official_realm_sheet_profile_product_unverified",
+  "source": {
+    "id": "MB-OFFICIAL-REALM-SHEETS-SNAPSHOT-20261108",
+    "title": "Mythic Bastionland Realm Sheets.pdf",
+    "edition": "Official free Realm Sheets snapshot downloaded2026-11-08; internal version not stated; referenced Creating a Realm(p14) not collated to final book",
+    "author": "Chris McDowall / Bastionland Press; sheet artwork attribution not verified",
+    "publisher": "Bastionland Press",
+    "language": "en",
+    "url": "https://chrismcdee.itch.io/mythic-bastionland",
+    "upload_id": "13049889",
+    "accessed_at": "2026-11-08T17:34:26.008Z",
+    "access_level": "full_text_visual_primary_pdf",
+    "download_route": "Publisher itch.io Download demo file; public free download, no purchase/authenticated account",
+    "size_bytes": 6878626,
+    "pdf_pages": 2,
+    "sha256": "6082a760c7db9b81baf0180cae585feb35826b24e5feb839434c4ff33deb924d",
+    "pdf_metadata_date": "2024-11-07; not asserted publication date",
+    "locator": "PDF1 right column Creating a Realm(p14), WILDERNESS first sentence only",
+    "author_project_key": "chris-mcdowall:bastionland:mythic-bastionland:realm-sheets",
+    "parent_project_dedup_key": "chris-mcdowall:bastionland:mythic-bastionland",
+    "limitations": [
+      "PDF text extraction returned empty; selected clause read from rendered PDF1, not search snippet.",
+      "Only Wilderness first sentence extracted; other PDF1 content context only, PDF2 not read.",
+      "Final book/Quickstart version, edge handling and exact adjacency algorithm not verified.",
+      "No raw PDF/art/full tables published; only paraphrase and original acceptance examples.",
+      "Source discovery is not implementation evidence, score or audience measurement."
+    ]
+  },
+  "rules": [
+    {
+      "id": "MB-REALM-001",
+      "title": "Группы d12гексов одного типа местности",
+      "rule": {
+        "source_id": "MB-OFFICIAL-REALM-SHEETS-SNAPSHOT-20261108",
+        "url": "https://chrismcdee.itch.io/mythic-bastionland",
+        "printed_page": null,
+        "pdf_page": 1,
+        "section": "Creating a Realm(p14) / Wilderness",
+        "locator": "PDF1 right column Creating a Realm(p14), WILDERNESS first sentence only",
+        "paraphrase": "Рисовать группы одного типа местности размером по d12гексов.",
+        "parameters": {
+          "size_die": "d12",
+          "min_hexes": 1,
+          "max_hexes": 12,
+          "same_terrain": true,
+          "edge_resolution": "unknown"
+        },
+        "normative_kind": "realm_sheet_creation_procedure"
+      },
+      "comparison": {
+        "canonical_reuse": [
+          "map.extend_preserving_content",
+          "map.terrain_zones"
+        ],
+        "new_generic_rule": false,
+        "rationale": "Создание группы с сохранением карты и её преобладающая местность — существующие операции; d12 это параметры профиля, не новая численная методика рейтинга.",
+        "parameter_equivalence": "Distinct from existingd20+XdF; no inherited runtime evidence"
+      },
+      "requirements": [
+        {
+          "id": "MB-REALM-001-L1",
+          "layer": "L1",
+          "requirement": "Определить целевой размер группы исходом d12 и создать группу гексов одного выбранного типа. При достаточной свободной области получить ровно заданное число; сохранить результат без автоматического переброса.",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "evidence_sha": null,
+          "canonical_rule_ids": [
+            "map.extend_preserving_content",
+            "map.terrain_zones"
+          ],
+          "criterion_ids": [
+            "S03-C01",
+            "S03-C03",
+            "S01-C05"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#MB-REALM-001-L1",
+          "operational_requirement": {
+            "source_rule_ref": "agent-work/market/rules/MB-Realm-Sheets.json#MB-REALM-001",
+            "normative_kind": "realm_sheet_creation_procedure",
+            "applicability": "Official free MB Realm Sheets snapshot,PDF1Wilderness first sentence; conscious product profile selection",
+            "layer": "L1",
+            "trigger_or_user_action": "Ведущий выбирает профиль групп местности Realm Sheet и создаёт одну группу выбранного типа.",
+            "inputs_and_units": {
+              "terrain_type": "выбранный один тип местности",
+              "size_roll": "d12: целый исход1–12; единица — число гексов",
+              "available_area": "свободная область карты с действующими ограничениями",
+              "profile": "явный выбор режима, не автоматическая замена текущего Classic/MB"
+            },
+            "product_operation": "Определить целевой размер группы исходом d12 и создать группу гексов одного выбранного типа. При достаточной свободной области получить ровно заданное число; сохранить результат без автоматического переброса.",
+            "expected_output": "Группа из nгексов одного типа, n=1…12; при нехватке места цель и её недостижение различимы, прежнее содержимое сохранено.",
+            "constraints_and_exceptions": [
+              "Источник задаёт d12-группы одного типа, но не алгоритм роста, выбор соседей или поведение у края.",
+              "Связность — продуктовый перевод слова clusters; точная геометрическая/координатная процедура не специфицирована источником.",
+              "Не отменять действующие запреты пересечений/дыр и другие ограничения ради размера; конкретное разрешение конфликта needs_product_decision.",
+              "Не навязывать этот профиль всем существующим картам/режимам; текущий d20+XdF не изменяется исследователем.",
+              "Равновероятность исходов d12 и проверка ввода — продуктовые критерии; выполненные тесты продукта отсутствуют.",
+              "Сохранение/открытие/происхождение результата — продуктовая операционализация, не команда/API или схема хранения."
+            ],
+            "acceptance_cases": [
+              {
+                "id": "MB-REALM-001-L1-AC01",
+                "given": "Свободная область вмещает12гексов без конфликтов; выбран тип местности T и d12=1.",
+                "when": "Создать группу по выбранному профилю.",
+                "expected": "Получена группа из1гекса T; размер не заменён текущим d20+XdF."
+              },
+              {
+                "id": "MB-REALM-001-L1-AC02",
+                "given": "Та же достаточная свободная область; T, d12=7.",
+                "when": "Создать группу.",
+                "expected": "Получена связная группа из7гексов T; окружающая подготовленная карта не перегенерирована."
+              },
+              {
+                "id": "MB-REALM-001-L1-AC03",
+                "given": "Достаточная свободная область; T, d12=12.",
+                "when": "Создать группу.",
+                "expected": "Получена группа из12гексов T; все12 имеют выбранный тип."
+              },
+              {
+                "id": "MB-REALM-001-L1-AC04",
+                "given": "Вместо исхода d12 переданы0,13 либо7.5.",
+                "when": "Попытаться применить размер по этому профилю.",
+                "expected": "Ни один ввод не принят как корректный исход d12; группа не объявлена успешно созданной с некорректным размером."
+              },
+              {
+                "id": "MB-REALM-001-L1-AC05",
+                "given": "Выбран d12-профиль с равновероятными исходами; имеется нормированный случайный вход r.",
+                "when": "Для k=0…11 проверить равные интервалы [k/12,(k+1)/12) и их середины.",
+                "expected": "Каждый интервал соответствует ровно исходу k+1; середины дают1…12, двенадцать равных исходов. Значение r=1 не считается обычным входом [0,1). Это критерий продукта, не проверенный алгоритм."
+              },
+              {
+                "id": "MB-REALM-001-L1-AC06",
+                "given": "Цель12гексов; у края осталось только5допустимых мест, прочие заняты либо нарушают действующие ограничения.",
+                "when": "Разрешить конфликт размера и ограничений.",
+                "expected": "Существующие объекты не перезаписаны и запреты не обойдены; показано/сохранено, что цель12 не достигнута. Конкретное усечение/перенос/отказ остаётся решением аналитика, а не правилом источника."
+              },
+              {
+                "id": "MB-REALM-001-L1-AC07",
+                "given": "Ведущий выбрал другой профиль размера; готовая карта использует текущую процедуру.",
+                "when": "Открыть карту или добавить группу без выбора d12-профиля.",
+                "expected": "D12 не навязан существующим картам; прежние параметры и география сохранены."
+              },
+              {
+                "id": "MB-REALM-001-L1-AC08",
+                "given": "Группа7гексов T с выбранным профилем и известным исходом7 сохранена.",
+                "when": "Сохранить и снова открыть карту.",
+                "expected": "Сохранены7гексов T и известное происхождение размера; исход не переброшен автоматически."
+              }
+            ],
+            "source_vs_product_interpretation": "Первичный текст прямо задаёт группы d12гексов одинаковой местности. Выбор отдельного профиля, проверка1/7/12, корректного ввода, равных исходов, сохранности карты и явного конфликта края — исследовательский перевод для стратега/аналитика. Авторский пример владельца теперь подтверждён данным конкретным источником; эквивалентность всем редакциям не объявлена.",
+            "canonical_rule_refs": [
+              "map.extend_preserving_content",
+              "map.terrain_zones"
+            ],
+            "unresolved_parameters": [
+              "Правило обработки края, тесной области, недостижения размера.",
+              "Точная связность/порядок роста/выбор типа и соседей.",
+              "Эквивалентность текущей финальной книге/Quickstart; фактическая поддержка HexCrawl."
+            ]
+          },
+          "gap_task_ids": [
+            "HX-BL-008"
+          ],
+          "delivery": "research_handoff_not_specification"
+        },
+        {
+          "layer": "L2",
+          "status": "not_applicable",
+          "reason": "Нет движения/времени."
+        },
+        {
+          "layer": "L3",
+          "status": "not_applicable",
+          "reason": "Нет встреч/проверок персонажей."
+        }
+      ]
+    }
+  ],
+  "comparison_summary": {
+    "source_rules": 1,
+    "L1_requirements": 1,
+    "acceptance_examples": 8,
+    "canonical_used": 2,
+    "new_canonical_rules": 0
+  },
+  "completeness": {
+    "status": "partial_checkpoint",
+    "full_game_read": false,
+    "reviewed": "PDF1 visually read; onlyWilderness firstsentence extracted",
+    "context_only": "Other PDF1clauses/legend/example map not extracted",
+    "unreviewed": "PDF2; fullbook/Quickstart and dependencies",
+    "ledger_ref": "agent-work/market/rules/MB-Realm-Sheets-coverage-ledger.json"
+  },
+  "source_questions": [
+    "Правило обработки края, тесной области, недостижения размера.",
+    "Точная связность/порядок роста/выбор типа и соседей.",
+    "Эквивалентность текущей финальной книге/Quickstart; фактическая поддержка HexCrawl."
+  ],
+  "shared_rules": {
+    "registry": "agent-work/rules/common-rules.json",
+    "bindings": "agent-work/rules/game-bindings.json",
+    "new_generic_rules": []
+  },
+  "runtime_support": "unverified",
+  "rating_changed": false,
+  "score_changed": false
+}
