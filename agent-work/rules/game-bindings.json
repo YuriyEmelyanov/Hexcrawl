@@ -45679,6 +45679,126 @@
       "evidence_ids": [],
       "traceability_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-013-L1",
       "own_acceptance_check": "ROOT-TO-013-L1-AC01: Обычная контролируемаяX, сумма2d6=10. Выполнить заключительную проверку. → КонтрольX сохраняется.\nROOT-TO-013-L1-AC02: Обычная контролируемаяX, кубики5и6. Выполнить заключительную проверку. → Сумма11: X становится неконтролируемой; контрольWoodlandAlliance не назначен.\nROOT-TO-013-L1-AC03: Есть stronghold, EyrieRoost, базаAlliance и уже неконтролируемаяY. Ведущий проходит заключительный шаг. → Эти поляны пропущены без бросков данного шага."
+    },
+    {
+      "id": "CAIRN2-PC-001-L1",
+      "game_id": "CAIRN2",
+      "edition": "Second Edition official online rules; page revision/date not declared",
+      "source_rule_id": "CAIRN2-PC-001",
+      "source_page": null,
+      "source_url": "https://cairnrpg.com/second-edition/wardens-guide/pointcrawls/",
+      "source_locator": "Converting a Map, bullet1",
+      "layer": "L1",
+      "normative_kind": "map_conversion_procedure",
+      "scope": "Preparing a pointcrawl representation from a chosen existing map; not a mandatory replacement for all hex movement",
+      "source_requirement": "Позволить ведущему обозначить выбранные места номерами, сохранив их названия и положение.",
+      "canonical_rule_ids": [
+        "map.reference_labels"
+      ],
+      "profiles": [
+        {
+          "rule_id": "map.reference_labels",
+          "parameters": {
+            "number_all_potential_POIs": true,
+            "fixed_POI_count": null
+          },
+          "exceptions": [
+            "Книга не задаёт фиксированного количества мест, стартового номера или порядка обхода.",
+            "Способ показа и сохранения определяет аналитик; отдельная копия мира не предписывается."
+          ],
+          "conditions": [
+            "Preparing a pointcrawl representation from a chosen existing map; not a mandatory replacement for all hex movement"
+          ],
+          "profile_status": "unverified",
+          "verification_requirement": "Known GM examples on exact profile and future evidence SHA; source/analogy do not establish implementation."
+        }
+      ],
+      "coverage_status": "unverified",
+      "own_acceptance_check": "Given Выбраны мельница, башня и пристань; ведущий назначил номера1,2,3. When Подготовить обозначения мест. Expected Номера1,2,3 относятся к этим трём местам соответственно; названия и положения прежние.; Given На карте есть четвёртое место «Пещера», не выбранное ведущим. When Пронумеровать только выбранные три места. Expected Пещере не придуман номер и она не удалена.",
+      "acceptance_cases": [
+        {
+          "id": "CAIRN2-PC-001-L1-AC01",
+          "given": "Выбраны мельница, башня и пристань; ведущий назначил номера1,2,3.",
+          "when": "Подготовить обозначения мест.",
+          "expected": "Номера1,2,3 относятся к этим трём местам соответственно; названия и положения прежние."
+        },
+        {
+          "id": "CAIRN2-PC-001-L1-AC02",
+          "given": "На карте есть четвёртое место «Пещера», не выбранное ведущим.",
+          "when": "Пронумеровать только выбранные три места.",
+          "expected": "Пещере не придуман номер и она не удалена."
+        }
+      ],
+      "operational_requirement_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-PC-001-L1",
+      "traceability_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-PC-001-L1",
+      "evidence_ids": [],
+      "author_project_key": "cairn-rpg/second-edition/wardens-guide/pointcrawls"
+    },
+    {
+      "id": "CAIRN2-PC-002-L1",
+      "game_id": "CAIRN2",
+      "edition": "Second Edition official online rules; page revision/date not declared",
+      "source_rule_id": "CAIRN2-PC-002",
+      "source_page": null,
+      "source_url": "https://cairnrpg.com/second-edition/wardens-guide/pointcrawls/",
+      "source_locator": "Converting a Map, bullet2",
+      "layer": "L1",
+      "normative_kind": "map_conversion_procedure",
+      "scope": "Preparing a pointcrawl representation from a chosen existing map; not a mandatory replacement for all hex movement",
+      "source_requirement": "Дать ведущему отметить существующие пути между выбранными местами и отдельно увидеть места без соединений; не добавлять путь только ради общей связности.",
+      "canonical_rule_ids": [
+        "map.routes_and_barriers"
+      ],
+      "profiles": [
+        {
+          "rule_id": "map.routes_and_barriers",
+          "parameters": {
+            "route_kinds": [
+              "road",
+              "trail",
+              "waterway"
+            ],
+            "mark_unconnected_sites": true,
+            "automatic_full_connectivity": false
+          },
+          "exceptions": [
+            "Близость или соседство гексов не является названной дорогой, тропой или водным маршрутом.",
+            "Отсутствие маршрута не означает непроходимость всей местности.",
+            "Направленность и доступность пути при разных условиях не определены этим ограниченным срезом."
+          ],
+          "conditions": [
+            "Preparing a pointcrawl representation from a chosen existing map; not a mandatory replacement for all hex movement"
+          ],
+          "profile_status": "unverified",
+          "verification_requirement": "Known GM examples on exact profile and future evidence SHA; source/analogy do not establish implementation."
+        }
+      ],
+      "coverage_status": "unverified",
+      "own_acceptance_check": "Given A–B соединены тропой, B–C водным маршрутом; D без соединений. When Подготовить сеть этих четырёх мест. Expected Сохранены тропа A–B и водный маршрут B–C; D обозначен без соединений, новая дорога к D не придумана.; Given E и F соседствуют на гексовой карте; дороги, тропы или водного маршрута между ними не отмечено. When Показать подготовленную сеть. Expected Соединение E–F не создано только из соседства; обычное движение по исходной карте не объявлено запрещённым.; Given Ведущий добавил к D известную дорогу от C. When Обновить представление сети. Expected Показана дорога C–D; D больше не обозначен как не имеющий соединений.",
+      "acceptance_cases": [
+        {
+          "id": "CAIRN2-PC-002-L1-AC01",
+          "given": "A–B соединены тропой, B–C водным маршрутом; D без соединений.",
+          "when": "Подготовить сеть этих четырёх мест.",
+          "expected": "Сохранены тропа A–B и водный маршрут B–C; D обозначен без соединений, новая дорога к D не придумана."
+        },
+        {
+          "id": "CAIRN2-PC-002-L1-AC02",
+          "given": "E и F соседствуют на гексовой карте; дороги, тропы или водного маршрута между ними не отмечено.",
+          "when": "Показать подготовленную сеть.",
+          "expected": "Соединение E–F не создано только из соседства; обычное движение по исходной карте не объявлено запрещённым."
+        },
+        {
+          "id": "CAIRN2-PC-002-L1-AC03",
+          "given": "Ведущий добавил к D известную дорогу от C.",
+          "when": "Обновить представление сети.",
+          "expected": "Показана дорога C–D; D больше не обозначен как не имеющий соединений."
+        }
+      ],
+      "operational_requirement_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-PC-002-L1",
+      "traceability_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-PC-002-L1",
+      "evidence_ids": [],
+      "author_project_key": "cairn-rpg/second-edition/wardens-guide/pointcrawls"
     }
   ],
   "other_games_status": "DND5 DMG2014 and bounded PF2 Remaster now analysed; other games unverified. Shared IDs do not establish parameter equivalence."
