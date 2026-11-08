@@ -80,7 +80,14 @@ test('Knave real generation commits content with its map, preserves world RNG an
  knave.render().undoMap();assert.deepEqual(map(knave),empty);knave.render().redoMap();assert.deepEqual(map(knave),first);
  const reload=setup(false);reload.injectFunction('knaveGenerationCatalog',knaveCatalogFixture);reload.injectFunction('readTextFile',async f=>f.text);reload.setWindow({alert:m=>{throw Error(m);}});
  await reload.render().handleImportJson({target:{files:[{text:JSON.stringify(knave.render().createSaveData())}],value:''}});assert.deepEqual(serialized(map(reload)),serialized(first));
- const anchor=knave.render().candidateHexes[0];for(const h of [plain,knave,reload])generate(h,anchor);
+ // Supported older v10 layers may have missing content. Growth must not
+ // backfill/retag their old owners as a hidden conversion of accepted regions.
+ const sparse=setup(false),sparseDocument=structuredClone(knave.render().captureDocument()),oldOwners=new Set(Object.keys(first.knave.content.byPoi));delete sparseDocument.map.knave.content;
+ sparse.render().applyDocument(sparseDocument);sparse.injectFunction('knaveGenerationCatalog',knaveCatalogFixture);
+ const anchor=knave.render().candidateHexes[0];generate(sparse,anchor);
+ const sparseMap=map(sparse);assert.ok(Object.keys(sparseMap.knave.content.byPoi).length);for(const owner of oldOwners)assert.equal(sparseMap.knave.content.byPoi[owner],undefined,'old missing payload stays missing');
+ assert.deepEqual(sparseMap.regions[0],first.regions[0]);
+ for(const h of [plain,knave,reload])generate(h,anchor);
  const next=map(knave);assert.deepEqual(serialized(next),serialized(map(reload)));assert.deepEqual(physical(next),physical(map(plain)));
  for(const [owner,c]of Object.entries(first.knave.content.byPoi))assert.deepEqual(next.knave.content.byPoi[owner],c);
  // A missing or malformed source package must roll back IDs, RNG, history,

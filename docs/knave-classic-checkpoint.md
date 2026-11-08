@@ -56,7 +56,9 @@ distinct neighboring road connections. A visual mountain override does not
 invent physical elevation; the current biome model supplies no explicit ice
 fact, so `coldIce` remains false.
 
-Only missing owner snapshots are filled. Settlement identities and water POI
+Only new owners absent from the pre-generation checkpoint are filled. Missing
+payload on old imported v10 owners stays missing: growth never silently converts
+accepted regions. Settlement identities and water POI
 markers stay literal. New nonsettlement central markers are neutral natural
 site/structure/dungeon; secondary markers follow the source-free policy. New
 natural-site and structure SVGs are original simple symbols. These marker kinds

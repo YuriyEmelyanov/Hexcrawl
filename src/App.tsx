@@ -1084,9 +1084,9 @@ function knaveFactsForMap(map:MapSnapshot):KnaveFacts[]{
 }
 /** Pure preparation before history or state writes. Existing owner snapshots and
  * markers remain literal. Only new nonsettlement land owners change markers. */
-function prepareKnaveGeneratedMap(map:MapSnapshot,catalog:KnaveCatalog):MapSnapshot {
+function prepareKnaveGeneratedMap(map:MapSnapshot,catalog:KnaveCatalog,preservedOwners?:ReadonlySet<string>):MapSnapshot {
   if(!map.knave)return map;
-  const before=map.knave.content??emptyKnaveContent(),content=fillKnaveContent(before,catalog,knaveFactsForMap(map),map.generation.masterSeed);
+  const before=map.knave.content??emptyKnaveContent(),content=fillKnaveContent(before,catalog,knaveFactsForMap(map),map.generation.masterSeed,preservedOwners);
   if(content===before)return map;
   const regions=map.regions.map(r=>{
     let next=r;
@@ -13747,7 +13747,7 @@ export function App() {
     backup?: GenerationBackup, checkpoints = history) => {
     if(map.knave){
       let catalog:KnaveCatalog;try{catalog=knaveGenerationCatalog();}catch{throw Error(language==='ru'?'Не удалось загрузить данные Knave 2e. Карта не изменена.':'Knave 2e data could not be loaded. Your map is unchanged.');}
-      map=prepareKnaveGeneratedMap(map,catalog);
+      map=prepareKnaveGeneratedMap(map,catalog,poiNameLocators(checkpoint));
     }
     const sea=prepareSeaIdentity(captureMap(),map.hexTerrainByKey);
     if(sea.unresolved.length)throw new WaterEditError('sea_name_choice',...sea.unresolved.map(c=>c.key));

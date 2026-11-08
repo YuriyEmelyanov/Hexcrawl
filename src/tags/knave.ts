@@ -72,14 +72,14 @@ export function knaveCompatibleRows(table:PrimaryTable,facts:KnaveFacts):number[
 }
 /** Only missing live owners are filled. Existing snapshots/text/counters are
  * immutable, regardless of catalog text changes or the requested target order. */
-export function fillKnaveContent(state:KnaveContentState,catalog:KnaveCatalog,facts:readonly KnaveFacts[],seed:number):KnaveContentState {
+export function fillKnaveContent(state:KnaveContentState,catalog:KnaveCatalog,facts:readonly KnaveFacts[],seed:number,preservedOwners?:ReadonlySet<string>):KnaveContentState {
   validateKnaveCatalog(catalog);
   const live=new Set(facts.map(f=>f.owner));if(live.size!==facts.length)fail();
   for(const f of facts)if(!owner(f.owner)||!['land','settlement','water'].includes(f.kind)||f.owner.startsWith('waterPoi:')!==(f.kind==='water')||f.kind!=='water'&&!f.dry||f.kind==='water'&&f.dry
     ||f.height!==null&&![1,2,3].includes(f.height)||!['dry','forest','wetland','sand','coldIce','river','riverStart','rapids','waterfall','waterContact','road','roadJunction'].every(k=>typeof f[k as keyof KnaveFacts]==='boolean')
     ||!Array.isArray(f.crossings)||new Set(f.crossings).size!==f.crossings.length||f.crossings.some(k=>!['bridge','ford','ferry'].includes(k)))fail();
   validateKnaveContent(state,live);
-  const pending=facts.filter(f=>!own(state.byPoi,f.owner)).sort((a,b)=>a.owner<b.owner?-1:a.owner>b.owner?1:0);
+  const pending=facts.filter(f=>!own(state.byPoi,f.owner)&&!preservedOwners?.has(f.owner)).sort((a,b)=>a.owner<b.owner?-1:a.owner>b.owner?1:0);
   if(!pending.length)return state;
   const next=structuredClone(state);
   for(const f of pending){let counter={category:0,primary:0,trait:0},category:KnavePoiContent['category']=f.kind==='water'?'water':'settlement',site:Site|null=null;
