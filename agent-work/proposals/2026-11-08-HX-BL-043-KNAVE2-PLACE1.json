@@ -1,0 +1,87 @@
+{
+  "task_id": "HX-BL-043",
+  "stage_id": "KNAVE2-PLACE1",
+  "status": "proposed",
+  "version": "KNAVE2-PLACE1-P1",
+  "proposed_on": "2026-11-08",
+  "title": "Наполнять выбранное место подсказками Knave 2e",
+  "problem": "Общие таблицы и редактор уже есть, но мастер классической карты ещё не получает для выбранного места подсказки Knave с сохранённым источником и своим описанием.",
+  "benefit": "Быстрее превратить отмеченное место в подготовленную локацию, сохраняя подсказки и авторскую интерпретацию.",
+  "primary_scenario": "create",
+  "layer": "L1",
+  "ranking_version": "three-scenario-ranks-1.4-create-evidence",
+  "cohort_version": "2026-11-06-ranking1.4-create-evidence",
+  "target_game": {
+    "id": "KNAVE2",
+    "edition": "Knave2e RU Torbin1.0 11.06.2024; stated2024 edition",
+    "create_rank": 3,
+    "overall_rank": 3,
+    "source_limit": "English wording/errata unverified"
+  },
+  "scope": [
+    "Три таблицы: Локации, Постройки, Свойства мест, печатные10–11/PDF9; ручной выбор или d100 для выбранного существующего места.",
+    "Сохранить исходные подсказки, таблицу/строку, выпавшее значение при броске и описание ведущего; сочетание разных подсказок остаётся его решением.",
+    "Переиспользовать действующие таблицы/теги/заметки/Undo, перед реализацией проверить пробелы на текущем published SHA.",
+    "Компактное действие в информации места; аналитик после утверждения покажет desktop/narrow предложение без третьего согласования."
+  ],
+  "out_of_scope": [
+    "Автоматическое изменение геометрии по слову Река, плотность POI и новая генерация карты",
+    "Все прочие таблицы Knave, полный адаптер игры, боевые/путевые процедуры",
+    "Публикация корпуса без конкретного разрешения и происхождения; расходы",
+    "Новые общие движки вместо пригодного существующего"
+  ],
+  "before_after": {
+    "before": "У выбранного места есть маркер/имя и авторская заметка; книжные подсказки мастер выбирает и переносит вручную.",
+    "after": "Мастер выбирает Локации/Постройки/Свойства, вручную указывает результат или бросает d100; видит сохранённые подсказки и записывает, например, своё «Заброшенное аббатство у брода».",
+    "example_kind": "Product behavior proposal; invented author description, not production UI."
+  },
+  "priority_reason": "Узкий L1 срез для игры create#3; адресует готовое исследованное правило и переиспользует выпущенный каркас. DND/PF2 имеют более высокий ранг, но их широкие профили требуют отдельного среза. У NATURE2 остаётся отдельная source-transfer граница; performance003 ждёт решения по приёмке и не допускает новых замеров автоматически; персонажи/кампанийное время шире L1.",
+  "estimate": "M: ограниченная спецификация, один PR и независимое ревью; не оценка расхода подписки.",
+  "dependencies": [
+    "Утверждение старта именно этого среза HX-BL-043",
+    "Проверить источник/права и режим поставки таблиц до публичного переноса; отсутствие разрешения не позволяет скрытый upload",
+    "Сверить текущее ядро таблиц и lifecycle на releasea246fdf; прежнее evidence не переносить автоматически"
+  ],
+  "acceptance": [
+    "Подсказка относится к выбранному существующему месту; source table/row и бросок при наличии сохраняются.",
+    "Ручной выбор не расходует RNG; открытие/загрузка не бросают; независимый переброс не изменяет другие поля.",
+    "Сочетание нескольких подсказок и авторский текст переживают save/load/Undo/Redo; старые карты безопасно открываются.",
+    "Печатная00 соответствует100; ссылки и неизвестные детали не превращаются в выдуманную геометрию/механики.",
+    "Фактический desktop/narrow UI показан на точном SHA; независимая проверка и score_assessment1.2 до отдельного выпуска."
+  ],
+  "criterion_ids": [
+    "S05-C02",
+    "S08-C04"
+  ],
+  "score_forecast": {
+    "model_version": "1.2",
+    "before_grade": null,
+    "before_points": null,
+    "expected_grade": null,
+    "expected_delta": null,
+    "status": "unknown; no promised whole-criterion transition",
+    "baseline_ref": "agent-work/score/current-score.json"
+  },
+  "canonical_rule_ids": [
+    "content.place_description",
+    "content.roll_table_resolution"
+  ],
+  "requirement_refs": [
+    "agent-work/market/rules/Knave-2e.json#KNAVE2-020-L1",
+    "agent-work/market/rules/Knave-2e.json#KNAVE2-070-L1",
+    "agent-work/market/rules/Knave-2e.json#KNAVE2-071-L1"
+  ],
+  "evidence_refs": [
+    "agent-work/research/requirements/KNAVE2-020-L1.md",
+    "agent-work/research/requirements/KNAVE2-table-reuse-v1.json",
+    "agent-work/research/requirements/L1-tagged-poi-lifecycle-v1.json"
+  ],
+  "feedback_assessment": {
+    "HX_FB_002": "Audit completed; reuse existing comparable tests; no recurring full test audit. No unrelated feedback bundled."
+  },
+  "implementation_authorized": false,
+  "release_authorized": false,
+  "next_role": "owner",
+  "next_role_after_approval": "business_analyst",
+  "next_step": "Ожидается утверждение владельцем задачи HX-BL-043 в границах KNAVE2-PLACE1; затем аналитик готовит спецификацию и показывает компактный UI."
+}
