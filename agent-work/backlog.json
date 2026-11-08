@@ -889,7 +889,8 @@
         "scope_and_budget_approval"
       ],
       "research_handoff_refs": [
-        "agent-work/research/requirements/WWN-regional-hydrology-v1.json"
+        "agent-work/research/requirements/WWN-regional-hydrology-v1.json",
+        "agent-work/research/requirements/ROOT-TO-woodland-setup-L1.md"
       ],
       "wwn_regional_hydrology": {
         "status": "proposed",
@@ -920,7 +921,35 @@
           "agent-work/rules/game-bindings.json#WWN-RU-REG-006-L1",
           "agent-work/rules/game-bindings.json#WWN-RU-REG-007-L1"
         ]
-      }
+      },
+      "source_profile_handoffs": [
+        {
+          "game_id": "ROOT",
+          "edition": "Travelers & Outsiders, First printing2021",
+          "layer": "L1",
+          "primary_scenario": "create",
+          "ranking_version": "three-scenario-ranks-1.4-create-evidence",
+          "scenario_rank_reference": 7,
+          "overall_rank_reference": 5,
+          "source_rule_ids": [
+            "ROOT-TO-008",
+            "ROOT-TO-009"
+          ],
+          "requirement_refs": [
+            "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-008-L1",
+            "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-009-L1"
+          ],
+          "binding_refs": [
+            "agent-work/rules/game-bindings.json#ROOT-TO-008-L1",
+            "agent-work/rules/game-bindings.json#ROOT-TO-009-L1"
+          ],
+          "handoff_ref": "agent-work/research/requirements/ROOT-TO-woodland-setup-L1.md",
+          "component_scope": "Река/озеро и ограничения расширения; ROOT-TO-Q04/05/06 сохраняются открытыми, без подмены параметров WWN.",
+          "runtime_status": "unverified",
+          "implementation_authorized": false,
+          "source_limitations": "Only printed178–181; core224/228 unreviewed. No automatic implementation or compatible-profile claim."
+        }
+      ]
     },
     {
       "task_id": "HX-BL-006",
@@ -5191,7 +5220,8 @@
         "agent-work/research/runs/2026-11-06T1230-KNAVE2-table-reuse.json",
         "agent-work/research/runs/2026-11-06T1330-L1-lifecycle-evidence.json",
         "agent-work/research/requirements/KNAVE2-020-L1.md",
-        "agent-work/research/requirements/ROOT-TO-clearing-L1.md"
+        "agent-work/research/requirements/ROOT-TO-clearing-L1.md",
+        "agent-work/research/requirements/ROOT-TO-woodland-setup-L1.md"
       ],
       "source_profile_handoffs": [
         {
@@ -5805,6 +5835,35 @@
             "agent-work/rules/game-bindings.json#ROOT-TO-003-L1",
             "agent-work/rules/game-bindings.json#ROOT-TO-004-L1"
           ]
+        },
+        {
+          "game_id": "ROOT",
+          "edition": "Travelers & Outsiders, First printing2021",
+          "layer": "L1",
+          "primary_scenario": "create",
+          "ranking_version": "three-scenario-ranks-1.4-create-evidence",
+          "scenario_rank_reference": 7,
+          "overall_rank_reference": 5,
+          "source_rule_ids": [
+            "ROOT-TO-007",
+            "ROOT-TO-010",
+            "ROOT-TO-011"
+          ],
+          "requirement_refs": [
+            "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-007-L1",
+            "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-010-L1",
+            "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-011-L1"
+          ],
+          "binding_refs": [
+            "agent-work/rules/game-bindings.json#ROOT-TO-007-L1",
+            "agent-work/rules/game-bindings.json#ROOT-TO-010-L1",
+            "agent-work/rules/game-bindings.json#ROOT-TO-011-L1"
+          ],
+          "handoff_ref": "agent-work/research/requirements/ROOT-TO-woodland-setup-L1.md",
+          "component_scope": "Описания сада, торгового поста и входов в туннели; фракционный контроль/присутствие не считаются текстовым описанием.",
+          "runtime_status": "unverified",
+          "implementation_authorized": false,
+          "source_limitations": "Only printed178–181; core224/228 unreviewed. No automatic implementation or compatible-profile claim."
         }
       ],
       "reuse_audit": {
@@ -11583,6 +11642,211 @@
       },
       "research_handoff_ref": "agent-work/research/requirements/ROOT-TO-clearing-L1.md",
       "research_result_ref": "agent-work/research/runs/2026-11-08T0000-ROOT-TO-clearing.json",
+      "readiness": "research_proposed_requires_strategist_selection_and_analyst_specification",
+      "implementation_authorized": false,
+      "release_authorized": false,
+      "score_delta": null
+    },
+    {
+      "task_id": "HX-BL-049",
+      "title": "Подготавливать контроль и присутствие фракций на карте",
+      "status": "proposed",
+      "problem": "Начальное назначение/снятие контроля и бинарное присутствие не были представлены самостоятельными общими правилами. Их нельзя подтвердить одним описанием места; продуктовая поддержка не проверена.",
+      "benefit": "Ведущий получает начальную политическую карту по выбранному игровому профилю, различая контролируемые места, присутствие и подготовленные объекты.",
+      "game_editions": [
+        "Root RPG — Travelers & Outsiders, First printing2021; Woodland Setup printed178–181 only"
+      ],
+      "primary_scenario": "create",
+      "layer": "L1",
+      "ranking_version": "three-scenario-ranks-1.4-create-evidence",
+      "scenario_rank_reference": 7,
+      "overall_rank_reference": 5,
+      "requirement_refs": [
+        "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-005-L1",
+        "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-006-L1",
+        "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-007-L1",
+        "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-010-L1",
+        "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-011-L1",
+        "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-012-L1",
+        "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-013-L1"
+      ],
+      "binding_refs": [
+        "agent-work/rules/game-bindings.json#ROOT-TO-005-L1",
+        "agent-work/rules/game-bindings.json#ROOT-TO-006-L1",
+        "agent-work/rules/game-bindings.json#ROOT-TO-007-L1",
+        "agent-work/rules/game-bindings.json#ROOT-TO-010-L1",
+        "agent-work/rules/game-bindings.json#ROOT-TO-011-L1",
+        "agent-work/rules/game-bindings.json#ROOT-TO-012-L1",
+        "agent-work/rules/game-bindings.json#ROOT-TO-013-L1"
+      ],
+      "canonical_rule_ids": [
+        "map.faction_control",
+        "map.faction_presence",
+        "content.roll_table_resolution",
+        "content.place_description",
+        "map.routes_and_barriers",
+        "map.settlement_resources"
+      ],
+      "criterion_ids": [
+        "S06-C01"
+      ],
+      "scope": "Подготовить начальную расстановку выбранных фракций по прочитанному профилю; отдельно сохранять контроль, бинарное присутствие и объекты поляны. Стратег выбирает объём, аналитик готовит спецификацию. Дальнейшая фракционная фаза и автоматическая симуляция не входят в этот source-handoff.",
+      "dependencies": [],
+      "acceptance_checks": [
+        {
+          "requirement_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-005-L1",
+          "id": "ROOT-TO-005-L1-AC01",
+          "given": "Таблица полян источника; первый d6=2, второй=5.",
+          "when": "Ведущий выбирает случайную поляну.",
+          "expected": "Выбрана поляна4; сумма7 не используется как номер."
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-005-L1",
+          "id": "ROOT-TO-005-L1-AC02",
+          "given": "Пары d6: (1,1),(1,6),(6,1),(6,6).",
+          "when": "Применить каждую пару к таблице.",
+          "expected": "Получены соответственно поляны1,2,11,12."
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-005-L1",
+          "id": "ROOT-TO-005-L1-AC03",
+          "given": "Из дополнительных фракций включены только Riverfolk и Corvid; базовая карта уже подготовлена.",
+          "when": "Ведущий проходит расстановку по источнику.",
+          "expected": "Riverfolk обрабатывается раньше Corvid; Lizard Cult и Grand Duchy пропущены; заключительный применимый шаг Denizens идёт последним."
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-006-L1",
+          "id": "ROOT-TO-006-L1-AC01",
+          "given": "ПолянуA контролирует Marquisate; в ней назначено присутствие Riverfolk и Corvid.",
+          "when": "Сохранить подготовку поляны.",
+          "expected": "Контроль Marquisate остаётся; оба присутствия сохранены отдельно."
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-006-L1",
+          "id": "ROOT-TO-006-L1-AC02",
+          "given": "В полянеB отмечено присутствие Corvid, захват не задан.",
+          "when": "Ведущий открывает сведения о фракциях поляны.",
+          "expected": "Есть присутствие Corvid; контроль и численность войск из него не выведены."
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-007-L1",
+          "id": "ROOT-TO-007-L1-AC01",
+          "given": "Outcast d6=3; кролики доминируют вA/B. Есть только Marquisate со stronghold наNW; противоположныйSE применим.",
+          "when": "Ведущий выбираетA/B и выполняет setup Культа.",
+          "expected": "Присутствие Культа вA/B; один сад и контроль вSE. Одно присутствиеA/B не даёт им контроль."
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-007-L1",
+          "id": "ROOT-TO-007-L1-AC02",
+          "given": "По отдельным выборам Outcast получены1,4,6; случайный угол дал5, затем2.",
+          "when": "Применить соответствующие таблицы.",
+          "expected": "Виды соответственно лисы,кролики,мыши;5 требует переброса,2 даётNE."
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-007-L1",
+          "id": "ROOT-TO-007-L1-AC03",
+          "given": "У выбранного вида только одна подходящая поляна.",
+          "when": "Нужно выбрать две поляны присутствия.",
+          "expected": "Недостаток кандидатов отмечен для решения ведущего; вторая поляна с неподходящим видом не выдана за выбор книги."
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-010-L1",
+          "id": "ROOT-TO-010-L1-AC01",
+          "given": "A:вода,4пути,ресурсы; B:вода,4пути,безресурсов; C:вода,3пути,безресурсов; D:безводы,3пути,безресурсов; E:безводы,2пути,безресурсов.",
+          "when": "Применить четыре признака выбора.",
+          "expected": "Получены соответственно4,3,2,1,0 «да»; присутствие выбирается вA/B/C/D."
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-010-L1",
+          "id": "ROOT-TO-010-L1-AC02",
+          "given": "Те жеA–E; A содержит stronghold и не может быть передана; B допустима.",
+          "when": "Назначить контроль и торговый пост.",
+          "expected": "A сохраняет присутствие Riverfolk; контроль и один торговый пост получаетB."
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-010-L1",
+          "id": "ROOT-TO-010-L1-AC03",
+          "given": "УA/B равное наибольшее число «да», обе допустимы; случайный выбор контроля далB; четыре места присутствия уже однозначно выбраны.",
+          "when": "Завершить выбор контролируемой поляны.",
+          "expected": "Контроль и один торговый пост уB. Этот пример не решает неизвестную ничью на границе четырёх мест присутствия."
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-011-L1",
+          "id": "ROOT-TO-011-L1-AC01",
+          "given": "НачальнаяA; её непосредственные соседиB/C; BсвязанасD. Броски дляB/C дают10/9.",
+          "when": "Выполнить начальное расширение контроля.",
+          "expected": "Герцогство получаетB, но неC; Dне проверяется рекурсивно черезB."
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-011-L1",
+          "id": "ROOT-TO-011-L1-AC02",
+          "given": "Для дополнительного туннеля выбрана контролируемаяA, затем при перебросе неконтролируемаяE.",
+          "when": "Разместить дополнительный туннель.",
+          "expected": "ВA дополнительный туннель этим выбором не добавлен; туннель появляетсявE, контрольE не выдан."
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-011-L1",
+          "id": "ROOT-TO-011-L1-AC03",
+          "given": "Из трёх учитываемых фракций включена только Marquisate со стартомNW; противоположныйSE применим.",
+          "when": "Выбрать начальный угол вторжения.",
+          "expected": "ВыбранSE. При всех трёх учитываемых фракциях выбирается единственный неиспользованный угол по известной исходной расстановке."
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-012-L1",
+          "id": "ROOT-TO-012-L1-AC01",
+          "given": "Четыре выбора далиA/B/C/D.",
+          "when": "Применить начальную расстановку Corvid.",
+          "expected": "Присутствие Corvid вA/B/C/D; начальный контроль из этого не возникает."
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-012-L1",
+          "id": "ROOT-TO-012-L1-AC02",
+          "given": "Четыре выбора далиA/A/B/C.",
+          "when": "Ведущий проверяет результат расстановки.",
+          "expected": "ПовторA виден и вопрос политики дублей остаётся открытым; четыре разные поляны не объявлены полученными, неописанный пятый выбор не приписан книге."
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-013-L1",
+          "id": "ROOT-TO-013-L1-AC01",
+          "given": "Обычная контролируемаяX, сумма2d6=10.",
+          "when": "Выполнить заключительную проверку.",
+          "expected": "КонтрольX сохраняется."
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-013-L1",
+          "id": "ROOT-TO-013-L1-AC02",
+          "given": "Обычная контролируемаяX, кубики5и6.",
+          "when": "Выполнить заключительную проверку.",
+          "expected": "Сумма11: X становится неконтролируемой; контрольWoodlandAlliance не назначен."
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-013-L1",
+          "id": "ROOT-TO-013-L1-AC03",
+          "given": "Есть stronghold, EyrieRoost, базаAlliance и уже неконтролируемаяY.",
+          "when": "Ведущий проходит заключительный шаг.",
+          "expected": "Эти поляны пропущены без бросков данного шага."
+        }
+      ],
+      "expected_evidence": {
+        "source": "ROOT-TO-2021-EN, printed178–181/PDF179–182",
+        "future_product": "Exact SHA and selected known-output cases; existing behavior must be audited before declaring a gap.",
+        "current_runtime": "unknown"
+      },
+      "source_limitations": [
+        "Core224/228 unreviewed; base map and baseline factions not reconstructed.",
+        "Fallbacks for too few candidates, Corvid duplicates and Riverfolk cutoff ties are not invented.",
+        "Source count/order is not an amendment to active S06-C01 score model."
+      ],
+      "duplication_review": {
+        "related_tasks": [
+          "HX-BL-005",
+          "HX-BL-043",
+          "HX-BL-048"
+        ],
+        "decision": "Water geometry stays005; object descriptions stay043; motivated local conflicts stay048. None covers initial faction-control/presence assignment."
+      },
+      "research_handoff_ref": "agent-work/research/requirements/ROOT-TO-woodland-setup-L1.md",
+      "research_result_ref": "agent-work/research/runs/2026-11-08T0026-ROOT-TO-woodland.json",
       "readiness": "research_proposed_requires_strategist_selection_and_analyst_specification",
       "implementation_authorized": false,
       "release_authorized": false,

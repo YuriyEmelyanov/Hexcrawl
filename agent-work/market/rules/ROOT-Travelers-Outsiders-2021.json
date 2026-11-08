@@ -3,7 +3,7 @@
   "game_id": "ROOT",
   "date": "2026-11-08",
   "status": "bounded_supplement_source_inventory_product_unverified",
-  "scope": "L1 filling and preparing a clearing from Travelers & Outsiders2021, Making Your Own Clearing only; no geography/core compatibility claim",
+  "scope": "Bounded L1 supplement inventory: Making Your Own Clearing plus Woodland Setup; not complete Root core, supplement, or faction simulation.",
   "source": {
     "id": "ROOT-TO-2021-EN",
     "title": "Root: The Roleplaying Game — Travelers & Outsiders",
@@ -32,11 +32,17 @@
       5
     ],
     "page_numbering": "Verified selected printed page = PDF page minus1; title PDF1 has no printed number.",
-    "read_scope": "Making Your Own Clearing, printed219–220/PDF220–221, fully read; surrounding and bibliographic context separately logged.",
+    "read_scope": "Fully extracted printed178–181/PDF179–182 and printed219–220/PDF220–221. Context and unread corpus logged separately.",
     "core_dependency": {
       "locator": "printed3/PDF4; printed219/PDF220 refers to core197",
       "status": "core_not_attached_or_read_in_this_review",
-      "effect": "No inference of full Root rules, NPC harm-track sizes or core map-generation procedure."
+      "effect": "No inference of full Root rules, NPC harm-track sizes or core map-generation procedure.",
+      "core_pages_referenced_but_unread": [
+        197,
+        224,
+        228
+      ],
+      "additional_locator": "printed178/PDF179 refers to core224 (clearings/paths) and core228 (base factions)"
     },
     "limitations": [
       "Bounded supplementary source, not a complete Root inventory.",
@@ -57,12 +63,19 @@
     "reused_canonical_ids": [
       "content.place_description",
       "content.discovery_levels",
-      "content.adventure_hooks"
+      "content.adventure_hooks",
+      "content.roll_table_resolution",
+      "map.land_water_shapes",
+      "map.river_network",
+      "map.routes_and_barriers",
+      "map.settlement_resources"
     ],
     "new_canonical_ids": [
-      "content.local_conflicts"
+      "content.local_conflicts",
+      "map.faction_control",
+      "map.faction_presence"
     ],
-    "new_rule_reason": "No existing rule preserves local conflicts, participant motives and possible pressure events as a preparation operation with open outcomes; plain description is only a partial analogue."
+    "new_rule_reason": "No existing rule preserves local conflicts, participant motives and possible pressure events as a preparation operation with open outcomes; plain description is only a partial analogue. Woodland Setup additionally distinguishes initial control assignment/removal from binary faction presence; neither is represented by place_description or local_conflicts."
   },
   "rules": [
     {
@@ -542,29 +555,1165 @@
           "reason": "Конструирование особых ходов отсылает к с.77; оно не прочитано в этом проходе."
         }
       ]
+    },
+    {
+      "id": "ROOT-TO-005",
+      "title": "Порядок начальной расстановки и выбор поляны",
+      "corpus": "Woodland Setup, printed178–181/PDF179–182",
+      "rule": {
+        "source_id": "ROOT-TO-2021-EN",
+        "printed_page": 178,
+        "pdf_page": 179,
+        "section": "Control of Clearings; Random Clearing",
+        "paraphrase": "На уже созданных полянах и путях выполнять расстановку включённых фракций в заданном порядке, пропуская отсутствующие. Таблица случайной поляны использует два отдельных d6.",
+        "normative_kind": "conditional_setup_procedure",
+        "quotation": null
+      },
+      "parameters": {
+        "order": [
+          "Marquisate",
+          "Eyrie",
+          "Woodland Alliance",
+          "Lizard Cult",
+          "Riverfolk",
+          "Grand Duchy",
+          "Corvid",
+          "Denizens"
+        ],
+        "excluded_factions": "skip",
+        "random_clearing": "first d6 selects row1–6; second1–3 selects odd clearing,4–6 even",
+        "addressed_clearings": 12,
+        "core_refs": [
+          224,
+          228
+        ]
+      },
+      "comparison": {
+        "relation": "shared_capabilities_with_source_specific_initial_setup_profile",
+        "canonical_analogues": [
+          "map.faction_control",
+          "map.faction_presence",
+          "content.roll_table_resolution"
+        ],
+        "parameter_equivalence": "unverified_not_inferred",
+        "rationale": "Existing water/table/place components reused where their meaning applies. New generic faction control/presence capabilities retain distinct state semantics; no text field is treated as numeric setup. Root river component is only partial analogue of full river-network capability."
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": "Помогать пройти начальную расстановку в порядке источника, пропуская выключенные фракции, и выбирать поляну по двумерной таблице.",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Фактическая поддержка на SHA не проверена; это source-to-generator handoff.",
+          "canonical_rule_ids": [
+            "map.faction_control",
+            "map.faction_presence",
+            "content.roll_table_resolution"
+          ],
+          "criterion_ids": [
+            "S06-C01"
+          ],
+          "operational_requirement": {
+            "source_rule_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-005",
+            "normative_kind": "conditional_setup_procedure",
+            "applicability": "L1: начальная подготовка Леса по Travelers & Outsiders2021, при включении соответствующих фракций; базовая карта и её исходные данные должны быть известны.",
+            "layer": "L1",
+            "trigger_or_user_action": "Ведущий готовит Лес с уже известными полянами, путями и включёнными фракциями.",
+            "inputs_and_units": {
+              "карта": "Подготовленные поляны и пути",
+              "фракции": "Включённые в кампанию",
+              "броски выбора поляны": "Два отдельных d6 с сохранением роли каждого"
+            },
+            "product_operation": "Помогать пройти начальную расстановку в порядке источника, пропуская выключенные фракции, и выбирать поляну по двумерной таблице.",
+            "expected_output": "Выполнены только применимые шаги; случайная поляна соответствует паре кубиков, а не их сумме.",
+            "constraints_and_exceptions": [
+              "Базовое создание полян/путей — core224, расстановка трёх базовых фракций — core228; здесь их нет.",
+              "Таблица адресует12 полян, но это не доказанное требование12 полян для любой карты.",
+              "Не определено применение таблицы к карте с другим набором полян."
+            ],
+            "acceptance_cases": [
+              {
+                "id": "ROOT-TO-005-L1-AC01",
+                "given": "Таблица полян источника; первый d6=2, второй=5.",
+                "when": "Ведущий выбирает случайную поляну.",
+                "expected": "Выбрана поляна4; сумма7 не используется как номер."
+              },
+              {
+                "id": "ROOT-TO-005-L1-AC02",
+                "given": "Пары d6: (1,1),(1,6),(6,1),(6,6).",
+                "when": "Применить каждую пару к таблице.",
+                "expected": "Получены соответственно поляны1,2,11,12."
+              },
+              {
+                "id": "ROOT-TO-005-L1-AC03",
+                "given": "Из дополнительных фракций включены только Riverfolk и Corvid; базовая карта уже подготовлена.",
+                "when": "Ведущий проходит расстановку по источнику.",
+                "expected": "Riverfolk обрабатывается раньше Corvid; Lizard Cult и Grand Duchy пропущены; заключительный применимый шаг Denizens идёт последним."
+              }
+            ],
+            "source_vs_product_interpretation": "Процедуры и ограничения пересказаны из указанного среза. Сохранение и показ подготовленной карты — перевод на язык генератора; способ хранения, команды, интерфейс и архитектуру определяет аналитик. Все A/B/C, заданные броски и исходные состояния примеров — синтетические проверки смысла, не готовые поляны книги. Двусмысленности источника не исправлены; hit может быть только переданным подтверждённым исходом, пока core не проверен.",
+            "canonical_rule_refs": [
+              "map.faction_control",
+              "map.faction_presence",
+              "content.roll_table_resolution"
+            ],
+            "unresolved_parameters": [
+              "Полный базовый setup core224/228 не прочитан."
+            ]
+          },
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#ROOT-TO-005-L1",
+          "acceptance_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-005-L1",
+          "gap_task_ids": [
+            "HX-BL-049"
+          ],
+          "gap": "Сначала стратег выбирает объём, аналитик разрешает продуктовые вопросы и проверяет существующие возможности; отсутствие реализации не выведено из чтения книги.",
+          "development_readiness": "research_handoff_source_dependencies_open"
+        },
+        {
+          "layer": "L2",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Этот срез задаёт начальную расстановку; Faction Roll/Phase и последующее ведение кампании не прочитаны."
+        },
+        {
+          "layer": "L3",
+          "requirement": null,
+          "status": "not_assessed_dependency",
+          "implemented": null,
+          "reason": "Базовые правила core и механическое разрешение последующих событий этим setup не подтверждены."
+        }
+      ]
+    },
+    {
+      "id": "ROOT-TO-006",
+      "title": "Контроль и бинарное присутствие различаются",
+      "corpus": "Woodland Setup, printed178–181/PDF179–182",
+      "rule": {
+        "source_id": "ROOT-TO-2021-EN",
+        "printed_page": 180,
+        "pdf_page": 181,
+        "section": "Control vs Presence",
+        "paraphrase": "Присутствие означает значимые силы/агентов в поляне и является бинарным. Само по себе оно не даёт контроля; для контроля есть отдельный способ. Не отслеживать такое присутствие для всех иных фракций автоматически.",
+        "normative_kind": "conditional_setup_procedure",
+        "quotation": null
+      },
+      "parameters": {
+        "presence": "binary",
+        "presence_implies_control": false,
+        "presence_for_all_factions": false,
+        "agent_or_army_count": null
+      },
+      "comparison": {
+        "relation": "shared_capabilities_with_source_specific_initial_setup_profile",
+        "canonical_analogues": [
+          "map.faction_control",
+          "map.faction_presence"
+        ],
+        "parameter_equivalence": "unverified_not_inferred",
+        "rationale": "Existing water/table/place components reused where their meaning applies. New generic faction control/presence capabilities retain distinct state semantics; no text field is treated as numeric setup. Root river component is only partial analogue of full river-network capability."
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": "Сохранять присутствие отдельно от контроля; позволять применимому присутствию сосуществовать с иным контролем.",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Фактическая поддержка на SHA не проверена; это source-to-generator handoff.",
+          "canonical_rule_ids": [
+            "map.faction_control",
+            "map.faction_presence"
+          ],
+          "criterion_ids": [
+            "S06-C01"
+          ],
+          "operational_requirement": {
+            "source_rule_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-006",
+            "normative_kind": "conditional_setup_procedure",
+            "applicability": "L1: начальная подготовка Леса по Travelers & Outsiders2021, при включении соответствующих фракций; базовая карта и её исходные данные должны быть известны.",
+            "layer": "L1",
+            "trigger_or_user_action": "Ведущий назначает начальное присутствие и контроль фракций в поляне.",
+            "inputs_and_units": {
+              "поляна": "Выбранная поляна",
+              "фракция": "Фракция с применимым правилом присутствия",
+              "сведения": "Есть/нет присутствия и отдельно известный контроль"
+            },
+            "product_operation": "Сохранять присутствие отдельно от контроля; позволять применимому присутствию сосуществовать с иным контролем.",
+            "expected_output": "У поляны различимы действующий контроль и присутствующие фракции, без выдуманной численности сил.",
+            "constraints_and_exceptions": [
+              "Бинарное присутствие не равно количеству агентов.",
+              "Не добавлять этот вид присутствия всем базовым фракциям по аналогии.",
+              "Само наличие присутствия не запускает захват поляны."
+            ],
+            "acceptance_cases": [
+              {
+                "id": "ROOT-TO-006-L1-AC01",
+                "given": "ПолянуA контролирует Marquisate; в ней назначено присутствие Riverfolk и Corvid.",
+                "when": "Сохранить подготовку поляны.",
+                "expected": "Контроль Marquisate остаётся; оба присутствия сохранены отдельно."
+              },
+              {
+                "id": "ROOT-TO-006-L1-AC02",
+                "given": "В полянеB отмечено присутствие Corvid, захват не задан.",
+                "when": "Ведущий открывает сведения о фракциях поляны.",
+                "expected": "Есть присутствие Corvid; контроль и численность войск из него не выведены."
+              }
+            ],
+            "source_vs_product_interpretation": "Процедуры и ограничения пересказаны из указанного среза. Сохранение и показ подготовленной карты — перевод на язык генератора; способ хранения, команды, интерфейс и архитектуру определяет аналитик. Все A/B/C, заданные броски и исходные состояния примеров — синтетические проверки смысла, не готовые поляны книги. Двусмысленности источника не исправлены; hit может быть только переданным подтверждённым исходом, пока core не проверен.",
+            "canonical_rule_refs": [
+              "map.faction_control",
+              "map.faction_presence"
+            ],
+            "unresolved_parameters": [
+              "Полные способы дальнейшего захвата и фракционные фазы не разобраны."
+            ]
+          },
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#ROOT-TO-006-L1",
+          "acceptance_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-006-L1",
+          "gap_task_ids": [
+            "HX-BL-049"
+          ],
+          "gap": "Сначала стратег выбирает объём, аналитик разрешает продуктовые вопросы и проверяет существующие возможности; отсутствие реализации не выведено из чтения книги.",
+          "development_readiness": "research_handoff_source_dependencies_open"
+        },
+        {
+          "layer": "L2",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Этот срез задаёт начальную расстановку; Faction Roll/Phase и последующее ведение кампании не прочитаны."
+        },
+        {
+          "layer": "L3",
+          "requirement": null,
+          "status": "not_assessed_dependency",
+          "implemented": null,
+          "reason": "Базовые правила core и механическое разрешение последующих событий этим setup не подтверждены."
+        }
+      ]
+    },
+    {
+      "id": "ROOT-TO-007",
+      "title": "Начальные поляны Культа Ящериц и один сад",
+      "corpus": "Woodland Setup, printed178–181/PDF179–182",
+      "rule": {
+        "source_id": "ROOT-TO-2021-EN",
+        "printed_page": 179,
+        "pdf_page": 180,
+        "section": "Fourth: The Lizard Cult; Outcast Table; Random Corner Table",
+        "paraphrase": "По d6 определить угнетённый вид:1–2 лисы,3–4 кролики,5–6 мыши. Из полян с его доминированием выбрать две для присутствия Культа. Отдельно поставить один сад и назначить контроль угловой поляне с учётом Marquisate/Eyrie.",
+        "normative_kind": "conditional_setup_procedure",
+        "quotation": null
+      },
+      "parameters": {
+        "outcast_die": "1d6",
+        "bands": {
+          "1–2": "fox",
+          "3–4": "rabbit",
+          "5–6": "mouse"
+        },
+        "presence_clearings": 2,
+        "gardens": 1,
+        "corner": "opposite single Marquisate/Eyrie; remaining2 if both; random if neither",
+        "corner_die": "1NW,2NE,3SW,4SE;5–6 reroll"
+      },
+      "comparison": {
+        "relation": "shared_capabilities_with_source_specific_initial_setup_profile",
+        "canonical_analogues": [
+          "map.faction_presence",
+          "map.faction_control",
+          "content.roll_table_resolution",
+          "content.place_description"
+        ],
+        "parameter_equivalence": "unverified_not_inferred",
+        "rationale": "Existing water/table/place components reused where their meaning applies. New generic faction control/presence capabilities retain distinct state semantics; no text field is treated as numeric setup. Root river component is only partial analogue of full river-network capability."
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": "Выбрать две подходящие поляны присутствия, а отдельным шагом — угловую поляну сада и контроля.",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Фактическая поддержка на SHA не проверена; это source-to-generator handoff.",
+          "canonical_rule_ids": [
+            "map.faction_presence",
+            "map.faction_control",
+            "content.roll_table_resolution",
+            "content.place_description"
+          ],
+          "criterion_ids": [
+            "S06-C01",
+            "S05-C01"
+          ],
+          "operational_requirement": {
+            "source_rule_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-007",
+            "normative_kind": "conditional_setup_procedure",
+            "applicability": "L1: начальная подготовка Леса по Travelers & Outsiders2021, при включении соответствующих фракций; базовая карта и её исходные данные должны быть известны.",
+            "layer": "L1",
+            "trigger_or_user_action": "Ведущий включает Lizard Cult в начальную карту.",
+            "inputs_and_units": {
+              "вид жителей": "Результат d6 и доминирующие виды полян",
+              "поляны": "Подходящие для выбора двух",
+              "стартовые углы": "Известные stronghold/Roost, если применимо"
+            },
+            "product_operation": "Выбрать две подходящие поляны присутствия, а отдельным шагом — угловую поляну сада и контроля.",
+            "expected_output": "Сохранены две поляны присутствия и один сад с контролем в применимом углу.",
+            "constraints_and_exceptions": [
+              "Сад не обязан совпадать с двумя выбранными полянами присутствия по этому тексту.",
+              "Недостаток подходящих полян не имеет описанного запасного решения.",
+              "Случайный угол:5–6 перебрасываются, а не трактуются как дополнительный угол."
+            ],
+            "acceptance_cases": [
+              {
+                "id": "ROOT-TO-007-L1-AC01",
+                "given": "Outcast d6=3; кролики доминируют вA/B. Есть только Marquisate со stronghold наNW; противоположныйSE применим.",
+                "when": "Ведущий выбираетA/B и выполняет setup Культа.",
+                "expected": "Присутствие Культа вA/B; один сад и контроль вSE. Одно присутствиеA/B не даёт им контроль."
+              },
+              {
+                "id": "ROOT-TO-007-L1-AC02",
+                "given": "По отдельным выборам Outcast получены1,4,6; случайный угол дал5, затем2.",
+                "when": "Применить соответствующие таблицы.",
+                "expected": "Виды соответственно лисы,кролики,мыши;5 требует переброса,2 даётNE."
+              },
+              {
+                "id": "ROOT-TO-007-L1-AC03",
+                "given": "У выбранного вида только одна подходящая поляна.",
+                "when": "Нужно выбрать две поляны присутствия.",
+                "expected": "Недостаток кандидатов отмечен для решения ведущего; вторая поляна с неподходящим видом не выдана за выбор книги."
+              }
+            ],
+            "source_vs_product_interpretation": "Процедуры и ограничения пересказаны из указанного среза. Сохранение и показ подготовленной карты — перевод на язык генератора; способ хранения, команды, интерфейс и архитектуру определяет аналитик. Все A/B/C, заданные броски и исходные состояния примеров — синтетические проверки смысла, не готовые поляны книги. Двусмысленности источника не исправлены; hit может быть только переданным подтверждённым исходом, пока core не проверен.",
+            "canonical_rule_refs": [
+              "map.faction_presence",
+              "map.faction_control",
+              "content.roll_table_resolution",
+              "content.place_description"
+            ],
+            "unresolved_parameters": [
+              "Запасное действие при менее двух подходящих полян; применимость занятого угла за пределами указанных условий."
+            ]
+          },
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#ROOT-TO-007-L1",
+          "acceptance_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-007-L1",
+          "gap_task_ids": [
+            "HX-BL-049",
+            "HX-BL-043"
+          ],
+          "gap": "Сначала стратег выбирает объём, аналитик разрешает продуктовые вопросы и проверяет существующие возможности; отсутствие реализации не выведено из чтения книги.",
+          "development_readiness": "research_handoff_source_dependencies_open"
+        },
+        {
+          "layer": "L2",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Этот срез задаёт начальную расстановку; Faction Roll/Phase и последующее ведение кампании не прочитаны."
+        },
+        {
+          "layer": "L3",
+          "requirement": null,
+          "status": "not_assessed_dependency",
+          "implemented": null,
+          "reason": "Базовые правила core и механическое разрешение последующих событий этим setup не подтверждены."
+        }
+      ]
+    },
+    {
+      "id": "ROOT-TO-008",
+      "title": "Riverfolk: добавить водные объекты и провести реку",
+      "corpus": "Woodland Setup, printed178–181/PDF179–182",
+      "rule": {
+        "source_id": "ROOT-TO-2021-EN",
+        "printed_page": 179,
+        "pdf_page": 180,
+        "section": "Fifth: The Riverfolk Company; Map Edge Table",
+        "paraphrase": "Если реки и озера ещё нет, d6 определяет добавление:1–3 река,4–5 озеро,6 оба. Река входит со случайного края через ближайшую к нему поляну; без озера выходной край выбирается снова. При совместном добавлении явное предложение направляет реку в озеро, далее есть опечатка. Извилистость предлагается рисовать вокруг примерно5–6 кубиков, брошенных с высоты около6дюймов.",
+        "normative_kind": "conditional_setup_procedure",
+        "quotation": null
+      },
+      "parameters": {
+        "water_when_none": {
+          "6": "both",
+          "1–3": "river",
+          "4–5": "lake"
+        },
+        "edge_die": {
+          "1": "top",
+          "2": "bottom",
+          "3": "left",
+          "4": "right",
+          "5–6": "reroll"
+        },
+        "paper_sketch_dice_about": [
+          5,
+          6
+        ],
+        "paper_drop_inches_about": 6,
+        "world_distance_from_drop": null,
+        "nearest_metric": null,
+        "close_radius": null,
+        "lake_river_direction": "source anomaly unresolved"
+      },
+      "comparison": {
+        "relation": "shared_capabilities_with_source_specific_initial_setup_profile",
+        "canonical_analogues": [
+          "map.land_water_shapes",
+          "map.river_network",
+          "content.roll_table_resolution"
+        ],
+        "parameter_equivalence": "unverified_not_inferred",
+        "rationale": "Existing water/table/place components reused where their meaning applies. New generic faction control/presence capabilities retain distinct state semantics; no text field is treated as numeric setup. Root river component is only partial analogue of full river-network capability."
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": "Предложить требуемый вид воды и помочь провести реку через ближайшие к краям поляны и заданные ведущим изгибы; для ветки с озером сохранить неясность противоречивого направления.",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Фактическая поддержка на SHA не проверена; это source-to-generator handoff.",
+          "canonical_rule_ids": [
+            "map.land_water_shapes",
+            "map.river_network",
+            "content.roll_table_resolution"
+          ],
+          "criterion_ids": [
+            "S01-C02",
+            "S01-C03"
+          ],
+          "operational_requirement": {
+            "source_rule_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-008",
+            "normative_kind": "conditional_setup_procedure",
+            "applicability": "L1: начальная подготовка Леса по Travelers & Outsiders2021, при включении соответствующих фракций; базовая карта и её исходные данные должны быть известны.",
+            "layer": "L1",
+            "trigger_or_user_action": "Ведущий подготавливает водные объекты для Riverfolk на карте без реки и озера.",
+            "inputs_and_units": {
+              "существующая вода": "Есть ли уже река или озеро",
+              "вид добавления": "d6",
+              "края карты": "Броски таблицы края",
+              "поляны": "Заранее известные ближайшие к выбранным краям",
+              "русло": "Намеченные ведущим изгибы и близкие поляны"
+            },
+            "product_operation": "Предложить требуемый вид воды и помочь провести реку через ближайшие к краям поляны и заданные ведущим изгибы; для ветки с озером сохранить неясность противоречивого направления.",
+            "expected_output": "На карте подготовлен выбранный водный объект; известные соединения с полянами сохранены, неподтверждённые размеры и направление не придуманы.",
+            "constraints_and_exceptions": [
+              "Если вода уже есть, этот условный шаг не требует обязательного нового водного объекта.",
+              "5–6 кубиков и6дюймов — приблизительный приём рисования на бумаге, а не масштаб мира или готовый цифровой алгоритм.",
+              "Метрика близости, равные расстояния и расстояние «particularly close» не определены.",
+              "Повторный край не обязан отличаться от первого по явному тексту.",
+              "Опечатка про озеро, соединяемое с озером, не исправлена молча."
+            ],
+            "acceptance_cases": [
+              {
+                "id": "ROOT-TO-008-L1-AC01",
+                "given": "На карте нет воды; в отдельных выборах d6=1,4,6.",
+                "when": "Определить вид добавляемой воды.",
+                "expected": "Соответственно предлагаются река, озеро, река вместе с озером."
+              },
+              {
+                "id": "ROOT-TO-008-L1-AC02",
+                "given": "Выбрана только река; входной край:5, затем1; выходной край:4. Ближайшие поляны к верху и правому краю однозначноA/B.",
+                "when": "Ведущий намечает русло между краями.",
+                "expected": "5 переброшено; река входит сверху черезA и выходит справа черезB. Промежуточное русло определяется намеченными изгибами."
+              },
+              {
+                "id": "ROOT-TO-008-L1-AC03",
+                "given": "Озеро уже есть, дополнительная вода ведущим не запрошена.",
+                "when": "Начинается подготовка Riverfolk.",
+                "expected": "Условный выбор нового водного объекта не добавляет второе озеро или реку только из-за включения фракции."
+              }
+            ],
+            "source_vs_product_interpretation": "Процедуры и ограничения пересказаны из указанного среза. Сохранение и показ подготовленной карты — перевод на язык генератора; способ хранения, команды, интерфейс и архитектуру определяет аналитик. Все A/B/C, заданные броски и исходные состояния примеров — синтетические проверки смысла, не готовые поляны книги. Двусмысленности источника не исправлены; hit может быть только переданным подтверждённым исходом, пока core не проверен.",
+            "canonical_rule_refs": [
+              "map.land_water_shapes",
+              "map.river_network",
+              "content.roll_table_resolution"
+            ],
+            "unresolved_parameters": [
+              "ROOT-TO-Q04: ошибочное подлежащее и направление связи река/озеро.",
+              "ROOT-TO-Q07: геометрическая метрика, близость и равенства расстояний."
+            ]
+          },
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#ROOT-TO-008-L1",
+          "acceptance_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-008-L1",
+          "gap_task_ids": [
+            "HX-BL-005"
+          ],
+          "gap": "Сначала стратег выбирает объём, аналитик разрешает продуктовые вопросы и проверяет существующие возможности; отсутствие реализации не выведено из чтения книги.",
+          "development_readiness": "research_handoff_source_dependencies_open"
+        },
+        {
+          "layer": "L2",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Этот срез задаёт начальную расстановку; Faction Roll/Phase и последующее ведение кампании не прочитаны."
+        },
+        {
+          "layer": "L3",
+          "requirement": null,
+          "status": "not_assessed_dependency",
+          "implemented": null,
+          "reason": "Базовые правила core и механическое разрешение последующих событий этим setup не подтверждены."
+        }
+      ]
+    },
+    {
+      "id": "ROOT-TO-009",
+      "title": "Расширять озеро с пределом четырёх полян и двух путей",
+      "corpus": "Woodland Setup, printed178–181/PDF179–182",
+      "rule": {
+        "source_id": "ROOT-TO-2021-EN",
+        "printed_page": 180,
+        "pdf_page": 181,
+        "section": "To add a lake",
+        "paraphrase": "Начать озеро в большом свободном месте рядом с одной поляной. Для близких полян использовать2d6, запись «subtract –1» за каждую подключённую после первой, и условие hit. Не стирать более двух путей; остановиться при четырёх подключённых полянах.",
+        "normative_kind": "conditional_setup_procedure",
+        "quotation": null
+      },
+      "parameters": {
+        "initial_clearings": 1,
+        "max_connected_clearings": 4,
+        "max_erased_paths": 2,
+        "expansion_die": "2d6",
+        "modifier_literal": "subtract –1 for each clearing past the first connected",
+        "modifier_direction": null,
+        "hit_threshold": null,
+        "nearby_radius": null,
+        "candidate_order": null
+      },
+      "comparison": {
+        "relation": "shared_capabilities_with_source_specific_initial_setup_profile",
+        "canonical_analogues": [
+          "map.land_water_shapes",
+          "map.routes_and_barriers",
+          "content.roll_table_resolution"
+        ],
+        "parameter_equivalence": "unverified_not_inferred",
+        "rationale": "Existing water/table/place components reused where their meaning applies. New generic faction control/presence capabilities retain distinct state semantics; no text field is treated as numeric setup. Root river component is only partial analogue of full river-network capability."
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": "Помогать подключать допустимые поляны по переданным исходам, ограничивая озеро четырьмя полянами и потерю путей двумя; спорный модификатор и неизвестный порог проверки не вычислять как установленное правило.",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Фактическая поддержка на SHA не проверена; это source-to-generator handoff.",
+          "canonical_rule_ids": [
+            "map.land_water_shapes",
+            "map.routes_and_barriers",
+            "content.roll_table_resolution"
+          ],
+          "criterion_ids": [
+            "S01-C03",
+            "S01-C04"
+          ],
+          "operational_requirement": {
+            "source_rule_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-009",
+            "normative_kind": "conditional_setup_procedure",
+            "applicability": "L1: начальная подготовка Леса по Travelers & Outsiders2021, при включении соответствующих фракций; базовая карта и её исходные данные должны быть известны.",
+            "layer": "L1",
+            "trigger_or_user_action": "Ведущий расширяет озеро от выбранной начальной поляны.",
+            "inputs_and_units": {
+              "начало": "Свободное место рядом с поляной",
+              "кандидаты": "Близкие поляны в явно выбранном ведущим порядке",
+              "исход проверки": "Подтверждённый hit/не-hit из совместимого правила",
+              "ограничения": "Число уже подключённых полян и стёртых путей"
+            },
+            "product_operation": "Помогать подключать допустимые поляны по переданным исходам, ограничивая озеро четырьмя полянами и потерю путей двумя; спорный модификатор и неизвестный порог проверки не вычислять как установленное правило.",
+            "expected_output": "Сохранены допустимые расширения озера и ограничения; неясные численные условия остаются видимыми.",
+            "constraints_and_exceptions": [
+              "Порог hit здесь не определён;7+ по одной аналогии не утверждён.",
+              "Буквальная запись subtract –1 двусмысленна; знак не нормализован молча.",
+              "Метрика nearby и порядок проверки полян не заданы.",
+              "Ограничение относится к путям; оно не означает разрешения удалить любое другое содержимое карты."
+            ],
+            "acceptance_cases": [
+              {
+                "id": "ROOT-TO-009-L1-AC01",
+                "given": "Озеро связано сA/B/C; ведущий передал подтверждённый hit дляD. Удаление путей укладывается в предел2.",
+                "when": "Расширить озеро кD, затем рассмотретьE.",
+                "expected": "ПодключеныA/B/C/D; на четырёх расширение остановлено, E не добавлена."
+              },
+              {
+                "id": "ROOT-TO-009-L1-AC02",
+                "given": "При подготовке озера уже стёрты два пути; подключениеE требует стереть третий.",
+                "when": "Рассмотреть это расширение.",
+                "expected": "Третий путь не стёрт; такой вариант не выдан за соответствующий пределу источника."
+              },
+              {
+                "id": "ROOT-TO-009-L1-AC03",
+                "given": "Есть только сырые2d6 и буквальный текст subtract –1; ни знак, ни правило hit не уточнены.",
+                "when": "Ведущий хочет вычислить исход расширения.",
+                "expected": "Автоматический результат не объявлен правилом книги; показаны два недостающих уточнения. Независимые пределы4полян/2путей остаются известными."
+              }
+            ],
+            "source_vs_product_interpretation": "Процедуры и ограничения пересказаны из указанного среза. Сохранение и показ подготовленной карты — перевод на язык генератора; способ хранения, команды, интерфейс и архитектуру определяет аналитик. Все A/B/C, заданные броски и исходные состояния примеров — синтетические проверки смысла, не готовые поляны книги. Двусмысленности источника не исправлены; hit может быть только переданным подтверждённым исходом, пока core не проверен.",
+            "canonical_rule_refs": [
+              "map.land_water_shapes",
+              "map.routes_and_barriers",
+              "content.roll_table_resolution"
+            ],
+            "unresolved_parameters": [
+              "ROOT-TO-Q05: знак модификатора.",
+              "ROOT-TO-Q06: определение hit.",
+              "ROOT-TO-Q07: nearby и порядок кандидатов."
+            ]
+          },
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#ROOT-TO-009-L1",
+          "acceptance_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-009-L1",
+          "gap_task_ids": [
+            "HX-BL-005"
+          ],
+          "gap": "Сначала стратег выбирает объём, аналитик разрешает продуктовые вопросы и проверяет существующие возможности; отсутствие реализации не выведено из чтения книги.",
+          "development_readiness": "research_handoff_source_dependencies_open"
+        },
+        {
+          "layer": "L2",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Этот срез задаёт начальную расстановку; Faction Roll/Phase и последующее ведение кампании не прочитаны."
+        },
+        {
+          "layer": "L3",
+          "requirement": null,
+          "status": "not_assessed_dependency",
+          "implemented": null,
+          "reason": "Порог hit и знак модификатора не определены однозначно; не достраивать механику проверки по аналогии."
+        }
+      ]
+    },
+    {
+      "id": "ROOT-TO-010",
+      "title": "Riverfolk: четыре места присутствия и один торговый пост",
+      "corpus": "Woodland Setup, printed178–181/PDF179–182",
+      "rule": {
+        "source_id": "ROOT-TO-2021-EN",
+        "printed_page": 180,
+        "pdf_page": 181,
+        "section": "Then, add the Riverfolk Company",
+        "paraphrase": "Выбрать четыре разные поляны по числу четырёх отдельных «да»: вода, не менее3путей, не менее4путей, ценные ресурсы. Для лучшей допустимой поляны назначить контроль и торговый пост; ничью при выборе контролируемой поляны решить случайно, недопустимую лучшую пропустить.",
+        "normative_kind": "conditional_setup_procedure",
+        "quotation": null
+      },
+      "parameters": {
+        "presence_clearings": 4,
+        "distinct": true,
+        "yes_conditions": [
+          "on lake or river",
+          "paths>=3",
+          "paths>=4",
+          "valuable resources in/near"
+        ],
+        "control_clearings": 1,
+        "trading_posts": 1,
+        "control_tie": "random",
+        "presence_cutoff_tie": null,
+        "ineligible_control": "skip to next; stronghold/Roost are examples, not exhaustive list"
+      },
+      "comparison": {
+        "relation": "shared_capabilities_with_source_specific_initial_setup_profile",
+        "canonical_analogues": [
+          "map.faction_presence",
+          "map.faction_control",
+          "map.routes_and_barriers",
+          "map.settlement_resources",
+          "content.place_description"
+        ],
+        "parameter_equivalence": "unverified_not_inferred",
+        "rationale": "Existing water/table/place components reused where their meaning applies. New generic faction control/presence capabilities retain distinct state semantics; no text field is treated as numeric setup. Root river component is only partial analogue of full river-network capability."
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": "Сопоставить четыре отдельных признака, выбрать четыре разные поляны присутствия, затем лучшую допустимую поляну контроля с одним торговым постом.",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Фактическая поддержка на SHA не проверена; это source-to-generator handoff.",
+          "canonical_rule_ids": [
+            "map.faction_presence",
+            "map.faction_control",
+            "map.routes_and_barriers",
+            "map.settlement_resources",
+            "content.place_description"
+          ],
+          "criterion_ids": [
+            "S06-C01",
+            "S05-C01"
+          ],
+          "operational_requirement": {
+            "source_rule_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-010",
+            "normative_kind": "conditional_setup_procedure",
+            "applicability": "L1: начальная подготовка Леса по Travelers & Outsiders2021, при включении соответствующих фракций; базовая карта и её исходные данные должны быть известны.",
+            "layer": "L1",
+            "trigger_or_user_action": "Ведущий выбирает стартовые поляны Riverfolk после подготовки воды.",
+            "inputs_and_units": {
+              "поляны": "Вода, число путей и наличие ценных ресурсов по фактам карты",
+              "допуск контроля": "Какие поляны можно передать Компании",
+              "ничья контроля": "Результат случайного выбора, если нужен"
+            },
+            "product_operation": "Сопоставить четыре отдельных признака, выбрать четыре разные поляны присутствия, затем лучшую допустимую поляну контроля с одним торговым постом.",
+            "expected_output": "Присутствие назначено четырём разным полянам; контроль и торговый пост — одной допустимой.",
+            "constraints_and_exceptions": [
+              "При4путях истинны оба порога,≥3и≥4: это два «да».",
+              "Ценные ресурсы и близость к ним качественные; они передаются ведущим, а не выдумываются из названия биома.",
+              "Ничья на границе четырёх мест присутствия отдельно не разъяснена.",
+              "Запрет передать контроль не равен запрету присутствия."
+            ],
+            "acceptance_cases": [
+              {
+                "id": "ROOT-TO-010-L1-AC01",
+                "given": "A:вода,4пути,ресурсы; B:вода,4пути,безресурсов; C:вода,3пути,безресурсов; D:безводы,3пути,безресурсов; E:безводы,2пути,безресурсов.",
+                "when": "Применить четыре признака выбора.",
+                "expected": "Получены соответственно4,3,2,1,0 «да»; присутствие выбирается вA/B/C/D."
+              },
+              {
+                "id": "ROOT-TO-010-L1-AC02",
+                "given": "Те жеA–E; A содержит stronghold и не может быть передана; B допустима.",
+                "when": "Назначить контроль и торговый пост.",
+                "expected": "A сохраняет присутствие Riverfolk; контроль и один торговый пост получаетB."
+              },
+              {
+                "id": "ROOT-TO-010-L1-AC03",
+                "given": "УA/B равное наибольшее число «да», обе допустимы; случайный выбор контроля далB; четыре места присутствия уже однозначно выбраны.",
+                "when": "Завершить выбор контролируемой поляны.",
+                "expected": "Контроль и один торговый пост уB. Этот пример не решает неизвестную ничью на границе четырёх мест присутствия."
+              }
+            ],
+            "source_vs_product_interpretation": "Процедуры и ограничения пересказаны из указанного среза. Сохранение и показ подготовленной карты — перевод на язык генератора; способ хранения, команды, интерфейс и архитектуру определяет аналитик. Все A/B/C, заданные броски и исходные состояния примеров — синтетические проверки смысла, не готовые поляны книги. Двусмысленности источника не исправлены; hit может быть только переданным подтверждённым исходом, пока core не проверен.",
+            "canonical_rule_refs": [
+              "map.faction_presence",
+              "map.faction_control",
+              "map.routes_and_barriers",
+              "map.settlement_resources",
+              "content.place_description"
+            ],
+            "unresolved_parameters": [
+              "ROOT-TO-Q08: недостаток кандидатов/отсутствие допустимой поляны.",
+              "ROOT-TO-Q09: ничья на границе четвёртого места."
+            ]
+          },
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#ROOT-TO-010-L1",
+          "acceptance_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-010-L1",
+          "gap_task_ids": [
+            "HX-BL-049",
+            "HX-BL-043"
+          ],
+          "gap": "Сначала стратег выбирает объём, аналитик разрешает продуктовые вопросы и проверяет существующие возможности; отсутствие реализации не выведено из чтения книги.",
+          "development_readiness": "research_handoff_source_dependencies_open"
+        },
+        {
+          "layer": "L2",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Этот срез задаёт начальную расстановку; Faction Roll/Phase и последующее ведение кампании не прочитаны."
+        },
+        {
+          "layer": "L3",
+          "requirement": null,
+          "status": "not_assessed_dependency",
+          "implemented": null,
+          "reason": "Базовые правила core и механическое разрешение последующих событий этим setup не подтверждены."
+        }
+      ]
+    },
+    {
+      "id": "ROOT-TO-011",
+      "title": "Начальное вторжение Герцогства и отдельный туннель",
+      "corpus": "Woodland Setup, printed178–181/PDF179–182",
+      "rule": {
+        "source_id": "ROOT-TO-2021-EN",
+        "printed_page": 181,
+        "pdf_page": 182,
+        "section": "Sixth: The Grand Duchy; Duchy Invasion Table",
+        "paraphrase": "Выбрать стартовый угол по участию Marquisate/Eyrie/Lizard Cult; дать стартовой поляне туннель и контроль. Для непосредственно связанных с ней полян2d6:10+ даёт контроль. Дополнительный случайный туннель ставится вне контролируемых Герцогством полян, с перебросом контролируемых результатов.",
+        "normative_kind": "conditional_setup_procedure",
+        "quotation": null
+      },
+      "parameters": {
+        "start_tunnel": 1,
+        "start_control": true,
+        "corner_rule": {
+          "3_factions": "unused corner",
+          "2_factions": "random remaining2",
+          "1_faction": "opposite",
+          "0_factions": "random corner"
+        },
+        "expansion_die": "2d6",
+        "expansion_control_threshold": 10,
+        "expansion_scope": "direct connections of initial clearing only",
+        "additional_tunnels": 1,
+        "controlled_tunnel_roll": "reroll",
+        "tunnel_implies_additional_control": false
+      },
+      "comparison": {
+        "relation": "shared_capabilities_with_source_specific_initial_setup_profile",
+        "canonical_analogues": [
+          "map.faction_control",
+          "content.roll_table_resolution",
+          "content.place_description"
+        ],
+        "parameter_equivalence": "unverified_not_inferred",
+        "rationale": "Existing water/table/place components reused where their meaning applies. New generic faction control/presence capabilities retain distinct state semantics; no text field is treated as numeric setup. Root river component is only partial analogue of full river-network capability."
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": "Разместить стартовый контроль и туннель, проверить только соседей исходной поляны, затем выбрать дополнительный туннель вне контроля Герцогства.",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Фактическая поддержка на SHA не проверена; это source-to-generator handoff.",
+          "canonical_rule_ids": [
+            "map.faction_control",
+            "content.roll_table_resolution",
+            "content.place_description"
+          ],
+          "criterion_ids": [
+            "S06-C01",
+            "S05-C01"
+          ],
+          "operational_requirement": {
+            "source_rule_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-011",
+            "normative_kind": "conditional_setup_procedure",
+            "applicability": "L1: начальная подготовка Леса по Travelers & Outsiders2021, при включении соответствующих фракций; базовая карта и её исходные данные должны быть известны.",
+            "layer": "L1",
+            "trigger_or_user_action": "Ведущий включает Grand Duchy в начальную карту.",
+            "inputs_and_units": {
+              "фракции и углы": "Marquisate/Eyrie/Lizard Cult и известные стартовые углы",
+              "связи": "Непосредственно связанные с начальной поляны",
+              "броски": "2d6 для каждой такой поляны; выбор дополнительного туннеля"
+            },
+            "product_operation": "Разместить стартовый контроль и туннель, проверить только соседей исходной поляны, затем выбрать дополнительный туннель вне контроля Герцогства.",
+            "expected_output": "Контроль расширен только по указанному начальному шагу; дополнительный туннель не присваивает контроль своей поляне.",
+            "constraints_and_exceptions": [
+              "Новые захваченные поляны не становятся началом рекурсивной экспансии в этом шаге.",
+              "Дополнительный туннель сам по себе контроля не даёт.",
+              "Геометрия прохода между туннелями, время и вместимость не заданы.",
+              "Как определяются все непосредственные связи, требует совместимой базовой карты; геометрическое соседство гексов не подставляется автоматически."
+            ],
+            "acceptance_cases": [
+              {
+                "id": "ROOT-TO-011-L1-AC01",
+                "given": "НачальнаяA; её непосредственные соседиB/C; BсвязанасD. Броски дляB/C дают10/9.",
+                "when": "Выполнить начальное расширение контроля.",
+                "expected": "Герцогство получаетB, но неC; Dне проверяется рекурсивно черезB."
+              },
+              {
+                "id": "ROOT-TO-011-L1-AC02",
+                "given": "Для дополнительного туннеля выбрана контролируемаяA, затем при перебросе неконтролируемаяE.",
+                "when": "Разместить дополнительный туннель.",
+                "expected": "ВA дополнительный туннель этим выбором не добавлен; туннель появляетсявE, контрольE не выдан."
+              },
+              {
+                "id": "ROOT-TO-011-L1-AC03",
+                "given": "Из трёх учитываемых фракций включена только Marquisate со стартомNW; противоположныйSE применим.",
+                "when": "Выбрать начальный угол вторжения.",
+                "expected": "ВыбранSE. При всех трёх учитываемых фракциях выбирается единственный неиспользованный угол по известной исходной расстановке."
+              }
+            ],
+            "source_vs_product_interpretation": "Процедуры и ограничения пересказаны из указанного среза. Сохранение и показ подготовленной карты — перевод на язык генератора; способ хранения, команды, интерфейс и архитектуру определяет аналитик. Все A/B/C, заданные броски и исходные состояния примеров — синтетические проверки смысла, не готовые поляны книги. Двусмысленности источника не исправлены; hit может быть только переданным подтверждённым исходом, пока core не проверен.",
+            "canonical_rule_refs": [
+              "map.faction_control",
+              "content.roll_table_resolution",
+              "content.place_description"
+            ],
+            "unresolved_parameters": [
+              "ROOT-TO-Q08: нет поляны вне контроля для дополнительного туннеля.",
+              "ROOT-TO-Q11: геометрия туннельной связи и параметры пути."
+            ]
+          },
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#ROOT-TO-011-L1",
+          "acceptance_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-011-L1",
+          "gap_task_ids": [
+            "HX-BL-049",
+            "HX-BL-043"
+          ],
+          "gap": "Сначала стратег выбирает объём, аналитик разрешает продуктовые вопросы и проверяет существующие возможности; отсутствие реализации не выведено из чтения книги.",
+          "development_readiness": "research_handoff_source_dependencies_open"
+        },
+        {
+          "layer": "L2",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Этот срез задаёт начальную расстановку; Faction Roll/Phase и последующее ведение кампании не прочитаны."
+        },
+        {
+          "layer": "L3",
+          "requirement": null,
+          "status": "not_assessed_dependency",
+          "implemented": null,
+          "reason": "Базовые правила core и механическое разрешение последующих событий этим setup не подтверждены."
+        }
+      ]
+    },
+    {
+      "id": "ROOT-TO-012",
+      "title": "Начальное присутствие Corvid без контроля",
+      "corpus": "Woodland Setup, printed178–181/PDF179–182",
+      "rule": {
+        "source_id": "ROOT-TO-2021-EN",
+        "printed_page": 181,
+        "pdf_page": 182,
+        "section": "Seventh: The Corvid Conspiracy",
+        "paraphrase": "Случайно выбрать поляны четыре раза и добавить присутствие Corvid; начальный контроль не назначается. Слово «разные» и политика повторов здесь не приведены.",
+        "normative_kind": "conditional_setup_procedure",
+        "quotation": null
+      },
+      "parameters": {
+        "random_clearing_draws": 4,
+        "initial_control": false,
+        "duplicate_policy": null,
+        "presence": "binary"
+      },
+      "comparison": {
+        "relation": "shared_capabilities_with_source_specific_initial_setup_profile",
+        "canonical_analogues": [
+          "map.faction_presence",
+          "content.roll_table_resolution"
+        ],
+        "parameter_equivalence": "unverified_not_inferred",
+        "rationale": "Existing water/table/place components reused where their meaning applies. New generic faction control/presence capabilities retain distinct state semantics; no text field is treated as numeric setup. Root river component is only partial analogue of full river-network capability."
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": "Назначить присутствие выбранным полянам, сохранив контроль отдельно; при повторах явно сохранить вопрос источника.",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Фактическая поддержка на SHA не проверена; это source-to-generator handoff.",
+          "canonical_rule_ids": [
+            "map.faction_presence",
+            "content.roll_table_resolution"
+          ],
+          "criterion_ids": [
+            "S06-C01"
+          ],
+          "operational_requirement": {
+            "source_rule_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-012",
+            "normative_kind": "conditional_setup_procedure",
+            "applicability": "L1: начальная подготовка Леса по Travelers & Outsiders2021, при включении соответствующих фракций; базовая карта и её исходные данные должны быть известны.",
+            "layer": "L1",
+            "trigger_or_user_action": "Ведущий включает Corvid Conspiracy в начальную карту.",
+            "inputs_and_units": {
+              "выборы": "Четыре случайных результата полян",
+              "исходный контроль": "Известный контроль карты"
+            },
+            "product_operation": "Назначить присутствие выбранным полянам, сохранив контроль отдельно; при повторах явно сохранить вопрос источника.",
+            "expected_output": "Известны выбранные поляны присутствия; контроль не выдан из-за присутствия.",
+            "constraints_and_exceptions": [
+              "Не переносить требование четырёх разных полян Riverfolk на Corvid без источника.",
+              "Источник не указывает переброс повторного результата."
+            ],
+            "acceptance_cases": [
+              {
+                "id": "ROOT-TO-012-L1-AC01",
+                "given": "Четыре выбора далиA/B/C/D.",
+                "when": "Применить начальную расстановку Corvid.",
+                "expected": "Присутствие Corvid вA/B/C/D; начальный контроль из этого не возникает."
+              },
+              {
+                "id": "ROOT-TO-012-L1-AC02",
+                "given": "Четыре выбора далиA/A/B/C.",
+                "when": "Ведущий проверяет результат расстановки.",
+                "expected": "ПовторA виден и вопрос политики дублей остаётся открытым; четыре разные поляны не объявлены полученными, неописанный пятый выбор не приписан книге."
+              }
+            ],
+            "source_vs_product_interpretation": "Процедуры и ограничения пересказаны из указанного среза. Сохранение и показ подготовленной карты — перевод на язык генератора; способ хранения, команды, интерфейс и архитектуру определяет аналитик. Все A/B/C, заданные броски и исходные состояния примеров — синтетические проверки смысла, не готовые поляны книги. Двусмысленности источника не исправлены; hit может быть только переданным подтверждённым исходом, пока core не проверен.",
+            "canonical_rule_refs": [
+              "map.faction_presence",
+              "content.roll_table_resolution"
+            ],
+            "unresolved_parameters": [
+              "ROOT-TO-Q10: политика повторных результатов Corvid."
+            ]
+          },
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#ROOT-TO-012-L1",
+          "acceptance_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-012-L1",
+          "gap_task_ids": [
+            "HX-BL-049"
+          ],
+          "gap": "Сначала стратег выбирает объём, аналитик разрешает продуктовые вопросы и проверяет существующие возможности; отсутствие реализации не выведено из чтения книги.",
+          "development_readiness": "research_handoff_source_dependencies_open"
+        },
+        {
+          "layer": "L2",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Этот срез задаёт начальную расстановку; Faction Roll/Phase и последующее ведение кампании не прочитаны."
+        },
+        {
+          "layer": "L3",
+          "requirement": null,
+          "status": "not_assessed_dependency",
+          "implemented": null,
+          "reason": "Базовые правила core и механическое разрешение последующих событий этим setup не подтверждены."
+        }
+      ]
+    },
+    {
+      "id": "ROOT-TO-013",
+      "title": "Заключительная потеря контроля в допустимых полянах",
+      "corpus": "Woodland Setup, printed178–181/PDF179–182",
+      "rule": {
+        "source_id": "ROOT-TO-2021-EN",
+        "printed_page": 181,
+        "pdf_page": 182,
+        "section": "Last: The Denizens; Denizen Control",
+        "paraphrase": "Последним шагом проверять2d6 контролируемые поляны, кроме stronghold, любыхEyrieRoost и базыWoodlandAlliance. На11–12 поляна становится неконтролируемой; до10 контроль сохраняется. Уже неконтролируемые не проверяют.",
+        "normative_kind": "conditional_setup_procedure",
+        "quotation": null
+      },
+      "parameters": {
+        "die": "2d6",
+        "printed_bands": {
+          "1–10": "remains in control",
+          "11–12": "uncontrolled"
+        },
+        "excluded": [
+          "Marquisate stronghold",
+          "any Eyrie Roost",
+          "Woodland Alliance base",
+          "already uncontrolled"
+        ],
+        "phase": "initial setup only",
+        "not_alliance_uprising": true
+      },
+      "comparison": {
+        "relation": "shared_capabilities_with_source_specific_initial_setup_profile",
+        "canonical_analogues": [
+          "map.faction_control",
+          "content.roll_table_resolution"
+        ],
+        "parameter_equivalence": "unverified_not_inferred",
+        "rationale": "Existing water/table/place components reused where their meaning applies. New generic faction control/presence capabilities retain distinct state semantics; no text field is treated as numeric setup. Root river component is only partial analogue of full river-network capability."
+      },
+      "requirements": [
+        {
+          "layer": "L1",
+          "requirement": "Проверить допустимые поляны и снять контроль при11–12, сохраняя исключённые без этой проверки.",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "finding": "Фактическая поддержка на SHA не проверена; это source-to-generator handoff.",
+          "canonical_rule_ids": [
+            "map.faction_control",
+            "content.roll_table_resolution"
+          ],
+          "criterion_ids": [
+            "S06-C01"
+          ],
+          "operational_requirement": {
+            "source_rule_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-013",
+            "normative_kind": "conditional_setup_procedure",
+            "applicability": "L1: начальная подготовка Леса по Travelers & Outsiders2021, при включении соответствующих фракций; базовая карта и её исходные данные должны быть известны.",
+            "layer": "L1",
+            "trigger_or_user_action": "Ведущий завершает начальную расстановку Леса.",
+            "inputs_and_units": {
+              "поляны": "Известный контроль и защищённые стартовые объекты",
+              "броски": "2d6 только для допустимых контролируемых полян"
+            },
+            "product_operation": "Проверить допустимые поляны и снять контроль при11–12, сохраняя исключённые без этой проверки.",
+            "expected_output": "В допустимых полянах либо прежний контроль, либо состояние без контроля; результат не переименован в восстание Alliance.",
+            "constraints_and_exceptions": [
+              "Stronghold/Roost/базаAlliance и уже неконтролируемые исключены.",
+              "Печатная полоса1–10 сохранена как в книге; сумма1 на2d6 недостижима.",
+              "Это заключительный шаг setup, не автоматическое событие при каждом открытии карты."
+            ],
+            "acceptance_cases": [
+              {
+                "id": "ROOT-TO-013-L1-AC01",
+                "given": "Обычная контролируемаяX, сумма2d6=10.",
+                "when": "Выполнить заключительную проверку.",
+                "expected": "КонтрольX сохраняется."
+              },
+              {
+                "id": "ROOT-TO-013-L1-AC02",
+                "given": "Обычная контролируемаяX, кубики5и6.",
+                "when": "Выполнить заключительную проверку.",
+                "expected": "Сумма11: X становится неконтролируемой; контрольWoodlandAlliance не назначен."
+              },
+              {
+                "id": "ROOT-TO-013-L1-AC03",
+                "given": "Есть stronghold, EyrieRoost, базаAlliance и уже неконтролируемаяY.",
+                "when": "Ведущий проходит заключительный шаг.",
+                "expected": "Эти поляны пропущены без бросков данного шага."
+              }
+            ],
+            "source_vs_product_interpretation": "Процедуры и ограничения пересказаны из указанного среза. Сохранение и показ подготовленной карты — перевод на язык генератора; способ хранения, команды, интерфейс и архитектуру определяет аналитик. Все A/B/C, заданные броски и исходные состояния примеров — синтетические проверки смысла, не готовые поляны книги. Двусмысленности источника не исправлены; hit может быть только переданным подтверждённым исходом, пока core не проверен.",
+            "canonical_rule_refs": [
+              "map.faction_control",
+              "content.roll_table_resolution"
+            ],
+            "unresolved_parameters": [
+              "Дальнейшая динамика фракций из Faction Roll/Phase не разобрана."
+            ]
+          },
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#ROOT-TO-013-L1",
+          "acceptance_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-013-L1",
+          "gap_task_ids": [
+            "HX-BL-049"
+          ],
+          "gap": "Сначала стратег выбирает объём, аналитик разрешает продуктовые вопросы и проверяет существующие возможности; отсутствие реализации не выведено из чтения книги.",
+          "development_readiness": "research_handoff_source_dependencies_open"
+        },
+        {
+          "layer": "L2",
+          "requirement": null,
+          "status": "not_applicable",
+          "implemented": null,
+          "reason": "Этот срез задаёт начальную расстановку; Faction Roll/Phase и последующее ведение кампании не прочитаны."
+        },
+        {
+          "layer": "L3",
+          "requirement": null,
+          "status": "not_assessed_dependency",
+          "implemented": null,
+          "reason": "Базовые правила core и механическое разрешение последующих событий этим setup не подтверждены."
+        }
+      ]
     }
   ],
   "completeness": {
     "status": "bounded_partial",
     "fully_extracted_pdf_pages": [
+      179,
+      180,
+      181,
+      182,
       220,
       221
     ],
     "printed_pages": [
+      178,
+      179,
+      180,
+      181,
       219,
       220
     ],
-    "source_groups": 4,
-    "applicable_L1_requirements": 4,
-    "acceptance_cases": 11,
+    "source_groups": 13,
+    "applicable_L1_requirements": 13,
+    "acceptance_cases": 36,
     "coverage_ledger_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021-coverage-ledger.json",
     "core_read": false,
     "not_claimed": [
       "Whole supplement thematic completeness",
-      "Core rulebook reviewed",
-      "Woodland geography creation",
+      "Core224/228 base map/faction setup reviewed",
+      "Full terrain/river-network model",
       "NPC harm mechanics",
-      "Faction simulation",
+      "Faction Roll/Phase runtime simulation",
       "Custom-move construction"
     ]
   },
@@ -581,8 +1730,65 @@
     },
     {
       "id": "ROOT-TO-Q03",
-      "question": "Woodland Setup, printed178+ / PDF179+, not yet read.",
-      "status": "next_bounded_source_candidate"
+      "question": "Woodland Setup printed178–181 read; core224/228 base creation/setup dependencies remain unreviewed.",
+      "status": "read_selected_Woodland_Setup_core_dependencies_open",
+      "resolution_ref": "agent-work/research/runs/2026-11-08T0026-ROOT-TO-woodland.json",
+      "original_question": "Woodland Setup, printed178+ / PDF179+, not yet read."
+    },
+    {
+      "id": "ROOT-TO-Q04",
+      "question": "Printed179 visually contains lake connecting to lake; preceding river-into-lake sentence and following direction text do not remove typo ambiguity.",
+      "status": "source_anomaly_needs_primary_clarification",
+      "pdf_page": 180
+    },
+    {
+      "id": "ROOT-TO-Q05",
+      "question": "Printed180 literally says subtract –1 for connected clearings beyond first; direction not silently normalized.",
+      "status": "source_anomaly_needs_primary_clarification",
+      "pdf_page": 181
+    },
+    {
+      "id": "ROOT-TO-Q06",
+      "question": "Hit threshold for lake expansion not defined in this slice; no7+ inferred.",
+      "status": "needs_core_or_primary_clarification",
+      "pdf_page": 181
+    },
+    {
+      "id": "ROOT-TO-Q07",
+      "question": "Nearest/nearby/particularly-close metrics, ties and candidate ordering are qualitative/unspecified.",
+      "status": "unresolved_source_parameters",
+      "pdf_pages": [
+        180,
+        181
+      ]
+    },
+    {
+      "id": "ROOT-TO-Q08",
+      "question": "No fallback supplied for too few eligible clearings or no noncontrolled tunnel candidate.",
+      "status": "unresolved_edge_case",
+      "pdf_pages": [
+        180,
+        181,
+        182
+      ]
+    },
+    {
+      "id": "ROOT-TO-Q09",
+      "question": "Riverfolk presence top4 cutoff tie not expressly resolved; random tie-break text refers to control selection.",
+      "status": "unresolved_edge_case",
+      "pdf_page": 181
+    },
+    {
+      "id": "ROOT-TO-Q10",
+      "question": "Corvid four draws lack explicit duplicate policy; do not import Riverfolk distinctness.",
+      "status": "unresolved_edge_case",
+      "pdf_page": 182
+    },
+    {
+      "id": "ROOT-TO-Q11",
+      "question": "Tunnel entrances do not supply connecting geometry, distance, time or capacity.",
+      "status": "unresolved_source_parameters",
+      "pdf_page": 182
     }
   ],
   "score_impact": {
@@ -596,6 +1802,11 @@
       "run_id": "2026-11-08T0000-ROOT-TO-clearing",
       "source_read_mode": "Parent parsed PDF1–6 and218–221; independent same-model agent read context and visually confirmed selected pages",
       "result_ref": "agent-work/research/runs/2026-11-08T0000-ROOT-TO-clearing.json"
+    },
+    {
+      "run_id": "2026-11-08T0026-ROOT-TO-woodland",
+      "source_read_mode": "Parent parsed full PDF179–182; independent same-model agent rendered and visually checked all4pages and source anomalies.",
+      "result_ref": "agent-work/research/runs/2026-11-08T0026-ROOT-TO-woodland.json"
     }
   ]
 }

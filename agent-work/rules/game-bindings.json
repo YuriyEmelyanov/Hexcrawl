@@ -44496,6 +44496,1176 @@
       "operational_requirement_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-004-L1",
       "evidence_ids": [],
       "traceability_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-004-L1"
+    },
+    {
+      "id": "ROOT-TO-005-L1",
+      "game_id": "ROOT",
+      "edition": "Root-Travelers-Outsiders-EN-first-printing2021",
+      "source_rule_id": "ROOT-TO-005",
+      "source_id": "ROOT-TO-2021-EN",
+      "source_page": 178,
+      "source_pdf_page": 179,
+      "layer": "L1",
+      "normative_kind": "conditional_setup_procedure",
+      "scope": "initial_Woodland_setup_not_campaign_simulation",
+      "source_requirement": "Помогать пройти начальную расстановку в порядке источника, пропуская выключенные фракции, и выбирать поляну по двумерной таблице.",
+      "canonical_rule_ids": [
+        "map.faction_control",
+        "map.faction_presence",
+        "content.roll_table_resolution"
+      ],
+      "profiles": [
+        {
+          "rule_id": "map.faction_control",
+          "parameters": {
+            "order": [
+              "Marquisate",
+              "Eyrie",
+              "Woodland Alliance",
+              "Lizard Cult",
+              "Riverfolk",
+              "Grand Duchy",
+              "Corvid",
+              "Denizens"
+            ],
+            "excluded_factions": "skip",
+            "random_clearing": "first d6 selects row1–6; second1–3 selects odd clearing,4–6 even",
+            "addressed_clearings": 12,
+            "core_refs": [
+              224,
+              228
+            ]
+          },
+          "exceptions": [
+            "Базовое создание полян/путей — core224, расстановка трёх базовых фракций — core228; здесь их нет.",
+            "Таблица адресует12 полян, но это не доказанное требование12 полян для любой карты.",
+            "Не определено применение таблицы к карте с другим набором полян."
+          ],
+          "conditions": [
+            "Selected optional factions and known starting map; no inferred core compatibility."
+          ],
+          "profile_status": "unverified",
+          "verification_requirement": "Exact source profile and known-output examples require future product evidence SHA; unknown source edges block full coverage.",
+          "source_clause": "На уже созданных полянах и путях выполнять расстановку включённых фракций в заданном порядке, пропуская отсутствующие. Таблица случайной поляны использует два отдельных d6."
+        },
+        {
+          "rule_id": "map.faction_presence",
+          "parameters": {
+            "order": [
+              "Marquisate",
+              "Eyrie",
+              "Woodland Alliance",
+              "Lizard Cult",
+              "Riverfolk",
+              "Grand Duchy",
+              "Corvid",
+              "Denizens"
+            ],
+            "excluded_factions": "skip",
+            "random_clearing": "first d6 selects row1–6; second1–3 selects odd clearing,4–6 even",
+            "addressed_clearings": 12,
+            "core_refs": [
+              224,
+              228
+            ]
+          },
+          "exceptions": [
+            "Базовое создание полян/путей — core224, расстановка трёх базовых фракций — core228; здесь их нет.",
+            "Таблица адресует12 полян, но это не доказанное требование12 полян для любой карты.",
+            "Не определено применение таблицы к карте с другим набором полян."
+          ],
+          "conditions": [
+            "Selected optional factions and known starting map; no inferred core compatibility."
+          ],
+          "profile_status": "unverified",
+          "verification_requirement": "Exact source profile and known-output examples require future product evidence SHA; unknown source edges block full coverage.",
+          "source_clause": "На уже созданных полянах и путях выполнять расстановку включённых фракций в заданном порядке, пропуская отсутствующие. Таблица случайной поляны использует два отдельных d6."
+        },
+        {
+          "rule_id": "content.roll_table_resolution",
+          "parameters": {
+            "order": [
+              "Marquisate",
+              "Eyrie",
+              "Woodland Alliance",
+              "Lizard Cult",
+              "Riverfolk",
+              "Grand Duchy",
+              "Corvid",
+              "Denizens"
+            ],
+            "excluded_factions": "skip",
+            "random_clearing": "first d6 selects row1–6; second1–3 selects odd clearing,4–6 even",
+            "addressed_clearings": 12,
+            "core_refs": [
+              224,
+              228
+            ]
+          },
+          "exceptions": [
+            "Базовое создание полян/путей — core224, расстановка трёх базовых фракций — core228; здесь их нет.",
+            "Таблица адресует12 полян, но это не доказанное требование12 полян для любой карты.",
+            "Не определено применение таблицы к карте с другим набором полян."
+          ],
+          "conditions": [
+            "Selected optional factions and known starting map; no inferred core compatibility."
+          ],
+          "profile_status": "unverified",
+          "verification_requirement": "Exact source profile and known-output examples require future product evidence SHA; unknown source edges block full coverage.",
+          "source_clause": "На уже созданных полянах и путях выполнять расстановку включённых фракций в заданном порядке, пропуская отсутствующие. Таблица случайной поляны использует два отдельных d6."
+        }
+      ],
+      "coverage_status": "unverified",
+      "acceptance_cases": [
+        {
+          "id": "ROOT-TO-005-L1-AC01",
+          "given": "Таблица полян источника; первый d6=2, второй=5.",
+          "when": "Ведущий выбирает случайную поляну.",
+          "expected": "Выбрана поляна4; сумма7 не используется как номер."
+        },
+        {
+          "id": "ROOT-TO-005-L1-AC02",
+          "given": "Пары d6: (1,1),(1,6),(6,1),(6,6).",
+          "when": "Применить каждую пару к таблице.",
+          "expected": "Получены соответственно поляны1,2,11,12."
+        },
+        {
+          "id": "ROOT-TO-005-L1-AC03",
+          "given": "Из дополнительных фракций включены только Riverfolk и Corvid; базовая карта уже подготовлена.",
+          "when": "Ведущий проходит расстановку по источнику.",
+          "expected": "Riverfolk обрабатывается раньше Corvid; Lizard Cult и Grand Duchy пропущены; заключительный применимый шаг Denizens идёт последним."
+        }
+      ],
+      "operational_requirement_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-005-L1",
+      "evidence_ids": [],
+      "traceability_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-005-L1",
+      "own_acceptance_check": "ROOT-TO-005-L1-AC01: Таблица полян источника; первый d6=2, второй=5. Ведущий выбирает случайную поляну. → Выбрана поляна4; сумма7 не используется как номер.\nROOT-TO-005-L1-AC02: Пары d6: (1,1),(1,6),(6,1),(6,6). Применить каждую пару к таблице. → Получены соответственно поляны1,2,11,12.\nROOT-TO-005-L1-AC03: Из дополнительных фракций включены только Riverfolk и Corvid; базовая карта уже подготовлена. Ведущий проходит расстановку по источнику. → Riverfolk обрабатывается раньше Corvid; Lizard Cult и Grand Duchy пропущены; заключительный применимый шаг Denizens идёт последним."
+    },
+    {
+      "id": "ROOT-TO-006-L1",
+      "game_id": "ROOT",
+      "edition": "Root-Travelers-Outsiders-EN-first-printing2021",
+      "source_rule_id": "ROOT-TO-006",
+      "source_id": "ROOT-TO-2021-EN",
+      "source_page": 180,
+      "source_pdf_page": 181,
+      "layer": "L1",
+      "normative_kind": "conditional_setup_procedure",
+      "scope": "initial_Woodland_setup_not_campaign_simulation",
+      "source_requirement": "Сохранять присутствие отдельно от контроля; позволять применимому присутствию сосуществовать с иным контролем.",
+      "canonical_rule_ids": [
+        "map.faction_control",
+        "map.faction_presence"
+      ],
+      "profiles": [
+        {
+          "rule_id": "map.faction_control",
+          "parameters": {
+            "presence": "binary",
+            "presence_implies_control": false,
+            "presence_for_all_factions": false,
+            "agent_or_army_count": null
+          },
+          "exceptions": [
+            "Бинарное присутствие не равно количеству агентов.",
+            "Не добавлять этот вид присутствия всем базовым фракциям по аналогии.",
+            "Само наличие присутствия не запускает захват поляны."
+          ],
+          "conditions": [
+            "Selected optional factions and known starting map; no inferred core compatibility."
+          ],
+          "profile_status": "unverified",
+          "verification_requirement": "Exact source profile and known-output examples require future product evidence SHA; unknown source edges block full coverage.",
+          "source_clause": "Присутствие означает значимые силы/агентов в поляне и является бинарным. Само по себе оно не даёт контроля; для контроля есть отдельный способ. Не отслеживать такое присутствие для всех иных фракций автоматически."
+        },
+        {
+          "rule_id": "map.faction_presence",
+          "parameters": {
+            "presence": "binary",
+            "presence_implies_control": false,
+            "presence_for_all_factions": false,
+            "agent_or_army_count": null
+          },
+          "exceptions": [
+            "Бинарное присутствие не равно количеству агентов.",
+            "Не добавлять этот вид присутствия всем базовым фракциям по аналогии.",
+            "Само наличие присутствия не запускает захват поляны."
+          ],
+          "conditions": [
+            "Selected optional factions and known starting map; no inferred core compatibility."
+          ],
+          "profile_status": "unverified",
+          "verification_requirement": "Exact source profile and known-output examples require future product evidence SHA; unknown source edges block full coverage.",
+          "source_clause": "Присутствие означает значимые силы/агентов в поляне и является бинарным. Само по себе оно не даёт контроля; для контроля есть отдельный способ. Не отслеживать такое присутствие для всех иных фракций автоматически."
+        }
+      ],
+      "coverage_status": "unverified",
+      "acceptance_cases": [
+        {
+          "id": "ROOT-TO-006-L1-AC01",
+          "given": "ПолянуA контролирует Marquisate; в ней назначено присутствие Riverfolk и Corvid.",
+          "when": "Сохранить подготовку поляны.",
+          "expected": "Контроль Marquisate остаётся; оба присутствия сохранены отдельно."
+        },
+        {
+          "id": "ROOT-TO-006-L1-AC02",
+          "given": "В полянеB отмечено присутствие Corvid, захват не задан.",
+          "when": "Ведущий открывает сведения о фракциях поляны.",
+          "expected": "Есть присутствие Corvid; контроль и численность войск из него не выведены."
+        }
+      ],
+      "operational_requirement_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-006-L1",
+      "evidence_ids": [],
+      "traceability_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-006-L1",
+      "own_acceptance_check": "ROOT-TO-006-L1-AC01: ПолянуA контролирует Marquisate; в ней назначено присутствие Riverfolk и Corvid. Сохранить подготовку поляны. → Контроль Marquisate остаётся; оба присутствия сохранены отдельно.\nROOT-TO-006-L1-AC02: В полянеB отмечено присутствие Corvid, захват не задан. Ведущий открывает сведения о фракциях поляны. → Есть присутствие Corvid; контроль и численность войск из него не выведены."
+    },
+    {
+      "id": "ROOT-TO-007-L1",
+      "game_id": "ROOT",
+      "edition": "Root-Travelers-Outsiders-EN-first-printing2021",
+      "source_rule_id": "ROOT-TO-007",
+      "source_id": "ROOT-TO-2021-EN",
+      "source_page": 179,
+      "source_pdf_page": 180,
+      "layer": "L1",
+      "normative_kind": "conditional_setup_procedure",
+      "scope": "initial_Woodland_setup_not_campaign_simulation",
+      "source_requirement": "Выбрать две подходящие поляны присутствия, а отдельным шагом — угловую поляну сада и контроля.",
+      "canonical_rule_ids": [
+        "map.faction_presence",
+        "map.faction_control",
+        "content.roll_table_resolution",
+        "content.place_description"
+      ],
+      "profiles": [
+        {
+          "rule_id": "map.faction_presence",
+          "parameters": {
+            "outcast_die": "1d6",
+            "bands": {
+              "1–2": "fox",
+              "3–4": "rabbit",
+              "5–6": "mouse"
+            },
+            "presence_clearings": 2,
+            "gardens": 1,
+            "corner": "opposite single Marquisate/Eyrie; remaining2 if both; random if neither",
+            "corner_die": "1NW,2NE,3SW,4SE;5–6 reroll"
+          },
+          "exceptions": [
+            "Сад не обязан совпадать с двумя выбранными полянами присутствия по этому тексту.",
+            "Недостаток подходящих полян не имеет описанного запасного решения.",
+            "Случайный угол:5–6 перебрасываются, а не трактуются как дополнительный угол."
+          ],
+          "conditions": [
+            "Selected optional factions and known starting map; no inferred core compatibility."
+          ],
+          "profile_status": "unverified",
+          "verification_requirement": "Exact source profile and known-output examples require future product evidence SHA; unknown source edges block full coverage.",
+          "source_clause": "По d6 определить угнетённый вид:1–2 лисы,3–4 кролики,5–6 мыши. Из полян с его доминированием выбрать две для присутствия Культа. Отдельно поставить один сад и назначить контроль угловой поляне с учётом Marquisate/Eyrie."
+        },
+        {
+          "rule_id": "map.faction_control",
+          "parameters": {
+            "outcast_die": "1d6",
+            "bands": {
+              "1–2": "fox",
+              "3–4": "rabbit",
+              "5–6": "mouse"
+            },
+            "presence_clearings": 2,
+            "gardens": 1,
+            "corner": "opposite single Marquisate/Eyrie; remaining2 if both; random if neither",
+            "corner_die": "1NW,2NE,3SW,4SE;5–6 reroll"
+          },
+          "exceptions": [
+            "Сад не обязан совпадать с двумя выбранными полянами присутствия по этому тексту.",
+            "Недостаток подходящих полян не имеет описанного запасного решения.",
+            "Случайный угол:5–6 перебрасываются, а не трактуются как дополнительный угол."
+          ],
+          "conditions": [
+            "Selected optional factions and known starting map; no inferred core compatibility."
+          ],
+          "profile_status": "unverified",
+          "verification_requirement": "Exact source profile and known-output examples require future product evidence SHA; unknown source edges block full coverage.",
+          "source_clause": "По d6 определить угнетённый вид:1–2 лисы,3–4 кролики,5–6 мыши. Из полян с его доминированием выбрать две для присутствия Культа. Отдельно поставить один сад и назначить контроль угловой поляне с учётом Marquisate/Eyrie."
+        },
+        {
+          "rule_id": "content.roll_table_resolution",
+          "parameters": {
+            "outcast_die": "1d6",
+            "bands": {
+              "1–2": "fox",
+              "3–4": "rabbit",
+              "5–6": "mouse"
+            },
+            "presence_clearings": 2,
+            "gardens": 1,
+            "corner": "opposite single Marquisate/Eyrie; remaining2 if both; random if neither",
+            "corner_die": "1NW,2NE,3SW,4SE;5–6 reroll"
+          },
+          "exceptions": [
+            "Сад не обязан совпадать с двумя выбранными полянами присутствия по этому тексту.",
+            "Недостаток подходящих полян не имеет описанного запасного решения.",
+            "Случайный угол:5–6 перебрасываются, а не трактуются как дополнительный угол."
+          ],
+          "conditions": [
+            "Selected optional factions and known starting map; no inferred core compatibility."
+          ],
+          "profile_status": "unverified",
+          "verification_requirement": "Exact source profile and known-output examples require future product evidence SHA; unknown source edges block full coverage.",
+          "source_clause": "По d6 определить угнетённый вид:1–2 лисы,3–4 кролики,5–6 мыши. Из полян с его доминированием выбрать две для присутствия Культа. Отдельно поставить один сад и назначить контроль угловой поляне с учётом Marquisate/Eyrie."
+        },
+        {
+          "rule_id": "content.place_description",
+          "parameters": {
+            "outcast_die": "1d6",
+            "bands": {
+              "1–2": "fox",
+              "3–4": "rabbit",
+              "5–6": "mouse"
+            },
+            "presence_clearings": 2,
+            "gardens": 1,
+            "corner": "opposite single Marquisate/Eyrie; remaining2 if both; random if neither",
+            "corner_die": "1NW,2NE,3SW,4SE;5–6 reroll"
+          },
+          "exceptions": [
+            "Сад не обязан совпадать с двумя выбранными полянами присутствия по этому тексту.",
+            "Недостаток подходящих полян не имеет описанного запасного решения.",
+            "Случайный угол:5–6 перебрасываются, а не трактуются как дополнительный угол."
+          ],
+          "conditions": [
+            "Selected optional factions and known starting map; no inferred core compatibility."
+          ],
+          "profile_status": "unverified",
+          "verification_requirement": "Exact source profile and known-output examples require future product evidence SHA; unknown source edges block full coverage.",
+          "source_clause": "По d6 определить угнетённый вид:1–2 лисы,3–4 кролики,5–6 мыши. Из полян с его доминированием выбрать две для присутствия Культа. Отдельно поставить один сад и назначить контроль угловой поляне с учётом Marquisate/Eyrie."
+        }
+      ],
+      "coverage_status": "unverified",
+      "acceptance_cases": [
+        {
+          "id": "ROOT-TO-007-L1-AC01",
+          "given": "Outcast d6=3; кролики доминируют вA/B. Есть только Marquisate со stronghold наNW; противоположныйSE применим.",
+          "when": "Ведущий выбираетA/B и выполняет setup Культа.",
+          "expected": "Присутствие Культа вA/B; один сад и контроль вSE. Одно присутствиеA/B не даёт им контроль."
+        },
+        {
+          "id": "ROOT-TO-007-L1-AC02",
+          "given": "По отдельным выборам Outcast получены1,4,6; случайный угол дал5, затем2.",
+          "when": "Применить соответствующие таблицы.",
+          "expected": "Виды соответственно лисы,кролики,мыши;5 требует переброса,2 даётNE."
+        },
+        {
+          "id": "ROOT-TO-007-L1-AC03",
+          "given": "У выбранного вида только одна подходящая поляна.",
+          "when": "Нужно выбрать две поляны присутствия.",
+          "expected": "Недостаток кандидатов отмечен для решения ведущего; вторая поляна с неподходящим видом не выдана за выбор книги."
+        }
+      ],
+      "operational_requirement_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-007-L1",
+      "evidence_ids": [],
+      "traceability_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-007-L1",
+      "own_acceptance_check": "ROOT-TO-007-L1-AC01: Outcast d6=3; кролики доминируют вA/B. Есть только Marquisate со stronghold наNW; противоположныйSE применим. Ведущий выбираетA/B и выполняет setup Культа. → Присутствие Культа вA/B; один сад и контроль вSE. Одно присутствиеA/B не даёт им контроль.\nROOT-TO-007-L1-AC02: По отдельным выборам Outcast получены1,4,6; случайный угол дал5, затем2. Применить соответствующие таблицы. → Виды соответственно лисы,кролики,мыши;5 требует переброса,2 даётNE.\nROOT-TO-007-L1-AC03: У выбранного вида только одна подходящая поляна. Нужно выбрать две поляны присутствия. → Недостаток кандидатов отмечен для решения ведущего; вторая поляна с неподходящим видом не выдана за выбор книги."
+    },
+    {
+      "id": "ROOT-TO-008-L1",
+      "game_id": "ROOT",
+      "edition": "Root-Travelers-Outsiders-EN-first-printing2021",
+      "source_rule_id": "ROOT-TO-008",
+      "source_id": "ROOT-TO-2021-EN",
+      "source_page": 179,
+      "source_pdf_page": 180,
+      "layer": "L1",
+      "normative_kind": "conditional_setup_procedure",
+      "scope": "initial_Woodland_setup_not_campaign_simulation",
+      "source_requirement": "Предложить требуемый вид воды и помочь провести реку через ближайшие к краям поляны и заданные ведущим изгибы; для ветки с озером сохранить неясность противоречивого направления.",
+      "canonical_rule_ids": [
+        "map.land_water_shapes",
+        "map.river_network",
+        "content.roll_table_resolution"
+      ],
+      "profiles": [
+        {
+          "rule_id": "map.land_water_shapes",
+          "parameters": {
+            "water_when_none": {
+              "6": "both",
+              "1–3": "river",
+              "4–5": "lake"
+            },
+            "edge_die": {
+              "1": "top",
+              "2": "bottom",
+              "3": "left",
+              "4": "right",
+              "5–6": "reroll"
+            },
+            "paper_sketch_dice_about": [
+              5,
+              6
+            ],
+            "paper_drop_inches_about": 6,
+            "world_distance_from_drop": null,
+            "nearest_metric": null,
+            "close_radius": null,
+            "lake_river_direction": "source anomaly unresolved"
+          },
+          "exceptions": [
+            "Если вода уже есть, этот условный шаг не требует обязательного нового водного объекта.",
+            "5–6 кубиков и6дюймов — приблизительный приём рисования на бумаге, а не масштаб мира или готовый цифровой алгоритм.",
+            "Метрика близости, равные расстояния и расстояние «particularly close» не определены.",
+            "Повторный край не обязан отличаться от первого по явному тексту.",
+            "Опечатка про озеро, соединяемое с озером, не исправлена молча."
+          ],
+          "conditions": [
+            "Selected optional factions and known starting map; no inferred core compatibility."
+          ],
+          "profile_status": "unverified",
+          "verification_requirement": "Exact source profile and known-output examples require future product evidence SHA; unknown source edges block full coverage.",
+          "source_clause": "Если реки и озера ещё нет, d6 определяет добавление:1–3 река,4–5 озеро,6 оба. Река входит со случайного края через ближайшую к нему поляну; без озера выходной край выбирается снова. При совместном добавлении явное предложение направляет реку в озеро, далее есть опечатка. Извилистость предлагается рисовать вокруг примерно5–6 кубиков, брошенных с высоты около6дюймов."
+        },
+        {
+          "rule_id": "map.river_network",
+          "parameters": {
+            "water_when_none": {
+              "6": "both",
+              "1–3": "river",
+              "4–5": "lake"
+            },
+            "edge_die": {
+              "1": "top",
+              "2": "bottom",
+              "3": "left",
+              "4": "right",
+              "5–6": "reroll"
+            },
+            "paper_sketch_dice_about": [
+              5,
+              6
+            ],
+            "paper_drop_inches_about": 6,
+            "world_distance_from_drop": null,
+            "nearest_metric": null,
+            "close_radius": null,
+            "lake_river_direction": "source anomaly unresolved"
+          },
+          "exceptions": [
+            "Если вода уже есть, этот условный шаг не требует обязательного нового водного объекта.",
+            "5–6 кубиков и6дюймов — приблизительный приём рисования на бумаге, а не масштаб мира или готовый цифровой алгоритм.",
+            "Метрика близости, равные расстояния и расстояние «particularly close» не определены.",
+            "Повторный край не обязан отличаться от первого по явному тексту.",
+            "Опечатка про озеро, соединяемое с озером, не исправлена молча."
+          ],
+          "conditions": [
+            "Selected optional factions and known starting map; no inferred core compatibility."
+          ],
+          "profile_status": "unverified",
+          "verification_requirement": "Exact source profile and known-output examples require future product evidence SHA; unknown source edges block full coverage.",
+          "source_clause": "Если реки и озера ещё нет, d6 определяет добавление:1–3 река,4–5 озеро,6 оба. Река входит со случайного края через ближайшую к нему поляну; без озера выходной край выбирается снова. При совместном добавлении явное предложение направляет реку в озеро, далее есть опечатка. Извилистость предлагается рисовать вокруг примерно5–6 кубиков, брошенных с высоты около6дюймов."
+        },
+        {
+          "rule_id": "content.roll_table_resolution",
+          "parameters": {
+            "water_when_none": {
+              "6": "both",
+              "1–3": "river",
+              "4–5": "lake"
+            },
+            "edge_die": {
+              "1": "top",
+              "2": "bottom",
+              "3": "left",
+              "4": "right",
+              "5–6": "reroll"
+            },
+            "paper_sketch_dice_about": [
+              5,
+              6
+            ],
+            "paper_drop_inches_about": 6,
+            "world_distance_from_drop": null,
+            "nearest_metric": null,
+            "close_radius": null,
+            "lake_river_direction": "source anomaly unresolved"
+          },
+          "exceptions": [
+            "Если вода уже есть, этот условный шаг не требует обязательного нового водного объекта.",
+            "5–6 кубиков и6дюймов — приблизительный приём рисования на бумаге, а не масштаб мира или готовый цифровой алгоритм.",
+            "Метрика близости, равные расстояния и расстояние «particularly close» не определены.",
+            "Повторный край не обязан отличаться от первого по явному тексту.",
+            "Опечатка про озеро, соединяемое с озером, не исправлена молча."
+          ],
+          "conditions": [
+            "Selected optional factions and known starting map; no inferred core compatibility."
+          ],
+          "profile_status": "unverified",
+          "verification_requirement": "Exact source profile and known-output examples require future product evidence SHA; unknown source edges block full coverage.",
+          "source_clause": "Если реки и озера ещё нет, d6 определяет добавление:1–3 река,4–5 озеро,6 оба. Река входит со случайного края через ближайшую к нему поляну; без озера выходной край выбирается снова. При совместном добавлении явное предложение направляет реку в озеро, далее есть опечатка. Извилистость предлагается рисовать вокруг примерно5–6 кубиков, брошенных с высоты около6дюймов."
+        }
+      ],
+      "coverage_status": "unverified",
+      "acceptance_cases": [
+        {
+          "id": "ROOT-TO-008-L1-AC01",
+          "given": "На карте нет воды; в отдельных выборах d6=1,4,6.",
+          "when": "Определить вид добавляемой воды.",
+          "expected": "Соответственно предлагаются река, озеро, река вместе с озером."
+        },
+        {
+          "id": "ROOT-TO-008-L1-AC02",
+          "given": "Выбрана только река; входной край:5, затем1; выходной край:4. Ближайшие поляны к верху и правому краю однозначноA/B.",
+          "when": "Ведущий намечает русло между краями.",
+          "expected": "5 переброшено; река входит сверху черезA и выходит справа черезB. Промежуточное русло определяется намеченными изгибами."
+        },
+        {
+          "id": "ROOT-TO-008-L1-AC03",
+          "given": "Озеро уже есть, дополнительная вода ведущим не запрошена.",
+          "when": "Начинается подготовка Riverfolk.",
+          "expected": "Условный выбор нового водного объекта не добавляет второе озеро или реку только из-за включения фракции."
+        }
+      ],
+      "operational_requirement_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-008-L1",
+      "evidence_ids": [],
+      "traceability_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-008-L1",
+      "own_acceptance_check": "ROOT-TO-008-L1-AC01: На карте нет воды; в отдельных выборах d6=1,4,6. Определить вид добавляемой воды. → Соответственно предлагаются река, озеро, река вместе с озером.\nROOT-TO-008-L1-AC02: Выбрана только река; входной край:5, затем1; выходной край:4. Ближайшие поляны к верху и правому краю однозначноA/B. Ведущий намечает русло между краями. → 5 переброшено; река входит сверху черезA и выходит справа черезB. Промежуточное русло определяется намеченными изгибами.\nROOT-TO-008-L1-AC03: Озеро уже есть, дополнительная вода ведущим не запрошена. Начинается подготовка Riverfolk. → Условный выбор нового водного объекта не добавляет второе озеро или реку только из-за включения фракции."
+    },
+    {
+      "id": "ROOT-TO-009-L1",
+      "game_id": "ROOT",
+      "edition": "Root-Travelers-Outsiders-EN-first-printing2021",
+      "source_rule_id": "ROOT-TO-009",
+      "source_id": "ROOT-TO-2021-EN",
+      "source_page": 180,
+      "source_pdf_page": 181,
+      "layer": "L1",
+      "normative_kind": "conditional_setup_procedure",
+      "scope": "initial_Woodland_setup_not_campaign_simulation",
+      "source_requirement": "Помогать подключать допустимые поляны по переданным исходам, ограничивая озеро четырьмя полянами и потерю путей двумя; спорный модификатор и неизвестный порог проверки не вычислять как установленное правило.",
+      "canonical_rule_ids": [
+        "map.land_water_shapes",
+        "map.routes_and_barriers",
+        "content.roll_table_resolution"
+      ],
+      "profiles": [
+        {
+          "rule_id": "map.land_water_shapes",
+          "parameters": {
+            "initial_clearings": 1,
+            "max_connected_clearings": 4,
+            "max_erased_paths": 2,
+            "expansion_die": "2d6",
+            "modifier_literal": "subtract –1 for each clearing past the first connected",
+            "modifier_direction": null,
+            "hit_threshold": null,
+            "nearby_radius": null,
+            "candidate_order": null
+          },
+          "exceptions": [
+            "Порог hit здесь не определён;7+ по одной аналогии не утверждён.",
+            "Буквальная запись subtract –1 двусмысленна; знак не нормализован молча.",
+            "Метрика nearby и порядок проверки полян не заданы.",
+            "Ограничение относится к путям; оно не означает разрешения удалить любое другое содержимое карты."
+          ],
+          "conditions": [
+            "Selected optional factions and known starting map; no inferred core compatibility."
+          ],
+          "profile_status": "unverified",
+          "verification_requirement": "Exact source profile and known-output examples require future product evidence SHA; unknown source edges block full coverage.",
+          "source_clause": "Начать озеро в большом свободном месте рядом с одной поляной. Для близких полян использовать2d6, запись «subtract –1» за каждую подключённую после первой, и условие hit. Не стирать более двух путей; остановиться при четырёх подключённых полянах."
+        },
+        {
+          "rule_id": "map.routes_and_barriers",
+          "parameters": {
+            "initial_clearings": 1,
+            "max_connected_clearings": 4,
+            "max_erased_paths": 2,
+            "expansion_die": "2d6",
+            "modifier_literal": "subtract –1 for each clearing past the first connected",
+            "modifier_direction": null,
+            "hit_threshold": null,
+            "nearby_radius": null,
+            "candidate_order": null
+          },
+          "exceptions": [
+            "Порог hit здесь не определён;7+ по одной аналогии не утверждён.",
+            "Буквальная запись subtract –1 двусмысленна; знак не нормализован молча.",
+            "Метрика nearby и порядок проверки полян не заданы.",
+            "Ограничение относится к путям; оно не означает разрешения удалить любое другое содержимое карты."
+          ],
+          "conditions": [
+            "Selected optional factions and known starting map; no inferred core compatibility."
+          ],
+          "profile_status": "unverified",
+          "verification_requirement": "Exact source profile and known-output examples require future product evidence SHA; unknown source edges block full coverage.",
+          "source_clause": "Начать озеро в большом свободном месте рядом с одной поляной. Для близких полян использовать2d6, запись «subtract –1» за каждую подключённую после первой, и условие hit. Не стирать более двух путей; остановиться при четырёх подключённых полянах."
+        },
+        {
+          "rule_id": "content.roll_table_resolution",
+          "parameters": {
+            "initial_clearings": 1,
+            "max_connected_clearings": 4,
+            "max_erased_paths": 2,
+            "expansion_die": "2d6",
+            "modifier_literal": "subtract –1 for each clearing past the first connected",
+            "modifier_direction": null,
+            "hit_threshold": null,
+            "nearby_radius": null,
+            "candidate_order": null
+          },
+          "exceptions": [
+            "Порог hit здесь не определён;7+ по одной аналогии не утверждён.",
+            "Буквальная запись subtract –1 двусмысленна; знак не нормализован молча.",
+            "Метрика nearby и порядок проверки полян не заданы.",
+            "Ограничение относится к путям; оно не означает разрешения удалить любое другое содержимое карты."
+          ],
+          "conditions": [
+            "Selected optional factions and known starting map; no inferred core compatibility."
+          ],
+          "profile_status": "unverified",
+          "verification_requirement": "Exact source profile and known-output examples require future product evidence SHA; unknown source edges block full coverage.",
+          "source_clause": "Начать озеро в большом свободном месте рядом с одной поляной. Для близких полян использовать2d6, запись «subtract –1» за каждую подключённую после первой, и условие hit. Не стирать более двух путей; остановиться при четырёх подключённых полянах."
+        }
+      ],
+      "coverage_status": "unverified",
+      "acceptance_cases": [
+        {
+          "id": "ROOT-TO-009-L1-AC01",
+          "given": "Озеро связано сA/B/C; ведущий передал подтверждённый hit дляD. Удаление путей укладывается в предел2.",
+          "when": "Расширить озеро кD, затем рассмотретьE.",
+          "expected": "ПодключеныA/B/C/D; на четырёх расширение остановлено, E не добавлена."
+        },
+        {
+          "id": "ROOT-TO-009-L1-AC02",
+          "given": "При подготовке озера уже стёрты два пути; подключениеE требует стереть третий.",
+          "when": "Рассмотреть это расширение.",
+          "expected": "Третий путь не стёрт; такой вариант не выдан за соответствующий пределу источника."
+        },
+        {
+          "id": "ROOT-TO-009-L1-AC03",
+          "given": "Есть только сырые2d6 и буквальный текст subtract –1; ни знак, ни правило hit не уточнены.",
+          "when": "Ведущий хочет вычислить исход расширения.",
+          "expected": "Автоматический результат не объявлен правилом книги; показаны два недостающих уточнения. Независимые пределы4полян/2путей остаются известными."
+        }
+      ],
+      "operational_requirement_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-009-L1",
+      "evidence_ids": [],
+      "traceability_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-009-L1",
+      "own_acceptance_check": "ROOT-TO-009-L1-AC01: Озеро связано сA/B/C; ведущий передал подтверждённый hit дляD. Удаление путей укладывается в предел2. Расширить озеро кD, затем рассмотретьE. → ПодключеныA/B/C/D; на четырёх расширение остановлено, E не добавлена.\nROOT-TO-009-L1-AC02: При подготовке озера уже стёрты два пути; подключениеE требует стереть третий. Рассмотреть это расширение. → Третий путь не стёрт; такой вариант не выдан за соответствующий пределу источника.\nROOT-TO-009-L1-AC03: Есть только сырые2d6 и буквальный текст subtract –1; ни знак, ни правило hit не уточнены. Ведущий хочет вычислить исход расширения. → Автоматический результат не объявлен правилом книги; показаны два недостающих уточнения. Независимые пределы4полян/2путей остаются известными."
+    },
+    {
+      "id": "ROOT-TO-010-L1",
+      "game_id": "ROOT",
+      "edition": "Root-Travelers-Outsiders-EN-first-printing2021",
+      "source_rule_id": "ROOT-TO-010",
+      "source_id": "ROOT-TO-2021-EN",
+      "source_page": 180,
+      "source_pdf_page": 181,
+      "layer": "L1",
+      "normative_kind": "conditional_setup_procedure",
+      "scope": "initial_Woodland_setup_not_campaign_simulation",
+      "source_requirement": "Сопоставить четыре отдельных признака, выбрать четыре разные поляны присутствия, затем лучшую допустимую поляну контроля с одним торговым постом.",
+      "canonical_rule_ids": [
+        "map.faction_presence",
+        "map.faction_control",
+        "map.routes_and_barriers",
+        "map.settlement_resources",
+        "content.place_description"
+      ],
+      "profiles": [
+        {
+          "rule_id": "map.faction_presence",
+          "parameters": {
+            "presence_clearings": 4,
+            "distinct": true,
+            "yes_conditions": [
+              "on lake or river",
+              "paths>=3",
+              "paths>=4",
+              "valuable resources in/near"
+            ],
+            "control_clearings": 1,
+            "trading_posts": 1,
+            "control_tie": "random",
+            "presence_cutoff_tie": null,
+            "ineligible_control": "skip to next; stronghold/Roost are examples, not exhaustive list"
+          },
+          "exceptions": [
+            "При4путях истинны оба порога,≥3и≥4: это два «да».",
+            "Ценные ресурсы и близость к ним качественные; они передаются ведущим, а не выдумываются из названия биома.",
+            "Ничья на границе четырёх мест присутствия отдельно не разъяснена.",
+            "Запрет передать контроль не равен запрету присутствия."
+          ],
+          "conditions": [
+            "Selected optional factions and known starting map; no inferred core compatibility."
+          ],
+          "profile_status": "unverified",
+          "verification_requirement": "Exact source profile and known-output examples require future product evidence SHA; unknown source edges block full coverage.",
+          "source_clause": "Выбрать четыре разные поляны по числу четырёх отдельных «да»: вода, не менее3путей, не менее4путей, ценные ресурсы. Для лучшей допустимой поляны назначить контроль и торговый пост; ничью при выборе контролируемой поляны решить случайно, недопустимую лучшую пропустить."
+        },
+        {
+          "rule_id": "map.faction_control",
+          "parameters": {
+            "presence_clearings": 4,
+            "distinct": true,
+            "yes_conditions": [
+              "on lake or river",
+              "paths>=3",
+              "paths>=4",
+              "valuable resources in/near"
+            ],
+            "control_clearings": 1,
+            "trading_posts": 1,
+            "control_tie": "random",
+            "presence_cutoff_tie": null,
+            "ineligible_control": "skip to next; stronghold/Roost are examples, not exhaustive list"
+          },
+          "exceptions": [
+            "При4путях истинны оба порога,≥3и≥4: это два «да».",
+            "Ценные ресурсы и близость к ним качественные; они передаются ведущим, а не выдумываются из названия биома.",
+            "Ничья на границе четырёх мест присутствия отдельно не разъяснена.",
+            "Запрет передать контроль не равен запрету присутствия."
+          ],
+          "conditions": [
+            "Selected optional factions and known starting map; no inferred core compatibility."
+          ],
+          "profile_status": "unverified",
+          "verification_requirement": "Exact source profile and known-output examples require future product evidence SHA; unknown source edges block full coverage.",
+          "source_clause": "Выбрать четыре разные поляны по числу четырёх отдельных «да»: вода, не менее3путей, не менее4путей, ценные ресурсы. Для лучшей допустимой поляны назначить контроль и торговый пост; ничью при выборе контролируемой поляны решить случайно, недопустимую лучшую пропустить."
+        },
+        {
+          "rule_id": "map.routes_and_barriers",
+          "parameters": {
+            "presence_clearings": 4,
+            "distinct": true,
+            "yes_conditions": [
+              "on lake or river",
+              "paths>=3",
+              "paths>=4",
+              "valuable resources in/near"
+            ],
+            "control_clearings": 1,
+            "trading_posts": 1,
+            "control_tie": "random",
+            "presence_cutoff_tie": null,
+            "ineligible_control": "skip to next; stronghold/Roost are examples, not exhaustive list"
+          },
+          "exceptions": [
+            "При4путях истинны оба порога,≥3и≥4: это два «да».",
+            "Ценные ресурсы и близость к ним качественные; они передаются ведущим, а не выдумываются из названия биома.",
+            "Ничья на границе четырёх мест присутствия отдельно не разъяснена.",
+            "Запрет передать контроль не равен запрету присутствия."
+          ],
+          "conditions": [
+            "Selected optional factions and known starting map; no inferred core compatibility."
+          ],
+          "profile_status": "unverified",
+          "verification_requirement": "Exact source profile and known-output examples require future product evidence SHA; unknown source edges block full coverage.",
+          "source_clause": "Выбрать четыре разные поляны по числу четырёх отдельных «да»: вода, не менее3путей, не менее4путей, ценные ресурсы. Для лучшей допустимой поляны назначить контроль и торговый пост; ничью при выборе контролируемой поляны решить случайно, недопустимую лучшую пропустить."
+        },
+        {
+          "rule_id": "map.settlement_resources",
+          "parameters": {
+            "presence_clearings": 4,
+            "distinct": true,
+            "yes_conditions": [
+              "on lake or river",
+              "paths>=3",
+              "paths>=4",
+              "valuable resources in/near"
+            ],
+            "control_clearings": 1,
+            "trading_posts": 1,
+            "control_tie": "random",
+            "presence_cutoff_tie": null,
+            "ineligible_control": "skip to next; stronghold/Roost are examples, not exhaustive list"
+          },
+          "exceptions": [
+            "При4путях истинны оба порога,≥3и≥4: это два «да».",
+            "Ценные ресурсы и близость к ним качественные; они передаются ведущим, а не выдумываются из названия биома.",
+            "Ничья на границе четырёх мест присутствия отдельно не разъяснена.",
+            "Запрет передать контроль не равен запрету присутствия."
+          ],
+          "conditions": [
+            "Selected optional factions and known starting map; no inferred core compatibility."
+          ],
+          "profile_status": "unverified",
+          "verification_requirement": "Exact source profile and known-output examples require future product evidence SHA; unknown source edges block full coverage.",
+          "source_clause": "Выбрать четыре разные поляны по числу четырёх отдельных «да»: вода, не менее3путей, не менее4путей, ценные ресурсы. Для лучшей допустимой поляны назначить контроль и торговый пост; ничью при выборе контролируемой поляны решить случайно, недопустимую лучшую пропустить."
+        },
+        {
+          "rule_id": "content.place_description",
+          "parameters": {
+            "presence_clearings": 4,
+            "distinct": true,
+            "yes_conditions": [
+              "on lake or river",
+              "paths>=3",
+              "paths>=4",
+              "valuable resources in/near"
+            ],
+            "control_clearings": 1,
+            "trading_posts": 1,
+            "control_tie": "random",
+            "presence_cutoff_tie": null,
+            "ineligible_control": "skip to next; stronghold/Roost are examples, not exhaustive list"
+          },
+          "exceptions": [
+            "При4путях истинны оба порога,≥3и≥4: это два «да».",
+            "Ценные ресурсы и близость к ним качественные; они передаются ведущим, а не выдумываются из названия биома.",
+            "Ничья на границе четырёх мест присутствия отдельно не разъяснена.",
+            "Запрет передать контроль не равен запрету присутствия."
+          ],
+          "conditions": [
+            "Selected optional factions and known starting map; no inferred core compatibility."
+          ],
+          "profile_status": "unverified",
+          "verification_requirement": "Exact source profile and known-output examples require future product evidence SHA; unknown source edges block full coverage.",
+          "source_clause": "Выбрать четыре разные поляны по числу четырёх отдельных «да»: вода, не менее3путей, не менее4путей, ценные ресурсы. Для лучшей допустимой поляны назначить контроль и торговый пост; ничью при выборе контролируемой поляны решить случайно, недопустимую лучшую пропустить."
+        }
+      ],
+      "coverage_status": "unverified",
+      "acceptance_cases": [
+        {
+          "id": "ROOT-TO-010-L1-AC01",
+          "given": "A:вода,4пути,ресурсы; B:вода,4пути,безресурсов; C:вода,3пути,безресурсов; D:безводы,3пути,безресурсов; E:безводы,2пути,безресурсов.",
+          "when": "Применить четыре признака выбора.",
+          "expected": "Получены соответственно4,3,2,1,0 «да»; присутствие выбирается вA/B/C/D."
+        },
+        {
+          "id": "ROOT-TO-010-L1-AC02",
+          "given": "Те жеA–E; A содержит stronghold и не может быть передана; B допустима.",
+          "when": "Назначить контроль и торговый пост.",
+          "expected": "A сохраняет присутствие Riverfolk; контроль и один торговый пост получаетB."
+        },
+        {
+          "id": "ROOT-TO-010-L1-AC03",
+          "given": "УA/B равное наибольшее число «да», обе допустимы; случайный выбор контроля далB; четыре места присутствия уже однозначно выбраны.",
+          "when": "Завершить выбор контролируемой поляны.",
+          "expected": "Контроль и один торговый пост уB. Этот пример не решает неизвестную ничью на границе четырёх мест присутствия."
+        }
+      ],
+      "operational_requirement_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-010-L1",
+      "evidence_ids": [],
+      "traceability_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-010-L1",
+      "own_acceptance_check": "ROOT-TO-010-L1-AC01: A:вода,4пути,ресурсы; B:вода,4пути,безресурсов; C:вода,3пути,безресурсов; D:безводы,3пути,безресурсов; E:безводы,2пути,безресурсов. Применить четыре признака выбора. → Получены соответственно4,3,2,1,0 «да»; присутствие выбирается вA/B/C/D.\nROOT-TO-010-L1-AC02: Те жеA–E; A содержит stronghold и не может быть передана; B допустима. Назначить контроль и торговый пост. → A сохраняет присутствие Riverfolk; контроль и один торговый пост получаетB.\nROOT-TO-010-L1-AC03: УA/B равное наибольшее число «да», обе допустимы; случайный выбор контроля далB; четыре места присутствия уже однозначно выбраны. Завершить выбор контролируемой поляны. → Контроль и один торговый пост уB. Этот пример не решает неизвестную ничью на границе четырёх мест присутствия."
+    },
+    {
+      "id": "ROOT-TO-011-L1",
+      "game_id": "ROOT",
+      "edition": "Root-Travelers-Outsiders-EN-first-printing2021",
+      "source_rule_id": "ROOT-TO-011",
+      "source_id": "ROOT-TO-2021-EN",
+      "source_page": 181,
+      "source_pdf_page": 182,
+      "layer": "L1",
+      "normative_kind": "conditional_setup_procedure",
+      "scope": "initial_Woodland_setup_not_campaign_simulation",
+      "source_requirement": "Разместить стартовый контроль и туннель, проверить только соседей исходной поляны, затем выбрать дополнительный туннель вне контроля Герцогства.",
+      "canonical_rule_ids": [
+        "map.faction_control",
+        "content.roll_table_resolution",
+        "content.place_description"
+      ],
+      "profiles": [
+        {
+          "rule_id": "map.faction_control",
+          "parameters": {
+            "start_tunnel": 1,
+            "start_control": true,
+            "corner_rule": {
+              "3_factions": "unused corner",
+              "2_factions": "random remaining2",
+              "1_faction": "opposite",
+              "0_factions": "random corner"
+            },
+            "expansion_die": "2d6",
+            "expansion_control_threshold": 10,
+            "expansion_scope": "direct connections of initial clearing only",
+            "additional_tunnels": 1,
+            "controlled_tunnel_roll": "reroll",
+            "tunnel_implies_additional_control": false
+          },
+          "exceptions": [
+            "Новые захваченные поляны не становятся началом рекурсивной экспансии в этом шаге.",
+            "Дополнительный туннель сам по себе контроля не даёт.",
+            "Геометрия прохода между туннелями, время и вместимость не заданы.",
+            "Как определяются все непосредственные связи, требует совместимой базовой карты; геометрическое соседство гексов не подставляется автоматически."
+          ],
+          "conditions": [
+            "Selected optional factions and known starting map; no inferred core compatibility."
+          ],
+          "profile_status": "unverified",
+          "verification_requirement": "Exact source profile and known-output examples require future product evidence SHA; unknown source edges block full coverage.",
+          "source_clause": "Выбрать стартовый угол по участию Marquisate/Eyrie/Lizard Cult; дать стартовой поляне туннель и контроль. Для непосредственно связанных с ней полян2d6:10+ даёт контроль. Дополнительный случайный туннель ставится вне контролируемых Герцогством полян, с перебросом контролируемых результатов."
+        },
+        {
+          "rule_id": "content.roll_table_resolution",
+          "parameters": {
+            "start_tunnel": 1,
+            "start_control": true,
+            "corner_rule": {
+              "3_factions": "unused corner",
+              "2_factions": "random remaining2",
+              "1_faction": "opposite",
+              "0_factions": "random corner"
+            },
+            "expansion_die": "2d6",
+            "expansion_control_threshold": 10,
+            "expansion_scope": "direct connections of initial clearing only",
+            "additional_tunnels": 1,
+            "controlled_tunnel_roll": "reroll",
+            "tunnel_implies_additional_control": false
+          },
+          "exceptions": [
+            "Новые захваченные поляны не становятся началом рекурсивной экспансии в этом шаге.",
+            "Дополнительный туннель сам по себе контроля не даёт.",
+            "Геометрия прохода между туннелями, время и вместимость не заданы.",
+            "Как определяются все непосредственные связи, требует совместимой базовой карты; геометрическое соседство гексов не подставляется автоматически."
+          ],
+          "conditions": [
+            "Selected optional factions and known starting map; no inferred core compatibility."
+          ],
+          "profile_status": "unverified",
+          "verification_requirement": "Exact source profile and known-output examples require future product evidence SHA; unknown source edges block full coverage.",
+          "source_clause": "Выбрать стартовый угол по участию Marquisate/Eyrie/Lizard Cult; дать стартовой поляне туннель и контроль. Для непосредственно связанных с ней полян2d6:10+ даёт контроль. Дополнительный случайный туннель ставится вне контролируемых Герцогством полян, с перебросом контролируемых результатов."
+        },
+        {
+          "rule_id": "content.place_description",
+          "parameters": {
+            "start_tunnel": 1,
+            "start_control": true,
+            "corner_rule": {
+              "3_factions": "unused corner",
+              "2_factions": "random remaining2",
+              "1_faction": "opposite",
+              "0_factions": "random corner"
+            },
+            "expansion_die": "2d6",
+            "expansion_control_threshold": 10,
+            "expansion_scope": "direct connections of initial clearing only",
+            "additional_tunnels": 1,
+            "controlled_tunnel_roll": "reroll",
+            "tunnel_implies_additional_control": false
+          },
+          "exceptions": [
+            "Новые захваченные поляны не становятся началом рекурсивной экспансии в этом шаге.",
+            "Дополнительный туннель сам по себе контроля не даёт.",
+            "Геометрия прохода между туннелями, время и вместимость не заданы.",
+            "Как определяются все непосредственные связи, требует совместимой базовой карты; геометрическое соседство гексов не подставляется автоматически."
+          ],
+          "conditions": [
+            "Selected optional factions and known starting map; no inferred core compatibility."
+          ],
+          "profile_status": "unverified",
+          "verification_requirement": "Exact source profile and known-output examples require future product evidence SHA; unknown source edges block full coverage.",
+          "source_clause": "Выбрать стартовый угол по участию Marquisate/Eyrie/Lizard Cult; дать стартовой поляне туннель и контроль. Для непосредственно связанных с ней полян2d6:10+ даёт контроль. Дополнительный случайный туннель ставится вне контролируемых Герцогством полян, с перебросом контролируемых результатов."
+        }
+      ],
+      "coverage_status": "unverified",
+      "acceptance_cases": [
+        {
+          "id": "ROOT-TO-011-L1-AC01",
+          "given": "НачальнаяA; её непосредственные соседиB/C; BсвязанасD. Броски дляB/C дают10/9.",
+          "when": "Выполнить начальное расширение контроля.",
+          "expected": "Герцогство получаетB, но неC; Dне проверяется рекурсивно черезB."
+        },
+        {
+          "id": "ROOT-TO-011-L1-AC02",
+          "given": "Для дополнительного туннеля выбрана контролируемаяA, затем при перебросе неконтролируемаяE.",
+          "when": "Разместить дополнительный туннель.",
+          "expected": "ВA дополнительный туннель этим выбором не добавлен; туннель появляетсявE, контрольE не выдан."
+        },
+        {
+          "id": "ROOT-TO-011-L1-AC03",
+          "given": "Из трёх учитываемых фракций включена только Marquisate со стартомNW; противоположныйSE применим.",
+          "when": "Выбрать начальный угол вторжения.",
+          "expected": "ВыбранSE. При всех трёх учитываемых фракциях выбирается единственный неиспользованный угол по известной исходной расстановке."
+        }
+      ],
+      "operational_requirement_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-011-L1",
+      "evidence_ids": [],
+      "traceability_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-011-L1",
+      "own_acceptance_check": "ROOT-TO-011-L1-AC01: НачальнаяA; её непосредственные соседиB/C; BсвязанасD. Броски дляB/C дают10/9. Выполнить начальное расширение контроля. → Герцогство получаетB, но неC; Dне проверяется рекурсивно черезB.\nROOT-TO-011-L1-AC02: Для дополнительного туннеля выбрана контролируемаяA, затем при перебросе неконтролируемаяE. Разместить дополнительный туннель. → ВA дополнительный туннель этим выбором не добавлен; туннель появляетсявE, контрольE не выдан.\nROOT-TO-011-L1-AC03: Из трёх учитываемых фракций включена только Marquisate со стартомNW; противоположныйSE применим. Выбрать начальный угол вторжения. → ВыбранSE. При всех трёх учитываемых фракциях выбирается единственный неиспользованный угол по известной исходной расстановке."
+    },
+    {
+      "id": "ROOT-TO-012-L1",
+      "game_id": "ROOT",
+      "edition": "Root-Travelers-Outsiders-EN-first-printing2021",
+      "source_rule_id": "ROOT-TO-012",
+      "source_id": "ROOT-TO-2021-EN",
+      "source_page": 181,
+      "source_pdf_page": 182,
+      "layer": "L1",
+      "normative_kind": "conditional_setup_procedure",
+      "scope": "initial_Woodland_setup_not_campaign_simulation",
+      "source_requirement": "Назначить присутствие выбранным полянам, сохранив контроль отдельно; при повторах явно сохранить вопрос источника.",
+      "canonical_rule_ids": [
+        "map.faction_presence",
+        "content.roll_table_resolution"
+      ],
+      "profiles": [
+        {
+          "rule_id": "map.faction_presence",
+          "parameters": {
+            "random_clearing_draws": 4,
+            "initial_control": false,
+            "duplicate_policy": null,
+            "presence": "binary"
+          },
+          "exceptions": [
+            "Не переносить требование четырёх разных полян Riverfolk на Corvid без источника.",
+            "Источник не указывает переброс повторного результата."
+          ],
+          "conditions": [
+            "Selected optional factions and known starting map; no inferred core compatibility."
+          ],
+          "profile_status": "unverified",
+          "verification_requirement": "Exact source profile and known-output examples require future product evidence SHA; unknown source edges block full coverage.",
+          "source_clause": "Случайно выбрать поляны четыре раза и добавить присутствие Corvid; начальный контроль не назначается. Слово «разные» и политика повторов здесь не приведены."
+        },
+        {
+          "rule_id": "content.roll_table_resolution",
+          "parameters": {
+            "random_clearing_draws": 4,
+            "initial_control": false,
+            "duplicate_policy": null,
+            "presence": "binary"
+          },
+          "exceptions": [
+            "Не переносить требование четырёх разных полян Riverfolk на Corvid без источника.",
+            "Источник не указывает переброс повторного результата."
+          ],
+          "conditions": [
+            "Selected optional factions and known starting map; no inferred core compatibility."
+          ],
+          "profile_status": "unverified",
+          "verification_requirement": "Exact source profile and known-output examples require future product evidence SHA; unknown source edges block full coverage.",
+          "source_clause": "Случайно выбрать поляны четыре раза и добавить присутствие Corvid; начальный контроль не назначается. Слово «разные» и политика повторов здесь не приведены."
+        }
+      ],
+      "coverage_status": "unverified",
+      "acceptance_cases": [
+        {
+          "id": "ROOT-TO-012-L1-AC01",
+          "given": "Четыре выбора далиA/B/C/D.",
+          "when": "Применить начальную расстановку Corvid.",
+          "expected": "Присутствие Corvid вA/B/C/D; начальный контроль из этого не возникает."
+        },
+        {
+          "id": "ROOT-TO-012-L1-AC02",
+          "given": "Четыре выбора далиA/A/B/C.",
+          "when": "Ведущий проверяет результат расстановки.",
+          "expected": "ПовторA виден и вопрос политики дублей остаётся открытым; четыре разные поляны не объявлены полученными, неописанный пятый выбор не приписан книге."
+        }
+      ],
+      "operational_requirement_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-012-L1",
+      "evidence_ids": [],
+      "traceability_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-012-L1",
+      "own_acceptance_check": "ROOT-TO-012-L1-AC01: Четыре выбора далиA/B/C/D. Применить начальную расстановку Corvid. → Присутствие Corvid вA/B/C/D; начальный контроль из этого не возникает.\nROOT-TO-012-L1-AC02: Четыре выбора далиA/A/B/C. Ведущий проверяет результат расстановки. → ПовторA виден и вопрос политики дублей остаётся открытым; четыре разные поляны не объявлены полученными, неописанный пятый выбор не приписан книге."
+    },
+    {
+      "id": "ROOT-TO-013-L1",
+      "game_id": "ROOT",
+      "edition": "Root-Travelers-Outsiders-EN-first-printing2021",
+      "source_rule_id": "ROOT-TO-013",
+      "source_id": "ROOT-TO-2021-EN",
+      "source_page": 181,
+      "source_pdf_page": 182,
+      "layer": "L1",
+      "normative_kind": "conditional_setup_procedure",
+      "scope": "initial_Woodland_setup_not_campaign_simulation",
+      "source_requirement": "Проверить допустимые поляны и снять контроль при11–12, сохраняя исключённые без этой проверки.",
+      "canonical_rule_ids": [
+        "map.faction_control",
+        "content.roll_table_resolution"
+      ],
+      "profiles": [
+        {
+          "rule_id": "map.faction_control",
+          "parameters": {
+            "die": "2d6",
+            "printed_bands": {
+              "1–10": "remains in control",
+              "11–12": "uncontrolled"
+            },
+            "excluded": [
+              "Marquisate stronghold",
+              "any Eyrie Roost",
+              "Woodland Alliance base",
+              "already uncontrolled"
+            ],
+            "phase": "initial setup only",
+            "not_alliance_uprising": true
+          },
+          "exceptions": [
+            "Stronghold/Roost/базаAlliance и уже неконтролируемые исключены.",
+            "Печатная полоса1–10 сохранена как в книге; сумма1 на2d6 недостижима.",
+            "Это заключительный шаг setup, не автоматическое событие при каждом открытии карты."
+          ],
+          "conditions": [
+            "Selected optional factions and known starting map; no inferred core compatibility."
+          ],
+          "profile_status": "unverified",
+          "verification_requirement": "Exact source profile and known-output examples require future product evidence SHA; unknown source edges block full coverage.",
+          "source_clause": "Последним шагом проверять2d6 контролируемые поляны, кроме stronghold, любыхEyrieRoost и базыWoodlandAlliance. На11–12 поляна становится неконтролируемой; до10 контроль сохраняется. Уже неконтролируемые не проверяют."
+        },
+        {
+          "rule_id": "content.roll_table_resolution",
+          "parameters": {
+            "die": "2d6",
+            "printed_bands": {
+              "1–10": "remains in control",
+              "11–12": "uncontrolled"
+            },
+            "excluded": [
+              "Marquisate stronghold",
+              "any Eyrie Roost",
+              "Woodland Alliance base",
+              "already uncontrolled"
+            ],
+            "phase": "initial setup only",
+            "not_alliance_uprising": true
+          },
+          "exceptions": [
+            "Stronghold/Roost/базаAlliance и уже неконтролируемые исключены.",
+            "Печатная полоса1–10 сохранена как в книге; сумма1 на2d6 недостижима.",
+            "Это заключительный шаг setup, не автоматическое событие при каждом открытии карты."
+          ],
+          "conditions": [
+            "Selected optional factions and known starting map; no inferred core compatibility."
+          ],
+          "profile_status": "unverified",
+          "verification_requirement": "Exact source profile and known-output examples require future product evidence SHA; unknown source edges block full coverage.",
+          "source_clause": "Последним шагом проверять2d6 контролируемые поляны, кроме stronghold, любыхEyrieRoost и базыWoodlandAlliance. На11–12 поляна становится неконтролируемой; до10 контроль сохраняется. Уже неконтролируемые не проверяют."
+        }
+      ],
+      "coverage_status": "unverified",
+      "acceptance_cases": [
+        {
+          "id": "ROOT-TO-013-L1-AC01",
+          "given": "Обычная контролируемаяX, сумма2d6=10.",
+          "when": "Выполнить заключительную проверку.",
+          "expected": "КонтрольX сохраняется."
+        },
+        {
+          "id": "ROOT-TO-013-L1-AC02",
+          "given": "Обычная контролируемаяX, кубики5и6.",
+          "when": "Выполнить заключительную проверку.",
+          "expected": "Сумма11: X становится неконтролируемой; контрольWoodlandAlliance не назначен."
+        },
+        {
+          "id": "ROOT-TO-013-L1-AC03",
+          "given": "Есть stronghold, EyrieRoost, базаAlliance и уже неконтролируемаяY.",
+          "when": "Ведущий проходит заключительный шаг.",
+          "expected": "Эти поляны пропущены без бросков данного шага."
+        }
+      ],
+      "operational_requirement_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-013-L1",
+      "evidence_ids": [],
+      "traceability_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-013-L1",
+      "own_acceptance_check": "ROOT-TO-013-L1-AC01: Обычная контролируемаяX, сумма2d6=10. Выполнить заключительную проверку. → КонтрольX сохраняется.\nROOT-TO-013-L1-AC02: Обычная контролируемаяX, кубики5и6. Выполнить заключительную проверку. → Сумма11: X становится неконтролируемой; контрольWoodlandAlliance не назначен.\nROOT-TO-013-L1-AC03: Есть stronghold, EyrieRoost, базаAlliance и уже неконтролируемаяY. Ведущий проходит заключительный шаг. → Эти поляны пропущены без бросков данного шага."
     }
   ],
   "other_games_status": "DND5 DMG2014 and bounded PF2 Remaster now analysed; other games unverified. Shared IDs do not establish parameter equivalence."
