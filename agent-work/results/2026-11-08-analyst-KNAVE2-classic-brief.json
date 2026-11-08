@@ -1,0 +1,106 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-08-analyst-KNAVE2-classic-brief",
+  "role": "business_analyst",
+  "task_id": "HX-BL-043",
+  "status": "bounded_analysis_completed_owner_direction_recorded",
+  "owner_direction": {
+    "id": "owner-direction-2026-11-08-KNAVE2-classic-before-prompts",
+    "recorded_at": "2026-11-08T11:07:23.815Z",
+    "source": "Current task chat",
+    "quote": "Подсказки knave 2e рано. Нужен классический режим под knave2e.",
+    "scope": "Bounded summary requested: classic mode checkbox Knave2e affects new map generation. Defer standalone KNAVE2-PLACE1 prompts. No inferred product implementation or release approval.",
+    "task_id": "HX-BL-043",
+    "old_stage_id": "KNAVE2-PLACE1",
+    "next_direction": "classic_KNAVE2_map_profile",
+    "result_ref": "agent-work/results/2026-11-08-analyst-KNAVE2-classic-brief.json"
+  },
+  "baseline_sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
+  "source": {
+    "file": "Knave 2e Spreads Rus.pdf",
+    "library_file_id": "libfile_8b6719d4aab88191973e2d4bb59681e8",
+    "edition": "Torbin RU1.0 11.06.2024",
+    "pages_read": [
+      8,
+      9,
+      40,
+      41
+    ],
+    "source_rule_inventory": "agent-work/market/rules/Knave-2e.json",
+    "inventory_sha": "106be460df7cc3fe6c2dc0b5008432ce41400369",
+    "limitations": [
+      "Russian translation; English/errata not collated",
+      "PDF43 returned image pointer only; example map not visually assessed in this run",
+      "Static code comparison only; no full runtime coverage audit"
+    ]
+  },
+  "proposed_adjustments": [
+    {
+      "item": "Classic checkbox and saved Knave2 profile",
+      "basis": "Explicit owner UI direction; product choice",
+      "behavior": "Apply to new map/new generation; preserve old documents. Switching checkbox does not silently regenerate existing objects."
+    },
+    {
+      "item": "Six-mile physical hex",
+      "source": "KNAVE2-005; printed8,72",
+      "behavior": "Store physical size and units separately from screen zoom. Exact geometric convention remains unspecified by source."
+    },
+    {
+      "item": "POI generation by Knave content profiles",
+      "source": "KNAVE2-020/070/071; printed1,10–11,16–17",
+      "behavior": "Reuse existing icons/POI persistence; map natural places, structures, dungeon concepts and traits to suitable generated objects. Tables may inspire content; not all location words become new biomes, nor automatically overwrite geographic rivers/lakes.",
+      "current": "Classic has own central/secondary type lists and constraints, density floor(eligible/6)..floor(eligible/4), distinct secondary kinds within region.",
+      "open": "Knave has no universal POI density, region size distribution or mandatory number of POIs. Any revised distribution must be explicit product policy, not invented book rule."
+    },
+    {
+      "item": "Difficult terrain",
+      "source": "KNAVE2-006; printed8",
+      "behavior": "Separate passability/difficulty from biome; store independent flag/annotation. Automatic biome-to-difficulty mapping is product policy; no full travel computation in L1."
+    },
+    {
+      "item": "Discovery and clues",
+      "source": "KNAVE2-009/010; printed7–8",
+      "behavior": "Distinguish visible during passage, discoverable with hex exploration, secrets found by interaction; connect secret to clue. Preparation data now; automatic reveal/fog and watch costs are later L2."
+    }
+  ],
+  "later_optional": [
+    "Settlement shrines/patrons printed32–33",
+    "Regional encounter table references",
+    "Water availability/aridity, prepared site hazards",
+    "Settlement services, NPCs, monsters and all auxiliary prompt tables"
+  ],
+  "unchanged_geography": "No separate Knave biome/river/region-size generation algorithm found in thematic source inventory; retain existing algorithms as generator choices. Example map not a mandatory distribution.",
+  "excluded": [
+    "Travel clock, watch actions, hazard die, weather, navigation and encounter resolution",
+    "Character resources/combat/spells"
+  ],
+  "recommended_first_scope": "Classic+Knave checkbox, saved profile, physical6mile scale, generated POI content profile, independent difficult terrain and discovery/clue data. Exact density/default policies remain to settle in bounded specification.",
+  "implementation_authorized": false,
+  "release_authorized": false,
+  "full_spec_prepared": false,
+  "score": {
+    "model_version": "1.2",
+    "status": "unknown/unverified",
+    "delta": null,
+    "points_awarded": 0,
+    "note": "No product implementation or full criterion assessment; current score unchanged"
+  },
+  "automation_health": {
+    "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-08T11:06:05.743Z",
+      "is_enabled": true,
+      "status": "checked"
+    },
+    "end": {
+      "checked_at": "2026-11-08T11:07:23.815Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "recovery_performed": false,
+    "errors": []
+  },
+  "next_role": "business_analyst",
+  "next_step": "Present concise source-based scope to owner, then define bounded classic-profile task after scope is settled; old standalone prompts deferred. MC1-EN approved source-file handoff unchanged.",
+  "main_changed": false
+}
