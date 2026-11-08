@@ -1,0 +1,331 @@
+{
+  "schema_version": 2,
+  "run_id": "2026-11-08T1030-WWN-hex-refinement",
+  "game_id": "WWN",
+  "source_id": "WWN-RU-DELUXE-SUPPLIED-20261106",
+  "ranking_version": "three-scenario-ranks-1.4-create-evidence",
+  "cohort_version": "2026-11-06-ranking1.4-create-evidence",
+  "primary_scenario": "create",
+  "layer": "L1",
+  "status": "research_handoff_not_specification",
+  "source": {
+    "id": "WWN-RU-DELUXE-SUPPLIED-20261106",
+    "edition": "Worlds Without Number Deluxe, copyright2021; supplied Russian translation Lock-key; translation revision and English collation unverified",
+    "filename": "WWN_RU_deluxe.pdf",
+    "library_file_id": "libfile_94c1341a09608191b716aa54fae75d21",
+    "sha256": "43497af41f345eed2ccd812d191657aafb5ad80afa8e63dd6d8bf7eb883c5d2c",
+    "size_bytes": 57492157,
+    "pdf_pages": 400,
+    "copyright": 2021,
+    "author": "Kevin Crawford",
+    "publisher": "Sine Nomine Publishing, Inc.",
+    "translator": "Lock-key",
+    "isbn": "978-1-950965-07-6",
+    "bibliographic_locator": "PDF3 copyright/contents",
+    "page_numbering": "printed page n = PDF position n+3 in this supplied file for selected pages",
+    "read_corpus": [
+      "printed120–121/PDF123–124: full two pages read; extracted only regional-step3 river/lake clauses",
+      "printed122/PDF125: context only, no additional rules registered",
+      "PDF3 bibliographic metadata only",
+      "2026-11-08: source bytes rehashed unchanged; printed120–121/PDF123–124 reopened; step2 procedure and selected table type labels reviewed, full literary table not copied",
+      "2026-11-08: original supplied bytes rehashed unchanged; printed121/PDF124 reopened, regionalstep4 through deferred-POI paragraph extracted; other material context only",
+      "2026-11-08: source hash reverified unchanged; kingdom-map paragraphs printed121–122/PDF124–125 reopened; extracted only initial inheritance paragraph and smaller-local-geography paragraph, rest context",
+      "2026-11-08: sourcehash reverified unchanged; printed122/PDF125 Уточните карту reread and extracted; no English collation"
+    ],
+    "access_level": "full_text",
+    "author_project_key": "sine-nomine:kevin-crawford:wwn-deluxe2021:ru-lock-key",
+    "deduplication": "Library originals and filename copies(1–3) are the same supplied source project, not independent evidence or GM observations.",
+    "translation_revision": null,
+    "english_collation": "unverified",
+    "accessed_at": "2026-11-08T10:32:02.216Z",
+    "limitations": [
+      "Full book is available but only stated bounded corpus read; no complete WWN thematic audit.",
+      "Source applicability is not usage prevalence or audience size.",
+      "No full book, art, or complete content table is published in derived records."
+    ]
+  },
+  "read_corpus": {
+    "printed_pages": [
+      122
+    ],
+    "pdf_pages": [
+      125
+    ],
+    "scope": "complete Refine the Map section only",
+    "source_bytes_rehashed": true,
+    "sha256": "43497af41f345eed2ccd812d191657aafb5ad80afa8e63dd6d8bf7eb883c5d2c",
+    "full_book_read": false,
+    "english_collation": "unverified"
+  },
+  "requirements": [
+    {
+      "id": "WWN-RU-KNG-002-L1",
+      "layer": "L1",
+      "requirement": "Предложить6миль как один из вариантов физического масштаба точной гекс-карты, сохраняя выбор ведущего и известность конвенции измерения. В выбранном профиле хранить один основной тип местности гекса и несколько отдельных POI, сохраняя содержимое при изменении основного типа. Не менять существующие карты автоматически.",
+      "status": "unverified",
+      "implemented": null,
+      "evidence_id": null,
+      "evidence_sha": null,
+      "canonical_rule_ids": [
+        "map.physical_hex_scale",
+        "map.terrain_zones",
+        "content.place_description"
+      ],
+      "criterion_ids": [
+        "S06-C04",
+        "S01-C05",
+        "S05-C01"
+      ],
+      "canonical_binding_ref": "agent-work/rules/game-bindings.json#WWN-RU-KNG-002-L1",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-KNG-002",
+        "normative_kind": "optional_cartographic_recommendation",
+        "applicability": "WWN suppliedRU Deluxe Refine the Map122/PDF125; optional detailed hex-map preparation, not forced migration of all campaigns/maps",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий решает, нужна ли точная гекс-карта для исследования, и при необходимости выбирает её масштаб.",
+        "inputs_and_units": {
+          "точность": "схематическая карта либо точная гекс-карта по необходимости",
+          "размер": "необязательный предложенный вариант6миль",
+          "измерение": "отдельно известная/заданная ведущим геометрическая конвенция, иначеunknown",
+          "гекс": "один основной тип местности и размещённые POIбез заданного книгой максимума"
+        },
+        "product_operation": "Предложить6миль как один из вариантов физического масштаба точной гекс-карты, сохраняя выбор ведущего и известность конвенции измерения. В выбранном профиле хранить один основной тип местности гекса и несколько отдельных POI, сохраняя содержимое при изменении основного типа. Не менять существующие карты автоматически.",
+        "expected_output": "Выбранная карта имеет известный размер/единицу и отдельно известную либо неизвестную конвенцию; у гекса различимы основной тип и несколько POI. Схематическая подготовка остаётся допустимой.",
+        "constraints_and_exceptions": [
+          "Шесть миль — популярный выбор, не универсальная обязанность и не причина пересчёта всех существующих карт.",
+          "Источник не определяет сторону/диаметр/расстояние между центрами; точную геометрию не выводить из6миль.",
+          "Несколько POIне равно фиксированным2/3объектам или обязательному максимуму; локальные отличия местности не запрещены.",
+          "Основной тип — характеристика гекса, не утверждение отсутствия любых иных объектов/местностей внутри.",
+          "Расчёт времени пути/стоимости движенияL2из этого абзаца не следует.",
+          "Сохранение, разделение zoom/физического размера и адресная правка — продуктовый перевод; API/архитектура/интерфейс не проектируются."
+        ],
+        "acceptance_cases": [
+          {
+            "id": "WWN-RU-KNG-002-L1-AC01",
+            "given": "Ведущий использует схематическую карту и не требует точных расстояний.",
+            "when": "Сохранить подготовку без выбора точной гекс-карты.",
+            "expected": "Схема сохранена; обязательные6миль/гекс и художественная детализация не навязаны."
+          },
+          {
+            "id": "WWN-RU-KNG-002-L1-AC02",
+            "given": "Ведущий явно выбрал вариант6миль и отдельно задал конвенцию «между противоположными сторонами».",
+            "when": "Сохранить выбранный физический масштаб.",
+            "expected": "Длина6, единица miles и явно выбранная конвенция сохранены; конвенция отмечена как решение ведущего, не установленная норма WWN. Zoomне подменяет физическую длину."
+          },
+          {
+            "id": "WWN-RU-KNG-002-L1-AC03",
+            "given": "Источник сообщает6миль, геометрическая конвенция не задана ведущим.",
+            "when": "Подготовить профиль масштаба по источнику.",
+            "expected": "Рекомендация6миль известна, конвенцияunknown; расстояние между центрами или сторонами не вычислено по придуманному толкованию."
+          },
+          {
+            "id": "WWN-RU-KNG-002-L1-AC04",
+            "given": "Один гексHс основным типомлес; ведущий разместил в нём триPOI — башню, руины и родник.",
+            "when": "Сохранить Hв выбранном профиле.",
+            "expected": "У Hодин основной типлес и все триPOI; одинPOIне вытеснил остальные. Три — пример, не обязательное число или верхний лимит книги."
+          },
+          {
+            "id": "WWN-RU-KNG-002-L1-AC05",
+            "given": "Hимеет основной типлес, триPOI и выбранный масштаб; ведущий меняет основной тип на холмы.",
+            "when": "Изменить основной тип H.",
+            "expected": "Основной тип сталхолмы; триPOI и физический масштаб сохранены. Пример не запрещает локальные отличия местности внутри гекса."
+          },
+          {
+            "id": "WWN-RU-KNG-002-L1-AC06",
+            "given": "СохраненыHс тремяPOI, выбранные6миль и явно заданная конвенция; другая картаGимеет5км.",
+            "when": "Сохранить и снова открыть обе карты.",
+            "expected": "Масштаб/конвенцияHи его POIсохранены; Gостаётся5км. Рекомендация WWNне переформатировала существующие карты автоматически."
+          }
+        ],
+        "source_vs_product_interpretation": "Источник — весь короткий раздел «Уточните карту»122/PDF125. Норма6миль названа рекомендацией, один основной тип и несколько POI — объяснением полезности масштаба. H/G, триPOI,5км и явная конвенция — собственные примеры решений ведущего, не дополнительные правила книги. Источник не закрывает конвенцию измерения.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.physical_hex_scale",
+          "agent-work/rules/common-rules.json#map.terrain_zones",
+          "agent-work/rules/common-rules.json#content.place_description"
+        ],
+        "unresolved_parameters": [
+          "Геометрическая конвенция шестимильного гекса не определена этим источником.",
+          "Точный верхний предел/плотность POIи правила локальной неоднородности не заданы.",
+          "Полная английская сверка и фактическая поддержка профиля наSHAне выполнены."
+        ]
+      },
+      "gap_task_ids": [
+        "HX-BL-042",
+        "HX-BL-043"
+      ],
+      "delivery": "research_handoff_not_specification",
+      "binding_registration_status": "registered_profile_unverified"
+    }
+  ],
+  "facts": [
+    {
+      "source_rule_id": "WWN-RU-KNG-002",
+      "locator": "printed122/PDF125 complete section Уточните карту, three paragraphs",
+      "paraphrase": "Уточнять карту можно по необходимости. Для гекскроула удобна точная гекс-карта;6миль названы популярным выбором с одним основным типом местности и несколькими точками интереса. Художественная детализация не обязательна.",
+      "parameters": {
+        "precision": "as_needed; schematic_map_sufficient_for_some_campaigns",
+        "recommended_hex_length": 6,
+        "unit": "miles",
+        "normative_force": "popular_choice_not_mandate",
+        "geometric_measurement_convention": "unknown",
+        "dominant_terrain_per_hex": 1,
+        "multiple_POI_per_hex": true,
+        "exact_POI_count_or_cap": "not_specified",
+        "physical_scale_vs_zoom": "distinct_product_interpretation"
+      }
+    }
+  ],
+  "interpretations": [
+    "Источник — весь короткий раздел «Уточните карту»122/PDF125. Норма6миль названа рекомендацией, один основной тип и несколько POI — объяснением полезности масштаба. H/G, триPOI,5км и явная конвенция — собственные примеры решений ведущего, не дополнительные правила книги. Источник не закрывает конвенцию измерения."
+  ],
+  "unknowns": [
+    "Геометрическая конвенция шестимильного гекса не определена этим источником.",
+    "Точный верхний предел/плотность POIи правила локальной неоднородности не заданы.",
+    "Полная английская сверка и фактическая поддержка профиля наSHAне выполнены."
+  ],
+  "product_task_handoffs": [
+    {
+      "task_id": "HX-BL-042",
+      "title": "Физический размер гекса: длина, единица и конвенция измерения",
+      "status": "proposed",
+      "problem": "WWN recommendation/profile not registered; source geometry convention unresolved.",
+      "benefit": "Ведущий выбирает понятный масштаб и сохраняет несколько POIвгексе.",
+      "game_editions": [
+        "Worlds Without Number Deluxe, copyright2021; supplied Russian translation Lock-key; translation revision and English collation unverified"
+      ],
+      "primary_scenario": "create",
+      "layer": "L1",
+      "requirement_refs": [
+        "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-KNG-002-L1"
+      ],
+      "canonical_rule_ids": [
+        "map.physical_hex_scale"
+      ],
+      "binding_refs": [
+        "agent-work/rules/game-bindings.json#WWN-RU-KNG-002-L1"
+      ],
+      "criterion_ids": [
+        "S06-C04"
+      ],
+      "scope": "Research component of existing proposed task; no automatic map migration orL2travel engine.",
+      "dependencies": [
+        "Explicit GM choice; source convention unresolved"
+      ],
+      "acceptance_checks": [
+        {
+          "id": "WWN-RU-KNG-002-L1-AC01",
+          "given": "Ведущий использует схематическую карту и не требует точных расстояний.",
+          "when": "Сохранить подготовку без выбора точной гекс-карты.",
+          "expected": "Схема сохранена; обязательные6миль/гекс и художественная детализация не навязаны.",
+          "requirement_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-KNG-002-L1"
+        },
+        {
+          "id": "WWN-RU-KNG-002-L1-AC02",
+          "given": "Ведущий явно выбрал вариант6миль и отдельно задал конвенцию «между противоположными сторонами».",
+          "when": "Сохранить выбранный физический масштаб.",
+          "expected": "Длина6, единица miles и явно выбранная конвенция сохранены; конвенция отмечена как решение ведущего, не установленная норма WWN. Zoomне подменяет физическую длину.",
+          "requirement_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-KNG-002-L1"
+        },
+        {
+          "id": "WWN-RU-KNG-002-L1-AC03",
+          "given": "Источник сообщает6миль, геометрическая конвенция не задана ведущим.",
+          "when": "Подготовить профиль масштаба по источнику.",
+          "expected": "Рекомендация6миль известна, конвенцияunknown; расстояние между центрами или сторонами не вычислено по придуманному толкованию.",
+          "requirement_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-KNG-002-L1"
+        },
+        {
+          "id": "WWN-RU-KNG-002-L1-AC06",
+          "given": "СохраненыHс тремяPOI, выбранные6миль и явно заданная конвенция; другая картаGимеет5км.",
+          "when": "Сохранить и снова открыть обе карты.",
+          "expected": "Масштаб/конвенцияHи его POIсохранены; Gостаётся5км. Рекомендация WWNне переформатировала существующие карты автоматически.",
+          "requirement_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-KNG-002-L1"
+        }
+      ],
+      "expected_evidence": {
+        "current_runtime": "unknown",
+        "future_product": "Actual selected-profile known-output checks on exactSHA"
+      },
+      "score_delta": null,
+      "source_limitations": [
+        "Full book is available but only stated bounded corpus read; no complete WWN thematic audit.",
+        "Source applicability is not usage prevalence or audience size.",
+        "No full book, art, or complete content table is published in derived records.",
+        "Геометрическая конвенция шестимильного гекса не определена этим источником.",
+        "Точный верхний предел/плотность POIи правила локальной неоднородности не заданы.",
+        "Полная английская сверка и фактическая поддержка профиля наSHAне выполнены."
+      ]
+    },
+    {
+      "task_id": "HX-BL-043",
+      "title": "Выбирать и сохранять POI по связанным таблицам",
+      "status": "proposed",
+      "problem": "WWN recommendation/profile not registered; source geometry convention unresolved.",
+      "benefit": "Ведущий выбирает понятный масштаб и сохраняет несколько POIвгексе.",
+      "game_editions": [
+        "Worlds Without Number Deluxe, copyright2021; supplied Russian translation Lock-key; translation revision and English collation unverified"
+      ],
+      "primary_scenario": "create",
+      "layer": "L1",
+      "requirement_refs": [
+        "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-KNG-002-L1"
+      ],
+      "canonical_rule_ids": [
+        "map.terrain_zones",
+        "content.place_description"
+      ],
+      "binding_refs": [
+        "agent-work/rules/game-bindings.json#WWN-RU-KNG-002-L1"
+      ],
+      "criterion_ids": [
+        "S01-C05",
+        "S05-C01"
+      ],
+      "scope": "Research component of existing proposed task; no automatic map migration orL2travel engine.",
+      "dependencies": [
+        "Explicit GM choice; source convention unresolved"
+      ],
+      "acceptance_checks": [
+        {
+          "id": "WWN-RU-KNG-002-L1-AC04",
+          "given": "Один гексHс основным типомлес; ведущий разместил в нём триPOI — башню, руины и родник.",
+          "when": "Сохранить Hв выбранном профиле.",
+          "expected": "У Hодин основной типлес и все триPOI; одинPOIне вытеснил остальные. Три — пример, не обязательное число или верхний лимит книги.",
+          "requirement_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-KNG-002-L1"
+        },
+        {
+          "id": "WWN-RU-KNG-002-L1-AC05",
+          "given": "Hимеет основной типлес, триPOI и выбранный масштаб; ведущий меняет основной тип на холмы.",
+          "when": "Изменить основной тип H.",
+          "expected": "Основной тип сталхолмы; триPOI и физический масштаб сохранены. Пример не запрещает локальные отличия местности внутри гекса.",
+          "requirement_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-KNG-002-L1"
+        },
+        {
+          "id": "WWN-RU-KNG-002-L1-AC06",
+          "given": "СохраненыHс тремяPOI, выбранные6миль и явно заданная конвенция; другая картаGимеет5км.",
+          "when": "Сохранить и снова открыть обе карты.",
+          "expected": "Масштаб/конвенцияHи его POIсохранены; Gостаётся5км. Рекомендация WWNне переформатировала существующие карты автоматически.",
+          "requirement_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-KNG-002-L1"
+        }
+      ],
+      "expected_evidence": {
+        "current_runtime": "unknown",
+        "future_product": "Actual selected-profile known-output checks on exactSHA"
+      },
+      "score_delta": null,
+      "source_limitations": [
+        "Full book is available but only stated bounded corpus read; no complete WWN thematic audit.",
+        "Source applicability is not usage prevalence or audience size.",
+        "No full book, art, or complete content table is published in derived records.",
+        "Геометрическая конвенция шестимильного гекса не определена этим источником.",
+        "Точный верхний предел/плотность POIи правила локальной неоднородности не заданы.",
+        "Полная английская сверка и фактическая поддержка профиля наSHAне выполнены."
+      ]
+    }
+  ],
+  "runtime_support": {
+    "status": "unverified",
+    "evidence_sha": null
+  },
+  "rating_changed": false,
+  "score_changed": false
+}
