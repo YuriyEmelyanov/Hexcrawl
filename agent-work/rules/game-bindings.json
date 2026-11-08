@@ -48225,6 +48225,117 @@
       "traceability_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-KNG-002-L1",
       "evidence_ids": [],
       "author_project_key": "sine-nomine:kevin-crawford:wwn-deluxe2021:ru-lock-key"
+    },
+    {
+      "id": "OSE-ORR-2026-001-L1",
+      "game_id": "OSE",
+      "edition": "Official2026 re-edited online basic/BX-derived rules reference; snapshot2026-11-08, not full Referee's Book or legacy Classic/Advanced PDF",
+      "source_rule_id": "OSE-ORR-2026-001",
+      "source_page": null,
+      "source_url": "https://www.oldschoolessentials.necroticgnome.com/rules/doku.php?id=running_adventures:designing_a_wilderness",
+      "source_id": "OSE-OFFICIAL-ORR-2026-EN",
+      "layer": "L1",
+      "normative_kind": "typical_workflow_recommendation",
+      "scope": "OSE official2026 online basic/BX-derived reference, Designing a Wilderness step2 scale clause only; earlier/full-edition equivalence unknown",
+      "source_requirement": "Предложить последовательность обзорной24миль/гекс и подробной6миль/гекс карт выбранных областей. Сохранить физические масштабы, заданные ведущим пространственные соответствия и местные подробности, не навязывая миграцию других карт и не выдумывая геометрию вложения.",
+      "canonical_rule_ids": [
+        "map.nested_scales",
+        "map.physical_hex_scale"
+      ],
+      "profiles": [
+        {
+          "rule_id": "map.nested_scales",
+          "parameters": {
+            "recommended_overview_hex_miles": 24,
+            "recommended_detail_hex_miles": 6,
+            "normative_force": "typically_not_mandatory",
+            "geometric_measurement_convention": "unknown",
+            "child_hex_tessellation": "unknown",
+            "scope": "selected_areas_finer_detail_not_all_maps"
+          },
+          "exceptions": [
+            "Typically — описание обычного подхода, не обязательное правило всех кампаний/карт.",
+            "Числа24/6не устанавливают физическую конвенцию длины гекса или схему дочерних ячеек.",
+            "Не предполагать квадратное16клеток-вложение из одного отношения чисел.",
+            "Координатный алгоритм, миграция существующих документов и live-sync не заданы этой строкой.",
+            "Сохранение/адресные правки и явные соответствия — продуктовый перевод; техническая спецификация/API/архитектура не создаются.",
+            "Новая версия онлайн-справочника не меняет автоматически состав/числа активного рейтинга OSE."
+          ],
+          "conditions": [
+            "OSE official2026 online basic/BX-derived reference, Designing a Wilderness step2 scale clause only; earlier/full-edition equivalence unknown"
+          ],
+          "profile_status": "unverified",
+          "verification_requirement": "Actual selected-profile known-output checks on exactSHA; no inherited DND5/WWN geometry/evidence."
+        },
+        {
+          "rule_id": "map.physical_hex_scale",
+          "parameters": {
+            "recommended_overview_hex_miles": 24,
+            "recommended_detail_hex_miles": 6,
+            "normative_force": "typically_not_mandatory",
+            "geometric_measurement_convention": "unknown",
+            "child_hex_tessellation": "unknown",
+            "scope": "selected_areas_finer_detail_not_all_maps"
+          },
+          "exceptions": [
+            "Typically — описание обычного подхода, не обязательное правило всех кампаний/карт.",
+            "Числа24/6не устанавливают физическую конвенцию длины гекса или схему дочерних ячеек.",
+            "Не предполагать квадратное16клеток-вложение из одного отношения чисел.",
+            "Координатный алгоритм, миграция существующих документов и live-sync не заданы этой строкой.",
+            "Сохранение/адресные правки и явные соответствия — продуктовый перевод; техническая спецификация/API/архитектура не создаются.",
+            "Новая версия онлайн-справочника не меняет автоматически состав/числа активного рейтинга OSE."
+          ],
+          "conditions": [
+            "OSE official2026 online basic/BX-derived reference, Designing a Wilderness step2 scale clause only; earlier/full-edition equivalence unknown"
+          ],
+          "profile_status": "unverified",
+          "verification_requirement": "Actual selected-profile known-output checks on exactSHA; no inherited DND5/WWN geometry/evidence."
+        }
+      ],
+      "coverage_status": "unverified",
+      "acceptance_cases": [
+        {
+          "id": "OSE-ORR-2026-001-L1-AC01",
+          "given": "Ведущий выбрал обычный рекомендованный порядок: обзорная карта и более подробная карта областиK.",
+          "when": "Задать масштабы по выбранному профилюOSE.",
+          "expected": "На обзорной карте24миль/гекс, на картеK6миль/гекс; разные физические масштабы различимы, экранный zoomне подменяет их."
+        },
+        {
+          "id": "OSE-ORR-2026-001-L1-AC02",
+          "given": "Обзорная карта24миль содержит крупныеA/R, ведущий задал их соответствие в подробнойK.",
+          "when": "Добавить подробности областиK.",
+          "expected": "Сохранены заданные соответствияA/R; местные деталиKне заменяют географию всей обзорной карты."
+        },
+        {
+          "id": "OSE-ORR-2026-001-L1-AC03",
+          "given": "Из источника известны24и6миль, конвенция измерения и схема вложения гексов не установлены.",
+          "when": "Подготовить описание двух масштабов.",
+          "expected": "Числа/единицы известны, геометрияunknown; ровно16дочернихгексов, конкретная обрезка или расстояния между вершинами не объявлены правилом."
+        },
+        {
+          "id": "OSE-ORR-2026-001-L1-AC04",
+          "given": "Ведущий уже использует карту10км/гекс и не выбрал типичный24→6профиль.",
+          "when": "Открыть подготовленную карту.",
+          "expected": "Сохранены10км; словоtypicallyне вызывает обязательную миграцию/перегенерацию существующей карты."
+        },
+        {
+          "id": "OSE-ORR-2026-001-L1-AC05",
+          "given": "НаKвыполнены локальные описательные правки, масштаб6миль; обзорная карта24мильне редактировалась.",
+          "when": "Сохранить локальные подробности.",
+          "expected": "ПравкиKсохранены; масштаб и крупныеA/Rобзорной карты не изменены автоматически. Двусторонняя синхронизация не выдана за правило книги."
+        },
+        {
+          "id": "OSE-ORR-2026-001-L1-AC06",
+          "given": "Сохранены обзорная24и подробная6миль, соответствияA/Rи авторские описания.",
+          "when": "Сохранить, изменитьzoomи снова открыть карты.",
+          "expected": "Физические24/6и известные соответствия сохранены; zoomне изменил длины; новая география не брошена автоматически."
+        }
+      ],
+      "own_acceptance_check": "Given Ведущий выбрал обычный рекомендованный порядок: обзорная карта и более подробная карта областиK. When Задать масштабы по выбранному профилюOSE. Expected На обзорной карте24миль/гекс, на картеK6миль/гекс; разные физические масштабы различимы, экранный zoomне подменяет их.; Given Обзорная карта24миль содержит крупныеA/R, ведущий задал их соответствие в подробнойK. When Добавить подробности областиK. Expected Сохранены заданные соответствияA/R; местные деталиKне заменяют географию всей обзорной карты.; Given Из источника известны24и6миль, конвенция измерения и схема вложения гексов не установлены. When Подготовить описание двух масштабов. Expected Числа/единицы известны, геометрияunknown; ровно16дочернихгексов, конкретная обрезка или расстояния между вершинами не объявлены правилом.; Given Ведущий уже использует карту10км/гекс и не выбрал типичный24→6профиль. When Открыть подготовленную карту. Expected Сохранены10км; словоtypicallyне вызывает обязательную миграцию/перегенерацию существующей карты.; Given НаKвыполнены локальные описательные правки, масштаб6миль; обзорная карта24мильне редактировалась. When Сохранить локальные подробности. Expected ПравкиKсохранены; масштаб и крупныеA/Rобзорной карты не изменены автоматически. Двусторонняя синхронизация не выдана за правило книги.; Given Сохранены обзорная24и подробная6миль, соответствияA/Rи авторские описания. When Сохранить, изменитьzoomи снова открыть карты. Expected Физические24/6и известные соответствия сохранены; zoomне изменил длины; новая география не брошена автоматически.",
+      "operational_requirement_ref": "agent-work/market/rules/OSE-ORR-2026.json#OSE-ORR-2026-001-L1",
+      "traceability_ref": "agent-work/market/rules/OSE-ORR-2026.json#OSE-ORR-2026-001-L1",
+      "evidence_ids": [],
+      "author_project_key": "necrotic-gnome:gavin-norman:ose:online-reference2026"
     }
   ],
   "other_games_status": "DND5 DMG2014 and bounded PF2 Remaster now analysed; other games unverified. Shared IDs do not establish parameter equivalence."
