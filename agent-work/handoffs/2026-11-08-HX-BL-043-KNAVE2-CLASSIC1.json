@@ -2,8 +2,8 @@
   "schema_version": 1,
   "task_id": "HX-BL-043",
   "stage_id": "KNAVE2-CLASSIC1",
-  "status": "changes_requested",
-  "role": "programmer",
+  "status": "review_ready",
+  "role": "reviewer",
   "approval_ref": "owner-approval-2026-11-08-HX-BL-043-KNAVE2-CLASSIC1",
   "implementation_allowed": true,
   "release_approved": false,
@@ -41,7 +41,7 @@
     "Independent reviewer fresh context on exactSHA after implementation"
   ],
   "next_role_after_implementation": "reviewer",
-  "next_step": "Программист: исправить KNC-REV-001 — эффективные неперекрывающиеся44×44px области нажатия source disclosures и «Отмена» только в Knave; сохранить компактность, перепроверить1500/390/320 и передать новые public/private SHA независимому проверяющему.",
+  "next_step": "Проверяющий: независимо проверить KNC-REV-001 на public d7e7a5b/private af50286, actual targets1500/390/320 и регрессии; актуализировать score_assessment1.2. Выпуск отдельно не разрешён.",
   "foreign_claim_policy": "Do not take or close Nov3 HX-BL-041 presentation claim. MC1-EN separate source-file-required handoff preserved.",
   "score_model_version": "1.2",
   "score_forecast": "unknown; no grades/points awarded",
@@ -54,185 +54,101 @@
     "S08-C04"
   ],
   "implementation_checkpoint": {
-    "head_sha": "818476e5ec653384ab216efd75db9467d698cfc4",
-    "tree_sha": "cc4968f29b0ba3218b74b7d60bd7e0ed44fca5c6",
-    "private_head_sha": "c5b3c384792ce3349e40b0cc3ccc52e3d7685d1e",
-    "private_tree_sha": "6ef5d87c0b31b133f831a8300008008db57f0d32",
+    "head_sha": "d7e7a5bd4103c0ec866f9e9a4a83fbe3222c2ef1",
+    "tree_sha": "96677619008628ee0b0f1cc2198084f9c45a667c",
+    "private_head_sha": "af50286d8ad00303a0aed1d8473e7c6dffabb349",
+    "private_tree_sha": "7ac1c58da66809ddfae1af2fdbdc794d88b79922",
     "status": "review_ready",
     "branch": "agent/knave2-classic1",
     "pr": 494,
-    "result_ref": "agent-work/results/2026-11-08T1630-programmer-HX-BL-043-private-UI.json",
+    "result_ref": "agent-work/results/2026-11-08T1802-programmer-HX-BL-043-KNC-REV-001.json",
     "checks": {
-      "public_sha": "818476e5ec653384ab216efd75db9467d698cfc4",
-      "private_sha": "c5b3c384792ce3349e40b0cc3ccc52e3d7685d1e",
-      "public_CI": {
-        "run_id": 42500822912,
-        "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42500822912",
-        "status": "completed",
-        "conclusion": "success",
-        "jobs": [
-          {
-            "name": "check",
-            "id": 128792963295,
-            "status": "completed",
-            "conclusion": "success"
-          },
-          {
-            "name": "world-random",
-            "id": 128792963551,
-            "status": "completed",
-            "conclusion": "success"
-          },
-          {
-            "name": "browser",
-            "id": 128792963584,
-            "status": "completed",
-            "conclusion": "success"
-          }
-        ],
-        "node": {
-          "executed": 361,
-          "passed": 361,
-          "failed": 0,
-          "skipped": 0
+      "public_sha": "d7e7a5bd4103c0ec866f9e9a4a83fbe3222c2ef1",
+      "ci_run_id": 42508242559,
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42508242559",
+      "jobs": [
+        {
+          "id": 128815456058,
+          "name": "check",
+          "status": "completed",
+          "conclusion": "success"
         },
-        "browser": {
-          "workflows": 8,
-          "passed": 8
+        {
+          "id": 128815456233,
+          "name": "world-random",
+          "status": "completed",
+          "conclusion": "success"
         },
-        "rng": "pass"
+        {
+          "id": 128815456312,
+          "name": "browser",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ],
+      "verified_at": "2026-11-08T18:15:43.563Z",
+      "private_focused_browser": {
+        "status": "passed",
+        "log_ref": "agent-work/evidence/KNAVE2-CLASSIC1-d7e7a5b/tags.log"
       },
-      "private": {
-        "node24_check": "pass",
+      "local_full_check_status": "passed",
+      "local_full_browser_status": "passed",
+      "local_rng_status": "passed",
+      "local_check": {
+        "exit_code": 0,
+        "node_version": "24.22.1",
+        "executed": 361,
+        "passed": 361,
+        "failed": 0,
+        "skipped": 0,
+        "cancelled": 0,
         "typescript": "pass",
         "build": "pass",
-        "node": {
-          "executed": 361,
-          "passed": 361,
-          "failed": 0,
-          "skipped": 0
-        },
-        "browser": {
-          "workflows": 8,
-          "passed": 8,
-          "failed_product_checks": 0,
-          "execution": "First4 scripts passed under npm run test:browser; navigation stopped for missing default cached executable (env override ignored). Same installed binary linked at observed cache path; remaining4 scripts passed. No source/assertion changes.",
-          "browser_version": "153.0.8010.0",
-          "raw_logs": [
-            "private-browser-first-attempt.log",
-            "private-browser-rest.log"
-          ]
-        },
-        "actual_UI": {
-          "status": "pass",
-          "temporary_scenarios": 1,
-          "steps": 6,
-          "widths": [
-            1500,
-            390,
-            320
-          ],
-          "report": "private-ui-report.json",
-          "shown_in_chat": true
-        },
-        "source_functional": {
-          "status": "pass",
-          "temporary_fixed_scenarios": 2,
-          "report": "source-functional.json"
-        }
+        "duration_ms": 813406.923239
       },
-      "limits": [
-        "One fixed generated map/extension; not exhaustive",
-        "Automated Chromium, not physical touch/assistive technology",
-        "RU source only; GM export may reveal secrets; v9 cannot read v10",
-        "Independent review and score assessment remain separate"
-      ],
-      "independent_review": false,
-      "score_awarded": false
-    },
-    "actual_UI": {
-      "status": "pass",
-      "public_sha": "818476e5ec653384ab216efd75db9467d698cfc4",
-      "private_sha": "c5b3c384792ce3349e40b0cc3ccc52e3d7685d1e",
-      "browser": "153.0.8010.0",
-      "runtime": "@sparticuz/chromium153.0.0 from npm; manually decompressed within workspace after package chown EINVAL",
-      "steps": [
-        "empty profile/no world RNG; first real Knave generation and lock",
-        "actual source text/provenance; empty secret refuses; draft excluded from JSON; Cancel",
-        "long clue/difficulty one accepted transaction; 1500/390/320; exact UndoRedo",
-        "Stay restores native focus; Escape discards draft",
-        "Save/Discard external draft gates; mode-away retains clue; normal difficulty and exact UndoRedo",
-        "v10 save/load exact; extension keeps accepted content/clue/difficulty"
-      ],
-      "metrics": [
-        {
-          "state": "invalid",
-          "width": 1500,
-          "client": 465,
-          "scroll": 465
-        },
-        {
-          "state": "invalid",
-          "width": 390,
-          "client": 356,
-          "scroll": 356
-        },
-        {
-          "state": "invalid",
-          "width": 320,
-          "client": 286,
-          "scroll": 286
-        },
-        {
-          "state": "accepted",
-          "width": 1500,
-          "client": 465,
-          "scroll": 465
-        },
-        {
-          "state": "accepted",
-          "width": 390,
-          "client": 356,
-          "scroll": 356
-        },
-        {
-          "state": "accepted",
-          "width": 320,
-          "client": 286,
-          "scroll": 286
-        }
-      ],
-      "initial_poi_count": 3,
-      "extended_poi_count": 6,
-      "page_errors": [],
-      "limitations": [
-        "One fixed generated map/extension; not exhaustive",
-        "Automated Chromium, not physical touch/assistive technology",
-        "RU source only; GM export may reveal secrets; v9 cannot read v10",
-        "Independent review and score assessment remain separate"
-      ],
-      "shown_in_chat": true,
-      "visually_inspected": true,
-      "private_images_ref": "Library artifact version2 UI/",
-      "no_horizontal_overflow": true,
-      "font_limitation": "Some emoji glyphs absent in this runtime; SVG/Cyrillic work."
+      "local_browser": {
+        "workflows": 8,
+        "passed": 8,
+        "failed": 0,
+        "browser": "Chromium153.0.8010.0",
+        "log_ref": "agent-work/evidence/KNAVE2-CLASSIC1-d7e7a5b/browser.log"
+      },
+      "local_rng": {
+        "exit_code": 0,
+        "status": "pass",
+        "log_ref": "agent-work/evidence/KNAVE2-CLASSIC1-d7e7a5b/rng.log",
+        "separate_suite": true
+      }
     },
     "private_recovery_package": {
-      "path": "/workspace/scratch/320e5b03f904/knave-browser-runtime/HexCrawl-Knave2-Classic1-runtime-private.zip",
-      "bytes": 836265,
-      "sha256": "3adbe9fa2ada0f99abc2058e8b1c6682f4c89b991882cca20f88b6cc833c6e36",
-      "files": 23,
+      "path": "/workspace/scratch/320e5b03f904/knave-fix-evidence/HexCrawl-Knave2-Classic1-runtime-private.zip",
+      "bytes": 4924298,
+      "sha256": "402692e99beddbdcc8b4152b6b901e582a5889ce67f4f3947f3ea3c3e4d7f9b0",
+      "files": 28,
       "crc_and_manifest_verified": true,
+      "full_history_bundle_verified": true,
       "library_file_id": "libfile_fde3_f-0ebe6a7f3460819191ca4308c2778835_3c7ce53bef508191bc31de4d3dfa12cc",
-      "version": 2,
+      "version": 3,
       "filename": "HexCrawl-Knave2-Classic1-runtime-private.zip"
     },
-    "remaining": [
-      "Independent exact-package acceptance with score_assessment1.2",
-      "Owner permission on concrete accepted source-bearing publication package"
-    ]
+    "actual_UI": {
+      "shown_in_chat": true,
+      "widths": [
+        1500,
+        390,
+        320
+      ],
+      "metrics_ref": "agent-work/evidence/KNAVE2-CLASSIC1-d7e7a5b/ui-results.json",
+      "summary_height_min": 44,
+      "cancel_size": [
+        64.09375,
+        44
+      ],
+      "horizontal_overflow": false,
+      "scope": "Authored fixture lifecycle plus real private seed137 map. UI source text size unchanged."
+    }
   },
-  "next_role": "programmer",
+  "next_role": "reviewer",
   "previous_implementation_checkpoints": [
     {
       "head_sha": "861d4449227d4f850eb7f805a667cae2bbcd5346",
@@ -808,6 +724,185 @@
         "Fresh independent exact-package review and score_assessment1.2 after full programmer handoff",
         "Owner decision on concrete checked public source-bearing transfer and publication; not requested before acceptance"
       ]
+    },
+    {
+      "head_sha": "818476e5ec653384ab216efd75db9467d698cfc4",
+      "tree_sha": "cc4968f29b0ba3218b74b7d60bd7e0ed44fca5c6",
+      "private_head_sha": "c5b3c384792ce3349e40b0cc3ccc52e3d7685d1e",
+      "private_tree_sha": "6ef5d87c0b31b133f831a8300008008db57f0d32",
+      "status": "review_ready",
+      "branch": "agent/knave2-classic1",
+      "pr": 494,
+      "result_ref": "agent-work/results/2026-11-08T1630-programmer-HX-BL-043-private-UI.json",
+      "checks": {
+        "public_sha": "818476e5ec653384ab216efd75db9467d698cfc4",
+        "private_sha": "c5b3c384792ce3349e40b0cc3ccc52e3d7685d1e",
+        "public_CI": {
+          "run_id": 42500822912,
+          "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42500822912",
+          "status": "completed",
+          "conclusion": "success",
+          "jobs": [
+            {
+              "name": "check",
+              "id": 128792963295,
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "name": "world-random",
+              "id": 128792963551,
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "name": "browser",
+              "id": 128792963584,
+              "status": "completed",
+              "conclusion": "success"
+            }
+          ],
+          "node": {
+            "executed": 361,
+            "passed": 361,
+            "failed": 0,
+            "skipped": 0
+          },
+          "browser": {
+            "workflows": 8,
+            "passed": 8
+          },
+          "rng": "pass"
+        },
+        "private": {
+          "node24_check": "pass",
+          "typescript": "pass",
+          "build": "pass",
+          "node": {
+            "executed": 361,
+            "passed": 361,
+            "failed": 0,
+            "skipped": 0
+          },
+          "browser": {
+            "workflows": 8,
+            "passed": 8,
+            "failed_product_checks": 0,
+            "execution": "First4 scripts passed under npm run test:browser; navigation stopped for missing default cached executable (env override ignored). Same installed binary linked at observed cache path; remaining4 scripts passed. No source/assertion changes.",
+            "browser_version": "153.0.8010.0",
+            "raw_logs": [
+              "private-browser-first-attempt.log",
+              "private-browser-rest.log"
+            ]
+          },
+          "actual_UI": {
+            "status": "pass",
+            "temporary_scenarios": 1,
+            "steps": 6,
+            "widths": [
+              1500,
+              390,
+              320
+            ],
+            "report": "private-ui-report.json",
+            "shown_in_chat": true
+          },
+          "source_functional": {
+            "status": "pass",
+            "temporary_fixed_scenarios": 2,
+            "report": "source-functional.json"
+          }
+        },
+        "limits": [
+          "One fixed generated map/extension; not exhaustive",
+          "Automated Chromium, not physical touch/assistive technology",
+          "RU source only; GM export may reveal secrets; v9 cannot read v10",
+          "Independent review and score assessment remain separate"
+        ],
+        "independent_review": false,
+        "score_awarded": false
+      },
+      "actual_UI": {
+        "status": "pass",
+        "public_sha": "818476e5ec653384ab216efd75db9467d698cfc4",
+        "private_sha": "c5b3c384792ce3349e40b0cc3ccc52e3d7685d1e",
+        "browser": "153.0.8010.0",
+        "runtime": "@sparticuz/chromium153.0.0 from npm; manually decompressed within workspace after package chown EINVAL",
+        "steps": [
+          "empty profile/no world RNG; first real Knave generation and lock",
+          "actual source text/provenance; empty secret refuses; draft excluded from JSON; Cancel",
+          "long clue/difficulty one accepted transaction; 1500/390/320; exact UndoRedo",
+          "Stay restores native focus; Escape discards draft",
+          "Save/Discard external draft gates; mode-away retains clue; normal difficulty and exact UndoRedo",
+          "v10 save/load exact; extension keeps accepted content/clue/difficulty"
+        ],
+        "metrics": [
+          {
+            "state": "invalid",
+            "width": 1500,
+            "client": 465,
+            "scroll": 465
+          },
+          {
+            "state": "invalid",
+            "width": 390,
+            "client": 356,
+            "scroll": 356
+          },
+          {
+            "state": "invalid",
+            "width": 320,
+            "client": 286,
+            "scroll": 286
+          },
+          {
+            "state": "accepted",
+            "width": 1500,
+            "client": 465,
+            "scroll": 465
+          },
+          {
+            "state": "accepted",
+            "width": 390,
+            "client": 356,
+            "scroll": 356
+          },
+          {
+            "state": "accepted",
+            "width": 320,
+            "client": 286,
+            "scroll": 286
+          }
+        ],
+        "initial_poi_count": 3,
+        "extended_poi_count": 6,
+        "page_errors": [],
+        "limitations": [
+          "One fixed generated map/extension; not exhaustive",
+          "Automated Chromium, not physical touch/assistive technology",
+          "RU source only; GM export may reveal secrets; v9 cannot read v10",
+          "Independent review and score assessment remain separate"
+        ],
+        "shown_in_chat": true,
+        "visually_inspected": true,
+        "private_images_ref": "Library artifact version2 UI/",
+        "no_horizontal_overflow": true,
+        "font_limitation": "Some emoji glyphs absent in this runtime; SVG/Cyrillic work."
+      },
+      "private_recovery_package": {
+        "path": "/workspace/scratch/320e5b03f904/knave-browser-runtime/HexCrawl-Knave2-Classic1-runtime-private.zip",
+        "bytes": 836265,
+        "sha256": "3adbe9fa2ada0f99abc2058e8b1c6682f4c89b991882cca20f88b6cc833c6e36",
+        "files": 23,
+        "crc_and_manifest_verified": true,
+        "library_file_id": "libfile_fde3_f-0ebe6a7f3460819191ca4308c2778835_3c7ce53bef508191bc31de4d3dfa12cc",
+        "version": 2,
+        "filename": "HexCrawl-Knave2-Classic1-runtime-private.zip"
+      },
+      "remaining": [
+        "Independent exact-package acceptance with score_assessment1.2",
+        "Owner permission on concrete accepted source-bearing publication package"
+      ]
     }
   ],
   "current_programmer_handoff": {
@@ -894,7 +989,7 @@
     "checks_ref": "agent-work/evidence/KNAVE2-CLASSIC1-818476e/checks.json",
     "test_change_summary_ref": "agent-work/evidence/KNAVE2-CLASSIC1-818476e/test-change-summary.json"
   },
-  "review_request_ref": "agent-work/evidence/KNAVE2-CLASSIC1-818476e/review-request.json",
+  "review_request_ref": "agent-work/evidence/KNAVE2-CLASSIC1-d7e7a5b/review-request.json",
   "review_result": {
     "verdict": "changes_requested",
     "public_sha": "818476e5ec653384ab216efd75db9467d698cfc4",
@@ -905,5 +1000,8 @@
     ],
     "score_assessment_ref": "agent-work/evidence/KNAVE2-CLASSIC1-review-c5b3c38/score-assessment.json"
   },
-  "review_request_status": "completed_changes_requested"
+  "review_request_status": "completed_changes_requested",
+  "score_assessment_status": "independent_new_SHA_assessment_required",
+  "latest_programmer_result_ref": "agent-work/results/2026-11-08T1802-programmer-HX-BL-043-KNC-REV-001.json",
+  "finding_status": "KNC-REV-001_fix_submitted_pending_independent_review"
 }
