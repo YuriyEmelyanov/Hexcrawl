@@ -6693,7 +6693,8 @@
       "game_editions": [
         "Knave2e RU Torbin1.0 2024; existing DND/PF2 only where matching component profiles are verified",
         "Shadowdark RPG Core, copyright2023; supplied filename v4.6, internal revision unverified",
-        "Root RPG — Travelers & Outsiders, First printing2021; bounded L1 supplement slice"
+        "Root RPG — Travelers & Outsiders, First printing2021; bounded L1 supplement slice",
+        "Author FAQ published17July2025; associated book printing unspecified, not a full book corpus"
       ],
       "primary_scenario": "develop",
       "layer": "L1",
@@ -6727,7 +6728,8 @@
         "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-098-L1",
         "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-099-L1",
         "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-002-L1",
-        "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-003-L1"
+        "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-003-L1",
+        "agent-work/market/rules/MB-author-FAQ-2025.json#MB-FAQ-2025-001-L1"
       ],
       "canonical_rule_ids": [
         "content.discovery_levels",
@@ -6775,7 +6777,8 @@
         "agent-work/rules/game-bindings.json#SD-CORE-098-L1",
         "agent-work/rules/game-bindings.json#SD-CORE-099-L1",
         "agent-work/rules/game-bindings.json#ROOT-TO-002-L1",
-        "agent-work/rules/game-bindings.json#ROOT-TO-003-L1"
+        "agent-work/rules/game-bindings.json#ROOT-TO-003-L1",
+        "agent-work/rules/game-bindings.json#MB-FAQ-2025-001-L1"
       ],
       "criterion_ids": [
         "S01-C02",
@@ -7113,7 +7116,8 @@
       "duplication_review": "Existing013/023/024editor and041MBtables are dependencies/reuse candidates. This task is the missing documented generic/profile behavior, not authority to rebuild them.",
       "research_handoff_refs": [
         "agent-work/research/runs/2026-11-06-SD-core-thematic-audit.json",
-        "agent-work/research/requirements/ROOT-TO-clearing-L1.md"
+        "agent-work/research/requirements/ROOT-TO-clearing-L1.md",
+        "agent-work/research/requirements/MB-player-map-L1.json"
       ],
       "source_profile_handoffs": [
         {
@@ -7422,6 +7426,98 @@
             "agent-work/rules/game-bindings.json#ROOT-TO-002-L1",
             "agent-work/rules/game-bindings.json#ROOT-TO-003-L1"
           ]
+        }
+      ],
+      "research_components": [
+        {
+          "component_id": "MB-FAQ-player-map-L1",
+          "task_id": "HX-BL-044",
+          "title": "Подготовить выбранную карту для игроков без секретных категорий MB",
+          "status": "research_handoff_product_unverified",
+          "problem": "Наличие GM-экспорта не доказывает пригодную игрокам копию; категории и доступные сведения требуют отдельного профиля. Runtime unknown.",
+          "benefit": "Мастер может передать пригодную игрокам карту, сохранив полную подготовку у себя.",
+          "game_editions": [
+            "Author FAQ published17July2025; associated book printing unspecified, not a full book corpus"
+          ],
+          "primary_scenario": "create",
+          "layer": "L1",
+          "requirement_refs": [
+            "agent-work/market/rules/MB-author-FAQ-2025.json#MB-FAQ-2025-001-L1"
+          ],
+          "canonical_rule_ids": [
+            "map.audience_views"
+          ],
+          "binding_refs": [
+            "agent-work/rules/game-bindings.json#MB-FAQ-2025-001-L1"
+          ],
+          "criterion_ids": [
+            "S06-C05",
+            "S05-C03"
+          ],
+          "scope": "Только исследовательский профиль existing proposed044 map.audience_views. Стратег выбирает проверку/объём, аналитик специфицирует; не меняет active043/041, не запускает разработку/публикацию.",
+          "dependencies": [
+            "Подготовленная GM-карта",
+            "Проверка существующего audience view/вывода до новой реализации"
+          ],
+          "acceptance_checks": [
+            {
+              "id": "MB-FAQ-2025-001-L1-AC01",
+              "given": "GM-карта содержит владение H, общий рельеф T, миф M, ориентир L и барьер B; выбран профиль FAQ.",
+              "when": "Подготовить карту для игроков.",
+              "expected": "В копии видны H/T; M/L/B не показаны. Полная GM-карта сохранена."
+            },
+            {
+              "id": "MB-FAQ-2025-001-L1-AC02",
+              "given": "У M/L/B есть названия и описания; маркеры скрыты.",
+              "when": "Показать игрокам копию, включая доступные им подписи/описания.",
+              "expected": "Названия и описания M/L/B не раскрыты через подписи или доступные сведения; скрытие одной пиктограммы не считается достаточным."
+            },
+            {
+              "id": "MB-FAQ-2025-001-L1-AC03",
+              "given": "На GM-карте секретные объекты уже подготовлены; ведущий включает и выключает представление игроков.",
+              "when": "Вернуться к GM-карте.",
+              "expected": "Мифы, ориентиры и барьеры остаются у GM на исходных местах; представление не удалило исходные данные."
+            },
+            {
+              "id": "MB-FAQ-2025-001-L1-AC04",
+              "given": "Ведущий сознательно выбрал собственный набор видимости вместо FAQ.",
+              "when": "Сохранить выбор.",
+              "expected": "FAQ не навязан всем картам; сохранён выбранный вариант. Автоматический reveal по посещению не придуман."
+            },
+            {
+              "id": "MB-FAQ-2025-001-L1-AC05",
+              "given": "Владение H находится в необычном ландшафте T, связанном с мифом M.",
+              "when": "Подготовить копию по FAQ.",
+              "expected": "H и общий рельеф T сохранены; миф M не подписан, география не заменена вымышленной обычной местностью."
+            },
+            {
+              "id": "MB-FAQ-2025-001-L1-AC06",
+              "given": "Ведущий готовит отдельный файл карты для игроков, если такой вывод поддерживается; выбран профиль FAQ.",
+              "when": "Сохранить и проверить то, что доступно получателю файла.",
+              "expected": "Доступное содержимое копии не раскрывает M/L/B; полная GM-карта не выдана как безопасная копия. Поддержка такого канала до фактической проверки unknown."
+            },
+            {
+              "id": "MB-FAQ-2025-001-L1-AC07",
+              "given": "Выбран профиль FAQ, GM-карта и видимые H/T уже сохранены.",
+              "when": "Снова открыть подготовленную копию.",
+              "expected": "H/T и выбранный набор видимости восстановлены, скрытые объекты не появились из-за повторной генерации."
+            }
+          ],
+          "expected_evidence": {
+            "current_runtime": "unknown",
+            "future_product": "Actual chosen-profile/copy channel known-output cases on exact implementationSHA; no source-to-score transfer"
+          },
+          "score_delta": null,
+          "source_limitations": [
+            "One author-practice FAQ answer only; optional/adjustable, not universal mandatory book rule.",
+            "No full book/Quickstart/realm sheet inventory or source-byte hash; other FAQ answers/comments not extracted.",
+            "Exact current app coverage and export channels unknown; source discovery is not implementation evidence.",
+            "No audience/prevalence/ratings/score inference from author practice or tool existence."
+          ],
+          "research_handoff_ref": "agent-work/research/requirements/MB-player-map-L1.json",
+          "research_result_ref": "agent-work/research/runs/2026-11-08T1630-MB-player-map.json",
+          "implementation_authorized": false,
+          "release_authorized": false
         }
       ]
     },
