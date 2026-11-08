@@ -1,0 +1,203 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-08T1300-programmer-HX-BL-043-KNAVE2-CLASSIC1",
+  "role": "programmer",
+  "task_id": "HX-BL-043",
+  "stage_id": "KNAVE2-CLASSIC1",
+  "status": "implementation_checkpoint_not_review_ready",
+  "started_at": "2026-11-08T13:03:08.123Z",
+  "completed_at": "2026-11-08T13:25:15.104Z",
+  "role_selection_reason": "Continue approved KNC-1.0 implementation from own released, remote-verified PR494 checkpoint; no competing active claim or reviewer correction.",
+  "approval_ref": "owner-approval-2026-11-08-HX-BL-043-KNAVE2-CLASSIC1",
+  "spec_ref": "agent-work/specs/HX-BL-043-KNAVE2-CLASSIC1.md",
+  "spec_version": "KNC-1.0",
+  "base_sha": "861d4449227d4f850eb7f805a667cae2bbcd5346",
+  "head_sha": "d0d759c404bd4479f96b00a06362c279bc4c99ae",
+  "tree_sha": "fabefeeb6201a8d2a4946cd22136407c83243872",
+  "local_tested_sha": "691580e",
+  "local_public_tree_match": true,
+  "branch": "agent/knave2-classic1",
+  "pr": 494,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/494",
+  "implementation_allowed": true,
+  "release_approved": false,
+  "review_ready": false,
+  "implemented": [
+    "App JSON v10 optional Knave layer and atomic validation; no automatic legacy/MB conversion",
+    "Full capture/apply/import/export/UndoRedo and separate generation failure restore; reset including empty profile",
+    "E7/E8 POI metadata remapping with difficulty remaining at coordinates",
+    "E6 separate consent loss entries; submerged difficulty retained",
+    "Generation checkpoints retain surviving annotations and confirm removal"
+  ],
+  "remaining": [
+    "Supplied-source primary-table catalog/mapping and compatible-pool generation using existing tag machinery",
+    "Compact profile checkbox and difficulty/discovery/clue editor with draft gates",
+    "Actual full-feature desktop390/320 walkthrough and independent exact-SHA review/score_assessment1.2"
+  ],
+  "checks": {
+    "node24_check": "pass",
+    "node": {
+      "executed": 358,
+      "passed": 358,
+      "failed": 0,
+      "skipped": 0
+    },
+    "build": "pass",
+    "browser": {
+      "workflows": 8,
+      "passed": 8,
+      "failed": 0,
+      "skipped": 0
+    },
+    "log_prefix": "agent-work/evidence/KNAVE2-CLASSIC1-d0d759c/",
+    "node_log_sha256": "f2c9e0c0bf923d88a09befaf324fa4bd13a0bd9a5c9a760de90b5080a5f04da4",
+    "browser_log_sha256": "9b4f4e3cbea9a29d0606b442dfd95b191f1adc1c3cc889888123c46d976ec0c2",
+    "public_ci": [
+      {
+        "id": 42483989535,
+        "status": "completed",
+        "conclusion": "skipped",
+        "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42483989535"
+      },
+      {
+        "id": 42483989642,
+        "status": "in_progress",
+        "conclusion": null,
+        "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42483989642"
+      }
+    ]
+  },
+  "test_change_summary": {
+    "base_sha": "861d4449227d4f850eb7f805a667cae2bbcd5346",
+    "head_sha": "d0d759c404bd4479f96b00a06362c279bc4c99ae",
+    "added": 0,
+    "removed": 0,
+    "modified": 12,
+    "suite": "Node",
+    "source": "TypeScript AST compares existing test() bodies in base/head, expands two ['classic','mythic'] registrations to four logical runner cases; no renames or new registrations.",
+    "case_changes": [
+      {
+        "file": "test/mapTransactions.test.mjs",
+        "name": "'all manifest saves round-trip unchanged entities, names and can continue then undo'",
+        "loops": [],
+        "kind": "modified"
+      },
+      {
+        "file": "test/mapTransactions.test.mjs",
+        "name": "'v5 obstacle IDs and counter survive migration, round-trip and history; invalid v5 is atomic'",
+        "loops": [],
+        "kind": "modified"
+      },
+      {
+        "file": "test/mapTransactions.test.mjs",
+        "name": "'E5 native v7 feature intentions and counter survive real import, edits, history and rejected files'",
+        "loops": [],
+        "kind": "modified"
+      },
+      {
+        "file": "test/mapTransactions.test.mjs",
+        "name": "'E6 real POI/name/tag losses require every explicit answer and Undo restores authored content'",
+        "loops": [],
+        "kind": "modified"
+      },
+      {
+        "file": "test/regionEditing.test.mjs",
+        "name": "`E7 App transfer keeps full POI identity/history and real reload continuation ${mode}`",
+        "loops": [
+          "['classic','mythic']"
+        ],
+        "kind": "modified"
+      },
+      {
+        "file": "test/regionEditing.test.mjs",
+        "name": "`E8 real POI move is one exact transaction with full payload and literal hex notes ${mode}`",
+        "loops": [
+          "['classic','mythic']"
+        ],
+        "kind": "modified"
+      },
+      {
+        "file": "test/saveSafety.test.mjs",
+        "name": "'E8 v8 authored POI names use real import,exact export and UndoRedo without touching hex notes'",
+        "loops": [],
+        "kind": "modified"
+      },
+      {
+        "file": "test/saveSafety.test.mjs",
+        "name": "'SEA v2-v8 metadata migration and strict v9 refusal use the real atomic importer'",
+        "loops": [],
+        "kind": "modified"
+      },
+      {
+        "file": "test/tags.test.mjs",
+        "name": "'production imported legacy map does not roll; explicit fill and separate rerolls are exact reversible transactions and v6 roundtrip'",
+        "loops": [],
+        "kind": "modified"
+      },
+      {
+        "file": "test/worldContinuation.test.mjs",
+        "name": "'v2 migration and v3 validation are deterministic and atomic with redo'",
+        "loops": [],
+        "kind": "modified"
+      }
+    ],
+    "scenario_risk": "Actual v10 import/export/history, generation-backup refusal recovery, E7/E8 owner remapping, E6 consent; other changed cases assert new export version instead of9. Existing cases reused, no duplicate suite.",
+    "reuse_or_new_reason": "Extend existing importer/editor/geometry fixture flows; source-only contract tests cannot verify React snapshot paths.",
+    "executed": 358,
+    "passed": 358,
+    "skipped": 0,
+    "failed": 0,
+    "browser": {
+      "added": 0,
+      "removed": 0,
+      "modified_scenarios": 2,
+      "reason": "Existing GM notes export and myth-material production export assertions updated from9 to10; no new scenario or suite.",
+      "workflow_executed": 8,
+      "workflow_passed": 8,
+      "workflow_skipped": 0,
+      "logical_case_execution_count": null,
+      "note": "Eight existing workflow scripts, not eight Node cases; not added to Node counts."
+    },
+    "temporary_diagnostics": "Pre-commit targeted importer/editor runs are preflight only; exact-tree full358 and8workflow outcomes are authoritative."
+  },
+  "main_changed": false,
+  "observed_main_sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
+  "score": {
+    "model_version": "1.2",
+    "criterion_ids": [
+      "S04-C04",
+      "S01-C05",
+      "S05-C02",
+      "S05-C03",
+      "S06-C05",
+      "S08-C04"
+    ],
+    "status": "Partial exact-tree lifecycle evidence; full Knave game/profile support unverified; no grade/points transition claimed",
+    "expected_delta": null,
+    "score_changed": false
+  },
+  "source_book_reread": false,
+  "source_corpus_transferred": false,
+  "ui_actual_pending": true,
+  "automation_health": {
+    "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-08T13:02:45.718Z",
+      "is_enabled": true,
+      "status": "checked"
+    },
+    "end": {
+      "checked_at": "2026-11-08T13:25:15.104Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "recovery_performed": false,
+    "errors": [],
+    "limitation": "Point-in-time checks only; future service state is not guaranteed."
+  },
+  "foreign_claims_preserved": true,
+  "blockers": [],
+  "next_role": "programmer",
+  "next_step": "Продолжить PR494 на d0d759c: подготовить каталог/совместимые пулы POI из предоставленного источника, подключить генерацию и компактный UI профиля/проходимости/обнаружения; затем actual walkthrough и независимое ревью полного нового SHA.",
+  "previous_checkpoint_ref": "agent-work/results/2026-11-08T1200-programmer-HX-BL-043-KNAVE2-CLASSIC1.json"
+}
