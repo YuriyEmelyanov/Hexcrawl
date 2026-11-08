@@ -1,0 +1,145 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-041",
+  "stage_id": "MYTH-CARD1-RECOVERY",
+  "role": "reviewer",
+  "pr": 493,
+  "head_sha": "fb0a99dfd0203aeb74d442f4705cee71345a4aae",
+  "tree_sha": "b2689ed181250bcec69ac2e949c77551fd0f85e0",
+  "verdict": "request_changes",
+  "reviewer": "fresh independent subagent /root/independent_review_493",
+  "independence": "Fresh context, detached exact-SHA build and independent pure/DOM probes",
+  "findings": [
+    {
+      "id": "F01",
+      "severity": "high",
+      "criterion": "MC1-05",
+      "title": "A draft in another visible TagRow remains unprotected and clicking the material commits it",
+      "locations": [
+        "src/App.tsx:13687",
+        "src/tags/TagRow.tsx:7",
+        "src/tags/TagRow.tsx:36"
+      ],
+      "cause": "App.materialReadBlocked does not know local editing state of other TagRow instances. editing!==null only disables material inside the same mb.myth TagRow.",
+      "reproduction": [
+        "Import the valid fictional Sea-v9 fixture and select central myth A.",
+        "Add/display region mb.land via existing Земля +; enter edit mode and edit the first region land text.",
+        "Fill UNCOMMITTED OTHER TAG DRAFT, leave the input focused.",
+        "Observe the myth material toggle remains enabled; use page.mouse.click at its actual bounding-box center."
+      ],
+      "expected": "All new material controls disabled; active input retains focus and draft; accepted document/history unchanged.",
+      "actual": "Toggle enabled=true while input focused=true. Pointer click triggers onBlur commit; textbox count becomes0, document differs from pre-draft exported JSON, activeElement becomes BODY.",
+      "evidence": [
+        "/workspace/scratch/fb5036e89339/review493-dom-probe.json",
+        "/workspace/scratch/fb5036e89339/review493-probe.mjs"
+      ],
+      "required_change": "Expose current text-draft state from every visible TagRow to the narrow material-read guard; preserve existing generic editor commit/Enter/Escape contract. Add an actual cross-row pointer/blur regression."
+    },
+    {
+      "id": "F02",
+      "severity": "medium",
+      "criterion": "MC1-09 / specification section5",
+      "title": "Removing the focused material view leaves focus on BODY",
+      "locations": [
+        "src/tags/MythMaterialView.tsx:11",
+        "src/tags/TagRow.tsx:35"
+      ],
+      "cause": "The keyed view unmount invalidates requests but has no focused-subtree fallback to the existing information container.",
+      "reproduction": [
+        "Open A material and focus an omen summary.",
+        "Invoke actual App selection handler for B, removing A material.",
+        "Separately focus A summary then import a valid accepted map changing A from myth to dwelling."
+      ],
+      "expected": "When the target/view disappears, focus moves to the existing information heading/container; no jump to BODY or old detached content.",
+      "actual": "Both independent DOM probes observed document.activeElement.tagName === BODY and information-container focus=false.",
+      "evidence": [
+        "/workspace/scratch/fb5036e89339/review493-dom-probe.json",
+        "/workspace/scratch/fb5036e89339/review493-probe.mjs"
+      ],
+      "required_change": "Restore focus for a removed focused disclosure subtree, respecting already-selected live external targets; add regression for target loss."
+    }
+  ],
+  "score_assessment": {
+    "model_version": "1.2",
+    "head_sha": "fb0a99dfd0203aeb74d442f4705cee71345a4aae",
+    "baseline_source": "MC1 specification section10 references published00190bb current-score blob02e181ea87611c5a2eca7c4142855ce38a53625b; parent to confirm canonical operational state.",
+    "published_baseline": {
+      "all_criteria_count": 50,
+      "all_criteria_status": "unverified",
+      "confirmed_points": null,
+      "unverified_weight": 1000
+    },
+    "criteria": [
+      {
+        "criterion_id": "S05-C02",
+        "weight": 35,
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "after": {
+          "grade": null,
+          "points": null,
+          "status": "insufficient_evidence"
+        },
+        "delta": null,
+        "confirmed_transition": false,
+        "quality": "Technical binding/grouped text shell demonstrated; cross-row draft regression blocks shell acceptance.",
+        "breadth": "Only fictional source-free fixtures; real narrative causes/actions/consequences and significant-POI breadth are unknown.",
+        "evidence": [
+          "MC1-01/02/03 finite checks",
+          "empty production registry",
+          "MC1-10 unverified"
+        ],
+        "limits": "No real corpus, semantic verification or all72 ledger. No product score award."
+      },
+      {
+        "criterion_id": "S08-C04",
+        "weight": 10,
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "after": {
+          "grade": null,
+          "points": null,
+          "status": "insufficient_evidence"
+        },
+        "delta": null,
+        "confirmed_transition": false,
+        "quality": "Pinned version, exact tuple/owner, isolated fallback and lazy stale guards have positive finite evidence. F01/F02 prevent current core acceptance.",
+        "breadth": "RU/EN and Mythic/Classic checked for this shell only; top5/10/20 compatibility breadth unverified.",
+        "evidence": [
+          "MC1-01/06/07/08 source/API and finite browser/pure probes",
+          "findings F01/F02"
+        ],
+        "limits": "Narrative quality not double-counted; no supported-game breadth claim; no product score award."
+      }
+    ],
+    "points_awarded": 0,
+    "published_score_changed": false,
+    "double_counting": "No grade transition confirmed, no narrative content credited under compatibility, no repeated task/release award.",
+    "release_status": "No user release authorized; any new SHA requires updated independent review."
+  },
+  "automation_health": {
+    "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-07T23:52:04.847Z",
+      "is_enabled": true
+    },
+    "end": {
+      "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "is_enabled": true,
+      "checked_at": "2026-11-07T23:56:18.902Z"
+    },
+    "restoration_performed": false,
+    "errors": [],
+    "limit": "Checks establish status only at observed timestamps."
+  },
+  "release_approved": false,
+  "product_score_changed": false,
+  "successor_candidate_sha": "2f11a4b608a7ed66f5786b3a0e151362f82d0ad8",
+  "successor_requires_fresh_verdict": true
+}
