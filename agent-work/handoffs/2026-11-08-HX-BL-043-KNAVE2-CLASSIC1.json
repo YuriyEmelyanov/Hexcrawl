@@ -2,7 +2,7 @@
   "schema_version": 1,
   "task_id": "HX-BL-043",
   "stage_id": "KNAVE2-CLASSIC1",
-  "status": "atomic_generation_private_package_checkpoint_ui_pending",
+  "status": "review_ready",
   "role": "programmer",
   "approval_ref": "owner-approval-2026-11-08-HX-BL-043-KNAVE2-CLASSIC1",
   "implementation_allowed": true,
@@ -41,7 +41,7 @@
     "Independent reviewer fresh context on exactSHA after implementation"
   ],
   "next_role_after_implementation": "reviewer",
-  "next_step": "Завершить полный desktop390/320 UI-проход частного99d0bae (Library version1), затем передать точный пакет независимому проверяющему со score_assessment1.2; старт/макет повторно не согласовывать.",
+  "next_step": "Проверяющий: независимо проверить private c5b3c38 / public818476e по KNC-1.0,400строкам/ledger300 и точным evidence; записать score_assessment1.2. Замечания вернуть программисту, после принятия предъявить владельцу точный пакет публикации.",
   "foreign_claim_policy": "Do not take or close Nov3 HX-BL-041 presentation claim. MC1-EN separate source-file-required handoff preserved.",
   "score_model_version": "1.2",
   "score_forecast": "unknown; no grades/points awarded",
@@ -54,213 +54,185 @@
     "S08-C04"
   ],
   "implementation_checkpoint": {
-    "head_sha": "16468783470c6585a6aedd82a72cfa419fe642a4",
-    "tree_sha": "72e152fc17a79f6fea66022263e610cbb104eb68",
-    "private_head_sha": "99d0bae783674389518ea6c9cff16b2e3c6a1511",
-    "private_tree_sha": "98debcf6bc37a252002679b5644f7e43a6c9fb28",
+    "head_sha": "818476e5ec653384ab216efd75db9467d698cfc4",
+    "tree_sha": "cc4968f29b0ba3218b74b7d60bd7e0ed44fca5c6",
+    "private_head_sha": "c5b3c384792ce3349e40b0cc3ccc52e3d7685d1e",
+    "private_tree_sha": "6ef5d87c0b31b133f831a8300008008db57f0d32",
+    "status": "review_ready",
     "branch": "agent/knave2-classic1",
     "pr": 494,
-    "status": "atomic_generation_private_package_checkpoint_ui_pending",
-    "result_ref": "agent-work/results/2026-11-08T1534-programmer-HX-BL-043-KNAVE2-CLASSIC1.json",
+    "result_ref": "agent-work/results/2026-11-08T1630-programmer-HX-BL-043-private-UI.json",
     "checks": {
-      "node24_check": "pass",
-      "typescript": "pass",
-      "build": "pass",
-      "node": {
-        "executed": 361,
-        "passed": 361,
-        "failed": 0,
-        "skipped": 0,
-        "runner": "node --test test/*.test.mjs",
-        "node_version": "24.22.2",
-        "job_id": 128784920435
-      },
-      "browser": {
-        "unit": "existing workflows, separate from Node cases",
-        "executed": 8,
-        "passed": 8,
-        "failed": 0,
-        "skipped": 0,
-        "job_id": 128784920237,
-        "actual_panel_ref": "agent-work/evidence/KNAVE2-CLASSIC1-1646878/actual-panel-ui.json",
-        "full_private_new_map_walkthrough": "pending"
-      },
-      "world_random": {
-        "status": "pass",
-        "job_id": 128784919984,
-        "counted_separately": true
-      },
-      "public_ci": {
-        "run_id": 42498146934,
-        "head_sha": "16468783470c6585a6aedd82a72cfa419fe642a4",
+      "public_sha": "818476e5ec653384ab216efd75db9467d698cfc4",
+      "private_sha": "c5b3c384792ce3349e40b0cc3ccc52e3d7685d1e",
+      "public_CI": {
+        "run_id": 42500822912,
+        "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42500822912",
         "status": "completed",
         "conclusion": "success",
-        "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42498146934",
         "jobs": [
           {
-            "id": 128784919984,
-            "name": "world-random",
-            "status": "completed",
-            "conclusion": "success"
-          },
-          {
-            "id": 128784920237,
-            "name": "browser",
-            "status": "completed",
-            "conclusion": "success"
-          },
-          {
-            "id": 128784920435,
             "name": "check",
+            "id": 128792963295,
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "world-random",
+            "id": 128792963551,
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "browser",
+            "id": 128792963584,
             "status": "completed",
             "conclusion": "success"
           }
-        ]
-      },
-      "local": {
-        "node_version": "24.22.1",
-        "check": "pass",
+        ],
         "node": {
           "executed": 361,
           "passed": 361,
           "failed": 0,
           "skipped": 0
         },
-        "provenance_ref": "agent-work/evidence/KNAVE2-CLASSIC1-1646878/package-provenance.json"
+        "browser": {
+          "workflows": 8,
+          "passed": 8
+        },
+        "rng": "pass"
       },
       "private": {
-        "sha": "99d0bae783674389518ea6c9cff16b2e3c6a1511",
+        "node24_check": "pass",
         "typescript": "pass",
         "build": "pass",
-        "functional_scenarios": {
-          "executed": 2,
-          "passed": 2,
+        "node": {
+          "executed": 361,
+          "passed": 361,
           "failed": 0,
-          "classification": "temporary fixed source-bearing App diagnostic; not added to permanent runner counts"
+          "skipped": 0
         },
-        "diagnostic_ref": "agent-work/evidence/KNAVE2-CLASSIC1-1646878/private-integration.json"
+        "browser": {
+          "workflows": 8,
+          "passed": 8,
+          "failed_product_checks": 0,
+          "execution": "First4 scripts passed under npm run test:browser; navigation stopped for missing default cached executable (env override ignored). Same installed binary linked at observed cache path; remaining4 scripts passed. No source/assertion changes.",
+          "browser_version": "153.0.8010.0",
+          "raw_logs": [
+            "private-browser-first-attempt.log",
+            "private-browser-rest.log"
+          ]
+        },
+        "actual_UI": {
+          "status": "pass",
+          "temporary_scenarios": 1,
+          "steps": 6,
+          "widths": [
+            1500,
+            390,
+            320
+          ],
+          "report": "private-ui-report.json",
+          "shown_in_chat": true
+        },
+        "source_functional": {
+          "status": "pass",
+          "temporary_fixed_scenarios": 2,
+          "report": "source-functional.json"
+        }
       },
-      "logs_prefix": "agent-work/evidence/KNAVE2-CLASSIC1-1646878/",
-      "first_browser_failure_ref": "agent-work/evidence/KNAVE2-CLASSIC1-17c3a1e/browser-first-failure.log",
-      "first_browser_failure_resolved_on_sha": "16468783470c6585a6aedd82a72cfa419fe642a4",
       "limits": [
-        "Finite automated Chromium regressions and fixed private source scenarios; not independent acceptance or statistical coverage",
-        "Full actual private-package UI walkthrough pending current browser-runtime limitation"
-      ]
+        "One fixed generated map/extension; not exhaustive",
+        "Automated Chromium, not physical touch/assistive technology",
+        "RU source only; GM export may reveal secrets; v9 cannot read v10",
+        "Independent review and score assessment remain separate"
+      ],
+      "independent_review": false,
+      "score_awarded": false
     },
     "actual_UI": {
-      "package_sha": "16468783470c6585a6aedd82a72cfa419fe642a4",
-      "CI_run": 42498146934,
-      "CI_job": 128784920237,
-      "CI_artifact_id": 13624786234,
-      "artifact_sha256": "63f3b37257d27b6de30a558942890c06fafcdb8b98ef977b00dc0ebcaac9d62d",
-      "inspected": true,
-      "shown_in_chat": true,
-      "scope": "Partial actual properties panel with authored fixture labels; not full new-map/private-book walkthrough",
-      "desktop": "agent-work/evidence/KNAVE2-CLASSIC1-085724c/draft-1500.png",
-      "narrow": "agent-work/evidence/KNAVE2-CLASSIC1-085724c/accepted-320.png",
-      "image_provenance": "Current1646878 CI artifact retrieved and digest/CRC verified. Inspected screenshots have exactly the same Git blob SHAs as the already persistent085724c panel images, so those immutable blobs are referenced without claiming a different UI image.",
-      "image_blobs": [
-        {
-          "file": "draft-1500.png",
-          "sha": "96bb2e3c649e51cc3cf245d0440612786d7aadbd"
-        },
-        {
-          "file": "accepted-320.png",
-          "sha": "81da36b2ab19880bd1b45fe6c7dbcd39cbcaacd0"
-        },
-        {
-          "file": "metrics.json",
-          "sha": "22ebf8fedf41da731022f73749f6729c048653b0"
-        }
+      "status": "pass",
+      "public_sha": "818476e5ec653384ab216efd75db9467d698cfc4",
+      "private_sha": "c5b3c384792ce3349e40b0cc3ccc52e3d7685d1e",
+      "browser": "153.0.8010.0",
+      "runtime": "@sparticuz/chromium153.0.0 from npm; manually decompressed within workspace after package chown EINVAL",
+      "steps": [
+        "empty profile/no world RNG; first real Knave generation and lock",
+        "actual source text/provenance; empty secret refuses; draft excluded from JSON; Cancel",
+        "long clue/difficulty one accepted transaction; 1500/390/320; exact UndoRedo",
+        "Stay restores native focus; Escape discards draft",
+        "Save/Discard external draft gates; mode-away retains clue; normal difficulty and exact UndoRedo",
+        "v10 save/load exact; extension keeps accepted content/clue/difficulty"
       ],
       "metrics": [
         {
+          "state": "invalid",
           "width": 1500,
           "client": 465,
           "scroll": 465
         },
         {
+          "state": "invalid",
           "width": 390,
           "client": 356,
           "scroll": 356
         },
         {
+          "state": "invalid",
+          "width": 320,
+          "client": 286,
+          "scroll": 286
+        },
+        {
+          "state": "accepted",
+          "width": 1500,
+          "client": 465,
+          "scroll": 465
+        },
+        {
+          "state": "accepted",
+          "width": 390,
+          "client": 356,
+          "scroll": 356
+        },
+        {
+          "state": "accepted",
           "width": 320,
           "client": 286,
           "scroll": 286
         }
       ],
-      "full_private_UI_completed": false,
+      "initial_poi_count": 3,
+      "extended_poi_count": 6,
+      "page_errors": [],
       "limitations": [
-        "Book content/current new-map flow not exercised in a browser",
-        "GM export may show secrets; no player-safe export",
-        "RU catalog is not verified EN; v9 program cannot read v10"
-      ]
+        "One fixed generated map/extension; not exhaustive",
+        "Automated Chromium, not physical touch/assistive technology",
+        "RU source only; GM export may reveal secrets; v9 cannot read v10",
+        "Independent review and score assessment remain separate"
+      ],
+      "shown_in_chat": true,
+      "visually_inspected": true,
+      "private_images_ref": "Library artifact version2 UI/",
+      "no_horizontal_overflow": true,
+      "font_limitation": "Some emoji glyphs absent in this runtime; SVG/Cyrillic work."
     },
     "private_recovery_package": {
-      "path": "/workspace/scratch/320e5b03f904/knave-catalog-work/HexCrawl-Knave2-Classic1-runtime-private.zip",
-      "bytes": 40570,
-      "sha256": "50ab5888ecbdc8dac6fa444618ac8bb81413d23027a8415914c98b432863a6a9",
-      "files": 9,
-      "crc_verified": true,
-      "manifest": {
-        "schema_version": 1,
-        "task_id": "HX-BL-043",
-        "stage_id": "KNAVE2-CLASSIC1",
-        "public_core_sha": "16468783470c6585a6aedd82a72cfa419fe642a4",
-        "private_head_sha": "99d0bae783674389518ea6c9cff16b2e3c6a1511",
-        "private_tree_sha": "98debcf6bc37a252002679b5644f7e43a6c9fb28",
-        "source_catalog_sha256": "0619799a183e10bef6cd5cb34fb9c7fb9e3dfda634832e79a1811789c02b05a3",
-        "public_transfer_allowed": false,
-        "release_allowed": false,
-        "files": {
-          "Knave2-Classic1-catalog-RU.json": {
-            "bytes": 176349,
-            "sha256": "0619799a183e10bef6cd5cb34fb9c7fb9e3dfda634832e79a1811789c02b05a3"
-          },
-          "README.md": {
-            "bytes": 1608,
-            "sha256": "6ccf54c6d6e816028032ad1a2892185460c163f568e7b3559dcccc23707eb46d"
-          },
-          "build.log": {
-            "bytes": 916,
-            "sha256": "b67472b59da7f9fe509d6eaf68442a6901efadb8fd85aed70686bda2ea9f8504"
-          },
-          "bundle-verify.log": {
-            "bytes": 333,
-            "sha256": "5b6eddc076bf1a89c7533b0cb01be12e050e05dc1bc69c1089b7c95297c9e6c2"
-          },
-          "knaveCatalogData.ts": {
-            "bytes": 93057,
-            "sha256": "0b4db48dd5bfdc370ef030efca9389bb1b3a18731cf2fa9de8740235e368e88e"
-          },
-          "private-integration.json": {
-            "bytes": 1797,
-            "sha256": "a75f1d50bc7fc405dca0178365a15c53524aab18d61514079b98e63904c182b3"
-          },
-          "private-source.bundle": {
-            "bytes": 11289,
-            "sha256": "dc59a0a381baca249cbd5ae9a71dd41640c27a860792208b70497298eaf6a8de"
-          },
-          "verify-private-app.mjs": {
-            "bytes": 4873,
-            "sha256": "9f6aef8446fc4d793b27353e2097deb2c3e9867b1fb6bdb970fda296861d92fb"
-          }
-        }
-      },
+      "path": "/workspace/scratch/320e5b03f904/knave-browser-runtime/HexCrawl-Knave2-Classic1-runtime-private.zip",
+      "bytes": 836265,
+      "sha256": "3adbe9fa2ada0f99abc2058e8b1c6682f4c89b991882cca20f88b6cc833c6e36",
+      "files": 23,
+      "crc_and_manifest_verified": true,
       "library_file_id": "libfile_fde3_f-0ebe6a7f3460819191ca4308c2778835_3c7ce53bef508191bc31de4d3dfa12cc",
-      "version": 1,
-      "filename": "HexCrawl-Knave2-Classic1-runtime-private.zip",
-      "library_status": "succeeded"
+      "version": 2,
+      "filename": "HexCrawl-Knave2-Classic1-runtime-private.zip"
     },
     "remaining": [
-      "Full actual new-map private99d0bae desktop1500/390/320 walkthrough with usable browser; source-free panel fixture preview is only partial evidence",
-      "Fresh independent exact-package review and score_assessment1.2 after full programmer handoff",
-      "Owner decision on concrete checked public source-bearing transfer and publication; not requested before acceptance"
+      "Independent exact-package acceptance with score_assessment1.2",
+      "Owner permission on concrete accepted source-bearing publication package"
     ]
   },
-  "next_role": "programmer",
+  "next_role": "reviewer",
   "previous_implementation_checkpoints": [
     {
       "head_sha": "861d4449227d4f850eb7f805a667cae2bbcd5346",
@@ -629,31 +601,270 @@
         "Complete full actual new-map desktop390/320 walkthrough including profile hint/focus, error/cancel, save/load and continuation",
         "Fresh-context independent exact-SHA review and score_assessment1.2, then concrete package/source-transfer and publication approval"
       ]
+    },
+    {
+      "head_sha": "16468783470c6585a6aedd82a72cfa419fe642a4",
+      "tree_sha": "72e152fc17a79f6fea66022263e610cbb104eb68",
+      "private_head_sha": "99d0bae783674389518ea6c9cff16b2e3c6a1511",
+      "private_tree_sha": "98debcf6bc37a252002679b5644f7e43a6c9fb28",
+      "branch": "agent/knave2-classic1",
+      "pr": 494,
+      "status": "atomic_generation_private_package_checkpoint_ui_pending",
+      "result_ref": "agent-work/results/2026-11-08T1534-programmer-HX-BL-043-KNAVE2-CLASSIC1.json",
+      "checks": {
+        "node24_check": "pass",
+        "typescript": "pass",
+        "build": "pass",
+        "node": {
+          "executed": 361,
+          "passed": 361,
+          "failed": 0,
+          "skipped": 0,
+          "runner": "node --test test/*.test.mjs",
+          "node_version": "24.22.2",
+          "job_id": 128784920435
+        },
+        "browser": {
+          "unit": "existing workflows, separate from Node cases",
+          "executed": 8,
+          "passed": 8,
+          "failed": 0,
+          "skipped": 0,
+          "job_id": 128784920237,
+          "actual_panel_ref": "agent-work/evidence/KNAVE2-CLASSIC1-1646878/actual-panel-ui.json",
+          "full_private_new_map_walkthrough": "pending"
+        },
+        "world_random": {
+          "status": "pass",
+          "job_id": 128784919984,
+          "counted_separately": true
+        },
+        "public_ci": {
+          "run_id": 42498146934,
+          "head_sha": "16468783470c6585a6aedd82a72cfa419fe642a4",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42498146934",
+          "jobs": [
+            {
+              "id": 128784919984,
+              "name": "world-random",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "id": 128784920237,
+              "name": "browser",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "id": 128784920435,
+              "name": "check",
+              "status": "completed",
+              "conclusion": "success"
+            }
+          ]
+        },
+        "local": {
+          "node_version": "24.22.1",
+          "check": "pass",
+          "node": {
+            "executed": 361,
+            "passed": 361,
+            "failed": 0,
+            "skipped": 0
+          },
+          "provenance_ref": "agent-work/evidence/KNAVE2-CLASSIC1-1646878/package-provenance.json"
+        },
+        "private": {
+          "sha": "99d0bae783674389518ea6c9cff16b2e3c6a1511",
+          "typescript": "pass",
+          "build": "pass",
+          "functional_scenarios": {
+            "executed": 2,
+            "passed": 2,
+            "failed": 0,
+            "classification": "temporary fixed source-bearing App diagnostic; not added to permanent runner counts"
+          },
+          "diagnostic_ref": "agent-work/evidence/KNAVE2-CLASSIC1-1646878/private-integration.json"
+        },
+        "logs_prefix": "agent-work/evidence/KNAVE2-CLASSIC1-1646878/",
+        "first_browser_failure_ref": "agent-work/evidence/KNAVE2-CLASSIC1-17c3a1e/browser-first-failure.log",
+        "first_browser_failure_resolved_on_sha": "16468783470c6585a6aedd82a72cfa419fe642a4",
+        "limits": [
+          "Finite automated Chromium regressions and fixed private source scenarios; not independent acceptance or statistical coverage",
+          "Full actual private-package UI walkthrough pending current browser-runtime limitation"
+        ]
+      },
+      "actual_UI": {
+        "package_sha": "16468783470c6585a6aedd82a72cfa419fe642a4",
+        "CI_run": 42498146934,
+        "CI_job": 128784920237,
+        "CI_artifact_id": 13624786234,
+        "artifact_sha256": "63f3b37257d27b6de30a558942890c06fafcdb8b98ef977b00dc0ebcaac9d62d",
+        "inspected": true,
+        "shown_in_chat": true,
+        "scope": "Partial actual properties panel with authored fixture labels; not full new-map/private-book walkthrough",
+        "desktop": "agent-work/evidence/KNAVE2-CLASSIC1-085724c/draft-1500.png",
+        "narrow": "agent-work/evidence/KNAVE2-CLASSIC1-085724c/accepted-320.png",
+        "image_provenance": "Current1646878 CI artifact retrieved and digest/CRC verified. Inspected screenshots have exactly the same Git blob SHAs as the already persistent085724c panel images, so those immutable blobs are referenced without claiming a different UI image.",
+        "image_blobs": [
+          {
+            "file": "draft-1500.png",
+            "sha": "96bb2e3c649e51cc3cf245d0440612786d7aadbd"
+          },
+          {
+            "file": "accepted-320.png",
+            "sha": "81da36b2ab19880bd1b45fe6c7dbcd39cbcaacd0"
+          },
+          {
+            "file": "metrics.json",
+            "sha": "22ebf8fedf41da731022f73749f6729c048653b0"
+          }
+        ],
+        "metrics": [
+          {
+            "width": 1500,
+            "client": 465,
+            "scroll": 465
+          },
+          {
+            "width": 390,
+            "client": 356,
+            "scroll": 356
+          },
+          {
+            "width": 320,
+            "client": 286,
+            "scroll": 286
+          }
+        ],
+        "full_private_UI_completed": false,
+        "limitations": [
+          "Book content/current new-map flow not exercised in a browser",
+          "GM export may show secrets; no player-safe export",
+          "RU catalog is not verified EN; v9 program cannot read v10"
+        ]
+      },
+      "private_recovery_package": {
+        "path": "/workspace/scratch/320e5b03f904/knave-catalog-work/HexCrawl-Knave2-Classic1-runtime-private.zip",
+        "bytes": 40570,
+        "sha256": "50ab5888ecbdc8dac6fa444618ac8bb81413d23027a8415914c98b432863a6a9",
+        "files": 9,
+        "crc_verified": true,
+        "manifest": {
+          "schema_version": 1,
+          "task_id": "HX-BL-043",
+          "stage_id": "KNAVE2-CLASSIC1",
+          "public_core_sha": "16468783470c6585a6aedd82a72cfa419fe642a4",
+          "private_head_sha": "99d0bae783674389518ea6c9cff16b2e3c6a1511",
+          "private_tree_sha": "98debcf6bc37a252002679b5644f7e43a6c9fb28",
+          "source_catalog_sha256": "0619799a183e10bef6cd5cb34fb9c7fb9e3dfda634832e79a1811789c02b05a3",
+          "public_transfer_allowed": false,
+          "release_allowed": false,
+          "files": {
+            "Knave2-Classic1-catalog-RU.json": {
+              "bytes": 176349,
+              "sha256": "0619799a183e10bef6cd5cb34fb9c7fb9e3dfda634832e79a1811789c02b05a3"
+            },
+            "README.md": {
+              "bytes": 1608,
+              "sha256": "6ccf54c6d6e816028032ad1a2892185460c163f568e7b3559dcccc23707eb46d"
+            },
+            "build.log": {
+              "bytes": 916,
+              "sha256": "b67472b59da7f9fe509d6eaf68442a6901efadb8fd85aed70686bda2ea9f8504"
+            },
+            "bundle-verify.log": {
+              "bytes": 333,
+              "sha256": "5b6eddc076bf1a89c7533b0cb01be12e050e05dc1bc69c1089b7c95297c9e6c2"
+            },
+            "knaveCatalogData.ts": {
+              "bytes": 93057,
+              "sha256": "0b4db48dd5bfdc370ef030efca9389bb1b3a18731cf2fa9de8740235e368e88e"
+            },
+            "private-integration.json": {
+              "bytes": 1797,
+              "sha256": "a75f1d50bc7fc405dca0178365a15c53524aab18d61514079b98e63904c182b3"
+            },
+            "private-source.bundle": {
+              "bytes": 11289,
+              "sha256": "dc59a0a381baca249cbd5ae9a71dd41640c27a860792208b70497298eaf6a8de"
+            },
+            "verify-private-app.mjs": {
+              "bytes": 4873,
+              "sha256": "9f6aef8446fc4d793b27353e2097deb2c3e9867b1fb6bdb970fda296861d92fb"
+            }
+          }
+        },
+        "library_file_id": "libfile_fde3_f-0ebe6a7f3460819191ca4308c2778835_3c7ce53bef508191bc31de4d3dfa12cc",
+        "version": 1,
+        "filename": "HexCrawl-Knave2-Classic1-runtime-private.zip",
+        "library_status": "succeeded"
+      },
+      "remaining": [
+        "Full actual new-map private99d0bae desktop1500/390/320 walkthrough with usable browser; source-free panel fixture preview is only partial evidence",
+        "Fresh independent exact-package review and score_assessment1.2 after full programmer handoff",
+        "Owner decision on concrete checked public source-bearing transfer and publication; not requested before acceptance"
+      ]
     }
   ],
   "current_programmer_handoff": {
     "task_id": "HX-BL-043",
     "stage_id": "KNAVE2-CLASSIC1",
-    "next_role": "programmer",
-    "authority_status": "approved_KNC1_implementation_and_validation; no additional start/design approval; no public book transfer or release",
-    "input_evidence": [
-      "agent-work/evidence/KNAVE2-CLASSIC1-1646878/implementation-private-package.json",
-      "agent-work/evidence/KNAVE2-CLASSIC1-1646878/package-provenance.json",
-      "agent-work/evidence/KNAVE2-CLASSIC1-1646878/private-integration.json",
-      "agent-work/evidence/KNAVE2-CLASSIC1-1646878/test-change-summary.json"
-    ],
-    "public_sha": "16468783470c6585a6aedd82a72cfa419fe642a4",
-    "private_sha": "99d0bae783674389518ea6c9cff16b2e3c6a1511",
-    "private_package_library_file_id": "libfile_fde3_f-0ebe6a7f3460819191ca4308c2778835_3c7ce53bef508191bc31de4d3dfa12cc",
-    "private_package_version": 1,
-    "private_package_sha256": "50ab5888ecbdc8dac6fa444618ac8bb81413d23027a8415914c98b432863a6a9",
-    "scope": "Restore exact99d0bae private bundle on1646878 public core; perform full actual KNC-A01..A11 new-map walkthrough on desktop1500/390/320 with an available browser. Correct bounded findings only; no new geography/book research/paid APIs/public source transfer.",
-    "checkable_result": "Actual new Classic→Knave→first generation→new POI→difficulty/discovery/invalid+valid clue/cancel/focus→UndoRedo→save/load→extension evidence and screenshots on exact candidate, with known GM/RU/v10 limitations shown.",
-    "completion_criterion": "All mandatory checks current on any changed SHA; full actual private-package walkthrough shown in chat and persisted; only then review_ready and fresh independent reviewer with score_assessment1.2.",
-    "current_external_dependency": "A usable browser runtime for the private package. Current local Chromium absent; cloud browser/local cross-call localhost connection refused. Does not block or disable the permanent team.",
-    "next_step": "Завершить полный desktop390/320 UI-проход частного99d0bae (Library version1), затем передать точный пакет независимому проверяющему со score_assessment1.2; старт/макет повторно не согласовывать."
+    "next_role": "reviewer",
+    "next_step": "Проверяющий: независимо проверить private c5b3c38 / public818476e по KNC-1.0,400строкам/ledger300 и точным evidence; записать score_assessment1.2. Замечания вернуть программисту, после принятия предъявить владельцу точный пакет публикации.",
+    "head_sha": "818476e5ec653384ab216efd75db9467d698cfc4",
+    "private_sha": "c5b3c384792ce3349e40b0cc3ccc52e3d7685d1e",
+    "review_request_ref": "agent-work/evidence/KNAVE2-CLASSIC1-818476e/review-request.json"
   },
-  "review_ready": false,
+  "review_ready": true,
   "full_task_complete": false,
-  "updated_at": "2026-11-08T16:21:34.695Z"
+  "updated_at": "2026-11-08T16:21:34.695Z",
+  "review_request": {
+    "task_id": "HX-BL-043",
+    "stage_id": "KNAVE2-CLASSIC1",
+    "next_role": "reviewer",
+    "public_sha": "818476e5ec653384ab216efd75db9467d698cfc4",
+    "private_sha": "c5b3c384792ce3349e40b0cc3ccc52e3d7685d1e",
+    "private_tree": "6ef5d87c0b31b133f831a8300008008db57f0d32",
+    "artifact": {
+      "path": "/workspace/scratch/320e5b03f904/knave-browser-runtime/HexCrawl-Knave2-Classic1-runtime-private.zip",
+      "bytes": 836265,
+      "sha256": "3adbe9fa2ada0f99abc2058e8b1c6682f4c89b991882cca20f88b6cc833c6e36",
+      "files": 23,
+      "crc_and_manifest_verified": true,
+      "library_file_id": "libfile_fde3_f-0ebe6a7f3460819191ca4308c2778835_3c7ce53bef508191bc31de4d3dfa12cc",
+      "version": 2,
+      "filename": "HexCrawl-Knave2-Classic1-runtime-private.zip"
+    },
+    "spec_ref": "agent-work/specs/HX-BL-043-KNAVE2-CLASSIC1.md",
+    "scope": "Independent exact-package KNC-A01..A11 verification, source mapping and regressions, test necessity and model1.2 score assessment. No new product scope, public book data or release.",
+    "source_inputs": {
+      "catalog_ref": "Private package Knave2-Classic1-catalog-RU.json,400rows",
+      "source_library_file_id": "libfile_8b6719d4aab88191973e2d4bb59681e8",
+      "source_sha256": "30cf89b9547fd0f76a56f4bcd0ab2dd0303b6be02c00500b37050ad4c71b8795",
+      "source_pages": "Bounded verification of PDF9/12 for the four approved tables; do not repeat full book research",
+      "eligibility_ref": "agent-work/evidence/KNAVE2-CLASSIC1-catalog1/eligibility-ledger.json",
+      "preparation_result_ref": "agent-work/results/2026-11-08T1441-programmer-HX-BL-043-KNAVE2-CLASSIC1.json"
+    },
+    "evidence_prefix": "agent-work/evidence/KNAVE2-CLASSIC1-818476e/",
+    "review_checks": [
+      "Use fresh-context independent agent if available, own claim and actual automation start/end peeks",
+      "Confirm private tree differs from public core only in catalog module, not permission to push that module",
+      "Validate400rows/source metadata and300row compatibility ledger, unresolved refs, neutral markers and actual physical context; no invented EN/ice/geometry/d100 for filtered pools",
+      "Exercise actual generation/save/history/edit/rollback and KNC-UI-001 notice fix, old sparse v10 content preservation, settlement/water identities",
+      "Inspect private real UI screenshots and limitations: emoji font support, finite Chromium, GM secrets visible, v9 cannot read v10",
+      "Audit necessity of cumulative PR tests versus main, not just this run's zero test delta; do not count temporary diagnostics as permanent growth",
+      "Record independent score_assessment1.2 for S04-C04,S01-C05,S05-C02,S05-C03,S06-C05,S08-C04 with unknown baselines, quality/breadth limits and no double count"
+    ],
+    "completion": "Evidence-backed findings → programmer, or independent accepted exact-SHA result plus score_assessment1.2 → concrete owner publication/source-transfer decision. Any source change requires new checks/review.",
+    "authorization_status": "Existing approved KNC-1.0 validation only; release and public Knave corpus permission absent",
+    "ui_actual_shown_in_chat": true,
+    "readiness": "review_ready",
+    "checks_ref": "agent-work/evidence/KNAVE2-CLASSIC1-818476e/checks.json",
+    "test_change_summary_ref": "agent-work/evidence/KNAVE2-CLASSIC1-818476e/test-change-summary.json"
+  },
+  "review_request_ref": "agent-work/evidence/KNAVE2-CLASSIC1-818476e/review-request.json"
 }
