@@ -1,0 +1,211 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-08T1435-OSE-town-services",
+  "source": {
+    "id": "OSE-OFFICIAL-ORR-2026-BASE-TOWN-EN",
+    "title": "OSE Online Rules Reference — Designing a Base Town",
+    "edition": "Official2026 re-edited online basic/BX-derived rules reference; snapshot2026-11-08, not full Referee's Book or legacy Classic/Advanced PDF",
+    "author": "Gavin Norman / Necrotic Gnome",
+    "publisher": "Necrotic Gnome",
+    "language": "en",
+    "url": "https://www.oldschoolessentials.necroticgnome.com/rules/doku.php?id=running_adventures:designing_a_base_town",
+    "locator": "2. Note Services, HTML259–270",
+    "printed_pages": null,
+    "pdf_pages": null,
+    "page_last_modified": "2026/10/08 02:27",
+    "accessed_at": "2026-11-08T14:36:17.603Z",
+    "access_level": "public_official_primary_text",
+    "author_project_key": "necrotic-gnome:gavin-norman:ose:online-reference2026",
+    "raw_file_hash": null,
+    "edition_verification": {
+      "official_entry": "https://necroticgnome.com/blogs/news/ose-2026-update-timeline",
+      "official_home": "https://www.oldschoolessentials.necroticgnome.com/rules/doku.php?id=start",
+      "basis": "Publisher links current reference; home says moved from2019platform to re-edited2026text; reference basic/BX-derived, examples/full books excluded."
+    },
+    "limitations": [
+      "Only Services259–270 extracted; other paragraphs returned/read as context, not extracted.",
+      "Online2026 basic/BX-derived reference; no comparison to supplied Basic Rules v1-4 PDF or full Classic/Advanced/Referee books.",
+      "No source service fee, stock, spell availability, NPC stats or numerical patrol schedule extracted.",
+      "Full book/art/tables not reproduced."
+    ],
+    "deduplication": "One official OSE work/page; mirrors/search duplicates not independent popularity/audience evidence."
+  },
+  "delivery": "research_handoff_not_specification",
+  "operational_requirements": [
+    {
+      "id": "OSE-ORR-2026-006-L1",
+      "source_rule_ref": "agent-work/market/rules/OSE-ORR-2026.json#OSE-ORR-2026-006",
+      "normative_kind": "referee_preparation_notes_with_optional_details",
+      "applicability": "OSE official2026 online basic/BX-derived Designing a Base Town step2 only",
+      "layer": "L1",
+      "trigger_or_user_action": "Ведущий наполняет или исправляет описание служб выбранного базового города.",
+      "inputs_and_units": {
+        "town": "выбранное место карты",
+        "categories": "чёрный рынок; стража; помощь в лечении; ночлег; места распространения слухов",
+        "presence": "выбор ведущего: есть/нет/неизвестно; эти три состояния — продуктовая интерпретация",
+        "notes": "авторские текстовые сведения; игровые цены/частоты/статистика не заданы этим срезом"
+      },
+      "product_operation": "Записать у базового города наличие и примечания по пяти категориям служб. Разрешить адресную правку категории и сохранение неизвестного без автозаполнения услугами или событиями.",
+      "expected_output": "У города сохранены выбранные сведения о службах; ведущий видит различие отсутствующей службы и ещё не установленного наличия, может исправить одну запись без изменения остальных.",
+      "constraints_and_exceptions": [
+        "Источник предлагает заметки о наличии, а не гарантию всех пяти служб в каждом городе.",
+        "Гильдия воров может существовать; чёрный рынок сам по себе не доказывает её наличие.",
+        "Отношение стражи к взяткам и патрули — заметки для подготовки, не численный симулятор поведения.",
+        "Перечисление видов религиозного лечения не гарантирует все виды помощи в каждом святилище; цены/уровни/заклинания не извлечены.",
+        "Место распространения слухов не равно тексту слуха или его истинности.",
+        "Сохранение/редактирование и трёхзначное состояние наличия — продуктовый перевод, не предписание интерфейса/хранения.",
+        "L2-потребление/отдых и L3-лечение/торговые проверки здесь не рассчитываются."
+      ],
+      "acceptance_cases": [
+        {
+          "id": "OSE-ORR-2026-006-L1-AC01",
+          "given": "Для города T ведущий указал чёрный рынок «есть», заметку «скупка сокровищ»; гильдия неизвестна.",
+          "when": "Записать службу.",
+          "expected": "Сохранены рынок и заметка; наличие организованной гильдии воров не выведено из рынка."
+        },
+        {
+          "id": "OSE-ORR-2026-006-L1-AC02",
+          "given": "Стража T есть; ведущий указал «взятки: неизвестно», «патрули: площадь вечером».",
+          "when": "Сохранить примечания.",
+          "expected": "Обе пометки сохранены буквально; численная частота и вероятность взятки не придуманы."
+        },
+        {
+          "id": "OSE-ORR-2026-006-L1-AC03",
+          "given": "В T выбран храм H с записью «лечит раны; болезни/воскрешение неизвестны».",
+          "when": "Записать помощь в лечении.",
+          "expected": "Запись сохранена; лечение болезней и воскрешение не объявлены доступными автоматически."
+        },
+        {
+          "id": "OSE-ORR-2026-006-L1-AC04",
+          "given": "Для T ведущий указал «ночлега нет»; остальные службы не исследованы.",
+          "when": "Сохранить базовый город.",
+          "expected": "Ночлег отмечен отсутствующим, остальные службы остаются unknown; гостиница не создана автоматически."
+        },
+        {
+          "id": "OSE-ORR-2026-006-L1-AC05",
+          "given": "У T записано место слухов «доска у ворот», без текстов слухов.",
+          "when": "Сохранить службу слухов.",
+          "expected": "Сохранено место распространения слухов; сами слухи, их истинность и новые подземелья не сгенерированы."
+        },
+        {
+          "id": "OSE-ORR-2026-006-L1-AC06",
+          "given": "Ночлег T был «неизвестно»; ведущий меняет его на «есть, комнаты у мельника».",
+          "when": "Редактировать только ночлег.",
+          "expected": "Сохранено новое значение и примечание; рынок, стража, лечение, слухи и география не изменены."
+        },
+        {
+          "id": "OSE-ORR-2026-006-L1-AC07",
+          "given": "Для T сохранены разные статусы и все примечания по пяти категориям.",
+          "when": "Сохранить и снова открыть карту.",
+          "expected": "Статусы и текст восстановлены без переопределения unknown как «нет» и без повторных бросков."
+        }
+      ],
+      "source_vs_product_interpretation": "Факт источника: ведущий делает заметки о наличии перечисленных служб и отдельных возможных деталях. Продуктовый перевод: хранить выбранное наличие/неизвестность и текст у города с адресной правкой и проверяемым восстановлением. Это не спецификация и не доказательство реализации.",
+      "canonical_rule_refs": [
+        "content.place_description"
+      ],
+      "unresolved_parameters": [
+        "Полнота услуг, цены, запас товаров и уровни доступного лечения.",
+        "Численные патрули и механика взяток.",
+        "Городские NPC/правитель и тексты слухов из других пунктов страницы.",
+        "Переданный владельцем Basic Rules v1-4 PDF ещё не сверён с этим online-корпусом."
+      ]
+    }
+  ],
+  "canonical_reuse": {
+    "existing_rules": [
+      "content.place_description"
+    ],
+    "new_generic_rules": 0
+  },
+  "product_support": "unverified",
+  "score_delta": null,
+  "rating_changed": false,
+  "product_task_handoffs": [
+    {
+      "task_id": "HX-BL-052",
+      "title": "Сохранять наличие и примечания служб базового города",
+      "status": "proposed",
+      "problem": "Сведения о службах не должны превращать неизвестное в отсутствие либо автоматически обещать все виды лечения/организованную гильдию. Фактическая поддержка продукта unknown.",
+      "benefit": "Мастер сохраняет пригодную к игре базу и адресно дополняет неизвестные сведения.",
+      "game_editions": [
+        "Official2026 re-edited online basic/BX-derived rules reference; snapshot2026-11-08, not full Referee's Book or legacy Classic/Advanced PDF"
+      ],
+      "primary_scenario": "create",
+      "layer": "L1",
+      "requirement_refs": [
+        "agent-work/market/rules/OSE-ORR-2026.json#OSE-ORR-2026-006-L1"
+      ],
+      "canonical_rule_ids": [
+        "content.place_description"
+      ],
+      "binding_refs": [
+        "agent-work/rules/game-bindings.json#OSE-ORR-2026-006-L1"
+      ],
+      "criterion_ids": [
+        "S05-C01",
+        "S05-C02"
+      ],
+      "scope": "Исследовательский компонент existing proposed052 о подготовке базы; только записи служб/примечаний. Без цен, бросков, лечения, патрулей, схем/API/интерфейсной спецификации.",
+      "dependencies": [
+        "Выбор существующего города",
+        "Стратег выбирает объём, аналитик специфицирует; перед реализацией проверить переиспользование заметок/редактирования"
+      ],
+      "acceptance_checks": [
+        {
+          "id": "OSE-ORR-2026-006-L1-AC01",
+          "given": "Для города T ведущий указал чёрный рынок «есть», заметку «скупка сокровищ»; гильдия неизвестна.",
+          "when": "Записать службу.",
+          "expected": "Сохранены рынок и заметка; наличие организованной гильдии воров не выведено из рынка."
+        },
+        {
+          "id": "OSE-ORR-2026-006-L1-AC02",
+          "given": "Стража T есть; ведущий указал «взятки: неизвестно», «патрули: площадь вечером».",
+          "when": "Сохранить примечания.",
+          "expected": "Обе пометки сохранены буквально; численная частота и вероятность взятки не придуманы."
+        },
+        {
+          "id": "OSE-ORR-2026-006-L1-AC03",
+          "given": "В T выбран храм H с записью «лечит раны; болезни/воскрешение неизвестны».",
+          "when": "Записать помощь в лечении.",
+          "expected": "Запись сохранена; лечение болезней и воскрешение не объявлены доступными автоматически."
+        },
+        {
+          "id": "OSE-ORR-2026-006-L1-AC04",
+          "given": "Для T ведущий указал «ночлега нет»; остальные службы не исследованы.",
+          "when": "Сохранить базовый город.",
+          "expected": "Ночлег отмечен отсутствующим, остальные службы остаются unknown; гостиница не создана автоматически."
+        },
+        {
+          "id": "OSE-ORR-2026-006-L1-AC05",
+          "given": "У T записано место слухов «доска у ворот», без текстов слухов.",
+          "when": "Сохранить службу слухов.",
+          "expected": "Сохранено место распространения слухов; сами слухи, их истинность и новые подземелья не сгенерированы."
+        },
+        {
+          "id": "OSE-ORR-2026-006-L1-AC06",
+          "given": "Ночлег T был «неизвестно»; ведущий меняет его на «есть, комнаты у мельника».",
+          "when": "Редактировать только ночлег.",
+          "expected": "Сохранено новое значение и примечание; рынок, стража, лечение, слухи и география не изменены."
+        },
+        {
+          "id": "OSE-ORR-2026-006-L1-AC07",
+          "given": "Для T сохранены разные статусы и все примечания по пяти категориям.",
+          "when": "Сохранить и снова открыть карту.",
+          "expected": "Статусы и текст восстановлены без переопределения unknown как «нет» и без повторных бросков."
+        }
+      ],
+      "expected_evidence": {
+        "current_runtime": "unknown",
+        "future_product": "Known-output cases and saved edited notes on exact implementation SHA"
+      },
+      "score_delta": null,
+      "source_limitations": [
+        "Only Services259–270 extracted; other paragraphs returned/read as context, not extracted.",
+        "Online2026 basic/BX-derived reference; no comparison to supplied Basic Rules v1-4 PDF or full Classic/Advanced/Referee books.",
+        "No source service fee, stock, spell availability, NPC stats or numerical patrol schedule extracted.",
+        "Full book/art/tables not reproduced."
+      ]
+    }
+  ]
+}

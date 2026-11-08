@@ -3,7 +3,7 @@
   "game_id": "OSE",
   "source_id": "OSE-OFFICIAL-ORR-2026-EN",
   "date": "2026-11-08",
-  "status": "partial_official2026_scale_realms_base_sites_product_unverified",
+  "status": "partial_official2026_source_profiles_product_unverified",
   "source": {
     "id": "OSE-OFFICIAL-ORR-2026-EN",
     "title": "OSE Online Rules Reference — Designing a Wilderness",
@@ -703,20 +703,165 @@
           "reason": "Размещение не разрешает нападения/встречи."
         }
       ]
+    },
+    {
+      "id": "OSE-ORR-2026-006",
+      "title": "Наличие и примечания служб базового города",
+      "rule": {
+        "source_id": "OSE-OFFICIAL-ORR-2026-BASE-TOWN-EN",
+        "url": "https://www.oldschoolessentials.necroticgnome.com/rules/doku.php?id=running_adventures:designing_a_base_town",
+        "printed_page": null,
+        "pdf_page": null,
+        "section": "2. Note Services",
+        "locator": "2. Note Services, HTML259–270",
+        "paraphrase": "Отметить наличие служб, полезных приключенцам, и возможные подробности; не делать необоснованный вывод о доступности каждой услуги.",
+        "parameters": {
+          "service_categories": [
+            "black_market",
+            "guard",
+            "healing",
+            "lodgings",
+            "rumour_locations"
+          ],
+          "organised_thieves_guild": "may_exist",
+          "bribery_and_patrol_notes": "useful_to_note",
+          "numerical_rules": "not_given"
+        },
+        "normative_kind": "referee_preparation_notes_with_optional_details"
+      },
+      "comparison": {
+        "canonical_reuse": [
+          "content.place_description"
+        ],
+        "new_generic_rule": false,
+        "rationale": "Службы — подготовленное содержимое места; переиспользуется общее описание, без нового движка торговли, лечения и патрулей.",
+        "parameter_equivalence": "Source-specific notes, not inherited numeric procedures or evidence"
+      },
+      "requirements": [
+        {
+          "id": "OSE-ORR-2026-006-L1",
+          "layer": "L1",
+          "requirement": "Записать у базового города наличие и примечания по пяти категориям служб. Разрешить адресную правку категории и сохранение неизвестного без автозаполнения услугами или событиями.",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "evidence_sha": null,
+          "canonical_rule_ids": [
+            "content.place_description"
+          ],
+          "criterion_ids": [
+            "S05-C01",
+            "S05-C02"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#OSE-ORR-2026-006-L1",
+          "operational_requirement": {
+            "source_rule_ref": "agent-work/market/rules/OSE-ORR-2026.json#OSE-ORR-2026-006",
+            "normative_kind": "referee_preparation_notes_with_optional_details",
+            "applicability": "OSE official2026 online basic/BX-derived Designing a Base Town step2 only",
+            "layer": "L1",
+            "trigger_or_user_action": "Ведущий наполняет или исправляет описание служб выбранного базового города.",
+            "inputs_and_units": {
+              "town": "выбранное место карты",
+              "categories": "чёрный рынок; стража; помощь в лечении; ночлег; места распространения слухов",
+              "presence": "выбор ведущего: есть/нет/неизвестно; эти три состояния — продуктовая интерпретация",
+              "notes": "авторские текстовые сведения; игровые цены/частоты/статистика не заданы этим срезом"
+            },
+            "product_operation": "Записать у базового города наличие и примечания по пяти категориям служб. Разрешить адресную правку категории и сохранение неизвестного без автозаполнения услугами или событиями.",
+            "expected_output": "У города сохранены выбранные сведения о службах; ведущий видит различие отсутствующей службы и ещё не установленного наличия, может исправить одну запись без изменения остальных.",
+            "constraints_and_exceptions": [
+              "Источник предлагает заметки о наличии, а не гарантию всех пяти служб в каждом городе.",
+              "Гильдия воров может существовать; чёрный рынок сам по себе не доказывает её наличие.",
+              "Отношение стражи к взяткам и патрули — заметки для подготовки, не численный симулятор поведения.",
+              "Перечисление видов религиозного лечения не гарантирует все виды помощи в каждом святилище; цены/уровни/заклинания не извлечены.",
+              "Место распространения слухов не равно тексту слуха или его истинности.",
+              "Сохранение/редактирование и трёхзначное состояние наличия — продуктовый перевод, не предписание интерфейса/хранения.",
+              "L2-потребление/отдых и L3-лечение/торговые проверки здесь не рассчитываются."
+            ],
+            "acceptance_cases": [
+              {
+                "id": "OSE-ORR-2026-006-L1-AC01",
+                "given": "Для города T ведущий указал чёрный рынок «есть», заметку «скупка сокровищ»; гильдия неизвестна.",
+                "when": "Записать службу.",
+                "expected": "Сохранены рынок и заметка; наличие организованной гильдии воров не выведено из рынка."
+              },
+              {
+                "id": "OSE-ORR-2026-006-L1-AC02",
+                "given": "Стража T есть; ведущий указал «взятки: неизвестно», «патрули: площадь вечером».",
+                "when": "Сохранить примечания.",
+                "expected": "Обе пометки сохранены буквально; численная частота и вероятность взятки не придуманы."
+              },
+              {
+                "id": "OSE-ORR-2026-006-L1-AC03",
+                "given": "В T выбран храм H с записью «лечит раны; болезни/воскрешение неизвестны».",
+                "when": "Записать помощь в лечении.",
+                "expected": "Запись сохранена; лечение болезней и воскрешение не объявлены доступными автоматически."
+              },
+              {
+                "id": "OSE-ORR-2026-006-L1-AC04",
+                "given": "Для T ведущий указал «ночлега нет»; остальные службы не исследованы.",
+                "when": "Сохранить базовый город.",
+                "expected": "Ночлег отмечен отсутствующим, остальные службы остаются unknown; гостиница не создана автоматически."
+              },
+              {
+                "id": "OSE-ORR-2026-006-L1-AC05",
+                "given": "У T записано место слухов «доска у ворот», без текстов слухов.",
+                "when": "Сохранить службу слухов.",
+                "expected": "Сохранено место распространения слухов; сами слухи, их истинность и новые подземелья не сгенерированы."
+              },
+              {
+                "id": "OSE-ORR-2026-006-L1-AC06",
+                "given": "Ночлег T был «неизвестно»; ведущий меняет его на «есть, комнаты у мельника».",
+                "when": "Редактировать только ночлег.",
+                "expected": "Сохранено новое значение и примечание; рынок, стража, лечение, слухи и география не изменены."
+              },
+              {
+                "id": "OSE-ORR-2026-006-L1-AC07",
+                "given": "Для T сохранены разные статусы и все примечания по пяти категориям.",
+                "when": "Сохранить и снова открыть карту.",
+                "expected": "Статусы и текст восстановлены без переопределения unknown как «нет» и без повторных бросков."
+              }
+            ],
+            "source_vs_product_interpretation": "Факт источника: ведущий делает заметки о наличии перечисленных служб и отдельных возможных деталях. Продуктовый перевод: хранить выбранное наличие/неизвестность и текст у города с адресной правкой и проверяемым восстановлением. Это не спецификация и не доказательство реализации.",
+            "canonical_rule_refs": [
+              "content.place_description"
+            ],
+            "unresolved_parameters": [
+              "Полнота услуг, цены, запас товаров и уровни доступного лечения.",
+              "Численные патрули и механика взяток.",
+              "Городские NPC/правитель и тексты слухов из других пунктов страницы.",
+              "Переданный владельцем Basic Rules v1-4 PDF ещё не сверён с этим online-корпусом."
+            ]
+          },
+          "gap_task_ids": [
+            "HX-BL-052"
+          ],
+          "delivery": "research_handoff_not_specification"
+        },
+        {
+          "layer": "L2",
+          "status": "not_applicable",
+          "reason": "Запись наличия не разрешает отдых/движение."
+        },
+        {
+          "layer": "L3",
+          "status": "not_extracted_dependency",
+          "reason": "Численные действия служб требуют самостоятельных источников."
+        }
+      ]
     }
   ],
   "comparison_summary": {
-    "source_rules": 5,
-    "L1_requirements": 5,
-    "acceptance_examples": 26,
+    "source_rules": 6,
+    "L1_requirements": 6,
+    "acceptance_examples": 33,
     "canonical_used": 5,
     "new_canonical_rules": 0
   },
   "completeness": {
     "status": "partial_checkpoint",
     "full_game_read": false,
-    "reviewed": "Designing a Wilderness page read; Scale256, human/intelligent realms257–265, base town/dungeons267–273 extracted",
-    "context_only": "Step1, major terrain255, optional monsters266 and encounter tables274–277 not extracted; no crossreferences followed",
+    "reviewed": "Designing a Wilderness page read; Scale256, human/intelligent realms257–265, base town/dungeons267–273 extracted; Designing a Base Town page read, only Services259–270 extracted",
+    "context_only": "Step1, major terrain255, optional monsters266 and encounter tables274–277 not extracted; no crossreferences followed; BaseTown size248–258/ruler271–273/NPC275–277/rumours278–280 context only",
     "unreviewed": "Full reference/full books and other dependencies",
     "ledger_ref": "agent-work/market/rules/OSE-ORR-2026-coverage-ledger.json"
   },
@@ -726,7 +871,11 @@
     "Сверка старого OSE SRD/Classic/AdvancedPDFи всей редакции2026не выполнялась.",
     "Runtime/evidenceSHAпо этому профилюunknown.",
     "Владения: перекрытия/границы, численные пороги и распространение власти на отдельные места не определены; optional monsters266 пока не разобраны.",
-    "Base town/dungeons: близость к центру/дороге/реке, день пути и слишком близко не нормированы числами; Designing a Base Town не прочитан."
+    "Base town/dungeons: близость к центру/дороге/реке, день пути и слишком близко не нормированы числами; Designing a Base Town не прочитан.",
+    "Полнота услуг, цены, запас товаров и уровни доступного лечения.",
+    "Численные патрули и механика взяток.",
+    "Городские NPC/правитель и тексты слухов из других пунктов страницы.",
+    "Переданный владельцем Basic Rules v1-4 PDF ещё не сверён с этим online-корпусом."
   ],
   "shared_rules": {
     "registry": "agent-work/rules/common-rules.json",
@@ -735,5 +884,65 @@
   },
   "runtime_support": "unverified",
   "rating_changed": false,
-  "score_changed": false
+  "score_changed": false,
+  "sources": [
+    {
+      "id": "OSE-OFFICIAL-ORR-2026-EN",
+      "title": "OSE Online Rules Reference — Designing a Wilderness",
+      "edition": "Official2026 re-edited online basic/BX-derived rules reference; snapshot2026-11-08, not full Referee's Book or legacy Classic/Advanced PDF",
+      "author": "Gavin Norman / Necrotic Gnome",
+      "publisher": "Necrotic Gnome",
+      "language": "en",
+      "url": "https://www.oldschoolessentials.necroticgnome.com/rules/doku.php?id=running_adventures:designing_a_wilderness",
+      "locator": "HTML256–265 and267–273; Scale, human/intelligent realms, base town and dungeons",
+      "printed_pages": null,
+      "pdf_pages": null,
+      "page_last_modified": "2026/08/02 18:03",
+      "accessed_at": "2026-11-08T13:29:16.086Z",
+      "access_level": "public_official_primary_text",
+      "author_project_key": "necrotic-gnome:gavin-norman:ose:online-reference2026",
+      "raw_file_hash": null,
+      "edition_verification": {
+        "official_entry": "https://necroticgnome.com/blogs/news/ose-2026-update-timeline",
+        "official_home": "https://www.oldschoolessentials.necroticgnome.com/rules/doku.php?id=start",
+        "basis": "Publisher links current reference; home says moved from2019platform to re-edited2026text; reference basic/BX-derived, examples/full books excluded."
+      },
+      "limitations": [
+        "Extracted Scale, intelligent realms and base town/dungeon placement only; major terrain, optional monster266, regional encounters and crossreferences not extracted.",
+        "No equivalence with all previous Classic/Advanced printings or full2026Referee's Book inferred.",
+        "No full source/book/literary tables copied; primary source paraphrase only.",
+        "Geometric hex measurement convention and coordinate subdivision not specified in selected clause."
+      ],
+      "deduplication": "One official OSE work/page; mirrors/search duplicates not independent popularity/audience evidence."
+    },
+    {
+      "id": "OSE-OFFICIAL-ORR-2026-BASE-TOWN-EN",
+      "title": "OSE Online Rules Reference — Designing a Base Town",
+      "edition": "Official2026 re-edited online basic/BX-derived rules reference; snapshot2026-11-08, not full Referee's Book or legacy Classic/Advanced PDF",
+      "author": "Gavin Norman / Necrotic Gnome",
+      "publisher": "Necrotic Gnome",
+      "language": "en",
+      "url": "https://www.oldschoolessentials.necroticgnome.com/rules/doku.php?id=running_adventures:designing_a_base_town",
+      "locator": "2. Note Services, HTML259–270",
+      "printed_pages": null,
+      "pdf_pages": null,
+      "page_last_modified": "2026/10/08 02:27",
+      "accessed_at": "2026-11-08T14:36:17.603Z",
+      "access_level": "public_official_primary_text",
+      "author_project_key": "necrotic-gnome:gavin-norman:ose:online-reference2026",
+      "raw_file_hash": null,
+      "edition_verification": {
+        "official_entry": "https://necroticgnome.com/blogs/news/ose-2026-update-timeline",
+        "official_home": "https://www.oldschoolessentials.necroticgnome.com/rules/doku.php?id=start",
+        "basis": "Publisher links current reference; home says moved from2019platform to re-edited2026text; reference basic/BX-derived, examples/full books excluded."
+      },
+      "limitations": [
+        "Only Services259–270 extracted; other paragraphs returned/read as context, not extracted.",
+        "Online2026 basic/BX-derived reference; no comparison to supplied Basic Rules v1-4 PDF or full Classic/Advanced/Referee books.",
+        "No source service fee, stock, spell availability, NPC stats or numerical patrol schedule extracted.",
+        "Full book/art/tables not reproduced."
+      ],
+      "deduplication": "One official OSE work/page; mirrors/search duplicates not independent popularity/audience evidence."
+    }
+  ]
 }
