@@ -1,0 +1,144 @@
+{
+  "task_id": "HX-BL-006",
+  "title": "Подготавливать сеть полян Root с ограничениями количества, имён и путей",
+  "status": "proposed",
+  "problem": "Простое размещение POI и дорог не доказывает выполнение профиля12полян, лимитов сообществ, учёта входящего пути и уникальных имён.",
+  "benefit": "Ведущий готовит связанный Лес по базовой процедуре Root и сохраняет право выбора готовой карты и судьбы незавершённых путей.",
+  "game_editions": [
+    "Root RPG Core, First printing2021, map skeleton printed225–227; faction choice224 contextual only"
+  ],
+  "primary_scenario": "create",
+  "layer": "L1",
+  "requirement_refs": [
+    "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-001-L1",
+    "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-002-L1",
+    "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-003-L1",
+    "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-004-L1"
+  ],
+  "canonical_rule_ids": [
+    "content.site_density",
+    "content.roll_table_resolution",
+    "content.place_description",
+    "map.routes_and_barriers"
+  ],
+  "binding_refs": [
+    "agent-work/rules/game-bindings.json#ROOT-CORE-001-L1",
+    "agent-work/rules/game-bindings.json#ROOT-CORE-002-L1",
+    "agent-work/rules/game-bindings.json#ROOT-CORE-003-L1",
+    "agent-work/rules/game-bindings.json#ROOT-CORE-004-L1"
+  ],
+  "criterion_ids": [
+    "S05-C01",
+    "S07-C02",
+    "S05-C02",
+    "S01-C04",
+    "S01-C05",
+    "S06-C04",
+    "S01-C02"
+  ],
+  "scope": "Исследовательская передача: 12полян; сообщества и ограничение4; общий план путей с существующим входом; уникальные имена. Не спецификация алгоритма укладки или интерфейса. Контроль/симуляция фракций, путешествия и дополнительные таблицы вне среза.",
+  "dependencies": [
+    "Стратег выбирает продуктовый приоритет; аналитик готовит спецификацию.",
+    "Сверка точной издательской PDF и импорт полной таблицы имён — отдельная работа при необходимости."
+  ],
+  "acceptance_checks": [
+    {
+      "id": "ROOT-CORE-001-L1-AC01",
+      "given": "Выбрана новая карта стандартного Леса.",
+      "when": "Завершить добавление полян.",
+      "expected": "Всего12полян; число гексов не выведено из этого правила.",
+      "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-001-L1"
+    },
+    {
+      "id": "ROOT-CORE-001-L1-AC02",
+      "given": "Готовая карта содержит12названных полян и подготовленные связи.",
+      "when": "Выбрать её для кампании.",
+      "expected": "Названия, положения и связи сохранены; новые броски карты не выполнены.",
+      "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-001-L1"
+    },
+    {
+      "id": "ROOT-CORE-002-L1-AC01",
+      "given": "Кроличьих полян ещё нет; заданd6=2.",
+      "when": "Выбрать сообщество.",
+      "expected": "Преобладают кролики; существование мышей/лис на поляне не отрицается.",
+      "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-002-L1"
+    },
+    {
+      "id": "ROOT-CORE-002-L1-AC02",
+      "given": "Есть4кроличьи поляны; последовательностьd6=1,5; лисьих меньше4.",
+      "when": "Выбрать сообщество новой поляны.",
+      "expected": "Первый результат переброшен; в новой поляне преобладают лисы, пятая кроличья не добавлена.",
+      "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-002-L1"
+    },
+    {
+      "id": "ROOT-CORE-002-L1-AC03",
+      "given": "Завершены12полян с тремя допустимыми сообществами и лимитом4.",
+      "when": "Проверить итоговую подготовку.",
+      "expected": "У каждого сообщества4поляны; это проверка следствия ограничений.",
+      "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-002-L1"
+    },
+    {
+      "id": "ROOT-CORE-003-L1-AC01",
+      "given": "К новой поляне уже подходит1путь; сумма2d6=7.",
+      "when": "Наметить остальные пути.",
+      "expected": "Общий план3; добавляются2линии, не3.",
+      "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-003-L1"
+    },
+    {
+      "id": "ROOT-CORE-003-L1-AC02",
+      "given": "К новой поляне подходит1путь; сумма2d6=2.",
+      "when": "Наметить остальные пути.",
+      "expected": "Общий план1; дополнительных линий0.",
+      "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-003-L1"
+    },
+    {
+      "id": "ROOT-CORE-003-L1-AC03",
+      "given": "На карте12полян и2незавершённые линии; ведущий выбирает оставить отметки.",
+      "when": "Завершить построение.",
+      "expected": "Полян остаётся12; линии отмечены незавершёнными, не выданы за доступные дороги к новым полянам.",
+      "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-003-L1"
+    },
+    {
+      "id": "ROOT-CORE-003-L1-AC04",
+      "given": "Тот же Лес, ведущий выбирает убрать незавершённые линии.",
+      "when": "Завершить подготовку.",
+      "expected": "Линии убраны; число и содержимое12полян сохранены.",
+      "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-003-L1"
+    },
+    {
+      "id": "ROOT-CORE-004-L1-AC01",
+      "given": "ИмяSundell уже занято; задана пара2,6; обратное имяOpensky Haven свободно.",
+      "when": "Ведущий выбирает обратное чтение.",
+      "expected": "ВыбраноOpensky Haven по6,2; занятоеSundell не повторено.",
+      "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-004-L1"
+    },
+    {
+      "id": "ROOT-CORE-004-L1-AC02",
+      "given": "Оба имени для исходного и обратного порядка уже заняты.",
+      "when": "Ведущий выбирает переброс и получает свободное имя.",
+      "expected": "Используется новый свободный результат; старые названия не изменены.",
+      "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-004-L1"
+    }
+  ],
+  "expected_evidence": {
+    "source": "Primary book HTML text; selected printed pages, not publisher PDF byte equivalence",
+    "future_product": "Наблюдения известных примеров на точном SHA; registration/green source review is not runtime support"
+  },
+  "source_limitations": [
+    "Third-party text transcription, not publisher-hosted full PDF",
+    "Full-byte identity, visual table layout and latest errata not verified",
+    "Only map skeleton extracted; faction-selection text read as context, not extracted"
+  ],
+  "score_delta": null,
+  "implementation_authorized": false,
+  "release_authorized": false,
+  "related_existing_tasks": [
+    "HX-BL-018",
+    "HX-BL-043"
+  ],
+  "readiness": "research_for_strategist_and_analyst_not_specification",
+  "ranking_version": "three-scenario-ranks-1.4-create-evidence",
+  "cohort_version": "2026-11-06-ranking1.4-create-evidence",
+  "scenario_rank_reference": 7,
+  "overall_rank_reference": 5
+}
