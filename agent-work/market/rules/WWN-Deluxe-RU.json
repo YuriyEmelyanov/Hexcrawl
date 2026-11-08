@@ -2,7 +2,7 @@
   "schema_version": 2,
   "game_id": "WWN",
   "date": "2026-11-07",
-  "status": "partial_regional_steps2_3_4_product_unverified",
+  "status": "partial_regional_and_kingdom_inheritance_product_unverified",
   "source": {
     "id": "WWN-RU-DELUXE-SUPPLIED-20261106",
     "edition": "Worlds Without Number Deluxe, copyright2021; supplied Russian translation Lock-key; translation revision and English collation unverified",
@@ -23,21 +23,22 @@
       "printed122/PDF125: context only, no additional rules registered",
       "PDF3 bibliographic metadata only",
       "2026-11-08: source bytes rehashed unchanged; printed120–121/PDF123–124 reopened; step2 procedure and selected table type labels reviewed, full literary table not copied",
-      "2026-11-08: original supplied bytes rehashed unchanged; printed121/PDF124 reopened, regionalstep4 through deferred-POI paragraph extracted; other material context only"
+      "2026-11-08: original supplied bytes rehashed unchanged; printed121/PDF124 reopened, regionalstep4 through deferred-POI paragraph extracted; other material context only",
+      "2026-11-08: source hash reverified unchanged; kingdom-map paragraphs printed121–122/PDF124–125 reopened; extracted only initial inheritance paragraph and smaller-local-geography paragraph, rest context"
     ],
     "access_level": "full_text",
     "author_project_key": "sine-nomine:kevin-crawford:wwn-deluxe2021:ru-lock-key",
     "deduplication": "Library originals and filename copies(1–3) are the same supplied source project, not independent evidence or GM observations.",
     "translation_revision": null,
     "english_collation": "unverified",
-    "accessed_at": "2026-11-08T08:36:18.164Z",
+    "accessed_at": "2026-11-08T09:36:43.930Z",
     "limitations": [
       "Full book is available but only stated bounded corpus read; no complete WWN thematic audit.",
       "Source applicability is not usage prevalence or audience size.",
       "No full book, art, or complete content table is published in derived records."
     ]
   },
-  "scope": "Bounded regionalsteps2/3/4 only; no full WWN inventory",
+  "scope": "Bounded regionalsteps2/3/4 plus selected kingdom-map inheritance/local-detail clauses; no full WWN inventory",
   "rules": [
     {
       "id": "WWN-RU-REG-001",
@@ -1387,6 +1388,155 @@
           "reason": "No battle or economic simulation."
         }
       ]
+    },
+    {
+      "id": "WWN-RU-KNG-001",
+      "title": "Детализировать часть региона без потери крупных объектов",
+      "rule": {
+        "source_id": "WWN-RU-DELUXE-SUPPLIED-20261106",
+        "printed_page": [
+          121,
+          122
+        ],
+        "pdf_page": [
+          124,
+          125
+        ],
+        "section": "Создание карты королевства",
+        "locator": "printed121/PDF124 first paragraph; printed122/PDF125 paragraph beginning Естественно, реки и особенности рельефа",
+        "paraphrase": "Карту королевства готовят для выбранной части региона и переносят попадающие туда крупные объекты. Новые реки и особенности в этом масштабе мельче региональных; некоторые местные водоёмы слишком малы для обзорной карты.",
+        "normative_kind": "campaign_map_preparation_guidance",
+        "quotation": null,
+        "parameters": {
+          "map_levels": [
+            "region",
+            "kingdom_starting_area"
+          ],
+          "inheritance": "all_major_regional_terrain_features_within_selected_kingdom_area",
+          "additional_features": "smaller_local_features",
+          "local_water": "may_be_too_small_for_regional_map",
+          "numeric_scale_ratio": "not_specified",
+          "exact_coordinate_transform": "not_specified",
+          "bidirectional_live_sync": "not_specified"
+        }
+      },
+      "comparison": {
+        "canonical_reuse": [
+          "map.nested_scales"
+        ],
+        "new_canonical_rule": false,
+        "profile_equivalence": "unverified_source_specific_scope",
+        "relevant_binding_refs": [
+          "agent-work/rules/game-bindings.json#DND5-2014-009-L1"
+        ],
+        "rationale": "Existing nested-scale operation covers semantic relation; DND5 binding provides no verified WWN scale transform or product evidence. Same-level extension031 and fixed background027 do not cover nested map correspondence."
+      },
+      "requirements": [
+        {
+          "id": "WWN-RU-KNG-001-L1",
+          "layer": "L1",
+          "requirement": "Подготовить более подробную карту выбранной части региона, перенеся все относящиеся к ней крупные объекты с сохранением их пространственного соответствия. Добавлять меньшие местные детали без замены крупной региональной географии и без обязательного вывода всех мелких объектов на обзорную карту. Сохранять обе карты и понятные соответствия объектов.",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "evidence_sha": null,
+          "canonical_rule_ids": [
+            "map.nested_scales"
+          ],
+          "criterion_ids": [
+            "S06-C04",
+            "S02-C02"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#WWN-RU-KNG-001-L1",
+          "operational_requirement": {
+            "source_rule_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-KNG-001",
+            "normative_kind": "campaign_map_preparation_guidance",
+            "applicability": "WWN suppliedRU Deluxe selected kingdom-map paragraphs121–122; L1 regional-to-kingdom consistency, not full kingdom-generation workflow",
+            "layer": "L1",
+            "trigger_or_user_action": "Ведущий выбирает часть подготовленного региона, где начнутся приключения, и создаёт более подробную карту королевства.",
+            "inputs_and_units": {
+              "область": "выбранная часть региона и известный ведущему контур королевства",
+              "крупные объекты": "существующие региональные объекты внутри выбранной области, включая заданные ведущим части пересекающих её объектов",
+              "местные детали": "добавленные меньшие элементы рельефа/водоёмы",
+              "масштабы": "уровни регион/королевство; численный коэффициент только если он отдельно задан"
+            },
+            "product_operation": "Подготовить более подробную карту выбранной части региона, перенеся все относящиеся к ней крупные объекты с сохранением их пространственного соответствия. Добавлять меньшие местные детали без замены крупной региональной географии и без обязательного вывода всех мелких объектов на обзорную карту. Сохранять обе карты и понятные соответствия объектов.",
+            "expected_output": "Карта королевства согласуется с выбранной частью региона; крупные ориентиры узнаваемы и соотнесены, местные меньшие детали различимы.",
+            "constraints_and_exceptions": [
+              "Это переход уровня детализации, не увеличение размера всех уже существующих гексов или расширение в пустую область.",
+              "Точное преобразование координат, физический коэффициент масштаба и алгоритм пересечения границы не заданы; примеры используют известное ведущему соответствие.",
+              "Не всякий новый местный объект должен появиться на региональном обзоре; ручьи/озёра могут быть для него слишком малы.",
+              "Существующий крупный региональный объект не заменяется случайной мелкой деталью.",
+              "Автоматическая двусторонняя синхронизация редактирования крупных объектов из текста не следует.",
+              "Генерация государств/городов/путей по ссылке на124+ и прочие параграфы121–122 остаются вне этого среза.",
+              "Сохранение, явные связи и адресное редактирование — продуктовая интерпретация без технической спецификации/API/архитектуры."
+            ],
+            "acceptance_cases": [
+              {
+                "id": "WWN-RU-KNG-001-L1-AC01",
+                "given": "Ведущий выделил областьKна региональной карте. Крупный лесAцеликом внутри; хребетBпересекает границу, ведущий задал относящуюся кKчастьB1; пустыняCцеликом снаружи.",
+                "when": "Подготовить карту королевстваK.",
+                "expected": "На ней перенесеныAиB1 в соответствующих местах, с понятной связью с региональными объектами; Cне перенесена. Новые случайные результаты не заменяют унаследованныеA/B."
+              },
+              {
+                "id": "WWN-RU-KNG-001-L1-AC02",
+                "given": "На картеKуже перенесены региональная рекаRи хребетB. Ведущий добавляет местный небольшой ручейrи озероL.",
+                "when": "Добавить местную географическую детализацию.",
+                "expected": "R/Bсохранены; r/Lдобавлены на картеKкак более мелкие объекты. На обзорной карте региона r/Lне появляются принудительно и не заменяют R."
+              },
+              {
+                "id": "WWN-RU-KNG-001-L1-AC03",
+                "given": "Региональный вулканический хребетVуже перенесён. Новый местный результат «вулкан» ведущий конкретизировал как одиночную вершинуv.",
+                "when": "Детализировать местный результат.",
+                "expected": "vсохранена как локальная вершина; Vне заменён новой региональной цепью. Пример не задаёт обязательный физический размер вулкана."
+              },
+              {
+                "id": "WWN-RU-KNG-001-L1-AC04",
+                "given": "СвязьKс региональной областью задана ведущим; численный коэффициент масштабов не указан.",
+                "when": "Подготовить схематическую картуK.",
+                "expected": "Сохраняются заданные пространственные соответствия; коэффициент и точные расстояния отмечены неизвестными, не выведены из шестимильного гекса другого абзаца."
+              },
+              {
+                "id": "WWN-RU-KNG-001-L1-AC05",
+                "given": "ВKесть унаследованныеA/Bи местное озероL. Ведущий меняет описание/положение только местногоL, не меняя крупных объектов.",
+                "when": "Сохранить местную правку.",
+                "expected": "A/Bи региональная география сохранены; правкаLостаётся местной. Автоматическая двусторонняя синхронизация крупных объектов не заявлена."
+              },
+              {
+                "id": "WWN-RU-KNG-001-L1-AC06",
+                "given": "Подготовлены обзорная карта иKсо связямиA/B, ручьёмrи озеромL.",
+                "when": "Сохранить и повторно открыть обе карты.",
+                "expected": "Те же крупные объекты и их соответствия сохранены; r/Lостаются местными деталями, генерация и перенос автоматически не повторены."
+              }
+            ],
+            "source_vs_product_interpretation": "Источник — первый абзац «Создание карты королевства»121/PDF124 и абзац о меньших местных объектах122/PDF125. Другие абзацы прочитаны как контекст, не извлечены. A/B/B1/C/K/R/r/L/V/v и заданные соответствия — собственные примеры результата. Продуктовая интерпретация не утверждает автоматический clipping, масштабирование или существование функции.",
+            "canonical_rule_refs": [
+              "agent-work/rules/common-rules.json#map.nested_scales"
+            ],
+            "unresolved_parameters": [
+              "Как точно преобразуются координаты и задаётся физическое отношение масштабов — неизвестно.",
+              "Частично пересекающие выбранную область объекты и пограничные случаи требуют решения ведущего/аналитика, алгоритм не выведен из текста.",
+              "Правила двустороннего изменения унаследованных объектов и конфликтов версий не заданы.",
+              "Английская сверка и реализация профиля наSHAне подтверждены."
+            ]
+          },
+          "gap_task_ids": [
+            "HX-BL-051"
+          ],
+          "delivery": "research_handoff_not_specification",
+          "binding_registration_status": "registered_profile_unverified"
+        },
+        {
+          "layer": "L2",
+          "status": "not_applicable",
+          "reason": "Map preparation; no travel/time resolution."
+        },
+        {
+          "layer": "L3",
+          "status": "not_applicable",
+          "reason": "No character/combat engine."
+        }
+      ]
     }
   ],
   "completeness": {
@@ -1397,23 +1547,24 @@
       "printed122/PDF125: context only, no additional rules registered",
       "PDF3 bibliographic metadata only",
       "2026-11-08: source bytes rehashed unchanged; printed120–121/PDF123–124 reopened; step2 procedure and selected table type labels reviewed, full literary table not copied",
-      "2026-11-08: original supplied bytes rehashed unchanged; printed121/PDF124 reopened, regionalstep4 through deferred-POI paragraph extracted; other material context only"
+      "2026-11-08: original supplied bytes rehashed unchanged; printed121/PDF124 reopened, regionalstep4 through deferred-POI paragraph extracted; other material context only",
+      "2026-11-08: source hash reverified unchanged; kingdom-map paragraphs printed121–122/PDF124–125 reopened; extracted only initial inheritance paragraph and smaller-local-geography paragraph, rest context"
     ],
-    "unread_or_unextracted": "Regionalstep1, kingdom mapping and all other WWN thematic dependencies; English collation unknown",
+    "unread_or_unextracted": "Regionalstep1, remaining kingdom/detail/hex guidance and state-generation crossrefs124+; full thematic audit/English collation unknown",
     "ledger_ref": "agent-work/market/rules/WWN-Deluxe-RU-coverage-ledger.json"
   },
   "comparison_summary": {
-    "source_rules": 9,
-    "applicable_requirements": 9,
+    "source_rules": 10,
+    "applicable_requirements": 10,
     "applicable_by_layer": {
-      "L1": 9,
+      "L1": 10,
       "L2": 0,
       "L3": 0
     },
-    "canonical_rules_reused": 6,
+    "canonical_rules_reused": 7,
     "new_canonical_rules": 1,
-    "source_acceptance_cases": 37,
-    "handoff_acceptance_cases": 38
+    "source_acceptance_cases": 43,
+    "handoff_acceptance_cases": 44
   },
   "shared_rules": {
     "registry": "agent-work/rules/common-rules.json",
