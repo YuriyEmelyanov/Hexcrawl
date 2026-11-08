@@ -23,6 +23,7 @@
 | API ядра и подключение рек | [river-model-core.md](river-model-core.md), [river-model-integration.md](river-model-integration.md) |
 | Дороги ROAD | [road-model.md](road-model.md) |
 | Режим Mythic Bastionland | [mythic-bastionland.md](mythic-bastionland.md) |
+| Справочная карточка мифа: source-free ядро, корпус пока отсутствует | [myth-material.md](myth-material.md) |
 | Подложки и накладки | [biome-color.md](biome-color.md) |
 | Лес и редколесье | [forest-rendering.md](forest-rendering.md) |
 | Озёра и вода | [natural-lakes.md](natural-lakes.md), [ручная вода E6](water-editing.md) |
