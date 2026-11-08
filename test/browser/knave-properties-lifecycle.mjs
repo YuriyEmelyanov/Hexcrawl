@@ -15,9 +15,11 @@ export async function runKnavePropertiesLifecycle({page,snapshot,root}) {
  assert.deepEqual(chosen.generation,empty.generation);assert.ok(chosen.map.knave);
  await page.getByRole('combobox',{name:'Режим',exact:true}).selectOption('mythic');assert.equal(await checkbox.count(),0);
  await page.getByRole('combobox',{name:'Режим',exact:true}).selectOption('classic');assert.equal(await checkbox.isChecked(),false);
- const data=regionFixture();data.version=10;data.generation=createGenerationState(42);data.map.knave=newKnaveLayer();
+ // The shared fixture is v7. Upgrade its complete required v9/v10 envelope,
+ // including empty sea identities, before asking the real importer to load it.
+ const data=regionFixture();data.version=10;data.generation=createGenerationState(42);data.map.seas=[];data.map.nextSeaId=1;data.map.editorNames={};data.map.knave=newKnaveLayer();
  await page.locator('input[type=file]').setInputFiles({name:'knave-v10.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(data))});
- await page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);
+ await page.waitForFunction(()=>document.querySelector('input[aria-label="Knave 2e"]')?.checked&&document.querySelector('input[aria-label="Knave 2e"]')?.disabled);
  assert.equal(await checkbox.isChecked(),true);assert.equal(await checkbox.isDisabled(),true);
  const info=page.locator('.info-block--hex'),panel=info.locator('[data-knave-panel]');
  assert.match(await panel.innerText(),/При прохождении/);
