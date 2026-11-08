@@ -12102,7 +12102,157 @@
       "readiness": "research_proposed_requires_strategist_selection_and_analyst_specification",
       "implementation_authorized": false,
       "release_authorized": false,
-      "score_delta": null
+      "score_delta": null,
+      "research_components": [
+        {
+          "component_id": "ROOT-CORE-Marquisate-L1",
+          "status": "research_handoff_product_unverified",
+          "research_handoff_ref": "agent-work/research/requirements/ROOT-core-Marquisate-L1.json",
+          "research_result_ref": "agent-work/research/runs/2026-11-08T0335-ROOT-core-Marquisate.json",
+          "source_scope": "Core2021 printed224,228–229 only; Eyrie/Alliance unresolved",
+          "source_id": "ROOT-CORE-2021-EN",
+          "requirement_refs": [
+            "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-005-L1",
+            "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-006-L1",
+            "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-007-L1"
+          ],
+          "binding_refs": [
+            "agent-work/rules/game-bindings.json#ROOT-CORE-005-L1",
+            "agent-work/rules/game-bindings.json#ROOT-CORE-006-L1",
+            "agent-work/rules/game-bindings.json#ROOT-CORE-007-L1"
+          ],
+          "canonical_rule_ids": [
+            "map.faction_control",
+            "map.faction_presence",
+            "content.place_description",
+            "content.roll_table_resolution"
+          ],
+          "acceptance_checks": [
+            {
+              "id": "ROOT-CORE-005-L1-AC01",
+              "given": "Denizens, Marquisate и Alliance включены; Eyrie выключена.",
+              "when": "Пройти базовую расстановку.",
+              "expected": "Сначала Marquisate, затем Alliance; шаг Eyrie пропущен. Контроль каждой поляны для Denizens автоматически не назначен.",
+              "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-005-L1"
+            },
+            {
+              "id": "ROOT-CORE-005-L1-AC02",
+              "given": "Denizens и все три базовые фракции включены.",
+              "when": "Применить список базовых шагов.",
+              "expected": "Порядок Marquisate → Eyrie → Alliance; выбранные три другие фракции сохранены.",
+              "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-005-L1"
+            },
+            {
+              "id": "ROOT-CORE-005-L1-AC03",
+              "given": "Выбраны Denizens и только одна другая фракция.",
+              "when": "Сопоставить состав со стандартной процедурой.",
+              "expected": "Показано отклонение от нормы две/три; дополнительная фракция не добавлена без выбора ведущего.",
+              "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-005-L1"
+            },
+            {
+              "id": "ROOT-CORE-005-L1-AC04",
+              "given": "A переходит от Marquisate к Eyrie; B из отсутствия контроля получает Marquisate.",
+              "when": "Записать начальную историю переходов.",
+              "expected": "A отмечена contested, текущий контроль Eyrie; B не отмечена contested этим условием. Вид большинства населения не меняет вывод.",
+              "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-005-L1"
+            },
+            {
+              "id": "ROOT-CORE-006-L1-AC01",
+              "given": "Для четырёх независимых случайных выборов заданы d6=1,2,3,4; ведущий указал соответствующие крайние поляны A/B/C/D.",
+              "when": "Назначить крепость по каждому выбору.",
+              "expected": "Получены NW/NE/SW/SE и соответственно A/B/C/D; в каждом примере у выбранной поляны крепость и контроль Marquisate.",
+              "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-006-L1"
+            },
+            {
+              "id": "ROOT-CORE-006-L1-AC02",
+              "given": "Последовательность d6=5,6,3; крайней юго-западной выбрана A.",
+              "when": "Определить случайный угол.",
+              "expected": "5 и6 переброшены; итог SW, крепость и контроль у A. Дополнительные поляны не созданы.",
+              "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-006-L1"
+            },
+            {
+              "id": "ROOT-CORE-006-L1-AC03",
+              "given": "Marquisate включена; ведущий вручную выбрал крайнюю NE-поляну B с номинальным гражданским правительством.",
+              "when": "Подготовить крепость без броска.",
+              "expected": "У B крепость и фактический контроль Marquisate; гражданское описание не выдаётся за отсутствие её контроля.",
+              "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-006-L1"
+            },
+            {
+              "id": "ROOT-CORE-006-L1-AC04",
+              "given": "Marquisate исключена; готовая карта сохранена.",
+              "when": "Пройти список начальных фракций.",
+              "expected": "Крепость Marquisate и её новые назначения контроля не создаются.",
+              "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-006-L1"
+            },
+            {
+              "id": "ROOT-CORE-007-L1-AC01",
+              "given": "Поляны A/B на расстоянии1пути; суммы2d6 соответственно4/5.",
+              "when": "Разрешить начальный контроль.",
+              "expected": "A не получает контроль Marquisate; B получает.",
+              "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-007-L1"
+            },
+            {
+              "id": "ROOT-CORE-007-L1-AC02",
+              "given": "A/B на2путях; суммы6/7.",
+              "when": "Разрешить начальный контроль.",
+              "expected": "A не получает контроль Marquisate; B получает.",
+              "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-007-L1"
+            },
+            {
+              "id": "ROOT-CORE-007-L1-AC03",
+              "given": "A/B на3путях; суммы9/10.",
+              "when": "Разрешить начальный контроль.",
+              "expected": "A не получает контроль Marquisate; B получает.",
+              "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-007-L1"
+            },
+            {
+              "id": "ROOT-CORE-007-L1-AC04",
+              "given": "A/B на4путях; суммы11/12.",
+              "when": "Разрешить начальный контроль.",
+              "expected": "A не получает контроль Marquisate; B получает.",
+              "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-007-L1"
+            },
+            {
+              "id": "ROOT-CORE-007-L1-AC05",
+              "given": "A/B на5путях; переданы суммы2/12.",
+              "when": "Применить строку5путей.",
+              "expected": "Обе не получают контроль Marquisate по таблице; другие фракции автоматически не назначены.",
+              "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-007-L1"
+            },
+            {
+              "id": "ROOT-CORE-007-L1-AC06",
+              "given": "Крепость S уже под контролем; поляна X имеет расстояние6, для неё передано12.",
+              "when": "Продолжить подготовку.",
+              "expected": "Контроль S сохранён; для X отмечено неизвестное правило, успех из12 не выведен.",
+              "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-007-L1"
+            },
+            {
+              "id": "ROOT-CORE-007-L1-AC07",
+              "given": "A на2путях с суммой7 получила контроль; B на3путях с9 не получила; крепость S известна.",
+              "when": "Сохранить и снова открыть подготовленную карту.",
+              "expected": "Контроль Marquisate у S/A сохранён, у B не появился; броски без действия ведущего не повторены.",
+              "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-007-L1"
+            }
+          ],
+          "expected_evidence": {
+            "current_runtime": "unknown",
+            "future_product": "Actual selected-profile known-output cases on exact implementation SHA; no score transfer from source discovery"
+          },
+          "source_limitations": [
+            "Third-party text transcription, not publisher-hosted full PDF",
+            "Full-byte identity, visual table layout and latest errata not verified",
+            "Only map skeleton, selected-faction prerequisites/order and Marquisate setup extracted; Eyrie/Alliance and remaining core unreviewed.",
+            "Distance6+ and multiple-route interpretation unresolved; no silent shortest-path or5+ extrapolation."
+          ],
+          "implementation_authorized": false,
+          "release_authorized": false,
+          "score_delta": null
+        }
+      ],
+      "research_handoff_refs": [
+        "agent-work/research/requirements/ROOT-TO-woodland-setup-L1.md",
+        "agent-work/research/requirements/ROOT-core-Marquisate-L1.json"
+      ]
     }
   ],
   "last_review": {
