@@ -499,3 +499,8 @@ Pages42440189840 после merge повторно прошёл check/browser и
 ### 2026-11-08 — восстановимость снимка и полнота истории — разные доказательства
 
 Свежий reviewer восстановил af50286/tree7ac из самостоятельного клона архиваv3, все27manifest hashes/CRC совпали. При этом git bundle verify сообщил complete history, а git fsck --full нашёл два отсутствующих предка00190bb7/fb3f9b8 подa246fdf. Поэтому exact runtime recovery подтверждён, прежнее заявление о полной истории опровергнуто; это не дефект приложения и не блокирует требуемое восстановление снимка. В метаданных принятого пакета full_history_completeness=false, исходный архив не переписан. Для будущего заявления именно о полной истории одного bundle verify недостаточно: нужен самостоятельный clone/fsck. Evidence: agent-work/evidence/KNAVE2-CLASSIC1-review-af50286/package-recovery.json и bundle-fsck.log.
+
+
+### 2026-11-08 — устаревшие статусы могут создавать ложную исполнительскую очередь
+
+HX-FB-008/009оставалисьspecified_ready_for_development, хотя010принят и опубликованPR485/d3e7c49. Текущий GitHub подтвердил merged, compared3→main ahead47/behind0; Appf28189b содержитdebug?1gate, единыйselectNameTargetиdata-selected-hex. Статусы замечаний/направление010сверены с фактом выпуска и прежним независимым review; новое runtime-тестирование и повторная разработка не заявлялись. Аналогично pendingвapprovalPR493 оказался старой меткой при ужеcompletedscore-event; баллы повторно не считались. При выборе роли сопоставлять реестр замечаний с release/review, а не брать отдельно старую строкуready. Evidence: agent-work/handoffs/2026-11-08-strategist-next-product.json.
