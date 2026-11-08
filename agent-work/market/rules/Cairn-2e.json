@@ -1,0 +1,268 @@
+{
+  "schema_version": 2,
+  "game_id": "CAIRN2",
+  "date": "2026-11-08",
+  "status": "partial_source_checkpoint_bindings_pending",
+  "source": {
+    "id": "CAIRN2-WG-POINTCRAWLS-WEB",
+    "title": "Cairn 2e — Warden's Guide: Pointcrawls",
+    "edition": "Second Edition official online rules; page revision/date not declared",
+    "url": "https://cairnrpg.com/second-edition/wardens-guide/pointcrawls/",
+    "locator": "Pointcrawls; Converting a Map, first two bullets, web lines431–439",
+    "printed_page": null,
+    "language": "en",
+    "geography": "English web edition; no audience extrapolation",
+    "author_project_key": "cairn-rpg/second-edition/wardens-guide/pointcrawls",
+    "access_level": "full_text",
+    "accessed_at": "2026-11-08T00:36:44.847Z",
+    "license": "CC-BY-SA 4.0 as stated by source page",
+    "attribution": "Cairn official website, Warden's Guide, Pointcrawls",
+    "deduplication": "One canonical publisher page; navigation/linked adventures are not independent source or GM observations"
+  },
+  "rules": [
+    {
+      "id": "CAIRN2-PC-001",
+      "rule": {
+        "source_id": "CAIRN2-WG-POINTCRAWLS-WEB",
+        "printed_page": null,
+        "url": "https://cairnrpg.com/second-edition/wardens-guide/pointcrawls/",
+        "locator": "Converting a Map, bullet1",
+        "paraphrase": "Пронумеровать потенциальные интересные места исходной карты.",
+        "normative_kind": "map_conversion_procedure",
+        "parameters": {
+          "number_all_potential_POIs": true,
+          "fixed_POI_count": null
+        }
+      },
+      "comparison": {
+        "canonical_rule_ids": [
+          "map.reference_labels"
+        ],
+        "profile_equivalence": "unverified",
+        "analogue_binding_ids": [
+          "PF2-RM-004-L1"
+        ],
+        "new_canonical_rule": false
+      },
+      "requirements": [
+        {
+          "id": "CAIRN2-PC-001-L1",
+          "layer": "L1",
+          "requirement": "Позволить ведущему обозначить выбранные места номерами, сохранив их названия и положение.",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "evidence_sha": null,
+          "canonical_rule_ids": [
+            "map.reference_labels"
+          ],
+          "criterion_ids": [
+            "S04-C03"
+          ],
+          "canonical_binding_ref": null,
+          "proposed_binding_id": "CAIRN2-PC-001-L1",
+          "binding_registration_status": "checkpoint_pending_shared_registry_integration",
+          "operational_requirement": {
+            "source_rule_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-PC-001",
+            "normative_kind": "map_conversion_procedure",
+            "applicability": "Preparing a pointcrawl representation from a chosen existing map; not a mandatory replacement for all hex movement",
+            "layer": "L1",
+            "trigger_or_user_action": "Ведущий выбирает места исходной карты для представления pointcrawl.",
+            "inputs_and_units": {
+              "selected_places": "выбранные места; число не фиксировано книгой",
+              "labels": "номера для ссылки на места"
+            },
+            "product_operation": "Позволить ведущему обозначить выбранные места номерами, сохранив их названия и положение.",
+            "expected_output": "Выбранные места различимы по номеру; текст и расположение исходных мест сохраняются.",
+            "constraints_and_exceptions": [
+              "Книга не задаёт фиксированного количества мест, стартового номера или порядка обхода.",
+              "Способ показа и сохранения определяет аналитик; отдельная копия мира не предписывается."
+            ],
+            "acceptance_cases": [
+              {
+                "id": "CAIRN2-PC-001-L1-AC01",
+                "given": "Выбраны мельница, башня и пристань; ведущий назначил номера1,2,3.",
+                "when": "Подготовить обозначения мест.",
+                "expected": "Номера1,2,3 относятся к этим трём местам соответственно; названия и положения прежние."
+              },
+              {
+                "id": "CAIRN2-PC-001-L1-AC02",
+                "given": "На карте есть четвёртое место «Пещера», не выбранное ведущим.",
+                "when": "Пронумеровать только выбранные три места.",
+                "expected": "Пещере не придуман номер и она не удалена."
+              }
+            ],
+            "source_vs_product_interpretation": "Numbering and identifying routes/unconnected sites come from the source. The proposed generator action and invented examples express a useful outcome for the GM, not a specification or proof of implementation.",
+            "canonical_rule_refs": [
+              "agent-work/rules/common-rules.json#map.reference_labels"
+            ],
+            "unresolved_parameters": [
+              "Политика перенумерации и сочетания с существующими обозначениями источником не задана."
+            ]
+          },
+          "gap": "Exact-profile runtime behavior unknown; not evidence of a missing product function.",
+          "gap_task_ids": [
+            "HX-BL-043"
+          ]
+        },
+        {
+          "layer": "L2",
+          "status": "not_applicable",
+          "reason": "This extracted clause prepares the map; active travel resolution is not extracted."
+        },
+        {
+          "layer": "L3",
+          "status": "not_applicable",
+          "reason": "No character or other resolution procedure in this clause."
+        }
+      ]
+    },
+    {
+      "id": "CAIRN2-PC-002",
+      "rule": {
+        "source_id": "CAIRN2-WG-POINTCRAWLS-WEB",
+        "printed_page": null,
+        "url": "https://cairnrpg.com/second-edition/wardens-guide/pointcrawls/",
+        "locator": "Converting a Map, bullet2",
+        "paraphrase": "Выделить потенциальные дороги, тропы и водные маршруты между местами; обозначить места без соединений.",
+        "normative_kind": "map_conversion_procedure",
+        "parameters": {
+          "route_kinds": [
+            "road",
+            "trail",
+            "waterway"
+          ],
+          "mark_unconnected_sites": true,
+          "automatic_full_connectivity": false
+        }
+      },
+      "comparison": {
+        "canonical_rule_ids": [
+          "map.routes_and_barriers"
+        ],
+        "profile_equivalence": "unverified",
+        "analogue_binding_ids": [
+          "DND5-2014-011-L1",
+          "KNAVE2-034-L1"
+        ],
+        "new_canonical_rule": false
+      },
+      "requirements": [
+        {
+          "id": "CAIRN2-PC-002-L1",
+          "layer": "L1",
+          "requirement": "Дать ведущему отметить существующие пути между выбранными местами и отдельно увидеть места без соединений; не добавлять путь только ради общей связности.",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "evidence_sha": null,
+          "canonical_rule_ids": [
+            "map.routes_and_barriers"
+          ],
+          "criterion_ids": [
+            "S01-C04",
+            "S06-C04"
+          ],
+          "canonical_binding_ref": null,
+          "proposed_binding_id": "CAIRN2-PC-002-L1",
+          "binding_registration_status": "checkpoint_pending_shared_registry_integration",
+          "operational_requirement": {
+            "source_rule_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-PC-002",
+            "normative_kind": "map_conversion_procedure",
+            "applicability": "Preparing a pointcrawl representation from a chosen existing map; not a mandatory replacement for all hex movement",
+            "layer": "L1",
+            "trigger_or_user_action": "Ведущий превращает отмеченные места исходной карты в сеть возможных переходов.",
+            "inputs_and_units": {
+              "places": "выбранные места исходной карты",
+              "routes": "известные дороги, тропы и водные маршруты",
+              "unconnected_sites": "места без отмеченных соединений"
+            },
+            "product_operation": "Дать ведущему отметить существующие пути между выбранными местами и отдельно увидеть места без соединений; не добавлять путь только ради общей связности.",
+            "expected_output": "Сеть содержит указанные ведущим связи с их видом; изолированные места видны как не имеющие соединений.",
+            "constraints_and_exceptions": [
+              "Близость или соседство гексов не является названной дорогой, тропой или водным маршрутом.",
+              "Отсутствие маршрута не означает непроходимость всей местности.",
+              "Направленность и доступность пути при разных условиях не определены этим ограниченным срезом."
+            ],
+            "acceptance_cases": [
+              {
+                "id": "CAIRN2-PC-002-L1-AC01",
+                "given": "A–B соединены тропой, B–C водным маршрутом; D без соединений.",
+                "when": "Подготовить сеть этих четырёх мест.",
+                "expected": "Сохранены тропа A–B и водный маршрут B–C; D обозначен без соединений, новая дорога к D не придумана."
+              },
+              {
+                "id": "CAIRN2-PC-002-L1-AC02",
+                "given": "E и F соседствуют на гексовой карте; дороги, тропы или водного маршрута между ними не отмечено.",
+                "when": "Показать подготовленную сеть.",
+                "expected": "Соединение E–F не создано только из соседства; обычное движение по исходной карте не объявлено запрещённым."
+              },
+              {
+                "id": "CAIRN2-PC-002-L1-AC03",
+                "given": "Ведущий добавил к D известную дорогу от C.",
+                "when": "Обновить представление сети.",
+                "expected": "Показана дорога C–D; D больше не обозначен как не имеющий соединений."
+              }
+            ],
+            "source_vs_product_interpretation": "Numbering and identifying routes/unconnected sites come from the source. The proposed generator action and invented examples express a useful outcome for the GM, not a specification or proof of implementation.",
+            "canonical_rule_refs": [
+              "agent-work/rules/common-rules.json#map.routes_and_barriers"
+            ],
+            "unresolved_parameters": [
+              "Наличие точного режима pointcrawl в продукте не проверено.",
+              "Масштаб и длительность перехода требуют отдельного чтения процедур путешествия."
+            ]
+          },
+          "gap": "Exact-profile runtime behavior unknown; not evidence of a missing product function.",
+          "gap_task_ids": [
+            "HX-BL-018"
+          ]
+        },
+        {
+          "layer": "L2",
+          "status": "not_applicable",
+          "reason": "This extracted clause prepares the map; active travel resolution is not extracted."
+        },
+        {
+          "layer": "L3",
+          "status": "not_applicable",
+          "reason": "No character or other resolution procedure in this clause."
+        }
+      ]
+    }
+  ],
+  "completeness": {
+    "status": "partial_checkpoint",
+    "read_scope": "Body of Pointcrawls online page including example; extracted only first two Converting a Map bullets",
+    "full_book_inventory": false,
+    "not_extracted": [
+      "Third bullet: rough travel time",
+      "Worked travel example; numerical mechanics not registered",
+      "Linked Wilderness Exploration and Setting Seeds not read"
+    ],
+    "ledger_ref": "agent-work/market/rules/Cairn-2e-coverage-ledger.json"
+  },
+  "shared_rules": {
+    "registry": "agent-work/rules/common-rules.json",
+    "bindings": "agent-work/rules/game-bindings.json",
+    "used": [
+      "map.reference_labels",
+      "map.routes_and_barriers"
+    ],
+    "new_generic_rules": [],
+    "registration_status": "pending_to_respect_active_Root_worker_shared_writes"
+  },
+  "source_questions": [
+    {
+      "id": "CAIRN2-PC-Q01",
+      "locator": "Example, route4to6; web lines460–463",
+      "observed_fact": "Example declares4Watches but listed2+1+0=3.",
+      "interpretation": "Possible omitted modifier or editorial mismatch; exact cause unknown. Do not turn4or3 into a verified general travel rule.",
+      "status": "unresolved"
+    }
+  ],
+  "score_impact": {
+    "rating_changed": false,
+    "product_score_changed": false
+  }
+}

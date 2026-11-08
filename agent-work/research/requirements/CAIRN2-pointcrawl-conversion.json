@@ -1,0 +1,83 @@
+{
+  "task_id": "HX-BL-018",
+  "title": "Представлять известные пути между выбранными местами и отмечать отсутствие соединений",
+  "status": "proposed",
+  "problem": "Для преобразования карты в pointcrawl важно сохранить реальные пути и отдельно показать изолированные места; фактическая поддержка такого профиля неизвестна.",
+  "benefit": "Ведущий получает сеть осмысленных переходов, сохраняя исходную географию.",
+  "game_editions": [
+    "Cairn2e, Warden's Guide online Pointcrawls, two extracted bullets only"
+  ],
+  "primary_scenario": "create",
+  "layer": "L1",
+  "requirement_refs": [
+    "agent-work/market/rules/Cairn-2e.json#CAIRN2-PC-001-L1",
+    "agent-work/market/rules/Cairn-2e.json#CAIRN2-PC-002-L1"
+  ],
+  "canonical_rule_ids": [
+    "map.reference_labels",
+    "map.routes_and_barriers"
+  ],
+  "binding_refs": [],
+  "planned_binding_ids": [
+    "CAIRN2-PC-001-L1",
+    "CAIRN2-PC-002-L1"
+  ],
+  "criterion_ids": [
+    "S04-C03",
+    "S01-C04",
+    "S06-C04"
+  ],
+  "scope": "Указать выбранные места и уже известные дороги/тропы/водные связи; показать несоединённые места. Численные путешествия и интерфейс/архитектура вне исследовательского среза.",
+  "dependencies": [
+    "Стратег выбирает приоритет; аналитик готовит спецификацию.",
+    "Привязки и обратные ссылки в backlog ещё не зарегистрированы; нельзя считать передачу реализованной."
+  ],
+  "acceptance_checks": [
+    {
+      "id": "CAIRN2-PC-001-L1-AC01",
+      "given": "Выбраны мельница, башня и пристань; ведущий назначил номера1,2,3.",
+      "when": "Подготовить обозначения мест.",
+      "expected": "Номера1,2,3 относятся к этим трём местам соответственно; названия и положения прежние.",
+      "requirement_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-PC-001-L1"
+    },
+    {
+      "id": "CAIRN2-PC-001-L1-AC02",
+      "given": "На карте есть четвёртое место «Пещера», не выбранное ведущим.",
+      "when": "Пронумеровать только выбранные три места.",
+      "expected": "Пещере не придуман номер и она не удалена.",
+      "requirement_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-PC-001-L1"
+    },
+    {
+      "id": "CAIRN2-PC-002-L1-AC01",
+      "given": "A–B соединены тропой, B–C водным маршрутом; D без соединений.",
+      "when": "Подготовить сеть этих четырёх мест.",
+      "expected": "Сохранены тропа A–B и водный маршрут B–C; D обозначен без соединений, новая дорога к D не придумана.",
+      "requirement_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-PC-002-L1"
+    },
+    {
+      "id": "CAIRN2-PC-002-L1-AC02",
+      "given": "E и F соседствуют на гексовой карте; дороги, тропы или водного маршрута между ними не отмечено.",
+      "when": "Показать подготовленную сеть.",
+      "expected": "Соединение E–F не создано только из соседства; обычное движение по исходной карте не объявлено запрещённым.",
+      "requirement_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-PC-002-L1"
+    },
+    {
+      "id": "CAIRN2-PC-002-L1-AC03",
+      "given": "Ведущий добавил к D известную дорогу от C.",
+      "when": "Обновить представление сети.",
+      "expected": "Показана дорога C–D; D больше не обозначен как не имеющий соединений.",
+      "requirement_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-PC-002-L1"
+    }
+  ],
+  "expected_evidence": {
+    "future_product": "Наблюдения заданных примеров на точном SHA, включая сохранение исходных мест; runtime пока unknown."
+  },
+  "score_delta": null,
+  "source_limitations": [
+    "Одна официальная страница, не полный корпус Cairn.",
+    "Факты не измеряют аудиторию и долю гекскроула.",
+    "Длительность переходов не извлечена из неподтверждённого арифметического примера."
+  ],
+  "implementation_authorized": false,
+  "backlog_registration_status": "proposed handoff only; existing018and043 unchanged"
+}
