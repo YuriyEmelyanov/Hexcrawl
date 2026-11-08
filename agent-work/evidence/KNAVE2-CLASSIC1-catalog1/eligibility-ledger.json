@@ -1,0 +1,2918 @@
+{
+  "schemaVersion": 1,
+  "policyVersion": "knc1.compatibility.draft1",
+  "catalogVersion": "knave2.ru.torbin1.0.knc1.0-draft1",
+  "task_id": "HX-BL-043",
+  "stage_id": "KNAVE2-CLASSIC1",
+  "status": "prepared_for_implementation_not_runtime_verified",
+  "policy_owner": "HexCrawl KNC-1.0 product compatibility policy, not book probability/density rules",
+  "selection": "compatible_pool",
+  "categoryPolicy": "Equal probability among nonempty eligible natural/structure/dungeon pools; uniform row within chosen pool. None of these draws is represented as a source d100. Place trait uses one real d100;100 maps00.",
+  "universalGuards": [
+    "classic_knave_profile",
+    "unique_live_nonsettlement_land_poi",
+    "dry_hex",
+    "existing_settlement_identity_preserved",
+    "no_geometry_mutation",
+    "no_recursive_reference_rolls",
+    "trait_text_does_not_set_discovery_or_difficulty"
+  ],
+  "predicates": {
+    "any_dry": "Accepted dry land POI only.",
+    "elevated": "Current heightLevel>=2; does not raise terrain.",
+    "hill": "Current heightLevel==2.",
+    "mountain": "Current heightLevel==3.",
+    "forest": "Existing effective biome is forest/woodland. No biome is created.",
+    "wetland": "Existing effective biome is wetland. No water polygon is created.",
+    "river_contact": "Existing river touches this hex. No river is created.",
+    "water_contact": "Hex touches an existing river/lake/sea by current adjacency helpers; no inferred radius.",
+    "river_start": "Existing river start touches this hex. No new source or stream is created.",
+    "road_contact": "Existing road/trail segment touches this hex.",
+    "crossing_any": "Existing accepted bridge/ford/ferry at this hex.",
+    "river_rapids": "Existing accepted rapids feature touches this hex; mere river contact is insufficient.",
+    "river_waterfall": "Existing accepted waterfall feature touches this hex; mere river contact is insufficient.",
+    "crossing_ferry": "Existing crossing at this hex of kind ferry.",
+    "crossing_ford": "Existing crossing at this hex of kind ford.",
+    "crossing_bridge": "Existing crossing at this hex of kind bridge.",
+    "road_junction": "Existing road/trail graph has degree>=3 at this hex.",
+    "cold_ice": "Explicit existing ice/snow biome; if absent in effective biome model pool is empty. No climate inferred from height.",
+    "sand": "Explicit existing sand/desert biome; no new biome or coast inferred."
+  },
+  "representation": {
+    "natural_place": "Neutral local natural-site marker required in implementation; current runtime has no generic natural POI kind.",
+    "structure": "Neutral local structure marker required in implementation; use existing named kinds only when literal identity matches.",
+    "dungeon": "Existing dungeon marker means site/entrance, never room geometry."
+  },
+  "rows": [
+    {
+      "table": "locations",
+      "sourceRow": 1,
+      "status": "eligible",
+      "reason": "local_site_with_existing_context",
+      "requiresAll": [
+        "dry_hex",
+        "forest"
+      ],
+      "poiKind": "natural_place"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 2,
+      "status": "excluded",
+      "reason": "not_local_point_or_requires_new_biome"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 3,
+      "status": "excluded",
+      "reason": "not_local_point_or_requires_new_biome"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 4,
+      "status": "eligible",
+      "reason": "local_site_with_existing_context",
+      "requiresAll": [
+        "dry_hex",
+        "elevated"
+      ],
+      "poiKind": "natural_place"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 5,
+      "status": "excluded",
+      "reason": "water_body_or_shore_geometry_not_a_dry_local_poi"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 6,
+      "status": "excluded",
+      "reason": "water_body_or_shore_geometry_not_a_dry_local_poi"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 7,
+      "status": "eligible",
+      "reason": "local_site_with_existing_context",
+      "requiresAll": [
+        "dry_hex",
+        "elevated"
+      ],
+      "poiKind": "natural_place"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 8,
+      "status": "excluded",
+      "reason": "not_local_point_or_requires_new_biome"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 9,
+      "status": "eligible",
+      "reason": "local_site_with_existing_context",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "natural_place"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 10,
+      "status": "excluded",
+      "reason": "linear_water_geometry_not_generated_by_content"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 11,
+      "status": "eligible",
+      "reason": "local_site_with_existing_context",
+      "requiresAll": [
+        "dry_hex",
+        "elevated"
+      ],
+      "poiKind": "natural_place"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 12,
+      "status": "excluded",
+      "reason": "unrepresented_extent_or_geological_context"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 13,
+      "status": "excluded",
+      "reason": "not_local_point_or_requires_new_biome"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 14,
+      "status": "eligible",
+      "reason": "local_site_with_existing_context",
+      "requiresAll": [
+        "dry_hex",
+        "elevated"
+      ],
+      "poiKind": "cave"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 15,
+      "status": "eligible",
+      "reason": "local_site_with_existing_context",
+      "requiresAll": [
+        "dry_hex",
+        "elevated"
+      ],
+      "poiKind": "natural_place"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 16,
+      "status": "excluded",
+      "reason": "not_local_point_or_requires_new_biome"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 17,
+      "status": "excluded",
+      "reason": "not_local_point_or_requires_new_biome"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 18,
+      "status": "eligible",
+      "reason": "local_site_with_existing_context",
+      "requiresAll": [
+        "dry_hex",
+        "forest"
+      ],
+      "poiKind": "natural_place"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 19,
+      "status": "eligible",
+      "reason": "local_site_with_existing_context",
+      "requiresAll": [
+        "dry_hex",
+        "elevated"
+      ],
+      "poiKind": "natural_place"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 20,
+      "status": "excluded",
+      "reason": "unrepresented_extent_or_geological_context"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 21,
+      "status": "excluded",
+      "reason": "linear_water_geometry_not_generated_by_content"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 22,
+      "status": "eligible",
+      "reason": "local_site_with_existing_context",
+      "requiresAll": [
+        "dry_hex",
+        "crossing_any"
+      ],
+      "poiKind": "natural_place"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 23,
+      "status": "eligible",
+      "reason": "local_site_with_existing_context",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "natural_place"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 24,
+      "status": "excluded",
+      "reason": "not_local_point_or_requires_new_biome"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 25,
+      "status": "excluded",
+      "reason": "water_body_or_shore_geometry_not_a_dry_local_poi"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 26,
+      "status": "eligible",
+      "reason": "local_site_with_existing_context",
+      "requiresAll": [
+        "dry_hex",
+        "sand"
+      ],
+      "poiKind": "natural_place"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 27,
+      "status": "excluded",
+      "reason": "unrepresented_extent_or_geological_context"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 28,
+      "status": "excluded",
+      "reason": "unresolved_element_dependency_not_selected_as_primary_site"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 29,
+      "status": "excluded",
+      "reason": "not_local_point_or_requires_new_biome"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 30,
+      "status": "excluded",
+      "reason": "water_body_or_shore_geometry_not_a_dry_local_poi"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 31,
+      "status": "excluded",
+      "reason": "not_local_point_or_requires_new_biome"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 32,
+      "status": "excluded",
+      "reason": "unrepresented_extent_or_geological_context"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 33,
+      "status": "excluded",
+      "reason": "unrepresented_extent_or_geological_context"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 34,
+      "status": "eligible",
+      "reason": "local_site_with_existing_context",
+      "requiresAll": [
+        "dry_hex",
+        "cold_ice"
+      ],
+      "poiKind": "natural_place"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 35,
+      "status": "excluded",
+      "reason": "unrepresented_extent_or_geological_context"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 36,
+      "status": "eligible",
+      "reason": "local_site_with_existing_context",
+      "requiresAll": [
+        "dry_hex",
+        "elevated"
+      ],
+      "poiKind": "cave"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 37,
+      "status": "eligible",
+      "reason": "local_site_with_existing_context",
+      "requiresAll": [
+        "dry_hex",
+        "forest"
+      ],
+      "poiKind": "natural_place"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 38,
+      "status": "excluded",
+      "reason": "unrepresented_extent_or_geological_context"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 39,
+      "status": "excluded",
+      "reason": "not_local_point_or_requires_new_biome"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 40,
+      "status": "excluded",
+      "reason": "unrepresented_extent_or_geological_context"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 41,
+      "status": "excluded",
+      "reason": "unrepresented_extent_or_geological_context"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 42,
+      "status": "eligible",
+      "reason": "local_site_with_existing_context",
+      "requiresAll": [
+        "dry_hex",
+        "elevated"
+      ],
+      "poiKind": "natural_place"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 43,
+      "status": "excluded",
+      "reason": "unrepresented_extent_or_geological_context"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 44,
+      "status": "eligible",
+      "reason": "local_site_with_existing_context",
+      "requiresAll": [
+        "dry_hex",
+        "cold_ice"
+      ],
+      "poiKind": "natural_place"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 45,
+      "status": "excluded",
+      "reason": "not_local_point_or_requires_new_biome"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 46,
+      "status": "eligible",
+      "reason": "local_site_with_existing_context",
+      "requiresAll": [
+        "dry_hex",
+        "hill"
+      ],
+      "poiKind": "natural_place"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 47,
+      "status": "excluded",
+      "reason": "water_body_or_shore_geometry_not_a_dry_local_poi"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 48,
+      "status": "eligible",
+      "reason": "local_site_with_existing_context",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "lair"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 49,
+      "status": "excluded",
+      "reason": "water_body_or_shore_geometry_not_a_dry_local_poi"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 50,
+      "status": "excluded",
+      "reason": "water_body_or_shore_geometry_not_a_dry_local_poi"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 51,
+      "status": "excluded",
+      "reason": "unrepresented_extent_or_geological_context"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 52,
+      "status": "excluded",
+      "reason": "unrepresented_extent_or_geological_context"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 53,
+      "status": "excluded",
+      "reason": "water_body_or_shore_geometry_not_a_dry_local_poi"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 54,
+      "status": "excluded",
+      "reason": "not_local_point_or_requires_new_biome"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 55,
+      "status": "excluded",
+      "reason": "not_local_point_or_requires_new_biome"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 56,
+      "status": "excluded",
+      "reason": "not_local_point_or_requires_new_biome"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 57,
+      "status": "eligible",
+      "reason": "local_site_with_existing_context",
+      "requiresAll": [
+        "dry_hex",
+        "elevated"
+      ],
+      "poiKind": "natural_place"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 58,
+      "status": "excluded",
+      "reason": "not_local_point_or_requires_new_biome"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 59,
+      "status": "excluded",
+      "reason": "not_local_point_or_requires_new_biome"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 60,
+      "status": "eligible",
+      "reason": "local_site_with_existing_context",
+      "requiresAll": [
+        "dry_hex",
+        "mountain"
+      ],
+      "poiKind": "natural_place"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 61,
+      "status": "excluded",
+      "reason": "not_local_point_or_requires_new_biome"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 62,
+      "status": "excluded",
+      "reason": "unrepresented_extent_or_geological_context"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 63,
+      "status": "excluded",
+      "reason": "unrepresented_extent_or_geological_context"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 64,
+      "status": "eligible",
+      "reason": "local_site_with_existing_context",
+      "requiresAll": [
+        "dry_hex",
+        "mountain"
+      ],
+      "poiKind": "natural_place"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 65,
+      "status": "excluded",
+      "reason": "not_local_point_or_requires_new_biome"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 66,
+      "status": "excluded",
+      "reason": "not_local_point_or_requires_new_biome"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 67,
+      "status": "eligible",
+      "reason": "local_site_with_existing_context",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "natural_place"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 68,
+      "status": "excluded",
+      "reason": "unrepresented_extent_or_geological_context"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 69,
+      "status": "excluded",
+      "reason": "water_body_or_shore_geometry_not_a_dry_local_poi"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 70,
+      "status": "excluded",
+      "reason": "not_local_point_or_requires_new_biome"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 71,
+      "status": "eligible",
+      "reason": "local_site_with_existing_context",
+      "requiresAll": [
+        "dry_hex",
+        "wetland"
+      ],
+      "poiKind": "natural_place"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 72,
+      "status": "excluded",
+      "reason": "not_local_point_or_requires_new_biome"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 73,
+      "status": "eligible",
+      "reason": "local_site_with_existing_context",
+      "requiresAll": [
+        "dry_hex",
+        "river_rapids"
+      ],
+      "poiKind": "natural_place"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 74,
+      "status": "excluded",
+      "reason": "not_local_point_or_requires_new_biome"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 75,
+      "status": "excluded",
+      "reason": "unrepresented_extent_or_geological_context"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 76,
+      "status": "excluded",
+      "reason": "linear_water_geometry_not_generated_by_content"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 77,
+      "status": "excluded",
+      "reason": "not_local_point_or_requires_new_biome"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 78,
+      "status": "eligible",
+      "reason": "local_site_with_existing_context",
+      "requiresAll": [
+        "dry_hex",
+        "elevated"
+      ],
+      "poiKind": "natural_place"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 79,
+      "status": "excluded",
+      "reason": "not_local_point_or_requires_new_biome"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 80,
+      "status": "excluded",
+      "reason": "not_local_point_or_requires_new_biome"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 81,
+      "status": "excluded",
+      "reason": "not_local_point_or_requires_new_biome"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 82,
+      "status": "eligible",
+      "reason": "local_site_with_existing_context",
+      "requiresAll": [
+        "dry_hex",
+        "elevated"
+      ],
+      "poiKind": "natural_place"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 83,
+      "status": "excluded",
+      "reason": "not_local_point_or_requires_new_biome"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 84,
+      "status": "eligible",
+      "reason": "local_site_with_existing_context",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "natural_place"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 85,
+      "status": "eligible",
+      "reason": "local_site_with_existing_context",
+      "requiresAll": [
+        "dry_hex",
+        "river_start"
+      ],
+      "poiKind": "natural_place"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 86,
+      "status": "excluded",
+      "reason": "not_local_point_or_requires_new_biome"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 87,
+      "status": "excluded",
+      "reason": "linear_water_geometry_not_generated_by_content"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 88,
+      "status": "excluded",
+      "reason": "unrepresented_extent_or_geological_context"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 89,
+      "status": "excluded",
+      "reason": "not_local_point_or_requires_new_biome"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 90,
+      "status": "excluded",
+      "reason": "not_local_point_or_requires_new_biome"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 91,
+      "status": "excluded",
+      "reason": "unrepresented_extent_or_geological_context"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 92,
+      "status": "excluded",
+      "reason": "not_local_point_or_requires_new_biome"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 93,
+      "status": "excluded",
+      "reason": "not_local_point_or_requires_new_biome"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 94,
+      "status": "excluded",
+      "reason": "unrepresented_extent_or_geological_context"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 95,
+      "status": "excluded",
+      "reason": "unrepresented_extent_or_geological_context"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 96,
+      "status": "excluded",
+      "reason": "unrepresented_extent_or_geological_context"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 97,
+      "status": "excluded",
+      "reason": "not_local_point_or_requires_new_biome"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 98,
+      "status": "eligible",
+      "reason": "local_site_with_existing_context",
+      "requiresAll": [
+        "dry_hex",
+        "river_waterfall"
+      ],
+      "poiKind": "natural_place"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 99,
+      "status": "excluded",
+      "reason": "not_local_point_or_requires_new_biome"
+    },
+    {
+      "table": "locations",
+      "sourceRow": 100,
+      "status": "excluded",
+      "reason": "water_body_or_shore_geometry_not_a_dry_local_poi"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 1,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "monastery"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 2,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "structure"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 3,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "structure"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 4,
+      "status": "excluded",
+      "reason": "linear_aqueduct_geometry"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 5,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "structure"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 6,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "structure"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 7,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "camp"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 8,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "structure"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 9,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "structure"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 10,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "structure"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 11,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "structure"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 12,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "structure"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 13,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "structure"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 14,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "structure"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 15,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "structure"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 16,
+      "status": "excluded",
+      "reason": "linear_path_geometry"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 17,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "castle"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 18,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 19,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "holy_place"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 20,
+      "status": "excluded",
+      "reason": "settlement_identity_not_replaced"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 21,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "structure"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 22,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "monastery"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 23,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "road_junction"
+      ],
+      "poiKind": "structure"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 24,
+      "status": "excluded",
+      "reason": "hydraulic_geometry_not_supported"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 25,
+      "status": "excluded",
+      "reason": "linear_road_geometry"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 26,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "structure"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 27,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 28,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "farm"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 29,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "crossing_ferry"
+      ],
+      "poiKind": "structure"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 30,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "structure"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 31,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "water_contact"
+      ],
+      "poiKind": "hut"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 32,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "crossing_ford"
+      ],
+      "poiKind": "structure"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 33,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "forest"
+      ],
+      "poiKind": "hut"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 34,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "fort"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 35,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "structure"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 36,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "structure"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 37,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "structure"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 38,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "structure"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 39,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "structure"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 40,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "graveyard"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 41,
+      "status": "excluded",
+      "reason": "settlement_identity_not_replaced"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 42,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "structure"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 43,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "monastery"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 44,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "structure"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 45,
+      "status": "excluded",
+      "reason": "linear_road_geometry"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 46,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "camp"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 47,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "hut"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 48,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "tavern"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 49,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "stronghold"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 50,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "structure"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 51,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "water_contact"
+      ],
+      "poiKind": "tower"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 52,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "forest"
+      ],
+      "poiKind": "sawmill"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 53,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "structure"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 54,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "structure"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 55,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "structure"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 56,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "mill"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 57,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "elevated"
+      ],
+      "poiKind": "mine"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 58,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "monastery"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 59,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "structure"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 60,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "structure"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 61,
+      "status": "excluded",
+      "reason": "linear_path_geometry"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 62,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "obelisk"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 63,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "structure"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 64,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "structure"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 65,
+      "status": "excluded",
+      "reason": "linear_road_geometry"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 66,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "structure"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 67,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "camp"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 68,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "structure"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 69,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "water_contact"
+      ],
+      "poiKind": "structure"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 70,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "structure"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 71,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "structure"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 72,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "camp"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 73,
+      "status": "excluded",
+      "reason": "linear_road_geometry"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 74,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "structure"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 75,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "ruins"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 76,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "hut"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 77,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "holy_place"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 78,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "tower"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 79,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "structure"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 80,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "statue"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 81,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "crossing_bridge"
+      ],
+      "poiKind": "structure"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 82,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "structure"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 83,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "camp"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 84,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "tavern"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 85,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "holy_place"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 86,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "road_contact"
+      ],
+      "poiKind": "structure"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 87,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "structure"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 88,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "tower"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 89,
+      "status": "excluded",
+      "reason": "settlement_identity_not_replaced"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 90,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "camp"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 91,
+      "status": "excluded",
+      "reason": "linear_path_geometry"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 92,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "structure"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 93,
+      "status": "excluded",
+      "reason": "settlement_identity_not_replaced"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 94,
+      "status": "excluded",
+      "reason": "linear_wall_geometry"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 95,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "tower"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 96,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "river_contact"
+      ],
+      "poiKind": "mill"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 97,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "structure"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 98,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "mill"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 99,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "tower"
+    },
+    {
+      "table": "structures",
+      "sourceRow": 100,
+      "status": "eligible",
+      "reason": "local_structure_only_no_geometry_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "crossing_bridge"
+      ],
+      "poiKind": "structure"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 1,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 2,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 3,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 4,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 5,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 6,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 7,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 8,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 9,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 10,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 11,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 12,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 13,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 14,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 15,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 16,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 17,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 18,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 19,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 20,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "elevated"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 21,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 22,
+      "status": "excluded",
+      "reason": "settlement_identity_not_replaced"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 23,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 24,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 25,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 26,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 27,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 28,
+      "status": "excluded",
+      "reason": "hydraulic_geometry_not_supported"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 29,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 30,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 31,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 32,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 33,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 34,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 35,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 36,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 37,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 38,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 39,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 40,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 41,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 42,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 43,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 44,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "cold_ice"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 45,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 46,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 47,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 48,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 49,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 50,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 51,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "elevated"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 52,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 53,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 54,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 55,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 56,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 57,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 58,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 59,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 60,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 61,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "elevated"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 62,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 63,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 64,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 65,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 66,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 67,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "forest"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 68,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 69,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 70,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 71,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 72,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 73,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 74,
+      "status": "excluded",
+      "reason": "linear_race_course_geometry"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 75,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 76,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 77,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 78,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 79,
+      "status": "excluded",
+      "reason": "waterborne_or_drydock_context_missing"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 80,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 81,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 82,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 83,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 84,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 85,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 86,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 87,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 88,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 89,
+      "status": "excluded",
+      "reason": "park_extent_and_layout_not_supported"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 90,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 91,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 92,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 93,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 94,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "forest"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 95,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 96,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 97,
+      "status": "excluded",
+      "reason": "linear_waterworks_geometry"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 98,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 99,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    },
+    {
+      "table": "dungeons",
+      "sourceRow": 100,
+      "status": "eligible",
+      "reason": "site_entrance_only_no_rooms_or_recursive_roll",
+      "requiresAll": [
+        "dry_hex",
+        "any_dry"
+      ],
+      "poiKind": "dungeon"
+    }
+  ],
+  "verification": {
+    "sourceRows": 300,
+    "tables": {
+      "locations": {
+        "eligible": 30,
+        "excluded": 70
+      },
+      "structures": {
+        "eligible": 86,
+        "excluded": 14
+      },
+      "dungeons": {
+        "eligible": 94,
+        "excluded": 6
+      }
+    },
+    "bookDataPublished": false,
+    "currentRuntimeVerified": false,
+    "requiredNext": "Implement predicates from accepted map context and validate actual handler; do not present this ledger as implemented support."
+  }
+}
