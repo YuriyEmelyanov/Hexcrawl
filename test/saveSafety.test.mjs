@@ -1,5 +1,5 @@
 import {newKnaveLayer} from '../src/knaveClassic.ts';
-import {knaveContentFixture} from './helpers/knave-fixture.mjs';
+import {knaveContentFixture,knaveCatalogFixture} from './helpers/knave-fixture.mjs';
 import {seaFixture} from './helpers/sea-fixture.mjs';
 import {regionFixture} from './helpers/region-fixture.mjs';
 import {createGenerationState} from '../src/worldRandom.ts';
@@ -199,7 +199,7 @@ test('E8 v8 authored POI names use real import,exact export and UndoRedo without
  assert.deepEqual(structuredClone(profile.render().generationRef.current),initial.map.generation);
  profile.render().changeGenerationMode('mythic');assert.equal(profile.render().generationMode,'mythic');assert.equal(profile.render().createSaveData().map.knave,undefined);
  assert.equal(profile.render().chooseKnaveProfile(true),false);profile.render().changeGenerationMode('classic');profile.render().chooseKnaveProfile(true);
- profile.render().addFallbackTractToMap({q:0,r:0});assert.equal(profile.render().chooseKnaveProfile(false),false);
+ profile.injectFunction('knaveGenerationCatalog',knaveCatalogFixture);profile.render().addFallbackTractToMap({q:0,r:0});assert.equal(profile.render().chooseKnaveProfile(false),false);
  const locked=structuredClone(profile.render().createSaveData().map);profile.setWindow({confirm:()=>false});profile.render().changeGenerationMode('mythic');assert.deepEqual(structuredClone(profile.render().createSaveData().map),locked);
  profile.setWindow({confirm:()=>true});profile.render().changeGenerationMode('mythic');assert.equal(profile.render().generationMode,'mythic');assert.equal(profile.render().regions.length,0);
  profile.render().undoMap();assert.equal(profile.render().generationMode,'classic');assert.deepEqual(structuredClone(profile.render().createSaveData().map),locked);

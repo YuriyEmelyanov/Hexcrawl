@@ -1,3 +1,5 @@
+import knaveCatalogData from './tags/knaveCatalogData';
+import {emptyKnaveContent,fillKnaveContent,validateKnaveCatalog,type KnaveCatalog,type KnaveFacts} from './tags/knave';
 import {knaveLossValue,dropKnaveLoss,newKnaveLayer,setKnaveDifficulty,setKnaveDiscovery,type Difficulty,type Discovery,validateKnaveLayer,remapKnavePois,knaveLosses,type KnaveLayer,type KnaveContext} from './knaveClassic';
 import {hasCentralPoi,preparePoiMove,poiLocatorKey,type PoiLocator,assertPoiEditorNames,poiNameLocators,renamePoiEditorName,PoiMoveError,type EditorNames} from './manualPois';
 import {migrateSeas,prepareSeaIdentity,withLegacySeas,type SeaRecord,type SeaChoices} from './seaIdentity';
@@ -130,9 +132,11 @@ type RiverSlopeInfo = {
 type HexType = 'region' | 'candidate' | 'center';
 
 type BiomeLandType = 'settled' | 'wild';
-type CentralPoiKind = MythicPoi | 'capital' | 'city' | 'town' | 'village' | 'lair' | 'ruins' | 'cursed_place' | 'holy_place';
+type CentralPoiKind = 'natural_place'|'structure'|'dungeon'|MythicPoi | 'capital' | 'city' | 'town' | 'village' | 'lair' | 'ruins' | 'cursed_place' | 'holy_place';
 type SettlementPoiKind = Extract<CentralPoiKind, 'city' | 'town' | 'village'>;
 type SecondaryPoiKind =
+  | 'natural_place'
+  | 'structure'
   | 'dungeon'
   | 'camp'
   | 'castle'
@@ -375,6 +379,9 @@ const SHOW_BIOME_EMOJI = true;
 const REGION_CENTER_EMOJI = '★';
 const CENTRAL_POI_DETAILS: Record<CentralPoiKind, { emoji: string; label: Record<Language, string> }> = {
   ...MYTHIC_POI,
+  natural_place:{emoji:'◆',label:{ru:'Природное место',en:'Natural site'}},
+  structure:{emoji:'▣',label:{ru:'Постройка',en:'Structure'}},
+  dungeon:{emoji:'🕳️',label:{ru:'Подземелье',en:'Dungeon'}},
   capital: { emoji: '👑', label: { ru: 'Столица', en: 'Capital' } },
   city: { emoji: '🏰', label: { ru: 'Город', en: 'City' } },
   town: { emoji: '🏘️', label: { ru: 'Городок', en: 'Town' } },
@@ -1046,6 +1053,53 @@ function retainPoiNames(map:EditorObjectMap & {editorNames:EditorNames},current:
 function knaveMapContext(map:Pick<MapSnapshot,'regions'|'hexTerrainByKey'|'waterPoiByKey'>):KnaveContext{
   const hexes=new Set([...map.regions.flatMap(r=>r.hexes.map(hexKey)),...map.hexTerrainByKey.keys()]);
   return {hexes,dryHexes:new Set([...hexes].filter(key=>waterKindAt(map.hexTerrainByKey,key)==='land')),pois:poiNameLocators(map)};
+}
+function knaveGenerationCatalog():KnaveCatalog {
+  validateKnaveCatalog(knaveCatalogData);return knaveCatalogData;
+}
+/** Accepted physical context, shared with actual map presentation. No new
+ * coordinates, climate/geology inference or random draws are introduced. */
+function knaveFactsForMap(map:MapSnapshot):KnaveFacts[]{
+  const live=poiNameLocators(map),regionsById=new Map(map.regions.map(r=>[r.id,r]));
+  const marks=regionMarkKeys(map),roadNeighbors=new Map<string,Set<string>>();
+  for(const road of map.roads)for(const segment of road.segments){const a=hexKey(segment.from),b=hexKey(segment.to);for(const [from,to]of [[a,b],[b,a]]){const neighbors=roadNeighbors.get(from)??new Set<string>();neighbors.add(to);roadNeighbors.set(from,neighbors);}}
+  return [...live].sort().map(owner=>{
+    const water=owner.startsWith('waterPoi:'),parts=owner.split(':'),key=parts[water?1:2],[q,r]=key.split(',').map(Number),hex={q,r};
+    const region=water?map.regions.find(r=>r.hexes.some(h=>hexKey(h)===key)):regionsById.get(Number(parts[1]));
+    const central=!!region&&!region.isTract&&!region.suppressCentralPoi&&hexKey(region.centerHex)===key&&!!region.centralPoiKind;
+    const kind=central?region!.centralPoiKind:region?.pointOfInterestKinds?.[key];
+    const biome=map.biomeOverrideByHexKey.get(key)??region?.biomeId;
+    const vertices=new Set(getHexCornerPoints(hex).map(v=>v.key)),edges=new Set(getHexEdgeKeys(hex));
+    const nearby=getRiversOnHexEdges(hex,map.rivers);
+    const crossings=[...new Set(map.crossings.filter(c=>map.roads.find(r=>r.id===c.roadId)?.segments.some(s=>normalizeRoadSegmentKey(s.from,s.to)===c.roadSegmentKey&&(hexKey(s.from)===key||hexKey(s.to)===key))).map(c=>c.kind))];
+    const dry=waterKindAt(map.hexTerrainByKey,key)==='land';
+    if(!water&&(!region||!dry))throw Error('knave_invalid_land_owner');
+    return {owner,kind:water?'water':['capital','city','town','village'].includes(kind??'')?'settlement':'land',dry,
+      height:region?.heightLevel??null,forest:!!biome&&forestFamily(biome)!==null,wetland:biome==='swamp'||biome==='swamp_forest',sand:biome==='semi_desert',coldIce:false,
+      river:nearby.length>0,riverStart:nearby.some(r=>r.sectors.some(s=>s.startReason==='river_start'&&vertices.has(s.startVertexKey))),
+      rapids:[...edges].some(k=>marks.rapids.has(k)),waterfall:[...vertices].some(k=>marks.waterfalls.has(k)),
+      waterContact:nearby.length>0||getHexNeighbors(hex).some(h=>waterKindAt(map.hexTerrainByKey,hexKey(h))!=='land'),
+      road:(roadNeighbors.get(key)?.size??0)>0,roadJunction:(roadNeighbors.get(key)?.size??0)>=3,crossings};
+  });
+}
+/** Pure preparation before history or state writes. Existing owner snapshots and
+ * markers remain literal. Only new nonsettlement land owners change markers. */
+function prepareKnaveGeneratedMap(map:MapSnapshot,catalog:KnaveCatalog):MapSnapshot {
+  if(!map.knave)return map;
+  const before=map.knave.content??emptyKnaveContent(),content=fillKnaveContent(before,catalog,knaveFactsForMap(map),map.generation.masterSeed);
+  if(content===before)return map;
+  const regions=map.regions.map(r=>{
+    let next=r;
+    for(const [key,c]of Object.entries(content.byPoi)){
+      if(Object.prototype.hasOwnProperty.call(before.byPoi,key)||!key.startsWith(`poi:${r.id}:`)||!c.site)continue;
+      const coord=key.slice(`poi:${r.id}:`.length),central=!r.isTract&&!r.suppressCentralPoi&&hexKey(r.centerHex)===coord&&!!r.centralPoiKind;
+      if(next===r)next={...r,pointOfInterestKinds:{...r.pointOfInterestKinds}};
+      if(central)next.centralPoiKind=c.category==='natural'?'natural_place':c.category==='structure'?'structure':'dungeon';
+      else{if(!isPoiKind(c.site.representation))throw Error('knave_unknown_marker');next.pointOfInterestKinds![coord]=c.site.representation;}
+    }
+    return next;
+  });
+  const next={...map,regions,knave:{...map.knave,content}};checkedRiverMap(next);return next;
 }
 function checkedRiverMap<T extends MapSnapshot>(map:T):T{
   map=withLegacySeas(map);
@@ -8568,6 +8622,9 @@ function secondaryPoiKindCanAppearInRegion(
   roads: Road[]
 ): boolean {
   switch (kind) {
+    case 'natural_place':
+    case 'structure':
+      return true; // Knave markers never enter the ordinary random pool.
     case 'dungeon':
     case 'camp':
     case 'ruins':
@@ -11840,6 +11897,7 @@ export function App() {
   const knaveDraftRef=useRef<KnaveDraft|null>(null),knaveDraftSerial=useRef(0),knaveComposing=useRef(false);
   const [knaveError,setKnaveError]=useState<string|null>(null);
   const [knaveExitRequest,setKnaveExitRequest]=useState<{draft:KnaveDraft;action:()=>void}|null>(null);
+  const knaveFocusReturn=useRef<HTMLElement|null>(null);
   const updateKnaveDraft=(value:KnaveDraft|null)=>{knaveDraftRef.current=value;setKnaveDraft(value);setKnaveError(null);if(!value){setKnaveExitRequest(null);knaveComposing.current=false;}};
   type PoiDraft={id:number;revision:number;token:object;source:PoiLocator;q:string;r:string;ambiguous:string[]};
   const [poiDraft,setPoiDraft]=useState<PoiDraft|null>(null);
@@ -12421,12 +12479,12 @@ export function App() {
     const finalNextLakeId = Math.max(nextLakeIdAfterLandlockedSea, getNextLakeIdFromTerrain(finalHexTerrainByKey));
     const finalRoadPairs = new Set(tractRoadResult.roads.flatMap(r=>r.segments.map(s=>pairKey(s.from,s.to))));
     if (obstacles.some(o => finalRoadPairs.has(pairKey(o.hex,o.neighborHex)))) throw new Error('Дорога пересекает препятствие.');
-    recordGenerated(snapshot, { ...captureMap(), regions: finalRegions, candidateHexes: finalCandidateHexes,
+    const committedMap=recordGenerated(snapshot, { ...captureMap(), regions: finalRegions, candidateHexes: finalCandidateHexes,
       rivers: riversAfterTractGeneration, roads: tractRoadResult.roads, crossings: finalCrossings,
       hexTerrainByKey: finalHexTerrainByKey, waterPoiByKey: finalWaterPoi, toponyms: finalToponyms,
       nextLakeId: finalNextLakeId, nextRoadId: tractRoadResult.nextRoadId, nextRiverId:allocatedTractRivers.nextRiverId }, anchorHex, pendingRegen?.backup);
     setHistory((current) => [...current, structuredClone(snapshot)]);
-    setRegions(finalRegions);
+    setRegions(committedMap.regions);
     setCandidateHexes(finalCandidateHexes);
     setNextRiverId(allocatedTractRivers.nextRiverId);
     setRivers(riversAfterTractGeneration);
@@ -13244,12 +13302,12 @@ export function App() {
       if (options.mode === 'mythic') for (const key of newlyCheckedWaterHexKeys) finalWaterPoi.delete(key);
       const finalCrossings = reconcileRiverCrossings(roadResult.roads, riversWithDeltas, finalRegions, crossings, rng);
       const finalNextLakeId = Math.max(nextLakeIdAfterLandlockedSea, getNextLakeIdFromTerrain(finalHexTerrainByKey));
-      recordGenerated(snapshot, { ...captureMap(), regions: finalRegions, candidateHexes: finalCandidateHexes,
+      const committedMap=recordGenerated(snapshot, { ...captureMap(), regions: finalRegions, candidateHexes: finalCandidateHexes,
         rivers: riversWithDeltas, roads: roadResult.roads, crossings: finalCrossings,
         hexTerrainByKey: finalHexTerrainByKey, waterPoiByKey: finalWaterPoi, toponyms: finalToponyms,
         nextLakeId: finalNextLakeId, nextRoadId: roadResult.nextRoadId, nextRiverId:allocatedRegionRivers.nextRiverId }, finalCenterHex, pendingRegen?.backup);
       setHistory((current) => [...current, structuredClone(snapshot)]);
-      setRegions(finalRegions);
+      setRegions(committedMap.regions);
       setCandidateHexes(finalCandidateHexes);
       setHexTerrainByKey(finalHexTerrainByKey);
       setWaterPoiByKey(finalWaterPoi);
@@ -13687,6 +13745,10 @@ export function App() {
   };
   const recordGenerated = (checkpoint: MapSnapshot, map: MapSnapshot, selection: AxialHex,
     backup?: GenerationBackup, checkpoints = history) => {
+    if(map.knave){
+      let catalog:KnaveCatalog;try{catalog=knaveGenerationCatalog();}catch{throw Error(language==='ru'?'Не удалось загрузить данные Knave 2e. Карта не изменена.':'Knave 2e data could not be loaded. Your map is unchanged.');}
+      map=prepareKnaveGeneratedMap(map,catalog);
+    }
     const sea=prepareSeaIdentity(captureMap(),map.hexTerrainByKey);
     if(sea.unresolved.length)throw new WaterEditError('sea_name_choice',...sea.unresolved.map(c=>c.key));
     for(const id of sea.removedSeaIds){const pair=map.editorNames[`sea:${id}`];if(pair)throw new AuthoredNameConflict(`sea:${id}`,pair);}
@@ -13694,7 +13756,7 @@ export function App() {
     checkedRiverMap(map);
     assertGeneratedIds(map);
     if (!kingdomJob) backup ??= activeGenerationBackup.current ?? undefined;
-    if (kingdomJob && !backup) {updateSeaIdentity(map);return;} // internal kingdom steps form one transaction at finish
+    if (kingdomJob && !backup) {updateSeaIdentity(map);return map;} // internal kingdom steps form one transaction at finish
     const before = backup?.document ?? { ...captureDocument(), map: { ...captureMap(), generation: cloneGenerationState(checkpoint.generation) } };
     const notes = before.map.gmNotesByHexKey ?? gmNotesByHexKey;
     const keys = actualHexKeys(map), missing = Object.keys(notes).filter(key => !keys.has(key));
@@ -13703,7 +13765,7 @@ export function App() {
     map.gmNotesByHexKey = {...notes};
     recordTransaction(before, { ...captureDocument(), map, selectedHex: selection,
       generationHistory: [...checkpoints, structuredClone(withLegacySeas(checkpoint))] });
-    updateSeaIdentity(map);updateTags(map.tags);updateNotesMap(map.gmNotesByHexKey);
+    updateSeaIdentity(map);updateKnave(map.knave);updateTags(map.tags);updateNotesMap(map.gmNotesByHexKey);return map;
   };
 
   const mutateTag=(owner:TagOwner,id:string,slot?:number,edit?:{index:number;text:string})=>{
@@ -14267,8 +14329,8 @@ export function App() {
   const selectedRegion = selectedMeta ? regions.find((region) => region.id === selectedMeta.regionId) : undefined;
   const selectedKingdom = selectedRegion ? kingdoms.find(k=>k.regionIds.includes(selectedRegion.id)) : undefined;
   const selectedObstacles = selectedHex ? obstacles.filter(o=>hexKey(o.hex)===hexKey(selectedHex)||hexKey(o.neighborHex)===hexKey(selectedHex)) : [];
-  const editableCentralKinds = generationMode === 'mythic' ? mythicPoiChoices(selectedRegion?.biomeLandType==='settled',true) : ['capital','city','town','village','lair','ruins','cursed_place','holy_place'];
-  const editablePoiKinds: PoiKind[] = generationMode === 'mythic' ? mythicPoiChoices(selectedRegion?.biomeLandType==='settled',false) : EDITABLE_POI_KIND_ORDER.filter(k=>!(k in MYTHIC_POI)||k==='ruins');
+  const editableCentralKinds = generationMode === 'mythic' ? mythicPoiChoices(selectedRegion?.biomeLandType==='settled',true) : ['capital','city','town','village','lair','ruins','cursed_place','holy_place',...(knave?['natural_place','structure','dungeon']:[])];
+  const editablePoiKinds: PoiKind[] = generationMode === 'mythic' ? mythicPoiChoices(selectedRegion?.biomeLandType==='settled',false) : [...EDITABLE_POI_KIND_ORDER.filter(k=>!(k in MYTHIC_POI)||k==='ruins'),...(knave?['natural_place','structure'] as PoiKind[]:[])];
   const selectedHexBiomeOverride = selectedHexKey ? biomeOverrideByHexKey.get(selectedHexKey) : undefined;
   const selectedEffectiveBiomeId = selectedHexBiomeOverride ?? selectedRegion?.biomeId;
   const isEditingSelectedHexBiome = selectedHexKey !== null && editingHexBiomeKey === selectedHexKey;
@@ -14881,7 +14943,7 @@ export function App() {
     } finally { importInFlight.current=false; setIsImporting(false); }
   };
 
-  const poiPolicy=()=>({mode:generationMode,landKinds:(region:Pick<Region,'biomeLandType'>)=>generationMode==='mythic'?mythicPoiChoices(region.biomeLandType==='settled',false):EDITABLE_POI_KIND_ORDER.filter(k=>!(k in MYTHIC_POI)||k==='ruins'),waterKinds:getWaterPoiKindPool,inKingdomArea:(id:number,h:AxialHex)=>{const kingdom=kingdoms.find(k=>k.id===id);return !!kingdom&&kingdomKeys(kingdom.origin).has(hexKey(h));}});
+  const poiPolicy=()=>({mode:generationMode,landKinds:(region:Pick<Region,'biomeLandType'>)=>generationMode==='mythic'?mythicPoiChoices(region.biomeLandType==='settled',false):[...EDITABLE_POI_KIND_ORDER.filter(k=>!(k in MYTHIC_POI)||k==='ruins'),...(knaveRef.current?['natural_place','structure']:[])],waterKinds:getWaterPoiKindPool,inKingdomArea:(id:number,h:AxialHex)=>{const kingdom=kingdoms.find(k=>k.id===id);return !!kingdom&&kingdomKeys(kingdom.origin).has(hexKey(h));}});
   const currentPoiDraft=(draft:PoiDraft|null):draft is PoiDraft=>!!draft&&poiDraftRef.current===draft&&draft.revision===documentRevision.current&&draft.token===poiDocumentToken.current&&!documentBusy();
   const poiCommandError=(error:unknown)=>{
     const code=(error as {code?:string})?.code,ru=language==='ru';
@@ -14945,9 +15007,10 @@ export function App() {
     }catch{setKnaveError(language==='ru'?'Для секрета нужна улика: от 1 до 512 символов.':'A secret needs a clue of 1–512 characters.');return false;}
   };
   const requestKnaveExit=(action:()=>void)=>{const draft=knaveDraftRef.current;if(draft)setKnaveExitRequest({draft,action});};
+  const stayInKnaveEditor=()=>{setKnaveExitRequest(null);setTimeout(()=>{if(knaveFocusReturn.current?.isConnected)knaveFocusReturn.current.focus();},0);};
   const resolveKnaveExit=(choice:'finish'|'discard'|'stay')=>{
     const request=knaveExitRequest;if(!request)return false;
-    if(choice==='stay'){setKnaveExitRequest(null);return true;}
+    if(choice==='stay'){stayInKnaveEditor();return true;}
     if(!currentKnaveDraft(request.draft)){setKnaveExitRequest(null);return false;}
     if(choice==='finish'){if(!finishKnaveDraft(request.draft))return false;}else resetKnaveDraft(request.draft);
     setKnaveExitRequest(null);setTimeout(request.action,0);return true;
@@ -15157,7 +15220,7 @@ export function App() {
   const knaveControlsBlocked=!!poiDraft||!!regionDraft||!!waterDraft||!!riverDraft||!!roadDraft||!!obstacleDraft||!!riverCommandPreview||!!roadFeatureResolution||documentBusy()||dirtyNameDraft();
   const difficultyLabels:Record<Difficulty,string>=language==='ru'?{unspecified:'Не задана',normal:'Обычная',difficult:'Трудная'}:{unspecified:'Unspecified',normal:'Normal',difficult:'Difficult'};
   const discoveryLabels:Record<Discovery,string>=language==='ru'?{passage:'При прохождении',exploration:'При исследовании',interaction:'Секрет · взаимодействие'}:{passage:'On passage',exploration:'By exploration',interaction:'Secret · interaction'};
-  const knavePanel=knave&&generationMode==='classic'&&selectedHexKey&&knaveMapContext(captureMap()).hexes.has(selectedHexKey)?<div data-knave-panel className="knave-properties">
+  const knavePanel=knave&&generationMode==='classic'&&selectedHexKey&&knaveMapContext(captureMap()).hexes.has(selectedHexKey)?<div data-knave-panel className="knave-properties" onFocusCapture={e=>{if(e.target instanceof HTMLElement)knaveFocusReturn.current=e.target;}}>
     {selectedKnaveContent&&<div className="knave-results">{selectedKnaveContent.site?renderKnaveResult(selectedKnaveContent.site,selectedKnaveContent.site.table,selectedKnaveContent.site.sourceRow):null}{renderKnaveResult(selectedKnaveContent.trait,'place_traits',selectedKnaveContent.trait.sourceRow,true)}</div>}
     {!isSelectedLake&&!isSelectedSea&&<div className="direct-line"><label>{language==='ru'?'Проходимость: ':'Difficulty: '}{editMode?<select aria-label={language==='ru'?'Проходимость':'Difficulty'} value={knaveDifficulty} disabled={knaveControlsBlocked} onChange={e=>changeKnaveDraft({difficulty:e.target.value as Difficulty},knaveDraft)}>{Object.entries(difficultyLabels).map(([v,label])=><option key={v} value={v}>{label}</option>)}</select>:difficultyLabels[knaveDifficulty]}</label></div>}
     {knaveDiscoveryKey&&<><div className="direct-line"><label>{language==='ru'?'Обнаружение: ':'Discovery: '}{editMode?<select aria-label={language==='ru'?'Обнаружение':'Discovery'} value={knaveDiscovery} disabled={knaveControlsBlocked} onChange={e=>changeKnaveDraft({mode:e.target.value as Discovery},knaveDraft)}>{Object.entries(discoveryLabels).map(([v,label])=><option key={v} value={v}>{label}</option>)}</select>:discoveryLabels[knaveDiscovery]}</label></div>
@@ -16181,7 +16244,7 @@ export function App() {
     <div className="app" onClickCapture={poiClickGate} onChangeCapture={poiSelectGate} onPointerDownCapture={finishBeforePointer} onKeyDownCapture={e=>{
       if(e.key!=='Tab'&&guardMaterialRead(e))return;
       if(knaveExitRequest&&e.key==='Tab'){const buttons=[...(e.currentTarget.querySelector('[data-knave-exit-dialog]')?.querySelectorAll<HTMLButtonElement>('button')??[])],first=buttons[0],last=buttons[buttons.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last?.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus();}return;}
-      if(knaveDraftRef.current&&e.key==='Escape'&&!e.nativeEvent.isComposing){e.preventDefault();e.stopPropagation();if(knaveExitRequest)setKnaveExitRequest(null);else resetKnaveDraft();return;}
+      if(knaveDraftRef.current&&e.key==='Escape'&&!e.nativeEvent.isComposing){e.preventDefault();e.stopPropagation();if(knaveExitRequest)stayInKnaveEditor();else resetKnaveDraft();return;}
       if(poiExitRequest&&e.key==='Tab'){const buttons=[...(e.currentTarget.querySelector('[data-poi-exit-dialog]')?.querySelectorAll<HTMLButtonElement>('button:not(:disabled)')??[])];const first=buttons[0],last=buttons[buttons.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last?.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus();}return;}
       if(poiDraftRef.current&&e.key==='Escape'&&!e.nativeEvent.isComposing){e.preventDefault();e.stopPropagation();if(poiExitRequest)setPoiExitRequest(null);else resetPoiDraft();return;}
       if(regionDraftRef.current&&!e.nativeEvent.isComposing){if(e.key==='Escape'){e.preventDefault();e.stopPropagation();resetRegionDraft();return;}if(e.key==='Enter'&&(e.target as Element).closest('.map-viewport,[data-region-preview]')&&!(e.target as Element).closest('select,button,input,textarea,summary,[role="button"]')){e.preventDefault();e.stopPropagation();if(finishRegionDraft())setEditMode(false);return;}}
@@ -16278,7 +16341,7 @@ export function App() {
                 <option value="classic">{language === 'ru' ? 'Классический режим' : 'Classic mode'}</option>
                 <option value="mythic">Mythic Bastionland</option>
               </select></label></div>
-            {generationMode==='classic'&&<div className="knave-profile-row"><label title={regions.length||hexTerrainByKey.size?(language==='ru'?'Профиль выбран при создании карты. Для другого профиля начните новую карту.':'The profile was chosen when the map was created. Start a new map to change it.'):undefined} tabIndex={regions.length||hexTerrainByKey.size?0:undefined}><input type="checkbox" aria-label="Knave 2e" checked={!!knave} disabled={!!regions.length||!!hexTerrainByKey.size||mutationBlocked(false)} onChange={e=>chooseKnaveProfile(e.target.checked)}/>Knave 2e</label><span>{language==='ru'?'6 миль / гекс':'6 miles / hex'}</span></div>}
+            {generationMode==='classic'&&<div className="knave-profile-row"><label><input type="checkbox" aria-label="Knave 2e" checked={!!knave} disabled={!!regions.length||!!hexTerrainByKey.size||mutationBlocked(false)} onChange={e=>chooseKnaveProfile(e.target.checked)}/>Knave 2e</label><span>{language==='ru'?'6 миль / гекс':'6 miles / hex'}</span>{!!(regions.length||hexTerrainByKey.size)&&<details className="knave-profile-help"><summary aria-label={language==='ru'?'Почему профиль заблокирован':'Why the profile is locked'}>?</summary><p>{language==='ru'?'Профиль выбран при создании карты. Для другого профиля начните новую карту.':'The profile was chosen when the map was created. Start a new map to change it.'}</p></details>}</div>}
             {!kingdomJob && !detailedRenderReady ? <p role="status" className="kingdom-progress">{language === 'ru' ? 'Отрисовка карты…' : 'Drawing map…'}</p> : null}
             {kingdomJob ? <p role="status" className="kingdom-progress">{language === 'ru' ? 'Создание королевства…' : 'Building kingdom…'} {kingdomHexes(kingdomJob.origin).filter(h=>metadataMap.has(hexKey(h))).length}/144</p> : null}
             {generationMode === 'classic' ? <div className="control-block gen-params" aria-label={t.genParamsLabel}>

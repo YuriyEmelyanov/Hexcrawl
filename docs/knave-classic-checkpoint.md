@@ -28,9 +28,9 @@ accepted document; no invalid draft enters JSON. A saved clue is escaped text,
 is preserved when discovery changes, and shares one Undo transaction with the
 other property changes. Dry difficulty remains independent of POI location.
 
-The source content catalog/generation and complete new-map feature walkthrough
-remain required before review_ready. The checkpoint UI alone is not a working
-Knave content generator and must not be released as a completed profile.
+The complete new-map walkthrough with the private source catalog remains
+required before review_ready. The public source checkpoint must not be released
+as a completed profile: its catalog module deliberately contains no book text.
 
 The catalog preparation checkpoint supplies four100-row RU tables privately
 and a public source-free300-row eligibility policy. The next code checkpoint
@@ -47,15 +47,39 @@ layers without content remain valid. Unknown catalog versions, dangling owners,
 invalid rows/counters and misleading die/pool metadata are rejected. The public
 code contains authored fixtures only; the actual400-row catalog is not transferred.
 
-This is a detached adapter and persistence/display checkpoint. Actual App
-generation still needs accepted-map fact construction, neutral POI markers and
-atomic invocation for newly generated owners. It must not be presented as a
-completed Knave map generator or independent source/corpus review. Current tests
-extend the old lifecycle cases for the new payload; two new useful Node contracts
-cover compatible selection/replay and atomic catalog/context refusals. The
-existing browser lifecycle is extended, not duplicated. Its screenshots are now
-under the existing HX-BL-041 artifact directory so they can be retrieved.
-No new source text, full-book research, score award or publication is included.
+The App now prepares Knave content after final geography/roads/water/POI
+placement and before history or state writes, in both ordinary and fallback
+generation. It uses actual land owners, physical regional height, effective
+biome, incident river edges/source vertices, visible rapid/waterfall markers,
+incident road segments and their existing crossings. A junction requires three
+distinct neighboring road connections. A visual mountain override does not
+invent physical elevation; the current biome model supplies no explicit ice
+fact, so `coldIce` remains false.
+
+Only missing owner snapshots are filled. Settlement identities and water POI
+markers stay literal. New nonsettlement central markers are neutral natural
+site/structure/dungeon; secondary markers follow the source-free policy. New
+natural-site and structure SVGs are original simple symbols. These marker kinds
+never enter ordinary Classic/Mythic random pools. Coordinate placement,
+density, old marker snapshots, world RNG and topographic rules stay unchanged.
+The actual commit return value supplies the prepared regions, preventing the
+caller from overwriting new Knave markers with pre-preparation regions.
+
+`knaveCatalogData.ts` is an explicit source-free null provider. A separately
+checked private package can replace it with the supplied400-row catalog. With
+missing/unsupported data the actual generation handler refuses and restores its
+entire backup, including RNG, counters, history and Knave. It never substitutes
+authored fixture vocabulary for real book content. The public PR is still draft;
+no source corpus is transferred and no release is authorized.
+
+The profile lock explanation is now a native touch/keyboard disclosure. Stay or
+Escape from the draft-exit dialog restores focus to the last Knave editor control.
+The existing browser lifecycle checks those behaviors at the same viewport sizes.
+One additional Node contract exercises real generation, physical/RNG equivalence,
+marker commit, immutable prior content, reload continuation and atomic catalog
+failure; the existing catalog/context case now exercises the actual App fact
+extractor. These fill separate integration risks that the detached adapter test
+cannot detect.
 
 Test governance: the four existing Knave contract cases remain useful. Existing
 real import/history, E7/E8 transfer and E6 loss cases are extended for the actual

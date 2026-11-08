@@ -23,6 +23,7 @@ export async function runKnavePropertiesLifecycle({page,snapshot,root}) {
  await page.locator('input[type=file]').setInputFiles({name:'knave-v10.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(data))});
  await page.waitForFunction(()=>document.querySelector('input[aria-label="Knave 2e"]')?.checked&&document.querySelector('input[aria-label="Knave 2e"]')?.disabled);
  assert.equal(await checkbox.isChecked(),true);assert.equal(await checkbox.isDisabled(),true);
+ const lockHint=page.getByLabel('Почему профиль заблокирован',{exact:true});await lockHint.click();assert.match(await page.locator('.knave-profile-help').innerText(),/начните новую карту/);await lockHint.click();
  const info=page.locator('.info-block--hex'),panel=info.locator('[data-knave-panel]');
  assert.match(await panel.innerText(),/При прохождении/);
  assert.equal(await panel.locator('.knave-result').count(),2);await panel.locator('.knave-result').first().locator('summary').click();assert.match(await panel.innerText(),/совместимый пул/);
@@ -32,7 +33,7 @@ export async function runKnavePropertiesLifecycle({page,snapshot,root}) {
  assert.match(await panel.getByRole('alert').innerText(),/улика/);assert.deepEqual(await snapshot(),before,'export excludes invalid draft');
  await page.locator('polygon.hex[data-hex-key="1,0"]').dispatchEvent('click');
  const dialog=page.getByRole('alertdialog');await dialog.getByRole('button',{name:'Остаться',exact:true}).click();
- assert.equal(await discovery.inputValue(),'interaction');
+ assert.equal(await discovery.inputValue(),'interaction');assert.equal(await discovery.evaluate(el=>document.activeElement===el),true,'Stay restores focus to the Knave editor');
  await panel.getByRole('textbox',{name:'Улика',exact:true}).fill('<Следы обрываются у скалы>');
  await panel.getByRole('combobox',{name:'Проходимость',exact:true}).selectOption('difficult');
  const metrics=[];

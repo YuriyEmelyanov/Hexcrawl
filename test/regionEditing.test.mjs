@@ -1,4 +1,4 @@
-import {knaveContentFixture} from './helpers/knave-fixture.mjs';
+import {knaveContentFixture,knaveCatalogFixture} from './helpers/knave-fixture.mjs';
 import {newKnaveLayer} from '../src/knaveClassic.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -9,6 +9,7 @@ const save=h=>{const d=serial(h.render().createSaveData());delete d.savedAt;retu
 const stacks=h=>structuredClone([h.render().undoHistory,h.render().redoHistory]);
 async function setup(mode='classic',data=regionFixture(mode)){
  const h=createGenerationHarness(42);h.render();h.guardRandom();
+ if(data.map.knave)h.injectFunction('knaveGenerationCatalog',knaveCatalogFixture);
  h.setWindow({alert:m=>{throw Error(m);},matchMedia:()=>({matches:false})});
  h.injectFunction('readTextFile',async f=>f.text);
  await h.render().handleImportJson({target:{files:[{text:JSON.stringify(data)}],value:''}});h.render();return h;
