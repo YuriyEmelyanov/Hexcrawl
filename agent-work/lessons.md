@@ -494,3 +494,8 @@ Pages42440189840 после merge повторно прошёл check/browser и
 ### 2026-11-08 — KNC-REV-001: реальная область нажатия
 
 Читаемое summary16px и inline Cancel19px не обеспечивали44px цели. Исправлены только Knave summary и scoped Cancel; размер текста и глобальный direct-value сохранены. В существующий браузерный lifecycle добавлены corner hit-testing, неперекрытие, нижняя часть цели, Enter/Space и Cancel с точным сравнением документа. Один изменённый сценарий не выдан за рост набора. Public/private trees отличаются только неизменённым модулем каталога; новое заключение требуется для новых SHA. Evidence: agent-work/evidence/KNAVE2-CLASSIC1-d7e7a5b/review-request.json. Node361/361,8browser и отдельныйRNG прошли; физическое касание/AT не проверены.
+
+
+### 2026-11-08 — восстановимость снимка и полнота истории — разные доказательства
+
+Свежий reviewer восстановил af50286/tree7ac из самостоятельного клона архиваv3, все27manifest hashes/CRC совпали. При этом git bundle verify сообщил complete history, а git fsck --full нашёл два отсутствующих предка00190bb7/fb3f9b8 подa246fdf. Поэтому exact runtime recovery подтверждён, прежнее заявление о полной истории опровергнуто; это не дефект приложения и не блокирует требуемое восстановление снимка. В метаданных принятого пакета full_history_completeness=false, исходный архив не переписан. Для будущего заявления именно о полной истории одного bundle verify недостаточно: нужен самостоятельный clone/fsck. Evidence: agent-work/evidence/KNAVE2-CLASSIC1-review-af50286/package-recovery.json и bundle-fsck.log.
