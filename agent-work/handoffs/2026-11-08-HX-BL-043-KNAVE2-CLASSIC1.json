@@ -2,7 +2,7 @@
   "schema_version": 1,
   "task_id": "HX-BL-043",
   "stage_id": "KNAVE2-CLASSIC1",
-  "status": "ready_for_programmer",
+  "status": "implementation_checkpoint_not_review_ready",
   "role": "programmer",
   "approval_ref": "owner-approval-2026-11-08-HX-BL-043-KNAVE2-CLASSIC1",
   "implementation_allowed": true,
@@ -41,7 +41,7 @@
     "Independent reviewer fresh context on exactSHA after implementation"
   ],
   "next_role_after_implementation": "reviewer",
-  "next_step": "Программист проверяет свежие main/claims, берёт KNAVE2-CLASSIC1, реализует KNC-1.0 и предъявляет exact-SHA пакет/фактический UI независимому reviewer. Нового согласования старта или дизайна не требуется.",
+  "next_step": "Продолжить существующий PR494 с head861d444: сначала подключить слой к App, v10 save/load и Undo/Redo/E7/E8/E6; затем каталог/генерацию и компактный UI. До завершения всех KNC-A01..A11 не передавать пакет на приёмку.",
   "foreign_claim_policy": "Do not take or close Nov3 HX-BL-041 presentation claim. MC1-EN separate source-file-required handoff preserved.",
   "score_model_version": "1.2",
   "score_forecast": "unknown; no grades/points awarded",
@@ -52,5 +52,19 @@
     "S05-C03",
     "S06-C05",
     "S08-C04"
-  ]
+  ],
+  "implementation_checkpoint": {
+    "head_sha": "861d4449227d4f850eb7f805a667cae2bbcd5346",
+    "branch": "agent/knave2-classic1",
+    "pr": 494,
+    "result_ref": "agent-work/results/2026-11-08T1200-programmer-HX-BL-043-KNAVE2-CLASSIC1.json",
+    "remaining": [
+      "Wire layer into App capture/clone/applyExactMap/restoreGenerationBackup and v10 import/export/history/checkpoints",
+      "Integrate E7/E8 remapping and E6/deletion loss confirmation, draft identity guards",
+      "Prepare supplied-source compatible-pool ledger/content generation using existing tag machinery; no full book reread or public source corpus transfer",
+      "Add compact profile checkbox and info editor; show actual desktop390/320 walkthrough",
+      "Required actual handler/browser checks and independent exact-SHA reviewer with score_assessment1.2"
+    ]
+  },
+  "next_role": "programmer"
 }
