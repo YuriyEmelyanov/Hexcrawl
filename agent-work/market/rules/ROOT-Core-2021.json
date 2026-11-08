@@ -2,7 +2,7 @@
   "schema_version": 2,
   "game_id": "ROOT",
   "source_id": "ROOT-CORE-2021-EN",
-  "status": "partial_core_map_skeleton_source_inventory_product_unverified",
+  "status": "partial_core_map_and_Marquisate_inventory_product_unverified",
   "date": "2026-11-08",
   "source": {
     "id": "ROOT-CORE-2021-EN",
@@ -11,22 +11,24 @@
     "author": "Brendan Conway & Mark Diaz Truman",
     "publisher": "Magpie Games",
     "url": "https://studylib.net/doc/26230689/rootttprg-corebook-100721",
-    "locator": "Making the Woodland / Map of the Woodland, printed224–227; HTML8772–8930",
+    "locator": "Making the Woodland224; Map225–227; Control of Clearings / First: The Marquisate228–229; HTML8782–8794,8933–8998",
     "printed_pages": [
       224,
       225,
       226,
-      227
+      227,
+      228,
+      229
     ],
     "pdf_pages": null,
     "access_level": "full_text_selected_section",
     "author_project_key": "magpie-games:root-rpg:core2021",
-    "accessed_at": "2026-11-08T02:29:18.261Z",
+    "accessed_at": "2026-11-08T03:37:38.813Z",
     "bibliography_comparison": "First printing2021 credits match official9-page sample previously read, https://d1vzi28wh99zvq.cloudfront.net/pdf_previews/373406-sample.pdf",
     "access_limitations": [
       "Third-party text transcription, not publisher-hosted full PDF",
       "Full-byte identity, visual table layout and latest errata not verified",
-      "Only map skeleton extracted; faction-selection text read as context, not extracted"
+      "Only map skeleton, selected-faction prerequisites/order and Marquisate setup extracted; Eyrie/Alliance and remaining core unreviewed."
     ],
     "deduplication": "Same core work as prior p32 clarification; not a second independent audience observation; T&O remains a separate supplement corpus",
     "language": "en",
@@ -555,13 +557,433 @@
           "reason": "No combat/character engine required by this clause."
         }
       ]
+    },
+    {
+      "id": "ROOT-CORE-005",
+      "title": "Применять расстановку выбранных фракций в порядке книги",
+      "rule": {
+        "source_id": "ROOT-CORE-2021-EN",
+        "url": "https://studylib.net/doc/26230689/rootttprg-corebook-100721",
+        "printed_page": [
+          224,
+          228
+        ],
+        "pdf_page": null,
+        "section": "Making the Woodland; Control of Clearings",
+        "locator": "HTML8782–8794,8933–8946",
+        "paraphrase": "Включены Denizens и две или три другие выбранные фракции. Базовую расстановку проходят Marquisate → Eyrie → Alliance, пропуская невыбранные фракции. Смена контроля между неденизенскими фракциями отмечает contested-поляну.",
+        "parameters": {
+          "always_selected": "Denizens",
+          "other_factions_count": [
+            2,
+            3
+          ],
+          "core_order": [
+            "Marquisate",
+            "Eyrie Dynasties",
+            "Woodland Alliance"
+          ],
+          "skip_unselected": true,
+          "contested_trigger": "control_changes_between_non_denizen_factions"
+        },
+        "normative_kind": "conditional_Woodland_setup_procedure"
+      },
+      "comparison": {
+        "canonical_reuse": [
+          "map.faction_control",
+          "map.faction_presence",
+          "content.place_description"
+        ],
+        "new_generic_rule": false,
+        "parameter_equivalence": "unverified_source_specific_profile",
+        "analogue_binding_ids": [
+          "ROOT-TO-005-L1",
+          "ROOT-TO-006-L1"
+        ],
+        "mapping_scope": "Applicability/order of existing faction control/presence profiles plus history notes; no inference of global per-clearing presence"
+      },
+      "requirements": [
+        {
+          "id": "ROOT-CORE-005-L1",
+          "layer": "L1",
+          "requirement": "Применять профили расстановки только включённых фракций, сохраняя обязательных Denizens и порядок базовых шагов. При передаче поляны от одной неденизенской фракции другой отмечать её как оспариваемую и оставлять заметку о переходе.",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "evidence_sha": null,
+          "canonical_rule_ids": [
+            "map.faction_control",
+            "map.faction_presence",
+            "content.place_description"
+          ],
+          "criterion_ids": [
+            "S06-C01"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#ROOT-CORE-005-L1",
+          "operational_requirement": {
+            "source_rule_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-005",
+            "normative_kind": "conditional_Woodland_setup_procedure",
+            "applicability": "Root Core First printing2021: L1 initial Woodland preparation; selected faction prerequisites only, expansion profiles separate",
+            "layer": "L1",
+            "trigger_or_user_action": "Ведущий выбирает состав фракций и начинает начальную политическую расстановку на готовой карте.",
+            "inputs_and_units": {
+              "состав": "Denizens + две или три другие фракции; имена, не численность армий",
+              "контроль поляны до/после": "имена фракций либо отсутствие контроля",
+              "порядок": "шаги выбранных базовых фракций"
+            },
+            "product_operation": "Применять профили расстановки только включённых фракций, сохраняя обязательных Denizens и порядок базовых шагов. При передаче поляны от одной неденизенской фракции другой отмечать её как оспариваемую и оставлять заметку о переходе.",
+            "expected_output": "Выбранный состав не подменён; исключённые шаги пропущены; история передачи контроля и contested отличаются от текущего владельца.",
+            "constraints_and_exceptions": [
+              "Состав кампании не означает присутствия каждой выбранной фракции в каждой поляне; Denizens здесь не получают автоматический политический контроль.",
+              "Дополнительные фракции допустимы при использовании T&O; их расстановка — отдельные проверенные профили, а не предположение из core224.",
+              "Отклонение от стандартных двух/трёх других фракций показать как нестандартный выбор ведущего, не исправлять карту молча."
+            ],
+            "acceptance_cases": [
+              {
+                "id": "ROOT-CORE-005-L1-AC01",
+                "given": "Denizens, Marquisate и Alliance включены; Eyrie выключена.",
+                "when": "Пройти базовую расстановку.",
+                "expected": "Сначала Marquisate, затем Alliance; шаг Eyrie пропущен. Контроль каждой поляны для Denizens автоматически не назначен."
+              },
+              {
+                "id": "ROOT-CORE-005-L1-AC02",
+                "given": "Denizens и все три базовые фракции включены.",
+                "when": "Применить список базовых шагов.",
+                "expected": "Порядок Marquisate → Eyrie → Alliance; выбранные три другие фракции сохранены."
+              },
+              {
+                "id": "ROOT-CORE-005-L1-AC03",
+                "given": "Выбраны Denizens и только одна другая фракция.",
+                "when": "Сопоставить состав со стандартной процедурой.",
+                "expected": "Показано отклонение от нормы две/три; дополнительная фракция не добавлена без выбора ведущего."
+              },
+              {
+                "id": "ROOT-CORE-005-L1-AC04",
+                "given": "A переходит от Marquisate к Eyrie; B из отсутствия контроля получает Marquisate.",
+                "when": "Записать начальную историю переходов.",
+                "expected": "A отмечена contested, текущий контроль Eyrie; B не отмечена contested этим условием. Вид большинства населения не меняет вывод."
+              }
+            ],
+            "source_vs_product_interpretation": "Числа и условия пересказаны из указанного ограниченного корпуса. A/B/S/X и заданные броски — собственные примеры результата. Выбор, сохранение и повторное открытие — перевод на язык генератора, не утверждение о наличии функции и не техническая спецификация. Denizens/состав/порядок — условия применимости существующих профилей, не глобальная фракционная симуляция.",
+            "canonical_rule_refs": [
+              "agent-work/rules/common-rules.json#map.faction_control",
+              "agent-work/rules/common-rules.json#map.faction_presence",
+              "agent-work/rules/common-rules.json#content.place_description"
+            ],
+            "unresolved_parameters": [
+              "Порядок всех смешанных комбинаций core/дополнения требует применимого профиля дополнения; здесь только порядок трёх core-фракций.",
+              "Точные шаги Eyrie и Alliance в этом запуске не извлечены."
+            ]
+          },
+          "gap_task_ids": [
+            "HX-BL-049"
+          ],
+          "delivery": "research_handoff_not_specification"
+        },
+        {
+          "layer": "L2",
+          "status": "not_applicable",
+          "reason": "Initial map preparation only; faction turn not extracted."
+        },
+        {
+          "layer": "L3",
+          "status": "not_applicable",
+          "reason": "No combat or general simulation extracted."
+        }
+      ]
+    },
+    {
+      "id": "ROOT-CORE-006",
+      "title": "Выбрать крайнюю поляну крепости Marquisate",
+      "rule": {
+        "source_id": "ROOT-CORE-2021-EN",
+        "url": "https://studylib.net/doc/26230689/rootttprg-corebook-100721",
+        "printed_page": [
+          228,
+          229
+        ],
+        "pdf_page": null,
+        "section": "First: The Marquisate; Woodland Corner",
+        "locator": "HTML8947–8965,8969–8970,8974–8979,8996–8998",
+        "paraphrase": "При включённой Marquisate ведущий выбирает дальний край карты для stronghold или бросает d6: NW/NE/SW/SE для1/2/3/4,5–6переброс. Отмечает крепость и контроль Marquisate над поляной.",
+        "parameters": {
+          "corner_d6": {
+            "1": "NW",
+            "2": "NE",
+            "3": "SW",
+            "4": "SE",
+            "5": "reroll",
+            "6": "reroll"
+          },
+          "manual_corner_allowed": true,
+          "starting_control": "Marquisate",
+          "landmark": "Marquisate stronghold"
+        },
+        "normative_kind": "conditional_Woodland_setup_procedure"
+      },
+      "comparison": {
+        "canonical_reuse": [
+          "map.faction_control",
+          "content.place_description",
+          "content.roll_table_resolution"
+        ],
+        "new_generic_rule": false,
+        "parameter_equivalence": "unverified_source_specific_profile",
+        "analogue_binding_ids": [
+          "ROOT-TO-007-L1",
+          "ROOT-TO-011-L1",
+          "ROOT-TO-006-L1"
+        ],
+        "mapping_scope": "Existing preparation action; source-specific parameters remain separate"
+      },
+      "requirements": [
+        {
+          "id": "ROOT-CORE-006-L1",
+          "layer": "L1",
+          "requirement": "Выбрать существующую крайнюю поляну в указанном углу, отметить в ней крепость Marquisate и назначить Marquisate контроль. Для случайного угла перебрасывать5–6; не создавать новую поляну.",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "evidence_sha": null,
+          "canonical_rule_ids": [
+            "map.faction_control",
+            "content.place_description",
+            "content.roll_table_resolution"
+          ],
+          "criterion_ids": [
+            "S06-C01"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#ROOT-CORE-006-L1",
+          "operational_requirement": {
+            "source_rule_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-006",
+            "normative_kind": "conditional_Woodland_setup_procedure",
+            "applicability": "Root Core First printing2021: L1 initial Woodland preparation; selected faction prerequisites only, expansion profiles separate",
+            "layer": "L1",
+            "trigger_or_user_action": "Ведущий начинает выбранный шаг Marquisate и выбирает крепость вручную либо случайным углом.",
+            "inputs_and_units": {
+              "карта": "имеющиеся поляны и их положения",
+              "угол": "край карты NW/NE/SW/SE либо осмысленный выбор ведущего",
+              "случайный выбор": "один d6, грани1–6"
+            },
+            "product_operation": "Выбрать существующую крайнюю поляну в указанном углу, отметить в ней крепость Marquisate и назначить Marquisate контроль. Для случайного угла перебрасывать5–6; не создавать новую поляну.",
+            "expected_output": "У выбранной поляны есть крепость и контроль Marquisate; результат угла и решение ведущего понятны. Это опорная точка следующей таблицы расстояний.",
+            "constraints_and_exceptions": [
+              "Если Marquisate выключена, её шаг целиком пропускается.",
+              "Текст допускает ручной выбор края; точный математический способ найти край по координатам не задан.",
+              "Контроль de facto может сосуществовать с номинальным гражданским правительством; оно не подменяет контролирующую фракцию.",
+              "Не распространять защиту крепости/механики других фракций за пределы этого шага."
+            ],
+            "acceptance_cases": [
+              {
+                "id": "ROOT-CORE-006-L1-AC01",
+                "given": "Для четырёх независимых случайных выборов заданы d6=1,2,3,4; ведущий указал соответствующие крайние поляны A/B/C/D.",
+                "when": "Назначить крепость по каждому выбору.",
+                "expected": "Получены NW/NE/SW/SE и соответственно A/B/C/D; в каждом примере у выбранной поляны крепость и контроль Marquisate."
+              },
+              {
+                "id": "ROOT-CORE-006-L1-AC02",
+                "given": "Последовательность d6=5,6,3; крайней юго-западной выбрана A.",
+                "when": "Определить случайный угол.",
+                "expected": "5 и6 переброшены; итог SW, крепость и контроль у A. Дополнительные поляны не созданы."
+              },
+              {
+                "id": "ROOT-CORE-006-L1-AC03",
+                "given": "Marquisate включена; ведущий вручную выбрал крайнюю NE-поляну B с номинальным гражданским правительством.",
+                "when": "Подготовить крепость без броска.",
+                "expected": "У B крепость и фактический контроль Marquisate; гражданское описание не выдаётся за отсутствие её контроля."
+              },
+              {
+                "id": "ROOT-CORE-006-L1-AC04",
+                "given": "Marquisate исключена; готовая карта сохранена.",
+                "when": "Пройти список начальных фракций.",
+                "expected": "Крепость Marquisate и её новые назначения контроля не создаются."
+              }
+            ],
+            "source_vs_product_interpretation": "Числа и условия пересказаны из указанного ограниченного корпуса. A/B/S/X и заданные броски — собственные примеры результата. Выбор, сохранение и повторное открытие — перевод на язык генератора, не утверждение о наличии функции и не техническая спецификация. Denizens/состав/порядок — условия применимости существующих профилей, не глобальная фракционная симуляция.",
+            "canonical_rule_refs": [
+              "agent-work/rules/common-rules.json#map.faction_control",
+              "agent-work/rules/common-rules.json#content.place_description",
+              "agent-work/rules/common-rules.json#content.roll_table_resolution"
+            ],
+            "unresolved_parameters": [
+              "Несколько одинаково крайних кандидатов — выбор ведущего; автоматическое правило ничьей не задано.",
+              "Численность гарнизона и механика осады не определены этим L1-срезом."
+            ]
+          },
+          "gap_task_ids": [
+            "HX-BL-049"
+          ],
+          "delivery": "research_handoff_not_specification"
+        },
+        {
+          "layer": "L2",
+          "status": "not_applicable",
+          "reason": "Initial map preparation only; faction turn not extracted."
+        },
+        {
+          "layer": "L3",
+          "status": "not_applicable",
+          "reason": "No combat or general simulation extracted."
+        }
+      ]
+    },
+    {
+      "id": "ROOT-CORE-007",
+      "title": "Назначить исходный контроль Marquisate по числу путей",
+      "rule": {
+        "source_id": "ROOT-CORE-2021-EN",
+        "url": "https://studylib.net/doc/26230689/rootttprg-corebook-100721",
+        "printed_page": [
+          228,
+          229
+        ],
+        "pdf_page": null,
+        "section": "Marquisate Control",
+        "locator": "HTML8966–8973,8983–8998",
+        "paraphrase": "Начиная с соседних крепости полян, проверяют остальные поляны таблицей2d6: на1пути контроль5+, на2 —7+, на3 —10+, на4 —12, на5 контроля нет. Расстояние считается пересечёнными путями, не гексами.",
+        "parameters": {
+          "unit": "paths_crossed_from_stronghold_not_hexes",
+          "roll": "sum_of_2d6",
+          "control_minimum_by_paths": {
+            "1": 5,
+            "2": 7,
+            "3": 10,
+            "4": 12
+          },
+          "five_paths_control": false,
+          "over_five_paths": "unknown_not_extrapolated",
+          "stronghold": "already_controlled_no_threshold_roll"
+        },
+        "normative_kind": "conditional_Woodland_setup_procedure"
+      },
+      "comparison": {
+        "canonical_reuse": [
+          "map.faction_control",
+          "content.roll_table_resolution"
+        ],
+        "new_generic_rule": false,
+        "parameter_equivalence": "unverified_source_specific_profile",
+        "analogue_binding_ids": [
+          "ROOT-TO-011-L1",
+          "ROOT-TO-006-L1"
+        ],
+        "mapping_scope": "Existing preparation action; source-specific parameters remain separate"
+      },
+      "requirements": [
+        {
+          "id": "ROOT-CORE-007-L1",
+          "layer": "L1",
+          "requirement": "Для каждой рассматриваемой поляны сопоставить заданное расстояние и сумму2d6 с порогом, отметить контроль Marquisate при успехе. На пяти путях не назначать её контроль по этой таблице. Сохранить крепость под её исходным контролем.",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "evidence_sha": null,
+          "canonical_rule_ids": [
+            "map.faction_control",
+            "content.roll_table_resolution"
+          ],
+          "criterion_ids": [
+            "S06-C01"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#ROOT-CORE-007-L1",
+          "operational_requirement": {
+            "source_rule_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-007",
+            "normative_kind": "conditional_Woodland_setup_procedure",
+            "applicability": "Root Core First printing2021: L1 initial Woodland preparation; selected faction prerequisites only, expansion profiles separate",
+            "layer": "L1",
+            "trigger_or_user_action": "После выбора крепости ведущий проходит остальные поляны, начиная с непосредственно связанных с крепостью, и задаёт броски начального контроля.",
+            "inputs_and_units": {
+              "расстояние": "известное число пересекаемых путей от крепости до поляны:1/2/3/4/5",
+              "бросок": "сумма двух d6,2–12",
+              "опора": "уже выбранная крепость и включённая Marquisate"
+            },
+            "product_operation": "Для каждой рассматриваемой поляны сопоставить заданное расстояние и сумму2d6 с порогом, отметить контроль Marquisate при успехе. На пяти путях не назначать её контроль по этой таблице. Сохранить крепость под её исходным контролем.",
+            "expected_output": "Начальная карта контроля соответствует каждому известному расстоянию и броску; неуспех не назначает Eyrie, Alliance или Denizens и не означает отсутствие любых фракций.",
+            "constraints_and_exceptions": [
+              "Это начальная подготовка, а не захват во время игры, передвижение, симуляция войны или численность сил.",
+              "Крепость уже получает контроль отдельным шагом; таблица остальных полян не снимает его.",
+              "Пути — связи между полянами, не клетки, мили, часы или геометрическая длина.",
+              "На5путях контроль не выдается даже при2d6=12. Дальше5не экстраполировать без источника/решения.",
+              "Сумма — обычные2d6; новые модификаторы не добавлены."
+            ],
+            "acceptance_cases": [
+              {
+                "id": "ROOT-CORE-007-L1-AC01",
+                "given": "Поляны A/B на расстоянии1пути; суммы2d6 соответственно4/5.",
+                "when": "Разрешить начальный контроль.",
+                "expected": "A не получает контроль Marquisate; B получает."
+              },
+              {
+                "id": "ROOT-CORE-007-L1-AC02",
+                "given": "A/B на2путях; суммы6/7.",
+                "when": "Разрешить начальный контроль.",
+                "expected": "A не получает контроль Marquisate; B получает."
+              },
+              {
+                "id": "ROOT-CORE-007-L1-AC03",
+                "given": "A/B на3путях; суммы9/10.",
+                "when": "Разрешить начальный контроль.",
+                "expected": "A не получает контроль Marquisate; B получает."
+              },
+              {
+                "id": "ROOT-CORE-007-L1-AC04",
+                "given": "A/B на4путях; суммы11/12.",
+                "when": "Разрешить начальный контроль.",
+                "expected": "A не получает контроль Marquisate; B получает."
+              },
+              {
+                "id": "ROOT-CORE-007-L1-AC05",
+                "given": "A/B на5путях; переданы суммы2/12.",
+                "when": "Применить строку5путей.",
+                "expected": "Обе не получают контроль Marquisate по таблице; другие фракции автоматически не назначены."
+              },
+              {
+                "id": "ROOT-CORE-007-L1-AC06",
+                "given": "Крепость S уже под контролем; поляна X имеет расстояние6, для неё передано12.",
+                "when": "Продолжить подготовку.",
+                "expected": "Контроль S сохранён; для X отмечено неизвестное правило, успех из12 не выведен."
+              },
+              {
+                "id": "ROOT-CORE-007-L1-AC07",
+                "given": "A на2путях с суммой7 получила контроль; B на3путях с9 не получила; крепость S известна.",
+                "when": "Сохранить и снова открыть подготовленную карту.",
+                "expected": "Контроль Marquisate у S/A сохранён, у B не появился; броски без действия ведущего не повторены."
+              }
+            ],
+            "source_vs_product_interpretation": "Числа и условия пересказаны из указанного ограниченного корпуса. A/B/S/X и заданные броски — собственные примеры результата. Выбор, сохранение и повторное открытие — перевод на язык генератора, не утверждение о наличии функции и не техническая спецификация. Denizens/состав/порядок — условия применимости существующих профилей, не глобальная фракционная симуляция.",
+            "canonical_rule_refs": [
+              "agent-work/rules/common-rules.json#map.faction_control",
+              "agent-work/rules/common-rules.json#content.roll_table_resolution"
+            ],
+            "unresolved_parameters": [
+              "При нескольких маршрутах формулировка не задаёт здесь явно правило выбора маршрута; не предписывать алгоритм кратчайшего пути.",
+              "Строки для6+путей и недостижимой поляны в прочитанной таблице нет.",
+              "Порядок разрешения равных расстояний не задан; не вводить автоматическое правило."
+            ]
+          },
+          "gap_task_ids": [
+            "HX-BL-049"
+          ],
+          "delivery": "research_handoff_not_specification"
+        },
+        {
+          "layer": "L2",
+          "status": "not_applicable",
+          "reason": "Initial map preparation only; faction turn not extracted."
+        },
+        {
+          "layer": "L3",
+          "status": "not_applicable",
+          "reason": "No combat or general simulation extracted."
+        }
+      ]
     }
   ],
   "comparison_summary": {
-    "source_rules": 4,
-    "L1_requirements": 4,
-    "acceptance_examples": 11,
-    "canonical_used": 4,
+    "source_rules": 7,
+    "L1_requirements": 7,
+    "acceptance_examples": 26,
+    "canonical_used": 6,
     "new_canonical_rules": 0
   },
   "completeness": {
@@ -570,14 +992,16 @@
       224,
       225,
       226,
-      227
+      227,
+      228,
+      229
     ],
     "read_mode": "HTML primary-text transcription; bibliography and selected section",
     "full_core_read": false,
     "excluded_context": [
-      "Faction selection printed224 read as context, not extracted",
-      "Faction control228+ returned around target but not reviewed as part of this slice",
-      "Detailed18-entry naming table not reproduced"
+      "Eyrie230+ and Alliance232+ returned near target but not reviewed/extracted",
+      "Detailed18-entry literary naming table not reproduced",
+      "Other core thematic dependencies except earlier auxiliaryp32"
     ],
     "ledger_ref": "agent-work/market/rules/ROOT-Core-2021-coverage-ledger.json"
   },
@@ -591,6 +1015,21 @@
       "id": "ROOT-CORE-Q02",
       "question": "Collate HTML tables against exact publisher PDF/errata before table-data import;12/5row visually displaced in text rendering.",
       "status": "unverified_visual_collation"
+    },
+    {
+      "id": "ROOT-CORE-Q03",
+      "question": "При нескольких маршрутах формулировка не задаёт здесь явно правило выбора маршрута; не предписывать алгоритм кратчайшего пути.",
+      "status": "unknown_source_not_explicit"
+    },
+    {
+      "id": "ROOT-CORE-Q04",
+      "question": "Строки для6+путей и недостижимой поляны в прочитанной таблице нет.",
+      "status": "unknown_outside_table"
+    },
+    {
+      "id": "ROOT-CORE-Q05",
+      "question": "Несколько одинаково крайних кандидатов — выбор ведущего; автоматическое правило ничьей не задано.",
+      "status": "GM_judgment_not_invented"
     }
   ],
   "shared_rules": {
