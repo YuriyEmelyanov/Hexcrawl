@@ -1,0 +1,233 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-08T1802-programmer-HX-BL-043-KNC-REV-001",
+  "role": "programmer",
+  "task_id": "HX-BL-043",
+  "stage_id": "KNAVE2-CLASSIC1",
+  "status": "review_ready",
+  "role_selection_reason": "Latest approved stage had KNC-REV-001 changes requested, no active claim; bounded programmer correction has priority over new tasks/hourly role schedule.",
+  "started_at": "2026-11-08T18:03:27.727Z",
+  "completed_at": "2026-11-08T18:21:34.159Z",
+  "public_sha": "d7e7a5bd4103c0ec866f9e9a4a83fbe3222c2ef1",
+  "public_tree": "96677619008628ee0b0f1cc2198084f9c45a667c",
+  "private_sha": "af50286d8ad00303a0aed1d8473e7c6dffabb349",
+  "private_tree": "7ac1c58da66809ddfae1af2fdbdc794d88b79922",
+  "branch": "agent/knave2-classic1",
+  "pr": 494,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/494",
+  "finding_id": "KNC-REV-001",
+  "finding_status": "fix_submitted_independent_confirmation_required",
+  "fix": "Only Knave summary min44px/block padding; scoped knave-cancel min44px, inline-block. Global direct-value untouched.",
+  "checks": {
+    "public_sha": "d7e7a5bd4103c0ec866f9e9a4a83fbe3222c2ef1",
+    "ci_run_id": 42508242559,
+    "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42508242559",
+    "jobs": [
+      {
+        "id": 128815456058,
+        "name": "check",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 128815456233,
+        "name": "world-random",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 128815456312,
+        "name": "browser",
+        "status": "completed",
+        "conclusion": "success"
+      }
+    ],
+    "verified_at": "2026-11-08T18:15:43.563Z",
+    "private_focused_browser": {
+      "status": "passed",
+      "log_ref": "agent-work/evidence/KNAVE2-CLASSIC1-d7e7a5b/tags.log"
+    },
+    "local_full_check_status": "passed",
+    "local_full_browser_status": "passed",
+    "local_rng_status": "passed",
+    "local_check": {
+      "exit_code": 0,
+      "node_version": "24.22.1",
+      "executed": 361,
+      "passed": 361,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "typescript": "pass",
+      "build": "pass",
+      "duration_ms": 813406.923239
+    },
+    "local_browser": {
+      "workflows": 8,
+      "passed": 8,
+      "failed": 0,
+      "browser": "Chromium153.0.8010.0",
+      "log_ref": "agent-work/evidence/KNAVE2-CLASSIC1-d7e7a5b/browser.log"
+    },
+    "local_rng": {
+      "exit_code": 0,
+      "status": "pass",
+      "log_ref": "agent-work/evidence/KNAVE2-CLASSIC1-d7e7a5b/rng.log",
+      "separate_suite": true
+    }
+  },
+  "test_change_summary": {
+    "base_sha": "818476e5ec653384ab216efd75db9467d698cfc4",
+    "head_sha": "d7e7a5bd4103c0ec866f9e9a4a83fbe3222c2ef1",
+    "private_base_sha": "c5b3c384792ce3349e40b0cc3ccc52e3d7685d1e",
+    "private_head_sha": "af50286d8ad00303a0aed1d8473e7c6dffabb349",
+    "suites": [
+      {
+        "suite": "Node24 node --test test/*.test.mjs",
+        "added": 0,
+        "removed": 0,
+        "modified": 0
+      },
+      {
+        "suite": "browser/tags -> runKnavePropertiesLifecycle",
+        "added": 0,
+        "removed": 0,
+        "modified": 1,
+        "scenario_risk": "KNC-REV-001 pointer targets >=44px/nonoverlap, keyboard source disclosure, Cancel lower target atomically discards draft",
+        "reuse_or_new_reason": "Existing workflow already imports Knave, opens editor and loops1500/390/320; extend it rather than duplicate fixture/browser suite."
+      }
+    ],
+    "count_source": "git diff 818476e..d7e7a5b: only existing knave-properties-lifecycle function edited; no runner registration added/removed. Scoped correction counts, cumulative prior PR test audit retained separately.",
+    "executions": {
+      "Node": {
+        "executed": 361,
+        "passed": 361,
+        "failed": 0,
+        "skipped": 0,
+        "cancelled": 0
+      },
+      "browser": {
+        "workflows": 8,
+        "passed": 8,
+        "failed": 0,
+        "skipped": 0,
+        "subscenario": "existing Knave lifecycle modified; not a ninth workflow"
+      },
+      "rng": {
+        "status": "pass",
+        "separate_suite": true
+      },
+      "temporary_actual_UI": {
+        "maps": 1,
+        "seed": 137,
+        "widths": [
+          1500,
+          390,
+          320
+        ],
+        "status": "pass",
+        "permanent_case_growth": 0
+      }
+    }
+  },
+  "actual_UI": {
+    "shown_in_chat": true,
+    "widths": [
+      1500,
+      390,
+      320
+    ],
+    "metrics_ref": "agent-work/evidence/KNAVE2-CLASSIC1-d7e7a5b/ui-results.json",
+    "summary_height_min": 44,
+    "cancel_size": [
+      64.09375,
+      44
+    ],
+    "horizontal_overflow": false,
+    "scope": "Authored fixture lifecycle plus real private seed137 map. UI source text size unchanged."
+  },
+  "private_package": {
+    "path": "/workspace/scratch/320e5b03f904/knave-fix-evidence/HexCrawl-Knave2-Classic1-runtime-private.zip",
+    "bytes": 4924298,
+    "sha256": "402692e99beddbdcc8b4152b6b901e582a5889ce67f4f3947f3ea3c3e4d7f9b0",
+    "files": 28,
+    "crc_and_manifest_verified": true,
+    "full_history_bundle_verified": true,
+    "library_file_id": "libfile_fde3_f-0ebe6a7f3460819191ca4308c2778835_3c7ce53bef508191bc31de4d3dfa12cc",
+    "version": 3,
+    "filename": "HexCrawl-Knave2-Classic1-runtime-private.zip"
+  },
+  "evidence_prefix": "agent-work/evidence/KNAVE2-CLASSIC1-d7e7a5b/",
+  "spec_ref": "agent-work/specs/HX-BL-043-KNAVE2-CLASSIC1.md",
+  "review_request_ref": "agent-work/evidence/KNAVE2-CLASSIC1-d7e7a5b/review-request.json",
+  "feedback_disposition": [
+    {
+      "id": "HX-FB-002",
+      "decision": "include_principle_only",
+      "reason": "Extend one useful existing lifecycle, no new registrations or repeated audit."
+    },
+    {
+      "id": "HX-FB-008",
+      "decision": "defer",
+      "reason": "Unrelated debug/sidebar redesign outside bounded correction."
+    },
+    {
+      "id": "HX-FB-009",
+      "decision": "defer",
+      "reason": "Unrelated selected-hex redesign outside bounded correction."
+    }
+  ],
+  "score": {
+    "model_version": "1.2",
+    "criterion_ids": [
+      "S04-C04",
+      "S01-C05",
+      "S05-C02",
+      "S05-C03",
+      "S06-C05",
+      "S08-C04"
+    ],
+    "status": "independent_new_SHA_assessment_required",
+    "before_grade": null,
+    "before_points": null,
+    "expected_delta": null,
+    "awarded_points": 0
+  },
+  "limitations": [
+    "Automated Chromium153; no physical-touch/assistive-technology audit",
+    "Finite imported fixture and one real seed137 map, not universal proof",
+    "RU catalog remains private; public provider null intentionally refuses content generation without it",
+    "Some emoji glyphs absent in runtime; source text/Cyrillic/SVG remain readable"
+  ],
+  "diagnostic_errors": [
+    {
+      "command": "ps process inventory",
+      "error": "fatal library error, lookup self",
+      "effect": "No test result relied on process inventory; completed command exit statuses/logs used"
+    }
+  ],
+  "main_changed": false,
+  "published": false,
+  "release_approved": false,
+  "public_book_transfer_approved": false,
+  "catalog_unchanged": true,
+  "next_role": "reviewer",
+  "next_step": "Проверяющий: независимо проверить KNC-REV-001 на public d7e7a5b/private af50286, actual targets1500/390/320 и регрессии; актуализировать score_assessment1.2. Выпуск отдельно не разрешён.",
+  "authority_status": "Approved bounded correction completed. Independent review required; owner publication decision not requested before acceptance.",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-08T18:02:50.929Z",
+      "is_enabled": true,
+      "status": "checked"
+    },
+    "end": {
+      "checked_at": "2026-11-08T18:21:34.159Z",
+      "is_enabled": true,
+      "status": "checked"
+    },
+    "restoration_performed": false,
+    "errors": [],
+    "limitation": "Point-in-time observations only; no guarantee after run completion"
+  }
+}
