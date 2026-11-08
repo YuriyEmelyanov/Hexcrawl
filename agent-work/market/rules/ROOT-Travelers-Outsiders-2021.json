@@ -35,14 +35,15 @@
     "read_scope": "Fully extracted printed178–181/PDF179–182 and printed219–220/PDF220–221. Context and unread corpus logged separately.",
     "core_dependency": {
       "locator": "printed3/PDF4; printed219/PDF220 refers to core197",
-      "status": "core_not_attached_or_read_in_this_review",
+      "status": "partial_core_support_read_p32_map_sections_pending",
       "effect": "No inference of full Root rules, NPC harm-track sizes or core map-generation procedure.",
       "core_pages_referenced_but_unread": [
         197,
         224,
         228
       ],
-      "additional_locator": "printed178/PDF179 refers to core224 (clearings/paths) and core228 (base factions)"
+      "additional_locator": "printed178/PDF179 refers to core224 (clearings/paths) and core228 (base factions)",
+      "auxiliary_core_source_ref": "ROOT-CORE-2021-EN"
     },
     "limitations": [
       "Bounded supplementary source, not a complete Root inventory.",
@@ -1082,7 +1083,7 @@
         "expansion_die": "2d6",
         "modifier_literal": "subtract –1 for each clearing past the first connected",
         "modifier_direction": null,
-        "hit_threshold": null,
+        "hit_threshold": 7,
         "nearby_radius": null,
         "candidate_order": null
       },
@@ -1099,7 +1100,7 @@
       "requirements": [
         {
           "layer": "L1",
-          "requirement": "Помогать подключать допустимые поляны по переданным исходам, ограничивая озеро четырьмя полянами и потерю путей двумя; спорный модификатор и неизвестный порог проверки не вычислять как установленное правило.",
+          "requirement": "Помогать подключать допустимые поляны, ограничивая озеро четырьмя полянами и потерю путей двумя; hit определяется по уже скорректированному итогу, знак модификатора остаётся неясным.",
           "status": "unverified",
           "implemented": null,
           "evidence_id": null,
@@ -1122,13 +1123,13 @@
             "inputs_and_units": {
               "начало": "Свободное место рядом с поляной",
               "кандидаты": "Близкие поляны в явно выбранном ведущим порядке",
-              "исход проверки": "Подтверждённый hit/не-hit из совместимого правила",
+              "исход проверки": "Подтверждённый hit/не-hit либо уже скорректированный итог; hit при7+ по core32. Знак модификатора озера ещё не установлен.",
               "ограничения": "Число уже подключённых полян и стёртых путей"
             },
-            "product_operation": "Помогать подключать допустимые поляны по переданным исходам, ограничивая озеро четырьмя полянами и потерю путей двумя; спорный модификатор и неизвестный порог проверки не вычислять как установленное правило.",
+            "product_operation": "Помогать подключать допустимые поляны по подтверждённым исходам, ограничивая озеро четырьмя полянами и потерю путей двумя. При известном уже скорректированном итоге распознавать hit на7+. Спорный знак модификатора не вычислять как установленное правило.",
             "expected_output": "Сохранены допустимые расширения озера и ограничения; неясные численные условия остаются видимыми.",
             "constraints_and_exceptions": [
-              "Порог hit здесь не определён;7+ по одной аналогии не утверждён.",
+              "Hit означает итог7+ по основному тексту Root, с.32; исход из сырых кубиков всё ещё зависит от неуточнённого модификатора озера.",
               "Буквальная запись subtract –1 двусмысленна; знак не нормализован молча.",
               "Метрика nearby и порядок проверки полян не заданы.",
               "Ограничение относится к путям; оно не означает разрешения удалить любое другое содержимое карты."
@@ -1148,12 +1149,18 @@
               },
               {
                 "id": "ROOT-TO-009-L1-AC03",
-                "given": "Есть только сырые2d6 и буквальный текст subtract –1; ни знак, ни правило hit не уточнены.",
+                "given": "Есть сырые2d6 и буквальное subtract–1; знак модификатора не уточнён. Порог hit уже известен:7+.",
                 "when": "Ведущий хочет вычислить исход расширения.",
-                "expected": "Автоматический результат не объявлен правилом книги; показаны два недостающих уточнения. Независимые пределы4полян/2путей остаются известными."
+                "expected": "Нужное уточнение знака остаётся явным; порог больше не помечен неизвестным. Итог из сырых кубиков не выдуман."
+              },
+              {
+                "id": "ROOT-TO-009-L1-AC04",
+                "given": "Для допустимого кандидата озера уже переданы скорректированные итоги6,7,10; знак модификатора в этом примере не вычисляется.",
+                "when": "Определить только условие hit.",
+                "expected": "6 — не-hit;7 и10 — hit. Остальные условия расширения проверяются отдельно."
               }
             ],
-            "source_vs_product_interpretation": "Процедуры и ограничения пересказаны из указанного среза. Сохранение и показ подготовленной карты — перевод на язык генератора; способ хранения, команды, интерфейс и архитектуру определяет аналитик. Все A/B/C, заданные броски и исходные состояния примеров — синтетические проверки смысла, не готовые поляны книги. Двусмысленности источника не исправлены; hit может быть только переданным подтверждённым исходом, пока core не проверен.",
+            "source_vs_product_interpretation": "Процедуры и ограничения пересказаны из указанного среза. Сохранение и показ подготовленной карты — перевод на язык генератора; способ хранения, команды, интерфейс и архитектуру определяет аналитик. Все A/B/C, заданные броски и исходные состояния примеров — синтетические проверки смысла, не готовые поляны книги. Двусмысленности источника не исправлены; Порог hit уточнён дополнительным источником; для сырого броска всё ещё нужен однозначный модификатор. Уточнение: определение hit сверено с core32 по первичному тексту на стороннем хостинге; это дополнительный источник, не молчаливое исправление T&O.",
             "canonical_rule_refs": [
               "map.land_water_shapes",
               "map.routes_and_barriers",
@@ -1161,7 +1168,6 @@
             ],
             "unresolved_parameters": [
               "ROOT-TO-Q05: знак модификатора.",
-              "ROOT-TO-Q06: определение hit.",
               "ROOT-TO-Q07: nearby и порядок кандидатов."
             ]
           },
@@ -1171,7 +1177,9 @@
             "HX-BL-005"
           ],
           "gap": "Сначала стратег выбирает объём, аналитик разрешает продуктовые вопросы и проверяет существующие возможности; отсутствие реализации не выведено из чтения книги.",
-          "development_readiness": "research_handoff_source_dependencies_open"
+          "development_readiness": "research_handoff_source_dependencies_open",
+          "acceptance_check": "ROOT-TO-009-L1-AC01: Озеро связано сA/B/C; ведущий передал подтверждённый hit дляD. Удаление путей укладывается в предел2. Расширить озеро кD, затем рассмотретьE. → ПодключеныA/B/C/D; на четырёх расширение остановлено, E не добавлена.\nROOT-TO-009-L1-AC02: При подготовке озера уже стёрты два пути; подключениеE требует стереть третий. Рассмотреть это расширение. → Третий путь не стёрт; такой вариант не выдан за соответствующий пределу источника.\nROOT-TO-009-L1-AC03: Есть сырые2d6 и буквальное subtract–1; знак модификатора не уточнён. Порог hit уже известен:7+. Ведущий хочет вычислить исход расширения. → Нужное уточнение знака остаётся явным; порог больше не помечен неизвестным. Итог из сырых кубиков не выдуман.\nROOT-TO-009-L1-AC04: Для допустимого кандидата озера уже переданы скорректированные итоги6,7,10; знак модификатора в этом примере не вычисляется. Определить только условие hit. → 6 — не-hit;7 и10 — hit. Остальные условия расширения проверяются отдельно.",
+          "source_clarification_ref": "agent-work/research/requirements/ROOT-source-clarifications.md"
         },
         {
           "layer": "L2",
@@ -1185,8 +1193,11 @@
           "requirement": null,
           "status": "not_assessed_dependency",
           "implemented": null,
-          "reason": "Порог hit и знак модификатора не определены однозначно; не достраивать механику проверки по аналогии."
+          "reason": "Определение hit уточнено по core32; знак модификатора озера остаётся неясным. Полная механика проверки из сырых кубиков не подтверждена."
         }
+      ],
+      "supporting_source_refs": [
+        "ROOT-CORE-2021-EN#printed32"
       ]
     },
     {
@@ -1705,7 +1716,7 @@
     ],
     "source_groups": 13,
     "applicable_L1_requirements": 13,
-    "acceptance_cases": 36,
+    "acceptance_cases": 37,
     "coverage_ledger_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021-coverage-ledger.json",
     "core_read": false,
     "not_claimed": [
@@ -1715,6 +1726,11 @@
       "NPC harm mechanics",
       "Faction Roll/Phase runtime simulation",
       "Custom-move construction"
+    ],
+    "core_read_scope": "Only auxiliary definition on core32 reviewed; full core thematic audit remains incomplete.",
+    "core_partial_read": true,
+    "auxiliary_core_pages_reviewed": [
+      32
     ]
   },
   "source_clarifications": [
@@ -1739,19 +1755,31 @@
       "id": "ROOT-TO-Q04",
       "question": "Printed179 visually contains lake connecting to lake; preceding river-into-lake sentence and following direction text do not remove typo ambiguity.",
       "status": "source_anomaly_needs_primary_clarification",
-      "pdf_page": 180
+      "pdf_page": 180,
+      "latest_check_ref": "agent-work/research/runs/2026-11-08T0051-ROOT-source-clarifications.json",
+      "latest_check_outcome": "Bounded official search did not locate an explicit correction; not proof that no errata exists."
     },
     {
       "id": "ROOT-TO-Q05",
       "question": "Printed180 literally says subtract –1 for connected clearings beyond first; direction not silently normalized.",
       "status": "source_anomaly_needs_primary_clarification",
-      "pdf_page": 181
+      "pdf_page": 181,
+      "latest_check_ref": "agent-work/research/runs/2026-11-08T0051-ROOT-source-clarifications.json",
+      "latest_check_outcome": "Bounded official search did not locate an explicit correction; not proof that no errata exists."
     },
     {
       "id": "ROOT-TO-Q06",
       "question": "Hit threshold for lake expansion not defined in this slice; no7+ inferred.",
-      "status": "needs_core_or_primary_clarification",
-      "pdf_page": 181
+      "status": "resolved_definition_from_primary_core_text",
+      "pdf_page": 181,
+      "previous_status": "needs_core_or_primary_clarification",
+      "resolution": {
+        "hit_threshold": 7,
+        "source_ref": "ROOT-CORE-2021-EN",
+        "printed_page": 32,
+        "host_type": "third_party_primary_text_copy",
+        "boundary": "Threshold known; unresolved lake modifier still blocks automatic raw-roll outcome."
+      }
     },
     {
       "id": "ROOT-TO-Q07",
@@ -1807,6 +1835,34 @@
       "run_id": "2026-11-08T0026-ROOT-TO-woodland",
       "source_read_mode": "Parent parsed full PDF179–182; independent same-model agent rendered and visually checked all4pages and source anomalies.",
       "result_ref": "agent-work/research/runs/2026-11-08T0026-ROOT-TO-woodland.json"
+    },
+    {
+      "run_id": "2026-11-08T0051-ROOT-source-clarifications",
+      "scope": "Primary source/access audit: resolve hit definition only; Q04/05 retained, core224/228 located for next bounded read",
+      "result_ref": "agent-work/research/runs/2026-11-08T0051-ROOT-source-clarifications.json"
+    }
+  ],
+  "auxiliary_sources": [
+    {
+      "id": "ROOT-CORE-2021-EN",
+      "title": "Root: The Roleplaying Game — Core Book",
+      "edition": "First printing2021 as stated in copied book credits; bibliography crosschecked with official9-page sample",
+      "author_project_key": "magpie-games/root-rpg/core/first-printing2021",
+      "access_level": "primary_book_text_public_third_party_HTML_copy",
+      "url": "https://studylib.net/doc/26230689/rootttprg-corebook-100721",
+      "printed_page": 32,
+      "pdf_page": null,
+      "section": "Hits and Misses",
+      "locator": "HTML lines1068–1094; printed32 footer lines1116–1117",
+      "official_bibliographic_check": {
+        "url": "https://d1vzi28wh99zvq.cloudfront.net/pdf_previews/373406-sample.pdf",
+        "scope": "9-page sample, credits/TOC; it does not contain p32"
+      },
+      "file_sha256": null,
+      "limitations": [
+        "Host is not the publisher; no official-file identity/hash or current errata match asserted.",
+        "Only the definition paragraph and bibliographic metadata were reviewed; core map section not yet extracted."
+      ]
     }
   ]
 }
