@@ -37,6 +37,10 @@ export async function runMythMaterialLifecycle({page,snapshot,saved,root}){
   await load(data);await select(a);
  };
  const immutable=async(before,message)=>assert.deepEqual(await snapshot(),before,message);
+ const restoredFocus=async message=>{
+  await page.waitForFunction(()=>{const target=document.querySelector('.info-block--hex')??document.querySelector('.map-viewport');return target&&document.activeElement===target;});
+  assert.equal(await page.locator('.info-block--hex').evaluate(el=>document.activeElement===el),true,message);
+ };
 
  // Production corpus is deliberately absent. Reading that safe state must not
  // manufacture tags or change the saved Sea-v9 document/history.
@@ -64,11 +68,16 @@ export async function runMythMaterialLifecycle({page,snapshot,saved,root}){
 
  // Same displayed name and neighbouring tuple boundary still select different
  // entries and owners; no catalogue name is used as a content key.
- await select(b);await collapsed(b);await ready(b);
+ // MC1-F02: removing a focused, open native disclosure through the actual App
+ // selection handler must leave focus at the existing information container.
+ await first.focus();assert.notEqual(await omens.locator('details').first().getAttribute('open'),null);
+ await select(b);await restoredFocus('owner selection must restore disappearing material focus');await collapsed(b);await ready(b);
  assert.equal(await material(b).getByRole('region',{name:'Знамения',exact:true}).locator('details').count(),4);
  assert.equal(await material(b).getByRole('region',{name:'Роли',exact:true}).locator('details').count(),2);
  assert.ok((await material(b).textContent()).includes('ВЫМЫШЛЕННЫЙ МАТЕРИАЛ B.'));assert.ok(!(await material(b).textContent()).includes('ВЫМЫШЛЕННЫЙ МАТЕРИАЛ A.'));
  await select(a);await collapsed(a);await ready(a);await ensureEdit();
+ const land=page.locator(`[data-tag="mb.land"][data-tag-owner="region:${a.regionId}"]`);
+ if(await land.count()===0){await button('Земля +').click();await land.waitFor();await collapsed(a);await ready(a);}
  assert.ok((await material(a).textContent()).includes('ВЫМЫШЛЕННЫЙ МАТЕРИАЛ A.'));
 
  // Author text is an override of the row only. Real commit/Undo/Redo also
@@ -94,7 +103,10 @@ export async function runMythMaterialLifecycle({page,snapshot,saved,root}){
  await row(a).locator('.tag-text').click();draft=row(a).getByRole('textbox');await retainDraft(draft,'НЕСОХРАНЁННЫЙ ЧЕРНОВИК ТЕГА','tag draft');
  await page.locator(`[data-name-key="poi:${a.regionId}:${a.hexKey}"]`).click();
  await retainDraft(page.getByRole('textbox',{name:'Название',exact:true}),'НЕСОХРАНЁННЫЙ ЧЕРНОВИК ИМЕНИ','parent name draft');
- await immutable(draftBefore,'both protected drafts preserve accepted document and redo');await closeMenu();
+ // MC1-F01: a different TagRow has a separate local editor but shares the
+ // accepted document; its blur must not be committed by reference reading.
+ await land.locator('.tag-text').first().click();await retainDraft(land.getByRole('textbox'),'ВЫМЫШЛЕННЫЙ ЧЕРНОВИК ДРУГОГО ТЕГА','other row tag draft');
+ await immutable(draftBefore,'all protected drafts preserve accepted document and redo');await closeMenu();
 
  // Locale and mode are transient reference contexts; both reset disclosure.
  await page.locator('.language-toggle').click();await collapsed(a);await ready(a);
@@ -116,7 +128,15 @@ export async function runMythMaterialLifecycle({page,snapshot,saved,root}){
  await material(a).getByRole('status').filter({hasText:'Материал этого мифа пока недоступен'}).waitFor();assert.equal(await row(a).locator('[data-tag-slot="0"]').isDisabled(),true);
  await immutable(futureBefore,'compatible map import preserves a future tag snapshot');await closeMenu();
  const noTag=structuredClone(data);noTag.map.tags.instances=noTag.map.tags.instances.filter(t=>!(t.definitionId==='mb.myth'&&t.owner.regionId===a.regionId&&t.owner.hexKey===a.hexKey));noTag.map.tags.rollCounters=Object.fromEntries(Object.entries(noTag.map.tags.rollCounters).filter(([key])=>!key.startsWith(`${a.owner}|mb.myth|`)));await load(noTag);await page.locator(`polygon.hex[data-hex-key="${a.hexKey}"]`).dispatchEvent('click');assert.equal(await material(a).count(),0,'missing tag has no material control');
- const wrongPoi=structuredClone(data);wrongPoi.map.regions.find(r=>r.id===a.regionId).centralPoiKind='dwelling';await load(wrongPoi);await page.locator(`polygon.hex[data-hex-key="${a.hexKey}"]`).dispatchEvent('click');assert.equal(await material(a).count(),0,'stale myth snapshot on a non-myth POI has no material control');
+ const wrongPoi=structuredClone(data);wrongPoi.map.regions.find(r=>r.id===a.regionId).centralPoiKind='dwelling';
+ // Keep actual focus in an open omen through accepted import/type replacement.
+ // load() exports JSON to verify acceptance, so defer that observer until after
+ // the disappearing-focus assertion; an export-menu click would move focus.
+ await load(data);await select(a);await ready(a);const importedSummary=material(a).getByRole('region',{name:'Знамения',exact:true}).locator('summary').first();await importedSummary.click();await importedSummary.focus();
+ assert.notEqual(await importedSummary.locator('..').getAttribute('open'),null);
+ await page.locator('input[type=file]').setInputFiles({name:'mc1-fictional-type-change-v9.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(wrongPoi))});
+ await material(a).waitFor({state:'detached'});await restoredFocus('accepted import/type replacement must restore disappearing material focus');
+ const wrongPoiAccepted=await snapshot();assert.equal(wrongPoiAccepted.map.regions.find(r=>r.id===a.regionId).centralPoiKind,'dwelling');assert.deepEqual(wrongPoiAccepted.map.tags,wrongPoi.map.tags);await closeMenu();assert.equal(await material(a).count(),0,'stale myth snapshot on a non-myth POI has no material control');
 
  // A caught lazy-import failure stays local and preserves a valid map.
  await fresh(route=>route.abort('failed'));const failureBefore=await snapshot();await closeMenu();await open(a);
@@ -134,5 +154,5 @@ export async function runMythMaterialLifecycle({page,snapshot,saved,root}){
  await immutable(delayedBefore,'delayed completion must not mutate map state');await closeMenu();await ready(a);
  assert.ok((await material(a).textContent()).includes('ВЫМЫШЛЕННЫЙ МАТЕРИАЛ A.'));
  await page.unroute(modulePattern);await fs.writeFile(new URL('myth-material-metrics.json',out),JSON.stringify(metrics,null,2));
- console.log('MC1 fictional browser workflow passed: empty production registry; boundary owners; variable, escaped, grouped long material; exact JSON/history; override; tag/name draft pointer focus and Escape; RU fallback; reroll/Undo/import/mode resets; future/no-tag/wrong-POI states; load error; delayed A→B→A; 1500/390/320 layout.');
+ console.log('MC1 fictional browser workflow passed: empty production registry; boundary owners; variable, escaped, grouped long material; exact JSON/history; override; local/cross-row tag and name draft pointer focus and Escape; focus restoration on selection/import; RU fallback; reroll/Undo/import/mode resets; future/no-tag/wrong-POI states; load error; delayed A→B→A; 1500/390/320 layout.');
 }

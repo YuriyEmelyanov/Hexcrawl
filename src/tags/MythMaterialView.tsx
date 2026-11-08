@@ -6,9 +6,16 @@ type Props={owner:TagOwner;instance:TagInstance;poiType:string;language:string;d
 // Reading reference material never invokes a tag command or a map transaction.
 export function MythMaterialView({owner,instance,poiType,language,disabled}:Props){
  const id=useId(),request=useRef(0);
+ const view=useRef<HTMLDivElement|null>(null),focusWasInside=useRef(false);
  const [open,setOpen]=useState(false),[result,setResult]=useState<MythMaterialSelection|null>(null);
  const ru=language==='ru';
- useEffect(()=>()=>{request.current++;},[]);
+ useEffect(()=>()=>{
+  request.current++;
+  if(focusWasInside.current&&(document.activeElement===document.body||view.current?.contains(document.activeElement))){
+   const fallback=document.querySelector<HTMLElement>('.info-block--hex')??document.querySelector<HTMLElement>('.map-viewport');
+   fallback?.focus({preventScroll:true});
+  }
+ },[]);
  const protect=(event:SyntheticEvent)=>{if(disabled){event.preventDefault();event.stopPropagation();}};
  const toggle=()=>{
   if(disabled)return;
@@ -21,7 +28,9 @@ export function MythMaterialView({owner,instance,poiType,language,disabled}:Prop
  };
  const original=instance.texts[0]?.[language]??instance.texts[0]?.ru??Object.values(instance.texts[0]??{})[0]??'';
  const overridden=instance.overrides?.[0]?.[language]!==undefined;
- return <div className="myth-material" data-myth-material={ownerKey(owner)}
+ return <div ref={view} className="myth-material" data-myth-material={ownerKey(owner)}
+   onFocusCapture={()=>{focusWasInside.current=true;}}
+   onBlurCapture={event=>{if(event.relatedTarget!==null)focusWasInside.current=!!view.current?.contains(event.relatedTarget as Node);}}
    onPointerDownCapture={protect} onMouseDownCapture={protect}
    onClickCapture={protect} onKeyDownCapture={event=>{if(event.key!=='Tab')protect(event);}}>
   <button type="button" className="myth-material-toggle" disabled={disabled} aria-expanded={open} aria-controls={id} onClick={toggle}>

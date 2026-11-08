@@ -11738,6 +11738,13 @@ export function App() {
   const [kingdomJob, setKingdomJob] = useState<KingdomJob | null>(null);
   const [detailedRenderReady, setDetailedRenderReady] = useState(true);
   const [tags,setTags] = useState<TagState>(emptyTags);
+  const [activeTagDraftCount,setActiveTagDraftCount]=useState(0);
+  const activeTagDraftKeys=useRef(new Set<string>());
+  const notifyTagDraft=(key:string,active:boolean)=>{
+    const keys=activeTagDraftKeys.current,before=keys.size;
+    if(active)keys.add(key);else keys.delete(key);
+    if(keys.size!==before)setActiveTagDraftCount(keys.size);
+  };
   const tagsRef=useRef(tags);
   const updateTags=(value:TagState)=>{tagsRef.current=value;setTags(value);};
   const tagLocks=useRef(new Map<string,number>());
@@ -13684,7 +13691,7 @@ export function App() {
       return true;
     }catch(error){setEditError(tagCommandError(error));return false;}
   };
-  const materialReadBlocked=()=>!!nameDraftRef.current||notesEditorKey!==null||mutationBlocked(false)||!!obstacleDraftRef.current;
+  const materialReadBlocked=()=>activeTagDraftCount>0||activeTagDraftKeys.current.size>0||!!nameDraftRef.current||notesEditorKey!==null||mutationBlocked(false)||!!obstacleDraftRef.current;
   const guardMaterialRead=(event:React.SyntheticEvent<HTMLDivElement>)=>{
     if((event.target as Element).closest('[data-myth-material]')&&materialReadBlocked()){
       event.preventDefault();event.stopPropagation();return true;
@@ -13701,6 +13708,7 @@ export function App() {
         materialContext={type==='myth'?{poiType:type,documentRevision:renderedDocumentRevision,disabled:materialReadBlocked()}:undefined}
         disabled={!!poiDraft||!!regionDraft||isImporting||!!kingdomJob||!!pendingRegen||!!waterDraft||!!riverDraft||!!roadDraft||!!obstacleDraft||dirtyNameDraft()}
         animation={tagAnimations[tagKey(owner,id)]}
+        onDraftChange={(active,token)=>notifyTagDraft(token,active)}
         onRoll={slot=>mutateTag(owner,id,slot)} onEdit={(index,text)=>mutateTag(owner,id,undefined,{index,text})}/>;
     });
     return generationMode==='mythic'?<>{rows}</>:rows.length?<details className="tag-mode"><summary>Mythic Bastionland</summary>{rows}</details>:null;
