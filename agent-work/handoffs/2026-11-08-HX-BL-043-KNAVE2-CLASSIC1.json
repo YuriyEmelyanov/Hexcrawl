@@ -2,7 +2,7 @@
   "schema_version": 1,
   "task_id": "HX-BL-043",
   "stage_id": "KNAVE2-CLASSIC1",
-  "status": "review_ready",
+  "status": "changes_requested",
   "role": "programmer",
   "approval_ref": "owner-approval-2026-11-08-HX-BL-043-KNAVE2-CLASSIC1",
   "implementation_allowed": true,
@@ -41,7 +41,7 @@
     "Independent reviewer fresh context on exactSHA after implementation"
   ],
   "next_role_after_implementation": "reviewer",
-  "next_step": "Проверяющий: независимо проверить private c5b3c38 / public818476e по KNC-1.0,400строкам/ledger300 и точным evidence; записать score_assessment1.2. Замечания вернуть программисту, после принятия предъявить владельцу точный пакет публикации.",
+  "next_step": "Программист: исправить KNC-REV-001 — эффективные неперекрывающиеся44×44px области нажатия source disclosures и «Отмена» только в Knave; сохранить компактность, перепроверить1500/390/320 и передать новые public/private SHA независимому проверяющему.",
   "foreign_claim_policy": "Do not take or close Nov3 HX-BL-041 presentation claim. MC1-EN separate source-file-required handoff preserved.",
   "score_model_version": "1.2",
   "score_forecast": "unknown; no grades/points awarded",
@@ -232,7 +232,7 @@
       "Owner permission on concrete accepted source-bearing publication package"
     ]
   },
-  "next_role": "reviewer",
+  "next_role": "programmer",
   "previous_implementation_checkpoints": [
     {
       "head_sha": "861d4449227d4f850eb7f805a667cae2bbcd5346",
@@ -813,13 +813,41 @@
   "current_programmer_handoff": {
     "task_id": "HX-BL-043",
     "stage_id": "KNAVE2-CLASSIC1",
-    "next_role": "reviewer",
-    "next_step": "Проверяющий: независимо проверить private c5b3c38 / public818476e по KNC-1.0,400строкам/ledger300 и точным evidence; записать score_assessment1.2. Замечания вернуть программисту, после принятия предъявить владельцу точный пакет публикации.",
-    "head_sha": "818476e5ec653384ab216efd75db9467d698cfc4",
-    "private_sha": "c5b3c384792ce3349e40b0cc3ccc52e3d7685d1e",
-    "review_request_ref": "agent-work/evidence/KNAVE2-CLASSIC1-818476e/review-request.json"
+    "finding_id": "KNC-REV-001",
+    "role": "programmer",
+    "priority": "P2",
+    "authority": "Existing approved KNC-1.0 correction; no new start/design permission required",
+    "base_public_sha": "818476e5ec653384ab216efd75db9467d698cfc4",
+    "base_private_sha": "c5b3c384792ce3349e40b0cc3ccc52e3d7685d1e",
+    "scope": "Only newly introduced Knave source disclosure and draft Cancel touch targets; preserve current text/dice visual size, compact layout and all content/state/RNG behavior. No global direct-value redesign or new book data.",
+    "evidence_refs": [
+      "agent-work/evidence/KNAVE2-CLASSIC1-review-c5b3c38/ui-results.json",
+      "agent-work/specs/HX-BL-043-KNAVE2-CLASSIC1.md#KNC-A10"
+    ],
+    "observed": {
+      "source_summaries_height": 16,
+      "cancel_height": 19,
+      "summary_pseudo_elements": "none",
+      "expanded_pointer_hit": false,
+      "widths": [
+        1500,
+        390,
+        320
+      ]
+    },
+    "checkable_result": [
+      "Effective >=44x44CSSpx targets for every affected Knave control at1500/390/320, short text included; no overlapping adjacent targets or horizontal overflow",
+      "Keyboard/focus/Enter/Space/Cancel/Escape and Save/Discard/Stay remain correct; actual pointer/touch target behavior checked, not only text box size",
+      "Extend/reuse current Knave browser lifecycle for this risk rather than duplicate suite; explain useful test diff if edited",
+      "Record exact new public/private SHA and recoverable private package; run required checks and show actual corrected UI",
+      "Hand new SHA to fresh independent reviewer; no release or public Knave book transfer"
+    ],
+    "completion_criterion": "Independent new-SHA reviewer confirms KNC-REV-001 fixed and updates score_assessment1.2; programmer claim alone does not close finding",
+    "next_role_after_fix": "reviewer",
+    "release_approved": false,
+    "result_ref": "agent-work/results/2026-11-08T1705-reviewer-HX-BL-043-KNAVE2-CLASSIC1.json"
   },
-  "review_ready": true,
+  "review_ready": false,
   "full_task_complete": false,
   "updated_at": "2026-11-08T16:21:34.695Z",
   "review_request": {
@@ -866,5 +894,16 @@
     "checks_ref": "agent-work/evidence/KNAVE2-CLASSIC1-818476e/checks.json",
     "test_change_summary_ref": "agent-work/evidence/KNAVE2-CLASSIC1-818476e/test-change-summary.json"
   },
-  "review_request_ref": "agent-work/evidence/KNAVE2-CLASSIC1-818476e/review-request.json"
+  "review_request_ref": "agent-work/evidence/KNAVE2-CLASSIC1-818476e/review-request.json",
+  "review_result": {
+    "verdict": "changes_requested",
+    "public_sha": "818476e5ec653384ab216efd75db9467d698cfc4",
+    "private_sha": "c5b3c384792ce3349e40b0cc3ccc52e3d7685d1e",
+    "result_ref": "agent-work/results/2026-11-08T1705-reviewer-HX-BL-043-KNAVE2-CLASSIC1.json",
+    "finding_ids": [
+      "KNC-REV-001"
+    ],
+    "score_assessment_ref": "agent-work/evidence/KNAVE2-CLASSIC1-review-c5b3c38/score-assessment.json"
+  },
+  "review_request_status": "completed_changes_requested"
 }
