@@ -2,7 +2,7 @@
   "schema_version": 2,
   "game_id": "ROOT",
   "source_id": "ROOT-CORE-2021-EN",
-  "status": "partial_core_map_Marquisate_Eyrie_inventory_product_unverified",
+  "status": "partial_core_initial_map_and_political_setup_inventory_product_unverified",
   "date": "2026-11-08",
   "source": {
     "id": "ROOT-CORE-2021-EN",
@@ -11,7 +11,7 @@
     "author": "Brendan Conway & Mark Diaz Truman",
     "publisher": "Magpie Games",
     "url": "https://studylib.net/doc/26230689/rootttprg-corebook-100721",
-    "locator": "Making the Woodland224; Map225–227; Control of Clearings / First: The Marquisate228–229; HTML8782–8794,8933–8998; Eyrie230–231 HTML9002–9048",
+    "locator": "Making the Woodland224; Map225–227; Control of Clearings / First: The Marquisate228–229; HTML8782–8794,8933–8998; Eyrie230–231 HTML9002–9048; Alliance/Denizens232–234 HTML9053–9144",
     "printed_pages": [
       224,
       225,
@@ -20,17 +20,20 @@
       228,
       229,
       230,
-      231
+      231,
+      232,
+      233,
+      234
     ],
     "pdf_pages": null,
     "access_level": "full_text_selected_section",
     "author_project_key": "magpie-games:root-rpg:core2021",
-    "accessed_at": "2026-11-08T04:30:48.771Z",
+    "accessed_at": "2026-11-08T05:33:38.724Z",
     "bibliography_comparison": "First printing2021 credits match official9-page sample previously read, https://d1vzi28wh99zvq.cloudfront.net/pdf_previews/373406-sample.pdf",
     "access_limitations": [
       "Third-party text transcription, not publisher-hosted full PDF",
       "Full-byte identity, visual table layout and latest errata not verified",
-      "Only map skeleton, faction prerequisites/order, Marquisate and Eyrie extracted; Alliance/Denizens and remaining core unreviewed."
+      "Only selected initial map and political setup224–234 extracted; full core thematic inventory not claimed."
     ],
     "deduplication": "Same core work as prior p32 clarification; not a second independent audience observation; T&O remains a separate supplement corpus",
     "language": "en",
@@ -1414,12 +1417,426 @@
           "reason": "No general combat/simulation."
         }
       ]
+    },
+    {
+      "id": "ROOT-CORE-011",
+      "title": "Подготовить симпатию Alliance отдельно от контроля",
+      "rule": {
+        "source_id": "ROOT-CORE-2021-EN",
+        "url": "https://studylib.net/doc/26230689/rootttprg-corebook-100721",
+        "printed_page": [
+          232,
+          233
+        ],
+        "pdf_page": null,
+        "section": "Third: The Woodland Alliance / Sympathy and Uprising",
+        "locator": "HTML9053–9075,9113–9114",
+        "paraphrase": "Для каждой поляны бросают2d6 на симпатию Alliance: uncontrolled9+, controlled11+, contested8+. Симпатия означает подпольные ячейки/потенциальную поддержку, не открытый контроль или базу; contested связано с прежней передачей между неденизенскими фракциями.",
+        "parameters": {
+          "roll": "sum_2d6",
+          "sympathy_minimum": {
+            "uncontrolled": 9,
+            "controlled": 11,
+            "contested": 8
+          },
+          "sympathy_implies_base": false,
+          "sympathy_implies_control": false
+        },
+        "normative_kind": "conditional_Woodland_setup_procedure"
+      },
+      "comparison": {
+        "canonical_reuse": [
+          "map.faction_presence",
+          "content.place_description",
+          "content.roll_table_resolution"
+        ],
+        "new_generic_rule": false,
+        "parameter_equivalence": "unverified_source_specific_profile",
+        "analogue_binding_ids": [
+          "ROOT-TO-006-L1",
+          "ROOT-CORE-005-L1"
+        ]
+      },
+      "requirements": [
+        {
+          "id": "ROOT-CORE-011-L1",
+          "layer": "L1",
+          "requirement": "По категории и броску отметить симпатию Alliance либо её отсутствие для каждой поляны; сохранить текущий контроль отдельно и подготовить список полян с симпатией для восстаний.",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "evidence_sha": null,
+          "canonical_rule_ids": [
+            "map.faction_presence",
+            "content.place_description",
+            "content.roll_table_resolution"
+          ],
+          "criterion_ids": [
+            "S06-C01"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#ROOT-CORE-011-L1",
+          "operational_requirement": {
+            "source_rule_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-011",
+            "normative_kind": "conditional_Woodland_setup_procedure",
+            "applicability": "Root Core2021 initial Woodland preparation; Alliance only if selected, Denizens concluding step; not ongoing campaign simulation",
+            "layer": "L1",
+            "trigger_or_user_action": "Ведущий начинает выбранный шаг Alliance после предыдущих базовых фракций.",
+            "inputs_and_units": {
+              "поляны": "все поляны подготовленной карты",
+              "состояние строки": "известная применимая категория uncontrolled/controlled/contested",
+              "броски": "сумма2d6 на каждую поляну,2–12"
+            },
+            "product_operation": "По категории и броску отметить симпатию Alliance либо её отсутствие для каждой поляны; сохранить текущий контроль отдельно и подготовить список полян с симпатией для восстаний.",
+            "expected_output": "Известно, где есть подпольная симпатия, без автоматического создания базы или смены контроля.",
+            "constraints_and_exceptions": [
+              "Если Alliance не выбрана, её шаг пропускается.",
+              "Contested нельзя выводить только из наличия текущего контролёра: нужна история перехода между неденизенскими фракциями.",
+              "Симпатия — отдельный игровой профиль присутствия/описания, не доказанная эквивалентность любому присутствию фракции.",
+              "В этом тексте не задано исключение крепости/Roost из проверки симпатии; исключения финального Denizens не переносить сюда."
+            ],
+            "acceptance_cases": [
+              {
+                "id": "ROOT-CORE-011-L1-AC01",
+                "given": "Две независимые uncontrolled-поляны, суммы8/9.",
+                "when": "Определить симпатию.",
+                "expected": "У первой симпатии нет, у второй есть; база и контроль Alliance не созданы."
+              },
+              {
+                "id": "ROOT-CORE-011-L1-AC02",
+                "given": "Две controlled-поляны Marquisate, суммы10/11.",
+                "when": "Определить симпатию.",
+                "expected": "Симпатия соответственно нет/есть; контроль Marquisate обеих сохранён."
+              },
+              {
+                "id": "ROOT-CORE-011-L1-AC03",
+                "given": "Две поляны заданы ведущим как contested по истории Marquisate→Eyrie; суммы7/8.",
+                "when": "Применить contested-строку.",
+                "expected": "Симпатия нет/есть; история и текущий контроль Eyrie сохранены."
+              },
+              {
+                "id": "ROOT-CORE-011-L1-AC04",
+                "given": "Alliance выключена, готовая карта содержит контроль других фракций.",
+                "when": "Пройти выбранные шаги.",
+                "expected": "Новые броски симпатии Alliance и её базы не создаются."
+              }
+            ],
+            "source_vs_product_interpretation": "Параметры и последовательность пересказаны из выбранного корпуса. A/B/C/D/S/R/U и заданные броски — собственные примеры результата; сохранение/повторное открытие — перевод на язык генератора, не функция из книги. Техническая спецификация/API/архитектура не создаётся; runtime unknown.",
+            "canonical_rule_refs": [
+              "agent-work/rules/common-rules.json#map.faction_presence",
+              "agent-work/rules/common-rules.json#content.place_description",
+              "agent-work/rules/common-rules.json#content.roll_table_resolution"
+            ],
+            "unresolved_parameters": [
+              "При пересечении исторической contested-отметки с последующей uncontrolled-категорией приоритет строк здесь не формализован; категорию явно определяет ведущий."
+            ]
+          },
+          "gap_task_ids": [
+            "HX-BL-049"
+          ],
+          "delivery": "research_handoff_not_specification"
+        },
+        {
+          "layer": "L2",
+          "status": "not_applicable",
+          "reason": "Initial map setup, not campaign faction turn."
+        },
+        {
+          "layer": "L3",
+          "status": "not_applicable",
+          "reason": "No general character/combat engine extracted."
+        }
+      ]
+    },
+    {
+      "id": "ROOT-CORE-012",
+      "title": "Разрешить первое восстание Alliance и разместить базу",
+      "rule": {
+        "source_id": "ROOT-CORE-2021-EN",
+        "url": "https://studylib.net/doc/26230689/rootttprg-corebook-100721",
+        "printed_page": [
+          232,
+          233
+        ],
+        "pdf_page": null,
+        "section": "Third: The Woodland Alliance / Sympathy and Uprising",
+        "locator": "HTML9053–9056,9077–9119",
+        "paraphrase": "После симпатии проверяют восстания только в сочувствующих полянах:2d6=1–9без восстания;10–11снимает прежний контроль и размещает базу Alliance;12 дополнительно даёт симпатию во всех connected-полянах. База означает открытый контроль Alliance. После первого восстания дальнейшие броски прекращают.",
+        "parameters": {
+          "roll": "sum_2d6",
+          "uprising_minimum": 10,
+          "base_on": [
+            10,
+            11,
+            12
+          ],
+          "spread_sympathy_on": 12,
+          "stop_after_first_uprising": true,
+          "eligible": "clearings_with_sympathy",
+          "prior_control": "removed_on_success",
+          "new_control": "Woodland Alliance"
+        },
+        "normative_kind": "conditional_Woodland_setup_procedure"
+      },
+      "comparison": {
+        "canonical_reuse": [
+          "map.faction_control",
+          "map.faction_presence",
+          "content.place_description",
+          "content.roll_table_resolution"
+        ],
+        "new_generic_rule": false,
+        "parameter_equivalence": "unverified_source_specific_profile",
+        "analogue_binding_ids": [
+          "ROOT-CORE-005-L1",
+          "ROOT-TO-006-L1"
+        ]
+      },
+      "requirements": [
+        {
+          "id": "ROOT-CORE-012-L1",
+          "layer": "L1",
+          "requirement": "Выполнять проверки только в сочувствующих полянах до первого результата10+ или исчерпания кандидатов. При успехе снять прежний контроль, разместить базу и контроль Alliance; при12 добавить симпатию в заданный применимый набор связанных полян. Сохранить полученную карту без последующих бросков восстаний в этой процедуре.",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "evidence_sha": null,
+          "canonical_rule_ids": [
+            "map.faction_control",
+            "map.faction_presence",
+            "content.place_description",
+            "content.roll_table_resolution"
+          ],
+          "criterion_ids": [
+            "S06-C01"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#ROOT-CORE-012-L1",
+          "operational_requirement": {
+            "source_rule_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-012",
+            "normative_kind": "conditional_Woodland_setup_procedure",
+            "applicability": "Root Core2021 initial Woodland preparation; Alliance only if selected, Denizens concluding step; not ongoing campaign simulation",
+            "layer": "L1",
+            "trigger_or_user_action": "После определения симпатии ведущий выбирает порядок полян с симпатией и выполняет проверки восстания.",
+            "inputs_and_units": {
+              "кандидаты": "поляны с симпатией и выбранный порядок",
+              "бросок": "сумма2d6; физически достижимые2–12",
+              "текущий контроль": "фракция либо uncontrolled",
+              "связанные поляны": "известный ведущему набор connected для результата12"
+            },
+            "product_operation": "Выполнять проверки только в сочувствующих полянах до первого результата10+ или исчерпания кандидатов. При успехе снять прежний контроль, разместить базу и контроль Alliance; при12 добавить симпатию в заданный применимый набор связанных полян. Сохранить полученную карту без последующих бросков восстаний в этой процедуре.",
+            "expected_output": "Не более одного начального восстания/базы этим шагом; симпатия в других полянах не превращается автоматически в их контроль.",
+            "constraints_and_exceptions": [
+              "Табличный диапазон1–9 не разрешает ввод1 как физически возможной суммы2d6.",
+              "Отсутствие восстания сохраняет прежний контроль.",
+              "Не переносить защиту крепости/Roost из финального Denizens в Alliance без источника.",
+              "База и контроль следуют смысловому абзацу источника, а не только короткой табличной строке.",
+              "Связь с contested-историей при передаче от другой неденизенской фракции — ранее извлечённый ROOT-CORE-005."
+            ],
+            "acceptance_cases": [
+              {
+                "id": "ROOT-CORE-012-L1-AC01",
+                "given": "Симпатия есть только уA/B; задан порядокA,B; дляA сумма9, дляB10; Cбезсимпатии.",
+                "when": "Пройти восстания.",
+                "expected": "A сохраняет прежний контроль без базы; B получает базу/контроль Alliance, прежний контроль снят; Cне проверяется; дальнейшие броски прекращены."
+              },
+              {
+                "id": "ROOT-CORE-012-L1-AC02",
+                "given": "Aссимпатией, сумма11, до проверки контрольEyrie.",
+                "when": "Разрешить восстание.",
+                "expected": "База и контроль Alliance уA, контроль Eyrie снят; дополнительных симпатий строка11не даёт."
+              },
+              {
+                "id": "ROOT-CORE-012-L1-AC03",
+                "given": "Aссимпатией, сумма12; задан connected-наборB/C; Dв него не входит.",
+                "when": "Разрешить восстание.",
+                "expected": "УA база/контроль Alliance; B/Cполучают симпатию, но не контроль/базы; Dне изменена. Каскад отB/Cне выполнен."
+              },
+              {
+                "id": "ROOT-CORE-012-L1-AC04",
+                "given": "В спискеA/B/C с симпатией первый бросокA=10; дляB/Cзарезервированы11/12.",
+                "when": "Продолжить шаг.",
+                "expected": "После базыA броскиB/Cне выполняются; второй базы и дополнительных симпатий от неиспользованного12нет."
+              },
+              {
+                "id": "ROOT-CORE-012-L1-AC05",
+                "given": "Все сочувствующиеA/B получили2/9; Cбезсимпатии.",
+                "when": "Завершить проверки.",
+                "expected": "Ни базы, ни нового контроля Alliance нет; прежние контролёры сохранены; Cне проверялась."
+              },
+              {
+                "id": "ROOT-CORE-012-L1-AC06",
+                "given": "БазаA, контроль Alliance и симпатия B/C уже подготовлены.",
+                "when": "Сохранить и повторно открыть карту.",
+                "expected": "База, контроль и отдельная симпатия сохранены; броски и распространение автоматически не повторены."
+              }
+            ],
+            "source_vs_product_interpretation": "Параметры и последовательность пересказаны из выбранного корпуса. A/B/C/D/S/R/U и заданные броски — собственные примеры результата; сохранение/повторное открытие — перевод на язык генератора, не функция из книги. Техническая спецификация/API/архитектура не создаётся; runtime unknown.",
+            "canonical_rule_refs": [
+              "agent-work/rules/common-rules.json#map.faction_control",
+              "agent-work/rules/common-rules.json#map.faction_presence",
+              "agent-work/rules/common-rules.json#content.place_description",
+              "agent-work/rules/common-rules.json#content.roll_table_resolution"
+            ],
+            "unresolved_parameters": [
+              "Порядок полян с симпатией не задан; исход может зависеть от выбора ведущего.",
+              "Охват слова connected (прямая связь или более широкий набор) здесь явно не формализован; для примеров набор задаётся ведущим, автоматический обход/каскад не придуман.",
+              "Что делать при попытке повторить весь setup на уже подготовленной карте, решает аналитик/ведущий."
+            ]
+          },
+          "gap_task_ids": [
+            "HX-BL-049"
+          ],
+          "delivery": "research_handoff_not_specification"
+        },
+        {
+          "layer": "L2",
+          "status": "not_applicable",
+          "reason": "Initial map setup, not campaign faction turn."
+        },
+        {
+          "layer": "L3",
+          "status": "not_applicable",
+          "reason": "No general character/combat engine extracted."
+        }
+      ]
+    },
+    {
+      "id": "ROOT-CORE-013",
+      "title": "Завершить карту снятием контроля по шагу Denizens",
+      "rule": {
+        "source_id": "ROOT-CORE-2021-EN",
+        "url": "https://studylib.net/doc/26230689/rootttprg-corebook-100721",
+        "printed_page": [
+          234
+        ],
+        "pdf_page": null,
+        "section": "Last: The Denizens",
+        "locator": "HTML9122–9144",
+        "paraphrase": "Последний шаг подготовки проверяет контролируемые поляны кроме крепости Marquisate, любых Eyrie Roost и базы Alliance. Uncontrolled пропускают.2d6=1–10сохраняет контроль,11–12делает поляну uncontrolled; это не восстание Alliance.",
+        "parameters": {
+          "roll": "sum_2d6",
+          "keep_control": "1–10",
+          "remove_control": "11–12",
+          "skip": [
+            "Marquisate stronghold",
+            "Eyrie Roost",
+            "Woodland Alliance base",
+            "uncontrolled"
+          ],
+          "phase": "last_Woodland_setup_step",
+          "result": "uncontrolled_not_Denizens_faction_control"
+        },
+        "normative_kind": "conditional_Woodland_setup_procedure"
+      },
+      "comparison": {
+        "canonical_reuse": [
+          "map.faction_control",
+          "content.roll_table_resolution"
+        ],
+        "new_generic_rule": false,
+        "parameter_equivalence": "unverified_source_specific_profile",
+        "analogue_binding_ids": [
+          "ROOT-TO-013-L1",
+          "ROOT-CORE-010-L1"
+        ]
+      },
+      "requirements": [
+        {
+          "id": "ROOT-CORE-013-L1",
+          "layer": "L1",
+          "requirement": "Пропустить защищённые и уже uncontrolled-поляны. В остальных контролируемых полянах по11–12снять текущий фракционный контроль, по2–10сохранить. Результат снятия отметить как uncontrolled, без назначения нового контролёра или базы Alliance.",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "evidence_sha": null,
+          "canonical_rule_ids": [
+            "map.faction_control",
+            "content.roll_table_resolution"
+          ],
+          "criterion_ids": [
+            "S06-C01"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#ROOT-CORE-013-L1",
+          "operational_requirement": {
+            "source_rule_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-013",
+            "normative_kind": "conditional_Woodland_setup_procedure",
+            "applicability": "Root Core2021 initial Woodland preparation; Alliance only if selected, Denizens concluding step; not ongoing campaign simulation",
+            "layer": "L1",
+            "trigger_or_user_action": "Ведущий завершает начальную подготовку Леса после выбранных фракционных шагов.",
+            "inputs_and_units": {
+              "карта": "текущие контролёры и признаки крепости/Roost/базы",
+              "проверки": "сумма2d6 для каждой допустимой контролируемой поляны"
+            },
+            "product_operation": "Пропустить защищённые и уже uncontrolled-поляны. В остальных контролируемых полянах по11–12снять текущий фракционный контроль, по2–10сохранить. Результат снятия отметить как uncontrolled, без назначения нового контролёра или базы Alliance.",
+            "expected_output": "Подготовленная политическая карта содержит итоговый контроль либо его отсутствие; защищённые опоры сохранены.",
+            "constraints_and_exceptions": [
+              "Не назначать политический контроль Denizens автоматически из названия шага.",
+              "Бинарное присутствие, симпатия, население и описания не равны контролю и не удаляются автоматически этой операцией.",
+              "Таблица1–10 не расширяет физический диапазон суммы2d6ниже2.",
+              "Это финальный начальный шаг, не регулярный ход кампании и не восстание Alliance."
+            ],
+            "acceptance_cases": [
+              {
+                "id": "ROOT-CORE-013-L1-AC01",
+                "given": "Обычные контролируемыеA/B/C, суммы10/11/12.",
+                "when": "Завершить Denizens.",
+                "expected": "Контроль Aсохранён; B/Cстали uncontrolled, новых контролёров нет."
+              },
+              {
+                "id": "ROOT-CORE-013-L1-AC02",
+                "given": "Sкрепость Marquisate; Rимеет Eyrie Roost; Bимеет базу Alliance; зарезервированы12длякаждой.",
+                "when": "Пройти финальную проверку.",
+                "expected": "Все три пропущены без броска; контроль и опоры сохранены."
+              },
+              {
+                "id": "ROOT-CORE-013-L1-AC03",
+                "given": "Uужеuncontrolled, зарезервирован12.",
+                "when": "Пройти финальную проверку.",
+                "expected": "Uпропущена без броска и остаётся uncontrolled; контроль Denizens не создан."
+              },
+              {
+                "id": "ROOT-CORE-013-L1-AC04",
+                "given": "Обычная полянаA под Eyrie, имеет симпатию Alliance, но неRoost/базу; сумма11.",
+                "when": "Разрешить Denizens.",
+                "expected": "Aстала uncontrolled; симпатия сохранена, база/контроль Alliance не появились."
+              },
+              {
+                "id": "ROOT-CORE-013-L1-AC05",
+                "given": "ИтогAcontrolled/Buncontrolled и защищённыеS/Rуже подготовлены.",
+                "when": "Сохранить и снова открыть карту.",
+                "expected": "Контроль/его отсутствие и опоры сохранены; Denizens не запускается заново автоматически."
+              }
+            ],
+            "source_vs_product_interpretation": "Параметры и последовательность пересказаны из выбранного корпуса. A/B/C/D/S/R/U и заданные броски — собственные примеры результата; сохранение/повторное открытие — перевод на язык генератора, не функция из книги. Техническая спецификация/API/архитектура не создаётся; runtime unknown.",
+            "canonical_rule_refs": [
+              "agent-work/rules/common-rules.json#map.faction_control",
+              "agent-work/rules/common-rules.json#content.roll_table_resolution"
+            ],
+            "unresolved_parameters": [
+              "Неописанные дополнительные гарантии/объекты других дополнений требуют отдельного применимого профиля; не распространять исключения по аналогии."
+            ]
+          },
+          "gap_task_ids": [
+            "HX-BL-049"
+          ],
+          "delivery": "research_handoff_not_specification"
+        },
+        {
+          "layer": "L2",
+          "status": "not_applicable",
+          "reason": "Initial map setup, not campaign faction turn."
+        },
+        {
+          "layer": "L3",
+          "status": "not_applicable",
+          "reason": "No general character/combat engine extracted."
+        }
+      ]
     }
   ],
   "comparison_summary": {
-    "source_rules": 10,
-    "L1_requirements": 10,
-    "acceptance_examples": 42,
+    "source_rules": 13,
+    "L1_requirements": 13,
+    "acceptance_examples": 57,
     "canonical_used": 6,
     "new_canonical_rules": 0
   },
@@ -1433,14 +1850,17 @@
       228,
       229,
       230,
-      231
+      231,
+      232,
+      233,
+      234
     ],
     "read_mode": "HTML primary-text transcription; bibliography and selected section",
     "full_core_read": false,
     "excluded_context": [
-      "Alliance232+ and Denizens234 returned around target but not reviewed/extracted",
-      "Detailed literary naming table not reproduced",
-      "Other thematic core dependencies except auxiliaryp32"
+      "Fleshing Out Your Clearings235+ returned around target but not reviewed/extracted",
+      "Complete literary naming table not reproduced",
+      "Other thematic core dependencies except auxiliary32"
     ],
     "ledger_ref": "agent-work/market/rules/ROOT-Core-2021-coverage-ledger.json"
   },
@@ -1473,6 +1893,16 @@
     {
       "id": "ROOT-CORE-Q06",
       "question": "Eyrie: multiple routes/roosts and equal-distance clearing processing order are not formalized here; no automatic shortest-path/tie-break invented.",
+      "status": "unknown_source_not_explicit"
+    },
+    {
+      "id": "ROOT-CORE-Q07",
+      "question": "Alliance12: exact connected scope not formalized here; accept GM-specified set, no graph expansion invented.",
+      "status": "unknown_source_not_explicit"
+    },
+    {
+      "id": "ROOT-CORE-Q08",
+      "question": "Alliance: sympathy row priority for historical contested then uncontrolled, and uprising clearing order are not formalized here.",
       "status": "unknown_source_not_explicit"
     }
   ],
