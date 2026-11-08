@@ -1,0 +1,208 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-053",
+  "title": "Размещать по3–4ориентира каждого вида и сохранять обозначения",
+  "status": "proposed",
+  "problem": "Общий POI и шесть мест мифов не подтверждают количество3–4для КАЖДОГО вида ориентиров; реализация и сохранение обозначений unknown.",
+  "benefit": "Ведущий получает полный выбранный набор landmarks без ошибки3–4на весь край и может различать виды по выбранным меткам.",
+  "game_editions": [
+    "Official free Realm Sheets snapshot downloaded2026-11-08; internal version not stated; referenced Creating a Realm(p14) not collated to final book"
+  ],
+  "primary_scenario": "create",
+  "layer": "L1",
+  "requirement_refs": [
+    "agent-work/market/rules/MB-Realm-Sheets.json#MB-REALM-005-L1"
+  ],
+  "canonical_rule_ids": [
+    "content.site_density",
+    "map.reference_labels"
+  ],
+  "binding_refs": [
+    "agent-work/rules/game-bindings.json#MB-REALM-005-L1"
+  ],
+  "criterion_ids": [
+    "S05-C01",
+    "S07-C02",
+    "S04-C03"
+  ],
+  "scope": "Только количество по шести видам и обозначения с сохранением/адресной правкой. Автопозиции/вероятности/игровые эффекты не специфицированы.",
+  "dependencies": [
+    "До выбора разработки проверить существующий генератор MB/редактор/метки и coverage041/013; не объявлять функцию отсутствующей без проверки.",
+    "Стратег выбирает/консолидирует объём proposed053; аналитик определяет Realm, обозначения и поведение тесной области."
+  ],
+  "acceptance_checks": [
+    {
+      "id": "MB-REALM-005-L1-AC01",
+      "given": "Один подготавливаемый край; ведущий выбрал по3места каждого из шести видов Dwellings/Sanctums/Monuments/Hazards/Curses/Ruins.",
+      "when": "Нанести выбранный набор landmarks.",
+      "expected": "Получены шесть групп по3объекта, всего18. Число3 не применено ко всему краю вместо каждого вида; мифы и владения не включены в этот счёт."
+    },
+    {
+      "id": "MB-REALM-005-L1-AC02",
+      "given": "Один край; ведущий выбрал по4места всех шести видов.",
+      "when": "Нанести выбранный набор.",
+      "expected": "У каждого вида4объекта, всего24; количество не обрезано до18."
+    },
+    {
+      "id": "MB-REALM-005-L1-AC03",
+      "given": "Для шести видов в порядке Dwellings/Sanctums/Monuments/Hazards/Curses/Ruins ведущий задал3,4,3,4,3,4места.",
+      "when": "Подготовить выбранный набор.",
+      "expected": "Количество по видам совпадает с3/4/3/4/3/4, всего21; источник не выдан за требование одинакового числа для всех видов или обязательного случайного броска."
+    },
+    {
+      "id": "MB-REALM-005-L1-AC04",
+      "given": "Ведущий выбрал буквенные метки английских видов; одно место имеет вид Hazards, другое Ruins.",
+      "when": "Отметить эти два места.",
+      "expected": "Для видов сохранены различимые метки H и R и связь с соответствующим видом; буквы обозначают вид, а не автоматически уникальный номер каждого объекта или номер мифа."
+    },
+    {
+      "id": "MB-REALM-005-L1-AC05",
+      "given": "Для одного Sanctum ведущий выбрал условный значок вместо буквы, а для остальных объектов — буквенные метки.",
+      "when": "Изменить обозначение только выбранного места.",
+      "expected": "Это место сохраняет вид Sanctum и положение, обозначается выбранным значком без требования одновременно иметь букву; остальные места не изменены, новая численная игровая характеристика не добавлена."
+    },
+    {
+      "id": "MB-REALM-005-L1-AC06",
+      "given": "Цель по3объекта каждого вида, но доступны только2выбранных допустимых места для Ruins; остальные виды подготовлены.",
+      "when": "Проверить завершённость выбранного набора.",
+      "expected": "Набор не объявлен полностью соответствующим профилю: у Ruins2вместо3. Другие виды и существующая карта сохранены; место не создано поверх занятого. Правило дополнения/отказа требует продуктового решения."
+    },
+    {
+      "id": "MB-REALM-005-L1-AC07",
+      "given": "Сохранён смешанный набор21места с известными видами, выбранными буквами/значками и положениями; есть мифы, владения и ручные заметки.",
+      "when": "Сохранить и снова открыть карту.",
+      "expected": "Восстановлены21место с теми же видами/обозначениями/положениями; другие объекты и заметки сохранены. Эффекты опасностей/проклятий, Провидцы или события не сгенерированы только из этого профиля количества и маркировки."
+    }
+  ],
+  "expected_evidence": {
+    "current_runtime": "unknown",
+    "evidence_sha": null,
+    "future_product": "Actual per-type3/4 and label/save cases on exact SHA; reading source is not implementation evidence"
+  },
+  "score_delta": null,
+  "source_limitations": [
+    "Only prior d12/barrier/HOLDINGS/MYTH HEXES slices plus LANDMARKS count/marking sentences and six type headings extracted; descriptions/effects not extracted this run, PDF2 unread.",
+    "Pinned previously downloaded PDF rehashed unchanged and selected clause visually reread; publisher listing rechecked, no new PDF binary/version asserted.",
+    "Final book/Quickstart equivalence unknown; p14 is a cross-reference, not a book page read in this run.",
+    "3 or4 per type does not specify dice, odds, positions or an obligation to use identical counts for every type.",
+    "No raw PDF/art/literary corpus published; product support unknown."
+  ],
+  "operational_requirement": {
+    "source_rule_ref": "agent-work/market/rules/MB-Realm-Sheets.json#MB-REALM-005",
+    "normative_kind": "realm_sheet_creation_procedure",
+    "applicability": "Official MB Realm Sheet pinned snapshot, PDF1 LANDMARKS count/marking sentences plus six headings; one Realm preparation",
+    "layer": "L1",
+    "trigger_or_user_action": "Ведущий готовит набор ориентиров одного края: выбирает3или4места каждого вида и буквенные обозначения или значки.",
+    "inputs_and_units": {
+      "types": "Шесть видов из заголовков: Dwellings, Sanctums, Monuments, Hazards, Curses, Ruins; переводы не новые виды",
+      "counts": "3или4объекта КАЖДОГО вида на один Realm; минимум18/максимум24 — наша арифметика по шести видам, не аудитория",
+      "positions": "выбранные ведущим допустимые места; источник не задаёт алгоритм позиции",
+      "marking": "начальная буква вида либо значок; выбранный способ сохраняется"
+    },
+    "product_operation": "Разместить выбранный набор мест с количеством3или4для каждого из шести видов и обозначить вид буквой либо значком. Адресно менять обозначение, сохраняя вид и положение; восстановить набор и обозначения при открытии карты.",
+    "expected_output": "В одном крае по3–4ориентира каждого из шести видов, всего18–24, с различимыми обозначениями видов; сохранение не меняет количества и географию.",
+    "constraints_and_exceptions": [
+      "Число относится к каждому виду, не к общему набору landmarks, не к мифам/владениям и не к каждому биому интерфейса.",
+      "Распределение3/4, случайность, равные шансы и алгоритм размещения не заданы; выбор ведущего не подменяется выдуманным броском.",
+      "18–24 и смешанные21 — арифметический вывод из шести видов; это не новое правило вероятности и не рыночная метрика.",
+      "Инициал/значок описывает вид; уникальный идентификатор каждого экземпляра не предписан текстом. Значки авторского листа не копируются в продукт этим исследованием.",
+      "Карта с иным ручным количеством не должна молча перестраиваться; такой набор не объявлять полным соответствием выбранной процедуре.",
+      "Сохранение/правка обозначения и явная неполнота — продуктовая операционализация, не UI/API/схема хранения.",
+      "Описания и эффекты отдельных видов, назначение Провидцев и ссылки на другие страницы здесь не разобраны; из количества не выводится готовность сюжетного/боевого движка."
+    ],
+    "acceptance_cases": [
+      {
+        "id": "MB-REALM-005-L1-AC01",
+        "given": "Один подготавливаемый край; ведущий выбрал по3места каждого из шести видов Dwellings/Sanctums/Monuments/Hazards/Curses/Ruins.",
+        "when": "Нанести выбранный набор landmarks.",
+        "expected": "Получены шесть групп по3объекта, всего18. Число3 не применено ко всему краю вместо каждого вида; мифы и владения не включены в этот счёт."
+      },
+      {
+        "id": "MB-REALM-005-L1-AC02",
+        "given": "Один край; ведущий выбрал по4места всех шести видов.",
+        "when": "Нанести выбранный набор.",
+        "expected": "У каждого вида4объекта, всего24; количество не обрезано до18."
+      },
+      {
+        "id": "MB-REALM-005-L1-AC03",
+        "given": "Для шести видов в порядке Dwellings/Sanctums/Monuments/Hazards/Curses/Ruins ведущий задал3,4,3,4,3,4места.",
+        "when": "Подготовить выбранный набор.",
+        "expected": "Количество по видам совпадает с3/4/3/4/3/4, всего21; источник не выдан за требование одинакового числа для всех видов или обязательного случайного броска."
+      },
+      {
+        "id": "MB-REALM-005-L1-AC04",
+        "given": "Ведущий выбрал буквенные метки английских видов; одно место имеет вид Hazards, другое Ruins.",
+        "when": "Отметить эти два места.",
+        "expected": "Для видов сохранены различимые метки H и R и связь с соответствующим видом; буквы обозначают вид, а не автоматически уникальный номер каждого объекта или номер мифа."
+      },
+      {
+        "id": "MB-REALM-005-L1-AC05",
+        "given": "Для одного Sanctum ведущий выбрал условный значок вместо буквы, а для остальных объектов — буквенные метки.",
+        "when": "Изменить обозначение только выбранного места.",
+        "expected": "Это место сохраняет вид Sanctum и положение, обозначается выбранным значком без требования одновременно иметь букву; остальные места не изменены, новая численная игровая характеристика не добавлена."
+      },
+      {
+        "id": "MB-REALM-005-L1-AC06",
+        "given": "Цель по3объекта каждого вида, но доступны только2выбранных допустимых места для Ruins; остальные виды подготовлены.",
+        "when": "Проверить завершённость выбранного набора.",
+        "expected": "Набор не объявлен полностью соответствующим профилю: у Ruins2вместо3. Другие виды и существующая карта сохранены; место не создано поверх занятого. Правило дополнения/отказа требует продуктового решения."
+      },
+      {
+        "id": "MB-REALM-005-L1-AC07",
+        "given": "Сохранён смешанный набор21места с известными видами, выбранными буквами/значками и положениями; есть мифы, владения и ручные заметки.",
+        "when": "Сохранить и снова открыть карту.",
+        "expected": "Восстановлены21место с теми же видами/обозначениями/положениями; другие объекты и заметки сохранены. Эффекты опасностей/проклятий, Провидцы или события не сгенерированы только из этого профиля количества и маркировки."
+      }
+    ],
+    "source_vs_product_interpretation": "Источник задаёт3или4каждого вида, букву либо значок; перечень шести видов читается по заголовкам. Итоги18/21/24, проверка сохранности/частичного набора и адресная смена обозначения — наш перевод для генератора. Не заявлены фиксированные вероятности, геометрическое размещение или runtime coverage.",
+    "canonical_rule_refs": [
+      "content.site_density",
+      "map.reference_labels"
+    ],
+    "unresolved_parameters": [
+      "Алгоритм выбора3или4 и размещения каждого вида.",
+      "Соответствие Realm единице текущего генератора, правила дополнения и нехватки допустимых мест.",
+      "Переводы/обозначения при совпадающих инициалах и допустимость ручных отступлений — продуктовые решения, не дополнительные параметры источника.",
+      "Описание/эффекты каждого вида и эквивалентность финальной книге не разобраны; фактическая поддержка на SHA unknown."
+    ]
+  },
+  "source": {
+    "id": "MB-OFFICIAL-REALM-SHEETS-SNAPSHOT-20261108",
+    "title": "Mythic Bastionland Realm Sheets.pdf",
+    "edition": "Official free Realm Sheets snapshot downloaded2026-11-08; internal version not stated; referenced Creating a Realm(p14) not collated to final book",
+    "author": "Chris McDowall / Bastionland Press; sheet artwork attribution not verified",
+    "publisher": "Bastionland Press",
+    "language": "en",
+    "url": "https://chrismcdee.itch.io/mythic-bastionland",
+    "upload_id": "13049889",
+    "accessed_at": "2026-11-08T21:33:22.138Z",
+    "access_level": "full_text_visual_primary_pdf",
+    "download_route": "Publisher itch.io Download demo file; public free download, no purchase/authenticated account",
+    "size_bytes": 6878626,
+    "pdf_pages": 2,
+    "sha256": "6082a760c7db9b81baf0180cae585feb35826b24e5feb839434c4ff33deb924d",
+    "pdf_metadata_date": "2024-11-07; not asserted publication date",
+    "locator": "PDF1: prior slices plus LANDMARKS opening two sentences and six type headings",
+    "author_project_key": "chris-mcdowall:bastionland:mythic-bastionland:realm-sheets",
+    "parent_project_dedup_key": "chris-mcdowall:bastionland:mythic-bastionland",
+    "limitations": [
+      "Only prior d12/barrier/HOLDINGS/MYTH HEXES slices plus LANDMARKS count/marking sentences and six type headings extracted; descriptions/effects not extracted this run, PDF2 unread.",
+      "Pinned previously downloaded PDF rehashed unchanged and selected clause visually reread; publisher listing rechecked, no new PDF binary/version asserted.",
+      "Final book/Quickstart equivalence unknown; p14 is a cross-reference, not a book page read in this run.",
+      "3 or4 per type does not specify dice, odds, positions or an obligation to use identical counts for every type.",
+      "No raw PDF/art/literary corpus published; product support unknown."
+    ]
+  },
+  "implementation_authorized": false,
+  "release_authorized": false,
+  "dedup_review": {
+    "decision": "Additional research component in existing proposed053; no new task/canonical rule.",
+    "related_tasks": [
+      "HX-BL-013",
+      "HX-BL-041",
+      "HX-BL-043",
+      "HX-BL-053"
+    ],
+    "reason": "053 already fixed-set placement and labels. This is another source-verified profile of the same capabilities; existing product reuse must be checked before development. No scope change to active/approved041/043."
+  }
+}
