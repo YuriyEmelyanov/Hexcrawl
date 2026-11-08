@@ -29,7 +29,7 @@
   "run_id": "2026-11-08T1300-programmer-HX-BL-043-KNAVE2-CLASSIC1",
   "plan_revision": 1,
   "baseline_sha": "00190bb749a4fa5af57aac4bbffff808e8fe733f",
-  "status": "implementation_in_progress",
+  "status": "implementation_checkpoint_not_review_ready",
   "planning_for": "2026-10-31",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-10-25",
@@ -50,23 +50,10 @@
   "current_task_id": "HX-BL-043",
   "spec_path": "agent-work/specs/HX-BL-043-KNAVE2-CLASSIC1.md",
   "spec_version": "KNC-1.0",
-  "result_path": "agent-work/results/2026-11-08T1200-programmer-HX-BL-043-KNAVE2-CLASSIC1.json",
+  "result_path": "agent-work/results/2026-11-08T1300-programmer-HX-BL-043-KNAVE2-CLASSIC1.json",
   "handoff_commit_sha": "d8540be256914aa9d262d6c0687620d9c3f7e237",
-  "active_claim": {
-    "run_id": "2026-11-08T1300-programmer-HX-BL-043-KNAVE2-CLASSIC1",
-    "task_id": "HX-BL-043",
-    "stage_id": "KNAVE2-CLASSIC1",
-    "role": "programmer",
-    "status": "active",
-    "started_at": "2026-11-08T13:03:08.123Z",
-    "lease_expires_at": "2026-11-08T15:03:08.123Z",
-    "branch": "agent/knave2-classic1",
-    "base_sha": "861d4449227d4f850eb7f805a667cae2bbcd5346",
-    "scope": "Continue own verified checkpoint: App v10 persistence/history/editor data integration; no release",
-    "approval_ref": "owner-approval-2026-11-08-HX-BL-043-KNAVE2-CLASSIC1",
-    "claim_ref": "agent-work/claims/2026-11-08T1300-programmer-HX-BL-043-KNAVE2-CLASSIC1.json"
-  },
-  "next_step": "Продолжить существующий PR494 с head861d444: сначала подключить слой к App, v10 save/load и Undo/Redo/E7/E8/E6; затем каталог/генерацию и компактный UI. До завершения всех KNC-A01..A11 не передавать пакет на приёмку.",
+  "active_claim": null,
+  "next_step": "Продолжить PR494 на d0d759c: подготовить каталог/совместимые пулы POI из предоставленного источника, подключить генерацию и компактный UI профиля/проходимости/обнаружения; затем actual walkthrough и независимое ревью полного нового SHA.",
   "owner_decisions_needed": [
     {
       "task_id": "HX-BL-043",
@@ -127,8 +114,8 @@
   "evidence_path": "agent-work/results/2026-11-08T0400-strategist-score-PR493.json",
   "branch_name": "agent/knave2-classic1",
   "pr": 494,
-  "head_sha": "861d4449227d4f850eb7f805a667cae2bbcd5346",
-  "checks_status": "checkpoint_local_pass_public_ci_pending",
+  "head_sha": "d0d759c404bd4479f96b00a06362c279bc4c99ae",
+  "checks_status": "local_node358_and_browser8_pass_public_ci_pending",
   "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42439485433",
   "review_verdict": "accepted_release_candidate_exact_public_sha",
   "role_selection_mode": "ready_work_priority",
@@ -326,18 +313,18 @@
   "automation_health": {
     "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-11-08T12:00:44.270Z",
+      "checked_at": "2026-11-08T13:02:45.718Z",
       "is_enabled": true,
       "status": "checked"
     },
     "end": {
-      "checked_at": "2026-11-08T12:12:43.428Z",
+      "checked_at": "2026-11-08T13:25:15.104Z",
       "status": "checked",
       "is_enabled": true
     },
     "recovery_performed": false,
     "errors": [],
-    "limitation": "Actual point-in-time start/end observations; no guarantee about later service changes."
+    "limitation": "Point-in-time checks only; future service state is not guaranteed."
   },
   "open_findings": [],
   "current_review_score_assessment_status": "completed_candidate_G1_S08_no_award_S05_insufficient",
@@ -957,7 +944,7 @@
     "next_step": "Решить отдельно узкий cleanup AUD-02/03/04; готовую спецификацию024 не задерживать."
   },
   "owner_decisions_note": "PR490 exact package authorized and published. No further publication decision needed for this released package; future package publication remains separate.",
-  "updated_at": "2026-11-08T12:13:22.043Z",
+  "updated_at": "2026-11-08T13:26:00.463Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
     "stage_id": "V3",
@@ -1218,42 +1205,97 @@
     "handoff_ref": "agent-work/handoffs/2026-10-27-HX-FB-002-audit.json"
   },
   "test_change_summary": {
-    "base_sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
-    "head_sha": "861d4449227d4f850eb7f805a667cae2bbcd5346",
-    "added": 4,
+    "base_sha": "861d4449227d4f850eb7f805a667cae2bbcd5346",
+    "head_sha": "d0d759c404bd4479f96b00a06362c279bc4c99ae",
+    "added": 0,
     "removed": 0,
-    "modified": 0,
-    "suite": "Node test/tags.test.mjs",
-    "scenario_risk": [
-      "KNC-A02/A09 known profile/import refusal",
-      "KNC-A06 coordinate difficulty independent of water/POI",
-      "KNC-A07 separate clue preservation and validation",
-      "KNC-A08 metadata relocation/collision/loss preview"
-    ],
-    "reuse_or_new_reason": "Existing MB tuple/command cases do not cover these new Knave payload contracts. Four independent cases appended to existing suite; no duplicate RNG/browser cases.",
-    "count_source": "Four added test() registrations in base/head diff, matching four targeted runner cases; full comparable Node runner354→358. No rename or parametrized count inflation.",
-    "executions": [
+    "modified": 12,
+    "suite": "Node",
+    "source": "TypeScript AST compares existing test() bodies in base/head, expands two ['classic','mythic'] registrations to four logical runner cases; no renames or new registrations.",
+    "case_changes": [
       {
-        "runner": "Node24 full npm run check",
-        "executed": 358,
-        "passed": 358,
-        "skipped": 0,
-        "failed": 0
+        "file": "test/mapTransactions.test.mjs",
+        "name": "'all manifest saves round-trip unchanged entities, names and can continue then undo'",
+        "loops": [],
+        "kind": "modified"
       },
       {
-        "runner": "Node24 targeted Knave name filter",
-        "executed": 4,
-        "passed": 4,
-        "skipped": 0,
-        "failed": 0
+        "file": "test/mapTransactions.test.mjs",
+        "name": "'v5 obstacle IDs and counter survive migration, round-trip and history; invalid v5 is atomic'",
+        "loops": [],
+        "kind": "modified"
+      },
+      {
+        "file": "test/mapTransactions.test.mjs",
+        "name": "'E5 native v7 feature intentions and counter survive real import, edits, history and rejected files'",
+        "loops": [],
+        "kind": "modified"
+      },
+      {
+        "file": "test/mapTransactions.test.mjs",
+        "name": "'E6 real POI/name/tag losses require every explicit answer and Undo restores authored content'",
+        "loops": [],
+        "kind": "modified"
+      },
+      {
+        "file": "test/regionEditing.test.mjs",
+        "name": "`E7 App transfer keeps full POI identity/history and real reload continuation ${mode}`",
+        "loops": [
+          "['classic','mythic']"
+        ],
+        "kind": "modified"
+      },
+      {
+        "file": "test/regionEditing.test.mjs",
+        "name": "`E8 real POI move is one exact transaction with full payload and literal hex notes ${mode}`",
+        "loops": [
+          "['classic','mythic']"
+        ],
+        "kind": "modified"
+      },
+      {
+        "file": "test/saveSafety.test.mjs",
+        "name": "'E8 v8 authored POI names use real import,exact export and UndoRedo without touching hex notes'",
+        "loops": [],
+        "kind": "modified"
+      },
+      {
+        "file": "test/saveSafety.test.mjs",
+        "name": "'SEA v2-v8 metadata migration and strict v9 refusal use the real atomic importer'",
+        "loops": [],
+        "kind": "modified"
+      },
+      {
+        "file": "test/tags.test.mjs",
+        "name": "'production imported legacy map does not roll; explicit fill and separate rerolls are exact reversible transactions and v6 roundtrip'",
+        "loops": [],
+        "kind": "modified"
+      },
+      {
+        "file": "test/worldContinuation.test.mjs",
+        "name": "'v2 migration and v3 validation are deterministic and atomic with redo'",
+        "loops": [],
+        "kind": "modified"
       }
     ],
+    "scenario_risk": "Actual v10 import/export/history, generation-backup refusal recovery, E7/E8 owner remapping, E6 consent; other changed cases assert new export version instead of9. Existing cases reused, no duplicate suite.",
+    "reuse_or_new_reason": "Extend existing importer/editor/geometry fixture flows; source-only contract tests cannot verify React snapshot paths.",
+    "executed": 358,
+    "passed": 358,
+    "skipped": 0,
+    "failed": 0,
     "browser": {
-      "executed": 0,
-      "reason": "Checkpoint changes detached module only; actual generation/UI browser validation remains required before review_ready"
+      "added": 0,
+      "removed": 0,
+      "modified_scenarios": 2,
+      "reason": "Existing GM notes export and myth-material production export assertions updated from9 to10; no new scenario or suite.",
+      "workflow_executed": 8,
+      "workflow_passed": 8,
+      "workflow_skipped": 0,
+      "logical_case_execution_count": null,
+      "note": "Eight existing workflow scripts, not eight Node cases; not added to Node counts."
     },
-    "typescript": "pass",
-    "build": "pass"
+    "temporary_diagnostics": "Pre-commit targeted importer/editor runs are preflight only; exact-tree full358 and8workflow outcomes are authoritative."
   },
   "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/491",
   "coordination_handoff": {
@@ -2067,7 +2109,7 @@
     "implementation_allowed": true,
     "release_approved": false,
     "next_role": "programmer",
-    "next_step": "Продолжить существующий PR494 с head861d444: сначала подключить слой к App, v10 save/load и Undo/Redo/E7/E8/E6; затем каталог/генерацию и компактный UI. До завершения всех KNC-A01..A11 не передавать пакет на приёмку.",
+    "next_step": "Продолжить PR494 на d0d759c: подготовить каталог/совместимые пулы POI из предоставленного источника, подключить генерацию и компактный UI профиля/проходимости/обнаружения; затем actual walkthrough и независимое ревью полного нового SHA.",
     "score_impact": "unknown; no award"
   },
   "ui_amendment": {
@@ -2263,7 +2305,7 @@
     "implementation_allowed": true,
     "release_approved": false,
     "next_role": "programmer",
-    "next_step": "Продолжить существующий PR494 с head861d444: сначала подключить слой к App, v10 save/load и Undo/Redo/E7/E8/E6; затем каталог/генерацию и компактный UI. До завершения всех KNC-A01..A11 не передавать пакет на приёмку.",
+    "next_step": "Продолжить PR494 на d0d759c: подготовить каталог/совместимые пулы POI из предоставленного источника, подключить генерацию и компактный UI профиля/проходимости/обнаружения; затем actual walkthrough и независимое ревью полного нового SHA.",
     "score_impact": "unknown; no award"
   },
   "owner_editor_scope": {
@@ -2589,18 +2631,20 @@
   "review_ready": false,
   "current_stage_ui_status": "release_preview_pending_whole_package_walkthrough",
   "completed_claim": {
-    "run_id": "2026-11-08T1200-programmer-HX-BL-043-KNAVE2-CLASSIC1",
+    "run_id": "2026-11-08T1300-programmer-HX-BL-043-KNAVE2-CLASSIC1",
     "task_id": "HX-BL-043",
     "stage_id": "KNAVE2-CLASSIC1",
     "role": "programmer",
     "status": "completed_checkpoint",
-    "started_at": "2026-11-08T12:01:14.538Z",
-    "scope": "Implement approved KNC-1.0 in separate branch; no publication",
-    "spec_ref": "agent-work/specs/HX-BL-043-KNAVE2-CLASSIC1.md",
+    "started_at": "2026-11-08T13:03:08.123Z",
+    "lease_expires_at": "2026-11-08T15:03:08.123Z",
+    "branch": "agent/knave2-classic1",
+    "base_sha": "861d4449227d4f850eb7f805a667cae2bbcd5346",
+    "scope": "Continue own verified checkpoint: App v10 persistence/history/editor data integration; no release",
     "approval_ref": "owner-approval-2026-11-08-HX-BL-043-KNAVE2-CLASSIC1",
-    "claim_ref": "agent-work/claims/2026-11-08T1200-programmer-HX-BL-043-KNAVE2-CLASSIC1.json",
-    "head_sha": "861d4449227d4f850eb7f805a667cae2bbcd5346",
-    "result_ref": "agent-work/results/2026-11-08T1200-programmer-HX-BL-043-KNAVE2-CLASSIC1.json"
+    "claim_ref": "agent-work/claims/2026-11-08T1300-programmer-HX-BL-043-KNAVE2-CLASSIC1.json",
+    "head_sha": "d0d759c404bd4479f96b00a06362c279bc4c99ae",
+    "result_ref": "agent-work/results/2026-11-08T1300-programmer-HX-BL-043-KNAVE2-CLASSIC1.json"
   },
   "evidence_commit_sha": "5a9c6c97bd0ff170751d78babcc9d3578066e0bb",
   "finding_ids": [],
@@ -6186,7 +6230,7 @@
     "canonical_interrupted_claim_preserved": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json"
   },
   "recovery_resolution_ref": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json",
-  "result_ref": "agent-work/results/2026-11-08T1200-programmer-HX-BL-043-KNAVE2-CLASSIC1.json",
+  "result_ref": "agent-work/results/2026-11-08T1300-programmer-HX-BL-043-KNAVE2-CLASSIC1.json",
   "latest_PR493_recovery": {
     "status": "accepted_source_free_core_unpublished",
     "head_sha": "2f11a4b608a7ed66f5786b3a0e151362f82d0ad8",
@@ -6913,33 +6957,67 @@
     "implementation_allowed": true,
     "release_approved": false,
     "next_role": "programmer",
-    "next_step": "Продолжить существующий PR494 с head861d444: сначала подключить слой к App, v10 save/load и Undo/Redo/E7/E8/E6; затем каталог/генерацию и компактный UI. До завершения всех KNC-A01..A11 не передавать пакет на приёмку.",
+    "next_step": "Продолжить PR494 на d0d759c: подготовить каталог/совместимые пулы POI из предоставленного источника, подключить генерацию и компактный UI профиля/проходимости/обнаружения; затем actual walkthrough и независимое ревью полного нового SHA.",
     "score_impact": "unknown; no award",
-    "run_id": "2026-11-08-analyst-HX-BL-043-KNAVE2-CLASSIC1",
-    "result_ref": "agent-work/results/2026-11-08T1200-programmer-HX-BL-043-KNAVE2-CLASSIC1.json",
+    "run_id": "2026-11-08T1300-programmer-HX-BL-043-KNAVE2-CLASSIC1",
+    "result_ref": "agent-work/results/2026-11-08T1300-programmer-HX-BL-043-KNAVE2-CLASSIC1.json",
     "materials_commit_sha": "574549b50f57334e27838a537bf7da2ae4531110",
     "automation_health": {
       "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
       "start": {
-        "checked_at": "2026-11-08T12:00:44.270Z",
+        "checked_at": "2026-11-08T13:02:45.718Z",
         "is_enabled": true,
         "status": "checked"
       },
       "end": {
-        "checked_at": "2026-11-08T12:12:43.428Z",
+        "checked_at": "2026-11-08T13:25:15.104Z",
         "status": "checked",
         "is_enabled": true
       },
       "recovery_performed": false,
       "errors": [],
-      "limitation": "Actual point-in-time start/end observations; no guarantee about later service changes."
+      "limitation": "Point-in-time checks only; future service state is not guaranteed."
     },
     "preserves_other_claims": true,
     "source_requirement_policy": "Existing Knave extraction primary; book only concrete missing data/contradiction",
     "standalone_prompts_stage": "KNAVE2-PLACE1 deferred_by_owner",
     "branch": "agent/knave2-classic1",
     "pr": 494,
-    "head_sha": "861d4449227d4f850eb7f805a667cae2bbcd5346",
-    "review_ready": false
+    "head_sha": "d0d759c404bd4479f96b00a06362c279bc4c99ae",
+    "review_ready": false,
+    "tree_sha": "fabefeeb6201a8d2a4946cd22136407c83243872",
+    "checks": {
+      "node24_check": "pass",
+      "node": {
+        "executed": 358,
+        "passed": 358,
+        "failed": 0,
+        "skipped": 0
+      },
+      "build": "pass",
+      "browser": {
+        "workflows": 8,
+        "passed": 8,
+        "failed": 0,
+        "skipped": 0
+      },
+      "log_prefix": "agent-work/evidence/KNAVE2-CLASSIC1-d0d759c/",
+      "node_log_sha256": "f2c9e0c0bf923d88a09befaf324fa4bd13a0bd9a5c9a760de90b5080a5f04da4",
+      "browser_log_sha256": "9b4f4e3cbea9a29d0606b442dfd95b191f1adc1c3cc889888123c46d976ec0c2",
+      "public_ci": [
+        {
+          "id": 42483989535,
+          "status": "completed",
+          "conclusion": "skipped",
+          "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42483989535"
+        },
+        {
+          "id": 42483989642,
+          "status": "in_progress",
+          "conclusion": null,
+          "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42483989642"
+        }
+      ]
+    }
   }
 }
