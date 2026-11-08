@@ -5508,7 +5508,7 @@
       "implementation_authorized": false,
       "release_authorized": false,
       "priority": "first_L1_candidate",
-      "readiness": "proposed_requires_product_coverage_audit_and_bounded_analyst_spec",
+      "readiness": "classic_profile_scope_analysis_completed_standalone_prompts_deferred",
       "research_result_ref": "agent-work/research/runs/2026-11-06-KNAVE2-full-thematic-audit.json",
       "feedback_assessment": "Open UI/diagnostic feedback is outside this source-only run; future analyst must evaluate current feedback and show any UI proposal.",
       "ui_preview_pending": true,
@@ -6267,7 +6267,7 @@
       "product_proposal": {
         "task_id": "HX-BL-043",
         "stage_id": "KNAVE2-PLACE1",
-        "status": "proposed",
+        "status": "deferred_by_owner",
         "version": "KNAVE2-PLACE1-P1",
         "proposed_on": "2026-11-08",
         "title": "Наполнять выбранное место подсказками Knave 2e",
@@ -6349,12 +6349,14 @@
         "release_authorized": false,
         "next_role": "owner",
         "next_role_after_approval": "business_analyst",
-        "next_step": "Ожидается утверждение владельцем задачи HX-BL-043 в границах KNAVE2-PLACE1; затем аналитик готовит спецификацию и показывает компактный UI."
+        "next_step": "Ожидается утверждение владельцем задачи HX-BL-043 в границах KNAVE2-PLACE1; затем аналитик готовит спецификацию и показывает компактный UI.",
+        "deferred_reason": "Owner prioritizes a classic Knave2 map-generation profile before standalone prompts",
+        "owner_direction_ref": "agent-work/results/2026-11-08-analyst-KNAVE2-classic-brief.json"
       },
       "proposal_ref": "agent-work/proposals/2026-11-08-HX-BL-043-KNAVE2-PLACE1.json",
-      "recommended_priority": 1,
-      "next_role": "owner",
-      "next_step": "Ожидается утверждение владельцем задачи HX-BL-043 в границах KNAVE2-PLACE1; затем аналитик готовит спецификацию и показывает компактный UI.",
+      "recommended_priority": null,
+      "next_role": "business_analyst",
+      "next_step": "Уточнить объём классического профиля Knave2e по готовой выжимке правил и фактическому классическому режиму; прежний KNAVE2-PLACE1 отложен владельцем. Реализация/выпуск не начаты.",
       "research_components": [
         {
           "component_id": "ROOT-CORE-clearing-content-L1",
@@ -6569,7 +6571,18 @@
           "implementation_authorized": false,
           "release_authorized": false
         }
-      ]
+      ],
+      "owner_direction": {
+        "id": "owner-direction-2026-11-08-KNAVE2-classic-before-prompts",
+        "recorded_at": "2026-11-08T11:07:23.815Z",
+        "source": "Current task chat",
+        "quote": "Подсказки knave 2e рано. Нужен классический режим под knave2e.",
+        "scope": "Bounded summary requested: classic mode checkbox Knave2e affects new map generation. Defer standalone KNAVE2-PLACE1 prompts. No inferred product implementation or release approval.",
+        "task_id": "HX-BL-043",
+        "old_stage_id": "KNAVE2-PLACE1",
+        "next_direction": "classic_KNAVE2_map_profile",
+        "result_ref": "agent-work/results/2026-11-08-analyst-KNAVE2-classic-brief.json"
+      }
     },
     {
       "task_id": "HX-BL-044",
