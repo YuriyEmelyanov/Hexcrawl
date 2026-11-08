@@ -3799,7 +3799,7 @@
       "task_id": "HX-BL-041",
       "title": "Генераторы игрового материала Mythic Bastionland: мифы, теги и полный перечень категорий",
       "criterion_id": "S08-C04",
-      "status": "published_score_update_pending",
+      "status": "current_slice_published_score_completed",
       "recommended_priority": 2,
       "approval_ref": "owner-decision-2026-10-28-editor-and-MB-content-before-outreach",
       "execution_allowed": true,
@@ -3828,8 +3828,8 @@
         "HX-BL-023"
       ],
       "spec_status": "ready",
-      "next_role": "strategist_manager",
-      "next_step": "Стратег в ближайший свободный запуск сверяет точный releasea246fdf/tree98970e с renewedreviewfb3, применяет только подтверждённые переходы в current-score/history по модели1.2, проверяет50критериев/1000весов/G0–G4 и idempotency task+release+model+criterion. Null не превращать в0/G0. После учёта в том же запуске выбрать следующий конкретный разрешённый этап041 либо одно актуальное продуктовое предложение из существующего backlog; не заканчивать только пересчётом/общим ожиданием.",
+      "next_role": "owner",
+      "next_step": "Ожидается утверждение владельцем задачи HX-BL-043 в границах KNAVE2-PLACE1; затем аналитик готовит спецификацию и показывает компактный UI.",
       "handoff_ref": "agent-work/handoffs/2026-11-08-PR493-release-score.json",
       "potential_delta": null,
       "score_forecast": {
@@ -3904,11 +3904,11 @@
       "release_preview_status": "Exact same-tree desktop/narrow before/after shown and downloadable example provided; actual liveUI verified",
       "release_preview_responsible": "developer",
       "release_sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
-      "score_update_status": "pending",
-      "score_update_result_ref": "agent-work/results/2026-11-04-strategist-score-PR485-PR484.json",
-      "score_update_completed_at": "2026-11-04T01:03:06.681367+00:00",
+      "score_update_status": "completed",
+      "score_update_result_ref": "agent-work/results/2026-11-08T0400-strategist-score-PR493.json",
+      "score_update_completed_at": "2026-11-08T03:58:21.307Z",
       "score_awarded_points": 0,
-      "next_task_id": "HX-BL-041",
+      "next_task_id": "HX-BL-043",
       "full_task_complete": false,
       "previous_queue_routing": {
         "status": "approved_specification_ready",
@@ -4187,7 +4187,8 @@
       "publication_ref": "agent-work/evidence/release-PR493/publication.json",
       "release_result_ref": "agent-work/results/2026-11-08-developer-release-PR493.json",
       "score_update_responsible": "strategist_manager",
-      "score_update_handoff_ref": "agent-work/handoffs/2026-11-08-PR493-release-score.json"
+      "score_update_handoff_ref": "agent-work/handoffs/2026-11-08-PR493-release-score.json",
+      "score_update_release_sha": "a246fdf292963fd534a8203f569b9ca48b6292c7"
     },
     {
       "task_id": "HX-RSR-001",
@@ -6173,7 +6174,98 @@
         "product_support": "unverified",
         "implementation_authorized": false,
         "score_delta": null
-      }
+      },
+      "product_proposal": {
+        "task_id": "HX-BL-043",
+        "stage_id": "KNAVE2-PLACE1",
+        "status": "proposed",
+        "version": "KNAVE2-PLACE1-P1",
+        "proposed_on": "2026-11-08",
+        "title": "Наполнять выбранное место подсказками Knave 2e",
+        "problem": "Общие таблицы и редактор уже есть, но мастер классической карты ещё не получает для выбранного места подсказки Knave с сохранённым источником и своим описанием.",
+        "benefit": "Быстрее превратить отмеченное место в подготовленную локацию, сохраняя подсказки и авторскую интерпретацию.",
+        "primary_scenario": "create",
+        "layer": "L1",
+        "ranking_version": "three-scenario-ranks-1.4-create-evidence",
+        "cohort_version": "2026-11-06-ranking1.4-create-evidence",
+        "target_game": {
+          "id": "KNAVE2",
+          "edition": "Knave2e RU Torbin1.0 11.06.2024; stated2024 edition",
+          "create_rank": 3,
+          "overall_rank": 3,
+          "source_limit": "English wording/errata unverified"
+        },
+        "scope": [
+          "Три таблицы: Локации, Постройки, Свойства мест, печатные10–11/PDF9; ручной выбор или d100 для выбранного существующего места.",
+          "Сохранить исходные подсказки, таблицу/строку, выпавшее значение при броске и описание ведущего; сочетание разных подсказок остаётся его решением.",
+          "Переиспользовать действующие таблицы/теги/заметки/Undo, перед реализацией проверить пробелы на текущем published SHA.",
+          "Компактное действие в информации места; аналитик после утверждения покажет desktop/narrow предложение без третьего согласования."
+        ],
+        "out_of_scope": [
+          "Автоматическое изменение геометрии по слову Река, плотность POI и новая генерация карты",
+          "Все прочие таблицы Knave, полный адаптер игры, боевые/путевые процедуры",
+          "Публикация корпуса без конкретного разрешения и происхождения; расходы",
+          "Новые общие движки вместо пригодного существующего"
+        ],
+        "before_after": {
+          "before": "У выбранного места есть маркер/имя и авторская заметка; книжные подсказки мастер выбирает и переносит вручную.",
+          "after": "Мастер выбирает Локации/Постройки/Свойства, вручную указывает результат или бросает d100; видит сохранённые подсказки и записывает, например, своё «Заброшенное аббатство у брода».",
+          "example_kind": "Product behavior proposal; invented author description, not production UI."
+        },
+        "priority_reason": "Узкий L1 срез для игры create#3; адресует готовое исследованное правило и переиспользует выпущенный каркас. DND/PF2 имеют более высокий ранг, но их широкие профили требуют отдельного среза. У NATURE2 остаётся отдельная source-transfer граница; performance003 ждёт решения по приёмке и не допускает новых замеров автоматически; персонажи/кампанийное время шире L1.",
+        "estimate": "M: ограниченная спецификация, один PR и независимое ревью; не оценка расхода подписки.",
+        "dependencies": [
+          "Утверждение старта именно этого среза HX-BL-043",
+          "Проверить источник/права и режим поставки таблиц до публичного переноса; отсутствие разрешения не позволяет скрытый upload",
+          "Сверить текущее ядро таблиц и lifecycle на releasea246fdf; прежнее evidence не переносить автоматически"
+        ],
+        "acceptance": [
+          "Подсказка относится к выбранному существующему месту; source table/row и бросок при наличии сохраняются.",
+          "Ручной выбор не расходует RNG; открытие/загрузка не бросают; независимый переброс не изменяет другие поля.",
+          "Сочетание нескольких подсказок и авторский текст переживают save/load/Undo/Redo; старые карты безопасно открываются.",
+          "Печатная00 соответствует100; ссылки и неизвестные детали не превращаются в выдуманную геометрию/механики.",
+          "Фактический desktop/narrow UI показан на точном SHA; независимая проверка и score_assessment1.2 до отдельного выпуска."
+        ],
+        "criterion_ids": [
+          "S05-C02",
+          "S08-C04"
+        ],
+        "score_forecast": {
+          "model_version": "1.2",
+          "before_grade": null,
+          "before_points": null,
+          "expected_grade": null,
+          "expected_delta": null,
+          "status": "unknown; no promised whole-criterion transition",
+          "baseline_ref": "agent-work/score/current-score.json"
+        },
+        "canonical_rule_ids": [
+          "content.place_description",
+          "content.roll_table_resolution"
+        ],
+        "requirement_refs": [
+          "agent-work/market/rules/Knave-2e.json#KNAVE2-020-L1",
+          "agent-work/market/rules/Knave-2e.json#KNAVE2-070-L1",
+          "agent-work/market/rules/Knave-2e.json#KNAVE2-071-L1"
+        ],
+        "evidence_refs": [
+          "agent-work/research/requirements/KNAVE2-020-L1.md",
+          "agent-work/research/requirements/KNAVE2-table-reuse-v1.json",
+          "agent-work/research/requirements/L1-tagged-poi-lifecycle-v1.json"
+        ],
+        "feedback_assessment": {
+          "HX_FB_002": "Audit completed; reuse existing comparable tests; no recurring full test audit. No unrelated feedback bundled."
+        },
+        "implementation_authorized": false,
+        "release_authorized": false,
+        "next_role": "owner",
+        "next_role_after_approval": "business_analyst",
+        "next_step": "Ожидается утверждение владельцем задачи HX-BL-043 в границах KNAVE2-PLACE1; затем аналитик готовит спецификацию и показывает компактный UI."
+      },
+      "proposal_ref": "agent-work/proposals/2026-11-08-HX-BL-043-KNAVE2-PLACE1.json",
+      "recommended_priority": 1,
+      "next_role": "owner",
+      "next_step": "Ожидается утверждение владельцем задачи HX-BL-043 в границах KNAVE2-PLACE1; затем аналитик готовит спецификацию и показывает компактный UI."
     },
     {
       "task_id": "HX-BL-044",
@@ -12274,48 +12366,26 @@
     "checked_at": "2026-10-24T14:57:53.937368+00:00"
   },
   "last_score_update": {
-    "task_id": "HX-BL-023",
-    "stage_id": "E8-N-SEA",
-    "pr": 492,
-    "release_sha": "00190bb749a4fa5af57aac4bbffff808e8fe733f",
-    "reviewed_sha": "856fe0946d6050808fadfa040277db8c3ffc5aea",
-    "release_tree_sha": "9c8585ad4c5aafdec38d242a67ffc54fe7f4402c",
+    "task_id": "HX-BL-041",
+    "stage_id": "MC1-10-DATA",
+    "pr": 493,
+    "release_sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
+    "reviewed_sha": "fb3f9b8e82bb17468af5d3f2e59c266e5f6474b8",
+    "release_tree_sha": "98970eae3513ef14294dbfa4a9af21b6df6e62de",
     "model_version": "1.2",
     "status": "completed",
     "assessment_ref": {
-      "path": "agent-work/results/2026-11-06-reviewer-PR492-856fe09.json",
+      "path": "agent-work/results/2026-11-08-reviewer-PR493-fb3f9b8.json",
       "property": "score_assessment"
     },
-    "result_ref": "agent-work/results/2026-11-07T0300-strategist-score-PR492.json",
+    "result_ref": "agent-work/results/2026-11-08T0400-strategist-score-PR493.json",
     "criterion_ids": [
-      "S02-C02",
-      "S02-C03",
-      "S03-C01",
-      "S03-C04",
-      "S03-C05",
-      "S04-C04",
-      "S04-C05",
-      "S09-C04"
+      "S05-C02",
+      "S08-C04"
     ],
     "awarded_points": 0,
     "delta_points": null,
-    "applied_at": "2026-11-06T23:58:19Z",
-    "weight_metadata_errata": [
-      {
-        "criterion_id": "S03-C04",
-        "review_report_weight": 25,
-        "canonical_weight": 30,
-        "source": "agent-work/strategy/score-model.md",
-        "resolution": "Accounting uses canonical unchanged weight; original independent review retained verbatim. No grade/points transition to recalculate."
-      },
-      {
-        "criterion_id": "S04-C04",
-        "review_report_weight": 20,
-        "canonical_weight": 15,
-        "source": "agent-work/strategy/score-model.md",
-        "resolution": "Accounting uses canonical unchanged weight; original independent review retained verbatim. No grade/points transition to recalculate."
-      }
-    ]
+    "applied_at": "2026-11-08T03:58:21.307Z"
   },
   "feedback_register_path": "agent-work/feedback.json",
   "feedback_handoff": {
@@ -12342,6 +12412,18 @@
   "model_path": "agent-work/strategy/score-model.md",
   "model_activation_ref": "owner-decision-2026-10-26-activate-score-1.2",
   "next_product_recommendation": {
+    "task_id": "HX-BL-043",
+    "stage_id": "KNAVE2-PLACE1",
+    "status": "proposed",
+    "proposal_ref": "agent-work/proposals/2026-11-08-HX-BL-043-KNAVE2-PLACE1.json",
+    "next_role": "owner",
+    "next_role_after_approval": "business_analyst",
+    "next_step": "Ожидается утверждение владельцем задачи HX-BL-043 в границах KNAVE2-PLACE1; затем аналитик готовит спецификацию и показывает компактный UI.",
+    "execution_allowed": false,
+    "release_approved": false,
+    "score_impact": "unknown"
+  },
+  "previous_product_recommendation": {
     "task_id": "HX-BL-041",
     "stage_id": "post-release-score",
     "status": "mandatory_score_accounting_ready",
@@ -12351,22 +12433,6 @@
     "next_step": "Стратег в ближайший свободный запуск сверяет точный releasea246fdf/tree98970e с renewedreviewfb3, применяет только подтверждённые переходы в current-score/history по модели1.2, проверяет50критериев/1000весов/G0–G4 и idempotency task+release+model+criterion. Null не превращать в0/G0. После учёта в том же запуске выбрать следующий конкретный разрешённый этап041 либо одно актуальное продуктовое предложение из существующего backlog; не заканчивать только пересчётом/общим ожиданием.",
     "execution_allowed": true,
     "no_new_product_start_authorization": true
-  },
-  "previous_product_recommendation": {
-    "task_id": "HX-BL-041",
-    "stage_id": "MC1-10-DATA",
-    "status": "awaiting_exact_package_publication_decision",
-    "task_start_approved": true,
-    "next_role": "owner",
-    "next_role_after_decision": "programmer",
-    "head_sha": "3e00851a9247d35e535b4439e35f64b30f5b1dc8",
-    "tree_sha": "98970eae3513ef14294dbfa4a9af21b6df6e62de",
-    "result_ref": "agent-work/results/2026-11-08-programmer-HX-BL-041-MC1-10-DATA.json",
-    "handoff_ref": "agent-work/handoffs/2026-11-08-HX-BL-041-MC1-10-publication.json",
-    "next_step": "Ожидается решение владельца о публикации пакета HX-BL-041 / MC1-10-DATA на3e00851 (tree98970e), включая передачу текстов72карточек в публичный GitHub. После разрешения программист восстанавливает точный bundle, дополняет существующий PR493, подтверждает SHA/публичный CI/приёмку и публикует только разрешённый пакет; затем score_update_pending стратегу.",
-    "release_approved": false,
-    "source_transfer_approved": false,
-    "score_impact": "unknown/insufficient_evidence; no award"
   },
   "recommendation_history": [
     {
