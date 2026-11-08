@@ -1038,6 +1038,110 @@
       },
       "dependencies": [
         "scope_and_budget_approval"
+      ],
+      "research_components": [
+        {
+          "component_id": "MB-official-d12-terrain-L1",
+          "task_id": "HX-BL-008",
+          "title": "Выбирать размер группы одного типа местности по d12-профилю MB",
+          "status": "research_handoff_product_unverified",
+          "problem": "Примерd12теперь подтверждён RealmSheet; текущий d20+XdF не эквивалентен. Поддержка выбранного режима и поведение края unknown.",
+          "benefit": "Ведущий получает группы размера по выбранному MB-профилю без изменения других карт.",
+          "game_editions": [
+            "Official free Realm Sheets snapshot downloaded2026-11-08; internal version not stated; referenced Creating a Realm(p14) not collated to final book"
+          ],
+          "primary_scenario": "create",
+          "layer": "L1",
+          "requirement_refs": [
+            "agent-work/market/rules/MB-Realm-Sheets.json#MB-REALM-001-L1"
+          ],
+          "canonical_rule_ids": [
+            "map.extend_preserving_content",
+            "map.terrain_zones"
+          ],
+          "binding_refs": [
+            "agent-work/rules/game-bindings.json#MB-REALM-001-L1"
+          ],
+          "criterion_ids": [
+            "S03-C01",
+            "S03-C03",
+            "S01-C05"
+          ],
+          "scope": "Исследовательский компонент существующей proposed008. Источник/операции/приёмка, без технической спецификации. До реализации проверить существующие RNG/профили и отдельно выбрать обработку края.",
+          "dependencies": [
+            "Стратег выбирает объём; аналитик решает неизвестные параметры",
+            "Существующая генерация/сохранение и ограничения переиспользуются после проверки"
+          ],
+          "acceptance_checks": [
+            {
+              "id": "MB-REALM-001-L1-AC01",
+              "given": "Свободная область вмещает12гексов без конфликтов; выбран тип местности T и d12=1.",
+              "when": "Создать группу по выбранному профилю.",
+              "expected": "Получена группа из1гекса T; размер не заменён текущим d20+XdF."
+            },
+            {
+              "id": "MB-REALM-001-L1-AC02",
+              "given": "Та же достаточная свободная область; T, d12=7.",
+              "when": "Создать группу.",
+              "expected": "Получена связная группа из7гексов T; окружающая подготовленная карта не перегенерирована."
+            },
+            {
+              "id": "MB-REALM-001-L1-AC03",
+              "given": "Достаточная свободная область; T, d12=12.",
+              "when": "Создать группу.",
+              "expected": "Получена группа из12гексов T; все12 имеют выбранный тип."
+            },
+            {
+              "id": "MB-REALM-001-L1-AC04",
+              "given": "Вместо исхода d12 переданы0,13 либо7.5.",
+              "when": "Попытаться применить размер по этому профилю.",
+              "expected": "Ни один ввод не принят как корректный исход d12; группа не объявлена успешно созданной с некорректным размером."
+            },
+            {
+              "id": "MB-REALM-001-L1-AC05",
+              "given": "Выбран d12-профиль с равновероятными исходами; имеется нормированный случайный вход r.",
+              "when": "Для k=0…11 проверить равные интервалы [k/12,(k+1)/12) и их середины.",
+              "expected": "Каждый интервал соответствует ровно исходу k+1; середины дают1…12, двенадцать равных исходов. Значение r=1 не считается обычным входом [0,1). Это критерий продукта, не проверенный алгоритм."
+            },
+            {
+              "id": "MB-REALM-001-L1-AC06",
+              "given": "Цель12гексов; у края осталось только5допустимых мест, прочие заняты либо нарушают действующие ограничения.",
+              "when": "Разрешить конфликт размера и ограничений.",
+              "expected": "Существующие объекты не перезаписаны и запреты не обойдены; показано/сохранено, что цель12 не достигнута. Конкретное усечение/перенос/отказ остаётся решением аналитика, а не правилом источника."
+            },
+            {
+              "id": "MB-REALM-001-L1-AC07",
+              "given": "Ведущий выбрал другой профиль размера; готовая карта использует текущую процедуру.",
+              "when": "Открыть карту или добавить группу без выбора d12-профиля.",
+              "expected": "D12 не навязан существующим картам; прежние параметры и география сохранены."
+            },
+            {
+              "id": "MB-REALM-001-L1-AC08",
+              "given": "Группа7гексов T с выбранным профилем и известным исходом7 сохранена.",
+              "when": "Сохранить и снова открыть карту.",
+              "expected": "Сохранены7гексов T и известное происхождение размера; исход не переброшен автоматически."
+            }
+          ],
+          "expected_evidence": {
+            "current_runtime": "unknown",
+            "future_product": "Actual1/7/12,distribution,input/edge/save cases on exactimplementationSHA; no scorefromsource"
+          },
+          "score_delta": null,
+          "source_limitations": [
+            "PDF text extraction returned empty; selected clause read from rendered PDF1, not search snippet.",
+            "Only Wilderness first sentence extracted; other PDF1 content context only, PDF2 not read.",
+            "Final book/Quickstart version, edge handling and exact adjacency algorithm not verified.",
+            "No raw PDF/art/full tables published; only paraphrase and original acceptance examples.",
+            "Source discovery is not implementation evidence, score or audience measurement."
+          ],
+          "research_handoff_ref": "agent-work/research/requirements/MB-d12-terrain-L1.json",
+          "research_result_ref": "agent-work/research/runs/2026-11-08T1730-MB-d12-terrain.json",
+          "implementation_authorized": false,
+          "release_authorized": false
+        }
+      ],
+      "research_handoff_refs": [
+        "agent-work/research/requirements/MB-d12-terrain-L1.json"
       ]
     },
     {
