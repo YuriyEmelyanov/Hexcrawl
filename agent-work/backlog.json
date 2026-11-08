@@ -4369,7 +4369,8 @@
       ],
       "research_handoff_refs": [
         "agent-work/research/runs/2026-11-06-SD-core-thematic-audit.json",
-        "agent-work/research/requirements/WWN-hex-refinement-L1.json"
+        "agent-work/research/requirements/WWN-hex-refinement-L1.json",
+        "agent-work/research/requirements/OSE-map-scales-L1.json"
       ],
       "source_profile_handoffs": [
         {
@@ -4457,6 +4458,70 @@
             "Геометрическая конвенция шестимильного гекса не определена этим источником.",
             "Точный верхний предел/плотность POIи правила локальной неоднородности не заданы.",
             "Полная английская сверка и фактическая поддержка профиля наSHAне выполнены."
+          ],
+          "score_delta": null,
+          "implementation_authorized": false,
+          "release_authorized": false
+        },
+        {
+          "component_id": "OSE2026-map-scales-HX-BL-042",
+          "status": "research_handoff_product_unverified",
+          "research_handoff_ref": "agent-work/research/requirements/OSE-map-scales-L1.json",
+          "research_result_ref": "agent-work/research/runs/2026-11-08T1135-OSE-map-scales.json",
+          "source_id": "OSE-OFFICIAL-ORR-2026-EN",
+          "source_scope": "official2026onlineMapRegion Scale only",
+          "requirement_refs": [
+            "agent-work/market/rules/OSE-ORR-2026.json#OSE-ORR-2026-001-L1"
+          ],
+          "binding_refs": [
+            "agent-work/rules/game-bindings.json#OSE-ORR-2026-001-L1"
+          ],
+          "canonical_rule_ids": [
+            "map.physical_hex_scale"
+          ],
+          "acceptance_checks": [
+            {
+              "id": "OSE-ORR-2026-001-L1-AC01",
+              "given": "Ведущий выбрал обычный рекомендованный порядок: обзорная карта и более подробная карта областиK.",
+              "when": "Задать масштабы по выбранному профилюOSE.",
+              "expected": "На обзорной карте24миль/гекс, на картеK6миль/гекс; разные физические масштабы различимы, экранный zoomне подменяет их.",
+              "requirement_ref": "agent-work/market/rules/OSE-ORR-2026.json#OSE-ORR-2026-001-L1"
+            },
+            {
+              "id": "OSE-ORR-2026-001-L1-AC03",
+              "given": "Из источника известны24и6миль, конвенция измерения и схема вложения гексов не установлены.",
+              "when": "Подготовить описание двух масштабов.",
+              "expected": "Числа/единицы известны, геометрияunknown; ровно16дочернихгексов, конкретная обрезка или расстояния между вершинами не объявлены правилом.",
+              "requirement_ref": "agent-work/market/rules/OSE-ORR-2026.json#OSE-ORR-2026-001-L1"
+            },
+            {
+              "id": "OSE-ORR-2026-001-L1-AC04",
+              "given": "Ведущий уже использует карту10км/гекс и не выбрал типичный24→6профиль.",
+              "when": "Открыть подготовленную карту.",
+              "expected": "Сохранены10км; словоtypicallyне вызывает обязательную миграцию/перегенерацию существующей карты.",
+              "requirement_ref": "agent-work/market/rules/OSE-ORR-2026.json#OSE-ORR-2026-001-L1"
+            },
+            {
+              "id": "OSE-ORR-2026-001-L1-AC06",
+              "given": "Сохранены обзорная24и подробная6миль, соответствияA/Rи авторские описания.",
+              "when": "Сохранить, изменитьzoomи снова открыть карты.",
+              "expected": "Физические24/6и известные соответствия сохранены; zoomне изменил длины; новая география не брошена автоматически.",
+              "requirement_ref": "agent-work/market/rules/OSE-ORR-2026.json#OSE-ORR-2026-001-L1"
+            }
+          ],
+          "expected_evidence": {
+            "current_runtime": "unknown",
+            "future_product": "ExactSHA selected official2026profile examples"
+          },
+          "source_limitations": [
+            "Only one current online-reference scale clause extracted; full OSE thematic inventory not claimed.",
+            "No equivalence with all previous Classic/Advanced printings or full2026Referee's Book inferred.",
+            "No full source/book/literary tables copied; primary source paraphrase only.",
+            "Geometric hex measurement convention and coordinate subdivision not specified in selected clause.",
+            "Как именно измеряются24/6миль гекса, неизвестно.",
+            "Схема вложения, частично пересекающие границу объекты и синхронизация редактирования не заданы.",
+            "Сверка старого OSE SRD/Classic/AdvancedPDFи всей редакции2026не выполнялась.",
+            "Runtime/evidenceSHAпо этому профилюunknown."
           ],
           "score_delta": null,
           "implementation_authorized": false,
@@ -13182,7 +13247,76 @@
       "research_result_ref": "agent-work/research/runs/2026-11-08T0935-WWN-nested-maps.json",
       "readiness": "research_proposed_requires_strategist_selection_and_analyst_specification",
       "implementation_authorized": false,
-      "release_authorized": false
+      "release_authorized": false,
+      "research_components": [
+        {
+          "component_id": "OSE2026-map-scales-HX-BL-051",
+          "status": "research_handoff_product_unverified",
+          "research_handoff_ref": "agent-work/research/requirements/OSE-map-scales-L1.json",
+          "research_result_ref": "agent-work/research/runs/2026-11-08T1135-OSE-map-scales.json",
+          "source_id": "OSE-OFFICIAL-ORR-2026-EN",
+          "source_scope": "official2026onlineMapRegion Scale only",
+          "requirement_refs": [
+            "agent-work/market/rules/OSE-ORR-2026.json#OSE-ORR-2026-001-L1"
+          ],
+          "binding_refs": [
+            "agent-work/rules/game-bindings.json#OSE-ORR-2026-001-L1"
+          ],
+          "canonical_rule_ids": [
+            "map.nested_scales"
+          ],
+          "acceptance_checks": [
+            {
+              "id": "OSE-ORR-2026-001-L1-AC02",
+              "given": "Обзорная карта24миль содержит крупныеA/R, ведущий задал их соответствие в подробнойK.",
+              "when": "Добавить подробности областиK.",
+              "expected": "Сохранены заданные соответствияA/R; местные деталиKне заменяют географию всей обзорной карты.",
+              "requirement_ref": "agent-work/market/rules/OSE-ORR-2026.json#OSE-ORR-2026-001-L1"
+            },
+            {
+              "id": "OSE-ORR-2026-001-L1-AC03",
+              "given": "Из источника известны24и6миль, конвенция измерения и схема вложения гексов не установлены.",
+              "when": "Подготовить описание двух масштабов.",
+              "expected": "Числа/единицы известны, геометрияunknown; ровно16дочернихгексов, конкретная обрезка или расстояния между вершинами не объявлены правилом.",
+              "requirement_ref": "agent-work/market/rules/OSE-ORR-2026.json#OSE-ORR-2026-001-L1"
+            },
+            {
+              "id": "OSE-ORR-2026-001-L1-AC05",
+              "given": "НаKвыполнены локальные описательные правки, масштаб6миль; обзорная карта24мильне редактировалась.",
+              "when": "Сохранить локальные подробности.",
+              "expected": "ПравкиKсохранены; масштаб и крупныеA/Rобзорной карты не изменены автоматически. Двусторонняя синхронизация не выдана за правило книги.",
+              "requirement_ref": "agent-work/market/rules/OSE-ORR-2026.json#OSE-ORR-2026-001-L1"
+            },
+            {
+              "id": "OSE-ORR-2026-001-L1-AC06",
+              "given": "Сохранены обзорная24и подробная6миль, соответствияA/Rи авторские описания.",
+              "when": "Сохранить, изменитьzoomи снова открыть карты.",
+              "expected": "Физические24/6и известные соответствия сохранены; zoomне изменил длины; новая география не брошена автоматически.",
+              "requirement_ref": "agent-work/market/rules/OSE-ORR-2026.json#OSE-ORR-2026-001-L1"
+            }
+          ],
+          "expected_evidence": {
+            "current_runtime": "unknown",
+            "future_product": "ExactSHA selected official2026profile examples"
+          },
+          "source_limitations": [
+            "Only one current online-reference scale clause extracted; full OSE thematic inventory not claimed.",
+            "No equivalence with all previous Classic/Advanced printings or full2026Referee's Book inferred.",
+            "No full source/book/literary tables copied; primary source paraphrase only.",
+            "Geometric hex measurement convention and coordinate subdivision not specified in selected clause.",
+            "Как именно измеряются24/6миль гекса, неизвестно.",
+            "Схема вложения, частично пересекающие границу объекты и синхронизация редактирования не заданы.",
+            "Сверка старого OSE SRD/Classic/AdvancedPDFи всей редакции2026не выполнялась.",
+            "Runtime/evidenceSHAпо этому профилюunknown."
+          ],
+          "score_delta": null,
+          "implementation_authorized": false,
+          "release_authorized": false
+        }
+      ],
+      "research_handoff_refs": [
+        "agent-work/research/requirements/OSE-map-scales-L1.json"
+      ]
     }
   ],
   "last_review": {
