@@ -45799,6 +45799,447 @@
       "traceability_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-PC-002-L1",
       "evidence_ids": [],
       "author_project_key": "cairn-rpg/second-edition/wardens-guide/pointcrawls"
+    },
+    {
+      "id": "ROOT-CORE-001-L1",
+      "game_id": "ROOT",
+      "edition": "First printing2021; English primary book text on third-party HTML host",
+      "source_rule_id": "ROOT-CORE-001",
+      "source_page": [
+        225,
+        226
+      ],
+      "source_url": "https://studylib.net/doc/26230689/rootttprg-corebook-100721",
+      "layer": "L1",
+      "normative_kind": "procedure_within_Woodland_setup",
+      "scope": "Root default Woodland preparation; scope is clearings and their named paths, not all hexes/POIs or all games",
+      "source_requirement": "Предложить подготовить Лес из12полян; при выборе готового Леса оставить его расположение и содержимое, не запускать заново построение.",
+      "canonical_rule_ids": [
+        "content.site_density"
+      ],
+      "profiles": [
+        {
+          "rule_id": "content.site_density",
+          "parameters": {
+            "clearings_total": 12,
+            "unit": "clearings_not_hexes",
+            "existing_map_option": true
+          },
+          "exceptions": [
+            "Не означает12гексов,12регионов или запрет иных POI.",
+            "Поведение для готовой карты, не соответствующей12полянам, этим срезом не определено; не добавлять и не удалять молча."
+          ],
+          "conditions": [
+            "Root default Woodland preparation; scope is clearings and their named paths, not all hexes/POIs or all games"
+          ],
+          "profile_status": "unverified",
+          "verification_requirement": "Future exact-profile GM examples at evidence SHA; source reading not implementation."
+        }
+      ],
+      "coverage_status": "unverified",
+      "own_acceptance_check": "Given Выбрана новая карта стандартного Леса. When Завершить добавление полян. Expected Всего12полян; число гексов не выведено из этого правила.; Given Готовая карта содержит12названных полян и подготовленные связи. When Выбрать её для кампании. Expected Названия, положения и связи сохранены; новые броски карты не выполнены.",
+      "acceptance_cases": [
+        {
+          "id": "ROOT-CORE-001-L1-AC01",
+          "given": "Выбрана новая карта стандартного Леса.",
+          "when": "Завершить добавление полян.",
+          "expected": "Всего12полян; число гексов не выведено из этого правила."
+        },
+        {
+          "id": "ROOT-CORE-001-L1-AC02",
+          "given": "Готовая карта содержит12названных полян и подготовленные связи.",
+          "when": "Выбрать её для кампании.",
+          "expected": "Названия, положения и связи сохранены; новые броски карты не выполнены."
+        }
+      ],
+      "operational_requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-001-L1",
+      "traceability_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-001-L1",
+      "evidence_ids": [],
+      "author_project_key": "magpie-games:root-rpg:core2021"
+    },
+    {
+      "id": "ROOT-CORE-002-L1",
+      "game_id": "ROOT",
+      "edition": "First printing2021; English primary book text on third-party HTML host",
+      "source_rule_id": "ROOT-CORE-002",
+      "source_page": [
+        225,
+        226
+      ],
+      "source_url": "https://studylib.net/doc/26230689/rootttprg-corebook-100721",
+      "layer": "L1",
+      "normative_kind": "procedure_within_Woodland_setup",
+      "scope": "Root default Woodland preparation; scope is clearings and their named paths, not all hexes/POIs or all games",
+      "source_requirement": "Выбрать сообщество по броску; если уже подготовлены четыре такие поляны, перебросить этот результат. Сохранять речь о большинстве населения, не о единственном виде жителей.",
+      "canonical_rule_ids": [
+        "content.roll_table_resolution",
+        "content.place_description"
+      ],
+      "profiles": [
+        {
+          "rule_id": "content.roll_table_resolution",
+          "parameters": {
+            "die": "1d6",
+            "dominant_community_bands": [
+              {
+                "range": [
+                  1,
+                  2
+                ],
+                "community": "rabbit"
+              },
+              {
+                "range": [
+                  3,
+                  4
+                ],
+                "community": "mouse"
+              },
+              {
+                "range": [
+                  5,
+                  6
+                ],
+                "community": "fox"
+              }
+            ],
+            "maximum_per_dominant_community": 4,
+            "birds_dominant": false,
+            "non_dominant_species_still_present": true
+          },
+          "exceptions": [
+            "Равные четыре из каждого вида на завершённых12полянах — вывод из общего количества и лимитов, а не дополнительная таблица.",
+            "Политический контроль и присутствие фракций из вида большинства не выводятся."
+          ],
+          "conditions": [
+            "Root default Woodland preparation; scope is clearings and their named paths, not all hexes/POIs or all games"
+          ],
+          "profile_status": "unverified",
+          "verification_requirement": "Future exact-profile GM examples at evidence SHA; source reading not implementation."
+        },
+        {
+          "rule_id": "content.place_description",
+          "parameters": {
+            "die": "1d6",
+            "dominant_community_bands": [
+              {
+                "range": [
+                  1,
+                  2
+                ],
+                "community": "rabbit"
+              },
+              {
+                "range": [
+                  3,
+                  4
+                ],
+                "community": "mouse"
+              },
+              {
+                "range": [
+                  5,
+                  6
+                ],
+                "community": "fox"
+              }
+            ],
+            "maximum_per_dominant_community": 4,
+            "birds_dominant": false,
+            "non_dominant_species_still_present": true
+          },
+          "exceptions": [
+            "Равные четыре из каждого вида на завершённых12полянах — вывод из общего количества и лимитов, а не дополнительная таблица.",
+            "Политический контроль и присутствие фракций из вида большинства не выводятся."
+          ],
+          "conditions": [
+            "Root default Woodland preparation; scope is clearings and their named paths, not all hexes/POIs or all games"
+          ],
+          "profile_status": "unverified",
+          "verification_requirement": "Future exact-profile GM examples at evidence SHA; source reading not implementation."
+        }
+      ],
+      "coverage_status": "unverified",
+      "own_acceptance_check": "Given Кроличьих полян ещё нет; заданd6=2. When Выбрать сообщество. Expected Преобладают кролики; существование мышей/лис на поляне не отрицается.; Given Есть4кроличьи поляны; последовательностьd6=1,5; лисьих меньше4. When Выбрать сообщество новой поляны. Expected Первый результат переброшен; в новой поляне преобладают лисы, пятая кроличья не добавлена.; Given Завершены12полян с тремя допустимыми сообществами и лимитом4. When Проверить итоговую подготовку. Expected У каждого сообщества4поляны; это проверка следствия ограничений.",
+      "acceptance_cases": [
+        {
+          "id": "ROOT-CORE-002-L1-AC01",
+          "given": "Кроличьих полян ещё нет; заданd6=2.",
+          "when": "Выбрать сообщество.",
+          "expected": "Преобладают кролики; существование мышей/лис на поляне не отрицается."
+        },
+        {
+          "id": "ROOT-CORE-002-L1-AC02",
+          "given": "Есть4кроличьи поляны; последовательностьd6=1,5; лисьих меньше4.",
+          "when": "Выбрать сообщество новой поляны.",
+          "expected": "Первый результат переброшен; в новой поляне преобладают лисы, пятая кроличья не добавлена."
+        },
+        {
+          "id": "ROOT-CORE-002-L1-AC03",
+          "given": "Завершены12полян с тремя допустимыми сообществами и лимитом4.",
+          "when": "Проверить итоговую подготовку.",
+          "expected": "У каждого сообщества4поляны; это проверка следствия ограничений."
+        }
+      ],
+      "operational_requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-002-L1",
+      "traceability_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-002-L1",
+      "evidence_ids": [],
+      "author_project_key": "magpie-games:root-rpg:core2021"
+    },
+    {
+      "id": "ROOT-CORE-003-L1",
+      "game_id": "ROOT",
+      "edition": "First printing2021; English primary book text on third-party HTML host",
+      "source_rule_id": "ROOT-CORE-003",
+      "source_page": [
+        225,
+        226
+      ],
+      "source_url": "https://studylib.net/doc/26230689/rootttprg-corebook-100721",
+      "layer": "L1",
+      "normative_kind": "procedure_within_Woodland_setup",
+      "scope": "Root default Woodland preparation; scope is clearings and their named paths, not all hexes/POIs or all games",
+      "source_requirement": "Определить общее число путей; учесть уже подведённые пути и добавить только оставшиеся. По достижении12полян дать ведущему убрать незавершённые линии либо оставить их отметками, без новой поляны ради каждой линии.",
+      "canonical_rule_ids": [
+        "content.roll_table_resolution",
+        "map.routes_and_barriers"
+      ],
+      "profiles": [
+        {
+          "rule_id": "content.roll_table_resolution",
+          "parameters": {
+            "path_count_by_2d6": [
+              {
+                "range": [
+                  2,
+                  2
+                ],
+                "count": 1
+              },
+              {
+                "range": [
+                  3,
+                  4
+                ],
+                "count": 2
+              },
+              {
+                "range": [
+                  5,
+                  9
+                ],
+                "count": 3
+              },
+              {
+                "range": [
+                  10,
+                  11
+                ],
+                "count": 4
+              },
+              {
+                "range": [
+                  12,
+                  12
+                ],
+                "count": 5
+              }
+            ],
+            "count_incoming_existing_path": true,
+            "stop_new_clearings_at": 12,
+            "unfinished_path_options": [
+              "erase",
+              "retain_as_unfinished_or_lost_route"
+            ],
+            "transcription": "text-only; last12/5row displaced in HTML but returned explicitly at8845–8846; visual PDF collation unknown"
+          },
+          "exceptions": [
+            "Путь здесь — доступная поддерживаемая дорога к соседней поляне; не всякая линия движения по гексам.",
+            "Связность предлагается поддерживать где возможно; численный алгоритм укладки не задан.",
+            "После удаления незавершённых линий итоговое число реально соединённых дорог может быть меньше выпавшего плана."
+          ],
+          "conditions": [
+            "Root default Woodland preparation; scope is clearings and their named paths, not all hexes/POIs or all games"
+          ],
+          "profile_status": "unverified",
+          "verification_requirement": "Future exact-profile GM examples at evidence SHA; source reading not implementation."
+        },
+        {
+          "rule_id": "map.routes_and_barriers",
+          "parameters": {
+            "path_count_by_2d6": [
+              {
+                "range": [
+                  2,
+                  2
+                ],
+                "count": 1
+              },
+              {
+                "range": [
+                  3,
+                  4
+                ],
+                "count": 2
+              },
+              {
+                "range": [
+                  5,
+                  9
+                ],
+                "count": 3
+              },
+              {
+                "range": [
+                  10,
+                  11
+                ],
+                "count": 4
+              },
+              {
+                "range": [
+                  12,
+                  12
+                ],
+                "count": 5
+              }
+            ],
+            "count_incoming_existing_path": true,
+            "stop_new_clearings_at": 12,
+            "unfinished_path_options": [
+              "erase",
+              "retain_as_unfinished_or_lost_route"
+            ],
+            "transcription": "text-only; last12/5row displaced in HTML but returned explicitly at8845–8846; visual PDF collation unknown"
+          },
+          "exceptions": [
+            "Путь здесь — доступная поддерживаемая дорога к соседней поляне; не всякая линия движения по гексам.",
+            "Связность предлагается поддерживать где возможно; численный алгоритм укладки не задан.",
+            "После удаления незавершённых линий итоговое число реально соединённых дорог может быть меньше выпавшего плана."
+          ],
+          "conditions": [
+            "Root default Woodland preparation; scope is clearings and their named paths, not all hexes/POIs or all games"
+          ],
+          "profile_status": "unverified",
+          "verification_requirement": "Future exact-profile GM examples at evidence SHA; source reading not implementation."
+        }
+      ],
+      "coverage_status": "unverified",
+      "own_acceptance_check": "Given К новой поляне уже подходит1путь; сумма2d6=7. When Наметить остальные пути. Expected Общий план3; добавляются2линии, не3.; Given К новой поляне подходит1путь; сумма2d6=2. When Наметить остальные пути. Expected Общий план1; дополнительных линий0.; Given На карте12полян и2незавершённые линии; ведущий выбирает оставить отметки. When Завершить построение. Expected Полян остаётся12; линии отмечены незавершёнными, не выданы за доступные дороги к новым полянам.; Given Тот же Лес, ведущий выбирает убрать незавершённые линии. When Завершить подготовку. Expected Линии убраны; число и содержимое12полян сохранены.",
+      "acceptance_cases": [
+        {
+          "id": "ROOT-CORE-003-L1-AC01",
+          "given": "К новой поляне уже подходит1путь; сумма2d6=7.",
+          "when": "Наметить остальные пути.",
+          "expected": "Общий план3; добавляются2линии, не3."
+        },
+        {
+          "id": "ROOT-CORE-003-L1-AC02",
+          "given": "К новой поляне подходит1путь; сумма2d6=2.",
+          "when": "Наметить остальные пути.",
+          "expected": "Общий план1; дополнительных линий0."
+        },
+        {
+          "id": "ROOT-CORE-003-L1-AC03",
+          "given": "На карте12полян и2незавершённые линии; ведущий выбирает оставить отметки.",
+          "when": "Завершить построение.",
+          "expected": "Полян остаётся12; линии отмечены незавершёнными, не выданы за доступные дороги к новым полянам."
+        },
+        {
+          "id": "ROOT-CORE-003-L1-AC04",
+          "given": "Тот же Лес, ведущий выбирает убрать незавершённые линии.",
+          "when": "Завершить подготовку.",
+          "expected": "Линии убраны; число и содержимое12полян сохранены."
+        }
+      ],
+      "operational_requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-003-L1",
+      "traceability_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-003-L1",
+      "evidence_ids": [],
+      "author_project_key": "magpie-games:root-rpg:core2021"
+    },
+    {
+      "id": "ROOT-CORE-004-L1",
+      "game_id": "ROOT",
+      "edition": "First printing2021; English primary book text on third-party HTML host",
+      "source_rule_id": "ROOT-CORE-004",
+      "source_page": [
+        225,
+        226,
+        227
+      ],
+      "source_url": "https://studylib.net/doc/26230689/rootttprg-corebook-100721",
+      "layer": "L1",
+      "normative_kind": "procedure_within_Woodland_setup",
+      "scope": "Root default Woodland preparation; scope is clearings and their named paths, not all hexes/POIs or all games",
+      "source_requirement": "Получить имя по выбранному порядку кубов; при повторе предложить обратное чтение или новый бросок, не принимая уже занятое имя.",
+      "canonical_rule_ids": [
+        "content.roll_table_resolution",
+        "content.place_description"
+      ],
+      "profiles": [
+        {
+          "rule_id": "content.roll_table_resolution",
+          "parameters": {
+            "dice": "ordered2d6_not_sum",
+            "unique_clearing_names": true,
+            "duplicate_options": [
+              "reverse_dice_order",
+              "reroll"
+            ],
+            "full_name_table": "not republished; source table and worked examples referenced"
+          },
+          "exceptions": [
+            "В отличие от числа путей кубики имени не складываются.",
+            "Полная литературная таблица здесь не копируется; известные клетки проверены по примеру книги."
+          ],
+          "conditions": [
+            "Root default Woodland preparation; scope is clearings and their named paths, not all hexes/POIs or all games"
+          ],
+          "profile_status": "unverified",
+          "verification_requirement": "Future exact-profile GM examples at evidence SHA; source reading not implementation."
+        },
+        {
+          "rule_id": "content.place_description",
+          "parameters": {
+            "dice": "ordered2d6_not_sum",
+            "unique_clearing_names": true,
+            "duplicate_options": [
+              "reverse_dice_order",
+              "reroll"
+            ],
+            "full_name_table": "not republished; source table and worked examples referenced"
+          },
+          "exceptions": [
+            "В отличие от числа путей кубики имени не складываются.",
+            "Полная литературная таблица здесь не копируется; известные клетки проверены по примеру книги."
+          ],
+          "conditions": [
+            "Root default Woodland preparation; scope is clearings and their named paths, not all hexes/POIs or all games"
+          ],
+          "profile_status": "unverified",
+          "verification_requirement": "Future exact-profile GM examples at evidence SHA; source reading not implementation."
+        }
+      ],
+      "coverage_status": "unverified",
+      "own_acceptance_check": "Given ИмяSundell уже занято; задана пара2,6; обратное имяOpensky Haven свободно. When Ведущий выбирает обратное чтение. Expected ВыбраноOpensky Haven по6,2; занятоеSundell не повторено.; Given Оба имени для исходного и обратного порядка уже заняты. When Ведущий выбирает переброс и получает свободное имя. Expected Используется новый свободный результат; старые названия не изменены.",
+      "acceptance_cases": [
+        {
+          "id": "ROOT-CORE-004-L1-AC01",
+          "given": "ИмяSundell уже занято; задана пара2,6; обратное имяOpensky Haven свободно.",
+          "when": "Ведущий выбирает обратное чтение.",
+          "expected": "ВыбраноOpensky Haven по6,2; занятоеSundell не повторено."
+        },
+        {
+          "id": "ROOT-CORE-004-L1-AC02",
+          "given": "Оба имени для исходного и обратного порядка уже заняты.",
+          "when": "Ведущий выбирает переброс и получает свободное имя.",
+          "expected": "Используется новый свободный результат; старые названия не изменены."
+        }
+      ],
+      "operational_requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-004-L1",
+      "traceability_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-004-L1",
+      "evidence_ids": [],
+      "author_project_key": "magpie-games:root-rpg:core2021"
     }
   ],
   "other_games_status": "DND5 DMG2014 and bounded PF2 Remaster now analysed; other games unverified. Shared IDs do not establish parameter equivalence."
