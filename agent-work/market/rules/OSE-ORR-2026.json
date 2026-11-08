@@ -3,7 +3,7 @@
   "game_id": "OSE",
   "source_id": "OSE-OFFICIAL-ORR-2026-EN",
   "date": "2026-11-08",
-  "status": "partial_official2026_online_scale_and_realms_profiles_product_unverified",
+  "status": "partial_official2026_scale_realms_base_sites_product_unverified",
   "source": {
     "id": "OSE-OFFICIAL-ORR-2026-EN",
     "title": "OSE Online Rules Reference — Designing a Wilderness",
@@ -12,11 +12,11 @@
     "publisher": "Necrotic Gnome",
     "language": "en",
     "url": "https://www.oldschoolessentials.necroticgnome.com/rules/doku.php?id=running_adventures:designing_a_wilderness",
-    "locator": "Scale HTML256; human/intelligent nonhuman realms HTML257–265",
+    "locator": "HTML256–265 and267–273; Scale, human/intelligent realms, base town and dungeons",
     "printed_pages": null,
     "pdf_pages": null,
     "page_last_modified": "2026/08/02 18:03",
-    "accessed_at": "2026-11-08T12:33:54.312Z",
+    "accessed_at": "2026-11-08T13:29:16.086Z",
     "access_level": "public_official_primary_text",
     "author_project_key": "necrotic-gnome:gavin-norman:ose:online-reference2026",
     "raw_file_hash": null,
@@ -26,7 +26,7 @@
       "basis": "Publisher links current reference; home says moved from2019platform to re-edited2026text; reference basic/BX-derived, examples/full books excluded."
     },
     "limitations": [
-      "Extracted Scale plus human/intelligent nonhuman realms only; optional monster clause266 and remaining page clauses not extracted; not full OSE thematic inventory.",
+      "Extracted Scale, intelligent realms and base town/dungeon placement only; major terrain, optional monster266, regional encounters and crossreferences not extracted.",
       "No equivalence with all previous Classic/Advanced printings or full2026Referee's Book inferred.",
       "No full source/book/literary tables copied; primary source paraphrase only.",
       "Geometric hex measurement convention and coordinate subdivision not specified in selected clause."
@@ -452,20 +452,271 @@
           "reason": "В этом срезе нет разрешения охоты, набегов или боевых встреч."
         }
       ]
+    },
+    {
+      "id": "OSE-ORR-2026-004",
+      "title": "Базовый город как начальное место кампании",
+      "rule": {
+        "source_id": "OSE-OFFICIAL-ORR-2026-EN",
+        "url": "https://www.oldschoolessentials.necroticgnome.com/rules/doku.php?id=running_adventures:designing_a_wilderness",
+        "printed_page": null,
+        "pdf_page": null,
+        "section": "5. Place the Base Town",
+        "locator": "HTML267–269; reference to Designing a Base Town not followed",
+        "paraphrase": "Разместить базовый город, откуда начинается игра; обычное место — близ реки или дороги около центра карты.",
+        "parameters": {
+          "role": "base_town_where_play_begins",
+          "typical_location": "near_river_or_road_near_map_centre",
+          "hard_distance": null
+        },
+        "normative_kind": "preparation_instruction_with_typical_location"
+      },
+      "comparison": {
+        "canonical_reuse": [
+          "content.place_description"
+        ],
+        "new_generic_rule": false,
+        "rationale": "Размещение/описание мест и смысловая связь с базой уже общие операции; OSE задаёт только роль и качественные условия. Маршрут/расстояние L2 не наследуются по аналогии.",
+        "parameter_equivalence": "Source-specific qualitative profile, no inherited evidence"
+      },
+      "requirements": [
+        {
+          "id": "OSE-ORR-2026-004-L1",
+          "layer": "L1",
+          "requirement": "Отметить выбранный город как базовое место начала кампании, сохранив его положение и описание контекста. Предлагать близость к реке или дороге и центру как обычный выбор; сохранить сознательное отступление ведущего.",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "evidence_sha": null,
+          "canonical_rule_ids": [
+            "content.place_description"
+          ],
+          "criterion_ids": [
+            "S05-C01",
+            "S05-C02"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#OSE-ORR-2026-004-L1",
+          "operational_requirement": {
+            "source_rule_ref": "agent-work/market/rules/OSE-ORR-2026.json#OSE-ORR-2026-004",
+            "normative_kind": "preparation_instruction_with_typical_location",
+            "applicability": "OSE official2026 online basic/BX-derived source only; not all print editions",
+            "layer": "L1",
+            "trigger_or_user_action": "Ведущий выбирает существующий город или размещает новый как базовый город кампании.",
+            "inputs_and_units": {
+              "town": "выбранное место и название",
+              "location": "выбранное положение на карте",
+              "geographic_context": "имеющаяся река либо дорога и положение относительно центра; качественные признаки, порог расстояния не задан"
+            },
+            "product_operation": "Отметить выбранный город как базовое место начала кампании, сохранив его положение и описание контекста. Предлагать близость к реке или дороге и центру как обычный выбор; сохранить сознательное отступление ведущего.",
+            "expected_output": "На карте сохранён выбранный базовый город и его роль начала кампании; карта не перегенерирована.",
+            "constraints_and_exceptions": [
+              "Типичное размещение не означает обязательное условие или запрет иного места.",
+              "Река ИЛИ дорога: не требовать оба объекта одновременно.",
+              "Источник не задаёт порог близости и алгоритм поиска центра.",
+              "Начальное место при подготовке L1 не является автоматически маркером партии или начатой сессией L2.",
+              "Раздел Designing a Base Town содержит отдельную зависимость; состав служб/населения не разобран."
+            ],
+            "acceptance_cases": [
+              {
+                "id": "OSE-ORR-2026-004-L1-AC01",
+                "given": "Город T выбран у дороги R около центра; рядом нет реки.",
+                "when": "Назначить T базовым городом.",
+                "expected": "T сохранён на выбранном месте с ролью начала кампании; отсутствие реки не требует её создать."
+              },
+              {
+                "id": "OSE-ORR-2026-004-L1-AC02",
+                "given": "T выбран у реки V около центра, дороги нет.",
+                "when": "Назначить T базовым городом.",
+                "expected": "T и связь с V сохранены; дорога не добавлена как обязательная."
+              },
+              {
+                "id": "OSE-ORR-2026-004-L1-AC03",
+                "given": "Ведущий выбрал T на краю карты вдали от реки и дороги.",
+                "when": "Сохранить сознательное отступление от типичного размещения.",
+                "expected": "T остаётся выбранным базовым городом; принудительного переноса/перегенерации нет."
+              },
+              {
+                "id": "OSE-ORR-2026-004-L1-AC04",
+                "given": "Город T уже имеет название и описание; остальные места подготовлены.",
+                "when": "Добавить T роль базового города.",
+                "expected": "Название, описание, положение T и остальные места сохранены; отдельная копия города не нужна."
+              },
+              {
+                "id": "OSE-ORR-2026-004-L1-AC05",
+                "given": "Роль T и географический контекст сохранены; партия ещё не размещена.",
+                "when": "Сохранить и снова открыть карту.",
+                "expected": "Роль и контекст T сохранены; маркер партии, дата сессии и случайные услуги города автоматически не придуманы."
+              }
+            ],
+            "source_vs_product_interpretation": "Источник описывает размещение мест и качественные рекомендации. Роль начального места, адресное редактирование, сохранение и примеры — перевод на язык генератора; не техническая спецификация. Численная модель движения не извлечена.",
+            "canonical_rule_refs": [
+              "content.place_description"
+            ],
+            "unresolved_parameters": [
+              "Численные расстояния до реки/дороги и граница центральной области.",
+              "Содержимое базового города из отдельной страницы.",
+              "Несколько альтернативных стартов и перенос активной партии этим срезом не определены."
+            ]
+          },
+          "gap_task_ids": [
+            "HX-BL-052"
+          ],
+          "delivery": "research_handoff_not_specification"
+        },
+        {
+          "layer": "L2",
+          "status": "not_extracted_dependency",
+          "reason": "Качественный день пути не задаёт численный расчёт движения; проверять отдельно до любых вычислений."
+        },
+        {
+          "layer": "L3",
+          "status": "not_applicable",
+          "reason": "Размещение не разрешает нападения/встречи."
+        }
+      ]
+    },
+    {
+      "id": "OSE-ORR-2026-005",
+      "title": "Подземелья, связанные с базовым городом",
+      "rule": {
+        "source_id": "OSE-OFFICIAL-ORR-2026-EN",
+        "url": "https://www.oldschoolessentials.necroticgnome.com/rules/doku.php?id=running_adventures:designing_a_wilderness",
+        "printed_page": null,
+        "pdf_page": null,
+        "section": "6. Place Dungeons",
+        "locator": "HTML270–273; vicinity and Distance recommendation",
+        "paraphrase": "Разместить одно или несколько подземелий около базы, обычно примерно в дне пути; замысел — удобный доступ без чрезмерной близости к городу.",
+        "parameters": {
+          "minimum_sites": 1,
+          "typical_distance": "around_a_days_journey",
+          "distance_miles": null,
+          "distance_hexes": null,
+          "intent": "convenient_access_without_monsters_plaguing_town"
+        },
+        "normative_kind": "preparation_instruction_with_normal_distance_guidance"
+      },
+      "comparison": {
+        "canonical_reuse": [
+          "content.place_description",
+          "content.site_links"
+        ],
+        "new_generic_rule": false,
+        "rationale": "Размещение/описание мест и смысловая связь с базой уже общие операции; OSE задаёт только роль и качественные условия. Маршрут/расстояние L2 не наследуются по аналогии.",
+        "parameter_equivalence": "Source-specific qualitative profile, no inherited evidence"
+      },
+      "requirements": [
+        {
+          "id": "OSE-ORR-2026-005-L1",
+          "layer": "L1",
+          "requirement": "Разместить выбранные подземелья, связать каждое с базовым городом и сохранить описание удобства доступа/удалённости. Ориентир «около дня пути» оставить качественным, пока отдельным проверенным профилем не заданы условия движения.",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "evidence_sha": null,
+          "canonical_rule_ids": [
+            "content.place_description",
+            "content.site_links"
+          ],
+          "criterion_ids": [
+            "S05-C01",
+            "S05-C02"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#OSE-ORR-2026-005-L1",
+          "operational_requirement": {
+            "source_rule_ref": "agent-work/market/rules/OSE-ORR-2026.json#OSE-ORR-2026-005",
+            "normative_kind": "preparation_instruction_with_normal_distance_guidance",
+            "applicability": "OSE official2026 online basic/BX-derived source only; not all print editions",
+            "layer": "L1",
+            "trigger_or_user_action": "Ведущий размещает одно или несколько подземелий в окрестностях выбранного базового города.",
+            "inputs_and_units": {
+              "base_town": "выбранный базовый город",
+              "sites": "одно или несколько размещаемых подземелий",
+              "positions": "положения, выбранные ведущим",
+              "proximity": "качественная связь с базой: обычно около дня пути; мили/гексы и темп не заданы"
+            },
+            "product_operation": "Разместить выбранные подземелья, связать каждое с базовым городом и сохранить описание удобства доступа/удалённости. Ориентир «около дня пути» оставить качественным, пока отдельным проверенным профилем не заданы условия движения.",
+            "expected_output": "Сохранены подземелья, их положения, связь с базовым городом и качественный ориентир близости; не выведено ложное точное расстояние.",
+            "constraints_and_exceptions": [
+              "Норма около дня пути не равна жёсткому условию ровно один день.",
+              "Не выводить 24 мили или 4 гекса из слова day либо ранее найденного масштаба6миль/гекс.",
+              "Не создавать дорогу из самой смысловой связи с базовым городом.",
+              "Цель не слишком близко к городу — качественный замысел, а не автоматическое доказательство отсутствия нападений.",
+              "Бой, патрули, ежедневное движение и расчёт времени не входят в этот L1-срез.",
+              "Правки и сохранение связи — продуктовый перевод, технический способ не задан."
+            ],
+            "acceptance_cases": [
+              {
+                "id": "OSE-ORR-2026-005-L1-AC01",
+                "given": "База T; ведущий разместил D и указал «около дня пути от T».",
+                "when": "Подготовить одно подземелье.",
+                "expected": "D сохранено в выбранной позиции со связью с T и этой качественной пометкой; мили/гексы остаются unknown."
+              },
+              {
+                "id": "OSE-ORR-2026-005-L1-AC02",
+                "given": "База T и два выбранных подземелья D1/D2 в разных местах.",
+                "when": "Подготовить несколько подземелий.",
+                "expected": "Оба D1/D2 сохранены, каждое связано с T; требование не сведено к ровно одному объекту."
+              },
+              {
+                "id": "OSE-ORR-2026-005-L1-AC03",
+                "given": "Есть карта6миль/гекс; про скорость и путь данных нет.",
+                "when": "Добавить ориентир «около дня пути» для D.",
+                "expected": "Не назначены автоматически4гекса,24мили или иной точный радиус; геометрическая удалённость остаётся выбранной ведущим."
+              },
+              {
+                "id": "OSE-ORR-2026-005-L1-AC04",
+                "given": "D связано с T; ведущий изменил описание удалённости на «два дня через болото».",
+                "when": "Сохранить осознанное отступление от обычного ориентира.",
+                "expected": "Новое описание сохранено; T и D не перемещены автоматически, дорога не создана."
+              },
+              {
+                "id": "OSE-ORR-2026-005-L1-AC05",
+                "given": "Сохранены T, D1/D2 и их связи; существующие дороги не редактировались.",
+                "when": "Снова открыть карту.",
+                "expected": "Положения, связи и пометки сохранены; случайные подземелья/дороги не добавлены, нападения на T не симулированы."
+              }
+            ],
+            "source_vs_product_interpretation": "Источник описывает размещение мест и качественные рекомендации. Роль начального места, адресное редактирование, сохранение и примеры — перевод на язык генератора; не техническая спецификация. Численная модель движения не извлечена.",
+            "canonical_rule_refs": [
+              "content.place_description",
+              "content.site_links"
+            ],
+            "unresolved_parameters": [
+              "Условия движения/скорость/длительность дня и численный допуск around.",
+              "Пространственный порог слишком близко и критерий угрозы городу.",
+              "Геометрия пути, проходимость и необходимость дорог для каждого подземелья."
+            ]
+          },
+          "gap_task_ids": [
+            "HX-BL-052"
+          ],
+          "delivery": "research_handoff_not_specification"
+        },
+        {
+          "layer": "L2",
+          "status": "not_extracted_dependency",
+          "reason": "Качественный день пути не задаёт численный расчёт движения; проверять отдельно до любых вычислений."
+        },
+        {
+          "layer": "L3",
+          "status": "not_applicable",
+          "reason": "Размещение не разрешает нападения/встречи."
+        }
+      ]
     }
   ],
   "comparison_summary": {
-    "source_rules": 3,
-    "L1_requirements": 3,
-    "acceptance_examples": 16,
-    "canonical_used": 4,
+    "source_rules": 5,
+    "L1_requirements": 5,
+    "acceptance_examples": 26,
+    "canonical_used": 5,
     "new_canonical_rules": 0
   },
   "completeness": {
     "status": "partial_checkpoint",
     "full_game_read": false,
-    "reviewed": "Whole Designing a Wilderness page read; extracted Scale256 and human/intelligent nonhuman realms257–265 only",
-    "context_only": "Step1, step2 major terrain, optional monster clause266, steps5–7 not extracted; no crossreferences followed",
+    "reviewed": "Designing a Wilderness page read; Scale256, human/intelligent realms257–265, base town/dungeons267–273 extracted",
+    "context_only": "Step1, major terrain255, optional monsters266 and encounter tables274–277 not extracted; no crossreferences followed",
     "unreviewed": "Full reference/full books and other dependencies",
     "ledger_ref": "agent-work/market/rules/OSE-ORR-2026-coverage-ledger.json"
   },
@@ -474,7 +725,8 @@
     "Схема вложения, частично пересекающие границу объекты и синхронизация редактирования не заданы.",
     "Сверка старого OSE SRD/Classic/AdvancedPDFи всей редакции2026не выполнялась.",
     "Runtime/evidenceSHAпо этому профилюunknown.",
-    "Владения: перекрытия/границы, численные пороги и распространение власти на отдельные места не определены; optional monsters266 пока не разобраны."
+    "Владения: перекрытия/границы, численные пороги и распространение власти на отдельные места не определены; optional monsters266 пока не разобраны.",
+    "Base town/dungeons: близость к центру/дороге/реке, день пути и слишком близко не нормированы числами; Designing a Base Town не прочитан."
   ],
   "shared_rules": {
     "registry": "agent-work/rules/common-rules.json",
