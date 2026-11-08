@@ -1,0 +1,204 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-08T1830-MB-barriers",
+  "delivery": "research_handoff_not_specification",
+  "source": {
+    "id": "MB-OFFICIAL-REALM-SHEETS-SNAPSHOT-20261108",
+    "title": "Mythic Bastionland Realm Sheets.pdf",
+    "edition": "Official free Realm Sheets snapshot downloaded2026-11-08; internal version not stated; referenced Creating a Realm(p14) not collated to final book",
+    "author": "Chris McDowall / Bastionland Press; sheet artwork attribution not verified",
+    "publisher": "Bastionland Press",
+    "language": "en",
+    "url": "https://chrismcdee.itch.io/mythic-bastionland",
+    "upload_id": "13049889",
+    "accessed_at": "2026-11-08T18:33:14.341Z",
+    "access_level": "full_text_visual_primary_pdf",
+    "download_route": "Publisher itch.io Download demo file; public free download, no purchase/authenticated account",
+    "size_bytes": 6878626,
+    "pdf_pages": 2,
+    "sha256": "6082a760c7db9b81baf0180cae585feb35826b24e5feb839434c4ff33deb924d",
+    "pdf_metadata_date": "2024-11-07; not asserted publication date",
+    "locator": "PDF1 rightcolumn Creating a Realm(p14),WILDERNESS second paragraph: Barriers",
+    "author_project_key": "chris-mcdowall:bastionland:mythic-bastionland:realm-sheets",
+    "parent_project_dedup_key": "chris-mcdowall:bastionland:mythic-bastionland",
+    "limitations": [
+      "Only d12sentence and barrier paragraph extracted across two runs; otherPDF1content context,PDF2notread.",
+      "Pinned officialPDF bytes rehashed and barrier clause reread visually; no new officialdownload this run.",
+      "1-in-6 refers to Hexes; exact selection and number/direction of outlined sides not specified by selected paragraph.",
+      "Fullbook/Quickstart/edition equivalence and runtime coverage unknown; no artwork/rawPDF republished."
+    ]
+  },
+  "operational_requirements": [
+    {
+      "id": "MB-REALM-002-L1",
+      "source_rule_ref": "agent-work/market/rules/MB-Realm-Sheets.json#MB-REALM-002",
+      "normative_kind": "realm_sheet_creation_procedure_with_unresolved_selection_parameters",
+      "applicability": "Official free MBRealmSheet hashpinned snapshot; PDF1Wilderness barrier paragraph only",
+      "layer": "L1",
+      "trigger_or_user_action": "Ведущий выбирает сторону/стороны гекса и наносит или исправляет барьер при подготовке карты.",
+      "inputs_and_units": {
+        "selected_hexes": "гексы, выбранные ведущим; исходный ориентир1-in-6 относится к гексам",
+        "selected_sides": "указанные стороны между гексами; количество/направления не заданы источником",
+        "barrier_property": "переход обычными средствами невозможен",
+        "selection_algorithm": "unknown; нет подтверждённого автоматического d6-порога/квоты/округления"
+      },
+      "product_operation": "Разместить барьер на указанной стороне гекса и сохранить его как границу, непроходимую обычными средствами, отдельно от местности и центрового содержимого. Разрешить адресную правку/снятие без перерисовки географии; автоматический выбор1-in-6 не специфицировать до закрытия неизвестных параметров.",
+      "expected_output": "На выбранной границе есть барьер с обычной непроходимостью; выбранные положения/свойства сохранены. Никакие дополнительные стороны, квоты рёбер, маршруты и времена не выдуманы.",
+      "constraints_and_exceptions": [
+        "1-in-6Hexes не равно1/6всехрёбер и не предписание закрыть все6сторон.",
+        "Нормальные средства не позволяют перейти барьер; конкретные исключительные способы/усилия здесь не определены.",
+        "Гора/холм/река не становится барьером автоматически: выбранный абзац говорит о нанесённых барьерах.",
+        "Граница общая для двух соседних гексов — продуктовый инвариант карты, не отдельный механизм движения.",
+        "Толстая линия — условный знак, не физическая ширина препятствия.",
+        "Сохранение, редактирование и разделение границы/местности — продуктовый перевод; API/хранение/UI не проектируются.",
+        "Представление игроков уже имеет отдельный FAQ-профиль; здесь его правило не дублируется и новая процедура раскрытия не добавляется."
+      ],
+      "acceptance_cases": [
+        {
+          "id": "MB-REALM-002-L1-AC01",
+          "given": "Гексы A/B соседствуют; ведущий выбрал их общую сторону E для барьера.",
+          "when": "Нанести барьер E.",
+          "expected": "На границе A/B сохранён барьер с признаком «обычными средствами не пройти»; тип местности A/B не изменён."
+        },
+        {
+          "id": "MB-REALM-002-L1-AC02",
+          "given": "Барьер E уже нанесён между A/B.",
+          "when": "Проверить описание E со стороны B.",
+          "expected": "Это та же непроходимая обычными средствами граница, а не независимый односторонний проход; дублирование объекта не требуется."
+        },
+        {
+          "id": "MB-REALM-002-L1-AC03",
+          "given": "У выбранного гекса H шесть сторон; ведущий указал только E.",
+          "when": "Подготовить барьер по выбранной стороне.",
+          "expected": "Нанесена E; пять остальных сторон автоматически не замкнуты. Само слово outside не принято за доказательство обязательной шестиугольной стены."
+        },
+        {
+          "id": "MB-REALM-002-L1-AC04",
+          "given": "Карта12гексов; ведущий заранее отметил2гекса для работы с барьерами, конкретные стороны ещё не заданы.",
+          "when": "Сохранить параметры подготовительного наброска.",
+          "expected": "Частота относится к гексам: сохранены2выбранныхгекса и неизвестные стороны. Ровно2ребра,12рёбер или1/6всехрёбер не выведены автоматически."
+        },
+        {
+          "id": "MB-REALM-002-L1-AC05",
+          "given": "Известна только формулировка1-in-6Hexes; алгоритм выбора/округления и стороны неизвестны.",
+          "when": "Запросить автоматическую расстановку.",
+          "expected": "Параметры выбора отмечены needs_source_or_product_decision; точная квота и d6-порог не объявлены правилом. Ручное нанесение заданных сторон остаётся описанной операцией."
+        },
+        {
+          "id": "MB-REALM-002-L1-AC06",
+          "given": "Есть барьер E и обычный холм H; ведущий снимает только E.",
+          "when": "Редактировать подготовленную карту.",
+          "expected": "Отметка E снята; холм H и прочая география сохранены. Сам холм автоматически не стал барьером, время маршрута не пересчитано этим L1-профилем."
+        },
+        {
+          "id": "MB-REALM-002-L1-AC07",
+          "given": "Заданы барьеры E1/E2 и связанные гексы, обычная непроходимость сохранена.",
+          "when": "Сохранить и снова открыть карту.",
+          "expected": "E1/E2 и их свойства восстановлены; барьеры не переброшены и не превратились в центровые POI."
+        }
+      ],
+      "source_vs_product_interpretation": "Источник задаёт барьеры снаружи гексов, ориентир1-in-6Hexes и невозможность обычного перехода. Конкретная выбранная сторона, симметричность границы, сохранение/адресные правки — продуктовая операционализация. Автоматическая расстановка остаётся draft, не ready_for_development.",
+      "canonical_rule_refs": [
+        "map.routes_and_barriers"
+      ],
+      "unresolved_parameters": [
+        "Случайный/ручной способ выбора1-in-6; квота/вероятность/округление и пограничные случаи.",
+        "Сколько сторон и какие стороны очерчивать; пересечения/стыки/край карты.",
+        "Какие необычные средства пересечения возможны; L2процедура не разобрана.",
+        "Текущая поддержка границ в HexCrawl и эквивалентность финальной книге."
+      ]
+    }
+  ],
+  "product_task_handoffs": [
+    {
+      "task_id": "HX-BL-044",
+      "title": "Наносить и сохранять выбранные барьеры по сторонам гексов",
+      "status": "proposed",
+      "problem": "Частота по гексам не задаёт число/направление рёбер. Смешение барьеров с центровыми POI либо автоматическое замыкание сторон исказит карту. Runtimeunknown.",
+      "benefit": "Мастер сохраняет выбранную непроходимую границу с явными неизвестными параметрами авторасстановки.",
+      "game_editions": [
+        "Official free Realm Sheets snapshot downloaded2026-11-08; internal version not stated; referenced Creating a Realm(p14) not collated to final book"
+      ],
+      "primary_scenario": "create",
+      "layer": "L1",
+      "requirement_refs": [
+        "agent-work/market/rules/MB-Realm-Sheets.json#MB-REALM-002-L1"
+      ],
+      "canonical_rule_ids": [
+        "map.routes_and_barriers"
+      ],
+      "binding_refs": [
+        "agent-work/rules/game-bindings.json#MB-REALM-002-L1"
+      ],
+      "criterion_ids": [
+        "S01-C04",
+        "S01-C05",
+        "S06-C04"
+      ],
+      "scope": "Исследовательский компонент proposed044. Только выбранная граница/обычная непроходимость/сохранение; генерация1-in-6не готова до решений по параметрам, нет L2расчёта/UIспецификации.",
+      "dependencies": [
+        "Стратег выбирает проверку/объём, аналитик уточняет параметры",
+        "Проверить переиспользование существующих edge/barriereditor операций"
+      ],
+      "acceptance_checks": [
+        {
+          "id": "MB-REALM-002-L1-AC01",
+          "given": "Гексы A/B соседствуют; ведущий выбрал их общую сторону E для барьера.",
+          "when": "Нанести барьер E.",
+          "expected": "На границе A/B сохранён барьер с признаком «обычными средствами не пройти»; тип местности A/B не изменён."
+        },
+        {
+          "id": "MB-REALM-002-L1-AC02",
+          "given": "Барьер E уже нанесён между A/B.",
+          "when": "Проверить описание E со стороны B.",
+          "expected": "Это та же непроходимая обычными средствами граница, а не независимый односторонний проход; дублирование объекта не требуется."
+        },
+        {
+          "id": "MB-REALM-002-L1-AC03",
+          "given": "У выбранного гекса H шесть сторон; ведущий указал только E.",
+          "when": "Подготовить барьер по выбранной стороне.",
+          "expected": "Нанесена E; пять остальных сторон автоматически не замкнуты. Само слово outside не принято за доказательство обязательной шестиугольной стены."
+        },
+        {
+          "id": "MB-REALM-002-L1-AC04",
+          "given": "Карта12гексов; ведущий заранее отметил2гекса для работы с барьерами, конкретные стороны ещё не заданы.",
+          "when": "Сохранить параметры подготовительного наброска.",
+          "expected": "Частота относится к гексам: сохранены2выбранныхгекса и неизвестные стороны. Ровно2ребра,12рёбер или1/6всехрёбер не выведены автоматически."
+        },
+        {
+          "id": "MB-REALM-002-L1-AC05",
+          "given": "Известна только формулировка1-in-6Hexes; алгоритм выбора/округления и стороны неизвестны.",
+          "when": "Запросить автоматическую расстановку.",
+          "expected": "Параметры выбора отмечены needs_source_or_product_decision; точная квота и d6-порог не объявлены правилом. Ручное нанесение заданных сторон остаётся описанной операцией."
+        },
+        {
+          "id": "MB-REALM-002-L1-AC06",
+          "given": "Есть барьер E и обычный холм H; ведущий снимает только E.",
+          "when": "Редактировать подготовленную карту.",
+          "expected": "Отметка E снята; холм H и прочая география сохранены. Сам холм автоматически не стал барьером, время маршрута не пересчитано этим L1-профилем."
+        },
+        {
+          "id": "MB-REALM-002-L1-AC07",
+          "given": "Заданы барьеры E1/E2 и связанные гексы, обычная непроходимость сохранена.",
+          "when": "Сохранить и снова открыть карту.",
+          "expected": "E1/E2 и их свойства восстановлены; барьеры не переброшены и не превратились в центровые POI."
+        }
+      ],
+      "expected_evidence": {
+        "current_runtime": "unknown",
+        "future_product": "Actual selected-edge edit/save cases on exactSHA; auto density interpretation explicit"
+      },
+      "score_delta": null,
+      "source_limitations": [
+        "Only d12sentence and barrier paragraph extracted across two runs; otherPDF1content context,PDF2notread.",
+        "Pinned officialPDF bytes rehashed and barrier clause reread visually; no new officialdownload this run.",
+        "1-in-6 refers to Hexes; exact selection and number/direction of outlined sides not specified by selected paragraph.",
+        "Fullbook/Quickstart/edition equivalence and runtime coverage unknown; no artwork/rawPDF republished."
+      ]
+    }
+  ],
+  "product_support": "unverified",
+  "readiness": "auto_selection_parameters_open",
+  "score_delta": null,
+  "rating_changed": false
+}
