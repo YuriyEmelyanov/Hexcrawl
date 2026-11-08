@@ -1,0 +1,557 @@
+{
+  "schema_version": 2,
+  "run_id": "2026-11-08T0430-ROOT-core-Eyrie",
+  "game_id": "ROOT",
+  "source_id": "ROOT-CORE-2021-EN",
+  "ranking_version": "three-scenario-ranks-1.4-create-evidence",
+  "cohort_version": "2026-11-06-ranking1.4-create-evidence",
+  "primary_scenario": "create",
+  "layer": "L1",
+  "status": "research_handoff_not_specification",
+  "source": {
+    "id": "ROOT-CORE-2021-EN",
+    "title": "Root: The Roleplaying Game — Core Book",
+    "edition": "First printing2021; English primary book text on third-party HTML host",
+    "author": "Brendan Conway & Mark Diaz Truman",
+    "publisher": "Magpie Games",
+    "url": "https://studylib.net/doc/26230689/rootttprg-corebook-100721",
+    "locator": "Making the Woodland224; Map225–227; Control of Clearings / First: The Marquisate228–229; HTML8782–8794,8933–8998; Eyrie230–231 HTML9002–9048",
+    "printed_pages": [
+      224,
+      225,
+      226,
+      227,
+      228,
+      229,
+      230,
+      231
+    ],
+    "pdf_pages": null,
+    "access_level": "full_text_selected_section",
+    "author_project_key": "magpie-games:root-rpg:core2021",
+    "accessed_at": "2026-11-08T04:30:48.771Z",
+    "bibliography_comparison": "First printing2021 credits match official9-page sample previously read, https://d1vzi28wh99zvq.cloudfront.net/pdf_previews/373406-sample.pdf",
+    "access_limitations": [
+      "Third-party text transcription, not publisher-hosted full PDF",
+      "Full-byte identity, visual table layout and latest errata not verified",
+      "Only map skeleton, faction prerequisites/order, Marquisate and Eyrie extracted; Alliance/Denizens and remaining core unreviewed."
+    ],
+    "deduplication": "Same core work as prior p32 clarification; not a second independent audience observation; T&O remains a separate supplement corpus",
+    "language": "en",
+    "revision": null
+  },
+  "read_corpus": {
+    "new_extracted_printed_pages": [
+      230,
+      231
+    ],
+    "locator": "HTML9002–9048",
+    "full_core_read": false,
+    "visual_pdf_collation": false
+  },
+  "requirements": [
+    {
+      "id": "ROOT-CORE-008-L1",
+      "layer": "L1",
+      "requirement": "Выбрать исходную крайнюю поляну, соблюдая противоположный угол при Marquisate; отметить Roost, присутствие Eyrie и её контроль. При допустимом случайном выборе перебрасывать5–6.",
+      "status": "unverified",
+      "implemented": null,
+      "evidence_id": null,
+      "evidence_sha": null,
+      "canonical_rule_ids": [
+        "map.faction_control",
+        "map.faction_presence",
+        "content.place_description",
+        "content.roll_table_resolution"
+      ],
+      "criterion_ids": [
+        "S06-C01"
+      ],
+      "canonical_binding_ref": "agent-work/rules/game-bindings.json#ROOT-CORE-008-L1",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-008",
+        "normative_kind": "conditional_Woodland_setup_procedure",
+        "applicability": "Root Core2021 selected Eyrie initial Woodland setup; L1 only; other faction profiles separate",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий начинает шаг Eyrie после применимого шага Marquisate.",
+        "inputs_and_units": {
+          "фракции": "включена ли Eyrie и Marquisate",
+          "карта": "имеющиеся крайние поляны и выбранная крепость Marquisate",
+          "случайный угол": "d6,1–6, только при допустимом случайном выборе"
+        },
+        "product_operation": "Выбрать исходную крайнюю поляну, соблюдая противоположный угол при Marquisate; отметить Roost, присутствие Eyrie и её контроль. При допустимом случайном выборе перебрасывать5–6.",
+        "expected_output": "Одна исходная опора Eyrie отмечена на существующей карте; Roost и контроль различимы.",
+        "constraints_and_exceptions": [
+          "Если Eyrie не включена, шаг пропускается.",
+          "Случайный выбор не отменяет обязательный противоположный угол при Marquisate.",
+          "Точный геометрический алгоритм противоположного угла не задан; пример книги использует ближайшее подобие противоположного края.",
+          "Не выводить численность войск из присутствия или Roost."
+        ],
+        "acceptance_cases": [
+          {
+            "id": "ROOT-CORE-008-L1-AC01",
+            "given": "Marquisate включена, крепостьSW; ведущий определил противоположную крайнююNE-полянуA.",
+            "when": "Подготовить начальный Roost.",
+            "expected": "У A один Roost, присутствие и контроль Eyrie; случайный угол не подменяетNE."
+          },
+          {
+            "id": "ROOT-CORE-008-L1-AC02",
+            "given": "Marquisate выключена; четыре независимых выбораd6=1/2/3/4; соответствующие крайние поляны заданы.",
+            "when": "Выбрать исходный Roost.",
+            "expected": "В каждом выборе соответственноNW/NE/SW/SE; выбранная поляна получает Roost и контроль."
+          },
+          {
+            "id": "ROOT-CORE-008-L1-AC03",
+            "given": "Marquisate выключена; последовательностьd6=5,6,2;NE-полянаB выбрана ведущим.",
+            "when": "Выбрать случайный угол.",
+            "expected": "5/6 переброшены; исходный Roost, присутствие и контроль уB."
+          },
+          {
+            "id": "ROOT-CORE-008-L1-AC04",
+            "given": "Eyrie выключена, карта уже подготовлена.",
+            "when": "Перейти к следующим выбранным фракциям.",
+            "expected": "Roost и новые назначения Eyrie не создаются; карта не перегенерирована."
+          }
+        ],
+        "source_vs_product_interpretation": "Параметры пересказаны из Core230–231. A/B/C/D/S и заданные броски — собственные проверяемые примеры. Сохранение/повторное открытие и представление истории — перевод на язык генератора; без технической спецификации/API/архитектуры. Чтение книги не подтверждает реализацию.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.faction_control",
+          "agent-work/rules/common-rules.json#map.faction_presence",
+          "agent-work/rules/common-rules.json#content.place_description",
+          "agent-work/rules/common-rules.json#content.roll_table_resolution"
+        ],
+        "unresolved_parameters": [
+          "Выбор при нескольких одинаково подходящих крайних полянах остаётся решением ведущего."
+        ]
+      },
+      "gap_task_ids": [
+        "HX-BL-049"
+      ],
+      "delivery": "research_handoff_not_specification"
+    },
+    {
+      "id": "ROOT-CORE-009-L1",
+      "layer": "L1",
+      "requirement": "По расстоянию и сумме2d6 назначать один из трёх исходов: нет нового контроля Eyrie; контроль без нового Roost; контроль с новым Roost. Применять ограничения и исключения ROOT-CORE-010.",
+      "status": "unverified",
+      "implemented": null,
+      "evidence_id": null,
+      "evidence_sha": null,
+      "canonical_rule_ids": [
+        "map.faction_control",
+        "content.place_description",
+        "content.roll_table_resolution"
+      ],
+      "criterion_ids": [
+        "S06-C01"
+      ],
+      "canonical_binding_ref": "agent-work/rules/game-bindings.json#ROOT-CORE-009-L1",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-009",
+        "normative_kind": "conditional_Woodland_setup_procedure",
+        "applicability": "Root Core2021 selected Eyrie initial Woodland setup; L1 only; other faction profiles separate",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий последовательно рассматривает допустимые поляны начальной расстановки Eyrie.",
+        "inputs_and_units": {
+          "удалённость": "известное число пересечённых путей от применимого имеющегося Roost",
+          "бросок": "сумма двухd6,2–12",
+          "исходные сведения": "текущий контроль и число имеющихся Roost/контролируемых полян"
+        },
+        "product_operation": "По расстоянию и сумме2d6 назначать один из трёх исходов: нет нового контроля Eyrie; контроль без нового Roost; контроль с новым Roost. Применять ограничения и исключения ROOT-CORE-010.",
+        "expected_output": "У очередной поляны известен исход Eyrie; наличие Roost не отождествлено с любым контролем.",
+        "constraints_and_exceptions": [
+          "При неуспехе существующий контроль другой фракции не снимается.",
+          "4+ включает4и6путей; это явное отличие от неясной строки Marquisate5путей.",
+          "Исходный Roost и крепость Marquisate не проверять этой таблицей как обычные кандидаты.",
+          "Из неуспеха не выводить отсутствие любого фракционного присутствия.",
+          "Это подготовка карты, не ход войны или путешествия."
+        ],
+        "acceptance_cases": [
+          {
+            "id": "ROOT-CORE-009-L1-AC01",
+            "given": "Независимые поляны на1пути; суммы5/6/8/9; лимиты не достигнуты.",
+            "when": "Разрешить каждую.",
+            "expected": "Соответственно: нет контроля Eyrie; контроль без нового Roost; контроль без нового Roost; контроль с новым Roost."
+          },
+          {
+            "id": "ROOT-CORE-009-L1-AC02",
+            "given": "Независимые поляны на2путях; суммы8/9/10/11; лимиты свободны.",
+            "when": "Разрешить каждую.",
+            "expected": "Соответственно: нет контроля Eyrie; контроль без Roost; контроль без Roost; контроль с Roost."
+          },
+          {
+            "id": "ROOT-CORE-009-L1-AC03",
+            "given": "Независимые поляны на3путях; суммы10/11/12; лимиты свободны.",
+            "when": "Разрешить каждую.",
+            "expected": "Соответственно: нет контроля Eyrie; контроль без Roost; контроль с Roost."
+          },
+          {
+            "id": "ROOT-CORE-009-L1-AC04",
+            "given": "A на4путях, B на6; обе суммы12.",
+            "when": "Применить строку4+.",
+            "expected": "Ни A, ни B не получают контроль Eyrie или новый Roost по таблице."
+          },
+          {
+            "id": "ROOT-CORE-009-L1-AC05",
+            "given": "A контролирует Marquisate, это не крепость;1путь от Roost, сумма5.",
+            "when": "Разрешить проверку Eyrie.",
+            "expected": "Marquisate сохраняет контроль A; Eyrie не получает контроль и Roost."
+          }
+        ],
+        "source_vs_product_interpretation": "Параметры пересказаны из Core230–231. A/B/C/D/S и заданные броски — собственные проверяемые примеры. Сохранение/повторное открытие и представление истории — перевод на язык генератора; без технической спецификации/API/архитектуры. Чтение книги не подтверждает реализацию.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.faction_control",
+          "agent-work/rules/common-rules.json#content.place_description",
+          "agent-work/rules/common-rules.json#content.roll_table_resolution"
+        ],
+        "unresolved_parameters": [
+          "Явный способ выбрать маршрут/опору при нескольких путях и Roost в тексте здесь не формализован; принимать известную применимую удалённость, не навязывать алгоритм.",
+          "Недостижимые поляны этим фрагментом не определены."
+        ]
+      },
+      "gap_task_ids": [
+        "HX-BL-049"
+      ],
+      "delivery": "research_handoff_not_specification"
+    },
+    {
+      "id": "ROOT-CORE-010-L1",
+      "layer": "L1",
+      "requirement": "Учитывать исходный Roost в лимитах; не размещать пятый Roost, сохраняя применимый контроль успешной проверки. Прекратить новые броски после шестой контролируемой поляны. Пропускать крепость Marquisate; при захвате обычной её поляны заменить контроль на Eyrie и связать с историей contested. Новые Roost использовать для дальнейших проверок без пересчёта прошлых.",
+      "status": "unverified",
+      "implemented": null,
+      "evidence_id": null,
+      "evidence_sha": null,
+      "canonical_rule_ids": [
+        "map.faction_control",
+        "content.place_description",
+        "content.roll_table_resolution"
+      ],
+      "criterion_ids": [
+        "S06-C01"
+      ],
+      "canonical_binding_ref": "agent-work/rules/game-bindings.json#ROOT-CORE-010-L1",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-010",
+        "normative_kind": "conditional_Woodland_setup_procedure",
+        "applicability": "Root Core2021 selected Eyrie initial Woodland setup; L1 only; other faction profiles separate",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий продолжает шаг Eyrie после каждого исхода таблицы.",
+        "inputs_and_units": {
+          "текущие итоги": "число Roost и контролируемых полян, включая исходную",
+          "поляна": "является ли крепостью Marquisate; текущая контролирующая фракция",
+          "история": "ранее разрешённые исходы и последовательность ведущего"
+        },
+        "product_operation": "Учитывать исходный Roost в лимитах; не размещать пятый Roost, сохраняя применимый контроль успешной проверки. Прекратить новые броски после шестой контролируемой поляны. Пропускать крепость Marquisate; при захвате обычной её поляны заменить контроль на Eyrie и связать с историей contested. Новые Roost использовать для дальнейших проверок без пересчёта прошлых.",
+        "expected_output": "Не больше4Roost/6контролируемых полян; крепость Marquisate сохранена; ранние исходы не переписаны; переходы контроля понятны.",
+        "constraints_and_exceptions": [
+          "Предел4 относится к Roost, а не ко всем контролируемым полянам.",
+          "Счётчик6 включает исходный Roost; это не ещё6полян сверх него.",
+          "Прекращение касается новых бросков Eyrie, не завершения всей подготовки других фракций.",
+          "Contested-отметка опирается на ранее извлечённое общее условие ROOT-CORE-005.",
+          "Сохранение и повторное открытие — продуктовая интерпретация, не утверждение о функции приложения в книге."
+        ],
+        "acceptance_cases": [
+          {
+            "id": "ROOT-CORE-010-L1-AC01",
+            "given": "Есть3Roost и3контролируемые поляны; новаяA на1пути, сумма9.",
+            "when": "Разрешить A.",
+            "expected": "У A контроль и четвёртый Roost; всего4Roost и4контролируемые поляны."
+          },
+          {
+            "id": "ROOT-CORE-010-L1-AC02",
+            "given": "Есть4Roost и4контролируемые поляны; новаяB на1пути, сумма9.",
+            "when": "Разрешить B.",
+            "expected": "B получает контроль, но пятый Roost не размещается; всего4Roost и5контролируемых полян."
+          },
+          {
+            "id": "ROOT-CORE-010-L1-AC03",
+            "given": "Всего5контролируемых полян с учётом исходного Roost; C на1пути с6, Dещёнепроверена.",
+            "when": "Разрешить C и продолжить.",
+            "expected": "C становится шестой; бросок для D не выполняется. Последующие фракционные шаги не объявлены завершёнными."
+          },
+          {
+            "id": "ROOT-CORE-010-L1-AC04",
+            "given": "S — крепость Marquisate; передан бросок12.",
+            "when": "Пройти список кандидатов Eyrie.",
+            "expected": "S пропущена без проверки; контроль Marquisate и крепость сохранены."
+          },
+          {
+            "id": "ROOT-CORE-010-L1-AC05",
+            "given": "A — обычная поляна Marquisate на1пути, сумма6, лимиты свободны.",
+            "when": "Разрешить переход.",
+            "expected": "Текущий контроль A — Eyrie, новый Roost не размещён; переход от Marquisate отмечен в истории и A contested."
+          },
+          {
+            "id": "ROOT-CORE-010-L1-AC06",
+            "given": "A ранее не получила контроль на3путях с10; затем вB появился новый Roost; для ещё не провереннойC ведущий определил1путь отB и сумму6.",
+            "when": "Продолжить последовательность.",
+            "expected": "Результат A остаётся прежним; C получает контроль без нового Roost по1пути. Прошлый бросок A не переинтерпретирован."
+          },
+          {
+            "id": "ROOT-CORE-010-L1-AC07",
+            "given": "Сохранена карта с4Roost и6контролируемыми полянами Eyrie, крепостью Marquisate и историей переходаA.",
+            "when": "Сохранить и повторно открыть карту.",
+            "expected": "Количество, крепость, текущий контроль и история A сохранены; броски автоматически не повторены."
+          }
+        ],
+        "source_vs_product_interpretation": "Параметры пересказаны из Core230–231. A/B/C/D/S и заданные броски — собственные проверяемые примеры. Сохранение/повторное открытие и представление истории — перевод на язык генератора; без технической спецификации/API/архитектуры. Чтение книги не подтверждает реализацию.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.faction_control",
+          "agent-work/rules/common-rules.json#content.place_description",
+          "agent-work/rules/common-rules.json#content.roll_table_resolution"
+        ],
+        "unresolved_parameters": [
+          "Порядок полян при одинаковой удалённости не задан; результат зависит от выбранной последовательности, её не придумывать как норму книги.",
+          "Повторный запуск всей расстановки после ручного изменения карты требует решения аналитика/ведущего."
+        ]
+      },
+      "gap_task_ids": [
+        "HX-BL-049"
+      ],
+      "delivery": "research_handoff_not_specification"
+    }
+  ],
+  "facts": [
+    {
+      "source_rule_id": "ROOT-CORE-008",
+      "locator": "HTML9002–9007,9040–9048",
+      "paraphrase": "При выбранной Eyrie исходный Roost размещают в крайней поляне, противоположной крепости Marquisate, если Marquisate включена. Без Marquisate край выбирает ведущий либо d6 с перебросом5–6. Исходная поляна получает Roost, присутствие и контроль Eyrie; Roost означает укреплённую позицию и местное правительство.",
+      "parameters": {
+        "marquisate_present": "opposite_corner_of_stronghold",
+        "without_marquisate": "GM_choice_or_corner_d6",
+        "corner_d6": {
+          "1": "NW",
+          "2": "NE",
+          "3": "SW",
+          "4": "SE",
+          "5": "reroll",
+          "6": "reroll"
+        },
+        "initial_roosts": 1,
+        "initial_controlled_clearings": 1
+      }
+    },
+    {
+      "source_rule_id": "ROOT-CORE-009",
+      "locator": "HTML9008–9014,9024–9037",
+      "paraphrase": "Для очередной поляны используется2d6 и число путей от имеющегося Roost:1путь — контроль6–8, контроль с Roost9+;2пути — контроль9–10, с Roost11+;3пути — контроль11, с Roost12; ниже порогов и на4+путях контроля Eyrie нет. Проверки начинают с соседей исходного Roost.",
+      "parameters": {
+        "distance_unit": "paths_crossed_from_existing_Roost_not_hexes",
+        "roll": "sum_2d6",
+        "outcomes": {
+          "1": {
+            "no_control": "2–5",
+            "control_only": "6–8",
+            "control_and_roost": "9–12"
+          },
+          "2": {
+            "no_control": "2–8",
+            "control_only": "9–10",
+            "control_and_roost": "11–12"
+          },
+          "3": {
+            "no_control": "2–10",
+            "control_only": "11",
+            "control_and_roost": "12"
+          },
+          "4+": "no_Eyrie_control"
+        },
+        "caps_ref": "ROOT-CORE-010"
+      }
+    },
+    {
+      "source_rule_id": "ROOT-CORE-010",
+      "locator": "HTML9012–9022",
+      "paraphrase": "После появления нового Roost ранее разрешённые результаты не меняются. Максимум4Roost; дальнейшее размещение Roost игнорируется. На6контролируемых полянах, считая исходный Roost, броски прекращают. Крепость Marquisate исключена; прочие её поляны могут перейти Eyrie.",
+      "parameters": {
+        "maximum_roosts": 4,
+        "maximum_controlled_clearings": 6,
+        "initial_roost_counts_toward_limits": true,
+        "ignore_excess_roost_only": true,
+        "stop_rolls_at_control_cap": true,
+        "skip_marquisate_stronghold": true,
+        "recompute_prior_results": false
+      }
+    }
+  ],
+  "interpretations": [
+    "Сохранение и история — предложенные операции генератора, не цитата о приложении.",
+    "Никакой технической схемы/API, архитектуры или разрешения разработки."
+  ],
+  "unknowns": [
+    "Выбор при нескольких одинаково подходящих крайних полянах остаётся решением ведущего.",
+    "Явный способ выбрать маршрут/опору при нескольких путях и Roost в тексте здесь не формализован; принимать известную применимую удалённость, не навязывать алгоритм.",
+    "Недостижимые поляны этим фрагментом не определены.",
+    "Порядок полян при одинаковой удалённости не задан; результат зависит от выбранной последовательности, её не придумывать как норму книги.",
+    "Повторный запуск всей расстановки после ручного изменения карты требует решения аналитика/ведущего."
+  ],
+  "product_task_handoffs": [
+    {
+      "task_id": "HX-BL-049",
+      "title": "Подготавливать контроль и присутствие фракций на карте",
+      "status": "proposed",
+      "problem": "Eyrie initial control profile was not extracted; runtime support unknown.",
+      "benefit": "Ведущий готовит исходную карту Eyrie с Roost, пределами и последовательными результатами.",
+      "game_editions": [
+        "Root RPG Core2021"
+      ],
+      "primary_scenario": "create",
+      "layer": "L1",
+      "requirement_refs": [
+        "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-008-L1",
+        "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-009-L1",
+        "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-010-L1"
+      ],
+      "canonical_rule_ids": [
+        "map.faction_control",
+        "map.faction_presence",
+        "content.place_description",
+        "content.roll_table_resolution"
+      ],
+      "binding_refs": [
+        "agent-work/rules/game-bindings.json#ROOT-CORE-008-L1",
+        "agent-work/rules/game-bindings.json#ROOT-CORE-009-L1",
+        "agent-work/rules/game-bindings.json#ROOT-CORE-010-L1"
+      ],
+      "criterion_ids": [
+        "S06-C01"
+      ],
+      "scope": "Selected initial Eyrie preparation only; strategist selects scope and analyst specifies.",
+      "dependencies": [
+        "Prepared clearings/paths and selected factions; known Marquisate stronghold if in play"
+      ],
+      "acceptance_checks": [
+        {
+          "id": "ROOT-CORE-008-L1-AC01",
+          "given": "Marquisate включена, крепостьSW; ведущий определил противоположную крайнююNE-полянуA.",
+          "when": "Подготовить начальный Roost.",
+          "expected": "У A один Roost, присутствие и контроль Eyrie; случайный угол не подменяетNE.",
+          "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-008-L1"
+        },
+        {
+          "id": "ROOT-CORE-008-L1-AC02",
+          "given": "Marquisate выключена; четыре независимых выбораd6=1/2/3/4; соответствующие крайние поляны заданы.",
+          "when": "Выбрать исходный Roost.",
+          "expected": "В каждом выборе соответственноNW/NE/SW/SE; выбранная поляна получает Roost и контроль.",
+          "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-008-L1"
+        },
+        {
+          "id": "ROOT-CORE-008-L1-AC03",
+          "given": "Marquisate выключена; последовательностьd6=5,6,2;NE-полянаB выбрана ведущим.",
+          "when": "Выбрать случайный угол.",
+          "expected": "5/6 переброшены; исходный Roost, присутствие и контроль уB.",
+          "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-008-L1"
+        },
+        {
+          "id": "ROOT-CORE-008-L1-AC04",
+          "given": "Eyrie выключена, карта уже подготовлена.",
+          "when": "Перейти к следующим выбранным фракциям.",
+          "expected": "Roost и новые назначения Eyrie не создаются; карта не перегенерирована.",
+          "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-008-L1"
+        },
+        {
+          "id": "ROOT-CORE-009-L1-AC01",
+          "given": "Независимые поляны на1пути; суммы5/6/8/9; лимиты не достигнуты.",
+          "when": "Разрешить каждую.",
+          "expected": "Соответственно: нет контроля Eyrie; контроль без нового Roost; контроль без нового Roost; контроль с новым Roost.",
+          "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-009-L1"
+        },
+        {
+          "id": "ROOT-CORE-009-L1-AC02",
+          "given": "Независимые поляны на2путях; суммы8/9/10/11; лимиты свободны.",
+          "when": "Разрешить каждую.",
+          "expected": "Соответственно: нет контроля Eyrie; контроль без Roost; контроль без Roost; контроль с Roost.",
+          "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-009-L1"
+        },
+        {
+          "id": "ROOT-CORE-009-L1-AC03",
+          "given": "Независимые поляны на3путях; суммы10/11/12; лимиты свободны.",
+          "when": "Разрешить каждую.",
+          "expected": "Соответственно: нет контроля Eyrie; контроль без Roost; контроль с Roost.",
+          "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-009-L1"
+        },
+        {
+          "id": "ROOT-CORE-009-L1-AC04",
+          "given": "A на4путях, B на6; обе суммы12.",
+          "when": "Применить строку4+.",
+          "expected": "Ни A, ни B не получают контроль Eyrie или новый Roost по таблице.",
+          "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-009-L1"
+        },
+        {
+          "id": "ROOT-CORE-009-L1-AC05",
+          "given": "A контролирует Marquisate, это не крепость;1путь от Roost, сумма5.",
+          "when": "Разрешить проверку Eyrie.",
+          "expected": "Marquisate сохраняет контроль A; Eyrie не получает контроль и Roost.",
+          "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-009-L1"
+        },
+        {
+          "id": "ROOT-CORE-010-L1-AC01",
+          "given": "Есть3Roost и3контролируемые поляны; новаяA на1пути, сумма9.",
+          "when": "Разрешить A.",
+          "expected": "У A контроль и четвёртый Roost; всего4Roost и4контролируемые поляны.",
+          "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-010-L1"
+        },
+        {
+          "id": "ROOT-CORE-010-L1-AC02",
+          "given": "Есть4Roost и4контролируемые поляны; новаяB на1пути, сумма9.",
+          "when": "Разрешить B.",
+          "expected": "B получает контроль, но пятый Roost не размещается; всего4Roost и5контролируемых полян.",
+          "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-010-L1"
+        },
+        {
+          "id": "ROOT-CORE-010-L1-AC03",
+          "given": "Всего5контролируемых полян с учётом исходного Roost; C на1пути с6, Dещёнепроверена.",
+          "when": "Разрешить C и продолжить.",
+          "expected": "C становится шестой; бросок для D не выполняется. Последующие фракционные шаги не объявлены завершёнными.",
+          "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-010-L1"
+        },
+        {
+          "id": "ROOT-CORE-010-L1-AC04",
+          "given": "S — крепость Marquisate; передан бросок12.",
+          "when": "Пройти список кандидатов Eyrie.",
+          "expected": "S пропущена без проверки; контроль Marquisate и крепость сохранены.",
+          "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-010-L1"
+        },
+        {
+          "id": "ROOT-CORE-010-L1-AC05",
+          "given": "A — обычная поляна Marquisate на1пути, сумма6, лимиты свободны.",
+          "when": "Разрешить переход.",
+          "expected": "Текущий контроль A — Eyrie, новый Roost не размещён; переход от Marquisate отмечен в истории и A contested.",
+          "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-010-L1"
+        },
+        {
+          "id": "ROOT-CORE-010-L1-AC06",
+          "given": "A ранее не получила контроль на3путях с10; затем вB появился новый Roost; для ещё не провереннойC ведущий определил1путь отB и сумму6.",
+          "when": "Продолжить последовательность.",
+          "expected": "Результат A остаётся прежним; C получает контроль без нового Roost по1пути. Прошлый бросок A не переинтерпретирован.",
+          "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-010-L1"
+        },
+        {
+          "id": "ROOT-CORE-010-L1-AC07",
+          "given": "Сохранена карта с4Roost и6контролируемыми полянами Eyrie, крепостью Marquisate и историей переходаA.",
+          "when": "Сохранить и повторно открыть карту.",
+          "expected": "Количество, крепость, текущий контроль и история A сохранены; броски автоматически не повторены.",
+          "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-010-L1"
+        }
+      ],
+      "expected_evidence": {
+        "current_runtime": "unknown",
+        "future_product": "Actual selected-profile known-output checks on exact SHA"
+      },
+      "score_delta": null,
+      "source_limitations": [
+        "Third-party text transcription, not publisher-hosted full PDF",
+        "Full-byte identity, visual table layout and latest errata not verified",
+        "Only map skeleton, faction prerequisites/order, Marquisate and Eyrie extracted; Alliance/Denizens and remaining core unreviewed.",
+        "Multiple routes/roost selection and equal-distance order unresolved; no algorithm invented."
+      ]
+    }
+  ],
+  "runtime_support": {
+    "status": "unverified",
+    "evidence_sha": null
+  },
+  "rating_changed": false,
+  "score_changed": false
+}
