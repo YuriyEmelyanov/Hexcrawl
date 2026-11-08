@@ -26,10 +26,10 @@
   },
   "lessons_path": "agent-work/lessons.md",
   "plan_id": "2026-11-08-PR493-release-score",
-  "run_id": "2026-11-08T1802-programmer-HX-BL-043-KNC-REV-001",
+  "run_id": "2026-11-08T1856-reviewer-HX-BL-043-KNC-REV-001",
   "plan_revision": 1,
   "baseline_sha": "00190bb749a4fa5af57aac4bbffff808e8fe733f",
-  "status": "review_ready",
+  "status": "accepted_private_package_awaiting_owner_publication",
   "planning_for": "2026-10-31",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-10-25",
@@ -45,26 +45,15 @@
   "schedule_start_at": "2026-10-24T01:00:00+03:00",
   "schedule_frequency": "hourly",
   "process_path": "agent-work/process.md",
-  "current_role": "programmer",
-  "next_role": "reviewer",
+  "current_role": "reviewer",
+  "next_role": "owner",
   "current_task_id": "HX-BL-043",
   "spec_path": "agent-work/specs/HX-BL-043-KNAVE2-CLASSIC1.md",
   "spec_version": "KNC-1.0",
-  "result_path": "agent-work/results/2026-11-08T1802-programmer-HX-BL-043-KNC-REV-001.json",
+  "result_path": "agent-work/results/2026-11-08T1856-reviewer-HX-BL-043-KNC-REV-001.json",
   "handoff_commit_sha": "d8540be256914aa9d262d6c0687620d9c3f7e237",
-  "active_claim": {
-    "run_id": "2026-11-08T1856-reviewer-HX-BL-043-KNC-REV-001",
-    "role": "reviewer",
-    "task_id": "HX-BL-043",
-    "stage_id": "KNAVE2-CLASSIC1",
-    "status": "active",
-    "started_at": "2026-11-08T18:56:56.971Z",
-    "scope": "Fresh-context independent new-SHA review KNC-REV-001 plus model1.2 assessment; no implementation/release",
-    "public_sha": "d7e7a5bd4103c0ec866f9e9a4a83fbe3222c2ef1",
-    "private_sha": "af50286d8ad00303a0aed1d8473e7c6dffabb349",
-    "path": "agent-work/claims/2026-11-08T1856-reviewer-HX-BL-043-KNC-REV-001.json"
-  },
-  "next_step": "Проверяющий: независимо проверить KNC-REV-001 на public d7e7a5b/private af50286, actual targets1500/390/320 и регрессии; актуализировать score_assessment1.2. Выпуск отдельно не разрешён.",
+  "active_claim": null,
+  "next_step": "Ожидается явное разрешение владельца на публикацию точного принятого пакета HX-BL-043/KNAVE2-CLASSIC1: public d7e7a5b + private af50286/tree7ac1c58 с400RU-каталогом. После разрешения — программист, сверка полномочий/пакета/SHA и независимая актуализация при изменении SHA; до этого не выпускать source-free null provider.",
   "owner_decisions_needed": [],
   "release_approval": {
     "id": "owner-release-2026-11-08-PR493-3e00851",
@@ -288,7 +277,7 @@
   "score_update_task_id": "HX-BL-041",
   "score_update_release_sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
   "score_process_decision_ref": "owner-decision-2026-10-24-score-responsibilities",
-  "score_assessment_ref": null,
+  "score_assessment_ref": "agent-work/evidence/KNAVE2-CLASSIC1-review-af50286/score-assessment.json",
   "role_selection_reason": "Current approved stage was review_ready on exact public/private SHA with no active claim; owner priority selects reviewer irrespective of hour. Fresh-context agent used because root had programmer history.",
   "score_update_result_ref": "agent-work/results/2026-11-08T0400-strategist-score-PR493.json",
   "score_update_completed_at": "2026-11-08T03:59:22.384Z",
@@ -313,77 +302,21 @@
   "automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-11-08T18:02:50.929Z",
-      "is_enabled": true,
-      "status": "checked"
+      "checked_at": "2026-11-08T18:56:36.556Z",
+      "status": "checked",
+      "is_enabled": true
     },
     "end": {
-      "checked_at": "2026-11-08T18:21:34.159Z",
-      "is_enabled": true,
-      "status": "checked"
+      "checked_at": "2026-11-08T19:05:17.949Z",
+      "status": "checked",
+      "is_enabled": true
     },
     "restoration_performed": false,
     "errors": [],
-    "limitation": "Point-in-time observations only; no guarantee after run completion"
+    "independent_agent_health_ref": "agent-work/evidence/KNAVE2-CLASSIC1-review-af50286/automation-health.json",
+    "limitation": "Point-in-time observations only, no guarantee after completion"
   },
-  "open_findings": [
-    {
-      "id": "KNC-REV-001",
-      "priority": "P2",
-      "severity": "medium",
-      "type": "confirmed_specification_UI_accessibility_deviation",
-      "criterion": "KNC-A10 / KNC UI44CSSpx hit area",
-      "title": "New Knave source disclosures and draft Cancel have undersized touch targets",
-      "locations": [
-        {
-          "path": "src/styles.css",
-          "lines": [
-            238,
-            252,
-            253
-          ]
-        },
-        {
-          "path": "src/App.tsx",
-          "lines": [
-            15216,
-            15229
-          ]
-        }
-      ],
-      "observed": {
-        "summary": {
-          "height_css_px": 16,
-          "details_height_css_px": 16,
-          "min_height": "0px",
-          "before_content": "none",
-          "after_content": "none",
-          "hit_at_summary_top_plus24_is_summary": false,
-          "widths_tested": [
-            1500,
-            390,
-            320
-          ]
-        },
-        "cancel": {
-          "width_css_px": 64.09375,
-          "height_css_px": 19,
-          "min_height": "0px",
-          "viewport_width": 320
-        }
-      },
-      "expected": "Every newly introduced Knave interactive target has an effective nonoverlapping44×44CSSpx pointer/touch area according to approved specification; keep existing visible typography/dice density and compact panel.",
-      "reproduction": [
-        "Run the exact private production build in Chromium153.0.8010.0.",
-        "Start new Classic; worldseed137; enable Knave2e; choose locality/wild/mainland; click first candidate.",
-        "Select generated POI0,0; inspect both short source-result summaries at1500,390,320 widths. Each summary and parentdetails is16px tall; no pseudo-element expands it; point24px below its top does not hit that summary.",
-        "Enter Edit and change Difficulty to Normal/Difficult to create a draft; inspect Knave Cancel (64.09×19px at320)."
-      ],
-      "impact": "Adjacent narrow disclosure targets and the short Cancel target miss the approved touch minimum even while visual layout has no horizontal overflow. Current browser workflow checks panel overflow but does not detect this.",
-      "bounded_next_step": "Programmer fixes only new Knave target hit areas, reuses or extends existing Knave browser lifecycle as needed, preserves source/RNG/save behavior, reruns relevant required checks and hands new public/private exactSHAs to fresh independent review. No design approval or broad global direct-value refactor needed.",
-      "evidence": "ui-results.json; independent-ui.mjs; source CSS; private screenshots excluded from public reports"
-    }
-  ],
+  "open_findings": [],
   "current_review_score_assessment_status": "completed_insufficient_evidence_no_award",
   "target_audience_research": {
     "model_version": "1.1",
@@ -1309,54 +1242,68 @@
   "test_change_summary": {
     "base_sha": "818476e5ec653384ab216efd75db9467d698cfc4",
     "head_sha": "d7e7a5bd4103c0ec866f9e9a4a83fbe3222c2ef1",
-    "private_base_sha": "c5b3c384792ce3349e40b0cc3ccc52e3d7685d1e",
-    "private_head_sha": "af50286d8ad00303a0aed1d8473e7c6dffabb349",
-    "suites": [
-      {
-        "suite": "Node24 node --test test/*.test.mjs",
-        "added": 0,
-        "removed": 0,
-        "modified": 0
-      },
-      {
-        "suite": "browser/tags -> runKnavePropertiesLifecycle",
-        "added": 0,
-        "removed": 0,
-        "modified": 1,
-        "scenario_risk": "KNC-REV-001 pointer targets >=44px/nonoverlap, keyboard source disclosure, Cancel lower target atomically discards draft",
-        "reuse_or_new_reason": "Existing workflow already imports Knave, opens editor and loops1500/390/320; extend it rather than duplicate fixture/browser suite."
-      }
-    ],
-    "count_source": "git diff 818476e..d7e7a5b: only existing knave-properties-lifecycle function edited; no runner registration added/removed. Scoped correction counts, cumulative prior PR test audit retained separately.",
+    "added": 0,
+    "removed": 0,
+    "modified": 1,
+    "suite": "existing browser/tags -> runKnavePropertiesLifecycle",
+    "scenario_risk": "KNC-REV-001:44px source/Cancel native nonoverlapping targets and safe draft cancellation",
+    "reuse_or_new_reason": "Keep extension to existing lifecycle: KNC-A10 requires effective44px nonoverlapping source/Cancel targets. Prior real defect was16px summaries/19pxCancel; existing profile/import/editor/width setup is reused, no duplicate fixture/workflow.",
+    "count_source": "Independent git diff of exact reviewed old/new SHA; one existing lifecycle modified, no Node or workflow registrations added. Prior cumulative PR main-to-head audit retained separately.",
+    "independent_sensitivity": {
+      "current_committed_scenario": "passes in tags.log",
+      "negative_control": "Unmodified committed runKnavePropertiesLifecycle with former sizing appended only to CSS network response fails expected44px assertion at line50:height16,width441. No tracked source changed.",
+      "independent_diagnostic": "Own DOM-only former-CSS check measures16/16/19, restoring currentCSS yields44/44/44.",
+      "log": "permanent-negative-control.log"
+    },
     "executions": {
-      "Node": {
-        "executed": 361,
-        "passed": 361,
-        "failed": 0,
-        "skipped": 0,
-        "cancelled": 0
+      "independent_build": {
+        "exit_code": 0,
+        "node": "24.22.1",
+        "log": "build.log"
       },
-      "browser": {
-        "workflows": 8,
-        "passed": 8,
-        "failed": 0,
-        "skipped": 0,
-        "subscenario": "existing Knave lifecycle modified; not a ninth workflow"
+      "independent_typescript": {
+        "exit_code": 0,
+        "log": "typescript.log"
       },
-      "rng": {
-        "status": "pass",
-        "separate_suite": true
+      "independent_tags_workflow": {
+        "exit_code": 0,
+        "log": "tags.log",
+        "includes": [
+          "Mythic material",
+          "existing tags",
+          "Knave profile/lifecycle/targets"
+        ]
       },
-      "temporary_actual_UI": {
-        "maps": 1,
+      "independent_new_map_diagnostic": {
+        "exit_code": 0,
+        "matrix_combinations": 6,
         "seed": 137,
+        "source_pois": 3,
         "widths": [
           1500,
           390,
           320
         ],
-        "status": "pass",
-        "permanent_case_growth": 0
+        "clue_lengths": [
+          4,
+          512
+        ],
+        "log": "independent-ui-rerun.log",
+        "metrics": "ui-results.json"
+      },
+      "exact_public_SHA_CI": {
+        "run_id": 42508242559,
+        "check": "success",
+        "browser": "success",
+        "world-random": "success",
+        "evidence": "ci-evidence.json"
+      },
+      "programmer_raw_logs": {
+        "hashes_verified": true,
+        "reported_node_tests": 361,
+        "reported_browser_workflows": 8,
+        "reported_rng": "pass",
+        "evidence": "programmer-log-verification.json"
       }
     }
   },
@@ -2398,7 +2345,7 @@
     }
   },
   "full_editor_ready": false,
-  "current_task_score_assessment_status": "independent_new_SHA_assessment_required",
+  "current_task_score_assessment_status": "completed_insufficient_evidence_no_award",
   "published": false,
   "main_changed": false,
   "ui_actual": {
@@ -2468,7 +2415,7 @@
     "no_horizontal_overflow": true,
     "font_limitation": "Some emoji glyphs absent in this runtime; SVG/Cyrillic work."
   },
-  "review_result_ref": "agent-work/results/2026-11-08T1705-reviewer-HX-BL-043-KNAVE2-CLASSIC1.json",
+  "review_result_ref": "agent-work/results/2026-11-08T1856-reviewer-HX-BL-043-KNC-REV-001.json",
   "previous_review_score_assessment_ref": "agent-work/evidence/review-HX-BL-023-E1-24fa342/score_assessment.json",
   "previous_independent_reviewer_automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
@@ -2587,7 +2534,7 @@
   "programmer_score_evidence_ref": "agent-work/evidence/KNAVE2-CLASSIC1-818476e/programmer-score-evidence.json",
   "completed_claim_result_ref": "agent-work/results/2026-11-08T1705-reviewer-HX-BL-043-KNAVE2-CLASSIC1.json",
   "review_evidence_ref": "agent-work/evidence/HX-FB-010-PR491-de02991/review-report.json",
-  "github_review_state": "ready_for_independent_review",
+  "github_review_state": "accepted_private_package_owner_publication_pending",
   "independent_reviewer_automation_health_ref": "agent-work/evidence/KNAVE2-CLASSIC1-review-c5b3c38/automation-health.json",
   "owner_visual_correction": {
     "date": "2026-10-30",
@@ -2664,9 +2611,9 @@
   "current_stage_id": "KNAVE2-CLASSIC1",
   "implementation_started": true,
   "current_stage_release_approved": false,
-  "review_ready": true,
+  "review_ready": false,
   "current_stage_ui_status": "bounded44px_touch_correction_required; prior full actual UI retained",
-  "completed_claim": "agent-work/claims/2026-11-08T1802-programmer-HX-BL-043-KNC-REV-001.json",
+  "completed_claim": "agent-work/claims/2026-11-08T1856-reviewer-HX-BL-043-KNC-REV-001.json",
   "evidence_commit_sha": "5a9c6c97bd0ff170751d78babcc9d3578066e0bb",
   "finding_ids": [],
   "current_release_package_ref": "agent-work/handoffs/2026-10-31-HX-BL-023-E3-release-package-d7bb38f.json",
@@ -4257,7 +4204,7 @@
   },
   "current_stage_status": "changes_requested",
   "current_stage_review_status": "changes_requested",
-  "accepted": false,
+  "accepted": true,
   "full_UI_pending": false,
   "latest_HX_BL_023_E5_persistence_20261104": {
     "run_id": "2026-11-04-developer-HX-BL-023-E5-persistence",
@@ -5796,7 +5743,7 @@
     "delta_points": null,
     "applied_at": "2026-11-06T07:21:35Z"
   },
-  "authority_status": "Approved bounded correction completed. Independent review required; owner publication decision not requested before acceptance.",
+  "authority_status": "Task accepted within approved scope. One concrete publication gate includes source-bearing package; no publication authorization inferred.",
   "analysis_baseline_sha": "00190bb749a4fa5af57aac4bbffff808e8fe733f",
   "analysis_baseline_tree": "9c8585ad4c5aafdec38d242a67ffc54fe7f4402c",
   "previous_evidence_path": "agent-work/evidence/score-PR491-7547a67/accounting.json",
@@ -6254,7 +6201,7 @@
     "canonical_interrupted_claim_preserved": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json"
   },
   "recovery_resolution_ref": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json",
-  "result_ref": "agent-work/results/2026-11-08T1802-programmer-HX-BL-043-KNC-REV-001.json",
+  "result_ref": "agent-work/results/2026-11-08T1856-reviewer-HX-BL-043-KNC-REV-001.json",
   "latest_PR493_recovery": {
     "status": "accepted_source_free_core_unpublished",
     "head_sha": "2f11a4b608a7ed66f5786b3a0e151362f82d0ad8",
@@ -6313,7 +6260,7 @@
   "branch_is_remote": true,
   "pr_branch_name": "agent/hx041-myth-card1-recovery",
   "pr_public_head_sha": "818476e5ec653384ab216efd75db9467d698cfc4",
-  "next_role_after_decision": null,
+  "next_role_after_decision": "programmer",
   "whole_team_blocked": false,
   "local_runtime_content_ready": true,
   "artifact": {
@@ -6674,8 +6621,8 @@
   },
   "published_scope": "MYTH-CARD1 full72RU reference slice; overall041 has remaining categories",
   "public_book_corpus_approval_scope": "Only exact72MC1 corpus/tree98970e; NATURE2/other corpora excluded",
-  "previous_run_id": "2026-11-08T1705-reviewer-HX-BL-043-KNAVE2-CLASSIC1",
-  "next_role_after_approval": "business_analyst",
+  "previous_run_id": "2026-11-08T1802-programmer-HX-BL-043-KNC-REV-001",
+  "next_role_after_approval": "programmer",
   "latest_MC1_EN_intake": {
     "schema_version": 1,
     "run_id": "2026-11-08-analyst-HX-BL-041-MC1-EN",
@@ -6972,19 +6919,34 @@
   "previous_next_task_proposal_ref": "agent-work/proposals/2026-11-08-HX-BL-043-KNAVE2-PLACE1.json",
   "next_task_handoff_ref": "agent-work/handoffs/2026-11-08-HX-BL-043-KNAVE2-CLASSIC1.json",
   "latest_HX_BL_043_KNAVE2_CLASSIC1": {
-    "run_id": "2026-11-08T1802-programmer-HX-BL-043-KNC-REV-001",
-    "status": "review_ready",
-    "result_ref": "agent-work/results/2026-11-08T1802-programmer-HX-BL-043-KNC-REV-001.json",
+    "run_id": "2026-11-08T1856-reviewer-HX-BL-043-KNC-REV-001",
+    "status": "accepted_private_package_awaiting_owner_publication",
+    "result_ref": "agent-work/results/2026-11-08T1856-reviewer-HX-BL-043-KNC-REV-001.json",
     "public_sha": "d7e7a5bd4103c0ec866f9e9a4a83fbe3222c2ef1",
     "private_sha": "af50286d8ad00303a0aed1d8473e7c6dffabb349",
-    "next_role": "reviewer",
-    "next_step": "Проверяющий: независимо проверить KNC-REV-001 на public d7e7a5b/private af50286, actual targets1500/390/320 и регрессии; актуализировать score_assessment1.2. Выпуск отдельно не разрешён.",
-    "finding_ids": [
+    "next_role": "owner",
+    "next_step": "Ожидается явное разрешение владельца на публикацию точного принятого пакета HX-BL-043/KNAVE2-CLASSIC1: public d7e7a5b + private af50286/tree7ac1c58 с400RU-каталогом. После разрешения — программист, сверка полномочий/пакета/SHA и независимая актуализация при изменении SHA; до этого не выпускать source-free null provider.",
+    "closed_findings": [
       "KNC-REV-001"
     ],
-    "finding_status": "fix_submitted_pending_independent_confirmation",
-    "score_assessment_status": "pending_new_SHA",
-    "release_approved": false
+    "score_assessment_ref": "agent-work/evidence/KNAVE2-CLASSIC1-review-af50286/score-assessment.json",
+    "score_assessment_status": "completed_insufficient_evidence_no_award",
+    "release_approved": false,
+    "private_package": {
+      "path": "/workspace/scratch/320e5b03f904/knave-fix-evidence/HexCrawl-Knave2-Classic1-runtime-private.zip",
+      "bytes": 4924298,
+      "sha256": "402692e99beddbdcc8b4152b6b901e582a5889ce67f4f3947f3ea3c3e4d7f9b0",
+      "files": 28,
+      "crc_and_manifest_verified": true,
+      "full_history_bundle_verified": false,
+      "library_file_id": "libfile_fde3_f-0ebe6a7f3460819191ca4308c2778835_3c7ce53bef508191bc31de4d3dfa12cc",
+      "version": 3,
+      "filename": "HexCrawl-Knave2-Classic1-runtime-private.zip",
+      "bundle_verify_pass": true,
+      "full_history_completeness": false,
+      "runtime_checkout_verified": true,
+      "history_limitation_ref": "agent-work/evidence/KNAVE2-CLASSIC1-review-af50286/package-recovery.json"
+    }
   },
   "superseded_owner_decisions": [
     {
@@ -7004,27 +6966,40 @@
     "sha256": "402692e99beddbdcc8b4152b6b901e582a5889ce67f4f3947f3ea3c3e4d7f9b0",
     "files": 28,
     "crc_and_manifest_verified": true,
-    "full_history_bundle_verified": true,
+    "full_history_bundle_verified": false,
     "library_file_id": "libfile_fde3_f-0ebe6a7f3460819191ca4308c2778835_3c7ce53bef508191bc31de4d3dfa12cc",
     "version": 3,
-    "filename": "HexCrawl-Knave2-Classic1-runtime-private.zip"
+    "filename": "HexCrawl-Knave2-Classic1-runtime-private.zip",
+    "bundle_verify_pass": true,
+    "full_history_completeness": false,
+    "runtime_checkout_verified": true,
+    "history_limitation_ref": "agent-work/evidence/KNAVE2-CLASSIC1-review-af50286/package-recovery.json"
   },
   "next_programmer_step_ref": "agent-work/evidence/KNAVE2-CLASSIC1-1646878/next-programmer-step.json",
   "review_request_ref": "agent-work/evidence/KNAVE2-CLASSIC1-d7e7a5b/review-request.json",
   "programmer_complete": true,
   "current_programmer_result_ref": "agent-work/results/2026-11-08T1802-programmer-HX-BL-043-KNC-REV-001.json",
-  "reviewed_private_sha": "c5b3c384792ce3349e40b0cc3ccc52e3d7685d1e",
+  "reviewed_private_sha": "af50286d8ad00303a0aed1d8473e7c6dffabb349",
   "ui_review_result": {
-    "status": "programmer_recheck_passed_pending_independent_review",
+    "status": "independent_passed_exact_SHA",
     "finding_id": "KNC-REV-001",
-    "metrics_ref": "agent-work/evidence/KNAVE2-CLASSIC1-d7e7a5b/ui-results.json",
-    "actual_UI_shown_in_chat": true,
-    "source_disclosure_min_height": 44,
-    "cancel_height": 44
+    "finding_status": "closed",
+    "metrics_ref": "agent-work/evidence/KNAVE2-CLASSIC1-review-af50286/ui-results.json",
+    "summary_target_min_height": 44,
+    "cancel_size": [
+      64.09375,
+      44
+    ],
+    "widths": [
+      1500,
+      390,
+      320
+    ],
+    "actual_UI_shown_in_chat": true
   },
   "fix_handoff_ref": "agent-work/evidence/KNAVE2-CLASSIC1-review-c5b3c38/programmer-fix-handoff.json",
-  "role": "programmer",
-  "latest_result_ref": "agent-work/results/2026-11-08T1802-programmer-HX-BL-043-KNC-REV-001.json",
+  "role": "reviewer",
+  "latest_result_ref": "agent-work/results/2026-11-08T1856-reviewer-HX-BL-043-KNC-REV-001.json",
   "checks": {
     "public_sha": "d7e7a5bd4103c0ec866f9e9a4a83fbe3222c2ef1",
     "ci_run_id": 42508242559,
@@ -7083,5 +7058,18 @@
       "separate_suite": true
     }
   },
-  "score_assessment_status": "pending_independent_new_SHA_review"
+  "score_assessment_status": "completed_insufficient_evidence_no_award",
+  "review_report_ref": "agent-work/evidence/KNAVE2-CLASSIC1-review-af50286/review-report.json",
+  "reviewed_public_sha": "d7e7a5bd4103c0ec866f9e9a4a83fbe3222c2ef1",
+  "closed_findings": [
+    "KNC-REV-001"
+  ],
+  "nonblocking_findings": [
+    "KNC-EVID-001"
+  ],
+  "score_delta": null,
+  "score_delta_status": "unknown_not_zero",
+  "public_book_transfer_approved": false,
+  "current_external_dependency": "Owner concrete publication decision including private RU catalog",
+  "publication_package_requires_private_catalog": true
 }
