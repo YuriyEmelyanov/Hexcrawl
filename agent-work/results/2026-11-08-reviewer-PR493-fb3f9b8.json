@@ -3,13 +3,13 @@
   "task_id": "HX-BL-041-MC1-10-DATA",
   "pr": 493,
   "role": "independent_reviewer_fresh_context_release_renewal",
-  "reviewed_at": "2026-11-08T02:42:36.845504+00:00",
+  "reviewed_at": "2026-11-08T02:49:17.667379+00:00",
   "reviewed_sha": "fb3f9b8e82bb17468af5d3f2e59c266e5f6474b8",
   "reviewed_tree_sha": "98970eae3513ef14294dbfa4a9af21b6df6e62de",
   "approved_local_sha": "3e00851a9247d35e535b4439e35f64b30f5b1dc8",
   "published_base_sha": "00190bb749a4fa5af57aac4bbffff808e8fe733f",
   "parent_sha": "2f11a4b608a7ed66f5786b3a0e151362f82d0ad8",
-  "verdict": "accepted_same_tree_package_conditional_public_CI",
+  "verdict": "accepted_release_candidate_exact_public_sha",
   "findings_open": [],
   "evidence_identity": {
     "method": "Own git fetch origin fb3 and agent-operations, git show -s %H %T %P for both commits; git diff --exit-code3e..fb3; connector get_pr_info confirmed exact PRhead.",
@@ -84,19 +84,86 @@
     "commit_sha": "fb3f9b8e82bb17468af5d3f2e59c266e5f6474b8",
     "run_id": 42439485433,
     "run_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42439485433",
-    "status": "in_progress",
+    "status": "completed",
     "jobs": {
       "check": {
         "id": 128605444736,
-        "status": "in_progress"
+        "status": "completed",
+        "conclusion": "success",
+        "decoded_log_path": "/workspace/scratch/fb5036e89339/release493-ci-128605444736.log",
+        "decoded_log_bytes": 62621,
+        "decoded_log_sha256": "ea2cf40931f30559eb4e793e25e157b3b14ea471f8ef586a92bc4376f4d79ef0",
+        "github_error_annotations": 0,
+        "node_version": "24.22.2",
+        "own_decoded_log_verified": true,
+        "typescript": "passed",
+        "tests_executed": 354,
+        "tests_passed": 354,
+        "tests_failed": 0,
+        "tests_cancelled": 0,
+        "tests_skipped": 0,
+        "tests_todo": 0,
+        "unique_named_pass_lines": 354,
+        "production_build": "passed"
       },
       "browser": {
         "id": 128605444755,
-        "status": "in_progress"
+        "status": "completed",
+        "conclusion": "success",
+        "decoded_log_path": "/workspace/scratch/fb5036e89339/release493-ci-128605444755.log",
+        "decoded_log_bytes": 53339,
+        "decoded_log_sha256": "5c27c4cabc7344bc2b0edeaff4af9ef6d7b99365f5e7c95f65d7747572e52bf3",
+        "github_error_annotations": 0,
+        "node_version": "24.22.2",
+        "own_decoded_log_verified": true,
+        "production_build": "passed",
+        "scripts_executed": 8,
+        "scripts_passed": 8,
+        "scripts": [
+          "generation",
+          "poi-display",
+          "terrain-color",
+          "forest-display",
+          "navigation",
+          "large-navigation",
+          "save-history",
+          "tags"
+        ],
+        "actual72_MC1_and_partial_registry_fallback": "passed",
+        "method": "All8scripts chained by && in package command; final tags/MC1 completion lines and successful job/step confirm completion. UI Chromium151.0.7922.34, finite sample."
       },
       "world-random": {
         "id": 128605444610,
-        "status": "in_progress"
+        "status": "completed",
+        "conclusion": "success",
+        "decoded_log_path": "/workspace/scratch/fb5036e89339/release493-ci-128605444610.log",
+        "decoded_log_bytes": 49747,
+        "decoded_log_sha256": "e6a01448107da74aa4a2ed1f4aaf51b106f139363391ecf04147e5ada70d6308",
+        "github_error_annotations": 0,
+        "node_version": "24.22.2",
+        "own_decoded_log_verified": true,
+        "production_build": "passed",
+        "world_rng_cases_passed": 8,
+        "seeds": [
+          0,
+          1,
+          123456789,
+          4294967295
+        ],
+        "modes": [
+          "classic",
+          "mythic"
+        ],
+        "checks": [
+          "fresh",
+          "continuation",
+          "undo-repeat",
+          "invalid import",
+          "R2 hidden locality",
+          "AC06 display/read-only",
+          "AC08 malformed/noop atomicity",
+          "AC09 doubleclick/busy/delayedimport/transaction"
+        ]
       }
     },
     "label_specific_ui_acceptance": {
@@ -106,7 +173,17 @@
     },
     "must_be_success_before_merge": true,
     "raw_api_run_head_sha_independently_confirmed": "fb3f9b8e82bb17468af5d3f2e59c266e5f6474b8",
-    "raw_api_event": "pull_request"
+    "raw_api_event": "pull_request",
+    "conclusion": "success",
+    "decoded_logs_independently_fetched_and_verified": true,
+    "ci_checkout_commit": "b13fc2c929950d2bcf0147dd503bd31e0fa1f958",
+    "ci_checkout_tree": "98970eae3513ef14294dbfa4a9af21b6df6e62de",
+    "ci_checkout_tree_equals_approved_and_candidate": true,
+    "ci_checkout_parent_shas": [
+      "00190bb749a4fa5af57aac4bbffff808e8fe733f",
+      "fb3f9b8e82bb17468af5d3f2e59c266e5f6474b8"
+    ],
+    "checkout_verification": "Own raw git fetch test merge b13fc2c; fulltree98970e and candidate diff --exit-code0; checkout merge lines present in all3 decoded job logs."
   },
   "test_change_summary": {
     "comparison": "approved3e00851..publicfb3f9b8",
@@ -147,7 +224,13 @@
         "quality_assessment": "Verified real selected-myth reference content and preserved participants/situations in bounded MB slice. Source fidelity demonstrated for every targeted block.",
         "breadth": "MB supplied RU core preparation/reference only; create rank5/overall8, current1.4 cohort. Other games and top5/10/20 applicability/support unverified.",
         "limitations": "No complete assessment of every significant POI/active natural feature, causal-world compatibility, all applicable game requirements or top5/10/20 breadth. No whole-criterion grade inferred from complete72myth corpus.",
-        "renewal_method": "Independent fetched Git tree identity with approved and previously source/UI-reviewed tree98970e; current model/spec criteria read; no whole-criterion transition inferred."
+        "renewal_method": "Independent fetched Git tree identity with approved and previously source/UI-reviewed tree98970e; current model/spec criteria read; no whole-criterion transition inferred.",
+        "release_ci_evidence": {
+          "run_id": 42439485433,
+          "head_sha": "fb3f9b8e82bb17468af5d3f2e59c266e5f6474b8",
+          "checkout_tree": "98970eae3513ef14294dbfa4a9af21b6df6e62de",
+          "check354_browser8_worldRNG": "success"
+        }
       },
       {
         "criterion_id": "S08-C04",
@@ -169,7 +252,13 @@
         "quality_assessment": "Verified pinned identity/version and actual RU/EN fallback/Classic compatibility on exact SHA; no core generation changes.",
         "breadth": "MB supplied RU core preparation/reference only; create rank5/overall8, current1.4 cohort. Other games and top5/10/20 applicability/support unverified.",
         "limitations": "No cross-game requirement compatibility corpus or full create/develop/merge-modules coverage. Narrative fidelity counted under S05-C02 only. No whole-criterion grade inferred.",
-        "renewal_method": "Independent fetched Git tree identity with approved and previously source/UI-reviewed tree98970e; current model/spec criteria read; no whole-criterion transition inferred."
+        "renewal_method": "Independent fetched Git tree identity with approved and previously source/UI-reviewed tree98970e; current model/spec criteria read; no whole-criterion transition inferred.",
+        "release_ci_evidence": {
+          "run_id": 42439485433,
+          "head_sha": "fb3f9b8e82bb17468af5d3f2e59c266e5f6474b8",
+          "checkout_tree": "98970eae3513ef14294dbfa4a9af21b6df6e62de",
+          "check354_browser8_worldRNG": "success"
+        }
       }
     ],
     "confirmed_points_after": null,
@@ -186,13 +275,20 @@
     },
     "end": {
       "is_enabled": true,
-      "checked_at": "2026-11-08T02:43:32.673Z"
+      "checked_at": "2026-11-08T02:49:17.463Z"
     },
     "restoration_performed": false,
-    "errors": []
+    "errors": [],
+    "consolidation_start": {
+      "is_enabled": true,
+      "checked_at": "2026-11-08T02:47:51.924Z"
+    },
+    "consolidation_end": {
+      "is_enabled": true,
+      "checked_at": "2026-11-08T02:49:17.463Z"
+    }
   },
   "limitations": [
-    "CI currently in progress: this conditional report does not authorize merge before success.",
     "No deployment or live-site state checked by this reviewer; parent owns release verification.",
     "No second source extraction or heavy local suite performed because full approved tree is identical.",
     "Source fidelity and72complete records do not prove whole criterion grade, full game support or all top5/10/20breadth.",
@@ -201,11 +297,22 @@
     "No product edits, GitHub writes, merge, deployment or public messages performed by this reviewer."
   ],
   "pr_final_identity_check": {
-    "checked_at": "2026-11-08T02:43:32.673Z",
+    "checked_at": "2026-11-08T02:48:35Z (tool-call observed; exact timestamp approximate)",
     "head_sha": "fb3f9b8e82bb17468af5d3f2e59c266e5f6474b8",
     "base_sha": "00190bb749a4fa5af57aac4bbffff808e8fe733f",
     "state": "open",
     "mergeable": true,
-    "metadata_updated_full72": true
+    "metadata_updated_full72": true,
+    "ci_completed_success": true
+  },
+  "release_readiness": {
+    "accepted": true,
+    "candidate_sha": "fb3f9b8e82bb17468af5d3f2e59c266e5f6474b8",
+    "tree_sha": "98970eae3513ef14294dbfa4a9af21b6df6e62de",
+    "same_approved_package": true,
+    "required_public_ci_success": true,
+    "open_findings": 0,
+    "merge_and_deploy_not_performed_by_reviewer": true,
+    "remaining_release_actions": "Parent must confirm unchanged PRhead/base immediately before authorized merge and verify actual deployed/live release."
   }
 }
