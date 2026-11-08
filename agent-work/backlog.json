@@ -6849,7 +6849,8 @@
         "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-099-L1",
         "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-002-L1",
         "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-003-L1",
-        "agent-work/market/rules/MB-author-FAQ-2025.json#MB-FAQ-2025-001-L1"
+        "agent-work/market/rules/MB-author-FAQ-2025.json#MB-FAQ-2025-001-L1",
+        "agent-work/market/rules/MB-Realm-Sheets.json#MB-REALM-002-L1"
       ],
       "canonical_rule_ids": [
         "content.discovery_levels",
@@ -6898,7 +6899,8 @@
         "agent-work/rules/game-bindings.json#SD-CORE-099-L1",
         "agent-work/rules/game-bindings.json#ROOT-TO-002-L1",
         "agent-work/rules/game-bindings.json#ROOT-TO-003-L1",
-        "agent-work/rules/game-bindings.json#MB-FAQ-2025-001-L1"
+        "agent-work/rules/game-bindings.json#MB-FAQ-2025-001-L1",
+        "agent-work/rules/game-bindings.json#MB-REALM-002-L1"
       ],
       "criterion_ids": [
         "S01-C02",
@@ -7237,7 +7239,8 @@
       "research_handoff_refs": [
         "agent-work/research/runs/2026-11-06-SD-core-thematic-audit.json",
         "agent-work/research/requirements/ROOT-TO-clearing-L1.md",
-        "agent-work/research/requirements/MB-player-map-L1.json"
+        "agent-work/research/requirements/MB-player-map-L1.json",
+        "agent-work/research/requirements/MB-barriers-L1.json"
       ],
       "source_profile_handoffs": [
         {
@@ -7636,6 +7639,97 @@
           ],
           "research_handoff_ref": "agent-work/research/requirements/MB-player-map-L1.json",
           "research_result_ref": "agent-work/research/runs/2026-11-08T1630-MB-player-map.json",
+          "implementation_authorized": false,
+          "release_authorized": false
+        },
+        {
+          "component_id": "MB-official-barriers-L1",
+          "task_id": "HX-BL-044",
+          "title": "Наносить и сохранять выбранные барьеры по сторонам гексов",
+          "status": "research_handoff_product_unverified",
+          "problem": "Частота по гексам не задаёт число/направление рёбер. Смешение барьеров с центровыми POI либо автоматическое замыкание сторон исказит карту. Runtimeunknown.",
+          "benefit": "Мастер сохраняет выбранную непроходимую границу с явными неизвестными параметрами авторасстановки.",
+          "game_editions": [
+            "Official free Realm Sheets snapshot downloaded2026-11-08; internal version not stated; referenced Creating a Realm(p14) not collated to final book"
+          ],
+          "primary_scenario": "create",
+          "layer": "L1",
+          "requirement_refs": [
+            "agent-work/market/rules/MB-Realm-Sheets.json#MB-REALM-002-L1"
+          ],
+          "canonical_rule_ids": [
+            "map.routes_and_barriers"
+          ],
+          "binding_refs": [
+            "agent-work/rules/game-bindings.json#MB-REALM-002-L1"
+          ],
+          "criterion_ids": [
+            "S01-C04",
+            "S01-C05",
+            "S06-C04"
+          ],
+          "scope": "Исследовательский компонент proposed044. Только выбранная граница/обычная непроходимость/сохранение; генерация1-in-6не готова до решений по параметрам, нет L2расчёта/UIспецификации.",
+          "dependencies": [
+            "Стратег выбирает проверку/объём, аналитик уточняет параметры",
+            "Проверить переиспользование существующих edge/barriereditor операций"
+          ],
+          "acceptance_checks": [
+            {
+              "id": "MB-REALM-002-L1-AC01",
+              "given": "Гексы A/B соседствуют; ведущий выбрал их общую сторону E для барьера.",
+              "when": "Нанести барьер E.",
+              "expected": "На границе A/B сохранён барьер с признаком «обычными средствами не пройти»; тип местности A/B не изменён."
+            },
+            {
+              "id": "MB-REALM-002-L1-AC02",
+              "given": "Барьер E уже нанесён между A/B.",
+              "when": "Проверить описание E со стороны B.",
+              "expected": "Это та же непроходимая обычными средствами граница, а не независимый односторонний проход; дублирование объекта не требуется."
+            },
+            {
+              "id": "MB-REALM-002-L1-AC03",
+              "given": "У выбранного гекса H шесть сторон; ведущий указал только E.",
+              "when": "Подготовить барьер по выбранной стороне.",
+              "expected": "Нанесена E; пять остальных сторон автоматически не замкнуты. Само слово outside не принято за доказательство обязательной шестиугольной стены."
+            },
+            {
+              "id": "MB-REALM-002-L1-AC04",
+              "given": "Карта12гексов; ведущий заранее отметил2гекса для работы с барьерами, конкретные стороны ещё не заданы.",
+              "when": "Сохранить параметры подготовительного наброска.",
+              "expected": "Частота относится к гексам: сохранены2выбранныхгекса и неизвестные стороны. Ровно2ребра,12рёбер или1/6всехрёбер не выведены автоматически."
+            },
+            {
+              "id": "MB-REALM-002-L1-AC05",
+              "given": "Известна только формулировка1-in-6Hexes; алгоритм выбора/округления и стороны неизвестны.",
+              "when": "Запросить автоматическую расстановку.",
+              "expected": "Параметры выбора отмечены needs_source_or_product_decision; точная квота и d6-порог не объявлены правилом. Ручное нанесение заданных сторон остаётся описанной операцией."
+            },
+            {
+              "id": "MB-REALM-002-L1-AC06",
+              "given": "Есть барьер E и обычный холм H; ведущий снимает только E.",
+              "when": "Редактировать подготовленную карту.",
+              "expected": "Отметка E снята; холм H и прочая география сохранены. Сам холм автоматически не стал барьером, время маршрута не пересчитано этим L1-профилем."
+            },
+            {
+              "id": "MB-REALM-002-L1-AC07",
+              "given": "Заданы барьеры E1/E2 и связанные гексы, обычная непроходимость сохранена.",
+              "when": "Сохранить и снова открыть карту.",
+              "expected": "E1/E2 и их свойства восстановлены; барьеры не переброшены и не превратились в центровые POI."
+            }
+          ],
+          "expected_evidence": {
+            "current_runtime": "unknown",
+            "future_product": "Actual selected-edge edit/save cases on exactSHA; auto density interpretation explicit"
+          },
+          "score_delta": null,
+          "source_limitations": [
+            "Only d12sentence and barrier paragraph extracted across two runs; otherPDF1content context,PDF2notread.",
+            "Pinned officialPDF bytes rehashed and barrier clause reread visually; no new officialdownload this run.",
+            "1-in-6 refers to Hexes; exact selection and number/direction of outlined sides not specified by selected paragraph.",
+            "Fullbook/Quickstart/edition equivalence and runtime coverage unknown; no artwork/rawPDF republished."
+          ],
+          "research_handoff_ref": "agent-work/research/requirements/MB-barriers-L1.json",
+          "research_result_ref": "agent-work/research/runs/2026-11-08T1830-MB-barriers.json",
           "implementation_authorized": false,
           "release_authorized": false
         }
