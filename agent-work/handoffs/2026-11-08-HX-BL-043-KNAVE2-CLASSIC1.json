@@ -2,8 +2,8 @@
   "schema_version": 1,
   "task_id": "HX-BL-043",
   "stage_id": "KNAVE2-CLASSIC1",
-  "status": "review_ready",
-  "role": "reviewer",
+  "status": "accepted_private_package_awaiting_owner_publication",
+  "role": "owner",
   "approval_ref": "owner-approval-2026-11-08-HX-BL-043-KNAVE2-CLASSIC1",
   "implementation_allowed": true,
   "release_approved": false,
@@ -41,7 +41,7 @@
     "Independent reviewer fresh context on exactSHA after implementation"
   ],
   "next_role_after_implementation": "reviewer",
-  "next_step": "Проверяющий: независимо проверить KNC-REV-001 на public d7e7a5b/private af50286, actual targets1500/390/320 и регрессии; актуализировать score_assessment1.2. Выпуск отдельно не разрешён.",
+  "next_step": "Ожидается явное разрешение владельца на публикацию точного принятого пакета HX-BL-043/KNAVE2-CLASSIC1: public d7e7a5b + private af50286/tree7ac1c58 с400RU-каталогом. После разрешения — программист, сверка полномочий/пакета/SHA и независимая актуализация при изменении SHA; до этого не выпускать source-free null provider.",
   "foreign_claim_policy": "Do not take or close Nov3 HX-BL-041 presentation claim. MC1-EN separate source-file-required handoff preserved.",
   "score_model_version": "1.2",
   "score_forecast": "unknown; no grades/points awarded",
@@ -58,7 +58,7 @@
     "tree_sha": "96677619008628ee0b0f1cc2198084f9c45a667c",
     "private_head_sha": "af50286d8ad00303a0aed1d8473e7c6dffabb349",
     "private_tree_sha": "7ac1c58da66809ddfae1af2fdbdc794d88b79922",
-    "status": "review_ready",
+    "status": "accepted_by_independent_reviewer",
     "branch": "agent/knave2-classic1",
     "pr": 494,
     "result_ref": "agent-work/results/2026-11-08T1802-programmer-HX-BL-043-KNC-REV-001.json",
@@ -126,10 +126,14 @@
       "sha256": "402692e99beddbdcc8b4152b6b901e582a5889ce67f4f3947f3ea3c3e4d7f9b0",
       "files": 28,
       "crc_and_manifest_verified": true,
-      "full_history_bundle_verified": true,
+      "full_history_bundle_verified": false,
       "library_file_id": "libfile_fde3_f-0ebe6a7f3460819191ca4308c2778835_3c7ce53bef508191bc31de4d3dfa12cc",
       "version": 3,
-      "filename": "HexCrawl-Knave2-Classic1-runtime-private.zip"
+      "filename": "HexCrawl-Knave2-Classic1-runtime-private.zip",
+      "bundle_verify_pass": true,
+      "full_history_completeness": false,
+      "runtime_checkout_verified": true,
+      "history_limitation_ref": "agent-work/evidence/KNAVE2-CLASSIC1-review-af50286/package-recovery.json"
     },
     "actual_UI": {
       "shown_in_chat": true,
@@ -146,9 +150,10 @@
       ],
       "horizontal_overflow": false,
       "scope": "Authored fixture lifecycle plus real private seed137 map. UI source text size unchanged."
-    }
+    },
+    "independent_review_ref": "agent-work/results/2026-11-08T1856-reviewer-HX-BL-043-KNC-REV-001.json"
   },
-  "next_role": "reviewer",
+  "next_role": "owner",
   "previous_implementation_checkpoints": [
     {
       "head_sha": "861d4449227d4f850eb7f805a667cae2bbcd5346",
@@ -1001,7 +1006,46 @@
     "score_assessment_ref": "agent-work/evidence/KNAVE2-CLASSIC1-review-c5b3c38/score-assessment.json"
   },
   "review_request_status": "completed_changes_requested",
-  "score_assessment_status": "independent_new_SHA_assessment_required",
+  "score_assessment_status": "completed_insufficient_evidence_no_award",
   "latest_programmer_result_ref": "agent-work/results/2026-11-08T1802-programmer-HX-BL-043-KNC-REV-001.json",
-  "finding_status": "KNC-REV-001_fix_submitted_pending_independent_review"
+  "finding_status": "KNC-REV-001_fix_submitted_pending_independent_review",
+  "review_result_ref": "agent-work/results/2026-11-08T1856-reviewer-HX-BL-043-KNC-REV-001.json",
+  "review_report_ref": "agent-work/evidence/KNAVE2-CLASSIC1-review-af50286/review-report.json",
+  "score_assessment_ref": "agent-work/evidence/KNAVE2-CLASSIC1-review-af50286/score-assessment.json",
+  "accepted": true,
+  "accepted_public_sha": "d7e7a5bd4103c0ec866f9e9a4a83fbe3222c2ef1",
+  "accepted_private_sha": "af50286d8ad00303a0aed1d8473e7c6dffabb349",
+  "accepted_private_tree": "7ac1c58da66809ddfae1af2fdbdc794d88b79922",
+  "closed_findings": [
+    "KNC-REV-001"
+  ],
+  "nonblocking_findings": [
+    {
+      "id": "KNC-EVID-001",
+      "severity": "evidence_limitation",
+      "description": "Private archive exact current runtime is recoverable and all27manifest entries/CRC match. Complete-history claim is inaccurate: fresh standalone clone git fsck exits2 for missing ancestors00190bb749a4fa5af57aac4bbffff808e8fe733f andfb3f9b8e82bb17468af5d3f2e59c266e5f6474b8 undera246fdf.",
+      "evidence": [
+        "package-recovery.json",
+        "bundle-fsck.log"
+      ],
+      "disposition": "Nonblocking: requirement is exact-runtime recovery, confirmed by standalone clone+checkoutaf50286/tree7ac. Report full_history_completeness=false; no archive rewrite needed."
+    }
+  ],
+  "public_book_transfer_approved": false,
+  "private_package": {
+    "path": "/workspace/scratch/320e5b03f904/knave-fix-evidence/HexCrawl-Knave2-Classic1-runtime-private.zip",
+    "bytes": 4924298,
+    "sha256": "402692e99beddbdcc8b4152b6b901e582a5889ce67f4f3947f3ea3c3e4d7f9b0",
+    "files": 28,
+    "crc_and_manifest_verified": true,
+    "full_history_bundle_verified": false,
+    "library_file_id": "libfile_fde3_f-0ebe6a7f3460819191ca4308c2778835_3c7ce53bef508191bc31de4d3dfa12cc",
+    "version": 3,
+    "filename": "HexCrawl-Knave2-Classic1-runtime-private.zip",
+    "bundle_verify_pass": true,
+    "full_history_completeness": false,
+    "runtime_checkout_verified": true,
+    "history_limitation_ref": "agent-work/evidence/KNAVE2-CLASSIC1-review-af50286/package-recovery.json"
+  },
+  "next_role_after_owner_approval": "programmer"
 }
