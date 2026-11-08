@@ -1,4 +1,5 @@
 import {newKnaveLayer} from '../src/knaveClassic.ts';
+import {knaveContentFixture} from './helpers/knave-fixture.mjs';
 import {seaFixture} from './helpers/sea-fixture.mjs';
 import {regionFixture} from './helpers/region-fixture.mjs';
 import {createGenerationState} from '../src/worldRandom.ts';
@@ -154,6 +155,7 @@ test('E8 v8 authored POI names use real import,exact export and UndoRedo without
  // KNC-A02/A07/A09: same real importer and history path, not a second suite.
  const knave=structuredClone(g.render().createSaveData());knave.map.knave=newKnaveLayer();
  knave.map.knave.discoveryByPoi[key]={mode:'interaction',clueText:'Authored test clue'};
+ knave.map.knave.content=knaveContentFixture(key,{kind:'settlement'});
  knave.map.knave.difficultyByHex[key.split(':')[2]]='difficult';
  await g.render().handleImportJson({target:{files:[{text:JSON.stringify(knave)}],value:''}});assert.deepEqual(alerts,[]);
  const accepted=structuredClone(g.render().captureDocument());
@@ -180,7 +182,7 @@ test('E8 v8 authored POI names use real import,exact export and UndoRedo without
  assert.equal(g.render().finishKnaveDraft(stale),false);
  g.render().applyDocument(accepted);g.render();
  const history=structuredClone([g.render().undoHistory,g.render().redoHistory]);
- for(const mutate of [d=>d.version=9,d=>d.ui.generationMode='mythic',d=>delete d.generation,d=>d.map.knave=null,d=>d.map.knave.profile.physicalHex.measurementConvention='vertices',d=>d.map.knave.discoveryByPoi[key].clueText='',d=>d.map.knave.discoveryByPoi['poi:999:0,0']={mode:'passage',clueText:''}]){
+ for(const mutate of [d=>d.version=9,d=>d.ui.generationMode='mythic',d=>delete d.generation,d=>d.map.knave=null,d=>d.map.knave.profile.physicalHex.measurementConvention='vertices',d=>d.map.knave.content=null,d=>d.map.knave.content.byPoi[key].catalogVersion='future',d=>d.map.knave.discoveryByPoi[key].clueText='',d=>d.map.knave.discoveryByPoi['poi:999:0,0']={mode:'passage',clueText:''}]){
   const invalid=structuredClone(knave);mutate(invalid);await g.render().handleImportJson({target:{files:[{text:JSON.stringify(invalid)}],value:''}});
   assert.equal(alerts.length,1);alerts.pop();assert.deepEqual(structuredClone(g.render().captureDocument()),accepted);assert.deepEqual(structuredClone([g.render().undoHistory,g.render().redoHistory]),history);
  }

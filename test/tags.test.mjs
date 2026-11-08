@@ -10,7 +10,41 @@ import {mythicDefinitions as defs,tagOwners,tagPolicy,fillMythicTags} from '../s
 import {selectMythMaterial,materialIdentity,MYTH_MATERIAL_EDITION,mythMaterialManifest} from '../src/tags/mythMaterial.ts';
 import mythMaterialRecords from '../src/tags/mythMaterialData.ts';
 import {createGenerationHarness} from './helpers/generation-harness.mjs';
-import {newKnaveLayer,validateKnaveLayer,setKnaveDifficulty,setKnaveDiscovery,remapKnavePois,knaveLosses} from '../src/knaveClassic.ts';
+import {newKnaveLayer,validateKnaveLayer,setKnaveDifficulty,setKnaveDiscovery,remapKnavePois,knaveLosses,dropKnaveLoss} from '../src/knaveClassic.ts';
+import {emptyKnaveContent,fillKnaveContent,validateKnaveContent,validateKnaveCatalog,knaveCompatibleRows} from '../src/tags/knave.ts';
+import {drawTagIndex} from '../src/tags/engine.ts';
+import {knaveCatalogFixture,knaveFactsFixture,knaveContentFixture} from './helpers/knave-fixture.mjs';
+
+test('Knave content snapshots use filtered source rows and separate real d100, remain immutable and replay after JSON',()=>{
+ const catalog=knaveCatalogFixture(),land=knaveFactsFixture(),settlement=knaveFactsFixture('poi:2:1,0',{kind:'settlement'}),water=knaveFactsFixture('waterPoi:2,0');
+ const first=fillKnaveContent(emptyKnaveContent(),catalog,[land,settlement,water],42),before=structuredClone(first);
+ const site=first.byPoi[land.owner].site;
+ for(const [seed,category]of [[0,'structure'],[5,'dungeon'],[42,'natural']]){
+  const chosen=fillKnaveContent(emptyKnaveContent(),catalog,[land],seed).byPoi[land.owner];assert.equal(chosen.category,category);assert.ok(knaveCompatibleRows(chosen.site.table,land).includes(chosen.site.sourceRow));
+ }
+ assert.equal(site.selection,'compatible_pool');assert.ok(knaveCompatibleRows(site.table,land).includes(site.sourceRow));assert.equal(site.ru,catalog.tables[site.table][site.sourceRow-1].ru);
+ assert.equal(first.byPoi[settlement.owner].site,null);assert.equal(first.byPoi[water.owner].site,null);
+ assert.equal(first.byPoi[land.owner].trait.selection,'d100');assert.deepEqual(first.rollCounters[land.owner],{category:1,primary:1,trait:1});
+ assert.deepEqual(first,fillKnaveContent(emptyKnaveContent(),catalog,[water,land,settlement],42));
+ const updated=structuredClone(catalog);updated.tables.place_traits.forEach(e=>e.ru='Changed catalog text');assert.equal(fillKnaveContent(first,updated,[land,settlement,water],42),first);
+ const extra=knaveFactsFixture('poi:3:3,0');
+ assert.deepEqual(fillKnaveContent(JSON.parse(JSON.stringify(first)),catalog,[land,settlement,water,extra],42),fillKnaveContent(first,catalog,[extra,water,land,settlement],42));assert.deepEqual(first,before);
+ const seed100=Array.from({length:10000},(_,i)=>i).find(seed=>drawTagIndex(seed,`knave-content-v1:${water.owner}:trait`,0,100).index===99);assert.notEqual(seed100,undefined);
+ const hundred=fillKnaveContent(emptyKnaveContent(),catalog,[water],seed100).byPoi[water.owner].trait;
+ assert.equal(hundred.roll,100);assert.equal(hundred.sourceRow,100);assert.equal(catalog.tables.place_traits[hundred.sourceRow-1].printedResult,'00');
+ assert.deepEqual(drawTagIndex(42,'one-row-pool',0,1),{index:0,nextCounter:1});assert.throws(()=>drawTagIndex(42,'exhausted',Number.MAX_SAFE_INTEGER,100));
+});
+test('Knave catalog and snapshot refusals are atomic; context predicates use existing features and never infer climate',()=>{
+ const c=knaveCatalogFixture(),facts=knaveFactsFixture(),state=knaveContentFixture(),before=structuredClone(state),live=new Set([facts.owner]);
+ assert.doesNotThrow(()=>validateKnaveCatalog(c));
+ for(const change of [d=>d.catalogVersion='future',d=>d.source.sha256='wrong',d=>d.tables.locations.pop(),d=>d.tables.structures[1].row=1,d=>d.tables.place_traits[99].printedResult='100',d=>d.tables.dungeons[0].sourceRef.printedPage=99,d=>d.tables.locations[0].ru='x'.repeat(257)]){const bad=structuredClone(c);change(bad);assert.throws(()=>fillKnaveContent(state,bad,[facts],42));assert.deepEqual(state,before);}
+ for(const change of [d=>d.byPoi[facts.owner].catalogVersion='future',d=>d.byPoi[facts.owner].trait.roll=0,d=>d.byPoi[facts.owner].trait.sourceRow=0,d=>d.rollCounters[facts.owner].trait=0,d=>d.byPoi['poi:9:9,0']=d.byPoi[facts.owner],d=>d.byPoi[facts.owner].site.selection='d100',d=>d.byPoi[facts.owner].trait.references=[{printedPage:7,resolution:'auto_roll'}]]){const bad=structuredClone(state);change(bad);assert.throws(()=>validateKnaveContent(bad,live));assert.deepEqual(state,before);}
+ assert.throws(()=>fillKnaveContent(state,c,[facts,facts],42));assert.throws(()=>fillKnaveContent(state,c,[{...facts,forest:undefined}],42));
+ const dry=knaveCompatibleRows('locations',facts),river=knaveCompatibleRows('locations',{...facts,river:true});assert.ok(!dry.includes(34)&&!dry.includes(44)&&!river.includes(73)&&!river.includes(98));
+ assert.ok(knaveCompatibleRows('locations',{...facts,rapids:true}).includes(73));assert.ok(knaveCompatibleRows('locations',{...facts,waterfall:true}).includes(98));
+ assert.ok(!knaveCompatibleRows('structures',facts).includes(81));assert.ok(knaveCompatibleRows('structures',{...facts,crossings:['bridge']}).includes(81));
+ assert.deepEqual(knaveCompatibleRows('locations',knaveFactsFixture('waterPoi:2,0')),[]);
+});
 
 const knaveContext=()=>({hexes:new Set(['0,0','1,0']),dryHexes:new Set(['0,0','1,0']),pois:new Set(['poi:1:0,0','poi:2:1,0'])});
 test('Knave profile refuses unknown scales, legacy injection, MB and dangling annotations without mutation',()=>{
@@ -52,14 +86,17 @@ test('Knave interaction requires a bounded separate clue and mode changes preser
 test('Knave POI remapping preserves coordinate flags, refuses collisions and previews losses before pruning',()=>{
  const source=knaveContext(),from='poi:1:0,0',to='poi:3:1,0';
  const layer=setKnaveDiscovery(setKnaveDifficulty(newKnaveLayer(),source,'0,0','difficult'),source,from,'interaction','Test clue');
+ layer.content=knaveContentFixture(from);
  const before=structuredClone(layer),target={...source,pois:new Set([to,'poi:2:1,0'])};
  const moved=remapKnavePois(layer,source,target,new Map([[from,to]]));
  assert.deepEqual(moved.discoveryByPoi[to],layer.discoveryByPoi[from]);assert.equal(moved.discoveryByPoi[from],undefined);
  assert.deepEqual(moved.difficultyByHex,{'0,0':'difficult'});assert.deepEqual(layer,before);
+ assert.deepEqual(moved.content.byPoi[to],layer.content.byPoi[from]);assert.deepEqual(moved.content.rollCounters[to],layer.content.rollCounters[from]);assert.equal(moved.content.byPoi[from],undefined);
  assert.throws(()=>remapKnavePois(layer,source,source,new Map([[from,'poi:2:1,0']])));
  assert.throws(()=>remapKnavePois(layer,source,{...target,pois:new Set()},new Map([[from,to]])));
  const removed={hexes:new Set(['1,0']),dryHexes:new Set(['1,0']),pois:new Set()};
- assert.deepEqual(knaveLosses(layer,removed),[{kind:'difficulty',key:'0,0'},{kind:'discovery',key:from}]);
+ assert.deepEqual(knaveLosses(layer,removed),[{kind:'difficulty',key:'0,0'},{kind:'discovery',key:from},{kind:'content',key:from}]);
+ const detached=structuredClone(layer);for(const loss of knaveLosses(layer,removed))dropKnaveLoss(detached,loss);assert.deepEqual(detached.content,{schemaVersion:1,byPoi:{},rollCounters:{}});assert.deepEqual(layer,before);
  assert.throws(()=>remapKnavePois(layer,source,removed,new Map()));assert.deepEqual(layer,before);
 });
 const owner={kind:'region',id:1};

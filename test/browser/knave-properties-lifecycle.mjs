@@ -4,11 +4,12 @@ import {fileURLToPath} from 'node:url';
 import {regionFixture} from '../helpers/region-fixture.mjs';
 import {createGenerationState} from '../../src/worldRandom.ts';
 import {newKnaveLayer} from '../../src/knaveClassic.ts';
+import {knaveContentFixture} from '../helpers/knave-fixture.mjs';
 
 // One DOM lifecycle scenario, extending the existing tags workflow. The Node
 // import case checks transaction data; this checks native controls and gates.
 export async function runKnavePropertiesLifecycle({page,snapshot,root}) {
- const out=new URL('reports/KNAVE2-CLASSIC1/',root);await fs.mkdir(out,{recursive:true});
+ const out=new URL('reports/HX-BL-041/KNAVE2-CLASSIC1/',root);await fs.mkdir(out,{recursive:true});
  await page.reload();await page.getByRole('button',{name:'Переключить на русский',exact:true}).click();
  const checkbox=page.getByRole('checkbox',{name:'Knave 2e',exact:true});
  const empty=await snapshot();await checkbox.check();const chosen=await snapshot();
@@ -18,11 +19,13 @@ export async function runKnavePropertiesLifecycle({page,snapshot,root}) {
  // The shared fixture is v7. Upgrade its complete required v9/v10 envelope,
  // including empty sea identities, before asking the real importer to load it.
  const data=regionFixture();data.version=10;data.generation=createGenerationState(42);data.map.seas=[];data.map.nextSeaId=1;data.map.editorNames={};data.map.knave=newKnaveLayer();
+ data.map.regions[0].pointOfInterestKinds['2,0']='ruins';data.map.knave.content=knaveContentFixture('poi:1:2,0');
  await page.locator('input[type=file]').setInputFiles({name:'knave-v10.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(data))});
  await page.waitForFunction(()=>document.querySelector('input[aria-label="Knave 2e"]')?.checked&&document.querySelector('input[aria-label="Knave 2e"]')?.disabled);
  assert.equal(await checkbox.isChecked(),true);assert.equal(await checkbox.isDisabled(),true);
  const info=page.locator('.info-block--hex'),panel=info.locator('[data-knave-panel]');
  assert.match(await panel.innerText(),/При прохождении/);
+ assert.equal(await panel.locator('.knave-result').count(),2);await panel.locator('.knave-result').first().locator('summary').click();assert.match(await panel.innerText(),/совместимый пул/);
  const before=await snapshot();await page.getByRole('button',{name:'Редактировать',exact:true}).click();
  const discovery=panel.getByRole('combobox',{name:'Обнаружение',exact:true});
  await discovery.selectOption('interaction');await page.getByRole('button',{name:'Готово',exact:true}).click();

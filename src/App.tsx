@@ -1,4 +1,4 @@
-import {newKnaveLayer,setKnaveDifficulty,setKnaveDiscovery,type Difficulty,type Discovery,validateKnaveLayer,remapKnavePois,knaveLosses,type KnaveLayer,type KnaveContext} from './knaveClassic';
+import {knaveLossValue,dropKnaveLoss,newKnaveLayer,setKnaveDifficulty,setKnaveDiscovery,type Difficulty,type Discovery,validateKnaveLayer,remapKnavePois,knaveLosses,type KnaveLayer,type KnaveContext} from './knaveClassic';
 import {hasCentralPoi,preparePoiMove,poiLocatorKey,type PoiLocator,assertPoiEditorNames,poiNameLocators,renamePoiEditorName,PoiMoveError,type EditorNames} from './manualPois';
 import {migrateSeas,prepareSeaIdentity,withLegacySeas,type SeaRecord,type SeaChoices} from './seaIdentity';
 import {prepareWaterGeometry,connectedWaterBody,waterKindAt,WaterEditError,compareWaterHexes,type WaterEdit,type WaterKind} from './manualWater';
@@ -1406,7 +1406,7 @@ function prepareWaterMapEdit(map:MapSnapshot,edit:WaterEdit,options:WaterEditOpt
   if(map.knave){
     const removed=knaveLosses(map.knave,knaveMapContext(candidate));
     const layer=structuredClone(map.knave);
-    for(const loss of removed){const data=loss.kind==='difficulty'?layer.difficultyByHex:layer.discoveryByPoi;losses.push({id:`knave:${loss.kind}:${loss.key}`,type:'knave',key:loss.key,value:{kind:loss.kind,data:data[loss.key]}});delete data[loss.key];}
+    for(const loss of removed){losses.push({id:`knave:${loss.kind}:${loss.key}`,type:'knave',key:loss.key,value:{kind:loss.kind,data:knaveLossValue(layer,loss)}});dropKnaveLoss(layer,loss);}
     candidate={...candidate,knave:layer};
   }
   candidate=checkedRiverMap({...candidate,editorNames:authored,toponyms:names,tags});assertGeneratedIds(candidate);
@@ -13456,8 +13456,8 @@ export function App() {
       // Prepare every clone before the first history/revision/state write.
       map={...map,tags:reconcileTags(map.tags??emptyTags(),map,captureMap(),generationRef.current.masterSeed,generationMode==='mythic')};
       if(map.knave){const losses=knaveLosses(map.knave,knaveMapContext(map));
-        if(losses.length){if(!window.confirm(language==='ru'?`Изменение удалит данные проходимости/обнаружения Knave (${losses.length}). Отмена вернёт их.`:`This edit removes Knave terrain/discovery data (${losses.length}). Undo can restore it.`))return false;
-          const layer=structuredClone(map.knave);for(const loss of losses){if(loss.kind==='difficulty')delete layer.difficultyByHex[loss.key];else delete layer.discoveryByPoi[loss.key];}map={...map,knave:layer};}}
+        if(losses.length){if(!window.confirm(language==='ru'?`Изменение удалит содержимое точек и данные проходимости/обнаружения Knave (${losses.length}). Отмена вернёт их.`:`This edit removes Knave point content and terrain/discovery data (${losses.length}). Undo can restore it.`))return false;
+          const layer=structuredClone(map.knave);for(const loss of losses){dropKnaveLoss(layer,loss);}map={...map,knave:layer};}}
       checkedRiverMap(map);
       const prepared = structuredClone({ ...map, toponyms: reconcileNames ? synchronizeToponyms(map.toponyms,
         getToponymEntities(map.regions, map.rivers, map.hexTerrainByKey), map.toponymSeed) : map.toponyms });
@@ -13996,7 +13996,7 @@ export function App() {
       && nextRiverId===1 && !riverFeatureOverrides.rapids.length && !riverFeatureOverrides.waterfalls.length
       && !knaveRef.current && selectedHex?.q===START_HEX.q && selectedHex?.r===START_HEX.r) return;
     if(Object.keys(editorNamesRef.current).length){setEditError(language==='ru'?`Сброс удалит авторское имя «${Object.values(editorNamesRef.current)[0]?.ru}». Сначала очистите его явно.`:`Reset would remove the authored name “${Object.values(editorNamesRef.current)[0]?.en}”. Clear it explicitly first.`);return;}
-    if(knaveRef.current&&(Object.keys(knaveRef.current.difficultyByHex).length||Object.keys(knaveRef.current.discoveryByPoi).length)&&!window.confirm(language==='ru'?'Сброс удалит проходимость и данные обнаружения Knave. Отмена вернёт их.':'Reset removes Knave terrain and discovery data. Undo can restore them.'))return;
+    if(knaveRef.current&&(Object.keys(knaveRef.current.difficultyByHex).length||Object.keys(knaveRef.current.discoveryByPoi).length||Object.keys(knaveRef.current.content?.byPoi??{}).length)&&!window.confirm(language==='ru'?'Сброс удалит содержимое точек, проходимость и данные обнаружения Knave. Отмена вернёт их.':'Reset removes Knave point content, terrain and discovery data. Undo can restore them.'))return;
     if (!confirmNotesRemoval({})) return;
     const before=captureDocument();
     const newGeneration = createGenerationState(newWorldSeed());
@@ -14054,7 +14054,7 @@ export function App() {
   const retainedKnaveCheckpoint=(snapshot:MapSnapshot)=>{
     const current=knaveRef.current;if(!current)return snapshot.knave;
     const layer=structuredClone(current),target=knaveMapContext(snapshot);
-    for(const loss of knaveLosses(layer,target)){if(loss.kind==='difficulty')delete layer.difficultyByHex[loss.key];else delete layer.discoveryByPoi[loss.key];}
+    for(const loss of knaveLosses(layer,target)){dropKnaveLoss(layer,loss);}
     validateKnaveLayer(layer,target,10,'classic');return layer;
   };
   // Удаление последнего региона = восстановление снимка состояния, сделанного
@@ -14126,7 +14126,7 @@ export function App() {
   };
   const checkPoiNameCheckpoint=(checkpoint:MapSnapshot)=>{try{retainPoiNames(checkpoint,editorNamesRef.current);
     const losses=knaveRef.current?knaveLosses(knaveRef.current,knaveMapContext(checkpoint)):[];
-    if(losses.length&&!window.confirm(language==='ru'?`Контрольная точка удалит данные проходимости/обнаружения Knave (${losses.length}). Отмена вернёт их.`:`The checkpoint removes Knave terrain/discovery data (${losses.length}). Undo can restore it.`))return false;
+    if(losses.length&&!window.confirm(language==='ru'?`Контрольная точка удалит содержимое точек и данные проходимости/обнаружения Knave (${losses.length}). Отмена вернёт их.`:`The checkpoint removes Knave point content and terrain/discovery data (${losses.length}). Undo can restore it.`))return false;
     return true;}catch(error){setEditError(authoredNameError(error,language)??(language==='ru'?'Контрольная точка удалит авторское имя. Сначала очистите его явно.':'The checkpoint would remove an authored name. Clear it explicitly first.'));return false;}};
   const deleteLastRegion = () => {
     if (mutationBlocked() || history.length === 0) return;
@@ -15149,6 +15149,8 @@ export function App() {
     () => setEditingPoiHexKey(selectedHexKey)) : null}{selectedWaterPoiKind?renderName(`waterPoi:${selectedHexKey}`):null}</>;
   const selectedPoiSource:PoiLocator|null=selectedHexKey?(selectedWaterPoiKind?{kind:'water',hexKey:selectedHexKey}:selectedRegion&&poiNameLocators({regions,waterPoiByKey}).has(`poi:${selectedRegion.id}:${selectedHexKey}`)?{kind:'land',regionId:selectedRegion.id,hexKey:selectedHexKey}:null):null;
   const knaveDiscoveryKey=selectedPoiSource?poiLocatorKey(selectedPoiSource):null;
+  const selectedKnaveContent=knaveDiscoveryKey?knave?.content?.byPoi[knaveDiscoveryKey]:undefined;
+  const renderKnaveResult=(result:{ru:string;references:{printedPage:number}[]},table:string,row:number,die=false)=><details className="knave-result"><summary>{die?`d100=${row===100?'00':row} · `:''}{result.ru}{language==='en'?<small> RU</small>:null}</summary><small>{`Knave 2e · Torbin RU1.0 · ${table} · ${language==='ru'?'строка':'row'} ${row}`}{!die?` · ${language==='ru'?'совместимый пул':'compatible pool'}`:''}{result.references.map((r,i)=><span key={i}>{` · ${language==='ru'?'ссылка не разрешена: стр.':'unresolved reference: p.'} ${r.printedPage}`}</span>)}</small></details>;
   const acceptedDiscovery=knaveDiscoveryKey?knave?.discoveryByPoi[knaveDiscoveryKey]:undefined;
   const knaveDifficulty=knaveDraft?.difficulty??(selectedHexKey?knave?.difficultyByHex[selectedHexKey]:undefined)??'unspecified';
   const knaveDiscovery=knaveDraft?.mode??acceptedDiscovery?.mode??'passage',knaveClue=knaveDraft?.clueText??acceptedDiscovery?.clueText??'';
@@ -15156,6 +15158,7 @@ export function App() {
   const difficultyLabels:Record<Difficulty,string>=language==='ru'?{unspecified:'Не задана',normal:'Обычная',difficult:'Трудная'}:{unspecified:'Unspecified',normal:'Normal',difficult:'Difficult'};
   const discoveryLabels:Record<Discovery,string>=language==='ru'?{passage:'При прохождении',exploration:'При исследовании',interaction:'Секрет · взаимодействие'}:{passage:'On passage',exploration:'By exploration',interaction:'Secret · interaction'};
   const knavePanel=knave&&generationMode==='classic'&&selectedHexKey&&knaveMapContext(captureMap()).hexes.has(selectedHexKey)?<div data-knave-panel className="knave-properties">
+    {selectedKnaveContent&&<div className="knave-results">{selectedKnaveContent.site?renderKnaveResult(selectedKnaveContent.site,selectedKnaveContent.site.table,selectedKnaveContent.site.sourceRow):null}{renderKnaveResult(selectedKnaveContent.trait,'place_traits',selectedKnaveContent.trait.sourceRow,true)}</div>}
     {!isSelectedLake&&!isSelectedSea&&<div className="direct-line"><label>{language==='ru'?'Проходимость: ':'Difficulty: '}{editMode?<select aria-label={language==='ru'?'Проходимость':'Difficulty'} value={knaveDifficulty} disabled={knaveControlsBlocked} onChange={e=>changeKnaveDraft({difficulty:e.target.value as Difficulty},knaveDraft)}>{Object.entries(difficultyLabels).map(([v,label])=><option key={v} value={v}>{label}</option>)}</select>:difficultyLabels[knaveDifficulty]}</label></div>}
     {knaveDiscoveryKey&&<><div className="direct-line"><label>{language==='ru'?'Обнаружение: ':'Discovery: '}{editMode?<select aria-label={language==='ru'?'Обнаружение':'Discovery'} value={knaveDiscovery} disabled={knaveControlsBlocked} onChange={e=>changeKnaveDraft({mode:e.target.value as Discovery},knaveDraft)}>{Object.entries(discoveryLabels).map(([v,label])=><option key={v} value={v}>{label}</option>)}</select>:discoveryLabels[knaveDiscovery]}</label></div>
     {editMode?<label className="knave-clue">{language==='ru'?'Улика (тот же гекс)':'Clue (same hex)'}<textarea aria-label={language==='ru'?'Улика':'Clue'} aria-invalid={!!knaveError} aria-describedby={knaveError?'knave-clue-error':undefined} maxLength={512} rows={2} value={knaveClue} disabled={knaveControlsBlocked} onChange={e=>changeKnaveDraft({clueText:e.target.value},knaveDraft)} onCompositionStart={()=>{knaveComposing.current=true;}} onCompositionEnd={()=>{knaveComposing.current=false;}} /></label>:knaveClue?<p className="knave-clue-text">{language==='ru'?'Улика: ':'Clue: '}{knaveClue}</p>:null}</>}
@@ -15176,7 +15179,7 @@ export function App() {
   </div>:null;
   const waterLossText=(loss:WaterLoss):string=>{
     const ru=language==='ru';
-    if(loss.type==='knave'){const v=loss.value as {kind:string;data:{mode?:string;clueText?:string}|string};return `${ru?'Удалить':'Delete'} ${v.kind==='difficulty'?(ru?'отметку проходимости':'terrain difficulty'):(ru?'способ обнаружения и улику':'discovery and clue')} · ${loss.key}`;}
+    if(loss.type==='knave'){const v=loss.value as {kind:string;data:{mode?:string;clueText?:string}|string};return `${ru?'Удалить':'Delete'} ${v.kind==='difficulty'?(ru?'отметку проходимости':'terrain difficulty'):v.kind==='content'?(ru?'содержимое точки':'point content'):(ru?'способ обнаружения и улику':'discovery and clue')} · ${loss.key}`;}
     if(loss.type==='lake')return `${ru?'Озеро исчезнет':'Lake will be removed'}: ${waterName(loss.key)}`;
     if(loss.type==='name'){const v=loss.value as {ru:string;en:string;seaInto?:number[]};return `${ru?'Удалить название':'Delete name'}${loss.key.startsWith('sea:')?` · ${ru?'море':'sea'} #${loss.key.slice(4)}`:''}: ${v.ru} / ${v.en}${v.seaInto?(v.seaInto.length?` · ${ru?'слияние в':'merged into'} ${v.seaInto.map(id=>`${waterName(`sea:${id}`)} (#${id})`).join(', ')}`:` · ${ru?'морской объект исчезнет':'no sea remains'}`):''}`;}
     if(loss.type==='tag'){const v=loss.value as TagState['instances'][number],def=mythicDefinitions[v.definitionId];const text=v.texts.map((t,i)=>Object.entries({...t,...v.overrides?.[i]}).map(([l,s])=>`${l}: ${s}`).join(' / ')).join(' · ');return `${ru?'Удалить тег':'Delete tag'} ${def?.label[language]??v.definitionId}: ${text} (${v.values.map(v=>v.join('+')).join(' / ')})`;}

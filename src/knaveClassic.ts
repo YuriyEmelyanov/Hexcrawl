@@ -1,3 +1,4 @@
+import {validateKnaveContent,type KnaveContentState} from './tags/knave.ts';
 /** KNC-1.0 detached profile/annotation contracts. App v10 wiring is separate.
  * No ambient RNG, geography generation, source corpus, or UI side effects. */
 export type KnaveProfile = {
@@ -11,6 +12,7 @@ export type KnaveLayer = {
   profile: KnaveProfile;
   difficultyByHex: Record<string, Exclude<Difficulty, 'unspecified'>>;
   discoveryByPoi: Record<string, PoiDiscovery>;
+  content?: KnaveContentState;
 };
 /** Live sets come from the accepted candidate document, not the old map. */
 export type KnaveContext = {hexes: ReadonlySet<string>; dryHexes: ReadonlySet<string>; pois: ReadonlySet<string>};
@@ -41,8 +43,9 @@ export function newKnaveLayer(): KnaveLayer {
 export function validateKnaveLayer(value: unknown, context: KnaveContext, saveVersion: number, mode: 'classic' | 'mythic'): asserts value is KnaveLayer | undefined {
   if (value === undefined) return;
   if (saveVersion !== 10 || mode !== 'classic') fail('knave_profile_version_or_mode');
-  if (!record(value) || !exactKeys(value, ['profile','difficultyByHex','discoveryByPoi'])) fail('knave_layer');
+  if (!record(value) || !exactKeys(value, own(value??{},'content')?['profile','difficultyByHex','discoveryByPoi','content']:['profile','difficultyByHex','discoveryByPoi'])) fail('knave_layer');
   const layer = value as Record<string, unknown>;
+  if(own(layer,'content'))try{validateKnaveContent(layer.content,context.pois);}catch{fail('knave_content');}
   const p = layer.profile;
   if (!record(p) || !exactKeys(p, ['id','version','physicalHex']) || p.id !== 'classic.knave2' || p.version !== 1) fail('knave_profile');
   const scale = (p as Record<string, unknown>).physicalHex;
@@ -97,15 +100,30 @@ export function remapKnavePois(layer: KnaveLayer, source: KnaveContext, target: 
   const entries = Object.entries(layer.discoveryByPoi).map(([key, value]) => [moves.get(key) ?? key, value] as const);
   if (new Set(entries.map(([key]) => key)).size !== entries.length) fail('knave_poi_collision');
   const next = {...structuredClone(layer), discoveryByPoi: Object.fromEntries(entries.map(([key, value]) => [key, {...value}]))};
+  if(next.content){
+    const remap=<T,>(values:Record<string,T>):Record<string,T>=>{const pairs=Object.entries(values).map(([k,v])=>[moves.get(k)??k,v]as const);if(new Set(pairs.map(([k])=>k)).size!==pairs.length)fail('knave_poi_collision');return Object.fromEntries(pairs);};
+    next.content={schemaVersion:1,byPoi:remap(next.content.byPoi),rollCounters:remap(next.content.rollCounters)};
+  }
   validateKnaveLayer(next, target, 10, 'classic');
   return next;
 }
 
 /** Explicit loss preview for candidate water/deletion operations. The caller
  * must obtain existing confirmation before dropping any listed payload. */
-export function knaveLosses(layer: KnaveLayer, target: KnaveContext): {kind: 'difficulty' | 'discovery'; key: string}[] {
+export type KnaveLoss={kind:'difficulty'|'discovery'|'content';key:string};
+export function knaveLosses(layer: KnaveLayer, target: KnaveContext): KnaveLoss[] {
   return [
     ...Object.keys(layer.difficultyByHex).filter(key => !target.hexes.has(key)).map(key => ({kind: 'difficulty' as const, key})),
-    ...Object.keys(layer.discoveryByPoi).filter(key => !target.pois.has(key)).map(key => ({kind: 'discovery' as const, key}))
+    ...Object.keys(layer.discoveryByPoi).filter(key => !target.pois.has(key)).map(key => ({kind: 'discovery' as const, key})),
+    ...Object.keys(layer.content?.byPoi??{}).filter(key=>!target.pois.has(key)).map(key=>({kind:'content' as const,key}))
   ];
+}
+/** Only on an already detached candidate after the existing loss gate. */
+export function knaveLossValue(layer:KnaveLayer,loss:KnaveLoss):unknown {
+  return loss.kind==='difficulty'?layer.difficultyByHex[loss.key]:loss.kind==='discovery'?layer.discoveryByPoi[loss.key]:{snapshot:layer.content?.byPoi[loss.key],counters:layer.content?.rollCounters[loss.key]};
+}
+export function dropKnaveLoss(layer:KnaveLayer,loss:KnaveLoss):void {
+  if(loss.kind==='difficulty')delete layer.difficultyByHex[loss.key];
+  else if(loss.kind==='discovery')delete layer.discoveryByPoi[loss.key];
+  else if(layer.content){delete layer.content.byPoi[loss.key];delete layer.content.rollCounters[loss.key];}
 }

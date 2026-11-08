@@ -28,6 +28,14 @@ function drawDie(key:string,sides:number):number {
   const limit=Math.floor(0x100000000/sides)*sides;
   for(let attempt=0;;attempt++){const n=hash(`${key}:${attempt}`);if(n<limit)return n%sides+1;}
 }
+/** Domain adapters reuse the tag sampler without pretending a filtered pool is
+ * a printed die. A one-entry pool is valid. Existing rollTag keys are unchanged. */
+export function drawTagIndex(seed:number,key:string,counter:number,size:number):{index:number;nextCounter:number} {
+  if(!Number.isSafeInteger(seed)||seed<0||seed>0xffffffff||typeof key!=='string'||!key.length||key.length>240
+    ||!Number.isSafeInteger(counter)||counter<0||counter>=Number.MAX_SAFE_INTEGER
+    ||!Number.isSafeInteger(size)||size<1||size>1000000)throw Error('Invalid tag choice');
+  return {index:drawDie(`tag-choice-v1:${seed}:${key}:${counter}`,size)-1,nextCounter:counter+1};
+}
 export function resolved(def:TagDefinition,values:number[][]):{entryIds:string[];texts:Texts[]} {
   const indices=values.map(v=>v.reduce((a,b)=>a+b,0)-1);
   if(def.resolver==='product') {

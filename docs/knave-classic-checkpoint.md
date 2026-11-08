@@ -31,6 +31,30 @@ other property changes. Dry difficulty remains independent of POI location.
 The source content catalog/generation and complete new-map feature walkthrough
 remain required before review_ready. The checkpoint UI alone is not a working
 Knave content generator and must not be released as a completed profile.
+
+The catalog preparation checkpoint supplies four100-row RU tables privately
+and a public source-free300-row eligibility policy. The next code checkpoint
+adds `tags/knave.ts`: a catalog/context adapter using the existing tag hash
+sampler via `drawTagIndex`. Compatible-pool choices and the real trait d100 are
+stored distinctly. POI snapshots retain source rows, text, unresolved references,
+catalog/source identity and independent counters. Settlement/water owners receive
+a trait without changing their identity; no trait changes discovery or terrain.
+
+Optional `map.knave.content` participates in validation, exact save/history,
+E7/E8 address remapping and E6/checkpoint/reset loss gates. The same panel displays
+accepted content as escaped text with keyboard/touch source disclosure. Old v10
+layers without content remain valid. Unknown catalog versions, dangling owners,
+invalid rows/counters and misleading die/pool metadata are rejected. The public
+code contains authored fixtures only; the actual400-row catalog is not transferred.
+
+This is a detached adapter and persistence/display checkpoint. Actual App
+generation still needs accepted-map fact construction, neutral POI markers and
+atomic invocation for newly generated owners. It must not be presented as a
+completed Knave map generator or independent source/corpus review. Current tests
+extend the old lifecycle cases for the new payload; two new useful Node contracts
+cover compatible selection/replay and atomic catalog/context refusals. The
+existing browser lifecycle is extended, not duplicated. Its screenshots are now
+under the existing HX-BL-041 artifact directory so they can be retrieved.
 No new source text, full-book research, score award or publication is included.
 
 Test governance: the four existing Knave contract cases remain useful. Existing

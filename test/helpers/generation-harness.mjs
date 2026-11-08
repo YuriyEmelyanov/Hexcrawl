@@ -70,11 +70,12 @@ export function createGenerationHarness(seed = 1, search = '', language = 'ru') 
   });
   const modeCache = new Map();
   function loadMode(url) {
+    if(url.pathname.endsWith(".json"))return {default:JSON.parse(fs.readFileSync(url,"utf8"))};
     if (modeCache.has(url.href)) return modeCache.get(url.href).exports;
     const loaded = { exports: {} }; modeCache.set(url.href, loaded);
     const code = ts.transpileModule(fs.readFileSync(url, 'utf8'), {compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2020}}).outputText;
     const execute = vm.runInContext(`(function(exports,module,require){${code}\n})`,context);
-    execute(loaded.exports,loaded,name=>loadMode(new URL(name.endsWith('.ts')?name:`${name}.ts`,url)));
+    execute(loaded.exports,loaded,name=>loadMode(new URL(name.endsWith('.ts')||name.endsWith('.json')?name:`${name}.ts`,url)));
     return loaded.exports;
   }
   Object.assign(diagnostics.exports, loadMode(new URL('../../src/generationDiagnostics.ts', import.meta.url)));

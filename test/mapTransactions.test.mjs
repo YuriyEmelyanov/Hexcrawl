@@ -1,3 +1,4 @@
+import {knaveContentFixture} from './helpers/knave-fixture.mjs';
 import {seaFixture} from './helpers/sea-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -645,13 +646,13 @@ test('E6 real POI/name/tag losses require every explicit answer and Undo restore
  const owner={kind:'poi',regionId:1,hexKey:'0,0'};let tags=rollTag(emptyTags(),owner,mythicDefinitions['mb.feature'],42);tags=editTag(tags,owner,'mb.feature',0,'ru','Авторский текст');f.map.tags=tags;
  f.map.toponyms.names['settlement:1:0,0']={ru:'Авторская деревня',en:'Authored Village',kind:'settlement',model:'germanic',revision:4};
  const initial=await waterSetup(f),named=stable(initial.render());named.map.editorNames={'poi:1:0,0':{en:'Explicit authored',ru:'Явное авторское'}};
- named.map.knave={profile:{id:'classic.knave2',version:1,physicalHex:{length:6,unit:'mile',measurementConvention:null}},difficultyByHex:{'0,0':'difficult'},discoveryByPoi:{'poi:1:0,0':{mode:'interaction',clueText:'Authored test clue'}}};
+ named.map.knave={profile:{id:'classic.knave2',version:1,physicalHex:{length:6,unit:'mile',measurementConvention:null}},difficultyByHex:{'0,0':'difficult'},discoveryByPoi:{'poi:1:0,0':{mode:'interaction',clueText:'Authored test clue'}},content:knaveContentFixture('poi:1:0,0',{kind:'settlement'})};
  const h=await waterSetup(named),before=stable(h.render());h.render().startWaterDraft('lake');assert.equal(h.render().finishWaterDraft(),false);
- let a=h.render(),losses=a.waterPreview.plan.losses;assert.deepEqual(serial(losses.map(l=>l.type).sort()),['knave','name','name','poi','tag']);
+ let a=h.render(),losses=a.waterPreview.plan.losses;assert.deepEqual(serial(losses.map(l=>l.type).sort()),['knave','knave','name','name','poi','tag']);
  assert.equal(a.finishWaterDraft(a.waterDraft,true),false);assert.deepEqual(stable(h.render()),before);
  a=h.render();a.changeWaterDraft(a.waterDraft,{options:{acceptedLosses:[losses[0].id]},preview:true});assert.equal(h.render().finishWaterDraft(h.render().waterDraft,true),false);assert.deepEqual(stable(h.render()),before);
  a=h.render();a.changeWaterDraft(a.waterDraft,{options:{acceptedLosses:losses.map(l=>l.id)},preview:true});assert.equal(h.render().finishWaterDraft(h.render().waterDraft,true),true);
- const after=stable(h.render());assert.equal(after.map.regions[0].pointsOfInterest.length,0);assert.deepEqual(after.map.editorNames,{});assert.equal(after.map.tags.instances.length,0);assert.deepEqual(after.map.knave.discoveryByPoi,{});assert.equal(after.map.knave.difficultyByHex['0,0'],'difficult');assert.deepEqual(after.generation,before.generation);assert.equal(after.map.gmNotesByHexKey['0,0'],before.map.gmNotesByHexKey['0,0']);assertUndoRedo(h,before,after);
+ const after=stable(h.render());assert.equal(after.map.regions[0].pointsOfInterest.length,0);assert.deepEqual(after.map.editorNames,{});assert.equal(after.map.tags.instances.length,0);assert.deepEqual(after.map.knave.discoveryByPoi,{});assert.deepEqual(after.map.knave.content,{schemaVersion:1,byPoi:{},rollCounters:{}});assert.equal(after.map.knave.difficultyByHex['0,0'],'difficult');assert.deepEqual(after.generation,before.generation);assert.equal(after.map.gmNotesByHexKey['0,0'],before.map.gmNotesByHexKey['0,0']);assertUndoRedo(h,before,after);
 });
 test('E6 water cancel/no-op/stale callbacks and snapshot failure preserve map and both history branches',async()=>{
  const h=await waterSetup();h.render().setSelectedPoiKind('lair');h.render().undoMap();const before=stable(h.render()),stacks=serial([h.render().undoHistory,h.render().redoHistory]);
