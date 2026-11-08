@@ -12932,6 +12932,108 @@
       "readiness": "research_proposed_requires_strategist_selection_and_analyst_specification",
       "implementation_authorized": false,
       "release_authorized": false
+    },
+    {
+      "task_id": "HX-BL-051",
+      "title": "Детализировать часть карты в другом масштабе с сохранением крупных объектов",
+      "status": "proposed",
+      "problem": "Ни расширение карты на том же уровне, ни неподвижная подложка не подтверждают согласованность вложенных карт. Общее правило есть, проверенного WWN-профиля не было.",
+      "benefit": "Ведущий готовит подробную начальную область, сохраняя узнаваемую географию общего региона.",
+      "game_editions": [
+        "Worlds Without Number Deluxe, copyright2021; supplied Russian translation Lock-key; translation revision and English collation unverified"
+      ],
+      "primary_scenario": "create",
+      "layer": "L1",
+      "ranking_version": "three-scenario-ranks-1.4-create-evidence",
+      "requirement_refs": [
+        "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-KNG-001-L1"
+      ],
+      "canonical_rule_ids": [
+        "map.nested_scales"
+      ],
+      "binding_refs": [
+        "agent-work/rules/game-bindings.json#WWN-RU-KNG-001-L1"
+      ],
+      "criterion_ids": [
+        "S06-C04",
+        "S02-C02"
+      ],
+      "scope": "Связать выбранную область обзорной карты с подробной, перенести известные крупные объекты и сохранять местные детали. Стратег выбирает объём, аналитик разрешает неизвестные параметры. Не создавать полный генератор королевств или live-sync без отдельного объёма.",
+      "dependencies": [
+        "Prepared regional map; selected starting area; GM-known spatial correspondence"
+      ],
+      "acceptance_checks": [
+        {
+          "id": "WWN-RU-KNG-001-L1-AC01",
+          "given": "Ведущий выделил областьKна региональной карте. Крупный лесAцеликом внутри; хребетBпересекает границу, ведущий задал относящуюся кKчастьB1; пустыняCцеликом снаружи.",
+          "when": "Подготовить карту королевстваK.",
+          "expected": "На ней перенесеныAиB1 в соответствующих местах, с понятной связью с региональными объектами; Cне перенесена. Новые случайные результаты не заменяют унаследованныеA/B.",
+          "requirement_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-KNG-001-L1"
+        },
+        {
+          "id": "WWN-RU-KNG-001-L1-AC02",
+          "given": "На картеKуже перенесены региональная рекаRи хребетB. Ведущий добавляет местный небольшой ручейrи озероL.",
+          "when": "Добавить местную географическую детализацию.",
+          "expected": "R/Bсохранены; r/Lдобавлены на картеKкак более мелкие объекты. На обзорной карте региона r/Lне появляются принудительно и не заменяют R.",
+          "requirement_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-KNG-001-L1"
+        },
+        {
+          "id": "WWN-RU-KNG-001-L1-AC03",
+          "given": "Региональный вулканический хребетVуже перенесён. Новый местный результат «вулкан» ведущий конкретизировал как одиночную вершинуv.",
+          "when": "Детализировать местный результат.",
+          "expected": "vсохранена как локальная вершина; Vне заменён новой региональной цепью. Пример не задаёт обязательный физический размер вулкана.",
+          "requirement_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-KNG-001-L1"
+        },
+        {
+          "id": "WWN-RU-KNG-001-L1-AC04",
+          "given": "СвязьKс региональной областью задана ведущим; численный коэффициент масштабов не указан.",
+          "when": "Подготовить схематическую картуK.",
+          "expected": "Сохраняются заданные пространственные соответствия; коэффициент и точные расстояния отмечены неизвестными, не выведены из шестимильного гекса другого абзаца.",
+          "requirement_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-KNG-001-L1"
+        },
+        {
+          "id": "WWN-RU-KNG-001-L1-AC05",
+          "given": "ВKесть унаследованныеA/Bи местное озероL. Ведущий меняет описание/положение только местногоL, не меняя крупных объектов.",
+          "when": "Сохранить местную правку.",
+          "expected": "A/Bи региональная география сохранены; правкаLостаётся местной. Автоматическая двусторонняя синхронизация крупных объектов не заявлена.",
+          "requirement_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-KNG-001-L1"
+        },
+        {
+          "id": "WWN-RU-KNG-001-L1-AC06",
+          "given": "Подготовлены обзорная карта иKсо связямиA/B, ручьёмrи озеромL.",
+          "when": "Сохранить и повторно открыть обе карты.",
+          "expected": "Те же крупные объекты и их соответствия сохранены; r/Lостаются местными деталями, генерация и перенос автоматически не повторены.",
+          "requirement_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-KNG-001-L1"
+        }
+      ],
+      "expected_evidence": {
+        "source": "WWN suppliedRU printed121–122/PDF124–125 selected paragraphs",
+        "current_runtime": "unknown",
+        "future_product": "Actual selected-profile examples on exact SHA; no inherited DND5 acceptance"
+      },
+      "score_delta": null,
+      "source_limitations": [
+        "Full book is available but only stated bounded corpus read; no complete WWN thematic audit.",
+        "Source applicability is not usage prevalence or audience size.",
+        "No full book, art, or complete content table is published in derived records.",
+        "Как точно преобразуются координаты и задаётся физическое отношение масштабов — неизвестно.",
+        "Частично пересекающие выбранную область объекты и пограничные случаи требуют решения ведущего/аналитика, алгоритм не выведен из текста.",
+        "Правила двустороннего изменения унаследованных объектов и конфликтов версий не заданы.",
+        "Английская сверка и реализация профиля наSHAне подтверждены."
+      ],
+      "duplication_review": {
+        "related_tasks": [
+          "HX-BL-031",
+          "HX-BL-027",
+          "HX-BL-042"
+        ],
+        "decision": "031 extends same-level area;027 fixed background;042 physical hex measurement. Nested-map correspondence uses existing map.nested_scales and requires distinct proposed scope."
+      },
+      "research_handoff_ref": "agent-work/research/requirements/WWN-nested-maps-L1.json",
+      "research_result_ref": "agent-work/research/runs/2026-11-08T0935-WWN-nested-maps.json",
+      "readiness": "research_proposed_requires_strategist_selection_and_analyst_specification",
+      "implementation_authorized": false,
+      "release_authorized": false
     }
   ],
   "last_review": {
