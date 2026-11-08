@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
 import {fictionalMythMaterial,mythMaterialFixture} from '../helpers/myth-material-fixture.mjs';
+import mythMaterialRecords from '../../src/tags/mythMaterialData.ts';
 
 // MC1 extends the existing real-App tag workflow. Pure selector validation is in
 // tags.test.mjs; these cases protect DOM focus/blur, lazy request lifetime, and
@@ -42,13 +43,22 @@ export async function runMythMaterialLifecycle({page,snapshot,saved,root}){
   assert.equal(await page.locator('.info-block--hex').evaluate(el=>document.activeElement===el),true,message);
  };
 
- // Production corpus is deliberately absent. Reading that safe state must not
- // manufacture tags or change the saved Sea-v9 document/history.
+ // The actual lazy production module must expose the source-validated record
+ // for the accepted tuple without any route replacement or map/history writes.
  await load(data);await select(a);const production=await snapshot(),productionHistory={undo:await button('Отменить').isDisabled(),redo:await button('Повторить').isDisabled()};await closeMenu();
- assert.equal(production.version,9);await open(a);
- await material(a).getByRole('status').filter({hasText:'Материал этого мифа пока недоступен'}).waitFor();
- const metrics=[];for(const width of [1500,390,320])metrics.push({state:'unavailable',...await capture('myth-unavailable',width)});
- await page.setViewportSize({width:1500,height:1100});await toggle(a).click();await immutable(production,'production missing material must preserve the complete accepted document');
+ assert.equal(production.version,9);await ready(a);
+ const actual=mythMaterialRecords.find(record=>record.entryId===a.entryId);assert.ok(actual);
+ const actualOmens=material(a).getByRole('region',{name:'Знамения',exact:true}),actualRoles=material(a).getByRole('region',{name:'Роли',exact:true});
+ assert.equal(await actualOmens.locator('details').count(),actual.locales.ru.omens.length);
+ assert.equal(await actualRoles.locator('details').count(),actual.locales.ru.roles.length);
+ for(const [index,item] of actual.locales.ru.omens.entries()){
+  const detail=actualOmens.locator('details').nth(index);assert.equal(await detail.locator('summary').textContent(),String(item.ordinal));
+  assert.equal(await detail.locator('p').textContent(),item.text);
+ }
+ await actualOmens.locator('summary').first().click();await actualRoles.locator('summary').first().click();
+ assert.equal(await actualRoles.locator('details p').first().textContent(),actual.locales.ru.roles[0].text);
+ const metrics=[];for(const width of [1500,390,320])metrics.push({state:'production-ready',...await capture('myth-production-ready',width)});
+ await page.setViewportSize({width:1500,height:1100});await toggle(a).click();await immutable(production,'reading production material must preserve the complete accepted document');
  assert.deepEqual({undo:await button('Отменить').isDisabled(),redo:await button('Повторить').isDisabled()},productionHistory,'reading preserves existing history availability');
 
  await fresh(route=>route.fulfill({contentType:'text/javascript',body:moduleBody}));
@@ -59,6 +69,8 @@ export async function runMythMaterialLifecycle({page,snapshot,saved,root}){
  assert.deepEqual(await omens.locator('details p').allTextContents(),fictionalMythMaterial[0].locales.ru.omens.map(o=>o.text),'full source order/text survives without clipping');
  assert.equal(await roles.locator('details p').textContent(),fictionalMythMaterial[0].locales.ru.roles[0].text);
  assert.ok((await roles.textContent()).includes(fictionalMythMaterial[0].locales.ru.rolePreamble));
+ assert.equal(await omens.locator(':scope > p').textContent(),fictionalMythMaterial[0].locales.ru.omenPreamble);
+ assert.equal(await omens.locator('summary').first().textContent(),'1','shared introduction must not become a numbered omen');
  assert.equal(await material(a).locator('img,script').count(),0);assert.equal(await page.evaluate(()=>globalThis.__mythUnsafe),undefined);
  assert.match(await material(a).textContent(),/9001/);assert.match(await material(a).textContent(),/ссылка не разрешена/);
  const first=omens.locator('summary').first();await first.focus();await page.keyboard.press('Enter');assert.notEqual(await omens.locator('details').first().getAttribute('open'),null,'native keyboard opens an omen');
@@ -138,6 +150,12 @@ export async function runMythMaterialLifecycle({page,snapshot,saved,root}){
  await material(a).waitFor({state:'detached'});await restoredFocus('accepted import/type replacement must restore disappearing material focus');
  const wrongPoiAccepted=await snapshot();assert.equal(wrongPoiAccepted.map.regions.find(r=>r.id===a.regionId).centralPoiKind,'dwelling');assert.deepEqual(wrongPoiAccepted.map.tags,wrongPoi.map.tags);await closeMenu();assert.equal(await material(a).count(),0,'stale myth snapshot on a non-myth POI has no material control');
 
+ // A known saved myth can safely lack an entry in a partial content module.
+ await fresh(route=>route.fulfill({contentType:'text/javascript',body:'export default [];'}));
+ const missingBefore=await snapshot();await closeMenu();await open(a);
+ await material(a).getByRole('status').filter({hasText:'Материал этого мифа пока недоступен'}).waitFor();
+ await immutable(missingBefore,'missing compatible material does not repair or mutate the map');await closeMenu();
+
  // A caught lazy-import failure stays local and preserves a valid map.
  await fresh(route=>route.abort('failed'));const failureBefore=await snapshot();await closeMenu();await open(a);
  await material(a).getByRole('status').filter({hasText:'Не удалось показать материал мифа'}).waitFor();await capture('myth-load-error',1500);await immutable(failureBefore,'lazy load error must not mutate the accepted map');await closeMenu();
@@ -154,5 +172,5 @@ export async function runMythMaterialLifecycle({page,snapshot,saved,root}){
  await immutable(delayedBefore,'delayed completion must not mutate map state');await closeMenu();await ready(a);
  assert.ok((await material(a).textContent()).includes('ВЫМЫШЛЕННЫЙ МАТЕРИАЛ A.'));
  await page.unroute(modulePattern);await fs.writeFile(new URL('myth-material-metrics.json',out),JSON.stringify(metrics,null,2));
- console.log('MC1 fictional browser workflow passed: empty production registry; boundary owners; variable, escaped, grouped long material; exact JSON/history; override; local/cross-row tag and name draft pointer focus and Escape; focus restoration on selection/import; RU fallback; reroll/Undo/import/mode resets; future/no-tag/wrong-POI states; load error; delayed A→B→A; 1500/390/320 layout.');
+ console.log('MC1 browser workflow passed: actual72record production module and partial-registry fallback; boundary owners; variable, escaped, grouped long material; exact JSON/history; override; local/cross-row tag and name draft pointer focus and Escape; focus restoration on selection/import; RU fallback; reroll/Undo/import/mode resets; future/no-tag/wrong-POI states; load error; delayed A→B→A; 1500/390/320 layout.');
 }

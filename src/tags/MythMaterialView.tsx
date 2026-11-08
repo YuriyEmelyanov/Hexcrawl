@@ -41,6 +41,7 @@ export function MythMaterialView({owner,instance,poiType,language,disabled}:Prop
    {!result?<p role="status">{ru?'Загрузка…':'Loading…'}</p>:result.status==='error'?<p role="status">{ru?'Не удалось показать материал мифа':'Could not show myth material'}</p>:result.status!=='ready'?<p role="status">{ru?'Материал этого мифа пока недоступен':'Material for this myth is not available'}</p>:<>
     {result.fallback&&<p className="myth-material-source">{ru?'Русский источник':'Russian source'}</p>}
     <section aria-label={ru?'Знамения':'Omens'}><strong>{ru?'Знамения':'Omens'}</strong>
+     {result.content.omenPreamble&&<p>{result.content.omenPreamble}</p>}
      {result.content.omens.length?result.content.omens.map(omen=><details key={omen.id}><summary aria-disabled={disabled} tabIndex={disabled?-1:0}>{omen.ordinal}</summary><p>{omen.text}</p></details>):<p>{ru?'Знамений нет':'No omens'}</p>}
     </section>
     <section aria-label={ru?'Роли':'Roles'}><strong>{ru?'Роли':'Roles'}</strong>

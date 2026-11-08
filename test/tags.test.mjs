@@ -53,11 +53,12 @@ test('saved tags validate references, tuples, counts and known snapshots; future
 });
 // MC1-01/03/07/10: independently check tuple identity, isolated malformed data,
 // defensive limits and language fallback. These invented records are test-only;
-// they contain no book material and the production registry remains empty.
+// they contain no book material. Production identity/coverage is checked too.
 test('myth material selects only the exact compatible snapshot without mutating or repairing it',()=>{
  const poi={kind:'poi',regionId:7,hexKey:'2,-3'};
  const snapshot=index=>({definitionId:'mb.myth',definitionVersion:1,owner:{...poi},resolver:'product',revision:3,sides:[6,12],values:[[Math.floor(index/12)+1],[index%12+1]],entryIds:[`mb.myth:${index}`],texts:[{ru:`ВЫМЫШЛЕННЫЙ TEST ONLY ${index}`}],overrides:[{ru:'Авторское имя'}]});
  const content=index=>({
+  ...(index%3===0?{omenPreamble:'ВЫМЫШЛЕННОЕ TEST ONLY общее вступление знамений'}:{}),
   omens:Array.from({length:index%3+1},(_,n)=>({id:`omen-${n}`,ordinal:n+1,text:`ВЫМЫШЛЕННАЯ TEST ONLY сцена ${index}/${n} ${n===0?'<script>never execute</script>':''}`})),
   roles:Array.from({length:index%4+1},(_,n)=>({id:`role-${n}`,title:n===0?'ВЫМЫШЛЕННАЯ TEST ONLY группа из двух':'TEST ONLY роль',text:`ВЫМЫШЛЕННЫЙ TEST ONLY блок ${index}/${n}`})),
   ...(index%2===0?{rolePreamble:'ВЫМЫШЛЕННОЕ TEST ONLY общее вступление'}:{})
@@ -66,7 +67,8 @@ test('myth material selects only the exact compatible snapshot without mutating 
  records[12].locales.en=structuredClone(content(12));records[12].locales.en.roles[0].title='TEST ONLY translated group';
  const deepFreeze=value=>{if(value&&typeof value==='object'){for(const child of Object.values(value))deepFreeze(child);Object.freeze(value);}return value;};
  const frozen=deepFreeze(records),frozenPoi=deepFreeze(poi),before=structuredClone(frozen);
- assert.deepEqual(mythMaterialRecords,[],'source-free production cannot silently ship fictional cards');
+ assert.equal(mythMaterialRecords.length,72,'production must contain all72 compatible myth records');
+ assert.equal(new Set(mythMaterialRecords.map(record=>record.entryId)).size,72);
  assert.deepEqual(mythMaterialManifest,[{definitionId:'mb.myth',definitionVersion:1,sourceEdition:MYTH_MATERIAL_EDITION,materialVersion:1}]);
  const identities=new Set();
  for(let group=1;group<=6;group++)for(let entry=1;entry<=12;entry++){
@@ -75,7 +77,13 @@ test('myth material selects only the exact compatible snapshot without mutating 
   assert.equal(selected.status,'ready');assert.equal(selected.record.entryId,`mb.myth:${index}`);
   assert.deepEqual(selected.content,records[index].locales.ru);assert.equal(selected.language,'ru');assert.equal(selected.fallback,false);
   assert.deepEqual(s,saved);identities.add(materialIdentity(s,frozenPoi,'myth'));
-  assert.equal(selectMythMaterial(s,frozenPoi,'myth',mythMaterialRecords,'ru').status,'unavailable');
+  const actual=selectMythMaterial(s,frozenPoi,'myth',mythMaterialRecords,'ru');
+  assert.equal(actual.status,'ready');assert.equal(actual.record.entryId,`mb.myth:${index}`);
+  assert.equal(actual.record.sourcePage,29+index*2);
+  assert.ok(!JSON.stringify(actual.content).includes('TEST ONLY'),'fictional material must stay outside production');
+  const actualFallback=selectMythMaterial(s,frozenPoi,'myth',mythMaterialRecords,'en');
+  assert.equal(actualFallback.status,'ready');assert.equal(actualFallback.language,'ru');assert.equal(actualFallback.fallback,true);
+  assert.deepEqual(actualFallback.content,actual.content);assert.deepEqual(s,saved);
  }
  assert.equal(identities.size,72);assert.ok(!identities.has(undefined));
  assert.notEqual(materialIdentity(snapshot(11),poi,'myth'),materialIdentity(snapshot(12),poi,'myth'));
@@ -91,6 +99,10 @@ test('myth material selects only the exact compatible snapshot without mutating 
  const fallback=selectMythMaterial(a,poi,'myth',records,'en');assert.equal(fallback.status,'ready');assert.equal(fallback.fallback,true);assert.equal(fallback.language,'ru');assert.deepEqual(fallback.content,records[0].locales.ru);
  const translated=selectMythMaterial(snapshot(12),poi,'myth',records,'en');assert.equal(translated.status,'ready');assert.equal(translated.language,'en');assert.equal(translated.fallback,false);assert.equal(translated.content.roles[0].title,'TEST ONLY translated group');
  const selectRegistry=registry=>selectMythMaterial(a,poi,'myth',registry,'ru');
+ for(const invalid of ['',42,'🧭'.repeat(16385)]){
+  const bad=structuredClone(records);bad[0].locales.ru.omenPreamble=invalid;
+  assert.equal(selectRegistry(bad).status,'error','shared introduction obeys the same string limits');
+ }
  assert.equal(selectRegistry(null).status,'error');assert.equal(selectRegistry({}).status,'error');assert.equal(selectRegistry([]).status,'unavailable');
  const changed=mutate=>{const registry=structuredClone(records);mutate(registry[0],registry);return registry;};
  for(const mutate of [r=>r.definitionVersion=2,r=>r.materialVersion=2,r=>r.sourceEdition='unpublished-other-edition'])assert.equal(selectRegistry(changed(mutate)).status,'unavailable');

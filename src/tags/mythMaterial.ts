@@ -11,6 +11,7 @@ export const mythMaterialManifest=Object.freeze([Object.freeze({
 export const MYTH_MATERIAL_LIMITS=Object.freeze({blocks:128,stringCodePoints:16384,recordCodePoints:262144});
 
 export type MythMaterialContent={
+ readonly omenPreamble?:string;
  readonly omens:readonly {readonly id:string;readonly ordinal:number;readonly text:string}[];
  readonly roles:readonly {readonly id:string;readonly title:string;readonly text:string}[];
  readonly rolePreamble?:string;
@@ -77,6 +78,7 @@ function validateRecord(record:Record<string,unknown>):'valid'|'invalid'|'incomp
   const content=record.locales[language];
   if(!object(content)||!Array.isArray(content.omens)||!Array.isArray(content.roles)
    ||content.omens.length>MYTH_MATERIAL_LIMITS.blocks||content.roles.length>MYTH_MATERIAL_LIMITS.blocks
+   ||(content.omenPreamble!==undefined&&!string(content.omenPreamble))
    ||(content.rolePreamble!==undefined&&!string(content.rolePreamble)))return 'invalid';
   const ids=new Set<string>(),ordinals=new Set<number>();
   for(const omen of content.omens){
