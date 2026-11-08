@@ -1,0 +1,199 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-044",
+  "title": "Сохранять ориентир числа барьеров и выбранные непроходимые грани",
+  "status": "proposed",
+  "problem": "Ранее sheet-only источник не подтверждал точную квоту; Quickstart задаётN/6Barriers. Подмена квоты вероятностью1/6или числом всех сегментов исказит карту; runtimeunknown.",
+  "benefit": "Ведущий получает верный количественный ориентир типичного края и сохраняет выбранные грани/отступления без выдуманного округления.",
+  "game_editions": [
+    "Official free Quickstart snapshot2026-11-08; internal edition/version unspecified, not full book"
+  ],
+  "primary_scenario": "create",
+  "layer": "L1",
+  "requirement_refs": [
+    "agent-work/market/rules/MB-Quickstart.json#MB-QS-001-L1"
+  ],
+  "canonical_rule_ids": [
+    "map.routes_and_barriers"
+  ],
+  "binding_refs": [
+    "agent-work/rules/game-bindings.json#MB-QS-001-L1"
+  ],
+  "criterion_ids": [
+    "S01-C04",
+    "S01-C05",
+    "S06-C04"
+  ],
+  "scope": "Адресное source-уточнение existing proposed044: N/6, выбранные грани и отступления. Округление/группировка/распределение остаются открытыми. Не спецификация/разрешение авторасстановки.",
+  "dependencies": [
+    "Проверить переиспользование текущих операций карты, не объявлять их отсутствующими без SHA evidence.",
+    "Стратег выбирает044, аналитик определяет единицу многогранного барьера, округление и границы решения."
+  ],
+  "acceptance_checks": [
+    {
+      "id": "MB-QS-001-L1-AC01",
+      "given": "Ведущий готовит типичный Realm из6гексов по выбранному профилю Quickstart.",
+      "when": "Определить целевое число барьеров.",
+      "expected": "Цель равна1барьеру(6/6); не задан бросокd6длякаждогогекса и не вычислена доля всех рёбер."
+    },
+    {
+      "id": "MB-QS-001-L1-AC02",
+      "given": "Типичный Realm из12гексов, позиции барьеров пока не выбраны.",
+      "when": "Определить целевое число.",
+      "expected": "Цель равна2барьерам(12/6). Это число барьеров, а не подтверждение выбора ровно2гексов; расположение и грани остаются незаданными."
+    },
+    {
+      "id": "MB-QS-001-L1-AC03",
+      "given": "Подготовка типичного края включает144гекса.",
+      "when": "Вычислить целевое число по этому профилю.",
+      "expected": "Цель24барьера(144/6);144здесь заданный вход примера, а не навязанный размер всякой карты."
+    },
+    {
+      "id": "MB-QS-001-L1-AC04",
+      "given": "N=10; правило округления не задано.",
+      "when": "Определить число для размещения.",
+      "expected": "Сырой ориентир10/6=5/3сохранён; целое число/округление остаётся needs_product_decision. Ни1, ни2, ни независимая вероятность1/6не выдаются за точное правило источника."
+    },
+    {
+      "id": "MB-QS-001-L1-AC05",
+      "given": "Ведущий указал один барьер на двух выбранных гранях гекса H; остальные четыре грани не выбирались.",
+      "when": "Нанести выбранную геометрию барьера.",
+      "expected": "Отмечены выбранные две грани с обычной непроходимостью; остальные четыре автоматически не замкнуты. Группировка/подсчёт многогранного барьера ещё требует явного продуктового решения, две грани не объявлены двумя барьерами только по числу сегментов."
+    },
+    {
+      "id": "MB-QS-001-L1-AC06",
+      "given": "ДляN=12типичный ориентир2, но ведущий сознательно выбирает3барьера для собственного Realm.",
+      "when": "Сохранить отступление от типичной рекомендации.",
+      "expected": "Выбранные3барьера сохранены как осознанное отступление, без принудительного удаления третьего; ориентир2не переписан как авторское правило3."
+    },
+    {
+      "id": "MB-QS-001-L1-AC07",
+      "given": "СохраненыN=12, ориентир2, выбранные грани и обычная непроходимость; другие места/местность уже подготовлены.",
+      "when": "Сохранить и снова открыть карту.",
+      "expected": "Ориентир и выбранные грани/свойства восстановлены; местность и POI сохранены, барьеры не переброшены и движение/время партии не рассчитаны."
+    }
+  ],
+  "expected_evidence": {
+    "current_runtime": "unknown",
+    "evidence_sha": null,
+    "future_product": "Known-output quota/geometry/override/save outcomes on exact SHA; documented grouping policy before claiming full profile support."
+  },
+  "score_delta": null,
+  "source_limitations": [
+    "Only p14 typical-guideline and barrier clauses newly extracted; earlier Sanctums dependencies remain separate, full book/corpus not audited.",
+    "Pinned official Quickstart bytes rehashed unchanged, selected p14 clauses read visually and as native text; no fresh download/version claim.",
+    "N/6 is number of Barriers, not a per-hex Bernoulli roll; rounding, automatic placement and definition/counting of a connected multi-edge Barrier remain unspecified.",
+    "No runtime test/score claim or raw book/art redistribution."
+  ],
+  "operational_requirement": {
+    "source_rule_ref": "agent-work/market/rules/MB-Quickstart.json#MB-QS-001",
+    "normative_kind": "typical_realm_guideline_explicitly_overridable",
+    "applicability": "Official Quickstart pinned snapshot p14 barrier and Breaking the Rules clauses only; not automatic equivalence to all Realm Sheet rules",
+    "layer": "L1",
+    "trigger_or_user_action": "Ведущий выбирает подготовку типичного края, задаёт общее число гексов, получает ориентир количества барьеров и наносит выбранные грани; при желании сохраняет осознанное отступление.",
+    "inputs_and_units": {
+      "N": "число всех гексов подготавливаемого Realm, не число рёбер/биомов/отмеченных гексов",
+      "quantity": "ориентир Barriers=N/6; округление неизвестно",
+      "geometry": "выбранные одна или несколько граней; источник не требует шестиугольного замыкания",
+      "override": "явно выбранное ведущим отступление от типичного края"
+    },
+    "product_operation": "Определить ориентир количества барьеров N/6 и сохранить выбранные грани с обычной непроходимостью. Отличать ориентир от реально подготовленного размещения; при неделимом на6N не придумывать округление, при осознанном отступлении не перестраивать карту автоматически.",
+    "expected_output": "ДляN=6/12/144получены ориентиры1/2/24барьера; выбранная геометрия и отступления сохранены. ПриN=10дробный ориентир известен, целое число остаётся нерешённым.",
+    "constraints_and_exceptions": [
+      "Quickstart задаёт число Barriers=N/6, а не частоту независимых бросков1-in-6длякаждогогекса.",
+      "Один/несколько рёбер допустимы; количество сегментов нельзя автоматически объявить количеством именованных барьеров без определения этой единицы в продукте.",
+      "Округление, алгоритм выбора позиций/сторон, стыки, край карты и группировка многогранного барьера неизвестны.",
+      "В начале страницы рекомендации типичного Realm прямо разрешено менять; осознанное ручное отступление не ошибка источника.",
+      "Сохранение/показ ориентира и фактического результата — продуктовая операционализация; API, архитектура и интерфейс не специфицированы.",
+      "Обычная непроходимость не означает расчёт маршрута/времени или отсутствие любых особых средств пересечения.",
+      "Прежний Realm Sheet профиль остаётся source-specific; его прежние условные AC при доступности только листа сохранены, новая квота проверяется по Quickstart."
+    ],
+    "acceptance_cases": [
+      {
+        "id": "MB-QS-001-L1-AC01",
+        "given": "Ведущий готовит типичный Realm из6гексов по выбранному профилю Quickstart.",
+        "when": "Определить целевое число барьеров.",
+        "expected": "Цель равна1барьеру(6/6); не задан бросокd6длякаждогогекса и не вычислена доля всех рёбер."
+      },
+      {
+        "id": "MB-QS-001-L1-AC02",
+        "given": "Типичный Realm из12гексов, позиции барьеров пока не выбраны.",
+        "when": "Определить целевое число.",
+        "expected": "Цель равна2барьерам(12/6). Это число барьеров, а не подтверждение выбора ровно2гексов; расположение и грани остаются незаданными."
+      },
+      {
+        "id": "MB-QS-001-L1-AC03",
+        "given": "Подготовка типичного края включает144гекса.",
+        "when": "Вычислить целевое число по этому профилю.",
+        "expected": "Цель24барьера(144/6);144здесь заданный вход примера, а не навязанный размер всякой карты."
+      },
+      {
+        "id": "MB-QS-001-L1-AC04",
+        "given": "N=10; правило округления не задано.",
+        "when": "Определить число для размещения.",
+        "expected": "Сырой ориентир10/6=5/3сохранён; целое число/округление остаётся needs_product_decision. Ни1, ни2, ни независимая вероятность1/6не выдаются за точное правило источника."
+      },
+      {
+        "id": "MB-QS-001-L1-AC05",
+        "given": "Ведущий указал один барьер на двух выбранных гранях гекса H; остальные четыре грани не выбирались.",
+        "when": "Нанести выбранную геометрию барьера.",
+        "expected": "Отмечены выбранные две грани с обычной непроходимостью; остальные четыре автоматически не замкнуты. Группировка/подсчёт многогранного барьера ещё требует явного продуктового решения, две грани не объявлены двумя барьерами только по числу сегментов."
+      },
+      {
+        "id": "MB-QS-001-L1-AC06",
+        "given": "ДляN=12типичный ориентир2, но ведущий сознательно выбирает3барьера для собственного Realm.",
+        "when": "Сохранить отступление от типичной рекомендации.",
+        "expected": "Выбранные3барьера сохранены как осознанное отступление, без принудительного удаления третьего; ориентир2не переписан как авторское правило3."
+      },
+      {
+        "id": "MB-QS-001-L1-AC07",
+        "given": "СохраненыN=12, ориентир2, выбранные грани и обычная непроходимость; другие места/местность уже подготовлены.",
+        "when": "Сохранить и снова открыть карту.",
+        "expected": "Ориентир и выбранные грани/свойства восстановлены; местность и POI сохранены, барьеры не переброшены и движение/время партии не рассчитаны."
+      }
+    ],
+    "source_vs_product_interpretation": "Первичный Quickstart прямо задаёт число барьеров как1/6всехгексов, одну/несколько граней и возможность отступать от типичной подготовки. Числа1/2/24и5/3 — арифметика от заданного N. Сохранение и представление неизвестной группировки/округления — наш перевод, не придуманный алгоритм. Это уточнение source-профиля, не новая рейтинговая метрика.",
+    "canonical_rule_refs": [
+      "map.routes_and_barriers"
+    ],
+    "unresolved_parameters": [
+      "Округление приNне кратном6.",
+      "Какие грани выбирать и как считать один связанный/многогранный Barrier.",
+      "Обработка пересечений/края и алгоритм распределения.",
+      "Фактическая поддержка/current implementation SHA и эквивалентность полной книге unknown."
+    ]
+  },
+  "source": {
+    "id": "MB-OFFICIAL-QUICKSTART-SNAPSHOT-20261108",
+    "title": "Mythic Bastionland Quickstart.pdf",
+    "edition": "Official free Quickstart snapshot2026-11-08; internal edition/version unspecified, not full book",
+    "author": "Chris McDowall",
+    "publisher": "Bastionland Press",
+    "language": "en",
+    "url": "https://chrismcdee.itch.io/mythic-bastionland",
+    "upload_id": "14160848",
+    "accessed_at": "2026-11-08T23:33:40.453Z",
+    "access_level": "full_text",
+    "access_method": "Official public demo download, primary PDF text + selected visual pages",
+    "sha256": "ed79a47c271d829370af5066da9a6b2f1480ad1e9d2f0be4cc65e001fb977ed8",
+    "size_bytes": 20753950,
+    "pdf_pages": 51,
+    "printed_pdf_page_alignment": "Verified selected pages14/26/28/30 align; not asserted for every page",
+    "author_project_key": "chris-mcdowall:bastionland:mythic-bastionland:quickstart",
+    "parent_project_dedup_key": "chris-mcdowall:bastionland:mythic-bastionland",
+    "limitations": [
+      "Only p14 typical-guideline and barrier clauses newly extracted; earlier Sanctums dependencies remain separate, full book/corpus not audited.",
+      "Pinned official Quickstart bytes rehashed unchanged, selected p14 clauses read visually and as native text; no fresh download/version claim.",
+      "N/6 is number of Barriers, not a per-hex Bernoulli roll; rounding, automatic placement and definition/counting of a connected multi-edge Barrier remain unspecified.",
+      "No runtime test/score claim or raw book/art redistribution."
+    ],
+    "locator": "printed/PDF14 Breaking the Rules paragraph + Wilderness barrier paragraph"
+  },
+  "implementation_authorized": false,
+  "release_authorized": false,
+  "dedup_review": {
+    "decision": "New primary-source profile clarifies existing barrier proposal044; same canonical rule, no new product task.",
+    "related_source_rule": "MB-REALM-002",
+    "reason": "Keep original sheet parameters/conditioned AC as historical/source-specific; attach Quickstart clarification and unresolved grouping/rounding. No equivalence/runtime score inferred."
+  }
+}
