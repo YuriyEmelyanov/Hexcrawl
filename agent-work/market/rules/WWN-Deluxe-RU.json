@@ -2,7 +2,7 @@
   "schema_version": 2,
   "game_id": "WWN",
   "date": "2026-11-07",
-  "status": "partial_regional_step2_and_step3_inventory_product_unverified",
+  "status": "partial_regional_steps2_3_4_product_unverified",
   "source": {
     "id": "WWN-RU-DELUXE-SUPPLIED-20261106",
     "edition": "Worlds Without Number Deluxe, copyright2021; supplied Russian translation Lock-key; translation revision and English collation unverified",
@@ -22,21 +22,22 @@
       "printed120–121/PDF123–124: full two pages read; extracted only regional-step3 river/lake clauses",
       "printed122/PDF125: context only, no additional rules registered",
       "PDF3 bibliographic metadata only",
-      "2026-11-08: source bytes rehashed unchanged; printed120–121/PDF123–124 reopened; step2 procedure and selected table type labels reviewed, full literary table not copied"
+      "2026-11-08: source bytes rehashed unchanged; printed120–121/PDF123–124 reopened; step2 procedure and selected table type labels reviewed, full literary table not copied",
+      "2026-11-08: original supplied bytes rehashed unchanged; printed121/PDF124 reopened, regionalstep4 through deferred-POI paragraph extracted; other material context only"
     ],
     "access_level": "full_text",
     "author_project_key": "sine-nomine:kevin-crawford:wwn-deluxe2021:ru-lock-key",
     "deduplication": "Library originals and filename copies(1–3) are the same supplied source project, not independent evidence or GM observations.",
     "translation_revision": null,
     "english_collation": "unverified",
-    "accessed_at": "2026-11-08T07:35:41.571Z",
+    "accessed_at": "2026-11-08T08:36:18.164Z",
     "limitations": [
       "Full book is available but only stated bounded corpus read; no complete WWN thematic audit.",
       "Source applicability is not usage prevalence or audience size.",
       "No full book, art, or complete content table is published in derived records."
     ]
   },
-  "scope": "Bounded regional step3 hydrology retained; added step2 feature-selection/climate guidance only; full WWN inventory not claimed",
+  "scope": "Bounded regionalsteps2/3/4 only; no full WWN inventory",
   "rules": [
     {
       "id": "WWN-RU-REG-001",
@@ -1226,6 +1227,166 @@
           "reason": "No tactical/character engine."
         }
       ]
+    },
+    {
+      "id": "WWN-RU-REG-009",
+      "title": "Разместить политические территории по географии, не приравнивая их к контролю",
+      "rule": {
+        "source_id": "WWN-RU-DELUXE-SUPPLIED-20261106",
+        "printed_page": 121,
+        "pdf_page": 124,
+        "section": "Создание карты Региона / Шаг четвёртый",
+        "locator": "printed121/PDF124: step4 through paragraph preceding Создание карты королевства",
+        "paraphrase": "На региональном наброске размещают значимых игроков; государственные/племенные границы в основном следуют естественным преградам. Внутри возможны необитаемые и неподчинённые земли; опасные земли могут пересекать границы. Города/руины детализируют позже.",
+        "normative_kind": "regional_worldbuilding_guidance",
+        "quotation": null,
+        "parameters": {
+          "phase": "regionalstep4",
+          "actors": [
+            "states",
+            "tribal_unions",
+            "large_organizations",
+            "other_GM_selected_major_actors"
+          ],
+          "boundary_guidance": "mostly_natural_defensible_barriers_not_hard_constraint",
+          "barriers": [
+            "rivers",
+            "mountain_ranges",
+            "dense_forests",
+            "impassable_marshes",
+            "other_defensible_terrain"
+          ],
+          "territory_implies_effective_control": false,
+          "territory_implies_population": false,
+          "poi_detail": "defer_new_cities_ruins_to_kingdom_detail",
+          "war_history": "possible_explanation_not_required_simulation"
+        }
+      },
+      "comparison": {
+        "canonical_reuse": [
+          "content.place_description"
+        ],
+        "new_canonical_rule": true,
+        "new_canonical_rule_id": "map.political_territories",
+        "profile_equivalence": "unverified_distinct_territorial_scope",
+        "relevant_binding_refs": [
+          "agent-work/rules/game-bindings.json#ROOT-TO-006-L1",
+          "agent-work/rules/game-bindings.json#ROOT-CORE-010-L1"
+        ],
+        "rationale": "Existing faction_control/presence describes a place, not political territory or boundary linked to natural geography. Mere text description cannot stand in for territory extent; new generic rule avoids false Root-equivalence."
+      },
+      "requirements": [
+        {
+          "id": "WWN-RU-REG-009-L1",
+          "layer": "L1",
+          "requirement": "Разместить выбранных игроков и их заданные территории/границы поверх существующей географии. Помочь связать границы с естественными преградами, сохраняя допустимые отступления и описание ведущего. Различать территорию государства, населённость и фактический контроль мест; опасную область позволить описать как пересекающую несколько территорий. Сохранить набросок без обязательной генерации новых городов/руин.",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "evidence_sha": null,
+          "canonical_rule_ids": [
+            "map.political_territories",
+            "content.place_description"
+          ],
+          "criterion_ids": [
+            "S06-C01"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#WWN-RU-REG-009-L1",
+          "operational_requirement": {
+            "source_rule_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-REG-009",
+            "normative_kind": "regional_worldbuilding_guidance",
+            "applicability": "WWN suppliedRU Deluxe regionalstep4; schematic political placement, not faction simulation or automatic authority over every place",
+            "layer": "L1",
+            "trigger_or_user_action": "Ведущий завершает региональный набросок после географических объектов и рек и размещает значимых игроков.",
+            "inputs_and_units": {
+              "игроки региона": "государства, племенные союзы, организации и другие выбранные ведущим стороны",
+              "география": "существующие реки, хребты, леса, болота и другие преграды",
+              "территории": "заданные ведущим области/участки границ, без выдуманной доли совпадения с преградами",
+              "описания": "выбранные объяснения необычных границ и общих опасных земель"
+            },
+            "product_operation": "Разместить выбранных игроков и их заданные территории/границы поверх существующей географии. Помочь связать границы с естественными преградами, сохраняя допустимые отступления и описание ведущего. Различать территорию государства, населённость и фактический контроль мест; опасную область позволить описать как пересекающую несколько территорий. Сохранить набросок без обязательной генерации новых городов/руин.",
+            "expected_output": "На карте есть выбранные территории и границы, понятная связь с географией и описания отступлений; внутренняя глушь не превращена в автоматически населённые/контролируемые места.",
+            "constraints_and_exceptions": [
+              "В основном по преградам — рекомендация; процент, расстояние привязки и обязательная оптимизация не заданы.",
+              "Граница за преградой может объясняться прошлой войной; объяснение предлагает ведущий, автоматическая война не следует.",
+              "Необитаемые/опасные земли допустимы внутри государственных границ без населения, подчинённого государству.",
+              "Пересечение опасными землями границы даёт материал для описания напряжённости, не готовый движок набегов/эскалаций.",
+              "Не каждая крупная организация получает государственную территорию автоматически.",
+              "Города/руины предлагается детализировать позже; это не запрет на сохранение ранее размещённых POI.",
+              "Сохранение/адресное изменение — продуктовый перевод, без архитектуры/API/интерфейса и разрешения реализации."
+            ],
+            "acceptance_cases": [
+              {
+                "id": "WWN-RU-REG-009-L1-AC01",
+                "given": "РегионыA/B и рекаR уже подготовлены; ведущий проводит их общую границу поR.",
+                "when": "Назначить территории и выбранную границу.",
+                "expected": "ТерриторииA/B и связь границы сR сохранены; руслоR и рельеф не изменены. Контроль всех мест внутри не назначен автоматически."
+              },
+              {
+                "id": "WWN-RU-REG-009-L1-AC02",
+                "given": "Ведущий проводит часть границыA за хребтомM и добавляет заметку о прошлой успешной войне.",
+                "when": "Сохранить выбранную границу и объяснение.",
+                "expected": "Граница остаётся заM, заметка сохранена; карта не принудительно обрезана по хребту и новая война/битва не запущена."
+              },
+              {
+                "id": "WWN-RU-REG-009-L1-AC03",
+                "given": "Опасная необитаемая областьW находится внутри заявленной территорииA; местный контроль/подчинение не заданы.",
+                "when": "Сохранить территорию.",
+                "expected": "W остаётся внутри границыA; отсутствие населения и неизвестность фактического контроля сохранены. Владение границей не выдано за наличие населения/подчинение его законам."
+              },
+              {
+                "id": "WWN-RU-REG-009-L1-AC04",
+                "given": "Одна опасная областьW пересекает территорииA/B; ведущий добавляет описание напряжённости из-заW.",
+                "when": "Связать описание с областью и двумя сторонами.",
+                "expected": "Общая W и выбранное описание связаны сA/B; не созданы автоматически набеги, вторжение, расписание событий или изменение границ."
+              },
+              {
+                "id": "WWN-RU-REG-009-L1-AC05",
+                "given": "Ведущий включает государствоA, племенной союзB и организациюC; толькоA/B получили выбранные территории, Cместоположение и описание.",
+                "when": "Подготовить значимых игроков региона.",
+                "expected": "A/B имеют выбранные территории; Cразмещена без автоматически придуманной государственной территории/контроля окружающих мест."
+              },
+              {
+                "id": "WWN-RU-REG-009-L1-AC06",
+                "given": "Региональный набросок ещё не содержит городов/руин; на импортированной части уже есть POIX.",
+                "when": "Завершить этот региональный шаг.",
+                "expected": "Новые города/руины не обязательны; существующий Xне удалён. Детализация королевства оставлена последующим шагам."
+              },
+              {
+                "id": "WWN-RU-REG-009-L1-AC07",
+                "given": "Сохранены территорииA/B, граница поR, исключение заM и областьW. Ведущий меняет только один участок границыA.",
+                "when": "Изменить и повторно открыть карту.",
+                "expected": "Выбранный участок изменён; остальные границы, R/M, описание Wи исключение сохранены; контроль/население не пересчитаны автоматически."
+              }
+            ],
+            "source_vs_product_interpretation": "Источник — четыре абзаца региональногоstep4 плюс абзац об отложенной детализации, suppliedRU121/PDF124. A/B/C/R/M/W/X и операции редактирования — собственные примеры. Территориальная граница не сведена к Root-контролю отдельной поляны. Текст не задаёт универсальной модели пересекающихся претензий; английская сверкаunknown.",
+            "canonical_rule_refs": [
+              "agent-work/rules/common-rules.json#map.political_territories",
+              "agent-work/rules/common-rules.json#content.place_description"
+            ],
+            "unresolved_parameters": [
+              "Численные пороги близости к преградам/доли естественных границ отсутствуют.",
+              "Спорные и перекрывающиеся территориальные претензии и точный способ задания границ не определены этим срезом.",
+              "Полная английская сверка и runtime-проверка наSHAне выполнены."
+            ]
+          },
+          "gap_task_ids": [
+            "HX-BL-050"
+          ],
+          "delivery": "research_handoff_not_specification",
+          "binding_registration_status": "registered_profile_unverified"
+        },
+        {
+          "layer": "L2",
+          "status": "not_applicable",
+          "reason": "Map preparation, no faction turn."
+        },
+        {
+          "layer": "L3",
+          "status": "not_applicable",
+          "reason": "No battle or economic simulation."
+        }
+      ]
     }
   ],
   "completeness": {
@@ -1235,23 +1396,24 @@
       "printed120–121/PDF123–124: full two pages read; extracted only regional-step3 river/lake clauses",
       "printed122/PDF125: context only, no additional rules registered",
       "PDF3 bibliographic metadata only",
-      "2026-11-08: source bytes rehashed unchanged; printed120–121/PDF123–124 reopened; step2 procedure and selected table type labels reviewed, full literary table not copied"
+      "2026-11-08: source bytes rehashed unchanged; printed120–121/PDF123–124 reopened; step2 procedure and selected table type labels reviewed, full literary table not copied",
+      "2026-11-08: original supplied bytes rehashed unchanged; printed121/PDF124 reopened, regionalstep4 through deferred-POI paragraph extracted; other material context only"
     ],
-    "unread_or_unextracted": "Other WWN procedures including regionalsteps1/4 and kingdom setup; full English collation unknown.",
+    "unread_or_unextracted": "Regionalstep1, kingdom mapping and all other WWN thematic dependencies; English collation unknown",
     "ledger_ref": "agent-work/market/rules/WWN-Deluxe-RU-coverage-ledger.json"
   },
   "comparison_summary": {
-    "source_rules": 8,
-    "applicable_requirements": 8,
+    "source_rules": 9,
+    "applicable_requirements": 9,
     "applicable_by_layer": {
-      "L1": 8,
+      "L1": 9,
       "L2": 0,
       "L3": 0
     },
     "canonical_rules_reused": 6,
-    "new_canonical_rules": 0,
-    "source_acceptance_cases": 30,
-    "handoff_acceptance_cases": 31
+    "new_canonical_rules": 1,
+    "source_acceptance_cases": 37,
+    "handoff_acceptance_cases": 38
   },
   "shared_rules": {
     "registry": "agent-work/rules/common-rules.json",
