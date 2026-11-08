@@ -14008,6 +14008,223 @@
         "agent-work/research/requirements/OSE-base-sites-L1.json",
         "agent-work/research/requirements/OSE-town-services-L1.json"
       ]
+    },
+    {
+      "schema_version": 1,
+      "task_id": "HX-BL-053",
+      "title": "Размещать заданный набор владений и назначать резиденцию правителя",
+      "status": "proposed",
+      "problem": "Поддержка общего POI не доказывает четыре владения одного края, выбор единственной резиденции среди них и сохранение этой роли. Численное расстояние не определено источником; реализация unknown.",
+      "benefit": "Ведущий получает сохранённую основу политических мест края: четыре выбранных владения и одно место правителя без подмены базы кампании.",
+      "game_editions": [
+        "Official free Realm Sheets snapshot downloaded2026-11-08; internal version not stated; referenced Creating a Realm(p14) not collated to final book"
+      ],
+      "primary_scenario": "create",
+      "layer": "L1",
+      "requirement_refs": [
+        "agent-work/market/rules/MB-Realm-Sheets.json#MB-REALM-003-L1"
+      ],
+      "canonical_rule_ids": [
+        "content.site_density",
+        "content.place_description"
+      ],
+      "binding_refs": [
+        "agent-work/rules/game-bindings.json#MB-REALM-003-L1"
+      ],
+      "criterion_ids": [
+        "S05-C01",
+        "S05-C02",
+        "S07-C02"
+      ],
+      "scope": "Исследовательская передача: выбранные места, целевое количество и смысловая роль одного из них, описания и сохранность карты. Автоматическая дистанция/раскладка, интерфейс/API/схемы, доменная симуляция не специфицированы.",
+      "dependencies": [
+        "До выбора разработки проверить переиспользование редактора HX-BL-013, размещения/подсказок HX-BL-043 и ролей места HX-BL-052.",
+        "Стратег выбирает объём, аналитик определяет соответствие Realm единице карты и решение нехватки мест; новые разработка/публикация требуют обычного решения владельца."
+      ],
+      "acceptance_checks": [
+        {
+          "id": "MB-REALM-003-L1-AC01",
+          "given": "Ведущий выбрал четыре разных допустимых места A, B, C, D и форму каждого владения; резиденцией выбрано B.",
+          "when": "Подготовить набор владений по профилю Realm Sheet.",
+          "expected": "На карте четыре владения в A, B, C, D; только B отмечено резиденцией правителя. Выбранные формы сохранены."
+        },
+        {
+          "id": "MB-REALM-003-L1-AC02",
+          "given": "Есть четыре владения A–D, резиденция B; ведущий выбирает D новой резиденцией.",
+          "when": "Изменить назначение резиденции.",
+          "expected": "Резиденция теперь только D; у B прежняя роль снята, все четыре владения, их положения и описания сохранены."
+        },
+        {
+          "id": "MB-REALM-003-L1-AC03",
+          "given": "Выбраны четыре владения; источник даёт лишь качественное указание разнести их, численный минимум неизвестен.",
+          "when": "Сохранить выбранное ведущим размещение.",
+          "expected": "Положения сохранены; минимум в гексах или километрах остаётся unknown. Расстояние 3 гекса либо иной порог не выдано за правило и соблюдение численной нормы не объявлено."
+        },
+        {
+          "id": "MB-REALM-003-L1-AC04",
+          "given": "Для нового набора с целью четыре владения ведущий выбрал только три допустимых места; соседние места уже заняты.",
+          "when": "Подготовить выбранный набор.",
+          "expected": "Цель четыре не объявлена выполненной; существующие места не перезаписаны. Способ дополнения/переноса/отказа остаётся продуктовым решением, отсутствующее четвёртое владение не выдумано."
+        },
+        {
+          "id": "MB-REALM-003-L1-AC05",
+          "given": "Четыре владения, одно описано ведущим как «укреплённый монастырь»; перечень типичных построек в источнике дан как примеры.",
+          "when": "Сохранить форму этого владения.",
+          "expected": "Описание «укреплённый монастырь» сохранено как выбор ведущего; его не принуждают стать одной из четырёх перечисленных форм, пример не представлен как дословная строка источника."
+        },
+        {
+          "id": "MB-REALM-003-L1-AC06",
+          "given": "У владения A указан рыцарь, у C — влиятельный вассал; у B/D владелец пока не описан; базой кампании независимо выбран город T.",
+          "when": "Сохранить сведения о владельцах и резиденции B.",
+          "expected": "У A/C сохранены указанные владельцы, у B/D сведения остаются неизвестны; резиденция B и база T различимы. Владения не получили автоматически территорию, население или боевые характеристики."
+        },
+        {
+          "id": "MB-REALM-003-L1-AC07",
+          "given": "Сохранены четыре владения, выбранная резиденция D, формы, положения и описанные владельцы; на карте есть и другие подготовленные места.",
+          "when": "Сохранить и снова открыть карту.",
+          "expected": "Восстановлены те же четыре владения и единственная резиденция D с прежними сведениями; новые владения не добавлены, другие места и география сохранены."
+        }
+      ],
+      "expected_evidence": {
+        "current_runtime": "unknown",
+        "evidence_sha": null,
+        "future_product": "Показанные известные выходы размещения/смены роли/сохранения на точном SHA; сходство с общим POI не evidence."
+      },
+      "score_delta": null,
+      "source_limitations": [
+        "Only d12 sentence, barrier paragraph and HOLDINGS paragraph extracted; remaining PDF1 context, PDF2 not read.",
+        "Pinned official PDF rehashed unchanged and HOLDINGS reread visually; official landing page rechecked, no new PDF download/version claim.",
+        "Internal sheet version and equivalence to final full book unknown; referenced printed p14 not itself read.",
+        "No numerical distance or automatic placement algorithm specified in HOLDINGS; typical building examples not a mandatory closed catalogue.",
+        "Full game/runtime coverage unknown; no raw PDF, artwork or literary table corpus published."
+      ],
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/MB-Realm-Sheets.json#MB-REALM-003",
+        "normative_kind": "realm_sheet_creation_procedure_with_typical_examples",
+        "applicability": "MB official free Realm Sheets hash-pinned snapshot; PDF1 HOLDINGS paragraph, for one realm being prepared",
+        "layer": "L1",
+        "trigger_or_user_action": "При подготовке одного владетельного края ведущий выбирает четыре места владений, описывает их и назначает одно резиденцией правителя.",
+        "inputs_and_units": {
+          "target_count": "4 владения на один подготавливаемый Realm, не 4 на биом/регион/королевство интерфейса без проверки соответствия",
+          "selected_places": "четыре места, выбранные ведущим на карте",
+          "seat_choice": "одно из этих четырёх владений",
+          "forms_and_holders": "описания формы и владельца; типичные примеры и неизвестные различимы",
+          "spacing": "качественно далеко друг от друга; численная дистанция unknown"
+        },
+        "product_operation": "Разместить выбранный набор из четырёх владений и назначить одному роль резиденции правителя. Позволить сменить эту роль между ними и сохранить выбранные места, формы и описания владельцев вместе с картой.",
+        "expected_output": "Четыре подготовленных владения одного края, ровно одна выбранная среди них резиденция; после смены/открытия карты набор, положения и описания не потеряны.",
+        "constraints_and_exceptions": [
+          "Ровно четыре относится к процедуре подготовки одного Realm, не к любому существующему пользовательскому региону; соответствие Realm единице генератора неизвестно.",
+          "Источник не задаёт численной дистанции, веса случайного размещения или алгоритма решения тесной области.",
+          "Замок, город со стенами, крепость и башня — типичные формы, а не обязательные четыре разных типа и не закрытый список.",
+          "Резиденция выбирается из этих владений; роль начала кампании/базы из OSE сама по себе не равнозначна резиденции.",
+          "Knight/Vassal здесь — описание держателя; границы домена, население и характеристики персонажа не вытекают из выбранного абзаца.",
+          "Не переустраивать все существующие карты по этому профилю; недостаток мест не даёт разрешения перезаписать подготовленное содержимое.",
+          "Смена роли, сохранение/открытие и обозначение неизвестных — продуктовая операционализация; не правила движения, не схема хранения и не спецификация интерфейса."
+        ],
+        "acceptance_cases": [
+          {
+            "id": "MB-REALM-003-L1-AC01",
+            "given": "Ведущий выбрал четыре разных допустимых места A, B, C, D и форму каждого владения; резиденцией выбрано B.",
+            "when": "Подготовить набор владений по профилю Realm Sheet.",
+            "expected": "На карте четыре владения в A, B, C, D; только B отмечено резиденцией правителя. Выбранные формы сохранены."
+          },
+          {
+            "id": "MB-REALM-003-L1-AC02",
+            "given": "Есть четыре владения A–D, резиденция B; ведущий выбирает D новой резиденцией.",
+            "when": "Изменить назначение резиденции.",
+            "expected": "Резиденция теперь только D; у B прежняя роль снята, все четыре владения, их положения и описания сохранены."
+          },
+          {
+            "id": "MB-REALM-003-L1-AC03",
+            "given": "Выбраны четыре владения; источник даёт лишь качественное указание разнести их, численный минимум неизвестен.",
+            "when": "Сохранить выбранное ведущим размещение.",
+            "expected": "Положения сохранены; минимум в гексах или километрах остаётся unknown. Расстояние 3 гекса либо иной порог не выдано за правило и соблюдение численной нормы не объявлено."
+          },
+          {
+            "id": "MB-REALM-003-L1-AC04",
+            "given": "Для нового набора с целью четыре владения ведущий выбрал только три допустимых места; соседние места уже заняты.",
+            "when": "Подготовить выбранный набор.",
+            "expected": "Цель четыре не объявлена выполненной; существующие места не перезаписаны. Способ дополнения/переноса/отказа остаётся продуктовым решением, отсутствующее четвёртое владение не выдумано."
+          },
+          {
+            "id": "MB-REALM-003-L1-AC05",
+            "given": "Четыре владения, одно описано ведущим как «укреплённый монастырь»; перечень типичных построек в источнике дан как примеры.",
+            "when": "Сохранить форму этого владения.",
+            "expected": "Описание «укреплённый монастырь» сохранено как выбор ведущего; его не принуждают стать одной из четырёх перечисленных форм, пример не представлен как дословная строка источника."
+          },
+          {
+            "id": "MB-REALM-003-L1-AC06",
+            "given": "У владения A указан рыцарь, у C — влиятельный вассал; у B/D владелец пока не описан; базой кампании независимо выбран город T.",
+            "when": "Сохранить сведения о владельцах и резиденции B.",
+            "expected": "У A/C сохранены указанные владельцы, у B/D сведения остаются неизвестны; резиденция B и база T различимы. Владения не получили автоматически территорию, население или боевые характеристики."
+          },
+          {
+            "id": "MB-REALM-003-L1-AC07",
+            "given": "Сохранены четыре владения, выбранная резиденция D, формы, положения и описанные владельцы; на карте есть и другие подготовленные места.",
+            "when": "Сохранить и снова открыть карту.",
+            "expected": "Восстановлены те же четыре владения и единственная резиденция D с прежними сведениями; новые владения не добавлены, другие места и география сохранены."
+          }
+        ],
+        "source_vs_product_interpretation": "Первичный абзац прямо задаёт четыре владения, качественную разнесённость, типичные формы/держателей и выбор одного Seat of Power. Авторские параметры не содержат минимальной дистанции или механизма размещения. Предлагаемые адресные правки, смена единственной роли и восстановление сохранения — перевод на язык возможностей генератора; имена A–D/T и монастырь являются нашими примерами, не дополнительными игровыми правилами.",
+        "canonical_rule_refs": [
+          "content.site_density",
+          "content.place_description"
+        ],
+        "unresolved_parameters": [
+          "Численная дистанция и способ разнесения владений; не подменять их самодельным порогом.",
+          "Соответствие одного Realm единице подготовки текущего генератора и дополнение уже заполненной карты.",
+          "Поведение при недостатке места и изменение целевого количества вне исходного профиля.",
+          "Связь с финальной книгой/Quickstart и другие правила держателей не сверены.",
+          "Фактическая поддержка размещения/роли/сохранения в HexCrawl на точном SHA unknown."
+        ]
+      },
+      "source": {
+        "id": "MB-OFFICIAL-REALM-SHEETS-SNAPSHOT-20261108",
+        "title": "Mythic Bastionland Realm Sheets.pdf",
+        "edition": "Official free Realm Sheets snapshot downloaded2026-11-08; internal version not stated; referenced Creating a Realm(p14) not collated to final book",
+        "author": "Chris McDowall / Bastionland Press; sheet artwork attribution not verified",
+        "publisher": "Bastionland Press",
+        "language": "en",
+        "url": "https://chrismcdee.itch.io/mythic-bastionland",
+        "upload_id": "13049889",
+        "accessed_at": "2026-11-08T19:31:42.870Z",
+        "access_level": "full_text_visual_primary_pdf",
+        "download_route": "Publisher itch.io Download demo file; public free download, no purchase/authenticated account",
+        "size_bytes": 6878626,
+        "pdf_pages": 2,
+        "sha256": "6082a760c7db9b81baf0180cae585feb35826b24e5feb839434c4ff33deb924d",
+        "pdf_metadata_date": "2024-11-07; not asserted publication date",
+        "locator": "PDF1: Wilderness d12 sentence/barrier paragraph and HOLDINGS paragraph",
+        "author_project_key": "chris-mcdowall:bastionland:mythic-bastionland:realm-sheets",
+        "parent_project_dedup_key": "chris-mcdowall:bastionland:mythic-bastionland",
+        "limitations": [
+          "Only d12 sentence, barrier paragraph and HOLDINGS paragraph extracted; remaining PDF1 context, PDF2 not read.",
+          "Pinned official PDF rehashed unchanged and HOLDINGS reread visually; official landing page rechecked, no new PDF download/version claim.",
+          "Internal sheet version and equivalence to final full book unknown; referenced printed p14 not itself read.",
+          "No numerical distance or automatic placement algorithm specified in HOLDINGS; typical building examples not a mandatory closed catalogue.",
+          "Full game/runtime coverage unknown; no raw PDF, artwork or literary table corpus published."
+        ]
+      },
+      "implementation_authorized": false,
+      "release_authorized": false,
+      "dedup_review": {
+        "existing_tasks": [
+          "HX-BL-013",
+          "HX-BL-043",
+          "HX-BL-049",
+          "HX-BL-050",
+          "HX-BL-052"
+        ],
+        "decision": "New proposed research handoff for bounded set of holdings and Seat of Power; not a separate implementation mandate.",
+        "reason": "013 is editor infrastructure; active043 table prompts/current Knave scope not expanded. 049/050 concern factions/territories, 052 campaign base plus linked dungeons. None currently specifies four holdings and one Seat of Power. Reuse common placement/description/roles before selecting development; consolidate later if appropriate.",
+        "main_queue_changed": false
+      },
+      "ranking_version": "three-scenario-ranks-1.4-create-evidence",
+      "cohort_version": "2026-11-06-ranking1.4-create-evidence",
+      "research_handoff_ref": "agent-work/research/requirements/MB-holdings-L1.json",
+      "research_result_ref": "agent-work/research/runs/2026-11-08T1930-MB-holdings.json",
+      "readiness": "research_proposed_requires_strategist_selection_and_analyst_specification"
     }
   ],
   "last_review": {
