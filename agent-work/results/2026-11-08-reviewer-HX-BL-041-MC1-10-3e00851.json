@@ -6,9 +6,9 @@
   "reviewed_tree_sha": "98970eae3513ef14294dbfa4a9af21b6df6e62de",
   "base_sha": "2f11a4b608a7ed66f5786b3a0e151362f82d0ad8",
   "base_tree_sha": "30557b4d5f79318f26de4811091e62a4deb54cce",
-  "verdict": "accepted_bounded_local_data_and_delta_review",
+  "verdict": "accepted_bounded_local_mc1_package",
   "findings_open": [],
-  "scope": "Independent original-source coverage, all72 bindings, optional omenPreamble code/test delta, exact production UI probes. Parent owns mandatory fullcheck/fullbrowser consolidation. No publication/merge/release authorization implied.",
+  "scope": "Original-source coverage/all72bindings, optional omenPreamble code/test delta, independent exact production UI probe plus independently verified mandatory fullcheck/fullbrowser logs on the same commit. Local package accepted for owner review; publication/merge/release authorization remains separate.",
   "source_validation": {
     "source_pdf_sha256": "58f265ce6e4db6ec40cef588ad2adbd38807a5c4863022df825cd68020304231",
     "pdf_pages": 212,
@@ -141,13 +141,13 @@
     "tracked_tree_clean_after_review": true
   },
   "test_change_summary": {
-    "source": "git diff 2f11a4b608a7ed66f5786b3a0e151362f82d0ad8..3e00851a9247d35e535b4439e35f64b30f5b1dc8 -- test; package scripts unchanged; six existing named Node registrations before/after; browser workflow reused. Global baseline354 from prior accepted baseline log, final full count pending parent runner at this writing.",
+    "source": "git diff 2f11a4b608a7ed66f5786b3a0e151362f82d0ad8..3e00851a9247d35e535b4439e35f64b30f5b1dc8 -- test; package scripts unchanged; six existing named tags Node registrations before/after; existing tags browser workflow reused. Baseline354 from accepted baseline log; exact head354 independently verified from full check log.",
     "node_all": {
       "base": 354,
-      "head_expected": 354,
       "added": 0,
       "removed": 0,
-      "modified": 1
+      "modified": 1,
+      "head": 354
     },
     "node_tags": {
       "base": 6,
@@ -228,16 +228,88 @@
     },
     "end": {
       "is_enabled": true,
-      "checked_at": "2026-11-08T00:56:49.673Z"
+      "checked_at": "2026-11-08T01:03:09.240Z"
     },
     "restoration_performed": false,
-    "errors": []
+    "errors": [],
+    "consolidation_start": {
+      "is_enabled": true,
+      "checked_at": "2026-11-08T01:01:40.487Z"
+    },
+    "consolidation_end": {
+      "is_enabled": true,
+      "checked_at": "2026-11-08T01:03:09.240Z"
+    }
   },
   "limitations": [
-    "Bounded local acceptance; no public exactSHA CI or deployment checked; fullcheck/browser execution owned by parent and must be consolidated separately.",
+    "Bounded local acceptance. Mandatory check and all8browser scripts passed on exact SHA; parent executed these suites and reviewer independently verified full local logs/result metadata/hash. No public exactSHA CI or deployment checked.",
     "Complete source text comparison is not a full game rules or narrative quality grade. Whitespace/font layout is normalized; every line-end hyphen pair was separately manually checked.",
     "Chromium desktop/mobile viewport checks do not establish physical touch, assistive technology or full WCAG.",
     "No raw corpus/images uploaded, no GitHub writes/merge/deploy or Library writes performed by reviewer.",
     "Any changed source or commit SHA requires updated review."
-  ]
+  ],
+  "consolidated_required_checks": {
+    "check": {
+      "command": "npm run check",
+      "reviewed_sha": "3e00851a9247d35e535b4439e35f64b30f5b1dc8",
+      "exit_code_recorded": 0,
+      "duration_s_recorded": 475.832154750824,
+      "log_sha256": "adb6d86414efdeac20efa28ae850bc6124f6e28db709c37daec035621cabae81",
+      "log_bytes": 36703,
+      "independently_read_and_verified": true,
+      "execution_owner": "parent",
+      "verification_method": "Read full log bytes and result JSON; verify SHA256/length, command chain, completion markers, absence of failure output, exact current HEAD/tree and source cleanliness.",
+      "tsc": "passed_via_successful_shell_chain",
+      "tests_executed": 354,
+      "tests_passed": 354,
+      "tests_failed": 0,
+      "tests_cancelled": 0,
+      "tests_skipped": 0,
+      "tests_todo": 0,
+      "unique_named_pass_lines": 354,
+      "build": "passed",
+      "built_assets": [
+        "mythMaterialData-BtvxzA-7.js",
+        "index-t8BX6Yzf.js"
+      ]
+    },
+    "browser": {
+      "command": "npm run test:browser",
+      "reviewed_sha": "3e00851a9247d35e535b4439e35f64b30f5b1dc8",
+      "exit_code_recorded": 0,
+      "duration_s_recorded": 313.58455181121826,
+      "log_sha256": "1103f59ad6d0c0e5aeb08f86728b3525815592490281f0ba66b52061a9b3b438",
+      "log_bytes": 8225,
+      "independently_read_and_verified": true,
+      "execution_owner": "parent",
+      "verification_method": "Read full log bytes and result JSON; verify SHA256/length, command chain, completion markers, absence of failure output, exact current HEAD/tree and source cleanliness.",
+      "scripts_executed": 8,
+      "scripts_passed": 8,
+      "scripts_failed": 0,
+      "scripts_skipped": 0,
+      "scripts": [
+        "generation",
+        "poi-display",
+        "terrain-color",
+        "forest-display",
+        "navigation",
+        "large-navigation",
+        "save-history",
+        "tags"
+      ],
+      "actual_production_MC1_and_fallback_workflow": "passed",
+      "execution_sequence": "eight scripts joined by shell &&; final tags workflow completion present"
+    }
+  },
+  "consolidation": {
+    "reviewed_sha": "3e00851a9247d35e535b4439e35f64b30f5b1dc8",
+    "reviewed_tree_sha": "98970eae3513ef14294dbfa4a9af21b6df6e62de",
+    "program_source_matches_reviewed_commit": true,
+    "tracked_test_report_pngs_pending_parent_restoration": [],
+    "source_review_repeated": false,
+    "source_review_remains_applicable": "HEAD/tree and program source unchanged; corpus module hash remains pinned.",
+    "public_CI": "not_run_for_private_local_corpus_commit",
+    "deployment": "not_performed_or_checked",
+    "tracked_tree_clean_after_consolidation": true
+  }
 }
