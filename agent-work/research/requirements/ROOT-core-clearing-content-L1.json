@@ -1,0 +1,274 @@
+{
+  "schema_version": 2,
+  "run_id": "2026-11-08T0630-ROOT-core-clearing-content",
+  "game_id": "ROOT",
+  "source_id": "ROOT-CORE-2021-EN",
+  "ranking_version": "three-scenario-ranks-1.4-create-evidence",
+  "cohort_version": "2026-11-06-ranking1.4-create-evidence",
+  "primary_scenario": "create",
+  "layer": "L1",
+  "status": "research_handoff_not_specification",
+  "source": {
+    "id": "ROOT-CORE-2021-EN",
+    "title": "Root: The Roleplaying Game — Core Book",
+    "edition": "First printing2021; English primary book text on third-party HTML host",
+    "author": "Brendan Conway & Mark Diaz Truman",
+    "publisher": "Magpie Games",
+    "url": "https://studylib.net/doc/26230689/rootttprg-corebook-100721",
+    "locator": "Making the Woodland224; Map225–227; Control of Clearings / First: The Marquisate228–229; HTML8782–8794,8933–8998; Eyrie230–231 HTML9002–9048; Alliance/Denizens232–234 HTML9053–9144; Fleshing Out235 HTML9147–9315, procedure and six selected cells only",
+    "printed_pages": [
+      224,
+      225,
+      226,
+      227,
+      228,
+      229,
+      230,
+      231,
+      232,
+      233,
+      234,
+      235
+    ],
+    "pdf_pages": null,
+    "access_level": "full_text_selected_section",
+    "author_project_key": "magpie-games:root-rpg:core2021",
+    "accessed_at": "2026-11-08T06:33:25.189Z",
+    "bibliography_comparison": "First printing2021 credits match official9-page sample previously read, https://d1vzi28wh99zvq.cloudfront.net/pdf_previews/373406-sample.pdf",
+    "access_limitations": [
+      "Third-party text transcription, not publisher-hosted full PDF",
+      "Full-byte identity, visual table layout and latest errata not verified",
+      "Selected initial map/political setup224–234 and procedural clearing content235 extracted; full core inventory/full table corpus not claimed."
+    ],
+    "deduplication": "Same core work as prior p32 clarification; not a second independent audience observation; T&O remains a separate supplement corpus",
+    "language": "en",
+    "revision": null
+  },
+  "read_corpus": {
+    "new_reviewed_printed_pages": [
+      235
+    ],
+    "locator": "HTML9147–9315; procedure9148–9151; selected cells9161/9202,9212/9252,9262/9312–9313",
+    "scope": "procedure and six symmetric cells; full table data not registered",
+    "full_core_read": false,
+    "visual_pdf_collation": false
+  },
+  "requirements": [
+    {
+      "id": "ROOT-CORE-014-L1",
+      "layer": "L1",
+      "requirement": "Выбрать по два результата жителей, построек и проблем и связать шесть позиций с поляной. Позволить ведущему описать их смысл и адресно изменить одну позицию с сохранением остальных.",
+      "status": "unverified",
+      "implemented": null,
+      "evidence_id": null,
+      "evidence_sha": null,
+      "canonical_rule_ids": [
+        "content.place_description",
+        "content.roll_table_resolution"
+      ],
+      "criterion_ids": [
+        "S05-C01",
+        "S05-C02"
+      ],
+      "canonical_binding_ref": "agent-work/rules/game-bindings.json#ROOT-CORE-014-L1",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-014",
+        "normative_kind": "optional_random_fiction_preparation_procedure",
+        "applicability": "Root Core2021 Fleshing Out Your Clearings235; L1 on-demand content, distinct from political control and T&O detailed conflicts",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий выбирает существующую поляну и запрашивает её подробности, когда они нужны.",
+        "inputs_and_units": {
+          "место": "одна поляна",
+          "категории": "жители, постройки, проблемы — по две позиции",
+          "таблицы": "три6×6таблицы, две координаты1–6, не сумма2d6",
+          "изменение": "выбранная позиция и новый результат"
+        },
+        "product_operation": "Выбрать по два результата жителей, построек и проблем и связать шесть позиций с поляной. Позволить ведущему описать их смысл и адресно изменить одну позицию с сохранением остальных.",
+        "expected_output": "У поляны две позиции жителей, две построек и две проблем, отдельно от её политического контроля.",
+        "constraints_and_exceptions": [
+          "Наполнение по необходимости, не обязательное немедленное заполнение всей карты.",
+          "Это не ровно два физических здания/жителя во всей поляне.",
+          "Уникальность и политика совпадений не заданы; повтор строки не доказывает двух разных NPC.",
+          "Два кубика адресуют ячейку, не суммируются; порядок осей несимметричных пар требует сверки.",
+          "Адресная замена и сохранение — продуктовый перевод, не функция из книги.",
+          "Полные108литературных ячеек не публикуются; проверены шесть симметричных угловых ячеек.",
+          "Список проблем не подтверждает полноценную модель конфликтов/эскалаций HX-BL-048."
+        ],
+        "acceptance_cases": [
+          {
+            "id": "ROOT-CORE-014-L1-AC01",
+            "given": "Пустая полянаA; для каждой из трёх таблиц заданы ячейки(1,1) и(6,6).",
+            "when": "Запросить наполнение.",
+            "expected": "Два жителя: Mayor/Judge; две постройки: Mill/Aqueduct; две проблемы: Bear/Strange mystery. Шесть результатов2/2/2; пары не суммируются."
+          },
+          {
+            "id": "ROOT-CORE-014-L1-AC02",
+            "given": "Обе позиции жителей получили(1,1); четыре остальных результата известны.",
+            "when": "Разрешить жителей.",
+            "expected": "Два результата Mayor; четыре остальных сохранены. Уникальность не обеспечивается придуманным обязательным перебросом; число разных лиц решает ведущий."
+          },
+          {
+            "id": "ROOT-CORE-014-L1-AC03",
+            "given": "Поляна создана, подробности ещё не запрошены.",
+            "when": "Сохранить карту.",
+            "expected": "Поляна сохраняется без обязательного немедленного заполнения шести позиций; контроль не используется для выдумывания содержимого."
+          },
+          {
+            "id": "ROOT-CORE-014-L1-AC04",
+            "given": "Шесть результатов уже есть; ведущий заменяет только первую постройку, задавая(6,6).",
+            "when": "Повторить выбор этой позиции.",
+            "expected": "Первая постройка заменена на Aqueduct; остальные пять результатов сохранены. Это продуктовая операция адресного изменения, не обязанность из книги."
+          },
+          {
+            "id": "ROOT-CORE-014-L1-AC05",
+            "given": "Выбрана проблема Bear; мотивы, события и характеристики ведущим не заданы.",
+            "when": "Связать результат с поляной.",
+            "expected": "Название проблемы сохранено; готовый конфликт, мотивация, эскалация, статистика медведя и исход не заявлены."
+          },
+          {
+            "id": "ROOT-CORE-014-L1-AC06",
+            "given": "Шесть результатов связаны сA; ведущий дополнил один описанием.",
+            "when": "Сохранить и снова открыть карту.",
+            "expected": "Шесть результатов, категории и дополнение ведущего сохранены; новые броски не выполнены."
+          }
+        ],
+        "source_vs_product_interpretation": "Норма2/2/2 и моментwhen-needed — процедура источника. Две координаты следуют раскладке6×6; порядок первого/второго кубика по осям unknown. Симметричные(1,1)/(6,6) не решают полную раскладку. A и заданные выборы — собственные примеры. Адресная замена/сохранение — операции генератора, без технической спецификации/API/архитектуры.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.place_description",
+          "agent-work/rules/common-rules.json#content.roll_table_resolution"
+        ],
+        "unresolved_parameters": [
+          "Полная визуальная PDF-сверка таблиц и назначение кубиков осям не проведены.",
+          "Политика совпадений, имена/мотивы/конкретизация результатов не заданы этим абзацем.",
+          "Поддержка профиля генератором требует фактического evidence наSHA."
+        ]
+      },
+      "gap_task_ids": [
+        "HX-BL-043"
+      ],
+      "delivery": "research_handoff_not_specification"
+    }
+  ],
+  "facts": [
+    {
+      "source_rule_id": "ROOT-CORE-014",
+      "locator": "HTML9147–9315; procedure9148–9151; selected cells9161/9202,9212/9252,9262/9312–9313",
+      "paraphrase": "Когда нужно определить содержание поляны, предлагается случайно получить по два результата жителей, построек и проблем. Таблицы6×6; весь литературный корпус здесь не извлекается.",
+      "parameters": {
+        "per_clearing": {
+          "inhabitants": 2,
+          "buildings": 2,
+          "problems": 2
+        },
+        "total_results": 6,
+        "trigger": "when_GM_needs_clearing_fiction",
+        "table_shape": "three6x6tables_labeled2D6",
+        "addressing": "two_coordinates_not_sum; axis_order_unverified",
+        "duplicates": "source_not_specified"
+      }
+    }
+  ],
+  "interpretations": [
+    "Норма2/2/2 и моментwhen-needed — процедура источника. Две координаты следуют раскладке6×6; порядок первого/второго кубика по осям unknown. Симметричные(1,1)/(6,6) не решают полную раскладку. A и заданные выборы — собственные примеры. Адресная замена/сохранение — операции генератора, без технической спецификации/API/архитектуры."
+  ],
+  "unknowns": [
+    "Полная визуальная PDF-сверка таблиц и назначение кубиков осям не проведены.",
+    "Политика совпадений, имена/мотивы/конкретизация результатов не заданы этим абзацем.",
+    "Поддержка профиля генератором требует фактического evidence наSHA."
+  ],
+  "product_task_handoffs": [
+    {
+      "task_id": "HX-BL-043",
+      "title": "Выбирать и сохранять POI по связанным таблицам",
+      "status": "proposed",
+      "problem": "Core2/2/2 clearing profile not registered; runtime unknown.",
+      "benefit": "Минимальное наполнение выбранной поляны с сохранением решений ведущего.",
+      "game_editions": [
+        "Root RPG Core2021"
+      ],
+      "primary_scenario": "create",
+      "layer": "L1",
+      "requirement_refs": [
+        "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-014-L1"
+      ],
+      "canonical_rule_ids": [
+        "content.place_description",
+        "content.roll_table_resolution"
+      ],
+      "binding_refs": [
+        "agent-work/rules/game-bindings.json#ROOT-CORE-014-L1"
+      ],
+      "criterion_ids": [
+        "S05-C01",
+        "S05-C02"
+      ],
+      "scope": "On-demand2/2/2 only; no automatic motivated conflict engine.",
+      "dependencies": [
+        "Selected clearing; verified selected table results; full mapping unresolved"
+      ],
+      "acceptance_checks": [
+        {
+          "id": "ROOT-CORE-014-L1-AC01",
+          "given": "Пустая полянаA; для каждой из трёх таблиц заданы ячейки(1,1) и(6,6).",
+          "when": "Запросить наполнение.",
+          "expected": "Два жителя: Mayor/Judge; две постройки: Mill/Aqueduct; две проблемы: Bear/Strange mystery. Шесть результатов2/2/2; пары не суммируются.",
+          "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-014-L1"
+        },
+        {
+          "id": "ROOT-CORE-014-L1-AC02",
+          "given": "Обе позиции жителей получили(1,1); четыре остальных результата известны.",
+          "when": "Разрешить жителей.",
+          "expected": "Два результата Mayor; четыре остальных сохранены. Уникальность не обеспечивается придуманным обязательным перебросом; число разных лиц решает ведущий.",
+          "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-014-L1"
+        },
+        {
+          "id": "ROOT-CORE-014-L1-AC03",
+          "given": "Поляна создана, подробности ещё не запрошены.",
+          "when": "Сохранить карту.",
+          "expected": "Поляна сохраняется без обязательного немедленного заполнения шести позиций; контроль не используется для выдумывания содержимого.",
+          "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-014-L1"
+        },
+        {
+          "id": "ROOT-CORE-014-L1-AC04",
+          "given": "Шесть результатов уже есть; ведущий заменяет только первую постройку, задавая(6,6).",
+          "when": "Повторить выбор этой позиции.",
+          "expected": "Первая постройка заменена на Aqueduct; остальные пять результатов сохранены. Это продуктовая операция адресного изменения, не обязанность из книги.",
+          "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-014-L1"
+        },
+        {
+          "id": "ROOT-CORE-014-L1-AC05",
+          "given": "Выбрана проблема Bear; мотивы, события и характеристики ведущим не заданы.",
+          "when": "Связать результат с поляной.",
+          "expected": "Название проблемы сохранено; готовый конфликт, мотивация, эскалация, статистика медведя и исход не заявлены.",
+          "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-014-L1"
+        },
+        {
+          "id": "ROOT-CORE-014-L1-AC06",
+          "given": "Шесть результатов связаны сA; ведущий дополнил один описанием.",
+          "when": "Сохранить и снова открыть карту.",
+          "expected": "Шесть результатов, категории и дополнение ведущего сохранены; новые броски не выполнены.",
+          "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-014-L1"
+        }
+      ],
+      "expected_evidence": {
+        "current_runtime": "unknown",
+        "future_product": "Exact-SHA selected profile checks; table-data verification separate"
+      },
+      "score_delta": null,
+      "source_limitations": [
+        "Third-party text transcription, not publisher-hosted full PDF",
+        "Full-byte identity, visual table layout and latest errata not verified",
+        "Selected initial map/political setup224–234 and procedural clearing content235 extracted; full core inventory/full table corpus not claimed.",
+        "Полная визуальная PDF-сверка таблиц и назначение кубиков осям не проведены.",
+        "Политика совпадений, имена/мотивы/конкретизация результатов не заданы этим абзацем.",
+        "Поддержка профиля генератором требует фактического evidence наSHA."
+      ]
+    }
+  ],
+  "runtime_support": {
+    "status": "unverified",
+    "evidence_sha": null
+  },
+  "rating_changed": false,
+  "score_changed": false
+}
