@@ -2,7 +2,7 @@
   "schema_version": 1,
   "task_id": "HX-BL-043",
   "stage_id": "KNAVE2-CLASSIC1",
-  "status": "catalog_prepared_implementation_checkpoint_not_review_ready",
+  "status": "content_adapter_checkpoint_not_review_ready",
   "role": "programmer",
   "approval_ref": "owner-approval-2026-11-08-HX-BL-043-KNAVE2-CLASSIC1",
   "implementation_allowed": true,
@@ -41,7 +41,7 @@
     "Independent reviewer fresh context on exactSHA after implementation"
   ],
   "next_role_after_implementation": "reviewer",
-  "next_step": "Взять сохранённый каталог KNC-draft1 и ledger300: подключить предикаты контекста, нейтральные маркеры и генерацию POI через существующие теги; затем полный lifecycle/UI walkthrough и независимое ревью нового SHA.",
+  "next_step": "Продолжить PR494 на085724c: построить KnaveFacts из принятой карты, добавить нейтральные маркеры и атомарно вызвать адаптер при создании новых POI с приватным каталогом; затем полный actual walkthrough и независимое ревью нового SHA.",
   "foreign_claim_policy": "Do not take or close Nov3 HX-BL-041 presentation claim. MC1-EN separate source-file-required handoff preserved.",
   "score_model_version": "1.2",
   "score_forecast": "unknown; no grades/points awarded",
@@ -54,144 +54,75 @@
     "S08-C04"
   ],
   "implementation_checkpoint": {
-    "head_sha": "d60240b811474de3a58dce27ef184a98c0567e19",
-    "tree_sha": "ff9833048c094e3e950b784f9aeef486fea7bdde",
+    "head_sha": "085724cc736af5ba64fe1649cb8c99c5a36235fd",
+    "tree_sha": "69ea5e61e2f5c6b44a371b6f2a1841878a5e6d8e",
     "branch": "agent/knave2-classic1",
     "pr": 494,
-    "result_ref": "agent-work/results/2026-11-08T1441-programmer-HX-BL-043-KNAVE2-CLASSIC1.json",
-    "remaining": [
-      "Implement effective map-context predicates from source-free ledger, including actual crossing/rapid/waterfall checks; cold/ice pool remains empty without an existing explicit compatible biome",
-      "Add neutral natural-place/structure representation without mislabelling general sites as farms/statues/obelisks; preserve central settlements",
-      "Integrate source-bearing catalog privately with existing tag random/counters, accepted content snapshots and complete v10/E6/E7/E8 lifecycle; no new geography or ambient RNG",
-      "Full source/package tests, UI hint/focus completion and actual desktop390/320 walkthrough, then independent exact-SHA review/score_assessment1.2",
-      "Exact source-bearing public transfer and final product publication remain separate owner approval of concrete checked package"
-    ],
+    "status": "content_adapter_checkpoint_not_review_ready",
+    "result_ref": "agent-work/results/2026-11-08T1457-programmer-HX-BL-043-KNAVE2-CLASSIC1.json",
+    "catalog_input_ref": "agent-work/results/2026-11-08T1441-programmer-HX-BL-043-KNAVE2-CLASSIC1.json",
     "checks": {
       "node24_check": "pass",
-      "node": {
-        "executed": 358,
-        "passed": 358,
-        "failed": 0,
-        "skipped": 0
-      },
       "typescript": "pass",
       "build": "pass",
-      "node_provenance": {
-        "local_started_commit": "0bfc7c162a0a8ed5ab93cd7d6b97693e59558627",
-        "local_finished_commit": "8f20daec8e1c9db38234dab9323ea1bf68092fb7",
-        "public_head_sha": "d60240b811474de3a58dce27ef184a98c0567e19",
-        "public_tree_sha": "ff9833048c094e3e950b784f9aeef486fea7bdde",
-        "inflight_diff": [
-          "test/browser/knave-properties-lifecycle.mjs"
-        ],
-        "scope": "Only browser fixture helper changed while Node check ran. src/** and all Node runner inputs are byte-identical. Public current-SHA Check repeats all checks. No claim that earlier failed browser execution passed.",
-        "public_current_sha_check": {
-          "job_id": 128760289747,
-          "run_id": 42490062315,
-          "head_sha": "d60240b811474de3a58dce27ef184a98c0567e19",
-          "node": {
-            "executed": 358,
-            "passed": 358,
-            "failed": 0,
-            "skipped": 0
-          },
-          "typescript": "pass",
-          "build": "pass",
-          "evidence_ref": "agent-work/evidence/KNAVE2-CLASSIC1-d60240b/node24-ci.log"
-        }
-      },
-      "local_browser": {
-        "status": "blocked_environment",
-        "error": "Chromium executable absent; official Chrome and headless-shell downloads returned HTML Site Unavailable200, not ZIP. No successful local browser execution claimed."
-      },
-      "public_ci": {
-        "id": 42490062315,
-        "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42490062315",
-        "head_sha": "d60240b811474de3a58dce27ef184a98c0567e19",
-        "status": "completed",
-        "jobs": [
-          {
-            "id": 128760289555,
-            "name": "browser",
-            "status": "completed",
-            "conclusion": "success"
-          },
-          {
-            "id": 128760289716,
-            "name": "world-random",
-            "status": "completed",
-            "conclusion": "success"
-          },
-          {
-            "id": 128760289747,
-            "name": "check",
-            "status": "completed",
-            "conclusion": "success"
-          }
-        ],
-        "conclusion": "success"
-      },
-      "first_browser_attempt": {
-        "head_sha": "96a367b9b8af763cce79a1804d1a3ca1de0b2929",
-        "run_id": 42489460755,
-        "status": "failure",
-        "reason": "Fixture lacked required sea identity envelope; actual validator confirmed fixture error; fixed browser-only at current head",
-        "evidence_ref": "agent-work/evidence/KNAVE2-CLASSIC1-d60240b/first-browser-failure.json"
+      "node": {
+        "executed": 360,
+        "passed": 360,
+        "failed": 0,
+        "skipped": 0
       },
       "browser": {
         "workflows": 8,
         "passed": 8,
         "failed": 0,
-        "skipped": 0,
-        "new_knave_scenario": "passed",
-        "evidence": "Public current-head browser job128760289555; actual native controls/profilelock/draftgates/Escape/UndoRedo/import/RU1500/390/320 checks passed",
-        "visual_inspection_limit": "CI generated screenshots under reports/KNAVE2-CLASSIC1; existing workflow upload paths omit that directory. Screenshots not independently retrieved/inspected or shown in chat."
+        "skipped": 0
       },
-      "world_random": {
-        "status": "pass",
-        "job_id": 128760289716,
-        "counted_separately": true
+      "world_random": "pass",
+      "public_ci": {
+        "run_id": 42493863846,
+        "head_sha": "085724cc736af5ba64fe1649cb8c99c5a36235fd",
+        "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42493863846",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      "logs_prefix": "agent-work/evidence/KNAVE2-CLASSIC1-085724c/",
+      "actual_UI": {
+        "package_sha": "085724cc736af5ba64fe1649cb8c99c5a36235fd",
+        "CI_artifact_id": 13621979309,
+        "artifact_zip_sha256": "c78a25b063a5fd93d3c7de3bcdf4e91557c322687c0e3dd3c857f965dc70b974",
+        "images_commit": "02ef1e732a4cff5001d23bc45ac4ca85e58f70da",
+        "desktop_edit": "agent-work/evidence/KNAVE2-CLASSIC1-085724c/draft-1500.png",
+        "narrow_view": "agent-work/evidence/KNAVE2-CLASSIC1-085724c/accepted-320.png",
+        "metrics": {
+          "320": {
+            "client": 286,
+            "scroll": 286
+          },
+          "390": {
+            "client": 356,
+            "scroll": 356
+          },
+          "1500": {
+            "client": 465,
+            "scroll": 465
+          }
+        },
+        "inspected": true,
+        "shown_in_chat": true,
+        "scope": "Actual partial panel checkpoint with authored fixture labels, not book content or complete new-map workflow",
+        "known_limitations": [
+          "Source metadata may wrap over several lines while expanded at320px",
+          "Current actual App generation does not invoke this adapter yet",
+          "Full KNC new-map walkthrough/neutral markers/profile hint and focus checks remain pending"
+        ]
       }
     },
-    "status": "catalog_prepared_implementation_checkpoint_not_review_ready",
-    "catalog": {
-      "version": "knave2.ru.torbin1.0.knc1.0-draft1",
-      "source_sha256": "30cf89b9547fd0f76a56f4bcd0ab2dd0303b6be02c00500b37050ad4c71b8795",
-      "rows": 400,
-      "tables": 4,
-      "rows_per_table": 100,
-      "source_rows_character_match_ignoring_whitespace": 400,
-      "manual_whitespace_repairs": [
-        {
-          "table": "locations",
-          "row": 28
-        },
-        {
-          "table": "dungeons",
-          "row": 92
-        }
-      ],
-      "references_kept_explicit_unresolved": 16,
-      "duplicate_labels_preserved": true,
-      "english_verified": false,
-      "independently_reviewed": false,
-      "runtime_integrated": false,
-      "sha256": "0619799a183e10bef6cd5cb34fb9c7fb9e3dfda634832e79a1811789c02b05a3"
-    },
-    "private_recovery_package": {
-      "library_file_id": "libfile_fde3_f-c02ba0e04c48819187e74f51db702d27_3c7ce53bef508191bc31de4d3dfa12cc",
-      "version": 0,
-      "filename": "HexCrawl-Knave2-Classic1-catalog-private-v1.zip",
-      "local_path": "/workspace/scratch/320e5b03f904/knave-catalog-work/HexCrawl-Knave2-Classic1-catalog-private-v1.zip",
-      "bytes": 24688,
-      "sha256": "c254cc7120eec73f13d2a254ade160bbe864994ab2a11e152a9c2d81bb495c91",
-      "files": 7,
-      "zip_crc_verified": true,
-      "rebuild_identical": true,
-      "PDF_or_page_images_included": false,
-      "source_bearing_catalog_publicly_transferred": false,
-      "public_corpus_permission": false
-    }
+    "remaining": [
+      "Build KnaveFacts from the actual accepted map and add neutral natural-place/structure markers without changing legacy generation pools",
+      "Invoke adapter atomically for newly generated POI with supplied private catalog; preserve settlement/water identity, density, world RNG, old snapshots and failure rollback",
+      "Complete full actual new-map desktop390/320 walkthrough including profile hint/focus, error/cancel, save/load and continuation",
+      "Fresh-context independent exact-SHA review and score_assessment1.2, then concrete package/source-transfer and publication approval"
+    ]
   },
   "next_role": "programmer",
   "previous_implementation_checkpoints": [
@@ -350,6 +281,146 @@
           "job_id": 128760289716,
           "counted_separately": true
         }
+      }
+    },
+    {
+      "head_sha": "d60240b811474de3a58dce27ef184a98c0567e19",
+      "tree_sha": "ff9833048c094e3e950b784f9aeef486fea7bdde",
+      "branch": "agent/knave2-classic1",
+      "pr": 494,
+      "result_ref": "agent-work/results/2026-11-08T1441-programmer-HX-BL-043-KNAVE2-CLASSIC1.json",
+      "remaining": [
+        "Implement effective map-context predicates from source-free ledger, including actual crossing/rapid/waterfall checks; cold/ice pool remains empty without an existing explicit compatible biome",
+        "Add neutral natural-place/structure representation without mislabelling general sites as farms/statues/obelisks; preserve central settlements",
+        "Integrate source-bearing catalog privately with existing tag random/counters, accepted content snapshots and complete v10/E6/E7/E8 lifecycle; no new geography or ambient RNG",
+        "Full source/package tests, UI hint/focus completion and actual desktop390/320 walkthrough, then independent exact-SHA review/score_assessment1.2",
+        "Exact source-bearing public transfer and final product publication remain separate owner approval of concrete checked package"
+      ],
+      "checks": {
+        "node24_check": "pass",
+        "node": {
+          "executed": 358,
+          "passed": 358,
+          "failed": 0,
+          "skipped": 0
+        },
+        "typescript": "pass",
+        "build": "pass",
+        "node_provenance": {
+          "local_started_commit": "0bfc7c162a0a8ed5ab93cd7d6b97693e59558627",
+          "local_finished_commit": "8f20daec8e1c9db38234dab9323ea1bf68092fb7",
+          "public_head_sha": "d60240b811474de3a58dce27ef184a98c0567e19",
+          "public_tree_sha": "ff9833048c094e3e950b784f9aeef486fea7bdde",
+          "inflight_diff": [
+            "test/browser/knave-properties-lifecycle.mjs"
+          ],
+          "scope": "Only browser fixture helper changed while Node check ran. src/** and all Node runner inputs are byte-identical. Public current-SHA Check repeats all checks. No claim that earlier failed browser execution passed.",
+          "public_current_sha_check": {
+            "job_id": 128760289747,
+            "run_id": 42490062315,
+            "head_sha": "d60240b811474de3a58dce27ef184a98c0567e19",
+            "node": {
+              "executed": 358,
+              "passed": 358,
+              "failed": 0,
+              "skipped": 0
+            },
+            "typescript": "pass",
+            "build": "pass",
+            "evidence_ref": "agent-work/evidence/KNAVE2-CLASSIC1-d60240b/node24-ci.log"
+          }
+        },
+        "local_browser": {
+          "status": "blocked_environment",
+          "error": "Chromium executable absent; official Chrome and headless-shell downloads returned HTML Site Unavailable200, not ZIP. No successful local browser execution claimed."
+        },
+        "public_ci": {
+          "id": 42490062315,
+          "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42490062315",
+          "head_sha": "d60240b811474de3a58dce27ef184a98c0567e19",
+          "status": "completed",
+          "jobs": [
+            {
+              "id": 128760289555,
+              "name": "browser",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "id": 128760289716,
+              "name": "world-random",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "id": 128760289747,
+              "name": "check",
+              "status": "completed",
+              "conclusion": "success"
+            }
+          ],
+          "conclusion": "success"
+        },
+        "first_browser_attempt": {
+          "head_sha": "96a367b9b8af763cce79a1804d1a3ca1de0b2929",
+          "run_id": 42489460755,
+          "status": "failure",
+          "reason": "Fixture lacked required sea identity envelope; actual validator confirmed fixture error; fixed browser-only at current head",
+          "evidence_ref": "agent-work/evidence/KNAVE2-CLASSIC1-d60240b/first-browser-failure.json"
+        },
+        "browser": {
+          "workflows": 8,
+          "passed": 8,
+          "failed": 0,
+          "skipped": 0,
+          "new_knave_scenario": "passed",
+          "evidence": "Public current-head browser job128760289555; actual native controls/profilelock/draftgates/Escape/UndoRedo/import/RU1500/390/320 checks passed",
+          "visual_inspection_limit": "CI generated screenshots under reports/KNAVE2-CLASSIC1; existing workflow upload paths omit that directory. Screenshots not independently retrieved/inspected or shown in chat."
+        },
+        "world_random": {
+          "status": "pass",
+          "job_id": 128760289716,
+          "counted_separately": true
+        }
+      },
+      "status": "catalog_prepared_implementation_checkpoint_not_review_ready",
+      "catalog": {
+        "version": "knave2.ru.torbin1.0.knc1.0-draft1",
+        "source_sha256": "30cf89b9547fd0f76a56f4bcd0ab2dd0303b6be02c00500b37050ad4c71b8795",
+        "rows": 400,
+        "tables": 4,
+        "rows_per_table": 100,
+        "source_rows_character_match_ignoring_whitespace": 400,
+        "manual_whitespace_repairs": [
+          {
+            "table": "locations",
+            "row": 28
+          },
+          {
+            "table": "dungeons",
+            "row": 92
+          }
+        ],
+        "references_kept_explicit_unresolved": 16,
+        "duplicate_labels_preserved": true,
+        "english_verified": false,
+        "independently_reviewed": false,
+        "runtime_integrated": false,
+        "sha256": "0619799a183e10bef6cd5cb34fb9c7fb9e3dfda634832e79a1811789c02b05a3"
+      },
+      "private_recovery_package": {
+        "library_file_id": "libfile_fde3_f-c02ba0e04c48819187e74f51db702d27_3c7ce53bef508191bc31de4d3dfa12cc",
+        "version": 0,
+        "filename": "HexCrawl-Knave2-Classic1-catalog-private-v1.zip",
+        "local_path": "/workspace/scratch/320e5b03f904/knave-catalog-work/HexCrawl-Knave2-Classic1-catalog-private-v1.zip",
+        "bytes": 24688,
+        "sha256": "c254cc7120eec73f13d2a254ade160bbe864994ab2a11e152a9c2d81bb495c91",
+        "files": 7,
+        "zip_crc_verified": true,
+        "rebuild_identical": true,
+        "PDF_or_page_images_included": false,
+        "source_bearing_catalog_publicly_transferred": false,
+        "public_corpus_permission": false
       }
     }
   ]
