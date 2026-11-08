@@ -15,8 +15,22 @@ v10 and Classic. Unknown versions/scales and dangling or ambiguous owners refuse
 before any setter. Physical scale remains6mile with convention null, never zoom.
 The old v9 application cannot read v10 exports.
 
-The source content catalog/generation, profile checkbox, compact property editor
-and actual desktop/narrow feature walkthrough remain required before review_ready.
+The next checkpoint adds the compact Classic checkbox and6mile label, locked on
+an accepted map. Switching a Knave map to Mythic offers a reset, retaining the
+existing loss/name/note gates; Undo restores the old document and mode. Empty
+profile choices do not roll or add history. Imported profiles restore the checkbox.
+
+The existing hex panel now edits difficulty and POI discovery/clue. A UI-only
+draft captures revision, document identity and object address. Done validates a
+secret's trimmed clue (1..512 UTF-16 units); Cancel/Escape drops only the draft.
+Other actions offer Save/Discard/Stay. Export and map navigation retain the
+accepted document; no invalid draft enters JSON. A saved clue is escaped text,
+is preserved when discovery changes, and shares one Undo transaction with the
+other property changes. Dry difficulty remains independent of POI location.
+
+The source content catalog/generation and complete new-map feature walkthrough
+remain required before review_ready. The checkpoint UI alone is not a working
+Knave content generator and must not be released as a completed profile.
 No new source text, full-book research, score award or publication is included.
 
 Test governance: the four existing Knave contract cases remain useful. Existing
@@ -26,4 +40,8 @@ unknown-version refusal advances to11. No new test registration or duplicate
 RNG/browser suite is needed. Actual generation fault injection checks the separate
 backup restoration path, not only successful import. Counts in structured evidence
 are logical runner cases; fixture loops, helper edits and browser workflows stay
-separate.
+separate. The same actual-import/history case now covers draft refusal, stale
+callbacks, accepted-only export, no-op/cancellation, profile lock and mode reset.
+One DOM lifecycle scenario in the existing tags browser workflow checks native
+controls, explicit draft exits, keyboard Escape and desktop/390/320 layout. Its
+browser count is recorded separately from Node cases.
