@@ -1,0 +1,315 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-08T1230-OSE-realms",
+  "delivery": "research_handoff_not_specification",
+  "source": {
+    "id": "OSE-OFFICIAL-ORR-2026-EN",
+    "title": "OSE Online Rules Reference — Designing a Wilderness",
+    "edition": "Official2026 re-edited online basic/BX-derived rules reference; snapshot2026-11-08, not full Referee's Book or legacy Classic/Advanced PDF",
+    "author": "Gavin Norman / Necrotic Gnome",
+    "publisher": "Necrotic Gnome",
+    "language": "en",
+    "url": "https://www.oldschoolessentials.necroticgnome.com/rules/doku.php?id=running_adventures:designing_a_wilderness",
+    "locator": "Scale HTML256; human/intelligent nonhuman realms HTML257–265",
+    "printed_pages": null,
+    "pdf_pages": null,
+    "page_last_modified": "2026/08/02 18:03",
+    "accessed_at": "2026-11-08T12:33:54.312Z",
+    "access_level": "public_official_primary_text",
+    "author_project_key": "necrotic-gnome:gavin-norman:ose:online-reference2026",
+    "raw_file_hash": null,
+    "edition_verification": {
+      "official_entry": "https://necroticgnome.com/blogs/news/ose-2026-update-timeline",
+      "official_home": "https://www.oldschoolessentials.necroticgnome.com/rules/doku.php?id=start",
+      "basis": "Publisher links current reference; home says moved from2019platform to re-edited2026text; reference basic/BX-derived, examples/full books excluded."
+    },
+    "limitations": [
+      "Extracted Scale plus human/intelligent nonhuman realms only; optional monster clause266 and remaining page clauses not extracted; not full OSE thematic inventory.",
+      "No equivalence with all previous Classic/Advanced printings or full2026Referee's Book inferred.",
+      "No full source/book/literary tables copied; primary source paraphrase only.",
+      "Geometric hex measurement convention and coordinate subdivision not specified in selected clause."
+    ],
+    "deduplication": "One official OSE work/page; mirrors/search duplicates not independent popularity/audience evidence."
+  },
+  "ranking_version": "three-scenario-ranks-1.4-create-evidence",
+  "cohort_version": "2026-11-06-ranking1.4-create-evidence",
+  "game_id": "OSE",
+  "layer": "L1",
+  "primary_scenario": "create",
+  "scope": "Designing a Wilderness steps3–4, human/intelligent nonhuman realms HTML257–265 only; monster266 excluded",
+  "source_rule_ids": [
+    "OSE-ORR-2026-002",
+    "OSE-ORR-2026-003"
+  ],
+  "operational_requirements": [
+    {
+      "id": "OSE-ORR-2026-002-L1",
+      "source_rule_ref": "agent-work/market/rules/OSE-ORR-2026.json#OSE-ORR-2026-002",
+      "normative_kind": "referee_preparation_guidance_with_typical_location",
+      "applicability": "OSE official2026 online basic/BX-derived reference only; source-specific profile, not all OSE editions",
+      "layer": "L1",
+      "trigger_or_user_action": "Ведущий наносит или редактирует человеческое владение на подготовленной карте.",
+      "inputs_and_units": {
+        "area": "выбранная ведущим область карты; размер и единицы источник не нормирует",
+        "ruling_party": "название человека либо коллективной правящей стороны",
+        "civilisation_context": "связь с имеющимися реками, сельскохозяйственными угодьями или иными потребностями; качественное описание",
+        "base_town": "заданное место, если уже выбрано"
+      },
+      "product_operation": "Сохранить выбранную область как человеческое владение, связать её с правящей стороной и описанием связи с географией. Позволить изменить правителя без повторной генерации области; учитывать обычное размещение базового города как рекомендацию.",
+      "expected_output": "На подготовленной карте различимы область владения, её правящая сторона и заданное объяснение размещения; правка одного владения не меняет географию и соседние записи.",
+      "constraints_and_exceptions": [
+        "Коллективный правитель допустим: лига купцов не заменяется вымышленным монархом.",
+        "Реки и пашни — примеры потребностей, а не обязательная граница каждого владения и не численный тест пригодности.",
+        "Базовый город обычно внутри человеческого владения; отклонение ведущего не вызывает его принудительный перенос.",
+        "Принадлежность области не устанавливает автоматически население и фактический контроль каждого расположенного в ней места.",
+        "Сохранение, адресное редактирование и повторное открытие — продуктовый перевод, а не буквальная интерфейсная процедура источника."
+      ],
+      "acceptance_cases": [
+        {
+          "id": "OSE-ORR-2026-002-L1-AC01",
+          "given": "Выбрана область A у реки R; правящая сторона «Лига купцов», описание «поля у R».",
+          "when": "Нанести человеческое владение A.",
+          "expected": "A отмечена как человеческое владение; сохранены «Лига купцов» и «поля у R». Отдельный король не придуман."
+        },
+        {
+          "id": "OSE-ORR-2026-002-L1-AC02",
+          "given": "У A правитель «Барон», у B — «Совет»; границы и география уже выбраны.",
+          "when": "Изменить у A правителя на «Лига купцов».",
+          "expected": "У A изменён только правитель; B, границы A/B и река сохранены."
+        },
+        {
+          "id": "OSE-ORR-2026-002-L1-AC03",
+          "given": "Ведущий выбрал A без реки и указал причину «караванная торговля».",
+          "when": "Сохранить A.",
+          "expected": "Выбор и причина сохранены. Из примера rivers не выведен запрет такой области или автоматическое создание реки."
+        },
+        {
+          "id": "OSE-ORR-2026-002-L1-AC04",
+          "given": "Базовый город T уже находится вне человеческих владений по выбору ведущего.",
+          "when": "Применить рекомендацию о человеческом владении.",
+          "expected": "T остаётся на месте; типичное размещение отмечено как рекомендация, новое владение вокруг T не создано автоматически."
+        },
+        {
+          "id": "OSE-ORR-2026-002-L1-AC05",
+          "given": "A правит Лига; внутри A место P с неизвестным фактическим контролем; всё сохранено.",
+          "when": "Повторно открыть карту.",
+          "expected": "Область A и Лига сохранены; контроль P остаётся unknown, население P не назначено."
+        }
+      ],
+      "source_vs_product_interpretation": "Источник задаёт подготовку владений и качественные условия. Адресные правки, сохранение и примеры ожидаемого выхода — исследовательский перевод на язык генератора. Способ интерфейса/хранения/алгоритм не специфицирован; реализация не подтверждена.",
+      "canonical_rule_refs": [
+        "map.political_territories",
+        "content.place_description"
+      ],
+      "unresolved_parameters": [
+        "Способ задания/измерения границ и разрешение перекрывающихся областей.",
+        "Численные пороги близости к воде, размера владения и площади пашни.",
+        "Распространение власти на конкретные места без отдельного решения ведущего."
+      ]
+    },
+    {
+      "id": "OSE-ORR-2026-003-L1",
+      "source_rule_ref": "agent-work/market/rules/OSE-ORR-2026.json#OSE-ORR-2026-003",
+      "normative_kind": "referee_preparation_guidance_conditional_variants",
+      "applicability": "OSE official2026 online basic/BX-derived reference only; source-specific profile, not all OSE editions",
+      "layer": "L1",
+      "trigger_or_user_action": "Ведущий размещает или уточняет область разумного нечеловеческого народа.",
+      "inputs_and_units": {
+        "species": "выбранный разумный вид сеттинга",
+        "environment": "предпочитаемая среда; качественный контекст",
+        "way_of_life": "оседлый или кочевой образ жизни по решению ведущего",
+        "area": "заданная область карты",
+        "extent_quality": "чёткие границы либо приблизительная область; численные радиусы не заданы"
+      },
+      "product_operation": "Сохранить область народа вместе с описанием среды и образа жизни, различая чётко заданное владение и приблизительный ареал охоты/набегов. Уточнение области выполнять по выбору ведущего, не превращая его в расчёт движения.",
+      "expected_output": "На карте сохранены вид, область, её определённость и контекст среды/образа жизни; приблизительная область остаётся приблизительной после правок и повторного открытия.",
+      "constraints_and_exceptions": [
+        "Не каждый нечеловеческий народ кочует: источник допускает и чёткие владения.",
+        "Приблизительная область не превращается в точную государственную границу, набор обязательных гексов или постоянный радиус.",
+        "Охота/набеги здесь объясняют область подготовки карты, а не задают расписание, маршруты и симуляцию L2/L3.",
+        "Территории неразумных чудовищ вынесены в отдельный необработанный optional-пункт266; их политическое устройство не выдумывается.",
+        "Область народа не доказывает населённость и контроль каждого внутреннего места.",
+        "Нет переноса WWN-рекомендации о преимущественно естественных границах: выбранный текст OSE её не задаёт."
+      ],
+      "acceptance_cases": [
+        {
+          "id": "OSE-ORR-2026-003-L1-AC01",
+          "given": "Разумный народ E оседлый; ведущий задал область A с чёткими границами, среда «лес».",
+          "when": "Нанести владение E.",
+          "expected": "Сохранены E, A, «чёткие границы», «лес»; кочевой образ жизни не навязан."
+        },
+        {
+          "id": "OSE-ORR-2026-003-L1-AC02",
+          "given": "Разумный народ N кочевой; ведущий задал приблизительную область B для охоты, среда «степь».",
+          "when": "Нанести область N.",
+          "expected": "B обозначена приблизительной; сохранены N, «охота», «степь». Точная государственная граница и радиус не придуманы."
+        },
+        {
+          "id": "OSE-ORR-2026-003-L1-AC03",
+          "given": "Для N сохранена приблизительная B; ведущий уточнил её до B2, сохранив приблизительный характер.",
+          "when": "Обновить область.",
+          "expected": "Сохранена B2 как приблизительная; путь перемещения, часы и расписание набегов не созданы."
+        },
+        {
+          "id": "OSE-ORR-2026-003-L1-AC04",
+          "given": "Внутри B находится P с неизвестным контролем; рядом оседлая область A; N сохранён кочевым.",
+          "when": "Сохранить и снова открыть карту.",
+          "expected": "Сохранены A, B, её приблизительность и кочевой контекст N; контроль P остаётся unknown."
+        },
+        {
+          "id": "OSE-ORR-2026-003-L1-AC05",
+          "given": "Ведущий указал неразумное чудовище M; обработаны только пункты262–265.",
+          "when": "Сопоставить M с этим профилем.",
+          "expected": "Профиль разумного народа к M не применён. Optional-пункт266 отмечен как следующий отдельный пробел; правитель/государство M не выдуманы."
+        }
+      ],
+      "source_vs_product_interpretation": "Источник задаёт подготовку владений и качественные условия. Адресные правки, сохранение и примеры ожидаемого выхода — исследовательский перевод на язык генератора. Способ интерфейса/хранения/алгоритм не специфицирован; реализация не подтверждена.",
+      "canonical_rule_refs": [
+        "map.political_territories",
+        "content.place_description"
+      ],
+      "unresolved_parameters": [
+        "Геометрическое представление нечёткой области и разрешение пересечений.",
+        "Численные радиусы/плотности, частоты охоты и набегов.",
+        "Параметры optional-территорий неразумных чудовищ; отдельный будущий срез."
+      ]
+    }
+  ],
+  "canonical_reuse": {
+    "existing_rules": [
+      "map.political_territories",
+      "content.place_description"
+    ],
+    "new_generic_rules": 0,
+    "not_equivalent": "No WWN natural-boundary preference or Root faction-control dice imposed; uncertain nomadic extent is an OSE source profile"
+  },
+  "source_limitations": [
+    "Extracted Scale plus human/intelligent nonhuman realms only; optional monster clause266 and remaining page clauses not extracted; not full OSE thematic inventory.",
+    "No equivalence with all previous Classic/Advanced printings or full2026Referee's Book inferred.",
+    "No full source/book/literary tables copied; primary source paraphrase only.",
+    "Geometric hex measurement convention and coordinate subdivision not specified in selected clause."
+  ],
+  "product_support": "unverified",
+  "score_delta": null,
+  "rating_changed": false,
+  "product_task_handoffs": [
+    {
+      "task_id": "HX-BL-050",
+      "title": "Добавить профиль OSE к подготовке территорий: правящая сторона и приблизительные области кочевников",
+      "status": "proposed",
+      "problem": "Без отдельного профиля общая территория может ошибочно получить WWN-условия или превратить приблизительную область кочевников в точную государственную границу. Наличие функции в продукте пока unknown.",
+      "benefit": "Ведущий подготавливает разные типы владений OSE, сохраняет их смысл и правителя без симуляции населения/войны.",
+      "game_editions": [
+        "Official2026 re-edited online basic/BX-derived rules reference; snapshot2026-11-08, not full Referee's Book or legacy Classic/Advanced PDF"
+      ],
+      "primary_scenario": "create",
+      "layer": "L1",
+      "requirement_refs": [
+        "agent-work/market/rules/OSE-ORR-2026.json#OSE-ORR-2026-002-L1",
+        "agent-work/market/rules/OSE-ORR-2026.json#OSE-ORR-2026-003-L1"
+      ],
+      "canonical_rule_ids": [
+        "map.political_territories",
+        "content.place_description"
+      ],
+      "binding_refs": [
+        "agent-work/rules/game-bindings.json#OSE-ORR-2026-002-L1",
+        "agent-work/rules/game-bindings.json#OSE-ORR-2026-003-L1"
+      ],
+      "criterion_ids": [
+        "S06-C01",
+        "S05-C01",
+        "S05-C02"
+      ],
+      "scope": "Только исследовательский компонент существующей proposed050; стратег выбирает объём, аналитик готовит спецификацию. Правитель/контекст, чёткая или приблизительная область; без императивных естественных границ, L2-движения и автоматического контроля POI.",
+      "dependencies": [
+        "Готовая география; выбор области, вида и правящей стороны ведущим",
+        "Выбор задачи стратегом и отдельная спецификация аналитика до реализации"
+      ],
+      "acceptance_checks": [
+        {
+          "id": "OSE-ORR-2026-002-L1-AC01",
+          "given": "Выбрана область A у реки R; правящая сторона «Лига купцов», описание «поля у R».",
+          "when": "Нанести человеческое владение A.",
+          "expected": "A отмечена как человеческое владение; сохранены «Лига купцов» и «поля у R». Отдельный король не придуман.",
+          "requirement_ref": "agent-work/market/rules/OSE-ORR-2026.json#OSE-ORR-2026-002-L1"
+        },
+        {
+          "id": "OSE-ORR-2026-002-L1-AC02",
+          "given": "У A правитель «Барон», у B — «Совет»; границы и география уже выбраны.",
+          "when": "Изменить у A правителя на «Лига купцов».",
+          "expected": "У A изменён только правитель; B, границы A/B и река сохранены.",
+          "requirement_ref": "agent-work/market/rules/OSE-ORR-2026.json#OSE-ORR-2026-002-L1"
+        },
+        {
+          "id": "OSE-ORR-2026-002-L1-AC03",
+          "given": "Ведущий выбрал A без реки и указал причину «караванная торговля».",
+          "when": "Сохранить A.",
+          "expected": "Выбор и причина сохранены. Из примера rivers не выведен запрет такой области или автоматическое создание реки.",
+          "requirement_ref": "agent-work/market/rules/OSE-ORR-2026.json#OSE-ORR-2026-002-L1"
+        },
+        {
+          "id": "OSE-ORR-2026-002-L1-AC04",
+          "given": "Базовый город T уже находится вне человеческих владений по выбору ведущего.",
+          "when": "Применить рекомендацию о человеческом владении.",
+          "expected": "T остаётся на месте; типичное размещение отмечено как рекомендация, новое владение вокруг T не создано автоматически.",
+          "requirement_ref": "agent-work/market/rules/OSE-ORR-2026.json#OSE-ORR-2026-002-L1"
+        },
+        {
+          "id": "OSE-ORR-2026-002-L1-AC05",
+          "given": "A правит Лига; внутри A место P с неизвестным фактическим контролем; всё сохранено.",
+          "when": "Повторно открыть карту.",
+          "expected": "Область A и Лига сохранены; контроль P остаётся unknown, население P не назначено.",
+          "requirement_ref": "agent-work/market/rules/OSE-ORR-2026.json#OSE-ORR-2026-002-L1"
+        },
+        {
+          "id": "OSE-ORR-2026-003-L1-AC01",
+          "given": "Разумный народ E оседлый; ведущий задал область A с чёткими границами, среда «лес».",
+          "when": "Нанести владение E.",
+          "expected": "Сохранены E, A, «чёткие границы», «лес»; кочевой образ жизни не навязан.",
+          "requirement_ref": "agent-work/market/rules/OSE-ORR-2026.json#OSE-ORR-2026-003-L1"
+        },
+        {
+          "id": "OSE-ORR-2026-003-L1-AC02",
+          "given": "Разумный народ N кочевой; ведущий задал приблизительную область B для охоты, среда «степь».",
+          "when": "Нанести область N.",
+          "expected": "B обозначена приблизительной; сохранены N, «охота», «степь». Точная государственная граница и радиус не придуманы.",
+          "requirement_ref": "agent-work/market/rules/OSE-ORR-2026.json#OSE-ORR-2026-003-L1"
+        },
+        {
+          "id": "OSE-ORR-2026-003-L1-AC03",
+          "given": "Для N сохранена приблизительная B; ведущий уточнил её до B2, сохранив приблизительный характер.",
+          "when": "Обновить область.",
+          "expected": "Сохранена B2 как приблизительная; путь перемещения, часы и расписание набегов не созданы.",
+          "requirement_ref": "agent-work/market/rules/OSE-ORR-2026.json#OSE-ORR-2026-003-L1"
+        },
+        {
+          "id": "OSE-ORR-2026-003-L1-AC04",
+          "given": "Внутри B находится P с неизвестным контролем; рядом оседлая область A; N сохранён кочевым.",
+          "when": "Сохранить и снова открыть карту.",
+          "expected": "Сохранены A, B, её приблизительность и кочевой контекст N; контроль P остаётся unknown.",
+          "requirement_ref": "agent-work/market/rules/OSE-ORR-2026.json#OSE-ORR-2026-003-L1"
+        },
+        {
+          "id": "OSE-ORR-2026-003-L1-AC05",
+          "given": "Ведущий указал неразумное чудовище M; обработаны только пункты262–265.",
+          "when": "Сопоставить M с этим профилем.",
+          "expected": "Профиль разумного народа к M не применён. Optional-пункт266 отмечен как следующий отдельный пробел; правитель/государство M не выдуманы.",
+          "requirement_ref": "agent-work/market/rules/OSE-ORR-2026.json#OSE-ORR-2026-003-L1"
+        }
+      ],
+      "expected_evidence": {
+        "source": "Official2026online257–265",
+        "current_runtime": "unknown",
+        "future_product": "Actual known-output cases on exact implementation SHA; no score from source discovery"
+      },
+      "score_delta": null,
+      "source_limitations": [
+        "Extracted Scale plus human/intelligent nonhuman realms only; optional monster clause266 and remaining page clauses not extracted; not full OSE thematic inventory.",
+        "No equivalence with all previous Classic/Advanced printings or full2026Referee's Book inferred.",
+        "No full source/book/literary tables copied; primary source paraphrase only.",
+        "Geometric hex measurement convention and coordinate subdivision not specified in selected clause."
+      ]
+    }
+  ]
+}
