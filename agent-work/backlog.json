@@ -14294,17 +14294,20 @@
       "requirement_refs": [
         "agent-work/market/rules/MB-Realm-Sheets.json#MB-REALM-003-L1",
         "agent-work/market/rules/MB-Realm-Sheets.json#MB-REALM-004-L1",
-        "agent-work/market/rules/MB-Realm-Sheets.json#MB-REALM-005-L1"
+        "agent-work/market/rules/MB-Realm-Sheets.json#MB-REALM-005-L1",
+        "agent-work/market/rules/MB-Realm-Sheets.json#MB-REALM-006-L1"
       ],
       "canonical_rule_ids": [
         "content.site_density",
         "content.place_description",
-        "map.reference_labels"
+        "map.reference_labels",
+        "content.roll_table_resolution"
       ],
       "binding_refs": [
         "agent-work/rules/game-bindings.json#MB-REALM-003-L1",
         "agent-work/rules/game-bindings.json#MB-REALM-004-L1",
-        "agent-work/rules/game-bindings.json#MB-REALM-005-L1"
+        "agent-work/rules/game-bindings.json#MB-REALM-005-L1",
+        "agent-work/rules/game-bindings.json#MB-REALM-006-L1"
       ],
       "criterion_ids": [
         "S05-C01",
@@ -14312,7 +14315,7 @@
         "S07-C02",
         "S04-C03"
       ],
-      "scope": "Исследовательская передача: выбранные места, целевое количество и смысловая роль одного из них, описания и сохранность карты. Автоматическая дистанция/раскладка, интерфейс/API/схемы, доменная симуляция не специфицированы. Дополнительный proposed-компонент MB: шесть выбранных мест мифов и номера1–6, без автоматического размещения/сюжетных правил. Дополнительный профиль landmarks: по3–4каждого из шести видов и буквы/значки; без эффектов.",
+      "scope": "Исследовательская передача: выбранные места, целевое количество и смысловая роль одного из них, описания и сохранность карты. Автоматическая дистанция/раскладка, интерфейс/API/схемы, доменная симуляция не специфицированы. Дополнительный proposed-компонент MB: шесть выбранных мест мифов и номера1–6, без автоматического размещения/сюжетных правил. Дополнительный профиль landmarks: по3–4каждого из шести видов и буквы/значки; без эффектов. Дополнительный источник-профиль Sanctum→Knight table→associated Seer; две полные цепочки, остальные pending, без характеристик.",
       "dependencies": [
         "До выбора разработки проверить переиспользование редактора HX-BL-013, размещения/подсказок HX-BL-043 и ролей места HX-BL-052.",
         "Стратег выбирает объём, аналитик определяет соответствие Realm единице карты и решение нехватки мест; новые разработка/публикация требуют обычного решения владельца."
@@ -14443,6 +14446,48 @@
           "given": "Сохранён смешанный набор21места с известными видами, выбранными буквами/значками и положениями; есть мифы, владения и ручные заметки.",
           "when": "Сохранить и снова открыть карту.",
           "expected": "Восстановлены21место с теми же видами/обозначениями/положениями; другие объекты и заметки сохранены. Эффекты опасностей/проклятий, Провидцы или события не сгенерированы только из этого профиля количества и маркировки."
+        },
+        {
+          "id": "MB-REALM-006-L1-AC01",
+          "given": "Святилище S выбрано, броски d6=1 и d12=1; официальный Quickstart p26/p28 доступен.",
+          "when": "По d6 выбрать группу, по d12 запись, затем прочитать Провидца на странице рыцаря.",
+          "expected": "Выбран The True Knight, на p28 указан The Rotted Seer; с S связан именно The Rotted Seer, а не автоматически рыцарь как житель святилища. Сохранены исходы1/1 и локаторы."
+        },
+        {
+          "id": "MB-REALM-006-L1-AC02",
+          "given": "Святилище S, d6=1 и d12=2; доступны p26/p30 того же снимка.",
+          "when": "Разрешить выбор Провидца.",
+          "expected": "Выбран The Snare Knight и с S связан The Swollen Seer с p30. Результат2 не сложен с1 и не прочитан как2/1."
+        },
+        {
+          "id": "MB-REALM-006-L1-AC03",
+          "given": "Святилище S; d6=2 и d12=1; доступна таблица p26, карточка выбранного рыцаря не предоставлена.",
+          "when": "Разрешить доступную часть цепочки.",
+          "expected": "Таблица даёт The Trail Knight; Провидец остаётся unknown/pending_source_card. The Swollen Seer из1/2 не подставлен; рыцарь не выдан за Провидца."
+        },
+        {
+          "id": "MB-REALM-006-L1-AC04",
+          "given": "Святилище S; d6=6,d12=12; таблица p26 даёт The Rat Knight, но его карточка не проверена.",
+          "when": "Сохранить незавершённую цепочку.",
+          "expected": "У S сохранены исходы6/12, The Rat Knight и нерешённая ссылка на карточку; имя/описание Провидца не выдуманы, полного соответствия не заявлено."
+        },
+        {
+          "id": "MB-REALM-006-L1-AC05",
+          "given": "Вместо корректных пары переданы d6=0/7 либо d12=0/13; у S уже есть сохранённый Провидец.",
+          "when": "Попытаться применить результат по данному профилю.",
+          "expected": "Недопустимая пара не назначает нового Провидца и не стирает прежнего; автоматического превращения13в1 нет."
+        },
+        {
+          "id": "MB-REALM-006-L1-AC06",
+          "given": "У S1 выбран The Rotted Seer из1/1, у S2 уже есть ручная запись; ведущий меняет только S1 на подтверждённый исход1/2.",
+          "when": "Обновить Провидца выбранного святилища.",
+          "expected": "У S1 теперь The Swollen Seer; S2 и местоположения обоих святилищ сохранены. Способности/боевые характеристики и рыцарь на карте автоматически не созданы."
+        },
+        {
+          "id": "MB-REALM-006-L1-AC07",
+          "given": "Сохранены S1 с разрешённым Провидцем и S2 с незавершённой цепочкой6/12, их положения/заметки и источники.",
+          "when": "Сохранить и снова открыть карту.",
+          "expected": "У S1 восстановлен тот же Провидец, у S2 тот же pending с неизвестным Провидцем; исходы/локаторы/положения не потеряны и не переброшены."
         }
       ],
       "expected_evidence": {
@@ -15003,14 +15048,248 @@
             ],
             "reason": "053 already fixed-set placement and labels. This is another source-verified profile of the same capabilities; existing product reuse must be checked before development. No scope change to active/approved041/043."
           }
+        },
+        {
+          "schema_version": 1,
+          "task_id": "HX-BL-053",
+          "title": "Назначать Провидца выбранному святилищу по связанной таблице",
+          "status": "proposed",
+          "problem": "Правильная цепочка рыцарь→его Провидец не доказана общим наличием таблиц/карточек; нельзя выдавать промежуточного рыцаря за жителя святилища. Реализация unknown.",
+          "benefit": "Ведущий получает связанного с местом Провидца с проверенным происхождением; недоступная карточка не заполняется вымыслом.",
+          "game_editions": [
+            "Official free Realm Sheets snapshot downloaded2026-11-08; internal version not stated; referenced Creating a Realm(p14) not collated to final book",
+            "Official free Quickstart snapshot2026-11-08; internal edition/version unspecified, not full book"
+          ],
+          "primary_scenario": "create",
+          "layer": "L1",
+          "requirement_refs": [
+            "agent-work/market/rules/MB-Realm-Sheets.json#MB-REALM-006-L1"
+          ],
+          "canonical_rule_ids": [
+            "content.roll_table_resolution",
+            "content.place_description"
+          ],
+          "binding_refs": [
+            "agent-work/rules/game-bindings.json#MB-REALM-006-L1"
+          ],
+          "criterion_ids": [
+            "S05-C01",
+            "S05-C02"
+          ],
+          "scope": "Только подготовка связи места с Провидцем и происхождение/pending/сохранение; две полные sourceцепочки. Не полный каталог или движок.",
+          "dependencies": [
+            "Проверить переиспользование существующих MB/редактора и связанного выбора таблиц043; активный объём041/043 не расширять.",
+            "Стратег выбирает proposed053, аналитик специфицирует. Остальные source cards проверять адресно."
+          ],
+          "acceptance_checks": [
+            {
+              "id": "MB-REALM-006-L1-AC01",
+              "given": "Святилище S выбрано, броски d6=1 и d12=1; официальный Quickstart p26/p28 доступен.",
+              "when": "По d6 выбрать группу, по d12 запись, затем прочитать Провидца на странице рыцаря.",
+              "expected": "Выбран The True Knight, на p28 указан The Rotted Seer; с S связан именно The Rotted Seer, а не автоматически рыцарь как житель святилища. Сохранены исходы1/1 и локаторы."
+            },
+            {
+              "id": "MB-REALM-006-L1-AC02",
+              "given": "Святилище S, d6=1 и d12=2; доступны p26/p30 того же снимка.",
+              "when": "Разрешить выбор Провидца.",
+              "expected": "Выбран The Snare Knight и с S связан The Swollen Seer с p30. Результат2 не сложен с1 и не прочитан как2/1."
+            },
+            {
+              "id": "MB-REALM-006-L1-AC03",
+              "given": "Святилище S; d6=2 и d12=1; доступна таблица p26, карточка выбранного рыцаря не предоставлена.",
+              "when": "Разрешить доступную часть цепочки.",
+              "expected": "Таблица даёт The Trail Knight; Провидец остаётся unknown/pending_source_card. The Swollen Seer из1/2 не подставлен; рыцарь не выдан за Провидца."
+            },
+            {
+              "id": "MB-REALM-006-L1-AC04",
+              "given": "Святилище S; d6=6,d12=12; таблица p26 даёт The Rat Knight, но его карточка не проверена.",
+              "when": "Сохранить незавершённую цепочку.",
+              "expected": "У S сохранены исходы6/12, The Rat Knight и нерешённая ссылка на карточку; имя/описание Провидца не выдуманы, полного соответствия не заявлено."
+            },
+            {
+              "id": "MB-REALM-006-L1-AC05",
+              "given": "Вместо корректных пары переданы d6=0/7 либо d12=0/13; у S уже есть сохранённый Провидец.",
+              "when": "Попытаться применить результат по данному профилю.",
+              "expected": "Недопустимая пара не назначает нового Провидца и не стирает прежнего; автоматического превращения13в1 нет."
+            },
+            {
+              "id": "MB-REALM-006-L1-AC06",
+              "given": "У S1 выбран The Rotted Seer из1/1, у S2 уже есть ручная запись; ведущий меняет только S1 на подтверждённый исход1/2.",
+              "when": "Обновить Провидца выбранного святилища.",
+              "expected": "У S1 теперь The Swollen Seer; S2 и местоположения обоих святилищ сохранены. Способности/боевые характеристики и рыцарь на карте автоматически не созданы."
+            },
+            {
+              "id": "MB-REALM-006-L1-AC07",
+              "given": "Сохранены S1 с разрешённым Провидцем и S2 с незавершённой цепочкой6/12, их положения/заметки и источники.",
+              "when": "Сохранить и снова открыть карту.",
+              "expected": "У S1 восстановлен тот же Провидец, у S2 тот же pending с неизвестным Провидцем; исходы/локаторы/положения не потеряны и не переброшены."
+            }
+          ],
+          "expected_evidence": {
+            "current_runtime": "unknown",
+            "evidence_sha": null,
+            "future_product": "Two fixed source chains, missing-card outcomes and saved edited place association on exact SHA"
+          },
+          "score_delta": null,
+          "source_limitations": [
+            "Only bounded previous slices plus Sanctums clause extracted; other individual landmark effects not extracted and PDF2 unread.",
+            "Pinned Realm Sheet rehashed unchanged; selected Sanctums clause reread visually. Its reference resolved only for selected official Quickstart pages, not all editions.",
+            "Quickstart p26 table read; actual seer chains verified for1/1 and1/2 only. Other seer card contents unknown.",
+            "No raw PDFs/art/full literary catalogue republished; runtime unknown.",
+            "Only Sanctums clause p14, Knights procedure/table p26, and seer identification on p28/p30 extracted.",
+            "p1/13/27/29 text returned as context only; remaining pages not thematically audited. Text search of51pages for two names is not reading those pages.",
+            "No full-book equivalence, complete72seer catalogue, stats/art/table corpus redistribution or runtime verification."
+          ],
+          "operational_requirement": {
+            "source_rule_ref": "agent-work/market/rules/MB-Realm-Sheets.json#MB-REALM-006",
+            "normative_kind": "realm_sheet_creation_procedure_with_bounded_quickstart_dependency",
+            "applicability": "Realm Sheet Sanctums clause, operationally resolved with official Quickstart snapshot p14/26/28/30; no whole-book equivalence",
+            "layer": "L1",
+            "trigger_or_user_action": "Ведущий выбирает святилище и определяет живущего там Провидца по таблице рыцарей и странице выбранного рыцаря.",
+            "inputs_and_units": {
+              "place": "одно выбранное святилище",
+              "rolls": "упорядоченная пара: d6=1…6, затем d12=1…12; не сумма",
+              "table": "Knight table printed/PDF26 официального Quickstart",
+              "card": "страница выбранного рыцаря с полем Knighted by; прочитаны p28/p30",
+              "result": "связь святилище—Провидец с известными исходами/источниками либо явно незавершённой ссылкой"
+            },
+            "product_operation": "Выбрать рыцаря по паре d6/d12, найти связанного с ним Провидца на его странице и связать Провидца с выбранным святилищем. Сохранить выбор и источник; при отсутствии карточки сохранить незавершённую цепочку без выдуманного имени, разрешить адресную замену и восстановление при открытии карты.",
+            "expected_output": "У выбранного святилища указан проверенный Провидец, а не рыцарь из промежуточной таблицы; недоступная карточка остаётся unknown с сохранённым промежуточным результатом.",
+            "constraints_and_exceptions": [
+              "Пара читается d6первым, d12вторым; перестановка и сложение меняют смысл и не предусмотрены.",
+              "Рыцарь служит промежуточным выбором, живущий в святилище персонаж — связанный Провидец.",
+              "Подтверждены две полные цепочки; наличие72записей таблицы не означает прочтение72карточек/имён Провидцев.",
+              "2/1 и6/12 подтверждены только до названия рыцаря; имя Провидца по этим исходам unknown.",
+              "Сохранение/редактирование/pending — продуктовая операционализация, не внутренние команды, схема хранения или спецификация интерфейса.",
+              "Не переносить автоматически характеристики/способности, не добавлять рыцаря на карту и не запускать L2/L3эффекты.",
+              "Совпадение выбранного Sanctums абзаца между листом и Quickstart проверено; остальные численные профили/вся финальная книга не объявлены эквивалентными."
+            ],
+            "acceptance_cases": [
+              {
+                "id": "MB-REALM-006-L1-AC01",
+                "given": "Святилище S выбрано, броски d6=1 и d12=1; официальный Quickstart p26/p28 доступен.",
+                "when": "По d6 выбрать группу, по d12 запись, затем прочитать Провидца на странице рыцаря.",
+                "expected": "Выбран The True Knight, на p28 указан The Rotted Seer; с S связан именно The Rotted Seer, а не автоматически рыцарь как житель святилища. Сохранены исходы1/1 и локаторы."
+              },
+              {
+                "id": "MB-REALM-006-L1-AC02",
+                "given": "Святилище S, d6=1 и d12=2; доступны p26/p30 того же снимка.",
+                "when": "Разрешить выбор Провидца.",
+                "expected": "Выбран The Snare Knight и с S связан The Swollen Seer с p30. Результат2 не сложен с1 и не прочитан как2/1."
+              },
+              {
+                "id": "MB-REALM-006-L1-AC03",
+                "given": "Святилище S; d6=2 и d12=1; доступна таблица p26, карточка выбранного рыцаря не предоставлена.",
+                "when": "Разрешить доступную часть цепочки.",
+                "expected": "Таблица даёт The Trail Knight; Провидец остаётся unknown/pending_source_card. The Swollen Seer из1/2 не подставлен; рыцарь не выдан за Провидца."
+              },
+              {
+                "id": "MB-REALM-006-L1-AC04",
+                "given": "Святилище S; d6=6,d12=12; таблица p26 даёт The Rat Knight, но его карточка не проверена.",
+                "when": "Сохранить незавершённую цепочку.",
+                "expected": "У S сохранены исходы6/12, The Rat Knight и нерешённая ссылка на карточку; имя/описание Провидца не выдуманы, полного соответствия не заявлено."
+              },
+              {
+                "id": "MB-REALM-006-L1-AC05",
+                "given": "Вместо корректных пары переданы d6=0/7 либо d12=0/13; у S уже есть сохранённый Провидец.",
+                "when": "Попытаться применить результат по данному профилю.",
+                "expected": "Недопустимая пара не назначает нового Провидца и не стирает прежнего; автоматического превращения13в1 нет."
+              },
+              {
+                "id": "MB-REALM-006-L1-AC06",
+                "given": "У S1 выбран The Rotted Seer из1/1, у S2 уже есть ручная запись; ведущий меняет только S1 на подтверждённый исход1/2.",
+                "when": "Обновить Провидца выбранного святилища.",
+                "expected": "У S1 теперь The Swollen Seer; S2 и местоположения обоих святилищ сохранены. Способности/боевые характеристики и рыцарь на карте автоматически не созданы."
+              },
+              {
+                "id": "MB-REALM-006-L1-AC07",
+                "given": "Сохранены S1 с разрешённым Провидцем и S2 с незавершённой цепочкой6/12, их положения/заметки и источники.",
+                "when": "Сохранить и снова открыть карту.",
+                "expected": "У S1 восстановлен тот же Провидец, у S2 тот же pending с неизвестным Провидцем; исходы/локаторы/положения не потеряны и не переброшены."
+              }
+            ],
+            "source_vs_product_interpretation": "Лист прямо назначает святилище домом Провидца и отсылает к Knight table. Quickstart p14 уточняет переход к странице рыцаря, p26 задаёт d6 затем d12; имена подтверждены на p28/30. Сохранение происхождения, pending и адресная замена — наш перевод в возможности генератора. Не весь каталог и не фактическая реализация.",
+            "canonical_rule_refs": [
+              "content.roll_table_resolution",
+              "content.place_description"
+            ],
+            "unresolved_parameters": [
+              "Остальные карточки Провидцев и другие редакции/полная книга не прочитаны.",
+              "Повторный выбор одинакового Провидца для разных святилищ/уникальность не установлены.",
+              "Фактическая поддержка в текущем MB генераторе, сохранение и точное SHA evidence unknown."
+            ]
+          },
+          "source": {
+            "id": "MB-OFFICIAL-REALM-SHEETS-SNAPSHOT-20261108",
+            "title": "Mythic Bastionland Realm Sheets.pdf",
+            "edition": "Official free Realm Sheets snapshot downloaded2026-11-08; internal version not stated; referenced Creating a Realm(p14) not collated to final book",
+            "author": "Chris McDowall / Bastionland Press; sheet artwork attribution not verified",
+            "publisher": "Bastionland Press",
+            "language": "en",
+            "url": "https://chrismcdee.itch.io/mythic-bastionland",
+            "upload_id": "13049889",
+            "accessed_at": "2026-11-08T22:34:01.740Z",
+            "access_level": "full_text_visual_primary_pdf",
+            "download_route": "Publisher itch.io Download demo file; public free download, no purchase/authenticated account",
+            "size_bytes": 6878626,
+            "pdf_pages": 2,
+            "sha256": "6082a760c7db9b81baf0180cae585feb35826b24e5feb839434c4ff33deb924d",
+            "pdf_metadata_date": "2024-11-07; not asserted publication date",
+            "locator": "PDF1 prior slices and LANDMARKS/Sanctums descriptive clause",
+            "author_project_key": "chris-mcdowall:bastionland:mythic-bastionland:realm-sheets",
+            "parent_project_dedup_key": "chris-mcdowall:bastionland:mythic-bastionland",
+            "limitations": [
+              "Only bounded previous slices plus Sanctums clause extracted; other individual landmark effects not extracted and PDF2 unread.",
+              "Pinned Realm Sheet rehashed unchanged; selected Sanctums clause reread visually. Its reference resolved only for selected official Quickstart pages, not all editions.",
+              "Quickstart p26 table read; actual seer chains verified for1/1 and1/2 only. Other seer card contents unknown.",
+              "No raw PDFs/art/full literary catalogue republished; runtime unknown."
+            ]
+          },
+          "dependency_source": {
+            "id": "MB-OFFICIAL-QUICKSTART-SNAPSHOT-20261108",
+            "title": "Mythic Bastionland Quickstart.pdf",
+            "edition": "Official free Quickstart snapshot2026-11-08; internal edition/version unspecified, not full book",
+            "author": "Chris McDowall",
+            "publisher": "Bastionland Press",
+            "language": "en",
+            "url": "https://chrismcdee.itch.io/mythic-bastionland",
+            "upload_id": "14160848",
+            "accessed_at": "2026-11-08T22:34:01.740Z",
+            "access_level": "full_text",
+            "access_method": "Official public demo download, primary PDF text + selected visual pages",
+            "sha256": "ed79a47c271d829370af5066da9a6b2f1480ad1e9d2f0be4cc65e001fb977ed8",
+            "size_bytes": 20753950,
+            "pdf_pages": 51,
+            "printed_pdf_page_alignment": "Verified selected pages14/26/28/30 align; not asserted for every page",
+            "author_project_key": "chris-mcdowall:bastionland:mythic-bastionland:quickstart",
+            "parent_project_dedup_key": "chris-mcdowall:bastionland:mythic-bastionland",
+            "limitations": [
+              "Only Sanctums clause p14, Knights procedure/table p26, and seer identification on p28/p30 extracted.",
+              "p1/13/27/29 text returned as context only; remaining pages not thematically audited. Text search of51pages for two names is not reading those pages.",
+              "No full-book equivalence, complete72seer catalogue, stats/art/table corpus redistribution or runtime verification."
+            ]
+          },
+          "implementation_authorized": false,
+          "release_authorized": false,
+          "dedup_review": {
+            "decision": "Additional component in existing proposed053 place role/description handoff; no new canonical rule/task.",
+            "related_tasks": [
+              "HX-BL-013",
+              "HX-BL-041",
+              "HX-BL-043",
+              "HX-BL-053"
+            ],
+            "reason": "Reuse general table-chain and place description. Existing043 generic chain does not prove this specific source profile; existingMB may implement it, check before development. Active scopes unchanged."
+          }
         }
       ],
       "research_handoff_refs": [
         "agent-work/research/requirements/MB-holdings-L1.json",
         "agent-work/research/requirements/MB-myth-hexes-L1.json",
-        "agent-work/research/requirements/MB-landmarks-L1.json"
+        "agent-work/research/requirements/MB-landmarks-L1.json",
+        "agent-work/research/requirements/MB-sanctums-L1.json"
       ],
-      "last_research_result_ref": "agent-work/research/runs/2026-11-08T2130-MB-landmarks.json"
+      "last_research_result_ref": "agent-work/research/runs/2026-11-08T2230-MB-sanctums.json"
     }
   ],
   "last_review": {
