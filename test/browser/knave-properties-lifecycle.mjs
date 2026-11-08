@@ -29,10 +29,11 @@ export async function runKnavePropertiesLifecycle({page,snapshot,root}) {
  assert.equal(await panel.locator('.knave-result').count(),2);await panel.locator('.knave-result').first().locator('summary').click();assert.match(await panel.innerText(),/совместимый пул/);
  const before=await snapshot();await page.getByRole('button',{name:'Редактировать',exact:true}).click();
  const discovery=panel.getByRole('combobox',{name:'Обнаружение',exact:true});
- await discovery.selectOption('interaction');await page.getByRole('button',{name:'Готово',exact:true}).click();
+ await discovery.focus();await discovery.selectOption('interaction');await page.getByRole('button',{name:'Готово',exact:true}).click();
  assert.match(await panel.getByRole('alert').innerText(),/улика/);assert.deepEqual(await snapshot(),before,'export excludes invalid draft');
  await page.locator('polygon.hex[data-hex-key="1,0"]').dispatchEvent('click');
  const dialog=page.getByRole('alertdialog');await dialog.getByRole('button',{name:'Остаться',exact:true}).click();
+ await page.waitForFunction(()=>document.activeElement?.getAttribute('aria-label')==='Обнаружение');
  assert.equal(await discovery.inputValue(),'interaction');assert.equal(await discovery.evaluate(el=>document.activeElement===el),true,'Stay restores focus to the Knave editor');
  await panel.getByRole('textbox',{name:'Улика',exact:true}).fill('<Следы обрываются у скалы>');
  await panel.getByRole('combobox',{name:'Проходимость',exact:true}).selectOption('difficult');
