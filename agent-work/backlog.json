@@ -12490,12 +12490,157 @@
           "implementation_authorized": false,
           "release_authorized": false,
           "score_delta": null
+        },
+        {
+          "component_id": "ROOT-CORE-Alliance-Denizens-L1",
+          "status": "research_handoff_product_unverified",
+          "research_handoff_ref": "agent-work/research/requirements/ROOT-core-Alliance-Denizens-L1.json",
+          "research_result_ref": "agent-work/research/runs/2026-11-08T0530-ROOT-core-Alliance-Denizens.json",
+          "source_id": "ROOT-CORE-2021-EN",
+          "source_scope": "Core2021 printed232–234 only",
+          "requirement_refs": [
+            "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-011-L1",
+            "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-012-L1",
+            "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-013-L1"
+          ],
+          "binding_refs": [
+            "agent-work/rules/game-bindings.json#ROOT-CORE-011-L1",
+            "agent-work/rules/game-bindings.json#ROOT-CORE-012-L1",
+            "agent-work/rules/game-bindings.json#ROOT-CORE-013-L1"
+          ],
+          "canonical_rule_ids": [
+            "map.faction_presence",
+            "content.place_description",
+            "content.roll_table_resolution",
+            "map.faction_control"
+          ],
+          "acceptance_checks": [
+            {
+              "id": "ROOT-CORE-011-L1-AC01",
+              "given": "Две независимые uncontrolled-поляны, суммы8/9.",
+              "when": "Определить симпатию.",
+              "expected": "У первой симпатии нет, у второй есть; база и контроль Alliance не созданы.",
+              "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-011-L1"
+            },
+            {
+              "id": "ROOT-CORE-011-L1-AC02",
+              "given": "Две controlled-поляны Marquisate, суммы10/11.",
+              "when": "Определить симпатию.",
+              "expected": "Симпатия соответственно нет/есть; контроль Marquisate обеих сохранён.",
+              "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-011-L1"
+            },
+            {
+              "id": "ROOT-CORE-011-L1-AC03",
+              "given": "Две поляны заданы ведущим как contested по истории Marquisate→Eyrie; суммы7/8.",
+              "when": "Применить contested-строку.",
+              "expected": "Симпатия нет/есть; история и текущий контроль Eyrie сохранены.",
+              "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-011-L1"
+            },
+            {
+              "id": "ROOT-CORE-011-L1-AC04",
+              "given": "Alliance выключена, готовая карта содержит контроль других фракций.",
+              "when": "Пройти выбранные шаги.",
+              "expected": "Новые броски симпатии Alliance и её базы не создаются.",
+              "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-011-L1"
+            },
+            {
+              "id": "ROOT-CORE-012-L1-AC01",
+              "given": "Симпатия есть только уA/B; задан порядокA,B; дляA сумма9, дляB10; Cбезсимпатии.",
+              "when": "Пройти восстания.",
+              "expected": "A сохраняет прежний контроль без базы; B получает базу/контроль Alliance, прежний контроль снят; Cне проверяется; дальнейшие броски прекращены.",
+              "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-012-L1"
+            },
+            {
+              "id": "ROOT-CORE-012-L1-AC02",
+              "given": "Aссимпатией, сумма11, до проверки контрольEyrie.",
+              "when": "Разрешить восстание.",
+              "expected": "База и контроль Alliance уA, контроль Eyrie снят; дополнительных симпатий строка11не даёт.",
+              "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-012-L1"
+            },
+            {
+              "id": "ROOT-CORE-012-L1-AC03",
+              "given": "Aссимпатией, сумма12; задан connected-наборB/C; Dв него не входит.",
+              "when": "Разрешить восстание.",
+              "expected": "УA база/контроль Alliance; B/Cполучают симпатию, но не контроль/базы; Dне изменена. Каскад отB/Cне выполнен.",
+              "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-012-L1"
+            },
+            {
+              "id": "ROOT-CORE-012-L1-AC04",
+              "given": "В спискеA/B/C с симпатией первый бросокA=10; дляB/Cзарезервированы11/12.",
+              "when": "Продолжить шаг.",
+              "expected": "После базыA броскиB/Cне выполняются; второй базы и дополнительных симпатий от неиспользованного12нет.",
+              "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-012-L1"
+            },
+            {
+              "id": "ROOT-CORE-012-L1-AC05",
+              "given": "Все сочувствующиеA/B получили2/9; Cбезсимпатии.",
+              "when": "Завершить проверки.",
+              "expected": "Ни базы, ни нового контроля Alliance нет; прежние контролёры сохранены; Cне проверялась.",
+              "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-012-L1"
+            },
+            {
+              "id": "ROOT-CORE-012-L1-AC06",
+              "given": "БазаA, контроль Alliance и симпатия B/C уже подготовлены.",
+              "when": "Сохранить и повторно открыть карту.",
+              "expected": "База, контроль и отдельная симпатия сохранены; броски и распространение автоматически не повторены.",
+              "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-012-L1"
+            },
+            {
+              "id": "ROOT-CORE-013-L1-AC01",
+              "given": "Обычные контролируемыеA/B/C, суммы10/11/12.",
+              "when": "Завершить Denizens.",
+              "expected": "Контроль Aсохранён; B/Cстали uncontrolled, новых контролёров нет.",
+              "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-013-L1"
+            },
+            {
+              "id": "ROOT-CORE-013-L1-AC02",
+              "given": "Sкрепость Marquisate; Rимеет Eyrie Roost; Bимеет базу Alliance; зарезервированы12длякаждой.",
+              "when": "Пройти финальную проверку.",
+              "expected": "Все три пропущены без броска; контроль и опоры сохранены.",
+              "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-013-L1"
+            },
+            {
+              "id": "ROOT-CORE-013-L1-AC03",
+              "given": "Uужеuncontrolled, зарезервирован12.",
+              "when": "Пройти финальную проверку.",
+              "expected": "Uпропущена без броска и остаётся uncontrolled; контроль Denizens не создан.",
+              "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-013-L1"
+            },
+            {
+              "id": "ROOT-CORE-013-L1-AC04",
+              "given": "Обычная полянаA под Eyrie, имеет симпатию Alliance, но неRoost/базу; сумма11.",
+              "when": "Разрешить Denizens.",
+              "expected": "Aстала uncontrolled; симпатия сохранена, база/контроль Alliance не появились.",
+              "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-013-L1"
+            },
+            {
+              "id": "ROOT-CORE-013-L1-AC05",
+              "given": "ИтогAcontrolled/Buncontrolled и защищённыеS/Rуже подготовлены.",
+              "when": "Сохранить и снова открыть карту.",
+              "expected": "Контроль/его отсутствие и опоры сохранены; Denizens не запускается заново автоматически.",
+              "requirement_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-013-L1"
+            }
+          ],
+          "expected_evidence": {
+            "current_runtime": "unknown",
+            "future_product": "Actual selected-profile examples on exact implementation SHA"
+          },
+          "source_limitations": [
+            "Third-party text transcription, not publisher-hosted full PDF",
+            "Full-byte identity, visual table layout and latest errata not verified",
+            "Only selected initial map and political setup224–234 extracted; full core thematic inventory not claimed.",
+            "Alliance connected scope, contested-category overlap and uprising order unresolved; no invented cascades or exceptions."
+          ],
+          "score_delta": null,
+          "implementation_authorized": false,
+          "release_authorized": false
         }
       ],
       "research_handoff_refs": [
         "agent-work/research/requirements/ROOT-TO-woodland-setup-L1.md",
         "agent-work/research/requirements/ROOT-core-Marquisate-L1.json",
-        "agent-work/research/requirements/ROOT-core-Eyrie-L1.json"
+        "agent-work/research/requirements/ROOT-core-Eyrie-L1.json",
+        "agent-work/research/requirements/ROOT-core-Alliance-Denizens-L1.json"
       ]
     }
   ],
