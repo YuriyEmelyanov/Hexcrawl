@@ -1,3 +1,4 @@
+import {reconcileDetailPoiIdentities} from './detailIdentity';
 import {validateDetail1Document,type Detail1State} from './detailModel';
 import knaveCatalogData from './tags/knaveCatalogData';
 import {emptyKnaveContent,fillKnaveContent,rerollKnaveContent,validateKnaveCatalog,knaveResultText,type KnaveCatalog,type KnaveFacts} from './tags/knave';
@@ -1112,6 +1113,15 @@ function prepareKnaveGeneratedMap(map:MapSnapshot,catalog:KnaveCatalog,preserved
   });
   const next={...map,regions,knave:{...map.knave,content}};checkedRiverMap(next);return next;
 }
+/** Identity updates are detached from geometry. Empty-footprint checkpoints can
+ * reconcile explicit POI operations; spatial states remain gated until their
+ * actual water/route geometry is integrated. Never guess a missing old alias. */
+function reconcileDetailMapIdentities<T extends MapSnapshot>(map:T,moves:ReadonlyMap<string,string|null>=new Map()):T{
+  const state=map.physicalGrid;if(!state?.poiIdentities)return map;
+  if(state.poiFootprints.length)throw Error('DETAIL1 live spatial reconciliation is not available');
+  const next=reconcileDetailPoiIdentities(poiNameLocators(map,true),state.poiIdentities,moves);
+  return next===state.poiIdentities?map:{...map,physicalGrid:{...state,poiIdentities:next}};
+}
 function checkedRiverMap<T extends MapSnapshot>(map:T):T{
   map=withLegacySeas(map);
   validateDetail1Document(map.physicalGrid,11,map.physicalGrid?.poiIdentities?poiNameLocators(map,true):undefined);
@@ -1267,6 +1277,7 @@ function prepareRegionMapEdit(map:MapSnapshot,edit:RegionEdit):MapSnapshot{
     const editorNames=Object.fromEntries(Object.entries(authored).map(([key,v])=>[key===from?to:key,v]));
     candidate={...candidate,...identity,editorNames};
     candidate.classification=remapClassification(map.classification,new Map([[from,to]]));
+    candidate=reconcileDetailMapIdentities(candidate,new Map([[from,to]]));
     if(map.knave)candidate.knave=remapKnavePois(map.knave,knaveMapContext(map),knaveMapContext(candidate),new Map([[from,to]]));
   }
   // A road keeps its origin regionId even when a cell underneath it changes
@@ -13530,7 +13541,7 @@ export function App() {
     ? language==='ru' ? (error.capacity==='owner'?'На объекте уже 64 тега. Карта не изменена.':'В этом тексте уже 8 языков. Карта не изменена.')
       : (error.capacity==='owner'?'This object already has 64 tags. Your map is unchanged.':'This text already has 8 languages. Your map is unchanged.')
     : language==='ru'?'Не удалось изменить тег. Карта не изменена.':'Could not change tag. Your map is unchanged.';
-  const commitManualMap = (map: MapSnapshot, reconcileNames = true) => {
+  const commitManualMap = (map: MapSnapshot, reconcileNames = true,identityMoves:ReadonlyMap<string,string|null>=new Map()) => {
     try {
       // Preserve a settlement label before the type ceases to enumerate it.
       const nextEntities=new Set(getToponymEntities(map.regions,map.rivers,map.hexTerrainByKey).map(e=>e.key));
@@ -13544,6 +13555,7 @@ export function App() {
           const layer=structuredClone(map.knave);for(const loss of losses){dropKnaveLoss(layer,loss);}map={...map,knave:layer};}}
       const classificationLost=classificationLosses(map.classification,knaveMapContext(map));
       if(classificationLost.length){if(!window.confirm(language==='ru'?`Изменение удалит отметки проходимости/обнаружения (${classificationLost.length}). Отмена вернёт их.`:`This edit removes terrain/discovery annotations (${classificationLost.length}). Undo can restore them.`))return false;map={...map,classification:retainClassification(map.classification,knaveMapContext(map))};}
+      map=reconcileDetailMapIdentities(map,identityMoves);
       checkedRiverMap(map);
       const prepared = structuredClone({ ...map, toponyms: reconcileNames ? synchronizeToponyms(map.toponyms,
         getToponymEntities(map.regions, map.rivers, map.hexTerrainByKey), map.toponymSeed) : map.toponyms });
@@ -13773,6 +13785,7 @@ export function App() {
   };
   const recordGenerated = (checkpoint: MapSnapshot, map: MapSnapshot, selection: AxialHex,
     backup?: GenerationBackup, checkpoints = history) => {
+    map=reconcileDetailMapIdentities(map);
     if(map.knave&&knaveEnabledRef.current&&!kingdomJob&&generationMode==='classic'){
       let catalog:KnaveCatalog;try{catalog=knaveGenerationCatalog();}catch{throw Error(language==='ru'?'Не удалось загрузить данные Knave 2e. Карта не изменена.':'Knave 2e data could not be loaded. Your map is unchanged.');}
       map=prepareKnaveGeneratedMap(map,catalog,poiNameLocators(checkpoint));
@@ -13784,7 +13797,7 @@ export function App() {
     checkedRiverMap(map);
     assertGeneratedIds(map);
     if (!kingdomJob) backup ??= activeGenerationBackup.current ?? undefined;
-    if (kingdomJob && !backup) {updateSeaIdentity(map);return map;} // internal kingdom steps form one transaction at finish
+    if (kingdomJob && !backup) {updateSeaIdentity(map);updatePhysicalGrid(map.physicalGrid);return map;} // internal kingdom steps form one transaction at finish
     const before = backup?.document ?? { ...captureDocument(), map: { ...captureMap(), generation: cloneGenerationState(checkpoint.generation) } };
     const notes = before.map.gmNotesByHexKey ?? gmNotesByHexKey;
     const keys = actualHexKeys(map), missing = Object.keys(notes).filter(key => !keys.has(key));
@@ -14020,7 +14033,7 @@ export function App() {
     const water=new Map(waterPoiByKey);
     for(const r of members)for(const h of r.hexes)water.delete(hexKey(h));
     const finalCrossings=reconcileRiverCrossings(rebuiltRoads,rivers,finalRegions,crossings, rng);
-    recordGenerated(job.backup.map, { ...captureMap(), regions: finalRegions, roads: rebuiltRoads,
+    recordGenerated(job.backup.map, { ...captureMap(), physicalGrid:job.backup.map.physicalGrid, regions: finalRegions, roads: rebuiltRoads,
       nextRoadId: roadId, crossings: finalCrossings,
       waterPoiByKey: water, toponyms: synchronizeToponyms(toponyms,getToponymEntities(finalRegions,rivers,hexTerrainByKey),toponymSeed),
       kingdoms: [...kingdoms,kingdom], obstacles: [...obstacles,...identifiedObstacles], nextObstacleId: finalNextObstacleId },
@@ -14431,7 +14444,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
     if(mutationBlocked() || !selectedHexKey || notesSelectionRef.current !== selectedHexKey) return;
     if(!waterPoiByKey.has(selectedHexKey)) { closeEditors(); return; }
     const layer=new Map(waterPoiByKey); layer.delete(selectedHexKey);
-    commitManualMap({...captureMap(),waterPoiByKey:layer});
+    commitManualMap({...captureMap(),waterPoiByKey:layer},true,new Map([[`waterPoi:${selectedHexKey}`,null]]));
   };
   const deleteSelectedPoi = () => {
     if(mutationBlocked() || notesSelectionRef.current !== selectedHexKey || !selectedRegion || !selectedHexKey) return;
@@ -14439,7 +14452,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
     const kinds={...selectedRegion.pointOfInterestKinds}; delete kinds[selectedHexKey];
     commitManualMap({...captureMap(),regions:regions.map(r=>r.id!==selectedRegion.id?r:{...r,
       pointsOfInterest:r.pointsOfInterest.filter(h=>hexKey(h)!==selectedHexKey),
-      pointOfInterestKinds:Object.keys(kinds).length?kinds:undefined})});
+      pointOfInterestKinds:Object.keys(kinds).length?kinds:undefined})},true,new Map([[`poi:${selectedRegion.id}:${selectedHexKey}`,null]]));
   };
   const regionBiomeReason = (region: Region, biomeId: BiomeId): string | null => {
     const biome = BIOMES[biomeId];
@@ -15020,9 +15033,10 @@ retainPoiNames(checkpoint,editorNamesRef.current);
   const preparePoiDraft=(draft:PoiDraft)=>{
     if(!currentPoiDraft(draft))throw new PoiMoveError('stale_poi_move');
     if(draft.q===''||draft.r===''||draft.ambiguous.length)throw new PoiMoveError('unknown_poi_target');
-    const original={...captureMap(),tags:tagsRef.current},map=preparePoiMove(original,{source:draft.source,targetKey:`${draft.q},${draft.r}`},poiPolicy());
+    const original={...captureMap(),tags:tagsRef.current};let map=preparePoiMove(original,{source:draft.source,targetKey:`${draft.q},${draft.r}`},poiPolicy());
     if(original.classification&&map!==original){const from=poiLocatorKey(draft.source),to=draft.source.kind==='water'?`waterPoi:${draft.q},${draft.r}`:`poi:${map.regions.find(r=>r.hexes.some(h=>hexKey(h)===`${draft.q},${draft.r}`))!.id}:${draft.q},${draft.r}`;map.classification=remapClassification(original.classification,new Map([[from,to]]));}
     if(original.knave&&map!==original){const from=poiLocatorKey(draft.source),to=draft.source.kind==='water'?`waterPoi:${draft.q},${draft.r}`:`poi:${map.regions.find(r=>r.hexes.some(h=>hexKey(h)===`${draft.q},${draft.r}`))!.id}:${draft.q},${draft.r}`;map.knave=remapKnavePois(original.knave,knaveMapContext(original),knaveMapContext(map),new Map([[from,to]]));}
+    if(map!==original){const from=poiLocatorKey(draft.source),to=draft.source.kind==='water'?`waterPoi:${draft.q},${draft.r}`:`poi:${map.regions.find(r=>r.hexes.some(h=>hexKey(h)===`${draft.q},${draft.r}`))!.id}:${draft.q},${draft.r}`;map=reconcileDetailMapIdentities(map,new Map([[from,to]]));}
     return {original,map};
   };
   const finishPoiDraft=(expected=poiDraft):boolean=>{

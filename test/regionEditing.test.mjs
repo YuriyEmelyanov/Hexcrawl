@@ -1,3 +1,5 @@
+import {reconcileDetailPoiIdentities} from '../src/detailIdentity.ts';
+import {poiNameLocators} from '../src/manualPois.ts';
 import {knaveContentFixture,knaveCatalogFixture} from './helpers/knave-fixture.mjs';
 import {newKnaveLayer} from '../src/knaveClassic.ts';
 import test from 'node:test';
@@ -14,17 +16,19 @@ async function setup(mode='classic',data=regionFixture(mode)){
  h.injectFunction('readTextFile',async f=>f.text);
  await h.render().handleImportJson({target:{files:[{text:JSON.stringify(data)}],value:''}});h.render();return h;
 }
+function withDetailIdentities(data){data.version=11;data.map.physicalGrid={schema:'hexcrawl.detail1',version:1,active:true,grid:{origin:{x:0,y:0},orientation:'pointy',convention:'across_flats'},source:{stepMiles:6,physicalConvention:'unknown',displayAssumption:'project_across_flats_6mi'},viewStep:6,poiFootprints:[],poiIdentities:reconcileDetailPoiIdentities(poiNameLocators({regions:data.map.regions,waterPoiByKey:new Map(Object.entries(data.map.waterPoiByHexKey??{}))},true))};return data;}
 function draft(h,type,patch){h.render().setEditMode(true);assert.equal(h.render().startRegionDraft(type),true);const d=h.render().regionDraft;assert.equal(h.render().changeRegionDraft(d,{...d.edit,...patch}),true);return h.render().regionDraft;}
 function continuation(h){const a=h.render();a.generateAt(a.candidateHexes[0]);for(let i=0;i<310&&h.render().kingdomJob;i++)h.render().advanceKingdom();assert.equal(h.render().kingdomJob,null);assert.equal(h.render().generationError,null);}
 
 for(const mode of ['classic','mythic'])test(`E7 App transfer keeps full POI identity/history and real reload continuation ${mode}`,async()=>{
  const initial=await setup(mode),named=save(initial);named.map.editorNames={'poi:1:2,0':{en:'Authored E7',ru:'Авторское E7'}};
  if(mode==='classic'){named.map.knave=newKnaveLayer();named.map.knave.content=knaveContentFixture('poi:1:2,0',{kind:'settlement'});named.map.knave.difficultyByHex['2,0']='difficult';named.map.knave.discoveryByPoi['poi:1:2,0']={mode:'interaction',clueText:'Test E7 clue'};}
- const h=await setup(mode,named);assert.equal(h.render().mutateTag({kind:'poi',regionId:1,hexKey:'2,0'},'mb.feature'),true);h.render();
+ const h=await setup(mode,withDetailIdentities(named));assert.equal(h.render().mutateTag({kind:'poi',regionId:1,hexKey:'2,0'},'mb.feature'),true);h.render();
  const before=save(h),history=stacks(h),oldName=before.map.toponyms.names['settlement:1:2,0'];assert.ok(oldName);
  const d=draft(h,'transfer_hex',{toRegionId:2});assert.deepEqual(save(h),before,'draft is not exported');
  assert.equal(h.render().finishRegionDraft(d),true);const after=save(h);
  assert.equal(h.render().undoHistory.length,history[0].length+1);assert.equal(h.render().redoHistory.length,0);
+ assert.equal(after.map.physicalGrid.poiIdentities.byLegacyRef['poi:2:2,0'],before.map.physicalGrid.poiIdentities.byLegacyRef['poi:1:2,0']);assert.equal(after.map.physicalGrid.poiIdentities.nextId,before.map.physicalGrid.poiIdentities.nextId);
  assert.equal(after.map.regions[0].pointsOfInterest.length,0);assert.deepEqual(after.map.regions[1].pointsOfInterest,[{q:2,r:0}]);
  assert.deepEqual(after.map.toponyms.names['settlement:2:2,0'],oldName);assert.equal(after.map.toponyms.names['settlement:1:2,0'],undefined);
  const expectedTags=structuredClone(before.map.tags);for(const t of expectedTags.instances)if(t.owner.kind==='poi'&&t.owner.regionId===1&&t.owner.hexKey==='2,0')t.owner.regionId=2;
@@ -136,12 +140,12 @@ test('E7 late clone and v7 format faults keep both stacks, counters and selected
 
 for(const mode of ['classic','mythic'])test(`E8 real POI move is one exact transaction with full payload and literal hex notes ${mode}`,async()=>{
  const fixture=regionFixture(mode);fixture.map.regions[1].suppressCentralPoi=false;delete fixture.map.regions[1].centralPoiKind;if(mode==='mythic')fixture.map.regions[0].pointOfInterestKinds['2,0']='monument';
- const h=await setup(mode,fixture),named=save(h);named.map.editorNames={'poi:1:2,0':{en:'Kept authored',ru:'Сохранённое имя'}};if(mode==='classic'){named.map.knave=newKnaveLayer();named.map.knave.content=knaveContentFixture('poi:1:2,0',{kind:'settlement'});named.map.knave.difficultyByHex['2,0']='difficult';named.map.knave.discoveryByPoi['poi:1:2,0']={mode:'interaction',clueText:'Test E8 clue'};}const g=await setup(mode,named);
+ const h=await setup(mode,fixture),named=save(h);named.map.editorNames={'poi:1:2,0':{en:'Kept authored',ru:'Сохранённое имя'}};if(mode==='classic'){named.map.knave=newKnaveLayer();named.map.knave.content=knaveContentFixture('poi:1:2,0',{kind:'settlement'});named.map.knave.difficultyByHex['2,0']='difficult';named.map.knave.discoveryByPoi['poi:1:2,0']={mode:'interaction',clueText:'Test E8 clue'};}const g=await setup(mode,withDetailIdentities(named));
  assert.equal(g.render().mutateTag({kind:'poi',regionId:1,hexKey:'2,0'},'mb.feature'),true);
  g.render().setEditMode(true);assert.equal(g.render().startPoiDraft({kind:'land',regionId:1,hexKey:'2,0'}),true);
  const before=save(g),history=stacks(g);assert.equal(g.render().changePoiTarget('3','0'),true);assert.deepEqual(save(g),before,'preview excluded from export');
  const draft=g.render().poiDraft;assert.ok(g.render().poiPreview.plan);assert.equal(g.render().finishPoiDraft(draft),true);const after=save(g);
- assert.equal(g.render().undoHistory.length,history[0].length+1);assert.deepEqual(after.map.regions[1].pointsOfInterest,[{q:3,r:0}]);assert.deepEqual(after.map.editorNames,{'poi:2:3,0':named.map.editorNames['poi:1:2,0']});
+ assert.equal(g.render().undoHistory.length,history[0].length+1);assert.deepEqual(after.map.regions[1].pointsOfInterest,[{q:3,r:0}]);assert.deepEqual(after.map.editorNames,{'poi:2:3,0':named.map.editorNames['poi:1:2,0']});assert.equal(after.map.physicalGrid.poiIdentities.byLegacyRef['poi:2:3,0'],before.map.physicalGrid.poiIdentities.byLegacyRef['poi:1:2,0']);assert.equal(after.map.physicalGrid.poiIdentities.nextId,before.map.physicalGrid.poiIdentities.nextId);
  const expectedTags=structuredClone(before.map.tags);for(const t of expectedTags.instances)if(t.owner.kind==='poi'&&t.owner.regionId===1&&t.owner.hexKey==='2,0')t.owner={kind:'poi',regionId:2,hexKey:'3,0'};expectedTags.rollCounters=Object.fromEntries(Object.entries(expectedTags.rollCounters).map(([k,v])=>[k.replace(/^poi:1:2,0\|/,'poi:2:3,0|'),v]));assert.deepEqual(after.map.tags,expectedTags);
  if(mode==='classic'){assert.deepEqual(after.map.knave.discoveryByPoi,{'poi:2:3,0':before.map.knave.discoveryByPoi['poi:1:2,0']});assert.deepEqual(after.map.knave.difficultyByHex,{'2,0':'difficult'});const nextOwner=Object.keys(after.map.knave.discoveryByPoi)[0];assert.deepEqual(after.map.knave.content.byPoi,{[nextOwner]:before.map.knave.content.byPoi['poi:1:2,0']});assert.deepEqual(after.map.knave.content.rollCounters,{[nextOwner]:before.map.knave.content.rollCounters['poi:1:2,0']});}
  assert.deepEqual(after.map.gmNotesByHexKey,before.map.gmNotesByHexKey);assert.deepEqual(after.generation,before.generation);assert.deepEqual(after.counters,before.counters);assert.deepEqual(after.ui.selectedHex,{q:3,r:0});

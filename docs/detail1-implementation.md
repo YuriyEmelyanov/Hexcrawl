@@ -1,4 +1,4 @@
-# DETAIL1 implementation checkpoint D2a
+# DETAIL1 implementation checkpoint D2b1
 
 Approved scope: agent-operations/agent-work/specs/HX-BL-051-DETAIL1.md (DTL-1.0).
 
@@ -98,3 +98,32 @@ explicit remap/removal, collision, overflow, ambiguity and input immutability.
 The existing D1 actual-handler saveSafety case is extended to save/restore the
 registry and reject orphan aliases and invalid counters atomically; it is not
 a duplicate new lifecycle runner.
+
+## D2b1: live identity transactions
+
+The existing manual map commit allocates IDs for explicitly added POIs and
+accepts deletions only through an explicit alias-removal map supplied by the
+actual land/water delete command. Missing old aliases are still not guessed.
+E7 transfers and E8 moves pass their known old/new locator correspondence,
+retaining the ID together with names, Knave/MB payload and exact Undo/Redo.
+Type/name-only edits retain identity. Counter exhaustion/conflict is checked
+before the first history/state write. Geometry/path protections remain active.
+
+Generated maps reconcile IDs before Knave content preparation and commit.
+Mythic internal steps keep the temporary document coherent; final kingdom POI
+allocation starts from the action's accepted backup identity registry. Thus
+provisional sites do not become accepted entities, while pre-action IDs remain
+fixed. Accepted map generation/continuation/history retain the existing RNG,
+quota, water, route and rollback contracts; no RIV/ROAD algorithm is changed.
+
+Nonempty footprints remain gated until actual spatial reconciliation is ready.
+Water edits/removals beyond explicit POI commands, full footprint placement and
+water/access geometry, legacy activation and1/6/12/24UI are not complete.
+Whole DETAIL1 is still not review-ready or authorized for publication.
+
+Test decision: extend five existing logical Node cases (E7 transfer Classic/
+Mythic, E8 move Classic/Mythic, D1 actual import/history lifecycle) with active
+identity registries and exact ID/counter assertions. Their existing generation
+continuation, source payload and Undo/Redo checks are retained. The initial
+negative run reproduced all five missing integrations. No parallel suite or
+additional random search series is added.
