@@ -13403,7 +13403,8 @@
       "research_handoff_refs": [
         "agent-work/research/runs/2026-11-06-SD-core-thematic-audit.json",
         "agent-work/research/runs/2026-11-06T1430-SD-terrain-mapping.json",
-        "agent-work/research/requirements/PF2-RM-011-L1.json"
+        "agent-work/research/requirements/PF2-RM-011-L1.json",
+        "agent-work/market/rules/Daggerheart-SRD2.json#DH-SRD2-002-L1"
       ],
       "source_profile_handoffs": [
         {
@@ -13695,6 +13696,96 @@
             "decision": "Existingcanonical/binding reused; research-only047component. No newrule/task. Sharedcanonicalmeaningnotparameter/runtimeequivalence.",
             "forbidden_inheritance": "Noautomatic2d6or7-categoryring/mandatoryvalidator fromother047profiles."
           }
+        },
+        {
+          "component_id": "DH-SRD2-habitat-L1",
+          "task_id": "HX-BL-047",
+          "title": "Определять среду региона по выбранному d20-профилю и сохранять порчу",
+          "status": "proposed",
+          "problem": "Соответствие DH-профиля текущей генерации не проверено; названия биомов и общая классификация не заменяют исходные интервалы/исключение.",
+          "benefit": "Мастер получает среду и особый результат без выдуманной непроходимости или отдельного движка.",
+          "game_editions": [
+            "Daggerheart SRD2.0,2026-08-25 supplemental hex crawl"
+          ],
+          "primary_scenario": "create",
+          "layer": "L1",
+          "requirement_refs": [
+            "agent-work/market/rules/Daggerheart-SRD2.json#DH-SRD2-002-L1"
+          ],
+          "canonical_rule_ids": [
+            "map.terrain_zones",
+            "content.place_description"
+          ],
+          "binding_refs": [
+            "agent-work/rules/game-bindings.json#DH-SRD2-002-L1"
+          ],
+          "criterion_ids": [
+            "S01-C05",
+            "S05-C01"
+          ],
+          "scope": "Отдельный профиль начальной генерации в уже предложенной047; исследовательская передача, не расширение активной044/051. Перед решением о реализации проверить переиспользование текущего генератора.",
+          "dependencies": [
+            "Strategist/analyst select047scope",
+            "Current biome correspondence remainsunknown"
+          ],
+          "acceptance_checks": [
+            {
+              "id": "DH-SRD2-002-L1-AC01",
+              "given": "Последовательно заданы обычные исходы2…20; ожидаемое соответствие — intervals в parameters.",
+              "when": "Определить habitat региона для каждого исхода.",
+              "expected": "Каждый исход даёт habitat указанного интервала; второй бросок не требуется, признак blighted не добавляется."
+            },
+            {
+              "id": "DH-SRD2-002-L1-AC02",
+              "given": "Исходы1,11.",
+              "when": "Определить habitat.",
+              "expected": "Forest с признаком blighted; израсходованы два исхода, третий не требуется."
+            },
+            {
+              "id": "DH-SRD2-002-L1-AC03",
+              "given": "Исходы1,1.",
+              "when": "Определить результат региона.",
+              "expected": "Терминальный сильно испорченный регион: почти невозможно пересечь; базовый habitat неизвестен. Нет третьего переброса, абсолютного запрета или выдуманного численного времени/урона."
+            },
+            {
+              "id": "DH-SRD2-002-L1-AC04",
+              "given": "Первый исход1; повторный исход пока не задан.",
+              "when": "Подготовить регион.",
+              "expected": "Требуется повторный бросок; habitat не выдуман и завершённый обычный результат не показан."
+            },
+            {
+              "id": "DH-SRD2-002-L1-AC05",
+              "given": "Значения0,21,2.5 вместо исхода d20.",
+              "when": "Применить значение.",
+              "expected": "Ни одно не принято как корректный исход; готовая карта не изменена."
+            },
+            {
+              "id": "DH-SRD2-002-L1-AC06",
+              "given": "Сохранён регион Forest/blighted из исходов1,11; рядом другой регион.",
+              "when": "Сохранить и открыть карту.",
+              "expected": "Forest и blighted остаются, повторного броска нет; соседний регион прежний."
+            },
+            {
+              "id": "DH-SRD2-002-L1-AC07",
+              "given": "Обычный исход17.",
+              "when": "Определить habitat.",
+              "expected": "Mountain без добавления blighted/двойной коррупции. Категории CLASSIFY1 задаются отдельной политикой владельца; этот профиль не меняет их автоматически."
+            }
+          ],
+          "expected_evidence": {
+            "current_runtime": "unknown",
+            "required": "ExactDHprofile outputs on implementationSHA, not source reading"
+          },
+          "score_delta": null,
+          "source_limitations": [
+            "One optional bullet only; no audience rate.",
+            "No numeric traversal/check/damage supplied.",
+            "No existingownerCLASSIFY1 taxonomy changed."
+          ],
+          "research_handoff_ref": "agent-work/market/rules/Daggerheart-SRD2.json#DH-SRD2-002-L1",
+          "research_result_ref": "agent-work/research/runs/2026-11-09T1127-DH-habitat.json",
+          "implementation_authorized": false,
+          "release_authorized": false
         }
       ],
       "last_research_result_ref": "agent-work/research/runs/2026-11-09T0857-PF2-terrain-judgement.json"

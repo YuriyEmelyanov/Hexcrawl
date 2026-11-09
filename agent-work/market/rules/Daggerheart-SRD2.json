@@ -3,7 +3,7 @@
   "game_id": "DH",
   "date": "2026-11-09",
   "status": "bounded_source_inventory_product_unverified",
-  "scope": "SRD2 p203 d12 region geometry only; not whole DH or full Hex Crawl section",
+  "scope": "SRD2 p203 optional d12 region geometry and d20 habitat/corruption only; not full Hex Crawl/game",
   "source": {
     "id": "DH-SRD2-20260825",
     "url": "https://www.daggerheart.com/wp-content/uploads/2026/08/DH_SRD_2_2026_08_25.pdf",
@@ -13,7 +13,7 @@
     "access_level": "full_text",
     "author_project_key": "critical-role:darrington-press:daggerheart:srd2",
     "locator": "PDF page203 (zero-based202), d12 bullet; web lines17304–17332",
-    "accessed_at": "2026-11-09T10:30:13.009Z"
+    "accessed_at": "2026-11-09T11:31:23.833Z"
   },
   "evaluation_policy": "Source reading is not product evidence or population calibration; active numbers unchanged.",
   "rules": [
@@ -161,13 +161,267 @@
           "reason": "No external game-resolution mechanic in selected clause."
         }
       ]
+    },
+    {
+      "id": "DH-SRD2-002",
+      "title": "Среда региона и порча на d20",
+      "corpus": "SRD2_Hex_Crawl_Campaigns_bounded",
+      "rule": {
+        "source_id": "DH-SRD2-20260825",
+        "printed_page": 203,
+        "pdf_page": 203,
+        "section": "Filling Wilderness Hexes, d20 habitat bullet",
+        "url": "https://www.daggerheart.com/wp-content/uploads/2026/08/DH_SRD_2_2026_08_25.pdf",
+        "paraphrase": "d20 определяет habitat;1 добавляет порчу и требует повторного исхода. Ещё1 даёт особенно испорченный регион с почти невозможным пересечением.",
+        "normative_kind": "optional_procedure",
+        "quotation": null
+      },
+      "parameters": {
+        "die": "d20",
+        "intervals": [
+          {
+            "min": 2,
+            "max": 2,
+            "habitat": "Underground"
+          },
+          {
+            "min": 3,
+            "max": 4,
+            "habitat": "Aquatic"
+          },
+          {
+            "min": 5,
+            "max": 6,
+            "habitat": "Wetland"
+          },
+          {
+            "min": 7,
+            "max": 8,
+            "habitat": "Grassland"
+          },
+          {
+            "min": 9,
+            "max": 10,
+            "habitat": "Tropical"
+          },
+          {
+            "min": 11,
+            "max": 12,
+            "habitat": "Forest"
+          },
+          {
+            "min": 13,
+            "max": 14,
+            "habitat": "Drylands"
+          },
+          {
+            "min": 15,
+            "max": 16,
+            "habitat": "Rolling"
+          },
+          {
+            "min": 17,
+            "max": 18,
+            "habitat": "Mountain"
+          },
+          {
+            "min": 19,
+            "max": 19,
+            "habitat": "Frozen"
+          },
+          {
+            "min": 20,
+            "max": 20,
+            "habitat": "Badlands"
+          }
+        ],
+        "first1": "blighted; roll again",
+        "second1": "terminal extreme corruption; basehabitat unknown; traversal qualitative"
+      },
+      "comparison": {
+        "relation": "existing_common_profile",
+        "canonical_rule_ids": [
+          "map.terrain_zones",
+          "content.place_description"
+        ],
+        "parameter_equivalence": "not_inferred; no automatic MB/SD/PF2 biome correspondence"
+      },
+      "requirements": [
+        {
+          "id": "DH-SRD2-002-L1",
+          "layer": "L1",
+          "requirement": "Назначить habitat региона с отдельным результатом порчи",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "criterion_ids": [
+            "S01-C05",
+            "S05-C01"
+          ],
+          "canonical_rule_ids": [
+            "map.terrain_zones",
+            "content.place_description"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#DH-SRD2-002-L1",
+          "operational_requirement": {
+            "source_rule_ref": "agent-work/market/rules/Daggerheart-SRD2.json#DH-SRD2-002",
+            "normative_kind": "optional_procedure",
+            "applicability": "Selected SRD2 supplemental hex-crawl preparation, not all Daggerheart games.",
+            "layer": "L1",
+            "trigger_or_user_action": "Мастер определяет habitat нового региона по выбранному d20-профилю.",
+            "inputs_and_units": {
+              "die": "d20",
+              "valid_integer_results": [
+                1,
+                20
+              ],
+              "ordinary_intervals": [
+                {
+                  "min": 2,
+                  "max": 2,
+                  "habitat": "Underground"
+                },
+                {
+                  "min": 3,
+                  "max": 4,
+                  "habitat": "Aquatic"
+                },
+                {
+                  "min": 5,
+                  "max": 6,
+                  "habitat": "Wetland"
+                },
+                {
+                  "min": 7,
+                  "max": 8,
+                  "habitat": "Grassland"
+                },
+                {
+                  "min": 9,
+                  "max": 10,
+                  "habitat": "Tropical"
+                },
+                {
+                  "min": 11,
+                  "max": 12,
+                  "habitat": "Forest"
+                },
+                {
+                  "min": 13,
+                  "max": 14,
+                  "habitat": "Drylands"
+                },
+                {
+                  "min": 15,
+                  "max": 16,
+                  "habitat": "Rolling"
+                },
+                {
+                  "min": 17,
+                  "max": 18,
+                  "habitat": "Mountain"
+                },
+                {
+                  "min": 19,
+                  "max": 19,
+                  "habitat": "Frozen"
+                },
+                {
+                  "min": 20,
+                  "max": 20,
+                  "habitat": "Badlands"
+                }
+              ],
+              "reroll_trigger": 1,
+              "max_consumed_results": 2
+            },
+            "product_operation": "Назначить среду по обычному исходу; при первом1 получить дополнительный исход и сохранить порчу отдельно от базовой среды; повторная1 завершает особый результат.",
+            "expected_output": "Обычный habitat либо habitat с порчей;1+1 — особо испорченный регион с качественным ограничением и неизвестной базовой средой.",
+            "constraints_and_exceptions": [
+              "Метод необязательный; ручная/смешанная подготовка остаётся допустимой.",
+              "Не отождествлять habitat и отдельно бросаемый terrain; d4 время пути не разобрано.",
+              "Почти невозможно не означает абсолютный запрет. Численного множителя, проверки или урона здесь нет.",
+              "Классификация владельца ordinary/difficult/dangerous и её реализация044 не меняются этим исследованием.",
+              "Полная таблица текстов/описаний не копируется; только короткие наименования и численные параметры.",
+              "Save/load и неразрушающее применение — продуктовые примеры, не дополнительные цитаты."
+            ],
+            "acceptance_cases": [
+              {
+                "id": "DH-SRD2-002-L1-AC01",
+                "given": "Последовательно заданы обычные исходы2…20; ожидаемое соответствие — intervals в parameters.",
+                "when": "Определить habitat региона для каждого исхода.",
+                "expected": "Каждый исход даёт habitat указанного интервала; второй бросок не требуется, признак blighted не добавляется."
+              },
+              {
+                "id": "DH-SRD2-002-L1-AC02",
+                "given": "Исходы1,11.",
+                "when": "Определить habitat.",
+                "expected": "Forest с признаком blighted; израсходованы два исхода, третий не требуется."
+              },
+              {
+                "id": "DH-SRD2-002-L1-AC03",
+                "given": "Исходы1,1.",
+                "when": "Определить результат региона.",
+                "expected": "Терминальный сильно испорченный регион: почти невозможно пересечь; базовый habitat неизвестен. Нет третьего переброса, абсолютного запрета или выдуманного численного времени/урона."
+              },
+              {
+                "id": "DH-SRD2-002-L1-AC04",
+                "given": "Первый исход1; повторный исход пока не задан.",
+                "when": "Подготовить регион.",
+                "expected": "Требуется повторный бросок; habitat не выдуман и завершённый обычный результат не показан."
+              },
+              {
+                "id": "DH-SRD2-002-L1-AC05",
+                "given": "Значения0,21,2.5 вместо исхода d20.",
+                "when": "Применить значение.",
+                "expected": "Ни одно не принято как корректный исход; готовая карта не изменена."
+              },
+              {
+                "id": "DH-SRD2-002-L1-AC06",
+                "given": "Сохранён регион Forest/blighted из исходов1,11; рядом другой регион.",
+                "when": "Сохранить и открыть карту.",
+                "expected": "Forest и blighted остаются, повторного броска нет; соседний регион прежний."
+              },
+              {
+                "id": "DH-SRD2-002-L1-AC07",
+                "given": "Обычный исход17.",
+                "when": "Определить habitat.",
+                "expected": "Mountain без добавления blighted/двойной коррупции. Категории CLASSIFY1 задаются отдельной политикой владельца; этот профиль не меняет их автоматически."
+              }
+            ],
+            "source_vs_product_interpretation": "Табличные интервалы/повтор1 и качественная тяжесть1+1 подтверждены источником. Отдельная передача базовой среды/порчи и неполного результата — продуктовая интерпретация. UI/API, текущие biome ID и алгоритм генератора не задаются.",
+            "canonical_rule_refs": [
+              "agent-work/rules/common-rules.json#map.terrain_zones",
+              "agent-work/rules/common-rules.json#content.place_description"
+            ],
+            "unresolved_parameters": [
+              "Базовая среда при1+1 источником не названа.",
+              "Численное разрешение почти непроходимой области не задано.",
+              "Соответствие11 habitat текущим biome ID не проверено; не подменять похожими категориями."
+            ]
+          },
+          "proposed_task_ref": "agent-work/backlog.json#HX-BL-047",
+          "finding": "Profile not executed on current productSHA; generic biome labels not evidence."
+        },
+        {
+          "layer": "L2",
+          "status": "not_applicable",
+          "reason": "This pass preserves qualitative source fact only; does not implement travel restriction/cost."
+        },
+        {
+          "layer": "L3",
+          "status": "not_applicable",
+          "reason": "No numeric check/damage rule in selected clause; not invented."
+        }
+      ]
     }
   ],
   "completeness": {
     "full_game_read": false,
     "read_corpus": [
       "Official SRD landing version/changelog",
-      "PDF cover/TOC and p203 headings/context through d12 bullet"
+      "PDF cover/TOC and p203 headings/context through d12 bullet",
+      "p203 d20 habitat bullet lines17313–17328; landing version/date rechecked"
     ],
     "context_only": [
       "24mile scale",
@@ -175,14 +429,13 @@
       "manual/random/mixed preparation"
     ],
     "not_extracted": [
-      "d20 habitat and corruption",
       "d8+d6 encounters",
       "d4 terrain",
       "Sanctuaries and settlements",
       "Travel days and rest rules",
       "p204–205 other hex-crawl content"
     ],
-    "next_locator": "p203 Filling Wilderness Hexes d20 habitat incl1→reroll and second1"
+    "next_locator": "p203 d8+d6 encounter type or d4 terrain, if reprioritized"
   },
   "product_evidence": {
     "status": "unknown",
@@ -198,5 +451,12 @@
     "pool_changed": false,
     "proposal_refs": [],
     "finding": "Confirms an explicit own-map preparation option, not incidence among GMs or new M/p/T."
-  }
+  },
+  "research_history": [
+    {
+      "run_id": "2026-11-09T1127-DH-habitat",
+      "source_rule_id": "DH-SRD2-002",
+      "status": "bounded_source_complete_runtime_unknown"
+    }
+  ]
 }
