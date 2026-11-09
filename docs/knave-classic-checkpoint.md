@@ -1,5 +1,40 @@
 # Knave classic: implementation checkpoint
 
+## Current correction: ROLLUI2 (9 November 2026)
+
+Owner-approved UI2-1.0 supersedes the earlier no-reroll presentation requirement.
+Knave and Mythic Bastionland now use `TableResultRow` for the visible entity label,
+roll action, result, keyboard/context menu and accessible44px target. The visible
+language badge states the current RU/EN language; its accessible action still
+names the target language. Each entity label precedes its actions and result.
+
+Knave's trait is a genuine saved d100, including100/00. Primary sites retain the
+honest compatible-pool action and source row; their row number is not rendered as
+an invented d100. A primary reroll stays in the current table/category and uses
+current accepted geographic facts. Trait and primary counters remain independent;
+the context menu rerolls both in one transaction when both exist. Settlement and
+water points keep trait-only behavior. A repeated result is valid randomness.
+
+The command prepares the selected result, source references and actual marker
+together before one manual-map transaction. Names, notes, discovery/clue,
+difficulty, other points, geography and world RNG remain unchanged. Dirty editors,
+pending operations and repeated clicks refuse safely. Empty pools, invalid catalog
+data and counter exhaustion leave the accepted document untouched. Undo/Redo and
+JSON continuation retain the accepted result/counters. Save schema remainsv10;
+there are no new persisted fields or retrospective inferred rolls.
+
+Earlier source-free/private-package paragraphs below describe historical
+checkpoints. PR494 subsequently published the complete approved catalog; this
+correction preserves that catalog unchanged. It adds no new source material.
+
+Verification extends the existing adapter, actual App command and browser
+lifecycle cases: counter/owner isolation, atomic primary+trait/marker update,
+Undo/Redo, v10 continuation, language/entity labels and keyboard/touch controls.
+This correction has its own PR and requires independent review and separate
+publication permission.
+
+## Previous checkpoints
+
 Approved contract: agent-operations/agent-work/specs/HX-BL-043-KNAVE2-CLASSIC1.md KNC-1.0.
 
 The first checkpoint provided detached profile/annotation contracts. This checkpoint
