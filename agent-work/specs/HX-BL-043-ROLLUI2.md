@@ -22,6 +22,7 @@ engine.drawTagIndex уже общий. MB используетTagRow с кубо
 - **UI2-13** Точечнопроверитьистинныйtraitd100,compatiblepick,изоляциюcounter/owner,MBregression,label/currentlanguage,Undo/import ипустойпул;расширятьсуществующиеtests,не зеркалитьреализацию/числопроверок. ОбязательныеnpmruncheckNode24,build+browser иприменимыйRNGпоAGENTS.
 - **UI2-14** ActualUIbefore/afterнаexactSHA показатьdesktop/narrow; независимыйfreshreviewиscore_assessment1.2 обязательныпередразрешениемпубликации. Mainне менять,выпускне разрешён.
 ## Дизайн и проверка
+Предложение UI2-1.0 desktop/narrow предъявлено владельцу в текущем чате 09.11.2026; immutablecommit20f6241c0f5f4731778f3e6abad3d3ff2b76d487. Материалы и actualbaseline: agent-work/evidence/HX-BL-043-ROLLUI2/visuals/manifest.json. Это макет с иллюстративным текстом, не готовый результат; просмотр/ответ владельца не блокирует реализацию. Фактические снимки нового exactSHA ещё требуются.
 Показать предложенный вид на текущем стилеdesktop/narrow до фактического результата; без ожидания отдельного дизайн-одобрения. Поведение на основе уже общего MBпаттерна. Root/аналитик предъявитpreviewизпервого этапа, затемпрограммист продолжает и показываетactualSHA.
 Использовать существующие test/tags.test.mjs, test/browser/tags.smoke.mjs, test/browser/knave-properties-lifecycle.mjs и пригодные проверкиязыка/истории; объяснитькаждое изменениепостоянноготеста поHX-FB-002. Считатьлогическиекейсы поrunner, а нестроки/запуски. Node/browser/RNG отдельно. Временнаядиагностика не ростпостоянногонабора.
 ## Score1.2
