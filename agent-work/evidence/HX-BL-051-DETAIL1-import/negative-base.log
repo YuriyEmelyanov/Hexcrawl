@@ -1,0 +1,32 @@
+✖ ordinary v11 DETAIL1 import roundtrips active extents and refuses corrupt spatial references atomically (776.346753ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2089.36524
+
+✖ failing tests:
+
+test at test/detailGeography.test.mjs:150:1
+✖ ordinary v11 DETAIL1 import roundtrips active extents and refuses corrupt spatial references atomically (776.346753ms)
+  AssertionError [ERR_ASSERTION]: a valid nonempty layer imports
+  + actual - expected
+  
+  + [
+  +   'Не удалось загрузить JSON: некорректные данные (map.physicalGrid: DETAIL1 POI adaptation is not available in this checkpoint). Текущая карта сохранена.'
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/50f278832674/hexcrawl/test/detailGeography.test.mjs:158:27)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ 'Не удалось загрузить JSON: некорректные данные (map.physicalGrid: DETAIL1 POI adaptation is not available in this checkpoint). Текущая карта сохранена.' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
