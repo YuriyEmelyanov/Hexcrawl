@@ -1,0 +1,346 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-09T1305-programmer-HX-BL-044-RIV011",
+  "task_id": "HX-BL-044",
+  "stage_id": "CLASSIFY1-RIV011-diagnostic",
+  "role": "programmer",
+  "status": "capture_complete_original_failure_unresolved_ci_pending",
+  "reason": "Approvedboundedhandoff followingnegativeCI, noforeignactiveexecution for044;051pausedclaimpreserved.",
+  "base_sha": "6fd58bd14e47b1c9c7463f96965801cb9efeb15b",
+  "head_sha": "9dab995f3d7740baf1a18f0aa28af2ffadb485bb",
+  "local_sha": "7f732cc54189639a8f2e16efb3fb3da833c7fb0b",
+  "tree_sha": "5e241777047cfd606ed091b94bdc757afa25c66c",
+  "pr": 498,
+  "implementation": "Existing checker savesbefore/afterfullJSON,worldSeed,RNGstreams,counters,mode,parameters,candidate andoriginalexception; failureartifactinCI. GuardpreservesoriginalthrowevenEACCES. src/docs andgenerationRNGunchanged.",
+  "checks": {
+    "syntax": "passed",
+    "diff_check": "passed",
+    "build": "passed",
+    "local_generation_workflow": {
+      "executed": 1,
+      "passed": 1,
+      "clicks": 19,
+      "regions_by_phase": {
+        "coast": 6,
+        "auto": 6,
+        "mainland": 6
+      },
+      "regeneration": true,
+      "undo": true,
+      "jsonReload": true,
+      "errorRecovery": true,
+      "pageErrors": [],
+      "ran_at_local_sha": "0e1402ada7d5b3bf28f69f60e8fa25eae20fa207",
+      "bridge": "Final4lineguardonly changes diagnosticIO-failurepath; exact final deterministicfaultprobespassed. No randomrepeat."
+    },
+    "CI": {
+      "run_id": 42623025393,
+      "status": "in_progress",
+      "head_sha": "9dab995f3d7740baf1a18f0aa28af2ffadb485bb",
+      "jobs": [
+        129179821077,
+        129179821475,
+        129179821763
+      ]
+    },
+    "full_current_check": "pending_CI_not_claimed_passed"
+  },
+  "finding": {
+    "id": "CLASSIFY1-VALIDATION-RIV011",
+    "status": "open_cause_unknown",
+    "original_ci": 42612175536,
+    "original_input_missing": true,
+    "new_natural_failure_captured": false,
+    "green_run_does_not_resolve_original": true
+  },
+  "review": {
+    "schema_version": 1,
+    "task_id": "HX-BL-044",
+    "stage_id": "CLASSIFY1-RIV011-diagnostic",
+    "role": "independent_reviewer",
+    "review_scope": "Fresh independent exact local SHA review; no GitHub writes, no source mutation, no random/product rerun by reviewer.",
+    "reviewed_base_sha": "6fd58bd14e47b1c9c7463f96965801cb9efeb15b",
+    "reviewed_initial_sha": "0e1402ada7d5b3bf28f69f60e8fa25eae20fa207",
+    "reviewed_initial_tree": "0c6ec75ee80a0c1c30438d7e1c60e34128fd5605",
+    "reviewed_final_sha": "7f732cc54189639a8f2e16efb3fb3da833c7fb0b",
+    "reviewed_final_tree": "5e241777047cfd606ed091b94bdc757afa25c66c",
+    "public_head_parent_reported": "9dab995f3d7740baf1a18f0aa28af2ffadb485bb",
+    "public_mapping_independently_checked": false,
+    "status": "bounded_capture_accepted_no_open_findings_in_reviewed_diff",
+    "release_authorized": false,
+    "package_gate": "Still blocked/unknown pending disposition of original negative validation evidence and exact-head checks.",
+    "files": [
+      "test/browser/generation.smoke.mjs",
+      ".github/workflows/check.yml"
+    ],
+    "findings": [
+      {
+        "id": "capture-IO-masks-assertion",
+        "initial_status": "confirmed",
+        "initial_sha": "0e1402ada7d5b3bf28f69f60e8fa25eae20fa207",
+        "evidence": "Injected writeFileSync EACCES threw capture error instead of identical original AssertionError.",
+        "final_status": "resolved",
+        "final_sha": "7f732cc54189639a8f2e16efb3fb3da833c7fb0b",
+        "resolution": "Nested diagnostic try/catch protects original rethrow; independent injected write and mkdir EACCES preserve exact original AssertionError object."
+      }
+    ],
+    "capture_checks": {
+      "full_after_save": true,
+      "exact_before_save_when_available": true,
+      "world_seed_field": "generation.masterSeed",
+      "stream_states": [
+        "generation.streams.geography",
+        "generation.streams.poi"
+      ],
+      "generation_before_after": true,
+      "counters_before_after": true,
+      "action": [
+        "type",
+        "candidateIndex",
+        "candidateCount",
+        "hexKey",
+        "mode",
+        "seedInput",
+        "parameters",
+        "mathRandomInitialSeed",
+        "mathRandomAlgorithm"
+      ],
+      "error_name_message_stack": true,
+      "workflow_checkout_sha": true,
+      "assertion_statements_unchanged": true,
+      "fatal_original_rethrow": true,
+      "no_reroll": true,
+      "artifact": {
+        "name": "generation-failure-inputs",
+        "path": "reports/generation-failure/",
+        "condition": "failure()",
+        "missing_files": "ignore"
+      },
+      "limitation": "No earlier CI failure input can be reconstructed. I/O failure logs capture error and leaves assertion fatal; files can be absent or partial on I/O failure."
+    },
+    "source_bridge": {
+      "src_tree": "f950137399cd6dbcf9de001e8e114670ee51d1d1",
+      "docs_tree": "e40deb64b62a356340d398bbaaba01b21c80db34",
+      "equal_base_final": true,
+      "source_generator_rng_unchanged": true
+    },
+    "verification": {
+      "reviewer_checks": [
+        "git exact SHA/tree + full diff/name list",
+        "git diff --check",
+        "node --check existing generation smoke",
+        "temporary vm extraction of unchanged capture function with deterministic fixture and injected invariant failure",
+        "exact before/after/context JSON equality",
+        "identical original AssertionError on writable capture",
+        "identical original AssertionError on write EACCES",
+        "identical original AssertionError on mkdir EACCES"
+      ],
+      "probe_path": "/workspace/scratch/50f278832674/reviewer-capture-probe.mjs",
+      "probe_result": "passed",
+      "probe_kind": "temporary isolated helper fault probe; not product behavior or permanent tests",
+      "browser_workflow_run": "Parent reports exactly one generation smoke run at initial local SHA0e1402ada7d5b3bf28f69f60e8fa25eae20fa207 passed 19clicks, coast/auto/mainland6each, regeneration/undo/reload/errorRecovery true, noPageErrors. Final fourline guard affects failing I/O path only. Reviewer did not independently run or observe browser result.",
+      "final_ci": "pending per parent; not independently retrieved by this reviewer"
+    },
+    "test_governance": {
+      "base_sha": "6fd58bd14e47b1c9c7463f96965801cb9efeb15b",
+      "head_sha": "7f732cc54189639a8f2e16efb3fb3da833c7fb0b",
+      "added": 0,
+      "removed": 0,
+      "modified_existing_browser_workflows": 1,
+      "suite": "existing generation browser smoke",
+      "scenario_risk": "Future invariant failure preserves exact continuation inputs; original assertion remains fatal.",
+      "reuse_or_new_reason": "Extends existing failure path; no new permanent scenario needed.",
+      "count_source": "Full exact base..head diff; existing package.json runner unchanged.",
+      "product_tests_run_by_reviewer": 0,
+      "permanent_tests_run_by_reviewer": 0,
+      "temporary_diagnostic_checks": "Helper probes excluded from permanent case counts. Node/browser/RNG suites not combined."
+    },
+    "negative_evidence": {
+      "id": "CLASSIFY1-VALIDATION-RIV011",
+      "ci_run": 42612175536,
+      "head_sha": "6fd58bd14e47b1c9c7463f96965801cb9efeb15b",
+      "message": "LAKE_AREA/RIV-011 positive integer at node72.746,-14",
+      "status": "open_cause_unknown",
+      "original_seed_save_streams_unavailable": true,
+      "same_input_baseline_comparison": "not possible from original evidence",
+      "new_capture_does_not_resolve_original": true,
+      "no_product_defect_cause_inferred": true
+    },
+    "score_assessment1_2": {
+      "model_version": "1.2",
+      "sha": "7f732cc54189639a8f2e16efb3fb3da833c7fb0b",
+      "method": "Bounded diagnostic-only diff review plus source/docs tree equality and isolated capture fault probes; no full criterion or cohort evaluation.",
+      "status": "insufficient_evidence_no_full_criterion_award",
+      "awarded_points": 0,
+      "confirmed_zero": false,
+      "delta_points": null,
+      "criteria": [
+        {
+          "criterion_id": "S01-C05",
+          "before": {
+            "grade": null,
+            "points": null,
+            "status": "unverified"
+          },
+          "after": {
+            "grade": null,
+            "points": null,
+            "status": "insufficient_evidence_for_whole_criterion_grade"
+          },
+          "delta": null,
+          "awarded_points": 0
+        },
+        {
+          "criterion_id": "S03-C01",
+          "before": {
+            "grade": null,
+            "points": null,
+            "status": "unverified"
+          },
+          "after": {
+            "grade": null,
+            "points": null,
+            "status": "insufficient_evidence_for_whole_criterion_grade"
+          },
+          "delta": null,
+          "awarded_points": 0
+        },
+        {
+          "criterion_id": "S04-C05",
+          "before": {
+            "grade": null,
+            "points": null,
+            "status": "unverified"
+          },
+          "after": {
+            "grade": null,
+            "points": null,
+            "status": "insufficient_evidence_for_whole_criterion_grade"
+          },
+          "delta": null,
+          "awarded_points": 0
+        },
+        {
+          "criterion_id": "S05-C01",
+          "before": {
+            "grade": null,
+            "points": null,
+            "status": "unverified"
+          },
+          "after": {
+            "grade": null,
+            "points": null,
+            "status": "insufficient_evidence_for_whole_criterion_grade"
+          },
+          "delta": null,
+          "awarded_points": 0
+        },
+        {
+          "criterion_id": "S05-C03",
+          "before": {
+            "grade": null,
+            "points": null,
+            "status": "unverified"
+          },
+          "after": {
+            "grade": null,
+            "points": null,
+            "status": "insufficient_evidence_for_whole_criterion_grade"
+          },
+          "delta": null,
+          "awarded_points": 0
+        },
+        {
+          "criterion_id": "S07-C01",
+          "before": {
+            "grade": null,
+            "points": null,
+            "status": "unverified"
+          },
+          "after": {
+            "grade": null,
+            "points": null,
+            "status": "insufficient_evidence_for_whole_criterion_grade"
+          },
+          "delta": null,
+          "awarded_points": 0
+        }
+      ],
+      "double_counting": "No points awarded; no projection applied; no prior historical points transferred.",
+      "limitations": [
+        "Diagnostic capture does not implement new product capability.",
+        "Whole-criterion grades/points remain unknown/unverified.",
+        "Original mandatory browser negative remains unresolved; no score uplift or publication approval."
+      ]
+    },
+    "automation_health": {
+      "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "start": {
+        "checked_at": "2026-11-09T13:08:08Z",
+        "method": "actual automations.peek",
+        "is_enabled": true
+      },
+      "end": {
+        "checked_at": "2026-11-09T13:10:23Z",
+        "method": "actual automations.peek",
+        "is_enabled": true
+      },
+      "restore_performed": false,
+      "errors": [],
+      "limitation": "Observed status only at check times."
+    }
+  },
+  "test_change_summary": {
+    "base_sha": "6fd58bd14e47b1c9c7463f96965801cb9efeb15b",
+    "head_sha": "9dab995f3d7740baf1a18f0aa28af2ffadb485bb",
+    "added": 0,
+    "removed": 0,
+    "modified": 1,
+    "suite": "Existinggenerationbrowserworkflow1of8",
+    "scenario_risk": "MissingexactinputsforRIV011failure; preservefatalassertionduringcaptureIOerror",
+    "reuse_or_new_reason": "Extendedexistingchecker withoutnewlogicalcases; temporaryisolatedreviewerprobesexcluded",
+    "count_source": "gitdiff twofiles; onlygeneration.smoke.mjs containsrunnerworkflow; YAMLartifactstepnotatestcase"
+  },
+  "release_authorized": false,
+  "published": false,
+  "score_changed": false,
+  "score_assessment_status": "model1.2 boundedreview noaward; wholecriteriaunknown",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "is_enabled": true,
+      "checked_at": "2026-11-09T13:05:11.992Z"
+    },
+    "end": {
+      "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "is_enabled": true,
+      "checked_at": "2026-11-09T13:13:15.483Z"
+    },
+    "restoration_performed": false,
+    "errors": [],
+    "limitation": "Actualpoint-in-timechecks only"
+  },
+  "next_role": "programmer",
+  "next_task_id": "HX-BL-051",
+  "next_step": "ResumeexistingpausedDETAIL1claim at14f413f through D integration handoff. For044 reviewer checks exact9dabCI whencomplete andretainsoriginalRIVunknown until evidence-baseddisposition; noautomaticrandomreruns.",
+  "handoff_ref": "agent-work/handoffs/2026-11-09-PR497-DETAIL1-D.json",
+  "owner_scribd_copy": {
+    "status": "draft_only_not_published",
+    "title_limit": 40,
+    "description_limit": 100,
+    "files": [
+      {
+        "name": "Ярнмарк",
+        "title": "Ярнмарк: карта Mythic Bastionland",
+        "description": "191 гекс, 6 мифов. Карта ведущему, инструкция и JSON для редактирования в HexCrawl.ru."
+      },
+      {
+        "name": "Уайтшир",
+        "title": "Уайтшир: карта Mythic Bastionland",
+        "description": "185 гексов, 6 мифов. Карта ведущему, инструкция и JSON для редактирования в HexCrawl.ru."
+      }
+    ]
+  },
+  "completed_at": "2026-11-09T13:12:42.856Z"
+}
