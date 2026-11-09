@@ -1,0 +1,185 @@
+{
+  "schema_version": 1,
+  "version": 1,
+  "status": "proposed",
+  "created_at": "2026-11-09T02:06:26.195Z",
+  "role": "strategist_manager",
+  "primary_scenario": "develop",
+  "secondary_scenarios": [
+    "create"
+  ],
+  "layer": "L1",
+  "ranking_version": "three-scenario-ranks-1.4-create-evidence",
+  "cohort_version": "2026-11-06-ranking1.4-create-evidence",
+  "process_basis": {
+    "source": "Current owner instruction in existing task chat",
+    "quote": "Для стратега. Если ты одну задачу на согласование отправил. Формируй следуюшие в холостую не работай. Я могу несколько задач сразу согласовать.",
+    "effect": "Prepare additional concrete, nonduplicate proposals while others await approval. Owner may approve several task IDs/scopes together; this message is not approval to implement them."
+  },
+  "priority_basis": "Strategist recommendation after owner asked for actual generation/user effect of042: prioritize immediate visible map editing over physical-scale metadata. This prioritization is not owner task approval.",
+  "authority": {
+    "task_start_approved": false,
+    "full_specification_allowed": false,
+    "implementation_allowed": false,
+    "release_approved": false,
+    "additional_spend_approved": false
+  },
+  "required_owner_decision": "Утвердить старт указанного task_id/stage_id в этих границах. Можно согласовать несколько предложений одним сообщением, перечислив их ID; публикация каждого точного проверенного пакета требует отдельного разрешения.",
+  "next_role": "owner",
+  "next_role_after_approval": "business_analyst",
+  "ui_preview": {
+    "status": "required_after_task_start_approval",
+    "scope": "Аналитик показывает предлагаемый desktop/narrow вид на основе актуального интерфейса; разработчик затем фактический exactSHA результат. Не отдельный третий gate; отсутствие ответа на показ не блокирует утверждённую работу.",
+    "shown": false
+  },
+  "current_code_evidence": {
+    "inspected_sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
+    "method": "Targeted read-only git show/git grep of exact source snapshot; not a full UI/runtime audit",
+    "limitations": [
+      "This is the inspected pre-PR494-release baseline, not a claim about later release contents.",
+      "After task approval analyst rechecks latest published baseline and accepted packages before fixing implementation base.",
+      "No product support or score grade inferred from a source search."
+    ],
+    "refs": [
+      {
+        "path": "src/App.tsx",
+        "line": 1703,
+        "fact": "MapSnapshot stores seas/kingdoms/regions and geography/content layers; separate political territory data not found in inspected snapshot."
+      },
+      {
+        "path": "src/manualRegions.ts",
+        "line": 1,
+        "fact": "Existing region edit commands alter administrative geometry; that is not a separate political area overlay."
+      }
+    ],
+    "search_result": "Targeted political/territor source search found only historical handbook/archive references, not current source implementation."
+  },
+  "feedback_assessment": {
+    "HX_FB_002": {
+      "decision": "include_test_governance",
+      "reason": "Reuse/extend current transaction, import, UI and related editor cases. New permanent cases only for a distinct requirement or reproduced failure; do not repeat a full test-code audit or count tests as progress."
+    }
+  },
+  "score": {
+    "model_version": "1.2",
+    "baseline_ref": "agent-work/score/current-score.json",
+    "baseline_blob_sha": "ff88f6418f5eacd654d5efa5a6a8e394706022af",
+    "status": "unknown; no score award or numeric gain promised before exactSHA assessment and release",
+    "criteria": [
+      {
+        "criterion_id": "S06-C01",
+        "before_grade": null,
+        "before_points": null,
+        "expected_grade": null,
+        "expected_delta": null,
+        "evidence_needed": "ExactSHA independently verified manual territory extent and note; no faction simulation or whole-game coverage inferred."
+      },
+      {
+        "criterion_id": "S05-C01",
+        "before_grade": null,
+        "before_points": null,
+        "expected_grade": null,
+        "expected_delta": null,
+        "evidence_needed": "Only documented partial preparation behavior; full criterion remains independently assessed."
+      },
+      {
+        "criterion_id": "S05-C02",
+        "before_grade": null,
+        "before_points": null,
+        "expected_grade": null,
+        "expected_delta": null,
+        "evidence_needed": "Saved territory description/context and preservation; source wording is not product evidence."
+      }
+    ]
+  },
+  "source_refs": [
+    "agent-work/backlog.json",
+    "agent-work/strategy/vision.md",
+    "agent-work/strategy/score-model.md",
+    "agent-work/feedback.json",
+    "agent-work/backlog.json#HX-BL-050",
+    "agent-work/research/requirements/WWN-regional-territories-L1.json",
+    "agent-work/research/requirements/OSE-realms-L1.json",
+    "src/App.tsx@a246fdf292963fd534a8203f569b9ca48b6292c7",
+    "src/manualRegions.ts@a246fdf292963fd534a8203f569b9ca48b6292c7"
+  ],
+  "proposal_id": "HX-BL-050-POLITY1",
+  "task_id": "HX-BL-050",
+  "stage_id": "POLITY1",
+  "title": "Ручной политический слой поверх готовой карты",
+  "recommended_priority": 2,
+  "problem": "Проверенный документ содержит географические регионы/kingdoms, но отдельный политический слой не найден. Географические регионы нельзя безопасно переименовать в государства: политическая граница должна редактироваться независимо от рельефа.",
+  "benefit": "Ведущий обозначает территорию выбранной стороны и сохраняет её с картой, не перестраивая леса, реки, регионы и подготовленные места.",
+  "user_visible_effect": {
+    "before": "Принадлежность области «Лиге купцов» приходится описывать словами; географический регион не является независимой политической территорией.",
+    "after": "Предложение, не реализация: выделить подготовленные гексы, назвать территорию «Лига купцов» и увидеть отличимую границу/заливку с краткой заметкой; река и лес остаются на месте.",
+    "generation_effect": "Не генерирует государства/фракции автоматически; добавляет ручной политический набросок L1."
+  },
+  "in_scope": [
+    "Создать, переименовать и удалить именованную территорию; вручную назначить ей набор существующих гексов и краткую заметку.",
+    "Отдельный политический слой с отличимыми границей/заливкой и возможностью просмотра без изменения географии.",
+    "Первый пакет поддерживает однозначную принадлежность выбранного гекса не более чем одной территории; конфликт при правке показан и разрешается явно, без молчаливого отъёма.",
+    "Атомарная правка, Undo/Redo, безопасные черновики и JSON сохранение; старые карты имеют пустой слой."
+  ],
+  "out_of_scope": [
+    "Войны, автоматическое влияние/контроль POI, население, экономика, движение фракций и игровые события.",
+    "Спорные/перекрывающиеся претензии, автоматический выбор границы по реке/хребту, генерация стран или фракций.",
+    "Подмена kingdomId/географических регионов политической принадлежностью, перенос существующих объектов, изменение географического генератора.",
+    "Карта для игроков/скрытие тайн и VTT/L2; owner MB player-map deferral сохраняется."
+  ],
+  "priority_vs_alternatives": [
+    {
+      "task_id": "HX-BL-028",
+      "decision": "After brush: territory layer is broader and needs new persisted data, but gives direct visible map-preparation utility."
+    },
+    {
+      "task_id": "HX-BL-042",
+      "decision": "Before scale metadata by strategist recommendation because political layer adds a visible preparation operation.042remains proposed, not canceled."
+    },
+    {
+      "task_id": "HX-BL-049/HX-BL-048/HX-BL-040",
+      "decision": "No faction simulation, conflicts or linked-story generation included; a manual territory layer is a bounded independent first step."
+    },
+    {
+      "task_id": "HX-BL-052",
+      "decision": "Structured base/site links remain a candidate, but brush and visible territory layer have stronger immediate map-editing effect."
+    }
+  ],
+  "estimated_scope": "M–L: ориентировочно1аналитический,2–3разработческих и1независимый проверочный этап; оценка объёма, не срок/стоимость.",
+  "dependencies": [
+    "Явное утверждение HX-BL-050/POLITY1.",
+    "Переиспользовать текущие документ, историю, выбор гекса и заметки, но хранить политическую область независимо от географических regions/kingdoms.",
+    "После утверждения аналитик фиксирует компактное выделение набора, допустимость разрывов и разрешение конфликта принадлежности; существенное расширение на спорные претензии требует отдельного решения.",
+    "Реализация на актуальной точной базе после043; не зависит от042, порядок после028 — приоритет, не технический блок."
+  ],
+  "acceptance": [
+    "На готовой карте создать «Лигу купцов» и соседнюю территорию другого имени с явно выбранными наборами гексов; видимая граница/заливка соответствует выбранной принадлежности.",
+    "Переименование/заметка/изменение части набора не меняют географические регионы, реки, дороги, POI, имена, теги, заметки мастера или RNG.",
+    "Попытка назначить гекс другой территории не приводит к скрытому отъёму; до применения показан конфликт и явный выбор в рамках однозначной принадлежности.",
+    "Удаление территории удаляет только политическую запись/отображение; существующие гексы и содержимое сохранены.",
+    "Undo/Redo восстанавливает полный политический слой; JSON round-trip сохраняет имя/принадлежность/заметку без автоматического назначения контроля POI или населения.",
+    "Старые карты загружаются с пустым слоем; некорректные координаты/идентификаторы/ссылки отклоняются атомарно, без потери прежнего документа.",
+    "Desktop/390/320: соседние территории различимы, подписи/выделение не перекрывают основные действия, доступны44px цели/клавиатура; показан proposedUI и фактический exactSHA результат."
+  ],
+  "source_profiles": [
+    {
+      "game_id": "WWN",
+      "edition": "Worlds Without Number Deluxe, supplied Russian translation, translation revision/English collation unverified",
+      "binding_id": "WWN-RU-REG-009-L1",
+      "scope": "Manual territory extent and note only; broader source behavior and automatic natural-boundary matching not claimed."
+    },
+    {
+      "game_id": "OSE",
+      "edition": "Official2026 online basic/BX-derived reference; not full Referee book",
+      "binding_ids": [
+        "OSE-ORR-2026-002-L1",
+        "OSE-ORR-2026-003-L1"
+      ],
+      "scope": "Partial common map-preparation component; nomadic/approximate/contested boundaries not claimed covered by POLITY1."
+    }
+  ],
+  "canonical_rule_ids": [
+    "map.political_territories",
+    "content.place_description"
+  ]
+}
