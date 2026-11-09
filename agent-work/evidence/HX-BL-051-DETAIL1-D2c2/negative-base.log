@@ -1,0 +1,37 @@
+✖ live DETAIL1 preview projects actual capital/Seat and every assigned road without changing the document or RNG (516.362933ms)
+✔ live DETAIL1 preview retains actual sea/river identities and source requirements, refusing missing mandatory water atomically (1252.319731ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 1
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3100.572806
+
+✖ failing tests:
+
+test at test/detailGeography.test.mjs:15:1
+✖ live DETAIL1 preview projects actual capital/Seat and every assigned road without changing the document or RNG (516.362933ms)
+  AssertionError [ERR_ASSERTION]: Got unwanted exception.
+  Actual message: "DETAIL1 nondefault_extent_reconciliation_pending"
+      at TestContext.<anonymous> (file:///workspace/scratch/50f278832674/hexcrawl/test/detailGeography.test.mjs:24:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: Error: DETAIL1 nondefault_extent_reconciliation_pending
+        at fail (evalmachine.<anonymous>:16:32)
+        at validateDetailGeographyFootprints (evalmachine.<anonymous>:205:20)
+        at Object.validateDetailMapFootprints (evalmachine.<anonymous>:892:61)
+        at validate (file:///workspace/scratch/50f278832674/hexcrawl/test/detailGeography.test.mjs:12:38)
+        at file:///workspace/scratch/50f278832674/hexcrawl/test/detailGeography.test.mjs:24:27
+        at getActual (node:assert:611:5)
+        at strict.doesNotThrow (node:assert:779:32)
+        at TestContext.<anonymous> (file:///workspace/scratch/50f278832674/hexcrawl/test/detailGeography.test.mjs:24:10)
+        at async Test.run (node:internal/test_runner/test:1409:7)
+        at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3),
+    expected: undefined,
+    operator: 'doesNotThrow',
+    diff: 'simple'
+  }
