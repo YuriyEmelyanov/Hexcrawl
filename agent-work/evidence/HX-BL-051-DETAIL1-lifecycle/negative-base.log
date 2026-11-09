@@ -1,0 +1,48 @@
+✖ active DETAIL1 lifecycle preserves manual extents through E7 and allocates/removes POIs without recycling IDs (559.244791ms)
+✖ active DETAIL1 route and water mutations retain exact attachments or refuse both histories atomically (413.869015ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2306.500296
+
+✖ failing tests:
+
+test at test/detailGeography.test.mjs:96:1
+✖ active DETAIL1 lifecycle preserves manual extents through E7 and allocates/removes POIs without recycling IDs (559.244791ms)
+  AssertionError [ERR_ASSERTION]: Изменение конфликтует с данными региона или реки. Карта не изменена.
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/50f278832674/hexcrawl/test/detailGeography.test.mjs:100:189)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/detailGeography.test.mjs:109:1
+✖ active DETAIL1 route and water mutations retain exact attachments or refuse both histories atomically (413.869015ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'mountains'
+  - 'open_hills'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/50f278832674/hexcrawl/test/detailGeography.test.mjs:114:73)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'mountains',
+    expected: 'open_hills',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
