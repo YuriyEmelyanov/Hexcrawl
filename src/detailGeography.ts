@@ -5,12 +5,12 @@ import {buildDetailPoiFootprint,detailSegmentSpan,type DetailWaterAccess,type De
 import {assertDetailPoiOwners,reconcileDetailPoiIdentities,type DetailPoiIdentities} from './detailIdentity.ts';
 import {poiNameLocators,hasCentralPoi,type PoiRegion} from './manualPois.ts';
 import {parseWaterHex,waterHexKey,waterKindAt,waterNeighbors,type WaterTerrain} from './manualWater.ts';
-import type {Detail1State,DetailPoiFootprint} from './detailModel.ts';
+import {parseDetail1StateV11,type Detail1State,type DetailPoiFootprint} from './detailModel.ts';
 import type {KnaveLayer} from './knaveClassic.ts';
 import policy from './tags/knavePolicy.json' with {type:'json'};
 
 type Segment=Readonly<{from:WorldPoint;to:WorldPoint}>;
-export type DetailLiveRiver=Readonly<{id:number;edges:readonly Readonly<{id:string;segment:Segment;rapid:boolean;crossings:readonly Readonly<{kind:string;point:WorldPoint}>[]}>[];starts:readonly WorldPoint[];waterfalls:readonly Readonly<{id:string;point:WorldPoint}>[]}>;
+export type DetailLiveRiver=Readonly<{id:number;edges:readonly Readonly<{id:string;segment:Segment;rapid:boolean;crossings:readonly Readonly<{id:string;kind:string;point:WorldPoint}>[]}>[];starts:readonly WorldPoint[];waterfalls:readonly Readonly<{id:string;point:WorldPoint}>[]}>;
 export type DetailGeographyMap=Readonly<{
  regions:readonly PoiRegion[];hexTerrainByKey:ReadonlyMap<string,WaterTerrain>;waterPoiByKey:ReadonlyMap<string,string>;
  roads:readonly {id:number;segments:readonly {from:DetailCell;to:DetailCell;kind:'road'|'trail'}[]}[];
@@ -112,7 +112,7 @@ function waterAccesses(map:DetailGeographyMap,rivers:readonly DetailLiveRiver[],
    if(need.requirement==='rapid'&&!edge.rapid)continue;
    if(need.requirement==='crossing'){
     const kinds=need.predicates.filter(p=>p.startsWith('crossing_')).map(p=>p.slice(9));
-    for(const crossing of edge.crossings)if(kinds.every(k=>k==='any'||k===crossing.kind))point(crossing.point,waterId,edge.id,'crossing');
+    for(const crossing of edge.crossings)if(kinds.every(k=>k==='any'||k===crossing.kind))point(crossing.point,waterId,crossing.id,'crossing');
     continue;
    }
    line(edge.segment,waterId,edge.id,need.requirement==='rapid'?'rapid':'river');
@@ -139,4 +139,40 @@ export function buildDetailGeographyPreview(map:DetailGeographyMap,rivers:readon
   footprints.push(buildDetailPoiFootprint(fine,{poiId,legacyRef:alias,role:kind==='capital'?'capital':kind==='throne'?'mythic_seat':'site',anchor:detailCellCenter(coarse,source),sourcePolygon:detailCellPolygon(coarse,source),waterRequirement:need.requirement,waterAccesses:waterAccesses(map,rivers,source,origin,water,need),routeRequirement:routes.length?'assigned':'none',routeAccesses:routes}));
  }
  return Object.freeze({activatesDetail1:false,grid:Object.freeze({origin:Object.freeze({...origin}),orientation:'pointy',convention:'across_flats'}),source:Object.freeze({stepMiles:6,physicalConvention:map.physicalGrid?.source.physicalConvention??'unknown',displayAssumption:'project_across_flats_6mi'}),poiIdentities:identities,poiFootprints:Object.freeze(footprints),waterRequirementsByPoi:Object.freeze(requirements)});
+}
+
+
+/** Internal saved-default validator. Does not activate the layer or relax the
+ * App document gate. Manual/measured reconciliation is deliberately fail-closed. */
+export function validateDetailGeographyFootprints(map:DetailGeographyMap,rivers:readonly DetailLiveRiver[],value:unknown):void {
+ const state=parseDetail1StateV11(value),identities=state.poiIdentities;
+ if(!identities)fail('saved_footprints_require_identities');
+ if(state.source.physicalConvention!==(map.physicalGrid?.source.physicalConvention??'unknown'))fail('unproven_source_convention');
+ const live=poiNameLocators({regions:[...map.regions],waterPoiByKey:new Map(map.waterPoiByKey)},true);
+ assertDetailPoiOwners(identities!,live);
+ if(state.poiFootprints.length!==live.size)fail('incomplete_footprint_coverage');
+ const origin=state.grid.origin,fine=createDetailGrid(1,origin),coarse=createDetailGrid(6,origin);
+ const close=(a:WorldPoint,b:WorldPoint)=>Math.hypot(a.x-b.x,a.y-b.y)<=1e-9;
+ for(const footprint of state.poiFootprints){
+  const alias=footprint.legacyRef;if(!alias||!live.has(alias))fail('unknown_footprint_owner');
+  const parts=alias!.split(':'),water=alias!.startsWith('waterPoi:'),source=parseWaterHex(parts[water?1:2]);
+  const region=water?undefined:map.regions.find(r=>r.id===Number(parts[1]));
+  const kind=region&&hasCentralPoi(region)&&key(region.centerHex)===key(source)?region.centralPoiKind:region?.pointOfInterestKinds?.[key(source)];
+  if(!water&&waterKindAt(map.hexTerrainByKey,key(source))!=='land')fail('land_poi_in_water');
+  if(footprint.extent.kind!=='default')return fail('nondefault_extent_reconciliation_pending');
+  const capital=kind==='capital';
+  if(footprint.extent.policy!==(capital?'capital_min_two':'one_cell')||capital&&footprint.cells.length<2||!capital&&footprint.cells.length!==1)fail('invalid_default_extent');
+  const allowed=new Set(detailPositiveAreaIntersections(fine,detailCellPolygon(coarse,source)).map(p=>key(p.cell)));
+  if(footprint.cells.some(c=>!allowed.has(key(c))))fail('footprint_outside_source');
+  const member=new Set(footprint.cells.map(key)),need=requirement(map,alias!,water);
+  const accesses=waterAccesses(map,rivers,source,origin,water,need).filter(a=>member.has(key(a.cell)));
+  const waterRefs=footprint.attachments.filter(a=>a.kind==='water');
+  if(waterRefs.length!==(need.requirement==='none'?0:1))fail('invalid_water_attachment_count');
+  for(const ref of waterRefs)if(!accesses.some(a=>a.waterId===ref.waterId&&a.segmentId===ref.segmentId&&a.kind===ref.waterKind&&close(a.contact,ref.contact)))fail('invalid_live_water_attachment');
+  const routes=assignedRoutes(map,source,origin),ids=new Set(routes.map(r=>r.routeId)),refs=footprint.attachments.filter(a=>a.kind==='route');
+  if(refs.length!==ids.size||new Set(refs.map(r=>r.routeId)).size!==ids.size)fail('incomplete_route_coverage');
+  for(const ref of refs){
+   if(!ids.has(ref.routeId)||!routes.some(r=>r.routeId===ref.routeId&&r.accessNodeId===ref.accessNodeId&&r.kind===ref.routeKind&&footprint.cells.some(cell=>{const span=detailSegmentSpan(fine,cell,r.segment);return span&&close(span.from,ref.entry);})))fail('invalid_live_route_attachment');
+  }
+ }
 }

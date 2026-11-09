@@ -168,3 +168,20 @@ logical Node cases for the previously uncovered source-geography bridge: true
 capital/Seat and graph ports; exact sea/river/shore/source requirements/crossing
 and unknown provenance with refusal. They reuse the existing authored E6/E7 and
 Knave fixture data and harness rather than adding another lifecycle framework.
+
+## D2c1: saved default footprint validation (internal)
+
+The actual App geometry bridge now also validates a proposed saved state against
+live POI owners, real water contacts and every assigned route/entry port. It
+strictly parses the state, requires complete identity/footprint coverage, checks
+connected source-cell coverage and capital/Seat default rules, and rejects
+missing/forged water IDs, features, coordinates, paths and ports. A crossing now
+retains its concrete opaque crossing key, not only the containing river edge.
+Unproven source conventions cannot become known during validation.
+
+This bounded validator supports default extents. Manual/measured extents fail
+closed until their reconciliation is connected. It does not replace the live
+import guard or enable an active nonempty layer. The next stage must connect
+atomic edit/remap/removal/history handling and finish manual/measured validation
+before enabling the layer. The two existing actual-App cases are expanded with
+saved-state validity/refusal checks; no new permanent runner/case is added.
