@@ -14214,7 +14214,7 @@
     {
       "task_id": "HX-BL-051",
       "title": "Обзор карты6/12/24мили и многоуровневая детализация",
-      "status": "analysis_in_progress",
+      "status": "specified_ready_for_development",
       "problem": "Ни расширение карты на том же уровне, ни неподвижная подложка не подтверждают согласованность вложенных карт. Общее правило есть, проверенного WWN-профиля не было.",
       "benefit": "Ведущий готовит подробную начальную область, сохраняя узнаваемую географию общего региона.",
       "game_editions": [
@@ -14603,29 +14603,94 @@
       "proposed_stage_id": "OVERVIEW1",
       "proposal_id": "HX-BL-051-OVERVIEW1",
       "proposal_ref": "agent-work/proposals/2026-11-09-HX-BL-051-OVERVIEW1.json",
-      "score_forecast": {
-        "model_version": "1.2",
-        "criterion_ids": [
-          "S03-C01",
-          "S04-C03",
-          "S04-C04",
-          "S06-C04"
-        ],
-        "before_grade": null,
-        "before_points": null,
-        "expected_grade": null,
-        "expected_delta": null,
-        "status": "unknown; scope covers overview/navigation/storage components only; no grade promised.",
-        "evidence_needed": "ExactSHA mixed-terrain/POIownership/selection/save/Undo compatibility and assessed breadth; source reading not runtime proof"
-      },
-      "implementation_allowed": false,
+      "score_forecast": [
+        {
+          "criterion_id": "S01-C04",
+          "weight": 25,
+          "before_grade": null,
+          "before_points": null,
+          "baseline_ref": "agent-work/score/current-score.json",
+          "baseline_blob_sha": "05e1ba3c1a12b300d564fd044b15b8121d5fa0cd",
+          "expected_grade": null,
+          "expected_points": null,
+          "expected_delta": null,
+          "evidence_needed": "Exact valid paths through access nodes/footprints, legal crossings; route fixtures not full campaign coverage.",
+          "status": "unknown; reviewer must assess on exactSHA; no forecast awarded"
+        },
+        {
+          "criterion_id": "S01-C05",
+          "weight": 10,
+          "before_grade": null,
+          "before_points": null,
+          "baseline_ref": "agent-work/score/current-score.json",
+          "baseline_blob_sha": "05e1ba3c1a12b300d564fd044b15b8121d5fa0cd",
+          "expected_grade": null,
+          "expected_points": null,
+          "expected_delta": null,
+          "evidence_needed": "Fine footprint/source-water eligibility, no geography/hydro regression; not500mapexpert claim.",
+          "status": "unknown; reviewer must assess on exactSHA; no forecast awarded"
+        },
+        {
+          "criterion_id": "S03-C01",
+          "weight": 25,
+          "before_grade": null,
+          "before_points": null,
+          "baseline_ref": "agent-work/score/current-score.json",
+          "baseline_blob_sha": "05e1ba3c1a12b300d564fd044b15b8121d5fa0cd",
+          "expected_grade": null,
+          "expected_points": null,
+          "expected_delta": null,
+          "evidence_needed": "Addressed footprint/edit/remap/delete with validated state and Undo.",
+          "status": "unknown; reviewer must assess on exactSHA; no forecast awarded"
+        },
+        {
+          "criterion_id": "S04-C03",
+          "weight": 20,
+          "before_grade": null,
+          "before_points": null,
+          "baseline_ref": "agent-work/score/current-score.json",
+          "baseline_blob_sha": "05e1ba3c1a12b300d564fd044b15b8121d5fa0cd",
+          "expected_grade": null,
+          "expected_points": null,
+          "expected_delta": null,
+          "evidence_needed": "1/6/12/24display only; player map/fog-of-war still not implemented.",
+          "status": "unknown; reviewer must assess on exactSHA; no forecast awarded"
+        },
+        {
+          "criterion_id": "S04-C04",
+          "weight": 15,
+          "before_grade": null,
+          "before_points": null,
+          "baseline_ref": "agent-work/score/current-score.json",
+          "baseline_blob_sha": "05e1ba3c1a12b300d564fd044b15b8121d5fa0cd",
+          "expected_grade": null,
+          "expected_points": null,
+          "expected_delta": null,
+          "evidence_needed": "v11oldimport/roundtrip/export of new links and unchanged source content.",
+          "status": "unknown; reviewer must assess on exactSHA; no forecast awarded"
+        },
+        {
+          "criterion_id": "S05-C01",
+          "weight": 25,
+          "before_grade": null,
+          "before_points": null,
+          "baseline_ref": "agent-work/score/current-score.json",
+          "baseline_blob_sha": "05e1ba3c1a12b300d564fd044b15b8121d5fa0cd",
+          "expected_grade": null,
+          "expected_points": null,
+          "expected_delta": null,
+          "evidence_needed": "Compact context for one/multi-cell POI, unique counts and sourcecells.",
+          "status": "unknown; reviewer must assess on exactSHA; no forecast awarded"
+        }
+      ],
+      "implementation_allowed": true,
       "full_specification_allowed": false,
       "release_approved": false,
       "recommended_priority": 1,
       "owner_direction_ref": "agent-work/proposals/2026-11-09-hex-scale-owner-direction.json",
-      "next_role": "business_analyst",
+      "next_role": "programmer",
       "next_role_after_approval": "business_analyst",
-      "next_step": "УтверждёнDETAIL1: аналитик готовит1mile/POIfootprints/water/roads specification and UI. Не брать старыйOVERVIEW1как полный контракт.",
+      "next_step": "РеализацияDTL-1.0:1/6/12/24,единыйохватPOI,вода/входыпутей/миграция,затемнезависимыйexactSHAreview.",
       "source_compatibility_notes": [
         {
           "requirement_id": "PF2-RM-003-L1",
@@ -14636,11 +14701,12 @@
       ],
       "last_research_result_ref": "agent-work/research/runs/2026-11-09T0230-PF2-terrain-overlays.json",
       "ui_preview": {
-        "version": "OVERVIEW1-UI1",
-        "status": "proposal_shown_in_chat",
-        "desktop": "agent-work/mockups/HX-BL-051-OVERVIEW1/OVERVIEW1-desktop.png",
-        "narrow": "agent-work/mockups/HX-BL-051-OVERVIEW1/OVERVIEW1-narrow.png",
-        "design_approval_required": false
+        "version": "DETAIL1-UI1",
+        "shown_in_chat": true,
+        "desktop": "agent-work/mockups/HX-BL-051-DETAIL1-UI1/DETAIL1-desktop.png",
+        "narrow": "agent-work/mockups/HX-BL-051-DETAIL1-UI1/DETAIL1-narrow.png",
+        "commit": "d146b44eac1aa1581ba374814718202ac891328c",
+        "design_gate": false
       },
       "current_stage_id": "DETAIL1",
       "approval_ref": "agent-work/decisions/owner-approval-2026-11-09-HX-BL-051-DETAIL1.json",
@@ -14650,7 +14716,11 @@
         "POIs use whole1mi-cell footprint; larger site multipleconnected cells, repeatedicons and commonboundary; analyze footprintdimensions instead of inventing area fromicon.",
         "Preserve requiredwaterattachment; otherPOIs centraleligible cells; associated roads/trails must contact/pass site ratherthanmerelynear.",
         "Prepare specification/analysis and UI then programmer work in approvedscope; independent exactSHAreview and distinct releaseapproval stillrequired."
-      ]
+      ],
+      "spec_ref": "agent-work/specs/HX-BL-051-DETAIL1.md",
+      "spec_version": "DTL-1.0",
+      "acceptance_ref": "agent-work/specs/HX-BL-051-DETAIL1.acceptance.json",
+      "handoff_ref": "agent-work/handoffs/2026-11-09-HX-BL-051-DETAIL1.json"
     },
     {
       "task_id": "HX-BL-052",
@@ -16521,14 +16591,11 @@
   "model_activation_ref": "owner-decision-2026-10-26-activate-score-1.2",
   "next_product_recommendation": {
     "task_id": "HX-BL-051",
-    "stage_id": "OVERVIEW1",
-    "priority": 1,
-    "proposal_ref": "agent-work/proposals/2026-11-09-HX-BL-051-OVERVIEW1.json",
-    "status": "proposed",
-    "next_role": "owner",
-    "next_role_after_approval": "business_analyst",
-    "execution_allowed": false,
-    "next_step": "Утвердить051/OVERVIEW1; можно пакетно028/BRUSH1и050/POLITY1. Вопрос о масштабе не принят за утверждение реализации."
+    "stage_id": "DETAIL1",
+    "status": "approved_spec_ready",
+    "execution_allowed": true,
+    "next_role": "programmer",
+    "spec_ref": "agent-work/specs/HX-BL-051-DETAIL1.md"
   },
   "previous_product_recommendation": {
     "task_id": "HX-BL-043",
@@ -16644,7 +16711,8 @@
       "stage_id": "DETAIL1",
       "priority": 1,
       "proposal_ref": "agent-work/proposals/2026-11-09-HX-BL-051-OVERVIEW1.json",
-      "status": "approved_analysis_in_progress"
+      "status": "approved_spec_ready",
+      "spec_ref": "agent-work/specs/HX-BL-051-DETAIL1.md"
     },
     {
       "task_id": "HX-BL-028",
