@@ -1,0 +1,183 @@
+{
+  "schema_version": 2,
+  "game_id": "VAARN",
+  "date": "2026-11-10",
+  "status": "bounded_author_variant_registered_runtime_unverified",
+  "source": {
+    "id": "VAARN-AUTHOR-HEXFILL-20240411",
+    "title": "Vaarn Hexfill Procedure",
+    "edition": "Author blog variant2024-04-11; not identified as core1e/2e",
+    "url": "https://vaultsofvaarn.com/2024/04/11/vaarn-hexfill-procedure/",
+    "locator": "Introduction and first Hex Contents d6 table, web lines9–21",
+    "published_at": "2024-04-11",
+    "printed_page": null,
+    "language": "en",
+    "author_project_key": "leo-hunt:vaultsofvaarn:hexfill2024",
+    "access_level": "full_text",
+    "accessed_at": "2026-11-09T21:45:30.267403+00:00"
+  },
+  "rules": [
+    {
+      "id": "VAARN-HF2024-001",
+      "rule": {
+        "source_id": "VAARN-AUTHOR-HEXFILL-20240411",
+        "url": "https://vaultsofvaarn.com/2024/04/11/vaarn-hexfill-procedure/",
+        "locator": "Introduction and first Hex Contents d6 table, web lines9–21",
+        "printed_page": null,
+        "paraphrase": "После подготовки карты определить категорию содержимого каждого гекса одним d6.",
+        "normative_kind": "optional_author_blog_procedure",
+        "parameters": {
+          "die": "d6",
+          "ranges": [
+            [
+              1,
+              3,
+              "nothing"
+            ],
+            [
+              4,
+              4,
+              "inhabited"
+            ],
+            [
+              5,
+              5,
+              "hazardous"
+            ],
+            [
+              6,
+              6,
+              "special"
+            ]
+          ],
+          "roll_scope": "one per hex after map sketched",
+          "hex_scale": null,
+          "subtype_resolution": "outside this bounded slice"
+        }
+      },
+      "comparison": {
+        "canonical_rule_ids": [
+          "content.feature_distribution"
+        ],
+        "analogue_binding_ids": [
+          "PF2-RM-013-L1",
+          "SD-CORE-050-L1"
+        ],
+        "new_canonical_rule": false,
+        "profile_equivalence": "unverified; different dice intervals"
+      },
+      "requirements": [
+        {
+          "id": "VAARN-HF2024-001-L1",
+          "layer": "L1",
+          "requirement": "Разрешить исход в категорию содержимого выбранного гекса; сохранить категорию и исход. Не выводить ещё подтип, риск или последствия.",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_sha": null,
+          "evidence_id": null,
+          "canonical_rule_ids": [
+            "content.feature_distribution"
+          ],
+          "criterion_ids": [
+            "S05-C01",
+            "S05-C03"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#VAARN-HF2024-001-L1",
+          "operational_requirement": {
+            "source_rule_ref": "agent-work/market/rules/Vaarn-Hexfill-2024.json#VAARN-HF2024-001",
+            "normative_kind": "optional_author_blog_procedure",
+            "applicability": "Явно выбранный ведущим Hexfill2024 для уже нарисованной карты Vaarn; не профиль ядра игры.",
+            "layer": "L1",
+            "trigger_or_user_action": "Ведущий выбирает гекс подготовленной карты и запускает первый этап наполнения по Hexfill2024.",
+            "inputs_and_units": {
+              "hexes": "идентификаторы гексов существующей карты",
+              "roll": "целый исход d6,1–6; один на гекс",
+              "profile": "Vaarn author Hexfill2024, отдельно от1e/2e"
+            },
+            "product_operation": "Разрешить исход в категорию содержимого выбранного гекса; сохранить категорию и исход. Не выводить ещё подтип, риск или последствия.",
+            "expected_output": "nothing/inhabited/hazardous/special по заданному исходу; география и ранее подготовленное содержимое сохранены.",
+            "constraints_and_exceptions": [
+              "Авторский необязательный blog-вариант 11.04.2024; не core1e или2e и не обязательное правило всей игры.",
+              "Таблицы подтипов и связанные генераторы не извлечены; category-only не завершает полное наполнение.",
+              "Nothing означает отсутствие нового содержимого по этому броску, а не пустую географию или удаление ручных объектов.",
+              "Hazardous — категория содержимого, а не класс проходимости044/CLASSIFY1.",
+              "Источник не задаёт масштаб гекса, повторную обработку, замену существующих объектов или сохранение."
+            ],
+            "acceptance_cases": [
+              {
+                "id": "VAARN-HF2024-001-L1-AC01",
+                "given": "Шесть ещё не наполненных гексов A–F; заданные исходы d6 [1,2,3,4,5,6].",
+                "when": "Подготовить по одной категории содержимого для каждого гекса.",
+                "expected": "A–C: ничего по этой таблице; D: inhabited; E: hazardous; F: special. Никакой конкретный подтип ещё не выбран."
+              },
+              {
+                "id": "VAARN-HF2024-001-L1-AC02",
+                "given": "Лесной гекс, проходимость difficult, исход d6=5.",
+                "when": "Назначить категорию содержимого.",
+                "expected": "Категория hazardous; лес и difficult остаются прежними. Урон, тип риска и проходимость dangerous не придуманы."
+              },
+              {
+                "id": "VAARN-HF2024-001-L1-AC03",
+                "given": "Гекс с ручной башней и рекой; исход d6=1.",
+                "when": "Явно применить первый этап наполнения.",
+                "expected": "По этой таблице новых мест нет; существующие башня и река не удаляются. Это защита продукта, а не заданная автором политика замены."
+              },
+              {
+                "id": "VAARN-HF2024-001-L1-AC04",
+                "given": "Категория special уже принята из d6=6.",
+                "when": "Сохранить и снова открыть карту.",
+                "expected": "Категория special и исход6 сохранены без нового броска; подтип остаётся не определён."
+              },
+              {
+                "id": "VAARN-HF2024-001-L1-AC05",
+                "given": "Предложены исходы0,7,2.5.",
+                "when": "Применить исход как d6.",
+                "expected": "Ни один исход не принят, карта прежняя."
+              }
+            ],
+            "source_vs_product_interpretation": "Автор задаёт предпосылку готовой карты, один d6 и интервалы. Явный запуск, сохранение происхождения, неразрушающее применение и валидация — перевод в проверяемое поведение продукта, не дополнительные правила Vaarn.",
+            "canonical_rule_refs": [
+              "agent-work/rules/common-rules.json#content.feature_distribution"
+            ],
+            "unresolved_parameters": [
+              "Размер гекса не указан.",
+              "Подтипы inhabited/hazardous/special и special10 требуют отдельного разбора.",
+              "Политика явного повторного наполнения/конфликтов остаётся выбором аналитика после согласования."
+            ]
+          },
+          "gap": "Поведение точного профиля на runtimeSHA неизвестно; это не доказательство отсутствия функции.",
+          "gap_task_ids": [
+            "HX-BL-054"
+          ]
+        },
+        {
+          "layer": "L2",
+          "status": "not_applicable",
+          "reason": "Only preparation; no party movement extracted."
+        },
+        {
+          "layer": "L3",
+          "status": "not_applicable",
+          "reason": "No hazard resolution or character rules extracted."
+        }
+      ]
+    }
+  ],
+  "completeness": {
+    "full_game_read": false,
+    "read_scope": "Introduction and first Hex Contents d6 table, web lines9–21",
+    "not_extracted": [
+      "inhabited d10",
+      "hazardous d8",
+      "special d10, including10 recursion",
+      "linked generators",
+      "core1e/2e"
+    ],
+    "remaining_unknowns": [
+      "Размер гекса не указан.",
+      "Подтипы inhabited/hazardous/special и special10 требуют отдельного разбора.",
+      "Политика явного повторного наполнения/конфликтов остаётся выбором аналитика после согласования."
+    ]
+  },
+  "score_impact": "none; source evidence only"
+}

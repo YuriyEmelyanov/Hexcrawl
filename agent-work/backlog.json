@@ -17622,6 +17622,88 @@
         "agent-work/decisions/owner-decision-2026-11-09-MB-flavour-and-player-map-layer.json"
       ],
       "research_source_correction_ref": "agent-work/research/runs/2026-11-09-MB-owner-scope-correction.json"
+    },
+    {
+      "task_id": "HX-BL-054",
+      "title": "Назначать категории содержимого гексов по выбранному распределению",
+      "status": "proposed",
+      "problem": "Существующие source-профили PF2/SD и новый авторский Vaarn описывают разные исходы; их поддержка runtime неизвестна. Объявлять их совместимыми по одному rule_id нельзя.",
+      "benefit": "Ведущий получает воспроизводимый первый этап наполнения готовой карты без изменения географии и ручных мест.",
+      "game_editions": [
+        "Author blog variant2024-04-11; not identified as core1e/2e"
+      ],
+      "primary_scenario": "develop",
+      "layer": "L1",
+      "requirement_refs": [
+        "agent-work/market/rules/Vaarn-Hexfill-2024.json#VAARN-HF2024-001-L1"
+      ],
+      "canonical_rule_ids": [
+        "content.feature_distribution"
+      ],
+      "binding_refs": [
+        "agent-work/rules/game-bindings.json#VAARN-HF2024-001-L1"
+      ],
+      "criterion_ids": [
+        "S05-C01",
+        "S05-C03"
+      ],
+      "scope": "Предложенный отдельный срез: проверить переиспользование общей операции, затем при утверждении реализовать только недостающее для первой категории. Подтипы, hazards resolution, terrain generation и UI-спецификация вне объёма.",
+      "dependencies": [
+        "owner_task_start_approval",
+        "exact_profile_runtime_gap_check"
+      ],
+      "acceptance_checks": [
+        {
+          "id": "VAARN-HF2024-001-L1-AC01",
+          "given": "Шесть ещё не наполненных гексов A–F; заданные исходы d6 [1,2,3,4,5,6].",
+          "when": "Подготовить по одной категории содержимого для каждого гекса.",
+          "expected": "A–C: ничего по этой таблице; D: inhabited; E: hazardous; F: special. Никакой конкретный подтип ещё не выбран."
+        },
+        {
+          "id": "VAARN-HF2024-001-L1-AC02",
+          "given": "Лесной гекс, проходимость difficult, исход d6=5.",
+          "when": "Назначить категорию содержимого.",
+          "expected": "Категория hazardous; лес и difficult остаются прежними. Урон, тип риска и проходимость dangerous не придуманы."
+        },
+        {
+          "id": "VAARN-HF2024-001-L1-AC03",
+          "given": "Гекс с ручной башней и рекой; исход d6=1.",
+          "when": "Явно применить первый этап наполнения.",
+          "expected": "По этой таблице новых мест нет; существующие башня и река не удаляются. Это защита продукта, а не заданная автором политика замены."
+        },
+        {
+          "id": "VAARN-HF2024-001-L1-AC04",
+          "given": "Категория special уже принята из d6=6.",
+          "when": "Сохранить и снова открыть карту.",
+          "expected": "Категория special и исход6 сохранены без нового броска; подтип остаётся не определён."
+        },
+        {
+          "id": "VAARN-HF2024-001-L1-AC05",
+          "given": "Предложены исходы0,7,2.5.",
+          "when": "Применить исход как d6.",
+          "expected": "Ни один исход не принят, карта прежняя."
+        }
+      ],
+      "expected_evidence": "ExactSHA, fixed input/output for five cases, save/reopen result and existing objects preserved; source text not runtime evidence.",
+      "score_delta": null,
+      "source_limitations": [
+        "Авторский необязательный blog-вариант 11.04.2024; не core1e или2e и не обязательное правило всей игры.",
+        "Таблицы подтипов и связанные генераторы не извлечены; category-only не завершает полное наполнение.",
+        "Nothing означает отсутствие нового содержимого по этому броску, а не пустую географию или удаление ручных объектов.",
+        "Hazardous — категория содержимого, а не класс проходимости044/CLASSIFY1.",
+        "Источник не задаёт масштаб гекса, повторную обработку, замену существующих объектов или сохранение."
+      ],
+      "implementation_authorized": false,
+      "release_authorized": false,
+      "research_ref": "agent-work/market/rules/Vaarn-Hexfill-2024.json",
+      "dedup_disposition": "043 published table/POI slice does not establish per-hex feature distribution. 047 is terrain;053 fixed sets/roles, not a random category. Reuse feature_distribution, no new canonical rule or duplicate per-game implementation.",
+      "ranking_version": "three-scenario-ranks-1.4-create-evidence",
+      "cohort_version": "2026-11-06-ranking1.4-create-evidence",
+      "game_rank_context": {
+        "overall": 15,
+        "create": 13
+      },
+      "approval_ref": null
     }
   ],
   "last_review": {

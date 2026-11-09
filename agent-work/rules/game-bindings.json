@@ -50581,6 +50581,106 @@
       "traceability_ref": "agent-work/market/rules/Daggerheart-SRD2.json#DH-SRD2-002-L1",
       "evidence_ids": [],
       "author_project_key": "critical-role:darrington-press:daggerheart:srd2"
+    },
+    {
+      "id": "VAARN-HF2024-001-L1",
+      "game_id": "VAARN",
+      "edition": "Author blog variant2024-04-11; not identified as core1e/2e",
+      "source_rule_id": "VAARN-HF2024-001",
+      "source_id": "VAARN-AUTHOR-HEXFILL-20240411",
+      "source_page": null,
+      "source_url": "https://vaultsofvaarn.com/2024/04/11/vaarn-hexfill-procedure/",
+      "source_locator": "Introduction and first Hex Contents d6 table, web lines9–21",
+      "author_project_key": "leo-hunt:vaultsofvaarn:hexfill2024",
+      "access_level": "full_text",
+      "layer": "L1",
+      "normative_kind": "optional_author_blog_procedure",
+      "scope": "first d6 category only",
+      "source_requirement": "Разрешить исход в категорию содержимого выбранного гекса; сохранить категорию и исход. Не выводить ещё подтип, риск или последствия.",
+      "canonical_rule_ids": [
+        "content.feature_distribution"
+      ],
+      "profiles": [
+        {
+          "rule_id": "content.feature_distribution",
+          "parameters": {
+            "die": "d6",
+            "ranges": [
+              [
+                1,
+                3,
+                "nothing"
+              ],
+              [
+                4,
+                4,
+                "inhabited"
+              ],
+              [
+                5,
+                5,
+                "hazardous"
+              ],
+              [
+                6,
+                6,
+                "special"
+              ]
+            ],
+            "roll_scope": "one per hex after map sketched",
+            "hex_scale": null,
+            "subtype_resolution": "outside this bounded slice"
+          },
+          "exceptions": [
+            "Авторский необязательный blog-вариант 11.04.2024; не core1e или2e и не обязательное правило всей игры.",
+            "Таблицы подтипов и связанные генераторы не извлечены; category-only не завершает полное наполнение.",
+            "Nothing означает отсутствие нового содержимого по этому броску, а не пустую географию или удаление ручных объектов.",
+            "Hazardous — категория содержимого, а не класс проходимости044/CLASSIFY1.",
+            "Источник не задаёт масштаб гекса, повторную обработку, замену существующих объектов или сохранение."
+          ],
+          "conditions": [
+            "Явно выбранный ведущим Hexfill2024 для уже нарисованной карты Vaarn; не профиль ядра игры."
+          ],
+          "profile_status": "unverified",
+          "verification_requirement": "Fixed outcomes1–6, preservation and reopen on exact runtimeSHA"
+        }
+      ],
+      "coverage_status": "unverified",
+      "acceptance_cases": [
+        {
+          "id": "VAARN-HF2024-001-L1-AC01",
+          "given": "Шесть ещё не наполненных гексов A–F; заданные исходы d6 [1,2,3,4,5,6].",
+          "when": "Подготовить по одной категории содержимого для каждого гекса.",
+          "expected": "A–C: ничего по этой таблице; D: inhabited; E: hazardous; F: special. Никакой конкретный подтип ещё не выбран."
+        },
+        {
+          "id": "VAARN-HF2024-001-L1-AC02",
+          "given": "Лесной гекс, проходимость difficult, исход d6=5.",
+          "when": "Назначить категорию содержимого.",
+          "expected": "Категория hazardous; лес и difficult остаются прежними. Урон, тип риска и проходимость dangerous не придуманы."
+        },
+        {
+          "id": "VAARN-HF2024-001-L1-AC03",
+          "given": "Гекс с ручной башней и рекой; исход d6=1.",
+          "when": "Явно применить первый этап наполнения.",
+          "expected": "По этой таблице новых мест нет; существующие башня и река не удаляются. Это защита продукта, а не заданная автором политика замены."
+        },
+        {
+          "id": "VAARN-HF2024-001-L1-AC04",
+          "given": "Категория special уже принята из d6=6.",
+          "when": "Сохранить и снова открыть карту.",
+          "expected": "Категория special и исход6 сохранены без нового броска; подтип остаётся не определён."
+        },
+        {
+          "id": "VAARN-HF2024-001-L1-AC05",
+          "given": "Предложены исходы0,7,2.5.",
+          "when": "Применить исход как d6.",
+          "expected": "Ни один исход не принят, карта прежняя."
+        }
+      ],
+      "operational_requirement_ref": "agent-work/market/rules/Vaarn-Hexfill-2024.json#VAARN-HF2024-001-L1",
+      "traceability_ref": "agent-work/market/rules/Vaarn-Hexfill-2024.json#VAARN-HF2024-001-L1",
+      "evidence_ids": []
     }
   ],
   "other_games_status": "DND5 DMG2014 and bounded PF2 Remaster now analysed; other games unverified. Shared IDs do not establish parameter equivalence."
