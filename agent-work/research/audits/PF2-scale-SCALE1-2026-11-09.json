@@ -1,0 +1,432 @@
+{
+  "schema_version": 1,
+  "audit_id": "PF2-scale-SCALE1-2026-11-09",
+  "run_ref": "agent-work/research/runs/2026-11-09T0130-PF2-scale-handoff.json",
+  "status": "bounded_transfer_validated_no_new_gap",
+  "source": {
+    "id": "PF2-GMC-RM",
+    "title": "GM Core / Designing the Map",
+    "edition": "Pathfinder2 Remaster GM Core",
+    "printed_page": 206,
+    "url": "https://2e.aonprd.com/Rules.aspx?ID=3104",
+    "locator": "Designing the Map first paragraph, physical hex-size sentence; returned page other paragraphs context only",
+    "access_level": "full_text",
+    "accessed_at": "2026-11-09T01:33:46.135Z",
+    "author_project_key": "paizo:pathfinder2:gm-core:remaster",
+    "duplicate_key": "paizo:pathfinder2:gm-core:remaster:p206:hex-scale",
+    "geography_language": "English primary rule text hosted by Archives of Nethys",
+    "limitations": [
+      "One existing scale clause rechecked, no full PF2 corpus rescan.",
+      "No user prevalence, audience, runtime support or whole-game compatibility inferred."
+    ]
+  },
+  "source_rule_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-002",
+  "requirement_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-002-L1",
+  "canonical_rule_ref": "agent-work/rules/common-rules.json#map.physical_hex_scale",
+  "binding_ref": "agent-work/rules/game-bindings.json#PF2-RM-002-L1",
+  "proposal": {
+    "path": "agent-work/proposals/2026-11-08-HX-BL-042-SCALE1.json",
+    "proposal_id": "HX-BL-042-SCALE1",
+    "version": 1,
+    "sha": "7e24004a743a646c30e6bdfe1192efb4ed8309ec",
+    "status": "proposed",
+    "implementation_allowed": false,
+    "full_specification_allowed": false
+  },
+  "sources_facts": [
+    {
+      "id": "PF2-SCALE-SOURCE-001",
+      "kind": "source_fact",
+      "locator": "Designing the Map first paragraph, physical hex-size sentence; returned page other paragraphs context only",
+      "fact": "Recommended Hexploration hex12miles corner-to-corner; source clause rechecked."
+    }
+  ],
+  "derivations": [
+    {
+      "id": "PF2-SCALE-MATH-001",
+      "kind": "mathematical_derivation",
+      "inputs": {
+        "corner_miles": 12,
+        "metres_per_mile": 1609.344
+      },
+      "expected": {
+        "corner_km": 19.312128,
+        "sides_miles": 10.392304845413264,
+        "sides_km": 16.724793449136765
+      },
+      "meaning": "Regular-hex geometry and exact international mile conversion; not another source rule, numeric rating input or runtime test."
+    }
+  ],
+  "transfer_checks": [
+    {
+      "case_id": "SCALE-01",
+      "proposal_refs": [
+        "in_scope[0]",
+        "in_scope[4]",
+        "acceptance[0]",
+        "profiles[PF2-RM-002-L1]"
+      ],
+      "finding": "12/mile/opposite_vertices retained; separate zoom retained.",
+      "status": "retained_by_summary_and_linked_detailed_task",
+      "existing_acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#SCALE-01"
+    },
+    {
+      "case_id": "SCALE-02",
+      "proposal_refs": [
+        "in_scope[2]",
+        "acceptance[1]",
+        "source_refs[agent-work/backlog.json#HX-BL-042]"
+      ],
+      "finding": "19.312128km retained; original1e-9mile tolerance remains in linked task SCALE-02, not repeated in compressed summary.",
+      "status": "retained_by_summary_and_linked_detailed_task",
+      "existing_acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#SCALE-02"
+    },
+    {
+      "case_id": "SCALE-03",
+      "proposal_refs": [
+        "in_scope[2]",
+        "acceptance[1]",
+        "source_refs[agent-work/backlog.json#HX-BL-042]"
+      ],
+      "finding": "12→6√3mile + inverse retained; detailed side-km expected value remains in linked SCALE-03.",
+      "status": "retained_by_summary_and_linked_detailed_task",
+      "existing_acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#SCALE-03"
+    },
+    {
+      "case_id": "SCALE-04",
+      "proposal_refs": [
+        "in_scope[1]",
+        "acceptance[0]"
+      ],
+      "finding": "zoom/rotate, coordinates/POI/RNG invariant retained.",
+      "status": "retained_by_summary_and_linked_detailed_task",
+      "existing_acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#SCALE-04"
+    },
+    {
+      "case_id": "SCALE-05",
+      "proposal_refs": [
+        "in_scope[1]",
+        "acceptance[2]",
+        "source_refs[agent-work/backlog.json#HX-BL-042]"
+      ],
+      "finding": "Undo/Redo/JSON/full document retained; exact12→6→12→6 sequence remains in original linked SCALE-05.",
+      "status": "retained_by_summary_and_linked_detailed_task",
+      "existing_acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#SCALE-05"
+    },
+    {
+      "case_id": "SCALE-06",
+      "proposal_refs": [
+        "in_scope[0]",
+        "acceptance[2]",
+        "source_refs[agent-work/backlog.json#HX-BL-042]"
+      ],
+      "finding": "Positive length and atomic invalid-input refusal retained; finite fractional acceptance detailed in linked SCALE-06.",
+      "status": "retained_by_summary_and_linked_detailed_task",
+      "existing_acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#SCALE-06"
+    },
+    {
+      "case_id": "SCALE-07",
+      "proposal_refs": [
+        "in_scope[0]",
+        "out_of_scope[3]",
+        "acceptance[3]"
+      ],
+      "finding": "Old saves unset, no inferred12mile default; fixed Knave6mile/unknown convention preserved separately.",
+      "status": "retained_by_summary_and_linked_detailed_task",
+      "existing_acceptance_ref": "agent-work/market/rules/PF2-Remaster.json#SCALE-07"
+    }
+  ],
+  "existing_operational_requirement": {
+    "source_rule_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-002",
+    "normative_kind": "recommendation",
+    "applicability": "Selected PF2 Remaster Hexploration map; not mandatory for every PF2 campaign or every map.",
+    "layer": "L1",
+    "trigger_or_user_action": "Мастер задаёт физический размер гекса для карты Hexploration либо меняет единицу его отображения.",
+    "inputs_and_units": {
+      "length": 12,
+      "unit": "mile",
+      "measurement": "opposite_vertices",
+      "grid_geometry": "regular_hexagon",
+      "mile_to_kilometre": 1.609344
+    },
+    "product_operation": "Хранить отдельный от zoom параметр длины гекса с единицей и геометрической конвенцией; явно показывать, между какими точками измеряется длина, валидировать ввод и сохранять параметр в документе.",
+    "expected_output": "Профиль 12 миль угол–угол сохраняет эту физическую длину при любом zoom. Эквивалент: 19.312128 км угол–угол; ширина сторона–сторона = 6√3 миль ≈10.392304845413264.",
+    "constraints_and_exceptions": [
+      "Hexploration — необязательный подсистемный формат, 12 миль — рекомендованный профиль.",
+      "Поворот сетки не меняет длину; pixel HEX_SIZE и ui.mapScale не физические единицы.",
+      "Преобразование способа измерения с сохранением физического гекса требует множителя √3/2 или 2/√3; простая замена подписи неверна.",
+      "Старые сохранения без физического масштаба остаются с явно неизвестным масштабом; 12 миль не назначаются им автоматически.",
+      "Числовая точность вычисления и отображения разделены; округлённый текст не заменяет сохранённое значение.",
+      "Выбор физического масштаба не перегенерирует гексы/POI и не расходует RNG. Save/load и undo/redo — продуктовые требования, не буквальный текст PF2.",
+      "Расчёт времени, скорости и движения партии L2 в эту задачу не входит."
+    ],
+    "acceptance_cases": [
+      {
+        "id": "SCALE-01",
+        "given": "Регулярная гекс-сетка; профиль length=12, unit=mile, measurement=opposite_vertices.",
+        "when": "Создать/назначить профиль и прочитать сохранённые параметры.",
+        "expected": "Точное значение 12, единица mile и конвенция opposite_vertices хранятся отдельно от ui.mapScale; нет неявного значения «12 миль» без типа измерения."
+      },
+      {
+        "id": "SCALE-02",
+        "given": "Тот же физический гекс 12 миль между противоположными вершинами.",
+        "when": "Выразить длину в километрах.",
+        "expected": "19.312128 км между вершинами; обратный перевод возвращает 12 миль с абсолютной ошибкой не более 1e-9 мили. Карта и число гексов не меняются."
+      },
+      {
+        "id": "SCALE-03",
+        "given": "Тот же регулярный гекс.",
+        "when": "Преобразовать конвенцию на расстояние между противоположными сторонами, сохраняя физическую площадь.",
+        "expected": "6√3 ≈10.392304845413264 мили (≈16.724793449136765 км) сторона–сторона; обратное преобразование даёт 12 миль угол–угол. Просто переписать подпись и оставить 12 — непрохождение."
+      },
+      {
+        "id": "SCALE-04",
+        "given": "Карта с физическим профилем 12 миль угол–угол и zoom=1.",
+        "when": "Изменить zoom на 2, повернуть карту, вернуться к zoom=1.",
+        "expected": "Физический профиль неизменен; перерисовка не меняет его ни на 24, ни на 6 миль; гексы/POI и RNG не изменены."
+      },
+      {
+        "id": "SCALE-05",
+        "given": "Карта с профилем, объектами и контрольным состоянием RNG.",
+        "when": "Изменить 12→6 миль, выполнить undo, redo, затем JSON export/import.",
+        "expected": "Профиль меняется 12→6→12→6; после round-trip остаются 6 миль и та же конвенция. Идентичность/координаты объектов и RNG сохранены."
+      },
+      {
+        "id": "SCALE-06",
+        "given": "Проверка настройки и импорта масштаба.",
+        "when": "Передать 0, отрицательную длину, строку вместо числа, неизвестную единицу или конвенцию; отдельно внутренние NaN/Infinity.",
+        "expected": "Понятный отказ до изменения документа; нет частичной записи. Любая конечная положительная дробная длина допустима, если иной явно утверждённый диапазон не задан."
+      },
+      {
+        "id": "SCALE-07",
+        "given": "Поддерживаемое старое сохранение без физического масштаба.",
+        "when": "Импортировать, изменить zoom, сохранить повторно.",
+        "expected": "Старая карта загружается по действующим правилам; физический масштаб обозначен unknown/unset и не превращается в PF2 12 миль автоматически."
+      }
+    ],
+    "source_vs_product_interpretation": "Источник задаёт рекомендацию 12 miles corner-to-corner. Регулярный гекс и противоположные вершины — явная геометрическая интерпретация профиля. Поле документа, единицы, преобразование, zoom-инвариант, save/load, undo/redo и ошибки — предлагаемое продуктовое решение с приёмкой, не дополнительные цитаты PF2.",
+    "canonical_rule_refs": [
+      "agent-work/rules/common-rules.json#map.physical_hex_scale"
+    ],
+    "unresolved_parameters": [
+      "Геометрическая конвенция сравниваемого DND5-2014 профиля не подтверждена: автоматический перенос evidence запрещён.",
+      "Местоположение настройки в UI и версия схемы/способ миграции выбираются при спецификации после одобрения задачи; этот пакет их не утверждает."
+    ]
+  },
+  "product_task_handoff": {
+    "task_id": "HX-BL-042",
+    "title": "Физический размер гекса: длина, единица и конвенция измерения",
+    "status": "proposed",
+    "problem": "В проверенном опубликованном контракте карты есть pixel HEX_SIZE и ui.mapScale для zoom, но не найден отдельный физический масштаб с единицей/измерением. Это не позволяет подтвердить профиль PF2 12 миль угол–угол; простое поле «12» допускает 15.47% ошибку интерпретации диаметра.",
+    "benefit": "Одна общая настройка создаёт однозначный масштаб подготовленной карты и основу для будущих маршрутов разных систем, сохраняя документ и старые карты.",
+    "game_editions": [
+      "PF2 Remaster GM Core p206, optional Hexploration"
+    ],
+    "primary_scenario": "create",
+    "layer": "L1",
+    "requirement_refs": [
+      "agent-work/market/rules/PF2-Remaster.json#PF2-RM-002-L1"
+    ],
+    "canonical_rule_ids": [
+      "map.physical_hex_scale"
+    ],
+    "binding_refs": [
+      "agent-work/rules/game-bindings.json#PF2-RM-002-L1"
+    ],
+    "criterion_ids": [
+      "S06-C04",
+      "S04-C04"
+    ],
+    "scope": "Existing research handoff retained by SCALE1v1 + linked detailed042; no new scope/technical spec.",
+    "dependencies": [
+      "task_scope_approval",
+      "reuse_current_document_history_contract",
+      "explicit_old_save_migration_policy"
+    ],
+    "acceptance_checks": [
+      {
+        "id": "SCALE-01",
+        "given": "Регулярная гекс-сетка; профиль length=12, unit=mile, measurement=opposite_vertices.",
+        "when": "Создать/назначить профиль и прочитать сохранённые параметры.",
+        "expected": "Точное значение 12, единица mile и конвенция opposite_vertices хранятся отдельно от ui.mapScale; нет неявного значения «12 миль» без типа измерения."
+      },
+      {
+        "id": "SCALE-02",
+        "given": "Тот же физический гекс 12 миль между противоположными вершинами.",
+        "when": "Выразить длину в километрах.",
+        "expected": "19.312128 км между вершинами; обратный перевод возвращает 12 миль с абсолютной ошибкой не более 1e-9 мили. Карта и число гексов не меняются."
+      },
+      {
+        "id": "SCALE-03",
+        "given": "Тот же регулярный гекс.",
+        "when": "Преобразовать конвенцию на расстояние между противоположными сторонами, сохраняя физическую площадь.",
+        "expected": "6√3 ≈10.392304845413264 мили (≈16.724793449136765 км) сторона–сторона; обратное преобразование даёт 12 миль угол–угол. Просто переписать подпись и оставить 12 — непрохождение."
+      },
+      {
+        "id": "SCALE-04",
+        "given": "Карта с физическим профилем 12 миль угол–угол и zoom=1.",
+        "when": "Изменить zoom на 2, повернуть карту, вернуться к zoom=1.",
+        "expected": "Физический профиль неизменен; перерисовка не меняет его ни на 24, ни на 6 миль; гексы/POI и RNG не изменены."
+      },
+      {
+        "id": "SCALE-05",
+        "given": "Карта с профилем, объектами и контрольным состоянием RNG.",
+        "when": "Изменить 12→6 миль, выполнить undo, redo, затем JSON export/import.",
+        "expected": "Профиль меняется 12→6→12→6; после round-trip остаются 6 миль и та же конвенция. Идентичность/координаты объектов и RNG сохранены."
+      },
+      {
+        "id": "SCALE-06",
+        "given": "Проверка настройки и импорта масштаба.",
+        "when": "Передать 0, отрицательную длину, строку вместо числа, неизвестную единицу или конвенцию; отдельно внутренние NaN/Infinity.",
+        "expected": "Понятный отказ до изменения документа; нет частичной записи. Любая конечная положительная дробная длина допустима, если иной явно утверждённый диапазон не задан."
+      },
+      {
+        "id": "SCALE-07",
+        "given": "Поддерживаемое старое сохранение без физического масштаба.",
+        "when": "Импортировать, изменить zoom, сохранить повторно.",
+        "expected": "Старая карта загружается по действующим правилам; физический масштаб обозначен unknown/unset и не превращается в PF2 12 миль автоматически."
+      }
+    ],
+    "expected_evidence": {
+      "requirement_profile": "PF2-RM-002-L1",
+      "release_sha": "required_on_implementation",
+      "cases": [
+        "SCALE-01",
+        "SCALE-02",
+        "SCALE-03",
+        "SCALE-04",
+        "SCALE-05",
+        "SCALE-06",
+        "SCALE-07"
+      ],
+      "method": "Проверка реальных изменения/сохранения/импорта документа и геометрической конверсии на точном SHA; сравнение ID/координат/POI/RNG до и после, без новой тяжёлой серии генераций.",
+      "limitations": "Текущий пакет — исследование и статическая адресная проверка; не runtime acceptance и не подтверждение поддержки PF2."
+    },
+    "score_delta": null,
+    "source_limitations": [
+      "Прочитан один пункт GM Core 206 через Archives of Nethys; основной PF2 корпус не переразбирался.",
+      "Статически проверены App.tsx, createSaveData и saveValidation на main 2ef5cc3. Не утверждается отсутствие всякой внешней/ручной возможности измерять карту.",
+      "Не объявлять параметры DND эквивалентными без проверки.",
+      "Веса/баллы и когорты не меняются; S06-C04 — связь части подготовки, не закрытие полного цикла экспедиции."
+    ],
+    "operational_requirement": {
+      "source_rule_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-002",
+      "normative_kind": "recommendation",
+      "applicability": "Selected PF2 Remaster Hexploration map; not mandatory for every PF2 campaign or every map.",
+      "layer": "L1",
+      "trigger_or_user_action": "Мастер задаёт физический размер гекса для карты Hexploration либо меняет единицу его отображения.",
+      "inputs_and_units": {
+        "length": 12,
+        "unit": "mile",
+        "measurement": "opposite_vertices",
+        "grid_geometry": "regular_hexagon",
+        "mile_to_kilometre": 1.609344
+      },
+      "product_operation": "Хранить отдельный от zoom параметр длины гекса с единицей и геометрической конвенцией; явно показывать, между какими точками измеряется длина, валидировать ввод и сохранять параметр в документе.",
+      "expected_output": "Профиль 12 миль угол–угол сохраняет эту физическую длину при любом zoom. Эквивалент: 19.312128 км угол–угол; ширина сторона–сторона = 6√3 миль ≈10.392304845413264.",
+      "constraints_and_exceptions": [
+        "Hexploration — необязательный подсистемный формат, 12 миль — рекомендованный профиль.",
+        "Поворот сетки не меняет длину; pixel HEX_SIZE и ui.mapScale не физические единицы.",
+        "Преобразование способа измерения с сохранением физического гекса требует множителя √3/2 или 2/√3; простая замена подписи неверна.",
+        "Старые сохранения без физического масштаба остаются с явно неизвестным масштабом; 12 миль не назначаются им автоматически.",
+        "Числовая точность вычисления и отображения разделены; округлённый текст не заменяет сохранённое значение.",
+        "Выбор физического масштаба не перегенерирует гексы/POI и не расходует RNG. Save/load и undo/redo — продуктовые требования, не буквальный текст PF2.",
+        "Расчёт времени, скорости и движения партии L2 в эту задачу не входит."
+      ],
+      "acceptance_cases": [
+        {
+          "id": "SCALE-01",
+          "given": "Регулярная гекс-сетка; профиль length=12, unit=mile, measurement=opposite_vertices.",
+          "when": "Создать/назначить профиль и прочитать сохранённые параметры.",
+          "expected": "Точное значение 12, единица mile и конвенция opposite_vertices хранятся отдельно от ui.mapScale; нет неявного значения «12 миль» без типа измерения."
+        },
+        {
+          "id": "SCALE-02",
+          "given": "Тот же физический гекс 12 миль между противоположными вершинами.",
+          "when": "Выразить длину в километрах.",
+          "expected": "19.312128 км между вершинами; обратный перевод возвращает 12 миль с абсолютной ошибкой не более 1e-9 мили. Карта и число гексов не меняются."
+        },
+        {
+          "id": "SCALE-03",
+          "given": "Тот же регулярный гекс.",
+          "when": "Преобразовать конвенцию на расстояние между противоположными сторонами, сохраняя физическую площадь.",
+          "expected": "6√3 ≈10.392304845413264 мили (≈16.724793449136765 км) сторона–сторона; обратное преобразование даёт 12 миль угол–угол. Просто переписать подпись и оставить 12 — непрохождение."
+        },
+        {
+          "id": "SCALE-04",
+          "given": "Карта с физическим профилем 12 миль угол–угол и zoom=1.",
+          "when": "Изменить zoom на 2, повернуть карту, вернуться к zoom=1.",
+          "expected": "Физический профиль неизменен; перерисовка не меняет его ни на 24, ни на 6 миль; гексы/POI и RNG не изменены."
+        },
+        {
+          "id": "SCALE-05",
+          "given": "Карта с профилем, объектами и контрольным состоянием RNG.",
+          "when": "Изменить 12→6 миль, выполнить undo, redo, затем JSON export/import.",
+          "expected": "Профиль меняется 12→6→12→6; после round-trip остаются 6 миль и та же конвенция. Идентичность/координаты объектов и RNG сохранены."
+        },
+        {
+          "id": "SCALE-06",
+          "given": "Проверка настройки и импорта масштаба.",
+          "when": "Передать 0, отрицательную длину, строку вместо числа, неизвестную единицу или конвенцию; отдельно внутренние NaN/Infinity.",
+          "expected": "Понятный отказ до изменения документа; нет частичной записи. Любая конечная положительная дробная длина допустима, если иной явно утверждённый диапазон не задан."
+        },
+        {
+          "id": "SCALE-07",
+          "given": "Поддерживаемое старое сохранение без физического масштаба.",
+          "when": "Импортировать, изменить zoom, сохранить повторно.",
+          "expected": "Старая карта загружается по действующим правилам; физический масштаб обозначен unknown/unset и не превращается в PF2 12 миль автоматически."
+        }
+      ],
+      "source_vs_product_interpretation": "Источник задаёт рекомендацию 12 miles corner-to-corner. Регулярный гекс и противоположные вершины — явная геометрическая интерпретация профиля. Поле документа, единицы, преобразование, zoom-инвариант, save/load, undo/redo и ошибки — предлагаемое продуктовое решение с приёмкой, не дополнительные цитаты PF2.",
+      "canonical_rule_refs": [
+        "agent-work/rules/common-rules.json#map.physical_hex_scale"
+      ],
+      "unresolved_parameters": [
+        "Геометрическая конвенция сравниваемого DND5-2014 профиля не подтверждена: автоматический перенос evidence запрещён.",
+        "Местоположение настройки в UI и версия схемы/способ миграции выбираются при спецификации после одобрения задачи; этот пакет их не утверждает."
+      ]
+    },
+    "implementation_authorized": false,
+    "release_authorized": false
+  },
+  "findings": [
+    {
+      "id": "PF2-SCALE-TRANSFER-001",
+      "kind": "handoff_fact",
+      "conclusion": "All seven existing cases retain semantic coverage through SCALE1 summaries + existing detailed042 references. No new task/source rule/acceptance case is needed."
+    },
+    {
+      "id": "PF2-SCALE-TRANSFER-002",
+      "kind": "interpretation",
+      "conclusion": "SCALE1 acceptance list is compressed; linked task is authoritative for tolerance/exact Undo sequence and fractional validation. Analyst must consume source_refs; compressed list alone is not the full detailed acceptance set."
+    },
+    {
+      "id": "PF2-SCALE-TRANSFER-003",
+      "kind": "unknown",
+      "conclusion": "Current runtime support remains unverified. Proposal transfer quality is not implementation evidence; no grade/score awarded."
+    }
+  ],
+  "mb_owner_request_context": {
+    "audit_ref": "agent-work/research/audits/MB-implementation-2026-11-09.json",
+    "status": "already_completed_before_this_run",
+    "product_sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
+    "action": "Preserved all fresh MB results/statuses and did not repeat audit or re-propose completed MB core."
+  },
+  "new_rules": 0,
+  "new_generic_rules": 0,
+  "new_bindings": 0,
+  "new_product_tasks": 0,
+  "new_acceptance_cases": 0,
+  "reused_acceptance_cases": 7,
+  "rating_changed": false,
+  "score_changed": false,
+  "runtime_verified": false,
+  "readiness": "research_transfer_retained_implementation_still_requires_existing_owner_gate",
+  "test_change_summary": {
+    "added": 0,
+    "removed": 0,
+    "modified": 0,
+    "suite": "read-only source/traceability checks",
+    "reason": "No product or runtime test changed"
+  }
+}
