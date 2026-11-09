@@ -1,4 +1,4 @@
-# DETAIL1 implementation checkpoint A2
+# DETAIL1 implementation checkpoint B/C
 
 Approved scope: agent-operations/agent-work/specs/HX-BL-051-DETAIL1.md (DTL-1.0).
 
@@ -26,6 +26,15 @@ and display assumption, stable POI identity, connected footprint, size
 provenance, and typed water/route references. A legacy helper produces an
 immutable preview for v2-v10 and cannot activate or mutate the document.
 
+`src/detailPlacement.ts` adds the detached deterministic B/C adapter. It applies
+one-cell site defaults, the capital minimum-two rule, the Mythic Bastionland
+Seat exception and measured-polygon precedence without reading icon size. A
+required water attachment keeps the exact water/segment identity. An assigned
+road or trail is accepted only when a real segment has positive length inside
+the selected footprint; adjacent and corner-only geometry fails. The adapter
+never creates a route for an unassigned or isolated POI and never moves the
+source river, road or POI when validation fails.
+
 This checkpoint is not connected to App, save/import or generation. Existing
 maps, format v10 and all UI remain unchanged. No feature readiness or product
 score increase is claimed. Subsequent work must integrate stable POI identity,
@@ -35,6 +44,7 @@ independent acceptance.
 
 Test decision: existing tests cover pixel rendering and POI editor lifecycle,
 but no physical across-flats multi-scale projection or shared footprint union.
-Four Node cases now protect separate requirements: A1 grid/boundary topology and
-A2 source projection/strict state preview. No browser case is added for modules
-that are still deliberately disconnected from the product.
+Six Node cases now protect separate requirements: A1 grid/boundary topology,
+A2 source projection/strict state preview, and B/C extent plus water/route
+legality. No browser case is added for modules that are still deliberately
+disconnected from the product.

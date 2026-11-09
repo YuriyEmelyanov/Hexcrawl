@@ -1,8 +1,8 @@
 import {createDetailGrid,detailPolygonArea,validateDetailFootprint,type DetailCell,type DetailStep,type WorldPoint} from './detailGrid.ts';
 
 export type DetailAttachmentRef=
-  |Readonly<{kind:'water';waterId:string;segmentId:string;contact:WorldPoint}>
-  |Readonly<{kind:'route';routeId:string;accessNodeId:string;entry:WorldPoint}>;
+  |Readonly<{kind:'water';waterKind:'shore'|'river'|'water'|'crossing'|'rapid'|'waterfall';waterId:string;segmentId:string;contact:WorldPoint}>
+  |Readonly<{kind:'route';routeKind:'road'|'trail';routeId:string;accessNodeId:string;entry:WorldPoint}>;
 export type DetailExtent=
   |Readonly<{kind:'default';reason:'unknown_size';policy:'one_cell'|'capital_min_two'}>
   |Readonly<{kind:'measured_polygon';sourceId:string;unit:'mile'|'meter';method:'positive_area_intersection';sourcePolygon:readonly WorldPoint[]}>
@@ -51,8 +51,8 @@ function extent(value:unknown):DetailExtent {
 function attachment(value:unknown):DetailAttachmentRef {
   if(!value||typeof value!=='object'||Array.isArray(value)) throw Error('Invalid attachment');
   const kind=(value as Plain).kind;
-  if(kind==='water') {const a=object(value,'water attachment',['kind','waterId','segmentId','contact']);return Object.freeze({kind,waterId:text(a.waterId,'water id'),segmentId:text(a.segmentId,'water segment id'),contact:worldPoint(a.contact,'water contact')});}
-  if(kind==='route') {const a=object(value,'route attachment',['kind','routeId','accessNodeId','entry']);return Object.freeze({kind,routeId:text(a.routeId,'route id'),accessNodeId:text(a.accessNodeId,'access node id'),entry:worldPoint(a.entry,'route entry')});}
+  if(kind==='water') {const a=object(value,'water attachment',['kind','waterKind','waterId','segmentId','contact']);if(!['shore','river','water','crossing','rapid','waterfall'].includes(a.waterKind as string))throw Error('Invalid water attachment kind');return Object.freeze({kind,waterKind:a.waterKind as 'shore'|'river'|'water'|'crossing'|'rapid'|'waterfall',waterId:text(a.waterId,'water id'),segmentId:text(a.segmentId,'water segment id'),contact:worldPoint(a.contact,'water contact')});}
+  if(kind==='route') {const a=object(value,'route attachment',['kind','routeKind','routeId','accessNodeId','entry']);if(!['road','trail'].includes(a.routeKind as string))throw Error('Invalid route attachment kind');return Object.freeze({kind,routeKind:a.routeKind as 'road'|'trail',routeId:text(a.routeId,'route id'),accessNodeId:text(a.accessNodeId,'access node id'),entry:worldPoint(a.entry,'route entry')});}
   throw Error('Unknown attachment kind');
 }
 /** Strict parser for the DETAIL1 section of an active v11 document. Reference
