@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-043",
+  "stage_id": "OWNERFIX1",
+  "created_at": "2026-11-09T09:37:16.049Z",
+  "role": "strategist_manager",
+  "status": "ready",
+  "release_sha": "90afe931d9e9f8a2482febf77eaed20b401ceece",
+  "release_tree_sha": "1631cd0a0a59f8b5f2d2e50f925111e7f59aefa2",
+  "model_version": "1.2",
+  "inputs": [
+    "agent-work/evidence/release-PR497/publication.json",
+    "agent-work/evidence/HX-BL-043-OWNERFIX1/score-assessment1.2.json",
+    "agent-work/evidence/release-PR497/merge-bridge.json"
+  ],
+  "scope": "Apply only confirmed transitions from independent score_assessment1.2. All four affected criteria have unknown before/after/delta and award0. Record one release event, retain unknowns, check dedup and50weights, update current/history/latest without full audit.",
+  "completion_criteria": [
+    "Exact release tree matches independently reviewed tree.",
+    "History dedup uses task+releaseSHA+model+criterion; no unknown grade promoted.",
+    "score_update_status completed or explicit blocked with responsible/evidence.",
+    "In same strategist run, direct next ready approved DETAIL1 D stage rather than duplicate proposals."
+  ],
+  "next_approved_work": {
+    "task_id": "HX-BL-051",
+    "stage_id": "DETAIL1",
+    "substage": "D",
+    "pr": 496,
+    "head_sha": "14f413f63f26e438e168158a869d21ed323959cd",
+    "claim_ref": "agent-work/claims/2026-11-09T0500-programmer-HX-BL-051-DETAIL1-A.json",
+    "execution_running": false,
+    "implementation_authorized": true,
+    "publication_authorized": false
+  },
+  "next_step": "Стратег обрабатывает событие выпуска PR497 по модели1.2 и независимому assessment на том же дереве, без начисления неизвестных баллов; затем программист безопасно возобновляет собственный утверждённый HX-BL-051/DETAIL1 D в PR496 с интеграцией main90afe931 и новой проверкой итогового SHA.",
+  "publication_permission_scope": "PR497 only; PR496 still not authorized for publication."
+}
