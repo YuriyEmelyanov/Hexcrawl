@@ -1,0 +1,103 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-051",
+  "stage_id": "DETAIL1",
+  "checkpoint": "BC1",
+  "base_sha": "853c639f2c75b725a29eec3d65cfad4dd823ae5f",
+  "previous_head_sha": "a37e4957f706d6ade6be6f42837c4cf8a7fd3c42",
+  "head_sha": "14f413f63f26e438e168158a869d21ed323959cd",
+  "tree_sha": "3d4eb87090746525aae7d41ffca85ffd72ff3bb0",
+  "pr": 496,
+  "branch": "agent/hx-bl-051-detail1",
+  "implemented": [
+    "A detached deterministic one-mile POI footprint adapter with stable identity and immutable output.",
+    "Unknown-size ordinary sites and Mythic Bastionland Seats select one cell; unknown-size true capitals require at least two edge-connected cells; measured polygons are authoritative and may select one or many cells.",
+    "A required water attachment retains the selected live water kind, water ID and segment ID and must contact a selected cell; validation never moves or regenerates source hydrography.",
+    "An assigned road or trail is accepted only when a real segment has positive length strictly inside the footprint; adjacency and edge/corner-only contact fail.",
+    "Unassigned routes are not forced onto POIs, and invalid candidates fail atomically without mutating source POI, water or route data."
+  ],
+  "files": [
+    "src/detailPlacement.ts",
+    "src/detailModel.ts",
+    "test/detailPlacement.test.mjs",
+    "test/detailProjection.test.mjs",
+    "docs/detail1-implementation.md"
+  ],
+  "checks": {
+    "exact_tree_full_local": {
+      "typescript": "passed",
+      "node": {
+        "executed": 369,
+        "passed": 369,
+        "failed": 0,
+        "skipped": 0
+      },
+      "build": "passed",
+      "build_modules": 83,
+      "note": "Existing bundle-size warning only."
+    },
+    "focused_detail1": {
+      "typescript": "passed",
+      "node": {
+        "executed": 6,
+        "passed": 6,
+        "failed": 0,
+        "skipped": 0
+      }
+    },
+    "CI": {
+      "run_id": 42581302836,
+      "status": "in_progress",
+      "conclusion": null,
+      "browser": "success",
+      "world_random": "success",
+      "check": "in_progress"
+    }
+  },
+  "test_change_summary": {
+    "incremental_base_sha": "a37e4957f706d6ade6be6f42837c4cf8a7fd3c42",
+    "pr_base_sha": "853c639f2c75b725a29eec3d65cfad4dd823ae5f",
+    "head_sha": "14f413f63f26e438e168158a869d21ed323959cd",
+    "incremental": {
+      "added": 2,
+      "removed": 0,
+      "modified": 1
+    },
+    "whole_pr": {
+      "added": 6,
+      "removed": 0,
+      "modified": 1
+    },
+    "suite": "Node node --test",
+    "scenario_risk": "B/C protects extent policy, one-identity multi-cell footprint, exact water reference and positive-length assigned route contact.",
+    "reuse_or_new_reason": "Existing A1/A2 cases cover grid/projection/state but cannot exercise placement legality. The strict state fixture was extended for typed water/route kinds; two new logical cases cover distinct extent and access invariants.",
+    "count_source": "Named logical Node test registrations; the existing DETAIL1 state case is counted as modified, not deleted and re-added.",
+    "executions": {
+      "full_local_node": {
+        "executed": 369,
+        "passed": 369,
+        "failed": 0,
+        "skipped": 0
+      },
+      "focused_detail1": {
+        "executed": 6,
+        "passed": 6,
+        "failed": 0,
+        "skipped": 0
+      },
+      "browser": "tracked separately in CI observation",
+      "rng": "tracked separately in CI observation"
+    }
+  },
+  "score_model_version": "1.2",
+  "score_awarded": false,
+  "forecast_delta": "unknown",
+  "review_ready": false,
+  "release_approved": false,
+  "limitations": [
+    "The B/C adapter remains disconnected from App generation, the active document, history/Undo, import/export and UI.",
+    "No whole DETAIL1 acceptance, independent review or product-score transition is claimed.",
+    "The exact-head GitHub Actions run is still in progress; local exact-tree checks passed."
+  ],
+  "recorded_at": "2026-11-09T07:45:59.132Z"
+}

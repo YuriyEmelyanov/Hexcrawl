@@ -4,99 +4,64 @@
   "role": "programmer",
   "task_id": "HX-BL-051",
   "stage_id": "DETAIL1",
-  "checkpoint": "A2",
-  "status": "A2_checkpoint_saved_DETAIL1_in_progress",
-  "role_selection_reason": "Safely resumed the existing owned HX-BL-051 DETAIL1 claim after A1 CI success; integrated published main PR495 and advanced the next bounded A2 stage without duplicating another claim.",
+  "checkpoint": "BC1",
+  "status": "BC1_checkpoint_saved_DETAIL1_in_progress",
+  "role_selection_reason": "Safely resumed the existing owned HX-BL-051 DETAIL1 claim because it remained the highest-priority approved implementation with no reviewer findings or competing programmer claim.",
   "base_sha": "853c639f2c75b725a29eec3d65cfad4dd823ae5f",
-  "previous_head_sha": "12905db9229174a2c2173cfb7774f9cfaee7c068",
-  "integration_sha": "5fdb7ffabec1d2615db9d0dcd9b29fa875264620",
-  "head_sha": "a37e4957f706d6ade6be6f42837c4cf8a7fd3c42",
-  "tree_sha": "e8ab5f4af9d5142d99d8033f67d1ea6054f2a0ca",
+  "previous_head_sha": "a37e4957f706d6ade6be6f42837c4cf8a7fd3c42",
+  "head_sha": "14f413f63f26e438e168158a869d21ed323959cd",
+  "tree_sha": "3d4eb87090746525aae7d41ffca85ffd72ff3bb0",
   "pr": 496,
   "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/496",
   "branch": "agent/hx-bl-051-detail1",
   "spec_ref": "agent-work/specs/HX-BL-051-DETAIL1.md",
   "approval_ref": "agent-work/decisions/owner-approval-2026-11-09-HX-BL-051-DETAIL1.json",
   "claim_ref": "agent-work/claims/2026-11-09T0500-programmer-HX-BL-051-DETAIL1-A.json",
-  "handoff_ref": "agent-work/handoffs/2026-11-09-HX-BL-051-DETAIL1-A2-resume.json",
-  "implementation_evidence_ref": "agent-work/evidence/HX-BL-051-DETAIL1-A2/implementation.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-09-HX-BL-051-DETAIL1-BC1-resume.json",
+  "implementation_evidence_ref": "agent-work/evidence/HX-BL-051-DETAIL1-BC1/implementation.json",
+  "ci_evidence_ref": "agent-work/evidence/HX-BL-051-DETAIL1-BC1/ci-observation.json",
   "checks": {
-    "local_focused_Node": {
-      "executed": 4,
-      "passed": 4,
-      "skipped": 0
-    },
-    "local_full_Node": {
-      "executed": 367,
-      "passed": 367,
-      "failed": 0,
-      "skipped": 0
-    },
+    "local_focused_Node": {"executed": 6, "passed": 6, "failed": 0, "skipped": 0},
+    "local_full_Node": {"executed": 369, "passed": 369, "failed": 0, "skipped": 0},
     "typescript": "passed",
     "build": "passed",
     "CI": {
-      "head_sha": "a37e4957f706d6ade6be6f42837c4cf8a7fd3c42",
-      "run_id": 42574349482,
+      "head_sha": "14f413f63f26e438e168158a869d21ed323959cd",
+      "run_id": 42581302836,
       "status": "in_progress",
       "conclusion": null,
-      "observed_at": "2026-11-09T06:38:44.000Z",
+      "observed_at": "2026-11-09T07:45:59.132Z",
       "jobs": [
-        {
-          "id": 129018598476,
-          "name": "check",
-          "status": "in_progress",
-          "conclusion": null
-        },
-        {
-          "id": 129018598634,
-          "name": "browser",
-          "status": "completed",
-          "conclusion": "success"
-        },
-        {
-          "id": 129018598670,
-          "name": "world-random",
-          "status": "completed",
-          "conclusion": "success"
-        }
+        {"id": 129040409234, "name": "check", "status": "in_progress", "conclusion": null},
+        {"id": 129040408664, "name": "browser", "status": "completed", "conclusion": "success"},
+        {"id": 129040409122, "name": "world-random", "status": "completed", "conclusion": "success"}
       ],
-      "interpretation": "Browser and RNG passed on the exact A2 head. The full check job remains in progress; incomplete CI evidence is not a confirmed defect. Browser and RNG remain separate from Node case counts."
+      "interpretation": "Browser and world-random passed on the exact head; check remains running. Incomplete CI evidence is not a confirmed defect. Local exact-tree TypeScript, 369/369 Node and production build passed."
     },
-    "temporary_geometry_diagnostic": {
-      "neighbor_pairs": 726,
-      "status": "passed",
-      "permanent_case_growth": false
+    "previous_A2_CI": {
+      "head_sha": "a37e4957f706d6ade6be6f42837c4cf8a7fd3c42",
+      "run_id": 42574349482,
+      "status": "completed",
+      "conclusion": "success",
+      "jobs": {"check": "success", "browser": "success", "world-random": "success"}
     }
   },
   "test_change_summary": {
+    "incremental_base_sha": "a37e4957f706d6ade6be6f42837c4cf8a7fd3c42",
     "base_sha": "853c639f2c75b725a29eec3d65cfad4dd823ae5f",
-    "head_sha": "a37e4957f706d6ade6be6f42837c4cf8a7fd3c42",
-    "added": 4,
-    "removed": 0,
-    "modified": 0,
+    "head_sha": "14f413f63f26e438e168158a869d21ed323959cd",
+    "incremental": {"added": 2, "removed": 0, "modified": 1},
+    "whole_pr": {"added": 6, "removed": 0, "modified": 1},
     "suite": "Node node --test",
-    "scenario_risk": "A1 physical grid/topology plus A2 positive-area source-polygon projection and strict typed state/legacy preview.",
-    "reuse_or_new_reason": "Existing pixel/UI cases do not expose the physical clipping and typed-state contracts. Two A1 and two distinct A2 cases protect separate externally relevant invariants.",
-    "count_source": "Four named logical Node test registrations across test/detailGrid.test.mjs and test/detailProjection.test.mjs.",
+    "scenario_risk": "BC1 extent policy, stable multi-cell identity, exact water reference and real assigned route contact.",
+    "reuse_or_new_reason": "Existing A1/A2 cases cover grid/projection/state, so the strict state fixture was extended and only two distinct placement-contract cases were added.",
+    "count_source": "Named logical Node test registrations; modified existing state case counted once.",
     "executions": {
-      "focusedNode": {
-        "executed": 4,
-        "passed": 4,
-        "skipped": 0
-      },
-      "tsc": {
-        "status": "passed",
-        "exit_code": 0
-      },
-      "build": {
-        "status": "passed",
-        "exit_code": 0,
-        "duration_seconds": 14.29
-      },
-      "fullCI": {
-        "run_id": 42574349482,
-        "status": "pending"
-      }
+      "focusedNode": {"executed": 6, "passed": 6, "skipped": 0},
+      "fullNode": {"executed": 369, "passed": 369, "failed": 0, "skipped": 0},
+      "tsc": {"status": "passed", "exit_code": 0},
+      "build": {"status": "passed", "exit_code": 0, "duration_seconds": 14.18},
+      "fullCI": {"run_id": 42581302836, "status": "in_progress"}
     }
   },
   "score_model_version": "1.2",
@@ -111,34 +76,25 @@
   "UI_changed": false,
   "next_role": "programmer",
   "next_task_id": "HX-BL-051",
-  "next_step": "Resume the same claim at a37e495 and implement bounded B/C live POI footprint, water-access and route-contact integration; then create a new exact SHA and checks. Do not declare partial DETAIL1 review_ready.",
+  "next_step": "Resume the same claim at 14f413f and implement D: connect the tested contract to actual generation/document/history/import/export and desktop/narrow UI. Produce a new exact SHA and only then hand the whole DETAIL1 package to independent review.",
   "owner_decisions_needed": "None for continued implementation inside approved DETAIL1. Independent review and a separate exact-package release decision remain required later.",
   "automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
-    "start": {
-      "checked_at": "2026-11-09T06:17:09.152Z",
-      "status": "checked",
-      "is_enabled": true
-    },
-    "end": {
-      "checked_at": "2026-11-09T06:52:15.342Z",
-      "status": "checked",
-      "is_enabled": true
-    },
+    "start": {"checked_at": "2026-11-09T07:04:34.956Z", "status": "checked", "is_enabled": true},
+    "end": {"checked_at": "2026-11-09T07:52:28.450Z", "status": "checked", "is_enabled": true},
     "restoration_performed": false,
     "errors": [],
     "limitation": "Actual point-in-time checks only; no guarantee of later service state."
   },
   "limitations": [
-    "A2 model/projection is not connected to App, history, import/export or UI.",
-    "Water and route fields are typed references only; live placement validation remains B/C work.",
+    "BC1 is a detached adapter and is not yet connected to App generation, active document, history, import/export or UI.",
+    "Exact-head CI run 42581302836 is still running; local exact-tree checks passed.",
     "Full DETAIL1 must not be presented ready for review or publication."
   ],
   "foreign_claim_preserved": {
     "ref": "agent-work/claims/2026-11-03-developer-HX-BL-041-presentation.json",
     "sha": "6d9cfe0ebaab93c5ff789cf32520dd542d2668e3"
   },
-  "recorded_at": "2026-11-09T06:41:50.014Z",
-  "completed_at": "2026-11-09T06:52:15.342Z",
-  "ci_evidence_ref": "agent-work/evidence/HX-BL-051-DETAIL1-A2/ci-observation.json"
+  "recorded_at": "2026-11-09T07:45:59.132Z",
+  "completed_at": "2026-11-09T07:52:28.450Z"
 }
