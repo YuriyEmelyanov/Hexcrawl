@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "model_version": "1.2",
-  "updated_on": "2026-11-08",
+  "updated_on": "2026-11-09",
   "strategy_version": "1.0",
   "note": "Перенесённые идеи, не разрешение на реализацию. implemented_unverified означает наличие функции/отметки о выполнении, а не G3/G4. criterion_id — предлагаемое отнесение, не начисленный эффект. Полные уникальные детали сохранены в снимке исходного документа.",
   "source_snapshot": {
@@ -4943,7 +4943,7 @@
     {
       "task_id": "HX-BL-043",
       "title": "Выбирать и сохранять POI по связанным таблицам",
-      "status": "current_slice_published",
+      "status": "implementation_in_progress",
       "problem": "Подтверждённые правила наполнения мест переведены на язык генератора. Полная поддержка Knave не подтверждена; стратегу и аналитику предстоит выбрать продуктовый объём и подготовить спецификацию.",
       "benefit": "Проверяемый результат для мастера и переиспользуемая операция вместо отдельной копии функции на игру.",
       "game_editions": [
@@ -5984,7 +5984,7 @@
       "implementation_authorized": true,
       "release_authorized": false,
       "priority": "first_L1_candidate",
-      "readiness": "ready_for_programmer_KNC_1_0",
+      "readiness": "approved_spec_ready_in_progress",
       "research_result_ref": "agent-work/research/runs/2026-11-06-KNAVE2-full-thematic-audit.json",
       "feedback_assessment": "Open UI/diagnostic feedback is outside this source-only run; future analyst must evaluate current feedback and show any UI proposal.",
       "ui_preview_pending": true,
@@ -6831,8 +6831,8 @@
       },
       "proposal_ref": "agent-work/proposals/2026-11-08-HX-BL-043-KNAVE2-PLACE1.json",
       "recommended_priority": 1,
-      "next_role": "owner",
-      "next_step": "Принятый KNAVE2-CLASSIC1 опубликован PR494; следующий предлагаемый пакет051/OVERVIEW1 (можно пакетно028/BRUSH1,050/POLITY1). ОтдельныйKNAVE2-PLACE1остаётся отложен.",
+      "next_role": "programmer",
+      "next_step": "Implement shared table UI, current language and purpose labels per UI2-1.0; then independent exactSHA review. DETAIL1 remains next approved programmer stage.",
       "research_components": [
         {
           "component_id": "ROOT-CORE-clearing-content-L1",
@@ -7060,6 +7060,55 @@
         "result_ref": "agent-work/results/2026-11-08-analyst-KNAVE2-classic-brief.json"
       },
       "active_stage": {
+        "stage_id": "ROLLUI2",
+        "status": "implementation_in_progress",
+        "approval_ref": "agent-work/decisions/owner-approval-2026-11-09-HX-BL-043-ROLLUI2.json",
+        "implementation_allowed": true,
+        "release_approved": false,
+        "spec_ref": "agent-work/specs/HX-BL-043-ROLLUI2.md",
+        "spec_version": "UI2-1.0",
+        "claim_ref": "agent-work/claims/2026-11-09T0404-programmer-HX-BL-043-ROLLUI2.json",
+        "feedback_id": "HX-FB-011",
+        "branch": "fix/knave-shared-roll-ui2",
+        "next_role": "reviewer",
+        "next_step": "Independent exactSHA verification after implementation/checks; no release permission.",
+        "ui_preview_pending": true
+      },
+      "authorized_scope": "ROLLUI2",
+      "latest_analyst_result_ref": "agent-work/results/2026-11-08-analyst-HX-BL-043-KNAVE2-CLASSIC1.json",
+      "latest_programmer_result_ref": "agent-work/results/2026-11-08T1802-programmer-HX-BL-043-KNC-REV-001.json",
+      "implementation_history": [
+        "agent-work/results/2026-11-08T1200-programmer-HX-BL-043-KNAVE2-CLASSIC1.json",
+        "agent-work/results/2026-11-08T1300-programmer-HX-BL-043-KNAVE2-CLASSIC1.json",
+        "agent-work/results/2026-11-08T1400-programmer-HX-BL-043-KNAVE2-CLASSIC1.json",
+        "agent-work/results/2026-11-08T1441-programmer-HX-BL-043-KNAVE2-CLASSIC1.json",
+        "agent-work/results/2026-11-08T1457-programmer-HX-BL-043-KNAVE2-CLASSIC1.json",
+        "agent-work/results/2026-11-08T1534-programmer-HX-BL-043-KNAVE2-CLASSIC1.json",
+        "agent-work/results/2026-11-08T1630-programmer-HX-BL-043-private-UI.json",
+        "agent-work/results/2026-11-08T1802-programmer-HX-BL-043-KNC-REV-001.json"
+      ],
+      "latest_reviewer_result_ref": "agent-work/results/2026-11-08T1856-reviewer-HX-BL-043-KNC-REV-001.json",
+      "review_history": [
+        "agent-work/results/2026-11-08T1705-reviewer-HX-BL-043-KNAVE2-CLASSIC1.json",
+        "agent-work/results/2026-11-08T1856-reviewer-HX-BL-043-KNC-REV-001.json"
+      ],
+      "publication_approval_ref": "agent-work/approvals/2026-11-09-PR494-af50286.json",
+      "release_approved": false,
+      "current_publication": {
+        "status": "published_verified_score_completed",
+        "public_head_sha": "3a03cd78731f03cdce79a2adf9f0f095e31d1cbd",
+        "tree_sha": "7ac1c58da66809ddfae1af2fdbdc794d88b79922",
+        "merge_sha": "01341b3c981324603f5413b0c675d53a5bac2bc2",
+        "approval_ref": "agent-work/approvals/2026-11-09-PR494-af50286.json",
+        "publication_ref": "agent-work/evidence/release-PR494/publication.json",
+        "deployment_run_id": 42550377717,
+        "score_update_status": "completed",
+        "score_update_result_ref": "agent-work/results/2026-11-09-strategist-score-PR494.json"
+      },
+      "current_stage_id": "ROLLUI2",
+      "score_update_status": "completed",
+      "score_update_result_ref": "agent-work/results/2026-11-09-strategist-score-PR494.json",
+      "previous_completed_stage": {
         "stage_id": "KNAVE2-CLASSIC1",
         "status": "accepted_awaiting_owner_publication",
         "approval_ref": "owner-approval-2026-11-08-HX-BL-043-KNAVE2-CLASSIC1",
@@ -7097,41 +7146,7 @@
         "nonblocking_findings": [
           "KNC-EVID-001"
         ]
-      },
-      "authorized_scope": "KNAVE2-CLASSIC1",
-      "latest_analyst_result_ref": "agent-work/results/2026-11-08-analyst-HX-BL-043-KNAVE2-CLASSIC1.json",
-      "latest_programmer_result_ref": "agent-work/results/2026-11-08T1802-programmer-HX-BL-043-KNC-REV-001.json",
-      "implementation_history": [
-        "agent-work/results/2026-11-08T1200-programmer-HX-BL-043-KNAVE2-CLASSIC1.json",
-        "agent-work/results/2026-11-08T1300-programmer-HX-BL-043-KNAVE2-CLASSIC1.json",
-        "agent-work/results/2026-11-08T1400-programmer-HX-BL-043-KNAVE2-CLASSIC1.json",
-        "agent-work/results/2026-11-08T1441-programmer-HX-BL-043-KNAVE2-CLASSIC1.json",
-        "agent-work/results/2026-11-08T1457-programmer-HX-BL-043-KNAVE2-CLASSIC1.json",
-        "agent-work/results/2026-11-08T1534-programmer-HX-BL-043-KNAVE2-CLASSIC1.json",
-        "agent-work/results/2026-11-08T1630-programmer-HX-BL-043-private-UI.json",
-        "agent-work/results/2026-11-08T1802-programmer-HX-BL-043-KNC-REV-001.json"
-      ],
-      "latest_reviewer_result_ref": "agent-work/results/2026-11-08T1856-reviewer-HX-BL-043-KNC-REV-001.json",
-      "review_history": [
-        "agent-work/results/2026-11-08T1705-reviewer-HX-BL-043-KNAVE2-CLASSIC1.json",
-        "agent-work/results/2026-11-08T1856-reviewer-HX-BL-043-KNC-REV-001.json"
-      ],
-      "publication_approval_ref": "agent-work/approvals/2026-11-09-PR494-af50286.json",
-      "release_approved": true,
-      "current_publication": {
-        "status": "published_verified_score_completed",
-        "public_head_sha": "3a03cd78731f03cdce79a2adf9f0f095e31d1cbd",
-        "tree_sha": "7ac1c58da66809ddfae1af2fdbdc794d88b79922",
-        "merge_sha": "01341b3c981324603f5413b0c675d53a5bac2bc2",
-        "approval_ref": "agent-work/approvals/2026-11-09-PR494-af50286.json",
-        "publication_ref": "agent-work/evidence/release-PR494/publication.json",
-        "deployment_run_id": 42550377717,
-        "score_update_status": "completed",
-        "score_update_result_ref": "agent-work/results/2026-11-09-strategist-score-PR494.json"
-      },
-      "current_stage_id": "KNAVE2-CLASSIC1",
-      "score_update_status": "completed",
-      "score_update_result_ref": "agent-work/results/2026-11-09-strategist-score-PR494.json"
+      }
     },
     {
       "task_id": "HX-BL-044",
