@@ -208,3 +208,24 @@ Test decision: extend the existing capital/Seat actual-App geography case with
 manual/measured validity, exact measured cells, malformed geometry, immutable
 edit/refusal and the capital override constraint. Reuse its authored fixture,
 without another case or runner.
+
+## D2c2 transaction: actual extent command and exact history
+
+App.editDetailFootprintExtent now uses the prepared explicit extent operation,
+validates its complete candidate, and records one ordinary document transaction.
+It refuses stale document revisions, busy/draft states, absent layers and invalid
+extents before writing history. Repeating an unchanged extent is a no-op. Undo
+and Redo restore the exact physical layer together with the rest of the map.
+
+Internal document copies can validate nonempty spatial states only through an
+explicit live validation callback. The default structural document boundary,
+including the ordinary JSON importer, still refuses such a layer. Generic map
+commits also retain their nonempty-state refusal until remap/removal/generation
+integration is complete. Thus this controller is ready for later activation;
+it is not an exposed UI or claim of completed DETAIL1/import support.
+
+Test decision: one distinct actual-controller logical Node case is needed,
+since detached shape/geometry cases cannot prove history/stale-command behavior.
+It reuses the existing authored region fixture and harness and checks one-Undo,
+exact Redo, no-op, stale/invalid refusal, content/RNG preservation and the retained
+ordinary-import gate. No second lifecycle framework is introduced.

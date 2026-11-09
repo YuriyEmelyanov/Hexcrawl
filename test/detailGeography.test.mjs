@@ -70,3 +70,22 @@ test('live DETAIL1 preview retains actual sea/river identities and source requir
  const legacy=structuredClone(before.map);delete legacy.knave;legacy.editorNames['poi:1:2,0']={ru:'Мельница на водопаде',en:'Waterfall mill'};const unknown=h.geometry.prepareDetailMapPreview(legacy);assert.equal(unknown.waterRequirementsByPoi[unknown.poiFootprints[0].poiId].provenance,'unknown');assert.equal(unknown.poiFootprints[0].attachments.length,0,'a name does not establish a mandatory source profile');
  const map=structuredClone(before.map);map.rivers=[];map.toponyms={};assert.throws(()=>h.geometry.prepareDetailMapPreview(map),/missing_compatible_water_access/);assert.deepEqual(structuredClone(h.render().captureDocument()),before);
 });
+
+// DTL-08/22/23: detached validation cannot prove controller history or stale-command refusal.
+test('actual DETAIL1 extent command records one exact undo/redo transaction and refuses invalid or stale commands atomically',async()=>{
+ const h=await importMap(regionFixture()),doc=structuredClone(h.render().captureDocument()),preview=prepare(h);doc.map.physicalGrid=state(preview);
+ h.render().applyDocument(doc);h.render().setEditMode(true);h.render();h.guardRandom();
+ const before=structuredClone(h.render().captureDocument()),stacks=structuredClone([h.render().undoHistory,h.render().redoHistory]),poi=preview.poiFootprints[0],cell=poi.cells[0],cells=[cell,{q:cell.q,r:cell.r+1}],extent={kind:'manual',basis:'conditional',note:'Явный охват мастера'};
+ const oldCommand=h.render().editDetailFootprintExtent;
+ assert.equal(oldCommand(poi.poiId,extent,cells),true);const after=structuredClone(h.render().captureDocument());
+ assert.equal(h.render().undoHistory.length,stacks[0].length+1);assert.equal(h.render().redoHistory.length,0);assert.deepEqual(after.map.generation,before.map.generation);assert.equal(after.map.physicalGrid.poiFootprints[0].poiId,poi.poiId);
+ const withoutGrid=d=>{const c=structuredClone(d);delete c.map.physicalGrid;return c;};assert.deepEqual(withoutGrid(after),withoutGrid(before));
+ assert.equal(h.render().editDetailFootprintExtent(poi.poiId,extent,cells),true);assert.equal(h.render().undoHistory.length,stacks[0].length+1,'no-op does not add history');
+ const saved=structuredClone(h.render().captureDocument()),history=structuredClone([h.render().undoHistory,h.render().redoHistory]);
+ assert.equal(oldCommand(poi.poiId,extent,[cell]),false,'consumed command cannot mutate a newer document');
+ assert.equal(h.render().editDetailFootprintExtent(poi.poiId,extent,[{q:999,r:999}]),false);
+ assert.deepEqual(structuredClone(h.render().captureDocument()),saved);assert.deepEqual(structuredClone([h.render().undoHistory,h.render().redoHistory]),history);
+ h.render().undoMap();assert.deepEqual(structuredClone(h.render().captureDocument()),before);h.render().redoMap();assert.deepEqual(structuredClone(h.render().captureDocument()),after);
+ // The ordinary importer stays closed until all generic mutations reconcile the layer.
+ assert.throws(()=>h.geometry.assertHexcrawlSaveData(h.render().createSaveData()));
+});

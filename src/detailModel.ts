@@ -99,10 +99,10 @@ export function prepareLegacyDetailAdaptation(input:Readonly<{sourceVersion:numb
 /** Live document boundary for D1. Until the live geometry adapter is connected,
  * fail closed on footprints rather than accepting unchecked spatial references.
  * No existing save is implicitly activated or assigned a physical convention. */
-export function validateDetail1Document(value:unknown,saveVersion:number,liveAliases?:ReadonlySet<string>):void {
+export function validateDetail1Document(value:unknown,saveVersion:number,liveAliases?:ReadonlySet<string>,validateSpatial?:(state:Detail1State)=>void):void {
   if(value===undefined)return;
   if(saveVersion!==11)throw Error('Physical grid requires version11');
   const state=parseDetail1StateV11(value);
   if(state.poiIdentities&&liveAliases)assertDetailPoiOwners(state.poiIdentities,liveAliases);
-  if(state.poiFootprints.length)throw Error('DETAIL1 POI adaptation is not available in this checkpoint');
+  if(state.poiFootprints.length){if(!validateSpatial)throw Error('DETAIL1 POI adaptation is not available in this checkpoint');validateSpatial(state);}
 }

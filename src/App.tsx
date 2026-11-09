@@ -1,6 +1,6 @@
-import {validateDetailGeographyFootprints,buildDetailGeographyPreview,detailSourcePixelToWorld,detailCrossingPoint} from './detailGeography';
+import {prepareDetailFootprintExtentEdit,validateDetailGeographyFootprints,buildDetailGeographyPreview,detailSourcePixelToWorld,detailCrossingPoint} from './detailGeography';
 import {reconcileDetailPoiIdentities} from './detailIdentity';
-import {validateDetail1Document,type Detail1State} from './detailModel';
+import {validateDetail1Document,type DetailExtent,type Detail1State} from './detailModel';
 import knaveCatalogData from './tags/knaveCatalogData';
 import {emptyKnaveContent,fillKnaveContent,rerollKnaveContent,validateKnaveCatalog,knaveResultText,type KnaveCatalog,type KnaveFacts} from './tags/knave';
 import {hasClassification,emptyClassification,validateClassification,terrainDefault,terrainRisk,discoveryDefault,discoveryTagEffect,remapClassification,classificationLosses,retainClassification,type Classification,type Difficulty,type Discovery} from './classification';
@@ -1125,7 +1125,7 @@ function reconcileDetailMapIdentities<T extends MapSnapshot>(map:T,moves:Readonl
 }
 function checkedRiverMap<T extends MapSnapshot>(map:T):T{
   map=withLegacySeas(map);
-  validateDetail1Document(map.physicalGrid,11,map.physicalGrid?.poiIdentities?poiNameLocators(map,true):undefined);
+  validateDetail1Document(map.physicalGrid,11,map.physicalGrid?.poiIdentities?poiNameLocators(map,true):undefined,state=>validateDetailGeographyFootprints(map,detailMapRiverGeometry(map,state.grid.origin),state));
   assertEditorNames(map);
   validateClassification(map.classification,knaveMapContext(map));
   validateKnaveLayer(map.knave,knaveMapContext(map),10,map.regions.some(r=>r.generationMode==='mythic')?'mythic':'classic');
@@ -13597,6 +13597,23 @@ export function App() {
       return true;
     } catch (error) {
       setEditError(authoredNameError(error,language)??(error instanceof PoiMoveError?(language==='ru'?'Изменение удалит авторское имя POI. Сначала очистите его явно. Карта не изменена.':'The edit would remove an authored POI name. Clear it explicitly first. Your map is unchanged.'):error instanceof TagCapacityError?tagCommandError(error):language === 'ru' ? 'Не удалось изменить значение. Карта не изменена.' : 'Could not change the value. Your map is unchanged.'));
+      return false;
+    }
+  };
+  /** One explicit extent operation. Other map edits still refuse nonempty
+   * spatial state until their reconciliation is wired; import remains gated. */
+  const editDetailFootprintExtent=(poiId:string,extent:DetailExtent,cells?:readonly AxialHex[],expectedRevision=renderedDocumentRevision):boolean=>{
+    if(!editMode||expectedRevision!==documentRevision.current||mutationBlocked(false)||notesComposingRef.current||notesEditorKey!==null||obstacleDraftRef.current)return false;
+    try{
+      const before=captureDocument(),map=before.map,state=map.physicalGrid;
+      if(!state)return false;
+      const next=prepareDetailFootprintExtentEdit(map,detailMapRiverGeometry(map,state.grid.origin),state,poiId,extent,cells);
+      if(JSON.stringify(next)===JSON.stringify(state))return true;
+      const prepared=copyDocument({...before,map:{...map,physicalGrid:next}});
+      recordTransaction(before,prepared);applyExactMap(prepared.map);closeEditors();return true;
+    }catch(error){
+      const reason=error instanceof Error?error.message:'';
+      setEditError(language==='ru'?(reason.includes('capital_manual')?'Для столицы без измеренного контура нужны хотя бы две соседние клетки.':reason.includes('attachment')||reason.includes('route_coverage')?'Охват должен сохранять обязательный контакт с водой и входы путей.':'Не удалось изменить охват POI. Карта не изменена.'):(reason.includes('capital_manual')?'An unmeasured capital needs at least two adjacent cells.':reason.includes('attachment')||reason.includes('route_coverage')?'The footprint must retain required water and route accesses.':'Could not change the POI footprint. Your map is unchanged.'));
       return false;
     }
   };
