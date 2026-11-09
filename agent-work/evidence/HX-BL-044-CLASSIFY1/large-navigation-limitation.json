@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-044",
+  "stage_id": "CLASSIFY1-R3",
+  "reviewed_public_sha": "6038d3151e8385745c6a36c342a12c54b3cc2c62",
+  "reviewed_local_sha": "c37f1594c65b64ace56e350719c08dd2cb3bb6a1",
+  "tree_sha": "55c0e66f2ac6ee4d11a0ece2db776c174c66042a",
+  "recorded_at": "2026-11-09T11:43:47.487Z",
+  "negative_observation": {
+    "origin": "Root reported local exact-R3 fullbrowser execution; raw log held by root, not independently rerun here.",
+    "command": "npm run test:browser",
+    "earlier_runners_reported_passed": [
+      "generation",
+      "POI",
+      "terrain",
+      "forest",
+      "navigation"
+    ],
+    "failed_runner": "large-navigation",
+    "failed_assertion": "scripts/profile-large-map.mjs:43 Native scrolling uses the buffer",
+    "actual_opacity": "1",
+    "expected_opacity": "0",
+    "status": "failure_preserved_not_waived"
+  },
+  "independent_method": "Read-only exact-source comparison and source-order audit; separate source auditor agrees. No expensive fullbrowser rerun and no source/test edits.",
+  "source_evidence": "navigation-source-comparison.json",
+  "analysis": {
+    "unchanged": "Script, raster cache, styles and entire App navigation block are byte-identical base→R3.",
+    "mechanism": "beginMapNavigation adds is-navigating and removes it after180ms. CSS opacity0 requires both has-motion-buffer and is-navigating. Test line42 waits for has-motion-buffer, then line43 reads opacity in a separate protocol call. The idle timeout can expire between observations.",
+    "inference": "A transient check/idle race is plausible and directly permitted by current scheduling. Missing simultaneous class/timing diagnostics prevent attributing the specific failure conclusively.",
+    "classification_scope": "No direct CLASSIFY change to native scroll, raster cache, opacity CSS or idle timer. Unchanged source alone cannot exclude all indirect runtime-load effects."
+  },
+  "recommendation": {
+    "current_package": "Keep navigation product code/test unchanged and preserve failed local gate while exact final CI is pending, per root direction.",
+    "future_if_authorized": "Register a once native scroll listener before changing scrollLeft; capture is-navigating, has-motion-buffer and computed opacity together after existing listeners run. Assert active snapshot, then separately wait for idle and assert opacity1. Do not alter production timing or merely add a longer sleep."
+  },
+  "acceptance_status": "External validation remains pending. No full-local-browser success and no release/merge approval claimed.",
+  "score_effect": "No new whole-criterion evidence or points; assessment remains unknown.",
+  "independent_ci_followup": {
+    "evidence": "ci-r3-browser-negative.json",
+    "large_navigation": "passed in exactR3 CI before later water failure",
+    "local_failure_waived": false
+  },
+  "navigation_pointer_automation_health_ref": "automation-health-navigation-pointer.json"
+}

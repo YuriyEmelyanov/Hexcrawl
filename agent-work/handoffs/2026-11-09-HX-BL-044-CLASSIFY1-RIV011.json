@@ -1,0 +1,47 @@
+{
+  "task_id": "HX-BL-044",
+  "stage_id": "CLASSIFY1-RIV011-diagnostic",
+  "role": "programmer",
+  "status": "ready_bounded_verification",
+  "head_sha": "6fd58bd14e47b1c9c7463f96965801cb9efeb15b",
+  "scope": "Failure capture in existing checker and one controlled verification; no river algorithm change or random-until-green loop",
+  "inputs": [
+    "agent-work/evidence/HX-BL-044-CLASSIFY1/ci-r4-browser-negative.json",
+    "agent-work/evidence/HX-BL-044-CLASSIFY1/classification-rng-lake-source-audit.json",
+    "agent-work/evidence/HX-BL-044-CLASSIFY1/validation.json",
+    "agent-work/evidence/HX-BL-044-CLASSIFY1/independent-review.json"
+  ],
+  "finding": {
+    "id": "CLASSIFY1-VALIDATION-RIV011",
+    "status": "open_cause_unknown",
+    "kind": "confirmed_failed_validation_evidence_not_yet_reproducible_product_defect",
+    "rule": "RIV-011",
+    "ci_run": 42612175536,
+    "job_id": 129143080882,
+    "head_sha": "6fd58bd14e47b1c9c7463f96965801cb9efeb15b",
+    "message": "LAKE_AREA positive integer, node72.746,-14",
+    "failed_input_available": false,
+    "direct_classification_cause_found": false,
+    "same_input_baseline_comparison": "not_possible_without_original_seed_save",
+    "evidence_ref": "agent-work/evidence/HX-BL-044-CLASSIFY1/ci-r4-browser-negative.json",
+    "source_audit_ref": "agent-work/evidence/HX-BL-044-CLASSIFY1/classification-rng-lake-source-audit.json",
+    "local_full_browser": "passed8of8",
+    "green_local_or_retry_does_not_erase_negative": true
+  },
+  "next_step": "Программист в пределах проверки HX-BL-044/CLASSIFY1 добавляет сохранение точного падающего JSON/seed/streams и контекста в существующий generation browser check, сохранив RIV-011 и RNG. Один ограниченный прогон; при повторе — replay одинаковых входов на main90afe931 и пакете, затем независимое заключение нового SHA. При отсутствии повтора не запускать случайные прогоны до зелёного: оставить unknown/blocked и передать evidence. Алгоритм рек и новые массовые замеры не расширяются автоматически. Готовая отдельная утверждённая работа051/DETAIL1 сохраняется в собственном paused claim.",
+  "completion_criteria": [
+    "Future failure reports exact save/worldSeed/stream counters/mode/action and retains original assertion.",
+    "One run and exact-input base/final replay if captured; otherwise explicit unknown without claiming resolved.",
+    "Any new SHA independently checked; package publication remains blocked until required gate disposition is resolved."
+  ],
+  "implementation_authorized": true,
+  "release_authorized": false,
+  "new_permanent_cases_required": false,
+  "other_approved_work": {
+    "task_id": "HX-BL-051",
+    "pr": 496,
+    "status": "paused_existing_claim",
+    "handoff_ref": "agent-work/handoffs/2026-11-09-PR497-DETAIL1-D.json",
+    "integration_dependency": "Reconcile JSONv11 physical-grid work with optional map.classification; neither feature may be discarded."
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "retrieved_at": "2026-11-09T11:56:02.143Z",
+  "repo": "YuriyEmelyanov/Hexcrawl",
+  "commit_sha": "6fd58bd14e47b1c9c7463f96965801cb9efeb15b",
+  "run_id": 42612175536,
+  "run_attempt": 1,
+  "run_head_independently_confirmed": "6fd58bd14e47b1c9c7463f96965801cb9efeb15b",
+  "run_status_at_retrieval": "in_progress",
+  "browser_job_id": 129143080882,
+  "browser_conclusion": "failure",
+  "run_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42612175536",
+  "independently_retrieved": true,
+  "negative_summary": "Generation smoke exported a network failing LAKE_AREA/RIV-011 at node72.746,-14 in addRegion104/mode loop123; cause unknown.",
+  "log_excerpt": "2026-11-09T11:51:05.5783044Z ##[group]Run npm run test:browser\n2026-11-09T11:51:05.5783369Z \u001b[36;1mnpm run test:browser\u001b[0m\n2026-11-09T11:51:05.5834894Z shell: /usr/bin/bash -e {0}\n2026-11-09T11:51:05.5835167Z ##[endgroup]\n2026-11-09T11:51:05.6893929Z \n2026-11-09T11:51:05.6894591Z > hexcrawl-mvp@0.1.0 test:browser\n2026-11-09T11:51:05.6896705Z > node test/browser/generation.smoke.mjs && node test/browser/poi-display.smoke.mjs && node test/browser/terrain-color.smoke.mjs && node test/browser/forest-display.smoke.mjs && node test/browser/navigation.smoke.mjs && node test/browser/large-navigation.smoke.mjs && node test/browser/save-history.smoke.mjs && node test/browser/tags.smoke.mjs\n2026-11-09T11:51:05.6898216Z \n2026-11-09T11:51:15.8297890Z node:internal/modules/run_main:107\n2026-11-09T11:51:15.8298597Z     triggerUncaughtException(\n2026-11-09T11:51:15.8299143Z     ^\n2026-11-09T11:51:15.8299653Z \n2026-11-09T11:51:15.8300853Z AssertionError [ERR_ASSERTION]: [{\"code\":\"LAKE_AREA\",\"rule\":\"RIV-011\",\"message\":\"Lake area must be a positive integer.\",\"nodeId\":\"72.746,-14\"}]\n2026-11-09T11:51:15.8301750Z \n2026-11-09T11:51:15.8302031Z false !== true\n2026-11-09T11:51:15.8302534Z \n2026-11-09T11:51:15.8303543Z     at assertRiverTermini (file:///home/runner/work/Hexcrawl/Hexcrawl/test/browser/generation.smoke.mjs:16:10)\n2026-11-09T11:51:15.8305285Z     at addRegion (file:///home/runner/work/Hexcrawl/Hexcrawl/test/browser/generation.smoke.mjs:104:9)\n2026-11-09T11:51:15.8306716Z     at async file:///home/runner/work/Hexcrawl/Hexcrawl/test/browser/generation.smoke.mjs:123:17 {\n2026-11-09T11:51:15.8311111Z   generatedMessage: false,\n2026-11-09T11:51:15.8311517Z   code: 'ERR_ASSERTION',\n2026-11-09T11:51:15.8312002Z   actual: false,\n2026-11-09T11:51:15.8312401Z   expected: true,\n2026-11-09T11:51:15.8312835Z   operator: 'strictEqual',\n2026-11-09T11:51:15.8313261Z   diff: 'simple'\n2026-11-09T11:51:15.8313578Z }\n2026-11-09T11:51:15.8313736Z \n2026-11-09T11:51:15.8313873Z Node.js v24.22.2\n2026-11-09T11:51:15.8848504Z ##[error]Process completed with exit code 1.",
+  "source_audit_ref": "classification-rng-lake-source-audit.json",
+  "reproduction_limitations": "CIlog lacks failing JSON/masterSeed/streams/mode index; no same-input baseline comparison possible from available evidence.",
+  "status": "mandatory_browser_gate_failed_not_waived",
+  "followup": "Preserve failed sample evidence; capture failing save/seed/streams in a diagnostic run and compare base/final with identical input. Do not weaken RIV assertion or repeat blindly until green.",
+  "r4_automation_health_ref": "automation-health-r4.json"
+}

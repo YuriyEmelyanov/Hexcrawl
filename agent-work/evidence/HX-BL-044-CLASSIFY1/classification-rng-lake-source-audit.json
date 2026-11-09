@@ -1,0 +1,40 @@
+{
+  "base_sha": "90afe931d9e9f8a2482febf77eaed20b401ceece",
+  "local_sha": "565a61878d5f924c069ee062b25a14a226b48999",
+  "public_sha": "6fd58bd14e47b1c9c7463f96965801cb9efeb15b",
+  "files": {
+    "src/worldRandom.ts": {
+      "equal": true,
+      "sha256": "1e79519426b7ed209e11df6a2dde9bbed212572e052b85fe8b23bf464b586b34"
+    },
+    "src/riverModel/core.ts": {
+      "equal": true,
+      "sha256": "213a5fc7d113fc317f4a1d09ac66d007de968778618dbb4064dd7272d2626ad6"
+    },
+    "src/manualWater.ts": {
+      "equal": true,
+      "sha256": "790daaea6cc772725fce7f107a165628b74543c4eb2315cc6e5f6b8ada6d61a9"
+    },
+    "src/manualRivers.ts": {
+      "equal": true,
+      "sha256": "611fa858ed6839f945c43e25c7b31093a5359c5d3807b321f19459f000b8d298"
+    }
+  },
+  "blocks": {
+    "buildRegionRiverNetwork": {
+      "equal": true,
+      "sha256": "0ee4c74c7f2db5b93b120472f70dc1ea4eef75cfca9bc120eeb94420b47ff70a"
+    },
+    "knaveMapContext": {
+      "equal": true,
+      "sha256": "e0549f9e0dbf3d1fd849f97f388448a994452bc93871ee17a40fdd0b1b724f22"
+    }
+  },
+  "added_classification_audit": "No RNG draws/ambient entropy calls; pure context enumeration and classification-only maps. Capture/apply/history thread a separate field without mutating river/water fields.",
+  "existing_reset_behavior": "Smoke test seeds42 only once, resets between modes. resetMap creates generation state from newWorldSeed\u2192crypto.getRandomValues; restoreGeneration updates seedInput. Math.random stub does not control reset seeds.",
+  "LAKE_AREA_meaning": "Adapter deliberately emits lakeHexCount0 for a closed inland mouth without real sink lake (ins1/outs0); failure does not by itself identify corrupted stored lake area.",
+  "limitations": [
+    "Source audit identifies no direct CLASSIFY cause; does not rule out all regression.",
+    "Failure save/masterSeed/stream state not available from CIlog; no same-input base/final replay performed."
+  ]
+}

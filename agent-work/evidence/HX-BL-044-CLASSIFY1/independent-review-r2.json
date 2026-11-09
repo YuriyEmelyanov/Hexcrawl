@@ -1,0 +1,150 @@
+{
+  "schema_version": 1,
+  "role": "independent_reviewer",
+  "task_id": "HX-BL-044",
+  "stage_id": "CLASSIFY1",
+  "reviewed_at": "2026-11-09T11:32:53.623Z",
+  "status": "bounded_independent_review_passed_external_checks_pending",
+  "reviewed_public_sha": "16c2133e60d4b037359d8a1d77b3fa06d66df898",
+  "reviewed_local_sha": "b4f0cf57eedf9262a5056d5cb6487863cf70eed5",
+  "tree_sha": "24b8ab6fe5825b9830d414c6ccc196dece80c189",
+  "base_sha": "90afe931d9e9f8a2482febf77eaed20b401ceece",
+  "independence": {
+    "fresh_detached_worktree": "/workspace/scratch/ffa816ada945/classify-review-worktree",
+    "initial_target_sha": "00735ae01a4c15c3130e6ac7e14af6ba2179cbb6",
+    "initial_tree": "5d03fcdfb1885d9793d13f7cddc523c110201c10",
+    "source_changes_by_reviewer": false,
+    "github_writes": false,
+    "secondary_read_only_source_auditor": true,
+    "dependency_symlink_only": "node_modules -> ../hexcrawl/node_modules",
+    "tracked_source_diff_empty": true
+  },
+  "authorization": "Parent supplied latest explicit owner instruction «Реализуй» overriding original analysis-only wording; implementation review authorized, release/merge not authorized.",
+  "sources": [
+    "AGENTS.md",
+    "docs/index.md",
+    "docs/development-workflow.md",
+    "docs/strategy/vision.md",
+    "docs/terrain-discovery.md",
+    "ops/agent-work/specs/HX-BL-044-CLASSIFY1.md",
+    "ops/agent-work/decisions/owner-direction-2026-11-09-CLASSIFY1.json",
+    "ops/agent-work/strategy/score-model.md",
+    "ops/agent-work/score/current-score.json"
+  ],
+  "findings": [
+    {
+      "id": "CLASSIFY1-RV1",
+      "priority": "P1",
+      "title": "Clue-only edit lost authored legacy discovery mode",
+      "first_observed_sha": "00735ae01a4c15c3130e6ac7e14af6ba2179cbb6",
+      "first_observed_public_sha": "b54e74eefc34aa256c2f1acbcb8c1d1f9157edae",
+      "source": "src/App.tsx original15043-15057",
+      "reproduction": "Canonical v10 map.knave.discoveryByPoi['poi:1:2,0']={mode:'interaction',clueText:'Original clue'}; edit only clue; accept. Original target exports common mode:auto/Revised clue and deletes legacy interaction.",
+      "evidence": [
+        "legacy-clue-repro.json",
+        "bounded-probes-00735.json"
+      ],
+      "resolution": "Initialize effective common-or-legacy draft fields; compare semantic changes before replacing legacy data.",
+      "fixed_in_local_sha": "1379b851b5ab991ac0e09e65225c6b205974d118",
+      "verified_in_final": true,
+      "status": "resolved"
+    },
+    {
+      "id": "CLASSIFY1-RV2",
+      "priority": "P2",
+      "title": "Empty common envelope unnecessarily forced v11",
+      "first_observed_sha": "00735ae01a4c15c3130e6ac7e14af6ba2179cbb6",
+      "source": "src/App.tsx createSaveData / finishKnaveDraft; src/classification.ts retainClassification",
+      "reproduction": "Remove final override using Auto; original exports11 with empty maps. R1 fixes editor path but deleting final annotated POI still exports11.",
+      "evidence": [
+        "bounded-probes-00735.json",
+        "empty-after-delete-1379b85.json"
+      ],
+      "resolution": "Omit empty editor layer; normalize retained empty layer to undefined and choose export11 only for nonempty annotation maps.",
+      "fixed_in_local_sha": "b4f0cf57eedf9262a5056d5cb6487863cf70eed5",
+      "verified_in_final": true,
+      "status": "resolved"
+    }
+  ],
+  "open_findings": [],
+  "checks": [
+    {
+      "method": "Read-only source audit",
+      "result": "pass",
+      "scope": "Complete diff, default priority/common+legacy drafts, all24 biome IDs, exact semantic IDs, validation, capture/apply/backups/history, E7/E8, water/generic deletion loss gates and checkpoint retention."
+    },
+    {
+      "method": "Independent real-callback bounded probes",
+      "result": "pass",
+      "cases": 8,
+      "evidence": "bounded-probes-b4f0cf5.json",
+      "scope": "Legacy clue-only edit; final Auto v10; E7/E8 discovery remap/coordinate retention/RNG/exact UndoRedo;10 hostile imports atomic; water loss enumeration; generic deletion cancellation/exact Undo; semantic identity/version/overrides; checkpoint loss cancellation/current-survivor retention/exact UndoRedo."
+    },
+    {
+      "method": "Additional empty-layer probes",
+      "result": "pass",
+      "evidence": "empty-layer-probes-b4f0cf5.json",
+      "scope": "Only annotation removed by water or POI deletion, imported empty common layer exportsv10."
+    },
+    {
+      "method": "Independent production build",
+      "command": "npm run build",
+      "node": "v24.22.1",
+      "result": "pass",
+      "evidence": "build-identity-b4f0cf5.json"
+    },
+    {
+      "method": "Independent built Chromium UI",
+      "result": "pass",
+      "evidence": [
+        "ui-built-b4f0cf5/ui-results.json",
+        "ui-built-b4f0cf5/first-roll-results.json"
+      ],
+      "scope": "Automatic forest/lair at1500/390; normal+unknown hidden; mountain/swamp risk RU; Surface edit-only; RU/EN; read first-roll preserved with no dummy values; no pageerrors/alerts/horizontal overflow in measured cases."
+    },
+    {
+      "method": "GitHub Git commit API exact-tree bridge",
+      "result": "pass",
+      "evidence": "public-bridge-final.json",
+      "scope": "Public16c2133 tree24b8 equals localb4f0cf5 tree24b8."
+    }
+  ],
+  "test_necessity_assessment": [
+    {
+      "test": "classification.test.mjs case1",
+      "reason": "New shared default-policy boundary across all24 registered IDs plus future unknown, no prior shared policy coverage.",
+      "limitation": "Name parsing mirrors rough biome families; not empirical game correctness or proof of concrete risk by itself."
+    },
+    {
+      "test": "classification.test.mjs case2",
+      "reason": "New context/tag precedence and localized-text independence; prevents arbitrary passage and substring inference."
+    },
+    {
+      "test": "classification.test.mjs case3",
+      "reason": "New v11 ownership/schema and POI-only remap contract distinct from existing Knave layer; empty-retain regression added within same case."
+    },
+    {
+      "test": "classification.test.mjs case4",
+      "reason": "New common data must use accepted-document/history/import/RNG contract across modes, including final Auto cleanup; pure policy tests do not cover integration."
+    },
+    {
+      "test": "Existing saveSafety lifecycle",
+      "reason": "Necessary extension for changed storage boundary and actual P1 clue-only legacy regression; no duplicate top-level test corpus."
+    },
+    {
+      "test": "Existing browser Knave lifecycle",
+      "reason": "Necessary extension of established draft/gate/Undo/export workflow to non-Knave policy, hidden unknown/Surface and responsive UI. Existing unsupported-version probe moves11→12 because11 is supported."
+    }
+  ],
+  "limitations": [
+    "Full npm run check and npm run test:browser are owned by root and remain pending for this review artifact; no success inferred from programmer assertions.",
+    "Independent UI used bounded desktop Chromium at1500/390, no full WCAGAA/assistive technology/physical mobile validation.",
+    "No full game cohort,500-map expert or master-play study; no whole criterion grade awarded.",
+    "Rules mechanics, movement/time/checks/damage/reveal, resource system and DETAIL1 remain outside scope.",
+    "Any later source SHA requires an updated review; release authorization remains separate."
+  ],
+  "score_assessment_ref": "score_assessment1.2.json",
+  "automation_health_ref": "automation-health.json",
+  "release_approved": false,
+  "merge_performed": false
+}

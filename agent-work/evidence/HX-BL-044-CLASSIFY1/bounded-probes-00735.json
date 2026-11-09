@@ -1,0 +1,66 @@
+{
+  "repo": "/workspace/scratch/ffa816ada945/classify-review-worktree",
+  "node": "v24.22.1",
+  "results": [
+    {
+      "name": "legacy clue-only edit preserves authored interaction",
+      "status": "fail",
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:\n+ actual - expected\n\n  {\n    clueText: 'New clue',\n+   mode: 'auto'\n-   mode: 'interaction'\n  }\n",
+      "stack": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:\n+ actual - expected\n\n  {\n    clueText: 'New clue',\n+   mode: 'auto'\n-   mode: 'interaction'\n  }\n\n    at file:///workspace/scratch/ffa816ada945/classify-review/bounded-probes.mjs:16:433\n    at async probe (file:///workspace/scratch/ffa816ada945/classify-review/bounded-probes.mjs:14:50)\n    at async file:///workspace/scratch/ffa816ada945/classify-review/bounded-probes.mjs:16:1"
+    },
+    {
+      "name": "annotation-free document returns to v10 after final Auto",
+      "status": "fail",
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n11 !== 10\n",
+      "stack": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n11 !== 10\n\n    at file:///workspace/scratch/ffa816ada945/classify-review/bounded-probes.mjs:17:425\n    at async probe (file:///workspace/scratch/ffa816ada945/classify-review/bounded-probes.mjs:14:50)\n    at async file:///workspace/scratch/ffa816ada945/classify-review/bounded-probes.mjs:17:1"
+    },
+    {
+      "name": "v11 E7 and E8 remap discovery only and exact UndoRedo",
+      "status": "pass",
+      "evidence": {
+        "e7": "poi:2:2,0",
+        "e8": "poi:2:3,0",
+        "difficulty": "2,0 remains unknown"
+      }
+    },
+    {
+      "name": "v11 malformed annotations fail before document/history commit",
+      "status": "pass",
+      "evidence": {
+        "rejected": 10,
+        "mapHistoryRng": "unchanged"
+      }
+    },
+    {
+      "name": "v11 water removal enumerates annotation loss before retention",
+      "status": "pass",
+      "evidence": [
+        {
+          "id": "poi:1:2,0",
+          "type": "poi"
+        },
+        {
+          "id": "name:settlement:1:2,0",
+          "type": "name"
+        },
+        {
+          "id": "classification:poi:poi:1:2,0",
+          "type": "classification"
+        }
+      ]
+    },
+    {
+      "name": "generic deletion loss cancellation is exact and confirm Undo restores",
+      "status": "pass",
+      "evidence": {
+        "cancel": "exact",
+        "undo": "exact"
+      }
+    },
+    {
+      "name": "policy semantic slots are exact and danger risk localized",
+      "status": "pass",
+      "evidence": "four explicit semantic identities; overrides/version suspend inference"
+    }
+  ]
+}

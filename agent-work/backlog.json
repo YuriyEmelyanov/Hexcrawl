@@ -7422,7 +7422,7 @@
     {
       "task_id": "HX-BL-044",
       "title": "Отмечать труднопроходимость, доступность ресурсов и способы обнаружения объектов",
-      "status": "approved_analysis_in_progress",
+      "status": "CLASSIFY1_implemented_validation_blocked_remainder_not_implemented",
       "problem": "Source-backed operations are now specified; exact product coverage remains unknown and must be audited before implementation scope is finalized.",
       "benefit": "Проверяемый результат для мастера и переиспользуемая операция вместо отдельной копии функции на игру.",
       "game_editions": [
@@ -7886,10 +7886,10 @@
         "The source notice distinguishes freely reusable mechanics from text/art; this result paraphrases rules and records table locators without republishing full tables. Product content-pack provenance/permission must be defined before embedding source text.",
         "Open questions are in game matrix/ledger; automatic enforcement of unresolved parameters is not ready."
       ],
-      "implementation_authorized": false,
+      "implementation_authorized": true,
       "release_authorized": false,
       "priority": "parallel_or_next_L1_candidate",
-      "readiness": "CLASSIFY1_analysis_prepared_mapping_and_migration_pending",
+      "readiness": "CLASSIFY1_mandatory_ci_gate_failed",
       "research_result_ref": "agent-work/research/runs/2026-11-06-KNAVE2-full-thematic-audit.json",
       "feedback_assessment": "Open UI/diagnostic feedback is outside this source-only run; future analyst must evaluate current feedback and show any UI proposal.",
       "ui_preview_pending": true,
@@ -8620,6 +8620,78 @@
       "research_source_correction_ref": "agent-work/research/runs/2026-11-09-MB-owner-scope-correction.json",
       "active_stage": {
         "stage_id": "CLASSIFY1",
+        "status": "implemented_local_checks_passed_ci_validation_blocked",
+        "scope": [
+          "Shared24-biome normal/difficult/dangerous defaults and concrete mountain/swamp risk",
+          "Context/tag discovery with manual overrides and old authored Knave preservation",
+          "Unknown/normal hidden in read; Surface edit-only; first dice action retained",
+          "Optional common annotation layer integrated with real document, import/exportv11, undo/redo, loss confirmations and POI remap"
+        ],
+        "decision_ref": "agent-work/decisions/owner-direction-2026-11-09-CLASSIFY1.json",
+        "spec_ref": "agent-work/specs/HX-BL-044-CLASSIFY1-implementation.md",
+        "result_ref": "agent-work/results/2026-11-09T1107-programmer-HX-BL-044-CLASSIFY1.json",
+        "ui_preview_ref": "agent-work/mockups/CLASSIFY1-UI1.png",
+        "ui_preview_status": "actual_presented_in_task_chat",
+        "implementation_started": true,
+        "release_approved": false,
+        "next_role": "programmer",
+        "next_step": "Программист в пределах проверки HX-BL-044/CLASSIFY1 добавляет сохранение точного падающего JSON/seed/streams и контекста в существующий generation browser check, сохранив RIV-011 и RNG. Один ограниченный прогон; при повторе — replay одинаковых входов на main90afe931 и пакете, затем независимое заключение нового SHA. При отсутствии повтора не запускать случайные прогоны до зелёного: оставить unknown/blocked и передать evidence. Алгоритм рек и новые массовые замеры не расширяются автоматически. Готовая отдельная утверждённая работа051/DETAIL1 сохраняется в собственном paused claim.",
+        "task_id": "HX-BL-044",
+        "spec_version": "IMPL2",
+        "base_sha": "90afe931d9e9f8a2482febf77eaed20b401ceece",
+        "head_sha": "6fd58bd14e47b1c9c7463f96965801cb9efeb15b",
+        "local_sha": "565a61878d5f924c069ee062b25a14a226b48999",
+        "tree_sha": "907c0295ce6da9ec12ba1327d540c2a334541f52",
+        "pr": 498,
+        "branch": "agent/hx-bl-044-classify1",
+        "authorization_ref": "agent-work/decisions/owner-approval-2026-11-09-CLASSIFY1-implementation.json",
+        "implementation_authorized": true,
+        "release_authorized": false,
+        "out_of_scope": [
+          "Resource mechanics",
+          "Full travel/search/damage/player reveal engine",
+          "MB barrier quota generation",
+          "DETAIL1 scale geometry",
+          "Publication"
+        ],
+        "resolved_review_findings": [
+          "CLASSIFY1-RV1 legacy clue-only edit lost interaction",
+          "CLASSIFY1-RV2 empty classification forcedv11"
+        ],
+        "review_ref": "agent-work/evidence/HX-BL-044-CLASSIFY1/independent-review.json",
+        "score_assessment_ref": "agent-work/evidence/HX-BL-044-CLASSIFY1/score_assessment1.2.json",
+        "test_change_summary_ref": "agent-work/evidence/HX-BL-044-CLASSIFY1/test-change-summary.json",
+        "validation_ref": "agent-work/evidence/HX-BL-044-CLASSIFY1/validation.json",
+        "ui_ref": "agent-work/evidence/HX-BL-044-CLASSIFY1/ui-actual.json",
+        "score_points_awarded": 0,
+        "confirmed_delta": null,
+        "claim_ref": "agent-work/claims/2026-11-09T1107-programmer-HX-BL-044-CLASSIFY1.json",
+        "handoff_ref": "agent-work/handoffs/2026-11-09-HX-BL-044-CLASSIFY1-PR498.json",
+        "ui_actual_ref": "agent-work/evidence/HX-BL-044-CLASSIFY1/ui-actual.json",
+        "checks_status": "local_required_passed_CI_browser_failed",
+        "remainder044_status": "Other resource/barrier profiles remain proposed/unimplemented; not approved by this package.",
+        "validation_finding": {
+          "id": "CLASSIFY1-VALIDATION-RIV011",
+          "status": "open_cause_unknown",
+          "kind": "confirmed_failed_validation_evidence_not_yet_reproducible_product_defect",
+          "rule": "RIV-011",
+          "ci_run": 42612175536,
+          "job_id": 129143080882,
+          "head_sha": "6fd58bd14e47b1c9c7463f96965801cb9efeb15b",
+          "message": "LAKE_AREA positive integer, node72.746,-14",
+          "failed_input_available": false,
+          "direct_classification_cause_found": false,
+          "same_input_baseline_comparison": "not_possible_without_original_seed_save",
+          "evidence_ref": "agent-work/evidence/HX-BL-044-CLASSIFY1/ci-r4-browser-negative.json",
+          "source_audit_ref": "agent-work/evidence/HX-BL-044-CLASSIFY1/classification-rng-lake-source-audit.json",
+          "local_full_browser": "passed8of8",
+          "green_local_or_retry_does_not_erase_negative": true
+        },
+        "diagnostic_handoff_ref": "agent-work/handoffs/2026-11-09-HX-BL-044-CLASSIFY1-RIV011.json",
+        "release_readiness": false
+      },
+      "previous_stage_snapshot": {
+        "stage_id": "CLASSIFY1",
         "status": "analysis_in_progress",
         "scope": "Terrain/discovery/concise read UI only; remainder044not approved implicitly",
         "decision_ref": "agent-work/decisions/owner-direction-2026-11-09-CLASSIFY1.json",
@@ -8631,7 +8703,11 @@
         "release_approved": false,
         "next_role": "business_analyst",
         "next_step": "Аналитик завершает044/CLASSIFY1: точная таблица текущих biome ID и семантических ID тегов, приоритеты ручных исключений и совместимость сохранений; затем передача пригодной спецификации. Три категории приняты: опасная обычно включает труднопроходимость. Код и выпуск не начаты; прежнее поручение пока не программировать сохранено. Claim051/DETAIL1 и его checkpoint не изменены."
-      }
+      },
+      "next_task_id": "HX-BL-044",
+      "next_role": "programmer",
+      "next_step": "Программист в пределах проверки HX-BL-044/CLASSIFY1 добавляет сохранение точного падающего JSON/seed/streams и контекста в существующий generation browser check, сохранив RIV-011 и RNG. Один ограниченный прогон; при повторе — replay одинаковых входов на main90afe931 и пакете, затем независимое заключение нового SHA. При отсутствии повтора не запускать случайные прогоны до зелёного: оставить unknown/blocked и передать evidence. Алгоритм рек и новые массовые замеры не расширяются автоматически. Готовая отдельная утверждённая работа051/DETAIL1 сохраняется в собственном paused claim.",
+      "next_handoff_ref": "agent-work/handoffs/2026-11-09-HX-BL-044-CLASSIFY1-RIV011.json"
     },
     {
       "task_id": "HX-BL-045",

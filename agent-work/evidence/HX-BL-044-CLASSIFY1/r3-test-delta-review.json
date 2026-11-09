@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-044",
+  "stage_id": "CLASSIFY1-R3",
+  "reviewed_at": "2026-11-09T11:39:23.042Z",
+  "reviewed_public_sha": "6038d3151e8385745c6a36c342a12c54b3cc2c62",
+  "reviewed_local_sha": "c37f1594c65b64ace56e350719c08dd2cb3bb6a1",
+  "tree_sha": "55c0e66f2ac6ee4d11a0ece2db776c174c66042a",
+  "previous_public_sha": "16c2133e60d4b037359d8a1d77b3fa06d66df898",
+  "previous_local_sha": "b4f0cf57eedf9262a5056d5cb6487863cf70eed5",
+  "scope": "Two browser test corrections only; no product source or docs changes.",
+  "status": "test_delta_review_passed_external_execution_pending",
+  "public_bridge_ref": "public-bridge-r3.json",
+  "source_bridge": {
+    "src_tree": "f950137399cd6dbcf9de001e8e114670ee51d1d1",
+    "docs_tree": "e40deb64b62a356340d398bbaaba01b21c80db34",
+    "complete_diff_only": [
+      "test/browser/generation.smoke.mjs",
+      "test/browser/save-history.smoke.mjs"
+    ],
+    "prior_independent_product_evidence_applies": true
+  },
+  "profiler_diagnosis": {
+    "source_evidence": "profiler-source-comparison.json",
+    "runtime_evidence": [
+      "profile-base-90afe93.json",
+      "profile-final-b4f0cf5.json"
+    ],
+    "sample": "Four fresh production Chromium pages per base/final, same locality/mainland procedure as existing smoke loop.",
+    "observed": "All eight attempts emitted PROFILE and console.table, generated noncandidate hexes, and had no pageerrors/alerts; fixed100ms failure was not reproduced in this bounded run.",
+    "inference": "Profiler block and browser probe were unchanged base→R2; async setTimeout+CDP delivery has no100ms contract. A latent synchronization race is the supported hypothesis; this is not proof of the exact prior failure's cause, nor evidence of a CLASSIFY profiler regression.",
+    "correction": "Register waits for PROFILE and table before click, await both using existing bounded Playwright default timeout, retain positive log/table and absence-of-Biome-log assertions.",
+    "meaningfulness": "A missing profile branch or omitted table still times out; the test no longer asserts a100ms delivery SLA."
+  },
+  "spacing_diagnosis": {
+    "prior_failure": "Root reported CI save-history180 compared absolute paragraph top positions across read/edit. Required edit-only form adds height between groups.",
+    "correction": "Compare direct information-row heights and preceding gaps within each group; reset the gap at explicit .knave-properties block. Keep same before/after equality assertion at1500/390.",
+    "meaningfulness": "Preserves compact height/spacing checks within existing row groups and first row placement, while allowing intended form insertion. Does not authorize arbitrary page layout changes."
+  },
+  "checks": [
+    {
+      "command": "node --check test/browser/generation.smoke.mjs",
+      "result": "pass"
+    },
+    {
+      "command": "node --check test/browser/save-history.smoke.mjs",
+      "result": "pass"
+    },
+    {
+      "command": "git diff --exit-code in detachedR3",
+      "result": "pass"
+    },
+    {
+      "method": "GitHub Git commit API",
+      "result": "public6038d315 tree55c0e66 matches localR3"
+    }
+  ],
+  "open_findings": [],
+  "limitations": [
+    "Exact prior100ms failure not reproduced in8bounded profile attempts; no broad timing/performance claim.",
+    "Root exact-final full browser, Node/check and CI execution remain external pending at this artifact.",
+    "No repeat of unchanged full product UI/probe corpus; priorR2 evidence is reused through exact source/docs and test-only diff bridge."
+  ],
+  "score_effect": "score-neutral delta; six previously assessed whole criteria remain unknown/no points.",
+  "release_approved": false,
+  "followup_automation_health_ref": "automation-health-r3.json"
+}

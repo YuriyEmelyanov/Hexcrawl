@@ -1,0 +1,103 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-044",
+  "stage_id": "CLASSIFY1-R4",
+  "reviewed_at": "2026-11-09T11:52:30.621Z",
+  "reviewed_public_sha": "6fd58bd14e47b1c9c7463f96965801cb9efeb15b",
+  "reviewed_local_sha": "565a61878d5f924c069ee062b25a14a226b48999",
+  "tree_sha": "907c0295ce6da9ec12ba1327d540c2a334541f52",
+  "previous_public_sha": "6038d3151e8385745c6a36c342a12c54b3cc2c62",
+  "previous_local_sha": "c37f1594c65b64ace56e350719c08dd2cb3bb6a1",
+  "status": "test_delta_review_passed_mandatory_ci_browser_gate_failed",
+  "complete_delta": {
+    "files": 3,
+    "insertions": 7,
+    "deletions": 5,
+    "product_source_changes": 0,
+    "docs_changes": 0
+  },
+  "public_bridge_ref": "public-bridge-r4.json",
+  "prior_runtime_evidence_local_sha": "b4f0cf57eedf9262a5056d5cb6487863cf70eed5",
+  "source_bridge": {
+    "src_tree": "f950137399cd6dbcf9de001e8e114670ee51d1d1",
+    "docs_tree": "e40deb64b62a356340d398bbaaba01b21c80db34",
+    "same_as_independently_runtime_tested_R2": true
+  },
+  "assessment": [
+    {
+      "file": "test/browser/water-lifecycle.mjs",
+      "reason": "Old read/edit row-height comparison requires a read Surface row, contradicting explicit owner instruction. Replace with readcount0/editcount1 and rename metric to edit_row_height. Preserve every E6 functional assertion.",
+      "basis": [
+        "docs/terrain-discovery.md",
+        "ci-r3-browser-negative.json"
+      ],
+      "result": "appropriate explicit contract correction"
+    },
+    {
+      "file": "test/browser/myth-material-lifecycle.mjs",
+      "reason": "Independently reproduced original pointer center below viewport; click missed requested target and blurred unrelated draft. Final helper scrolls before measuring, asserts actual hit target and retains physical click plus all focus/value/redo/Escape/document assertions.",
+      "basis": [
+        "tag-pointer-diagnosis.json"
+      ],
+      "result": "stronger physical-target verification; no product fix needed"
+    },
+    {
+      "file": "test/classification.test.mjs",
+      "reason": "Comment-only correction identifies actual tags runner containing Knave lifecycle; Node behavior unchanged.",
+      "result": "accurate documentation"
+    }
+  ],
+  "independent_checks": [
+    {
+      "method": "Read exact Git diff plus secondary read-only auditor",
+      "result": "pass no unjustified assertion weakening"
+    },
+    {
+      "method": "node --check on all3modified files",
+      "result": "pass"
+    },
+    {
+      "method": "Tracked gitdiff in detachedR4",
+      "result": "empty"
+    },
+    {
+      "method": "GitHub Git commit API",
+      "result": "public6fd58bd tree907c029 equals local565a618"
+    }
+  ],
+  "test_inventory": {
+    "new_node_top_level_cases": 4,
+    "modified_existing_node_top_level_cases": 2,
+    "new_browser_workflows": 0,
+    "modified_browser_workflows": 3,
+    "total_existing_browser_workflows": 8,
+    "modified_browser_workflow_names": [
+      "generation",
+      "save-history (water lifecycle nested)",
+      "tags (Knave properties and myth material nested)"
+    ]
+  },
+  "negative_evidence_preserved": [
+    "bounded-probes-00735.json",
+    "empty-after-delete-1379b85.json",
+    "ci-r3-browser-negative.json",
+    "large-navigation-limitation.json",
+    "tag-pointer-diagnosis.json"
+  ],
+  "external_execution": {
+    "root_reported_local_npm_check": "367tests/0fail/0skip + production build pass; not independently rerun as a full suite here",
+    "root_reported_final_browser": "running",
+    "new_head_ci": "Attempt1 browser failure LAKE_AREA/RIV-011 independently confirmed; ci-r4-browser-negative.json",
+    "historical_r3_failure": "retained; corrected tests require final exact-head execution"
+  },
+  "limitations": [
+    "No fullsuite success inferred from root/programmer assertions.",
+    "Prior product callbacks/UI/build reused through exact unchanged-source/docs and test-only diff bridge.",
+    "Local navigation opacity timing cause remains unconfirmed; script and product unchanged, negative evidence not waived."
+  ],
+  "open_findings": [],
+  "score_effect": "No whole criterion awards or point changes.",
+  "release_approved": false,
+  "r4_rng_lake_source_audit_ref": "classification-rng-lake-source-audit.json",
+  "r4_automation_health_ref": "automation-health-r4.json"
+}
