@@ -1,0 +1,146 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-RSR-ROOT-GM-ADOPTION-01",
+  "run_id": "2026-11-09T1830-ROOT-GM-tool-choice",
+  "status": "completed_bounded_with_access_limits",
+  "game_id": "ROOT",
+  "ranking_context": {
+    "active_version": "three-scenario-ranks-1.4-create-evidence",
+    "overall_rank": 5,
+    "create_rank": 7,
+    "active_changed": false
+  },
+  "observations": [
+    {
+      "id": "HX-OBS-ROOT-GM-REQUEST-20261109",
+      "game_ids": [
+        "ROOT"
+      ],
+      "source": {
+        "url_or_ref": "https://www.reddit.com/r/RootRPG/comments/1oys12v",
+        "locator": "OP Nov16; replies Nov16–17 indexed text",
+        "published_at": "2025-11-16"
+      },
+      "observed_fact": "OP is preparing a first Woodland map and prefers digital drawing. Replies recommend general mapping tools and labels; no OP follow-up establishing adoption is visible.",
+      "interpretation": "A digital preparation request, not a failed-tool report or a completed campaign. Reply recommendations are opinions, not independently tested capabilities.",
+      "signal_type": "gm_materials",
+      "quantity": null,
+      "unit": null,
+      "period": "2025-11-16",
+      "geography_language": "English thread; Spanish map labels and author replies in practice report; geography unknown",
+      "author_project_key": "reddit:RootRPG:1oys12v:OP-handle-unavailable",
+      "duplicate_of": null,
+      "access_level": "search_snippet",
+      "scenario_relevance": [
+        "create",
+        "develop"
+      ],
+      "limitations": [
+        "Search-returned indexed thread text only; direct open returned DisabledError. Image and linked artifact not inspected.",
+        "Author handle and comment permalinks not exposed; thread-local OP key is provisional, not a verified independent person.",
+        "Self-selected report; exact RPG printing unspecified; no denominator, completed-session evidence, current tool functionality or willingness-to-switch measurement."
+      ],
+      "observed_at": "2026-11-09T18:35:19.822459+00:00"
+    },
+    {
+      "id": "HX-OBS-ROOT-GM-INKARNATE-20261109",
+      "game_ids": [
+        "ROOT"
+      ],
+      "source": {
+        "url_or_ref": "https://www.reddit.com/r/RootRPG/comments/1qhk74m/i_tried_my_hand_at_making_a_forest_map/",
+        "locator": "OP Jan19; OP-reply-context Jan20, Jan23 and Feb22 2026 in indexed thread",
+        "published_at": "2026-01-19"
+      },
+      "observed_fact": "Author reports making a map for a first Root campaign with Inkarnate. Spanish reply describes following generation rolls then adding/removing some paths and decorating. Later reply identifies the free version/assets. Campaign start was announced; completed sessions are not established.",
+      "interpretation": "Concrete preparation process and a satisfactory existing alternative. No explicit unresolved tool limitation or reason to leave Inkarnate reported. Not verified as the author from the Nov2025 request.",
+      "signal_type": "gm_materials",
+      "quantity": null,
+      "unit": null,
+      "period": "2026-01-19",
+      "geography_language": "English thread; Spanish map labels and author replies in practice report; geography unknown",
+      "author_project_key": "reddit:RootRPG:1qhk74m:OP-handle-unavailable",
+      "duplicate_of": null,
+      "access_level": "search_snippet",
+      "scenario_relevance": [
+        "create",
+        "develop"
+      ],
+      "limitations": [
+        "Search-returned indexed thread text only; direct open returned DisabledError. Image and linked artifact not inspected.",
+        "Author handle and comment permalinks not exposed; thread-local OP key is provisional, not a verified independent person.",
+        "Self-selected report; exact RPG printing unspecified; no denominator, completed-session evidence, current tool functionality or willingness-to-switch measurement."
+      ],
+      "observed_at": "2026-11-09T18:35:19.822459+00:00"
+    }
+  ],
+  "conclusions": [
+    "Digital map preparation is directly self-reported; adopting free Inkarnate is self-reported in a separate thread. It is not established that the request led to that adoption.",
+    "Follow-rolls → manually adjust paths → decorate is a concrete L1 workflow, distinct from a rules engine or hex-based travel demand.",
+    "No evidence in the bounded read establishes an unsolved limitation, current preference for Root Keeper, demand for HexCrawl or a conversion coefficient.",
+    "No unique-GM total computed; request/author replies/search rediscovery are not independent people."
+  ],
+  "unknowns": [
+    "Author identity across threads and independence",
+    "Actual image geometry and save/reload results",
+    "Exact core printing and performed session dates",
+    "Unmet need, switch motivation, population denominator"
+  ],
+  "development_handoff": {
+    "type": "qualitative_context_only_no_new_rule_or_task",
+    "backlog_refs": [
+      "agent-work/backlog.json#HX-BL-006",
+      "agent-work/backlog.json#HX-BL-018"
+    ],
+    "existing_requirement_refs": [
+      "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-003-L1"
+    ],
+    "canonical_refs": [
+      "agent-work/rules/common-rules.json#map.routes_and_barriers",
+      "agent-work/rules/common-rules.json#content.roll_table_resolution"
+    ],
+    "message": "Preserve distinction between dice-based source profile and discretionary GM changes when assessing existing route editing. Do not count this report as normative confirmation of the core profile or an implementation gap. No change to task scope/priority/acceptance.",
+    "operational_requirement": {
+      "source_rule_ref": "agent-work/research/market/ROOT-GM-tool-choice-2026-11-09.json#HX-OBS-ROOT-GM-INKARNATE-20261109",
+      "normative_kind": "observed_practice_not_game_rule; illustrative_product_interpretation",
+      "applicability": "Qualitative L1 preparation comparison only; no new mandatory feature",
+      "layer": "L1",
+      "trigger_or_user_action": "Ведущий корректирует пути после подготовки карты по броскам.",
+      "inputs_and_units": {
+        "clearings": "Три именованные поляны A/B/C, пример исследователя",
+        "paths": "Связи A–B и B–C; это связи полян, не мили и не число гексов"
+      },
+      "product_operation": "Позволить сравнить полученную по броскам сеть с результатом намеренной ручной правки; не выдавать ручную правку за новый бросок.",
+      "expected_output": "После удаления B–C и добавления A–C итог содержит A–B и A–C; названия полян сохранены.",
+      "constraints_and_exceptions": [
+        "Это иллюстрация пользовательского процесса, а не прочитанное новое правило Root.",
+        "Фактическая поддержка HexCrawl и Inkarnate этим источником не проверена; реализация не запускается."
+      ],
+      "acceptance_cases": [
+        {
+          "given": "A/B/C; пути A–B,B–C",
+          "when": "Убрать B–C, добавить A–C",
+          "expected": "Пути A–B,A–C; B–C отсутствует; A/B/C сохранены."
+        }
+      ],
+      "source_vs_product_interpretation": "Отчёт подтверждает добавление/удаление отдельных путей; имена A/B/C и ожидаемый выход придуманы как конкретный пример для сравнения. Нового source rule/binding не создано.",
+      "canonical_rule_refs": [
+        "agent-work/rules/common-rules.json#map.routes_and_barriers"
+      ],
+      "unresolved_parameters": [
+        "Сам отчёт не сообщает алгоритм, ограничения путей или формат сохранения."
+      ]
+    }
+  },
+  "numeric_effect": {
+    "rating_inputs_changed": false,
+    "method_changed": false,
+    "score_changed": false,
+    "proposal_needed": false,
+    "reason": "Qualitative existing signal types; no numerical inference or new metric."
+  },
+  "search_budget": {
+    "completed": "Two targeted search engines; bounded Root threads; no full rescan",
+    "stop_condition": "Request and used alternative distinguished; explicit unsolved limitation not found in accessed text. Stop rather than infer a defect or continue indefinitely."
+  }
+}
