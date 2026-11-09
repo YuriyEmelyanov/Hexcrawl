@@ -1,0 +1,169 @@
+{
+  "schema_version": 1,
+  "program_id": "HX-RSR-001",
+  "run_id": "2026-11-09T1730-ROOT-Keeper-workflow",
+  "game_id": "ROOT",
+  "layer": "L1",
+  "status": "completed_bounded_static_workflow_review",
+  "ranking_version": "three-scenario-ranks-1.4-create-evidence",
+  "selection": {
+    "chosen": "Existing-alternative uncertainty for active overall#5/create#7 Root",
+    "alternatives": [
+      {
+        "game": "KNAVE2",
+        "reason": "Active#3, but full thematic corpus and recent L1 disposition already saved; no fresh rule issue requiring repetition"
+      },
+      {
+        "game": "SD",
+        "reason": "Active#4; practice evidence just saved, no denominator or new targeted source yet"
+      }
+    ],
+    "completion": "Trace one create/edit/persist chain; classify source support separately from live verification and adoption"
+  },
+  "observations": [
+    {
+      "id": "HX-OBS-ROOT-KEEPER-PUBLISHER-20261109",
+      "game_ids": [
+        "ROOT"
+      ],
+      "source": {
+        "url_or_ref": "https://root-rpg.backerkit.com/hosted_preorders/project_updates?page=4",
+        "locator": "May Check-In / Campaign Keeper, lines65–98",
+        "published_at": "2021-05-29"
+      },
+      "observed_fact": "Publisher announced Kyle Kemp's campaign tool for characters and clearings. The listed beta limitations are historical.",
+      "interpretation": "Existing preparation alternative; announcement does not measure adoption.",
+      "signal_type": "gm_materials",
+      "quantity": null,
+      "unit": null,
+      "period": "2021 announcement; checked2026-11-09",
+      "geography_language": "English; audience geography unknown",
+      "author_project_key": "magpie-kyle-kemp:root-rpg-keeper",
+      "duplicate_of": null,
+      "access_level": "full_text",
+      "scenario_relevance": [
+        "create",
+        "develop",
+        "play_now"
+      ],
+      "limitations": [
+        "Publisher announcement, not independent GM testimony",
+        "Historical beta bugs must not be treated as current"
+      ],
+      "observed_at": "2026-11-09T17:33:20.921Z"
+    },
+    {
+      "id": "HX-OBS-ROOT-KEEPER-SOURCE-20261109",
+      "game_ids": [
+        "ROOT"
+      ],
+      "source": {
+        "url_or_ref": "https://github.com/Vagabottos/root-rpg/blob/bd5c4c98fd050f8e454f640677e5a74edb279cd3/client/src/app/pages/campaign-view-clearings/campaign-view-clearings.page.ts",
+        "locator": "SHA bd5c4c98fd050f8e454f640677e5a74edb279cd3; selected files/lines in workflow_trace",
+        "published_at": null
+      },
+      "observed_fact": "Source generates twelve clearings. Map editing uses a copy: move a clearing, add/remove symmetric paths, confirm or discard. Confirm patches the campaign; server uses MongoDB. Map and edit controls carry ion-hide-lg-down.",
+      "interpretation": "Source-supported alternative for a bounded L1 workflow. Responsive restriction is a comparison hypothesis, not proven unmet demand.",
+      "signal_type": "gm_materials",
+      "quantity": null,
+      "unit": null,
+      "period": "repository snapshot2026-11-09; deployed revision unknown",
+      "geography_language": "English UI; geography unknown",
+      "author_project_key": "magpie-kyle-kemp:root-rpg-keeper",
+      "duplicate_of": "HX-OBS-ROOT-KEEPER-PUBLISHER-20261109",
+      "access_level": "full_text",
+      "scenario_relevance": [
+        "create",
+        "develop"
+      ],
+      "limitations": [
+        "Static selected-code inspection, no runtime or authenticated save/reload test",
+        "Repository/site lineage supported by publisher author and deployment domain, exact deployed SHA unknown",
+        "No users, campaigns or demand denominator measured",
+        "Not Root boardgame companion"
+      ],
+      "observed_at": "2026-11-09T17:33:20.921Z"
+    }
+  ],
+  "workflow_trace": [
+    {
+      "step": "create",
+      "source": "https://github.com/Vagabottos/root-rpg/blob/bd5c4c98fd050f8e454f640677e5a74edb279cd3/server/src/middleware/reformat-campaign.ts",
+      "locator": "NUM_CLEARINGS line9; generation557–564; context.data598",
+      "evidence_kind": "static_source",
+      "result": "Twelve generated clearings; no book-rule equivalence claim"
+    },
+    {
+      "step": "edit",
+      "source": "https://github.com/Vagabottos/root-rpg/blob/bd5c4c98fd050f8e454f640677e5a74edb279cd3/client/src/app/pages/campaign-view-clearings/campaign-view-clearings.page.ts",
+      "locator": "47–75,87–115",
+      "evidence_kind": "static_source",
+      "result": "Edit copy, movement and bidirectional paths, confirm/discard"
+    },
+    {
+      "step": "persist",
+      "source": "https://github.com/Vagabottos/root-rpg/blob/bd5c4c98fd050f8e454f640677e5a74edb279cd3/client/src/app/services/data.service.ts",
+      "locator": "156–176; campaign.api.service.ts20–45; server campaign.class.ts8–16 and campaign.hooks.ts39–46",
+      "evidence_kind": "static_source",
+      "result": "Patch followed by reload; authenticated MongoDB service. Successful live roundtrip unknown"
+    },
+    {
+      "step": "responsive_boundary",
+      "source": "https://github.com/Vagabottos/root-rpg/blob/bd5c4c98fd050f8e454f640677e5a74edb279cd3/client/src/app/pages/campaign-view-clearings/campaign-view-clearings.page.html",
+      "locator": "edit/confirm buttons and app-woodland-map class ion-hide-lg-down",
+      "evidence_kind": "static_template",
+      "result": "Map editing hidden below large breakpoint in inspected template; deployed mobile behavior unknown"
+    }
+  ],
+  "development_handoff": {
+    "existing_task": "HX-BL-049",
+    "requirement_refs": [
+      "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-001-L1",
+      "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-003-L1",
+      "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-005-L1"
+    ],
+    "canonical_rule_refs": [
+      "agent-work/rules/common-rules.json#content.site_density",
+      "agent-work/rules/common-rules.json#map.routes_and_barriers",
+      "agent-work/rules/common-rules.json#map.faction_control"
+    ],
+    "disposition": "Attach existing-alternative context only. Creating a generic Root generator is not yet justified as unmet need. Strategist should compare an explicit user advantage before choosing scope.",
+    "comparison_examples": [
+      {
+        "given": "Existing twelve-clearing woodland",
+        "when": "Move clearing A, add path A–B, confirm and reopen",
+        "expected": "Same twelve clearings; new A position; path A–B retained in both directions; other content preserved",
+        "status": "benchmark example; source chain exists; live outcome unknown"
+      },
+      {
+        "given": "Existing map snapshot",
+        "when": "Move A and discard",
+        "expected": "Original saved A position remains",
+        "status": "benchmark example, not executed"
+      }
+    ],
+    "new_rules": 0,
+    "new_operational_requirements": 0,
+    "reason": "Tool capability evidence, not new book-rule extraction. Existing operational_requirement and canonical registries preserved.",
+    "runtime_evidence_for_hexcrawl": "unknown; no product SHA tested",
+    "implementation_authorized": false
+  },
+  "unknowns": [
+    "Exact deployed revision and successful save/reload",
+    "Uptake, active GM denominator, switching intent",
+    "Import/export compatibility and offline use not established by this bounded read",
+    "Source algorithm equivalence with final core and supplement not tested"
+  ],
+  "next_candidate": {
+    "task_id": "HX-RSR-ROOT-GM-ADOPTION-01",
+    "game_id": "ROOT",
+    "layer": "L1",
+    "status": "candidate_not_fixed_rotation",
+    "action": "Find one independent actual GM woodland preparation report with tool choice and concrete limitation; start with dated RootRPG map-making thread, then follow author's own artifact. Deduplicate and verify played/prepared status; no population estimate.",
+    "reason": "Tool supply established qualitatively; demand/why switch remains missing. Reassess fresh priorities first."
+  },
+  "active_rating_changed": false,
+  "numeric_method_changed": false,
+  "score_changed": false,
+  "owner_decisions_needed": []
+}
