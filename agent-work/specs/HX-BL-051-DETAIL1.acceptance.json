@@ -1,0 +1,244 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-051",
+  "stage_id": "DETAIL1",
+  "version": "DTL-1.0",
+  "status": "ready_for_programmer",
+  "approval_ref": "agent-work/decisions/owner-approval-2026-11-09-HX-BL-051-DETAIL1.json",
+  "spec_ref": "agent-work/specs/HX-BL-051-DETAIL1.md",
+  "acceptance": [
+    {
+      "id": "DTL-01",
+      "name": "Grid 1/6/12/24",
+      "expected": "У новой карты проектный шаг задаётся в милях между противоположными сторонами; 1миля=1609.344м. Переключение1→6→12→24→1 меняет сетку/сводку, не исходные регионы,биомы,воды,POIIDs,содержимое,RNG."
+    },
+    {
+      "id": "DTL-02",
+      "name": "Grid alignment",
+      "expected": "Зафиксированы начало/ориентация всех уровней; pan/zoom/rotation не сдвигает границы относительно мира. Крупные гексы могут пересекать мелкие; нет обещания4/16/36целых дочерних ячеек."
+    },
+    {
+      "id": "DTL-03",
+      "name": "Legacy conversion",
+      "expected": "v2–v10 без известной физической конвенции не переобъявляется молча. Для DETAIL1 предложить явную адаптацию с проектным допущением6миль исходному шагу, предпросмотром и однимUndo; Cancel/ошибка оставляют весь документ/RNG прежним. Knave6mile/null сохраняет источникunknown отдельно от допущения отображения."
+    },
+    {
+      "id": "DTL-04",
+      "name": "Small site",
+      "expected": "Башня с неизвестными габаритами получает1полный подходящий одномильный гекс охвата,значок внутри и обводку. Это охват выбора,не утверждение о площади здания; одноID/имя/содержимое."
+    },
+    {
+      "id": "DTL-05",
+      "name": "Capital default",
+      "expected": "Истинный типcapital без размеров получает минимум2смежных по ребру допустимых гекса как явно условный проектный охват; одинPOI,иконка в каждом члене,единая внешняя обводка. Не выводить число из SVGicon или имени."
+    },
+    {
+      "id": "DTL-06",
+      "name": "Seat exception",
+      "expected": "MBthrone/Seat со значкомcapital не получает правило размера столицы. При неизвестных размерах остаётся1подходящий гекс; квоты/теги/рольMBне меняются."
+    },
+    {
+      "id": "DTL-07",
+      "name": "Measured extent",
+      "expected": "При заданном исходном контуре в мировых координатах охват строится по положительному пересечению с1mileсеткой, сохраняются источник/единицы/метод. Изолированное касание ребра/вершины не добавляет клетку. Одна площадь/название без формы не превращается в якобы известный контур."
+    },
+    {
+      "id": "DTL-08",
+      "name": "Manual extent",
+      "expected": "Расширить/сократить условный охват адресно; набор непустой и связан по ребру, сохраняет обязательныеводные/путевые привязки и минимум2дляcapital с неизвестным размером; подтверждённый малый контур имеет приоритет. Ошибка,неприменённыйчерновик,Escape/Cancel не меняют документ. Это не кисть биома028."
+    },
+    {
+      "id": "DTL-09",
+      "name": "One entity",
+      "expected": "При выборе любой из занятых клеток открывается тот жеPOI. В сводке крупной ячейки столица считается1раз,а не по числузначков. JSON/Undo не создаёт копий текста/Knave-результатов/источника."
+    },
+    {
+      "id": "DTL-10",
+      "name": "Shared cell",
+      "expected": "Несколько малыхPOI и город/мост могут занимать одну отображаемую клетку. Список выбора сохраняет всеID; ради разделениязначков нельзя смещать водныйякорь/географию. Физическое совпадение противоречащих профилей проверяется отдельно."
+    },
+    {
+      "id": "DTL-11",
+      "name": "Water shore",
+      "expected": "POI с обязательнымshore/water_contact получает конкретный допустимый берег/водоём и точкуконтакта; после детализации остаётся у того же объекта воды. Сухой центральный гекс вместо берега отклоняется; вода не передвигается радиPOI."
+    },
+    {
+      "id": "DTL-12",
+      "name": "Water river",
+      "expected": "river_contact сохраняет ту же riverID/участок/порт; озеро рядом не заменяет реку. Water-contact-unknown не приписывать по имени«мельница». Для legacy без происхождения unknown явно отделён от обязательного."
+    },
+    {
+      "id": "DTL-13",
+      "name": "Water objects/crossings",
+      "expected": "ВодныйPOIостаётся на той же воде; crossing/rapid/waterfall профиль привязывается к соответствующему реальному элементу. У города достаточно подходящей набережной/входа,не каждый его гекс обязан касаться воды."
+    },
+    {
+      "id": "DTL-14",
+      "name": "Center fallback",
+      "expected": "Без более сильного требования выбрать центральный допустимый1mileгекс исходной области; при равенстве — устойчивый координатный порядок. Требования воды/входа/среды не заменяются центральностью; новых случайных бросков для размещения нет."
+    },
+    {
+      "id": "DTL-15",
+      "name": "Real route contact",
+      "expected": "Маршрут, обслуживающийPOI, имеет действительный связанный узел доступа в охвате и положительный участок внутри него; разрешён вход на границе с дальнейшим вхождением. Дорога в соседней клетке,касаниеугла,видимое наложениенесвязанныхлиний не проходят."
+    },
+    {
+      "id": "DTL-16",
+      "name": "Capital entry",
+      "expected": "Дорога/тропа входит через указанный вход в площадь многогексовой столицы. Не требуется проводить путь через каждыйповторзначка; граф соединён сPOI,пиктограммы не уводят вход в соседнюю клетку."
+    },
+    {
+      "id": "DTL-17",
+      "name": "No forced access",
+      "expected": "Не создавать дорогу к каждому скрытому/изолированномуPOI. Выход дороги в неизвестную область поROAD03 допустим. Требованиепроходитьпообъекту относится к предусмотренным/явно назначенным соединениям."
+    },
+    {
+      "id": "DTL-18",
+      "name": "Water crossing legality",
+      "expected": "Новая/адаптированная ветвь пути через воду получает настоящую переправу поROAD/RIV,безрисованногофальшсоединителя. ПриF≥3брод запрещён; невозможное допустимое подключение отклоняется атомарно."
+    },
+    {
+      "id": "DTL-19",
+      "name": "Freeze hydrography",
+      "expected": "После детализации того же озера/реки сохраняются IDs,координаты,истоки,стоки,F,ёмкости,пороги/водопады и связи. Число новых мелких клеток не поступает в прежниеN-зависимыеформулыRIV008/009/017."
+    },
+    {
+      "id": "DTL-20",
+      "name": "Freeze accepted map on view",
+      "expected": "Простое изменение уровня/зум не переноситPOIи не меняет дороги. Адаптация старыхякорей/путей — только явная транзакция с предпросмотром: неизменные части дорог и вся гидрография сохранены; добавленные соединители валидны и сохранены,не простоSVG."
+    },
+    {
+      "id": "DTL-21",
+      "name": "Edit/remap/remove",
+      "expected": "Переименование,обычный переносPOI,E7/E8переносгеографии и удаление обновляют единыйохват/привязки по утверждённым identityправилам. Невозможный перенос сводой/дорогой — точный отказ; невисячие ссылки,нечастичная потеряконтента."
+    },
+    {
+      "id": "DTL-22",
+      "name": "Persistence/version",
+      "expected": "Экспорт активногоDETAIL1 — явныйv11; импорт поддерживает старыеv2–v10 ивалидныйv11 атомарно. Futureversion,неизвестныйprofile,невалидныеcells/водныепорты/путевыеrefs отклоняются до изменениякарты. v10не выдавать за форматсновымиобязательнымиполями."
+    },
+    {
+      "id": "DTL-23",
+      "name": "History/RNG",
+      "expected": "Активация/адаптация,правкаохвата и связанныйремонтпути — каждая однадокументная транзакция с точнымUndo/Redo. ПринятыеKnave/MBтексты,кубы,счётчики иRNG не перебрасываются припросмотре/адаптации/повторномоткрытии."
+    },
+    {
+      "id": "DTL-24",
+      "name": "Overview/UI",
+      "expected": "На6/12/24малые границы скрыты,смешанныебиомы сохранены. Отображение повторов можетсворачиваться в1значок+числоохвата при нехваткеместа,но общийконтур/полныйсписок/переход1миля сохраняются. Карточка показываетуникальныеPOI,частьобъекта,охват/источникразмера иводу/входы компактно."
+    },
+    {
+      "id": "DTL-25",
+      "name": "Modes/compatibility",
+      "expected": "Classic,MB,Knave сохраняют собственные квоты/принадлежность/теги/центральные роли. MBruins не получает фильтрнеактивныхмифов; player-map/VTT не входит. Старые6mileKnave данные не заменяются новымисточниковымутверждениемгеометрии."
+    },
+    {
+      "id": "DTL-26",
+      "name": "Responsive/export",
+      "expected": "Actualdesktop1500/390/320,keyboard/touch,доступныецели/Cancel/ошибка/длинныеимена,выборперекрывающихсяPOI проверены наexactSHA. PNG/SVG отображают выбранныйуровень/охват без дублированияданных; экспорт остаётсяGMview,секреты автоматическине очищаются."
+    },
+    {
+      "id": "DTL-27",
+      "name": "Failure/no space",
+      "expected": "Не хватает допустимыхсоседнихклетокдлястолицы иливоды/дорог — указатьконкретноеограничение,предложитьизменитьохват/привязку,не сдвигатьреку/другиеPOI молча. Публикационныйпакет не содержитнеразрешённыхобязательныхпривязок."
+    },
+    {
+      "id": "DTL-28",
+      "name": "Required checks/evidence",
+      "expected": "npm run check Node24, build+test:browser и применимый отдельныйRNG выполняются поAGENTS. Переиспользуются существующие генерация/POI/editor/E7/E8/import/historyfixtures; нетсамовольнойновойтяжёлойсерии003или500картрадибаллов. Передrelease — независимыйexactSHAreview всегоDETAIL1+score_assessment1.2."
+    }
+  ],
+  "score_model_version": "1.2",
+  "score_criteria": [
+    {
+      "criterion_id": "S01-C04",
+      "weight": 25,
+      "before_grade": null,
+      "before_points": null,
+      "baseline_ref": "agent-work/score/current-score.json",
+      "baseline_blob_sha": "05e1ba3c1a12b300d564fd044b15b8121d5fa0cd",
+      "expected_grade": null,
+      "expected_points": null,
+      "expected_delta": null,
+      "evidence_needed": "Exact valid paths through access nodes/footprints, legal crossings; route fixtures not full campaign coverage.",
+      "status": "unknown; reviewer must assess on exactSHA; no forecast awarded"
+    },
+    {
+      "criterion_id": "S01-C05",
+      "weight": 10,
+      "before_grade": null,
+      "before_points": null,
+      "baseline_ref": "agent-work/score/current-score.json",
+      "baseline_blob_sha": "05e1ba3c1a12b300d564fd044b15b8121d5fa0cd",
+      "expected_grade": null,
+      "expected_points": null,
+      "expected_delta": null,
+      "evidence_needed": "Fine footprint/source-water eligibility, no geography/hydro regression; not500mapexpert claim.",
+      "status": "unknown; reviewer must assess on exactSHA; no forecast awarded"
+    },
+    {
+      "criterion_id": "S03-C01",
+      "weight": 25,
+      "before_grade": null,
+      "before_points": null,
+      "baseline_ref": "agent-work/score/current-score.json",
+      "baseline_blob_sha": "05e1ba3c1a12b300d564fd044b15b8121d5fa0cd",
+      "expected_grade": null,
+      "expected_points": null,
+      "expected_delta": null,
+      "evidence_needed": "Addressed footprint/edit/remap/delete with validated state and Undo.",
+      "status": "unknown; reviewer must assess on exactSHA; no forecast awarded"
+    },
+    {
+      "criterion_id": "S04-C03",
+      "weight": 20,
+      "before_grade": null,
+      "before_points": null,
+      "baseline_ref": "agent-work/score/current-score.json",
+      "baseline_blob_sha": "05e1ba3c1a12b300d564fd044b15b8121d5fa0cd",
+      "expected_grade": null,
+      "expected_points": null,
+      "expected_delta": null,
+      "evidence_needed": "1/6/12/24display only; player map/fog-of-war still not implemented.",
+      "status": "unknown; reviewer must assess on exactSHA; no forecast awarded"
+    },
+    {
+      "criterion_id": "S04-C04",
+      "weight": 15,
+      "before_grade": null,
+      "before_points": null,
+      "baseline_ref": "agent-work/score/current-score.json",
+      "baseline_blob_sha": "05e1ba3c1a12b300d564fd044b15b8121d5fa0cd",
+      "expected_grade": null,
+      "expected_points": null,
+      "expected_delta": null,
+      "evidence_needed": "v11oldimport/roundtrip/export of new links and unchanged source content.",
+      "status": "unknown; reviewer must assess on exactSHA; no forecast awarded"
+    },
+    {
+      "criterion_id": "S05-C01",
+      "weight": 25,
+      "before_grade": null,
+      "before_points": null,
+      "baseline_ref": "agent-work/score/current-score.json",
+      "baseline_blob_sha": "05e1ba3c1a12b300d564fd044b15b8121d5fa0cd",
+      "expected_grade": null,
+      "expected_points": null,
+      "expected_delta": null,
+      "evidence_needed": "Compact context for one/multi-cell POI, unique counts and sourcecells.",
+      "status": "unknown; reviewer must assess on exactSHA; no forecast awarded"
+    }
+  ],
+  "score_forecast": "unknown",
+  "ui_preview": {
+    "version": "DETAIL1-UI1",
+    "shown_in_chat": true,
+    "desktop": "agent-work/mockups/HX-BL-051-DETAIL1-UI1/DETAIL1-desktop.png",
+    "narrow": "agent-work/mockups/HX-BL-051-DETAIL1-UI1/DETAIL1-narrow.png",
+    "commit": "d146b44eac1aa1581ba374814718202ac891328c",
+    "design_gate": false
+  },
+  "next_role": "programmer",
+  "implementation_allowed": true,
+  "release_approved": false
+}
