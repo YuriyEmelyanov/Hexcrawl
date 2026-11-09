@@ -12,8 +12,9 @@ import mythMaterialRecords from '../src/tags/mythMaterialData.ts';
 import {createGenerationHarness} from './helpers/generation-harness.mjs';
 import {regionFixture} from './helpers/region-fixture.mjs';
 import {newKnaveLayer,validateKnaveLayer,setKnaveDifficulty,setKnaveDiscovery,remapKnavePois,knaveLosses,dropKnaveLoss} from '../src/knaveClassic.ts';
-import {emptyKnaveContent,fillKnaveContent,validateKnaveContent,validateKnaveCatalog,knaveCompatibleRows} from '../src/tags/knave.ts';
+import {emptyKnaveContent,fillKnaveContent,validateKnaveContent,validateKnaveCatalog,knaveCompatibleRows,rerollKnaveContent} from '../src/tags/knave.ts';
 import {drawTagIndex} from '../src/tags/engine.ts';
+import {createGenerationState} from '../src/worldRandom.ts';
 import {knaveCatalogFixture,knaveFactsFixture,knaveContentFixture} from './helpers/knave-fixture.mjs';
 
 test('Knave content snapshots use filtered source rows and separate real d100, remain immutable and replay after JSON',()=>{
@@ -34,6 +35,31 @@ test('Knave content snapshots use filtered source rows and separate real d100, r
  const hundred=fillKnaveContent(emptyKnaveContent(),catalog,[water],seed100).byPoi[water.owner].trait;
  assert.equal(hundred.roll,100);assert.equal(hundred.sourceRow,100);assert.equal(catalog.tables.place_traits[hundred.sourceRow-1].printedResult,'00');
  assert.deepEqual(drawTagIndex(42,'one-row-pool',0,1),{index:0,nextCounter:1});assert.throws(()=>drawTagIndex(42,'exhausted',Number.MAX_SAFE_INTEGER,100));
+});
+// UI2-04..08: this operation did not exist in the initial-fill test. Check its
+// public preservation/selection contract, rather than UI internals or counts.
+test('Knave granular rerolls preserve categories and siblings, consume only targeted counters and replay after JSON',()=>{
+ const catalog=knaveCatalogFixture(),land=knaveFactsFixture(),other=knaveFactsFixture('poi:2:1,0'),water=knaveFactsFixture('waterPoi:2,0'),settlement=knaveFactsFixture('poi:3:3,0',{kind:'settlement'});
+ const state=fillKnaveContent(emptyKnaveContent(),catalog,[land,other,water,settlement],42),original=structuredClone(state);
+ for(const part of ['trait','primary','both']){
+  const next=rerollKnaveContent(state,catalog,land,42,part),before=state.byPoi[land.owner],after=next.byPoi[land.owner];
+  assert.equal(after.category,before.category);assert.equal(after.site.table,before.site.table);
+  assert.equal(next.rollCounters[land.owner].category,state.rollCounters[land.owner].category);
+  assert.equal(next.rollCounters[land.owner].primary,state.rollCounters[land.owner].primary+(part==='trait'?0:1));
+  assert.equal(next.rollCounters[land.owner].trait,state.rollCounters[land.owner].trait+(part==='primary'?0:1));
+  if(part==='trait')assert.deepEqual(after.site,before.site);else{assert.ok(knaveCompatibleRows(after.site.table,land).includes(after.site.sourceRow));assert.equal(after.site.ru,catalog.tables[after.site.table][after.site.sourceRow-1].ru);}
+  if(part==='primary')assert.deepEqual(after.trait,before.trait);else{assert.equal(after.trait.sourceRow,after.trait.roll);assert.equal(after.trait.ru,catalog.tables.place_traits[after.trait.roll-1].ru);}
+  for(const f of [other,water,settlement]){assert.deepEqual(next.byPoi[f.owner],state.byPoi[f.owner]);assert.deepEqual(next.rollCounters[f.owner],state.rollCounters[f.owner]);}
+  assert.deepEqual(rerollKnaveContent(JSON.parse(JSON.stringify(next)),catalog,land,42,part),rerollKnaveContent(next,catalog,land,42,part));
+  assert.deepEqual(state,original);
+ }
+ for(const facts of [water,settlement]){const next=rerollKnaveContent(state,catalog,facts,42,'trait');assert.equal(next.byPoi[facts.owner].site,null);assert.deepEqual(next.rollCounters[facts.owner],{category:0,primary:0,trait:2});assert.throws(()=>rerollKnaveContent(state,catalog,facts,42,'primary'));}
+ // A reroll is permitted to repeat: no forced replacement or hidden extra draw.
+ const sameSeed=Array.from({length:10000},(_,i)=>i).find(seed=>drawTagIndex(seed,`knave-content-v1:${land.owner}:trait`,0,100).index===drawTagIndex(seed,`knave-content-v1:${land.owner}:trait`,1,100).index);
+ assert.notEqual(sameSeed,undefined);const repeated=fillKnaveContent(emptyKnaveContent(),catalog,[land],sameSeed),again=rerollKnaveContent(repeated,catalog,land,sameSeed,'trait');assert.deepEqual(again.byPoi[land.owner].trait,repeated.byPoi[land.owner].trait);assert.equal(again.rollCounters[land.owner].trait,2);
+ for(const part of ['primary','both'])for(const facts of [{...land,dry:false},{...land,kind:'settlement'}]){assert.throws(()=>rerollKnaveContent(state,catalog,facts,42,part));assert.deepEqual(state,original);}
+ const badCatalog=structuredClone(catalog);badCatalog.tables.place_traits.pop();assert.throws(()=>rerollKnaveContent(state,badCatalog,land,42,'both'));assert.deepEqual(state,original);
+ const exhausted=structuredClone(state);exhausted.rollCounters[land.owner].trait=Number.MAX_SAFE_INTEGER;const before=structuredClone(exhausted);assert.throws(()=>rerollKnaveContent(exhausted,catalog,land,42,'both'));assert.deepEqual(exhausted,before,'failed second draw cannot consume the first draw');
 });
 test('Knave catalog and snapshot refusals are atomic; context predicates use existing features and never infer climate',()=>{
  const c=knaveCatalogFixture(),facts=knaveFactsFixture(),state=knaveContentFixture(),before=structuredClone(state),live=new Set([facts.owner]);
@@ -266,11 +292,13 @@ function atCapacity(o,withKnown=true){
  if(!withKnown)s.rollCounters={};
  return s;
 }
-test('equal independent dice expose distinct localized purposes and current edited results without visible labels',()=>{
+test('equal independent dice expose visible purpose before dice and current localized edited results',()=>{
  const source=fs.readFileSync(new URL('../src/tags/TagRow.tsx',import.meta.url),'utf8');
  const code=ts.transpileModule(source,{compilerOptions:{module:ts.ModuleKind.CommonJS,jsx:ts.JsxEmit.ReactJSX}}).outputText;
  const module={exports:{}},require=createRequire(import.meta.url);
- new Function('require','module','exports',code)(name=>name==='./engine'?{ownerKey}:name==='./MythMaterialView'?{MythMaterialView:()=>null}:require(name),module,module.exports);
+ const sharedSource=fs.readFileSync(new URL('../src/tags/TableResultRow.tsx',import.meta.url),'utf8'),sharedCode=ts.transpileModule(sharedSource,{compilerOptions:{module:ts.ModuleKind.CommonJS,jsx:ts.JsxEmit.ReactJSX}}).outputText,shared={exports:{}};
+ new Function('require','module','exports',sharedCode)(require,shared,shared.exports);
+ new Function('require','module','exports',code)(name=>name==='./engine'?{ownerKey}:name==='./MythMaterialView'?{MythMaterialView:()=>null}:name==='./TableResultRow'?shared.exports:require(name),module,module.exports);
  const def=defs['mb.land'],instance={...rollTag(emptyTags(),owner,def,42).instances[0],values:[[2],[2]],...resolved(def,[[2],[2]]),overrides:[{ru:'Моя земля',en:'My land'},{}]};
  for(const language of ['ru','en']){
   const html=renderToStaticMarkup(React.createElement(module.exports.TagRow,{owner,definition:def,instance,language,editMode:false,disabled:false,onRoll:()=>true,onEdit:()=>true}));
@@ -280,11 +308,39 @@ test('equal independent dice expose distinct localized purposes and current edit
   assert.ok(names[0].includes(language==='ru'?'Состояние':'Character'));
   assert.ok(names[1].includes(language==='ru'?'Ландшафт':'Landscape'));
   assert.ok(names.every(n=>n.includes('d12: 2')));
+  const label=language==='ru'?def.label.ru:def.label.en;assert.ok(html.includes(label));
+  assert.ok(html.indexOf('tag-label')<html.indexOf('tag-die'),'visible entity precedes dice');
+  assert.ok(html.indexOf('tag-label')<html.indexOf(language==='ru'?'Моя земля':'My land'),'visible entity precedes result');
  }
 });
 const fixture=JSON.parse(fs.readFileSync(new URL('./fixtures/import-v2/baseline-mythic.json',import.meta.url)));
 const stable=h=>structuredClone(h.render().captureDocument());
 async function load(h,data=fixture){h.setWindow({alert:m=>{throw Error(m)},matchMedia:()=>({matches:false})});h.injectFunction('readTextFile',async f=>f.text);await h.render().handleImportJson({target:{files:[{text:JSON.stringify(data)}],value:''}});h.render();}
+// UI2-06/09/10: the domain adapter cannot prove that the App commits the
+// rendered marker, accepted result and history together. Reuse the tiny import.
+test('Knave actual reroll command is one reversible transaction preserving authored context and continuation',async()=>{
+ const d=regionFixture();d.version=10;d.generation=createGenerationState(42);d.map.seas=[];d.map.nextSeaId=1;d.map.editorNames={'poi:1:2,0':{ru:'Именная точка',en:'Named site'}};d.map.regions[0].pointOfInterestKinds['2,0']='ruins';d.map.knave=newKnaveLayer();
+ d.map.knave.content=knaveContentFixture('poi:1:2,0');d.map.knave.discoveryByPoi={'poi:1:2,0':{mode:'interaction',clueText:'Авторская улика'}};d.map.knave.difficultyByHex={'2,0':'difficult'};
+ const h=createGenerationHarness(42);await load(h,d);h.guardRandom();h.injectFunction('knaveGenerationCatalog',knaveCatalogFixture);
+ let clock=1000;h.injectFunction('Date.now',()=>clock);
+ const key='poi:1:2,0',before=stable(h),history=h.render().undoHistory.length;
+ assert.equal(h.render().mutateKnaveContent(key,'trait'),true);const trait=stable(h);
+ assert.deepEqual(trait.map.knave.content.byPoi[key].site,before.map.knave.content.byPoi[key].site);assert.deepEqual(trait.map.regions,before.map.regions,'trait reroll does not change any marker or kind');assert.deepEqual(trait.map.generation,before.map.generation);assert.equal(h.render().undoHistory.length,history+1);
+ assert.equal(h.render().mutateKnaveContent(key,'trait'),false,'same-instant second click does not spend another draw');assert.deepEqual(stable(h),trait);
+ h.render().undoMap();assert.deepEqual(stable(h),before);h.render().redoMap();assert.deepEqual(stable(h),trait);
+ clock+=350;assert.equal(h.render().mutateKnaveContent(key,'both'),true);const both=stable(h),content=both.map.knave.content.byPoi[key],counters=both.map.knave.content.rollCounters[key];
+ assert.equal(counters.category,1);assert.equal(counters.primary,2);assert.equal(counters.trait,3);assert.equal(content.category,before.map.knave.content.byPoi[key].category);
+ assert.equal(both.map.regions[0].pointOfInterestKinds['2,0'],content.site.representation);
+ assert.deepEqual(both.map.editorNames,before.map.editorNames);assert.deepEqual(both.map.gmNotesByHexKey,before.map.gmNotesByHexKey);assert.deepEqual(both.map.knave.discoveryByPoi,before.map.knave.discoveryByPoi);assert.deepEqual(both.map.knave.difficultyByHex,before.map.knave.difficultyByHex);assert.deepEqual(both.map.generation,before.map.generation);
+ const physical=doc=>{const copy=structuredClone(doc);delete copy.map.knave;for(const r of copy.map.regions){delete r.centralPoiKind;delete r.pointOfInterestKinds;}return copy;};assert.deepEqual(physical(both),physical(before));
+ h.render().undoMap();assert.deepEqual(stable(h),trait);h.render().redoMap();assert.deepEqual(stable(h),both);
+ const save=h.render().createSaveData();assert.equal(save.version,10);h.geometry.assertHexcrawlSaveData(save);
+ const restored=createGenerationHarness(42);await load(restored,save);restored.injectFunction('knaveGenerationCatalog',knaveCatalogFixture);clock+=350;
+ assert.equal(h.render().mutateKnaveContent(key,'primary'),true);assert.equal(restored.render().mutateKnaveContent(key,'primary'),true);assert.deepEqual(stable(h),stable(restored));
+ clock+=350;h.render().setEditMode(true);assert.equal(h.render().changeKnaveDraft({clueText:'Незавершённая улика'}),true);const draft=stable(h),draftHistory=h.render().undoHistory.length;
+ assert.equal(h.render().mutateKnaveContent(key,'trait'),false);assert.deepEqual(stable(h),draft);assert.equal(h.render().undoHistory.length,draftHistory);h.render().resetKnaveDraft();
+ const missing=h.injectFunction('knaveGenerationCatalog',()=>{throw Error('Missing catalog');}),unchanged=stable(h),stacks=structuredClone([h.render().undoHistory,h.render().redoHistory]);assert.equal(h.render().mutateKnaveContent(key,'both'),false);assert.deepEqual(stable(h),unchanged);assert.deepEqual(structuredClone([h.render().undoHistory,h.render().redoHistory]),stacks);missing();
+});
 test('production imported legacy map does not roll; explicit fill and separate rerolls are exact reversible transactions and v6 roundtrip',async()=>{
  const h=createGenerationHarness(42);await load(h);
  assert.equal(h.render().tags.instances.length,0);

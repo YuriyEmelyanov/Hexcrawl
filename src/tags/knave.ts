@@ -70,14 +70,18 @@ export function knaveCompatibleRows(table:PrimaryTable,facts:KnaveFacts):number[
   if(facts.kind!=='land'||!facts.dry)return [];
   return policy.rows.filter(r=>r.table===table&&r.status==='eligible'&&r.requiresAll?.every(p=>p==='dry_hex'?facts.dry:matches(p,facts))).map(r=>r.sourceRow);
 }
+
+function validateFacts(f:KnaveFacts):void {
+  if(!owner(f.owner)||!['land','settlement','water'].includes(f.kind)||f.owner.startsWith('waterPoi:')!==(f.kind==='water')||f.kind!=='water'&&!f.dry||f.kind==='water'&&f.dry
+    ||f.height!==null&&![1,2,3].includes(f.height)||!['dry','forest','wetland','sand','coldIce','river','riverStart','rapids','waterfall','waterContact','road','roadJunction'].every(k=>typeof f[k as keyof KnaveFacts]==='boolean')
+    ||!Array.isArray(f.crossings)||new Set(f.crossings).size!==f.crossings.length||f.crossings.some(k=>!['bridge','ford','ferry'].includes(k)))fail();
+}
 /** Only missing live owners are filled. Existing snapshots/text/counters are
  * immutable, regardless of catalog text changes or the requested target order. */
 export function fillKnaveContent(state:KnaveContentState,catalog:KnaveCatalog,facts:readonly KnaveFacts[],seed:number,preservedOwners?:ReadonlySet<string>):KnaveContentState {
   validateKnaveCatalog(catalog);
   const live=new Set(facts.map(f=>f.owner));if(live.size!==facts.length)fail();
-  for(const f of facts)if(!owner(f.owner)||!['land','settlement','water'].includes(f.kind)||f.owner.startsWith('waterPoi:')!==(f.kind==='water')||f.kind!=='water'&&!f.dry||f.kind==='water'&&f.dry
-    ||f.height!==null&&![1,2,3].includes(f.height)||!['dry','forest','wetland','sand','coldIce','river','riverStart','rapids','waterfall','waterContact','road','roadJunction'].every(k=>typeof f[k as keyof KnaveFacts]==='boolean')
-    ||!Array.isArray(f.crossings)||new Set(f.crossings).size!==f.crossings.length||f.crossings.some(k=>!['bridge','ford','ferry'].includes(k)))fail();
+  for(const f of facts)validateFacts(f);
   validateKnaveContent(state,live);
   const pending=facts.filter(f=>!own(state.byPoi,f.owner)&&!preservedOwners?.has(f.owner)).sort((a,b)=>a.owner<b.owner?-1:a.owner>b.owner?1:0);
   if(!pending.length)return state;
@@ -96,6 +100,31 @@ export function fillKnaveContent(state:KnaveContentState,catalog:KnaveCatalog,fa
     const roll=traitDraw.index+1,entry=catalog.tables.place_traits[traitDraw.index];
     next.byPoi[f.owner]={catalogVersion:KNAVE_CATALOG_VERSION,sourceId:KNAVE_SOURCE_ID,category,site,trait:{selection:'d100',roll,sourceRow:roll,ru:entry.ru,references:structuredClone(entry.references)}};
     next.rollCounters[f.owner]=counter;
+  }
+  validateKnaveContent(next,live);return next;
+}
+
+/** Reuse the accepted stream/counter contract. A primary is a draw from the
+ * current compatible pool, never a claim that its source row was rolled d100. */
+export function rerollKnaveContent(state:KnaveContentState,catalog:KnaveCatalog,facts:KnaveFacts,seed:number,part:'primary'|'trait'|'both'):KnaveContentState {
+  validateKnaveCatalog(catalog);
+  validateFacts(facts);
+  const live=new Set(Object.keys(state.byPoi));validateKnaveContent(state,live);
+  const current=state.byPoi[facts.owner];
+  if(!current||!['primary','trait','both'].includes(part))fail();
+  // A changed map can make a literal accepted site incompatible. Refuse an
+  // empty current pool atomically; traits remain independently rerollable.
+  const rows=part!=='trait'&&current.site?knaveCompatibleRows(current.site.table,facts):null;
+  if(part!=='trait'&&(!current.site||!rows?.length))throw Error('Empty Knave compatible pool');
+  const next=structuredClone(state),content=next.byPoi[facts.owner],counter=next.rollCounters[facts.owner];
+  if(rows&&content.site){
+    const draw=drawTagIndex(seed,`knave-content-v1:${facts.owner}:primary`,counter.primary,rows.length),row=rows[draw.index];
+    const entry=catalog.tables[content.site.table][row-1],rule=policy.rows.find(r=>r.table===content.site!.table&&r.sourceRow===row)!;
+    content.site={selection:'compatible_pool',table:content.site.table,sourceRow:row,ru:entry.ru,references:structuredClone(entry.references),representation:rule.poiKind!};counter.primary=draw.nextCounter;
+  }
+  if(part!=='primary'){
+    const draw=drawTagIndex(seed,`knave-content-v1:${facts.owner}:trait`,counter.trait,100),entry=catalog.tables.place_traits[draw.index],roll=draw.index+1;
+    content.trait={selection:'d100',roll,sourceRow:roll,ru:entry.ru,references:structuredClone(entry.references)};counter.trait=draw.nextCounter;
   }
   validateKnaveContent(next,live);return next;
 }
