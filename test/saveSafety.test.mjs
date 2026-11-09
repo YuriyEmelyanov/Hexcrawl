@@ -165,6 +165,11 @@ test('E8 v8 authored POI names use real import,exact export and UndoRedo without
  // Extend this lifecycle case: UI drafts must not enter accepted JSON/history,
  // and stale closures must never retarget a clue to another document.
  g.render().setEditMode(true);g.render().setSelectedHex(Object.fromEntries(['q','r'].map((axis,i)=>[axis,Number(key.split(':')[2].split(',')[i])])));
+ // CLASSIFY1 reviewer regression: editing only a legacy clue must retain interaction.
+ assert.equal(g.render().changeKnaveDraft({clueText:'Only revised clue'}),true);assert.equal(g.render().finishKnaveDraft(),true);
+ assert.equal(g.render().createSaveData().map.classification.discoveryByPoi[key].mode,'interaction');
+ assert.equal(g.render().createSaveData().map.classification.discoveryByPoi[key].clueText,'Only revised clue');
+ g.render().undoMap();assert.deepEqual(structuredClone(g.render().captureDocument().map),accepted.map);
  const uiBefore=structuredClone(g.render().createSaveData().map),uiHistory=g.render().undoHistory.length;
  assert.equal(g.render().changeKnaveDraft({mode:'interaction',clueText:''}),true);
  const stale=g.render().knaveDraft;
@@ -174,7 +179,7 @@ test('E8 v8 authored POI names use real import,exact export and UndoRedo without
  assert.equal(g.render().changeKnaveDraft({clueText:'  <Authored UI clue>  '}),true);
  assert.equal(g.render().changeKnaveDraft({clueText:'stale'},stale),false);
  assert.equal(g.render().finishKnaveDraft(),true);
- assert.equal(g.render().createSaveData().map.knave.discoveryByPoi[key].clueText,'<Authored UI clue>');
+ assert.equal(g.render().createSaveData().map.classification.discoveryByPoi[key].clueText,'<Authored UI clue>');
  g.render().undoMap();assert.deepEqual(structuredClone(g.render().createSaveData().map),uiBefore);
  const noOpHistory=g.render().undoHistory.length;
  assert.equal(g.render().changeKnaveDraft({mode:'interaction'}),true);assert.equal(g.render().finishKnaveDraft(),true);assert.equal(g.render().undoHistory.length,noOpHistory);
@@ -182,7 +187,7 @@ test('E8 v8 authored POI names use real import,exact export and UndoRedo without
  assert.equal(g.render().finishKnaveDraft(stale),false);
  g.render().applyDocument(accepted);g.render();
  const history=structuredClone([g.render().undoHistory,g.render().redoHistory]);
- for(const mutate of [d=>d.version=9,d=>d.ui.generationMode='mythic',d=>delete d.generation,d=>d.map.knave=null,d=>d.map.knave.profile.physicalHex.measurementConvention='vertices',d=>d.map.knave.content=null,d=>d.map.knave.content.byPoi[key].catalogVersion='future',d=>d.map.knave.discoveryByPoi[key].clueText='',d=>d.map.knave.discoveryByPoi['poi:999:0,0']={mode:'passage',clueText:''}]){
+ for(const mutate of [d=>d.version=9,d=>delete d.generation,d=>d.ui.knaveEnabled='yes',d=>{d.ui.knaveEnabled=true;delete d.map.knave;},d=>d.map.knave=null,d=>d.map.knave.profile.physicalHex.measurementConvention='vertices',d=>d.map.knave.content=null,d=>d.map.knave.content.byPoi[key].catalogVersion='future',d=>d.map.knave.discoveryByPoi[key].clueText='',d=>d.map.knave.discoveryByPoi['poi:999:0,0']={mode:'passage',clueText:''}]){
   const invalid=structuredClone(knave);mutate(invalid);await g.render().handleImportJson({target:{files:[{text:JSON.stringify(invalid)}],value:''}});
   assert.equal(alerts.length,1);alerts.pop();assert.deepEqual(structuredClone(g.render().captureDocument()),accepted);assert.deepEqual(structuredClone([g.render().undoHistory,g.render().redoHistory]),history);
  }
@@ -197,12 +202,22 @@ test('E8 v8 authored POI names use real import,exact export and UndoRedo without
  const profile=createGenerationHarness(42);profile.render();const initial=structuredClone(profile.render().captureDocument());
  assert.equal(profile.render().chooseKnaveProfile(true),true);assert.equal(profile.render().undoHistory.length,0);
  assert.deepEqual(structuredClone(profile.render().generationRef.current),initial.map.generation);
- profile.render().changeGenerationMode('mythic');assert.equal(profile.render().generationMode,'mythic');assert.equal(profile.render().createSaveData().map.knave,undefined);
+ profile.render().changeGenerationMode('mythic');assert.equal(profile.render().generationMode,'mythic');assert.deepEqual(structuredClone(profile.render().createSaveData().map.knave),newKnaveLayer());
  assert.equal(profile.render().chooseKnaveProfile(true),false);profile.render().changeGenerationMode('classic');profile.render().chooseKnaveProfile(true);
- profile.injectFunction('knaveGenerationCatalog',knaveCatalogFixture);profile.render().addFallbackTractToMap({q:0,r:0});assert.equal(profile.render().chooseKnaveProfile(false),false);
- const locked=structuredClone(profile.render().createSaveData().map);profile.setWindow({confirm:()=>false});profile.render().changeGenerationMode('mythic');assert.deepEqual(structuredClone(profile.render().createSaveData().map),locked);
- profile.setWindow({confirm:()=>true});profile.render().changeGenerationMode('mythic');assert.equal(profile.render().generationMode,'mythic');assert.equal(profile.render().regions.length,0);
- profile.render().undoMap();assert.equal(profile.render().generationMode,'classic');assert.deepEqual(structuredClone(profile.render().createSaveData().map),locked);
+ profile.injectFunction('knaveGenerationCatalog',knaveCatalogFixture);profile.render().addFallbackTractToMap({q:0,r:0});
+ const knaveMap=structuredClone(profile.render().createSaveData().map),knaveHistory=profile.render().undoHistory.length;
+ assert.equal(profile.render().chooseKnaveProfile(false),true);assert.equal(profile.render().createSaveData().ui.knaveEnabled,false);assert.deepEqual(structuredClone(profile.render().createSaveData().map),knaveMap);assert.equal(profile.render().undoHistory.length,knaveHistory+1);
+ profile.render().undoMap();assert.equal(profile.render().createSaveData().ui.knaveEnabled,true);profile.render().redoMap();assert.equal(profile.render().createSaveData().ui.knaveEnabled,false);assert.deepEqual(structuredClone(profile.render().createSaveData().map),knaveMap);
+ const plainProfile=structuredClone(profile.render().createSaveData());
+ await g.render().handleImportJson({target:{files:[{text:JSON.stringify(plainProfile)}],value:''}});assert.deepEqual(alerts,[]);assert.equal(g.render().createSaveData().ui.knaveEnabled,false);
+ assert.equal(profile.render().chooseKnaveProfile(true),true);assert.deepEqual(structuredClone(profile.render().createSaveData().map),knaveMap);
+ const kept=structuredClone(profile.render().createSaveData().map),modeHistory=profile.render().undoHistory.length;
+ profile.setWindow({confirm:()=>{throw Error('Mode switching must not ask to erase the map');}});
+ profile.render().changeGenerationMode('mythic');assert.equal(profile.render().generationMode,'mythic');assert.deepEqual(structuredClone(profile.render().createSaveData().map),kept);assert.equal(profile.render().undoHistory.length,modeHistory);
+ profile.geometry.assertHexcrawlSaveData(JSON.parse(JSON.stringify(profile.render().createSaveData())));
+ const mixed=structuredClone(knave);mixed.ui.generationMode='mythic';
+ await g.render().handleImportJson({target:{files:[{text:JSON.stringify(mixed)}],value:''}});assert.deepEqual(alerts,[]);assert.equal(g.render().generationMode,'mythic');assert.deepEqual(structuredClone(g.render().createSaveData().map.knave),knave.map.knave);
+ profile.render().changeGenerationMode('classic');assert.deepEqual(structuredClone(profile.render().createSaveData().map),kept);assert.equal(profile.render().undoHistory.length,modeHistory);
 });
 test('E8 malformed,orphan and older-version authored names refuse atomically in the real importer',async()=>{
  const {g,alerts,data,key}=await loadAuthoredMap();
@@ -261,7 +276,29 @@ test('SEA v2-v8 metadata migration and strict v9 refusal use the real atomic imp
   const saved=structuredClone(g.render().createSaveData());assert.equal(saved.version,10);assert.deepEqual(saved.map.seas,[{id:1,hexKeys:['-1,2','0,2','1,2','2,2','3,2','3,3']}]);assert.equal(saved.map.nextSeaId,2);assert.deepEqual(saved.generation,data.generation);assert.deepEqual(saved.map.terrainByHexKey,data.map.terrainByHexKey);
  }
  const valid=structuredClone(g.render().createSaveData()),before=structuredClone(g.render().captureDocument()),stacks=structuredClone([g.render().undoHistory,g.render().redoHistory]);
- for(const mutate of [d=>delete d.map.seas,d=>delete d.map.nextSeaId,d=>d.map.seas[0].hexKeys.pop(),d=>d.map.seas.push({...d.map.seas[0]}),d=>d.map.nextSeaId=1,d=>d.map.editorNames={'sea:999':{en:'X',ru:'Х'}},d=>d.version=11,d=>{d.version=8;d.map.editorNames={'sea:1':{en:'X',ru:'Х'}};}]){
+ for(const mutate of [d=>delete d.map.seas,d=>delete d.map.nextSeaId,d=>d.map.seas[0].hexKeys.pop(),d=>d.map.seas.push({...d.map.seas[0]}),d=>d.map.nextSeaId=1,d=>d.map.editorNames={'sea:999':{en:'X',ru:'Х'}},d=>d.version=12,d=>{d.version=8;d.map.editorNames={'sea:1':{en:'X',ru:'Х'}};}]){
   const bad=structuredClone(valid);mutate(bad);await g.render().handleImportJson({target:{files:[{text:JSON.stringify(bad)}],value:''}});assert.equal(alerts.length,1);alerts.pop();assert.deepEqual(structuredClone(g.render().captureDocument()),before);assert.deepEqual(structuredClone([g.render().undoHistory,g.render().redoHistory]),stacks);
  }
+});
+
+// DTL-22/23: model-only parsing cannot catch App silently dropping the physical
+// layer or downgrading JSON when the separate classification layer is removed.
+test('DETAIL1 live document keeps physical grid and classification together through import, history and reset',async()=>{
+ const g=createGenerationHarness(42),alerts=[];g.render();g.setWindow({alert:s=>alerts.push(s),confirm:()=>true,matchMedia:()=>({matches:false})});g.injectFunction('readTextFile',async f=>f.text);
+ const load=async d=>{await g.render().handleImportJson({target:{files:[{text:JSON.stringify(d)}],value:'x'}});g.render();};
+ const snapshot=()=>{const d=JSON.parse(JSON.stringify(g.render().createSaveData()));delete d.savedAt;return d;};
+ await load(regionFixture());const before=snapshot();
+ const data=structuredClone(before);data.version=11;
+ data.map.classification={version:1,difficultyByHex:{'2,0':'dangerous'},discoveryByPoi:{}};
+ data.map.physicalGrid={schema:'hexcrawl.detail1',version:1,active:true,grid:{origin:{x:0,y:0},orientation:'pointy',convention:'across_flats'},source:{stepMiles:6,physicalConvention:'unknown',displayAssumption:'project_across_flats_6mi'},viewStep:12,poiFootprints:[]};
+ await load(data);assert.deepEqual(alerts,[]);assert.deepEqual(snapshot(),data);
+ g.render().undoMap();assert.deepEqual(snapshot(),before);g.render().redoMap();assert.deepEqual(snapshot(),data);
+ g.render().changeGenerationMode('mythic');assert.deepEqual(snapshot().map,data.map);g.render().changeGenerationMode('classic');assert.deepEqual(snapshot(),data);
+ const gridOnly=structuredClone(data);delete gridOnly.map.classification;await load(gridOnly);assert.deepEqual(snapshot(),gridOnly);assert.equal(snapshot().version,11);
+ g.render().resetMap();assert.equal(snapshot().map.physicalGrid,undefined);g.render().undoMap();assert.deepEqual(snapshot(),gridOnly);
+ const doc=structuredClone(g.render().captureDocument()),history=structuredClone([g.render().undoHistory,g.render().redoHistory]);
+ for(const mutate of [d=>d.version=10,d=>d.map.physicalGrid.viewStep=2,d=>d.map.physicalGrid.grid.extra=true,d=>d.map.physicalGrid.poiFootprints=[{poiId:'unchecked:1',legacyRef:null,cells:[{q:0,r:0}],extent:{kind:'default',reason:'unknown_size',policy:'one_cell'},attachments:[]}]]){
+  const invalid=structuredClone(gridOnly);mutate(invalid);await load(invalid);assert.deepEqual(structuredClone(g.render().captureDocument()),doc);assert.deepEqual(structuredClone([g.render().undoHistory,g.render().redoHistory]),history);
+ }
+ assert.equal(alerts.length,4);assert.deepEqual(snapshot().generation,before.generation);
 });

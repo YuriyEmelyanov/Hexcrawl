@@ -1,5 +1,38 @@
 # Knave classic: implementation checkpoint
 
+## Compact bilingual content — 9 November 2026
+
+OWNERFIX1 removes the Source disclosure, printed-page links, RU fallback badge
+and visible pick wording from the normal card. Every accepted catalog row has
+an English UI translation of the supplied Russian edition, without claiming a
+verified transcription of the official English book. Language changes leave
+saved Russian snapshots, identities and random counters intact.
+Primary sites show a compact reroll icon; traits show their saved d100.
+The content rows use32px-high,44px-wide reroll targets and no extra row gaps,
+as requested by the owner's compactness correction. This supersedes the former
+44px Knave row height; other shared-table controls retain their existing sizes.
+
+## Mixed-map continuation — 9 November 2026
+
+The owner's correction supersedes the earlier Knave-to-Mythic reset restriction.
+Changing the next generation mode preserves the accepted map, Knave content,
+annotations, names, notes, RNG and history. The retained Knave layer is valid in
+both Classic and Mythic documents. Existing Knave points remain viewable and
+editable in either mode. New Mythic regions keep their own POIs, quotas and
+automatic tags; they are not reinterpreted as new Knave sites. Returning to Classic
+continues the selected Knave profile on newly generated points only. The Knave
+checkbox can be changed on an existing Classic map: its optional v10
+`ui.knaveEnabled` preference controls future generation while saved content stays
+in `map.knave`. A missing preference inherits whether the legacy layer exists.
+Changing this preference on a populated map is one Undo/Redo transaction and does
+not retroactively fill accepted points. The stored
+6-mile source metadata is retained; selecting a generation mode does not change
+physical scale or rebuild accepted geography.
+
+The surface editor labels its Land/Lake/Sea value as Surface rather than Water.
+The Knave profile's reset explanation and the redundant clue parenthesis are
+removed from the normal interface.
+
 ## Current correction: ROLLUI2 (9 November 2026)
 
 Owner-approved UI2-1.0 supersedes the earlier no-reroll presentation requirement.

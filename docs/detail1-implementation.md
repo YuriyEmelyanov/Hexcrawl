@@ -1,4 +1,4 @@
-# DETAIL1 implementation checkpoint B/C
+# DETAIL1 implementation checkpoint D1
 
 Approved scope: agent-operations/agent-work/specs/HX-BL-051-DETAIL1.md (DTL-1.0).
 
@@ -35,12 +35,27 @@ the selected footprint; adjacent and corner-only geometry fails. The adapter
 never creates a route for an unassigned or isolated POI and never moves the
 source river, road or POI when validation fails.
 
-This checkpoint is not connected to App, save/import or generation. Existing
-maps, format v10 and all UI remain unchanged. No feature readiness or product
-score increase is claimed. Subsequent work must integrate stable POI identity,
-validate water/access references against live geometry, add explicit apply/cancel
-and v11 document/history wiring, then implement the compact multi-scale UI before
-independent acceptance.
+D1 connects the optional `map.physicalGrid` section to the actual App document,
+JSON v11 import/export, generation/error backups and exact document Undo/Redo.
+The separate classification section can coexist in the same v11 document;
+removing classification alone does not downgrade a physical-grid document.
+Existing v2-v10 imports stay inactive and receive no assumed convention.
+
+This remains an internal checkpoint, without activation controls or rendering.
+Only states with an empty POI footprint list cross the live document boundary.
+A nonempty list is rejected atomically until D2 resolves and validates each
+footprint's identity and typed water/route attachment against live geometry;
+structural validity alone must not accept dangling spatial references. This
+restriction is a temporary implementation boundary, not the finished format.
+The detached B/C adapter still supports footprints for subsequent integration.
+
+The integration branch also contains published OWNERFIX1/main90afe and the
+unpublished CLASSIFY1 exact9dab package. Its historic RIV-011 risk remains
+unresolved; neither prior review nor publication authority automatically carries
+to this combined package. Whole DETAIL1 acceptance still needs the actual POI
+adapter, explicit legacy adaptation/apply/cancel, remap/delete protections,
+1/6/12/24 UI, exports, exact-head required checks and independent review.
+No feature readiness, publication or product score increase is claimed.
 
 Test decision: existing tests cover pixel rendering and POI editor lifecycle,
 but no physical across-flats multi-scale projection or shared footprint union.
@@ -48,3 +63,9 @@ Six Node cases now protect separate requirements: A1 grid/boundary topology,
 A2 source projection/strict state preview, and B/C extent plus water/route
 legality. No browser case is added for modules that are still deliberately
 disconnected from the product.
+
+D1 test decision: one actual App import/history fixture is added to the existing
+saveSafety suite. Pure model tests cannot detect losing physicalGrid in App
+setters, dropping the sibling classification layer, downgrading JSON v11 or
+partially committing invalid input. The fixture uses existing regionFixture;
+no random map search or additional browser suite is introduced.

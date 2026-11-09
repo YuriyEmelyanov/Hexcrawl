@@ -2,10 +2,18 @@
  * Source text is supplied by a separately approved/private catalog package. */
 import {drawTagIndex} from './engine.ts';
 import policy from './knavePolicy.json' with {type:'json'};
+import {knaveEnglish} from './knaveEnglish.ts';
 export const KNAVE_CATALOG_VERSION='knave2.ru.torbin1.0.knc1.0-draft1';
 export const KNAVE_SOURCE_ID='KNAVE2-RU-1.0';
 export const KNAVE_SOURCE_SHA='30cf89b9547fd0f76a56f4bcd0ab2dd0303b6be02c00500b37050ad4c71b8795';
 export type KnaveTable='locations'|'structures'|'place_traits'|'dungeons';
+/** Language is a view of the accepted row, never a new draw or save mutation.
+ * Old v10 snapshots retain their literal RU text; English uses the same row's
+ * UI translation. Already-English/custom fixture snapshots remain literal. */
+export function knaveResultText(result:{sourceRow:number;ru:string;en?:string},table:KnaveTable,language:string):string {
+  const value=language==='ru'?result.ru:result.en??(/[А-Яа-яЁё]/.test(result.ru)?knaveEnglish[table][result.sourceRow-1]:result.ru);
+  return (value??'').replace(/\s*\((?:стр\.|p\.)\s*\d+\)/gi,'').trim();
+}
 type PrimaryTable=Exclude<KnaveTable,'place_traits'>;
 export type KnaveReference={printedPage:number;resolution:'unresolved_source_reference'};
 export type KnaveEntry={row:number;printedResult:string;ru:string;sourceRef:{pdfPage:number;printedPage:number;table:KnaveTable;row:number};references:KnaveReference[]};

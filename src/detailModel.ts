@@ -90,3 +90,13 @@ export function prepareLegacyDetailAdaptation(input:Readonly<{sourceVersion:numb
   const origin=worldPoint(input.origin,'legacy projection origin');
   return Object.freeze({schema:'hexcrawl.detail1-adaptation-preview',sourceVersion:input.sourceVersion,sourcePhysicalConvention:input.sourcePhysicalConvention,proposedDisplayAssumption:'project_across_flats_6mi',origin,requiresExplicitApply:true,activatesDetail1:false});
 }
+
+/** Live document boundary for D1. Until the live geometry adapter is connected,
+ * fail closed on footprints rather than accepting unchecked spatial references.
+ * No existing save is implicitly activated or assigned a physical convention. */
+export function validateDetail1Document(value:unknown,saveVersion:number):void {
+  if(value===undefined)return;
+  if(saveVersion!==11)throw Error('Physical grid requires version11');
+  const state=parseDetail1StateV11(value);
+  if(state.poiFootprints.length)throw Error('DETAIL1 POI adaptation is not available in this checkpoint');
+}

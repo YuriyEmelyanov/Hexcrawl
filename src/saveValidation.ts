@@ -1,3 +1,4 @@
+import {validateDetail1Document} from './detailModel.ts';
 import {validateSeaIdentity} from './seaIdentity.ts';
 import {validateDeltaReferences, validateRiverCounter, validateRiverFeatures, migrateRiverEditing, type RiverGeometry} from './manualRivers.ts';
 import { generationValidationPath } from './worldRandom.ts';
@@ -59,10 +60,11 @@ export function validateSaveStructure(value: unknown, domain: {
   names: (v: unknown)=>boolean; toponymModel: string; kingdoms: (map: RecordValue, version: number)=>void;
 }): void {
   const data=record(value,'$');
-  oneOf(data.schema,['hexcrawl-map'],'schema'); oneOf(data.version,[2,3,4,5,6,7,8,9,10],'version');
-  if (data.version === 3 || data.version === 4 || data.version === 5 || data.version === 6 || data.version === 7 || data.version === 8 || data.version === 9 || data.version === 10 || data.generation !== undefined) { const path = generationValidationPath(data.generation); if (path) fail(path,'unsupported or invalid RNG state'); }
+  oneOf(data.schema,['hexcrawl-map'],'schema'); oneOf(data.version,[2,3,4,5,6,7,8,9,10,11],'version');
+  if (data.version === 3 || data.version === 4 || data.version === 5 || data.version === 6 || data.version === 7 || data.version === 8 || data.version === 9 || data.version === 10 || data.version === 11 || data.generation !== undefined) { const path = generationValidationPath(data.generation); if (path) fail(path,'unsupported or invalid RNG state'); }
   const map=record(data.map,'map'), ui=record(data.ui,'ui'), counters=record(data.counters,'counters');
   if((data.version as number)<8&&map.editorNames!==undefined&&Object.keys(record(map.editorNames,'map.editorNames')).length)fail('map.editorNames','authored names require version8');
+  try{validateDetail1Document(map.physicalGrid,data.version as number);}catch(error){fail('map.physicalGrid',error instanceof Error?error.message:'invalid physical grid');}
   const regions=array(map.regions,'map.regions'), rivers=array(map.rivers,'map.rivers'), roads=array(map.roads,'map.roads');
   const regionIds=uniqueIds(regions,'map.regions'), riverIds=uniqueIds(rivers,'map.rivers'), roadIds=uniqueIds(roads,'map.roads');
   const land=new Set<string>();
@@ -185,5 +187,6 @@ export function validateSaveStructure(value: unknown, domain: {
   for(const [f,max] of [['nextLakeId',maxLake],['nextRoadId',Math.max(0,...roadIds)]] as const) { integer(counters[f],'counters.'+f); if(max===Number.MAX_SAFE_INTEGER) fail('counters.'+f,'counter overflow'); }
   bool(ui.isMapRotated,'ui.isMapRotated'); if(finite(ui.mapScale,'ui.mapScale')<=0) fail('ui.mapScale','positive scale');
   if(ui.generationMode!==undefined) oneOf(ui.generationMode,['classic','mythic'],'ui.generationMode');
+  if(ui.knaveEnabled!==undefined) {bool(ui.knaveEnabled,'ui.knaveEnabled');if((data.version!==10&&data.version!==11)||ui.knaveEnabled&&!map.knave)fail('ui.knaveEnabled','Knave generation preference requires a v10 layer');}
   if(ui.selectedHex!==undefined&&ui.selectedHex!==null) hex(ui.selectedHex,'ui.selectedHex');
 }

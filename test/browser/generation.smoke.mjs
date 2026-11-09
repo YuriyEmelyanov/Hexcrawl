@@ -2,18 +2,41 @@ import {createGenerationState} from '../../src/worldRandom.ts';
 import { spawn } from 'node:child_process';
 import { chromium } from 'playwright';
 import fs from 'node:fs/promises';
+import { mkdirSync, writeFileSync } from 'node:fs';
 import assert from 'node:assert/strict';
 import { fileURLToPath } from 'node:url';
 import { stripVTControlCharacters } from 'node:util';
 import { createGenerationHarness } from '../helpers/generation-harness.mjs';
 import { validateRiverNetwork } from '../../src/riverModel/core.ts';
 const geometry = createGenerationHarness().geometry;
+let lastGenerationAction = null;
 function assertRiverTermini(save) {
+ try {
   const m = save.map;
   const built = geometry.buildRegionRiverNetwork(m.rivers, [], m.regions, m.candidateHexes, new Map(Object.entries(m.terrainByHexKey)), true);
   assert.deepEqual(Array.from(built.issues), []);
   const checked = validateRiverNetwork(built.network);
   assert.equal(checked.valid, true, JSON.stringify(checked.issues));
+ } catch (error) {
+  // Keep the original assertion fatal. Capture actual inputs, never reroll here.
+  try {
+  const directory = new URL('../../reports/generation-failure/', import.meta.url);
+  mkdirSync(directory, { recursive: true });
+  const { before, ...action } = lastGenerationAction ?? {};
+  writeFileSync(new URL('after.json', directory), JSON.stringify(save, null, 2));
+  if (before) writeFileSync(new URL('before.json', directory), JSON.stringify(before, null, 2));
+  writeFileSync(new URL('context.json', directory), JSON.stringify({
+   capturedAt: new Date().toISOString(), workflowCheckoutSha: process.env.GITHUB_SHA ?? null,
+   action, generationBefore: before?.generation ?? null, generationAfter: save.generation,
+   countersBefore: before?.counters ?? null, countersAfter: save.counters,
+   error: { name: error.name, message: error.message, stack: error.stack }
+  }, null, 2));
+  console.error('Generation invariant failure captured in reports/generation-failure/');
+  } catch (captureError) {
+   console.error('Generation failure capture could not be written:', captureError);
+  }
+  throw error;
+ }
 }
 
 // Run against the production build, not instrumented source.
@@ -96,6 +119,16 @@ try {
     const candidates = page.locator('polygon.hex.candidate');
     const attempts = await candidates.count();
     for (let index = 0; index < attempts; index++) {
+      lastGenerationAction = {
+        type: 'candidate-click', before,
+        candidateIndex: index, candidateCount: attempts,
+        hexKey: await candidates.nth(index).getAttribute('data-hex-key'),
+        mode: await page.getByRole('combobox', {name:'Режим',exact:true}).inputValue(),
+        seedInput: await page.getByRole('textbox', {name:'Seed мира',exact:true}).inputValue(),
+        parameters: await page.locator('.gen-params select').evaluateAll(nodes => nodes.map(n => n.value)),
+        mathRandomInitialSeed: 42,
+        mathRandomAlgorithm: 'LCG1664525+1013904223 uint32 / 4294967296'
+      };
       await candidates.nth(index).dispatchEvent('click');
       const after = await snapshot();
       assert.equal(errors.length, 0, errors.join('\n'));
@@ -225,9 +258,15 @@ try {
     await probe.goto(`http://127.0.0.1:4173/${query}`);
     await probe.locator('.gen-params select').nth(0).selectOption('locality');
     await probe.locator('.gen-params select').nth(3).selectOption('mainland');
+    // Profiling reports asynchronously after generation. Wait for the actual
+    // console events rather than assuming their delivery within100ms.
+    const profileEvents = query.includes('profile') ? Promise.all([
+      probe.waitForEvent('console', { predicate: msg => msg.text().includes('[PROFILE]') }),
+      probe.waitForEvent('console', { predicate: msg => msg.type() === 'table' })
+    ]) : null;
     await probe.locator('polygon.hex.candidate').first().dispatchEvent('click');
     if (query.includes('profile')) {
-      await probe.waitForTimeout(100);
+      await profileEvents;
       assert.ok(logs.some(log => log.text.includes('[PROFILE]')));
       assert.ok(logs.some(log => log.type === 'table'));
       assert.ok(!logs.some(log => log.text.includes('Biome selected')));
