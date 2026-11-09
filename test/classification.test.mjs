@@ -35,5 +35,6 @@ test('CLASSIFY1 real document import/commit/history preserves map/RNG and author
  h.render().undoMap();assert.deepEqual(snapshot(),before);h.render().redoMap();assert.deepEqual(snapshot(),after);
  h.render().changeGenerationMode('mythic');assert.deepEqual(snapshot().map,after.map);h.render().changeGenerationMode('classic');assert.deepEqual(snapshot().map,after.map);
  await h.render().handleImportJson({target:{files:[{text:JSON.stringify(after)}],value:'x'}});assert.deepEqual(snapshot(),after);
+ h.render().setEditMode(true);h.render();assert.equal(h.render().changeKnaveDraft({difficulty:'auto'}),true);h.render();assert.equal(h.render().finishKnaveDraft(),true);assert.equal(snapshot().map.classification,undefined);assert.equal(snapshot().version,10);h.render().undoMap();assert.deepEqual(snapshot(),after);
  const invalid=structuredClone(after);invalid.map.classification.difficultyByHex['99,99']='normal';await h.render().handleImportJson({target:{files:[{text:JSON.stringify(invalid)}],value:'x'}});assert.deepEqual(snapshot(),after);
 });

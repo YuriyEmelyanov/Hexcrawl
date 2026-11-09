@@ -165,6 +165,11 @@ test('E8 v8 authored POI names use real import,exact export and UndoRedo without
  // Extend this lifecycle case: UI drafts must not enter accepted JSON/history,
  // and stale closures must never retarget a clue to another document.
  g.render().setEditMode(true);g.render().setSelectedHex(Object.fromEntries(['q','r'].map((axis,i)=>[axis,Number(key.split(':')[2].split(',')[i])])));
+ // CLASSIFY1 reviewer regression: editing only a legacy clue must retain interaction.
+ assert.equal(g.render().changeKnaveDraft({clueText:'Only revised clue'}),true);assert.equal(g.render().finishKnaveDraft(),true);
+ assert.equal(g.render().createSaveData().map.classification.discoveryByPoi[key].mode,'interaction');
+ assert.equal(g.render().createSaveData().map.classification.discoveryByPoi[key].clueText,'Only revised clue');
+ g.render().undoMap();assert.deepEqual(structuredClone(g.render().captureDocument().map),accepted.map);
  const uiBefore=structuredClone(g.render().createSaveData().map),uiHistory=g.render().undoHistory.length;
  assert.equal(g.render().changeKnaveDraft({mode:'interaction',clueText:''}),true);
  const stale=g.render().knaveDraft;
@@ -174,7 +179,7 @@ test('E8 v8 authored POI names use real import,exact export and UndoRedo without
  assert.equal(g.render().changeKnaveDraft({clueText:'  <Authored UI clue>  '}),true);
  assert.equal(g.render().changeKnaveDraft({clueText:'stale'},stale),false);
  assert.equal(g.render().finishKnaveDraft(),true);
- assert.equal(g.render().createSaveData().map.knave.discoveryByPoi[key].clueText,'<Authored UI clue>');
+ assert.equal(g.render().createSaveData().map.classification.discoveryByPoi[key].clueText,'<Authored UI clue>');
  g.render().undoMap();assert.deepEqual(structuredClone(g.render().createSaveData().map),uiBefore);
  const noOpHistory=g.render().undoHistory.length;
  assert.equal(g.render().changeKnaveDraft({mode:'interaction'}),true);assert.equal(g.render().finishKnaveDraft(),true);assert.equal(g.render().undoHistory.length,noOpHistory);

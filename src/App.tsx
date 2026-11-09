@@ -15040,8 +15040,8 @@ retainPoiNames(checkpoint,editorNamesRef.current);
     const context=knaveMapContext(captureMap());if(!context.hexes.has(selectedHexKey))return false;
     const key=selectedPoiSource?poiLocatorKey(selectedPoiSource):null;
     if(patch.difficulty!==undefined&&!context.dryHexes.has(selectedHexKey)||('mode'in patch||'clueText'in patch)&&!key)return false;
-    const previous=key?classificationRef.current?.discoveryByPoi[key]:undefined;
-    const draft=expected??{id:++knaveDraftSerial.current,revision:documentRevision.current,token:poiDocumentToken.current,hexKey:selectedHexKey,poiKey:key,difficulty:classificationRef.current?.difficultyByHex[selectedHexKey]??'auto',mode:previous?.mode??'auto',clueText:previous?.clueText??(key?knaveRef.current?.discoveryByPoi[key]?.clueText:'')??''};
+    const previous=key?classificationRef.current?.discoveryByPoi[key]??knaveRef.current?.discoveryByPoi[key]:undefined;
+    const draft=expected??{id:++knaveDraftSerial.current,revision:documentRevision.current,token:poiDocumentToken.current,hexKey:selectedHexKey,poiKey:key,difficulty:classificationRef.current?.difficultyByHex[selectedHexKey]??knaveRef.current?.difficultyByHex[selectedHexKey]??'auto',mode:previous?.mode??'auto',clueText:previous?.clueText??(key?knaveRef.current?.discoveryByPoi[key]?.clueText:'')??''};
     finishNotesGroup();clearNotesDraft();updateKnaveDraft({...draft,...patch,changedDifficulty:draft.changedDifficulty||patch.difficulty!==undefined,changedDiscovery:draft.changedDiscovery||patch.mode!==undefined||patch.clueText!==undefined});return true;
   };
   const resetKnaveDraft=(expected=knaveDraftRef.current)=>{if(knaveDraftRef.current!==expected)return false;updateKnaveDraft(null);return true;};
@@ -15050,13 +15050,16 @@ retainPoiNames(checkpoint,editorNamesRef.current);
     if(!currentKnaveDraft(expected)||knaveComposing.current)return false;
     try{
       const context=knaveMapContext(captureMap()),next=structuredClone(classificationRef.current??emptyClassification());
-      if(expected.changedDifficulty){if(expected.difficulty==='auto')delete next.difficultyByHex[expected.hexKey];else next.difficultyByHex[expected.hexKey]=expected.difficulty;}
-      if(expected.poiKey&&expected.changedDiscovery){if(expected.mode==='auto'&&!expected.clueText.trim())delete next.discoveryByPoi[expected.poiKey];else next.discoveryByPoi[expected.poiKey]={mode:expected.mode,clueText:expected.clueText.trim()};}
+      const oldDifficulty=classificationRef.current?.difficultyByHex[expected.hexKey]??knaveRef.current?.difficultyByHex[expected.hexKey]??'auto',oldDiscovery=expected.poiKey?classificationRef.current?.discoveryByPoi[expected.poiKey]??knaveRef.current?.discoveryByPoi[expected.poiKey]:undefined;
+      const difficultyChanged=expected.changedDifficulty&&expected.difficulty!==oldDifficulty,discoveryChanged=expected.changedDiscovery&&(expected.mode!==(oldDiscovery?.mode??'auto')||expected.clueText.trim()!==(oldDiscovery?.clueText??''));
+      if(difficultyChanged){if(expected.difficulty==='auto')delete next.difficultyByHex[expected.hexKey];else next.difficultyByHex[expected.hexKey]=expected.difficulty;}
+      if(expected.poiKey&&discoveryChanged){if(expected.mode==='auto'&&!expected.clueText.trim())delete next.discoveryByPoi[expected.poiKey];else next.discoveryByPoi[expected.poiKey]={mode:expected.mode,clueText:expected.clueText.trim()};}
       validateClassification(next,context);
       let legacy=knaveRef.current;
-      if(legacy){legacy=structuredClone(legacy);if(expected.changedDifficulty)delete legacy.difficultyByHex[expected.hexKey];if(expected.changedDiscovery&&expected.poiKey)delete legacy.discoveryByPoi[expected.poiKey];}
+      if(legacy){legacy=structuredClone(legacy);if(difficultyChanged)delete legacy.difficultyByHex[expected.hexKey];if(discoveryChanged&&expected.poiKey)delete legacy.discoveryByPoi[expected.poiKey];}
       if(JSON.stringify(next)===JSON.stringify(classificationRef.current??emptyClassification())&&JSON.stringify(legacy)===JSON.stringify(knaveRef.current)){resetKnaveDraft(expected);return true;}
-      return commitManualMap({...captureMap(),knave:legacy,classification:next},false);
+      const annotations=Object.keys(next.difficultyByHex).length||Object.keys(next.discoveryByPoi).length?next:undefined;
+      return commitManualMap({...captureMap(),knave:legacy,classification:annotations},false);
     }catch{setKnaveError(language==='ru'?'Для секрета нужна улика: от 1 до 512 символов.':'A secret needs a clue of 1–512 characters.');return false;}
   };
   const requestKnaveExit=(action:()=>void)=>{const draft=knaveDraftRef.current;if(draft)setKnaveExitRequest({draft,action});};
