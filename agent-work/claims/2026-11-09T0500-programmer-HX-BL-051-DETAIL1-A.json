@@ -3,7 +3,7 @@
   "run_id": "2026-11-09T0500-programmer-HX-BL-051-DETAIL1-A",
   "task_id": "HX-BL-051",
   "stage_id": "DETAIL1",
-  "substage": "D2b1-live-E7-E8-identity-transactions",
+  "substage": "D2b1_live_ID_transactions_local_verified_CI_check_pending",
   "role": "programmer",
   "status": "active",
   "last_pause_for": "HX-BL-043/OWNERFIX1",
@@ -16,16 +16,40 @@
   "branch": "agent/hx-bl-051-detail1",
   "release_approved": false,
   "foreign_claim_preserved": "2026-11-03-developer-HX-BL-041-presentation: walkthroughonly, no source changes",
-  "execution_running": true,
-  "checkpoint_status": "D2b1_committed_validation_running",
-  "checkpoint_at": "2026-11-09 16:24:07 UTC",
+  "execution_running": false,
+  "checkpoint_status": "saved_safe_to_resume_same_task_chat",
+  "checkpoint_at": "2026-11-09 17:20:21 UTC",
   "head_sha": "4c3324c83edd07c06471558e41ab89f3a8d318e4",
   "tree_sha": "b2420b12aef89abdaf98f1321f85c57bb91b7b78",
   "pr": 496,
   "result_ref": "agent-work/results/2026-11-09T1658-programmer-HX-BL-051-DETAIL1-D2b1.json",
   "handoff_ref": "agent-work/handoffs/2026-11-09-HX-BL-051-DETAIL1-D2b1-resume.json",
-  "next_step": "Продолжить тот же собственный claim HX-BL-051/DETAIL1 сae3e309 в PR496. D2b: совместно подключить identity reconciliation к генерации/добавлению/переносу/E7/E8/удалению и построению допустимого охвата по реальной географии; проверить конкретные водные объекты/порты и назначенные пути. Не снимать запрет непустых footprints до полной живой валидации. Затем explicit legacy-preview/Apply/Cancel, правки охвата, UI1/6/12/24 и actual1500/390/320; новый exact-SHA whole-package review. Публикация не разрешена, RIV011 не закрыт.",
+  "next_step": "Сначала сверить итог уже запущенного CI42662139332 check для exact4c3324c без повторного запуска; сохранить отрицательное evidence при неуспехе. Продолжить тот же собственный claim HX-BL-051/DETAIL1 с4c3324c в PR496. D2b2: соединить стабильные ID с B/C-охватом по реальной географии, конкретными водными объектами/портами и назначенными путями; обработать полные water-edit/removal/remap транзакции. Не снимать запрет непустых footprints до полной живой валидации. Затем явная legacy-адаптация Apply/Cancel, правка охвата, UI1/6/12/24 и actual1500/390/320. Весь новый пакет — на независимый exact-SHA review/score_assessment1.2; публикация не разрешена, RIV011 не закрыт.",
   "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-09 16:58:54 UTC",
+      "is_enabled": true,
+      "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "status": "checked",
+      "method": "automations.peek"
+    },
+    "end": {
+      "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "checked_at": "2026-11-09 17:20:21 UTC",
+      "is_enabled": true,
+      "status": "checked",
+      "method": "automations.peek"
+    },
+    "restoration_performed": false,
+    "errors": [],
+    "limitation": "Actual point-in-time checks only; no guarantee of later service state. Schedule and prompt unchanged."
+  },
+  "task_completed": false,
+  "review_ready": false,
+  "last_resume_at": "2026-11-09 16:58:54 UTC",
+  "local_sha": "68e19036490197c307bd5ad9cecda5af6e38ab62",
+  "previous_automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
       "checked_at": "2026-11-09 16:02:58 UTC",
@@ -45,44 +69,5 @@
     "errors": [],
     "limitation": "Actual point-in-time observations only; no guarantee against later service disablement. Schedule and prompt unchanged."
   },
-  "task_completed": false,
-  "review_ready": false,
-  "last_resume_at": "2026-11-09 16:58:54 UTC",
-  "local_sha": "68e19036490197c307bd5ad9cecda5af6e38ab62",
-  "previous_automation_health": {
-    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
-    "start": {
-      "checked_at": "2026-11-09 15:32:48 UTC",
-      "is_enabled": true,
-      "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
-      "status": "checked",
-      "method": "automations.peek"
-    },
-    "end": {
-      "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
-      "title": "Команда HexCrawl",
-      "is_enabled": true,
-      "checked_at": "2026-11-09 15:53:37 UTC",
-      "status": "checked",
-      "method": "automations.peek"
-    },
-    "restoration_performed": false,
-    "errors": [],
-    "limitation": "Point-in-time observations only; no guarantee after completion. No schedule/prompt changes.",
-    "other_agent_status": [
-      {
-        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
-        "title": "Исследователь HexCrawl",
-        "is_enabled": true,
-        "checked_at": "2026-11-09 15:53:37 UTC"
-      },
-      {
-        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
-        "title": "Команда HexCrawl",
-        "is_enabled": true,
-        "checked_at": "2026-11-09 15:53:37 UTC"
-      }
-    ]
-  },
-  "last_run_id": "2026-11-09T1602-programmer-HX-BL-051-DETAIL1-D2a"
+  "last_run_id": "2026-11-09T1658-programmer-HX-BL-051-DETAIL1-D2b1"
 }
