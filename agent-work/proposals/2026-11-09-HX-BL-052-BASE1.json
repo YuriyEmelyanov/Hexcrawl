@@ -1,0 +1,179 @@
+{
+  "schema_version": 1,
+  "proposal_id": "HX-BL-052-BASE1",
+  "version": 1,
+  "task_id": "HX-BL-052",
+  "stage_id": "BASE1",
+  "title": "База кампании и быстрые переходы к связанным местам",
+  "status": "proposed",
+  "recommended_priority": 4,
+  "created_at": "2026-11-09T03:07:14.847Z",
+  "role": "strategist_manager",
+  "role_selection_reason": "No ready approved execution/review/release or pending score event; owner9Nov requires useful further proposals despite existing pending queue.",
+  "primary_scenario": "create",
+  "secondary_scenarios": [
+    "develop"
+  ],
+  "layer": "L1",
+  "ranking_version": "three-scenario-ranks-1.4-create-evidence",
+  "cohort_version": "2026-11-06-ranking1.4-create-evidence",
+  "game_profiles": [
+    {
+      "game_id": "OSE",
+      "edition": "Official2026 online basic/BX-derived reference, snapshot2026-11-08",
+      "create_rank": 8,
+      "requirement_ids": [
+        "OSE-ORR-2026-004-L1",
+        "OSE-ORR-2026-005-L1"
+      ],
+      "source_ref": "agent-work/research/requirements/OSE-base-sites-L1.json",
+      "limitations": "Selected base-town/adventure-site preparation only; no full Classic/Advanced or supplied BasicPDF equivalence."
+    }
+  ],
+  "canonical_rule_ids": [
+    "content.place_description",
+    "content.site_links"
+  ],
+  "potential_reuse": {
+    "games": [
+      "PF2",
+      "KNAVE2",
+      "SD"
+    ],
+    "status": "unverified profile-specific applicability; no whole-rule/game coverage promised",
+    "basis": "Existing content.site_links reverse index includes these games. Implement shared place relation operation once; do not duplicate engines."
+  },
+  "problem": "Названия и свободные заметки уже сохраняются. Подготовленный список «из этой базы отправляются в эти места» пока приходится поддерживать текстом и отдельно искать объекты; структурированная роль базы/переходы к связанным местам не подтверждены в проверенном контракте.",
+  "benefit": "Мастер выбирает базовый город и получает короткий список подготовленных вылазок; одним действием открывает нужное место и возвращается к базе. Ссылки переживают переименование и сохранение карты.",
+  "user_visible_effect": {
+    "before": "В заметке города: «Рядом Башня, Склеп». После переименования/переноса места приходится сверять текст и искать объект на карте.",
+    "after": "В карточке выбранной базы «Берёзовка»: «Старая башня →», «Затопленный склеп →». Нажатие выбирает существующий POI и показывает его карточку; связь остаётся при переименовании. Произвольный текст заметки не переписывается автоматически."
+  },
+  "generation_effect": "Никакого изменения генерации рельефа, плотности POI или RNG. Пользовательский результат — подготовка связного списка мест и навигация между уже существующими объектами.",
+  "in_scope": [
+    "Назначить один существующий населённый POI базой данной карты; заменить или снять эту роль без копирования/перегенерации места.",
+    "Вручную связать базу с выбранными существующими приключенческими POI; добавить/удалить связь и короткое необязательное описание вроде «около дня пути».",
+    "Компактный раскрываемый список актуальных имён мест, переход к исходному объекту и возврат к базе. Редактор/выбор места/заметки переиспользуются.",
+    "Сохранение роли/связей и качественных примечаний в JSON/UndoRedo. Переименование/перенос исходного POI сохраняют идентичность ссылки; удаление имеет явный безопасный исход без висячих ссылок."
+  ],
+  "out_of_scope": [
+    "Новые поселения/подземелья автоматически, новая география, дороги или навязываемое размещение у центра/реки.",
+    "Калькулятор дня пути, маршруты/вахты/положение партии, VTT/player map.",
+    "Структурированные службы города, цены/лечение/гильдии, новая форма поверх уже существующих заметок.",
+    "Генерация слухов/квестов/сюжетных связей040, управление фракциями049/050, публичный книжный корпус.",
+    "Поддержка произвольного графа/нескольких баз/межфайловой синхронизации в этом первом пакете."
+  ],
+  "acceptance": [
+    "Назначить T базой и связать D1/D2; список открывает именно эти исходные объекты, возврат выбирает T.",
+    "Переименовать/переместить D1 обычным редактором: ссылка ведёт к тому же объекту с актуальным именем; D2/география/тексты заметок не изменены.",
+    "Удалить связь: удалён только указатель, исходный POI и его содержимое остаются. Замена базы имеет явно показанный исход для текущих связей без молчаливого переноса.",
+    "Удалить/перегенерировать связанный объект или базу: показать затронутые связи и обеспечить атомарный отказ/явное удаление; не оставлять ссылки на отсутствующие сущности. Один Undo восстанавливает исходное состояние.",
+    "JSON round-trip/UndoRedo сохраняют роли/связи/примечания, POI, заметки, теги и RNG. Старое сохранение открывается без автоматически назначенной базы.",
+    "«Около дня пути» остаётся текстовым ориентиром; не превращается автоматически в24мили/4гекса. Назначение T на краю без реки/дороги допустимо.",
+    "Desktop/390/320: список компактный, раскрываемый; клавиатура и доступные цели; аналитик показывает предлагаемый UI после утверждения старта, разработчик — фактический exactSHA. Просмотр макета не третий gate."
+  ],
+  "priority_vs_alternatives": [
+    {
+      "id": "HX-BL-051/OVERVIEW1",
+      "reason": "Сохраняет первый приоритет по последнему направлению владельца; BASE1 не меняет агрегацию/сетку."
+    },
+    {
+      "id": "HX-BL-028/BRUSH1;HX-BL-050/POLITY1",
+      "reason": "Более широкая непосредственная польза правки/подготовки карты; сохраняют2/3приоритет. BASE1 — следующий независимо согласуемый пакет."
+    },
+    {
+      "id": "HX-BL-040;HX-BL-049;HX-BL-047",
+      "reason": "Сюжеты, фракции и новый алгоритм географии существенно шире. BASE1 ограничен выбранными местами и их навигацией, без симуляции."
+    }
+  ],
+  "estimated_scope": "M:1аналитический,1–2разработческих,1независимый проверочный этап; предварительная оценка объёма, не срок/расход.",
+  "dependencies": [
+    "Утверждение владельцемHX-BL-052/BASE1; новая разработка/полная спецификация до этого не начинаются.",
+    "Переиспользовать действующие идентификаторы/редактор POI, выбор/камеру, JSON и историю; после утверждения аналитик уточняет базовый SHA и правила удаления/переноса.",
+    "Нет зависимости от масштаба051, политических территорий050 или нового источникового файла; OSE-правило не принуждает к дню пути как числу."
+  ],
+  "deduplication": {
+    "published_reused": [
+      "HX-BL-024 notes",
+      "HX-BL-023 POI edit/selection",
+      "HX-BL-043 KNAVE2-CLASSIC1 content"
+    ],
+    "excluded_overlap": "Do not rebuild notes or table generator;040 owns future generated narrative relations, BASE1 only explicitly authored base/site links.052 services component remains outside."
+  },
+  "current_code_evidence": {
+    "head_sha": "01341b3c981324603f5413b0c675d53a5bac2bc2",
+    "files": [
+      {
+        "path": "src/App.tsx",
+        "blob_sha": "dbb9d220585875f26eb79cfcc8ae38652909091a",
+        "lines": [
+          1772,
+          1780,
+          11857,
+          13337
+        ],
+        "finding": "MapSnapshot/notes contract has POI editor names, Knave properties, tags and gmNotesByHexKey. No campaign-base/semantic site-link collection found in targeted snapshot + identifier search."
+      },
+      {
+        "path": "src/knaveClassic.ts",
+        "blob_sha": "1b30a49243aaa73fbb2d9b02974efc2a4481e1ed",
+        "finding": "Existing discovery/content annotations are not an authored base/site list."
+      },
+      {
+        "path": "src/saveValidation.ts",
+        "blob_sha": "cf68dd8711f4b71ee66f45dc2b29f63923b0701f",
+        "finding": "Targeted search found no base/site relation contract."
+      }
+    ],
+    "method": "Bounded static contract/read search only, not full audit or runtime proof of absence. Existing names/notes preserved as already available.",
+    "runtime_executed": false
+  },
+  "score": {
+    "model_version": "1.2",
+    "baseline_ref": "agent-work/score/current-score.json",
+    "baseline_sha": "05e1ba3c1a12b300d564fd044b15b8121d5fa0cd",
+    "criteria": [
+      {
+        "criterion_id": "S05-C01",
+        "before_grade": null,
+        "before_points": null,
+        "expected_grade": null,
+        "expected_delta": null,
+        "evidence_needed": "Actual compact context/base links/navigation on exactSHA; a partial card feature does not establish full criterion."
+      },
+      {
+        "criterion_id": "S04-C04",
+        "before_grade": null,
+        "before_points": null,
+        "expected_grade": null,
+        "expected_delta": null,
+        "evidence_needed": "Exact saved identities/relations through JSON and edit/history/removal cases."
+      }
+    ],
+    "not_claimed": "S05-C02 narrative-cause improvement is not established by formal links; do not award points for a mere edge.",
+    "status": "unknown; no point gain promised"
+  },
+  "feedback_assessment": {
+    "HX-FB-002": "Existing audit_completed acknowledged; reuse current POI move/rename/removal/save/history cases. New persistent tests only for distinct base/link referential-integrity risks; no recurring full suite audit."
+  },
+  "ui_preview": {
+    "status": "pending_after_task_start",
+    "responsible": "business_analyst",
+    "design_approval_required": false,
+    "scope": "Proposal before/after shown as text now; visual preview must be shown during approved spec work."
+  },
+  "source_refs": [
+    "agent-work/backlog.json#HX-BL-052",
+    "agent-work/research/requirements/OSE-base-sites-L1.json",
+    "agent-work/rules/common-rules.json#content.site_links",
+    "agent-work/rules/game-bindings.json",
+    "agent-work/decisions/owner-decision-2026-11-09-strategist-batch-proposals.json"
+  ],
+  "implementation_allowed": false,
+  "full_specification_allowed": false,
+  "release_approved": false,
+  "additional_spend_approved": false,
+  "next_role": "owner",
+  "next_role_after_approval": "business_analyst",
+  "required_owner_decision": "Утвердить052/BASE1в этих границах; можно пакетно с051/OVERVIEW1,028/BRUSH1,050/POLITY1."
+}
