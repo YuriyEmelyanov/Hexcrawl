@@ -1,0 +1,171 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-043",
+  "stage": "OWNERFIX1",
+  "reviewer": "independent /root/knave_ownerfix_review",
+  "reviewed_at": "2026-11-09T08:35:00Z",
+  "package": {
+    "base_sha": "853c639f2c75b725a29eec3d65cfad4dd823ae5f",
+    "local_commit_sha": "501ebbde6dc34fe47a1ad112ddc050cdb7b9aeec",
+    "public_commit_sha": "1299cd0555f1318d921304b5f95a69335b4c80f9",
+    "tree_sha": "1631cd0a0a59f8b5f2d2e50f925111e7f59aefa2",
+    "pr": 497,
+    "identity_method": "Independently read git rev-parse HEAD/HEAD^{tree}; GET GitHub /git/commits/1299cd... confirms identical tree and parent853c639. Local commit and public commit have different metadata but the exact same source tree."
+  },
+  "verdict": "passed_bounded_independent_review_no_blocking_findings",
+  "findings": [],
+  "finding_count": 0,
+  "scope": [
+    "Read-only review of all16 changed files and relevant App save/history/generation integration",
+    "AGENTS.md,docs/index.md,README,development workflow,Knave/Mythic documentation,OWNERFIX1 spec and operational model1.2/current-score",
+    "Independently executed targeted registered Node cases and two additional real-catalog scenarios",
+    "Inspected actual after screenshots EN1500/320 and RU390 plus metrics at1500/390/320"
+  ],
+  "acceptance": {
+    "OF1": "Pass in selected existing seed16 integration case plus independent seed42 real-catalog twin test. Switch is non-destructive; Mythic29-region result and RNG match control without Knave; old layer unchanged; Undo/Redo and next Classic region preserve Mythic regions.",
+    "OF2": "Pass in actual import/history case and independent real-catalog toggle/save/reload/plain/re-enable continuation. Saved false survives reload; existing content3 -> plain3 -> Mythic3 -> next Knave7; no backfill.",
+    "OF3": "Pass all400 accepted catalog rows, each table explicitly100; EN nonempty/no Cyrillic/page references; RU input unchanged. Manual review of all400 RU-to-EN pairs found no material translation defect. Official-English collation remains unverified and is not claimed.",
+    "OF4": "Pass source/selected tests plus additional actual seed89 rerolls in Mythic mode: eligible primary, real trait roll/sourceRow, target-only counters, preserved world RNG/siblings/history. Captures show entity/action/result order and no Source/pick/RU badge.",
+    "OF5": "Pass for inspected captures and metrics: adjacent32px result rows at1500/390/320; EN320/1500 and RU390 readable. Native keyboard/focus/hit testing is delegated to root-owned browser execution, not independently rerun by this reviewer.",
+    "OF6": "Pass source and inspected EN/RU cards: Surface:Land / Поверхность:Суша. Root-owned browser execution covers actual water editing regression.",
+    "OF7": "This independent concrete-tree review is complete. Root owns full npm run check, build+browser,RNG and final validation/publication decision; those were not duplicated or claimed independently here."
+  },
+  "independent_execution": {
+    "runtime": "Node v24.22.1",
+    "registered_commands": [
+      {
+        "command": "node --test --test-name-pattern='Knave|classic to mythic' test/tags.test.mjs test/saveSafety.test.mjs test/mythicKingdom.test.mjs",
+        "exit_code": 0,
+        "actual_registered_cases_passed": 10,
+        "runner_total": 11,
+        "note": "The extra test/saveSafety.test.mjs runner item was a file-level no-match sentinel. It is excluded from the logical case count."
+      },
+      {
+        "command": "node --test --test-name-pattern='E8 v8 authored POI names' test/saveSafety.test.mjs",
+        "exit_code": 0,
+        "actual_registered_cases_passed": 1,
+        "runner_total": 1,
+        "note": "Re-executed the actual modified save/import/history/profile case explicitly."
+      }
+    ],
+    "registered_logical_cases_passed": 11,
+    "additional_probes": [
+      {
+        "kind": "node --input-type=module stdin",
+        "seed": 42,
+        "source_catalog": "actual src/tags/knaveCatalogData.ts, no catalog fixture injection",
+        "result": "pass",
+        "steps": [
+          "Validate actual catalog and all400 rows/4 arrays; inspect each EN view, RU view and unchanged source snapshot",
+          "Generate Knave region; import exact authored clue and difficult flag",
+          "Toggle off,Undo,Redo,save/import into fresh harness; generate plain Classic with no new Knave content; re-enable without backfill",
+          "Switch Mythic with no reset; create control from same JSON minus Knave; generate full kingdoms in both; compare all non-Knave map values and generation RNG",
+          "Validate save; Undo/Redo kingdom; return Classic; generate region, retain every prior Mythic region/Knave result and scale; locale switching changes no saved value"
+        ],
+        "output": {
+          "translationCount": 400,
+          "initialContentOwners": 3,
+          "plainContentOwners": 3,
+          "mythicContentOwners": 3,
+          "continuedContentOwners": 7,
+          "mythicRegionCount": 29,
+          "regions": 32
+        },
+        "comparison": "Canonical JSON semantics remove undefined optional properties and savedAt wall-clock only. Initial unnormalized twin comparison stopped on generationMode/kingdomId undefined versus absent keys; corrected comparison rerun passed. Product source never changed."
+      },
+      {
+        "kind": "node --input-type=module stdin",
+        "seed": 89,
+        "source_catalog": "actual catalog, no catalog fixture injection",
+        "result": "pass",
+        "steps": [
+          "Generate Knave region and switch Mythic",
+          "Reroll selected site's trait; verify exact primary/counter/RNG preservation",
+          "Undo and Redo exact document; reroll both; verify current geographic eligible primary,real d100,only selected primary+trait counters,other owners and RNG unchanged;validate exported save"
+        ],
+        "owner": "poi:1:0,2"
+      }
+    ]
+  },
+  "test_necessity": {
+    "new_registered_node_cases": 0,
+    "modified_registered_node_cases": 5,
+    "reason": "The changed snapshot, actual-generation, validation/profile, real-import/history, and Mythic integration cases cover different newly reported risks.400 rows are data iterations inside one existing snapshot case, not400 new tests. Profile false/on plus actual generation tests are useful because checking checkbox state alone cannot prove future generation behavior. Existing granular reroll and atomic refusal cases remain useful regression coverage.",
+    "browser": "One existing Knave lifecycle extended for profile toggles,mixed mode,localized content,absence of obsolete source UI,32px owner-requested row compactness and keyboard menus. Other browser module edits update Surface selectors; no added suite/count target.",
+    "removed_assertions": "Source-disclosure keyboard/44px row assertions removed because OWNERFIX1 explicitly removes disclosure and replaces Knave-only reroll height with32px; Cancel remains44px. Mixed-mode save rejection/reset expectations correctly replaced by preservation/import assertions."
+  },
+  "source_evidence": [
+    {
+      "file": "src/App.tsx",
+      "line": 1091,
+      "result": "Preserve Mythic region owners during future Knave fill."
+    },
+    {
+      "file": "src/App.tsx",
+      "line": 13756,
+      "result": "Future fill gated by selected preference,Classic mode and absence of internal kingdom step."
+    },
+    {
+      "file": "src/App.tsx",
+      "line": 14103,
+      "result": "Existing-map preference captured as reversible document transaction; layer retained."
+    },
+    {
+      "file": "src/App.tsx",
+      "line": 14112,
+      "result": "Mode switch no longer resets map."
+    },
+    {
+      "file": "src/App.tsx",
+      "line": 14871,
+      "result": "Optional v10 generation preference exported with retained layer."
+    },
+    {
+      "file": "src/App.tsx",
+      "line": 14956,
+      "result": "Old optional preference defaults to prior layer behavior."
+    },
+    {
+      "file": "src/tags/knave.ts",
+      "line": 13,
+      "result": "Language-only view uses same accepted row and strips page references."
+    },
+    {
+      "file": "src/tags/KnaveContentRow.tsx",
+      "line": 14,
+      "result": "Localized content and simple primary reroll icon; source disclosure removed."
+    },
+    {
+      "file": "test/tags.test.mjs",
+      "line": 123,
+      "result": "Actual generation verifies preference off/on and no backfill."
+    },
+    {
+      "file": "test/saveSafety.test.mjs",
+      "line": 204,
+      "result": "Actual import/history verifies persisted choice and reversible preference."
+    },
+    {
+      "file": "test/mythicKingdom.test.mjs",
+      "line": 63,
+      "result": "Real kingdom continuation validates quotas and no reset/old Knave content change."
+    },
+    {
+      "file": "test/browser/knave-properties-lifecycle.mjs",
+      "line": 64,
+      "result": "Existing lifecycle checks viewport overflow,hit geometry and compact adjacent rows at1500/390/320."
+    }
+  ],
+  "limitations": [
+    "Finite selected seeds cannot prove all generation contexts.",
+    "Full mandatory npm/browser/RNG outputs are root-owned and should be checked separately before release.",
+    "Inspected screenshots establish bounded legibility and visual compactness,not exhaustive WCAG/mobile cohort validation.",
+    "English text is a UI translation of supplied RU rows; official English edition has not been collated.",
+    "Approved wider physical-scale implementation1/6/12/24 remains a separate task; this review confirms accepted6mile metadata preservation only.",
+    "Review and PR creation do not authorize merge/deploy."
+  ],
+  "score_assessment_file": "score-assessment1.2.json",
+  "external_writes": false,
+  "product_source_edits": false,
+  "automation_mutations": false
+}

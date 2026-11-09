@@ -10,7 +10,7 @@ Replace misleading Water:Land with Surface:Land (RU Поверхность:Су�
 - OF2: Turn Knave off/on for future Classic regions on a populated map; preserve the layer and existing results. Save/load and Undo/Redo retain the choice. Missing optional preference in old v10 infers previous behavior.
 - OF3: All400 rows have nonempty EN view with no Cyrillic/page refs; language switch spends no rolls or counters and leaves accepted RU snapshots literal.
 - OF4: No Source/pick/RU badge in Knave content; label precedes action/result; d100 matches saved trait; primary reroll remains valid random filtered selection.
-- OF5: Desktop/390/320 content rows adjacent and readable, no overflow/overlap, keyboard reroll/menu focus and44px hit targets retained.
+- OF5: Desktop/390/320 content rows adjacent and readable, no overflow/overlap, keyboard reroll/menu focus retained. Owner's repeated compactness correction supersedes the former44px Knave reroll-row height: use32px height with44px width, keep the other controls' existing targets.
 - OF6: Surface:Land/Lake/Sea is localized; water editing still works.
 - OF7: npm run check, build+browser, applicable RNG; independent review on concrete SHA; actual UI desktop/narrow shown before publication.
 ## Test governance
