@@ -3,7 +3,7 @@
   "game_id": "MB",
   "source_id": "MB-OFFICIAL-REALM-SHEETS-SNAPSHOT-20261108",
   "date": "2026-11-08",
-  "status": "partial_official_realm_sheet_profile_product_unverified",
+  "status": "bounded_source_inventory_with_2026_11_09_runtime_audit",
   "source": {
     "id": "MB-OFFICIAL-REALM-SHEETS-SNAPSHOT-20261108",
     "title": "Mythic Bastionland Realm Sheets.pdf",
@@ -65,10 +65,10 @@
           "id": "MB-REALM-001-L1",
           "layer": "L1",
           "requirement": "Определить целевой размер группы исходом d12 и создать группу гексов одного выбранного типа. При достаточной свободной области получить ровно заданное число; сохранить результат без автоматического переброса.",
-          "status": "unverified",
+          "status": "partial",
           "implemented": null,
-          "evidence_id": null,
-          "evidence_sha": null,
+          "evidence_id": "MB-AUDIT-MB-REALM-001-L1",
+          "evidence_sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
           "canonical_rule_ids": [
             "map.extend_preserving_content",
             "map.terrain_zones"
@@ -165,7 +165,14 @@
           "gap_task_ids": [
             "HX-BL-008"
           ],
-          "delivery": "research_handoff_not_specification"
+          "delivery": "research_handoff_not_specification",
+          "runtime_assessment": {
+            "audit_ref": "agent-work/research/audits/MB-implementation-2026-11-09.json#MB-AUDIT-MB-REALM-001-L1",
+            "source_core_status": "implemented_with_owner_variants",
+            "actual_behavior": "В MB уже используется равномерная цель1–12. Проверенные свободные группы1/7/12 дают1/7/12. Первый регион11/12 и поглощение замкнутых карманов могут увеличить фактический размер; это ТЗ владельца, не пропущенная реализацияd12.",
+            "remaining_or_product_choice": "Не создавать новый MB d12-режим из предположения о d20. Общая задача008 может остаться для других профилей; точный размер/выбор типа и принудительного броска — отдельный продуктовый выбор.",
+            "formal_score_coverage_transfer": false
+          }
         },
         {
           "layer": "L2",
@@ -215,10 +222,10 @@
           "id": "MB-REALM-002-L1",
           "layer": "L1",
           "requirement": "Разместить барьер на указанной стороне гекса и сохранить его как границу, непроходимую обычными средствами, отдельно от местности и центрового содержимого. Разрешить адресную правку/снятие без перерисовки географии; автоматический выбор1-in-6 не специфицировать до закрытия неизвестных параметров.",
-          "status": "unverified",
+          "status": "partial",
           "implemented": null,
-          "evidence_id": null,
-          "evidence_sha": null,
+          "evidence_id": "MB-AUDIT-MB-REALM-002-L1",
+          "evidence_sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
           "canonical_rule_ids": [
             "map.routes_and_barriers"
           ],
@@ -310,7 +317,14 @@
             "HX-BL-044"
           ],
           "delivery": "research_handoff_not_specification",
-          "readiness": "manual_selected_boundary_profile_documented_auto_selection_parameters_open"
+          "readiness": "manual_selected_boundary_profile_documented_auto_selection_parameters_open",
+          "runtime_assessment": {
+            "audit_ref": "agent-work/research/audits/MB-implementation-2026-11-09.json#MB-AUDIT-MB-REALM-002-L1",
+            "source_core_status": "implemented_L1",
+            "actual_behavior": "Грани-препятствия создаются, редактируются, сохраняются; дороги не проходят сквозь них. Есть24стабильных уникальных объекта в144гексах.",
+            "remaining_or_product_choice": "Игровая проходимость при движении партии —L2; отсутствие движка перемещения не дефектL1. Один объект на грань — текущая модель, источник не требует группировать несколько граней.",
+            "formal_score_coverage_transfer": false
+          }
         },
         {
           "layer": "L2",
@@ -366,10 +380,10 @@
           "id": "MB-REALM-003-L1",
           "layer": "L1",
           "requirement": "Разместить выбранный набор из четырёх владений и назначить одному роль резиденции правителя. Позволить сменить эту роль между ними и сохранить выбранные места, формы и описания владельцев вместе с картой.",
-          "status": "unverified",
+          "status": "partial",
           "implemented": null,
-          "evidence_id": null,
-          "evidence_sha": null,
+          "evidence_id": "MB-AUDIT-MB-REALM-003-L1",
+          "evidence_sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
           "canonical_rule_ids": [
             "content.site_density",
             "content.place_description"
@@ -465,7 +479,14 @@
             "HX-BL-053"
           ],
           "delivery": "research_handoff_not_specification",
-          "readiness": "selected_positions_and_role_documented_auto_spacing_unknown"
+          "readiness": "selected_positions_and_role_documented_auto_spacing_unknown",
+          "runtime_assessment": {
+            "audit_ref": "agent-work/research/audits/MB-implementation-2026-11-09.json#MB-AUDIT-MB-REALM-003-L1",
+            "source_core_status": "implemented_initial_allocation",
+            "actual_behavior": "Генератор создаёт1Престол+3Удела, Престол получает те же теги владения. Квота и сохранение подтверждены.",
+            "remaining_or_product_choice": "После ручной смены типа можно получить2Престола; ТЗ разрешает ручные изменения без перебалансировки. Нет автоматической операции переназначения единственного Престола с сохранением формы. Не требовать её как исправления исходной генерации; численная дистанция источником не задана.",
+            "formal_score_coverage_transfer": false
+          }
         },
         {
           "layer": "L2",
@@ -521,10 +542,10 @@
           "id": "MB-REALM-004-L1",
           "layer": "L1",
           "requirement": "Отметить шесть выбранных мест мифов и связать каждое с его номером 1–6 и выбранной записью. Позволить согласованно менять номера, сохраняя положения и смысловую связь с мифом, и восстановить набор при открытии карты.",
-          "status": "unverified",
+          "status": "partial",
           "implemented": null,
-          "evidence_id": null,
-          "evidence_sha": null,
+          "evidence_id": "MB-AUDIT-MB-REALM-004-L1",
+          "evidence_sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
           "canonical_rule_ids": [
             "content.site_density",
             "map.reference_labels"
@@ -618,7 +639,14 @@
           "gap_task_ids": [
             "HX-BL-053"
           ],
-          "delivery": "research_handoff_not_specification"
+          "delivery": "research_handoff_not_specification",
+          "runtime_assessment": {
+            "audit_ref": "agent-work/research/audits/MB-implementation-2026-11-09.json#MB-AUDIT-MB-REALM-004-L1",
+            "source_core_status": "implemented_six_places_owner_exception_labels",
+            "actual_behavior": "Генерируются6мест мифов, по одному на дикий регион; есть имена, кубы и сохранённые записи.",
+            "remaining_or_product_choice": "Номеров1–6нет по явному ТЗ владельца. Не добавлять их молча. Численной нормы удалённости и обязательной уникальности6каталожных мифов источник не дал.",
+            "formal_score_coverage_transfer": false
+          }
         },
         {
           "layer": "L2",
@@ -682,10 +710,10 @@
           "id": "MB-REALM-005-L1",
           "layer": "L1",
           "requirement": "Разместить выбранный набор мест с количеством3или4для каждого из шести видов и обозначить вид буквой либо значком. Адресно менять обозначение, сохраняя вид и положение; восстановить набор и обозначения при открытии карты.",
-          "status": "unverified",
+          "status": "partial",
           "implemented": null,
-          "evidence_id": null,
-          "evidence_sha": null,
+          "evidence_id": "MB-AUDIT-MB-REALM-005-L1",
+          "evidence_sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
           "canonical_rule_ids": [
             "content.site_density",
             "map.reference_labels"
@@ -778,7 +806,14 @@
           "gap_task_ids": [
             "HX-BL-053"
           ],
-          "delivery": "research_handoff_not_specification"
+          "delivery": "research_handoff_not_specification",
+          "runtime_assessment": {
+            "audit_ref": "agent-work/research/audits/MB-implementation-2026-11-09.json#MB-AUDIT-MB-REALM-005-L1",
+            "source_core_status": "implemented_source_core",
+            "actual_behavior": "Квота3–4для каждого из6видов, различные значки и сохранение реализованы. Управляемые броски дали18,24и смешанный набор21ориентир.",
+            "remaining_or_product_choice": "В исследовательских примерах дополнительно предложены заданный вектор количеств/проверка комплектности после правок. Они не буквальное правило источника и не основание заново разрабатывать квоты/значки.",
+            "formal_score_coverage_transfer": false
+          }
         },
         {
           "layer": "L2",
@@ -871,10 +906,10 @@
           "id": "MB-REALM-006-L1",
           "layer": "L1",
           "requirement": "Выбрать рыцаря по паре d6/d12, найти связанного с ним Провидца на его странице и связать Провидца с выбранным святилищем. Сохранить выбор и источник; при отсутствии карточки сохранить незавершённую цепочку без выдуманного имени, разрешить адресную замену и восстановление при открытии карты.",
-          "status": "unverified",
+          "status": "partial",
           "implemented": null,
-          "evidence_id": null,
-          "evidence_sha": null,
+          "evidence_id": "MB-AUDIT-MB-REALM-006-L1",
+          "evidence_sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
           "canonical_rule_ids": [
             "content.roll_table_resolution",
             "content.place_description"
@@ -967,7 +1002,14 @@
             "HX-BL-053"
           ],
           "delivery": "research_handoff_not_specification",
-          "readiness": "two_verified_source_chains_other_cards_partial"
+          "readiness": "two_verified_source_chains_other_cards_partial",
+          "runtime_assessment": {
+            "audit_ref": "agent-work/research/audits/MB-implementation-2026-11-09.json#MB-AUDIT-MB-REALM-006-L1",
+            "source_core_status": "implemented_verified_source_examples",
+            "actual_behavior": "Отдельный бросокd6+d12выбирает Провидца;1/1→The Rotted Seer,1/2→The Swollen Seer. В продукте72имени; кубы/имя сохраняются и перебрасываются независимо от описания святилища.",
+            "remaining_or_product_choice": "Прямой lookup эквивалентен переходу через рыцаря для проверенных пар. Не создавать функцию лишь ради хранения промежуточного рыцаря/страницы. Полная первичная сверка остальных70карточек не проведена.",
+            "formal_score_coverage_transfer": false
+          }
         },
         {
           "layer": "L2",
@@ -1027,7 +1069,44 @@
     "bindings": "agent-work/rules/game-bindings.json",
     "new_generic_rules": []
   },
-  "runtime_support": "unverified",
+  "runtime_support": {
+    "status": "bounded_audit_partial_or_absent_full_operational_profiles",
+    "evidence_sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
+    "audit_ref": "agent-work/research/audits/MB-implementation-2026-11-09.json",
+    "findings": [
+      {
+        "requirement_id": "MB-REALM-001-L1",
+        "source_core_status": "implemented_with_owner_variants",
+        "full_operational_requirement_status": "partial"
+      },
+      {
+        "requirement_id": "MB-REALM-002-L1",
+        "source_core_status": "implemented_L1",
+        "full_operational_requirement_status": "partial"
+      },
+      {
+        "requirement_id": "MB-REALM-003-L1",
+        "source_core_status": "implemented_initial_allocation",
+        "full_operational_requirement_status": "partial"
+      },
+      {
+        "requirement_id": "MB-REALM-004-L1",
+        "source_core_status": "implemented_six_places_owner_exception_labels",
+        "full_operational_requirement_status": "partial"
+      },
+      {
+        "requirement_id": "MB-REALM-005-L1",
+        "source_core_status": "implemented_source_core",
+        "full_operational_requirement_status": "partial"
+      },
+      {
+        "requirement_id": "MB-REALM-006-L1",
+        "source_core_status": "implemented_verified_source_examples",
+        "full_operational_requirement_status": "partial"
+      }
+    ],
+    "score_awarded": false
+  },
   "rating_changed": false,
   "score_changed": false,
   "dependency_sources": [

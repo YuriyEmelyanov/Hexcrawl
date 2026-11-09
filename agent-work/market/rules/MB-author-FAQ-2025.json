@@ -3,7 +3,7 @@
   "game_id": "MB",
   "source_id": "MB-AUTHOR-FAQ-20250717-EN",
   "date": "2026-11-08",
-  "status": "partial_author_FAQ_profile_product_unverified",
+  "status": "bounded_source_inventory_with_2026_11_09_runtime_audit",
   "source": {
     "id": "MB-AUTHOR-FAQ-20250717-EN",
     "title": "Guidance from the Seers — A Mythic Bastionland FAQ",
@@ -71,10 +71,10 @@
           "id": "MB-FAQ-2025-001-L1",
           "layer": "L1",
           "requirement": "Подготовить игрокам карту с владениями и общим рельефом, скрыв мифы, ориентиры и барьеры по выбранному FAQ-профилю. Сохранить полную карту ведущего; применять тот же смысл к доступным игрокам подписям/сведениям и выбранному способу передачи.",
-          "status": "unverified",
-          "implemented": null,
-          "evidence_id": null,
-          "evidence_sha": null,
+          "status": "absent",
+          "implemented": false,
+          "evidence_id": "MB-AUDIT-MB-FAQ-2025-001-L1",
+          "evidence_sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
           "canonical_rule_ids": [
             "map.audience_views"
           ],
@@ -164,7 +164,14 @@
           "gap_task_ids": [
             "HX-BL-044"
           ],
-          "delivery": "research_handoff_not_specification"
+          "delivery": "research_handoff_not_specification",
+          "runtime_assessment": {
+            "audit_ref": "agent-work/research/audits/MB-implementation-2026-11-09.json#MB-AUDIT-MB-FAQ-2025-001-L1",
+            "source_core_status": "absent_optional_profile",
+            "actual_behavior": "Экспортируется общая карта. PNGберёт текущийSVG; JSONсодержит полные регионы, теги, барьеры и заметки ведущего. Фильтра H/Tвидно,M/L/Bскрыто в коде нет.",
+            "remaining_or_product_choice": "Необязательная авторская практика; не блокирует генератор. Остаточный компонент044 — отдельное представление/вывод для игроков, сохраняя GMоригинал. ОбычныйJSONне считать очищенной копией.",
+            "formal_score_coverage_transfer": false
+          }
         },
         {
           "layer": "L2",
@@ -204,7 +211,19 @@
     "bindings": "agent-work/rules/game-bindings.json",
     "new_generic_rules": []
   },
-  "runtime_support": "unverified",
+  "runtime_support": {
+    "status": "bounded_audit_partial_or_absent_full_operational_profiles",
+    "evidence_sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
+    "audit_ref": "agent-work/research/audits/MB-implementation-2026-11-09.json",
+    "findings": [
+      {
+        "requirement_id": "MB-FAQ-2025-001-L1",
+        "source_core_status": "absent_optional_profile",
+        "full_operational_requirement_status": "absent"
+      }
+    ],
+    "score_awarded": false
+  },
   "rating_changed": false,
   "score_changed": false
 }

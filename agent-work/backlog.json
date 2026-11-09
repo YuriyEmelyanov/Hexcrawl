@@ -1044,8 +1044,8 @@
           "component_id": "MB-official-d12-terrain-L1",
           "task_id": "HX-BL-008",
           "title": "Выбирать размер группы одного типа местности по d12-профилю MB",
-          "status": "research_handoff_product_unverified",
-          "problem": "Примерd12теперь подтверждён RealmSheet; текущий d20+XdF не эквивалентен. Поддержка выбранного режима и поведение края unknown.",
+          "status": "audited_existing_MB_d12_owner_variants_not_new_MB_implementation",
+          "problem": "Предыдущая гипотеза об отсутствии MBd12опровергнута аудитомa246fdf:MBуже имеет цели1–12. Точный итог может превышать цель из-за утверждённых карманов; первая группа11/12. Классический d20-профиль — отдельная ветвь.",
           "benefit": "Ведущий получает группы размера по выбранному MB-профилю без изменения других карт.",
           "game_editions": [
             "Official free Realm Sheets snapshot downloaded2026-11-08; internal version not stated; referenced Creating a Realm(p14) not collated to final book"
@@ -1142,6 +1142,18 @@
       ],
       "research_handoff_refs": [
         "agent-work/research/requirements/MB-d12-terrain-L1.json"
+      ],
+      "implementation_audits": [
+        {
+          "audit_ref": "agent-work/research/audits/MB-implementation-2026-11-09.json",
+          "evidence_sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
+          "requirement_ids": [
+            "MB-REALM-001-L1"
+          ],
+          "queue_status_unchanged": true,
+          "new_development_authorized": false,
+          "disposition": "Reuse existing generation/tags/save components; no blanket build request. Only residual source behavior remains proposed; owner differences are not defects."
+        }
       ]
     },
     {
@@ -8257,7 +8269,21 @@
       "source_clarification_refs": [
         "agent-work/research/requirements/MB-barrier-clarification-L1.json"
       ],
-      "last_research_result_ref": "agent-work/research/runs/2026-11-08T2330-MB-barrier-clarification.json"
+      "last_research_result_ref": "agent-work/research/runs/2026-11-08T2330-MB-barrier-clarification.json",
+      "implementation_audits": [
+        {
+          "audit_ref": "agent-work/research/audits/MB-implementation-2026-11-09.json",
+          "evidence_sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
+          "requirement_ids": [
+            "MB-FAQ-2025-001-L1",
+            "MB-REALM-002-L1",
+            "MB-QS-001-L1"
+          ],
+          "queue_status_unchanged": true,
+          "new_development_authorized": false,
+          "disposition": "Reuse existing generation/tags/save components; no blanket build request. Only residual source behavior remains proposed; owner differences are not defects."
+        }
+      ]
     },
     {
       "task_id": "HX-BL-045",
@@ -14532,7 +14558,7 @@
       "task_id": "HX-BL-053",
       "title": "Размещать заданные наборы мест и назначать им роли и номера",
       "status": "proposed",
-      "problem": "Поддержка общего POI не доказывает четыре владения одного края, выбор единственной резиденции среди них и сохранение этой роли. Численное расстояние не определено источником; реализация unknown.",
+      "problem": "Аудитa246fdf подтвердил исходные4владения,6мифов,3–4ориентира каждого вида,значки,Провидцев и сохранение. Остаток источника:выбор руинами локально неактивного мифа. Номера1–6,переназначениеединственногоПрестола/контрольквотпослеручныхправок расходятся с действующимТЗвладельца,неавтоматическиеисправления.",
       "benefit": "Ведущий получает сохранённую основу политических мест края: четыре выбранных владения и одно место правителя без подмены базы кампании.",
       "game_editions": [
         "Official free Realm Sheets snapshot downloaded2026-11-08; internal version not stated; referenced Creating a Realm(p14) not collated to final book"
@@ -15790,7 +15816,42 @@
         "agent-work/research/requirements/MB-sanctums-L1.json",
         "agent-work/research/requirements/MB-ruins-L1.json"
       ],
-      "last_research_result_ref": "agent-work/research/runs/2026-11-09T0030-MB-ruins.json"
+      "last_research_result_ref": "agent-work/research/runs/2026-11-09T0030-MB-ruins.json",
+      "implementation_audits": [
+        {
+          "audit_ref": "agent-work/research/audits/MB-implementation-2026-11-09.json",
+          "evidence_sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
+          "requirement_ids": [
+            "MB-REALM-003-L1",
+            "MB-REALM-004-L1",
+            "MB-REALM-005-L1",
+            "MB-REALM-006-L1",
+            "MB-QS-002-L1"
+          ],
+          "queue_status_unchanged": true,
+          "new_development_authorized": false,
+          "disposition": "Reuse existing generation/tags/save components; no blanket build request. Only residual source behavior remains proposed; owner differences are not defects."
+        }
+      ],
+      "implementation_disposition": {
+        "already_present": [
+          "Four initial holdings inclSeat",
+          "SixMythPOIs",
+          "Landmark3–4perkind+icons",
+          "Seerdice+names",
+          "Tag/position save+undo"
+        ],
+        "residual_proposed": [
+          "Ruins locally inactive Myth selection"
+        ],
+        "owner_decision_variants": [
+          "Map1–6labels deliberately omitted",
+          "Manual edits do not rebalance or swapSeat"
+        ],
+        "additional_source_verification": [
+          "Remaining70Seercard mappings; directlookup equivalent for verified2pairs"
+        ]
+      }
     }
   ],
   "last_review": {

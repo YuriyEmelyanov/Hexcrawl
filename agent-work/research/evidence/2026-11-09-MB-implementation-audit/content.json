@@ -1,0 +1,410 @@
+{
+  "schema_version": 1,
+  "audit_scope": "Mythic Bastionland L1 content and POI relationships; read-only product audit",
+  "product": {
+    "checkout": "/workspace/scratch/9b069330eeae/hexcrawl-main",
+    "sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
+    "changes_by_auditor": false
+  },
+  "operational_sources": {
+    "checkout": "/workspace/scratch/9b069330eeae/hexcrawl-audit",
+    "head_observed": "aa92ef02b76609712b4c5fd4f277131050086187",
+    "note": "Shared operational branch can advance concurrently; product findings are pinned to exact main SHA.",
+    "requirements": [
+      "agent-work/research/requirements/MB-landmarks-L1.json",
+      "agent-work/research/requirements/MB-sanctums-L1.json",
+      "agent-work/research/requirements/MB-ruins-L1.json",
+      "agent-work/research/requirements/MB-myth-hexes-L1.json"
+    ]
+  },
+  "status_semantics": {
+    "implemented": "Runtime supports the stated bounded capability on inspected product SHA.",
+    "partial": "Some source semantics or derived acceptance behavior exists; named remainder is missing.",
+    "not_implemented": "A specific required procedure/link is absent, beyond generic text editing.",
+    "owner_exception": "Difference from researched source is an explicit existing owner product decision, not automatically a product defect."
+  },
+  "findings": [
+    {
+      "id": "MB-CONTENT-01",
+      "requirement_id": "MB-REALM-005-L1",
+      "subject": "Six landmark types with3–4 of each",
+      "source_core_status": "implemented",
+      "full_research_acceptance_status": "partial",
+      "implemented": [
+        "Six kinds: dwelling, sanctuary, monument, hazard, curse, ruins.",
+        "Generator allocates3 or4 separately for each kind inside one144-hex kingdom area; central/noncentral both count.",
+        "Each kind has a distinct built-in emoji/SVG icon; letters are not necessary under source icon alternative.",
+        "Existing kingdom handler validates quotas through real generation, save validation, undo/redo, regeneration and second kingdom."
+      ],
+      "gaps": [
+        "No dedicated UI for a prescribed six-number count vector; counts are generator RNG decisions. Manual POI editing can change a map, but does not assert procedure completeness.",
+        "No per-instance letter/custom icon choice or research-profile completeness validator demonstrated. Fixed icons satisfy the bounded source marking alternative, while these extra acceptance operations are product interpretations."
+      ],
+      "owner_contract": "docs/mythic-bastionland.md:53–68 explicitly specifies random3–4 counts and permits manual departures without automatic rebalancing.",
+      "evidence": [
+        "src/modes/pointsOfInterest.ts:8",
+        "src/modes/pointsOfInterest.ts:17",
+        "src/modes/pointsOfInterest.ts:45",
+        "src/App.tsx:13854",
+        "test/mythicKingdom.test.mjs:19",
+        "test/mythicKingdom.test.mjs:27",
+        "test/mythicKingdom.test.mjs:38"
+      ],
+      "probes": {
+        "direct_allocator_known_outputs": [
+          [
+            3,
+            3,
+            3,
+            3,
+            3,
+            3
+          ],
+          [
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ],
+          [
+            3,
+            4,
+            3,
+            4,
+            3,
+            4
+          ]
+        ],
+        "method": "10 synthetic dry regions,100slots,4 settled and6wild; controlled production allocator RNG after100slot draws+3holding draws."
+      },
+      "assessment": "Count/type/icon/save core already exists; do not propose building it from scratch."
+    },
+    {
+      "id": "MB-CONTENT-02",
+      "requirement_id": "MB-REALM-006-L1",
+      "subject": "Sanctum→Seer by ordered d6/d12",
+      "source_identity_status": "implemented_for_verified_pairs",
+      "full_research_acceptance_status": "not_exhaustively_verified",
+      "implemented": [
+        "New sanctuary automatically receives separate mb.sanctum description and mb.seer identity tags.",
+        "Seer uses ordered d6 first,d12second; product resolver index=(d6-1)*12+d12-1.",
+        "Known source1/1→The Rotted Seer and1/2→The Swollen Seer produce exact expected EN identities.",
+        "Seer tag keeps dice,table identity/version,entryId,text snapshot,owner and counters; can reroll/edit separately and survives JSON import/export and undo/redo.",
+        "Invalid input pairs0/1,7/1,1/0,1/13 are rejected by saved-tag validation."
+      ],
+      "source_boundary": "Official Quickstart research has only two fully verified chains and table-only others. Product data uses supplied full Russian book for72Seers; this audit compared catalogs but did not independently re-read72source cards.",
+      "evidence": [
+        "src/tags/mythic.ts:14",
+        "src/tags/mythic.ts:34",
+        "src/tags/mythic.ts:37",
+        "src/tags/engine.ts:5",
+        "src/tags/engine.ts:31",
+        "src/tags/engine.ts:85",
+        "src/tags/mythicData.ts:810",
+        "test/tags.test.mjs:147",
+        "docs/mythic-tags.md:23"
+      ],
+      "runtime_probe": {
+        "1/2": {
+          "seed": 13,
+          "owner": {
+            "kind": "poi",
+            "regionId": 1,
+            "hexKey": "2,0"
+          },
+          "definitionId": "mb.seer",
+          "values": [
+            [
+              1
+            ],
+            [
+              2
+            ]
+          ],
+          "entryIds": [
+            "mb.seer:1"
+          ],
+          "texts": [
+            {
+              "ru": "Раздутый Провидец",
+              "en": "The Swollen Seer"
+            }
+          ],
+          "keys": [
+            "definitionId",
+            "definitionVersion",
+            "owner",
+            "resolver",
+            "revision",
+            "sides",
+            "values",
+            "entryIds",
+            "texts"
+          ],
+          "sanctumDescriptionValues": [
+            [
+              4
+            ],
+            [
+              6
+            ]
+          ]
+        },
+        "1/1": {
+          "seed": 75,
+          "owner": {
+            "kind": "poi",
+            "regionId": 1,
+            "hexKey": "2,0"
+          },
+          "definitionId": "mb.seer",
+          "values": [
+            [
+              1
+            ],
+            [
+              1
+            ]
+          ],
+          "entryIds": [
+            "mb.seer:0"
+          ],
+          "texts": [
+            {
+              "ru": "Гнилой Провидец",
+              "en": "The Rotted Seer"
+            }
+          ],
+          "keys": [
+            "definitionId",
+            "definitionVersion",
+            "owner",
+            "resolver",
+            "revision",
+            "sides",
+            "values",
+            "entryIds",
+            "texts"
+          ],
+          "sanctumDescriptionValues": [
+            [
+              4
+            ],
+            [
+              4
+            ]
+          ]
+        }
+      },
+      "assessment": "Seer identity is already implemented for verified pairs1/1and1/2,and72-entry production table exists. Treat the direct lookup as equivalent behavior. Remaining source72mapping audit is unverified,not a new feature requirement. Do not propose work solely for Knight provenance.",
+      "source_coverage_limitations": [
+        "The direct flattened d6/d12→Seer lookup is behaviorally equivalent to selecting the Knight and reading that card for checked1/1and1/2 outputs. Missing intermediate runtime Knight/page fields alone is not a missing source rule.",
+        "All72Seer names and their order are in production and match operational catalog; this audit did not reread all72source cards,so full72source mapping remains unverified.",
+        "Runtime has no special pending_source_card/provenance UI. Those are derived operational acceptance interpretations,not independently established mandatory source functionality; no new product task is justified solely by their absence.",
+        "No Seer biography,abilities or stats; current owner scope explicitly covers names and dice."
+      ]
+    },
+    {
+      "id": "MB-CONTENT-03",
+      "requirement_id": "MB-QS-002-L1",
+      "subject": "Ruins hint at a myth inactive in their own Realm",
+      "source_core_status": "partial",
+      "implemented": [
+        "Ruins have an independently rolled72-row mb.ruin descriptive prompt and optional feature tag.",
+        "Descriptions,manual override and generic map notes can be saved, but do not implement inactive-myth eligibility."
+      ],
+      "gaps": [
+        "No mechanical Ruins→mb.myth link.",
+        "No current local Realm active-myth set or unknown-versus-empty state used by Ruin roll.",
+        "No exclusion of locally active myths,no pending_active_set/no_eligible state,no defined eligibility-preserving reroll.",
+        "Generic manual hint text is not automatic source-rule implementation."
+      ],
+      "evidence": [
+        "src/tags/mythic.ts:14",
+        "src/tags/mythic.ts:34",
+        "src/tags/mythic.ts:37",
+        "src/tags/engine.ts:39",
+        "docs/mythic-tags.md:23"
+      ],
+      "runtime_probe": {
+        "seed": 199,
+        "myth": {
+          "owner": {
+            "kind": "poi",
+            "regionId": 1,
+            "hexKey": "0,0"
+          },
+          "values": [
+            [
+              3
+            ],
+            [
+              2
+            ]
+          ],
+          "entryIds": [
+            "mb.myth:25"
+          ],
+          "texts": [
+            {
+              "ru": "Пустыня"
+            }
+          ]
+        },
+        "ruin": {
+          "owner": {
+            "kind": "poi",
+            "regionId": 1,
+            "hexKey": "1,0"
+          },
+          "values": [
+            [
+              3
+            ],
+            [
+              2
+            ]
+          ],
+          "entryIds": [
+            "mb.ruin:25"
+          ],
+          "texts": [
+            {
+              "ru": "Кровавое поле битвы"
+            }
+          ]
+        },
+        "validation": "accepted",
+        "runtimeRuinKeys": [
+          "definitionId",
+          "definitionVersion",
+          "owner",
+          "resolver",
+          "revision",
+          "sides",
+          "values",
+          "entryIds",
+          "texts"
+        ],
+        "note": "The Ruin description uses the same catalogue-row pair as the current map Myth. Its persisted entryId is mb.ruin, with no mechanical mb.myth link or active-set eligibility state."
+      },
+      "assessment": "Partial source support: Ruin prompt exists; locally inactive-myth relation/filter does not. This is an explicitly excluded scope,not a regression in existing owner requirements. Pair collision proves no filtering of catalog rows; because Ruin stores mb.ruin:25 rather than mb.myth:25,do not misdescribe it as an implemented but incorrect myth-link command.",
+      "missing_procedure_status": "inactive_myth_relation_and_filter_not_implemented"
+    },
+    {
+      "id": "MB-CONTENT-04",
+      "requirement_id": "MB-REALM-004-L1",
+      "subject": "Six Myth Hexes and map labels1–6",
+      "source_core_status": "partial",
+      "classification": "owner_exception_for_numbering",
+      "implemented": [
+        "Exactly6Myth POIs generated inside kingdom area,at most1per wild region.",
+        "Each new Myth POI receives an independent72-entry mb.myth tag with stable owner/dice/entry snapshot.",
+        "Tag state and positions survive save and undo/redo."
+      ],
+      "gaps": [
+        "No separate1–6map-label field,permutation/uniqueness validator or renumber UI.",
+        "No numerical remoteness guarantee; research itself leaves threshold unknown.",
+        "No assertion of six unique catalog myths: independent draws permit repeats; research source does not establish uniqueness requirement."
+      ],
+      "owner_contract": "docs/mythic-bastionland.md:1–4 prioritizes owner06Oct specification; line56 explicitly says six Myths without numbers.",
+      "evidence": [
+        "docs/mythic-bastionland.md:3",
+        "docs/mythic-bastionland.md:56",
+        "src/modes/pointsOfInterest.ts:42",
+        "src/tags/mythic.ts:37",
+        "test/mythicKingdom.test.mjs:24",
+        "test/mythicKingdom.test.mjs:27"
+      ],
+      "assessment": "Source numbering is missing by explicit product decision. Reversing it requires changing that decision, not silently treating current owner contract as a regression."
+    },
+    {
+      "id": "MB-CONTENT-05",
+      "subject": "Production data and operational catalogs",
+      "status": "implemented_production_bundle",
+      "production_counts": {
+        "spark_tables": 13,
+        "myth_names": 72,
+        "seer_names": 72,
+        "landmark_prompts": 432,
+        "product_d6xd12_tables": 8,
+        "myth_material_records": 72
+      },
+      "catalog_comparison": {
+        "myth_names_checked": 72,
+        "seer_names_checked": 72,
+        "landmark_prompts_checked": 432,
+        "mismatches": 0
+      },
+      "english_coverage": {
+        "seer_names": 12,
+        "each_landmark_type": 12,
+        "myth_name_translations": 0,
+        "myth_material_translations": 0
+      },
+      "evidence": [
+        "src/tags/mythicData.ts:810",
+        "src/tags/mythic.ts:14",
+        "src/tags/mythMaterialData.ts:1",
+        "docs/mythic-tags.md:17",
+        "docs/mythic-tags.md:25",
+        "docs/myth-material.md:13"
+      ],
+      "notes": [
+        "Operational JSON catalogs are source/provenance materials,not runtime by themselves. The corresponding flattened names/prompts are independently present in published main.",
+        "All72full reference-material records are also in main; not merely an operational future catalog. Material source pages29–171,omens and roles are reference text.",
+        "Production English interface uses RU fallback when missing; this is deliberate and should not be presented as72translated EN records.",
+        "Catalog equality and structural selection are not independent verification of the full Russian transcription against original PDF."
+      ]
+    },
+    {
+      "id": "MB-CONTENT-06",
+      "subject": "Tag saves and reference material",
+      "status": "implemented_bounded_scope",
+      "implemented": [
+        "TagState saves identity/version,owner,ordered actual dice,entry IDs,snapshots,overrides and independent roll counters.",
+        "Import validates matching known snapshots and references; unknown dictionary versions are read-only snapshots.",
+        "Actual App legacy import does not auto-roll; explicit fill adds missing tags and existing tags are preserved.",
+        "Seer reroll preserves sanctuary-description tag. Undo/redo and v9roundtrip preserve tag state.",
+        "All72myth-material records select by exact mb.myth snapshot identity; material reading has no map command,RNG use or automatic omen activation."
+      ],
+      "evidence": [
+        "src/tags/engine.ts:4",
+        "src/tags/engine.ts:39",
+        "src/tags/engine.ts:69",
+        "src/App.tsx:13679",
+        "src/App.tsx:14702",
+        "src/App.tsx:14799",
+        "test/tags.test.mjs:57",
+        "test/tags.test.mjs:147",
+        "test/tags.test.mjs:178",
+        "src/tags/mythMaterial.ts:109",
+        "docs/myth-material.md:9"
+      ]
+    }
+  ],
+  "verification": {
+    "node_version": "24.22.1",
+    "existing_test_command": "node --test test/tags.test.mjs test/mythicKingdom.test.mjs",
+    "result": {
+      "executed": 13,
+      "passed": 13,
+      "failed": 0,
+      "duration_ms": 43763.018668
+    },
+    "production_probe_script": "/workspace/scratch/9b069330eeae/mb-content-probe.mjs",
+    "production_probe_output": "/workspace/scratch/9b069330eeae/mb-content-probe.json",
+    "permanent_tests_changed": false,
+    "product_source_changed": false,
+    "browser_not_run_by_this_auditor": true,
+    "limits": [
+      "Finite tests/seeds support only listed cases.",
+      "No live-site or primary-PDF re-transcription verification performed in this sub-audit.",
+      "Exact required source-version equivalence between supplied Russian full book,official free Quickstart and Realm Sheets is not assumed.",
+      "No score,ranking,rule registry,backlog,claims,automation or GitHub writes. Parent owns overall audit publication and automation health."
+    ],
+    "parent_verification_note": "Parent independently reports actual72-record browser production-module/lifecycle/save checks passed; this sub-audit does not duplicate them."
+  }
+}

@@ -1,0 +1,176 @@
+{
+  "product_sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
+  "node": "24.22.1",
+  "geography": [
+    {
+      "id": "current-geography-suite",
+      "command": "node --test test/mythicKingdom.test.mjs test/manualObstacles.test.mjs",
+      "node": "v24.22.1",
+      "sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
+      "result": "PASS12/12",
+      "duration_ms": 43122.445425,
+      "covers": [
+        "Seed7/42/103 full144 coverage, first11/12, later target1..12,4holdings includingSeat,6Myths,24barriers, no water/road/river intersections, tags, save validation, undo/redo",
+        "Seed16 Classic->Mythic, regeneration,2kingdoms preserve prior maps",
+        "Late failure rollback",
+        "Pocket target1->8 and target6->20 actual handler",
+        "Manual barrier pure operations"
+      ]
+    },
+    {
+      "id": "current-barrier-transaction-test",
+      "command": "node --test --test-name-pattern='v5 obstacle IDs' test/mapTransactions.test.mjs",
+      "result": "PASS1/1",
+      "duration_ms": 13223.513537,
+      "covers": [
+        "Legacy IDs and next counter migration",
+        "Roundtrip and invalid import atomicity",
+        "Current actual App barrier add(move/remove) and exact undo/redo"
+      ]
+    },
+    {
+      "id": "d12-midpoints",
+      "type": "temporary pure module probe; no source edits",
+      "result": {
+        "midpoints": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
+        "firstRegion": [
+          11,
+          12
+        ],
+        "classicCallbackValue": 19
+      }
+    },
+    {
+      "id": "fresh-size-1-7-12",
+      "type": "temporary current real-App harness probe",
+      "seed": 42,
+      "result": [
+        {
+          "target": 1,
+          "actual": 1,
+          "biomeId": "open_plains",
+          "isTract": true,
+          "success": true
+        },
+        {
+          "target": 7,
+          "actual": 7,
+          "biomeId": "deciduous_woodland",
+          "isTract": false,
+          "success": true
+        },
+        {
+          "target": 12,
+          "actual": 12,
+          "biomeId": "open_plains",
+          "isTract": false,
+          "success": true
+        }
+      ]
+    },
+    {
+      "id": "generic-obstacle-count-module",
+      "type": "temporary module probe, synthetic line ofN adjacent dry hexes, no roads/rivers, fixed RNG. Not arbitrary-Realm UI test.",
+      "result": [
+        {
+          "N": 6,
+          "sourceTarget": 1,
+          "productError": "Недостаточно свободных рёбер для 24 препятствий."
+        },
+        {
+          "N": 12,
+          "sourceTarget": 2,
+          "productError": "Недостаточно свободных рёбер для 24 препятствий."
+        },
+        {
+          "N": 144,
+          "sourceTarget": 24,
+          "productCount": 24
+        }
+      ]
+    },
+    {
+      "id": "seat-duplicate-real-App-roundtrip",
+      "type": "temporary actual App harness import->edit->save->reimport probe",
+      "fixture": "test/fixtures/import-v2/baseline-mythic.json",
+      "result": {
+        "importAlerts": [],
+        "regions": 27,
+        "initialBarriers": 24,
+        "selectedRegionId": 7,
+        "oldKind": "holding_stronghold",
+        "newKind": "throne",
+        "seatCountAfterEdit": 2,
+        "seatCountAfterRoundtrip": 2,
+        "barriersAfterRoundtrip": 24
+      }
+    }
+  ],
+  "root_node_suites": {
+    "command": "node --test test/tags.test.mjs test/saveSafety.test.mjs",
+    "passed": 45,
+    "failed": 0,
+    "log_ref": "agent-work/research/evidence/2026-11-09-MB-implementation-audit/tags-save.log"
+  },
+  "content_suite": {
+    "node_version": "24.22.1",
+    "existing_test_command": "node --test test/tags.test.mjs test/mythicKingdom.test.mjs",
+    "result": {
+      "executed": 13,
+      "passed": 13,
+      "failed": 0,
+      "duration_ms": 43763.018668
+    },
+    "production_probe_script": "/workspace/scratch/9b069330eeae/mb-content-probe.mjs",
+    "production_probe_output": "/workspace/scratch/9b069330eeae/mb-content-probe.json",
+    "permanent_tests_changed": false,
+    "product_source_changed": false,
+    "browser_not_run_by_this_auditor": true,
+    "limits": [
+      "Finite tests/seeds support only listed cases.",
+      "No live-site or primary-PDF re-transcription verification performed in this sub-audit.",
+      "Exact required source-version equivalence between supplied Russian full book,official free Quickstart and Realm Sheets is not assumed.",
+      "No score,ranking,rule registry,backlog,claims,automation or GitHub writes. Parent owns overall audit publication and automation health."
+    ],
+    "parent_verification_note": "Parent independently reports actual72-record browser production-module/lifecycle/save checks passed; this sub-audit does not duplicate them."
+  },
+  "browser": [
+    {
+      "command": "node test/browser/tags.smoke.mjs",
+      "result": "passed",
+      "log_ref": "agent-work/research/evidence/2026-11-09-MB-implementation-audit/browser-tags.log",
+      "covers": "Actual72record production module; legacy/fill/reroll/undo/redo/JSON,1500/390/320,material lifecycle; fictional case supplement distinguished in existing script."
+    },
+    {
+      "command": "node test/browser/generation.smoke.mjs",
+      "result": "passed",
+      "log_ref": "agent-work/research/evidence/2026-11-09-MB-implementation-audit/browser-generation.log",
+      "covers": "Real generation handlers,MB144boundary,24barriers,1Seat,mode switch,regeneration,undo,JSONreload,pageerrors[]"
+    }
+  ],
+  "build": {
+    "command": "npm run build",
+    "result": "passed",
+    "log_ref": "agent-work/research/evidence/2026-11-09-MB-implementation-audit/build.log"
+  },
+  "counting_note": "Suites overlap (mythicKingdom,tags rerun independently). Do not sum them as unique tests. No permanent product tests or source changed.",
+  "limits": [
+    "Finite listed seeds/examples only; not proof every map is error-free.",
+    "No whole-book completeness claim.",
+    "Published package verified locally at releaseSHA; live-site state was not separately browsed.",
+    "Source matrices use bounded official free Quickstart/RealmSheets/authorFAQ; final full-book equivalence and72card primary-source retranscription not inferred."
+  ]
+}

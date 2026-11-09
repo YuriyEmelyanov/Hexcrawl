@@ -1,0 +1,522 @@
+{
+  "schema_version": 1,
+  "audit": "Mythic Bastionland L1 geography comparison",
+  "audited_at": "2026-11-09",
+  "product": {
+    "path": "/workspace/scratch/9b069330eeae/hexcrawl-main",
+    "sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
+    "read_only": true
+  },
+  "operational_sources_root": "/workspace/scratch/9b069330eeae/hexcrawl-audit",
+  "governing_product_spec": {
+    "file": "docs/mythic-bastionland.md",
+    "lines": [
+      3,
+      4,
+      36,
+      42,
+      55,
+      56,
+      67,
+      68,
+      76,
+      81
+    ],
+    "meaning": "Owner specification takes precedence over the book in current product. First region11/12, pocket absorption, six unnumbered Myth POIs, 24 individual internal-edge obstacles and manual no-rebalance are documented product choices. Source-profile shortfalls below are not automatically product bugs or authorization to change."
+  },
+  "source_scope": {
+    "realm_sheets": "Official free snapshot2026-11-08, sha2566082a760c7db9b81baf0180cae585feb35826b24e5feb839434c4ff33deb924d, bounded PDF1 extraction; referenced bookp14 not independently read",
+    "quickstart": "Official free pinned snapshot, printed/PDFp14 Breaking the Rules and Wilderness/Barriers; typical recommendations explicitly overridable",
+    "limitations": [
+      "Final full-book equivalence unverified.",
+      "Research acceptance includes product operationalizations, not only literal source requirements.",
+      "No changes to code, registry, backlog, ratings, main, GitHub or automation made by this audit."
+    ]
+  },
+  "findings": [
+    {
+      "requirement_id": "MB-REALM-001-L1",
+      "canonical_rule_ids": [
+        "map.extend_preserving_content",
+        "map.terrain_zones"
+      ],
+      "status": "partial",
+      "source_rule": "Groups of d12 hexes sharing terrain type; research translates into chosen profile/type, exact size with adequate space, validation and persistence.",
+      "implemented": [
+        "Uniform d12 targets1..12 after the first region; twelve midpoint bins probe returns1..12.",
+        "Single biomeId/biomeLandType is stored on each generated region; ordinary fresh-region probes target1/7/12 reached actual1/7/12.",
+        "Generation stores targetSize separately from finalSize; same map restored by undo/redo and save validation in current seeded tests.",
+        "Classic branch retains its supplied size procedure; switching mode does not rebuild existing regions."
+      ],
+      "partial_or_absent": [
+        "First kingdom region deliberately uses11/12, not all d12 outcomes.",
+        "Enclosed pockets can increase final size beyond target; source's exact-count operational criterion is not universally satisfied.",
+        "Mythic UI uses automatic type/biome; no dedicated UI for selecting researched terrain T and a forced d12 result was verified.",
+        "Invalid raw target0/13/7.5 acceptance was not probed; no claim of user-visible failure or complete input validation."
+      ],
+      "owner_choices": [
+        "First11/12 and pocket absorption are explicit approved behavior, docs:36-44.",
+        "Terrain automatic is explicit approved behavior, docs:8-11. Source does not prescribe growth algorithm or edge resolution."
+      ],
+      "evidence": [
+        {
+          "file": "src/modes/regionSize.ts",
+          "lines": [
+            2,
+            3
+          ]
+        },
+        {
+          "file": "src/App.tsx",
+          "lines": [
+            12154,
+            12155,
+            12165,
+            12166,
+            12187,
+            12421,
+            12422,
+            13930,
+            13931
+          ]
+        },
+        {
+          "file": "test/mythicKingdom.test.mjs",
+          "lines": [
+            14,
+            18,
+            21,
+            22,
+            40,
+            55,
+            88,
+            116
+          ]
+        }
+      ],
+      "runtime_probes": [
+        "d12-midpoints",
+        "fresh-size-1-7-12",
+        "current-geography-suite"
+      ],
+      "source_ref": "agent-work/market/rules/MB-Realm-Sheets.json#MB-REALM-001-L1"
+    },
+    {
+      "requirement_id": "MB-REALM-002-L1",
+      "canonical_rule_ids": [
+        "map.routes_and_barriers"
+      ],
+      "status": "partial",
+      "source_rule": "Barriers lie on selected hex edges, ordinarily cannot be crossed; exact positioning, rounding and counting were unresolved in sheet-only extraction.",
+      "implemented": [
+        "One-edge barrier has stable ID, hex+adjacent neighbor and shared physical edgeKey.",
+        "Manual add/move/remove operates on selected edge; reverse duplicate blocked; move retains identity; other records unchanged.",
+        "Both hexes must exist and be dry; river/road occupation rejected; these are product constraints, not extracted source rules.",
+        "Persistence validates actual shared edge, kingdom references and duplicate edges. Current real-App integration test verifies migration, roundtrip, edit transactions and undo/redo.",
+        "Manual road creation checks obstacle edge as blocked. Barriers display on edge from both adjacent-hex references; selected nearby list supports both sides."
+      ],
+      "partial_or_unverified": [
+        "No separate ordinary-impassable attribute or travel engine was found. Road exclusion is verified source/code support, not proof of every possible runtime movement/crossing mechanic.",
+        "Multi-edge named/grouped barrier object not present; each product barrier is one edge. Source allows one or more but leaves grouping/counting undefined, so this is a product representation choice, not by itself a violation."
+      ],
+      "evidence": [
+        {
+          "file": "src/modes/obstacles.ts",
+          "lines": [
+            3,
+            4,
+            9,
+            14,
+            15
+          ]
+        },
+        {
+          "file": "src/manualObstacles.ts",
+          "lines": [
+            4,
+            6,
+            43,
+            53,
+            57,
+            72
+          ]
+        },
+        {
+          "file": "src/modes/persistence.ts",
+          "lines": [
+            21,
+            28
+          ]
+        },
+        {
+          "file": "src/App.tsx",
+          "lines": [
+            13347,
+            13352,
+            14213,
+            15377,
+            15382,
+            15394,
+            15414,
+            15445,
+            15460
+          ]
+        },
+        {
+          "file": "test/manualObstacles.test.mjs",
+          "lines": [
+            10,
+            45
+          ]
+        },
+        {
+          "file": "test/mapTransactions.test.mjs",
+          "lines": [
+            252,
+            311
+          ]
+        }
+      ],
+      "runtime_probes": [
+        "current-geography-suite",
+        "current-barrier-transaction-test"
+      ],
+      "source_ref": "agent-work/market/rules/MB-Realm-Sheets.json#MB-REALM-002-L1"
+    },
+    {
+      "requirement_id": "MB-QS-001-L1",
+      "canonical_rule_ids": [
+        "map.routes_and_barriers"
+      ],
+      "status": "partial",
+      "source_rule": "Typical Realm guideline: Barrier count=N total hexes/6, one or more edges, ordinarily impassable; intentional departures permitted. Rounding and multi-edge identity unspecified.",
+      "implemented": [
+        "Fixed current kingdom area144 has24 individual edge barriers, numerically consistent with144/6.",
+        "Manual add/remove lets user depart from24 and save result; targeted App transaction test adds a25th barrier and confirms exact undo/redo."
+      ],
+      "absent_or_unverified": [
+        "Generator hardcodes24; no generic N/6 guide, independent stored target, incomplete target state, rounding/needs-decision state or explicit intentional-departure metadata was found.",
+        "N6 andN12 pure module probes demand24 and fail for insufficient edges; N144 synthetic line gets24. This establishes a hardcoded module contract, not a supported arbitrary-Realm UI bug.",
+        "Multi-edge grouping is not defined by extracted source; cannot score segment count as grouped-object compliance without a product unit decision."
+      ],
+      "owner_choices": [
+        "Current realm is fixed12x12, source does not require every product Realm be variable size.",
+        "24 weighted unique internal edges excluding water/rivers/roads is owner-specified docs:76-81.",
+        "Not an implementation defect against current spec; general Quickstart operational profile remains partial."
+      ],
+      "evidence": [
+        {
+          "file": "src/modes/kingdoms.ts",
+          "lines": [
+            7,
+            9
+          ]
+        },
+        {
+          "file": "src/modes/obstacles.ts",
+          "lines": [
+            4,
+            15
+          ]
+        },
+        {
+          "file": "src/App.tsx",
+          "lines": [
+            13868,
+            13874
+          ]
+        },
+        {
+          "file": "docs/mythic-bastionland.md",
+          "lines": [
+            25,
+            26,
+            76,
+            81
+          ]
+        },
+        {
+          "file": "test/mythicKingdom.test.mjs",
+          "lines": [
+            29,
+            32
+          ]
+        }
+      ],
+      "runtime_probes": [
+        "generic-obstacle-count-module",
+        "current-geography-suite",
+        "current-barrier-transaction-test"
+      ],
+      "source_ref": "agent-work/market/rules/MB-Quickstart.json#MB-QS-001-L1"
+    },
+    {
+      "requirement_id": "MB-REALM-003-L1",
+      "canonical_rule_ids": [
+        "content.site_density",
+        "content.place_description"
+      ],
+      "status": "partial",
+      "source_rule": "Four holdings at qualitative distance, typical forms include castles/walled towns/fortresses/towers; holders Knights or influential Vassals; one holding is Seat of Power.",
+      "implemented": [
+        "Fresh kingdom allocation produces exactly one throne+three holding POIs, all inside designated area on settled non-tract region centers.",
+        "Seat receives same holding/bailey/keep tag policy as holding kinds, so it is semantically treated as one of the four holdings.",
+        "Insufficient settled centers prompts promotion of eligible wild regions; allocation throws if still fewer than4.",
+        "POI kinds and locations persist; real current seeded tests validate counts and map undo/redo.",
+        "Generic naming/notes/tag editing can preserve user text, but this is not dedicated holding-owner/form model."
+      ],
+      "partial_or_absent": [
+        "Seat is a distinct POI kind, not an independently stored role preserving original holding form.",
+        "Changing another holding kind to throne does not atomically remove old Seat or preserve the old kind as a form; temporary real-App probe confirms two Seats persist after roundtrip.",
+        "No dedicated set-of-four selection/completeness UI or owner Knight/Vassal field was found.",
+        "No quantitative separation rule exists in source; distinct region centers are not proof of qualitative good-distance-apart. No numeric gap asserted."
+      ],
+      "owner_choices": [
+        "Initial1Seat+3holdings matches approved count docs55.",
+        "Manual changes intentionally do not rebalance quotas or modify other objects docs67-68. Two-seat probe therefore demonstrates a source-profile role-operation gap, not a violation of approved manual behavior.",
+        "Four example forms are not mandatory unique types or a source-required closed catalogue; random choice from four forms is product design."
+      ],
+      "evidence": [
+        {
+          "file": "src/modes/pointsOfInterest.ts",
+          "lines": [
+            3,
+            7,
+            20,
+            39,
+            41
+          ]
+        },
+        {
+          "file": "src/App.tsx",
+          "lines": [
+            13843,
+            13854,
+            14246,
+            14250
+          ]
+        },
+        {
+          "file": "src/tags/mythic.ts",
+          "lines": [
+            28,
+            31
+          ]
+        },
+        {
+          "file": "test/mythicKingdom.test.mjs",
+          "lines": [
+            15,
+            27,
+            40,
+            65
+          ]
+        }
+      ],
+      "runtime_probes": [
+        "current-geography-suite",
+        "seat-duplicate-real-App-roundtrip"
+      ],
+      "source_ref": "agent-work/market/rules/MB-Realm-Sheets.json#MB-REALM-003-L1"
+    },
+    {
+      "requirement_id": "MB-REALM-004-L1",
+      "canonical_rule_ids": [
+        "content.site_density",
+        "map.reference_labels"
+      ],
+      "status": "partial",
+      "source_rule": "Six myth locations in remote places; label1..6. Research translation separates map labels from full-catalogue myth identity, allows coherent renumber and preserves links.",
+      "implemented": [
+        "Initial allocation produces exactly six myth POIs within designated area, only wild regions, at most one per region.",
+        "Generation gives myth POIs automatic mb.myth tag by owner(position+region), resolving table record from d6/d12; position and record are distinct from arbitrary labels.",
+        "Current seeded kingdom tests verify six myth POIs and automatic tag existence; save map exact undo/redo works.",
+        "Relocation policy restricts Myth to wild region inside same kingdom area and disallows second Myth in destination region; persistence/tag identity checked elsewhere by parent audit."
+      ],
+      "absent_or_unverified": [
+        "Map numbers1..6 and renumber operation are absent by explicit owner decision.",
+        "No source numeric remoteness threshold; one per wild region does not prove qualitative remoteness. Source does not establish a six-unique-catalogue-selection algorithm, so repeats are not called defects.",
+        "No dedicated set completeness validation after arbitrary manual edits; approved manual behavior does not automatically rebalance."
+      ],
+      "owner_choices": [
+        "docs56 explicitly says six Myths without numbers. This is a documented difference from researched source, not an accidental regression.",
+        "Initial spatial/region constraints are product choices; source does not specify random placement algorithm.",
+        "d6/d12 record selector values are catalogue identity and must not be presented as missing map labels1..6."
+      ],
+      "evidence": [
+        {
+          "file": "src/modes/pointsOfInterest.ts",
+          "lines": [
+            11,
+            42,
+            44
+          ]
+        },
+        {
+          "file": "src/tags/mythic.ts",
+          "lines": [
+            14,
+            16,
+            23,
+            24,
+            34,
+            42
+          ]
+        },
+        {
+          "file": "src/App.tsx",
+          "lines": [
+            14827,
+            14831
+          ]
+        },
+        {
+          "file": "src/manualPois.ts",
+          "lines": [
+            11
+          ]
+        },
+        {
+          "file": "docs/mythic-bastionland.md",
+          "lines": [
+            55,
+            56,
+            67,
+            68
+          ]
+        },
+        {
+          "file": "test/mythicKingdom.test.mjs",
+          "lines": [
+            19,
+            27
+          ]
+        }
+      ],
+      "runtime_probes": [
+        "current-geography-suite"
+      ],
+      "source_ref": "agent-work/market/rules/MB-Realm-Sheets.json#MB-REALM-004-L1"
+    }
+  ],
+  "verification": [
+    {
+      "id": "current-geography-suite",
+      "command": "node --test test/mythicKingdom.test.mjs test/manualObstacles.test.mjs",
+      "node": "v24.22.1",
+      "sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
+      "result": "PASS12/12",
+      "duration_ms": 43122.445425,
+      "covers": [
+        "Seed7/42/103 full144 coverage, first11/12, later target1..12,4holdings includingSeat,6Myths,24barriers, no water/road/river intersections, tags, save validation, undo/redo",
+        "Seed16 Classic->Mythic, regeneration,2kingdoms preserve prior maps",
+        "Late failure rollback",
+        "Pocket target1->8 and target6->20 actual handler",
+        "Manual barrier pure operations"
+      ]
+    },
+    {
+      "id": "current-barrier-transaction-test",
+      "command": "node --test --test-name-pattern='v5 obstacle IDs' test/mapTransactions.test.mjs",
+      "result": "PASS1/1",
+      "duration_ms": 13223.513537,
+      "covers": [
+        "Legacy IDs and next counter migration",
+        "Roundtrip and invalid import atomicity",
+        "Current actual App barrier add(move/remove) and exact undo/redo"
+      ]
+    },
+    {
+      "id": "d12-midpoints",
+      "type": "temporary pure module probe; no source edits",
+      "result": {
+        "midpoints": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
+        "firstRegion": [
+          11,
+          12
+        ],
+        "classicCallbackValue": 19
+      }
+    },
+    {
+      "id": "fresh-size-1-7-12",
+      "type": "temporary current real-App harness probe",
+      "seed": 42,
+      "result": [
+        {
+          "target": 1,
+          "actual": 1,
+          "biomeId": "open_plains",
+          "isTract": true,
+          "success": true
+        },
+        {
+          "target": 7,
+          "actual": 7,
+          "biomeId": "deciduous_woodland",
+          "isTract": false,
+          "success": true
+        },
+        {
+          "target": 12,
+          "actual": 12,
+          "biomeId": "open_plains",
+          "isTract": false,
+          "success": true
+        }
+      ]
+    },
+    {
+      "id": "generic-obstacle-count-module",
+      "type": "temporary module probe, synthetic line ofN adjacent dry hexes, no roads/rivers, fixed RNG. Not arbitrary-Realm UI test.",
+      "result": [
+        {
+          "N": 6,
+          "sourceTarget": 1,
+          "productError": "Недостаточно свободных рёбер для 24 препятствий."
+        },
+        {
+          "N": 12,
+          "sourceTarget": 2,
+          "productError": "Недостаточно свободных рёбер для 24 препятствий."
+        },
+        {
+          "N": 144,
+          "sourceTarget": 24,
+          "productCount": 24
+        }
+      ]
+    },
+    {
+      "id": "seat-duplicate-real-App-roundtrip",
+      "type": "temporary actual App harness import->edit->save->reimport probe",
+      "fixture": "test/fixtures/import-v2/baseline-mythic.json",
+      "result": {
+        "importAlerts": [],
+        "regions": 27,
+        "initialBarriers": 24,
+        "selectedRegionId": 7,
+        "oldKind": "holding_stronghold",
+        "newKind": "throne",
+        "seatCountAfterEdit": 2,
+        "seatCountAfterRoundtrip": 2,
+        "barriersAfterRoundtrip": 24
+      }
+    }
+  ],
+  "historical_vs_current": "docs' Oct6/8 test counts are historical only. Above evidence was executed against exact current SHA on2026-11-09. No browser screenshot or browser acceptance was run by this subaudit.",
+  "test_log_file": "/workspace/scratch/9b069330eeae/mb-geography-audit.log"
+}

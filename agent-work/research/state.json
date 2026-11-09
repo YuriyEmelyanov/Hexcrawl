@@ -55,17 +55,15 @@
     "record_alternatives": true
   },
   "next_candidate": {
-    "game_id": "PF2",
+    "game_id": "MB",
     "layer": "L1",
-    "status": "candidate_not_fixed_rotation",
-    "requirement_id": "PF2-RM-002-L1",
-    "action": "Сверить профиль PF2-RM-002-L1:12миль между противоположными вершинами, с актуальным proposed042/SCALE1 и его приёмкой/сохранением. Проверить, передана ли измерительная конвенция без подмены шириной/зумом, и оформить один адресный исследовательский пробел; не начинать спецификацию/разработку042.",
-    "source_context_ref": "agent-work/research/runs/2026-11-06T0330-PF2-L1-hex-scale.json",
-    "completion": "Точный source→операция→приёмка→042diff/unknown с примером12corner-to-corner; выбор пересмотреть по новым решениям/claims."
+    "status": "candidate_after_owner_comparison",
+    "action": "Стратег использует существующие HX-BL-053/044 только для остаточного поведения: руины и карта игроков. Новую разработку не запускать без выбора и утверждения. Затем вернуться к обычному выбору исследования; PF2-кандидат сохранён отдельно.",
+    "source_context_ref": "agent-work/research/audits/MB-implementation-2026-11-09.json"
   },
   "active_task": null,
   "claim": null,
-  "last_completed_run": "2026-11-09T0030-MB-ruins",
+  "last_completed_run": "2026-11-09-MB-implementation-audit",
   "run_history_refs": [
     "agent-work/research/runs/2026-11-06-setup.json",
     "agent-work/research/runs/2026-11-06-map-creation-ranking.json",
@@ -109,7 +107,8 @@
     "agent-work/research/runs/2026-11-08T2130-MB-landmarks.json",
     "agent-work/research/runs/2026-11-08T2230-MB-sanctums.json",
     "agent-work/research/runs/2026-11-08T2330-MB-barrier-clarification.json",
-    "agent-work/research/runs/2026-11-09T0030-MB-ruins.json"
+    "agent-work/research/runs/2026-11-09T0030-MB-ruins.json",
+    "agent-work/research/runs/2026-11-09-MB-implementation-audit.json"
   ],
   "awaiting_owner_approval": [],
   "conflicts_observed": [
@@ -125,38 +124,46 @@
   "setup_commit": "88448b734a8e9a1a35fba9352c2a6845eff98ae5",
   "last_setup_result_ref": "agent-work/research/runs/2026-11-06-setup.json",
   "automation_health": {
-    "research_agent": {
-      "start": {
-        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
-        "is_enabled": true,
-        "checked_at": "2026-11-09T00:29:17.183Z"
+    "start": {
+      "checked_at": null,
+      "note": "Exact tool event time unavailable; start checked before audit",
+      "main_team": {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "is_enabled": true
       },
-      "end": {
+      "research_agent": {
         "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
-        "is_enabled": true,
-        "checked_at": "2026-11-09T00:32:53.821Z"
+        "is_enabled": true
       }
     },
-    "main_team": {
-      "start": {
-        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
-        "is_enabled": true,
-        "checked_at": "2026-11-09T00:29:18.229Z"
+    "end": {
+      "main_team": {
+        "checked_at": "2026-11-09T01:07:51.115Z",
+        "automation": [
+          {
+            "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+            "is_enabled": true
+          }
+        ]
       },
-      "end": {
-        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
-        "is_enabled": true,
-        "checked_at": "2026-11-09T00:32:54.735Z"
+      "research_agent": {
+        "checked_at": "2026-11-09T01:07:51.115Z",
+        "automation": [
+          {
+            "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+            "is_enabled": true
+          }
+        ]
       }
     },
     "restored": false,
     "errors": []
   },
-  "last_result_ref": "agent-work/research/runs/2026-11-09T0030-MB-ruins.json",
+  "last_result_ref": "agent-work/research/runs/2026-11-09-MB-implementation-audit.json",
   "blocked_source_work": [],
   "owner_scope_ref": "owner-decision-2026-11-06-knave-complete-rules-audit",
-  "checkpoint_ref": "agent-work/research/checkpoints/MB-ruins.json",
-  "last_owner_update_ref": "agent-work/research/runs/2026-11-06-SD-core-thematic-audit.json",
+  "checkpoint_ref": "agent-work/research/checkpoints/MB-implementation-comparison.json",
+  "last_owner_update_ref": "agent-work/decisions/owner-decision-2026-11-09-MB-implementation-comparison.json",
   "source_access_resolved": {
     "KNAVE2": {
       "resolved": true,
@@ -351,7 +358,8 @@
     "MB_myth_hexes": "agent-work/research/checkpoints/MB-myth-hexes.json",
     "MB_landmarks": "agent-work/research/checkpoints/MB-landmarks.json",
     "MB_sanctums": "agent-work/research/checkpoints/MB-sanctums.json",
-    "MB_barrier_clarification": "agent-work/research/checkpoints/MB-barrier-clarification.json"
+    "MB_barrier_clarification": "agent-work/research/checkpoints/MB-barrier-clarification.json",
+    "MB_implementation_comparison": "agent-work/research/checkpoints/MB-implementation-comparison.json"
   },
   "previous_research_claim": {
     "claim_id": "2026-11-09T0030-MB-ruins",
@@ -475,8 +483,26 @@
     "L1_requirements": 9,
     "acceptance_examples": 64,
     "registered_bindings": 9,
-    "product_support": "unverified",
+    "product_support": "bounded_runtime_audit_existing_core_implemented_profiles_partial",
     "full_game_read": false,
-    "scope": "Bounded FAQ/Realm Sheet/Quickstart, including Ruins inactive-Myth relation; source profiles are not independent implementations"
+    "scope": "Bounded FAQ/Realm Sheet/Quickstart, including Ruins inactive-Myth relation; source profiles are not independent implementations",
+    "implementation_audit_ref": "agent-work/research/audits/MB-implementation-2026-11-09.json"
+  },
+  "implementation_audit": {
+    "status": "completed_bounded",
+    "audit_ref": "agent-work/research/audits/MB-implementation-2026-11-09.json",
+    "evidence_sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
+    "result_ref": "agent-work/research/runs/2026-11-09-MB-implementation-audit.json",
+    "priority": "Owner explicitly requested comparing implemented MB rules; supersedes autonomous PF2source candidate for this run.",
+    "next_step": "Pass only residual053/044 scope to strategist; if owner prioritizes literal source fidelity, separately decide changing existing numbering/manual-edit variants. Do not implement before task approval."
+  },
+  "previous_next_candidate_before_owner_MB_audit": {
+    "game_id": "PF2",
+    "layer": "L1",
+    "status": "candidate_not_fixed_rotation",
+    "requirement_id": "PF2-RM-002-L1",
+    "action": "Сверить профиль PF2-RM-002-L1:12миль между противоположными вершинами, с актуальным proposed042/SCALE1 и его приёмкой/сохранением. Проверить, передана ли измерительная конвенция без подмены шириной/зумом, и оформить один адресный исследовательский пробел; не начинать спецификацию/разработку042.",
+    "source_context_ref": "agent-work/research/runs/2026-11-06T0330-PF2-L1-hex-scale.json",
+    "completion": "Точный source→операция→приёмка→042diff/unknown с примером12corner-to-corner; выбор пересмотреть по новым решениям/claims."
   }
 }

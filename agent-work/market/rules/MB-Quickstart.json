@@ -3,7 +3,7 @@
   "game_id": "MB",
   "source_id": "MB-OFFICIAL-QUICKSTART-SNAPSHOT-20261108",
   "date": "2026-11-09",
-  "status": "partial_official_quickstart_clarification_runtime_unverified",
+  "status": "bounded_source_inventory_with_2026_11_09_runtime_audit",
   "source": {
     "id": "MB-OFFICIAL-QUICKSTART-SNAPSHOT-20261108",
     "title": "Mythic Bastionland Quickstart.pdf",
@@ -84,10 +84,10 @@
           "id": "MB-QS-001-L1",
           "layer": "L1",
           "requirement": "Определить ориентир количества барьеров N/6 и сохранить выбранные грани с обычной непроходимостью. Отличать ориентир от реально подготовленного размещения; при неделимом на6N не придумывать округление, при осознанном отступлении не перестраивать карту автоматически.",
-          "status": "unverified",
+          "status": "partial",
           "implemented": null,
-          "evidence_id": null,
-          "evidence_sha": null,
+          "evidence_id": "MB-AUDIT-MB-QS-001-L1",
+          "evidence_sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
           "canonical_rule_ids": [
             "map.routes_and_barriers"
           ],
@@ -179,7 +179,14 @@
             "HX-BL-044"
           ],
           "delivery": "research_handoff_not_specification",
-          "readiness": "quota_target_documented_automatic_placement_and_rounding_open"
+          "readiness": "quota_target_documented_automatic_placement_and_rounding_open",
+          "runtime_assessment": {
+            "audit_ref": "agent-work/research/audits/MB-implementation-2026-11-09.json#MB-AUDIT-MB-QS-001-L1",
+            "source_core_status": "implemented_for_current_144_hex_realm",
+            "actual_behavior": "Текущий144-гексовый край получает24барьера=144/6. Ручное изменение допускает другие количества без перебалансировки.",
+            "remaining_or_product_choice": "Универсальный вводN/6 для других размеров не реализован; текущий режим не предлагает такие размеры. Это расширение, не ошибка фиксированного режима.",
+            "formal_score_coverage_transfer": false
+          }
         },
         {
           "layer": "L2",
@@ -258,10 +265,10 @@
           "id": "MB-QS-002-L1",
           "layer": "L1",
           "requirement": "Проверить, что выбранный случайный кандидат не активен в данном крае, и связать руины с ним как с намёком, сохранив текст ведущего и происхождение выбора. При активном кандидате, неизвестном наборе или пустой допустимой выборке оставить выбор нерешённым; адресно редактировать и восстановить запись при открытии карты.",
-          "status": "unverified",
+          "status": "partial",
           "implemented": null,
-          "evidence_id": null,
-          "evidence_sha": null,
+          "evidence_id": "MB-AUDIT-MB-QS-002-L1",
+          "evidence_sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
           "canonical_rule_ids": [
             "content.roll_table_resolution",
             "content.adventure_hooks",
@@ -356,7 +363,14 @@
             "HX-BL-053"
           ],
           "delivery": "research_handoff_not_specification",
-          "readiness": "selected_candidate_eligibility_documented_random_filter_policy_open"
+          "readiness": "selected_candidate_eligibility_documented_random_filter_policy_open",
+          "runtime_assessment": {
+            "audit_ref": "agent-work/research/audits/MB-implementation-2026-11-09.json#MB-AUDIT-MB-QS-002-L1",
+            "source_core_status": "partial_missing_inactive_filter",
+            "actual_behavior": "Есть описание руин из72-строчного каталога и обычные теги/заметки. Отбора по неактивным мифам этого края нет. Seed199в одной области даёт миф3/2и описание руин из той же пары3/2; валидатор принимает результат.",
+            "remaining_or_product_choice": "Остаточный содержательный пробел в053: связывать подсказку с допустимым неактивным мифом данного края. Неизвестное множество активных не считать пустым; пустую допустимую выборку обработать явно. Не активировать миф/предзнаменования.",
+            "formal_score_coverage_transfer": false
+          }
         },
         {
           "layer": "L2",
@@ -403,7 +417,24 @@
   },
   "rating_changed": false,
   "score_changed": false,
-  "runtime_support": "unverified",
+  "runtime_support": {
+    "status": "bounded_audit_partial_or_absent_full_operational_profiles",
+    "evidence_sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
+    "audit_ref": "agent-work/research/audits/MB-implementation-2026-11-09.json",
+    "findings": [
+      {
+        "requirement_id": "MB-QS-001-L1",
+        "source_core_status": "implemented_for_current_144_hex_realm",
+        "full_operational_requirement_status": "partial"
+      },
+      {
+        "requirement_id": "MB-QS-002-L1",
+        "source_core_status": "partial_missing_inactive_filter",
+        "full_operational_requirement_status": "partial"
+      }
+    ],
+    "score_awarded": false
+  },
   "additional_source_scopes": [
     {
       "id": "MB-OFFICIAL-QUICKSTART-SNAPSHOT-20261108",

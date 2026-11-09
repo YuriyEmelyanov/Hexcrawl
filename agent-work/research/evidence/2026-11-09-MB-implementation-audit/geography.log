@@ -1,0 +1,25 @@
+Captured current tool output excerpts. Product SHA a246fdf292963fd534a8203f569b9ca48b6292c7, Node v24.22.1.
+Command: node --test test/mythicKingdom.test.mjs test/manualObstacles.test.mjs
+PASS legacy migration assigns deterministic IDs without changing array order or membership (4.726878ms)
+PASS v5 counter normalization rejects duplicate IDs, duplicate edges and unsafe allocation (1.535549ms)
+PASS Classic add and remove preserve input and unrelated state without a fake kingdom (1.116674ms)
+PASS move retains identity and unrelated records while recalculating real kingdom membership (3.409824ms)
+PASS invalid targets and reversed duplicates reject atomically; source move remains no-op (1.907141ms)
+PASS kingdom quotas, d12 sizes, save, classic extension and atomic undo (14753.369361ms)
+PASS classic to mythic, second kingdom and regeneration preserve earlier regions (22209.085946ms)
+PASS late exception rolls back entire kingdom (371.478107ms)
+PASS nearest free rectangle and disjoint territory (0.905498ms)
+PASS first settled region starts at the rectangle center, including its throne (2672.734815ms)
+PASS Mythic growth fills an enclosed pocket even when the target is already reached (251.044587ms)
+PASS real Mythic handler absorbs a pocket beyond the roll and undo restores it (585.062348ms)
+tests12 pass12 fail0 duration_ms43122.445425
+
+Command: node --test --test-name-pattern='v5 obstacle IDs' test/mapTransactions.test.mjs
+PASS v5 obstacle IDs and counter survive migration, round-trip and history; invalid v5 is atomic (11100.621296ms)
+tests1 pass1 fail0 duration_ms13223.513537
+
+Temporary probe: modeRegionSize midpoint bins =>1,2,3,4,5,6,7,8,9,10,11,12; first =>11,12; Classic callback =>19.
+Temporary real-handler seed42 target1=>actual1 open_plains tract success;7=>7 deciduous_woodland success;12=>12 open_plains success.
+Temporary real-App imported baseline =>27regions24barriers, no alerts. Changed region7 holding_stronghold->throne =>2Seats. JSON save+reimport =>2Seats24barriers,noalerts.
+Temporary pure obstacle module N6/N12=>error "Недостаточно свободных рёбер для 24 препятствий.";N144=>24.
+Initial pre-dependency attempt: five pure manualObstacles tests passed, mythicKingdom unable to import missing TypeScript. Dependencies subsequently installed by root and complete current tests passed above.

@@ -1,0 +1,435 @@
+{
+  "schema_version": 1,
+  "audit_id": "2026-11-09-MB-implementation-audit",
+  "date": "2026-11-09",
+  "requested_by_owner": "У нас реализован режим mythic bastionland. Надо бы сопоставить, реализованы правила или нет.",
+  "role": "owner_authorized_bounded_implementation_review",
+  "scope": "Nine existing MB L1 source profiles; published main plus selected adjacent content/save behavior. Derived audit, not another rule register.",
+  "product_sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
+  "source_registry_branch_baseline": "a9910d10a7e00fbe86ae9bc996729554bc0ab918",
+  "primary_scenario": "create",
+  "ranking_version": "three-scenario-ranks-1.4-create-evidence",
+  "cohort_version": "2026-11-06-ranking1.4-create-evidence",
+  "main_changed": false,
+  "implementation_started": false,
+  "rating_changed": false,
+  "score_changed": false,
+  "source_vs_product_rule": "Literal source recommendations, full researcher-authored operational acceptance and approved owner variants evaluated separately. Incomplete extra acceptance does not mean generator missing.",
+  "findings": [
+    {
+      "id": "MB-AUDIT-MB-REALM-001-L1",
+      "requirement_id": "MB-REALM-001-L1",
+      "source_rule_ref": "agent-work/market/rules/MB-Realm-Sheets.json#MB-REALM-001",
+      "requirement_ref": "agent-work/market/rules/MB-Realm-Sheets.json#MB-REALM-001-L1",
+      "canonical_rule_ids": [
+        "map.extend_preserving_content",
+        "map.terrain_zones"
+      ],
+      "criterion_ids": [
+        "S03-C01",
+        "S03-C03",
+        "S01-C05"
+      ],
+      "layer": "L1",
+      "source_core_status": "implemented_with_owner_variants",
+      "full_operational_requirement_status": "partial",
+      "actual_behavior": "В MB уже используется равномерная цель1–12. Проверенные свободные группы1/7/12 дают1/7/12. Первый регион11/12 и поглощение замкнутых карманов могут увеличить фактический размер; это ТЗ владельца, не пропущенная реализацияd12.",
+      "remaining_or_product_choice": "Не создавать новый MB d12-режим из предположения о d20. Общая задача008 может остаться для других профилей; точный размер/выбор типа и принудительного броска — отдельный продуктовый выбор.",
+      "evidence_sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
+      "code_refs": [
+        {
+          "path": "src/modes/regionSize.ts",
+          "line": 2,
+          "url": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/a246fdf292963fd534a8203f569b9ca48b6292c7/src/modes/regionSize.ts#L2"
+        },
+        {
+          "path": "test/mythicKingdom.test.mjs",
+          "line": 116,
+          "url": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/a246fdf292963fd534a8203f569b9ca48b6292c7/test/mythicKingdom.test.mjs#L116"
+        }
+      ],
+      "evidence_refs": [
+        "agent-work/research/evidence/2026-11-09-MB-implementation-audit/geography.json",
+        "agent-work/research/evidence/2026-11-09-MB-implementation-audit/content.json",
+        "agent-work/research/evidence/2026-11-09-MB-implementation-audit/checks.json"
+      ],
+      "score_awarded": false
+    },
+    {
+      "id": "MB-AUDIT-MB-REALM-002-L1",
+      "requirement_id": "MB-REALM-002-L1",
+      "source_rule_ref": "agent-work/market/rules/MB-Realm-Sheets.json#MB-REALM-002",
+      "requirement_ref": "agent-work/market/rules/MB-Realm-Sheets.json#MB-REALM-002-L1",
+      "canonical_rule_ids": [
+        "map.routes_and_barriers"
+      ],
+      "criterion_ids": [
+        "S01-C04",
+        "S01-C05",
+        "S06-C04"
+      ],
+      "layer": "L1",
+      "source_core_status": "implemented_L1",
+      "full_operational_requirement_status": "partial",
+      "actual_behavior": "Грани-препятствия создаются, редактируются, сохраняются; дороги не проходят сквозь них. Есть24стабильных уникальных объекта в144гексах.",
+      "remaining_or_product_choice": "Игровая проходимость при движении партии —L2; отсутствие движка перемещения не дефектL1. Один объект на грань — текущая модель, источник не требует группировать несколько граней.",
+      "evidence_sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
+      "code_refs": [
+        {
+          "path": "src/modes/obstacles.ts",
+          "line": 4,
+          "url": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/a246fdf292963fd534a8203f569b9ca48b6292c7/src/modes/obstacles.ts#L4"
+        },
+        {
+          "path": "src/manualObstacles.ts",
+          "line": 43,
+          "url": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/a246fdf292963fd534a8203f569b9ca48b6292c7/src/manualObstacles.ts#L43"
+        },
+        {
+          "path": "test/mapTransactions.test.mjs",
+          "line": 252,
+          "url": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/a246fdf292963fd534a8203f569b9ca48b6292c7/test/mapTransactions.test.mjs#L252"
+        }
+      ],
+      "evidence_refs": [
+        "agent-work/research/evidence/2026-11-09-MB-implementation-audit/geography.json",
+        "agent-work/research/evidence/2026-11-09-MB-implementation-audit/content.json",
+        "agent-work/research/evidence/2026-11-09-MB-implementation-audit/checks.json"
+      ],
+      "score_awarded": false
+    },
+    {
+      "id": "MB-AUDIT-MB-QS-001-L1",
+      "requirement_id": "MB-QS-001-L1",
+      "source_rule_ref": "agent-work/market/rules/MB-Quickstart.json#MB-QS-001",
+      "requirement_ref": "agent-work/market/rules/MB-Quickstart.json#MB-QS-001-L1",
+      "canonical_rule_ids": [
+        "map.routes_and_barriers"
+      ],
+      "criterion_ids": [
+        "S01-C04",
+        "S01-C05",
+        "S06-C04"
+      ],
+      "layer": "L1",
+      "source_core_status": "implemented_for_current_144_hex_realm",
+      "full_operational_requirement_status": "partial",
+      "actual_behavior": "Текущий144-гексовый край получает24барьера=144/6. Ручное изменение допускает другие количества без перебалансировки.",
+      "remaining_or_product_choice": "Универсальный вводN/6 для других размеров не реализован; текущий режим не предлагает такие размеры. Это расширение, не ошибка фиксированного режима.",
+      "evidence_sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
+      "code_refs": [
+        {
+          "path": "src/modes/kingdoms.ts",
+          "line": 7,
+          "url": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/a246fdf292963fd534a8203f569b9ca48b6292c7/src/modes/kingdoms.ts#L7"
+        },
+        {
+          "path": "src/modes/obstacles.ts",
+          "line": 15,
+          "url": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/a246fdf292963fd534a8203f569b9ca48b6292c7/src/modes/obstacles.ts#L15"
+        },
+        {
+          "path": "docs/mythic-bastionland.md",
+          "line": 76,
+          "url": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/a246fdf292963fd534a8203f569b9ca48b6292c7/docs/mythic-bastionland.md#L76"
+        }
+      ],
+      "evidence_refs": [
+        "agent-work/research/evidence/2026-11-09-MB-implementation-audit/geography.json",
+        "agent-work/research/evidence/2026-11-09-MB-implementation-audit/content.json",
+        "agent-work/research/evidence/2026-11-09-MB-implementation-audit/checks.json"
+      ],
+      "score_awarded": false
+    },
+    {
+      "id": "MB-AUDIT-MB-REALM-003-L1",
+      "requirement_id": "MB-REALM-003-L1",
+      "source_rule_ref": "agent-work/market/rules/MB-Realm-Sheets.json#MB-REALM-003",
+      "requirement_ref": "agent-work/market/rules/MB-Realm-Sheets.json#MB-REALM-003-L1",
+      "canonical_rule_ids": [
+        "content.site_density",
+        "content.place_description"
+      ],
+      "criterion_ids": [
+        "S05-C01",
+        "S05-C02",
+        "S07-C02"
+      ],
+      "layer": "L1",
+      "source_core_status": "implemented_initial_allocation",
+      "full_operational_requirement_status": "partial",
+      "actual_behavior": "Генератор создаёт1Престол+3Удела, Престол получает те же теги владения. Квота и сохранение подтверждены.",
+      "remaining_or_product_choice": "После ручной смены типа можно получить2Престола; ТЗ разрешает ручные изменения без перебалансировки. Нет автоматической операции переназначения единственного Престола с сохранением формы. Не требовать её как исправления исходной генерации; численная дистанция источником не задана.",
+      "evidence_sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
+      "code_refs": [
+        {
+          "path": "src/modes/pointsOfInterest.ts",
+          "line": 39,
+          "url": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/a246fdf292963fd534a8203f569b9ca48b6292c7/src/modes/pointsOfInterest.ts#L39"
+        },
+        {
+          "path": "src/tags/mythic.ts",
+          "line": 28,
+          "url": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/a246fdf292963fd534a8203f569b9ca48b6292c7/src/tags/mythic.ts#L28"
+        },
+        {
+          "path": "src/App.tsx",
+          "line": 14246,
+          "url": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/a246fdf292963fd534a8203f569b9ca48b6292c7/src/App.tsx#L14246"
+        }
+      ],
+      "evidence_refs": [
+        "agent-work/research/evidence/2026-11-09-MB-implementation-audit/geography.json",
+        "agent-work/research/evidence/2026-11-09-MB-implementation-audit/content.json",
+        "agent-work/research/evidence/2026-11-09-MB-implementation-audit/checks.json"
+      ],
+      "score_awarded": false
+    },
+    {
+      "id": "MB-AUDIT-MB-REALM-004-L1",
+      "requirement_id": "MB-REALM-004-L1",
+      "source_rule_ref": "agent-work/market/rules/MB-Realm-Sheets.json#MB-REALM-004",
+      "requirement_ref": "agent-work/market/rules/MB-Realm-Sheets.json#MB-REALM-004-L1",
+      "canonical_rule_ids": [
+        "content.site_density",
+        "map.reference_labels"
+      ],
+      "criterion_ids": [
+        "S05-C01",
+        "S07-C02",
+        "S04-C03"
+      ],
+      "layer": "L1",
+      "source_core_status": "implemented_six_places_owner_exception_labels",
+      "full_operational_requirement_status": "partial",
+      "actual_behavior": "Генерируются6мест мифов, по одному на дикий регион; есть имена, кубы и сохранённые записи.",
+      "remaining_or_product_choice": "Номеров1–6нет по явному ТЗ владельца. Не добавлять их молча. Численной нормы удалённости и обязательной уникальности6каталожных мифов источник не дал.",
+      "evidence_sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
+      "code_refs": [
+        {
+          "path": "src/modes/pointsOfInterest.ts",
+          "line": 42,
+          "url": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/a246fdf292963fd534a8203f569b9ca48b6292c7/src/modes/pointsOfInterest.ts#L42"
+        },
+        {
+          "path": "docs/mythic-bastionland.md",
+          "line": 56,
+          "url": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/a246fdf292963fd534a8203f569b9ca48b6292c7/docs/mythic-bastionland.md#L56"
+        }
+      ],
+      "evidence_refs": [
+        "agent-work/research/evidence/2026-11-09-MB-implementation-audit/geography.json",
+        "agent-work/research/evidence/2026-11-09-MB-implementation-audit/content.json",
+        "agent-work/research/evidence/2026-11-09-MB-implementation-audit/checks.json"
+      ],
+      "score_awarded": false
+    },
+    {
+      "id": "MB-AUDIT-MB-REALM-005-L1",
+      "requirement_id": "MB-REALM-005-L1",
+      "source_rule_ref": "agent-work/market/rules/MB-Realm-Sheets.json#MB-REALM-005",
+      "requirement_ref": "agent-work/market/rules/MB-Realm-Sheets.json#MB-REALM-005-L1",
+      "canonical_rule_ids": [
+        "content.site_density",
+        "map.reference_labels"
+      ],
+      "criterion_ids": [
+        "S05-C01",
+        "S07-C02",
+        "S04-C03"
+      ],
+      "layer": "L1",
+      "source_core_status": "implemented_source_core",
+      "full_operational_requirement_status": "partial",
+      "actual_behavior": "Квота3–4для каждого из6видов, различные значки и сохранение реализованы. Управляемые броски дали18,24и смешанный набор21ориентир.",
+      "remaining_or_product_choice": "В исследовательских примерах дополнительно предложены заданный вектор количеств/проверка комплектности после правок. Они не буквальное правило источника и не основание заново разрабатывать квоты/значки.",
+      "evidence_sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
+      "code_refs": [
+        {
+          "path": "src/modes/pointsOfInterest.ts",
+          "line": 45,
+          "url": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/a246fdf292963fd534a8203f569b9ca48b6292c7/src/modes/pointsOfInterest.ts#L45"
+        },
+        {
+          "path": "test/mythicKingdom.test.mjs",
+          "line": 27,
+          "url": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/a246fdf292963fd534a8203f569b9ca48b6292c7/test/mythicKingdom.test.mjs#L27"
+        }
+      ],
+      "evidence_refs": [
+        "agent-work/research/evidence/2026-11-09-MB-implementation-audit/geography.json",
+        "agent-work/research/evidence/2026-11-09-MB-implementation-audit/content.json",
+        "agent-work/research/evidence/2026-11-09-MB-implementation-audit/checks.json"
+      ],
+      "score_awarded": false
+    },
+    {
+      "id": "MB-AUDIT-MB-REALM-006-L1",
+      "requirement_id": "MB-REALM-006-L1",
+      "source_rule_ref": "agent-work/market/rules/MB-Realm-Sheets.json#MB-REALM-006",
+      "requirement_ref": "agent-work/market/rules/MB-Realm-Sheets.json#MB-REALM-006-L1",
+      "canonical_rule_ids": [
+        "content.roll_table_resolution",
+        "content.place_description"
+      ],
+      "criterion_ids": [
+        "S05-C01",
+        "S05-C02"
+      ],
+      "layer": "L1",
+      "source_core_status": "implemented_verified_source_examples",
+      "full_operational_requirement_status": "partial",
+      "actual_behavior": "Отдельный бросокd6+d12выбирает Провидца;1/1→The Rotted Seer,1/2→The Swollen Seer. В продукте72имени; кубы/имя сохраняются и перебрасываются независимо от описания святилища.",
+      "remaining_or_product_choice": "Прямой lookup эквивалентен переходу через рыцаря для проверенных пар. Не создавать функцию лишь ради хранения промежуточного рыцаря/страницы. Полная первичная сверка остальных70карточек не проведена.",
+      "evidence_sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
+      "code_refs": [
+        {
+          "path": "src/tags/mythic.ts",
+          "line": 14,
+          "url": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/a246fdf292963fd534a8203f569b9ca48b6292c7/src/tags/mythic.ts#L14"
+        },
+        {
+          "path": "src/tags/mythic.ts",
+          "line": 34,
+          "url": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/a246fdf292963fd534a8203f569b9ca48b6292c7/src/tags/mythic.ts#L34"
+        },
+        {
+          "path": "src/tags/engine.ts",
+          "line": 31,
+          "url": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/a246fdf292963fd534a8203f569b9ca48b6292c7/src/tags/engine.ts#L31"
+        }
+      ],
+      "evidence_refs": [
+        "agent-work/research/evidence/2026-11-09-MB-implementation-audit/geography.json",
+        "agent-work/research/evidence/2026-11-09-MB-implementation-audit/content.json",
+        "agent-work/research/evidence/2026-11-09-MB-implementation-audit/checks.json"
+      ],
+      "score_awarded": false
+    },
+    {
+      "id": "MB-AUDIT-MB-QS-002-L1",
+      "requirement_id": "MB-QS-002-L1",
+      "source_rule_ref": "agent-work/market/rules/MB-Quickstart.json#MB-QS-002",
+      "requirement_ref": "agent-work/market/rules/MB-Quickstart.json#MB-QS-002-L1",
+      "canonical_rule_ids": [
+        "content.roll_table_resolution",
+        "content.adventure_hooks",
+        "content.place_description"
+      ],
+      "criterion_ids": [
+        "S05-C01",
+        "S05-C02"
+      ],
+      "layer": "L1",
+      "source_core_status": "partial_missing_inactive_filter",
+      "full_operational_requirement_status": "partial",
+      "actual_behavior": "Есть описание руин из72-строчного каталога и обычные теги/заметки. Отбора по неактивным мифам этого края нет. Seed199в одной области даёт миф3/2и описание руин из той же пары3/2; валидатор принимает результат.",
+      "remaining_or_product_choice": "Остаточный содержательный пробел в053: связывать подсказку с допустимым неактивным мифом данного края. Неизвестное множество активных не считать пустым; пустую допустимую выборку обработать явно. Не активировать миф/предзнаменования.",
+      "evidence_sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
+      "code_refs": [
+        {
+          "path": "src/tags/mythic.ts",
+          "line": 34,
+          "url": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/a246fdf292963fd534a8203f569b9ca48b6292c7/src/tags/mythic.ts#L34"
+        },
+        {
+          "path": "docs/mythic-tags.md",
+          "line": 23,
+          "url": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/a246fdf292963fd534a8203f569b9ca48b6292c7/docs/mythic-tags.md#L23"
+        }
+      ],
+      "evidence_refs": [
+        "agent-work/research/evidence/2026-11-09-MB-implementation-audit/geography.json",
+        "agent-work/research/evidence/2026-11-09-MB-implementation-audit/content.json",
+        "agent-work/research/evidence/2026-11-09-MB-implementation-audit/checks.json"
+      ],
+      "score_awarded": false
+    },
+    {
+      "id": "MB-AUDIT-MB-FAQ-2025-001-L1",
+      "requirement_id": "MB-FAQ-2025-001-L1",
+      "source_rule_ref": "agent-work/market/rules/MB-author-FAQ-2025.json#MB-FAQ-2025-001",
+      "requirement_ref": "agent-work/market/rules/MB-author-FAQ-2025.json#MB-FAQ-2025-001-L1",
+      "canonical_rule_ids": [
+        "map.audience_views"
+      ],
+      "criterion_ids": [
+        "S06-C05",
+        "S05-C03"
+      ],
+      "layer": "L1",
+      "source_core_status": "absent_optional_profile",
+      "full_operational_requirement_status": "absent",
+      "actual_behavior": "Экспортируется общая карта. PNGберёт текущийSVG; JSONсодержит полные регионы, теги, барьеры и заметки ведущего. Фильтра H/Tвидно,M/L/Bскрыто в коде нет.",
+      "remaining_or_product_choice": "Необязательная авторская практика; не блокирует генератор. Остаточный компонент044 — отдельное представление/вывод для игроков, сохраняя GMоригинал. ОбычныйJSONне считать очищенной копией.",
+      "evidence_sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
+      "code_refs": [
+        {
+          "path": "src/App.tsx",
+          "line": 14692,
+          "url": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/a246fdf292963fd534a8203f569b9ca48b6292c7/src/App.tsx#L14692"
+        },
+        {
+          "path": "src/App.tsx",
+          "line": 14727,
+          "url": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/a246fdf292963fd534a8203f569b9ca48b6292c7/src/App.tsx#L14727"
+        },
+        {
+          "path": "src/App.tsx",
+          "line": 14743,
+          "url": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/a246fdf292963fd534a8203f569b9ca48b6292c7/src/App.tsx#L14743"
+        },
+        {
+          "path": "src/App.tsx",
+          "line": 14400,
+          "url": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/a246fdf292963fd534a8203f569b9ca48b6292c7/src/App.tsx#L14400"
+        }
+      ],
+      "evidence_refs": [
+        "agent-work/research/evidence/2026-11-09-MB-implementation-audit/geography.json",
+        "agent-work/research/evidence/2026-11-09-MB-implementation-audit/content.json",
+        "agent-work/research/evidence/2026-11-09-MB-implementation-audit/checks.json"
+      ],
+      "score_awarded": false
+    }
+  ],
+  "additional_verified_content": {
+    "production_myth_names": 72,
+    "production_seer_names": 72,
+    "production_landmark_prompts": 432,
+    "production_myth_reference_records": 72,
+    "catalog_comparison": "72myth names+72seer names+432prompts match operational catalogs; not independent original-source transcription audit.",
+    "english_limit": "12seer/landmark results have verifiedEN,othersRUfallback;72reference recordsRU.",
+    "evidence_ref": "agent-work/research/evidence/2026-11-09-MB-implementation-audit/content.json"
+  },
+  "residual_product_components": [
+    {
+      "task_id": "HX-BL-053",
+      "component": "Ruins relation to locally inactive Myth",
+      "status": "proposed_existing_component",
+      "implementation_authorized": false
+    },
+    {
+      "task_id": "HX-BL-044",
+      "component": "Optional player-facing map/copy",
+      "status": "proposed_existing_component",
+      "implementation_authorized": false
+    }
+  ],
+  "no_new_implementation_needed_for": [
+    "MBtargetd12fromscratch",
+    "Four initial holdings includingSeat",
+    "Six initial Myth places",
+    "3–4of each landmark type/icons",
+    "24barriers for fixed144hexRealm",
+    "Seerlookup merely to store intermediateKnight provenance"
+  ],
+  "owner_variants": [
+    "Firstregion11/12andholeabsorption",
+    "Unnumbered myth map markers",
+    "Manual edits without quota rebalancing"
+  ],
+  "source_corpus_completeness": "bounded9existing profiles, not entire game; otherp14clauses such as geography affected byMyth not newly audited",
+  "verification_ref": "agent-work/research/evidence/2026-11-09-MB-implementation-audit/checks.json",
+  "next_step": "Pass only residual053/044 scope to strategist; if owner prioritizes literal source fidelity, separately decide changing existing numbering/manual-edit variants. Do not implement before task approval."
+}
