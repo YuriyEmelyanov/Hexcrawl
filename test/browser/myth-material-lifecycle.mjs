@@ -102,7 +102,7 @@ export async function runMythMaterialLifecycle({page,snapshot,saved,root}){
  await button('Повторить').click();assert.deepEqual(await snapshot(),renamed);await closeMenu();await collapsed(a);
  await button('Отменить').click();const draftBefore=await snapshot();await closeMenu();await ready(a);
  assert.equal(await button('Повторить').isEnabled(),true);
- const pointer=async target=>{const rect=await target.boundingBox();assert.ok(rect);await page.mouse.click(rect.x+rect.width/2,rect.y+rect.height/2);};
+ const pointer=async target=>{await target.scrollIntoViewIfNeeded();const rect=await target.boundingBox();assert.ok(rect);const point={x:rect.x+rect.width/2,y:rect.y+rect.height/2};assert.ok(await target.evaluate((el,p)=>el.contains(document.elementFromPoint(p.x,p.y)),point),'physical pointer must hit the intended disabled material control');await page.mouse.click(point.x,point.y);};
  const retainDraft=async(input,value,label)=>{
   await input.fill(value);assert.equal(await toggle(a).isDisabled(),true);await pointer(toggle(a));
   assert.equal(await input.evaluate(el=>document.activeElement===el),true,`${label}: material pointer must retain focus`);assert.equal(await input.inputValue(),value);

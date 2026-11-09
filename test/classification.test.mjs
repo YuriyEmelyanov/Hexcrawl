@@ -1,6 +1,6 @@
 // CLASSIFY1: new policy has no prior coverage. Four cases cover distinct risks:
 // biome defaults, discovery semantics, hostile/legacy import, real history.
-// UI/POI move coverage extends the existing save-history browser lifecycle.
+// UI/POI move coverage extends the existing tags browser lifecycle.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
