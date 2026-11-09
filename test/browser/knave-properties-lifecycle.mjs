@@ -27,9 +27,22 @@ export async function runKnavePropertiesLifecycle({page,snapshot,root}) {
  const info=page.locator('.info-block--hex'),panel=info.locator('[data-knave-panel]');
  assert.match(await panel.innerText(),/При прохождении/);
  assert.equal(await panel.locator('.knave-result').count(),2);await panel.locator('.knave-result').first().locator('summary').click();assert.match(await panel.innerText(),/совместимый пул/);
+ // UI2 reuses the MB result line, with honest filtered selection and a real
+ // d100 trait. These DOM checks protect visible order and accepted commands.
+ const primary=panel.locator('[data-knave-part="primary"]'),trait=panel.locator('[data-knave-part="trait"]'),traitDie=trait.locator('.tag-die'),pick=primary.locator('.tag-pick');
+ assert.equal(await primary.locator('.tag-die').count(),0,'filtered source row is not presented as original d100');assert.equal(await pick.count(),1);assert.match(await pick.getAttribute('aria-label'),/совместимый выбор/i);
+ for(const row of [primary,trait])assert.equal(await row.evaluate(el=>{const label=el.querySelector('.tag-label'),action=el.querySelector('.tag-die,.tag-pick'),result=el.querySelector('.tag-result');return !!label?.textContent?.trim()&&!!(label.compareDocumentPosition(action)&Node.DOCUMENT_POSITION_FOLLOWING)&&!!(label.compareDocumentPosition(result)&Node.DOCUMENT_POSITION_FOLLOWING);}),true,'purpose before action and result');
+ const initialRoll=await snapshot(),key='poi:1:2,0',initialCounter=initialRoll.map.knave.content.rollCounters[key];
+ assert.equal(Number(await traitDie.locator('svg text').textContent()),initialRoll.map.knave.content.byPoi[key].trait.roll);
+ await traitDie.focus();await page.keyboard.press('Enter');const rerolled=await snapshot();
+ assert.deepEqual(rerolled.map.knave.content.byPoi[key].site,initialRoll.map.knave.content.byPoi[key].site);assert.equal(rerolled.map.knave.content.rollCounters[key].trait,initialCounter.trait+1);assert.equal(rerolled.map.knave.content.rollCounters[key].primary,initialCounter.primary);assert.deepEqual(rerolled.generation,initialRoll.generation);
+ await page.getByRole('button',{name:'Отменить',exact:true}).click();assert.deepEqual(await snapshot(),initialRoll);await page.getByRole('button',{name:'Повторить',exact:true}).click();assert.deepEqual(await snapshot(),rerolled);
+ await page.waitForTimeout(350);await traitDie.focus();await page.keyboard.press('Shift+F10');await page.getByRole('menuitem',{name:'Перебросить оба',exact:true}).click();const pair=await snapshot();assert.equal(pair.map.knave.content.rollCounters[key].primary,initialCounter.primary+1);assert.equal(pair.map.knave.content.rollCounters[key].trait,initialCounter.trait+2);assert.equal(pair.map.knave.content.rollCounters[key].category,initialCounter.category);
+ await page.getByRole('button',{name:'Отменить',exact:true}).click();assert.deepEqual(await snapshot(),rerolled,'both actions share one Undo');await page.getByRole('button',{name:'Повторить',exact:true}).click();assert.deepEqual(await snapshot(),pair);
+ await page.locator('.language-toggle').click();assert.equal(await page.locator('.language-toggle').innerText(),'EN');assert.match(await trait.locator('.tag-label').innerText(),/Place trait/);assert.match(await trait.innerText(),/RU/);assert.deepEqual(await snapshot(),pair,'language switch does not reroll');await page.locator('.language-toggle').click();assert.equal(await page.locator('.language-toggle').innerText(),'RU');assert.match(await trait.locator('.tag-label').innerText(),/Особенность места/);
  const before=await snapshot();await page.getByRole('button',{name:'Редактировать',exact:true}).click();
  const discovery=panel.getByRole('combobox',{name:'Обнаружение',exact:true});
- await discovery.focus();await discovery.selectOption('interaction');await page.getByRole('button',{name:'Готово',exact:true}).click();
+ await discovery.focus();await discovery.selectOption('interaction');assert.equal(await traitDie.isDisabled(),true,'dirty Knave draft blocks reroll');assert.equal(await pick.isDisabled(),true);await page.getByRole('button',{name:'Готово',exact:true}).click();
  assert.match(await panel.getByRole('alert').innerText(),/улика/);assert.deepEqual(await snapshot(),before,'export excludes invalid draft');
  await page.locator('polygon.hex[data-hex-key="1,0"]').dispatchEvent('click');
  const dialog=page.getByRole('alertdialog');await dialog.getByRole('button',{name:'Остаться',exact:true}).click();
@@ -42,7 +55,7 @@ export async function runKnavePropertiesLifecycle({page,snapshot,root}) {
    await page.setViewportSize({width,height:1100});await panel.scrollIntoViewIfNeeded();
    const size=await info.evaluate(el=>({client:el.clientWidth,scroll:el.scrollWidth}));assert.ok(size.scroll<=size.client+1,JSON.stringify({width,...size}));
    // KNC-REV-001: actual, nonoverlapping hit targets, not just legible text.
-   const targets=panel.locator('.knave-result summary, .knave-cancel');
+   const targets=panel.locator('.knave-result summary, .tag-die, .tag-pick, .knave-cancel');
    const hitAreas=[];
    for(const target of await targets.all()){
      await target.scrollIntoViewIfNeeded();
@@ -80,5 +93,5 @@ export async function runKnavePropertiesLifecycle({page,snapshot,root}) {
  await page.locator('input[type=file]').setInputFiles({name:'knave-roundtrip.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(accepted))});
  await page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);assert.deepEqual(await snapshot(),accepted);
  await fs.writeFile(new URL('metrics.json',out),JSON.stringify(metrics,null,2));
- console.log('KNAVE2-CLASSIC1 browser properties: profile choice/lock, secret validation, accepted-only export, save/discard/Escape, UndoRedo, escaped clue, 1500/390/320, roundtrip passed');
+ console.log('KNAVE2-CLASSIC1 + ROLLUI2 browser properties: profile choice/lock, secret validation, accepted-only export, save/discard/Escape, UndoRedo, escaped clue, 1500/390/320, roundtrip passed');
 }

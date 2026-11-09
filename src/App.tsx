@@ -1,5 +1,5 @@
 import knaveCatalogData from './tags/knaveCatalogData';
-import {emptyKnaveContent,fillKnaveContent,validateKnaveCatalog,type KnaveCatalog,type KnaveFacts} from './tags/knave';
+import {emptyKnaveContent,fillKnaveContent,rerollKnaveContent,validateKnaveCatalog,type KnaveCatalog,type KnaveFacts} from './tags/knave';
 import {knaveLossValue,dropKnaveLoss,newKnaveLayer,setKnaveDifficulty,setKnaveDiscovery,type Difficulty,type Discovery,validateKnaveLayer,remapKnavePois,knaveLosses,type KnaveLayer,type KnaveContext} from './knaveClassic';
 import {hasCentralPoi,preparePoiMove,poiLocatorKey,type PoiLocator,assertPoiEditorNames,poiNameLocators,renamePoiEditorName,PoiMoveError,type EditorNames} from './manualPois';
 import {migrateSeas,prepareSeaIdentity,withLegacySeas,type SeaRecord,type SeaChoices} from './seaIdentity';
@@ -11,6 +11,7 @@ import {prepareRiverEdit,validateEditedRiverNetwork,rebuildRiverWaterSectors,reb
 import {emptyTags,findTag,ownerKey,tagKey,rollTag,editTag,validateTags,TagCapacityError,type TagState,type TagOwner} from './tags/engine';
 import {mythicDefinitions,tagOwners,tagPolicy,reconcileTags,fillMythicTags} from './tags/mythic';
 import {TagRow} from './tags/TagRow';
+import {KnaveContentRow} from './tags/KnaveContentRow';
 import {prepareRoadEdit, type RoadEdit} from './manualRoads';
 import { type RandomStreams, type GenerationState, fallbackRandomStreams, poiRandomStreams, createGenerationState, cloneGenerationState, draw, toponymSeedFor, newWorldSeed, isUint32 } from './worldRandom';
 import { validateSaveStructure, SaveValidationError, assertGeneratedIds } from './saveValidation';
@@ -13768,8 +13769,29 @@ export function App() {
     updateSeaIdentity(map);updateKnave(map.knave);updateTags(map.tags);updateNotesMap(map.gmNotesByHexKey);return map;
   };
 
+  const mutateKnaveContent=(owner:string,part:'primary'|'trait'|'both')=>{
+    if(generationMode!=='classic'||mutationBlocked()||obstacleDraftRef.current||activeTagDraftKeys.current.size>0||notesEditorKey!==null)return false;
+    const key=`knave:${owner}`,now=Date.now();
+    if((tagLocks.current.get(key)??0)>now)return false;
+    try{
+      const map=captureMap(),layer=map.knave,facts=knaveFactsForMap(map).find(f=>f.owner===owner);
+      if(!layer?.content||!facts)return false;
+      const content=rerollKnaveContent(layer.content,knaveGenerationCatalog(),facts,generationRef.current.masterSeed,part),result=content.byPoi[owner];
+      const regions=part==='trait'||!result.site?map.regions:map.regions.map(region=>{
+        const prefix=`poi:${region.id}:`;if(!owner.startsWith(prefix))return region;
+        const coord=owner.slice(prefix.length),central=!region.isTract&&!region.suppressCentralPoi&&hexKey(region.centerHex)===coord&&!!region.centralPoiKind;
+        if(central)return {...region,centralPoiKind:result.category==='natural'?'natural_place' as const:result.category==='structure'?'structure' as const:'dungeon' as const};
+        if(!isPoiKind(result.site!.representation))throw Error('knave_unknown_marker');
+        return {...region,pointOfInterestKinds:{...region.pointOfInterestKinds,[coord]:result.site!.representation}};
+      });
+      if(!commitManualMap({...map,regions,knave:{...layer,content}},false))return false;
+      tagLocks.current.set(key,now+350);
+      setTagAnimations(current=>({...current,[key]:{key,slot:part==='primary'?0:part==='trait'?1:undefined,revision:content.rollCounters[owner].primary+content.rollCounters[owner].trait,expiresAt:now+350}}));
+      setTagAnnouncement(part==='primary'?result.site!.ru:part==='trait'?result.trait.ru:`${result.site!.ru} · ${result.trait.ru}`);return true;
+    }catch{setEditError(language==='ru'?'Не удалось перебросить результат Knave 2e: нет доступного совместимого выбора или данных. Карта не изменена.':'Could not reroll Knave 2e: no compatible choice or data is available. Your map is unchanged.');return false;}
+  };
   const mutateTag=(owner:TagOwner,id:string,slot?:number,edit?:{index:number;text:string})=>{
-    if(mutationBlocked()||obstacleDraftRef.current)return false;
+    if(mutationBlocked()||obstacleDraftRef.current||!edit&&(activeTagDraftKeys.current.size>0||notesEditorKey!==null))return false;
     const key=tagKey(owner,id),now=Date.now();
     if((tagLocks.current.get(key)??0)>now||!tagOwners(captureMap()).has(ownerKey(owner)))return false;
     const def=mythicDefinitions[id],existing=findTag(tagsRef.current,owner,id);
@@ -13796,9 +13818,9 @@ export function App() {
     const ids=generationMode==='mythic'?[...new Set([...available,...instances.filter(i=>!mythicDefinitions[i.definitionId]).map(i=>i.definitionId)])]:[...new Set(instances.map(i=>i.definitionId))];
     const rows=ids.filter(id=>generationMode==='mythic'||findTag(tags,owner,id)).map(id=>{
       const def=mythicDefinitions[id],instance=findTag(tags,owner,id);
-      return <TagRow key={`${tagKey(owner,id)}:${instance?.revision??0}`} owner={owner} definition={def} instance={instance} language={language} editMode={editMode}
+      return <TagRow key={`${tagKey(owner,id)}:${instance?.revision??0}`} owner={owner} definition={def} instance={instance} language={language} editMode={editMode} rollDisabled={activeTagDraftCount>0}
         materialContext={type==='myth'?{poiType:type,documentRevision:renderedDocumentRevision,disabled:materialReadBlocked()}:undefined}
-        disabled={!!poiDraft||!!regionDraft||isImporting||!!kingdomJob||!!pendingRegen||!!waterDraft||!!riverDraft||!!roadDraft||!!obstacleDraft||dirtyNameDraft()}
+        disabled={!!knaveDraft||!!poiDraft||!!regionDraft||isImporting||!!kingdomJob||!!pendingRegen||!!waterDraft||!!riverDraft||!!roadDraft||!!obstacleDraft||!!riverCommandPreview||!!roadFeatureResolution||dirtyNameDraft()||notesEditorKey!==null}
         animation={tagAnimations[tagKey(owner,id)]}
         onDraftChange={(active,token)=>notifyTagDraft(token,active)}
         onRoll={slot=>mutateTag(owner,id,slot)} onEdit={(index,text)=>mutateTag(owner,id,undefined,{index,text})}/>;
@@ -15213,7 +15235,6 @@ export function App() {
   const selectedPoiSource:PoiLocator|null=selectedHexKey?(selectedWaterPoiKind?{kind:'water',hexKey:selectedHexKey}:selectedRegion&&poiNameLocators({regions,waterPoiByKey}).has(`poi:${selectedRegion.id}:${selectedHexKey}`)?{kind:'land',regionId:selectedRegion.id,hexKey:selectedHexKey}:null):null;
   const knaveDiscoveryKey=selectedPoiSource?poiLocatorKey(selectedPoiSource):null;
   const selectedKnaveContent=knaveDiscoveryKey?knave?.content?.byPoi[knaveDiscoveryKey]:undefined;
-  const renderKnaveResult=(result:{ru:string;references:{printedPage:number}[]},table:string,row:number,die=false)=><details className="knave-result"><summary>{die?`d100=${row===100?'00':row} · `:''}{result.ru}{language==='en'?<small> RU</small>:null}</summary><small>{`Knave 2e · Torbin RU1.0 · ${table} · ${language==='ru'?'строка':'row'} ${row}`}{!die?` · ${language==='ru'?'совместимый пул':'compatible pool'}`:''}{result.references.map((r,i)=><span key={i}>{` · ${language==='ru'?'ссылка не разрешена: стр.':'unresolved reference: p.'} ${r.printedPage}`}</span>)}</small></details>;
   const acceptedDiscovery=knaveDiscoveryKey?knave?.discoveryByPoi[knaveDiscoveryKey]:undefined;
   const knaveDifficulty=knaveDraft?.difficulty??(selectedHexKey?knave?.difficultyByHex[selectedHexKey]:undefined)??'unspecified';
   const knaveDiscovery=knaveDraft?.mode??acceptedDiscovery?.mode??'passage',knaveClue=knaveDraft?.clueText??acceptedDiscovery?.clueText??'';
@@ -15221,7 +15242,7 @@ export function App() {
   const difficultyLabels:Record<Difficulty,string>=language==='ru'?{unspecified:'Не задана',normal:'Обычная',difficult:'Трудная'}:{unspecified:'Unspecified',normal:'Normal',difficult:'Difficult'};
   const discoveryLabels:Record<Discovery,string>=language==='ru'?{passage:'При прохождении',exploration:'При исследовании',interaction:'Секрет · взаимодействие'}:{passage:'On passage',exploration:'By exploration',interaction:'Secret · interaction'};
   const knavePanel=knave&&generationMode==='classic'&&selectedHexKey&&knaveMapContext(captureMap()).hexes.has(selectedHexKey)?<div data-knave-panel className="knave-properties" onFocusCapture={e=>{if(e.target instanceof HTMLElement)knaveFocusReturn.current=e.target;}}>
-    {selectedKnaveContent&&<div className="knave-results">{selectedKnaveContent.site?renderKnaveResult(selectedKnaveContent.site,selectedKnaveContent.site.table,selectedKnaveContent.site.sourceRow):null}{renderKnaveResult(selectedKnaveContent.trait,'place_traits',selectedKnaveContent.trait.sourceRow,true)}</div>}
+    {selectedKnaveContent&&knaveDiscoveryKey&&<div className="knave-results"><KnaveContentRow content={selectedKnaveContent} owner={knaveDiscoveryKey} language={language} disabled={knaveControlsBlocked||!!knaveDraft||activeTagDraftCount>0||notesEditorKey!==null} animation={tagAnimations[`knave:${knaveDiscoveryKey}`]} onRoll={part=>mutateKnaveContent(knaveDiscoveryKey,part)}/></div>}
     {!isSelectedLake&&!isSelectedSea&&<div className="direct-line"><label>{language==='ru'?'Проходимость: ':'Difficulty: '}{editMode?<select aria-label={language==='ru'?'Проходимость':'Difficulty'} value={knaveDifficulty} disabled={knaveControlsBlocked} onChange={e=>changeKnaveDraft({difficulty:e.target.value as Difficulty},knaveDraft)}>{Object.entries(difficultyLabels).map(([v,label])=><option key={v} value={v}>{label}</option>)}</select>:difficultyLabels[knaveDifficulty]}</label></div>}
     {knaveDiscoveryKey&&<><div className="direct-line"><label>{language==='ru'?'Обнаружение: ':'Discovery: '}{editMode?<select aria-label={language==='ru'?'Обнаружение':'Discovery'} value={knaveDiscovery} disabled={knaveControlsBlocked} onChange={e=>changeKnaveDraft({mode:e.target.value as Discovery},knaveDraft)}>{Object.entries(discoveryLabels).map(([v,label])=><option key={v} value={v}>{label}</option>)}</select>:discoveryLabels[knaveDiscovery]}</label></div>
     {editMode?<label className="knave-clue">{language==='ru'?'Улика (тот же гекс)':'Clue (same hex)'}<textarea aria-label={language==='ru'?'Улика':'Clue'} aria-invalid={!!knaveError} aria-describedby={knaveError?'knave-clue-error':undefined} maxLength={512} rows={2} value={knaveClue} disabled={knaveControlsBlocked} onChange={e=>changeKnaveDraft({clueText:e.target.value},knaveDraft)} onCompositionStart={()=>{knaveComposing.current=true;}} onCompositionEnd={()=>{knaveComposing.current=false;}} /></label>:knaveClue?<p className="knave-clue-text">{language==='ru'?'Улика: ':'Clue: '}{knaveClue}</p>:null}</>}
@@ -16300,7 +16321,7 @@ export function App() {
                 aria-label={t.switchLanguage}
                 title={t.switchLanguage}
               >
-                {language === 'ru' ? 'EN' : 'RU'}
+                {language === 'ru' ? 'RU' : 'EN'}
               </button>
               <a
                 className="social-link social-link--telegram"

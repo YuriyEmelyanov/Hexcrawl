@@ -252,7 +252,9 @@ button:disabled,select:disabled { opacity:.55; cursor:wait; }
 .knave-result { font-size:.9em; }
 .knave-result summary { box-sizing:border-box; min-width:44px; min-height:44px; padding-block:12px; cursor:pointer; }
 .knave-properties .knave-cancel { display:inline-block; min-width:44px; min-height:44px; cursor:pointer; }
-.knave-result > small { display:block; color:var(--muted); }
+.knave-source > small { display:block; color:var(--muted); }
+.knave-source summary { width:max-content; color:var(--muted); }
+.knave-result + .knave-result { margin-top:.3rem; }
 [data-region-editor] .direct-line select { min-height:0; height:auto; padding:0; border:0; border-radius:0; line-height:inherit; background:transparent; }
 .region-edit-preview { min-width:0; overflow-wrap:anywhere; margin-block:.5rem; padding-left:.6rem; border-left:2px solid #f7dc6f; }
 .region-edit-preview p { margin-block:.4rem; }
@@ -288,11 +290,14 @@ button:disabled,select:disabled { opacity:.55; cursor:wait; }
 .obstacle-row .direct-value { min-height:44px; }
 
 /* Tags are inline annotations: retain existing card density and typography. */
-.tag-inline { position:relative; display:inline; margin-inline-start: .25em; }
+.tag-inline { position:relative; display:block; margin-block:.15em; }
 .tag-component { display:inline; }
 .tag-component + .tag-component { margin-inline-start:2px; }
-.tag-die { display:inline-flex; vertical-align:-.15em; align-items:center; justify-content:center; width:1.1em; height:1.1em; min-width:0; padding:0; margin:0 2px 0 0; border:0; border-radius:0; background:transparent; color:inherit; font:inherit; box-shadow:none; }
-.tag-die svg { display:block; width:100%; height:100%; overflow:visible; }
+.tag-label { font-weight:500; }
+.tag-die,.tag-pick { display:inline-flex; vertical-align:middle; align-items:center; justify-content:center; min-width:44px; min-height:44px; padding:0; margin:0 2px 0 0; border:0; border-radius:0; background:transparent; color:inherit; font:inherit; box-shadow:none; }
+.tag-die { width:44px; height:44px; }
+.tag-pick { width:auto; padding-inline:4px; color:var(--muted); font-size:.85em; }
+.tag-die svg { display:block; width:1.1em; height:1.1em; overflow:visible; }
 .tag-die path { fill:var(--panel-bg,#101a2b); stroke:currentColor; stroke-width:1; }
 .tag-die text { fill:currentColor; font:10px system-ui,sans-serif; text-anchor:middle; }
 .tag-add,.tag-text { display:inline; width:auto; min-width:0; padding:0; margin:0 2px; border:0; border-radius:0; background:transparent; color:inherit; font:inherit; line-height:inherit; text-align:inherit; box-shadow:none; }
@@ -317,7 +322,7 @@ button:disabled,select:disabled { opacity:.55; cursor:wait; }
 @media(prefers-reduced-motion:reduce) { .tag-die--roll svg { animation:none; } }
 
 .tag-actions { position:absolute; z-index:20; inset-inline-start:0; bottom:100%; white-space:nowrap; }
-.tag-actions button { padding:2px 4px; font:inherit; background:#101a2b; }
+.tag-actions button { min-width:44px; min-height:44px; padding:2px 4px; font:inherit; background:#101a2b; }
 .map-stage > svg.selected-hex-overlay { position:absolute; top:0; left:0; z-index:4; opacity:1; background:none; pointer-events:none; transform-origin:0 0; overflow:visible; }
 .map-viewport.has-motion-buffer.is-navigating .map-stage > svg.selected-hex-overlay { opacity:1; }
 

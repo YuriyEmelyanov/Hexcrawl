@@ -16,7 +16,8 @@ try{
  page.on('pageerror',e=>errors.push(e.message));await page.route(/mc\.yandex/,r=>r.abort());
  await page.addInitScript(()=>{const create=URL.createObjectURL,click=HTMLAnchorElement.prototype.click,blobs=new Map();URL.createObjectURL=function(blob){const url=create.call(this,blob);if(blob.type.startsWith('application/json'))blobs.set(url,blob.text());return url;};HTMLAnchorElement.prototype.click=function(){if(blobs.has(this.href)){blobs.get(this.href).then(text=>window.__exported=JSON.parse(text));return;}return click.call(this);};});
  await page.goto('http://127.0.0.1:4188/');
- await page.getByRole('button',{name:'Переключить на русский',exact:true}).click();
+ assert.equal(await page.locator('.language-toggle').innerText(),'EN');
+ await page.getByRole('button',{name:'Переключить на русский',exact:true}).click();assert.equal(await page.locator('.language-toggle').innerText(),'RU');
  const data=JSON.parse(await fs.readFile(new URL('../fixtures/import-v2/baseline-mythic.json',import.meta.url)));
  async function snapshot(){await page.evaluate(()=>window.__exported=null);const menu=page.locator('details.export-menu');if(await menu.getAttribute('open')===null)await menu.locator('summary').click();await page.getByRole('button',{name:'JSON',exact:true}).click();await page.waitForFunction(()=>window.__exported);return page.evaluate(()=>{const d=window.__exported;delete d.savedAt;return d;});}
  await page.locator('input[type=file]').setInputFiles({name:'tags-legacy.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(data))});
@@ -32,6 +33,8 @@ try{
  const filled=await snapshot();assert.ok(filled.map.tags.instances.length>30);
  await page.getByRole('button',{name:'Готово',exact:true}).click();
  const row=info.locator('[data-tag="mb.monument"]'),die=row.locator('[data-tag-slot="0"]');
+ assert.ok((await row.locator('.tag-label').innerText()).trim(),'visible monument purpose');
+ assert.equal(await row.evaluate(el=>{const label=el.querySelector('.tag-label'),action=el.querySelector('.tag-die');return !!(label.compareDocumentPosition(action)&Node.DOCUMENT_POSITION_FOLLOWING);}),true,'MB purpose precedes dice');
  await die.click();const after=await snapshot();
  const beforeTag=filled.map.tags.instances.find(i=>i.definitionId==='mb.monument'&&i.owner.hexKey===`${hex.q},${hex.r}`);
  const afterTag=after.map.tags.instances.find(i=>i.definitionId==='mb.monument'&&i.owner.hexKey===`${hex.q},${hex.r}`);
@@ -42,7 +45,7 @@ try{
  for(const width of [1500,390,320]){
   await page.setViewportSize({width,height:1100});await info.scrollIntoViewIfNeeded();
   const size=await die.evaluate(el=>{const b=el.getBoundingClientRect(),p=el.closest('.direct-line'),c=getComputedStyle(p);return{w:b.width,h:b.height,font:Number.parseFloat(c.fontSize),cardWidth:el.closest('section').clientWidth,scrollWidth:el.closest('section').scrollWidth};});
-  assert.ok(size.w<=size.font*1.15+.1&&size.h<=size.font*1.15+.1,JSON.stringify(size));assert.ok(size.scrollWidth<=size.cardWidth+1,'no card overflow');metrics.push({width,...size});
+  assert.ok(size.w>=44&&size.h>=44,JSON.stringify(size));assert.ok(size.scrollWidth<=size.cardWidth+1,'no card overflow');metrics.push({width,...size});
   await info.screenshot({path:fileURLToPath(new URL(`monument-${width}.png`,out))});
  }
  await page.emulateMedia({reducedMotion:'reduce'});await die.focus();await page.keyboard.press('Space');await page.waitForTimeout(30);
