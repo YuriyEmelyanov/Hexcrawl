@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-043",
+  "stage_id": "ROLLUI2",
+  "role": "independent_reviewer",
+  "reviewed_sha": "78ca3142a61b0840a7b2a45069f2f9e0b41bd217",
+  "local_equivalent_sha": "eec1f108fbf554704dd7eb6342afe8091830a808",
+  "tree_sha": "da0f2c6659e75ef8cef106a8f9e815c048ab49be",
+  "status": "changes_requested",
+  "findings": [
+    {
+      "id": "UI2-FOCUS-001",
+      "severity": "medium",
+      "requirement": "UI2-09",
+      "path": "src/tags/TableResultRow.tsx",
+      "line": 13,
+      "trigger": [
+        "Focus Knave trait die",
+        "Press Shift+F10",
+        "Press Escape"
+      ],
+      "expected": "Menu closes, no reroll, keyboard focus returns to the same initiating action.",
+      "actual": "Menu closes without reroll; document.activeElement is BODY, class empty, aria-label null.",
+      "cause": "Escape handler sets menu false, removing the focused menuitem; no ref or restoration to the initiating action.",
+      "requested_change": "Restore the initiating action focus when menu is dismissed with Escape; keep shared component/MB and Knave behavior; extend the existing browser scenario."
+    }
+  ],
+  "positive_bounded_checks": [
+    "Separate fresh worktree created from exact local-equivalent commit; all 12 remote changed blob SHAs independently match local tree; GitHub compare confirms exact 12-file change against public base01341b3.",
+    "Production Chromium153 and production catalog; tiny authored two-owner fixture, seed6 produces true d100100.",
+    "Current RU/EN language badge, entity label order, honest primary pick without false d100; exact click targets44px and no overflow at1500/390/320.",
+    "Trait/primary/both separate counters/category/other owner; selected primary marker synchronized; accepted author name/notes/clue/difficulty/geography/world RNG preserved.",
+    "Trait and pair exact Undo/Redo; both one transaction; dirty draft disables actions; v10 exact roundtrip.",
+    "Empty current compatible pool and second-draw overflow refuse without partial accepted/counter mutation.",
+    "Settlement trait-only has no primary and menu says Reroll."
+  ],
+  "negative_controls": {
+    "visible_language_check_rejects_former_target_badge": true,
+    "target_check_rejects_former_18px_density": true
+  },
+  "browser_errors": [],
+  "scope_limits": [
+    "This diagnostic did not rerun the full suite; author and exact-SHA CI logs are separately reviewed.",
+    "No full score criterion/cohort grade is established.",
+    "No merge or deployment performed; publication permission remains separate."
+  ],
+  "test_governance": {
+    "node": {
+      "added": 2,
+      "removed": 0,
+      "modified": 1,
+      "base_tags_cases": 13,
+      "head_tags_cases": 15
+    },
+    "browser": {
+      "added": 0,
+      "removed": 0,
+      "modified": 1,
+      "runner_basis": "tags.smoke.mjs among 8 npm test:browser top-level scripts; MB scenario and nested Knave lifecycle both extended inside that workflow"
+    },
+    "infrastructure": "generation-harness helper excluded from logical case counts",
+    "verdict": "No unnecessary duplicate permanent test found; independent browser probe reveals missing Escape-focus assertion."
+  },
+  "recorded_at": "2026-11-09T04:28:58.407Z",
+  "automation_health": {
+    "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-09T04:10:13.120Z",
+      "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "is_enabled": true,
+      "title": "Команда HexCrawl"
+    },
+    "end": {
+      "checked_at": "2026-11-09T04:29:10.768Z",
+      "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "is_enabled": true,
+      "title": "Команда HexCrawl"
+    },
+    "restored": false,
+    "errors": []
+  }
+}
