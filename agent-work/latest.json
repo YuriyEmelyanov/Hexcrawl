@@ -17,7 +17,7 @@
   "score_model_path": "agent-work/strategy/score-model.md",
   "backlog_path": "agent-work/backlog.json",
   "approvals_path": "agent-work/approvals.json",
-  "execution_blocker": null,
+  "execution_blocker": "ExactCIstillinprogress; inspectbeforecontinuing sameclaim, not a totalteamtechnicalblock",
   "cleanup_status": "merged_pr470",
   "project_attachments_cleanup": {
     "status": "detached_by_owner",
@@ -29,7 +29,7 @@
   "run_id": "2026-11-09T0500-programmer-HX-BL-051-DETAIL1-A",
   "plan_revision": 1,
   "baseline_sha": "00190bb749a4fa5af57aac4bbffff808e8fe733f",
-  "status": "implementation_in_progress",
+  "status": "implementation_checkpoint_CI_pending",
   "planning_for": "2026-11-08",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-10-25",
@@ -50,10 +50,10 @@
   "current_task_id": "HX-BL-051",
   "spec_path": "agent-work/specs/HX-BL-051-DETAIL1.md",
   "spec_version": "DTL-1.0",
-  "result_path": "agent-work/results/2026-11-09T0404-programmer-HX-BL-043-ROLLUI2.json",
+  "result_path": "agent-work/results/2026-11-09T0500-programmer-HX-BL-051-DETAIL1-A.json",
   "handoff_commit_sha": "d8540be256914aa9d262d6c0687620d9c3f7e237",
   "active_claim": "agent-work/claims/2026-11-09T0500-programmer-HX-BL-051-DETAIL1-A.json",
-  "next_step": "Continue ownDETAIL1claim: sourcepolygon intersections, stablePOI footprint/typedwater/pathaccess andv11/history/UI. CurrentA1primitivesonly, notacceptance-ready.",
+  "next_step": "VerifyCI42565364491, then safelyresume this ownedclaim at12905db and implement A2sourcepolygonintersections/migrationstate; neverdeclarepartialDETAIL1review_ready.",
   "owner_decisions_needed": [
     {
       "task_id": "HX-BL-028",
@@ -94,8 +94,8 @@
   "pr": 496,
   "head_sha": "12905db9229174a2c2173cfb7774f9cfaee7c068",
   "checks_status": "local_geometry_tsc_build_passed_fullCI_pending",
-  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42562224308",
-  "review_verdict": "accepted_after_exact_source_CI",
+  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42565364491",
+  "review_verdict": "not_requested_partial_implementation",
   "role_selection_mode": "ready_work_priority",
   "role_selection_source": "agent-work/process.md",
   "process_decision_ref": "owner-decision-2026-10-24-dynamic-roles",
@@ -311,21 +311,21 @@
   "automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-11-09T04:04:22.116Z",
+      "checked_at": "2026-11-09T05:01:59.046Z",
       "status": "checked",
       "is_enabled": true
     },
     "end": {
-      "checked_at": "2026-11-09T04:43:25.993Z",
+      "checked_at": "2026-11-09T05:18:19.525Z",
       "status": "checked",
       "is_enabled": true
     },
     "restoration_performed": false,
     "errors": [],
-    "limitation": "Point-in-time observations only; no claim aboutlater service state."
+    "limitation": "Point-in-time checks only."
   },
   "open_findings": [],
-  "current_review_score_assessment_status": "completed_insufficient_evidence_no_award",
+  "current_review_score_assessment_status": "not_due_partial_implementation",
   "target_audience_research": {
     "model_version": "1.1",
     "model_max_points": 25,
@@ -880,8 +880,8 @@
     "checks_ref": "agent-work/evidence/KNAVE2-CLASSIC1-818476e/checks.json",
     "test_change_summary_ref": "agent-work/evidence/KNAVE2-CLASSIC1-818476e/test-change-summary.json"
   },
-  "reviewed_sha": "12e65a09c8f93e39ce020cc6a919ec67d6979216",
-  "current_review_score_assessment_ref": "agent-work/evidence/review-HX-BL-043-ROLLUI2-12e65a0/score-assessment1.2.json",
+  "reviewed_sha": null,
+  "current_review_score_assessment_ref": null,
   "automatic_measurement_rerun_allowed": false,
   "repeat_review_requires": "Fresh-context independent exact d92ecdd review, including F1 and score_assessment1.2",
   "blocked_task_handoffs": {
@@ -981,7 +981,7 @@
     "next_step": "Решить отдельно узкий cleanup AUD-02/03/04; готовую спецификацию024 не задерживать."
   },
   "owner_decisions_note": "PR490 exact package authorized and published. No further publication decision needed for this released package; future package publication remains separate.",
-  "updated_at": "2026-11-09T05:07:28.684Z",
+  "updated_at": "2026-11-09T05:18:22.751Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
     "stage_id": "V3",
@@ -1249,31 +1249,34 @@
   },
   "test_change_summary": {
     "base_sha": "01341b3c981324603f5413b0c675d53a5bac2bc2",
-    "local_head_sha": "46658e22e141be4b9080ea517b23e54770c2a963",
-    "suites": [
-      {
-        "suite": "Node node--test",
-        "added": 2,
-        "removed": 0,
-        "modified": 1,
-        "baseline_tags_cases": 13,
-        "head_tags_cases": 15,
-        "scenario_risk": "Granular independentcounter replay/atomicrefusal; realAppmarker/result/Undo/authorcontext/continuation; existingSSRentitylabel andcurrentaria",
-        "reuse_or_new_reason": "Existingadapterfillcase doesnotexercisererollcountertransaction; realAppcommitpathdistinctfromdetachedadapter. ExistingSSRcasereusedinsteadduplicate.",
-        "count_source": "test/tags.test.mjs namedtest registrations at base/currentdiff"
+    "head_sha": "12905db9229174a2c2173cfb7774f9cfaee7c068",
+    "added": 2,
+    "removed": 0,
+    "modified": 0,
+    "suite": "Node node--test",
+    "scenario_risk": "Physicalprojection/units/ties vs connectedfootprintunion topology",
+    "reuse_or_new_reason": "Searchedsrc/testphysicalacrossflats,footprintandcubeRound; existingApppixelgeometry isprivateandhasnophysicalmultiscalecontract. ExistingUI/editcasescannotprotectthesegeometricinvariants. NoAppextraction/refactor.",
+    "count_source": "Two named Node testregistrations innewtest/detailGrid.test.mjs; otherfiles unchanged",
+    "executions": {
+      "focusedNode": {
+        "executed": 2,
+        "passed": 2,
+        "skipped": 0
       },
-      {
-        "suite": "Browser npm run test:browser (8top-levelworkflowrunners)",
-        "added": 0,
-        "removed": 0,
-        "modified": 1,
-        "scenario_risk": "Currentlanguage/entitylabels, honestd100/pick, keyboard/contextboth,dirtygate,44pxtouch,nooverflow andhistory",
-        "reuse_or_new_reason": "ExtendedexistingtagsandnestedKnavepropertieslifecycle;noadditionalrunnerfiles",
-        "count_source": "Onlytags.smoke.mjs of8existingtop-levelscriptsmodified; knave-properties-lifecycle is nestedhelper/scenario andnotdoublecounted",
-        "nested_scenario_changed": "runKnavePropertiesLifecycle insideexistingtagsworkflow; notcountedasadditionalrunner"
+      "tsc": {
+        "status": "passed",
+        "exit_code": 0
+      },
+      "build": {
+        "status": "passed",
+        "exit_code": 0,
+        "duration_seconds": 14.29
+      },
+      "fullCI": {
+        "run_id": 42565364491,
+        "status": "pending"
       }
-    ],
-    "head_sha": "12e65a09c8f93e39ce020cc6a919ec67d6979216"
+    }
   },
   "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/491",
   "coordination_handoff": {
@@ -1618,7 +1621,7 @@
   "historical_unverified_weight": 70,
   "historical_score_model_version": "1.1",
   "score_update_awarded_points": 0,
-  "handoff_ref": "agent-work/handoffs/2026-11-09-HX-BL-043-ROLLUI2-accepted.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-09-HX-BL-051-DETAIL1-A1-resume.json",
   "previous_feedback_handoff": {
     "task_id": "HX-FB-001",
     "register": "agent-work/feedback.json",
@@ -2324,7 +2327,7 @@
     "sha": "12e65a09c8f93e39ce020cc6a919ec67d6979216",
     "ref": "agent-work/evidence/HX-BL-043-ROLLUI2/visuals/actual-R1-manifest.json"
   },
-  "review_result_ref": "agent-work/evidence/review-HX-BL-043-ROLLUI2-12e65a0/independent-review.json",
+  "review_result_ref": null,
   "previous_review_score_assessment_ref": "agent-work/evidence/review-HX-BL-023-E1-24fa342/score_assessment.json",
   "previous_independent_reviewer_automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
@@ -2506,10 +2509,10 @@
   "previous_score_update_result_ref": "agent-work/results/2026-10-29-strategist-score-HX-BL-023-E1-8f7d172.json",
   "next_approved_stage": "KNAVE2-CLASSIC1",
   "next_approved_stage_handoff_ref": "agent-work/handoffs/2026-11-08-HX-BL-043-KNAVE2-CLASSIC1.json",
-  "authorization_status": "ROLLUI2andDETAIL1startapproved;PR495publicationnotapproved;PDFcreationapproved, noScribdupload.",
+  "authorization_status": "DETAIL1implementationapproved, no releasepermission; acceptedPR495publicationgatepreserved",
   "completed_at": "2026-11-09T04:43:33.296Z",
   "score_changed": false,
-  "next_stage_id": "DETAIL1",
+  "next_stage_id": "DETAIL1-A2",
   "score_evidence_updated": true,
   "current_stage_id": "DETAIL1",
   "implementation_started": true,
@@ -4105,8 +4108,8 @@
     "workspace_recovery": "Pruning removed old shared git metadata; fresh clone from GitHub succeeded, no request to user needed.",
     "materials_commit_sha": "64fa823e19f701817ff59d962d7b211e83aaa406"
   },
-  "current_stage_status": "implementation_in_progress",
-  "current_stage_review_status": "accepted",
+  "current_stage_status": "A1_checkpoint_A2_next",
+  "current_stage_review_status": "not_ready_partial_implementation",
   "accepted": false,
   "full_UI_pending": false,
   "latest_HX_BL_023_E5_persistence_20261104": {
@@ -4180,7 +4183,7 @@
     },
     "materials_commit_sha": "ea69b2937198ed08670bae9ab3520b88aa4f1748"
   },
-  "checkpoint_at": "2026-11-04 08:44:45 UTC",
+  "checkpoint_at": "2026-11-09T05:18:22.751Z",
   "previous_execution_blocker": null,
   "latest_HX_BL_023_E5_geometry_20261104": {
     "run_id": "2026-11-04-developer-HX-BL-023-E5-geometry",
@@ -4341,28 +4344,50 @@
   },
   "stage_id": "ROLLUI2",
   "release_approved": false,
-  "ui_actual_shown": true,
+  "ui_actual_shown": false,
   "ui_actual_responsible": "programmer",
   "UI_proposal_already_shown": true,
   "authorization_ref": "agent-work/decisions/owner-approval-2026-11-09-HX-BL-043-ROLLUI2.json",
   "checks_summary": {
-    "node": {
-      "executed": 363,
-      "passed": 363,
-      "failed": 0,
+    "local_focused_Node": {
+      "executed": 2,
+      "passed": 2,
       "skipped": 0
     },
-    "browser": {
-      "executed": 8,
-      "passed": 8,
-      "skipped": 0,
-      "unit": "top-levelworkflow"
+    "typescript": "passed",
+    "build": "passed",
+    "CI": {
+      "head_sha": "12905db9229174a2c2173cfb7774f9cfaee7c068",
+      "run_id": 42565364491,
+      "status": "in_progress",
+      "conclusion": null,
+      "observed_at": "2026-11-09T05:17:37.224Z",
+      "jobs": [
+        {
+          "id": 128990596610,
+          "name": "check",
+          "status": "in_progress",
+          "conclusion": null
+        },
+        {
+          "id": 128990596851,
+          "name": "browser",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 128990596943,
+          "name": "world-random",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ],
+      "interpretation": "Checkpoint only. Pending npmcheck is not a defect or pass; inspect exactrun before nextsourcechange. BrowserandRNG successnotcombinedwithNodecases."
     },
-    "rng": {
-      "workflow_count": 1,
-      "reported_scenario_groups": 15,
-      "passed": 15,
-      "skipped": 0
+    "temporary_geometry_diagnostic": {
+      "neighbor_pairs": 726,
+      "status": "passed",
+      "permanent_case_growth": false
     }
   },
   "full_E5_UI_pending": true,
@@ -5256,7 +5281,7 @@
     }
   ],
   "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/496",
-  "active_claim_scope": "Owner-requested common MB/Knave table result/reroll UI, current language badge and purpose labels",
+  "active_claim_scope": "First specifiedimplementationstage: fixed1/6/12/24 spatialprojection and connectedfootprintboundary primitives; no partialrelease or review_ready claim.",
   "other_active_claims": [
     {
       "claim_ref": "agent-work/claims/2026-11-03-developer-HX-BL-041-presentation.json",
@@ -6275,7 +6300,7 @@
     "canonical_interrupted_claim_preserved": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json"
   },
   "recovery_resolution_ref": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json",
-  "result_ref": "agent-work/results/2026-11-09T0404-programmer-HX-BL-043-ROLLUI2.json",
+  "result_ref": "agent-work/results/2026-11-09T0500-programmer-HX-BL-051-DETAIL1-A.json",
   "latest_PR493_recovery": {
     "status": "accepted_source_free_core_unpublished",
     "head_sha": "2f11a4b608a7ed66f5786b3a0e151362f82d0ad8",
@@ -6991,7 +7016,7 @@
     "handoff_ref": "agent-work/handoffs/2026-11-08-HX-BL-041-MC1-EN.json"
   },
   "previous_next_task_proposal_ref": "agent-work/proposals/2026-11-08-HX-BL-043-KNAVE2-PLACE1.json",
-  "next_task_handoff_ref": "agent-work/handoffs/2026-11-09-HX-BL-051-DETAIL1.json",
+  "next_task_handoff_ref": "agent-work/handoffs/2026-11-09-HX-BL-051-DETAIL1-A1-resume.json",
   "latest_HX_BL_043_KNAVE2_CLASSIC1": {
     "run_id": "2026-11-08T1856-reviewer-HX-BL-043-KNC-REV-001",
     "status": "published_verified_score_completed",
@@ -7042,7 +7067,7 @@
   "next_programmer_step_ref": "agent-work/evidence/KNAVE2-CLASSIC1-1646878/next-programmer-step.json",
   "review_request_ref": "agent-work/evidence/KNAVE2-CLASSIC1-d7e7a5b/review-request.json",
   "programmer_complete": false,
-  "current_programmer_result_ref": "agent-work/results/2026-11-09T0404-programmer-HX-BL-043-ROLLUI2.json",
+  "current_programmer_result_ref": "agent-work/results/2026-11-09T0500-programmer-HX-BL-051-DETAIL1-A.json",
   "reviewed_private_sha": "af50286d8ad00303a0aed1d8473e7c6dffabb349",
   "ui_review_result": {
     "status": "independent_passed_exact_SHA",
@@ -7063,7 +7088,7 @@
   },
   "fix_handoff_ref": "agent-work/evidence/KNAVE2-CLASSIC1-review-c5b3c38/programmer-fix-handoff.json",
   "role": "programmer",
-  "latest_result_ref": "agent-work/results/2026-11-09T0404-programmer-HX-BL-043-ROLLUI2.json",
+  "latest_result_ref": "agent-work/results/2026-11-09T0500-programmer-HX-BL-051-DETAIL1-A.json",
   "checks": {
     "run": 42548896306,
     "status": "success",
@@ -7204,7 +7229,7 @@
       "limitation": "Point-in-time checks only, no guarantee after completion."
     }
   },
-  "task_start_approval_ref": "agent-work/decisions/owner-approval-2026-11-09-HX-BL-043-ROLLUI2.json",
+  "task_start_approval_ref": "agent-work/decisions/owner-approval-2026-11-09-HX-BL-051-DETAIL1.json",
   "latest_DETAIL1_handoff": {
     "result_ref": "agent-work/results/2026-11-09T0340-analyst-HX-BL-051-DETAIL1.json",
     "spec_ref": "agent-work/specs/HX-BL-051-DETAIL1.md",
@@ -7266,5 +7291,6 @@
   },
   "current_role_result": "completed",
   "current_stage_score_assessment_status": "completed_insufficient_evidence_no_award",
-  "ui_actual_ref": "agent-work/evidence/HX-BL-043-ROLLUI2/visuals/actual-R1-manifest.json"
+  "ui_actual_ref": null,
+  "execution_running": false
 }
