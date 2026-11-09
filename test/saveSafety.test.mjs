@@ -271,7 +271,7 @@ test('SEA v2-v8 metadata migration and strict v9 refusal use the real atomic imp
   const saved=structuredClone(g.render().createSaveData());assert.equal(saved.version,10);assert.deepEqual(saved.map.seas,[{id:1,hexKeys:['-1,2','0,2','1,2','2,2','3,2','3,3']}]);assert.equal(saved.map.nextSeaId,2);assert.deepEqual(saved.generation,data.generation);assert.deepEqual(saved.map.terrainByHexKey,data.map.terrainByHexKey);
  }
  const valid=structuredClone(g.render().createSaveData()),before=structuredClone(g.render().captureDocument()),stacks=structuredClone([g.render().undoHistory,g.render().redoHistory]);
- for(const mutate of [d=>delete d.map.seas,d=>delete d.map.nextSeaId,d=>d.map.seas[0].hexKeys.pop(),d=>d.map.seas.push({...d.map.seas[0]}),d=>d.map.nextSeaId=1,d=>d.map.editorNames={'sea:999':{en:'X',ru:'Х'}},d=>d.version=11,d=>{d.version=8;d.map.editorNames={'sea:1':{en:'X',ru:'Х'}};}]){
+ for(const mutate of [d=>delete d.map.seas,d=>delete d.map.nextSeaId,d=>d.map.seas[0].hexKeys.pop(),d=>d.map.seas.push({...d.map.seas[0]}),d=>d.map.nextSeaId=1,d=>d.map.editorNames={'sea:999':{en:'X',ru:'Х'}},d=>d.version=12,d=>{d.version=8;d.map.editorNames={'sea:1':{en:'X',ru:'Х'}};}]){
   const bad=structuredClone(valid);mutate(bad);await g.render().handleImportJson({target:{files:[{text:JSON.stringify(bad)}],value:''}});assert.equal(alerts.length,1);alerts.pop();assert.deepEqual(structuredClone(g.render().captureDocument()),before);assert.deepEqual(structuredClone([g.render().undoHistory,g.render().redoHistory]),stacks);
  }
 });
