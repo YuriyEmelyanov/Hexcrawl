@@ -1,0 +1,201 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-RSR-PIRATE-MAP-PRACTICE-01",
+  "run_id": "2026-11-09T2326-PIRATE-map-practice",
+  "status": "completed_bounded_qualitative",
+  "scope": "Pirate Borg island-map practice: distinguish creation, adaptation and prepared-map play; no rules inventory",
+  "observations": [
+    {
+      "id": "obs-PIRATE-JAKE-map-recheck-20261109",
+      "game_ids": [
+        "PIRATE"
+      ],
+      "source": {
+        "url_or_ref": "https://jakezemeckis.substack.com/p/lets-play-pirate-borg-part-3",
+        "locator": "Setting sail; island generation and map caption, indexed text",
+        "published_at": "2026-04-20"
+      },
+      "observed_fact": "Jake reports generating an island with Down Among the Dead, converting it to a hex map in Tiled with 2-Minute Tabletop assets, and adding the port needed for the adventure.",
+      "interpretation": "Existing creation example rechecked, not another independent creator. Shows selection/editing after random output; save format and friction unknown.",
+      "signal_type": "gm_materials",
+      "quantity": null,
+      "unit": null,
+      "period": "2026-04-20",
+      "geography_language": "English; author/audience geography unknown",
+      "author_project_key": "jake-zemeckis:pirate-borg-solo",
+      "duplicate_of": "agent-work/market/map-creation-evidence-2026-11-06.json#legacy_records/P2",
+      "access_level": "search_snippet",
+      "scenario_relevance": [
+        "create",
+        "develop"
+      ],
+      "limitations": [
+        "Direct page open returns404; map image not inspected.",
+        "Solo author, not a group GM population sample.",
+        "P2 and X20 are the same case.",
+        "No disclosed unmet need or willingness to switch tools."
+      ],
+      "observed_at": "2026-11-09T23:30:53.647114+00:00"
+    },
+    {
+      "id": "obs-PIRATE-SHADOW-relocation-20261109",
+      "game_ids": [
+        "PIRATE"
+      ],
+      "source": {
+        "url_or_ref": "https://rpgcorner.com/2026/07/30/pirate-borg-trapped-in-the-tropics-replay-exploring-eel-island/",
+        "locator": "lines15–21,63–89 in retrieved HTML",
+        "published_at": "2026-07-30"
+      },
+      "observed_fact": "Shadow describes solo replay on the included Eel Island map, keeping prepared sites while moving their locations mentally to obscure adventure spoilers.",
+      "interpretation": "Adaptation of existing geography and content, not creation of a new island or a saved edited map. A use case for relocation; no demonstrated software pain.",
+      "signal_type": "gm_materials",
+      "quantity": null,
+      "unit": null,
+      "period": "2026-07-30",
+      "geography_language": "English; author/audience geography unknown",
+      "author_project_key": "rpgcorner:shadow:trapped-in-the-tropics",
+      "duplicate_of": null,
+      "access_level": "full_text",
+      "scenario_relevance": [
+        "develop",
+        "play_now"
+      ],
+      "limitations": [
+        "Solo replay, not a measured group campaign.",
+        "Location edits described as mental; persistence unknown.",
+        "Book procedures retold by player are not a verified core/supplement rule corpus.",
+        "Images not inspected; no basis to import travel values as verified source rules."
+      ],
+      "observed_at": "2026-11-09T23:30:53.647114+00:00"
+    },
+    {
+      "id": "obs-PIRATE-BAR-starter-play-20261109",
+      "game_ids": [
+        "PIRATE"
+      ],
+      "source": {
+        "url_or_ref": "https://burnafterrunningrpg.com/2026/06/09/everything-but-the-bottle-of-rum-review-pirate-borg-starter-set/",
+        "locator": "lines10–11,17–24; first-person played review",
+        "published_at": "2026-06-09"
+      },
+      "observed_fact": "Reviewer reports running one three-hour online one-shot of Trapped in the Tropics, with players escaping the first island. The review describes using the supplied hex maps; a later convention run was planned.",
+      "interpretation": "A played adventure using prepared maps supports play-now applicability, not independent map generation. Planned convention play is separate and not counted as conducted.",
+      "signal_type": "gm_materials",
+      "quantity": null,
+      "unit": null,
+      "period": "2026-06-09",
+      "geography_language": "English; author/audience geography unknown",
+      "author_project_key": "burnafterrunning:guyeatsfood:pirate-starter",
+      "duplicate_of": null,
+      "access_level": "full_text",
+      "scenario_relevance": [
+        "play_now"
+      ],
+      "limitations": [
+        "Review copy supplied by Free League; disclose promotional/selection bias.",
+        "One-shot duration and session are reported, not unique creator counts.",
+        "No custom-map creation described; absence in this report does not prove author never creates maps.",
+        "Future convention announcement is not evidence it ran."
+      ],
+      "observed_at": "2026-11-09T23:30:53.647114+00:00"
+    }
+  ],
+  "operational_requirement": {
+    "source_rule_ref": "obs-PIRATE-SHADOW-relocation-20261109 (practice report, not a game rule)",
+    "normative_kind": "non-normative observed practice; product interpretation only",
+    "applicability": "Optional preparation of an existing island; no claim that Pirate Borg requires it",
+    "layer": "L1",
+    "trigger_or_user_action": "Move an existing prepared site to a chosen different hex",
+    "inputs_and_units": {
+      "site_id": "stable site identifier A",
+      "source_hex": "q/r0/0",
+      "target_hex": "q/r1/0",
+      "payload": "name and description; no new random content"
+    },
+    "product_operation": "Reuse the common content.relocate concept: change the selected site location while retaining its prepared content. Check existing editing behavior before proposing implementation.",
+    "expected_output": "Site A at1/0 with unchanged name/description; original placement at0/0 removed; other sites unchanged.",
+    "constraints_and_exceptions": [
+      "Source uses mental relocation, so this is a product example, not a literal rules mandate.",
+      "Water/land restrictions and occupied-target handling are not supplied by the source; unknown and must not be invented.",
+      "JSON persistence below is a product acceptance hypothesis, not an observed author workflow."
+    ],
+    "acceptance_cases": [
+      {
+        "given": "Site A at0/0 named Wreck with description D; target1/0 empty and admissible",
+        "when": "Move A to1/0",
+        "expected": "Exactly one A at1/0; no A at0/0; name Wreck and description D retained"
+      },
+      {
+        "given": "The accepted document after the move above",
+        "when": "Save and reload the same document without regeneration",
+        "expected": "A remains at1/0 with the same identity/name/description; no duplicate A at0/0"
+      }
+    ],
+    "source_vs_product_interpretation": "Observed report supplies the preparation goal only. Relocation/persistence examples are generator-language interpretation, neither new source rule nor approved specification.",
+    "canonical_rule_refs": [
+      "content.relocate"
+    ],
+    "unresolved_parameters": [
+      "Source-specific placement legality",
+      "Current exact-SHA support in HexCrawl",
+      "Whether author wants software persistence or a different tool"
+    ],
+    "criterion_ids": [
+      "S03-C01",
+      "S03-C04"
+    ],
+    "existing_task_refs": [
+      "HX-BL-013"
+    ],
+    "runtime_evidence": {
+      "status": "unknown",
+      "sha": null
+    },
+    "binding_decision": "No new game binding: no primary game rule read; no new canonical registry."
+  },
+  "sources_vs_conclusions": {
+    "sources": "Two full first-person reports and one indexed recheck; itch landing page separately screened, no PDF read.",
+    "conclusions": [
+      "Jake remains one existing creation example; not new reach.",
+      "Shadow supplies a distinct adaptation case; Burn After Running supplies prepared-map play.",
+      "Reported Tiled workflow is an existing alternative; unmet need remains unverified."
+    ],
+    "unknown": [
+      "Distribution and denominator of independent map makers",
+      "Tool switching demand and save formats",
+      "Exact edition of core behind each play report",
+      "Core/Down Among the Dead rule pages; no rule extraction attempted"
+    ]
+  },
+  "deduplication": {
+    "existing_keys_checked": [
+      "P2",
+      "X20",
+      "P1",
+      "X19",
+      "obs-map-create-20261106-Z12"
+    ],
+    "rechecked_not_new": [
+      "jake-zemeckis:pirate-borg-solo"
+    ],
+    "not_aggregate_people": "Three author/project records are not a population estimate or three proven prospective users."
+  },
+  "screened_not_counted": [
+    {
+      "url": "https://jlpi.itch.io/die-in-six-directions",
+      "access_level": "full_text",
+      "kind": "creator product landing page",
+      "finding": "An existing island generator and hex-grid download; no PDF read, user count or independent usage proven."
+    },
+    {
+      "url": "https://www.reddit.com/r/MorkBorg/comments/16mvtep",
+      "access_level": "search_snippet",
+      "finding": "Creation claim discovered but author identity/text not sufficiently verified; excluded from final observation set."
+    }
+  ],
+  "active_rating_changed": false,
+  "score_changed": false,
+  "method_experiment": "Not required: existing gm_materials collection type; no new metric or numerical weight",
+  "product_disposition": "Existing HX-BL-013/content.relocate only as a reuse lead; no new task, no scope/status/queue change. No missing function asserted."
+}
