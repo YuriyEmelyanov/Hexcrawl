@@ -3,7 +3,7 @@
   "run_id": "2026-11-09T0500-programmer-HX-BL-051-DETAIL1-A",
   "task_id": "HX-BL-051",
   "stage_id": "DETAIL1",
-  "substage": "actual_extent_transaction",
+  "substage": "actual_extent_transaction_local_verified_CI_check_pending",
   "role": "programmer",
   "status": "active",
   "last_pause_for": "HX-BL-043/OWNERFIX1",
@@ -16,32 +16,38 @@
   "branch": "agent/hx-bl-051-detail1",
   "release_approved": false,
   "foreign_claim_preserved": "2026-11-03-developer-HX-BL-041-presentation: walkthroughonly, no source changes",
-  "execution_running": true,
-  "checkpoint_status": "source_saved_full_check_running",
-  "checkpoint_at": "2026-11-09 21:09:12 UTC",
+  "execution_running": false,
+  "checkpoint_status": "saved_safe_to_resume_same_task_chat",
+  "checkpoint_at": "2026-11-09 21:20:52 UTC",
   "head_sha": "c5598ccbdbcc5bb5caa6003adc540b97bc9fe7d6",
   "tree_sha": "740879feab410e9abe9eafad622d4389fa905eae",
   "pr": 496,
-  "result_ref": "agent-work/results/2026-11-09T2004-programmer-HX-BL-051-DETAIL1-D2c2.json",
-  "handoff_ref": "agent-work/handoffs/2026-11-09-HX-BL-051-DETAIL1-D2c2-extents-resume.json",
-  "next_step": "Продолжить HX-BL-051/DETAIL1 D2c2-transactions с текущего SHA PR496: подключить подготовленные проверки и extent-edit к одной реальной документной Undo/Redo-транзакции; затем обработать сохранение/перенос/удаление охвата и отказ при E7/E8, water/river/road edits и генерации без потери старых обязательных привязок. До полного покрытия не снимать guard непустых footprints. После этого legacy Apply/Cancel, UI1/6/12/24, показ1500/390/320 и независимый exact-SHA review/score_assessment1.2; публикация отдельно.",
+  "result_ref": "agent-work/results/2026-11-09T2103-programmer-HX-BL-051-DETAIL1-extent-transaction.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-DETAIL1-extent-transaction-resume.json",
+  "next_step": "Сверить завершение уже запущенного CI42699708649/check на текущем SHA без автоматического rerun; сохранить отрицательное evidence при неуспехе. Программист продолжает HX-BL-051/DETAIL1 на текущем точном SHA PR496: подключить сохранение/перенос/удаление охвата либо конкретный атомарный отказ к E7/E8, water/river/road edits и генерации, сохранив старые обязательные привязки. Новая extent-операция и Undo/Redo готовы; обычный импорт непустого слоя и generic mutation guard пока не снимать. Затем явная legacy-адаптация Apply/Cancel и UI1/6/12/24 с показом1500/390/320; полный пакет — на независимый exact-SHA review и score_assessment1.2, выпуск отдельно.",
   "automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-11-09 20:04:54 UTC",
+      "checked_at": "2026-11-09 21:03:24 UTC",
       "is_enabled": true,
       "status": "checked",
       "method": "automations.peek"
     },
     "end": {
-      "checked_at": "2026-11-09 20:19:49 UTC",
+      "checked_at": "2026-11-09 21:20:52 UTC",
       "is_enabled": true,
       "status": "checked",
       "method": "automations.peek"
     },
     "restoration_performed": false,
     "errors": [],
-    "limitation": "Point-in-time checks only; no guarantee of later service state. Schedule/prompt unchanged."
+    "limitation": "Actual point-in-time observations only; no guarantee of later service state. Schedule/prompt unchanged.",
+    "additional_end_check": {
+      "checked_at": "2026-11-09 21:19:15 UTC",
+      "is_enabled": true,
+      "status": "checked",
+      "method": "automations.peek"
+    }
   },
   "task_completed": false,
   "review_ready": false,
@@ -68,5 +74,5 @@
     "limitation": "Actual point-in-time observations only; no guarantee against later service disablement. Schedule and prompt unchanged."
   },
   "last_run_id": "2026-11-09T2103-programmer-HX-BL-051-DETAIL1-extent-transaction",
-  "evidence_ref": "agent-work/results/2026-11-09T2004-programmer-HX-BL-051-DETAIL1-D2c2.json"
+  "evidence_ref": "agent-work/results/2026-11-09T2103-programmer-HX-BL-051-DETAIL1-extent-transaction.json"
 }
