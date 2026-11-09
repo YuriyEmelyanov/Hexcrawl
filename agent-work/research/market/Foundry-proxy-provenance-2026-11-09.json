@@ -1,0 +1,262 @@
+{
+  "schema_version": 1,
+  "audit_id": "HX-RSR-METHOD-FOUNDRY-PROXY-01-v1",
+  "version": 1,
+  "run_id": "2026-11-09T0956-Foundry-proxy-provenance",
+  "status": "completed_bounded_provenance_audit_population_bridge_unknown",
+  "kind": "audit_of_existing_proxy_not_new_metric_or_method_experiment",
+  "checked_at": "2026-11-09T10:04:22.930Z",
+  "baseline_commit": "f553d67b6ba979bc167c9f7dd23ff3d5cafc8503",
+  "scope": {
+    "game_ids": [
+      "DND5",
+      "PF2"
+    ],
+    "read_corpus": [
+      "Foundry2026 Software Usage and Insights/Game Systems and date context",
+      "Existing P01 republished Paizo sales announcement",
+      "Pinned repository provenance/formula chain"
+    ],
+    "excluded": [
+      "Full platform telemetry/microdata",
+      "New global-population estimate",
+      "Game rules or current runtime audit",
+      "New metric/weight/calibration"
+    ],
+    "full_game_rules_read": false
+  },
+  "observations_ref": "agent-work/research/observations.json",
+  "observation_ids": [
+    "obs-FOUNDRY2026-most-played-DND5-PF2-20261109",
+    "obs-FOUNDRY2026-installed-DND5-PF2-20261109",
+    "obs-PF2-HUMBLE2023-anchor-recheck-20261109"
+  ],
+  "sources": [
+    {
+      "id": "FOUND2026",
+      "url": "https://foundryvtt.com/article/year-in-review-2026/",
+      "access_level": "full_text",
+      "author_project_key": "foundry-vtt:anonymous-usage:year-in-review-2026",
+      "locator": "lines135,169–173; date context18/26/38",
+      "publication_date_status": "Exact date not independently established; existing file records2026-05-23; source mentions May23 companion and writing afterMay20. Do not replace recorded date with inferred publication date.",
+      "published_at": null
+    },
+    {
+      "id": "P01-recheck",
+      "url": "https://5d-blog.com/record-breaking-pathfinder-rpg-humble-bundle-extended/",
+      "access_level": "full_text",
+      "author_project_key": "paizo:humble:so-you-wanna-try-pathfinder:2023",
+      "locator": "lines19–32",
+      "published_at": "2023-02-23",
+      "authority": "Republished release attributed toPaizo; not direct publisher hosting",
+      "original_publisher_url": "https://paizo.com/blog/so-you-wanna-try-out-pathfinder-bundle",
+      "original_access": "403; search metadata only; no additional sales count inferred"
+    }
+  ],
+  "provenance_chain": [
+    {
+      "step_id": "FND-PROV-01",
+      "status": "reported_proxy_observation",
+      "ref": "agent-work/research/observations.json#obs-FOUNDRY2026-most-played-DND5-PF2-20261109",
+      "output": "Source percentages match carried Foundry rows.",
+      "independent_samples": 1
+    },
+    {
+      "step_id": "FND-PROV-02",
+      "status": "reported_historical_sales_proxy",
+      "ref": "agent-work/research/observations.json#obs-PF2-HUMBLE2023-anchor-recheck-20261109",
+      "output": "P01 existing100000 rounded anchor; GM population not observed."
+    },
+    {
+      "step_id": "FND-PROV-03",
+      "status": "assumption",
+      "ref": "agent-work/market/annual-audience-data.json#/previous_v1_1_results/systems/0/proxy_scenarios",
+      "formula": "M_PF2 = anchor * k * g",
+      "parameter_definitions": {
+        "k": "Hypothetical broader unique acquired/interested owner pool relative to one campaign, including other channels; not sum of campaigns.",
+        "g": "Combined share of that hypothetical pool active as GM during the 12-month horizon."
+      },
+      "reproduction": [
+        {
+          "scenario": "cautious",
+          "anchor": 100000,
+          "k": 3,
+          "g": 0.2,
+          "calculated_M": 60000,
+          "carried_M": 60000,
+          "error": 0,
+          "coefficient_status": "assumption"
+        },
+        {
+          "scenario": "reference",
+          "anchor": 100000,
+          "k": 8,
+          "g": 0.25,
+          "calculated_M": 200000,
+          "carried_M": 200000,
+          "error": 0,
+          "coefficient_status": "assumption"
+        },
+        {
+          "scenario": "high",
+          "anchor": 100000,
+          "k": 20,
+          "g": 0.35,
+          "calculated_M": 700000,
+          "carried_M": 700000,
+          "error": 0,
+          "coefficient_status": "assumption"
+        }
+      ],
+      "observation": "k/g are hypothetical; no calibrated acquisition-to-active-GM bridge found in this chain."
+    },
+    {
+      "step_id": "FND-PROV-04",
+      "status": "assumption_and_reproduced_arithmetic",
+      "ref": "agent-work/market/foundry-systems-2026.json#/population_extrapolation",
+      "formula": "M_DND5 = M_PF2 * (52.11 / 18.49) * b",
+      "existing_b": [
+        0.3,
+        1,
+        5
+      ],
+      "arithmetic": {
+        "ratio": 2.8182801514332074,
+        "calcs": [
+          {
+            "scenario": "low",
+            "anchor": 60000,
+            "b": 0.3,
+            "ratio": 2.8182801514332074,
+            "M": 50729.042725797735
+          },
+          {
+            "scenario": "reference",
+            "anchor": 200000,
+            "b": 1,
+            "ratio": 2.8182801514332074,
+            "M": 563656.0302866414
+          },
+          {
+            "scenario": "high",
+            "anchor": 700000,
+            "b": 5,
+            "ratio": 2.8182801514332074,
+            "M": 9863980.530016225
+          }
+        ],
+        "active_values": [
+          50729.042725797735,
+          563656.0302866414,
+          9863980.530016225
+        ],
+        "errors": [
+          0,
+          0,
+          0
+        ],
+        "status": "reproduced_existing_formula_no_candidate_change"
+      },
+      "b_status": "Assumed platform-composition adjustment, not measured correction or statistical bound."
+    },
+    {
+      "step_id": "FND-PROV-05",
+      "status": "carried_forward_proxy_not_observed",
+      "ref": "agent-work/market/three-scenario-ranking-2026-11-06.json#/rows",
+      "game_ids": [
+        "DND5",
+        "PF2"
+      ],
+      "effect": "The active M values reproduce exactly. Audit validates transcription/arithmetic only; existing expert-assumption labels remain necessary."
+    }
+  ],
+  "unknowns": [
+    {
+      "id": "FND-UNK-01",
+      "quantity": null,
+      "unit": "reporting users",
+      "missing": "Opt-in sample denominator and sampling/coverage calibration; platform-to-worldwide representative GM bridge."
+    },
+    {
+      "id": "FND-UNK-02",
+      "quantity": null,
+      "unit": "unique active GMs per rolling12months",
+      "missing": "Deduplicated buyer→person→GM role→2026 activity retention, across channels and legacyPF2/Remaster."
+    },
+    {
+      "id": "FND-UNK-03",
+      "quantity": null,
+      "unit": "share of active GMs",
+      "missing": "Own regional geography creation/refinement versus premade adventures/other play; source supplies no p_create or unmet-need T."
+    },
+    {
+      "id": "FND-UNK-04",
+      "quantity": null,
+      "unit": "edition-specific users",
+      "missing": "DND2014/2024 and PF2legacy/Remaster separation."
+    }
+  ],
+  "sensitivity": {
+    "kind": "readonly_existing_formula_diagnostics_not_confidence_interval",
+    "PF2_M_high_to_low": 11.666666666666666,
+    "DND5_M_high_to_low": 194.44444444444443,
+    "effect": "At fixed p,T,R,C, D and U scale linearly with M. Existing M-only spread does not measure uncertainty probabilities; complete scenarios also vary other inputs.",
+    "active_snapshot": {
+      "reference_DND5": {
+        "M": 563656.0302866414,
+        "U": [
+          1690.9680908599244,
+          2536.4521362898868,
+          3522.850189291509
+        ],
+        "scenario_ranks": [
+          1,
+          1,
+          1
+        ],
+        "overall_place": 1
+      },
+      "reference_PF2": {
+        "M": 200000,
+        "U": [
+          600,
+          900,
+          1250
+        ],
+        "scenario_ranks": [
+          2,
+          2,
+          2
+        ],
+        "overall_place": 2
+      }
+    },
+    "candidate_values": null,
+    "scenario_rank_cohort_changes": "None: active file/inputs/method/composition/cohorts unchanged. No reranking performed."
+  },
+  "conclusion": {
+    "supported": "Existing source transcription and both formula steps reproduce; proxy units are traceable.",
+    "not_supported": "Worldwide activeGM population, target-market share, statistical ranges or product support.",
+    "not_a_new_defect_claim": "Active files already label proxy assumptions; this audit strengthens provenance without claiming new empirical validation.",
+    "rating_proposal_refs": [],
+    "owner_decision_needed": false,
+    "active_changed": false
+  },
+  "product_handoff": {
+    "operational_requirement": null,
+    "reason": "No game rule extracted in this market audit; operational_requirement is N/A. No canonical rule, binding, criterion, runtime evidence or product task created.",
+    "new_product_task_refs": [],
+    "score_delta": "none; no implementation evidence"
+  },
+  "checkpoint_ref": "agent-work/research/checkpoints/Foundry-proxy-provenance.json",
+  "next_candidate": {
+    "task_id": "HX-RSR-DH-SRD-SCOPE-01",
+    "game_id": "DH",
+    "layer": "L1",
+    "kind": "source_to_product_and_market_applicability",
+    "status": "candidate_not_fixed_rotation",
+    "action": "Проверить в официальном Daggerheart SRD заявленную в текущем рейтинге версию и ограниченный раздел Hex Crawl Campaigns с прямыми ссылками: создание собственной географии, наполнение или использование готовой карты. Подтверждённые операции сопоставить с общими правилами/привязками и backlog; не выводить долю всех ведущих из одного раздела.",
+    "completion": "Точная редакция/корпус/локатор → нормативность → действие, входы, ожидаемый выход, исключения и известный пример → существующий rule/profile/task либо unknown; без новой разработки и чисел active.",
+    "reason": "DH уже есть в active; reference overall23 и high4 показывают сценарную неустойчивость. Foundry most-played0.97% — лишь основание проверить применимость, не повышение оценки. Новый или недооценённый сильный кандидат может сменить этот шаг при свежем сигнале."
+  }
+}
