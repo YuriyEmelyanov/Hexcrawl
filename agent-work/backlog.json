@@ -7900,14 +7900,14 @@
           "component_id": "MB-FAQ-player-map-L1",
           "task_id": "HX-BL-044",
           "title": "Подготовить выбранную карту для игроков без секретных категорий MB",
-          "status": "research_handoff_product_unverified",
+          "status": "deferred_to_hexcrawl_VTT_owner_decision",
           "problem": "Наличие GM-экспорта не доказывает пригодную игрокам копию; категории и доступные сведения требуют отдельного профиля. Runtime unknown.",
           "benefit": "Мастер может передать пригодную игрокам карту, сохранив полную подготовку у себя.",
           "game_editions": [
             "Author FAQ published17July2025; associated book printing unspecified, not a full book corpus"
           ],
           "primary_scenario": "create",
-          "layer": "L1",
+          "layer": "L2",
           "requirement_refs": [
             "agent-work/market/rules/MB-author-FAQ-2025.json#MB-FAQ-2025-001-L1"
           ],
@@ -7984,7 +7984,10 @@
           "research_handoff_ref": "agent-work/research/requirements/MB-player-map-L1.json",
           "research_result_ref": "agent-work/research/runs/2026-11-08T1630-MB-player-map.json",
           "implementation_authorized": false,
-          "release_authorized": false
+          "release_authorized": false,
+          "previous_layer": "L1",
+          "owner_decision_ref": "agent-work/decisions/owner-decision-2026-11-09-MB-flavour-and-player-map-layer.json",
+          "next_step": "Будущий этап VTT гекскроула, после L1 и отдельного утверждения границ; не дефект текущего генератора."
         },
         {
           "component_id": "MB-official-barriers-L1",
@@ -8294,6 +8297,9 @@
           "new_development_authorized": false,
           "disposition": "Reuse existing generation/tags/save components; no blanket build request. Only residual source behavior remains proposed; owner differences are not defects."
         }
+      ],
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-09-MB-flavour-and-player-map-layer.json"
       ]
     },
     {
@@ -14603,7 +14609,7 @@
         "S07-C02",
         "S04-C03"
       ],
-      "scope": "Исследовательская передача: выбранные места, целевое количество и смысловая роль одного из них, описания и сохранность карты. Автоматическая дистанция/раскладка, интерфейс/API/схемы, доменная симуляция не специфицированы. Дополнительный proposed-компонент MB: шесть выбранных мест мифов и номера1–6, без автоматического размещения/сюжетных правил. Дополнительный профиль landmarks: по3–4каждого из шести видов и буквы/значки; без эффектов. Дополнительный источник-профиль Sanctum→Knight table→associated Seer; две полные цепочки, остальные pending, без характеристик. Дополнительный профиль Ruins: намёк на неактивный в данном Realm миф, unknown/empty явно; без активации/Omens.",
+      "scope": "Исследовательская передача: выбранные места, целевое количество и смысловая роль одного из них, описания и сохранность карты. Автоматическая дистанция/раскладка, интерфейс/API/схемы, доменная симуляция не специфицированы. Дополнительный proposed-компонент MB: шесть выбранных мест мифов и номера1–6, без автоматического размещения/сюжетных правил. Дополнительный профиль landmarks: по3–4каждого из шести видов и буквы/значки; без эффектов. Дополнительный источник-профиль Sanctum→Knight table→associated Seer; две полные цепочки, остальные pending, без характеристик. Руины: только описательная атмосфера; механический фильтр активных мифов исключён решением владельца.",
       "dependencies": [
         "До выбора разработки проверить переиспользование редактора HX-BL-013, размещения/подсказок HX-BL-043 и ролей места HX-BL-052.",
         "Стратег выбирает объём, аналитик определяет соответствие Realm единице карты и решение нехватки мест; новые разработка/публикация требуют обычного решения владельца."
@@ -15616,7 +15622,7 @@
           "schema_version": 1,
           "task_id": "HX-BL-053",
           "title": "Связывать намёк руин с неактивным мифом края",
-          "status": "proposed",
+          "status": "excluded_mechanical_requirement_owner_flavour_only",
           "problem": "Просто выбрать миф недостаточно: активный в этом крае кандидат не подходит для Ruins; неизвестный список активных нельзя принять за пустой. Реализация unknown.",
           "benefit": "Ведущий готовит намёк руин на допустимый миф без случайной активации/потери записей.",
           "game_editions": [
@@ -15639,12 +15645,66 @@
             "S05-C01",
             "S05-C02"
           ],
-          "scope": "Только связь руин с кандидатом/намёком, проверка локальной неактивности и сохранность. Алгоритм распределения/полный сюжет/Omens/движение не специфицированы.",
+          "scope": "Описательная атмосфера руин. Механический отбор по активным мифам не требуется по решению владельца; не дефект продукта и не объём разработки.",
           "dependencies": [
             "Проверить переиспользование существующих MB мифов/таблиц/редактора, не объявлять отсутствие функции без evidence.",
             "Стратег выбирает/консолидирует proposed053; аналитик определяет выбор при исключениях/смене активного набора. Активные041/043не расширять."
           ],
-          "acceptance_checks": [
+          "acceptance_checks": [],
+          "expected_evidence": {
+            "current_runtime": "unknown",
+            "evidence_sha": null,
+            "future_product": "Actual inactive/local-scope/unknown/empty-pool/edit/reopen cases on exact SHA; no source reading counted as product evidence"
+          },
+          "score_delta": null,
+          "source_limitations": [
+            "Only p14 Ruins clause and p27 Myth-selection procedure/index newly extracted; narrative Omens/cast and progression rules are context only.",
+            "Pinned official Quickstart bytes rehashed unchanged; p27 visually checked, p14 clause reread in native text and prior rendered page.",
+            "Random eligible-Myth choice is required, but filter/retry algorithm, conditional probabilities and empty-pool policy are not specified.",
+            "No full-game audit, full literary catalogue or artwork republished; runtime support unknown."
+          ],
+          "source": {
+            "id": "MB-OFFICIAL-QUICKSTART-SNAPSHOT-20261108",
+            "title": "Mythic Bastionland Quickstart.pdf",
+            "edition": "Official free Quickstart snapshot2026-11-08; internal edition/version unspecified, not full book",
+            "author": "Chris McDowall",
+            "publisher": "Bastionland Press",
+            "language": "en",
+            "url": "https://chrismcdee.itch.io/mythic-bastionland",
+            "upload_id": "14160848",
+            "accessed_at": "2026-11-09T00:32:07.194Z",
+            "access_level": "full_text",
+            "access_method": "Official public demo download, primary PDF text + selected visual pages",
+            "sha256": "ed79a47c271d829370af5066da9a6b2f1480ad1e9d2f0be4cc65e001fb977ed8",
+            "size_bytes": 20753950,
+            "pdf_pages": 51,
+            "printed_pdf_page_alignment": "Verified selected pages14/26/28/30 align; not asserted for every page",
+            "author_project_key": "chris-mcdowall:bastionland:mythic-bastionland:quickstart",
+            "parent_project_dedup_key": "chris-mcdowall:bastionland:mythic-bastionland",
+            "limitations": [
+              "Only p14 Ruins clause and p27 Myth-selection procedure/index newly extracted; narrative Omens/cast and progression rules are context only.",
+              "Pinned official Quickstart bytes rehashed unchanged; p27 visually checked, p14 clause reread in native text and prior rendered page.",
+              "Random eligible-Myth choice is required, but filter/retry algorithm, conditional probabilities and empty-pool policy are not specified.",
+              "No full-game audit, full literary catalogue or artwork republished; runtime support unknown."
+            ],
+            "locator": "printed/PDF14 Ruins descriptive clause; p27 Myths ordered-dice procedure and selected index entries"
+          },
+          "implementation_authorized": false,
+          "release_authorized": false,
+          "dedup_review": {
+            "decision": "Additional research component of existing proposed053 places/roles/links; no new task or common rule.",
+            "related_tasks": [
+              "HX-BL-013",
+              "HX-BL-041",
+              "HX-BL-043",
+              "HX-BL-053"
+            ],
+            "reason": "Reuse general table and place/hook operations. Source-specific active-set exclusion needs own profile/evidence; no separate game engine or active task scope change."
+          },
+          "previous_status": "proposed",
+          "owner_decision_ref": "agent-work/decisions/owner-decision-2026-11-09-MB-flavour-and-player-map-layer.json",
+          "historical_scope": "Только связь руин с кандидатом/намёком, проверка локальной неактивности и сохранность. Алгоритм распределения/полный сюжет/Omens/движение не специфицированы.",
+          "historical_acceptance_checks": [
             {
               "id": "MB-QS-002-L1-AC01",
               "given": "Руины R в крае A; актуальный известный набор активных мифов A содержит The Plague, но не The Wall. Кандидат по таблице p27: d6=1,d12=2.",
@@ -15688,19 +15748,7 @@
               "expected": "Связи, тексты, положения и различие проверенного/непроверенного восстановлены без переброса. Неизвестное не стало «неактивным», руины не заменены полноценным активным Myth Hex."
             }
           ],
-          "expected_evidence": {
-            "current_runtime": "unknown",
-            "evidence_sha": null,
-            "future_product": "Actual inactive/local-scope/unknown/empty-pool/edit/reopen cases on exact SHA; no source reading counted as product evidence"
-          },
-          "score_delta": null,
-          "source_limitations": [
-            "Only p14 Ruins clause and p27 Myth-selection procedure/index newly extracted; narrative Omens/cast and progression rules are context only.",
-            "Pinned official Quickstart bytes rehashed unchanged; p27 visually checked, p14 clause reread in native text and prior rendered page.",
-            "Random eligible-Myth choice is required, but filter/retry algorithm, conditional probabilities and empty-pool policy are not specified.",
-            "No full-game audit, full literary catalogue or artwork republished; runtime support unknown."
-          ],
-          "operational_requirement": {
+          "historical_operational_requirement": {
             "source_rule_ref": "agent-work/market/rules/MB-Quickstart.json#MB-QS-002",
             "normative_kind": "landmark_preparation_rule_with_unresolved_selection_policy",
             "applicability": "Official Quickstart pinned snapshot p14 Ruins; p27 dice/index only, not full Myth plot or play procedure",
@@ -15780,44 +15828,7 @@
               "Фактическая поддержка профиля/сохранения в текущем продукте и точное SHA evidence unknown."
             ]
           },
-          "source": {
-            "id": "MB-OFFICIAL-QUICKSTART-SNAPSHOT-20261108",
-            "title": "Mythic Bastionland Quickstart.pdf",
-            "edition": "Official free Quickstart snapshot2026-11-08; internal edition/version unspecified, not full book",
-            "author": "Chris McDowall",
-            "publisher": "Bastionland Press",
-            "language": "en",
-            "url": "https://chrismcdee.itch.io/mythic-bastionland",
-            "upload_id": "14160848",
-            "accessed_at": "2026-11-09T00:32:07.194Z",
-            "access_level": "full_text",
-            "access_method": "Official public demo download, primary PDF text + selected visual pages",
-            "sha256": "ed79a47c271d829370af5066da9a6b2f1480ad1e9d2f0be4cc65e001fb977ed8",
-            "size_bytes": 20753950,
-            "pdf_pages": 51,
-            "printed_pdf_page_alignment": "Verified selected pages14/26/28/30 align; not asserted for every page",
-            "author_project_key": "chris-mcdowall:bastionland:mythic-bastionland:quickstart",
-            "parent_project_dedup_key": "chris-mcdowall:bastionland:mythic-bastionland",
-            "limitations": [
-              "Only p14 Ruins clause and p27 Myth-selection procedure/index newly extracted; narrative Omens/cast and progression rules are context only.",
-              "Pinned official Quickstart bytes rehashed unchanged; p27 visually checked, p14 clause reread in native text and prior rendered page.",
-              "Random eligible-Myth choice is required, but filter/retry algorithm, conditional probabilities and empty-pool policy are not specified.",
-              "No full-game audit, full literary catalogue or artwork republished; runtime support unknown."
-            ],
-            "locator": "printed/PDF14 Ruins descriptive clause; p27 Myths ordered-dice procedure and selected index entries"
-          },
-          "implementation_authorized": false,
-          "release_authorized": false,
-          "dedup_review": {
-            "decision": "Additional research component of existing proposed053 places/roles/links; no new task or common rule.",
-            "related_tasks": [
-              "HX-BL-013",
-              "HX-BL-041",
-              "HX-BL-043",
-              "HX-BL-053"
-            ],
-            "reason": "Reuse general table and place/hook operations. Source-specific active-set exclusion needs own profile/evidence; no separate game engine or active task scope change."
-          }
+          "product_interpretation_status": "superseded_by_owner"
         }
       ],
       "research_handoff_refs": [
@@ -15852,17 +15863,20 @@
           "Seerdice+names",
           "Tag/position save+undo"
         ],
-        "residual_proposed": [
-          "Ruins locally inactive Myth selection"
-        ],
+        "residual_proposed": [],
         "owner_decision_variants": [
           "Map1–6labels deliberately omitted",
-          "Manual edits do not rebalance or swapSeat"
+          "Manual edits do not rebalance or swapSeat",
+          "Ruins are descriptive flavour; active-Myth filtering is not a mechanical requirement or defect."
         ],
         "additional_source_verification": [
           "Remaining70Seercard mappings; directlookup equivalent for verified2pairs"
-        ]
-      }
+        ],
+        "supersedes_audit_interpretation_ref": "agent-work/decisions/owner-decision-2026-11-09-MB-flavour-and-player-map-layer.json"
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-09-MB-flavour-and-player-map-layer.json"
+      ]
     }
   ],
   "last_review": {
