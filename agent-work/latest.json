@@ -26,10 +26,10 @@
   },
   "lessons_path": "agent-work/lessons.md",
   "plan_id": "2026-11-08T1957-strategist-next-product",
-  "run_id": "2026-11-09T1305-programmer-HX-BL-044-RIV011",
+  "run_id": "2026-11-09T1425-reviewer-HX-BL-044-CLASSIFY1",
   "plan_revision": 1,
   "baseline_sha": "00190bb749a4fa5af57aac4bbffff808e8fe733f",
-  "status": "capture_complete_original_failure_unresolved_ci_pending",
+  "status": "review_completed_feature_accepted_release_risk_unresolved",
   "planning_for": "2026-11-08",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-10-25",
@@ -40,12 +40,11 @@
   "unverified_weight": 1000,
   "last_completed_task": "HX-BL-043",
   "operational_state_write": {
-    "data_commit": "06cae1aebecd3d06ac45808353bf942655a404dc",
-    "files_written": 61,
-    "data_readback_verified": true,
-    "result_and_backlog_exact_blobs": true,
-    "foreign_claim_and_score_blobs_preserved": true,
-    "method": "Git data tree + expected_sha CAS; latest.json alone in final commit, then exact readback."
+    "status": "writing_latest_last",
+    "evidence_commit_sha": "d4a474e2ee3c1ba44e49bff32f1a8cd3c22cded9",
+    "health_commit_sha": "77fb7754235e3891fa19f2887b451515297e0d4b",
+    "latest_written_last": true,
+    "concurrent_research_parent_preserved": "fc07d9e12e36487d2f27414d92a856e6f457a596"
   },
   "budget_status": "owner_waived_usage_gate",
   "plan_file_shas": null,
@@ -53,21 +52,28 @@
   "schedule_start_at": "2026-10-24T01:00:00+03:00",
   "schedule_frequency": "hourly",
   "process_path": "agent-work/process.md",
-  "current_role": "programmer",
+  "current_role": "reviewer",
   "next_role": "programmer",
   "current_task_id": "HX-BL-044",
   "spec_path": "agent-work/specs/HX-BL-044-CLASSIFY1-implementation.md",
   "spec_version": "IMPL2",
-  "result_path": "agent-work/results/2026-11-09T1305-programmer-HX-BL-044-RIV011.json",
+  "result_path": "agent-work/results/2026-11-09T1425-reviewer-HX-BL-044-CLASSIFY1.json",
   "handoff_commit_sha": "06cae1aebecd3d06ac45808353bf942655a404dc",
   "active_claim": "agent-work/claims/2026-11-09T0500-programmer-HX-BL-051-DETAIL1-A.json",
-  "next_step": "ResumeexistingpausedDETAIL1claim at14f413f through D integration handoff. For044 reviewer checks exact9dabCI whencomplete andretainsoriginalRIVunknown until evidence-baseddisposition; noautomaticrandomreruns.",
+  "next_step": "Программист продолжает утверждённую HX-BL-051/DETAIL1, этап D: проверить владение существующим paused claim 2026-11-09T0500, интегрировать модули A/BC с опубликованным main90afe931, реальной картой, документом, историей и импортом/экспортом по готовой передаче PR496. Сохранить оба слоя JSONv11: classification и physicalGrid. Результат — точный SHA и evidence для независимой проверки; публикация требует отдельного разрешения.",
   "owner_decisions_needed": [
     {
       "task_id": "HX-BL-047",
       "stage_id": "SD-TERRAIN1",
       "decision": "Approve taskstart/scope after currentapproved044/051; proposal only, no approval inferred",
       "ref": "agent-work/proposals/2026-11-09-HX-BL-047-SD-TERRAIN1.json"
+    },
+    {
+      "task_id": "HX-BL-044",
+      "stage_id": "CLASSIFY1",
+      "head_sha": "9dab995f3d7740baf1a18f0aa28af2ffadb485bb",
+      "status": "publication_not_authorized",
+      "decision": "If owner chooses publication of exact9dab, explicitly disposition historic RIV011 unknown risk after actual before/after presentation. No new start/design gate."
     }
   ],
   "release_approval": {
@@ -97,14 +103,14 @@
     "ref": "agent-work/approvals/2026-11-09-PR497-1299cd0.json"
   },
   "historical_plan_status": "План23.10 сохранён как история; его блокировки и предложенный процесс заменены decisions24.10 в approvals/process/budget и текущим handoff.",
-  "evidence_path": "agent-work/evidence/HX-BL-044-CLASSIFY1",
+  "evidence_path": "agent-work/evidence/HX-BL-044-CLASSIFY1/review-9dab995/independent-review.json",
   "branch_name": "agent/hx-bl-044-classify1",
   "pr": 498,
   "head_sha": "9dab995f3d7740baf1a18f0aa28af2ffadb485bb",
   "tree_sha": "5e241777047cfd606ed091b94bdc757afa25c66c",
-  "checks_status": "local_required_passed_CI_browser_failed",
-  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42612175536",
-  "review_verdict": "bounded_feature_pass_mandatory_gate_failed",
+  "checks_status": "all_current_required_CI_passed",
+  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42623025393",
+  "review_verdict": "bounded_feature_accepted_current_CI_passed_historic_RIV011_risk_unresolved",
   "role_selection_mode": "ready_work_priority",
   "role_selection_source": "agent-work/process.md",
   "process_decision_ref": "owner-decision-2026-10-24-dynamic-roles",
@@ -215,7 +221,7 @@
   "score_update_release_sha": "90afe931d9e9f8a2482febf77eaed20b401ceece",
   "score_process_decision_ref": "owner-decision-2026-10-24-score-responsibilities",
   "score_assessment_ref": "agent-work/evidence/HX-BL-044-CLASSIFY1/score_assessment1.2.json",
-  "role_selection_reason": "Latest explicit owner «Реализуй.» authorizes CLASSIFY1 implementation; prior analysis-only/code hold superseded. Existing051 claim is explicitly paused, not duplicated.",
+  "role_selection_reason": "No newprogrammerfix pending; exactSHAhasmandatorycheck/browser/RNGsuccess, review priority4.051pausedclaim remainsunchanged.",
   "score_update_result_ref": "agent-work/results/2026-11-09T1003-strategist-score-PR497.json",
   "score_update_completed_at": "2026-11-09T10:06:29.844095+00:00",
   "score_update_delta": null,
@@ -237,44 +243,57 @@
   },
   "base_sha": "90afe931d9e9f8a2482febf77eaed20b401ceece",
   "automation_health": {
-    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
       "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
       "is_enabled": true,
-      "checked_at": "2026-11-09T13:30:56.718Z"
+      "checked_at": "2026-11-09T14:25:54.335Z",
+      "status": "checked",
+      "method": "automations.peek"
     },
     "end": {
       "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "checked_at": "2026-11-09 14:39:48 UTC",
       "is_enabled": true,
-      "checked_at": "2026-11-09T13:37:00.592Z"
+      "status": "checked",
+      "method": "automations.peek",
+      "errors": []
     },
     "restoration_performed": false,
     "errors": [],
-    "limitation": "Point-in-time checks only",
-    "run_id": "2026-11-09T1330-owner-materials-SCRIBD-MAPS4",
-    "result_ref": "agent-work/results/2026-11-09T1330-owner-materials-SCRIBD-MAPS4.json",
-    "role": "owner_material_preparation"
+    "independent_reviewer": {
+      "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "start": {
+        "checked_at": "2026-11-09 14:27:56 UTC",
+        "method": "actual automations.peek",
+        "is_enabled": true
+      },
+      "end": {
+        "checked_at": "2026-11-09 14:35:44 UTC",
+        "is_enabled": true,
+        "method": "actual automations.peek",
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "restore_performed": false,
+        "errors": []
+      },
+      "restore_performed": false,
+      "errors": [],
+      "limitation": "Actual point-in-time enabled observations; next_run_time null and recorded in_progress do not prove worker liveness or future service behavior. No automation schedule/prompt changed."
+    },
+    "limitation": "Actual point-in-time start/end observations only; no guarantee against later service disablement. Reason for earlier disablement not inferred; schedule/prompt unchanged.",
+    "prior_end_observation": {
+      "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "checked_at": "2026-11-09 14:36:19 UTC",
+      "is_enabled": true,
+      "status": "checked",
+      "method": "automations.peek",
+      "errors": []
+    }
   },
   "open_findings": [
-    {
-      "id": "CLASSIFY1-VALIDATION-RIV011",
-      "status": "open_cause_unknown",
-      "kind": "confirmed_failed_validation_evidence_not_yet_reproducible_product_defect",
-      "rule": "RIV-011",
-      "ci_run": 42612175536,
-      "job_id": 129143080882,
-      "head_sha": "6fd58bd14e47b1c9c7463f96965801cb9efeb15b",
-      "message": "LAKE_AREA positive integer, node72.746,-14",
-      "failed_input_available": false,
-      "direct_classification_cause_found": false,
-      "same_input_baseline_comparison": "not_possible_without_original_seed_save",
-      "evidence_ref": "agent-work/evidence/HX-BL-044-CLASSIFY1/ci-r4-browser-negative.json",
-      "source_audit_ref": "agent-work/evidence/HX-BL-044-CLASSIFY1/classification-rng-lake-source-audit.json",
-      "local_full_browser": "passed8of8",
-      "green_local_or_retry_does_not_erase_negative": true
-    }
+    "CLASSIFY1-VALIDATION-RIV011"
   ],
-  "current_review_score_assessment_status": "completed_insufficient_evidence_no_award",
+  "current_review_score_assessment_status": "insufficient_evidence_six_whole_criteria_unknown",
   "target_audience_research": {
     "model_version": "1.1",
     "model_max_points": 25,
@@ -774,51 +793,16 @@
     "completed_at": "2026-10-27T12:12:46.356Z"
   },
   "review_request": {
-    "task_id": "HX-BL-043",
-    "stage_id": "KNAVE2-CLASSIC1",
-    "next_role": "reviewer",
-    "public_sha": "818476e5ec653384ab216efd75db9467d698cfc4",
-    "private_sha": "c5b3c384792ce3349e40b0cc3ccc52e3d7685d1e",
-    "private_tree": "6ef5d87c0b31b133f831a8300008008db57f0d32",
-    "artifact": {
-      "path": "/workspace/scratch/320e5b03f904/knave-browser-runtime/HexCrawl-Knave2-Classic1-runtime-private.zip",
-      "bytes": 836265,
-      "sha256": "3adbe9fa2ada0f99abc2058e8b1c6682f4c89b991882cca20f88b6cc833c6e36",
-      "files": 23,
-      "crc_and_manifest_verified": true,
-      "library_file_id": "libfile_fde3_f-0ebe6a7f3460819191ca4308c2778835_3c7ce53bef508191bc31de4d3dfa12cc",
-      "version": 2,
-      "filename": "HexCrawl-Knave2-Classic1-runtime-private.zip"
-    },
-    "spec_ref": "agent-work/specs/HX-BL-043-KNAVE2-CLASSIC1.md",
-    "scope": "Independent exact-package KNC-A01..A11 verification, source mapping and regressions, test necessity and model1.2 score assessment. No new product scope, public book data or release.",
-    "source_inputs": {
-      "catalog_ref": "Private package Knave2-Classic1-catalog-RU.json,400rows",
-      "source_library_file_id": "libfile_8b6719d4aab88191973e2d4bb59681e8",
-      "source_sha256": "30cf89b9547fd0f76a56f4bcd0ab2dd0303b6be02c00500b37050ad4c71b8795",
-      "source_pages": "Bounded verification of PDF9/12 for the four approved tables; do not repeat full book research",
-      "eligibility_ref": "agent-work/evidence/KNAVE2-CLASSIC1-catalog1/eligibility-ledger.json",
-      "preparation_result_ref": "agent-work/results/2026-11-08T1441-programmer-HX-BL-043-KNAVE2-CLASSIC1.json"
-    },
-    "evidence_prefix": "agent-work/evidence/KNAVE2-CLASSIC1-818476e/",
-    "review_checks": [
-      "Use fresh-context independent agent if available, own claim and actual automation start/end peeks",
-      "Confirm private tree differs from public core only in catalog module, not permission to push that module",
-      "Validate400rows/source metadata and300row compatibility ledger, unresolved refs, neutral markers and actual physical context; no invented EN/ice/geometry/d100 for filtered pools",
-      "Exercise actual generation/save/history/edit/rollback and KNC-UI-001 notice fix, old sparse v10 content preservation, settlement/water identities",
-      "Inspect private real UI screenshots and limitations: emoji font support, finite Chromium, GM secrets visible, v9 cannot read v10",
-      "Audit necessity of cumulative PR tests versus main, not just this run's zero test delta; do not count temporary diagnostics as permanent growth",
-      "Record independent score_assessment1.2 for S04-C04,S01-C05,S05-C02,S05-C03,S06-C05,S08-C04 with unknown baselines, quality/breadth limits and no double count"
-    ],
-    "completion": "Evidence-backed findings → programmer, or independent accepted exact-SHA result plus score_assessment1.2 → concrete owner publication/source-transfer decision. Any source change requires new checks/review.",
-    "authorization_status": "Existing approved KNC-1.0 validation only; release and public Knave corpus permission absent",
-    "ui_actual_shown_in_chat": true,
-    "readiness": "review_ready",
-    "checks_ref": "agent-work/evidence/KNAVE2-CLASSIC1-818476e/checks.json",
-    "test_change_summary_ref": "agent-work/evidence/KNAVE2-CLASSIC1-818476e/test-change-summary.json"
+    "task_id": "HX-BL-044",
+    "stage_id": "CLASSIFY1",
+    "head_sha": "9dab995f3d7740baf1a18f0aa28af2ffadb485bb",
+    "status": "completed",
+    "result_ref": "agent-work/results/2026-11-09T1425-reviewer-HX-BL-044-CLASSIFY1.json",
+    "independent_review_ref": "agent-work/evidence/HX-BL-044-CLASSIFY1/review-9dab995/independent-review.json",
+    "release_ready": false
   },
-  "reviewed_sha": null,
-  "current_review_score_assessment_ref": null,
+  "reviewed_sha": "9dab995f3d7740baf1a18f0aa28af2ffadb485bb",
+  "current_review_score_assessment_ref": "agent-work/evidence/HX-BL-044-CLASSIFY1/score_assessment1.2.json",
   "automatic_measurement_rerun_allowed": false,
   "repeat_review_requires": "Fresh-context independent exact d92ecdd review, including F1 and score_assessment1.2",
   "blocked_task_handoffs": {
@@ -918,7 +902,7 @@
     "next_step": "Решить отдельно узкий cleanup AUD-02/03/04; готовую спецификацию024 не задерживать."
   },
   "owner_decisions_note": "PR498 publication decision is premature while mandatory CI validation finding is unresolved. Existing028/050/052 proposals preserved.",
-  "updated_at": "2026-11-09T12:06:23.784160+00:00",
+  "updated_at": "2026-11-09 14:39:48 UTC",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
     "stage_id": "V3",
@@ -1131,28 +1115,23 @@
     }
   },
   "independent_reviewer_automation_health": {
-    "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "actual_peek_performed": true,
-      "is_enabled": true,
-      "checked_at": null,
-      "error": "timestamp_not_captured; initial real enabled response preceded review. Earlier17:13estimate withdrawn; no inferred exact timestamp."
-    },
-    "supplemental": {
-      "checked_at_utc": "2026-11-08 17:18:19 UTC",
-      "is_enabled": true,
-      "error": null,
-      "clock_method": "available tools.clock__curr_time immediately before real automations.peek"
+      "checked_at": "2026-11-09 14:27:56 UTC",
+      "method": "actual automations.peek",
+      "is_enabled": true
     },
     "end": {
-      "checked_at_utc": "2026-11-08 17:27:25 UTC",
+      "checked_at": "2026-11-09 14:35:44 UTC",
       "is_enabled": true,
-      "error": null,
-      "clock_method": "available tools.clock__curr_time immediately after real automations.peek"
+      "method": "actual automations.peek",
+      "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "restore_performed": false,
+      "errors": []
     },
-    "restoration_performed": false,
-    "schedule_changed": false,
-    "limitations": "Initial enabled observation has no exact independently recorded timestamp; accurate supplemental/end timestamps do not repair that missing first timestamp. A peek confirms only its observed moment."
+    "restore_performed": false,
+    "errors": [],
+    "limitation": "Actual point-in-time enabled observations; next_run_time null and recorded in_progress do not prove worker liveness or future service behavior. No automation schedule/prompt changed."
   },
   "previous_reviewed_sha": "78ca3142a61b0840a7b2a45069f2f9e0b41bd217",
   "test_governance": {
@@ -1186,7 +1165,7 @@
   },
   "test_change_summary": {
     "base_sha": "90afe931d9e9f8a2482febf77eaed20b401ceece",
-    "head_sha": "6fd58bd14e47b1c9c7463f96965801cb9efeb15b",
+    "head_sha": "9dab995f3d7740baf1a18f0aa28af2ffadb485bb",
     "counting_unit": "logical Node test cases; browser top-level package.json workflows separately; no line/file/run count substitution",
     "node": {
       "added": 4,
@@ -1207,7 +1186,21 @@
         "Existing invalid-future-version case updated11→12 because11 is supported"
       ],
       "reuse_or_new_reason": "New shared policy/schema lacked coverage; existing actual save lifecycle reused for legacy regressions rather than creating another corpus.",
-      "source": "Exact git diff BASE..HEAD + top-level node:test AST/count from comparable runner"
+      "source": "Exact git diff BASE..HEAD + top-level node:test AST/count from comparable runner",
+      "added_file": "test/classification.test.mjs",
+      "modified_cases": [
+        "E8 v8 authored POI names use real import,exact export and UndoRedo without touching hex notes",
+        "SEA v2-v8 metadata migration and strict v9 refusal use the real atomic importer"
+      ],
+      "rationale": [
+        "New shared24-biome policy boundary had no prior shared-layer test.",
+        "Context/semantic IDs independent from localized text are distinct from terrain defaults.",
+        "Strictv11 ownership/remap differs from existing legacy layer contract.",
+        "Actual common-layer document/history integration is distinct from pure functions.",
+        "Existing E8 regression extended for actual P1 clue edit instead of new suite.",
+        "Existing version-refusal probe11→12 preserves rejection boundary after v11 support."
+      ],
+      "limitation": "First test's family-name expectation resembles implementation grouping and does not itself prove concrete risk text or game correctness; those use separate source/UI evidence. No whole-suite static regex count substituted for runner367."
     },
     "browser": {
       "added": 0,
@@ -1231,7 +1224,37 @@
         "Wait for real asynchronous profiler log/table instead of100ms race; scroll and prove the physical pointer hits the intended disabled control"
       ],
       "reuse_or_new_reason": "Preserve three existing workflows and assertions; no duplicate new runner. Nested CLASSIFY cases are not another top-level workflow.",
-      "source": "Exact diff and unchanged8 package.json runner commands"
+      "source": "Exact diff and unchanged8 package.json runner commands",
+      "modified_logical_runner_workflows": 3,
+      "total_logical_runner_workflows": 8,
+      "modified_files": 5,
+      "runner_mapping": [
+        {
+          "workflow": "generation",
+          "files": [
+            "test/browser/generation.smoke.mjs"
+          ],
+          "reason": "Existing profiling wait strengthened to actual events; exact failing-input capture added to unchanged fatal assertion."
+        },
+        {
+          "workflow": "save-history",
+          "files": [
+            "test/browser/save-history.smoke.mjs",
+            "test/browser/water-lifecycle.mjs"
+          ],
+          "reason": "Authorized edit-only form changes absolute offsets/Surface row visibility; retained information-row height/gaps and E6 functionality."
+        },
+        {
+          "workflow": "tags",
+          "files": [
+            "test/browser/knave-properties-lifecycle.mjs",
+            "test/browser/myth-material-lifecycle.mjs"
+          ],
+          "reason": "Extend existing common/legacy draft/export/history UI case; pointer helper scrolls and verifies physical target rather than clicking outside viewport."
+        }
+      ],
+      "distinction": "Five modified browser files are not five runner workflows. Three feature-expectation files (Knave,save-history,water), two diagnostic/pointer files (generation,myth-material). Generation file itself also has the earlier profiler expectation change.",
+      "nonduplication": "No parallel permanent browser suite added; existing lifecycles reused. Assertions retained/updated to approved behavior; diagnostic failure remains fatal."
     },
     "harness": {
       "suite": "test/helpers/generation-harness.mjs",
@@ -1239,179 +1262,100 @@
       "reason": "Import shared classification module into existing extracted actual callbacks"
     },
     "temporary_reviewer_diagnostics": {
-      "permanent_test_growth": 0,
-      "evidence_ref": "agent-work/evidence/HX-BL-044-CLASSIFY1/independent-review.json"
+      "new_permanent_cases": 0,
+      "vm_fault_modes": 3,
+      "random_runs": 0
     },
     "execution": {
-      "head_sha": "6fd58bd14e47b1c9c7463f96965801cb9efeb15b",
-      "tree_sha": "907c0295ce6da9ec12ba1327d540c2a334541f52",
       "base_sha": "90afe931d9e9f8a2482febf77eaed20b401ceece",
-      "local_required_passed": true,
-      "all_required_passed": false,
-      "local_node": {
-        "command": "npm run check",
-        "node": "24.22.1",
-        "executed": 367,
-        "passed": 367,
-        "failed": 0,
-        "skipped": 0,
-        "exit_code": 0,
-        "source_local_sha": "b4f0cf57eedf9262a5056d5cb6487863cf70eed5",
-        "final_src_docs_equal": true,
-        "final_Node_test_difference": "one comment only; executable Node test cases unchanged",
-        "build_exit_code": 0
-      },
-      "local_browser": {
-        "command": "npm run test:browser",
-        "exit_code": 0,
-        "top_level_workflows_executed": 8,
-        "passed": 8,
-        "failed": 0,
-        "browser": "153.0.8010.0",
-        "source_local_sha": "565a61878d5f924c069ee062b25a14a226b48999",
-        "log": "classify-r4-browser.log"
-      },
-      "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42612175536",
-      "ci_run_id": 42612175536,
-      "ci_checked_at": "2026-11-09T12:06:23.784160+00:00",
-      "ci_jobs": [
-        {
-          "name": "world-random",
-          "id": 129143080211,
-          "status": "completed",
-          "conclusion": "success"
-        },
-        {
-          "name": "check",
-          "id": 129143080593,
-          "status": "completed",
-          "conclusion": "success"
-        },
-        {
-          "name": "browser",
-          "id": 129143080882,
-          "status": "completed",
-          "conclusion": "failure"
-        }
-      ],
-      "mandatory_ci_browser_status": "failed_RIV011_LAKE_AREA_cause_unknown",
-      "independent_review_ref": "independent-review.json",
-      "score_assessment_ref": "score_assessment1.2.json",
-      "local_evidence": {
-        "base_sha": "90afe931d9e9f8a2482febf77eaed20b401ceece",
-        "head_sha": "6fd58bd14e47b1c9c7463f96965801cb9efeb15b",
-        "earlier_failures": [
+      "head_sha": "9dab995f3d7740baf1a18f0aa28af2ffadb485bb",
+      "tree_sha": "5e241777047cfd606ed091b94bdc757afa25c66c",
+      "all_current_required_passed": true,
+      "current_ci": {
+        "run_id": 42623025393,
+        "run_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42623025393",
+        "head_sha": "9dab995f3d7740baf1a18f0aa28af2ffadb485bb",
+        "attempt": 1,
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "success",
+        "updated_at": "2026-11-09T13:17:32Z",
+        "method": "Independent run API, run jobs API and all three decoded job logs; not programmer counts.",
+        "node": "v24.22.2",
+        "jobs": [
           {
-            "sha": "16c2133e60d4b037359d8a1d77b3fa06d66df898",
-            "source": "local R2 fullbrowser",
-            "failure": "generation.smoke missing PROFILE after100ms",
-            "disposition": "Profiler and handler unchanged from base; bounded8base/final probes pass. Latent timing race inferred, not reproduced; R3 awaits events."
+            "id": 129179821475,
+            "name": "check",
+            "conclusion": "success",
+            "evidence": "npm run check completed TypeScript, Node suite and build; log summary tests367/pass367/fail0/skipped0",
+            "node_cases": {
+              "executed": 367,
+              "passed": 367,
+              "failed": 0,
+              "skipped": 0
+            }
           },
           {
-            "sha": "16c2133e60d4b037359d8a1d77b3fa06d66df898",
-            "source": "CI42609369579/browser",
-            "failure": "save-history edit/view absolute row tops differ due required new edit-only classification form",
-            "disposition": "R3 retains row height/gaps inside common groups, excludes offset across explicit new form."
+            "id": 129179821763,
+            "name": "browser",
+            "conclusion": "success",
+            "logical_workflows": {
+              "executed": 8,
+              "passed": 8,
+              "failed": 0,
+              "skipped": 0
+            },
+            "evidence": "Unchanged package.json chains eight existing browser workflows; command and job succeed. Generation JSON reports19clicks/coast6/auto6/mainland6/regeneration/undo/jsonReload/errorRecovery true/pageErrors[]. Nested water/Knave/material lifecycle pass messages inspected.",
+            "diagnostic_artifact_upload": "generation-failure-inputs skipped because job passed; absence of this artifact is expected."
           },
           {
-            "sha": "6038d3151e8385745c6a36c342a12c54b3cc2c62",
-            "source": "local R3 fullbrowser",
-            "failure": "large-navigation Native scrolling uses buffer; SVG opacity1 vs0",
-            "disposition": "Not a local fullbrowser pass. No source/test navigation edits made; root cause not established. Exact-head CI remains authoritative external required check."
-          },
-          {
-            "sha": "6fd58bd14e47b1c9c7463f96965801cb9efeb15b",
-            "source": "CI42612175536/browser129143080882",
-            "failure": "LAKE_AREA/RIV-011 positive integer node72.746,-14; generation.smoke16/104/123",
-            "disposition": "Actual failed mandatory gate. Source cause unknown. Not suppressed; diagnostic retry considered only after preserving evidence. Other R2/R3 CI generation and final local generation passed; no score or release inferred."
+            "id": 129179821077,
+            "name": "world-random",
+            "conclusion": "success",
+            "evidence": "Eight mode×seed scenarios logged passed (classic/mythic ×0/1/123456789/4294967295); R2 and AC06/08/09 logs pass. Kept separate from Node/browser counts."
           }
         ],
-        "focused_Node": {
-          "executed": 43,
-          "passed": 43,
-          "failed": 0,
-          "skipped": 0
-        },
-        "full_Node": {
-          "status": "passed",
-          "executed": 367,
-          "passed": 367,
-          "failed": 0,
-          "skipped": 0,
-          "duration_ms": 1039989.812463,
-          "command": "npm run check",
-          "exit_code": 0,
-          "source_local_sha": "b4f0cf57eedf9262a5056d5cb6487863cf70eed5",
-          "final_product_source_equal": true,
-          "scope_note": "Executed before final browser-only test corrections; all src/docs/Node cases unchanged."
-        },
-        "local_browser": {
-          "completed_workflows": [
-            "generation",
-            "poi-display",
-            "terrain-color",
-            "forest-display",
-            "navigation"
-          ],
-          "failed_workflow": "large-navigation",
-          "save_history": "running separately",
-          "tags": "not yet run"
-        },
-        "temporary_ui": {
-          "status": "passed",
-          "permanent_test_growth": 0
-        },
-        "build_R2": {
-          "status": "passed",
-          "source_unchanged_in_R3": true
-        },
-        "local_Node_version": "24.22.1",
-        "local_Chromium": "153.0.8010.0",
-        "temporary_remaining_save_history": {
-          "status": "passed",
-          "permanent_test_growth": 0,
-          "workflows": [
-            "water",
-            "region",
-            "POI",
-            "entity names"
-          ],
-          "alerts": [],
-          "log": "classify-r4-remaining.log"
+        "unrelated_workflow": {
+          "id": 42623025321,
+          "name": "HX-FB-001 UI acceptance",
+          "conclusion": "skipped",
+          "interpretation": "Not one of required three jobs; no success claimed."
         }
       },
-      "bounded_diagnostic": {
-        "attempts": 1,
-        "command": "temporary copy of existing generation browser workflow with save capture before unchanged assertions",
-        "exit_code": 0,
-        "snapshots": 38,
-        "generation_clicks": 19,
-        "invalid_snapshots": 0,
-        "permanent_added_cases": 0,
-        "interpretation": "CI failure not reproduced; original CI seed/save unavailable. This successful sample does not resolve or erase failure."
+      "independent_fixture_cases": {
+        "executed": 5,
+        "passed": 5,
+        "failed": 0,
+        "skipped": 0
       },
-      "retry_request": {
-        "attempted": true,
-        "executed": false,
-        "response": {
-          "error": "GitHub API error 403: {\"message\":\"This workflow is already running\",\"documentation_url\":\"https://docs.github.com/rest/actions/workflow-runs#re-run-failed-jobs-from-a-workflow-run\",\"status\":\"403\"}",
-          "error_code": "FORBIDDEN",
-          "error_data": {
-            "message": "This workflow is already running",
-            "documentation_url": "https://docs.github.com/rest/actions/workflow-runs#re-run-failed-jobs-from-a-workflow-run",
-            "status": "403"
-          }
+      "temporary_capture_fault_modes": {
+        "executed": 3,
+        "passed": 3,
+        "permanent_test_growth": 0
+      },
+      "prior_execution_ref": "agent-work/evidence/HX-BL-044-CLASSIFY1/review-9dab995/prior-test-change-summary.json",
+      "historical_negative": {
+        "run_id": 42612175536,
+        "job_id": 129143080882,
+        "original_head": "6fd58bd14e47b1c9c7463f96965801cb9efeb15b",
+        "independently_retrieved_log": true,
+        "log_time": "2026-11-09T11:51:15.8300853Z",
+        "exact_issue": {
+          "code": "LAKE_AREA",
+          "rule": "RIV-011",
+          "message": "Lake area must be a positive integer.",
+          "nodeId": "72.746,-14"
         },
-        "reason": "Workflow already running; no failed-job rerun was launched"
+        "original_seed_save_streams": "unavailable",
+        "disposition": "Genuine failed invariant; cause and impact unresolved. No classification cause proven; no justified fixed/preexisting/flaky claim.",
+        "source_facts": "Current and main buildRegionRiverNetwork are byte-identical and explicitly create lakeHexCount0 sentinel for closed inland one-input/no-output mouth without real lake. Core validator/RNG/manual water/rivers unchanged. This explains a possible diagnostic path, not original input reachability or safe product state.",
+        "new_evidence": "Current CI independently passes same assertions; capture guard does not weaken them. Prior38-snapshot sample and one19-click diagnostic success do not reproduce original; no new random sample run here.",
+        "remaining_gate": "Before marking release handoff ready, record a reasoned risk disposition for this exact package: deterministic source/fixture explanation with justified acceptance or approved fix/new exact-SHA review, OR owner's explicit acceptance of the named unresolved risk as part of concrete package publication decision. Lost input cannot be demanded indefinitely and is not silently waived."
       },
       "release_ready": false,
-      "release_authorized": false,
-      "limitations": [
-        "No exact replay of failing CI map without its original worldSeed/save/stream state.",
-        "Local successful full suites do not dismiss exact-head negative CI evidence.",
-        "Earlier pre-final or interrupted checks are not counted as aggregate success."
-      ]
-    }
+      "release_authorized": false
+    },
+    "count_source": "Independent complete base..head test diff and unchanged package.json runner mapping. Counts are logical cases/workflows, not changed lines or files."
   },
   "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/497",
   "coordination_handoff": {
@@ -1491,7 +1435,7 @@
     "nav_status_success": 24,
     "png_captured": 4
   },
-  "evidence_ref": "agent-work/evidence/KNAVE2-CLASSIC1-review-c5b3c38/review-report.json",
+  "evidence_ref": "agent-work/evidence/HX-BL-044-CLASSIFY1/review-9dab995/independent-review.json",
   "static_diagnosis_handoff": {
     "status": "coordinated_nextstage_proposed",
     "result_ref": "agent-work/results/2026-10-27-developer-HX-BL-003-static-diagnosis.json",
@@ -1555,13 +1499,48 @@
     }
   },
   "previous_review_request": {
-    "task_id": "HX-BL-023",
-    "stage_id": "E1_names_F1",
-    "head_sha": "d92ecdd7ca8c5b7293a4f3e2e6efde93f944c57c",
-    "status": "review_ready",
-    "spec_version": "2.0",
-    "handoff_ref": "agent-work/handoffs/2026-10-29-HX-BL-023-E1-review-d92ecdd.json",
-    "score_assessment_saved": false
+    "task_id": "HX-BL-043",
+    "stage_id": "KNAVE2-CLASSIC1",
+    "next_role": "reviewer",
+    "public_sha": "818476e5ec653384ab216efd75db9467d698cfc4",
+    "private_sha": "c5b3c384792ce3349e40b0cc3ccc52e3d7685d1e",
+    "private_tree": "6ef5d87c0b31b133f831a8300008008db57f0d32",
+    "artifact": {
+      "path": "/workspace/scratch/320e5b03f904/knave-browser-runtime/HexCrawl-Knave2-Classic1-runtime-private.zip",
+      "bytes": 836265,
+      "sha256": "3adbe9fa2ada0f99abc2058e8b1c6682f4c89b991882cca20f88b6cc833c6e36",
+      "files": 23,
+      "crc_and_manifest_verified": true,
+      "library_file_id": "libfile_fde3_f-0ebe6a7f3460819191ca4308c2778835_3c7ce53bef508191bc31de4d3dfa12cc",
+      "version": 2,
+      "filename": "HexCrawl-Knave2-Classic1-runtime-private.zip"
+    },
+    "spec_ref": "agent-work/specs/HX-BL-043-KNAVE2-CLASSIC1.md",
+    "scope": "Independent exact-package KNC-A01..A11 verification, source mapping and regressions, test necessity and model1.2 score assessment. No new product scope, public book data or release.",
+    "source_inputs": {
+      "catalog_ref": "Private package Knave2-Classic1-catalog-RU.json,400rows",
+      "source_library_file_id": "libfile_8b6719d4aab88191973e2d4bb59681e8",
+      "source_sha256": "30cf89b9547fd0f76a56f4bcd0ab2dd0303b6be02c00500b37050ad4c71b8795",
+      "source_pages": "Bounded verification of PDF9/12 for the four approved tables; do not repeat full book research",
+      "eligibility_ref": "agent-work/evidence/KNAVE2-CLASSIC1-catalog1/eligibility-ledger.json",
+      "preparation_result_ref": "agent-work/results/2026-11-08T1441-programmer-HX-BL-043-KNAVE2-CLASSIC1.json"
+    },
+    "evidence_prefix": "agent-work/evidence/KNAVE2-CLASSIC1-818476e/",
+    "review_checks": [
+      "Use fresh-context independent agent if available, own claim and actual automation start/end peeks",
+      "Confirm private tree differs from public core only in catalog module, not permission to push that module",
+      "Validate400rows/source metadata and300row compatibility ledger, unresolved refs, neutral markers and actual physical context; no invented EN/ice/geometry/d100 for filtered pools",
+      "Exercise actual generation/save/history/edit/rollback and KNC-UI-001 notice fix, old sparse v10 content preservation, settlement/water identities",
+      "Inspect private real UI screenshots and limitations: emoji font support, finite Chromium, GM secrets visible, v9 cannot read v10",
+      "Audit necessity of cumulative PR tests versus main, not just this run's zero test delta; do not count temporary diagnostics as permanent growth",
+      "Record independent score_assessment1.2 for S04-C04,S01-C05,S05-C02,S05-C03,S06-C05,S08-C04 with unknown baselines, quality/breadth limits and no double count"
+    ],
+    "completion": "Evidence-backed findings → programmer, or independent accepted exact-SHA result plus score_assessment1.2 → concrete owner publication/source-transfer decision. Any source change requires new checks/review.",
+    "authorization_status": "Existing approved KNC-1.0 validation only; release and public Knave corpus permission absent",
+    "ui_actual_shown_in_chat": true,
+    "readiness": "review_ready",
+    "checks_ref": "agent-work/evidence/KNAVE2-CLASSIC1-818476e/checks.json",
+    "test_change_summary_ref": "agent-work/evidence/KNAVE2-CLASSIC1-818476e/test-change-summary.json"
   },
   "previous_plan": {
     "plan_json": "agent-work/plans/2026-10-23.json",
@@ -1595,7 +1574,7 @@
     }
   },
   "last_secondary_result_ref": "agent-work/results/2026-11-09T0539-programmer-release-PR495.json",
-  "execution_note": "CLASSIFY1 feature implemented; full local367Node+8browser passed. CI RIV011 negative retained, cause unknown. Bounded exact-input diagnosis handoff ready;051 existing approved claim preserved.",
+  "execution_note": "Independent exact9dab review completed; current required CI passes. Historic RIV011 cause remains unknown and is not waived. Next approved051 D integration may resume; no random reruns, new scope or publication authorized.",
   "completed_validation_handoffs": {
     "HX-BL-003": {
       "task_id": "HX-BL-003",
@@ -1756,7 +1735,7 @@
   "historical_unverified_weight": 70,
   "historical_score_model_version": "1.1",
   "score_update_awarded_points": 0,
-  "handoff_ref": "agent-work/handoffs/2026-11-09-HX-BL-043-OWNERFIX1.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-09-HX-BL-044-CLASSIFY1-PR498.json",
   "previous_feedback_handoff": {
     "task_id": "HX-FB-001",
     "register": "agent-work/feedback.json",
@@ -1841,19 +1820,7 @@
       "errors": []
     }
   },
-  "release_risk_review_handoff": {
-    "task_id": "HX-BL-003",
-    "status": "completed_owner_AC_decision_pending",
-    "path": "agent-work/handoffs/2026-10-27-HX-BL-003-release-risk-review.md",
-    "result_ref": "agent-work/results/2026-10-27-reviewer-HX-BL-003-release-risk.json",
-    "next_role": "owner",
-    "preparation_authorized": true,
-    "measurement_allowed": false,
-    "release_approved": false,
-    "independent_ref": "agent-work/evidence/HX-BL-003-release-risk-58adcce/result.json",
-    "next_handoff_ref": "agent-work/handoffs/2026-10-27-HX-BL-003-minimal-release-package.json",
-    "new_execution_authorized_by_review": false
-  },
+  "release_risk_review_handoff": "agent-work/handoffs/2026-11-09-HX-BL-044-CLASSIFY1-RIV011.json",
   "previous_queue_next_step": "Уточнить совместимость E4 по HX023-E4-SPEC-01: определить однозначный исход старого импорта с hex=neighborHex и последующего v5 round-trip; обновить миграционные требования/AC05, затем вернуть программисту PR481.",
   "actual_main_sha": "90afe931d9e9f8a2482febf77eaed20b401ceece",
   "future_head_sha": null,
@@ -1861,12 +1828,10 @@
   "current_package_release_approval": {
     "task_id": "HX-BL-044",
     "stage_id": "CLASSIFY1",
-    "pr": 498,
-    "approved": false,
-    "status": "blocked_validation_not_ready_for_publication_decision",
-    "public_sha": "6fd58bd14e47b1c9c7463f96965801cb9efeb15b",
-    "tree_sha": "907c0295ce6da9ec12ba1327d540c2a334541f52",
-    "diagnostic_handoff_ref": "agent-work/handoffs/2026-11-09-HX-BL-044-CLASSIFY1-RIV011.json"
+    "head_sha": "9dab995f3d7740baf1a18f0aa28af2ffadb485bb",
+    "status": "not_authorized",
+    "release_approved": false,
+    "risk_disposition_pending": true
   },
   "current_risk_findings": [
     {
@@ -2066,7 +2031,7 @@
     "approval_ref": "owner-decision-2026-11-06-rating-v1.4-approved"
   },
   "previous_result_path": "agent-work/results/2026-11-06-developer-release-PR491.json",
-  "handoff_path": "agent-work/handoffs/2026-11-08-strategist-next-product.json",
+  "handoff_path": "agent-work/handoffs/2026-11-09-HX-BL-044-CLASSIFY1-PR498.json",
   "ui_actual_preview": {
     "status": "actual_presented_in_task_chat",
     "public_sha": "6fd58bd14e47b1c9c7463f96965801cb9efeb15b",
@@ -2458,15 +2423,15 @@
     }
   },
   "full_editor_ready": false,
-  "current_task_score_assessment_status": "completed_insufficient_evidence_no_award",
+  "current_task_score_assessment_status": "insufficient_evidence_six_whole_criteria_unknown",
   "published": false,
-  "main_changed": true,
+  "main_changed": false,
   "ui_actual": {
     "shown": true,
     "sha": "12e65a09c8f93e39ce020cc6a919ec67d6979216",
     "ref": "agent-work/evidence/HX-BL-043-ROLLUI2/visuals/actual-R1-manifest.json"
   },
-  "review_result_ref": null,
+  "review_result_ref": "agent-work/results/2026-11-09T1425-reviewer-HX-BL-044-CLASSIFY1.json",
   "previous_review_score_assessment_ref": "agent-work/evidence/review-HX-BL-023-E1-24fa342/score_assessment.json",
   "previous_independent_reviewer_automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
@@ -2487,7 +2452,7 @@
     "errors": [],
     "limitation": "Observed status at two calls only; not guarantee of subsequent service state."
   },
-  "next_active_slice": "E5",
+  "next_active_slice": "DETAIL1-D-integration",
   "review_scope": "Exact KNC1 public818476e/privatec5b3c38 with source400/policy300 and independent real handler/UI/regressions",
   "previous_accepted_release_pending": {
     "task_id": "HX-BL-023",
@@ -2574,12 +2539,12 @@
   "spec_blob_sha": "584707ebe78516b39148315ffc7b0214f52cb6b6",
   "parent_spec_ref": "agent-work/specs/HX-BL-023.md",
   "parent_spec_version": "2.3",
-  "test_change_summary_ref": null,
+  "test_change_summary_ref": "agent-work/evidence/HX-BL-044-CLASSIFY1/test-change-summary.json",
   "programmer_score_evidence_ref": "agent-work/evidence/KNAVE2-CLASSIC1-818476e/programmer-score-evidence.json",
-  "completed_claim_result_ref": "agent-work/results/2026-11-09T1107-programmer-HX-BL-044-CLASSIFY1.json",
-  "review_evidence_ref": "agent-work/evidence/HX-FB-010-PR491-de02991/review-report.json",
+  "completed_claim_result_ref": "agent-work/results/2026-11-09T1425-reviewer-HX-BL-044-CLASSIFY1.json",
+  "review_evidence_ref": "agent-work/evidence/HX-BL-044-CLASSIFY1/review-9dab995/independent-review.json",
   "github_review_state": "accepted_private_package_owner_publication_pending",
-  "independent_reviewer_automation_health_ref": "agent-work/evidence/KNAVE2-CLASSIC1-review-c5b3c38/automation-health.json",
+  "independent_reviewer_automation_health_ref": "agent-work/evidence/HX-BL-044-CLASSIFY1/review-9dab995/independent-review.json",
   "owner_visual_correction": {
     "date": "2026-10-30",
     "request": "Приблизить подчёркивание к элементу и выделить редактируемые значения цветом",
@@ -2647,18 +2612,18 @@
   "previous_score_update_result_ref": "agent-work/results/2026-10-29-strategist-score-HX-BL-023-E1-8f7d172.json",
   "next_approved_stage": "KNAVE2-CLASSIC1",
   "next_approved_stage_handoff_ref": "agent-work/handoffs/2026-11-08-HX-BL-043-KNAVE2-CLASSIC1.json",
-  "authorization_status": "Feature implementation approved/completed. Bounded failure capture/replay is verification within current task; publication remains blocked. No expanded river rewrite authorized.",
-  "completed_at": "2026-11-09T12:06:23.784160+00:00",
+  "authorization_status": "Next051 D integration already approved; no new scope/spending/merge authorization. Exact044 publication awaits explicit owner risk disposition and release permission.",
+  "completed_at": "2026-11-09 14:39:48 UTC",
   "score_changed": false,
-  "next_stage_id": "CLASSIFY1-RIV011-diagnostic",
+  "next_stage_id": "D",
   "score_evidence_updated": true,
   "current_stage_id": "CLASSIFY1",
   "implementation_started": false,
   "current_stage_release_approved": false,
   "review_ready": false,
   "current_stage_ui_status": "bounded44px_touch_correction_required; prior full actual UI retained",
-  "completed_claim": "agent-work/claims/2026-11-09T1305-programmer-HX-BL-044-RIV011.json",
-  "evidence_commit_sha": "0d0d973af9e16587911c4cb2e1fa3b073ef5f0ee",
+  "completed_claim": "agent-work/claims/2026-11-09T1425-reviewer-HX-BL-044-CLASSIFY1.json",
+  "evidence_commit_sha": "d4a474e2ee3c1ba44e49bff32f1a8cd3c22cded9",
   "finding_ids": [],
   "current_release_package_ref": "agent-work/handoffs/2026-10-31-HX-BL-023-E3-release-package-d7bb38f.json",
   "current_stage_ui_preview": {
@@ -4246,8 +4211,8 @@
     "workspace_recovery": "Pruning removed old shared git metadata; fresh clone from GitHub succeeded, no request to user needed.",
     "materials_commit_sha": "64fa823e19f701817ff59d962d7b211e83aaa406"
   },
-  "current_stage_status": "published_verified_score_update_pending",
-  "current_stage_review_status": "not_ready_partial_implementation",
+  "current_stage_status": "review_completed_feature_accepted_release_risk_unresolved",
+  "current_stage_review_status": "completed_bounded_feature_accepted_release_risk_unresolved",
   "accepted": false,
   "full_UI_pending": false,
   "latest_HX_BL_023_E5_persistence_20261104": {
@@ -4487,59 +4452,29 @@
   "UI_proposal_already_shown": true,
   "authorization_ref": "agent-work/decisions/owner-correction-2026-11-09-HX-BL-043-OWNERFIX1.json",
   "checks_summary": {
-    "typescript": "passed",
     "Node": {
-      "executed": 363,
-      "passed": 363,
+      "executed": 367,
+      "passed": 367,
       "failed": 0,
       "skipped": 0
     },
-    "build": {
-      "status": "passed",
-      "modules": 84,
-      "duration_seconds": 14.3
-    },
     "browser": {
-      "executed": 8,
+      "workflows_executed": 8,
       "passed": 8,
-      "failed": 0,
-      "skipped": 0,
-      "runtime": "Chromium153.0.8010.0",
-      "recovery": "Obsolete local Chromium symlink fixed; first4 scripts and subsequent4 scripts passed; original environment error retained."
+      "failed": 0
     },
-    "CI": {
-      "head_sha": "1299cd0555f1318d921304b5f95a69335b4c80f9",
-      "run_id": 42586702962,
-      "status": "completed",
-      "conclusion": "success",
-      "observed_at": "2026-11-09T08:45:27.661Z",
-      "jobs": [
-        {
-          "id": 129058151611,
-          "name": "world-random",
-          "status": "completed",
-          "conclusion": "success"
-        },
-        {
-          "id": 129058151887,
-          "name": "check",
-          "status": "completed",
-          "conclusion": "success"
-        },
-        {
-          "id": 129058151915,
-          "name": "browser",
-          "status": "completed",
-          "conclusion": "success"
-        }
-      ]
+    "world_random": "passed separately",
+    "ci_synthetic_merge_tree_equal": true,
+    "fresh_fixture_cases": {
+      "executed": 5,
+      "passed": 5
     },
-    "independent": {
-      "status": "passed_no_blocking_findings",
-      "registered_cases": 11,
-      "temporary_real_catalog_probes": 2,
-      "ref": "agent-work/evidence/HX-BL-043-OWNERFIX1/independent-review.json"
-    }
+    "capture_fault_modes": {
+      "executed": 3,
+      "passed": 3
+    },
+    "new_random_generations": 0,
+    "new_mass_measurements": 0
   },
   "full_E5_UI_pending": true,
   "materials_commit_sha": "d66fc1882d982bf71de1977869077ec56c117d06",
@@ -5138,11 +5073,16 @@
   },
   "owner_resume_dispatch_ref": "agent-work/handoffs/2026-11-04-HX-BL-023-E5-programmer-resume.json",
   "execution": {
-    "status": "ready_for_business_analyst_claim",
-    "task_id": "HX-BL-023",
-    "stage_id": "E8-N-SEA",
-    "handoff_ref": "agent-work/handoffs/2026-11-06-HX-BL-023-E8-SEA-analysis.json",
-    "note": "Release accounting completed; check claims before starting approved sea identity/name specification. No duplicate implementation, no new approval gate."
+    "task_id": "HX-BL-051",
+    "stage_id": "DETAIL1-D",
+    "status": "ready_to_resume_existing_own_paused_claim_after_ownership_check",
+    "claim_ref": "agent-work/claims/2026-11-09T0500-programmer-HX-BL-051-DETAIL1-A.json",
+    "head_sha": "14f413f63f26e438e168158a869d21ed323959cd",
+    "pr": 496,
+    "handoff_ref": "agent-work/handoffs/2026-11-09-PR497-DETAIL1-D.json",
+    "implementation_authorized": true,
+    "release_authorized": false,
+    "reviewer_run_starts_no_implementation": true
   },
   "latest_concurrent_worker_observation": {
     "run_id": "2026-11-04-developer-E5-active-worker-observation-1800",
@@ -5431,7 +5371,7 @@
       }
     }
   ],
-  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/497",
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/498",
   "active_claim_scope": "First specifiedimplementationstage: fixed1/6/12/24 spatialprojection and connectedfootprintboundary primitives; no partialrelease or review_ready claim.",
   "other_active_claims": [
     {
@@ -6436,7 +6376,7 @@
     "canonical_interrupted_claim_preserved": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json"
   },
   "recovery_resolution_ref": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json",
-  "result_ref": "agent-work/results/2026-11-09T1305-programmer-HX-BL-044-RIV011.json",
+  "result_ref": "agent-work/results/2026-11-09T1425-reviewer-HX-BL-044-CLASSIFY1.json",
   "latest_PR493_recovery": {
     "status": "accepted_source_free_core_unpublished",
     "head_sha": "2f11a4b608a7ed66f5786b3a0e151362f82d0ad8",
@@ -7223,8 +7163,8 @@
     "actual_UI_shown_in_chat": true
   },
   "fix_handoff_ref": "agent-work/evidence/KNAVE2-CLASSIC1-review-c5b3c38/programmer-fix-handoff.json",
-  "role": "programmer",
-  "latest_result_ref": "agent-work/results/2026-11-09T1107-programmer-HX-BL-044-CLASSIFY1.json",
+  "role": "reviewer",
+  "latest_result_ref": "agent-work/results/2026-11-09T1425-reviewer-HX-BL-044-CLASSIFY1.json",
   "checks": {
     "typescript": "passed",
     "Node": {
@@ -7281,8 +7221,8 @@
     }
   },
   "score_assessment_status": "completed_insufficient_evidence_no_award",
-  "review_report_ref": "agent-work/evidence/HX-BL-043-OWNERFIX1/independent-review.json",
-  "reviewed_public_sha": "d7e7a5bd4103c0ec866f9e9a4a83fbe3222c2ef1",
+  "review_report_ref": "agent-work/evidence/HX-BL-044-CLASSIFY1/review-9dab995/independent-review.json",
+  "reviewed_public_sha": "9dab995f3d7740baf1a18f0aa28af2ffadb485bb",
   "closed_findings": [
     "KNC-REV-001"
   ],
@@ -7290,7 +7230,7 @@
     "KNC-EVID-001"
   ],
   "score_delta": null,
-  "score_delta_status": "unknown_not_zero",
+  "score_delta_status": "unknown_no_points_awarded",
   "public_book_transfer_approved": true,
   "current_external_dependency": "PR497 awaits owner permission to publish; approved DETAIL1 D in PR496 remains ready.",
   "publication_package_requires_private_catalog": true,
@@ -7786,7 +7726,13 @@
       }
     ]
   },
-  "current_role_result": "agent-work/results/2026-11-09T1107-programmer-HX-BL-044-CLASSIFY1.json",
+  "current_role_result": {
+    "run_id": "2026-11-09T1425-reviewer-HX-BL-044-CLASSIFY1",
+    "task_id": "HX-BL-044",
+    "stage_id": "CLASSIFY1",
+    "status": "review_completed_feature_accepted_release_risk_unresolved",
+    "result_ref": "agent-work/results/2026-11-09T1425-reviewer-HX-BL-044-CLASSIFY1.json"
+  },
   "current_stage_score_assessment_status": "completed_insufficient_evidence_no_award",
   "ui_actual_ref": "agent-work/evidence/HX-BL-043-OWNERFIX1/visuals/after-metrics.json",
   "execution_running": false,
@@ -7945,13 +7891,7 @@
     "head_sha": "6fd58bd14e47b1c9c7463f96965801cb9efeb15b",
     "status": "implemented_local_checks_passed_ci_validation_blocked"
   },
-  "paused_claim_preserved": {
-    "claim_ref": "agent-work/claims/2026-11-09T0500-programmer-HX-BL-051-DETAIL1-A.json",
-    "execution_running": false,
-    "task_id": "HX-BL-051",
-    "pr": 496,
-    "next_step": "Resume existing approved DETAIL1 work without duplicating claim; keep optional common classification in v11."
-  },
+  "paused_claim_preserved": "agent-work/claims/2026-11-09T0500-programmer-HX-BL-051-DETAIL1-A.json",
   "latest_priority_reassessment": {
     "run_id": "2026-11-09T1225-strategist-priority-correction",
     "result_ref": "agent-work/results/2026-11-09T1225-strategist-priority-correction.json",
@@ -8247,5 +8187,53 @@
       "limitation": "Point-in-time checks only"
     },
     "Scribd_uploaded": false
+  },
+  "task_id": "HX-BL-044",
+  "review_completed": true,
+  "release_readiness": false,
+  "bounded_feature_accepted": true,
+  "current_package_score_update_status": "not_due_unpublished",
+  "next_handoff_ref": "agent-work/handoffs/2026-11-09-PR497-DETAIL1-D.json",
+  "open_validation_findings": [
+    {
+      "run_id": 42612175536,
+      "job_id": 129143080882,
+      "original_head": "6fd58bd14e47b1c9c7463f96965801cb9efeb15b",
+      "independently_retrieved_log": true,
+      "log_time": "2026-11-09T11:51:15.8300853Z",
+      "exact_issue": {
+        "code": "LAKE_AREA",
+        "rule": "RIV-011",
+        "message": "Lake area must be a positive integer.",
+        "nodeId": "72.746,-14"
+      },
+      "original_seed_save_streams": "unavailable",
+      "disposition": "Genuine failed invariant; cause and impact unresolved. No classification cause proven; no justified fixed/preexisting/flaky claim.",
+      "source_facts": "Current and main buildRegionRiverNetwork are byte-identical and explicitly create lakeHexCount0 sentinel for closed inland one-input/no-output mouth without real lake. Core validator/RNG/manual water/rivers unchanged. This explains a possible diagnostic path, not original input reachability or safe product state.",
+      "new_evidence": "Current CI independently passes same assertions; capture guard does not weaken them. Prior38-snapshot sample and one19-click diagnostic success do not reproduce original; no new random sample run here.",
+      "remaining_gate": "Before marking release handoff ready, record a reasoned risk disposition for this exact package: deterministic source/fixture explanation with justified acceptance or approved fix/new exact-SHA review, OR owner's explicit acceptance of the named unresolved risk as part of concrete package publication decision. Lost input cannot be demanded indefinitely and is not silently waived."
+    }
+  ],
+  "previous_execution_routing": {
+    "status": "ready_for_business_analyst_claim",
+    "task_id": "HX-BL-023",
+    "stage_id": "E8-N-SEA",
+    "handoff_ref": "agent-work/handoffs/2026-11-06-HX-BL-023-E8-SEA-analysis.json",
+    "note": "Release accounting completed; check claims before starting approved sea identity/name specification. No duplicate implementation, no new approval gate."
+  },
+  "latest_CLASSIFY1_final_review": {
+    "run_id": "2026-11-09T1425-reviewer-HX-BL-044-CLASSIFY1",
+    "task_id": "HX-BL-044",
+    "head_sha": "9dab995f3d7740baf1a18f0aa28af2ffadb485bb",
+    "tree_sha": "5e241777047cfd606ed091b94bdc757afa25c66c",
+    "result_ref": "agent-work/results/2026-11-09T1425-reviewer-HX-BL-044-CLASSIFY1.json",
+    "review_ref": "agent-work/evidence/HX-BL-044-CLASSIFY1/review-9dab995/independent-review.json",
+    "score_assessment_ref": "agent-work/evidence/HX-BL-044-CLASSIFY1/score_assessment1.2.json",
+    "status": "review_completed_feature_accepted_release_risk_unresolved",
+    "current_ci": "passed",
+    "historic_RIV011": "unresolved_no_current_CLASSIFY_defect_proven",
+    "next_task_id": "HX-BL-051",
+    "next_role": "programmer",
+    "next_handoff_ref": "agent-work/handoffs/2026-11-09-PR497-DETAIL1-D.json"
   }
 }
