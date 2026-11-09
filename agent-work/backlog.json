@@ -3372,7 +3372,7 @@
       "proposal_ref": "agent-work/proposals/2026-11-09-HX-BL-028-BRUSH1.json",
       "proposal_id": "HX-BL-028-BRUSH1",
       "stage_id": "BRUSH1",
-      "recommended_priority": 1,
+      "recommended_priority": 2,
       "implementation_allowed": false,
       "full_specification_allowed": false,
       "release_approved": false,
@@ -4388,7 +4388,7 @@
     {
       "task_id": "HX-BL-042",
       "title": "Физический размер гекса: длина, единица и конвенция измерения",
-      "status": "proposed",
+      "status": "proposed_dependency_folded_into_051",
       "problem": "В проверенном опубликованном контракте карты есть pixel HEX_SIZE и ui.mapScale для zoom, но не найден отдельный физический масштаб с единицей/измерением. Это не позволяет подтвердить профиль PF2 12 миль угол–угол; простое поле «12» допускает 15.47% ошибку интерпретации диаметра.",
       "benefit": "Одна общая настройка создаёт однозначный масштаб подготовленной карты и основу для будущих маршрутов разных систем, сохраняя документ и старые карты.",
       "game_editions": [
@@ -4667,7 +4667,7 @@
           "release_authorized": false
         }
       ],
-      "proposal_ref": "agent-work/proposals/2026-11-08-HX-BL-042-SCALE1.json",
+      "proposal_ref": "agent-work/proposals/2026-11-09-HX-BL-051-OVERVIEW1.json",
       "proposal_status": "awaiting_owner_task_start",
       "proposal": {
         "schema_version": 1,
@@ -4916,7 +4916,7 @@
       "recommended_priority": 3,
       "proposal_last_reviewed_at": "2026-11-08T20:02:47.356Z",
       "next_role": "owner",
-      "next_step": "Ожидается утверждение владельцем задачи HX-BL-042/SCALE1; затем аналитик готовит спецификацию и показывает desktop/narrow предложение.",
+      "next_step": "Минимальный физический масштаб/хранение реализуется один раз внутри051/OVERVIEW1после утверждения; не брать прежнийSCALE1как отдельную разработку.",
       "current_baseline": {
         "published_main_sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
         "main_App_blob": "f28189bc1e5b1af47cf099102007b9432c71fdbb",
@@ -4936,7 +4936,9 @@
           "implementation_evidence": false
         }
       ],
-      "priority_note": "Metadata-only scope does not change generation; strategist recommends brush and political areas first for immediate L1 benefit. Owner question is not task approval; SCALE1 proposal retained."
+      "priority_note": "Metadata-only scope does not change generation; strategist recommends brush and political areas first for immediate L1 benefit. Owner question is not task approval; SCALE1 proposal retained.",
+      "previous_standalone_proposal_ref": "agent-work/proposals/2026-11-08-HX-BL-042-SCALE1.json",
+      "superseded_standalone_scope": true
     },
     {
       "task_id": "HX-BL-043",
@@ -6830,7 +6832,7 @@
       "proposal_ref": "agent-work/proposals/2026-11-08-HX-BL-043-KNAVE2-PLACE1.json",
       "recommended_priority": 1,
       "next_role": "owner",
-      "next_step": "Ожидается явное разрешение владельца на публикацию точного принятого пакета HX-BL-043/KNAVE2-CLASSIC1: public d7e7a5b + private af50286/tree7ac1c58 с400RU-каталогом. После разрешения — программист, сверка полномочий/пакета/SHA и независимая актуализация при изменении SHA; до этого не выпускать source-free null provider.",
+      "next_step": "GitHub Pages42550377717 завершает выкладку exacttree7ac; затем проверка сайта и score_update_pending.",
       "research_components": [
         {
           "component_id": "ROOT-CORE-clearing-content-L1",
@@ -7117,10 +7119,14 @@
       "publication_approval_ref": "agent-work/approvals/2026-11-09-PR494-af50286.json",
       "release_approved": true,
       "current_publication": {
-        "status": "in_progress",
+        "status": "merged_deployment_in_progress",
         "public_head_sha": "3a03cd78731f03cdce79a2adf9f0f095e31d1cbd",
         "tree_sha": "7ac1c58da66809ddfae1af2fdbdc794d88b79922",
-        "approval_ref": "agent-work/approvals/2026-11-09-PR494-af50286.json"
+        "approval_ref": "agent-work/approvals/2026-11-09-PR494-af50286.json",
+        "merge_sha": "01341b3c981324603f5413b0c675d53a5bac2bc2",
+        "merge_tree_sha": "7ac1c58da66809ddfae1af2fdbdc794d88b79922",
+        "deployment_run_id": 42550377717,
+        "review_ref": "agent-work/results/2026-11-09-reviewer-release-PR494-3a03cd.json"
       }
     },
     {
@@ -14192,7 +14198,7 @@
       "proposal_ref": "agent-work/proposals/2026-11-09-HX-BL-050-POLITY1.json",
       "proposal_id": "HX-BL-050-POLITY1",
       "stage_id": "POLITY1",
-      "recommended_priority": 2,
+      "recommended_priority": 3,
       "implementation_allowed": false,
       "full_specification_allowed": false,
       "release_approved": false,
@@ -14203,7 +14209,7 @@
     },
     {
       "task_id": "HX-BL-051",
-      "title": "Детализировать часть карты в другом масштабе с сохранением крупных объектов",
+      "title": "Обзор карты6/12/24мили и многоуровневая детализация",
       "status": "proposed",
       "problem": "Ни расширение карты на том же уровне, ни неподвижная подложка не подтверждают согласованность вложенных карт. Общее правило есть, проверенного WWN-профиля не было.",
       "benefit": "Ведущий готовит подробную начальную область, сохраняя узнаваемую географию общего региона.",
@@ -14226,53 +14232,19 @@
         "S06-C04",
         "S02-C02"
       ],
-      "scope": "Связать выбранную область обзорной карты с подробной, перенести известные крупные объекты и сохранять местные детали. Стратег выбирает объём, аналитик разрешает неизвестные параметры. Не создавать полный генератор королевств или live-sync без отдельного объёма.",
+      "scope": "Текущий предлагаемый пакетOVERVIEW1: Одна подробная карта на основе6миль; сохраняемые настройки обзорного уровня6/12/24 и геометрической привязки. Минимальный scale/storage компонент042входит в этот пакет, отдельная дублирующая реализация не нужна. Сетка12/24поверх неизменной подробной местности; скрытие только малых границ. Никакого превращения крупного гекса в один преобладающий биом. Сводка фактически пересечённой местности и объектов выбранной крупной ячейки; раскрываемые строки/переход к исходному малому гексу/POI. Явная стабильная привязка сетки; пограничные фрагменты местности допустимы, POI относится к одной крупной ячейке по фактической координате и детерминированному правилу края. Отдельный от масштаба обзора обычный zoom. Переключение обзорного уровня не меняет генерацию, документ географии, RNG, IDs, ручные правки и места. Текущие старые карты без физической длины не получают молчаливого нового расстояния; аналитик показывает явный переход к предлагаемой базе6миль. Knave6mile/null и другие источниковыеunknownсохраняются без ложной сертификацииPF2. Ранее исследованная генерация/связь отдельных подробных карт остаётся отдельно от этого пакета.",
       "dependencies": [
         "Prepared regional map; selected starting area; GM-known spatial correspondence"
       ],
       "acceptance_checks": [
-        {
-          "id": "WWN-RU-KNG-001-L1-AC01",
-          "given": "Ведущий выделил областьKна региональной карте. Крупный лесAцеликом внутри; хребетBпересекает границу, ведущий задал относящуюся кKчастьB1; пустыняCцеликом снаружи.",
-          "when": "Подготовить карту королевстваK.",
-          "expected": "На ней перенесеныAиB1 в соответствующих местах, с понятной связью с региональными объектами; Cне перенесена. Новые случайные результаты не заменяют унаследованныеA/B.",
-          "requirement_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-KNG-001-L1"
-        },
-        {
-          "id": "WWN-RU-KNG-001-L1-AC02",
-          "given": "На картеKуже перенесены региональная рекаRи хребетB. Ведущий добавляет местный небольшой ручейrи озероL.",
-          "when": "Добавить местную географическую детализацию.",
-          "expected": "R/Bсохранены; r/Lдобавлены на картеKкак более мелкие объекты. На обзорной карте региона r/Lне появляются принудительно и не заменяют R.",
-          "requirement_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-KNG-001-L1"
-        },
-        {
-          "id": "WWN-RU-KNG-001-L1-AC03",
-          "given": "Региональный вулканический хребетVуже перенесён. Новый местный результат «вулкан» ведущий конкретизировал как одиночную вершинуv.",
-          "when": "Детализировать местный результат.",
-          "expected": "vсохранена как локальная вершина; Vне заменён новой региональной цепью. Пример не задаёт обязательный физический размер вулкана.",
-          "requirement_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-KNG-001-L1"
-        },
-        {
-          "id": "WWN-RU-KNG-001-L1-AC04",
-          "given": "СвязьKс региональной областью задана ведущим; численный коэффициент масштабов не указан.",
-          "when": "Подготовить схематическую картуK.",
-          "expected": "Сохраняются заданные пространственные соответствия; коэффициент и точные расстояния отмечены неизвестными, не выведены из шестимильного гекса другого абзаца.",
-          "requirement_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-KNG-001-L1"
-        },
-        {
-          "id": "WWN-RU-KNG-001-L1-AC05",
-          "given": "ВKесть унаследованныеA/Bи местное озероL. Ведущий меняет описание/положение только местногоL, не меняя крупных объектов.",
-          "when": "Сохранить местную правку.",
-          "expected": "A/Bи региональная география сохранены; правкаLостаётся местной. Автоматическая двусторонняя синхронизация крупных объектов не заявлена.",
-          "requirement_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-KNG-001-L1"
-        },
-        {
-          "id": "WWN-RU-KNG-001-L1-AC06",
-          "given": "Подготовлены обзорная карта иKсо связямиA/B, ручьёмrи озеромL.",
-          "when": "Сохранить и повторно открыть обе карты.",
-          "expected": "Те же крупные объекты и их соответствия сохранены; r/Lостаются местными деталями, генерация и перенос автоматически не повторены.",
-          "requirement_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-KNG-001-L1"
-        }
+        "На одной фиксированной карте6→12→24→6сохраняются гексы/биомы/реки/дороги/POI/теги/заметки и RNG; меняются сетка и карточка выбора.",
+        "Крупная ячейка на стыке леса/холмов/воды сохраняет смешанную картинку. В компактной сводке нет выдуманного единого биома.",
+        "POIна границе получает ровно одного владельца; все места доступны, ни одного потерянного/дублированного объекта; выбор строки открывает исходную запись.",
+        "Панель показывает фактические сведения исходных объектов, включая различие целого малого гекса и пограничного фрагмента; не выдаёт число4/16за точное вложение.",
+        "Zoom/panне изменяют выбранный физический уровень или привязку; на12/24не рисуется внутренняя малая сетка.",
+        "Настройки, выбор и правки проходят JSON/UndoRedo по согласованному контракту; старые карты и Knaveprofile не повреждаются.",
+        "Desktop/390/320: компактная читабельная сводка, без десятков раскрытых полных карточек; аналитик показывает предложенный UI, программист — actualSHA. Не вводить третье дизайн-согласование.",
+        "ExactSHA независимая проверка общего пакета, измерение реакции переключения на согласованных уже существующих fixtures без самовольной новой тяжёлой серии003."
       ],
       "expected_evidence": {
         "source": "WWN suppliedRU printed121–122/PDF124–125 selected paragraphs",
@@ -14370,7 +14342,79 @@
       ],
       "research_handoff_refs": [
         "agent-work/research/requirements/OSE-map-scales-L1.json"
-      ]
+      ],
+      "previous_research_title": "Детализировать часть карты в другом масштабе с сохранением крупных объектов",
+      "deferred_source_scope": "Связать выбранную область обзорной карты с подробной, перенести известные крупные объекты и сохранять местные детали. Стратег выбирает объём, аналитик разрешает неизвестные параметры. Не создавать полный генератор королевств или live-sync без отдельного объёма.",
+      "deferred_source_acceptance": [
+        {
+          "id": "WWN-RU-KNG-001-L1-AC01",
+          "given": "Ведущий выделил областьKна региональной карте. Крупный лесAцеликом внутри; хребетBпересекает границу, ведущий задал относящуюся кKчастьB1; пустыняCцеликом снаружи.",
+          "when": "Подготовить карту королевстваK.",
+          "expected": "На ней перенесеныAиB1 в соответствующих местах, с понятной связью с региональными объектами; Cне перенесена. Новые случайные результаты не заменяют унаследованныеA/B.",
+          "requirement_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-KNG-001-L1"
+        },
+        {
+          "id": "WWN-RU-KNG-001-L1-AC02",
+          "given": "На картеKуже перенесены региональная рекаRи хребетB. Ведущий добавляет местный небольшой ручейrи озероL.",
+          "when": "Добавить местную географическую детализацию.",
+          "expected": "R/Bсохранены; r/Lдобавлены на картеKкак более мелкие объекты. На обзорной карте региона r/Lне появляются принудительно и не заменяют R.",
+          "requirement_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-KNG-001-L1"
+        },
+        {
+          "id": "WWN-RU-KNG-001-L1-AC03",
+          "given": "Региональный вулканический хребетVуже перенесён. Новый местный результат «вулкан» ведущий конкретизировал как одиночную вершинуv.",
+          "when": "Детализировать местный результат.",
+          "expected": "vсохранена как локальная вершина; Vне заменён новой региональной цепью. Пример не задаёт обязательный физический размер вулкана.",
+          "requirement_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-KNG-001-L1"
+        },
+        {
+          "id": "WWN-RU-KNG-001-L1-AC04",
+          "given": "СвязьKс региональной областью задана ведущим; численный коэффициент масштабов не указан.",
+          "when": "Подготовить схематическую картуK.",
+          "expected": "Сохраняются заданные пространственные соответствия; коэффициент и точные расстояния отмечены неизвестными, не выведены из шестимильного гекса другого абзаца.",
+          "requirement_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-KNG-001-L1"
+        },
+        {
+          "id": "WWN-RU-KNG-001-L1-AC05",
+          "given": "ВKесть унаследованныеA/Bи местное озероL. Ведущий меняет описание/положение только местногоL, не меняя крупных объектов.",
+          "when": "Сохранить местную правку.",
+          "expected": "A/Bи региональная география сохранены; правкаLостаётся местной. Автоматическая двусторонняя синхронизация крупных объектов не заявлена.",
+          "requirement_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-KNG-001-L1"
+        },
+        {
+          "id": "WWN-RU-KNG-001-L1-AC06",
+          "given": "Подготовлены обзорная карта иKсо связямиA/B, ручьёмrи озеромL.",
+          "when": "Сохранить и повторно открыть обе карты.",
+          "expected": "Те же крупные объекты и их соответствия сохранены; r/Lостаются местными деталями, генерация и перенос автоматически не повторены.",
+          "requirement_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-KNG-001-L1"
+        }
+      ],
+      "proposed_stage_id": "OVERVIEW1",
+      "proposal_id": "HX-BL-051-OVERVIEW1",
+      "proposal_ref": "agent-work/proposals/2026-11-09-HX-BL-051-OVERVIEW1.json",
+      "score_forecast": {
+        "model_version": "1.2",
+        "criterion_ids": [
+          "S03-C01",
+          "S04-C03",
+          "S04-C04",
+          "S06-C04"
+        ],
+        "before_grade": null,
+        "before_points": null,
+        "expected_grade": null,
+        "expected_delta": null,
+        "status": "unknown; scope covers overview/navigation/storage components only; no grade promised.",
+        "evidence_needed": "ExactSHA mixed-terrain/POIownership/selection/save/Undo compatibility and assessed breadth; source reading not runtime proof"
+      },
+      "implementation_allowed": false,
+      "full_specification_allowed": false,
+      "release_approved": false,
+      "recommended_priority": 1,
+      "owner_direction_ref": "agent-work/proposals/2026-11-09-hex-scale-owner-direction.json",
+      "next_role": "owner",
+      "next_role_after_approval": "business_analyst",
+      "next_step": "Ожидается утверждениеHX-BL-051/OVERVIEW1: одна карта6миль с обзорными сетками12/24и компактной сводкой; затем аналитик показывает desktop/narrow UI и специфицирует пакет без отдельного дизайн-gate."
     },
     {
       "task_id": "HX-BL-052",
@@ -15977,14 +16021,15 @@
   "model_path": "agent-work/strategy/score-model.md",
   "model_activation_ref": "owner-decision-2026-10-26-activate-score-1.2",
   "next_product_recommendation": {
-    "task_id": "HX-BL-028",
-    "stage_id": "BRUSH1",
+    "task_id": "HX-BL-051",
+    "stage_id": "OVERVIEW1",
+    "priority": 1,
+    "proposal_ref": "agent-work/proposals/2026-11-09-HX-BL-051-OVERVIEW1.json",
     "status": "proposed",
-    "proposal_ref": "agent-work/proposals/2026-11-09-HX-BL-028-BRUSH1.json",
     "next_role": "owner",
     "next_role_after_approval": "business_analyst",
     "execution_allowed": false,
-    "next_step": "Пакетно согласовать028/BRUSH1 и050/POLITY1;042/SCALE1 остаётся третьим по рекомендации, отдельное утверждение границ."
+    "next_step": "Утвердить051/OVERVIEW1; можно пакетно028/BRUSH1и050/POLITY1. Вопрос о масштабе не принят за утверждение реализации."
   },
   "previous_product_recommendation": {
     "task_id": "HX-BL-043",
@@ -16096,26 +16141,27 @@
   },
   "proposal_queue": [
     {
+      "task_id": "HX-BL-051",
+      "stage_id": "OVERVIEW1",
+      "priority": 1,
+      "proposal_ref": "agent-work/proposals/2026-11-09-HX-BL-051-OVERVIEW1.json",
+      "status": "proposed"
+    },
+    {
       "task_id": "HX-BL-028",
       "stage_id": "BRUSH1",
-      "priority": 1,
+      "priority": 2,
       "proposal_ref": "agent-work/proposals/2026-11-09-HX-BL-028-BRUSH1.json",
       "status": "proposed"
     },
     {
       "task_id": "HX-BL-050",
       "stage_id": "POLITY1",
-      "priority": 2,
-      "proposal_ref": "agent-work/proposals/2026-11-09-HX-BL-050-POLITY1.json",
-      "status": "proposed"
-    },
-    {
-      "task_id": "HX-BL-042",
-      "stage_id": "SCALE1",
       "priority": 3,
-      "proposal_ref": "agent-work/proposals/2026-11-08-HX-BL-042-SCALE1.json",
+      "proposal_ref": "agent-work/proposals/2026-11-09-HX-BL-050-POLITY1.json",
       "status": "proposed"
     }
   ],
-  "proposal_queue_authority_ref": "agent-work/decisions/owner-decision-2026-11-09-strategist-batch-proposals.json"
+  "proposal_queue_authority_ref": "agent-work/decisions/owner-decision-2026-11-09-strategist-batch-proposals.json",
+  "proposal_queue_owner_direction_ref": "agent-work/proposals/2026-11-09-hex-scale-owner-direction.json"
 }
