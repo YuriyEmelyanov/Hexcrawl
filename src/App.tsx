@@ -982,7 +982,7 @@ function isRiverCrossing(value: unknown): value is RiverCrossing {
     && (value.kind === 'bridge' || value.kind === 'ferry' || value.kind === 'ford');
 }
 
-function assertHexcrawlSaveData(value: unknown,validateSpatial?:(state:Detail1State)=>void): asserts value is ValidatedHexcrawlSaveData {
+function assertHexcrawlSaveData(value: unknown,validateSpatial:(state:Detail1State)=>void=state=>validateImportedDetailFootprints(value as HexcrawlSaveData,state)): asserts value is ValidatedHexcrawlSaveData {
   validateSaveStructure(value, {
     biome: v => typeof v === 'string' && Object.prototype.hasOwnProperty.call(BIOMES, v),
     poi: v => typeof v === 'string' && Object.prototype.hasOwnProperty.call(POI_DETAILS, v),
@@ -998,6 +998,17 @@ function assertHexcrawlSaveData(value: unknown,validateSpatial?:(state:Detail1St
   if(data.version>=8)try{assertEditorNames({...data.map,seas:data.version>=9?data.map.seas:[],obstacles:(data.map.obstacles??[]) as EditableObstacle[],hexTerrainByKey:new Map(Object.entries(data.map.terrainByHexKey)),waterPoiByKey:new Map(Object.entries(data.map.waterPoiByHexKey??{})),riverFeatures:data.map.riverFeatures??emptyRiverFeatures(),editorNames:data.map.editorNames===undefined?{}:data.map.editorNames});}catch{throw new SaveValidationError('map.editorNames','invalid or dangling authored object name');}
   if(data.version>=7)try{validateMapRiverFeatures(data.map.riverFeatures,data.map.rivers,data.map.regions,new Map(Object.entries(data.map.terrainByHexKey)),data.map.crossings);}catch{throw new SaveValidationError('map.riverFeatures','invalid or ineligible river feature');}
   if(data.map.tags!==undefined)try{validateTags(data.map.tags,new Set(tagOwners({regions:data.map.regions,rivers:data.map.rivers,hexTerrainByKey:new Map(Object.entries(data.map.terrainByHexKey))}).keys()),mythicDefinitions);}catch{throw new SaveValidationError('map.tags','invalid tag data');}
+}
+
+
+/** Validate the serialized layer against its own authoritative geography, never
+ * the currently displayed map. Called only after structural save validation. */
+function validateImportedDetailFootprints(data:HexcrawlSaveData,state:Detail1State):void {
+  if(data.map.knave&&state.source.physicalConvention!=='unknown')throw Error('DETAIL1 unproven_knave_source_convention');
+  const map={...data.map,hexTerrainByKey:new Map(Object.entries(data.map.terrainByHexKey)),
+    waterPoiByKey:new Map(Object.entries(data.map.waterPoiByHexKey??{})),
+    seas:data.map.seas??[],riverFeatures:data.map.riverFeatures??emptyRiverFeatures()};
+  validateDetailGeographyFootprints(map,detailMapRiverGeometry(map,state.grid.origin),state);
 }
 
 
@@ -1146,7 +1157,8 @@ function checkedRiverMap<T extends MapSnapshot>(map:T):T{
 
 /** Pure adaptation preparation on the real accepted document. UI Apply remains
  * gated until full footprint edit/import/reference reconciliation is connected. */
-function detailMapRiverGeometry(map:MapSnapshot,origin:{x:number;y:number}){
+type DetailRiverMap=Pick<MapSnapshot,'regions'|'rivers'|'roads'|'crossings'|'riverFeatures'|'hexTerrainByKey'>;
+function detailMapRiverGeometry(map:DetailRiverMap,origin:{x:number;y:number}){
   const marks=regionMarkKeys(map);
   const world=(p:RiverVertex)=>detailSourcePixelToWorld(p,origin);
   return map.rivers.map(river=>({id:river.id,
@@ -1169,8 +1181,7 @@ function prepareDetailMapPreview(map:MapSnapshot){
   const origin=map.physicalGrid?.grid.origin??{x:0,y:0};
   return buildDetailGeographyPreview(map,detailMapRiverGeometry(map,origin),origin);
 }
-/** Explicit internal validation; the actual importer stays fail-closed until
- * every edit transaction can preserve or reject nonempty footprints. */
+/** Validate a prepared document against its authoritative geography. */
 function validateDetailMapFootprints(map:MapSnapshot,state:Detail1State){
   checkedRiverMap({...map,physicalGrid:undefined});
   validateDetailGeographyFootprints(map,detailMapRiverGeometry(map,state.grid.origin),state);
@@ -1251,7 +1262,7 @@ function deriveWaterfalls({rivers,regions,riverFeatures}:Pick<MapSnapshot,'river
 
     return Array.from(waterfallsByVertexKey.values());
 }
-function regionMarkKeys(map:MapSnapshot){
+function regionMarkKeys(map:DetailRiverMap){
   const all=map.regions.flatMap(r=>r.hexes),hidden=new Set([...getLakeEdgeKeys(all,map.hexTerrainByKey),...getSeaEdgeKeys(map.hexTerrainByKey)]);
   return {rapids:new Set([...deriveRapidKeys(map)].filter(key=>!hidden.has(key))),
     waterfalls:new Set(deriveWaterfalls(map,{hexes:all},getLakeVertices(all,map.hexTerrainByKey)).map(v=>v.vertexKey))};

@@ -65,7 +65,6 @@ export function validateSaveStructure(value: unknown, domain: {
   if (data.version === 3 || data.version === 4 || data.version === 5 || data.version === 6 || data.version === 7 || data.version === 8 || data.version === 9 || data.version === 10 || data.version === 11 || data.generation !== undefined) { const path = generationValidationPath(data.generation); if (path) fail(path,'unsupported or invalid RNG state'); }
   const map=record(data.map,'map'), ui=record(data.ui,'ui'), counters=record(data.counters,'counters');
   if((data.version as number)<8&&map.editorNames!==undefined&&Object.keys(record(map.editorNames,'map.editorNames')).length)fail('map.editorNames','authored names require version8');
-  try{validateDetail1Document(map.physicalGrid,data.version as number,undefined,domain.detailSpatial);}catch(error){fail('map.physicalGrid',error instanceof Error?error.message:'invalid physical grid');}
   const regions=array(map.regions,'map.regions'), rivers=array(map.rivers,'map.rivers'), roads=array(map.roads,'map.roads');
   const regionIds=uniqueIds(regions,'map.regions'), riverIds=uniqueIds(rivers,'map.rivers'), roadIds=uniqueIds(roads,'map.roads');
   const land=new Set<string>();
@@ -190,4 +189,6 @@ export function validateSaveStructure(value: unknown, domain: {
   if(ui.generationMode!==undefined) oneOf(ui.generationMode,['classic','mythic'],'ui.generationMode');
   if(ui.knaveEnabled!==undefined) {bool(ui.knaveEnabled,'ui.knaveEnabled');if((data.version!==10&&data.version!==11)||ui.knaveEnabled&&!map.knave)fail('ui.knaveEnabled','Knave generation preference requires a v10 layer');}
   if(ui.selectedHex!==undefined&&ui.selectedHex!==null) hex(ui.selectedHex,'ui.selectedHex');
+  // The trusted spatial adapter must see fully validated arrays/references.
+  try{validateDetail1Document(map.physicalGrid,data.version as number,undefined,domain.detailSpatial);}catch(error){fail('map.physicalGrid',error instanceof Error?error.message:'invalid physical grid');}
 }

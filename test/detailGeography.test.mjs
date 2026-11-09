@@ -87,8 +87,8 @@ test('actual DETAIL1 extent command records one exact undo/redo transaction and 
  assert.deepEqual(structuredClone(h.render().captureDocument()),saved);assert.deepEqual(structuredClone([h.render().undoHistory,h.render().redoHistory]),history);
  h.render().undoMap();assert.deepEqual(structuredClone(h.render().captureDocument()),before);h.render().redoMap();assert.deepEqual(structuredClone(h.render().captureDocument()),after);
  const reordered=structuredClone(after);const grid=reordered.map.physicalGrid;reordered.map.physicalGrid={poiFootprints:grid.poiFootprints,poiIdentities:grid.poiIdentities,source:grid.source,grid:grid.grid,viewStep:grid.viewStep,active:grid.active,version:grid.version,schema:grid.schema};h.render().applyDocument(reordered);h.render();const count=h.render().undoHistory.length;assert.equal(h.render().editDetailFootprintExtent(poi.poiId,extent,cells),true);assert.equal(h.render().undoHistory.length,count,'field order does not turn a semantic no-op into a transaction');
- // The ordinary importer stays closed until all generic mutations reconcile the layer.
- assert.throws(()=>h.geometry.assertHexcrawlSaveData(h.render().createSaveData()));
+ // The ordinary serialized boundary now validates the actual geography too.
+ assert.doesNotThrow(()=>h.geometry.assertHexcrawlSaveData(h.render().createSaveData()));
 });
 
 // DTL-09/21/23: registry-only tests cannot prove accepted spatial state survives
@@ -143,4 +143,28 @@ test('active DETAIL1 generated candidate places only new owners after accepted K
  const connected=h.render().recordGenerated(h.render().captureDocument().map,withRoad,{q:3,r:0});assert.deepEqual(structuredClone(connected.physicalGrid.poiFootprints.find(v=>v.poiId===p.poiId).cells),before.map.physicalGrid.poiFootprints[0].cells);assert.equal(connected.physicalGrid.poiFootprints.find(v=>v.poiId===p.poiId).attachments.filter(a=>a.kind==='route').length,1);h.render().applyDocument({...h.render().captureDocument(),map:connected});h.render();
  const saved=structuredClone(h.render().captureDocument()),stacks=structuredClone([h.render().undoHistory,h.render().redoHistory]),bad=structuredClone(saved.map);bad.roads[0].segments[0].kind='trail';
  assert.throws(()=>h.render().recordGenerated(saved.map,bad,{q:3,r:0}),/DETAIL1/);assert.deepEqual(structuredClone(h.render().captureDocument()),saved);assert.deepEqual(structuredClone([h.render().undoHistory,h.render().redoHistory]),stacks);
+});
+
+// DTL-22/23: geometry/controller tests do not prove ordinary file import.
+// Reuse authored maps and the real importer; no new harness or random series.
+test('ordinary v11 DETAIL1 import roundtrips active extents and refuses corrupt spatial references atomically',async()=>{
+ const road=regionFixture();road.map.roads=[{id:1,regionId:1,segments:[{from:{q:2,r:0},to:{q:3,r:0},kind:'road'}]}];road.counters.nextRoadId=2;
+ const sea=seaFixture();sea.map.waterPoiByHexKey={'1,2':'shipwreck'};
+ const knave=regionFixture();knave.version=10;knave.map.seas=[];knave.map.nextSeaId=1;knave.map.knave={...newKnaveLayer(),content:knaveContentFixture('poi:1:2,0',{kind:'settlement'})};
+ for(const raw of [road,regionFixture('mythic'),sea,knave]){
+  const source=await importMap(raw),doc=structuredClone(source.render().captureDocument());doc.map.physicalGrid=state(prepare(source));source.render().applyDocument(doc);source.render().setEditMode(true);source.render();
+  const poi=doc.map.physicalGrid.poiFootprints[0],extent=raw.ui.generationMode==='mythic'?{kind:'measured_polygon',sourceId:'authored-survey:import',unit:'mile',method:'positive_area_intersection',sourcePolygon:detailCellPolygon(createDetailGrid(1),poi.cells[0])}:{kind:'manual',basis:'conditional',note:'Принятый явный охват'};
+  assert.equal(source.render().editDetailFootprintExtent(poi.poiId,extent,poi.cells),true);Object.assign(doc,structuredClone(source.render().captureDocument()));const data=JSON.parse(JSON.stringify(source.render().createSaveData()));
+  const target=await importMap(regionFixture()),before=structuredClone(target.render().captureDocument()),count=target.render().undoHistory.length,alerts=[];target.setWindow({alert:s=>alerts.push(s),confirm:()=>true});target.guardRandom();
+  const load=async value=>{await target.render().handleImportJson({target:{files:[{text:JSON.stringify(value)}],value:''}});target.render();};
+  await load(data);assert.deepEqual(alerts,[],'a valid nonempty layer imports');const after=structuredClone(target.render().captureDocument());assert.deepEqual(after.map.physicalGrid,structuredClone(doc.map.physicalGrid));assert.deepEqual(after.map.generation,doc.map.generation);assert.deepEqual(after.map.knave,doc.map.knave);assert.equal(target.render().undoHistory.length,count+1);
+  const exported=JSON.parse(JSON.stringify(target.render().createSaveData()));delete exported.savedAt;delete data.savedAt;assert.deepEqual(exported,data,'exact save roundtrip');
+  target.render().undoMap();assert.deepEqual(structuredClone(target.render().captureDocument()),before);target.render().redoMap();assert.deepEqual(structuredClone(target.render().captureDocument()),after);target.render().undoMap();
+  const accepted=structuredClone(target.render().captureDocument()),stacks=structuredClone([target.render().undoHistory,target.render().redoHistory]);
+  const corruptions=[d=>d.version=12,d=>d.map.physicalGrid.poiFootprints[0].cells=[{q:999,r:999}],d=>d.map.physicalGrid.poiFootprints[0].poiId='detail-poi:999',d=>d.map.physicalGrid.poiFootprints[0].legacyRef='poi:999:0,0',d=>d.map.physicalGrid.poiFootprints[0].cells=[]];
+  if(data.map.knave)corruptions.push(d=>d.map.physicalGrid.source.physicalConvention='known_across_flats');
+  if(data.map.physicalGrid.poiFootprints[0].attachments.length)corruptions.push(d=>{const a=d.map.physicalGrid.poiFootprints[0].attachments[0];if(a.kind==='water')a.waterId='sea:999';else a.accessNodeId='missing-port';});
+  for(const mutate of corruptions){const bad=structuredClone(data);mutate(bad);const old=alerts.length;await load(bad);assert.equal(alerts.length,old+1);assert.deepEqual(structuredClone(target.render().captureDocument()),accepted);assert.deepEqual(structuredClone([target.render().undoHistory,target.render().redoHistory]),stacks);}
+  target.render().redoMap();assert.deepEqual(structuredClone(target.render().captureDocument()),after,'preexisting Redo remains executable after bad imports');
+ }
 });
