@@ -29,7 +29,7 @@
   "run_id": "2026-11-09T0404-programmer-HX-BL-043-ROLLUI2",
   "plan_revision": 1,
   "baseline_sha": "00190bb749a4fa5af57aac4bbffff808e8fe733f",
-  "status": "implementation_in_progress",
+  "status": "implementation_checks_and_independent_review_in_progress",
   "planning_for": "2026-11-08",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-10-25",
@@ -53,7 +53,7 @@
   "result_path": null,
   "handoff_commit_sha": "d8540be256914aa9d262d6c0687620d9c3f7e237",
   "active_claim": "agent-work/claims/2026-11-09T0404-programmer-HX-BL-043-ROLLUI2.json",
-  "next_step": "Finish ROLLUI2 implementation and checks; fresh independent reviewer verifies exact SHA. DETAIL1/DTL-1.0 then proceeds in a separate sequential programmer claim.",
+  "next_step": "Complete exactSHA checks and independent review for PR495; then request publication permission for this package. Inparallel create two newScribdPDFs+ready title/description onexplicitownerrequest; noScribdupload.",
   "owner_decisions_needed": [
     {
       "task_id": "HX-BL-028",
@@ -97,10 +97,10 @@
   "historical_plan_status": "План23.10 сохранён как история; его блокировки и предложенный процесс заменены decisions24.10 в approvals/process/budget и текущим handoff.",
   "evidence_path": "agent-work/evidence/KNAVE2-CLASSIC1-review-c5b3c38/",
   "branch_name": "fix/knave-shared-roll-ui2",
-  "pr": null,
-  "head_sha": null,
-  "checks_status": "Final publicSHA CI and GitHub Pages passed; exact production assets and actual live Knave seed137 verified",
-  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42500822912",
+  "pr": 495,
+  "head_sha": "78ca3142a61b0840a7b2a45069f2f9e0b41bd217",
+  "checks_status": "in_progress",
+  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42561502848",
   "review_verdict": "accepted_exact_public_SHA_and_tree",
   "role_selection_mode": "ready_work_priority",
   "role_selection_source": "agent-work/process.md",
@@ -984,7 +984,7 @@
     "next_step": "Решить отдельно узкий cleanup AUD-02/03/04; готовую спецификацию024 не задерживать."
   },
   "owner_decisions_note": "PR490 exact package authorized and published. No further publication decision needed for this released package; future package publication remains separate.",
-  "updated_at": "2026-11-09T04:08:25.438Z",
+  "updated_at": "2026-11-09T04:25:52.397Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
     "stage_id": "V3",
@@ -2032,7 +2032,7 @@
     23
   ],
   "schedule_decision_ref": "owner-decision-2026-10-31-team-resume-hourly",
-  "tree_sha": null,
+  "tree_sha": "da0f2c6659e75ef8cef106a8f9e815c048ab49be",
   "accepted_release_pending": null,
   "next_product_proposal": {
     "task_id": "HX-BL-042",
@@ -2171,16 +2171,11 @@
   "active_slice": "KNAVE2-CLASSIC1",
   "last_completed_stage_task_id": "HX-BL-041",
   "ui_preview": {
-    "version": "KNAVE2-CLASSIC-UI1",
-    "status": "proposal_shown_in_chat",
-    "shown_in_chat": true,
-    "desktop": "agent-work/mockups/KNAVE2-CLASSIC-UI1-desktop.png",
-    "narrow": "agent-work/mockups/KNAVE2-CLASSIC-UI1-narrow.png",
-    "design_approval_required": false,
-    "actual_UI_required": true,
-    "limitations": "Schematic map and authored text; not running implementation. Actual320px,keyboard/touch/error/cancel/scroll checked by programmer/reviewer."
+    "version": "UI2-1.0",
+    "shown": true,
+    "ref": "agent-work/evidence/HX-BL-043-ROLLUI2/visuals/manifest.json"
   },
-  "ui_preview_pending": true,
+  "ui_preview_pending": false,
   "marketing_gate_status": "not_passed_full023_remains",
   "current_task_release_approval": false,
   "next_product_recommendation": {
@@ -2305,71 +2300,9 @@
   "published": false,
   "main_changed": false,
   "ui_actual": {
-    "status": "pass",
-    "public_sha": "818476e5ec653384ab216efd75db9467d698cfc4",
-    "private_sha": "c5b3c384792ce3349e40b0cc3ccc52e3d7685d1e",
-    "browser": "153.0.8010.0",
-    "runtime": "@sparticuz/chromium153.0.0 from npm; manually decompressed within workspace after package chown EINVAL",
-    "steps": [
-      "empty profile/no world RNG; first real Knave generation and lock",
-      "actual source text/provenance; empty secret refuses; draft excluded from JSON; Cancel",
-      "long clue/difficulty one accepted transaction; 1500/390/320; exact UndoRedo",
-      "Stay restores native focus; Escape discards draft",
-      "Save/Discard external draft gates; mode-away retains clue; normal difficulty and exact UndoRedo",
-      "v10 save/load exact; extension keeps accepted content/clue/difficulty"
-    ],
-    "metrics": [
-      {
-        "state": "invalid",
-        "width": 1500,
-        "client": 465,
-        "scroll": 465
-      },
-      {
-        "state": "invalid",
-        "width": 390,
-        "client": 356,
-        "scroll": 356
-      },
-      {
-        "state": "invalid",
-        "width": 320,
-        "client": 286,
-        "scroll": 286
-      },
-      {
-        "state": "accepted",
-        "width": 1500,
-        "client": 465,
-        "scroll": 465
-      },
-      {
-        "state": "accepted",
-        "width": 390,
-        "client": 356,
-        "scroll": 356
-      },
-      {
-        "state": "accepted",
-        "width": 320,
-        "client": 286,
-        "scroll": 286
-      }
-    ],
-    "initial_poi_count": 3,
-    "extended_poi_count": 6,
-    "page_errors": [],
-    "limitations": [
-      "One fixed generated map/extension; not exhaustive",
-      "Automated Chromium, not physical touch/assistive technology",
-      "RU source only; GM export may reveal secrets; v9 cannot read v10",
-      "Independent review and score assessment remain separate"
-    ],
-    "shown_in_chat": true,
-    "visually_inspected": true,
-    "private_images_ref": "Library artifact version2 UI/",
-    "no_horizontal_overflow": true,
-    "font_limitation": "Some emoji glyphs absent in this runtime; SVG/Cyrillic work."
+    "shown": false,
+    "ref": "agent-work/evidence/HX-BL-043-ROLLUI2/visuals/actual-manifest.json",
+    "sha": "78ca3142a61b0840a7b2a45069f2f9e0b41bd217"
   },
   "review_result_ref": null,
   "previous_review_score_assessment_ref": "agent-work/evidence/review-HX-BL-023-E1-24fa342/score_assessment.json",
@@ -4153,7 +4086,7 @@
     "materials_commit_sha": "64fa823e19f701817ff59d962d7b211e83aaa406"
   },
   "current_stage_status": "changes_requested",
-  "current_stage_review_status": "pending",
+  "current_stage_review_status": "independent_review_in_progress",
   "accepted": false,
   "full_UI_pending": false,
   "latest_HX_BL_023_E5_persistence_20261104": {
@@ -5336,7 +5269,7 @@
       }
     }
   ],
-  "pr_url": null,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/495",
   "active_claim_scope": "Owner-requested common MB/Knave table result/reroll UI, current language badge and purpose labels",
   "other_active_claims": [
     {
@@ -7249,5 +7182,12 @@
     }
   },
   "active_stage": "ROLLUI2",
-  "ui_preview_responsible": "programmer / root display"
+  "ui_preview_responsible": "programmer / root display",
+  "supplemental_owner_deliverables": {
+    "type": "two_new_kingdom_PDFs_for_Scribd_plus_titles_descriptions",
+    "source": "Currentownerrequest",
+    "assigned_agent": "/root/scribd_two_new_kingdoms",
+    "upload_to_Scribd_authorized": false,
+    "status": "in_progress"
+  }
 }
