@@ -26,10 +26,10 @@
   },
   "lessons_path": "agent-work/lessons.md",
   "plan_id": "2026-11-08T1957-strategist-next-product",
-  "run_id": "2026-11-09T1658-programmer-HX-BL-051-DETAIL1-D2b1",
+  "run_id": "2026-11-09T1803-programmer-HX-BL-051-DETAIL1-D2b2",
   "plan_revision": 1,
   "baseline_sha": "00190bb749a4fa5af57aac4bbffff808e8fe733f",
-  "status": "D2b1_local_verified_checkpoint_CI_check_pending",
+  "status": "D2b2_local_verified_checkpoint_CI_error_no_jobs",
   "planning_for": "2026-11-08",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-10-25",
@@ -41,7 +41,7 @@
   "last_completed_task": "HX-BL-043",
   "operational_state_write": {
     "latest_written_last": true,
-    "data_commit_sha": "d5eb9d17dd972b507fe3c6b8d521a9711f716438"
+    "data_commit_sha": "6c9f33445bec10aea70515489bbf855fe990db2a"
   },
   "budget_status": "owner_waived_usage_gate",
   "plan_file_shas": null,
@@ -52,12 +52,12 @@
   "current_role": "programmer",
   "next_role": "programmer",
   "current_task_id": "HX-BL-051",
-  "spec_path": "agent-work/specs/HX-BL-044-CLASSIFY1-implementation.md",
-  "spec_version": "IMPL2",
-  "result_path": "agent-work/results/2026-11-09T1658-programmer-HX-BL-051-DETAIL1-D2b1.json",
+  "spec_path": "agent-work/specs/HX-BL-051-DETAIL1.md",
+  "spec_version": "DTL-1.0",
+  "result_path": "agent-work/results/2026-11-09T1803-programmer-HX-BL-051-DETAIL1-D2b2.json",
   "handoff_commit_sha": "06cae1aebecd3d06ac45808353bf942655a404dc",
   "active_claim": "agent-work/claims/2026-11-09T0500-programmer-HX-BL-051-DETAIL1-A.json",
-  "next_step": "Сначала сверить итог уже запущенного CI42662139332 check для exact4c3324c без повторного запуска; сохранить отрицательное evidence при неуспехе. Продолжить тот же собственный claim HX-BL-051/DETAIL1 с4c3324c в PR496. D2b2: соединить стабильные ID с B/C-охватом по реальной географии, конкретными водными объектами/портами и назначенными путями; обработать полные water-edit/removal/remap транзакции. Не снимать запрет непустых footprints до полной живой валидации. Затем явная legacy-адаптация Apply/Cancel, правка охвата, UI1/6/12/24 и actual1500/390/320. Весь новый пакет — на независимый exact-SHA review/score_assessment1.2; публикация не разрешена, RIV011 не закрыт.",
+  "next_step": "Продолжить собственный claim HX-BL-051/DETAIL1 с743e4f7 в PR496. D2c: подключить строгую живую проверку сохранённых охватов, водных привязок и всех назначенных путей, затем их атомарное обновление/отказ в E7/E8, удалении POI, полной water-edit/removal/remap транзакции и новой генерации. Существующий footprint guard снимать только вместе с этой полной проверкой. После этого — явная legacy-адаптация Apply/Cancel, ручная правка охвата и UI1/6/12/24 с фактическим показом1500/390/320. Итоговый пакет передать независимому проверяющему на точном SHA и score_assessment1.2; публикация отдельно. Текущий CI42672314879 завершился failure до jobs (0), причина неизвестна; не считать его падением теста или автоматически повторять. Исторический RIV011 остаётся открытым.",
   "owner_decisions_needed": [
     {
       "task_id": "HX-BL-047",
@@ -100,13 +100,13 @@
     "ref": "agent-work/approvals/2026-11-09-PR497-1299cd0.json"
   },
   "historical_plan_status": "План23.10 сохранён как история; его блокировки и предложенный процесс заменены decisions24.10 в approvals/process/budget и текущим handoff.",
-  "evidence_path": "agent-work/evidence/HX-BL-051-DETAIL1-D2b1/implementation.json",
+  "evidence_path": "agent-work/evidence/HX-BL-051-DETAIL1-D2b2/implementation.json",
   "branch_name": "agent/hx-bl-051-detail1",
   "pr": 496,
-  "head_sha": "4c3324c83edd07c06471558e41ab89f3a8d318e4",
-  "tree_sha": "b2420b12aef89abdaf98f1321f85c57bb91b7b78",
-  "checks_status": "local_check_passed_CI_browser_rng_passed_CI_check_pending",
-  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42662139332",
+  "head_sha": "743e4f793f33eff2f9a7c030fb3da625051c124b",
+  "tree_sha": "e8fc00b2acb5cde757578f287cad8e3af7782ce5",
+  "checks_status": "local_check377_passed_CI_failed_zero_jobs_browser_unavailable",
+  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42672314879",
   "review_verdict": "not_requested_incomplete_DETAIL1",
   "role_selection_mode": "ready_work_priority",
   "role_selection_source": "agent-work/process.md",
@@ -218,15 +218,15 @@
   "score_update_release_sha": "90afe931d9e9f8a2482febf77eaed20b401ceece",
   "score_process_decision_ref": "owner-decision-2026-10-24-score-responsibilities",
   "score_assessment_ref": null,
-  "role_selection_reason": "Priority2: own paused active051 claim, exactae3 checkpoint and executionfalse confirmed; approved live D2 implementation ready, no other programmer owns it.",
+  "role_selection_reason": "Priority2: safely resumed own paused051 claim after exact4c tree/ownership verification. Approved geography-adapter work ready; previous exact-head CI closure observed without rerun. Foreign claims/results/research preserved.",
   "score_update_result_ref": "agent-work/results/2026-11-09T1003-strategist-score-PR497.json",
   "score_update_completed_at": "2026-11-09T10:06:29.844095+00:00",
   "score_update_delta": null,
   "score_history_path": "agent-work/score/history.json",
   "next_task_proposal_ref": "agent-work/proposals/2026-11-09-HX-BL-051-OVERVIEW1.json",
   "next_task_id": "HX-BL-051",
-  "approval_ref": "agent-work/decisions/owner-approval-2026-11-09-CLASSIFY1-implementation.json",
-  "last_completed_stage": "DETAIL1-D2b1-local-verified",
+  "approval_ref": "agent-work/decisions/owner-approval-2026-11-09-HX-BL-051-DETAIL1.json",
+  "last_completed_stage": "DETAIL1-D2b2-source-geography-preview",
   "previous_release_approval": {
     "task_id": "HX-BL-023",
     "stage_id": "E1_UI3",
@@ -238,26 +238,26 @@
     "deployment_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40874465786",
     "published": true
   },
-  "base_sha": "ae3e309c6e9b1830c11b2b4cdac44d81e5d92718",
+  "base_sha": "4c3324c83edd07c06471558e41ab89f3a8d318e4",
   "automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-11-09 16:58:54 UTC",
-      "is_enabled": true,
       "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "checked_at": "2026-11-09 18:03:22 UTC",
+      "is_enabled": true,
       "status": "checked",
       "method": "automations.peek"
     },
     "end": {
       "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
-      "checked_at": "2026-11-09 17:20:21 UTC",
+      "checked_at": "2026-11-09 18:26:04 UTC",
       "is_enabled": true,
       "status": "checked",
       "method": "automations.peek"
     },
     "restoration_performed": false,
     "errors": [],
-    "limitation": "Actual point-in-time checks only; no guarantee of later service state. Schedule and prompt unchanged."
+    "limitation": "Actual point-in-time checks only; they do not guarantee later service state. No cause of disabling inferred. Schedule, prompt and other instructions unchanged."
   },
   "open_findings": [
     "CLASSIFY1-VALIDATION-RIV011"
@@ -1631,7 +1631,7 @@
   "historical_unverified_weight": 70,
   "historical_score_model_version": "1.1",
   "score_update_awarded_points": 0,
-  "handoff_ref": "agent-work/handoffs/2026-11-09-HX-BL-051-DETAIL1-D2b1-resume.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-09-HX-BL-051-DETAIL1-D2b2-resume.json",
   "previous_feedback_handoff": {
     "task_id": "HX-FB-001",
     "register": "agent-work/feedback.json",
@@ -2430,12 +2430,12 @@
     "score_assessment_ref": "agent-work/evidence/review-HX-BL-023-E1-ui3-a265a78/score_assessment.json",
     "release_sha": "8f7d17266c53e31428da7c0da6dbbf1afe01d035"
   },
-  "spec_ref": "agent-work/specs/HX-BL-044-CLASSIFY1.md",
+  "spec_ref": "agent-work/specs/HX-BL-051-DETAIL1.md",
   "spec_blob_sha": "584707ebe78516b39148315ffc7b0214f52cb6b6",
   "parent_spec_ref": "agent-work/specs/HX-BL-023.md",
   "parent_spec_version": "2.3",
   "test_change_summary_ref": "agent-work/evidence/HX-BL-051-DETAIL1-D2b1/test-change-summary.json",
-  "programmer_score_evidence_ref": "agent-work/evidence/HX-BL-051-DETAIL1-D2b1/score-evidence1.2.json",
+  "programmer_score_evidence_ref": "agent-work/evidence/HX-BL-051-DETAIL1-D2b2/score-evidence1.2.json",
   "completed_claim_result_ref": "agent-work/results/2026-11-09T1425-reviewer-HX-BL-044-CLASSIFY1.json",
   "review_evidence_ref": null,
   "github_review_state": "accepted_private_package_owner_publication_pending",
@@ -2510,9 +2510,9 @@
   "authorization_status": "Approved DETAIL1 implementation; own safe checkpoint resumed. CI check pending; no publication permission. Full spatial/UI implementation and independent review still required.",
   "completed_at": "2026-11-09 17:20:21 UTC",
   "score_changed": false,
-  "next_stage_id": "DETAIL1-D2b2",
+  "next_stage_id": "DETAIL1-D2c",
   "score_evidence_updated": true,
-  "current_stage_id": "DETAIL1-D2b1",
+  "current_stage_id": "DETAIL1-D2b2",
   "implementation_started": false,
   "current_stage_release_approved": false,
   "review_ready": false,
@@ -4343,7 +4343,7 @@
   "stage_id": "DETAIL1-D2b1",
   "release_approved": true,
   "ui_actual_shown": true,
-  "ui_actual_responsible": "programmer after physical footprint/water-route/UI integration; D2b1 adds no new controls",
+  "ui_actual_responsible": "programmer",
   "UI_proposal_already_shown": true,
   "authorization_ref": "agent-work/decisions/owner-correction-2026-11-09-HX-BL-043-OWNERFIX1.json",
   "checks_summary": {
@@ -5635,7 +5635,7 @@
     "delta_points": null,
     "applied_at": "2026-11-06T07:21:35Z"
   },
-  "authority_status": "Owner exact PR497 publication permission executed. No extra scope, costs, PR496 merge or deployment authorized. Existing DETAIL1 start approval preserved.",
+  "authority_status": "Existing approved DETAIL1 scope permits continuation; no additional start/design decision required. Final independent review and concrete publication permission still required.",
   "analysis_baseline_sha": "00190bb749a4fa5af57aac4bbffff808e8fe733f",
   "analysis_baseline_tree": "9c8585ad4c5aafdec38d242a67ffc54fe7f4402c",
   "previous_evidence_path": "agent-work/evidence/score-PR491-7547a67/accounting.json",
@@ -7976,5 +7976,8 @@
     "checks": "local375pass_build_CIbrowser_RNGpass_CIcheckpending",
     "full_task_complete": false,
     "next_handoff_ref": "agent-work/handoffs/2026-11-09-HX-BL-051-DETAIL1-D2b1-resume.json"
-  }
+  },
+  "local_sha": "c5048ed833fd8274554101e521c38d7a57cd6424",
+  "checks_evidence_ref": "agent-work/evidence/HX-BL-051-DETAIL1-D2b2/test-change-summary.json",
+  "execution_status": "safe_resume_existing_claim_ready_D2c_CI_unavailable"
 }
