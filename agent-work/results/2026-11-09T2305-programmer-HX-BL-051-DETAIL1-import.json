@@ -1,0 +1,387 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-09T2305-programmer-HX-BL-051-DETAIL1-import",
+  "task_id": "HX-BL-051",
+  "role": "programmer",
+  "stage_id": "DETAIL1-import",
+  "status": "bounded_import_verified_activation_UI_pending",
+  "started_at": "2026-11-09T23:05:51.575Z",
+  "completed_at": "2026-11-09T23:30:20.555Z",
+  "role_selection_reason": "Priority2: safely resumed own approved051 claim in same task chat, execution=false and exact616e063/treeb66981a verified. Continued ready import step; no foreign work duplicated.",
+  "base_sha": "616e063569ba046c9fbabae6132df3b19e3ea95f",
+  "head_sha": "6862807d89790fa301026a7dfff153ca54224108",
+  "tree_sha": "1702ffa3e1400e2447c96884698152ef9f36dd1f",
+  "local_sha": "86bb9d7fd27078d631438b39837ff3f600bfddad",
+  "branch": "agent/hx-bl-051-detail1",
+  "pr": 496,
+  "spec_ref": "agent-work/specs/HX-BL-051-DETAIL1.md",
+  "approval_ref": "agent-work/decisions/owner-approval-2026-11-09-HX-BL-051-DETAIL1.json",
+  "implementation_authorized": true,
+  "release_authorized": false,
+  "published": false,
+  "main_changed": false,
+  "actual_main_sha": "90afe931d9e9f8a2482febf77eaed20b401ceece",
+  "review_ready": false,
+  "programmer_complete": false,
+  "full_task_complete": false,
+  "scope_completed": [
+    "Ordinary v11 file import now validates nonempty DETAIL1 against the serialized file geography, not current displayed map.",
+    "Structural validation completes before trusted geometry adapter; strict identity/shape/actual water/river/path checks occur before document/history mutation.",
+    "Classic, Mythic, sea POI and Knave manual/measured extents roundtrip exactly, preserve accepted content/RNG and commit as one Undo/Redo transaction.",
+    "Future version, invalid cell/ID/owner/water/port and forged known Knave convention refuse atomically, preserving executable Redo.",
+    "No automatic legacy conversion/new-map activation or UI completion claimed. Existing no-layer v2–v10 behavior retained."
+  ],
+  "checks_status": "local_and_CI383_build_RNG_pass_browser_one_bounded_infrastructure_retry_pass",
+  "checks": {
+    "node": {
+      "executed": 383,
+      "passed": 383,
+      "failed": 0,
+      "skipped": 0,
+      "duration_ms": 531469.547161,
+      "version": "24.22.1",
+      "exit_code": 0,
+      "typescript": "passed",
+      "build": "passed"
+    },
+    "node_CI": {
+      "executed": 383,
+      "passed": 383,
+      "failed": 0,
+      "skipped": 0,
+      "duration_ms": 579642.055953,
+      "job_id": 129505074122,
+      "run_attempt": 1,
+      "typescript": "passed",
+      "build": "passed"
+    },
+    "focused": {
+      "executed": 8,
+      "passed": 8,
+      "failed": 0,
+      "skipped": 0
+    },
+    "browser": {
+      "added": 0,
+      "removed": 0,
+      "modified": 0,
+      "first_attempt": "infrastructure_interruption",
+      "one_targeted_retry": "passed",
+      "first_attempt_ref": "agent-work/evidence/HX-BL-051-DETAIL1-import/browser-interruption.json",
+      "job_id": 129510468636,
+      "run_attempt": 2,
+      "workflows": 8
+    },
+    "rng_browser": {
+      "added": 0,
+      "removed": 0,
+      "modified": 0,
+      "job_id": 129505074476,
+      "run_attempt": 1,
+      "status": "passed",
+      "workflows": 1
+    }
+  },
+  "CI": {
+    "run_id": 42718195706,
+    "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42718195706",
+    "head_sha": "6862807d89790fa301026a7dfff153ca54224108",
+    "run_attempt": 2,
+    "status": "completed",
+    "conclusion": "success",
+    "observed_at": "2026-11-09T23:29:36.809Z",
+    "jobs": [
+      {
+        "id": 129505074122,
+        "name": "check",
+        "status": "completed",
+        "conclusion": "success",
+        "run_attempt": 1
+      },
+      {
+        "id": 129505074476,
+        "name": "world-random",
+        "status": "completed",
+        "conclusion": "success",
+        "run_attempt": 1
+      },
+      {
+        "id": 129505074611,
+        "name": "browser",
+        "status": "completed",
+        "conclusion": "failure",
+        "run_attempt": 1
+      },
+      {
+        "id": 129510468636,
+        "name": "browser",
+        "status": "completed",
+        "conclusion": "success",
+        "run_attempt": 2
+      },
+      {
+        "id": 129510471121,
+        "name": "world-random",
+        "status": "completed",
+        "conclusion": "success",
+        "run_attempt": 2
+      },
+      {
+        "id": 129510519091,
+        "name": "check",
+        "status": "completed",
+        "conclusion": "success",
+        "run_attempt": 2
+      }
+    ]
+  },
+  "browser_interruption": {
+    "head_sha": "6862807d89790fa301026a7dfff153ca54224108",
+    "run_id": 42718195706,
+    "job_id": 129505074611,
+    "observed_at": "2026-11-09T23:17:50.221Z",
+    "conclusion": "failure",
+    "classification": "infrastructure_interruption_incomplete_evidence",
+    "evidence": "The runner has received a shutdown signal; The operation was canceled.",
+    "root_cause": "unknown",
+    "product_failure_confirmed": false,
+    "completed_workflows": [
+      "generation",
+      "poi-display",
+      "terrain-color",
+      "forest-display",
+      "navigation",
+      "large-navigation"
+    ],
+    "incomplete": [
+      "save-history",
+      "tags"
+    ],
+    "next_action": "One targeted retry of only this interrupted job on same SHA after run completion; no random rerun until green."
+  },
+  "bounded_retry": {
+    "at": "2026-11-09T23:21:19.645Z",
+    "response": {
+      "success": true
+    }
+  },
+  "test_change_summary": {
+    "base_sha": "616e063569ba046c9fbabae6132df3b19e3ea95f",
+    "head_sha": "6862807d89790fa301026a7dfff153ca54224108",
+    "tree_sha": "1702ffa3e1400e2447c96884698152ef9f36dd1f",
+    "local_sha": "86bb9d7fd27078d631438b39837ff3f600bfddad",
+    "added": 1,
+    "removed": 0,
+    "modified": 1,
+    "suite": "Node --test test/*.test.mjs",
+    "scenario_risk": "Ordinary active v11 file import: exact manual/measured/Knave/RNG roundtrip, one transaction Undo/Redo, malformed/future IDs/cells/water/ports and forged Knave convention refuse map and both histories.",
+    "reuse_or_new_reason": "Existing seven geometry/lifecycle cases do not exercise ordinary file import of nonempty state. Reuse region/sea/Knave fixtures and real import harness. Update one existing case that intentionally asserted the previous temporary importer gate; no parallel framework or random series.",
+    "count_source": "Exact616e063→6862807 diff: one appended top-level Node case with authored Classic/Mythic/sea/Knave variants and one existing logical case modified only for the new serialized acceptance contract. Variants/assertions are not runner cases; browser/RNG separate.",
+    "execution": {
+      "focused": {
+        "executed": 8,
+        "passed": 8,
+        "failed": 0,
+        "skipped": 0
+      },
+      "baseline_negative": {
+        "executed": 1,
+        "passed": 0,
+        "failed": 1,
+        "classification": "Missing approved nonempty-import integration, not attributed to released main"
+      },
+      "node": {
+        "executed": 383,
+        "passed": 383,
+        "failed": 0,
+        "skipped": 0,
+        "duration_ms": 531469.547161,
+        "version": "24.22.1",
+        "exit_code": 0,
+        "typescript": "passed",
+        "build": "passed"
+      },
+      "browser": {
+        "added": 0,
+        "removed": 0,
+        "modified": 0,
+        "first_attempt": "infrastructure_interruption",
+        "one_targeted_retry": "passed",
+        "first_attempt_ref": "agent-work/evidence/HX-BL-051-DETAIL1-import/browser-interruption.json",
+        "job_id": 129510468636,
+        "run_attempt": 2,
+        "workflows": 8
+      },
+      "rng_browser": {
+        "added": 0,
+        "removed": 0,
+        "modified": 0,
+        "job_id": 129505074476,
+        "run_attempt": 1,
+        "status": "passed",
+        "workflows": 1
+      },
+      "node_CI": {
+        "executed": 383,
+        "passed": 383,
+        "failed": 0,
+        "skipped": 0,
+        "duration_ms": 579642.055953,
+        "job_id": 129505074122,
+        "run_attempt": 1,
+        "typescript": "passed",
+        "build": "passed"
+      }
+    },
+    "input_variants": [
+      "Classic manual extent and route",
+      "Mythic measured polygon",
+      "Sea POI manual extent and exact water identity",
+      "Knave manual extent/source unknown convention"
+    ],
+    "count_evidence": {
+      "method": "TypeScript AST top-level test call callback text; comments outside callback excluded",
+      "base_cases": 7,
+      "head_cases": 8,
+      "added": [
+        "ordinary v11 DETAIL1 import roundtrips active extents and refuses corrupt spatial references atomically"
+      ],
+      "removed": [],
+      "modified": [
+        "actual DETAIL1 extent command records one exact undo/redo transaction and refuses invalid or stale commands atomically"
+      ]
+    },
+    "CI": {
+      "run_id": 42718195706,
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42718195706",
+      "head_sha": "6862807d89790fa301026a7dfff153ca54224108",
+      "run_attempt": 2,
+      "status": "completed",
+      "conclusion": "success",
+      "observed_at": "2026-11-09T23:29:36.809Z",
+      "jobs": [
+        {
+          "id": 129505074122,
+          "name": "check",
+          "status": "completed",
+          "conclusion": "success",
+          "run_attempt": 1
+        },
+        {
+          "id": 129505074476,
+          "name": "world-random",
+          "status": "completed",
+          "conclusion": "success",
+          "run_attempt": 1
+        },
+        {
+          "id": 129505074611,
+          "name": "browser",
+          "status": "completed",
+          "conclusion": "failure",
+          "run_attempt": 1
+        },
+        {
+          "id": 129510468636,
+          "name": "browser",
+          "status": "completed",
+          "conclusion": "success",
+          "run_attempt": 2
+        },
+        {
+          "id": 129510471121,
+          "name": "world-random",
+          "status": "completed",
+          "conclusion": "success",
+          "run_attempt": 2
+        },
+        {
+          "id": 129510519091,
+          "name": "check",
+          "status": "completed",
+          "conclusion": "success",
+          "run_attempt": 2
+        }
+      ]
+    },
+    "browser_interruption": {
+      "head_sha": "6862807d89790fa301026a7dfff153ca54224108",
+      "run_id": 42718195706,
+      "job_id": 129505074611,
+      "observed_at": "2026-11-09T23:17:50.221Z",
+      "conclusion": "failure",
+      "classification": "infrastructure_interruption_incomplete_evidence",
+      "evidence": "The runner has received a shutdown signal; The operation was canceled.",
+      "root_cause": "unknown",
+      "product_failure_confirmed": false,
+      "completed_workflows": [
+        "generation",
+        "poi-display",
+        "terrain-color",
+        "forest-display",
+        "navigation",
+        "large-navigation"
+      ],
+      "incomplete": [
+        "save-history",
+        "tags"
+      ],
+      "next_action": "One targeted retry of only this interrupted job on same SHA after run completion; no random rerun until green."
+    },
+    "retry": {
+      "at": "2026-11-09T23:21:19.645Z",
+      "response": {
+        "success": true
+      }
+    }
+  },
+  "test_change_summary_ref": "agent-work/evidence/HX-BL-051-DETAIL1-import/test-change-summary.json",
+  "merge_tree_bridge": {
+    "merge_sha": "e068411b78a89b0281725bb6c1f8707111130676",
+    "tree_sha": "1702ffa3e1400e2447c96884698152ef9f36dd1f",
+    "parents": [
+      "90afe931d9e9f8a2482febf77eaed20b401ceece",
+      "6862807d89790fa301026a7dfff153ca54224108"
+    ],
+    "local_sha": "86bb9d7fd27078d631438b39837ff3f600bfddad",
+    "matched": true
+  },
+  "score_model_version": "1.2",
+  "score_evidence_ref": "agent-work/evidence/HX-BL-051-DETAIL1-import/score-evidence1.2.json",
+  "score_assessment_ref": null,
+  "score_changed": false,
+  "awarded_points": 0,
+  "confirmed_delta": null,
+  "ui_actual_pending": true,
+  "claim_ref": "agent-work/claims/2026-11-09T0500-programmer-HX-BL-051-DETAIL1-A.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-DETAIL1-import-resume.json",
+  "next_role": "programmer",
+  "next_task_id": "HX-BL-051",
+  "next_stage_id": "DETAIL1-activation-UI",
+  "next_step": "Программист продолжает HX-BL-051/DETAIL1 в PR496: явный предпросмотр адаптации старых карт и Apply/Cancel с одной Undo, автоматическая активация новых карт после принятой географии/Knave, затем фактический UI1/6/12/24 и компактный выбор охватов. Показать1500/390/320 и до/после на точном SHA; без нового дизайн-согласования. Импорт v11 с непустым слоем уже подключён. Полный объединённый пакет передать на независимую проверку и score_assessment1.2; публикация требует отдельного решения владельца.",
+  "authority_status": "Implementation authorized within DTL-1.0; separate release permission required; no design-response hold.",
+  "limitations": [
+    "Activation/new-map and actual UI remain incomplete; no third design approval gate.",
+    "Manual/measured/attached E8 relocation retains concrete refusal, old mandatory references are not silently rebound.",
+    "Historic RIV011 negative remains unknown/unresolved; green checks do not erase it.",
+    "Six score1.2 criteria remain unknown; no score ledger/history changes or release permission."
+  ],
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-09T23:05:51.575Z",
+      "is_enabled": true,
+      "status": "checked",
+      "method": "automations.peek"
+    },
+    "end": {
+      "checked_at": "2026-11-09T23:30:20.555Z",
+      "is_enabled": true,
+      "status": "checked",
+      "method": "automations.peek"
+    },
+    "restoration_performed": false,
+    "errors": [],
+    "limitation": "Point-in-time observations only, no guarantee of later service state. Schedule/prompt unchanged."
+  }
+}

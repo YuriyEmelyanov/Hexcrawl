@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-051",
+  "stage_id": "DETAIL1",
+  "from_role": "programmer",
+  "next_role": "programmer",
+  "head_sha": "6862807d89790fa301026a7dfff153ca54224108",
+  "tree_sha": "1702ffa3e1400e2447c96884698152ef9f36dd1f",
+  "branch": "agent/hx-bl-051-detail1",
+  "pr": 496,
+  "spec_ref": "agent-work/specs/HX-BL-051-DETAIL1.md",
+  "approval_ref": "agent-work/decisions/owner-approval-2026-11-09-HX-BL-051-DETAIL1.json",
+  "implementation_authorized": true,
+  "release_authorized": false,
+  "scope_completed": [
+    "Ordinary v11 file import now validates nonempty DETAIL1 against the serialized file geography, not current displayed map.",
+    "Structural validation completes before trusted geometry adapter; strict identity/shape/actual water/river/path checks occur before document/history mutation.",
+    "Classic, Mythic, sea POI and Knave manual/measured extents roundtrip exactly, preserve accepted content/RNG and commit as one Undo/Redo transaction.",
+    "Future version, invalid cell/ID/owner/water/port and forged known Knave convention refuse atomically, preserving executable Redo.",
+    "No automatic legacy conversion/new-map activation or UI completion claimed. Existing no-layer v2–v10 behavior retained."
+  ],
+  "input_evidence": [
+    "agent-work/results/2026-11-09T2305-programmer-HX-BL-051-DETAIL1-import.json",
+    "agent-work/evidence/HX-BL-051-DETAIL1-import/test-change-summary.json"
+  ],
+  "next_step": "Программист продолжает HX-BL-051/DETAIL1 в PR496: явный предпросмотр адаптации старых карт и Apply/Cancel с одной Undo, автоматическая активация новых карт после принятой географии/Knave, затем фактический UI1/6/12/24 и компактный выбор охватов. Показать1500/390/320 и до/после на точном SHA; без нового дизайн-согласования. Импорт v11 с непустым слоем уже подключён. Полный объединённый пакет передать на независимую проверку и score_assessment1.2; публикация требует отдельного решения владельца.",
+  "bounded_next_stage": {
+    "task_id": "HX-BL-051",
+    "role": "programmer",
+    "scope": "Explicit legacy preview/Apply/Cancel, automatic final-geography activation for new maps, then actual1/6/12/24 UI within approved DTL-1.0.",
+    "entry_points": [
+      "prepareDetailMapPreview",
+      "editDetailFootprintExtent",
+      "recordGenerated",
+      "checkedRiverMap",
+      "captureDocument/recordTransaction/applyPreparedDocument"
+    ],
+    "completion_criteria": [
+      "Legacy document remains unchanged before Apply; Cancel no mutation; Apply exactly one full document Undo/Redo with fixed grid/source unknown convention and accepted RNG/content.",
+      "New maps get deterministic layer only after accepted source geography/Knave; preserve existing legacy maps until explicit action.",
+      "Actual responsive UI with compact overlap selection/unique counts, whole-cell outline, real water/path contact; show1500/390/320 before/after on exact SHA.",
+      "Required checks and whole combined independent review plus score_assessment1.2 before publication request."
+    ]
+  },
+  "known_limitations": [
+    "Activation/new-map and actual UI remain incomplete; no third design approval gate.",
+    "Manual/measured/attached E8 relocation retains concrete refusal, old mandatory references are not silently rebound.",
+    "Historic RIV011 negative remains unknown/unresolved; green checks do not erase it.",
+    "Six score1.2 criteria remain unknown; no score ledger/history changes or release permission."
+  ],
+  "review_ready": false,
+  "full_task_complete": false,
+  "ui_actual_pending": true,
+  "checks_ref": "agent-work/evidence/HX-BL-051-DETAIL1-import/test-change-summary.json",
+  "automation_health_ref": "agent-work/evidence/HX-BL-051-DETAIL1-import/automation-health.json"
+}
