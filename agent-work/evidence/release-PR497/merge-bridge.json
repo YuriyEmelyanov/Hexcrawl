@@ -1,0 +1,148 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-043",
+  "stage_id": "OWNERFIX1",
+  "pr": 497,
+  "reviewer": "independent /root/pr497_release_verify",
+  "observed_at": "2026-11-09T09:22:25Z",
+  "verdict": "passed_exact_accepted_tree_merge_bridge_no_blockers",
+  "authorization": {
+    "owner_instruction": "Публикуй pr497",
+    "reported_by": "root",
+    "scope": "Publish the accepted PR497 package; merge/deployment owned by root."
+  },
+  "package": {
+    "repository": "YuriyEmelyanov/Hexcrawl",
+    "base_sha": "853c639f2c75b725a29eec3d65cfad4dd823ae5f",
+    "accepted_head_sha": "1299cd0555f1318d921304b5f95a69335b4c80f9",
+    "accepted_local_sha": "501ebbde6dc34fe47a1ad112ddc050cdb7b9aeec",
+    "accepted_tree_sha": "1631cd0a0a59f8b5f2d2e50f925111e7f59aefa2",
+    "merge_sha": "90afe931d9e9f8a2482febf77eaed20b401ceece",
+    "merge_tree_sha": "1631cd0a0a59f8b5f2d2e50f925111e7f59aefa2",
+    "merge_parents": [
+      "853c639f2c75b725a29eec3d65cfad4dd823ae5f",
+      "1299cd0555f1318d921304b5f95a69335b4c80f9"
+    ],
+    "merged_at": "2026-11-09T09:22:05Z"
+  },
+  "identity": {
+    "accepted_head_has_expected_base_parent": true,
+    "accepted_local_and_public_complete_trees_equal": true,
+    "merge_complete_tree_equals_accepted": true,
+    "merge_first_parent_equals_approved_base": true,
+    "merge_second_parent_equals_accepted_head": true,
+    "main_ref_observed_equal_merge": true,
+    "pr_closed_merged_exact_head": true,
+    "github_compare": {
+      "status": "ahead",
+      "ahead_by": 1,
+      "behind_by": 0,
+      "total_commits": 1,
+      "files": [],
+      "content_changes_from_accepted": 0
+    },
+    "method": [
+      "Independently inspected local Git objects: accepted public1299cd0 and local501ebbde have complete tree1631cd0 and common parent853c639; git diff --exit-code between them returned0.",
+      "Independently fetched live GitHub GET git/commits/1299cd0, git/commits/90afe931 and git/ref/heads/main. Exact Git tree SHA equality covers every tracked path,blob and file mode, not only changed files.",
+      "Independently fetched PR497 after merge: state closed,merged true, unchanged accepted head/base, merge90afe931 at09:22:05Z.",
+      "Independently compared accepted head1299cd0 to release90afe931 through GitHub compare API: one metadata/merge commit ahead, files empty.",
+      "Base→accepted diff has16 files/272 insertions/82 deletions. .github/workflows comparison is empty, preserving Pages workflow."
+    ],
+    "source_worktree": {
+      "path": "/workspace/scratch/ffa816ada945/hexcrawl-knave-fixes",
+      "head": "501ebbde6dc34fe47a1ad112ddc050cdb7b9aeec",
+      "tracked_source_test_docs_workflow_package_diffs": 0,
+      "existing_report_image_changes_and_untracked_reports_present": true,
+      "interpretation": "Existing reports and node_modules are excluded from the accepted tracked source tree. No source, test, specification,workflow or package change was made during release verification."
+    }
+  },
+  "accepted_checks_reused": {
+    "basis": "Exact whole-tree equality; no changed source paths from accepted package to merge. This verifier did not duplicate full local test execution.",
+    "ci": {
+      "id": 42586702962,
+      "head_sha": "1299cd0555f1318d921304b5f95a69335b4c80f9",
+      "head_tree_sha": "1631cd0a0a59f8b5f2d2e50f925111e7f59aefa2",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42586702962",
+      "jobs": [
+        {
+          "id": 129058151611,
+          "name": "world-random",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 129058151887,
+          "name": "check",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 129058151915,
+          "name": "browser",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ],
+      "independently_live_read": true
+    },
+    "implementation_evidence": {
+      "path": "agent-work/evidence/HX-BL-043-OWNERFIX1/implementation.json",
+      "blob_sha": "8de2c28045cfc8bd327f56095f28a2d1d31b9749",
+      "typescript": "passed",
+      "node": {
+        "executed": 363,
+        "passed": 363,
+        "failed": 0,
+        "skipped": 0
+      },
+      "build": "passed",
+      "browser": {
+        "executed": 8,
+        "passed": 8,
+        "failed": 0,
+        "skipped": 0,
+        "limitation": "Original local Chromium symlink error retained; recovered runtime completed all8 workflows; GitHub browser job independently passed."
+      }
+    },
+    "independent_review": {
+      "path": "agent-work/evidence/HX-BL-043-OWNERFIX1/independent-review.json",
+      "blob_sha": "2bac45acd7425136c5fa319bbe62805fe3ee7ab8",
+      "verdict": "passed_bounded_independent_review_no_blocking_findings",
+      "registered_cases_passed": 11,
+      "additional_real_catalog_probes_passed": 2,
+      "limitations_preserved": true
+    },
+    "score_assessment": {
+      "model_version": "1.2",
+      "path": "agent-work/evidence/HX-BL-043-OWNERFIX1/score-assessment1.2.json",
+      "blob_sha": "a8b7580fe56c41960f1acfffaea608c57948a268",
+      "applicable_to_release_tree": true,
+      "criteria": [
+        "S04-C04",
+        "S05-C01",
+        "S08-C04",
+        "S03-C02"
+      ],
+      "grades_before_after_delta": "unknown/null; insufficient evidence for whole criterion grade",
+      "new_points_awarded": 0,
+      "score_mutation_by_verifier": false
+    },
+    "tests_changed_during_release": {
+      "added": 0,
+      "removed": 0,
+      "modified": 0
+    },
+    "source_evidence_operations_ref": "89542aad78097a2985df67c2c9ea8308a2e91841"
+  },
+  "limits": [
+    "This bridge verifies accepted source identity and unchanged applicability of existing evidence. It does not independently claim actual deployment/live publication; root owns deployment completion and live verification.",
+    "No new full local suite was executed; all reported suite counts belong to accepted implementation/review evidence or live GitHub CI on the exact accepted head.",
+    "Finite existing samples do not prove absence of all defects; official English edition collation and wider physical-scale work remain outside this package.",
+    "Automation health observations are root-owned; this verifier made no automation mutations."
+  ],
+  "product_source_edits": false,
+  "external_writes": false,
+  "automation_mutations": false
+}
