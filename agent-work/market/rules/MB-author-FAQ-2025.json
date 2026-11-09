@@ -69,9 +69,9 @@
       "requirements": [
         {
           "id": "MB-FAQ-2025-001-L1",
-          "layer": "L1",
+          "layer": "L2",
           "requirement": "Подготовить игрокам карту с владениями и общим рельефом, скрыв мифы, ориентиры и барьеры по выбранному FAQ-профилю. Сохранить полную карту ведущего; применять тот же смысл к доступным игрокам подписям/сведениям и выбранному способу передачи.",
-          "status": "absent",
+          "status": "deferred_future_VTT_stage",
           "implemented": false,
           "evidence_id": "MB-AUDIT-MB-FAQ-2025-001-L1",
           "evidence_sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
@@ -87,7 +87,7 @@
             "source_rule_ref": "agent-work/market/rules/MB-author-FAQ-2025.json#MB-FAQ-2025-001",
             "normative_kind": "optional_author_practice_not_mandatory_rule",
             "applicability": "Mythic Bastionland authorFAQ17July2025 player-map answer only; conscious selected profile",
-            "layer": "L1",
+            "layer": "L2",
             "trigger_or_user_action": "Ведущий выбирает авторский вариант карты для игроков и готовит отдельное представление/копию.",
             "inputs_and_units": {
               "gm_map": "подготовленная карта с полным содержимым",
@@ -151,7 +151,7 @@
                 "expected": "H/T и выбранный набор видимости восстановлены, скрытые объекты не появились из-за повторной генерации."
               }
             ],
-            "source_vs_product_interpretation": "Источник определяет необязательный набор видимых категорий. Копия без утечки через подписи/доступные данные, сохранение и неизменность GM — критерии продуктового перевода. UI/API/формат хранения не проектируются.",
+            "source_vs_product_interpretation": "Уточнение владельца 09.11.2026: руины — атмосферное описание. Проверка списка активных мифов, обязательная связь/фильтр/переброс не требуются как механика L1. Карта игроков относится к следующему общему этапу L2 VTT/ведения гекскроула, а не к недостающим правилам текущего генератора.",
             "canonical_rule_refs": [
               "map.audience_views"
             ],
@@ -167,11 +167,12 @@
           "delivery": "research_handoff_not_specification",
           "runtime_assessment": {
             "audit_ref": "agent-work/research/audits/MB-implementation-2026-11-09.json#MB-AUDIT-MB-FAQ-2025-001-L1",
-            "source_core_status": "absent_optional_profile",
-            "actual_behavior": "Экспортируется общая карта. PNGберёт текущийSVG; JSONсодержит полные регионы, теги, барьеры и заметки ведущего. Фильтра H/Tвидно,M/L/Bскрыто в коде нет.",
-            "remaining_or_product_choice": "Необязательная авторская практика; не блокирует генератор. Остаточный компонент044 — отдельное представление/вывод для игроков, сохраняя GMоригинал. ОбычныйJSONне считать очищенной копией.",
+            "source_core_status": "deferred_whole_tool_L2",
+            "actual_behavior": "Отдельный профиль игроков отсутствует в текущем продукте; относится к будущему этапуVTT.",
+            "remaining_or_product_choice": "Не считать пробелом текущегоL1.",
             "formal_score_coverage_transfer": false
-          }
+          },
+          "owner_decision_ref": "agent-work/decisions/owner-decision-2026-11-09-MB-flavour-and-player-map-layer.json"
         },
         {
           "layer": "L2",
@@ -218,12 +219,15 @@
     "findings": [
       {
         "requirement_id": "MB-FAQ-2025-001-L1",
-        "source_core_status": "absent_optional_profile",
-        "full_operational_requirement_status": "absent"
+        "source_core_status": "deferred_whole_tool_L2",
+        "full_operational_requirement_status": "deferred_L2"
       }
     ],
-    "score_awarded": false
+    "score_awarded": false,
+    "stage": "future_L2_VTT_not_current_L1_gap"
   },
   "rating_changed": false,
-  "score_changed": false
+  "score_changed": false,
+  "owner_decision_ref": "agent-work/decisions/owner-decision-2026-11-09-MB-flavour-and-player-map-layer.json",
+  "owner_clarification": "Уточнение владельца 09.11.2026: руины — атмосферное описание. Проверка списка активных мифов, обязательная связь/фильтр/переброс не требуются как механика L1. Карта игроков относится к следующему общему этапу L2 VTT/ведения гекскроула, а не к недостающим правилам текущего генератора."
 }

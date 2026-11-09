@@ -312,8 +312,6 @@
       "source_rule_ref": "agent-work/market/rules/MB-Quickstart.json#MB-QS-002",
       "requirement_ref": "agent-work/market/rules/MB-Quickstart.json#MB-QS-002-L1",
       "canonical_rule_ids": [
-        "content.roll_table_resolution",
-        "content.adventure_hooks",
         "content.place_description"
       ],
       "criterion_ids": [
@@ -321,10 +319,10 @@
         "S05-C02"
       ],
       "layer": "L1",
-      "source_core_status": "partial_missing_inactive_filter",
-      "full_operational_requirement_status": "partial",
-      "actual_behavior": "Есть описание руин из72-строчного каталога и обычные теги/заметки. Отбора по неактивным мифам этого края нет. Seed199в одной области даёт миф3/2и описание руин из той же пары3/2; валидатор принимает результат.",
-      "remaining_or_product_choice": "Остаточный содержательный пробел в053: связывать подсказку с допустимым неактивным мифом данного края. Неизвестное множество активных не считать пустым; пустую допустимую выборку обработать явно. Не активировать миф/предзнаменования.",
+      "source_core_status": "existing_descriptive_behavior_no_mechanical_gap",
+      "full_operational_requirement_status": "withdrawn_inferred_mechanics",
+      "actual_behavior": "Описание руин реализовано. Вывод об обязательной механической связи и фильтре был ошибочной интерпретацией исследователя.",
+      "remaining_or_product_choice": "Уточнение владельца 09.11.2026: руины — атмосферное описание. Проверка списка активных мифов, обязательная связь/фильтр/переброс не требуются как механика L1. Карта игроков относится к следующему общему этапу L2 VTT/ведения гекскроула, а не к недостающим правилам текущего генератора.",
       "evidence_sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
       "code_refs": [
         {
@@ -343,7 +341,8 @@
         "agent-work/research/evidence/2026-11-09-MB-implementation-audit/content.json",
         "agent-work/research/evidence/2026-11-09-MB-implementation-audit/checks.json"
       ],
-      "score_awarded": false
+      "score_awarded": false,
+      "owner_decision_ref": "agent-work/decisions/owner-decision-2026-11-09-MB-flavour-and-player-map-layer.json"
     },
     {
       "id": "MB-AUDIT-MB-FAQ-2025-001-L1",
@@ -357,11 +356,11 @@
         "S06-C05",
         "S05-C03"
       ],
-      "layer": "L1",
-      "source_core_status": "absent_optional_profile",
-      "full_operational_requirement_status": "absent",
+      "layer": "L2",
+      "source_core_status": "deferred_whole_tool_L2",
+      "full_operational_requirement_status": "deferred_L2",
       "actual_behavior": "Экспортируется общая карта. PNGберёт текущийSVG; JSONсодержит полные регионы, теги, барьеры и заметки ведущего. Фильтра H/Tвидно,M/L/Bскрыто в коде нет.",
-      "remaining_or_product_choice": "Необязательная авторская практика; не блокирует генератор. Остаточный компонент044 — отдельное представление/вывод для игроков, сохраняя GMоригинал. ОбычныйJSONне считать очищенной копией.",
+      "remaining_or_product_choice": "Уточнение владельца 09.11.2026: руины — атмосферное описание. Проверка списка активных мифов, обязательная связь/фильтр/переброс не требуются как механика L1. Карта игроков относится к следующему общему этапу L2 VTT/ведения гекскроула, а не к недостающим правилам текущего генератора.",
       "evidence_sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
       "code_refs": [
         {
@@ -390,7 +389,8 @@
         "agent-work/research/evidence/2026-11-09-MB-implementation-audit/content.json",
         "agent-work/research/evidence/2026-11-09-MB-implementation-audit/checks.json"
       ],
-      "score_awarded": false
+      "score_awarded": false,
+      "owner_decision_ref": "agent-work/decisions/owner-decision-2026-11-09-MB-flavour-and-player-map-layer.json"
     }
   ],
   "additional_verified_content": {
@@ -402,20 +402,7 @@
     "english_limit": "12seer/landmark results have verifiedEN,othersRUfallback;72reference recordsRU.",
     "evidence_ref": "agent-work/research/evidence/2026-11-09-MB-implementation-audit/content.json"
   },
-  "residual_product_components": [
-    {
-      "task_id": "HX-BL-053",
-      "component": "Ruins relation to locally inactive Myth",
-      "status": "proposed_existing_component",
-      "implementation_authorized": false
-    },
-    {
-      "task_id": "HX-BL-044",
-      "component": "Optional player-facing map/copy",
-      "status": "proposed_existing_component",
-      "implementation_authorized": false
-    }
-  ],
+  "residual_product_components": [],
   "no_new_implementation_needed_for": [
     "MBtargetd12fromscratch",
     "Four initial holdings includingSeat",
@@ -431,5 +418,22 @@
   ],
   "source_corpus_completeness": "bounded9existing profiles, not entire game; otherp14clauses such as geography affected byMyth not newly audited",
   "verification_ref": "agent-work/research/evidence/2026-11-09-MB-implementation-audit/checks.json",
-  "next_step": "Pass only residual053/044 scope to strategist; if owner prioritizes literal source fidelity, separately decide changing existing numbering/manual-edit variants. Do not implement before task approval."
+  "next_step": "Не считать два прежних вывода пробеламиL1. Продолжить текущий независимый исследовательский кандидат без запуска этих механик.",
+  "owner_correction": {
+    "decision_ref": "agent-work/decisions/owner-decision-2026-11-09-MB-flavour-and-player-map-layer.json",
+    "note": "Уточнение владельца 09.11.2026: руины — атмосферное описание. Проверка списка активных мифов, обязательная связь/фильтр/переброс не требуются как механика L1. Карта игроков относится к следующему общему этапу L2 VTT/ведения гекскроула, а не к недостающим правилам текущего генератора.",
+    "previous_two_residual_L1_conclusions_superseded": true
+  },
+  "future_stage_components": [
+    {
+      "task_id": "HX-BL-044",
+      "component": "Player-facing map/copy",
+      "layer": "L2",
+      "status": "deferred_future_whole_tool_VTT"
+    }
+  ],
+  "withdrawn_interpretations": [
+    "MandatoryRuinsMythlink/active-setfilter",
+    "Playercopy counted as currentL1gap"
+  ]
 }
