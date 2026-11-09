@@ -126,24 +126,58 @@ export function buildDetailGeographyPreview(map:DetailGeographyMap,rivers:readon
  if(map.physicalGrid?.poiFootprints.length)fail('existing_footprints_require_reconciliation');
  const live=poiNameLocators({regions:[...map.regions],waterPoiByKey:new Map(map.waterPoiByKey)},true);
  const previous=map.physicalGrid?.poiIdentities;if(previous)assertDetailPoiOwners(previous,live);
- const identities=previous??reconcileDetailPoiIdentities(live),coarse=createDetailGrid(6,origin),fine=createDetailGrid(1,origin);
+ const identities=previous??reconcileDetailPoiIdentities(live);
  const requirements:Record<string,DetailWaterProvenance>={},footprints:DetailPoiFootprint[]=[];
  for(const alias of [...live].sort()){
+  const {footprint,need}=buildLiveFootprint(map,rivers,identities,alias,origin);
+  requirements[footprint.poiId]=Object.freeze({...need,predicates:Object.freeze([...need.predicates])});footprints.push(footprint);
+ }
+ return Object.freeze({activatesDetail1:false,grid:Object.freeze({origin:Object.freeze({...origin}),orientation:'pointy',convention:'across_flats'}),source:Object.freeze({stepMiles:6,physicalConvention:map.physicalGrid?.source.physicalConvention??'unknown',displayAssumption:'project_across_flats_6mi'}),poiIdentities:identities,poiFootprints:Object.freeze(footprints),waterRequirementsByPoi:Object.freeze(requirements)});
+}
+
+
+function buildLiveFootprint(map:DetailGeographyMap,rivers:readonly DetailLiveRiver[],identities:DetailPoiIdentities,alias:string,origin:WorldPoint):{footprint:DetailPoiFootprint;need:DetailWaterProvenance}{
+ const coarse=createDetailGrid(6,origin),fine=createDetailGrid(1,origin);
   const water=alias.startsWith('waterPoi:'),parts=alias.split(':'),source=parseWaterHex(parts[water?1:2]);
   const region=water?undefined:map.regions.find(r=>r.id===Number(parts[1]));
   const central=region&&hasCentralPoi(region)&&key(region.centerHex)===key(source);
   const kind=central?region!.centralPoiKind:region?.pointOfInterestKinds?.[key(source)];
   if(!water&&waterKindAt(map.hexTerrainByKey,key(source))!=='land')fail('land_poi_in_water');
   const poiId=identities.byLegacyRef[alias],need=requirement(map,alias,water),routes=assignedRoutes(map,source,origin);
-  requirements[poiId]=Object.freeze({...need,predicates:Object.freeze([...need.predicates])});
-  footprints.push(buildDetailPoiFootprint(fine,{poiId,legacyRef:alias,role:kind==='capital'?'capital':kind==='throne'?'mythic_seat':'site',anchor:detailCellCenter(coarse,source),sourcePolygon:detailCellPolygon(coarse,source),waterRequirement:need.requirement,waterAccesses:waterAccesses(map,rivers,source,origin,water,need),routeRequirement:routes.length?'assigned':'none',routeAccesses:routes}));
+  const footprint=buildDetailPoiFootprint(fine,{poiId,legacyRef:alias,role:kind==='capital'?'capital':kind==='throne'?'mythic_seat':'site',anchor:detailCellCenter(coarse,source),sourcePolygon:detailCellPolygon(coarse,source),waterRequirement:need.requirement,waterAccesses:waterAccesses(map,rivers,source,origin,water,need),routeRequirement:routes.length?'assigned':'none',routeAccesses:routes});
+  return {footprint,need};
  }
- return Object.freeze({activatesDetail1:false,grid:Object.freeze({origin:Object.freeze({...origin}),orientation:'pointy',convention:'across_flats'}),source:Object.freeze({stepMiles:6,physicalConvention:map.physicalGrid?.source.physicalConvention??'unknown',displayAssumption:'project_across_flats_6mi'}),poiIdentities:identities,poiFootprints:Object.freeze(footprints),waterRequirementsByPoi:Object.freeze(requirements)});
+/** Reconcile the accepted layer against a candidate map before a document write.
+ * Existing extents/ports remain literal. Explicit deletion is the only way to
+ * drop an owner; a new owner gets one deterministic default, without rerolls. */
+export function reconcileDetailGeography(map:DetailGeographyMap,rivers:readonly DetailLiveRiver[],moves:ReadonlyMap<string,string|null>=new Map()):Detail1State|undefined {
+ const state=map.physicalGrid;if(!state?.poiIdentities)return state;
+ const live=poiNameLocators({regions:[...map.regions],waterPoiByKey:new Map(map.waterPoiByKey)},true);
+ const identities=reconcileDetailPoiIdentities(live,state.poiIdentities,moves);
+ // Retain compatibility with the earlier identity-only, unadapted checkpoint.
+ if(!state.poiFootprints.length&&Object.keys(state.poiIdentities.byLegacyRef).length)return identities===state.poiIdentities?state:parseDetail1StateV11({...state,poiIdentities:identities});
+ const byId=new Map(state.poiFootprints.map(p=>[p.poiId,p]));
+ const footprints:DetailPoiFootprint[]=[];
+ for(const [alias,id]of Object.entries(identities.byLegacyRef)){
+  const prior=byId.get(id);
+  if(!prior){footprints.push(buildLiveFootprint(map,rivers,identities,alias,state.grid.origin).footprint);continue;}
+  if(prior.legacyRef!==alias){
+   const coordinate=(ref:string)=>ref.slice(ref.lastIndexOf(':')+1);
+   if(!prior.legacyRef||coordinate(prior.legacyRef)!==coordinate(alias)){
+    // E8 retains its old road protections. Unknown manual/measured geography
+    // and mandatory water/ports cannot be translated by an address change.
+    if(prior.extent.kind!=='default'||prior.attachments.length)fail('extent_relocation_requires_explicit_adaptation');
+    footprints.push(buildLiveFootprint(map,rivers,identities,alias,state.grid.origin).footprint);continue;
+   }
+  }
+  footprints.push(prior.legacyRef===alias?prior:{...prior,legacyRef:alias});
+ }
+ const next=parseDetail1StateV11({...state,poiIdentities:identities,poiFootprints:footprints});
+ validateDetailGeographyFootprints(map,rivers,next);
+ return JSON.stringify(next)===JSON.stringify(parseDetail1StateV11(state))?state:next;
 }
 
-
-/** Internal saved-default validator. Does not activate the layer or relax the
- * App document gate. Manual/measured reconciliation is deliberately fail-closed. */
+/** Validate saved extents and exact attachments against authoritative geometry. */
 export function validateDetailGeographyFootprints(map:DetailGeographyMap,rivers:readonly DetailLiveRiver[],value:unknown):void {
  const state=parseDetail1StateV11(value),identities=state.poiIdentities;
  if(!identities)fail('saved_footprints_require_identities');

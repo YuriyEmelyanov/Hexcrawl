@@ -90,3 +90,55 @@ test('actual DETAIL1 extent command records one exact undo/redo transaction and 
  // The ordinary importer stays closed until all generic mutations reconcile the layer.
  assert.throws(()=>h.geometry.assertHexcrawlSaveData(h.render().createSaveData()));
 });
+
+// DTL-09/21/23: registry-only tests cannot prove accepted spatial state survives
+// real map edits, owner transfer and document history. Reuse the authored E7 map.
+test('active DETAIL1 lifecycle preserves manual extents through E7 and allocates/removes POIs without recycling IDs',async()=>{
+ const h=await importMap(regionFixture()),doc=structuredClone(h.render().captureDocument()),p=prepare(h);doc.map.physicalGrid=state(p);h.render().applyDocument(doc);h.render().setEditMode(true);h.render();h.guardRandom();
+ const footprint=p.poiFootprints[0],cell=footprint.cells[0];assert.equal(h.render().editDetailFootprintExtent(footprint.poiId,{kind:'manual',basis:'conditional',note:'Принятый охват'},[cell,{q:cell.q,r:cell.r+1}]),true);
+ const before=structuredClone(h.render().captureDocument()),history=h.render().undoHistory.length;
+ assert.equal(h.render().startRegionDraft('transfer_hex'),true);let draft=h.render().regionDraft;assert.equal(h.render().changeRegionDraft(draft,{...draft.edit,toRegionId:2}),true);assert.equal(h.render().finishRegionDraft(h.render().regionDraft),true,h.render().editError);
+ const after=structuredClone(h.render().captureDocument()),next=after.map.physicalGrid.poiFootprints[0];assert.deepEqual(next,{...before.map.physicalGrid.poiFootprints[0],legacyRef:'poi:2:2,0'});assert.equal(after.map.physicalGrid.poiIdentities.nextId,before.map.physicalGrid.poiIdentities.nextId);assert.equal(h.render().undoHistory.length,history+1);assert.deepEqual(after.map.generation,before.map.generation);
+ h.render().undoMap();assert.deepEqual(structuredClone(h.render().captureDocument()),before);h.render().redoMap();assert.deepEqual(structuredClone(h.render().captureDocument()),after);
+ h.render().setSelectedPoiKind('structure');h.render();assert.deepEqual(structuredClone(h.render().captureDocument().map.physicalGrid.poiFootprints[0]),next,'compatible type edit retains the explicit extent');
+ h.render().deleteSelectedPoi();h.render();assert.equal(h.render().captureDocument().map.physicalGrid.poiFootprints.length,0);h.render().setSelectedPoiKind('village');h.render();const reborn=h.render().captureDocument().map.physicalGrid;assert.equal(reborn.poiFootprints.length,1);assert.notEqual(reborn.poiFootprints[0].poiId,footprint.poiId);assert.equal(reborn.poiIdentities.nextId,before.map.physicalGrid.poiIdentities.nextId+1);
+});
+
+// DTL-11/19/23: a real route/water edit must validate the OLD exact attachment,
+// rather than recomputing a convenient replacement in the candidate geography.
+test('active DETAIL1 route and water mutations retain exact attachments or refuse both histories atomically',async()=>{
+ const raw=regionFixture();raw.map.roads=[{id:1,regionId:1,segments:[{from:{q:2,r:0},to:{q:3,r:0},kind:'road'}]}];raw.counters.nextRoadId=2;
+ const h=await importMap(raw),doc=structuredClone(h.render().captureDocument());doc.map.physicalGrid=state(prepare(h));h.render().applyDocument(doc);h.render().setEditMode(true);h.render();h.guardRandom();
+ const before=structuredClone(h.render().captureDocument()),stacks=structuredClone([h.render().undoHistory,h.render().redoHistory]);
+ assert.equal(h.render().editRoadDocument({type:'kind',roadId:1,segmentKey:'2,0|3,0',kind:'trail'}),false);assert.deepEqual(structuredClone(h.render().captureDocument()),before);assert.deepEqual(structuredClone([h.render().undoHistory,h.render().redoHistory]),stacks);
+ h.render().setSelectedHexBiomeOverride('open_hills');h.render();assert.equal(h.render().captureDocument().map.biomeOverrideByHexKey.get('2,0'),'open_hills');assert.deepEqual(structuredClone(h.render().captureDocument().map.physicalGrid),before.map.physicalGrid);
+ h.render().undoMap();assert.deepEqual(structuredClone(h.render().captureDocument()),before);
+ const sea=seaFixture();sea.map.waterPoiByHexKey={'1,2':'shipwreck'};const w=await importMap(sea),waterDoc=structuredClone(w.render().captureDocument());waterDoc.map.physicalGrid=state(prepare(w));w.render().applyDocument(waterDoc);w.render().setEditMode(true);w.render().setSelectedHex({q:1,r:2});w.render();w.guardRandom();
+ const accepted=structuredClone(w.render().captureDocument()),waterStacks=structuredClone([w.render().undoHistory,w.render().redoHistory]);
+ assert.equal(w.render().startWaterDraft('land','1,2'),true);const d=w.render().waterDraft;w.render().finishWaterDraft(d,true);w.render();assert.deepEqual(structuredClone(w.render().captureDocument()),accepted);assert.deepEqual(structuredClone([w.render().undoHistory,w.render().redoHistory]),waterStacks);
+});
+
+// DTL-21/23: E7 address remapping is not proof of physical E8 relocation.
+test('active DETAIL1 E8 relocates an assumed unattached site once and refuses translating accepted explicit extents',async()=>{
+ const h=await importMap(regionFixture()),doc=structuredClone(h.render().captureDocument());doc.map.physicalGrid=state(prepare(h));h.render().applyDocument(doc);h.render().setEditMode(true);h.render();h.guardRandom();
+ const before=structuredClone(h.render().captureDocument()),old=before.map.physicalGrid.poiFootprints[0],history=h.render().undoHistory.length;
+ assert.equal(h.render().startPoiDraft({kind:'land',regionId:1,hexKey:'2,0'}),true);h.render().changePoiTarget('3','0');assert.equal(h.render().finishPoiDraft(),true,h.render().editError);
+ const after=structuredClone(h.render().captureDocument()),moved=after.map.physicalGrid.poiFootprints[0];assert.equal(moved.poiId,old.poiId);assert.equal(moved.legacyRef,'poi:2:3,0');assert.notDeepEqual(moved.cells,old.cells);assert.equal(h.render().undoHistory.length,history+1);assert.deepEqual(after.map.generation,before.map.generation);
+ h.render().undoMap();assert.deepEqual(structuredClone(h.render().captureDocument()),before);h.render().redoMap();assert.deepEqual(structuredClone(h.render().captureDocument()),after);
+ assert.equal(h.render().editDetailFootprintExtent(moved.poiId,{kind:'manual',basis:'conditional',note:'Измерений нет; принята форма'},moved.cells),true);
+ const accepted=structuredClone(h.render().captureDocument()),stacks=structuredClone([h.render().undoHistory,h.render().redoHistory]);assert.equal(h.render().startPoiDraft({kind:'land',regionId:2,hexKey:'3,0'}),true);h.render().changePoiTarget('2','0');assert.equal(h.render().finishPoiDraft(),false);assert.match(h.render().editError,/охват|footprint/i);assert.deepEqual(structuredClone(h.render().captureDocument()),accepted);assert.deepEqual(structuredClone([h.render().undoHistory,h.render().redoHistory]),stacks);
+});
+
+// DTL-07/09/23: new accepted Knave rows must be known BEFORE spatial placement;
+// old manually expanded footprints and accepted content must never be rebuilt.
+test('active DETAIL1 generated candidate places only new owners after accepted Knave content and refuses invalid candidates before history',async()=>{
+ const {knaveCatalogFixture}=await import('./helpers/knave-fixture.mjs');
+ const raw=regionFixture();raw.version=10;raw.map.seas=[];raw.map.nextSeaId=1;raw.map.knave={...newKnaveLayer(),content:knaveContentFixture('poi:1:2,0',{kind:'settlement'})};
+ const h=await importMap(raw);h.injectFunction('knaveGenerationCatalog',knaveCatalogFixture);const doc=structuredClone(h.render().captureDocument());doc.map.physicalGrid=state(prepare(h));h.render().applyDocument(doc);h.render().setEditMode(true);h.render();h.guardRandom();
+ const p=doc.map.physicalGrid.poiFootprints[0],c=p.cells[0];assert.equal(h.render().editDetailFootprintExtent(p.poiId,{kind:'manual',basis:'conditional',note:'Сохранённая форма'},[c,{q:c.q,r:c.r+1}]),true);
+ const before=structuredClone(h.render().captureDocument()),history=structuredClone([h.render().undoHistory,h.render().redoHistory]),candidate=structuredClone(before.map);candidate.regions[1].pointsOfInterest=[{q:3,r:1}];candidate.regions[1].pointOfInterestKinds={'3,1':'structure'};
+ const result=h.render().recordGenerated(before.map,candidate,{q:3,r:1});assert.equal(result.physicalGrid.poiFootprints.length,2);assert.deepEqual(structuredClone(result.physicalGrid.poiFootprints.find(v=>v.poiId===p.poiId)),before.map.physicalGrid.poiFootprints[0]);assert.deepEqual(result.knave.content.byPoi['poi:1:2,0'],before.map.knave.content.byPoi['poi:1:2,0']);assert.ok(result.knave.content.byPoi['poi:2:3,1']);assert.deepEqual(result.generation,before.map.generation);assert.equal(h.render().undoHistory.length,history[0].length+1);h.geometry.validateDetailMapFootprints(result,result.physicalGrid);
+ h.render().undoMap();assert.deepEqual(structuredClone(h.render().captureDocument()),before);h.render().redoMap();assert.deepEqual(structuredClone(h.render().captureDocument().map.physicalGrid),structuredClone(result.physicalGrid));
+ const saved=structuredClone(h.render().captureDocument()),stacks=structuredClone([h.render().undoHistory,h.render().redoHistory]),bad=structuredClone(saved.map);bad.roads.push({id:1,regionId:1,segments:[{from:{q:2,r:0},to:{q:3,r:0},kind:'road'}]});bad.nextRoadId=2;
+ assert.throws(()=>h.render().recordGenerated(saved.map,bad,{q:3,r:0}),/DETAIL1/);assert.deepEqual(structuredClone(h.render().captureDocument()),saved);assert.deepEqual(structuredClone([h.render().undoHistory,h.render().redoHistory]),stacks);
+});

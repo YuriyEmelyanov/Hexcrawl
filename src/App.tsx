@@ -1,4 +1,4 @@
-import {prepareDetailFootprintExtentEdit,validateDetailGeographyFootprints,buildDetailGeographyPreview,detailSourcePixelToWorld,detailCrossingPoint} from './detailGeography';
+import {reconcileDetailGeography,prepareDetailFootprintExtentEdit,validateDetailGeographyFootprints,buildDetailGeographyPreview,detailSourcePixelToWorld,detailCrossingPoint} from './detailGeography';
 import {reconcileDetailPoiIdentities} from './detailIdentity';
 import {parseDetail1StateV11,validateDetail1Document,type DetailExtent,type Detail1State} from './detailModel';
 import knaveCatalogData from './tags/knaveCatalogData';
@@ -982,17 +982,17 @@ function isRiverCrossing(value: unknown): value is RiverCrossing {
     && (value.kind === 'bridge' || value.kind === 'ferry' || value.kind === 'ford');
 }
 
-function assertHexcrawlSaveData(value: unknown): asserts value is ValidatedHexcrawlSaveData {
+function assertHexcrawlSaveData(value: unknown,validateSpatial?:(state:Detail1State)=>void): asserts value is ValidatedHexcrawlSaveData {
   validateSaveStructure(value, {
     biome: v => typeof v === 'string' && Object.prototype.hasOwnProperty.call(BIOMES, v),
     poi: v => typeof v === 'string' && Object.prototype.hasOwnProperty.call(POI_DETAILS, v),
     centralPoi: v => typeof v === 'string' && Object.prototype.hasOwnProperty.call(CENTRAL_POI_DETAILS, v),
     waterPoi: v => typeof v === 'string' && Object.prototype.hasOwnProperty.call(WATER_POI_DETAILS, v),
-    names: isToponymRegistry, toponymModel: DEFAULT_TOPONYM_MODEL,
+    names: isToponymRegistry, toponymModel: DEFAULT_TOPONYM_MODEL, detailSpatial:validateSpatial,
     kingdoms: (map, version) => validateKingdomLayers(map, getHexEdgeKeys, version >= 5)
   });
   const data=value as HexcrawlSaveData;
-  try{validateDetail1Document(data.map.physicalGrid,data.version,data.map.physicalGrid?.poiIdentities?poiNameLocators({regions:data.map.regions,waterPoiByKey:new Map(Object.entries(data.map.waterPoiByHexKey??{}))},true):undefined);}catch{throw new SaveValidationError('map.physicalGrid','invalid or ambiguous POI identity owner');}
+  try{validateDetail1Document(data.map.physicalGrid,data.version,data.map.physicalGrid?.poiIdentities?poiNameLocators({regions:data.map.regions,waterPoiByKey:new Map(Object.entries(data.map.waterPoiByHexKey??{}))},true):undefined,validateSpatial);}catch{throw new SaveValidationError('map.physicalGrid','invalid or ambiguous POI identity owner');}
   try{validateClassification(data.map.classification,knaveMapContext({regions:data.map.regions,hexTerrainByKey:new Map(Object.entries(data.map.terrainByHexKey)),waterPoiByKey:new Map(Object.entries(data.map.waterPoiByHexKey??{}))}),data.version);}catch{throw new SaveValidationError('map.classification','invalid classification');}
   try{validateKnaveLayer(data.map.knave,knaveMapContext({regions:data.map.regions,hexTerrainByKey:new Map(Object.entries(data.map.terrainByHexKey)),waterPoiByKey:new Map(Object.entries(data.map.waterPoiByHexKey??{}))}),data.version,data.ui.generationMode??'classic');}catch{throw new SaveValidationError('map.knave','invalid profile or annotations');}
   if(data.version>=8)try{assertEditorNames({...data.map,seas:data.version>=9?data.map.seas:[],obstacles:(data.map.obstacles??[]) as EditableObstacle[],hexTerrainByKey:new Map(Object.entries(data.map.terrainByHexKey)),waterPoiByKey:new Map(Object.entries(data.map.waterPoiByHexKey??{})),riverFeatures:data.map.riverFeatures??emptyRiverFeatures(),editorNames:data.map.editorNames===undefined?{}:data.map.editorNames});}catch{throw new SaveValidationError('map.editorNames','invalid or dangling authored object name');}
@@ -1114,15 +1114,25 @@ function prepareKnaveGeneratedMap(map:MapSnapshot,catalog:KnaveCatalog,preserved
   });
   const next={...map,regions,knave:{...map.knave,content}};checkedRiverMap(next);return next;
 }
-/** Identity updates are detached from geometry. Empty-footprint checkpoints can
- * reconcile explicit POI operations; spatial states remain gated until their
- * actual water/route geometry is integrated. Never guess a missing old alias. */
+/** Preserve accepted extents/ports on ordinary edits; prepare all new owners
+ * against actual geometry and refuse incompatible candidates before writes. */
 function reconcileDetailMapIdentities<T extends MapSnapshot>(map:T,moves:ReadonlyMap<string,string|null>=new Map()):T{
   const state=map.physicalGrid;if(!state?.poiIdentities)return map;
-  if(state.poiFootprints.length)throw Error('DETAIL1 live spatial reconciliation is not available');
-  const next=reconcileDetailPoiIdentities(poiNameLocators(map,true),state.poiIdentities,moves);
-  return next===state.poiIdentities?map:{...map,physicalGrid:{...state,poiIdentities:next}};
+  const next=reconcileDetailGeography(map,detailMapRiverGeometry(map,state.grid.origin),moves);
+  return next===state?map:{...map,physicalGrid:next};
 }
+/** Explain spatial refusal through every existing editor without losing its
+ * atomic transaction boundary or offering a fictional automatic repair. */
+function detailCommandError(error:unknown,language:Language):string|undefined {
+ const reason=error instanceof Error?error.message:'';if(!reason.startsWith('DETAIL1 '))return undefined;
+ const ru=language==='ru';
+ if(reason.includes('extent_relocation'))return ru?'Перенос POI с явным охватом или обязательными привязками требует отдельной адаптации охвата. Карта не изменена.':'Moving a POI with an explicit footprint or required attachments needs explicit footprint adaptation. Your map is unchanged.';
+ if(reason.includes('route'))return ru?'Изменение нарушит принятый вход пути в охват POI. Карта не изменена.':'This edit would break an accepted path access to a POI footprint. Your map is unchanged.';
+ if(reason.includes('water')||reason.includes('crossing'))return ru?'Изменение нарушит обязательную привязку охвата POI к прежнему водоёму или речному элементу. Карта не изменена.':'This edit would break the POI footprint attachment to its accepted water body or river feature. Your map is unchanged.';
+ if(reason.includes('extent')||reason.includes('footprint'))return ru?'Принятый охват POI несовместим с новым типом или географией. Карта не изменена.':'The accepted POI footprint conflicts with the new type or geography. Your map is unchanged.';
+ return ru?'Не удалось сохранить идентичность и пространственные связи POI. Карта не изменена.':'The POI identity and spatial attachments could not be retained. Your map is unchanged.';
+}
+
 function checkedRiverMap<T extends MapSnapshot>(map:T):T{
   map=withLegacySeas(map);
   validateDetail1Document(map.physicalGrid,11,map.physicalGrid?.poiIdentities?poiNameLocators(map,true):undefined,state=>validateDetailGeographyFootprints(map,detailMapRiverGeometry(map,state.grid.origin),state));
@@ -1310,8 +1320,8 @@ function prepareRegionMapEdit(map:MapSnapshot,edit:RegionEdit):MapSnapshot{
     const editorNames=Object.fromEntries(Object.entries(authored).map(([key,v])=>[key===from?to:key,v]));
     candidate={...candidate,...identity,editorNames};
     candidate.classification=remapClassification(map.classification,new Map([[from,to]]));
-    candidate=reconcileDetailMapIdentities(candidate,new Map([[from,to]]));
     if(map.knave)candidate.knave=remapKnavePois(map.knave,knaveMapContext(map),knaveMapContext(candidate),new Map([[from,to]]));
+    candidate=reconcileDetailMapIdentities(candidate,new Map([[from,to]]));
   }
   // A road keeps its origin regionId even when a cell underneath it changes
   // owner. Size changes cannot silently invent another road or waive a minimum.
@@ -13537,7 +13547,7 @@ export function App() {
       applyPreparedDocument(after);
       return true;
     } catch (error) {
-      setEditError(authoredNameError(error,language)??(language === 'ru' ? `Путь не изменён: ${roadErrorText(error instanceof Error ? error.message : '')}`
+      setEditError(detailCommandError(error,language)??authoredNameError(error,language)??(language === 'ru' ? `Путь не изменён: ${roadErrorText(error instanceof Error ? error.message : '')}`
         : `Path unchanged: ${error instanceof Error ? error.message : 'preparation error'}`));
       return false;
     }
@@ -13596,12 +13606,11 @@ export function App() {
       recordTransaction(before, after); applyExactMap(prepared); closeEditors();
       return true;
     } catch (error) {
-      setEditError(authoredNameError(error,language)??(error instanceof PoiMoveError?(language==='ru'?'Изменение удалит авторское имя POI. Сначала очистите его явно. Карта не изменена.':'The edit would remove an authored POI name. Clear it explicitly first. Your map is unchanged.'):error instanceof TagCapacityError?tagCommandError(error):language === 'ru' ? 'Не удалось изменить значение. Карта не изменена.' : 'Could not change the value. Your map is unchanged.'));
+      setEditError(detailCommandError(error,language)??authoredNameError(error,language)??(error instanceof PoiMoveError?(language==='ru'?'Изменение удалит авторское имя POI. Сначала очистите его явно. Карта не изменена.':'The edit would remove an authored POI name. Clear it explicitly first. Your map is unchanged.'):error instanceof TagCapacityError?tagCommandError(error):language === 'ru' ? 'Не удалось изменить значение. Карта не изменена.' : 'Could not change the value. Your map is unchanged.'));
       return false;
     }
   };
-  /** One explicit extent operation. Other map edits still refuse nonempty
-   * spatial state until their reconciliation is wired; import remains gated. */
+  /** One explicit extent operation; ordinary import remains separately gated. */
   const editDetailFootprintExtent=(poiId:string,extent:DetailExtent,cells?:readonly AxialHex[],expectedRevision=renderedDocumentRevision):boolean=>{
     if(!editMode||expectedRevision!==documentRevision.current||mutationBlocked(false)||notesComposingRef.current||notesEditorKey!==null||obstacleDraftRef.current)return false;
     try{
@@ -13618,6 +13627,7 @@ export function App() {
     }
   };
   const riverCommandError=(error:unknown)=>{
+    const spatial=detailCommandError(error,language);if(spatial)return spatial;
     const authored=authoredNameError(error,language);if(authored)return authored;
     const reason=error instanceof Error?error.message:'';
     const rules:[string,string,string][]=[['CYCLE','Русло создаёт замкнутый цикл.','The route creates a directed cycle.'],['RIV-007','Сухопутный исток должен иметь полноводность 1.','A dry source must have fullness 1.'],['RIV-005','Полноводность в месте слияния несовместима с притоками.','Fullness at the confluence conflicts with its tributaries.'],['RIV-008','Площадь озера недостаточна для этого истока.','The lake is too small for this source.'],['RIV-009','Площадь озера не выдерживает разницу входа и выхода.','The lake cannot support this inflow/outflow difference.'],['RIV-010','Площадь озера недостаточна для закрытого устья.','The lake is too small for this closed mouth.'],['RIV-006','Недопустимый исток, устье или разветвление; море не может быть истоком.','Invalid source, mouth or split; the sea cannot be a source.'],['owner','Регион владельца не прилегает к ребру.','The owner region does not adjoin the edge.'],['unknown_fixed_river_fullness','Неоднозначная полноводность старого участка.','The old reach has ambiguous fullness.']];
@@ -13679,6 +13689,7 @@ export function App() {
   const waterKindLabel=(kind:WaterKind)=>language==='ru'?({land:'Суша',lake:'Озеро',sea:'Море'}[kind]):({land:'Land',lake:'Lake',sea:'Sea'}[kind]);
   const waterName=(key:string)=>editorNames[key]?.[language]??toponyms[key]?.[language]??(language==='ru'?'Без названия':'Unnamed');
   const waterCommandError=(error:unknown)=>{
+    const spatial=detailCommandError(error,language);if(spatial)return spatial;
     const authored=authoredNameError(error,language);if(authored)return authored;
     const ru=language==='ru',end=ru?' Карта не изменена.':' Your map is unchanged.';
     if(!(error instanceof WaterEditError))return (error instanceof TagCapacityError?tagCommandError(error):ru?'Не удалось подготовить изменение воды.':'Could not prepare the water edit.')+end;
@@ -13712,6 +13723,7 @@ export function App() {
     return (message[error.code]??(ru?'Недопустимое изменение воды.':'Invalid water edit.'))+end;
   };
   const regionCommandError=(error:unknown)=>{
+    const spatial=detailCommandError(error,language);if(spatial)return spatial;
     const authored=authoredNameError(error,language);if(authored)return authored;
     const ru=language==='ru',code=error instanceof RegionEditError?error.code:error instanceof Error?error.message.split(':')[0]:'';
     const unchanged=ru?' Карта не изменена.':' Your map is unchanged.';
@@ -13784,7 +13796,7 @@ export function App() {
       const original=captureMap(),map=prepareRegionMapEdit(original,draft.edit);
       if(map===original){resetRegionDraft(draft);return true;}
       const before=copyDocument(captureDocument()),after=copyDocument({...captureDocument(),map});
-      assertHexcrawlSaveData(createSaveData(after));
+      assertHexcrawlSaveData(createSaveData(after),state=>validateDetailMapFootprints(after.map,state));
       recordTransaction(before,after);applyPreparedDocument(after);return true;
     }catch(error){setEditError(regionCommandError(error));return false;}
   };
@@ -13835,7 +13847,9 @@ export function App() {
   };
   const recordGenerated = (checkpoint: MapSnapshot, map: MapSnapshot, selection: AxialHex,
     backup?: GenerationBackup, checkpoints = history) => {
-    map=reconcileDetailMapIdentities(map);
+    const acceptedSpatial=map.physicalGrid?.poiFootprints.length?map.physicalGrid:undefined;
+    if(acceptedSpatial)map={...map,physicalGrid:{...acceptedSpatial,poiFootprints:[],poiIdentities:reconcileDetailPoiIdentities(poiNameLocators(map,true),acceptedSpatial.poiIdentities)}};
+    else map=reconcileDetailMapIdentities(map);
     if(map.knave&&knaveEnabledRef.current&&!kingdomJob&&generationMode==='classic'){
       let catalog:KnaveCatalog;try{catalog=knaveGenerationCatalog();}catch{throw Error(language==='ru'?'Не удалось загрузить данные Knave 2e. Карта не изменена.':'Knave 2e data could not be loaded. Your map is unchanged.');}
       map=prepareKnaveGeneratedMap(map,catalog,poiNameLocators(checkpoint));
@@ -13844,6 +13858,7 @@ export function App() {
     if(sea.unresolved.length)throw new WaterEditError('sea_name_choice',...sea.unresolved.map(c=>c.key));
     for(const id of sea.removedSeaIds){const pair=map.editorNames[`sea:${id}`];if(pair)throw new AuthoredNameConflict(`sea:${id}`,pair);}
     map.seas=sea.seas;map.nextSeaId=sea.nextSeaId;
+    if(acceptedSpatial)map=reconcileDetailMapIdentities({...map,physicalGrid:acceptedSpatial});
     checkedRiverMap(map);
     assertGeneratedIds(map);
     if (!kingdomJob) backup ??= activeGenerationBackup.current ?? undefined;
@@ -14306,7 +14321,7 @@ export function App() {
 retainPoiNames(checkpoint,editorNamesRef.current);
     const losses=knaveRef.current?knaveLosses(knaveRef.current,knaveMapContext(checkpoint)):[];
     if(losses.length&&!window.confirm(language==='ru'?`Контрольная точка удалит содержимое точек и данные проходимости/обнаружения Knave (${losses.length}). Отмена вернёт их.`:`The checkpoint removes Knave point content and terrain/discovery data (${losses.length}). Undo can restore it.`))return false;
-    return true;}catch(error){setEditError(authoredNameError(error,language)??(language==='ru'?'Контрольная точка удалит авторское имя. Сначала очистите его явно.':'The checkpoint would remove an authored name. Clear it explicitly first.'));return false;}};
+    return true;}catch(error){setEditError(detailCommandError(error,language)??authoredNameError(error,language)??(language==='ru'?'Контрольная точка удалит авторское имя. Сначала очистите его явно.':'The checkpoint would remove an authored name. Clear it explicitly first.'));return false;}};
   const deleteLastRegion = () => {
     if (mutationBlocked() || history.length === 0) return;
     const checkpoint = history[history.length-1];
@@ -15067,6 +15082,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
   const poiPolicy=()=>({mode:generationMode,landKinds:(region:Pick<Region,'biomeLandType'>)=>generationMode==='mythic'?mythicPoiChoices(region.biomeLandType==='settled',false):[...EDITABLE_POI_KIND_ORDER.filter(k=>!(k in MYTHIC_POI)||k==='ruins'),...(knaveRef.current?['natural_place','structure']:[])],waterKinds:getWaterPoiKindPool,inKingdomArea:(id:number,h:AxialHex)=>{const kingdom=kingdoms.find(k=>k.id===id);return !!kingdom&&kingdomKeys(kingdom.origin).has(hexKey(h));}});
   const currentPoiDraft=(draft:PoiDraft|null):draft is PoiDraft=>!!draft&&poiDraftRef.current===draft&&draft.revision===documentRevision.current&&draft.token===poiDocumentToken.current&&!documentBusy();
   const poiCommandError=(error:unknown)=>{
+    const spatial=detailCommandError(error,language);if(spatial)return spatial;
     const code=(error as {code?:string})?.code,ru=language==='ru';
     const texts:Record<string,[string,string]>={central_poi:['Центральная точка связана с центром региона. Измените её тип или имя на месте.','The central point is bound to the region center. Edit its type or name in place.'],ambiguous_poi:['На этом гексе несколько объектов; перенос неоднозначен.','Several objects share this hex; the move is ambiguous.'],occupied_poi_target:['Гекс уже занят точкой интереса.','This hex already has a point of interest.'],poi_environment_mismatch:['Наземную точку нельзя переносить в воду, а водную — на сушу.','Land and water points need matching terrain.'],unknown_poi_target:['Выберите существующий гекс карты.','Choose an existing map hex.'],poi_kind_mismatch:['Тип точки несовместим с назначением.','The point type is incompatible with its destination.'],poi_kingdom_mismatch:['Перенос между королевствами здесь недоступен.','Moving between kingdoms is unavailable here.'],poi_myth_area:['Миф должен оставаться в дикой местности внутри области королевства.','A Myth must stay in a wild region inside its kingdom area.'],poi_myth_duplicate:['В целевом регионе уже есть Миф.','The destination region already has a Myth.'],water_poi_in_mythic:['Водные точки можно переносить в режиме Classic.','Move water points in Classic mode.'],poi_path_dependency:['С исходным гексом связан путь. Отмените перенос и измените путь явно.','A path touches the source hex. Discard this move and edit the path explicitly.'],poi_identity_conflict:['В назначении есть данные другой точки; перезапись запрещена.','Other point data exists at the destination;overwriting is blocked.'],coordinate:['Нужны канонические целые координаты q/r.','Enter canonical integer q/r coordinates.'],stale_poi_move:['Карта изменилась. Выберите точку заново.','The map changed. Select the point again.']};
     const details=(error as {details?:string[]})?.details??[];
@@ -15094,7 +15110,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
     if(draft!==expected||!currentPoiDraft(draft)||notesComposingRef.current||dirtyNameDraft())return false;
     try{const {original,map}=preparePoiDraft(draft);if(map===original){resetPoiDraft(draft);return true;}
       const before=copyDocument(captureDocument()),after=copyDocument({...captureDocument(),map,selectedHex:{q:Number(draft.q),r:Number(draft.r)}});
-      assertHexcrawlSaveData(createSaveData(after));recordTransaction(before,after);applyPreparedDocument(after);return true;
+      assertHexcrawlSaveData(createSaveData(after),state=>validateDetailMapFootprints(after.map,state));recordTransaction(before,after);applyPreparedDocument(after);return true;
     }catch(error){setEditError(poiCommandError(error));return false;}
   };
   const poiPreview=(()=>{if(!poiDraft)return null;try{return {plan:preparePoiDraft(poiDraft),error:null,code:null};}catch(error){return {plan:null,error:poiCommandError(error),code:(error as {code?:string}).code};}})();
@@ -15696,6 +15712,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
     roadPairs:new Set(roads.flatMap(r=>r.segments.map(v=>pairKey(v.from,v.to)))),kingdoms
   });
   const obstacleMessage = (error:unknown) => {
+    const spatial=detailCommandError(error,language);if(spatial)return spatial;
     const authored=authoredNameError(error,language);if(authored)return authored;
     const code=error instanceof Error?error.message:'';
     const messages:Record<string,[string,string]>={
