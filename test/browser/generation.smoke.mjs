@@ -19,6 +19,7 @@ function assertRiverTermini(save) {
   assert.equal(checked.valid, true, JSON.stringify(checked.issues));
  } catch (error) {
   // Keep the original assertion fatal. Capture actual inputs, never reroll here.
+  try {
   const directory = new URL('../../reports/generation-failure/', import.meta.url);
   mkdirSync(directory, { recursive: true });
   const { before, ...action } = lastGenerationAction ?? {};
@@ -31,6 +32,9 @@ function assertRiverTermini(save) {
    error: { name: error.name, message: error.message, stack: error.stack }
   }, null, 2));
   console.error('Generation invariant failure captured in reports/generation-failure/');
+  } catch (captureError) {
+   console.error('Generation failure capture could not be written:', captureError);
+  }
   throw error;
  }
 }
