@@ -4,7 +4,7 @@
   "task_id": "HX-BL-051",
   "stage_id": "DETAIL1-D1",
   "role": "programmer",
-  "status": "checkpoint_committed_validation_running",
+  "status": "D1_checkpoint_validated_implementation_continues",
   "head_sha": "15fc8a6a848b269206de42cdc745d588ac1d405b",
   "tree_sha": "0f3081a4883e88dc48a4d24011d34a1ab89df410",
   "local_sha": "9b5d9995ba751a52c71e7ad8a8a27ed568eeaf05",
@@ -12,46 +12,228 @@
   "review_ready": false,
   "release_approved": false,
   "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
       "checked_at": "2026-11-09 15:32:48 UTC",
       "is_enabled": true,
-      "id": "6ad9c2426c7481919bb9f3d2b289e9b9"
+      "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "status": "checked",
+      "method": "automations.peek"
     },
     "end": {
-      "status": "unchecked_run_in_progress"
-    }
+      "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "title": "Команда HexCrawl",
+      "is_enabled": true,
+      "checked_at": "2026-11-09 15:53:37 UTC",
+      "status": "checked",
+      "method": "automations.peek"
+    },
+    "restoration_performed": false,
+    "errors": [],
+    "limitation": "Point-in-time observations only; no guarantee after completion. No schedule/prompt changes.",
+    "other_agent_status": [
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "title": "Исследователь HexCrawl",
+        "is_enabled": true,
+        "checked_at": "2026-11-09 15:53:37 UTC"
+      },
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "title": "Команда HexCrawl",
+        "is_enabled": true,
+        "checked_at": "2026-11-09 15:53:37 UTC"
+      }
+    ]
   },
   "next_role": "programmer",
   "next_task_id": "HX-BL-051",
   "next_step": "Продолжить тот же собственный claim HX-BL-051/DETAIL1 с15fc8a6 в PR496: D2 подключает стабильные POI/legacy identity, детерминированный B/C adapter и полные живые ссылки воды/назначенных путей к документу. Только после проверки этих ссылок снять временный запрет непустых footprints; добавить явный legacy-preview/Apply/Cancel, remap/delete/правку охвата, затем компактный UI1/6/12/24 и actual1500/390/320. Весь пакет требует нового независимого exact-SHA review и отдельного разрешения выпуска; RIV011 не закрыт.",
   "checks": {
-    "focused": "pass",
-    "build": "pass",
-    "browser_save_history": "pass",
-    "local_check": "running",
-    "CI": [
-      {
-        "id": 129262728980,
-        "name": "browser",
-        "status": "completed",
-        "conclusion": "success"
+    "focused_D1_fixture": {
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    "production_build": {
+      "exit_code": 0
+    },
+    "local_npm_check": {
+      "exit_code": 0,
+      "executed": 374,
+      "passed": 374,
+      "failed": 0,
+      "skipped": 0,
+      "duration_ms": 926606.532579,
+      "typescript": "passed",
+      "build": "passed"
+    },
+    "local_browser_save_history": {
+      "exit_code": 0,
+      "workflows": 1,
+      "includes": "existing nested E5/E6/E7/E8/sea/name/100mixed history fixtures; not counted as new tests"
+    },
+    "CI": {
+      "run_id": 42646970702,
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42646970702",
+      "head_sha": "15fc8a6a848b269206de42cdc745d588ac1d405b",
+      "jobs": [
+        {
+          "id": 129262728980,
+          "name": "browser",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 129262729423,
+          "name": "world-random",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 129262729857,
+          "name": "check",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ],
+      "check_log_counts": {
+        "executed": 374,
+        "passed": 374,
+        "failed": 0,
+        "skipped": 0
       },
-      {
-        "id": 129262729423,
-        "name": "world-random",
-        "status": "completed",
-        "conclusion": "success"
-      },
-      {
-        "id": 129262729857,
-        "name": "check",
-        "status": "in_progress",
-        "conclusion": null
-      }
-    ]
+      "browser": "8top-level workflows existing chain passed",
+      "world_random": "passed separately"
+    }
   },
   "limitations": [
     "D1 boundary only, nonempty footprint imports rejected until D2 live validation",
     "Merged unpublished CLASSIFY1 RIV011 risk remains unresolved"
-  ]
+  ],
+  "base_sha": "14f413f63f26e438e168158a869d21ed323959cd",
+  "scope": "D1 live document/history/import/export boundary, upstream integration",
+  "completed_scope": [
+    "PhysicalGrid captured/restored in App document, snapshots and generation backups",
+    "JSONv11 persists physicalGrid and classification together; neither silently drops the sibling layer",
+    "Atomic v10/invalid/nonempty-unvalidated-footprint refusal; old maps not automatically adapted",
+    "Published main90afe OWNERFIX1 and unpublished exact9dab CLASSIFY integrated"
+  ],
+  "test_change_summary_ref": "agent-work/evidence/HX-BL-051-DETAIL1-D1/test-change-summary.json",
+  "test_change_summary": {
+    "base_sha": "1bd35356107d3c8ef3a4dc2dc8339402f94ae794",
+    "base_scope": "Local exact integration baseline after merging published90afe and reviewed9dab, before D1 edits; full ancestry preserved in public commit parents",
+    "head_sha": "15fc8a6a848b269206de42cdc745d588ac1d405b",
+    "head_tree": "0f3081a4883e88dc48a4d24011d34a1ab89df410",
+    "source_count": "git diff localintegrationbase..local9b5d999 + exact public tree equivalence; logical test cases, not lines/files",
+    "D1_increment": {
+      "node": {
+        "added": 1,
+        "removed": 0,
+        "modified": 0,
+        "suite": "test/saveSafety.test.mjs",
+        "scenario_risk": "DTL22/23 actual App loses physicalGrid, drops sibling classification, downgradesv11 or partially imports invalid state",
+        "reuse_or_new_reason": "Existing model parser probes cannot observe actual App state setters/history. Reused saveSafety harness and regionFixture; one distinct lifecycle case."
+      },
+      "browser": {
+        "added": 0,
+        "removed": 0,
+        "modified": 0
+      },
+      "helper": {
+        "modified_files": 1,
+        "added_cases": 0,
+        "reason": "Load actual detailModel dependency through existing extracted App harness"
+      }
+    },
+    "cumulative_PR_vs_current_main": {
+      "base_sha": "90afe931d9e9f8a2482febf77eaed20b401ceece",
+      "node": {
+        "added": 11,
+        "removed": 0,
+        "modified": 2,
+        "note": "6priorDETAIL geometry/adapter cases+4mergedCLASSIFY cases+1D1; modified2existing saveSafety cases inherited CLASSIFY"
+      },
+      "browser": {
+        "added": 0,
+        "removed": 0,
+        "modified_workflows": 3,
+        "modified_files": 5,
+        "note": "Inherited exact9dab CLASSIFY changes; no new D1 browser suite"
+      }
+    },
+    "execution": {
+      "focused_D1_fixture": {
+        "executed": 1,
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0
+      },
+      "production_build": {
+        "exit_code": 0
+      },
+      "local_npm_check": {
+        "exit_code": 0,
+        "executed": 374,
+        "passed": 374,
+        "failed": 0,
+        "skipped": 0,
+        "duration_ms": 926606.532579,
+        "typescript": "passed",
+        "build": "passed"
+      },
+      "local_browser_save_history": {
+        "exit_code": 0,
+        "workflows": 1,
+        "includes": "existing nested E5/E6/E7/E8/sea/name/100mixed history fixtures; not counted as new tests"
+      },
+      "CI": {
+        "run_id": 42646970702,
+        "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42646970702",
+        "head_sha": "15fc8a6a848b269206de42cdc745d588ac1d405b",
+        "jobs": [
+          {
+            "id": 129262728980,
+            "name": "browser",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "id": 129262729423,
+            "name": "world-random",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "id": 129262729857,
+            "name": "check",
+            "status": "completed",
+            "conclusion": "success"
+          }
+        ],
+        "check_log_counts": {
+          "executed": 374,
+          "passed": 374,
+          "failed": 0,
+          "skipped": 0
+        },
+        "browser": "8top-level workflows existing chain passed",
+        "world_random": "passed separately"
+      }
+    },
+    "base_tree": "ae0ea5425cbea63d77b9fb9652582c92c862fb6c"
+  },
+  "score_evidence_ref": "agent-work/evidence/HX-BL-051-DETAIL1-D1/score-evidence1.2.json",
+  "score_changed": false,
+  "score_awarded_points": 0,
+  "confirmed_delta": null,
+  "task_completed": false,
+  "release_authorized": false,
+  "published": false,
+  "main_changed": false,
+  "ui_actual_pending": true,
+  "ui_actual_responsible": "programmer after D2 live adapter and UI integration; no new D1 UI exposed",
+  "handoff_ref": "agent-work/handoffs/2026-11-09-HX-BL-051-DETAIL1-D1-resume.json",
+  "completed_at": "2026-11-09 15:53:37 UTC"
 }
