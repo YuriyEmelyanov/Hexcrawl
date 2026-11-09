@@ -1,4 +1,4 @@
-# DETAIL1 implementation checkpoint D1
+# DETAIL1 implementation checkpoint D2a
 
 Approved scope: agent-operations/agent-work/specs/HX-BL-051-DETAIL1.md (DTL-1.0).
 
@@ -69,3 +69,32 @@ saveSafety suite. Pure model tests cannot detect losing physicalGrid in App
 setters, dropping the sibling classification layer, downgrading JSON v11 or
 partially committing invalid input. The fixture uses existing regionFixture;
 no random map search or additional browser suite is introduced.
+
+## D2a: live identity boundary
+
+An optional physicalGrid.poiIdentities registry stores version1, a monotonic
+nextId counter and byLegacyRef bindings. The aliases are the existing POI name
+locators; detail-poi IDs remain independent from mutable coordinates. Removed
+IDs are not recycled. Explicit simultaneous address mappings preserve IDs;
+missing old aliases and conflicting targets refuse without changing input.
+Allocation uses stable lexical ordering and no RNG. No source text is copied.
+
+The live App import/document checker validates registry completeness against
+actual unambiguous POI locators, reusing poiNameLocators with an opt-in ambiguity
+error. Existing sparse name enumeration remains unchanged. A registry can be
+saved with the empty D1 footprint list and survives exact import/history/reset.
+Older D1/v11 documents without the optional registry remain compatible.
+
+This is an internal identity checkpoint. No activation UI or automatic migration
+is exposed. The nonempty-footprint gate remains until live water/route geometry
+and POI placement are integrated. Ordinary POI/E7/E8 transactions must next use
+the explicit identity reconciliation plus valid footprint relocation/removal;
+unresolved ownership changes currently fail the live boundary instead of losing
+identity silently. New generation must reconcile the complete registry in the
+same transaction. Full DETAIL1 is not review-ready or approved for publication.
+
+Test decision: one new logical Node case covers monotonic identity allocation,
+explicit remap/removal, collision, overflow, ambiguity and input immutability.
+The existing D1 actual-handler saveSafety case is extended to save/restore the
+registry and reject orphan aliases and invalid counters atomically; it is not
+a duplicate new lifecycle runner.

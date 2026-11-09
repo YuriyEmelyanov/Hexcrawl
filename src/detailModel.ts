@@ -1,3 +1,4 @@
+import {parseDetailPoiIdentities,assertDetailPoiOwners,type DetailPoiIdentities} from './detailIdentity.ts';
 import {createDetailGrid,detailPolygonArea,validateDetailFootprint,type DetailCell,type DetailStep,type WorldPoint} from './detailGrid.ts';
 
 export type DetailAttachmentRef=
@@ -12,6 +13,7 @@ export type Detail1State=Readonly<{
   schema:'hexcrawl.detail1';version:1;active:true;
   grid:Readonly<{origin:WorldPoint;orientation:'pointy';convention:'across_flats'}>;
   source:Readonly<{stepMiles:6;physicalConvention:'known_across_flats'|'unknown';displayAssumption:'project_across_flats_6mi'}>;
+  poiIdentities?:DetailPoiIdentities;
   viewStep:DetailStep;poiFootprints:readonly DetailPoiFootprint[];
 }>;
 type Plain=Record<string,unknown>;
@@ -58,7 +60,9 @@ function attachment(value:unknown):DetailAttachmentRef {
 /** Strict parser for the DETAIL1 section of an active v11 document. Reference
  * existence and water/route legality are checked during later App integration. */
 export function parseDetail1StateV11(value:unknown):Detail1State {
-  const root=object(value,'DETAIL1 state',['schema','version','active','grid','source','viewStep','poiFootprints']);
+  const extra=value&&typeof value==='object'&&Object.prototype.hasOwnProperty.call(value,'poiIdentities')?['poiIdentities']:[];
+  const root=object(value,'DETAIL1 state',['schema','version','active','grid','source','viewStep','poiFootprints',...extra]);
+  const poiIdentities=extra.length?parseDetailPoiIdentities(root.poiIdentities):undefined;
   if(root.schema!=='hexcrawl.detail1'||root.version!==1||root.active!==true||![1,6,12,24].includes(root.viewStep as number)||!Array.isArray(root.poiFootprints)) throw Error('Invalid DETAIL1 state');
   const rawGrid=object(root.grid,'DETAIL1 grid',['origin','orientation','convention']);
   if(rawGrid.orientation!=='pointy'||rawGrid.convention!=='across_flats') throw Error('Invalid DETAIL1 grid');
@@ -76,7 +80,8 @@ export function parseDetail1StateV11(value:unknown):Detail1State {
     if(new Set(attachmentKeys).size!==attachmentKeys.length) throw Error('Duplicate attachment reference');
     return Object.freeze({poiId,legacyRef:p.legacyRef as string|null,cells:cells(p.cells),extent:extent(p.extent),attachments});
   }));
-  return Object.freeze({schema:'hexcrawl.detail1',version:1,active:true,grid:Object.freeze({origin,orientation:'pointy',convention:'across_flats'}),source:Object.freeze({stepMiles:6,physicalConvention:rawSource.physicalConvention as 'known_across_flats'|'unknown',displayAssumption:'project_across_flats_6mi'}),viewStep:root.viewStep as DetailStep,poiFootprints});
+  if(poiIdentities)for(const p of poiFootprints)if(p.legacyRef===null||poiIdentities.byLegacyRef[p.legacyRef]!==p.poiId)throw Error('Footprint identity does not match POI binding');
+  return Object.freeze({...(poiIdentities?{poiIdentities}:{}),schema:'hexcrawl.detail1',version:1,active:true,grid:Object.freeze({origin,orientation:'pointy',convention:'across_flats'}),source:Object.freeze({stepMiles:6,physicalConvention:rawSource.physicalConvention as 'known_across_flats'|'unknown',displayAssumption:'project_across_flats_6mi'}),viewStep:root.viewStep as DetailStep,poiFootprints});
 }
 
 export type LegacyDetailAdaptationPreview=Readonly<{
@@ -94,9 +99,10 @@ export function prepareLegacyDetailAdaptation(input:Readonly<{sourceVersion:numb
 /** Live document boundary for D1. Until the live geometry adapter is connected,
  * fail closed on footprints rather than accepting unchecked spatial references.
  * No existing save is implicitly activated or assigned a physical convention. */
-export function validateDetail1Document(value:unknown,saveVersion:number):void {
+export function validateDetail1Document(value:unknown,saveVersion:number,liveAliases?:ReadonlySet<string>):void {
   if(value===undefined)return;
   if(saveVersion!==11)throw Error('Physical grid requires version11');
   const state=parseDetail1StateV11(value);
+  if(state.poiIdentities&&liveAliases)assertDetailPoiOwners(state.poiIdentities,liveAliases);
   if(state.poiFootprints.length)throw Error('DETAIL1 POI adaptation is not available in this checkpoint');
 }

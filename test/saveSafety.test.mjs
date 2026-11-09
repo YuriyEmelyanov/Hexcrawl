@@ -290,15 +290,15 @@ test('DETAIL1 live document keeps physical grid and classification together thro
  await load(regionFixture());const before=snapshot();
  const data=structuredClone(before);data.version=11;
  data.map.classification={version:1,difficultyByHex:{'2,0':'dangerous'},discoveryByPoi:{}};
- data.map.physicalGrid={schema:'hexcrawl.detail1',version:1,active:true,grid:{origin:{x:0,y:0},orientation:'pointy',convention:'across_flats'},source:{stepMiles:6,physicalConvention:'unknown',displayAssumption:'project_across_flats_6mi'},viewStep:12,poiFootprints:[]};
+ data.map.physicalGrid={schema:'hexcrawl.detail1',version:1,active:true,grid:{origin:{x:0,y:0},orientation:'pointy',convention:'across_flats'},source:{stepMiles:6,physicalConvention:'unknown',displayAssumption:'project_across_flats_6mi'},viewStep:12,poiFootprints:[],poiIdentities:{version:1,nextId:2,byLegacyRef:{'poi:1:2,0':'detail-poi:1'}}};
  await load(data);assert.deepEqual(alerts,[]);assert.deepEqual(snapshot(),data);
  g.render().undoMap();assert.deepEqual(snapshot(),before);g.render().redoMap();assert.deepEqual(snapshot(),data);
  g.render().changeGenerationMode('mythic');assert.deepEqual(snapshot().map,data.map);g.render().changeGenerationMode('classic');assert.deepEqual(snapshot(),data);
  const gridOnly=structuredClone(data);delete gridOnly.map.classification;await load(gridOnly);assert.deepEqual(snapshot(),gridOnly);assert.equal(snapshot().version,11);
  g.render().resetMap();assert.equal(snapshot().map.physicalGrid,undefined);g.render().undoMap();assert.deepEqual(snapshot(),gridOnly);
  const doc=structuredClone(g.render().captureDocument()),history=structuredClone([g.render().undoHistory,g.render().redoHistory]);
- for(const mutate of [d=>d.version=10,d=>d.map.physicalGrid.viewStep=2,d=>d.map.physicalGrid.grid.extra=true,d=>d.map.physicalGrid.poiFootprints=[{poiId:'unchecked:1',legacyRef:null,cells:[{q:0,r:0}],extent:{kind:'default',reason:'unknown_size',policy:'one_cell'},attachments:[]}]]){
+ for(const mutate of [d=>d.map.physicalGrid.poiIdentities.byLegacyRef={'poi:1:99,99':'detail-poi:1'},d=>d.map.physicalGrid.poiIdentities.nextId=1,d=>d.version=10,d=>d.map.physicalGrid.viewStep=2,d=>d.map.physicalGrid.grid.extra=true,d=>d.map.physicalGrid.poiFootprints=[{poiId:'unchecked:1',legacyRef:null,cells:[{q:0,r:0}],extent:{kind:'default',reason:'unknown_size',policy:'one_cell'},attachments:[]}]]){
   const invalid=structuredClone(gridOnly);mutate(invalid);await load(invalid);assert.deepEqual(structuredClone(g.render().captureDocument()),doc);assert.deepEqual(structuredClone([g.render().undoHistory,g.render().redoHistory]),history);
  }
- assert.equal(alerts.length,4);assert.deepEqual(snapshot().generation,before.generation);
+ assert.equal(alerts.length,6);assert.deepEqual(snapshot().generation,before.generation);
 });

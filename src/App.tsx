@@ -990,6 +990,7 @@ function assertHexcrawlSaveData(value: unknown): asserts value is ValidatedHexcr
     kingdoms: (map, version) => validateKingdomLayers(map, getHexEdgeKeys, version >= 5)
   });
   const data=value as HexcrawlSaveData;
+  try{validateDetail1Document(data.map.physicalGrid,data.version,data.map.physicalGrid?.poiIdentities?poiNameLocators({regions:data.map.regions,waterPoiByKey:new Map(Object.entries(data.map.waterPoiByHexKey??{}))},true):undefined);}catch{throw new SaveValidationError('map.physicalGrid','invalid or ambiguous POI identity owner');}
   try{validateClassification(data.map.classification,knaveMapContext({regions:data.map.regions,hexTerrainByKey:new Map(Object.entries(data.map.terrainByHexKey)),waterPoiByKey:new Map(Object.entries(data.map.waterPoiByHexKey??{}))}),data.version);}catch{throw new SaveValidationError('map.classification','invalid classification');}
   try{validateKnaveLayer(data.map.knave,knaveMapContext({regions:data.map.regions,hexTerrainByKey:new Map(Object.entries(data.map.terrainByHexKey)),waterPoiByKey:new Map(Object.entries(data.map.waterPoiByHexKey??{}))}),data.version,data.ui.generationMode??'classic');}catch{throw new SaveValidationError('map.knave','invalid profile or annotations');}
   if(data.version>=8)try{assertEditorNames({...data.map,seas:data.version>=9?data.map.seas:[],obstacles:(data.map.obstacles??[]) as EditableObstacle[],hexTerrainByKey:new Map(Object.entries(data.map.terrainByHexKey)),waterPoiByKey:new Map(Object.entries(data.map.waterPoiByHexKey??{})),riverFeatures:data.map.riverFeatures??emptyRiverFeatures(),editorNames:data.map.editorNames===undefined?{}:data.map.editorNames});}catch{throw new SaveValidationError('map.editorNames','invalid or dangling authored object name');}
@@ -1113,7 +1114,7 @@ function prepareKnaveGeneratedMap(map:MapSnapshot,catalog:KnaveCatalog,preserved
 }
 function checkedRiverMap<T extends MapSnapshot>(map:T):T{
   map=withLegacySeas(map);
-  validateDetail1Document(map.physicalGrid,11);
+  validateDetail1Document(map.physicalGrid,11,map.physicalGrid?.poiIdentities?poiNameLocators(map,true):undefined);
   assertEditorNames(map);
   validateClassification(map.classification,knaveMapContext(map));
   validateKnaveLayer(map.knave,knaveMapContext(map),10,map.regions.some(r=>r.generationMode==='mythic')?'mythic':'classic');
