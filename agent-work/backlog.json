@@ -3476,7 +3476,13 @@
       "next_role": "owner",
       "next_role_after_approval": "business_analyst",
       "next_step": "Ожидается утверждение владельцем задачи HX-BL-028/BRUSH1; затем аналитик специфицирует только утверждённый пакет и показывает desktop/narrow UI без третьего gate.",
-      "proposal_authority_ref": "agent-work/decisions/owner-decision-2026-11-09-strategist-batch-proposals.json"
+      "proposal_authority_ref": "agent-work/decisions/owner-decision-2026-11-09-strategist-batch-proposals.json",
+      "priority_reassessment": {
+        "status": "secondary_proposal_not_urgent_owner_gate",
+        "owner_feedback": "Не вижу в них приоритетные задачи.",
+        "result_ref": "agent-work/results/2026-11-09T1225-strategist-priority-correction.json",
+        "recommendation": "Retain proposal/history; below approved044/051 and proposed047. No taskapproval/rejection inferred."
+      }
     },
     {
       "task_id": "HX-BL-029",
@@ -13864,7 +13870,179 @@
           "release_authorized": false
         }
       ],
-      "last_research_result_ref": "agent-work/research/runs/2026-11-09T0857-PF2-terrain-judgement.json"
+      "last_research_result_ref": "agent-work/research/runs/2026-11-09T0857-PF2-terrain-judgement.json",
+      "product_proposal": {
+        "schema_version": 1,
+        "version": 1,
+        "task_id": "HX-BL-047",
+        "stage_id": "SD-TERRAIN1",
+        "status": "proposed",
+        "role": "strategist_manager",
+        "title": "Создавать и продолжать карту по таблицам местности Shadowdark",
+        "created_at": "2026-11-09T12:31:20.705Z",
+        "primary_scenario": "create",
+        "layer": "L1",
+        "ranking_version": "three-scenario-ranks-1.4-create-evidence",
+        "cohort_version": "2026-11-06-ranking1.4-create-evidence",
+        "target_profile": {
+          "game_id": "SD",
+          "edition": "Shadowdark Core2023; supplied v4.6 filename, internal revision unverified",
+          "reference_overall_rank": 4,
+          "reference_create_rank": 4,
+          "rank_source": "agent-work/market/three-scenario-ranking-2026-11-06.json"
+        },
+        "problem": "В готовом разборе есть точные процедуры начальной местности и следующего пустого гекса, но текущий Classic выбирает биомы по своим высотным/соседским весам. Исторический аудит и адресное чтение main90afe931 не подтверждают применение семи строк Shadowdark. Перечень предложений028/050/052 обходил этот прямой генераторный результат.",
+        "benefit": "Мастер получает новую карту и её продолжение с узнаваемым распределением и переходами местности выбранной игры; меньше ручной сверки таблиц.",
+        "user_visible_effect": {
+          "before": "Выбрать Classic и добавить территорию: применяется текущая региональная генерация; выбрать процедуру Shadowdark нельзя.",
+          "after": "Выбрать профиль Shadowdark, создать стартовую местность, затем добавить соседний пустой гекс. Например, от леса при New Hex 4+4 продолжится лес; при 4+5 получится категория океана и соответствующая вода на карте.",
+          "result_contract": "Нужна видимая пригодная карта с реальными сухопутными/водными результатами. Один source-record, pending-плашка, справка о правилах или подпись «океан» на суше не являются завершением."
+        },
+        "in_scope": [
+          "Один необязательный профиль существующего генератора: начальная местность по выбору/2d6 и последовательное добавление пустого соседнего гекса по сохранённой исходной категории.",
+          "Семь исходных категорий; точные интервалы2d6 и циклические переходы. Выбор desert/arctic, forest/jungle и river/coast задаётся мастером; аналитик делает его компактным и не требует повторного выбора для каждого одинакового результата.",
+          "Применять выбранный результат к реальной карте. Аналитик до разработки закрывает отображение пустыни/арктики/джунглей и отображение/геометрию воды, реки/побережья через повторное использование текущих слоёв. Обнаруженный большой самостоятельный пробел гидрологии выносится отдельным ограниченным решением, а не скрывается фиктивным результатом.",
+          "Сохранить категорию и выбор мастера независимо от оформления; продолжение, сохранение и Undo/Redo используют прежние результаты. Старые принятые объекты и смена профиля сохраняются.",
+          "Показать предлагаемый и фактический UI desktop/узкий экран в утверждённых границах; общие действия выбора/броска и редактора переиспользовать."
+        ],
+        "out_of_scope": [
+          "Движение партии/время/встречи L2/L3",
+          "Полная поддержка Shadowdark, генераторы NPC/сокровищ/подземелий",
+          "Автоматический перенос параметров на PF2/DND/WWN/DH",
+          "Климатическая симуляция, широкий рефакторинг, автоматическое переписывание нынешнего Classic",
+          "Новый массовый замер производительности или платные сервисы"
+        ],
+        "priority_vs_alternatives": [
+          {
+            "task_id": "HX-BL-044/CLASSIFY1",
+            "decision": "Сначала завершить разрешённую ограниченную диагностику и независимую проверку уже реализованного пакета. ОтрицательныйRIV-011 остаётся unknown; это не разрешение бесконечно перезапускать генератор."
+          },
+          {
+            "task_id": "HX-BL-051/DETAIL1",
+            "decision": "Уже утверждённая продуктовая работа остаётся впереди новой разработки; продолжать собственный paused claim по пригодной передаче, без дублирования."
+          },
+          {
+            "task_id": "HX-BL-028,HX-BL-050,HX-BL-052",
+            "decision": "Второй эшелон: ускоряют ручную подготовку, но не дают следующую процедуру создания территории. Отдельные proposals сохранены, не отвергнуты и не утверждены."
+          },
+          {
+            "task_id": "HX-BL-008/MB",
+            "decision": "Не предлагать повторную реализацию MBd12: аудит подтвердил её наличие и варианты владельца."
+          },
+          {
+            "task_id": "DND5/PF2",
+            "decision": "Ранги1/2 выше SD4; совпадение общихrule_id не доказывает одинаковых параметров. В этом ограниченном выбореSD имеет готовые точные таблицы и адресный разбор совместимости; не обещать поддержку DND/PF2 через этот профиль и не назначать очередь только по названию игры."
+          }
+        ],
+        "estimated_scope": "L: ориентировочно1–2аналитических,2–4реализационных и1–2независимых проверочных этапа; оценка объёма, не срока/расхода. После анализа отображения всех7категорий уточнить объём до разработки.",
+        "dependencies": [
+          "Обычное утверждение начала HX-BL-047/SD-TERRAIN1; сейчас предложено, не утверждено.",
+          "Сохранить текущие044/051claims и их приоритет; после них определить точную интеграционную базу.",
+          "Адресная сверка существующих слоёв земли/воды/рек и адаптации семи категорий. Не повторять полный аудит книги или всех тестов.",
+          "Переиспользовать независимые RNGпотоки, общий табличный выбор, документ/историю и импорт; не создавать второй движок."
+        ],
+        "acceptance": [
+          "Стартовая таблица на36упорядоченных исходах2d6 даёт количества[1,2,12,11,7,2,1]; ручной выбор тоже создаёт реальную местность.",
+          "New Hex на36исходах даёт +1=3,same=23,+2=9,новыйterrainroll=1; после mountain переход+1 возвращается к первой категории. Дополнительныйterrainroll хранится отдельно.",
+          "Показать созданную карту для каждого из семи семантических результатов и выбранных альтернатив. Река/берег/океан подтверждены фактическим водным слоем/геометрией; при конфликте исходная карта остаётся прежней, причина и разрешение доступны в действии редактирования.",
+          "Выбранный лес при8 продолжается лесом; при9 даёт океан. Изменение визуального подтипа не меняет индекс исходной категории для следующего шага.",
+          "Соседние принятые гексы, POI, вода, пути и ручные тексты сохраняются; занятый целевой гекс не перегенерируется скрыто. Смена профиля сохраняет карту.",
+          "JSONroundtrip, Undo/Redo и продолжение после загрузки сохраняют категории, реальные слои и RNG. Старым картам не приписываются выдуманные исторические броски.",
+          "На1500и390/320показать короткий путь создания→продолжения→сохранения. В чтении нет служебныхSource/pending/unknownпояснений вместо содержимого. Полнаяприёмка точногоSHA и score_assessment1.2 до запроса выпуска."
+        ],
+        "source_refs": [
+          "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-047-L1",
+          "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-048-L1",
+          "agent-work/research/requirements/SD-terrain-mapping-v1.json",
+          "agent-work/research/runs/2026-11-06T1430-SD-terrain-mapping.json"
+        ],
+        "canonical_rule_ids": [
+          "map.terrain_zones",
+          "map.terrain_distribution",
+          "map.generate_on_discovery",
+          "map.extend_preserving_content"
+        ],
+        "shared_profile_applicability": {
+          "target_binding_ids": [
+            "SD-CORE-047-L1",
+            "SD-CORE-048-L1"
+          ],
+          "other_games": "Shared rules have DND5/PF2/KNAVE2/WWN/MB/DH bindings; parameter equivalence and runtime coverage unverified. No full-game or automatic multi-game claim.",
+          "reverse_index_ref": "agent-work/evidence/priority-reassessment-2026-11-09/shared-rules-index.json"
+        },
+        "evidence": {
+          "main_sha": "90afe931d9e9f8a2482febf77eaed20b401ceece",
+          "app_blob_sha": "6350591bacf7a4cc7a80b43bcd9d4e1f95f91fd3",
+          "method": "Boundedstaticread of currentApp pickBiome12639–12662 and absentShadowdarkkeywords, compared with documented generation and historical seven-category audit. No fresh runtime; absence not proved solely by textsearch.",
+          "source_matrix_blob_sha": "140c0683463307440f08d64aca90ab2ff952677a",
+          "current_runtime": "unverified"
+        },
+        "score": {
+          "model_version": "1.2",
+          "baseline_ref": "agent-work/score/current-score.json",
+          "baseline_blob_sha": "0375056c5d65ddd62fbb61cd55e55203dd0d9229",
+          "status": "unknown",
+          "expected_delta": null,
+          "criteria": [
+            {
+              "criterion_id": "S01-C05",
+              "before_grade": null,
+              "before_points": null,
+              "expected_grade": null,
+              "expected_delta": null,
+              "evidence_needed": "Independent exactSHA profile behavior, actual map layers, deterministic continuation and preservation; bounded pass is not whole-criterion grade."
+            },
+            {
+              "criterion_id": "S02-C01",
+              "before_grade": null,
+              "before_points": null,
+              "expected_grade": null,
+              "expected_delta": null,
+              "evidence_needed": "Independent exactSHA profile behavior, actual map layers, deterministic continuation and preservation; bounded pass is not whole-criterion grade."
+            },
+            {
+              "criterion_id": "S02-C03",
+              "before_grade": null,
+              "before_points": null,
+              "expected_grade": null,
+              "expected_delta": null,
+              "evidence_needed": "Independent exactSHA profile behavior, actual map layers, deterministic continuation and preservation; bounded pass is not whole-criterion grade."
+            },
+            {
+              "criterion_id": "S04-C04",
+              "before_grade": null,
+              "before_points": null,
+              "expected_grade": null,
+              "expected_delta": null,
+              "evidence_needed": "Independent exactSHA profile behavior, actual map layers, deterministic continuation and preservation; bounded pass is not whole-criterion grade."
+            }
+          ],
+          "awarded_points": 0
+        },
+        "feedback": {
+          "HX_FB_002": "Reuse existing generation/save/history/browser cases; only distinct requirement risks justify permanent newcases. No recurring fulltestaudit."
+        },
+        "full_specification_allowed": false,
+        "implementation_allowed": false,
+        "release_authorized": false,
+        "extra_spend_authorized": false,
+        "required_owner_decision": "Утвердить начало HX-BL-047/SD-TERRAIN1 в перечисленных границах после текущих утверждённых044/051; самостоятельное разрешение публикации точного проверенного пакета остаётся отдельным.",
+        "next_role_after_approval": "business_analyst",
+        "ui_preview": {
+          "status": "pending_during_approved_specification",
+          "shown": false,
+          "design_approval_is_blocking": false
+        },
+        "limitations": [
+          "Предложение, не полная спецификация и не новая реализация.",
+          "Семь категорий требуют реального сопряжения с землёй/водой; нельзя продать только техническое хранение как готовый генератор.",
+          "Нет повторного чтения всей книги, нового рейтинга/score или гарантии полного соответствия всем изданиям."
+        ]
+      },
+      "proposal_ref": "agent-work/proposals/2026-11-09-HX-BL-047-SD-TERRAIN1.json",
+      "proposed_stage_id": "SD-TERRAIN1",
+      "recommended_tier": "next_product_after_current_approved_work",
+      "next_step": "Ожидается утверждение начала HX-BL-047/SD-TERRAIN1. Аналитик после утверждения закрывает все7категорий→реальнаякарта; затем реализация и независимыйreview. Текущие044/051впереди."
     },
     {
       "task_id": "HX-BL-048",
@@ -15070,7 +15248,13 @@
       "next_role": "owner",
       "next_role_after_approval": "business_analyst",
       "next_step": "Ожидается утверждение владельцем задачи HX-BL-050/POLITY1; затем аналитик специфицирует только утверждённый пакет и показывает desktop/narrow UI без третьего gate.",
-      "proposal_authority_ref": "agent-work/decisions/owner-decision-2026-11-09-strategist-batch-proposals.json"
+      "proposal_authority_ref": "agent-work/decisions/owner-decision-2026-11-09-strategist-batch-proposals.json",
+      "priority_reassessment": {
+        "status": "secondary_proposal_not_urgent_owner_gate",
+        "owner_feedback": "Не вижу в них приоритетные задачи.",
+        "result_ref": "agent-work/results/2026-11-09T1225-strategist-priority-correction.json",
+        "recommendation": "Retain proposal/history; below approved044/051 and proposed047. No taskapproval/rejection inferred."
+      }
     },
     {
       "task_id": "HX-BL-051",
@@ -15884,7 +16068,13 @@
       "next_role": "owner",
       "next_role_after_approval": "business_analyst",
       "next_step": "На утверждение052/BASE1: существующая база, связанные места и быстрый переход; без служб/слухов/путешествий. После утверждения аналитик готовит спецификацию и показываетUI.",
-      "proposal_authority_ref": "agent-work/decisions/owner-decision-2026-11-09-strategist-batch-proposals.json"
+      "proposal_authority_ref": "agent-work/decisions/owner-decision-2026-11-09-strategist-batch-proposals.json",
+      "priority_reassessment": {
+        "status": "secondary_proposal_not_urgent_owner_gate",
+        "owner_feedback": "Не вижу в них приоритетные задачи.",
+        "result_ref": "agent-work/results/2026-11-09T1225-strategist-priority-correction.json",
+        "recommendation": "Retain proposal/history; below approved044/051 and proposed047. No taskapproval/rejection inferred."
+      }
     },
     {
       "schema_version": 1,
@@ -17581,33 +17771,77 @@
     {
       "task_id": "HX-BL-051",
       "stage_id": "DETAIL1",
+      "status": "implementation_in_progress",
+      "tier": "approved_execution",
       "priority": 1,
-      "proposal_ref": "agent-work/proposals/2026-11-09-HX-BL-051-OVERVIEW1.json",
-      "status": "approved_spec_ready",
       "spec_ref": "agent-work/specs/HX-BL-051-DETAIL1.md"
+    },
+    {
+      "task_id": "HX-BL-047",
+      "stage_id": "SD-TERRAIN1",
+      "status": "proposed",
+      "tier": "next_product_recommendation",
+      "priority": 2,
+      "proposal_ref": "agent-work/proposals/2026-11-09-HX-BL-047-SD-TERRAIN1.json"
     },
     {
       "task_id": "HX-BL-028",
       "stage_id": "BRUSH1",
-      "priority": 2,
-      "proposal_ref": "agent-work/proposals/2026-11-09-HX-BL-028-BRUSH1.json",
-      "status": "proposed"
+      "status": "proposed",
+      "tier": "secondary_backlog",
+      "priority": 10,
+      "owner_response_urgently_requested": false,
+      "reason": "Owner priority objection; no rejection or approval inferred."
     },
     {
       "task_id": "HX-BL-050",
       "stage_id": "POLITY1",
-      "priority": 3,
-      "proposal_ref": "agent-work/proposals/2026-11-09-HX-BL-050-POLITY1.json",
-      "status": "proposed"
+      "status": "proposed",
+      "tier": "secondary_backlog",
+      "priority": 11,
+      "owner_response_urgently_requested": false,
+      "reason": "Owner priority objection; no rejection or approval inferred."
     },
     {
       "task_id": "HX-BL-052",
       "stage_id": "BASE1",
-      "priority": 4,
-      "proposal_ref": "agent-work/proposals/2026-11-09-HX-BL-052-BASE1.json",
-      "status": "proposed"
+      "status": "proposed",
+      "tier": "secondary_backlog",
+      "priority": 12,
+      "owner_response_urgently_requested": false,
+      "reason": "Owner priority objection; no rejection or approval inferred."
     }
   ],
   "proposal_queue_authority_ref": "agent-work/decisions/owner-decision-2026-11-09-strategist-batch-proposals.json",
-  "proposal_queue_owner_direction_ref": "agent-work/proposals/2026-11-09-hex-scale-owner-direction.json"
+  "proposal_queue_owner_direction_ref": "agent-work/proposals/2026-11-09-hex-scale-owner-direction.json",
+  "latest_priority_reassessment": {
+    "run_id": "2026-11-09T1225-strategist-priority-correction",
+    "result_ref": "agent-work/results/2026-11-09T1225-strategist-priority-correction.json",
+    "owner_quote": "Не вижу в них приоритетные задачи.",
+    "status": "recommendation_reassessed",
+    "role": "strategist_manager",
+    "reason": "Directownerpriorityobjection; technical/programmer current044 and051 scope/claims preserved.",
+    "recommended_task_id": "HX-BL-047",
+    "recommended_stage_id": "SD-TERRAIN1",
+    "proposal_ref": "agent-work/proposals/2026-11-09-HX-BL-047-SD-TERRAIN1.json",
+    "approved_execution_order": [
+      "HX-BL-044/CLASSIFY1 bounded diagnostic→independentreview",
+      "HX-BL-051/DETAIL1 resume existingclaim"
+    ],
+    "next_role": "programmer",
+    "next_task_id": "HX-BL-044",
+    "next_step": "Выполнить существующую ограниченную передачу CLASSIFY1-RIV011; после новогоSHA независимыйreview. DETAIL1 продолжать по готовой передаче при блокировке044; чужойclaim не дублировать.",
+    "authority_status": "044/051 approved;047proposed_only;028/050/052secondary_unapproved;no498releaseapproval",
+    "next_owner_decision": "Утверждение начала047/SD-TERRAIN1; текущая044/051работа этого не ждёт.",
+    "previous_priority_queue_ref": "agent-work/backlog.json@d3dbd3d8a25262f8ef92b36b9c7ebcfbc5d5f514",
+    "full_daily_summary": false,
+    "score_changed": false
+  },
+  "next_unapproved_product_recommendation": {
+    "task_id": "HX-BL-047",
+    "stage_id": "SD-TERRAIN1",
+    "proposal_ref": "agent-work/proposals/2026-11-09-HX-BL-047-SD-TERRAIN1.json",
+    "status": "proposed",
+    "next_role_after_approval": "business_analyst"
+  }
 }
