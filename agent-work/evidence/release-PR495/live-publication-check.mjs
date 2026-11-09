@@ -1,0 +1,41 @@
+import {chromium} from '../../hexcrawl-knave/node_modules/playwright/index.mjs';
+import assert from 'node:assert/strict';
+import fs from 'node:fs/promises';
+const out=new URL('./',import.meta.url);
+const px=new URL(process.env.HTTPS_PROXY);
+const proxy={server:px.protocol+'//'+px.hostname+':'+px.port,...(px.username?{username:decodeURIComponent(px.username),password:decodeURIComponent(px.password)}:{})};
+const browser=await chromium.launch({proxy,executablePath:'/workspace/scratch/320e5b03f904/knave-browser-runtime/extracted/chromium',headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
+try {
+ const page=await browser.newPage({ignoreHTTPSErrors:true,viewport:{width:1500,height:1100}}),errors=[];
+ page.on('pageerror',e=>errors.push(e.message));await page.route(/mc\.yandex/,r=>r.abort());
+ await page.addInitScript(()=>{const old=URL.createObjectURL,click=HTMLAnchorElement.prototype.click,blobs=new Map();URL.createObjectURL=function(b){const u=old.call(this,b);if(b.type.startsWith('application/json'))blobs.set(u,b.text());return u;};HTMLAnchorElement.prototype.click=function(){if(blobs.has(this.href)){blobs.get(this.href).then(t=>window.__release=JSON.parse(t));return;}return click.call(this);};});
+ await page.goto('https://app.hexcrawl.ru/?release=PR495',{waitUntil:'networkidle'});
+ const snapshot=async()=>{await page.evaluate(()=>window.__release=null);const menu=page.locator('details.export-menu');if(await menu.getAttribute('open')===null)await menu.locator('summary').click();await page.getByRole('button',{name:'JSON',exact:true}).click();await page.waitForFunction(()=>window.__release);return page.evaluate(()=>{const d=window.__release;delete d.savedAt;return d;});};
+ const badge=page.locator('.language-toggle');assert.equal(await badge.innerText(),'EN');
+ await page.getByRole('button',{name:'Переключить на русский',exact:true}).click();assert.equal(await badge.innerText(),'RU');
+ await page.getByRole('textbox',{name:'Seed мира',exact:true}).fill('137');await page.keyboard.press('Tab');
+ await page.getByRole('checkbox',{name:'Knave 2e'}).check();
+ await page.locator('.gen-params select').nth(0).selectOption('locality');await page.locator('.gen-params select').nth(1).selectOption('wild');await page.locator('.gen-params select').nth(3).selectOption('mainland');await page.locator('polygon.hex.candidate').first().dispatchEvent('click');
+ const generated=await snapshot();assert.equal(generated.version,10);
+ const entries=Object.entries(generated.map.knave.content.byPoi),[owner,content]=entries.find(([,c])=>c.site);
+ assert.ok(content.site.ru.length&&content.trait.ru.length);
+ const coord=owner.split(':')[2];await page.locator(`polygon.hex[data-hex-key="${coord}"]`).dispatchEvent('click');
+ const panel=page.locator('[data-knave-panel]');assert.ok((await panel.innerText()).includes(content.site.ru));
+ const labels=await panel.locator('[data-table-result]').evaluateAll(rows=>rows.map(row=>{const label=row.querySelector('.tag-label'),action=row.querySelector('button[data-tag-slot]'),result=row.querySelector('.tag-result');return {label:label.textContent.trim(),beforeAction:!!(label.compareDocumentPosition(action)&Node.DOCUMENT_POSITION_FOLLOWING),beforeResult:!!(label.compareDocumentPosition(result)&Node.DOCUMENT_POSITION_FOLLOWING)};}));
+ assert.equal(labels.length,2);assert.ok(labels.every(l=>l.label&&l.beforeAction&&l.beforeResult));
+ const primary=panel.locator('[data-knave-part="primary"]');assert.equal(await primary.locator('.tag-pick').count(),1);assert.equal(await primary.locator('.tag-die').count(),0);
+ const trait=panel.locator('[data-knave-part="trait"] .tag-die');const before=await snapshot();
+ assert.equal(await trait.locator('svg text').textContent(),String(before.map.knave.content.byPoi[owner].trait.roll));
+ await trait.click();const after=await snapshot();
+ const bc=before.map.knave.content.rollCounters[owner],ac=after.map.knave.content.rollCounters[owner];
+ assert.equal(ac.trait,bc.trait+1);assert.equal(ac.primary,bc.primary);assert.equal(ac.category,bc.category);
+ assert.deepEqual(after.map.knave.content.byPoi[owner].site,before.map.knave.content.byPoi[owner].site);
+ assert.deepEqual(after.generation,before.generation);
+ const rest=d=>{const copy=structuredClone(d);delete copy.map.knave.content.byPoi[owner].trait;delete copy.map.knave.content.rollCounters[owner].trait;return copy;};
+ assert.deepEqual(rest(after),rest(before));
+ await page.getByRole('button',{name:'Отменить',exact:true}).click();assert.deepEqual(await snapshot(),before);
+ for(const width of [1500,390]){await page.setViewportSize({width,height:1100});await panel.scrollIntoViewIfNeeded();await panel.screenshot({path:new URL(`live-knave-${width}.png`,out).pathname});}
+ assert.deepEqual(errors,[]);
+ const result={checked_at:new Date().toISOString(),live_url:page.url(),head_sha:'12e65a09c8f93e39ce020cc6a919ec67d6979216',tree_sha:'b0b2a17aa8b08cfeaa5cb73e20f6011566af9886',network:'configured runtime HTTPS proxy',TLS_validation:'not asserted in Chromium(ignoreHTTPSErrors); asset verifier default HTTPS validation separate',actual_default_EN_and_current_RU_badges:true,entity_labels_precede_actions_and_results:labels,primary_compatible_pick_no_fake_d100:true,trait_saved_roll_visible:true,one_trait_counter_only:true,other_content_geography_generation_unchanged:true,exact_undo:true,json_version:10,seed:137,generated_poi_records:entries.length,page_errors:errors,method:'Actual live generator→native JSON export→POI selection→trait click→nativeUndo; export capture intercepts download only, no injected result DOM.',limitations:['One real seed and two desktop/mobile emulated widths, not all POIs/devices/AT.','Temporary publication diagnostic, not permanent test growth.']};
+ await fs.writeFile(new URL('live-publication-check.json',out),JSON.stringify(result,null,2));console.log(JSON.stringify(result));
+} finally {await browser.close();}
