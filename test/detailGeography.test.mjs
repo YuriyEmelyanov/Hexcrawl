@@ -86,6 +86,7 @@ test('actual DETAIL1 extent command records one exact undo/redo transaction and 
  assert.equal(h.render().editDetailFootprintExtent(poi.poiId,extent,[{q:999,r:999}]),false);
  assert.deepEqual(structuredClone(h.render().captureDocument()),saved);assert.deepEqual(structuredClone([h.render().undoHistory,h.render().redoHistory]),history);
  h.render().undoMap();assert.deepEqual(structuredClone(h.render().captureDocument()),before);h.render().redoMap();assert.deepEqual(structuredClone(h.render().captureDocument()),after);
+ const reordered=structuredClone(after);const grid=reordered.map.physicalGrid;reordered.map.physicalGrid={poiFootprints:grid.poiFootprints,poiIdentities:grid.poiIdentities,source:grid.source,grid:grid.grid,viewStep:grid.viewStep,active:grid.active,version:grid.version,schema:grid.schema};h.render().applyDocument(reordered);h.render();const count=h.render().undoHistory.length;assert.equal(h.render().editDetailFootprintExtent(poi.poiId,extent,cells),true);assert.equal(h.render().undoHistory.length,count,'field order does not turn a semantic no-op into a transaction');
  // The ordinary importer stays closed until all generic mutations reconcile the layer.
  assert.throws(()=>h.geometry.assertHexcrawlSaveData(h.render().createSaveData()));
 });

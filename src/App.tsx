@@ -1,6 +1,6 @@
 import {prepareDetailFootprintExtentEdit,validateDetailGeographyFootprints,buildDetailGeographyPreview,detailSourcePixelToWorld,detailCrossingPoint} from './detailGeography';
 import {reconcileDetailPoiIdentities} from './detailIdentity';
-import {validateDetail1Document,type DetailExtent,type Detail1State} from './detailModel';
+import {parseDetail1StateV11,validateDetail1Document,type DetailExtent,type Detail1State} from './detailModel';
 import knaveCatalogData from './tags/knaveCatalogData';
 import {emptyKnaveContent,fillKnaveContent,rerollKnaveContent,validateKnaveCatalog,knaveResultText,type KnaveCatalog,type KnaveFacts} from './tags/knave';
 import {hasClassification,emptyClassification,validateClassification,terrainDefault,terrainRisk,discoveryDefault,discoveryTagEffect,remapClassification,classificationLosses,retainClassification,type Classification,type Difficulty,type Discovery} from './classification';
@@ -13608,7 +13608,7 @@ export function App() {
       const before=captureDocument(),map=before.map,state=map.physicalGrid;
       if(!state)return false;
       const next=prepareDetailFootprintExtentEdit(map,detailMapRiverGeometry(map,state.grid.origin),state,poiId,extent,cells);
-      if(JSON.stringify(next)===JSON.stringify(state))return true;
+      if(JSON.stringify(next)===JSON.stringify(parseDetail1StateV11(state)))return true;
       const prepared=copyDocument({...before,map:{...map,physicalGrid:next}});
       recordTransaction(before,prepared);applyExactMap(prepared.map);closeEditors();return true;
     }catch(error){
