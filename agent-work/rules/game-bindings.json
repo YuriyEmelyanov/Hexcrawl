@@ -1800,7 +1800,16 @@
       "profiles": [
         {
           "rule_id": "map.terrain_zones",
-          "parameters": {},
+          "parameters": {
+            "primary_terrain": "one_predominant_not_exclusive",
+            "additional_elements": [
+              "river",
+              "road",
+              "site"
+            ],
+            "predominance_fraction": null,
+            "site_count_limit": null
+          },
           "exceptions": [
             "Hexploration is optional; action metadata may cite legacy GMG"
           ],
@@ -1809,11 +1818,20 @@
           ],
           "profile_status": "unverified",
           "source_clause": "У гекса одна преобладающая местность; река, дорога и места — дополнительные объекты.",
-          "verification_requirement": "Source parameters extracted; component normalization and cross-game parameter equivalence require independent review before inherited implementation evidence."
+          "verification_requirement": "Known-output selected-terrain/river/road/site edits/save cases; actual evidence on exact SHA, no equivalence inferred from source mapping."
         },
         {
           "rule_id": "map.routes_and_barriers",
-          "parameters": {},
+          "parameters": {
+            "primary_terrain": "one_predominant_not_exclusive",
+            "additional_elements": [
+              "river",
+              "road",
+              "site"
+            ],
+            "predominance_fraction": null,
+            "site_count_limit": null
+          },
           "exceptions": [
             "Hexploration is optional; action metadata may cite legacy GMG"
           ],
@@ -1822,11 +1840,20 @@
           ],
           "profile_status": "unverified",
           "source_clause": "У гекса одна преобладающая местность; река, дорога и места — дополнительные объекты.",
-          "verification_requirement": "Source parameters extracted; component normalization and cross-game parameter equivalence require independent review before inherited implementation evidence."
+          "verification_requirement": "Known-output selected-terrain/river/road/site edits/save cases; actual evidence on exact SHA, no equivalence inferred from source mapping."
         },
         {
           "rule_id": "content.place_description",
-          "parameters": {},
+          "parameters": {
+            "primary_terrain": "one_predominant_not_exclusive",
+            "additional_elements": [
+              "river",
+              "road",
+              "site"
+            ],
+            "predominance_fraction": null,
+            "site_count_limit": null
+          },
           "exceptions": [
             "Hexploration is optional; action metadata may cite legacy GMG"
           ],
@@ -1835,14 +1862,65 @@
           ],
           "profile_status": "unverified",
           "source_clause": "У гекса одна преобладающая местность; река, дорога и места — дополнительные объекты.",
-          "verification_requirement": "Source parameters extracted; component normalization and cross-game parameter equivalence require independent review before inherited implementation evidence."
+          "verification_requirement": "Known-output selected-terrain/river/road/site edits/save cases; actual evidence on exact SHA, no equivalence inferred from source mapping."
         }
       ],
       "coverage_status": "unverified",
       "historical_status": null,
-      "own_acceptance_check": "Проверить требование «Хранить местность, дороги, реки и места независимо» на точном SHA с профилем этого правила и граничными условиями; отличать ручной способ от автоматического. Для изменяемых данных проверить save/load и undo/redo; для L3 — результат интеграции/механики, а не наличие заметки.",
+      "own_acceptance_check": "PF2-RM-003-L1-AC01: Given Ведущий выбрал подробный гекс H с преобладающим лесом и допустимыми позициями для реки R, дороги D и пещеры P. When Добавить R, D и P как выбранные дополнительные элементы H. Expected У H остаётся преобладающий лес; река, дорога и пещера присутствуют одновременно и различимы. Лес не заменён типом «река», а P не исчезло из-за дороги.\nPF2-RM-003-L1-AC02: Given В H есть лес, R, D и пещера P с именем «Старая пещера». When Переименовать только P в «Пещера у брода». Expected Изменено только имя P; преобладающая местность, положение P, река R и дорога D сохранены. Сам брод не создан автоматически из имени.\nPF2-RM-003-L1-AC03: Given В H есть R/D/P; ведущий выбирает холмы вместо леса, все позиции дополнительных элементов остаются допустимыми по действующим ограничениям карты. When Изменить только преобладающую местность H. Expected Преобладающая местность стала холмами; R/D/P и их описания сохранены. Если реальное ограничение совместимости обнаружено, оно требует отдельного решения, а не молчаливого стирания содержимого.\nPF2-RM-003-L1-AC04: Given В H есть лес, R/D/P, ведущий выбрал для удаления только дорогу D. When Удалить выбранную дорогу. Expected D удалена; R, P и преобладающий лес сохранены. Удаление дороги не превращает гекс в пустой и не стирает все накладки.\nPF2-RM-003-L1-AC05: Given Для H выбран преобладающий лес; ведущий добавляет описание небольшой поляны. When Сохранить локальное отличие. Expected Лес остаётся преобладающим, описание поляны сохранено как локальное отличие. Не назначены придуманные проценты50/70или новая обязательная геометрия поляны.\nPF2-RM-003-L1-AC06: Given По предложению владельца OVERVIEW1 большая обзорная ячейка G пересекает подробные участки леса и холмов, реку R и место P. When Переключить обзор с6на12/24 и обратно, сохраняя одну подробную карту. Expected Все исходные участки/объекты сохранены; смешанная область не сплющена в единый обязательный «биом PF2». Это ограничение владельца для обзора, не утверждение точной PF2совместимости масштаба или вложения.\nPF2-RM-003-L1-AC07: Given Сохранён подробный H с выбранной преобладающей местностью, локальным отличием, R/D/P и ручными описаниями; другие гексы подготовлены. When Сохранить и снова открыть карту. Expected Восстановлены те же местность, локальное отличие и отдельные R/D/Pс описаниями/положениями; другие гексы сохранены. Новые объекты/случайные броски не добавлены, время движения не рассчитано.",
       "evidence_ids": [],
-      "traceability_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-003-L1"
+      "traceability_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-003-L1",
+      "acceptance_cases": [
+        {
+          "id": "PF2-RM-003-L1-AC01",
+          "given": "Ведущий выбрал подробный гекс H с преобладающим лесом и допустимыми позициями для реки R, дороги D и пещеры P.",
+          "when": "Добавить R, D и P как выбранные дополнительные элементы H.",
+          "expected": "У H остаётся преобладающий лес; река, дорога и пещера присутствуют одновременно и различимы. Лес не заменён типом «река», а P не исчезло из-за дороги."
+        },
+        {
+          "id": "PF2-RM-003-L1-AC02",
+          "given": "В H есть лес, R, D и пещера P с именем «Старая пещера».",
+          "when": "Переименовать только P в «Пещера у брода».",
+          "expected": "Изменено только имя P; преобладающая местность, положение P, река R и дорога D сохранены. Сам брод не создан автоматически из имени."
+        },
+        {
+          "id": "PF2-RM-003-L1-AC03",
+          "given": "В H есть R/D/P; ведущий выбирает холмы вместо леса, все позиции дополнительных элементов остаются допустимыми по действующим ограничениям карты.",
+          "when": "Изменить только преобладающую местность H.",
+          "expected": "Преобладающая местность стала холмами; R/D/P и их описания сохранены. Если реальное ограничение совместимости обнаружено, оно требует отдельного решения, а не молчаливого стирания содержимого."
+        },
+        {
+          "id": "PF2-RM-003-L1-AC04",
+          "given": "В H есть лес, R/D/P, ведущий выбрал для удаления только дорогу D.",
+          "when": "Удалить выбранную дорогу.",
+          "expected": "D удалена; R, P и преобладающий лес сохранены. Удаление дороги не превращает гекс в пустой и не стирает все накладки."
+        },
+        {
+          "id": "PF2-RM-003-L1-AC05",
+          "given": "Для H выбран преобладающий лес; ведущий добавляет описание небольшой поляны.",
+          "when": "Сохранить локальное отличие.",
+          "expected": "Лес остаётся преобладающим, описание поляны сохранено как локальное отличие. Не назначены придуманные проценты50/70или новая обязательная геометрия поляны."
+        },
+        {
+          "id": "PF2-RM-003-L1-AC06",
+          "given": "По предложению владельца OVERVIEW1 большая обзорная ячейка G пересекает подробные участки леса и холмов, реку R и место P.",
+          "when": "Переключить обзор с6на12/24 и обратно, сохраняя одну подробную карту.",
+          "expected": "Все исходные участки/объекты сохранены; смешанная область не сплющена в единый обязательный «биом PF2». Это ограничение владельца для обзора, не утверждение точной PF2совместимости масштаба или вложения."
+        },
+        {
+          "id": "PF2-RM-003-L1-AC07",
+          "given": "Сохранён подробный H с выбранной преобладающей местностью, локальным отличием, R/D/P и ручными описаниями; другие гексы подготовлены.",
+          "when": "Сохранить и снова открыть карту.",
+          "expected": "Восстановлены те же местность, локальное отличие и отдельные R/D/Pс описаниями/положениями; другие гексы сохранены. Новые объекты/случайные броски не добавлены, время движения не рассчитано."
+        }
+      ],
+      "operational_requirement_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-003-L1",
+      "source_limitations": [
+        "One existing paragraph operationalized, no new full-book/corpus audit.",
+        "No numeric terrain proportion, river/road routing, site-density limit or map-generation algorithm extracted.",
+        "Preparation recommendation, not game-use prevalence, implementation evidence or mandatory uniformity of owner's overview cell."
+      ],
+      "owner_overview_boundary": "Detailed predominant terrain not forced onto aggregated mixed overview cell"
     },
     {
       "id": "PF2-RM-004-L1",
