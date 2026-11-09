@@ -53,7 +53,7 @@
   "result_path": null,
   "handoff_commit_sha": "d8540be256914aa9d262d6c0687620d9c3f7e237",
   "active_claim": "agent-work/claims/2026-11-09T0404-programmer-HX-BL-043-ROLLUI2.json",
-  "next_step": "Complete exactSHA checks and independent review for PR495; then request publication permission for this package. Inparallel create two newScribdPDFs+ready title/description onexplicitownerrequest; noScribdupload.",
+  "next_step": "Independent exactSHA confirmation of UI2-FOCUS-001 and fullCI for new PR495head; then publicationapproval gate while nextapprovedDETAIL1 remainsready.",
   "owner_decisions_needed": [
     {
       "task_id": "HX-BL-028",
@@ -98,8 +98,8 @@
   "evidence_path": "agent-work/evidence/KNAVE2-CLASSIC1-review-c5b3c38/",
   "branch_name": "fix/knave-shared-roll-ui2",
   "pr": 495,
-  "head_sha": "78ca3142a61b0840a7b2a45069f2f9e0b41bd217",
-  "checks_status": "in_progress",
+  "head_sha": "12e65a09c8f93e39ce020cc6a919ec67d6979216",
+  "checks_status": "new_exact_SHA_CI_pending",
   "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42561502848",
   "review_verdict": "accepted_exact_public_SHA_and_tree",
   "role_selection_mode": "ready_work_priority",
@@ -984,7 +984,7 @@
     "next_step": "Решить отдельно узкий cleanup AUD-02/03/04; готовую спецификацию024 не задерживать."
   },
   "owner_decisions_note": "PR490 exact package authorized and published. No further publication decision needed for this released package; future package publication remains separate.",
-  "updated_at": "2026-11-09T04:25:52.397Z",
+  "updated_at": "2026-11-09T04:31:17.905Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
     "stage_id": "V3",
@@ -1220,7 +1220,7 @@
     "schedule_changed": false,
     "limitations": "Initial enabled observation has no exact independently recorded timestamp; accurate supplemental/end timestamps do not repair that missing first timestamp. A peek confirms only its observed moment."
   },
-  "previous_reviewed_sha": "50f81251cf000d17f7f91eb96608d35ad900cfe4",
+  "previous_reviewed_sha": "78ca3142a61b0840a7b2a45069f2f9e0b41bd217",
   "test_governance": {
     "decision_ref": "owner-decision-2026-10-26-test-governance",
     "feedback_id": "HX-FB-002",
@@ -1717,11 +1717,14 @@
     "public_sha": "818476e5ec653384ab216efd75db9467d698cfc4",
     "private_sha": "c5b3c384792ce3349e40b0cc3ccc52e3d7685d1e"
   },
-  "current_risk_findings": {
-    "confirmed_defects": [],
-    "coverage_gap": "realReact debug toggle/nonzerocounts/currentSource refresh",
-    "conditional_programmer_handoff": "agent-work/handoffs/2026-10-27-HX-BL-003-minimal-release-package.json"
-  },
+  "current_risk_findings": [
+    {
+      "id": "UI2-FOCUS-001",
+      "status": "fix_submitted",
+      "review_ref": "agent-work/evidence/review-HX-BL-043-ROLLUI2-78ca314/independent-negative-review.json",
+      "fixed_candidate_sha": "12e65a09c8f93e39ce020cc6a919ec67d6979216"
+    }
+  ],
   "model_activation_status": "active_routes_verified",
   "last_process_update": {
     "decision_ref": "owner-decision-2026-10-31-release-user-walkthrough",
@@ -2032,7 +2035,7 @@
     23
   ],
   "schedule_decision_ref": "owner-decision-2026-10-31-team-resume-hourly",
-  "tree_sha": "da0f2c6659e75ef8cef106a8f9e815c048ab49be",
+  "tree_sha": "b0b2a17aa8b08cfeaa5cb73e20f6011566af9886",
   "accepted_release_pending": null,
   "next_product_proposal": {
     "task_id": "HX-BL-042",
@@ -4086,7 +4089,7 @@
     "materials_commit_sha": "64fa823e19f701817ff59d962d7b211e83aaa406"
   },
   "current_stage_status": "changes_requested",
-  "current_stage_review_status": "independent_review_in_progress",
+  "current_stage_review_status": "focus_fix_pending_independent_confirmation",
   "accepted": false,
   "full_UI_pending": false,
   "latest_HX_BL_023_E5_persistence_20261104": {
