@@ -1,0 +1,170 @@
+{
+  "schema_version": 1,
+  "audit_id": "HX-RSR-DND5-SCALE-CONVENTION-01-v1",
+  "run_id": "2026-11-09T1430-DND5-scale-disposition",
+  "status": "bounded_handoff_disposition_complete_source_axis_unknown",
+  "baseline_sha": "f3ed1d24d433c3559c86e2ab3ef1eba5ffba132e",
+  "requirement_id": "DND5-2014-002-L1",
+  "source_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-002",
+  "scope": "One existing scale requirement and corresponding acceptedDETAIL1spec; not fullDND/051implementation",
+  "source_access": {
+    "historical_supplied_source": {
+      "id": "DMG14-RU-upload",
+      "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+      "filename": "5e Dungeon Masters Guide - Руководство Мастера RUS.pdf",
+      "sha256": "95b828ad64eaa192c67a19bcc0149d82204fcb3c992c5407a9091607a23baba8",
+      "pdf_pages": 322,
+      "page_numbering": "Номера печатных страниц, а не позиция в PDF.",
+      "reviewed_sections": [
+        "13–14",
+        "86–87",
+        "106–112",
+        "242–244"
+      ],
+      "limitations": [
+        "Текст извлечён из приложенного PDF; чтение тематических разделов, не аудит каждого правила всей книги.",
+        "Обзор водных/воздушных путешествий 116–119, ловушек и подземелий не включён; применимость к региональной карте требует отдельного прохода.",
+        "Правило изложено пересказом с точным локатором. Интерпретация функции — требование продукта, не заявление о требованиях издателя к программам.",
+        "Прежние источники 2024 сохранены отдельно и не подмешиваются в 2014."
+      ]
+    },
+    "source_reread": false,
+    "library_search": "Exactfilename and simplerDungeon/Мастера title searches returned no files; no invented fileID",
+    "official_chapter": {
+      "url": "https://www.dndbeyond.com/sources/dnd/dmg-2014/a-world-of-your-own",
+      "status": "redirected_to_store",
+      "access_level": "metadata",
+      "full_rules_read": false
+    },
+    "corroboration": {
+      "url": "https://www.dndbeyond.com/posts/777-worldbuilding-with-legendary-monsters",
+      "access_level": "full_text",
+      "locator": "MapmakingBasics¶3, line131",
+      "supports": "6milekingdom",
+      "does_not_establish": "corner/sideaxis"
+    }
+  },
+  "operational_requirement": {
+    "source_rule_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-002",
+    "normative_kind": "recommendation",
+    "applicability": "DND5-2014 regional-map scale handoff; 6milekingdom recommendation corroborated by2020publisherarticle. Axis unknown; not mandatory for every DNDmap.",
+    "layer": "L1",
+    "trigger_or_user_action": "Мастер задаёт физический масштаб карты, сохраняя известное из источника и свой явный выбор конвенции.",
+    "inputs_and_units": {
+      "source_length_miles": 6,
+      "source_measurement": null,
+      "historical_presets_miles": [
+        1,
+        6,
+        60
+      ],
+      "historical_preset_status": "Retained from earlier suppliedDMGpage14 pass; not reverified in this run",
+      "project_example_measurement": "opposite_sides chosen by project/GM, not inferred DND",
+      "mile_to_km": 1.609344
+    },
+    "product_operation": "Сохранить исходную длину с неизвестной конвенцией отдельно от явного проектного/ручного выбора; при конвертации конвенции сохранять физическую геометрию.",
+    "expected_output": "Одноимённые6mileпрофили не объявляются геометрически эквивалентными без конвенции; явный выбор даёт проверяемые длины/площадь.",
+    "constraints_and_exceptions": [
+      "Это исследовательская конкретизация существующей042/051, не новый режим/спецификация.",
+      "DETAIL1 конвенция между сторонами уже утверждена как проектный выбор; не менять её ради непроверенной аналогии.",
+      "ИсточникDNDaxisunknown не запрещает работать с явно выбранным проектным отображением.",
+      "Математические примеры — результаты регулярной геометрии, не параметрыDNDправил.",
+      "Не добавлять Source/unknown-плашки в чтение карты; provenance предназначен для исследовательских данных и существующего редактирования.",
+      "Наличие принятой спецификации не доказывает runtime. Поддержка1/60пресетов этим проходом не проверена."
+    ],
+    "acceptance_cases": [
+      {
+        "id": "DND5-2014-002-L1-SCALE01",
+        "given": "Старый источник:6 miles, measurement unknown; DETAIL1 использует6 miles между сторонами.",
+        "when": "Назначить проектное отображение.",
+        "expected": "Длина6 и исходнаяunknownконвенция сохранены; проектная сторона–сторона отмечена как допущение проекта, не подтверждениеDND."
+      },
+      {
+        "id": "DND5-2014-002-L1-SCALE02",
+        "given": "GM явно выбрал6 miles между сторонами регулярного гекса.",
+        "when": "Вычислить эквивалент длины/площади.",
+        "expected": "Между вершинами4√3≈6.9282032303mi; площадь18√3≈31.1769145362mi². Перевод ширины вkm даёт9.656064."
+      },
+      {
+        "id": "DND5-2014-002-L1-SCALE03",
+        "given": "GM явно выбрал6 miles между вершинами.",
+        "when": "Вычислить тот же профиль.",
+        "expected": "Между сторонами3√3≈5.1961524227mi; площадь13.5√3≈23.3826859022mi². Это другая геометрия, не та же6mileячейка изSCALE02."
+      },
+      {
+        "id": "DND5-2014-002-L1-SCALE04",
+        "given": "Геометрия изSCALE02, принятие новой географии не запрошено.",
+        "when": "Сменить конвенцию отображения на расстояние между вершинами.",
+        "expected": "Длина4√3mi; география/площадь прежние. Просто переименовать6side как6corner — ошибка."
+      },
+      {
+        "id": "DND5-2014-002-L1-SCALE05",
+        "given": "Источник6/unknown, проектное отображение6side; принятыеPOI и RNG.",
+        "when": "Сохранить/загрузить, сменить обзор иzoom.",
+        "expected": "Исходныйunknown не исчезает, проектная конвенция остаётся отдельной; POI/география/RNG не изменяются."
+      },
+      {
+        "id": "DND5-2014-002-L1-SCALE06",
+        "given": "Не выбрана конвенция и нет новой первичной страницы.",
+        "when": "Проверить совместимость профилей сPF2 илиDETAIL1.",
+        "expected": "Совместимостьunverified; corner-to-cornerPF2 не переносится вDND. Новая задача/обязательная переделка051 из одногоunknown не выводится."
+      }
+    ],
+    "source_vs_product_interpretation": "ИсторическийDMGисточник задаёт масштабы; доступная первичная издательская статья подтверждает только6milekingdom. Ось остаётсяunknown. Разделение source/project и математические примеры — продуктовая интерпретация существующихDETAIL1§3/§8, не восстановленный текст недоступной книги.",
+    "canonical_rule_refs": [
+      "agent-work/rules/common-rules.json#map.physical_hex_scale"
+    ],
+    "unresolved_parameters": [
+      "Точный текст/диаграммаDMG2014с14 и указание оси недоступны в этом проходе.",
+      "Не установлено, задаёт ли самаDMGвообщеоднозначную ось; это нельзя решить отсутствием доступногоPDF.",
+      "Текущее исполнение051 наSHA не проверено."
+    ]
+  },
+  "existing_delivery": {
+    "task_ids": [
+      "HX-BL-042",
+      "HX-BL-051"
+    ],
+    "ref": "agent-work/specs/HX-BL-051-DETAIL1.md",
+    "blob_sha": "55739d0b82a6508a4344af3737700732db5b28ee",
+    "locators": [
+      "§3lines20–21:projectopposite_sides",
+      "§8lines63–64:unknownsourceconventions separate",
+      "DTL01/DTL03lines76/78"
+    ],
+    "finding": "Spec already makes this separation. No additional feature/duplicate task or051scopechange needed for selected6milehandoff.",
+    "runtime_status": "unverified",
+    "runtime_sha": null
+  },
+  "mathematics": {
+    "kind": "originalregularhexgeometry_examples_not_game_rule",
+    "six_mile_sides": {
+      "opposite_vertices": 6.92820323027551,
+      "area": 31.17691453623979
+    },
+    "six_mile_vertices": {
+      "opposite_sides": 5.196152422706632,
+      "area": 23.38268590217984
+    },
+    "area_ratio": 1.3333333333333333
+  },
+  "decision": {
+    "recommendation": "Reuse existing042 foldedinto051; close additionaldevelopmentrequest for this clause. Retain source-axisunknown without blocking explicitlychosenprojectaxis.",
+    "new_product_task": false,
+    "active051changed": false,
+    "source_convention_resolved": false,
+    "compatibility_claim_allowed": false
+  },
+  "rating_changed": false,
+  "score_changed": false,
+  "product_development_started": false,
+  "checkpoint_ref": "agent-work/research/checkpoints/DND5-scale-disposition.json",
+  "next_candidate": {
+    "task_id": "HX-RSR-L1-DECISION-QUEUE-01",
+    "kind": "research_to_decision_priority",
+    "status": "candidate_not_fixed_rotation",
+    "action": "Свести только готовые L1исследовательские пробелы лидеров в1–3 конкретных продуктовых решения: уже реализовано/включено в044или051/готовая proposed047/отложить. Выбрать один важный незакрытый результат с видимым примером, убрать из рекомендации дубли и неизвестности без продукта. Использовать существующийbacklog, не запускать код и не создавать новый реестр.",
+    "reason": "Свежая критика владельца — мало видимой пользы. После закрытия масштабного ложного дубля полезнее проверить готовую передачу в очередь решений, чем продолжать малые уточнения или повторять неизвестныеM.",
+    "completion": "Одна понятная рекомендация по приоритету с existingtask/source/evidence/примеромдо→после и почему она впереди1–2альтернатив; активную очередь меняет основнаякоманда/владелец."
+  }
+}

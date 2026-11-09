@@ -47,7 +47,17 @@
       "profiles": [
         {
           "rule_id": "map.physical_hex_scale",
-          "parameters": {},
+          "parameters": {
+            "source_length_miles": 6,
+            "source_measurement": null,
+            "historical_recommendation_miles": [
+              1,
+              6,
+              60
+            ],
+            "source_status": "EarlierDMGpass retained;6mile corroboration2020article; axisunknown",
+            "project_measurement_not_source_evidence": "DETAIL1opposite_sides"
+          },
           "exceptions": [],
           "conditions": [],
           "profile_status": "unverified",
@@ -57,9 +67,49 @@
       ],
       "coverage_status": "unverified",
       "historical_status": "partial",
-      "own_acceptance_check": "На зафиксированной карте и выбранном масштабе выполнить: Гекс-сетка и явно заданная физическая длина гекса в выбранном масштабе. Проверить сохраняемые данные и относящиеся к операции ограничения; если операция меняет документ — save/load и undo/redo без потери принятого материала. Ручную запись отличать от автоматической функции.",
+      "own_acceptance_check": "DND5-2014-002-L1-SCALE01: Длина6 и исходнаяunknownконвенция сохранены; проектная сторона–сторона отмечена как допущение проекта, не подтверждениеDND.\nDND5-2014-002-L1-SCALE02: Между вершинами4√3≈6.9282032303mi; площадь18√3≈31.1769145362mi². Перевод ширины вkm даёт9.656064.\nDND5-2014-002-L1-SCALE03: Между сторонами3√3≈5.1961524227mi; площадь13.5√3≈23.3826859022mi². Это другая геометрия, не та же6mileячейка изSCALE02.\nDND5-2014-002-L1-SCALE04: Длина4√3mi; география/площадь прежние. Просто переименовать6side как6corner — ошибка.\nDND5-2014-002-L1-SCALE05: Исходныйunknown не исчезает, проектная конвенция остаётся отдельной; POI/география/RNG не изменяются.\nDND5-2014-002-L1-SCALE06: Совместимостьunverified; corner-to-cornerPF2 не переносится вDND. Новая задача/обязательная переделка051 из одногоunknown не выводится.",
       "evidence_ids": [],
-      "traceability_ref": "agent-work/score/DND5-2014-traceability.json#DND5-2014-002-L1"
+      "traceability_ref": "agent-work/score/DND5-2014-traceability.json#DND5-2014-002-L1",
+      "operational_requirement_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-002-L1",
+      "acceptance_cases": [
+        {
+          "id": "DND5-2014-002-L1-SCALE01",
+          "given": "Старый источник:6 miles, measurement unknown; DETAIL1 использует6 miles между сторонами.",
+          "when": "Назначить проектное отображение.",
+          "expected": "Длина6 и исходнаяunknownконвенция сохранены; проектная сторона–сторона отмечена как допущение проекта, не подтверждениеDND."
+        },
+        {
+          "id": "DND5-2014-002-L1-SCALE02",
+          "given": "GM явно выбрал6 miles между сторонами регулярного гекса.",
+          "when": "Вычислить эквивалент длины/площади.",
+          "expected": "Между вершинами4√3≈6.9282032303mi; площадь18√3≈31.1769145362mi². Перевод ширины вkm даёт9.656064."
+        },
+        {
+          "id": "DND5-2014-002-L1-SCALE03",
+          "given": "GM явно выбрал6 miles между вершинами.",
+          "when": "Вычислить тот же профиль.",
+          "expected": "Между сторонами3√3≈5.1961524227mi; площадь13.5√3≈23.3826859022mi². Это другая геометрия, не та же6mileячейка изSCALE02."
+        },
+        {
+          "id": "DND5-2014-002-L1-SCALE04",
+          "given": "Геометрия изSCALE02, принятие новой географии не запрошено.",
+          "when": "Сменить конвенцию отображения на расстояние между вершинами.",
+          "expected": "Длина4√3mi; география/площадь прежние. Просто переименовать6side как6corner — ошибка."
+        },
+        {
+          "id": "DND5-2014-002-L1-SCALE05",
+          "given": "Источник6/unknown, проектное отображение6side; принятыеPOI и RNG.",
+          "when": "Сохранить/загрузить, сменить обзор иzoom.",
+          "expected": "Исходныйunknown не исчезает, проектная конвенция остаётся отдельной; POI/география/RNG не изменяются."
+        },
+        {
+          "id": "DND5-2014-002-L1-SCALE06",
+          "given": "Не выбрана конвенция и нет новой первичной страницы.",
+          "when": "Проверить совместимость профилей сPF2 илиDETAIL1.",
+          "expected": "Совместимостьunverified; corner-to-cornerPF2 не переносится вDND. Новая задача/обязательная переделка051 из одногоunknown не выводится."
+        }
+      ],
+      "research_assessment_ref": "agent-work/research/audits/DND5-scale-disposition-2026-11-09.json"
     },
     {
       "id": "DND5-2014-002-L2",
