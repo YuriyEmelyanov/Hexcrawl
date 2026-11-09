@@ -1,0 +1,234 @@
+{
+  "schema_version": 1,
+  "audit_id": "HX-RSR-KNAVE-MARKET-ANCHOR-01-v1",
+  "version": 1,
+  "run_id": "2026-11-09T1225-KNAVE2-market-anchor",
+  "status": "completed_bounded_anchor_audit_population_calibration_unknown",
+  "kind": "existing_input_provenance_audit_not_new_method",
+  "checked_at": "2026-11-09T12:29:35.022Z",
+  "baseline_sha": "bde4df93f187f5817c97df5e9d1d8a0cc20625d3",
+  "game_id": "KNAVE2",
+  "observation_registry": "agent-work/research/observations.json",
+  "observation_ids": [
+    "obs-KNAVE2-KS2023-anchor-recheck-20261109",
+    "obs-KNAVE2-KS2023-mixed-offer-20261109",
+    "obs-KNAVE2-Backerkit2023-channel-20261109"
+  ],
+  "source_inventory": [
+    {
+      "url": "https://www.kickstarter.com/projects/questingbeast/knave-rpg-second-edition",
+      "locator": "Counter/funding period",
+      "access_level": "full_text",
+      "author_project_key": "ben-milton:questing-beast:knave2:2023-crowdfunding",
+      "scope": "Readable header/counter only; full dynamic campaign/reward bodies not obtained",
+      "count": 11003,
+      "unit": "backers",
+      "period": "2023-05-02/2023-06-01",
+      "page_last_updated": "2024-09-07",
+      "aliases_not_new_samples": [
+        "https://www.kickstarter.com/projects/questingbeast/knave-rpg-second-edition/description",
+        "https://www.kickstarter.com/projects/questingbeast/knave-rpg-second-edition/rewards",
+        "https://www.kickstarter.com/projects/questingbeast/knave-rpg-second-edition/faqs",
+        "Backerkit BackerTracker mirrors"
+      ]
+    },
+    {
+      "url": "https://questingbeast.substack.com/p/knave-2e-is-live-on-kickstarter",
+      "locator": "lines5,11–12",
+      "access_level": "full_text",
+      "published_at": "2023-05-02",
+      "author_project_key": "ben-milton:questing-beast:knave2:2023-crowdfunding"
+    },
+    {
+      "url": "https://questingbeast.substack.com/p/knave-2e-backerkit-pre-orders-are",
+      "locator": "lines5,9,14–16",
+      "access_level": "full_text",
+      "published_at": "2023-10-11",
+      "author_project_key": "ben-milton:questing-beast:knave2:2023-crowdfunding"
+    }
+  ],
+  "observations_vs_inference": {
+    "observed": "Campaign counter and dates match existing anchor; mixed book offer and later preorder/PDF bundle documented.",
+    "inferred": "M is historical campaign count multiplied by analyst K/G assumptions; no measurement of current activeGM incidence.",
+    "not_observed": {
+      "unique_core_buyers": null,
+      "digital_only_backers": null,
+      "physical_backers": null,
+      "late_unique_buyers": null,
+      "current_active_GMs": null,
+      "current_own_map_GMs": null
+    }
+  },
+  "provenance_chain": [
+    {
+      "id": "KN-MKT-P01",
+      "status": "verified_historical_proxy",
+      "source_ref": "obs-KNAVE2-KS2023-anchor-recheck-20261109",
+      "A": 11003
+    },
+    {
+      "id": "KN-MKT-P02",
+      "status": "assumptions_reproduced",
+      "ref": "agent-work/market/development-priorities.json#/rows/2/scenarios",
+      "formula": "M=A*K*G",
+      "definitions": {
+        "K": "Hypothetical broader accumulated audience relative to one campaign; other channels not summed.",
+        "G": "Hypothetical annual-activeGM share of that wider audience."
+      },
+      "calculations": [
+        {
+          "name": "low",
+          "A": 11003,
+          "K": 3,
+          "G": 0.35,
+          "M": 11553.15,
+          "active_M": 11553.15,
+          "error": 0
+        },
+        {
+          "name": "reference",
+          "A": 11003,
+          "K": 6,
+          "G": 0.5,
+          "M": 33009,
+          "active_M": 33009,
+          "error": 0
+        },
+        {
+          "name": "high",
+          "A": 11003,
+          "K": 12,
+          "G": 0.6,
+          "M": 79221.59999999999,
+          "active_M": 79221.59999999999,
+          "error": 0
+        }
+      ],
+      "calibrated": false
+    },
+    {
+      "id": "KN-MKT-P03",
+      "status": "carried_forward_proxy",
+      "ref": "agent-work/market/campaign-vtt-ranking-2026-10-27.json#/rows/2/population",
+      "effect": "Same M carried into active v1.4; not adoption of old D/U or obsolete fit assumptions."
+    },
+    {
+      "id": "KN-MKT-P04",
+      "status": "active_unchanged",
+      "ref": "agent-work/market/three-scenario-ranking-2026-11-06.json",
+      "population": {
+        "M": [
+          11553.15,
+          33009,
+          79221.59999999999
+        ],
+        "status": "carried_forward_proxy_not_observed",
+        "prior_method": "historical_anchor_proxy_KG",
+        "anchor": 11003,
+        "source": "https://www.kickstarter.com/projects/questingbeast/knave-rpg-second-edition",
+        "observed_active_GMs": null
+      },
+      "reference_snapshot": {
+        "name": "reference",
+        "M": 33009,
+        "T": 0.5,
+        "R": 0.2,
+        "C": 0.25,
+        "p": [
+          0.25,
+          0.22999999999999998,
+          0.27
+        ],
+        "D": [
+          4126.125,
+          3796.035,
+          4456.215
+        ],
+        "U": [
+          206.30625,
+          189.80175,
+          222.81075
+        ],
+        "ranks": [
+          3,
+          6,
+          7
+        ],
+        "mean_rank": 5.333333333333333,
+        "overall_place": 3,
+        "overall_ranks": [
+          3,
+          6,
+          7
+        ]
+      }
+    }
+  ],
+  "sensitivity": {
+    "kind": "readonly_reproduction_not_new_candidate_or_confidence_interval",
+    "K": [
+      3,
+      6,
+      12
+    ],
+    "G": [
+      0.35,
+      0.5,
+      0.6
+    ],
+    "effective_multiplier": [
+      1.05,
+      3,
+      7.2
+    ],
+    "M_high_to_low": 6.857142857142857,
+    "effect": "At fixedp/T/R/C, D/U proportional to M and K/G; percentages/sourcecount alone cannot validate any K/G. Existing6.8571x span is assumption spread, not measured bounds.",
+    "changed_inputs": null,
+    "scenario_rank_cohort_impact": "None; no reranking, active file unchanged"
+  },
+  "unknowns": [
+    {
+      "id": "KN-MKT-U01",
+      "quantity": null,
+      "unit": "unique people",
+      "missing": "Tier/core-only buyers; overlaps across add-ons, Backerkit, retail, PDF and print."
+    },
+    {
+      "id": "KN-MKT-U02",
+      "quantity": null,
+      "unit": "activeGMs in12months",
+      "missing": "Annual activity/GM role/edition retention calibration of K/G."
+    },
+    {
+      "id": "KN-MKT-U03",
+      "quantity": null,
+      "unit": "share of activeGMs",
+      "missing": "Own-map create/develop use and unmet need, not established by campaign count."
+    }
+  ],
+  "product_traceability": {
+    "operational_requirement": null,
+    "reason": "Market provenance audit extracts no game rule; operational_requirement N/A. Existing Knave source matrices untouched.",
+    "product_task_refs": [],
+    "runtime_evidence": "not_audited",
+    "score_delta": null
+  },
+  "disposition": {
+    "rating_proposal_refs": [],
+    "owner_decisions_needed": [],
+    "reason": "Anchor/transcription verified, no new calibrated replacement quantity; preserve active assumptions rather than propose invented correction.",
+    "active_changed": false,
+    "method_changed": false,
+    "pool_changed": false
+  },
+  "checkpoint_ref": "agent-work/research/checkpoints/KNAVE2-market-anchor.json",
+  "next_candidate": {
+    "task_id": "HX-RSR-MAUS-ANCHOR-SCREEN-01",
+    "game_id": "MAUS",
+    "kind": "underestimated_candidate_market_anchor",
+    "status": "candidate_not_fixed_rotation",
+    "action": "Проверить первичные раскрытия автора/издателя Mausritter о распространении базовой игры: платные копии, бесплатные/PWYW скачивания и исторический box-set Kickstarter1580 раздельно. Один ограниченный поиск раскрытых чисел; без вывода аудитории из значков/отзывов и без сложения каналов.",
+    "reason": "MAUS имеет прямые hexcrawl/own-map источники, но reference overall32 опирается на1580 одной кампании коробки/приключений. Это основание проверить недооценку, не утверждение высокого места.",
+    "completion": "Раскрытое сопоставимое число либо честноеunknown с локатором; точная редакция/core/supplement, период, единицы и дубли. Любая правкаM/мест толькоcandidate/approval; выбор пересмотреть по свежим решениям."
+  }
+}
