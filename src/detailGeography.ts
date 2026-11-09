@@ -170,7 +170,21 @@ export function reconcileDetailGeography(map:DetailGeographyMap,rivers:readonly 
     footprints.push(buildLiveFootprint(map,rivers,identities,alias,state.grid.origin).footprint);continue;
    }
   }
-  footprints.push(prior.legacyRef===alias?prior:{...prior,legacyRef:alias});
+  // Expansion may assign an additional real path to an accepted site. Add
+  // only that new access inside the existing shape; retain every old port.
+  const source=parseWaterHex(alias.slice(alias.lastIndexOf(':')+1)),routes=assignedRoutes(map,source,state.grid.origin);
+  const attached=new Set(prior.attachments.filter(a=>a.kind==='route').map(a=>a.routeId));
+  const attachments=[...prior.attachments];
+  for(const routeId of [...new Set(routes.map(r=>r.routeId))].sort())if(!attached.has(routeId)){
+   const options=routes.filter(r=>r.routeId===routeId);
+   let entry:Extract<DetailPoiFootprint['attachments'][number],{kind:'route'}>|undefined;
+   for(const route of options){
+    const span=prior.cells.map(cell=>detailSegmentSpan(createDetailGrid(1,state.grid.origin),cell,route.segment)).find(Boolean);
+    if(span){entry={kind:'route',routeId,routeKind:route.kind,accessNodeId:route.accessNodeId,entry:span.from};break;}
+   }
+   if(!entry)fail('new_route_outside_accepted_footprint');attachments.push(entry!);
+  }
+  footprints.push(prior.legacyRef===alias&&attachments.length===prior.attachments.length?prior:{...prior,legacyRef:alias,attachments});
  }
  const next=parseDetail1StateV11({...state,poiIdentities:identities,poiFootprints:footprints});
  validateDetailGeographyFootprints(map,rivers,next);
