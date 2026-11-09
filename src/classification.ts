@@ -4,6 +4,7 @@ export type Difficulty='auto'|'unknown'|'normal'|'difficult'|'dangerous';
 export type Discovery='auto'|'unknown'|'passage'|'exploration'|'interaction';
 export type Classification={version:1;difficultyByHex:Record<string,Exclude<Difficulty,'auto'>>;discoveryByPoi:Record<string,{mode:Discovery;clueText:string}>};
 export const emptyClassification=():Classification=>({version:1,difficultyByHex:{},discoveryByPoi:{}});
+export const hasClassification=(layer:Classification|undefined)=>!!layer&&(Object.keys(layer.difficultyByHex).length>0||Object.keys(layer.discoveryByPoi).length>0);
 type Context={hexes:ReadonlySet<string>;pois:ReadonlySet<string>};
 const record=(x:unknown):x is Record<string,unknown>=>!!x&&typeof x==='object'&&!Array.isArray(x);
 const keys=(x:Record<string,unknown>,ks:string[])=>Object.keys(x).length===ks.length&&ks.every(k=>Object.prototype.hasOwnProperty.call(x,k));
@@ -53,5 +54,5 @@ export function remapClassification(layer:Classification|undefined,moves:Readonl
 }
 export function classificationLosses(layer:Classification|undefined,context:Context):string[]{return layer?[...Object.keys(layer.difficultyByHex).filter(k=>!context.hexes.has(k)).map(k=>'hex:'+k),...Object.keys(layer.discoveryByPoi).filter(k=>!context.pois.has(k)).map(k=>'poi:'+k)]:[];}
 export function retainClassification(layer:Classification|undefined,context:Context):Classification|undefined{
- return layer?{version:1,difficultyByHex:Object.fromEntries(Object.entries(layer.difficultyByHex).filter(([k])=>context.hexes.has(k))),discoveryByPoi:Object.fromEntries(Object.entries(layer.discoveryByPoi).filter(([k])=>context.pois.has(k)))}:undefined;
+ const next:Classification|undefined=layer?{version:1,difficultyByHex:Object.fromEntries(Object.entries(layer.difficultyByHex).filter(([k])=>context.hexes.has(k))),discoveryByPoi:Object.fromEntries(Object.entries(layer.discoveryByPoi).filter(([k])=>context.pois.has(k)))}:undefined;return hasClassification(next)?next:undefined;
 }

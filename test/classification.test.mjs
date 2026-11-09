@@ -4,7 +4,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {terrainDefault,discoveryDefault,discoveryTagEffect,emptyClassification,validateClassification,remapClassification} from '../src/classification.ts';
+import {terrainDefault,discoveryDefault,discoveryTagEffect,emptyClassification,validateClassification,remapClassification,retainClassification} from '../src/classification.ts';
 import {createGenerationHarness} from './helpers/generation-harness.mjs';
 import {regionFixture} from './helpers/region-fixture.mjs';
 test('CLASSIFY1 all existing biome defaults and unknown are explicit, dangerous includes terrain risk',()=>{
@@ -23,7 +23,7 @@ test('CLASSIFY1 discovery uses exact context and semantic IDs independent of lan
 });
 test('CLASSIFY1 overrides validate version/live ownership, preserve unknown and remap only POI',()=>{
  const c={hexes:new Set(['0,0','2,0']),pois:new Set(['poi:1:2,0'])},d=emptyClassification();d.difficultyByHex['0,0']='unknown';d.discoveryByPoi['poi:1:2,0']={mode:'interaction',clueText:'Tracks'};
- validateClassification(d,c);assert.throws(()=>validateClassification(d,c,10));assert.throws(()=>validateClassification({...d,version:2},c));assert.throws(()=>validateClassification({...d,discoveryByPoi:{'poi:1:2,0':{mode:'interaction',clueText:''}}},c));
+ assert.equal(retainClassification(d,{hexes:new Set(),pois:new Set()}),undefined);validateClassification(d,c);assert.throws(()=>validateClassification(d,c,10));assert.throws(()=>validateClassification({...d,version:2},c));assert.throws(()=>validateClassification({...d,discoveryByPoi:{'poi:1:2,0':{mode:'interaction',clueText:''}}},c));
  const moved=remapClassification(d,new Map([['poi:1:2,0','poi:2:0,0']]));assert.deepEqual(moved.difficultyByHex,d.difficultyByHex);assert.equal(moved.discoveryByPoi['poi:2:0,0'].clueText,'Tracks');assert.equal(d.discoveryByPoi['poi:2:0,0'],undefined);
 });
 test('CLASSIFY1 real document import/commit/history preserves map/RNG and authored overrides across modes',async()=>{

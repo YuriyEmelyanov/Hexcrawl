@@ -1,6 +1,6 @@
 import knaveCatalogData from './tags/knaveCatalogData';
 import {emptyKnaveContent,fillKnaveContent,rerollKnaveContent,validateKnaveCatalog,knaveResultText,type KnaveCatalog,type KnaveFacts} from './tags/knave';
-import {emptyClassification,validateClassification,terrainDefault,terrainRisk,discoveryDefault,discoveryTagEffect,remapClassification,classificationLosses,retainClassification,type Classification,type Difficulty,type Discovery} from './classification';
+import {hasClassification,emptyClassification,validateClassification,terrainDefault,terrainRisk,discoveryDefault,discoveryTagEffect,remapClassification,classificationLosses,retainClassification,type Classification,type Difficulty,type Discovery} from './classification';
 import {knaveLossValue,dropKnaveLoss,newKnaveLayer,setKnaveDifficulty,setKnaveDiscovery,validateKnaveLayer,remapKnavePois,knaveLosses,type KnaveLayer,type KnaveContext} from './knaveClassic';
 import {hasCentralPoi,preparePoiMove,poiLocatorKey,type PoiLocator,assertPoiEditorNames,poiNameLocators,renamePoiEditorName,PoiMoveError,type EditorNames} from './manualPois';
 import {migrateSeas,prepareSeaIdentity,withLegacySeas,type SeaRecord,type SeaChoices} from './seaIdentity';
@@ -14857,10 +14857,10 @@ retainPoiNames(checkpoint,editorNamesRef.current);
   const createSaveData = (doc=captureDocument()): HexcrawlSaveData => ({
     schema: HEXCRAWL_SAVE_SCHEMA,
     generation: cloneGenerationState(doc.map.generation),
-    version: doc.map.classification===undefined?HEXCRAWL_SAVE_VERSION:11,
+    version: hasClassification(doc.map.classification)?11:HEXCRAWL_SAVE_VERSION,
     savedAt: new Date().toISOString(),
     map: {
-      ...(doc.map.classification===undefined?{}:{classification:structuredClone(doc.map.classification)}),
+      ...(hasClassification(doc.map.classification)?{classification:structuredClone(doc.map.classification)}:{}),
       ...(doc.map.knave===undefined?{}:{knave:structuredClone(doc.map.knave)}),
       seas:structuredClone(doc.map.seas).sort((a,b)=>a.id-b.id).map(sea=>({...sea,hexKeys:sea.hexKeys.sort(compareWaterHexes)})),
       nextSeaId:doc.map.nextSeaId,
