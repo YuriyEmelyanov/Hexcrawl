@@ -182,7 +182,7 @@ test('E8 v8 authored POI names use real import,exact export and UndoRedo without
  assert.equal(g.render().finishKnaveDraft(stale),false);
  g.render().applyDocument(accepted);g.render();
  const history=structuredClone([g.render().undoHistory,g.render().redoHistory]);
- for(const mutate of [d=>d.version=9,d=>d.ui.generationMode='mythic',d=>delete d.generation,d=>d.map.knave=null,d=>d.map.knave.profile.physicalHex.measurementConvention='vertices',d=>d.map.knave.content=null,d=>d.map.knave.content.byPoi[key].catalogVersion='future',d=>d.map.knave.discoveryByPoi[key].clueText='',d=>d.map.knave.discoveryByPoi['poi:999:0,0']={mode:'passage',clueText:''}]){
+ for(const mutate of [d=>d.version=9,d=>delete d.generation,d=>d.ui.knaveEnabled='yes',d=>{d.ui.knaveEnabled=true;delete d.map.knave;},d=>d.map.knave=null,d=>d.map.knave.profile.physicalHex.measurementConvention='vertices',d=>d.map.knave.content=null,d=>d.map.knave.content.byPoi[key].catalogVersion='future',d=>d.map.knave.discoveryByPoi[key].clueText='',d=>d.map.knave.discoveryByPoi['poi:999:0,0']={mode:'passage',clueText:''}]){
   const invalid=structuredClone(knave);mutate(invalid);await g.render().handleImportJson({target:{files:[{text:JSON.stringify(invalid)}],value:''}});
   assert.equal(alerts.length,1);alerts.pop();assert.deepEqual(structuredClone(g.render().captureDocument()),accepted);assert.deepEqual(structuredClone([g.render().undoHistory,g.render().redoHistory]),history);
  }
@@ -197,12 +197,22 @@ test('E8 v8 authored POI names use real import,exact export and UndoRedo without
  const profile=createGenerationHarness(42);profile.render();const initial=structuredClone(profile.render().captureDocument());
  assert.equal(profile.render().chooseKnaveProfile(true),true);assert.equal(profile.render().undoHistory.length,0);
  assert.deepEqual(structuredClone(profile.render().generationRef.current),initial.map.generation);
- profile.render().changeGenerationMode('mythic');assert.equal(profile.render().generationMode,'mythic');assert.equal(profile.render().createSaveData().map.knave,undefined);
+ profile.render().changeGenerationMode('mythic');assert.equal(profile.render().generationMode,'mythic');assert.deepEqual(structuredClone(profile.render().createSaveData().map.knave),newKnaveLayer());
  assert.equal(profile.render().chooseKnaveProfile(true),false);profile.render().changeGenerationMode('classic');profile.render().chooseKnaveProfile(true);
- profile.injectFunction('knaveGenerationCatalog',knaveCatalogFixture);profile.render().addFallbackTractToMap({q:0,r:0});assert.equal(profile.render().chooseKnaveProfile(false),false);
- const locked=structuredClone(profile.render().createSaveData().map);profile.setWindow({confirm:()=>false});profile.render().changeGenerationMode('mythic');assert.deepEqual(structuredClone(profile.render().createSaveData().map),locked);
- profile.setWindow({confirm:()=>true});profile.render().changeGenerationMode('mythic');assert.equal(profile.render().generationMode,'mythic');assert.equal(profile.render().regions.length,0);
- profile.render().undoMap();assert.equal(profile.render().generationMode,'classic');assert.deepEqual(structuredClone(profile.render().createSaveData().map),locked);
+ profile.injectFunction('knaveGenerationCatalog',knaveCatalogFixture);profile.render().addFallbackTractToMap({q:0,r:0});
+ const knaveMap=structuredClone(profile.render().createSaveData().map),knaveHistory=profile.render().undoHistory.length;
+ assert.equal(profile.render().chooseKnaveProfile(false),true);assert.equal(profile.render().createSaveData().ui.knaveEnabled,false);assert.deepEqual(structuredClone(profile.render().createSaveData().map),knaveMap);assert.equal(profile.render().undoHistory.length,knaveHistory+1);
+ profile.render().undoMap();assert.equal(profile.render().createSaveData().ui.knaveEnabled,true);profile.render().redoMap();assert.equal(profile.render().createSaveData().ui.knaveEnabled,false);assert.deepEqual(structuredClone(profile.render().createSaveData().map),knaveMap);
+ const plainProfile=structuredClone(profile.render().createSaveData());
+ await g.render().handleImportJson({target:{files:[{text:JSON.stringify(plainProfile)}],value:''}});assert.deepEqual(alerts,[]);assert.equal(g.render().createSaveData().ui.knaveEnabled,false);
+ assert.equal(profile.render().chooseKnaveProfile(true),true);assert.deepEqual(structuredClone(profile.render().createSaveData().map),knaveMap);
+ const kept=structuredClone(profile.render().createSaveData().map),modeHistory=profile.render().undoHistory.length;
+ profile.setWindow({confirm:()=>{throw Error('Mode switching must not ask to erase the map');}});
+ profile.render().changeGenerationMode('mythic');assert.equal(profile.render().generationMode,'mythic');assert.deepEqual(structuredClone(profile.render().createSaveData().map),kept);assert.equal(profile.render().undoHistory.length,modeHistory);
+ profile.geometry.assertHexcrawlSaveData(JSON.parse(JSON.stringify(profile.render().createSaveData())));
+ const mixed=structuredClone(knave);mixed.ui.generationMode='mythic';
+ await g.render().handleImportJson({target:{files:[{text:JSON.stringify(mixed)}],value:''}});assert.deepEqual(alerts,[]);assert.equal(g.render().generationMode,'mythic');assert.deepEqual(structuredClone(g.render().createSaveData().map.knave),knave.map.knave);
+ profile.render().changeGenerationMode('classic');assert.deepEqual(structuredClone(profile.render().createSaveData().map),kept);assert.equal(profile.render().undoHistory.length,modeHistory);
 });
 test('E8 malformed,orphan and older-version authored names refuse atomically in the real importer',async()=>{
  const {g,alerts,data,key}=await loadAuthoredMap();

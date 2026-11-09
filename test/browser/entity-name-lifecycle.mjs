@@ -35,13 +35,13 @@ export async function runEntityNameLifecycle({page,load,snapshot,ensureEdit,butt
  for(const mode of ['classic','mythic']){
   const data=seaFixture(mode);data.map.editorNames={'sea:7':{ru:'Северное море',en:'Northern Sea'}};
   await load(data);await select('1,2');await closeMenu();await ensureEdit();const before=await snapshot();await closeMenu();
-  await page.getByRole('combobox',{name:'Вода',exact:true}).selectOption('land');await page.locator('[data-water-finish]').click();
+  await page.getByRole('combobox',{name:'Поверхность',exact:true}).selectOption('land');await page.locator('[data-water-finish]').click();
   const split=page.locator('[data-sea-split="7"]');assert.equal(await split.inputValue(),'');assert.equal(await page.locator('[data-water-confirm]').isDisabled(),true);assert.deepEqual(await snapshot(),before);await closeMenu();
   await split.selectOption('2,2');if(mode==='classic'){await capture('sea-split',1500);await capture('sea-split',390);await capture('sea-split',320);await page.setViewportSize({width:1500,height:1100});}
   await page.locator('[data-water-confirm]').click();const after=await snapshot();assert.equal(after.map.seas.find(s=>s.id===7).hexKeys[0],'2,2');assert.equal(after.map.nextSeaId,21);await closeMenu();await button('Отменить').click();assert.deepEqual(await snapshot(),before);await closeMenu();await button('Повторить').click();assert.deepEqual(await snapshot(),after);await closeMenu();
   const merged=seaFixture(mode,true);merged.map.editorNames={'sea:7':{ru:'Северное море',en:'Northern Sea'},'sea:12':{ru:'Залив Туманов',en:'Misty Bay'}};
   await load(merged);await select('-2,2');await closeMenu();await ensureEdit();const old=await snapshot();await closeMenu();
-  await page.getByRole('combobox',{name:'Вода',exact:true}).selectOption('sea');await page.locator('[data-water-finish]').click();const merge=page.locator('[data-sea-merge]');assert.equal(await merge.inputValue(),'');await merge.selectOption('12');assert.equal(await page.locator('[data-water-confirm]').isDisabled(),true);
+  await page.getByRole('combobox',{name:'Поверхность',exact:true}).selectOption('sea');await page.locator('[data-water-finish]').click();const merge=page.locator('[data-sea-merge]');assert.equal(await merge.inputValue(),'');await merge.selectOption('12');assert.equal(await page.locator('[data-water-confirm]').isDisabled(),true);
   assert.match(await page.locator('[data-water-loss="editorName:sea:7"]').locator('..').textContent(),/Северное море.*Northern Sea/);
   if(mode==='classic'){await capture('sea-merge',1500);await capture('sea-merge',390);await capture('sea-merge',320);await page.setViewportSize({width:1500,height:1100});}
   await page.locator('[data-water-loss="editorName:sea:7"]').check();await page.locator('[data-water-confirm]').click();const joined=await snapshot();assert.equal(joined.map.seas[0].id,12);assert.deepEqual(joined.map.editorNames,{'sea:12':merged.map.editorNames['sea:12']});await closeMenu();await button('Отменить').click();assert.deepEqual(await snapshot(),old);await closeMenu();

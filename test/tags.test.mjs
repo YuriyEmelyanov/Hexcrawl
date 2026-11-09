@@ -12,7 +12,9 @@ import mythMaterialRecords from '../src/tags/mythMaterialData.ts';
 import {createGenerationHarness} from './helpers/generation-harness.mjs';
 import {regionFixture} from './helpers/region-fixture.mjs';
 import {newKnaveLayer,validateKnaveLayer,setKnaveDifficulty,setKnaveDiscovery,remapKnavePois,knaveLosses,dropKnaveLoss} from '../src/knaveClassic.ts';
-import {emptyKnaveContent,fillKnaveContent,validateKnaveContent,validateKnaveCatalog,knaveCompatibleRows,rerollKnaveContent} from '../src/tags/knave.ts';
+import {emptyKnaveContent,fillKnaveContent,validateKnaveContent,validateKnaveCatalog,knaveCompatibleRows,rerollKnaveContent,knaveResultText} from '../src/tags/knave.ts';
+import knaveCatalogData from '../src/tags/knaveCatalogData.ts';
+import {knaveEnglish} from '../src/tags/knaveEnglish.ts';
 import {drawTagIndex} from '../src/tags/engine.ts';
 import {createGenerationState} from '../src/worldRandom.ts';
 import {knaveCatalogFixture,knaveFactsFixture,knaveContentFixture} from './helpers/knave-fixture.mjs';
@@ -35,6 +37,20 @@ test('Knave content snapshots use filtered source rows and separate real d100, r
  const hundred=fillKnaveContent(emptyKnaveContent(),catalog,[water],seed100).byPoi[water.owner].trait;
  assert.equal(hundred.roll,100);assert.equal(hundred.sourceRow,100);assert.equal(catalog.tables.place_traits[hundred.sourceRow-1].printedResult,'00');
  assert.deepEqual(drawTagIndex(42,'one-row-pool',0,1),{index:0,nextCounter:1});assert.throws(()=>drawTagIndex(42,'exhausted',Number.MAX_SAFE_INTEGER,100));
+ // Accepted v10 Russian snapshots stay byte-for-byte while every known row
+ // has English content in the English view, including legacy saved maps.
+ for(const table of ['locations','structures','place_traits','dungeons']){
+  assert.equal(knaveEnglish[table].length,100);
+  for(const row of knaveCatalogData.tables[table]){
+   const result={sourceRow:row.row,ru:row.ru},copy=structuredClone(result);
+   const en=knaveResultText(result,table,'en'),ru=knaveResultText(result,table,'ru');
+   assert.ok(en.trim());assert.doesNotMatch(en,/[А-Яа-яЁё]|\(p\.\s*\d+\)/);
+   assert.equal(ru,row.ru.replace(/\s*\(стр\.\s*\d+\)/g,''));
+   assert.deepEqual(result,copy);
+  }
+ }
+ assert.equal(knaveResultText({sourceRow:1,ru:'Authored English snapshot'},'locations','en'),'Authored English snapshot');
+ assert.deepEqual(first,before,'changing presentation language cannot mutate the save or counters');
 });
 // UI2-04..08: this operation did not exist in the initial-fill test. Check its
 // public preservation/selection contract, rather than UI internals or counts.
@@ -102,6 +118,14 @@ test('Knave real generation commits content with its map, preserves world RNG an
  const empty=map(knave);generate(plain,{q:0,r:0});generate(knave,{q:0,r:0});
  const first=map(knave),facts=knave.geometry.knaveFactsForMap(first);assert.ok(facts.length>=2);assert.deepEqual(physical(first),physical(map(plain)));
  assert.deepEqual(first.generation,map(plain).generation);assert.equal(Object.keys(first.knave.content.byPoi).length,facts.length);
+ // The preference controls future Classic generation; retained snapshots stay
+ // literal when the user turns Knave off and are not backfilled on re-enable.
+ const switched=setup(false),disabledDocument=structuredClone(knave.render().captureDocument());disabledDocument.knaveEnabled=false;switched.render().applyDocument(disabledDocument);switched.injectFunction('knaveGenerationCatalog',knaveCatalogFixture);
+ const plainAnchor=switched.render().candidateHexes[0];generate(switched,plainAnchor);const withoutNewContent=map(switched);
+ assert.deepEqual(withoutNewContent.knave,first.knave);assert.equal(switched.render().createSaveData().ui.knaveEnabled,false);
+ const acceptedOwners=new Set(switched.geometry.knaveFactsForMap(withoutNewContent).map(f=>f.owner));assert.equal(switched.render().chooseKnaveProfile(true),true);assert.deepEqual(map(switched).knave,first.knave);
+ generate(switched,switched.render().candidateHexes[0]);const enabledAgain=map(switched);assert.ok(Object.keys(enabledAgain.knave.content.byPoi).length>Object.keys(first.knave.content.byPoi).length);
+ for(const owner of acceptedOwners)assert.deepEqual(enabledAgain.knave.content.byPoi[owner],first.knave.content.byPoi[owner],'enabling never backfills accepted old POIs');
  for(const f of facts){const c=first.knave.content.byPoi[f.owner];assert.ok(c);if(f.kind==='land'){assert.ok(knaveCompatibleRows(c.site.table,f).includes(c.site.sourceRow));const [,id,key]=f.owner.split(':'),r=first.regions.find(r=>r.id===Number(id));const central=`${r.centerHex.q},${r.centerHex.r}`===key&&!r.isTract&&!r.suppressCentralPoi;assert.equal(central?r.centralPoiKind:r.pointOfInterestKinds[key],central?{natural:'natural_place',structure:'structure',dungeon:'dungeon'}[c.category]:c.site.representation);}else assert.equal(c.site,null);}
  knave.render().undoMap();assert.deepEqual(map(knave),empty);knave.render().redoMap();assert.deepEqual(map(knave),first);
  const reload=setup(false);reload.injectFunction('knaveGenerationCatalog',knaveCatalogFixture);reload.injectFunction('readTextFile',async f=>f.text);reload.setWindow({alert:m=>{throw Error(m);}});
@@ -125,12 +149,12 @@ test('Knave real generation commits content with its map, preserves world RNG an
  }
 });
 const knaveContext=()=>({hexes:new Set(['0,0','1,0']),dryHexes:new Set(['0,0','1,0']),pois:new Set(['poi:1:0,0','poi:2:1,0'])});
-test('Knave profile refuses unknown scales, legacy injection, MB and dangling annotations without mutation',()=>{
+test('Knave profile permits mixed generation modes and refuses unknown scales, legacy injection and dangling annotations without mutation',()=>{
  const layer=newKnaveLayer(),context=knaveContext(),before=structuredClone(layer);
  assert.doesNotThrow(()=>validateKnaveLayer(JSON.parse(JSON.stringify(layer)),context,10,'classic'));
  for(const version of [2,9])assert.doesNotThrow(()=>validateKnaveLayer(undefined,context,version,'classic'));
  assert.throws(()=>validateKnaveLayer(layer,context,9,'classic'));
- assert.throws(()=>validateKnaveLayer(layer,context,10,'mythic'));
+ assert.doesNotThrow(()=>validateKnaveLayer(layer,context,10,'mythic'));
  for(const mutate of [s=>s.profile.version=2,s=>s.profile.physicalHex.unit='km',s=>s.profile.physicalHex.length=NaN,s=>s.profile.physicalHex.measurementConvention='vertices',s=>s.difficultyByHex={'9,9':'difficult'},s=>s.difficultyByHex={'-0,0':'normal'},s=>s.discoveryByPoi={'poi:9:9,9':{mode:'passage',clueText:''}},s=>s.difficultyByHex=null]){
   const bad=structuredClone(layer);mutate(bad);assert.throws(()=>validateKnaveLayer(bad,context,10,'classic'));
  }

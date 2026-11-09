@@ -1,5 +1,5 @@
 import knaveCatalogData from './tags/knaveCatalogData';
-import {emptyKnaveContent,fillKnaveContent,rerollKnaveContent,validateKnaveCatalog,type KnaveCatalog,type KnaveFacts} from './tags/knave';
+import {emptyKnaveContent,fillKnaveContent,rerollKnaveContent,validateKnaveCatalog,knaveResultText,type KnaveCatalog,type KnaveFacts} from './tags/knave';
 import {knaveLossValue,dropKnaveLoss,newKnaveLayer,setKnaveDifficulty,setKnaveDiscovery,type Difficulty,type Discovery,validateKnaveLayer,remapKnavePois,knaveLosses,type KnaveLayer,type KnaveContext} from './knaveClassic';
 import {hasCentralPoi,preparePoiMove,poiLocatorKey,type PoiLocator,assertPoiEditorNames,poiNameLocators,renamePoiEditorName,PoiMoveError,type EditorNames} from './manualPois';
 import {migrateSeas,prepareSeaIdentity,withLegacySeas,type SeaRecord,type SeaChoices} from './seaIdentity';
@@ -500,6 +500,7 @@ type HexcrawlSaveData = {
   };
   ui: {
     generationMode?: GenerationMode;
+    knaveEnabled?: boolean;
     selectedHex: AxialHex | null;
     isMapRotated: boolean;
     mapScale: number;
@@ -1087,7 +1088,10 @@ function knaveFactsForMap(map:MapSnapshot):KnaveFacts[]{
  * markers remain literal. Only new nonsettlement land owners change markers. */
 function prepareKnaveGeneratedMap(map:MapSnapshot,catalog:KnaveCatalog,preservedOwners?:ReadonlySet<string>):MapSnapshot {
   if(!map.knave)return map;
-  const before=map.knave.content??emptyKnaveContent(),content=fillKnaveContent(before,catalog,knaveFactsForMap(map),map.generation.masterSeed,preservedOwners);
+  const facts=knaveFactsForMap(map),mythicRegions=new Set(map.regions.filter(r=>r.generationMode==='mythic').map(r=>r.id));
+  const preserved=new Set(preservedOwners);
+  for(const fact of facts)if(fact.owner.startsWith('poi:')&&mythicRegions.has(Number(fact.owner.split(':')[1])))preserved.add(fact.owner);
+  const before=map.knave.content??emptyKnaveContent(),content=fillKnaveContent(before,catalog,facts,map.generation.masterSeed,preserved);
   if(content===before)return map;
   const regions=map.regions.map(r=>{
     let next=r;
@@ -1800,7 +1804,7 @@ type MapSnapshot = {
 // Exact rollback state: unlike user undo, error recovery never recalculates names or roads.
 type DocumentSnapshot = {
   map: MapSnapshot; generationHistory: MapSnapshot[]; selectedHex: AxialHex | null;
-  generationMode: GenerationMode; isMapRotated: boolean; mapScale: number;
+  generationMode: GenerationMode; knaveEnabled?: boolean; isMapRotated: boolean; mapScale: number;
 };
 type MapTransaction = { before: DocumentSnapshot; after: DocumentSnapshot };
 type GenerationBackup = {
@@ -11830,6 +11834,9 @@ export function App() {
   const [knave,setKnave]=useState<KnaveLayer|undefined>(undefined);
   const knaveRef=useRef(knave);knaveRef.current=knave;
   const updateKnave=(value:KnaveLayer|undefined)=>{knaveRef.current=value;setKnave(value);};
+  const [knaveEnabled,setKnaveEnabled]=useState(false);
+  const knaveEnabledRef=useRef(knaveEnabled);knaveEnabledRef.current=knaveEnabled;
+  const updateKnaveEnabled=(value:boolean)=>{knaveEnabledRef.current=value;setKnaveEnabled(value);};
   const [editorNames,setEditorNames]=useState<EditorNames>({});
   const editorNamesRef=useRef(editorNames);editorNamesRef.current=editorNames;
   const updateEditorNames=(value:EditorNames)=>{editorNamesRef.current=value;setEditorNames(value);};
@@ -13338,7 +13345,7 @@ export function App() {
   const captureMap = (): MapSnapshot => ({ knave:knaveRef.current,...seaIdentityRef.current,editorNames:editorNamesRef.current,riverFeatures:riverFeatureOverrides,nextRiverId,tags:tagsRef.current, gmNotesByHexKey: notesMapRef.current, generation: cloneGenerationState(generationRef.current), kingdoms, obstacles, nextObstacleId, regions, candidateHexes, rivers, roads, crossings,
     hexTerrainByKey, waterPoiByKey, biomeOverrideByHexKey, toponyms, toponymSeed, nextLakeId, nextRoadId });
   const captureDocument = (): DocumentSnapshot => ({ map: captureMap(), generationHistory: history, selectedHex,
-    generationMode, isMapRotated, mapScale: pendingMapZoomRef.current?.scale ?? mapScaleRef.current });
+    generationMode, knaveEnabled:knaveEnabledRef.current, isMapRotated, mapScale: pendingMapZoomRef.current?.scale ?? mapScaleRef.current });
   const closeEditors = () => {
     updateKnaveDraft(null);
     updatePoiDraft(null);
@@ -13383,7 +13390,7 @@ export function App() {
     documentRevision.current++;
     updateWaterDraft(null); updateRiverDraft(null); updateRoadDraft(null); setSelectedRoadPair(null); setSelectedRoadTarget(null); setConfirmRoadRemoval(null);
     applyExactMap(doc.map); setHistory(doc.generationHistory); setSelectedHex(doc.selectedHex);
-    setGenerationMode(doc.generationMode); setIsMapRotated(doc.isMapRotated);
+    setGenerationMode(doc.generationMode); updateKnaveEnabled(doc.knaveEnabled??!!doc.map.knave); setIsMapRotated(doc.isMapRotated);
     updateMapScale(doc.mapScale); setPendingRegen(null); closeEditors();
     nameDraftRef.current = null; setNameDraft(null); setNameErrors({});
   };
@@ -13746,7 +13753,7 @@ export function App() {
   };
   const recordGenerated = (checkpoint: MapSnapshot, map: MapSnapshot, selection: AxialHex,
     backup?: GenerationBackup, checkpoints = history) => {
-    if(map.knave){
+    if(map.knave&&knaveEnabledRef.current&&!kingdomJob&&generationMode==='classic'){
       let catalog:KnaveCatalog;try{catalog=knaveGenerationCatalog();}catch{throw Error(language==='ru'?'Не удалось загрузить данные Knave 2e. Карта не изменена.':'Knave 2e data could not be loaded. Your map is unchanged.');}
       map=prepareKnaveGeneratedMap(map,catalog,poiNameLocators(checkpoint));
     }
@@ -13770,7 +13777,7 @@ export function App() {
   };
 
   const mutateKnaveContent=(owner:string,part:'primary'|'trait'|'both')=>{
-    if(generationMode!=='classic'||mutationBlocked()||obstacleDraftRef.current||activeTagDraftKeys.current.size>0||notesEditorKey!==null)return false;
+    if(mutationBlocked()||obstacleDraftRef.current||activeTagDraftKeys.current.size>0||notesEditorKey!==null)return false;
     const key=`knave:${owner}`,now=Date.now();
     if((tagLocks.current.get(key)??0)>now)return false;
     try{
@@ -13787,7 +13794,8 @@ export function App() {
       if(!commitManualMap({...map,regions,knave:{...layer,content}},false))return false;
       tagLocks.current.set(key,now+350);
       setTagAnimations(current=>({...current,[key]:{key,slot:part==='primary'?0:part==='trait'?1:undefined,revision:content.rollCounters[owner].primary+content.rollCounters[owner].trait,expiresAt:now+350}}));
-      setTagAnnouncement(part==='primary'?result.site!.ru:part==='trait'?result.trait.ru:`${result.site!.ru} · ${result.trait.ru}`);return true;
+      const siteText=result.site?knaveResultText(result.site,result.site.table,language):'',traitText=knaveResultText(result.trait,'place_traits',language);
+      setTagAnnouncement(part==='primary'?siteText:part==='trait'?traitText:`${siteText} · ${traitText}`);return true;
     }catch{setEditError(language==='ru'?'Не удалось перебросить результат Knave 2e: нет доступного совместимого выбора или данных. Карта не изменена.':'Could not reroll Knave 2e: no compatible choice or data is available. Your map is unchanged.');return false;}
   };
   const mutateTag=(owner:TagOwner,id:string,slot?:number,edit?:{index:number;text:string})=>{
@@ -13860,7 +13868,7 @@ export function App() {
     setHistory(backup.history);
     setSelectedHex(backup.selectedHex);
     if (backup.document) {
-      setGenerationMode(backup.document.generationMode); setIsMapRotated(backup.document.isMapRotated);
+      setGenerationMode(backup.document.generationMode); updateKnaveEnabled(backup.document.knaveEnabled??!!backup.document.map.knave); setIsMapRotated(backup.document.isMapRotated);
       updateMapScale(backup.document.mapScale);
     }
     if (backup.undo) setUndoHistory(backup.undo);
@@ -14087,22 +14095,23 @@ export function App() {
     const after: DocumentSnapshot = { ...before, map: { seas:[],nextSeaId:1,editorNames:{},riverFeatures:emptyRiverFeatures(),nextRiverId:1,tags:emptyTags(), gmNotesByHexKey: {}, generation: newGeneration, kingdoms: [], obstacles: [], regions: [], candidateHexes: [],
       rivers: [], roads: [], crossings: [], hexTerrainByKey: new Map(), waterPoiByKey: new Map(), biomeOverrideByHexKey: new Map(),
       toponyms: {}, toponymSeed: toponymSeedFor(newGeneration.masterSeed), nextLakeId: 1, nextRoadId: 1, nextObstacleId: 1 },
-      generationHistory: [], selectedHex: START_HEX, isMapRotated: false, generationMode:nextMode??before.generationMode };
+      generationHistory: [], selectedHex: START_HEX, isMapRotated: false, generationMode:nextMode??before.generationMode,knaveEnabled:false };
     recordTransaction(before,after); applyDocument(after); setEditMode(false); setGenerationError(null);
   };
 
   const resetMap = () => resetMapToMode();
   const chooseKnaveProfile=(enabled:boolean)=>{
-    if(generationMode!=='classic'||mutationBlocked()||regions.length||hexTerrainByKey.size||kingdoms.length)return false;
-    if(enabled===!!knaveRef.current)return true;
-    documentRevision.current++;updateKnave(enabled?newKnaveLayer():undefined);return true;
+    if(generationMode!=='classic'||mutationBlocked())return false;
+    if(enabled===knaveEnabledRef.current)return true;
+    const layer=knaveRef.current??(enabled?newKnaveLayer():undefined);
+    if(!regions.length&&!hexTerrainByKey.size&&!kingdoms.length){documentRevision.current++;updateKnave(layer);updateKnaveEnabled(enabled);return true;}
+    finishNotesGroup();
+    const before=captureDocument(),after={...before,map:{...before.map,knave:layer},knaveEnabled:enabled};
+    recordTransaction(before,after);applyPreparedDocument(after);return true;
   };
   const changeGenerationMode=(mode:GenerationMode)=>{
     if(mutationBlocked()||mode===generationMode)return;
-    if(knaveRef.current&&mode==='mythic'){
-      if(regions.length||hexTerrainByKey.size){if(!window.confirm(language==='ru'?'Для смены профиля начать новую карту?':'Start a new map to change the profile?'))return;resetMapToMode(mode);}
-      else{documentRevision.current++;updateKnave(undefined);setGenerationMode(mode);}
-    }else setGenerationMode(mode);
+    setGenerationMode(mode);
   };
   const applyWorldSeed = () => {
     if (mutationBlocked()) return false;
@@ -14859,6 +14868,7 @@ export function App() {
     },
     ui: {
       generationMode:doc.generationMode,
+      ...(doc.map.knave?{knaveEnabled:doc.knaveEnabled??true}:{}),
       selectedHex:doc.selectedHex,
       isMapRotated:doc.isMapRotated,
       mapScale:doc.mapScale
@@ -14943,7 +14953,7 @@ export function App() {
           biomeOverrideByHexKey:new Map(Object.entries(imported.map.biomeOverrideByHexKey ?? {})),toponyms:names,toponymSeed:seed,
           nextLakeId:Math.max(imported.counters.nextLakeId,Math.max(0,...Array.from(terrain.values(),t=>t.lakeId??0))+1),
           nextRoadId:Math.max(imported.counters.nextRoadId,Math.max(0,...imported.map.roads.map(r=>r.id))+1)},
-        generationHistory:[],generationMode:imported.ui.generationMode ?? 'classic',
+        generationHistory:[],generationMode:imported.ui.generationMode ?? 'classic',knaveEnabled:imported.ui.knaveEnabled??!!imported.map.knave,
         selectedHex:!hexes.length&&!terrain.size?START_HEX:selection&&validSelection.has(hexKey(selection))?selection:null,
         isMapRotated:imported.ui.isMapRotated,mapScale:clamp(imported.ui.mapScale,MIN_MAP_SCALE,MAX_MAP_SCALE)
       };
@@ -15007,7 +15017,7 @@ export function App() {
   };
   const currentKnaveDraft=(draft:KnaveDraft|null):draft is KnaveDraft=>!!draft&&knaveDraftRef.current===draft&&draft.revision===documentRevision.current&&draft.token===poiDocumentToken.current&&draft.hexKey===notesSelectionRef.current&&!documentBusy();
   const changeKnaveDraft=(patch:Partial<Pick<KnaveDraft,'difficulty'|'mode'|'clueText'>>,expected=knaveDraft)=>{
-    if(!editMode||!knaveRef.current||generationMode!=='classic'||!selectedHexKey)return false;
+    if(!editMode||!knaveRef.current||!selectedHexKey)return false;
     if(expected?!currentKnaveDraft(expected):mutationBlocked()||notesComposingRef.current||obstacleDraftRef.current||!finishInlineName())return false;
     const context=knaveMapContext(captureMap());if(!context.hexes.has(selectedHexKey))return false;
     const key=selectedPoiSource?poiLocatorKey(selectedPoiSource):null;
@@ -15241,11 +15251,11 @@ export function App() {
   const knaveControlsBlocked=!!poiDraft||!!regionDraft||!!waterDraft||!!riverDraft||!!roadDraft||!!obstacleDraft||!!riverCommandPreview||!!roadFeatureResolution||documentBusy()||dirtyNameDraft();
   const difficultyLabels:Record<Difficulty,string>=language==='ru'?{unspecified:'Не задана',normal:'Обычная',difficult:'Трудная'}:{unspecified:'Unspecified',normal:'Normal',difficult:'Difficult'};
   const discoveryLabels:Record<Discovery,string>=language==='ru'?{passage:'При прохождении',exploration:'При исследовании',interaction:'Секрет · взаимодействие'}:{passage:'On passage',exploration:'By exploration',interaction:'Secret · interaction'};
-  const knavePanel=knave&&generationMode==='classic'&&selectedHexKey&&knaveMapContext(captureMap()).hexes.has(selectedHexKey)?<div data-knave-panel className="knave-properties" onFocusCapture={e=>{if(e.target instanceof HTMLElement)knaveFocusReturn.current=e.target;}}>
+  const knavePanel=knave&&selectedHexKey&&knaveMapContext(captureMap()).hexes.has(selectedHexKey)?<div data-knave-panel className="knave-properties" onFocusCapture={e=>{if(e.target instanceof HTMLElement)knaveFocusReturn.current=e.target;}}>
     {selectedKnaveContent&&knaveDiscoveryKey&&<div className="knave-results"><KnaveContentRow content={selectedKnaveContent} owner={knaveDiscoveryKey} language={language} disabled={knaveControlsBlocked||!!knaveDraft||activeTagDraftCount>0||notesEditorKey!==null} animation={tagAnimations[`knave:${knaveDiscoveryKey}`]} onRoll={part=>mutateKnaveContent(knaveDiscoveryKey,part)}/></div>}
     {!isSelectedLake&&!isSelectedSea&&<div className="direct-line"><label>{language==='ru'?'Проходимость: ':'Difficulty: '}{editMode?<select aria-label={language==='ru'?'Проходимость':'Difficulty'} value={knaveDifficulty} disabled={knaveControlsBlocked} onChange={e=>changeKnaveDraft({difficulty:e.target.value as Difficulty},knaveDraft)}>{Object.entries(difficultyLabels).map(([v,label])=><option key={v} value={v}>{label}</option>)}</select>:difficultyLabels[knaveDifficulty]}</label></div>}
     {knaveDiscoveryKey&&<><div className="direct-line"><label>{language==='ru'?'Обнаружение: ':'Discovery: '}{editMode?<select aria-label={language==='ru'?'Обнаружение':'Discovery'} value={knaveDiscovery} disabled={knaveControlsBlocked} onChange={e=>changeKnaveDraft({mode:e.target.value as Discovery},knaveDraft)}>{Object.entries(discoveryLabels).map(([v,label])=><option key={v} value={v}>{label}</option>)}</select>:discoveryLabels[knaveDiscovery]}</label></div>
-    {editMode?<label className="knave-clue">{language==='ru'?'Улика (тот же гекс)':'Clue (same hex)'}<textarea aria-label={language==='ru'?'Улика':'Clue'} aria-invalid={!!knaveError} aria-describedby={knaveError?'knave-clue-error':undefined} maxLength={512} rows={2} value={knaveClue} disabled={knaveControlsBlocked} onChange={e=>changeKnaveDraft({clueText:e.target.value},knaveDraft)} onCompositionStart={()=>{knaveComposing.current=true;}} onCompositionEnd={()=>{knaveComposing.current=false;}} /></label>:knaveClue?<p className="knave-clue-text">{language==='ru'?'Улика: ':'Clue: '}{knaveClue}</p>:null}</>}
+    {editMode?<label className="knave-clue">{language==='ru'?'Улика':'Clue'}<textarea aria-label={language==='ru'?'Улика':'Clue'} aria-invalid={!!knaveError} aria-describedby={knaveError?'knave-clue-error':undefined} maxLength={512} rows={2} value={knaveClue} disabled={knaveControlsBlocked} onChange={e=>changeKnaveDraft({clueText:e.target.value},knaveDraft)} onCompositionStart={()=>{knaveComposing.current=true;}} onCompositionEnd={()=>{knaveComposing.current=false;}} /></label>:knaveClue?<p className="knave-clue-text">{language==='ru'?'Улика: ':'Clue: '}{knaveClue}</p>:null}</>}
     {knaveError&&<p id="knave-clue-error" className="direct-error" role="alert">{knaveError}</p>}
     {knaveDraft&&<button type="button" className="direct-value knave-cancel" onClick={()=>resetKnaveDraft(knaveDraft)}>{language==='ru'?'Отмена':'Cancel'}</button>}
   </div>:null;
@@ -15392,7 +15402,7 @@ export function App() {
     </div>}
   </div>:null;
   const waterPanel=selectedHexKey&&!isSelectedCandidate&&(selectedRegion||isSelectedLake||isSelectedSea)?<div data-water-panel className="water-editor">
-    <div className="direct-line">{language==='ru'?'Вода: ':'Water: '}{editMode?<select className="water-kind-value" aria-label={language==='ru'?'Вода':'Water'} disabled={!!poiDraft || !!regionDraft || !!waterDraft}
+    <div className="direct-line">{language==='ru'?'Поверхность: ':'Surface: '}{editMode?<select className="water-kind-value" aria-label={language==='ru'?'Поверхность':'Surface'} disabled={!!poiDraft || !!regionDraft || !!waterDraft}
       value={waterKindAt(hexTerrainByKey,selectedHexKey)} onChange={e=>startWaterDraft(e.target.value as WaterKind)}>
       {(['land','lake','sea'] as const).map(kind=><option value={kind} key={kind}>{waterKindLabel(kind)}</option>)}
     </select>:<span>{waterKindLabel(waterKindAt(hexTerrainByKey,selectedHexKey))}</span>}
@@ -16362,7 +16372,7 @@ export function App() {
                 <option value="classic">{language === 'ru' ? 'Классический режим' : 'Classic mode'}</option>
                 <option value="mythic">Mythic Bastionland</option>
               </select></label></div>
-            {generationMode==='classic'&&<div className="knave-profile-row"><label><input type="checkbox" aria-label="Knave 2e" checked={!!knave} disabled={!!regions.length||!!hexTerrainByKey.size||mutationBlocked(false)} onChange={e=>chooseKnaveProfile(e.target.checked)}/>Knave 2e</label><span>{language==='ru'?'6 миль / гекс':'6 miles / hex'}</span>{!!(regions.length||hexTerrainByKey.size)&&<details className="knave-profile-help"><summary aria-label={language==='ru'?'Почему профиль заблокирован':'Why the profile is locked'}>?</summary><p>{language==='ru'?'Профиль выбран при создании карты. Для другого профиля начните новую карту.':'The profile was chosen when the map was created. Start a new map to change it.'}</p></details>}</div>}
+            {generationMode==='classic'&&<div className="knave-profile-row"><label><input type="checkbox" aria-label="Knave 2e" checked={knaveEnabled} disabled={mutationBlocked(false)} onChange={e=>chooseKnaveProfile(e.target.checked)}/>Knave 2e</label><span>{language==='ru'?'6 миль / гекс':'6 miles / hex'}</span></div>}
             {!kingdomJob && !detailedRenderReady ? <p role="status" className="kingdom-progress">{language === 'ru' ? 'Отрисовка карты…' : 'Drawing map…'}</p> : null}
             {kingdomJob ? <p role="status" className="kingdom-progress">{language === 'ru' ? 'Создание королевства…' : 'Building kingdom…'} {kingdomHexes(kingdomJob.origin).filter(h=>metadataMap.has(hexKey(h))).length}/144</p> : null}
             {generationMode === 'classic' ? <div className="control-block gen-params" aria-label={t.genParamsLabel}>

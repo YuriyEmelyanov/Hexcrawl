@@ -7,6 +7,7 @@ import {findTag} from '../src/tags/engine.ts';
 import {landmarks,holdings,mythicPoiChoices} from '../src/modes/pointsOfInterest.ts';
 import {validateRiverNetwork} from '../src/riverModel/core.ts';
 import {pairKey} from '../src/modes/obstacles.ts';
+import {knaveCatalogFixture} from './helpers/knave-fixture.mjs';
 const finish=h=>{for(let step=0;step<305&&h.render().kingdomJob;step++)h.render().advanceKingdom();const app=h.render();assert.equal(app.kingdomJob,null);assert.equal(app.generationError,null,JSON.stringify(app.generationError));return app;};
 function validate(h,k) {
   const app=h.render(),area=kingdomKeys(k.origin),rs=app.regions.filter(r=>k.regionIds.includes(r.id));
@@ -55,9 +56,15 @@ test('kingdom quotas, d12 sizes, save, classic extension and atomic undo',()=>{
   }
 });
 test('classic to mythic, second kingdom and regeneration preserve earlier regions',()=>{
-  const h=createGenerationHarness(16);h.render().safelyAddRegionToMap({q:0,r:0},{targetSize:12,coastalPreference:'mainland'});
-  let app=h.render();const old=JSON.stringify(app.regions),oldNames=app.toponyms,oldSegments=app.roads.flatMap(r=>r.segments.map(s=>JSON.stringify(s)));
-  app.startKingdom(app.candidateHexes[0]);app=finish(h);assert.equal(JSON.stringify(app.regions.slice(0,1)),old);validate(h,app.kingdoms[0]);
+  const h=createGenerationHarness(16);h.render().chooseKnaveProfile(true);h.injectFunction('knaveGenerationCatalog',knaveCatalogFixture);
+  h.render().safelyAddRegionToMap({q:0,r:0},{targetSize:12,coastalPreference:'mainland'});
+  let app=h.render();const old=JSON.stringify(app.regions),oldNames=app.toponyms,oldSegments=app.roads.flatMap(r=>r.segments.map(s=>JSON.stringify(s))),oldKnave=structuredClone(app.createSaveData().map.knave);
+  h.setWindow({confirm:()=>{throw Error('Changing generation mode must preserve the map without a reset prompt');}});
+  app.changeGenerationMode('mythic');assert.equal(h.render().generationMode,'mythic');assert.equal(JSON.stringify(h.render().regions),old);assert.deepEqual(structuredClone(h.render().createSaveData().map.knave),oldKnave);
+  app=h.render();app.startKingdom(app.candidateHexes[0]);app=finish(h);assert.equal(JSON.stringify(app.regions.slice(0,1)),old);validate(h,app.kingdoms[0]);
+  assert.deepEqual(structuredClone(app.createSaveData().map.knave),oldKnave,'Mythic POIs retain their own types/tags without Knave replacement');
+  const built=JSON.stringify(app.createSaveData().map);app.undoMap();assert.equal(JSON.stringify(h.render().regions),old);assert.deepEqual(structuredClone(h.render().createSaveData().map.knave),oldKnave);h.render().redoMap();assert.equal(JSON.stringify(h.render().createSaveData().map),built);app=h.render();
+  h.setWindow({confirm:()=>true});
   for(const [k,v]of Object.entries(oldNames))assert.deepEqual(app.toponyms[k],v);
   const segments=new Set(app.roads.flatMap(r=>r.segments.map(s=>JSON.stringify(s))));
   for(const segment of oldSegments)assert.ok(segments.has(segment),'old road preserved');
