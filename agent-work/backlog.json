@@ -14764,18 +14764,18 @@
         "Geometric hex measurement convention and coordinate subdivision not specified in selected clause."
       ],
       "duplication_review": {
-        "related_tasks": [
-          "HX-BL-013",
-          "HX-BL-043",
-          "HX-BL-045"
+        "published_reused": [
+          "HX-BL-024 notes",
+          "HX-BL-023 POI edit/selection",
+          "HX-BL-043 KNAVE2-CLASSIC1 content"
         ],
-        "decision": "013 may supply placement/editing primitives;043 owns active Knave table generation, unchanged. New proposed slice is base role and semantic base/site relationships with qualitative proximity; no new table generator or travel engine. Before planning merge into an existing task if exact functionality is demonstrated."
+        "excluded_overlap": "Do not rebuild notes or table generator;040 owns future generated narrative relations, BASE1 only explicitly authored base/site links.052 services component remains outside."
       },
       "research_handoff_ref": "agent-work/research/requirements/OSE-base-sites-L1.json",
       "research_result_ref": "agent-work/research/runs/2026-11-08T1330-OSE-base-sites.json",
       "implementation_authorized": false,
       "release_authorized": false,
-      "readiness": "research_proposed_requires_strategist_selection_and_analyst_specification",
+      "readiness": "bounded_proposal_ready_for_owner_task_start_decision",
       "research_components": [
         {
           "component_id": "OSE-town-services-L1",
@@ -14871,7 +14871,65 @@
       "research_handoff_refs": [
         "agent-work/research/requirements/OSE-base-sites-L1.json",
         "agent-work/research/requirements/OSE-town-services-L1.json"
-      ]
+      ],
+      "proposal_id": "HX-BL-052-BASE1",
+      "proposed_stage_id": "BASE1",
+      "proposal_ref": "agent-work/proposals/2026-11-09-HX-BL-052-BASE1.json",
+      "recommended_priority": 4,
+      "active_proposed_scope": [
+        "Назначить один существующий населённый POI базой данной карты; заменить или снять эту роль без копирования/перегенерации места.",
+        "Вручную связать базу с выбранными существующими приключенческими POI; добавить/удалить связь и короткое необязательное описание вроде «около дня пути».",
+        "Компактный раскрываемый список актуальных имён мест, переход к исходному объекту и возврат к базе. Редактор/выбор места/заметки переиспользуются.",
+        "Сохранение роли/связей и качественных примечаний в JSON/UndoRedo. Переименование/перенос исходного POI сохраняют идентичность ссылки; удаление имеет явный безопасный исход без висячих ссылок."
+      ],
+      "active_proposed_out_of_scope": [
+        "Новые поселения/подземелья автоматически, новая география, дороги или навязываемое размещение у центра/реки.",
+        "Калькулятор дня пути, маршруты/вахты/положение партии, VTT/player map.",
+        "Структурированные службы города, цены/лечение/гильдии, новая форма поверх уже существующих заметок.",
+        "Генерация слухов/квестов/сюжетных связей040, управление фракциями049/050, публичный книжный корпус.",
+        "Поддержка произвольного графа/нескольких баз/межфайловой синхронизации в этом первом пакете."
+      ],
+      "active_proposed_acceptance": [
+        "Назначить T базой и связать D1/D2; список открывает именно эти исходные объекты, возврат выбирает T.",
+        "Переименовать/переместить D1 обычным редактором: ссылка ведёт к тому же объекту с актуальным именем; D2/география/тексты заметок не изменены.",
+        "Удалить связь: удалён только указатель, исходный POI и его содержимое остаются. Замена базы имеет явно показанный исход для текущих связей без молчаливого переноса.",
+        "Удалить/перегенерировать связанный объект или базу: показать затронутые связи и обеспечить атомарный отказ/явное удаление; не оставлять ссылки на отсутствующие сущности. Один Undo восстанавливает исходное состояние.",
+        "JSON round-trip/UndoRedo сохраняют роли/связи/примечания, POI, заметки, теги и RNG. Старое сохранение открывается без автоматически назначенной базы.",
+        "«Около дня пути» остаётся текстовым ориентиром; не превращается автоматически в24мили/4гекса. Назначение T на краю без реки/дороги допустимо.",
+        "Desktop/390/320: список компактный, раскрываемый; клавиатура и доступные цели; аналитик показывает предлагаемый UI после утверждения старта, разработчик — фактический exactSHA. Просмотр макета не третий gate."
+      ],
+      "score_forecast": {
+        "model_version": "1.2",
+        "baseline_ref": "agent-work/score/current-score.json",
+        "baseline_sha": "05e1ba3c1a12b300d564fd044b15b8121d5fa0cd",
+        "criteria": [
+          {
+            "criterion_id": "S05-C01",
+            "before_grade": null,
+            "before_points": null,
+            "expected_grade": null,
+            "expected_delta": null,
+            "evidence_needed": "Actual compact context/base links/navigation on exactSHA; a partial card feature does not establish full criterion."
+          },
+          {
+            "criterion_id": "S04-C04",
+            "before_grade": null,
+            "before_points": null,
+            "expected_grade": null,
+            "expected_delta": null,
+            "evidence_needed": "Exact saved identities/relations through JSON and edit/history/removal cases."
+          }
+        ],
+        "not_claimed": "S05-C02 narrative-cause improvement is not established by formal links; do not award points for a mere edge.",
+        "status": "unknown; no point gain promised"
+      },
+      "implementation_allowed": false,
+      "full_specification_allowed": false,
+      "release_approved": false,
+      "next_role": "owner",
+      "next_role_after_approval": "business_analyst",
+      "next_step": "На утверждение052/BASE1: существующая база, связанные места и быстрый переход; без служб/слухов/путешествий. После утверждения аналитик готовит спецификацию и показываетUI.",
+      "proposal_authority_ref": "agent-work/decisions/owner-decision-2026-11-09-strategist-batch-proposals.json"
     },
     {
       "schema_version": 1,
@@ -16376,6 +16434,13 @@
       "stage_id": "POLITY1",
       "priority": 3,
       "proposal_ref": "agent-work/proposals/2026-11-09-HX-BL-050-POLITY1.json",
+      "status": "proposed"
+    },
+    {
+      "task_id": "HX-BL-052",
+      "stage_id": "BASE1",
+      "priority": 4,
+      "proposal_ref": "agent-work/proposals/2026-11-09-HX-BL-052-BASE1.json",
       "status": "proposed"
     }
   ],
