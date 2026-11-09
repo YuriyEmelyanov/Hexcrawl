@@ -185,3 +185,26 @@ import guard or enable an active nonempty layer. The next stage must connect
 atomic edit/remap/removal/history handling and finish manual/measured validation
 before enabling the layer. The two existing actual-App cases are expanded with
 saved-state validity/refusal checks; no new permanent runner/case is added.
+
+## D2c2: explicit manual/measured extents and immutable edit preparation
+
+The internal live validator now supports manual and measured extents. Explicit
+shapes may cross old source-cell/region boundaries, while every cell must have
+positive overlap with compatible accepted land or the water POI's same body.
+All mandatory water/feature contacts and assigned route entry ports remain
+required. Unknown-size capitals still need two cells after a manual edit;
+changing a provenance label alone is not evidence of a measured exception.
+A real measured polygon determines exactly the positive-intersection cell set
+and can substantiate a one-cell capital. Self-intersecting/degenerate surveys
+are rejected. Survey polygon coordinates are fixed world miles; unit records
+source measurement provenance, not an alternate unit for stored coordinates.
+
+prepareDetailFootprintExtentEdit prepares a fully validated immutable state,
+retains the POI identity, and leaves its input untouched on success or refusal.
+It is still a detached preparation step: actual controller/history edits,
+remap/removal/generation and explicit activation/UI must be connected before
+removing the nonempty-document guard. No active importer/UI is enabled here.
+Test decision: extend the existing capital/Seat actual-App geography case with
+manual/measured validity, exact measured cells, malformed geometry, immutable
+edit/refusal and the capital override constraint. Reuse its authored fixture,
+without another case or runner.

@@ -5,7 +5,7 @@ import {buildDetailPoiFootprint,detailSegmentSpan,type DetailWaterAccess,type De
 import {assertDetailPoiOwners,reconcileDetailPoiIdentities,type DetailPoiIdentities} from './detailIdentity.ts';
 import {poiNameLocators,hasCentralPoi,type PoiRegion} from './manualPois.ts';
 import {parseWaterHex,waterHexKey,waterKindAt,waterNeighbors,type WaterTerrain} from './manualWater.ts';
-import {parseDetail1StateV11,type Detail1State,type DetailPoiFootprint} from './detailModel.ts';
+import {parseDetail1StateV11,type Detail1State,type DetailPoiFootprint,type DetailExtent} from './detailModel.ts';
 import type {KnaveLayer} from './knaveClassic.ts';
 import policy from './tags/knavePolicy.json' with {type:'json'};
 
@@ -159,11 +159,26 @@ export function validateDetailGeographyFootprints(map:DetailGeographyMap,rivers:
   const region=water?undefined:map.regions.find(r=>r.id===Number(parts[1]));
   const kind=region&&hasCentralPoi(region)&&key(region.centerHex)===key(source)?region.centralPoiKind:region?.pointOfInterestKinds?.[key(source)];
   if(!water&&waterKindAt(map.hexTerrainByKey,key(source))!=='land')fail('land_poi_in_water');
-  if(footprint.extent.kind!=='default')return fail('nondefault_extent_reconciliation_pending');
-  const capital=kind==='capital';
-  if(footprint.extent.policy!==(capital?'capital_min_two':'one_cell')||capital&&footprint.cells.length<2||!capital&&footprint.cells.length!==1)fail('invalid_default_extent');
-  const allowed=new Set(detailPositiveAreaIntersections(fine,detailCellPolygon(coarse,source)).map(p=>key(p.cell)));
-  if(footprint.cells.some(c=>!allowed.has(key(c))))fail('footprint_outside_source');
+  const capital=kind==='capital',extent=footprint.extent;
+  if(extent.kind==='default'&&(extent.policy!==(capital?'capital_min_two':'one_cell')||capital&&footprint.cells.length<2||!capital&&footprint.cells.length!==1))fail('invalid_default_extent');
+  if(extent.kind==='manual'&&capital&&footprint.cells.length<2)fail('capital_manual_needs_two_cells');
+  let allowed:Set<string>;
+  if(extent.kind==='default')allowed=new Set(detailPositiveAreaIntersections(fine,detailCellPolygon(coarse,source)).map(p=>key(p.cell)));
+  else {
+   // Explicit extents may cross source-cell/region boundaries, but must remain
+   // on compatible accepted geography. A water POI retains its exact body.
+   const coarseKeys=water?[...map.hexTerrainByKey.keys()].filter(k=>waterKindAt(map.hexTerrainByKey,k)!=='land'&&waterIdentity(map,k)===waterIdentity(map,key(source))):[...new Set(map.regions.flatMap(r=>r.hexes.map(key)))].filter(k=>waterKindAt(map.hexTerrainByKey,k)==='land');
+   const compatible=new Set(coarseKeys);
+   allowed=new Set(footprint.cells.filter(cell=>detailPositiveAreaIntersections(coarse,detailCellPolygon(fine,cell)).some(hit=>compatible.has(key(hit.cell)))).map(key));
+  }
+  if(footprint.cells.some(c=>!allowed.has(key(c))))fail('footprint_outside_compatible_geography');
+  if(extent.kind==='measured_polygon'){
+   assertSimpleExtentPolygon(extent.sourcePolygon);
+   // sourcePolygon is expressed in fixed world miles. unit records the source
+   // measurement provenance; it never changes stored world coordinate units.
+   const expected=detailPositiveAreaIntersections(fine,extent.sourcePolygon).map(p=>key(p.cell)).sort(),actual=footprint.cells.map(key).sort();
+   if(expected.length!==actual.length||expected.some((k,i)=>k!==actual[i]))fail('measured_extent_cell_mismatch');
+  }
   const member=new Set(footprint.cells.map(key)),need=requirement(map,alias!,water);
   const accesses=waterAccesses(map,rivers,source,origin,water,need).filter(a=>member.has(key(a.cell)));
   const waterRefs=footprint.attachments.filter(a=>a.kind==='water');
@@ -175,4 +190,32 @@ export function validateDetailGeographyFootprints(map:DetailGeographyMap,rivers:
    if(!ids.has(ref.routeId)||!routes.some(r=>r.routeId===ref.routeId&&r.accessNodeId===ref.accessNodeId&&r.kind===ref.routeKind&&footprint.cells.some(cell=>{const span=detailSegmentSpan(fine,cell,r.segment);return span&&close(span.from,ref.entry);})))fail('invalid_live_route_attachment');
   }
  }
+}
+
+
+/** Reject ambiguous/self-crossing surveys before any clipping or state write. */
+function assertSimpleExtentPolygon(input:readonly WorldPoint[]):void {
+ const points=input.length>3&&input[0].x===input[input.length-1].x&&input[0].y===input[input.length-1].y?input.slice(0,-1):input;
+ const cross=(a:WorldPoint,b:WorldPoint,c:WorldPoint)=>(b.x-a.x)*(c.y-a.y)-(b.y-a.y)*(c.x-a.x);
+ const on=(a:WorldPoint,b:WorldPoint,p:WorldPoint)=>Math.abs(cross(a,b,p))<=1e-10&&p.x>=Math.min(a.x,b.x)-1e-10&&p.x<=Math.max(a.x,b.x)+1e-10&&p.y>=Math.min(a.y,b.y)-1e-10&&p.y<=Math.max(a.y,b.y)+1e-10;
+ for(let i=0;i<points.length;i++){
+  const a=points[i],b=points[(i+1)%points.length];if(Math.hypot(a.x-b.x,a.y-b.y)<1e-10)fail('invalid_survey_edge');
+  for(let j=i+1;j<points.length;j++){
+   if(j===i+1||i===0&&j===points.length-1)continue;
+   const c=points[j],d=points[(j+1)%points.length],ab1=cross(a,b,c),ab2=cross(a,b,d),cd1=cross(c,d,a),cd2=cross(c,d,b);
+   if(ab1*ab2<0&&cd1*cd2<0||on(a,b,c)||on(a,b,d)||on(c,d,a)||on(c,d,b))fail('self_intersecting_survey');
+  }
+ }
+}
+
+/** Prepare one immutable extent edit. The live controller must commit this in
+ * one document/history transaction; no import gate is lifted here. */
+export function prepareDetailFootprintExtentEdit(map:DetailGeographyMap,rivers:readonly DetailLiveRiver[],value:unknown,poiId:string,extent:DetailExtent,cells?:readonly DetailCell[]):Detail1State {
+ const state=parseDetail1StateV11(value);validateDetailGeographyFootprints(map,rivers,state);
+ if(!state.poiFootprints.some(p=>p.poiId===poiId))fail('stale_extent_owner');
+ if(extent.kind==='default')fail('extent_edit_requires_explicit_provenance');
+ if(extent.kind==='measured_polygon')assertSimpleExtentPolygon(extent.sourcePolygon);
+ const selected=extent.kind==='measured_polygon'?detailPositiveAreaIntersections(createDetailGrid(1,state.grid.origin),extent.sourcePolygon).map(p=>p.cell):cells??fail('manual_extent_requires_cells');
+ const next=parseDetail1StateV11({...state,poiFootprints:state.poiFootprints.map(p=>p.poiId===poiId?{...p,extent,cells:selected}:p)});
+ validateDetailGeographyFootprints(map,rivers,next);return next;
 }

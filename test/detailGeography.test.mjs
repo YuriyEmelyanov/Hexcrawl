@@ -1,3 +1,5 @@
+import {prepareDetailFootprintExtentEdit} from '../src/detailGeography.ts';
+import {detailCellPolygon,createDetailGrid} from '../src/detailGrid.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createGenerationHarness} from './helpers/generation-harness.mjs';
@@ -19,6 +21,15 @@ test('live DETAIL1 preview projects actual capital/Seat and every assigned road 
   const preview=prepare(h),poi=preview.poiFootprints[0];
   assert.doesNotThrow(()=>validate(h,before.map,preview));
   for(const change of [p=>p.poiFootprints.pop(),p=>p.poiFootprints[0].cells=[{q:99,r:99}],p=>p.poiFootprints[0].attachments.pop(),p=>p.poiFootprints[0].attachments[0].entry={x:900,y:900},p=>p.poiFootprints[0].poiId='detail-poi:999']){const bad=structuredClone(preview);change(bad);assert.throws(()=>validate(h,before.map,bad));}
+  const manual=structuredClone(preview);manual.poiFootprints[0].extent={kind:'manual',basis:'conditional',note:'Явный условный охват'};manual.poiFootprints[0].cells=[...poi.cells,{q:12,r:1}];
+  assert.doesNotThrow(()=>validate(h,before.map,manual));
+  const original=state(preview),rivers=h.geometry.detailMapRiverGeometry(before.map,preview.grid.origin),copy=structuredClone(original);
+  const changed=prepareDetailFootprintExtentEdit(before.map,rivers,original,poi.poiId,manual.poiFootprints[0].extent,manual.poiFootprints[0].cells);assert.deepEqual(structuredClone(original),copy);assert.equal(changed.poiFootprints[0].poiId,poi.poiId);assert.ok(Object.isFrozen(changed));
+  assert.throws(()=>prepareDetailFootprintExtentEdit(before.map,rivers,original,poi.poiId,manual.poiFootprints[0].extent,[{q:999,r:999}]));assert.deepEqual(structuredClone(original),copy);
+  const measured=structuredClone(preview);measured.poiFootprints[0].extent={kind:'measured_polygon',sourceId:'survey:1',unit:'mile',method:'positive_area_intersection',sourcePolygon:detailCellPolygon(createDetailGrid(1),{q:12,r:0})};measured.poiFootprints[0].cells=[{q:12,r:0}];assert.doesNotThrow(()=>validate(h,before.map,measured));
+  for(const change of [p=>p.poiFootprints[0].cells.push({q:13,r:0}),p=>p.poiFootprints[0].extent.sourcePolygon=[{x:11,y:0},{x:13,y:2},{x:11,y:2},{x:13,y:0},{x:14,y:0}]]){const bad=structuredClone(measured);change(bad);assert.throws(()=>validate(h,before.map,bad));}
+  if(mode==='classic'){const tooSmall=structuredClone(manual);tooSmall.poiFootprints[0].cells=[{q:12,r:0}];tooSmall.poiFootprints[0].extent.basis='measured_override';assert.throws(()=>validate(h,before.map,tooSmall),/capital_manual_needs_two_cells/);}
+  const outside=structuredClone(manual);outside.poiFootprints[0].cells=[{q:900,r:0}];assert.throws(()=>validate(h,before.map,outside));
   assert.equal(preview.activatesDetail1,false);assert.equal(preview.source.physicalConvention,'unknown');assert.equal(preview.poiFootprints.length,1);
   assert.equal(poi.cells.length,mode==='classic'?2:1);assert.equal(poi.poiId,preview.poiIdentities.byLegacyRef['poi:1:2,0']);
   assert.deepEqual(structuredClone(poi.attachments.filter(a=>a.kind==='route').map(a=>a.routeId)),['road:1','road:2']);
