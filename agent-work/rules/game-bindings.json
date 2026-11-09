@@ -50681,6 +50681,125 @@
       "operational_requirement_ref": "agent-work/market/rules/Vaarn-Hexfill-2024.json#VAARN-HF2024-001-L1",
       "traceability_ref": "agent-work/market/rules/Vaarn-Hexfill-2024.json#VAARN-HF2024-001-L1",
       "evidence_ids": []
+    },
+    {
+      "id": "VAARN-HF2024-002-L1",
+      "game_id": "VAARN",
+      "edition": "Author blog variant2024-04-11; not identified as core1e/2e",
+      "source_rule_id": "VAARN-HF2024-002",
+      "source_id": "VAARN-AUTHOR-HEXFILL-20240411",
+      "source_page": null,
+      "source_url": "https://vaultsofvaarn.com/2024/04/11/vaarn-hexfill-procedure/",
+      "source_locator": "Inhabited Hex heading and complete d10 table, web lines22–35",
+      "author_project_key": "leo-hunt:vaultsofvaarn:hexfill2024",
+      "access_level": "full_text",
+      "layer": "L1",
+      "normative_kind": "optional_author_blog_procedure",
+      "scope": "inhabitedd10 only; linked contentunread",
+      "source_requirement": "Определить подтип нового места по исходу и позволить мастеру продолжить описание вручную либо обратиться к авторской ссылке.",
+      "canonical_rule_ids": [
+        "content.roll_table_resolution"
+      ],
+      "profiles": [
+        {
+          "rule_id": "content.roll_table_resolution",
+          "parameters": {
+            "die": "d10",
+            "condition": "category=inhabited",
+            "outcomes": [
+              {
+                "roll": 1,
+                "subtype_ru_paraphrase": "архив"
+              },
+              {
+                "roll": 2,
+                "subtype_ru_paraphrase": "аркология"
+              },
+              {
+                "roll": 3,
+                "subtype_ru_paraphrase": "лагерь охотника за головами"
+              },
+              {
+                "roll": 4,
+                "subtype_ru_paraphrase": "лагерь кочевников Faa"
+              },
+              {
+                "roll": 5,
+                "subtype_ru_paraphrase": "лагерь Гегемонии"
+              },
+              {
+                "roll": 6,
+                "subtype_ru_paraphrase": "святое место"
+              },
+              {
+                "roll": 7,
+                "subtype_ru_paraphrase": "оазис"
+              },
+              {
+                "roll": 8,
+                "subtype_ru_paraphrase": "обитель учёного-мистика"
+              },
+              {
+                "roll": 9,
+                "subtype_ru_paraphrase": "поселение"
+              },
+              {
+                "roll": 10,
+                "subtype_ru_paraphrase": "торговый пост"
+              }
+            ],
+            "linked_generator_content": "unread"
+          },
+          "exceptions": [
+            "Только необязательный авторский Hexfill2024, не core1e/2e.",
+            "Только гексы inhabited; hazardous/special и их сочетания вне этого прохода.",
+            "Текст связанных генераторов не прочитан; автоматическая загрузка, параметры и лицензия интеграции unknown.",
+            "Источник не задаёт диаметр гекса, повторную генерацию и размещение нескольких мест.",
+            "Наличие святого места не создаёт обязательной связи с MB Seer; одинаковое название не доказывает общий профиль."
+          ],
+          "conditions": [
+            "После выбора inhabited по первому d6 в явно выбранном Hexfill2024."
+          ],
+          "profile_status": "unverified",
+          "verification_requirement": "Five acceptance examples on exact runtimeSHA; no evidence inherited from043"
+        }
+      ],
+      "coverage_status": "unverified",
+      "acceptance_cases": [
+        {
+          "id": "VAARN-HF2024-002-L1-AC01",
+          "given": "Десять гексов с категорией inhabited и заданными исходами d10 от1 до10.",
+          "when": "Определить по одному подтипу.",
+          "expected": "Каждый исход даёт соответствующий подтип из упорядоченного профиля;1 — архив,7 — оазис,10 — торговый пост. География не меняется."
+        },
+        {
+          "id": "VAARN-HF2024-002-L1-AC02",
+          "given": "Категория hazardous или special либо категории ещё нет.",
+          "when": "Запустить шаг inhabited.",
+          "expected": "Эта ветка не применяется автоматически; подтип и категория не подменяются. Иные ветки остаются неразобранными."
+        },
+        {
+          "id": "VAARN-HF2024-002-L1-AC03",
+          "given": "Исход0,11 или1.5 при категории inhabited.",
+          "when": "Принять исход d10.",
+          "expected": "Недопустимый исход не меняет карту."
+        },
+        {
+          "id": "VAARN-HF2024-002-L1-AC04",
+          "given": "Вручную подготовленный гекс с рекой; принят исход7.",
+          "when": "Сохранить и снова открыть карту.",
+          "expected": "Оазис и исход7 сохранены без нового броска; река и другие ручные места не удалены."
+        },
+        {
+          "id": "VAARN-HF2024-002-L1-AC05",
+          "given": "Исход1; связанный генератор архива недоступен.",
+          "when": "Принять подтип.",
+          "expected": "Подтип архива остаётся пригоден для ручного описания; население, сокровища и прочие детали не выдуманы. Ссылка не считается сгенерированным содержимым."
+        }
+      ],
+      "operational_requirement_ref": "agent-work/market/rules/Vaarn-Hexfill-2024.json#VAARN-HF2024-002-L1",
+      "traceability_ref": "agent-work/market/rules/Vaarn-Hexfill-2024.json#VAARN-HF2024-002-L1",
+      "evidence_ids": []
     }
   ],
   "other_games_status": "DND5 DMG2014 and bounded PF2 Remaster now analysed; other games unverified. Shared IDs do not establish parameter equivalence."

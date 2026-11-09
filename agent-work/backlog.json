@@ -17703,7 +17703,75 @@
         "overall": 15,
         "create": 13
       },
-      "approval_ref": null
+      "approval_ref": null,
+      "candidate_extensions": [
+        {
+          "id": "VAARN-HF2024-INHABITED-v1",
+          "status": "proposed_research_handoff",
+          "requirement_refs": [
+            "agent-work/market/rules/Vaarn-Hexfill-2024.json#VAARN-HF2024-002-L1"
+          ],
+          "canonical_rule_ids": [
+            "content.roll_table_resolution"
+          ],
+          "binding_refs": [
+            "agent-work/rules/game-bindings.json#VAARN-HF2024-002-L1"
+          ],
+          "problem": "First category alone does not give an inhabited place subtype.",
+          "benefit": "Master receives a concrete new place type while preserving manual map work.",
+          "scope": "Only inhabitedd10; no generator contents or geography; independent future scope decision.",
+          "acceptance_checks": [
+            {
+              "id": "VAARN-HF2024-002-L1-AC01",
+              "given": "Десять гексов с категорией inhabited и заданными исходами d10 от1 до10.",
+              "when": "Определить по одному подтипу.",
+              "expected": "Каждый исход даёт соответствующий подтип из упорядоченного профиля;1 — архив,7 — оазис,10 — торговый пост. География не меняется."
+            },
+            {
+              "id": "VAARN-HF2024-002-L1-AC02",
+              "given": "Категория hazardous или special либо категории ещё нет.",
+              "when": "Запустить шаг inhabited.",
+              "expected": "Эта ветка не применяется автоматически; подтип и категория не подменяются. Иные ветки остаются неразобранными."
+            },
+            {
+              "id": "VAARN-HF2024-002-L1-AC03",
+              "given": "Исход0,11 или1.5 при категории inhabited.",
+              "when": "Принять исход d10.",
+              "expected": "Недопустимый исход не меняет карту."
+            },
+            {
+              "id": "VAARN-HF2024-002-L1-AC04",
+              "given": "Вручную подготовленный гекс с рекой; принят исход7.",
+              "when": "Сохранить и снова открыть карту.",
+              "expected": "Оазис и исход7 сохранены без нового броска; река и другие ручные места не удалены."
+            },
+            {
+              "id": "VAARN-HF2024-002-L1-AC05",
+              "given": "Исход1; связанный генератор архива недоступен.",
+              "when": "Принять подтип.",
+              "expected": "Подтип архива остаётся пригоден для ручного описания; население, сокровища и прочие детали не выдуманы. Ссылка не считается сгенерированным содержимым."
+            }
+          ],
+          "expected_evidence": "Exact runtimeSHA fixed outcomes, guard, save/reopen; currentlyunknown.",
+          "dependencies": [
+            "owner_scope_decision",
+            "shared043 reuse assessment",
+            "054 firstcategory"
+          ],
+          "score_delta": null,
+          "source_limitations": [
+            "Только необязательный авторский Hexfill2024, не core1e/2e.",
+            "Только гексы inhabited; hazardous/special и их сочетания вне этого прохода.",
+            "Текст связанных генераторов не прочитан; автоматическая загрузка, параметры и лицензия интеграции unknown.",
+            "Источник не задаёт диаметр гекса, повторную генерацию и размещение нескольких мест.",
+            "Наличие святого места не создаёт обязательной связи с MB Seer; одинаковое название не доказывает общий профиль."
+          ],
+          "implementation_authorized": false,
+          "release_authorized": false,
+          "research_ref": "agent-work/research/runs/2026-11-09T2230-VAARN-inhabited-subtypes.json",
+          "current_task_scope_unchanged": true
+        }
+      ]
     }
   ],
   "last_review": {
