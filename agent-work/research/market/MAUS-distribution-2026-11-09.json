@@ -1,0 +1,246 @@
+{
+  "schema_version": 1,
+  "assessment_id": "HX-RSR-MAUS-ANCHOR-SCREEN-01-v1",
+  "version": 1,
+  "run_id": "2026-11-09T1331-MAUS-distribution-screen",
+  "status": "bounded_distribution_screen_complete_core_counts_unknown",
+  "kind": "existing_crowdfunding_and_distribution_signals_not_new_numeric_metric",
+  "checked_at": "2026-11-09T13:36:08.542Z",
+  "baseline_sha": "fb8bfa374c02719d105ff8ebaa054760cc4c7df6",
+  "game_id": "MAUS",
+  "observation_registry": "agent-work/research/observations.json",
+  "observation_ids": [
+    "obs-MAUS-boxset2021-anchor-recheck-20261109",
+    "obs-MAUS-core-PWYW-channel-20261109",
+    "obs-MAUS-reprint2024-channel-20261109",
+    "obs-MAUS-JunkCity2025-counter-20261109"
+  ],
+  "source_inventory": [
+    {
+      "url": "https://www.kickstarter.com/projects/isaac-williams/mausritter-box-set-and-adventure-collection",
+      "access_level": "full_text",
+      "locator": "Header/counter/funding period",
+      "author_project_key": "isaac-williams:losing-games:mausritter:boxset-estate:2021",
+      "scope": "Counter readable; no full reward-tier census",
+      "page_last_updated": "2025-09-10"
+    },
+    {
+      "url": "https://losing-games.itch.io/mausritter",
+      "access_level": "full_text",
+      "locator": "Product metadata, includedfiles and devlog index lines7–85",
+      "author_project_key": "isaac-williams:losing-games:mausritter:core-itch"
+    },
+    {
+      "url": "https://losing-games.itch.io/mausritter/purchase",
+      "access_level": "full_text",
+      "locator": "Free/PWYW + includedrulebook, no checkout/download performed",
+      "author_project_key": "isaac-williams:losing-games:mausritter:core-itch"
+    },
+    {
+      "url": "https://losing-games.itch.io/mausritter/devlog/667727/box-set-reprint-now-available",
+      "access_level": "full_text",
+      "locator": "Opening3paragraphs",
+      "author_project_key": "isaac-williams:losing-games:mausritter:reprint:2024"
+    },
+    {
+      "url": "https://losing-games.itch.io/mausritter/devlog/194667/expanded-pdf-rulebook-print-edition-out-today",
+      "access_level": "full_text",
+      "locator": "2020expandededition announcement, lines16–19/31",
+      "author_project_key": "isaac-williams:losing-games:mausritter",
+      "scope": "Edition history only; no count extracted"
+    },
+    {
+      "url": "https://losing-games.itch.io/mausritter/devlog/1109978/mausritter-junk-city-now-crowdfunding",
+      "access_level": "full_text",
+      "locator": "Author link to official BackerKit, lines17–25",
+      "author_project_key": "isaac-williams:losing-games:mausritter:junk-city:2025"
+    },
+    {
+      "url": "https://www.backerkit.com/c/projects/exalted-funeral/mausritter-junk-city",
+      "access_level": "full_text",
+      "locator": "Project counter31–37; shipping39; campaign contents98–144",
+      "author_project_key": "isaac-williams:losing-games:mausritter:junk-city:2025"
+    },
+    {
+      "url": "https://mausritter.com/",
+      "access_level": "unavailable",
+      "locator": "No readable lines in returned page; no claim site itself is globally unavailable",
+      "author_project_key": "isaac-williams:losing-games:mausritter"
+    }
+  ],
+  "search_scope": {
+    "queries": [
+      "Mausritter Isaac Williams downloads sales copies itch.io statistics",
+      "site:losing-games.itch.io/mausritter downloads copies",
+      "site:mausritter.com sold copies downloads",
+      "Mausritter Isaac sold copies"
+    ],
+    "engines": "Routine search + stronger primary-source verification; one bounded pass",
+    "coverage": "Core itch/PWYW, selected creator devlogs2020/2024/2025, oldKS and linkednewcampaign; not wholeweb or private analytics",
+    "result": "No comparable basegame sales/download total found in this bounded corpus; not proof no such disclosure exists."
+  },
+  "source_unit_exclusions": [
+    {
+      "signal": "itchratings/reviews",
+      "decision": "Not downloads/people; no review multiplier."
+    },
+    {
+      "signal": "Event banner7996backers across16projects",
+      "ref": "https://www.backerkit.com/c/projects/exalted-funeral/mausritter-junk-city",
+      "decision": "Different aggregated event unit; cross-project dedup/role/core ownership unknown. Not used asMAUS audience and not summed with1956."
+    },
+    {
+      "signal": "Limited firstprint-run500 from secondary listings/comments",
+      "decision": "Not verified as sales in primary corpus; do not use as current total."
+    },
+    {
+      "signal": "Translations/award/creatorsubscribers",
+      "decision": "Not converted into audience; not needed for selected countcheck."
+    }
+  ],
+  "observations_vs_inference": {
+    "observed": "Multiple distribution channels and two distinct campaign counters; core downloads/paid split not observed.",
+    "inferred": "Old boxset audience anchor is incomplete as a census; direction/size of totalGM correction remain unknown.",
+    "not_supported": "Replacing1580 with1956 or adding campaigns/event/downloads; increasing activeM/p/score without calibration."
+  },
+  "provenance_chain": {
+    "formula": "M=A*K*G",
+    "legacy_ref": "agent-work/market/development-priorities.json",
+    "calculations": [
+      {
+        "scenario": "low",
+        "A": 1580,
+        "K": 3,
+        "G": 0.35,
+        "M": 1659,
+        "active_M": 1659,
+        "error": 0
+      },
+      {
+        "scenario": "reference",
+        "A": 1580,
+        "K": 6,
+        "G": 0.5,
+        "M": 4740,
+        "active_M": 4740,
+        "error": 0
+      },
+      {
+        "scenario": "high",
+        "A": 1580,
+        "K": 12,
+        "G": 0.6,
+        "M": 11376,
+        "active_M": 11376,
+        "error": 0
+      }
+    ],
+    "active_ref": "agent-work/market/three-scenario-ranking-2026-11-06.json",
+    "active_population": {
+      "M": [
+        1659,
+        4740,
+        11376
+      ],
+      "status": "carried_forward_proxy_not_observed",
+      "prior_method": "historical_anchor_proxy_KG",
+      "anchor": 1580,
+      "source": "https://www.kickstarter.com/projects/isaac-williams/mausritter-box-set-and-adventure-collection",
+      "observed_active_GMs": null
+    },
+    "calibration_status": "K/G are assumptions, not learned from channel announcements"
+  },
+  "sensitivity": {
+    "kind": "readonly_algebra_on_existing_model_not_replacement_estimate",
+    "reference": {
+      "name": "reference",
+      "M": 4740,
+      "T": 0.5,
+      "R": 0.2,
+      "C": 0.25,
+      "p": [
+        0.4,
+        0.22999999999999998,
+        0.27
+      ],
+      "D": [
+        948,
+        545.0999999999999,
+        639.9000000000001
+      ],
+      "U": [
+        47.400000000000006,
+        27.254999999999995,
+        31.995000000000005
+      ],
+      "ranks": [
+        17,
+        39,
+        40
+      ],
+      "mean_rank": 31.666666666666668,
+      "overall_place": 32,
+      "overall_ranks": [
+        16,
+        39,
+        40
+      ]
+    },
+    "threshold_rule": "Existing eligibility D_create>1000, not >=1000",
+    "fixed_p_create": 0.4,
+    "fixed_T": 0.5,
+    "required_M_strictly_greater_than": 5000,
+    "current_M": 4740,
+    "gap_to_boundary": 260,
+    "gap_relative_to_current_M": 0.05485232067510549,
+    "note": "At fixedp/T, M5000 yieldsD1000 exactly and does not satisfy strictthreshold. This diagnostic is not a proposed M or evidence that threshold is crossed.",
+    "rank_cohort_effect": "No reranking/cohort modification performed; active uncertainty preserved."
+  },
+  "unknowns": [
+    {
+      "id": "MAUS-U01",
+      "quantity": null,
+      "unit": "downloads/paidcopies/printcopies",
+      "missing": "Comparable date-bounded disclosed basegame totals with channeldefinitions."
+    },
+    {
+      "id": "MAUS-U02",
+      "quantity": null,
+      "unit": "uniquepeople/currentGMs",
+      "missing": "Crosschannel and campaign dedup; buyerrole/yearactivity; exactedition retention."
+    },
+    {
+      "id": "MAUS-U03",
+      "quantity": null,
+      "unit": "share of activeGMs",
+      "missing": "Newgeography creation versus premadecampaign use; examples do not measure prevalence."
+    }
+  ],
+  "product_handoff": {
+    "operational_requirement": null,
+    "reason": "Distribution screen extracts no game rule; operational_requirement N/A. Existing source matrices and canonical registries untouched.",
+    "product_task_refs": [],
+    "runtime_evidence": "not_audited",
+    "score_delta": null
+  },
+  "disposition": {
+    "status": "retain_explicit_unknown_no_numeric_candidate",
+    "active_changed": false,
+    "method_changed": false,
+    "pool_changed": false,
+    "rating_proposal_refs": [],
+    "owner_decisions_needed": [],
+    "reason": "Newer campaign counter is not comparable core/currentGM count. Preserve oldactive values while recording weakness; no invented numeric correction."
+  },
+  "checkpoint_ref": "agent-work/research/checkpoints/MAUS-distribution.json",
+  "next_candidate": {
+    "task_id": "HX-RSR-DND5-SCALE-CONVENTION-01",
+    "game_id": "DND5",
+    "layer": "L1",
+    "kind": "primary_source_to_existing_handoff",
+    "status": "candidate_not_fixed_rotation",
+    "action": "Проверить по первичному DMG2014 геометрическую конвенцию физического масштаба профиля DND5-2014-002-L1: что именно измерено и что остаётсяunknown. Сопоставить с существующими042/051, не переносить corner-to-corner PF2 по аналогии и не менять активную051.",
+    "reason": "Высший referencecreate-приоритет DND5; в прежней передаче PF2 конвенция DND оставалась неподтверждённой, а051 уже развивает общий масштаб. Это конкретная проверка важного L1входа после рыночного прохода.",
+    "completion": "Источник/страница/прочитанный фрагмент → точное измерение либоunknown → известный пример по operational_requirement и адресная передача existingtask; без новой спецификации/кода. Свежие решения могут сменить выбор."
+  }
+}
