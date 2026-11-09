@@ -1,0 +1,153 @@
+{
+  "schema_version": 1,
+  "version": 1,
+  "status": "proposed",
+  "created_at": "2026-11-09T02:06:26.195Z",
+  "role": "strategist_manager",
+  "primary_scenario": "develop",
+  "secondary_scenarios": [
+    "create"
+  ],
+  "layer": "L1",
+  "ranking_version": "three-scenario-ranks-1.4-create-evidence",
+  "cohort_version": "2026-11-06-ranking1.4-create-evidence",
+  "process_basis": {
+    "source": "Current owner instruction in existing task chat",
+    "quote": "Для стратега. Если ты одну задачу на согласование отправил. Формируй следуюшие в холостую не работай. Я могу несколько задач сразу согласовать.",
+    "effect": "Prepare additional concrete, nonduplicate proposals while others await approval. Owner may approve several task IDs/scopes together; this message is not approval to implement them."
+  },
+  "priority_basis": "Strategist recommendation after owner asked for actual generation/user effect of042: prioritize immediate visible map editing over physical-scale metadata. This prioritization is not owner task approval.",
+  "authority": {
+    "task_start_approved": false,
+    "full_specification_allowed": false,
+    "implementation_allowed": false,
+    "release_approved": false,
+    "additional_spend_approved": false
+  },
+  "required_owner_decision": "Утвердить старт указанного task_id/stage_id в этих границах. Можно согласовать несколько предложений одним сообщением, перечислив их ID; публикация каждого точного проверенного пакета требует отдельного разрешения.",
+  "next_role": "owner",
+  "next_role_after_approval": "business_analyst",
+  "ui_preview": {
+    "status": "required_after_task_start_approval",
+    "scope": "Аналитик показывает предлагаемый desktop/narrow вид на основе актуального интерфейса; разработчик затем фактический exactSHA результат. Не отдельный третий gate; отсутствие ответа на показ не блокирует утверждённую работу.",
+    "shown": false
+  },
+  "current_code_evidence": {
+    "inspected_sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
+    "method": "Targeted read-only git show/git grep of exact source snapshot; not a full UI/runtime audit",
+    "limitations": [
+      "This is the inspected pre-PR494-release baseline, not a claim about later release contents.",
+      "After task approval analyst rechecks latest published baseline and accepted packages before fixing implementation base.",
+      "No product support or score grade inferred from a source search."
+    ],
+    "refs": [
+      {
+        "path": "src/App.tsx",
+        "line": 16349,
+        "fact": "Single selected-hex terrain select calls setSelectedHexBiomeOverride/resetSelectedHexBiomeOverride."
+      },
+      {
+        "path": "src/App.tsx",
+        "line": 14235,
+        "fact": "Existing override reset changes a single selected key and commits manual map."
+      },
+      {
+        "path": "src/App.tsx",
+        "line": 14712,
+        "fact": "biomeOverrideByHexKey already serialized; import reconstruction at14802."
+      }
+    ],
+    "search_result": "No brush/кисть implementation found by targeted source search; only historical archive backlog mention."
+  },
+  "feedback_assessment": {
+    "HX_FB_002": {
+      "decision": "include_test_governance",
+      "reason": "Reuse/extend current transaction, import, UI and related editor cases. New permanent cases only for a distinct requirement or reproduced failure; do not repeat a full test-code audit or count tests as progress."
+    }
+  },
+  "score": {
+    "model_version": "1.2",
+    "baseline_ref": "agent-work/score/current-score.json",
+    "baseline_blob_sha": "ff88f6418f5eacd654d5efa5a6a8e394706022af",
+    "status": "unknown; no score award or numeric gain promised before exactSHA assessment and release",
+    "criteria": [
+      {
+        "criterion_id": "S03-C01",
+        "before_grade": null,
+        "before_points": null,
+        "expected_grade": null,
+        "expected_delta": null,
+        "evidence_needed": "ExactSHA successful batch local edit/preview/cancel and preservation of existing map."
+      },
+      {
+        "criterion_id": "S04-C04",
+        "before_grade": null,
+        "before_points": null,
+        "expected_grade": null,
+        "expected_delta": null,
+        "evidence_needed": "ExactSHA atomic Undo/Redo and JSON round-trip for stroke; no whole-criterion grade assumed."
+      }
+    ]
+  },
+  "source_refs": [
+    "agent-work/backlog.json",
+    "agent-work/strategy/vision.md",
+    "agent-work/strategy/score-model.md",
+    "agent-work/feedback.json",
+    "agent-work/backlog.json#HX-BL-028",
+    "src/App.tsx@a246fdf292963fd534a8203f569b9ca48b6292c7"
+  ],
+  "proposal_id": "HX-BL-028-BRUSH1",
+  "task_id": "HX-BL-028",
+  "stage_id": "BRUSH1",
+  "title": "Кисть местности для нескольких готовых гексов",
+  "recommended_priority": 1,
+  "problem": "Существующий редактор позволяет менять локальный биом выбранного гекса. Для полосы или пятна из нескольких гексов нужно повторять однотипную правку; отдельный инструмент штриха не найден в проверенном source snapshot.",
+  "benefit": "Мастер быстро уточняет форму леса, болота или другой местности на подготовленной карте, сохраняя возможность отменить весь штрих одной командой.",
+  "user_visible_effect": {
+    "before": "Чтобы сделать семь соседних гексов лесом, ведущий по очереди выбирает каждый и меняет местность.",
+    "after": "Предложение, не реализация: выбрать лес один раз, провести кистью по семи готовым гексам и применить весь штрих; один Undo возвращает их прежние локальные настройки.",
+    "generation_effect": "Не меняет автоматическую генерацию: ускоряет ручную подготовку/исправление уже построенной карты."
+  },
+  "in_scope": [
+    "Один ограниченный инструмент для локальной смены биома нескольких существующих сухопутных гексов и сброса их к биому региона.",
+    "Один штрих/набор применяет выбранное значение атомарно; предварительный просмотр и отмена черновика, один Undo/Redo на применение.",
+    "Mouse/touch и доступный способ набрать/применить те же гексы с клавиатуры; существующие кнопки и панель без непропорционального расширения.",
+    "Повторно использовать текущий biomeOverrideByHexKey, документ, историю и JSON; сохранять прежнюю семантику индивидуальной правки."
+  ],
+  "out_of_scope": [
+    "Создание новых гексов, изменение административной принадлежности/высот/географического генератора.",
+    "Кисти рек, озёр, морей, дорог и новые биомы; это другие части028/019/018 и требуют отдельного объёма.",
+    "Молчаливая правка POI, тегов, заметок, имён, дорог, рек, RNG; автоматическое перемещение/перегенерация объектов.",
+    "Измерения производительности генерации сверх существующих разрешений."
+  ],
+  "priority_vs_alternatives": [
+    {
+      "task_id": "HX-BL-050",
+      "decision": "Brush first: smaller reuse-oriented editor change with immediate repeated-action benefit; independent territory layer follows."
+    },
+    {
+      "task_id": "HX-BL-042",
+      "decision": "Scale remains proposed priority3; persisted metadata is useful groundwork, but less immediate interaction benefit than brush."
+    },
+    {
+      "task_id": "HX-BL-047/HX-BL-040",
+      "decision": "New geography and connected stories are materially wider; do not add them to this slice."
+    }
+  ],
+  "estimated_scope": "M: ориентировочно1аналитический,1–2разработческих и1независимый проверочный этап; оценка объёма, не срок/стоимость.",
+  "dependencies": [
+    "Явное утверждение HX-BL-028/BRUSH1.",
+    "Актуальная точная база после публикации043; не менять принятый043пакет незаметно.",
+    "Переиспользовать локальную смену биома, атомарный документ/Undo, черновики и существующую JSON совместимость. Независим от042 и050."
+  ],
+  "acceptance": [
+    "Готовая карта с семью выбранными сухопутными гексами и разными прежними overrides: один штрих назначает выбранный биом всем семи, повторное прохождение того же гекса не создаёт дублирующую правку.",
+    "Показан набор затрагиваемых гексов; отмена/потеря pointer capture до подтверждения оставляет документ прежним; аналитик фиксирует завершение штриха и конфликт с pan/zoom до реализации.",
+    "Вода, пустые кандидаты и гексы вне допустимого существующего набора не перекрашиваются; нет частичного скрытого применения при некорректном черновике.",
+    "Один Undo восстанавливает все прежние overrides/наследования, Redo повторяет ровно тот же результат; сброс к биому региона не удаляет другие авторские данные.",
+    "JSON export/import восстанавливает результат; прежние карты и одиночный редактор продолжают работать.",
+    "POI/координаты, имена, теги, заметки, регионы, дороги/реки и RNG не меняются; никакая генерация не запускается.",
+    "Desktop/390/320: компактный режим,44px цели, отсутствие конфликтов жеста и панорамирования; показан proposedUI, затем фактический интерфейс точногоSHA."
+  ]
+}
