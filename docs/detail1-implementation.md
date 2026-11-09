@@ -1,4 +1,4 @@
-# DETAIL1 implementation checkpoint D2b1
+# DETAIL1 implementation checkpoint D2b2
 
 Approved scope: agent-operations/agent-work/specs/HX-BL-051-DETAIL1.md (DTL-1.0).
 
@@ -127,3 +127,44 @@ identity registries and exact ID/counter assertions. Their existing generation
 continuation, source payload and Undo/Redo checks are retained. The initial
 negative run reproduced all five missing integrations. No parallel suite or
 additional random search series is added.
+
+
+## D2b2: source geography and joint access preview
+
+`detailGeography.ts` and the real App `prepareDetailMapPreview` now prepare the
+complete POI footprint candidate set from an accepted document, without changing
+it. Unshifted model coordinates use the same pointy orientation and fixed
+six-mile across-flats display assumption; renderer offsets/rotation/zoom never
+enter the conversion. Existing source convention stays unknown when unproven.
+Original hydrography, coarse N, roads, content and random streams are not edited.
+
+The bridge enumerates real positive-area source-cell intersections, distinguishes
+true capital from the Mythic Seat, uses the monotonic POI registry, and resolves
+water environment to the existing lake/sea ID. Required water comes from the
+accepted Knave source row's typed policy, never the localized name. Legacy
+provenance stays unknown. Shore accesses use the shared physical edge; rivers
+use their actual ID/edge, source nodes, visible rapids/waterfalls, or exact
+road/river crossing point. A ford at F>=3 refuses; no connector is invented.
+
+Only roads/trails with an existing graph node at the coarse POI address are
+assigned. Each assigned road ID must have a positive interior span in the
+footprint. Access ports are subdivision nodes on that existing segment, with
+stable segment/cell IDs and an entry coordinate. They add no path geometry.
+Water and routes are selected jointly: a nearer incompatible water port cannot
+hide a valid one-cell solution, and multiple assigned routes are not silently
+reduced to the first. Capital extent connects all required entries.
+
+The result is an immutable **internal adaptation preview**, not an activated
+user feature. Failure returns no partial candidate, allocates no live IDs and
+writes no history. This checkpoint deliberately retains the live nonempty
+footprint guard. General water/edit/removal/remap reconciliation and strict live
+validation of imported/manual footprints must be connected before that guard
+can be removed; legacy Apply/Cancel and the actual1/6/12/24 renderer/panel follow.
+No full DETAIL1 completion, independent acceptance or publication is claimed.
+
+Test decision: extend the existing placement access case to reproduce joint
+water/route selection and every-assigned-route omission. Add two actual-App
+logical Node cases for the previously uncovered source-geography bridge: true
+capital/Seat and graph ports; exact sea/river/shore/source requirements/crossing
+and unknown provenance with refusal. They reuse the existing authored E6/E7 and
+Knave fixture data and harness rather than adding another lifecycle framework.

@@ -35,6 +35,15 @@ test('required water and assigned routes select a compatible footprint while adj
   {...input,routeAccesses:[{...through,segment:{from:{x:.5,y:-.2},to:{x:.5,y:.2}}}]},
  ]) assert.throws(()=>buildDetailPoiFootprint(grid,invalid),DetailPlacementError);
  assert.deepEqual(input,before,'failed candidates do not mutate source geography or references');
+ // Joint search must try another real water port rather than reject a valid
+ // small site after greedily fixing the nearest water contact.
+ const farCell={q:2,r:0},far=detailCellCenter(grid,farCell),farWater={...water,cell:farCell,contact:far};
+ const farRoute={...through,routeId:'road:4',segment:{from:{x:far.x-.2,y:far.y},to:{x:far.x+.2,y:far.y}}};
+ const joint=buildDetailPoiFootprint(grid,{...input,role:'site',waterAccesses:[water,farWater],routeAccesses:[farRoute]});
+ assert.deepEqual(joint.cells,[farCell]);assert.deepEqual(joint.attachments[0].contact,far);
+ const many={...input,waterRequirement:'none',waterAccesses:[],routeAccesses:[{...through,segment:{from:{x:-.2,y:0},to:{x:.2,y:0}}},farRoute]};
+ const linked=buildDetailPoiFootprint(grid,many);assert.deepEqual(linked.attachments.map(a=>a.routeId),['road:3','road:4']);assert.ok(linked.cells.some(c=>c.q===2&&c.r===0));
+ assert.throws(()=>buildDetailPoiFootprint(grid,{...many,role:'site'}),/no_single_cell_satisfies_access/,'one-cell site must satisfy every assigned route');
  const isolated=buildDetailPoiFootprint(grid,{...base,poiId:'hidden:1',role:'site',routeAccesses:[through]});
  assert.equal(isolated.attachments.length,0,'unassigned routes are not forced onto every POI');
 });

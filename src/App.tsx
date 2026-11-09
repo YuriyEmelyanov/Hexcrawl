@@ -1,3 +1,4 @@
+import {buildDetailGeographyPreview,detailSourcePixelToWorld,detailCrossingPoint} from './detailGeography';
 import {reconcileDetailPoiIdentities} from './detailIdentity';
 import {validateDetail1Document,type Detail1State} from './detailModel';
 import knaveCatalogData from './tags/knaveCatalogData';
@@ -1131,6 +1132,28 @@ function checkedRiverMap<T extends MapSnapshot>(map:T):T{
   validateRiverCounter(map.rivers,map.nextRiverId);
   validateMapRiverFeatures(map.riverFeatures,map.rivers,map.regions,map.hexTerrainByKey,map.crossings);
   return map;
+}
+
+/** Pure adaptation preparation on the real accepted document. UI Apply remains
+ * gated until full footprint edit/import/reference reconciliation is connected. */
+function prepareDetailMapPreview(map:MapSnapshot){
+  checkedRiverMap(map);
+  const origin=map.physicalGrid?.grid.origin??{x:0,y:0},marks=regionMarkKeys(map);
+  const world=(p:RiverVertex)=>detailSourcePixelToWorld(p,origin);
+  return buildDetailGeographyPreview(map,map.rivers.map(river=>({id:river.id,
+    edges:river.vertexPath.slice(1).map((to,index)=>{
+      const from=river.vertexPath[index],id=edgeKey(from,to),segment={from:world(from),to:world(to)};
+      const crossings=map.crossings.filter(c=>c.riverId===river.id&&c.riverEdgeKey===id).map(c=>{
+        const road=map.roads.find(r=>r.id===c.roadId),part=road?.segments.find(s=>normalizeRoadSegmentKey(s.from,s.to)===c.roadSegmentKey);
+        const point=part?detailCrossingPoint(segment,{from:detailSourcePixelToWorld(toPixel(part.from.q,part.from.r),origin),to:detailSourcePixelToWorld(toPixel(part.to.q,part.to.r),origin)}):null;
+        if(!point||c.kind==='ford'&&Number(knownRiverEdgeFullness(river,id))>=3)throw Error('DETAIL1 incompatible_crossing_geometry');
+        return {kind:c.kind,point};
+      });
+      return {id,segment,rapid:marks.rapids.has(id),crossings};
+    }),
+    starts:river.vertexPath.filter(v=>river.sectors.some(s=>s.startReason==='river_start'&&s.startVertexKey===v.key)).map(world),
+    waterfalls:river.vertexPath.filter(v=>marks.waterfalls.has(v.key)).map(v=>({id:`vertex:${v.key}`,point:world(v)}))
+  })),origin);
 }
 
 type RiverEditOptions={crossingKinds?:Record<string,RiverCrossingKind>;featureEdits?:FeatureEdit[];confirmed?:boolean};

@@ -57,7 +57,7 @@ function pointInConvexCell(grid:DetailGrid,cell:DetailCell,point:WorldPoint):boo
 }
 /** Positive t-span proves a real route portion inside the cell; a corner or
  * edge-only touch is rejected. */
-function routeSpanInCell(grid:DetailGrid,cell:DetailCell,segment:DetailRouteAccess['segment']):Readonly<{from:WorldPoint;to:WorldPoint}>|null {
+export function detailSegmentSpan(grid:DetailGrid,cell:DetailCell,segment:DetailRouteAccess['segment'],allowBoundary=false):Readonly<{from:WorldPoint;to:WorldPoint}>|null {
   if(!finite(segment.from)||!finite(segment.to)) fail('invalid_route_segment');
   const polygon=detailCellPolygon(grid,cell),direction={x:segment.to.x-segment.from.x,y:segment.to.y-segment.from.y};
   const length=Math.hypot(direction.x,direction.y);if(!(length>0)) return null;
@@ -75,7 +75,7 @@ function routeSpanInCell(grid:DetailGrid,cell:DetailCell,segment:DetailRouteAcce
   if((upper-lower)*length<=Math.max(tolerance,grid.step*1e-10)) return null;
   const at=(t:number)=>Object.freeze({x:segment.from.x+direction.x*t,y:segment.from.y+direction.y*t});
   const midpoint=at((Math.max(0,lower)+Math.min(1,upper))/2);
-  if(!polygon.every((p,index)=>orientation*cross(p,polygon[(index+1)%polygon.length],midpoint)>tolerance))return null;
+  if(!allowBoundary&&!polygon.every((p,index)=>orientation*cross(p,polygon[(index+1)%polygon.length],midpoint)>tolerance))return null;
   return Object.freeze({from:at(Math.max(0,lower)),to:at(Math.min(1,upper))});
 }
 function orderedCells(grid:DetailGrid,cells:readonly DetailCell[],anchor:WorldPoint):DetailCell[] {
@@ -105,7 +105,7 @@ function connectedUnion(allowed:readonly DetailCell[],seeds:readonly DetailCell[
 }
 function routeCells(grid:DetailGrid,cells:readonly DetailCell[],route:DetailRouteAccess):Map<string,Readonly<{from:WorldPoint;to:WorldPoint}>> {
   const result=new Map<string,Readonly<{from:WorldPoint;to:WorldPoint}>>();
-  for(const cell of cells){const span=routeSpanInCell(grid,cell,route.segment);if(span)result.set(key(cell),span);}
+  for(const cell of cells){const span=detailSegmentSpan(grid,cell,route.segment);if(span)result.set(key(cell),span);}
   return result;
 }
 
@@ -119,32 +119,40 @@ export function buildDetailPoiFootprint(grid:DetailGrid,input:DetailPoiPlacement
   const projected=detailPositiveAreaIntersections(grid,extentPolygon).map(item=>item.cell);
   if(!projected.length)fail('no_projected_cells');
   const ordered=orderedCells(grid,projected,input.anchor),projectedKeys=new Set(projected.map(key));
-  const water=input.waterRequirement==='none'?null:[...input.waterAccesses]
+  const waterOptions=input.waterRequirement==='none'?[]:[...input.waterAccesses]
     .filter(access=>compatibleWater(input.waterRequirement as DetailWaterKind,access.kind)&&projectedKeys.has(key(access.cell))&&pointInConvexCell(grid,access.cell,access.contact))
-    .sort((a,b)=>ordered.findIndex(cell=>key(cell)===key(a.cell))-ordered.findIndex(cell=>key(cell)===key(b.cell))||a.waterId.localeCompare(b.waterId)||a.segmentId.localeCompare(b.segmentId))[0]??null;
-  if(input.waterRequirement!=='none'&&!water)fail('missing_compatible_water_access');
+    .sort((a,b)=>ordered.findIndex(cell=>key(cell)===key(a.cell))-ordered.findIndex(cell=>key(cell)===key(b.cell))||a.waterId.localeCompare(b.waterId)||a.segmentId.localeCompare(b.segmentId));
+  if(input.waterRequirement!=='none'&&!waterOptions.length)fail('missing_compatible_water_access');
   const routeOptions=input.routeRequirement==='none'?[]:input.routeAccesses.flatMap(route=>{
     const spans=routeCells(grid,projected,route);return [...spans].map(([cellKey,span])=>({route,cell:projected.find(cell=>key(cell)===cellKey)!,span}));
   }).sort((a,b)=>ordered.findIndex(cell=>key(cell)===key(a.cell))-ordered.findIndex(cell=>key(cell)===key(b.cell))||a.route.routeId.localeCompare(b.route.routeId)||a.route.accessNodeId.localeCompare(b.route.accessNodeId));
-  const route=routeOptions[0]??null;if(input.routeRequirement==='assigned'&&!route)fail('missing_route_inside_footprint');
-  let cells:DetailCell[];
-  if(input.measuredExtent) cells=[...projected].sort((a,b)=>a.q-b.q||a.r-b.r);
-  else if(input.role!=='capital') {
-    const candidate=ordered.find(cell=>(!water||key(water.cell)===key(cell))&&(!route||key(route.cell)===key(cell)));
-    if(!candidate)fail('no_single_cell_satisfies_access');cells=[candidate as DetailCell];
+  // Each assigned route is a requirement; segments of the same route are alternatives.
+  const routeIds=input.routeRequirement==='none'?[]:[...new Set(input.routeAccesses.map(route=>route.routeId))].sort();
+  if(input.routeRequirement==='assigned'&&(!routeIds.length||routeIds.some(id=>!routeOptions.some(option=>option.route.routeId===id))))fail('missing_route_inside_footprint');
+  let cells:DetailCell[],water:DetailWaterAccess|null=null;
+  if(input.measuredExtent) {
+    cells=[...projected].sort((a,b)=>a.q-b.q||a.r-b.r);water=waterOptions[0]??null;
+  } else if(input.role!=='capital') {
+    // Search the joint admissible set before choosing water or a route. A nearer
+    // water port must not hide a different, fully compatible one-cell solution.
+    const candidate=ordered.find(cell=>(input.waterRequirement==='none'||waterOptions.some(access=>key(access.cell)===key(cell)))&&routeIds.every(id=>routeOptions.some(option=>option.route.routeId===id&&key(option.cell)===key(cell))));
+    if(!candidate)fail('no_single_cell_satisfies_access');cells=[candidate as DetailCell];water=waterOptions.find(access=>key(access.cell)===key(candidate as DetailCell))??null;
   } else {
-    const seeds:DetailCell[]=[];if(water)seeds.push(water.cell);if(route)seeds.push(route.cell);seeds.push(ordered[0]);
-    cells=connectedUnion(projected,seeds);
+    water=waterOptions[0]??null;
+    const seeds:DetailCell[]=[];if(water)seeds.push(water.cell);
+    for(const id of routeIds)seeds.push(routeOptions.find(option=>option.route.routeId===id)!.cell);
+    seeds.push(ordered[0]);cells=connectedUnion(projected,seeds);
     if(cells.length<2){const first=cells[0],neighbour=ordered.find(cell=>!cells.some(existing=>key(existing)===key(cell))&&directions.some(([q,r])=>key({q:first.q+q,r:first.r+r})===key(cell)));if(!neighbour)fail('capital_needs_two_connected_cells');cells=[...cells,neighbour as DetailCell].sort((a,b)=>a.q-b.q||a.r-b.r);}
   }
   validateDetailFootprint(cells);const footprintKeys=new Set(cells.map(key));
   if(water&&!footprintKeys.has(key(water.cell)))fail('water_access_outside_footprint');
-  let selectedRoute:(typeof routeOptions)[number]|null=route;
-  if(route&&!footprintKeys.has(key(route.cell))) selectedRoute=routeOptions.find(option=>footprintKeys.has(key(option.cell)))??null;
-  if(input.routeRequirement==='assigned'&&!selectedRoute)fail('route_access_outside_footprint');
   const attachments:DetailAttachmentRef[]=[];
   if(water)attachments.push(Object.freeze({kind:'water',waterKind:water.kind,waterId:text(water.waterId,'water_id'),segmentId:text(water.segmentId,'water_segment_id'),contact:Object.freeze({...water.contact})}));
-  if(selectedRoute)attachments.push(Object.freeze({kind:'route',routeKind:selectedRoute.route.kind,routeId:text(selectedRoute.route.routeId,'route_id'),accessNodeId:text(selectedRoute.route.accessNodeId,'access_node_id'),entry:Object.freeze({...selectedRoute.span.from})}));
+  for(const id of routeIds){
+    const selected=routeOptions.find(option=>option.route.routeId===id&&footprintKeys.has(key(option.cell)));
+    if(!selected)fail('route_access_outside_footprint');
+    attachments.push(Object.freeze({kind:'route',routeKind:selected!.route.kind,routeId:text(id,'route_id'),accessNodeId:text(selected!.route.accessNodeId,'access_node_id'),entry:Object.freeze({...selected!.span.from})}));
+  }
   const extent:DetailExtent=input.measuredExtent
     ?Object.freeze({kind:'measured_polygon',sourceId:text(input.measuredExtent.sourceId,'extent_source'),unit:input.measuredExtent.unit,method:'positive_area_intersection',sourcePolygon:Object.freeze(input.measuredExtent.sourcePolygon.map(point=>Object.freeze({...point})))})
     :Object.freeze({kind:'default',reason:'unknown_size',policy:input.role==='capital'?'capital_min_two':'one_cell'});
