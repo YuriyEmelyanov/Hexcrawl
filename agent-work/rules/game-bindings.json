@@ -50193,6 +50193,125 @@
       },
       "own_acceptance_check": "Текст показан; наличие мифа не блокирует описание и не запускает отбор/переброс.",
       "owner_decision_ref": "agent-work/decisions/owner-decision-2026-11-09-MB-flavour-and-player-map-layer.json"
+    },
+    {
+      "id": "DH-SRD2-001-L1",
+      "game_id": "DH",
+      "edition": "Daggerheart SRD2.0,2026-08-25",
+      "source_rule_id": "DH-SRD2-001",
+      "source_page": 203,
+      "source_pdf_page": 203,
+      "source_url": "https://www.daggerheart.com/wp-content/uploads/2026/08/DH_SRD_2_2026_08_25.pdf",
+      "source_id": "DH-SRD2-20260825",
+      "layer": "L1",
+      "normative_kind": "optional_procedure",
+      "scope": "SRD2 p203 d12 region geometry only; not whole DH or full Hex Crawl section",
+      "source_requirement": "Добавить связный регион по исходу d12 без пустот внутри",
+      "canonical_rule_ids": [
+        "map.extend_preserving_content",
+        "map.terrain_zones"
+      ],
+      "profiles": [
+        {
+          "rule_id": "map.extend_preserving_content",
+          "parameters": {
+            "size_die": "d12",
+            "min_hexes": 1,
+            "max_hexes": 12,
+            "contiguous": true,
+            "enclose_empty_hexes": false,
+            "edge_handling": null
+          },
+          "conditions": [
+            "Selected optional d12 preparation; sufficient free area for exact-size cases"
+          ],
+          "exceptions": [
+            "Не навязывать профиль картам других режимов; ручная/смешанная подготовка разрешена.",
+            "Не переносить утверждённые исключения MB (первая группа11/12 и поглощение карманов) как правила DH.",
+            "Сохранение/неизменность соседей и обработка недопустимого ввода — продуктовая приёмка, не дополнительные игровые правила.",
+            "Исход не доказывает равномерность текущего RNG; runtime не проверен."
+          ],
+          "profile_status": "unverified",
+          "verification_requirement": "Exact DH outputs/shape/edge/save on implementationSHA; no inferred MB compatibility"
+        },
+        {
+          "rule_id": "map.terrain_zones",
+          "parameters": {
+            "size_die": "d12",
+            "min_hexes": 1,
+            "max_hexes": 12,
+            "contiguous": true,
+            "enclose_empty_hexes": false,
+            "edge_handling": null
+          },
+          "conditions": [
+            "Selected optional d12 preparation; sufficient free area for exact-size cases"
+          ],
+          "exceptions": [
+            "Не навязывать профиль картам других режимов; ручная/смешанная подготовка разрешена.",
+            "Не переносить утверждённые исключения MB (первая группа11/12 и поглощение карманов) как правила DH.",
+            "Сохранение/неизменность соседей и обработка недопустимого ввода — продуктовая приёмка, не дополнительные игровые правила.",
+            "Исход не доказывает равномерность текущего RNG; runtime не проверен."
+          ],
+          "profile_status": "unverified",
+          "verification_requirement": "Exact DH outputs/shape/edge/save on implementationSHA; no inferred MB compatibility"
+        }
+      ],
+      "coverage_status": "unverified",
+      "acceptance_cases": [
+        {
+          "id": "DH-SRD2-001-L1-AC01",
+          "given": "Выбран необязательный профиль DH; свободная область достаточна; задан исход d12=1, habitat H.",
+          "when": "Создать один регион.",
+          "expected": "Ровно 1 связных гексов H без пустоты внутри; например axial(q,r)=(0,0)…(0,0)."
+        },
+        {
+          "id": "DH-SRD2-001-L1-AC02",
+          "given": "Выбран необязательный профиль DH; свободная область достаточна; задан исход d12=7, habitat H.",
+          "when": "Создать один регион.",
+          "expected": "Ровно 7 связных гексов H без пустоты внутри; например axial(q,r)=(0,0)…(6,0)."
+        },
+        {
+          "id": "DH-SRD2-001-L1-AC03",
+          "given": "Выбран необязательный профиль DH; свободная область достаточна; задан исход d12=12, habitat H.",
+          "when": "Создать один регион.",
+          "expected": "Ровно 12 связных гексов H без пустоты внутри; например axial(q,r)=(0,0)…(11,0)."
+        },
+        {
+          "id": "DH-SRD2-001-L1-AC04",
+          "given": "Предложены шесть соседей пустого (0,0) и (2,0), размер7.",
+          "when": "Применить форму.",
+          "expected": "Форма не принята как допустимая: (0,0) окружён пустым. Допустимый альтернативный пример — ряд (0,0)…(6,0)."
+        },
+        {
+          "id": "DH-SRD2-001-L1-AC05",
+          "given": "Предложены (0,0),(1,0),(2,0),(4,0),(5,0),(6,0),(7,0).",
+          "when": "Применить форму региона7.",
+          "expected": "Набор не принят как связный; разрыв между (2,0) и (4,0)."
+        },
+        {
+          "id": "DH-SRD2-001-L1-AC06",
+          "given": "Вместо исхода d12 передано0,13 или7.5.",
+          "when": "Создать регион.",
+          "expected": "Недопустимый исход не создаёт успешный регион."
+        },
+        {
+          "id": "DH-SRD2-001-L1-AC07",
+          "given": "Исход7; осталось только5 доступных гексов.",
+          "when": "Добавить регион.",
+          "expected": "Занятая карта не перезаписана; цель7 не объявлена достигнутой. Усечение/перенос/отказ источником не определены."
+        },
+        {
+          "id": "DH-SRD2-001-L1-AC08",
+          "given": "Регион7 подготовлен в выбранном профиле; рядом существуют другие регионы.",
+          "when": "Сохранить и снова открыть карту.",
+          "expected": "Те же7 гексов, habitat и форма; соседи прежние, автоматического переброса нет."
+        }
+      ],
+      "operational_requirement_ref": "agent-work/market/rules/Daggerheart-SRD2.json#DH-SRD2-001-L1",
+      "traceability_ref": "agent-work/market/rules/Daggerheart-SRD2.json#DH-SRD2-001-L1",
+      "evidence_ids": [],
+      "author_project_key": "critical-role:darrington-press:daggerheart:srd2"
     }
   ],
   "other_games_status": "DND5 DMG2014 and bounded PF2 Remaster now analysed; other games unverified. Shared IDs do not establish parameter equivalence."

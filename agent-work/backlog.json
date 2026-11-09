@@ -1138,10 +1138,107 @@
           "research_result_ref": "agent-work/research/runs/2026-11-08T1730-MB-d12-terrain.json",
           "implementation_authorized": false,
           "release_authorized": false
+        },
+        {
+          "component_id": "DH-SRD2-region-d12-L1",
+          "task_id": "HX-BL-008",
+          "title": "Добавлять регион размером по d12 с выбором формы без пустот",
+          "status": "proposed",
+          "problem": "Нет проверенного evidence соответствия DH-профиля; совпадение куба с MB не подтверждает ограничения.",
+          "benefit": "Мастер подготавливает собственные регионы без отдельной дублирующей механики.",
+          "game_editions": [
+            "Daggerheart SRD2.0,2026-08-25; supplemental hex-crawl mechanics"
+          ],
+          "primary_scenario": "create",
+          "layer": "L1",
+          "requirement_refs": [
+            "agent-work/market/rules/Daggerheart-SRD2.json#DH-SRD2-001-L1"
+          ],
+          "canonical_rule_ids": [
+            "map.extend_preserving_content",
+            "map.terrain_zones"
+          ],
+          "binding_refs": [
+            "agent-work/rules/game-bindings.json#DH-SRD2-001-L1"
+          ],
+          "criterion_ids": [
+            "S03-C01",
+            "S01-C05"
+          ],
+          "scope": "Исследовательская передача профиля в существующую008: сначала проверить переиспользование, затем стратег/аналитик определяют пробел. Новая реализация не разрешена.",
+          "dependencies": [
+            "Scope decision for existing008",
+            "Resolve insufficient-space behavior without overriding owner variants"
+          ],
+          "acceptance_checks": [
+            {
+              "id": "DH-SRD2-001-L1-AC01",
+              "given": "Выбран необязательный профиль DH; свободная область достаточна; задан исход d12=1, habitat H.",
+              "when": "Создать один регион.",
+              "expected": "Ровно 1 связных гексов H без пустоты внутри; например axial(q,r)=(0,0)…(0,0)."
+            },
+            {
+              "id": "DH-SRD2-001-L1-AC02",
+              "given": "Выбран необязательный профиль DH; свободная область достаточна; задан исход d12=7, habitat H.",
+              "when": "Создать один регион.",
+              "expected": "Ровно 7 связных гексов H без пустоты внутри; например axial(q,r)=(0,0)…(6,0)."
+            },
+            {
+              "id": "DH-SRD2-001-L1-AC03",
+              "given": "Выбран необязательный профиль DH; свободная область достаточна; задан исход d12=12, habitat H.",
+              "when": "Создать один регион.",
+              "expected": "Ровно 12 связных гексов H без пустоты внутри; например axial(q,r)=(0,0)…(11,0)."
+            },
+            {
+              "id": "DH-SRD2-001-L1-AC04",
+              "given": "Предложены шесть соседей пустого (0,0) и (2,0), размер7.",
+              "when": "Применить форму.",
+              "expected": "Форма не принята как допустимая: (0,0) окружён пустым. Допустимый альтернативный пример — ряд (0,0)…(6,0)."
+            },
+            {
+              "id": "DH-SRD2-001-L1-AC05",
+              "given": "Предложены (0,0),(1,0),(2,0),(4,0),(5,0),(6,0),(7,0).",
+              "when": "Применить форму региона7.",
+              "expected": "Набор не принят как связный; разрыв между (2,0) и (4,0)."
+            },
+            {
+              "id": "DH-SRD2-001-L1-AC06",
+              "given": "Вместо исхода d12 передано0,13 или7.5.",
+              "when": "Создать регион.",
+              "expected": "Недопустимый исход не создаёт успешный регион."
+            },
+            {
+              "id": "DH-SRD2-001-L1-AC07",
+              "given": "Исход7; осталось только5 доступных гексов.",
+              "when": "Добавить регион.",
+              "expected": "Занятая карта не перезаписана; цель7 не объявлена достигнутой. Усечение/перенос/отказ источником не определены."
+            },
+            {
+              "id": "DH-SRD2-001-L1-AC08",
+              "given": "Регион7 подготовлен в выбранном профиле; рядом существуют другие регионы.",
+              "when": "Сохранить и снова открыть карту.",
+              "expected": "Те же7 гексов, habitat и форма; соседи прежние, автоматического переброса нет."
+            }
+          ],
+          "expected_evidence": {
+            "current_runtime": "unknown",
+            "required": "DH profile with exact1/7/12, hole/disconnection/input/edge/save results on implementationSHA"
+          },
+          "score_delta": null,
+          "source_limitations": [
+            "One optional clause only, not full section/game.",
+            "No population/use-frequency measurement.",
+            "MB owner variants not transferable as DH defaults."
+          ],
+          "research_handoff_ref": "agent-work/market/rules/Daggerheart-SRD2.json#DH-SRD2-001-L1",
+          "research_result_ref": "agent-work/research/runs/2026-11-09T1026-DH-region-size.json",
+          "implementation_authorized": false,
+          "release_authorized": false
         }
       ],
       "research_handoff_refs": [
-        "agent-work/research/requirements/MB-d12-terrain-L1.json"
+        "agent-work/research/requirements/MB-d12-terrain-L1.json",
+        "agent-work/market/rules/Daggerheart-SRD2.json#DH-SRD2-001-L1"
       ],
       "implementation_audits": [
         {

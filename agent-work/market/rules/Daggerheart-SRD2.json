@@ -1,0 +1,202 @@
+{
+  "schema_version": 2,
+  "game_id": "DH",
+  "date": "2026-11-09",
+  "status": "bounded_source_inventory_product_unverified",
+  "scope": "SRD2 p203 d12 region geometry only; not whole DH or full Hex Crawl section",
+  "source": {
+    "id": "DH-SRD2-20260825",
+    "url": "https://www.daggerheart.com/wp-content/uploads/2026/08/DH_SRD_2_2026_08_25.pdf",
+    "landing_url": "https://www.daggerheart.com/srd/",
+    "edition": "Daggerheart SRD2.0",
+    "published_at": "2026-08-25",
+    "access_level": "full_text",
+    "author_project_key": "critical-role:darrington-press:daggerheart:srd2",
+    "locator": "PDF page203 (zero-based202), d12 bullet; web lines17304–17332",
+    "accessed_at": "2026-11-09T10:30:13.009Z"
+  },
+  "evaluation_policy": "Source reading is not product evidence or population calibration; active numbers unchanged.",
+  "rules": [
+    {
+      "id": "DH-SRD2-001",
+      "title": "Размер и форма одного региона",
+      "corpus": "SRD2_Hex_Crawl_Campaigns_bounded",
+      "rule": {
+        "source_id": "DH-SRD2-20260825",
+        "printed_page": 203,
+        "pdf_page": 203,
+        "section": "Preparing the GM’s Key Map → Filling Wilderness Hexes, d12 bullet",
+        "url": "https://www.daggerheart.com/wp-content/uploads/2026/08/DH_SRD_2_2026_08_25.pdf",
+        "paraphrase": "В необязательном способе подготовки d12 задаёт число связных гексов; форма свободная, окружать пустые гексы нельзя.",
+        "normative_kind": "optional_procedure",
+        "quotation": null
+      },
+      "parameters": {
+        "size_die": "d12",
+        "min_hexes": 1,
+        "max_hexes": 12,
+        "contiguous": true,
+        "enclose_empty_hexes": false,
+        "edge_handling": null
+      },
+      "comparison": {
+        "baseline": "Existing map.extend_preserving_content/map.terrain_zones; MB-REALM-001-L1",
+        "relation": "analogous_parameter_profile",
+        "parameter_equivalence": "unverified; same die does not establish identical exceptions or runtime"
+      },
+      "requirements": [
+        {
+          "id": "DH-SRD2-001-L1",
+          "layer": "L1",
+          "requirement": "Добавить связный регион по исходу d12 без пустот внутри",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "criterion_ids": [
+            "S03-C01",
+            "S01-C05"
+          ],
+          "canonical_rule_ids": [
+            "map.extend_preserving_content",
+            "map.terrain_zones"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#DH-SRD2-001-L1",
+          "operational_requirement": {
+            "source_rule_ref": "agent-work/market/rules/Daggerheart-SRD2.json#DH-SRD2-001",
+            "normative_kind": "optional_procedure",
+            "applicability": "Only selected SRD2 supplemental hex-crawl preparation method; manual/mixed preparation also permitted.",
+            "layer": "L1",
+            "trigger_or_user_action": "Мастер добавляет регион выбранного habitat по d12-профилю.",
+            "inputs_and_units": {
+              "size_die": "d12",
+              "result_range": [
+                1,
+                12
+              ],
+              "size_unit": "contiguous hexes",
+              "habitat": "H chosen externally; d20 mapping not extracted this run",
+              "shape": "GM choice subject to connectivity/no enclosed empty hexes"
+            },
+            "product_operation": "Создать группу заданного размера с общим habitat; принимать разные формы при соблюдении связности и отсутствии окружённых пустых гексов.",
+            "expected_output": "При достаточном свободном месте размер равен исходу; заданные1/7/12 дают1/7/12 гексов.",
+            "constraints_and_exceptions": [
+              "Не навязывать профиль картам других режимов; ручная/смешанная подготовка разрешена.",
+              "Не переносить утверждённые исключения MB (первая группа11/12 и поглощение карманов) как правила DH.",
+              "Сохранение/неизменность соседей и обработка недопустимого ввода — продуктовая приёмка, не дополнительные игровые правила.",
+              "Исход не доказывает равномерность текущего RNG; runtime не проверен."
+            ],
+            "acceptance_cases": [
+              {
+                "id": "DH-SRD2-001-L1-AC01",
+                "given": "Выбран необязательный профиль DH; свободная область достаточна; задан исход d12=1, habitat H.",
+                "when": "Создать один регион.",
+                "expected": "Ровно 1 связных гексов H без пустоты внутри; например axial(q,r)=(0,0)…(0,0)."
+              },
+              {
+                "id": "DH-SRD2-001-L1-AC02",
+                "given": "Выбран необязательный профиль DH; свободная область достаточна; задан исход d12=7, habitat H.",
+                "when": "Создать один регион.",
+                "expected": "Ровно 7 связных гексов H без пустоты внутри; например axial(q,r)=(0,0)…(6,0)."
+              },
+              {
+                "id": "DH-SRD2-001-L1-AC03",
+                "given": "Выбран необязательный профиль DH; свободная область достаточна; задан исход d12=12, habitat H.",
+                "when": "Создать один регион.",
+                "expected": "Ровно 12 связных гексов H без пустоты внутри; например axial(q,r)=(0,0)…(11,0)."
+              },
+              {
+                "id": "DH-SRD2-001-L1-AC04",
+                "given": "Предложены шесть соседей пустого (0,0) и (2,0), размер7.",
+                "when": "Применить форму.",
+                "expected": "Форма не принята как допустимая: (0,0) окружён пустым. Допустимый альтернативный пример — ряд (0,0)…(6,0)."
+              },
+              {
+                "id": "DH-SRD2-001-L1-AC05",
+                "given": "Предложены (0,0),(1,0),(2,0),(4,0),(5,0),(6,0),(7,0).",
+                "when": "Применить форму региона7.",
+                "expected": "Набор не принят как связный; разрыв между (2,0) и (4,0)."
+              },
+              {
+                "id": "DH-SRD2-001-L1-AC06",
+                "given": "Вместо исхода d12 передано0,13 или7.5.",
+                "when": "Создать регион.",
+                "expected": "Недопустимый исход не создаёт успешный регион."
+              },
+              {
+                "id": "DH-SRD2-001-L1-AC07",
+                "given": "Исход7; осталось только5 доступных гексов.",
+                "when": "Добавить регион.",
+                "expected": "Занятая карта не перезаписана; цель7 не объявлена достигнутой. Усечение/перенос/отказ источником не определены."
+              },
+              {
+                "id": "DH-SRD2-001-L1-AC08",
+                "given": "Регион7 подготовлен в выбранном профиле; рядом существуют другие регионы.",
+                "when": "Сохранить и снова открыть карту.",
+                "expected": "Те же7 гексов, habitat и форма; соседи прежние, автоматического переброса нет."
+              }
+            ],
+            "source_vs_product_interpretation": "Размер/связность/запрет окружать пустые гексы — источник. Предлагаемый выбираемый профиль и приведённые координатные примеры — перевод в операцию генератора; UI/API/алгоритм не проектируются.",
+            "canonical_rule_refs": [
+              "agent-work/rules/common-rules.json#map.extend_preserving_content",
+              "agent-work/rules/common-rules.json#map.terrain_zones"
+            ],
+            "unresolved_parameters": [
+              "Поведение при нехватке места не задано.",
+              "Дословное contiguous переведено как соседство сторон на обычной гекс-сетке; алгоритм формы не задан.",
+              "Полный habitat/encounter/terrain профиль не извлечён."
+            ]
+          },
+          "acceptance_ref": "agent-work/market/rules/Daggerheart-SRD2.json#DH-SRD2-001-L1",
+          "proposed_task_ref": "agent-work/backlog.json#HX-BL-008",
+          "finding": "README describes connected growth and wouldCreateEnclosedVoid; historical MB audit confirms d12 target. Neither verifies DH result/exception profile on current SHA."
+        },
+        {
+          "layer": "L2",
+          "status": "not_applicable",
+          "reason": "Selected size/shape clause only; player map/movement/rests remain outside this pass."
+        },
+        {
+          "layer": "L3",
+          "status": "not_applicable",
+          "reason": "No external game-resolution mechanic in selected clause."
+        }
+      ]
+    }
+  ],
+  "completeness": {
+    "full_game_read": false,
+    "read_corpus": [
+      "Official SRD landing version/changelog",
+      "PDF cover/TOC and p203 headings/context through d12 bullet"
+    ],
+    "context_only": [
+      "24mile scale",
+      "GM/player copies",
+      "manual/random/mixed preparation"
+    ],
+    "not_extracted": [
+      "d20 habitat and corruption",
+      "d8+d6 encounters",
+      "d4 terrain",
+      "Sanctuaries and settlements",
+      "Travel days and rest rules",
+      "p204–205 other hex-crawl content"
+    ],
+    "next_locator": "p203 Filling Wilderness Hexes d20 habitat incl1→reroll and second1"
+  },
+  "product_evidence": {
+    "status": "unknown",
+    "runtime_sha": null,
+    "evidence_ids": [],
+    "documentation_baseline_sha": "56733c50b4f2653f1f80705d8103b69d79450839",
+    "documentation_ref": "README.md mechanics3–8; not executable verification",
+    "MB_audit_context": "agent-work/research/audits/MB-implementation-2026-11-09.json; no evidence transfer"
+  },
+  "score_impact": null,
+  "rating_impact": {
+    "active_changed": false,
+    "pool_changed": false,
+    "proposal_refs": [],
+    "finding": "Confirms an explicit own-map preparation option, not incidence among GMs or new M/p/T."
+  }
+}
