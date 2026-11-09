@@ -32,6 +32,12 @@ jobs:
       - run: npx playwright install --with-deps chromium
       - run: npm run test:browser
       - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: generation-failure-inputs
+          path: reports/generation-failure/
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: terrain-render-preview
