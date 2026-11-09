@@ -5,6 +5,7 @@ import assert from 'node:assert/strict';
 import {fileURLToPath} from 'node:url';
 import {stripVTControlCharacters} from 'node:util';
 import {runMythMaterialLifecycle} from './myth-material-lifecycle.mjs';
+import {runKnavePropertiesLifecycle} from './knave-properties-lifecycle.mjs';
 const root=new URL('../../',import.meta.url),out=new URL('reports/HX-BL-041/',root);
 const server=spawn(process.execPath,[fileURLToPath(new URL('node_modules/vite/bin/vite.js',root)),'preview','--host','127.0.0.1','--port','4188','--strictPort'],{cwd:root,stdio:['ignore','pipe','inherit']});
 let browser;
@@ -49,6 +50,7 @@ try{
  const saved=await snapshot();await page.locator('input[type=file]').setInputFiles({name:'tags-v6.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(saved))});
  await page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);assert.deepEqual(await snapshot(),saved);
  await runMythMaterialLifecycle({page,snapshot,saved,root});
+ await runKnavePropertiesLifecycle({page,snapshot,root});
  assert.deepEqual(errors,[]);await fs.writeFile(new URL('metrics.json',out),JSON.stringify(metrics,null,2));
  console.log('HX-BL-041 browser: legacy, fill, tuple reroll, exact history, 1500/390/320 density, keyboard/reduced-motion, v6 roundtrip passed');
 }finally{await browser?.close();server.kill();}

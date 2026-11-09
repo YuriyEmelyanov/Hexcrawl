@@ -1,3 +1,5 @@
+import {knaveContentFixture,knaveCatalogFixture} from './helpers/knave-fixture.mjs';
+import {newKnaveLayer} from '../src/knaveClassic.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createGenerationHarness} from './helpers/generation-harness.mjs';
@@ -7,6 +9,7 @@ const save=h=>{const d=serial(h.render().createSaveData());delete d.savedAt;retu
 const stacks=h=>structuredClone([h.render().undoHistory,h.render().redoHistory]);
 async function setup(mode='classic',data=regionFixture(mode)){
  const h=createGenerationHarness(42);h.render();h.guardRandom();
+ if(data.map.knave)h.injectFunction('knaveGenerationCatalog',knaveCatalogFixture);
  h.setWindow({alert:m=>{throw Error(m);},matchMedia:()=>({matches:false})});
  h.injectFunction('readTextFile',async f=>f.text);
  await h.render().handleImportJson({target:{files:[{text:JSON.stringify(data)}],value:''}});h.render();return h;
@@ -16,6 +19,7 @@ function continuation(h){const a=h.render();a.generateAt(a.candidateHexes[0]);fo
 
 for(const mode of ['classic','mythic'])test(`E7 App transfer keeps full POI identity/history and real reload continuation ${mode}`,async()=>{
  const initial=await setup(mode),named=save(initial);named.map.editorNames={'poi:1:2,0':{en:'Authored E7',ru:'Авторское E7'}};
+ if(mode==='classic'){named.map.knave=newKnaveLayer();named.map.knave.content=knaveContentFixture('poi:1:2,0',{kind:'settlement'});named.map.knave.difficultyByHex['2,0']='difficult';named.map.knave.discoveryByPoi['poi:1:2,0']={mode:'interaction',clueText:'Test E7 clue'};}
  const h=await setup(mode,named);assert.equal(h.render().mutateTag({kind:'poi',regionId:1,hexKey:'2,0'},'mb.feature'),true);h.render();
  const before=save(h),history=stacks(h),oldName=before.map.toponyms.names['settlement:1:2,0'];assert.ok(oldName);
  const d=draft(h,'transfer_hex',{toRegionId:2});assert.deepEqual(save(h),before,'draft is not exported');
@@ -27,6 +31,7 @@ for(const mode of ['classic','mythic'])test(`E7 App transfer keeps full POI iden
  expectedTags.rollCounters=Object.fromEntries(Object.entries(expectedTags.rollCounters).map(([k,v])=>[k.replace(/^poi:1:2,0\|/,'poi:2:2,0|'),v]));
  assert.deepEqual(after.map.tags,expectedTags);
  assert.deepEqual(after.map.editorNames,{'poi:2:2,0':before.map.editorNames['poi:1:2,0']});
+ if(mode==='classic'){assert.deepEqual(after.map.knave.discoveryByPoi,{'poi:2:2,0':before.map.knave.discoveryByPoi['poi:1:2,0']});assert.deepEqual(after.map.knave.difficultyByHex,{'2,0':'difficult'});const nextOwner=Object.keys(after.map.knave.discoveryByPoi)[0];assert.deepEqual(after.map.knave.content.byPoi,{[nextOwner]:before.map.knave.content.byPoi['poi:1:2,0']});assert.deepEqual(after.map.knave.content.rollCounters,{[nextOwner]:before.map.knave.content.rollCounters['poi:1:2,0']});}
  for(const k of ['biomeOverrideByHexKey','terrainByHexKey','gmNotesByHexKey','roads','crossings','riverFeatures'])assert.deepEqual(after.map[k],before.map[k]);
  assert.deepEqual(after.map.candidateHexes,before.map.candidateHexes,'accepted frontier entries and order remain literal');
  assert.deepEqual(after.generation,before.generation);assert.deepEqual(after.counters,before.counters);
@@ -131,13 +136,14 @@ test('E7 late clone and v7 format faults keep both stacks, counters and selected
 
 for(const mode of ['classic','mythic'])test(`E8 real POI move is one exact transaction with full payload and literal hex notes ${mode}`,async()=>{
  const fixture=regionFixture(mode);fixture.map.regions[1].suppressCentralPoi=false;delete fixture.map.regions[1].centralPoiKind;if(mode==='mythic')fixture.map.regions[0].pointOfInterestKinds['2,0']='monument';
- const h=await setup(mode,fixture),named=save(h);named.map.editorNames={'poi:1:2,0':{en:'Kept authored',ru:'Сохранённое имя'}};const g=await setup(mode,named);
+ const h=await setup(mode,fixture),named=save(h);named.map.editorNames={'poi:1:2,0':{en:'Kept authored',ru:'Сохранённое имя'}};if(mode==='classic'){named.map.knave=newKnaveLayer();named.map.knave.content=knaveContentFixture('poi:1:2,0',{kind:'settlement'});named.map.knave.difficultyByHex['2,0']='difficult';named.map.knave.discoveryByPoi['poi:1:2,0']={mode:'interaction',clueText:'Test E8 clue'};}const g=await setup(mode,named);
  assert.equal(g.render().mutateTag({kind:'poi',regionId:1,hexKey:'2,0'},'mb.feature'),true);
  g.render().setEditMode(true);assert.equal(g.render().startPoiDraft({kind:'land',regionId:1,hexKey:'2,0'}),true);
  const before=save(g),history=stacks(g);assert.equal(g.render().changePoiTarget('3','0'),true);assert.deepEqual(save(g),before,'preview excluded from export');
  const draft=g.render().poiDraft;assert.ok(g.render().poiPreview.plan);assert.equal(g.render().finishPoiDraft(draft),true);const after=save(g);
  assert.equal(g.render().undoHistory.length,history[0].length+1);assert.deepEqual(after.map.regions[1].pointsOfInterest,[{q:3,r:0}]);assert.deepEqual(after.map.editorNames,{'poi:2:3,0':named.map.editorNames['poi:1:2,0']});
  const expectedTags=structuredClone(before.map.tags);for(const t of expectedTags.instances)if(t.owner.kind==='poi'&&t.owner.regionId===1&&t.owner.hexKey==='2,0')t.owner={kind:'poi',regionId:2,hexKey:'3,0'};expectedTags.rollCounters=Object.fromEntries(Object.entries(expectedTags.rollCounters).map(([k,v])=>[k.replace(/^poi:1:2,0\|/,'poi:2:3,0|'),v]));assert.deepEqual(after.map.tags,expectedTags);
+ if(mode==='classic'){assert.deepEqual(after.map.knave.discoveryByPoi,{'poi:2:3,0':before.map.knave.discoveryByPoi['poi:1:2,0']});assert.deepEqual(after.map.knave.difficultyByHex,{'2,0':'difficult'});const nextOwner=Object.keys(after.map.knave.discoveryByPoi)[0];assert.deepEqual(after.map.knave.content.byPoi,{[nextOwner]:before.map.knave.content.byPoi['poi:1:2,0']});assert.deepEqual(after.map.knave.content.rollCounters,{[nextOwner]:before.map.knave.content.rollCounters['poi:1:2,0']});}
  assert.deepEqual(after.map.gmNotesByHexKey,before.map.gmNotesByHexKey);assert.deepEqual(after.generation,before.generation);assert.deepEqual(after.counters,before.counters);assert.deepEqual(after.ui.selectedHex,{q:3,r:0});
  assert.equal(g.render().finishPoiDraft(draft),false,'captured doubleDone cannot create another operation');g.render().undoMap();assert.deepEqual(save(g),before);g.render().redoMap();assert.deepEqual(save(g),after);
  const reloaded=await setup(mode,after);assert.deepEqual(save(reloaded),after);

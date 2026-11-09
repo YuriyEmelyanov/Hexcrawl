@@ -16,6 +16,7 @@ const artwork = app.body.statements.flatMap(node => ts.isVariableStatement(node)
 let prefix = source.slice(0, lastReturn.getStart(ast));
 if (artwork?.initializer) prefix = prefix.slice(0, artwork.initializer.getStart(ast)) + 'undefined' + prefix.slice(artwork.initializer.end);
 const instrumented = prefix + `return {
+  chooseKnaveProfile, changeGenerationMode, knaveDraft, knaveError, changeKnaveDraft, finishKnaveDraft, resetKnaveDraft, requestKnaveExit, resolveKnaveExit, knaveExitRequest, knavePanel,
   poiDraft, startPoiDraft, changePoiTarget, finishPoiDraft, resetPoiDraft, poiPreview, requestPoiExit, resolvePoiExit, poiExitRequest,
   regionDraft, startRegionDraft, changeRegionDraft, finishRegionDraft, resetRegionDraft, selectRegionTarget, regionPreview, editError,
   waterDraft, startWaterDraft, changeWaterDraft, toggleWaterHex, selectWholeWaterBody, finishWaterDraft, resetWaterDraft, waterPreview,
@@ -33,7 +34,7 @@ const instrumented = prefix + `return {
   setSelectedWaterPoiKind, deleteSelectedWaterPoi, deleteSelectedPoi, isImporting,
   selectNameTarget, nameTargetHex, nameTargets, nameDraft, nameErrors, showNameTarget, requestNameTarget, changeNameDraft, changeOtherNameDraft, saveNameDraft, cancelNameDraft, applyDocument, setLanguage, language, setSelectedRegionBiome, regionBiomeReason, editMode, setEditMode
 };` + source.slice(lastReturn.end) + `
-export const testGeometry = { WaterEditError, TagCapacityError, prepareRegionMapEdit, generateConnectedRegionFromAnchorImpl, generateFallbackTractFromAnchor, findFillableEnclosedEmptyAreas, getNewRiverLakeReentryViolation, getHexCornerPoints, getHexEdgeKeys, getHexNeighbors, hexKey, buildRiverGraphForRegion,
+export const testGeometry = { knaveFactsForMap, prepareKnaveGeneratedMap, WaterEditError, TagCapacityError, prepareRegionMapEdit, generateConnectedRegionFromAnchorImpl, generateFallbackTractFromAnchor, findFillableEnclosedEmptyAreas, getNewRiverLakeReentryViolation, getHexCornerPoints, getHexEdgeKeys, getHexNeighbors, hexKey, buildRiverGraphForRegion,
   findRiverEndpointsTouchingRegion, getCandidateHexes, generateRiverForRegion, assertHexcrawlSaveData,
   prepareWaterMapEdit, prepareRiverMapEdit, buildManualRiverGeometryContext, riverFeatureEligibility, buildRegionRiverNetwork, reconcileRegionRiverModel, completeRegionRiverEnds, addLakeAroundRiverSplitVertex, createInitialRiverSectors,
   countRoadPathRiverCrossings, findLowestRiverCrossingPathWithinWildRegion, getWildRoadCandidates, chooseBestWildRoadCandidate, collectSettledIncomingRoadPathsToTarget, generateRoadsForRegionImpl, findIncomingRoadEndpointsForRegion, getRoadEndpointHexKeysImpl,
@@ -64,16 +65,17 @@ export function createGenerationHarness(seed = 1, search = '', language = 'ru') 
   const diagnostics = { exports: {} };
   const context = vm.createContext({ module, exports: module.exports, Math: seededMath, Map, Set, crypto: {getRandomValues(a){ a[0]=seed >>> 0; return a; }},
     console: Object.fromEntries(['log', 'warn', 'error'].map(level => [level, (...args) => logs.push({ level, args })])),
-    require: name => name==='./tags/TagRow'?{TagRow:()=>null}: (name.startsWith('./modes/') || name.startsWith('./rendering/') || name.startsWith('./tags/') || name === './worldRandom' || name === './saveValidation' || name === './manualWater' || name === './seaIdentity' || name === './manualRivers' || name === './manualRiverGeometry' || name === './manualRiverDependencies') ? loadMode(new URL(`../../src/${name}.ts`, import.meta.url)) : name === './generationDiagnostics' ? diagnostics.exports : name === 'react' ? hooks : localRequire(name.startsWith('./') ? `${name}.ts` : name),
+    require: name => name==='./tags/TagRow'?{TagRow:()=>null}: (name.startsWith('./modes/') || name.startsWith('./rendering/') || name.startsWith('./tags/') || name === './worldRandom' || name === './saveValidation' || name === './manualWater' || name === './knaveClassic' || name === './seaIdentity' || name === './manualRivers' || name === './manualRiverGeometry' || name === './manualRiverDependencies') ? loadMode(new URL(`../../src/${name}.ts`, import.meta.url)) : name === './generationDiagnostics' ? diagnostics.exports : name === 'react' ? hooks : localRequire(name.startsWith('./') ? `${name}.ts` : name),
     performance, URLSearchParams, structuredClone, setTimeout, clearTimeout, window: { location: { search } }
   });
   const modeCache = new Map();
   function loadMode(url) {
+    if(url.pathname.endsWith(".json"))return {default:JSON.parse(fs.readFileSync(url,"utf8"))};
     if (modeCache.has(url.href)) return modeCache.get(url.href).exports;
     const loaded = { exports: {} }; modeCache.set(url.href, loaded);
     const code = ts.transpileModule(fs.readFileSync(url, 'utf8'), {compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2020}}).outputText;
     const execute = vm.runInContext(`(function(exports,module,require){${code}\n})`,context);
-    execute(loaded.exports,loaded,name=>loadMode(new URL(name.endsWith('.ts')?name:`${name}.ts`,url)));
+    execute(loaded.exports,loaded,name=>loadMode(new URL(name.endsWith('.ts')||name.endsWith('.json')?name:`${name}.ts`,url)));
     return loaded.exports;
   }
   Object.assign(diagnostics.exports, loadMode(new URL('../../src/generationDiagnostics.ts', import.meta.url)));

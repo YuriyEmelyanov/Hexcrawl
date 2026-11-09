@@ -1,3 +1,5 @@
+import {newKnaveLayer} from '../src/knaveClassic.ts';
+import {knaveContentFixture,knaveCatalogFixture} from './helpers/knave-fixture.mjs';
 import {seaFixture} from './helpers/sea-fixture.mjs';
 import {regionFixture} from './helpers/region-fixture.mjs';
 import {createGenerationState} from '../src/worldRandom.ts';
@@ -146,10 +148,61 @@ test('E8 v8 authored POI names use real import,exact export and UndoRedo without
  const {g,alerts,data,key}=await loadAuthoredMap();const before=structuredClone(g.render().captureDocument());
  await g.render().handleImportJson({target:{files:[{text:JSON.stringify(data)}],value:'x'}});assert.deepEqual(alerts,[]);
  const after=structuredClone(g.render().captureDocument());assert.deepEqual(after.map.editorNames,data.map.editorNames);
- assert.deepEqual(g.render().createSaveData().map.editorNames,data.map.editorNames);assert.equal(g.render().createSaveData().version,9);
+ assert.deepEqual(g.render().createSaveData().map.editorNames,data.map.editorNames);assert.equal(g.render().createSaveData().version,10);
  g.render().undoMap();assert.deepEqual(g.render().captureDocument().map.editorNames,before.map.editorNames);
  g.render().redoMap();assert.deepEqual(structuredClone(g.render().captureDocument()),after);assert.equal(after.map.editorNames[key].ru,'Авторское имя');
  assert.deepEqual(after.map.gmNotesByHexKey,before.map.gmNotesByHexKey);
+ // KNC-A02/A07/A09: same real importer and history path, not a second suite.
+ const knave=structuredClone(g.render().createSaveData());knave.map.knave=newKnaveLayer();
+ knave.map.knave.discoveryByPoi[key]={mode:'interaction',clueText:'Authored test clue'};
+ knave.map.knave.content=knaveContentFixture(key,{kind:'settlement'});
+ knave.map.knave.difficultyByHex[key.split(':')[2]]='difficult';
+ await g.render().handleImportJson({target:{files:[{text:JSON.stringify(knave)}],value:''}});assert.deepEqual(alerts,[]);
+ const accepted=structuredClone(g.render().captureDocument());
+ assert.deepEqual(structuredClone(g.render().createSaveData().map.knave),knave.map.knave);
+ g.render().undoMap();assert.equal(g.render().createSaveData().map.knave,undefined);
+ g.render().redoMap();assert.deepEqual(structuredClone(g.render().captureDocument()),accepted);
+ // Extend this lifecycle case: UI drafts must not enter accepted JSON/history,
+ // and stale closures must never retarget a clue to another document.
+ g.render().setEditMode(true);g.render().setSelectedHex(Object.fromEntries(['q','r'].map((axis,i)=>[axis,Number(key.split(':')[2].split(',')[i])])));
+ const uiBefore=structuredClone(g.render().createSaveData().map),uiHistory=g.render().undoHistory.length;
+ assert.equal(g.render().changeKnaveDraft({mode:'interaction',clueText:''}),true);
+ const stale=g.render().knaveDraft;
+ assert.equal(g.render().finishKnaveDraft(),false);assert.ok(g.render().knaveError);
+ assert.deepEqual(structuredClone(g.render().createSaveData().map),uiBefore);assert.equal(g.render().undoHistory.length,uiHistory);
+ g.render().undoMap();g.render().resetMap();assert.deepEqual(structuredClone(g.render().createSaveData().map),uiBefore);
+ assert.equal(g.render().changeKnaveDraft({clueText:'  <Authored UI clue>  '}),true);
+ assert.equal(g.render().changeKnaveDraft({clueText:'stale'},stale),false);
+ assert.equal(g.render().finishKnaveDraft(),true);
+ assert.equal(g.render().createSaveData().map.knave.discoveryByPoi[key].clueText,'<Authored UI clue>');
+ g.render().undoMap();assert.deepEqual(structuredClone(g.render().createSaveData().map),uiBefore);
+ const noOpHistory=g.render().undoHistory.length;
+ assert.equal(g.render().changeKnaveDraft({mode:'interaction'}),true);assert.equal(g.render().finishKnaveDraft(),true);assert.equal(g.render().undoHistory.length,noOpHistory);
+ assert.equal(g.render().changeKnaveDraft({difficulty:'normal'}),true);assert.equal(g.render().resetKnaveDraft(),true);
+ assert.equal(g.render().finishKnaveDraft(stale),false);
+ g.render().applyDocument(accepted);g.render();
+ const history=structuredClone([g.render().undoHistory,g.render().redoHistory]);
+ for(const mutate of [d=>d.version=9,d=>d.ui.generationMode='mythic',d=>delete d.generation,d=>d.map.knave=null,d=>d.map.knave.profile.physicalHex.measurementConvention='vertices',d=>d.map.knave.content=null,d=>d.map.knave.content.byPoi[key].catalogVersion='future',d=>d.map.knave.discoveryByPoi[key].clueText='',d=>d.map.knave.discoveryByPoi['poi:999:0,0']={mode:'passage',clueText:''}]){
+  const invalid=structuredClone(knave);mutate(invalid);await g.render().handleImportJson({target:{files:[{text:JSON.stringify(invalid)}],value:''}});
+  assert.equal(alerts.length,1);alerts.pop();assert.deepEqual(structuredClone(g.render().captureDocument()),accepted);assert.deepEqual(structuredClone([g.render().undoHistory,g.render().redoHistory]),history);
+ }
+ const restore=g.injectFunction('randomInt',()=>{throw Error('KNC injected generation failure');});
+ g.render().generateAt(g.render().candidateHexes[0]);restore();
+ assert.deepEqual(structuredClone(g.render().captureDocument()),accepted,'actual generation backup restores Knave data');
+ assert.deepEqual(structuredClone([g.render().undoHistory,g.render().redoHistory]),history);
+ const empty=createGenerationHarness(42);empty.render();const blank=empty.render().createSaveData();blank.map.knave=newKnaveLayer();
+ await g.render().handleImportJson({target:{files:[{text:JSON.stringify(blank)}],value:''}});assert.deepEqual(alerts,[]);
+ assert.ok(g.render().createSaveData().map.knave);g.render().resetMap();assert.equal(g.render().createSaveData().map.knave,undefined,'empty profile can be reset');
+ g.render().undoMap();assert.deepEqual(structuredClone(g.render().createSaveData().map.knave),blank.map.knave);
+ const profile=createGenerationHarness(42);profile.render();const initial=structuredClone(profile.render().captureDocument());
+ assert.equal(profile.render().chooseKnaveProfile(true),true);assert.equal(profile.render().undoHistory.length,0);
+ assert.deepEqual(structuredClone(profile.render().generationRef.current),initial.map.generation);
+ profile.render().changeGenerationMode('mythic');assert.equal(profile.render().generationMode,'mythic');assert.equal(profile.render().createSaveData().map.knave,undefined);
+ assert.equal(profile.render().chooseKnaveProfile(true),false);profile.render().changeGenerationMode('classic');profile.render().chooseKnaveProfile(true);
+ profile.injectFunction('knaveGenerationCatalog',knaveCatalogFixture);profile.render().addFallbackTractToMap({q:0,r:0});assert.equal(profile.render().chooseKnaveProfile(false),false);
+ const locked=structuredClone(profile.render().createSaveData().map);profile.setWindow({confirm:()=>false});profile.render().changeGenerationMode('mythic');assert.deepEqual(structuredClone(profile.render().createSaveData().map),locked);
+ profile.setWindow({confirm:()=>true});profile.render().changeGenerationMode('mythic');assert.equal(profile.render().generationMode,'mythic');assert.equal(profile.render().regions.length,0);
+ profile.render().undoMap();assert.equal(profile.render().generationMode,'classic');assert.deepEqual(structuredClone(profile.render().createSaveData().map),locked);
 });
 test('E8 malformed,orphan and older-version authored names refuse atomically in the real importer',async()=>{
  const {g,alerts,data,key}=await loadAuthoredMap();
@@ -205,10 +258,10 @@ test('SEA v2-v8 metadata migration and strict v9 refusal use the real atomic imp
   const data=structuredClone(raw);data.version=version;delete data.map.seas;delete data.map.nextSeaId;
   if(version<8)delete data.map.editorNames;
   await g.render().handleImportJson({target:{files:[{text:JSON.stringify(data)}],value:''}});assert.deepEqual(alerts,[]);
-  const saved=structuredClone(g.render().createSaveData());assert.equal(saved.version,9);assert.deepEqual(saved.map.seas,[{id:1,hexKeys:['-1,2','0,2','1,2','2,2','3,2','3,3']}]);assert.equal(saved.map.nextSeaId,2);assert.deepEqual(saved.generation,data.generation);assert.deepEqual(saved.map.terrainByHexKey,data.map.terrainByHexKey);
+  const saved=structuredClone(g.render().createSaveData());assert.equal(saved.version,10);assert.deepEqual(saved.map.seas,[{id:1,hexKeys:['-1,2','0,2','1,2','2,2','3,2','3,3']}]);assert.equal(saved.map.nextSeaId,2);assert.deepEqual(saved.generation,data.generation);assert.deepEqual(saved.map.terrainByHexKey,data.map.terrainByHexKey);
  }
  const valid=structuredClone(g.render().createSaveData()),before=structuredClone(g.render().captureDocument()),stacks=structuredClone([g.render().undoHistory,g.render().redoHistory]);
- for(const mutate of [d=>delete d.map.seas,d=>delete d.map.nextSeaId,d=>d.map.seas[0].hexKeys.pop(),d=>d.map.seas.push({...d.map.seas[0]}),d=>d.map.nextSeaId=1,d=>d.map.editorNames={'sea:999':{en:'X',ru:'Х'}},d=>d.version=10,d=>{d.version=8;d.map.editorNames={'sea:1':{en:'X',ru:'Х'}};}]){
+ for(const mutate of [d=>delete d.map.seas,d=>delete d.map.nextSeaId,d=>d.map.seas[0].hexKeys.pop(),d=>d.map.seas.push({...d.map.seas[0]}),d=>d.map.nextSeaId=1,d=>d.map.editorNames={'sea:999':{en:'X',ru:'Х'}},d=>d.version=11,d=>{d.version=8;d.map.editorNames={'sea:1':{en:'X',ru:'Х'}};}]){
   const bad=structuredClone(valid);mutate(bad);await g.render().handleImportJson({target:{files:[{text:JSON.stringify(bad)}],value:''}});assert.equal(alerts.length,1);alerts.pop();assert.deepEqual(structuredClone(g.render().captureDocument()),before);assert.deepEqual(structuredClone([g.render().undoHistory,g.render().redoHistory]),stacks);
  }
 });

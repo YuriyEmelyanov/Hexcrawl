@@ -42,7 +42,7 @@ test('v2 migration and v3 validation are deterministic and atomic with redo',asy
  for(const entry of manifest.entries){
   const data=JSON.parse(fs.readFileSync(new URL('../'+entry.path,import.meta.url)));
   const h=setup(2),g=setup(3);await load(h,data);await load(g,data);
-  const save=stable(h.render());assert.equal(save.version,9);assert.deepEqual(stable(g.render()),save);
+  const save=stable(h.render());assert.equal(save.version,10);assert.deepEqual(stable(g.render()),save);
   for(const key of ['regions','rivers','roads','crossings','terrainByHexKey'])assert.deepEqual(save.map[key],data.map[key]);
   await load(g,save);assert.deepEqual(stable(g.render()),save);
  }
