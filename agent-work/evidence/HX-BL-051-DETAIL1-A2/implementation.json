@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-051",
+  "stage_id": "DETAIL1",
+  "checkpoint": "A2",
+  "base_sha": "853c639f2c75b725a29eec3d65cfad4dd823ae5f",
+  "integration_sha": "5fdb7ffabec1d2615db9d0dcd9b29fa875264620",
+  "head_sha": "a37e4957f706d6ade6be6f42837c4cf8a7fd3c42",
+  "tree_sha": "e8ab5f4af9d5142d99d8033f67d1ea6054f2a0ca",
+  "pr": 496,
+  "branch": "agent/hx-bl-051-detail1",
+  "implemented": [
+    "Positive-area projection of a source polygon onto actual intersected one-mile cells, including deterministic negative coordinates and exclusion of edge/vertex-only contacts.",
+    "Strict typed DETAIL1 v11 active-state parser separating source measurement convention from display assumption.",
+    "Stable POI identity, connected footprints, extent provenance and typed water/route references in the new model boundary.",
+    "Immutable legacy v2-v10 adaptation preview; legacy input is neither activated nor mutated at this checkpoint."
+  ],
+  "files": [
+    "src/detailGrid.ts",
+    "src/detailModel.ts",
+    "test/detailProjection.test.mjs",
+    "docs/detail1-implementation.md"
+  ],
+  "checks": {
+    "full_local": {
+      "typescript": "passed",
+      "node": {
+        "executed": 367,
+        "passed": 367,
+        "failed": 0,
+        "skipped": 0
+      },
+      "build": "passed",
+      "build_modules": 83,
+      "note": "Existing bundle-size warning only."
+    },
+    "post_patch_focused": {
+      "typescript": "passed",
+      "detail1_node": {
+        "executed": 4,
+        "passed": 4,
+        "failed": 0,
+        "skipped": 0
+      }
+    }
+  },
+  "test_change_summary": {
+    "base_sha": "853c639f2c75b725a29eec3d65cfad4dd823ae5f",
+    "head_sha": "a37e4957f706d6ade6be6f42837c4cf8a7fd3c42",
+    "added": 4,
+    "removed": 0,
+    "modified": 0,
+    "suite": "Node node --test",
+    "scenario_risk": "A1 protects physical grid/topology; A2 protects positive-area source-polygon projection and strict atomic DETAIL1 state/legacy preview.",
+    "reuse_or_new_reason": "Existing pixel/UI tests do not expose a physical-grid contract or clipping/state boundary. A1 added two focused cases; A2 adds two distinct cases rather than duplicating UI paths.",
+    "count_source": "Four named logical test registrations across test/detailGrid.test.mjs and test/detailProjection.test.mjs.",
+    "executions": {
+      "full_local_node": {
+        "executed": 367,
+        "passed": 367,
+        "failed": 0,
+        "skipped": 0
+      },
+      "focused_detail1": {
+        "executed": 4,
+        "passed": 4,
+        "failed": 0,
+        "skipped": 0
+      },
+      "browser": "tracked separately in CI observation",
+      "rng": "tracked separately in CI observation"
+    }
+  },
+  "score_model_version": "1.2",
+  "score_awarded": false,
+  "forecast_delta": "unknown",
+  "review_ready": false,
+  "release_approved": false,
+  "limitations": [
+    "A2 model and projection are not yet connected to App, history, import/export or UI.",
+    "Water eligibility, access nodes and real route contact are typed references only; live generator validation remains B/C work.",
+    "No full DETAIL1 acceptance or independent review is claimed."
+  ],
+  "recorded_at": "2026-11-09T06:41:50.014Z"
+}
