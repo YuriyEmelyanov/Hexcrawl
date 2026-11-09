@@ -16,7 +16,7 @@ export function TableResultRow({label,language,disabled,readonly,components,onRo
      data-tag-slot={action.slot} aria-label={`${ru?'Перебросить':'Reroll'} ${label}; ${action.purpose}; ${action.current}${action.values?`; d${action.sides}: ${action.values.join(', ')}`:''}`} title={title}
      onContextMenu={openMenu} onKeyDown={event=>{if(event.key==='ContextMenu'||event.shiftKey&&event.key==='F10')openMenu(event);}}
      onClick={event=>{event.stopPropagation();onRoll(action.slot);}}>
-     {action.pick?<span>{ru?'↻ выбор':'↻ pick'}</span>:<svg key={action.active?action.animationKey:0} viewBox="0 0 18 18" aria-hidden="true"><path d={action.sides===6?'M2 2H16V16H2Z':'M9 1L17 7L14 16H4L1 7Z'}/><text x="9" y="12">{action.values?.reduce((a,b)=>a+b,0)}</text></svg>}
+     {action.pick?<span key={action.active?action.animationKey:0} aria-hidden="true">↻</span>:<svg key={action.active?action.animationKey:0} viewBox="0 0 18 18" aria-hidden="true"><path d={action.sides===6?'M2 2H16V16H2Z':'M9 1L17 7L14 16H4L1 7Z'}/><text x="9" y="12">{action.values?.reduce((a,b)=>a+b,0)}</text></svg>}
    </button>)}<span className="tag-result">{component.result}</span></span>)}
  </span>;
 }

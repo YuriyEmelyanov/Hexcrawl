@@ -185,5 +185,6 @@ export function validateSaveStructure(value: unknown, domain: {
   for(const [f,max] of [['nextLakeId',maxLake],['nextRoadId',Math.max(0,...roadIds)]] as const) { integer(counters[f],'counters.'+f); if(max===Number.MAX_SAFE_INTEGER) fail('counters.'+f,'counter overflow'); }
   bool(ui.isMapRotated,'ui.isMapRotated'); if(finite(ui.mapScale,'ui.mapScale')<=0) fail('ui.mapScale','positive scale');
   if(ui.generationMode!==undefined) oneOf(ui.generationMode,['classic','mythic'],'ui.generationMode');
+  if(ui.knaveEnabled!==undefined) {bool(ui.knaveEnabled,'ui.knaveEnabled');if(data.version!==10||ui.knaveEnabled&&!map.knave)fail('ui.knaveEnabled','Knave generation preference requires a v10 layer');}
   if(ui.selectedHex!==undefined&&ui.selectedHex!==null) hex(ui.selectedHex,'ui.selectedHex');
 }
