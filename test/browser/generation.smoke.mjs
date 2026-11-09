@@ -225,9 +225,15 @@ try {
     await probe.goto(`http://127.0.0.1:4173/${query}`);
     await probe.locator('.gen-params select').nth(0).selectOption('locality');
     await probe.locator('.gen-params select').nth(3).selectOption('mainland');
+    // Profiling reports asynchronously after generation. Wait for the actual
+    // console events rather than assuming their delivery within100ms.
+    const profileEvents = query.includes('profile') ? Promise.all([
+      probe.waitForEvent('console', { predicate: msg => msg.text().includes('[PROFILE]') }),
+      probe.waitForEvent('console', { predicate: msg => msg.type() === 'table' })
+    ]) : null;
     await probe.locator('polygon.hex.candidate').first().dispatchEvent('click');
     if (query.includes('profile')) {
-      await probe.waitForTimeout(100);
+      await profileEvents;
       assert.ok(logs.some(log => log.text.includes('[PROFILE]')));
       assert.ok(logs.some(log => log.type === 'table'));
       assert.ok(!logs.some(log => log.text.includes('Biome selected')));
