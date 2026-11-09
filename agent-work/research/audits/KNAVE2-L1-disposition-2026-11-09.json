@@ -1,0 +1,1952 @@
+{
+  "schema_version": 1,
+  "audit_id": "HX-RSR-KNAVE2-L1-DISPOSITION-01",
+  "run_id": "2026-11-09T1533-KNAVE2-L1-disposition",
+  "kind": "derived_scope_disposition_not_rule_registry",
+  "baseline_operations_sha": "02363d2",
+  "ranking_version": "three-scenario-ranks-1.4-create-evidence",
+  "cohort_version": "2026-11-06-ranking1.4-create-evidence",
+  "source_access": [
+    {
+      "ref": "agent-work/market/rules/Knave-2e.json",
+      "locator": "28 applicable L1 rows; existing RU source locators and operations",
+      "access_level": "full_text",
+      "author_project_key": "ben-milton/questing-beast/knave2/core2024",
+      "note": "Existing reviewed extraction reused; original PDF not reread in this run; EN final/errata not collated."
+    },
+    {
+      "ref": "agent-work/specs/HX-BL-043-KNAVE2-CLASSIC1.md",
+      "locator": "Цель/полномочия; Границы; KNC02; discovery and export exclusion",
+      "access_level": "full_text",
+      "author_project_key": "hexcrawl/owner-approved/KNAVE2-CLASSIC1"
+    },
+    {
+      "ref": "agent-work/proposals/2026-11-09-HX-BL-047-SD-TERRAIN1.json",
+      "locator": "problem; user_visible_effect; in_scope/out_of_scope; acceptance",
+      "access_level": "full_text",
+      "author_project_key": "hexcrawl/SD-TERRAIN1/v1"
+    },
+    {
+      "ref": "agent-work/backlog.json",
+      "locator": "HX-BL-018/042/043/044/047/051, latest scope and status",
+      "access_level": "full_text",
+      "author_project_key": "hexcrawl/product-backlog"
+    }
+  ],
+  "findings": [
+    "21 Knave L1 rows point at043, but only020/070/071 belong to the bounded table/content family cited by CLASSIC1. Even those whole source profiles are not proved fully supported by a release label. Other18 rows need separate future scope decisions, not a claim of18 missing approved features.",
+    "005 is already routed through042 folded into051. 006/024 overlap044 CLASSIFY1 only in bounded preparation/classification. 025 water-resource availability is explicitly outside CLASSIFY1; do not silently add it to active development.",
+    "010/073 combine GM preparation with player-safe presentation. Keep the latter as laterL2; no missing currentL1 player-export task. 072 already points to018; two routes do not imply automatically building a second road.",
+    "Recommendation: retain the existing047/SD-TERRAIN1 proposal as the next independent L1 decision, after authorized044/051. It already offers a visible source-backed map result. Do not issue a duplicate proposal, restart postponedPLACE1, or alter the main team queue."
+  ],
+  "unknowns": [
+    "Complete runtime support of every Knave source profile remains unverified; no new runtime audit performed.",
+    "Source-language and settlement-category uncertainties remain in the existing operations.",
+    "No measured uptake or numeric audience change follows from source/scope disposition."
+  ],
+  "summary": {
+    "existing_051_scale_no_new_task": 1,
+    "existing_044_CLASSIFY1_partial_scope_no_full_profile_claim": 2,
+    "044_GM_preparation_only_player_view_L2_deferred": 2,
+    "043_legacy_membership_outside_CLASSIC1_no_reactivation_of_PLACE1": 18,
+    "043_CLASSIC1_bounded_tables_only_not_full_resolver": 3,
+    "044_resource_component_excluded_from_CLASSIFY1_not_missing_approved_scope": 1,
+    "existing_018_routes_runtime_unknown_no_new_task": 1
+  },
+  "rows": [
+    {
+      "requirement_id": "KNAVE2-005-L1",
+      "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-005-L1",
+      "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-005",
+      "printed_page": 8,
+      "canonical_rule_ids": [
+        "map.physical_hex_scale"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#KNAVE2-005-L1",
+      "criterion_ids": [
+        "S01-C02",
+        "S01-C04",
+        "S01-C05",
+        "S04-C04",
+        "S06-C04"
+      ],
+      "existing_task_ids": [
+        "HX-BL-042"
+      ],
+      "disposition": "existing_051_scale_no_new_task",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-005",
+        "normative_kind": "procedure",
+        "applicability": "Knave 2e, региональная карта и гекскроул; игровые эффекты через адаптер интеграции.",
+        "layer": "L1",
+        "trigger_or_user_action": "Включён профиль карты Knave 2e",
+        "inputs_and_units": {
+          "hex_length": 6,
+          "unit": "mile",
+          "measurement_convention": "unknown until explicit decision"
+        },
+        "product_operation": "Записать 6 миль как физический профиль. Сохранить единицу и неизвестную геометрическую конвенцию; не подставлять opposite_vertices из PF2.",
+        "expected_output": "Физический профиль 6 mi, независимый от экранного приближения.",
+        "constraints_and_exceptions": [],
+        "acceptance_cases": [
+          {
+            "given": "Новая карта с профилем Knave 2e",
+            "when": "Сохранить и загрузить",
+            "expected": "Физическая длина 6 mile; convention=null/unknown, а не профиль PF2 с длиной 12.",
+            "id": "KNAVE2-005-L1-AC01"
+          },
+          {
+            "given": "Физический профиль 6 mile",
+            "when": "Изменить zoom с 1 на 2",
+            "expected": "Физическая длина остаётся 6 mile.",
+            "id": "KNAVE2-005-L1-AC02"
+          }
+        ],
+        "source_vs_product_interpretation": "Числа/условия взяты из указанного правила; автоматическая операция/структурированные данные — предлагаемое продуктовое решение, а не требование автора к ПО.",
+        "canonical_rule_refs": [
+          "map.physical_hex_scale"
+        ],
+        "unresolved_parameters": [
+          "В прочитанном тексте не задано расстояние между сторонами/вершинами. Геометрическое измерение требует отдельного решения."
+        ]
+      },
+      "runtime_evidence": {
+        "status": "unknown_for_complete_requirement",
+        "sha": null,
+        "note": "This disposition reads source inventory and accepted scope documents; it does not rerun product acceptance or transfer a package status to a whole source profile."
+      }
+    },
+    {
+      "requirement_id": "KNAVE2-006-L1",
+      "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-006-L1",
+      "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-006",
+      "printed_page": 8,
+      "canonical_rule_ids": [
+        "map.terrain_zones"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#KNAVE2-006-L1",
+      "criterion_ids": [
+        "S01-C02",
+        "S01-C04",
+        "S01-C05",
+        "S06-C04"
+      ],
+      "existing_task_ids": [
+        "HX-BL-044"
+      ],
+      "disposition": "existing_044_CLASSIFY1_partial_scope_no_full_profile_claim",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-006",
+        "normative_kind": "procedure",
+        "applicability": "Knave 2e, региональная карта и гекскроул; игровые эффекты через адаптер интеграции.",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий меняет труднопроходимость выбранного гекса или участка",
+        "inputs_and_units": {
+          "hex_ids": "selected IDs",
+          "difficult": "boolean",
+          "terrain_type": "existing terrain"
+        },
+        "product_operation": "Записать либо снять локальный флаг труднопроходимости. Сохранить прежний тип рельефа, POI и геометрию.",
+        "expected_output": "Труднопроходимость видна ведущему и сохраняется в документе.",
+        "constraints_and_exceptions": [
+          "Не все леса автоматически труднопроходимы; книга не задаёт исчерпывающую классификацию биомов."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "H — лес, содержит POI A, difficult=false",
+            "when": "Включить труднопроходимость H, сохранить и загрузить",
+            "expected": "H остаётся лесом с POI A, difficult=true.",
+            "id": "KNAVE2-006-L1-AC01"
+          },
+          {
+            "given": "То же состояние с difficult=true",
+            "when": "Снять флаг, затем отменить действие",
+            "expected": "После снятия difficult=false, после undo=true; POI и рельеф прежние.",
+            "id": "KNAVE2-006-L1-AC02"
+          }
+        ],
+        "source_vs_product_interpretation": "Числа/условия взяты из указанного правила; автоматическая операция/структурированные данные — предлагаемое продуктовое решение, а не требование автора к ПО.",
+        "canonical_rule_refs": [
+          "map.terrain_zones"
+        ],
+        "unresolved_parameters": []
+      },
+      "runtime_evidence": {
+        "status": "unknown_for_complete_requirement",
+        "sha": null,
+        "note": "This disposition reads source inventory and accepted scope documents; it does not rerun product acceptance or transfer a package status to a whole source profile."
+      }
+    },
+    {
+      "requirement_id": "KNAVE2-010-L1",
+      "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-010-L1",
+      "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-010",
+      "printed_page": 8,
+      "canonical_rule_ids": [
+        "content.discovery_levels",
+        "content.site_links",
+        "map.audience_views"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#KNAVE2-010-L1",
+      "criterion_ids": [
+        "S04-C03",
+        "S05-C02",
+        "S05-C03",
+        "S06-C05"
+      ],
+      "existing_task_ids": [
+        "HX-BL-044"
+      ],
+      "disposition": "044_GM_preparation_only_player_view_L2_deferred",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-010",
+        "normative_kind": "procedure",
+        "applicability": "Knave 2e, региональная карта и гекскроул; игровые эффекты через адаптер интеграции.",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий создаёт секрет S и улику C",
+        "inputs_and_units": {
+          "secret": "POI/item/entrance",
+          "clue": "description+location",
+          "relation": "C hints S"
+        },
+        "product_operation": "Записать отдельные уровни раскрытия и устойчивую связь C → S. Представление игрока скрывает S и его секретное описание, но может показывать C.",
+        "expected_output": "Секрет и подсказка — отдельные объекты или поля с управляемым раскрытием.",
+        "constraints_and_exceptions": [],
+        "acceptance_cases": [
+          {
+            "given": "C связана с S; C открыта, S закрыт",
+            "when": "Сформировать представление игрока",
+            "expected": "C видна; S и его секретные поля не переданы игроку.",
+            "id": "KNAVE2-010-L1-AC01"
+          }
+        ],
+        "source_vs_product_interpretation": "Числа/условия взяты из указанного правила; автоматическая операция/структурированные данные — предлагаемое продуктовое решение, а не требование автора к ПО.",
+        "canonical_rule_refs": [
+          "content.discovery_levels",
+          "content.site_links",
+          "map.audience_views"
+        ],
+        "unresolved_parameters": []
+      },
+      "runtime_evidence": {
+        "status": "unknown_for_complete_requirement",
+        "sha": null,
+        "note": "This disposition reads source inventory and accepted scope documents; it does not rerun product acceptance or transfer a package status to a whole source profile."
+      }
+    },
+    {
+      "requirement_id": "KNAVE2-013-L1",
+      "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-013-L1",
+      "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-013",
+      "printed_page": 8,
+      "canonical_rule_ids": [
+        "content.place_description"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#KNAVE2-013-L1",
+      "criterion_ids": [
+        "S05-C01",
+        "S05-C02"
+      ],
+      "existing_task_ids": [
+        "HX-BL-043"
+      ],
+      "disposition": "043_legacy_membership_outside_CLASSIC1_no_reactivation_of_PLACE1",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-013",
+        "normative_kind": "procedure",
+        "applicability": "Knave 2e, региональная карта и гекскроул; игровые эффекты через адаптер интеграции.",
+        "layer": "L1",
+        "trigger_or_user_action": "Мастер назначает источник встреч области",
+        "inputs_and_units": {
+          "region_or_terrain": "ID",
+          "encounter_table": "reference"
+        },
+        "product_operation": "Сохранить ссылку на таблицу в свойствах области. Не превращать ссылку на случайную встречу в фиксированное логово.",
+        "expected_output": "У области известен источник встреч; логово автоматически не создано.",
+        "constraints_and_exceptions": [],
+        "acceptance_cases": [
+          {
+            "given": "Регион R и таблица T",
+            "when": "Привязать T к R, сохранить и загрузить",
+            "expected": "У R table_ref=T; конкретное логово на карте не создано.",
+            "id": "KNAVE2-013-L1-AC01"
+          }
+        ],
+        "source_vs_product_interpretation": "Прикрепление ссылки на таблицу к описанию области — компонент хранения контента. Это не фиксированное логово. Выбор таблицы/бросок переиспользует общий табличный резолвер; не считать одно поле описания реализацией всей процедуры встречи.",
+        "canonical_rule_refs": [
+          "content.place_description"
+        ],
+        "unresolved_parameters": [
+          "Точногоуниверсальноговесатаблицырегионапротивбиомакниганезадаёт."
+        ]
+      },
+      "runtime_evidence": {
+        "status": "unknown_for_complete_requirement",
+        "sha": null,
+        "note": "This disposition reads source inventory and accepted scope documents; it does not rerun product acceptance or transfer a package status to a whole source profile."
+      }
+    },
+    {
+      "requirement_id": "KNAVE2-017-L1",
+      "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-017-L1",
+      "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-017",
+      "printed_page": 8,
+      "canonical_rule_ids": [
+        "content.tracks_and_ground",
+        "content.discovery_levels"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#KNAVE2-017-L1",
+      "criterion_ids": [
+        "S04-C03",
+        "S05-C01",
+        "S05-C03",
+        "S06-C03",
+        "S06-C05"
+      ],
+      "existing_task_ids": [
+        "HX-BL-043"
+      ],
+      "disposition": "043_legacy_membership_outside_CLASSIC1_no_reactivation_of_PLACE1",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-017",
+        "normative_kind": "procedure",
+        "applicability": "Knave 2e, региональная карта и гекскроул; игровые эффекты через адаптер интеграции.",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий размещает знак в H",
+        "inputs_and_units": {
+          "hex": "H",
+          "sign_table_roll": "1..100 or manual",
+          "clue_target": "optional ID"
+        },
+        "product_operation": "Добавить знак с источником, броском и уровнем доступности. Улику связать с целью, не раскрывая её автоматически.",
+        "expected_output": "Сохранённый знак или улика в H.",
+        "constraints_and_exceptions": [],
+        "acceptance_cases": [
+          {
+            "given": "H, таблица «Знаки» p10, фиксированный бросок 1",
+            "when": "Разместить знак",
+            "expected": "Создан знак «Спор», source=p10,row1; монстр автоматически не создан.",
+            "id": "KNAVE2-017-L1-AC01"
+          }
+        ],
+        "source_vs_product_interpretation": "Числа/условия взяты из указанного правила; автоматическая операция/структурированные данные — предлагаемое продуктовое решение, а не требование автора к ПО.",
+        "canonical_rule_refs": [
+          "content.tracks_and_ground",
+          "content.discovery_levels"
+        ],
+        "unresolved_parameters": []
+      },
+      "runtime_evidence": {
+        "status": "unknown_for_complete_requirement",
+        "sha": null,
+        "note": "This disposition reads source inventory and accepted scope documents; it does not rerun product acceptance or transfer a package status to a whole source profile."
+      }
+    },
+    {
+      "requirement_id": "KNAVE2-020-L1",
+      "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-020-L1",
+      "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-020",
+      "printed_page": 10,
+      "canonical_rule_ids": [
+        "content.place_description",
+        "content.static_hazard",
+        "content.roll_table_resolution"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#KNAVE2-020-L1",
+      "criterion_ids": [
+        "S05-C01",
+        "S05-C02",
+        "S07-C01"
+      ],
+      "existing_task_ids": [
+        "HX-BL-043"
+      ],
+      "disposition": "043_CLASSIC1_bounded_tables_only_not_full_resolver",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-020",
+        "normative_kind": "toolkit_table",
+        "applicability": "Помощь ведущему в наполнении выбранного места карты. В этом проходе заново проверены только «Локации», «Постройки» и «Свойства мест», печатные с. 10–11 / PDF9; остальные таблицы исходной группы не перечитывались.",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий добавляет описание места в выбранный гекс или дополняет уже отмеченное место.",
+        "inputs_and_units": {
+          "место": "Выбранный гекс или уже отмеченное место",
+          "таблица": "Одна или несколько таблиц наполнения; текущий проверенный срез — «Локации», «Постройки», «Свойства мест»",
+          "выбор": "Бросок d100 или выбранная вручную строка; в каждой таблице 100 исходов, последняя печатная метка — 00",
+          "свойство": "Необязательная подсказка из «Свойств мест»",
+          "описание": "Толкование ведущего"
+        },
+        "product_operation": "Получить подсказку типа места и при желании добавить к ней свойство. Сохранить полученные подсказки, указания таблиц и строк и описание ведущего у выбранного места. Ссылки и сочетания трактуются по уже разобранным KNAVE2-070/071.",
+        "expected_output": "На выбранном участке карты есть описанное место; ведущему доступны выбранные подсказки и его собственное толкование.",
+        "constraints_and_exceptions": [
+          "Выбор, сочетание и прикрепление подсказок к месту — предлагаемая помощь генератора; таблицы сами не предписывают такое устройство приложения.",
+          "Таблицы не задают количество мест в гексе, частоту подземелий, размеры регионов или распределение биомов.",
+          "Названия природных областей, рек и путей не задают их длину, границы, направление и связи. Способ представить их геометрией карты требует отдельного решения аналитика.",
+          "Свойство «Пепельный» даёт подсказку, а не установленную причину пожара, урон или иной отсутствующий игровой эффект.",
+          "Ссылки на другие таблицы сохраняют ограничения и неизвестное KNAVE2-070; в этом проходе полный корпус таблиц-назначений не перечитан.",
+          "Отдельное место в примерах — действие ведущего для примера, не правило «ровно один POI в каждом гексе»."
+        ],
+        "acceptance_cases": [
+          {
+            "id": "KNAVE2-020-L1-AC01",
+            "given": "Выбран гекс H; строка 1 таблицы «Локации», печатная с. 10, — «Пепелище».",
+            "when": "Ведущий выбирает эту строку вручную для нового места.",
+            "expected": "В H отмечено место с подсказкой «Пепелище» и её локатором; случайный бросок не требуется."
+          },
+          {
+            "id": "KNAVE2-020-L1-AC02",
+            "given": "Для одного места получены 1 по «Постройкам» и 1 по «Свойствам мест», обе на с. 11.",
+            "when": "Ведущий использует их для описания места.",
+            "expected": "У одного места есть подсказки «Аббатство» и «Пепельный» с обоими локаторами; текст ведущего может объяснить их сочетание. Причина появления пепла не выдумана как правило книги."
+          },
+          {
+            "id": "KNAVE2-020-L1-AC03",
+            "given": "В прежнем разборе с. 16 / PDF12 зафиксировано: строка 1 «Подземелий» — «Лаборатория алхимии»; в текущем проходе эта страница не перечитана.",
+            "when": "Ведущий выбирает подсказку для места.",
+            "expected": "У выбранного места есть подсказка «Лаборатория алхимии»; из одного названия не выводится готовый план комнат."
+          },
+          {
+            "id": "KNAVE2-020-L1-AC04",
+            "given": "На карте уже есть место A; для нового места B ведущий получил «Аббатство» и записал «Заброшенное аббатство у брода» как собственное толкование.",
+            "when": "Ведущий сохраняет карту и открывает её снова.",
+            "expected": "У B остаются подсказка «Аббатство», её источник и текст ведущего; место A также остаётся на карте. Текст про брод — пример ведущего, не строка книги."
+          },
+          {
+            "id": "KNAVE2-020-L1-AC05",
+            "given": "Уже выбранное место; «Локации», с. 10, строка 76 — «Река». Длина, исток и русло не заданы.",
+            "when": "Ведущий использует результат как подсказку к описанию выбранного места.",
+            "expected": "У места сохранена подсказка «Река» с локатором; неизвестные длина, исток и русло не представлены как заданные таблицей."
+          },
+          {
+            "id": "KNAVE2-020-L1-AC06",
+            "given": "В «Локациях» на с. 10 последняя печатная строка отмечена 00 и содержит «Водоворот».",
+            "when": "Ведущий вручную выбирает эту печатную строку.",
+            "expected": "Для выбранного места получена подсказка «Водоворот». Печатная метка 00 сохранена в ссылке на источник; число, под которым её обрабатывает приложение, определяет аналитик."
+          }
+        ],
+        "source_vs_product_interpretation": "Источник даёт таблицы подсказок; ручной выбор, ссылки и сочетания установлены KNAVE2-070/071 на печатной с. 1 / PDF4. Возможность прикрепить результат к месту, редактировать толкование и сохранить карту — продуктовый перевод для решения стратега и аналитика. Производственные схемы, команды, архитектура и интерфейс здесь не определены. Строки примеров AC01/02/05/06 заново проверены по PDF9; AC03 перенесён из прежнего разбора; фразы ведущего придуманы и помечены.",
+        "canonical_rule_refs": [
+          "content.place_description",
+          "content.static_hazard",
+          "content.roll_table_resolution"
+        ],
+        "unresolved_parameters": [
+          "Таблицы не задают плотность, частоту и географические размеры; не подставлять числа по умолчанию как правило Knave.",
+          "Соответствие подсказок реальным рекам, путям и областям требует продуктового решения; готовой геометрии в таблице нет.",
+          "Ссылки после последней строки и следующая строка, снова содержащая ссылку, остаются вопросами KNAVE2-070."
+        ]
+      },
+      "runtime_evidence": {
+        "status": "unknown_for_complete_requirement",
+        "sha": null,
+        "note": "This disposition reads source inventory and accepted scope documents; it does not rerun product acceptance or transfer a package status to a whole source profile."
+      }
+    },
+    {
+      "requirement_id": "KNAVE2-024-L1",
+      "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-024-L1",
+      "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-024",
+      "printed_page": 21,
+      "canonical_rule_ids": [
+        "content.static_hazard"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#KNAVE2-024-L1",
+      "criterion_ids": [
+        "S05-C02",
+        "S07-C01"
+      ],
+      "existing_task_ids": [
+        "HX-BL-044"
+      ],
+      "disposition": "existing_044_CLASSIFY1_partial_scope_no_full_profile_claim",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-024",
+        "normative_kind": "procedure",
+        "applicability": "Knave 2e, региональная карта и гекскроул; игровые эффекты через адаптер интеграции.",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий размещает опасность",
+        "inputs_and_units": {
+          "site": "hex orPOI ID",
+          "hazard_type": "fire|freezing|water|lightning|fall",
+          "profile_ref": "p21 rule"
+        },
+        "product_operation": "Записать участок с описанием, видимостью, уликой и ссылкой на профиль. При создании участка урон не бросается.",
+        "expected_output": "Опасность в данных карты; запуск механики отдельный.",
+        "constraints_and_exceptions": [],
+        "acceptance_cases": [
+          {
+            "given": "H, тип опасности freezing",
+            "when": "Добавить опасный участок",
+            "expected": "Сохранена опасность с source=p21; ОЗ персонажей не изменены.",
+            "id": "KNAVE2-024-L1-AC01"
+          }
+        ],
+        "source_vs_product_interpretation": "Числа/условия взяты из указанного правила; автоматическая операция/структурированные данные — предлагаемое продуктовое решение, а не требование автора к ПО.",
+        "canonical_rule_refs": [
+          "content.static_hazard"
+        ],
+        "unresolved_parameters": []
+      },
+      "runtime_evidence": {
+        "status": "unknown_for_complete_requirement",
+        "sha": null,
+        "note": "This disposition reads source inventory and accepted scope documents; it does not rerun product acceptance or transfer a package status to a whole source profile."
+      }
+    },
+    {
+      "requirement_id": "KNAVE2-025-L1",
+      "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-025-L1",
+      "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-025",
+      "printed_page": 21,
+      "canonical_rule_ids": [
+        "map.resource_availability"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#KNAVE2-025-L1",
+      "criterion_ids": [
+        "S05-C01",
+        "S07-C01"
+      ],
+      "existing_task_ids": [
+        "HX-BL-044"
+      ],
+      "disposition": "044_resource_component_excluded_from_CLASSIFY1_not_missing_approved_scope",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-025",
+        "normative_kind": "procedure",
+        "applicability": "Knave 2e, региональная карта и гекскроул; игровые эффекты через адаптер интеграции.",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий задаёт доступность воды региону или гексу",
+        "inputs_and_units": {
+          "area": "ID",
+          "very_arid": "boolean",
+          "water_override": "optional"
+        },
+        "product_operation": "Хранить флаг сильной засушливости и явные источники воды. Не выводить его только из цвета тайла.",
+        "expected_output": "Карта может опровергнуть стандартное предположение о найденной воде.",
+        "constraints_and_exceptions": [],
+        "acceptance_cases": [
+          {
+            "given": "H, very_arid=true, источник воды не указан",
+            "when": "Сохранить профиль местности",
+            "expected": "Вода в H не считается автоматически доступной.",
+            "id": "KNAVE2-025-L1-AC01"
+          }
+        ],
+        "source_vs_product_interpretation": "Числа/условия взяты из указанного правила; автоматическая операция/структурированные данные — предлагаемое продуктовое решение, а не требование автора к ПО.",
+        "canonical_rule_refs": [
+          "map.resource_availability"
+        ],
+        "unresolved_parameters": []
+      },
+      "runtime_evidence": {
+        "status": "unknown_for_complete_requirement",
+        "sha": null,
+        "note": "This disposition reads source inventory and accepted scope documents; it does not rerun product acceptance or transfer a package status to a whole source profile."
+      }
+    },
+    {
+      "requirement_id": "KNAVE2-034-L1",
+      "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-034-L1",
+      "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-034",
+      "printed_page": [
+        21,
+        22,
+        23,
+        24,
+        25
+      ],
+      "canonical_rule_ids": [
+        "map.routes_and_barriers",
+        "content.static_hazard",
+        "content.place_description"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#KNAVE2-034-L1",
+      "criterion_ids": [
+        "S01-C02",
+        "S01-C04",
+        "S01-C05",
+        "S05-C01",
+        "S05-C02",
+        "S06-C04",
+        "S07-C01"
+      ],
+      "existing_task_ids": [
+        "HX-BL-043"
+      ],
+      "disposition": "043_legacy_membership_outside_CLASSIC1_no_reactivation_of_PLACE1",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-034",
+        "normative_kind": "source_procedure_or_effect_profile",
+        "applicability": "Опциональная активация соответствующего содержимого/эффекта Knave 2e; не глобальное правило всех карт.",
+        "layer": "L1",
+        "trigger_or_user_action": "Мастер размещает подтверждённый пространственный эффект на карте",
+        "inputs_and_units": {
+          "anchor": "hex + local location",
+          "spell_no": 27,
+          "chosen_spell_level": 2,
+          "shape": "GM accepted polyline",
+          "units": "feet"
+        },
+        "product_operation": "Добавить отдельный объект с источником эффекта, геометрией, материалом и условиями действия; не перегенерировать регион или целый гекс.",
+        "expected_output": "Для стены уровня2 сохранены длина80ft, ширина5ft, высота10ft; исходный биом и прочие объекты сохранены.",
+        "constraints_and_exceptions": [
+          "Источник не предписывает отдельный режим генерации регионов.",
+          "Канонические поля препятствия/опасности переиспользуются; численные последствия движения/урона относятся к L2/L3.",
+          "Если эффект не задаёт особой длительности, учитывать общее правило печ.21."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "В H есть лес и POI A; выбран №27 уровень2, материал лёд, принята линия80ft",
+            "when": "Разместить эффект и сохранить/загрузить карту",
+            "expected": "Есть отдельная ледяная стена80×5×10ft с причиной spell27; лес, A и соседние гексы прежние.",
+            "id": "KNAVE2-034-L1-AC01"
+          }
+        ],
+        "source_vs_product_interpretation": "Положение источника пересказано отдельно; хранение/передача результата в HexCrawl — предлагаемая операция продукта. Правило не доказывает наличие реализации.",
+        "canonical_rule_refs": [
+          "map.routes_and_barriers",
+          "content.static_hazard",
+          "content.place_description"
+        ],
+        "unresolved_parameters": [
+          "Точность локального размещения/отрисовки в крупном шестимильном гексе; интерфейс временных объектов."
+        ]
+      },
+      "runtime_evidence": {
+        "status": "unknown_for_complete_requirement",
+        "sha": null,
+        "note": "This disposition reads source inventory and accepted scope documents; it does not rerun product acceptance or transfer a package status to a whole source profile."
+      }
+    },
+    {
+      "requirement_id": "KNAVE2-035-L1",
+      "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-035-L1",
+      "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-035",
+      "printed_page": [
+        21,
+        23
+      ],
+      "canonical_rule_ids": [
+        "content.place_description"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#KNAVE2-035-L1",
+      "criterion_ids": [
+        "S05-C01",
+        "S05-C02"
+      ],
+      "existing_task_ids": [
+        "HX-BL-043"
+      ],
+      "disposition": "043_legacy_membership_outside_CLASSIC1_no_reactivation_of_PLACE1",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-035",
+        "normative_kind": "source_procedure_or_effect_profile",
+        "applicability": "Опциональная активация соответствующего содержимого/эффекта Knave 2e; не глобальное правило всех карт.",
+        "layer": "L1",
+        "trigger_or_user_action": "Подтверждён результат №45",
+        "inputs_and_units": {
+          "hex_id": "H",
+          "chosen_spell_level": 3,
+          "start_time": "campaign timestamp"
+        },
+        "product_operation": "Добавить временный POI-дом с 3комнатами, временем окончания через1день и safe_haven=false; не добавлять припасы.",
+        "expected_output": "Дом имеет явное исключение для процедур отдыха; число припасов не изменилось.",
+        "constraints_and_exceptions": [
+          "Дом не превращается в постоянное поселение.",
+          "Безопасность не выводится только из типа постройка."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "До эффекта у группы0пайков,0запасного снаряжения; выбран уровень3",
+            "when": "Применить №45",
+            "expected": "Создан дом с3комнатами на1день; safe_haven=false; пайки и снаряжение по-прежнему0.",
+            "id": "KNAVE2-035-L1-AC01"
+          }
+        ],
+        "source_vs_product_interpretation": "Положение источника пересказано отдельно; хранение/передача результата в HexCrawl — предлагаемая операция продукта. Правило не доказывает наличие реализации.",
+        "canonical_rule_refs": [
+          "content.place_description"
+        ],
+        "unresolved_parameters": []
+      },
+      "runtime_evidence": {
+        "status": "unknown_for_complete_requirement",
+        "sha": null,
+        "note": "This disposition reads source inventory and accepted scope documents; it does not rerun product acceptance or transfer a package status to a whole source profile."
+      }
+    },
+    {
+      "requirement_id": "KNAVE2-037-L1",
+      "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-037-L1",
+      "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-037",
+      "printed_page": [
+        32,
+        33
+      ],
+      "canonical_rule_ids": [
+        "content.place_description",
+        "content.site_links"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#KNAVE2-037-L1",
+      "criterion_ids": [
+        "S05-C01",
+        "S05-C02"
+      ],
+      "existing_task_ids": [
+        "HX-BL-043"
+      ],
+      "disposition": "043_legacy_membership_outside_CLASSIC1_no_reactivation_of_PLACE1",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-037",
+        "normative_kind": "source_procedure_or_effect_profile",
+        "applicability": "Опциональная активация соответствующего содержимого/эффекта Knave 2e; не глобальное правило всех карт.",
+        "layer": "L1",
+        "trigger_or_user_action": "Мастер создаёт святилище/покровителя",
+        "inputs_and_units": {
+          "shrine_id": "S",
+          "patron_id": "P",
+          "domains": "1 or2 chosen/table-resolved entries",
+          "relic_ids": "optional links"
+        },
+        "product_operation": "Сохранить посвящение S→P, домены P и ссылки реликвий на того же покровителя; в карточке святилища показать связанные объекты.",
+        "expected_output": "Перемещение/переименование святилища сохраняет устойчивую связь с P.",
+        "constraints_and_exceptions": [
+          "1–2 домена — диапазон, но метод выбора количества источник не задаёт.",
+          "Условия общения/благосклонности принадлежат L3, не автоматическое открытие всей информации."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Создан P с2доменами; SпосвящёнP; RсвязанP",
+            "when": "ПереименоватьS и сохранить/загрузить",
+            "expected": "S по устойчивомуID по-прежнему ведёткP; R связансP; доменовPдва.",
+            "id": "KNAVE2-037-L1-AC01"
+          }
+        ],
+        "source_vs_product_interpretation": "Положение источника пересказано отдельно; хранение/передача результата в HexCrawl — предлагаемая операция продукта. Правило не доказывает наличие реализации.",
+        "canonical_rule_refs": [
+          "content.place_description",
+          "content.site_links"
+        ],
+        "unresolved_parameters": []
+      },
+      "runtime_evidence": {
+        "status": "unknown_for_complete_requirement",
+        "sha": null,
+        "note": "This disposition reads source inventory and accepted scope documents; it does not rerun product acceptance or transfer a package status to a whole source profile."
+      }
+    },
+    {
+      "requirement_id": "KNAVE2-038-L1",
+      "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-038-L1",
+      "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-038",
+      "printed_page": [
+        32
+      ],
+      "canonical_rule_ids": [
+        "content.site_density",
+        "content.place_description"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#KNAVE2-038-L1",
+      "criterion_ids": [
+        "S05-C01",
+        "S05-C02",
+        "S07-C02"
+      ],
+      "existing_task_ids": [
+        "HX-BL-043"
+      ],
+      "disposition": "043_legacy_membership_outside_CLASSIC1_no_reactivation_of_PLACE1",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-038",
+        "normative_kind": "source_procedure_or_effect_profile",
+        "applicability": "Опциональная активация соответствующего содержимого/эффекта Knave 2e; не глобальное правило всех карт.",
+        "layer": "L1",
+        "trigger_or_user_action": "Мастер запускает предложенное наполнение святилищами",
+        "inputs_and_units": {
+          "settlement_class": "village/town/city",
+          "town_roll": "1..6",
+          "patron_catalog": "explicit known set for city",
+          "manual_exception": "GM override"
+        },
+        "product_operation": "В town создать число святилищ по принятому d6; village предложить1 с возможностью исключения; city использовать явный список покровителей и не выдумывать неизвестную полноту пантеона.",
+        "expected_output": "Выпавшее число и созданные shrineIDs сохранены; правило не включается принудительно во всех картах.",
+        "constraints_and_exceptions": [
+          "Количество существующих святилищ и правило дозаполнения/дедупликации — продуктовый выбор; source не задаёт повторный запуск.",
+          "Неоднозначный перевод city/town требует фиксированной продуктовой классификации."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Пустойtown, фиксированныйd6=1, затем в отдельном fixture d6=4 и6",
+            "when": "Применить профиль",
+            "expected": "Созданы соответственно1,4,6святилищ; недопустимые0/7отвергнуты до изменения карты.",
+            "id": "KNAVE2-038-L1-AC01"
+          },
+          {
+            "given": "Village, обычные условия; затем мастер задаёт исключение2",
+            "when": "Сначала применить обычное предложение, затем ручное исключение",
+            "expected": "Предложено1, ручное2 сохранено как исключение; система не принуждает возвратк1.",
+            "id": "KNAVE2-038-L1-AC02"
+          },
+          {
+            "given": "City, явный каталог P1/P2/P3",
+            "when": "Сформировать предложение святилищ",
+            "expected": "Представлены все3из переданного каталога; при неизвестной полноте каталога результат не помечен как полный пантеон.",
+            "id": "KNAVE2-038-L1-AC03"
+          }
+        ],
+        "source_vs_product_interpretation": "Положение источника пересказано отдельно; хранение/передача результата в HexCrawl — предлагаемая операция продукта. Правило не доказывает наличие реализации.",
+        "canonical_rule_refs": [
+          "content.site_density",
+          "content.place_description"
+        ],
+        "unresolved_parameters": [
+          "Полнота списка покровителей города; политика повторного наполнения и несколько святилищ одного покровителя."
+        ]
+      },
+      "runtime_evidence": {
+        "status": "unknown_for_complete_requirement",
+        "sha": null,
+        "note": "This disposition reads source inventory and accepted scope documents; it does not rerun product acceptance or transfer a package status to a whole source profile."
+      }
+    },
+    {
+      "requirement_id": "KNAVE2-039-L1",
+      "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-039-L1",
+      "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-039",
+      "printed_page": [
+        32
+      ],
+      "canonical_rule_ids": [
+        "content.adventure_hooks",
+        "content.site_links"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#KNAVE2-039-L1",
+      "criterion_ids": [
+        "S05-C02"
+      ],
+      "existing_task_ids": [
+        "HX-BL-043"
+      ],
+      "disposition": "043_legacy_membership_outside_CLASSIC1_no_reactivation_of_PLACE1",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-039",
+        "normative_kind": "source_procedure_or_effect_profile",
+        "applicability": "Опциональная активация соответствующего содержимого/эффекта Knave 2e; не глобальное правило всех карт.",
+        "layer": "L1",
+        "trigger_or_user_action": "Мастер подтверждает выданное покровителем задание",
+        "inputs_and_units": {
+          "quest_id": "Q",
+          "patron_id": "P",
+          "source_shrine": "S",
+          "return_shrine": "S",
+          "relic_id": "R"
+        },
+        "product_operation": "Привязать Q к P/R/S и отдельному месту возврата, не смешивать цель задания с выдающим святилищем.",
+        "expected_output": "Из карты видно, где дано задание и куда вернуться; награда не начислена только по созданию связи.",
+        "constraints_and_exceptions": [
+          "Источник говорит о возвращении к святилищу, но не определяет, может ли любое святилище того же покровителя заменить исходное."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "PчерезS далQ, цельQ находитсяX, реликвияR связанаP",
+            "when": "СохранитьQ и открытьсвязи",
+            "expected": "Q имеетsource/return S и цельX; X не заменяетS; благословение не выдано автоматически.",
+            "id": "KNAVE2-039-L1-AC01"
+          }
+        ],
+        "source_vs_product_interpretation": "Положение источника пересказано отдельно; хранение/передача результата в HexCrawl — предлагаемая операция продукта. Правило не доказывает наличие реализации.",
+        "canonical_rule_refs": [
+          "content.adventure_hooks",
+          "content.site_links"
+        ],
+        "unresolved_parameters": [
+          "Допустимость другого святилища для возврата; состояние благосклонности и разрешение награды — L3 интеграция."
+        ]
+      },
+      "runtime_evidence": {
+        "status": "unknown_for_complete_requirement",
+        "sha": null,
+        "note": "This disposition reads source inventory and accepted scope documents; it does not rerun product acceptance or transfer a package status to a whole source profile."
+      }
+    },
+    {
+      "requirement_id": "KNAVE2-040-L1",
+      "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-040-L1",
+      "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-040",
+      "printed_page": [
+        35
+      ],
+      "canonical_rule_ids": [
+        "map.resource_availability",
+        "content.place_description"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#KNAVE2-040-L1",
+      "criterion_ids": [
+        "S05-C01",
+        "S05-C02",
+        "S07-C01"
+      ],
+      "existing_task_ids": [
+        "HX-BL-043"
+      ],
+      "disposition": "043_legacy_membership_outside_CLASSIC1_no_reactivation_of_PLACE1",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-040",
+        "normative_kind": "source_procedure_or_effect_profile",
+        "applicability": "Опциональная активация соответствующего содержимого/эффекта Knave 2e; не глобальное правило всех карт.",
+        "layer": "L1",
+        "trigger_or_user_action": "Мастер добавляет источник редкого ингредиента",
+        "inputs_and_units": {
+          "site_id": "P",
+          "ingredient_descriptor": "GM chosen/resolved",
+          "location_tags": [
+            "dangerous",
+            "lost"
+          ],
+          "visibility": "explicit"
+        },
+        "product_operation": "Сохранить ресурс как содержимое выбранного места с происхождением/условиями, не придумывая плотность, урожай или срок возобновления.",
+        "expected_output": "Источник ингредиента виден мастеру и связан сP; количественные неизвестные остаютсяnull.",
+        "constraints_and_exceptions": [
+          "Слово обычно допускает авторские исключения.",
+          "Редкость не задаёт автоматическую вероятность появления."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "P—затерянные руины, выбран ресурсI, объёмдобычи неизвестен",
+            "when": "Добавить ресурс и сохранить/загрузить",
+            "expected": "I привязанP; yield=null, respawn=null; таблица карты не заполняет все соседние гексы тем же растением.",
+            "id": "KNAVE2-040-L1-AC01"
+          }
+        ],
+        "source_vs_product_interpretation": "Положение источника пересказано отдельно; хранение/передача результата в HexCrawl — предлагаемая операция продукта. Правило не доказывает наличие реализации.",
+        "canonical_rule_refs": [
+          "map.resource_availability",
+          "content.place_description"
+        ],
+        "unresolved_parameters": []
+      },
+      "runtime_evidence": {
+        "status": "unknown_for_complete_requirement",
+        "sha": null,
+        "note": "This disposition reads source inventory and accepted scope documents; it does not rerun product acceptance or transfer a package status to a whole source profile."
+      }
+    },
+    {
+      "requirement_id": "KNAVE2-044-L1",
+      "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-044-L1",
+      "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-044",
+      "printed_page": [
+        38
+      ],
+      "canonical_rule_ids": [
+        "map.settlement_resources",
+        "content.place_description"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#KNAVE2-044-L1",
+      "criterion_ids": [
+        "S01-C05",
+        "S05-C01",
+        "S05-C02"
+      ],
+      "existing_task_ids": [
+        "HX-BL-043"
+      ],
+      "disposition": "043_legacy_membership_outside_CLASSIC1_no_reactivation_of_PLACE1",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-044",
+        "normative_kind": "source_procedure_or_effect_profile",
+        "applicability": "Опциональная активация соответствующего содержимого/эффекта Knave 2e; не глобальное правило всех карт.",
+        "layer": "L1",
+        "trigger_or_user_action": "Мастер задаёт тип/размер поселения и открывает сведения о снабжении",
+        "inputs_and_units": {
+          "settlement_class": "explicit size/type",
+          "item_rarity": "common/uncommon/rare",
+          "stock": "unknown unless GM filled"
+        },
+        "product_operation": "Сохранить пригодность категории по профилю, ценовой ориентир и неизвестный фактический запас; не создавать весь магазин автоматически.",
+        "expected_output": "У карточки места есть возможности снабжения, отделённые от фактического наличия.",
+        "constraints_and_exceptions": [
+          "Пограничные категории крупного поселения/городка требуют согласованной классификации, а не переводческого предположения.",
+          "Типовая цена не измеряет популярность и не меняет рейтинг."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Небольшаядеревня, предметrare=секстант; stockunknown",
+            "when": "Показатьснабжение",
+            "expected": "Редкаякатегориянепредлагаетсякакдоступнаяпообычномупрофилю; stockостаётсяunknown.",
+            "id": "KNAVE2-044-L1-AC01"
+          },
+          {
+            "given": "Крупныйгород, rareпредмет",
+            "when": "Показатьснабжение",
+            "expected": "Категориядопустима; ориентир100+монет, нефиксированные100; наличиенеутверждено.",
+            "id": "KNAVE2-044-L1-AC02"
+          },
+          {
+            "given": "Любоепоселение, commonпредмет",
+            "when": "Показатькатегорию",
+            "expected": "Обычнаякатегориядопустима; конкретныйостатокневымышлен.",
+            "id": "KNAVE2-044-L1-AC03"
+          }
+        ],
+        "source_vs_product_interpretation": "Положение источника пересказано отдельно; хранение/передача результата в HexCrawl — предлагаемая операция продукта. Правило не доказывает наличие реализации.",
+        "canonical_rule_refs": [
+          "map.settlement_resources",
+          "content.place_description"
+        ],
+        "unresolved_parameters": []
+      },
+      "runtime_evidence": {
+        "status": "unknown_for_complete_requirement",
+        "sha": null,
+        "note": "This disposition reads source inventory and accepted scope documents; it does not rerun product acceptance or transfer a package status to a whole source profile."
+      }
+    },
+    {
+      "requirement_id": "KNAVE2-045-L1",
+      "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-045-L1",
+      "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-045",
+      "printed_page": [
+        27,
+        28,
+        29,
+        30,
+        31,
+        33,
+        35,
+        36,
+        37,
+        39,
+        40,
+        41,
+        42,
+        43
+      ],
+      "canonical_rule_ids": [
+        "content.place_description",
+        "content.tracks_and_ground",
+        "content.roll_table_resolution"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#KNAVE2-045-L1",
+      "criterion_ids": [
+        "S05-C01",
+        "S05-C02",
+        "S06-C03"
+      ],
+      "existing_task_ids": [
+        "HX-BL-043"
+      ],
+      "disposition": "043_legacy_membership_outside_CLASSIC1_no_reactivation_of_PLACE1",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-045",
+        "normative_kind": "source_procedure_or_effect_profile",
+        "applicability": "Опциональная активация соответствующего содержимого/эффекта Knave 2e; не глобальное правило всех карт.",
+        "layer": "L1",
+        "trigger_or_user_action": "Общий resolver получил ссылку на вспомогательную таблицу Knave",
+        "inputs_and_units": {
+          "parent_result": "stable table+row reference",
+          "target_table": "catalog entry",
+          "follow_roll": "d1001..100",
+          "source_policy_ref": "printed1"
+        },
+        "product_operation": "Выполнить обращение к нужному профилю данных через единый общий resolver и сохранить цепочку происхождения; повторную ссылку обработать по печ.1, не изобретать собственный рекурсивный движок для Knave.",
+        "expected_output": "В подписи/признаке места есть итог и source trail; выбор таблицы не превращается в изменение всей географии.",
+        "constraints_and_exceptions": [
+          "Поведение переходов и повторных ссылок принадлежит общему source-rule введения печ.1; эта группа — набор табличных профилей.",
+          "Табличная строка, например катастрофа, сама по себе не даёт численной механики/масштаба или разрешения переписать реки и поселения."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Признак места ссылается на таблицу «Цвет» p37; задан следующий бросок1.",
+            "when": "Разрешить ссылку по общему правилу.",
+            "expected": "Сохранён «Ядовито-зеленый» и provenance p37/row1; биом и соседние места не изменены.",
+            "id": "KNAVE2-045-L1-AC01"
+          },
+          {
+            "given": "Первый переход привёл в «Качества» p28,row69, которая снова является ссылкой; выбрана рекомендованная политика следующей строки.",
+            "when": "Применить общий resolver.",
+            "expected": "Выбрана строка70 той же таблицы, «Планарный»; исходная строка69 и сдвиг сохранены; третий бросок не выполняется.",
+            "id": "KNAVE2-045-L1-AC02"
+          }
+        ],
+        "source_vs_product_interpretation": "Таблицы источника — данные и советы; подключение к карточке карты является предложением продукта. Общий алгоритм должен быть привязан к source-rule печ.1 через root, без дублирования реализации.",
+        "canonical_rule_refs": [
+          "content.place_description",
+          "content.tracks_and_ground",
+          "content.roll_table_resolution"
+        ],
+        "unresolved_parameters": [
+          "Ситуации следующаястрокавновьссылка и ссылкастроки100 требуют общей явно принятой продуктовой политики."
+        ]
+      },
+      "runtime_evidence": {
+        "status": "unknown_for_complete_requirement",
+        "sha": null,
+        "note": "This disposition reads source inventory and accepted scope documents; it does not rerun product acceptance or transfer a package status to a whole source profile."
+      }
+    },
+    {
+      "requirement_id": "KNAVE2-050-L1",
+      "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-050-L1",
+      "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-050",
+      "printed_page": [
+        46,
+        47
+      ],
+      "canonical_rule_ids": [
+        "content.place_description",
+        "content.roll_table_resolution"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#KNAVE2-050-L1",
+      "criterion_ids": [
+        "S05-C01",
+        "S05-C02"
+      ],
+      "existing_task_ids": [
+        "HX-BL-043"
+      ],
+      "disposition": "043_legacy_membership_outside_CLASSIC1_no_reactivation_of_PLACE1",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-050",
+        "normative_kind": "optional_content_tables",
+        "applicability": "Optional Knave preparation/operation profile; applies only when the GM invokes this tool or relevant hireling/encounter procedure. Not a mandatory geography algorithm.",
+        "layer": "L1",
+        "trigger_or_user_action": "Мастер выбирает поселение S и таблицу/строку для его описания.",
+        "inputs_and_units": {
+          "settlement_id": "stable ID",
+          "table_id": "city_theme|street_detail|building",
+          "roll_index": "integer 1..100; 00 means100"
+        },
+        "product_operation": "Look up only requested rows; attach source-linked prompt fields to S without changing its coordinate, hex terrain or other POIs.",
+        "expected_output": "S has requested prompt values with table/page/index provenance.",
+        "constraints_and_exceptions": [
+          "Do not infer settlement density, hex coordinates or mandatory placement from a vocabulary table.",
+          "Do not treat a table result as executed mechanical change without a GM choice or an explicit integrated procedure.",
+          "Keep selected source table, row index and interpretation separate; do not copy the full book tables into this research result.",
+          "Table index/reference resolution must reuse the root-extracted p1 common resolver, including manual choice and its bounded follow-reference/fallback behavior. A missing second input produces pending_reference_input, not a completed final result."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "S has no prompts; city_theme=1, building=1",
+            "when": "Generate those two requested fields",
+            "expected": "S.theme=Алхимия and S.building_prompt=Академия; S coordinates unchanged.",
+            "id": "KNAVE2-050-L1-AC01"
+          },
+          {
+            "given": "S already has a GM-edited theme",
+            "when": "Select street_detail=100",
+            "expected": "Add Пролившееся вино only to requested street detail; preserve edited theme.",
+            "id": "KNAVE2-050-L1-AC02"
+          }
+        ],
+        "source_vs_product_interpretation": "The book provides procedures/content tables. An on-demand generator, typed fields, source-linked result history, save/load and stale markers are proposed product operations; the source does not prescribe this software UI, automatic placement, population or event cadence.",
+        "canonical_rule_refs": [
+          "content.place_description",
+          "content.roll_table_resolution"
+        ],
+        "unresolved_parameters": []
+      },
+      "runtime_evidence": {
+        "status": "unknown_for_complete_requirement",
+        "sha": null,
+        "note": "This disposition reads source inventory and accepted scope documents; it does not rerun product acceptance or transfer a package status to a whole source profile."
+      }
+    },
+    {
+      "requirement_id": "KNAVE2-051-L1",
+      "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-051-L1",
+      "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-051",
+      "printed_page": [
+        48,
+        49
+      ],
+      "canonical_rule_ids": [
+        "content.place_description",
+        "content.roll_table_resolution"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#KNAVE2-051-L1",
+      "criterion_ids": [
+        "S05-C01",
+        "S05-C02"
+      ],
+      "existing_task_ids": [
+        "HX-BL-043"
+      ],
+      "disposition": "043_legacy_membership_outside_CLASSIC1_no_reactivation_of_PLACE1",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-051",
+        "normative_kind": "optional_content_tables",
+        "applicability": "Optional Knave preparation/operation profile; applies only when the GM invokes this tool or relevant hireling/encounter procedure. Not a mandatory geography algorithm.",
+        "layer": "L1",
+        "trigger_or_user_action": "Мастер выбирает таверну P и генерацию названия/еды.",
+        "inputs_and_units": {
+          "poi_id": "stable ID",
+          "tavern1_index": "1..100",
+          "tavern2_index": "1..100",
+          "food_detail_index": "optional1..100",
+          "food_index": "optional1..100"
+        },
+        "product_operation": "Save the selected lexical components with indices, plus a separately editable combined display name/menu; preserve the uninflected source components.",
+        "expected_output": "Existing P stores chosen name/menu prompts, not new map geometry or rations.",
+        "constraints_and_exceptions": [
+          "Do not infer settlement density, hex coordinates or mandatory placement from a vocabulary table.",
+          "Do not treat a table result as executed mechanical change without a GM choice or an explicit integrated procedure.",
+          "Keep selected source table, row index and interpretation separate; do not copy the full book tables into this research result.",
+          "Russian grammatical agreement/combined name is a product interpretation; preserve raw components.",
+          "Table index/reference resolution must reuse the root-extracted p1 common resolver, including manual choice and its bounded follow-reference/fallback behavior. A missing second input produces pending_reference_input, not a completed final result."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "P selected; tavern1=2, tavern2=3, food_detail=1, food=1",
+            "when": "Generate requested values",
+            "expected": "Store name components Орущий + Топор and menu components Вяленый + Желудь; no ration inventory increment.",
+            "id": "KNAVE2-051-L1-AC01"
+          },
+          {
+            "given": "P.name has a manual edit",
+            "when": "Reroll menu only to food_detail=100 and food=100",
+            "expected": "Menu becomes Завернутый + Ямс; manual name preserved.",
+            "id": "KNAVE2-051-L1-AC02"
+          }
+        ],
+        "source_vs_product_interpretation": "The book provides procedures/content tables. An on-demand generator, typed fields, source-linked result history, save/load and stale markers are proposed product operations; the source does not prescribe this software UI, automatic placement, population or event cadence.",
+        "canonical_rule_refs": [
+          "content.place_description",
+          "content.roll_table_resolution"
+        ],
+        "unresolved_parameters": []
+      },
+      "runtime_evidence": {
+        "status": "unknown_for_complete_requirement",
+        "sha": null,
+        "note": "This disposition reads source inventory and accepted scope documents; it does not rerun product acceptance or transfer a package status to a whole source profile."
+      }
+    },
+    {
+      "requirement_id": "KNAVE2-052-L1",
+      "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-052-L1",
+      "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-052",
+      "printed_page": [
+        50
+      ],
+      "canonical_rule_ids": [
+        "content.place_description",
+        "content.site_links",
+        "content.roll_table_resolution"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#KNAVE2-052-L1",
+      "criterion_ids": [
+        "S05-C01",
+        "S05-C02"
+      ],
+      "existing_task_ids": [
+        "HX-BL-043"
+      ],
+      "disposition": "043_legacy_membership_outside_CLASSIC1_no_reactivation_of_PLACE1",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-052",
+        "normative_kind": "optional_content_tables",
+        "applicability": "Optional Knave preparation/operation profile; applies only when the GM invokes this tool or relevant hireling/encounter procedure. Not a mandatory geography algorithm.",
+        "layer": "L1",
+        "trigger_or_user_action": "Мастер добавляет фракционный контекст к месту P.",
+        "inputs_and_units": {
+          "poi_id": "stable ID",
+          "faction_index": "1..100",
+          "trait_index": "1..100",
+          "related_poi_ids": "optional existing IDs explicitly chosen by GM"
+        },
+        "product_operation": "Attach a faction prompt to P; link only GM-selected existing places and preserve identities.",
+        "expected_output": "P contains a source-linked faction description and explicit links, without invented political borders.",
+        "constraints_and_exceptions": [
+          "Do not infer settlement density, hex coordinates or mandatory placement from a vocabulary table.",
+          "Do not treat a table result as executed mechanical change without a GM choice or an explicit integrated procedure.",
+          "Keep selected source table, row index and interpretation separate; do not copy the full book tables into this research result.",
+          "The association with map places is proposed application of the source content tool, not a mandated Knave faction map.",
+          "Table index/reference resolution must reuse the root-extracted p1 common resolver, including manual choice and its bounded follow-reference/fallback behavior. A missing second input produces pending_reference_input, not a completed final result."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "P selected; faction=1, trait=1",
+            "when": "Generate faction context",
+            "expected": "Attach Гильдия актеров with Активисты; create no territorial polygons.",
+            "id": "KNAVE2-052-L1-AC01"
+          },
+          {
+            "given": "P and Q explicitly selected; faction=100, trait=100",
+            "when": "Attach one shared faction context",
+            "expected": "Description is Орда зомби + Молодые and references P/Q; no duplicate independent faction created for each place.",
+            "id": "KNAVE2-052-L1-AC02"
+          }
+        ],
+        "source_vs_product_interpretation": "The book provides procedures/content tables. An on-demand generator, typed fields, source-linked result history, save/load and stale markers are proposed product operations; the source does not prescribe this software UI, automatic placement, population or event cadence.",
+        "canonical_rule_refs": [
+          "content.place_description",
+          "content.site_links",
+          "content.roll_table_resolution"
+        ],
+        "unresolved_parameters": []
+      },
+      "runtime_evidence": {
+        "status": "unknown_for_complete_requirement",
+        "sha": null,
+        "note": "This disposition reads source inventory and accepted scope documents; it does not rerun product acceptance or transfer a package status to a whole source profile."
+      }
+    },
+    {
+      "requirement_id": "KNAVE2-053-L1",
+      "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-053-L1",
+      "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-053",
+      "printed_page": [
+        51
+      ],
+      "canonical_rule_ids": [
+        "content.adventure_hooks",
+        "content.site_links",
+        "content.roll_table_resolution"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#KNAVE2-053-L1",
+      "criterion_ids": [
+        "S05-C02"
+      ],
+      "existing_task_ids": [
+        "HX-BL-043"
+      ],
+      "disposition": "043_legacy_membership_outside_CLASSIC1_no_reactivation_of_PLACE1",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-053",
+        "normative_kind": "optional_content_tables",
+        "applicability": "Optional Knave preparation/operation profile; applies only when the GM invokes this tool or relevant hireling/encounter procedure. Not a mandatory geography algorithm.",
+        "layer": "L1",
+        "trigger_or_user_action": "Мастер выбирает исходный POI A, цель B и строки миссии/награды.",
+        "inputs_and_units": {
+          "origin_poi_id": "existing ID",
+          "target_poi_id": "existing ID or null pending GM choice",
+          "mission_index": "1..100",
+          "reward_index": "1..100"
+        },
+        "product_operation": "Create source-linked hook with separate mission prompt, target reference and reward prompt; leave completion false.",
+        "expected_output": "One hook linked to origin and explicit target with reward description.",
+        "constraints_and_exceptions": [
+          "Do not infer settlement density, hex coordinates or mandatory placement from a vocabulary table.",
+          "Do not treat a table result as executed mechanical change without a GM choice or an explicit integrated procedure.",
+          "Keep selected source table, row index and interpretation separate; do not copy the full book tables into this research result.",
+          "A map/shortcut/safe-passage reward is a narrative option, not automatic exposure of all secret map data.",
+          "Table index/reference resolution must reuse the root-extracted p1 common resolver, including manual choice and its bounded follow-reference/fallback behavior. A missing second input produces pending_reference_input, not a completed final result."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "A and B exist; mission=11, reward=69",
+            "when": "Generate hook and choose B",
+            "expected": "Hook asks to map place B; reward prompt is Карта местности; no free reveal or completion.",
+            "id": "KNAVE2-053-L1-AC01"
+          },
+          {
+            "given": "mission=58 and no target chosen",
+            "when": "Generate mission prompt",
+            "expected": "Save Найти подземелье with target=null and needs_target status; do not invent a dungeon position.",
+            "id": "KNAVE2-053-L1-AC02"
+          }
+        ],
+        "source_vs_product_interpretation": "The book provides procedures/content tables. An on-demand generator, typed fields, source-linked result history, save/load and stale markers are proposed product operations; the source does not prescribe this software UI, automatic placement, population or event cadence.",
+        "canonical_rule_refs": [
+          "content.adventure_hooks",
+          "content.site_links",
+          "content.roll_table_resolution"
+        ],
+        "unresolved_parameters": []
+      },
+      "runtime_evidence": {
+        "status": "unknown_for_complete_requirement",
+        "sha": null,
+        "note": "This disposition reads source inventory and accepted scope documents; it does not rerun product acceptance or transfer a package status to a whole source profile."
+      }
+    },
+    {
+      "requirement_id": "KNAVE2-054-L1",
+      "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-054-L1",
+      "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-054",
+      "printed_page": 53,
+      "canonical_rule_ids": [
+        "content.place_description"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#KNAVE2-054-L1",
+      "criterion_ids": [
+        "S05-C01",
+        "S05-C02"
+      ],
+      "existing_task_ids": [
+        "HX-BL-043"
+      ],
+      "disposition": "043_legacy_membership_outside_CLASSIC1_no_reactivation_of_PLACE1",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-054",
+        "normative_kind": "optional_procedure",
+        "applicability": "Optional Knave preparation/operation profile; applies only when the GM invokes this tool or relevant hireling/encounter procedure. Not a mandatory geography algorithm.",
+        "layer": "L1",
+        "trigger_or_user_action": "Мастер назначает поселению S категорию Knave.",
+        "inputs_and_units": {
+          "settlement_id": "ID",
+          "source_label": "деревня|город|большой город"
+        },
+        "product_operation": "Store the selected source category and both availability dice profiles as settlement content fields.",
+        "expected_output": "The settlement carries correct worker/mercenary dice for later generation.",
+        "constraints_and_exceptions": [
+          "Keep source settlement labels; source has no population thresholds.",
+          "Do not silently equate these labels with the different expert-rarity labels."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "S category=деревня",
+            "when": "Apply profile",
+            "expected": "Worker dice=1d10 and mercenary dice=1d6.",
+            "id": "KNAVE2-054-L1-AC01"
+          },
+          {
+            "given": "S category=большой город",
+            "when": "Apply profile",
+            "expected": "Worker dice=10d10 and mercenary dice=10d6; do not infer population from category.",
+            "id": "KNAVE2-054-L1-AC02"
+          }
+        ],
+        "source_vs_product_interpretation": "The book provides procedures/content tables. An on-demand generator, typed fields, source-linked result history, save/load and stale markers are proposed product operations; the source does not prescribe this software UI, automatic placement, population or event cadence.",
+        "canonical_rule_refs": [
+          "content.place_description"
+        ],
+        "unresolved_parameters": []
+      },
+      "runtime_evidence": {
+        "status": "unknown_for_complete_requirement",
+        "sha": null,
+        "note": "This disposition reads source inventory and accepted scope documents; it does not rerun product acceptance or transfer a package status to a whole source profile."
+      }
+    },
+    {
+      "requirement_id": "KNAVE2-056-L1",
+      "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-056-L1",
+      "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-056",
+      "printed_page": 53,
+      "canonical_rule_ids": [
+        "content.place_description"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#KNAVE2-056-L1",
+      "criterion_ids": [
+        "S05-C01",
+        "S05-C02"
+      ],
+      "existing_task_ids": [
+        "HX-BL-043"
+      ],
+      "disposition": "043_legacy_membership_outside_CLASSIC1_no_reactivation_of_PLACE1",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-056",
+        "normative_kind": "optional_procedure",
+        "applicability": "Optional Knave preparation/operation profile; applies only when the GM invokes this tool or relevant hireling/encounter procedure. Not a mandatory geography algorithm.",
+        "layer": "L1",
+        "trigger_or_user_action": "Мастер выбирает категорию поселения и открывает список экспертов.",
+        "inputs_and_units": {
+          "settlement_id": "ID",
+          "settlement_category_mapping": "explicit source-label mapping, not inferred from worker dice labels",
+          "expert_rarity": "обычный|необычный|редкий"
+        },
+        "product_operation": "Display source availability and monthly fee for selected rarity; do not invent an available expert count.",
+        "expected_output": "S has source-linked availability/fee categories; quantity remains unknown until GM supplies it.",
+        "constraints_and_exceptions": [
+          "Source labels for expert rarity differ from worker/mercenary pool labels.",
+          "No numeric count/refresh formula for experts is given."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "S explicitly classified as village only; ordinary expert requested",
+            "when": "Open expert services",
+            "expected": "Ordinary service allowed at600 coins/month; count remains unknown.",
+            "id": "KNAVE2-056-L1-AC01"
+          },
+          {
+            "given": "S explicitly classified as город; rare expert requested",
+            "when": "Open expert services",
+            "expected": "Rare category allowed at2400 coins/month; do not roll1d10 experts.",
+            "id": "KNAVE2-056-L1-AC02"
+          }
+        ],
+        "source_vs_product_interpretation": "The book provides procedures/content tables. An on-demand generator, typed fields, source-linked result history, save/load and stale markers are proposed product operations; the source does not prescribe this software UI, automatic placement, population or event cadence.",
+        "canonical_rule_refs": [
+          "content.place_description"
+        ],
+        "unresolved_parameters": [
+          "Mapping project settlement enum to source городок/город must be explicit."
+        ]
+      },
+      "runtime_evidence": {
+        "status": "unknown_for_complete_requirement",
+        "sha": null,
+        "note": "This disposition reads source inventory and accepted scope documents; it does not rerun product acceptance or transfer a package status to a whole source profile."
+      }
+    },
+    {
+      "requirement_id": "KNAVE2-058-L1",
+      "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-058-L1",
+      "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-058",
+      "printed_page": [
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59
+      ],
+      "canonical_rule_ids": [
+        "content.place_description",
+        "content.adventure_hooks",
+        "content.roll_table_resolution"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#KNAVE2-058-L1",
+      "criterion_ids": [
+        "S05-C01",
+        "S05-C02"
+      ],
+      "existing_task_ids": [
+        "HX-BL-043"
+      ],
+      "disposition": "043_legacy_membership_outside_CLASSIC1_no_reactivation_of_PLACE1",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-058",
+        "normative_kind": "optional_content_tables",
+        "applicability": "Optional Knave preparation/operation profile; applies only when the GM invokes this tool or relevant hireling/encounter procedure. Not a mandatory geography algorithm.",
+        "layer": "L1",
+        "trigger_or_user_action": "Мастер выбирает контакт N в описании POI P и поля NPC для генерации.",
+        "inputs_and_units": {
+          "poi_id": "existing ID",
+          "contact_record": "existing text/object within POI description",
+          "chosen_table_indices": "only explicitly selected table_id:index1..100"
+        },
+        "product_operation": "Apply requested prompt components with their source/table indices to that place-associated contact; leave all other fields intact.",
+        "expected_output": "Contact description has chosen prompts; no NPC entity/AI engine or new map location inferred.",
+        "constraints_and_exceptions": [
+          "Do not infer settlement density, hex coordinates or mandatory placement from a vocabulary table.",
+          "Do not treat a table result as executed mechanical change without a GM choice or an explicit integrated procedure.",
+          "Keep selected source table, row index and interpretation separate; do not copy the full book tables into this research result.",
+          "Personality/asset relationship words are narrative prompts, not automatically applied bonuses or simulated relationships.",
+          "This profile is optional content for a map-associated contact, not all NPC mechanics declared L1.",
+          "Table index/reference resolution must reuse the root-extracted p1 common resolver, including manual choice and its bounded follow-reference/fallback behavior. A missing second input produces pending_reference_input, not a completed final result."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "P has contact N with manual name; profession=1, goal=67",
+            "when": "Generate profession and goal only",
+            "expected": "Keep name; store profession Аббат and goal Составить карту местности.",
+            "id": "KNAVE2-058-L1-AC01"
+          },
+          {
+            "given": "Requested surname1=1,surname2=1",
+            "when": "Generate surname components",
+            "expected": "Store Аддер- + -болд as separate source values; combined display spelling is an editable product interpretation.",
+            "id": "KNAVE2-058-L1-AC02"
+          }
+        ],
+        "source_vs_product_interpretation": "The book provides procedures/content tables. An on-demand generator, typed fields, source-linked result history, save/load and stale markers are proposed product operations; the source does not prescribe this software UI, automatic placement, population or event cadence.",
+        "canonical_rule_refs": [
+          "content.place_description",
+          "content.adventure_hooks",
+          "content.roll_table_resolution"
+        ],
+        "unresolved_parameters": []
+      },
+      "runtime_evidence": {
+        "status": "unknown_for_complete_requirement",
+        "sha": null,
+        "note": "This disposition reads source inventory and accepted scope documents; it does not rerun product acceptance or transfer a package status to a whole source profile."
+      }
+    },
+    {
+      "requirement_id": "KNAVE2-062-L1",
+      "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-062-L1",
+      "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-062",
+      "printed_page": 66,
+      "canonical_rule_ids": [
+        "content.place_description",
+        "content.tracks_and_ground",
+        "content.discovery_levels",
+        "content.roll_table_resolution"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#KNAVE2-062-L1",
+      "criterion_ids": [
+        "S04-C03",
+        "S05-C01",
+        "S05-C02",
+        "S05-C03",
+        "S06-C03",
+        "S06-C05"
+      ],
+      "existing_task_ids": [
+        "HX-BL-043"
+      ],
+      "disposition": "043_legacy_membership_outside_CLASSIC1_no_reactivation_of_PLACE1",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-062",
+        "normative_kind": "optional_content_tables",
+        "applicability": "Optional Knave preparation/operation profile; applies only when the GM invokes this tool or relevant hireling/encounter procedure. Not a mandatory geography algorithm.",
+        "layer": "L1",
+        "trigger_or_user_action": "Мастер выбирает POI/улику и запрашивает сенсорную подсказку.",
+        "inputs_and_units": {
+          "poi_or_clue_id": "stable ID",
+          "smell_index": "optional1..100",
+          "sound_index": "optional1..100",
+          "visibility": "existing clue/discovery state"
+        },
+        "product_operation": "Attach source-linked sensory prompt to selected object; preserve its visibility and separate clue description from hidden target.",
+        "expected_output": "Object stores sensory clues; no unrequested map reveal or detection radius assigned.",
+        "constraints_and_exceptions": [
+          "Do not infer settlement density, hex coordinates or mandatory placement from a vocabulary table.",
+          "Do not treat a table result as executed mechanical change without a GM choice or an explicit integrated procedure.",
+          "Keep selected source table, row index and interpretation separate; do not copy the full book tables into this research result.",
+          "Detection mechanics require another rule or integration; source table alone does not determine range.",
+          "Table index/reference resolution must reuse the root-extracted p1 common resolver, including manual choice and its bounded follow-reference/fallback behavior. A missing second input produces pending_reference_input, not a completed final result."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Hidden place P with visible clue C; smell=1,sound=100",
+            "when": "Generate sensory clues for C",
+            "expected": "C stores Кислота and Визг; P remains hidden and no numeric radius appears.",
+            "id": "KNAVE2-062-L1-AC01"
+          },
+          {
+            "given": "smell=34 references Element p29",
+            "when": "Resolve smell row only",
+            "expected": "Record pending reference to Element p29 because the follow-up index was not supplied; status=pending_reference_input, no final sensory result yet and no hazard damage.",
+            "id": "KNAVE2-062-L1-AC02"
+          }
+        ],
+        "source_vs_product_interpretation": "The book provides procedures/content tables. An on-demand generator, typed fields, source-linked result history, save/load and stale markers are proposed product operations; the source does not prescribe this software UI, automatic placement, population or event cadence.",
+        "canonical_rule_refs": [
+          "content.place_description",
+          "content.tracks_and_ground",
+          "content.discovery_levels",
+          "content.roll_table_resolution"
+        ],
+        "unresolved_parameters": []
+      },
+      "runtime_evidence": {
+        "status": "unknown_for_complete_requirement",
+        "sha": null,
+        "note": "This disposition reads source inventory and accepted scope documents; it does not rerun product acceptance or transfer a package status to a whole source profile."
+      }
+    },
+    {
+      "requirement_id": "KNAVE2-070-L1",
+      "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-070-L1",
+      "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-070",
+      "printed_page": 1,
+      "canonical_rule_ids": [
+        "content.place_description",
+        "content.roll_table_resolution"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#KNAVE2-070-L1",
+      "criterion_ids": [
+        "S05-C01",
+        "S05-C02"
+      ],
+      "existing_task_ids": [
+        "HX-BL-043"
+      ],
+      "disposition": "043_CLASSIC1_bounded_tables_only_not_full_resolver",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-070",
+        "normative_kind": "recommendation",
+        "applicability": "Подсказки для подготовки и игры на ходу; ведущий решает, как использовать результат.",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий наполняет выбранное место карты и выбирает результат таблицы вручную или броском.",
+        "inputs_and_units": {
+          "таблица": "Выбранная таблица на 100 строк",
+          "выбор": "Бросок d100 или номер строки, целое от 1 до 100",
+          "уточнение": "Результат одного дополнительного броска, если выбранная строка отсылает к другой таблице",
+          "место": "Выбранное место карты"
+        },
+        "product_operation": "Дать подсказку выбранной строки. Если она отсылает к другой таблице, получить результат той таблицы для толкования в контексте первой. При повторной ссылке предложить рекомендованную автором следующую запись. Сохранить использованные подсказки и описание ведущего у места.",
+        "expected_output": "У места остаются исходные подсказки с указанием таблиц и строк и составленное ведущим описание.",
+        "constraints_and_exceptions": [
+          "Рекомендация не задаёт число мест, плотность наполнения или географию карты.",
+          "Ручной выбор не требует броска.",
+          "Переход после последней строки и следующая запись, которая тоже является ссылкой, источником не разрешены; отдельное решение ведущего остаётся явным.",
+          "Автоматическое составление связного описания не требуется правилом."
+        ],
+        "acceptance_cases": [
+          {
+            "id": "KNAVE2-070-L1-AC01",
+            "given": "Придуманная таблица «Места»: строка 37 — «Колодец».",
+            "when": "Ведущий вручную выбирает строку 37 для места P.",
+            "expected": "У P есть подсказка «Колодец» из строки 37; бросок не нужен."
+          },
+          {
+            "id": "KNAVE2-070-L1-AC02",
+            "given": "Придуманная таблица A: строка 1 — «Колодец; уточните странность по B». В B строка 7 — «Светится изнутри».",
+            "when": "Получены броски 1 и 7; ведущий сохраняет описание «Колодец с холодным светом в глубине».",
+            "expected": "У места сохранены обе подсказки A/1 и B/7 и описание ведущего; третьего броска нет."
+          },
+          {
+            "id": "KNAVE2-070-L1-AC03",
+            "given": "Придуманная A/1 отсылает к B; B/8 отсылает к C; следующая B/9 — «Треснувший».",
+            "when": "Получены 1 и 8; ведущий использует рекомендацию следующей записи.",
+            "expected": "Для толкования используется «Треснувший» из B/9; видны выпавшая B/8 и причина перехода; бросок по C не делается."
+          },
+          {
+            "id": "KNAVE2-070-L1-AC04",
+            "given": "Таблица содержит 100 строк.",
+            "when": "Указана строка 0, 101 или 2,5.",
+            "expected": "Результат строки не назначен месту: такого номера строки в таблице нет."
+          },
+          {
+            "id": "KNAVE2-070-L1-AC05",
+            "given": "A/1 отсылает к B; B/100 снова отсылает к таблице; следующей строки нет.",
+            "when": "Ведущий хочет использовать рекомендацию следующей записи.",
+            "expected": "Вопрос остаётся открытым до решения ведущего; первая строка B не выдаётся за предусмотренное книгой продолжение."
+          },
+          {
+            "id": "KNAVE2-070-L1-AC06",
+            "given": "A/1 отсылает к B; B/8 и следующая B/9 обе отсылают к таблицам.",
+            "when": "Ведущий хочет использовать рекомендацию следующей записи.",
+            "expected": "Сохраняются полученные подсказки и открытый вопрос; готовый конечный результат не выдуман."
+          }
+        ],
+        "source_vs_product_interpretation": "Источник разрешает бросок и ручной выбор и рекомендует ограничивать цепочку ссылок. Сохранение подсказок с локаторами и описанием у места — предлагаемая помощь генератора. Примеры придуманы для проверки смысла, это не строки Knave. Способ хранения, команды и интерфейс определяет аналитик.",
+        "canonical_rule_refs": [
+          "content.place_description",
+          "content.roll_table_resolution"
+        ],
+        "unresolved_parameters": [
+          "После строки 100 нет следующей записи.",
+          "Рекомендованная следующая запись может сама быть ссылкой."
+        ]
+      },
+      "runtime_evidence": {
+        "status": "unknown_for_complete_requirement",
+        "sha": null,
+        "note": "This disposition reads source inventory and accepted scope documents; it does not rerun product acceptance or transfer a package status to a whole source profile."
+      }
+    },
+    {
+      "requirement_id": "KNAVE2-071-L1",
+      "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-071-L1",
+      "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-071",
+      "printed_page": 1,
+      "canonical_rule_ids": [
+        "content.place_description",
+        "content.roll_table_resolution"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#KNAVE2-071-L1",
+      "criterion_ids": [
+        "S05-C01",
+        "S05-C02"
+      ],
+      "existing_task_ids": [
+        "HX-BL-043"
+      ],
+      "disposition": "043_CLASSIC1_bounded_tables_only_not_full_resolver",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-071",
+        "normative_kind": "recommendation",
+        "applicability": "Творческая помощь ведущему при наполнении места, а не обязательное автоматическое описание.",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий собирает несколько подсказок для одного места и составляет из них описание.",
+        "inputs_and_units": {
+          "таблицы": "Выбранные ведущим таблицы; одну можно использовать повторно",
+          "результаты": "Выбранная строка или бросок при каждом обращении",
+          "толкование": "Описание ведущего",
+          "место": "Выбранное место карты"
+        },
+        "product_operation": "Помогать сочетать полученные подсказки, включая повторные обращения к одной таблице, и сохранять их вместе с описанием ведущего.",
+        "expected_output": "У места сохранены все выбранные подсказки и итоговое описание; совпавшие результаты не затирают друг друга.",
+        "constraints_and_exceptions": [
+          "Две-три таблицы — рекомендация, не обязательный предел числа таблиц, результатов или бросков.",
+          "Повторное использование одной таблицы допустимо; совпадение подсказок не делает одно из обращений лишним.",
+          "Генератор не обязан сам придумывать смысловое объединение; его может задать ведущий.",
+          "Правило не задаёт перечень таблиц для каждого вида места."
+        ],
+        "acceptance_cases": [
+          {
+            "id": "KNAVE2-071-L1-AC01",
+            "given": "В придуманной таблице «Животные» дважды выбран «Ворон». Из таблицы «Места» получена «Колокольня».",
+            "when": "Ведущий сохраняет описание «В пустой колокольне живут два ворона».",
+            "expected": "У места остаются обе подсказки «Ворон», подсказка «Колокольня» и описание ведущего."
+          },
+          {
+            "id": "KNAVE2-071-L1-AC02",
+            "given": "Из трёх придуманных таблиц получены «Мельница», «Заброшенная», «Синий огонь».",
+            "when": "Ведущий сохраняет «Заброшенная мельница с синим огнём в окнах».",
+            "expected": "У места остаются все три подсказки и сохранённое описание; лишние результаты не добавлены."
+          },
+          {
+            "id": "KNAVE2-071-L1-AC03",
+            "given": "Ведущий выбрал четыре придуманные таблицы и получил «Мост», «Разбитый», «Зимородки», «Пошлина».",
+            "when": "Он использует все четыре подсказки в описании места.",
+            "expected": "Рекомендация двух-трёх таблиц не выдаётся за запрет книги; все четыре выбранные подсказки остаются у места."
+          }
+        ],
+        "source_vs_product_interpretation": "Книга рекомендует сочетать результаты и допускает повторное использование таблицы. Сохранение компонентов и описания места — предлагаемая возможность генератора; её техническую спецификацию исследователь не определяет. Все приведённые подсказки — синтетические примеры.",
+        "canonical_rule_refs": [
+          "content.place_description",
+          "content.roll_table_resolution"
+        ],
+        "unresolved_parameters": []
+      },
+      "runtime_evidence": {
+        "status": "unknown_for_complete_requirement",
+        "sha": null,
+        "note": "This disposition reads source inventory and accepted scope documents; it does not rerun product acceptance or transfer a package status to a whole source profile."
+      }
+    },
+    {
+      "requirement_id": "KNAVE2-072-L1",
+      "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-072-L1",
+      "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-072",
+      "printed_page": 2,
+      "canonical_rule_ids": [
+        "map.routes_and_barriers"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#KNAVE2-072-L1",
+      "criterion_ids": [
+        "S01-C04",
+        "S06-C04"
+      ],
+      "existing_task_ids": [
+        "HX-BL-018"
+      ],
+      "disposition": "existing_018_routes_runtime_unknown_no_new_task",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-072",
+        "normative_kind": "recommendation",
+        "applicability": "Опциональная помощь ведущему; не обязательный интерфейс и не автоматическая генерация всего мира.",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий добавляет альтернативный маршрут между подготовленными местами.",
+        "inputs_and_units": {
+          "areas": "stable map location IDs",
+          "route_edges": "endpoints and passability",
+          "alternative_path": "ordered IDs"
+        },
+        "product_operation": "Добавить выбранные соединения к существующей карте путей; сохранить оба маршрута и связанные препятствия.",
+        "expected_output": "Два указанных ведущим пути к цели существуют одновременно и видны как разные соединения.",
+        "constraints_and_exceptions": [
+          "Совет не задаёт численной нормы процента областей или алгоритма генерации графа.",
+          "Не объявлять дорогой каждый абстрактный путь.",
+          "Автоматическая проверка условия «к большинству» не готова без продуктового выбора метрики."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "ОбластиA,B,C; существующий прямой путьA–B.",
+            "when": "Добавить A–C и C–B как альтернативу.",
+            "expected": "Сохранены A–B и A–C–B; исходный путь не удалён; объектыA,B,C сохраняют IDs.",
+            "id": "KNAVE2-072-L1-AC01"
+          },
+          {
+            "given": "Карта с двумя указанными путями кB.",
+            "when": "Сохранить и загрузить карту.",
+            "expected": "Оба пути и их условия доступны после загрузки без превращения в единую линию.",
+            "id": "KNAVE2-072-L1-AC02"
+          }
+        ],
+        "source_vs_product_interpretation": "Это рекомендация дизайна локаций, применимая к региональной сети мест, а не обязательная форма каждого гекса. Операция ручного добавления путей — продуктовая интерпретация; параметры географического генератора из совета не следуют.",
+        "canonical_rule_refs": [
+          "map.routes_and_barriers"
+        ],
+        "unresolved_parameters": [
+          "Численная трактовка «большинство областей» отсутствует."
+        ]
+      },
+      "runtime_evidence": {
+        "status": "unknown_for_complete_requirement",
+        "sha": null,
+        "note": "This disposition reads source inventory and accepted scope documents; it does not rerun product acceptance or transfer a package status to a whole source profile."
+      }
+    },
+    {
+      "requirement_id": "KNAVE2-073-L1",
+      "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-073-L1",
+      "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-073",
+      "printed_page": 2,
+      "canonical_rule_ids": [
+        "content.static_hazard",
+        "content.discovery_levels",
+        "map.audience_views"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#KNAVE2-073-L1",
+      "criterion_ids": [
+        "S07-C01",
+        "S05-C03",
+        "S04-C03"
+      ],
+      "existing_task_ids": [
+        "HX-BL-044"
+      ],
+      "disposition": "044_GM_preparation_only_player_view_L2_deferred",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-073",
+        "normative_kind": "recommendation",
+        "applicability": "Опциональная помощь ведущему; не обязательный интерфейс и не автоматическая генерация всего мира.",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий добавляет предупреждающий признак к опасному месту.",
+        "inputs_and_units": {
+          "hazard_id": "existing place/hazard",
+          "cue_text": "observable description",
+          "visibility": "player-visible cue vs GM-only mechanism"
+        },
+        "product_operation": "Сохранить отдельный наблюдаемый признак и скрытое описание механизма; в представлении игроков отобразить признак согласно раскрытию, сохранив механизм у ведущего.",
+        "expected_output": "Игрок видит выбранное предупреждение, но не получает автоматически все скрытые параметры угрозы.",
+        "constraints_and_exceptions": [
+          "Нет исходной численной шкалы опасности или алгоритма перевода опасности в заметность.",
+          "Не подменять секретные features автоматически открытым механизмом.",
+          "Покрытие связано с существующими общими discovery/hazard компонентами, не новая игровая копия."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "ОпасностьH с GM-механикойM, признакC помечен открытым.",
+            "when": "Открыть представление игроков.",
+            "expected": "C присутствует, M отсутствует; в GM-виде доступны оба.",
+            "id": "KNAVE2-073-L1-AC01"
+          },
+          {
+            "given": "ОпасностьH и открытый признакC, GM вручную редактируетC→C2.",
+            "when": "Сохранить и загрузить карту.",
+            "expected": "Связь C2→H сохранена, механизмM не изменён.",
+            "id": "KNAVE2-073-L1-AC02"
+          }
+        ],
+        "source_vs_product_interpretation": "Источник описывает честное информирование игроков. Разделённые поля/представления — предлагаемая конкретная реализация этого результата, не буквальное требование интерфейса.",
+        "canonical_rule_refs": [
+          "content.static_hazard",
+          "content.discovery_levels",
+          "map.audience_views"
+        ],
+        "unresolved_parameters": [
+          "Не определены численные уровни заметности в зависимости от опасности."
+        ]
+      },
+      "runtime_evidence": {
+        "status": "unknown_for_complete_requirement",
+        "sha": null,
+        "note": "This disposition reads source inventory and accepted scope documents; it does not rerun product acceptance or transfer a package status to a whole source profile."
+      }
+    }
+  ],
+  "recommendation": {
+    "existing_task_id": "HX-BL-047",
+    "stage_id": "SD-TERRAIN1",
+    "existing_proposal_ref": "agent-work/proposals/2026-11-09-HX-BL-047-SD-TERRAIN1.json",
+    "decision": "Support existing recommendation; no new owner request or scope amendment.",
+    "before_after": "Current Classic uses its own terrain weights; proposed SD profile: forest+NewHex8 stays forest, forest+9 becomes ocean on the actual map. These are existing proposed acceptance examples, not current runtime evidence.",
+    "alternatives": [
+      {
+        "candidate": "KNAVE2-PLACE1 / eighteen legacy043 rows",
+        "reason": "Owner postponed standalone prompts; CLASSIC1 excludes full tables/economy/shrines. Reopening would contradict scope and repeat research."
+      },
+      {
+        "candidate": "DND5/PF2 physical scale",
+        "reason": "Higher-ranked games, but existing051 already owns physical-scale delivery. No independent duplicate implementation justified."
+      }
+    ]
+  },
+  "rating_changed": false,
+  "numeric_method_changed": false,
+  "score_changed": false,
+  "new_tasks": 0,
+  "queue_changed": false
+}
