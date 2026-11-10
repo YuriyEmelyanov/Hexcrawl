@@ -50,7 +50,13 @@ test('kingdom quotas, d12 sizes, save, classic extension and atomic undo',()=>{
     h.render().redoMap();app=h.render();assert.equal(app.createSaveData().counters.nextObstacleId,25);
     assert.equal(JSON.stringify(app.createSaveData().map),built,'kingdom redo restores the same crossings without a second random choice');
     const previous=JSON.stringify(app.regions);app.setGenerationMode('classic');assert.equal(JSON.stringify(h.render().regions),previous);
-    app=h.render();assert.equal(app.safelyAddRegionToMap(app.candidateHexes[0],{targetSize:8,coastalPreference:'mainland'}).success,true);
+    app=h.render();const acceptedFootprints=structuredClone(app.captureDocument().map.physicalGrid.poiFootprints);
+    const extension=app.safelyAddRegionToMap(app.candidateHexes[0],{targetSize:8,coastalPreference:'mainland'});assert.equal(extension.success,true,JSON.stringify(extension));
+    const extended=h.render(),map=extended.captureDocument().map,last=extended.regions.at(-1);
+    for(const poi of [...last.pointsOfInterest,...(last.centralPoiKind&&!last.suppressCentralPoi&&!last.isTract?[last.centerHex]:[])])assert.ok(!map.hexTerrainByKey.get(key(poi))?.terrainOverride,'new land POIs use final dry terrain');
+    h.geometry.validateDetailMapFootprints(map,map.physicalGrid);
+    for(const prior of acceptedFootprints){const current=map.physicalGrid.poiFootprints.find(p=>p.poiId===prior.poiId);assert.deepEqual(structuredClone(current.cells),prior.cells,'extension must not move accepted POIs');assert.deepEqual(structuredClone(current.extent),prior.extent);}
+
     h.render().deleteLastRegion();assert.equal(JSON.stringify(h.render().createSaveData().map),built);
     h.render().deleteLastRegion();assert.equal(JSON.stringify(h.render().createSaveData().map),JSON.stringify(original));
   }

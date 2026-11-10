@@ -16,6 +16,7 @@ import {emptyKnaveContent,fillKnaveContent,validateKnaveContent,validateKnaveCat
 import knaveCatalogData from '../src/tags/knaveCatalogData.ts';
 import {knaveEnglish} from '../src/tags/knaveEnglish.ts';
 import {drawTagIndex} from '../src/tags/engine.ts';
+import {localizedTagText} from '../src/tags/tagPresentation.ts';
 import {createGenerationState} from '../src/worldRandom.ts';
 import {knaveCatalogFixture,knaveFactsFixture,knaveContentFixture} from './helpers/knave-fixture.mjs';
 
@@ -223,6 +224,14 @@ test('independent columns preserve sibling overrides and counters; product tuple
 test('saved tags validate references, tuples, counts and known snapshots; future dictionary is read-only data',()=>{
  const state=rollTag(emptyTags(),owner,defs['mb.land'],42),owners=new Set([ownerKey(owner)]);
  assert.doesNotThrow(()=>validateTags(state,owners,defs));
+ for(const def of Object.values(defs).filter(d=>d.legacyTables)){
+  for(let index=0;index<72;index++){
+   const saved=rollTag(emptyTags(),owner,def,42),values=[[Math.floor(index/12)+1],[index%12+1]];
+   Object.assign(saved.instances[0],{values,...resolved({...def,tables:def.legacyTables},values)});
+   const before=structuredClone(saved);validateTags(saved,owners,defs);assert.deepEqual(saved,before);
+   const wrong=structuredClone(saved);wrong.instances[0].texts[0].ru+=' changed';assert.throws(()=>validateTags(wrong,owners,defs));
+  }
+ }
  for(const mutate of [s=>s.instances.push(structuredClone(s.instances[0])),s=>s.instances[0].values[0][0]=13,s=>s.instances[0].texts[0].ru='wrong',s=>s.instances[0].owner.id=2,s=>s.rollCounters[tagKey(owner,'mb.land')+'|character']=-1,s=>s.schemaVersion=2]){
    const s=structuredClone(state);mutate(s);assert.throws(()=>validateTags(s,owners,defs));
  }
@@ -272,9 +281,13 @@ test('myth material selects only the exact compatible snapshot without mutating 
   assert.equal(actual.status,'ready');assert.equal(actual.record.entryId,`mb.myth:${index}`);
   assert.equal(actual.record.sourcePage,29+index*2);
   assert.ok(!JSON.stringify(actual.content).includes('TEST ONLY'),'fictional material must stay outside production');
-  const actualFallback=selectMythMaterial(s,frozenPoi,'myth',mythMaterialRecords,'en');
-  assert.equal(actualFallback.status,'ready');assert.equal(actualFallback.language,'ru');assert.equal(actualFallback.fallback,true);
-  assert.deepEqual(actualFallback.content,actual.content);assert.deepEqual(s,saved);
+  const actualEnglish=selectMythMaterial(s,frozenPoi,'myth',mythMaterialRecords,'en');
+  assert.equal(actualEnglish.status,'ready');assert.equal(actualEnglish.language,'en');assert.equal(actualEnglish.fallback,false);
+  assert.doesNotMatch(JSON.stringify(actualEnglish.content),/[\u0400-\u04ff]/u);
+  assert.deepEqual(actualEnglish.content.omens.map(o=>[o.id,o.ordinal]),actual.content.omens.map(o=>[o.id,o.ordinal]));
+  assert.deepEqual(actualEnglish.content.roles.map(r=>r.id),actual.content.roles.map(r=>r.id));
+  for(const reference of actualEnglish.record.references){assert.ok(reference.descriptionEn?.trim());assert.doesNotMatch(reference.descriptionEn,/[\u0400-\u04ff]/u);}
+  assert.deepEqual(s,saved);
  }
  assert.equal(identities.size,72);assert.ok(!identities.has(undefined));
  assert.notEqual(materialIdentity(snapshot(11),poi,'myth'),materialIdentity(snapshot(12),poi,'myth'));
@@ -287,7 +300,7 @@ test('myth material selects only the exact compatible snapshot without mutating 
  }
  assert.notEqual(materialIdentity(a,poi,'myth'),materialIdentity({...a,revision:a.revision+1},poi,'myth'));
  assert.deepEqual(a,clone,'selection must preserve authored overrides and original snapshots');
- const fallback=selectMythMaterial(a,poi,'myth',records,'en');assert.equal(fallback.status,'ready');assert.equal(fallback.fallback,true);assert.equal(fallback.language,'ru');assert.deepEqual(fallback.content,records[0].locales.ru);
+ assert.deepEqual(selectMythMaterial(a,poi,'myth',records,'en'),{status:'unavailable',reason:'missing-translation'});
  const translated=selectMythMaterial(snapshot(12),poi,'myth',records,'en');assert.equal(translated.status,'ready');assert.equal(translated.language,'en');assert.equal(translated.fallback,false);assert.equal(translated.content.roles[0].title,'TEST ONLY translated group');
  const selectRegistry=registry=>selectMythMaterial(a,poi,'myth',registry,'ru');
  for(const invalid of ['',42,'🧭'.repeat(16385)]){
@@ -322,7 +335,7 @@ test('equal independent dice expose visible purpose before dice and current loca
  const module={exports:{}},require=createRequire(import.meta.url);
  const sharedSource=fs.readFileSync(new URL('../src/tags/TableResultRow.tsx',import.meta.url),'utf8'),sharedCode=ts.transpileModule(sharedSource,{compilerOptions:{module:ts.ModuleKind.CommonJS,jsx:ts.JsxEmit.ReactJSX}}).outputText,shared={exports:{}};
  new Function('require','module','exports',sharedCode)(require,shared,shared.exports);
- new Function('require','module','exports',code)(name=>name==='./engine'?{ownerKey}:name==='./MythMaterialView'?{MythMaterialView:()=>null}:name==='./TableResultRow'?shared.exports:require(name),module,module.exports);
+ new Function('require','module','exports',code)(name=>name==='./engine'?{ownerKey}:name==='./MythMaterialView'?{MythMaterialView:()=>null}:name==='./TableResultRow'?shared.exports:name==='./tagPresentation'?{localizedTagText}:require(name),module,module.exports);
  const def=defs['mb.land'],instance={...rollTag(emptyTags(),owner,def,42).instances[0],values:[[2],[2]],...resolved(def,[[2],[2]]),overrides:[{ru:'Моя земля',en:'My land'},{}]};
  for(const language of ['ru','en']){
   const html=renderToStaticMarkup(React.createElement(module.exports.TagRow,{owner,definition:def,instance,language,editMode:false,disabled:false,onRoll:()=>true,onEdit:()=>true}));
@@ -336,6 +349,18 @@ test('equal independent dice expose visible purpose before dice and current loca
   assert.ok(html.indexOf('tag-label')<html.indexOf('tag-die'),'visible entity precedes dice');
   assert.ok(html.indexOf('tag-label')<html.indexOf(language==='ru'?'Моя земля':'My land'),'visible entity precedes result');
  }
+ // A saved Russian-only generated result acquires an English display without
+ // a reroll, import migration, snapshot rewrite, or loss of authored overrides.
+ for(const def of Object.values(defs))for(let row=0;row<def.tables[0].length;row++){
+  const values=def.resolver==='product'?[[Math.floor(row/12)+1],[row%12+1]]:[[row+1],[1]];
+  const saved={...rollTag(emptyTags(),owner,def,42).instances[0],values,...resolved(def,values)};
+  saved.texts=saved.texts.map(t=>({ru:t.ru}));const before=structuredClone(saved);
+  const text=localizedTagText(saved,def,0,'en');assert.ok(text.trim());assert.doesNotMatch(text,/[\u0400-\u04ff]/u);
+  assert.equal(text,resolved(def,values).texts[0].en);assert.deepEqual(saved,before);
+ }
+ const legacy=structuredClone(instance);legacy.texts=legacy.texts.map(t=>({ru:t.ru}));
+ assert.equal(localizedTagText(legacy,def,0,'en'),'My land','explicit English override wins');
+ assert.equal(localizedTagText({...legacy,definitionVersion:2,overrides:[]},def,0,'en'),'Translation unavailable');
 });
 const fixture=JSON.parse(fs.readFileSync(new URL('./fixtures/import-v2/baseline-mythic.json',import.meta.url)));
 const stable=h=>structuredClone(h.render().captureDocument());
