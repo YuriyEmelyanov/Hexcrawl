@@ -26,10 +26,10 @@
   },
   "lessons_path": "agent-work/lessons.md",
   "plan_id": "2026-11-08T1957-strategist-next-product",
-  "run_id": "2026-11-09T2359-programmer-HX-BL-051-DETAIL1-adaptation",
+  "run_id": "2026-11-10T0100-programmer-HX-BL-051-DETAIL1-activation",
   "plan_revision": 1,
   "baseline_sha": "00190bb749a4fa5af57aac4bbffff808e8fe733f",
-  "status": "bounded_legacy_adaptation_verified_full_DETAIL1_continues",
+  "status": "wip_checkpoint_regressions_pending",
   "planning_for": "2026-11-08",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-10-25",
@@ -41,7 +41,7 @@
   "last_completed_task": "HX-BL-043",
   "operational_state_write": {
     "latest_written_last": true,
-    "data_commit_sha": "97f1b711cef8e43ce2ccc3ca000a19689515cb18"
+    "data_commit_sha": "6ead54c5ccf97d4caf4cd126127774ef34d99e68"
   },
   "budget_status": "owner_waived_usage_gate",
   "plan_file_shas": null,
@@ -54,10 +54,10 @@
   "current_task_id": "HX-BL-051",
   "spec_path": "agent-work/specs/HX-BL-051-DETAIL1.md",
   "spec_version": "DTL-1.0",
-  "result_path": "agent-work/results/2026-11-09T2359-programmer-HX-BL-051-DETAIL1-adaptation.json",
+  "result_path": "agent-work/results/2026-11-10T0100-programmer-HX-BL-051-DETAIL1-activation.json",
   "handoff_commit_sha": "a95c4baa4cab4788955b1cfe13469ee569c24e0c",
   "active_claim": "agent-work/claims/2026-11-09T0500-programmer-HX-BL-051-DETAIL1-A.json",
-  "next_step": "Программист продолжает утверждённую HX-BL-051/DETAIL1 на текущем SHA PR496: автоматически создавать слой новых карт только после принятой географии/Knave и окончательных квот Mythic; старые карты сохранять до явного Apply. Затем подключить реальные уровни1/6/12/24, единые контуры/повторные значки одного POI, компактный выбор пересекающихся объектов и адресную правку охвата. Предъявить фактическое до/после1500/390/320 всего пакета, включая ошибки/экспорт; независимый exact-SHA review и score_assessment1.2 после полной реализации. Разрешение публикации отдельно; новой дизайн-паузы нет.",
+  "next_step": "Программист продолжает HX-BL-051/DETAIL1 с WIP cdba937 (tree17145265), не повторяя начало: устранить отказ Classic expansion после Mythic (существующий mythicKingdom:53), согласовать сохранённые route attachments с итоговыми дорогами при перегенерации Mythic (incomplete_route_coverage, mythicKingdom:72), проверить точное восстановление authored edits при rollback. Не ослаблять валидацию и не перебрасывать принятый контент. Затем полный check, браузер в доступной среде, интерфейс1/6/12/24 и независимый combined review. PR496 остаётся09b3c9b, выпуск не разрешён.",
   "owner_decisions_needed": [
     {
       "task_id": "HX-BL-047",
@@ -100,12 +100,12 @@
     "ref": "agent-work/approvals/2026-11-09-PR497-1299cd0.json"
   },
   "historical_plan_status": "План23.10 сохранён как история; его блокировки и предложенный процесс заменены decisions24.10 в approvals/process/budget и текущим handoff.",
-  "evidence_path": "agent-work/evidence/HX-BL-051-DETAIL1-adaptation/",
+  "evidence_path": "agent-work/results/2026-11-10T0100-programmer-HX-BL-051-DETAIL1-activation.json",
   "branch_name": "agent/hx-bl-051-detail1",
   "pr": 496,
   "head_sha": "09b3c9bdb886e0a49eaae6af5a28877a0ea7addc",
   "tree_sha": "b181679aac4fc4a1baffe1151b0446eb8233bf4a",
-  "checks_status": "local_and_CI384_build_browser9_RNG_pass",
+  "checks_status": "WIP_typecheck_build_focused25pass_Mythic2fail_browser_blocked_not_review_ready",
   "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42729558446",
   "review_verdict": "not_requested_incomplete_DETAIL1",
   "role_selection_mode": "ready_work_priority",
@@ -242,20 +242,25 @@
   "automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-11-09T23:59:40.323Z",
-      "is_enabled": true,
+      "checked_at": "2026-11-10T00:58:15.830Z",
       "status": "checked",
+      "is_enabled": true,
       "method": "automations.peek"
     },
     "end": {
-      "checked_at": "2026-11-10T00:49:21.729Z",
-      "is_enabled": true,
+      "checked_at": "2026-11-10T01:05:38.071Z",
       "status": "checked",
+      "is_enabled": true,
       "method": "automations.peek"
     },
     "restoration_performed": false,
     "errors": [],
-    "limitation": "Actual point-in-time checks only; no guarantee of subsequent service state. Schedule and instructions unchanged."
+    "limitation": "Point-in-time observations only; no guarantee after completion.",
+    "final_observation": {
+      "checked_at": "2026-11-10T01:07:17.521Z",
+      "is_enabled": true,
+      "method": "automations.peek"
+    }
   },
   "open_findings": [
     "CLASSIFY1-VALIDATION-RIV011"
@@ -7859,7 +7864,7 @@
   "release_readiness": false,
   "bounded_feature_accepted": true,
   "current_package_score_update_status": "not_due_unpublished",
-  "next_handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-DETAIL1-adaptation-resume.json",
+  "next_handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-DETAIL1-activation-resume.json",
   "open_validation_findings": [
     {
       "run_id": 42612175536,
@@ -7928,7 +7933,7 @@
   },
   "local_sha": "a60a0a0c813b052490137c1adb7e1b777b2f35bf",
   "checks_evidence_ref": "agent-work/evidence/HX-BL-051-DETAIL1-adaptation/CI-final.json",
-  "execution_status": "saved_safe_to_resume_same_task_chat",
+  "execution_status": "safe_WIP_checkpoint_regressions_pending",
   "latest_DETAIL1_lifecycle": {
     "run_id": "2026-11-09T2204-programmer-HX-BL-051-DETAIL1-lifecycle",
     "head_sha": "616e063569ba046c9fbabae6132df3b19e3ea95f",
@@ -7939,9 +7944,10 @@
     "full_task_complete": false
   },
   "previous_DETAIL1_checkpoint": {
-    "run_id": "2026-11-09T2305-programmer-HX-BL-051-DETAIL1-import",
-    "head_sha": "6862807d89790fa301026a7dfff153ca54224108",
-    "result_ref": "agent-work/results/2026-11-09T2305-programmer-HX-BL-051-DETAIL1-import.json"
+    "run_id": "2026-11-09T2359-programmer-HX-BL-051-DETAIL1-adaptation",
+    "result_ref": "agent-work/results/2026-11-09T2359-programmer-HX-BL-051-DETAIL1-adaptation.json",
+    "head_sha": "09b3c9bdb886e0a49eaae6af5a28877a0ea7addc",
+    "status": "bounded_legacy_adaptation_verified_full_DETAIL1_continues"
   },
   "prior_ci_closure": {
     "run_id": 42699708649,
@@ -8034,5 +8040,14 @@
     "handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-DETAIL1-adaptation-resume.json",
     "ui_ref": "agent-work/evidence/HX-BL-051-DETAIL1-adaptation/ui-walkthrough.json",
     "test_change_summary_ref": "agent-work/evidence/HX-BL-051-DETAIL1-adaptation/test-change-summary.json"
+  },
+  "latest_DETAIL1_activation": {
+    "head_sha": "cdba937d8a49d86504298a386910e5682a2f7227",
+    "tree_sha": "17145265bd65e01a7a78f036987330bd1190a24b",
+    "branch": "agent/hx-bl-051-activation-wip",
+    "result_ref": "agent-work/results/2026-11-10T0100-programmer-HX-BL-051-DETAIL1-activation.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-DETAIL1-activation-resume.json",
+    "pr496_head_unchanged": "09b3c9bdb886e0a49eaae6af5a28877a0ea7addc",
+    "full_task_complete": false
   }
 }
