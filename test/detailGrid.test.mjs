@@ -1,3 +1,5 @@
+import {summarizeDetailCell} from '../src/detailSummary.ts';
+import {parseDetail1StateV11} from '../src/detailModel.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createDetailGrid,detailCellCenter,worldToDetailCell,detailCellPolygon,detailCellAreaSquareMiles,detailFootprintBoundary,validateDetailFootprint,METERS_PER_MILE} from '../src/detailGrid.ts';
@@ -32,4 +34,15 @@ test('footprint boundaries remove every shared edge and retain exact topology in
  assert.equal(detailFootprintBoundary(g,ring).length,24,'outer boundary plus hole rim; no shared edges');
  for(const invalid of [[],[...one,...one],[...one,{q:2,r:0}],[{q:.5,r:0}]])assert.throws(()=>validateDetailFootprint(invalid));
  assert.deepEqual(two,[{q:0,r:0},{q:1,r:0}]);
+});
+
+// DTL04/24: projection primitives do not prove summary identity or partial-object counts.
+test('spatial summaries retain mixed source fragments and count a multi-cell POI once without mutating accepted state',()=>{
+ const state=parseDetail1StateV11({schema:'hexcrawl.detail1',version:1,active:true,viewStep:1,grid:{origin:{x:0,y:0},orientation:'pointy',convention:'across_flats'},source:{stepMiles:6,physicalConvention:'unknown',displayAssumption:'project_across_flats_6mi'},selectedCell:{q:0,r:0},poiFootprints:[{poiId:'site',legacyRef:null,cells:[{q:0,r:0},{q:1,r:0}],extent:{kind:'default',reason:'unknown_size',policy:'capital_min_two'},attachments:[]}]});
+ const terrain=new Map([['0,0','forest'],['1,0','sea']]),before=structuredClone(state);
+ const detail=summarizeDetailCell(state,{q:0,r:0},terrain);assert.equal(detail.pois.length,1);assert.equal(detail.pois[0].partCells,1);assert.equal(detail.pois[0].partial,true);
+ const overview=summarizeDetailCell({...state,viewStep:12},{q:0,r:0},terrain);assert.deepEqual(new Set(overview.sources.map(h=>h.terrain)),new Set(['forest','sea']));assert.equal(overview.pois.length,1);assert.equal(overview.pois[0].totalCells,2);assert.equal(overview.pois[0].partCells,2);assert.equal(overview.pois[0].partial,false);assert.ok(overview.sources.some(h=>h.partial));
+ assert.deepEqual(state,before);assert.equal(summarizeDetailCell(state,{q:-99,r:-99},terrain).pois.length,0);
+ for(const selectedCell of [{q:.5,r:0},{q:'0',r:0},{q:0,r:0,extra:true}])assert.throws(()=>parseDetail1StateV11({...state,selectedCell}));
+ assert.deepEqual(parseDetail1StateV11(JSON.parse(JSON.stringify(state))),state);
 });

@@ -1,5 +1,5 @@
 import {parseDetailPoiIdentities,assertDetailPoiOwners,type DetailPoiIdentities} from './detailIdentity.ts';
-import {createDetailGrid,detailPolygonArea,validateDetailFootprint,type DetailCell,type DetailStep,type WorldPoint} from './detailGrid.ts';
+import {createDetailGrid,detailPolygonArea,detailCellCenter,validateDetailFootprint,type DetailCell,type DetailStep,type WorldPoint} from './detailGrid.ts';
 
 export type DetailAttachmentRef=
   |Readonly<{kind:'water';waterKind:'shore'|'river'|'water'|'crossing'|'rapid'|'waterfall';waterId:string;segmentId:string;contact:WorldPoint}>
@@ -14,6 +14,7 @@ export type Detail1State=Readonly<{
   grid:Readonly<{origin:WorldPoint;orientation:'pointy';convention:'across_flats'}>;
   source:Readonly<{stepMiles:6;physicalConvention:'known_across_flats'|'unknown';displayAssumption:'project_across_flats_6mi'}>;
   poiIdentities?:DetailPoiIdentities;
+  selectedCell?:DetailCell; // Stable one-mile address, independent of the current overview step.
   viewStep:DetailStep;poiFootprints:readonly DetailPoiFootprint[];
 }>;
 type Plain=Record<string,unknown>;
@@ -60,13 +61,19 @@ function attachment(value:unknown):DetailAttachmentRef {
 /** Strict parser for the DETAIL1 section of an active v11 document. Reference
  * existence and water/route legality are checked during later App integration. */
 export function parseDetail1StateV11(value:unknown):Detail1State {
-  const extra=value&&typeof value==='object'&&Object.prototype.hasOwnProperty.call(value,'poiIdentities')?['poiIdentities']:[];
+  const extra=['poiIdentities','selectedCell'].filter(k=>value&&typeof value==='object'&&Object.prototype.hasOwnProperty.call(value,k));
   const root=object(value,'DETAIL1 state',['schema','version','active','grid','source','viewStep','poiFootprints',...extra]);
-  const poiIdentities=extra.length?parseDetailPoiIdentities(root.poiIdentities):undefined;
+  const poiIdentities=extra.includes('poiIdentities')?parseDetailPoiIdentities(root.poiIdentities):undefined;
   if(root.schema!=='hexcrawl.detail1'||root.version!==1||root.active!==true||![1,6,12,24].includes(root.viewStep as number)||!Array.isArray(root.poiFootprints)) throw Error('Invalid DETAIL1 state');
   const rawGrid=object(root.grid,'DETAIL1 grid',['origin','orientation','convention']);
   if(rawGrid.orientation!=='pointy'||rawGrid.convention!=='across_flats') throw Error('Invalid DETAIL1 grid');
   const origin=worldPoint(rawGrid.origin,'DETAIL1 origin');createDetailGrid(root.viewStep as DetailStep,origin);
+  let selectedCell:DetailCell|undefined;
+  if(extra.includes('selectedCell')){
+    const c=object(root.selectedCell,'selected detail cell',['q','r']);
+    selectedCell={q:c.q as number,r:c.r as number};detailCellCenter(createDetailGrid(1,origin),selectedCell);
+    selectedCell=Object.freeze(selectedCell);
+  }
   const rawSource=object(root.source,'DETAIL1 source',['stepMiles','physicalConvention','displayAssumption']);
   if(rawSource.stepMiles!==6||!['known_across_flats','unknown'].includes(rawSource.physicalConvention as string)||rawSource.displayAssumption!=='project_across_flats_6mi') throw Error('Invalid DETAIL1 source');
   const ids=new Set<string>();
@@ -81,7 +88,7 @@ export function parseDetail1StateV11(value:unknown):Detail1State {
     return Object.freeze({poiId,legacyRef:p.legacyRef as string|null,cells:cells(p.cells),extent:extent(p.extent),attachments});
   }));
   if(poiIdentities)for(const p of poiFootprints)if(p.legacyRef===null||poiIdentities.byLegacyRef[p.legacyRef]!==p.poiId)throw Error('Footprint identity does not match POI binding');
-  return Object.freeze({...(poiIdentities?{poiIdentities}:{}),schema:'hexcrawl.detail1',version:1,active:true,grid:Object.freeze({origin,orientation:'pointy',convention:'across_flats'}),source:Object.freeze({stepMiles:6,physicalConvention:rawSource.physicalConvention as 'known_across_flats'|'unknown',displayAssumption:'project_across_flats_6mi'}),viewStep:root.viewStep as DetailStep,poiFootprints});
+  return Object.freeze({...(selectedCell?{selectedCell}:{}),...(poiIdentities?{poiIdentities}:{}),schema:'hexcrawl.detail1',version:1,active:true,grid:Object.freeze({origin,orientation:'pointy',convention:'across_flats'}),source:Object.freeze({stepMiles:6,physicalConvention:rawSource.physicalConvention as 'known_across_flats'|'unknown',displayAssumption:'project_across_flats_6mi'}),viewStep:root.viewStep as DetailStep,poiFootprints});
 }
 
 export type LegacyDetailAdaptationPreview=Readonly<{

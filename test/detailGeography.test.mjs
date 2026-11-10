@@ -213,6 +213,15 @@ test('legacy DETAIL1 preview cancels unchanged and Apply is one guarded exact do
  assert.equal(oldView(12),false,'stale view command cannot change a newer document');
  const count=h.render().undoHistory.length;assert.equal(h.render().setDetailViewStep(6),true);assert.equal(h.render().undoHistory.length,count,'same view is a no-op');
  h.render().undoMap();assert.equal(h.render().captureDocument().map.physicalGrid.viewStep,24);h.render().redoMap();assert.deepEqual(structuredClone(h.render().captureDocument()),accepted);
+ const beforeCell=structuredClone(h.render().captureDocument()),beforeCount=h.render().undoHistory.length;
+ assert.equal(h.render().selectDetailCell({q:12,r:0}),true);const chosen=structuredClone(h.render().captureDocument());assert.deepEqual(chosen.map.physicalGrid.selectedCell,{q:12,r:0});
+ assert.deepEqual(chosen.map.generation,beforeCell.map.generation);assert.equal(chosen.mapScale,beforeCell.mapScale);assert.ok(h.render().detailSummary.pois.length);
+ assert.equal(h.render().selectDetailCell({q:12,r:0}),true);assert.equal(h.render().undoHistory.length,beforeCount+1);
+ h.geometry.assertHexcrawlSaveData(h.render().createSaveData());h.render().undoMap();assert.deepEqual(structuredClone(h.render().captureDocument()),beforeCell);h.render().redoMap();assert.deepEqual(structuredClone(h.render().captureDocument()),chosen);
+ assert.equal(h.render().setDetailViewStep(12),true);assert.deepEqual(structuredClone(h.render().captureDocument().map.physicalGrid.selectedCell),{q:12,r:0});
+ const loaded=await importMap(JSON.parse(JSON.stringify(h.render().createSaveData())));assert.deepEqual(structuredClone(loaded.render().captureDocument().map.physicalGrid.selectedCell),{q:12,r:0});
+ assert.equal(h.render().selectDetailCell({q:12,r:0},undefined,1),true);assert.equal(h.render().captureDocument().map.physicalGrid.viewStep,1);
+
 
 });
 
