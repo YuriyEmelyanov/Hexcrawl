@@ -1,0 +1,1054 @@
+{
+  "schema_version": 1,
+  "audit_id": "SD-REGIONAL-L1-RUNTIME-20261110",
+  "run_id": "2026-11-10T1531-SD-regional-L1-runtime",
+  "status": "completed_entire_selected_regional_preparation_corpus",
+  "code_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+  "ranking_version": "three-scenario-ranks-1.4-create-evidence",
+  "cohort_version": "2026-11-06-ranking1.4-create-evidence",
+  "scope": "All9regionalpreparationL1operations in suppliedCore p90 andp132–133: scale,difficulty,initial/nextterrain,danger,presence,POIfill,cataclysm,settlementname. Not allSDL1,not town/dungeoninternalgenerators,camp/travelcombat or supplements.",
+  "completion_condition": "Nine source-linked operationalrequirements evaluated with unit/trigger and exactcode/reuse/residual; concrete creatorworkflow conclusion rather than missingcheckbox list.",
+  "source": {
+    "filename": "pdfcoffee.com_shadowdark-rpg-v4-6-pdf-free(1).pdf",
+    "library_file_id": "libfile_500dbefb62b081919a9791f60c818b4f9",
+    "sha256": "22db5db3cb9869b2867f689504256f69903db81c5059b1e8932436a65343f104",
+    "size_bytes": 51569398,
+    "pdf_pages": 332,
+    "metadata": {
+      "format": "PDF 1.4",
+      "title": "",
+      "author": "",
+      "subject": "",
+      "keywords": "",
+      "creator": "Adobe InDesign 17.4 (Macintosh)",
+      "producer": "Adobe PDF Library 16.0.7",
+      "creationDate": "D:20230704163852-07'00'",
+      "modDate": "D:20230704164109-07'00'",
+      "trapped": "",
+      "encryption": null
+    },
+    "id": "SD-CORE-SUPPLIED-20261106",
+    "edition": "Shadowdark RPG Core, copyright2023; supplied filename v4.6, internal revision unverified",
+    "language": "English",
+    "access_level": "full_text",
+    "author_project_key": "kelsey-dionne/the-arcane-library/shadowdark/core2023",
+    "page_numbering": "Body printed page n is PDF n+4; printed2 begins PDF6. PDF5 is unnumbered credits corresponding to frontmatter1. PDF1–4,330–332 are unnumbered covers/quickrefs/blank. Actual332-file-page count is not a correction to publisher marketing or active ranking edition.",
+    "limitations": [
+      "Full thematic relevance screen of supplied Core only; not full combat/character/magic engine.",
+      "Filename v4.6 is not an internally verified printing/revision; later errata and supplements not collated.",
+      "Source reading and analogous canonical IDs do not verify product support, numerical profile equivalence or score.",
+      "Rule/requirement counts are editorial groups, not system complexity, audience or a ranking metric.",
+      "Derived paraphrases, parameters and locators only; complete book, art and full literary content tables are not published in this result."
+    ],
+    "access_scope_this_run": "Existing complete thematicdigitization reused; originalPDF not re-opened. No new sourcepeople/marketcount.",
+    "matrix_blob_sha": "140c0683463307440f08d64aca90ab2ff952677a",
+    "matrix_ref": "agent-work/market/rules/Shadowdark-Core.json"
+  },
+  "summary": {
+    "selected_operations": 9,
+    "evaluated": 9,
+    "verdict_counts": {
+      "reusable_numeric_component": 1,
+      "partial": 1,
+      "arithmetic_reuse_profile_absent": 1,
+      "profile_absent": 2,
+      "manual_text_only": 2,
+      "partial_manual_pipeline": 1,
+      "partial_manual_name": 1
+    },
+    "new_product_code": 0,
+    "new_rules": 0,
+    "new_tasks": 0,
+    "product_runtime_probes_passed": 10,
+    "native_terrain_pairs_checked_in_actual_generic_resolver": 36,
+    "source_only_joint_transition_outcomes": 9072
+  },
+  "rows": [
+    {
+      "requirement_id": "SD-CORE-001-L1",
+      "source_rule_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-001",
+      "requirement_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-001-L1",
+      "source_pages": [
+        90
+      ],
+      "source_parameters": {
+        "hex_across_miles": 6,
+        "mile_kind": "unspecified",
+        "across_geometry": "unspecified"
+      },
+      "source_paraphrase_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-001.rule",
+      "operation": "Сохранить физический масштаб Shadowdark вместе с картой",
+      "unit_and_trigger": "Шесть миль across; сторона/вершина не определена. Не подменять обзорным уровнем или zoom.",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-001",
+        "normative_kind": "fixed_parameter",
+        "applicability": "Shadowdark supplied English core PDF; только карта, исследование и ограниченные внешние игровые адаптеры.",
+        "layer": "L1",
+        "trigger_or_user_action": "Создать карту или применить профиль масштаба Shadowdark",
+        "inputs_and_units": {
+          "hex_across": 6,
+          "unit": "mile",
+          "geometry_convention": "explicit user/GM selection or unresolved"
+        },
+        "product_operation": "Сохранить значение 6 и единицу mile; хранить выбранную геометрическую конвенцию отдельно от исходного факта. При повторном открытии восстановить значение.",
+        "expected_output": "Карта с устойчивым масштабом и явно указанной неопределённостью геометрии.",
+        "constraints_and_exceptions": [],
+        "acceptance_cases": [
+          {
+            "given": "Новая карта, профиль Shadowdark, геометрия не выбрана",
+            "when": "Задать масштаб и сохранить/открыть",
+            "expected": "hex_across=6 mile восстановлен; face-to-face/vertex-to-vertex не назначен без решения.",
+            "id": "SD-CORE-001-L1-AC01"
+          }
+        ],
+        "source_vs_product_interpretation": "Шесть миль — источник; сохранение настроек в файле/БД — продуктовая операция. В этой странице нет самостоятельного требования автора к экспорту/формату сохранения.",
+        "canonical_rule_refs": [
+          "map.physical_hex_scale"
+        ],
+        "unresolved_parameters": [
+          "Across не определяет flat-to-flat или vertex-to-vertex; тип мили и округления не оговорены."
+        ]
+      },
+      "operational_requirement_origin": "existing_matrix_unmodified",
+      "canonical_rule_ids": [
+        "map.physical_hex_scale"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#SD-CORE-001-L1",
+      "criterion_ids": [
+        "S01-C02",
+        "S01-C04",
+        "S01-C05",
+        "S04-C04",
+        "S06-C04"
+      ],
+      "verdict": "reusable_numeric_component",
+      "finding": "6mile и unset geometry уже хранятся в существующем Knaveпрофиле. Он не является SDпрофилем; совпадение числа не разрешает автоматически перенести семантику/авторство. Отдельный SDпереключатель книгой не требуется.",
+      "code_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+      "code_locators": [
+        "src/knaveClassic.ts:4",
+        "src/knaveClassic.ts:37",
+        "src/knaveClassic.ts:51"
+      ],
+      "runtime_probe_ids": [
+        "SD-P01",
+        "SD-P04"
+      ],
+      "runtime_evidence_ref": "agent-work/research/audits/evidence/SD-regional-L1-20261110/probes.json",
+      "evidence_basis": "selected_actualmodule_or_handler_probes_and_code",
+      "source_reference_checks_ref": null,
+      "existing_task_ref": "agent-work/backlog.json#HX-BL-042",
+      "implementation_authorized_by_this_run": false,
+      "missing_is_approved_defect": false,
+      "score_or_formal_coverage_changed": false
+    },
+    {
+      "requirement_id": "SD-CORE-002-L1",
+      "source_rule_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-002",
+      "requirement_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-002-L1",
+      "source_pages": [
+        90
+      ],
+      "source_parameters": {
+        "walking_hours_per_hex": 4,
+        "mounted_hours_per_hex": 2,
+        "sailing_hours_per_hex": 1,
+        "difficult_multiplier": 2,
+        "arduous_hours_per_hex": 8,
+        "arduous_method_interaction": "unresolved"
+      },
+      "source_paraphrase_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-002.rule",
+      "operation": "Хранить категории трудности местности, необходимые профилю пересечения",
+      "unit_and_trigger": "Категория пересечения гекса; не encounterdanger и не типбиома.",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-002",
+        "normative_kind": "procedure",
+        "applicability": "Shadowdark supplied English core PDF; только карта, исследование и ограниченные внешние игровые адаптеры.",
+        "layer": "L1",
+        "trigger_or_user_action": "Редактировать местность гекса",
+        "inputs_and_units": {
+          "hex_id": "stable reference",
+          "travel_difficulty": "normal|difficult|arduous|GM-defined"
+        },
+        "product_operation": "Сохранить выбранную категорию независимо от художественного биома; передать категорию в расчёт путешествия без автоматического вывода forest→difficult.",
+        "expected_output": "Гекс с редактируемой и сохраняемой категорией трудности.",
+        "constraints_and_exceptions": [],
+        "acceptance_cases": [
+          {
+            "given": "Гекс H17: forest; GM выбирает normal",
+            "when": "Сохранить/открыть",
+            "expected": "Биом forest и travel_difficulty=normal сохранены; категория не изменена автоматически.",
+            "id": "SD-CORE-002-L1-AC01"
+          }
+        ],
+        "source_vs_product_interpretation": "Условия и числа — парафраз указанного источника. Хранение, интерфейс, события и автоматизация — предлагаемая продуктовая интерпретация; книга не специфицирует ПО. Это требование, а не свидетельство реализации.",
+        "canonical_rule_refs": [
+          "map.terrain_zones"
+        ],
+        "unresolved_parameters": [
+          "Страница не классифицирует конкретные биомы по difficult/arduous."
+        ]
+      },
+      "operational_requirement_origin": "existing_matrix_unmodified",
+      "canonical_rule_ids": [
+        "map.terrain_zones"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#SD-CORE-002-L1",
+      "criterion_ids": [
+        "S01-C02",
+        "S01-C04",
+        "S01-C05",
+        "S06-C04"
+      ],
+      "verdict": "partial",
+      "finding": "Normal/difficult могут храниться независимо от биома. Arduous отсутствует в этом сохранённом словаре. Это не поручение добавить четвертый универсальный класс: актуальная модель владельца ordinary/difficult/dangerous сохраняется; сложное сочетание arduous с mounted/sailing — неизвестноеL2.",
+      "code_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+      "code_locators": [
+        "src/knaveClassic.ts:8",
+        "src/knaveClassic.ts:68"
+      ],
+      "runtime_probe_ids": [
+        "SD-P02",
+        "SD-P03"
+      ],
+      "runtime_evidence_ref": "agent-work/research/audits/evidence/SD-regional-L1-20261110/probes.json",
+      "evidence_basis": "selected_actualmodule_or_handler_probes_and_code",
+      "source_reference_checks_ref": null,
+      "existing_task_ref": "agent-work/backlog.json#HX-BL-044",
+      "implementation_authorized_by_this_run": false,
+      "missing_is_approved_defect": false,
+      "score_or_formal_coverage_changed": false
+    },
+    {
+      "requirement_id": "SD-CORE-047-L1",
+      "source_rule_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-047",
+      "requirement_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-047-L1",
+      "source_pages": [
+        132
+      ],
+      "source_parameters": {
+        "die": "2d6",
+        "ordered_category_keys": [
+          "desert_or_arctic",
+          "swamp",
+          "grassland",
+          "forest_or_jungle",
+          "river_or_coast",
+          "ocean",
+          "mountain"
+        ],
+        "roll_intervals": [
+          [
+            2,
+            2
+          ],
+          [
+            3,
+            3
+          ],
+          [
+            4,
+            6
+          ],
+          [
+            7,
+            8
+          ],
+          [
+            9,
+            10
+          ],
+          [
+            11,
+            11
+          ],
+          [
+            12,
+            12
+          ]
+        ],
+        "derived_weights_out_of_36": [
+          1,
+          2,
+          12,
+          11,
+          7,
+          2,
+          1
+        ],
+        "within_category_choice": null
+      },
+      "source_paraphrase_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-047.rule",
+      "operation": "Выбирать начальную местность по2d6 или вручную",
+      "unit_and_trigger": "Начальная категория native6mileкарты; manual выбор разрешён, не равномерныйd12.",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-047",
+        "normative_kind": "procedure",
+        "applicability": "Shadowdark Core, региональная карта/гекскроул; внутренние карты данжей и поселений только как linked-site content. Применять при явном выборе данного профиля ведущим.",
+        "layer": "L1",
+        "trigger_or_user_action": "Создать начальный гекс overland карты",
+        "inputs_and_units": {
+          "selection_mode": "roll|choose",
+          "dice": "two integers1..6 when roll",
+          "category_choice": "one of7rows when choose",
+          "within_category": "optional explicit GM choice"
+        },
+        "product_operation": "При roll суммировать двеd6 и получить категориальную строку; при choose сохранить выбранную строку. Внутренний desert/arctic, forest/jungle и river/coast выбор сохранить отдельно и не придумывать климат.",
+        "expected_output": "Гекс с категорией, исходными костями/выбором и необязательным уточнением.",
+        "constraints_and_exceptions": [
+          "Суммы имеют2d6 weights; count step относится к категориям, не ко всем числовым значениям."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Начальный hex; dice1+1",
+            "when": "Сгенерировать terrain",
+            "expected": "category=desert_or_arctic; subtype=null до выбораGM.",
+            "id": "SD-CORE-047-L1-AC01"
+          },
+          {
+            "given": "Начальный hex; dice3+4",
+            "when": "Сгенерировать terrain",
+            "expected": "category=forest_or_jungle; никакой автоматический forest/jungle tie-break не выполняется.",
+            "id": "SD-CORE-047-L1-AC02"
+          },
+          {
+            "given": "GM вручную выбрал mountain",
+            "when": "Создать стартовый гекс",
+            "expected": "category=mountain; random dice не требуются.",
+            "id": "SD-CORE-047-L1-AC03"
+          },
+          {
+            "id": "SD-CORE-047-L1-AC04",
+            "given": "Фиксированные 36 упорядоченных пар (a,b), a,b ∈ {1,2,3,4,5,6}; каждый исход используется ровно один раз.",
+            "when": "Разрешить Hex Terrain для всех 36 пар.",
+            "expected": "Числа по семи упорядоченным категориям: [1,2,12,11,7,2,1]. Uniform d12 не проходит этот тест."
+          }
+        ],
+        "source_vs_product_interpretation": "Игровое правило/совет и численные параметры принадлежат источнику. Структурированные поля, автоматизация, проверки ввода, журнал и адаптеры — предлагаемая продуктовая реализация. Она не обязательна по книге; ведущий может изменить или отключить правило (p102).",
+        "canonical_rule_refs": [
+          "map.terrain_zones",
+          "map.terrain_distribution"
+        ],
+        "unresolved_parameters": [
+          "Выбор внутри трёх объединённых категорий источником не определён.",
+          "Наличие non-lossy mapping этих source categories в существующий Classic terrain vocabulary не проверено; наличие похожего имени не доказывает эквивалентность."
+        ]
+      },
+      "operational_requirement_origin": "existing_matrix_unmodified",
+      "canonical_rule_ids": [
+        "map.terrain_zones",
+        "map.terrain_distribution"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#SD-CORE-047-L1",
+      "criterion_ids": [
+        "S01-C05",
+        "S01-C04",
+        "S06-C04",
+        "S01-C02"
+      ],
+      "verdict": "arithmetic_reuse_profile_absent",
+      "finding": "Общий resolved/rollTag поддерживает двеd6 с суммой: все36пар и точные веса подтверждены. Но SDсемь категорий, выбор desert/arctic и реальная география не подключены как профиль App. Новый движок кубов не нужен; зарегистрированный игровой режим этим не доказан.",
+      "code_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+      "code_locators": [
+        "src/tags/engine.ts:39",
+        "src/tags/engine.ts:47",
+        "src/App.tsx:2035",
+        "src/tags/knave.ts:1"
+      ],
+      "runtime_probe_ids": [
+        "SD-P05",
+        "SD-P09",
+        "SD-P10"
+      ],
+      "runtime_evidence_ref": "agent-work/research/audits/evidence/SD-regional-L1-20261110/probes.json",
+      "evidence_basis": "selected_actualmodule_or_handler_probes_and_code",
+      "source_reference_checks_ref": "agent-work/research/audits/evidence/SD-regional-L1-20261110/source-reference-results.json",
+      "existing_task_ref": "agent-work/backlog.json#HX-BL-047",
+      "implementation_authorized_by_this_run": false,
+      "missing_is_approved_defect": false,
+      "score_or_formal_coverage_changed": false
+    },
+    {
+      "requirement_id": "SD-CORE-048-L1",
+      "source_rule_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-048",
+      "requirement_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-048-L1",
+      "source_pages": [
+        132
+      ],
+      "source_parameters": {
+        "new_hex_die": "2d6",
+        "actions_by_total": {
+          "2-3": "+1 row",
+          "4-8": "same row",
+          "9-11": "+2 rows",
+          "12": "reroll Hex Terrain with2d6"
+        },
+        "derived_action_weights_out_of_36": {
+          "plus1": 3,
+          "same": 23,
+          "plus2": 9,
+          "reroll": 1
+        },
+        "row_count": 7,
+        "wrap_formula": "(current_row_index+step)%7",
+        "terrain_order_ref": "SD-CORE-047",
+        "step_unit": "category row",
+        "batch_generation_algorithm": null
+      },
+      "source_paraphrase_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-048.rule",
+      "operation": "Генерировать terrain нового пустого гекса по соседнему текущему с кольцевым wrap",
+      "unit_and_trigger": "Триггер enter empty nativehex. Порядок обработки всей готовой карты/подгексов отсутствует.",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-048",
+        "normative_kind": "procedure",
+        "applicability": "Shadowdark Core, региональная карта/гекскроул; внутренние карты данжей и поселений только как linked-site content. Применять при явном выборе данного профиля ведущим.",
+        "layer": "L1",
+        "trigger_or_user_action": "Партия входит в empty hex и GM применяет overland generator",
+        "inputs_and_units": {
+          "current_terrain": "one of7categories",
+          "new_hex_dice": "two d6",
+          "reroll_dice": "two d6 only if initial sum12",
+          "destination_state": "empty|already_populated"
+        },
+        "product_operation": "Если destination empty, разрешить2d6 New Hex по индексам семи строк; +1/+2 вычислить по модулю7. При12 отдельно бросить2d6 Hex Terrain. Сохранить trace. Защиту уже созданного содержания от перезаписи использовать как продуктовое условие, а не новый закон книги.",
+        "expected_output": "Назначенная категория нового гекса с точным происхождением и без перезаписи готового гекса.",
+        "constraints_and_exceptions": [
+          "Source empty не приравнивается автоматически к любому visited/unvisited; продукт должен явно хранить отсутствие terrain."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "current=mountain; empty destination; dice1+1 =>2",
+            "when": "Создать новый hex",
+            "expected": "+1 category row с wrap даёт desert_or_arctic.",
+            "id": "SD-CORE-048-L1-AC01"
+          },
+          {
+            "given": "current=ocean; dice4+5 =>9",
+            "when": "Создать новый hex",
+            "expected": "+2 category rows: ocean→mountain→desert_or_arctic.",
+            "id": "SD-CORE-048-L1-AC02"
+          },
+          {
+            "given": "current=mountain; dice5+5 =>10",
+            "when": "Создать новый hex",
+            "expected": "+2 rows даёт swamp; не арифметический total14.",
+            "id": "SD-CORE-048-L1-AC03"
+          },
+          {
+            "given": "NewHex dice6+6; отдельный terrain dice6+6",
+            "when": "Создать новый hex",
+            "expected": "Сработал reroll; итогmountain; записаны две пары костей.",
+            "id": "SD-CORE-048-L1-AC04"
+          },
+          {
+            "given": "Гекс уже имеет grassland и linked POI; поступила команда генерации",
+            "when": "Применить защиту продукта",
+            "expected": "Содержимое сохранено; требуется явное GM overwrite, если оно вообще поддерживается.",
+            "id": "SD-CORE-048-L1-AC05"
+          },
+          {
+            "id": "SD-CORE-048-L1-AC06",
+            "given": "Фиксированные 36 упорядоченных пар двух d6; current terrain произвольна; повторный terrain roll при 12 фиксирован отдельно.",
+            "when": "Разрешить New Hex для всех 36 пар.",
+            "expected": "Числа действий: +1 строка=3, same=23, +2 строки=9, новый terrain roll=1. Uniform d12 неэквивалентен."
+          }
+        ],
+        "source_vs_product_interpretation": "Игровое правило/совет и численные параметры принадлежат источнику. Структурированные поля, автоматизация, проверки ввода, журнал и адаптеры — предлагаемая продуктовая реализация. Она не обязательна по книге; ведущий может изменить или отключить правило (p102).",
+        "canonical_rule_refs": [
+          "map.generate_on_discovery",
+          "map.terrain_distribution",
+          "map.extend_preserving_content"
+        ],
+        "unresolved_parameters": [
+          "Источник не задаёт обработку смены current hex при маршруте, split party и повторной генерации; данные требуют явного выбора.",
+          "Source trigger — enter empty hex. Batch-генерация всей карты, порядок обхода, опорный сосед и обработка границ не заданы; такой режим требует явных origin/next и продуктового рецепта."
+        ]
+      },
+      "operational_requirement_origin": "existing_matrix_unmodified",
+      "canonical_rule_ids": [
+        "map.generate_on_discovery",
+        "map.terrain_distribution",
+        "map.extend_preserving_content"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#SD-CORE-048-L1",
+      "criterion_ids": [
+        "S03-C01",
+        "S01-C05",
+        "S03-C03"
+      ],
+      "verdict": "profile_absent",
+      "finding": "В опубликованном App нет SDNewHex цикла строк/контекста previous. Обычное расширение региона уже существует, но не эквивалентно входу в один emptyhex. Переиспользовать его и вычисление кубов можно лишь при отдельном согласованном профиле; пакетная генерация обхода не задана источником.",
+      "code_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+      "code_locators": [
+        "src/App.tsx:13720",
+        "src/App.tsx:2035",
+        "src/App.tsx:11826"
+      ],
+      "runtime_probe_ids": [],
+      "runtime_evidence_ref": null,
+      "evidence_basis": "code_inspection_plus_source_arithmetic; not productprofile runtime",
+      "source_reference_checks_ref": "agent-work/research/audits/evidence/SD-regional-L1-20261110/source-reference-results.json",
+      "existing_task_ref": "agent-work/backlog.json#HX-BL-047",
+      "implementation_authorized_by_this_run": false,
+      "missing_is_approved_defect": false,
+      "score_or_formal_coverage_changed": false
+    },
+    {
+      "requirement_id": "SD-CORE-049-L1",
+      "source_rule_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-049",
+      "requirement_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-049-L1",
+      "source_pages": [
+        132
+      ],
+      "source_parameters": {
+        "die": "d6",
+        "danger_weights_out_of_6": {
+          "safe": 1,
+          "unsafe": 2,
+          "risky": 2,
+          "deadly": 1
+        },
+        "danger_intervals": {
+          "safe": [
+            1,
+            1
+          ],
+          "unsafe": [
+            2,
+            3
+          ],
+          "risky": [
+            4,
+            5
+          ],
+          "deadly": [
+            6,
+            6
+          ]
+        },
+        "assignment_scope_frequency": null,
+        "safe_encounter_cadence": null
+      },
+      "source_paraphrase_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-049.rule",
+      "operation": "Хранить явно выбранный или сгенерированный danger у места/гекса",
+      "unit_and_trigger": "Явное назначение GMили выбраннаяd6таблица; частота назначения не выдумана.",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-049",
+        "normative_kind": "table_profile",
+        "applicability": "Shadowdark Core, региональная карта/гекскроул; внутренние карты данжей и поселений только как linked-site content. Применять при явном выборе данного профиля ведущим.",
+        "layer": "L1",
+        "trigger_or_user_action": "GM явно назначает danger либо выбирает таблицу132",
+        "inputs_and_units": {
+          "hex_id": "ID",
+          "mode": "choose|roll",
+          "die": "1..6 when roll",
+          "danger": "chosen enum when choose"
+        },
+        "product_operation": "По явному действию разрешить таблицу и сохранить danger и provenance; не бросать автоматически для всех гексов без выбранного product recipe.",
+        "expected_output": "Назначенный danger profile без выдуманной частоты назначения.",
+        "constraints_and_exceptions": [],
+        "acceptance_cases": [
+          {
+            "given": "GM вызвал Danger Level; die1",
+            "when": "Назначить гексуA",
+            "expected": "A.danger=safe; encounter_cadence не подставляется.",
+            "id": "SD-CORE-049-L1-AC01"
+          },
+          {
+            "given": "GM вызвал Danger Level; die5",
+            "when": "Назначить гексуB",
+            "expected": "B.danger=risky.",
+            "id": "SD-CORE-049-L1-AC02"
+          }
+        ],
+        "source_vs_product_interpretation": "Игровое правило/совет и численные параметры принадлежат источнику. Структурированные поля, автоматизация, проверки ввода, журнал и адаптеры — предлагаемая продуктовая реализация. Она не обязательна по книге; ведущий может изменить или отключить правило (p102).",
+        "canonical_rule_refs": [
+          "content.place_description",
+          "content.roll_table_resolution"
+        ],
+        "unresolved_parameters": [
+          "Текст не определяет scope/frequency назначения Danger Level; нужна явная конфигурация."
+        ]
+      },
+      "operational_requirement_origin": "existing_matrix_unmodified",
+      "canonical_rule_ids": [
+        "content.place_description",
+        "content.roll_table_resolution"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#SD-CORE-049-L1",
+      "criterion_ids": [
+        "S05-C01",
+        "S05-C02"
+      ],
+      "verdict": "manual_text_only",
+      "finding": "Danger можно записать в заметке; отдельная SDчастота встреч не реализована. Safe/unsafe/risky/deadly не принимаются как difficulty и не тождественны dangerous из044. Источник не задаёт автоматическое назначение danger каждомуhex; safe cadence неизвестна.",
+      "code_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+      "code_locators": [
+        "src/App.tsx:13423",
+        "src/knaveClassic.ts:68"
+      ],
+      "runtime_probe_ids": [
+        "SD-P03",
+        "SD-P06",
+        "SD-P07"
+      ],
+      "runtime_evidence_ref": "agent-work/research/audits/evidence/SD-regional-L1-20261110/probes.json",
+      "evidence_basis": "selected_actualmodule_or_handler_probes_and_code",
+      "source_reference_checks_ref": "agent-work/research/audits/evidence/SD-regional-L1-20261110/source-reference-results.json",
+      "existing_task_ref": "agent-work/backlog.json#HX-BL-043",
+      "implementation_authorized_by_this_run": false,
+      "missing_is_approved_defect": false,
+      "score_or_formal_coverage_changed": false
+    },
+    {
+      "requirement_id": "SD-CORE-050-L1",
+      "source_rule_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-050",
+      "requirement_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-050-L1",
+      "source_pages": [
+        132
+      ],
+      "source_parameters": {
+        "die": "1d6",
+        "POI_on": 1,
+        "POI_count_on_success": 1,
+        "probability": {
+          "numerator": 1,
+          "denominator": 6
+        },
+        "retry_policy": null
+      },
+      "source_paraphrase_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-050.rule",
+      "operation": "Разрешить единичную POI check при подготовке гекса",
+      "unit_and_trigger": "Одна проверка на один исходный sixmilehex;1→однаPOI,2–6→ноль по этому рецепту. Не числообъектов=d6.",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-050",
+        "normative_kind": "procedure",
+        "applicability": "Shadowdark Core, региональная карта/гекскроул; внутренние карты данжей и поселений только как linked-site content. Применять при явном выборе данного профиля ведущим.",
+        "layer": "L1",
+        "trigger_or_user_action": "GM генерирует POI presence для ещё не обработанного гекса",
+        "inputs_and_units": {
+          "hex_id": "ID",
+          "roll": "1..6",
+          "POI_check_state": "not_done|done"
+        },
+        "product_operation": "На1 создать одну POI slot и передать заполнение SD-CORE-051; на2–6 не создавать POI из этой процедуры. Сохранить check_state; повторный запуск не должен молча повышать вероятность или дублировать объект.",
+        "expected_output": "Ноль или одна POI slot с исходом броска.",
+        "constraints_and_exceptions": [
+          "Idempotence/check_state — предложенная защита продукта, а не отдельное правило книги."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Новый гексA; die1",
+            "when": "Проверить POI presence",
+            "expected": "Создана ровно1POI slot.",
+            "id": "SD-CORE-050-L1-AC01"
+          },
+          {
+            "given": "Новый гексB; die6",
+            "when": "Проверить POI presence",
+            "expected": "По этому рецепту создано0POI, не6.",
+            "id": "SD-CORE-050-L1-AC02"
+          },
+          {
+            "given": "ГексA уже содержит результатcheck1",
+            "when": "Повторно открыть генератор",
+            "expected": "Нет скрытого повторного броска и новогоPOI; повторная генерация возможна только явно по решениюGM.",
+            "id": "SD-CORE-050-L1-AC03"
+          },
+          {
+            "id": "SD-CORE-050-L1-AC04",
+            "given": "Шесть новых гексов и фиксированные POI presence outcomes [1,2,3,4,5,6].",
+            "when": "Разрешить по одной presence check на гекс.",
+            "expected": "Числа созданных POI slots [1,0,0,0,0,0], всего один POI; повторная обработка не скрыто перебрасывается."
+          }
+        ],
+        "source_vs_product_interpretation": "Игровое правило/совет и численные параметры принадлежат источнику. Структурированные поля, автоматизация, проверки ввода, журнал и адаптеры — предлагаемая продуктовая реализация. Она не обязательна по книге; ведущий может изменить или отключить правило (p102).",
+        "canonical_rule_refs": [
+          "content.site_density",
+          "content.feature_distribution"
+        ],
+        "unresolved_parameters": [
+          "Повторная проверка уже подготовленного гекса не описана."
+        ]
+      },
+      "operational_requirement_origin": "existing_matrix_unmodified",
+      "canonical_rule_ids": [
+        "content.site_density",
+        "content.feature_distribution"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#SD-CORE-050-L1",
+      "criterion_ids": [
+        "S05-C01",
+        "S07-C02",
+        "S05-C03"
+      ],
+      "verdict": "profile_absent",
+      "finding": "Текущий POIгенератор выбирает число/тип мест по собственным региональным правилам, а не один presence-d6 на исходныйSDгекс. Ручная постановкаPOI возможна, но не доказывает профиль1/6. Нельзя переносить вероятность на каждую1mileдеталь.",
+      "code_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+      "code_locators": [
+        "src/App.tsx:8501",
+        "src/App.tsx:8708",
+        "src/App.tsx:14396"
+      ],
+      "runtime_probe_ids": [],
+      "runtime_evidence_ref": null,
+      "evidence_basis": "code_inspection_plus_source_arithmetic; not productprofile runtime",
+      "source_reference_checks_ref": "agent-work/research/audits/evidence/SD-regional-L1-20261110/source-reference-results.json",
+      "existing_task_ref": "agent-work/backlog.json#HX-BL-054",
+      "implementation_authorized_by_this_run": false,
+      "missing_is_approved_defect": false,
+      "score_or_formal_coverage_changed": false
+    },
+    {
+      "requirement_id": "SD-CORE-051-L1",
+      "source_rule_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-051",
+      "requirement_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-051-L1",
+      "source_pages": [
+        133
+      ],
+      "source_parameters": {
+        "die": "d20",
+        "columns": [
+          "location",
+          "development"
+        ],
+        "table_locator": "printed133/PDF137 Points of Interest",
+        "column_roll_policy": null,
+        "followup_cataclysm_if_development1": true
+      },
+      "source_paraphrase_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-051.rule",
+      "operation": "Разрешить POI по явно выбранному рецепту и сохранить связи",
+      "unit_and_trigger": "Заполнение выбранногоPOI, а не повторная densitycheck. Две колонки с явным ручным/продуктовым рецептом.",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-051",
+        "normative_kind": "table_generator",
+        "applicability": "Shadowdark Core, региональная карта/гекскроул; внутренние карты данжей и поселений только как linked-site content. Применять при явном выборе данного профиля ведущим.",
+        "layer": "L1",
+        "trigger_or_user_action": "Заполняется POI slot либо GM вручную добавляет POI",
+        "inputs_and_units": {
+          "column_policy": "explicit same_roll|independent_rolls|manual",
+          "location_roll": "1..20",
+          "development_roll": "1..20, explicit",
+          "hex_id": "ID",
+          "linked_site_refs": "optional"
+        },
+        "product_operation": "Разрешить каждую выбранную колонку по сохранённому рецепту. Создать editable POI descriptor; при development2 сохранить смысловую связь с tomb как описание/link, а при development1 вызвать bounded Cataclysm choice. Не выдавать выбранный recipe за однозначный текст источника.",
+        "expected_output": "POI с независимыми source coordinates, рецептом и linked content.",
+        "constraints_and_exceptions": [
+          "Словесная таблица целиком не переносится."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Product profile явно same_roll; roll2",
+            "when": "Создать POI",
+            "expected": "Location=укреплённый keep; development=связь с большим tomb; recipe=same_roll recorded, source certainty=unresolved.",
+            "id": "SD-CORE-051-L1-AC01"
+          },
+          {
+            "given": "Product profile явно independent; location roll7,development20",
+            "when": "Создать POI",
+            "expected": "Location=деревня; development=дверь в иной plane; оба результата сохранены отдельно.",
+            "id": "SD-CORE-051-L1-AC02"
+          },
+          {
+            "given": "Рецепт не выбран",
+            "when": "Попросить полностью автоматическую генерацию",
+            "expected": "Возвращён unresolved_column_policy; same/independent не назначены молча.",
+            "id": "SD-CORE-051-L1-AC03"
+          }
+        ],
+        "source_vs_product_interpretation": "Игровое правило/совет и численные параметры принадлежат источнику. Структурированные поля, автоматизация, проверки ввода, журнал и адаптеры — предлагаемая продуктовая реализация. Она не обязательна по книге; ведущий может изменить или отключить правило (p102).",
+        "canonical_rule_refs": [
+          "content.roll_table_resolution",
+          "content.place_description",
+          "content.site_links"
+        ],
+        "unresolved_parameters": [
+          "Same-vs-independent rolls двух колонок p133 явно не определены."
+        ]
+      },
+      "operational_requirement_origin": "existing_matrix_unmodified",
+      "canonical_rule_ids": [
+        "content.roll_table_resolution",
+        "content.place_description",
+        "content.site_links"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#SD-CORE-051-L1",
+      "criterion_ids": [
+        "S05-C01",
+        "S05-C02"
+      ],
+      "verdict": "partial_manual_pipeline",
+      "finding": "POI,имя и ручная заметка работают; готового SDlocation/development/linkedfollowup нет. Общий табличный механизм пригоден для переиспользования, но источник оставляет same/independent политику неизвестной. TABLES1 даёт разрешённые общие действия, а не автоматическое разрешение всех SDпрофилей.",
+      "code_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+      "code_locators": [
+        "src/App.tsx:200",
+        "src/App.tsx:13423",
+        "src/tags/engine.ts:39",
+        "src/tags/knave.ts:1"
+      ],
+      "runtime_probe_ids": [
+        "SD-P05",
+        "SD-P06",
+        "SD-P07"
+      ],
+      "runtime_evidence_ref": "agent-work/research/audits/evidence/SD-regional-L1-20261110/probes.json",
+      "evidence_basis": "selected_actualmodule_or_handler_probes_and_code",
+      "source_reference_checks_ref": null,
+      "existing_task_ref": "agent-work/backlog.json#HX-BL-043",
+      "implementation_authorized_by_this_run": false,
+      "missing_is_approved_defect": false,
+      "score_or_formal_coverage_changed": false
+    },
+    {
+      "requirement_id": "SD-CORE-052-L1",
+      "source_rule_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-052",
+      "requirement_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-052-L1",
+      "source_pages": [
+        132,
+        133
+      ],
+      "source_parameters": {
+        "die": "d8",
+        "table_locator": "printed132/PDF136 Cataclysm",
+        "trigger": "selected cataclysm, including POI Development1",
+        "spatial_extent": null,
+        "duration_speed_damage": null
+      },
+      "source_paraphrase_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-052.rule",
+      "operation": "Разрешить ссылку на Cataclysm в ограниченной цепочке",
+      "unit_and_trigger": "Только после выбранногоcataclysm/Development1;d8тема, не физический disasterresolver.",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-052",
+        "normative_kind": "bounded_generator",
+        "applicability": "Shadowdark Core, региональная карта/гекскроул; внутренние карты данжей и поселений только как linked-site content. Применять при явном выборе данного профиля ведущим.",
+        "layer": "L1",
+        "trigger_or_user_action": "POI development либо GM choice требует cataclysm",
+        "inputs_and_units": {
+          "cataclysm_roll": "1..8",
+          "parent_POI": "ID",
+          "details": "optional GM-authored"
+        },
+        "product_operation": "Один раз разрешитьd8 и сохранить тип катастрофы у parentPOI. Автоматически не расширять область, не изменять соседние гексы и не придумывать mechanics.",
+        "expected_output": "Связанная тема катастрофы с завершённой source chain.",
+        "constraints_and_exceptions": [],
+        "acceptance_cases": [
+          {
+            "given": "POI development1; cataclysm roll4",
+            "when": "Разрешить follow-up",
+            "expected": "УPOI записан storm; trace133:development1→132:cataclysm4; цепочка завершена.",
+            "id": "SD-CORE-052-L1-AC01"
+          },
+          {
+            "given": "Cataclysm roll6",
+            "when": "Разрешить",
+            "expected": "Записан war как сюжетный катаклизм; состав армий/зона боёв не сгенерированы.",
+            "id": "SD-CORE-052-L1-AC02"
+          }
+        ],
+        "source_vs_product_interpretation": "Игровое правило/совет и численные параметры принадлежат источнику. Структурированные поля, автоматизация, проверки ввода, журнал и адаптеры — предлагаемая продуктовая реализация. Она не обязательна по книге; ведущий может изменить или отключить правило (p102).",
+        "canonical_rule_refs": [
+          "content.roll_table_resolution",
+          "content.static_hazard",
+          "content.adventure_hooks"
+        ],
+        "unresolved_parameters": [
+          "Масштаб, продолжительность, поражение и динамика не определены таблицей."
+        ]
+      },
+      "operational_requirement_origin": "existing_matrix_unmodified",
+      "canonical_rule_ids": [
+        "content.roll_table_resolution",
+        "content.static_hazard",
+        "content.adventure_hooks"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#SD-CORE-052-L1",
+      "criterion_ids": [
+        "S05-C01",
+        "S05-C02",
+        "S07-C01"
+      ],
+      "verdict": "manual_text_only",
+      "finding": "Storm/war и толкование можно сохранить текстом. Автоматической SDцепочки development→Cataclysm нет. Из темы не создаются армия, скорость бедствия, урон или новая зона мира; общая работа по ссылкам TABLES1 может быть основой без расширения её объёма.",
+      "code_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+      "code_locators": [
+        "src/App.tsx:13423",
+        "src/tags/knave.ts:1"
+      ],
+      "runtime_probe_ids": [
+        "SD-P06",
+        "SD-P07"
+      ],
+      "runtime_evidence_ref": "agent-work/research/audits/evidence/SD-regional-L1-20261110/probes.json",
+      "evidence_basis": "selected_actualmodule_or_handler_probes_and_code",
+      "source_reference_checks_ref": null,
+      "existing_task_ref": "agent-work/backlog.json#HX-BL-043",
+      "implementation_authorized_by_this_run": false,
+      "missing_is_approved_defect": false,
+      "score_or_formal_coverage_changed": false
+    },
+    {
+      "requirement_id": "SD-CORE-053-L1",
+      "source_rule_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-053",
+      "requirement_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-053-L1",
+      "source_pages": [
+        133
+      ],
+      "source_parameters": {
+        "die": "d8",
+        "columns": [
+          "village",
+          "town",
+          "city_or_metropolis"
+        ],
+        "table_locator": "printed133/PDF137 Settlement Name",
+        "population": null
+      },
+      "source_paraphrase_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-053.rule",
+      "operation": "Выбрать имя в колонке уже заданного типа поселения",
+      "unit_and_trigger": "Выбранный тип поселения задаёт колонку; одинd8. Не вероятность появления поселения.",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-053",
+        "normative_kind": "table_generator",
+        "applicability": "Shadowdark Core, региональная карта/гекскроул; внутренние карты данжей и поселений только как linked-site content. Применять при явном выборе данного профиля ведущим.",
+        "layer": "L1",
+        "trigger_or_user_action": "У POI уже выбран settlement type и GM вызывает генератор имени",
+        "inputs_and_units": {
+          "settlement_type": "village|town|city|metropolis",
+          "roll": "1..8"
+        },
+        "product_operation": "Выбрать соответствующую колонку, сохранить имя и source coordinate. Результат не должен изменять тип поселения или создавать population.",
+        "expected_output": "Поселение с именем и сохранённым типом.",
+        "constraints_and_exceptions": [],
+        "acceptance_cases": [
+          {
+            "given": "type=village; roll1",
+            "when": "Назвать",
+            "expected": "Имя=Bruga’s Hold; type остаётсяvillage.",
+            "id": "SD-CORE-053-L1-AC01"
+          },
+          {
+            "given": "type=metropolis; roll8",
+            "when": "Назвать",
+            "expected": "Имя=Rahgbat изcity/metropolis колонки; численность жителей неизвестна.",
+            "id": "SD-CORE-053-L1-AC02"
+          }
+        ],
+        "source_vs_product_interpretation": "Игровое правило/совет и численные параметры принадлежат источнику. Структурированные поля, автоматизация, проверки ввода, журнал и адаптеры — предлагаемая продуктовая реализация. Она не обязательна по книге; ведущий может изменить или отключить правило (p102).",
+        "canonical_rule_refs": [
+          "content.place_description",
+          "content.roll_table_resolution"
+        ],
+        "unresolved_parameters": []
+      },
+      "operational_requirement_origin": "existing_matrix_unmodified",
+      "canonical_rule_ids": [
+        "content.place_description",
+        "content.roll_table_resolution"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#SD-CORE-053-L1",
+      "criterion_ids": [
+        "S05-C01",
+        "S05-C02"
+      ],
+      "verdict": "partial_manual_name",
+      "finding": "Ручное двуязычное имя сохраняется, Undo/Redo не меняют вид/географию. Собственный топонимический генератор не является d8колонками SD; выбора нужной колонки по village/town/city/metropolis в App нет. Никакой population не вычисляется из имени.",
+      "code_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+      "code_locators": [
+        "src/App.tsx:15115",
+        "src/App.tsx:15175",
+        "src/toponyms.ts:1"
+      ],
+      "runtime_probe_ids": [
+        "SD-P08"
+      ],
+      "runtime_evidence_ref": "agent-work/research/audits/evidence/SD-regional-L1-20261110/probes.json",
+      "evidence_basis": "selected_actualmodule_or_handler_probes_and_code",
+      "source_reference_checks_ref": null,
+      "existing_task_ref": "agent-work/backlog.json#HX-BL-043",
+      "implementation_authorized_by_this_run": false,
+      "missing_is_approved_defect": false,
+      "score_or_formal_coverage_changed": false
+    }
+  ],
+  "findings": [
+    {
+      "id": "SD-REG-REUSE-2D6",
+      "kind": "runtime",
+      "knowledge": "Existing generic table resolver already supports exact2d6nonuniformcategories and persisted two-die interpretation; no separate diceengine needed. Syntheticdefinition is not registeredSDproductprofile.",
+      "evidence_ids": [
+        "SD-P09",
+        "SD-P10"
+      ]
+    },
+    {
+      "id": "SD-REG-TWO-DANGERS",
+      "kind": "source_to_product_boundary",
+      "knowledge": "SDencounterdanger(safe/unsafe/risky/deadly) and travel difficulty(normal/difficult/arduous) are differentdimensions. Owner044dangerous is a third productclassification, not an automatictranslation of either.",
+      "evidence_ids": [
+        "SD-P02",
+        "SD-P03"
+      ],
+      "source_rules": [
+        "SD-CORE-002",
+        "SD-CORE-049"
+      ]
+    },
+    {
+      "id": "SD-REG-DENSITY-UNIT",
+      "kind": "source_and_inference",
+      "knowledge": "One presencecheck1/6 applies to original6mileoverlandhex; no independentcheck per1mileviewcell. Under explicitlysamegeometricconvention, applying it to36subcells changes expecteddensity36fold. Source acrossgeometry/051mapping remainsunspecified; conditionalillustration only.",
+      "source_rules": [
+        "SD-CORE-001",
+        "SD-CORE-050"
+      ],
+      "ref": "agent-work/research/audits/evidence/SD-regional-L1-20261110/source-reference-results.json#scale_guard"
+    },
+    {
+      "id": "SD-REG-OPTIONAL-MODE",
+      "kind": "product_disposition",
+      "knowledge": "Initial/nextterrain form an optional sequentialhex preparation mode. Missing thisprofile is not a defect of existingwhole-regionClassic. Current047proposal already has precisely that optionalscope.",
+      "ref": "agent-work/proposals/2026-11-09-HX-BL-047-SD-TERRAIN1.json"
+    },
+    {
+      "id": "SD-REG-MANUAL-RESULT",
+      "kind": "runtime",
+      "knowledge": "Chosenlocation/development/danger/theme and manualsettlementname can already be authored and retained using existingnote/name/edit/import/history handlers. This does not implement SDtablechains or automaticlinkedsiteobjects.",
+      "evidence_ids": [
+        "SD-P06",
+        "SD-P07",
+        "SD-P08"
+      ]
+    }
+  ],
+  "unknowns": [
+    "Same-vs-independent POIcolumns remains sourceambiguous; no defaultinvented.",
+    "Within-category desert/arctic,forest/jungle,river/coast selection requiresGMchoice.",
+    "Across convention and kindofmile unspecified; no forced061mapping to detailgrid.",
+    "Danger assignmentcadence and safecadence not supplied.",
+    "No fresh browser/UI/PNG evidence; actualmodule/handlerharness only. Publishedcodeunchanged; prior exactSHA75editor/save checks reused byreference, not rerun/recounted as newtests."
+  ],
+  "verification": {
+    "product_probes_ref": "agent-work/research/audits/evidence/SD-regional-L1-20261110/probes.json",
+    "product_probes_script": "agent-work/research/audits/evidence/SD-regional-L1-20261110/probes.mjs",
+    "reference_arithmetic_ref": "agent-work/research/audits/evidence/SD-regional-L1-20261110/source-reference-results.json",
+    "reference_script": "agent-work/research/audits/evidence/SD-regional-L1-20261110/source-reference-checks.py",
+    "existing_exactsha_editor_evidence": "agent-work/research/audits/evidence/PF2-L1-20261110/targeted-tests.txt",
+    "prior_generic_editor_tests_reused": 75,
+    "fresh_generic_editor_rerun": false,
+    "tracked_code_changes": 0,
+    "runtime_vs_reference": "36pairs resolved by actualpublishedmodule;9072transitions are independent sourcearithmetic, not Appgeneration evidence.",
+    "browser": "not executed; no visualacceptanceclaim"
+  },
+  "development_consequence": {
+    "recommendation": "Keep whole-regionClassic usable; no mandatoryShadowdarkmode or newcubeengine. Optional047 remains proposal. Any futureSDtables reuse genericTABLES1 operations with explicit scale/trigger/subtype/columnrecipe; noautomaticexpansion of approvedTABLES1.",
+    "density_safeguard": "Do not attachnativepresencecheck to everydisplayed1milecell.",
+    "proceeding_order_preserved": "051/DETAIL1→043/TABLES1→054/PF2-BATCH1",
+    "owner_decisions_needed": [],
+    "rating_proposal_refs": [],
+    "new_tasks": 0,
+    "fresh_owner_decision_ref": "agent-work/decisions/owner-approval-2026-11-10-HX-BL-054-PF2-BATCH1.json"
+  },
+  "active_rating_changed": false,
+  "score_changed": false,
+  "formal_coverage_changed": false
+}

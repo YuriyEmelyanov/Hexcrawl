@@ -1,0 +1,134 @@
+{
+  "code_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+  "method": "Actual modules/App handlers through existing harness; final JSX not rendered",
+  "checks": [
+    {
+      "id": "SD-P01",
+      "action": "Inspect existing physical numeric value",
+      "expected": "Six miles with convention unset, but profile belongs to Knave; not certified SD mode",
+      "actual": {
+        "id": "classic.knave2",
+        "version": 1,
+        "physicalHex": {
+          "length": 6,
+          "unit": "mile",
+          "measurementConvention": null
+        }
+      },
+      "result": "pass"
+    },
+    {
+      "id": "SD-P02",
+      "action": "Choose normal/difficult in existing annotation module",
+      "expected": "Both values independently stored, original unchanged",
+      "actual": {
+        "accepted": [
+          "normal",
+          "difficult"
+        ]
+      },
+      "result": "pass"
+    },
+    {
+      "id": "SD-P03",
+      "action": "Try SD arduous and encounter danger labels as difficulty",
+      "expected": "Not supported in this strict vocabulary; different dimensions must not be conflated",
+      "actual": {
+        "rejected": [
+          "arduous",
+          "safe",
+          "unsafe",
+          "risky",
+          "deadly"
+        ]
+      },
+      "result": "pass"
+    },
+    {
+      "id": "SD-P04",
+      "action": "Try declaring strict existing layer as SD profile",
+      "expected": "Rejected; equal number6 does not create alternate source profile",
+      "actual": "Rejected",
+      "result": "pass"
+    },
+    {
+      "id": "SD-P05",
+      "action": "Try adding SD terrain as fifth table to current Knave catalog",
+      "expected": "Existing fixed catalog rejects extra table; pure generic tags not equated with game profile",
+      "actual": "Rejected",
+      "result": "pass"
+    },
+    {
+      "id": "SD-P06",
+      "action": "Accept chosen SD regional descriptors in current map notes",
+      "expected": "Exact accepted human interpretation retained; no automatic SD dice/links/damage",
+      "actual": "Местность: forest/jungle; мастер выбрал forest\nОпасность встреч: risky\nТрудность пути: difficult\nМесто: keep; развитие: связь с tomb\nКатаклизм: storm; границы и урон не заданы",
+      "result": "pass"
+    },
+    {
+      "id": "SD-P07",
+      "action": "Actual import/undo/redo of authored content",
+      "expected": "Exact map/RNG after import, empty undo, exact redo",
+      "actual": {
+        "exactMap": true,
+        "exactRNG": true,
+        "undoEmpty": true,
+        "redoExact": true
+      },
+      "result": "pass"
+    },
+    {
+      "id": "SD-P08",
+      "action": "Manually name an existing POI and undo/redo",
+      "expected": "Bilingual accepted name retained; type/geometry unchanged; no SDd8 trace inferred",
+      "actual": {
+        "name": {
+          "en": "Bruga’s Hold",
+          "ru": "Оплот Бруги"
+        },
+        "geometryAndTypePreserved": true
+      },
+      "result": "pass"
+    },
+    {
+      "id": "SD-P09",
+      "action": "Use existing generic table resolver for all36 2d6 pairs with synthetic SDcategory definition",
+      "expected": "Correct nonuniform category distribution; arithmetic reuse proved, not registered UI/profile",
+      "actual": {
+        "desert_or_arctic": 1,
+        "swamp": 2,
+        "grassland": 12,
+        "forest_or_jungle": 11,
+        "river_or_coast": 7,
+        "ocean": 2,
+        "mountain": 1
+      },
+      "result": "pass"
+    },
+    {
+      "id": "SD-P10",
+      "action": "Roll, manually interpret, serialize and validate generic two-die tag with explicit syntheticregistry",
+      "expected": "Both dice/counters retained, no reroll on interpretation; no productionregistry integration implied",
+      "actual": {
+        "values": [
+          [
+            4,
+            6
+          ]
+        ],
+        "counters": {
+          "poi:1:0,0|research_sd_2d6|terrain": 1
+        },
+        "override": {
+          "en": "GM chose forest"
+        }
+      },
+      "result": "pass"
+    }
+  ],
+  "limitations": [
+    "Negative probes describe present strict interfaces, not a requirement to extend them.",
+    "Notes/name/manual acceptance are supported; SD source tables and semantics are not thereby implemented.",
+    "No new browser or product-code changes."
+  ]
+}
