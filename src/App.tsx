@@ -2964,6 +2964,23 @@ function buildRegionRiverNetwork(
   return { network, issues, vertices, previousEdges, internalLakeEdges };
 }
 
+// Reuse the editor's exact physical-violation comparison for saved Classic
+// maps. An old CYCLE flag never authorizes a second/new cyclic subgraph.
+function generatedRiverNetworkIsValid(before: Pick<MapSnapshot,'rivers'|'regions'|'candidateHexes'|'hexTerrainByKey'>,
+  after: Pick<MapSnapshot,'rivers'|'regions'|'candidateHexes'|'hexTerrainByKey'>, allowUnchangedLegacy: boolean): boolean {
+  const full = buildRegionRiverNetwork(after.rivers, [], after.regions, after.candidateHexes, after.hexTerrainByKey, true);
+  if (!full.issues.length && validateRiverNetwork(full.network).valid) return true;
+  if (!allowUnchangedLegacy) return false;
+  const accepted = buildRegionRiverNetwork(before.rivers, [], before.regions, before.candidateHexes, before.hexTerrainByKey, true);
+  try {
+    validateEditedRiverNetwork(before.rivers, after.rivers, {network:()=>full}, {network:()=>accepted});
+    return true;
+  } catch (error) {
+    if (error instanceof Error && (/^RIV-\d{3}:/.test(error.message) || full.issues.includes(error.message))) return false;
+    throw error;
+  }
+}
+
 function solveRiverComponents(network: ModelNetwork): ModelSolveResult {
   const remaining = new Set(network.nodes.map(n => n.id));
   const fullness: Record<string, RiverFullness> = {};
@@ -12571,8 +12588,7 @@ export function App() {
       return;
     }
     {
-      const full = buildRegionRiverNetwork(completed.rivers, [], finalRegions, finalCandidateHexes, completed.terrain, true);
-      if (full.issues.length || !validateRiverNetwork(full.network).valid) {
+      if (!generatedRiverNetworkIsValid(snapshot, {rivers:completed.rivers,regions:finalRegions,candidateHexes:finalCandidateHexes,hexTerrainByKey:completed.terrain}, options.mode !== 'mythic')) {
         if (tractAttempt < MAX_REGION_ATTEMPTS) {
           addFallbackTractToMap(anchorHex, forceCoastalSea, options, reason, tractAttempt + 1, hexTerrainByKey, candidateHexes);
         } else generationProgress.constraintFailure = 'full_river_network';
@@ -13419,10 +13435,7 @@ export function App() {
         nextRoadId
       };
       const finalHexTerrainByKey = modelResult.terrain;
-      {
-        const full = buildRegionRiverNetwork(riversWithDeltas, [], finalRegions, finalCandidateHexes, finalHexTerrainByKey, true);
-        if (full.issues.length || !validateRiverNetwork(full.network).valid) { rejectAttempt('full_river_network'); continue; }
-      }
+      if (!generatedRiverNetworkIsValid(snapshot, {rivers:riversWithDeltas,regions:finalRegions,candidateHexes:finalCandidateHexes,hexTerrainByKey:finalHexTerrainByKey}, options.mode !== 'mythic')) { rejectAttempt('full_river_network'); continue; }
 
       const finalRegionKeySet = new Set(finalRegionWithPoiKinds.hexes.map(hexKey));
       const newlyCheckedWaterHexKeys = new Set([...finalRegionKeySet, ...finalSeaKeysToWrite]);
