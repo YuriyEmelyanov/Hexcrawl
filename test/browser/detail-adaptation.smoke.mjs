@@ -34,6 +34,7 @@ shared.map.classification={version:1,difficultyByHex:{},discoveryByPoi:{'poi:1:2
 const longNames={one:'Северная столица старой переправы через Серебряную реку',two:'Деревнядревнихсмотрителейторговойдорогиусеверныхсосен'};
 shared.map.editorNames={'poi:1:2,0':{ru:longNames.one,en:'Northern capital at the old crossing of the Silver River'},'poi:2:3,0':{ru:longNames.two,en:'VillageOfTheAncientKeepersOfTheNorthernTradingRoad'}};
 await page.setViewportSize({width:1500,height:1100});await page.locator('input[type=file]').setInputFiles({name:'shared.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(shared))});
+await page.waitForFunction(name=>document.body.textContent.includes(name),longNames.one);await page.screenshot({path:dir+'/shared-before.png',fullPage:true});
 await page.locator('[data-detail-preview]').click();await page.locator('[data-detail-apply]').click();await page.locator('[data-detail-step="1"]').click();
 const firstId=await page.locator('[data-detail-marker-cell]').first().getAttribute('data-detail-marker-owners');
 await page.locator('[data-detail-marker-cell]').first().evaluate(e=>{const key=e.getAttribute('data-detail-marker-cell');document.querySelector(`[data-detail-cell="${key}"]`).dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true}));});
