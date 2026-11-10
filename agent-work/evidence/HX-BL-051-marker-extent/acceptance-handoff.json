@@ -1,0 +1,357 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-051",
+  "stage_id": "DETAIL1",
+  "head_sha": "a4e8a484efcdf1bd8c38efb9e37a22c4e39a9dd9",
+  "tree_sha": "a37e5de40297b42c72b402785241986cc1cc32ff",
+  "spec_ref": "agent-work/specs/HX-BL-051-DETAIL1.md",
+  "status": "programmer_submission_independent_verdict_pending",
+  "note": "Navigation map to existing source suites, not independent acceptance. Do not equate successful aggregate count with all28 criteria. Reproduce relevant assertions and direct UI paths; gaps explicitly listed.",
+  "acceptance": [
+    {
+      "id": "DTL-01",
+      "name": "Grid 1/6/12/24",
+      "expected": "У новой карты проектный шаг задаётся в милях между противоположными сторонами; 1миля=1609.344м. Переключение1→6→12→24→1 меняет сетку/сводку, не исходные регионы,биомы,воды,POIIDs,содержимое,RNG.",
+      "submission_source_suites": [
+        "test/detailGrid.test.mjs",
+        "test/detailProjection.test.mjs",
+        "test/detailGeography.test.mjs"
+      ],
+      "independent_verdict": null
+    },
+    {
+      "id": "DTL-02",
+      "name": "Grid alignment",
+      "expected": "Зафиксированы начало/ориентация всех уровней; pan/zoom/rotation не сдвигает границы относительно мира. Крупные гексы могут пересекать мелкие; нет обещания4/16/36целых дочерних ячеек.",
+      "submission_source_suites": [
+        "test/detailGrid.test.mjs",
+        "test/detailProjection.test.mjs",
+        "test/detailGeography.test.mjs"
+      ],
+      "independent_verdict": null
+    },
+    {
+      "id": "DTL-03",
+      "name": "Legacy conversion",
+      "expected": "v2–v10 без известной физической конвенции не переобъявляется молча. Для DETAIL1 предложить явную адаптацию с проектным допущением6миль исходному шагу, предпросмотром и однимUndo; Cancel/ошибка оставляют весь документ/RNG прежним. Knave6mile/null сохраняет источникunknown отдельно от допущения отображения.",
+      "submission_source_suites": [
+        "test/detailGrid.test.mjs",
+        "test/detailProjection.test.mjs",
+        "test/detailGeography.test.mjs"
+      ],
+      "independent_verdict": null
+    },
+    {
+      "id": "DTL-04",
+      "name": "Small site",
+      "expected": "Башня с неизвестными габаритами получает1полный подходящий одномильный гекс охвата,значок внутри и обводку. Это охват выбора,не утверждение о площади здания; одноID/имя/содержимое.",
+      "submission_source_suites": [
+        "test/detailPlacement.test.mjs",
+        "test/detailGrid.test.mjs",
+        "test/detailGeography.test.mjs",
+        "test/browser/detail-adaptation.smoke.mjs"
+      ],
+      "independent_verdict": null
+    },
+    {
+      "id": "DTL-05",
+      "name": "Capital default",
+      "expected": "Истинный типcapital без размеров получает минимум2смежных по ребру допустимых гекса как явно условный проектный охват; одинPOI,иконка в каждом члене,единая внешняя обводка. Не выводить число из SVGicon или имени.",
+      "submission_source_suites": [
+        "test/detailPlacement.test.mjs",
+        "test/detailGrid.test.mjs",
+        "test/detailGeography.test.mjs",
+        "test/browser/detail-adaptation.smoke.mjs"
+      ],
+      "independent_verdict": null
+    },
+    {
+      "id": "DTL-06",
+      "name": "Seat exception",
+      "expected": "MBthrone/Seat со значкомcapital не получает правило размера столицы. При неизвестных размерах остаётся1подходящий гекс; квоты/теги/рольMBне меняются.",
+      "submission_source_suites": [
+        "test/detailPlacement.test.mjs",
+        "test/detailGrid.test.mjs",
+        "test/detailGeography.test.mjs",
+        "test/browser/detail-adaptation.smoke.mjs"
+      ],
+      "independent_verdict": null
+    },
+    {
+      "id": "DTL-07",
+      "name": "Measured extent",
+      "expected": "При заданном исходном контуре в мировых координатах охват строится по положительному пересечению с1mileсеткой, сохраняются источник/единицы/метод. Изолированное касание ребра/вершины не добавляет клетку. Одна площадь/название без формы не превращается в якобы известный контур.",
+      "submission_source_suites": [
+        "test/detailPlacement.test.mjs",
+        "test/detailGrid.test.mjs",
+        "test/detailGeography.test.mjs",
+        "test/browser/detail-adaptation.smoke.mjs"
+      ],
+      "independent_verdict": null
+    },
+    {
+      "id": "DTL-08",
+      "name": "Manual extent",
+      "expected": "Расширить/сократить условный охват адресно; набор непустой и связан по ребру, сохраняет обязательныеводные/путевые привязки и минимум2дляcapital с неизвестным размером; подтверждённый малый контур имеет приоритет. Ошибка,неприменённыйчерновик,Escape/Cancel не меняют документ. Это не кисть биома028.",
+      "submission_source_suites": [
+        "test/detailPlacement.test.mjs",
+        "test/detailGrid.test.mjs",
+        "test/detailGeography.test.mjs",
+        "test/browser/detail-adaptation.smoke.mjs"
+      ],
+      "independent_verdict": null
+    },
+    {
+      "id": "DTL-09",
+      "name": "One entity",
+      "expected": "При выборе любой из занятых клеток открывается тот жеPOI. В сводке крупной ячейки столица считается1раз,а не по числузначков. JSON/Undo не создаёт копий текста/Knave-результатов/источника.",
+      "submission_source_suites": [
+        "test/detailPlacement.test.mjs",
+        "test/detailGrid.test.mjs",
+        "test/detailGeography.test.mjs",
+        "test/browser/detail-adaptation.smoke.mjs"
+      ],
+      "independent_verdict": null
+    },
+    {
+      "id": "DTL-10",
+      "name": "Shared cell",
+      "expected": "Несколько малыхPOI и город/мост могут занимать одну отображаемую клетку. Список выбора сохраняет всеID; ради разделениязначков нельзя смещать водныйякорь/географию. Физическое совпадение противоречащих профилей проверяется отдельно.",
+      "submission_source_suites": [
+        "test/detailPlacement.test.mjs",
+        "test/detailGrid.test.mjs",
+        "test/detailGeography.test.mjs",
+        "test/browser/detail-adaptation.smoke.mjs"
+      ],
+      "independent_verdict": null
+    },
+    {
+      "id": "DTL-11",
+      "name": "Water shore",
+      "expected": "POI с обязательнымshore/water_contact получает конкретный допустимый берег/водоём и точкуконтакта; после детализации остаётся у того же объекта воды. Сухой центральный гекс вместо берега отклоняется; вода не передвигается радиPOI.",
+      "submission_source_suites": [
+        "test/detailGeography.test.mjs",
+        "test/detailPlacement.test.mjs",
+        "test/riverIntegration.test.mjs",
+        "test/mythicKingdom.test.mjs"
+      ],
+      "independent_verdict": null
+    },
+    {
+      "id": "DTL-12",
+      "name": "Water river",
+      "expected": "river_contact сохраняет ту же riverID/участок/порт; озеро рядом не заменяет реку. Water-contact-unknown не приписывать по имени«мельница». Для legacy без происхождения unknown явно отделён от обязательного.",
+      "submission_source_suites": [
+        "test/detailGeography.test.mjs",
+        "test/detailPlacement.test.mjs",
+        "test/riverIntegration.test.mjs",
+        "test/mythicKingdom.test.mjs"
+      ],
+      "independent_verdict": null
+    },
+    {
+      "id": "DTL-13",
+      "name": "Water objects/crossings",
+      "expected": "ВодныйPOIостаётся на той же воде; crossing/rapid/waterfall профиль привязывается к соответствующему реальному элементу. У города достаточно подходящей набережной/входа,не каждый его гекс обязан касаться воды.",
+      "submission_source_suites": [
+        "test/detailGeography.test.mjs",
+        "test/detailPlacement.test.mjs",
+        "test/riverIntegration.test.mjs",
+        "test/mythicKingdom.test.mjs"
+      ],
+      "independent_verdict": null
+    },
+    {
+      "id": "DTL-14",
+      "name": "Center fallback",
+      "expected": "Без более сильного требования выбрать центральный допустимый1mileгекс исходной области; при равенстве — устойчивый координатный порядок. Требования воды/входа/среды не заменяются центральностью; новых случайных бросков для размещения нет.",
+      "submission_source_suites": [
+        "test/detailGeography.test.mjs",
+        "test/detailPlacement.test.mjs",
+        "test/riverIntegration.test.mjs",
+        "test/mythicKingdom.test.mjs"
+      ],
+      "independent_verdict": null
+    },
+    {
+      "id": "DTL-15",
+      "name": "Real route contact",
+      "expected": "Маршрут, обслуживающийPOI, имеет действительный связанный узел доступа в охвате и положительный участок внутри него; разрешён вход на границе с дальнейшим вхождением. Дорога в соседней клетке,касаниеугла,видимое наложениенесвязанныхлиний не проходят.",
+      "submission_source_suites": [
+        "test/detailGeography.test.mjs",
+        "test/detailPlacement.test.mjs",
+        "test/riverIntegration.test.mjs",
+        "test/mythicKingdom.test.mjs"
+      ],
+      "independent_verdict": null
+    },
+    {
+      "id": "DTL-16",
+      "name": "Capital entry",
+      "expected": "Дорога/тропа входит через указанный вход в площадь многогексовой столицы. Не требуется проводить путь через каждыйповторзначка; граф соединён сPOI,пиктограммы не уводят вход в соседнюю клетку.",
+      "submission_source_suites": [
+        "test/detailGeography.test.mjs",
+        "test/detailPlacement.test.mjs",
+        "test/riverIntegration.test.mjs",
+        "test/mythicKingdom.test.mjs"
+      ],
+      "independent_verdict": null
+    },
+    {
+      "id": "DTL-17",
+      "name": "No forced access",
+      "expected": "Не создавать дорогу к каждому скрытому/изолированномуPOI. Выход дороги в неизвестную область поROAD03 допустим. Требованиепроходитьпообъекту относится к предусмотренным/явно назначенным соединениям.",
+      "submission_source_suites": [
+        "test/detailGeography.test.mjs",
+        "test/detailPlacement.test.mjs",
+        "test/riverIntegration.test.mjs",
+        "test/mythicKingdom.test.mjs"
+      ],
+      "independent_verdict": null
+    },
+    {
+      "id": "DTL-18",
+      "name": "Water crossing legality",
+      "expected": "Новая/адаптированная ветвь пути через воду получает настоящую переправу поROAD/RIV,безрисованногофальшсоединителя. ПриF≥3брод запрещён; невозможное допустимое подключение отклоняется атомарно.",
+      "submission_source_suites": [
+        "test/detailGeography.test.mjs",
+        "test/detailPlacement.test.mjs",
+        "test/riverIntegration.test.mjs",
+        "test/mythicKingdom.test.mjs"
+      ],
+      "independent_verdict": null
+    },
+    {
+      "id": "DTL-19",
+      "name": "Freeze hydrography",
+      "expected": "После детализации того же озера/реки сохраняются IDs,координаты,истоки,стоки,F,ёмкости,пороги/водопады и связи. Число новых мелких клеток не поступает в прежниеN-зависимыеформулыRIV008/009/017.",
+      "submission_source_suites": [
+        "test/detailGeography.test.mjs",
+        "test/detailPlacement.test.mjs",
+        "test/riverIntegration.test.mjs",
+        "test/mythicKingdom.test.mjs"
+      ],
+      "independent_verdict": null
+    },
+    {
+      "id": "DTL-20",
+      "name": "Freeze accepted map on view",
+      "expected": "Простое изменение уровня/зум не переноситPOIи не меняет дороги. Адаптация старыхякорей/путей — только явная транзакция с предпросмотром: неизменные части дорог и вся гидрография сохранены; добавленные соединители валидны и сохранены,не простоSVG.",
+      "submission_source_suites": [
+        "test/detailGeography.test.mjs",
+        "test/detailPlacement.test.mjs",
+        "test/riverIntegration.test.mjs",
+        "test/mythicKingdom.test.mjs"
+      ],
+      "independent_verdict": null
+    },
+    {
+      "id": "DTL-21",
+      "name": "Edit/remap/remove",
+      "expected": "Переименование,обычный переносPOI,E7/E8переносгеографии и удаление обновляют единыйохват/привязки по утверждённым identityправилам. Невозможный перенос сводой/дорогой — точный отказ; невисячие ссылки,нечастичная потеряконтента.",
+      "submission_source_suites": [
+        "test/detailIdentity.test.mjs",
+        "test/detailGeography.test.mjs",
+        "test/mapTransactions.test.mjs",
+        "test/saveSafety.test.mjs"
+      ],
+      "independent_verdict": null
+    },
+    {
+      "id": "DTL-22",
+      "name": "Persistence/version",
+      "expected": "Экспорт активногоDETAIL1 — явныйv11; импорт поддерживает старыеv2–v10 ивалидныйv11 атомарно. Futureversion,неизвестныйprofile,невалидныеcells/водныепорты/путевыеrefs отклоняются до изменениякарты. v10не выдавать за форматсновымиобязательнымиполями.",
+      "submission_source_suites": [
+        "test/detailIdentity.test.mjs",
+        "test/detailGeography.test.mjs",
+        "test/mapTransactions.test.mjs",
+        "test/saveSafety.test.mjs"
+      ],
+      "independent_verdict": null
+    },
+    {
+      "id": "DTL-23",
+      "name": "History/RNG",
+      "expected": "Активация/адаптация,правкаохвата и связанныйремонтпути — каждая однадокументная транзакция с точнымUndo/Redo. ПринятыеKnave/MBтексты,кубы,счётчики иRNG не перебрасываются припросмотре/адаптации/повторномоткрытии.",
+      "submission_source_suites": [
+        "test/detailIdentity.test.mjs",
+        "test/detailGeography.test.mjs",
+        "test/mapTransactions.test.mjs",
+        "test/saveSafety.test.mjs"
+      ],
+      "independent_verdict": null
+    },
+    {
+      "id": "DTL-24",
+      "name": "Overview/UI",
+      "expected": "На6/12/24малые границы скрыты,смешанныебиомы сохранены. Отображение повторов можетсворачиваться в1значок+числоохвата при нехваткеместа,но общийконтур/полныйсписок/переход1миля сохраняются. Карточка показываетуникальныеPOI,частьобъекта,охват/источникразмера иводу/входы компактно.",
+      "submission_source_suites": [
+        "test/detailGeography.test.mjs",
+        "test/detailGrid.test.mjs",
+        "test/browser/detail-adaptation.smoke.mjs",
+        "test/browser/world-random.smoke.mjs"
+      ],
+      "independent_verdict": null
+    },
+    {
+      "id": "DTL-25",
+      "name": "Modes/compatibility",
+      "expected": "Classic,MB,Knave сохраняют собственные квоты/принадлежность/теги/центральные роли. MBruins не получает фильтрнеактивныхмифов; player-map/VTT не входит. Старые6mileKnave данные не заменяются новымисточниковымутверждениемгеометрии.",
+      "submission_source_suites": [
+        "test/detailGeography.test.mjs",
+        "test/detailGrid.test.mjs",
+        "test/browser/detail-adaptation.smoke.mjs",
+        "test/browser/world-random.smoke.mjs"
+      ],
+      "independent_verdict": null
+    },
+    {
+      "id": "DTL-26",
+      "name": "Responsive/export",
+      "expected": "Actualdesktop1500/390/320,keyboard/touch,доступныецели/Cancel/ошибка/длинныеимена,выборперекрывающихсяPOI проверены наexactSHA. PNG/SVG отображают выбранныйуровень/охват без дублированияданных; экспорт остаётсяGMview,секреты автоматическине очищаются.",
+      "submission_source_suites": [
+        "test/detailGeography.test.mjs",
+        "test/detailGrid.test.mjs",
+        "test/browser/detail-adaptation.smoke.mjs",
+        "test/browser/world-random.smoke.mjs"
+      ],
+      "independent_verdict": null
+    },
+    {
+      "id": "DTL-27",
+      "name": "Failure/no space",
+      "expected": "Не хватает допустимыхсоседнихклетокдлястолицы иливоды/дорог — указатьконкретноеограничение,предложитьизменитьохват/привязку,не сдвигатьреку/другиеPOI молча. Публикационныйпакет не содержитнеразрешённыхобязательныхпривязок.",
+      "submission_source_suites": [
+        "test/detailGeography.test.mjs",
+        "test/detailGrid.test.mjs",
+        "test/browser/detail-adaptation.smoke.mjs",
+        "test/browser/world-random.smoke.mjs"
+      ],
+      "independent_verdict": null
+    },
+    {
+      "id": "DTL-28",
+      "name": "Required checks/evidence",
+      "expected": "npm run check Node24, build+test:browser и применимый отдельныйRNG выполняются поAGENTS. Переиспользуются существующие генерация/POI/editor/E7/E8/import/historyfixtures; нетсамовольнойновойтяжёлойсерии003или500картрадибаллов. Передrelease — независимыйexactSHAreview всегоDETAIL1+score_assessment1.2.",
+      "submission_source_suites": [
+        "test/detailGeography.test.mjs",
+        "test/detailGrid.test.mjs",
+        "test/browser/detail-adaptation.smoke.mjs",
+        "test/browser/world-random.smoke.mjs"
+      ],
+      "independent_verdict": null
+    }
+  ],
+  "combined_scope": [
+    "DETAIL1",
+    "integrated CLASSIFY1"
+  ],
+  "historical_risk": "CLASSIFY1-VALIDATION-RIV011 unknown; preserve without new measured claim",
+  "evidence_gaps": [
+    "Direct touch on active DETAIL1 targets/extent form, long names, overlapping POI pointer/list flow, visible focus/error state and SVG image export are not proved by the current single-capital browser walkthrough.",
+    "Actual rendered 12/24 compact summary screenshot and bounded response timing on existing fixtures require independent acceptance; view-step DOM presence and pure summary/controller checks are narrower evidence.",
+    "CLASSIFY1-VALIDATION-RIV011 remains historical unknown; no new 500-map expert run authorized or implied.",
+    "No independent combined review or model1.2 score_assessment yet; no publication permission."
+  ],
+  "required_reviewer_outcome": "Findings with exact file/line/repro or independent acceptance of exact SHA plus score_assessment1.2 (quality/breadth/limitations). No release authorization inferred."
+}

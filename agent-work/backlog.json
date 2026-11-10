@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "model_version": "1.2",
-  "updated_on": "2026-11-10T07:26:36.817Z",
+  "updated_on": "2026-11-10",
   "strategy_version": "1.0",
   "note": "Перенесённые идеи, не разрешение на реализацию. implemented_unverified означает наличие функции/отметки о выполнении, а не G3/G4. criterion_id — предлагаемое отнесение, не начисленный эффект. Полные уникальные детали сохранены в снимке исходного документа.",
   "source_snapshot": {
@@ -15344,7 +15344,7 @@
     {
       "task_id": "HX-BL-051",
       "title": "Обзор карты6/12/24мили и многоуровневая детализация",
-      "status": "implementation_in_progress",
+      "status": "review_ready",
       "problem": "Ни расширение карты на том же уровне, ни неподвижная подложка не подтверждают согласованность вложенных карт. Общее правило есть, проверенного WWN-профиля не было.",
       "benefit": "Ведущий готовит подробную начальную область, сохраняя узнаваемую географию общего региона.",
       "game_editions": [
@@ -15407,7 +15407,7 @@
       },
       "research_handoff_ref": "agent-work/research/requirements/WWN-nested-maps-L1.json",
       "research_result_ref": "agent-work/research/runs/2026-11-08T0935-WWN-nested-maps.json",
-      "readiness": "approved_spec_implementation_started",
+      "readiness": "implementation_submitted_independent_combined_review_ready",
       "implementation_authorized": true,
       "release_authorized": false,
       "research_components": [
@@ -15818,9 +15818,9 @@
       "release_approved": false,
       "recommended_priority": 1,
       "owner_direction_ref": "agent-work/proposals/2026-11-09-hex-scale-owner-direction.json",
-      "next_role": "programmer",
+      "next_role": "reviewer",
       "next_role_after_approval": "business_analyst",
-      "next_step": "Программист продолжает утверждённую HX-BL-051/DETAIL1 с bc220e4/treeb60cac98 (WIP интегрирует main1962fb9a; PR496 всё ещё09b3c9b). Размещение нового land POI после финальной воды исправлено: не повторять этот разбор. До нового полного прогона адресно разобрать7оставшихся отрицательных случаев. Первый: mapTransactions:111 искусственно заменяет регионы/POI после addFallbackTractToMap, сохраняя несовместимый physicalGrid; validator правильно отказывает POI identities do not match live owners. Проверить ту же причину в riverBackendFixture:560 для3E5cases; явно оформить legacy fixture без spatial layer либо построить согласованный слой, не ослабляя production validation и не удаляя активные DETAIL1 tests. Отдельно проверить NotesLossConflict приоритет/fixtures, реальный RIV expansion и future save version: notes fixture не должна считать поддержаннуюv11 будущей без проверки контракта. Затем обязательные check/browser, оставшийся фактический UI1/6/12/24 и независимый combined exactSHAreview/score_assessment1.2. Публикация отдельно не разрешена.",
+      "next_step": "Проверяющий независимо проверяет весь PR496 (DETAIL1 + интегрированная CLASSIFY1) на a4e8a484efcdf1bd8c38efb9e37a22c4e39a9dd9/tree a37e5de40297b42c72b402785241986cc1cc32ff по DTL-01…28 и модели1.2, свежим отдельным агентом. Перепроверить source/derived click и RNG, воду/входы/порты/историю, режимыClassic/MB/Knave; actual touch, длинные имена, перекрывающиесяPOI, SVG и отзывчивость на существующих fixtures остаются отдельными пробелами browser evidence. Сохранить findings либо заключение+score_assessment1.2 на exactSHA, Сохранить историческую CLASSIFY1-VALIDATION-RIV011 как unknown без доказанного закрытия; разрешение на старый9dab не переносить на новыйSHA. Без нового тяжёлого замера003/500карт. После замечаний — программист; после принятия — отдельное разрешение владельца на конкретный пакет. Новых согласований начала нет; публикация PR496 не разрешена.",
       "source_compatibility_notes": [
         {
           "requirement_id": "PF2-RM-003-L1",
@@ -15850,42 +15850,56 @@
       "spec_ref": "agent-work/specs/HX-BL-051-DETAIL1.md",
       "spec_version": "DTL-1.0",
       "acceptance_ref": "agent-work/specs/HX-BL-051-DETAIL1.acceptance.json",
-      "handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-final-water-resume.json",
+      "handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-marker-extent-review.json",
       "active_stage": {
         "stage_id": "DETAIL1",
-        "substage": "spatial_summary_verified_UI_completion_pending",
-        "status": "spatial_summary_selection_implemented_UI_completion_pending",
+        "substage": "programmer_complete_ready_for_independent_combined_review",
+        "status": "review_ready",
         "claim_ref": "agent-work/claims/2026-11-09T0500-programmer-HX-BL-051-DETAIL1-A.json",
         "spec_ref": "agent-work/specs/HX-BL-051-DETAIL1.md",
-        "branch": "agent/hx-bl-051-activation-wip",
-        "head_sha": "e1217b1396c88700afbbfbc80d88caecf2c93aba",
-        "tree_sha": "4a2eb65611905054547b544397ad9ad1c5e315f5",
+        "branch": "agent/hx-bl-051-detail1",
+        "head_sha": "a4e8a484efcdf1bd8c38efb9e37a22c4e39a9dd9",
+        "tree_sha": "a37e5de40297b42c72b402785241986cc1cc32ff",
         "pr": 496,
-        "handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-spatial-summary-resume.json",
-        "evidence_ref": "agent-work/evidence/HX-BL-051-spatial-summary",
-        "review_ready": false,
+        "handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-marker-extent-review.json",
+        "evidence_ref": "agent-work/evidence/HX-BL-051-marker-extent",
+        "review_ready": true,
         "release_approved": false,
-        "result_ref": "agent-work/results/2026-11-10T0711-programmer-HX-BL-051-spatial-summary.json",
+        "result_ref": "agent-work/results/2026-11-10T0800-programmer-HX-BL-051-marker-extent.json",
         "release_authorized": false,
-        "next_role": "programmer",
-        "next_step": "Программист продолжает HX-BL-051/DETAIL1 с e1217b1396c88700afbbfbc80d88caecf2c93aba/tree4a2eb65611905054547b544397ad9ad1c5e315f5 в agent/hx-bl-051-activation-wip. Реализованы selectedCell в устойчивых1mileкоординатах, реальные пересечения/фрагменты местности, уникальные POI, раскрытие extent/воды/путей, переход к клетке нужногоPOI и pointer/keyboard цели для производных1/12/24. Следующий ограниченный этап D: завершить повторяемые маркеры POI в клетках и общий контур, выбор пересекающихся объектов, адресную форму правки охвата, клавиатурные цели6mile и видимый selected/focus highlight, сворачивание исходной6mileкарточки при обзорном12/24. Затем actual desktop1500/390/320, pointer/touch/keyboard/zoom/rotation и PNG выбранного вида на exactSHA. Новая отрисовка не проверена браузером: обычный/RNG launch socket denied; использовать доступную разрешённую CI/browser среду, не объявлять screenshots выполненными. После завершения обновить существующий PR496 (покаhead09b3c9b), независимый combined review+score_assessment1.2. Новой продуктовой задачи/измерений сверхлимита/публикации не разрешено.",
-        "checks_status": "Node386pass_typecheck_build_passed_browser_RNG_launch_blocked",
-        "base_sha": "bc220e48341723ac6509ddb29832b02226a74ed8",
-        "local_sha": "2c40d55716af2199087ebb1a767e22ef8c982fd0",
-        "ui_actual_ref": "agent-work/evidence/HX-BL-051-DETAIL1-adaptation/ui-walkthrough.json",
+        "next_role": "reviewer",
+        "next_step": "Проверяющий независимо проверяет весь PR496 (DETAIL1 + интегрированная CLASSIFY1) на a4e8a484efcdf1bd8c38efb9e37a22c4e39a9dd9/tree a37e5de40297b42c72b402785241986cc1cc32ff по DTL-01…28 и модели1.2, свежим отдельным агентом. Перепроверить source/derived click и RNG, воду/входы/порты/историю, режимыClassic/MB/Knave; actual touch, длинные имена, перекрывающиесяPOI, SVG и отзывчивость на существующих fixtures остаются отдельными пробелами browser evidence. Сохранить findings либо заключение+score_assessment1.2 на exactSHA, Сохранить историческую CLASSIFY1-VALIDATION-RIV011 как unknown без доказанного закрытия; разрешение на старый9dab не переносить на новыйSHA. Без нового тяжёлого замера003/500карт. После замечаний — программист; после принятия — отдельное разрешение владельца на конкретный пакет. Новых согласований начала нет; публикация PR496 не разрешена.",
+        "checks_status": "check386_typecheck_build_browser9_RNG_passed_CI42782321639",
+        "base_sha": "e1217b1396c88700afbbfbc80d88caecf2c93aba",
+        "local_sha": "0f9efbcd1d26505489b1280f4cbeadb7de71578f",
+        "ui_actual_ref": "agent-work/evidence/HX-BL-051-marker-extent/ui/walkthrough.json",
         "working_branch": "agent/hx-bl-051-activation-wip",
-        "wip_head_sha": "e1217b1396c88700afbbfbc80d88caecf2c93aba",
-        "wip_tree_sha": "4a2eb65611905054547b544397ad9ad1c5e315f5"
+        "wip_head_sha": "a4e8a484efcdf1bd8c38efb9e37a22c4e39a9dd9",
+        "wip_tree_sha": "a37e5de40297b42c72b402785241986cc1cc32ff",
+        "execution_running": false,
+        "pr_head_sha": "a4e8a484efcdf1bd8c38efb9e37a22c4e39a9dd9"
       },
-      "head_sha": "09b3c9bdb886e0a49eaae6af5a28877a0ea7addc",
-      "result_ref": "agent-work/results/2026-11-10T0711-programmer-HX-BL-051-spatial-summary.json",
+      "head_sha": "a4e8a484efcdf1bd8c38efb9e37a22c4e39a9dd9",
+      "result_ref": "agent-work/results/2026-11-10T0800-programmer-HX-BL-051-marker-extent.json",
       "latest_activation_checkpoint": {
-        "branch": "agent/hx-bl-051-activation-wip",
-        "head_sha": "e1217b1396c88700afbbfbc80d88caecf2c93aba",
-        "tree_sha": "4a2eb65611905054547b544397ad9ad1c5e315f5",
-        "status": "spatial_summary_selection_implemented_UI_completion_pending",
-        "result_ref": "agent-work/results/2026-11-10T0711-programmer-HX-BL-051-spatial-summary.json",
-        "review_ready": false
+        "branch": "agent/hx-bl-051-detail1",
+        "head_sha": "a4e8a484efcdf1bd8c38efb9e37a22c4e39a9dd9",
+        "tree_sha": "a37e5de40297b42c72b402785241986cc1cc32ff",
+        "status": "review_ready",
+        "result_ref": "agent-work/results/2026-11-10T0800-programmer-HX-BL-051-marker-extent.json",
+        "review_ready": true
+      },
+      "ui_actual": {
+        "head_sha": "a4e8a484efcdf1bd8c38efb9e37a22c4e39a9dd9",
+        "shown_in_chat": true,
+        "shown_at": "2026-11-10T08:42:10.024Z",
+        "ref": "agent-work/evidence/HX-BL-051-marker-extent/ui/walkthrough.json",
+        "desktop": "agent-work/evidence/HX-BL-051-marker-extent/ui/detail1-desktop-after.png",
+        "narrow": [
+          "agent-work/evidence/HX-BL-051-marker-extent/ui/detail1-summary-390.png",
+          "agent-work/evidence/HX-BL-051-marker-extent/ui/detail1-summary-320.png"
+        ],
+        "independent_acceptance": false
       }
     },
     {
