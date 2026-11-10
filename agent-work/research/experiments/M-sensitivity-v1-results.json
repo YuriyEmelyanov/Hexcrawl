@@ -1,0 +1,5942 @@
+{
+  "experiment_id": "HX-RSR-EXP-M-SENSITIVITY-v1",
+  "version": 1,
+  "status": "diagnostic_only_not_activation_candidate",
+  "active_ranking_changed": false,
+  "ranking_ref": "agent-work/market/three-scenario-ranking-2026-11-06.json",
+  "ranking_version": "three-scenario-ranks-1.4-create-evidence",
+  "design": "20 one-at-a-time endpoints: existing low/highM for each referenceoveralltop10, all p/T/R/C and othergamesM fixed at reference. Not joint scenarios or confidence bounds.",
+  "unit": "Existing hypothetical GMs per12months; not new observations",
+  "no_new_weight": true,
+  "population_compositions": {
+    "overall": 70,
+    "standalone_create": 73
+  },
+  "representation_discrepancy": {
+    "pairs": [
+      {
+        "ids": [
+          "DS",
+          "WOD20"
+        ],
+        "play_now_D": [
+          151.4332071389941,
+          151.43320713899408
+        ],
+        "active_ranks": [
+          65,
+          66
+        ]
+      }
+    ],
+    "legacy_audit_relative_tolerance": 1e-10,
+    "legacy_audit_source": "agent-work/market/recompute-three-scenario-ranking.mjs ranks() helper",
+    "interpretation": "Exact serialized comparisons reproduce active ranks. The historical helper tolerance merges an almost-equal pair and changes DS/HARN overall tie. This experiment uses exact comparisons solely to reproduce current active data, not to recommend them as the correct long-term tie policy.",
+    "tolerant_reference_differences": [
+      {
+        "game": "DS",
+        "play_now_active": 65.0,
+        "play_now_tolerant": 65.5,
+        "overall_active": 64.5,
+        "overall_tolerant": 65.0
+      },
+      {
+        "game": "HARN",
+        "play_now_active": 61.0,
+        "play_now_tolerant": 61.0,
+        "overall_active": 64.5,
+        "overall_tolerant": 64.0
+      },
+      {
+        "game": "WOD20",
+        "play_now_active": 66.0,
+        "play_now_tolerant": 65.5,
+        "overall_active": 66.0,
+        "overall_tolerant": 66.0
+      }
+    ],
+    "active_change": false,
+    "proposal": "No tie-policy correction proposed or activated; a future correction needs exact versioned owner approval and full low/reference/high comparison."
+  },
+  "validation": {
+    "reference_formulas": "all non-null D/U reproduced",
+    "reference_ranks": "all70 overall and all standalone scenario ranks reproduced",
+    "tie_average_fixture": "pass",
+    "boundary_tie_fixture": "pass"
+  },
+  "baseline_sets": {
+    "overall": {
+      "5": [
+        "DND5",
+        "PF2",
+        "KNAVE2",
+        "SD",
+        "ROOT"
+      ],
+      "10": [
+        "DND5",
+        "PF2",
+        "KNAVE2",
+        "SD",
+        "ROOT",
+        "CAIRN2",
+        "OSE",
+        "MB",
+        "DW",
+        "MOTH"
+      ],
+      "20": [
+        "DND5",
+        "PF2",
+        "KNAVE2",
+        "SD",
+        "ROOT",
+        "CAIRN2",
+        "OSE",
+        "MB",
+        "DW",
+        "MOTH",
+        "WWN",
+        "PF1",
+        "PIRATE",
+        "AWN",
+        "VAARN",
+        "STARF",
+        "BSH",
+        "ODD",
+        "FL",
+        "SWC"
+      ]
+    },
+    "create": {
+      "5": [
+        "DND5",
+        "PF2",
+        "KNAVE2",
+        "SD",
+        "MB"
+      ],
+      "10": [
+        "DND5",
+        "PF2",
+        "KNAVE2",
+        "SD",
+        "MB",
+        "WWN",
+        "ROOT",
+        "OSE",
+        "CAIRN2",
+        "PIRATE"
+      ],
+      "20": [
+        "DND5",
+        "PF2",
+        "KNAVE2",
+        "SD",
+        "MB",
+        "WWN",
+        "ROOT",
+        "OSE",
+        "CAIRN2",
+        "PIRATE",
+        "SI",
+        "AWN",
+        "VAARN",
+        "BSH",
+        "PF1",
+        "SWC",
+        "MAUS",
+        "SALV",
+        "DCC",
+        "OSRIC"
+      ]
+    },
+    "develop": {
+      "5": [
+        "DND5",
+        "PF2",
+        "TOR2",
+        "DW",
+        "TW2000"
+      ],
+      "10": [
+        "DND5",
+        "PF2",
+        "TOR2",
+        "DW",
+        "TW2000",
+        "KNAVE2",
+        "SD",
+        "MOTH",
+        "ROOT",
+        "NUM"
+      ],
+      "20": [
+        "DND5",
+        "PF2",
+        "TOR2",
+        "DW",
+        "TW2000",
+        "KNAVE2",
+        "SD",
+        "MOTH",
+        "ROOT",
+        "NUM",
+        "OSE",
+        "FL",
+        "CAIRN2",
+        "MB",
+        "PF1",
+        "WWN",
+        "PIRATE",
+        "AWN",
+        "STARF",
+        "VAARN"
+      ]
+    },
+    "play_now": {
+      "5": [
+        "DND5",
+        "PF2",
+        "TOR2",
+        "DW",
+        "TW2000"
+      ],
+      "10": [
+        "DND5",
+        "PF2",
+        "TOR2",
+        "DW",
+        "TW2000",
+        "MOTH",
+        "KNAVE2",
+        "SD",
+        "CAIRN2",
+        "FL"
+      ],
+      "20": [
+        "DND5",
+        "PF2",
+        "TOR2",
+        "DW",
+        "TW2000",
+        "MOTH",
+        "KNAVE2",
+        "SD",
+        "CAIRN2",
+        "FL",
+        "NUM",
+        "ROOT",
+        "OSE",
+        "PF1",
+        "MB",
+        "STARF",
+        "WWN",
+        "PIRATE",
+        "ODD",
+        "AWN"
+      ]
+    }
+  },
+  "summary": [
+    {
+      "game_id": "DND5",
+      "baseline_overall": 1.0,
+      "overall_at_own_low_high": [
+        2.0,
+        1.0
+      ],
+      "create_at_own_low_high": [
+        5.0,
+        1.0
+      ],
+      "in_overall_top5_at_both_own_endpoints": true,
+      "in_create_top5_at_both_own_endpoints": true
+    },
+    {
+      "game_id": "PF2",
+      "baseline_overall": 2.0,
+      "overall_at_own_low_high": [
+        2.0,
+        1.0
+      ],
+      "create_at_own_low_high": [
+        3.0,
+        1.0
+      ],
+      "in_overall_top5_at_both_own_endpoints": true,
+      "in_create_top5_at_both_own_endpoints": true
+    },
+    {
+      "game_id": "KNAVE2",
+      "baseline_overall": 3.0,
+      "overall_at_own_low_high": [
+        13.0,
+        3.0
+      ],
+      "create_at_own_low_high": [
+        11.0,
+        3.0
+      ],
+      "in_overall_top5_at_both_own_endpoints": false,
+      "in_create_top5_at_both_own_endpoints": false
+    },
+    {
+      "game_id": "SD",
+      "baseline_overall": 4.0,
+      "overall_at_own_low_high": [
+        16.0,
+        3.0
+      ],
+      "create_at_own_low_high": [
+        14.0,
+        3.0
+      ],
+      "in_overall_top5_at_both_own_endpoints": false,
+      "in_create_top5_at_both_own_endpoints": false
+    },
+    {
+      "game_id": "ROOT",
+      "baseline_overall": 5.0,
+      "overall_at_own_low_high": [
+        25.0,
+        3.0
+      ],
+      "create_at_own_low_high": [
+        18.0,
+        3.0
+      ],
+      "in_overall_top5_at_both_own_endpoints": false,
+      "in_create_top5_at_both_own_endpoints": false
+    },
+    {
+      "game_id": "CAIRN2",
+      "baseline_overall": 6.0,
+      "overall_at_own_low_high": [
+        27.5,
+        3.0
+      ],
+      "create_at_own_low_high": [
+        26.0,
+        3.0
+      ],
+      "in_overall_top5_at_both_own_endpoints": false,
+      "in_create_top5_at_both_own_endpoints": false
+    },
+    {
+      "game_id": "OSE",
+      "baseline_overall": 7.0,
+      "overall_at_own_low_high": [
+        27.0,
+        3.0
+      ],
+      "create_at_own_low_high": [
+        20.0,
+        3.0
+      ],
+      "in_overall_top5_at_both_own_endpoints": false,
+      "in_create_top5_at_both_own_endpoints": false
+    },
+    {
+      "game_id": "MB",
+      "baseline_overall": 8.0,
+      "overall_at_own_low_high": [
+        27.0,
+        3.0
+      ],
+      "create_at_own_low_high": [
+        15.0,
+        3.0
+      ],
+      "in_overall_top5_at_both_own_endpoints": false,
+      "in_create_top5_at_both_own_endpoints": false
+    },
+    {
+      "game_id": "DW",
+      "baseline_overall": 9.0,
+      "overall_at_own_low_high": [
+        22.0,
+        5.0
+      ],
+      "create_at_own_low_high": [
+        50.0,
+        15.0
+      ],
+      "in_overall_top5_at_both_own_endpoints": false,
+      "in_create_top5_at_both_own_endpoints": false
+    },
+    {
+      "game_id": "MOTH",
+      "baseline_overall": 10.0,
+      "overall_at_own_low_high": [
+        25.0,
+        3.5
+      ],
+      "create_at_own_low_high": [
+        40.0,
+        10.0
+      ],
+      "in_overall_top5_at_both_own_endpoints": false,
+      "in_create_top5_at_both_own_endpoints": false
+    }
+  ],
+  "cases": [
+    {
+      "focal_game": "DND5",
+      "endpoint_label": "low",
+      "M_before": 563656.0302866414,
+      "M_diagnostic": 50729.042725797735,
+      "p_T_R_C": "unchanged reference for every game; all other M unchanged",
+      "before": {
+        "overall_rank": 1.0,
+        "scenario_ranks": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "D": [
+          33819.361817198485,
+          50729.04272579773,
+          70457.00378583018
+        ]
+      },
+      "diagnostic": {
+        "overall_rank": 2.0,
+        "scenario_ranks": [
+          5.0,
+          4.0,
+          4.0
+        ],
+        "D": [
+          3043.742563547864,
+          4565.613845321796,
+          6341.130340724717
+        ],
+        "D_gt_1000": [
+          true,
+          true,
+          true
+        ],
+        "threshold_note": "Strict D>1000 only, not evidence of documented suitability or a complete eligible-pool calculation."
+      },
+      "membership_changes": {
+        "overall": {
+          "5": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "PF2",
+              "DND5",
+              "KNAVE2",
+              "SD",
+              "ROOT"
+            ]
+          },
+          "10": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "PF2",
+              "DND5",
+              "KNAVE2",
+              "SD",
+              "ROOT",
+              "CAIRN2",
+              "OSE",
+              "MB",
+              "DW",
+              "MOTH"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "PF2",
+              "DND5",
+              "KNAVE2",
+              "SD",
+              "ROOT",
+              "CAIRN2",
+              "OSE",
+              "MB",
+              "DW",
+              "MOTH",
+              "WWN",
+              "PF1",
+              "PIRATE",
+              "AWN",
+              "VAARN",
+              "STARF",
+              "BSH",
+              "ODD",
+              "FL",
+              "SWC"
+            ]
+          }
+        },
+        "create": {
+          "5": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "MB",
+              "DND5"
+            ]
+          },
+          "10": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "MB",
+              "DND5",
+              "WWN",
+              "ROOT",
+              "OSE",
+              "CAIRN2",
+              "PIRATE"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "MB",
+              "DND5",
+              "WWN",
+              "ROOT",
+              "OSE",
+              "CAIRN2",
+              "PIRATE",
+              "SI",
+              "AWN",
+              "VAARN",
+              "BSH",
+              "PF1",
+              "SWC",
+              "MAUS",
+              "SALV",
+              "DCC",
+              "OSRIC"
+            ]
+          }
+        },
+        "develop": {
+          "5": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "PF2",
+              "TOR2",
+              "DW",
+              "DND5",
+              "TW2000"
+            ]
+          },
+          "10": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "PF2",
+              "TOR2",
+              "DW",
+              "DND5",
+              "TW2000",
+              "KNAVE2",
+              "SD",
+              "MOTH",
+              "ROOT",
+              "NUM"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "PF2",
+              "TOR2",
+              "DW",
+              "DND5",
+              "TW2000",
+              "KNAVE2",
+              "SD",
+              "MOTH",
+              "ROOT",
+              "NUM",
+              "OSE",
+              "FL",
+              "CAIRN2",
+              "MB",
+              "PF1",
+              "WWN",
+              "PIRATE",
+              "AWN",
+              "STARF",
+              "VAARN"
+            ]
+          }
+        },
+        "play_now": {
+          "5": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "PF2",
+              "TOR2",
+              "DW",
+              "DND5",
+              "TW2000"
+            ]
+          },
+          "10": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "PF2",
+              "TOR2",
+              "DW",
+              "DND5",
+              "TW2000",
+              "MOTH",
+              "KNAVE2",
+              "SD",
+              "CAIRN2",
+              "FL"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "PF2",
+              "TOR2",
+              "DW",
+              "DND5",
+              "TW2000",
+              "MOTH",
+              "KNAVE2",
+              "SD",
+              "CAIRN2",
+              "FL",
+              "NUM",
+              "ROOT",
+              "OSE",
+              "PF1",
+              "MB",
+              "STARF",
+              "WWN",
+              "PIRATE",
+              "ODD",
+              "AWN"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "focal_game": "DND5",
+      "endpoint_label": "high",
+      "M_before": 563656.0302866414,
+      "M_diagnostic": 9863980.530016225,
+      "p_T_R_C": "unchanged reference for every game; all other M unchanged",
+      "before": {
+        "overall_rank": 1.0,
+        "scenario_ranks": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "D": [
+          33819.361817198485,
+          50729.04272579773,
+          70457.00378583018
+        ]
+      },
+      "diagnostic": {
+        "overall_rank": 1.0,
+        "scenario_ranks": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "D": [
+          591838.8318009735,
+          887758.2477014601,
+          1232997.566252028
+        ],
+        "D_gt_1000": [
+          true,
+          true,
+          true
+        ],
+        "threshold_note": "Strict D>1000 only, not evidence of documented suitability or a complete eligible-pool calculation."
+      },
+      "membership_changes": {
+        "overall": {
+          "5": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "ROOT"
+            ]
+          },
+          "10": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "ROOT",
+              "CAIRN2",
+              "OSE",
+              "MB",
+              "DW",
+              "MOTH"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "ROOT",
+              "CAIRN2",
+              "OSE",
+              "MB",
+              "DW",
+              "MOTH",
+              "WWN",
+              "PF1",
+              "PIRATE",
+              "AWN",
+              "VAARN",
+              "STARF",
+              "BSH",
+              "ODD",
+              "FL",
+              "SWC"
+            ]
+          }
+        },
+        "create": {
+          "5": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "MB"
+            ]
+          },
+          "10": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "MB",
+              "WWN",
+              "ROOT",
+              "OSE",
+              "CAIRN2",
+              "PIRATE"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "MB",
+              "WWN",
+              "ROOT",
+              "OSE",
+              "CAIRN2",
+              "PIRATE",
+              "SI",
+              "AWN",
+              "VAARN",
+              "BSH",
+              "PF1",
+              "SWC",
+              "MAUS",
+              "SALV",
+              "DCC",
+              "OSRIC"
+            ]
+          }
+        },
+        "develop": {
+          "5": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "TW2000"
+            ]
+          },
+          "10": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "TW2000",
+              "KNAVE2",
+              "SD",
+              "MOTH",
+              "ROOT",
+              "NUM"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "TW2000",
+              "KNAVE2",
+              "SD",
+              "MOTH",
+              "ROOT",
+              "NUM",
+              "OSE",
+              "FL",
+              "CAIRN2",
+              "MB",
+              "PF1",
+              "WWN",
+              "PIRATE",
+              "AWN",
+              "STARF",
+              "VAARN"
+            ]
+          }
+        },
+        "play_now": {
+          "5": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "TW2000"
+            ]
+          },
+          "10": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "TW2000",
+              "MOTH",
+              "KNAVE2",
+              "SD",
+              "CAIRN2",
+              "FL"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "TW2000",
+              "MOTH",
+              "KNAVE2",
+              "SD",
+              "CAIRN2",
+              "FL",
+              "NUM",
+              "ROOT",
+              "OSE",
+              "PF1",
+              "MB",
+              "STARF",
+              "WWN",
+              "PIRATE",
+              "ODD",
+              "AWN"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "focal_game": "PF2",
+      "endpoint_label": "low",
+      "M_before": 200000,
+      "M_diagnostic": 60000,
+      "p_T_R_C": "unchanged reference for every game; all other M unchanged",
+      "before": {
+        "overall_rank": 2.0,
+        "scenario_ranks": [
+          2.0,
+          2.0,
+          2.0
+        ],
+        "D": [
+          12000.0,
+          18000.0,
+          25000.0
+        ]
+      },
+      "diagnostic": {
+        "overall_rank": 2.0,
+        "scenario_ranks": [
+          3.0,
+          3.0,
+          3.0
+        ],
+        "D": [
+          3600.0,
+          5400.0,
+          7500.0
+        ],
+        "D_gt_1000": [
+          true,
+          true,
+          true
+        ],
+        "threshold_note": "Strict D>1000 only, not evidence of documented suitability or a complete eligible-pool calculation."
+      },
+      "membership_changes": {
+        "overall": {
+          "5": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "ROOT"
+            ]
+          },
+          "10": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "ROOT",
+              "CAIRN2",
+              "OSE",
+              "MB",
+              "DW",
+              "MOTH"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "ROOT",
+              "CAIRN2",
+              "OSE",
+              "MB",
+              "DW",
+              "MOTH",
+              "WWN",
+              "PF1",
+              "PIRATE",
+              "AWN",
+              "VAARN",
+              "STARF",
+              "BSH",
+              "ODD",
+              "FL",
+              "SWC"
+            ]
+          }
+        },
+        "create": {
+          "5": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "KNAVE2",
+              "PF2",
+              "SD",
+              "MB"
+            ]
+          },
+          "10": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "KNAVE2",
+              "PF2",
+              "SD",
+              "MB",
+              "WWN",
+              "ROOT",
+              "OSE",
+              "CAIRN2",
+              "PIRATE"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "KNAVE2",
+              "PF2",
+              "SD",
+              "MB",
+              "WWN",
+              "ROOT",
+              "OSE",
+              "CAIRN2",
+              "PIRATE",
+              "SI",
+              "AWN",
+              "VAARN",
+              "BSH",
+              "PF1",
+              "SWC",
+              "MAUS",
+              "SALV",
+              "DCC",
+              "OSRIC"
+            ]
+          }
+        },
+        "develop": {
+          "5": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "TOR2",
+              "PF2",
+              "DW",
+              "TW2000"
+            ]
+          },
+          "10": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "TOR2",
+              "PF2",
+              "DW",
+              "TW2000",
+              "KNAVE2",
+              "SD",
+              "MOTH",
+              "ROOT",
+              "NUM"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "TOR2",
+              "PF2",
+              "DW",
+              "TW2000",
+              "KNAVE2",
+              "SD",
+              "MOTH",
+              "ROOT",
+              "NUM",
+              "OSE",
+              "FL",
+              "CAIRN2",
+              "MB",
+              "PF1",
+              "WWN",
+              "PIRATE",
+              "AWN",
+              "STARF",
+              "VAARN"
+            ]
+          }
+        },
+        "play_now": {
+          "5": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "TOR2",
+              "PF2",
+              "DW",
+              "TW2000"
+            ]
+          },
+          "10": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "TOR2",
+              "PF2",
+              "DW",
+              "TW2000",
+              "MOTH",
+              "KNAVE2",
+              "SD",
+              "CAIRN2",
+              "FL"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "TOR2",
+              "PF2",
+              "DW",
+              "TW2000",
+              "MOTH",
+              "KNAVE2",
+              "SD",
+              "CAIRN2",
+              "FL",
+              "NUM",
+              "ROOT",
+              "OSE",
+              "PF1",
+              "MB",
+              "STARF",
+              "WWN",
+              "PIRATE",
+              "ODD",
+              "AWN"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "focal_game": "PF2",
+      "endpoint_label": "high",
+      "M_before": 200000,
+      "M_diagnostic": 700000,
+      "p_T_R_C": "unchanged reference for every game; all other M unchanged",
+      "before": {
+        "overall_rank": 2.0,
+        "scenario_ranks": [
+          2.0,
+          2.0,
+          2.0
+        ],
+        "D": [
+          12000.0,
+          18000.0,
+          25000.0
+        ]
+      },
+      "diagnostic": {
+        "overall_rank": 1.0,
+        "scenario_ranks": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "D": [
+          42000.0,
+          63000.0,
+          87500.0
+        ],
+        "D_gt_1000": [
+          true,
+          true,
+          true
+        ],
+        "threshold_note": "Strict D>1000 only, not evidence of documented suitability or a complete eligible-pool calculation."
+      },
+      "membership_changes": {
+        "overall": {
+          "5": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "PF2",
+              "DND5",
+              "KNAVE2",
+              "SD",
+              "ROOT"
+            ]
+          },
+          "10": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "PF2",
+              "DND5",
+              "KNAVE2",
+              "SD",
+              "ROOT",
+              "CAIRN2",
+              "OSE",
+              "MB",
+              "DW",
+              "MOTH"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "PF2",
+              "DND5",
+              "KNAVE2",
+              "SD",
+              "ROOT",
+              "CAIRN2",
+              "OSE",
+              "MB",
+              "DW",
+              "MOTH",
+              "WWN",
+              "PF1",
+              "PIRATE",
+              "AWN",
+              "VAARN",
+              "STARF",
+              "BSH",
+              "ODD",
+              "FL",
+              "SWC"
+            ]
+          }
+        },
+        "create": {
+          "5": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "PF2",
+              "DND5",
+              "KNAVE2",
+              "SD",
+              "MB"
+            ]
+          },
+          "10": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "PF2",
+              "DND5",
+              "KNAVE2",
+              "SD",
+              "MB",
+              "WWN",
+              "ROOT",
+              "OSE",
+              "CAIRN2",
+              "PIRATE"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "PF2",
+              "DND5",
+              "KNAVE2",
+              "SD",
+              "MB",
+              "WWN",
+              "ROOT",
+              "OSE",
+              "CAIRN2",
+              "PIRATE",
+              "SI",
+              "AWN",
+              "VAARN",
+              "BSH",
+              "PF1",
+              "SWC",
+              "MAUS",
+              "SALV",
+              "DCC",
+              "OSRIC"
+            ]
+          }
+        },
+        "develop": {
+          "5": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "PF2",
+              "DND5",
+              "TOR2",
+              "DW",
+              "TW2000"
+            ]
+          },
+          "10": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "PF2",
+              "DND5",
+              "TOR2",
+              "DW",
+              "TW2000",
+              "KNAVE2",
+              "SD",
+              "MOTH",
+              "ROOT",
+              "NUM"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "PF2",
+              "DND5",
+              "TOR2",
+              "DW",
+              "TW2000",
+              "KNAVE2",
+              "SD",
+              "MOTH",
+              "ROOT",
+              "NUM",
+              "OSE",
+              "FL",
+              "CAIRN2",
+              "MB",
+              "PF1",
+              "WWN",
+              "PIRATE",
+              "AWN",
+              "STARF",
+              "VAARN"
+            ]
+          }
+        },
+        "play_now": {
+          "5": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "PF2",
+              "DND5",
+              "TOR2",
+              "DW",
+              "TW2000"
+            ]
+          },
+          "10": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "PF2",
+              "DND5",
+              "TOR2",
+              "DW",
+              "TW2000",
+              "MOTH",
+              "KNAVE2",
+              "SD",
+              "CAIRN2",
+              "FL"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "PF2",
+              "DND5",
+              "TOR2",
+              "DW",
+              "TW2000",
+              "MOTH",
+              "KNAVE2",
+              "SD",
+              "CAIRN2",
+              "FL",
+              "NUM",
+              "ROOT",
+              "OSE",
+              "PF1",
+              "MB",
+              "STARF",
+              "WWN",
+              "PIRATE",
+              "ODD",
+              "AWN"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "focal_game": "KNAVE2",
+      "endpoint_label": "low",
+      "M_before": 33009,
+      "M_diagnostic": 11553.15,
+      "p_T_R_C": "unchanged reference for every game; all other M unchanged",
+      "before": {
+        "overall_rank": 3.0,
+        "scenario_ranks": [
+          3.0,
+          6.0,
+          7.0
+        ],
+        "D": [
+          4126.125,
+          3796.035,
+          4456.215
+        ]
+      },
+      "diagnostic": {
+        "overall_rank": 13.0,
+        "scenario_ranks": [
+          11.0,
+          17.0,
+          19.0
+        ],
+        "D": [
+          1444.14375,
+          1328.61225,
+          1559.67525
+        ],
+        "D_gt_1000": [
+          true,
+          true,
+          true
+        ],
+        "threshold_note": "Strict D>1000 only, not evidence of documented suitability or a complete eligible-pool calculation."
+      },
+      "membership_changes": {
+        "overall": {
+          "5": {
+            "entered": [
+              "CAIRN2"
+            ],
+            "left": [
+              "KNAVE2"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "SD",
+              "ROOT",
+              "CAIRN2"
+            ]
+          },
+          "10": {
+            "entered": [
+              "WWN"
+            ],
+            "left": [
+              "KNAVE2"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "SD",
+              "ROOT",
+              "CAIRN2",
+              "OSE",
+              "MB",
+              "DW",
+              "MOTH",
+              "WWN"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "SD",
+              "ROOT",
+              "CAIRN2",
+              "OSE",
+              "MB",
+              "DW",
+              "MOTH",
+              "WWN",
+              "PF1",
+              "PIRATE",
+              "KNAVE2",
+              "AWN",
+              "STARF",
+              "VAARN",
+              "BSH",
+              "ODD",
+              "FL",
+              "SWC"
+            ]
+          }
+        },
+        "create": {
+          "5": {
+            "entered": [
+              "WWN"
+            ],
+            "left": [
+              "KNAVE2"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "SD",
+              "MB",
+              "WWN"
+            ]
+          },
+          "10": {
+            "entered": [
+              "SI"
+            ],
+            "left": [
+              "KNAVE2"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "SD",
+              "MB",
+              "WWN",
+              "ROOT",
+              "OSE",
+              "CAIRN2",
+              "PIRATE",
+              "SI"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "SD",
+              "MB",
+              "WWN",
+              "ROOT",
+              "OSE",
+              "CAIRN2",
+              "PIRATE",
+              "SI",
+              "KNAVE2",
+              "AWN",
+              "VAARN",
+              "BSH",
+              "PF1",
+              "SWC",
+              "MAUS",
+              "SALV",
+              "DCC",
+              "OSRIC"
+            ]
+          }
+        },
+        "develop": {
+          "5": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "TW2000"
+            ]
+          },
+          "10": {
+            "entered": [
+              "OSE"
+            ],
+            "left": [
+              "KNAVE2"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "TW2000",
+              "SD",
+              "MOTH",
+              "ROOT",
+              "NUM",
+              "OSE"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "TW2000",
+              "SD",
+              "MOTH",
+              "ROOT",
+              "NUM",
+              "OSE",
+              "FL",
+              "CAIRN2",
+              "MB",
+              "PF1",
+              "WWN",
+              "PIRATE",
+              "KNAVE2",
+              "AWN",
+              "STARF",
+              "VAARN"
+            ]
+          }
+        },
+        "play_now": {
+          "5": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "TW2000"
+            ]
+          },
+          "10": {
+            "entered": [
+              "NUM"
+            ],
+            "left": [
+              "KNAVE2"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "TW2000",
+              "MOTH",
+              "SD",
+              "CAIRN2",
+              "FL",
+              "NUM"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "TW2000",
+              "MOTH",
+              "SD",
+              "CAIRN2",
+              "FL",
+              "NUM",
+              "ROOT",
+              "OSE",
+              "PF1",
+              "MB",
+              "STARF",
+              "WWN",
+              "PIRATE",
+              "ODD",
+              "KNAVE2",
+              "AWN"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "focal_game": "KNAVE2",
+      "endpoint_label": "high",
+      "M_before": 33009,
+      "M_diagnostic": 79221.59999999999,
+      "p_T_R_C": "unchanged reference for every game; all other M unchanged",
+      "before": {
+        "overall_rank": 3.0,
+        "scenario_ranks": [
+          3.0,
+          6.0,
+          7.0
+        ],
+        "D": [
+          4126.125,
+          3796.035,
+          4456.215
+        ]
+      },
+      "diagnostic": {
+        "overall_rank": 3.0,
+        "scenario_ranks": [
+          3.0,
+          3.0,
+          3.0
+        ],
+        "D": [
+          9902.699999999999,
+          9110.483999999999,
+          10694.916
+        ],
+        "D_gt_1000": [
+          true,
+          true,
+          true
+        ],
+        "threshold_note": "Strict D>1000 only, not evidence of documented suitability or a complete eligible-pool calculation."
+      },
+      "membership_changes": {
+        "overall": {
+          "5": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "ROOT"
+            ]
+          },
+          "10": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "ROOT",
+              "CAIRN2",
+              "OSE",
+              "MB",
+              "DW",
+              "MOTH"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "ROOT",
+              "CAIRN2",
+              "OSE",
+              "MB",
+              "DW",
+              "MOTH",
+              "WWN",
+              "PF1",
+              "PIRATE",
+              "AWN",
+              "VAARN",
+              "STARF",
+              "BSH",
+              "ODD",
+              "FL",
+              "SWC"
+            ]
+          }
+        },
+        "create": {
+          "5": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "MB"
+            ]
+          },
+          "10": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "MB",
+              "WWN",
+              "ROOT",
+              "OSE",
+              "CAIRN2",
+              "PIRATE"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "MB",
+              "WWN",
+              "ROOT",
+              "OSE",
+              "CAIRN2",
+              "PIRATE",
+              "SI",
+              "AWN",
+              "VAARN",
+              "BSH",
+              "PF1",
+              "SWC",
+              "MAUS",
+              "SALV",
+              "DCC",
+              "OSRIC"
+            ]
+          }
+        },
+        "develop": {
+          "5": {
+            "entered": [
+              "KNAVE2"
+            ],
+            "left": [
+              "TW2000"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "TOR2",
+              "DW"
+            ]
+          },
+          "10": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "TOR2",
+              "DW",
+              "TW2000",
+              "SD",
+              "MOTH",
+              "ROOT",
+              "NUM"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "TOR2",
+              "DW",
+              "TW2000",
+              "SD",
+              "MOTH",
+              "ROOT",
+              "NUM",
+              "OSE",
+              "FL",
+              "CAIRN2",
+              "MB",
+              "PF1",
+              "WWN",
+              "PIRATE",
+              "AWN",
+              "STARF",
+              "VAARN"
+            ]
+          }
+        },
+        "play_now": {
+          "5": {
+            "entered": [
+              "KNAVE2"
+            ],
+            "left": [
+              "TW2000"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "TOR2",
+              "DW"
+            ]
+          },
+          "10": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "TOR2",
+              "DW",
+              "TW2000",
+              "MOTH",
+              "SD",
+              "CAIRN2",
+              "FL"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "TOR2",
+              "DW",
+              "TW2000",
+              "MOTH",
+              "SD",
+              "CAIRN2",
+              "FL",
+              "NUM",
+              "ROOT",
+              "OSE",
+              "PF1",
+              "MB",
+              "STARF",
+              "WWN",
+              "PIRATE",
+              "ODD",
+              "AWN"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "focal_game": "SD",
+      "endpoint_label": "low",
+      "M_before": 34678,
+      "M_diagnostic": 12137.3,
+      "p_T_R_C": "unchanged reference for every game; all other M unchanged",
+      "before": {
+        "overall_rank": 4.0,
+        "scenario_ranks": [
+          4.0,
+          7.0,
+          8.0
+        ],
+        "D": [
+          3467.8,
+          3121.02,
+          4334.75
+        ]
+      },
+      "diagnostic": {
+        "overall_rank": 16.0,
+        "scenario_ranks": [
+          14.0,
+          23.0,
+          20.0
+        ],
+        "D": [
+          1213.73,
+          1092.357,
+          1517.1625
+        ],
+        "D_gt_1000": [
+          true,
+          true,
+          true
+        ],
+        "threshold_note": "Strict D>1000 only, not evidence of documented suitability or a complete eligible-pool calculation."
+      },
+      "membership_changes": {
+        "overall": {
+          "5": {
+            "entered": [
+              "CAIRN2"
+            ],
+            "left": [
+              "SD"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "ROOT",
+              "CAIRN2"
+            ]
+          },
+          "10": {
+            "entered": [
+              "WWN"
+            ],
+            "left": [
+              "SD"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "ROOT",
+              "CAIRN2",
+              "OSE",
+              "MB",
+              "DW",
+              "MOTH",
+              "WWN"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "ROOT",
+              "CAIRN2",
+              "OSE",
+              "MB",
+              "DW",
+              "MOTH",
+              "WWN",
+              "PF1",
+              "PIRATE",
+              "AWN",
+              "VAARN",
+              "STARF",
+              "SD",
+              "BSH",
+              "ODD",
+              "FL",
+              "SWC"
+            ]
+          }
+        },
+        "create": {
+          "5": {
+            "entered": [
+              "WWN"
+            ],
+            "left": [
+              "SD"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "MB",
+              "WWN"
+            ]
+          },
+          "10": {
+            "entered": [
+              "SI"
+            ],
+            "left": [
+              "SD"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "MB",
+              "WWN",
+              "ROOT",
+              "OSE",
+              "CAIRN2",
+              "PIRATE",
+              "SI"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "MB",
+              "WWN",
+              "ROOT",
+              "OSE",
+              "CAIRN2",
+              "PIRATE",
+              "SI",
+              "AWN",
+              "VAARN",
+              "BSH",
+              "SD",
+              "PF1",
+              "SWC",
+              "MAUS",
+              "SALV",
+              "DCC",
+              "OSRIC"
+            ]
+          }
+        },
+        "develop": {
+          "5": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "TW2000"
+            ]
+          },
+          "10": {
+            "entered": [
+              "OSE"
+            ],
+            "left": [
+              "SD"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "TW2000",
+              "KNAVE2",
+              "MOTH",
+              "ROOT",
+              "NUM",
+              "OSE"
+            ]
+          },
+          "20": {
+            "entered": [
+              "ODD"
+            ],
+            "left": [
+              "SD"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "TW2000",
+              "KNAVE2",
+              "MOTH",
+              "ROOT",
+              "NUM",
+              "OSE",
+              "FL",
+              "CAIRN2",
+              "MB",
+              "PF1",
+              "WWN",
+              "PIRATE",
+              "AWN",
+              "STARF",
+              "VAARN",
+              "ODD"
+            ]
+          }
+        },
+        "play_now": {
+          "5": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "TW2000"
+            ]
+          },
+          "10": {
+            "entered": [
+              "NUM"
+            ],
+            "left": [
+              "SD"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "TW2000",
+              "MOTH",
+              "KNAVE2",
+              "CAIRN2",
+              "FL",
+              "NUM"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "TW2000",
+              "MOTH",
+              "KNAVE2",
+              "CAIRN2",
+              "FL",
+              "NUM",
+              "ROOT",
+              "OSE",
+              "PF1",
+              "MB",
+              "STARF",
+              "WWN",
+              "PIRATE",
+              "ODD",
+              "AWN",
+              "SD"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "focal_game": "SD",
+      "endpoint_label": "high",
+      "M_before": 34678,
+      "M_diagnostic": 83227.2,
+      "p_T_R_C": "unchanged reference for every game; all other M unchanged",
+      "before": {
+        "overall_rank": 4.0,
+        "scenario_ranks": [
+          4.0,
+          7.0,
+          8.0
+        ],
+        "D": [
+          3467.8,
+          3121.02,
+          4334.75
+        ]
+      },
+      "diagnostic": {
+        "overall_rank": 3.0,
+        "scenario_ranks": [
+          3.0,
+          3.0,
+          4.0
+        ],
+        "D": [
+          8322.72,
+          7490.447999999999,
+          10403.4
+        ],
+        "D_gt_1000": [
+          true,
+          true,
+          true
+        ],
+        "threshold_note": "Strict D>1000 only, not evidence of documented suitability or a complete eligible-pool calculation."
+      },
+      "membership_changes": {
+        "overall": {
+          "5": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "SD",
+              "KNAVE2",
+              "ROOT"
+            ]
+          },
+          "10": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "SD",
+              "KNAVE2",
+              "ROOT",
+              "CAIRN2",
+              "OSE",
+              "MB",
+              "DW",
+              "MOTH"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "SD",
+              "KNAVE2",
+              "ROOT",
+              "CAIRN2",
+              "OSE",
+              "MB",
+              "DW",
+              "MOTH",
+              "WWN",
+              "PF1",
+              "PIRATE",
+              "AWN",
+              "VAARN",
+              "STARF",
+              "BSH",
+              "ODD",
+              "FL",
+              "SWC"
+            ]
+          }
+        },
+        "create": {
+          "5": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "SD",
+              "KNAVE2",
+              "MB"
+            ]
+          },
+          "10": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "SD",
+              "KNAVE2",
+              "MB",
+              "WWN",
+              "ROOT",
+              "OSE",
+              "CAIRN2",
+              "PIRATE"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "SD",
+              "KNAVE2",
+              "MB",
+              "WWN",
+              "ROOT",
+              "OSE",
+              "CAIRN2",
+              "PIRATE",
+              "SI",
+              "AWN",
+              "VAARN",
+              "BSH",
+              "PF1",
+              "SWC",
+              "MAUS",
+              "SALV",
+              "DCC",
+              "OSRIC"
+            ]
+          }
+        },
+        "develop": {
+          "5": {
+            "entered": [
+              "SD"
+            ],
+            "left": [
+              "TW2000"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "SD",
+              "TOR2",
+              "DW"
+            ]
+          },
+          "10": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "SD",
+              "TOR2",
+              "DW",
+              "TW2000",
+              "KNAVE2",
+              "MOTH",
+              "ROOT",
+              "NUM"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "SD",
+              "TOR2",
+              "DW",
+              "TW2000",
+              "KNAVE2",
+              "MOTH",
+              "ROOT",
+              "NUM",
+              "OSE",
+              "FL",
+              "CAIRN2",
+              "MB",
+              "PF1",
+              "WWN",
+              "PIRATE",
+              "AWN",
+              "STARF",
+              "VAARN"
+            ]
+          }
+        },
+        "play_now": {
+          "5": {
+            "entered": [
+              "SD"
+            ],
+            "left": [
+              "TW2000"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "SD",
+              "DW"
+            ]
+          },
+          "10": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "SD",
+              "DW",
+              "TW2000",
+              "MOTH",
+              "KNAVE2",
+              "CAIRN2",
+              "FL"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "SD",
+              "DW",
+              "TW2000",
+              "MOTH",
+              "KNAVE2",
+              "CAIRN2",
+              "FL",
+              "NUM",
+              "ROOT",
+              "OSE",
+              "PF1",
+              "MB",
+              "STARF",
+              "WWN",
+              "PIRATE",
+              "ODD",
+              "AWN"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "focal_game": "ROOT",
+      "endpoint_label": "low",
+      "M_before": 19485,
+      "M_diagnostic": 6819.75,
+      "p_T_R_C": "unchanged reference for every game; all other M unchanged",
+      "before": {
+        "overall_rank": 5.0,
+        "scenario_ranks": [
+          7.0,
+          9.0,
+          12.0
+        ],
+        "D": [
+          2435.625,
+          2240.7749999999996,
+          2630.4750000000004
+        ]
+      },
+      "diagnostic": {
+        "overall_rank": 25.0,
+        "scenario_ranks": [
+          18.0,
+          29.0,
+          34.0
+        ],
+        "D": [
+          852.46875,
+          784.2712499999999,
+          920.6662500000001
+        ],
+        "D_gt_1000": [
+          false,
+          false,
+          false
+        ],
+        "threshold_note": "Strict D>1000 only, not evidence of documented suitability or a complete eligible-pool calculation."
+      },
+      "membership_changes": {
+        "overall": {
+          "5": {
+            "entered": [
+              "CAIRN2",
+              "OSE"
+            ],
+            "left": [
+              "ROOT"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "CAIRN2",
+              "OSE"
+            ]
+          },
+          "10": {
+            "entered": [
+              "WWN"
+            ],
+            "left": [
+              "ROOT"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "CAIRN2",
+              "OSE",
+              "MB",
+              "DW",
+              "MOTH",
+              "WWN"
+            ]
+          },
+          "20": {
+            "entered": [
+              "TORCH"
+            ],
+            "left": [
+              "ROOT"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "CAIRN2",
+              "OSE",
+              "MB",
+              "DW",
+              "MOTH",
+              "WWN",
+              "PF1",
+              "PIRATE",
+              "AWN",
+              "VAARN",
+              "STARF",
+              "BSH",
+              "ODD",
+              "FL",
+              "SWC",
+              "TORCH"
+            ]
+          }
+        },
+        "create": {
+          "5": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "MB"
+            ]
+          },
+          "10": {
+            "entered": [
+              "SI"
+            ],
+            "left": [
+              "ROOT"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "MB",
+              "WWN",
+              "OSE",
+              "CAIRN2",
+              "PIRATE",
+              "SI"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "MB",
+              "WWN",
+              "OSE",
+              "CAIRN2",
+              "PIRATE",
+              "SI",
+              "AWN",
+              "VAARN",
+              "BSH",
+              "PF1",
+              "SWC",
+              "MAUS",
+              "SALV",
+              "ROOT",
+              "DCC",
+              "OSRIC"
+            ]
+          }
+        },
+        "develop": {
+          "5": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "TW2000"
+            ]
+          },
+          "10": {
+            "entered": [
+              "OSE"
+            ],
+            "left": [
+              "ROOT"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "TW2000",
+              "KNAVE2",
+              "SD",
+              "MOTH",
+              "NUM",
+              "OSE"
+            ]
+          },
+          "20": {
+            "entered": [
+              "ODD"
+            ],
+            "left": [
+              "ROOT"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "TW2000",
+              "KNAVE2",
+              "SD",
+              "MOTH",
+              "NUM",
+              "OSE",
+              "FL",
+              "CAIRN2",
+              "MB",
+              "PF1",
+              "WWN",
+              "PIRATE",
+              "AWN",
+              "STARF",
+              "VAARN",
+              "ODD"
+            ]
+          }
+        },
+        "play_now": {
+          "5": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "TW2000"
+            ]
+          },
+          "10": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "TW2000",
+              "MOTH",
+              "KNAVE2",
+              "SD",
+              "CAIRN2",
+              "FL"
+            ]
+          },
+          "20": {
+            "entered": [
+              "CLOUD"
+            ],
+            "left": [
+              "ROOT"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "TW2000",
+              "MOTH",
+              "KNAVE2",
+              "SD",
+              "CAIRN2",
+              "FL",
+              "NUM",
+              "OSE",
+              "PF1",
+              "MB",
+              "STARF",
+              "WWN",
+              "PIRATE",
+              "ODD",
+              "AWN",
+              "CLOUD"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "focal_game": "ROOT",
+      "endpoint_label": "high",
+      "M_before": 19485,
+      "M_diagnostic": 46764,
+      "p_T_R_C": "unchanged reference for every game; all other M unchanged",
+      "before": {
+        "overall_rank": 5.0,
+        "scenario_ranks": [
+          7.0,
+          9.0,
+          12.0
+        ],
+        "D": [
+          2435.625,
+          2240.7749999999996,
+          2630.4750000000004
+        ]
+      },
+      "diagnostic": {
+        "overall_rank": 3.0,
+        "scenario_ranks": [
+          3.0,
+          4.0,
+          5.0
+        ],
+        "D": [
+          5845.5,
+          5377.86,
+          6313.14
+        ],
+        "D_gt_1000": [
+          true,
+          true,
+          true
+        ],
+        "threshold_note": "Strict D>1000 only, not evidence of documented suitability or a complete eligible-pool calculation."
+      },
+      "membership_changes": {
+        "overall": {
+          "5": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "ROOT",
+              "KNAVE2",
+              "SD"
+            ]
+          },
+          "10": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "ROOT",
+              "KNAVE2",
+              "SD",
+              "CAIRN2",
+              "OSE",
+              "MB",
+              "DW",
+              "MOTH"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "ROOT",
+              "KNAVE2",
+              "SD",
+              "CAIRN2",
+              "OSE",
+              "MB",
+              "DW",
+              "MOTH",
+              "WWN",
+              "PF1",
+              "PIRATE",
+              "AWN",
+              "VAARN",
+              "STARF",
+              "BSH",
+              "ODD",
+              "FL",
+              "SWC"
+            ]
+          }
+        },
+        "create": {
+          "5": {
+            "entered": [
+              "ROOT"
+            ],
+            "left": [
+              "MB"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "ROOT",
+              "KNAVE2",
+              "SD"
+            ]
+          },
+          "10": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "ROOT",
+              "KNAVE2",
+              "SD",
+              "MB",
+              "WWN",
+              "OSE",
+              "CAIRN2",
+              "PIRATE"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "ROOT",
+              "KNAVE2",
+              "SD",
+              "MB",
+              "WWN",
+              "OSE",
+              "CAIRN2",
+              "PIRATE",
+              "SI",
+              "AWN",
+              "VAARN",
+              "BSH",
+              "PF1",
+              "SWC",
+              "MAUS",
+              "SALV",
+              "DCC",
+              "OSRIC"
+            ]
+          }
+        },
+        "develop": {
+          "5": {
+            "entered": [
+              "ROOT"
+            ],
+            "left": [
+              "TW2000"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "ROOT",
+              "DW"
+            ]
+          },
+          "10": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "ROOT",
+              "DW",
+              "TW2000",
+              "KNAVE2",
+              "SD",
+              "MOTH",
+              "NUM"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "ROOT",
+              "DW",
+              "TW2000",
+              "KNAVE2",
+              "SD",
+              "MOTH",
+              "NUM",
+              "OSE",
+              "FL",
+              "CAIRN2",
+              "MB",
+              "PF1",
+              "WWN",
+              "PIRATE",
+              "AWN",
+              "STARF",
+              "VAARN"
+            ]
+          }
+        },
+        "play_now": {
+          "5": {
+            "entered": [
+              "ROOT"
+            ],
+            "left": [
+              "TW2000"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "ROOT"
+            ]
+          },
+          "10": {
+            "entered": [
+              "ROOT"
+            ],
+            "left": [
+              "FL"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "ROOT",
+              "TW2000",
+              "MOTH",
+              "KNAVE2",
+              "SD",
+              "CAIRN2"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "ROOT",
+              "TW2000",
+              "MOTH",
+              "KNAVE2",
+              "SD",
+              "CAIRN2",
+              "FL",
+              "NUM",
+              "OSE",
+              "PF1",
+              "MB",
+              "STARF",
+              "WWN",
+              "PIRATE",
+              "ODD",
+              "AWN"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "focal_game": "CAIRN2",
+      "endpoint_label": "low",
+      "M_before": 13947,
+      "M_diagnostic": 4881.45,
+      "p_T_R_C": "unchanged reference for every game; all other M unchanged",
+      "before": {
+        "overall_rank": 6.0,
+        "scenario_ranks": [
+          9.0,
+          13.0,
+          9.0
+        ],
+        "D": [
+          1743.375,
+          1952.5800000000002,
+          2928.87
+        ]
+      },
+      "diagnostic": {
+        "overall_rank": 27.5,
+        "scenario_ranks": [
+          26.0,
+          33.0,
+          29.0
+        ],
+        "D": [
+          610.18125,
+          683.403,
+          1025.1045
+        ],
+        "D_gt_1000": [
+          false,
+          false,
+          true
+        ],
+        "threshold_note": "Strict D>1000 only, not evidence of documented suitability or a complete eligible-pool calculation."
+      },
+      "membership_changes": {
+        "overall": {
+          "5": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "ROOT"
+            ]
+          },
+          "10": {
+            "entered": [
+              "WWN"
+            ],
+            "left": [
+              "CAIRN2"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "ROOT",
+              "OSE",
+              "MB",
+              "DW",
+              "MOTH",
+              "WWN"
+            ]
+          },
+          "20": {
+            "entered": [
+              "TORCH"
+            ],
+            "left": [
+              "CAIRN2"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "ROOT",
+              "OSE",
+              "MB",
+              "DW",
+              "MOTH",
+              "WWN",
+              "PF1",
+              "PIRATE",
+              "AWN",
+              "VAARN",
+              "STARF",
+              "BSH",
+              "ODD",
+              "FL",
+              "SWC",
+              "TORCH"
+            ]
+          }
+        },
+        "create": {
+          "5": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "MB"
+            ]
+          },
+          "10": {
+            "entered": [
+              "SI"
+            ],
+            "left": [
+              "CAIRN2"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "MB",
+              "WWN",
+              "ROOT",
+              "OSE",
+              "PIRATE",
+              "SI"
+            ]
+          },
+          "20": {
+            "entered": [
+              "STARF"
+            ],
+            "left": [
+              "CAIRN2"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "MB",
+              "WWN",
+              "ROOT",
+              "OSE",
+              "PIRATE",
+              "SI",
+              "AWN",
+              "VAARN",
+              "BSH",
+              "PF1",
+              "SWC",
+              "MAUS",
+              "SALV",
+              "DCC",
+              "OSRIC",
+              "STARF"
+            ]
+          }
+        },
+        "develop": {
+          "5": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "TW2000"
+            ]
+          },
+          "10": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "TW2000",
+              "KNAVE2",
+              "SD",
+              "MOTH",
+              "ROOT",
+              "NUM"
+            ]
+          },
+          "20": {
+            "entered": [
+              "ODD"
+            ],
+            "left": [
+              "CAIRN2"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "TW2000",
+              "KNAVE2",
+              "SD",
+              "MOTH",
+              "ROOT",
+              "NUM",
+              "OSE",
+              "FL",
+              "MB",
+              "PF1",
+              "WWN",
+              "PIRATE",
+              "AWN",
+              "STARF",
+              "VAARN",
+              "ODD"
+            ]
+          }
+        },
+        "play_now": {
+          "5": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "TW2000"
+            ]
+          },
+          "10": {
+            "entered": [
+              "NUM"
+            ],
+            "left": [
+              "CAIRN2"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "TW2000",
+              "MOTH",
+              "KNAVE2",
+              "SD",
+              "FL",
+              "NUM"
+            ]
+          },
+          "20": {
+            "entered": [
+              "CLOUD"
+            ],
+            "left": [
+              "CAIRN2"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "TW2000",
+              "MOTH",
+              "KNAVE2",
+              "SD",
+              "FL",
+              "NUM",
+              "ROOT",
+              "OSE",
+              "PF1",
+              "MB",
+              "STARF",
+              "WWN",
+              "PIRATE",
+              "ODD",
+              "AWN",
+              "CLOUD"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "focal_game": "CAIRN2",
+      "endpoint_label": "high",
+      "M_before": 13947,
+      "M_diagnostic": 33472.799999999996,
+      "p_T_R_C": "unchanged reference for every game; all other M unchanged",
+      "before": {
+        "overall_rank": 6.0,
+        "scenario_ranks": [
+          9.0,
+          13.0,
+          9.0
+        ],
+        "D": [
+          1743.375,
+          1952.5800000000002,
+          2928.87
+        ]
+      },
+      "diagnostic": {
+        "overall_rank": 3.0,
+        "scenario_ranks": [
+          3.0,
+          5.0,
+          5.0
+        ],
+        "D": [
+          4184.099999999999,
+          4686.192,
+          7029.287999999999
+        ],
+        "D_gt_1000": [
+          true,
+          true,
+          true
+        ],
+        "threshold_note": "Strict D>1000 only, not evidence of documented suitability or a complete eligible-pool calculation."
+      },
+      "membership_changes": {
+        "overall": {
+          "5": {
+            "entered": [
+              "CAIRN2"
+            ],
+            "left": [
+              "ROOT"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "CAIRN2",
+              "KNAVE2",
+              "SD"
+            ]
+          },
+          "10": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "CAIRN2",
+              "KNAVE2",
+              "SD",
+              "ROOT",
+              "OSE",
+              "MB",
+              "DW",
+              "MOTH"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "CAIRN2",
+              "KNAVE2",
+              "SD",
+              "ROOT",
+              "OSE",
+              "MB",
+              "DW",
+              "MOTH",
+              "WWN",
+              "PF1",
+              "PIRATE",
+              "AWN",
+              "VAARN",
+              "STARF",
+              "BSH",
+              "ODD",
+              "FL",
+              "SWC"
+            ]
+          }
+        },
+        "create": {
+          "5": {
+            "entered": [
+              "CAIRN2"
+            ],
+            "left": [
+              "MB"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "CAIRN2",
+              "KNAVE2",
+              "SD"
+            ]
+          },
+          "10": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "CAIRN2",
+              "KNAVE2",
+              "SD",
+              "MB",
+              "WWN",
+              "ROOT",
+              "OSE",
+              "PIRATE"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "CAIRN2",
+              "KNAVE2",
+              "SD",
+              "MB",
+              "WWN",
+              "ROOT",
+              "OSE",
+              "PIRATE",
+              "SI",
+              "AWN",
+              "VAARN",
+              "BSH",
+              "PF1",
+              "SWC",
+              "MAUS",
+              "SALV",
+              "DCC",
+              "OSRIC"
+            ]
+          }
+        },
+        "develop": {
+          "5": {
+            "entered": [
+              "CAIRN2"
+            ],
+            "left": [
+              "TW2000"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "CAIRN2"
+            ]
+          },
+          "10": {
+            "entered": [
+              "CAIRN2"
+            ],
+            "left": [
+              "NUM"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "CAIRN2",
+              "TW2000",
+              "KNAVE2",
+              "SD",
+              "MOTH",
+              "ROOT"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "CAIRN2",
+              "TW2000",
+              "KNAVE2",
+              "SD",
+              "MOTH",
+              "ROOT",
+              "NUM",
+              "OSE",
+              "FL",
+              "MB",
+              "PF1",
+              "WWN",
+              "PIRATE",
+              "AWN",
+              "STARF",
+              "VAARN"
+            ]
+          }
+        },
+        "play_now": {
+          "5": {
+            "entered": [
+              "CAIRN2"
+            ],
+            "left": [
+              "TW2000"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "CAIRN2"
+            ]
+          },
+          "10": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "CAIRN2",
+              "TW2000",
+              "MOTH",
+              "KNAVE2",
+              "SD",
+              "FL"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "CAIRN2",
+              "TW2000",
+              "MOTH",
+              "KNAVE2",
+              "SD",
+              "FL",
+              "NUM",
+              "ROOT",
+              "OSE",
+              "PF1",
+              "MB",
+              "STARF",
+              "WWN",
+              "PIRATE",
+              "ODD",
+              "AWN"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "focal_game": "OSE",
+      "endpoint_label": "low",
+      "M_before": 19101,
+      "M_diagnostic": 6685.349999999999,
+      "p_T_R_C": "unchanged reference for every game; all other M unchanged",
+      "before": {
+        "overall_rank": 7.0,
+        "scenario_ranks": [
+          8.0,
+          11.0,
+          13.0
+        ],
+        "D": [
+          2387.625,
+          2196.615,
+          2578.635
+        ]
+      },
+      "diagnostic": {
+        "overall_rank": 27.0,
+        "scenario_ranks": [
+          20.0,
+          31.0,
+          36.0
+        ],
+        "D": [
+          835.6687499999999,
+          768.8152499999999,
+          902.52225
+        ],
+        "D_gt_1000": [
+          false,
+          false,
+          false
+        ],
+        "threshold_note": "Strict D>1000 only, not evidence of documented suitability or a complete eligible-pool calculation."
+      },
+      "membership_changes": {
+        "overall": {
+          "5": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "ROOT"
+            ]
+          },
+          "10": {
+            "entered": [
+              "WWN"
+            ],
+            "left": [
+              "OSE"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "ROOT",
+              "CAIRN2",
+              "MB",
+              "DW",
+              "MOTH",
+              "WWN"
+            ]
+          },
+          "20": {
+            "entered": [
+              "TORCH"
+            ],
+            "left": [
+              "OSE"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "ROOT",
+              "CAIRN2",
+              "MB",
+              "DW",
+              "MOTH",
+              "WWN",
+              "PF1",
+              "PIRATE",
+              "AWN",
+              "VAARN",
+              "STARF",
+              "BSH",
+              "ODD",
+              "FL",
+              "SWC",
+              "TORCH"
+            ]
+          }
+        },
+        "create": {
+          "5": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "MB"
+            ]
+          },
+          "10": {
+            "entered": [
+              "SI"
+            ],
+            "left": [
+              "OSE"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "MB",
+              "WWN",
+              "ROOT",
+              "CAIRN2",
+              "PIRATE",
+              "SI"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "MB",
+              "WWN",
+              "ROOT",
+              "CAIRN2",
+              "PIRATE",
+              "SI",
+              "AWN",
+              "VAARN",
+              "BSH",
+              "PF1",
+              "SWC",
+              "MAUS",
+              "SALV",
+              "DCC",
+              "OSRIC",
+              "OSE"
+            ]
+          }
+        },
+        "develop": {
+          "5": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "TW2000"
+            ]
+          },
+          "10": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "TW2000",
+              "KNAVE2",
+              "SD",
+              "MOTH",
+              "ROOT",
+              "NUM"
+            ]
+          },
+          "20": {
+            "entered": [
+              "ODD"
+            ],
+            "left": [
+              "OSE"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "TW2000",
+              "KNAVE2",
+              "SD",
+              "MOTH",
+              "ROOT",
+              "NUM",
+              "FL",
+              "CAIRN2",
+              "MB",
+              "PF1",
+              "WWN",
+              "PIRATE",
+              "AWN",
+              "STARF",
+              "VAARN",
+              "ODD"
+            ]
+          }
+        },
+        "play_now": {
+          "5": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "TW2000"
+            ]
+          },
+          "10": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "TW2000",
+              "MOTH",
+              "KNAVE2",
+              "SD",
+              "CAIRN2",
+              "FL"
+            ]
+          },
+          "20": {
+            "entered": [
+              "CLOUD"
+            ],
+            "left": [
+              "OSE"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "TW2000",
+              "MOTH",
+              "KNAVE2",
+              "SD",
+              "CAIRN2",
+              "FL",
+              "NUM",
+              "ROOT",
+              "PF1",
+              "MB",
+              "STARF",
+              "WWN",
+              "PIRATE",
+              "ODD",
+              "AWN",
+              "CLOUD"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "focal_game": "OSE",
+      "endpoint_label": "high",
+      "M_before": 19101,
+      "M_diagnostic": 45842.4,
+      "p_T_R_C": "unchanged reference for every game; all other M unchanged",
+      "before": {
+        "overall_rank": 7.0,
+        "scenario_ranks": [
+          8.0,
+          11.0,
+          13.0
+        ],
+        "D": [
+          2387.625,
+          2196.615,
+          2578.635
+        ]
+      },
+      "diagnostic": {
+        "overall_rank": 3.0,
+        "scenario_ranks": [
+          3.0,
+          4.0,
+          5.0
+        ],
+        "D": [
+          5730.3,
+          5271.876,
+          6188.724
+        ],
+        "D_gt_1000": [
+          true,
+          true,
+          true
+        ],
+        "threshold_note": "Strict D>1000 only, not evidence of documented suitability or a complete eligible-pool calculation."
+      },
+      "membership_changes": {
+        "overall": {
+          "5": {
+            "entered": [
+              "OSE"
+            ],
+            "left": [
+              "ROOT"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "OSE",
+              "KNAVE2",
+              "SD"
+            ]
+          },
+          "10": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "OSE",
+              "KNAVE2",
+              "SD",
+              "ROOT",
+              "CAIRN2",
+              "MB",
+              "DW",
+              "MOTH"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "OSE",
+              "KNAVE2",
+              "SD",
+              "ROOT",
+              "CAIRN2",
+              "MB",
+              "DW",
+              "MOTH",
+              "WWN",
+              "PF1",
+              "PIRATE",
+              "AWN",
+              "VAARN",
+              "STARF",
+              "BSH",
+              "ODD",
+              "FL",
+              "SWC"
+            ]
+          }
+        },
+        "create": {
+          "5": {
+            "entered": [
+              "OSE"
+            ],
+            "left": [
+              "MB"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "OSE",
+              "KNAVE2",
+              "SD"
+            ]
+          },
+          "10": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "OSE",
+              "KNAVE2",
+              "SD",
+              "MB",
+              "WWN",
+              "ROOT",
+              "CAIRN2",
+              "PIRATE"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "OSE",
+              "KNAVE2",
+              "SD",
+              "MB",
+              "WWN",
+              "ROOT",
+              "CAIRN2",
+              "PIRATE",
+              "SI",
+              "AWN",
+              "VAARN",
+              "BSH",
+              "PF1",
+              "SWC",
+              "MAUS",
+              "SALV",
+              "DCC",
+              "OSRIC"
+            ]
+          }
+        },
+        "develop": {
+          "5": {
+            "entered": [
+              "OSE"
+            ],
+            "left": [
+              "TW2000"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "OSE",
+              "DW"
+            ]
+          },
+          "10": {
+            "entered": [
+              "OSE"
+            ],
+            "left": [
+              "NUM"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "OSE",
+              "DW",
+              "TW2000",
+              "KNAVE2",
+              "SD",
+              "MOTH",
+              "ROOT"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "OSE",
+              "DW",
+              "TW2000",
+              "KNAVE2",
+              "SD",
+              "MOTH",
+              "ROOT",
+              "NUM",
+              "FL",
+              "CAIRN2",
+              "MB",
+              "PF1",
+              "WWN",
+              "PIRATE",
+              "AWN",
+              "STARF",
+              "VAARN"
+            ]
+          }
+        },
+        "play_now": {
+          "5": {
+            "entered": [
+              "OSE"
+            ],
+            "left": [
+              "TW2000"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "OSE"
+            ]
+          },
+          "10": {
+            "entered": [
+              "OSE"
+            ],
+            "left": [
+              "FL"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "OSE",
+              "TW2000",
+              "MOTH",
+              "KNAVE2",
+              "SD",
+              "CAIRN2"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "OSE",
+              "TW2000",
+              "MOTH",
+              "KNAVE2",
+              "SD",
+              "CAIRN2",
+              "FL",
+              "NUM",
+              "ROOT",
+              "PF1",
+              "MB",
+              "STARF",
+              "WWN",
+              "PIRATE",
+              "ODD",
+              "AWN"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "focal_game": "MB",
+      "endpoint_label": "low",
+      "M_before": 15639,
+      "M_diagnostic": 5473.65,
+      "p_T_R_C": "unchanged reference for every game; all other M unchanged",
+      "before": {
+        "overall_rank": 8.0,
+        "scenario_ranks": [
+          5.0,
+          14.0,
+          15.0
+        ],
+        "D": [
+          3127.8,
+          1798.485,
+          2111.2650000000003
+        ]
+      },
+      "diagnostic": {
+        "overall_rank": 27.0,
+        "scenario_ranks": [
+          15.0,
+          35.0,
+          38.0
+        ],
+        "D": [
+          1094.73,
+          629.4697499999999,
+          738.94275
+        ],
+        "D_gt_1000": [
+          true,
+          false,
+          false
+        ],
+        "threshold_note": "Strict D>1000 only, not evidence of documented suitability or a complete eligible-pool calculation."
+      },
+      "membership_changes": {
+        "overall": {
+          "5": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "ROOT"
+            ]
+          },
+          "10": {
+            "entered": [
+              "WWN"
+            ],
+            "left": [
+              "MB"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "ROOT",
+              "CAIRN2",
+              "OSE",
+              "DW",
+              "WWN",
+              "MOTH"
+            ]
+          },
+          "20": {
+            "entered": [
+              "TORCH"
+            ],
+            "left": [
+              "MB"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "ROOT",
+              "CAIRN2",
+              "OSE",
+              "DW",
+              "WWN",
+              "MOTH",
+              "PF1",
+              "PIRATE",
+              "AWN",
+              "VAARN",
+              "STARF",
+              "BSH",
+              "ODD",
+              "FL",
+              "SWC",
+              "TORCH"
+            ]
+          }
+        },
+        "create": {
+          "5": {
+            "entered": [
+              "WWN"
+            ],
+            "left": [
+              "MB"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "WWN"
+            ]
+          },
+          "10": {
+            "entered": [
+              "SI"
+            ],
+            "left": [
+              "MB"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "WWN",
+              "ROOT",
+              "OSE",
+              "CAIRN2",
+              "PIRATE",
+              "SI"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "WWN",
+              "ROOT",
+              "OSE",
+              "CAIRN2",
+              "PIRATE",
+              "SI",
+              "AWN",
+              "VAARN",
+              "BSH",
+              "PF1",
+              "MB",
+              "SWC",
+              "MAUS",
+              "SALV",
+              "DCC",
+              "OSRIC"
+            ]
+          }
+        },
+        "develop": {
+          "5": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "TW2000"
+            ]
+          },
+          "10": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "TW2000",
+              "KNAVE2",
+              "SD",
+              "MOTH",
+              "ROOT",
+              "NUM"
+            ]
+          },
+          "20": {
+            "entered": [
+              "ODD"
+            ],
+            "left": [
+              "MB"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "TW2000",
+              "KNAVE2",
+              "SD",
+              "MOTH",
+              "ROOT",
+              "NUM",
+              "OSE",
+              "FL",
+              "CAIRN2",
+              "PF1",
+              "WWN",
+              "PIRATE",
+              "AWN",
+              "STARF",
+              "VAARN",
+              "ODD"
+            ]
+          }
+        },
+        "play_now": {
+          "5": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "TW2000"
+            ]
+          },
+          "10": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "TW2000",
+              "MOTH",
+              "KNAVE2",
+              "SD",
+              "CAIRN2",
+              "FL"
+            ]
+          },
+          "20": {
+            "entered": [
+              "CLOUD"
+            ],
+            "left": [
+              "MB"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "TW2000",
+              "MOTH",
+              "KNAVE2",
+              "SD",
+              "CAIRN2",
+              "FL",
+              "NUM",
+              "ROOT",
+              "OSE",
+              "PF1",
+              "STARF",
+              "WWN",
+              "PIRATE",
+              "ODD",
+              "AWN",
+              "CLOUD"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "focal_game": "MB",
+      "endpoint_label": "high",
+      "M_before": 15639,
+      "M_diagnostic": 37533.6,
+      "p_T_R_C": "unchanged reference for every game; all other M unchanged",
+      "before": {
+        "overall_rank": 8.0,
+        "scenario_ranks": [
+          5.0,
+          14.0,
+          15.0
+        ],
+        "D": [
+          3127.8,
+          1798.485,
+          2111.2650000000003
+        ]
+      },
+      "diagnostic": {
+        "overall_rank": 3.0,
+        "scenario_ranks": [
+          3.0,
+          5.0,
+          6.0
+        ],
+        "D": [
+          7506.72,
+          4316.364,
+          5067.036
+        ],
+        "D_gt_1000": [
+          true,
+          true,
+          true
+        ],
+        "threshold_note": "Strict D>1000 only, not evidence of documented suitability or a complete eligible-pool calculation."
+      },
+      "membership_changes": {
+        "overall": {
+          "5": {
+            "entered": [
+              "MB"
+            ],
+            "left": [
+              "ROOT"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "MB",
+              "KNAVE2",
+              "SD"
+            ]
+          },
+          "10": {
+            "entered": [
+              "WWN"
+            ],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "MB",
+              "KNAVE2",
+              "SD",
+              "ROOT",
+              "CAIRN2",
+              "OSE",
+              "DW",
+              "MOTH",
+              "WWN"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "MB",
+              "KNAVE2",
+              "SD",
+              "ROOT",
+              "CAIRN2",
+              "OSE",
+              "DW",
+              "MOTH",
+              "WWN",
+              "PF1",
+              "PIRATE",
+              "AWN",
+              "VAARN",
+              "STARF",
+              "BSH",
+              "ODD",
+              "FL",
+              "SWC"
+            ]
+          }
+        },
+        "create": {
+          "5": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "MB",
+              "KNAVE2",
+              "SD"
+            ]
+          },
+          "10": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "MB",
+              "KNAVE2",
+              "SD",
+              "WWN",
+              "ROOT",
+              "OSE",
+              "CAIRN2",
+              "PIRATE"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "MB",
+              "KNAVE2",
+              "SD",
+              "WWN",
+              "ROOT",
+              "OSE",
+              "CAIRN2",
+              "PIRATE",
+              "SI",
+              "AWN",
+              "VAARN",
+              "BSH",
+              "PF1",
+              "SWC",
+              "MAUS",
+              "SALV",
+              "DCC",
+              "OSRIC"
+            ]
+          }
+        },
+        "develop": {
+          "5": {
+            "entered": [
+              "MB"
+            ],
+            "left": [
+              "TW2000"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "MB"
+            ]
+          },
+          "10": {
+            "entered": [
+              "MB"
+            ],
+            "left": [
+              "NUM"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "MB",
+              "TW2000",
+              "KNAVE2",
+              "SD",
+              "MOTH",
+              "ROOT"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "MB",
+              "TW2000",
+              "KNAVE2",
+              "SD",
+              "MOTH",
+              "ROOT",
+              "NUM",
+              "OSE",
+              "FL",
+              "CAIRN2",
+              "PF1",
+              "WWN",
+              "PIRATE",
+              "AWN",
+              "STARF",
+              "VAARN"
+            ]
+          }
+        },
+        "play_now": {
+          "5": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "TW2000"
+            ]
+          },
+          "10": {
+            "entered": [
+              "MB"
+            ],
+            "left": [
+              "FL"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "TW2000",
+              "MB",
+              "MOTH",
+              "KNAVE2",
+              "SD",
+              "CAIRN2"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "TW2000",
+              "MB",
+              "MOTH",
+              "KNAVE2",
+              "SD",
+              "CAIRN2",
+              "FL",
+              "NUM",
+              "ROOT",
+              "OSE",
+              "PF1",
+              "STARF",
+              "WWN",
+              "PIRATE",
+              "ODD",
+              "AWN"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "focal_game": "DW",
+      "endpoint_label": "low",
+      "M_before": 32586,
+      "M_diagnostic": 11405.099999999999,
+      "p_T_R_C": "unchanged reference for every game; all other M unchanged",
+      "before": {
+        "overall_rank": 9.0,
+        "scenario_ranks": [
+          29.0,
+          4.0,
+          4.0
+        ],
+        "D": [
+          488.78999999999996,
+          5213.759999999999,
+          7331.85
+        ]
+      },
+      "diagnostic": {
+        "overall_rank": 22.0,
+        "scenario_ranks": [
+          50.0,
+          13.0,
+          13.0
+        ],
+        "D": [
+          171.07649999999998,
+          1824.8159999999996,
+          2566.1474999999996
+        ],
+        "D_gt_1000": [
+          false,
+          true,
+          true
+        ],
+        "threshold_note": "Strict D>1000 only, not evidence of documented suitability or a complete eligible-pool calculation."
+      },
+      "membership_changes": {
+        "overall": {
+          "5": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "ROOT"
+            ]
+          },
+          "10": {
+            "entered": [
+              "WWN"
+            ],
+            "left": [
+              "DW"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "ROOT",
+              "CAIRN2",
+              "OSE",
+              "MB",
+              "MOTH",
+              "WWN"
+            ]
+          },
+          "20": {
+            "entered": [
+              "TORCH"
+            ],
+            "left": [
+              "DW"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "ROOT",
+              "CAIRN2",
+              "OSE",
+              "MB",
+              "MOTH",
+              "WWN",
+              "PF1",
+              "PIRATE",
+              "AWN",
+              "VAARN",
+              "STARF",
+              "BSH",
+              "ODD",
+              "FL",
+              "SWC",
+              "TORCH"
+            ]
+          }
+        },
+        "create": {
+          "5": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "MB"
+            ]
+          },
+          "10": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "MB",
+              "WWN",
+              "ROOT",
+              "OSE",
+              "CAIRN2",
+              "PIRATE"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "MB",
+              "WWN",
+              "ROOT",
+              "OSE",
+              "CAIRN2",
+              "PIRATE",
+              "SI",
+              "AWN",
+              "VAARN",
+              "BSH",
+              "PF1",
+              "SWC",
+              "MAUS",
+              "SALV",
+              "DCC",
+              "OSRIC"
+            ]
+          }
+        },
+        "develop": {
+          "5": {
+            "entered": [
+              "KNAVE2"
+            ],
+            "left": [
+              "DW"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "TW2000",
+              "KNAVE2"
+            ]
+          },
+          "10": {
+            "entered": [
+              "OSE"
+            ],
+            "left": [
+              "DW"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "TW2000",
+              "KNAVE2",
+              "SD",
+              "MOTH",
+              "ROOT",
+              "NUM",
+              "OSE"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "TW2000",
+              "KNAVE2",
+              "SD",
+              "MOTH",
+              "ROOT",
+              "NUM",
+              "OSE",
+              "FL",
+              "CAIRN2",
+              "DW",
+              "MB",
+              "PF1",
+              "WWN",
+              "PIRATE",
+              "AWN",
+              "STARF",
+              "VAARN"
+            ]
+          }
+        },
+        "play_now": {
+          "5": {
+            "entered": [
+              "MOTH"
+            ],
+            "left": [
+              "DW"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "TW2000",
+              "MOTH"
+            ]
+          },
+          "10": {
+            "entered": [
+              "NUM"
+            ],
+            "left": [
+              "DW"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "TW2000",
+              "MOTH",
+              "KNAVE2",
+              "SD",
+              "CAIRN2",
+              "FL",
+              "NUM"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "TW2000",
+              "MOTH",
+              "KNAVE2",
+              "SD",
+              "CAIRN2",
+              "FL",
+              "NUM",
+              "ROOT",
+              "OSE",
+              "DW",
+              "PF1",
+              "MB",
+              "STARF",
+              "WWN",
+              "PIRATE",
+              "ODD",
+              "AWN"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "focal_game": "DW",
+      "endpoint_label": "high",
+      "M_before": 32586,
+      "M_diagnostic": 78206.4,
+      "p_T_R_C": "unchanged reference for every game; all other M unchanged",
+      "before": {
+        "overall_rank": 9.0,
+        "scenario_ranks": [
+          29.0,
+          4.0,
+          4.0
+        ],
+        "D": [
+          488.78999999999996,
+          5213.759999999999,
+          7331.85
+        ]
+      },
+      "diagnostic": {
+        "overall_rank": 5.0,
+        "scenario_ranks": [
+          15.0,
+          3.0,
+          3.0
+        ],
+        "D": [
+          1173.0959999999998,
+          12513.023999999998,
+          17596.44
+        ],
+        "D_gt_1000": [
+          true,
+          true,
+          true
+        ],
+        "threshold_note": "Strict D>1000 only, not evidence of documented suitability or a complete eligible-pool calculation."
+      },
+      "membership_changes": {
+        "overall": {
+          "5": {
+            "entered": [
+              "DW"
+            ],
+            "left": [
+              "ROOT"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "DW"
+            ]
+          },
+          "10": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "DW",
+              "ROOT",
+              "CAIRN2",
+              "OSE",
+              "MB",
+              "MOTH"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "DW",
+              "ROOT",
+              "CAIRN2",
+              "OSE",
+              "MB",
+              "MOTH",
+              "WWN",
+              "PF1",
+              "PIRATE",
+              "AWN",
+              "VAARN",
+              "STARF",
+              "BSH",
+              "ODD",
+              "FL",
+              "SWC"
+            ]
+          }
+        },
+        "create": {
+          "5": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "MB"
+            ]
+          },
+          "10": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "MB",
+              "WWN",
+              "ROOT",
+              "OSE",
+              "CAIRN2",
+              "PIRATE"
+            ]
+          },
+          "20": {
+            "entered": [
+              "DW"
+            ],
+            "left": [
+              "OSRIC"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "MB",
+              "WWN",
+              "ROOT",
+              "OSE",
+              "CAIRN2",
+              "PIRATE",
+              "SI",
+              "AWN",
+              "VAARN",
+              "BSH",
+              "DW",
+              "PF1",
+              "SWC",
+              "MAUS",
+              "SALV",
+              "DCC"
+            ]
+          }
+        },
+        "develop": {
+          "5": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "DW",
+              "TOR2",
+              "TW2000"
+            ]
+          },
+          "10": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "DW",
+              "TOR2",
+              "TW2000",
+              "KNAVE2",
+              "SD",
+              "MOTH",
+              "ROOT",
+              "NUM"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "DW",
+              "TOR2",
+              "TW2000",
+              "KNAVE2",
+              "SD",
+              "MOTH",
+              "ROOT",
+              "NUM",
+              "OSE",
+              "FL",
+              "CAIRN2",
+              "MB",
+              "PF1",
+              "WWN",
+              "PIRATE",
+              "AWN",
+              "STARF",
+              "VAARN"
+            ]
+          }
+        },
+        "play_now": {
+          "5": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "DW",
+              "TOR2",
+              "TW2000"
+            ]
+          },
+          "10": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "DW",
+              "TOR2",
+              "TW2000",
+              "MOTH",
+              "KNAVE2",
+              "SD",
+              "CAIRN2",
+              "FL"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "DW",
+              "TOR2",
+              "TW2000",
+              "MOTH",
+              "KNAVE2",
+              "SD",
+              "CAIRN2",
+              "FL",
+              "NUM",
+              "ROOT",
+              "OSE",
+              "PF1",
+              "MB",
+              "STARF",
+              "WWN",
+              "PIRATE",
+              "ODD",
+              "AWN"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "focal_game": "MOTH",
+      "endpoint_label": "low",
+      "M_before": 47097,
+      "M_diagnostic": 16483.95,
+      "p_T_R_C": "unchanged reference for every game; all other M unchanged",
+      "before": {
+        "overall_rank": 10.0,
+        "scenario_ranks": [
+          24.0,
+          8.0,
+          6.0
+        ],
+        "D": [
+          706.4549999999999,
+          2825.8199999999997,
+          4709.7
+        ]
+      },
+      "diagnostic": {
+        "overall_rank": 25.0,
+        "scenario_ranks": [
+          40.0,
+          23.0,
+          18.0
+        ],
+        "D": [
+          247.25925,
+          989.037,
+          1648.3950000000002
+        ],
+        "D_gt_1000": [
+          false,
+          false,
+          true
+        ],
+        "threshold_note": "Strict D>1000 only, not evidence of documented suitability or a complete eligible-pool calculation."
+      },
+      "membership_changes": {
+        "overall": {
+          "5": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "ROOT"
+            ]
+          },
+          "10": {
+            "entered": [
+              "WWN"
+            ],
+            "left": [
+              "MOTH"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "ROOT",
+              "CAIRN2",
+              "OSE",
+              "MB",
+              "DW",
+              "WWN"
+            ]
+          },
+          "20": {
+            "entered": [
+              "TORCH"
+            ],
+            "left": [
+              "MOTH"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "ROOT",
+              "CAIRN2",
+              "OSE",
+              "MB",
+              "DW",
+              "WWN",
+              "PF1",
+              "PIRATE",
+              "AWN",
+              "STARF",
+              "VAARN",
+              "BSH",
+              "ODD",
+              "FL",
+              "SWC",
+              "TORCH"
+            ]
+          }
+        },
+        "create": {
+          "5": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "MB"
+            ]
+          },
+          "10": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "MB",
+              "WWN",
+              "ROOT",
+              "OSE",
+              "CAIRN2",
+              "PIRATE"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "MB",
+              "WWN",
+              "ROOT",
+              "OSE",
+              "CAIRN2",
+              "PIRATE",
+              "SI",
+              "AWN",
+              "VAARN",
+              "BSH",
+              "PF1",
+              "SWC",
+              "MAUS",
+              "SALV",
+              "DCC",
+              "OSRIC"
+            ]
+          }
+        },
+        "develop": {
+          "5": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "TW2000"
+            ]
+          },
+          "10": {
+            "entered": [
+              "OSE"
+            ],
+            "left": [
+              "MOTH"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "TW2000",
+              "KNAVE2",
+              "SD",
+              "ROOT",
+              "NUM",
+              "OSE"
+            ]
+          },
+          "20": {
+            "entered": [
+              "ODD"
+            ],
+            "left": [
+              "MOTH"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "TW2000",
+              "KNAVE2",
+              "SD",
+              "ROOT",
+              "NUM",
+              "OSE",
+              "FL",
+              "CAIRN2",
+              "MB",
+              "PF1",
+              "WWN",
+              "PIRATE",
+              "AWN",
+              "STARF",
+              "VAARN",
+              "ODD"
+            ]
+          }
+        },
+        "play_now": {
+          "5": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "TW2000"
+            ]
+          },
+          "10": {
+            "entered": [
+              "NUM"
+            ],
+            "left": [
+              "MOTH"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "TW2000",
+              "KNAVE2",
+              "SD",
+              "CAIRN2",
+              "FL",
+              "NUM"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "DW",
+              "TW2000",
+              "KNAVE2",
+              "SD",
+              "CAIRN2",
+              "FL",
+              "NUM",
+              "ROOT",
+              "OSE",
+              "PF1",
+              "MB",
+              "STARF",
+              "WWN",
+              "PIRATE",
+              "MOTH",
+              "ODD",
+              "AWN"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "focal_game": "MOTH",
+      "endpoint_label": "high",
+      "M_before": 47097,
+      "M_diagnostic": 113032.8,
+      "p_T_R_C": "unchanged reference for every game; all other M unchanged",
+      "before": {
+        "overall_rank": 10.0,
+        "scenario_ranks": [
+          24.0,
+          8.0,
+          6.0
+        ],
+        "D": [
+          706.4549999999999,
+          2825.8199999999997,
+          4709.7
+        ]
+      },
+      "diagnostic": {
+        "overall_rank": 3.5,
+        "scenario_ranks": [
+          10.0,
+          4.0,
+          3.0
+        ],
+        "D": [
+          1695.492,
+          6781.968,
+          11303.28
+        ],
+        "D_gt_1000": [
+          true,
+          true,
+          true
+        ],
+        "threshold_note": "Strict D>1000 only, not evidence of documented suitability or a complete eligible-pool calculation."
+      },
+      "membership_changes": {
+        "overall": {
+          "5": {
+            "entered": [
+              "MOTH"
+            ],
+            "left": [
+              "ROOT"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "MOTH",
+              "SD"
+            ]
+          },
+          "10": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "MOTH",
+              "SD",
+              "ROOT",
+              "CAIRN2",
+              "OSE",
+              "MB",
+              "DW"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "MOTH",
+              "SD",
+              "ROOT",
+              "CAIRN2",
+              "OSE",
+              "MB",
+              "DW",
+              "WWN",
+              "PF1",
+              "PIRATE",
+              "AWN",
+              "VAARN",
+              "STARF",
+              "BSH",
+              "ODD",
+              "FL",
+              "SWC"
+            ]
+          }
+        },
+        "create": {
+          "5": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "MB"
+            ]
+          },
+          "10": {
+            "entered": [
+              "MOTH"
+            ],
+            "left": [
+              "PIRATE"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "MB",
+              "WWN",
+              "ROOT",
+              "OSE",
+              "CAIRN2",
+              "MOTH"
+            ]
+          },
+          "20": {
+            "entered": [
+              "MOTH"
+            ],
+            "left": [
+              "OSRIC"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "KNAVE2",
+              "SD",
+              "MB",
+              "WWN",
+              "ROOT",
+              "OSE",
+              "CAIRN2",
+              "MOTH",
+              "PIRATE",
+              "SI",
+              "AWN",
+              "VAARN",
+              "BSH",
+              "PF1",
+              "SWC",
+              "MAUS",
+              "SALV",
+              "DCC"
+            ]
+          }
+        },
+        "develop": {
+          "5": {
+            "entered": [
+              "MOTH"
+            ],
+            "left": [
+              "TW2000"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "MOTH",
+              "DW"
+            ]
+          },
+          "10": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "MOTH",
+              "DW",
+              "TW2000",
+              "KNAVE2",
+              "SD",
+              "ROOT",
+              "NUM"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "TOR2",
+              "MOTH",
+              "DW",
+              "TW2000",
+              "KNAVE2",
+              "SD",
+              "ROOT",
+              "NUM",
+              "OSE",
+              "FL",
+              "CAIRN2",
+              "MB",
+              "PF1",
+              "WWN",
+              "PIRATE",
+              "AWN",
+              "STARF",
+              "VAARN"
+            ]
+          }
+        },
+        "play_now": {
+          "5": {
+            "entered": [
+              "MOTH"
+            ],
+            "left": [
+              "TW2000"
+            ],
+            "members": [
+              "DND5",
+              "PF2",
+              "MOTH",
+              "TOR2",
+              "DW"
+            ]
+          },
+          "10": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "MOTH",
+              "TOR2",
+              "DW",
+              "TW2000",
+              "KNAVE2",
+              "SD",
+              "CAIRN2",
+              "FL"
+            ]
+          },
+          "20": {
+            "entered": [],
+            "left": [],
+            "members": [
+              "DND5",
+              "PF2",
+              "MOTH",
+              "TOR2",
+              "DW",
+              "TW2000",
+              "KNAVE2",
+              "SD",
+              "CAIRN2",
+              "FL",
+              "NUM",
+              "ROOT",
+              "OSE",
+              "PF1",
+              "MB",
+              "STARF",
+              "WWN",
+              "PIRATE",
+              "ODD",
+              "AWN"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "retained_in_top5_all_20_cases": {
+    "overall": [
+      "DND5",
+      "PF2"
+    ],
+    "create": [
+      "DND5",
+      "PF2"
+    ]
+  },
+  "limits": [
+    "No calibration of M, p or T. Existing endpoints are expert priors, not measured minima/maxima.",
+    "Only focalgameM varied; no simultaneous uncertainty, correlations, probability of ranks or market forecast.",
+    "TopN evaluation sets are separate from strict demand threshold and source applicability; no support or score.",
+    "No replacement active input/method/version is proposed. Experiment results must never overwrite active ranking/cohorts."
+  ]
+}
