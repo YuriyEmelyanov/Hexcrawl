@@ -1,0 +1,147 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-10T0027-WWN-builder-screen",
+  "task_id": "HX-RSR-WWN-BUILDER-SCREEN-01",
+  "status": "completed_bounded_static_screen",
+  "game_id": "WWN",
+  "observation": {
+    "id": "obs-WWN-BUILDER-20261110",
+    "game_ids": [
+      "WWN"
+    ],
+    "source": {
+      "url_or_ref": "https://github.com/stories-with-dice/worlds-without-number-builder/blob/9e7202f7be9d5ab9c3cd2abce6d9bb199f9fea30/README.md",
+      "locator": "Seeds and regeneration; Obsidian export; corroborated by src/main.ts and src/export/obsidian.ts on same SHA",
+      "published_at": null
+    },
+    "observed_fact": "The project documents regional map generation, renaming and notes, JSON persistence, and an Obsidian vault export. Static code connects rename/notes edits to browser save, serializes the world to JSON, reads JSON back, and emits site notes and world.json into a vault.",
+    "interpretation": "One existing alternative addresses an L1 preparation and handoff workflow. Static implementation evidence is stronger than a catalog promise, but does not prove deployed runtime correctness, WWN rules fidelity, user adoption or willingness to switch to HexCrawl.",
+    "signal_type": "gm_materials",
+    "quantity": null,
+    "unit": null,
+    "period": "Repository snapshot checked2026-11-10; publication date not verified",
+    "geography_language": "English; author and audience geography unknown",
+    "author_project_key": "stories-with-dice:worlds-without-number-builder",
+    "duplicate_of": null,
+    "access_level": "full_text",
+    "scenario_relevance": [
+      "create",
+      "develop"
+    ],
+    "limitations": [
+      "Primary README and bounded code inspected; no hosted UI interaction, download round-trip or Obsidian vault opened.",
+      "README claims WWN2021/free tables; no book corpus collated and no source rules registered.",
+      "Creator self-description; no independent user/GM count or sampling denominator.",
+      "Aggregator discovery post and repository are not separate people; Reddit handle association unverified.",
+      "Tests in repository were read only; not reported as passing."
+    ],
+    "observed_at": "2026-11-10T00:30:55.691020+00:00"
+  },
+  "source_snapshot": {
+    "repository": "stories-with-dice/worlds-without-number-builder",
+    "sha": "9e7202f7be9d5ab9c3cd2abce6d9bb199f9fea30",
+    "access": "Public git clone plus GitHub connector README; web open unavailable",
+    "read_scope": [
+      "README.md",
+      "src/main.ts selected persistence/edit/export handlers",
+      "src/export/obsidian.ts selected note/ZIP generation",
+      "test/export.test.ts selected definitions",
+      "src/gen/world.ts defaults/seed definitions",
+      "src/data.ts declaration header"
+    ],
+    "not_read": "No full generator audit, bundled rules corpus, premium PDF or full book read"
+  },
+  "code_evidence": [
+    {
+      "path": "src/main.ts",
+      "lines": "36–39,948–950,986–1002",
+      "finding": "Browser persistence, JSON download/load and edited names/notes handlers connected",
+      "status": "static_confirmed"
+    },
+    {
+      "path": "src/export/obsidian.ts",
+      "lines": "75–101,210–222,259–260,372–383",
+      "finding": "Per-place notes, name overrides, world.json snapshot, SVG/PNG and vault zip construction",
+      "status": "static_confirmed"
+    },
+    {
+      "path": "test/export.test.ts",
+      "lines": "1–53",
+      "finding": "Existing authored tests assert note paths, markers, links and bundled plugin files; not run",
+      "status": "test_definition_only"
+    }
+  ],
+  "operational_requirement": {
+    "source_rule_ref": "obs-WWN-BUILDER-20261110 (competitor workflow, not a game rule)",
+    "normative_kind": "non-normative product workflow; research interpretation only",
+    "applicability": "Optional transfer of a prepared WWN regional map and edited place notes into an external notes tool",
+    "layer": "L1",
+    "trigger_or_user_action": "After renaming a prepared place and writing a note, export the map and place information for use in Obsidian.",
+    "inputs_and_units": {
+      "region": "one prepared regional map",
+      "place": "one existing location named Old Port, renamed New Port",
+      "note": "Harbor closes at dusk",
+      "placement": "retain the same position on the exported map"
+    },
+    "product_operation": "Transfer current edited map/place content together, so the user can find the place on the map, read its latest name/note and retain the source document for later continuation. The analyst chooses the eventual export design.",
+    "expected_output": "New Port appears at its original map location with the note Harbor closes at dusk; map and place notes remain mutually navigable.",
+    "constraints_and_exceptions": [
+      "Source is software behavior, not a mandatory WWN rule.",
+      "The existing HX-BL-029 is proposed; this research does not authorize it or dictate bundled plugins/technical format.",
+      "External edits flowing back into the generator are not established; the included world.json is a snapshot, not evidence of Markdown round-trip sync.",
+      "HexCrawl current runtime support is unknown; do not label export absent without checking."
+    ],
+    "acceptance_cases": [
+      {
+        "given": "Existing Old Port, edited to New Port with note Harbor closes at dusk",
+        "when": "Export the current prepared map and places",
+        "expected": "Exported place title is New Port and the note is retained; no duplicate Old Port is created by the rename"
+      },
+      {
+        "given": "New Port remains in the same map position",
+        "when": "Open the exported map and select its place marker",
+        "expected": "The corresponding New Port note is reachable at that position"
+      },
+      {
+        "given": "The exported original source document snapshot with New Port and its note",
+        "when": "Load that snapshot back into the generating tool without changing it externally",
+        "expected": "The prepared map/place content is retained; this does not promise importing later external Markdown edits"
+      }
+    ],
+    "source_vs_product_interpretation": "The competitor supplies an implemented transfer model. Cases express a user outcome for existing029; they are research examples, not a new WWN profile, detailed specification or release evidence.",
+    "canonical_rule_refs": [],
+    "unresolved_parameters": [
+      "HexCrawl exact-SHA export support",
+      "Whether users need one-way export or bidirectional synchronization",
+      "Deploy/runtime verification of competitor output",
+      "Analyst-approved export format and scope"
+    ],
+    "criterion_ids": [
+      "S08-C03"
+    ],
+    "existing_task_refs": [
+      "HX-BL-029"
+    ],
+    "runtime_evidence": {
+      "HexCrawl": "unknown",
+      "competitor": "static_code_inspected_only",
+      "competitor_sha": "9e7202f7be9d5ab9c3cd2abce6d9bb199f9fea30"
+    }
+  },
+  "separated_conclusions": {
+    "facts": "Source implements save/edit/export paths and includes a standalone source snapshot.",
+    "inference": "An existing alternative reduces the uniqueness of a proposed WWN-to-Obsidian workflow; proposal029 should define a concrete user advantage before implementation.",
+    "unknown": "Hosted runtime, independent adoption, book fidelity, unmet need and switching probability"
+  },
+  "discovery_only": {
+    "url": "https://gitwal.com/mentions?before=2026-11-02T09%3A51%3A53.000Z",
+    "access_level": "search_snippet",
+    "disposition": "Used only to discover primary repository; not added as a second observation or verified publication date"
+  },
+  "dedup": "One repository/project; Godsbarrow W1/X12/Z10 not rediscovered as new users. No sum of posts/stars/reviews into audience.",
+  "rating_effect": "No active inputs/ranks/cohorts change; insufficient denominator for numerical proposal",
+  "method": "Existing gm_materials/source_applicability contract; no new metric/experiment/weight",
+  "product_effect": "Existing proposed029 annotated with research refs only; no new task, scope/status/dependency/queue change",
+  "active_rating_changed": false,
+  "score_changed": false
+}
